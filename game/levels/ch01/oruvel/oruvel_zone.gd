@@ -68,7 +68,7 @@ func _set_undertow(on: bool, we: WorldEnvironment) -> void:
 	if u.is_empty():
 		return
 	if on:
-		_set_block(str(u.get("replaces", "")), false)
+		# The wall's block stays shown (its storm set follows it, M3-ENV-751); the kit dressing hides its mesh.
 		if field_camera != null:  # the storm stands kilometres out: past the camera's default far plane
 			field_camera.far = maxf(field_camera.far, float(u.get("camera_far_m", field_camera.far)))
 	if _undertow == null and on:

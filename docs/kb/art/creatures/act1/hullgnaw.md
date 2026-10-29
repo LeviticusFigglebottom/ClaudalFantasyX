@@ -79,3 +79,13 @@ off, under `spine4`).
 
 **Budget:** 15,768 triangles (11,662 body, 4,106 frames), so the budget above is now **≤ 16k** (a boss may take 25k;
 the extra 2k went to the frames' squared timbers and the head the battle camera looks at).
+
+## Polish 2 (2026-10-28)
+
+The neck read as a glossy tube under the battle sun (battle_boss_intro_hullgnaw). Its specular is broken up now, by
+vertex data only, from the last frame to the head: the upper ridge has dried (wetness about 0.05, a little paler
+`storm_slate` over the lumps), slime runs down the flanks in streaks (wet and glossy) between drier bands, and the
+wrinkle valleys hold cavity, so the sheen catches along the folds and streaks instead of in one long highlight.
+materials.json `carapace` roughness_dry 0.35 → 0.62, so the dry skin is matte (the wet skin, roughness_wet 0.26 and the
+clearcoat, is unchanged; the chafe bands and scars, already part-dry, go a little duller with it). Triangles, bones,
+clips, contacts and anchors unchanged (15,768).

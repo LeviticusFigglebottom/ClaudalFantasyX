@@ -1,0 +1,83 @@
+{
+  "_about": "Garo's emotion tags -> face blendshape weights (M3-CHR-532). A pair is [L, R]; a scalar sets both sides of a paired shape. The villager default rows, a big careful man: a slow smile, a laugh that catches; grief held in the brow. Shapes: the shared API (asha.md \u00a76.2). Tags: game/data/dialogue/emotions.json. Read by the villager stage and, once wired, by CutsceneSequencer (sequencer.json face_poses).",
+  "blend_in_s": 0.22,
+  "emotions": {
+    "neutral": {},
+    "soft_smile": {
+      "cheek_raise": 0.3,
+      "lid_squint": 0.18,
+      "mouth_smile": 0.32
+    },
+    "smile": {
+      "cheek_raise": 0.55,
+      "lid_squint": 0.3,
+      "mouth_smile": 0.6
+    },
+    "laugh": {
+      "cheek_raise": 0.75,
+      "lid_squint": 0.6,
+      "mouth_smile": 0.75,
+      "jaw_open": 0.4
+    },
+    "worried": {
+      "brow_inner_up": 0.55,
+      "brow_down": 0.25
+    },
+    "sad": {
+      "brow_inner_up": 0.6,
+      "lid_close": 0.25,
+      "mouth_press": 0.25
+    },
+    "grief": {
+      "brow_inner_up": 1.0,
+      "brow_down": 0.4,
+      "lid_squint": 0.4,
+      "mouth_frown": 0.5,
+      "jaw_clench": 0.3
+    },
+    "angry": {
+      "brow_down": 0.85,
+      "lid_squint": 0.25,
+      "nose_sneer": 0.18,
+      "jaw_clench": 0.5
+    },
+    "cold": {
+      "brow_down": 0.35,
+      "lid_close": 0.15,
+      "mouth_press": 0.45
+    },
+    "surprised": {
+      "brow_outer_up": 0.7,
+      "brow_inner_up": 0.45,
+      "lid_wide": 0.4,
+      "jaw_open": 0.2
+    },
+    "afraid": {
+      "brow_inner_up": 0.8,
+      "lid_wide": 0.45,
+      "mouth_stretch": 0.2,
+      "jaw_open": 0.08
+    },
+    "determined": {
+      "brow_down": 0.45,
+      "jaw_clench": 0.4,
+      "mouth_press": 0.35
+    },
+    "tender": {
+      "brow_inner_up": 0.3,
+      "cheek_raise": 0.2,
+      "lid_close": 0.2,
+      "mouth_smile": 0.12
+    },
+    "guilty": {
+      "brow_inner_up": 0.55,
+      "lid_close": 0.35,
+      "mouth_press": 0.4
+    },
+    "exhausted": {
+      "lid_close": 0.4,
+      "brow_inner_up": 0.2,
+      "jaw_open": 0.08
+    }
+  }
+}

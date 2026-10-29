@@ -2,8 +2,8 @@
 id: M3-CRE-639
 title: "Vowbound choreography: play Ilun's model clips (rise, dismiss, special) once his model lands"
 role: combat
-status: todo
-owner_session: ""
+status: review
+owner_session: claude/battle-presentation
 depends_on: [M3-CRE-638]
 milestone: M3
 request-from: creatures
@@ -47,3 +47,11 @@ It also has three Vowbound clips that only the choreography can trigger:
 - **Framing:** a 4.6 m wingspan, his body hovering 1.35 m up. In our vertex preview of the default camera, his tail and the float cross the right edge of the HUD safe frame. If the render confirms it, a vowbound_slot nudge or a summon-shot change is yours. Tell us if you'd rather have him smaller.
 
 ## Review log
+- 2026-10-28, battle-presentation: done.
+  - (1) choreo.json `clip_own` (`rise` on vowbound.entry and summon_cinematic.entry, `dismiss` on vowbound.dismiss),
+    played when the model has the clip, else the contract `ready` (BattleChoreo.spec_clip). Test:
+    test_battle_vowbound_own_clips.
+  - (2) `special` already plays for Floodnet through creatures.json, as your update says.
+  - (3) SELF-RENDERED battle_choreo_summon, _vowbound_rise, battle_vowbound_call and _out, all viewed. He rises with
+    his wings unfurling up out of the water. In the summon shot his tail and float stay inside the frame, so no
+    smaller model or reframe is needed.

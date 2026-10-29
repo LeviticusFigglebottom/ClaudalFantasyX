@@ -68,6 +68,7 @@ hb.MATERIALS.update({
     "cloth_b": ((0.10, 0.15, 0.35), 0.7),
     "cloth_c": ((0.20, 0.40, 0.55), 0.7),
     "leather": ((0.12, 0.07, 0.04), 0.6),
+    "cloth_d": ((0.30, 0.20, 0.12), 0.6),  # M3-CHR-516: the fifth (optional) cloth slot
     "hair_grey": ((0.35, 0.33, 0.31), 0.5),
 })
 hb.LOD1_RATIO.clear()
@@ -89,7 +90,7 @@ def parse_args() -> argparse.Namespace:
     return ap.parse_args(argv)
 
 
-TORSO_PIECES = ("Top",)  # garment_fit: the torso only (M1-CHR-14: arm weights at the armholes drag the sides out)
+TORSO_PIECES = ("Top", "Shawl", "TopStrapL", "TopStrapR")  # M3-CHR-539: the netting shawl (optional) rides the torso too, as do the tank cut's straps (M3-CHR-526/534)  # garment_fit: the torso only (M1-CHR-14: arm weights at the armholes drag the sides out)
 LOWER_PIECES = ("TrouserTop", "TrouserLegL", "TrouserLegR")  # garment_fit: off the arms (a hanging hand is near)
 LEG_FOLLOW_PIECES = ("Skirt", "Apron")  # garment_fit: below the crotch they follow the legs (build_asha.skirt_weights)
 
@@ -116,6 +117,42 @@ def fitted_weights(key: str, P: np.ndarray, V: np.ndarray, W: np.ndarray, reg: n
         low = np.clip((z_crotch + 0.05 - P[:, 2]) / 0.25, 0.0, 1.0) * 0.5
         Wc = hb.limit4(Wc * (1.0 - low[:, None]) + np.outer(low, np.eye(W.shape[1])[spine_i]))
     return Wc
+
+
+TEETH_CLEAR_MARGIN = 0.005  # UV units kept between the packed skin islands and the teeth strip
+
+
+def clear_teeth_strip(ob) -> bool:
+    """M3-CHR-527: the head's skin islands are packed over the whole square, but the teeth keep their authored strip of
+    the head atlas (asha_mouth; asha_textures paints them there), so a pack that happens to put a scalp island on that
+    strip shows the teeth on the temple. When any packed face centre falls inside the strip, scale the packed islands
+    toward the opposite corner until they clear it. A pack that already clears it (every villager before M3-CHR-526)
+    is left exactly as it was."""
+    me = ob.data
+    names = [m.name for m in me.materials]
+    uvl = me.uv_layers.active.data
+    teeth = [li for p in me.polygons if names[p.material_index] == "teeth" for li in p.loop_indices]
+    if not teeth:
+        return False
+    T = np.array([uvl[li].uv[:] for li in teeth])
+    lo, hi = T.min(axis=0), T.max(axis=0)
+    packed = [p for p in me.polygons if names[p.material_index] in ("skin_head", "mouth")]
+    # only the skin samples the atlas there (the mouth interior's material reads no albedo, and its faces may sit on
+    # the strip harmlessly, as on several M2 villagers)
+    skin = [p for p in packed if names[p.material_index] == "skin_head"]
+    cents = np.array([np.mean([uvl[li].uv[:] for li in p.loop_indices], axis=0) for p in skin])
+    if not ((cents >= lo) & (cents <= hi)).all(axis=1).any():
+        return False
+    # the strip sits in one corner of the square; scale about the opposite corner so the islands end short of it
+    corner = np.array([0.0 if lo[0] > 0.5 else 1.0, 0.0 if lo[1] > 0.5 else 1.0])
+    k = min(abs(lo[0] - corner[0]) if corner[0] == 0.0 else abs(corner[0] - hi[0]),
+            abs(lo[1] - corner[1]) if corner[1] == 0.0 else abs(corner[1] - hi[1])) - TEETH_CLEAR_MARGIN
+    for p in packed:
+        for li in p.loop_indices:
+            q = corner + (np.array(uvl[li].uv[:]) - corner) * k
+            uvl[li].uv = (float(q[0]), float(q[1]))
+    log(f"head skin islands scaled by {k:.3f} to clear the teeth strip")
+    return True
 
 
 def kept_shapes(shapes: dict, build: dict) -> dict:
@@ -218,6 +255,7 @@ def main() -> int:
                                                        np.where(fh_reg == "mouth", 4, 2)))
     hb.unwrap_faces(ob_head, {"skin_head", "mouth"}, hb.head_seams(Fh, cat, Vh, lm),
                     shrink=(np.nonzero(cat != 1)[0], 0.45))
+    clear_teeth_strip(ob_head)
     if snaps:
         hb.quantize_uvs(ob_head)
     pad = np.zeros(len(Vhead) - n_skin)
@@ -275,6 +313,9 @@ def main() -> int:
     # ---- hair and head wrap: one rigid object on the head ----------------------------------------
     hstyle = villager_hair.style(extra["_hair"])
     hair = hstyle.build(lm, surf)
+    hw = cparams.get("headwrap") or {}
+    if headwear is not None and hw.get("press_hair") and hair.V:  # M3-CHR-03/528/537 (optional): under the band
+        hair.V = list(villager_costume.press_under_band(hair.varr(), headwear, lm, float(hw["press_hair"]) * lm.S))
     if snaps and hair.V:  # cards rooted on the midline and traced over the scalp carry the same host noise
         hair.V = list(np.round(hair.varr() / POS_GRID) * POS_GRID)
     hair_tris = hair.tris()

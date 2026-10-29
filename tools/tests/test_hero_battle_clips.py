@@ -26,7 +26,8 @@ sys.path.insert(0, str(ROOT / "assets_src" / "characters" / "asha"))
 
 import hero_clips  # noqa: E402
 
-HEROES = ("asha", "rhen", "toma", "liss", "kerrid", "moll")  # M3-CHR-03: Liss; M3-CHR-505: Kerrid; M3-CHR-507: Moll, the Ch6 boss
+# M3-CHR-03: Liss; M3-CHR-505: Kerrid; M3-CHR-507: Moll, the Ch6 boss; M3-CHR-506: Pell
+HEROES = ("asha", "rhen", "toma", "liss", "kerrid", "moll", "pell")
 # the contract (battle_presentation.md § Clip contract)
 LOOPING = {"idle", "victory"}
 ONE_SHOT = {"ready", "attack", "cast", "item", "read", "defend", "finisher", "hit", "dodge"}
@@ -63,6 +64,8 @@ EXISTING = {  # the clips before M2-CHR-07; their sub-resources must stay byte-i
                "stand_watch", "wade", "push_climber", "down_a_step", "collar_haul", "look_down_stair",
                "carry_child"],  # M3-CHR-505: his own clips, then the contract
     "moll": ["idle", "walk", "look_at", "kneel"],  # M3-CHR-507: his own clips, then the contract
+    "pell": ["idle", "walk", "run", "talk", "storm_call", "descend_rocks", "go_still", "listen_tilt",
+             "back_to_sea"],  # M3-CHR-506: his own clips, then the contract
 }
 # M3-CHR-507: a foe's `ko` is his own (hero_clips.KO_OWN): Moll's is the yield, held kneeling, not a fall; and he has
 # no revive (optional in the contract)
@@ -70,6 +73,7 @@ YIELD_HIPS_M = (0.35, 0.7)  # the hips joint over the floor on one knee
 YIELD_TORSO_MIN_DEG = 55.0  # the torso stays upright-ish (he does not lie down)
 YIELD_GRIP_M = 0.12  # each hand within this of the iron's haft (both hands on it)
 YIELD_IRON_TILT_MAX_DEG = 15.0
+YIELD_HEROES = ("moll",)  # the KO_OWN heroes whose ko is a yield on the haft (Pell's is his own fall: test_pell)
 
 
 def _subresources(text: str) -> dict:
@@ -263,7 +267,7 @@ class TestHeroBattleClips(unittest.TestCase):
     def test_ko_lies_down(self):
         """ko's held frame lies on the floor: the hips joint low, the torso near horizontal, the body centred."""
         for hero in HEROES:
-            if hero in hero_clips.KO_OWN:  # the yield kneels (test_yield_kneels_on_the_haft)
+            if hero in hero_clips.KO_OWN:  # the yield kneels (test_yield_kneels_on_the_haft); Pell's own (test_pell)
                 continue
             _t, last = list(self._keys(hero, "ko"))[-1]
             _g, t = self._globals(hero, last)
@@ -322,7 +326,7 @@ class TestHeroBattleClips(unittest.TestCase):
     def test_yield_kneels_on_the_haft(self):
         """M3-CHR-507: Moll's ko is the yield (hadric_moll.md §9): held on the right knee, the torso upright, the iron
         upright with its foot on the floor and both hands on the haft; `yield` is the same clip."""
-        for hero in sorted(hero_clips.KO_OWN):
+        for hero in YIELD_HEROES:
             sk, persona = self.sk[hero], hero_clips.PERSONA[hero]
             _t, last = list(self._keys(hero, "ko"))[-1]
             g, t = self._globals(hero, last)

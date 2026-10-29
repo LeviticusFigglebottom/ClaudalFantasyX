@@ -1,0 +1,699 @@
+{
+  "version": 1,
+  "doc": "M3-AUD-861 (M3-BPR-421/422; ADR 0041; Git LFS, ADR 0173): every Act I ability's own sound (battle_sfx.json `vfx` names them by effect id) and the swing/reel Swell styles' rows (assets_src/sfx/act1_ability_sfx.py).",
+  "sfx": {
+    "abl_quick_hit": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_quick_hit.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Rhen: a quick light cut, foam-white."
+    },
+    "abl_undertow_cut": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_undertow_cut.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Rhen: a cut that drags down like the undertow: teal spray pulled under."
+    },
+    "abl_mend": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_mend.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Asha: shallow water lifting off the wound (water, not glimmer)."
+    },
+    "abl_hasten": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_hasten.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Asha: quick pale streaks rising past the ally."
+    },
+    "abl_ward": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_ward.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Asha: a ring of reef-blue light lifting around the ally."
+    },
+    "abl_shell_breaker": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_shell_breaker.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Toma: shell plates cracking off the target."
+    },
+    "abl_challenge": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_challenge.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Toma (Ch8): the challenge, a spark at the foe's head."
+    },
+    "abl_hold_the_stair": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_hold_the_stair.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Toma (Ch8): he sets his shield over the stair."
+    },
+    "abl_stand_firm": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_stand_firm.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Toma (Ch8): feet set, dust settling."
+    },
+    "abl_stand_fast": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_stand_fast.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Ch8: a hero braces on the wall-walk."
+    },
+    "abl_return_tide": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_return_tide.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Toma's Swell: the tide thrown back out from the stair."
+    },
+    "abl_ember": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_ember.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Ysolde: a small flame climbing the target."
+    },
+    "abl_frost": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_frost.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Ysolde: salt-glass shards of rime falling."
+    },
+    "abl_slow_hex": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_slow_hex.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Ysolde: ink-dark motes settling over the target."
+    },
+    "abl_written_light": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_written_light.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Ysolde's Swell: written strokes of pale light across each foe (not glimmer)."
+    },
+    "abl_anchor_fall": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_anchor_fall.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Kerrid: the anchor comes down: dust and stone."
+    },
+    "abl_fluke_cleave": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_fluke_cleave.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Kerrid: the anchor-fluke bites: iron chips and splinters."
+    },
+    "abl_snub_line": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_snub_line.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Kerrid: the line snubbed hard: rope fibres snapping."
+    },
+    "abl_flash_housing": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_flash_housing.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Liss: the lamp housing's flash in the foe's eyes (oil light; capped by particles, not a screen flash)."
+    },
+    "abl_reel_shot": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_reel_shot.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Liss: the line strikes home, brass bright."
+    },
+    "abl_hoist_haul": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_hoist_haul.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Liss (Ch8): the hoist hauls a group up."
+    },
+    "abl_brine_lash": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_brine_lash.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Ilun: a lash of brine."
+    },
+    "abl_tidal_ward": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_tidal_ward.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Ilun: water rising in a ring around itself."
+    },
+    "abl_floodnet": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_floodnet.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Ilun's Swell: a steady net of bound threads over each foe (bound light: no drift)."
+    },
+    "abl_forge_bolt": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_forge_bolt.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Kahre: a forge-hot bolt."
+    },
+    "abl_last_strike": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_last_strike.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Kahre's Swell: raw lightning down onto the foe."
+    },
+    "abl_kite_flare": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_kite_flare.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Virel: a kite's flare drifting down on the foe."
+    },
+    "abl_flare_line": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_flare_line.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Virel's Swell: the kite-string burning, a flare on each foe."
+    },
+    "abl_ash_rake": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_ash_rake.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: An ashwing rakes: ash streaks."
+    },
+    "abl_wing_dust": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_wing_dust.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Ash shaken from a wing over each foe."
+    },
+    "abl_bank_the_fire": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_bank_the_fire.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: The Cinder Matron banks her fire."
+    },
+    "abl_ladle_swing": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_ladle_swing.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: The Cinder Matron's ladle: molten slag."
+    },
+    "abl_slag_pour": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_slag_pour.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: The Cinder Matron pours slag over the party."
+    },
+    "abl_recrust": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_recrust.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: The Cinder Matron's crust closes over her."
+    },
+    "abl_breach": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_breach.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: The Breach: the wall gives under the Reach."
+    },
+    "abl_crust_slam": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_crust_slam.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: The Reach's crust slams."
+    },
+    "abl_undertow_pull": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_undertow_pull.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: The Reach pulls at the party's footing."
+    },
+    "abl_brine_iron": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_brine_iron.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: The Inquisitor's brine-iron: a salt burn."
+    },
+    "abl_haft_strike": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_haft_strike.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: The Inquisitor's haft."
+    },
+    "abl_shell_wall": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_shell_wall.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: The Inquisitor's red shell armour closes."
+    },
+    "abl_torch_hulk": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_torch_hulk.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: The Inquisitor torches the hulk: smoke over each foe."
+    },
+    "abl_hound_bite": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_hound_bite.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: The Order's hound bites."
+    },
+    "abl_pounce": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_pounce.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: The hound pounces."
+    },
+    "abl_brine_spit": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_brine_spit.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: A crab spits brine."
+    },
+    "abl_pinch": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_pinch.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: A crab's pinch: shell grit."
+    },
+    "abl_scuttle_claw": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_scuttle_claw.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: A scuttler's claw."
+    },
+    "abl_tide_claw": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_tide_claw.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: A tide crawler's claw: the Undertow's light, sideways."
+    },
+    "abl_housing_glare": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_housing_glare.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: A wreck crab's lamp-housing glare."
+    },
+    "abl_dive_rake": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_dive_rake.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: A gull's raking dive: pale feathers."
+    },
+    "abl_wing_peck": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_wing_peck.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: A squall wing pecks."
+    },
+    "abl_spark_spit": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_spark_spit.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: A vein sparker spits sparks."
+    },
+    "abl_lure_glow": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_lure_glow.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: The lantern eel's lure: a cold glow."
+    },
+    "abl_oil_slap": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_oil_slap.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: An oil slug slaps: black oil."
+    },
+    "abl_smother": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_smother.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: An oil slug smothers."
+    },
+    "abl_polyp_mend_hit": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_polyp_mend_hit.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: A polyp's held motes mend its ally (sinking, never rising)."
+    },
+    "abl_limpet_clamp": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_limpet_clamp.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: A limpet clamps down."
+    },
+    "abl_pull_in": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_pull_in.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: A slag tortoise pulls into its shell."
+    },
+    "abl_shell_ram": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_shell_ram.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: A slag tortoise rams."
+    },
+    "abl_sail_drop": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_sail_drop.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: A sail leech drops over the target."
+    },
+    "abl_skim_bite": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_skim_bite.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: A skipper's bite out of the shallows."
+    },
+    "abl_shoal_nip": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_shoal_nip.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: A wickfry's nip."
+    },
+    "abl_glass_jab": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_glass_jab.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: The bottle hermit's glass."
+    },
+    "abl_glass_flare": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_glass_flare.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: The hermit's bottle flares."
+    },
+    "abl_gnaw": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_gnaw.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Hullgnaw's gnaw: the spawn's wound-light, sinking."
+    },
+    "abl_rib_lash": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_rib_lash.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Hullgnaw's ribs lash."
+    },
+    "abl_thrash": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_thrash.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: Hullgnaw thrashes in its ribs."
+    },
+    "abl_hood_slam": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_hood_slam.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: The Drownbell's hood comes down."
+    },
+    "abl_flood_surge": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_flood_surge.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: The Drownbell's flood surges over each foe."
+    },
+    "abl_undertow_surge": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_undertow_surge.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: The Drownbell's undertow drags at each foe's feet."
+    },
+    "abl_haul": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_haul.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: The Spar-Wraith hauls its spar down on a foe."
+    },
+    "abl_sea_lash": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_sea_lash.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: The Spar-Wraith lashes the party with the sea."
+    },
+    "abl_shroud_sweep": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_shroud_sweep.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: The spar-wraith's shroud sweeps the party."
+    },
+    "abl_spar_stab": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/abl_spar_stab.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-421: The spar-wraith's spar: splinters."
+    },
+    "whoosh_swing": {
+      "files": [
+        "res://assets/lfs/audio/sfx/choreo/whoosh_swing.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-422: Kerrid's Swell: the anchor swung round on its line"
+    },
+    "swell_kerrid": {
+      "files": [
+        "res://assets/lfs/audio/sfx/choreo/swell_kerrid.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-422: Kerrid's Swell: the anchor landing"
+    },
+    "reel_whir": {
+      "files": [
+        "res://assets/lfs/audio/sfx/choreo/reel_whir.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-422: Liss's Swell: the line paid out and snubbed"
+    },
+    "swell_liss": {
+      "files": [
+        "res://assets/lfs/audio/sfx/choreo/swell_liss.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861 / M3-BPR-422: Liss's Swell: the reel-stop's bright brass strike"
+    }
+  }
+}

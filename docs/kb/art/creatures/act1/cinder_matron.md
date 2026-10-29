@@ -109,3 +109,13 @@ than her rest bow; the anvil's ring jolts through her at 0.35 s; the head lifts 
 firebox flares (VFX at `vfx_core`); the arms raise the ladle and the tongs; she settles onto idle's first frame).
 Kept: `idle` (the bowed, grieving rest pose), `attack` (contact 0.85 s unchanged), `cast`, `hit`, `ko`,
 `phase_change`, and `hit_b`/`idle_b` from the kit; `clip_by_skill` unchanged.
+
+## Polish 2 (2026-10-28)
+
+The biggest slag cells on her belly front read smooth up close. The crust cells broader than 0.05 m² within 100° of
+her front (five cells: the broad flows the review and boss-intro cameras see) are re-topped: a ring of 2k points
+(corners and edge middles) between the centre and the rim, bubbled up and sunk into pits by noise (the pits darker,
+with cavity), and two fine cracks sunk from the centre to the rim across the cell, dark and deep. +4k triangles a
+cell: 24,988 (body 18,292, crust 6,696), within the 25k boss budget (was 24,836). The rng sequence of the other cells
+is untouched (the crack direction is hashed), so every other cell, crack and drip is where it was. Bones, clips,
+contacts and anchors unchanged.

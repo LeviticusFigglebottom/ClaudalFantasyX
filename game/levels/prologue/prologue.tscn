@@ -9,7 +9,7 @@
 [ext_resource type="PackedScene" path="res://assets/characters/ysolde/ysolde.glb" id="6_ysolde"]
 [ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="7_water"]
 [ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="8_waves"]
-[ext_resource type="Material" path="res://game/levels/ch02/haluna/haluna_water_material.tres" id="9_water_mat"]
+[ext_resource type="Material" path="res://assets/environments/zones/iskarra/iskarra_water_material.tres" id="9_water_mat"]
 
 [sub_resource type="Resource" id="ShotP01"]
 script = ExtResource("2_shot")

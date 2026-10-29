@@ -24,6 +24,7 @@ from toma_hair import (  # noqa: F401  (the hair interface asha_textures reads)
     hairline_v, in_hair)
 
 LIP_TRIM_H = 0.012  # head heights: default for `lip_trim_h`
+TRIM_HALF_W = 1.15  # of the mouth half-width: the trimmed lens's half-width
 _TOMA_BEARD_V = toma_hair.beard_v  # Toma's own region (beard_cards swaps the module's name for Kerrid's)
 
 
@@ -32,12 +33,9 @@ def beard_v(lm, face, P: np.ndarray, lip_trim_h: float = LIP_TRIM_H) -> np.ndarr
     lip line, so the mouth shows (kerrid.md §5)."""
     base = _TOMA_BEARD_V(lm, face, P)
     u, v, phi = toma_hair._face_coords(lm, P)
-    W = face.mouth_half / lm.h
-    vm = face.vm
-    above = np.minimum((1.15 * W - np.abs(u)) / 0.04, np.minimum((vm + 0.040 + lip_trim_h - v) / 0.02,
-                                                                 (v - (vm + 0.02)) / 0.02))
-    above = np.where(np.abs(phi) < 40.0, above, -1.0)
-    return np.minimum(base, -above)
+    # M2-CHR-524: Toma's mouth lens, a little wider and raised by the trim (was a steep-edged box: a hard notch)
+    trimmed = toma_hair.mouth_clear(lm, face, u, v, phi, TRIM_HALF_W, lip_trim_h)
+    return np.minimum(base, -trimmed)
 
 
 def in_beard(lm, face, P: np.ndarray, margin_h: float = 0.0, lip_trim_h: float = LIP_TRIM_H) -> np.ndarray:

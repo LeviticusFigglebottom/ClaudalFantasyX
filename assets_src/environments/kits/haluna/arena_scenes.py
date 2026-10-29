@@ -585,7 +585,29 @@ def _terrace_arena() -> dict:
     }
 
 
-ASH_TERRACE = _terrace_arena()
+PEMAKAR_VOTIVE = "res://assets/environments/kits/pemakar/votive_lamp.glb"
+VOTIVE_YAW_SPREAD_DEG = 25.0  # the spouts face the fight, each set down by hand
+
+
+def _with_votive_lamps(table: dict) -> dict:
+    """env-art-b's votive lamps (M3-ENV-1305/1306; b_lanternfall.py's arena(), the same rows in the same order): each
+    votive row keeps its light but draws no writer flame, and a kit `votive_lamp` (b_votive.py) stands under it.
+    `arena_scenes.py` writes the arena with them, so b_lanternfall.py's write and this one are the same file."""
+    votives = {tuple(v["at"]) for v in _terrace_votives()}
+    rng = np.random.default_rng(np.random.SeedSequence([6006, 51]))
+    lamps, pieces = [], list(table["pieces"])
+    for lp in table["lamps"]:
+        if tuple(lp["at"]) in votives:
+            lp = {**lp, "flame": False}
+            x, _, z = lp["at"]
+            yaw = round(float(rng.uniform(-VOTIVE_YAW_SPREAD_DEG, VOTIVE_YAW_SPREAD_DEG)), 2)
+            # At the grave wall's foot, the floor's edge (the writer's flames stood there): a structure's clearance.
+            pieces.append({"glb": PEMAKAR_VOTIVE, "at": (x, 0.0, z), "yaw": yaw, "structure": True})
+        lamps.append(lp)
+    return {**table, "lamps": lamps, "pieces": pieces}
+
+
+ASH_TERRACE = _with_votive_lamps(_terrace_arena())
 
 
 # ---------------------------------------------------------------------------------------------
@@ -691,7 +713,10 @@ UNDERWAY_TOWER = {
     # oruvel_underway.md §0 `ch01_underway_int` (the lamp gallery): the dive's sun (08:45, 42 deg / 105 deg in the kit,
     # 15 deg here), the ch01 key #FFEFE1 3.0 and fill #8FC3E0 tinted by 21 m of water (the downwelling stand-in), the
     # ambient 0.22, the in-scatter x0.33 (ArenaUnderwater), exposure 0.65, lut_ch01_raft's intent.
-    "sun": {"elev": 42.0, "az": 15.0, "color": water_tinted(CH01_KEY, UW_DEPTH_M), "energy": 3.0},
+    # The sun through 21 m of water arrives soft (M3-ENV-1323, the GPU QA's rows 15 and 40: the windows' light lay on
+    # the floor as hard-edged rectangles).
+    "sun": {"elev": 42.0, "az": 15.0, "color": water_tinted(CH01_KEY, UW_DEPTH_M), "energy": 3.0, "angular_deg": 9.0,
+            "shadow_blur": 4.0},
     "fill": {"color": water_tinted(CH01_FILL, UW_DEPTH_M), "energy": UW_AMBIENT},
     "exposure": 0.65,
     "fog": {"color": "#1FA3A6", "density": 0.0, "sky_affect": 0.0, "height": 0.0, "height_density": 0.0},
@@ -1853,7 +1878,9 @@ def write_arena(a: dict) -> Path:
         "transform": sun_xform(s["elev"], s["az"]), "light_color": hexc(s["color"]), "light_energy": s["energy"],
         "shadow_enabled": "true", "shadow_bias": 0.03, "shadow_normal_bias": 1.0, "shadow_blur": 1.0,
         "directional_shadow_mode": 2, "directional_shadow_split_1": 0.06, "directional_shadow_split_2": 0.18,
-        "directional_shadow_split_3": 0.45, "directional_shadow_max_distance": s.get("max_distance", 120.0)})
+        "directional_shadow_split_3": 0.45, "directional_shadow_max_distance": s.get("max_distance", 120.0),
+        # M3-ENV-1323: an underwater sun's light is diffused by the water above: soft-edged pools, not hard panes.
+        **({"light_angular_distance": s["angular_deg"], "shadow_blur": s["shadow_blur"]} if "angular_deg" in s else {})})
     sea = a["sea"]
     sea_props = {
         "transform": f"Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, {sea['y']}, 0)",

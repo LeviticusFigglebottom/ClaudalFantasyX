@@ -2,7 +2,7 @@
 id: M2-MNU-06
 title: Scene-router swap test on an injected clock (deterministic, not load-sensitive)
 role: architect
-status: review
+status: done
 owner_session: "menus (claude/menus)"
 depends_on: [M2-ARC-05]
 milestone: M2
@@ -23,3 +23,8 @@ test_scene_router_swap::test_swap_frame_stays_under_threshold_for_every_target f
 - **Gates:** `--filter=test_scene_router` 15/15; again 15/15 with six busy loops on 4 CPUs (load 5.1); gdlint/gdformat clean; validate_data 0/0. Docs: architecture.md § the scene swap.
 
 ## Review log
+- 2026-10-28, integration-qa (architect seat, per the Lead): **accepted.** `SceneRouter.set_measure_clock` and
+  `_now_usec()` are in game/core/scene_router.gd. test_scene_router_swap runs each target through scene_swap_probe on
+  `--frame-usec=16667` and asserts exact one-step frames and `over_budget` false; the threshold isn't loosened. On
+  claude/hero-integration (big15 merged): scene_router 15/0, also with M3-HER-1151's ShaderGlobals hold in
+  `_instantiate`.

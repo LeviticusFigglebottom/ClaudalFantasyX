@@ -24,7 +24,7 @@ import math
 
 import numpy as np
 
-SKIRT_SECTORS = 8
+SKIRT_SECTORS = 16  # big14's review (the skirt as cloth): 8 panels were too coarse to fold; 16 halve each panel
 SKIRT_BONE = "DEF-skirt_"
 ARMPIT_BONE = "DEF-armpit."
 # skirt weights (m at s = 1): the band above the pivot over which the cloth hands over from the hips to the panels,

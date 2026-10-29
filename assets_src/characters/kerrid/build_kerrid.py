@@ -73,6 +73,7 @@ import kerrid_costume  # noqa: E402
 import kerrid_hair  # noqa: E402
 import kerrid_head  # noqa: E402
 import kerrid_props  # noqa: E402
+import toma_hair  # noqa: E402
 from asha_hair import Scalp  # noqa: E402
 from asha_mesh import Part  # noqa: E402
 
@@ -396,6 +397,8 @@ def main() -> int:
     auto = np.zeros((len(me.vertices), 3))
     me.vertices.foreach_get("normal", auto.ravel())
     auto[:n_skin] = np.array(normals_h)
+    if len(beard.V):  # M2-CHR-524: the beard cards shade with the skin's normal (no separately lit flakes)
+        auto[beard_start:beard_start + len(beard.V)] = toma_hair.surface_normals(beard.varr(), beard.F, surf)
     me.normals_split_custom_set_from_vertices([tuple(map(float, n)) for n in auto])
     cat = np.where(res["face_mask"][is_head], 1, np.where(res["face_socket"][is_head], 3,
                                                        np.where(fh_reg == "mouth", 4, 2)))
@@ -441,7 +444,7 @@ def main() -> int:
         Vr = snap(hair.varr())
         Vr[np.abs(Vr) < MIDLINE_SNAP] = 0.0
         hair.V = list(Vr)
-        ob = hb.part_object(hair)
+        ob = hb.part_object(hair, toma_hair.surface_normals(Vr, hair.F, surf))  # M2-CHR-524: the scalp's normal
         Wr = np.zeros((len(hair.V), len(wnames)), dtype=np.float32)
         Wr[:, head_i] = 1.0
         hb.apply_weights(ob, Wr, wnames, skel)

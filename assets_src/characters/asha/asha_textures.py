@@ -77,6 +77,18 @@ SKIN_MOTTLE_SCALE = 0.009  # m (times the head scale): the mottle's base cell
 PREFIX = "asha"  # file prefix of the skin maps
 SKIN_HEX = "#B9876A"  # base skin albedo (asha.md §6.1 skin_asha)
 FRECKLES = 18  # freckles across the nose bridge (asha.md §6.1: 12-20)
+# M3-CHR-534/526/538: a feathered, broken painted hairline (0 = off, the heroes' default; their maps are unchanged).
+# villager_textures sets it from `_hair.hairline_feather` (0..1) for cropped and short villager hair, whose card rows
+# stop at the hairline and left the underpaint's even edge as a blunt line across the forehead. At 1 the edge wanders
+# by HAIRLINE_BREAK_AMP head heights over a HAIRLINE_BREAK_SCALE cell (tufts forward, gaps back), the transition is
+# HAIRLINE_FEATHER_EXTRA head heights longer, the outermost strands are fewer (HAIRLINE_SPARSE) and thinner (their
+# density down to 1 - HAIRLINE_EDGE_THIN of it), so the edge breaks into separate strands rather than a wash.
+HAIRLINE_FEATHER = 0.0
+HAIRLINE_BREAK_AMP = 0.10
+HAIRLINE_BREAK_SCALE = 0.005  # m (times the head scale)
+HAIRLINE_FEATHER_EXTRA = 0.03
+HAIRLINE_EDGE_THIN = 0.35
+HAIRLINE_SPARSE = 0.6  # at 1, the streak threshold's extra rise toward the edge: fewer, separate strands there
 
 
 # ---------------------------------------------------------------------------------------------
@@ -875,10 +887,19 @@ def albedo(Ph, Nh, key, face, lm, hair_mod, r, npz) -> np.ndarray:
             # M1-CHR-07: a longer, sparser transition (about 15 mm) whose first strands are fine and
             # half transparent, as baby hairs are. CHR-04's 5 mm ramp to 95% hair colour drew the
             # hard dark line the review called a helmet edge
-            ramp = smoothstep(-0.045, 0.03, dz + wander)
-            cover = smoothstep(0.40, 0.66, streak + (ramp - 0.5) * 1.2) * smoothstep(-0.055, -0.012, dz + wander)
+            if HAIRLINE_FEATHER > 0.0:  # opt-in (villagers): a broken, feathered edge; the branch below is unchanged
+                f = HAIRLINE_FEATHER
+                wander = wander + f * HAIRLINE_BREAK_AMP * (fbm3(Ph, HAIRLINE_BREAK_SCALE * s, 74, octaves=3) - 0.5)
+                ext = f * HAIRLINE_FEATHER_EXTRA
+                ramp = smoothstep(-0.045 - ext, 0.03, dz + wander)
+                cover = (smoothstep(0.40, 0.66, streak + (ramp - 0.5) * (1.2 + f * HAIRLINE_SPARSE))
+                         * smoothstep(-0.055 - ext, -0.012, dz + wander))
+                dens = (0.55 * (1.0 - f * HAIRLINE_EDGE_THIN * (1.0 - ramp)) + 0.40 * ramp) * cover
+            else:
+                ramp = smoothstep(-0.045, 0.03, dz + wander)
+                cover = smoothstep(0.40, 0.66, streak + (ramp - 0.5) * 1.2) * smoothstep(-0.055, -0.012, dz + wander)
+                dens = (0.55 + 0.40 * ramp) * cover
             hcol = hexc(HAIR_UNDERPAINT) * (0.75 + 0.5 * streak)[:, None]
-            dens = (0.55 + 0.40 * ramp) * cover
             col = col * (1 - dens[:, None]) + hcol * dens[:, None]
         # brow skin a touch darker
         col *= 1 - 0.12 * (np.exp(-((v - (ve + 0.072)) / 0.015) ** 2) * np.exp(-((np.abs(u) - 0.13) / 0.06) ** 2))[:, None]

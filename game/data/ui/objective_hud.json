@@ -1,6 +1,6 @@
 {
   "objective_hud": {
-    "doc": "M2-UI-17/19: the on-screen objective line and the destination cue in the field. Rects are x, y, w, h at the 1920 x 1080 reference (multiples of 3); the panel's height is its least, and it grows for a wrapped line up to panel max_lines. The line slides in slide_px from the left over in_sec (reduced motion: a fade, no slide), holds hold_sec, then fades over out_sec. It shows when the objective changes, once when the field first takes input after a scene loads, and on demand with `action` (added to the InputMap when missing, through FieldInput.add_actions; remappable on the Controls page). It never shows while the field controller refuses input (cutscenes, conversations), while the tree is paused (menus) or in battle (a separate scene). cue: the destination marker over the objective's target when it is on screen, an edge arrow when it is not (inset edge_px from the screen edge), hidden within hide_within_m of the target; marker_lift_m raises it above the ground; distance words: near under near_m, a short walk under walk_m, else far.",
+    "doc": "M2-UI-17/19: the on-screen objective line and the destination cue in the field. Rects are x, y, w, h at the 1920 x 1080 reference (multiples of 3); the panel's height is its least, and it grows for a wrapped line up to panel max_lines. The line slides in slide_px from the left over in_sec (reduced motion: a fade, no slide), holds hold_sec, then fades over out_sec. It shows when the objective changes, once when the field first takes input after a scene loads, and on demand with `action` (added to the InputMap when missing, through FieldInput.add_actions; remappable on the Controls page). It never shows while the field controller refuses input (cutscenes, conversations), while the tree is paused (menus) or in battle (a separate scene). cue: the destination marker over the objective's target when it is on screen, an edge arrow when it is not (inset edge_px from the screen edge), hidden within hide_within_m of the target; marker_lift_m raises it above the ground; distance words: near under near_m, a short walk under walk_m, else far. The distance words carry a label_outline_px dark outline, so they read over bright sky, sand and night water alike.",
     "canvas_layer": 40,
     "panel": {"rect": [48, 48, 630, 96], "pad": 15, "glyph_px": 9, "label_height": 27, "max_lines": 3},
     "in_sec": 0.35,
@@ -10,6 +10,7 @@
     "action": {"field_objective": {"keys": ["Tab"], "joy_buttons": [4]}},
     "deadzone": 0.5,
     "cue": {"edge_px": 72, "marker_px": 15, "arrow_px": 21, "hide_within_m": 4.0, "marker_lift_m": 2.4,
-            "near_m": 15.0, "walk_m": 60.0, "label_width": 240, "label_height": 30}
+            "near_m": 15.0, "walk_m": 60.0, "label_width": 240, "label_height": 30,
+            "label_outline_px": 6}
   }
 }

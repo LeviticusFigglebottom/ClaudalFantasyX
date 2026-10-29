@@ -55,24 +55,25 @@
     {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 68},
     {"op": "line", "id": "ch04_shell_020", "key": "DLG_CH04_SHELL_020", "speaker": "toma", "emotion": "sad", "voice": "", "src": 69},
     {"op": "goto", "to": 48, "src": 67},
-    {"op": "cue", "cue": "camera", "args": ["H14"], "kwargs": {}, "src": 71},
+    {"op": "cue", "cue": "camera", "args": ["H17"], "kwargs": {}, "src": 71},
     {"op": "cue", "cue": "face", "args": ["asha", "soft_smile", 0.0], "kwargs": {}, "src": 72},
     {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 73},
     {"op": "line", "id": "ch04_shell_021", "key": "DLG_CH04_SHELL_021", "speaker": "", "emotion": "", "voice": "", "src": 74, "tags": ["sung"]},
     {"op": "cue", "cue": "camera", "args": ["H12"], "kwargs": {}, "src": 75},
     {"op": "cue", "cue": "anim", "args": ["rhen", "put_down_plate"], "kwargs": {}, "src": 76},
-    {"op": "cue", "cue": "mark", "args": ["rhen", "feast_edge", "walk"], "kwargs": {}, "src": 77},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "leave_rhen", "walk"], "kwargs": {}, "src": 77},
     {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 78},
     {"op": "cue", "cue": "anim", "args": ["toma", "follow"], "kwargs": {}, "src": 79},
     {"op": "cue", "cue": "anim", "args": ["asha", "touch_arm", "toma"], "kwargs": {}, "src": 80},
     {"op": "line", "id": "ch04_shell_022", "key": "DLG_CH04_SHELL_022", "speaker": "asha", "emotion": "tender", "voice": "", "src": 81},
     {"op": "line", "id": "ch04_shell_023", "key": "DLG_CH04_SHELL_023", "speaker": "toma", "emotion": "worried", "voice": "", "src": 82},
     {"op": "line", "id": "ch04_shell_024", "key": "DLG_CH04_SHELL_024", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 83},
-    {"op": "cue", "cue": "mark", "args": ["asha", "feast_edge", "walk"], "kwargs": {}, "src": 84},
+    {"op": "cue", "cue": "mark", "args": ["asha", "leave_asha", "walk"], "kwargs": {}, "src": 84},
     {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 85},
-    {"op": "cue", "cue": "mark", "args": ["toma", "feast_edge", "walk"], "kwargs": {}, "src": 86},
-    {"op": "cue", "cue": "fade", "args": ["out", 1.0], "kwargs": {}, "src": 87},
-    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 88}
+    {"op": "cue", "cue": "mark", "args": ["toma", "leave_toma", "walk"], "kwargs": {}, "src": 86},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 87},
+    {"op": "cue", "cue": "fade", "args": ["out", 1.0], "kwargs": {}, "src": 88},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 89}
    ]
   }
  }

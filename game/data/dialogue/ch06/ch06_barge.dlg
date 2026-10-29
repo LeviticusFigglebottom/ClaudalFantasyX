@@ -29,11 +29,11 @@ location: ch06/brine_shoals
 @music silence
 @anim inquisitor kneel
 Inquisitor [exhausted]: ...Enough. Enough. #line:ch06_barge_001
-@mark stillguard_a impasse_a run
+@mark stillguard_a impasse_a run via=way_tents_s,way_camp_s
 @mark stillguard_b impasse_b run
 @anim stillguard_a level_spear
 @anim stillguard_b level_spear
-@mark toma shield_line walk
+@mark toma shield_line walk via=way_tents_e
 @anim toma shield_up
 @wait 1.5
 // 3. Kerrid, before the barge arrives: at the burning hulk, a smouldering hull-rib on his shoulder

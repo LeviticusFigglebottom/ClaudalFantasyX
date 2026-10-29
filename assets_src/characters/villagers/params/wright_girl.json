@@ -1,0 +1,124 @@
+{
+  "_about": "The Saltwright girl at the brazier (Ch6 B03 W06, the mark `brand_girl`; M3-CHR-511), about 16: the Stillguard holds her arm out over the clerk's irons, her line-marks toward them. Small and wiry, dark-brown hair in a low knot, a sailcloth work top with the sleeves pushed up and rolled, rust canvas calf trousers, a leather belt, barefoot. Four line-marks on the right arm (three on the forearm, one on the upper arm: an apprentice's record), liss_textures' generator with her own seed; no reach-bands. Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials, villager_clips), not by bb_params.",
+  "name": "wright_girl",
+  "height_m": 1.55,
+  "heads_tall": 7.0,
+  "shoulder_width_heads": 1.56,
+  "chest_width_heads": 1.16,
+  "chest_depth_heads": 0.86,
+  "waist_width_heads": 1.02,
+  "hip_width_heads": 1.36,
+  "crotch_height_heads": 3.4,
+  "arm_span_ratio": 1.0,
+  "hand_length_heads": 0.8,
+  "foot_length_ratio": 0.148,
+  "neck_length_heads": 0.4,
+  "neck_width_ratio": 0.5,
+  "head_width_ratio": 0.67,
+  "femininity": 0.9,
+  "muscle": 0.5,
+  "mass": 0.12,
+  "breast": 0.25,
+  "eye_scale": 1.14,
+  "ipd_m": 0.06,
+  "arm_abduction_deg": 47.0,
+  "skin_hex": "#9C6E50",
+  "eye_tilt_deg": 2.0,
+  "jaw_width": 0.9,
+  "cheekbone_height": 0.002,
+  "cheekbone_width": 1.04,
+  "chin_size": 0.88,
+  "nose_bridge_width": 0.94,
+  "nose_tip_projection": 0.96,
+  "lip_fullness": 0.82,
+  "lip_close": 0.6,
+  "lip_seal": 0.96,
+  "lip_lower_fullness": 0.74,
+  "mouth_corner_lift": 0.0,
+  "brow_ridge": 0.8,
+  "donor_mix_african": 0.3,
+  "donor_mix_asian": 0.45,
+  "donor_mix_caucasian": 0.25,
+  "_skin": {
+    "hex": "#9C6E50",
+    "age": 0.0,
+    "freckles": 0,
+    "reach_bands": {
+      "L": 0,
+      "R": 0
+    },
+    "seed": 121,
+    "lip": "#86544A",
+    "body_size": [
+      2048,
+      1024
+    ],
+    "line_marks": {
+      "seed": 5111,
+      "placement": {
+        "forearm": 3,
+        "upper_arm": 1
+      },
+      "length_m": [
+        0.025,
+        0.05
+      ],
+      "line_mm": 1.0,
+      "gap_mm": 1.4,
+      "dot_mm": 2.2
+    }
+  },
+  "_hair": {
+    "kind": "bun",
+    "seed": 41,
+    "scalp_cards": [
+      170,
+      130,
+      90
+    ],
+    "hairline_cards": 60,
+    "bun_r_m": 0.032,
+    "bun_ribbons": 30,
+    "colour": "#2A1C14",
+    "underpaint": "#24180F"
+  },
+  "_eyes": {
+    "iris": "#3A2816"
+  },
+  "_costume": {
+    "top": {
+      "mat": "cloth_a",
+      "hem": "hip",
+      "sleeve": 0.3,
+      "cuff_roll_m": 0.007,
+      "neck_v_m": 0.05
+    },
+    "trousers": {
+      "mat": "cloth_b",
+      "hem": "calf",
+      "loose_m": 0.016
+    },
+    "sash": {
+      "mat": "cloth_c",
+      "width_m": 0.045,
+      "turns": 1,
+      "tails_m": 0.12
+    }
+  },
+  "_tints": {
+    "cloth_a": "#D8CFBC",
+    "cloth_b": "#8A4A2A",
+    "cloth_c": "#5A3A26",
+    "leather": "#FFFFFF"
+  },
+  "_build": {
+    "shapes": "all",
+    "host_snaps": true,
+    "garment_fit": true
+  },
+  "_persona": {
+    "sway": 1.1,
+    "lean": 3.0,
+    "arms_down": 40.0
+  }
+}

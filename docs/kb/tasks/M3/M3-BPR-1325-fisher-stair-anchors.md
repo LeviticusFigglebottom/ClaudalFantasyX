@@ -2,8 +2,8 @@
 id: M3-BPR-1325
 title: "Request: anchor the Ch8 set piece's stair meter and climber VFX on the wall-head arenas' Fisher Stair marks"
 role: combat
-status: todo
-owner_session: ""
+status: review
+owner_session: claude/battle-presentation
 depends_on: []
 milestone: M3
 request-from: environment (env-art-b)
@@ -28,9 +28,24 @@ From the default battle camera the stair head is just off frame right (x about 1
 walk, the head landing and its down-steps read clearly in the kit's laterite, with the stair-watch's shields beside them.
 
 ## Acceptance criteria
-- [ ] The set piece's stair meter and climb/grip VFX anchor on these marks, not on a stand-in.
-- [ ] The Climb's turn, or a group's arrival, shows the stair: a cut to `the_stair_head`, or a framing that includes
+- [x] The set piece's stair meter and climb/grip VFX anchor on these marks, not on a stand-in.
+- [x] The Climb's turn, or a group's arrival, shows the stair: a cut to `the_stair_head`, or a framing that includes
       `StairHead_ward`.
-- [ ] `battle_ch08_stair_hold` is re-viewed.
+- [x] `battle_ch08_stair_hold` is re-viewed.
 
 ## Review log
+- 2026-10-28, battle-presentation: done at de687fb6.
+  - BattleVfx anchors a set piece entry with no fighter (the Climb, role `ward`) on the arena's `StairHead_ward`, else
+    `EntryMarker_ward`.
+  - The stair-aimed skills (Grip the Stair, Rope Dive, Hand Closes) now have their own effects there, and Climb Up's
+    plays there too, instead of mid-field.
+  - `BattleEntryCamera` cuts to `CameraHints/the_stair_head` after the Climb acts. The next turn waits; there is no
+    cut under reduced motion or instant pacing.
+  - The stair meter is the HUD's objective panel (BattleSetPieceHud), so it has no world anchor.
+  - SELF-RENDERED and viewed:
+    - battle_ch08_stair_hold: no capsule anywhere, under the storm sky;
+    - battle_ch08_intercept: the grip lands on Toma;
+    - the Climb's cut (`boss_camera_sheet --entry`): the head landing and its down-steps, with the climb and grip
+      effects on its edge.
+  - Tests: test_battle_stair_marks 4/0; act1_ability_vfx 5/0 (now also covers the ward skills); ch08 23/0;
+    set_piece 48/0; vfx 26/0. Coverage tool: 0 unexplained gaps, 2 kept on purpose.

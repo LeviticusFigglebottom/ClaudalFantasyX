@@ -589,6 +589,348 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **The Lead's 17:37 follow-up (big15's `test_the_town_is_dressed_over_the_greybox`, "LowHull (a story block) is not
+  hidden by the kit"): fixed in big16; nothing to change.**
+  - **Cause:** on big15 the zone mounted the old `tools/ch01/ch01_oruvel_dressing.py` output. My walk-through batch 1
+    (62409951b) had that generator dress `LowHull` with `hull_lashed` and stop keeping its greybox mesh, while big15's
+    test still listed `LowHull` in `KEPT`.
+  - **big16 (ff82858c):**
+    - The zone mounts `ov_zone_dressing`'s layout: all greybox hidden, `hull_outrigger` following `LowHull`.
+    - The test expects exactly that (`KEPT = []`; "the low hull follows its block").
+    - Run here: 3 run, 0 failed.
+  - **The booth and chandlery orientation:** viewed on big16 in `ch01_scale_hull` and `ch01_kell_stall` (entry above).
+    Both counters face their customers.
+  - **No code change. LEAD-ASK:** none. If the cloud suite still fails it on big16, send me its log line.
+- **MERGE-READY @ 2666255bb: the Lead's big16 checks (lead/gate-big16 @ ff82858c, this branch fast-forwarded to it).
+  No code change was needed.**
+  - **U03 on my mounted Underway dressing:** `ch01_bell_room` was rendered and viewed. The camera is in the bell-room
+    behind Rhen's shoulder, with the door and the lantern in frame; it is not in a wall. Row 23's bell-room is fine.
+  - **The booths:** in big16, `ov_zone_dressing` places `scale_hull` at yaw 0 and `chandlery` at -90, and slice-polish
+    staged the actors to them. Rendered and viewed:
+    - `ch01_scale_hull`: the scale-man behind his counter, the brass scales between him and Rhen.
+    - `ch01_kell_stall`: Kell before her lamp racks under the striped awning.
+    - Both counters face their customers. My retired generator's flip (845287999) is moot.
+  - **`ch01_o10_gull`:** the carved gull side-on against the sky. A rigging pole crosses the frame on the left; it
+    reads, but the camera is slice-polish's to trim if wanted.
+  - **`test_ch01_oruvel_kit`:** 3 run, 0 failed on big16. big15 failed because big15 still mounted the old dressing.
+  - **`test_footsteps_slice_zones`:** 5 run, 0 failed on big16, so the Haluna sand, dock and shallows groups read
+    right. Nothing to fix or file.
+- **MERGE-READY @ df2c8384a: M3-ENV-105 (high), the Underway's walls on the walk walls; M3-ENV-740 needs nothing.**
+  - **Cause:** `ou_zone_dressing.py` hard-coded the rooms from an older greybox. The layout has since moved its walls
+    (the crown to x ±9 and z -4/20, the gauge room's east wall to x 104, the tin alcove to z -4..2).
+  - **Fix:** every wall is now read from its greybox block. Each bay's inner face sits on the block's inner face
+    (`gb_wall`), and the piers stand at the inner corners. Every room was redone: the crown, the bell-room, the
+    galleries, the tin alcove and the gauge room. The stairwell is now read from StairLip.
+  - **The cut gauge wheel:** `gauge_wheel_cut` now stands on GaugeWheelCut, so the hub stays on its plinth after the
+    cut.
+  - **The check:**
+    - The podium is carried over from the retired layout: seafloor cells with the broken lip all round, the open
+      stairwell, 22 seagrass patches, the sand drift through the east breach, and the wreck ribs to the east.
+    - The bell-room is dressed (pipe run, coral, fallen lamp-column, the lantern at the rest).
+  - **Walkability test, `tools/tests/test_underway_walk.py`:**
+    - Every floor-level bay's inner face lies on a greybox wall's inner face (2 cm), within its span.
+    - Every wall block carries bays.
+    - No spawn stands inside a bay's wall.
+    - It passes on this layout and fails (75) on the old one.
+  - **SELF-RENDERED with the dressing mounted as m2-slice mounts it** (a scratch layout_path, not committed):
+    - A 10-frame walk through the crown, the bell-room, the galleries and the gauge room: the walls stand where the
+      walk stops.
+    - `ch01_underway_crown`: Rhen inside the room, the camera over the south wall's top (it was through it).
+    - `ch01_underway_gallery` reads.
+  - **Gates:** test_underway_walk, test_zone_dressing_ch01, test_oruvel_underway_kit (22 OK); validate_data.
+  - **M3-ENV-740:** slice-polish already re-staged Oruvel's actors onto my `ov_zone_dressing` hulls (da5b34e6, their
+    renders "read right"), so my hulls stay where they are.
+  - **For the merge (Lead):** m2-slice deletes `tools/ch01/ch01_oruvel_dressing.py` and `ch01_underway_dressing.py`.
+    My later edits to them on this branch (the lashed hull, the flipped booths, O10) belong to the retired generators.
+    Take m2-slice's deletion. The mounted `ov_`/`ou_zone_dressing` generators are what count.
+- **MERGE-READY @ c9dbf9631: M3-ENV-1316's Coilspire headland ground (the last of 1316 that is env-art's).**
+  - **Diagnosis:** I re-rendered the arena with one piece hidden at a time. The "broad planes" behind the foes are
+    `arena_headland_ground` itself: a slope already on the fine 1.25 m grid near the fight, with one crisp
+    cast-shadow face and one sunlit face. That is lighting on real relief, not a faceted mesh.
+  - **The real defect for env-art-b's scrub:** the kit's fine grid stopped 8.5 m north of the landing. Past 45 m the
+    hill ran on 8–9 m cells, so the mesh strayed up to 0.7 m (p90) from the table's height function, and clumps
+    floated.
+  - **Fix:** `cs_arena.build_ground` carries the fine grid north to z -120 (1.75 m cells; 19.5k tris, budget 20k).
+  - **Mesh against `_headland_ground_y`, p90 (median):**
+
+    | Range | Before | After |
+    |---|---|---|
+    | 0–45 m | 0.32 m | 0.32 m |
+    | 45–80 m | 0.69 m | 0.29 m (median 6 mm) |
+    | beyond 80 m | 1.63 m | 1.26 m |
+
+  - **env-art-b:** you can take `b_headland_arena.py`'s `RING_M` out to 80 m.
+  - **Viewed:** `battle_arena_coilspire_headland_path` is unchanged in frame. `test_coilspire_kit` and `test_arenas`
+    OK.
+- **MERGE-READY @ 02d8d6716: M3-ENV-1316 part 2 (GPU QA row 5's `camp_tent`); findings on the rest.**
+  - **Brine Shoals `camp_tent`:** the canvas sags deeper between the frames (0.14 → 0.26 m), and sewn seams stand off
+    the cloth down every panel edge. Viewed `ch06_brine_camp`: it reads as a sewn sail-cloth tent, not a box.
+  - **Row 5's "flat mudflat" and the hard brown band on the horizon:** that is the Ch6 zone's ground and its far edge,
+    which are env-art-b's. On lavapipe the flat carries its ripple texture, tide pools and wrecks; the colour script
+    flattens ch06 on purpose.
+  - **1316's Coilspire "far facets": not fixed, cause not found.**
+    - Ruled out:
+      - the arena ground's own grid (refining it changed nothing in the frame);
+      - its LOD (LOD0 shows to 1,034 m);
+      - `corrow_far` (more rings changed nothing).
+    - The broad dark planes behind the foes in `battle_arena_coilspire_headland_path` look like the spire's shell or
+      tier faces at close range.
+    - **env-art-b:** send me the exact frame and the direction where the facets show (the arena hint or the camera
+      position) and I'll fix the right mesh.
+- **MERGE-READY @ 17a746b57: M3-ENV-1316 (env-art-b's request), part 1: the trader boat's cargo and Ashcrown's
+  flying stair.**
+  - **Corrow `trader_boat`:** the bales were plain sail-white blocks. They are now rounded cloth-wrapped bales (ochre,
+    red) and wicker crates, each bound by three rope bands and set down a little askew.
+  - **Ashcrown `flying_stair`:** the cheek's outer face was one flat plane. A string course now runs down the 48°
+    slope under the coping, and pilaster ribs stand proud every 3 m from the soffit (13.1k → 12.2k after the tilted
+    courses; budget 14k).
+  - **Viewed:** `ch08_corrow_arrival` (the bales read as roped cargo); `ch05_ashcrown_forecourt` (the stair's side
+    has relief and no spikes).
+  - **Row 26 (Ashcrown tiers "untextured grey" at High):** on lavapipe the tiers render textured (ashlar coursing,
+    buttresses, veins). That points at the PC's texture or import state at High, not the meshes. **LEAD-ANSWERED (10-28):** the Lead agrees; the PC re-checks it on a fresh import after big15. (Was: have
+    the PC re-check row 26 on a fresh import.)
+  - **Next:** 1316's Coilspire far headland ground, and row 5 (the Brine Shoals mudflat and `camp_tent`).
+- **MERGE-READY @ cbd7f5600: M3-ENV-1323 (env-art-b's request; GPU QA rows 15 and 40), the Underway arenas'
+  hard-edged lit rectangles.**
+  - Cause: the arena's sun cast its window openings onto the floor as hard panes, but underwater the light comes
+    through 21 m of water.
+  - Fix: `arena_scenes.py` takes an optional soft sun (`angular_deg`, `shadow_blur`), written only when set, so the
+    other arenas are byte-identical. Underway tower: 9° and blur 4.
+  - Viewed `battle_arena_underway` and `battle_arena_underway_tower`: soft pools, no panes.
+  - `test_arenas` OK.
+  - env-art-b: the task file is on your branch; please set it to review with this sha.
+- **MERGE-READY @ 10c6974d9: the Prologue's vigil lit (the Lead overruled "nothing burns"); M2-ENV-09 and
+  M2-ENV-06 finished.**
+  - **Vigil lighting:**
+    - The four lamp columns hold an oil flame in a warm, emissive lit-glass globe (new material
+      `kit_lamp_glass_lit`).
+    - Each of the seven offering shells has a lit clay saucer beside it.
+    - `iskarra_city.py` writes `VigilLights`: an omni in each globe (1.4, 9 m) and a small one at each saucer, all
+      shadowless with no fog energy.
+    - Viewed `iskarra_p01_plaza_dusk` and `slice_prologue_vigil_line`: the globes glow warm across the plaza at dusk.
+      The saucers are too small to read at these ranges.
+  - **M2-ENV-09:** the islet's wet band follows the shrine sea's published water level (viewed in S01). The channel
+    bends are not needed by the trial's layout.
+  - **M2-ENV-06:** `haluna_h10_dock_night` viewed on this tree; re-approve its drift.
+  - **Gates:** `test_iskarra` and `test_haluna_kit` pass (29 OK); taskboard --check.
+  - **Drift:** iskarra_p01/i02/i03, slice_prologue_*, shrine_s01_approach (re-approve).
+- **MERGE-READY @ 4c85ffb7b: the PC's GPU QA rows (`docs/kb/qa/act1_gpu_qa.md` on `origin/gpu/act1-qa-2`).**
+  Each row self-rendered here and VIEWED.
+  - **Rows 1–2 (Iskarra greybox; the vigil set untextured):** Pass A ran on integration 048b0a7f. That build lacked
+    the colour pass (d2ae3cb2) and slice-polish's city mount (28b0f97a); both reached the tree in big14. The big14
+    gate's own renders (`gate-runs/big14/out/iskarra_p01_plaza_dusk.png`, `slice_prologue_vigil_line.png`) show the
+    textured, coloured city. **Fixed in big14**; re-check on the PC.
+  - **Row 19 (the green rectangle in the Prologue's water): fixed @ 4c85ffb7b.**
+    - Cause: Haluna's lagoon water was reused for the drowned city. Its turquoise shallow scatter lit the plaza's
+      drowned steps and the towers' plinths as flat green panes.
+    - Fix: the Prologue and the Iskarra kit preview now use their own `iskarra_water_material.tres` (written by
+      `iskarra_city.py`; deep, dark, little scatter).
+    - Viewed `iskarra_p01_plaza_dusk` and `slice_prologue_vigil_line`: no panes left; the water carries the sunset.
+  - **Row 4 (`ch04_ferry_deck` nearly black): fixed @ 4c85ffb7b.** A cold sky fill along the ferry's waist and poop
+    (`ferry_fill()` in `tools/act1/ch04_ferry_dressing.py`), stronger and lower over the poop. The deck, the deckhouse
+    face and the rails read now. The "orange sphere" is the party member's back beside the lit stern lantern; nothing
+    unlit is left.
+  - **Row 23 (Ch1 cameras in walls): fixed @ 4c85ffb7b.**
+    - `ch01_bell_room`: U03 sat on the bell-room's south wall line. It now stands in the room on Rhen.
+    - `ch01_kell_stall` and `ch01_scale_hull`: the chandlery and the scale-hull booth were placed backwards, their
+      counters facing the sea. They now face their customers. The scale-man stands at his counter (yaw 180), and O02
+      looks in from the front.
+    - O10 is re-aimed at the chandlery's moved gull.
+    - Viewed: Kell behind her counter under the lanterns; the scale-man behind the brass scales; Rhen in the
+      bell-room; the gull side-on and lit.
+  - **Row 24 (`zone_wake_h02/h08/c01`): fixed by retiring them @ 4c85ffb7b.** M3-ENV-743/744 are dropped as
+    superseded (the Lead's word). The preview, the generator and the eight `zone_wake_*` shots are gone.
+  - **Row 25 (`brightwater_landing_f06` against a wall): fixed @ 4c85ffb7b.** F06 is ch04_under_way's camera on the
+    wrapped name-board. It sat in the ferry's bulwark and now frames the board on the deck with Toma and Asha (viewed).
+    F01 is dark because of the pre-dawn grade; it reads.
+  - **Gates:** validate_data; taskboard --check; unittest for ch01_oruvel/underway_dressing, ch04_validate,
+    zone_dressing_ch01 and test_iskarra.
+  - **Drift, re-approve:** iskarra_p01/i02/i03, slice_prologue_*, ch04_ferry_deck, brightwater_landing_f06,
+    ch01_bell_room, ch01_kell_stall, ch01_scale_hull, ch01_o10_gull, ch01_oruvel_dressed.
+- **BACKLOG EMPTY (2026-10-28 ~11:45).** Everything the Lead asked for is done and MERGE-READY above:
+  - M3-ENV-753;
+  - the Prologue, Ch3, Ch1, Ch2 and Ch4 walk-throughs;
+  - save shrines, chests (Act I has none), doors and signs;
+  - M3-ENV-101 and M3-ENV-102.
+
+  **What is left on env-art's board, and why it is not mine to move now:**
+  - **Inventory rows (M3-HER-1140):**
+    - The Prologue vigil capsule (Pell's hero body) is characters'.
+    - The Haluna NPC stand-in bodies are villager/characters'.
+    - The `*_placeholder` tree names wait on M3-ENV-750 (slice-polish's `haluna.tscn` collision rules).
+    - `reefball_drop_proxy` waits on M3-RND-26 (PC GPU's drop look).
+  - **M3-ENV-724 and M3-ENV-705:** the PC renders to view and approve (the gate).
+  - **M3-ENV-1000:** waits on M3-RND-03 reaching integration. It is Ch6, env-art-b's now.
+  - **M2-ENV-12:** waits on M2-RND-17.
+  - **M2-HER-1127:** slice-polish's request (First Verse offerings).
+  - **The swap-in tasks M3-C01-04 and M3-C04-03:** wait on their greybox tasks. The dressings are mounted already.
+  - **M3-C05/C08/C09:** env-art-b's chapters.
+  - **Retirement, waiting on the Lead's word:** M3-ENV-743/744 and the `zone_wake_*` preview shots (superseded by
+    the wake on the real Haluna).
+- **MERGE-READY @ 2bbf6cd4d: M3-ENV-102, the Order chapel at the kit's level; M3-ENV-101 viewed. Both to review.**
+  - **`order_chapel`**, same footprint and door position:
+    - a bare coral-stone base course;
+    - weathered lime-wash;
+    - an arched lamp niche with the gold Level emblem over the door;
+    - a bell-cote with a gilt bell on the front parapet;
+    - the gilt dome 1.25x larger, on a taller drum.
+  - **SELF-RENDERED** `haluna_h07_chapel_court`: it now reads as the Order's building from the court (an intended
+    drift).
+  - **`save_shrine_field`** viewed: the final shrine reads. It drifts from its baseline; re-approve.
+  - **Gates:** `test_haluna_kit` and `test_haluna_dressing` pass; taskboard --check.
+- **MERGE-READY @ 219b86861: M3-ENV-753, Haluna's NPC props swapped (the Lead assigned it to env-art).**
+  - In `haluna.tscn`:
+    - Reed's Broom, Neme's Bag and Osu's Bowl are `hand_broom`, `woven_bag` and `clay_bowl`.
+    - Osu's Shell sphere is a new `wake_shell_loose`: a 0.14 m wake-shell lying in the bowl, since she is washing the
+      wake-shells.
+  - The four primitives' sub-resources are gone.
+  - **Gates:** Godot haluna 65/0. The task is at review, with slice-polish to review it.
+  - **VIEWED** with the walk rig: Neme's bag reads beside her. The broom and the bowl sit with their NPCs' stand-in
+    bodies, which the villager layer replaces, so they are not in frame there.
+  - **Drift:** `slice_neme_table` and `npc_haluna_*` may drift slightly.
+- **MERGE-READY @ b04753893: the Haluna NPCs' held props as kit pieces; the forge's bellows grounded.**
+  - **New Haluna kit pieces:**
+    - `hand_broom`: Reed's 1.4 m palm-rib broom.
+    - `woven_bag`: Neme's bag.
+    - `clay_bowl`: Osu's bowl.
+  - Each matches its `haluna.tscn` primitive's size and centre, so it drops in. Built in Blender, with manifest and
+    PROVENANCE rows.
+  - The swap is slice-polish's (`haluna.tscn`): request **M3-ENV-753**.
+  - **Fixed in `beach_forge`:** the bellows floated about 0.4 m up (found on viewing). They now sit on the sand, with
+    the nozzle rising into the hearth.
+  - **SELF-RENDERED:** a scratch preview of the five Haluna props (not committed): the broom, the bag, the bowl, the
+    forge and the inn sign all read as themselves.
+  - **Gates:** `test_haluna_kit` and `test_haluna_dressing` pass; validate_data; taskboard --check.
+- **MERGE-READY @ 5ef018b14: Haluna's night-lamp flames are the kit's flame; the Prologue walked; the inventory
+  re-run.**
+  - **The placeholder audit** (`tools/placeholder_audit.py`, re-run on this tree; the inventory file restored) puts
+    env-art's open rows at 11. Of those:
+    - **Fixed here:** the wake's "38 SphereMesh under Dressing/Dresser". These were `HalunaDresser`'s night-lamp
+      flames. They are now the kit's `lamp_flame` teardrop at the lamp's radius (a sphere only if the kit lacks the
+      piece). This also applies to Haluna's own night.
+    - **Already fixed** since the last trial merge: Oruvel's LowHull, the shrine's ChamberPassage and the derelict's
+      flames.
+    - **Not env-art's to finish:**
+      - Prologue `City/Vigils`: one capsule, the vigil without a hero body (Pell). Characters/integration-qa, as their
+        Ch9 Pell row.
+      - Haluna `NPCs/*` (11): the NPC stand-in bodies, plus Reed's broom, Neme's bag and Osu's bowl. These are in
+        slice-polish's `haluna.tscn`. The bodies are characters' and creatures' villager work.
+      - `banyan_placeholder` / `windbreak_placeholder`: the real pieces `banyan_hero` / `windbreak_tree` exist. The
+        rename waits on M3-ENV-750 (slice-polish), because `haluna.tscn`'s collision rules key on the old names.
+      - `reefball_drop_proxy` / `tb_drop_proxy`: PC GPU's agreed drop volume (M3-RND-26, open). Never shown in play.
+        Rename only with M3-RND-26.
+  - **The Prologue walk-through:** 9 player-eye frames through Iskarra: the arrival line, the plaza, the vigil line.
+    The final city reads in colour (cream, gold, blue bands), with no grey left. One frame looked from inside a
+    tower wall, an artefact of my path. The causeway and the Shell Shrine were walked and viewed in batch 1, and
+    both were fine.
+  - **SELF-RENDERED:**
+    - `haluna_h10_dock_night` drifts on purpose (the H10 reframe and the flames).
+    - `ch04_haluna_wake_lane` and `ch04_haluna_wake_feast` are new (no baseline); viewed. The lamp pools are warm and
+      no spheres show.
+  - **Gates:** Godot `--filter=haluna` 65 run, 0 failed; gdlint/gdformat clean.
+- **MERGE-READY @ 216c8ee5c: the touchable props in Haluna (the Lead's item 3), and the walk-through findings.**
+  - **Haluna's shops were the gap:**
+    - The `haluna_forge` smith stood by a boat on the beach with no forge.
+    - The goods shop and the inn had only an awning cloth each.
+  - **New kit pieces** (props.py; Blender built, manifest and PROVENANCE rows):
+    - `beach_forge`: a coral-stone hearth with an ember bed, a clay chimney cowl, goatskin bellows, an anvil on a
+      driftwood stump, a quench trough and a tool rack.
+    - `shop_sign_goods`, `shop_sign_forge`, `shop_sign_inn`: post-and-arm hanging boards painted with the trade's
+      mark (a jar, an anvil, a steaming bowl).
+  - **Placed in `haluna_layout.json`:**
+    - The forge stands behind the smith.
+    - The existing `market_stall` stands behind the goods-shop keeper. Each keeper's talk sphere is 1.7 m, so nothing
+      stands between the keeper and the customer.
+    - The three signs stand beside their keepers, off the walking lines. They take the default box collider, because
+      `haluna.tscn`'s collision rules are slice-polish's.
+  - **SELF-RENDERED** (`ch02_haluna_touch`, from the customer's side):
+    - The shop reads as a stall with wares under its blue awning, with the jar sign.
+    - The forge reads as hearth, chimney, anvil and rack, with the anvil sign.
+    - The inn's sign hangs by its awning.
+    - The save shrine is unchanged.
+  - **Gates:**
+    - `test_haluna_kit` and `test_haluna_dressing` pass (31 OK).
+    - The full tools suite ran (1,527 tests). Its only failures are the gate README's other owners: screenshots,
+      `test_pemakar_kit`, `test_zone_map_pois` and `test_hero_clips`.
+  - **Drift:** shots that see the market, the forge beach or the inn will drift on purpose, mainly `haluna_*`
+    and `npc_haluna_*`.
+- **MERGE-READY @ f6141df80: the big14 gate's `test_zone_dressing_ch01` and walk-through batches 1–2.**
+  - **The gate failure is fixed.** I merged `origin/gpu/gate-big14-shots`; there were no conflicts.
+    - `ov_zone_dressing.py`'s stale layout was regenerated at 9f4d11ab.
+    - `ou_zone_dressing.py`'s stair is guarded.
+    - `wake_zone_dressing.py` is retired from the test. Ch4's wake now stands on the real Haluna (M3-C04-1226), so
+      the old greybox frame is gone.
+    - **For the Lead:** retire M3-ENV-743/744 and the `zone_wake_*` preview shots (my rows; say the word and I'll drop
+      them).
+    - The tools tests for my area pass on the merged tree (139, OK).
+  - **The walk-through pass (the Lead's item 2):**
+    - `tools/act1/walkthrough.py` and `game/levels/_tests/walkthrough/walk_render.tscn` render a player-eye frame
+      (1.6 m over the ground under it) every ≤30 m along each zone's critical path. Each zone loads once.
+    - 71 frames over Ch1–Ch4, all viewed. The Prologue has no player (it is a cinematic), so it is not walked.
+    - **Fixed:**
+      - Oruvel: the run's `LowHull` was a tan greybox box on the bridge. It is now the new kit piece `hull_lashed`: a
+        teal skiff thrown across the planks and lashed to both cut points, which goes with its block. Oruvel now keeps
+        only the StormWall.
+      - Underway: the first bell-room's walls were bare. It now has pipe runs, coral, a fallen lamp-column, fragments
+        and the divers' lantern at the air-bell rest. The gallery breach's cut wall ends got pier jambs.
+      - Ferry: the derelict's deck read near-black at player height, and its three fights happen there. It now has
+        three cold sky-fill omnis (#9DB4D6, 1.4). It now reads, and still as a dead ship.
+    - **Seen and fine:** Haluna, the causeway, the Shell Shrine and the wake night. Frames facing walls are my
+      straight-line path, not the dressing.
+  - **Touchable props (the Lead's item 3), so far:**
+    - The ferry's save point is the deckhouse's Order niche (already a final model; the hidden greybox block was
+      only the stand-in).
+    - The Underway's hinge door, gauge wheel and cord, the ferry's gate, gangplank and name-boards, and Haluna's save
+      shrine are final kit pieces.
+    - Act I has no chests.
+    - Haluna's shop, smith and inn close-ups render next.
+  - **SELF-RENDERED:** walk frames for all seven zones viewed. After the fixes, re-rendered and viewed Oruvel (the
+    skiff), the Underway (the bell-room) and the ferry (the derelict).
+- **MERGE-READY @ aff485af5 (M3-ENV-1306, the Lead's item): `test_arenas`' Lanternfall reproducibility test is green again.**
+  - It includes a merge of the Lead's `lead/gate-big14` (8707ff90). The merge had no conflicts. Merge this after big14,
+    or with it.
+  - **The fix:**
+    - `arena_scenes.py` now writes `ash_terrace_lanternfall` with env-art-b's votive lamps (`_with_votive_lamps()`:
+      the same rows, order and seed as `b_lanternfall.py`).
+    - Both writers now give the committed file byte for byte.
+    - The votive pieces are marked `structure`: they stand at the grave wall's foot, where the old sphere flames
+      stood.
+  - **Gates:** `test_arenas` 21 OK; regenerating every arena changes nothing; validate_data; taskboard --check.
+  - Nothing was rendered: the committed scene is unchanged.
+- **MERGE-READY @ 9f4d11ab: the Lead's two Ch1 shots.** It also merges big13 (99a077ef).
+  - **The big13 merge (99a077ef):**
+    - `arenas.json`: kept ours, the final `wall_head_storm` arena, because integration had reverted it to greybox.
+    - The shrine GI was rebaked for the merged inputs.
+    - `shots.json`: theirs plus our 42.
+    - `PROVENANCE.md` and `ownership.md`: line unions.
+    - Baselines: theirs.
+  - **`ch01_underway_gallery`:**
+    - Cause: the follow camera sat outside the gallery's south wall, and the two 3.2 m bays filled the frame.
+    - Fix (`tools/ch01/ch01_underway_dressing.py`): that wall now lies fallen outward onto the terrace. It is two
+      tilted `tower_bay_broken` pieces plus rubble.
+    - The greybox wall still blocks movement but is not drawn.
+  - **`ch01_o10_gull`:** three causes, all fixed.
+    - **The glow veiled the frame.** O10 is a fov-14 telephoto into a cloud bank, and the Oruvel grade's glow
+      (threshold 1.2, bloom 0.03) washed the bloom from the cloud over everything.
+      - The grade now has threshold 3.0 and bloom 0, so sky and cloud no longer bloom; glints and lamps still do.
+      - This is in the kit preview's environment, and both zone copies were re-copied.
+    - **The camera saw the unlit underside.** The real carving, `lintel_gull_open`, sits on the chandlery's roof.
+      From the low camera we saw its underside, which the noon sun doesn't reach, so it read as a flat grey shape.
+      - It is now side-on to O10, with the beak south and clear of the dive raft's post.
+      - A warm water-bounce omni sits below it and in front (energy 6, range 6).
+    - These are in `tools/ch01/ch01_oruvel_dressing.py`.
+  - **Also fixed:** `ou_zone_dressing.py`, my old Underway preview dressing, crashed on the merged greybox's stair
+    (it divided by zero). It is now guarded and regenerated.
+  - **SELF-RENDERED @ 9f4d11ab:** ch01_underway_gallery, ch01_o10_gull, ch01_oruvel_dressed, ch01_o07_name_board,
+    oruvel_o01_surfacing, oruvel_o19_dive_mooring, zone_oruvel_o09.
+    - **Intended drift:** gallery (rmse 0.094) and o10 (0.068).
+      - Gallery: Rhen is framed in the colonnade with the lamp-columns ahead, and the wall lies on the sand.
+      - O10: a carved-wood gull in profile with its throat open, against a clean cloud.
+      - **Re-approve both.**
+    - **Pass:** oruvel_dressed, o07, o01 and o19; the glow change doesn't move them.
+    - zone_oruvel_o09 has no baseline; it is my preview, and I viewed it.
+  - **Gates:** validate_data 0/0; taskboard --check; unittest for ch01_oruvel/underway_dressing, oruvel_kit,
+    zone_dressing_ch01 and post_import (36, OK). No GDScript was touched.
 - **2026-10-28 ~10:30: FAST-TRACK M3-ENV-752, the opening cinematic read GREYSCALE (the human's playtest).**
   - **Cause 1, for the Lead to merge:** the integration build's `prologue.tscn` (7855d016) still builds the city from
     primitives. slice-polish's mount of the final city and its WaterSurface is on `claude/m2-slice` (ead04bab, 2ab7a66e,

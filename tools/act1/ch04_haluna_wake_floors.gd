@@ -8,6 +8,8 @@ const POINTS := "res://tools/act1/ch04_haluna_wake_points.json"
 const OUT := "res://tools/act1/ch04_haluna_wake_floors.json"
 const RAY_TOP_Y := 60.0
 const RAY_BOTTOM_Y := -20.0
+const STAND_ABOVE_GROUND_M := 3.5  ## a deck or a dock may stand this far over the ground; anything higher is a roof
+const MAX_HITS := 12
 
 
 func _ready() -> void:
@@ -39,11 +41,36 @@ func _run() -> void:
 			Vector3(float(p[0]), RAY_TOP_Y, float(p[1])), Vector3(float(p[0]), RAY_BOTTOM_Y, float(p[1]))
 		)
 		q.exclude = exclude + (props if key.begins_with("shot:") or key.begins_with("look:") else [] as Array[RID])
-		var hit := space.intersect_ray(q)
-		var y := snappedf((hit["position"] as Vector3).y, 0.001) if not hit.is_empty() else 0.0
+		var hits := _hits(space, q)
+		var ground := -INF
+		for h: Dictionary in hits:
+			if (h["collider"] as Node).name == &"Ground":
+				ground = maxf(ground, (h["position"] as Vector3).y)
+		var y := 0.0
+		var on := "MISS"
+		for h: Dictionary in hits:  # the highest surface a body can stand on: the ground or a deck on it, not a roof
+			var hy := (h["position"] as Vector3).y
+			if hy <= ground + STAND_ABOVE_GROUND_M and (on == "MISS" or hy > y):
+				y = snappedf(hy, 0.001)
+				on = String((h["collider"] as Node).name)
 		out[key] = y
-		print("%s %s %s" % [key, y, (hit.get("collider") as Node).name if not hit.is_empty() else "MISS"])
+		print("%s %s %s" % [key, y, on])
 	var f := FileAccess.open(OUT, FileAccess.WRITE)
 	f.store_string(JSON.stringify(out, " ", true) + "\n")
 	f.close()
 	get_tree().quit()
+
+
+## Every surface along the ray, top down.
+func _hits(space: PhysicsDirectSpaceState3D, q: PhysicsRayQueryParameters3D) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	var ex := q.exclude
+	for i in MAX_HITS:
+		q.exclude = ex
+		var h := space.intersect_ray(q)
+		if h.is_empty():
+			break
+		if not h["collider"] is CharacterBody3D:  # the field player standing on a spawn is not its floor
+			out.append(h)
+		ex.append((h["collider"] as CollisionObject3D).get_rid())
+	return out

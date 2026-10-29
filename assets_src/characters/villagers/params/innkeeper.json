@@ -1,0 +1,120 @@
+{
+  "_about": "The Haluna innkeeper at the inn door (haluna.tscn NPCs/Town/Innkeeper, the inn), about 50 (M3-CHR-517). A stout, warm, brisk woman: black hair drawn back into a low knot, greying; a red-tile terracotta wrap top with elbow sleeves rolled once, an indigo ankle skirt, a long undyed apron to the calf, a sea-blue sash, sandals. Reach-bands left 3, right 3. Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials, villager_clips), not by bb_params.",
+  "name": "innkeeper",
+  "height_m": 1.58,
+  "heads_tall": 7.0,
+  "shoulder_width_heads": 1.62,
+  "chest_width_heads": 1.3,
+  "chest_depth_heads": 1.02,
+  "waist_width_heads": 1.28,
+  "hip_width_heads": 1.58,
+  "crotch_height_heads": 3.35,
+  "arm_span_ratio": 1.0,
+  "hand_length_heads": 0.78,
+  "foot_length_ratio": 0.148,
+  "neck_length_heads": 0.36,
+  "neck_width_ratio": 0.54,
+  "head_width_ratio": 0.68,
+  "femininity": 1.0,
+  "muscle": 0.35,
+  "mass": 0.56,
+  "breast": 0.6,
+  "eye_scale": 1.08,
+  "ipd_m": 0.062,
+  "arm_abduction_deg": 47.0,
+  "skin_hex": "#B4805C",
+  "eye_tilt_deg": 2.5,
+  "jaw_width": 1.02,
+  "cheekbone_height": 0.003,
+  "cheekbone_width": 1.06,
+  "chin_size": 0.96,
+  "nose_bridge_width": 1.06,
+  "nose_tip_projection": 0.9,
+  "lip_fullness": 0.86,
+  "lip_close": 0.6,
+  "lip_seal": 0.96,
+  "lip_lower_fullness": 0.78,
+  "mouth_corner_lift": 0.0006,
+  "brow_ridge": 0.88,
+  "donor_mix_african": 0.4,
+  "donor_mix_asian": 0.45,
+  "donor_mix_caucasian": 0.15,
+  "_skin": {
+    "hex": "#B4805C",
+    "age": 0.5,
+    "freckles": 0,
+    "reach_bands": {
+      "L": 3,
+      "R": 3
+    },
+    "ink_opacity": 0.6,
+    "seed": 115,
+    "lip": "#8E5444"
+  },
+  "_hair": {
+    "kind": "bun",
+    "seed": 35,
+    "scalp_cards": [
+      150,
+      115,
+      80
+    ],
+    "hairline_cards": 56,
+    "bun_r_m": 0.04,
+    "bun_ribbons": 26,
+    "grey_share": 0.18,
+    "colour": "#141417",
+    "grey": "#77726B",
+    "underpaint": "#18181B"
+  },
+  "_eyes": {
+    "iris": "#2A1A10"
+  },
+  "_costume": {
+    "top": {
+      "mat": "cloth_c",
+      "hem": "hip",
+      "sleeve": 0.46,
+      "cuff_roll_m": 0.004,
+      "neck_v_m": 0.065
+    },
+    "skirt": {
+      "mat": "cloth_b",
+      "hem": "ankle",
+      "folds": 10,
+      "fold_amp": 0.008,
+      "flare": 0.16,
+      "seed": 83,
+      "keep_above_knee_m": 1.0
+    },
+    "apron": {
+      "mat": "cloth_a",
+      "hem": "calf",
+      "half_deg": 60,
+      "seed": 84
+    },
+    "sash": {
+      "mat": "cloth_d",
+      "width_m": 0.07,
+      "turns": 2
+    },
+    "sandals": "leather"
+  },
+  "_tints": {
+    "cloth_a": "#DCCFB4",
+    "cloth_b": "#3B4A7C",
+    "cloth_c": "#A6593F",
+    "leather": "#FFFFFF",
+    "cloth_d": "#3F78A6"
+  },
+  "_build": {
+    "shapes": "all",
+    "host_snaps": true,
+    "garment_fit": true
+  },
+  "_persona": {
+    "sway": 0.7,
+    "lean": 1.5,
+    "arms_down": 39.0
+  }
+}

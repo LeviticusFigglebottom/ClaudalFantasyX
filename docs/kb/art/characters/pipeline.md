@@ -178,6 +178,16 @@ Toma (M2-CHR-02, [`toma_review.md`](toma_review.md)) is the second hero on this 
 - **Card hair for short lengths (M2-CHR-04):** a hero-owned strand atlas (`toma_shorthair.png`, tufts of tapered
   strands with soft sides) and mostly-Lambert hair shading (`kajiya_diffuse_mix` 0.15) for cropped hair and a short
   beard; paint the skin between the painted hairs as shaded scalp, not lit skin.
+- **Short cards at dialogue range (M2-CHR-524):** at 1-2 px per mm a card is 10-15 px wide and the strands inside it are
+  far below a pixel, so what reads is the card's mip-averaged alpha and its shading. Keep both flat: (1) the atlas
+  spreads its strands evenly across a column at partial opacity (no dense core: a core resolves as a dark lozenge per
+  card); import the atlas **with mipmaps** (the contract's rule; Toma's atlas had them off). (2) Shade the cards with
+  the skin's normal (`toma_hair.surface_normals`, sign-matched to the card's winding), not their own tilted, rolled
+  face: own normals light each card separately and the crown breaks into flakes. (3) Keep the cards' albedo and
+  occlusion near the scalp paint's rendered value (`root_occlusion`/`depth_occlusion` 0.85 on cards that lie on the
+  skin), so the cards add grain over the paint rather than dots. (4) Grey cards are a veil (`alpha_boost` 0.6), so
+  salt-and-pepper reads as a lighter haze, not pale chips. (5) Region edges (the beard round the mouth) are distances
+  in head heights, so the skin's beard shadow ramps over millimetres; a steep term draws a hard notch.
 
 ## 13. Body clips (M2-FP-07)
 

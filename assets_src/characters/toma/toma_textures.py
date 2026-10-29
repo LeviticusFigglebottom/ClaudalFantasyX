@@ -569,6 +569,15 @@ def shield_atlas(cparams: dict, size: int = 2048) -> None:
 # ---------------------------------------------------------------------------------------------
 SH_SIZE = (1024, 512)  # width x height: toma_hair.SH_COLS columns, V root (row 0) -> tip
 SH_MM_PER_PX = (0.055, 0.024)  # one texel across x along, on a 7 mm x 12 mm card (strand lean in true angles)
+# M2-CHR-524: a column's strands spread evenly across it, at lower opacity, with only a narrow soft band at each side.
+# M2-CHR-04 packed them round the middle (normal, sigma 0.16 of the column; opacity 0.6-1.0): at dialogue range a card
+# is 10-15 px wide, its mips averaged that into one near-opaque core (alpha ~0.9 x alpha_boost), and every card drew a
+# dark lozenge over the scalp paint (the "blotches"). Spread out, a card's mip alpha is a ragged 0.3-0.7 field: the
+# card is a veil of strand grain, and overlapping cards build up coverage gradually.
+SH_STRANDS = {"full": (120, 140), "edge": 120, "sparse": 45}  # strands per column (full: a range, per column)
+SH_X_MARGIN = 0.02  # of a column: strand roots spread uniformly between this and 1 - it
+SH_SIDE_SOFT = 0.14  # of a column: the opacity falls to 0 over this band at each side (no hard card edge)
+SH_OPACITY = (0.45, 0.80)  # each strand's peak opacity
 
 
 def _sh_column(h: int, w: int, rng, kind: str) -> np.ndarray:
@@ -579,17 +588,19 @@ def _sh_column(h: int, w: int, rng, kind: str) -> np.ndarray:
     runs most of the way up (`full`), or only part of it (`edge`: short, for the hairline and the
     beard's border), or the column holds a few loose strands (`sparse`: the outer layer's breakup).
     Strands are 1-2 px wide at the root (about 0.08 mm) and taper to a point, each with its own lean
-    (true angles, the texel is not square), bend, opacity and length; density falls off toward both
-    column edges, so a card has no hard side. Returns RGBA: R root-to-tip along the strand, G strand
+    (true angles, the texel is not square), bend, opacity and length; they spread evenly across the
+    column (M2-CHR-524: no dense core for the mips to turn into a blob) and fade out in a narrow band at
+    each side, so a card has no hard side. Returns RGBA: R root-to-tip along the strand, G strand
     id, B depth layer, A coverage (character_hair's tex_hair contract)."""
-    n = {"full": int(rng.integers(160, 200)), "edge": 160, "sparse": 70}[kind]
+    lo_hi = SH_STRANDS["full"]
+    n = {"full": int(rng.integers(lo_hi[0], lo_hi[1])), "edge": SH_STRANDS["edge"], "sparse": SH_STRANDS["sparse"]}[kind]
     acc = np.zeros((h, w, 4))  # R, G, B premultiplied by alpha, then alpha (front-to-back "over")
     vv = (np.arange(h) + 0.5) / h
     px = np.arange(w) + 0.5
     k_ratio = SH_MM_PER_PX[1] / SH_MM_PER_PX[0]  # x px per y px for a 45 degree lean
     for _ in range(n):
-        xn = float(np.clip(rng.normal(0.5, 0.16), 0.03, 0.97))
-        side = smoothstep(0.0, 0.34, min(xn, 1.0 - xn))  # a soft lens across: no hard card side at the mips
+        xn = float(rng.uniform(SH_X_MARGIN, 1.0 - SH_X_MARGIN))
+        side = smoothstep(0.0, SH_SIDE_SOFT, min(xn, 1.0 - xn))  # soft sides: no hard card edge at the mips
         v0 = rng.uniform(0.0, 0.10)
         if kind == "full":
             L = rng.uniform(0.55, 1.0) ** 0.6 * (1.0 - v0)
@@ -600,7 +611,7 @@ def _sh_column(h: int, w: int, rng, kind: str) -> np.ndarray:
         lean = np.tan(np.radians(rng.normal(0.0, 9.0))) * k_ratio
         bend = np.tan(np.radians(rng.normal(0.0, 8.0))) * k_ratio
         wd = rng.uniform(1.0, 2.0) if kind != "sparse" else rng.uniform(0.8, 1.5)
-        op = rng.uniform(0.6, 1.0) * (0.15 + 0.85 * side)
+        op = rng.uniform(*SH_OPACITY) * side
         dep = rng.random()
         sid = rng.random()
         y0, y1 = int(v0 * h), min(int((v0 + L) * h) + 1, h)

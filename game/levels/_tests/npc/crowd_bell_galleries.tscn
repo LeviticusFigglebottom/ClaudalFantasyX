@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/npc/haluna_villagers.gd" id="stage"]
+
+[node name="CrowdBellGalleries" type="Node3D"]
+script = ExtResource("stage")
+zone_scene = "res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries.tscn"
+zone_id = &"ch07/tamsule_bell_galleries"
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Crowd" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.320807, -0.107813, 0.940988, 0, 0.9935, 0.113829, -0.947145, -0.0365172, 0.318722, 0, 2.4, 6)
+fov = 45.0

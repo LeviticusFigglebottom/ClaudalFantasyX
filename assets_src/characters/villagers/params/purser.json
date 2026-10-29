@@ -1,0 +1,119 @@
+{
+  "_about": "The Brightwater ferry's purser (Ch4, the ferry shop; act1_ch04.md: sells Pemakar-bound supplies), about 34, a woman. Brisk, precise; black hair under a sand head wrap, a sea-blue short-sleeved wrap top, a sand calf skirt with an indigo apron (the purse and tally are props), sandals. Reach-bands left 2, right 2. (M3-CHR-530.) Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials, villager_clips), not by bb_params.",
+  "name": "purser",
+  "height_m": 1.6,
+  "heads_tall": 7.2,
+  "shoulder_width_heads": 1.6,
+  "chest_width_heads": 1.2,
+  "chest_depth_heads": 0.9,
+  "waist_width_heads": 1.08,
+  "hip_width_heads": 1.46,
+  "crotch_height_heads": 3.45,
+  "arm_span_ratio": 1.0,
+  "hand_length_heads": 0.78,
+  "foot_length_ratio": 0.148,
+  "neck_length_heads": 0.4,
+  "neck_width_ratio": 0.52,
+  "head_width_ratio": 0.66,
+  "femininity": 1.0,
+  "muscle": 0.4,
+  "mass": 0.28,
+  "breast": 0.45,
+  "eye_scale": 1.1,
+  "ipd_m": 0.062,
+  "arm_abduction_deg": 47.0,
+  "skin_hex": "#A4704E",
+  "eye_tilt_deg": 2.5,
+  "jaw_width": 0.96,
+  "cheekbone_height": 0.002,
+  "cheekbone_width": 1.02,
+  "chin_size": 1.0,
+  "nose_bridge_width": 1.02,
+  "nose_tip_projection": 0.98,
+  "lip_fullness": 0.76,
+  "lip_close": 0.6,
+  "lip_seal": 0.96,
+  "lip_lower_fullness": 0.72,
+  "mouth_corner_lift": 0.0002,
+  "brow_ridge": 0.9,
+  "donor_mix_african": 0.35,
+  "donor_mix_asian": 0.5,
+  "donor_mix_caucasian": 0.15,
+  "_skin": {
+    "hex": "#A4704E",
+    "age": 0.15,
+    "freckles": 0,
+    "reach_bands": {
+      "L": 2,
+      "R": 2
+    },
+    "ink_opacity": 0.66,
+    "seed": 130,
+    "lip": "#86504A"
+  },
+  "_hair": {
+    "kind": "wrap",
+    "hairline": "female",
+    "seed": 50,
+    "hairline_cards": 60,
+    "colour": "#141417",
+    "underpaint": "#16161A",
+    "spec": "#6A6460"
+  },
+  "_eyes": {
+    "iris": "#2A1A10"
+  },
+  "_costume": {
+    "top": {
+      "mat": "cloth_c",
+      "hem": "hip",
+      "sleeve": 0.24,
+      "neck_v_m": 0.05
+    },
+    "skirt": {
+      "mat": "cloth_a",
+      "hem": "calf",
+      "folds": 9,
+      "fold_amp": 0.007,
+      "flare": 0.14,
+      "seed": 131,
+      "keep_above_knee_m": 1.0
+    },
+    "apron": {
+      "mat": "cloth_b",
+      "hem": "knee",
+      "half_deg": 46,
+      "seed": 132
+    },
+    "sash": {
+      "mat": "cloth_b",
+      "width_m": 0.05,
+      "turns": 1
+    },
+    "headwrap": {
+      "mat": "cloth_a",
+      "edge_lift": 0.01,
+      "puff_m": 0.01,
+      "knot_m": 0.03,
+      "seed": 133,
+      "edge_off_m": 0.002
+    },
+    "sandals": "leather"
+  },
+  "_tints": {
+    "cloth_a": "#D2C3A0",
+    "cloth_b": "#34447A",
+    "cloth_c": "#4C86AE",
+    "leather": "#FFFFFF"
+  },
+  "_build": {
+    "shapes": "all",
+    "host_snaps": true,
+    "garment_fit": true
+  },
+  "_persona": {
+    "sway": 0.7,
+    "lean": 0.0,
+    "arms_down": 41.0
+  }
+}

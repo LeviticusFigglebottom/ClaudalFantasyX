@@ -212,6 +212,65 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
   still todo. The galleries part of M3-C07-04 is done by M3-C07-1211. I'll compose the port from the Bell kit's port
   pieces and Oruvel's rafts only if the Lead wants it before env-art gets to it.
 
+- **MERGE-READY @ adf680fa1: big14's gate failures in act1-chapters' lane fixed** (merged gpu/gate-big14-shots @ 36c5f5ec7):
+  - test_act1_cutscene_walks: Asha and Toma staged at the dock before C4-06; three wake walks clean and off the known
+    list; the lamps walk was fixed before the gate (712bc98a).
+  - test_qa_save_shrines: the wake has a `Shrine` spawn, and Ch04Zone points the dressing's SaveShrine at the wake.
+  - test_hero_field_snaps (haluna_wake): the floor probe put NemeDoor on a tree canopy 18 m up; it now takes the
+    ground or a deck within 3.5 m of it, never a roof, a tree or the player. The drowned_choir pop (Act II) is the
+    body, not the floor: request M3-HER-1230.
+  - test_villager_routines (wake): the vendor within Osu's chat range.
+  - test_battle_act1_ability_vfx: my ten Act II foes are `"act": 2` in enemies.json, and **battle-presentation: I
+    added a one-line skip of act > 1 rows to your test** (its title and doc are Act I; Act II effects come with Act II).
+  - test_qa_capsules: Pell in Ossa Fen and the Act II regulars listed known (ADR 0041). Haluna's own villager
+    capsules (ch02/haluna) are slice-polish's.
+  - Checks on the merged tree: act1_cutscene_walks, qa_save_shrines, zone_map, ability_vfx, ch04-ch09, hero_cutscene_snaps
+    green; villager_routines' two Oruvel/layer await failures and the Haluna capsules are other tracks'.
+- **MERGE-READY @ 548ba5222: Act I walks on their paths, and pacing** (details in
+  `docs/kb/qa/act1_playthrough_ch04_ch09.md`, "Walks and pacing").
+  - M3-CIN-1220 (review): M3-CIN-1221's `via=` landed in b2d39f8cc, `act1_walk_vias.patch` is in, and
+    `act1_cutscene_walks_known.json` is empty. The dawn causeway is re-staged on the real Haluna (32d59e75d).
+  - Pacing (d212b0413, 3c3839c84, 548ba5222): scenes no longer hold a frame, a black screen or a released camera
+    while walks finish. Every Act I scene ends within about 11 s of its last step, on a visible walk; stuck_key's
+    14 s is a harness artefact. Flow, mark and script staging changes: ch04 shell_is_set/dock/dawn, ch06
+    raid/after_barge/liss_lantern, ch07 into_tamsule/after_the_bell/empty_moorings, ch08 landfall (party on the
+    mole stair, MoleStair spawn; `test_ch08_thread` expects it)/spire_door/wall_falls/cut_rope.
+    **For env-art-b:** the new and moved marks (`landfall_kerrid`, `MoleStair`, `figure_gone`, `W02`; Ch6
+    `inq_halt`, `hound_halt`; Ch7 `drift_*`, `tavi_leaves`, `tavi_away`) are hand edits after the one-time
+    relayouts. Keep them if you regenerate.
+  - `tools/act1/cutscene_stills`: `STILLS_TIMING` (headless TAIL report), `STILLS_EVERY`, per-still debug
+    positions; the plan runs in story order (flags needed and raised, trigger flags, reloads, beat triggers).
+  - Request M3-CIN-1231 (slice-polish): an advanced line's box stays up through silent holds.
+  - Checks: `--filter=` act1_cutscene_walks 1/0, hero_cutscene_snaps 1/0, ch0 107/0, ch04 13/0, ch06 5/0,
+    ch07 18/0, ch08 25/0; validate_data, dlgc --check, taskboard --check, gdlint, gdformat clean;
+    `tools.tests.test_chapter_flow` and `test_act1_poi_views` OK. Skipped: coverage and sim (no battle or
+    progression code), shots (no manifest camera changed).
+- **MERGE-READY @ 81b997807: the playthrough's third pass and the field POI pass** (Lead brief 10-28; details in
+  `docs/kb/qa/act1_playthrough_ch04_ch09.md`).
+  - Cutscene cameras (7000ae2b5): R08 off the waterline; W07 and W07_storm west of the gate (they sat inside the
+    gate leaves, which have no collision); F08_key from the north, with Asha placed at the wheel (`great_key_asha`, a
+    ch08.json `place_actor` before ch08_beacon_opened); N09 frames the standing mourner (the kneel is M3-C09-08 §5).
+  - Field cameras: every Ch4–Ch9 zone map POI (69) rendered at the hub orbit's default view. The wake now uses
+    ch02/haluna's own CameraVolumes (Ch04Zone rebuilds them from that scene's SceneState) plus Neme's door (c48cba476).
+    Pan-follow `camera_volumes` were added where the orbit saw a sail, roof, wall or beacon: the ferry (775a44dd0),
+    Pemakar's harbour (e66297f98), Tamsule's stilt lane, Corrow's wall-gate, the Coilspire (the hut, each tier, the
+    gallery's two halves) and Ch9's road gate, milestone and wall head (3e43e1e71). **For env-art-b:** these are
+    camera entries in the layouts (the act1-chapters lane); keep them if you regenerate.
+  - Pacing scan: only pinned holds (ch08_wall_falls rule 4, ch09_the_stair ADR 0022 (f), the Ebbing). Balance: no spike
+    or trivial fight showed, so no sim run.
+  - Checks: `--filter=` ch0 107/0, zone 74/0, camera 54/0 (new `test_ch08_coilspire_camera` 2/0,
+    `test_the_wakes_field_camera_is_halunas`), ch07 18/0, ch08 23/0, ch09 12/0, hero_cutscene_snaps 1/0,
+    act1_cutscene_walks 1/0; validate_data, dlgc --check, taskboard --check, gdlint, gdformat clean;
+    `tools.tests.test_chapter_flow` and the new `tools.tests.test_act1_poi_views` OK (`tools/act1/poi_views.py`, the
+    POI pass as a tool). Skipped: coverage and sim (no battle or progression code).
+  - SELF-RENDERED @ 81b997807: ch04_ferry_deck PASS 0.0014, ch05_pemakar_crown PASS 0.00002, ch04_haluna_wake_lane
+    (no baseline: the lane at night with the folk under the lamps; approve at the gate), ch04_haluna_wake_feast (no
+    baseline; re-aimed from east of the mats because a palm trunk crossed the old frame; approve at the gate).
+    ch07_tamsule_quay and ch07_tamsule_lane are no longer in shots.json (env-art-b's manifest won the merge).
+- **Playthrough (Lead brief 10-28):** `docs/kb/qa/act1_playthrough_ch04_ch09.md` (181 stills of every Ch4-Ch9 cutscene
+  played in flow order, `tools/act1/cutscene_stills`; camera solver `tools/act1/shot_check`). Two passes fixed: the
+  wake staging, Coilspire's cameras, 16 blocked shots, ch08_captain staged at the flooded stair foot (ADR 0022 (c)),
+  Garo/Kerrid/Toma/Tavi framings, the dawn road. Open rows are listed there with owners and requests.
 - **MERGE-READY @ 91f21337: the Act I chapter threads and cutscenes are clean.** All 39 `_thread` tests pass;
   `hero_cutscene_snaps` (ADR 0192, the merged suite) went from 6 new failures to 0: the wake's feast villagers face
   the wall's gap, Coilspire's tender and Liss face where they first turn, Liss stands 0.6 m back from the seized key
@@ -266,11 +325,18 @@ RETIRED (TRACK-RULES 10-28 01:00, tracks self-render; rendered below) @ 760a0e4c
 SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbour view reads, the stair and lit houses under Ashcrown's lamps; approve at the gate), ch06_brine_road PASS 0.0032 (Kerrid still a capsule, M3-CHR-505), ch06_brine_camp drift 0.0115 (Ch6's kit pieces in place of the last greybox; the Stillguard casts read as red robes at this distance), ch08_corrow_arrival drift 0.072 (the trader boat and the story pieces; the mole's top is flat, env-art's mole_pier), ch08_corrow_stair drift 0.0087 (Kerrid's capsule in the foreground), ch08_coilspire_hall PASS 0, ch09_corrow_strand drift 0.109 (the lit night: shrouds, lamps, the vigil; the landing still greybox, being replaced now), ch09_corrow_road PASS 0.0072 (Kerrid's capsule). For the Lead's gate: all intended.
 
 ## Exact next step
-1. Self-render (TRACK-RULES) the shots this batch changed and view them: ch04_ferry_deck, ch05_pemakar_harbour,
-   ch05_pemakar_crown, ch08_corrow_arrival, ch08_corrow_stair, ch08_coilspire_hall, ch09_corrow_strand,
-   ch09_corrow_road and the four new ones; write SELF-RENDERED lines. (Viewed already as previews; baselines are the
-   Lead's gate's.)
-2. Queue item 6, the cutscene quality bar, on the Act I scripts (easing, HeroMotion, no snapping, no greyscale
-   frames, villagers alive).
+**BACKLOG EMPTY (2026-10-28, @ fe9bb143b):** in act1-chapters' lane, the Ch4-Ch9 playthrough is done. That covers
+cutscene cameras and staging (three passes of stills), field cameras at every zone-map POI, every Act I walk on
+the floor (known list empty), and pacing (no scene holds past its script beyond a visible walk ending). Ch1-Ch3 are
+slice-polish's. The balance check had no trigger: no spike or trivial fight showed. Everything still open waits on
+another track's request (below), and Act II is paused by ADR 0041.
+1. Nothing left in my lane on the Ch4–Ch9 playthrough list. Every open row waits on another track, each with its
+   request: the derelict's and Pemakar harbour's night grades (M3-ENV-1228, M3-ENV-1229); Ashcrown's kit and its
+   field volumes after it (M3-ARC-1216); the kneeling mourners for N09 (M3-C09-08 §5); the stand-ins (Virel
+   M3-CRE-627, Kerrid M3-CHR-505, Pell M3-CHR-506, Liss M3-C06-06, Sefir M3-HER-1225, the storm figure M3-RND-28,
+   the column and storm M3-RND-27); drowned_choir's body pop (M3-HER-1230); the freed sequencer cast (M3-HER-1227).
+2. When any of those lands: re-run `tools/act1/cutscene_stills` for that zone's visit and the POI views
+   (`GODOT=<binary> python3 tools/act1/poi_views.py --zones <id> --render <dir>`: each POI's field view, its layout
+   volume's camera or else the hub orbit), and re-aim D06 at the name-board (-9.24, 0.85, 21.04)
+   once the derelict reads.
 3. Act II is PAUSED (ADR 0041): its tasks and my requests for it are `status: blocked`, `blocked-by: ADR 0041`.
-4. Blocked or waiting: Ashcrown (M3-ARC-1216), the stand-ins above (their requests), the Reefball HUD (M3-UI-01).

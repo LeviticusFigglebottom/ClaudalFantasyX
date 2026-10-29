@@ -78,6 +78,10 @@ func show_result(
 	_title.text = title
 	_subtitle.text = subtitle
 	_subtitle.visible = subtitle != ""
+	# A result shown again while the last open still counts (act1_gpu_qa row 33): that tween would write into
+	# the rows freed below.
+	if _open_tween != null and _open_tween.is_valid():
+		_open_tween.kill()
 	for ch in _list.get_children():
 		_list.remove_child(ch)
 		ch.queue_free()
@@ -257,12 +261,14 @@ func is_counting() -> bool:
 	if _counters.is_empty() or _open_tween == null or not _open_tween.is_valid() or not _open_tween.is_running():
 		return false
 	for c in _counters:
-		if (c["label"] as Label).text != _count_text(c, int(c["n"])):
+		if is_instance_valid(c["label"]) and (c["label"] as Label).text != _count_text(c, int(c["n"])):
 			return true
 	return false
 
 
 func _set_count(value: float, c: Dictionary) -> void:
+	if not is_instance_valid(c["label"]):  # the row went with the panel (a result left quickly; row 33)
+		return
 	(c["label"] as Label).text = _count_text(c, roundi(value))
 
 

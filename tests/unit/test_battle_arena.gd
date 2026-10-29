@@ -16,7 +16,7 @@ const ACT_ONE := {
 	&"ch01_hullgnaw": &"oruvel_raft_morning",
 	&"ch03_causeway_shore": &"causeway_route_afternoon",
 	&"ch04_spar_wraith": &"derelict_deck_night",
-	&"ch05_cinder_matron": &"ashcrown_anvil_court",
+	&"ch05_cinder_matron": &"ashcrown_anvil_court",  # M3-BPR-1305: Ashcrown's anvil court (B09)
 	&"ch05_stair_tortoises": &"ashcrown_forecourt_day",
 	&"ch08_stair_hold_1": &"seawall_stairhead_storm",
 	&"ch08_stair_hold_2": &"seawall_stairhead_hoist",

@@ -136,6 +136,15 @@ class CompareTests(unittest.TestCase):
         self.assertFalse(ok)
         self.assertIn("size", msg)
 
+    def test_a_pending_shot_passes_until_it_has_a_baseline(self) -> None:
+        pngio.write(self.out / "s.png", self.grey)
+        pending = {**self.shot, compare.PENDING: True}
+        ok, msg = compare.compare_shot(pending, self.out, self.base)
+        self.assertTrue(ok, msg)
+        self.assertIn("PENDING", msg)
+        pngio.write(self.base / "s.png", np.zeros((4, 8, 3), np.uint8))
+        self.assertFalse(compare.compare_shot(pending, self.out, self.base)[0], "with a baseline it is compared")
+
     def test_update_baselines_copies_and_records_renderer(self) -> None:
         pngio.write(self.out / "s.png", self.grey)
         (self.out / "capture_report.json").write_text(json.dumps({"rendering_method": "forward_plus"}))
@@ -171,7 +180,11 @@ class CompareTests(unittest.TestCase):
 
     def test_repo_manifest_is_valid_and_baselined(self) -> None:
         for shot in compare.load_shots(compare.SHOTS):
-            self.assertTrue((compare.BASELINES / f"{shot['id']}.png").exists(), shot["id"])
+            has = (compare.BASELINES / f"{shot['id']}.png").exists()
+            if shot.get(compare.PENDING, False):
+                self.assertFalse(has, f"{shot['id']} is approved: drop its {compare.PENDING} key")
+            else:
+                self.assertTrue(has, shot["id"])
             scene = ROOT / shot["scene"].removeprefix("res://")
             self.assertTrue(scene.exists(), shot["scene"])
 

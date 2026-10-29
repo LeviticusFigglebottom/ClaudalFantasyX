@@ -1,0 +1,27 @@
+[gd_resource type="ShaderMaterial" load_steps=7 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/character/character_skin.gdshader" id="sh"]
+[ext_resource type="Texture2D" path="res://assets/characters/villagers/shopkeeper/textures/shopkeeper_head_albedo.png" id="t0"]
+[ext_resource type="Texture2D" path="res://assets/characters/asha/textures/asha_skin_detail_normal.png" id="t1"]
+[ext_resource type="Texture2D" path="res://assets/characters/villagers/shopkeeper/textures/shopkeeper_head_normal.png" id="t2"]
+[ext_resource type="Texture2D" path="res://assets/characters/villagers/shopkeeper/textures/shopkeeper_head_orm.png" id="t3"]
+[ext_resource type="Texture2D" path="res://assets/characters/villagers/shopkeeper/textures/shopkeeper_head_skinmask.png" id="t4"]
+
+[resource]
+resource_name = "skin_head_dialogue"
+render_priority = 0
+shader = ExtResource("sh")
+shader_parameter/tex_albedo = ExtResource("t0")
+shader_parameter/tex_detail_normal = ExtResource("t1")
+shader_parameter/tex_normal = ExtResource("t2")
+shader_parameter/tex_orm = ExtResource("t3")
+shader_parameter/tex_skin_mask = ExtResource("t4")
+shader_parameter/cavity_albedo = 0.45
+shader_parameter/detail_strength = 0.35
+shader_parameter/detail_tiling = 64.0
+shader_parameter/normal_strength = 0.8
+shader_parameter/painterly = 0.6
+shader_parameter/painterly_form = 0.3
+shader_parameter/roughness_max = 0.67
+shader_parameter/roughness_min = 0.48
+shader_parameter/specular_scale = 0.8

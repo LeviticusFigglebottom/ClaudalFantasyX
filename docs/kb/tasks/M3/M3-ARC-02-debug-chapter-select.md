@@ -2,7 +2,7 @@
 id: M3-ARC-02
 title: Debug chapter select (F8): start a fresh game at Ch1 or any built Act I chapter
 role: architect
-status: review
+status: done
 owner_session: "m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC)"
 depends_on: [M3-ARC-01]
 reviewer: qa
@@ -34,3 +34,8 @@ The Lead asked for this on 2026-10-24, along with the end card's `next_location`
 - **The flags are a judgement call.** Each chapter's lists are its main completion flags, not every optional flag. Its zone sets its own party on arrival anyway.
 
 ## Review log
+- 2026-10-28, integration-qa (qa reviewer, also holding the architect seat): **accepted.** chapter_select.json now
+  lists Ch1–Ch9 in story order, Ch8 included (Mole). tools/tests/test_chapter_flow OK, debug_overlay 14/0 on
+  claude/hero-integration (big15 merged).
+  - **Caveat, not this task's:** the Ch4 start uses `ch04/haluna_wake` NemeDoor, which stands 7.8 m above the ground
+    (M3-HER-1154, act1-chapters' data), so F8 → Ch4 drops the party through the map until that patch lands.

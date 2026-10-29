@@ -11,7 +11,13 @@
     "boss_intro": {
       "sfx": "sting_boss",
       "by_arg": {
-        "drownbell": "sting_boss_bell"
+        "drownbell": "sting_boss_bell",
+        "ch01_hullgnaw": "sting_boss_hullgnaw",
+        "ch04_bottle_hermit": "sting_boss_bottle_hermit",
+        "ch04_spar_wraith": "sting_boss_spar_wraith",
+        "ch05_cinder_matron": "sting_boss_cinder_matron",
+        "ch06_inquisitor": "sting_boss_inquisitor",
+        "undertows_reach": "sting_boss_undertows_reach"
       },
       "duck": "boss_intro",
       "duck_sec": 3.5
@@ -19,6 +25,12 @@
   },
   "reduced": {
     "sting_boss": "sting_boss_soft",
-    "sting_boss_bell": "sting_boss_bell_soft"
+    "sting_boss_bell": "sting_boss_bell_soft",
+    "sting_boss_hullgnaw": "sting_boss_hullgnaw_soft",
+    "sting_boss_bottle_hermit": "sting_boss_bottle_hermit_soft",
+    "sting_boss_spar_wraith": "sting_boss_spar_wraith_soft",
+    "sting_boss_cinder_matron": "sting_boss_cinder_matron_soft",
+    "sting_boss_inquisitor": "sting_boss_inquisitor_soft",
+    "sting_boss_undertows_reach": "sting_boss_undertows_reach_soft"
   }
 }
