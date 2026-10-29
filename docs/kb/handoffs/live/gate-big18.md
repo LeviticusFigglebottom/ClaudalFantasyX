@@ -51,3 +51,18 @@ env-art-b and act1-chapters?
 LEAD-ASK: Ch1 U03 (Oruvel Underway) and O02/scaleman (Oruvel) were re-framed by both m2-slice and act1-chapters (GPU
 QA row 23). big18 keeps m2-slice's (Ch1's owner). Check the shots; if act1-chapters' framing is wanted, it needs a
 follow-up on m2-slice's side.
+
+### big18 checks in progress (on 4ee3a7b8)
+- 2026-10-29 21:36 UTC: every non-shot step started (HYMN_STEP_TIMEOUT=10800, own HYMN_LOG_DIR and XDG_DATA_HOME;
+  each step runs even if an earlier one fails). Data 0/0; audio, manifest ok.
+- **Tool suite: 186 units, 1930 tests, 3 failing units** (big17: 4 failing). Fixed since big17: test_freed_cast_lint,
+  test_npc, test_post_import.
+  - test_screenshots: `villager_shopkeeper_front` has no baseline. **Known on big17.**
+  - **NEW, branch content:** test_zone_map_pois: "ch01/oruvel/kell (actor:kell): at [31.0, -7.5] but the source is
+    at [29.0, -7.0]". act1-chapters' cb97a0cf (GPU QA row 23) moved Kell without moving her zone-map POI. It's red
+    on `claude/act1-chapters` @ e7b065b4 alone too. Route to act1-chapters.
+  - **NEW, merge fallout, fixed (4ee3a7b8):** test_glimmer_forms: `glimmer_forms.json` was stale. m2-slice's forms
+    (green on its own head) sample creatures' rebuilt models. Regenerated with `tools/cutscene/glimmer_forms.py`
+    (two coordinates moved by under 0.01).
+- Blender: 78 jobs touched since `origin/lead/gate-big17` (1bdaea53): heroes, villagers, crowd, creatures and 7
+  zone kits. As on big17, they run after the timing-sensitive suite.
