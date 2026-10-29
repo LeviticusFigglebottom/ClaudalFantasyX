@@ -311,7 +311,20 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
 - Tried and reverted: a staggered fringe for Ione. The hard line is the painted scalp hairline and the chips are the
   short-hair cards on Asha's long-hair atlas; filed as M3-CHR-592 with the plan (Moll's square line is toma_hair's
   shared hairline table).
-- **Next:** M3-CHR-592 (villager short hair at dialogue range), then Pell's leftovers (pell_review.md "Still open").
+- MERGE-READY @ 2295265c: **M3-CHR-592, Ione's crop** on Toma's short-hair tufts (opt-in `tufts` in villager_hair and
+  write_materials; only Ione turns it on). The square chips on her crown are gone at dialogue range; the fringe edge
+  is softer. villager_ione identical on the three numpy paths, test_villagers 45 OK; self-rendered villager_ione_face
+  before and after. Next in M3-CHR-592: the other named NPCs' crops (gatekeeper, clerk, Kell, Tavi) and Moll's line.
+- Merged the integration branch (ADR 0201's banned word: no hits in characters' files).
+- MERGE-READY @ 5667eedb: **Pell's field row** (Lead routing: the Prologue City/Vigils/Pell capsule, M3-HER-1140, and
+  fp_prologue's failing vigil test). hero_motion.json `pell` (pell_lod1, walk 1.27, run 3.13 m/s, measured with
+  HeroClipGait, which reproduces Kerrid's recorded 0.71/1.80), so every Pell vigil takes his body. fp_prologue's test
+  expected Liss and Pell to stay capsules: both have bodies now (Liss since her field row). Checks: Godot fp_prologue
+  8/0, hero_field_actor 14/0; `--filter=hero_` 111 with 2 failures, test_hero_field_snaps (Rhen in haluna_wake and
+  drowned_choir: hero-integration's and act1-chapters', known, not this change). test_qa_capsules still lists
+  Haluna's villager capsules (static scan; VillagerLayer swaps them at runtime). The vigil's pose and mark stay
+  slice-polish's (`back_to_sea` is Pell's vigil clip).
+- **Next:** M3-CHR-102 (Lead routing: Asha's kneeling skirt over Rhen on the beach), then M3-CHR-592's other crops.
 - (was) **In progress:** Pell's second look-dev pass (M3-CHR-506, pell_review.md "What still does not read" 1–5): rounder
   lid openings and a dark eye ring, round flat ears, a flat right hand in storm_call and cast, the fur pattern, the
   nape ridge.
