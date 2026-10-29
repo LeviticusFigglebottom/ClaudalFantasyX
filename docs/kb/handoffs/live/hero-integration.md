@@ -1327,3 +1327,30 @@ trial_merge --prefold, merge_union's virtual base, test_post_import's crowd, fre
 - LEAD-ASK: audio isn't started, and M3-HER-1163 is a 3-row data fix in audio's `battle_sfx.json`. Start audio for
   it, or let me apply it (I'd rather not edit another track's file unasked).
 - In flight: the full Godot suite on lead/gate-big17 in my container, for an early read and M3-HER-1130's leak list.
+
+### The Lead's three asks (messages of 17:58, 19:04, 19:24), 2026-10-29 ~20:00
+1. **Audit rows re-routed @ 07a2f41a7:** `tools/placeholder_audit.py` gains `ROUTES` (path and what regexes,
+   owner, reason; first match wins), applied after the owner rules; test_placeholder_audit has a routing test.
+   - The Prologue's City/Vigils capsule → **characters** (Pell's vigil; slice-polish puts him on his mark);
+   - `tamsule_bell/reefball_drop_proxy.glb` and `materials/tb_drop_proxy.tres` → **env-art-b** (M3-RND-26).
+   - Inventory re-generated on big17 + claude/ui (full scan): **9 items**: characters 1, creatures 1, env-art 2,
+     env-art-b 2, integration-qa 3 (Pell's capsules, which clear with this branch's Pell row). Note: with Pell's
+     row, the Prologue vigil clears as well (it's his `vigil_pell`), so characters' row should close by itself.
+2. **taskboard --check fails on a duplicate task id @ 8266adbf5** (`duplicate_ids`, tools/tests/test_taskboard 2/0).
+   **On lead/gate-big17 the only duplicate is M3-CRE-627:**
+   - `M3-CRE-627-act2-regulars-ch10-11.md` (character, blocked, creatures);
+   - `M3-CRE-627-virel-field-body.md` (character, todo, filed by act1-chapters' M3-CIN-1217; the one being
+     renamed to M3-CRE-700).
+   Until that rename lands, `--check` is red on every tree that carries both, mine included. That's intended.
+3. **test_hero_field_snaps: no fix needed; it's ui's head, not the code.**
+   - Green on lead/gate-big17 (2/0), on this branch's head (2/0), and on **big17 + claude/ui merged** (2/0, the tree
+     big18 builds).
+   - It fails only on claude/ui's own head a9ae00b7 (haluna_wake: rhen 38 snaps, drowned_choir 2). That head mixes
+     newer hero-motion files, which came in through its merge of characters, with pre-big16 `field_camera_director.gd`,
+     `camera_shot.gd` and the old haluna_wake layout, because integration doesn't carry big16 yet.
+   - It goes away when big17 lands on integration and ui merges it.
+- Also: the same big17 × ui merge went through merge_union's new virtual-base path for real (shots.json resolved).
+- **Lost to a container restart (~19:35, memory: three Godots at once):** my full-suite run on big17 and the
+  inventory re-run. The inventory is redone above. The full suite is NOT re-run; the gate session has it. From now on
+  I run one Godot at a time.
+MERGE-READY @ (this commit): ROUTES, the taskboard duplicate check, the inventory.
