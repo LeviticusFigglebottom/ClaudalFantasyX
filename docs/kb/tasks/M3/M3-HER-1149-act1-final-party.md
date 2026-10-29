@@ -25,7 +25,9 @@ real hero. Kerrid and Liss also need battle actors.
       wrapper (characters' game/characters/heroes/kerrid_battle.tscn by path), plus his battle_sandbox row. He's real
       everywhere once claude/characters merges. Checked on a scratch merge: hero_ green, the dawn road shows him at
       the milestone.
-- [ ] Pell's, once M3-CHR-506 lands.
+- [x] Pell's field row (walk 1.27, run 3.13 m/s, measured by HeroClipGait on characters' pell_lod1 in the big17
+      trial tree; 2026-10-29). Ch9's `pell` and `vigil_pell` (the `vigil_` prefix) take his body once
+      claude/characters merges. No battle wrapper: Ch9 says he has no battle row in Act I (M3-C09-07 is his kit).
 - [ ] The audit lists no integration-qa rows.
 
 ## Notes

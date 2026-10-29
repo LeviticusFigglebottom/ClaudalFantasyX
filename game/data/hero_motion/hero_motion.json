@@ -66,6 +66,11 @@
         "scene": "res://assets/characters/kerrid/kerrid_lod1.glb",
         "walk_clip_mps": 0.71,
         "run_clip_mps": 1.8
+      },
+      "pell": {
+        "scene": "res://assets/characters/pell/pell_lod1.glb",
+        "walk_clip_mps": 1.27,
+        "run_clip_mps": 3.13
       }
     },
     "actor_aliases_doc": "ADR 0041 (the party's stage capsules): a stage actor whose node name isn't a hero id but plays that hero takes the hero's body. actor_aliases names them one by one (Ysolde at the Wake's edge, Kerrid on the stair in Ch9); actor_prefixes strips a prefix (Ch9's vigil_<hero> at the dawn road). An actor whose hero has no field row stays its capsule.",

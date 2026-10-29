@@ -250,7 +250,8 @@ func test_aliased_stage_actors_get_their_heroes_bodies() -> void:
 	var vigil := _capsule_actor("vigil_asha")
 	var edge := _capsule_actor("ysolde_edge")
 	var pell := _capsule_actor("vigil_pell")
-	for a in [vigil, edge, pell]:
+	var neme := _capsule_actor("vigil_neme")
+	for a in [vigil, edge, pell, neme]:
 		actors.add_child(a)
 	zone.add_child(stage)
 	var bodies := HeroFieldActor.attach_stage(stage)
@@ -258,9 +259,16 @@ func test_aliased_stage_actors_get_their_heroes_bodies() -> void:
 	for b in bodies:
 		ids.append(String(b.hero_id))
 	ids.sort()
-	assert_eq(ids, ["asha", "ysolde"] as Array[String], "Asha's vigil and Ysolde at the edge get bodies")
+	# M3-HER-1149: Pell's row is in; his model comes with claude/characters (M3-CHR-506), so before that merge his
+	# vigil stays a capsule and after it he gets his body like the others.
+	var pell_model := HeroFieldActor.scene_path(&"pell") != ""
+	var want: Array[String] = ["asha", "ysolde"]
+	if pell_model:
+		want.insert(1, "pell")
+	assert_eq(ids, want, "Asha's vigil, Ysolde at the edge (and Pell's vigil, with his model) get bodies")
 	assert_false((vigil.get_node("StandIn") as Node3D).visible, "the vigil's capsule hides")
-	assert_true((pell.get_node("StandIn") as Node3D).visible, "Pell (no model yet) keeps his")
+	assert_eq((pell.get_node("StandIn") as Node3D).visible, not pell_model, "Pell's hides once his model is in")
+	assert_true((neme.get_node("StandIn") as Node3D).visible, "an actor whose hero has no field row keeps its capsule")
 	_done()
 
 
