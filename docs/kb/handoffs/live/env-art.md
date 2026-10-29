@@ -589,6 +589,11 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **BACKLOG EMPTY (2026-10-29): every env-art item for the Prologue–Ch4 is done, in review or routed.** Why nothing is
+  left for this track: the inventory's env-art rows are cleared or re-routed (M3-HER-1140, review); the GPU QA rows are
+  fixed on this tree (the real-GPU re-checks are in PC-QUEUE); the walk-through and the touchable props are done; the
+  environment todo list's other rows are Ch5–Ch9 or arenas (env-art-b's) or wait on other tracks. Handoff:
+  `docs/kb/handoffs/2026-10-29-environment-env-art-1.md`. Lead: send more Act I work and I'll take it.
 - **To review (checked on this tree, no code change): M2-ENV-12** (m2-slice's off-tree shrine build is in), **M3-C01-04**
   and **M3-C04-03** (the kits are mounted; `--filter=ch01_thread` 2/0, `--filter=ch04_thread` 3/0).
 - **MERGE-READY @ e1db6170: M3-CRE-663** (the big14 Blender gate's haluna_kit diff), to review: `kirru_roost`'s arch crown
