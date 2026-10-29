@@ -426,7 +426,15 @@
    },
    "materials_dir": "res://assets/environments/kits/ashcrown/materials/",
    "scale": 0.75,
-   "scale_y": 1.0
+   "scale_y": 1.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "open_hand_gate",
@@ -437,7 +445,15 @@
    ],
    "y": -4.0,
    "yaw_deg": 0.0,
-   "scale": 1.6
+   "scale": 1.6,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -447,7 +463,15 @@
     22.0
    ],
    "y": -4.0,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -457,7 +481,15 @@
     28.0
    ],
    "y": -4.0,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -467,7 +499,15 @@
     34.0
    ],
    "y": -4.0,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -477,7 +517,15 @@
     40.0
    ],
    "y": -4.0,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -487,7 +535,15 @@
     22.0
    ],
    "y": -4.0,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -497,7 +553,15 @@
     28.0
    ],
    "y": -4.0,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -507,7 +571,15 @@
     34.0
    ],
    "y": -4.0,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -517,7 +589,15 @@
     40.0
    ],
    "y": -4.0,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -527,7 +607,15 @@
     55.06
    ],
    "y": -11.04,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -537,7 +625,15 @@
     55.06
    ],
    "y": -11.04,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -547,7 +643,15 @@
     64.22
    ],
    "y": -18.08,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -557,7 +661,15 @@
     64.22
    ],
    "y": -18.08,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -567,7 +679,15 @@
     73.38
    ],
    "y": -25.12,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -577,7 +697,15 @@
     73.38
    ],
    "y": -25.12,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -587,7 +715,15 @@
     82.54
    ],
    "y": -32.16,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -597,7 +733,15 @@
     82.54
    ],
    "y": -32.16,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -607,7 +751,15 @@
     91.7
    ],
    "y": -39.2,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -617,7 +769,15 @@
     91.7
    ],
    "y": -39.2,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -627,7 +787,15 @@
     100.86
    ],
    "y": -46.24,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -637,7 +805,15 @@
     100.86
    ],
    "y": -46.24,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -647,7 +823,15 @@
     110.02
    ],
    "y": -53.28,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -657,7 +841,15 @@
     110.02
    ],
    "y": -53.28,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -667,7 +859,15 @@
     119.18
    ],
    "y": -60.32,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -677,7 +877,15 @@
     119.18
    ],
    "y": -60.32,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -687,7 +895,15 @@
     128.34
    ],
    "y": -67.36,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -697,7 +913,15 @@
     128.34
    ],
    "y": -67.36,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -707,7 +931,15 @@
     137.5
    ],
    "y": -74.4,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "lamp_pillar",
@@ -717,7 +949,15 @@
     137.5
    ],
    "y": -74.4,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "release_lever",
@@ -1727,7 +1967,15 @@
    ],
    "y": 24.0,
    "yaw_deg": 270.0,
-   "block": "TenderGraves"
+   "block": "TenderGraves",
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_stele_a",
@@ -1737,7 +1985,15 @@
     0.659
    ],
    "y": 24.0,
-   "yaw_deg": 270.0
+   "yaw_deg": 270.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_curb",
@@ -1747,7 +2003,15 @@
     -0.341
    ],
    "y": 24.0,
-   "yaw_deg": 270.0
+   "yaw_deg": 270.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_stele_b",
@@ -1757,7 +2021,15 @@
     -0.341
    ],
    "y": 24.0,
-   "yaw_deg": 270.0
+   "yaw_deg": 270.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_curb",
@@ -1767,7 +2039,15 @@
     -2.541
    ],
    "y": 24.0,
-   "yaw_deg": 270.0
+   "yaw_deg": 270.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_stele_a",
@@ -1777,7 +2057,15 @@
     -2.541
    ],
    "y": 24.0,
-   "yaw_deg": 270.0
+   "yaw_deg": 270.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_curb",
@@ -1787,7 +2075,15 @@
     -3.541
    ],
    "y": 24.0,
-   "yaw_deg": 270.0
+   "yaw_deg": 270.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_stele_b",
@@ -1797,7 +2093,15 @@
     -3.541
    ],
    "y": 24.0,
-   "yaw_deg": 270.0
+   "yaw_deg": 270.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "matron_alcove",
@@ -1863,7 +2167,15 @@
    "y": -81.44,
    "yaw_deg": 0.0,
    "scale": 1.3,
-   "block": "TendersGate"
+   "block": "TendersGate",
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_curb",
@@ -1873,7 +2185,15 @@
     118.48
    ],
    "y": -66.603,
-   "yaw_deg": 90.0
+   "yaw_deg": 90.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_stele_a",
@@ -1884,7 +2204,15 @@
    ],
    "y": -66.603,
    "yaw_deg": 90.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_curb",
@@ -1894,7 +2222,15 @@
     119.88
    ],
    "y": -66.713,
-   "yaw_deg": 90.0
+   "yaw_deg": 90.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_stele_b",
@@ -1905,7 +2241,15 @@
    ],
    "y": -66.713,
    "yaw_deg": 90.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_curb",
@@ -1915,7 +2259,15 @@
     118.48
    ],
    "y": -66.598,
-   "yaw_deg": 270.0
+   "yaw_deg": 270.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_stele_a",
@@ -1926,7 +2278,15 @@
    ],
    "y": -66.598,
    "yaw_deg": 270.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_curb",
@@ -1936,7 +2296,15 @@
     119.88
    ],
    "y": -66.667,
-   "yaw_deg": 270.0
+   "yaw_deg": 270.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_stele_b",
@@ -1947,7 +2315,15 @@
    ],
    "y": -66.667,
    "yaw_deg": 270.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_curb",
@@ -1957,7 +2333,15 @@
     109.32
    ],
    "y": -61.79,
-   "yaw_deg": 90.0
+   "yaw_deg": 90.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_stele_b",
@@ -1968,7 +2352,15 @@
    ],
    "y": -61.79,
    "yaw_deg": 90.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_curb",
@@ -1978,7 +2370,15 @@
     110.72
    ],
    "y": -61.935,
-   "yaw_deg": 90.0
+   "yaw_deg": 90.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_stele_a",
@@ -1989,7 +2389,15 @@
    ],
    "y": -61.935,
    "yaw_deg": 90.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_curb",
@@ -1999,7 +2407,15 @@
     109.32
    ],
    "y": -61.821,
-   "yaw_deg": 270.0
+   "yaw_deg": 270.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_stele_b",
@@ -2010,7 +2426,15 @@
    ],
    "y": -61.821,
    "yaw_deg": 270.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_curb",
@@ -2020,7 +2444,15 @@
     110.72
    ],
    "y": -61.949,
-   "yaw_deg": 270.0
+   "yaw_deg": 270.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_stele_a",
@@ -2031,7 +2463,15 @@
    ],
    "y": -61.949,
    "yaw_deg": 270.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_curb",
@@ -2041,7 +2481,15 @@
     100.16
    ],
    "y": -57.11,
-   "yaw_deg": 90.0
+   "yaw_deg": 90.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_stele_a",
@@ -2052,7 +2500,15 @@
    ],
    "y": -57.11,
    "yaw_deg": 90.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_curb",
@@ -2062,7 +2518,15 @@
     101.56
    ],
    "y": -59.274,
-   "yaw_deg": 90.0
+   "yaw_deg": 90.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_stele_b",
@@ -2073,7 +2537,15 @@
    ],
    "y": -59.274,
    "yaw_deg": 90.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_curb",
@@ -2083,7 +2555,15 @@
     100.16
    ],
    "y": -57.193,
-   "yaw_deg": 270.0
+   "yaw_deg": 270.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_stele_a",
@@ -2094,7 +2574,15 @@
    ],
    "y": -57.193,
    "yaw_deg": 270.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_curb",
@@ -2104,7 +2592,15 @@
     101.56
    ],
    "y": -58.908,
-   "yaw_deg": 270.0
+   "yaw_deg": 270.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_stele_b",
@@ -2115,7 +2611,15 @@
    ],
    "y": -58.908,
    "yaw_deg": 270.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_curb",
@@ -2125,7 +2629,15 @@
     91.0
    ],
    "y": -53.056,
-   "yaw_deg": 90.0
+   "yaw_deg": 90.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_stele_b",
@@ -2136,7 +2648,15 @@
    ],
    "y": -53.056,
    "yaw_deg": 90.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_curb",
@@ -2146,7 +2666,15 @@
     92.4
    ],
    "y": -55.397,
-   "yaw_deg": 90.0
+   "yaw_deg": 90.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_stele_a",
@@ -2157,7 +2685,15 @@
    ],
    "y": -55.397,
    "yaw_deg": 90.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_curb",
@@ -2167,7 +2703,15 @@
     91.0
    ],
    "y": -53.829,
-   "yaw_deg": 270.0
+   "yaw_deg": 270.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_stele_b",
@@ -2178,7 +2722,15 @@
    ],
    "y": -53.829,
    "yaw_deg": 270.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_curb",
@@ -2188,7 +2740,15 @@
     92.4
    ],
    "y": -55.594,
-   "yaw_deg": 270.0
+   "yaw_deg": 270.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_stele_a",
@@ -2199,7 +2759,15 @@
    ],
    "y": -55.594,
    "yaw_deg": 270.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_curb",
@@ -2209,7 +2777,15 @@
     81.84
    ],
    "y": -48.969,
-   "yaw_deg": 90.0
+   "yaw_deg": 90.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_stele_a",
@@ -2220,7 +2796,15 @@
    ],
    "y": -48.969,
    "yaw_deg": 90.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_curb",
@@ -2230,7 +2814,15 @@
     83.24
    ],
    "y": -50.63,
-   "yaw_deg": 90.0
+   "yaw_deg": 90.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_stele_b",
@@ -2241,7 +2833,15 @@
    ],
    "y": -50.63,
    "yaw_deg": 90.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_curb",
@@ -2251,7 +2851,15 @@
     81.84
    ],
    "y": -50.338,
-   "yaw_deg": 270.0
+   "yaw_deg": 270.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_stele_a",
@@ -2262,7 +2870,15 @@
    ],
    "y": -50.338,
    "yaw_deg": 270.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_curb",
@@ -2272,7 +2888,15 @@
     83.24
    ],
    "y": -50.547,
-   "yaw_deg": 270.0
+   "yaw_deg": 270.0,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "grave_stele_b",
@@ -2283,7 +2907,15 @@
    ],
    "y": -50.547,
    "yaw_deg": 270.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2293,7 +2925,15 @@
     113.044
    ],
    "y": -71.706,
-   "yaw_deg": 339.282
+   "yaw_deg": 339.282,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2303,7 +2943,15 @@
     124.51
    ],
    "y": -76.584,
-   "yaw_deg": 279.345
+   "yaw_deg": 279.345,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2313,7 +2961,15 @@
     76.407
    ],
    "y": -52.625,
-   "yaw_deg": 40.754
+   "yaw_deg": 40.754,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2323,7 +2979,15 @@
     97.969
    ],
    "y": -61.769,
-   "yaw_deg": 36.711
+   "yaw_deg": 36.711,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2333,7 +2997,15 @@
     76.434
    ],
    "y": -50.609,
-   "yaw_deg": 65.547
+   "yaw_deg": 65.547,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2343,7 +3015,15 @@
     137.011
    ],
    "y": -80.764,
-   "yaw_deg": 286.973
+   "yaw_deg": 286.973,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2353,7 +3033,15 @@
     65.599
    ],
    "y": -46.658,
-   "yaw_deg": 0.639
+   "yaw_deg": 0.639,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2363,7 +3051,15 @@
     137.398
    ],
    "y": -81.417,
-   "yaw_deg": 345.646
+   "yaw_deg": 345.646,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2373,7 +3069,15 @@
     68.254
    ],
    "y": -46.22,
-   "yaw_deg": 346.132
+   "yaw_deg": 346.132,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2383,7 +3087,15 @@
     104.844
    ],
    "y": -65.295,
-   "yaw_deg": 348.68
+   "yaw_deg": 348.68,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2393,7 +3105,15 @@
     71.294
    ],
    "y": -51.724,
-   "yaw_deg": 130.028
+   "yaw_deg": 130.028,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2403,7 +3123,15 @@
     68.264
    ],
    "y": -46.281,
-   "yaw_deg": 119.468
+   "yaw_deg": 119.468,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2413,7 +3141,15 @@
     132.105
    ],
    "y": -77.464,
-   "yaw_deg": 254.763
+   "yaw_deg": 254.763,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2423,7 +3159,15 @@
     58.47
    ],
    "y": -43.41,
-   "yaw_deg": 173.068
+   "yaw_deg": 173.068,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2433,7 +3177,15 @@
     82.948
    ],
    "y": -57.174,
-   "yaw_deg": 63.403
+   "yaw_deg": 63.403,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2443,7 +3195,15 @@
     77.106
    ],
    "y": -53.278,
-   "yaw_deg": 128.752
+   "yaw_deg": 128.752,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2453,7 +3213,15 @@
     91.621
    ],
    "y": -62.154,
-   "yaw_deg": 208.267
+   "yaw_deg": 208.267,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2463,7 +3231,15 @@
     52.89
    ],
    "y": -40.694,
-   "yaw_deg": 224.537
+   "yaw_deg": 224.537,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2473,7 +3249,15 @@
     145.531
    ],
    "y": -86.217,
-   "yaw_deg": 334.676
+   "yaw_deg": 334.676,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2483,7 +3267,15 @@
     144.32
    ],
    "y": -90.415,
-   "yaw_deg": 321.376
+   "yaw_deg": 321.376,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2493,7 +3285,15 @@
     76.588
    ],
    "y": -51.123,
-   "yaw_deg": 269.423
+   "yaw_deg": 269.423,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2503,7 +3303,15 @@
     130.128
    ],
    "y": -71.781,
-   "yaw_deg": 340.488
+   "yaw_deg": 340.488,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2513,7 +3321,15 @@
     60.936
    ],
    "y": -43.992,
-   "yaw_deg": 130.545
+   "yaw_deg": 130.545,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2523,7 +3339,15 @@
     66.523
    ],
    "y": -49.863,
-   "yaw_deg": 196.252
+   "yaw_deg": 196.252,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2533,7 +3357,15 @@
     82.62
    ],
    "y": -57.575,
-   "yaw_deg": 287.559
+   "yaw_deg": 287.559,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2543,7 +3375,15 @@
     113.427
    ],
    "y": -71.623,
-   "yaw_deg": 58.151
+   "yaw_deg": 58.151,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2553,7 +3393,15 @@
     56.758
    ],
    "y": -38.706,
-   "yaw_deg": 266.601
+   "yaw_deg": 266.601,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2563,7 +3411,15 @@
     85.696
    ],
    "y": -59.955,
-   "yaw_deg": 151.833
+   "yaw_deg": 151.833,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2573,7 +3429,15 @@
     57.459
    ],
    "y": -43.427,
-   "yaw_deg": 120.307
+   "yaw_deg": 120.307,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2583,7 +3447,15 @@
     72.292
    ],
    "y": -50.382,
-   "yaw_deg": 283.683
+   "yaw_deg": 283.683,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2593,7 +3465,15 @@
     62.45
    ],
    "y": -46.592,
-   "yaw_deg": 21.157
+   "yaw_deg": 21.157,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2603,7 +3483,15 @@
     93.223
    ],
    "y": -60.202,
-   "yaw_deg": 359.748
+   "yaw_deg": 359.748,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2613,7 +3501,15 @@
     135.521
    ],
    "y": -85.676,
-   "yaw_deg": 247.982
+   "yaw_deg": 247.982,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   },
   {
    "piece": "flank_rocks",
@@ -2623,7 +3519,15 @@
     83.135
    ],
    "y": -58.349,
-   "yaw_deg": 145.364
+   "yaw_deg": 145.364,
+   "material_paths": {
+    "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+    "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+    "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+    "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+    "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+   }
   }
  ]
 }

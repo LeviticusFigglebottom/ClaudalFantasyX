@@ -102,3 +102,26 @@ def load_generator(name: str):
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
+
+
+NEW_COPPER = {  # copper kept bright (the Tenders' rods, a smith's work): a little bloom in the hollows only
+    "col_bronze": (0.5020, 0.2706, 0.1255), "col_worn": (0.8000, 0.4784, 0.2706),
+    "col_patina": (0.2706, 0.3804, 0.3373), "col_patina_pale": (0.4314, 0.5137, 0.4706),
+    "metallic_bronze": 1.0, "roughness_bronze": 0.4, "roughness_worn": 0.24, "patina_coverage": (0.0, 0.2),
+    "patina_roughness": 0.85, "streak_strength": 0.3, "wear_strength": 0.9, "detail_scale_m": 0.5,
+    "normal_strength": 0.4, "normal_tile_m": 1.6}
+GOLD = {  # gilt: worn through to the ground under it at the edges, a little dulled in the hollows
+    "col_bronze": (0.8314, 0.6431, 0.2157), "col_worn": (0.5490, 0.3922, 0.1961),
+    "col_patina": (0.3608, 0.3451, 0.3255), "col_patina_pale": (0.5020, 0.4824, 0.4549),
+    "metallic_bronze": 1.0, "roughness_bronze": 0.28, "roughness_worn": 0.45, "patina_coverage": (0.0, 0.15),
+    "patina_shade_bias": 0.1, "patina_roughness": 0.85, "streak_strength": 0.2, "wear_strength": 0.6,
+    "detail_scale_m": 0.5, "normal_strength": 0.3, "normal_tile_m": 1.6}
+
+
+def lacquer(color: tuple, *, undercoat: tuple = (0.0784, 0.0667, 0.0627)) -> dict:
+    """A lacquer of `color`: its hollows dull to an aged lacquer of the same hue (a grey dust gathered in the normal
+    map's pits read as camouflage on broad leaves), chipped to `undercoat` at the edges."""
+    aged = tuple(round(c * 0.6, 4) for c in color)
+    pale = tuple(round(min(1.0, c * 0.75 + 0.04), 4) for c in color)
+    return dict(LACQUER, col_bronze=color, col_worn=undercoat, col_patina=aged, col_patina_pale=pale,
+                patina_coverage=(0.05, 0.3))

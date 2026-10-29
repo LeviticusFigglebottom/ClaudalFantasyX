@@ -32110,6 +32110,14 @@
    "block": "Lamps"
   }
  ],
+ "kit_material_paths": {
+  "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+  "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+  "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+  "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+  "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+  "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+ },
  "pieces": [
   {
    "piece": "terrace_wall_4m",

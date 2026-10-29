@@ -33,6 +33,12 @@ M3-ENV-1316 stays env-art's).
 - **Arenas:** the seawall stairhead arenas (storm, hoist, surge) and `coilspire_headland_path` take their zone's
   swaps through `KitSlotSwaps`, like Ashcrown's.
 
+- **Pemakar (Ch5), Brine Shoals (Ch6), Tamsule (Ch7)** (added later on 10-29): the same treatment for their kits'
+  flat lacquer, copper, gold, brass and iron slots (`kit_material_paths`, `zl.lacquer()` / `NEW_COPPER` / `GOLD`
+  presets), including the Pemakar pieces Ashcrown borrows; their arenas (`ash_terrace_lanternfall`,
+  `salvage_camp_burning`, `brine_shoals_afternoon`) wear them through `KitSlotSwaps`.
+- **Ch9's low town** (M3-C09-04): the kit's `flood_debris` among the drowned roofs.
+
 ## Left for env-art (M3-ENV-1316)
 - The kits' own flat slots (their previews and every other user).
 - Tamsule's `market_boat_a` sun umbrella: a flat 16-sided disc with no ribs; from the decks above the boats it reads
