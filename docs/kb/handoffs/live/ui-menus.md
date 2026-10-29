@@ -678,3 +678,15 @@ SELF-RENDERED (at e40234da's parent, before the text fixes; a temporary manifest
   own, not an Act I arena.
 - No baselines written. Baselines that will move: equip_menu (stat columns), shop_menu_buy (the shorter line), and any
   page whose title used to ellipsize.
+MERGE-READY @ e562b48d1: the underwater rig fix (rendering's file, at the Lead's request) and the Act I UI final-quality pass
+(4:3 in the aspect audit, the default-theme check, the dead-end test, English text fits at 100 % and 130 %).
+Checks:
+- aspect_layouts 18/0, pseudo_loc 26/0, menu 251/0, input_parity 65/0 (no node left), shop 28/0, reefball 80/0,
+  equip 66/0, settings 48/0, underwater 9/0;
+- battle_ 737/1: only test_battle_act1_ability_vfx (battle-presentation's, routed by the Lead);
+- an English text walk trims nothing;
+- lint and validate_data are clean.
+Skipped: coverage (no game/battle core or game/progression change; game/ui/battle is the scene layer). I did not
+re-render the shots after the text fixes: equip_menu and shop_menu_buy move, and the Lead's gate renders them.
+- 2026-10-29 21:40, **BACKLOG EMPTY:** the Lead's 19:24 list is done. What's left waits on the PC (PC-QUEUE) or on other
+  tracks' routed findings.
