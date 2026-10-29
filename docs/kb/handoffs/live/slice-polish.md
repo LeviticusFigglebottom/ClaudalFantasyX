@@ -793,6 +793,122 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   check samples a real shallows point, (2.5, 8) on the terrain, which reads water. Rhen's mark stays on the wet sand
   where the fast-track put it, and the beach staging is unchanged. footsteps_slice 5/0. MERGE-READY @ the branch head.
 
+## NEW SESSION (2026-10-29, the new Lead session_01Bg3iP7; integration branch `claude/new-session-mj8c3c`)
+- **Merged** `origin/claude/new-session-mj8c3c` @ b60a8f61, then @ 5a9978bc. No conflicts (Lead docs only).
+  - **Gotcha again:** this clone was shallow, so `git merge-base --is-ancestor` said "no" for commits this branch
+    has. Run `git fetch --deepen=600 origin <branches>` before trusting any ancestry check.
+- **The human's four 10-28 FAST-TRACKs: where each fix is.** None is on the integration branch yet: it is big13 plus
+  Lead docs. All four are on big16 (`lead/gate-big16` @ ff82858c, never gated) and on this branch (by way of
+  ft-beach and big14). big17 brings them in.
+
+  | Report | Fix commit | On integration | On big16 | On claude/m2-slice |
+  |---|---|---|---|---|
+  | The grey Prologue | d2ae3cb2 (env-art, M3-ENV-752) | no | yes | yes |
+  | The beach staging | 93d0741e (Lead's ft-beach) + 9f31066b | no | yes | yes |
+  | The stacked party | b66981e9 (HeroFieldParty) | no | yes | yes |
+  | The party start, camera far back | integration-qa's M3-HER-1149 on claude/hero-integration | no | no | no |
+  | The run | 0a565c4f (characters' run base) | no | yes | yes |
+- **SELF-RENDERED @ d0433789 (verification, viewed):**
+  - slice_prologue_p01 and slice_prologue_vigil_line: Iskarra is warm white, gilt and blue-glazed at dusk, not grey.
+    Rhen's lantern globe is lit over his shoulder on the line. **The grey Prologue: fixed.**
+  - slice_beach_h05_asha: both faces read, Asha toward Rhen. **The beach staging: fixed**, with two faults left:
+    - Asha's kneeling skirt still balloons into a blue mass over Rhen (PC row 31, M3-CHR-102, characters);
+    - Toma stood mid-left 5 m from the lens with his head above the top bar (fixed below, M2-FP-119).
+- LEAD-ANSWERED (17:58: routed to characters as a cloth-side fix; the marks stay; Pell's vigil mark and staging are mine, his model is characters'; big17 @ 1a986abf carries 595be6eb): M3-CHR-102 (Asha's kneeling skirt balloons over Rhen on the beach, row 31) exists only on claude/m2-slice,
+  so characters can't see it until big17. Please route it to characters now (their `helper_bones.json` gather_flare,
+  or a `kneel_over_rhen` override). My default meanwhile: the marks stay; I move Asha only if they say the cloth
+  can't clear him.
+
+- **Verified on this branch (self-rendered and viewed):** asha_clip_run and field_hero_gait_strip (the run is grounded:
+  the free arm is bent near the body, with no flop); field_hero_party (three bodies spaced, none stacked), with
+  qa_party_spawns 2/0 under real physics. **All four fast-tracks hold here; they reach the integration branch with
+  big17.**
+- **M2-FP-119, the slice's timing and framing (MERGE-READY @ the branch head):**
+  - `@wait arrive=<actor>`: the sequencer holds until that actor's walk lands. B11's flat `@wait 6.0` assumed a walk
+    length, but the player sets B11 off from anywhere on the dock. Unit test mutation-checked; cues.json and
+    cutscenes.md updated.
+  - **H05:** Toma stood with his head above the top bar. He moved to (-3.0, 0.131, 10.0): off H05; his spear
+    enters H06 from the left; he stands whole in H05_up's left third for his own line.
+  - **The First Verse:** S07's walk gets a beat before its fade; S06's sits and S09's emerge start under the black
+    (a glide and an empty doorway had shown after the fade-ins).
+  - **SELF-RENDERED @ ddcf5f28 (viewed, no baselines written):**
+    - slice_beach_h05_asha: Asha and Rhen only, both faces;
+    - slice_beach_h06_toma: the spear enters from the left. **Lead, judge at the gate:** its shaft passes just behind
+      Asha's head;
+    - slice_beach_standing: all three faces, Toma clear;
+    - slice_verse_threshold: Asha out of the doorway, the light rising.
+    The skirt balloon (row 31) is in H05 and H06 until characters' M3-CHR-102.
+  - **Checks:** cutscene 85 (1 failed: the known Ch4 walks red, act1-chapters'), cutscene_sequencer 18, first_verse 3,
+    dialogue_vs 3, slice_shots 1, prologue 8, fp_ 30, haluna 65, qa_party 2, all 0 failed bar that red;
+    hero_field 29 with 1 failed (snaps in Ch4's haluna_wake and drowned_choir, not the slice). dlgc --check,
+    validate_data 0/0, taskboard --check, gdlint and gdformat clean.
+  - **Skipped:** coverage and Blender (nothing they cover).
+- **B11 watched in motion** (tools/cutscene_frames from the real DockNight arrival, every 0.1–0.5 s):
+  - `@wait arrive=rhen` works: Rhen reaches Asha, then about 1 s on, the first line (23.0 s in the first run).
+  - **Fixed (e7b19992):** the climax opened on Toma's back and shield, centred on H04's axis with Rhen hidden behind
+    him. Toma now starts behind H04's lens at the dock's root and walks up from the top of the scene.
+  - **Fixed (3f526f99):** the H04→B11 change flew the camera 30 m down the dock and over the water. B11 and B02 are
+    now hard cuts. The camera log shows one clean frame from H04 to B11 in position and aim.
+  - **Fixed (3f526f99):** Toma's dock_toma was 6° outside B11's frame, so his objection and sigh were off screen.
+    He now stops 2.9 m behind Rhen, in the frame's left.
+  - **The dark frames, found and fixed (my own, from e7b19992):** they came about 0.2 s before the cut. Toma, cued at
+    the top from behind H04's lens, walked through the camera. The new `--cut-frames=N` and `--no-taa` options on
+    tools/cutscene_frames showed clean frames after the cut with and without TAA, so it is not a renderer fault.
+    Toma now sets off after `@wait arrive=rhen`, once the cut to B11 is past.
+  - **Viewed (pass 4, from the real arrival):** no dark frame from the first visible frame to the closing fade. Toma
+    comes up the dock on the frame's left from 45 s and arrives whole for "..." and "Then you walk behind me". Asha
+    turns to him for her answer.
+  - **MERGE-READY @ the branch head (B11):** haluna 65, fp_ 30, end_card 5, cutscene_sequencer 18, all 0 failed;
+    dlgc, validate_data, gdlint and gdformat clean. Not a manifest still change: slice_dock_night_yes holds line 007
+    with Toma off frame either way.
+  - **Follow-up, not changed:** leaving Neme's door volume may blend from B02 back to H09 (23 m).
+- **Queued (the Lead's 19:24 item, after B11): unperformed cutscene directives.** Act I .dlg use, measured:
+  - `@vfx rate=` (16 uses), `drift=` (20), `motion=` (2) and `@sfx at=` (8) are already performed (M3-HER-1123,
+    CutsceneVfx and CutsceneSound).
+  - **Not performed:**
+    - `@camera grade=` (5 uses: `ch02` ×4, `ch03_boss` ×1);
+    - the scene header `grade:` (every scene; the slice's are ch02, ch03, ch03_steps and ch03_shrine_int);
+    - `@vfx form=` (1 use: `form=ilun`, S08).
+  - `@anim loop=` is parsed but unused in Act I.
+  - **Plan:** a grade table (grade id → Environment and sun, the zone `*_grades.json` shape) applied on `@camera grade=`
+    and the header, and restored at the scene's end; `form=` through glimmer.json; a guard test that fails on any
+    Act I directive or argument the sequencer doesn't perform. Grades with no Environment yet wait on env-art-b's
+    M3-ENV-106; the guard will name them.
+- **M2-FP-120, the unperformed cutscene directives (the Lead's 19:24 item), MERGE-READY @ the branch head:**
+  - **Grades (CutsceneGrade):** a node's `grade:` header and `@camera grade=` now apply. The scene's end restores the
+    level's own Environment and sun. The look comes from the zones' grade tables
+    (`assets/environments/zones/*/*_grades.json`), the same rows the zones' own light rows use. Unit-tested on
+    env-art's `ch05_harbour_dusk`.
+  - **No Act I grade has a row yet:** ch02, ch03, ch03_boss, ch03_shrine_int, ch03_steps. They change nothing and warn
+    once. `tests/integration/cutscene_directives_known.json` lists them for M3-ENV-106 (env-art-b).
+  - **`@vfx form=`:** a Vowbound form in bound light, per palette.json glimmer_bound ("Vowbound forms… Steady").
+    Ilun's rest-pose model stands as translucent, emissive bound light in the field's own colour and energy, with 16
+    still motes on his outline (`tools/cutscene/glimmer_forms.py` → `game/data/cutscene/glimmer_forms.json`).
+    S08's ilun_chamber turns 90°, so his face is off screen (colour script).
+  - **Guard: `test_cutscene_directives`.** It fails when an Act I cue uses a key the sequencer doesn't perform, a
+    cues.json key has no code reading it, a grade has neither a row nor a known entry, or a form is unknown. The
+    sequencer's unsupported list is now only `@anim loop=`, which Act I doesn't use.
+  - **Also:**
+    - end_after_sec now runs on the scene's own clock;
+    - the shot rig gains `hold_cue`;
+    - `CutsceneLight` is split out of the sequencer (its line cap);
+    - `DialogueRunner.headers()` is new (additive);
+    - `slice_dock_night_yes` holds line 007.
+  - **For act1-chapters (whose beats change):** nothing changes on screen today. Once M3-ENV-106 lands its rows,
+    Ch4's `ch04_long_way_round` (H08, C01 and C02 take `grade=ch02`, the dawn) and the slice's Ch2–Ch3 scenes change
+    grade. No other Act I chapter uses a grade or a form.
+  - **SELF-RENDERED (viewed):** slice_verse_s08 (new, pending): Ilun in bound light above the inner pool, seen from
+    behind, about 4% of the frame. slice_dock_night_yes: holds "Yes." (line 007) on B11, the pair face to
+    face at the dock end with the village lights behind.
+  - **Checks:** cutscene_directives 2, cutscene_grade 3, cutscene_sequencer 18, first_verse 3, fp_ 30, prologue 8,
+    haluna 65, ch01 20, dialogue 84, glimmer 36, slice_shots 1, all 0 failed; cutscene 90 (1 failed: the known Ch4
+    walks). Tools: test_glimmer_forms. dlgc, validate_data 0/0, gdlint and gdformat clean. test_screenshots is red
+    only on other tracks' unbaselined shots (kerrid_front …).
+  - **Skipped:** coverage and Blender (no battle, progression or Blender source).
+### PC-QUEUE
+- Re-check PC GPU QA rows 18 (C07 harrier) and 32 (beach standing lines) on the GPU: both are fixed here (rendered on
+  lavapipe), and the sheet still lists them open.
+
 ### Render requests
 SUPERSEDED RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
 - **Known red until the render lands:** the six new `slice_*` shots have no baseline yet, so the tools test

@@ -7,6 +7,7 @@ extends TestCase
 const ZONE := "res://game/levels/_tests/field/field_test.tscn"
 const FIXTURE := &"test_cutscene_fixture"
 const BEACH := &"ch02_girl_on_the_beach"
+const ARRIVE := &"test_cutscene_arrive"
 const DT := 1.0 / 30.0
 const MAX_FRAMES := 3000
 const SPOT := Vector3(2.0, 0.0, 6.0)
@@ -310,6 +311,23 @@ func test_a_walk_sets_off_and_settles_instead_of_starting_at_full_speed() -> voi
 	var peak: float = moving.max()
 	assert_true(moving[0] < peak * 0.5, "it speeds up as it sets off")
 	assert_true(moving[-1] < peak * 0.5, "and slows as it settles")
+	_drive()
+	_free()
+
+
+func test_wait_arrive_holds_until_the_walk_lands() -> void:
+	# M2-FP-119: B11's walk out is as long as the player left it; a fixed wait started lines mid-walk.
+	asha.global_position = SPOT + Vector3(-3.0, 0.0, 0.0)
+	_start(ARRIVE)
+	var frames := _drive_until(func() -> bool: return lines_seen > 0)
+	assert_eq(lines_seen, 1, "the first line came")
+	assert_true(asha.global_position.distance_to(SPOT) < 0.01, "only once she stood on her mark")
+	assert_false(seq.has_motion(&"move:asha"))
+	assert_true(frames * DT > 3.0, "a 3 m walk at walk_mps 1.0 took its time (%.2f s)" % (frames * DT))
+	lines_pending = 0
+	seq.overlay.box.skip_reveal()
+	seq.overlay.box.advance_requested.emit()
+	assert_eq(lines_seen, 2, "with no walk under way, arrive= does not wait at all")
 	_drive()
 	_free()
 

@@ -84,13 +84,14 @@
    }
   },
   "wait": {
-   "doc": "Pause the sequence for sec seconds, or until the music reaches marker (music=). max= is the sequencer's fallback timeout for a music wait.",
+   "doc": "Pause the sequence for sec seconds, until the music reaches marker (music=), or until an actor's current @mark walk lands (arrive=; at once when it is not walking). max= is the sequencer's fallback timeout for a music wait.",
    "args": [{"name": "sec", "type": "number", "min": 0, "optional": true}],
    "kwargs": {
     "music": {"type": "id"},
-    "max": {"type": "number", "min": 0}
+    "max": {"type": "number", "min": 0},
+    "arrive": {"type": "id"}
    },
-   "one_of": ["sec", "music"],
+   "one_of": ["sec", "music", "arrive"],
    "requires": {"max": "music"}
   }
  }
