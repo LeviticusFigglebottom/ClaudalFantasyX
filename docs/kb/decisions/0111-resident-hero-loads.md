@@ -107,3 +107,15 @@ swap wait while holders make progress, as the reveal hold already does (M2-ARC-0
 - **ShaderPrewarm.** Its `wait_progress()` counts frames for the reveal's stall check. It is not work, so it never
   extends a swap: a swap held only by the prewarm stops at the frame cap exactly as before.
 - **Tests.** `test_scene_router_swap::test_only_loading_holders_extend_the_swap_wait` covers the rule.
+
+## Amendment 3 (2026-10-29, ADR 0042 §4: the cover always runs)
+- **The record.** Every swap records the fade's alpha on the swap frame and on each of its hidden frames
+  (`SceneRouter.judge_cover`): `cover_alpha_min`, and `covered` when every one is fully opaque. An uncovered swap warns.
+- **The guards (headless).**
+  - `test_scene_change_cover`: no game script outside the router and the debug probes changes scene directly
+    (`change_scene_to_*`, `unload_current_scene`), so every change runs under the fade; no CanvasLayer in a scene or a
+    data table sits at or above the fade's layer (128), so nothing draws over it.
+  - `test_scene_router_swap`: the probe's real changes report `covered`.
+  - `tools/loading/act1_swap_sweep.py`: the probe once per Act I zone, the title and the battle sandbox, with
+    ResidentLoads on (`--resident-loads`); exits 1 on an uncovered change. Its frame times are the cloud box's.
+- **The 1 s target itself** is measured only on the PC (PC-QUEUE in the ui-menus live log).

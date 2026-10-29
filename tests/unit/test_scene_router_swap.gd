@@ -61,6 +61,7 @@ func test_swap_frame_stays_under_threshold_for_every_target() -> void:
 		assert_false(bool(stats.get("over_budget", true)), "%s: no hidden frame over 1 s" % t)
 		assert_false(bool(stats.get("visible_over_budget", true)), "%s: no visible frame over 50 ms" % t)
 		assert_false(bool(stats.get("entry_over_budget", true)), "%s: the entry is under 3 s" % t)
+		assert_true(bool(stats.get("covered", false)), "%s: the swap and its hidden frames are under the fade" % t)
 
 
 ## review-sweep-J S1 (M1-RND-22): without split_swap, a prewarm wait doesn't land inside frame 0.
