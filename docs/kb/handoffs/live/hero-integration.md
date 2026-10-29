@@ -1400,3 +1400,23 @@ hero-integration 78e9df9c. shots.json resolves everywhere. pc-gpu.md: take integ
   `oruvel_underway_layout.json` (act1-chapters vs everyone, generated: act1-chapters re-runs its generator).
 - As at 20:00: M3-ENV-750 (take env-art's), ownership.md (by hand), the characters `cast` edits in 9 layouts,
   ch08_coilspire_dressing.py and M3-ENV-744 (act1-chapters).
+
+### Full Godot suite on lead/gate-big17 (be74f9a0 = 1a986abf + docs), in my container, 2026-10-29 ~21:15
+**3241 run, 5 failed (6 FAILURE lines), 59 tests leave nodes.** By owner:
+- **test_cutscene_vfx_hosts.gd failed to load (mine, M3-ARC-1326). FIXED @ 791495cfa.** 93c1aa2df replaced the
+  `CutsceneMotes` placeholder with CutsceneVfx's GlimmerField, so the test now counts the sequencer's own
+  `Vfx_*` field. 4/0.
+- **test_ch04_zones::test_the_wakes_field_camera_is_halunas** (act1-chapters): expects 8 Haluna volumes, there are 10
+  (M2-FP-109). Already requested on M3-C04-1226.
+- **test_dialogue_box::test_every_act1_speaker_with_a_model_has_a_portrait** (ui): Pell has a model on big17 and no
+  portrait. `pell_*.png` is on claude/ui's newer head, so folding ui's head in fixes it.
+- **test_iskarra_city::test_the_city_instances_its_pieces_with_kit_materials** (env-art): "VigilLights has meshes".
+  env-art's own M3-ENV-724 added a `VigilLights` group that holds only lights. The test should skip a light-only
+  group.
+- **test_zone_cast::test_a_cast_actor_shows_its_model_and_idles_out_of_step** (creatures): "the fisher idles" and
+  "out of step". The same file clashes creatures vs env-art-b in the 21:00 trial, so check it after that merge.
+- **Leaks (M3-HER-1130's list refreshed):** ui-menus 48 (act_card, objective_hud, shrine_travel and
+  shrine_services, interact and hold prompts, dialogue_assist, area_title_card and more), battle-presentation 9
+  (fighter_actor, battle_controller, battle_boss_vfx), creatures-b 1, env-art 1. Down from the 10-28 list; creatures'
+  and act1-chapters' are gone.
+- Not run here: coverage, screenshots (the gate session has them).
