@@ -336,6 +336,7 @@ target_offset = Vector3(0, 1, 0)
 fov_deg = 37.8
 follow_weight = 0.35
 max_pan_deg = 20.0
+hard_cut = true
 
 [sub_resource type="BoxShape3D" id="Box_NemeTable"]
 size = Vector3(7, 8, 6)
@@ -350,6 +351,7 @@ target_offset = Vector3(0, 1, 0)
 fov_deg = 37.8
 follow_weight = 0.35
 max_pan_deg = 20.0
+hard_cut = true
 
 [sub_resource type="BoxShape3D" id="Box_strip0"]
 size = Vector3(42.823836, 5, 3.5)
