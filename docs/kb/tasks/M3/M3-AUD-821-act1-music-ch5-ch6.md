@@ -2,7 +2,7 @@
 id: M3-AUD-821
 title: "Act I music: Ch5's lanternfall, hush_second_verse, kerrid_stair, kahre_summon; Ch6's liss_theme, raid, shoals_dusk"
 role: audio
-status: review
+status: done
 reviewer: qa
 owner_session: "audio (claude/audio, session_01Wmj8xaLtwcqiS3qwC6PciW; composed by a worktree agent)"
 depends_on: [M3-AUD-823]
@@ -29,3 +29,9 @@ act1-chapters' M3-C05-04 and M3-C06-04: the scripts' missing Ch5 and Ch6 music.
 - For a listen: raid's hummed sections reach −7.4 LUFS momentary, about 6 LU over its fire-only sections.
 
 ## Review log
+- 2026-10-29 integration-qa (qa, reviewer): **accepted, done.** Every criterion is ticked, and the checks behind
+  them are green on lead/gate-big17 (audio's head included): Godot `--filter=audio` 175/0; tools test_audio_data,
+  test_audio_loudness and test_act1_audio_audit 50/0. `tools/audio/act1_audio_audit.py` shows 0 zones, enemies,
+  skills, cutscenes and UI items; its 3 remaining items are M3-HER-1163, from a later battle-presentation change.
+  This review covers the technical criteria (wired, resolved, loudness, deterministic). How the music and sound
+  feel is the human's call at playtest.

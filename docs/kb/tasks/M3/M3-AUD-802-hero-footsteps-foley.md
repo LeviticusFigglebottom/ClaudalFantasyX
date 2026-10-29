@@ -2,7 +2,7 @@
 id: M3-AUD-802
 title: Footsteps and movement foley for the real field heroes (claude/hero-integration), keyed to foot contacts
 role: audio
-status: review
+status: done
 reviewer: qa
 owner_session: "audio (claude/audio; worktree agent)"
 depends_on: [M2-AUD-02]
@@ -90,3 +90,11 @@ The human's note: parts feel primitive. claude/hero-integration is putting the r
   (the run-rows test caught it). The test speeds follow field_movement.json.
 
 ## Review log
+- 2026-10-29 integration-qa (qa, reviewer): **accepted, done.** Every criterion is ticked, and the checks behind
+  them are green on lead/gate-big17 (audio's head included): Godot `--filter=audio` 175/0; tools test_audio_data,
+  test_audio_loudness and test_act1_audio_audit 50/0. `tools/audio/act1_audio_audit.py` shows 0 zones, enemies,
+  skills, cutscenes and UI items; its 3 remaining items are M3-HER-1163, from a later battle-presentation change.
+  This review covers the technical criteria (wired, resolved, loudness, deterministic). How the music and sound
+  feel is the human's call at playtest.
+  Note: `game/audio/footstep_audio.gd` still has the freed-cast hit tracked as M3-HER-1150 (KNOWN in
+  tools/freed_cast_lint.py). That's a separate bug, not one of this task's criteria.

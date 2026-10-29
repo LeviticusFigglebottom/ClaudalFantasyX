@@ -1376,3 +1376,11 @@ act1-chapters a9c44edc, m2-slice 530b8551, audio 1cb9654d, hero-integration 4059
   - `ch08/coilspire/coilspire_layout.json` vs act1-chapters (M3-CRE-627 Virel).
 - **act1-chapters vs env-art-b: `tools/act1/ch08_coilspire_dressing.py`** (Virel's chamber vs M3-ENV-1326's zone looks).
   A generator, so act1-chapters resolves it and re-runs it. Also the `M3-ENV-744` task file: take act1-chapters'.
+
+### Reviews, 2026-10-29 ~20:30 (on lead/gate-big17, one Godot at a time)
+- **42 M3-AUD tasks → done** (qa reviewer). Every criterion is ticked. Godot `--filter=audio` 175/0, the tools
+  audio suites 50/0, and the Act I audio audit is clean apart from M3-HER-1163. Review lines say it's technical
+  only; the listening is the human's. M3-AUD-802 notes the separate M3-HER-1150. **M3-AUD-19** stays in review
+  (its one box is unticked).
+- **M3-UI-211:** verified (battle_portraits 3/0, menu_glyphs 3/0, hero_portraits 9/0, creature_portraits 4/0); Kerrid's
+  box ticked. It stays in review for the Inquisitor's bestiary picture (none on big17) and the Lead's baselines.

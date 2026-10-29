@@ -2,7 +2,7 @@
 id: M3-AUD-11
 title: Act I route themes: the Brightwater ferry crossing (Ch4) and the Brine Shoals (Ch6)
 role: audio
-status: review
+status: done
 reviewer: qa
 owner_session: "audio (claude/audio; worktree agents)"
 depends_on: [M2-AUD-03]
@@ -33,3 +33,9 @@ act_outline.md Ch4: the dawn ferry across Brightwater strait, the drifting drown
   `ch04/brightwater_ferry` and `ch06/brine_shoals` exist), LOOPING_CUES, and listening_notes "M3: Act I routes".
 
 ## Review log
+- 2026-10-29 integration-qa (qa, reviewer): **accepted, done.** Every criterion is ticked, and the checks behind
+  them are green on lead/gate-big17 (audio's head included): Godot `--filter=audio` 175/0; tools test_audio_data,
+  test_audio_loudness and test_act1_audio_audit 50/0. `tools/audio/act1_audio_audit.py` shows 0 zones, enemies,
+  skills, cutscenes and UI items; its 3 remaining items are M3-HER-1163, from a later battle-presentation change.
+  This review covers the technical criteria (wired, resolved, loudness, deterministic). How the music and sound
+  feel is the human's call at playtest.
