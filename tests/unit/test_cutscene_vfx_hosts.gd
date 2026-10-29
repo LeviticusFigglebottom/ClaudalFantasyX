@@ -1,6 +1,6 @@
 extends TestCase
 ## M3-ARC-1326: an `@vfx` cue goes first to the stage's VFX hosts (CutsceneVfxHosts: the `cutscene_vfx_hosts` group,
-## `play_vfx(effect, at_id, kwargs) -> bool`). A host that takes it means no CutsceneMotes placeholder; a host that
+## `play_vfx(effect, at_id, kwargs) -> bool`). A host that takes it means no placeholder field; a host that
 ## declines (or none at all) leaves the placeholder drawing as before. The cue's kwargs, cues.json's `follow` and
 ## `anchors` among them, reach the host whole.
 
@@ -106,11 +106,11 @@ func _step(kwargs: Dictionary) -> DialogueStep:
 	return step
 
 
-## CutsceneMotes placeholders spawned under the stage.
+## The sequencer's placeholders spawned under the stage: CutsceneVfx's GlimmerFields, named Vfx_<effect>_<n>.
 func _motes(stage: Node) -> int:
 	var n := 0
-	for c in stage.find_children("*", "", true, false):
-		if c is CutsceneMotes:
+	for c in stage.find_children("Vfx_*", "", true, false):
+		if c is GlimmerField:
 			n += 1
 	return n
 
