@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://by7ooyu0nrk3r"
-path="res://.godot/imported/windbreak_placeholder.glb-9eb9e867d568cc2a960edd6e7cbceb22.scn"
+uid="uid://dg8yl20s0v1xu"
+path="res://.godot/imported/raft_deck_small_tucked.glb-edc4a0a86e6d418e7dad6c7d13a7cce5.scn"
 
 [deps]
 
-source_file="res://assets/environments/kits/haluna/windbreak_placeholder.glb"
-dest_files=["res://.godot/imported/windbreak_placeholder.glb-9eb9e867d568cc2a960edd6e7cbceb22.scn"]
+source_file="res://assets/environments/kits/oruvel/raft_deck_small_tucked.glb"
+dest_files=["res://.godot/imported/raft_deck_small_tucked.glb-edc4a0a86e6d418e7dad6c7d13a7cce5.scn"]
 
 [params]
 
@@ -33,7 +33,7 @@ animation/fps=30
 animation/trimming=false
 animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false
-import_script/path="res://game/core/import/haluna_kit_post_import.gd"
+import_script/path="res://game/core/import/oruvel_kit_post_import.gd"
 materials/extract=0
 materials/extract_format=0
 materials/extract_path=""

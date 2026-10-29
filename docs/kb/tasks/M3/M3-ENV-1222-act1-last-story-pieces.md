@@ -32,6 +32,9 @@ VFX), which stay greybox until those land.
 - [ ] Each piece built, reproducible, with PROVENANCE rows and its LOD chain, fitting its footprint.
 - [ ] act1-chapters places them and asks for the shots (ch04_ferry_deck, ch08_coilspire_hall).
 
+## Notes (2026-10-29, env-art)
+- **The Ch4 half is built:** the Brightwater kit's `bf_landing` pieces (M3-ENV-746: the islet rock, the gangplank with its hand-lines, the wrapped name-board, the stern gate) are placed by `tools/act1/ch04_ferry_dressing.py` on their blocks; viewed in `brightwater_landing_f06` (10-29). The Coilspire half (Ch8) is env-art-b's.
+
 ## Review log
 
 ## Notes (env-art-b, 2026-10-28)

@@ -2870,6 +2870,15 @@
    ],
    "yaw_deg": 90.0,
    "_m746": "the inn's sign"
+  },
+  {
+   "piece": "inn_hearth",
+   "at": [
+    -32.4,
+    58.5
+   ],
+   "yaw_deg": 90.0,
+   "_walk29": "the inn's kitchen behind the innkeeper, clear of the awning cloth"
   }
  ],
  "plants": [
