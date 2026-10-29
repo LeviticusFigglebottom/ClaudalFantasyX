@@ -377,8 +377,36 @@ SUPERSEDED by the request below: 2d3ccdf2
 RETIRED (TRACK-RULES 10-28 01:00, tracks self-render; rendered below) @ 760a0e4c: ch05_pemakar_harbour, ch06_brine_road, ch06_brine_camp, ch08_corrow_arrival, ch08_corrow_stair, ch08_coilspire_hall, ch09_corrow_strand, ch09_corrow_road; why: the one open request (TRACK-RULES), folding 225370ba and 2d3ccdf2: Pemakar's harbour view re-aimed, Ch6's last greybox now kit pieces, the casts (Stillguard, hound), Coilspire's key t4_d, Corrow's story pieces, Ch9's drowned, lamps, raft and its lit night
 SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbour view reads, the stair and lit houses under Ashcrown's lamps; approve at the gate), ch06_brine_road PASS 0.0032 (Kerrid still a capsule, M3-CHR-505), ch06_brine_camp drift 0.0115 (Ch6's kit pieces in place of the last greybox; the Stillguard casts read as red robes at this distance), ch08_corrow_arrival drift 0.072 (the trader boat and the story pieces; the mole's top is flat, env-art's mole_pier), ch08_corrow_stair drift 0.0087 (Kerrid's capsule in the foreground), ch08_coilspire_hall PASS 0, ch09_corrow_strand drift 0.109 (the lit night: shrouds, lamps, the vigil; the landing still greybox, being replaced now), ch09_corrow_road PASS 0.0072 (Kerrid's capsule). For the Lead's gate: all intended.
 
+- **MERGE-READY @ cb97a0cf: the Lead's three real-GPU QA rows** (act1_gpu_qa.md on gpu/act1-qa-2; brief 10-29 19:45).
+  Integration merged @ ccf44ba4 (22994324).
+  - **Row 34** (ae27be2f): doesn't reproduce on this head. New guard `test_act1_encounters_resolve`: every
+    encounters.json `ch01_`..`ch09_` row (31) is started the way the field starts it (a pending BattleRequest, then
+    field_battle.tscn) and plays on its own arenas.json scene against exactly its row's enemies; all pass,
+    ch06_ridge_skippers included. The data was the same on the QA build, so that run met a battle scene with no
+    request pending (the sandbox's own fight). PC-QUEUE below.
+  - **Row 39** (de745039): Ch9's dawn state stood the stage Asha and Toma at the gate (road_asha/road_toma), so their
+    followers stayed hidden and Rhen walked to the milestone alone. RoadGate's arrival now hides those stage bodies (the
+    followers walk), and the road scene places them on near_asha/near_toma under its opening cut (viewed: D01, D02B).
+    The gate's field view is the camera volume I added on 10-28 (viewed: along the road past the gate leaf). Ch4's
+    battles already carry Rhen, Asha and Toma (`test_ch04_thread` asserts each request); Ch4's field staging of Toma
+    (the wake, the ferry) is story staging. PC-QUEUE below.
+  - **Row 23** (cb97a0cf): U03 clear of the post; O02 a two-shot from the scale hull's open side, with the Scale-Man
+    moved out in front of the hull (he stood inside it, facing away); O09 Rhen and Kell, with Kell moved to the front
+    of her stall (she stood inside it). M3-CIN-1232 updated: U09 and U11 stay with slice-polish.
+  - Checks: `--filter=` act1_encounters_resolve 1/0 (exit 0), ch01 21/0, oruvel 17/0, ch09 12/0,
+    hero_cutscene_snaps 1/0, act1_cutscene_walks 1/0; validate_data, taskboard --check, gdlint, gdformat clean.
+    Skipped: coverage and sim (no battle or progression code).
+  - SELF-RENDERED @ cb97a0cf: ch01_oruvel_dressed drift 0.0124 (the Scale-Man now stands visibly at his hull's front;
+    intended), ch01_bell_room, ch01_scale_hull, ch01_kell_stall (no baselines: each frames its speaker). For the gate.
+
+### PC-QUEUE
+- Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
+  arena and the Shoal Skippers.
+- Row 39: on the real GPU, walk Ch9's road from RoadGate to the milestone (Asha and Toma follow) and look at the
+  gate's camera with Rhen in it; check Ch4's fights show Toma.
+
 ## Exact next step
-**BACKLOG EMPTY (2026-10-29, @ f67d6134):** the fresh title → Ch9 playthrough is done (handoff
+**BACKLOG EMPTY (2026-10-29, again @ cb97a0cf after the Lead's QA rows 23, 34 and 39; first @ f67d6134):** the fresh title → Ch9 playthrough is done (handoff
 `docs/kb/handoffs/2026-10-29-cinematics-act1-chapters-1.md`). Every `_thread` test passes. Every Act I cutscene of
 Ch1 and Ch4–Ch9 was viewed in flow-order stills, and every problem in my lane is fixed and re-viewed (the fourth pass in
 `docs/kb/qa/act1_playthrough_ch04_ch09.md`). Ashcrown's POIs have camera volumes. What is left waits on filed requests:

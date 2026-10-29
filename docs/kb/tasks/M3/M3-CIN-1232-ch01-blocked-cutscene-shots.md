@@ -27,9 +27,14 @@ blocked close-up (the player stood on the subject's spot; act1-chapters fixed it
 Check the player's place for O02 and O09 first.
 
 ## Acceptance criteria
-- [ ] Each of the five frames shows its subject (re-render with the command above and view them).
+- [x] O02, O09, U03 show their speakers (act1-chapters, cb97a0cf; the Lead assigned act1_gpu_qa row 23's cameras to
+      act1-chapters on 2026-10-29).
+- [ ] U09 and U11 (slice-polish: they may be meant as a look up the shaft and a dive into the dark; if so, close them).
 
 ## Notes
 - The Ch1 storm (O11, O18) is M3-ENV-751; not part of this request.
 
 ## Review log
+- 2026-10-29 act1-chapters: O02, O09 and U03 fixed and viewed in the stills (cb97a0cf). The Scale-Man and Kell stood
+  inside the kit pieces that now dress their spots (the scale hull, Kell's stall); both moved out in front, facing Rhen.
+  U09 and U11 stay with slice-polish.
