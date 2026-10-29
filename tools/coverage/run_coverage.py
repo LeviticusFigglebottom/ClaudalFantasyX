@@ -126,7 +126,8 @@ def build_overlay(dest: Path, files: list[str], root: Path = ROOT) -> Overlay:
 
 # --- running Godot ---------------------------------------------------------------------------------
 def _run(cmd: list[str], log: Path, env: dict[str, str] | None = None) -> int:
-    timeout = int(os.environ.get("HYMN_STEP_TIMEOUT", "600"))
+    # As ci_local.sh: 3 h, the instrumented run is the whole suite (~45 min uninstrumented since big14).
+    timeout = int(os.environ.get("HYMN_STEP_TIMEOUT", "10800"))
     with log.open("w", encoding="utf-8") as fh:
         try:
             return subprocess.run(cmd, stdout=fh, stderr=subprocess.STDOUT, env=env, timeout=timeout).returncode
