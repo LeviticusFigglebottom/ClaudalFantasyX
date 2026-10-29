@@ -37,6 +37,22 @@ Session `session_015hKkhtpX67kS4yZeA8AAhv`. Integration branch `claude/undertow-
     (BattleEntryCamera). Test: test_the_kirrus_first_call_cuts_along_the_walk. `boss_camera_sheet --entry` now also
     renders the Kirru's cut.
 
+- **MERGE-READY @ e205c3e0** (+ this log commit): M3-BPR-406 (the Kirru's cut, now in review), request
+  M3-BPR-427, and the integration-branch merge b3f092f8.
+  - SELF-RENDERED @ e205c3e0 with `boss_camera_sheet --entry` (not a manifest shot). Viewed: the Kirru's cut along the
+    wall-walk shows the crawlers and polyp in front and Asha, Toma and Rhen behind with the hoist; the Climb's cut is
+    unchanged. No manifest shot can move: entry cuts play only mid-fight, and no shot freezes one.
+  - Checks run: Godot `--filter=` set_piece 48/0, ch08 23/0, boss_camera 7/0, stair_marks 5/0; gdlint, gdformat,
+    validate_data 0/0, taskboard --check.
+  - Checks skipped: the screenshot manifest (no shot can move), Blender (none touched), coverage (no game/battle core
+    change), and the tools suite (no tools/*.py touched).
+- **BACKLOG EMPTY (2026-10-29 18:xx):** the brief's three items are done or waiting on others:
+  - the stair has no new prop;
+  - row 34 waits on slice-polish (M3-BPR-427);
+  - row 36 waits on the PC;
+  - VFX coverage and the inventory have nothing left for this track.
+  Next: merge big17 when the Lead announces it, then any new rows.
+
 ### PC-QUEUE
 - GPU QA row 36 (the Reach): re-check in live play on the RX 9070 XT (M3-BPR-425's rest frame).
 - GPU QA row 34: re-check once M3-BPR-427 lands (and hold the zone's random encounters in the walk).
