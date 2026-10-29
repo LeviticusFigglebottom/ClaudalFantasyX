@@ -589,6 +589,24 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **The Lead's 18:43 ask: my open real-GPU rows (`act1_gpu_qa.md` on `gpu/act1-qa-2`, last checked on big15), re-checked
+  on this tree. All were fixed at 4c85ffb7b (10-28), after the big15 re-check; each SELF-RENDERED here and viewed.**
+  - **Row 4 `ch04_ferry_deck`:** the deck, deckhouse face, rails and sails read under the cold sky fill. The "orange
+    sphere" is a party member's back beside the lit stern lantern. `ch04_ferry_derelict` reads too. Drift 0.081 and
+    0.042 from older baselines: re-approve at the gate.
+  - **Row 19 `iskarra_p01_plaza_dusk` / `slice_prologue_vigil_line`:** no green rectangle; beside the terrace the water
+    shades soft teal with no edge (`iskarra_water_material.tres`). Drift 0.16 and 0.13 (the lit vigil, the colour pass):
+    re-approve at the gate.
+  - **Row 23 `ch01_bell_room`, `ch01_kell_stall`, `ch01_scale_hull`:** the camera is in the bell-room behind Rhen (door
+    and lantern in frame); Kell and the Scale-Man stand at their counters, in frame, facing the customer. First renders
+    (no baselines).
+  - **Row 24 `zone_wake_h02/h08/c01`:** these shots no longer exist (retired 10-28 with the Lead's word; Ch4's wake is on
+    the real Haluna). The real Haluna's H02 and the wake walk read (above).
+  - **Row 25 `brightwater_landing_f06` / `f01`:** F06 frames the deck, the wrapped name-board and the party, not the
+    bulwark; F01 is the pre-dawn grade and the ferry reads. First renders (no baselines).
+  - **The split (rows 23–25):** env-art fixed the geometry in front of the lens (the booths turned to face their
+    customers, the Underway walls on their greybox, the ferry's bulwark clear of F06). The cutscene cameras are
+    act1-chapters' (the chapters' scene files). I moved none of them, and these frames need no camera change.
 - **MERGE-READY @ c3038a18: the player-height walk-through on this tree, done (all nine walks viewed)**
   (`tools/act1/walkthrough.py`, all nine walks).
   - **Viewed, fine:** Haluna (14 frames), Haluna's shop, forge and save shrine from the customer's side, the Prologue
@@ -642,6 +660,8 @@ Read this section first; everything below it is history. The branch is `claude/e
     (characters/slice-polish), and `reefball_drop_proxy` / `tb_drop_proxy` are env-art-b's (M3-RND-26).
 
 ### PC-QUEUE
+- `ch01_bell_room`: the room reads washed out in its warm haze on lavapipe (walls, door and Rhen visible). Judge the
+  haze and lantern brightness on the real GPU. Also row 4's deck brightness at High.
 - The Ch4 wake night's lagoon reads bright turquoise close to the dock (lavapipe). It is the water shader's night
   sea-glow, the same look as the approved `haluna_h10_dock_night`, only nearer. Judge its brightness on the real GPU.
 - GPU QA rows 4, 19, 23, 24 and 25 (`act1_gpu_qa.md` on `gpu/act1-qa-2`): fixed @ 4c85ffb7b, after the QA file was
