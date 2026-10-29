@@ -149,6 +149,10 @@ def build(route):
         return t
 
     triggers = [
+        # M3-NAR-01: the Tide-Readers' Notice nailed to the first marker post past the head (C02), read before the
+        # first banter post. A record: CodexNotice marks codex_causeway_notice_found and shows its card.
+        trigger("causeway_notice", nearest_s(path, *anchors["marker_posts"][0]), activation="interact",
+                prompt_key="FIELD_PROMPT_DEFAULT", once=True, payload={"record": "causeway_notice"}),
         trigger("banter_posts", nearest_s(path, *anchors["marker_posts"][1]), once=True,
                 sets_flag="ch03_banter_posts",
                 payload={"dialogue": "ch03_bark_causeway_posts", "overheard": True}),

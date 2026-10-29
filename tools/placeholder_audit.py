@@ -346,8 +346,9 @@ def audio_ids(root: Path = ROOT) -> tuple[dict[str, set[str]], list[str]]:
 
 
 def check_audio(root: Path = ROOT) -> list[Item]:
-    """Every @sfx and @music cue the Act I scripts name plays a real file, resolved as CutsceneSequencer does:
-    sfx_dir/<name>.ogg, music_dir/<name>.ogg (else its music_stand_ins track: a stand-in, still a placeholder).
+    """Every @sfx and @music cue the Act I scripts name plays a real file, resolved as CutsceneSequencer does: a
+    music.json cue on Audio's deck (CutsceneSound.music), else sfx_dir/<name>.ogg, music_dir/<name>.ogg (else its
+    music_stand_ins track: a stand-in, still a placeholder).
     Plus the audio files the audio tables name: missing, or named as temp."""
     out: list[Item] = []
     cfg = _json(root / "game/data/cutscene/sequencer.json")
@@ -364,7 +365,15 @@ def check_audio(root: Path = ROOT) -> list[Item]:
             for kind, name in CUE_RE.findall(p.read_text(encoding="utf-8", errors="ignore")):
                 if kind in dirs and name not in AUDIO_SKIP:
                     found[(kind, name)].append(p.stem)
+    # CutsceneSound.music (M2-AUD-07): a music.json cue plays on Audio's deck, stems and LFS files included, before
+    # the sequencer's own music_dir/<id>.ogg and its stand-in are tried (M3-AUD-861)
+    cue_files: dict[str, list[str]] = {}
+    for k, v in (_json(root / "game/data/audio/music.json").get("cues", {}) or {}).items():
+        if isinstance(v, dict):
+            cue_files[k] = [str(v["file"])] if v.get("file") else [str(f) for f in v.get("stems", []) or []]
     for (kind, name), scenes in sorted(found.items()):
+        if kind == "music" and cue_files.get(name) and all(res_to_path(f, root).exists() for f in cue_files[name]):
+            continue
         if res_to_path("%s%s.ogg" % (dirs[kind], name), root).exists():
             continue
         ch = min((c for c in (chapter_of(s) for s in scenes) if c is not None), default=None)

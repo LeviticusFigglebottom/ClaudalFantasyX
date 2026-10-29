@@ -19,9 +19,11 @@ extends Ch01Zone
 ##    "rooms": [{"id", "rect": [x0, z0, x1, z1], "lighting", "depth_m"}] (the first that holds Rhen wins)}.
 ##   The sun and the ambient are tinted by the rig's transmittance over depth_m.
 ## "swaps": [{"flag", "from", "to"}]: block `from` shows until the flag is set, then `to` (the cut gauge wheel).
+## "environment_res": the kit's ch01 Environment for the zone (env-art's dressing keeps the layout's murk; M3-ENV-742).
 
 const KEY_UNDERWATER := "underwater"
 const KEY_SWAPS := "swaps"
+const KEY_ENVIRONMENT_RES := "environment_res"
 const RIG := ^"Underwater"
 const GLOBAL_GLIMMER := &"hymn_glimmer"
 const OPTICS := "optics"
@@ -50,6 +52,9 @@ func build() -> void:
 	if hint != null:
 		return
 	super()
+	var env_res := str(layout.get(KEY_ENVIRONMENT_RES, ""))
+	if env_res != "":  # the rooms' lighting (apply_lighting) then tints this frame, not the greybox's colours
+		(get_node(^"WorldEnvironment") as WorldEnvironment).environment = (load(env_res) as Environment).duplicate()
 	_lamp = field.get("lantern", {})
 	FieldInput.add_actions(_lamp.get("actions", {}) as Dictionary, float(_lamp.get("deadzone", 0.0)))
 	lantern = OmniLight3D.new()

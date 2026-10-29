@@ -65,9 +65,10 @@ func test_the_vowbound_stand_in_resolves_to_the_model() -> void:
 		"battle_sandbox.json's height still drives the anchors"
 	)
 	assert_false(CreatureModels.models().has("ilun"), "he is no enemy")
-	assert_eq(CreatureModels.stand_in_overrides("gallery_ray"), {}, "a creature row without `vowbound` is no Vowbound")
+	assert_eq(CreatureModels.vowbound_creature("gallery_ray"), &"", "a creature row without `vowbound` is no Vowbound")
 	assert_eq(CreatureModels.stand_in_overrides("asha"), {}, "the heroes keep their own actors")
 	assert_eq(CreatureModels.vowbound_creature("no_such_vowbound"), &"")
+	before_each()
 
 
 func test_the_scene_loads_headless_with_its_clips() -> void:
@@ -85,6 +86,7 @@ func test_the_scene_loads_headless_with_its_clips() -> void:
 		assert_true(t > 0.0 and t < a.clip_length(clip), "%s lands inside the clip" % clip)
 	var skel := _pose(a, &"idle", 0.0)
 	assert_true(absf(_bone_at(skel, "body").y - HOVER_Y) < HOVER_TOL_M, "he hovers over the water")
+	before_each()
 
 
 func test_the_stand_in_plays_the_stage_clips_on_the_model() -> void:
@@ -99,6 +101,7 @@ func test_the_stand_in_plays_the_stage_clips_on_the_model() -> void:
 	assert_true(BattleClips.play(f, &"ko"), "the fall's clip")
 	f.set_ko(true, 0.25, 0.35)
 	assert_true(f.creature().is_ko())
+	before_each()
 
 
 func test_the_clips_follow_the_sheet() -> void:
@@ -118,6 +121,7 @@ func test_the_clips_follow_the_sheet() -> void:
 	var held := _bone_at(skel, "wing_l2").y
 	skel = _pose(a, &"special", a.contact_time(&"special"))
 	assert_true(held - _bone_at(skel, "wing_l2").y > SWEEP_M, "Floodnet sweeps the wings down on the contact")
+	before_each()
 
 
 func _actor() -> CreatureActor:

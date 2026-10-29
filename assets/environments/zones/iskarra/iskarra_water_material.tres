@@ -1,0 +1,17 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/water/water_ocean.gdshader" id="1_ocean"]
+
+[resource]
+resource_name = "iskarra_water"
+render_priority = 0
+shader = ExtResource("1_ocean")
+shader_parameter/col_deep = Color(0.0314, 0.1333, 0.1647, 1)
+shader_parameter/col_scatter_shallow = Color(0.0863, 0.2745, 0.2941, 1)
+shader_parameter/absorption_per_m = Vector3(2.6, 0.9, 0.75)
+shader_parameter/absorption_scale = 2.2
+shader_parameter/scatter_energy = 0.08
+shader_parameter/caustic_strength = 0.5
+shader_parameter/col_foam = Color(0.86, 0.84, 0.8, 1)
+shader_parameter/col_sss = Color(0.149, 0.42, 0.4, 1)
+shader_parameter/foam_crest_threshold = 0.7

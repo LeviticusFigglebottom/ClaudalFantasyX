@@ -268,6 +268,34 @@ func test_aliased_stage_actors_get_their_heroes_bodies() -> void:
 	_done()
 
 
+## M3-HER-1225: Sefir has no stepping walk, only walk_glide; his row maps walk and run to it (`clips`), so his stage
+## actor (Ch6's reed bank) takes his model and glides when a cutscene walks him, instead of standing as a capsule.
+func test_sefir_s_stage_actor_takes_his_body_and_glides() -> void:
+	assert_eq(HeroFieldActor.clips_of(&"sefir").get("walk"), "walk_glide", "his walk is his glide")
+	assert_eq(
+		HeroFieldActor.clips_of(&"rhen").get("walk"), HeroFieldActor.clips_of(&"asha").get("walk"), "others keep theirs"
+	)
+	var stage := CutsceneStage.new()
+	stage.name = "CutsceneStage"
+	var actors := Node3D.new()
+	actors.name = "Actors"
+	stage.add_child(actors)
+	var sefir := _capsule_actor("sefir")
+	actors.add_child(sefir)
+	zone.add_child(stage)
+	var bodies := HeroFieldActor.attach_stage(stage)
+	assert_eq(bodies.size(), 1, "Sefir gets a body")
+	if not bodies.is_empty():
+		var body := bodies[0]
+		assert_false((sefir.get_node("StandIn") as Node3D).visible, "his capsule hides")
+		assert_true(body.tree != null and body.tree.has_animation(&"walk_glide"), "his tree has his glide")
+		for i in SETTLE_FRAMES:
+			sefir.global_position += Vector3(0.0, 0.0, -body.loco.walk_clip_mps * DT)
+			body.advance(DT)
+		assert_true(body.loco.speed > 0.0, "a cutscene walk moves him on his glide")
+	_done()
+
+
 ## The speeds the body actually uses (locomotion.json's once M2-CHR-12 is in, else hero_motion.json's)
 ## against HeroClipGait's own measure of whichever clips the model has.
 func test_the_clip_speeds_match_the_measured_foot_plant() -> void:
@@ -282,8 +310,9 @@ func test_the_clip_speeds_match_the_measured_foot_plant() -> void:
 		var m := (load(str(row["scene"])) as PackedScene).instantiate()
 		var has_new := (m.find_child("AnimationPlayer", true, false) as AnimationPlayer).has_animation(&"walk_start")
 		assert_eq(str(speeds["source"]) == "locomotion", has_new, "%s: locomotion.json speeds with its clips" % id)
+		var clips := HeroFieldActor.clips_of(StringName(id))  # a hero's own clips (Sefir glides on walk_glide)
 		for k: String in ["walk", "run"]:
-			var measured := HeroClipGait.clip_speed(m, StringName(k), cfg)
+			var measured := HeroClipGait.clip_speed(m, StringName(str(clips.get(k, k))), cfg)
 			var data_mps := float(speeds["%s_clip_mps" % k])
 			assert_true(measured > 0.0, "%s %s measured" % [id, k])
 			assert_between(

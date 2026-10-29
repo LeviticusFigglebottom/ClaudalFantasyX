@@ -2,8 +2,8 @@
 id: M3-HER-1141
 title: "ADR 0041 (Act I at final quality): env-art-b's items in the placeholder inventory (11: 11 high, 0 medium, 0 low)"
 role: environment
-status: todo
-owner_session: ""
+status: review
+owner_session: "env-art-b (session_01F3vrUNt6trAMrjeYavaDNC, claude/env-art-b)"
 reviewer: qa
 depends_on: []
 milestone: M3
@@ -15,9 +15,9 @@ ADR 0041: everything a player meets from the title to the end of Ch9 reaches fin
 **env-art-b** owns Ch5–Ch9 zones and the arenas used there. This task carries those rows; the inventory's "env-art-b" section is the live list.
 
 ## Acceptance criteria
-- [ ] Every row of the inventory's "env-art-b" section is final (fix the item, then re-run the audit; don't edit the
+- [x] Every row of the inventory's "env-art-b" section is final (fix the item, then re-run the audit; don't edit the
       table by hand).
-- [ ] The audit lists nothing for env-art-b: `python3 tools/placeholder_audit.py` (with Godot on PATH; it runs the zone
+- [x] The audit lists nothing for env-art-b: `python3 tools/placeholder_audit.py` (with Godot on PATH; it runs the zone
       scan itself) shows no "env-art-b" line.
 
 ## The rows as first audited (2026-10-28)
@@ -32,5 +32,12 @@ ADR 0041: everything a player meets from the title to the end of Ch9 reaches fin
 - **high**, Ch8: `game/levels/ch08/coilspire/coilspire.tscn`: zone greybox: 7 visible primitive/CSG meshes (7 BoxMesh), under Greybox 7
 - **high**, Ch8: `game/levels/ch08/corrow/corrow.tscn`: zone greybox: 8 visible primitive/CSG meshes (8 BoxMesh), under Greybox 8
 - **high**, Ch9: `game/levels/ch09/corrow_night/corrow_night.tscn`: zone greybox: 58 visible primitive/CSG meshes (58 BoxMesh), under Greybox 58
+
+## Notes (env-art-b, 2026-10-28)
+`python3 tools/placeholder_audit.py` (with its runtime scan) on `claude/env-art-b` @ 8ca4c492: **37 items, none for
+env-art-b** (audio 12, characters 3, creatures 4, creatures-b 4, env-art 12, integration-qa 2). The rows were fixed by
+M3-ENV-1300 to 1322 (the zones' kit dressing with `greybox.hide_all` and no kept blocks, the Ch5–Ch9 arenas on
+their kits, the Lanternfall votives, the seawall storm arenas replacing `wall_head_storm`) and M3-RND-26/27 (the Bell's
+drop and column, the Coilspire storm wall). The inventory file is integration-qa's to re-write (`--write`).
 
 ## Review log

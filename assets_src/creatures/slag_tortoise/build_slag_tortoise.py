@@ -31,19 +31,26 @@ SHELL_C = np.array([0.0, 0.38, -0.05])
 # The crust (M3-CRE-654): a lathe of SHELL_RINGS rings by SHELL_SEGS that skirts down past its equator to a hem at
 # HEM_LOW over the flanks (raised over the neck and the tail), with slag drips hanging at the DRIPS azimuths (radians,
 # 0 = the head, pi/2 = +x).
-SHELL_RINGS = 24
-SHELL_SEGS = 64
+SHELL_RINGS = 44
+SHELL_SEGS = 112
 HEM_LOW = 0.25
 DRIPS = (0.95, 1.6, 2.35, 3.7, 4.5, 5.25)
 HEAD_STATIONS = 14
 HEAD_ANGLES = 18
 NECK_FOLDS = 4.5
-CLINKERS = 7
+CLINKERS = 12
 SHELL_R = np.array([0.6, 0.42, 0.68])
 # A variant's parameters (the scree crawler's frost-split scree and shaggier skin, M3-CRE-628); these values are the
 # slag tortoise's: the shell's plate count, each plate's lift, faceted plates, and the skin's shag (metres).
 SHELL_CELLS = 22
 SHELL_LUMP = 0.06
+# The primitive pass (M3-CRE-660): each plate is a slab tilted its own way by up to PLATE_TILT (a fraction of the
+# radius per radian off its centre), so neighbours step at a seam instead of melting into one blob; the seam is
+# SEAM_W wide (in the cell-distance gap) and sinks SEAM_DEPTH; the plate crowns' glass is at most GLASS.
+PLATE_TILT = 0.12
+SEAM_W = 0.022
+SEAM_DEPTH = 0.07
+GLASS = 0.5
 SHELL_FLAT = False
 SKIN_SHAG = 0.0
 # The KO (M3-CRE-631): how far the legs tuck in (degrees) and the body rises (metres) by the end of the roll.
@@ -92,13 +99,19 @@ def shell(mesh: ck.Mesh, rig: ck.Rig) -> None:
     d = unit @ cells.T
     o = np.argsort(-d, axis=1)
     gap = d[np.arange(len(d)), o[:, 0]] - d[np.arange(len(d)), o[:, 1]]
-    seam = 1.0 - ck.smoothstep(0.0, 0.05, gap)
-    crack = 1.0 - ck.smoothstep(0.0, 0.015, gap)  # the open crack along a seam's middle
+    seam = 1.0 - ck.smoothstep(0.0, SEAM_W, gap)
+    crack = 1.0 - ck.smoothstep(0.0, 0.55 * SEAM_W, gap)  # the open crack along a seam's middle
     dome = ck.smoothstep(0.0, 0.12, gap) ** 0.5  # each plate swells to its middle
-    lump = rng.uniform(0.0, SHELL_LUMP, len(cells))[o[:, 0]] + 0.03 * ck.fbm(unit * 4.0, SEED + 1)
+    lump = rng.uniform(0.0, SHELL_LUMP, len(cells))[o[:, 0]] + 0.015 * ck.fbm(unit * 4.0, SEED + 1)
+    # each plate tilts its own way: a slab, so the seams show steps and the plates read as broken crust
+    tilt = rng.normal(size=(len(cells), 3)) * PLATE_TILT
+    near = cells[o[:, 0]]
+    tilt_v = (tilt[o[:, 0]] * (unit - near)).sum(axis=1)
+    rough = 0.008 * ck.fbm(unit * 18.0, SEED + 8)  # the cooled glass's ripple
     hem_row = np.repeat(np.arange(rings + 1) / rings, segs)
     lip = ck.smoothstep(0.8, 1.0, hem_row)  # the hem rolls under, thick and rounded
-    P = SHELL_C + unit * SHELL_R * (1.0 + lump + 0.03 * dome - 0.1 * seam ** 2 - 0.03 * lip)[:, None]
+    lift = lump + tilt_v + 0.025 * dome + rough
+    P = SHELL_C + unit * SHELL_R * (1.0 + lift * (1.0 - seam) - SEAM_DEPTH * seam - 0.03 * lip)[:, None]
     P[:, 1] = np.maximum(P[:, 1], 0.1)
     # the weak point: one short closed crack low on the crust's brow over the neck, jagged across it
     line = 0.42 + 0.035 * np.sin(unit[:, 0] * 45.0)
@@ -109,7 +122,9 @@ def shell(mesh: ck.Mesh, rig: ck.Rig) -> None:
     # copper weeps out of the seams and runs down the dome in streaks
     streak = ck.smoothstep(0.1, 0.5, ck.value_noise(unit * np.array([22.0, 2.5, 22.0]), SEED + 5))
     below = ck.smoothstep(0.06, 0.0, gap - 0.02 * (1.0 - unit[:, 1]))
-    weep = np.clip(0.9 * seam + 0.55 * streak * below * np.clip(1.0 - unit[:, 1], 0.0, 1.0) ** 0.5, 0.0, 1.0)
+    # the copper is a thin lip either side of the dark crack, and a few runs below it
+    weep = np.clip(0.9 * seam * (1 - crack) + 0.25 * streak * below * np.clip(1.0 - unit[:, 1], 0.0, 1.0) ** 0.5,
+                   0.0, 1.0)
     col = ck.mix(PAL["volcanic_stone"] * 0.8, PAL["lacquer_black"], (0.6 + 0.3 * ck.fbm(P * 8.0, SEED + 2))[:, None])
     # each plate its own cooling: most black glass, some a grey ash-skinned crust, a few rust-stained
     tone = np.random.default_rng(SEED + 6).uniform(0.0, 1.0, (len(cells), 2))[o[:, 0]]
@@ -119,13 +134,13 @@ def shell(mesh: ck.Mesh, rig: ck.Rig) -> None:
     col = ck.mix(col, ck.mix(PAL["volcanic_stone"] * 1.6, PAL["sand_dry"] * 0.45, 0.3), (0.75 * ash)[:, None])
     col = ck.mix(col, ck.mix(PAL["laterite"], PAL["volcanic_stone"], 0.45), (0.6 * rust)[:, None])
     col = ck.mix(col, PAL["bronze_patina"] * 1.2, (0.9 * weep)[:, None])
-    col = ck.mix(col, PAL["lacquer_black"], (0.8 * crack)[:, None])
+    col = ck.mix(col, PAL["lacquer_black"] * 0.6, (0.95 * crack)[:, None])
     dust = ck.smoothstep(0.75, 1.0, unit[:, 1]) * (0.25 + 0.5 * seam)
     col = ck.mix(col, PAL["sand_dry"] * 0.5, (0.35 * dust)[:, None])  # ash dust on top, thickest in the seams
     col = ck.mix(col, PAL["spawn_wound"] * 0.6, neck_crack[:, None])
     cavity = np.clip(0.75 * seam + 0.25 * crack + 0.35 * pits * (1 - seam) + 0.4 * lip, 0.0, 1.0)
     # glassy only where the slag cooled smooth (the plate crowns); the seams and pits stay dull
-    glass = 0.85 * dome * (1 - pits) * (1 - weep) * (1 - ash)
+    glass = GLASS * dome * (1 - pits) * (1 - weep) * (1 - ash) * (0.6 + 0.4 * ck.fbm(unit * 9.0, SEED + 9))
     ck.finish(mesh, P, T, "crust", col, rig.rigid("shell"), wet=glass, cavity=cavity, emission=neck_crack,
               flat=SHELL_FLAT)
     # clinker: lumps of slag fused on the dome, faceted where they cracked as they cooled
@@ -136,7 +151,7 @@ def shell(mesh: ck.Mesh, rig: ck.Rig) -> None:
         if n[2] > 0.55 and abs(n[0]) < 0.3:  # clear of the weak point's crack
             n[0] += 0.35
             n /= np.linalg.norm(n)
-        size = crng.uniform(0.045, 0.085)
+        size = crng.uniform(0.05, 0.11)
         Pk, Tk = ck.ellipsoid((0.0, 0.0, 0.0), (size, size * 0.6, size * crng.uniform(0.8, 1.3)), 3, 6)
         Pk = Pk * (1.0 + 0.25 * ck.value_noise(Pk * 30.0, SEED + 60 + k))[:, None]
         Pk = ck.transform(Pk, _frame(n, (0.0, 0.0, 1.0)) @ ck.rot_y(crng.uniform(0, 180)),
@@ -203,7 +218,7 @@ def leg(mesh: ck.Mesh, rig: ck.Rig, tag: str) -> None:
         Pc[:, 1] = np.maximum(Pc[:, 1], 0.0)
         ck.finish(mesh, Pc, Tc, "skin", ck.mix(PAL["bone"] * 0.75, PAL["tortoiseshell"], 0.35), bone, wet=0.15)
     # scales: staggered rows of thick plates
-    rows_, cols_ = (4, 3) if fore else (2, 2)
+    rows_, cols_ = (5, 4) if fore else (3, 3)
     face = 1.0 if fore else -1.0
     rng = np.random.default_rng(SEED + 40 + ("fl", "fr", "bl", "br").index(tag))
     tan, _, _ = ck.frames_along(path)
@@ -215,15 +230,17 @@ def leg(mesh: ck.Mesh, rig: ck.Rig, tag: str) -> None:
         c = path[i0] * (1 - f) + path[i0 + 1] * f
         rad = 0.112 - 0.025 * t
         for cidx in range(cols_):
-            a = (cidx - (cols_ - 1) / 2 + 0.5 * (r % 2) - 0.25) * 0.62
+            a = (cidx - (cols_ - 1) / 2 + 0.5 * (r % 2) - 0.25) * 0.5
             out = np.array([math.sin(a) * 0.6 + sx * 0.35, 0.0, math.cos(a) * face])
             out -= tan[i0] * (out @ tan[i0])
             out /= np.linalg.norm(out)
-            Ps, Ts = ck.ellipsoid((0.0, 0.0, 0.0), (0.04, 0.014, 0.034), 3, 5)
-            Ps = ck.transform(Ps, _frame(out, tan[i0]) @ ck.rot_x(-12.0), c + out * (rad - 0.004))
+            # a scute: domed, its lower edge lifted over the next row (overlapping, as a tortoise's leg)
+            Ps, Ts = ck.ellipsoid((0.0, 0.0, 0.0), (0.038, 0.013, 0.032), 4, 8)
+            Ps[:, 1] += 0.006 * ck.smoothstep(0.0, -0.03, Ps[:, 2])
+            Ps = ck.transform(Ps, _frame(out, tan[i0]) @ ck.rot_x(-18.0), c + out * (rad - 0.006))
             tone = rng.uniform(0.0, 1.0)
             colp = ck.mix(PAL["laterite"] * 0.85, PAL["sand_dry"] * 0.8, 0.25 + 0.35 * tone)
-            ck.finish(mesh, Ps, Ts, "skin", colp, bone, cavity=0.2, flat=True)
+            ck.finish(mesh, Ps, Ts, "skin", colp, bone, cavity=0.25)
 
 
 def head(mesh: ck.Mesh, rig: ck.Rig) -> None:

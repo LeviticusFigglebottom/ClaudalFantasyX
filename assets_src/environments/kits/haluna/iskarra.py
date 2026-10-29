@@ -538,6 +538,14 @@ def build_arch(seed: int = 724, *, fallen: bool = False) -> list[kc.MeshBuilder]
     return out
 
 
+LAMP_FLAME_R = 0.07  # the flame in a lamp column's globe (its base at LAMP_FLAME_Y)
+LAMP_FLAME_Y = 5.68
+OFFERING_SHELLS_X = tuple(-4.5 + 1.5 * k for k in range(7))  # the seven shells on the front step's lip
+OFFERING_Z_FROM_BACK = 2.55
+OFFERING_LAMP_DX = 0.24  # each shell's oil saucer beside it
+OFFERING_FLAME_R = 0.025
+
+
 def build_lamp_column(seed: int = 725) -> list[kc.MeshBuilder]:
     out = []
     for lod in (False, True):
@@ -548,11 +556,17 @@ def build_lamp_column(seed: int = 725) -> list[kc.MeshBuilder]:
         _shaft(tmp, 0.0, 5.4, 0.22, 0.15, rng, noise, lod=lod)
         mb.merge(tmp)
         kc.rounded_block(mb, (0.0, 0.15, 0.0), (0.38, 0.15, 0.38), mb.material(M_CERAMIC), radius=0.04, seg=1)
-        # The cold head: a bronze cage round a clouded glass globe (dead since the Lit Age).
+        # The head: a bronze cage round a clouded glass globe, an oil flame set in it for the vigil (the Lead, 10-28:
+        # the Prologue's lamps are lit; the city's light is the mourners').
         import props  # noqa: PLC0415
 
+        flame = [(r * LAMP_FLAME_R / 0.85, LAMP_FLAME_Y + y * LAMP_FLAME_R * 2.4) for r, y in props.FLAME_PROFILE]
+        props.lathe(mb, flame if not lod else flame[::2], "kit_lamp_flame_hot", rng, sides=10 if not lod else 5,
+                    weather=kc.Weathering(0, 0, 0, 0))
+
         ang = np.linspace(-math.pi * 0.5, math.pi * 0.5, 7 if not lod else 3)
-        props.lathe(mb, np.stack([np.maximum(np.cos(ang) * 0.36, 0.01), np.sin(ang) * 0.36], -1), M_GLASS, rng,
+        globe = np.stack([np.maximum(np.cos(ang) * 0.36, 0.01), np.sin(ang) * 0.36], -1)
+        props.lathe(mb, globe, "kit_lamp_glass_lit", rng,
                     sides=14 if not lod else 6, at=(0.0, 5.85, 0.0), cap_start=False)
         if not lod:
             for k in range(4):
@@ -740,7 +754,8 @@ def _pack(mb, rng, at, yaw: float) -> None:
 def build_vigil_dressing(seed: int = 730) -> list[kc.MeshBuilder]:
     """The vigil on the plaza (M3-ENV-724), in the plaza's frame: each member's gear by their mark, seven shells laid
     along the front step's lip (one for each who keeps the vigil), a broken jar, salt-grass along the edges and
-    creepers down the podium's sides. Nothing burns (ADR 0017: Rhen's lantern is the only flame)."""
+    creepers down the podium's sides. Each shell has a lit oil saucer beside it (the Lead overruled ADR 0017's "only
+    Rhen's lantern burns" for the Prologue, 10-28)."""
     out = []
     hx, hz = 17.0, 9.0
     for lod in (False, True):
@@ -756,10 +771,17 @@ def build_vigil_dressing(seed: int = 730) -> list[kc.MeshBuilder]:
             _pack(mb, rng, (-1.2, 0.8, -1.1), 0.4)  # Rhen's and Asha's, on the dais
             # Seven shells along the lip of the front steps' top, evenly spaced, mouths to the sea.
             shell = mb.material("kit_wake_shell")
-            for k in range(7):
-                x = -4.5 + 1.5 * k
-                kc.rounded_block(mb, (x, 0.03, hz - 2.55), (0.09, 0.03, 0.07), shell, rot=kc.rot_y(rng.normal(0, 0.2)),
-                                 radius=0.03, seg=2)
+            import props  # noqa: PLC0415
+
+            for x in OFFERING_SHELLS_X:
+                kc.rounded_block(mb, (x, 0.03, hz - OFFERING_Z_FROM_BACK), (0.09, 0.03, 0.07), shell,
+                                 rot=kc.rot_y(rng.normal(0, 0.2)), radius=0.03, seg=2)
+                # A clay oil saucer lit beside each shell (the Lead, 10-28: the vigil's offerings burn).
+                at = (x + OFFERING_LAMP_DX, 0.0, hz - OFFERING_Z_FROM_BACK)
+                props.lathe(mb, [(0.0, 0.0), (0.05, 0.0), (0.07, 0.025), (0.065, 0.03), (0.0, 0.018)],
+                            "kit_earthenware", rng, sides=10, at=at)
+                flame = [(r * OFFERING_FLAME_R / 0.85, 0.02 + y * OFFERING_FLAME_R * 2.4) for r, y in props.FLAME_PROFILE]
+                props.lathe(mb, flame, "kit_lamp_flame_hot", rng, sides=8, at=at, weather=kc.Weathering(0, 0, 0, 0))
             # A broken water jar by the lamp row, its sherds.
             clay = "kit_earthenware"
             import props  # noqa: PLC0415

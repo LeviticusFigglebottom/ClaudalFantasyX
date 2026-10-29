@@ -17,7 +17,29 @@
         1920,
         1080
       ],
-      "settle_frames": 10,
+      "settle_frames": 72,
+      "threshold_rmse": 0.004
+    },
+    {
+      "id": "slice_end_card_voice",
+      "pending_baseline": true,
+      "scene": "res://game/flow/end_card.tscn",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "settle_frames": 180,
+      "threshold_rmse": 0.004
+    },
+    {
+      "id": "slice_end_card",
+      "pending_baseline": true,
+      "scene": "res://game/flow/end_card.tscn",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "settle_frames": 1000,
       "threshold_rmse": 0.004
     },
     {
@@ -80,7 +102,8 @@
     },
     {
       "id": "battle_victory",
-      "scene": "res://game/battle/scene/shots/battle_victory.tscn"
+      "scene": "res://game/battle/scene/shots/battle_victory.tscn",
+      "settle_frames": 90
     },
     {
       "id": "base_body_slender_front",
@@ -4287,7 +4310,8 @@
             "flags": [
               "prologue_seen"
             ],
-            "scene_id": "ch02_girl_on_the_beach"
+            "scene_id": "ch02_girl_on_the_beach",
+            "hold_line": "ch02_beach_002"
           }
         },
         "time_scale": 4.0
@@ -4317,10 +4341,43 @@
             "flags": [
               "prologue_seen"
             ],
-            "scene_id": "ch02_girl_on_the_beach"
+            "scene_id": "ch02_girl_on_the_beach",
+            "hold_line": "ch02_beach_017"
           }
         },
         "time_scale": 4.0
+      }
+    },
+    {
+      "id": "slice_beach_standing",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 400,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch02/haluna/haluna.tscn",
+            "spawn": "Beach",
+            "flags": [
+              "prologue_seen"
+            ],
+            "scene_id": "ch02_girl_on_the_beach",
+            "hold_line": "ch02_beach_031"
+          }
+        },
+        "time_scale": 14.0
       }
     },
     {
@@ -4408,8 +4465,7 @@
               "prologue_seen",
               "ch02_met_asha",
               "ch02_tideline_won",
-              "ch02_ate_at_nemes",
-              "ch03_harrier_won"
+              "ch02_ate_at_nemes"
             ]
           }
         }
@@ -4423,7 +4479,7 @@
         960,
         540
       ],
-      "settle_frames": 630,
+      "settle_frames": 720,
       "setup": {
         "globals": {
           "hymn_wind_time": 40.0
@@ -4438,10 +4494,104 @@
             "scene_id": "ch03_the_first_verse",
             "flags": [
               "ch02_met_asha"
-            ]
+            ],
+            "hold_line": "ch03_verse_014"
           }
         },
         "time_scale": 4.0
+      }
+    },
+    {
+      "id": "slice_verse_threshold",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 720,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch03/first_verse/first_verse.tscn",
+            "scene_id": "ch03_the_first_verse",
+            "flags": [
+              "ch02_met_asha"
+            ],
+            "hold_line": "ch03_verse_030"
+          }
+        },
+        "time_scale": 8.0
+      }
+    },
+    {
+      "id": "slice_verse_recognition",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 720,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch03/first_verse/first_verse.tscn",
+            "scene_id": "ch03_the_first_verse",
+            "flags": [
+              "ch02_met_asha"
+            ],
+            "hold_line": "ch03_verse_031"
+          }
+        },
+        "time_scale": 8.0
+      }
+    },
+    {
+      "id": "slice_verse_c08",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 900,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch03/first_verse/first_verse.tscn",
+            "scene_id": "ch03_the_first_verse",
+            "flags": [
+              "ch02_met_asha"
+            ],
+            "hold_line": "ch03_verse_060"
+          }
+        },
+        "time_scale": 16.0
       }
     },
     {
@@ -5197,7 +5347,7 @@
         960,
         540
       ],
-      "settle_frames": 60,
+      "settle_frames": 240,
       "setup": {
         "globals": {
           "hymn_wind_time": 40.0
@@ -5211,6 +5361,7 @@
             "level_path": "res://game/levels/ch01/oruvel/oruvel.tscn",
             "spawn": "ScaleHull",
             "scene_id": "ch01_bark_outer_mooring",
+            "hold_line": "ch01_bark_sadi_003",
             "flags": [
               "ch01_started"
             ]
@@ -6141,206 +6292,6 @@
       }
     },
     {
-      "id": "zone_wake_h02",
-      "scene": "res://game/levels/_tests/haluna_wake_dressing/haluna_wake_dressed.tscn",
-      "camera": "Cameras/H02",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 24,
-      "setup": {
-        "globals": {
-          "hymn_wind_time": 40.0,
-          "hymn_glimmer": [
-            0.2122,
-            0.5647,
-            0.6939,
-            0.6
-          ]
-        },
-        "viewport": {
-          "use_taa": false,
-          "screen_space_aa": 1
-        }
-      }
-    },
-    {
-      "id": "zone_wake_h04",
-      "scene": "res://game/levels/_tests/haluna_wake_dressing/haluna_wake_dressed.tscn",
-      "camera": "Cameras/H04",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 24,
-      "setup": {
-        "globals": {
-          "hymn_wind_time": 40.0,
-          "hymn_glimmer": [
-            0.2122,
-            0.5647,
-            0.6939,
-            0.6
-          ]
-        },
-        "viewport": {
-          "use_taa": false,
-          "screen_space_aa": 1
-        }
-      }
-    },
-    {
-      "id": "zone_wake_h07",
-      "scene": "res://game/levels/_tests/haluna_wake_dressing/haluna_wake_dressed.tscn",
-      "camera": "Cameras/H07",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 24,
-      "setup": {
-        "globals": {
-          "hymn_wind_time": 40.0,
-          "hymn_glimmer": [
-            0.2122,
-            0.5647,
-            0.6939,
-            0.6
-          ]
-        },
-        "viewport": {
-          "use_taa": false,
-          "screen_space_aa": 1
-        }
-      }
-    },
-    {
-      "id": "zone_wake_h09",
-      "scene": "res://game/levels/_tests/haluna_wake_dressing/haluna_wake_dressed.tscn",
-      "camera": "Cameras/H09",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 24,
-      "setup": {
-        "globals": {
-          "hymn_wind_time": 40.0,
-          "hymn_glimmer": [
-            0.2122,
-            0.5647,
-            0.6939,
-            0.6
-          ]
-        },
-        "viewport": {
-          "use_taa": false,
-          "screen_space_aa": 1
-        }
-      }
-    },
-    {
-      "id": "zone_wake_h12",
-      "scene": "res://game/levels/_tests/haluna_wake_dressing/haluna_wake_dressed.tscn",
-      "camera": "Cameras/H12",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 24,
-      "setup": {
-        "globals": {
-          "hymn_wind_time": 40.0,
-          "hymn_glimmer": [
-            0.2122,
-            0.5647,
-            0.6939,
-            0.6
-          ]
-        },
-        "viewport": {
-          "use_taa": false,
-          "screen_space_aa": 1
-        }
-      }
-    },
-    {
-      "id": "zone_wake_h13",
-      "scene": "res://game/levels/_tests/haluna_wake_dressing/haluna_wake_dressed.tscn",
-      "camera": "Cameras/H13",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 24,
-      "setup": {
-        "globals": {
-          "hymn_wind_time": 40.0,
-          "hymn_glimmer": [
-            0.2122,
-            0.5647,
-            0.6939,
-            0.6
-          ]
-        },
-        "viewport": {
-          "use_taa": false,
-          "screen_space_aa": 1
-        }
-      }
-    },
-    {
-      "id": "zone_wake_h08",
-      "scene": "res://game/levels/_tests/haluna_wake_dressing/haluna_wake_dressed.tscn",
-      "camera": "Cameras/H08",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 24,
-      "setup": {
-        "globals": {
-          "hymn_wind_time": 40.0,
-          "hymn_glimmer": [
-            0.2122,
-            0.5647,
-            0.6939,
-            0.6
-          ]
-        },
-        "viewport": {
-          "use_taa": false,
-          "screen_space_aa": 1
-        }
-      }
-    },
-    {
-      "id": "zone_wake_c01",
-      "scene": "res://game/levels/_tests/haluna_wake_dressing/haluna_wake_dressed.tscn",
-      "camera": "Cameras/C01",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 24,
-      "setup": {
-        "globals": {
-          "hymn_wind_time": 40.0,
-          "hymn_glimmer": [
-            0.2122,
-            0.5647,
-            0.6939,
-            0.6
-          ]
-        },
-        "viewport": {
-          "use_taa": false,
-          "screen_space_aa": 1
-        }
-      }
-    },
-    {
       "id": "first_verse_stage_v01",
       "scene": "res://game/levels/_tests/first_verse_stage/first_verse_stage_preview.tscn",
       "camera": "Cameras/V01",
@@ -6987,6 +6938,7 @@
     },
     {
       "id": "slice_neme_table",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -7020,6 +6972,7 @@
     },
     {
       "id": "ch01_oruvel_storm",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -7052,6 +7005,7 @@
     },
     {
       "id": "ch01_drop",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -7083,6 +7037,7 @@
     },
     {
       "id": "ch01_bell_room",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -7114,6 +7069,7 @@
     },
     {
       "id": "ch01_scale_hull",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -7145,6 +7101,7 @@
     },
     {
       "id": "ch01_kell_stall",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -7176,6 +7133,7 @@
     },
     {
       "id": "ch01_net_pen",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -7208,6 +7166,7 @@
     },
     {
       "id": "ch01_hullgnaw_rises",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -7240,6 +7199,7 @@
     },
     {
       "id": "ch01_going_under",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -7272,6 +7232,7 @@
     },
     {
       "id": "slice_prologue_p01",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -7292,6 +7253,449 @@
             "level_path": "res://game/levels/prologue/prologue.tscn",
             "scene_id": "prologue_dead_city"
           }
+        }
+      }
+    },
+    {
+      "id": "crowd_lineup_a",
+      "scene": "res://game/levels/_tests/npc/crowd_lineup.tscn",
+      "camera": "Cameras/LineupA",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60
+    },
+    {
+      "id": "crowd_lineup_b",
+      "scene": "res://game/levels/_tests/npc/crowd_lineup.tscn",
+      "camera": "Cameras/LineupB",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60
+    },
+    {
+      "id": "crowd_lineup_c",
+      "scene": "res://game/levels/_tests/npc/crowd_lineup.tscn",
+      "camera": "Cameras/LineupC",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60
+    },
+    {
+      "id": "crowd_market",
+      "scene": "res://game/levels/_tests/npc/crowd_lineup.tscn",
+      "camera": "Cameras/Market",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 120,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "crowd_work",
+      "scene": "res://game/levels/_tests/npc/crowd_lineup.tscn",
+      "camera": "Cameras/Work",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 120,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "crowd_mourners",
+      "scene": "res://game/levels/_tests/npc/crowd_lineup.tscn",
+      "camera": "Cameras/Mourners",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 120,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "crowd_zone_pemakar",
+      "scene": "res://game/levels/_tests/npc/crowd_pemakar.tscn",
+      "camera": "Cameras/Crowd",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 180,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "crowd_zone_brine_shoals",
+      "scene": "res://game/levels/_tests/npc/crowd_brine_shoals.tscn",
+      "camera": "Cameras/Crowd",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 180,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "crowd_zone_tamsule",
+      "scene": "res://game/levels/_tests/npc/crowd_tamsule.tscn",
+      "camera": "Cameras/Crowd",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 180,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "crowd_zone_corrow_night",
+      "scene": "res://game/levels/_tests/npc/crowd_corrow_night.tscn",
+      "camera": "Cameras/Crowd",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 180,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "crowd_zone_corrow",
+      "scene": "res://game/levels/_tests/npc/crowd_corrow.tscn",
+      "camera": "Cameras/Crowd",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 180,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "crowd_zone_oruvel",
+      "scene": "res://game/levels/_tests/npc/crowd_oruvel.tscn",
+      "camera": "Cameras/Crowd",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 180,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "crowd_zone_bell_galleries",
+      "scene": "res://game/levels/_tests/npc/crowd_bell_galleries.tscn",
+      "camera": "Cameras/Crowd",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 180,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "crowd_lineup_back",
+      "scene": "res://game/levels/_tests/npc/crowd_lineup.tscn",
+      "camera": "Cameras/LineupBackB",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60
+    },
+    {
+      "id": "field_hud_over_haluna",
+      "scene": "res://game/levels/_tests/ui_shots/field_hud_over_haluna.tscn",
+      "camera": "Backdrop/Cameras/H02",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "field_hud_over_oruvel",
+      "scene": "res://game/levels/_tests/ui_shots/field_hud_over_oruvel.tscn",
+      "camera": "Backdrop/Cameras/O19",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "field_hud_over_tamsule",
+      "scene": "res://game/levels/_tests/ui_shots/field_hud_over_tamsule.tscn",
+      "camera": "Backdrop/Cameras/TP03",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "field_hud_over_corrow_night",
+      "scene": "res://game/levels/_tests/ui_shots/field_hud_over_corrow_night.tscn",
+      "camera": "Backdrop/Cameras/Strand",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ebbing_n11",
+      "scene": "res://game/levels/_tests/ebbing/ebbing_shots.tscn",
+      "camera": "Cameras/N11",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      },
+      "_note": "M3-C09-03: the Ebbing's held fields at N11 (env-art-b), every field playing at once on Ch9's Corrow at night."
+    },
+    {
+      "id": "ebbing_n08",
+      "scene": "res://game/levels/_tests/ebbing/ebbing_shots.tscn",
+      "camera": "Cameras/N08",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      },
+      "_note": "M3-C09-03: the Ebbing's held fields at N08 (env-art-b), every field playing at once on Ch9's Corrow at night."
+    },
+    {
+      "id": "crowd_zone_brightwater_ferry",
+      "scene": "res://game/levels/_tests/npc/crowd_brightwater_ferry.tscn",
+      "camera": "Cameras/Crowd",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 180,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "crowd_zone_ashcrown",
+      "scene": "res://game/levels/_tests/npc/crowd_ashcrown.tscn",
+      "camera": "Cameras/Crowd",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 180,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "field_hud_over_pemakar",
+      "scene": "res://game/levels/_tests/ui_shots/field_hud_over_pemakar.tscn",
+      "camera": "Backdrop/Cameras/Harbour",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "field_hud_over_ashcrown",
+      "scene": "res://game/levels/_tests/ui_shots/field_hud_over_ashcrown.tscn",
+      "camera": "Backdrop/Cameras/A01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "field_hud_over_brine_shoals",
+      "scene": "res://game/levels/_tests/ui_shots/field_hud_over_brine_shoals.tscn",
+      "camera": "Backdrop/Cameras/Road",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "field_hud_over_coilspire",
+      "scene": "res://game/levels/_tests/ui_shots/field_hud_over_coilspire.tscn",
+      "camera": "Backdrop/Cameras/Path",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "field_hud_over_haluna_wake",
+      "scene": "res://game/levels/_tests/ui_shots/field_hud_over_haluna_wake.tscn",
+      "camera": "Backdrop/Cameras/H02",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
         }
       }
     },

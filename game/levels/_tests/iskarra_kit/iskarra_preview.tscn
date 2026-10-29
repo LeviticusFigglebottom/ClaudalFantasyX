@@ -5,7 +5,7 @@
 [ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_shot_camera.gd" id="3_cam"]
 [ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="4_water"]
 [ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="5_waves"]
-[ext_resource type="Material" path="res://game/levels/ch02/haluna/haluna_water_material.tres" id="6_water_mat"]
+[ext_resource type="Material" path="res://assets/environments/zones/iskarra/iskarra_water_material.tres" id="6_water_mat"]
 [ext_resource type="Script" path="res://game/levels/_tests/iskarra_kit/iskarra_preview_figures.gd" id="7_figures"]
 
 [sub_resource type="Resource" id="ShotP01"]

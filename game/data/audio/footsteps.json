@@ -55,6 +55,11 @@
   "scenes": {
     "res://game/levels/ch02/haluna/haluna.tscn": "sand",
     "res://game/levels/ch03/shell_shrine/shell_shrine.tscn": "stone",
-    "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn": "sand"
+    "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn": "sand",
+    "res://game/levels/ch01/oruvel/oruvel.tscn": "wood",
+    "res://game/levels/ch04/brightwater_ferry/brightwater_ferry.tscn": "wood",
+    "res://game/levels/ch04/haluna_wake/haluna_wake.tscn": "sand",
+    "res://game/levels/ch06/brine_shoals/brine_shoals.tscn": "sand",
+    "res://game/levels/ch09/corrow_night/corrow_night.tscn": "sand"
   }
 }

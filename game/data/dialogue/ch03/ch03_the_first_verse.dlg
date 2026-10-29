@@ -85,6 +85,9 @@ Toma [tender]: Now she does not hide. I find I miss it. #line:ch03_verse_026
     Toma [sad]: Yes. I think so too. #line:ch03_verse_029
 <<endif>>
 @fade out 1.5
+// In the black, two hours on: they are on their feet when she comes out (S10 is the reverse on Rhen, facing her).
+@mark rhen rhen_rise walk
+@mark toma toma_rise walk
 @wait 1.0
 <<jump threshold>>
 ===
@@ -98,6 +101,8 @@ grade: ch03
 // ADR 0017 watch: she walks out on her own feet. No stumble, no catch at the door, and no summon
 // shown here. Ilun is first called in the Drownbell fight.
 @anim asha emerge_doorway
+@anim rhen look_at asha
+@anim toma look_at asha
 @vfx glimmer_lift at=asha motion=spiral_up rate=slow
 @face asha exhausted 1.0
 Asha [exhausted]: Oh. It's evening. #line:ch03_verse_030

@@ -19,6 +19,15 @@
         {"when": {"set": ["ch08_wave3_held"], "unset": ["ch08_reach_survived"]}, "steps": [
           {"place": "WallHead"},
           {"zone": "mend", "args": ["ch08_wave3"]},
+          {"zone": "place_actor", "args": ["kerrid", "foot_kerrid"]},
+          {"zone": "place_actor", "args": ["marra", "foot_marra"]},
+          {"zone": "place_actor", "args": ["climber_a", "foot_climber_a"]},
+          {"zone": "place_actor", "args": ["climber_b", "foot_climber_b"]},
+          {"zone": "place_actor", "args": ["climber_c", "foot_climber_c"]},
+          {"zone": "show_actor", "args": ["marra", true]},
+          {"zone": "show_actor", "args": ["climber_a", true]},
+          {"zone": "show_actor", "args": ["climber_b", true]},
+          {"zone": "show_actor", "args": ["climber_c", true]},
           {"play": "ch08_captain"},
           {"zone": "refresh_states"},
           {"play": "ch08_the_reach"},
@@ -52,8 +61,11 @@
            "return_spawn": "WallHead", "victory_flag": "ch08_wave1_held", "objective_flag": "ch08_stair_groups_up"}
         ]},
         {"when": {"unset": ["ch08_arrived_corrow"]}, "steps": [
-          {"place": "Mole"},
+          {"place": "MoleStair"},
           {"chapter": 8},
+          {"zone": "place_actor", "args": ["asha", "mole_steps_asha"]},
+          {"zone": "place_actor", "args": ["toma", "mole_steps_toma"]},
+          {"zone": "place_actor", "args": ["kerrid", "landfall_kerrid"]},
           {"play": "ch08_landfall"},
           {"set": "ch08_arrived_corrow"},
           {"party": {"party": ["rhen", "asha", "toma"], "reserve": ["ysolde", "liss"]}},
@@ -103,6 +115,7 @@
           {"play": "ch08_keeping_flame"}
         ]},
         "door": {"when": {"unset": ["ch08_entered_coilspire"]}, "steps": [
+          {"zone": "place_actor", "args": ["asha", "way_forecourt_e"]},
           {"play": "ch08_spire_door"},
           {"set": "ch08_entered_coilspire"},
           {"zone": "refresh_states"},
@@ -127,6 +140,7 @@
           {"play": "ch08_storm_against_wind"}
         ]},
         "open_beacon": {"when": {"set": ["ch08_virel_bound"], "unset": ["ch08_beacon_opened"]}, "steps": [
+          {"zone": "place_actor", "args": ["asha", "great_key_asha"]},
           {"play": "ch08_beacon_opened"},
           {"go": {"location": "ch08/corrow", "spawn": "WallGate"}}
         ]}

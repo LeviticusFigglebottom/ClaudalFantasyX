@@ -3307,7 +3307,11 @@
     -1.306
    ],
    "y": 12.02,
-   "yaw_deg": 16.81
+   "yaw_deg": 16.81,
+   "material_paths": {
+    "cw_earth": "res://assets/environments/kits/corrow/materials/cw_paving.tres",
+    "cw_cobble": "res://assets/environments/kits/corrow/materials/cw_paving.tres"
+   }
   },
   {
    "piece": "lowtown_ground",
@@ -3316,7 +3320,122 @@
     -6.221
    ],
    "y": 12.02,
-   "yaw_deg": 13.37
+   "yaw_deg": 13.37,
+   "material_paths": {
+    "cw_earth": "res://assets/environments/kits/corrow/materials/cw_paving.tres",
+    "cw_cobble": "res://assets/environments/kits/corrow/materials/cw_paving.tres"
+   }
+  },
+  {
+   "piece": "crate_stack",
+   "at": [
+    -92.557,
+    7.704
+   ],
+   "y": 12.0,
+   "yaw_deg": 27.57,
+   "kit_dir": "res://assets/environments/kits/brine_shoals/",
+   "materials_dir": "res://assets/environments/kits/brine_shoals/materials/",
+   "collide": true
+  },
+  {
+   "piece": "cargo_sacks",
+   "at": [
+    -90.157,
+    7.164
+   ],
+   "y": 12.0,
+   "yaw_deg": 97.11,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/",
+   "collide": true
+  },
+  {
+   "piece": "round_shield",
+   "at": [
+    -84.518,
+    -6.978
+   ],
+   "y": 12.0,
+   "yaw_deg": 30.39
+  },
+  {
+   "piece": "round_shield",
+   "at": [
+    -83.933,
+    -7.656
+   ],
+   "y": 12.0,
+   "yaw_deg": -24.74
+  },
+  {
+   "piece": "rope_coil",
+   "at": [
+    -70.893,
+    1.709
+   ],
+   "y": 12.0,
+   "yaw_deg": 13.37,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/"
+  },
+  {
+   "piece": "cargo_sacks",
+   "at": [
+    -66.592,
+    -8.392
+   ],
+   "y": 12.0,
+   "yaw_deg": 132.18,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/",
+   "collide": true
+  },
+  {
+   "piece": "rope_coil",
+   "at": [
+    -76.463,
+    -10.215
+   ],
+   "y": 12.0,
+   "yaw_deg": 13.85,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/"
+  },
+  {
+   "piece": "crate_stack",
+   "at": [
+    -67.856,
+    -13.234
+   ],
+   "y": 12.0,
+   "yaw_deg": 107.22,
+   "kit_dir": "res://assets/environments/kits/brine_shoals/",
+   "materials_dir": "res://assets/environments/kits/brine_shoals/materials/",
+   "collide": true
+  },
+  {
+   "piece": "net_heap",
+   "at": [
+    -95.138,
+    1.284
+   ],
+   "y": 12.0,
+   "yaw_deg": -142.33,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/"
+  },
+  {
+   "piece": "cargo_sacks",
+   "at": [
+    -83.487,
+    -1.66
+   ],
+   "y": 12.0,
+   "yaw_deg": 30.47,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/",
+   "collide": true
   },
   {
    "piece": "stillguard_barracks",

@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3]
+[gd_scene load_steps=27 format=3]
 
 [ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
 [ext_resource type="Shader" path="res://game/shaders/environment/env_sky_low_sun.gdshader" id="2_r"]
@@ -20,6 +20,8 @@
 [ext_resource type="PackedScene" path="res://assets/environments/kits/corrow/lowtown_ground.glb" id="18_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/corrow/lowtown_house_a.glb" id="19_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/corrow/lowtown_house_b.glb" id="20_r"]
+[ext_resource type="Script" path="res://game/vfx/undertow/undertow_storm.gd" id="storm_script"]
+[ext_resource type="Script" path="res://game/levels/act1/storm_far_plane.gd" id="storm_far"]
 
 [sub_resource type="ShaderMaterial" id="SkyMat"]
 shader = ExtResource("2_r")
@@ -797,3 +799,24 @@ transform = Transform3D(0.967075, 0.0359066, 0.251948, 0, 0.989997, -0.141091, -
 
 [node name="EntryMarker_ward" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.6, 0.0, 2.4)
+
+[node name="Undertow" type="Node3D" parent="."]
+script = ExtResource("storm_script")
+approach_azimuth_deg = 345.26
+preset = "ch08_seawall"
+zone_shadow = false
+exposure_flash = false
+sea_level_y = -12.0
+sea_level_from_water = false
+
+[node name="FarPlane" type="Node" parent="Undertow"]
+script = ExtResource("storm_far")
+
+[node name="StairHead_ward" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.356, 0, 2.202)
+
+[node name="StairFlight_ward" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.84, -0.517, 5.092)
+
+[node name="the_stair_head" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(-0.541373, 0.224776, -0.81018, 0, 0.963602, 0.267341, 0.840783, 0.144731, -0.521668, 5, 2.4, -0.6)

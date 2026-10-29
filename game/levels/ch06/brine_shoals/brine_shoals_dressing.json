@@ -953,39 +953,6 @@
    "block": "BurningHulk"
   },
   {
-   "piece": "smoke_plume",
-   "at": [
-    11.5,
-    -45.5
-   ],
-   "y": 1.2,
-   "yaw_deg": -150.0,
-   "scale": 1.0,
-   "block": "Smoke"
-  },
-  {
-   "piece": "smoke_plume",
-   "at": [
-    -11.5,
-    -33.0
-   ],
-   "y": 0.6,
-   "yaw_deg": -152.0,
-   "scale": 0.7,
-   "block": "Smoke"
-  },
-  {
-   "piece": "smoke_plume",
-   "at": [
-    2.5,
-    -45.0
-   ],
-   "y": 0.6,
-   "yaw_deg": -154.0,
-   "scale": 0.55,
-   "block": "Smoke"
-  },
-  {
    "piece": "white_barge",
    "at": [
     -22.5,
@@ -1285,6 +1252,87 @@
    "yaw_deg": 167.62,
    "kit_dir": "res://assets/environments/kits/haluna/",
    "materials_dir": "res://assets/environments/kits/haluna/materials/"
+  },
+  {
+   "piece": "camp_fire_large",
+   "at": [
+    11.0,
+    -46.0
+   ],
+   "y": 0.0,
+   "yaw_deg": 30.0,
+   "block": "Smoke"
+  },
+  {
+   "piece": "camp_fire_small",
+   "at": [
+    13.6,
+    -44.6
+   ],
+   "y": 0.0,
+   "yaw_deg": 200.0,
+   "block": "Smoke"
+  },
+  {
+   "piece": "camp_fire_small",
+   "at": [
+    8.4,
+    -45.4
+   ],
+   "y": 0.0,
+   "yaw_deg": 110.0,
+   "block": "Smoke"
+  },
+  {
+   "piece": "camp_fire_large",
+   "at": [
+    9.6,
+    -35.2
+   ],
+   "y": 0.0,
+   "yaw_deg": 300.0,
+   "block": "Smoke"
+  }
+ ],
+ "smokes": [
+  {
+   "name": "SmokeHulk",
+   "at": [
+    11.5,
+    1.2,
+    -45.5
+   ],
+   "yaw_deg": -150.0,
+   "scale": 1.0,
+   "profile": "camp",
+   "seed": 0.0,
+   "block": "Smoke"
+  },
+  {
+   "name": "SmokeTentWest",
+   "at": [
+    -11.5,
+    0.6,
+    -33.0
+   ],
+   "yaw_deg": -152.0,
+   "scale": 0.7,
+   "profile": "camp",
+   "seed": 0.37,
+   "block": "Smoke"
+  },
+  {
+   "name": "SmokeTentSouth",
+   "at": [
+    2.5,
+    0.6,
+    -45.0
+   ],
+   "yaw_deg": -154.0,
+   "scale": 0.55,
+   "profile": "camp",
+   "seed": 0.71,
+   "block": "Smoke"
   }
  ]
 }

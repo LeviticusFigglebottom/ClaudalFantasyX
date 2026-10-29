@@ -93,6 +93,8 @@ def _move_errors(where: str, m: object, nums: tuple[str, ...]) -> list[str]:
         errs.append(f"{where}.sec: must be > 0")
     if m.get("clip") not in CLIPS:
         errs.append(f"{where}.clip: must be a contract clip")
+    if "clip_own" in m and not (isinstance(m["clip_own"], str) and m["clip_own"]):  # M3-CRE-639: a model's own clip
+        errs.append(f"{where}.clip_own: must be a clip name")
     return errs
 
 

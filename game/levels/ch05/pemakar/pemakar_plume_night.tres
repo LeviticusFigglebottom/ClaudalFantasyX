@@ -1,0 +1,20 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/environment/env_ash_plume.gdshader" id="1_shader"]
+
+[resource]
+resource_name = "pemakar_plume_night"
+shader = ExtResource("1_shader")
+shader_parameter/alpha_mottle = 0.55
+shader_parameter/body_darken = 0.42
+shader_parameter/col_body = Color(0.29, 0.27, 0.26, 1)
+shader_parameter/col_body_top = Color(0.36, 0.35, 0.36, 1)
+shader_parameter/edge_soft = 0.65
+shader_parameter/ember_energy = 0.55
+shader_parameter/ember_height = 0.32
+shader_parameter/ember_underside = 1.0
+shader_parameter/mottle = 0.55
+shader_parameter/opacity = 0.92
+shader_parameter/rim_energy = 0.0
+shader_parameter/top_fade = 0.45
+shader_parameter/town_glow = 0.05

@@ -31,11 +31,11 @@
     "glyph": {"approach": "choreo_step", "approach_steps": 1, "strike": "whoosh_cast", "contact": "swell_ysolde",
               "needs_hit": false},
     "toll": {"strike": "", "contact": "toll_wave", "needs_hit": false},
-    "swing": {"_note": "M3-BPR-422 stand-in (Kerrid's weighted swing): the finisher's sounds until audio's own (M3-BPR-421).",
-              "approach": "choreo_step", "approach_steps": 3, "strike": "whoosh_heavy", "contact": "@weapon",
+    "swing": {"_note": "M3-BPR-422 / M3-AUD-861: Kerrid's Swell, the weighted swing: the anchor swung round on its line, then landing",
+              "approach": "choreo_step", "approach_steps": 3, "strike": "whoosh_swing", "contact": "swell_kerrid",
               "return": "choreo_step", "return_steps": 3},
-    "reel": {"_note": "M3-BPR-422 stand-in (Liss's reel-stop): the item throw's sounds until audio's own (M3-BPR-421).",
-             "approach": "choreo_step", "approach_steps": 1, "strike": "whoosh_throw", "contact": ""}
+    "reel": {"_note": "M3-BPR-422 / M3-AUD-861: Liss's Swell, the reel-stop: the line paid out and snubbed, then the brass strike",
+             "approach": "choreo_step", "approach_steps": 1, "strike": "reel_whir", "contact": "swell_liss"}
   },
   "skills": {
     "flood_surge": "flood_surge",
@@ -47,6 +47,8 @@
     "whoosh_melee": 0.12,
     "whoosh_heavy": 0.22,
     "whoosh_charge": 0.42,
+    "whoosh_swing": 0.36,
+    "reel_whir": 0.39,
     "whoosh_cast": 0.3,
     "whoosh_throw": 0.1,
     "whoosh_guard": 0.14

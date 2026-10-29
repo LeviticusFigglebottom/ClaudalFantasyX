@@ -25,7 +25,7 @@ func test_liss_names_her_battle_wrapper_with_a_capsule_until_it_lands() -> void:
 	assert_eq(str(spec.get("scene", "")), LISS_WRAPPER)
 	assert_eq(str(spec.get("shape", "")), "capsule", "her own capsule, not the default primitive")
 	assert_eq(float(spec.get("yaw_deg", 0.0)), -90.0, "faces the foes like the other heroes")
-	assert_eq(str(spec.get("tint", "")), "#7A8F6A", "her timeline tint")
+	assert_eq(str(spec.get("tint", "")), "#7A8C5A", "her timeline tint (her landed actor's row, big14)")
 
 
 func test_the_heroes_with_wrappers_stand_in_through_them() -> void:

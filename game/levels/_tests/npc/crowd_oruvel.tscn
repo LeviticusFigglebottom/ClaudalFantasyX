@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/npc/haluna_villagers.gd" id="stage"]
+
+[node name="CrowdOruvel" type="Node3D"]
+script = ExtResource("stage")
+zone_scene = "res://game/levels/ch01/oruvel/oruvel.tscn"
+zone_id = &"ch01/oruvel"
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Crowd" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.656524, 0.109463, -0.74632, 0, 0.989414, 0.145118, 0.754305, -0.0952734, 0.649575, 7, 1.65, -2.5)
+fov = 45.0

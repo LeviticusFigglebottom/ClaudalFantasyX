@@ -72,6 +72,7 @@ NET_INSET = 0.07  # metres in from the leading and trailing edges
 NET_NQ, NET_NP = 4, 7  # diamonds across the chord and along the span
 NET_WARP = 0.016  # hand-knotted: the lattice warped by up to this (net coordinates)
 NET_W, ROPE_W = 0.042, 0.06  # cord and head-rope widths
+NET_CHORD_FULL, NET_W_MIN = 0.8, 0.35  # Polish 2: cords full width where the net's chord is this wide, down to 35%
 NET_OFF = 0.007  # off the membrane
 NET_STEP_TOP, NET_STEP_BOT = 0.055, 0.1  # sampling along the cords (metres): the back is seen closer
 KNOT_R, KNOT_H = 0.034, 0.01  # bead half-diagonal and height
@@ -353,9 +354,18 @@ def shell_colour(P: np.ndarray, top: np.ndarray, N: np.ndarray):
 
     under = np.where(top, 0.0, ck.smoothstep(-0.35, -0.75, N[:, 1]))  # the flanks keep the back's tones
     col = ck.mix(back, belly, under[:, None])
+    # Polish 2: at the battle camera's grazing angle the near wing went pale and the net was lost in it. The membrane
+    # now deepens toward the trailing edge (reef blue into the deep teal, the light seen through more water), and
+    # only a thin rim at the very edge stays pale, so the bright net reads against it.
+    # The battle camera sees the near wing's underside, so the pale belly deepens the same way out on the wing.
+    te_deep = ck.smoothstep(0.85, 0.15, vv) * ck.smoothstep(0.12, 0.35, uu) * ck.smoothstep(0.02, 0.12, d_te)
+    deep = ck.mix(PAL["reef_blue"], PAL["deep_teal_shadow"], (0.45 + 0.3 * ck.smoothstep(-0.2, 0.3, mott))[:, None])
+    deep_under = ck.mix(PAL["sea_glow"], PAL["reef_blue"], 0.4)
+    col = ck.mix(col, ck.mix(deep, deep_under, under[:, None]), ((0.7 - 0.1 * under) * te_deep)[:, None])
+    te_margin = te_margin * ck.smoothstep(0.08, 0.0, d_te)  # the pale trailing margin pulled in to a thin rim
     col = ck.mix(col, PAL["salt_glass"], (0.55 * np.maximum(margin, te_margin))[:, None])  # thin margins pale
     col = ck.mix(col, PAL["foam_white"], (0.25 * te_margin * ck.smoothstep(-0.1, 0.4, fine))[:, None])
-    glow = 0.05 + 0.32 * np.maximum(margin, te_margin) - 0.04 * socket
+    glow = 0.05 + 0.32 * np.maximum(margin, te_margin) - 0.04 * socket - 0.03 * te_deep
     glow = glow + 0.07 * ck.smoothstep(0.1, 0.5, mott) * ck.smoothstep(0.1, 0.4, uu)  # light pooled in the wing
     glow = glow + 0.05 * np.exp(-((ax - 0.42 * SPAN) / (0.3 * SPAN)) ** 2) * ck.smoothstep(0.2, 0.5, vv)
     wet = np.where(top, 0.55, 0.7)
@@ -475,7 +485,11 @@ def net(mesh: ck.Mesh, rig: ck.Rig) -> None:
                 sd = np.cross(n, tan)
                 sd /= np.linalg.norm(sd, axis=1, keepdims=True)
                 m = len(pt)
-                Ps.append(np.vstack([pt - sd * w * 0.5, pt + sd * w * 0.5]))
+                # Polish 2: the cords thin with the chord toward the tip, where the diamonds close up, so the outer
+                # wing shows its dark membrane between them instead of a solid pale sheet at the battle camera's angle
+                u = np.abs(x) / SPAN
+                ww = w * np.clip((leading(u) - trailing(u) - 2.0 * NET_INSET) / NET_CHORD_FULL, NET_W_MIN, 1.0)
+                Ps.append(np.vstack([pt - sd * (ww * 0.5)[:, None], pt + sd * (ww * 0.5)[:, None]]))
                 Ns.append(np.vstack([n, n]))
                 G.append(np.full(2 * m, g))
                 C.append(np.tile(ck.mix(PAL["salt_glass"], PAL["lagoon_teal"], 0.45), (2 * m, 1)))
