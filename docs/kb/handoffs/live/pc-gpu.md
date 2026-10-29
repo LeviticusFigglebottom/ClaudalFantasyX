@@ -119,7 +119,7 @@ No job of this session is running. WSL `hymn` is idle: the batch (PIDs 302 and 2
 
 ## Gate results (newest first)
 
-- **GATE lead/gate-big14@8707ff90 (+ the shrine GI rebake 8f6fd29f): FAIL (Lead to view). Coverage re-running.**
+- **GATE lead/gate-big14@8707ff90 (+ the shrine GI rebake 8f6fd29f): FAIL (Lead to view).** The suite and the manifest finished at 2026-10-28 ~04:30; coverage is re-running with 3 h (its 600 s default cut it off).
   - Shrine GI rebaked first; test_shrine_gi_bake passes.
   - Tools: 6 failing units: test_arenas (known), test_screenshots, test_pemakar_kit, test_zone_dressing_ch01, test_zone_map_pois, test_hero_clips.
   - Godot: 3161 run, 15 failed. Then a **segfault at exit** in test_villager_routines.gd:489 (creatures), which stops ci_local's pipefail on its own.
@@ -133,7 +133,9 @@ No job of this session is running. WSL `hymn` is idle: the batch (PIDs 302 and 2
     - the beach: Rhen not in frame, and 4 lines on empty sky;
     - the party start: Asha and Toma walk ahead, but Rhen is not on screen.
   - Every scene change is over the 1000 ms hidden-frame budget (New Game 3.0 s, Ch2 2.0 s, the first fight 1.7 s, Ch1 1.3 s).
+  - On lead/gate-ft-beach @ 93d0741e the beach works: Rhen in the shallows, Asha kneeling beside him. Still open there: Asha's skirt passes through him, two lines are framed on his waist, and the field camera starts underwater.
   - `docs/kb/qa/gate-runs/big14/` on `gpu/gate-big14-shots`.
+  - **`gpu/ci-step-timeout-3h` @ 75e14190: MERGE-READY.** HYMN_STEP_TIMEOUT now defaults to 3 h in ci_local.sh, run_coverage.py and gate.sh.
 - **GATE lead/gate-big12@8a28be17: FAIL (2 Godot failures = the cloud's, 3 tools failures, drift + 31 new shots; Lead to view).**
   Godot 2820/2: test_creature_portraits (the 4 new creatures "have a portrait in the manifest") and
   test_footsteps_slice_zones causeway tidepool (water expected, stone got). Coverage and boot not reached (ci_local stops
@@ -174,9 +176,10 @@ No job of this session is running. WSL `hymn` is idle: the batch (PIDs 302 and 2
   test wave). Asha is unchanged. Rendering, env-art and art should view the shots and approve the baselines.
 - **M2-CHR-11 verify (2026-10-27):** claude/characters @ 3723f3eb (incl. 20773234), AVX2 i9-12900K: base_body, rhen, toma
   and 9 villagers 12/12 identical (664 s). Reported to the Lead and characters.
-- **Was in progress before the pause (2026-10-27 ~17:00):** render queue 4 (22 jobs: the fast-tracks c1d1e3e6 and d4430397 are rendered and
-  being published, then the RND-03 lavapipe check 02d1fa52, then oldest first). Next: the slice `--budget` re-sweep, then
-  the Act I playthrough (never during a render).
+- **In progress (2026-10-28 05:20 EDT):**
+  - big14 coverage in WSL (single process, 3 h limit; started 04:33).
+  - Act I QA pass B, visual, on lead/gate-ft-beach on the RX 9070 XT: every zone, spawn, battle and boss of Act I, stills every 5 s.
+  - Next: the per-zone budget run (`--budget`, no stills) once coverage ends, since a benchmark never runs during a gate step. Then the rows and sheets go to gpu/act1-qa-*.
 - **M1-QA-09 on hardware (heroes, 2026-10-27):** 49 shots at High 2× and Ultra on ze8rrn@f580e756, `gpu/m1-qa-09-heroes`
   `docs/kb/qa/gpu/2026-10-27-m1-qa-09-heroes/`. Asha's staff and Toma's spear aren't gripped (open hands; they float upright
   in run/walk_cycle/offer_hand). The staff goes through the skirt when kneeling. Asha's underskirt is a rigid tube in

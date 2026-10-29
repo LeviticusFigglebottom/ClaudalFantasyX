@@ -1,5 +1,33 @@
 # Live log: Lead (cloud) environment
 
+
+## LEAD 2026-10-29: `session_01Bg3iP7cPGyjbX4CyniBahc` on `claude/new-session-mj8c3c` (the integration branch)
+- 17:14–17:17 UTC: created 9 cloud sessions (env `env_0196G2TTr369gfmPLsL5gD3s`, tags `undertow`, `undertow:<track>`). Briefs = SESSION-BRIEFS preamble + track brief + the PC-offline rule.
+
+| Track | Session | Branch |
+|---|---|---|
+| env-art | `session_01UPFyEAzY1JcdZvoc5FBH1A` | claude/env-art |
+| env-art-b | `session_01UPFyEA3FwDAoAKTpVGbGsy` | claude/env-art-b |
+| characters | `session_01UPFyE733U6vQyV7tqjizxc` | claude/characters |
+| act1-chapters | `session_01UPFyE97m2fmnEAZsDPDniN` | claude/act1-chapters |
+| integration-qa | `session_01UPFyE9i6WzR6xpzKDZ82HQ` | claude/hero-integration |
+| slice-polish | `session_01UPFyE6pg4bUbqP33yjAkE5` | claude/m2-slice |
+| ui-menus | `session_01UPFyE7ZqP7u61XAAeaJqGy` | claude/ui |
+| battle-presentation | `session_01UPFyEA8QkJULH74MGgnMvJ` | claude/battle-presentation |
+| **gate** | `session_01UPFyE6NmbMsX7kaGj7ousX` | lead/gate-big17 (shots → lead/gate-big17-shots; its log is `gate.md`) |
+
+| creatures | `session_01UPFyE7ob7hr4Skv4cw3rtN` | claude/creatures (started 18:43: big17 gate reds test_npc/test_post_import, audit M3-HER-1142, QA row 40) |
+| creatures-b | `session_01UPFyE6iidnDAeaAEP21ZYd` | claude/creatures-b (started 18:43: Moll capsule in battle rows 12/35, Reach arm row 36, row 30) |
+
+- Not started: audio (no rows yet). Start it when a gate or the inventory files rows for it.
+- 18:40: ADR 0201 (Pell's niche wording, SPEC v1.5, `i:blue mage` banned). Routed big17's 4 pre-existing tools reds: freed-cast lint → env-art-b; test_npc and test_post_import → creatures; villager_shopkeeper_front NO BASE → approve at the gate.
+- **The PC is offline.** When it returns: find it with `list_sessions` (environment_kind `bridge`), then send it the PC brief (SESSION-BRIEFS.md) plus this queue:
+  1. Gate whatever batch is next, if the cloud gate session hasn't already gated it.
+  2. Act I real-GPU QA at High 1440p, pass A and pass B. Collect every track's `### PC-QUEUE` items first (`grep -n -A20 "PC-QUEUE" docs/kb/handoffs/live/*.md`).
+  3. Its unfinished M2-RND-01 (WIP on gpu/m2-rnd-01-undertow), and the in-review RND-22, M2-RND-02/03/04 follow-ups (pc-gpu.md "Unfinished queue").
+  4. Measure the Act I scene-change hitches, which must be ≤ 1 s hidden (ADR 0042 §4).
+- Heartbeat: every 20 min, check `list_sessions` and run `tools/dev/lead/leadask.sh`, then answer LEAD-ASKs, merge MERGE-READY work via batches, and check gate.md for GATE-BUILT/GATE-DONE.
+
 **Session:** `session_019iimsngAgPLEram1wcbLpE` (new account) · **Branch:** `claude/undertow-lead-handoff-423ixt` (the integration branch) · **Container:** 4 CPUs, Ubuntu, lavapipe. The container has restarted twice; the disk and the worktrees survived both times.
 
 ## NEW ACCOUNT (from 2026-10-25), Lead session_018aiGwGLGkxsnMnu8VfCu1m on claude/undertow-lead-handoff-ze8rrn
@@ -80,3 +108,19 @@
 - RENDERED @ fca9987986697c673d32188af45879f0a2d257b1: lead/gate-render-env-art-fca9987; 0 pass, 1 drift; 1 new without baseline (cloud)
 - RENDERED @ 34d6e51d88b7792c1e109d2773f1eceeeb3ca829: lead/gate-render-ui-34d6e51; 1 pass, 4 drift (cloud)
 - RENDERED @ 3b0e44b0b8c0490ddd92a6c0856d0625e1e2b09d: lead/gate-render-creatures-3b0e44b; 0 pass, 3 drift; 1 new without baseline, 2 portrait PNGs (cloud)
+
+## GATE-REQUEST lead/gate-big14 @ 8707ff90 (10-28 ~04:40)
+- Integration 608db549 plus all 11 track heads, including the human's playtest FAST-TRACKS (the grounded run, the party spawn, the Prologue colour, Rhen's shallows pose).
+- Checks already pass: validate_data, taskboard, dlgc, lint and format.
+- **Rebake the Shell Shrine GI** (`tools/shrine/bake_shrine_gi.tscn`, then `gi_inputs.py --write`). Two branches each rebaked it, so the merged inputs match neither bake.
+- **Known red:** `test_arenas` reproducibility for `ash_terrace_lanternfall` (red on env-art-b too; needs env-art's M3-ENV-1306).
+- Baseline PNG conflicts kept the integration side; I re-approve after viewing.
+
+## GATE-REQUEST lead/gate-big15 @ a44fec70 (10-28 ~10:35)
+- big14 plus every track's big14 fixes, plus lead/gate-ft-beach (the beach re-stage). hero-integration is at b7526686: its party-camera fix (Rhen off screen) is not in yet.
+- validate, taskboard, dlgc, lint and format all pass. The shrine GI inputs are unchanged (gi_inputs --check is up to date), so no rebake.
+- Run with HYMN_STEP_TIMEOUT at 3 h.
+
+## HANDOVER 2026-10-28 ~18:40 UTC (usage limit; a new account takes over)
+- Read CONSOLIDATED.md §0. big16 @ ff82858c is the next merge (it contains big15). Gate results go to lead/gate-big16-shots if the cloud gate finished; otherwise have the PC gate it.
+- Fold in creatures f6846325 and hero-integration a6e9d548 before merging. The Lead tools are in tools/dev/lead/.
