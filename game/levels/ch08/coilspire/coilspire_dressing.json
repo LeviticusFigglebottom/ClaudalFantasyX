@@ -1485,18 +1485,6 @@
    "block": "WrightMark"
   },
   {
-   "piece": "virel",
-   "kit_dir": "res://assets/creatures/virel/",
-   "materials_dir": "res://assets/creatures/virel/materials/",
-   "block": "Virel",
-   "yaw_deg": 0.0,
-   "at": [
-    308.745,
-    159.418
-   ],
-   "y": 74.285
-  },
-  {
    "piece": "corrow_far",
    "at": [
     0.0,

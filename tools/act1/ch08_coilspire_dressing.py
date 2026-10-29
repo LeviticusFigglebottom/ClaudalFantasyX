@@ -246,11 +246,9 @@ TRIAL_PIECES = (("Gate_t1", "flue_gate", "foot"), ("Gate_t2", "flue_gate", "foot
                 ("WrightMark", "wright_mark", "centre"))
 
 
-# Virel at rest in the crown chamber (B06 F07: "a long ribbon-serpent of sailcloth panels ... perfectly still"):
-# creatures-b's model (assets/creatures/virel, its own slot materials) on the Virel block's foot, held still (a
-# dressing piece, so no idle plays). It was the zone's last greybox stand-in (Act I inventory, M3-HER-1141).
-VIREL = {"piece": "virel", "kit_dir": "res://assets/creatures/virel/",
-         "materials_dir": "res://assets/creatures/virel/materials/", "block": "Virel", "yaw_deg": 0.0}
+# Virel in the crown chamber is act1-chapters' ZoneCast actor on her coil (M3-CRE-700), which owns her state after the
+# binding (the Lead, 2026-10-29: Coilspire showed her twice). This dressing places no model of her (it did, as
+# M3-ENV-1320's still piece, until then).
 
 
 # The interior on the GPU (M3-ENV-1322, the PC's QA rows 6 and 27): the kit's cs_laterite_inner gathers its green
@@ -282,13 +280,6 @@ def wash_lights() -> list[dict]:
             x, wy, z = cs.world_from_spire(r * math.cos(a), y, r * math.sin(a))
             out.append({"at": [r3(x), r3(wy), r3(z)], "energy": WASH["energy"], "range": WASH["range"]})
     return out
-
-
-def virel_piece() -> list[dict]:
-    g = json.loads(LAYOUT.read_text(encoding="utf-8"))
-    b = next(b for b in g["blocks"] if b["id"] == VIREL["block"])
-    foot = b["pos"][1] - b["size"][1] * 0.5
-    return [dict(VIREL, at=[r3(b["pos"][0]), r3(b["pos"][2])], y=r3(foot))]
 
 
 def trial_pieces() -> list[dict]:
@@ -339,7 +330,7 @@ def dressing() -> dict:
             pieces.append(dict(p, collide="trimesh", collide_lod0_in=door_boxes()))
             continue
         pieces.append(p)
-    pieces += key_pieces() + trial_pieces() + virel_piece()
+    pieces += key_pieces() + trial_pieces()
     backdrop = json.loads((PREVIEW / "coilspire_backdrop.json").read_text(encoding="utf-8"))
     corrow = "res://assets/environments/kits/corrow/"
     for p in backdrop.get("pieces", []):
