@@ -937,6 +937,20 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     (test-only), 4/0.
   - On the merged tree: cutscene_directives 2, cutscene_grade 3, cutscene_sequencer 18, first_verse 3, fp_ 30,
     haluna 65, prologue 8, ch01 20, all 0 failed.
+- **M3-CIN-1233, the M2 review switch flipped (the Lead's 23:31 order, ADR 0042), in progress:**
+  - first_playable.json: `prologue.next_location/next_spawn` → `ch01/oruvel_underway`/`Drop`;
+    `end_card.next_location/next_spawn` → `ch04/haluna_wake`/`NemeDoor`; both `_next_note`s updated.
+  - **Ch9's ending → the title:** Ch9 shows the same end card, so `end_card.final_flag` = `ch09_act_one_complete`
+    (Ch9's last scene sets it); with it set, accept returns to the title.
+  - The slice's card said "Confirm to return to the title" while it now goes on: when it carries on, the prompt is
+    `FLOW_END_CARD_PROMPT_CONTINUE` ("Confirm to continue"; appended to strings.csv).
+  - Tests moved to the route: test_fp_prologue, test_fp_thread, test_ch01_thread (its override dropped),
+    test_fp_end_card; the new **test_act1_route** walks New Game → prologue → Ch1, the end card → Ch4, and Act I's end
+    → the title.
+  - Still to come: the fp_/_thread runs on the final files, the hand-off stills, MERGE-READY.
+- LEAD-ASK: the slice's end card now plays mid-Act I and still reads "End of the first playable" with the slice credits
+  (CREDITS_SLICE). Keep it as the B12 beat, or should B11 go straight on into Ch4 with a chapter transition, or the
+  card get a mid-game title? My default: keep the card as is (your order) with only the prompt made honest.
 ### PC-QUEUE
 - New Game → the beach: 15 s of black before the fade on lavapipe (the load and prewarm at a fixed 30 fps). Measure it on
   the GPU against ADR 0042's ≤ 1 s hidden-frames target.

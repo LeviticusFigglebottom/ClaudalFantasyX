@@ -55,9 +55,13 @@ func _ready() -> void:
 	_return_scene = str(cfg.get("return_scene", DEFAULT_RETURN_SCENE))
 	next_location = StringName(str(cfg.get("next_location", "")))
 	next_spawn = StringName(str(cfg.get("next_spawn", "")))
+	# ADR 0042 (M3-CIN-1233): after Ch9's last scene (final_flag), Act I is over and accept returns to the title.
+	var final_flag := StringName(str(cfg.get("final_flag", "")))
+	if final_flag != &"" and bool(Game.get_flag(final_flag)):
+		next_location = &""
 	_title.text = tr("FLOW_END_CARD_TITLE")
 	_line.text = tr("FLOW_END_CARD_LINE")
-	_prompt.text = tr("FLOW_END_CARD_PROMPT")
+	_prompt.text = tr("FLOW_END_CARD_PROMPT_CONTINUE" if next_location != &"" else "FLOW_END_CARD_PROMPT")
 	var voice_key := str(cfg.get("voice_key", ""))
 	_voice.text = tr(voice_key) if voice_key != "" else ""
 	_voice_sec = float(cfg.get("voice_sec", 0.0)) if voice_key != "" else 0.0

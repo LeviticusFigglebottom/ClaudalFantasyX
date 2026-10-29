@@ -14,9 +14,9 @@
     },
     "prologue": {
       "scene_id": "prologue_dead_city",
-      "_next_note": "The M2 review switch (Lead, 2026-10-24): the slice route, ch02/haluna at Beach, until the human signs off the M2 review; then Act I, ch01/oruvel_underway at Drop (M3-C01-02), together with end_card.next_location. The debug chapter select (F8) reaches Ch1 meanwhile.",
-      "next_location": "ch02/haluna",
-      "next_spawn": "Beach"
+      "_next_note": "The M2 review switch (Lead, 2026-10-24), flipped on 2026-10-29 under ADR 0042 (the M2 review is approved; M3-CIN-1233): New Game plays Act I as one path, the prologue into Ch1, ch01/oruvel_underway at Drop (M3-C01-02), together with end_card.next_location. Before the flip it was the slice route, ch02/haluna at Beach.",
+      "next_location": "ch01/oruvel_underway",
+      "next_spawn": "Drop"
     },
     "end_card": {
       "return_scene": "res://game/core/boot.tscn",
@@ -27,9 +27,10 @@
       "credits": ["CREDITS_GAME", "CREDITS_SLICE", "CREDITS_MUSIC", "CREDITS_ENGINE", "CREDITS_FONTS", "CREDITS_THANKS"],
       "credit_line_sec": 1.1,
       "min_hold_sec": 16.0,
-      "_next_note": "M3-C04-04: next_location / next_spawn (a locations.json id and spawn) send accept on into the story instead of back to the title. Empty for the M2 review build; the Lead sets ch04/haluna_wake / NemeDoor once the human signs off the M2 review.",
-      "next_location": "",
-      "next_spawn": ""
+      "_next_note": "M3-C04-04: next_location / next_spawn (a locations.json id and spawn) send accept on into the story instead of back to the title. Flipped on 2026-10-29 under ADR 0042 (M3-CIN-1233): the slice's end card carries on into Ch4, ch04/haluna_wake at NemeDoor. final_flag: once Act I is over (Ch9's last scene sets it), accept returns to the title whatever next_location says (Ch9's ending shows this card too).",
+      "next_location": "ch04/haluna_wake",
+      "next_spawn": "NemeDoor",
+      "final_flag": "ch09_act_one_complete"
     },
     "haluna": {
       "location_id": "ch02/haluna",

@@ -1,8 +1,8 @@
 extends TestCase
 ## M2-FP-04, hardened in M2-FP-09: the whole first-playable thread, headless, with instant cutscenes
 ## and every scene change recorded instead of made (FlowRouting.record, BattleRequest.change_scene,
-## the battle's travel hooks): New Game → prologue (which hands off to Haluna in the M2 review build;
-## Act I's Ch1 route is tests/integration/test_ch01_thread.gd) → Haluna (Cutscene A) → three villagers → walk up
+## the battle's travel hooks): New Game → prologue (which hands off to Ch1 since the M2 review switch flipped;
+## Ch1 to the beach is tests/integration/test_ch01_thread.gd) → Haluna (Cutscene A) → three villagers → walk up
 ## the beach into the story's real tideline trigger → lose, Fight again, lose, Return to last save
 ## (none yet: the title) → walk in again and win → back at BattleReturn (not re-triggered) → save at
 ## the shrine, load it back → the causeway head → the Saltgrass Causeway (M2-FP-25: Ch3 starts, the
@@ -54,7 +54,8 @@ func _done() -> void:
 
 
 func test_the_first_playable_thread_end_to_end() -> void:
-	# New Game lands on the prologue, which hands off to the beach (the M2 review switch).
+	# New Game lands on the prologue, which hands off to Ch1 (the M2 review switch flipped on 2026-10-29, ADR 0042;
+	# test_ch01_thread plays Ch1 through to the beach). The slice thread picks up at Ch1's hand-off, Haluna's Beach.
 	var reg := LocationRegistry.load_default()
 	assert_eq(reg.new_game_location, &"prologue")
 	var prologue := (load(PROLOGUE) as PackedScene).instantiate() as PrologueScene
@@ -64,7 +65,7 @@ func test_the_first_playable_thread_end_to_end() -> void:
 	prologue.travel = _record_travel
 	prologue.play()
 	assert_true(bool(Game.get_flag(&"prologue_seen")))
-	assert_eq(travels, [[&"ch02/haluna", &"Beach"]] as Array[Array], "on to Haluna (the M2 slice route)")
+	assert_eq(travels, [[&"ch01/oruvel_underway", &"Drop"]] as Array[Array], "on to Ch1 (Act I's route)")
 	prologue.free()
 	var beach := reg.resolve(&"ch02/haluna", &"Beach")
 	assert_eq(beach.get("scene"), ZONE, "the registry enters the playable zone")

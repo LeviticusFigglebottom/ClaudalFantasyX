@@ -40,6 +40,7 @@ func test_text_comes_from_loc_keys() -> void:
 
 
 func test_accept_waits_for_the_hold_then_returns_to_the_title() -> void:
+	card.next_location = &""  # the title case (Act I's end; test_act1_route covers both)
 	assert_false(card.prompt_shown(), "no prompt during the hold")
 	assert_false(card.handle_input(_accept_event()), "accept is ignored during the hold")
 	assert_eq(swaps, [] as Array[String])
@@ -52,8 +53,10 @@ func test_accept_waits_for_the_hold_then_returns_to_the_title() -> void:
 	_done()
 
 
-func test_the_m2_build_ends_at_the_title_until_next_location_is_set() -> void:
-	assert_eq(card.next_location, &"", "first_playable.json end_card.next_location stays empty for the M2 review")
+func test_the_slice_card_goes_on_into_ch4_since_the_switch_flipped() -> void:
+	# ADR 0042 (M3-CIN-1233, 2026-10-29): the M2 review is approved, so the slice's end card carries on into Act I.
+	assert_eq(card.next_location, &"ch04/haluna_wake", "first_playable.json end_card.next_location")
+	assert_eq(card.next_spawn, &"NemeDoor")
 	_done()
 
 
