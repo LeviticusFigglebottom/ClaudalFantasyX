@@ -343,3 +343,21 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
 - **BACKLOG EMPTY (2026-10-29):** rows 12/35/36 fixed and pinned by tests, row 30 is later-act (record only), no clip
   is asked of this track, and the boss sweep's one weak read (the Spar-wraith) is fixed. What's left is real-GPU only
   (PC-QUEUE).
+
+## 2026-10-29 23:10: the Lead's move-pass brief (M3-CRB-013), on big18 (this branch fast-forwarded to lead/gate-big18)
+- **Method:** a scratch fixture freezes every clip at five beats from the battle camera in each creature's own fight
+  (plus head close-ups); a numeric pass samples every clip at 30 Hz (slide while grounded, depth under the floor,
+  per-frame jumps, loop seams, skill-to-clip sharing).
+- **Systemic finding:** most bosses play one `attack` and one `cast` for 2-6 skills (the Reach 6 on 2, the
+  Drownbell 5 on `cast`, the Spar-wraith 5 on 2, the Hullgnaw 3 on `attack`, the Matron 4 on 2). Each skill gets its
+  own clip via creatures.json `clip_by_skill` (phase `clips` maps for phase stances).
+- **Done: the Bottle hermit (9e2c4f93, 119af519):** its glass never moved, so every move read faint at battle
+  distance. Glass Jab rears back on its bulb (0.45 s telegraph) and lunges, **contact 0.45 -> 0.55**; Glass Flare
+  rocks up and aims its mouth, **new cast contact 0.75**; hits shove the glass; ready raises the claw. Blender verify
+  identical; tools test_creatures OK (grounding).
+- **In progress (worktree agents):** Hullgnaw (the strike plunged into the deck; its intro and KO rose from and sank
+  into solid raft planks, so it gets its own smashed-plank breach at its base; rib_lash, thrash, coil); Drownbell
+  (toll, toll_gather, flood_surge, undertow_surge, rouse_polyp; hits, flood phase); Spar-wraith and Cinder Matron.
+  Next: the Undertow's Reach, then the three Vowbound (Ilun's Brine Lash shares his basic attack).
+- **For battle-presentation:** every new clip changes when a blow lands. I will list each clip with its contact time
+  here before MERGE-READY; the hermit's are above (attack 0.55, cast 0.75).
