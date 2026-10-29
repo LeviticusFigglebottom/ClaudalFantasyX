@@ -95,11 +95,13 @@ Asha [soft_smile]: I'm Asha. That's Toma. He's nicer than his spear. #line:ch02_
     // Stay branch (decisions_log N-19, N-22): he takes the hand she offered as soon as she has
     // named herself, so she isn't holding it out through Toma's introduction. They rise together,
     // and H05 (Rhen's POV, haluna.md H05) rises with his eye.
+    // M2-FP-119: the cut to the standing two-shot comes first, so they rise in it. Kept on H05 (the kneeling height),
+    // the rise filled the frame with his legs at the lens for 1.2 s.
+    @camera H05_up blend=0.0
     @anim rhen take_hand asha
     @anim rhen rise_to_stand
     @anim asha rise_to_stand
     @wait 1.2
-    @camera H05_up blend=0.0
 <<endif>>
 Toma [neutral]: Toma Okeru, of Haluna. You are speaking to the Lady— #line:ch02_beach_031
 Asha [smile]: To Asha. Who is very glad you aren't dead. #line:ch02_beach_032
