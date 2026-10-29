@@ -298,7 +298,20 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
   ownership line. The inventory's neme/osu/reed rows in haluna.tscn are VillagerLayer's at runtime
   (game/data/world/npc/zones/ch02_haluna.json puts the models in the capsules), so a static audit still sees the
   capsule; Pell's Ch9 capsules are the party's (integration-qa), with a swap note in M3-CHR-519.
-- **In progress:** M3-CHR-590, the Stillguard dialogue clips.
+- MERGE-READY @ c57fa703: **M3-CHR-590, the Stillguard dialogue clips** for all six variants: `walk_torch` (the torch
+  carried low in the shield hand's fist; raised, the strapped shield cut into the shoulder), `hold_arm` (the shield
+  hand closes on the wright girl's forearm about a metre up; contact point = the left fist at the last frame, in the
+  task notes for Cinematics), `let_go` (hold_arm played back), the shared `kneel_palms_flat` (spear set down) and
+  `shake_head`. New hand shape: a fist (HAND_SHAPE), on the same solve as Pell's flat hand. Checks: test_stillguard,
+  test_hero_clips (every other library byte-identical), test_hero_battle_clips, test_hero_locomotion, test_pell,
+  test_moll OK (90); rig_probe stillguard_a..f OK with pinned, reasoned allowances; validate_data, taskboard OK.
+  SELF-RENDERED the three new shots (stillguard_a_clip_walk_torch, stillguard_c_clip_hold_arm,
+  stillguard_a_clip_kneel_palms_flat; no baselines): fists closed, spear on the floor in the kneel. Also filed
+  M3-CHR-591 (request to creatures: Haluna's town trio can wear their own models).
+- Tried and reverted: a staggered fringe for Ione. The hard line is the painted scalp hairline and the chips are the
+  short-hair cards on Asha's long-hair atlas; filed as M3-CHR-592 with the plan (Moll's square line is toma_hair's
+  shared hairline table).
+- **Next:** M3-CHR-592 (villager short hair at dialogue range), then Pell's leftovers (pell_review.md "Still open").
 - (was) **In progress:** Pell's second look-dev pass (M3-CHR-506, pell_review.md "What still does not read" 1–5): rounder
   lid openings and a dark eye ring, round flat ears, a flat right hand in storm_call and cast, the fur pattern, the
   nape ridge.
@@ -307,4 +320,5 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
   (M3-CHR-519, Pell's swap note added); then my own audit of the named NPCs at dialogue range.
 
 ### PC-QUEUE
-- (none yet)
+- Pell (M3-CHR-506) on the real GPU: the fur's read at full figure and the face's warm orange under the warm key
+  (lavapipe has no real sheen/SSS balance); pell_front, pell_face, pell_storm_ch8.
