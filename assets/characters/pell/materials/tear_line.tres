@@ -6,4 +6,5 @@
 resource_name = "tear_line"
 render_priority = 3
 shader = ExtResource("sh")
-
+shader_parameter/col_tear = Color(0.165, 0.118, 0.102, 1.0)
+shader_parameter/coverage = 0.4

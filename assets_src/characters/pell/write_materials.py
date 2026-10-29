@@ -128,7 +128,8 @@ def tables(extra: dict) -> dict[str, tuple[str, int, dict, dict]]:
                 {"tex_iris": A + "asha_iris.png", "tex_sclera": A + "asha_sclera.png"}),
         "cornea": ("character_cornea", 1, {}, {}),
         "eye_occlusion": ("character_eye_occlusion", 2, {"upper_strength": "1.0", "corner_strength": "0.75"}, {}),
-        "tear_line": ("character_tear_line", 3, {}, {}),
+        # second look-dev pass: a dark wet lid margin (the shared #C89088 read as a pink human lid line)
+        "tear_line": ("character_tear_line", 3, {"col_tear": col("#2A1E1A"), "coverage": "0.4"}, {}),
         "lash": ("character_hair", 0, {"flow_strength": "0.0", "spec_primary_intensity": "0.05",
                                        "spec_secondary_intensity": "0.0", "transmission_strength": "0.1",
                                        "indirect_specular": "0.03", "col_root": col("#1A1310"),

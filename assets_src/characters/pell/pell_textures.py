@@ -83,13 +83,15 @@ MOUTH = "#3A1E1C"  # the mouth's inside: dark, not a human pink
 TONE = {"bone": BONE, "reed": REED, "dark": SHELL_DARK, "nacre": NACRE}
 TONE_ROUGH = {"bone": 0.35, "reed": 0.35, "dark": 0.35, "nacre": 0.2}
 STRIPE_TOP_W = 0.07  # replaced by `stripe_width_m` (pell_params)
+STRIPE_EDGE = (0.5, 0.006)  # the stripe edge's tufts: +/- a quarter of its half-width, at this scale (m)
 CLUMP_M = (0.0025, 0.008)  # m: the body fur's clumps across and along the flow (short, dense: look-dev review)
 STRAND_STRETCH = 4.0  # the strand streaks: this much longer along the flow than across (short fur, not grain)
 FUR_STREAK = 0.08  # the albedo's strand streaks (+/- half this): fine and soft (the review: 0.32 read as wood grain)
-FUR_CLUMP = 0.06  # and its clumps
+FUR_CLUMP = 0.06  # and its clumps (the face; the body's is FUR_CLUMP_BODY)
+FUR_CLUMP_BODY = 0.14  # second look-dev pass: the body read smooth between the outline cards at full figure
 FEATHER_BARBS = 2.0  # the crest feathers' barbs per texel row: a full vane that reads at dialogue range
 LIP_DARK = 0.55  # how far the lips take the nose pad's dark: an otter's lip line
-FUR_RELIEF = (0.00025, 0.0003)  # m: the face's strand relief, the body's clump relief
+FUR_RELIEF = (0.00025, 0.0006)  # m: the face's strand relief, the body's clump relief
 FUR_SIZE = (1024, 512)  # pell_fur.png: pell_fur.FUR_COLS columns, V root (row 0) -> tip
 FEATHER_SIZE = 1024
 CLOTH_SIZE = 2048
@@ -131,7 +133,7 @@ def fur_regions(P: np.ndarray, N: np.ndarray, key: str, lm, face, fp: dict) -> d
     (palms and soles), inner_ear, lid_rim; the rest is mid brown."""
     S = lm.S
     s = lm.h / 0.222
-    out = {k: np.zeros(len(P)) for k in ("saddle", "pale", "pad", "bare", "inner_ear", "lid_rim", "grey")}
+    out = {k: np.zeros(len(P)) for k in ("saddle", "pale", "pad", "bare", "inner_ear", "lid_rim", "grey", "eye_ring")}
     x, y, z = P[:, 0], P[:, 1], P[:, 2]
     yc = float(lm.P("head_c")[1])
     zc, zn = float(lm.P("chin")[2]), float(lm.P("notch")[2])
@@ -157,6 +159,11 @@ def fur_regions(P: np.ndarray, N: np.ndarray, key: str, lm, face, fp: dict) -> d
             rr, _t = fr.field(x, z)
             near = smoothstep(fr.E[1] + 0.012 * S, fr.E[1] - 0.004 * S, y)
             out["lid_rim"] = np.maximum(out["lid_rim"], np.exp(-((rr - 1.04) / 0.08) ** 2) * near)
+            # second look-dev pass (pell_review.md item 1): the dark fur ring round the whole eye, not a lid line
+            r0, r1 = (float(v) for v in fp.get("eye_ring", (0.0, 0.0)))
+            if r1 > 0.0:
+                ring = (1.0 - smoothstep(r0, r1, rr + 0.15 * wobble)) * near
+                out["eye_ring"] = np.maximum(out["eye_ring"], ring)
         # the inner ears: the ear cup facing forward and out
         ear = lm.P("ear")
         for sg in (1.0, -1.0):
@@ -195,7 +202,10 @@ def fur_regions(P: np.ndarray, N: np.ndarray, key: str, lm, face, fp: dict) -> d
         tz = np.clip((zc - z) / max(zc - z_end, 1e-6), 0.0, 1.0)
         half = 0.5 * (w0 + (w1 - w0) * tz)
         front = smoothstep(0.05, 0.4, -N[:, 1])
-        out["pale"] = (smoothstep(half + 0.006 * S, half - 0.004 * S, np.abs(x) * (1.0 + wobble)) * front *
+        # second look-dev pass: the stripe's edge is broken by fine tufts and blends over a wider band (it read as a
+        # painted bib)
+        tuft = STRIPE_EDGE[0] * (at.fbm3(P, STRIPE_EDGE[1] * S, 311, octaves=2) - 0.5)
+        out["pale"] = (smoothstep(half + 0.014 * S, half - 0.01 * S, np.abs(x) * (1.0 + wobble + tuft)) * front *
                        smoothstep(z_end - 0.015 * S, z_end + 0.02 * S, z) * (z < zc + 0.02 * S))
         # the palms and soles: bare dark skin (the inner faces of the hands, the undersides of the feet)
         for sd in ("L", "R"):
@@ -253,7 +263,8 @@ def fur_maps(key: str, npz: dict, size: int, lm, face, fp: dict) -> None:
     col = col * (1.0 - reg["pale"][:, None]) + pale[None, :] * reg["pale"][:, None]
     streak = at.aniso_noise(P, D, float(fp["strand_m"]) * 2.0 * S, STRAND_STRETCH, 405)
     clump = at.aniso_noise(P, D, CLUMP_M[1] * S, STRAND_STRETCH * 0.5, 409)  # the wet fur's partings, down the flow
-    tone = 1.0 + FUR_STREAK * (streak - 0.5) + FUR_CLUMP * (clump - 0.5) + 0.06 * (at.fbm3(P, 0.02 * S, 406,
+    fur_clump = FUR_CLUMP if key == "head" else FUR_CLUMP_BODY
+    tone = 1.0 + FUR_STREAK * (streak - 0.5) + fur_clump * (clump - 0.5) + 0.06 * (at.fbm3(P, 0.02 * S, 406,
                                                                                           octaves=3) - 0.5)
     col = col * tone[:, None]
     if key == "head":
@@ -265,6 +276,8 @@ def fur_maps(key: str, npz: dict, size: int, lm, face, fp: dict) -> None:
         lipc = hexc(fp["nose_pad"])
         lips = lips * LIP_DARK  # the muzzle's lip line, not a painted mouth
         col = col * (1.0 - lips[:, None]) + lipc[None, :] * lips[:, None]
+        ring = reg["eye_ring"] * float(fp.get("eye_ring_strength", 0.0))
+        col = col * (1.0 - ring[:, None]) + (dark * tone[:, None]) * ring[:, None]
         col = col * (1.0 - reg["lid_rim"][:, None]) + hexc(LID_RIM)[None, :] * reg["lid_rim"][:, None]
         pad = reg["pad"]
         padc = hexc(fp["nose_pad"]) * (0.9 + 0.2 * at.noise3(P, 0.0012 * S, 408))[:, None]
@@ -317,6 +330,10 @@ def fur_maps(key: str, npz: dict, size: int, lm, face, fp: dict) -> None:
 def skin(bake_dir: Path, extra: dict) -> None:
     at.OUT = OUT
     lm, face = kirru_landmarks(bake_dir)
+    import pell_head
+
+    # the eye frames as build_pell left them (KirruWarp.round_frames), so the lid rims follow the margins
+    pell_head.round_eye_frames(face, extra["_kirru"]["otter_head"].get("eye_round"))
     fp = dict(extra["_fur"])
     fp["nose_pad_w_m"] = float(extra["_kirru"]["nose_pad_width_m"])
     for key, (size, _small) in (("head", HEAD), ("body", BODY)):
