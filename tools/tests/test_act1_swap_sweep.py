@@ -19,7 +19,9 @@ class Act1SwapSweepTest(unittest.TestCase):
         self.assertIn("res://game/core/boot.tscn", t)
         self.assertIn("res://game/battle/scene/battle_sandbox.tscn", t)
         self.assertEqual(len(t), len(set(t)))
-        for path in t:
+        self.assertIn("battle:ch01_hullgnaw", t, "the Act I field battles")
+        self.assertNotIn("battle:ch10_", " ".join(t))
+        for path in (x for x in t if not x.startswith(sweep.BATTLE_PREFIX)):
             self.assertTrue((ROOT / path.removeprefix("res://")).exists(), path)
 
     def test_a_probe_line_is_read_and_judged(self) -> None:

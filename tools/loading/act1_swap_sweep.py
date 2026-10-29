@@ -9,8 +9,9 @@ entry time and the worst visible frame (the fade lifting and the 60 frames after
 was not covered or printed no stats; frame times over budget are reported but do not fail the run, because a
 headless box is not the PC (its numbers are the PC-QUEUE measurement).
 
-Targets: every zone in game/data/ui/scene_loads.json, plus perf_budgets.json's scene_swap targets (the title
-and the battle sandbox).
+Targets: every zone in game/data/ui/scene_loads.json, perf_budgets.json's scene_swap targets (the title and the
+battle sandbox), and every Act I encounter in game/data/battle/encounters.json as a field battle
+(`battle:<id>`, the probe's --encounter).
 
 Usage: python3 tools/loading/act1_swap_sweep.py [--godot godot] [--only <substring>] [--json out.json]
 """
@@ -25,6 +26,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 SCENE_LOADS = ROOT / "game/data/ui/scene_loads.json"
 BUDGETS = ROOT / "game/data/debug/perf_budgets.json"
+ENCOUNTERS = ROOT / "game/data/battle/encounters.json"
+ACT1_PREFIXES = ("prologue", "ch01_", "ch02_", "ch03_", "ch04_", "ch05_", "ch06_", "ch07_", "ch08_", "ch09_")
+BATTLE_PREFIX = "battle:"
 PROBE_TAG = "SCENE_SWAP_PROBE "
 HIDDEN_BUDGET_MS = 1000.0
 TIMEOUT_S = 600
@@ -33,7 +37,10 @@ TIMEOUT_S = 600
 def targets() -> list[str]:
     zones = list(json.loads(SCENE_LOADS.read_text())["scene_loads"]["scenes"])
     swap = json.loads(BUDGETS.read_text())["scene_swap"]
-    return sorted(zones) + [t for t in swap["targets"] if t not in zones]
+    rows = json.loads(ENCOUNTERS.read_text())
+    rows = rows.get("encounters", []) if isinstance(rows, dict) else rows
+    battles = sorted(BATTLE_PREFIX + r["id"] for r in rows if str(r.get("id", "")).startswith(ACT1_PREFIXES))
+    return sorted(zones) + [t for t in swap["targets"] if t not in zones] + battles
 
 
 def probe_scene() -> str:
@@ -76,7 +83,8 @@ def row(target: str, stats: dict | None) -> dict:
 
 
 def run(godot: str, target: str) -> dict:
-    args = [godot, "--headless", "--path", str(ROOT), probe_scene(), "--", "--to=" + target]
+    where = "--encounter=" + target[len(BATTLE_PREFIX):] if target.startswith(BATTLE_PREFIX) else "--to=" + target
+    args = [godot, "--headless", "--path", str(ROOT), probe_scene(), "--", where]
     args += ["--resident-loads", "--warm-resident"]
     try:
         done = subprocess.run(args, capture_output=True, text=True, timeout=TIMEOUT_S, check=False)
