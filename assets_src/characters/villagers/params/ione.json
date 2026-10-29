@@ -66,6 +66,7 @@
       110
     ],
     "hairline_cards": 50,
+    "tufts": true,
     "rise": 0.8,
     "colour": "#141417",
     "underpaint": "#16161A",
