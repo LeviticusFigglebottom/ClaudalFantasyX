@@ -1420,3 +1420,15 @@ hero-integration 78e9df9c. shots.json resolves everywhere. pc-gpu.md: take integ
   (fighter_actor, battle_controller, battle_boss_vfx), creatures-b 1, env-art 1. Down from the 10-28 list; creatures'
   and act1-chapters' are gone.
 - Not run here: coverage, screenshots (the gate session has them).
+
+MERGE-READY @ 37adb2fb3 (+ this log):
+- **M3-CRB-012 → review (creatures-b's request):** the audit finds a Vowbound's body in its creatures.json row
+  (`vowbound: true` + `scene`), the game's own rule. New test; test_placeholder_audit OK.
+- **M2-HER-1128 → review (slice-polish reviews):** test_fp_thread arrives after the tideline win as the game does
+  (`story.begin()`), so B02 plays and `ch02_ate_at_nemes` is set before the shrine save. qa_known `unraised` is empty
+  now. fp_thread 2/0, qa_threads 1/0.
+- **M3-ARC-1326's test fix** (791495cfa) and the M3-HER-1130 leak list are above.
+
+### PC-QUEUE
+- **M1-QA-09** (qa, todo): the next Asha real-GPU re-check (grief) with the QA-08 rigour fixes. It needs the PC's GPU
+  and waits on M1-RND-24 and M1-CHR-12. Not runnable in a cloud container.
