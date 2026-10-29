@@ -104,7 +104,9 @@
     31.184
    ],
    "y": 0.0,
-   "yaw_deg": 26.356
+   "yaw_deg": 26.356,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -176,7 +178,9 @@
     26.073
    ],
    "y": 0.0,
-   "yaw_deg": 24.064
+   "yaw_deg": 24.064,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -248,7 +252,9 @@
     21.401
    ],
    "y": 0.0,
-   "yaw_deg": 21.772
+   "yaw_deg": 21.772,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -320,7 +326,9 @@
     17.174
    ],
    "y": 0.0,
-   "yaw_deg": 19.481
+   "yaw_deg": 19.481,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -392,7 +400,9 @@
     13.399
    ],
    "y": 0.0,
-   "yaw_deg": 17.189
+   "yaw_deg": 17.189,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -464,7 +474,9 @@
     10.083
    ],
    "y": 0.0,
-   "yaw_deg": 14.897
+   "yaw_deg": 14.897,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -536,7 +548,9 @@
     7.231
    ],
    "y": 0.0,
-   "yaw_deg": 12.605
+   "yaw_deg": 12.605,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -608,7 +622,9 @@
     4.847
    ],
    "y": 0.0,
-   "yaw_deg": 10.313
+   "yaw_deg": 10.313,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -681,6 +697,8 @@
    ],
    "y": 0.0,
    "yaw_deg": 8.021,
+   "scale": 1.01,
+   "scale_y": 1.0,
    "block": "WallSection"
   },
   {
@@ -766,6 +784,8 @@
    ],
    "y": 0.0,
    "yaw_deg": 5.73,
+   "scale": 1.01,
+   "scale_y": 1.0,
    "block": "WallSection"
   },
   {
@@ -845,6 +865,8 @@
    ],
    "y": 0.0,
    "yaw_deg": 3.438,
+   "scale": 1.01,
+   "scale_y": 1.0,
    "block": "WallSection"
   },
   {
@@ -929,7 +951,9 @@
     0.06
    ],
    "y": 0.0,
-   "yaw_deg": 1.146
+   "yaw_deg": 1.146,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -1001,7 +1025,9 @@
     0.06
    ],
    "y": 0.0,
-   "yaw_deg": -1.146
+   "yaw_deg": -1.146,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -1073,7 +1099,9 @@
     0.54
    ],
    "y": 0.0,
-   "yaw_deg": -3.438
+   "yaw_deg": -3.438,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -1127,7 +1155,9 @@
     1.499
    ],
    "y": 0.0,
-   "yaw_deg": -5.73
+   "yaw_deg": -5.73,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -1199,7 +1229,9 @@
     2.935
    ],
    "y": 0.0,
-   "yaw_deg": -8.021
+   "yaw_deg": -8.021,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -1271,7 +1303,9 @@
     4.847
    ],
    "y": 0.0,
-   "yaw_deg": -10.313
+   "yaw_deg": -10.313,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -1343,7 +1377,9 @@
     7.231
    ],
    "y": 0.0,
-   "yaw_deg": -12.605
+   "yaw_deg": -12.605,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -1415,7 +1451,9 @@
     10.083
    ],
    "y": 0.0,
-   "yaw_deg": -14.897
+   "yaw_deg": -14.897,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -1487,7 +1525,9 @@
     13.399
    ],
    "y": 0.0,
-   "yaw_deg": -17.189
+   "yaw_deg": -17.189,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -1559,7 +1599,9 @@
     17.174
    ],
    "y": 0.0,
-   "yaw_deg": -19.481
+   "yaw_deg": -19.481,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -1631,7 +1673,9 @@
     21.401
    ],
    "y": 0.0,
-   "yaw_deg": -21.772
+   "yaw_deg": -21.772,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -1703,7 +1747,9 @@
     26.073
    ],
    "y": 0.0,
-   "yaw_deg": -24.064
+   "yaw_deg": -24.064,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -1775,7 +1821,9 @@
     31.184
    ],
    "y": 0.0,
-   "yaw_deg": -26.356
+   "yaw_deg": -26.356,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -1847,7 +1895,9 @@
     36.725
    ],
    "y": 0.0,
-   "yaw_deg": -28.648
+   "yaw_deg": -28.648,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -1919,7 +1969,9 @@
     42.687
    ],
    "y": 0.0,
-   "yaw_deg": -30.94
+   "yaw_deg": -30.94,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -1991,7 +2043,9 @@
     49.061
    ],
    "y": 0.0,
-   "yaw_deg": -33.232
+   "yaw_deg": -33.232,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -2063,7 +2117,9 @@
     55.836
    ],
    "y": 0.0,
-   "yaw_deg": -35.523
+   "yaw_deg": -35.523,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -2135,7 +2191,9 @@
     63.002
    ],
    "y": 0.0,
-   "yaw_deg": -37.815
+   "yaw_deg": -37.815,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -2207,7 +2265,9 @@
     70.547
    ],
    "y": 0.0,
-   "yaw_deg": -40.107
+   "yaw_deg": -40.107,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -2279,7 +2339,9 @@
     78.459
    ],
    "y": 0.0,
-   "yaw_deg": -42.399
+   "yaw_deg": -42.399,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -2351,7 +2413,9 @@
     86.726
    ],
    "y": 0.0,
-   "yaw_deg": -44.691
+   "yaw_deg": -44.691,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -2423,7 +2487,9 @@
     95.334
    ],
    "y": 0.0,
-   "yaw_deg": -46.983
+   "yaw_deg": -46.983,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -2495,7 +2561,9 @@
     104.269
    ],
    "y": 0.0,
-   "yaw_deg": -49.274
+   "yaw_deg": -49.274,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -2567,7 +2635,9 @@
     113.517
    ],
    "y": 0.0,
-   "yaw_deg": -51.566
+   "yaw_deg": -51.566,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -2639,7 +2709,9 @@
     123.064
    ],
    "y": 0.0,
-   "yaw_deg": -53.858
+   "yaw_deg": -53.858,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -2711,7 +2783,9 @@
     132.893
    ],
    "y": 0.0,
-   "yaw_deg": -56.15
+   "yaw_deg": -56.15,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
