@@ -53,6 +53,28 @@ Session `session_015hKkhtpX67kS4yZeA8AAhv`. Integration branch `claude/undertow-
   - VFX coverage and the inventory have nothing left for this track.
   Next: merge big17 when the Lead announces it, then any new rows.
 
+### 2026-10-29 evening: the Lead's 17:59 message (Kerrid's and Liss's Swell techniques, then the Act I VFX sweep)
+- **Claimed** M3-C05-06 and M3-C06-05 (2b-claim commit, pushed).
+- **The techniques** (80e565ea):
+  - Kerrid: **The Long Hold**, physical 14, one foe (Return Tide's band).
+  - Liss: **Three-Reel Charge**, physical 9, every foe, a 1-rank push (Written Light's band less one for the push).
+  - Their inputs are data rows on the existing kinds. The weighted swing is a one-blow `brace` (hold while the
+    cleaver coils, let go on the count). The reel-stop is a three-beat `timing_ring`. Both give +45% at good and +90%
+    perfect.
+  - formulas.md and test_formulas.gd list both. No formula or constant changed.
+- **Viewed with self-rendered stills** in their own fights: `tools/vfx/swell_finisher_sheet.gd` plays each technique
+  through BattleSwell.perform.
+  - Liss on the Ch8 hoist reads: the gadget bursts over all four foes.
+  - Kerrid on the Matron showed only the chest hit at first. His low sweep spawned inside her 2.9 m bulk.
+- **Fix (0c84c54b):** new near-face low anchors, `ground` and `knee` (feet stays centred, for rings).
+  - Kerrid's sweep uses knee; Anchor Fall, Return Tide and Lamp Dive use ground.
+  - Re-rendered: the sweep's sand now shows low on her near side, apart from the chest hit.
+- **Sweep, Act I foe and boss actions:** every AI-picked skill of every Act I foe has its own effect (the Drownbell's
+  toll is its BattleBossVfx set piece). The one hidden effect found was the Matron's recrust ring (0.75 m, inside her
+  bulk). It is now 1.6 m (5b5d42d8). Re-rendered: ember motes ring her base.
+- **Pending:** the battle suite and the Ch5, Ch6 and Ch8 sim suites with Kerrid or Liss. The first run was lost to a
+  container restart, and they are re-running now. MERGE-READY follows when they are green.
+
 ### PC-QUEUE
 - GPU QA row 36 (the Reach): re-check in live play on the RX 9070 XT (M3-BPR-425's rest frame).
 - GPU QA row 34: re-check once M3-BPR-427 lands (and hold the zone's random encounters in the walk).
