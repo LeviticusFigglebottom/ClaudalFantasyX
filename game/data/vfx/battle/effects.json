@@ -6,7 +6,9 @@
     "chest": 0.6,
     "head": 1.0,
     "rim": 0.12,
-    "hood": 0.85
+    "hood": 0.85,
+    "ground": 0.05,
+    "knee": 0.25
   },
   "safety": {
     "doc": "Photosensitivity: every flash is capped at flash_max_alpha, and two flashes are at least flash_min_interval_s apart (at most 2 a second, under WCAG 2.3.1's 3). Flashes draw on a CanvasLayer below the HUD, so the timeline is never covered (pillar 4).",
@@ -433,7 +435,7 @@
     "lamp_dive": {
       "kind": "particles",
       "anchor": "target",
-      "at": "feet",
+      "at": "ground",
       "layers": [
         {
           "color": "#FFB16E",
@@ -1779,7 +1781,7 @@
     "anchor_fall": {
       "kind": "particles",
       "anchor": "target",
-      "at": "feet",
+      "at": "ground",
       "layers": [
         {
           "color": "#5E6E80",
@@ -2009,7 +2011,7 @@
     "return_tide": {
       "kind": "particles",
       "anchor": "target",
-      "at": "feet",
+      "at": "ground",
       "layers": [
         {
           "color": "#3FD0C9",
@@ -5621,7 +5623,7 @@
             "volcanic_stone",
             "ember_orange"
           ],
-          "amount": 44,
+          "amount": 60,
           "lifetime_s": 0.9,
           "explosiveness": 0.85,
           "velocity_m_s": [
@@ -5639,7 +5641,7 @@
             0.3
           ],
           "energy": 1.4,
-          "emission_radius_m": 0.75,
+          "emission_radius_m": 1.6,
           "turbulence": 0.0,
           "direction": [
             0,
@@ -6392,7 +6394,7 @@
     "swell_weighted_swing": {
       "kind": "particles",
       "anchor": "target",
-      "at": "feet",
+      "at": "knee",
       "layers": [
         {
           "color": "#B08D57",
@@ -7174,7 +7176,9 @@
       "undertow_surge": "undertow_surge",
       "grip_the_stair": "grip_the_stair",
       "rope_dive": "rope_dive",
-      "hand_closes": "hand_closes"
+      "hand_closes": "hand_closes",
+      "long_hold": "swell_weighted_swing",
+      "three_reel_charge": "swell_reel_stop"
     },
     "items": {
       "bitterleaf": "bitterleaf",

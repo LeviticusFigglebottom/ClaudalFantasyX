@@ -83,11 +83,13 @@ func test_every_live_input_earns_the_same_bonus_at_each_quality() -> void:
 	var want := {SwellInput.QUALITY_MISS: 0, SwellInput.QUALITY_GOOD: 45, SwellInput.QUALITY_PERFECT: 90}
 	var kinds: Array[StringName] = []
 	for row: Dictionary in cfg["inputs"]:
-		kinds.append(StringName(str(row["kind"])))
+		if not kinds.has(StringName(str(row["kind"]))):
+			kinds.append(StringName(str(row["kind"])))
 		for q: StringName in want:
 			var got := BattleSwell.bonus_pct(row, SwellInput.scripted_result(row, q))
 			assert_eq(got, want[q], "%s at %s" % [row["id"], q])
-	assert_eq(kinds, SwellInput.KINDS, "one input of every kind, in kind order")
+	# M3-C05-06/M3-C06-05: Kerrid's swing is a brace row and Liss's reel-stop a ring row, so kinds repeat.
+	assert_eq(kinds, SwellInput.KINDS, "every kind has an input, first met in kind order")
 	for hero: Dictionary in cfg["heroes"]:
 		var input := BattleSwell.input_row_of(cfg, StringName(str(hero["id"])))
 		assert_true(SwellInput.create(input).duration_sec() <= 5.0, "%s's input stays short" % hero["id"])

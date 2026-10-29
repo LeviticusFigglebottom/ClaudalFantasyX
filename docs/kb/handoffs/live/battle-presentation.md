@@ -8,6 +8,77 @@ The gap (the human's playtest note): battles had no action animation. This track
 Session `session_015hKkhtpX67kS4yZeA8AAhv`. Integration branch `claude/undertow-lead-handoff-ze8rrn` merged in
 (c6a960ab).
 
+### 2026-10-29: the new Lead's brief (integration branch `claude/new-session-mj8c3c`, merged in at b3f092f8)
+- **Merge:** one conflict, `pc-gpu.md` (not mine): took the integration branch's side.
+- **1. The stair meter on env-art-b's Fisher Stair:** nothing new has landed. The integration branch has no new stair
+  commit, and env-art-b's branch has no new prop. The hook from M3-BPR-1325 (the Corrow kit's `fisher_stair` and the
+  `StairHead_ward` / `CameraHints/the_stair_head` marks in all three seawall arenas) still stands. Re-checked:
+  `--filter=stair_marks` 5/0.
+- **2. act1_gpu_qa rows** (read from `gpu/act1-qa-2` @ 59a41402):
+  - Row 36 (the Reach's arm over the party) is mine. It was fixed in M3-BPR-425 (camera.rest_by_enemy) and viewed,
+    and it waits on the PC (PC-QUEUE below).
+  - Rows 12 and 35 (Moll a capsule in battle): the battle side was closed by M3-CHR-523 (his stand-in).
+  - **Row 34 (ch06_ridge_skippers on the sandbox's set and foes) is not a battle bug.** The encounter row is right.
+    The three foes are `sandbox_reef`, which `FieldBattle` plays when it takes no request. `BattleRequest.submit` has
+    no guard against a second submit while the first is still awaiting its stinger, and the QA walk starts fights
+    from outside the zone while brine_shoals' random encounters can still fire. Diagnosis and proposed fix are in
+    request **M3-BPR-427** (to slice-polish, who own `game/flow/**`). I did not edit their file.
+  - Inventory: `placeholder_audit.py --static-only` lists nothing for combat or battle-presentation (19 items: audio,
+    creatures-b, env-art). `battle_vfx_coverage.py`: 0 unexplained gaps. Every Act I foe's skill has its own effect,
+    except the Drownbell's toll and toll_gather, which are its set piece (BattleBossVfx and BattleTelegraph).
+- **3. M3-BPR-406's last open question** (asked of act1-chapters on 10-27, never answered; I decided it per ADR 0042):
+  - The Breach's gather turns stay on the home frame, with the push-in only.
+  - Wave 3's Kirru cuts to the hoist arena's `CameraHints/along_the_walk` (the movers in front, the party behind
+    them) the **first** time Pell sounds Storm-Call (`storm_call_sound`). I rendered and viewed five hints;
+    `the_storm_wall` showed only Toma's back, and `party_side` hid the foes.
+    His later calls, and Storm-Call itself (the withdrawal), stay on the home frame, where the player sees which
+    spawn leaves.
+  - This needed a per-role `skills` filter and a `once` list on choreo.json `camera.moments.entry`
+    (BattleEntryCamera). Test: test_the_kirrus_first_call_cuts_along_the_walk. `boss_camera_sheet --entry` now also
+    renders the Kirru's cut.
+
+- **MERGE-READY @ e205c3e0** (+ this log commit): M3-BPR-406 (the Kirru's cut, now in review), request
+  M3-BPR-427, and the integration-branch merge b3f092f8.
+  - SELF-RENDERED @ e205c3e0 with `boss_camera_sheet --entry` (not a manifest shot). Viewed: the Kirru's cut along the
+    wall-walk shows the crawlers and polyp in front and Asha, Toma and Rhen behind with the hoist; the Climb's cut is
+    unchanged. No manifest shot can move: entry cuts play only mid-fight, and no shot freezes one.
+  - Checks run: Godot `--filter=` set_piece 48/0, ch08 23/0, boss_camera 7/0, stair_marks 5/0; gdlint, gdformat,
+    validate_data 0/0, taskboard --check.
+  - Checks skipped: the screenshot manifest (no shot can move), Blender (none touched), coverage (no game/battle core
+    change), and the tools suite (no tools/*.py touched).
+- **BACKLOG EMPTY (2026-10-29 18:xx):** the brief's three items are done or waiting on others:
+  - the stair has no new prop;
+  - row 34 waits on slice-polish (M3-BPR-427);
+  - row 36 waits on the PC;
+  - VFX coverage and the inventory have nothing left for this track.
+  Next: merge big17 when the Lead announces it, then any new rows.
+
+### 2026-10-29 evening: the Lead's 17:59 message (Kerrid's and Liss's Swell techniques, then the Act I VFX sweep)
+- **Claimed** M3-C05-06 and M3-C06-05 (2b-claim commit, pushed).
+- **The techniques** (80e565ea):
+  - Kerrid: **The Long Hold**, physical 14, one foe (Return Tide's band).
+  - Liss: **Three-Reel Charge**, physical 9, every foe, a 1-rank push (Written Light's band less one for the push).
+  - Their inputs are data rows on the existing kinds. The weighted swing is a one-blow `brace` (hold while the
+    cleaver coils, let go on the count). The reel-stop is a three-beat `timing_ring`. Both give +45% at good and +90%
+    perfect.
+  - formulas.md and test_formulas.gd list both. No formula or constant changed.
+- **Viewed with self-rendered stills** in their own fights: `tools/vfx/swell_finisher_sheet.gd` plays each technique
+  through BattleSwell.perform.
+  - Liss on the Ch8 hoist reads: the gadget bursts over all four foes.
+  - Kerrid on the Matron showed only the chest hit at first. His low sweep spawned inside her 2.9 m bulk.
+- **Fix (0c84c54b):** new near-face low anchors, `ground` and `knee` (feet stays centred, for rings).
+  - Kerrid's sweep uses knee; Anchor Fall, Return Tide and Lamp Dive use ground.
+  - Re-rendered: the sweep's sand now shows low on her near side, apart from the chest hit.
+- **Sweep, Act I foe and boss actions:** every AI-picked skill of every Act I foe has its own effect (the Drownbell's
+  toll is its BattleBossVfx set piece). The one hidden effect found was the Matron's recrust ring (0.75 m, inside her
+  bulk). It is now 1.6 m (5b5d42d8). Re-rendered: ember motes ring her base.
+- **Pending:** the battle suite and the Ch5, Ch6 and Ch8 sim suites with Kerrid or Liss. The first run was lost to a
+  container restart, and they are re-running now. MERGE-READY follows when they are green.
+
+### PC-QUEUE
+- GPU QA row 36 (the Reach): re-check in live play on the RX 9070 XT (M3-BPR-425's rest frame).
+- GPU QA row 34: re-check once M3-BPR-427 lands (and hold the zone's random encounters in the walk).
+
 **MERGE-READY @ 1daa0fa7 (04:45): M3-BPR-423 boss-intro hero shots.** The Hullgnaw rail and the Drownbell framing are
 both fixed and pushed. The branch head also carries:
 - M3-BPR-420/422: the boss big-move camera, Kerrid's and Liss's Swell finishers, the Act I creatures' stand-in

@@ -7,15 +7,15 @@ const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 var ctl: BattleController
 
 
-func _start() -> void:
+func _start(encounter: StringName = &"ch08_stair_hold_1") -> void:
 	ctl = (load(SANDBOX) as PackedScene).instantiate() as BattleController
 	ctl.auto_start = false
 	ctl.pacing_scale = 0.0
 	ctl.persist_progress = false
 	var tree := Engine.get_main_loop() as SceneTree
 	(tree.current_scene if tree.current_scene != null else tree.root).add_child(ctl)
-	ctl.set_meta(BattleBossIntro.META_PLAYED, "ch08_stair_hold_1")
-	ctl.start_battle([&"rhen", &"asha", &"toma"] as Array[StringName], [], &"ch08_stair_hold_1", 20261028)
+	ctl.set_meta(BattleBossIntro.META_PLAYED, String(encounter))
+	ctl.start_battle([&"rhen", &"asha", &"toma"] as Array[StringName], [], encounter, 20261028)
 
 
 func _free() -> void:
@@ -24,8 +24,12 @@ func _free() -> void:
 
 
 func _climb() -> BattleCombatant:
+	return _entry(&"ward")
+
+
+func _entry(role: StringName) -> BattleCombatant:
 	for c in ctl.engine.entries:
-		if c.entry_role == &"ward":
+		if c.entry_role == role:
 			return c
 	return null
 
@@ -77,4 +81,32 @@ func test_instant_pacing_cuts_nowhere() -> void:
 	r.skill_id = &"climb_up"
 	ctl.stage.choreo.contact.emit(r)
 	assert_true(cam.cut_for.is_empty())
+	_free()
+
+
+## M3-BPR-406: the Kirru (wave 3's guest) cuts along the wall-walk, to the movers, the first time Pell sounds
+## Storm-Call; Storm-Call itself (the withdrawal) and his later calls stay on the home frame.
+func test_the_kirrus_first_call_cuts_along_the_walk() -> void:
+	_start(&"ch08_stair_hold_3")
+	var choreo := ctl.stage.choreo
+	choreo.force_play = true
+	choreo.reduced_motion = false
+	choreo.skip = false
+	var cam := choreo.get_node(^"BattleEntryCamera") as BattleEntryCamera
+	var kirru := _entry(&"guest")
+	assert_true(kirru != null, "wave 3 has the Kirru")
+	assert_false(cam.hint_pose(&"guest").is_empty(), "the hoist arena carries the wall-walk hint")
+	var r := ActionResult.new()
+	r.actor_id = kirru.id
+	r.skill_id = &"storm_call"
+	choreo.contact.emit(r)
+	assert_true(cam.cut_for.is_empty(), "the withdrawal plays on the home frame")
+	r.skill_id = &"storm_call_sound"
+	choreo.contact.emit(r)
+	assert_eq(cam.cut_for, [kirru.id] as Array[StringName], "the first call shows the movers")
+	choreo.advance(10.0)
+	assert_true(choreo.camera.at_default(), "and comes home")
+	choreo.contact.emit(r)
+	choreo.advance(10.0)
+	assert_eq(cam.cut_for.size(), 1, "once only")
 	_free()
