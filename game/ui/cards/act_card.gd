@@ -90,6 +90,7 @@ func show_titled(label_key: String, title_key: String) -> void:
 	act = 0
 	_label.text = tr(label_key)
 	_title.text = tr(title_key)
+	_title.autowrap_mode = TextServer.AUTOWRAP_OFF
 	HudLayout.place(_title, _d.get("title", {}))
 	_label.visible = true
 	_rule.visible = true
@@ -101,6 +102,7 @@ func show_caption(key: String) -> void:
 	act = 0
 	_label.text = ""
 	_title.text = tr(key)
+	_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART  # a caption may be a sentence (B12's voice-over)
 	HudLayout.place(_title, _d.get("caption", {}))
 	_label.visible = false
 	_rule.visible = false
