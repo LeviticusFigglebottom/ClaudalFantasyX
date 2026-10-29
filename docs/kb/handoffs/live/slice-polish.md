@@ -808,6 +808,16 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   | The stacked party | b66981e9 (HeroFieldParty) | no | yes | yes |
   | The party start, camera far back | integration-qa's M3-HER-1149 on claude/hero-integration | no | no | no |
   | The run | 0a565c4f (characters' run base) | no | yes | yes |
+- **SELF-RENDERED @ d0433789 (verification, viewed):**
+  - slice_prologue_p01 and slice_prologue_vigil_line: Iskarra is warm white, gilt and blue-glazed at dusk, not grey.
+    Rhen's lantern globe is lit over his shoulder on the line. **The grey Prologue: fixed.**
+  - slice_beach_h05_asha: both faces read, Asha toward Rhen. **The beach staging: fixed**, with two faults left:
+    - Asha's kneeling skirt still balloons into a blue mass over Rhen (PC row 31, M3-CHR-102, characters);
+    - Toma stood mid-left 5 m from the lens with his head above the top bar (fixed below, M2-FP-119).
+- LEAD-ASK: M3-CHR-102 (Asha's kneeling skirt balloons over Rhen on the beach, row 31) exists only on claude/m2-slice,
+  so characters can't see it until big17. Please route it to characters now (their `helper_bones.json` gather_flare,
+  or a `kneel_over_rhen` override). My default meanwhile: the marks stay; I move Asha only if they say the cloth
+  can't clear him.
 
 ### Render requests
 SUPERSEDED RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
