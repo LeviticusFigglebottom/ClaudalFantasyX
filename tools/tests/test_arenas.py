@@ -25,6 +25,9 @@ from pathlib import Path
 
 import numpy as np
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from test_b_arenas import WRAPPED  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "assets_src" / "environments" / "kits" / "haluna"
 sys.path.insert(0, str(SRC))
@@ -179,6 +182,8 @@ class ArenaSceneTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             scenes.OUT_DIR = Path(tmp)
             for aid, arena in scenes.ARENAS.items():
+                if aid in WRAPPED:  # env-art-b writes these through its wrappers; test_b_arenas.py reproduces them
+                    continue
                 with self.subTest(arena=aid):
                     out = scenes.write_arena(arena)
                     committed = ROOT / "assets" / "environments" / "arenas" / aid / f"{aid}.tscn"

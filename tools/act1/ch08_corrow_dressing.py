@@ -147,9 +147,46 @@ def bastion_pieces() -> list[dict]:
         out.append(seg(s0 + edge, zc, -90.0))  # the west end faces -s
     for sc in (s0 + 12.0, s1 - 12.0):
         x, _y, z, a = cf.arc(sc, 0.0, (zi + zo) * 0.5)
+        # The yard is paved as the walk is (the low town's earth and cobble read as a sand pad up here)
         out.append({"piece": "lowtown_ground", "at": [cf.r3(x), cf.r3(z)], "y": cf.WALK_Y + 0.02,
-                    "yaw_deg": cf.yaw_norm(a)})
+                    "yaw_deg": cf.yaw_norm(a), "material_paths": dict(BASTION_PAVING)})
     return out
+
+
+# The yard's clutter (the stair-watch's: crates, sacks, shields, rope and nets inside its rims, by the barracks and\n# the walk), in the wall frame:
+# (piece, kit_dir or "", s, local z, yaw offset, collides). Story points keep BASTION_CLEAR_M around them.
+BASTION_CLUTTER = (
+    ("crate_stack", "BRINE", -92.0, -6.6, 10.0, True), ("cargo_sacks", "HALUNA", -89.6, -6.4, 80.0, True),
+    ("round_shield", "", -80.6, -18.4, 15.0, False), ("round_shield", "", -79.9, -18.9, -40.0, False),
+    ("rope_coil", "HALUNA", -70.0, -6.6, 0.0, False), ("net_heap", "HALUNA", -67.0, -7.0, 30.0, False),
+    ("crate_stack", "BRINE", -64.2, -9.5, -15.0, True), ("cargo_sacks", "HALUNA", -63.8, -15.5, 120.0, True),
+    ("rope_coil", "HALUNA", -72.5, -19.5, 0.0, False), ("crate_stack", "BRINE", -64.0, -20.5, 95.0, True),
+    ("net_heap", "HALUNA", -92.5, -13.5, 200.0, False), ("cargo_sacks", "HALUNA", -81.0, -13.0, 15.0, True),
+)
+BASTION_CLEAR_M = 2.5
+
+
+def bastion_clutter() -> list[dict]:
+    g = json.loads(LAYOUT.read_text(encoding="utf-8"))
+    keep = [v[:3] for v in list(g.get("marks", {}).values()) + list(g.get("spawns", {}).values())]
+    keep += [a["at"][:3] for a in g.get("actors", {}).values()] + [t["at"][:3] for t in g.get("triggers", [])]
+    kits = {"BRINE": BRINE, "HALUNA": HALUNA}
+    out = []
+    for name, kit, s, zl, dyaw, collide in BASTION_CLUTTER:
+        x, _y, z, a = cf.arc(s, 0.0, zl)
+        if any(math.hypot(x - k[0], z - k[2]) < BASTION_CLEAR_M for k in keep):
+            continue
+        row = {"piece": name, "at": [cf.r3(x), cf.r3(z)], "y": cf.WALK_Y, "yaw_deg": cf.yaw_norm(a + dyaw)}
+        if kit:
+            row.update(kit_dir=kits[kit], materials_dir=kits[kit] + "materials/")
+        if collide:
+            row["collide"] = True
+        out.append(row)
+    return out
+
+
+BASTION_PAVING = {"cw_earth": "res://assets/environments/kits/corrow/materials/cw_paving.tres",
+                  "cw_cobble": "res://assets/environments/kits/corrow/materials/cw_paving.tres"}
 
 
 def stair_ramps() -> list[dict]:
@@ -390,7 +427,7 @@ def dressing() -> dict:
     pieces.append(dict(cwl.put_arc("liss_hoist_cut", cf.HOIST_S, cwl.HEAD_Y, cwl.HEAD_Z), block="RopeCoil"))
     pieces += breach_pieces()
     pieces += town_pieces()
-    pieces += bastion_pieces()
+    pieces += bastion_pieces() + bastion_clutter()
     pieces += story_pieces()
     pieces += trader()
     pieces += mole_pieces()

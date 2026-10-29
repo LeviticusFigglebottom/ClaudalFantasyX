@@ -11,5 +11,6 @@ done
 # The cloud gate session (from 2026-10-29) logs to gate.md on its newest lead/gate-big* branch.
 gb=$(git branch -r --sort=-committerdate | grep -E 'origin/lead/gate-big[0-9]+$' | head -1 | tr -d ' ')
 [ -n "$gb" ] && git show "$gb:docs/kb/handoffs/live/gate.md" 2>/dev/null | grep -n -E 'LEAD-ASK:|GATE-BUILT|GATE-DONE' | sed 's/^/[gate] /'
+[ -n "$gb" ] && git show "$gb:docs/kb/handoffs/live/gate-$(basename $gb | sed 's/gate-//').md" 2>/dev/null | grep -n -E 'LEAD-ASK:|GATE-BUILT|GATE-PLAYABLE|GATE-DONE' | sed 's/^/[gate-new] /'
 g=$(git branch -r --sort=-committerdate | grep 'origin/gpu/' | head -1 | tr -d ' ')
 [ -n "$g" ] && git show "$g:docs/kb/handoffs/live/pc-gpu.md" 2>/dev/null | grep -n 'LEAD-ASK:' | sed 's/^/[pc-gpu] /'

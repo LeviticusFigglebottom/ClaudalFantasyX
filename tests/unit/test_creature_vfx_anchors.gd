@@ -92,3 +92,12 @@ func test_a_creature_plays_as_a_field_stage_model() -> void:
 	assert_true(HeroMotion.play(body, &"idle", 0.0), "HeroMotion plays its idle")
 	assert_true(HeroMotion.add_micro_motion(body, &"hound") != null, "and breathes")
 	before_each()
+
+
+## big14 gate: a foe whose enemies.json row names no `model` still gets its creatures.json row's scene of the same id
+## (cord_moth), so a built creature never fights as a capsule.
+func test_a_foe_without_a_model_line_uses_its_creature_row() -> void:
+	var spec := CreatureModels.stand_in_overrides("cord_moth")
+	assert_eq(str(spec.get("scene", "")), "res://game/creatures/cord_moth/cord_moth_battle.tscn")
+	assert_eq(CreatureModels.stand_in_overrides("no_such_foe"), {}, "and a foe with neither has none")
+	before_each()

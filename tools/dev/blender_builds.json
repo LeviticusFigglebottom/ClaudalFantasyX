@@ -1387,6 +1387,249 @@
         ["{blender}", "--python", "assets_src/creatures/ethren/build_ethren.py", "--", "--out", "assets/creatures/ethren/ethren.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "ethren"]
       ]
+    },
+    {
+      "id": "crowd_boy_small",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CRE-659 (ADR 0152): Act I's crowd bodies at the crowd tier, one job per body. assets_src/crowd/build_crowd.py imports the characters' villager modules unedited (build_villager under Blender; villager_textures, write_materials and villager_clips in python) with their params and output paths at the crowd folders; it ships LOD1 only (LOD0 stays in the scratch bake dir), 512 head maps, and the work clips of crowd_clips.py. All the villager jobs' sources are this job's too.",
+      "sources": ["assets_src/crowd/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/crowd/crowd_boy_small/*.glb", "assets/crowd/crowd_boy_small/textures/*.png", "assets/crowd/crowd_boy_small/materials/*.tres", "assets/crowd/crowd_boy_small/*.tscn", "assets/crowd/clips/crowd_child_small_clips.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/build_crowd.py", "--", "--body", "crowd_boy_small", "--bake-dir", "{scratch}/crowd_boy_small_bake"],
+        ["{python}", "assets_src/crowd/build_crowd.py", "--body", "crowd_boy_small", "--bake-dir", "{scratch}/crowd_boy_small_bake"]
+      ]
+    },
+    {
+      "id": "crowd_boy_tall",
+      "threads": 4,
+      "owner": "character",
+      "sources": ["assets_src/crowd/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/crowd/crowd_boy_tall/*.glb", "assets/crowd/crowd_boy_tall/textures/*.png", "assets/crowd/crowd_boy_tall/materials/*.tres", "assets/crowd/crowd_boy_tall/*.tscn"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/build_crowd.py", "--", "--body", "crowd_boy_tall", "--bake-dir", "{scratch}/crowd_boy_tall_bake"],
+        ["{python}", "assets_src/crowd/build_crowd.py", "--body", "crowd_boy_tall", "--bake-dir", "{scratch}/crowd_boy_tall_bake"]
+      ]
+    },
+    {
+      "id": "crowd_elder_man_a",
+      "threads": 4,
+      "owner": "character",
+      "sources": ["assets_src/crowd/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/crowd/crowd_elder_man_a/*.glb", "assets/crowd/crowd_elder_man_a/textures/*.png", "assets/crowd/crowd_elder_man_a/materials/*.tres", "assets/crowd/crowd_elder_man_a/*.tscn", "assets/crowd/clips/crowd_elder_clips.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/build_crowd.py", "--", "--body", "crowd_elder_man_a", "--bake-dir", "{scratch}/crowd_elder_man_a_bake"],
+        ["{python}", "assets_src/crowd/build_crowd.py", "--body", "crowd_elder_man_a", "--bake-dir", "{scratch}/crowd_elder_man_a_bake"]
+      ]
+    },
+    {
+      "id": "crowd_elder_man_b",
+      "threads": 4,
+      "owner": "character",
+      "sources": ["assets_src/crowd/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/crowd/crowd_elder_man_b/*.glb", "assets/crowd/crowd_elder_man_b/textures/*.png", "assets/crowd/crowd_elder_man_b/materials/*.tres", "assets/crowd/crowd_elder_man_b/*.tscn"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/build_crowd.py", "--", "--body", "crowd_elder_man_b", "--bake-dir", "{scratch}/crowd_elder_man_b_bake"],
+        ["{python}", "assets_src/crowd/build_crowd.py", "--body", "crowd_elder_man_b", "--bake-dir", "{scratch}/crowd_elder_man_b_bake"]
+      ]
+    },
+    {
+      "id": "crowd_elder_woman_a",
+      "threads": 4,
+      "owner": "character",
+      "sources": ["assets_src/crowd/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/crowd/crowd_elder_woman_a/*.glb", "assets/crowd/crowd_elder_woman_a/textures/*.png", "assets/crowd/crowd_elder_woman_a/materials/*.tres", "assets/crowd/crowd_elder_woman_a/*.tscn"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/build_crowd.py", "--", "--body", "crowd_elder_woman_a", "--bake-dir", "{scratch}/crowd_elder_woman_a_bake"],
+        ["{python}", "assets_src/crowd/build_crowd.py", "--body", "crowd_elder_woman_a", "--bake-dir", "{scratch}/crowd_elder_woman_a_bake"]
+      ]
+    },
+    {
+      "id": "crowd_elder_woman_b",
+      "threads": 4,
+      "owner": "character",
+      "sources": ["assets_src/crowd/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/crowd/crowd_elder_woman_b/*.glb", "assets/crowd/crowd_elder_woman_b/textures/*.png", "assets/crowd/crowd_elder_woman_b/materials/*.tres", "assets/crowd/crowd_elder_woman_b/*.tscn"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/build_crowd.py", "--", "--body", "crowd_elder_woman_b", "--bake-dir", "{scratch}/crowd_elder_woman_b_bake"],
+        ["{python}", "assets_src/crowd/build_crowd.py", "--body", "crowd_elder_woman_b", "--bake-dir", "{scratch}/crowd_elder_woman_b_bake"]
+      ]
+    },
+    {
+      "id": "crowd_girl_small",
+      "threads": 4,
+      "owner": "character",
+      "sources": ["assets_src/crowd/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/crowd/crowd_girl_small/*.glb", "assets/crowd/crowd_girl_small/textures/*.png", "assets/crowd/crowd_girl_small/materials/*.tres", "assets/crowd/crowd_girl_small/*.tscn"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/build_crowd.py", "--", "--body", "crowd_girl_small", "--bake-dir", "{scratch}/crowd_girl_small_bake"],
+        ["{python}", "assets_src/crowd/build_crowd.py", "--body", "crowd_girl_small", "--bake-dir", "{scratch}/crowd_girl_small_bake"]
+      ]
+    },
+    {
+      "id": "crowd_girl_tall",
+      "threads": 4,
+      "owner": "character",
+      "sources": ["assets_src/crowd/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/crowd/crowd_girl_tall/*.glb", "assets/crowd/crowd_girl_tall/textures/*.png", "assets/crowd/crowd_girl_tall/materials/*.tres", "assets/crowd/crowd_girl_tall/*.tscn"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/build_crowd.py", "--", "--body", "crowd_girl_tall", "--bake-dir", "{scratch}/crowd_girl_tall_bake"],
+        ["{python}", "assets_src/crowd/build_crowd.py", "--body", "crowd_girl_tall", "--bake-dir", "{scratch}/crowd_girl_tall_bake"]
+      ]
+    },
+    {
+      "id": "crowd_girl_teen",
+      "threads": 4,
+      "owner": "character",
+      "sources": ["assets_src/crowd/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/crowd/crowd_girl_teen/*.glb", "assets/crowd/crowd_girl_teen/textures/*.png", "assets/crowd/crowd_girl_teen/materials/*.tres", "assets/crowd/crowd_girl_teen/*.tscn", "assets/crowd/clips/crowd_child_clips.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/build_crowd.py", "--", "--body", "crowd_girl_teen", "--bake-dir", "{scratch}/crowd_girl_teen_bake"],
+        ["{python}", "assets_src/crowd/build_crowd.py", "--body", "crowd_girl_teen", "--bake-dir", "{scratch}/crowd_girl_teen_bake"]
+      ]
+    },
+    {
+      "id": "crowd_man_heavy",
+      "threads": 4,
+      "owner": "character",
+      "sources": ["assets_src/crowd/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/crowd/crowd_man_heavy/*.glb", "assets/crowd/crowd_man_heavy/textures/*.png", "assets/crowd/crowd_man_heavy/materials/*.tres", "assets/crowd/crowd_man_heavy/*.tscn"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/build_crowd.py", "--", "--body", "crowd_man_heavy", "--bake-dir", "{scratch}/crowd_man_heavy_bake"],
+        ["{python}", "assets_src/crowd/build_crowd.py", "--body", "crowd_man_heavy", "--bake-dir", "{scratch}/crowd_man_heavy_bake"]
+      ]
+    },
+    {
+      "id": "crowd_man_heavy_b",
+      "threads": 4,
+      "owner": "character",
+      "sources": ["assets_src/crowd/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/crowd/crowd_man_heavy_b/*.glb", "assets/crowd/crowd_man_heavy_b/textures/*.png", "assets/crowd/crowd_man_heavy_b/materials/*.tres", "assets/crowd/crowd_man_heavy_b/*.tscn"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/build_crowd.py", "--", "--body", "crowd_man_heavy_b", "--bake-dir", "{scratch}/crowd_man_heavy_b_bake"],
+        ["{python}", "assets_src/crowd/build_crowd.py", "--body", "crowd_man_heavy_b", "--bake-dir", "{scratch}/crowd_man_heavy_b_bake"]
+      ]
+    },
+    {
+      "id": "crowd_man_lean_a",
+      "threads": 4,
+      "owner": "character",
+      "sources": ["assets_src/crowd/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/crowd/crowd_man_lean_a/*.glb", "assets/crowd/crowd_man_lean_a/textures/*.png", "assets/crowd/crowd_man_lean_a/materials/*.tres", "assets/crowd/crowd_man_lean_a/*.tscn"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/build_crowd.py", "--", "--body", "crowd_man_lean_a", "--bake-dir", "{scratch}/crowd_man_lean_a_bake"],
+        ["{python}", "assets_src/crowd/build_crowd.py", "--body", "crowd_man_lean_a", "--bake-dir", "{scratch}/crowd_man_lean_a_bake"]
+      ]
+    },
+    {
+      "id": "crowd_man_lean_b",
+      "threads": 4,
+      "owner": "character",
+      "sources": ["assets_src/crowd/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/crowd/crowd_man_lean_b/*.glb", "assets/crowd/crowd_man_lean_b/textures/*.png", "assets/crowd/crowd_man_lean_b/materials/*.tres", "assets/crowd/crowd_man_lean_b/*.tscn"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/build_crowd.py", "--", "--body", "crowd_man_lean_b", "--bake-dir", "{scratch}/crowd_man_lean_b_bake"],
+        ["{python}", "assets_src/crowd/build_crowd.py", "--body", "crowd_man_lean_b", "--bake-dir", "{scratch}/crowd_man_lean_b_bake"]
+      ]
+    },
+    {
+      "id": "crowd_man_medium_a",
+      "threads": 4,
+      "owner": "character",
+      "sources": ["assets_src/crowd/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/crowd/crowd_man_medium_a/*.glb", "assets/crowd/crowd_man_medium_a/textures/*.png", "assets/crowd/crowd_man_medium_a/materials/*.tres", "assets/crowd/crowd_man_medium_a/*.tscn"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/build_crowd.py", "--", "--body", "crowd_man_medium_a", "--bake-dir", "{scratch}/crowd_man_medium_a_bake"],
+        ["{python}", "assets_src/crowd/build_crowd.py", "--body", "crowd_man_medium_a", "--bake-dir", "{scratch}/crowd_man_medium_a_bake"]
+      ]
+    },
+    {
+      "id": "crowd_man_medium_b",
+      "threads": 4,
+      "owner": "character",
+      "sources": ["assets_src/crowd/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/crowd/crowd_man_medium_b/*.glb", "assets/crowd/crowd_man_medium_b/textures/*.png", "assets/crowd/crowd_man_medium_b/materials/*.tres", "assets/crowd/crowd_man_medium_b/*.tscn", "assets/crowd/clips/crowd_adult_clips.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/build_crowd.py", "--", "--body", "crowd_man_medium_b", "--bake-dir", "{scratch}/crowd_man_medium_b_bake"],
+        ["{python}", "assets_src/crowd/build_crowd.py", "--body", "crowd_man_medium_b", "--bake-dir", "{scratch}/crowd_man_medium_b_bake"]
+      ]
+    },
+    {
+      "id": "crowd_order_man",
+      "threads": 4,
+      "owner": "character",
+      "sources": ["assets_src/crowd/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/crowd/crowd_order_man/*.glb", "assets/crowd/crowd_order_man/textures/*.png", "assets/crowd/crowd_order_man/materials/*.tres", "assets/crowd/crowd_order_man/*.tscn"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/build_crowd.py", "--", "--body", "crowd_order_man", "--bake-dir", "{scratch}/crowd_order_man_bake"],
+        ["{python}", "assets_src/crowd/build_crowd.py", "--body", "crowd_order_man", "--bake-dir", "{scratch}/crowd_order_man_bake"]
+      ]
+    },
+    {
+      "id": "crowd_order_woman",
+      "threads": 4,
+      "owner": "character",
+      "sources": ["assets_src/crowd/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/crowd/crowd_order_woman/*.glb", "assets/crowd/crowd_order_woman/textures/*.png", "assets/crowd/crowd_order_woman/materials/*.tres", "assets/crowd/crowd_order_woman/*.tscn"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/build_crowd.py", "--", "--body", "crowd_order_woman", "--bake-dir", "{scratch}/crowd_order_woman_bake"],
+        ["{python}", "assets_src/crowd/build_crowd.py", "--body", "crowd_order_woman", "--bake-dir", "{scratch}/crowd_order_woman_bake"]
+      ]
+    },
+    {
+      "id": "crowd_woman_heavy",
+      "threads": 4,
+      "owner": "character",
+      "sources": ["assets_src/crowd/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/crowd/crowd_woman_heavy/*.glb", "assets/crowd/crowd_woman_heavy/textures/*.png", "assets/crowd/crowd_woman_heavy/materials/*.tres", "assets/crowd/crowd_woman_heavy/*.tscn"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/build_crowd.py", "--", "--body", "crowd_woman_heavy", "--bake-dir", "{scratch}/crowd_woman_heavy_bake"],
+        ["{python}", "assets_src/crowd/build_crowd.py", "--body", "crowd_woman_heavy", "--bake-dir", "{scratch}/crowd_woman_heavy_bake"]
+      ]
+    },
+    {
+      "id": "crowd_woman_lean_a",
+      "threads": 4,
+      "owner": "character",
+      "sources": ["assets_src/crowd/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/crowd/crowd_woman_lean_a/*.glb", "assets/crowd/crowd_woman_lean_a/textures/*.png", "assets/crowd/crowd_woman_lean_a/materials/*.tres", "assets/crowd/crowd_woman_lean_a/*.tscn"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/build_crowd.py", "--", "--body", "crowd_woman_lean_a", "--bake-dir", "{scratch}/crowd_woman_lean_a_bake"],
+        ["{python}", "assets_src/crowd/build_crowd.py", "--body", "crowd_woman_lean_a", "--bake-dir", "{scratch}/crowd_woman_lean_a_bake"]
+      ]
+    },
+    {
+      "id": "crowd_woman_lean_b",
+      "threads": 4,
+      "owner": "character",
+      "sources": ["assets_src/crowd/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/crowd/crowd_woman_lean_b/*.glb", "assets/crowd/crowd_woman_lean_b/textures/*.png", "assets/crowd/crowd_woman_lean_b/materials/*.tres", "assets/crowd/crowd_woman_lean_b/*.tscn"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/build_crowd.py", "--", "--body", "crowd_woman_lean_b", "--bake-dir", "{scratch}/crowd_woman_lean_b_bake"],
+        ["{python}", "assets_src/crowd/build_crowd.py", "--body", "crowd_woman_lean_b", "--bake-dir", "{scratch}/crowd_woman_lean_b_bake"]
+      ]
+    },
+    {
+      "id": "crowd_woman_medium",
+      "threads": 4,
+      "owner": "character",
+      "sources": ["assets_src/crowd/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/crowd/crowd_woman_medium/*.glb", "assets/crowd/crowd_woman_medium/textures/*.png", "assets/crowd/crowd_woman_medium/materials/*.tres", "assets/crowd/crowd_woman_medium/*.tscn"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/build_crowd.py", "--", "--body", "crowd_woman_medium", "--bake-dir", "{scratch}/crowd_woman_medium_bake"],
+        ["{python}", "assets_src/crowd/build_crowd.py", "--body", "crowd_woman_medium", "--bake-dir", "{scratch}/crowd_woman_medium_bake"]
+      ]
+    },
+    {
+      "id": "crowd_woman_medium_b",
+      "threads": 4,
+      "owner": "character",
+      "sources": ["assets_src/crowd/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/crowd/crowd_woman_medium_b/*.glb", "assets/crowd/crowd_woman_medium_b/textures/*.png", "assets/crowd/crowd_woman_medium_b/materials/*.tres", "assets/crowd/crowd_woman_medium_b/*.tscn"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/build_crowd.py", "--", "--body", "crowd_woman_medium_b", "--bake-dir", "{scratch}/crowd_woman_medium_b_bake"],
+        ["{python}", "assets_src/crowd/build_crowd.py", "--body", "crowd_woman_medium_b", "--bake-dir", "{scratch}/crowd_woman_medium_b_bake"]
+      ]
     }
   ]
 }

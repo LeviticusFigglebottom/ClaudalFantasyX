@@ -109,3 +109,42 @@ func test_the_night_match_glows_and_its_lamps_leave_the_fog_alone() -> void:
 	for l: Light3D in lamps:
 		assert_eq(l.light_volumetric_fog_energy, 0.0, "%s leaves the ball's fog alone" % l.name)
 	scene.free()
+
+
+## M3-RND-26: the Tamsule Bell's held drop is the "tamsule_drop" profile: the contract's flattened spheroid
+## (tamsule_bell.md §1, 14.0 x 11.5 m), perfectly still (no swell, a steady web), its colours palette swatches, its
+## light thrown under it, and every pass flattened alike; the base ball stays as it was. Both Ch7 zones place it.
+func test_the_tamsule_drop_profile() -> void:
+	var base := WaterSphereRig.load_data()
+	assert_eq(WaterSphereRig.profile_data(""), base, "no profile: the Reefball arena's ball")
+	var row := (base["profiles"] as Dictionary)["tamsule_drop"] as Dictionary
+	var swatches := (JSON.parse_string(FileAccess.get_file_as_string(PALETTE)) as Dictionary)["swatches"] as Dictionary
+	for key: String in row["colors"]:
+		var name := str((row["swatches"] as Dictionary)[key])
+		assert_eq(str(row["colors"][key]).to_upper(), str((swatches[name] as Dictionary)["hex"]).to_upper(), key)
+	var host := Node3D.new()
+	var env := WorldEnvironment.new()
+	env.environment = Environment.new()
+	host.add_child(env)
+	var rig := WaterSphereRig.new()
+	rig.profile = "tamsule_drop"
+	host.add_child(rig)
+	(Engine.get_main_loop() as SceneTree).current_scene.add_child(host)
+	assert_eq(rig.radius_m(), 14.0)
+	assert_eq(rig.semi_axis_y_m(), 11.5)
+	var mesh := rig.surface.mesh as SphereMesh
+	assert_between(mesh.height * 0.5 - rig.semi_axis_y_m(), 0.0, 0.5, "the mesh encloses the flattened drop")
+	assert_true(rig.fog.size.is_equal_approx(Vector3(28.0, 23.0, 28.0)), "the shafts fill the drop")
+	for m: ShaderMaterial in [rig.surface_material, rig.post_mul_material, rig.post_add_material]:
+		assert_between(float(m.get_shader_parameter(&"sphere_flatten")), 11.5 / 14.0 - 1e-5, 11.5 / 14.0 + 1e-5)
+	assert_eq(float(rig.surface_material.get_shader_parameter(&"swell_m")), 0.0, "still at rest")
+	assert_eq(float(rig.post_mul_material.get_shader_parameter(&"caustic_speed")), 0.0, "a steady web")
+	assert_true(float(rig.post_add_material.get_shader_parameter(&"under_strength")) > 0.0, "light under the drop")
+	assert_eq(float(rig.post_add_material.get_shader_parameter(&"sea_glow_strength")), 0.0, "bound, not sea-glow")
+	assert_true(float(rig.post_add_material.get_shader_parameter(&"bound_glow_energy")) > 0.0, "its bound light")
+	host.free()
+	for zone: String in ["tamsule_bell_galleries", "tamsule"]:
+		var path := "res://game/levels/ch07/%s/%s_dressing.json" % [zone, zone]
+		var drops := (JSON.parse_string(FileAccess.get_file_as_string(path)) as Dictionary).get("drops", []) as Array
+		assert_eq(drops.size(), 1, "%s holds the drop" % zone)
+		assert_eq(str((drops[0] as Dictionary)["profile"]), "tamsule_drop")

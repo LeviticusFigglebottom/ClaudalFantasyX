@@ -222,6 +222,10 @@ STANDARD["kit_lamp_flame"] = {"albedo_color": hexc("#FFB16E"), "emission_enabled
 # M3-ENV-746: an arena lamp's flame (lamp_flame) at the practicals' flame energy (arena_scenes lamp_spec, 8.0).
 STANDARD["kit_lamp_flame_hot"] = {"albedo_color": hexc("#FFB16E"), "shading_mode": 0, "emission_enabled": "true",
                                   "emission": hexc("#FFB16E"), "emission_energy_multiplier": 8.0}
+# The Prologue's lit lamp globes (the Lead, 10-28: the vigil's lamps burn): the salt-glass clouded warm by the oil
+# flame behind it, glowing at dusk across the plaza.
+STANDARD["kit_lamp_glass_lit"] = {"albedo_color": hexc("#FFE3B8"), "roughness": 0.2, "emission_enabled": "true",
+                                  "emission": hexc("#FFB16E"), "emission_energy_multiplier": 2.5}
 # haluna.md §2.2: the Lit Age ring's crack glints glimmer_bound at emission 0.6, steady (bound light).
 STANDARD["kit_glimmer_glint"] = {"albedo_color": hexc("#4FB3B0"), "emission_enabled": "true",
                                  "emission": hexc("#4FB3B0"), "emission_energy_multiplier": 0.6, "roughness": 0.3}

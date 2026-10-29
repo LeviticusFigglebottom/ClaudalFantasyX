@@ -1,0 +1,1518 @@
+{
+  "version": 1,
+  "doc": "Act I's crowd (M3-CRE-659, ADR 0152): the generic background people who stood as capsules in the greybox zones. One row per person: where they stand (`zone`, the GreyboxZone `stage_actor`), who they are (`role`, `community` and its `island` in bible section 5, `age_band`, `sex`, `build`) and what assets_src/crowd/gen_crowd.py gave them: the crowd `body` they wear (assets/crowd/<body>/), their `tints` (per-instance cloth_a/b/c and hair colours, palette.json swatches or two-swatch mixes) and their `work` clip (crowd_clips.py; empty: idle). `bodies` is the plan the generator samples each body's params from (assets_src/crowd/ranges.json). VillagerLayer resolves a zone row's `crowd: <id>` here. Haluna's own villagers (ch04/haluna_wake's child, fisher, netmender and vendor) keep their M2-CHR-03 bodies and are not in this list. Regenerate with python3 assets_src/crowd/gen_crowd.py (it rewrites body, tints and work).",
+  "groups": {
+    "brine_shoals_wrights": {
+      "stage_actor": "ch06/brine_shoals:wrights",
+      "people": 6,
+      "why": "act1_ch06 W06 has a dozen wrights kneeling at the waterline; the capsule (0.9 m radius) holds about six, so six crowd people kneel there, each with its own offset in the zone row."
+    }
+  },
+  "age_tuning": {
+    "doc": "Merged over npc.json's defaults for a crowd person of this age band (FieldNpc.tuning_over), before the work below: a child's quicker turn, shorter pace and restless looking (npc.json's Haluna child row); an elder's slower turn and longer settle (Osu's).",
+    "child": {
+      "locomotion": {
+        "turn": {
+          "max_rate_deg_per_sec": 200.0,
+          "max_accel_deg_per_sec2": 800.0
+        },
+        "gait": {
+          "walk_clip_mps": 0.46
+        }
+      },
+      "walk_speed_mps": 0.46,
+      "pause_sec": 1.4,
+      "look_around": {
+        "every_sec": [
+          2.0,
+          4.5
+        ],
+        "hold_sec": [
+          0.7,
+          1.4
+        ],
+        "yaw_deg": 60.0
+      },
+      "glance": {
+        "radius_m": 8.0,
+        "hold_sec": [
+          2.0,
+          3.5
+        ],
+        "rest_sec": [
+          1.5,
+          3.0
+        ]
+      },
+      "look": {
+        "smoothing_sec": 0.22,
+        "max_rate_deg_per_sec": 220.0,
+        "head_height_m": 1.1
+      }
+    },
+    "adult": {},
+    "elder": {
+      "locomotion": {
+        "turn": {
+          "max_rate_deg_per_sec": 110.0,
+          "max_accel_deg_per_sec2": 380.0
+        }
+      },
+      "walk_speed_mps": 0.5,
+      "return_delay_sec": 1.8,
+      "pause_sec": 3.5
+    }
+  },
+  "work_tuning": {
+    "doc": "Per crowd work clip (assets_src/crowd/crowd_clips.py): FieldNpc's `work` section (where the head looks while working, node space, and how often it looks up) plus any other tuning the pose needs (a kneeling head is lower). A person's `work` puts {clips.work: <clip>, work: <this>} over its tuning.",
+    "mend": {
+      "work": {
+        "look_at": [
+          0.0,
+          0.25,
+          -0.45
+        ],
+        "look_up_every_sec": [
+          6.0,
+          9.0
+        ],
+        "look_up_sec": 1.6,
+        "look_up_yaw_deg": 30.0
+      },
+      "look": {
+        "head_height_m": 0.9
+      }
+    },
+    "sweep": {
+      "work": {
+        "look_at": [
+          0.3,
+          0.0,
+          -1.0
+        ],
+        "look_up_every_sec": [
+          7.0,
+          11.0
+        ],
+        "look_up_sec": 1.5,
+        "look_up_yaw_deg": 30.0
+      }
+    },
+    "carry": {
+      "work": {
+        "look_at": [
+          0.0,
+          1.2,
+          -3.0
+        ],
+        "look_up_every_sec": [
+          5.0,
+          8.0
+        ],
+        "look_up_sec": 2.0,
+        "look_up_yaw_deg": 40.0
+      }
+    },
+    "fold": {
+      "work": {
+        "look_at": [
+          0.0,
+          0.9,
+          -0.4
+        ],
+        "look_up_every_sec": [
+          4.0,
+          7.0
+        ],
+        "look_up_sec": 1.8,
+        "look_up_yaw_deg": 35.0
+      }
+    },
+    "haul": {
+      "work": {
+        "look_at": [
+          0.0,
+          0.6,
+          -3.0
+        ],
+        "look_up_every_sec": [
+          6.0,
+          10.0
+        ],
+        "look_up_sec": 1.2,
+        "look_up_yaw_deg": 20.0
+      }
+    },
+    "kneel_mourn": {
+      "work": {
+        "look_at": [
+          0.0,
+          0.0,
+          -2.5
+        ],
+        "look_up_every_sec": [
+          10.0,
+          16.0
+        ],
+        "look_up_sec": 2.5,
+        "look_up_yaw_deg": 10.0
+      },
+      "look": {
+        "head_height_m": 1.0
+      },
+      "look_around": {
+        "every_sec": [
+          14.0,
+          22.0
+        ],
+        "hold_sec": [
+          1.0,
+          2.0
+        ],
+        "yaw_deg": 15.0
+      }
+    },
+    "vigil": {
+      "work": {
+        "look_at": [
+          0.0,
+          0.6,
+          -3.0
+        ],
+        "look_up_every_sec": [
+          9.0,
+          14.0
+        ],
+        "look_up_sec": 2.5,
+        "look_up_yaw_deg": 12.0
+      },
+      "look_around": {
+        "every_sec": [
+          12.0,
+          20.0
+        ],
+        "hold_sec": [
+          1.0,
+          2.0
+        ],
+        "yaw_deg": 20.0
+      }
+    }
+  },
+  "bodies": {
+    "crowd_boy_small": {
+      "age_band": "child",
+      "sex": "male",
+      "build": "small",
+      "community": "corrow",
+      "kit": "child_m",
+      "hair": "short",
+      "seed": 9101,
+      "growth": [
+        0.05,
+        0.2
+      ]
+    },
+    "crowd_boy_tall": {
+      "age_band": "child",
+      "sex": "male",
+      "build": "tall",
+      "community": "tamsule",
+      "kit": "child_m",
+      "hair": "cropped",
+      "seed": 9102,
+      "growth": [
+        0.45,
+        0.6
+      ]
+    },
+    "crowd_girl_small": {
+      "age_band": "child",
+      "sex": "female",
+      "build": "small",
+      "community": "pemakar",
+      "kit": "child_f",
+      "hair": "bun",
+      "seed": 9103,
+      "growth": [
+        0.15,
+        0.3
+      ]
+    },
+    "crowd_girl_tall": {
+      "age_band": "child",
+      "sex": "female",
+      "build": "tall",
+      "community": "saltwright",
+      "kit": "child_f",
+      "hair": "short",
+      "seed": 9104,
+      "growth": [
+        0.45,
+        0.6
+      ]
+    },
+    "crowd_girl_teen": {
+      "age_band": "child",
+      "sex": "female",
+      "build": "teen",
+      "community": "tamsule",
+      "kit": "child_f",
+      "hair": "bun",
+      "seed": 9105,
+      "growth": [
+        0.88,
+        0.98
+      ]
+    },
+    "crowd_man_lean_a": {
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "community": "oruvel",
+      "kit": "diver",
+      "hair": "short",
+      "seed": 9201
+    },
+    "crowd_man_lean_b": {
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "community": "tamsule",
+      "kit": "fisher_m",
+      "hair": "short",
+      "seed": 9202
+    },
+    "crowd_man_medium_a": {
+      "age_band": "adult",
+      "sex": "male",
+      "build": "medium",
+      "community": "pemakar",
+      "kit": "worker_m",
+      "hair": "cropped",
+      "seed": 9203
+    },
+    "crowd_man_medium_b": {
+      "age_band": "adult",
+      "sex": "male",
+      "build": "medium",
+      "community": "saltwright",
+      "kit": "wright",
+      "hair": "short",
+      "seed": 9204
+    },
+    "crowd_man_heavy": {
+      "age_band": "adult",
+      "sex": "male",
+      "build": "heavy",
+      "community": "corrow",
+      "kit": "trader_m",
+      "hair": "cropped",
+      "seed": 9205
+    },
+    "crowd_man_heavy_b": {
+      "age_band": "adult",
+      "sex": "male",
+      "build": "heavy",
+      "community": "brightwater",
+      "kit": "fisher_m",
+      "hair": "short",
+      "seed": 9206
+    },
+    "crowd_woman_lean_a": {
+      "age_band": "adult",
+      "sex": "female",
+      "build": "lean",
+      "community": "sorrin",
+      "kit": "diver",
+      "hair": "bun",
+      "seed": 9301
+    },
+    "crowd_woman_lean_b": {
+      "age_band": "adult",
+      "sex": "female",
+      "build": "lean",
+      "community": "saltwright",
+      "kit": "wright",
+      "hair": "short",
+      "seed": 9302
+    },
+    "crowd_woman_medium": {
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "community": "tamsule",
+      "kit": "market_f",
+      "hair": "wrap",
+      "seed": 9303
+    },
+    "crowd_woman_medium_b": {
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "community": "corrow",
+      "kit": "worker_f",
+      "hair": "short",
+      "seed": 9305
+    },
+    "crowd_woman_heavy": {
+      "age_band": "adult",
+      "sex": "female",
+      "build": "heavy",
+      "community": "pemakar",
+      "kit": "worker_f",
+      "hair": "bun",
+      "seed": 9304
+    },
+    "crowd_elder_man_a": {
+      "age_band": "elder",
+      "sex": "male",
+      "build": "lean",
+      "community": "oruvel",
+      "kit": "elder_m",
+      "hair": "cropped",
+      "seed": 9401
+    },
+    "crowd_elder_man_b": {
+      "age_band": "elder",
+      "sex": "male",
+      "build": "heavy",
+      "community": "corrow",
+      "kit": "worker_m",
+      "hair": "short",
+      "seed": 9402
+    },
+    "crowd_elder_woman_a": {
+      "age_band": "elder",
+      "sex": "female",
+      "build": "lean",
+      "community": "pemakar",
+      "kit": "elder_f",
+      "hair": "wrap",
+      "seed": 9403
+    },
+    "crowd_elder_woman_b": {
+      "age_band": "elder",
+      "sex": "female",
+      "build": "heavy",
+      "community": "corrow",
+      "kit": "worker_f",
+      "hair": "bun",
+      "seed": 9404
+    },
+    "crowd_order_man": {
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "community": "order",
+      "kit": "robe",
+      "hair": "cropped",
+      "seed": 9501
+    },
+    "crowd_order_woman": {
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "community": "order",
+      "kit": "robe",
+      "hair": "bun",
+      "seed": 9502
+    }
+  },
+  "people": [
+    {
+      "id": "ashcrown_tender",
+      "zone": "ch05/ashcrown",
+      "stage_actor": "tender",
+      "role": "tender",
+      "island": "order",
+      "community": "order",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "body": "crowd_order_woman",
+      "tints": {
+        "cloth_a": "#E5E0D5",
+        "cloth_b": "#E9E4DB",
+        "cloth_c": "#32416E",
+        "hair": "#261C15"
+      },
+      "work": "vigil",
+      "about": "A tender of the Lightning temple on the caldera stair (act1_ch05)."
+    },
+    {
+      "id": "brightwater_ferry_passenger_child",
+      "zone": "ch04/brightwater_ferry",
+      "stage_actor": "passenger_child",
+      "role": "passenger",
+      "island": "low_reaches",
+      "community": "brightwater",
+      "age_band": "child",
+      "sex": "female",
+      "build": "small",
+      "body": "crowd_girl_small",
+      "tints": {
+        "cloth_a": "#DCD0BB",
+        "cloth_b": "#33406D",
+        "cloth_c": "#9A3727",
+        "hair": "#201A16"
+      },
+      "work": ""
+    },
+    {
+      "id": "brightwater_ferry_passenger_reed",
+      "zone": "ch04/brightwater_ferry",
+      "stage_actor": "passenger_reed",
+      "role": "passenger",
+      "island": "order",
+      "community": "order",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_order_man",
+      "tints": {
+        "cloth_a": "#E9E3D6",
+        "cloth_b": "#E9E4DB",
+        "cloth_c": "#2D3C6C",
+        "hair": "#261C15"
+      },
+      "work": "",
+      "about": "A Reed (an Order novice) on the crossing: the Order's white."
+    },
+    {
+      "id": "brightwater_ferry_trader_a",
+      "zone": "ch04/brightwater_ferry",
+      "stage_actor": "trader_a",
+      "role": "trader",
+      "island": "low_reaches",
+      "community": "brightwater",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "heavy",
+      "body": "crowd_man_heavy_b",
+      "tints": {
+        "cloth_a": "#DCD1BC",
+        "cloth_b": "#3D486F",
+        "cloth_c": "#963325",
+        "hair": "#231B16"
+      },
+      "work": "carry"
+    },
+    {
+      "id": "brightwater_ferry_trader_b",
+      "zone": "ch04/brightwater_ferry",
+      "stage_actor": "trader_b",
+      "role": "trader",
+      "island": "low_reaches",
+      "community": "brightwater",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "body": "crowd_woman_medium",
+      "tints": {
+        "cloth_a": "#DCD1BC",
+        "cloth_b": "#33406D",
+        "cloth_c": "#427CAA",
+        "hair": "#261C15"
+      },
+      "work": "carry"
+    },
+    {
+      "id": "brine_shoals_brand_girl",
+      "zone": "ch06/brine_shoals",
+      "stage_actor": "brand_girl",
+      "role": "brand_girl",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "child",
+      "sex": "female",
+      "build": "teen",
+      "body": "crowd_girl_teen",
+      "tints": {
+        "cloth_a": "#A39F92",
+        "cloth_b": "#59697E",
+        "cloth_c": "#9CCBC5",
+        "hair": "#251B15"
+      },
+      "work": "",
+      "about": "The girl held at the brazier, her line-marks toward the iron (act1_ch06 W06)."
+    },
+    {
+      "id": "brine_shoals_clerk",
+      "zone": "ch06/brine_shoals",
+      "stage_actor": "clerk",
+      "role": "clerk",
+      "island": "order",
+      "community": "order",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "medium",
+      "body": "crowd_order_man",
+      "tints": {
+        "cloth_a": "#EAE5DC",
+        "cloth_b": "#E9E4DC",
+        "cloth_c": "#D0AA57",
+        "hair": "#251B15"
+      },
+      "work": "",
+      "about": "The Order clerk heating the brine-irons (act1_ch06 W06)."
+    },
+    {
+      "id": "brine_shoals_wright_child_a",
+      "zone": "ch06/brine_shoals",
+      "stage_actor": "wright_child_a",
+      "role": "child",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "child",
+      "sex": "male",
+      "build": "small",
+      "body": "crowd_boy_small",
+      "tints": {
+        "cloth_a": "#9A9890",
+        "cloth_b": "#6C7C69",
+        "cloth_c": "#AAD6D0",
+        "hair": "#201A16"
+      },
+      "work": "",
+      "about": "One of the two wright children Kerrid lifts the hull-rib off (act1_ch06 B05)."
+    },
+    {
+      "id": "brine_shoals_wright_child_b",
+      "zone": "ch06/brine_shoals",
+      "stage_actor": "wright_child_b",
+      "role": "child",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "child",
+      "sex": "female",
+      "build": "tall",
+      "body": "crowd_girl_tall",
+      "tints": {
+        "cloth_a": "#8F918D",
+        "cloth_b": "#4B5B78",
+        "cloth_c": "#7CB1AD",
+        "hair": "#2E1E14"
+      },
+      "work": ""
+    },
+    {
+      "id": "brine_shoals_wright_1",
+      "zone": "ch06/brine_shoals",
+      "stage_actor": "wrights",
+      "role": "wright",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "medium",
+      "body": "crowd_man_medium_b",
+      "tints": {
+        "cloth_a": "#95958E",
+        "cloth_b": "#5C6C7F",
+        "cloth_c": "#AAD5D0",
+        "hair": "#432918"
+      },
+      "work": "kneel_mourn",
+      "about": "The `wrights` stage actor is a group: 'a dozen wrights kneel with their sleeves pushed up' at the waterline (act1_ch06 W06). Six crowd people kneel at it (the capsule's 0.9 m radius holds about six)."
+    },
+    {
+      "id": "brine_shoals_wright_2",
+      "zone": "ch06/brine_shoals",
+      "stage_actor": "wrights",
+      "role": "wright",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "lean",
+      "body": "crowd_woman_lean_b",
+      "tints": {
+        "cloth_a": "#9A9890",
+        "cloth_b": "#5A697E",
+        "cloth_c": "#9DCBC6",
+        "hair": "#5D351D"
+      },
+      "work": "kneel_mourn",
+      "about": "The `wrights` stage actor is a group: 'a dozen wrights kneel with their sleeves pushed up' at the waterline (act1_ch06 W06). Six crowd people kneel at it (the capsule's 0.9 m radius holds about six)."
+    },
+    {
+      "id": "brine_shoals_wright_3",
+      "zone": "ch06/brine_shoals",
+      "stage_actor": "wrights",
+      "role": "wright",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_man_lean_a",
+      "tints": {
+        "cloth_a": "#A19D92",
+        "cloth_b": "#6F7A66",
+        "cloth_c": "#7DB2AD",
+        "hair": "#201A16"
+      },
+      "work": "kneel_mourn",
+      "about": "The `wrights` stage actor is a group: 'a dozen wrights kneel with their sleeves pushed up' at the waterline (act1_ch06 W06). Six crowd people kneel at it (the capsule's 0.9 m radius holds about six)."
+    },
+    {
+      "id": "brine_shoals_wright_4",
+      "zone": "ch06/brine_shoals",
+      "stage_actor": "wrights",
+      "role": "wright",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "body": "crowd_woman_medium_b",
+      "tints": {
+        "cloth_a": "#AAA394",
+        "cloth_b": "#57677D",
+        "cloth_c": "#AAD6D0",
+        "hair": "#241B15"
+      },
+      "work": "kneel_mourn",
+      "about": "The `wrights` stage actor is a group: 'a dozen wrights kneel with their sleeves pushed up' at the waterline (act1_ch06 W06). Six crowd people kneel at it (the capsule's 0.9 m radius holds about six)."
+    },
+    {
+      "id": "brine_shoals_wright_5",
+      "zone": "ch06/brine_shoals",
+      "stage_actor": "wrights",
+      "role": "wright",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "heavy",
+      "body": "crowd_man_heavy_b",
+      "tints": {
+        "cloth_a": "#96958F",
+        "cloth_b": "#5A6A7E",
+        "cloth_c": "#87BAB6",
+        "hair": "#201A16"
+      },
+      "work": "kneel_mourn",
+      "about": "The `wrights` stage actor is a group: 'a dozen wrights kneel with their sleeves pushed up' at the waterline (act1_ch06 W06). Six crowd people kneel at it (the capsule's 0.9 m radius holds about six)."
+    },
+    {
+      "id": "brine_shoals_wright_6",
+      "zone": "ch06/brine_shoals",
+      "stage_actor": "wrights",
+      "role": "wright",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "elder",
+      "sex": "female",
+      "build": "heavy",
+      "body": "crowd_elder_woman_b",
+      "tints": {
+        "cloth_a": "#90918D",
+        "cloth_b": "#717764",
+        "cloth_c": "#89BCB7",
+        "hair": "#3C3732"
+      },
+      "work": "kneel_mourn",
+      "about": "The `wrights` stage actor is a group: 'a dozen wrights kneel with their sleeves pushed up' at the waterline (act1_ch06 W06). Six crowd people kneel at it (the capsule's 0.9 m radius holds about six)."
+    },
+    {
+      "id": "coilspire_tender",
+      "zone": "ch08/coilspire",
+      "stage_actor": "tender",
+      "role": "tender",
+      "island": "order",
+      "community": "order",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_order_man",
+      "tints": {
+        "cloth_a": "#E8E3D9",
+        "cloth_b": "#89261C",
+        "cloth_c": "#D0AA58",
+        "hair": "#291D15"
+      },
+      "work": "vigil",
+      "about": "The beacon's tender at the spire top (act1_ch08)."
+    },
+    {
+      "id": "corrow_boy",
+      "zone": "ch08/corrow",
+      "stage_actor": "boy",
+      "role": "child",
+      "island": "corrow_coast",
+      "community": "corrow",
+      "age_band": "child",
+      "sex": "male",
+      "build": "small",
+      "body": "crowd_boy_small",
+      "tints": {
+        "cloth_a": "#D6D5D1",
+        "cloth_b": "#59697E",
+        "cloth_c": "#668370",
+        "hair": "#201A16"
+      },
+      "work": ""
+    },
+    {
+      "id": "corrow_child_a",
+      "zone": "ch08/corrow",
+      "stage_actor": "child_a",
+      "role": "child",
+      "island": "corrow_coast",
+      "community": "corrow",
+      "age_band": "child",
+      "sex": "female",
+      "build": "small",
+      "body": "crowd_girl_small",
+      "tints": {
+        "cloth_a": "#DAD8D3",
+        "cloth_b": "#455576",
+        "cloth_c": "#454E71",
+        "hair": "#201A16"
+      },
+      "work": "",
+      "about": "The kite children on the wall-head."
+    },
+    {
+      "id": "corrow_child_b",
+      "zone": "ch08/corrow",
+      "stage_actor": "child_b",
+      "role": "child",
+      "island": "corrow_coast",
+      "community": "corrow",
+      "age_band": "child",
+      "sex": "male",
+      "build": "tall",
+      "body": "crowd_boy_tall",
+      "tints": {
+        "cloth_a": "#CBCCCA",
+        "cloth_b": "#5C6C7F",
+        "cloth_c": "#98402C",
+        "hair": "#241B15"
+      },
+      "work": ""
+    },
+    {
+      "id": "corrow_child_c",
+      "zone": "ch08/corrow",
+      "stage_actor": "child_c",
+      "role": "child",
+      "island": "corrow_coast",
+      "community": "corrow",
+      "age_band": "child",
+      "sex": "female",
+      "build": "tall",
+      "body": "crowd_girl_tall",
+      "tints": {
+        "cloth_a": "#CECECB",
+        "cloth_b": "#52617B",
+        "cloth_c": "#2C3B6B",
+        "hair": "#2D1E14"
+      },
+      "work": ""
+    },
+    {
+      "id": "corrow_fisher_a",
+      "zone": "ch08/corrow",
+      "stage_actor": "fisher_a",
+      "role": "fisher",
+      "island": "corrow_coast",
+      "community": "corrow",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "medium",
+      "body": "crowd_man_medium_a",
+      "tints": {
+        "cloth_a": "#C6C7C6",
+        "cloth_b": "#495877",
+        "cloth_c": "#464F71",
+        "hair": "#241B15"
+      },
+      "work": "haul",
+      "about": "A stair-watch fisher by Hobb."
+    },
+    {
+      "id": "corrow_netmender",
+      "zone": "ch08/corrow",
+      "stage_actor": "netmender",
+      "role": "netmender",
+      "island": "corrow_coast",
+      "community": "corrow",
+      "age_band": "elder",
+      "sex": "female",
+      "build": "medium",
+      "body": "crowd_elder_woman_b",
+      "tints": {
+        "cloth_a": "#C9CAC8",
+        "cloth_b": "#56667D",
+        "cloth_c": "#38446E",
+        "hair": "#59544E"
+      },
+      "work": "mend"
+    },
+    {
+      "id": "corrow_townsfolk_a",
+      "zone": "ch08/corrow",
+      "stage_actor": "townsfolk_a",
+      "role": "townsfolk",
+      "island": "corrow_coast",
+      "community": "corrow",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "body": "crowd_woman_medium",
+      "tints": {
+        "cloth_a": "#D7D6D2",
+        "cloth_b": "#505F7A",
+        "cloth_c": "#658471",
+        "hair": "#261C15"
+      },
+      "work": "carry"
+    },
+    {
+      "id": "corrow_townsfolk_b",
+      "zone": "ch08/corrow",
+      "stage_actor": "townsfolk_b",
+      "role": "townsfolk",
+      "island": "corrow_coast",
+      "community": "corrow",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "heavy",
+      "body": "crowd_man_heavy",
+      "tints": {
+        "cloth_a": "#D6D5D1",
+        "cloth_b": "#4B5A78",
+        "cloth_c": "#474F71",
+        "hair": "#201A16"
+      },
+      "work": "carry"
+    },
+    {
+      "id": "corrow_night_child",
+      "zone": "ch09/corrow_night",
+      "stage_actor": "child",
+      "role": "child",
+      "island": "corrow_coast",
+      "community": "corrow",
+      "age_band": "child",
+      "sex": "female",
+      "build": "small",
+      "body": "crowd_girl_small",
+      "tints": {
+        "cloth_a": "#D2D2CE",
+        "cloth_b": "#5B6B7F",
+        "cloth_c": "#608977",
+        "hair": "#241B15"
+      },
+      "work": "",
+      "about": "By Marra at the Ebbing."
+    },
+    {
+      "id": "corrow_night_mourner_1",
+      "zone": "ch09/corrow_night",
+      "stage_actor": "mourner_1",
+      "role": "mourner",
+      "island": "corrow_coast",
+      "community": "corrow",
+      "age_band": "elder",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_elder_man_b",
+      "tints": {
+        "cloth_a": "#BCAF96",
+        "cloth_b": "#646D78",
+        "cloth_c": "#EAE6DD",
+        "hair": "#C4C0B9"
+      },
+      "work": "kneel_mourn",
+      "about": "Mourners kneel facing the water at the Ebbing (bible section 4, Rites)."
+    },
+    {
+      "id": "corrow_night_mourner_2",
+      "zone": "ch09/corrow_night",
+      "stage_actor": "mourner_2",
+      "role": "mourner",
+      "island": "corrow_coast",
+      "community": "corrow",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "body": "crowd_woman_medium_b",
+      "tints": {
+        "cloth_a": "#DFD6C3",
+        "cloth_b": "#6C6C6D",
+        "cloth_c": "#E2D9C9",
+        "hair": "#241B15"
+      },
+      "work": "kneel_mourn",
+      "about": "Mourners kneel facing the water at the Ebbing (bible section 4, Rites)."
+    },
+    {
+      "id": "corrow_night_mourner_3",
+      "zone": "ch09/corrow_night",
+      "stage_actor": "mourner_3",
+      "role": "mourner",
+      "island": "corrow_coast",
+      "community": "corrow",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "medium",
+      "body": "crowd_man_medium_a",
+      "tints": {
+        "cloth_a": "#DED3C0",
+        "cloth_b": "#435375",
+        "cloth_c": "#E8E3D8",
+        "hair": "#251C15"
+      },
+      "work": "kneel_mourn",
+      "about": "Mourners kneel facing the water at the Ebbing (bible section 4, Rites)."
+    },
+    {
+      "id": "corrow_night_mourner_4",
+      "zone": "ch09/corrow_night",
+      "stage_actor": "mourner_4",
+      "role": "mourner",
+      "island": "corrow_coast",
+      "community": "corrow",
+      "age_band": "elder",
+      "sex": "female",
+      "build": "heavy",
+      "body": "crowd_elder_woman_b",
+      "tints": {
+        "cloth_a": "#BAAE98",
+        "cloth_b": "#495977",
+        "cloth_c": "#283359",
+        "hair": "#7A756F"
+      },
+      "work": "kneel_mourn",
+      "about": "Mourners kneel facing the water at the Ebbing (bible section 4, Rites)."
+    },
+    {
+      "id": "corrow_night_tender",
+      "zone": "ch09/corrow_night",
+      "stage_actor": "tender",
+      "role": "tender",
+      "island": "order",
+      "community": "order",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "lean",
+      "body": "crowd_order_woman",
+      "tints": {
+        "cloth_a": "#EAE5DD",
+        "cloth_b": "#7E1B14",
+        "cloth_c": "#2D3C6C",
+        "hair": "#231B16"
+      },
+      "work": "vigil"
+    },
+    {
+      "id": "oruvel_cook",
+      "zone": "ch01/oruvel",
+      "stage_actor": "cook",
+      "role": "cook",
+      "island": "low_reaches",
+      "community": "oruvel",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "heavy",
+      "body": "crowd_woman_medium",
+      "tints": {
+        "cloth_a": "#E9E4DA",
+        "cloth_b": "#7CABA6",
+        "cloth_c": "#B85E45",
+        "hair": "#241B15"
+      },
+      "work": "fold",
+      "about": "The cookboat's cook who keeps Rhen's tally in knots (act1_ch01 C1-09)."
+    },
+    {
+      "id": "oruvel_netmender",
+      "zone": "ch01/oruvel",
+      "stage_actor": "netmender",
+      "role": "netmender",
+      "island": "low_reaches",
+      "community": "oruvel",
+      "age_band": "elder",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_elder_man_a",
+      "tints": {
+        "cloth_a": "#E6DFD2",
+        "cloth_b": "#475071",
+        "cloth_c": "#3C78A8",
+        "hair": "#8C8781"
+      },
+      "work": "mend",
+      "about": "The net lanes' menders, a pair."
+    },
+    {
+      "id": "oruvel_netmender_2",
+      "zone": "ch01/oruvel",
+      "stage_actor": "netmender_2",
+      "role": "netmender",
+      "island": "low_reaches",
+      "community": "oruvel",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "body": "crowd_woman_lean_a",
+      "tints": {
+        "cloth_a": "#DFD4C2",
+        "cloth_b": "#69A09C",
+        "cloth_c": "#5286AF",
+        "hair": "#261C15"
+      },
+      "work": "mend"
+    },
+    {
+      "id": "oruvel_pen_child",
+      "zone": "ch01/oruvel",
+      "stage_actor": "pen_child",
+      "role": "child",
+      "island": "low_reaches",
+      "community": "oruvel",
+      "age_band": "child",
+      "sex": "female",
+      "build": "tall",
+      "body": "crowd_girl_tall",
+      "tints": {
+        "cloth_a": "#DCD1BC",
+        "cloth_b": "#668AA0",
+        "cloth_c": "#4A7485",
+        "hair": "#281C15"
+      },
+      "work": "",
+      "about": "The girl at the Reefball pen."
+    },
+    {
+      "id": "oruvel_roof_child",
+      "zone": "ch01/oruvel",
+      "stage_actor": "roof_child",
+      "role": "child",
+      "island": "low_reaches",
+      "community": "oruvel",
+      "age_band": "child",
+      "sex": "male",
+      "build": "tall",
+      "body": "crowd_boy_tall",
+      "tints": {
+        "cloth_a": "#D9CCB5",
+        "cloth_b": "#6087A1",
+        "cloth_c": "#3F7AA9",
+        "hair": "#221A16"
+      },
+      "work": "",
+      "about": "Diving off a cabin roof."
+    },
+    {
+      "id": "pemakar_boat_fisher",
+      "zone": "ch05/pemakar",
+      "stage_actor": "boat_fisher",
+      "role": "fisher",
+      "island": "pemakar_terraces",
+      "community": "pemakar",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_man_lean_b",
+      "tints": {
+        "cloth_a": "#D9CCB4",
+        "cloth_b": "#295B3A",
+        "cloth_c": "#CC9E3D",
+        "hair": "#281C15"
+      },
+      "work": "haul"
+    },
+    {
+      "id": "pemakar_boat_seller",
+      "zone": "ch05/pemakar",
+      "stage_actor": "boat_seller",
+      "role": "vendor",
+      "island": "pemakar_terraces",
+      "community": "pemakar",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "heavy",
+      "body": "crowd_woman_heavy",
+      "tints": {
+        "cloth_a": "#D9CCB4",
+        "cloth_b": "#30643A",
+        "cloth_c": "#AD241D",
+        "hair": "#241B15"
+      },
+      "work": "fold",
+      "about": "Selling leaf-boats for Lanternfall."
+    },
+    {
+      "id": "pemakar_ferryman_mate",
+      "zone": "ch05/pemakar",
+      "stage_actor": "ferryman_mate",
+      "role": "ferryman_mate",
+      "island": "pemakar_terraces",
+      "community": "pemakar",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "medium",
+      "body": "crowd_man_medium_a",
+      "tints": {
+        "cloth_a": "#DDD2BE",
+        "cloth_b": "#2C5F3A",
+        "cloth_c": "#2C5F3A",
+        "hair": "#201A16"
+      },
+      "work": "haul"
+    },
+    {
+      "id": "pemakar_folder",
+      "zone": "ch05/pemakar",
+      "stage_actor": "folder",
+      "role": "folder",
+      "island": "pemakar_terraces",
+      "community": "pemakar",
+      "age_band": "elder",
+      "sex": "female",
+      "build": "lean",
+      "body": "crowd_elder_woman_a",
+      "tints": {
+        "cloth_a": "#D9CDB5",
+        "cloth_b": "#28593A",
+        "cloth_c": "#30653A",
+        "hair": "#87827C"
+      },
+      "work": "fold",
+      "about": "Folding leaf-boats (bible section 4)."
+    },
+    {
+      "id": "pemakar_folder_2",
+      "zone": "ch05/pemakar",
+      "stage_actor": "folder_2",
+      "role": "folder",
+      "island": "pemakar_terraces",
+      "community": "pemakar",
+      "age_band": "child",
+      "sex": "female",
+      "build": "teen",
+      "body": "crowd_girl_teen",
+      "tints": {
+        "cloth_a": "#E0D7C6",
+        "cloth_b": "#232638",
+        "cloth_c": "#BC9349",
+        "hair": "#2B1D14"
+      },
+      "work": "fold"
+    },
+    {
+      "id": "pemakar_forge_child",
+      "zone": "ch05/pemakar",
+      "stage_actor": "forge_child",
+      "role": "child",
+      "island": "pemakar_terraces",
+      "community": "pemakar",
+      "age_band": "child",
+      "sex": "male",
+      "build": "small",
+      "body": "crowd_boy_small",
+      "tints": {
+        "cloth_a": "#D7C8AF",
+        "cloth_b": "#262D4A",
+        "cloth_c": "#2E623A",
+        "hair": "#201A16"
+      },
+      "work": ""
+    },
+    {
+      "id": "pemakar_grave_child",
+      "zone": "ch05/pemakar",
+      "stage_actor": "grave_child",
+      "role": "child",
+      "island": "pemakar_terraces",
+      "community": "pemakar",
+      "age_band": "child",
+      "sex": "female",
+      "build": "small",
+      "body": "crowd_girl_small",
+      "tints": {
+        "cloth_a": "#E1D3B6",
+        "cloth_b": "#242940",
+        "cloth_c": "#7C1712",
+        "hair": "#231B16"
+      },
+      "work": "",
+      "about": "At the terrace graves."
+    },
+    {
+      "id": "pemakar_lacquerer",
+      "zone": "ch05/pemakar",
+      "stage_actor": "lacquerer",
+      "role": "lacquerer",
+      "island": "pemakar_terraces",
+      "community": "pemakar",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "medium",
+      "body": "crowd_man_heavy",
+      "tints": {
+        "cloth_a": "#D6C8AE",
+        "cloth_b": "#24293E",
+        "cloth_c": "#7B1712",
+        "hair": "#261C15"
+      },
+      "work": "mend"
+    },
+    {
+      "id": "pemakar_sweeper",
+      "zone": "ch05/pemakar",
+      "stage_actor": "sweeper",
+      "role": "sweeper",
+      "island": "pemakar_terraces",
+      "community": "pemakar",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "lean",
+      "body": "crowd_woman_medium_b",
+      "tints": {
+        "cloth_a": "#E3DBCC",
+        "cloth_b": "#30653A",
+        "cloth_c": "#C89C40",
+        "hair": "#281C15"
+      },
+      "work": "sweep"
+    },
+    {
+      "id": "pemakar_weir_child",
+      "zone": "ch05/pemakar",
+      "stage_actor": "weir_child",
+      "role": "child",
+      "island": "pemakar_terraces",
+      "community": "pemakar",
+      "age_band": "child",
+      "sex": "male",
+      "build": "tall",
+      "body": "crowd_boy_tall",
+      "tints": {
+        "cloth_a": "#DBCFBA",
+        "cloth_b": "#36436D",
+        "cloth_c": "#921D17",
+        "hair": "#211A16"
+      },
+      "work": ""
+    },
+    {
+      "id": "tamsule_board",
+      "zone": "ch07/tamsule",
+      "stage_actor": "board",
+      "role": "vendor",
+      "island": "tamsule",
+      "community": "tamsule",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "body": "crowd_woman_medium",
+      "tints": {
+        "cloth_a": "#E5DED1",
+        "cloth_b": "#3A71A1",
+        "cloth_c": "#CB9E3F",
+        "hair": "#201A16"
+      },
+      "work": "fold",
+      "about": "The Reefball board-caller (ch07_bark_board.dlg): a person, not a notice board."
+    },
+    {
+      "id": "tamsule_boatman",
+      "zone": "ch07/tamsule",
+      "stage_actor": "boatman",
+      "role": "boatman",
+      "island": "tamsule",
+      "community": "tamsule",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "heavy",
+      "body": "crowd_man_heavy_b",
+      "tints": {
+        "cloth_a": "#E8E3D9",
+        "cloth_b": "#B35139",
+        "cloth_c": "#B32F24",
+        "hair": "#241B15"
+      },
+      "work": "haul"
+    },
+    {
+      "id": "tamsule_child",
+      "zone": "ch07/tamsule",
+      "stage_actor": "child",
+      "role": "child",
+      "island": "tamsule",
+      "community": "tamsule",
+      "age_band": "child",
+      "sex": "male",
+      "build": "small",
+      "body": "crowd_boy_small",
+      "tints": {
+        "cloth_a": "#E2D9C9",
+        "cloth_b": "#688043",
+        "cloth_c": "#D0A23A",
+        "hair": "#201A16"
+      },
+      "work": ""
+    },
+    {
+      "id": "tamsule_fisher",
+      "zone": "ch07/tamsule",
+      "stage_actor": "fisher",
+      "role": "fisher",
+      "island": "tamsule",
+      "community": "tamsule",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_man_lean_b",
+      "tints": {
+        "cloth_a": "#E2DACA",
+        "cloth_b": "#325283",
+        "cloth_c": "#5A8BB1",
+        "hair": "#271C15"
+      },
+      "work": "haul"
+    },
+    {
+      "id": "tamsule_netmender",
+      "zone": "ch07/tamsule",
+      "stage_actor": "netmender",
+      "role": "netmender",
+      "island": "tamsule",
+      "community": "tamsule",
+      "age_band": "elder",
+      "sex": "male",
+      "build": "heavy",
+      "body": "crowd_elder_man_b",
+      "tints": {
+        "cloth_a": "#E6DFD3",
+        "cloth_b": "#466C81",
+        "cloth_c": "#6793B6",
+        "hair": "#85807A"
+      },
+      "work": "mend",
+      "about": "The lane elder (ch07_bark_elder)."
+    },
+    {
+      "id": "tamsule_trader_boatman",
+      "zone": "ch07/tamsule",
+      "stage_actor": "trader_boatman",
+      "role": "trader",
+      "island": "tamsule",
+      "community": "tamsule",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "medium",
+      "body": "crowd_man_medium_b",
+      "tints": {
+        "cloth_a": "#E7E1D6",
+        "cloth_b": "#A04B32",
+        "cloth_c": "#B32A21",
+        "hair": "#2E1E14"
+      },
+      "work": "carry"
+    },
+    {
+      "id": "tamsule_vendor",
+      "zone": "ch07/tamsule",
+      "stage_actor": "vendor",
+      "role": "vendor",
+      "island": "tamsule",
+      "community": "tamsule",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "lean",
+      "body": "crowd_woman_lean_a",
+      "tints": {
+        "cloth_a": "#DBD0BA",
+        "cloth_b": "#2D4374",
+        "cloth_c": "#6B96B7",
+        "hair": "#201A16"
+      },
+      "work": "fold"
+    },
+    {
+      "id": "tamsule_bell_galleries_oruvel_diver_1",
+      "zone": "ch07/tamsule_bell_galleries",
+      "stage_actor": "oruvel_diver_1",
+      "role": "diver",
+      "island": "low_reaches",
+      "community": "oruvel",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_man_lean_b",
+      "tints": {
+        "cloth_a": "#6AA09C",
+        "cloth_b": "#21222D",
+        "cloth_c": "#BC954C",
+        "hair": "#281C15"
+      },
+      "work": "vigil",
+      "about": "Oruvel's side."
+    },
+    {
+      "id": "tamsule_bell_galleries_oruvel_diver_2",
+      "zone": "ch07/tamsule_bell_galleries",
+      "stage_actor": "oruvel_diver_2",
+      "role": "diver",
+      "island": "low_reaches",
+      "community": "oruvel",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "lean",
+      "body": "crowd_woman_lean_b",
+      "tints": {
+        "cloth_a": "#649D99",
+        "cloth_b": "#1F1D21",
+        "cloth_c": "#BE964A",
+        "hair": "#5E361D"
+      },
+      "work": "vigil"
+    },
+    {
+      "id": "tamsule_bell_galleries_sorrin_diver_1",
+      "zone": "ch07/tamsule_bell_galleries",
+      "stage_actor": "sorrin_diver_1",
+      "role": "diver",
+      "island": "low_reaches",
+      "community": "sorrin",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "lean",
+      "body": "crowd_woman_lean_a",
+      "tints": {
+        "cloth_a": "#5588B0",
+        "cloth_b": "#5A8BB1",
+        "cloth_c": "#B35039",
+        "hair": "#211A16"
+      },
+      "work": "vigil",
+      "about": "Sorrin's side."
+    },
+    {
+      "id": "tamsule_bell_galleries_sorrin_diver_2",
+      "zone": "ch07/tamsule_bell_galleries",
+      "stage_actor": "sorrin_diver_2",
+      "role": "diver",
+      "island": "low_reaches",
+      "community": "sorrin",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_man_lean_a",
+      "tints": {
+        "cloth_a": "#4B81AD",
+        "cloth_b": "#4D83AD",
+        "cloth_c": "#A23F2D",
+        "hair": "#211A16"
+      },
+      "work": "vigil"
+    }
+  ]
+}

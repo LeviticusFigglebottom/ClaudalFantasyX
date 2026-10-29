@@ -42,7 +42,7 @@
         "shape_kind": "haluna_layout",
         "bounds": [-150.0, -150.0, 210.0, 230.0],
         "pois": [
-          {"id": "beach", "name_key": "MAP_POI_BEACH", "kind": "path", "at": [-1.0, 8.0], "source": "node:Spawns/Beach"},
+          {"id": "beach", "name_key": "MAP_POI_BEACH", "kind": "path", "at": [-4.0, 8.0], "source": "node:Spawns/Beach"},
           {"id": "village", "name_key": "MAP_POI_NEMES_HOUSE", "kind": "home", "at": [-54.1, -1.9], "source": "node:NPCs/Neme/Neme"},
           {"id": "market", "name_key": "MAP_POI_MARKET", "kind": "talk", "at": [-40.0, 1.5], "source": "node:NPCs/Market/Vendor"},
           {"id": "shop", "name_key": "MAP_POI_SHOP", "kind": "shop", "at": [-35.5, -0.6], "source": "node:NPCs/Town/Shopkeeper"},
@@ -99,7 +99,7 @@
         "shape_hints": {"sea": ["Sea"]},
         "bounds": [-40.0, -44.0, 92.0, 62.0],
         "pois": [
-          {"id": "scale_hull", "name_key": "MAP_POI_O_SCALE_HULL", "kind": "shop", "at": [0.0, 8.0], "source": "spawn:ScaleHull"},
+          {"id": "scale_hull", "name_key": "MAP_POI_O_SCALE_HULL", "kind": "shop", "at": [-4.6, 10.5], "source": "spawn:ScaleHull"},
           {"id": "cookboats", "name_key": "MAP_POI_O_COOKBOATS", "kind": "talk", "at": [-12.0, -6.0], "source": "actor:cook"},
           {"id": "net_lanes", "name_key": "MAP_POI_O_NET_LANES", "kind": "talk", "at": [12.0, -6.0], "source": "actor:netmender"},
           {"id": "outer_mooring", "name_key": "MAP_POI_O_OUTER_MOORING", "kind": "dock", "at": [-28.0, -12.0], "source": "actor:skipper_sadi"},
@@ -176,7 +176,7 @@
         "shapes": "res://game/levels/ch05/ashcrown/ashcrown_layout.json",
         "shape_kind": "greybox_layout",
         "shape_hints": {"structures": ["g1", "g2a", "g2b", "g3a", "g3b", "g3c", "g4a", "g4b"], "pads": ["TenderGraves"]},
-        "bounds": [-33.0, -21.0, 66.0, 177.0],
+        "bounds": [-25.0, -37.8, 66.3, 213.6],
         "pois": [
           {"id": "stair_foot", "name_key": "MAP_POI_A_STAIR_FOOT", "kind": "path", "at": [0.0, 150.8], "source": "spawn:StairFoot"},
           {"id": "grave_tier", "name_key": "MAP_POI_A_GRAVE_TIER", "kind": "talk", "at": [0.0, 100.9], "source": "trigger:banter_grave_tier"},

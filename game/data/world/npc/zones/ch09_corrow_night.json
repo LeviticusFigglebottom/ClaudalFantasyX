@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "doc": "Corrow at the Ebbing (M3-CRE-659, ADR 0152): four mourners kneeling facing the water, a child by Marra and the tender, crowd people (game/data/world/npc/crowd.json) inside their stage actors (attach child).",
+  "zone": "ch09/corrow_night",
+  "villagers": [
+    {
+      "npc_id": "corrow_night_child",
+      "crowd": "corrow_night_child",
+      "stand_in": "CutsceneStage/Actors/child",
+      "attach": "child"
+    },
+    {
+      "npc_id": "corrow_night_mourner_1",
+      "crowd": "corrow_night_mourner_1",
+      "stand_in": "CutsceneStage/Actors/mourner_1",
+      "attach": "child"
+    },
+    {
+      "npc_id": "corrow_night_mourner_2",
+      "crowd": "corrow_night_mourner_2",
+      "stand_in": "CutsceneStage/Actors/mourner_2",
+      "attach": "child"
+    },
+    {
+      "npc_id": "corrow_night_mourner_3",
+      "crowd": "corrow_night_mourner_3",
+      "stand_in": "CutsceneStage/Actors/mourner_3",
+      "attach": "child"
+    },
+    {
+      "npc_id": "corrow_night_mourner_4",
+      "crowd": "corrow_night_mourner_4",
+      "stand_in": "CutsceneStage/Actors/mourner_4",
+      "attach": "child"
+    },
+    {
+      "npc_id": "corrow_night_tender",
+      "crowd": "corrow_night_tender",
+      "stand_in": "CutsceneStage/Actors/tender",
+      "attach": "child"
+    }
+  ]
+}

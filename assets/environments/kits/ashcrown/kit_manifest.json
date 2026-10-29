@@ -106,9 +106,9 @@
         14000,
         1200
       ],
-      "bytes": 649620,
+      "bytes": 800856,
       "lods": {
-        "flying_stair": 10836,
+        "flying_stair": 12228,
         "flying_stair-lod1": 174
       }
     },

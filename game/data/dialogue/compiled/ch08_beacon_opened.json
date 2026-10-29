@@ -19,7 +19,7 @@
     {"op": "set", "flag": "ch08_beacon_opened", "value": ["lit", true], "src": 18},
     {"op": "cue", "cue": "camera", "args": ["F08"], "kwargs": {}, "src": 19},
     {"op": "line", "id": "ch08_beacon_opened_001", "key": "DLG_CH08_BEACON_OPENED_001", "speaker": "toma", "emotion": "determined", "voice": "", "src": 20},
-    {"op": "cue", "cue": "mark", "args": ["toma", "gallery_out", "run"], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "mark", "args": ["toma", "gallery_out", "run"], "kwargs": {"via": "way_gallery_door"}, "src": 21},
     {"op": "cue", "cue": "wait", "args": [0.6], "kwargs": {}, "src": 22},
     {"op": "cue", "cue": "fade", "args": ["out", 0.6], "kwargs": {}, "src": 23}
    ]

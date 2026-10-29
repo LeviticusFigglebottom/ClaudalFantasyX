@@ -131,6 +131,7 @@ func test_every_creature_row_names_a_scene_with_its_clips() -> void:
 		for clip: Variant in row["loop"]:
 			var player := a.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
 			assert_eq(player.get_animation(StringName(str(clip))).loop_mode, Animation.LOOP_LINEAR, "%s loops" % clip)
+	before_each()
 
 
 func test_an_action_plays_its_clip_and_the_actor_idles_again() -> void:
@@ -152,6 +153,7 @@ func test_an_action_plays_its_clip_and_the_actor_idles_again() -> void:
 	assert_eq(a.contact_time(&"hit"), -1.0)
 	assert_true(a.clip_length(&"attack") > a.contact_time(&"attack"))
 	assert_eq(a.clip_length(&"no_such_clip"), 0.0)
+	before_each()
 
 
 func test_ko_holds_its_pose_and_a_revive_returns_to_idle() -> void:
@@ -168,6 +170,7 @@ func test_ko_holds_its_pose_and_a_revive_returns_to_idle() -> void:
 	assert_eq(a.current_clip, &"idle")
 	for g in a.find_children("*", "GeometryInstance3D", true, false):
 		assert_eq((g as GeometryInstance3D).transparency, 0.0, "opaque again")
+	before_each()
 
 
 func test_petrify_freezes_and_refuses_clips() -> void:
@@ -176,6 +179,7 @@ func test_petrify_freezes_and_refuses_clips() -> void:
 	assert_false(a.play_action(&"pinch", &"physical"))
 	a.set_frozen(false)
 	assert_true(a.play_action(&"pinch", &"physical"))
+	before_each()
 
 
 func test_a_creature_without_phases_or_parts_ignores_them() -> void:
@@ -183,6 +187,7 @@ func test_a_creature_without_phases_or_parts_ignores_them() -> void:
 	assert_false(a.enter_phase(&"flood"))
 	assert_false(a.set_part_broken(&"toll", true))
 	assert_false(a.is_part_broken(&"toll"))
+	before_each()
 
 
 func test_the_model_field_reaches_the_stand_in_spec() -> void:
@@ -196,6 +201,7 @@ func test_the_model_field_reaches_the_stand_in_spec() -> void:
 	var hero := str(BattleStage.stand_in_spec(&"rhen").get("scene", ""))  # a hero actor scene since M2-UI-07
 	assert_false(CreatureModels.models().values().has(hero), "heroes are not creatures")
 	assert_eq(CreatureModels.stand_in_overrides("no_such_enemy"), {})
+	before_each()
 
 
 func test_the_stand_in_hands_ko_and_stone_to_the_creature() -> void:
@@ -218,6 +224,7 @@ func test_the_stand_in_hands_ko_and_stone_to_the_creature() -> void:
 	assert_false(plain.play_action(&"lure_glow", &"magical"), "a primitive plays nothing")
 	assert_false(plain.enter_phase(&"flood"))
 	assert_false(plain.set_part_broken(&"toll", true))
+	before_each()
 
 
 func test_a_sandbox_battle_drives_the_crabs_clips() -> void:
@@ -267,6 +274,7 @@ func test_a_sandbox_battle_drives_the_crabs_clips() -> void:
 	ctl.free()
 	ctl = null
 	Game.state = _saved_state
+	before_each()
 
 
 func test_the_drownbells_rim_breaks_and_mends() -> void:
@@ -281,6 +289,7 @@ func test_the_drownbells_rim_breaks_and_mends() -> void:
 	a.set_part_broken(&"toll", false)
 	assert_true(rim.visible and not broken.visible, "a new toll mends it")
 	assert_false(a.set_part_broken(&"hood_slam", true), "no part for that skill")
+	before_each()
 
 
 func test_the_flood_phase_sinks_the_bell_and_idles_on_its_flood_clip() -> void:
@@ -304,6 +313,7 @@ func test_the_flood_phase_sinks_the_bell_and_idles_on_its_flood_clip() -> void:
 	b.settle()
 	assert_true(is_equal_approx((b.get_child(0) as Node3D).position.y, -0.35), "settle() ends the sink at once")
 	assert_eq(b.current_clip, &"idle_flood")
+	before_each()
 
 
 func test_phase_nodes_hide_at_once_or_after_the_clip() -> void:
@@ -333,6 +343,7 @@ func test_phase_nodes_hide_at_once_or_after_the_clip() -> void:
 	w.settle()
 	assert_true(sheath.visible, "show_after: sheathed once the drop has played")
 	assert_eq(w.phase_clip(&"attack"), &"attack_deck", "it strikes from the deck")
+	before_each()
 
 
 func test_a_phase_plays_its_own_strikes() -> void:
@@ -349,6 +360,7 @@ func test_a_phase_plays_its_own_strikes() -> void:
 	assert_true(a.play_action(&"", &"magical"))
 	assert_eq(a.current_clip, &"cast_breach")
 	assert_eq(a.phase_clip(&"hit"), &"hit", "the Breach has no hit of its own")
+	before_each()
 
 
 func test_the_mangrove_drowner_uproots_and_strikes_risen() -> void:
@@ -366,6 +378,7 @@ func test_the_mangrove_drowner_uproots_and_strikes_risen() -> void:
 	assert_true(is_equal_approx(d.contact_time(&"attack"), 0.7), "the drag lands at 0.7 s")
 	assert_true(d.play_hit())
 	assert_eq(d.current_clip, &"hit_risen", "the risen hit wins over the variants")
+	before_each()
 
 
 func test_the_lamp_engine_opens_its_rings_and_strikes_open() -> void:
@@ -389,6 +402,7 @@ func test_the_lamp_engine_opens_its_rings_and_strikes_open() -> void:
 	assert_true(is_equal_approx(e.contact_time(&"attack"), 0.6), "the trim lands at 0.6 s")
 	assert_true(e.play_hit())
 	assert_eq(e.current_clip, &"hit_opened", "the open hit wins over the variants")
+	before_each()
 
 
 func test_the_avalanche_ram_charges_bellows_and_lies_down() -> void:
@@ -426,6 +440,7 @@ func test_the_avalanche_ram_charges_bellows_and_lies_down() -> void:
 	for b in skel.get_bone_count():
 		var y := (skel.global_transform * skel.get_bone_global_pose(b)).origin.y
 		assert_true(y > -RAM_FOOT_TOL_M, "%s stays above the ground in the KO" % skel.get_bone_name(b))
+	before_each()
 
 
 func test_the_wakefin_circles_cuts_dives_and_floats_belly_up() -> void:
@@ -462,6 +477,7 @@ func test_the_wakefin_circles_cuts_dives_and_floats_belly_up() -> void:
 		assert_true(
 			absf(y) < FIN_KO_BAND_M, "%s lies at the surface after the KO (y %.2f)" % [skel.get_bone_name(b), y]
 		)
+	before_each()
 
 
 func _bone_y(skel: Skeleton3D, bone: int) -> float:
@@ -522,6 +538,7 @@ func test_the_ridge_lynx_crouches_pounces_and_lies_down() -> void:
 	assert_true(_bone_y(skel, skel.find_bone("head")) < LYNX_KO_HEAD_MAX_Y, "it lies down with its head low")
 	for b in skel.get_bone_count():
 		assert_true(_bone_y(skel, b) > -RAM_FOOT_TOL_M, "%s stays above the snow in the KO" % skel.get_bone_name(b))
+	before_each()
 
 
 func test_the_cord_moth_hovers_opens_its_knots_and_drifts_down() -> void:
@@ -548,6 +565,7 @@ func test_the_cord_moth_hovers_opens_its_knots_and_drifts_down() -> void:
 		assert_true(
 			y > -MOTH_BAND_M and y < MOTH_BAND_M * 10.0, "%s lies on the floor (y %.3f)" % [skel.get_bone_name(b), y]
 		)
+	before_each()
 
 
 func test_the_glass_skate_lies_flat_erupts_and_flattens() -> void:
@@ -570,6 +588,7 @@ func test_the_glass_skate_lies_flat_erupts_and_flattens() -> void:
 	for b in skel.get_bone_count():
 		var y := _bone_y(skel, b)
 		assert_true(y > -RAM_FOOT_TOL_M and y < SKATE_FLAT_MAX_M, "%s lies flat (y %.3f)" % [skel.get_bone_name(b), y])
+	before_each()
 
 
 func test_the_act2_variants_keep_their_bases_rigs_and_clips() -> void:
@@ -602,6 +621,7 @@ func test_the_act2_variants_keep_their_bases_rigs_and_clips() -> void:
 	assert_true(
 		fen.get_bone_global_rest(tail).origin.z < leech.get_bone_global_rest(tail).origin.z, "the fen leech is longer"
 	)
+	before_each()
 
 
 func test_hits_rotate_their_variants_and_a_phase_keeps_its_own() -> void:
@@ -615,6 +635,7 @@ func test_hits_rotate_their_variants_and_a_phase_keeps_its_own() -> void:
 	r.enter_phase(&"dark", true)
 	assert_true(r.play_hit())
 	assert_eq(r.current_clip, &"hit_dark", "a phase's own hit wins over the variants")
+	before_each()
 
 
 func test_an_idling_creature_fidgets_now_and_then() -> void:
@@ -642,6 +663,7 @@ func test_an_idling_creature_fidgets_now_and_then() -> void:
 	for i in int((most + 0.5) / 0.1):
 		c._process(0.1)
 	assert_eq(c.current_clip, &"idle", "a held (paused) pose, as in a portrait, never fidgets")
+	before_each()
 
 
 func test_a_drownbell_fight_breaks_the_rim_and_floods_the_bell() -> void:
@@ -680,6 +702,7 @@ func test_a_drownbell_fight_breaks_the_rim_and_floods_the_bell() -> void:
 	ctl.free()
 	ctl = null
 	Game.state = _saved_state
+	before_each()
 
 
 func test_a_portrait_shows_an_enemy_with_a_model_and_nothing_otherwise() -> void:
@@ -696,6 +719,7 @@ func test_a_portrait_shows_an_enemy_with_a_model_and_nothing_otherwise() -> void
 	assert_eq(p.get_node(^"Viewport/Holder").get_child_count(), 1)
 	assert_false(p.show_enemy(&"no_such_enemy"))
 	assert_false(p.has_creature())
+	before_each()
 
 
 func _actor(path: String) -> CreatureActor:
@@ -731,6 +755,7 @@ func test_a_hit_snaps_onto_its_struck_pose() -> void:
 	assert_true(a.is_hit_clip(&"hit_b") and not a.is_hit_clip(&"attack"), "hit variants snap, strikes do not")
 	assert_true(a.play_action(&"pinch", &"physical"))
 	assert_between(player.current_animation_position, 0.0, 0.001, "a strike still starts at its beginning")
+	before_each()
 
 
 ## M3-CRE-627: an Act II regular strikes and casts on its clips, syncs both to its contact seconds and has its
@@ -779,6 +804,7 @@ func test_the_tannin_archer_spits_from_its_root_and_rolls_off_it() -> void:
 	assert_true(_bone_at(skel, "root").is_equal_approx(root_rest), "the mangrove root it lay on stays put")
 	assert_true(_bone_at(skel, "spine_0").x > ARCHER_KO_OFF_X, "it rolls off the root to the side")
 	assert_true(_bone_at(skel, "jaw").y < ARCHER_KO_MAX_Y, "and lies at the water")
+	before_each()
 
 
 func test_the_gallery_ray_glides_settles_into_its_pool_and_falls_flat() -> void:
@@ -799,6 +825,7 @@ func test_the_gallery_ray_glides_settles_into_its_pool_and_falls_flat() -> void:
 	assert_true(_bone_at(skel, "root").y < -RAY_POOL_DROP_M, "the cast settles it into the pool")
 	skel = _pose(a, &"ko", INF)
 	assert_true(absf(_bone_at(skel, "root").y + RAY_HOVER) < RAY_FLOOR_TOL_M, "the KO lays it flat on the floor")
+	before_each()
 
 
 func test_the_rime_urchin_clenches_aims_its_spines_and_settles_on_its_ice() -> void:
@@ -818,6 +845,7 @@ func test_the_rime_urchin_clenches_aims_its_spines_and_settles_on_its_ice() -> v
 	skel = _pose(a, &"ko", INF)
 	assert_true(_bone_at(skel, "body").y < body_rest.y - URCHIN_SETTLE_M, "the KO settles the test")
 	assert_true(_bone_at(skel, "root").is_equal_approx(plinth), "on the ice plinth, which stays")
+	before_each()
 
 
 func test_the_conduit_crawler_scrubs_jabs_and_folds_its_legs() -> void:
@@ -843,6 +871,7 @@ func test_the_conduit_crawler_scrubs_jabs_and_folds_its_legs() -> void:
 	assert_true(body > CRAWLER_KO_BODY_MIN_Y, "onto its belly plate, not through the floor")
 	for leg in legs:
 		assert_true(_bone_at(skel, leg).y > -RAM_FOOT_TOL_M, "%s stays above the floor" % leg)
+	before_each()
 
 
 func test_the_flat_engine_presses_the_water_flat_and_splits_on_its_ko() -> void:
@@ -868,6 +897,7 @@ func test_the_flat_engine_presses_the_water_flat_and_splits_on_its_ko() -> void:
 		assert_between(_turn_deg(skel, h), FLAT_SPLIT_DEG[0], FLAT_SPLIT_DEG[1], "the KO splits the drum: %s" % h)
 	for b in bones:
 		assert_true(_bone_at(skel, b).y > -RAM_FOOT_TOL_M, "%s stays on the water in the KO" % b)
+	before_each()
 
 
 ## How far a bone is turned from its rest (degrees).

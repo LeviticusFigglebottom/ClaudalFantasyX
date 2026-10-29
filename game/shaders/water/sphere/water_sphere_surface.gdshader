@@ -40,6 +40,7 @@ vec3 refracted(vec2 uv, vec2 off, float frag_z, mat4 inv_proj) {
 	return textureLod(screen_tex, z > frag_z ? uv : uv2, 0.0).rgb;
 }
 
+// The swell's phase is on the unit ball's direction (a flattened drop's too: mesh and normal stay unit-ball based).
 float swell(vec3 dir, float t) {
 	float k = sphere_radius_m / swell_scale_m;
 	return sin(dot(dir, vec3(0.8, 0.3, 0.5)) * k + t) * 0.5 + sin(dot(dir, vec3(-0.4, 0.7, 0.6)) * k * 1.7 - 1.3 * t)
@@ -53,7 +54,7 @@ void vertex() {
 }
 
 void fragment() {
-	vec3 n_out = normalize(v_world - sphere_center);
+	vec3 n_out = sphere_normal(v_world);
 	// The swell's slope perturbs the normal a little (finite differences of the same function on the sphere).
 	vec3 t1 = normalize(cross(n_out, abs(n_out.y) < 0.99 ? vec3(0.0, 1.0, 0.0) : vec3(1.0, 0.0, 0.0)));
 	vec3 t2 = cross(n_out, t1);
@@ -86,7 +87,7 @@ void fragment() {
 	} else {
 		// From outside, the far wall's back faces must not draw: one mesh, no depth write, so wherever their
 		// triangles came later they painted the dark TIR over the near face (wedges along the rings).
-		if (length(CAMERA_POSITION_WORLD - sphere_center) > sphere_radius_m) {
+		if (sphere_inside_m(CAMERA_POSITION_WORLD) < 0.0) {
 			discard;
 		}
 		vec3 n_in = -n_w;

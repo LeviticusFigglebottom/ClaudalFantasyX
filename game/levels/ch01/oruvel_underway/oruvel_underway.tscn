@@ -27,7 +27,7 @@ water = NodePath("../Water")
 
 [node name="Dressing" type="Node3D" parent="." node_paths=PackedStringArray("tide")]
 script = ExtResource("2_dressing")
-layout_path = "res://game/levels/ch01/oruvel_underway/oruvel_underway_dressing.json"
+layout_path = "res://assets/environments/zones/ch01/oruvel_underway_dressing.json"
 tide = NodePath("../Tide")
 
 [node name="Underwater" type="Node3D" parent="." node_paths=PackedStringArray("water")]

@@ -16,6 +16,8 @@ extends Node3D
 
 signal effect_played(effect_id: StringName, position: Vector3)
 
+## An entry's nominal height over its arena mark (a group of climbers on the stair head), for anchor_heights.
+const ENTRY_HEIGHT_M := 1.6
 const DATA_PATH := "res://game/data/vfx/battle/effects.json"
 const DRAW_MATERIAL := "res://game/vfx/battle/materials/battle_spark_draw.tres"
 const PROCESS_MATERIAL := "res://game/vfx/battle/materials/battle_spark_process.tres"
@@ -49,6 +51,7 @@ var _last_flash_ms := -1000000
 var _process_cache: Dictionary = {}
 var _pool: Dictionary = {}
 var _draw_mesh: QuadMesh
+var _depth_cache: Dictionary = {}
 
 
 static func load_data() -> Dictionary:
@@ -100,6 +103,8 @@ func attach(controller: BattleController, engine: BattleEngine) -> void:
 			func(vb: BattleCombatant) -> void: play_event.call_deferred(&"vowbound_call", vb.id)
 		)
 		engine.vowbound.departed.connect(_on_vowbound_departed)
+	engine.turn_ended.connect(func(_a: BattleCombatant, changes: Array[Dictionary]) -> void: play_ticks(changes))
+	engine.turn_lost.connect(_on_turn_lost)
 	prebuild()
 	var opening_event := _opening_event(engine.opening)
 	if opening_event != &"":
@@ -125,6 +130,27 @@ func prebuild() -> int:
 			_emitter(StringName("%s#%d" % [effect_id, i]), def.merged(layers[i] as Dictionary, true))
 			count += 1
 	return count
+
+
+## M3-BPR-424: an end-of-turn effect shows on its fighter (BattleEngine.turn_ended's changes: poison, regen, a Doom
+## count, Doom falling), each by map.ticks[cause]. Regen under Zombie (amount > 0) hurts: it plays the poison tick.
+func play_ticks(changes: Array[Dictionary]) -> void:
+	var ticks := (data.get("map", {}) as Dictionary).get("ticks", {}) as Dictionary
+	for c in changes:
+		var cause := str(c.get("cause", ""))
+		if cause == "regen" and int(c.get("amount", 0)) > 0:
+			cause = "poison"
+		var eid := str(ticks.get(cause, ""))
+		if eid != "":
+			play(StringName(eid), StringName(str(c.get("target_id", ""))))
+
+
+## A turn eaten by Sleep or Stop shows on the sleeper (map.ticks.sleep / stop), then its Doom ticks.
+func _on_turn_lost(actor: BattleCombatant, reason: StringName, changes: Array[Dictionary]) -> void:
+	var eid := str(((data.get("map", {}) as Dictionary).get("ticks", {}) as Dictionary).get(String(reason), ""))
+	if eid != "":
+		play(StringName(eid), actor.id)
+	play_ticks(changes)
 
 
 func _on_vowbound_departed(vb: BattleCombatant, fell: bool) -> void:
@@ -291,17 +317,58 @@ func _is_down(target: StringName) -> bool:
 	return c != null and c.hp <= 0
 
 
-## A fighter's point at `at` (an anchor_heights key: feet, rim, chest, hood, head); this node's position
-## when the fighter is not on the stage.
+## A fighter's point at `at` (an anchor_heights key: feet, rim, chest, hood, head). A set piece's entry with no
+## fighter (the Climb) anchors on its arena mark (entry_mark); anything else not on the stage, this node's position.
 func anchor(target: StringName, at: String) -> Vector3:
 	var frac := float((data.get("anchor_heights", {}) as Dictionary).get(at, 0.5))
 	if _ctl == null or not _ctl.stage.has_fighter(target):
-		return global_position
+		var mark := entry_mark(target)
+		return mark + Vector3.UP * ENTRY_HEIGHT_M * frac if mark != Vector3.INF else global_position
 	var f := _ctl.stage.stand_in(target)
 	var spec := BattleStage.stand_in_spec(target)
 	var height := float(spec.get("height", 1.7))
 	# M3-BPR-420: a flier stands at its hover (the gulls, the squall wings): its hit lands on it, not on the sand below.
-	return f.global_position + Vector3.UP * (float(spec.get("hover", 0.0)) + height * frac)
+	var p := f.global_position + Vector3.UP * (float(spec.get("hover", 0.0)) + height * frac)
+	var cam := get_viewport().get_camera_3d() if is_inside_tree() else null
+	if at == "feet" or cam == null:
+		return p
+	# M3-BPR-420: on the body's near face, not its middle: inside the Cinder Matron's 2.9 m bulk a hit was hidden.
+	var to_cam := Vector3(cam.global_position.x - p.x, 0.0, cam.global_position.z - p.z)
+	return p + to_cam.normalized() * _half_depth(target, f) if to_cam.length() > 0.01 else p
+
+
+## Half the fighter's smaller horizontal extent (its actor's visible meshes, or its primitive's radius), measured once.
+func _half_depth(target: StringName, f: FighterStandIn) -> float:
+	if _depth_cache.has(target):
+		return float(_depth_cache[target])
+	var r := float(f.spec.get("radius", 0.0))
+	if f.has_actor():
+		var box := AABB()
+		var first := true
+		for n in f.actor().find_children("*", "MeshInstance3D", true, false):
+			var mi := n as MeshInstance3D
+			if mi.mesh != null and mi.is_visible_in_tree():
+				var b := mi.global_transform * mi.get_aabb()
+				box = b if first else box.merge(b)
+				first = false
+		r = 0.0 if first else minf(box.size.x, box.size.z) * 0.5
+	_depth_cache[target] = r
+	return r
+
+
+## M3-BPR-1325: where a set piece's entry "is" in the arena: its role's StairHead_<role> mark (env-art-b's
+## seawall arenas: the head of the Fisher Stair, where a group of climbers arrives), else EntryMarker_<role>;
+## Vector3.INF for a fighter, or when the arena has no such mark.
+func entry_mark(target: StringName) -> Vector3:
+	var c := _engine.find(target) if _engine != null else null
+	var arena := _ctl.get_node_or_null(NodePath(String(BattleArena.ARENA_NODE))) if _ctl != null else null
+	if c == null or c.entry_role == &"" or arena == null:
+		return Vector3.INF
+	for mark: String in ["StairHead_%s", "EntryMarker_%s"]:
+		var n := arena.get_node_or_null(NodePath(mark % c.entry_role)) as Node3D
+		if n != null:
+			return n.global_position
+	return Vector3.INF
 
 
 func _emitter(effect_id: StringName, def: Dictionary) -> GPUParticles3D:

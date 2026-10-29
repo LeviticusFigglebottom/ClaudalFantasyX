@@ -147,6 +147,11 @@ HUD_RESULT_RETRY,Fight again
 HUD_RESULT_RETURN,Return
 HUD_TARGET_UNREAD,HP unknown until Read
 HUD_RESULT_FELL,Fell before the end: no XP
+HUD_RESULT_LUME,Lume
+HUD_RESULT_LUME_FMT,+{n} lume
+HUD_RESULT_PURSE_FMT,purse {n} lume
+HUD_RESULT_DROP_FMT,×{n}
+HUD_RESULT_BAG_FULL,"bag full, left behind"
 SAVE_MENU_TITLE_SAVE,Record the Journey
 SAVE_MENU_TITLE_LOAD,Continue a Journey
 SAVE_SHRINE_PROMPT,Rest at the shrine
@@ -457,6 +462,7 @@ SKILL_UNDERTOW_SURGE,Undertow Surge
 SKILL_FLOOD_SURGE,Floodtide
 SKILL_ROUSE_POLYP,Rouse the Spawn
 SKILL_POLYP_MEND,Feeding Tide
+SKILL_CALL_ILUN,Call Ilun
 PHASE_DROWNBELL_FLOOD,The Flood
 PART_DROWNBELL_RIM,Rim
 TUT_DROWNBELL_TOLL,The Drownbell's toll is coming. Strike its rim to silence it.
@@ -595,8 +601,6 @@ FIELD_MENU_SWELL_SET_FMT,{name}'s gauge now fills by {mode}. It keeps what it ho
 FIELD_MENU_HELP_ROOT,Up and Down: choose · Confirm: open · Cancel: close
 FIELD_MENU_HELP_HEROES,Up and Down: choose a hero · Confirm: their fill modes · Cancel: back
 FIELD_MENU_HELP_MODES,Up and Down: choose · Confirm: use this mode · Cancel: back
-CHAR_OSU,Grandmother Osu
-FIELD_PROMPT_LOOK,Look
 HUD_CMD_CALL,Call
 HUD_CMD_CALL_FMT,Call {name}
 HUD_CMD_DISMISS,Dismiss
@@ -617,6 +621,30 @@ HUD_FAIL_NOT_BOUND_FMT,{name} has bound no Vowbound yet.
 HUD_FAIL_NOT_CALLER_FMT,{name} cannot call that Vowbound.
 HUD_FAIL_VOWBOUND_FALLEN,That Vowbound has fallen and cannot answer again this battle.
 HUD_FAIL_NO_VOWBOUND,No Vowbound is on the field.
+BOOT_FIRST_RUN_NOTE,Preparing the graphics for first use. This happens only once.
+HUD_SWELL_CHANT_HINT,Directions: each note on the line · Cancel: back
+HUD_SWELL_CHANT_HINT_LOCKED,Directions: each note on the line
+HUD_SWELL_BRACE_HINT,Hold Confirm · let go on the counter · Cancel: back
+HUD_SWELL_BRACE_HINT_LOCKED,Hold Confirm · let go on the counter
+HUD_SWELL_GLYPH_HINT,Directions: trace each stroke · Cancel: back
+HUD_SWELL_GLYPH_HINT_LOCKED,Directions: trace each stroke
+HUD_SWELL_GRADE_BRACED,Braced
+HUD_SWELL_GRADE_TRACED,Traced
+HUD_SWELL_GRADE_SWIFT,Swift
+HUD_SWELL_BRACE_HOLDING,Holding
+HUD_SWELL_BRACE_NOT_HOLDING,Not holding
+HUD_SWELL_MODE_UNLOCKED_FMT,{mode} unlocked
+FIELD_MENU_SETTINGS,Settings
+FIELD_MENU_SETTINGS_DESC,"Graphics, and accessibility: text size, motion, colors and timing."
+SET_MENU_TITLE,Settings
+SET_MENU_GRAPHICS,Graphics
+SET_MENU_ACCESSIBILITY,Accessibility
+SET_MENU_HELP_GRAPHICS,"Graphics quality, from a whole preset down to each setting."
+SET_MENU_HELP_ACCESSIBILITY,"Text size, reduced motion, a colorblind-friendly palette and timing assist. Changes show at once."
+GFX_VALUE_PERCENT_FMT,{n}%
+GFX_VALUE_TIMES_FMT,×{n}
+CHAR_OSU,Grandmother Osu
+FIELD_PROMPT_LOOK,Look
 GFX_MENU_APPLYING,Applying the preset…
 SHOP_PROMPT,Browse the wares
 SHOP_MENU_BUY,Buy
@@ -666,45 +694,6 @@ INN_MENU_HELP,Up and Down: choose · Confirm: choose · Cancel: leave
 INN_ERR_UNKNOWN,No one keeps this house.
 INN_ERR_CLOSED,The door is barred. No rooms for now.
 INN_ERR_NO_FUNDS_FMT,"Not enough lume: a rest costs {price}, and the purse holds {purse}."
-ENC_CH03_CAUSEWAY_SHORE,The Causeway Shallows
-ENC_CH03_CAUSEWAY_HARRIER,A Harrier over the Saltgrass
-TUT_FLIER_RHEN,"Fliers dodge most blows. Rhen's quick, precise strikes find them."
-SAVE_SLOT_PROLOGUE,Prologue
-FLOW_END_CARD_VOICE,"""I said yes to a girl I'd known for two days. I didn't know yet what I was walking her toward."""
-CREDITS_GAME,Hymn of the Undertow
-CREDITS_SLICE,"The first playable: Haluna, the Saltgrass Causeway and the Shell Shrine"
-CREDITS_MUSIC,"Original music, in prototype"
-CREDITS_ENGINE,Made with the Godot Engine (MIT License)
-CREDITS_FONTS,EB Garamond and Source Sans 3 (SIL Open Font License)
-CREDITS_THANKS,Thank you for playing.
-SKILL_CALL_ILUN,Call Ilun
-BOOT_FIRST_RUN_NOTE,Preparing the graphics for first use. This happens only once.
-HUD_RESULT_LUME,Lume
-HUD_RESULT_LUME_FMT,+{n} lume
-HUD_RESULT_PURSE_FMT,purse {n} lume
-HUD_RESULT_DROP_FMT,×{n}
-HUD_RESULT_BAG_FULL,"bag full, left behind"
-HUD_SWELL_CHANT_HINT,Directions: each note on the line · Cancel: back
-HUD_SWELL_CHANT_HINT_LOCKED,Directions: each note on the line
-HUD_SWELL_BRACE_HINT,Hold Confirm · let go on the counter · Cancel: back
-HUD_SWELL_BRACE_HINT_LOCKED,Hold Confirm · let go on the counter
-HUD_SWELL_GLYPH_HINT,Directions: trace each stroke · Cancel: back
-HUD_SWELL_GLYPH_HINT_LOCKED,Directions: trace each stroke
-HUD_SWELL_GRADE_BRACED,Braced
-HUD_SWELL_GRADE_TRACED,Traced
-HUD_SWELL_GRADE_SWIFT,Swift
-HUD_SWELL_BRACE_HOLDING,Holding
-HUD_SWELL_BRACE_NOT_HOLDING,Not holding
-HUD_SWELL_MODE_UNLOCKED_FMT,{mode} unlocked
-FIELD_MENU_SETTINGS,Settings
-FIELD_MENU_SETTINGS_DESC,"Graphics, and accessibility: text size, motion, colors and timing."
-SET_MENU_TITLE,Settings
-SET_MENU_GRAPHICS,Graphics
-SET_MENU_ACCESSIBILITY,Accessibility
-SET_MENU_HELP_GRAPHICS,"Graphics quality, from a whole preset down to each setting."
-SET_MENU_HELP_ACCESSIBILITY,"Text size, reduced motion, a colorblind-friendly palette and timing assist. Changes show at once."
-GFX_VALUE_PERCENT_FMT,{n}%
-GFX_VALUE_TIMES_FMT,×{n}
 SET_TIMING_ASSIST_HOLD,Hold Confirm to play
 HUD_SWELL_ASSIST_HOLD,Assist: hold Confirm to play
 SET_TEXT_SPEED,Text speed
@@ -831,6 +820,17 @@ MAP_DIR_S,south
 MAP_DIR_SW,south-west
 MAP_DIR_W,west
 MAP_DIR_NW,north-west
+ENC_CH03_CAUSEWAY_SHORE,The Causeway Shallows
+ENC_CH03_CAUSEWAY_HARRIER,A Harrier over the Saltgrass
+TUT_FLIER_RHEN,"Fliers dodge most blows. Rhen's quick, precise strikes find them."
+SAVE_SLOT_PROLOGUE,Prologue
+FLOW_END_CARD_VOICE,"""I said yes to a girl I'd known for two days. I didn't know yet what I was walking her toward."""
+CREDITS_GAME,Hymn of the Undertow
+CREDITS_SLICE,"The first playable: Haluna, the Saltgrass Causeway and the Shell Shrine"
+CREDITS_MUSIC,Original music
+CREDITS_ENGINE,Made with the Godot Engine (MIT License)
+CREDITS_FONTS,EB Garamond and Source Sans 3 (SIL Open Font License)
+CREDITS_THANKS,Thank you for playing.
 FIELD_PROMPT_DEFAULT,Examine
 CTRL_ACT_BATTLE_PAUSE,Pause a battle
 TIP_OBJECTIVE_TITLE,Where to next
@@ -892,8 +892,6 @@ SET_VOLUME_70,70%
 SET_VOLUME_80,80%
 SET_VOLUME_90,90%
 SET_VOLUME_100,100%
-HUD_SCRIPTED_ESCAPE,You held.
-HUD_SCRIPTED_ESCAPE_SUB,There was no winning it. Only getting them out.
 SHOP_MENU_COUNT_FMT,×{n}
 SET_MENU_AUDIO,Audio
 SET_MENU_HELP_AUDIO,"Music, effects and voice volume."
@@ -1048,21 +1046,30 @@ MAP_POI_C_GATE,The landward gate
 MAP_POI_C_MILESTONE,The milestone
 BOSS_TITLE_INQUISITOR,Inquisitor Hadric Moll
 BOSS_EPITHET_INQUISITOR,A tired officer who still believes the Edict
-CHAR_PELL_UNNAMED,The Kirru
-ACT_CARD_2_LABEL,Act II
-ACT_CARD_2_TITLE,The Truth
 SET_SCREEN_SHAKE,Screen shake
 SET_SCREEN_SHAKE_HELP,"How hard the battle camera shakes when a blow lands. Reduced motion turns it off."
 SET_SCREEN_SHAKE_FULL,Full
 SET_SCREEN_SHAKE_HALF,Half
 SET_SCREEN_SHAKE_OFF,Off
-TUT_TIDELINE_TIMELINE,"The turn order runs down the right, next at the top. Every action costs time: watch where yours will land before you choose."
+HUD_SCRIPTED_ESCAPE,You held.
+HUD_SCRIPTED_ESCAPE_SUB,There was no winning it. Only getting them out.
+CHAR_PELL_UNNAMED,The Kirru
+ACT_CARD_2_LABEL,Act II
+ACT_CARD_2_TITLE,The Truth
 BOSS_TITLE_UNDERTOWS_REACH,The Undertow's Reach
 BOSS_EPITHET_UNDERTOWS_REACH,The storm puts a hand on the wall
 BOSS_TITLE_LAMP_ENGINE,The Lamp Engine
 BOSS_EPITHET_LAMP_ENGINE,It still burns with the bound dead
 BOSS_TITLE_AVALANCHE_RAM,Avalanche Ram
 BOSS_EPITHET_AVALANCHE_RAM,Grown monstrous on the drowned light
+BARK_CH08_TOMA_HOLD,Hold.
+BARK_CH08_LISS_PULL,Pull!
+BARK_CH08_ASHA_VIREL,Virel.
+TUT_TIDELINE_TIMELINE,"The turn order runs down the right, next at the top. Every action costs time: watch where yours will land before you choose."
+BOSS_TITLE_MANGROVE_DROWNER,The Mangrove Drowner
+BOSS_EPITHET_MANGROVE_DROWNER,It grew into the roots and would not let go
+BOSS_TITLE_WAKEFIN,The Wakefin
+BOSS_EPITHET_WAKEFIN,It followed the first wake out of Ansedra
 MAP_ROUTE_BRINE_SHOALS,Brine Shoals
 MAP_POI_S_ROAD_END,The end of the Pemakar road
 MAP_POI_S_BRASS_WRECK,The brass wreck
@@ -1098,13 +1105,6 @@ MAP_POI_SC_TIDEPOOLS,The tide pools
 MAP_POI_SC_RING,The Lit Age ring
 MAP_POI_SC_SHRINE_STEPS,The shrine steps
 OBJ_CAUSEWAY_TO_SHRINE,Follow the causeway out to the Shell Shrine while the tide is low.
-BARK_CH08_TOMA_HOLD,Hold.
-BARK_CH08_LISS_PULL,Pull!
-BARK_CH08_ASHA_VIREL,Virel.
-BOSS_TITLE_MANGROVE_DROWNER,The Mangrove Drowner
-BOSS_EPITHET_MANGROVE_DROWNER,It grew into the roots and would not let go
-BOSS_TITLE_WAKEFIN,The Wakefin
-BOSS_EPITHET_WAKEFIN,It followed the first wake out of Ansedra
 MAP_POI_Q_PATH_MID,The headland's turn
 ACT_CARD_3_LABEL,Act III
 ACT_CARD_3_TITLE,The Unbinding

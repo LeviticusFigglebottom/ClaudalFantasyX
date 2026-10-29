@@ -39,17 +39,29 @@ func test_events_play_their_rows() -> void:
 	var s := _listener()
 	assert_eq(s.on_event(&"battle_stinger", ["ch01_tideline"]), &"sting_tideline", "the tide line rises")
 	assert_eq(s.on_event(&"battle_bark", ["ch01_tideline", "LINE", "SPEAKER"]), &"sting_bark", "the bark's breath")
-	assert_eq(s.on_event(&"boss_intro", ["ch01_hullgnaw", "TITLE"]), &"sting_boss", "a boss is named")
+	assert_eq(s.on_event(&"boss_intro", ["unnamed_boss", "TITLE"]), &"sting_boss", "a boss with no sting of its own")
+	assert_eq(s.on_event(&"boss_intro", ["ch01_hullgnaw", "TITLE"]), &"sting_boss_hullgnaw", "Hullgnaw has its own")
 	assert_eq(s.on_event(&"boss_intro", ["drownbell", "TITLE"]), &"sting_boss_bell", "the Drownbell has its own")
 	assert_eq(s.on_event(&"line_shown", []), &"", "an event with no row plays nothing")
-	assert_eq(played, [&"sting_tideline", &"sting_bark", &"sting_boss", &"sting_boss_bell"] as Array[StringName])
+	assert_eq(
+		played,
+		(
+			[&"sting_tideline", &"sting_bark", &"sting_boss", &"sting_boss_hullgnaw", &"sting_boss_bell"]
+			as Array[StringName]
+		)
+	)
 	_done()
 
 
 func test_reduced_audio_swaps_the_boss_stings() -> void:
 	var s := _listener()
 	reduced = true
-	assert_eq(s.on_event(&"boss_intro", ["ch05_cinder_matron", "TITLE"]), &"sting_boss_soft", "no sub-bass")
+	assert_eq(s.on_event(&"boss_intro", ["unnamed_boss", "TITLE"]), &"sting_boss_soft", "no sub-bass")
+	assert_eq(
+		s.on_event(&"boss_intro", ["ch05_cinder_matron", "TITLE"]),
+		&"sting_boss_cinder_matron_soft",
+		"nor in a boss's own"
+	)
 	assert_eq(s.on_event(&"boss_intro", ["drownbell", "TITLE"]), &"sting_boss_bell_soft", "nor for the bell")
 	assert_eq(s.on_event(&"battle_stinger", ["x"]), &"sting_tideline", "a row without a soft version stays")
 	_done()
@@ -77,7 +89,7 @@ func test_the_director_listens_and_ducks() -> void:
 	assert_true(EventBus.dialogue_event.is_connected(dir.stings.on_event), "the director hears dialogue_event")
 	dir.stings.player = func(id: StringName) -> void: played.append(id)
 	dir.stings.on_event(&"boss_intro", ["ch01_hullgnaw", "TITLE"])
-	assert_eq(played, [&"sting_boss"] as Array[StringName], "the boss sting")
+	assert_eq(played, [&"sting_boss_hullgnaw"] as Array[StringName], "the boss's own sting")
 	assert_true(dir.ducks.has(&"boss_intro"), "the director's boss_intro duck is on")
 	assert_true(dir.duck_target_db(&"Music") < 0.0, "and dips the music")
 	dir.advance(10.0)

@@ -2,8 +2,8 @@
 id: M3-HER-1123
 title: "Cutscene cue features the sequencer doesn't perform yet, two of them in the slice (request to slice-polish)"
 role: cinematics
-status: todo
-owner_session: ""
+status: doing
+owner_session: "slice-polish (session_01F3vrUPLtDQMGSRrMHJtpz1)"
 depends_on: []
 milestone: M3
 request-from: qa
@@ -32,3 +32,10 @@ the_ink; ch08_wall_falls, stranger_on_wall) and `@camera grade=` (ch04_long_way_
 the sequencer, so one fix covers the slice and Act I.
 
 ## Review log
+- 2026-10-28 slice-polish:
+  - **Done:** `@vfx drift=`, `rate=` and `motion=` are performed: cues build Rendering's GlimmerField through
+    `apply_cue` (CutsceneVfx). `@sfx at=` was done earlier (CutsceneSound).
+  - **Left:** `@camera grade=` needs a grade table no one has built, requested as **M3-ENV-106**. `@vfx form=` is
+    reserved in glimmer.json (no form shape exists).
+  - The qa_known row stays until grade= lands.
+

@@ -2,8 +2,8 @@ extends Node
 ## ADR 0041 placeholder audit, the runtime half (tools/placeholder_audit.py runs it and reads its JSON):
 ## `godot --headless --path . res://tools/placeholder/scan.tscn -- --out=<file.json>`.
 ## Loads every Act I zone (locations.json, the test rooms excluded; the First Verse set) as the game loads it, again
-## under each layout variant's flags, and every battle arena an Act I encounter fights on. Records what a player
-## would see:
+## under each layout variant's flags and after each layout state's flag, and every battle arena an Act I encounter
+## fights on. Records what a player would see:
 ##   capsule    a visible StandIn mesh: a stage actor or NPC still drawn as its capsule (the actor's name)
 ##   greybox    a visible primitive mesh (box, capsule, cylinder, sphere, prism, torus) with a flat, untextured
 ##              material, or a visible CSG shape: greybox geometry (grouped by its top node under the zone)
@@ -125,7 +125,25 @@ func _scan_zone(path: String) -> void:
 				Game.set_flag(StringName(str(flag)))
 			zone.call(&"apply_variant")
 			_walk(path, zone, "variant " + ",".join(flags))
+	_scan_states(path, zone)
 	zone.free()
+
+
+## The zone as each layout "states" row shows it (Ch4/Ch6/Ch8 zones' refresh_states: a flag shows or hides stage
+## actors), the flags set in story order as a playthrough sets them: Ch6's Sefir stands on the reed bank only once
+## the Inquisitor has yielded.
+func _scan_states(path: String, zone: Node) -> void:
+	if not zone.has_method(&"refresh_states") or not "layout" in zone:
+		return
+	Game.state = GameStateData.new()
+	Game.state.party_ids = [&"rhen", &"asha", &"toma"] as Array[StringName]
+	for row: Variant in (zone.get(&"layout") as Dictionary).get("states", []):
+		var flag := str((row as Dictionary).get("flag", "")) if row is Dictionary else ""
+		if flag == "":
+			continue
+		Game.set_flag(StringName(flag))
+		zone.call(&"refresh_states")
+		_walk(path, zone, "state " + flag)
 
 
 func _scan_scene(path: String) -> void:

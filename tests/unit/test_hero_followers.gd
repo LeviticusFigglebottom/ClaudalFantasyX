@@ -29,6 +29,8 @@ func before_each() -> void:
 	player.set_process_unhandled_input(false)
 	party = player.get_node(NodePath(String(HeroFieldParty.NAME))) as HeroFieldParty
 	party.set_physics_process(false)
+	party._cfg = party._cfg.duplicate()
+	party._cfg["sight_clear_m"] = 0.0  # the trail itself: the step off the camera's line is test_qa_field_camera's
 	zone.call("place_at", &"Court")
 	party.advance(DT)
 

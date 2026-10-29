@@ -422,10 +422,12 @@ func _instantiate(packed: PackedScene, stats: Dictionary) -> Node:
 	var holder: Array[Node] = []
 	stats["instantiated_on_thread"] = instantiate_on_thread
 	if instantiate_on_thread:
+		ShaderGlobals.hold_writes()  # M3-HER-1151: no global write while the thread creates the zone's materials
 		var task := WorkerThreadPool.add_task(func() -> void: holder.append(packed.instantiate()))
 		while not WorkerThreadPool.is_task_completed(task):
 			await get_tree().process_frame
 		WorkerThreadPool.wait_for_task_completion(task)
+		ShaderGlobals.release_writes()
 	else:
 		holder.append(packed.instantiate())
 	stats["instantiate_ms"] = _ms_since(t)

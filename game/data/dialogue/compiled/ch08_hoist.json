@@ -29,7 +29,7 @@
     {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 32},
     {"op": "cue", "cue": "anim", "args": ["toma", "look_at", "watchers_mouths"], "kwargs": {}, "src": 33},
     {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 34},
-    {"op": "cue", "cue": "mark", "args": ["toma", "hoist_toma", "walk"], "kwargs": {}, "src": 35},
+    {"op": "cue", "cue": "mark", "args": ["toma", "hoist_toma", "walk"], "kwargs": {"via": "way_approach_east,way_approach_foot"}, "src": 35},
     {"op": "cue", "cue": "anim", "args": ["toma", "haul_rope"], "kwargs": {}, "src": 36},
     {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 37}
    ]

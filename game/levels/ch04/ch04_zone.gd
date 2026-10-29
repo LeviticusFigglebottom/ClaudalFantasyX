@@ -17,7 +17,9 @@ extends Ch01Zone
 ## Haluna's runtime walk collision, configured as ch02/haluna's own Collision node is (read from that scene,
 ## so the two never drift); "dressing_mood" sets its HalunaMood (&"night"); and a states row's
 ## "show_sets" / "hide_sets" show or hide the dresser's story sets (env-art's StorySet_<name>: the wake's
-## lamps and feast, the shells).
+## lamps and feast, the shells). Its field camera is ch02/haluna's too: that scene's CameraVolumes (the composed
+## lane, market, dock and chapel shots over the hub orbit) are rebuilt here from its SceneState, so the wake's
+## field never frames the player through a roof.
 
 const KEY_STATES := "states"
 const KEY_PLACE := "place"
@@ -26,6 +28,7 @@ const KEY_HIDE_SETS := "hide_sets"
 const KEY_MOOD := "dressing_mood"
 const HALUNA_SCENE := "res://game/levels/ch02/haluna/haluna.tscn"
 const HALUNA_COLLISION := ^"Collision"
+const HALUNA_VOLUMES := "CameraVolumes"
 const HALUNA_COLLISION_EXPORTS: Array[StringName] = [
 	&"walk_rect",
 	&"cell_m",
@@ -60,6 +63,9 @@ func _build_dressing() -> void:
 	var dresser := dressing.get_node_or_null(^"Dresser") as HalunaDresser
 	if terrain == null or dresser == null:
 		return
+	for shrine in dressing.find_children("*", "", true, false):  # the dressing's shrine rests the party here
+		if shrine is SaveShrine:
+			(shrine as SaveShrine).location_id = location_id
 	haluna_collision = HalunaCollision.new()
 	haluna_collision.name = "HalunaCollision"
 	_copy_haluna_collision_exports(haluna_collision)
@@ -67,6 +73,7 @@ func _build_dressing() -> void:
 	haluna_collision.dresser = dresser
 	add_child(haluna_collision)
 	haluna_collision.build()
+	add_child(_haluna_camera_volumes())
 
 
 ## ch02/haluna's Collision node's exported tuning, read from its scene without instancing it.
@@ -80,6 +87,27 @@ static func _copy_haluna_collision_exports(to: HalunaCollision) -> void:
 			if HALUNA_COLLISION_EXPORTS.has(key):
 				to.set(key, state.get_node_property_value(i, k))
 		return
+
+
+## ch02/haluna's camera volumes (each a transform, a shot, a priority and its Shape), read from its scene.
+static func _haluna_camera_volumes() -> Node3D:
+	var root := Node3D.new()
+	root.name = "HalunaCameraVolumes"
+	var state := (load(HALUNA_SCENE) as PackedScene).get_state()
+	for i in state.get_node_count():
+		var path := String(state.get_node_path(i)).trim_prefix("./").split("/")
+		if path.size() < 2 or path[0] != HALUNA_VOLUMES:
+			continue
+		var node: Node3D = CameraVolume.new() if path.size() == 2 else CollisionShape3D.new()
+		node.name = path[-1]
+		for k in state.get_node_property_count(i):
+			var key := state.get_node_property_name(i, k)
+			if key != &"script":
+				node.set(key, state.get_node_property_value(i, k))
+		var parent := root if path.size() == 2 else root.get_node_or_null(NodePath(path[1]))
+		if parent != null:
+			parent.add_child(node)
+	return root
 
 
 ## The layout's blocks plus its collision file's; then the ramps (KitCollision).

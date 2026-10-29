@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "doc": "The Bell galleries at the naming (M3-CRE-659, ADR 0152): two divers of Oruvel's side and two of Sorrin's at the rim, standing vigil in their sides' colours. Crowd people (game/data/world/npc/crowd.json) inside their stage actors (attach child); Tavi, Ione and the pool-keeper are named speakers.",
+  "zone": "ch07/tamsule_bell_galleries",
+  "villagers": [
+    {
+      "npc_id": "tamsule_bell_galleries_oruvel_diver_1",
+      "crowd": "tamsule_bell_galleries_oruvel_diver_1",
+      "stand_in": "CutsceneStage/Actors/oruvel_diver_1",
+      "attach": "child"
+    },
+    {
+      "npc_id": "tamsule_bell_galleries_oruvel_diver_2",
+      "crowd": "tamsule_bell_galleries_oruvel_diver_2",
+      "stand_in": "CutsceneStage/Actors/oruvel_diver_2",
+      "attach": "child"
+    },
+    {
+      "npc_id": "tamsule_bell_galleries_sorrin_diver_1",
+      "crowd": "tamsule_bell_galleries_sorrin_diver_1",
+      "stand_in": "CutsceneStage/Actors/sorrin_diver_1",
+      "attach": "child"
+    },
+    {
+      "npc_id": "tamsule_bell_galleries_sorrin_diver_2",
+      "crowd": "tamsule_bell_galleries_sorrin_diver_2",
+      "stand_in": "CutsceneStage/Actors/sorrin_diver_2",
+      "attach": "child"
+    }
+  ]
+}
