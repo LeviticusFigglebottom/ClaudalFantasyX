@@ -68,7 +68,7 @@ BONES = ["DEF-spine", "DEF-spine.001", "DEF-spine.002", "DEF-spine.003", "DEF-sp
          "DEF-shin.R.001", "DEF-foot.R", "DEF-toe.R"]
 HIPS = "DEF-spine"
 PERSONA = {
-    "asha": {"sway": 0.4, "lean": 0.0, "staff": True, "arms_down": 40.0},
+    "asha": {"sway": 0.4, "lean": 0.0, "staff": True, "arms_down": 40.0, "kneel_both": True},
     "rhen": {"sway": 1.3, "lean": 4.0, "staff": False, "arms_down": 42.0},
     # toma.md §1: "stance" = ankle spacing / shoulder-joint spacing in the standing clips; "knee" = the soft knees
     # (degrees) that carry his weight low. The spear is held like the staff.
@@ -393,7 +393,22 @@ def kneel(sk: Skeleton, persona: dict) -> dict:
          "DEF-spine.005": (6.0, 0.0, 0.0), "DEF-spine.006": (16.0, 0.0, 0.0),
          "DEF-upper_arm.L": (-34.0, 0.0, -a + 6.0), "DEF-forearm.L": (-38.0, 0.0, 0.0),
          "DEF-upper_arm.R": (-10.0, 0.0, a - 12.0), "DEF-forearm.R": (-30.0, 0.0, 0.0)}
+    if persona.get("kneel_both"):
+        # M3-CHR-102 (PC QA row 31): on both knees, the legs of the two-knee kneel (KO_LEGS), the same lean over him.
+        # On the right knee with the left foot planted, the raised left knee (0.44 m up, 0.38 m forward) tents the
+        # floor-length skirt about half a metre out in front of her, over whoever lies there; on both knees it pools
+        # round them.
+        th, sh, ft, toe = KO_LEGS[_hero_of(persona)]["kneel"]
+        p.update({"hips": (0.0, -drop - KNEEL_BOTH_DROP, KNEEL_BOTH_BACK),
+                  "DEF-thigh.L": (th, 0.0, -3.0), "DEF-thigh.R": (th, 0.0, 3.0),
+                  "DEF-shin.L": (sh, 0.0, 0.0), "DEF-shin.R": (sh, 0.0, 0.0),
+                  "DEF-foot.L": (ft, 0.0, 0.0), "DEF-foot.R": (ft, 0.0, 0.0),
+                  "DEF-toe.L": (toe, 0.0, 0.0), "DEF-toe.R": (toe, 0.0, 0.0)})
     return p
+
+
+KNEEL_BOTH_DROP = 0.012  # m: the two-knee kneel's hips sit this much lower than the one-knee drop (as _kneel_both)
+KNEEL_BOTH_BACK = -0.03  # m: and this far back
 
 
 def walk_pose(t: float, persona: dict, stride: float, knee: float, arm: float, bob: float, lean: float) -> dict:
