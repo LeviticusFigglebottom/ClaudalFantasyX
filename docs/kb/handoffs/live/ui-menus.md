@@ -687,6 +687,12 @@ Checks:
 - an English text walk trims nothing;
 - lint and validate_data are clean.
 Skipped: coverage (no game/battle core or game/progression change; game/ui/battle is the scene layer). I did not
-re-render the shots after the text fixes: equip_menu and shop_menu_buy move, and the Lead's gate renders them.
+re-render all 51 views after the text fixes; the five shots they touch are self-rendered below.
 - 2026-10-29 21:40, **BACKLOG EMPTY:** the Lead's 19:24 list is done. What's left waits on the PC (PC-QUEUE) or on other
   tracks' routed findings.
+SELF-RENDERED @ d7840ba0 (1280x720): equip_menu, equip_customize, shop_menu_buy, shop_menu_sell, inn_menu. What I saw:
+- the Customize header reads whole ("Customize Coral-Bitten Hooks");
+- Equip's stat columns line up with the wider names;
+- the shop's shorter lume line wraps cleanly onto two lines;
+- sell and inn are unchanged.
+Baselines will move for equip_menu, equip_customize and shop_menu_buy.
