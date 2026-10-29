@@ -340,3 +340,38 @@ func test_the_corrow_storm_figure_is_a_silhouette_in_the_real_zone() -> void:
 		var capsule := figure.get_node_or_null(^"StandIn") as Node3D
 		assert_true(capsule == null or not capsule.visible, "its capsule is hidden")
 	_done()
+
+
+## big17 (test_zone_cast): two crowd people at the same work start their work loop at their own phase, as the idle
+## does, so Tamsule's fisher and boatman never haul in step.
+func test_two_people_at_the_same_work_are_out_of_step() -> void:
+	var zone := _greybox_zone(["fisher", "boatman"])
+	var layer := _layer(
+		zone,
+		[
+			{
+				"npc_id": "tamsule_fisher",
+				"crowd": "tamsule_fisher",
+				"stand_in": "CutsceneStage/Actors/fisher",
+				"attach": "child"
+			},
+			{
+				"npc_id": "tamsule_boatman",
+				"crowd": "tamsule_boatman",
+				"stand_in": "CutsceneStage/Actors/boatman",
+				"attach": "child"
+			}
+		]
+	)
+	assert_eq(layer.build(), 2)
+	var a := layer.villager(&"tamsule_fisher")
+	var b := layer.villager(&"tamsule_boatman")
+	for i in 30:
+		a.tick(DT)
+		b.tick(DT)
+	assert_true(a.working() and b.working(), "both at rest at their work")
+	assert_eq(a.current_clip, b.current_clip, "the same work clip")
+	var length := a.anim.get_animation(a.current_clip).length
+	var gap := absf(a.anim.current_animation_position - b.anim.current_animation_position)
+	assert_true(minf(gap, length - gap) > 0.05, "out of step (%.3f s apart)" % gap)
+	_done()

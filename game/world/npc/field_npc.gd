@@ -500,6 +500,8 @@ func _update_clip(force: bool = false) -> void:
 	current_clip = clip
 	if kind == CLIP_IDLE:
 		anim.seek(idle_phase(), false)
+	elif kind == CLIP_WORK or kind == CLIP_STORM:
+		anim.seek(loop_phase(clip), false)
 
 
 ## Where in the idle loop it is now: its offset plus the clock, wrapped (the idle never restarts at 0).
@@ -507,6 +509,15 @@ func idle_phase() -> float:
 	if anim == null or not anim.has_animation(_clip(CLIP_IDLE)):
 		return 0.0
 	return fposmod(idle_offset_sec + clock, anim.get_animation(_clip(CLIP_IDLE)).length)
+
+
+## Where in a resting loop (a work or storm clip) it is now: a share of the loop of its own, plus the clock, so two
+## villagers at the same work never haul or brace in step (big17: Tamsule's crowd fisher and boatman hauled together).
+func loop_phase(clip: StringName) -> float:
+	if anim == null or not anim.has_animation(clip):
+		return 0.0
+	var length := anim.get_animation(clip).length
+	return fposmod(HeroIdleMicro.share(npc_id, String(clip)) * length + clock, length)
 
 
 ## True when the data names a clip for `kind` and the actor has it (work and storm clips are optional).
