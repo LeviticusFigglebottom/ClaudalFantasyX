@@ -1461,3 +1461,20 @@ MERGE-READY @ (this commit), after big17 landed:
 - **M3-HER-1149 → review (reviewer: lead):** every box ticked.
 - Hero motion, followers and the camera on integration (big17) + this branch: `--filter=hero_` 113/0,
   `--filter=camera` 62/0. Pell's model is in, so the alias test now runs its with-model branch.
+
+### TRIAL MERGE, 2026-10-29 ~23:00 @ integration 502f6999
+env-art d63eeea3, env-art-b cc7ab368, creatures 93829b74, creatures-b 4d0150e3, characters fe626d0e, ui a8df61a8,
+battle-presentation cdfe126a, act1-chapters 175d2b5e, m2-slice 7e0bba54, audio 1cb9654d, hero-integration e287b61a
+- **NEW: Pell's portraits, ui vs characters (binary).** Both baked `assets/ui/portraits/heroes/pell_*.png` (5 + .import):
+  ui at 17:37 (fa8ab4424, "framed closer for the Kirru head"), characters at 22:15 (e374376be, for big17's
+  test_dialogue_box red). Also `tools/portraits/portraits.json` and `tests/unit/test_hero_portraits.gd` (ui vs
+  creatures vs characters). **Take ui's:** `assets/ui/portraits/**` and `tools/portraits/**` are ui's (ownership.md).
+  Characters' bake duplicates work ui already did.
+- **Mine, cleared @ 70793031a:** env-art-b fast-tracked the same test_cutscene_vfx_hosts fix, so I took theirs (4/0).
+  test_hero_field_actor.gd vs characters is unchanged: take hero-integration's.
+- Unchanged:
+  - M3-ENV-750 (take env-art's);
+  - test_zone_cast.gd (creatures vs the merged tree);
+  - act1-chapters' generated layouts, coilspire dressing.py and M3-ENV-744, with characters' `cast` edits
+    (oruvel, ashcrown, coilspire).
+- env-art-b's ownership.md clash is gone.
