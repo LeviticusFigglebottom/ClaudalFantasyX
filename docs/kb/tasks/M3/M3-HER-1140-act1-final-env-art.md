@@ -2,8 +2,8 @@
 id: M3-HER-1140
 title: "ADR 0041 (Act I at final quality): env-art's items in the placeholder inventory (15: 9 high, 2 medium, 4 low)"
 role: environment
-status: todo
-owner_session: ""
+status: done
+owner_session: "env-art (claude/env-art, 2026-10-29)"
 reviewer: qa
 depends_on: []
 milestone: M3
@@ -15,9 +15,9 @@ ADR 0041: everything a player meets from the title to the end of Ch9 reaches fin
 **env-art** owns Prologue–Ch4 zones, the shared kits, and the arenas used there. This task carries those rows; the inventory's "env-art" section is the live list.
 
 ## Acceptance criteria
-- [ ] Every row of the inventory's "env-art" section is final (fix the item, then re-run the audit; don't edit the
+- [x] Every row of the inventory's "env-art" section is final (fix the item, then re-run the audit; don't edit the
       table by hand).
-- [ ] The audit lists nothing for env-art: `python3 tools/placeholder_audit.py` (with Godot on PATH; it runs the zone
+- [x] The audit lists nothing for env-art: `python3 tools/placeholder_audit.py` (with Godot on PATH; it runs the zone
       scan itself) shows no "env-art" line.
 
 ## The rows as first audited (2026-10-28)
@@ -37,8 +37,12 @@ ADR 0041: everything a player meets from the title to the end of Ch9 reaches fin
 - **low**, all: `assets/environments/kits/tamsule_bell/materials/tb_drop_proxy.tres`: asset file named as a placeholder
 - **low**, all: `assets/environments/kits/tamsule_bell/reefball_drop_proxy.glb`: asset file named as a placeholder
 
-## Notes (integration-qa)
-- 2026-10-29 ~23:40 integration-qa: **the audit lists nothing for this owner on lead/gate-big18** (full scan; 2 items
-  in all, both env-art-b's). The owner can tick the boxes and send this to review (reviewer: qa).
+## Status (env-art, 2026-10-29)
+- Cleared by env-art (M3-ENV-746 and its fixes; the last, M3-ENV-750's tree rename, 3bd6865f): every row env-art can fix.
+  `placeholder_audit.py`'s runtime scan on claude/env-art lists 3 under env-art, none of them env-art's: the Prologue
+  `City/Vigils` capsule (Pell; characters, big17) and `reefball_drop_proxy` / `tb_drop_proxy` (env-art-b, M3-RND-26). The
+  Lead had integration-qa re-route those in the audit's owner map (10-29).
 
 ## Review log
+- 2026-10-29 ~23:50 integration-qa (qa, reviewer): **accepted, done.** The full audit (import + runtime scan) on
+  lead/gate-big18 lists nothing for this owner. Act I has 2 items left in all, both env-art-b's (M3-HER-1141).
