@@ -41,17 +41,13 @@ const GAIT_RUN := &"run"
 const FADE_OUT := &"out"
 const SWITCH_ON := &"on"
 const DEFAULT_SEED := 1
-## The energy a light was authored with, kept on it by the first @light (M2-FP-102).
-const META_LIGHT_ENERGY := &"cutscene_authored_energy"
 ## Process after the FieldCameraDirector (priority 0), so the breath turns the pose it just set.
 const PROCESS_AFTER_DIRECTOR := 10
 ## cues.json keys this sequencer accepts but does not perform yet; each warns once per scene.
 ## A line tagged #timed shows and the scene goes on: its @waits pace it (a sung verse in time with its cue).
 const TAG_TIMED := "timed"
 const UNSUPPORTED_KWARGS := {
-	&"camera": ["grade"],
 	&"anim": ["loop"],
-	&"vfx": ["form"],
 }
 
 ## Tests and captures: no waits, no typewriter, lines and options answer themselves.
@@ -83,6 +79,8 @@ var warnings: Array[String] = []
 ## shapes and a sequencer.json "face_poses" row also show it (CutsceneFace), blink (M2-FP-18,
 ## sequencer.json "blink") and lip-sync each line's text to its reveal (M2-CHR-10, lipsync.json).
 var faces: Array = []
+## The grade the scene has put on its level (M2-FP-120), taken off at its end.
+var grade := CutsceneGrade.new()
 var config: Dictionary = {}
 var overlay: CutsceneOverlay
 var runner: DialogueRunner
@@ -322,6 +320,8 @@ func _begin(scene_id: StringName, stage: CutsceneStage) -> void:
 	if _starts_black(scene_id):
 		overlay.set_fade(1.0)
 	runner.event_triggered.connect(_on_event)
+	runner.node_started.connect(_grade_header)  # M2-FP-120: a node's `grade:` header, the first one now
+	_grade_header(runner.current_node())
 
 
 func _finish() -> void:
@@ -352,6 +352,7 @@ func _finish() -> void:
 	_held.clear()
 	_npc_talk.end_all()
 	_key_drop()
+	grade.restore()
 	SaveSystem.release_autosave(self)
 	_playing = false
 	finished.emit(_scene_id)
@@ -475,6 +476,7 @@ func _cue_camera(step: DialogueStep) -> void:
 			overlay.box.visible = false
 		_key_for(_stage.shot_node(id))
 		_director.play_shot(shot, blend, ease)
+		_grade(StringName(str(step.kwargs.get("grade", ""))))
 	await _land()
 
 
@@ -672,32 +674,27 @@ func _cue_vfx(step: DialogueStep) -> void:
 	var host: Node3D = at if at != null else _stage
 	if host == null:
 		return
-	CutsceneVfx.spawn(rows[effect], effect, step.kwargs, host, "Vfx_%s_%d" % [effect, _vfx_count], finished)
+	if CutsceneVfx.spawn(rows[effect], effect, step.kwargs, host, "Vfx_%s_%d" % [effect, _vfx_count], finished) == null:
+		_warn("no @vfx %s %s" % [effect, step.kwargs])
 	_vfx_count += 1
 
 
-## M2-FP-102: `@light <name> on|off [sec]` eases a stage practical's energy (a Light3D found by name under
-## the stage, wherever a body carries it) to its authored energy or to 0 (sequencer.json light_ease).
+## M2-FP-120: a grade (CutsceneGrade) on the stage's level. One nobody has built yet is not a stage gap: it
+## waits on Rendering (test_cutscene_directives' known list), and CutsceneGrade warns once.
+func _grade(id: StringName) -> void:
+	if id != &"":
+		grade.apply(_stage, id)
+
+
+func _grade_header(node: StringName) -> void:
+	_grade(StringName(str(runner.headers(node).get("grade", ""))))
+
+
+## M2-FP-102: `@light <name> on|off [sec]` (CutsceneLight).
 func _cue_light(step: DialogueStep) -> void:
-	var light_name := str(step.args[0])
-	var light := _stage.find_child(light_name, true, false) as Light3D if _stage != null else null
-	if light == null:
-		_warn("no light '%s' on the stage" % light_name)
-		return
-	if not light.has_meta(META_LIGHT_ENERGY):
-		light.set_meta(META_LIGHT_ENERGY, light.light_energy)
-	var from := light.light_energy if light.visible else 0.0
-	var to := float(light.get_meta(META_LIGHT_ENERGY)) if StringName(str(step.args[1])) == SWITCH_ON else 0.0
-	var sec := float(step.args[2]) if step.args.size() > 2 else 0.0
-	var curve := float(config.get("light_ease", 1.0))
-	light.visible = true
-	_start_motion(
-		&"light:%s" % light_name,
-		sec,
-		func(t: float) -> void:
-			if is_instance_valid(light):
-				light.light_energy = lerpf(from, to, CutsceneMotion.eased(t, curve))
-	)
+	var light_ease := float(config.get("light_ease", 1.0))
+	if not CutsceneLight.cue(_stage, step.args, light_ease, SWITCH_ON, _start_motion):
+		_warn("no light '%s' on the stage" % step.args[0])
 
 
 # --- key light (M2-FP-10) --------------------------------------------------------------------

@@ -47,6 +47,7 @@ CutsceneStage (director_path, player_path)
 | Cue | What the sequencer does |
 |---|---|
 | `@camera <id> [blend] [ease]` | `play_shot(shot, blend or 0, ease)`, then waits for the move to land. A missing shot warns once and keeps the current camera. |
+| `@camera <id> grade=<g>` and a node's `grade:` header | M2-FP-120: CutsceneGrade puts grade `g` on the stage's level: a copy of its Environment on the WorldEnvironment, and its sun (energy, colour, pitch, yaw), from the zones' grade tables (`assets/environments/zones/*/*_grades.json`). The header applies as its node starts; the scene's end restores the level's own look. A grade with no row changes nothing and warns once; `tests/integration/cutscene_directives_known.json` lists the ones waiting on Rendering (M3-ENV-106). |
 | `@camera release [blend] [ease]` | `release(blend or -1, ease)`, then waits. A scene that ends still holding a shot is released with the defaults. |
 | `@wait sec` | Waits. `@wait music=<m> max=<s>` waits `max` (no music markers are reported yet), then `release_wait()`. `@wait arrive=<actor>` (M2-FP-119) waits until that actor's current `@mark` walk lands, at once if it isn't walking: for a walk whose length depends on where the player started it (B11). |
 | `@fade in\|out sec [color]` | Fades the overlay and waits for it. A scene whose first fade is `in` starts black. Fading out hides the box. |
@@ -56,7 +57,7 @@ CutsceneStage (director_path, player_path)
 | `@face actor expr [sec]` | Blends the actor's face shape keys to the emotion's pose over `sec` (else the pose table's `blend_in_s`) through `CutsceneFace`, when the actor has blend shapes and a `face_poses` row in `sequencer.json` (Asha reads Character's `asha_face_poses.json`, read-only). Always recorded in `faces`. |
 | `@music track [fade]` | Plays `music_dir/<track>.ogg`, or its `music_stand_ins` row (placeholders until Audio ships the cues). `silence` fades out. |
 | `@sfx sound [vol]` | One-shot from `sfx_dir`. `at=` is ignored for now (2D). |
-| `@vfx effect [at] [count]` | `CutsceneMotes` at the mark or actor. `drift`, `motion` and `rate` come from the effect's row for now. |
+| `@vfx effect [at] [count]` | Rendering's GlimmerField at the mark or actor (CutsceneVfx): `count`, `drift`, `motion` and `rate` through glimmer.json's cues. `form=<id>` (M2-FP-120) stands the motes still on a creature's outline, one on each of glimmer_forms.json's points (`tools/cutscene/glimmer_forms.py`). `test_cutscene_directives` fails on any Act I key the sequencer doesn't perform. |
 | `@light name on\|off [sec]` | Finds a `Light3D` named `name` anywhere under the stage (Rhen's `LanternLight` rides his body) and eases its energy on `light_ease` to the energy it was authored with, or to 0. The prologue lights his lantern as the line lands. |
 | lines | The `DialogueBox` shows the line; `ui_accept` (or the field's interact key) skips the reveal, then advances. The speaker's `[emotion]` blends their face like `@face`, `DialogueBox.mouth_flap` drives the `lip_flap` shapes (visemes), and the speaker's `talk` clip plays (then `idle`) when the rig has them. |
 | options | `CutsceneChoices` over the box; the pick goes to `runner.choose()`. |
