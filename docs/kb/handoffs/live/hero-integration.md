@@ -1301,3 +1301,29 @@ trial_merge --prefold, merge_union's virtual base, test_post_import's crowd, fre
   python test's `KINDS` lacked `crowd`; I fixed the Godot twin for big16). Please tell creatures to skip it.
   test_npc does need creatures (M3-HER-1162 here: regenerate the crowd on the merged tree). The freed-cast hit is
   env-art-b's, M3-HER-1161, with the patch and a KNOWN row here.
+
+### Reviews and routing, 2026-10-29 ~19:00–19:30
+- **Done (qa reviewer):**
+  - M3-HER-1141 (env-art-b) and M3-HER-1143 (creatures-b): the merged-tree audit lists none for either.
+  - M3-AUD-861 (audio): on big17 all 5 named blockers are cleared.
+- **Done (architect reviewer):**
+  - M3-ENV-715 (Ashcrown's flights);
+  - M3-ARC-1216's last box: env-art's M3-ENV-1303 placed the 24 HeroStairs rows, and test_ch05_ashcrown_walkable
+    passes 5/0;
+  - a note on M3-C05-1215 (act1-chapters) that its blocker is gone.
+- **Changes requested: M3-C04-1226 (act1-chapters).** test_ch04_zones hard-codes Haluna's 8 camera volumes, and
+  Haluna has 10 since m2-slice's M2-FP-109 (B02, B11). The fix is to count haluna.tscn's own. This fails on my
+  branch (big16 in), so expect it in big17's suite.
+- **New, filed:**
+  - **M3-HER-1163 (audio):** M3-BPR-1325's `battle_sfx.json` `vfx` rows give the Climb's three stair skills
+    `status_apply`, which layers under the real sounds made for them. Fix: delete the 3 rows.
+  - **M3-HER-1164 (cinematics):** GPU QA row 39, "Rhen walks Ch9 alone". Probed: Ch9's stage keeps `Actors/asha`
+    and `Actors/toma` visible from load, so HeroFieldParty hides both followers (`staged`, by design). This is a
+    staging call: they follow, or they wait on purpose. Both options are written up.
+- Act I audit note: icons and faces are covered by UI's test_menu_glyphs and test_battle_portraits, and sounds by
+  audio's audit. The stale "not audited: icons" line is gone.
+- Pell's dialogue portrait: `pell_neutral.png` is on claude/ui, so it comes with the next batch. speakers.json's
+  `portrait_*_placeholder` ids are dead data; DialogueBox reads HeroPortraits by speaker id.
+- LEAD-ASK: audio isn't started, and M3-HER-1163 is a 3-row data fix in audio's `battle_sfx.json`. Start audio for
+  it, or let me apply it (I'd rather not edit another track's file unasked).
+- In flight: the full Godot suite on lead/gate-big17 in my container, for an early read and M3-HER-1130's leak list.
