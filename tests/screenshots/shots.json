@@ -7636,6 +7636,15 @@
         540
       ],
       "settle_frames": 30
+    },
+    {
+      "id": "creature_oil_slug_battle",
+      "scene": "res://game/levels/_tests/creatures/shots/battle_oil_slug.tscn",
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
     }
   ]
 }
