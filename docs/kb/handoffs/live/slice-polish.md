@@ -921,6 +921,12 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     - the field opens with the camera far back and the party small on the beach. That is integration-qa's party-start
       fix (M3-HER-1149, claude/hero-integration), not on this branch; big17 brings it.
   - The wash runs over Rhen in the shallows now and then; that is as staged (the human's fast-track).
+- **The Lead's 23:10 check-in:** the unperformed directives item is done (M2-FP-120 above, MERGE-READY): `rate=`,
+  `drift=` and `motion=` were already performed; `form=` and `grade=` (both the header and the cue) are now performed,
+  and `test_cutscene_directives` guards them. **Merged `origin/lead/gate-big18` @ d00d3284** (fceea746, clean; it
+  already carried this branch through f8f4d802); validate_data 0/0, dlgc and taskboard clean. The beat-by-beat pass
+  (every line's speaker in frame, eyelines, timing, dead frames, music on the beats) now continues on this merged tree:
+  Ch1 next, then the slice scenes again on big18.
 ### PC-QUEUE
 - New Game → the beach: 15 s of black before the fade on lavapipe (the load and prewarm at a fixed 30 fps). Measure it on
   the GPU against ADR 0042's ≤ 1 s hidden-frames target.
