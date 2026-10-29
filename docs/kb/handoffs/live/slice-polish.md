@@ -855,6 +855,18 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     corner) while the camera is already on B11. It looks like temporal history (TAA is on project-wide), so it would
     hit every hard cut in the game. Rendering it with TAA on and off now.
   - **Follow-up, not changed:** leaving Neme's door volume may blend from B02 back to H09 (23 m).
+- **Queued (the Lead's 19:24 item, after B11): unperformed cutscene directives.** Act I .dlg use, measured:
+  - `@vfx rate=` (16 uses), `drift=` (20), `motion=` (2) and `@sfx at=` (8) are already performed (M3-HER-1123,
+    CutsceneVfx and CutsceneSound).
+  - **Not performed:**
+    - `@camera grade=` (5 uses: `ch02` ×4, `ch03_boss` ×1);
+    - the scene header `grade:` (every scene; the slice's are ch02, ch03, ch03_steps and ch03_shrine_int);
+    - `@vfx form=` (1 use: `form=ilun`, S08).
+  - `@anim loop=` is parsed but unused in Act I.
+  - **Plan:** a grade table (grade id → Environment and sun, the zone `*_grades.json` shape) applied on `@camera grade=`
+    and the header, and restored at the scene's end; `form=` through glimmer.json; a guard test that fails on any
+    Act I directive or argument the sequencer doesn't perform. Grades with no Environment yet wait on env-art-b's
+    M3-ENV-106; the guard will name them.
 ### PC-QUEUE
 - Re-check PC GPU QA rows 18 (C07 harrier) and 32 (beach standing lines) on the GPU: both are fixed here (rendered on
   lavapipe), and the sheet still lists them open.
