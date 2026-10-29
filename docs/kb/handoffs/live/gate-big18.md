@@ -43,14 +43,16 @@ Checks at the build: validate_data 0 errors 0 warnings; taskboard --check ok; gd
 no duplicate loc keys, PROVENANCE rows or shot ids (619 shots); no conflict markers; no `docs/kb/qa/gate-runs/**`
 images.
 
-LEAD-ASK: Coilspire may show Virel twice. env-art-b's M3-ENV-1320 (22b289bf, already in big17) put her model in
+LEAD-ANSWERED: Coilspire may show Virel twice. env-art-b's M3-ENV-1320 (22b289bf, already in big17) put her model in
 the crown chamber as a dressing piece (`coilspire_dressing.json` "piece": "virel"). act1-chapters' M3-CRE-627
 (ed235044) adds a ZoneCast `virel` actor on her coil, which hides after the binding. big18 keeps both, per ownership.
 One of them should go, probably the dressing piece, since the actor handles the after-binding state. Route to
 env-art-b and act1-chapters?
-LEAD-ASK: Ch1 U03 (Oruvel Underway) and O02/scaleman (Oruvel) were re-framed by both m2-slice and act1-chapters (GPU
+LEAD-ANSWERED: Ch1 U03 (Oruvel Underway) and O02/scaleman (Oruvel) were re-framed by both m2-slice and act1-chapters (GPU
 QA row 23). big18 keeps m2-slice's (Ch1's owner). Check the shots; if act1-chapters' framing is wanted, it needs a
 follow-up on m2-slice's side.
+(Lead, 21:48: keep both Virels in big18; env-art-b drops the dressing piece on its branch for big19. Keeping
+m2-slice's Ch1 framing is right; the Lead judges the shots at review.)
 
 ### big18 checks in progress (on 4ee3a7b8)
 - 2026-10-29 21:36 UTC: every non-shot step started (HYMN_STEP_TIMEOUT=10800, own HYMN_LOG_DIR and XDG_DATA_HOME;
