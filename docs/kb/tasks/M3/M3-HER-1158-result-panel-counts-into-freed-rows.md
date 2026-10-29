@@ -38,8 +38,8 @@ func _set_count(value: float, c: Dictionary) -> void:
 ```
 
 ## Acceptance criteria
-- [ ] A re-shown result panel kills the previous open tween; `_set_count` checks the label before casting.
-- [ ] `godot --headless --path . res://tools/dev/battle_entry_probe.tscn -- --chapters=3` logs no
+- [x] A re-shown result panel kills the previous open tween; `_set_count` checks the label before casting.
+- [x] `godot --headless --path . res://tools/dev/battle_entry_probe.tscn -- --chapters=3` logs no
       battle_result_panel error.
 
 ## Notes
@@ -51,4 +51,6 @@ would need the call graph.
 ## Review log
 - 2026-10-29 integration-qa (the filer): fixed by ui in 503b99839 ("a count-up never writes into freed rows", act1_gpu_qa
   row 33): `_set_count` returns when the row's label is gone, and test_battle_result_motion covers it. It's in big17.
-  Moved to review. integration-qa re-runs the ch3 battle_entry_probe on big17 to tick the boxes.
+  Moved to review. Verified on lead/gate-big17: `open()` kills the previous open tween (lines 83-84),
+  `_set_count` checks the label, and `battle_entry_probe -- --chapters=3` logs 0 battle_result_panel errors (big15:
+  ~930). Reviewer: ui, to close.

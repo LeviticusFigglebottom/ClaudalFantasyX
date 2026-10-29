@@ -1286,3 +1286,18 @@ act1-chapters 7f49b2f3, m2-slice e7b19992, audio 1cb9654d, hero-integration 1ff5
 
 MERGE-READY @ 47fdc185c (+ this log): everything above (M3-HER-1149 Pell row, M3-HER-1227, M3-C09-09, M3-ARC-1324,
 trial_merge --prefold, merge_union's virtual base, test_post_import's crowd, freed-cast KNOWN for M3-HER-1161).
+
+### Act I encounter-entry smoke on lead/gate-big17 (import + `--filter=qa_encounters`), 2026-10-29 ~19:20
+- **Every Act I fight is entered, won and left clean: 1/0.** Its log held two `HalunaZone: no spawn ''` warnings
+  that the guard skipped. That was a gap in the guard, not in the game: its `_first_spawn` reads `<zone>_layout.json`
+  spawns, but Haluna's spawns are scene markers, so Haluna's fights were never returned to a real spawn. **Fixed in
+  test_qa_encounters:** it falls back to the zone's `spawn_names()`, and now **fails** when a zone with `place_at`
+  gets no spawn. Re-run on big17: 1/0, with no such warning.
+- Every other error in the log is known: `refresh_bounce_passes` with a freed root (M3-HER-1124, PC rendering), plus
+  exit-time leak lines.
+- **M3-HER-1158 verified and in review:** ui's 503b99839 (in big17). The ch3 `battle_entry_probe` logs 0
+  battle_result_panel errors (big15: ~930).
+- LEAD-ASK: you routed big17's test_post_import red to creatures. **It's already fixed here @ 96bd14658** (the
+  python test's `KINDS` lacked `crowd`; I fixed the Godot twin for big16). Please tell creatures to skip it.
+  test_npc does need creatures (M3-HER-1162 here: regenerate the crowd on the merged tree). The freed-cast hit is
+  env-art-b's, M3-HER-1161, with the patch and a KNOWN row here.
