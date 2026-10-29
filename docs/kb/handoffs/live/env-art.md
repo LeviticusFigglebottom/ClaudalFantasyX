@@ -589,6 +589,18 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ e557740d: the Lead's two big17 reds (both already red on big16 @ ff82858c), fixed; integration
+  ccf44ba4 merged in first.**
+  - **`test_iskarra_city::test_the_city_instances_its_pieces_with_kit_materials`** ("VigilLights has meshes"): my lit vigil
+    (10c6974d9) added `VigilLights` to `iskarra_city.tscn`, a group of OmniLights only. The scene is right; the test now
+    checks that group as lights (omni, shadowless, no fog energy) and every other child for kit meshes as before.
+  - **`test_ch04_zones::test_the_wakes_field_camera_is_halunas`** (8 expected, 10 got): the two new Haluna volumes are
+    intended. slice-polish added `NemeTable` (B02, e7301ddd) and `DockEnd` (B11, b75cde39) under M2-FP-109, and the wake
+    copies all of Haluna's volumes by design. The test now counts ch02/haluna's volumes from its scene instead of a
+    hard 8. **For act1-chapters (the test's owner) and hero-integration (field cameras):** no camera or volume changed;
+    if either of you wants the wake *without* B02/B11's close volumes, filter them in `Ch04Zone._haluna_camera_volumes`.
+  - **Counts:** `--filter=ch04_zones` 5 run / 0 failed (was 1 failed); `--filter=iskarra_city` 1 / 0 (was 1 failed);
+    `--filter=ch04` 13 / 0; `--filter=iskarra` 1 / 0. gdlint and gdformat clean. Skipped: shots (tests only).
 - **BACKLOG EMPTY (2026-10-29): every env-art item for the Prologue–Ch4 is done, in review or routed.** Why nothing is
   left for this track: the inventory's env-art rows are cleared or re-routed (M3-HER-1140, review); the GPU QA rows are
   fixed on this tree (the real-GPU re-checks are in PC-QUEUE); the walk-through and the touchable props are done; the
