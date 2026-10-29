@@ -1384,3 +1384,19 @@ act1-chapters a9c44edc, m2-slice 530b8551, audio 1cb9654d, hero-integration 4059
   (its one box is unticked).
 - **M3-UI-211:** verified (battle_portraits 3/0, menu_glyphs 3/0, hero_portraits 9/0, creature_portraits 4/0); Kerrid's
   box ticked. It stays in review for the Inquisitor's bestiary picture (none on big17) and the Lead's baselines.
+
+### TRIAL MERGE, 2026-10-29 ~21:00 (prefold lead/gate-big17 @ 1bdaea53; big17 isn't on integration yet)
+Heads: env-art d63eeea3, env-art-b 0e9db81d, creatures df6b8e2d, creatures-b 4d0150e3, characters 9fe30416,
+ui b2137061, battle-presentation b1316ebb, act1-chapters e7b065b4, m2-slice 8aa6f6a6, audio 1cb9654d,
+hero-integration 78e9df9c. shots.json resolves everywhere. pc-gpu.md: take integration's.
+- **NEW, mine to call: `tests/unit/test_hero_field_actor.gd`, hero-integration vs characters.** characters
+  5667eedbd added Pell's field row too: the same numbers, walk 1.27 and run 3.13, so `hero_motion.json` merges clean.
+  It also edited the alias test. **Resolve by taking hero-integration's version.** characters' version asserts
+  that `vigil_sefir` "has no field row" and keeps its capsule, but Sefir has had a row and a model since M3-HER-1225
+  (both are on big17), so it fails on the merged tree. Mine handles Pell's model being there or not, and uses
+  `vigil_neme`, an actor with no row.
+- **NEW:** `tests/unit/test_zone_cast.gd` (creatures vs env-art-b); `tests/integration/test_fp_prologue.gd`
+  (characters vs env-art-b and creatures; characters' edit is the Prologue vigil now having Pell's body);
+  `oruvel_underway_layout.json` (act1-chapters vs everyone, generated: act1-chapters re-runs its generator).
+- As at 20:00: M3-ENV-750 (take env-art's), ownership.md (by hand), the characters `cast` edits in 9 layouts,
+  ch08_coilspire_dressing.py and M3-ENV-744 (act1-chapters).
