@@ -1459,3 +1459,5 @@ MERGE-READY @ (this commit), after big17 landed:
   (Ch8's figure), env-art 2 low and env-art-b 2 low (placeholder-named kit files). **integration-qa 0, characters
   0:** Pell's capsules and the Prologue's vigil are gone.
 - **M3-HER-1149 → review (reviewer: lead):** every box ticked.
+- Hero motion, followers and the camera on integration (big17) + this branch: `--filter=hero_` 113/0,
+  `--filter=camera` 62/0. Pell's model is in, so the alias test now runs its with-model branch.
