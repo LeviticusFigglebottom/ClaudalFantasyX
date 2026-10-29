@@ -794,3 +794,43 @@ Merged `origin/claude/new-session-mj8c3c` (pc-gpu.md conflict: kept ours, the ne
 - **Also:** dropped a stale `shrine_offering.glb` PROVENANCE row the characters merge re-added (big17 has none): validate_data 0/0.
 - **villager_shopkeeper_front (NO BASE):** SELF-RENDERED and viewed: a full Haluna shopkeeper in T-pose on the review stage, clean, no placeholder (characters' M3-CHR-512 villager). **LEAD-ASK: approve villager_shopkeeper_front's baseline at the gate (I wrote none).**
 - Checks: tools test_npc 27/0, test_post_import 6/0; Godot crowd 7/0, villager 35/0, post_import 21/0, npc 10/0; validate_data, lint, format.
+
+### M3-HER-1142: Corrow's storm figure (audit row, high): done, in review
+- The capsule `figure` in `corrow.tscn` is the cyan silhouette in the storm wall (act1_ch08 W22). It is now `corrow_storm_figure` in `zones/ch08_corrow.json`: the Oruvel diver's crowd body (`crowd_man_lean_a`) drawn as one `#5fd6e0` silhouette.
+  - New VillagerLayer row keys: `body` (a crowd body with no crowd person), `silhouette` (NpcSilhouette: an unshaded fresnel-rim shader that fades in from the feet, depth prepass, no shadow, no TIME, render priority 1 so the storm sea doesn't paint over it) and `tuning` (zeroes its glance and talk radii). Validator and docs (field_npc.md "Silhouette rows") updated.
+  - It rides inside the `figure` stage actor, so the layout's flags and the cutscene's `@mark figure figure_gone walk` drive it.
+- **New shots:** `npc_corrow_storm_figure` (from the wall, about 31 m) and `npc_corrow_storm_figure_near`.
+- **Still needed in game:** M3-CRE-657 (GreyboxZone adds the VillagerLayer; patch in `live/patches/`). Until then Corrow's crowd and the figure appear only where a layer is wired (the shot stages, tests).
+
+### GPU QA row 40: the Oil Slug's read at battle distance: done
+- Flank-on in battle (`stand_in.yaw_deg` 60) at 1.3× (its battle scene's Model). A lighter back, a stronger oil sheen, a body rim sheen, brighter cerata tips.
+- `LampGlow`: a small shadowless `oil_lamp` omni light over the cerata (the design's "the only warm light in the underway"), which lights its back and a pool of floor. CreatureActor now fades a creature's lights with its KO (test).
+- New shot `creature_oil_slug_battle` (its real ch01_oil_slug encounter). Portrait re-baked (margin 1.2: its head had always been cropped). Blender verify identical.
+
+### Primitive pass
+- Rendered the current builds of the shoal skipper, raid hound and hullgnaw: they read finished (the old baselines predate their rebuilds).
+- **The tide crawler read primitive** (a plain ellipsoid on smooth cone legs), so it's rebuilt, 4.8k tris, rig and clips unchanged:
+  - a crab's carapace: a low dome widest forward, a rim lip, grooved plates split by glowing seams, a dorsal ridge, brow teeth and mandible hooks;
+  - jointed legs with coxa, knee and ankle knobs, dull joint membranes, a glowing seam along each femur, femur spines;
+  - serrated scythe forelegs.
+  - The paused Act II rim crawler imports this build, so it was rebuilt (verify identical).
+
+### Checks (this batch)
+- tools: test_npc, test_post_import, test_creatures OK; validate_data 0/0; taskboard; gdlint and gdformat on game/tests clean.
+- Godot: creature 85/0, portrait 21/0, crowd 9/0, villager 37/0, npc 10/0, post_import 21/0.
+- Blender verify identical: crowd_girl_teen, creature_oil_slug, creature_tide_crawler, creature_rim_crawler.
+- Skipped: coverage (nothing in game/battle or game/progression changed), the full manifest.
+
+### SELF-RENDERED (all viewed; no baselines written)
+- villager_shopkeeper_front (NO BASE): a clean villager.
+- crowd_zone_pemakar, crowd_zone_brine_shoals: crowd bodies, no capsules.
+- crowd_lineup_a/b/c/back: every body present. A first render came out empty because I had edited field_npc.gd mid-capture before the class cache was re-imported; re-rendered after the import.
+- npc_corrow_storm_figure(_near) (new): one cyan man's shape in the storm sea.
+- creature_oil_slug, creature_oil_slug_battle (new): it reads; a warm glow and crest at battle distance.
+- creature_tide_crawler: drift expected (rebuilt).
+- creature_shoal_skipper, creature_raid_hound, creature_hullgnaw: current builds; the old baselines are stale.
+- **LEAD-ASK: at the gate, approve baselines for villager_shopkeeper_front, creature_oil_slug_battle, npc_corrow_storm_figure, npc_corrow_storm_figure_near (new), and re-approve creature_oil_slug, creature_tide_crawler, creature_rim_crawler, plus the stale creature_shoal_skipper, creature_raid_hound, creature_hullgnaw and creature_slag_tortoise. Crowd shots for crowd_girl_teen's zones (pemakar, brine_shoals, lineups) may drift slightly.**
+
+### PC-QUEUE
+- GPU QA row 40: recheck the Oil Slug in ch01_oil_slug on the RX 9070 XT (LampGlow on real GPU; the arena's lit floor patches are env-art-b's row 15).
+- The Corrow storm figure on real GPU (bloom on the rim; rain over it).
