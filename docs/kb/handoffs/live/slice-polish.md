@@ -851,9 +851,16 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     now hard cuts. The camera log shows one clean frame from H04 to B11 in position and aim.
   - **Fixed (3f526f99):** Toma's dock_toma was 6° outside B11's frame, so his objection and sigh were off screen.
     He now stops 2.9 m behind Rhen, in the frame's left.
-  - **Investigating:** the first one or two frames after a hard cut render dark (the slope's underside, a house
-    corner) while the camera is already on B11. It looks like temporal history (TAA is on project-wide), so it would
-    hit every hard cut in the game. Rendering it with TAA on and off now.
+  - **The dark frames, found and fixed (my own, from e7b19992):** they came about 0.2 s before the cut. Toma, cued at
+    the top from behind H04's lens, walked through the camera. The new `--cut-frames=N` and `--no-taa` options on
+    tools/cutscene_frames showed clean frames after the cut with and without TAA, so it is not a renderer fault.
+    Toma now sets off after `@wait arrive=rhen`, once the cut to B11 is past.
+  - **Viewed (pass 4, from the real arrival):** no dark frame from the first visible frame to the closing fade. Toma
+    comes up the dock on the frame's left from 45 s and arrives whole for "..." and "Then you walk behind me". Asha
+    turns to him for her answer.
+  - **MERGE-READY @ the branch head (B11):** haluna 65, fp_ 30, end_card 5, cutscene_sequencer 18, all 0 failed;
+    dlgc, validate_data, gdlint and gdformat clean. Not a manifest still change: slice_dock_night_yes holds line 007
+    with Toma off frame either way.
   - **Follow-up, not changed:** leaving Neme's door volume may blend from B02 back to H09 (23 m).
 - **Queued (the Lead's 19:24 item, after B11): unperformed cutscene directives.** Act I .dlg use, measured:
   - `@vfx rate=` (16 uses), `drift=` (20), `motion=` (2) and `@sfx at=` (8) are already performed (M3-HER-1123,
