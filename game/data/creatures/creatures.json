@@ -24,14 +24,18 @@
     "flue_moth": {"scene": "res://game/creatures/flue_moth/flue_moth_battle.tscn", "vfx_anchors": {"core": "thorax", "wound": "head"}, "contact": {"attack": 0.5, "cast": 0.6}, "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}},
     "undertows_reach": {
       "scene": "res://game/creatures/undertows_reach/undertows_reach_battle.tscn",
-      "contact": {"attack": 1.2, "cast": 1.3, "attack_dark": 1.2, "cast_dark": 1.3, "attack_breach": 1.2, "cast_breach": 1.3},
+      "contact": {"attack": 1.2, "cast": 1.3, "attack_dark": 1.2, "cast_dark": 1.3, "attack_breach": 1.2, "cast_breach": 1.3,
+                  "undertow_pull": 1.35, "undertow_pull_dark": 1.35, "undertow_pull_breach": 1.35, "hand_closes": 1.15,
+                  "breach": 1.2},
+      "clip_by_skill": {"crust_slam": "attack", "undertow_pull": "undertow_pull", "close_the_hand": "close_the_hand",
+                        "hand_closes": "hand_closes", "breach_gather": "breach_gather", "breach": "breach"},
       "loop": ["idle", "idle_dark", "idle_breach"],
       "ko_fade_sec": 1.5,
       "phases": {
         "dark": {"clip": "phase_dark", "idle": "idle_dark", "sec": 0,
-                 "clips": {"attack": "attack_dark", "cast": "cast_dark", "hit": "hit_dark"}},
+                 "clips": {"attack": "attack_dark", "cast": "cast_dark", "hit": "hit_dark", "undertow_pull": "undertow_pull_dark"}},
         "breach": {"clip": "phase_breach", "idle": "idle_breach", "sec": 0,
-                   "clips": {"attack": "attack_breach", "cast": "cast_breach"}}
+                   "clips": {"attack": "attack_breach", "cast": "cast_breach", "undertow_pull": "undertow_pull_breach"}}
       },
       "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}
     },

@@ -1195,7 +1195,7 @@ def build_clips() -> list[ck.Clip]:
         cast.key(arm[-2], t, (-4.0 * s, 0, 0))
     hit = ck.Clip("hit", 0.8)  # a shudder runs up the limb
     for t, s in ((0.0, 0.0), (0.12, 1.0), (0.3, -0.6), (0.5, 0.3), (0.8, 0.0)):  # M3-CRE-617: thrown back harder
-        hit.key("hand", t, (12.0 * s, 0, 4.0 * s))
+        hit.key("hand", t, (18.0 * s, 0, 6.0 * s), (0.0, 0.25 * s, -0.3 * s))
         hit.key(arm[-2], t, (-4.0 * s, 0, -5.0 * s))
         hit.key(arm[-3], t, (-2.0 * s, 0, -2.5 * s))
     ko = ck.Clip("ko", 2.6)  # it lets go and is drawn back up into the storm
@@ -1236,7 +1236,8 @@ def build_clips() -> list[ck.Clip]:
     for i, b in enumerate(arm[:-1]):
         idle_dark.wave(b, amp_rot=(1.0, 0.6, 0.8), cycles=1, phase=-i * 0.8)
     # the Breach: it lets go and draws back over the sea, the hand raised and open, gathering
-    breach_pose = {"root": ((-14.0, 0, 0), (0, 1.5, -4.5)), "hand": ((-55.0, 0, 0), (0, 0.6, 0))}
+    # (M3-CRB-013: 2.6 m back, not 4.5: further out it left the battle camera's frame for the whole phase)
+    breach_pose = {"root": ((-10.0, 0, 0), (0, 1.0, -2.6)), "hand": ((-55.0, 0, 0), (0, 0.6, 0))}
     phase_breach = ck.Clip("phase_breach", 3.0)
     for t, s in ((0.0, 0.0), (0.6, 0.15), (2.4, 1.0), (3.0, 1.0)):
         for b, (r, l) in breach_pose.items():
@@ -1259,9 +1260,58 @@ def build_clips() -> list[ck.Clip]:
 
     dark_full = ck.pose_of(held(dark_pose, 0.8))
     breach_full = ck.pose_of(held(breach_pose, -1.1))
-    variants = [ck.in_pose(c, f"{c.name}_dark", dark_full) for c in (attack, cast, hit)]
-    variants += [ck.in_pose(c, f"{c.name}_breach", breach_full) for c in (attack, cast)]
-    return [idle, ready, intro, attack, cast, hit, ko, phase_dark, idle_dark, phase_breach, idle_breach] + variants
+
+    # One clip per skill (M3-CRB-013: each move reads as its own at battle distance).
+    # Undertow Pull: the fingers spread and dig into the stone, then the whole hand drags back toward the sea (the
+    # pull lands at 1.35 s), the claws raking, and eases back onto the Grip.
+    pull = ck.Clip("undertow_pull", 2.4)
+    for t, spread, dig, drag in ((0.0, 0.0, 0.0, 0.0), (0.5, 1.0, 0.0, 0.0), (0.9, 0.3, 1.0, 0.0),
+                                 (1.35, 0.0, 1.0, 1.0), (1.75, 0.0, 0.8, 0.9), (2.4, 0.0, 0.0, 0.0)):
+        pull.key("hand", t, (6.0 * dig + 6.0 * drag, 0.0, 0.0), (0.0, -0.05 * dig + 0.1 * spread, -1.1 * drag))
+        pull.key(arm[-1], t, (-4.0 * spread + 7.0 * drag, 0.0, 0.0))
+        pull.key(arm[-2], t, (5.0 * drag, 0.0, 0.0))
+        curl(pull, t, -1.0 * spread + 0.6 * dig + 0.8 * drag)
+    # Close the Hand (the two-turn telegraph): the hand rises off the stone toward the stair, opens, then closes
+    # slowly and only half way, trembling; it has not struck yet.
+    warn = ck.Clip("close_the_hand", 2.4)
+    for t, lift, close in ((0.0, 0.0, 0.0), (0.6, 1.0, -0.8), (1.4, 1.0, 0.85), (1.6, 0.95, 0.7), (1.8, 1.0, 0.95),
+                           (2.0, 0.95, 0.75), (2.4, 0.0, 0.0)):
+        warn.key("hand", t, (-14.0 * lift, 0.0, 0.0), (0.0, 0.5 * lift, 0.2 * lift))
+        warn.key(arm[-1], t, (-5.0 * lift, 0.0, 0.0))
+        curl(warn, t, close)
+    # The hand closes (on the stair): it rises high and wide open, then clamps down into a fist at 1.15 s, shudders and
+    # lets go.
+    clamp = ck.Clip("hand_closes", 2.2)
+    for t, rot, y, z, c, a1 in ((0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.7, -30.0, 1.6, -0.2, -1.3, -10.0),
+                                (0.95, -24.0, 1.3, -0.1, -1.2, -8.0), (1.15, 8.0, -0.1, 0.35, 2.4, 2.0),
+                                (1.25, 5.0, 0.05, 0.3, 2.3, 1.0), (1.45, 7.0, -0.03, 0.33, 2.2, 1.5),
+                                (1.65, 5.0, 0.0, 0.3, 2.2, 1.0), (2.2, 0.0, 0.0, 0.0, 0.0, 0.0)):
+        clamp.key("hand", t, (rot, 0.0, 0.0), (0.0, y, z))
+        clamp.key(arm[-1], t, (a1, 0.0, 0.0))
+        curl(clamp, t, c)
+    # Breach (gathering, from the Breach stance over the sea): it draws further back and higher, the fingers wide, the
+    # limb trembling with what it holds.
+    gather = ck.Clip("breach_gather", 2.6)
+    for t, s, shake in ((0.0, 0.0, 0.0), (0.8, 1.0, 0.0), (1.2, 1.0, 1.0), (1.5, 1.0, -1.0), (1.8, 1.0, 1.0),
+                        (2.1, 1.0, -0.6), (2.6, 0.0, 0.0)):
+        gather.key("root", t, (-4.0 * s, 0.0, 1.2 * shake), (0.0, 0.6 * s, -0.8 * s))
+        gather.key("hand", t, (-15.0 * s + 3.0 * shake, 0.0, 0.0), (0.0, 0.3 * s, 0.0))
+        curl(gather, t, -0.5 * s)
+    # Breach (the strike): it coils back, then hurls the whole limb down onto the wall-head like a breaking wave (1.2 s),
+    # rebounds and draws back over the sea.
+    crash = ck.Clip("breach", 2.6)
+    for t, rr, y, z, h, c in ((0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.6, -6.0, 0.8, -1.0, -20.0, -0.4),
+                              (1.0, 4.0, -0.4, 1.4, 20.0, 0.2), (1.2, 10.0, -1.0, 2.6, 50.0, 0.8),
+                              (1.5, 8.0, -0.8, 2.2, 40.0, 0.9), (2.6, 0.0, 0.0, 0.0, 0.0, 0.0)):
+        crash.key("root", t, (rr, 0.0, 0.0), (0.0, y, z))
+        crash.key("hand", t, (h, 0.0, 0.0))
+        curl(crash, t, c)
+
+    variants = [ck.in_pose(c, f"{c.name}_dark", dark_full) for c in (attack, cast, hit, pull)]
+    variants += [ck.in_pose(c, f"{c.name}_breach", breach_full) for c in (attack, cast, pull)]
+    variants += [ck.in_pose(gather, "breach_gather", breach_full), ck.in_pose(crash, "breach", breach_full)]
+    return [idle, ready, intro, attack, cast, hit, ko, phase_dark, idle_dark, phase_breach, idle_breach, pull, warn,
+            clamp] + variants
 
 
 def build_mesh(rig: ck.Rig, ja: np.ndarray) -> ck.Mesh:
