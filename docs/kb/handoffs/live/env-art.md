@@ -589,16 +589,29 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
-- **2026-10-29 (new Lead `session_01Bg3iP7cPGyjbX4CyniBahc`; integration `claude/new-session-mj8c3c`), IN PROGRESS, NOT
-  merge-ready yet: M3-ENV-750's kit half, the inventory's Haluna tree rows (2 medium, 2 low).**
+- **MERGE-READY @ 3bd6865f: M3-ENV-750 done; the inventory's four Haluna tree rows are gone.** The checks that were
+  still owed have now run:
+  - `haluna_kit` Blender verify: 197 identical, the hand-trimmed manifest included;
+  - Godot `--filter=haluna` 65/0;
+  - `--filter=post_import` 21/1. The one failure is `test_every_glb_import_runs_its_category_script` on
+    `assets/crowd/*` (creatures', fixed on their branch per CONSOLIDATED); the tree check passes;
+  - gdlint and gdformat clean; `placeholder_audit.py` (runtime scan) puts env-art at 3 (was 9), none medium;
+  - **skipped:** shots (same geometry under new names; nothing moves).
+- **LEAD-ASK:** the audit still files three rows under env-art (M3-HER-1140) that env-art can't close:
+  - the Prologue `City/Vigils` capsule: Pell's vigil, which characters' Pell (big17) or slice-polish's staging replaces;
+  - `tamsule_bell/reefball_drop_proxy.glb` and `materials/tb_drop_proxy.tres`: M3-RND-26, which the Lead gave env-art-b.
+
+  Please re-route them in the audit's owner map, or tell me to take M3-RND-26's rename myself. Meanwhile I'm starting the
+  walk-through.
+- **2026-10-29 (new Lead `session_01Bg3iP7cPGyjbX4CyniBahc`; integration `claude/new-session-mj8c3c`): M3-ENV-750's
+  kit half, the inventory's Haluna tree rows (2 medium, 2 low).**
   - Merged the integration branch (58011116; one conflict, `pc-gpu.md`, took the integration copy).
   - slice-polish's rename (`claude/m2-slice` 6fa37677, not on integration yet) is carried here as identical lines
     (`haluna_layout.json`'s 50 trees, `haluna.tscn`'s two `piece_rules` keys, `test_haluna_zone`, `test_post_import`),
     so env-art and m2-slice merge cleanly in either order.
   - Retired `banyan_placeholder` / `windbreak_placeholder`: `trees.py`, the glbs and imports, the manifest entries,
     PROVENANCE rows, `haluna_kit_sheet.gd`, `test_haluna_kit`, and `scene_loads.json`'s four paths (now the real names).
-  - Run: `test_haluna_kit` 21 OK, validate_data, taskboard. **Still to run before MERGE-READY:** the `haluna_kit`
-    Blender verify, the Godot `--filter=haluna` / `post_import` tests, and `placeholder_audit.py`.
+  - Run: `test_haluna_kit` 21 OK, validate_data, taskboard (the rest: MERGE-READY line above).
   - The rest of the env-art inventory isn't mine: the Prologue `City/Vigils` capsules are cast stand-ins
     (characters/slice-polish), and `reefball_drop_proxy` / `tb_drop_proxy` are env-art-b's (M3-RND-26).
 
