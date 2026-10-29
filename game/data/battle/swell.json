@@ -33,7 +33,9 @@
        "help_key": "SWELL_INPUT_GLYPH_HELP",
        "lead_in_sec": 0.6, "window_sec": 3.0, "swift_sec": 2.0, "max_step_sec": 0.05,
        "strokes": ["down", "right", "up", "right", "down"],
-       "grades": {"traced": 9, "swift": 45, "miss": 0}}
+       "grades": {"traced": 9, "swift": 45, "miss": 0}},
+      {"id": "weighted_swing", "kind": "brace", "name_key": "SWELL_INPUT_WEIGHTED_SWING", "help_key": "SWELL_INPUT_WEIGHTED_SWING_HELP", "lead_in_sec": 0.6, "impacts": [1.1], "counter_at": 2.4, "perfect_sec": 0.06, "good_sec": 0.15, "max_step_sec": 0.05, "grades": {"braced": 30, "perfect": 60, "good": 15, "miss": 0}, "_note": "M3-C05-06: Kerrid's weighted swing (kerrid.md): one long charge. Hold Confirm as the cleaver coils (graded once, at 1.1 s) and let go on the count at 2.4 s; let go early and the coil is lost. +45% at good, +90% perfect, like every input."},
+      {"id": "reel_stop", "kind": "timing_ring", "name_key": "SWELL_INPUT_REEL_STOP", "help_key": "SWELL_INPUT_REEL_STOP_HELP", "beats": 3, "lead_in_sec": 0.6, "beat_sec": 0.7, "peak_at": 0.65, "perfect_sec": 0.06, "good_sec": 0.15, "max_step_sec": 0.05, "grades": {"perfect": 30, "good": 15, "miss": 0}, "_note": "M3-C06-05: Liss's reel-stop (liss_varrow.md): stop three parts reels, one per beat, as each part lines up. A quicker beat than Rhen's lamp."}
     ],
     "unlocks": [
       {"id": "tether_from_ballast", "mode": "tether", "event": "damage_taken", "while_mode": "ballast", "count": 40},
@@ -43,7 +45,9 @@
       {"id": "rhen", "input": "timing_ring", "techniques": ["lamp_dive"]},
       {"id": "asha", "input": "verse_chant", "techniques": ["shallows_verse"]},
       {"id": "toma", "input": "tide_brace", "techniques": ["return_tide"]},
-      {"id": "ysolde", "input": "glyph_trace", "techniques": ["written_light"]}
+      {"id": "ysolde", "input": "glyph_trace", "techniques": ["written_light"]},
+      {"id": "kerrid", "input": "weighted_swing", "techniques": ["long_hold"]},
+      {"id": "liss", "input": "reel_stop", "techniques": ["three_reel_charge"]}
     ]
   }
 }
