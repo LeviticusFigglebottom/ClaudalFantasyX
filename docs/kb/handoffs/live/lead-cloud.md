@@ -92,3 +92,7 @@
 - big14 plus every track's big14 fixes, plus lead/gate-ft-beach (the beach re-stage). hero-integration is at b7526686: its party-camera fix (Rhen off screen) is not in yet.
 - validate, taskboard, dlgc, lint and format all pass. The shrine GI inputs are unchanged (gi_inputs --check is up to date), so no rebake.
 - Run with HYMN_STEP_TIMEOUT at 3 h.
+
+## HANDOVER 2026-10-28 ~18:40 UTC (usage limit; a new account takes over)
+- Read CONSOLIDATED.md §0. big16 @ ff82858c is the next merge (it contains big15). Gate results go to lead/gate-big16-shots if the cloud gate finished; otherwise have the PC gate it.
+- Fold in creatures f6846325 and hero-integration a6e9d548 before merging. The Lead tools are in tools/dev/lead/.

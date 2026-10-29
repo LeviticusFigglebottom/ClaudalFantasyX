@@ -1,17 +1,25 @@
-# Track rules for the new account (2026-10-25)
+# Track rules (2026-10-25; updated 2026-10-29)
+
+## FROM 2026-10-29: NEW LEAD; THE PC IS OFFLINE FOR A WHILE (this overrides everything below)
+- **Lead:** `session_01Bg3iP7cPGyjbX4CyniBahc`. **Integration branch:** `claude/new-session-mj8c3c`.
+- **The PC (pc-gpu) is OFFLINE for an extended period** (the human's note). Do not wait on it or plan around it.
+  - Keep SELF-RENDERING your own changed shots in your own container, as in the "SELF-RENDERING" section below: ≤15 ids, HYMN_SKIP_BLENDER=1, a unique XDG_DATA_HOME, and VIEW them.
+  - Batch gates run in a cloud **gate** session that the Lead creates.
+  - Real-GPU-only items (GPU QA rows, GPU perf, benchmarks) stay queued for the PC. Log them under `### PC-QUEUE` in your live log, then move on.
+- **Channel:** unchanged. Use `LEAD-ASK:` lines in your live log, plus `MERGE-READY @ <sha>` lines; the Lead polls every 20 min.
 
 Every track session reads this file. The Lead owns it.
 
 ## COMMON RULES (every track)
-- **Project:** "Hymn of the Undertow", an original cinematic CTB RPG in Godot 4.6.3. The repo LeviticusFigglebottom/ClaudalFantasyX is your only memory. The **Lead** is cloud session `session_018aiGwGLGkxsnMnu8VfCu1m`.
-- **Integration branch:** `claude/undertow-lead-handoff-ze8rrn`. It replaces `-423ixt`: wherever a doc says -423ixt, read -ze8rrn. Push ONLY your own track branch. Never push to `main`, the integration branch, or another track's branch.
+- **Project:** "Hymn of the Undertow", an original cinematic CTB RPG in Godot 4.6.3. The repo LeviticusFigglebottom/ClaudalFantasyX is your only memory. The **Lead** is cloud session `session_01Bg3iP7cPGyjbX4CyniBahc` (from 2026-10-29).
+- **Integration branch (from 2026-10-29): `claude/new-session-mj8c3c`.** It was fast-forwarded to `claude/undertow-lead-handoff-ze8rrn` @ 4d64a73e and replaces it. Wherever a doc says -ze8rrn or -423ixt, read `claude/new-session-mj8c3c`. Push ONLY your own track branch. Never push to `main`, the integration branch, or another track's branch.
 - **Read first:**
   1. CLAUDE.md (binding);
   2. `docs/kb/handoffs/live/CONSOLIDATED.md` on the integration branch (§4 process rules, §7 gotchas);
   3. your live log's "STATE AT HANDOVER (2026-10-25)" section on your branch;
   4. docs/kb/STATUS.md, your role's KB folder, and `python3 tools/taskboard.py --role <role>`.
 - **Setup:** `pip install -r tools/requirements.txt`, `python3 tools/dev/fetch_godot.py`, `python3 tools/dev/fetch_render_deps.py`, plus `tools/dev/fetch_blender.py` if you build Blender assets. Then run `godot --headless --path . --import` after every merge.
-- **Start:** `git fetch origin`, then merge `origin/claude/undertow-lead-handoff-ze8rrn` into your branch (merge commits, no rebase or force-push), re-import, and run your scoped tests.
+- **Start:** `git fetch origin`, then merge `origin/claude/new-session-mj8c3c` into your branch (merge commits, no rebase or force-push), re-import, and run your scoped tests.
 - **Guardrails:**
   - the pillars;
   - no Final Fantasy or Square Enix names, terms, music, UI or spell-tier echoes (tools/banned_terms.txt);
