@@ -424,7 +424,7 @@ shore_step_m = 2.0
 shore_gaps = Array[Vector3]([Vector3(7.9, 50.2, 1.6)])
 piece_rules = {
 "awning_cloth": {"shape": "none"},
-"banyan_placeholder": {"shape": "cylinder", "radius_m": 2.2, "height_m": 6.0},
+"banyan_hero": {"shape": "cylinder", "radius_m": 2.2, "height_m": 6.0},
 "beach_vine_patch": {"shape": "none"},
 "dock_haluna": {"shape": "trimesh", "extra_boxes": [[16.75, 1.25, 0.0, 33.5, 0.3, 2.6], [36.05, 1.25, 0.0, 5.1, 0.3, 4.4], [19.75, 1.4, 1.45, 27.5, 4.0, 0.3], [19.75, 1.4, -1.45, 27.5, 4.0, 0.3], [36.05, 1.4, 2.35, 5.1, 4.0, 0.3], [36.05, 1.4, -2.35, 5.1, 4.0, 0.3], [33.5, 1.4, 1.9, 0.3, 4.0, 1.2], [33.5, 1.4, -1.9, 0.3, 4.0, 1.2], [38.75, 1.4, 0.0, 0.3, 4.0, 5.0]], "ramps": [[-5.0, 0.72, 1.5, 1.4, 2.6]]},
 "frangipani_a": {"shape": "cylinder", "radius_m": 0.3, "height_m": 2.5},
@@ -442,7 +442,7 @@ piece_rules = {
 "palm_coconut_b": {"shape": "cylinder", "radius_m": 0.3, "height_m": 3.0},
 "palm_coconut_c": {"shape": "cylinder", "radius_m": 0.3, "height_m": 3.0},
 "tidewall_gate": {"shape": "none"},
-"windbreak_placeholder": {"shape": "cylinder", "radius_m": 1.0, "height_m": 6.0},
+"windbreak_tree": {"shape": "cylinder", "radius_m": 1.0, "height_m": 6.0},
 "rope_coil": {"shape": "none"},
 "sandals": {"shape": "none"},
 "tide_debris": {"shape": "none"},

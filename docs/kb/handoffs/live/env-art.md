@@ -589,6 +589,22 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **2026-10-29 (new Lead `session_01Bg3iP7cPGyjbX4CyniBahc`; integration `claude/new-session-mj8c3c`), IN PROGRESS, NOT
+  merge-ready yet: M3-ENV-750's kit half, the inventory's Haluna tree rows (2 medium, 2 low).**
+  - Merged the integration branch (58011116; one conflict, `pc-gpu.md`, took the integration copy).
+  - slice-polish's rename (`claude/m2-slice` 6fa37677, not on integration yet) is carried here as identical lines
+    (`haluna_layout.json`'s 50 trees, `haluna.tscn`'s two `piece_rules` keys, `test_haluna_zone`, `test_post_import`),
+    so env-art and m2-slice merge cleanly in either order.
+  - Retired `banyan_placeholder` / `windbreak_placeholder`: `trees.py`, the glbs and imports, the manifest entries,
+    PROVENANCE rows, `haluna_kit_sheet.gd`, `test_haluna_kit`, and `scene_loads.json`'s four paths (now the real names).
+  - Run: `test_haluna_kit` 21 OK, validate_data, taskboard. **Still to run before MERGE-READY:** the `haluna_kit`
+    Blender verify, the Godot `--filter=haluna` / `post_import` tests, and `placeholder_audit.py`.
+  - The rest of the env-art inventory isn't mine: the Prologue `City/Vigils` capsules are cast stand-ins
+    (characters/slice-polish), and `reefball_drop_proxy` / `tb_drop_proxy` are env-art-b's (M3-RND-26).
+
+### PC-QUEUE
+- GPU QA rows 4, 19, 23, 24 and 25 (`act1_gpu_qa.md` on `gpu/act1-qa-2`): fixed @ 4c85ffb7b, after the QA file was
+  written. They need the PC to look again on the real GPU.
 - **The Lead's 17:37 follow-up (big15's `test_the_town_is_dressed_over_the_greybox`, "LowHull (a story block) is not
   hidden by the kit"): fixed in big16; nothing to change.**
   - **Cause:** on big15 the zone mounted the old `tools/ch01/ch01_oruvel_dressing.py` output. My walk-through batch 1

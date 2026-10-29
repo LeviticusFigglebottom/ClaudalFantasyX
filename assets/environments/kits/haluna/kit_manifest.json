@@ -123,17 +123,6 @@
         "banyan_hero-lod1": 7351
       }
     },
-    "banyan_placeholder": {
-      "budget": [
-        60000,
-        10000
-      ],
-      "bytes": 3375764,
-      "lods": {
-        "banyan_placeholder": 54651,
-        "banyan_placeholder-lod1": 7351
-      }
-    },
     "basket_set": {
       "budget": [
         3600,
@@ -2097,17 +2086,6 @@
       "lods": {
         "well_shaft": 5702,
         "well_shaft-lod1": 760
-      }
-    },
-    "windbreak_placeholder": {
-      "budget": [
-        6500,
-        1000
-      ],
-      "bytes": 443264,
-      "lods": {
-        "windbreak_placeholder": 5785,
-        "windbreak_placeholder-lod1": 430
       }
     },
     "windbreak_tree": {
