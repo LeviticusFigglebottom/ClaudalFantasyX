@@ -56,6 +56,7 @@
     "brow_params": {"alpha_boost": "1.0", "strand_value_jitter": "0.4"},
     "hairline_feather": 1.0,
     "kind": "short",
+    "tufts": true,
     "hairline": "female",
     "seed": 46,
     "length_m": [

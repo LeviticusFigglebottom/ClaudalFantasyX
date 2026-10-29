@@ -58,6 +58,7 @@
   "_hair": {
     "hairline_feather": 1.0,
     "kind": "short",
+    "tufts": true,
     "hairline": "male",
     "seed": 58,
     "length_m": [
