@@ -264,7 +264,8 @@ SPEC §6.10 mandates "a suspended sphere of water", and Cinematics flagged that 
   1. Never call Pell a guardian, protector or sworn companion, in text, task titles or shot names.
   2. No scene where Pell fights other Kirru for his honour or his name.
   3. Never describe his ability-learning as taking a blow, or by the series' job word. In docs he "learns by listening".
-     SPEC §3's roster row says "blue mage"; that word is the Lead's to change (a LEAD-ASK in the ui-menus live log).
+     SPEC §3's roster row now says "learns enemy abilities by listening to them" (ADR 0201, the Lead, 2026-10-29), and
+     the job word is on the banned list.
   4. His crest, not his body, carries emotion; keep him free of any horn or breakable feature.
 - **Kerrid (the art sheet's §12 questions):**
   - **No breath: yes.** The unrisen don't breathe (bible §2). He speaks, and speech needs no idle breath: no breath

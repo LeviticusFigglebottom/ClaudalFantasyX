@@ -583,7 +583,7 @@ LEAD-ANSWERED (17:25: the runner prints FAILURE lines only in its end summary, a
   - Pemakar's remaining 0.6 s is spread over many small dressing nodes (no single culprit; profiled).
 - **Work item 3, inventory rows:** `placeholder_audit.py --static-only` lists nothing for ui-menus. M3-HER-1147 and M3-UI-101 are set to review (both were done on 10-28).
 - **M3-NAR-1000 (narrative seat), to review** (f5a1a17c): decisions_log N-27. Pell's echo check passes with no beat changes and four authoring guards; every Kerrid and Pell sheet question answered (story sheets' new sections); ADR 0020 append note; glossary superseding rows.
-LEAD-ASK: SPEC §3's roster row calls Pell's niche "blue mage", the inspiring series' own job word (also in ADR 0017 and pell.md's header). Reword SPEC to "learns enemy abilities by listening" (N-27 guard 3), and may I add "blue mage" to tools/banned_terms.txt after that? Until you answer I leave both as they are.
+LEAD-ANSWERED (18:22, ADR 0201: SPEC v1.5 and pell.md reworded, the term banned): SPEC §3's roster row called Pell's niche by the series' job word, the inspiring series' own job word (also in ADR 0017 and pell.md's header). Reword SPEC to "learns enemy abilities by listening" (N-27 guard 3), and ban the term?
 - **Known, not this track's:** test_qa_capsules fails (Haluna villagers and ossa_fen's Pell as capsules, ten foes without bodies): characters, creatures and integration-qa.
 
 ### PC-QUEUE
