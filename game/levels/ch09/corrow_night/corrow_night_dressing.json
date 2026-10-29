@@ -5173,6 +5173,126 @@
    ],
    "y": 0.6,
    "yaw_deg": -1.25
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -80.772,
+    -28.829
+   ],
+   "y": 3.5,
+   "yaw_deg": 293.393,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -71.781,
+    -29.811
+   ],
+   "y": 3.5,
+   "yaw_deg": 357.321,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -47.487,
+    -35.888
+   ],
+   "y": 3.5,
+   "yaw_deg": 223.194,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -16.492,
+    -4.853
+   ],
+   "y": 3.5,
+   "yaw_deg": 23.11,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -0.941,
+    -20.871
+   ],
+   "y": 3.5,
+   "yaw_deg": 131.9,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -29.888,
+    -40.308
+   ],
+   "y": 3.5,
+   "yaw_deg": 104.966,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -17.775,
+    -34.721
+   ],
+   "y": 3.5,
+   "yaw_deg": 6.129,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -89.087,
+    -45.868
+   ],
+   "y": 3.5,
+   "yaw_deg": 123.194,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -81.353,
+    -35.228
+   ],
+   "y": 3.5,
+   "yaw_deg": 282.919,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -60.378,
+    -34.042
+   ],
+   "y": 3.5,
+   "yaw_deg": 97.664,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -11.134,
+    -31.828
+   ],
+   "y": 3.5,
+   "yaw_deg": 69.017,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -69.568,
+    -44.869
+   ],
+   "y": 3.5,
+   "yaw_deg": 245.549,
+   "block": "LowTownLake"
   }
  ],
  "ebbing": {}
