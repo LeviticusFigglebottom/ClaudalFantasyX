@@ -1181,3 +1181,32 @@ MERGE-READY (+ this log): **party start fixed @ a6e9d5481** (big16 merged in, re
   - **M3-HER-1159 → act1-chapters:** four spawns whose volume's shot faces away. Brightwater DerelictDeck and Stern
     (FerryWaist), Coilspire Encounter (GallerySouth), Corrow Bastion (WallGate, Rhen behind the camera). KNOWN rows.
 - M3-ARC-1326 (the Ebbing cue hook) has been in since 5f59e2878.
+
+## FROM 2026-10-29 (Lead session_01Bg3iP7cPGyjbX4CyniBahc; integration branch claude/new-session-mj8c3c)
+- Merged `origin/claude/new-session-mj8c3c` into this branch (1e87e60d2). One clash, `pc-gpu.md`, which my branch only
+  carried through old gate merges: took integration's version (pc-gpu owns it).
+- **tools/dev/trial_merge.py:** its integration branch is now `claude/new-session-mj8c3c` (it still pointed at the
+  retired -ze8rrn), with `--integration` to override. New **`--prefold <ref>...`** merges an unlanded batch first.
+  big17 is `lead/gate-big16` plus the track heads, and integration carries neither big15 nor big16, so a trial on
+  bare integration reports clashes big16 already resolved. tools.tests.test_trial_merge 4/0 (new).
+
+### TRIAL MERGE, 2026-10-29 ~17:40
+TRIAL MERGE @ integration 5a9978bc + lead/gate-big16 ff82858c (= big17's base): env-art b68d1920, env-art-b a5e650bd,
+creatures f6846325, creatures-b d5f7b2b2, characters 3346484b, ui b2118f76, battle-presentation e641579e,
+act1-chapters 483dcb91, m2-slice d0433789, audio 1cb9654d, hero-integration 5c11d034
+- **Seven of the eleven heads merge clean onto big16.** characters' 2 clashes resolve by union (PROVENANCE and the loc csv).
+- **m2-slice (resolver: m2-slice, or the Lead in big17): `game/levels/ch02/haluna/haluna.tscn`, one hunk, mechanical.**
+  - m2-slice's M3-ENV-748/750 (ad28e9f4b, 6fa376771; after big16 took m2-slice) delete Osu's capsule
+    sub-resources (`Mat_osu`, `Mesh_osu`).
+  - big16's env-art M3-ENV-753 (219b86861) deletes the bowl, shell and bag sub-resources (`Mat_/Mesh_bowl`,
+    `_shell`, `_bag`), since those props are kit instances now.
+  - Each side keeps the block the other deleted. **Resolution: delete the whole conflict block, keeping neither
+    side.** Checked in a scratch merge: none of the 8 ids is referenced after it, and the rest of the file auto-merges.
+- **m2-slice (resolver: m2-slice): `docs/kb/tasks/M3/M3-CIN-1221-sequencer-mark-via.md`:** keep m2-slice's
+  `owner_session` and **both** Review-log lines (act1-chapters' and slice-polish's).
+- **battle-presentation (resolver: battle-presentation, or the Lead): `tests/unit/test_battle_arena.gd`:** both sides
+  map `ch05_cinder_matron` to `ashcrown_anvil_court`. Only big16's side has the `# M3-BPR-1305` comment. Keep big16's line.
+- `pc-gpu.md` (big16 vs integration's 10-29 edits; env-art carries the old version as well): take integration's
+  version. pc-gpu's log is the Lead's to merge.
+- For reference, a trial on bare integration (no prefold) also hits haluna.tscn as m2-slice vs env-art and
+  test_battle_arena.gd as battle-presentation vs env-art. Those are the same three hunks, seen from before big16.
