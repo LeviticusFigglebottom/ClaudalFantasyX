@@ -21,6 +21,24 @@ Owner per row: **act1-chapters** fixes cameras, staging, flow and encounters; th
   with the gate behind; F08_key from the north, the side the great key is turned from, and Asha placed at the
   wheel (`great_key_asha`) before ch08_beacon_opened; N09 frames the mourner whole until the kneel exists.
 
+- Fourth pass (2026-10-29, the new Lead's fresh playthrough on the integration branch, 185 stills, then re-rendered
+  with `STILLS_DEBUG` positions):
+  - ch04_the_ink H15: the ink trigger's centre is Ysolde's own spot, so Rhen stood between the lens and her hand (the
+    close-up was his hip). The flow places him at `InkLamp`, just behind the camera.
+  - ch06_channel_dawn W10_dawn: the party's stage bodies stayed at the ridge camp, 40 m from Rhen, and the camera
+    looked down an empty channel. The dawn beat stands them in the channel (`channel_*`); the camera is re-aimed.
+  - ch06_after_barge W06_after: the wrights' walk ended 1.6 m from the lens. The camera now holds Liss in profile by
+    the hulk, the camp and the escort behind her.
+  - ch07_after_the_bell R07: aimed at the far moorings while Oruvel's side walked out of frame; turned onto their walk.
+  - ch08_run_back W04_kite: the beacon state hid the kites before the run back, so the shot framed an empty sky. They
+    come down with `ch08_wave1_held` now.
+  - ch08_binding F07: Virel was the greybox block. She is her own model (`creature:virel`, held still), seen only in
+    F07: placed off stage under the fade and hidden with `ch08_virel_bound` (Asha came out standing inside her).
+  - ch09_the_road_out D02: Kerrid's close-up sat low, his chin under the dialogue box.
+  - Still open, all filed: the derelict's and Pemakar harbour's night grades, Corrow's storm grade, Ashcrown's greybox
+    on the integration branch (the kit is in big16: M3-ENV-1303), Sefir (M3-HER-1225), Pell (M3-CHR-506), the storm
+    figure (M3-RND-28), the storm wall (M3-RND-27), the held dialogue box (M3-CIN-1231).
+
 ## Field POIs (2026-10-28)
 Every zone map POI of Ch4–Ch9 (69) rendered at the field's default view (GreyboxZone's hub orbit, orbit_yaw 0,
 7.5 m back, 6 m up) through the zone's shot rig. Where the orbit saw a wall, a roof, a sail or the beacon, the layout
