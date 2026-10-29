@@ -1,7 +1,7 @@
 # Pell
 
 **Role:** a Kirru outcast. **Age:** about 120 (Kirru middle age). **From:** Reedhollow, Ossa Fen.
-**Battle niche:** learns enemy abilities (blue mage).
+**Battle niche:** learns enemy abilities by listening to them.
 
 ## Background
 Pell and **Ressa** were clutch-siblings, hatched the same season and inseparable for fifty years. Ressa was a hearer, the only Kirru in history known to hear glimmer, and she came to believe she could end the Undertow from inside it. Against her clutch's wishes she petitioned the Order. To everyone's astonishment, the Order made her the 56th Cantor, a political display of the faith's mercy.
