@@ -399,6 +399,11 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - SELF-RENDERED @ cb97a0cf: ch01_oruvel_dressed drift 0.0124 (the Scale-Man now stands visibly at his hull's front;
     intended), ch01_bell_room, ch01_scale_hull, ch01_kell_stall (no baselines: each frames its speaker). For the gate.
 
+- **Lead (10-29 21:48, big18):** Coilspire's Virel stays my ZoneCast actor (env-art-b drops their duplicate dressing
+  piece). Ch1's U03 and O02 (the Scale-Man) keep **slice-polish's** framing in big18 (they own Ch1 staging): don't
+  re-apply mine (cb97a0cf's Ch1 hunks lose to theirs on merge). After big18 lands, if a speaker is still out of frame
+  there, file a request to slice-polish with the still. O09 (Kell) is not named; check it after big18 too.
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
