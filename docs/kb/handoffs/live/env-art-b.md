@@ -450,6 +450,28 @@ that test at this branch's zones.
       encounter. The fallback is in the BattleRequest's lookup (act1-chapters' flow).
     The PC can close all of these on its next pass.
 
+- **Merged integration @ 502f6999 (big17)** at 1cda7ed9. Conflicts: PROVENANCE (union; then the three Ch4 wake rows
+  big17 had dropped, re-added by the union, removed again) and ownership (both rows kept).
+- **The Lead's big18 decision (Virel twice in Coilspire), done:** `ch08_coilspire_dressing.py` places no Virel model
+  any more (ea54ea37). act1-chapters' ZoneCast `virel` actor on her coil owns her. There was no coil or plinth piece of
+  mine under her to keep. **Self-rendered** on a trial merge with `claude/act1-chapters` @ 72254f9f (not pushed), from
+  F07 and F06: before the binding one Virel coils in the crown chamber; after it (`ch08_virel_bound`) the chamber is
+  empty under the storm grade.
+  **Merge note for act1-chapters' merge:** `tools/act1/ch08_coilspire_dressing.py` conflicts on one line (their
+  comment on `"greybox"`). Take this branch's file and add their comment; their side predates the kit looks.
+- **M3-C09-03 → review:** the hook arrived with big17. `test_ch09_ebbing_cues` now exercises it for real
+  (`--filter=ebbing` 6/0).
+- **FAST-TRACKs on files that came with big17:**
+  - `tests/unit/test_cutscene_vfx_hosts.gd` (hero-integration's; parse error): my patch is applied.
+    `--filter=vfx_hosts` 4/0.
+  - `tests/unit/test_zone_kit_dressing.gd`: the new clip test (b82f36b6) left before_each's zone in the tree; it now
+    closes it. `--filter=zone_kit` 13/0, no leak.
+- **Checks run:** Godot ch08 25/0, coilspire 11/0, zone_kit 13/0, ebbing 6/0, vfx_hosts 4/0; validate_data 0/0;
+  taskboard --check; gdlint/gdformat.
+- **Checks skipped:** the broad `--filter=cutscene` hit its 1500 s timeout inside the cutscene motion audit (90 passes,
+  no failures, not scoped to these changes); coverage (no battle/progression code).
+- **MERGE-READY @ 98d582ef.**
+
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
   on the PC presets (two large and three small fires in `ch06/brine_shoals` and `salvage_camp_burning`).
@@ -457,6 +479,7 @@ that test at this branch's zones.
 
 ### Render requests
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
+SELF-RENDERED @ 98d582ef (on a trial merge with act1-chapters @ 72254f9f): Coilspire's crown chamber from F07 and F06, before and after `ch08_virel_bound`. Viewed: one Virel before the binding, none after.
 SELF-RENDERED @ cff5dfd3: ch05_pemakar_harbour, _harbour_day, _weir, _crown, ch05_ashcrown_causeway, _crown, ch06_brine_camp, battle_arena_ash_terrace_lanternfall, _camp, _shoals; ch07_tamsule_market, ch07_bell_galleries (gilt); a Ch9 low-town view (scratch, the flood debris). Viewed: no regressions; aged lacquer and worn gilt read.
 SELF-RENDERED @ 2b882105: battle_arena_coilspire_tier_landing, _coilspire_headland_path, _ash_terrace_lanternfall. Viewed: the tier landing's pipes are verdigris over copper; the other two unchanged.
 SELF-RENDERED @ 61c918b0: ch06_brine_camp, ch06_brine_road, ch07_tamsule_mouth, _market, _gantry, ch08_corrow_arrival, _stair, _flood, _lake, _storm, ch08_coilspire_hall, _gate, _storm, ch09_corrow_strand, _road, _landing, _rocks, battle_arena_camp, _shoals, _wall_head, battle_ch08_stair_hold, battle_boss_intro_reach, plus ~290 walk views (scratch). Viewed: lashed bales on the trader, translucent fire with torn licks, weathered red doors, verdigris and sea iron, a stone shrine; no regressions.
