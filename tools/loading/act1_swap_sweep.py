@@ -2,7 +2,8 @@
 """Act I scene-change sweep (ADR 0042 §4, ADR 0111).
 
 Runs the scene-swap probe (game/core/debug/scene_swap_probe.tscn) once per Act I target, in its own headless
-Godot, with ResidentLoads on as the game has it (--resident-loads), on the real clock. Prints one row per target:
+Godot, with ResidentLoads on as the game has it (--resident-loads) and the resident hero bodies already loaded
+(--warm-resident: the title loads them while it shows), on the real clock. Prints one row per target:
 whether the swap and its hidden frames were under the opaque fade (`covered`), the worst hidden frame, the
 entry time and the worst visible frame (the fade lifting and the 60 frames after it). Exit 1 when any target
 was not covered or printed no stats; frame times over budget are reported but do not fail the run, because a
@@ -75,7 +76,8 @@ def row(target: str, stats: dict | None) -> dict:
 
 
 def run(godot: str, target: str) -> dict:
-    args = [godot, "--headless", "--path", str(ROOT), probe_scene(), "--", "--to=" + target, "--resident-loads"]
+    args = [godot, "--headless", "--path", str(ROOT), probe_scene(), "--", "--to=" + target]
+    args += ["--resident-loads", "--warm-resident"]
     try:
         done = subprocess.run(args, capture_output=True, text=True, timeout=TIMEOUT_S, check=False)
         return row(target, parse_stats(done.stdout + done.stderr))

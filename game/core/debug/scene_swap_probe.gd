@@ -13,6 +13,8 @@ extends Node
 ## judges the real swap deterministically, whatever the machine's load.
 ## --resident-loads (ADR 0111, ADR 0042 §4) turns ResidentLoads on in the headless run, as the game has it, so
 ## tools/loading/act1_swap_sweep.py measures the Act I changes with their threaded loads behind the fade.
+## --warm-resident also loads the resident set (the hero bodies) before the change, as the title does while it
+## shows, so the entry measures a change made in play rather than the first one after launch.
 
 const BUDGETS_PATH := "res://game/data/debug/perf_budgets.json"
 const SECTION := "scene_swap"
@@ -22,6 +24,7 @@ const ARG_LEGACY := "--legacy"
 const ARG_LAUNCH := "--launch"
 const ARG_FRAME_USEC := "--frame-usec="
 const ARG_RESIDENT_LOADS := "--resident-loads"
+const ARG_WARM_RESIDENT := "--warm-resident"
 const EXIT_OK := 0
 const EXIT_FAILED := 1
 
@@ -50,6 +53,7 @@ func _run() -> void:
 	var legacy := false
 	var launch := false
 	var frame_usec := 0
+	var warm_resident := false
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with(ARG_TO):
 			to = arg.trim_prefix(ARG_TO)
@@ -61,6 +65,8 @@ func _run() -> void:
 			launch = true
 		elif arg == ARG_RESIDENT_LOADS:
 			ResidentLoads.run_headless = true
+		elif arg == ARG_WARM_RESIDENT:
+			warm_resident = true
 	if frame_usec > 0:
 		SceneRouter.set_measure_clock(frame_clock(frame_usec))
 	if launch and not cfg.is_empty():
@@ -77,6 +83,13 @@ func _run() -> void:
 	get_tree().change_scene_to_file(str(cfg.get("from", "")))
 	for i in int(cfg.get("settle_frames", 0)):
 		await get_tree().process_frame
+	var resident := ResidentLoads.shared()
+	if warm_resident and resident != null:
+		resident.warm()
+		var warm_frames := int(cfg.get("timeout_frames", 0))
+		while not resident.is_ready() and warm_frames > 0:
+			warm_frames -= 1
+			await get_tree().process_frame
 	SceneRouter.last_swap_stats = {}
 	SceneRouter.change_scene(to)
 	var frames_left := int(cfg.get("timeout_frames", 0))
