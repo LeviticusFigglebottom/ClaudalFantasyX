@@ -1025,7 +1025,7 @@ ground_clearance_m = 0.06
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 0)
 
 [node name="toma" type="Node3D" parent="CutsceneStage/Actors"]
-transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -5.6, 0.27, 9.6)
+transform = Transform3D(0.894, 0, 0.447, 0, 1, 0, -0.447, 0, 0.894, -3.0, 0.131, 10.0)
 
 [node name="StandIn" type="MeshInstance3D" parent="CutsceneStage/Actors/toma"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
