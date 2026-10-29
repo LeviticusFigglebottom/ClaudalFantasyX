@@ -240,7 +240,7 @@ def door_boxes() -> list[dict]:
 # StormWall block (shown when Virel is bound).
 STORM = {"name": "Undertow", "at": [308.745, 77.285, 159.418], "preset": "ch08_seawall", "azimuth_deg": 170.0,
          "block": "StormWall"}
-# env-art-b's flue-trial pieces (the Coilspire kit's b_trial.py, M3-ENV-1222) on their blocks: (block, piece, origin)
+# env-art-b's flue-trial pieces (the Coilspire kit's b_spire_trial.py, M3-ENV-1222; renamed from b_trial.py so it never shadows Ashcrown's) on their blocks: (block, piece, origin)
 TRIAL_PIECES = (("Gate_t1", "flue_gate", "foot"), ("Gate_t2", "flue_gate", "foot"), ("Gate_t3", "flue_gate", "foot"),
                 ("Gate_t4", "flue_gate", "foot"), ("NicheSeal", "niche_seal", "foot"), ("Niche", "lamp_niche", "foot"),
                 ("WrightMark", "wright_mark", "centre"))
