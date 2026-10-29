@@ -397,6 +397,12 @@ that test at this branch's zones.
   Checks: Godot ch07 18/0, tamsule 7/0, zone_kit 12/0; viewed ch07_tamsule_market, ch07_bell_galleries.
   **MERGE-READY @ f248bb57.**
 
+- **Pemakar and Brine Shoals** get the same zone looks for their kits' flat lacquer, copper, gold, brass and iron
+  (`zl.lacquer()`, `NEW_COPPER`, `GOLD`), including the Pemakar pieces Ashcrown borrows; their arenas
+  (`ash_terrace_lanternfall`, `salvage_camp_burning`, `brine_shoals_afternoon`) through KitSlotSwaps. Checks: Godot
+  pemakar 10/0, ashcrown 22/0, ch05 13/0, ch06 5/0, brine 5/0, zone_kit 12/0, battle_arena 18/0; tools test_b_arenas,
+  test_arenas, test_pemakar_kit, test_brine_shoals_kit. **MERGE-READY @ cff5dfd3.**
+
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
   on the PC presets (two large and three small fires in `ch06/brine_shoals` and `salvage_camp_burning`).
@@ -404,6 +410,7 @@ that test at this branch's zones.
 
 ### Render requests
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
+SELF-RENDERED @ cff5dfd3: ch05_pemakar_harbour, _harbour_day, _weir, _crown, ch05_ashcrown_causeway, _crown, ch06_brine_camp, battle_arena_ash_terrace_lanternfall, _camp, _shoals; ch07_tamsule_market, ch07_bell_galleries (gilt); a Ch9 low-town view (scratch, the flood debris). Viewed: no regressions; aged lacquer and worn gilt read.
 SELF-RENDERED @ 2b882105: battle_arena_coilspire_tier_landing, _coilspire_headland_path, _ash_terrace_lanternfall. Viewed: the tier landing's pipes are verdigris over copper; the other two unchanged.
 SELF-RENDERED @ 61c918b0: ch06_brine_camp, ch06_brine_road, ch07_tamsule_mouth, _market, _gantry, ch08_corrow_arrival, _stair, _flood, _lake, _storm, ch08_coilspire_hall, _gate, _storm, ch09_corrow_strand, _road, _landing, _rocks, battle_arena_camp, _shoals, _wall_head, battle_ch08_stair_hold, battle_boss_intro_reach, plus ~290 walk views (scratch). Viewed: lashed bales on the trader, translucent fire with torn licks, weathered red doors, verdigris and sea iron, a stone shrine; no regressions.
 SELF-RENDERED @ a209511a: ch05_ashcrown_causeway, _forecourt, _tiers, _crown, _court, battle_arena_ashcrown_forecourt_day, battle_arena_ashcrown_anvil_court, battle_boss_intro_matron, plus 30 Ashcrown walk views (scratch). Viewed: the tiers' coursing and buttresses read in shade, the veins are streaked verdigris, the bowls aged copper; sunlit paving not blown out. None of these zone shots has a baseline yet.
