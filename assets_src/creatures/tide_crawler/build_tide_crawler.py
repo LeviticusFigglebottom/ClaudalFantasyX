@@ -160,7 +160,7 @@ def legs(mesh: ck.Mesh, rig: ck.Rig) -> None:
     dactyl down to a needle tip), the joints a paler wet membrane, two spines on each femur; the two striking forelegs
     end in flattened, serrated scythe blades."""
     base = ck.mix(PAL["lacquer_black"], PAL["storm_slate"], 0.2)
-    membrane = ck.mix(PAL["storm_slate"] * 1.4, PAL["spawn_wound"], 0.3)
+    membrane = ck.mix(PAL["storm_slate"] * 1.1, PAL["spawn_wound"], 0.15)
     for s, tag in ((1.0, "l"), (-1.0, "r")):
         for i in range(NLEG):
             hip, knee, tip = leg_pts(s, i)
@@ -170,7 +170,7 @@ def legs(mesh: ck.Mesh, rig: ck.Rig) -> None:
                 path = ck.bezier([p0, mid, p1], len(radii))
                 P, T = ck.tube(path, radii, LEG_SEGS, squash=LEG_SQUASH)
                 t = _ring_t(len(radii), LEG_SEGS)
-                joint = np.maximum(np.exp(-((t - joints[0]) / 0.07) ** 2), np.exp(-((t - joints[1]) / 0.07) ** 2))
+                joint = np.maximum(np.exp(-((t - joints[0]) / 0.045) ** 2), np.exp(-((t - joints[1]) / 0.045) ** 2))
                 col = ck.mix(base, membrane, (0.75 * joint)[:, None])
                 col = ck.mix(col, PAL["lacquer_black"] * 0.6, ck.smoothstep(0.75, 1.0, t)[:, None] * (seg == "b"))
                 # a wound seam split along the femur's top, glowing like the carapace's
@@ -181,7 +181,7 @@ def legs(mesh: ck.Mesh, rig: ck.Rig) -> None:
                 col = ck.mix(col, PAL["spawn_wound"] * 0.55, seam[:, None])
                 bone = rig.rigid(f"leg_{tag}{i}_{seg}")
                 ck.finish(mesh, P, T, "carapace", col, bone, wet=1.0 - 0.2 * joint, cavity=0.35 * joint,
-                          emission=np.maximum(seam, 0.3 * joint))
+                          emission=np.maximum(seam, 0.12 * joint))
                 if seg == "a":
                     for u in FEMUR_SPINES:
                         k = int(round(u * (len(path) - 1)))
