@@ -1449,3 +1449,13 @@ The same clashes as at 21:00, with the same resolvers, now against integration i
 - act1-chapters' generated layouts, ch08_coilspire_dressing.py and M3-ENV-744;
 - **test_hero_field_actor.gd: take hero-integration's** (characters' assumes Sefir has no field row).
 - shots.json resolves everywhere (merge_union's virtual-base path).
+
+MERGE-READY @ (this commit), after big17 landed:
+- **test_qa_capsules is a ratchet now:** in each zone it scans, a KNOWN capsule row whose actor has its body fails
+  ("drop it from qa_known.json"), so a stale row can't hide a capsule that comes back. **115 stale rows dropped.**
+  big17 gave almost every villager, NPC and vigil a body. Only `corrow.tscn: figure` (creatures, the stranger on
+  the wall) stays known. `--filter=qa_` 13/0.
+- **Act I inventory on integration 502f6999 (big17) + this branch: 5 items**, all low except one: creatures 1 high
+  (Ch8's figure), env-art 2 low and env-art-b 2 low (placeholder-named kit files). **integration-qa 0, characters
+  0:** Pell's capsules and the Prologue's vigil are gone.
+- **M3-HER-1149 → review (reviewer: lead):** every box ticked.
