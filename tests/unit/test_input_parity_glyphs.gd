@@ -91,7 +91,148 @@ func test_a_dialogue_line_names_its_bindings_for_the_device() -> void:
 	_done()
 
 
+## Lead 2026-10-28 (input pass): every line that names a binding ({action}: tips, tutorial and story
+## lines, any loc row) names it for both devices. Every {field_*}/{ui_*} is a real action; one with
+## a pad button reads as that button after a pad press and as its key after a key press; one bound
+## only to a stick (movement, camera) keeps its key name, so its line must say "stick" in words.
+func test_every_prompt_names_its_bindings_for_both_devices() -> void:
+	_ensure_every_action()
+	var lines := _loc_rows()
+	var named := 0
+	for key: String in lines:
+		var text := str(lines[key])
+		for action: StringName in _bindings_in(text):
+			named += 1
+			assert_true(InputMap.has_action(action), "%s names {%s}, an action" % [key, action])
+			if not InputMap.has_action(action):
+				continue
+			var k := InputNames.first_name(action, false)
+			var p := InputNames.first_name(action, true)
+			assert_ne(k, "", "%s: {%s} has a key" % [key, action])
+			assert_false(InputNames.fill(text, false).contains("{%s}" % action), "%s keys: filled" % key)
+			assert_false(InputNames.fill(text, true).contains("{%s}" % action), "%s pad: filled" % key)
+			if _has_pad_button(action):
+				assert_ne(k, p, "%s: {%s} reads as the pad's button after a pad press" % [key, action])
+				assert_true(InputNames.fill(text, true).contains(p), "%s pad: %s" % [key, p])
+				assert_true(InputNames.fill(text, false).contains(k), "%s keys: %s" % [key, k])
+			else:
+				assert_true(_has_pad_axis(action), "%s: {%s} has a pad button or a stick" % [key, action])
+				assert_true(text.to_lower().contains("stick"), "%s: {%s} is a stick on the pad: say so" % [key, action])
+	assert_true(named > 10, "the tips, the Ch1 tutorials and the hold prompts name bindings")
+
+
+## No Act I prompt names a binding in plain words ("Press interact", "Press E"): it says {action}
+## instead, so the name follows the device and the Controls page.
+func test_no_act1_prompt_names_a_binding_in_plain_words() -> void:
+	var re := RegEx.create_from_string(
+		"\\b(Press|press|Hold|hold)\\s+(interact|E|F|Q|R|Tab|Escape|Esc|Enter|Space|Shift|A|B|X|Y)\\b"
+	)
+	var lines := _loc_rows()
+	var act1 := 0
+	for key: String in lines:
+		if not _is_act1(key):
+			continue
+		act1 += 1
+		var m := re.search(str(lines[key]))
+		assert_true(m == null, "%s names a binding in words: '%s'" % [key, m.get_string() if m else ""])
+	assert_true(act1 > 100, "the Act I rows were read")
+
+
+## The two keycap prompts Act I uses (the interaction plate on every interactable, and the Ebbing's
+## hold plate in Ch9) name field_interact's key or pad button with the device; the Ch1 shutter's
+## binding (ch01_field.json) has both too.
+func test_the_act1_keycaps_follow_the_device() -> void:
+	_ensure_every_action()
+	var hold_action := StringName(str((_json("res://game/data/flow/ch09_field.json")["hold"] as Dictionary)["action"]))
+	var hold := HoldPrompt.new()
+	hold.action = hold_action
+	_add(hold)
+	hold.show_prompt("FIELD_PROMPT_CH09_RAISE_STAFF")
+	var key := InputNames.first_name(hold_action, false)
+	var pad := InputNames.first_name(hold_action, true)
+	assert_ne(key, pad, "the hold action has a key and a pad button")
+	for step: Array in _steps():
+		(step[0] as Callable).call()
+		hold.advance(0.1)
+		assert_eq(hold.key_text_shown(), pad if bool(step[1]) else key, "hold prompt after %s" % step[2])
+	var shutter := StringName(str(_find_key(_json("res://game/data/flow/ch01_field.json"), "action")))
+	assert_eq(shutter, &"field_lantern_shutter", "Ch1's held shutter")
+	assert_true(_has_pad_button(shutter), "the shutter has a pad button")
+	assert_ne(InputNames.first_name(shutter, false), InputNames.first_name(shutter, true), "shutter names differ")
+	_done()
+
+
 # --- helpers --------------------------------------------------------------------------------------
+
+
+## Every action a line may name: the field's, the objective's, and each chapter's own (any
+## "actions" table in game/data/flow/*.json, such as Ch1's shutter).
+func _ensure_every_action() -> void:
+	FieldInput.ensure_actions()
+	ObjectiveHud.ensure_action()
+	for f: String in DirAccess.get_files_at("res://game/data/flow"):
+		if f.ends_with(".json"):
+			var actions: Variant = _find_key(_json("res://game/data/flow/" + f), "actions")
+			if actions is Dictionary:
+				FieldInput.add_actions(actions as Dictionary, 0.5)
+
+
+## {key: English text} for every row of every loc CSV.
+func _loc_rows() -> Dictionary:
+	var out := {}
+	for f: String in DirAccess.get_files_at("res://game/data/loc"):
+		if not f.ends_with(".csv"):
+			continue
+		var fa := FileAccess.open("res://game/data/loc/" + f, FileAccess.READ)
+		fa.get_csv_line()  # header
+		while not fa.eof_reached():
+			var row := fa.get_csv_line()
+			if row.size() >= 2 and row[0] != "":
+				out[row[0]] = row[1]
+	return out
+
+
+## The {name}s in `text` that name a binding: an InputMap action, or anything field_*/ui_*.
+func _bindings_in(text: String) -> Array[StringName]:
+	var out: Array[StringName] = []
+	for m in RegEx.create_from_string("\\{([a-z_]+)\\}").search_all(text):
+		var n := StringName(m.get_string(1))
+		if InputMap.has_action(n) or String(n).begins_with("field_") or String(n).begins_with("ui_"):
+			out.append(n)
+	return out
+
+
+## Act I (ADR 0041: the title to Ch9): the Ch1-Ch9 tables, their dialogue, the tips and field prompts.
+func _is_act1(key: String) -> bool:
+	for prefix: String in ["DLG_CH0", "TIP_", "FIELD_PROMPT_CH0", "TUT_CH0"]:
+		if key.begins_with(prefix):
+			return true
+	return key.begins_with("FIELD_PROMPT_") and not key.begins_with("FIELD_PROMPT_CH1")
+
+
+func _has_pad_button(action: StringName) -> bool:
+	return InputMap.action_get_events(action).any(func(e: InputEvent) -> bool: return e is InputEventJoypadButton)
+
+
+func _has_pad_axis(action: StringName) -> bool:
+	return InputMap.action_get_events(action).any(func(e: InputEvent) -> bool: return e is InputEventJoypadMotion)
+
+
+func _json(path: String) -> Dictionary:
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+	return parsed as Dictionary if parsed is Dictionary else {}
+
+
+## The first value under `key` anywhere in `d` (depth first), or null.
+func _find_key(d: Dictionary, key: String) -> Variant:
+	if d.has(key):
+		return d[key]
+	for v: Variant in d.values():
+		if v is Dictionary:
+			var found: Variant = _find_key(v as Dictionary, key)
+			if found != null:
+				return found
+	return null
 
 
 ## [what to do, pad expected, label] for a walk over every device.

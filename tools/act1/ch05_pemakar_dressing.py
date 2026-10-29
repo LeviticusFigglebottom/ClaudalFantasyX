@@ -44,6 +44,7 @@ sys.path.insert(0, str(KIT_SRC))
 sys.path.insert(0, str(ROOT / "assets_src" / "environments" / "kits" / "brightwater_ferry"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import bf_common as bf  # noqa: E402
+import ch05_09_zone_looks as zl  # noqa: E402
 import numpy as np  # noqa: E402
 import pemakar_common as pc  # noqa: E402
 import pemakar_skyline as sky  # noqa: E402
@@ -80,6 +81,16 @@ WEIR_LIGHTS = [
     {"at": [WEIR_LAMP_AT[0], WEIR_LAMP_AT[1] + 1.35, WEIR_LAMP_AT[2]], "color": "#FFA757", "energy": 1.6, "range": 7.0},
     {"at": [WEIR_AT[0], WEIR_AT[1] + 0.3, WEIR_AT[2] + 0.5], "color": "#FF9A4A", "energy": 1.1, "range": 5.0},
 ]
+# The plume at night (the Lead's gate review, 10-28): the kit's far plume material is a hard-edged near-black
+# silhouette from the harbour, so it read as a blob in the sky. The zone's own night material (the same
+# env_ash_plume shader) softens and thins its edges and lifts the crater's ember up its underside, so it reads as
+# smoke lit from below. It is written here (PLUME_NIGHT_PARAMS) and the plume row takes it by slot.
+PLUME_NIGHT = "pemakar_plume_night"
+PLUME_NIGHT_PARAMS = {
+    "col_body": "Color(0.29, 0.27, 0.26, 1)", "col_body_top": "Color(0.36, 0.35, 0.36, 1)", "body_darken": 0.42,
+    "mottle": 0.55, "opacity": 0.92, "edge_soft": 0.65, "top_fade": 0.45, "alpha_mottle": 0.55,
+    "ember_energy": 0.55, "ember_height": 0.32, "ember_underside": 1.0, "town_glow": 0.05, "rim_energy": 0.0,
+}
 # The story pieces env-art built for the greybox's stand-ins (M3-ENV-1214): each follows its block
 # The leat feeding the weir (b_leat.py, M3-ENV-1307): from a culvert in tier 0's wall down the flank to the back of
 # the weir's cut (its bed 0.05 under the crest, 3 m upstream of it); it follows the weir's block
@@ -267,6 +278,21 @@ def swapped(p: dict) -> dict:
     return p
 
 
+# The kit's flat StandardMaterial metals and lacquers (M3-ENV-1326): the shrine-boxes, gates, bell frame and forge read
+# as plastic at player height. Zone looks by slot on every Pemakar piece (`kit_material_paths`), and on the Pemakar
+# pieces Ashcrown borrows (ch05_ashcrown_dressing.py reads PEMAKAR_SLOTS).
+KIT_LOOKS = {
+    "kit_lacquer_red": ("pemakar_lacquer_red_material.tres", zl.lacquer((0.702, 0.149, 0.1176))),
+    "kit_lacquer_black": ("pemakar_lacquer_black_material.tres",
+                          zl.lacquer((0.1137, 0.0980, 0.0863), undercoat=(0.3216, 0.1176, 0.0863))),
+    "kit_copper_vein": ("pemakar_copper_vein_material.tres", dict(zl.VERDIGRIS)),
+    "kit_copper_raw": ("pemakar_copper_raw_material.tres", dict(zl.NEW_COPPER)),
+    "kit_gold_leaf": ("pemakar_gold_leaf_material.tres", dict(zl.GOLD)),
+    "kit_iron": ("pemakar_iron_material.tres", dict(zl.SEA_IRON, col_bronze=(0.1647, 0.149, 0.1412))),
+}
+PEMAKAR_SLOTS = {slot: RES_ZONE + name for slot, (name, _) in KIT_LOOKS.items()}
+
+
 def dressing() -> dict:
     pv = preview()
     pieces = []
@@ -278,6 +304,8 @@ def dressing() -> dict:
             row.update(at=[r3(WEIR_AT[0]), r3(WEIR_AT[2])], y=r3(WEIR_AT[1]))
         if p["piece"] in STORY_PIECES:
             row["block"] = STORY_PIECES[p["piece"]]
+        if p["piece"] == "ash_plume":
+            row.update(kit_dir=KIT, materials={"kit_plume": PLUME_NIGHT}, materials_dir=RES_ZONE)
         if p["piece"] == "mountain_massif":
             row["collide"] = "trimesh_lod0"
         elif p["piece"] in COLLIDE_BOX:
@@ -317,8 +345,17 @@ def dressing() -> dict:
         "multimeshes": [{"name": "LeafBoats", "piece": boats["piece"], "transforms": boats["transforms"],
                          "block": NIGHT_BLOCK}],
         "far_lights": far,
+        "kit_material_paths": dict(PEMAKAR_SLOTS),
         "pieces": pieces,
     }
+
+
+def write_plume_night() -> None:
+    lines = ['[gd_resource type="ShaderMaterial" load_steps=2 format=3]', "",
+             '[ext_resource type="Shader" path="res://game/shaders/environment/env_ash_plume.gdshader" id="1_shader"]',
+             "", "[resource]", f'resource_name = "{PLUME_NIGHT}"', 'shader = ExtResource("1_shader")']
+    lines += [f"shader_parameter/{k} = {v}" for k, v in sorted(PLUME_NIGHT_PARAMS.items())]
+    (ZONE / f"{PLUME_NIGHT}.tres").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def copy_grades() -> None:
@@ -503,12 +540,15 @@ def weir_relayout() -> None:
 
 def main() -> None:
     copy_grades()
+    write_plume_night()
     if "--relayout" in sys.argv:
         relayout()
     if "--weir-relayout" in sys.argv:
         weir_relayout()
     (ZONE / "pemakar_collision.json").write_text(json.dumps(collision(), indent=1) + "\n", encoding="utf-8")
     (ZONE / "pemakar_dressing.json").write_text(json.dumps(dressing(), indent=1) + "\n", encoding="utf-8")
+    for name, params in KIT_LOOKS.values():
+        (ZONE / name).write_text(zl.bronze_material(name, params), encoding="utf-8")
 
 
 if __name__ == "__main__":

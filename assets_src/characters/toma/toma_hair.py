@@ -129,11 +129,34 @@ def beard_v(lm, face, P: np.ndarray) -> np.ndarray:
     inside = beard_top_v(lm, phi) - v
     side = (98.0 - a) / 60.0  # fades out behind the ear line
     # the lips themselves (the beard frames them; the lower lip is mostly hidden by it, toma.md §6)
-    W = face.mouth_half / lm.h
-    vm = face.vm
-    lips = np.minimum((1.08 * W - np.abs(u)) / 0.04, np.minimum((vm + 0.040 - v) / 0.02, (v - (vm - 0.034)) / 0.02))
-    lips = np.where(a < 40.0, lips, -1.0)
+    lips = mouth_clear(lm, face, u, v, phi, LIP_HALF_W, 0.0)
     return np.minimum(np.minimum(inside, side), -lips)
+
+
+# M2-CHR-524: the clear skin round the mouth is a lens measured in true head heights. Before, it was a box whose
+# distance was divided by 0.02-0.04 (25-50x too steep), so the cards and the skin's beard shadow both stopped dead at
+# it: Kerrid's trimmed lip read as a hard rectangular notch. The lens's upper and lower edges meet at the mouth corners
+# along (1 - (u/a)^2)^LIP_LENS_POW, so the moustache curves down into the chin beard, and the beard shadow (whose ramp
+# is in head heights) now fades over a few millimetres into the lip skin.
+LIP_HALF_W = 1.08  # of the mouth half-width: the lens reaches a little past the corners
+LIP_TOP = 0.040  # head heights above the mouth line, at the centre
+LIP_BOTTOM = 0.034  # head heights below it
+LIP_LENS_POW = 0.5  # 0.5 = an ellipse; nearer 1 the corners grow pointed
+LIP_WANDER = (0.0025, 23.0, 0.7)  # head heights, radians per head height, phase: a trimmed edge is not ruled
+LIP_AZIMUTH = 40.0  # degrees: no mouth clearing further round the head than this
+
+
+def mouth_clear(lm, face, u: np.ndarray, v: np.ndarray, phi: np.ndarray, half_w: float, top_extra: float) -> np.ndarray:
+    """Signed distance in head heights into the clear lens round the mouth (> 0 inside). `half_w`: the lens's
+    half-width in mouth half-widths; `top_extra`: head heights added to its upper edge (Kerrid's trimmed moustache)."""
+    hw = half_w * face.mouth_half / lm.h
+    vm = face.vm
+    s = np.clip(1.0 - (u / hw) ** 2, 0.0, 1.0) ** LIP_LENS_POW
+    amp, freq, ph = LIP_WANDER
+    top = vm + (LIP_TOP + top_extra) * s + amp * np.sin(freq * u + ph) * s
+    bottom = vm - LIP_BOTTOM * s
+    d = np.minimum(hw - np.abs(u), np.minimum(top - v, v - bottom))
+    return np.where(np.abs(phi) < LIP_AZIMUTH, d, -1.0)
 
 
 def in_beard(lm, face, P: np.ndarray, margin_h: float = 0.0) -> np.ndarray:
@@ -321,6 +344,25 @@ def beard_cards(lm, face, params: dict, surface, V: np.ndarray, T: np.ndarray) -
     part.T = [TAG_BEARD] * len(part.V)
     part.C = [STILL] * len(part.V)
     return part
+
+
+def surface_normals(V: np.ndarray, F: list, surface) -> np.ndarray:
+    """M2-CHR-524: per-vertex shading normals for cropped cards, the skin's normal under each vertex.
+
+    A card lies a few millimetres off the skin, tilted by its rise and rolled by up to TWIST, so with its own face
+    normal each card took its own share of the light: at dialogue range the crown and beard broke into separately lit
+    flakes, card-sized and paler or darker than their neighbours. Shaded with the skin's normal the layer lights as one
+    surface, and the cards only add strand grain. Each normal points to the side the card's winding faces (the hair
+    shader is double-sided and flips the normal on back faces), so the side the camera sees always gets the outward
+    skin normal. `F`: the faces (indices into V) of the part, `surface`: asha_hair.MeshScalp on the head skin."""
+    V = np.asarray(V, dtype=float)
+    N = surface.normal(V)
+    G = np.zeros_like(V)
+    for f in F:
+        a, b, c = V[f[0]], V[f[1]], V[f[2]]
+        G[list(f)] += np.cross(b - a, c - a)
+    s = np.where(np.sum(G * N, axis=1) < 0.0, -1.0, 1.0)
+    return N * s[:, None]
 
 
 def build_hair(lm, body, params: dict, scalp=None) -> dict[str, Part]:

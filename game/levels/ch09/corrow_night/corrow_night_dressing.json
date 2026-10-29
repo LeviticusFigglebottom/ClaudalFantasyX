@@ -397,6 +397,14 @@
    "block": "LampD"
   }
  ],
+ "kit_material_paths": {
+  "cw_lacquer_red": "res://game/levels/ch08/corrow/corrow_lacquer_red_material.tres",
+  "cw_watch_red": "res://game/levels/ch08/corrow/corrow_watch_red_material.tres",
+  "cw_lacquer_dark": "res://game/levels/ch08/corrow/corrow_lacquer_dark_material.tres",
+  "cw_copper": "res://game/levels/ch08/corrow/corrow_copper_material.tres",
+  "cw_iron": "res://game/levels/ch08/corrow/corrow_iron_material.tres",
+  "cw_sail": "res://game/levels/ch08/corrow/corrow_canvas_material.tres"
+ },
  "pieces": [
   {
    "piece": "corrow_far",
@@ -434,7 +442,10 @@
     31.184
    ],
    "y": 0.0,
-   "yaw_deg": 26.356
+   "yaw_deg": 26.356,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -506,7 +517,10 @@
     26.073
    ],
    "y": 0.0,
-   "yaw_deg": 24.064
+   "yaw_deg": 24.064,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -578,7 +592,10 @@
     21.401
    ],
    "y": 0.0,
-   "yaw_deg": 21.772
+   "yaw_deg": 21.772,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -650,7 +667,10 @@
     17.174
    ],
    "y": 0.0,
-   "yaw_deg": 19.481
+   "yaw_deg": 19.481,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -722,7 +742,10 @@
     13.399
    ],
    "y": 0.0,
-   "yaw_deg": 17.189
+   "yaw_deg": 17.189,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -794,7 +817,10 @@
     10.083
    ],
    "y": 0.0,
-   "yaw_deg": 14.897
+   "yaw_deg": 14.897,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -866,7 +892,10 @@
     7.231
    ],
    "y": 0.0,
-   "yaw_deg": 12.605
+   "yaw_deg": 12.605,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -938,7 +967,10 @@
     4.847
    ],
    "y": 0.0,
-   "yaw_deg": 10.313
+   "yaw_deg": 10.313,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -1001,7 +1033,10 @@
     2.935
    ],
    "y": 0.0,
-   "yaw_deg": 8.021
+   "yaw_deg": 8.021,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -1055,7 +1090,10 @@
     1.499
    ],
    "y": 0.0,
-   "yaw_deg": 5.73
+   "yaw_deg": 5.73,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "wall_apron",
@@ -1064,7 +1102,10 @@
     0.54
    ],
    "y": 0.0,
-   "yaw_deg": 3.438
+   "yaw_deg": 3.438,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head_cracked",
@@ -1127,7 +1168,10 @@
     0.06
    ],
    "y": 0.0,
-   "yaw_deg": 1.146
+   "yaw_deg": 1.146,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -1199,7 +1243,10 @@
     0.06
    ],
    "y": 0.0,
-   "yaw_deg": -1.146
+   "yaw_deg": -1.146,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -1271,7 +1318,10 @@
     0.54
    ],
    "y": 0.0,
-   "yaw_deg": -3.438
+   "yaw_deg": -3.438,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -1325,7 +1375,10 @@
     1.499
    ],
    "y": 0.0,
-   "yaw_deg": -5.73
+   "yaw_deg": -5.73,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -1397,7 +1450,10 @@
     2.935
    ],
    "y": 0.0,
-   "yaw_deg": -8.021
+   "yaw_deg": -8.021,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -1469,7 +1525,10 @@
     4.847
    ],
    "y": 0.0,
-   "yaw_deg": -10.313
+   "yaw_deg": -10.313,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -1541,7 +1600,10 @@
     7.231
    ],
    "y": 0.0,
-   "yaw_deg": -12.605
+   "yaw_deg": -12.605,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -1613,7 +1675,10 @@
     10.083
    ],
    "y": 0.0,
-   "yaw_deg": -14.897
+   "yaw_deg": -14.897,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -1685,7 +1750,10 @@
     13.399
    ],
    "y": 0.0,
-   "yaw_deg": -17.189
+   "yaw_deg": -17.189,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -1757,7 +1825,10 @@
     17.174
    ],
    "y": 0.0,
-   "yaw_deg": -19.481
+   "yaw_deg": -19.481,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -1829,7 +1900,10 @@
     21.401
    ],
    "y": 0.0,
-   "yaw_deg": -21.772
+   "yaw_deg": -21.772,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -1901,7 +1975,10 @@
     26.073
    ],
    "y": 0.0,
-   "yaw_deg": -24.064
+   "yaw_deg": -24.064,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -1973,7 +2050,10 @@
     31.184
    ],
    "y": 0.0,
-   "yaw_deg": -26.356
+   "yaw_deg": -26.356,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2045,7 +2125,10 @@
     36.725
    ],
    "y": 0.0,
-   "yaw_deg": -28.648
+   "yaw_deg": -28.648,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2117,7 +2200,10 @@
     42.687
    ],
    "y": 0.0,
-   "yaw_deg": -30.94
+   "yaw_deg": -30.94,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2189,7 +2275,10 @@
     49.061
    ],
    "y": 0.0,
-   "yaw_deg": -33.232
+   "yaw_deg": -33.232,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2261,7 +2350,10 @@
     55.836
    ],
    "y": 0.0,
-   "yaw_deg": -35.523
+   "yaw_deg": -35.523,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2333,7 +2425,10 @@
     63.002
    ],
    "y": 0.0,
-   "yaw_deg": -37.815
+   "yaw_deg": -37.815,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2405,7 +2500,10 @@
     70.547
    ],
    "y": 0.0,
-   "yaw_deg": -40.107
+   "yaw_deg": -40.107,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2477,7 +2575,10 @@
     78.459
    ],
    "y": 0.0,
-   "yaw_deg": -42.399
+   "yaw_deg": -42.399,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2549,7 +2650,10 @@
     86.726
    ],
    "y": 0.0,
-   "yaw_deg": -44.691
+   "yaw_deg": -44.691,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2621,7 +2725,10 @@
     95.334
    ],
    "y": 0.0,
-   "yaw_deg": -46.983
+   "yaw_deg": -46.983,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2693,7 +2800,10 @@
     104.269
    ],
    "y": 0.0,
-   "yaw_deg": -49.274
+   "yaw_deg": -49.274,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2765,7 +2875,10 @@
     113.517
    ],
    "y": 0.0,
-   "yaw_deg": -51.566
+   "yaw_deg": -51.566,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2837,7 +2950,10 @@
     123.064
    ],
    "y": 0.0,
-   "yaw_deg": -53.858
+   "yaw_deg": -53.858,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2909,7 +3025,10 @@
     132.893
    ],
    "y": 0.0,
-   "yaw_deg": -56.15
+   "yaw_deg": -56.15,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2981,7 +3100,10 @@
     2.935
    ],
    "y": 0.0,
-   "yaw_deg": 8.021
+   "yaw_deg": 8.021,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "seawall_breach_a",
@@ -2990,7 +3112,10 @@
     1.499
    ],
    "y": 0.0,
-   "yaw_deg": 5.73
+   "yaw_deg": 5.73,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "seawall_breach_end_e",
@@ -2999,7 +3124,10 @@
     0.54
    ],
    "y": 0.0,
-   "yaw_deg": 3.438
+   "yaw_deg": 3.438,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head_fallen",
@@ -3044,7 +3172,10 @@
     -12.473
    ],
    "y": 1.0,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "lowtown_ground",
@@ -3475,7 +3606,11 @@
     -1.306
    ],
    "y": 12.02,
-   "yaw_deg": 16.81
+   "yaw_deg": 16.81,
+   "material_paths": {
+    "cw_earth": "res://assets/environments/kits/corrow/materials/cw_paving.tres",
+    "cw_cobble": "res://assets/environments/kits/corrow/materials/cw_paving.tres"
+   }
   },
   {
    "piece": "lowtown_ground",
@@ -3484,7 +3619,122 @@
     -6.221
    ],
    "y": 12.02,
-   "yaw_deg": 13.37
+   "yaw_deg": 13.37,
+   "material_paths": {
+    "cw_earth": "res://assets/environments/kits/corrow/materials/cw_paving.tres",
+    "cw_cobble": "res://assets/environments/kits/corrow/materials/cw_paving.tres"
+   }
+  },
+  {
+   "piece": "crate_stack",
+   "at": [
+    -92.557,
+    7.704
+   ],
+   "y": 12.0,
+   "yaw_deg": 27.57,
+   "kit_dir": "res://assets/environments/kits/brine_shoals/",
+   "materials_dir": "res://assets/environments/kits/brine_shoals/materials/",
+   "collide": true
+  },
+  {
+   "piece": "cargo_sacks",
+   "at": [
+    -90.157,
+    7.164
+   ],
+   "y": 12.0,
+   "yaw_deg": 97.11,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/",
+   "collide": true
+  },
+  {
+   "piece": "round_shield",
+   "at": [
+    -84.518,
+    -6.978
+   ],
+   "y": 12.0,
+   "yaw_deg": 30.39
+  },
+  {
+   "piece": "round_shield",
+   "at": [
+    -83.933,
+    -7.656
+   ],
+   "y": 12.0,
+   "yaw_deg": -24.74
+  },
+  {
+   "piece": "rope_coil",
+   "at": [
+    -70.893,
+    1.709
+   ],
+   "y": 12.0,
+   "yaw_deg": 13.37,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/"
+  },
+  {
+   "piece": "cargo_sacks",
+   "at": [
+    -66.592,
+    -8.392
+   ],
+   "y": 12.0,
+   "yaw_deg": 132.18,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/",
+   "collide": true
+  },
+  {
+   "piece": "rope_coil",
+   "at": [
+    -76.463,
+    -10.215
+   ],
+   "y": 12.0,
+   "yaw_deg": 13.85,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/"
+  },
+  {
+   "piece": "crate_stack",
+   "at": [
+    -67.856,
+    -13.234
+   ],
+   "y": 12.0,
+   "yaw_deg": 107.22,
+   "kit_dir": "res://assets/environments/kits/brine_shoals/",
+   "materials_dir": "res://assets/environments/kits/brine_shoals/materials/",
+   "collide": true
+  },
+  {
+   "piece": "net_heap",
+   "at": [
+    -95.138,
+    1.284
+   ],
+   "y": 12.0,
+   "yaw_deg": -142.33,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/"
+  },
+  {
+   "piece": "cargo_sacks",
+   "at": [
+    -83.487,
+    -1.66
+   ],
+   "y": 12.0,
+   "yaw_deg": 30.47,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/",
+   "collide": true
   },
   {
    "piece": "stillguard_barracks",
@@ -3551,7 +3801,10 @@
    ],
    "y": 12.0,
    "yaw_deg": 12.41,
-   "kit_dir": "res://assets/environments/kits/brine_shoals/"
+   "kit_dir": "res://assets/environments/kits/brine_shoals/",
+   "material_paths": {
+    "bs_level_stone": "res://assets/environments/kits/haluna/materials/kit_shrine_stone.tres"
+   }
   },
   {
    "piece": "mole_pier",
@@ -4572,7 +4825,10 @@
    ],
    "y": 12.0,
    "yaw_deg": -12.41,
-   "block": "Milestone"
+   "block": "Milestone",
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "iskarra_plaza",
@@ -4893,7 +5149,10 @@
    ],
    "y": 0.0,
    "yaw_deg": -1.15,
-   "block": "Rocks"
+   "block": "Rocks",
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "ground_lamp",
@@ -4914,6 +5173,127 @@
    ],
    "y": 0.6,
    "yaw_deg": -1.25
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -80.772,
+    -28.829
+   ],
+   "y": 3.5,
+   "yaw_deg": 293.393,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -71.781,
+    -29.811
+   ],
+   "y": 3.5,
+   "yaw_deg": 357.321,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -47.487,
+    -35.888
+   ],
+   "y": 3.5,
+   "yaw_deg": 223.194,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -16.492,
+    -4.853
+   ],
+   "y": 3.5,
+   "yaw_deg": 23.11,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -0.941,
+    -20.871
+   ],
+   "y": 3.5,
+   "yaw_deg": 131.9,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -29.888,
+    -40.308
+   ],
+   "y": 3.5,
+   "yaw_deg": 104.966,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -17.775,
+    -34.721
+   ],
+   "y": 3.5,
+   "yaw_deg": 6.129,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -89.087,
+    -45.868
+   ],
+   "y": 3.5,
+   "yaw_deg": 123.194,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -81.353,
+    -35.228
+   ],
+   "y": 3.5,
+   "yaw_deg": 282.919,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -60.378,
+    -34.042
+   ],
+   "y": 3.5,
+   "yaw_deg": 97.664,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -11.134,
+    -31.828
+   ],
+   "y": 3.5,
+   "yaw_deg": 69.017,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -69.568,
+    -44.869
+   ],
+   "y": 3.5,
+   "yaw_deg": 245.549,
+   "block": "LowTownLake"
   }
- ]
+ ],
+ "ebbing": {}
 }

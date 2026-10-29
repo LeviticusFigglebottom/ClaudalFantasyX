@@ -7,7 +7,10 @@
 The heroes' clip generator (assets_src/characters/asha/hero_clips.py, M2-FP-07) used as a library: the skeleton
 rest read from the villager's committed GLB, the same keyed body bones, the same pose functions (`idle`, `talk`,
 `walk`), with a persona per villager from `_persona` in params/<npc>.json (sway, a forward lean, how far the arms
-hang). Without these an instanced villager would stand in the bind A-pose. The `characters` import rule
+hang). M3-CHR-509..517: the story and trade clips of the Act I villagers are data, villager_story_clips.json, in the
+heroes' story-clip vocabulary (hero_clips' M3-CHR-05 gestures: reach, look, turn, lean, crouch, shrug, hips, bone;
+postures; keys eased between), with two villager postures of its own (kneel_both, all_fours) and the crouch solved on
+the villager's own legs. Without these an instanced villager would stand in the bind A-pose. The `characters` import rule
 (game/data/import/characters.json `animations`) puts the library on an AnimationPlayer at the asset root, so the
 field can play `idle` (and `talk` during a bark). Pure Python, deterministic; tools/tests/test_villagers.py rebuilds
 every library and compares it byte for byte, so rerun this after any rebuild that moves a skeleton.
@@ -40,6 +43,22 @@ EXTRA_LENGTHS = {"hand_on_shoulder": 2.4, "hear_news": 3.6, "name_rite": 2.0, "p
                  "haggle_laugh": 2.4}
 EXTRA_LOOPS = {"trim_wick"}
 SNIP_EVERY_S = 2.0  # trim_wick: one snip of the shears every 2 s (§4.6)
+
+# M3-CHR-509..517: the Act I villagers' story and trade clips, as data. Each villager's list goes after the shared three
+# (EXTRA_CLIPS); a spec is hero_clips' story spec (`frames`, `loop`, `from`/`to`/`change` postures, `keys` of gestures)
+# or `like` a shared one of assets_src/characters/requested_clips.json.
+STORY_DATA = HERE / "villager_story_clips.json"
+_STORY = json.loads(STORY_DATA.read_text(encoding="utf-8"))
+STORY_SPECS: dict = {c: (hc.STORY_SHARED[sp["like"]] if "like" in sp else sp) for c, sp in _STORY["clips"].items()}
+POSTURES: dict = _STORY["postures"]
+for _npc, _clips in _STORY["villagers"].items():
+    EXTRA_CLIPS[_npc] = list(_clips)
+for _clip, _spec in STORY_SPECS.items():
+    EXTRA_LENGTHS[_clip] = _spec["frames"] / hc.FPS
+    if _spec.get("loop"):
+        EXTRA_LOOPS.add(_clip)
+KNEEL_LEGS = tuple(float(x) for x in _STORY["kneel_both_legs"])  # thigh, shin, foot, toe (degrees)
+FOOT_FLAT = float(_STORY["foot_flat"])  # share of a crouch's leg turn the ankle takes back (1 = the foot stays flat)
 
 
 def clips_for(npc: str) -> list[str]:
@@ -86,7 +105,79 @@ def _hands_at_chest(sk, pers: dict) -> dict:
         "DEF-upper_arm.R": (-20.0, 6.0, -14.0), "DEF-forearm.R": (-70.0, 48.0, 0.0), "DEF-hand.R": (0.0, 10.0, 8.0)})
 
 
+def _legs(sk, pers: dict, drop: float, dz_l: float = 0.0, dz_r: float = 0.0) -> dict:
+    """hero_clips._legs (a crouch: the hips `drop` lower, each foot `dz` forward of its hip joint, two-bone IK in the
+    leg's plane) on a villager's legs, which have no battle stance: the feet stay flat by FOOT_FLAT."""
+    th, sh = sk.leg_thigh, sk.leg_shin
+    h0 = th + sh
+
+    def ik(h: float, dz: float) -> tuple:
+        d = min(math.hypot(h, dz), th + sh - 1e-4)
+        at = math.acos(max(-1.0, min(1.0, (th * th + d * d - sh * sh) / (2.0 * th * d))))
+        ak = math.acos(max(-1.0, min(1.0, (sh * sh + d * d - th * th) / (2.0 * sh * d))))
+        return -math.degrees(math.atan2(dz, h) + at), math.degrees(at + ak)
+
+    rest = ik(h0, 0.0)
+    out = {"hips": (0.0, -drop, 0.0)}
+    for side, dz in (("L", dz_l), ("R", dz_r)):
+        thigh, shin = ik(h0 - drop, dz)
+        dt, ds = thigh - rest[0], shin - rest[1]
+        out[f"DEF-thigh.{side}"] = (dt, 0.0, 0.0)
+        out[f"DEF-shin.{side}"] = (ds, 0.0, 0.0)
+        out[f"DEF-foot.{side}"] = (-(dt + ds) * FOOT_FLAT, 0.0, 0.0)
+    return out
+
+
+def _gestures(gs: list, sk, pers: dict) -> dict:
+    out: dict = {}
+    for g in gs:
+        if g[0] == "crouch":
+            d = _legs(sk, pers, *(float(x) for x in g[1:4]))
+        else:
+            d = hc._gesture(g, sk, pers)
+        out = hc.add(out, d)
+    return out
+
+
+def posture(name: str, sk, pers: dict) -> dict:
+    """A story clip's base posture: hero_clips' (stand, sit, kneel, ground), `kneel_both` (down on both knees, sitting
+    up, the arms hanging; the legs KNEEL_LEGS) or one of the data's postures (a base plus gestures)."""
+    if name in POSTURES:
+        spec = POSTURES[name]
+        return hc.add(posture(spec["base"], sk, pers), _gestures(spec["gestures"], sk, pers))
+    if name == "kneel_both":
+        th, shin, ft, toe = KNEEL_LEGS
+        drop = sk.hip_h - (sk.leg_shin + sk.ankle_h) - 0.01
+        return hc.add(hc.stand(pers), {
+            "hips": (0.0, -drop - 0.012, -0.03),
+            "DEF-thigh.L": (th, 0.0, -3.0), "DEF-thigh.R": (th, 0.0, 3.0),
+            "DEF-shin.L": (shin, 0.0, 0.0), "DEF-shin.R": (shin, 0.0, 0.0),
+            "DEF-foot.L": (ft, 0.0, 0.0), "DEF-foot.R": (ft, 0.0, 0.0),
+            "DEF-toe.L": (toe, 0.0, 0.0), "DEF-toe.R": (toe, 0.0, 0.0)})
+    return hc.story_posture(name, sk, pers)
+
+
+def story_pose_at(spec: dict, t: float, length: float, sk, pers: dict) -> dict:
+    """hero_clips.story_pose_at on the villager postures and gestures."""
+    u = t / length
+    base = posture(spec.get("from", "stand"), sk, pers)
+    if "path" in spec:  # several postures in turn, [u, posture] eased between neighbours (crawl_out: up through a kneel)
+        path = [(float(a), posture(n, sk, pers)) for a, n in spec["path"]]
+        base = path[-1][1] if u >= path[-1][0] else path[0][1]
+        for (ua, pa), (ub, pb) in zip(path, path[1:]):
+            if ua <= u < ub:
+                base = hc.blend(pa, pb, hc.smooth((u - ua) / (ub - ua)))
+                break
+    elif "to" in spec:
+        a, b = spec.get("change", (0.0, 1.0))
+        base = hc.blend(base, posture(spec["to"], sk, pers), hc.smooth((u - a) / (b - a)))
+    keys = [(float(k), _gestures(gs, sk, pers)) for k, gs in spec.get("keys", [[0.0, []]])]
+    return hc.add(base, hc._seq(u, keys))
+
+
 def pose_at(clip: str, t: float, length: float, sk, pers: dict) -> dict:
+    if clip in STORY_SPECS:
+        return story_pose_at(STORY_SPECS[clip], t, length, sk, pers)
     u = t / length
     smooth = hc.smooth
     a = pers["arms_down"]

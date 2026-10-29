@@ -1,5 +1,5 @@
 {
-  "doc": "M3-C09-02 greybox: ch09/corrow_night, Corrow on the night of the Ebbing and the dawn road after it (act1_ch09.md B01-B10), a stand-in for the `ch08/corrow` night variant until Ch8 lands. +Z is south, out to sea (the placeholder held motes drift that way). The strand of the drowned (rows of shrouds, faces covered, oil lamps, the Stillguard row with its shields and Ivo's shroud at its east end) runs east-west between the broken sea wall (north; the breach a black gap of rubble) and the harbour (south; a floor 1.1 m down, no swimming). The raft's landing goes out from the strand's middle; the raft waits mid-harbour between the moles. The wall-head walk is the strand's west end (Liss on her cut rope); the rocks Pell comes down are its east end. Behind the wall the low town is a lake to the eaves, and the Fisher Stair rises out of it (N13; Kerrid alone on it all night, out of reach). The coast road out of the landward gate (north-east, reached at dawn) has the milestone. Far east (x 300) is a greybox stand-in for the Iskarra plaza, so B09's D03 cuts to P02 inside one scene. The night is the layout's light; dawn is a variant once ch09_pell_joined is set (the party on the road, Kerrid at the milestone). Shot ids are the sheet's (§7) plus N05A/N05B (the side scene's inserts), D02B (the Pell-Kerrid two-shot) and P04 (the burner, the act break's fade). Since M3-C09-1209 (ADR 0200) the zone stands in the Corrow kit's frame and its fallen state: tools/act1/ch09_corrow_night.py moved the story points once and writes the dressing and the collision from Ch8's (the strand of the drowned along the wall's sea foot, s -69..+1, y 0.6; the landing at the breach, s -30; a bridge to Ch8's mole, whose ramp climbs to the walk: Liss at her cut hoist, s -16.5, and the coast road east of the wall-gate, s 36..100; the lake at the eaves behind the wall, Kerrid on the broken stair; Iskarra's set 1700 m east). The dawn variant takes the day grade (environment_res).",
+  "doc": "M3-C09-02 greybox: ch09/corrow_night, Corrow on the night of the Ebbing and the dawn road after it (act1_ch09.md B01-B10), a stand-in for the `ch08/corrow` night variant until Ch8 lands. +Z is south, out to sea (the placeholder held motes drift that way). The strand of the drowned (rows of shrouds, faces covered, oil lamps, the Stillguard row with its shields and Ivo's shroud at its east end) runs east-west between the broken sea wall (north; the breach a black gap of rubble) and the harbour (south; a floor 1.1 m down, no swimming). The raft's landing goes out from the strand's middle; the raft waits mid-harbour between the moles. The wall-head walk is the strand's west end (Liss on her cut rope); the rocks Pell comes down are its east end. Behind the wall the low town is a lake to the eaves, and the Fisher Stair rises out of it (N13; Kerrid alone on it all night, out of reach). The coast road out of the landward gate (north-east, reached at dawn) has the milestone. Far east (x 300) is a greybox stand-in for the Iskarra plaza, so B09's D03 cuts to P02 inside one scene. The night is the layout's light; dawn is a variant once ch09_pell_joined is set (the party on the road, Kerrid at the milestone). Shot ids are the sheet's (§7) plus N05A/N05B (the side scene's inserts), D02B (the Pell-Kerrid two-shot) and P04 (the burner, the act break's fade). Since M3-C09-1209 (ADR 0200) the zone stands in the Corrow kit's frame and its fallen state: tools/act1/ch09_corrow_night.py moved the story points once and writes the dressing and the collision from Ch8's (the strand of the drowned along the wall's sea foot, s -69..+1, y 0.6; the landing at the breach, s -30; a bridge to Ch8's mole, whose ramp climbs to the walk: Liss at her cut hoist, s -16.5, and the coast road east of the wall-gate, s 36..100; the lake at the eaves behind the wall, Kerrid on the broken stair; Iskarra's set 1700 m east). The dawn variant takes its own ch09_dawn grade (environment_res, M3-C09-10).",
   "block_color": "#8a857c",
   "sun": {"pitch_deg": -25.0, "yaw_deg": 60.0, "energy": 1.25, "color": "#9fb4d6"},
   "environment": {"background": "#060b14", "ambient_color": "#2c3c58", "ambient_energy": 0.8},
@@ -56,7 +56,7 @@
     "lowtown_motes": [-60.634, 4.0, -8.146],
     "strand_motes": [-27.654, 4.6, 24.384],
     "mourners_motes": [-27.354, 1.8, 27.369],
-    "mourner_hand": [-32.717, 0.9, 28.665],
+    "mourner_hand": [-32.66, 0.65, 29.12],
     "harbour_stream": [-25.058, 3.6, 50.254],
     "stream_overhead": [-23.461, 4.6, 66.174],
     "harbour_mouth": [-20.466, 1.6, 96.024],
@@ -90,12 +90,12 @@
     "ysolde": {"at": [-30.134, 0.6, 27.159, -173.7], "color": "#d0d4dc"},
     "liss": {"at": [-17.334, 12.0, -0.25, 93.3], "color": "#7a8c5a"},
     "pell": {"at": [4.633, 4.0, 22.039, -90.95], "color": "#5d6b4a", "radius": 0.34, "height": 2.3},
-    "tender": {"cast": "reed", "at": [-26.397, 0.6, 27.777, -84.46], "color": "#b0a080"},
-    "marra": {"cast": "netmender", "at": [-10.077, 0.6, 25.285, 2.1], "color": "#8a6a7a"},
+    "tender": {"cast": "tender", "at": [-26.397, 0.6, 27.777, -84.46], "color": "#b0a080"},
+    "marra": {"cast": "marra", "at": [-10.077, 0.6, 25.285, 2.1], "color": "#8a6a7a"},
     "child": {"cast": "child", "at": [-11.18, 0.6, 25.227, 92.33], "color": "#d4b07a", "radius": 0.2, "height": 1.0},
-    "hobb": {"cast": "fisher", "at": [-35.151, 0.6, 23.979, -172.74], "color": "#6a6050"},
-    "fenn": {"cast": "fisher", "at": [-21.877, 0.6, 27.126, -175.42], "color": "#7a6a5a", "height": 1.2},
-    "stillguard": {"cast": "fisher", "at": [-18.503, 0.6, 22.867, -176.18], "color": "#5a6a7a"},
+    "hobb": {"cast": "hobb", "at": [-35.151, 0.6, 23.979, -172.74], "color": "#6a6050"},
+    "fenn": {"cast": "fenn", "at": [-21.877, 0.6, 27.126, -175.42], "color": "#7a6a5a", "height": 1.2},
+    "stillguard": {"cast": "stillguard_d", "at": [-18.503, 0.6, 22.867, -176.18], "color": "#5a6a7a"},
     "mourner_1": {"cast": "vendor", "at": [-38.165, 0.6, 29.176, -171.98], "color": "#6a6a72", "height": 1.1},
     "mourner_2": {"cast": "netmender", "at": [-32.729, 0.6, 28.566, -173.12], "color": "#6a6a72", "height": 1.1},
     "mourner_3": {"cast": "fisher", "at": [-20.031, 0.6, 27.335, -175.8], "color": "#6a6a72", "height": 1.1},
@@ -121,10 +121,10 @@
     "N06": {"pos": [-27.847, 2.15, 28.826], "look_at": [-28.263, 2.1, 27.462], "fov": 14},
     "N07": {"pos": [-34.803, 2.4, 26.707], "look_at": [-26.656, 1.1, 34.334], "fov": 46},
     "N08": {"pos": [0.0, 7.6, 69.0], "look_at": [-26.057, 0.6, 40.304], "fov": 62},
-    "N09": {"pos": [-32.092, 0.95, 29.296], "look_at": [-32.717, 0.7, 28.665], "fov": 20},
+    "N09": {"pos": [-30.2, 1.6, 31.6], "look_at": [-32.7, 1.2, 28.6], "fov": 40},
     "N10": {"pos": [-23.702, 1.3, 62.178], "look_at": [-24.06, 1.2, 60.204], "fov": 20},
     "N11": {"pos": [-33.466, -0.1, 73.459], "look_at": [-19.123, 2.6, 39.701], "fov": 75},
-    "N12": {"pos": [-21.902, -0.4, 66.023], "look_at": [-24.06, 4.6, 60.204], "fov": 62},
+    "N12": {"pos": [-21.9, 1.6, 66.0], "look_at": [-24.06, 0.9, 60.204], "fov": 50},
     "N13": {"pos": [-46.634, 3.5, -11.146], "look_at": [-40.634, 5.0, 0.254], "fov": 50},
     "N14": {"pos": [-21.84, 0.2, 57.983], "look_at": [-20.266, 0.6, 98.014], "fov": 32},
     "N15": {"pos": [-45.014, 3.6, 42.911], "look_at": [-24.06, 0.1, 60.204], "fov": 46},
@@ -133,13 +133,18 @@
     "N18": {"pos": [-22.066, 2.3, 30.402], "look_at": [-24.582, 2.2, 27.607], "fov": 20},
     "N19": {"pos": [-27.665, 2.2, 33.231], "look_at": [-24.429, 2.0, 29.3], "fov": 32},
     "D01": {"pos": [69.753, 13.6, 10.793], "look_at": [63.463, 13.2, 7.045], "fov": 40},
-    "D02": {"pos": [64.536, 13.8, 9.584], "look_at": [64.331, 13.75, 7.747], "fov": 18},
+    "D02": {"pos": [64.536, 13.66, 9.584], "look_at": [64.331, 13.62, 7.747], "fov": 18},
     "D02B": {"pos": [68.076, 13.7, 7.056], "look_at": [63.94, 13.9, 7.2], "fov": 30},
-    "D03": {"pos": [64.511, 9.6, 28.561], "look_at": [68.393, 12.0, 7.9], "fov": 40},
+    "D03": {"pos": [62.5, 14.0, 5.5], "look_at": [75.0, 12.9, 9.3], "fov": 40},
     "P02": {"pos": [2001.5, 3.4, 21.0], "look_at": [1996.0, 7.5, -40.0], "fov": 36},
     "P03": {"pos": [2007.0, 2.0, 14.0], "look_at": [2009.0, 1.8, 6.0], "fov": 20},
     "P04": {"pos": [2002.2, 1.2, -3.6], "look_at": [2001.2, 0.95, -4.6], "fov": 25}
   },
+  "camera_volumes": [
+    {"id": "RoadGate", "mode": "pan_follow", "at": [36.5, 13.5, 2.0], "size": [7.0, 4.0, 6.0], "pos": [37.5, 16.0, -5.0], "look_at": [36.9, 13.2, 2.3], "fov": 46.4, "priority": 1},
+    {"id": "Milestone", "mode": "pan_follow", "at": [60.6, 13.5, 4.5], "size": [8.0, 4.0, 7.0], "pos": [60.6, 16.5, -1.0], "look_at": [60.6, 13.2, 6.2], "fov": 46.4, "priority": 1},
+    {"id": "WallHead", "mode": "pan_follow", "at": [-16.9, 13.5, 0.0], "size": [8.0, 4.0, 6.0], "pos": [-16.9, 16.5, -7.3], "look_at": [-16.9, 13.2, 0.0], "fov": 46.4, "priority": 1}
+  ],
   "triggers": [
     {"id": "npc_marra", "activation": "interact", "at": [-10.52, 0.6, 25.702], "size": [2, 0, 2], "prompt_key": "FIELD_PROMPT_LISTEN", "requires_flag": "ch09_started", "blocked_by_flag": "ch09_ebbing_danced", "payload": {"dialogue": "ch09_bark_marra"}, "yaw": 2.2},
     {"id": "toma", "activation": "interact", "at": [-7.826, 0.6, 23.861], "size": [2, 0, 2], "prompt_key": "FIELD_PROMPT_CH09_TOMA", "requires_flag": "ch09_started", "blocked_by_flag": "ch09_ebbing_danced", "payload": {"dialogue": "ch09_toma"}, "yaw": 1.62},
@@ -150,7 +155,7 @@
     {"id": "milestone", "at": [60.581, 12.0, 6.18], "size": [2, 0, 6], "requires_flag": "ch09_pell_joined", "blocked_by_flag": "ch09_kerrid_on_road", "payload": {"beat": "road_out"}, "yaw": -11.65}
   ],
   "variants": [
-    {"when": {"set": ["ch09_pell_joined"]}, "sun": {"pitch_deg": -8.0, "yaw_deg": 90.0, "energy": 1.1, "color": "#ffc98a"}, "environment": {"background": "#e8b98a", "ambient_color": "#c9a88a", "ambient_energy": 0.6}, "hide": ["kerrid_stair", "tender", "marra", "child", "hobb", "fenn", "stillguard", "mourner_1", "mourner_2", "mourner_3", "mourner_4", "LampA", "LampB", "LampC", "LampD"], "place": {"asha": "road_asha", "toma": "road_toma", "ysolde": "road_ysolde", "liss": "road_liss", "pell": "road_pell", "kerrid": "milestone"}, "environment_res": "res://game/levels/ch08/corrow/corrow_ch08_environment.tres"}
+    {"when": {"set": ["ch09_pell_joined"]}, "sun": {"pitch_deg": -8.0, "yaw_deg": 90.0, "energy": 1.1, "color": "#ffc98a"}, "environment": {"background": "#e8b98a", "ambient_color": "#c9a88a", "ambient_energy": 0.6}, "hide": ["kerrid_stair", "tender", "marra", "child", "hobb", "fenn", "stillguard", "mourner_1", "mourner_2", "mourner_3", "mourner_4", "LampA", "LampB", "LampC", "LampD"], "place": {"asha": "road_asha", "toma": "road_toma", "ysolde": "road_ysolde", "liss": "road_liss", "pell": "road_pell", "kerrid": "milestone"}, "environment_res": "res://game/levels/ch08/corrow/corrow_ch09_dawn_environment.tres"}
   ],
   "collision_path": "res://game/levels/ch09/corrow_night/corrow_night_collision.json"
 }

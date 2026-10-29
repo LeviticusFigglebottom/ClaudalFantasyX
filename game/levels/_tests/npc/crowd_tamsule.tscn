@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/npc/haluna_villagers.gd" id="stage"]
+
+[node name="CrowdTamsule" type="Node3D"]
+script = ExtResource("stage")
+zone_scene = "res://game/levels/ch07/tamsule/tamsule.tscn"
+zone_id = &"ch07/tamsule"
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Crowd" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, 0, 0, 0.997366, 0.0725357, 0, -0.0725357, 0.997366, 0, 1.7, 14.5)
+fov = 50.0

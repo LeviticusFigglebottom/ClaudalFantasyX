@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
 [ext_resource type="Shader" path="res://game/shaders/environment/env_sky_low_sun.gdshader" id="2_r"]
@@ -13,6 +13,8 @@
 [ext_resource type="PackedScene" path="res://assets/environments/kits/ashcrown/plume_vent.glb" id="11_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/ashcrown/matron_alcove.glb" id="12_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/pemakar/ash_plume_near.glb" id="13_r"]
+[ext_resource type="Material" path="res://assets/environments/kits/ashcrown/materials/ac_plume_day.tres" id="plume_day"]
+[ext_resource type="Script" path="res://game/levels/act1/kit_slot_swaps.gd" id="slot_swaps"]
 
 [sub_resource type="ShaderMaterial" id="SkyMat"]
 shader = ExtResource("2_r")
@@ -272,3 +274,13 @@ transform = Transform3D(0.997597, 0.034219, 0.0602366, 0, 0.869496, -0.49394, -0
 
 [node name="BossAnchor" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4, 0.0, 0.9)
+
+[node name="ash_plume_near" parent="Dressing/ash_plume_near_1" index="0"]
+surface_material_override/0 = ExtResource("plume_day")
+
+[node name="ash_plume_near-lod1" parent="Dressing/ash_plume_near_1" index="1"]
+surface_material_override/0 = ExtResource("plume_day")
+
+[node name="KitSlotSwaps" type="Node" parent="."]
+script = ExtResource("slot_swaps")
+paths = {"ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres", "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres", "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres", "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres", "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres", "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres", "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres", "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres", "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres", "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres", "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres", "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres", "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres", "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres", "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"}

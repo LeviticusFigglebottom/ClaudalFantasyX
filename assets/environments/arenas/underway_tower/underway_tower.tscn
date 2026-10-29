@@ -90,12 +90,13 @@ light_energy = 3.0
 shadow_enabled = true
 shadow_bias = 0.03
 shadow_normal_bias = 1.0
-shadow_blur = 1.0
+shadow_blur = 4.0
 directional_shadow_mode = 2
 directional_shadow_split_1 = 0.06
 directional_shadow_split_2 = 0.18
 directional_shadow_split_3 = 0.45
 directional_shadow_max_distance = 120.0
+light_angular_distance = 9.0
 
 [node name="Sea" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 22.4, 0)

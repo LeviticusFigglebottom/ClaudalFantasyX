@@ -26,6 +26,18 @@ if FileAccess.file_exists(VillagerLayer.path_for(location_id)) and get_node_or_n
 No layout or cutscene changes. Tests: tests/unit/test_villager_routines.gd
 `test_oruvels_kell_comes_alive_in_the_real_zone` already wires the layer the same way on the real Oruvel.
 
+## Update (creatures, 2026-10-28, after the Lead's rollout order)
+- **Ready patch:** `docs/kb/handoffs/live/patches/m3-cre-657-greybox-villagers.patch` (`git apply`, 14 lines). It adds `_build_villagers()` to GreyboxZone, called at the top of `_ready()`, and does nothing for a location without a villager zone file.
+  - **Why `_ready` and not `build()`:** `_ready` runs after every child's, so ZoneCast (M3-CIN-1217) has cast its villagers by then. Added in `build()`, the layer built first and the tender got two bodies.
+- **What it does to ZoneCast's casts** (creatures' side, merged on claude/creatures):
+  - A crowd row's person replaces the actor's `Cast`. ZoneCast dresses the generic folk as Haluna's villagers, and ADR 0152 says Haluna's faces stand for no other town.
+  - A named villager's row adopts its `Cast` as it does a greybox `Model`.
+  - `HeroMotion.player_of(actor)` finds the new body, so the cutscenes' `@anim` lines still play.
+- **Trial on claude/creatures with the patch applied:**
+  - villager 35/0;
+  - qa_capsules: Pell only (Act II);
+  - **test_zone_cast** (cinematics') fails on Tamsule's fisher and boatman. Its live check reads the actor's `Cast`, which the crowd person has replaced. Its owner should check `HeroMotion.player_of(actor)` plays `idle`, or pick an actor with no villager row. Apply both changes together.
+
 ## Review log
 
 ## Done (slice-polish, 2026-10-28)

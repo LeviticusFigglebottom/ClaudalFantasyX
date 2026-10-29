@@ -1,0 +1,121 @@
+{
+  "_about": "The Order clerk at the brazier (Ch6 B03 W06 and B05; speaker `clerk`, CHAR_CLERK), about 38 (M3-CHR-509). Thin, upright, tidy, a functionary: neat close-cropped dark hair, a narrow face with thin lips. The Order's colours without armour: an ivory long-sleeved robe (a high-necked wrap top over an ankle skirt of the same cloth), a still-blue tabard panel to the shin (Sefir's still_blue_silk, act1_npcs.md \u00a75.1), a narrow lacquer-red sash (the Stillguard's red, the office he serves), sandals. No reach-bands: an inland man of the Order. Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials, villager_clips), not by bb_params.",
+  "name": "clerk",
+  "height_m": 1.72,
+  "heads_tall": 7.5,
+  "shoulder_width_heads": 1.62,
+  "chest_width_heads": 1.18,
+  "chest_depth_heads": 0.86,
+  "waist_width_heads": 1.06,
+  "hip_width_heads": 1.34,
+  "crotch_height_heads": 3.6,
+  "arm_span_ratio": 1.0,
+  "hand_length_heads": 0.8,
+  "foot_length_ratio": 0.15,
+  "neck_length_heads": 0.44,
+  "neck_width_ratio": 0.5,
+  "head_width_ratio": 0.63,
+  "femininity": 0.1,
+  "muscle": 0.25,
+  "mass": 0.12,
+  "breast": 0.0,
+  "eye_scale": 1.04,
+  "ipd_m": 0.062,
+  "arm_abduction_deg": 47.0,
+  "skin_hex": "#C09478",
+  "eye_tilt_deg": 0.0,
+  "jaw_width": 0.92,
+  "cheekbone_height": 0.003,
+  "cheekbone_width": 0.96,
+  "chin_size": 1.06,
+  "nose_bridge_width": 0.92,
+  "nose_tip_projection": 1.1,
+  "lip_fullness": 0.66,
+  "lip_close": 0.6,
+  "lip_seal": 0.96,
+  "lip_lower_fullness": 0.66,
+  "mouth_corner_lift": -0.0003,
+  "brow_ridge": 1.05,
+  "donor_mix_african": 0.2,
+  "donor_mix_asian": 0.35,
+  "donor_mix_caucasian": 0.45,
+  "_skin": {
+    "hex": "#C09478",
+    "age": 0.35,
+    "freckles": 0,
+    "reach_bands": {
+      "L": 0,
+      "R": 0
+    },
+    "stubble": 0.2,
+    "stubble_grey": 0.0,
+    "seed": 116,
+    "lip": "#9A6656"
+  },
+  "_hair": {
+    "kind": "cropped",
+    "hairline": "male",
+    "seed": 36,
+    "length_m": [
+      0.008,
+      0.012
+    ],
+    "scalp_cards": [
+      420,
+      320,
+      200
+    ],
+    "hairline_cards": 0,
+    "colour": "#2A201A",
+    "underpaint": "#2A201A"
+  },
+  "_eyes": {
+    "iris": "#3A2816"
+  },
+  "_costume": {
+    "top": {
+      "mat": "cloth_a",
+      "hem": "hip",
+      "sleeve": 0.96,
+      "neck_v_m": 0.025
+    },
+    "skirt": {
+      "mat": "cloth_a",
+      "hem": "ankle",
+      "folds": 8,
+      "fold_amp": 0.006,
+      "flare": 0.1,
+      "seed": 91,
+      "keep_above_knee_m": 1.0
+    },
+    "apron": {
+      "mat": "cloth_b",
+      "hem": "shin",
+      "half_deg": 30,
+      "seed": 92,
+      "extra_m": 0.01
+    },
+    "sash": {
+      "mat": "cloth_c",
+      "width_m": 0.045,
+      "turns": 1
+    },
+    "sandals": "leather"
+  },
+  "_tints": {
+    "cloth_a": "#E4DCCB",
+    "cloth_b": "#8FAEBB",
+    "cloth_c": "#8A2C24",
+    "leather": "#FFFFFF"
+  },
+  "_build": {
+    "shapes": "all",
+    "host_snaps": true,
+    "garment_fit": true
+  },
+  "_persona": {
+    "sway": 0.3,
+    "lean": -0.5,
+    "arms_down": 43.0
+  }
+}

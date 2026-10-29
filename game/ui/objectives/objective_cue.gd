@@ -25,6 +25,8 @@ func _ready() -> void:
 	_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_label.size = Vector2(HudLayout.num(_m, "label_width"), HudLayout.num(_m, "label_height"))
 	_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# No backing plate: an outline (the theme's outline colour) keeps the words legible over any sky.
+	_label.add_theme_constant_override(&"outline_size", int(HudLayout.num(_m, "label_outline_px")))
 	add_child(_label)
 
 

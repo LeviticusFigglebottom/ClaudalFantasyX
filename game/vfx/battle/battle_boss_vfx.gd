@@ -376,7 +376,7 @@ func _on_joined(added: Array[BattleCombatant]) -> void:
 
 func _place_polyp_light(cid: StringName) -> void:
 	var l := polyp_lights.get(cid) as OmniLight3D
-	if l != null:
+	if l != null and l.is_inside_tree() and vfx.is_inside_tree():  # deferred: the fight may have left the tree since
 		l.global_position = vfx.anchor(cid, str(_cfg("polyps").get("light_at", "chest")))
 
 

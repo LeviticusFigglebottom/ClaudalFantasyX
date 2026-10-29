@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3]
+[gd_scene load_steps=33 format=3]
 
 [ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
 [ext_resource type="Shader" path="res://game/shaders/environment/env_sky_low_sun.gdshader" id="2_r"]
@@ -27,6 +27,7 @@
 [ext_resource type="PackedScene" path="res://assets/environments/kits/corrow/lowtown_house_a.glb" id="25_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/corrow/lowtown_house_b.glb" id="26_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/coilspire/arena_headland_path.glb" id="27_r"]
+[ext_resource type="Script" path="res://game/levels/act1/kit_slot_swaps.gd" id="slot_swaps"]
 
 [sub_resource type="ShaderMaterial" id="SkyMat"]
 shader = ExtResource("2_r")
@@ -1247,6 +1248,306 @@ transform = Transform3D(-0.999886, 0, -0.0150965, 0, 1, 0, 0.0150965, 0, -0.9998
 [node name="arena_headland_path_1" parent="Dressing" instance=ExtResource("27_r")]
 transform = Transform3D(-0.885272, 0, 0.465074, 0, 1, 0, -0.465074, 0, -0.885272, -37.995, -27.285, -66.869)
 
+[node name="scrub_clump_a_43" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.38732, 0, -1.32453, 0, 1.38, 0, 1.32453, 0, -0.38732, -36.118, 3.224, -21.114)
+
+[node name="scrub_clump_b_21" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(2.16319, 0, 0.918218, 0, 2.35, 0, -0.918218, 0, 2.16319, -36.927, -0.725, -11.042)
+
+[node name="scrub_clump_b_22" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.336161, 0, 1.40021, 0, 1.44, 0, -1.40021, 0, -0.336161, -35.664, 2.941, -3.259)
+
+[node name="scrub_clump_b_23" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(0.651513, 0, 1.29539, 0, 1.45, 0, -1.29539, 0, 0.651513, -35.253, 3.177, -0.152)
+
+[node name="scrub_clump_a_44" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.0139625, 0, 1.59994, 0, 1.6, 0, -1.59994, 0, -0.0139625, -36.07, -23.591, 24.366)
+
+[node name="scrub_clump_a_45" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.823339, 0, 1.92099, 0, 2.09, 0, -1.92099, 0, -0.823339, -32.864, 6.911, -29.195)
+
+[node name="scrub_clump_a_46" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-1.40166, 0, 1.48221, 0, 2.04, 0, -1.48221, 0, -1.40166, -31.394, 3.923, -19.716)
+
+[node name="scrub_clump_b_24" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(1.9414, 0, -0.269391, 0, 1.96, 0, 0.269391, 0, 1.9414, -32.175, 1.727, -8.577)
+
+[node name="scrub_clump_b_25" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-1.20102, 0, -0.380986, 0, 1.26, 0, 0.380986, 0, -1.20102, -32.581, 3.049, -4.173)
+
+[node name="scrub_clump_b_26" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.888652, 0, 1.02951, 0, 1.36, 0, -1.02951, 0, -0.888652, -30.916, -4.191, 7.682)
+
+[node name="scrub_clump_a_47" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(1.77629, 0, -0.114868, 0, 1.78, 0, 0.114868, 0, 1.77629, -32.615, -10.113, 12.495)
+
+[node name="scrub_clump_b_27" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-1.83975, 0, 0.615571, 0, 1.94, 0, -0.615571, 0, -1.83975, -27.101, 8.431, -19.069)
+
+[node name="scrub_clump_b_28" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-1.38615, 0, 1.61725, 0, 2.13, 0, -1.61725, 0, -1.38615, -27.219, -0.664, 4.801)
+
+[node name="scrub_clump_a_48" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.148309, 0, -1.80391, 0, 1.81, 0, 1.80391, 0, -0.148309, -27.452, -9.432, 11.968)
+
+[node name="scrub_clump_a_49" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(1.56291, 0, 1.19926, 0, 1.97, 0, -1.19926, 0, 1.56291, -27.703, -36.393, 33.079)
+
+[node name="scrub_clump_a_50" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.419792, 0, 1.13485, 0, 1.21, 0, -1.13485, 0, -0.419792, -24.595, 7.623, -19.315)
+
+[node name="scrub_clump_b_29" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-1.33754, 0, -1.23425, 0, 1.82, 0, 1.23425, 0, -1.33754, -24.76, 4.51, -12.264)
+
+[node name="scrub_clump_a_51" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-2.18875, 0, -0.521433, 0, 2.25, 0, 0.521433, 0, -2.18875, -24.787, -1.712, 6.81)
+
+[node name="scrub_clump_a_52" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-1.96587, 0, -0.76646, 0, 2.11, 0, 0.76646, 0, -1.96587, -22.995, -28.157, 27.699)
+
+[node name="scrub_clump_a_53" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(1.39989, 0, 0.795246, 0, 1.61, 0, -0.795246, 0, 1.39989, -23.808, -36.406, 34.812)
+
+[node name="scrub_clump_b_30" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(0.717813, 0, -1.3057, 0, 1.49, 0, 1.3057, 0, 0.717813, -19.302, 11.311, -38.895)
+
+[node name="scrub_clump_b_31" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.839374, 0, -1.90312, 0, 2.08, 0, 1.90312, 0, -0.839374, -19.585, 10.622, -27.881)
+
+[node name="scrub_clump_b_32" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(1.66021, 0, -0.860574, 0, 1.87, 0, 0.860574, 0, 1.66021, -19.821, 8.48, -22.808)
+
+[node name="scrub_clump_a_54" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(0.372592, 0, -1.20365, 0, 1.26, 0, 1.20365, 0, 0.372592, -20.331, 3.273, -0.136)
+
+[node name="scrub_clump_b_33" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(1.67117, 0, -1.0241, 0, 1.96, 0, 1.0241, 0, 1.67117, -18.824, -0.589, 4.322)
+
+[node name="scrub_clump_a_55" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(1.15954, 0, -1.83422, 0, 2.17, 0, 1.83422, 0, 1.15954, -18.836, -36.328, 37.178)
+
+[node name="scrub_clump_a_56" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(0.346217, 0, 2.34458, 0, 2.37, 0, -2.34458, 0, 0.346217, -17.09, 10.143, -39.423)
+
+[node name="scrub_clump_a_57" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-1.01286, 0, 0.749477, 0, 1.26, 0, -0.749477, 0, -1.01286, -16.098, 7.194, -15.782)
+
+[node name="scrub_clump_a_58" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.64839, 0, -1.09201, 0, 1.27, 0, 1.09201, 0, -0.64839, -14.899, 4.676, -12.232)
+
+[node name="scrub_clump_a_59" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-1.64246, 0, 1.15863, 0, 2.01, 0, -1.15863, 0, -1.64246, -14.951, -4.366, 5.126)
+
+[node name="scrub_clump_b_34" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-1.34812, 0, 1.19272, 0, 1.8, 0, -1.19272, 0, -1.34812, -15.989, -10.757, 12.21)
+
+[node name="scrub_clump_a_60" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(1.29729, 0, -0.083892, 0, 1.3, 0, 0.083892, 0, 1.29729, -17.129, -34.669, 32.019)
+
+[node name="scrub_clump_a_61" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-1.15372, 0, -0.775266, 0, 1.39, 0, 0.775266, 0, -1.15372, -17.064, -36.294, 39.478)
+
+[node name="scrub_clump_a_62" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(1.60125, 0, -0.985094, 0, 1.88, 0, 0.985094, 0, 1.60125, -12.207, 10.864, -27.959)
+
+[node name="scrub_clump_b_35" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(1.55117, 0, 0.165772, 0, 1.56, 0, -0.165772, 0, 1.55117, -13.119, 9.564, -24.303)
+
+[node name="scrub_clump_b_36" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(0.205921, 0, 1.95921, 0, 1.97, 0, -1.95921, 0, 0.205921, -10.988, 4.709, -11.744)
+
+[node name="scrub_clump_a_63" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-1.74552, 0, -0.125121, 0, 1.75, 0, 0.125121, 0, -1.74552, -12.801, -1.968, -0.826)
+
+[node name="scrub_clump_a_64" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-2.04006, 0, 1.22579, 0, 2.38, 0, -1.22579, 0, -2.04006, -11.582, -12.448, 12.701)
+
+[node name="scrub_clump_b_37" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-1.17616, 0, 1.36259, 0, 1.8, 0, -1.36259, 0, -1.17616, -12.353, -25.828, 27.675)
+
+[node name="scrub_clump_b_38" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-2.16608, 0, -1.01006, 0, 2.39, 0, 1.01006, 0, -2.16608, -7.422, 0.481, -6.955)
+
+[node name="scrub_clump_a_65" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(1.36176, 0, 0.761061, 0, 1.56, 0, -0.761061, 0, 1.36176, -7.653, -6.346, 7.385)
+
+[node name="scrub_clump_b_39" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.123691, 0, -1.72557, 0, 1.73, 0, 1.72557, 0, -0.123691, -8.988, -10.597, 11.343)
+
+[node name="scrub_clump_b_40" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-2.26994, 0, -0.0158475, 0, 2.27, 0, 0.0158475, 0, -2.26994, -7.319, -14.492, 16.211)
+
+[node name="scrub_clump_b_41" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.00453785, 0, -1.29999, 0, 1.3, 0, 1.29999, 0, -0.00453785, -7.247, -16.808, 19.88)
+
+[node name="scrub_clump_b_42" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(0.7748, 0, 1.2844, 0, 1.5, 0, -1.2844, 0, 0.7748, -8.559, -19.543, 23.145)
+
+[node name="scrub_clump_b_43" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(0.016336, 0, 1.55991, 0, 1.56, 0, -1.55991, 0, 0.016336, -9.154, -36.172, 36.663)
+
+[node name="scrub_clump_a_66" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(1.27333, 0, 0.830075, 0, 1.52, 0, -0.830075, 0, 1.27333, -3.914, 9.959, -39.148)
+
+[node name="scrub_clump_b_44" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(1.75424, 0, 1.47198, 0, 2.29, 0, -1.47198, 0, 1.75424, -4.611, 11.555, -36.042)
+
+[node name="scrub_clump_a_67" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(1.62272, 0, -0.929341, 0, 1.87, 0, 0.929341, 0, 1.62272, -5.133, -9.717, 12.309)
+
+[node name="scrub_clump_a_68" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(0.232942, 0, -1.52228, 0, 1.54, 0, 1.52228, 0, 0.232942, -3.12, -36.07, 36.724)
+
+[node name="scrub_clump_b_45" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-2.14159, 0, 0.917885, 0, 2.33, 0, -0.917885, 0, -2.14159, -0.545, 9.323, -39.117)
+
+[node name="scrub_clump_b_46" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(1.48236, 0, -1.61205, 0, 2.19, 0, 1.61205, 0, 1.48236, 1.17, 8.863, -32.985)
+
+[node name="scrub_clump_a_69" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(0.866614, 0, 1.15004, 0, 1.44, 0, -1.15004, 0, 0.866614, -0.93, -17.891, 20.895)
+
+[node name="scrub_clump_b_47" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-1.76886, 0, -0.636827, 0, 1.88, 0, 0.636827, 0, -1.76886, -0.221, -22.051, 24.552)
+
+[node name="scrub_clump_b_48" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-2.17992, 0, 0.515311, 0, 2.24, 0, -0.515311, 0, -2.17992, 1.133, -26.464, 28.183)
+
+[node name="scrub_clump_b_49" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.964287, 0, -0.886708, 0, 1.31, 0, 0.886708, 0, -0.964287, -1.188, -30.628, 31.214)
+
+[node name="scrub_clump_b_50" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.880357, 0, -1.86241, 0, 2.06, 0, 1.86241, 0, -0.880357, 0.86, -36.2, 38.898)
+
+[node name="scrub_clump_b_51" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-1.09433, 0, -0.951286, 0, 1.45, 0, 0.951286, 0, -1.09433, 0.344, -36.263, 44.934)
+
+[node name="scrub_clump_b_52" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.232787, 0, -1.19759, 0, 1.22, 0, 1.19759, 0, -0.232787, 4.245, 10.391, -42.805)
+
+[node name="scrub_clump_a_70" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(2.12833, 0, -1.04266, 0, 2.37, 0, 1.04266, 0, 2.12833, 3.262, -36.205, 36.101)
+
+[node name="scrub_clump_a_71" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(1.6929, 0, 0.84036, 0, 1.89, 0, -0.84036, 0, 1.6929, 7.676, 12.216, -39.367)
+
+[node name="scrub_clump_a_72" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.465776, 0, 1.24577, 0, 1.33, 0, -1.24577, 0, -0.465776, 8.406, 15.339, -32.522)
+
+[node name="scrub_clump_b_53" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(1.94283, 0, 0.430715, 0, 1.99, 0, -0.430715, 0, 1.94283, 8.976, 5.673, -24.941)
+
+[node name="scrub_clump_a_73" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-1.9237, 0, 1.41827, 0, 2.39, 0, -1.41827, 0, -1.9237, 8.691, -10.145, 12.724)
+
+[node name="scrub_clump_b_54" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-2.29031, 0, -0.609405, 0, 2.37, 0, 0.609405, 0, -2.29031, 8.979, -13.612, 16.374)
+
+[node name="scrub_clump_b_55" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-1.02946, 0, 2.10138, 0, 2.34, 0, -2.10138, 0, -1.02946, 11.732, 13.952, -36.132)
+
+[node name="scrub_clump_a_74" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(1.18644, 0, -0.453057, 0, 1.27, 0, 0.453057, 0, 1.18644, 13.133, 5.28, -7.231)
+
+[node name="scrub_clump_b_56" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(0.116452, 0, 1.30481, 0, 1.31, 0, -1.30481, 0, 0.116452, 13.022, -0.759, -0.556)
+
+[node name="scrub_clump_a_75" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-2.08195, 0, 0.741348, 0, 2.21, 0, -0.741348, 0, -2.08195, 12.975, -10.57, 11.374)
+
+[node name="scrub_clump_a_76" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.868032, 0, -0.981132, 0, 1.31, 0, 0.981132, 0, -0.868032, 15.601, 12.019, -40.314)
+
+[node name="scrub_clump_a_77" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(0.208278, 0, -1.9489, 0, 1.96, 0, 1.9489, 0, 0.208278, 16.412, 11.858, -35.462)
+
+[node name="scrub_clump_b_57" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(0.479146, 0, 2.07541, 0, 2.13, 0, -2.07541, 0, 0.479146, 14.991, 12.026, -32.464)
+
+[node name="scrub_clump_b_58" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-1.72475, 0, 1.38179, 0, 2.21, 0, -1.38179, 0, -1.72475, 17.044, 3.93, -14.834)
+
+[node name="scrub_clump_a_78" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-1.31924, 0, -0.692615, 0, 1.49, 0, 0.692615, 0, -1.31924, 16.925, 1.6, -3.54)
+
+[node name="scrub_clump_a_79" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-1.37992, 0, 0.0144511, 0, 1.38, 0, -0.0144511, 0, -1.37992, 16.538, -3.27, -0.519)
+
+[node name="scrub_clump_b_59" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.00282743, 0, -1.62, 0, 1.62, 0, 1.62, 0, -0.00282743, 16.002, -4.194, 3.329)
+
+[node name="scrub_clump_a_80" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-1.34877, 0, -1.55706, 0, 2.06, 0, 1.55706, 0, -1.34877, 16.82, -5.798, 7.238)
+
+[node name="scrub_clump_a_81" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-1.27382, 0, 1.52888, 0, 1.99, 0, -1.52888, 0, -1.27382, 16.588, -10.327, 11.72)
+
+[node name="scrub_clump_b_60" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-1.30727, 0, 0.0845373, 0, 1.31, 0, -0.0845373, 0, -1.30727, 16.345, -15.791, 17.091)
+
+[node name="scrub_clump_a_82" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-1.77363, 0, -0.857405, 0, 1.97, 0, 0.857405, 0, -1.77363, 16.151, -19.164, 20.478)
+
+[node name="scrub_clump_a_83" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(0.724182, 0, -1.56012, 0, 1.72, 0, 1.56012, 0, 0.724182, 19.618, 2.95, -18.961)
+
+[node name="scrub_clump_a_84" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-1.64517, 0, 1.73364, 0, 2.39, 0, -1.73364, 0, -1.64517, 20.274, 4.008, -12.519)
+
+[node name="scrub_clump_a_85" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-2.04206, 0, 1.20287, 0, 2.37, 0, -1.20287, 0, -2.04206, 19.021, -0.056, -4.541)
+
+[node name="scrub_clump_b_61" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(0.139363, 0, -1.26233, 0, 1.27, 0, 1.26233, 0, 0.139363, 20.581, -5.302, 3.62)
+
+[node name="scrub_clump_a_86" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.382229, 0, -1.73848, 0, 1.78, 0, 1.73848, 0, -0.382229, 19.218, -36.266, 32.909)
+
+[node name="scrub_clump_b_62" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(1.30123, 0, -1.87222, 0, 2.28, 0, 1.87222, 0, 1.30123, 23.515, 13.535, -35.473)
+
+[node name="scrub_clump_a_87" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(1.5147, 0, 0.277999, 0, 1.54, 0, -0.277999, 0, 1.5147, 25.012, -5.374, -3.817)
+
+[node name="scrub_clump_b_63" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(1.61548, 0, -0.381883, 0, 1.66, 0, 0.381883, 0, 1.61548, 24.889, -13.217, 12.976)
+
+[node name="scrub_clump_a_88" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(1.00683, 0, -0.929079, 0, 1.37, 0, 0.929079, 0, 1.00683, 29.139, 1.756, -19.265)
+
+[node name="scrub_clump_b_64" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.809207, 0, -1.22723, 0, 1.47, 0, 1.22723, 0, -0.809207, 29.044, -14.705, 11.714)
+
+[node name="scrub_clump_a_89" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.440361, 0, -2.14527, 0, 2.19, 0, 2.14527, 0, -0.440361, 27.326, -20.016, 19.349)
+
+[node name="scrub_clump_b_65" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(1.95797, 0, -0.888175, 0, 2.15, 0, 0.888175, 0, 1.95797, 29.074, -27.35, 25.115)
+
+[node name="scrub_clump_b_66" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(1.17406, 0, -0.292725, 0, 1.21, 0, 0.292725, 0, 1.17406, 28.384, -30.372, 27.183)
+
+[node name="scrub_clump_b_67" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.474145, 0, 1.58041, 0, 1.65, 0, -1.58041, 0, -0.474145, 32.354, -1.33, -12.489)
+
+[node name="scrub_clump_b_68" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(0.725652, 0, 1.57046, 0, 1.73, 0, -1.57046, 0, 0.725652, 31.361, -1.307, -8.087)
+
+[node name="scrub_clump_a_90" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.164845, 0, 1.96309, 0, 1.97, 0, -1.96309, 0, -0.164845, 31.116, -18.228, 16.164)
+
+[node name="scrub_clump_a_91" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(1.39886, 0, 1.13278, 0, 1.8, 0, -1.13278, 0, 1.39886, 31.526, -21.064, 18.858)
+
+[node name="scrub_clump_a_92" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(2.05742, 0, -0.551285, 0, 2.13, 0, 0.551285, 0, 2.05742, 36.287, -11.315, -0.954)
+
+[node name="scrub_clump_b_69" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(0.697787, 0, -1.94884, 0, 2.07, 0, 1.94884, 0, 0.697787, 39.45, -23.737, 16.871)
+
+[node name="scrub_clump_a_93" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(0.791299, 0, 1.14278, 0, 1.39, 0, -1.14278, 0, 0.791299, 40.018, -25.703, 19.136)
+
 [node name="CameraHints" type="Node3D" parent="."]
 
 [node name="wide_high" type="Marker3D" parent="CameraHints"]
@@ -1260,3 +1561,7 @@ transform = Transform3D(0.490844, 0.0745636, -0.868051, -0, 0.996331, 0.0855825,
 
 [node name="to_the_spire" type="Marker3D" parent="CameraHints"]
 transform = Transform3D(0.965716, 0.0352537, 0.257196, 0, 0.990736, -0.1358, -0.259601, 0.131144, 0.95677, 4.5, 1.4, 6.5)
+
+[node name="KitSlotSwaps" type="Node" parent="."]
+script = ExtResource("slot_swaps")
+paths = {"cs_copper": "res://game/levels/ch08/coilspire/coilspire_copper_material.tres", "cs_copper_worn": "res://game/levels/ch08/coilspire/coilspire_copper_worn_material.tres", "cs_iron": "res://game/levels/ch08/coilspire/coilspire_iron_material.tres"}

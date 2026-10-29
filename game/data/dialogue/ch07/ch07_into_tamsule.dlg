@@ -18,8 +18,9 @@ Liss [cold]: Tidecup week. Every purse-cutter on the coast is here. #line:ch07_i
 Ysolde [neutral]: Then hold on to yours, Mistress Varrow. #line:ch07_into_002
 @wait 0.8
 Rhen [tender]: ...Oruvel always came up for this. #line:ch07_into_003
-@mark liss liss_stall walk
-@mark ysolde ysolde_gantry walk
+@mark liss drift_liss walk
+@mark ysolde drift_ysolde walk
+@wait 3.0
 @letterbox off
 @camera release
 ===

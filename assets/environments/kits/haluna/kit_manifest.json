@@ -123,17 +123,6 @@
         "banyan_hero-lod1": 7351
       }
     },
-    "banyan_placeholder": {
-      "budget": [
-        60000,
-        10000
-      ],
-      "bytes": 3375764,
-      "lods": {
-        "banyan_placeholder": 54651,
-        "banyan_placeholder-lod1": 7351
-      }
-    },
     "basket_set": {
       "budget": [
         3600,
@@ -143,6 +132,17 @@
       "lods": {
         "basket_set": 564,
         "basket_set-lod1": 153
+      }
+    },
+    "beach_forge": {
+      "budget": [
+        9000,
+        700
+      ],
+      "bytes": 110292,
+      "lods": {
+        "beach_forge": 1249,
+        "beach_forge-lod1": 188
       }
     },
     "bowl_dome": {
@@ -264,6 +264,17 @@
       "lods": {
         "choir_singer": 2172,
         "choir_singer-lod1": 274
+      }
+    },
+    "clay_bowl": {
+      "budget": [
+        900,
+        100
+      ],
+      "bytes": 16176,
+      "lods": {
+        "clay_bowl": 320,
+        "clay_bowl-lod1": 64
       }
     },
     "cloudloom_hall": {
@@ -475,6 +486,17 @@
         "ground_lamp-lod1": 47
       }
     },
+    "hand_broom": {
+      "budget": [
+        1500,
+        120
+      ],
+      "bytes": 27116,
+      "lods": {
+        "hand_broom": 372,
+        "hand_broom-lod1": 36
+      }
+    },
     "heart_column": {
       "budget": [
         3000,
@@ -662,6 +684,17 @@
         "ink_kit-lod1": 12
       }
     },
+    "inn_hearth": {
+      "budget": [
+        3000,
+        400
+      ],
+      "bytes": 110072,
+      "lods": {
+        "inn_hearth": 1720,
+        "inn_hearth-lod1": 330
+      }
+    },
     "iskarra_arcade_sunk": {
       "budget": [
         5000,
@@ -744,10 +777,10 @@
         1500,
         100
       ],
-      "bytes": 47128,
+      "bytes": 56060,
       "lods": {
-        "iskarra_lamp_column": 818,
-        "iskarra_lamp_column-lod1": 60
+        "iskarra_lamp_column": 948,
+        "iskarra_lamp_column-lod1": 95
       }
     },
     "iskarra_plaza": {
@@ -832,9 +865,9 @@
         9000,
         500
       ],
-      "bytes": 301552,
+      "bytes": 356088,
       "lods": {
-        "iskarra_vigil_dressing": 4440,
+        "iskarra_vigil_dressing": 5786,
         "iskarra_vigil_dressing-lod1": 60
       }
     },
@@ -1239,10 +1272,10 @@
         9000,
         900
       ],
-      "bytes": 401620,
+      "bytes": 433864,
       "lods": {
-        "order_chapel": 5528,
-        "order_chapel-lod1": 406
+        "order_chapel": 6064,
+        "order_chapel-lod1": 418
       }
     },
     "outrigger_7m": {
@@ -1556,6 +1589,39 @@
       "tags": [
         "PLACEHOLDER"
       ]
+    },
+    "shop_sign_forge": {
+      "budget": [
+        1800,
+        200
+      ],
+      "bytes": 22176,
+      "lods": {
+        "shop_sign_forge": 228,
+        "shop_sign_forge-lod1": 24
+      }
+    },
+    "shop_sign_goods": {
+      "budget": [
+        1800,
+        200
+      ],
+      "bytes": 22704,
+      "lods": {
+        "shop_sign_goods": 234,
+        "shop_sign_goods-lod1": 24
+      }
+    },
+    "shop_sign_inn": {
+      "budget": [
+        1800,
+        200
+      ],
+      "bytes": 26176,
+      "lods": {
+        "shop_sign_inn": 336,
+        "shop_sign_inn-lod1": 24
+      }
     },
     "shrine_basin_bowl": {
       "budget": [
@@ -1898,6 +1964,17 @@
         "timber_stilt_post-lod1": 15
       }
     },
+    "travel_bundle": {
+      "budget": [
+        2400,
+        200
+      ],
+      "bytes": 36428,
+      "lods": {
+        "travel_bundle": 648,
+        "travel_bundle-lod1": 36
+      }
+    },
     "vey_arcade_bay": {
       "budget": [
         12000,
@@ -1954,6 +2031,17 @@
       "lods": {
         "wake_ground": 45288,
         "wake_ground-lod1": 1566
+      }
+    },
+    "wake_shell_loose": {
+      "budget": [
+        600,
+        80
+      ],
+      "bytes": 5856,
+      "lods": {
+        "wake_shell_loose": 42,
+        "wake_shell_loose-lod1": 42
       }
     },
     "wake_shell_set": {
@@ -2022,17 +2110,6 @@
         "well_shaft-lod1": 760
       }
     },
-    "windbreak_placeholder": {
-      "budget": [
-        6500,
-        1000
-      ],
-      "bytes": 443264,
-      "lods": {
-        "windbreak_placeholder": 5785,
-        "windbreak_placeholder-lod1": 430
-      }
-    },
     "windbreak_tree": {
       "budget": [
         6500,
@@ -2075,6 +2152,17 @@
       "lods": {
         "woven_awning": 264,
         "woven_awning-lod1": 64
+      }
+    },
+    "woven_bag": {
+      "budget": [
+        1500,
+        120
+      ],
+      "bytes": 20560,
+      "lods": {
+        "woven_bag": 296,
+        "woven_bag-lod1": 12
       }
     },
     "wreck_rib": {

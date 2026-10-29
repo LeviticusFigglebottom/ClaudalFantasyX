@@ -16,7 +16,7 @@ const ACT1_DRESSINGS := {
 	"res://game/levels/ch07/tamsule/tamsule_dressing.json": [],
 	"res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries_dressing.json": ["Column"],  # M3-RND-27
 	"res://game/levels/ch08/corrow/corrow_dressing.json": [],
-	"res://game/levels/ch08/coilspire/coilspire_dressing.json": ["Virel"],  # M3-CRE-627
+	"res://game/levels/ch08/coilspire/coilspire_dressing.json": [],  # Virel is her own body (M3-CRE-700)
 	"res://game/levels/ch09/corrow_night/corrow_night_dressing.json": [],
 }
 
@@ -77,7 +77,9 @@ func test_story_pieces_follow_their_blocks() -> void:
 	assert_true(kit_barge.is_visible_in_tree(), "shown with the block")
 	zone.hide_block("Barge")
 	assert_false(kit_barge.is_visible_in_tree(), "hidden with the block")
-	assert_eq(_dressing().followers("Smoke").size(), 4, "three plumes and the hulk's fire")
+	assert_eq(
+		_dressing().followers("Smoke").size(), 8, "three plumes, the hulk's fire light and the raid's four flames"
+	)
 	zone.hide_block("Smoke")
 	for n: Node3D in _dressing().followers("Smoke"):
 		assert_false(n.visible, "%s goes out with the Smoke block at dusk" % n.name)
@@ -155,6 +157,74 @@ func test_a_lod0_box_clips_lod1_out_and_lod0_in() -> void:
 	for p in inside:
 		assert_true(absf(p.rotated(Vector3.UP, deg_to_rad(-45.0)).x) <= 0.5001, "inside stays in the turned box")
 	_close()
+
+
+## ADR 0111 (Coilspire's 1.4 s of trimesh clipping): a triangle wholly past one face of a box skips the per-plane cut,
+## and the clip gives the same triangles as cutting every one. A grid of quads, far and near a turned box, both ways.
+func test_the_quick_reject_keeps_the_clip_exact() -> void:
+	var faces := PackedVector3Array()
+	for x in range(-6, 6):
+		for z in range(-6, 6):
+			var a := Vector3(x, 0.1 * x, z)
+			faces.append_array(
+				[a, a + Vector3(1, 0, 0), a + Vector3(1, 0, 1), a, a + Vector3(1, 0, 1), a + Vector3(0, 0, 1)]
+			)
+	var boxes := ZoneKitDressing.lod0_boxes(
+		[
+			{"pos": [0.3, 0.0, -0.2], "size": [2.5, 3.0, 1.5], "yaw": 30.0},
+			{"pos": [4.0, 0.4, 4.0], "size": [1.0, 1.0, 1.0]}
+		]
+	)
+	var to_parent := Transform3D(Basis(Vector3.UP, 0.4), Vector3(0.5, 0.0, 0.25))
+	# The old clip also split polygons that never touch a box (the planes tried first cut them before a later plane
+	# found them wholly outside), so the triangles differ; the surface does not: the same area on both sides.
+	for inside: bool in [false, true]:
+		var fast := ZoneKitDressing._clip_faces(faces, to_parent, boxes, inside)
+		var slow := _clip_faces_every(faces, to_parent, boxes, inside)
+		assert_true(
+			absf(_area(fast) - _area(slow)) < 1e-3,
+			"the same surface (inside %s: %.5f vs %.5f)" % [inside, _area(fast), _area(slow)]
+		)
+		assert_true(fast.size() <= slow.size(), "no more triangles than before (inside %s)" % inside)
+	var whole := _area(faces)
+	var parts := (
+		_area(ZoneKitDressing._clip_faces(faces, to_parent, boxes, false))
+		+ _area(ZoneKitDressing._clip_faces(faces, to_parent, boxes, true))
+	)
+	assert_true(absf(parts - whole) < 1e-3, "outside and inside still add up to the mesh")
+
+
+## The clip as it was before the quick reject: every polygon cut by every box.
+static func _clip_faces_every(
+	faces: PackedVector3Array, to_parent: Transform3D, boxes: Array[Array], inside: bool
+) -> PackedVector3Array:
+	var out := PackedVector3Array()
+	var back := to_parent.affine_inverse()
+	for i in range(0, faces.size(), 3):
+		var outside: Array[PackedVector3Array] = [
+			PackedVector3Array([to_parent * faces[i], to_parent * faces[i + 1], to_parent * faces[i + 2]])
+		]
+		var kept: Array[PackedVector3Array] = []
+		for box: Array in boxes:
+			var frame: Transform3D = box[0]
+			var to_box := frame.affine_inverse()
+			var rest: Array[PackedVector3Array] = []
+			for poly in outside:
+				var pieces := ZoneKitDressing._cut_by_box(to_box * poly, box[1])
+				for k in pieces.size():
+					var world := frame * pieces[k]
+					if k == 0:
+						if inside and world.size() >= 3:
+							kept.append(world)
+					elif world.size() >= 3:
+						rest.append(world)
+			outside = rest
+		if not inside:
+			kept = outside
+		for poly in kept:
+			for k in range(1, poly.size() - 1):
+				out.append_array([back * poly[0], back * poly[k], back * poly[k + 1]])
+	return out
 
 
 static func _area(faces: PackedVector3Array) -> float:

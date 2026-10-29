@@ -65,7 +65,9 @@
     "grey_share": 0.12,
     "colour": "#141417",
     "grey": "#8C867D",
-    "underpaint": "#16161A"
+    "underpaint": "#16161A",
+    "grey_strands": true,
+    "spec": "#6A6460"
   },
   "_eyes": {
     "iris": "#2A1A10"

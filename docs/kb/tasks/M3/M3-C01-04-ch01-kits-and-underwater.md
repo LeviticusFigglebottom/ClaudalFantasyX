@@ -2,8 +2,8 @@
 id: M3-C01-04
 title: Ch1 kits swap-in (raft-town, drowned tower) and the Underway's underwater look
 role: environment
-status: todo
-owner_session: ""
+status: review
+owner_session: "env-art (claude/env-art, 2026-10-29)"
 depends_on: [M3-C01-02]
 milestone: M3
 request-from: cinematics
@@ -25,5 +25,11 @@ Keep every spawn, trigger and shot id. For the Underway's look, put in an `Under
   act1-chapters swaps Ch4–Ch9: `ZoneKitDressing` (ADR 0200, on `claude/act1-chapters`) with a generated layout from
   the Oruvel and Underway kits' preview layouts. Env-art builds any piece the swap finds missing: file a
   `role: environment` task, as M3-ENV-1201 and M3-ENV-1203 did.
+
+## Checked (env-art, 2026-10-29)
+- Both zones mount env-art's kit dressing (`ov_zone_dressing` / `ou_zone_dressing`, ZoneKitDressing, M3-ENV-738/740);
+  the Underway carries `UnderwaterRig`. Godot `--filter=ch01_thread` 2 run, 0 failed. Routes walked at player eye on
+  10-28 and 10-29 (walls on the greybox's lines, test_underway_walk); Oruvel's commons, gulls, beacon and storm sky
+  finished under M3-ENV-104. The U/O shots render on the kit (the gate re-approves their drift).
 
 ## Review log

@@ -55,6 +55,23 @@ func test_the_wake_is_the_real_haluna_at_night() -> void:
 	_done()
 
 
+func test_the_wakes_field_camera_is_halunas() -> void:
+	Game.set_flag(&"ch03_rhen_sworn_guardian")
+	_open(WAKE)
+	var vols := zone.get_node(^"HalunaCameraVolumes")
+	# As many as ch02/haluna has (10 since M2-FP-109's NemeTable and DockEnd), read from its scene, so a volume added
+	# there reaches the wake without this test going stale.
+	var want := _haluna_volume_count()
+	assert_true(want >= 8, "ch02/haluna has its volumes (%d)" % want)
+	assert_eq(vols.get_child_count(), want, "the wake has ch02/haluna's volumes")
+	var market := vols.get_node(^"Market") as CameraVolume
+	assert_eq(market.shot.id, &"H09", "with their shots")
+	assert_true(market.contains_point(Vector3(-46.5, 3.0, -0.5)), "and their shapes, where Haluna has them")
+	zone.director.collect_volumes()
+	assert_true(zone.director.volumes.has(market), "the director picks them up")
+	_done()
+
+
 func test_placing_an_actor_needs_the_actor_and_the_mark() -> void:
 	_open(FERRY)
 	assert_true(zone.place_actor("toma", "ferry_toma"))
@@ -62,6 +79,16 @@ func test_placing_an_actor_needs_the_actor_and_the_mark() -> void:
 	assert_false(zone.place_actor("toma", "no_such_mark"))
 	assert_false(zone.place_actor("nobody", "ferry_toma"))
 	_done()
+
+
+func _haluna_volume_count() -> int:
+	var state := (load(Ch04Zone.HALUNA_SCENE) as PackedScene).get_state()
+	var n := 0
+	for i in state.get_node_count():
+		var path := String(state.get_node_path(i)).trim_prefix("./").split("/")
+		if path.size() == 2 and path[0] == Ch04Zone.HALUNA_VOLUMES:
+			n += 1
+	return n
 
 
 func _open(path: String) -> void:

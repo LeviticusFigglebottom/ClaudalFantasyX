@@ -380,6 +380,9 @@ ROOST_W = 3.0
 ROOST_H = 2.8  # inside, over the deck
 
 
+SNAP_EPS = 1e-9  # coordinates nearer 0 than this are 0 (host determinism)
+
+
 def build_roost(seed: int = 1806) -> list[kc.MeshBuilder]:
     out = []
     for lod in (False, True):
@@ -433,6 +436,10 @@ def build_roost(seed: int = 1806) -> list[kc.MeshBuilder]:
         uv = np.stack(np.broadcast_arrays(t[:, None] * 6.0, np.array([0.0, 1.0])[None, :]), -1)
         kc.quad_strip(mb, grid, weave, uv=uv, col=(0, 0, 0, 0.3), uv2=(0.8, 0.5))
         kc.quad_strip(mb, grid, weave, uv=uv, col=(0, 0, 0, 0.3), uv2=(0.8, 0.5), flip=True)
+        # The arches' crown is cos(pi/2): 6e-17 on one numpy SIMD path and another on the next (M3-CRE-663). Snapped
+        # to 0 (and -0.0 cleared), the build is byte-identical on every host, as the Avalanche Ram's (ADR 0005).
+        p = np.asarray(mb.pos, dtype=np.float64)
+        mb.pos = (np.where(np.abs(p) < SNAP_EPS, 0.0, p) + 0.0).tolist()
         out.append(mb)
     return out
 

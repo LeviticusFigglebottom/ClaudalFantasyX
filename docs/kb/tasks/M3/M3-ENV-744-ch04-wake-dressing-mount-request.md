@@ -2,7 +2,7 @@
 id: M3-ENV-744
 title: "Mount env-art's wake-night dressing in ch04/haluna_wake.tscn (request to act1-chapters)"
 role: cinematics
-status: todo
+status: done
 owner_session: ""
 depends_on: [M3-ENV-743]
 milestone: M3
@@ -34,4 +34,13 @@ env-art's dressing is ready (M3-ENV-743). The preview
       south of the 2 m wall and below its top (the frame is the wall). Both are so in the greybox too.
 - [ ] Re-render the zone's shots and view them.
 
+- 2026-10-28 (env-art): **DROPPED, superseded** (the Lead's word, 10-28). Ch4's wake no longer stands on a greybox
+  zone: act1-chapters' M3-C04-1226 put it on the real Haluna at night (ADR 0041). This dressing's frame (the
+  greybox blocks) is gone, and its preview cameras landed inside walls (the GPU QA's row 24). Removed:
+  `wake_zone_dressing.py`, `assets/environments/zones/ch04/**`, the preview `game/levels/_tests/haluna_wake_dressing/`,
+  the eight `zone_wake_*` shots and their PROVENANCE rows. The kit pieces it made (`wake_ground`, `wake_shell_set`,
+  the lane houses, `dock_haluna_short`) stay in the Haluna kit.
+
 ## Review log
+- 2026-10-28 environment (env-art, the request's reviewer): closed as superseded at the Lead's word. The wake now stands on the real Haluna (M3-C04-1226), so there is nothing to mount.
+- 2026-10-29 act1-chapters: superseded by M3-C04-1226 (f307b8a8): ch04/haluna_wake no longer has greybox blocks; it instances Haluna's own dressing at night, with env-art's wake sets by flag, Haluna's walk collision, and every story point re-laid on Haluna. The H02 and C01 notes refer to the old layout (both cameras were re-placed). To review (environment), for closing.

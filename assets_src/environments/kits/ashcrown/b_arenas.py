@@ -68,7 +68,9 @@ def _preview() -> dict:
 TEMPLE_LIGHT = {  # ashcrown.md §0 `ch05_temple` (13:00): the sun through the ash veil, ash haze
     "sub_frame": "ch05_temple",
     "sun": {"elev": 58.0, "az": 225.0, "color": "#FFF0DC", "energy": 2.8},
-    "fill": {"color": "#8E959C", "energy": 0.45},
+    # the fill is the zone's (tools/act1/ch05_ashcrown_dressing.py ZONE_AMBIENT_ENERGY, M3-ENV-1325): at 0.45 the tiers'
+    # shaded faces behind the enemy line were black planes
+    "fill": {"color": "#8E959C", "energy": 1.8},
     "exposure": 0.72,
     "glow": (0.35, 0.03, 1.1),
     "fog": {"color": "#8C8882", "aerial": 0.5, "density": 0.0018, "sky_affect": 0.25, "height": 0.0,
@@ -155,11 +157,48 @@ def court() -> dict:
 
 
 ARENAS = {"ashcrown_forecourt_day": forecourt, "ashcrown_anvil_court": court}
+# The near plume's day look (M3-ENV-1314): the arena writer has no material override, so the plume drew in its own
+# glb material (flat and red against the noon sky); the written scene gets the override on both LOD meshes.
+PLUME_GLB = "res://assets/environments/kits/pemakar/ash_plume_near.glb"
+PLUME_DAY = KIT + "materials/ac_plume_day.tres"
+PLUME_MESHES = ("ash_plume_near", "ash_plume_near-lod1")
 
 
-def main() -> int:
+def plume_day(text: str) -> str:
+    rid = re.search(rf'\[ext_resource type="PackedScene" path="{re.escape(PLUME_GLB)}" id="([^"]+)"\]', text)
+    if rid is None:
+        return text
+    node = re.search(rf'\[node name="([^"]+)" parent="([^"]+)" instance=ExtResource\("{re.escape(rid.group(1))}"\)\]',
+                     text)
+    head = re.match(r"\[gd_scene load_steps=(\d+) format=3\]", text)
+    text = text.replace(head.group(0), f"[gd_scene load_steps={int(head.group(1)) + 1} format=3]", 1)
+    last = list(re.finditer(r"^\[ext_resource [^\n]*\]$", text, flags=re.M))[-1]
+    text = text[:last.end()] + f'\n[ext_resource type="Material" path="{PLUME_DAY}" id="plume_day"]' + text[last.end():]
+    path = f"{node.group(2)}/{node.group(1)}"
+    for k, mesh in enumerate(PLUME_MESHES):
+        text = text.rstrip("\n") + (f'\n\n[node name="{mesh}" parent="{path}" index="{k}"]\n'
+                                    'surface_material_override/0 = ExtResource("plume_day")\n')
+    return text
+
+
+# The zone's slot swaps (M3-ENV-1325: weathered copper, gold and lacquer, the stone's lighter baked occlusion), applied
+# to the written scene by a KitSlotSwaps node (tools/act1/ch05_09_zone_looks.py).
+def _zone_looks():
+    spec = importlib.util.spec_from_file_location("ch05_09_zone_looks", ROOT / "tools" / "act1" / "ch05_09_zone_looks.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def main(out_dir: Path | None = None) -> int:
+    if out_dir is not None:  # tools/tests/test_b_arenas.py writes to a scratch dir
+        AS.OUT_DIR = out_dir
+    zl = _zone_looks()
+    paths = zl.load_generator("ch05_ashcrown_dressing").metal_paths()
     for aid, fn in ARENAS.items():
-        print(f"ARENA {AS.write_arena(fn()).relative_to(ROOT)}")
+        path = AS.write_arena(fn())
+        path.write_text(zl.add_kit_slot_swaps(plume_day(path.read_text(encoding="utf-8")), paths), encoding="utf-8")
+        print(f"ARENA {path.name}")
     return 0
 
 

@@ -10,12 +10,16 @@ extends Resource
 ##               `track_path` (or along the dolly itself when unset), and aims at the player.
 ##   ORBIT       only honoured when the director's hub_orbit_enabled is set (hub zones); otherwise
 ##               the director treats it as PAN_FOLLOW and warns.
+##   FOLLOW      camera rides behind the player at a fixed offset (ADR 0194, the big15 playtest's party
+##               start): `follow_distance` back along the authored heading (`position` -> `look_at`, flat)
+##               and `follow_height` up, smoothed by follow_smoothing, aiming at the player. The party stays
+##               the same size on screen and the camera never swings.
 ## Positions are in the director's rail space (the level root by default). Paths resolve relative
 ## to that root too. Every mode that aims at the player aims at `aim_node` instead when it is set
 ## (cutscene two-shots and reaction shots, M1-ARC-05). FOV is vertical (Camera3D.keep_aspect =
 ## KEEP_HEIGHT); see the lens table in docs/kb/art/environments/haluna.md §5.
 
-enum Mode { FIXED, PAN_FOLLOW, DOLLY, ORBIT }
+enum Mode { FIXED, PAN_FOLLOW, DOLLY, ORBIT, FOLLOW }
 
 const USE_DEFAULT := -1.0
 
@@ -54,6 +58,11 @@ const USE_DEFAULT := -1.0
 @export var progress_scale: float = 1.0
 @export var progress_offset: float = 0.0
 
+@export_group("Follow")
+## Metres back from the player along the shot's heading, and up.
+@export var follow_distance: float = USE_DEFAULT
+@export var follow_height: float = USE_DEFAULT
+
 @export_group("Orbit (hub zones only)")
 @export var orbit_distance: float = USE_DEFAULT
 @export var orbit_height: float = USE_DEFAULT
@@ -88,3 +97,8 @@ func dof_dict() -> Dictionary:
 		"near_transition": dof_near_transition,
 		"amount": dof_blur_amount,
 	}
+
+
+## True when the camera moves with the player (DOLLY, ORBIT, FOLLOW): there is no fixed frame to judge.
+func moves_with_player() -> bool:
+	return mode in [Mode.DOLLY, Mode.ORBIT, Mode.FOLLOW]

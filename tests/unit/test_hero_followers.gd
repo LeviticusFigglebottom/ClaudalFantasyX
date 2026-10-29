@@ -29,6 +29,8 @@ func before_each() -> void:
 	player.set_process_unhandled_input(false)
 	party = player.get_node(NodePath(String(HeroFieldParty.NAME))) as HeroFieldParty
 	party.set_physics_process(false)
+	party._cfg = party._cfg.duplicate()
+	party._cfg["sight_clear_m"] = 0.0  # the trail itself: the step off the camera's line is test_qa_field_camera's
 	zone.call("place_at", &"Court")
 	party.advance(DT)
 
@@ -149,6 +151,26 @@ func test_hidden_while_a_cutscene_holds_the_player() -> void:
 	party.advance(DT)
 	for f in party.followers:
 		assert_true(f.visible, "back after it")
+	_done()
+
+
+## M3-HER-1227: a cached sequencer freed in play (a scene's, or tools/act1/cutscene_stills') is skipped, not cast. A
+## freed cast is a script error that aborts should_hide(), so the playing sequencer after it would never be seen.
+func test_a_freed_cached_sequencer_is_skipped() -> void:
+	var gone := CutsceneSequencer.new()
+	zone.add_child(gone)
+	var seq := CutsceneSequencer.new()
+	zone.add_child(seq)
+	party.rescan()
+	assert_eq(party._sequencers.size(), 2, "both cached")
+	gone.free()
+	seq._playing = true
+	assert_true(party.should_hide(), "the live sequencer behind the freed one still holds the player")
+	party.advance(DT)
+	for f in party.followers:
+		assert_false(f.visible, "hidden during the cutscene")
+	seq._playing = false
+	assert_false(party.should_hide(), "and not after it")
 	_done()
 
 

@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/npc/haluna_villagers.gd" id="stage"]
+
+[node name="CrowdPemakar" type="Node3D"]
+script = ExtResource("stage")
+zone_scene = "res://game/levels/ch05/pemakar/pemakar.tscn"
+zone_id = &"ch05/pemakar"
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Crowd" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, -0, -0, 0.992498, 0.122264, 0, -0.122264, 0.992498, 3, 9.75, 5.2)
+fov = 50.0

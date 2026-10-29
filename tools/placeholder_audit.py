@@ -74,6 +74,15 @@ OWNER_AUDIO = "audio"
 OWNER_UI = "ui-menus"
 EARLY_LAST_CHAPTER = 4
 
+# Rows the owner rules above route to a role that can't close them (the Lead, 2026-10-29, env-art's LEAD-ASK on
+# M3-HER-1140): (path regex, what regex, owner, why). The first match wins; a row that matches none keeps its owner.
+ROUTES: list[tuple[str, str, str, str]] = [
+    (r"^game/levels/prologue/prologue\.tscn$", r"under City/Vigils", OWNER_PEOPLE,
+     "Pell's vigil stand-in: characters' model, slice-polish places him on his mark"),
+    (r"^assets/environments/kits/tamsule_bell/(reefball_drop_proxy\.glb|materials/tb_drop_proxy\.tres)$", r"",
+     OWNER_ZONES_LATE, "the Tamsule Bell's held drop is rendering's (M3-RND-26, env-art-b)"),
+]
+
 
 @dataclass
 class Item:
@@ -346,8 +355,9 @@ def audio_ids(root: Path = ROOT) -> tuple[dict[str, set[str]], list[str]]:
 
 
 def check_audio(root: Path = ROOT) -> list[Item]:
-    """Every @sfx and @music cue the Act I scripts name plays a real file, resolved as CutsceneSequencer does:
-    sfx_dir/<name>.ogg, music_dir/<name>.ogg (else its music_stand_ins track: a stand-in, still a placeholder).
+    """Every @sfx and @music cue the Act I scripts name plays a real file, resolved as CutsceneSequencer does: a
+    music.json cue on Audio's deck (CutsceneSound.music), else sfx_dir/<name>.ogg, music_dir/<name>.ogg (else its
+    music_stand_ins track: a stand-in, still a placeholder).
     Plus the audio files the audio tables name: missing, or named as temp."""
     out: list[Item] = []
     cfg = _json(root / "game/data/cutscene/sequencer.json")
@@ -364,7 +374,15 @@ def check_audio(root: Path = ROOT) -> list[Item]:
             for kind, name in CUE_RE.findall(p.read_text(encoding="utf-8", errors="ignore")):
                 if kind in dirs and name not in AUDIO_SKIP:
                     found[(kind, name)].append(p.stem)
+    # CutsceneSound.music (M2-AUD-07): a music.json cue plays on Audio's deck, stems and LFS files included, before
+    # the sequencer's own music_dir/<id>.ogg and its stand-in are tried (M3-AUD-861)
+    cue_files: dict[str, list[str]] = {}
+    for k, v in (_json(root / "game/data/audio/music.json").get("cues", {}) or {}).items():
+        if isinstance(v, dict):
+            cue_files[k] = [str(v["file"])] if v.get("file") else [str(f) for f in v.get("stems", []) or []]
     for (kind, name), scenes in sorted(found.items()):
+        if kind == "music" and cue_files.get(name) and all(res_to_path(f, root).exists() for f in cue_files[name]):
+            continue
         if res_to_path("%s%s.ogg" % (dirs[kind], name), root).exists():
             continue
         ch = min((c for c in (chapter_of(s) for s in scenes) if c is not None), default=None)
@@ -488,11 +506,20 @@ def from_scan(scan: list[dict], root: Path = ROOT) -> list[Item]:
 # --- the inventory ----------------------------------------------------------------------------------------------
 
 
+def route(item: Item) -> Item:
+    """ROUTES' owner for an item one of its rows matches, else the item as it is."""
+    for path_re, what_re, owner, _why in ROUTES:
+        if re.search(path_re, item.path) and re.search(what_re, item.what):
+            item.owner = owner
+            break
+    return item
+
+
 def audit(scan: list[dict] | None, root: Path = ROOT) -> list[Item]:
     items = (from_scan(scan, root) if scan is not None else []) + check_battle(root) + check_portraits(root)
     items += check_vfx(root)
     items += check_audio(root) + check_named_files(root)
-    items = [i for i in items if i.chapter is None or i.chapter <= LAST_CHAPTER]
+    items = [route(i) for i in items if i.chapter is None or i.chapter <= LAST_CHAPTER]
     items.sort(key=lambda i: (i.owner, SEVERITY_ORDER[i.severity], i.chapter if i.chapter is not None else 99, i.path))
     return items
 
@@ -514,8 +541,10 @@ def render(items: list[Item], source: str, scanned: list[str] | None = None) -> 
         "bodies, arenas, portraits, audio cues and files, and placeholder-named assets.",
         "- **Severity:** high = on screen in play or battle; medium = heard, or seen in a menu or in passing; low = "
         "a name only.",
-        "- **Not audited yet, with the reason:** item and skill icons (the Act I menus have none: items carry no "
-        "icon field and status glyphs are drawn); battle VFX beyond the bosses' set pieces (every hit falls back to "
+        "- **Covered elsewhere:** item, equipment and skill icons and the battle HUD's faces are UI's "
+        "`test_menu_glyphs` and `test_battle_portraits` (M3-UI-211; `docs/kb/qa/ui_act1_menu_audit.md`); sounds are "
+        "`tools/audio/act1_audio_audit.py` (audio's, M3-AUD-861).",
+        "- **Not audited yet, with the reason:** battle VFX beyond the bosses' set pieces (every hit falls back to "
         "its element's effect, so whether a skill needs a signature effect is battle-presentation's call).",
         "- **Source:** %s." % source,
     ]

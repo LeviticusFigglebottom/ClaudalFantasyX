@@ -36,4 +36,60 @@ villager scenes) in place of each capsule, with their field idle.
   The scenes that build those capsules (act1_final_inventory.md): `game/levels/ch06/brine_shoals/brine_shoals.tscn`
   (a, b, c) and `game/levels/ch08/corrow/corrow.tscn` (a, b).
 
+- 2026-10-28 (chr-npc-wip): the Act I villager builds are ready to swap in (M3-CHR-509..517, status review). Actor scenes (the
+  GLB turned to face -Z like the capsules' Facing boxes; the import rule dresses it and puts the clip library on an
+  AnimationPlayer): Haluna `game/levels/ch02/haluna/haluna.tscn` NPCs/Town/Shopkeeper ->
+  `res://assets/characters/villagers/shopkeeper/shopkeeper_actor.tscn`, Smith -> `.../smith/smith_actor.tscn`, Innkeeper ->
+  `.../innkeeper/innkeeper_actor.tscn` (field idle `idle`, talk `talk`; trade gestures `offer_goods`, `hammer_strike`,
+  `welcome_bow`). Ch6 (`game/levels/ch06/**`, speakers as the scripts name them): `clerk` -> `.../clerk/clerk_actor.tscn`
+  (`heat_iron`, `iron_into_water`, `hand_over`), `reed_a`..`reed_d` -> `.../reed_a/reed_a_actor.tscn` .. `.../reed_d/reed_d_actor.tscn`
+  (`pole_barge`, `bow_from_barge`; the pole is a scene prop on DEF-hand.R), the girl at the brazier (mark `brand_girl`) ->
+  `.../wright_girl/wright_girl_actor.tscn` (`arm_held_out`, `kneel_wait`), `wright_child_a`/`wright_child_b` ->
+  `.../wright_child_a/wright_child_a_actor.tscn`, `.../wright_child_b/wright_child_b_actor.tscn` (`crawl_out`, `kneel_wait`).
+  The Prologue's Vigil3..Vigil7 are the party, not villagers (see M3-CHR-518): swap them for Toma, Ysolde, Kerrid, Liss
+  (built) and Pell (not built yet).
+
+- 2026-10-28 (chr-npc-wip, named-NPC pass, M3-CHR-526..539, status review): actor scenes for the named Act I NPCs, each
+  `res://assets/characters/villagers/<id>/<id>_actor.tscn` (faces -Z like the capsules; the import rule dresses it and
+  adds its clip library). Ch1 `game/levels/ch01/oruvel/oruvel.tscn`: `sabe`, `scaleman`, `skipper_sadi`. Ch4
+  `game/levels/ch04/brightwater_ferry/brightwater_ferry.tscn`: `ferrymaster`, `purser`. Ch5 `game/levels/ch05/pemakar/pemakar.tscn`:
+  `elder`, `garo` (also its ch05_kahre_bound variant); `game/levels/ch05/ashcrown/ashcrown.tscn`: `tender` (the same model in
+  `ch08/coilspire/coilspire.tscn` and `ch09/corrow_night/corrow_night.tscn`). Ch6: `clerk` (above). Ch7
+  `game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries.tscn`: `ione`, `poolkeeper`. Ch8 `game/levels/ch08/corrow/corrow.tscn`:
+  `gatekeeper`, `hobb`, `marra`; `ch08/coilspire/coilspire.tscn`: `fenn`; Ch9 `ch09/corrow_night/corrow_night.tscn`: `fenn`,
+  `hobb`, `marra`. Not built: `ivo` (a Stillguard, M3-CHR-540), `ferryman`/`ferryman_mate` (another track's).
+  The generic villagers built before the Lead's re-split (shopkeeper, smith, innkeeper, reed_a..d, wright_girl,
+  wright_child_a/b; M3-CHR-510..517) are committed and work; the creatures track's villager generator may supersede them.
+
+- 2026-10-28 (chr-ivo-wip, M3-CHR-540, status review): **Ivo Brannick** is built: `res://assets/characters/ivo/ivo.glb`
+  (+ `ivo_lod1.glb`, `materials/`, `anim/ivo_clips.tres` with idle, walk, run, talk, hug_lift, kneel_palms_flat; the import
+  rule dresses it and puts the library on an AnimationPlayer). Stage wrapper to copy (materials and the idle set):
+  `game/levels/_tests/characters/stillguard/ivo_stage.tscn`. It replaces the `ivo` capsule in
+  `game/levels/ch08/corrow/corrow.tscn` (`corrow_layout.json` actor `ivo`; actor id = speaker id `ivo`, so
+  `ch08_okeru.dlg`'s `@anim ivo hug_lift toma` and `@anim ivo kneel_palms_flat` resolve; `look_at` is the sequencer's
+  turn). Staging: he carries **no spear**, only the round shield (the GLB's `Shield` mesh, rigid on `DEF-shield`). The
+  scene drops it before he runs (`@sfx shield_dropped`), so the level should hide the `Shield` node there and lay a
+  dropped-shield prop (the same mesh) at his start; he then runs, hugs and kneels without it, and has it back for the W10 shield-line (`shield_line_ivo`). `hug_lift` (3.2 s) opens the
+  arms, wraps, dips and lifts, and holds the last frame leaning back with his arms round Toma's back about 0.4 m in
+  front of him at 1.25-1.3 m: Toma's lift (his feet off the floor) is the scene's placement. Not built: a lying-in-shroud
+  pose for Ch9 N05/N05B (`corrow_night`), which the task leaves to the Ch9 owner's call; ask the characters track.
+
+- 2026-10-29 (characters, M3-CHR-506): **Pell is built** (`res://assets/characters/pell/pell.glb`, `pell_lod1.glb`,
+  `materials/`, `anim/pell_clips.tres` with idle, walk, run, talk, storm_call, descend_rocks, go_still, listen_tilt,
+  back_to_sea and the battle contract). Stage wrapper to copy (materials, the name-shell toggle and the idle set):
+  `game/levels/_tests/characters/pell/pell_stage.tscn`. It replaces the capsules `pell` and `vigil_pell` in
+  `game/levels/ch09/corrow_night/corrow_night.tscn` (variant `ch09_pell_joined`, act1_final_inventory.md) and the
+  Prologue's party vigil (M3-CHR-518). The vigils play `back_to_sea`; the name-shell starts blank
+  (`PellNameShell.apply(root, false)`) and is carved after the Ch9 naming.
+
+- 2026-10-29 (characters; CONSOLIDATED: "capsules: named NPCs -> characters"): **the named Act I NPCs are cast as
+  themselves.** Every zone layout row that named one cast a generic villager in its place (the ferrymaster as `fisher`,
+  Ione as `vendor`, the Stillguard as `fisher`/`netmender` ...). Now `"cast": "<id>"` for ferrymaster, purser, elder,
+  garo, tender (Ch5 x2, Ch8, Ch9), ione, poolkeeper, fenn (Ch8, Ch9), gatekeeper, hobb (Ch8, Ch9), marra (Ch8, Ch9),
+  ivo, clerk, stillguard_a/b/c (Ch6, Ch8) and Ch9's `stillguard` (as stillguard_d); Ch1's `model` for sabe, scaleman
+  and skipper_sadi. Only the `cast`/`model` value changed in each row. ZoneCast resolves
+  `assets/characters/villagers/<id>/<id>_actor.tscn`, so the Stillguard soldiers and Ivo got actor wrappers there
+  (their GLBs stay in `assets/characters/<id>/`). Every named model has every clip its dialogue calls except the
+  Stillguard's (M3-CHR-590) and `look_at` (the sequencer's turn).
+
 ## Review log

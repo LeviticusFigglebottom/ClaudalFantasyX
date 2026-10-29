@@ -3,7 +3,7 @@ id: M3-HER-1141
 title: "ADR 0041 (Act I at final quality): env-art-b's items in the placeholder inventory (11: 11 high, 0 medium, 0 low)"
 role: environment
 status: todo
-owner_session: ""
+owner_session: "env-art-b (session_01F3vrUNt6trAMrjeYavaDNC, claude/env-art-b)"
 reviewer: qa
 depends_on: []
 milestone: M3
@@ -33,4 +33,18 @@ ADR 0041: everything a player meets from the title to the end of Ch9 reaches fin
 - **high**, Ch8: `game/levels/ch08/corrow/corrow.tscn`: zone greybox: 8 visible primitive/CSG meshes (8 BoxMesh), under Greybox 8
 - **high**, Ch9: `game/levels/ch09/corrow_night/corrow_night.tscn`: zone greybox: 58 visible primitive/CSG meshes (58 BoxMesh), under Greybox 58
 
+## Notes (env-art-b, 2026-10-28)
+`python3 tools/placeholder_audit.py` (with its runtime scan) on `claude/env-art-b` @ 8ca4c492: **37 items, none for
+env-art-b** (audio 12, characters 3, creatures 4, creatures-b 4, env-art 12, integration-qa 2). The rows were fixed by
+M3-ENV-1300 to 1322 (the zones' kit dressing with `greybox.hide_all` and no kept blocks, the Ch5–Ch9 arenas on
+their kits, the Lanternfall votives, the seawall storm arenas replacing `wall_head_storm`) and M3-RND-26/27 (the Bell's
+drop and column, the Coilspire storm wall). The inventory file is integration-qa's to re-write (`--write`).
+
 ## Review log
+- 2026-10-29 integration-qa (qa, reviewer): **accepted, done.** The full audit (import + runtime scan of every Act I
+  zone, variant and arena) on the merged tree, which was big16 + every track head (17:40) and then also Pell's row
+  (18:30), lists **nothing for env-art-b**. Both criteria hold. act1_final_inventory.md on claude/hero-integration shows it.
+- 2026-10-29 ~20:00 integration-qa: **reopened.** The Lead re-routed two rows here from env-art (who can't close
+  them): `assets/environments/kits/tamsule_bell/reefball_drop_proxy.glb` and `materials/tb_drop_proxy.tres`. Both
+  are named as placeholders, and the Bell's held drop is rendering's (M3-RND-26). Rename them, or replace them with
+  the final drop, and re-run the audit.

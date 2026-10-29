@@ -1,7 +1,7 @@
 {
  "doc": "The @cue vocabulary of .dlg files (docs/kb/tech/dialogue_format.md). tools/dlgc.py rejects unknown cues, unknown key= arguments, and values outside these types and option sets. Arg types: id (letters, digits, _), number, int, bool, string, emotion (game/data/dialogue/emotions.json), enum (values, or a named set). Positional args are listed in order; optional ones come last. one_of: exactly one of these names must be given. requires: key -> the name it needs. reserved: cue -> first-arg values that are commands rather than ids, each a meaning string or {doc, kwargs: [the only keys allowed with it]}.",
  "sets": {
-  "grades": ["ch02", "ch02_noon", "ch02_night", "ch03", "ch03_causeway", "ch03_steps", "ch03_boss", "ch03_shrine_int"],
+  "grades": ["ch02", "ch02_noon", "ch02_night", "ch03", "ch03_causeway", "ch03_steps", "ch03_boss", "ch03_shrine_int", "ch09", "ch09_dawn", "prologue"],
   "vfx_effects": ["glimmer_lift", "glimmer_held", "glimmer_bound"],
   "vfx_drift": ["down_seaward"],
   "vfx_motion": ["spiral_up"],
@@ -70,7 +70,7 @@
    "kwargs": {}
   },
   "vfx": {
-   "doc": "Trigger a VFX. Glimmer light rules: glimmer_lift rises (motion=spiral_up), glimmer_held sinks (drift=down_seaward), glimmer_bound is still.",
+   "doc": "Trigger a VFX. Glimmer light rules: glimmer_lift rises (motion=spiral_up), glimmer_held sinks (drift=down_seaward), glimmer_bound is still. The cue goes first to the stage's VFX hosts (CutsceneVfxHosts, M3-ARC-1326), then to the motes placeholder. follow=<actor> or <actor>_staff: one attractor on that body; anchors=<actor group>: grief anchors that let go as the follow-host passes (hosts read them; the placeholder ignores them).",
    "args": [{"name": "effect", "type": "enum", "set": "vfx_effects"}],
    "kwargs": {
     "at": {"type": "id"},
@@ -78,7 +78,9 @@
     "drift": {"type": "enum", "set": "vfx_drift"},
     "motion": {"type": "enum", "set": "vfx_motion"},
     "rate": {"type": "enum", "set": "vfx_rate"},
-    "form": {"type": "id"}
+    "form": {"type": "id"},
+    "follow": {"type": "id"},
+    "anchors": {"type": "id"}
    }
   },
   "wait": {

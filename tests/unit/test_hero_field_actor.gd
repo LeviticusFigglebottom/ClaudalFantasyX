@@ -250,7 +250,8 @@ func test_aliased_stage_actors_get_their_heroes_bodies() -> void:
 	var vigil := _capsule_actor("vigil_asha")
 	var edge := _capsule_actor("ysolde_edge")
 	var pell := _capsule_actor("vigil_pell")
-	for a in [vigil, edge, pell]:
+	var neme := _capsule_actor("vigil_neme")
+	for a in [vigil, edge, pell, neme]:
 		actors.add_child(a)
 	zone.add_child(stage)
 	var bodies := HeroFieldActor.attach_stage(stage)
@@ -258,9 +259,44 @@ func test_aliased_stage_actors_get_their_heroes_bodies() -> void:
 	for b in bodies:
 		ids.append(String(b.hero_id))
 	ids.sort()
-	assert_eq(ids, ["asha", "ysolde"] as Array[String], "Asha's vigil and Ysolde at the edge get bodies")
+	# M3-HER-1149: Pell's row is in; his model comes with claude/characters (M3-CHR-506), so before that merge his
+	# vigil stays a capsule and after it he gets his body like the others.
+	var pell_model := HeroFieldActor.scene_path(&"pell") != ""
+	var want: Array[String] = ["asha", "ysolde"]
+	if pell_model:
+		want.insert(1, "pell")
+	assert_eq(ids, want, "Asha's vigil, Ysolde at the edge (and Pell's vigil, with his model) get bodies")
 	assert_false((vigil.get_node("StandIn") as Node3D).visible, "the vigil's capsule hides")
-	assert_true((pell.get_node("StandIn") as Node3D).visible, "Pell (no model yet) keeps his")
+	assert_eq((pell.get_node("StandIn") as Node3D).visible, not pell_model, "Pell's hides once his model is in")
+	assert_true((neme.get_node("StandIn") as Node3D).visible, "an actor whose hero has no field row keeps its capsule")
+	_done()
+
+
+## M3-HER-1225: Sefir has no stepping walk, only walk_glide; his row maps walk and run to it (`clips`), so his stage
+## actor (Ch6's reed bank) takes his model and glides when a cutscene walks him, instead of standing as a capsule.
+func test_sefir_s_stage_actor_takes_his_body_and_glides() -> void:
+	assert_eq(HeroFieldActor.clips_of(&"sefir").get("walk"), "walk_glide", "his walk is his glide")
+	assert_eq(
+		HeroFieldActor.clips_of(&"rhen").get("walk"), HeroFieldActor.clips_of(&"asha").get("walk"), "others keep theirs"
+	)
+	var stage := CutsceneStage.new()
+	stage.name = "CutsceneStage"
+	var actors := Node3D.new()
+	actors.name = "Actors"
+	stage.add_child(actors)
+	var sefir := _capsule_actor("sefir")
+	actors.add_child(sefir)
+	zone.add_child(stage)
+	var bodies := HeroFieldActor.attach_stage(stage)
+	assert_eq(bodies.size(), 1, "Sefir gets a body")
+	if not bodies.is_empty():
+		var body := bodies[0]
+		assert_false((sefir.get_node("StandIn") as Node3D).visible, "his capsule hides")
+		assert_true(body.tree != null and body.tree.has_animation(&"walk_glide"), "his tree has his glide")
+		for i in SETTLE_FRAMES:
+			sefir.global_position += Vector3(0.0, 0.0, -body.loco.walk_clip_mps * DT)
+			body.advance(DT)
+		assert_true(body.loco.speed > 0.0, "a cutscene walk moves him on his glide")
 	_done()
 
 
@@ -278,8 +314,9 @@ func test_the_clip_speeds_match_the_measured_foot_plant() -> void:
 		var m := (load(str(row["scene"])) as PackedScene).instantiate()
 		var has_new := (m.find_child("AnimationPlayer", true, false) as AnimationPlayer).has_animation(&"walk_start")
 		assert_eq(str(speeds["source"]) == "locomotion", has_new, "%s: locomotion.json speeds with its clips" % id)
+		var clips := HeroFieldActor.clips_of(StringName(id))  # a hero's own clips (Sefir glides on walk_glide)
 		for k: String in ["walk", "run"]:
-			var measured := HeroClipGait.clip_speed(m, StringName(k), cfg)
+			var measured := HeroClipGait.clip_speed(m, StringName(str(clips.get(k, k))), cfg)
 			var data_mps := float(speeds["%s_clip_mps" % k])
 			assert_true(measured > 0.0, "%s %s measured" % [id, k])
 			assert_between(

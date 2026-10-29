@@ -152,7 +152,7 @@ Asha [worried]: They didn't want to go, Rhen. I had to keep asking them. #line:c
 <<set $ch09_asha_said_they_hung_back = true>>
 @wait 1.5
 @camera N17
-@mark pell rocks_foot walk
+@mark pell rocks_foot walk via=way_rocks_top,way_rocks_down,way_rocks_turn
 @wait 3.0
 @anim toma hand_on_spear
 @wait 2.5

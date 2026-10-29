@@ -78,6 +78,13 @@ const LOOK_NAME := &"NpcLook"
 @export var work_target_path: NodePath
 ## A Node3D it hurries to in a storm. Empty: it braces where it stands.
 @export var shelter_path: NodePath
+## M3-CRE-659: this person's colours on a shared body (NpcTints: cloth_a, cloth_b, cloth_c, hair -> a colour),
+## applied to the actor's materials as per-instance overrides.
+@export var tints: Dictionary = {}
+## M3-CRE-659: merged over its npc.json tuning (a crowd person's work clip and focus, a child's pace).
+@export var tuning_over: Dictionary = {}
+## M3-HER-1142: when opaque, the body is drawn as one glowing silhouette in this colour (NpcSilhouette).
+@export var silhouette := Color(0.0, 0.0, 0.0, 0.0)
 
 var tuning: Dictionary = {}
 var loco: HeroLocomotion
@@ -142,7 +149,7 @@ var _bout_on := false
 func _ready() -> void:
 	if npc_id == &"":
 		npc_id = StringName(String(name).to_snake_case())
-	tuning = tuning_for(npc_id)
+	tuning = merged(tuning_for(npc_id), tuning_over)
 	loco = HeroLocomotion.new(merged(HeroLocomotion.load_data(), tuning.get("locomotion", {}) as Dictionary))
 	rest_yaw = rotation.y
 	home = position
@@ -240,6 +247,9 @@ func _attach_actor() -> void:
 	if actor == null:
 		push_warning("FieldNpc %s: no actor" % npc_id)
 		return
+	NpcTints.apply(actor, tints)
+	if silhouette.a > 0.0:
+		NpcSilhouette.apply(actor, silhouette)
 	anim = HeroMotion.player_of(actor)
 	HeroMotion.add_micro_motion(actor, npc_id)
 	var skel := HeroMotion.skeleton_of(actor)
@@ -490,6 +500,8 @@ func _update_clip(force: bool = false) -> void:
 	current_clip = clip
 	if kind == CLIP_IDLE:
 		anim.seek(idle_phase(), false)
+	elif kind == CLIP_WORK or kind == CLIP_STORM:
+		anim.seek(loop_phase(clip), false)
 
 
 ## Where in the idle loop it is now: its offset plus the clock, wrapped (the idle never restarts at 0).
@@ -497,6 +509,15 @@ func idle_phase() -> float:
 	if anim == null or not anim.has_animation(_clip(CLIP_IDLE)):
 		return 0.0
 	return fposmod(idle_offset_sec + clock, anim.get_animation(_clip(CLIP_IDLE)).length)
+
+
+## Where in a resting loop (a work or storm clip) it is now: a share of the loop of its own, plus the clock, so two
+## villagers at the same work never haul or brace in step (big17: Tamsule's crowd fisher and boatman hauled together).
+func loop_phase(clip: StringName) -> float:
+	if anim == null or not anim.has_animation(clip):
+		return 0.0
+	var length := anim.get_animation(clip).length
+	return fposmod(HeroIdleMicro.share(npc_id, String(clip)) * length + clock, length)
 
 
 ## True when the data names a clip for `kind` and the actor has it (work and storm clips are optional).

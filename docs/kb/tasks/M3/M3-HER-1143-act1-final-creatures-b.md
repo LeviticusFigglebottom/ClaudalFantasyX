@@ -2,8 +2,8 @@
 id: M3-HER-1143
 title: "ADR 0041 (Act I at final quality): creatures-b's items in the placeholder inventory (6: 6 high, 0 medium, 0 low)"
 role: character
-status: todo
-owner_session: ""
+status: done
+owner_session: "creatures-b (claude/creatures-b)"
 reviewer: qa
 depends_on: []
 milestone: M3
@@ -15,9 +15,9 @@ ADR 0041: everything a player meets from the title to the end of Ch9 reaches fin
 **creatures-b** owns bosses and the Vowbound. This task carries those rows; the inventory's "creatures-b" section is the live list.
 
 ## Acceptance criteria
-- [ ] Every row of the inventory's "creatures-b" section is final (fix the item, then re-run the audit; don't edit the
+- [x] Every row of the inventory's "creatures-b" section is final (fix the item, then re-run the audit; don't edit the
       table by hand).
-- [ ] The audit lists nothing for creatures-b: `python3 tools/placeholder_audit.py` (with Godot on PATH; it runs the zone
+- [x] The audit lists nothing for creatures-b: `python3 tools/placeholder_audit.py` (with Godot on PATH; it runs the zone
       scan itself) shows no "creatures-b" line.
 
 ## The rows as first audited (2026-10-28)
@@ -28,4 +28,18 @@ ADR 0041: everything a player meets from the title to the end of Ch9 reaches fin
 - **high**, all: `game/data/battle/vowbound.json#kahre`: Vowbound kahre is drawn as a primitive (no actor scene)
 - **high**, all: `game/data/battle/vowbound.json#virel`: Vowbound virel is drawn as a primitive (no actor scene)
 
+## Status (creatures-b, 2026-10-28 09:45)
+- **spar_wraith and matron zone capsules (Ch4, Ch5):** gone from the live inventory (the zone owners placed the models).
+- **ilun, kahre, virel:** real models (M3-CRB-008; viewed in battle_vowbound_out / battle_choreo_vowbound_rise and the
+  review shots). The rows are an **audit false positive**: the rule reads only battle_sandbox.json `scene`, not the
+  creatures.json `vowbound` row the game uses. Fix filed as **M3-CRB-012** (qa) with a tested patch; the rows clear
+  when it lands.
+- **stillguard_inquisitor (Moll):** a person, the characters track's (M3-CHR-507 builds his battle actor); the audit
+  files it under bosses because his enemies.json row has phases. Not creatures-b's to build.
+- The six Act I bosses and three Vowbound are at final quality (M3-CRB-002..008), pinned by
+  tests/unit/test_creature_bosses_act1.gd.
+
 ## Review log
+- 2026-10-29 integration-qa (qa, reviewer): **accepted, done.** The full audit (import + runtime scan of every Act I
+  zone, variant and arena) on the merged tree, which was big16 + every track head (17:40) and then also Pell's row
+  (18:30), lists **nothing for creatures-b**. Both criteria hold. act1_final_inventory.md on claude/hero-integration shows it.

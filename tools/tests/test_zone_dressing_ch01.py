@@ -23,11 +23,8 @@ ZONES = [
     (ROOT / "assets_src" / "environments" / "kits" / "oruvel" / "ov_zone_dressing.py",
      {("cabin_keelroof", "actors:roof_child")}),  # the child sits on the cabin's roof (C1-01)
     (ROOT / "assets_src" / "environments" / "kits" / "oruvel_underway" / "ou_zone_dressing.py", set()),
-    # Ch4's wake night: the wall's pieces collide as the wall and stand where its scene is played (the gap's mark,
-    # Ysolde at the gap, the wall's trigger strip in front of it; each is clear of the pieces' faces by 0.5 m).
-    (ROOT / "assets_src" / "environments" / "kits" / "haluna" / "wake_zone_dressing.py",
-     {("wakeshell_wall", "actors:ysolde"), ("wakeshell_wall", "marks:wall_gap"), ("wakeshell_wall", "trigger:wall"),
-      ("tidewall_straight", "trigger:wall")}),
+    # Ch4's wake night (wake_zone_dressing.py, M3-ENV-743) is retired: the zone now stands on the real Haluna at
+    # night (act1-chapters' M3-C04-1226, ADR 0041), so its greybox blocks are gone and the generator has no frame.
 ]
 
 

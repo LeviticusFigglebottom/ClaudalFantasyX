@@ -22,6 +22,10 @@ extends HalunaDresser
 ##                    towers are squat or tall copies of one tower);
 ##                  "kit_dir" (+ "materials_dir", default <kit_dir>materials/)  a piece from another kit
 ##                    (Corrow's trader is the ferry kit's hull); each kit keeps its own material cache.
+##                  "material_paths": {slot: "res://...tres"}  one slot's material swapped for a zone's own, the
+##                    piece's other slots kept from its kit (Coilspire's inner laterite without its green joints).
+##   kit_material_paths  {slot: "res://...tres"}: the same swap on every piece from the zone's own kit (no "kit_dir"),
+##                  under each row's own "material_paths" (Corrow's weathered lacquer, copper and iron, M3-ENV-1326).
 ##   greybox      {"hide_all": bool, "keep": [ids]}: hides the greybox meshes (collision stays), except
 ##                  the kept ones (story pieces no kit has yet).
 ##   fire_lights  [{"at": [x, y, z], "energy", "range", "block"?, "shadow"?, "attenuation"?, "color"?}] omnis
@@ -40,6 +44,15 @@ extends HalunaDresser
 ##                  (UndertowStorm, game/data/vfx/undertow.json "presets") marking the point it approaches from
 ##                  `azimuth_deg`, on the zone's Water, sun and WorldEnvironment; a "block" storm follows its block
 ##                  and stops processing while hidden (no rain, shadow or flash before the story brings it).
+##   drops        [{"name", "at": [x, y, z], "profile", "block"?}]: Rendering's held water (WaterSphereRig, a
+##                  game/data/vfx/water_sphere.json "profiles" row) centred at `at` (the Tamsule Bell's drop,
+##                  M3-RND-26); a "block" drop follows its block.
+##   smokes       [{"name", "at": [x, y, z], "yaw_deg", "scale"?, "profile"?, "seed"?, "block"?}]: Rendering's
+##                  volumetric columns (SmokeColumn, game/data/vfx/smoke_column.json "columns", M3-RND-21), framed
+##                  as the kit's smoke_plume pieces (yawed so +X is downwind, uniform scale); a "block" one follows
+##                  its block.
+##   ebbing       {}: Ch9's Ebbing motes (EbbingMotes, game/data/vfx/ebbing.json, M3-C09-03): the held fields
+##                  the chapter's `@vfx glimmer_held` cues play, on the zone's stage.
 ##   environment  a res:// Environment: the zone's WorldEnvironment takes a copy (sky, grade, fog).
 ##   time_of_day_h  the hymn_time_of_day the sky reads.
 ## It writes hymn_sun_direction from the zone's sun every frame, so the sky's sun follows the story's
@@ -64,9 +77,11 @@ const KEY_MULTIMESHES := "multimeshes"
 const KEY_FAR_LIGHTS := "far_lights"
 const KEY_WATERS := "waters"
 const KEY_STORMS := "storms"
-## Past a shown storm's far side (m): the current camera's far plane is raised to its distance plus its bound plus this,
-## since the Undertow stands 10-14 km out (undertow.json presets) and a Camera3D's default far is 4 km.
-const STORM_FAR_MARGIN_M := 2000.0
+const KEY_DROPS := "drops"
+const KEY_SMOKES := "smokes"
+const KEY_EBBING := "ebbing"
+const KEY_MATERIAL_PATHS := "material_paths"
+const KEY_KIT_MATERIAL_PATHS := "kit_material_paths"
 const DEFAULT_WAVES := "res://game/world/water/lagoon_waves.tres"
 ## The waters' plane cells (m): fine enough for the wave field's short waves to read on a still lake.
 const WATER_CELL_M := 2.0
@@ -89,7 +104,6 @@ var _followers: Dictionary = {}  ## block id -> Array of kit nodes
 var _kit_caches: Dictionary = {}  ## materials dir -> that kit's material cache
 var _spinners: Array[Array] = []  ## [piece, block, the piece's own basis]
 var _turners: Array[Array] = []  ## [piece, block, the piece's own basis]
-var _storms: Array[UndertowStorm] = []
 
 
 func dress() -> void:
@@ -99,10 +113,15 @@ func dress() -> void:
 		return
 	zone = get_parent() as GreyboxZone
 	_rng.seed = int(layout.get("seed", 1))
+	var kit_paths: Dictionary = layout.get(KEY_KIT_MATERIAL_PATHS, {})
 	for spec: Dictionary in layout.get("pieces", []):
 		var piece := _place_from_kit(spec)
 		if piece == null:
 			continue
+		if not kit_paths.is_empty() and not spec.has(KEY_KIT_DIR):
+			swap_slots(piece, kit_paths)
+		if spec.has(KEY_MATERIAL_PATHS):
+			swap_slots(piece, spec[KEY_MATERIAL_PATHS])
 		if spec.has(KEY_SCALE_Y):
 			var s := float(spec.get("scale", 1.0))
 			piece.basis = piece.basis.scaled(Vector3(1.0, float(spec[KEY_SCALE_Y]) / s, 1.0))
@@ -125,6 +144,9 @@ func dress() -> void:
 	_place_far_lights()
 	_place_waters()
 	_place_storms()
+	_place_drops()
+	_place_smokes()
+	_place_ebbing()
 	_hide_greybox()
 	_apply_environment()
 	if layout.has(KEY_TIME_OF_DAY):
@@ -138,13 +160,25 @@ func _process(_delta: float) -> void:
 		(sp[0] as Node3D).basis = (sp[2] as Basis) * Basis(Vector3.BACK, turn)
 	for tp: Array in _turners:
 		(tp[0] as Node3D).basis = Basis(Vector3.UP, (tp[1] as Node3D).rotation.y) * (tp[2] as Basis)
-	_keep_storms_in_view()
 	if zone == null or zone.sun == null or not zone.sun.is_inside_tree():
 		return
 	var toward := zone.sun.global_basis.z.normalized()  # a light shines down its -Z
 	if not toward.is_equal_approx(_sun_written):
 		_sun_written = toward
 		ShaderGlobals.set_value(GLOBAL_SUN, toward)
+
+
+## Every surface of `root`'s meshes whose kit slot (its source material's name) is a key of `paths` takes that
+## path's material instead.
+static func swap_slots(root: Node, paths: Dictionary) -> void:
+	for n: Node in root.find_children("*", "MeshInstance3D", true, false):
+		var mi := n as MeshInstance3D
+		if mi.mesh == null:
+			continue
+		for i in mi.mesh.get_surface_count():
+			var src := mi.mesh.surface_get_material(i)
+			if src != null and paths.has(String(src.resource_name)):
+				mi.set_surface_override_material(i, load(String(paths[String(src.resource_name)])) as Material)
 
 
 ## HalunaDresser's placement, from the piece's own kit when it names one.
@@ -252,7 +286,11 @@ static func _clip_faces(
 			var to_box := frame.affine_inverse()
 			var rest: Array[PackedVector3Array] = []
 			for poly in outside:
-				var pieces := _cut_by_box(to_box * poly, box[1])
+				var local := to_box * poly
+				if _clear_of_box(local, box[1]):  # wholly past one face: nothing to cut (most of a mesh; ADR 0111)
+					rest.append(poly)
+					continue
+				var pieces := _cut_by_box(local, box[1])
 				for k in pieces.size():
 					var world := frame * pieces[k]
 					if k == 0:
@@ -267,6 +305,20 @@ static func _clip_faces(
 			for k in range(1, poly.size() - 1):
 				out.append_array([back * poly[0], back * poly[k], back * poly[k + 1]])
 	return out
+
+
+## True when every point of `poly` (in a box's frame) lies past the same face of the box of half size `h`, so the
+## polygon cannot touch it. The clip then keeps it whole, as _cut_by_box would, without the per-plane work.
+static func _clear_of_box(poly: PackedVector3Array, h: Vector3) -> bool:
+	for axis in 3:
+		var above := true
+		var below := true
+		for p in poly:
+			above = above and p[axis] > h[axis]
+			below = below and p[axis] < -h[axis]
+		if above or below:
+			return true
+	return false
 
 
 ## A convex polygon (in a box's frame) cut by the box of half size `h`: [the part inside, the parts outside...].
@@ -507,19 +559,44 @@ func _place_storms() -> void:
 		add_child(storm)
 		_attach(storm, str(row.get(KEY_BLOCK, "")))
 		_pause_hidden(storm)
-		_storms.append(storm)
+		var far := StormFarPlane.new()
+		far.name = "FarPlane"
+		storm.add_child(far)  # the current camera reaches past the storm while it shows (M3-ENV-1308)
 
 
-## Whichever camera is current (the field's, a cutscene's) reaches past every shown storm.
-func _keep_storms_in_view() -> void:
-	if _storms.is_empty() or not is_inside_tree():
+func _place_drops() -> void:
+	for r: Variant in layout.get(KEY_DROPS, []):
+		var row: Dictionary = r
+		var drop := WaterSphereRig.new()
+		drop.name = str(row.get("name", "Drop"))
+		drop.position = GreyboxZone._vec3(row.get("at", [0.0, 0.0, 0.0]))
+		drop.profile = str(row.get("profile", ""))
+		add_child(drop)
+		_attach(drop, str(row.get(KEY_BLOCK, "")))
+
+
+func _place_smokes() -> void:
+	for r: Variant in layout.get(KEY_SMOKES, []):
+		var row: Dictionary = r
+		var smoke := SmokeColumn.new()
+		smoke.name = str(row.get("name", "Smoke"))
+		smoke.profile = str(row.get("profile", "camp"))
+		smoke.seed = float(row.get("seed", 0.0))
+		var basis := Basis(Vector3.UP, deg_to_rad(float(row.get("yaw_deg", 0.0))))
+		smoke.transform = Transform3D(
+			basis.scaled(Vector3.ONE * float(row.get("scale", 1.0))), GreyboxZone._vec3(row.get("at", [0.0, 0.0, 0.0]))
+		)
+		add_child(smoke)
+		_attach(smoke, str(row.get(KEY_BLOCK, "")))
+
+
+func _place_ebbing() -> void:
+	if not layout.has(KEY_EBBING):
 		return
-	var cam := get_viewport().get_camera_3d()
-	if cam == null:
-		return
-	for storm: UndertowStorm in _storms:
-		if storm.is_visible_in_tree():
-			cam.far = maxf(cam.far, storm.approach_distance_m + storm.state.bound_radius() + STORM_FAR_MARGIN_M)
+	var ebb := EbbingMotes.new()
+	ebb.name = "Ebbing"
+	ebb.zone = zone
+	add_child(ebb)
 
 
 ## A hidden storm stops processing (its rain, zone shadow and flashes act on the zone's light).

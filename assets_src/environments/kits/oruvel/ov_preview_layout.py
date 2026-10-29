@@ -207,8 +207,9 @@ def kit_row() -> list[dict]:
     """O20: every piece on the open water east of the town: the small pieces each on a raft deck in front, the hulls
     and rafts behind, the two biggest heroes at the back."""
     front = ["cabin_keelroof", "cabin_patched", "stall_awning", "lintel_gull_open", "net_frame", "salvage_heap",
-             "plank_bridge"]
-    back = ["hull_outrigger", "hull_cabin", "raft_deck_small", "dive_raft", "scale_hull", "cookboat", "chandlery"]
+             "plank_bridge", "hull_lashed"]
+    back = ["hull_outrigger", "hull_cabin", "raft_deck_small", "dive_raft", "scale_hull", "cookboat", "chandlery",
+            "raft_deck_tucked", "raft_deck_small_tucked"]
     out = []
     for k, name in enumerate(front):
         x = KIT_ROW_X0 + 9.0 * k  # the rafts touch: one long deck

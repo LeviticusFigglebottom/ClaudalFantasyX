@@ -79,6 +79,17 @@
         "hull_capsized-lod1": 144
       }
     },
+    "hull_lashed": {
+      "budget": [
+        4500,
+        300
+      ],
+      "bytes": 179436,
+      "lods": {
+        "hull_lashed": 4236,
+        "hull_lashed-lod1": 156
+      }
+    },
     "hull_outrigger": {
       "budget": [
         4500,
@@ -242,6 +253,28 @@
       "lods": {
         "raft_deck_small": 11384,
         "raft_deck_small-lod1": 524
+      }
+    },
+    "raft_deck_small_tucked": {
+      "budget": [
+        12000,
+        600
+      ],
+      "bytes": 502956,
+      "lods": {
+        "raft_deck_small_tucked": 11204,
+        "raft_deck_small_tucked-lod1": 524
+      }
+    },
+    "raft_deck_tucked": {
+      "budget": [
+        18000,
+        900
+      ],
+      "bytes": 622328,
+      "lods": {
+        "raft_deck_tucked": 14160,
+        "raft_deck_tucked-lod1": 604
       }
     },
     "reef_edge_far": {

@@ -10,9 +10,8 @@ Art rules kept here (color_script.md, decisions_log):
   - glimmer_lift (released, rising gold) is only for release; nobody's attack uses it.
   - Undertow-spawn wounds are spawn_wound / glimmer_held, sinking or sideways, never rising.
   - Lamps burn oil (oil_lamp, dusk_gold), never glimmer. Vowbound light is glimmer_bound: steady, no drift.
-Not mapped on purpose: skills whose target is the stair (`ward`: grip_the_stair, rope_dive, hand_closes). The ward is
-an entry with no fighter, so an effect would play at the VFX node's origin. Their own motion is
-BattleChoreo's push reaction on the climb.
+The skills aimed at the stair (`ward`: grip_the_stair, rope_dive, hand_closes) play at the arena's StairHead_ward mark
+(M3-BPR-1325, BattleVfx.entry_mark); their motion is BattleChoreo's push reaction on the climb.
 
 Usage: python3 tools/vfx/gen_act1_ability_vfx.py [--check]   (--check: exit 1 if the file would change)
 """
@@ -62,16 +61,16 @@ def shards(a, b, n=24):  # few, larger pieces falling
     return [layer(a, b, n + 6, 0.8, 0.95, (1.2, 2.4), 60, (0, -6.5, 0), (0.18, 0.36), radius=0.15, energy=1.4)]
 
 
-def rise(a, b, n=36, life=1.1):  # slow upward motes (a blessing, a stance)
-    return [layer(a, b, n, life, 0.3, (0.4, 0.9), 25, (0, 0.4, 0), (0.15, 0.3), radius=0.35, turb=0.3, energy=1.4)]
+def rise(a, b, n=36, life=1.1, radius=0.35):  # slow upward motes (a blessing, a stance)
+    return [layer(a, b, n, life, 0.3, (0.4, 0.9), 25, (0, 0.4, 0), (0.15, 0.3), radius=radius, turb=0.3, energy=1.4)]
 
 
-def sink(a, b, n=32):  # motes settling down over the target (a hex, a smother)
-    return [layer(a, b, n, 1.0, 0.4, (0.2, 0.5), 30, (0, -1.4, 0), (0.16, 0.32), (0, -1, 0), 0.35, 0.2, energy=1.4)]
+def sink(a, b, n=32, radius=0.35):  # motes settling down over the target (a hex, a smother)
+    return [layer(a, b, n, 1.0, 0.4, (0.2, 0.5), 30, (0, -1.4, 0), (0.16, 0.32), (0, -1, 0), radius, 0.2, energy=1.4)]
 
 
-def ring(a, b, n=40):  # a ring lifting from the feet (a guard, a ward)
-    return [layer(a, b, n, 0.9, 0.85, (0.05, 0.15), 5, (0, 0.5, 0), (0.16, 0.3), radius=0.75, energy=1.4)]
+def ring(a, b, n=40, radius=0.75):  # a ring lifting from the feet (a guard, a ward)
+    return [layer(a, b, n, 0.9, 0.85, (0.05, 0.15), 5, (0, 0.5, 0), (0.16, 0.3), radius=radius, energy=1.4)]
 
 
 def charge(a, b, n=40):  # gathering: motes drawn in and up around the body
@@ -108,13 +107,13 @@ SKILLS = {
     "fluke_cleave": fx("chest", heavy("cold_blue_stone", "bone", "sand_wet", "timber_weathered", 40),
                        "Kerrid: the anchor-fluke bites: iron chips and splinters."),
     "snub_line": fx("chest", slash("sand_cloth", "timber_weathered", 34, -1.0), "Kerrid: the line snubbed hard: rope fibres snapping."),
-    "anchor_fall": fx("feet", heavy("cold_blue_stone", "bone", "sand_dry", "laterite", 60), "Kerrid: the anchor comes down: dust and stone."),
+    "anchor_fall": fx("ground", heavy("cold_blue_stone", "bone", "sand_dry", "laterite", 60), "Kerrid: the anchor comes down: dust and stone."),
     "reel_shot": fx("chest", slash("brass", "foam_white", 26), "Liss: the line strikes home, brass bright."),
     "flash_housing": fx("head", [core("oil_lamp", "sun_noon", 1.4, 0.3)] + burst("oil_lamp", "dusk_gold", 30, 0.5),
                         "Liss: the lamp housing's flash in the foe's eyes (oil light; capped by particles, not a screen flash)."),
     "hoist_haul": fx("chest", rise("sand_cloth", "bone", 24, 0.8), "Liss (Ch8): the hoist hauls a group up."),
     # Swells (lamp_dive and shallows_verse are rendering's own).
-    "return_tide": fx("feet", spray("turquoise_shallow", "foam_white", 70), "Toma's Swell: the tide thrown back out from the stair."),
+    "return_tide": fx("ground", spray("turquoise_shallow", "foam_white", 70), "Toma's Swell: the tide thrown back out from the stair."),
     "written_light": fx("chest", [layer("starlight", "salt_glass", 50, 0.9, 0.5, (0.6, 1.4), 15, (0, 0.2, 0), (0.04, 0.1),
                                         (1, 0.3, 0), 0.4)] + burst("starlight", "lit_ceramic", 20),
                         "Ysolde's Swell: written strokes of pale light across each foe (not glimmer)."),
@@ -178,6 +177,14 @@ SKILLS = {
     "recrust_gather": fx("chest", charge("volcanic_stone", "ember_orange", 40), "The Matron's crust re-forms."),
     "lines_taut": fx("chest", charge("sand_cloth", "timber_weathered", 30), "The Spar-Wraith's lines go taut."),
     "climb_up": fx("feet", rise("sand_cloth", "bone", 20, 0.8), "The Climb: a group goes up the stair."),
+    # M3-BPR-1325: aimed at the stair (the Climb, a ward entry with no fighter), played at the arena's StairHead_ward mark.
+    "grip_the_stair": fx("feet", slash("spawn_wound", "glimmer_held", 34) + sink("deep_teal_shadow", "abyss_navy", 18),
+                         "A crawler grips the stair head: wound-light clawing sideways, the climbers falter."),
+    "rope_dive": fx("chest", [layer("sand_cloth", "cumulus_shadow", 40, 0.5, 0.95, (2.5, 4.0), 20, (0, -3.0, 0), (0.06, 0.14),
+                                    (1.0, -0.4, 0), 0.2, energy=1.3)],
+                    "A squall wing dives the hand-line: spray and rope fibre whipped down across the stair."),
+    "hand_closes": fx("chest", sink("abyss_navy", "storm_slate", 70, 0.9) + burst("spawn_wound", "deep_teal_shadow", 30, -1.0),
+                      "The storm's hand closes on the stair head: the dark comes down whole, wound-light crushed out."),
     "surge_ebb": fx("feet", sink("deep_teal_shadow", "sea_glow", 20), "The Surge ebbs."),
     "rouse_polyp": fx("chest", charge("glimmer_held", "spawn_wound", 30), "The Drownbell rouses a polyp."),
     "surge_crawler": fx("feet", spray("deep_teal_shadow", "sea_glow", 30), "The Surge throws up a crawler."),
@@ -192,7 +199,8 @@ SKILLS = {
                     "The Cinder Matron pours slag over the party."),
     "torch_hulk": fx("head", sink("volcanic_stone", "lacquer_black", 40), "The Inquisitor torches the hulk: smoke over each foe."),
     "breach": fx("chest", heavy("spawn_wound", "glimmer_held", "deep_teal_shadow", "abyss_navy", 60), "The Breach: the wall gives under the Reach."),
-    "recrust": fx("feet", ring("volcanic_stone", "ember_orange", 44), "The Cinder Matron's crust closes over her."),
+    # Her bulk is ~2.9 m: the default 0.75 m ring closed inside her and never showed (M3-C05-06 sweep).
+    "recrust": fx("feet", ring("volcanic_stone", "ember_orange", 60, 1.6), "The Cinder Matron's crust closes over her."),
     "flood_surge": fx("chest", spray("turquoise_shallow", "lagoon_teal", 60), "The Drownbell's flood surges over each foe."),
     "undertow_surge": fx("feet", sink("deep_teal_shadow", "abyss_navy", 40), "The Drownbell's undertow drags at each foe's feet."),
 }
@@ -248,7 +256,7 @@ ITEMS = {
 # Liss M3-C06-05). BattleVfx plays map.swell_by_hero[hero] for any of that hero's skills marked "swell" with no
 # map.skills row, so they play the moment the technique lands. The motion is BattleChoreo's swing / reel styles.
 SWELL_BY_HERO = {
-    "kerrid": ("swell_weighted_swing", fx("feet", [layer("brass", "cold_blue_stone", 70, 0.55, 0.95, (3.0, 5.0), 22, (0, -3.0, 0),
+    "kerrid": ("swell_weighted_swing", fx("knee", [layer("brass", "cold_blue_stone", 70, 0.55, 0.95, (3.0, 5.0), 22, (0, -3.0, 0),
                                                          (0.12, 0.26), (-1.0, 0.12, 0), 0.25, energy=1.4)]
                                        + heavy("sand_wet", "storm_slate", "sand_dry", "cumulus_shadow", 40),
                                        "Kerrid's Swell (the weighted swing): one flat, low sweep of iron across the "
@@ -260,8 +268,35 @@ SWELL_BY_HERO = {
 }
 SWELL_SOUNDS = {"swell_weighted_swing": "hit_none", "swell_reel_stop": "status_apply"}
 
+# M3-BPR-424: the end-of-turn ticks (BattleEngine.turn_ended / turn_lost; BattleVfx.play_ticks), by cause in map.ticks:
+# poison and regen each turn, a Doom count and Doom falling, a turn lost to Sleep or Stop. Regen is water rising (never
+# glimmer); Doom sinks dark (never a release); a Zombie's regen hurts and plays the poison tick.
+TICKS = {
+    "poison": ("tick_poison", fx("chest", [layer("palm_green", "foliage_shadow", 30, 0.8, 0.55, (0.3, 0.8), 45, (0, 0.5, 0),
+                                                 (0.1, 0.2), radius=0.3, turb=0.3, energy=1.4)],
+                                 "Poison takes its turn's toll: sick green welling out of the fighter.")),
+    "regen": ("tick_regen", fx("chest", rise("turquoise_shallow", "foam_white", 24, 0.9),
+                               "Regen mends a little: shallow water lifting off (water, not glimmer).")),
+    # The dark alone vanished on the night terrace (self-render): cold pale motes fall with it, so it reads on any arena.
+    "doom_tick": ("tick_doom", fx("head", sink("night_sky", "abyss_navy", 20) + sink("moon_blue", "night_sky", 10),
+                                  "A Doom count falls: a little dark settling.")),
+    "doom": ("tick_doom_fall", fx("chest", sink("abyss_navy", "night_sky", 64, 0.5) + sink("moon_blue", "storm_slate", 26, 0.5),
+                                  "Doom comes due: the dark comes down whole.")),
+    "sleep": ("tick_sleep", fx("head", [layer("moon_blue", "starlight", 14, 1.4, 0.2, (0.1, 0.3), 30, (0, 0.25, 0),
+                                              (0.08, 0.16), radius=0.25, turb=0.2, energy=1.3)],
+                               "A turn lost to Sleep: slow pale motes drifting over the sleeper.")),
+    "stop": ("tick_stop", fx("feet", ring("salt_glass", "cold_blue_stone", 48, 1.05),
+                             "A turn lost to Stop: a still ring of salt-glass.")),
+}
+TICK_SOUNDS = {"tick_poison": "status_apply", "tick_regen": "heal", "tick_doom": "status_apply",
+               "tick_doom_fall": "ko_release", "tick_sleep": "status_apply", "tick_stop": "status_apply"}
+
 
 SFX = ROOT / "game/data/audio/battle_sfx.json"
+SWELL = ROOT / "game/data/battle/swell.json"
+# Low anchors on the body's near face (BattleVfx.anchor: only `feet` stays centred, for rings). A ground impact at a big
+# body's feet spawned inside it: the Cinder Matron hid Kerrid's sweep and Anchor Fall (the finisher self-render).
+ANCHOR_HEIGHTS = {"ground": 0.05, "knee": 0.25}
 
 
 def _stand_in_sounds(data: dict, sfx: dict) -> None:
@@ -288,10 +323,12 @@ def _stand_in_sounds(data: dict, sfx: dict) -> None:
 # A Vowbound taking and leaving the field (BattleVfx plays these on BattleVowbound.called / departed). Bound light is
 # steady: glimmer_bound, no drift; a fall is not a release, so nothing rises gold.
 EVENTS = {
-    "vowbound_call": fx("feet", ring("glimmer_bound", "lagoon_teal", 60) + rise("glimmer_bound", "salt_glass", 30, 1.4),
+    # Sized for the Vowbound's real bodies (Ilun 5.1 x 3.2 m, Virel 2.4 x 3.6, Kahre 1.6 x 2.8; M3-BPR-424's self-render):
+    # at a capsule's 0.75 m the ring hid under Ilun's middle and the rising motes bunched into a blob over its back.
+    "vowbound_call": fx("feet", ring("glimmer_bound", "lagoon_teal", 90, 1.6) + rise("glimmer_bound", "salt_glass", 44, 1.4, 1.1),
                         "A Vowbound answers: a steady ring of bound light lifting around it."),
-    "vowbound_dismiss": fx("chest", sink("glimmer_bound", "deep_teal_shadow", 40), "A Vowbound leaves: its bound light settles."),
-    "vowbound_fell": fx("chest", sink("glimmer_bound", "abyss_navy", 60), "A Vowbound falls: its bound light sinks (not a release)."),
+    "vowbound_dismiss": fx("chest", sink("glimmer_bound", "deep_teal_shadow", 56, 0.9), "A Vowbound leaves: its bound light settles."),
+    "vowbound_fell": fx("chest", sink("glimmer_bound", "abyss_navy", 80, 0.9), "A Vowbound falls: its bound light sinks (not a release)."),
 }
 # Each event's sound: audio's own Vowbound rows (the same sounds its `events` fallbacks play).
 EVENT_SOUNDS = {"vowbound_call": "vowbound_call", "vowbound_dismiss": "vowbound_dismiss", "vowbound_fell": "vowbound_fell"}
@@ -322,10 +359,18 @@ def main() -> int:
         data["map"]["events"][eid] = eid
     for eid, eff in BOSS_EFFECTS.items():
         data["effects"][eid] = eff
+    data["map"]["ticks"] = {}
+    for cause, (eid, eff) in TICKS.items():
+        data["effects"][eid] = eff
+        data["map"]["ticks"][cause] = eid
     data["map"]["swell_by_hero"] = {}
+    swell_heroes = {h["id"]: h["techniques"] for h in json.loads(SWELL.read_text())["swell"]["heroes"]}
     for hero, (eid, eff) in SWELL_BY_HERO.items():
         data["effects"][eid] = eff
         data["map"]["swell_by_hero"][hero] = eid
+        for tech in swell_heroes.get(hero, []):  # M3-C05-06 / M3-C06-05: the techniques now exist; map them by id
+            data["map"]["skills"][tech] = eid
+    data["anchor_heights"].update(ANCHOR_HEIGHTS)
     out = json.dumps(data, indent=2) + "\n"
     boss_text = BOSS_VFX.read_text()
     boss = json.loads(boss_text)
@@ -341,6 +386,8 @@ def main() -> int:
         sfx["vfx"].setdefault(eid, sfx["events"][key])
     for eid in BOSS_EFFECTS:
         sfx["vfx"].setdefault(eid, sfx["vfx"][BOSS_SOUNDS.get(eid, "status_apply")])
+    for eid, key in TICK_SOUNDS.items():
+        sfx["vfx"].setdefault(eid, sfx["vfx"][key])
     for eid, key in SWELL_SOUNDS.items():
         sfx["vfx"].setdefault(eid, sfx["vfx"][key])
     sfx_out = json.dumps(sfx, indent=2) + "\n"

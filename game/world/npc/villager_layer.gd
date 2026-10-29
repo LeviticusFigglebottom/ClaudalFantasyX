@@ -20,9 +20,21 @@ extends Node3D
 ##
 ## A row's `actor` (a villager id) dresses it in that villager's model while its own doesn't exist yet; its npc_id
 ## (talk, tuning, chat) stays its own.
+##
+## Crowd rows (M3-CRE-659, ADR 0152): `crowd: <person id>` resolves the person in game/data/world/npc/crowd.json:
+## their crowd body's actor (assets/crowd/<body>/<body>_actor.tscn), their tints (NpcTints, per instance) and their
+## age band's and work clip's tuning (FieldNpc.tuning_over). `offset` [x, y, z] or [x, y, z, yaw_deg] places an
+## `attach: child` villager inside its stand-in (several people standing for one group capsule).
+##
+## `body: <crowd body id>` wears that crowd body with no crowd person (no tints, npc.json tuning); `silhouette:
+## "#RRGGBB"` draws the villager as one glowing silhouette in that colour (NpcSilhouette; M3-HER-1142: the figure
+## in Corrow's storm wall); `tuning` is merged over the villager's tuning (the figure never glances or turns to the
+## party).
 
 const DATA_DIR := "res://game/data/world/npc/zones/"
 const ACTOR_PATH := "res://assets/characters/villagers/%s/%s_actor.tscn"
+const CROWD_PATH := "res://game/data/world/npc/crowd.json"
+const CROWD_ACTOR_PATH := "res://assets/crowd/%s/%s_actor.tscn"
 ## The stand-in children hidden when a row names none.
 const DEFAULT_HIDE: Array[String] = ["StandIn", "Facing"]
 const SHELTER_SUFFIX := "Shelter"
@@ -32,6 +44,12 @@ const ATTACH_CHILD := "child"
 const WORK_SUFFIX := "Work"
 ## The child a GreyboxZone stage actor's villager model is named (GreyboxZone `_actor_body`).
 const GREYBOX_MODEL := "Model"
+## ZoneCast's villager model on an Act I stage actor (M3-CIN-1217; game/levels/act1/zone_cast.gd).
+const ZONE_CAST := "Cast"
+
+## crowd.json, read once (crowd_data) and its people by id.
+static var _crowd: Dictionary = {}
+static var _crowd_people: Dictionary = {}
 
 ## The zone (a location id such as ch02/haluna); it names the data file.
 @export var zone_id: StringName = &""
@@ -55,14 +73,10 @@ var _built := false
 func _ready() -> void:
 	process_priority = 10  # after the villagers have moved this frame
 	if auto_build:
-		# Added while the zone is already in its own _ready (or later): build once the zone has finished its
-		# set-up, so villagers it places after adding this layer (HalunaVillagers' shop bodies) are adopted, not
-		# doubled. Added with the zone (a prebuilt zone entering the tree): the zone's set-up is done; build now.
-		var zone := get_parent()
-		if zone != null and zone.is_node_ready():
-			build.call_deferred()
-		else:
-			build()
+		# At once, also when added in the zone's own _ready: a zone loaded as the game loads it shows no capsule even
+		# before its first frame (big14 gate). Haluna's shop rows sit inside their bodies under `node_name`
+		# "Villager", where HalunaVillagers.populate (run after) looks, so it skips them instead of doubling them.
+		build()
 	set_process(auto_build)
 
 
@@ -112,8 +126,12 @@ func build() -> int:
 	return villagers.size()
 
 
-## Adds a layer for `zone_id` under `zone` (after the zone has placed any villagers of its own) and builds it.
+## Adds a layer for `zone_id` under `zone` (after the zone has placed any villagers of its own) and builds it; a zone
+## that already has its layer (one GreyboxZone adds, M3-CRE-657) keeps it, so no villager shows twice.
 static func wire(zone: Node3D, zone_id: StringName) -> VillagerLayer:
+	var existing := zone.get_node_or_null(^"VillagerLayer") as VillagerLayer
+	if existing != null:
+		return existing
 	var layer := VillagerLayer.new()
 	layer.name = "VillagerLayer"
 	layer.zone_id = zone_id
@@ -135,31 +153,57 @@ func _make(row: Dictionary) -> FieldNpc:
 	var root := _root()
 	var id := StringName(str(row.get("npc_id", "")))
 	var stand_in := root.get_node_or_null(NodePath(str(row.get("stand_in", "")))) as Node3D
-	var adopted := placed_on(stand_in) if stand_in != null else null
+	var crowd_id := StringName(str(row.get("crowd", "")))
+	var person := crowd_person(crowd_id) if crowd_id != &"" else {}
+	if crowd_id != &"" and person.is_empty():
+		push_warning("VillagerLayer %s: %s names no crowd person %s" % [zone_id, id, crowd_id])
+		return null
+	var adopted := placed_on(stand_in) if stand_in != null and person.is_empty() else null
 	var model := stand_in.get_node_or_null(NodePath(GREYBOX_MODEL)) as Node3D if stand_in != null else null
+	var cast := stand_in.get_node_or_null(NodePath(ZONE_CAST)) as Node3D if stand_in != null else null
+	if cast != null and not person.is_empty():
+		# a crowd person replaces ZoneCast's stand-in villager (one of Haluna's, which stand for no other town: ADR
+		# 0152), so one body shows and the cutscenes' clips find the crowd person's player
+		stand_in.remove_child(cast)
+		cast.free()
+	elif model == null and cast != null:
+		model = cast  # a named villager's own model, cast by ZoneCast: adopted as the greybox model is
 	if adopted == null and model != null and not model is FieldNpc:
-		return _adopt_model(row, id, stand_in, model)
+		return _adopt_model(row, id, stand_in, model, person)
 	if adopted != null:
 		adopted.shelter = _marker(row.get("shelter", null), String(stand_in.name) + "Villager" + SHELTER_SUFFIX)
 		adopted.work_target = _marker(row.get("work_at", null), String(stand_in.name) + "Villager" + WORK_SUFFIX)
 		return adopted
-	# `actor` (optional): wear another villager's model until this one has its own (M3-CRE-100: the shop bodies).
-	var actor_id := str(row.get("actor", id))
-	var scene := load(ACTOR_PATH % [actor_id, actor_id]) as PackedScene if actor_id != "" else null
+	var scene: PackedScene = null
+	if not person.is_empty() or row.has("body"):
+		# `body` (M3-HER-1142): a crowd body worn by no crowd person (the Corrow storm figure's silhouette)
+		var body := str(person.get("body", row.get("body", "")))
+		scene = load(CROWD_ACTOR_PATH % [body, body]) as PackedScene if body != "" else null
+	else:
+		# `actor` (optional): wear another villager's model until this one has its own (M3-CRE-100: the shop bodies).
+		var actor_id := str(row.get("actor", id))
+		scene = load(ACTOR_PATH % [actor_id, actor_id]) as PackedScene if actor_id != "" else null
 	if stand_in == null or scene == null:
 		push_warning("VillagerLayer %s: cannot place %s (stand-in %s)" % [zone_id, id, row.get("stand_in", "")])
 		return null
 	var npc := FieldNpc.new()
-	npc.name = String(stand_in.name) + "Villager"
+	# a crowd person is named for itself: several can stand for one group stand-in; a row's `node_name` overrides
+	npc.name = String(stand_in.name) + "Villager" if person.is_empty() else String(crowd_id)
+	npc.name = str(row.get("node_name", npc.name))
 	npc.npc_id = id
 	npc.actor_scene = scene
 	npc.auto_process = auto_build
+	_dress(npc, person)
+	if row.has("silhouette"):
+		npc.silhouette = Color.html(str(row["silhouette"]))
+	if row.get("tuning", null) is Dictionary:
+		npc.tuning_over = FieldNpc.merged(npc.tuning_over, row["tuning"] as Dictionary)
 	# `attach: child` (a cutscene-staged actor, which a cutscene moves): the villager rides inside the stand-in and
 	# keeps no route; otherwise it stands beside the stand-in and carries the stand-in along when it walks.
 	var inside := str(row.get("attach", ATTACH_BESIDE)) == ATTACH_CHILD
 	var holder := stand_in if inside else stand_in.get_parent_node_3d()
 	if inside:
-		npc.transform = Transform3D.IDENTITY
+		npc.transform = offset_transform(row.get("offset", null))
 	else:
 		npc.transform = Transform3D(Basis(Vector3.UP, stand_in.rotation.y), stand_in.position)
 		_set_route(npc, row, holder)
@@ -188,11 +232,14 @@ func _make(row: Dictionary) -> FieldNpc:
 ## `"model"`, M2-FP-111) becomes a FieldNpc carrying that same model, so it glances, turns to talk and keeps its
 ## routines instead of only idling. The model moves under the FieldNpc as its `Actor`; the stage actor node stays
 ## where the cutscenes find it, and the FieldNpc rides inside it (no route or follow, as `attach: child`).
-func _adopt_model(row: Dictionary, id: StringName, stand_in: Node3D, model: Node3D) -> FieldNpc:
+func _adopt_model(
+	row: Dictionary, id: StringName, stand_in: Node3D, model: Node3D, person: Dictionary = {}
+) -> FieldNpc:
 	var npc := FieldNpc.new()
 	npc.name = String(stand_in.name) + "Villager"
 	npc.npc_id = id
 	npc.auto_process = auto_build
+	_dress(npc, person)
 	npc.transform = model.transform
 	stand_in.remove_child(model)
 	model.transform = Transform3D.IDENTITY
@@ -203,6 +250,54 @@ func _adopt_model(row: Dictionary, id: StringName, stand_in: Node3D, model: Node
 	npc.shelter = _marker(row.get("shelter", null), String(npc.name) + SHELTER_SUFFIX)
 	npc.work_target = _marker(row.get("work_at", null), String(npc.name) + WORK_SUFFIX)
 	return npc
+
+
+## A crowd person's colours and tuning on its FieldNpc (before it enters the tree, so its _ready sees them).
+func _dress(npc: FieldNpc, person: Dictionary) -> void:
+	if person.is_empty():
+		return
+	npc.tints = (person.get("tints", {}) as Dictionary).duplicate()
+	npc.tuning_over = crowd_tuning(person)
+
+
+## A row's `offset` inside its stand-in: [x, y, z] or [x, y, z, yaw_deg] (FieldNpc yaw: 0 faces -Z); none: identity.
+static func offset_transform(spec: Variant) -> Transform3D:
+	var at := _vec3(spec)
+	if at == Vector3.INF:
+		return Transform3D.IDENTITY
+	var yaw := deg_to_rad(float(spec[3])) if (spec as Array).size() >= 4 else 0.0
+	return Transform3D(Basis(Vector3.UP, yaw), at)
+
+
+## game/data/world/npc/crowd.json (read once).
+static func crowd_data() -> Dictionary:
+	if _crowd.is_empty():
+		_crowd = load_data(CROWD_PATH)
+		for p: Variant in _crowd.get("people", []):
+			if p is Dictionary:
+				_crowd_people[StringName(str(p.get("id", "")))] = p
+	return _crowd
+
+
+## A crowd person's row in crowd.json, or {}.
+static func crowd_person(id: StringName) -> Dictionary:
+	crowd_data()
+	return _crowd_people.get(id, {}) as Dictionary
+
+
+## The tuning a crowd person's FieldNpc takes over npc.json's: its age band's, then its work clip's (the clip and
+## the work focus).
+static func crowd_tuning(person: Dictionary) -> Dictionary:
+	var d := crowd_data()
+	var out := (
+		((d.get("age_tuning", {}) as Dictionary).get(str(person.get("age_band", "")), {}) as Dictionary).duplicate(true)
+	)
+	var work := str(person.get("work", ""))
+	var spec := (d.get("work_tuning", {}) as Dictionary).get(work, {}) as Dictionary
+	if work != "" and not spec.is_empty():
+		out = FieldNpc.merged(out, spec)
+		out = FieldNpc.merged(out, {"clips": {String(FieldNpc.CLIP_WORK): work}})
+	return out
 
 
 ## The row's route (zone-root space points, or {"at", "pause_sec", "activity"} entries) in the villager's

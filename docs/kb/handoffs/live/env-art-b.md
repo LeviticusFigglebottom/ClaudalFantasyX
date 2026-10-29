@@ -160,9 +160,322 @@ that test at this branch's zones.
   - **Next for a fresh env-art-b:** re-run the audit (`tools/placeholder_audit.py`, on hero-integration) after the
     Lead's merge; take any new Ch5–Ch9 rows; the galleries' `Column` when M3-RND-26 lands.
 
+- **Lead's second pass (10-28): arenas, a walk-through, touched props.**
+  - **Arenas, the weakest angle at battle distance (M3-ENV-1312..1314):** all 10 Ch5–Ch9 arenas from every
+    CameraHint plus the battle camera (53 angles). Fixed:
+    - Lanternfall's side angles ran into black: its terrace now continues past both ends.
+    - The salvage camp had no fire: new kit fires (`camp_fire_large`/`_small`), with **request M3-RND-1315** to Rendering
+      for animated fire.
+    - **The Undertow was in no battle:** the three wall-head arenas get it, with `StormFarPlane`, a new node the zones
+      now use too.
+    - The headland's slopes get scrub.
+    - Ashcrown's plume now uses its day material.
+    - Wrapper writers over env-art's tables; `tools/tests/test_b_arenas.py` reproduces them.
+  - **Ch8 arena ids:** the note on M3-ENV-714 says `ch08_headland_*` go to `coilspire_headland_path` and
+    `ch08_flue_moths` to `coilspire_tier_landing`. That task is battle-presentation's. Ch5 is M3-BPR-1305.
+  - **Walk-through (M3-ENV-1317):** 44 player-height views on the critical paths. Fixed: Ch6's camp burns in the
+    zone too (until the evening camp). **Request M3-ENV-1316 to env-art:** the trader boat's white bales, Ashcrown's flat
+    stair and tier faces, and the headland's far facets.
+  - **Touched props:** every Ch5–Ch9 door, gate, lever, key, shrine and marker already wears a final kit model. Ch7's
+    Signboard block is the shophouses' own hung boards (M3-ENV-1311, nothing to add). There are no chests or
+    SaveShrine nodes in Ch5–Ch9.
+  - **FAST-TRACKs:** `test_arenas.py` skips the wrapped arena ids and `test_pemakar_kit.py` counts 34 targets (for
+    env-art); `test_zone_kit_dressing.gd` counts the Smoke block's eight followers (for act1-chapters).
+  - **Correction:** MERGE-READY @ 749bfc48 was NOT tools-green. `test_arenas` (Lanternfall) and `test_pemakar_kit`
+    (the count) were red because I skipped the tools suite there wrongly. Both are fixed in this push.
+- **MERGE-READY @ 8d198f1e.**
+  - **Checks run:** full tools suite (`run_tool_tests -j 4`): only `test_screenshots` red (baselines).
+    Godot `--filter=` battle_arenas 10/0, battle_arena 18/0, zone_kit 11/0, ch06 5/0, ch07 18/0, cutscene_walks 1/0.
+    gdlint/gdformat, validate_data, taskboard --check. Brine Shoals kit rebuilt `--all` in Blender: older pieces
+    byte-identical.
+  - **Checks skipped:** coverage (no battle/progression code).
+
+- **Merged big13 (90ecee18) at c47cc9a7.** The Ch5 Ashcrown and Ch7 Tamsule scenes and layouts keep env-art-b's kit
+  frames (they already carry act1-chapters' Cast node, marks and casts). In zone_maps.json, UI's new Ch8 Corrow and
+  Coilspire entries are re-pointed to the kit frames (POIs, hints, bounds). ownership, PROVENANCE and shots.json are
+  unions. Everything else is integration's.
+  Checks after the merge: Godot zone_kit, ch05..ch09, battle_arena, cutscene_walks and hero_stairs all pass; tools
+  test_zone_map_pois, test_arenas, test_b_arenas and the kit tests OK; validate_data, gdlint/gdformat.
+- **The Lead's gate notes (10-28):**
+  1. battle_boss_intro_reach / battle_ch08_stair_hold, "the Reach's backdrop is greybox": on integration
+     `wall_head_storm` still maps to the greybox scene. This branch maps it (env-art's fix) to the final
+     `seawall_stairhead_hoist`, now with the Undertow over it. Rendered on the merged tree: the wall, the town's roofs,
+     the headland and the storm; no greybox. Resolved by merging this branch.
+  2. ch09_corrow_strand, "a glowing white bar": the baseline is integration's greybox shroud rows lit by the vigil.
+     On this branch they are the kit's shroud pieces, and the strand is moonlit shingle (M3-ENV-1309). Rendered:
+     no slab. Resolved by merging this branch.
+  3. ch05_pemakar_harbour, "a dark blob in the sky": the far plume in the kit's material read as a hard silhouette.
+     It now uses the zone's own night plume material (`pemakar_plume_night.tres`, M3-ENV-1318): softer, thinner edges
+     and the crater's ember up its underside. Rendered: it reads as smoke lit from below.
+- **MERGE-READY @ 6cd17ce3.**
+
+- **Merge fix (13c07138):** five files where this branch already held all of integration's commits (env-art's
+  Haluna kit `build.py`, `materials.py` and `kit_manifest.json`, and the Ch4 and Ch6 layouts) went back to this
+  branch's newer versions; `test_haluna_kit` is green again. The other 68 files taken from integration were checked:
+  none of them lost a change from this branch.
+- **M3-ENV-1319, encounter arenas (the Lead asked twice):** every Ch5–Ch9 encounter now names its final arena in
+  `encounters.json` (only the `arena` fields), including the three Ch8 fights that had none. The seawall states take
+  `wall_head_storm`'s staging. battle-presentation, please review (M3-BPR-1305, M3-ENV-714).
+- **MERGE-READY @ f51f81f2.** Checks: Godot battle (757; the one failure was the pinned table, now updated), battle_arena
+  18/0, ch04 11/0, ch06 5/0; tools suite: only test_screenshots red (baselines), test_haluna_kit green after the fix.
+- **Queue state:** arenas for the remaining Ch5–Ch9 encounters are done (above). The player-height walk-through
+  (M3-ENV-1317) and the interactable props are done; their findings and requests are above (M3-ENV-1316 to env-art).
+
+- **big14 gate, test_pemakar_kit (34 targets, expected 32):** already fixed on this branch by e8944d6c (the count
+  is 34 for `votive_lamp` M3-ENV-1305 and `weir_leat` M3-ENV-1307, both with their LOD chains, which the same test
+  checks). big14 took an earlier commit. Any head from e8944d6c on is green (`test_pemakar_kit` OK at 5c077662).
+  **MERGE-READY @ 5c077662** (it holds every earlier MERGE-READY item).
+
+- **Merged lead/gate-big14 (8707ff90), 296c1248.** Each conflict was decided by ancestry (whichever side already
+  held all of the other's commits on that file). For encounters.json, this branch's Ch5–Ch9 arena fields plus
+  integration's Act II rows. The storm far-plane test now frees its zone (the runner's new leak check).
+  `test_zone_map_pois` has 8 ch04/haluna_wake failures that **also fail at 8707ff90** (integration's, act1-chapters'
+  or UI's), not this branch's.
+- **Inventory (M3-HER-1141), re-audited on the merged tree:** 2 rows left. **M3-ENV-1320** fixes `Virel` (creatures-b's
+  model now exists; it is placed in the crown chamber). That leaves `Column` only, still blocked on Rendering's
+  M3-RND-26 (todo).
+- **MERGE-READY @ 22b289bf.**
+
+- **Walk-through repeated on the merged tree (after big14):** the same 44 player-height views; no new issue in Ch5–Ch9
+  dressing. Today's fixes show (Pemakar's plume reads as lit smoke, Ch6's camp burns). Still open and not mine:
+  Ashcrown's flat flying-stair and tier faces and the trader boat's white bales (env-art, M3-ENV-1316), and the
+  placeholder capsules (characters). Interactable props: unchanged since M3-ENV-1311/1317, and every one is final.
+  **Backlog:** only the galleries' `Column`, blocked on Rendering's M3-RND-26.
+
+- **M3-ENV-1321, the Bell's weeping column (taken at the Lead's ask under ADR 0041):** a kit piece with zone water
+  materials, so no new shader. It stands in the galleries (on the Column block) and at the port (under the kit's Bell).
+  **env-art-b's Act I inventory rows are now all closed.** Rendering keeps M3-RND-26's sphere-rig sizing and an
+  optional flowing column shader.
+- **Walk-through and interactable props:** done on the merged tree (above); nothing new.
+- **MERGE-READY @ 8c535d1e. BACKLOG EMPTY:** no inventory rows left; requests out to env-art (M3-ENV-1306, 1316),
+  battle-presentation (M3-BPR-1305, M3-ENV-714 review) and Rendering (M3-RND-26 rig, M3-RND-1315 fire).
+
+- **The PC's Act I GPU QA (docs/kb/qa/act1_gpu_qa.md on gpu/act1-qa-2), env-art-b's rows.** Pass A ran on integration
+  048b0a7f, before this branch merged. Each row was re-rendered on this head:
+  | Row | Shots | Status |
+  |---|---|---|
+  | 5 | ch06_brine_camp, _road | **fixed @ 0981fc15** (the camp burns; the road carries the raid's wreckage, 4081127f). The flat mudflat and the boxy `camp_tent` are kit meshes and materials: added to env-art's M3-ENV-1316. |
+  | 6, 27 | ch08_coilspire_hall, _gate | **fixed @ 3109a2f5**: the green grid was the kit's verdigris gathered in the mortar joints; the zone now uses its own inner material (no grid), and wall-wash lamps on every tier light the well. |
+  | 7 | ch08_corrow_arrival | **fixed @ 00e15816**: the mole is the kit's `mole_pier` and `mole_sea_stair` (integration had the greybox). |
+  | 9 | ch09_corrow_strand | **fixed @ b1ca59b9**: the moon over the sea. |
+  | 10 | battle_arena_wall_head, battle_ch08_stair_hold | fixed in big14 (as the row says). |
+  | 11 | battle_boss_intro_reach | **fixed @ f51f81f2**: the Reach fights on `seawall_stairhead_surge`, with the Undertow. The light wedge is Rendering's, per the row. |
+  | 15, 40 | battle_arena_underway, _underway_tower, the Ch1 fights | **explained: Ch1 is env-art's** (the Lead's split: env-art-b has Ch5–Ch9). Request **M3-ENV-1323**. |
+  | 16 | battle_arena_terrace, _ash_terrace_lanternfall | **fixed @ 3be35a85**: a warm key over the party. The `terrace` shot (`ch05_stair_*`) now fights on `ashcrown_forecourt_day` (f51f81f2). |
+  | 26 | ch05_ashcrown_causeway, _forecourt, _tiers | **explained**: the zone stands on env-art's Ashcrown kit as built, and the grey is its `ac_*` materials. Added to M3-ENV-1316. |
+  | 28 | ch09_corrow_rocks | **fixed @ 47845c69**: the boulders are angular laterite, not glossy black spheres. |
+  | 34 | ch06_ridge_skippers on the test stage | **explained: act1-chapters'.** The encounter names `brine_shoals_afternoon` (validate_data clean). A fight with the sandbox's own enemies means the BattleRequest never found the encounter (its flow). |
+  | 38 | Coilspire spawns, camera against the wall | **explained: hero-integration's field camera**. The spawns stand on the tier landings by design; the camera doesn't pull in. |
+  **MERGE-READY @ 3be35a85.**
+
+- **M3-RND-26, the Tamsule Bell's held drop (the Lead's ask, 2026-10-28 13:25; rendering's zone and kit looks are env-art-b's):** done @ ce10e96a. `WaterSphereRig` gained data `profiles` and a flattened spheroid (`sphere_flatten`). `tamsule_drop` is the contract's 14.0 × 11.5 m drop: still (no swell, a steady web), pushed cyan, glowing steady with glimmer_bound, and throwing its web under it (pool, coping, posts) plus the pool's reflected web on the bell's underside, clipping to white. The Reefball ball is unchanged (empty profile). The weep column is the contract's 0.8 → 0.6 m now, turquoise in the zones. Placed in the preview (`SphereAnchor/Drop`, `/WeepColumn`) and both Ch7 zones (ZoneKitDressing `drops` rows). Contract accepted unchanged (written in the task file; pc-gpu.md is the PC's). Task → review (art).
+  Checks run: gdlint/gdformat, validate_data, taskboard --check, Godot `water_sphere` (5, +1 new), `tamsule` (7), `zone_kit` (12), `ch07` (18), `reefball` (80), tools `test_tamsule_bell_kit` (13), kit rebuild `--all` (only weep_column changed). Skipped: the Reefball arena's own shots (no registered shot shows the ball; at the empty profile its math is unchanged).
+  **MERGE-READY @ ce10e96a.**
+  LEAD-ANSWERED (14:06: the PC measures it in its QA pass once this branch is in a batch; the Lead re-approves t01 and t03 at the gate): M3-RND-26's last criterion is the cost on the PC presets (the drop is seen through 48 glass bays and from beneath). Route it to the PC's QA pass? Also re-approve `tamsule_t01_bell_from_the_mouth` and `tamsule_t03_oruvel_moorings` at your gate (they drift by design: the cyan drop and the contract column). Going ahead meanwhile.
+
+- **M3-RND-27** (→ review): already in place. The Ch7 column is the kit piece and the Ch8 storm wall is the Undertow on its block, and no zone keeps a box. **M3-HER-1141** (→ review): `placeholder_audit.py` with its runtime scan lists **nothing for env-art-b** (37 items, all other roles'). **M3-RND-1315** (→ review): the camp fires lick, tear and flicker on `hymn_wind_time` (`game/vfx/fire/flame_tongue.gdshader`, docs `tech/fire.md`), in dusk_gold → ember_orange.
+  Checks run: gdlint/gdformat, taskboard --check, Godot `flame` (2, new) and `brine` (5), tools `test_brine_shoals_kit` (31). **MERGE-READY @ 51f5185c.**
+
+- **M3-C09-10** (→ review): the colour script has `ch09_dawn` and the act-break vigil frame. The dawn variant now has its own grade, `corrow_ch09_dawn_environment.tres`, in place of the borrowed Ch8 storm grade. The vigil's own light waits on M3-C09-04. Checks run: Godot `ch09` (12), validate_data, taskboard --check. **MERGE-READY @ f11aca7d.**
+
+- **M3-RND-21** (→ review): a volumetric smoke column (`SmokeColumn`, `game/vfx/smoke/`, docs `tech/smoke.md`), raymarched in a bounding box and clipped by depth, so no shells show up close. It replaces the kit's shells in `ch06/brine_shoals` (ZoneKitDressing `smokes` rows, on the Smoke block). Requests: **M3-ENV-1324** (env-art: the kit preview and the camp arenas' shells) and **M3-ARC-1324** (integration-qa: `apply_system_tiers` should also tier WaterSphereRig and SmokeColumn). Checks run: gdlint/gdformat, validate_data, taskboard --check, Godot `smoke_column` (3, new), `zone_kit` (12), `ch06` (5). **MERGE-READY @ 3eaa64a5.**
+  LEAD-ANSWERED (14:47: yes, env-art-b takes it after the Fisher Stair prop; agree the cue vocabulary with integration-qa by task file): M3-C09-03 (the Ebbing's motes: GlimmerField fields, staff and mourner attractors, and a `.dlg` cue vocabulary with Systems and the Architect) is rendering's, but it's cutscene VFX, not a zone or kit look. Is it env-art-b's under your owners split? Meanwhile I'm leaving it and taking my own Ch5–Ch9 audit. Also: the cost criteria of M3-RND-21 (four columns under 0.3 ms at High 1440p) and M3-RND-1315 go to the PC's QA pass, as M3-RND-26's did.
+
+- **GPU QA re-check on big15 (6466a6f5, gpu/act1-qa-2 62b2115c):** rows 6, 27 and 28 read "still open" only because their fixes (3109a2f5: the Coilspire grid lines; 47845c69: the Corrow rocks) came after big15. Both are on this branch @ MERGE-READY. Rows 15, 26 and 40 stay explained (env-art's M3-ENV-1323 and M3-ENV-1316). The PC can re-check once this branch is in a batch.
+
+- **M3-RND-21 / M3-RND-1315 follow-up:** both Ch6 camp arenas (`salvage_camp_burning`, and `brine_shoals_afternoon` through a new wrapper, `b_shoals_arena.py`) now draw SmokeColumns instead of shells (`b_smoke_columns.py` swaps the written plume instances). The flames have volume (a brighter heart, an orange rim), and the fires sit on round, ragged ash beds instead of square trays (`b_fire.py`, rebuilt; only the two fire pieces changed). M3-ENV-1324 is narrowed to the kit preview. Checks run: tools `test_b_arenas` + `test_brine_shoals_kit` + `test_arenas` (53), Godot `flame`, `battle_arena`, `brine`, `smoke` (all green), gdlint/gdformat, taskboard --check. **MERGE-READY @ 9a9c0043.**
+
+- **The Fisher Stair in Ch8's set piece (the Lead's ask, 14:27; M3-CRB-009 ask 4):** done @ 9c8e9c99.
+  - **The capsule:** it is the greybox `wall_head_storm`'s `StairHead`. The integration branch still sends `ch08_stair_hold_1..3` and `undertows_reach` to that greybox. On this branch, encounters.json already sends them to the seawall arenas, which stand the Corrow kit's real `fisher_stair`, so merging this branch retires the capsule. Self-renders of `battle_ch08_stair_hold`, and of `undertows_reach` at the default camera (scratch), show no capsule.
+  - **Added:** `StairHead_ward` and `StairFlight_ward` anchors on all three wall-head arenas, computed from the kit stair's own frame. The head lands 0.3 m from env-art's `EntryMarker_ward`. A `CameraHints/the_stair_head` hint frames the head landing and its down-steps from the walk.
+  - **Request M3-BPR-1325** (battle-presentation): anchor the stair meter and climber VFX on these marks, and cut to the hint when the Climb acts. From the default camera the stair head sits just off frame right.
+  - **Checks run:** tools `test_b_arenas` + `test_arenas` (22); Godot `battle_arena` (18), `set_piece` (48), `seawall_stair` (1, new). **MERGE-READY @ 9c8e9c99.**
+
+- **M3-C09-03, the Ebbing's motes (the Lead, 14:47):** built @ 50db241b; the task stays `doing` until the cue hook lands.
+  - **The rig:** `EbbingMotes` (`game/vfx/ebbing/`, data `game/data/vfx/ebbing.json`, docs `tech/ebbing.md`) sits on `ch09/corrow_night` through ZoneKitDressing's `ebbing` row. It plays eight HELD fields by the cue marks, about 5,100 motes at High and 1,800 at Low.
+  - **Attractors:** a staff attractor on a `StaffHead` on Asha, kept low enough that under 5 % of the motes rise under the raised staff (a CPU replica test, which also shows a full-strength pull would lift 38 %). Mourner anchors let go over 4 s as the staff passes. The cutaway's field has no attractor and no focus. Reflections are on for the harbour fields.
+  - **Test scene:** `game/levels/_tests/ebbing/ebbing_shots.tscn`. New shots `ebbing_n11` and `ebbing_n08` need the Lead's baselines.
+  - **Request M3-ARC-1326** (integration-qa): `_cue_vfx` should offer each cue to the `cutscene_vfx_hosts` group first, plus the `follow=` / `anchors=` vocabulary. Until it lands, the chapter's cues still draw the placeholder.
+  - **Checks run:** Godot `ebbing` (5, new), `ch09` (12), `glimmer` (36), `zone_kit` (12); gdlint/gdformat; validate_data; taskboard --check. `tools.tests.test_screenshots` fails on `kerrid_front` already at HEAD (pre-existing, not this branch's), and the two new shots have no baselines yet. **MERGE-READY @ 50db241b.**
+  LEAD-ANSWERED (15:33: the Lead baselines them at the gate; M3-ARC-1326 routed to integration-qa): baselines for the new shots `ebbing_n11` and `ebbing_n08` at your gate. And M3-ARC-1326 needs integration-qa: the one hook that lets Ch9's cues play the real Ebbing. Can you route it?
+
+- **BACKLOG EMPTY (14:58, @ the handoff commit):**
+  - Every env-art-b and rendering zone/kit item is done or waiting on another track:
+    - M3-ARC-1324 and M3-ARC-1326: integration-qa.
+    - M3-ENV-1324, M3-ENV-1306, M3-ENV-1316 and M3-ENV-1323: env-art.
+    - M3-BPR-1325: battle-presentation.
+    - Costs: the PC.
+  - The rendering board's other todos are battle VFX (battle-presentation's, per the owners split), Ch1 underwater (env-art's chapter), or M2 items blocked on others.
+  - Next: the `ebbing_*` baselines and M3-ARC-1326. When the hook lands, play Ch9 through its cues and view N08 to N15.
+
+- **Player-height placeholder audit, Ch5–Ch9 (the Lead, 15:33):** 44 walk views at eye height along each zone's path, plus every registered Ch8 and Ch9 Corrow shot, all viewed.
+  - **Fixed @ 26a674f8:**
+    - **The Corrow bastion yard** (the wall's west end, by the Stillguard barracks) was the low town's sand-and-cobble ground raised to walk level: a flat sand pad with hard-edged stone patches. It is now paved in the walk's laterite (`material_paths`) and dressed with ten pieces of stair-watch clutter inside its rims (crates, sacks, shields, rope, nets; two skipped for story-point clearance). This covers Ch8 and Ch9.
+    - **Ch9's rubble at night** (the rip-rap, the breach, the strand rocks, the low-town rubble, the milestone) read as wet black pillows, the look GPU QA row 28 flagged. Its `cw_rubble` slot is now the kit's dry broken laterite.
+  - **Explained, not mine:**
+    - The trader boat's white box bales (Tamsule, Corrow): env-art's piece, request M3-ENV-1316.
+    - Ashcrown's flat mint and red lacquer posts and strips: env-art's kit materials, M3-ENV-1316.
+    - Pell and `kerrid_stair` as capsules: no field body yet, characters' M3-C09-08 (M3-CIN-1217 lists them).
+    - Pemakar's black flank above the town at night: the colour script's ch05 fill of 0.25, so the lamps read.
+  - **Sampling artifacts, not defects:**
+    - Views starting inside the party's heads.
+    - One Coilspire view interpolated through the hill.
+  - **Checks run:** Godot `ch08` (23), `ch09` (12), `zone_kit` (12), validate_data. **MERGE-READY @ 26a674f8.**
+
+### 2026-10-29 (new Lead session_01Bg3iP7cPGyjbX4CyniBahc; integration `claude/new-session-mj8c3c`)
+- **Merged `origin/claude/new-session-mj8c3c`** (clean). Re-imported.
+- **M3-C09-03 (the Ebbing):** M3-ARC-1326's hook (`CutsceneVfxHosts`) is on `claude/hero-integration` (5c11d034), not
+  yet on integration. My side needs no change: `EbbingMotes.play_vfx` matches its signature, and it reads marks at
+  runtime, so hero-integration's moved `mourner_hand` mark is followed. When it lands: play Ch9 and view N08–N15.
+- **M3-ENV-1325, Ashcrown at player height (GPU QA row 26; the Ch5 half of M3-ENV-1316, zone-side):** a new walk
+  (spawn → triggers at eye height, both ways) showed the tiers' shaded faces and the flying stair's flanks as flat
+  near-black planes, and the trial's copper and the posts as flat mint and red plastic.
+  - **Cause, black faces:** `Ch05Zone.apply_variant` writes the layout's `environment` row (ambient 0.45) over any
+    grade, and the kit's stone bakes an occlusion (UV2) applied at 0.8. Now ambient 1.8 (layout row and the zone's own
+    grade), and zone copies of `ac_ashlar`/`ac_dressed` at occlusion 0.3/0.35.
+  - **Flat metals:** zone materials on `env_bronze` (patina, streaks, edge wear; the lacquers chip to black) swapped in
+    by slot on every Ashcrown kit piece, including the tiers' veins (streaked verdigris).
+  - **The day arenas** take the same swaps through a new `KitSlotSwaps` node (`game/levels/act1/`, additive) written by
+    `b_arenas.py`, and the forecourt takes the zone's fill.
+  - Everything is written by `tools/act1/ch05_ashcrown_dressing.py`.
+  - **Checks run:** Godot `--filter=` ashcrown 22/0, ch05 13/0, zone_kit 12/0, battle_arena 18/0; tools test_b_arenas +
+    test_arenas (22); gdlint/gdformat; validate_data; taskboard --check.
+  - **Checks skipped:** coverage (no battle/progression code); Blender (no kit source touched).
+  - **MERGE-READY @ a209511a.**
+- LEAD-ASK: M3-ENV-1316 (env-art's kit faces, open since 10-28) is all Ch5–Ch9. I'm fixing what the zones can fix
+  (Ashcrown done above; next the trader boat's bales and the Brine Shoals tent and mudflat, by slot swaps or new
+  `b_*.py` pieces). env-art keeps the kit's own materials. Going ahead; overrule if env-art has it in flight.
+
+- **Merged `origin/claude/new-session-mj8c3c` @ ccf44ba4** (clean).
+- **big17's freed-cast lint (routed to me 18:40):** `EbbingMotes._process` cast a stored mourner ref before
+  `is_instance_valid`; it now checks the raw ref first (e884cb93). hero-integration's `tools/freed_cast_lint.py` run
+  on this tree: no env-art-b hit left (its `hero_field_party.gd` hit is fixed on hero-integration).
+- **Player-height walk, all eight Ch5–Ch9 zones (10-29):** spawns and triggers at eye height, both ways (~290 views),
+  plus an ID-colour pick to name what a view shows. Pemakar (night), Tamsule and the galleries read final.
+- **M3-ENV-1326, what the walk found in Ch6–Ch9** (the rest of M3-ENV-1316 that the zones can fix):
+  - **`ZoneKitDressing.kit_material_paths`** (additive; act1-chapters please note): a slot swap on every piece of the
+    zone's own kit, under a row's own `material_paths`. Shared writers in `tools/act1/ch05_09_zone_looks.py`.
+  - **Corrow, Ch8 and Ch9:** the Bastion's and the watch's doors were flat red planes, the copper and iron plastic,
+    the trader's bales and Ch9's shrouds flat `cw_sail`. Zone looks: weathered lacquer (the hollows dull to an aged
+    red), verdigris, sea iron, a tan sailcloth.
+  - **The trader's bales** (Ch7, Ch8): a new Corrow kit piece `trader_cargo` (`b_cargo.py`), lashed and bellied
+    canvas bales around the box bales. Corrow kit rebuilt `--all` in Blender 5.0.1: older pieces byte-identical.
+  - **Coilspire:** pale flat mint pipes, housings and roof (`cs_copper`'s patina near full), flat worn copper and iron.
+  - **The Level-stone shrine** (Ch6, and borrowed in Ch8): a white box. It takes Haluna's shrine stone.
+  - **Daylight fire** (my M3-RND-1315 shader): opaque tongues read as cut card on the noon flats. Now translucent,
+    with soft silhouettes, licks torn by the rising noise, and a hot heart.
+  - **Arenas:** the seawall stairhead arenas and `coilspire_headland_path` take their zone's swaps (`KitSlotSwaps`).
+- **Left for env-art (on M3-ENV-1316):** the kits' own flat slots, the headland's far facets, and Tamsule's
+  `market_boat_a` sun umbrella (a flat 16-gon with no ribs: from the decks it reads as a pale-blue plate on the water).
+- **Not mine, seen on the walk:** Inquisitor Moll is still a capsule in the camp fight (creatures-b, routed 18:43).
+- **Checks run (M3-ENV-1326):** Godot `--filter=` zone_kit 12/0, ch06 5/0, ch07 18/0, ch08 23/0, ch09 12/0, flame 2/0,
+  brine 5/0, battle_arena 18/0, ebbing 5/0; tools test_corrow_kit, test_coilspire_kit, test_brine_shoals_kit,
+  test_b_arenas, test_arenas; gdlint/gdformat; validate_data; taskboard --check; Corrow kit `--all` in Blender.
+  **Skipped:** coverage (no battle/progression code); the other kits' Blender jobs (untouched).
+- **MERGE-READY @ 61c918b0** (M3-ENV-1325, M3-ENV-1326, the freed-cast fix).
+
+- **`coilspire_tier_landing`** now wears the zone's slot looks too: `b_headland_arena.py` writes env-art's TIER_HALL
+  table unchanged and adds KitSlotSwaps (`test_b_arenas` WRAPPED updated). Checks: test_b_arenas + test_arenas,
+  Godot battle_arena 18/0. **MERGE-READY @ 2b882105.**
+
+- **M3-C09-03, verified against the hook (trial merge of `origin/claude/hero-integration` @ 5c11d034, not pushed):**
+  new `tests/integration/test_ch09_ebbing_cues.gd` runs every compiled Ch9 `@vfx glimmer_held` cue through
+  `CutsceneSequencer._cue_vfx` on `ch09/corrow_night`: with the hook, the Ebbing takes all of them and no placeholder
+  spawns (PASS on the trial tree; on this branch it only checks the cues until the hook arrives). Nothing else is
+  needed from me; the task closes when M3-ARC-1326 lands on integration. **MERGE-READY @ 7dc2ba55.**
+- **For integration-qa (FAST-TRACK, found on that trial):** hero-integration's own `tests/unit/test_cutscene_vfx_hosts.gd`
+  fails to parse at 5c11d034: its `_motes()` checks `c is CutsceneMotes`, a class that branch removed (CutsceneVfx
+  replaced it). Counting nodes named `Vfx_*` (the sequencer's names) works whatever draws the placeholder.
+
+- **M3-C09-04's last piece:** the kit's `flood_debris` (built for it, never placed) now drifts among the low town's
+  drowned roofs (12, seeded, 5–12 m from a house). Checks: Godot `--filter=ch09` 13/0; viewed from over the lake.
+- **Stale placement tasks closed to review** (they were env-art's "placement is act1-chapters'" notes; Ch5–Ch9 dressing
+  is mine since 10-28): M3-C05-03, M3-C08-102, M3-C09-04, each with what is built and where. B01's SaveShrine
+  interactable and chandler stay act1-chapters' (systems). **MERGE-READY @ 078f3e07.**
+
+- **Tamsule's gilt** (`tb_gold_leaf`, flat): a worn-gold look by `kit_material_paths` in the port and the galleries.
+  Checks: Godot ch07 18/0, tamsule 7/0, zone_kit 12/0; viewed ch07_tamsule_market, ch07_bell_galleries.
+  **MERGE-READY @ f248bb57.**
+
+- **Pemakar and Brine Shoals** get the same zone looks for their kits' flat lacquer, copper, gold, brass and iron
+  (`zl.lacquer()`, `NEW_COPPER`, `GOLD`), including the Pemakar pieces Ashcrown borrows; their arenas
+  (`ash_terrace_lanternfall`, `salvage_camp_burning`, `brine_shoals_afternoon`) through KitSlotSwaps. Checks: Godot
+  pemakar 10/0, ashcrown 22/0, ch05 13/0, ch06 5/0, brine 5/0, zone_kit 12/0, battle_arena 18/0; tools test_b_arenas,
+  test_arenas, test_pemakar_kit, test_brine_shoals_kit. **MERGE-READY @ cff5dfd3.**
+
+- **The Lead's "known red: test_arenas for ash_terrace_lanternfall" (lead-cloud.md):** not reproducible. `test_arenas`
+  + `test_b_arenas` pass on `lead/gate-big17` @ be74f9a0 and on a trial merge of this head into it (env-art's
+  M3-ENV-1306 table change doesn't clash: `b_lanternfall.py` starts from the raw `_terrace_arena()`, so its votives
+  are never doubled). That trial did find a real latent bug of mine: Ashcrown's and Coilspire's kit modules were both
+  `b_trial.py`, so a one-process `unittest discover` failed whichever kit test ran second. Coilspire's is now
+  `b_spire_trial.py` (PROVENANCE sources updated; `flue_gate` rebuilt in Blender: byte-identical). Both orders pass.
+  **MERGE-READY @ feafc90e.**
+
+- **Full tools suite on this head (`run_tool_tests -j 4`, 1528 tests):** red only in test_screenshots (missing
+  baselines for the new shots), test_shrine_gi_bake, test_hero_clips, test_zone_dressing_ch01 and test_zone_map_pois.
+  The last four are not this branch's work: they come from Ch1/Ch3 files this branch carries from older env-art and
+  m2-slice history that big17 has already reconciled. All four, plus test_b_arenas, pass on `lead/gate-big17` and
+  on a trial merge of this head into it. They clear when big17 reaches integration and I merge it.
+
+- **BACKLOG EMPTY (10-29, @ the handoff commit; session handoff `docs/kb/handoffs/2026-10-29-env-art-b-1.md`):**
+  - My GPU QA rows and inventory rows are all fixed or explained. The latest inventory lists none of mine: the
+    `*_drop_proxy` names are env-art's kit.
+  - The player-height walk of all eight Ch5–Ch9 zones is done, and so is the "anything primitive?" audit. Everything it
+    found that the zones, my arenas or my kit pieces can fix is fixed (M3-ENV-1325, M3-ENV-1326, M3-C09-04's debris).
+  - What's left belongs to others:
+    - env-art: M3-ENV-1316's kit-side items;
+    - characters and creatures-b: the capsules;
+    - integration-qa: M3-ARC-1326, which closes M3-C09-03;
+    - the PC: the PC-QUEUE.
+  - Next: merge the integration branch once big17 lands, run `--filter=ebbing` with the hook in, and move M3-C09-03
+    to review.
+
+- **The Lead's 18:43 and 20:46 messages, answered:**
+  - **Freed-cast lint:** fixed @ e884cb93 (`EbbingMotes._process` checks the stored ref before casting). The lint run
+    on this head lists no env-art-b hit; hero-integration's `hero_field_party.gd` hit is fixed on their branch.
+    `--filter=ebbing` 5/0 (6/0 with the new cue test).
+  - **`test_cutscene_vfx_hosts.gd` (hero-integration's file, red on big16/big17):** a patch for the gate:
+    `docs/kb/handoffs/live/patches/m3-arc-1326-vfx-hosts-test-big17.patch` (`git apply` on lead/gate-big17 @ 6aae2fd1).
+    It does not resurrect `CutsceneMotes`. `_motes()` now counts what replaced it: the sequencer's `CutsceneVfx`
+    placeholders, GlimmerFields named `Vfx_<effect>_<n>`. Proven on a big17 worktree: `--filter=vfx_hosts` 4/0,
+    `--filter=ebbing` 5/0. I didn't edit their file on any branch.
+  - **GPU QA rows on this head:**
+    - 6, 27 (Coilspire's green grid): gone in today's `ch08_coilspire_hall`/`_gate` renders and walk views.
+    - 28 (black spheres): `ch09_corrow_rocks` shows broken laterite today.
+    - 26 (Ashcrown's grey tiers): fixed today (M3-ENV-1325).
+    - 15, 40 (the Underway's hard light rectangles): Ch1, env-art's M3-ENV-1323; big17's `arena_scenes.py` carries
+      their soft underwater sun.
+    - 34 (the Brine Shoals fight on the test stage): my side is sound. `ch06_ridge_skippers` names
+      `brine_shoals_afternoon`, which is registered in `arenas.json`, and the zone's random table names the
+      encounter. The fallback is in the BattleRequest's lookup (act1-chapters' flow).
+    The PC can close all of these on its next pass.
+
+### PC-QUEUE
+- The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
+  on the PC presets (two large and three small fires in `ch06/brine_shoals` and `salvage_camp_burning`).
+- Carried: M3-RND-26's drop cost, M3-RND-21's four columns under 0.3 ms at High 1440p.
+
 ### Render requests
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
+SELF-RENDERED @ cff5dfd3: ch05_pemakar_harbour, _harbour_day, _weir, _crown, ch05_ashcrown_causeway, _crown, ch06_brine_camp, battle_arena_ash_terrace_lanternfall, _camp, _shoals; ch07_tamsule_market, ch07_bell_galleries (gilt); a Ch9 low-town view (scratch, the flood debris). Viewed: no regressions; aged lacquer and worn gilt read.
+SELF-RENDERED @ 2b882105: battle_arena_coilspire_tier_landing, _coilspire_headland_path, _ash_terrace_lanternfall. Viewed: the tier landing's pipes are verdigris over copper; the other two unchanged.
+SELF-RENDERED @ 61c918b0: ch06_brine_camp, ch06_brine_road, ch07_tamsule_mouth, _market, _gantry, ch08_corrow_arrival, _stair, _flood, _lake, _storm, ch08_coilspire_hall, _gate, _storm, ch09_corrow_strand, _road, _landing, _rocks, battle_arena_camp, _shoals, _wall_head, battle_ch08_stair_hold, battle_boss_intro_reach, plus ~290 walk views (scratch). Viewed: lashed bales on the trader, translucent fire with torn licks, weathered red doors, verdigris and sea iron, a stone shrine; no regressions.
+SELF-RENDERED @ a209511a: ch05_ashcrown_causeway, _forecourt, _tiers, _crown, _court, battle_arena_ashcrown_forecourt_day, battle_arena_ashcrown_anvil_court, battle_boss_intro_matron, plus 30 Ashcrown walk views (scratch). Viewed: the tiers' coursing and buttresses read in shade, the veins are streaked verdigris, the bowls aged copper; sunlit paving not blown out. None of these zone shots has a baseline yet.
+SELF-RENDERED @ 26a674f8: ch08_corrow_arrival, _stair, _flood, _lake, _storm, ch09_corrow_strand, _road, _landing, _rocks, plus 44 scratch walk views and three bastion views. Viewed: the yard is paved and dressed, Ch9's rocks and rubble read as broken laterite, and nothing regressed.
+SELF-RENDERED @ 50db241b: ebbing_n11, ebbing_n08 (new), plus a strand view (scratch). Viewed: cyan held motes over the harbour, mirrored in the still water and sinking seaward. N11's river overhead reads above and below the waterline, and nothing is gold or rising.
+SELF-RENDERED @ 9c8e9c99: battle_ch08_stair_hold. Viewed: no capsule, and the anchors are invisible so the frame is unchanged. Also viewed `undertows_reach` at the default camera and the new `the_stair_head` hint (scratch): the head landing and its down-steps read clearly from the walk.
+SELF-RENDERED @ 9a9c0043: battle_arena_camp, battle_arena_shoals. Viewed: the columns rise behind the camp, and the fires read as fire up close, with round beds and no trays.
+SELF-RENDERED @ 3eaa64a5: ch06_brine_camp (clocks 40 and 44), ch06_brine_road. Viewed: grey-brown columns that lean downwind with lit tops, read at range, and billow between the clocks. The foot's grain is gone with the gradient-noise offset.
+SELF-RENDERED @ f11aca7d: ch09_corrow_road. Viewed: the dawn road is a washed low gold looking east into the sun, slightly warmer than before.
+SELF-RENDERED @ 51f5185c: ch06_brine_camp at clocks 40.0 and 40.37 (scratch). Viewed: the fires read golden-orange with torn tips that move between the clocks. It drifts from its baseline, which predates the fires.
+SELF-RENDERED @ ce10e96a: tamsule_t01_bell_from_the_mouth, tamsule_t03_oruvel_moorings (drift by design: the cyan drop, the 0.8 m column), preview T02 and T05 (scratch), ch07_bell_galleries, ch07_bell_moorings, ch07_tamsule_gantry, ch07_tamsule_mouth — all viewed: the drop reads as held cyan water in every view, still, its light streaks the pool's coping white under it.
 SELF-RENDERED @ ea946ec8: ch07_tamsule_mouth, ch07_tamsule_market, ch07_tamsule_gantry — new shots, read final (Liss and Kerrid are capsules: no field body yet).
 SELF-RENDERED @ 00e15816: ch05_pemakar_weir, ch05_pemakar_harbour_day, ch08_corrow_storm, ch08_coilspire_storm, ch08_coilspire_gate, ch08_corrow_flood, ch08_corrow_lake, ch09_corrow_landing, ch09_corrow_rocks, ch09_corrow_strand — new shots (the strand is an existing baseline: no longer dark); viewed after fixes (re-aimed cameras, the flood lifted, the rocks' lamp). ch05_pemakar_harbour drifts by the new quay (the party's lanterns are the two glows).
 SELF-RENDERED @ 4081127f: ch05_ashcrown_causeway, ch05_ashcrown_forecourt, ch05_ashcrown_crown, ch05_ashcrown_tiers, ch05_ashcrown_court, battle_arena_ashcrown_forecourt_day, battle_arena_ashcrown_anvil_court, ch06_brine_road, ch06_brine_camp — all new shots or a changed zone, all viewed. The anvil court arena was re-lit after viewing (interior fill 1.4, exposure 1.35, plus a forge-spill lamp over the fight floor); its first render had a black near half.
 SELF-RENDERED @ 749bfc48: battle_arena_ash_terrace_lanternfall (votive lamps), ch05_pemakar_harbour_day and ch05_pemakar_weir (the leat), ch08_coilspire_storm and ch08_corrow_storm (the Undertow now drawn), ch09_corrow_rocks, ch09_corrow_strand and ch09_corrow_landing (the moon from the sea), ch05_ashcrown_court, _causeway and _crown (the loggia plume). All viewed, with before/after sheets for the moon and the plume. Plus a full contact sheet of the 25 Ch5–Ch9 zone shots to pick the weakest views.
+SELF-RENDERED @ 8d198f1e: 53 arena angles (scratch hint rig) before and 30 after the fixes, all viewed: ash_terrace_lanternfall, salvage_camp_burning, seawall_stairhead_storm/hoist/surge, coilspire_headland_path, ashcrown_forecourt_day, ashcrown_anvil_court; 44 player-height walk views across the 8 zones; ch06_brine_camp (the zone burns), ch07_tamsule_market/mouth. A headland scrub ring out to 90 m was viewed and reverted (clumps floated).
+SELF-RENDERED @ 6cd17ce3: battle_boss_intro_reach, battle_ch08_stair_hold, ch09_corrow_strand, ch05_pemakar_harbour, ch05_pemakar_crown (after the big13 merge), all viewed; the Lead's three gate notes are fixed.
+SELF-RENDERED @ f51f81f2: battle_boss_intro_matron (the anvil court), battle_boss_intro_reach (the surge state, landfall storm), battle_ch08_stair_hold (the storm state), all viewed.
+SELF-RENDERED @ 22b289bf: Virel in the Coilspire crown chamber (three scratch views) and ch08_coilspire_storm/_hall (unchanged), viewed.
+SELF-RENDERED @ 8c535d1e: ch07_bell_galleries, ch07_bell_moorings (the weeping column reads), ch07_tamsule_gantry, ch07_tamsule_mouth (the column sits behind the gantry leg head-on), all viewed.
+SELF-RENDERED @ 3be35a85: ch06_brine_camp, _road, ch08_coilspire_hall, _gate, ch08_corrow_arrival, ch09_corrow_strand, _rocks, battle_arena_underway, _underway_tower, _terrace, _ash_terrace_lanternfall, ch05_ashcrown_tiers (the GPU QA rows on this head), all viewed; hall, gate, rocks and Lanternfall re-rendered after the fixes.

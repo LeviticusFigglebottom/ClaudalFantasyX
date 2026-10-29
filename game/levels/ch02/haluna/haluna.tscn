@@ -13,6 +13,10 @@
 [ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_actor_pose.gd" id="11_pose"]
 [ext_resource type="PackedScene" path="res://assets/characters/asha/asha.glb" id="12_asha"]
 [ext_resource type="Script" path="res://game/flow/haluna_story.gd" id="13_story"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/hand_broom.glb" id="14_broom"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/woven_bag.glb" id="15_bag"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/clay_bowl.glb" id="16_bowl"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/wake_shell_loose.glb" id="17_shell"]
 
 [sub_resource type="StandardMaterial3D" id="Mat_rhen"]
 albedo_color = Color(0.368627, 0.603922, 0.588235, 1)
@@ -55,16 +59,6 @@ height = 1.7
 material = SubResource("Mat_facing")
 size = Vector3(0.12, 0.08, 0.18)
 
-[sub_resource type="StandardMaterial3D" id="Mat_broom"]
-albedo_color = Color(0.690196, 0.541176, 0.321569, 1)
-roughness = 0.8
-
-[sub_resource type="CylinderMesh" id="Mesh_broom"]
-material = SubResource("Mat_broom")
-top_radius = 0.02
-bottom_radius = 0.02
-height = 1.4
-
 [sub_resource type="SphereShape3D" id="Shape_talk"]
 radius = 1.7
 
@@ -100,9 +94,9 @@ height = 0.22
 [sub_resource type="Resource" id="Shot_beach_shallows"]
 script = ExtResource("7_shot")
 id = &"beach_shallows"
-mode = 1
+mode = 4
 position = Vector3(7, 2.4, 18)
-look_at = Vector3(-4, 0.9, 6)
+look_at = Vector3(-14, 0.9, 9)
 target_offset = Vector3(0, 1, 0)
 fov_deg = 37.8
 follow_weight = 0.75
@@ -111,7 +105,7 @@ max_pan_deg = 45.0
 [sub_resource type="Resource" id="Shot_beach_path"]
 script = ExtResource("7_shot")
 id = &"beach_path"
-mode = 1
+mode = 4
 position = Vector3(-6, 3.2, 15.5)
 look_at = Vector3(-27, 2.4, 6.5)
 target_offset = Vector3(0, 1, 0)
@@ -133,7 +127,7 @@ max_pan_deg = 18.0
 [sub_resource type="Resource" id="Shot_H09"]
 script = ExtResource("7_shot")
 id = &"H09"
-mode = 1
+mode = 4
 position = Vector3(-30.5, 3.5, 5.5)
 look_at = Vector3(-50, 2.6, -2)
 target_offset = Vector3(0, 1, 0)
@@ -245,32 +239,6 @@ look_at = Vector3(-54.74, 2.0, -2.49)
 fov_deg = 32.0
 hard_cut = true
 
-[sub_resource type="StandardMaterial3D" id="Mat_bowl"]
-albedo_color = Color(0.666667, 0.427451, 0.290196, 1)
-roughness = 0.7
-
-[sub_resource type="CylinderMesh" id="Mesh_bowl"]
-material = SubResource("Mat_bowl")
-top_radius = 0.22
-bottom_radius = 0.15
-height = 0.12
-
-[sub_resource type="StandardMaterial3D" id="Mat_shell"]
-albedo_color = Color(0.92549, 0.890196, 0.823529, 1)
-roughness = 0.5
-
-[sub_resource type="SphereMesh" id="Mesh_shell"]
-material = SubResource("Mat_shell")
-radius = 0.07
-height = 0.06
-
-[sub_resource type="StandardMaterial3D" id="Mat_bag"]
-albedo_color = Color(0.619608, 0.552941, 0.423529, 1)
-roughness = 0.9
-
-[sub_resource type="BoxMesh" id="Mesh_bag"]
-material = SubResource("Mat_bag")
-size = Vector3(0.45, 0.4, 0.28)
 
 [sub_resource type="StandardMaterial3D" id="Mat_shopkeep"]
 albedo_color = Color(0.25098, 0.462745, 0.556863, 1)
@@ -619,9 +587,8 @@ shape = SubResource("Shape_npc")
 
 
 
-[node name="Broom" type="MeshInstance3D" parent="NPCs/Chapel/Reed"]
+[node name="Broom" parent="NPCs/Chapel/Reed" instance=ExtResource("14_broom")]
 transform = Transform3D(1, 0, 0, 0, 0.906308, 0.422618, 0, -0.422618, 0.906308, 0.22, 0.75, -0.3)
-mesh = SubResource("Mesh_broom")
 
 [node name="Talk" type="Area3D" parent="NPCs/Chapel"]
 script = ExtResource("8_int")
@@ -701,9 +668,8 @@ shape = SubResource("Shape_npc")
 
 
 
-[node name="Bag" type="MeshInstance3D" parent="NPCs/Neme"]
+[node name="Bag" parent="NPCs/Neme" instance=ExtResource("15_bag")]
 transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -54.74, 2.05, -2.49)
-mesh = SubResource("Mesh_bag")
 
 [node name="Osu" type="Node3D" parent="NPCs"]
 
@@ -716,13 +682,11 @@ shape = SubResource("Shape_npc")
 
 
 
-[node name="Bowl" type="MeshInstance3D" parent="NPCs/Osu/Osu"]
+[node name="Bowl" parent="NPCs/Osu/Osu" instance=ExtResource("16_bowl")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, -0.5)
-mesh = SubResource("Mesh_bowl")
 
-[node name="Shell" type="MeshInstance3D" parent="NPCs/Osu/Osu/Bowl"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.07, 0.02)
-mesh = SubResource("Mesh_shell")
+[node name="Shell" parent="NPCs/Osu/Osu/Bowl" instance=ExtResource("17_shell")]
+transform = Transform3D(0.94, 0, 0.342, 0, 1, 0, -0.342, 0, 0.94, 0.05, -0.01, 0.02)
 
 [node name="Talk" type="Area3D" parent="NPCs/Osu"]
 script = ExtResource("8_int")

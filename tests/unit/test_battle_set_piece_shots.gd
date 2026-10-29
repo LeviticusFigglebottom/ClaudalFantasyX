@@ -83,7 +83,10 @@ func test_a_frozen_riposte_lands_its_vfx_where_the_attacker_stands() -> void:
 	assert_true(now.distance_to(home) > 0.5, "the attacker is away from its mark when the answer lands")
 	var near_now := false
 	for at in spots:
-		near_now = near_now or Vector2(at.x - now.x, at.z - now.z).length() < 0.6
+		# nearer where it stands than its mark (a hit steps out to the body's near face, M3-BPR-420)
+		near_now = (
+			near_now or Vector2(at.x - now.x, at.z - now.z).length() < Vector2(at.x - home.x, at.z - home.z).length()
+		)
 	assert_true(near_now, "an effect lands where it stands now, not on its mark")
 	_free()
 

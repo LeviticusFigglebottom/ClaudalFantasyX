@@ -1,0 +1,13 @@
+{
+  "_about": "Pell's shell-tile sequences (pell.md §3, art decision on the story's beaded cord wraps), authored as data: original, no script, no number. `call` is the left wrap, turn by turn from the wrist up (each turn a run of five to seven tiles in four tones: bone, reed, dark, nacre); the right wrap is the response, the same tones mirrored (pell_costume.tile_sequence reverses the turns and each run). `ankle` is the right ankle cord's three tiles. UI may author a Swell panel from these lists, never from a render of the costume.",
+  "tones": ["bone", "reed", "dark", "nacre"],
+  "call": [
+    ["bone", "dark", "dark", "reed", "nacre"],
+    ["nacre", "bone", "reed", "dark", "bone", "reed"],
+    ["dark", "reed", "nacre", "nacre", "bone"],
+    ["reed", "bone", "dark", "nacre", "reed", "dark", "bone"],
+    ["bone", "nacre", "dark", "reed", "bone"],
+    ["dark", "bone", "reed", "nacre", "dark", "reed"]
+  ],
+  "ankle": ["nacre", "dark", "bone"]
+}

@@ -26,10 +26,19 @@ from asha_hair import ROOT_CAST_H, SLOTS_FULL, SLOTS_HAIRLINE, SLOTS_SPARSE, _ri
 from asha_mesh import Part
 
 STILL = (0.0, 0.0, 0.0, 0.0)  # no wind on short or tied hair
+# M3-CHR-592 `tufts`: toma_hair.scalp_cards' three layers (lift off the scalp, tip rise, root margin inside the
+# hairline in head heights) and its card widths (m, at s = 1)
+TUFT_LIFT_M = (0.0008, 0.0022, 0.0036)
+TUFT_RISE_M = (0.0008, 0.0013, 0.0018)
+TUFT_MARGIN_H = (0.002, 0.008, 0.014)
+TUFT_WIDTH_M = (0.006, 0.009)
 # cards sample the tip zone and dense middle of the atlas columns (a short card over a whole column
 # reads as a square chip up close)
 CARD_V = (0.62, 0.96)
 CARD_U = (0.22, 0.78)
+GREY_U = (0.0, 1.0)  # `grey_strands`: a grey card takes its whole sparse column, feathered edges and all
+GREY_WIDTH_K = 0.7
+GREY_V_CROPPED = (0.30, 0.92)  # `grey_strands` on cropped hair: the strand samples more than the tip zone (CARD_V)  # `grey_strands`: a grey card's width against a dark one's
 
 
 def _still(t: float) -> tuple:
@@ -47,8 +56,9 @@ def _emit(part: Part, surface, paths: np.ndarray, widths, slots, rng, taper: flo
         side = np.cross(T, nrm)
         a = rng.uniform(-twist, twist)
         nrm = nrm * math.cos(a) - side * math.sin(a)
-        _ribbon(part, pts, nrm, float(widths[c]), int(slots[c]), _still, taper=taper, v_range=v_range,
-                mat="hair" if mats is None else mats[c], u_range=u_range)
+        _ribbon(part, pts, nrm, float(widths[c]), int(slots[c]), _still, taper=taper,
+                v_range=v_range[c] if isinstance(v_range, list) else v_range,
+                mat="hair" if mats is None else mats[c], u_range=u_range[c] if isinstance(u_range, list) else u_range)
 
 
 # hairline tables (head heights above the chin) by |azimuth| (0 front, 90 the side, 180 the back)
@@ -144,6 +154,20 @@ class HairStyle:
         share = float(self.p.get("grey_share", 0.0))
         return list(np.where(rng.random(n) < share, "hair_grey", "hair"))
 
+    def _grey_strands(self, widths: np.ndarray, slots: np.ndarray, mats: list, u_range) -> tuple:
+        """M3-CHR-538 (optional `grey_strands`): a grey card samples a sparse atlas column over its whole width and is
+        `grey_width_k` as wide, so salt-and-pepper reads as single grey strands through the dark hair, not as solid
+        light chips. Draws nothing from the rng, so the cards' layout is unchanged; without the key it is a no-op."""
+        mode = self.p.get("grey_strands", False)
+        if not mode:
+            return widths, slots, u_range
+        # "all": every card is a strand (thin white hair over a bare scalp, M3-CHR-536), not only the grey share
+        g = np.ones(len(mats), dtype=bool) if mode == "all" else np.array(mats) == "hair_grey"
+        k = float(self.p.get("grey_width_k", GREY_WIDTH_K))
+        sparse = np.array([SLOTS_SPARSE[i % len(SLOTS_SPARSE)] for i in range(len(mats))])
+        return (np.where(g, widths * k, widths), np.where(g, sparse, slots),
+                [GREY_U if gi else u_range for gi in g])
+
     def _trace_to(self, scalp, lm, roots, length, lift, G, seg, stop_r):
         """Paths over the scalp along the flow toward G; a path stops within `stop_r` of G."""
         step = length / seg
@@ -192,8 +216,48 @@ class HairStyle:
         seg = 2
         paths = self._trace_clamped(scalp, lm, roots, rng.uniform(*length, n_hl) * s, 0.0008 * s, seg,
                                     rng.uniform(0.0, 0.0008, n_hl) * s, G)
-        _emit(part, scalp, paths, rng.uniform(0.004, 0.006, n_hl) * s, rng.choice(SLOTS_HAIRLINE, n_hl), rng, 0.3,
-              (0.0, 0.6), self._mats(rng, n_hl), 0.3, CARD_U)
+        widths = rng.uniform(0.004, 0.006, n_hl) * s
+        slots = rng.choice(SLOTS_HAIRLINE, n_hl)
+        mats = self._mats(rng, n_hl)
+        widths, slots, u_rng = self._grey_strands(widths, slots, mats, CARD_U)
+        _emit(part, scalp, paths, widths, slots, rng, 0.3, (0.0, 0.6), mats, 0.3, u_rng)
+
+    def tuft_layers(self, part: Part, scalp, lm, rng, G, s: float) -> None:
+        """M3-CHR-592 (optional `tufts`): short and cropped hair on Toma's short-hair atlas (toma_hair's tufts of
+        tapered strands with ragged tips, M2-CHR-524), not the tip zone of Asha's long-strand columns (square chips
+        at dialogue range). Toma's three lifted layers, rooted inside this style's own hairline and traced along its
+        flow (`_trace_clamped`: the front may spill a little past the hairline); the cards nearest the hairline take
+        the short "edge" column, the outer layer mixes in the sparse ones. The hairline row uses the edge column too.
+        write_materials gives `hair` and `hair_grey` the short atlas."""
+        import toma_hair as th
+
+        p = self.p
+        lo, hi = p.get("length_m", [0.02, 0.04])
+        wlo, whi = p.get("card_width_m", TUFT_WIDTH_M)
+        seg = 1 if self.kind == "cropped" else 2
+        zc = lm.P("chin")[2]
+        rise_k = float(p.get("rise", 1.0))
+        n_hl = int(p.get("hairline_cards", 0))
+        if n_hl:
+            lim = math.pi * 0.97
+            phi = np.sort(np.linspace(-lim, lim, n_hl) + rng.uniform(-0.4, 0.4, n_hl) * (2 * lim / n_hl))
+            roots = self._hairline_roots(scalp, lm, phi, rng.uniform(0.002, 0.008, n_hl))
+            paths = self._trace_clamped(scalp, lm, roots, rng.uniform(0.5 * lo, 0.8 * lo, n_hl) * s, 0.0008 * s, seg,
+                                        rng.uniform(0.0, 0.0008, n_hl) * s, G)
+            th._emit(part, scalp, paths, rng.uniform(wlo, whi, n_hl) * s, rng.choice(th.SH_EDGE, n_hl), rng, 0.25,
+                     self._mats(rng, n_hl))
+        for li, (lift, count, rise, margin) in enumerate(zip(TUFT_LIFT_M, p["scalp_cards"], TUFT_RISE_M,
+                                                             TUFT_MARGIN_H)):
+            roots = self._roots_inside(scalp, lm, rng, int(count), margin)
+            n = len(roots)
+            if not n:
+                continue
+            edge = (roots[:, 2] - zc) / lm.h < self.hairline_v(lm, roots) + th.EDGE_BAND
+            paths = self._trace_clamped(scalp, lm, roots, rng.uniform(lo, hi, n) * s, lift * s, seg,
+                                        rng.uniform(0.4, 1.0, n) * rise * rise_k * s, G)
+            th._emit(part, scalp, paths, rng.uniform(wlo, whi, n) * s * (1.0 - 0.1 * li), th._columns(rng, n, edge,
+                                                                                                    li == 2),
+                     rng, 0.25, self._mats(rng, n))
 
     def build(self, lm, scalp) -> Part:
         part = Part("HairHead")
@@ -204,6 +268,8 @@ class HairStyle:
         lo, hi = p.get("length_m", [0.02, 0.04])
         if self.kind == "wrap":
             self.hairline_row(part, scalp, lm, rng, int(p.get("hairline_cards", 60)), tuple(p.get("hairline_m", (0.02, 0.035))))
+        elif self.kind in ("short", "cropped") and p.get("tufts"):
+            self.tuft_layers(part, scalp, lm, rng, G, s)
         elif self.kind in ("short", "cropped"):
             seg = 1 if self.kind == "cropped" else 3
             self.hairline_row(part, scalp, lm, rng, int(p.get("hairline_cards", 0)), (0.5 * lo, 0.8 * lo))
@@ -220,8 +286,13 @@ class HairStyle:
                                             seg, rng.uniform(0.4, 1.0, n) * rise * rise_k * s, G)
                 slots = rng.integers(SLOTS_FULL, size=n) if li < 2 else rng.choice(SLOTS_SPARSE, n)
                 v_rng = CARD_V if self.kind == "cropped" else (0.15, 0.95)
-                _emit(part, scalp, paths, rng.uniform(*wr, n) * s, slots, rng, 0.45, v_rng, self._mats(rng, n), 0.3,
-                      CARD_U if self.kind == "cropped" else (0.1, 0.9))
+                widths = rng.uniform(*wr, n) * s
+                mats = self._mats(rng, n)
+                widths, slots, u_rng = self._grey_strands(widths, slots, mats,
+                                                          CARD_U if self.kind == "cropped" else (0.1, 0.9))
+                if isinstance(u_rng, list) and self.kind == "cropped":  # a cropped strand: more of the column
+                    v_rng = [GREY_V_CROPPED if u == GREY_U else v_rng for u in u_rng]
+                _emit(part, scalp, paths, widths, slots, rng, 0.45, v_rng, mats, 0.3, u_rng)
         elif self.kind == "bun":
             self.hairline_row(part, scalp, lm, rng, int(p.get("hairline_cards", 70)), (0.03, 0.05))
             bun_r = float(p.get("bun_r_m", 0.034)) * s
@@ -235,8 +306,10 @@ class HairStyle:
                 dist = np.linalg.norm(roots - G, axis=1)
                 paths = self._trace_to(scalp, lm, roots, dist * 1.3, lift * s, G, 7, bun_r * 0.8)
                 slots = rng.integers(SLOTS_FULL, size=n) if li < 2 else rng.choice(SLOTS_SPARSE, n)
-                _emit(part, scalp, paths, rng.uniform(*wr, n) * s, slots, rng, 0.25, (0.0, 0.9), self._mats(rng, n),
-                      0.15, (0.05, 0.95))
+                widths = rng.uniform(*wr, n) * s
+                mats = self._mats(rng, n)
+                widths, slots, u_rng = self._grey_strands(widths, slots, mats, (0.05, 0.95))
+                _emit(part, scalp, paths, widths, slots, rng, 0.25, (0.0, 0.9), mats, 0.15, u_rng)
             part.extend(self.bun(lm, scalp, rng, G, bun_r))
         part.C = [STILL] * len(part.V)
         return part

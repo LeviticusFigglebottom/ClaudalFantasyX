@@ -8,6 +8,10 @@
   raft_deck_small  6 x 5 m on two 8 m hulls and four lashed barrels, deck top +0.70
   plank_bridge     6 m span along +Z between deck edges at local y 0 (both ends), 1.1 m wide: sagging stringers,
                    planks lashed across, a rope handrail, lashings wrapped hard round the stringer ends, two stays
+  hull_lashed      the run's low hull (C1-12/13): a 3.2 m open skiff, 1.3 m beam, thrown up across the plank bridge
+                   by the swell and lashed there, keel on the planks at y 0 (origin under its middle), listing; two
+                   lashing lines out to the cut points (lashing_a 2.5 m along +X, lashing_b 6 m along +X and 1.5 m
+                   along +Z), each made off round a stake
   net_pen          the Reefball practice pen and Hullgnaw's arena: a 12 m square of 1.4 m walkways on float logs
                    round a 9.2 m pool, the pen net hung from the walkways into the water, a practice net between
                    two posts on the north side; deck top +0.60, origin at the pool's middle at the waterline
@@ -28,12 +32,18 @@ TRI_BUDGET = {
     "hull_cabin": (5500, 300),
     "raft_deck": (18000, 900),
     "raft_deck_small": (12000, 600),
+    "raft_deck_tucked": (18000, 900),
+    "raft_deck_small_tucked": (12000, 600),
     "plank_bridge": (5000, 200),
     "net_pen": (16000, 800),
+    "hull_lashed": (4500, 300),
 }
 
 RAFT_DECK_Y = 0.80
 RAFT_SMALL_Y = 0.70
+TUCK_INSET_M = 0.2  # a tucked raft's hulls end this far inside its deck's ends
+TUCK_SHEER_M = 0.12
+TUCK_CLEAR_M = 0.06  # and their highest point stays this far under the deck line (the planks are 0.05 thick)
 NET_PEN_Y = 0.60
 BRIDGE_SPAN = 6.0
 BRIDGE_W = 1.1
@@ -96,6 +106,40 @@ def build_hull_cabin(seed: int = 702) -> list[kc.MeshBuilder]:
     return out
 
 
+LASHED_LINES = (((0.55, 0.5, 0.25), (2.5, 0.05, 0.0)), ((0.35, 0.62, 1.3), (6.0, 0.05, 1.5)))
+LASHED_LIST_DEG = 7.0
+
+
+def build_hull_lashed(seed: int = 707) -> list[kc.MeshBuilder]:
+    """The run's low hull, lashed across the bridge (see the module docstring)."""
+    out = []
+    roll = math.radians(LASHED_LIST_DEG)
+    for lod in (False, True):
+        rng = kc.rng_for("hull_lashed", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("hull_lashed" + (oc.LOD if lod else ""))
+        h = oc.hull("h", 3.2, 1.3, 0.6, rng, noise, waterline=-0.3, lod=lod, sheer=0.18, open_top=True,
+                    frames=not lod, paint=oc.M_PAINT_TEAL, wear=0.3)
+        mb.merge(h, kc.rot_z(roll), (0.0, 0.6, 0.0))
+        rope = mb.material(oc.M_ROPE)
+        timber = mb.material(oc.M_TIMBER)
+        for a, b in LASHED_LINES:
+            if lod:
+                kc.tube(mb, np.array([a, b], float), 0.02, 3, rope)
+                continue
+            oc.rope(mb, a, b, 0.12, 0.016, rope, n=10)
+            stake_top = np.asarray(b, float) + np.array([0.0, 0.3, 0.0])
+            village_post(mb, np.asarray(b, float) - np.array([0.0, 0.1, 0.0]), stake_top, 0.045, rng, noise, sides=6)
+            oc.lashing(mb, b, (0.0, 1.0, 0.0), 0.045, rope, turns=3)
+        if not lod:
+            # A bailer and an oar in the bilge, a coil of the cut line's spare.
+            kc.plank(mb, (-0.3, 0.2, -1.1), (0.25, 0.24, 1.0), 0.07, 0.03, timber, variation=0.6)
+            oc.coil(mb, (0.15, 0.12, -0.6), 0.13, rope, turns=4, rope_r=0.012)
+        del rng
+        out.append(mb)
+    return out
+
+
 def _float_log(mb: kc.MeshBuilder, rng, noise, x: float, z0: float, z1: float, y: float, *, lod: bool,
                along_x: bool = False, n: int = 2) -> None:
     """A bound float of logs (n side by side) with coir lashings every 1.5 m."""
@@ -132,22 +176,31 @@ def village_post(mb, base, top, radius, rng, noise, sides: int = 7) -> None:
 
 
 def raft(name: str, w: float, d: float, deck_y: float, hulls, rng, noise, *, lod: bool, barrels=(),
-         floats: bool = True, along_x: bool = False) -> kc.MeshBuilder:
+         floats: bool = True, along_x: bool = False, tucked: bool = False) -> kc.MeshBuilder:
     """A deck w (x) by d (z) at deck_y on `hulls` [(x, length, beam, depth, paint), ...] (bows north) lashed under
-    its bearers; float logs along the long sides, cleats at the corners, fascia boards."""
+    its bearers; float logs along the long sides, cleats at the corners, fascia boards.
+
+    `tucked` keeps every hull inside the deck's length and under its planks (stems included), for rafts lashed edge
+    to edge: an untucked raft's bows run past its deck and rise through the next raft's planks."""
     mb = kc.MeshBuilder(name)
     timber, rope = mb.material(oc.M_TIMBER), mb.material(oc.M_ROPE)
     x0, x1, z0, z1 = -w * 0.5, w * 0.5, -d * 0.5, d * 0.5
     oc.deck(mb, x0, x1, z0, z1, deck_y, rng, noise, along_x=along_x, lod=lod, missing_p=0.015)
     gun = deck_y - 0.21  # the hulls' gunwales just under the bearers
     for hx, length, beam, depth, paint in hulls:
+        sheer = 0.25 + 0.1 * float(rng.random())
+        if tucked:
+            length, sheer = min(length, d - TUCK_INSET_M * 2.0), min(sheer, TUCK_SHEER_M)
         h = oc.hull("h", length, beam, depth, rng, noise, waterline=-gun, lod=lod, paint=paint,
-                    sheer=0.25 + 0.1 * float(rng.random()), open_top=True, frames=False)
-        oc.place(mb, h, hx, gun, float(rng.uniform(-0.4, 0.4)))
+                    sheer=sheer, open_top=True, frames=False)
+        g = gun
+        if tucked:  # the stems' tops under the planks' underside
+            g = min(gun, deck_y - TUCK_CLEAR_M - float(np.asarray(h.pos)[:, 1].max()))
+        oc.place(mb, h, hx, g, float(rng.uniform(-0.4, 0.4)))
         if not lod:
             nb = max(2, int((z1 - z0) / 1.2) + 1)
             for zb in np.linspace(z0 + 0.15, z1 - 0.15, nb)[::2]:
-                oc.cross_lash(mb, (hx, gun + 0.07, zb), 0.17, rope)
+                oc.cross_lash(mb, (hx, g + 0.07, zb), 0.17, rope)
     if not lod:
         for xx in (x0 - 0.03, x1 + 0.03):
             kc.plank(mb, (xx, deck_y - 0.12, z0), (xx, deck_y - 0.12, z1), 0.2, 0.05, timber, up=(1.0, 0.0, 0.0),
@@ -174,26 +227,35 @@ def raft(name: str, w: float, d: float, deck_y: float, hulls, rng, noise, *, lod
     return mb
 
 
-def build_raft_deck(seed: int = 703) -> list[kc.MeshBuilder]:
+def build_raft_deck(seed: int = 703, piece: str = "raft_deck", tucked: bool = False) -> list[kc.MeshBuilder]:
     out = []
     for lod in (False, True):
-        rng = kc.rng_for("raft_deck", seed)
+        rng = kc.rng_for(piece, seed)
         noise = kc.Noise3(rng)
         hulls = [(-3.0, 11.0, 2.3, 1.15, oc.M_PAINT), (0.0, 11.4, 2.4, 1.2, oc.M_PAINT_RED),
                  (3.0, 10.6, 2.2, 1.1, oc.M_PAINT_WHITE)]
-        mb = raft("raft_deck" + (oc.LOD if lod else ""), 9.0, 7.0, RAFT_DECK_Y, hulls, rng, noise, lod=lod)
+        mb = raft(piece + (oc.LOD if lod else ""), 9.0, 7.0, RAFT_DECK_Y, hulls, rng, noise, lod=lod, tucked=tucked)
         out.append(mb)
     return out
 
 
-def build_raft_deck_small(seed: int = 704) -> list[kc.MeshBuilder]:
+# The commons' rafts, lashed edge to edge (ov_zone_dressing): the same decks with their hulls tucked under them.
+def build_raft_deck_tucked() -> list[kc.MeshBuilder]:
+    return build_raft_deck(piece="raft_deck_tucked", tucked=True)
+
+
+def build_raft_deck_small_tucked() -> list[kc.MeshBuilder]:
+    return build_raft_deck_small(piece="raft_deck_small_tucked", tucked=True)
+
+
+def build_raft_deck_small(seed: int = 704, piece: str = "raft_deck_small", tucked: bool = False) -> list[kc.MeshBuilder]:
     out = []
     for lod in (False, True):
-        rng = kc.rng_for("raft_deck_small", seed)
+        rng = kc.rng_for(piece, seed)
         noise = kc.Noise3(rng)
         hulls = [(-1.55, 8.0, 2.0, 1.0, oc.M_PAINT_OCHRE), (1.55, 7.6, 1.9, 0.95, oc.M_PAINT_TEAL)]
-        mb = raft("raft_deck_small" + (oc.LOD if lod else ""), 6.0, 5.0, RAFT_SMALL_Y, hulls, rng, noise, lod=lod,
-                  barrels=[(-2.7, -2.2), (2.7, -2.2), (-2.7, 2.2), (2.7, 2.2)], floats=False)
+        mb = raft(piece + (oc.LOD if lod else ""), 6.0, 5.0, RAFT_SMALL_Y, hulls, rng, noise, lod=lod,
+                  barrels=[(-2.7, -2.2), (2.7, -2.2), (-2.7, 2.2), (2.7, 2.2)], floats=False, tucked=tucked)
         out.append(mb)
     return out
 
@@ -313,6 +375,9 @@ TARGETS = {
     "hull_cabin": build_hull_cabin,
     "raft_deck": build_raft_deck,
     "raft_deck_small": build_raft_deck_small,
+    "raft_deck_tucked": build_raft_deck_tucked,
+    "raft_deck_small_tucked": build_raft_deck_small_tucked,
     "plank_bridge": build_plank_bridge,
     "net_pen": build_net_pen,
+    "hull_lashed": build_hull_lashed,
 }

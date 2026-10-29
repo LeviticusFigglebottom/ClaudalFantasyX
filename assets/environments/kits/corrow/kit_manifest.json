@@ -392,9 +392,9 @@
         12000,
         900
       ],
-      "bytes": 369044,
+      "bytes": 392132,
       "lods": {
-        "strand_rocks": 7448,
+        "strand_rocks": 7664,
         "strand_rocks-lod1": 208
       }
     },
@@ -403,10 +403,21 @@
         12000,
         1000
       ],
-      "bytes": 123816,
+      "bytes": 166756,
       "lods": {
-        "trader_boat": 2781,
+        "trader_boat": 3789,
         "trader_boat-lod1": 147
+      }
+    },
+    "trader_cargo": {
+      "budget": [
+        9000,
+        600
+      ],
+      "bytes": 155660,
+      "lods": {
+        "trader_cargo": 3840,
+        "trader_cargo-lod1": 48
       }
     },
     "wall_apron": {

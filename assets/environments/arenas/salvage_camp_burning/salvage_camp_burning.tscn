@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3]
+[gd_scene load_steps=30 format=3]
 
 [ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
 [ext_resource type="Shader" path="res://game/shaders/environment/env_sky_low_sun.gdshader" id="2_r"]
@@ -19,9 +19,12 @@
 [ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/chalk_mark_heavy.glb" id="17_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/wreck_hull_section.glb" id="18_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/wreck_mast_standing.glb" id="19_r"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/smoke_plume.glb" id="20_r"]
+[ext_resource type="Script" path="res://game/vfx/smoke/smoke_column.gd" id="20_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/wreck_bow.glb" id="21_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/wreck_ribs_large.glb" id="22_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/camp_fire_large.glb" id="23_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/camp_fire_small.glb" id="24_r"]
+[ext_resource type="Script" path="res://game/levels/act1/kit_slot_swaps.gd" id="slot_swaps"]
 
 [sub_resource type="ShaderMaterial" id="SkyMat"]
 shader = ExtResource("2_r")
@@ -169,20 +172,47 @@ transform = Transform3D(-1.09581, 0, 0.0958713, 0, 1.1, 0, -0.0958713, 0, -1.095
 [node name="wreck_mast_standing_1" parent="Dressing" instance=ExtResource("19_r")]
 transform = Transform3D(0.996195, 0, 0.0871557, 0, 1, 0, -0.0871557, 0, 0.996195, -6, -1.333, -24)
 
-[node name="smoke_plume_1" parent="Dressing" instance=ExtResource("20_r")]
+[node name="smoke_plume_1" type="Node3D" parent="Dressing"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 2, -1.138, -24)
+script = ExtResource("20_r")
+profile = "camp"
+seed = 0.0
 
-[node name="smoke_plume_2" parent="Dressing" instance=ExtResource("20_r")]
+[node name="smoke_plume_2" type="Node3D" parent="Dressing"]
 transform = Transform3D(0.579555, 0, 0.155291, 0, 0.6, 0, -0.155291, 0, 0.579555, -12, -0.117, -12)
+script = ExtResource("20_r")
+profile = "camp"
+seed = 0.37
 
-[node name="smoke_plume_3" parent="Dressing" instance=ExtResource("20_r")]
+[node name="smoke_plume_3" type="Node3D" parent="Dressing"]
 transform = Transform3D(0.689365, 0, -0.121554, 0, 0.7, 0, 0.121554, 0, 0.689365, 12, -0.614, -14)
+script = ExtResource("20_r")
+profile = "camp"
+seed = 0.74
 
 [node name="wreck_bow_1" parent="Dressing" instance=ExtResource("21_r")]
 transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, -45, -1.322, -40)
 
 [node name="wreck_ribs_large_1" parent="Dressing" instance=ExtResource("22_r")]
 transform = Transform3D(-0.952628, 0, 0.55, 0, 1.1, 0, -0.55, 0, -0.952628, 40, -1.366, -50)
+
+[node name="camp_fire_large_1" parent="Dressing" instance=ExtResource("23_r")]
+transform = Transform3D(0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, 0.939693, -3, 0, -14.2)
+
+[node name="camp_fire_small_1" parent="Dressing" instance=ExtResource("24_r")]
+transform = Transform3D(0.34202, 0, 0.939693, 0, 1, 0, -0.939693, 0, 0.34202, -12, 0, -9)
+
+[node name="camp_fire_small_2" parent="Dressing" instance=ExtResource("24_r")]
+transform = Transform3D(-0.766044, 0, 0.642788, 0, 1, 0, -0.642788, 0, -0.766044, -9.5, 0, -14.6)
+
+[node name="camp_fire_large_2" parent="Dressing" instance=ExtResource("23_r")]
+transform = Transform3D(-0.996195, 0, 0.0871557, 0, 1, 0, -0.0871557, 0, -0.996195, 0.5, 0, -24.5)
+
+[node name="camp_fire_large_3" parent="Dressing" instance=ExtResource("23_r")]
+transform = Transform3D(0.984808, 0, 0.173648, 0, 1, 0, -0.173648, 0, 0.984808, 4, 0, -25.5)
+
+[node name="camp_fire_small_3" parent="Dressing" instance=ExtResource("24_r")]
+transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, 11, 0, -10)
 
 [node name="FireLight0" type="OmniLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.0, 0.6, -14.0)
@@ -218,6 +248,14 @@ light_volumetric_fog_energy = 0.0
 shadow_enabled = true
 shadow_bias = 0.05
 
+[node name="FireLight4" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.0, 1.6, -24.0)
+light_color = Color(0.8784, 0.4392, 0.1804, 1)
+light_energy = 4.0
+omni_range = 16.0
+omni_attenuation = 1.4
+light_volumetric_fog_energy = 0.0
+
 [node name="CameraHints" type="Node3D" parent="."]
 
 [node name="wide_high" type="Marker3D" parent="CameraHints"]
@@ -231,3 +269,7 @@ transform = Transform3D(0.485643, 0.0508571, -0.872677, -0, 0.998306, 0.0581784,
 
 [node name="past_the_brazier" type="Marker3D" parent="CameraHints"]
 transform = Transform3D(0.488603, -0.024351, 0.872166, 0, 0.99961, 0.0279093, -0.872506, -0.0136366, 0.488413, 10.5, 1.4, 4)
+
+[node name="KitSlotSwaps" type="Node" parent="."]
+script = ExtResource("slot_swaps")
+paths = {"bs_brass": "res://game/levels/ch06/brine_shoals/brine_shoals_brass_material.tres", "bs_gold": "res://game/levels/ch06/brine_shoals/brine_shoals_gold_material.tres", "bs_iron": "res://game/levels/ch06/brine_shoals/brine_shoals_iron_material.tres", "bs_lacquer_red": "res://game/levels/ch06/brine_shoals/brine_shoals_lacquer_red_material.tres"}

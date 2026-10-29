@@ -1,0 +1,126 @@
+{
+  "_about": "The older of the two Saltwright children Kerrid frees from under the burning hulk (Ch6 B05 item 3, `wright_child_a`; M3-CHR-511): a boy of about nine. Child proportions on the adult donor as the lane child (child.json). Short brown hair, a cap-sleeved sailcloth tunic, rust canvas knee trousers, a brown cord belt, barefoot. One line-mark on the right forearm, his first. Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials, villager_clips), not by bb_params.",
+  "name": "wright_child_a",
+  "height_m": 1.32,
+  "heads_tall": 6.3,
+  "shoulder_width_heads": 1.38,
+  "chest_width_heads": 1.02,
+  "chest_depth_heads": 0.78,
+  "waist_width_heads": 0.98,
+  "hip_width_heads": 1.12,
+  "crotch_height_heads": 2.9,
+  "arm_span_ratio": 0.98,
+  "hand_length_heads": 0.66,
+  "foot_length_ratio": 0.152,
+  "neck_length_heads": 0.3,
+  "neck_width_ratio": 0.46,
+  "head_width_ratio": 0.76,
+  "femininity": 0.1,
+  "muscle": 0.2,
+  "mass": 0.35,
+  "breast": 0.0,
+  "eye_scale": 1.2,
+  "ipd_m": 0.055,
+  "arm_abduction_deg": 47.0,
+  "skin_hex": "#A57452",
+  "eye_tilt_deg": 1.0,
+  "jaw_width": 0.82,
+  "cheekbone_height": 0.0,
+  "cheekbone_width": 0.94,
+  "chin_size": 0.74,
+  "nose_bridge_width": 0.76,
+  "nose_tip_projection": 0.74,
+  "lip_fullness": 0.84,
+  "lip_close": 0.6,
+  "lip_seal": 0.96,
+  "lip_lower_fullness": 0.8,
+  "mouth_corner_lift": 0.0,
+  "brow_ridge": 0.2,
+  "donor_mix_african": 0.35,
+  "donor_mix_asian": 0.4,
+  "donor_mix_caucasian": 0.25,
+  "_skin": {
+    "hex": "#A57452",
+    "age": 0.0,
+    "freckles": 0,
+    "reach_bands": {
+      "L": 0,
+      "R": 0
+    },
+    "seed": 122,
+    "lip": "#90584A",
+    "body_size": [
+      2048,
+      1024
+    ],
+    "line_marks": {
+      "seed": 5112,
+      "placement": {
+        "forearm": 1
+      },
+      "length_m": [
+        0.025,
+        0.05
+      ],
+      "line_mm": 1.0,
+      "gap_mm": 1.4,
+      "dot_mm": 2.2
+    }
+  },
+  "_hair": {
+    "kind": "short",
+    "hairline": "male",
+    "seed": 42,
+    "length_m": [
+      0.025,
+      0.045
+    ],
+    "scalp_cards": [
+      170,
+      130,
+      90
+    ],
+    "hairline_cards": 40,
+    "rise": 1.5,
+    "colour": "#2C1E16",
+    "underpaint": "#24180F"
+  },
+  "_eyes": {
+    "iris": "#2E1E12"
+  },
+  "_costume": {
+    "top": {
+      "mat": "cloth_a",
+      "hem": "hip",
+      "sleeve": 0.12,
+      "neck_v_m": 0.035
+    },
+    "trousers": {
+      "mat": "cloth_b",
+      "hem": "knee",
+      "loose_m": 0.01
+    },
+    "sash": {
+      "mat": "cloth_c",
+      "width_m": 0.03,
+      "turns": 1,
+      "tails_m": 0.12
+    }
+  },
+  "_tints": {
+    "cloth_a": "#CFC4AE",
+    "cloth_b": "#7E4630",
+    "cloth_c": "#6A5444",
+    "leather": "#FFFFFF"
+  },
+  "_build": {
+    "shapes": "all",
+    "host_snaps": true,
+    "garment_fit": true
+  },
+  "_persona": {
+    "sway": 1.6,
+    "lean": 0.0,
+    "arms_down": 40.0
+  }
+}

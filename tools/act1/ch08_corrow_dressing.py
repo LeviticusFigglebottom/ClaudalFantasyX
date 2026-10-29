@@ -25,6 +25,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import ch05_09_zone_looks as zl  # noqa: E402
 import corrow_frame as cf  # noqa: E402
 
 cwl = cf.cwl
@@ -147,9 +148,46 @@ def bastion_pieces() -> list[dict]:
         out.append(seg(s0 + edge, zc, -90.0))  # the west end faces -s
     for sc in (s0 + 12.0, s1 - 12.0):
         x, _y, z, a = cf.arc(sc, 0.0, (zi + zo) * 0.5)
+        # The yard is paved as the walk is (the low town's earth and cobble read as a sand pad up here)
         out.append({"piece": "lowtown_ground", "at": [cf.r3(x), cf.r3(z)], "y": cf.WALK_Y + 0.02,
-                    "yaw_deg": cf.yaw_norm(a)})
+                    "yaw_deg": cf.yaw_norm(a), "material_paths": dict(BASTION_PAVING)})
     return out
+
+
+# The yard's clutter (the stair-watch's: crates, sacks, shields, rope and nets inside its rims, by the barracks and\n# the walk), in the wall frame:
+# (piece, kit_dir or "", s, local z, yaw offset, collides). Story points keep BASTION_CLEAR_M around them.
+BASTION_CLUTTER = (
+    ("crate_stack", "BRINE", -92.0, -6.6, 10.0, True), ("cargo_sacks", "HALUNA", -89.6, -6.4, 80.0, True),
+    ("round_shield", "", -80.6, -18.4, 15.0, False), ("round_shield", "", -79.9, -18.9, -40.0, False),
+    ("rope_coil", "HALUNA", -70.0, -6.6, 0.0, False), ("net_heap", "HALUNA", -67.0, -7.0, 30.0, False),
+    ("crate_stack", "BRINE", -64.2, -9.5, -15.0, True), ("cargo_sacks", "HALUNA", -63.8, -15.5, 120.0, True),
+    ("rope_coil", "HALUNA", -72.5, -19.5, 0.0, False), ("crate_stack", "BRINE", -64.0, -20.5, 95.0, True),
+    ("net_heap", "HALUNA", -92.5, -13.5, 200.0, False), ("cargo_sacks", "HALUNA", -81.0, -13.0, 15.0, True),
+)
+BASTION_CLEAR_M = 2.5
+
+
+def bastion_clutter() -> list[dict]:
+    g = json.loads(LAYOUT.read_text(encoding="utf-8"))
+    keep = [v[:3] for v in list(g.get("marks", {}).values()) + list(g.get("spawns", {}).values())]
+    keep += [a["at"][:3] for a in g.get("actors", {}).values()] + [t["at"][:3] for t in g.get("triggers", [])]
+    kits = {"BRINE": BRINE, "HALUNA": HALUNA}
+    out = []
+    for name, kit, s, zl, dyaw, collide in BASTION_CLUTTER:
+        x, _y, z, a = cf.arc(s, 0.0, zl)
+        if any(math.hypot(x - k[0], z - k[2]) < BASTION_CLEAR_M for k in keep):
+            continue
+        row = {"piece": name, "at": [cf.r3(x), cf.r3(z)], "y": cf.WALK_Y, "yaw_deg": cf.yaw_norm(a + dyaw)}
+        if kit:
+            row.update(kit_dir=kits[kit], materials_dir=kits[kit] + "materials/")
+        if collide:
+            row["collide"] = True
+        out.append(row)
+    return out
+
+
+BASTION_PAVING = {"cw_earth": "res://assets/environments/kits/corrow/materials/cw_paving.tres",
+                  "cw_cobble": "res://assets/environments/kits/corrow/materials/cw_paving.tres"}
 
 
 def stair_ramps() -> list[dict]:
@@ -301,6 +339,10 @@ STORY_PIECES = {
     "Shrine": [("level_stone_shrine", BRINE, "foot", 0.0)],
 }
 TRADER_DRAFT_M = 0.9  # the trader's keel below the tide
+# Borrowed pieces' flat slots (M3-ENV-1326): the Brine Shoals Level-stone read as a white box; the Order's shrine stone
+# as Haluna's shrines (and Ch6's) wear it.
+OTHER_KIT_SLOTS = {
+    "level_stone_shrine": {"bs_level_stone": "res://assets/environments/kits/haluna/materials/kit_shrine_stone.tres"}}
 
 
 def story_pieces() -> list[dict]:
@@ -315,15 +357,63 @@ def story_pieces() -> list[dict]:
                    "yaw_deg": cf.yaw_norm(float(b.get("yaw", 0.0)) + dyaw), "block": bid}
             if kit:
                 row["kit_dir"] = kit
+            if piece in OTHER_KIT_SLOTS:
+                row["material_paths"] = dict(OTHER_KIT_SLOTS[piece])
             out.append(row)
     return out
+
+
+# The trader's furled sail and its deck cargo take the kit's `cw_sail`, a flat StandardMaterial: at player distance
+# the bales read as plain white cubes (M3-ENV-1316). The zone's canvas (M3-ENV-1326) is the Ferry kit's tan sailcloth
+# (woven, sun-faded, salted at the seams) projected triplanar, since the kit's bales carry no cloth UVs. Ch7's port
+# moors the same boat and takes the same slot swap (ch07_tamsule_port_dressing.py).
+CANVAS_NAME = "corrow_canvas_material.tres"
+CANVAS_SRC = cf.ROOT / "assets" / "environments" / "kits" / "brightwater_ferry" / "materials" / "bf_canvas_tan.tres"
+CANVAS_OVERRIDES = {"base_triplanar": "true", "tile_m": "Vector2(0.12, 0.12)", "salt_coverage": "Vector2(0.05, 0.4)",
+                    "variation_value": "0.2", "normal_strength": "0.7"}
+TRADER_SLOTS = {"cw_sail": RES_ZONE + CANVAS_NAME}
+# The kit's other flat StandardMaterial slots (M3-ENV-1326): the Bastion's and the watch's lacquered doors and posts
+# read as flat red planes, the copper and iron as plastic. Swapped on every Corrow piece (`kit_material_paths`), Ch9
+# too (its dressing starts from this one).
+KIT_LOOKS = {
+    # (the hollows dull to an aged lacquer of the same red, not a grey dust: on a door's broad leaves a grey patina
+    # gathered in the normal map's pits and read as camouflage)
+    "cw_lacquer_red": ("corrow_lacquer_red_material.tres", dict(
+        zl.LACQUER, col_bronze=(0.6, 0.1294, 0.1020), col_patina=(0.3608, 0.1098, 0.0902),
+        col_patina_pale=(0.4510, 0.1843, 0.1490), patina_coverage=(0.05, 0.3))),
+    "cw_watch_red": ("corrow_watch_red_material.tres", dict(
+        zl.LACQUER, col_bronze=(0.5608, 0.1647, 0.1412), col_patina=(0.3412, 0.1255, 0.1059),
+        col_patina_pale=(0.4314, 0.2000, 0.1647), roughness_bronze=0.6, patina_coverage=(0.05, 0.35),
+        wear_strength=0.7)),
+    "cw_lacquer_dark": ("corrow_lacquer_dark_material.tres", dict(zl.LACQUER, col_bronze=(0.1294, 0.0980, 0.0824),
+                                                                  col_worn=(0.3216, 0.1176, 0.0863),
+                                                                  col_patina=(0.2000, 0.1725, 0.1569),
+                                                                  col_patina_pale=(0.2706, 0.2431, 0.2235))),
+    "cw_copper": ("corrow_copper_material.tres", dict(zl.VERDIGRIS)),
+    "cw_iron": ("corrow_iron_material.tres", dict(zl.SEA_IRON)),
+}
+
+
+def kit_material_paths() -> dict:
+    paths = {slot: RES_ZONE + name for slot, (name, _) in KIT_LOOKS.items()}
+    paths["cw_sail"] = RES_ZONE + CANVAS_NAME
+    return paths
+
+
+def canvas_material() -> str:
+    text = CANVAS_SRC.read_text(encoding="utf-8")
+    for key, value in CANVAS_OVERRIDES.items():
+        text, n = re.subn(rf"(?m)^shader_parameter/{key} = .*$", f"shader_parameter/{key} = {value}", text)
+        assert n == 1, key
+    return text.replace('resource_name = "bf_canvas_tan"', 'resource_name = "corrow_canvas"')
 
 
 def trader() -> list[dict]:
     """The trader the party comes in on (B01), on the Trader block, bow to -Z (M3-ENV-707's trader_boat)."""
     b = next(r for r in json.loads(LAYOUT.read_text(encoding="utf-8"))["blocks"] if r["id"] == "Trader")
-    return [{"piece": "trader_boat", "at": [b["pos"][0], b["pos"][2]], "y": cf.r3(cf.SEA_Y - TRADER_DRAFT_M),
-             "yaw_deg": b["yaw"], "block": "Trader"}]
+    boat = {"piece": "trader_boat", "at": [b["pos"][0], b["pos"][2]], "y": cf.r3(cf.SEA_Y - TRADER_DRAFT_M),
+            "yaw_deg": b["yaw"], "block": "Trader", "material_paths": dict(TRADER_SLOTS)}
+    return [boat, dict(boat, piece="trader_cargo")]  # its deck cargo as lashed bales (b_cargo.py, M3-ENV-1326)
 
 
 def mole_pieces() -> list[dict]:
@@ -390,7 +480,7 @@ def dressing() -> dict:
     pieces.append(dict(cwl.put_arc("liss_hoist_cut", cf.HOIST_S, cwl.HEAD_Y, cwl.HEAD_Z), block="RopeCoil"))
     pieces += breach_pieces()
     pieces += town_pieces()
-    pieces += bastion_pieces()
+    pieces += bastion_pieces() + bastion_clutter()
     pieces += story_pieces()
     pieces += trader()
     pieces += mole_pieces()
@@ -412,6 +502,7 @@ def dressing() -> dict:
         "storms": [dict(STORM, block="Storm")],
         "fire_light_color": preview.get("fire_light_color", "#E0702E"),
         "fire_lights": [{"at": f[:3], "energy": f[3], "range": f[4]} for f in preview.get("fire_lights", [])],
+        "kit_material_paths": kit_material_paths(),
         "pieces": pieces,
     }
 
@@ -446,6 +537,9 @@ def main() -> None:
     (ZONE / "corrow_collision.json").write_text(json.dumps(collision(), indent=1) + "\n", encoding="utf-8")
     (ZONE / "corrow_dressing.json").write_text(json.dumps(dressing(), indent=1) + "\n", encoding="utf-8")
     copy_grades()
+    (ZONE / CANVAS_NAME).write_text(canvas_material(), encoding="utf-8")
+    for name, params in KIT_LOOKS.values():
+        (ZONE / name).write_text(zl.bronze_material(name, params), encoding="utf-8")
 
 
 if __name__ == "__main__":

@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import json
 import math
+import re
 import sys
 from pathlib import Path
 
@@ -29,6 +30,7 @@ ROOT = Path(__file__).resolve().parents[2]
 KIT_SRC = ROOT / "assets_src" / "environments" / "kits" / "coilspire"
 sys.path.insert(0, str(KIT_SRC))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import ch05_09_zone_looks as zl  # noqa: E402
 import cs_common as cs  # noqa: E402
 import cs_headland as ch  # noqa: E402
 import cs_preview_layout as cpl  # noqa: E402
@@ -238,10 +240,55 @@ def door_boxes() -> list[dict]:
 # StormWall block (shown when Virel is bound).
 STORM = {"name": "Undertow", "at": [308.745, 77.285, 159.418], "preset": "ch08_seawall", "azimuth_deg": 170.0,
          "block": "StormWall"}
-# env-art-b's flue-trial pieces (the Coilspire kit's b_trial.py, M3-ENV-1222) on their blocks: (block, piece, origin)
+# env-art-b's flue-trial pieces (the Coilspire kit's b_spire_trial.py, M3-ENV-1222; renamed from b_trial.py so it never shadows Ashcrown's) on their blocks: (block, piece, origin)
 TRIAL_PIECES = (("Gate_t1", "flue_gate", "foot"), ("Gate_t2", "flue_gate", "foot"), ("Gate_t3", "flue_gate", "foot"),
                 ("Gate_t4", "flue_gate", "foot"), ("NicheSeal", "niche_seal", "foot"), ("Niche", "lamp_niche", "foot"),
                 ("WrightMark", "wright_mark", "centre"))
+
+
+# Virel at rest in the crown chamber (B06 F07: "a long ribbon-serpent of sailcloth panels ... perfectly still"):
+# creatures-b's model (assets/creatures/virel, its own slot materials) on the Virel block's foot, held still (a
+# dressing piece, so no idle plays). It was the zone's last greybox stand-in (Act I inventory, M3-HER-1141).
+VIREL = {"piece": "virel", "kit_dir": "res://assets/creatures/virel/",
+         "materials_dir": "res://assets/creatures/virel/materials/", "block": "Virel", "yaw_deg": 0.0}
+
+
+# The interior on the GPU (M3-ENV-1322, the PC's QA rows 6 and 27): the kit's cs_laterite_inner gathers its green
+# verdigris into every mortar joint, so the well's walls read as a thin green grid, and the well was near-black away
+# from the four braziers. The zone's own copy keeps a little verdigris off the joints, and each tier gets a ring of
+# low, shadowless wall-wash lamps (the keepers' lamps, warm), so the stonework reads.
+INNER_SLOT = "cs_laterite_inner"
+INNER_MAT = "coilspire_inner_material"
+INNER_OVERRIDES = {"salt_coverage": "Vector2(0.0, 0.16)", "salt_cavity_gather": "0.3"}
+WASH_PER_TIER = 4
+WASH = {"lift_m": 2.2, "in_m": 1.3, "energy": 1.3, "range": 7.5}
+
+
+def write_inner_material() -> None:
+    src = (ROOT / "assets" / "environments" / "kits" / "coilspire" / "materials" / f"{INNER_SLOT}.tres")
+    text = src.read_text(encoding="utf-8").replace(f'resource_name = "{INNER_SLOT}"', f'resource_name = "{INNER_MAT}"')
+    for key, value in INNER_OVERRIDES.items():
+        text = re.sub(rf"^shader_parameter/{key} = .*$", f"shader_parameter/{key} = {value}", text, flags=re.M)
+    (ZONE / f"{INNER_MAT}.tres").write_text(text, encoding="utf-8")
+
+
+def wash_lights() -> list[dict]:
+    out = []
+    for k, ty in enumerate(cs.TIER_Y):
+        y = ty + WASH["lift_m"]
+        r = float(cs.inner_r(y)) - WASH["in_m"]
+        for i in range(WASH_PER_TIER):
+            a = 2.0 * math.pi * (i + 0.5 * (k % 2)) / WASH_PER_TIER
+            x, wy, z = cs.world_from_spire(r * math.cos(a), y, r * math.sin(a))
+            out.append({"at": [r3(x), r3(wy), r3(z)], "energy": WASH["energy"], "range": WASH["range"]})
+    return out
+
+
+def virel_piece() -> list[dict]:
+    g = json.loads(LAYOUT.read_text(encoding="utf-8"))
+    b = next(b for b in g["blocks"] if b["id"] == VIREL["block"])
+    foot = b["pos"][1] - b["size"][1] * 0.5
+    return [dict(VIREL, at=[r3(b["pos"][0]), r3(b["pos"][2])], y=r3(foot))]
 
 
 def trial_pieces() -> list[dict]:
@@ -255,6 +302,21 @@ def trial_pieces() -> list[dict]:
         out.append({"piece": piece, "at": [b["pos"][0], b["pos"][2]], "y": round(y, 3), "yaw_deg": b.get("yaw", 0.0),
                     "block": bid})
     return out
+
+
+# The kit's metals at player height (M3-ENV-1326): `cs_copper`'s patina covered almost all of it, so the flue pipes,
+# key housings and the roof read pale flat mint; the wheels' worn copper and the gates' iron are flat StandardMaterials.
+# Swapped on every Coilspire piece (`kit_material_paths`).
+KIT_LOOKS = {
+    "cs_copper": ("coilspire_copper_material.tres", dict(zl.VERDIGRIS, patina_coverage=(0.1, 0.7))),
+    "cs_copper_worn": ("coilspire_copper_worn_material.tres", {
+        "col_bronze": (0.5020, 0.2706, 0.1255), "col_worn": (0.8000, 0.4784, 0.2706),
+        "col_patina": (0.2706, 0.3804, 0.3373), "col_patina_pale": (0.4314, 0.5137, 0.4706),
+        "metallic_bronze": 1.0, "roughness_bronze": 0.42, "roughness_worn": 0.25, "patina_coverage": (0.0, 0.25),
+        "patina_roughness": 0.85, "streak_strength": 0.3, "wear_strength": 0.9, "detail_scale_m": 0.5,
+        "normal_strength": 0.4, "normal_tile_m": 1.6}),
+    "cs_iron": ("coilspire_iron_material.tres", dict(zl.SEA_IRON)),
+}
 
 
 def dressing() -> dict:
@@ -277,7 +339,7 @@ def dressing() -> dict:
             pieces.append(dict(p, collide="trimesh", collide_lod0_in=door_boxes()))
             continue
         pieces.append(p)
-    pieces += key_pieces() + trial_pieces()
+    pieces += key_pieces() + trial_pieces() + virel_piece()
     backdrop = json.loads((PREVIEW / "coilspire_backdrop.json").read_text(encoding="utf-8"))
     corrow = "res://assets/environments/kits/corrow/"
     for p in backdrop.get("pieces", []):
@@ -286,6 +348,10 @@ def dressing() -> dict:
     for i, light in enumerate(lights[:4]):  # the tier braziers' lights burn with their braziers (Flame_t1-t4)
         light["block"] = f"Flame_t{i + 1}"
     lights += [{"at": l[:3], "energy": l[3], "range": l[4]} for l in preview.get("fire_lights", [])]
+    lights += wash_lights()
+    for p in pieces:
+        if p["piece"] in ("coilspire_shell", "coilspire_tiers"):
+            p["material_paths"] = {INNER_SLOT: RES_ZONE + INNER_MAT + ".tres"}
     return {
         "schema": "ZoneKitDressing (game/levels/act1/zone_kit_dressing.gd; ADR 0200)",
         "_about": "Generated by tools/act1/ch08_coilspire_dressing.py from env-art's Coilspire kit (M3-ENV-10); do "
@@ -298,10 +364,11 @@ def dressing() -> dict:
         "lod_margin_m": float(preview.get("lod_margin_m", 2.0)),
         "environment": RES_ZONE + "coilspire_ch08_environment.tres",
         "time_of_day_h": 12.0,
-        "greybox": {"hide_all": True, "keep": ["Virel"]},  # Virel: the Vowbound's own body (creatures-b)
+        "greybox": {"hide_all": True, "keep": []},
         "storms": [STORM],
         "fire_light_color": preview.get("hearth_light_color", "#FFB16E"),
         "fire_lights": lights,
+        "kit_material_paths": {slot: RES_ZONE + name for slot, (name, _) in KIT_LOOKS.items()},
         "pieces": pieces,
     }
 
@@ -452,6 +519,9 @@ def copy_grades() -> None:
 
 def main() -> None:
     copy_grades()
+    write_inner_material()
+    for name, params in KIT_LOOKS.values():
+        (ZONE / name).write_text(zl.bronze_material(name, params), encoding="utf-8")
     if "--relayout" in sys.argv:
         relayout()
     (ZONE / "coilspire_collision.json").write_text(json.dumps(collision(), indent=1) + "\n", encoding="utf-8")

@@ -84,6 +84,13 @@ def _skill_gap(s: dict, mapped: set[str], elements: set[str]) -> str:
     return "other"
 
 
+# Gaps kept on purpose (M3-BPR-411 closed by M3-BPR-420's Act I effects): skill id -> why it plays no effect of its own.
+INTENDED = {
+    "toll_gather": "the Drownbell's gather plays through its own rig (BattleBossVfx on charge_started)",
+    "unravel": "Act II (Ch12's cord moth), paused by ADR 0041; its effect comes with Act II",
+}
+
+
 def _item_gap(i: dict, mapped: set[str], elements: set[str]) -> str:
     if i["id"] in mapped:
         return ""
@@ -116,6 +123,8 @@ def coverage() -> dict:
         g = _item_gap(i, set(m.get("items", {})), elements)
         if g:
             out["items"][i["id"]] = g
+    out["intended"] = {k: INTENDED[k] for k in out["skills"] if k in INTENDED}
+    out["unexplained"] = sorted(k for k in out["skills"] if k not in INTENDED) + sorted(out["items"])
     out["proposal"] = {
         "skills": {k: PROPOSAL.get(v, PROPOSAL["other"]) for k, v in out["skills"].items() if v != "element"},
         "items": {k: PROPOSAL[v] for k, v in out["items"].items() if v in PROPOSAL},
@@ -140,6 +149,9 @@ def main() -> int:
     print(f"battle items with no effect: {len(c['items'])}")
     for k, v in sorted(c["items"].items()):
         print(f"  {k}: {v} (staged: {c['staged']['items'].get(k, '-')})")
+    print(f"unexplained gaps: {len(c['unexplained'])} ({len(c['intended'])} kept on purpose, INTENDED)")
+    for k in c["unexplained"]:
+        print(f"  UNEXPLAINED {k}")
     if c["proposal_missing_effects"]:
         print("PROPOSAL names effects that do not exist:", c["proposal_missing_effects"])
     return 0

@@ -68,11 +68,11 @@
       "stat_top": 60,
       "stat_pitch": 39,
       "cols": {
-        "name": [12, 192],
-        "now": [204, 63],
-        "arrow": [270, 39],
-        "next": [312, 63],
-        "delta": [378, 72]
+        "name": [12, 234],
+        "now": [249, 54],
+        "arrow": [303, 33],
+        "next": [336, 54],
+        "delta": [390, 66]
       },
       "changes_gap": 9,
       "changes_pad": 12

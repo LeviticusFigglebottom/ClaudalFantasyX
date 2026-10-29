@@ -4,7 +4,7 @@ The old **ui** and **menus** tracks merged into one (Lead, 2026-10-25). `claude/
 
 **Owns:** the HUD, objectives and map, prompts, title, tips, the dialogue box, settings, input parity, pseudo-loc, resolutions, and the field menu (Lattice, Equip, Items, Status, Formation, portraits, bestiary, codex, save).
 **Id block:** tasks 200–399 (ui 200s, menus 300s), ADRs 0110–0129 (0120 is taken), handoffs `<date>-ui-ui-menus-<n>.md`.
-**Integration branch:** `claude/undertow-lead-handoff-ze8rrn`.
+**Integration branch:** `claude/new-session-mj8c3c` (from 2026-10-29; Lead `session_01Bg3iP7cPGyjbX4CyniBahc`).
 
 ## NEW ACCOUNT (from 2026-10-25)
 
@@ -412,3 +412,224 @@ SELF-RENDERED @ f6db67f0f:
 - **battle_boss_intro_drownbell and battle_hud_preview:** faces on every hero chip and row, and each foe's picture in its diamond.
 - **field_objective_line, save_shrine_field, field_hero_party:** clean.
 MERGE-READY @ 588faa1a: M3-UI-101 (a foe's picture fills its timeline diamond; a petrified face greys under the strata) and the field HUD audit (no stand-ins). Checks: battle 765/0, battle_portraits 3/0, party 30/0, status 51/0; lint clean; shots self-rendered and viewed. Skipped: coverage (game/ui only, no battle core change).
+- 2026-10-28 04:25, **the Lead's 04:02 list:**
+  - **(1) big13 merged** into claude/ui (d984de2c1, pushed). The full suite is running on it; the result follows in the MERGE-READY line.
+  - **(2) Dialogue portraits as characters lands them.** claude/characters merged at c99275a1f. The **Stillguard** (M3-CHR-508; 4 Act I lines) is baked as `stillguard_neutral.png` (fc13fc1eb). Its stage has no face-pose table, so it gets neutral only; test_hero_portraits allows that for a speaking extra. Characters has no other new named NPC yet (Tavi, Kell, Garo, Ivo, Neme, Pell, Osu and Fenn are not modelled). I check again about every 30 min.
+  - **(3) Field HUD pass over the dressed areas:** new shots `field_hud_over_{haluna,oruvel,tamsule,corrow_night}` hold all four overlays at once. Fixes (721efa2f0):
+    - **Tip card vs area title (a real collision):** both show when the field first takes input. Corrow's long night name, "Corrow, the Night of the Ebbing", ran under the tip card. The tip card's top moved below the title band (y 156 → 396). test_field_hud_legibility keeps them apart at five aspects and checks every Act I name fits the title.
+    - **The cue's distance words** ("A short walk") were illegible over Haluna's bright sky, because they float with no plate. They now carry a 6 px outline (`label_outline_px`).
+    - **The title band** is deeper, at alpha 0.55 → 0.65, for bright clouds.
+    - `field_tip_card`'s baseline moves with the tip card (expected).
+  - **(4) Input pass:** test_input_parity_glyphs now reads every loc row (12349380c):
+    - every `{field_*}`/`{ui_*}` token is a real action;
+    - pad-button actions read as the pad button after a pad press and as the key after a key press;
+    - stick-only actions (movement and camera) must say "stick" in their line;
+    - no Act I row names a binding in plain words;
+    - the interaction and Ch9 hold keycaps and Ch1's shutter follow the device.
+    It caught one: the Ch1 tether tutorial said "Press interact". It now names `{field_interact}` (932916b1d; a one-token .dlg fix, recompiled with dlgc). **narrative: FYI.**
+SELF-RENDERED @ 24bc20e15 (the shots' scratch interactable left of the cue): field_hud_over_haluna, field_hud_over_oruvel, field_hud_over_tamsule, field_hud_over_corrow_night, field_tip_card. What I saw:
+- **Haluna (bright sand and sky):** all four overlays read. The cue's outlined "A short walk" is legible over the clouds.
+- **Oruvel (open water):** clean; the edge arrow sits top right.
+- **Tamsule (water and bright sky):** clean.
+- **Corrow at night:** the long title is clear of the tip card, which sits below the band. The cue and its words read over the dark sea.
+- No baselines written. No open render request.
+- 2026-10-28 05:10, **the named Act I NPCs landed on claude/characters** (M3-CHR-526..539). Merged at a1c155de9.
+  - **Baked dialogue portraits** (a2882374b): 20 speaking townsfolk, five emotions each (neutral, smile, determined, worried, grief), from their villager stages and face-pose tables. PROVENANCE rows added.
+    - Named: Tavi, Kell, Garo, Neme, Osu, Fenn, Hobb, Marra, Sabe, Ione, Skipper Sadi.
+    - By role: the poolkeeper, scale-man, ferrymaster, tender, Reed, net-mender, fisher, vendor and child.
+  - **New guard:** test_dialogue_box fails when an Act I speaker's model lands without a baked portrait.
+  - **Not modelled yet:** Ivo (M3-CHR-540, a Stillguard variant) and Pell. They show no portrait (no initial letter) until they land.
+SELF-RENDERED @ a2882374b: portraits for all 20 NPCs (contact sheets of neutral, plus Tavi's and Marra's five emotions). What I saw: faces centred, hair and headwear inside the frame, and each emotion reads. The child's portrait frames a little smaller (a smaller body), which is acceptable.
+- 2026-10-28 05:15: Liss's soft fringe (M2-CHR-521) merged at 201cde902. Her five portraits were rebaked (296ceb696) and compared with the old ones: the fringe now falls in soft clumps. characters' later skirt floor drape (M2-CHR-522) is a kneel-only change and touches no portrait, so nothing was rebaked for it.
+MERGE-READY @ 296ceb696: the Lead's 04:02 list.
+- big13 merged.
+- Field HUD legibility over Haluna, Oruvel, Tamsule and Corrow at night (four new shots, the tip card below the title band, the cue words outlined).
+- Act I input glyphs (test_input_parity_glyphs covers every prompt; the tether line fixed).
+- Dialogue portraits: the Stillguard, 20 townsfolk, and Liss rebaked.
+Checks:
+- Full suite at 296ceb696: 3040 run, 2 failed, both outside UI and both present before this work:
+  - test_hero_field_snaps (Asha and Rhen snap in tamsule_bell_galleries, coilspire and drowned_choir; hero-motion);
+  - test_qa_capsules (ossa_fen shows Pell as a capsule; Pell is not modelled yet).
+- gdlint and gdformat clean; validate_data 0 errors; dlgc --check clean.
+- Shots self-rendered and viewed (see the SELF-RENDERED lines above).
+Expected baseline moves at the Lead's gate: field_tip_card (the card sits lower), and the four new field_hud_over_* shots.
+Skipped: coverage (no game/battle or game/progression change).
+- 2026-10-28 10:40, **the Lead's big14 list and 09:35 item 1:**
+  - **big14 gate merged** (7b5fe9304). The UI items:
+    1. **test_creature_portraits:** the six Act II creatures were baked, plain and held, with PROVENANCE rows (bff8f1388). I viewed the contact sheet.
+    2. **test_title_reveal and test_battle_result_motion:** these pass on the merged tree. The gate's shots.json had boot_title at settle_frames 10 and had dropped battle_victory's 90. Claude/ui keeps 72 and 90, and **the integration merge must keep them too**.
+    3. **test_zone_map_pois:** every Ch4 wake POI already sat on its source. The wake now draws Haluna's shapes, so the test looked in the wrong layout. The entry now names its own layout in `points` (dd52da357).
+    4. **test_field_audio:** the outfitter's hook is no longer pending (574aed47b). Its watch expressions were checked against the class first.
+  - **Portraits:**
+    - Toma, Kerrid, Moll and the net-mender were rebaked for characters' short-hair and beard look-dev (M2-CHR-524, eb78f07e9). I viewed them before and after.
+    - Liss was rebaked for her softer fringe (296ceb696).
+  - **Scene-change hitches (ADR 0111, 5702d5d3a; proposed, for the Systems Architect and hero-motion to accept):**
+    - **Cause.** The hidden 1.3–3 s frames were mostly `HeroFieldActor.attach` reading the hero scenes from disk on the main thread, inside the swap frame. Measured headless (no renderer): 1.6–2.6 s, against 6–15 ms once cached. FieldHud.attach is 15–19 ms.
+    - **Fix.** SceneRouter emits `change_started`. `ResidentLoads` threaded-loads the field bodies and the party's battle actors there, holds the swap until they are in, and keeps them. The title starts them as it shows.
+    - **Headless, cloud box:** Ch1 1911 → 251 ms, Haluna 3386 → 964 ms.
+    - **Left for others:**
+      - Haluna's own build, haluna_zone.gd plus the Dresser, at about 0.9 s each: first-playable and env-art.
+      - The first fight's arena and creature loads (not measured).
+    - **The PC's next walk is the real measurement.**
+  - **Housekeeping, for the Lead:** every `godot --import` regenerates about 500 `.import` files: `valid=false` for the LFS audio not fetched here, and new ones for docs/kb/qa/gate-runs images. I revert them each time. A `.gdignore` in docs/ would stop the second set.
+MERGE-READY @ 5702d5d3a: the big14 UI fixes, the portrait rebakes and ADR 0111.
+Checks:
+- **Full suite at eb78f07e9:** 3168 run, 11 failed. None is this track's, and all appear in the gate's list:
+  - act1 ability VFX, Liss's battle tint, hero snaps, villager routines, cutscene walks, fp_prologue Liss, capsules, save shrines;
+  - Godot aborted at exit after reporting, the same segfault at exit as the gate.
+- **5702d5d3a only adds ResidentLoads.** Its own tests, plus scene_router, title and boot, are 0 failed.
+- **Tools suite:** 175 units, 5 failing units: audio_loudness (LFS audio not fetched), arenas, pemakar_kit, zone_dressing_ch01, and test_screenshots.
+  - test_screenshots fails because 168 manifest shots have no baseline. Baselines are the Lead's gate.
+- validate_data has 0 errors, dlgc is clean, taskboard --check passed, and lint is clean.
+Skipped:
+- The coverage step: no game/battle or game/progression change.
+- Screenshots: no changed shots this batch. The portraits were viewed directly.
+- 2026-10-28 11:20: **Ivo Brannick** (M3-CHR-540) and the Stillguard's short-hair rebuild landed on characters. Merged at 7ea66428f.
+  - **Portraits (81301ec34):**
+    - Ivo is baked. His stage has no face-pose table, so it is neutral only.
+    - The Stillguard is rebaked; it is nearly unchanged under the helmet.
+    - I viewed both against the old Stillguard.
+  - **Checks:** test_hero_portraits 9/0 and test_dialogue_box 26/0; validate_data has 0 errors.
+  - **Still missing:** Pell is the last named Act I speaker without a model.
+  - **Merge note:** the merge kept shots.json's boot_title at 72 and battle_victory at 90.
+MERGE-READY @ 81301ec34: Ivo's portrait and the Stillguard rebake, on top of MERGE-READY @ 5702d5d3a.
+- 2026-10-28 12:40, **the Lead's 11:46 list: loading and the ui-menus rows in act1_gpu_qa.md** (the file is on gpu/act1-qa-2, so the answers are here, for the PC to copy into its rows):
+  - **Coverage.** Every game scene change already goes through SceneRouter's opaque fade; only the debug swap probe changes scene directly. What froze was the frame inside the fade.
+  - **Row 22 (New Game, Ch1, Ch2, first fight), row 41 (entries up to 4.3 s) and row 42 (Ch5's 6.2 s hidden frame) — FIX PUSHED, needs the PC's walk.** ADR 0111 plus its amendment (5702d5d3a, e65e18653, 045348c44):
+    - **What fills the frame.** Profiled headless, most of the swap frame is runtime `load()`s on the main thread: the hero bodies, the zone's villagers (ZoneCast) and its kit pieces and materials (ZoneKitDressing).
+    - **What ResidentLoads does.** It loads them on worker threads behind the fade (two at a time), and holds the swap until they are in:
+      - the heroes, kept for the session;
+      - the zone's generated list, `game/data/ui/scene_loads.json`, from `tools/loading/scene_loads.gd`;
+      - for a battle, its arena and its enemies' actors.
+    - **Headless worst hidden frame:** Ch1 1671 → 291 ms, Pemakar 7624 → 1128 ms (it reached the router's 120-frame hold cap), Corrow 7571 → 318 ms.
+    - **Left for other tracks:**
+      - Coilspire's dressing build (about 1.7 s of CPU): env-art-b and act1-chapters.
+      - Haluna's zone build and dresser (about 0.9 s each): first-playable and env-art.
+      - Possibly a progress-based hold cap: Systems Architect (ADR 0111 amendment).
+    - **Row 42's 61.6 ms visible frame after the fade** isn't reproducible without the GPU. It may be the last of Pemakar's loads landing after the hold cap; the next walk will tell.
+  - **Row 33 (BattleResultPanel._set_count casting a freed object, 506 times) — FIXED (503b99839).**
+    - Cause: a result shown again, or left, while it still counted kept its tween writing into freed rows.
+    - Fix: show_result kills the last open's tween, and _set_count and is_counting skip a freed row.
+    - test_battle_result_motion reproduces the exact error without the fix and passes with it (5/0).
+MERGE-READY @ 045348c44: ADR 0111's zone and battle loads, and the row 33 fix.
+Checks:
+- resident_loads 7/0, battle_result_motion 5/0, scene_router 15/0, boot 27/0, title 40/0 (3 nodes left in the tree, which predates this change).
+- validate_data has 0 errors; lint and format are clean.
+Skipped:
+- Screenshots: nothing visual changed. Loading is behind the opaque fade, and the result panel's look is unchanged.
+- A full suite: ResidentLoads is off in headless runs unless a test opts in, so the suite would not exercise it.
+**The PC's next walk on this head is the real measurement.**
+- 2026-10-28 12:15, **for big15:** rows 22 and 33 are both pushed on origin/claude/ui at 9190b833c.
+  - **Row 22:** the loads already run behind SceneRouter's opaque fade and its ShaderPrewarm stage. ADR 0111 adds the threaded loads behind that fade: the hero bodies (resident), each zone's own runtime loads (scene_loads.json) and a battle's arena and enemies. The router holds the swap until they are in.
+  - **Row 33:** the result panel's freed-row count-up is fixed (503b99839).
+  - **MERGE-READY @ 045348c44**, as posted above. The PC's next walk on it is the measurement for row 22.
+- 2026-10-28 14:05, **the Lead's 13:25 list:**
+  - **M3-NAR-01 (this track holds the narrative seat), now in review:**
+    - **Reviewed all 26 Act I entries and both records** against the voice guide, the bible and the glossary: 2–4 sentences, sincere, nothing past each entry's flag, no Act II or III terms. Neme's mixed metaphor is fixed.
+    - **Added** (e83b13513): The Calm (`ch02_met_asha`), The Cantors (`ch03_ilun_bound`), The Ebbing (`ch09_ebbing_danced`; the Order's teaching only) and Inquisitor Hadric Moll (`ch06_inquisitor_yielded`).
+    - **Placed both records** (a9bb4fd27):
+      - `causeway_notice` is an Examine trigger on the causeway's first marker post, from the causeway generator.
+      - `basin_steps` is on the shrine's first step inside the entrance, built with the new CodexRecordSpot.
+    - Pell's entry is unchanged and keeps to what Rhen sees at Corrow. That is the canon characters asked about.
+  - **Pemakar's load, still over 1 s: fixed. Coilspire is fixed too.**
+    - **Pemakar** (662935b3a): past the 120-frame cap, a held swap now waits while its holders make progress (ResidentLoads counts finished loads). It still stops on a 30-frame stall or at the 900-frame cap. Its worst hidden frame went 1128 → 585 ms.
+    - **Coilspire** (b82f36b6a): 1.4 s of its frame was ZoneKitDressing clipping every trimesh triangle against every lod0 box. A triangle clear of a box now skips the cut, with the same surface (tested by area). Its worst hidden frame went 1920 → 582 ms.
+    - **Headless, cloud box, the worst hidden frame now:** Ch1 257 ms, Pemakar 585 ms, Corrow 318 ms, Coilspire 582 ms.
+SELF-RENDERED @ b82f36b6a: field_menu_codex. What I saw:
+- World reads "4 of 12" (The Calm unlocks with Haluna), and the total reads "10 of 54".
+- Places and Records are unchanged; the text is clean.
+- **The baseline will move** for the World count.
+MERGE-READY @ b82f36b6a: M3-NAR-01, plus the Pemakar and Coilspire load fixes.
+Checks:
+- codex 15/0, shell_shrine 15/0, causeway 16/0, zone_kit_dressing 10/0, scene_router 16/0, resident_loads 7/0, boot 27/0.
+- The causeway generator's --check is up to date. The Python causeway, codex and loc tests are OK.
+- validate_data has 0 errors, taskboard --check passed, the banned scan is clean, and lint is clean.
+Skipped: the full suite. The swap wait only differs past 120 held frames, and no test holds a swap that long.
+LEAD-ANSWERED (13:46, approved; the Cantors' last line stays; task marked done): M3-NAR-01 is in review with no narrative reviewer. Will you, or Cinematics, review the four new entries' voice (the Calm, the Cantors, the Ebbing, Moll)? This matters most for the Cantors' last line: "Her village holds her funeral before she leaves, and no one says why."
+LEAD-ANSWERED (13:46, ADR 0111 accepted; integration-qa and act1-chapters notified): ADR 0111 touches the Systems Architect's SceneRouter (change_started and the progress-based swap wait) and act1-chapters' ZoneKitDressing (the clip quick-reject). Please route them for acceptance.
+- 2026-10-28 15:10, **Act I loads still over 1 s? Every Act I zone and battle was measured**, headless on the cloud box (about 1.8× slower than the PC), through SceneRouter with ADR 0111 on:
+  - **Zones (worst hidden frame):** prologue 101 ms, Oruvel 135, Underway 234, causeway 127, shrine 112, ferry 134, wake 207, Ashcrown 146, Pemakar 615, Brine Shoals 190, Tamsule 201, Bell Galleries 164, Coilspire 741, Corrow 397, Corrow night 277.
+    - **Haluna is 935–1085 ms.** With everything preloaded, what remains is its own build: the dresser 586 ms, Asha's stage pose 224 ms and the zone 222 ms. On the PC that should be about 0.6 s. **For the PC's walk to confirm**; if it is over, it belongs to first-playable and env-art.
+  - **Battles:**
+    - **The first battle was 1845 ms**, because 1.4 s of stage.spawn loaded Rhen's battle actor on the main thread.
+      - Cause: the swap's stall window was 30 frames, which is milliseconds under the uncapped fade, and a model's threaded progress reads 0 until it is in.
+      - Fix (fe0bcc367, "the held swap's stall and cap are wall time"): the wait now runs while some load finished within 3 s, capped at 15 s.
+      - Now: 160 ms.
+    - **Later battles:** 120–215 ms.
+  - **Gotcha:** Godot exits with "double free or corruption" after a scripted run that ends mid-battle, with ResidentLoads off or on. It is the same abort at exit the gate and the full suite show; it is not this change.
+SELF-RENDERED @ 068218034: field_hud_over_pemakar (night), field_hud_over_ashcrown (bright ash sky), field_hud_over_brine_shoals (grey flats, bright), field_hud_over_coilspire (dusk), field_hud_over_haluna_wake (night). What I saw:
+- All four overlays read on every backdrop: the objective line, the area title band, the Listen keycap and the tip card. The cue's outlined "Far" and "A short walk" read over night and over the steps.
+- No contrast fixes were needed this round.
+- The Brine Shoals and Coilspire shots show the idle line, because their one flag starts no errand. That is shot setup, not a bug.
+MERGE-READY @ 068218034: the first-battle and Haluna load measurements, and the second field HUD pass. Checks: scene_router 16/0, resident_loads 7/0; the shots were viewed; nothing visual changed in game code.
+- 2026-10-28 17:45, **big15's two scene-router failures** (test_swap_frame_stays_under_threshold_for_every_target, test_launch_reveals_the_title_only_after_the_warm_up):
+  - **Not ADR 0111's.** None of its code is in lead/gate-big15: 5702d5d3a, 662935b3a and fe0bcc367 first appear in big16.
+  - **Both pass here,** in worktrees on lead/gate-big15 (15/0) and on lead/gate-big16 @ ff82858c (16/0), and on big16 with every core loaded (16/0). They run the real swap in a child Godot on an injected clock, so a full-suite-only failure points at the child (a crash, a timeout, or no stats printed) or at shared user:// state, not at the router's bookkeeping.
+  - **One latent issue found and fixed anyway (84bbd575a, ADR 0111 amendment 2).** Past the 120-frame cap the swap wait followed every holder's wait_progress(). ShaderPrewarm's counts frames, so a prewarm staging past 120 frames (a slow box, real cards) could hold a swap to the 15 s cap and bust the 3 s entry check: exactly test 1's check. Only ResidentLoads' swap_wait_progress() extends the wait now. New test: test_only_loading_holders_extend_the_swap_wait. scene_router 17/0, resident_loads 7/0.
+MERGE-READY @ 84bbd575a: the swap-wait fix for big16.
+LEAD-ANSWERED (17:25: the runner prints FAILURE lines only in its end summary, and big15's isn't out yet; the Lead will paste them. The box was cloud lavapipe on 4 CPUs with two capture shards beside it, so load timing is likely. The surrounding swap checks pass. **Not reproduced on big15 or big16, in isolation or under load.** 84bbd575a stays: it fixes a real latent wait, documented in ADR 0111 amendment 2, and changes no test expectation): Please paste the two tests' FAILURE lines from big15's cloud suite, or the gate log path. I can't reproduce either one in isolation or under load on big15 or big16, and the message decides whether it's the child probe (crash or timeout) or the entry budget that 84bbd575a covers.
+- 2026-10-28 17:50: **big15 router failures are LEAD-ANSWERED.** The causes were "printed no stats (exit 127)" for boot.tscn, battle_sandbox.tscn and launch: the cloud runner could not find the child probe's Godot binary. That is the environment, not the router. Run alone the test passed 15/0, and no logic was changed.
+  - **Optional hardening done:** test_scene_router_swap's probe helper now fails with "the Godot binary was not found (exit 127, <path>); not a budget failure", so it cannot pass for a budget failure. scene_router_swap 17/0.
+
+## FROM 2026-10-29 (Lead session_01Bg3iP7cPGyjbX4CyniBahc, integration claude/new-session-mj8c3c; the PC is offline)
+- 2026-10-29: **merged** origin/claude/new-session-mj8c3c (600e05af; pc-gpu.md took the integration side) and origin/claude/characters (92566b71: Pell, M3-CHR-506; PROVENANCE and shots.json by merge_union; shots.json keeps boot_title 72 and battle_victory 90).
+- **Work item 2, portraits: Pell baked** (fa8ab442): five emotions, framed closer (`camera` distance 0.86, aim_drop 0.05) so his head matches the humans' size with the crest in frame. Viewed as a contact sheet against Rhen, Kerrid and Tavi. His emotions differ only slightly at 256 px; that is the face-pose table (characters' call), not the bake. Every named Act I speaker now has a portrait (test_dialogue_box's guard). Pell joins the party only in Ch10 (flags.tres), so no Act I menu needs him.
+- **Work item 1, every Act I scene change covered and under 1 s hidden (ADR 0042 §4; ADR 0111 amendment 3):**
+  - SceneRouter records the fade's alpha on the swap frame and each hidden frame (`judge_cover`: `covered`, `cover_alpha_min`) and warns when one is not opaque (0bc329a6).
+  - test_scene_change_cover: no game script outside the router and the debug probes changes scene directly; no CanvasLayer in a .tscn or a data table sits at or above the fade's layer 128. test_scene_router_swap: the probe's real changes report `covered`.
+  - **Haluna fix (b7b1b53f):** tools/loading/scene_loads.gd collected each zone in the frame it entered, before VillagerLayer's deferred build, so Reed, the child, Neme and Osu (about 1 s) loaded inside the swap frame. It now lets each zone settle 3 frames; the regenerated lists add 89 paths. test_resident_loads::test_each_zone_s_villager_actors_are_listed fails on the old list. Haluna's worst hidden frame: 1245 → 453 ms.
+  - **tools/loading/act1_swap_sweep.py** runs the probe per Act I zone, the title and the battle sandbox, with ResidentLoads on and the hero bodies warm (`--resident-loads --warm-resident`, as after the title); exit 1 on an uncovered change.
+  - **Sweep at ec6be9da (headless, cloud box, about 1.8× slower than the PC): all 18 covered; worst hidden frame per target:** Oruvel 180, Underway 309, Haluna 453, causeway 149, shrine 142, ferry 247, wake 491, Ashcrown 168, **Pemakar 733**, Brine Shoals 222, Tamsule 287, Bell Galleries 227, Coilspire 475, Corrow 376, Corrow night 321, prologue 105, title 21, battle 130 ms. Worst visible frame 35 ms (Pemakar). Entries 0.4–3.9 s; Haluna (3.7 s) and the wake (3.9 s) are over ADR 0029's 3 s entry on this box, all under the fade.
+  - Pemakar's remaining 0.6 s is spread over many small dressing nodes (no single culprit; profiled).
+- **Work item 3, inventory rows:** `placeholder_audit.py --static-only` lists nothing for ui-menus. M3-HER-1147 and M3-UI-101 are set to review (both were done on 10-28).
+- **M3-NAR-1000 (narrative seat), to review** (f5a1a17c): decisions_log N-27. Pell's echo check passes with no beat changes and four authoring guards; every Kerrid and Pell sheet question answered (story sheets' new sections); ADR 0020 append note; glossary superseding rows.
+LEAD-ANSWERED (18:22, ADR 0201: SPEC v1.5 and pell.md reworded, the term banned): SPEC §3's roster row called Pell's niche by the series' job word, the inspiring series' own job word (also in ADR 0017 and pell.md's header). Reword SPEC to "learns enemy abilities by listening" (N-27 guard 3), and ban the term?
+- **Known, not this track's:** test_qa_capsules fails (Haluna villagers and ossa_fen's Pell as capsules, ten foes without bodies): characters, creatures and integration-qa.
+
+### PC-QUEUE
+- **Act I scene-change hitches on the RX 9070 XT** (act1_gpu_qa rows 22, 41, 42): re-walk New Game→Prologue, Ch1, Ch2, the first fight, every Act I zone entry and Ch5's fresh entry on this head. Expect every hidden frame under 1 s (cloud headless worst 733 ms) and no visible frame over 50 ms. Then close or update the rows. Quick per-zone numbers: `python3 tools/loading/act1_swap_sweep.py` (headless; the walk is the budget-grade measurement).
+- **Row 33** (the result panel's freed-row count-up, fixed 503b99839): confirm no `_set_count` SCRIPT ERROR in a pass.
+
+MERGE-READY @ bcfb63160: Pell's portraits; the scene-change cover record, guards and Act I sweep; Haluna's villager loads; M3-NAR-1000; M3-HER-1147 and M3-UI-101 to review. Checks: hero/creature/battle portraits 16/0, dialogue_box 26/0, scene_change_cover 4/0, scene_router_swap 17/0, resident_loads 8/0; tools test_act1_swap_sweep OK; gdlint and gdformat clean; validate_data 0 errors; taskboard --check passed; banned-terms scan of the new text clean. Skipped: screenshots (no shot changed: portraits viewed directly, the cover record is invisible); coverage (no game/battle or game/progression change); the full tools suite (only the new tools test can see tools/loading).
+- 2026-10-29 (superseded by the Lead's 18:22 list below) **BACKLOG EMPTY:** items 1–3 are done and merge-ready. Item 1's budget-grade numbers wait on the PC (PC-QUEUE). Item 2 waits on characters landing new Act I speakers: every named Act I speaker is baked. Item 3: the audit lists nothing for ui-menus. No ui `todo` tasks are left, and the narrative `todo`s are Act II or wait on other tasks. Handoff: docs/kb/handoffs/2026-10-29-ui-ui-menus-1.md.
+- 2026-10-29 19:40, **the Lead's 18:22 list:**
+  - **Merged** claude/new-session-mj8c3c (ADR 0201). N-27 no longer quotes the banned job word (validate_data is clean).
+  - **Row 33, FIXED twice over** (c0e98a59): the result panel kills its count's tween in NOTIFICATION_PREDELETE. A bound
+    tween only notices a freed node on the tree's next step, and stepped into freed rows until then.
+    test_battle_result_motion::test_freeing_the_panel_mid_count_ends_the_count frees the panel mid-count (6/0).
+  - **Row 42 (Ch5 fresh entry), headless:**
+    - Pemakar's swap frame, fresh launch with ResidentLoads: 700–780 ms with a warm disk cache, 1.8–2.4 s cold (just
+      after the container restarted).
+    - The cold excess is not in any node's _ready, any load (every one under 20 ms) or the Ch5 arrival steps; the
+      synchronous cutscene cues add about 215 ms (Rhen's `look_at` is 211 ms of it).
+    - The visible spike is on the fade's last lift frame: 24–39 ms headless, under 50 ms, with no node added. The PC's
+      61.6 ms came with the pre-ADR 0111 6.2 s hidden frame (loads landing late). PC-QUEUE below.
+  - **Rows 22/41, field battles:** the probe takes `--encounter=<id>` (a real BattleRequest), and the sweep covers all
+    31 Act I encounters (625dabd1).
+    - All covered; worst hidden frame 266 ms (ch03_causeway_shore), most 115–240 ms; entries 0.56–1.5 s.
+    - Run alone, the worst visible frame is 10–18 ms (the 160–277 ms in the first sweep were CPU contention with the
+      playthrough tests).
+    - Coilspire is 475–634 ms headless.
+  - **The headless UI error sweep** (the Act I playthrough tests fp_ and ch01, ch04–ch09 _thread, plus the UI areas:
+    menu 251, hud 76, dialogue 85, field_ 132, battle_ 737, codex, bestiary, title): **no SCRIPT ERROR anywhere.**
+    - Every push_error in the UI areas is a test exercising an error path on purpose.
+    - Not UI, for their owners:
+      - rendering: `refresh_bounce_passes` called deferred with a freed node (underwater_rig.gd:401), 2–12 times a run;
+      - battle-presentation: battle_vfx.gd:249/299 and battle_boss_vfx.gd:380 read get_global_transform off the tree;
+      - cinematics: "@vfx rate=/drift=/motion=/form=" and "@camera grade=" are not performed yet (Ch1–Ch9 cutscenes).
+    - Fixed while there: **Liss's battle tint** (c2d3a9b71): integration-qa's row set #7A8C5A, but the spec
+      (M3-HER-1120) and test_battle_party_stand_ins say #7A8F6A. That was a big14 gate failure (3/0 now).
+    - Other failures seen, not this track's: test_battle_act1_ability_vfx (battle-presentation), test_hero_field_snaps
+      (hero-motion), fp_prologue's Liss vigil (characters).
+### PC-QUEUE (added 19:40)
+- **Row 42:** a fresh F8 Ch5 start on this head: the hidden frame (headless 0.7–2.4 s) and the visible frame at the lift's
+  end (headless 24–39 ms). If it is still over 50 ms on the GPU, it is a draw-side cost (the cutscene's first camera or
+  UI material) that headless can't see.
+- **Row 41's field battles:** a walk of a few Act I field battles; headless they are 115–266 ms hidden, 10–18 ms visible.
+MERGE-READY @ c2d3a9b71: rows 33 and 42 (diagnosis), the field-battle sweep, the UI error sweep, and Liss's tint. Checks:
+battle_result_motion 6/0, battle_rewards 10/0, party_stand_ins 3/0, the UI areas above, and the Act I thread tests (fp_
+29/1 = the Liss vigil, characters'). tools test_act1_swap_sweep OK. Lint, format and validate_data are clean.
+Skipped: screenshots (nothing visual changed: a tint value matching the spec, and the panel's teardown) and coverage (no
+game/battle core or game/progression change).
+- 2026-10-29 19:40, **BACKLOG EMPTY:** the Lead's 18:22 list is done. What's left needs the PC (PC-QUEUE) or other
+  tracks' fixes, listed above.

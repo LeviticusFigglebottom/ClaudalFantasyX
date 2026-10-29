@@ -2825,6 +2825,60 @@
    ],
    "yaw_deg": 181.7,
    "_m701": true
+  },
+  {
+   "piece": "market_stall",
+   "at": [
+    -33.8,
+    -0.6
+   ],
+   "yaw_deg": -90.0,
+   "_m746": "the goods shop's stall behind its keeper"
+  },
+  {
+   "piece": "shop_sign_goods",
+   "at": [
+    -35.0,
+    -3.4
+   ],
+   "yaw_deg": -90.0,
+   "_m746": "the goods shop's sign"
+  },
+  {
+   "piece": "beach_forge",
+   "at": [
+    -13.8,
+    50.0
+   ],
+   "yaw_deg": 90.0,
+   "_m746": "haluna_forge's smithy behind the smith"
+  },
+  {
+   "piece": "shop_sign_forge",
+   "at": [
+    -12.5,
+    52.6
+   ],
+   "yaw_deg": 90.0,
+   "_m746": "the forge's sign"
+  },
+  {
+   "piece": "shop_sign_inn",
+   "at": [
+    -28.6,
+    60.6
+   ],
+   "yaw_deg": 90.0,
+   "_m746": "the inn's sign"
+  },
+  {
+   "piece": "inn_hearth",
+   "at": [
+    -32.4,
+    58.5
+   ],
+   "yaw_deg": 90.0,
+   "_walk29": "the inn's kitchen behind the innkeeper, clear of the awning cloth"
   }
  ],
  "plants": [

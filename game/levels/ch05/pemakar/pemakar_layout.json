@@ -152,14 +152,14 @@
     "folder": {"cast": "vendor", "at": [-2.52, 8.028, -1.621, 90.0], "color": "#9a6a4a"},
     "folder_2": {"cast": "netmender", "at": [-2.1, 8.028, -1.615, 90.0], "color": "#aa7a5a", "radius": 0.22, "height": 1.4},
     "lacquerer": {"cast": "vendor", "at": [2.52, 8.028, -1.621, 270.0], "color": "#7a2a2a"},
-    "garo": {"cast": "fisher", "at": [6.3, 8.028, -1.734, 90.0], "color": "#6a4a3a", "radius": 0.36, "height": 1.8},
+    "garo": {"cast": "garo", "at": [6.3, 8.028, -1.734, 90.0], "color": "#6a4a3a", "radius": 0.36, "height": 1.8},
     "forge_child": {"cast": "child", "at": [8.8, 8.028, -1.861, 0.0], "color": "#c4a07a", "radius": 0.18, "height": 1.1},
     "grave_child": {"cast": "child", "at": [13.0, 17.628, -30.304, 0.0], "color": "#b4907a", "radius": 0.18, "height": 1.0},
-    "elder": {"cast": "reed", "at": [-1.5, 29.641, -65.233, 90.0], "color": "#8a8a8a"},
+    "elder": {"cast": "elder", "at": [-1.5, 29.641, -65.233, 90.0], "color": "#8a8a8a"},
     "boat_seller": {"cast": "vendor", "at": [2.5, 29.65, -65.697, 270.0], "color": "#7a6a3a"},
     "weir_child": {"cast": "child", "at": [15.6, 1.2, 26.5, 180.0], "color": "#d4b07a", "radius": 0.18, "height": 1.05},
     "boat_fisher": {"cast": "fisher", "at": [13.6, 1.2, 26.1, 180.0], "color": "#5a7a8a", "hidden": true},
-    "tender": {"cast": "reed", "at": [-2.0, 29.711, -68.625, 180.0], "color": "#8a2a2a", "hidden": true}
+    "tender": {"cast": "tender", "at": [-2.0, 29.711, -68.625, 180.0], "color": "#8a2a2a", "hidden": true}
   },
   "shots": {
     "P01": {"pos": [-8.0, 1.6, 58.0], "look_at": [0.0, 22.0, -40.0], "fov": 46},
@@ -167,17 +167,20 @@
     "P03": {"pos": [0.0, 10.028, -1.6], "look_at": [-2.52, 9.228, -1.621], "fov": 46},
     "P04": {"pos": [-2.52, 10.028, -1.621], "look_at": [6.3, 9.228, -1.734], "fov": 46},
     "P05": {"pos": [18.0, 19.228, -30.953], "look_at": [11.0, 18.428, -30.104], "fov": 40},
-    "P06": {"pos": [8.8, 9.628, -1.861], "look_at": [-4.2, 14.028, -15.666], "fov": 40},
-    "P06N": {"pos": [-2.4, 14.228, -15.621], "look_at": [-4.2, 14.028, -15.666], "fov": 36},
-    "P07": {"pos": [7.55, 9.528, -1.792], "look_at": [6.3, 9.228, -1.734], "fov": 30},
+    "P06": {"pos": [-1.12, 12.22, -8.51], "look_at": [-4.2, 14.028, -15.666], "fov": 40},
+    "P06N": {"pos": [-6.2, 14.4, -15.1], "look_at": [-4.2, 14.4, -15.666], "fov": 36},
+    "P07": {"pos": [5.0, 9.5, -1.4], "look_at": [6.3, 9.45, -1.734], "fov": 32},
     "P08": {"pos": [0.0, 36.599999999999994, -71.0], "look_at": [0.0, 8.0, -4.0], "fov": 60},
-    "P09": {"pos": [1.26, 9.828, -1.605], "look_at": [0.0, 30.441, -65.22], "fov": 40},
-    "P09_garo": {"pos": [7.8, 8.828, -1.805], "look_at": [6.8, 8.128, -1.756], "fov": 30},
+    "P09": {"pos": [0.15, 27.98, -57.61], "look_at": [0.0, 30.441, -65.22], "fov": 40},
+    "P09_garo": {"pos": [4.9, 9.4, -2.3], "look_at": [6.6, 9.3, -1.756], "fov": 35},
     "P10": {"pos": [24.0, 20.628, -32.016], "look_at": [11.0, 18.228, -30.104], "fov": 44},
     "P11": {"pos": [21.0, 1.5, 31.5], "look_at": [15.0, 1.9, 26.6], "fov": 40},
     "P12": {"pos": [17.1, 2.8, 25.425], "look_at": [14.6, 2.6, 26.5], "fov": 36},
     "P02D": {"pos": [3.0, 2.977, 22.05], "look_at": [12.6, 1.8, 26.5], "fov": 40}
   },
+  "camera_volumes": [
+    {"id": "Harbour", "mode": "pan_follow", "at": [0.0, 2.0, 26.0], "size": [12.0, 5.0, 8.0], "pos": [-4.5, 5.0, 29.5], "look_at": [0.0, 1.8, 23.5], "fov": 46.4, "priority": 1}
+  ],
   "triggers": [
     {"id": "bark_ferryman", "at": [5.0, 1.2, 24.75], "size": [3, 0, 3], "once": true, "blocked_by_flag": "ch05_met_kerrid", "sets_flag": "ch05_heard_straw_cape_tale", "payload": {"dialogue": "ch05_bark_ferryman", "overheard": true}, "yaw": 0.0},
     {"id": "bark_boat_folders", "at": [-1.68, 8.028, -1.61], "size": [5, 0, 3], "once": true, "blocked_by_flag": "ch05_met_kerrid", "payload": {"dialogue": "ch05_bark_boat_folders", "overheard": true}, "yaw": -0.649},

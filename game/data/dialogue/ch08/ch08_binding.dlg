@@ -13,7 +13,7 @@ location: ch08/coilspire
 ---
 @letterbox on
 @camera F06
-@mark asha crown_door walk
+@mark asha crown_door walk via=way_f4_1,way_f4_2,way_f4_3,way_f4_4,way_f4_5,way_f4_6,way_f4_7,way_f4_8,way_f4_9,way_f4_10
 @wait 1.5
 @fade out 0.4
 @camera F07
@@ -23,6 +23,7 @@ location: ch08/coilspire
 @wait 3.0
 @fade out 0.6
 <<set $ch08_virel_bound = true>>
+@mark virel virel_gone
 @mark asha crown_out
 @camera F06_out
 @fade in 0.8
