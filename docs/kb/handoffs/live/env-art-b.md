@@ -430,6 +430,26 @@ that test at this branch's zones.
   - Next: merge the integration branch once big17 lands, run `--filter=ebbing` with the hook in, and move M3-C09-03
     to review.
 
+- **The Lead's 18:43 and 20:46 messages, answered:**
+  - **Freed-cast lint:** fixed @ e884cb93 (`EbbingMotes._process` checks the stored ref before casting). The lint run
+    on this head lists no env-art-b hit; hero-integration's `hero_field_party.gd` hit is fixed on their branch.
+    `--filter=ebbing` 5/0 (6/0 with the new cue test).
+  - **`test_cutscene_vfx_hosts.gd` (hero-integration's file, red on big16/big17):** a patch for the gate:
+    `docs/kb/handoffs/live/patches/m3-arc-1326-vfx-hosts-test-big17.patch` (`git apply` on lead/gate-big17 @ 6aae2fd1).
+    It does not resurrect `CutsceneMotes`. `_motes()` now counts what replaced it: the sequencer's `CutsceneVfx`
+    placeholders, GlimmerFields named `Vfx_<effect>_<n>`. Proven on a big17 worktree: `--filter=vfx_hosts` 4/0,
+    `--filter=ebbing` 5/0. I didn't edit their file on any branch.
+  - **GPU QA rows on this head:**
+    - 6, 27 (Coilspire's green grid): gone in today's `ch08_coilspire_hall`/`_gate` renders and walk views.
+    - 28 (black spheres): `ch09_corrow_rocks` shows broken laterite today.
+    - 26 (Ashcrown's grey tiers): fixed today (M3-ENV-1325).
+    - 15, 40 (the Underway's hard light rectangles): Ch1, env-art's M3-ENV-1323; big17's `arena_scenes.py` carries
+      their soft underwater sun.
+    - 34 (the Brine Shoals fight on the test stage): my side is sound. `ch06_ridge_skippers` names
+      `brine_shoals_afternoon`, which is registered in `arenas.json`, and the zone's random table names the
+      encounter. The fallback is in the BattleRequest's lookup (act1-chapters' flow).
+    The PC can close all of these on its next pass.
+
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
   on the PC presets (two large and three small fires in `ch06/brine_shoals` and `salvage_camp_burning`).
