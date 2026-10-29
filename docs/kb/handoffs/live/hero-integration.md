@@ -1240,3 +1240,49 @@ MERGE-READY @ fa046a497 (+ this log):
   - 21 (party start) is fixed @ 5c11d034;
   - 37 and 38 are fixed on the camera and follower side. The spawn and volume remainders are M3-HER-1156
     (environment) and M3-HER-1157 (environment).
+
+### TRIAL MERGE, 2026-10-29 ~18:45 (prefold lead/gate-big17, i.e. what big18 builds on)
+TRIAL MERGE @ integration 4f9c3732 + lead/gate-big17 be74f9a0: env-art c3038a18, env-art-b 6322659f,
+creatures f6846325, creatures-b d5f7b2b2, characters 3346484b, ui 625dabd1, battle-presentation 80e565ea,
+act1-chapters 7f49b2f3, m2-slice e7b19992, audio 1cb9654d, hero-integration 1ff590fa
+- **`docs/kb/handoffs/live/pc-gpu.md`** (env-art, ui, battle-presentation, act1-chapters, hero-integration): these
+  tracks merged integration's 10-29 copy, and big17 carries the older one. Resolver: the Lead. Take integration's.
+- **env-art: `docs/kb/tasks/M3/M3-ENV-750-...md`.** Resolver: env-art or the Lead. Take env-art's side
+  (status done, plus its 10-29 review line).
+- **ui: `tests/screenshots/shots.json` CRASHED merge_union.** ui and big17 have 3 merge bases, so git's recursive
+  strategy gives stage 1 a *virtual* base that holds its own conflict markers, and merge_union's `json.loads` died.
+  **Fixed in merge_union @ 47fdc185c** (tech seat). When stage 1 won't parse, it merges against the real merge
+  bases instead:
+  - a side equal to any base's version of a key counts as unchanged;
+  - if both sides differ and each sits on a different base, ours is kept and the key is reported.
+  - On big17 × ui it resolves to 612 shots with no duplicate ids. It reports 13 keys, and keeping ours is right
+    for all 13:
+    - 8 × `zone_wake_*`, whose scene `haluna_wake_dressing/` big16 deleted;
+    - 5 × `shrine_s0*` `warm_shader_groups: true`.
+  - The 10 `pending_baseline` and 5 `setup`/`settle_frames` rows where ui only carries an older base all take big17's.
+  - test_merge_union 17/0, including a criss-cross repo whose stage 1 has markers; the new test fails on the old
+    code with big17's JSONDecodeError.
+  - **Lead: use this merge_union when you fold ui into big18.** Without it, shots.json stays conflicted.
+
+### big17's tool-suite reds (gate.md: 4 units, red on big16 too), by owner
+- **test_post_import** (tech seat, mine): its `KINDS` set lacked creatures' `crowd`. Fixed @ 96bd14658 (6/0).
+- **test_freed_cast_lint** (my lint): a real hit in env-art-b's `game/vfx/ebbing/ebbing_motes.gd:168` (it casts a
+  freed mourner). Filed **M3-HER-1161 (rendering, env-art-b)** with the 3-line patch, plus a KNOWN row so the unit
+  is green; it passes on big17 with the row.
+- **test_npc** (creatures): green on claude/creatures alone and red on the merged tree. Characters' new Act I
+  villagers (`wright_child_a`) changed what the crowd generator must stay distinct from. Filed
+  **M3-HER-1162 (character, creatures)**: regenerate the crowd once big17 lands.
+- **test_screenshots** (`villager_shopkeeper_front` has no baseline): the Lead's baseline approval, not a code fix.
+
+### SELF-RENDERED on the big17 trial tree (Pell's row + characters' model), 2026-10-29
+- `ch09_corrow_rocks`, cropped and brightened: **Pell** (crest, staff, Kirru face) stands upright on the rock top,
+  feet on the stone, at hero scale. He was a capsule before. `ch09_corrow_road`, `ch09_corrow_landing` and
+  `slice_prologue_vigil_line` don't frame him closely; nothing wrong in them. Their drift against baselines comes
+  from the batch (big16/17 art), not from this row. No baselines written.
+- Audit on that tree with Pell's row: **5 items** (creatures 1, env-art 4 low); **integration-qa 0**. The
+  Prologue's City/Vigils capsule clears too: it was Pell's vigil.
+- After big17 lands, I drop Pell's stale KNOWN capsule rows from qa_known.json (corrow, corrow_night ×2,
+  ossa_fen). The guard doesn't fail on stale rows, so nothing is red meanwhile.
+
+MERGE-READY @ 47fdc185c (+ this log): everything above (M3-HER-1149 Pell row, M3-HER-1227, M3-C09-09, M3-ARC-1324,
+trial_merge --prefold, merge_union's virtual base, test_post_import's crowd, freed-cast KNOWN for M3-HER-1161).
