@@ -41,3 +41,20 @@ no duplicate loc keys, PROVENANCE rows or shot ids; no conflict markers; no `doc
 - Blender: base = the integration branch (`origin/claude/new-session-mj8c3c`, which holds only big13), so ~150 jobs
   (heroes, villagers, crowd, creatures, kits). That takes hours, so it runs after the suite and coverage, in
   parallel with the screenshot capture (both deterministic under load), not before the timing-sensitive suite.
+- 20:15 UTC: Godot import clean. **Suite: 3241 run, 5 failed** (6639 s), plus one parse error. Every red but one is
+  pre-existing (re-run on big16 @ ff82858c in a worktree, same result):
+  - test_ch04_zones::test_the_wakes_field_camera_is_halunas: expects 8 Haluna camera volumes, Haluna has 10 (big16 too).
+  - test_iskarra_city::test_the_city_instances_its_pieces_with_kit_materials: "VigilLights has meshes" (big16 too).
+  - test_zone_cast::test_a_cast_actor_shows_its_model_and_idles_out_of_step: "the fisher idles", "out of step" (big16 too).
+  - test_cutscene_vfx_hosts.gd: parse error, `CutsceneMotes` doesn't exist (ADR 0041's 93c1aa2d removed it; big16 too).
+  - **NEW in big17:** test_dialogue_box::test_every_act1_speaker_with_a_model_has_a_portrait: "pell has a model, so a
+    portrait". claude/characters' Pell adds `pell_stage.tscn`, and Pell has no portrait yet (speakers.json points at
+    `portrait_pell_placeholder`). Branch content, not merge fallout; it needs a Pell portrait render (characters +
+    ui-menus), so the gate doesn't fix it.
+- Boot smoke: no ERROR lines.
+- **Skipped as redundant (the human's productivity directive, 10-29):** the full coverage re-run. With the suite red,
+  run_coverage aborts with no numbers ("suite did not pass under instrumentation", as on big14), so ~1.5 h would buy
+  nothing. Instead, report-only coverage with `--filter=battle` and `--filter=progression` (game/battle and
+  game/progression changed: 30 files since the integration branch).
+- **Blender narrowed:** base = `origin/lead/gate-big14` (8707ff90, the last Blender-verified gate: 77 jobs, 2 DIFF),
+  not the integration branch: ~85 jobs instead of ~150. It runs alongside the full-manifest capture (612 shots).
