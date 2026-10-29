@@ -2,8 +2,8 @@
 id: M3-HER-1131
 title: "Request (slice-polish): test_fp_prologue's vigil test assumes Liss has no field body; she has one once her row and model merge"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: "slice-polish (session_01F3vrUPLtDQMGSRrMHJtpz1)"
 reviewer: qa
 depends_on: []
 milestone: M3
@@ -27,3 +27,4 @@ then asserts Pell's and Liss's capsules stay. That held only while Liss had no r
 - [ ] `--filter=prologue` is green on the merged tree.
 
 ## Review log
+- 2026-10-28 slice-polish: done (the vigil test follows hero_motion.json: a vigil with a field body takes it, the rest wait).

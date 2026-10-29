@@ -841,7 +841,7 @@
    "yaw_deg": 0
   },
   {
-   "piece": "banyan_placeholder",
+   "piece": "banyan_hero",
    "at": [
     -103.0,
     35.5
@@ -1139,7 +1139,7 @@
    }
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -151.3,
     -125
@@ -1148,7 +1148,7 @@
    "scale": 1.12
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -152.1,
     -118
@@ -1157,7 +1157,7 @@
    "scale": 1.2
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -151.8,
     -111
@@ -1166,7 +1166,7 @@
    "scale": 1.08
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -152.7,
     -104
@@ -1175,7 +1175,7 @@
    "scale": 1.02
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -153.0,
     -97
@@ -1184,7 +1184,7 @@
    "scale": 0.99
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -153.3,
     -90
@@ -1193,7 +1193,7 @@
    "scale": 1.14
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -153.5,
     -83
@@ -1202,7 +1202,7 @@
    "scale": 1.09
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -153.0,
     -76
@@ -1211,7 +1211,7 @@
    "scale": 1.14
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -153.0,
     -69
@@ -1220,7 +1220,7 @@
    "scale": 1.13
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -153.9,
     -62
@@ -1229,7 +1229,7 @@
    "scale": 1.0
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -152.6,
     -55
@@ -1238,7 +1238,7 @@
    "scale": 1.05
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -151.3,
     -48
@@ -1247,7 +1247,7 @@
    "scale": 1.08
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -152.3,
     -41
@@ -1256,7 +1256,7 @@
    "scale": 0.92
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -151.7,
     -34
@@ -1265,7 +1265,7 @@
    "scale": 0.95
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -150.2,
     -27
@@ -1274,7 +1274,7 @@
    "scale": 1.03
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -151.0,
     -20
@@ -1283,7 +1283,7 @@
    "scale": 0.96
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -152.3,
     -13
@@ -1292,7 +1292,7 @@
    "scale": 0.97
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -150.3,
     -6
@@ -1301,7 +1301,7 @@
    "scale": 1.19
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -151.3,
     1
@@ -1310,7 +1310,7 @@
    "scale": 0.94
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -150.2,
     8
@@ -1319,7 +1319,7 @@
    "scale": 1.03
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -153.6,
     15
@@ -1328,7 +1328,7 @@
    "scale": 0.92
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -153.7,
     22
@@ -1337,7 +1337,7 @@
    "scale": 0.94
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -150.7,
     29
@@ -1346,7 +1346,7 @@
    "scale": 0.96
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -150.7,
     36
@@ -1355,7 +1355,7 @@
    "scale": 0.91
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -153.7,
     43
@@ -1364,7 +1364,7 @@
    "scale": 1.11
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -151.2,
     50
@@ -1373,7 +1373,7 @@
    "scale": 1.03
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -153.0,
     57
@@ -1382,7 +1382,7 @@
    "scale": 0.99
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -150.3,
     64
@@ -1391,7 +1391,7 @@
    "scale": 1.2
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -151.4,
     71
@@ -1400,7 +1400,7 @@
    "scale": 1.12
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -150.2,
     78
@@ -1409,7 +1409,7 @@
    "scale": 0.94
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -150.2,
     85
@@ -1418,7 +1418,7 @@
    "scale": 1.24
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -153.1,
     92
@@ -1427,7 +1427,7 @@
    "scale": 0.99
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -153.8,
     99
@@ -1436,7 +1436,7 @@
    "scale": 0.94
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -150.4,
     106
@@ -1445,7 +1445,7 @@
    "scale": 1.25
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -150.9,
     113
@@ -1454,7 +1454,7 @@
    "scale": 1.24
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -150.1,
     120
@@ -1463,7 +1463,7 @@
    "scale": 1.13
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -104.68792164824367,
     -29.5
@@ -1472,7 +1472,7 @@
    "scale": 0.96
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -95.49631553670477,
     -29.5
@@ -1481,7 +1481,7 @@
    "scale": 1.06
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -56.13743958569613,
     -29.5
@@ -1490,7 +1490,7 @@
    "scale": 0.9
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -47.121926899470864,
     -29.5
@@ -1499,7 +1499,7 @@
    "scale": 0.91
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -38.882638597209066,
     -29.5
@@ -1508,7 +1508,7 @@
    "scale": 0.91
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -100.84339568684857,
     22.5
@@ -1517,7 +1517,7 @@
    "scale": 0.93
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -90.30057709566852,
     22.5
@@ -1526,7 +1526,7 @@
    "scale": 0.86
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -81.23282277386278,
     22.5
@@ -1535,7 +1535,7 @@
    "scale": 1.03
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -72.4509663039409,
     22.5
@@ -1544,7 +1544,7 @@
    "scale": 0.9
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -65.17920507481128,
     22.5
@@ -1553,7 +1553,7 @@
    "scale": 1.03
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -54.826788649747115,
     22.5
@@ -1562,7 +1562,7 @@
    "scale": 1.11
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -45.08504419734669,
     22.5
@@ -1571,7 +1571,7 @@
    "scale": 0.97
   },
   {
-   "piece": "windbreak_placeholder",
+   "piece": "windbreak_tree",
    "at": [
     -37.82236359070361,
     22.5

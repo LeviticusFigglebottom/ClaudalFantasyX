@@ -724,6 +724,17 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   50 m on 18 mm. The First Verse set's Drownbell, and its mark for the toll and the motes, came in to about 30 m, and
   C08 is now 28 mm from 5 m up. Viewed: the bronze hood breaking the surface, the sun's glitter beside it. Uncounted
   held fields are sparse too (C08's wounds).
+- **Requests to slice-polish on the board, closed to review:**
+  - **M3-ENV-748 (Neme) and test_qa_capsules' Haluna rows:** Haluna's seven villagers (Neme, Vendor, Reed,
+    Netmender, Fisher, Child, Osu) lose their static capsule and facing meshes. VillagerLayer gives each its body in
+    play; the capsule check reads the scene before that. Viewed slice_neme_table: Neme in her apron.
+    - test_villager_routines (creatures') now accepts an absent capsule.
+    - Left in test_qa_capsules, not mine: Pell (Act II) and five foes (creatures).
+  - **M3-ENV-750:** Haluna's trees under their real piece names.
+  - **M3-ENV-745, M3-ENV-751, M3-CIN-1221, M3-HER-1131:** already done.
+  - **M3-HER-1123 (the placeholder cue parameters):** drift, rate, motion and `@sfx at=` are done. `@camera grade=`
+    needs a grade table (the colour script's frames as Environment/LUTs) that no one has built: a rendering look
+    (env-art-b by the Lead's split). `@vfx form=` is reserved in glimmer.json.
 - **MERGE-READY @ 47f7707b** (everything since 743b94bf; plus the held rows' density in the next commit):
   - the cutscene VFX at final quality;
   - Oruvel and the Underway on env-art's dressings, with the cutscene side re-staged (M3-ENV-739/740/742 to review,
@@ -768,6 +779,19 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     DockNight still starts on H04. Re-rendering now.
 - LEAD-ANSWERED (13:35, no: the gate baselines every new shot; `pending_baseline` is only for a track's own in-flight shots between gates): should other tracks mark their 108 unbaselined shots `pending_baseline`, or should the gate baseline
   them? My default: each owner marks its own. I'm not editing their rows.
+
+- **Checkpoint (end of the queue), MERGE-READY @ the branch head.** The Lead's three items are done: the merges,
+  slice_verse_steps, and the beat audit through the slice and Ch1. Every remaining item waits on another track:
+  - env-art: M3-ENV-103/104/105/106;
+  - characters: M3-CHR-101/102;
+  - audio: M3-AUD-830/834;
+  - the gate's baselines for my pending shots.
+  Handoff: docs/kb/handoffs/2026-10-28-cinematics-slice-polish-1.md. I pick up at the next merge announcement,
+  env-art's M3-ENV-105, or a message.
+
+- **The Lead's 17:37 item (test_footsteps_slice_zones after the beach fast-track), already done @ 76bc72cc7:** the shallows
+  check samples a real shallows point, (2.5, 8) on the terrain, which reads water. Rhen's mark stays on the wet sand
+  where the fast-track put it, and the beach staging is unchanged. footsteps_slice 5/0. MERGE-READY @ the branch head.
 
 ### Render requests
 SUPERSEDED RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
