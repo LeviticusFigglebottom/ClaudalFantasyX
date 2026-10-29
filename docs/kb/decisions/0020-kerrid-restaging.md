@@ -151,3 +151,8 @@ The cleric's warm first meeting invokes the heroine's spent parent, as in the in
   - The Ch9 Ebbing absence now has a practical cause on screen, and the tell is dropped (0022 (f)).
 
 - 2026-10-23 Narrative (M1-NAR-11, review-sweep-G): see the append note on [0022](0022-dace-imra-strangers-sweep-f.md). It supersedes (a)'s "He and Dace drank together" (they worked the rings, Kerrid holding his line), and the line "When a new Cantor was named, he started walking toward Corrow" (he set out when the Undertow stirred early this year). In the Ending, Imra, Dace and Kerrid never share a frame (act3_ending §0 rule 8).
+
+- 2026-10-29 Narrative (M3-NAR-1000): this body's rope-burns as a gold cue, the "Stillguard" cord and stair-law, and
+  "gone from Corrow before the Ebbing" are superseded by [0022](0022-dace-imra-strangers-sweep-f.md)'s notes: the
+  burns leak held cyan, the watch is the stair-watch (never Stillguard), and his Ch9 absence has 0022 (f)'s practical
+  cause. See decisions_log N-27.

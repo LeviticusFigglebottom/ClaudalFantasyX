@@ -36,3 +36,11 @@ The Kirru learn by listening and imitating. Pell learns enemy abilities by *hear
 - **Kerrid:** a deep, wordless understanding between two who are outside life. Pell knows what Kerrid is from the first day (Kirru can smell anchored motes) and says nothing.
 - **Ressa (Nhoa):** his sister, the reason for everything.
 - **The Kirru elders:** exile and eventual return.
+
+## Narrative answers for the art sheet (2026-10-29, [decisions_log N-27](../decisions_log.md))
+- **Echo check: passes, no beat changes.** He is never a guardian or sworn to Asha; his shame is chosen grief, not a lost
+  fight; his return is a letting-go, never a trial against his own people; he learns by listening. Keep the four
+  authoring guards in N-27.
+- **No tail, no lower garment** (the split reed girdle only), **a spiral of notches** as the name carving, **no tears**
+  (a lowered crest and stillness), and **the fur:** a dark saddle, mid-brown front, a pale throat.
+- **Keepsakes:** the Kirru keep nothing of the dead. A name-shell is the wearer's own name, not a keepsake.

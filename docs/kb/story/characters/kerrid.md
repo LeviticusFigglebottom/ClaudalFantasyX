@@ -57,3 +57,8 @@ Kerrid breaks things: Armor Break, Power Break, and heavy high-rank blows that c
 - **Toma:** a former Stillguard who came to the Corrow wall in 1002, at twenty-one, and served seven years there hearing the watch tell its captain's story. He never saw the man.
 - **Sefir:** the head of the Order that would Still him on sight. Sefir never knew his face and didn't kill him. Their confrontation at the Choir is fury with no shouting and no steel, and it is for Imra.
 - **Imra and Dace:** the Cantor he opened his gate for and the diver whose line he held. They were strangers to each other until his stair, and they were the last two he got up it. Both are in the storm.
+
+## Narrative answers for the art sheet (2026-10-29, [decisions_log N-27](../decisions_log.md))
+- **No breath** (no idle cycle, no sighs, no fog; he speaks without a visible intake) and **no tears** (the unrisen
+  don't weep).
+- **The anchor's shackle ring as the pommel:** welcome. **Skin desaturation:** keep 0.06, a pallor, never a monster.
