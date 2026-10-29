@@ -144,6 +144,7 @@ func refresh() -> void:
 	for i in 2:
 		var side := mine if i == 0 else 1 - mine
 		_side_names[i].text = side_name(side)
+		HudLayout.fit_label(_side_names[i], HudLayout.num(section("scoreboard"), "side_width"))
 		_scores[i].text = str(score[side])
 	_clock.text = clock_text()
 	_match_name.text = tr(str(match_ref.match_row.get("name_key", "")))

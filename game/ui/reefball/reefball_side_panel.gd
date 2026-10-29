@@ -127,11 +127,29 @@ func _fill(row: HBoxContainer, d: Dictionary) -> void:
 	)
 	var tag := row.get_child(4) as Label
 	tag.text = str(d.get("tag", ""))
+	_fit_row(row)
 	var role := StringName(str(d.get("tag_role", "")))
 	if role == &"":
 		tag.remove_theme_color_override(&"font_color")
 	else:
 		tag.add_theme_color_override(&"font_color", get_theme_color(role, HymnThemeBuilder.PALETTE_TYPE))
+
+
+## Fixed cells sized for 100 % text: at 130 % a long name, band, count or tag shrinks a little to fit (the Lead's
+## final-quality pass); the tag fits what the fixed cells leave of the panel's inner width.
+func _fit_row(row: HBoxContainer) -> void:
+	for i: int in [0, 1, 3]:
+		HudLayout.fit_label(row.get_child(i) as Label, (row.get_child(i) as Control).custom_minimum_size.x)
+	var used := 0.0
+	for i in 4:
+		used += (row.get_child(i) as Control).custom_minimum_size.x + row.get_theme_constant(&"separation")
+	HudLayout.fit_label(row.get_child(4) as Label, _inner_width() - used)
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_THEME_CHANGED:
+		for row in _rows:
+			_fit_row(row)
 
 
 func _label(variation: StringName) -> Label:

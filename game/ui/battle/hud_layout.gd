@@ -22,6 +22,9 @@ const PINS := {
 	"bottom_right": Vector2(1.0, 1.0),
 }
 const DEFAULT_PIN := "top_left"
+## fit_label shrinks a single-line label's font to this share of its theme size at the least (the Lead's final-quality
+## pass, 2026-10-29: long names at 130 % text). Past it the label's own overrun (an ellipsis) is the last resort.
+const FIT_MIN_FONT_SCALE := 0.8
 
 static var _cache: Dictionary = {}
 
@@ -125,3 +128,43 @@ static func wrap_upward(l: Label) -> Label:
 	# A hidden label skips its minimum-size update, so a text set while hidden refits on its draw.
 	l.draw.connect(refit, CONNECT_DEFERRED)
 	return l
+
+
+## Shrinks single-line label `l`'s font (to FIT_MIN_FONT_SCALE of its theme size at the least) until its text fits
+## `width` px (its own width when `width` <= 0). Call it again whenever the text, the width or the theme changes: it
+## starts from the theme's size each time, so a shorter text or a smaller text scale gets the full size back.
+static func fit_label(l: Label, width: float = 0.0) -> void:
+	l.remove_theme_font_size_override(&"font_size")
+	var w := width if width > 0.0 else l.size.x
+	if l.text == "" or w <= 0.0:
+		return
+	var font := l.get_theme_font(&"font")
+	var fs := l.get_theme_font_size(&"font_size")
+	var floor_fs := ceili(fs * FIT_MIN_FONT_SCALE)
+	var size := fs
+	while size > floor_fs and font.get_string_size(l.text, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x > w:
+		size -= 1
+	if size < fs:
+		l.add_theme_font_size_override(&"font_size", size)
+
+
+## The height wrapped label `l` needs for its text at its current font and width.
+static func lines_height(l: Label) -> float:
+	var lines := l.get_line_count()
+	var spacing := float(l.get_theme_constant(&"line_spacing"))
+	return lines * l.get_line_height() + maxi(lines - 1, 0) * spacing
+
+
+## Shrinks wrapped label `l`'s font (to FIT_MIN_FONT_SCALE at the least) until its text's lines fit `height` px (its
+## own height when `height` <= 0), as fit_label does for one line. The label keeps its size.
+static func fit_lines(l: Label, height: float = 0.0) -> void:
+	l.remove_theme_font_size_override(&"font_size")
+	var h := height if height > 0.0 else l.size.y
+	if l.text == "" or h <= 0.0:
+		return
+	var fs := l.get_theme_font_size(&"font_size")
+	var floor_fs := ceili(fs * FIT_MIN_FONT_SCALE)
+	var size := fs
+	while size > floor_fs and lines_height(l) > h + 0.5:
+		size -= 1
+		l.add_theme_font_size_override(&"font_size", size)
