@@ -4686,7 +4686,8 @@
               "ch02_tideline_won",
               "ch02_ate_at_nemes",
               "ch03_drownbell_defeated"
-            ]
+            ],
+            "hold_line": "ch03_dock_007"
           }
         }
       }

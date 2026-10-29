@@ -6,8 +6,10 @@ extends RefCounted
 ## volume (spread_m, the half-extent across, half that in height; center_y_m above the place) and sets an uncounted
 ## field's density (amount_multiplier). The scene's end frees it (a counted field keeps its motes, no respawn), or
 ## end_after_sec of scene time for a light that belongs to one shot (the sequencer's clock: a paused or held scene
-## keeps it). M2-FP-120: `form=<id>` stands the motes still on a
-## creature's outline (game/data/cutscene/glimmer_forms.json, tools/cutscene/glimmer_forms.py), one mote a point.
+## keeps it). M2-FP-120: `form=<id>` is a Vowbound's form in bound light (palette.json glimmer_bound: "Vowbound
+## forms ... Steady"): the creature's rest-pose model as steady, translucent bound light in the field's colour and
+## energy, with the motes standing still on its outline, one a point (game/data/cutscene/glimmer_forms.json, made by
+## tools/cutscene/glimmer_forms.py).
 
 const FORMS_PATH := "res://game/data/cutscene/glimmer_forms.json"
 
@@ -21,7 +23,8 @@ static func spawn(
 ) -> GlimmerField:
 	var field := GlimmerField.new()
 	field.name = field_name
-	if kwargs.has("form") and not _shape(field, StringName(str(kwargs["form"]))):
+	var form: Dictionary = _shape(field, StringName(str(kwargs["form"]))) if kwargs.has("form") else {}
+	if kwargs.has("form") and form.is_empty():
 		field.free()
 		return null
 	# A cue is the beat's own light: glimmer.json's per-mode energy, not the zone's hymn_glimmer (0 where no zone
@@ -35,6 +38,9 @@ static func spawn(
 	if not field.apply_cue(effect, kwargs):
 		field.queue_free()
 		return null
+	var model := load(str(form.get("model", ""))) as PackedScene if not form.is_empty() else null
+	if model != null:
+		field.add_child(_body(model, form, field))  # after apply_cue: the field is in its cue's mode and colour
 	finished.connect(field.queue_free.unbind(1), CONNECT_ONE_SHOT)
 	return field
 
@@ -46,8 +52,8 @@ static func ender(field: GlimmerField) -> Callable:
 			field.queue_free()
 
 
-## The form's points as the field's spawn points, a mote each, never respawned. False for an unknown form.
-static func _shape(field: GlimmerField, form: StringName) -> bool:
+## The form's points as the field's spawn points, a mote each, never respawned. Its row ({} for an unknown form).
+static func _shape(field: GlimmerField, form: StringName) -> Dictionary:
 	if _forms.is_empty():
 		var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(FORMS_PATH))
 		_forms = (data as Dictionary).get("forms", {}) if typeof(data) == TYPE_DICTIONARY else {}
@@ -56,8 +62,30 @@ static func _shape(field: GlimmerField, form: StringName) -> bool:
 	for p: Array in row.get("points", []):
 		points.append(Vector3(float(p[0]), float(p[1]), float(p[2])))
 	if points.is_empty():
-		return false
+		return {}
 	field.spawn_points = points
 	field.fixed_count = points.size()
 	field.respawn = false
-	return true
+	return row
+
+
+## The form's body: the model, centred on the outline's centre, every mesh in steady bound light (unshaded,
+## emissive in the field's colour at its mode's energy, body_alpha opaque, casting no shadow).
+static func _body(model: PackedScene, row: Dictionary, field: GlimmerField) -> Node3D:
+	var body := model.instantiate() as Node3D
+	body.name = "Form"
+	var c: Array = row.get("centre", [0.0, 0.0, 0.0])
+	body.position = -Vector3(float(c[0]), float(c[1]), float(c[2]))
+	var colour := field.current_color()
+	var mat := StandardMaterial3D.new()
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	mat.albedo_color = Color(colour, float(row.get("body_alpha", 1.0)))
+	mat.emission_enabled = true
+	mat.emission = colour
+	mat.emission_energy_multiplier = float(field.config.get("modes", {}).get("machine", {}).get("energy", 1.0))
+	for mi: Node in body.find_children("*", "MeshInstance3D", true, false):
+		(mi as MeshInstance3D).material_override = mat
+		(mi as MeshInstance3D).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return body

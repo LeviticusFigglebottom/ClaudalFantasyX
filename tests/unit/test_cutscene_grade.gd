@@ -70,6 +70,12 @@ func test_a_form_stands_one_mote_on_each_outline_point() -> void:
 	assert_eq(field.spawn_points.size(), points.size())
 	assert_eq(field.fixed_count, points.size(), "one mote a point")
 	assert_false(field.respawn, "held: nothing sheds or respawns")
+	var body := field.get_node_or_null(^"Form") as Node3D
+	assert_true(body != null, "the creature's own body stands in the field")
+	var mesh := body.find_children("*", "MeshInstance3D", true, false)[0] as MeshInstance3D
+	var mat := mesh.material_override as StandardMaterial3D
+	assert_true(mat.emission.is_equal_approx(field.current_color()), "in the field's own bound colour")
+	assert_true(mat.albedo_color.a < 1.0, "translucent")
 	assert_true(
 		CutsceneVfx.spawn(row, "glimmer_bound", {"form": "nobody"}, host, "None", done) == null, "an unknown form"
 	)
