@@ -1478,3 +1478,24 @@ battle-presentation cdfe126a, act1-chapters 175d2b5e, m2-slice 7e0bba54, audio 1
   - act1-chapters' generated layouts, coilspire dressing.py and M3-ENV-744, with characters' `cast` edits
     (oruvel, ashcrown, coilspire).
 - env-art-b's ownership.md clash is gone.
+
+## The Lead's 23:10 list (big18)
+### 1. Act I inventory on lead/gate-big18 @ d00d3284 (full: import + runtime scan): **2 items, both low**
+- env-art-b (M3-HER-1141): `tamsule_bell/materials/tb_drop_proxy.tres` and `tamsule_bell/reefball_drop_proxy.glb`,
+  both named as placeholders (names only, nothing on screen). Those are the only rows left in all of Act I.
+- creatures' figure and env-art's banyan/windbreak files have cleared. **M3-HER-1140 (env-art) and M3-HER-1142
+  (creatures) → done** (qa review). M3-HER-1144 (characters) has a note: nothing left. Inventory @ f9e9540c8.
+
+### 3. TRIAL MERGE onto lead/gate-big18 (what big19 hits), 2026-10-29 ~23:50
+Heads: env-art d63eeea3, env-art-b d5660abb, creatures 93829b74, creatures-b 4d0150e3, characters fe626d0e,
+ui dae73fd8, battle-presentation cdfe126a, act1-chapters 175d2b5e, m2-slice 9d9e9653, audio 1cb9654d,
+hero-integration f9e9540c. The other claude/* branches are retired (ze8rrn, 423ixt, menus, gate-runner-a/b,
+first-playable).
+- **Only characters (fe626d0e) clashes, 13 files.** Resolver: the Lead, taking big18's side for all of them.
+  - Pell's 5 portraits (+ .import), `tools/portraits/portraits.json`, `tests/unit/test_hero_portraits.gd`: big18
+    already has ui's bake. ui owns `assets/ui/portraits/**` and `tools/portraits/**`; characters' 22:15 re-bake
+    duplicates it.
+  - `tests/integration/test_fp_prologue.gd`: big18's (creatures') version asserts that Pell's and Liss's vigil
+    capsules go, which is right now that both have bodies.
+- Mine (M3-HER-1140/1142 task files) cleared @ 5e285a886. env-art-b and ui merge clean (union only). Everyone else
+  merges clean.
