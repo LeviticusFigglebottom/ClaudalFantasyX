@@ -346,8 +346,42 @@ that test at this branch's zones.
   (Ashcrown done above; next the trader boat's bales and the Brine Shoals tent and mudflat, by slot swaps or new
   `b_*.py` pieces). env-art keeps the kit's own materials. Going ahead; overrule if env-art has it in flight.
 
+- **Merged `origin/claude/new-session-mj8c3c` @ ccf44ba4** (clean).
+- **big17's freed-cast lint (routed to me 18:40):** `EbbingMotes._process` cast a stored mourner ref before
+  `is_instance_valid`; it now checks the raw ref first (e884cb93). hero-integration's `tools/freed_cast_lint.py` run
+  on this tree: no env-art-b hit left (its `hero_field_party.gd` hit is fixed on hero-integration).
+- **Player-height walk, all eight Ch5–Ch9 zones (10-29):** spawns and triggers at eye height, both ways (~290 views),
+  plus an ID-colour pick to name what a view shows. Pemakar (night), Tamsule and the galleries read final.
+- **M3-ENV-1326, what the walk found in Ch6–Ch9** (the rest of M3-ENV-1316 that the zones can fix):
+  - **`ZoneKitDressing.kit_material_paths`** (additive; act1-chapters please note): a slot swap on every piece of the
+    zone's own kit, under a row's own `material_paths`. Shared writers in `tools/act1/ch05_09_zone_looks.py`.
+  - **Corrow, Ch8 and Ch9:** the Bastion's and the watch's doors were flat red planes, the copper and iron plastic,
+    the trader's bales and Ch9's shrouds flat `cw_sail`. Zone looks: weathered lacquer (the hollows dull to an aged
+    red), verdigris, sea iron, a tan sailcloth.
+  - **The trader's bales** (Ch7, Ch8): a new Corrow kit piece `trader_cargo` (`b_cargo.py`), lashed and bellied
+    canvas bales around the box bales. Corrow kit rebuilt `--all` in Blender 5.0.1: older pieces byte-identical.
+  - **Coilspire:** pale flat mint pipes, housings and roof (`cs_copper`'s patina near full), flat worn copper and iron.
+  - **The Level-stone shrine** (Ch6, and borrowed in Ch8): a white box. It takes Haluna's shrine stone.
+  - **Daylight fire** (my M3-RND-1315 shader): opaque tongues read as cut card on the noon flats. Now translucent,
+    with soft silhouettes, licks torn by the rising noise, and a hot heart.
+  - **Arenas:** the seawall stairhead arenas and `coilspire_headland_path` take their zone's swaps (`KitSlotSwaps`).
+- **Left for env-art (on M3-ENV-1316):** the kits' own flat slots, the headland's far facets, and Tamsule's
+  `market_boat_a` sun umbrella (a flat 16-gon with no ribs: from the decks it reads as a pale-blue plate on the water).
+- **Not mine, seen on the walk:** Inquisitor Moll is still a capsule in the camp fight (creatures-b, routed 18:43).
+- **Checks run (M3-ENV-1326):** Godot `--filter=` zone_kit 12/0, ch06 5/0, ch07 18/0, ch08 23/0, ch09 12/0, flame 2/0,
+  brine 5/0, battle_arena 18/0, ebbing 5/0; tools test_corrow_kit, test_coilspire_kit, test_brine_shoals_kit,
+  test_b_arenas, test_arenas; gdlint/gdformat; validate_data; taskboard --check; Corrow kit `--all` in Blender.
+  **Skipped:** coverage (no battle/progression code); the other kits' Blender jobs (untouched).
+- **MERGE-READY @ 61c918b0** (M3-ENV-1325, M3-ENV-1326, the freed-cast fix).
+
+### PC-QUEUE
+- The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
+  on the PC presets (two large and three small fires in `ch06/brine_shoals` and `salvage_camp_burning`).
+- Carried: M3-RND-26's drop cost, M3-RND-21's four columns under 0.3 ms at High 1440p.
+
 ### Render requests
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
+SELF-RENDERED @ 61c918b0: ch06_brine_camp, ch06_brine_road, ch07_tamsule_mouth, _market, _gantry, ch08_corrow_arrival, _stair, _flood, _lake, _storm, ch08_coilspire_hall, _gate, _storm, ch09_corrow_strand, _road, _landing, _rocks, battle_arena_camp, _shoals, _wall_head, battle_ch08_stair_hold, battle_boss_intro_reach, plus ~290 walk views (scratch). Viewed: lashed bales on the trader, translucent fire with torn licks, weathered red doors, verdigris and sea iron, a stone shrine; no regressions.
 SELF-RENDERED @ a209511a: ch05_ashcrown_causeway, _forecourt, _tiers, _crown, _court, battle_arena_ashcrown_forecourt_day, battle_arena_ashcrown_anvil_court, battle_boss_intro_matron, plus 30 Ashcrown walk views (scratch). Viewed: the tiers' coursing and buttresses read in shade, the veins are streaked verdigris, the bowls aged copper; sunlit paving not blown out. None of these zone shots has a baseline yet.
 SELF-RENDERED @ 26a674f8: ch08_corrow_arrival, _stair, _flood, _lake, _storm, ch09_corrow_strand, _road, _landing, _rocks, plus 44 scratch walk views and three bastion views. Viewed: the yard is paved and dressed, Ch9's rocks and rubble read as broken laterite, and nothing regressed.
 SELF-RENDERED @ 50db241b: ebbing_n11, ebbing_n08 (new), plus a strand view (scratch). Viewed: cyan held motes over the harbour, mirrored in the still water and sinking seaward. N11's river overhead reads above and below the waterline, and nothing is gold or rising.
