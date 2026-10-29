@@ -374,6 +374,10 @@ that test at this branch's zones.
   **Skipped:** coverage (no battle/progression code); the other kits' Blender jobs (untouched).
 - **MERGE-READY @ 61c918b0** (M3-ENV-1325, M3-ENV-1326, the freed-cast fix).
 
+- **`coilspire_tier_landing`** now wears the zone's slot looks too: `b_headland_arena.py` writes env-art's TIER_HALL
+  table unchanged and adds KitSlotSwaps (`test_b_arenas` WRAPPED updated). Checks: test_b_arenas + test_arenas,
+  Godot battle_arena 18/0. **MERGE-READY @ 2b882105.**
+
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
   on the PC presets (two large and three small fires in `ch06/brine_shoals` and `salvage_camp_burning`).
@@ -381,6 +385,7 @@ that test at this branch's zones.
 
 ### Render requests
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
+SELF-RENDERED @ 2b882105: battle_arena_coilspire_tier_landing, _coilspire_headland_path, _ash_terrace_lanternfall. Viewed: the tier landing's pipes are verdigris over copper; the other two unchanged.
 SELF-RENDERED @ 61c918b0: ch06_brine_camp, ch06_brine_road, ch07_tamsule_mouth, _market, _gantry, ch08_corrow_arrival, _stair, _flood, _lake, _storm, ch08_coilspire_hall, _gate, _storm, ch09_corrow_strand, _road, _landing, _rocks, battle_arena_camp, _shoals, _wall_head, battle_ch08_stair_hold, battle_boss_intro_reach, plus ~290 walk views (scratch). Viewed: lashed bales on the trader, translucent fire with torn licks, weathered red doors, verdigris and sea iron, a stone shrine; no regressions.
 SELF-RENDERED @ a209511a: ch05_ashcrown_causeway, _forecourt, _tiers, _crown, _court, battle_arena_ashcrown_forecourt_day, battle_arena_ashcrown_anvil_court, battle_boss_intro_matron, plus 30 Ashcrown walk views (scratch). Viewed: the tiers' coursing and buttresses read in shade, the veins are streaked verdigris, the bowls aged copper; sunlit paving not blown out. None of these zone shots has a baseline yet.
 SELF-RENDERED @ 26a674f8: ch08_corrow_arrival, _stair, _flood, _lake, _storm, ch09_corrow_strand, _road, _landing, _rocks, plus 44 scratch walk views and three bastion views. Viewed: the yard is paved and dressed, Ch9's rocks and rubble read as broken laterite, and nothing regressed.
