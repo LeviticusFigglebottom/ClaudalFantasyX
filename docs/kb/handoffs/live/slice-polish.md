@@ -793,6 +793,22 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   check samples a real shallows point, (2.5, 8) on the terrain, which reads water. Rhen's mark stays on the wet sand
   where the fast-track put it, and the beach staging is unchanged. footsteps_slice 5/0. MERGE-READY @ the branch head.
 
+## NEW SESSION (2026-10-29, the new Lead session_01Bg3iP7; integration branch `claude/new-session-mj8c3c`)
+- **Merged** `origin/claude/new-session-mj8c3c` @ b60a8f61, then @ 5a9978bc. No conflicts (Lead docs only).
+  - **Gotcha again:** this clone was shallow, so `git merge-base --is-ancestor` said "no" for commits this branch
+    has. Run `git fetch --deepen=600 origin <branches>` before trusting any ancestry check.
+- **The human's four 10-28 FAST-TRACKs: where each fix is.** None is on the integration branch yet: it is big13 plus
+  Lead docs. All four are on big16 (`lead/gate-big16` @ ff82858c, never gated) and on this branch (by way of
+  ft-beach and big14). big17 brings them in.
+
+  | Report | Fix commit | On integration | On big16 | On claude/m2-slice |
+  |---|---|---|---|---|
+  | The grey Prologue | d2ae3cb2 (env-art, M3-ENV-752) | no | yes | yes |
+  | The beach staging | 93d0741e (Lead's ft-beach) + 9f31066b | no | yes | yes |
+  | The stacked party | b66981e9 (HeroFieldParty) | no | yes | yes |
+  | The party start, camera far back | integration-qa's M3-HER-1149 on claude/hero-integration | no | no | no |
+  | The run | 0a565c4f (characters' run base) | no | yes | yes |
+
 ### Render requests
 SUPERSEDED RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
 - **Known red until the render lands:** the six new `slice_*` shots have no baseline yet, so the tools test
