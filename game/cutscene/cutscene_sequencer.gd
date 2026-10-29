@@ -48,6 +48,7 @@ const PROCESS_AFTER_DIRECTOR := 10
 const TAG_TIMED := "timed"
 const UNSUPPORTED_KWARGS := {
 	&"anim": ["loop"],
+	&"vfx": ["follow", "anchors"],  # M3-ARC-1326 hands them to a stage VFX host; none reads them yet
 }
 
 ## Tests and captures: no waits, no typewriter, lines and options answer themselves.
