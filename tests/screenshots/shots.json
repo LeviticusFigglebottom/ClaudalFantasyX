@@ -4842,6 +4842,36 @@
       "settle_frames": 30
     },
     {
+      "id": "stillguard_a_clip_walk_torch",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_a_clip_walk_torch.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_c_clip_hold_arm",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_c_clip_hold_arm.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_a_clip_kneel_palms_flat",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_a_clip_kneel_palms_flat.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "ch05_pemakar_harbour",
       "scene": "res://game/levels/_tests/act1_zones/ch05_pemakar_shots.tscn",
       "camera": "Cameras/Harbour",

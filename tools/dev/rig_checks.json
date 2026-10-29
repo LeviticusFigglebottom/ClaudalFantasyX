@@ -458,17 +458,17 @@
         ],
         "max_exposed": 4
       },
-      "_allowances": "M3-CHR-508 (probe at the default stride, shield arm SG_SHIELD_ARM). The prop guards (spear grip turn and offset, through_garment) and both props' prop_in_body (Spear, Shield) pass with no allowance; the Helm passes at the default. Costume and Sleeves: Moll's (M3-CHR-507) -- the jack's armhole edge, dropped under the shoulder (M1-CHR-14), takes the lowered upper arm into it at the side, and the sleeve shells sit inside the torso at the armpit crease as the arm comes forward (walk's swing, level_spear's reach). Body (skin_through_garment): at rest (the A pose) the inner face of the upper arm lies against that dropped armhole edge (0.1-0.5 mm on these builds, 6 mm on Moll's broader one, where the sleeve is the nearer cloth), so the probe tracks the jack's edge as the cloth over that skin; as the arm hangs it goes in under the armhole edge, inside the jack, and the depth is how far the arm passes under it, not skin showing through (the sleeve stays over it; the renders show none). max_exposed: in shield_up the raised left arm opens the front of the armpit's underarm cut (one to three edge vertices, behind the raised shield) and in the walk one at the back of the left shoulder's cap edge (under 5 mm), as Moll's finisher.",
+      "_allowances": "M3-CHR-508 (probe at the default stride, shield arm SG_SHIELD_ARM). The prop guards (spear grip turn and offset, through_garment) and both props' prop_in_body (Spear, Shield) pass with no allowance; the Helm passes at the default. Costume and Sleeves: Moll's (M3-CHR-507) -- the jack's armhole edge, dropped under the shoulder (M1-CHR-14), takes the lowered upper arm into it at the side, and the sleeve shells sit inside the torso at the armpit crease as the arm comes forward (walk's swing, level_spear's reach). Body (skin_through_garment): at rest (the A pose) the inner face of the upper arm lies against that dropped armhole edge (0.1-0.5 mm on these builds, 6 mm on Moll's broader one, where the sleeve is the nearer cloth), so the probe tracks the jack's edge as the cloth over that skin; as the arm hangs it goes in under the armhole edge, inside the jack, and the depth is how far the arm passes under it, not skin showing through (the sleeve stays over it; the renders show none). max_exposed: in shield_up the raised left arm opens the front of the armpit's underarm cut (one to three edge vertices, behind the raised shield) and in the walk one at the back of the left shoulder's cap edge (under 5 mm), as Moll's finisher. M3-CHR-590 (the dialogue clips): in kneel_palms_flat (Toma's two-knee kneel, as Ivo's) the trouser's knee fold takes the shin into the thigh (Costume, up to 16.7 mm) and the calf presses up into the back of that fold (Body: 36-57 vertices, hidden behind the thigh; the depth stays under the squad's arm-under-armhole limit), and the sleeve shells sit in the armpit crease as both arms come forward to the floor (Sleeves); walk_torch's raised shield arm puts the sleeve into the armpit crease as level_spear's reach does, and on the two broader builds (b, e) opens the front of the underarm cut by up to six edge vertices behind the raised arm, as shield_up does.",
       "penetration": {
         "limits_mm": {
-          "Costume": 13.0,
+          "Costume": 17.0,
           "Sleeves": 7.0,
           "Body": 62.0
         },
         "limits_count": {
           "Costume": 6,
           "Sleeves": 4,
-          "Body": 8
+          "Body": 47
         }
       }
     },
@@ -495,9 +495,9 @@
             "Sleeves"
           ]
         ],
-        "max_exposed": 4
+        "max_exposed": 6
       },
-      "_allowances": "M3-CHR-508 (probe at the default stride, shield arm SG_SHIELD_ARM). The prop guards (spear grip turn and offset, through_garment) and both props' prop_in_body (Spear, Shield) pass with no allowance; the Helm passes at the default. Costume and Sleeves: Moll's (M3-CHR-507) -- the jack's armhole edge, dropped under the shoulder (M1-CHR-14), takes the lowered upper arm into it at the side, and the sleeve shells sit inside the torso at the armpit crease as the arm comes forward (walk's swing, level_spear's reach). Body (skin_through_garment): at rest (the A pose) the inner face of the upper arm lies against that dropped armhole edge (0.1-0.5 mm on these builds, 6 mm on Moll's broader one, where the sleeve is the nearer cloth), so the probe tracks the jack's edge as the cloth over that skin; as the arm hangs it goes in under the armhole edge, inside the jack, and the depth is how far the arm passes under it, not skin showing through (the sleeve stays over it; the renders show none). max_exposed: in shield_up the raised left arm opens the front of the armpit's underarm cut (one to three edge vertices, behind the raised shield) and in the walk one at the back of the left shoulder's cap edge (under 5 mm), as Moll's finisher.",
+      "_allowances": "M3-CHR-508 (probe at the default stride, shield arm SG_SHIELD_ARM). The prop guards (spear grip turn and offset, through_garment) and both props' prop_in_body (Spear, Shield) pass with no allowance; the Helm passes at the default. Costume and Sleeves: Moll's (M3-CHR-507) -- the jack's armhole edge, dropped under the shoulder (M1-CHR-14), takes the lowered upper arm into it at the side, and the sleeve shells sit inside the torso at the armpit crease as the arm comes forward (walk's swing, level_spear's reach). Body (skin_through_garment): at rest (the A pose) the inner face of the upper arm lies against that dropped armhole edge (0.1-0.5 mm on these builds, 6 mm on Moll's broader one, where the sleeve is the nearer cloth), so the probe tracks the jack's edge as the cloth over that skin; as the arm hangs it goes in under the armhole edge, inside the jack, and the depth is how far the arm passes under it, not skin showing through (the sleeve stays over it; the renders show none). max_exposed: in shield_up the raised left arm opens the front of the armpit's underarm cut (one to three edge vertices, behind the raised shield) and in the walk one at the back of the left shoulder's cap edge (under 5 mm), as Moll's finisher. M3-CHR-590 (the dialogue clips): in kneel_palms_flat (Toma's two-knee kneel, as Ivo's) the trouser's knee fold takes the shin into the thigh (Costume, up to 16.7 mm) and the calf presses up into the back of that fold (Body: 36-57 vertices, hidden behind the thigh; the depth stays under the squad's arm-under-armhole limit), and the sleeve shells sit in the armpit crease as both arms come forward to the floor (Sleeves); walk_torch's raised shield arm puts the sleeve into the armpit crease as level_spear's reach does, and on the two broader builds (b, e) opens the front of the underarm cut by up to six edge vertices behind the raised arm, as shield_up does.",
       "penetration": {
         "limits_mm": {
           "Costume": 15.0,
@@ -506,8 +506,8 @@
         },
         "limits_count": {
           "Costume": 4,
-          "Sleeves": 4,
-          "Body": 9
+          "Sleeves": 5,
+          "Body": 42
         }
       }
     },
@@ -536,17 +536,17 @@
         ],
         "max_exposed": 4
       },
-      "_allowances": "M3-CHR-508 (probe at the default stride, shield arm SG_SHIELD_ARM). The prop guards (spear grip turn and offset, through_garment) and both props' prop_in_body (Spear, Shield) pass with no allowance; the Helm passes at the default. Costume and Sleeves: Moll's (M3-CHR-507) -- the jack's armhole edge, dropped under the shoulder (M1-CHR-14), takes the lowered upper arm into it at the side, and the sleeve shells sit inside the torso at the armpit crease as the arm comes forward (walk's swing, level_spear's reach). Body (skin_through_garment): at rest (the A pose) the inner face of the upper arm lies against that dropped armhole edge (0.1-0.5 mm on these builds, 6 mm on Moll's broader one, where the sleeve is the nearer cloth), so the probe tracks the jack's edge as the cloth over that skin; as the arm hangs it goes in under the armhole edge, inside the jack, and the depth is how far the arm passes under it, not skin showing through (the sleeve stays over it; the renders show none). max_exposed: in shield_up the raised left arm opens the front of the armpit's underarm cut (one to three edge vertices, behind the raised shield) and in the walk one at the back of the left shoulder's cap edge (under 5 mm), as Moll's finisher.",
+      "_allowances": "M3-CHR-508 (probe at the default stride, shield arm SG_SHIELD_ARM). The prop guards (spear grip turn and offset, through_garment) and both props' prop_in_body (Spear, Shield) pass with no allowance; the Helm passes at the default. Costume and Sleeves: Moll's (M3-CHR-507) -- the jack's armhole edge, dropped under the shoulder (M1-CHR-14), takes the lowered upper arm into it at the side, and the sleeve shells sit inside the torso at the armpit crease as the arm comes forward (walk's swing, level_spear's reach). Body (skin_through_garment): at rest (the A pose) the inner face of the upper arm lies against that dropped armhole edge (0.1-0.5 mm on these builds, 6 mm on Moll's broader one, where the sleeve is the nearer cloth), so the probe tracks the jack's edge as the cloth over that skin; as the arm hangs it goes in under the armhole edge, inside the jack, and the depth is how far the arm passes under it, not skin showing through (the sleeve stays over it; the renders show none). max_exposed: in shield_up the raised left arm opens the front of the armpit's underarm cut (one to three edge vertices, behind the raised shield) and in the walk one at the back of the left shoulder's cap edge (under 5 mm), as Moll's finisher. M3-CHR-590 (the dialogue clips): in kneel_palms_flat (Toma's two-knee kneel, as Ivo's) the trouser's knee fold takes the shin into the thigh (Costume, up to 16.7 mm) and the calf presses up into the back of that fold (Body: 36-57 vertices, hidden behind the thigh; the depth stays under the squad's arm-under-armhole limit), and the sleeve shells sit in the armpit crease as both arms come forward to the floor (Sleeves); walk_torch's raised shield arm puts the sleeve into the armpit crease as level_spear's reach does, and on the two broader builds (b, e) opens the front of the underarm cut by up to six edge vertices behind the raised arm, as shield_up does.",
       "penetration": {
         "limits_mm": {
-          "Costume": 10.0,
-          "Sleeves": 5.0,
+          "Costume": 15.0,
+          "Sleeves": 5.5,
           "Body": 59.0
         },
         "limits_count": {
           "Costume": 6,
-          "Sleeves": 4,
-          "Body": 9
+          "Sleeves": 6,
+          "Body": 36
         }
       }
     },
@@ -575,7 +575,7 @@
         ],
         "max_exposed": 4
       },
-      "_allowances": "M3-CHR-508 (probe at the default stride, shield arm SG_SHIELD_ARM). The prop guards (spear grip turn and offset, through_garment) and both props' prop_in_body (Spear, Shield) pass with no allowance; the Helm passes at the default. Costume and Sleeves: Moll's (M3-CHR-507) -- the jack's armhole edge, dropped under the shoulder (M1-CHR-14), takes the lowered upper arm into it at the side, and the sleeve shells sit inside the torso at the armpit crease as the arm comes forward (walk's swing, level_spear's reach). Body (skin_through_garment): at rest (the A pose) the inner face of the upper arm lies against that dropped armhole edge (0.1-0.5 mm on these builds, 6 mm on Moll's broader one, where the sleeve is the nearer cloth), so the probe tracks the jack's edge as the cloth over that skin; as the arm hangs it goes in under the armhole edge, inside the jack, and the depth is how far the arm passes under it, not skin showing through (the sleeve stays over it; the renders show none). max_exposed: in shield_up the raised left arm opens the front of the armpit's underarm cut (one to three edge vertices, behind the raised shield) and in the walk one at the back of the left shoulder's cap edge (under 5 mm), as Moll's finisher.",
+      "_allowances": "M3-CHR-508 (probe at the default stride, shield arm SG_SHIELD_ARM). The prop guards (spear grip turn and offset, through_garment) and both props' prop_in_body (Spear, Shield) pass with no allowance; the Helm passes at the default. Costume and Sleeves: Moll's (M3-CHR-507) -- the jack's armhole edge, dropped under the shoulder (M1-CHR-14), takes the lowered upper arm into it at the side, and the sleeve shells sit inside the torso at the armpit crease as the arm comes forward (walk's swing, level_spear's reach). Body (skin_through_garment): at rest (the A pose) the inner face of the upper arm lies against that dropped armhole edge (0.1-0.5 mm on these builds, 6 mm on Moll's broader one, where the sleeve is the nearer cloth), so the probe tracks the jack's edge as the cloth over that skin; as the arm hangs it goes in under the armhole edge, inside the jack, and the depth is how far the arm passes under it, not skin showing through (the sleeve stays over it; the renders show none). max_exposed: in shield_up the raised left arm opens the front of the armpit's underarm cut (one to three edge vertices, behind the raised shield) and in the walk one at the back of the left shoulder's cap edge (under 5 mm), as Moll's finisher. M3-CHR-590 (the dialogue clips): in kneel_palms_flat (Toma's two-knee kneel, as Ivo's) the trouser's knee fold takes the shin into the thigh (Costume, up to 16.7 mm) and the calf presses up into the back of that fold (Body: 36-57 vertices, hidden behind the thigh; the depth stays under the squad's arm-under-armhole limit), and the sleeve shells sit in the armpit crease as both arms come forward to the floor (Sleeves); walk_torch's raised shield arm puts the sleeve into the armpit crease as level_spear's reach does, and on the two broader builds (b, e) opens the front of the underarm cut by up to six edge vertices behind the raised arm, as shield_up does.",
       "penetration": {
         "limits_mm": {
           "Costume": 12.0,
@@ -584,8 +584,8 @@
         },
         "limits_count": {
           "Costume": 6,
-          "Sleeves": 4,
-          "Body": 10
+          "Sleeves": 6,
+          "Body": 57
         }
       }
     },
@@ -612,19 +612,19 @@
             "Sleeves"
           ]
         ],
-        "max_exposed": 4
+        "max_exposed": 6
       },
-      "_allowances": "M3-CHR-508 (probe at the default stride, shield arm SG_SHIELD_ARM). The prop guards (spear grip turn and offset, through_garment) and both props' prop_in_body (Spear, Shield) pass with no allowance; the Helm passes at the default. Costume and Sleeves: Moll's (M3-CHR-507) -- the jack's armhole edge, dropped under the shoulder (M1-CHR-14), takes the lowered upper arm into it at the side, and the sleeve shells sit inside the torso at the armpit crease as the arm comes forward (walk's swing, level_spear's reach). Body (skin_through_garment): at rest (the A pose) the inner face of the upper arm lies against that dropped armhole edge (0.1-0.5 mm on these builds, 6 mm on Moll's broader one, where the sleeve is the nearer cloth), so the probe tracks the jack's edge as the cloth over that skin; as the arm hangs it goes in under the armhole edge, inside the jack, and the depth is how far the arm passes under it, not skin showing through (the sleeve stays over it; the renders show none). max_exposed: in shield_up the raised left arm opens the front of the armpit's underarm cut (one to three edge vertices, behind the raised shield) and in the walk one at the back of the left shoulder's cap edge (under 5 mm), as Moll's finisher.",
+      "_allowances": "M3-CHR-508 (probe at the default stride, shield arm SG_SHIELD_ARM). The prop guards (spear grip turn and offset, through_garment) and both props' prop_in_body (Spear, Shield) pass with no allowance; the Helm passes at the default. Costume and Sleeves: Moll's (M3-CHR-507) -- the jack's armhole edge, dropped under the shoulder (M1-CHR-14), takes the lowered upper arm into it at the side, and the sleeve shells sit inside the torso at the armpit crease as the arm comes forward (walk's swing, level_spear's reach). Body (skin_through_garment): at rest (the A pose) the inner face of the upper arm lies against that dropped armhole edge (0.1-0.5 mm on these builds, 6 mm on Moll's broader one, where the sleeve is the nearer cloth), so the probe tracks the jack's edge as the cloth over that skin; as the arm hangs it goes in under the armhole edge, inside the jack, and the depth is how far the arm passes under it, not skin showing through (the sleeve stays over it; the renders show none). max_exposed: in shield_up the raised left arm opens the front of the armpit's underarm cut (one to three edge vertices, behind the raised shield) and in the walk one at the back of the left shoulder's cap edge (under 5 mm), as Moll's finisher. M3-CHR-590 (the dialogue clips): in kneel_palms_flat (Toma's two-knee kneel, as Ivo's) the trouser's knee fold takes the shin into the thigh (Costume, up to 16.7 mm) and the calf presses up into the back of that fold (Body: 36-57 vertices, hidden behind the thigh; the depth stays under the squad's arm-under-armhole limit), and the sleeve shells sit in the armpit crease as both arms come forward to the floor (Sleeves); walk_torch's raised shield arm puts the sleeve into the armpit crease as level_spear's reach does, and on the two broader builds (b, e) opens the front of the underarm cut by up to six edge vertices behind the raised arm, as shield_up does.",
       "penetration": {
         "limits_mm": {
-          "Costume": 14.0,
-          "Sleeves": 6.0,
+          "Costume": 15.5,
+          "Sleeves": 6.5,
           "Body": 63.0
         },
         "limits_count": {
           "Costume": 4,
           "Sleeves": 4,
-          "Body": 7
+          "Body": 50
         }
       }
     },
@@ -653,17 +653,17 @@
         ],
         "max_exposed": 4
       },
-      "_allowances": "M3-CHR-508 (probe at the default stride, shield arm SG_SHIELD_ARM). The prop guards (spear grip turn and offset, through_garment) and both props' prop_in_body (Spear, Shield) pass with no allowance; the Helm passes at the default. Costume and Sleeves: Moll's (M3-CHR-507) -- the jack's armhole edge, dropped under the shoulder (M1-CHR-14), takes the lowered upper arm into it at the side, and the sleeve shells sit inside the torso at the armpit crease as the arm comes forward (walk's swing, level_spear's reach). Body (skin_through_garment): at rest (the A pose) the inner face of the upper arm lies against that dropped armhole edge (0.1-0.5 mm on these builds, 6 mm on Moll's broader one, where the sleeve is the nearer cloth), so the probe tracks the jack's edge as the cloth over that skin; as the arm hangs it goes in under the armhole edge, inside the jack, and the depth is how far the arm passes under it, not skin showing through (the sleeve stays over it; the renders show none). max_exposed: in shield_up the raised left arm opens the front of the armpit's underarm cut (one to three edge vertices, behind the raised shield) and in the walk one at the back of the left shoulder's cap edge (under 5 mm), as Moll's finisher.",
+      "_allowances": "M3-CHR-508 (probe at the default stride, shield arm SG_SHIELD_ARM). The prop guards (spear grip turn and offset, through_garment) and both props' prop_in_body (Spear, Shield) pass with no allowance; the Helm passes at the default. Costume and Sleeves: Moll's (M3-CHR-507) -- the jack's armhole edge, dropped under the shoulder (M1-CHR-14), takes the lowered upper arm into it at the side, and the sleeve shells sit inside the torso at the armpit crease as the arm comes forward (walk's swing, level_spear's reach). Body (skin_through_garment): at rest (the A pose) the inner face of the upper arm lies against that dropped armhole edge (0.1-0.5 mm on these builds, 6 mm on Moll's broader one, where the sleeve is the nearer cloth), so the probe tracks the jack's edge as the cloth over that skin; as the arm hangs it goes in under the armhole edge, inside the jack, and the depth is how far the arm passes under it, not skin showing through (the sleeve stays over it; the renders show none). max_exposed: in shield_up the raised left arm opens the front of the armpit's underarm cut (one to three edge vertices, behind the raised shield) and in the walk one at the back of the left shoulder's cap edge (under 5 mm), as Moll's finisher. M3-CHR-590 (the dialogue clips): in kneel_palms_flat (Toma's two-knee kneel, as Ivo's) the trouser's knee fold takes the shin into the thigh (Costume, up to 16.7 mm) and the calf presses up into the back of that fold (Body: 36-57 vertices, hidden behind the thigh; the depth stays under the squad's arm-under-armhole limit), and the sleeve shells sit in the armpit crease as both arms come forward to the floor (Sleeves); walk_torch's raised shield arm puts the sleeve into the armpit crease as level_spear's reach does, and on the two broader builds (b, e) opens the front of the underarm cut by up to six edge vertices behind the raised arm, as shield_up does.",
       "penetration": {
         "limits_mm": {
-          "Costume": 10.0,
-          "Sleeves": 6.0,
+          "Costume": 16.5,
+          "Sleeves": 6.5,
           "Body": 66.0
         },
         "limits_count": {
-          "Costume": 5,
-          "Sleeves": 4,
-          "Body": 10
+          "Costume": 6,
+          "Sleeves": 6,
+          "Body": 43
         }
       }
     },
