@@ -57,12 +57,16 @@ func setup(metrics: Dictionary, pid: StringName, title: String, page_rows: Array
 	_header.theme_type_variation = &"HeaderLabel"
 	_header.text = title
 	_header.visible = title != ""
+	# Indented on the left like the rows; on the right only the row inset, so a long title keeps the page's width.
 	_header.position = Vector2(HudLayout.num(_m, "text_indent"), 0.0)
-	_header.size = Vector2(size.x - HudLayout.num(_m, "text_indent") * 2.0, HudLayout.num(_m, "header_height"))
+	_header.size = Vector2(
+		size.x - HudLayout.num(_m, "text_indent") - HudLayout.num(_m, "row_inset"), HudLayout.num(_m, "header_height")
+	)
 	_header.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
 	_header.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS  # never past the page (M2-UI-28)
 	_header.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_content.add_child(_header)
+	_fit_header()
 	if title != "":
 		_rule = OrnamentRule.new()
 		var indent := HudLayout.num(_m, "text_indent")
@@ -103,6 +107,18 @@ func replace_rows(page_rows: Array[Dictionary]) -> void:
 ## Changes the header text. A page set up untitled has no header row to show it in.
 func set_header(title: String) -> void:
 	_header.text = title
+	_fit_header()
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_THEME_CHANGED and _header != null:
+		_fit_header()
+
+
+## A header too long for its row shrinks its font a little (HudLayout.fit_label) before it ellipsizes: the Lead's
+## final-quality pass ("Customize Coral-Bitten Hooks" lost its last letter at 100 %).
+func _fit_header() -> void:
+	HudLayout.fit_label(_header)
 
 
 ## The header Label (pages that need a long title to ellipsize in its rect, M2-MNU-05).

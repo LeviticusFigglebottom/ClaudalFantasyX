@@ -40,8 +40,8 @@
       "breath_sec": 2.4,
       "breath_min": 0.75
     },
-    "desc": {"height": 120, "gap": 15},
-    "status": {"height": 87, "gap": 12}
+    "desc": {"height": 165, "gap": 15},
+    "status": {"height": 120, "gap": 12}
   },
   "inn_menu": {
     "doc": "The inn menu (M2-UI-06): Rest (its price on the right) and Leave on the left; the line about the highlighted row in the right column, and under it the cost of a night or why the inn refuses. Same rules as shop_menu.",
@@ -70,12 +70,12 @@
     "status": {"height": 87, "gap": 12}
   },
   "reefball_outfitter": {
-    "doc": "The Reefball outfitter (ADR 0040, M3-C07-05): the gear rows (price, Owned or Worn on the right) and Leave on the left, wider than the inn's for the longer names; the line about the highlighted piece (its words, then what it adds) in the right column, and under it what choosing it does or why not. Same rules as shop_menu.",
+    "doc": "The Reefball outfitter (ADR 0040, M3-C07-05): the gear rows (price, Owned or Worn on the right) and Leave on the left, wider than the inn's for the longer names (1400 px: every name and the swap line fit at 130 % text and in the pseudo-locale, the Lead's final-quality pass 2026-10-29); the line about the highlighted piece (its words, then what it adds) in the right column, and under it what choosing it does or why not. Same rules as shop_menu.",
     "canvas_layer": 60,
-    "panel": {"rect": [459, 261, 1002, 558], "pad": 27, "title_height": 56, "help_height": 40},
-    "purse": {"rect": [1011, 288, 423, 56]},
+    "panel": {"rect": [260, 220, 1400, 640], "pad": 27, "title_height": 56, "help_height": 40},
+    "purse": {"rect": [1210, 247, 423, 56]},
     "root": {
-      "rect": [486, 360, 456, 240],
+      "rect": [287, 319, 600, 240],
       "header_height": 0,
       "row_pitch": 48,
       "max_rows": 5,
@@ -91,8 +91,8 @@
       "breath_sec": 2.4,
       "breath_min": 0.75
     },
-    "detail": {"rect": [969, 360, 465, 0]},
+    "detail": {"rect": [914, 319, 719, 0]},
     "desc": {"height": 279, "gap": 0},
-    "status": {"height": 87, "gap": 12}
+    "status": {"height": 180, "gap": 12}
   }
 }

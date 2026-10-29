@@ -81,6 +81,22 @@ func test_a_count_never_writes_into_freed_rows() -> void:
 	_done()
 
 
+## act1_gpu_qa row 33 (the Lead, 10-29): the panel itself freed mid count-up (the result left at once) takes its count
+## with it: the tween is bound to the panel, so nothing steps into the freed rows afterwards.
+func test_freeing_the_panel_mid_count_ends_the_count() -> void:
+	panel.show_result(&"victory", "Victory", "", ROWS, CHOICES)
+	var tw := panel.get(&"_open_tween") as Tween
+	tw.custom_step(0.05)
+	assert_true(panel.is_counting(), "still counting")
+	panel.get_parent().remove_child(panel)
+	panel.free()
+	assert_false(tw.is_valid(), "the count's tween went with the panel")
+	panel = BattleResultPanel.new()  # for _done()
+	var tree := Engine.get_main_loop() as SceneTree
+	(tree.current_scene if tree.current_scene != null else tree.root).add_child(panel)
+	_done()
+
+
 func test_reduced_motion_shows_the_final_numbers_at_once() -> void:
 	UiSettings.shared().set_value(UiSettings.REDUCED_MOTION, true)
 	panel.show_result(&"victory", "Victory", "", ROWS, CHOICES)

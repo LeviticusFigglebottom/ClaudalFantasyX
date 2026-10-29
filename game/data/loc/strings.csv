@@ -674,7 +674,7 @@ SHOP_ERR_CLOSED,The shutters are down. Come back later.
 SHOP_ERR_NOT_IN_STOCK,{name} is not for sale here.
 SHOP_ERR_BAD_COUNT,Choose how many first.
 SHOP_ERR_NO_ROOM_FMT,Your bag has room for only {room} more {name}.
-SHOP_ERR_NO_FUNDS_FMT,"Not enough lume: this costs {price}, and the purse holds {purse}."
+SHOP_ERR_NO_FUNDS_FMT,"Not enough lume: {price} needed, {purse} in hand."
 SHOP_ERR_NOT_SELLABLE_FMT,No one here will buy {name}.
 SHOP_ERR_NOT_ENOUGH_FMT,You hold only {held} {name}.
 SHOP_ERR_UNKNOWN_PIECE,That piece is no longer in your pack.
