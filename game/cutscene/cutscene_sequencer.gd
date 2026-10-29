@@ -318,7 +318,7 @@ func _begin(scene_id: StringName, stage: CutsceneStage) -> void:
 		_player_input_was = _player.accepts_input
 		_player.accepts_input = false
 		_player.velocity = Vector3.ZERO
-	if _starts_black(scene_id):
+	if CutsceneCard.starts_black(scene_id):
 		overlay.set_fade(1.0)
 	runner.event_triggered.connect(_on_event)
 	runner.node_started.connect(func(n: StringName) -> void: _grade(runner.headers(n).get("grade", "")))  # M2-FP-120
@@ -366,6 +366,13 @@ func _restore_player() -> void:
 
 
 func _line(step: DialogueStep) -> void:
+	if CutsceneCard.TAG in step.tags:  # M2-FP-121: a time card on black, not a line in the box
+		overlay.set_fade(1.0)
+		var card := CutsceneCard.open(self, step)
+		if not _fast():
+			await _await_on(&"wait", card.finished, _on_awaited_plain)
+		CutsceneCard.close(card)
+		return
 	overlay.box.visible = true
 	overlay.box.show_line(step)
 	line_shown.emit(step)
@@ -972,23 +979,6 @@ func _place(actor: Node3D, pos: Vector3) -> void:
 
 
 ## True when the scene's first @fade (in its start node) is a fade in: the screen starts black.
-func _starts_black(scene_id: StringName) -> bool:
-	var f := FileAccess.open(DialogueRunner.scene_path(scene_id), FileAccess.READ)
-	if f == null:
-		return false
-	var data: Variant = JSON.parse_string(f.get_as_text())
-	if not data is Dictionary:
-		return false
-	var nodes: Dictionary = (data as Dictionary).get("nodes", {})
-	var start: Dictionary = nodes.get(str((data as Dictionary).get("start", "")), {})
-	for op: Dictionary in start.get("ops", []):
-		if str(op.get("cue", "")) == "fade":
-			return str((op.get("args", []) as Array)[0]) == "in"
-		if str(op.get("op", "")) == "line":
-			return false
-	return false
-
-
 func _warn(msg: String) -> void:
 	var full := "CutsceneSequencer(%s): %s" % [_scene_id, msg]
 	if full in warnings:
