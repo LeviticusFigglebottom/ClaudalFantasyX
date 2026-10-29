@@ -417,6 +417,19 @@ that test at this branch's zones.
   m2-slice history that big17 has already reconciled. All four, plus test_b_arenas, pass on `lead/gate-big17` and
   on a trial merge of this head into it. They clear when big17 reaches integration and I merge it.
 
+- **BACKLOG EMPTY (10-29, @ the handoff commit; session handoff `docs/kb/handoffs/2026-10-29-env-art-b-1.md`):**
+  - My GPU QA rows and inventory rows are all fixed or explained. The latest inventory lists none of mine: the
+    `*_drop_proxy` names are env-art's kit.
+  - The player-height walk of all eight Ch5–Ch9 zones is done, and so is the "anything primitive?" audit. Everything it
+    found that the zones, my arenas or my kit pieces can fix is fixed (M3-ENV-1325, M3-ENV-1326, M3-C09-04's debris).
+  - What's left belongs to others:
+    - env-art: M3-ENV-1316's kit-side items;
+    - characters and creatures-b: the capsules;
+    - integration-qa: M3-ARC-1326, which closes M3-C09-03;
+    - the PC: the PC-QUEUE.
+  - Next: merge the integration branch once big17 lands, run `--filter=ebbing` with the hook in, and move M3-C09-03
+    to review.
+
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
   on the PC presets (two large and three small fires in `ch06/brine_shoals` and `salvage_camp_burning`).
