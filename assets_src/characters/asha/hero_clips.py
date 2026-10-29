@@ -4566,6 +4566,18 @@ STORY_LEG_HEROES = STORY_LEG_HEROES + ("ivo",)
 FOOT_FLAT["ivo"] = FOOT_FLAT["moll"]  # the trousers gathered into the shin wraps (Moll's kit)
 KO_LEGS["ivo"] = dict(KO_LEGS["toma"])  # on both knees, up on the bent toes (the hems take no flexed ankle)
 
+# M3-CHR-593: the Ch8 Stillguard officer at Liss's hoist (ch08_cut_rope.dlg), a named Stillguard on the squad's build,
+# helmed, the shield on his left arm and no spear: the hatchet is the scene's prop in his right fist (HAND_SHAPE "fist",
+# held in every clip). He walks to his mark and gives the rope two blows (`hatchet_blow`, requested_clips.json
+# `heroes.officer`, once per call), on the squad's idle and walk.
+PERSONA["officer"] = {"sway": 0.35, "lean": 0.0, "staff": False, "arms_down": 38.0, "stillguard": True}
+CLIPS["officer"] = ["idle", "walk"]
+STORY_LEG_HEROES = STORY_LEG_HEROES + ("officer",)  # the blow's crouch uses the legs' solver
+FOOT_FLAT["officer"] = FOOT_FLAT["moll"]
+KO_LEGS["officer"] = dict(KO_LEGS["toma"])
+FLAT_HAND["officer"] = {c: {"R": (-1.0, 0.0, 2.0, 3.0)} for c in ("idle", "walk", "hatchet_blow")}
+HAND_SHAPE["officer"] = {"R": "fist"}
+
 
 # ---------------------------------------------------------------------------------------------
 # Pell (M3-CHR-506, pell.md §1, §10): the wading-bird stand. Plumb from the heels to the shoulders, the long neck

@@ -102,7 +102,7 @@
     "ysolde": {"at": [-1, 0, 63, 0], "color": "#2a2440", "radius": 0.26, "height": 1.85},
     "kerrid": {"at": [1.5, 0, 64, 0], "color": "#5a4a3a", "radius": 0.4, "height": 2.0},
     "liss": {"at": [9, 0, -24, 180], "color": "#5fa0a0", "radius": 0.24, "height": 1.5, "hidden": true},
-    "inquisitor": {"cast": "vendor", "at": [-4, 0, -40, 0], "color": "#a8302a", "radius": 0.34, "height": 1.85},
+    "inquisitor": {"cast": "moll", "at": [-4, 0, -40, 0], "color": "#a8302a", "radius": 0.34, "height": 1.85},
     "hound": {"cast": "creature:raid_hound", "at": [-3, 0, -41, 0], "color": "#6a5a40", "radius": 0.35, "height": 0.9},
     "clerk": {"cast": "clerk", "at": [-6, 0, -44, 0], "color": "#c8c0b0"},
     "stillguard_a": {"cast": "stillguard_a", "at": [-2, 0, -34, 180], "color": "#a8302a"},
@@ -110,13 +110,13 @@
     "stillguard_c": {"cast": "stillguard_c", "at": [-5, 0, -42.6, 270], "color": "#a8302a"},
     "brand_girl": {"cast": "child", "at": [-6.2, 0, -41.6, 0], "color": "#c09070", "radius": 0.22, "height": 1.4},
     "wrights": {"cast": "fisher", "at": [-5.0, 0, -47.0, 0], "color": "#8a7060", "radius": 0.9, "height": 1.1},
-    "wright_child_a": {"cast": "child", "at": [11.8, 0, -44, 0], "color": "#c09070", "radius": 0.18, "height": 1.0},
-    "wright_child_b": {"cast": "child", "at": [10.2, 0, -44, 0], "color": "#c09070", "radius": 0.18, "height": 1.0},
+    "wright_child_a": {"cast": "wright_child_a", "at": [11.8, 0, -44, 0], "color": "#c09070", "radius": 0.18, "height": 1.0},
+    "wright_child_b": {"cast": "wright_child_b", "at": [10.2, 0, -44, 0], "color": "#c09070", "radius": 0.18, "height": 1.0},
     "sefir": {"at": [-22, 1.2, -40, 270], "color": "#cfe0ee", "radius": 0.3, "height": 1.85, "hidden": true},
-    "reed_a": {"cast": "reed", "at": [-23.2, 1.2, -42, 270], "color": "#e8e4d8", "hidden": true},
-    "reed_b": {"cast": "reed", "at": [-20.8, 1.2, -42, 270], "color": "#e8e4d8", "hidden": true},
-    "reed_c": {"cast": "reed", "at": [-23.2, 1.2, -47, 270], "color": "#e8e4d8", "hidden": true},
-    "reed_d": {"cast": "reed", "at": [-20.8, 1.2, -47, 270], "color": "#e8e4d8", "hidden": true}
+    "reed_a": {"cast": "reed_a", "at": [-23.2, 1.2, -42, 270], "color": "#e8e4d8", "hidden": true},
+    "reed_b": {"cast": "reed_b", "at": [-20.8, 1.2, -42, 270], "color": "#e8e4d8", "hidden": true},
+    "reed_c": {"cast": "reed_c", "at": [-23.2, 1.2, -47, 270], "color": "#e8e4d8", "hidden": true},
+    "reed_d": {"cast": "reed_d", "at": [-20.8, 1.2, -47, 270], "color": "#e8e4d8", "hidden": true}
   },
   "shots": {
     "W01": {"pos": [10, 3, 64], "look_at": [4, 1, 55], "fov": 50},

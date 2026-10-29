@@ -704,6 +704,43 @@
         }
       }
     },
+    "officer": {
+      "garments": [
+        "Costume",
+        "Sleeves"
+      ],
+      "props": [
+        "Shield"
+      ],
+      "seams": {
+        "groups": [
+          [
+            "Body",
+            "Head:skin_head"
+          ],
+          [
+            "Costume"
+          ],
+          [
+            "Sleeves"
+          ]
+        ],
+        "max_exposed": 4
+      },
+      "_allowances": "M3-CHR-593 (probe at the default stride): the squad's kit on a leaner, taller build. Sleeves 7.5 and Body 40 mm at walk@9: as the squad's (M3-CHR-508), the dropped armhole edge takes the swinging upper arm in under it at the side, inside the jack (the sleeve stays over it; no skin shows). hatchet_blow's raise is held to 122 degrees, where the underarm cut stays covered (at 150 it opened 20 mm).",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 16.0,
+          "Sleeves": 7.5,
+          "Body": 40.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Sleeves": 6,
+          "Body": 37
+        }
+      }
+    },
     "shopkeeper": {
       "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/shopkeeper/shopkeeper.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB: the pole, the brine-iron, the hammer and the lamp are scene props.",
       "villager": true,
