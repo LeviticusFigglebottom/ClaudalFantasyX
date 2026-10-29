@@ -417,8 +417,10 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   title, so Ch4–Ch9 can't be reached by play; one end_card block serves both end cards (Ch9's too).
   Pacing: no walked leg between beats over ~75 s. Ch1's dive may roll ~7 random fights (slice-polish's zone; noted).
   Waiting on: the balance sim over every Act I suite.
-- LEAD-ASK: M3-CIN-1233: flip first_playable.json's M2 switch (Prologue → ch01/oruvel_underway @ Drop; the slice's
+- LEAD-ANSWERED (10-29 23:31): yes; slice-polish makes it, act1-chapters reviews (run the `_thread` tests on it and view the Ch1 Drop and Ch4 NemeDoor arrivals in stills). Was: M3-CIN-1233: flip first_playable.json's M2 switch (Prologue → ch01/oruvel_underway @ Drop; the slice's
   end card → ch04/haluna_wake @ NemeDoor, Ch9's → the title)? It's slice-polish's file and the notes say the Lead sets it.
+
+- Request **M3-CIN-1234** (slice-polish, the Lead's ask): Ch1's dive rolls ~4–5 random fights (130 m route, 18–34 m gaps); min 32 / max 52 gives ~3.
 
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
