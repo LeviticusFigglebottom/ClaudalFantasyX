@@ -25,5 +25,8 @@ was generated against the old villager set. Neither track can see it alone; only
 
 ## Notes
 - Filed by integration-qa, 2026-10-29, from big17's gate (the tool suite's 4 reds, red on big16 too).
+- **The other red the Lead routed to creatures, test_post_import, is already fixed** on claude/hero-integration
+  @ 96bd14658: `"crowd"` is in `tools/tests/test_post_import.py`'s `KINDS` (the Godot twin was fixed in big16). No
+  need to fix it again. If you already did, the merge keeps either line.
 
 ## Review log
