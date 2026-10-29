@@ -240,6 +240,11 @@
    "range": 7.5
   }
  ],
+ "kit_material_paths": {
+  "cs_copper": "res://game/levels/ch08/coilspire/coilspire_copper_material.tres",
+  "cs_copper_worn": "res://game/levels/ch08/coilspire/coilspire_copper_worn_material.tres",
+  "cs_iron": "res://game/levels/ch08/coilspire/coilspire_iron_material.tres"
+ },
  "pieces": [
   {
    "piece": "coilspire_ground",

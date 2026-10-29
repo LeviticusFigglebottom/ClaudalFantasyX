@@ -28,6 +28,14 @@ var _open_tween: Tween
 var _counters: Array[Dictionary] = []
 
 
+## act1_gpu_qa row 33: a panel freed mid count-up (the result left at once) ends its count now. A bound tween only
+## notices its freed node on the tree's next step, and would step into freed rows until then.
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE and _open_tween != null and _open_tween.is_valid():
+		_open_tween.kill()
+		_counters.clear()
+
+
 func _ready() -> void:
 	_m = HudLayout.section(&"result")
 	_open_m = HudLayout.section(&"panel_open")

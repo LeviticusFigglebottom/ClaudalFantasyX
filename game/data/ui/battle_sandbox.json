@@ -23,7 +23,7 @@
                "scene": "res://game/hero_motion/battle/toma_battle_actor.tscn", "yaw_deg": -90.0},
       "ysolde": {"shape": "capsule", "color": "#B08A52", "radius": 0.27, "height": 1.66, "tint": "#B08A52",
                  "scene": "res://game/hero_motion/battle/ysolde_battle_actor.tscn", "yaw_deg": -90.0},
-      "liss": {"shape": "capsule", "color": "#7A8C5A", "radius": 0.26, "height": 1.62, "tint": "#7A8C5A",
+      "liss": {"shape": "capsule", "color": "#7A8F6A", "radius": 0.26, "height": 1.62, "tint": "#7A8F6A",
                "scene": "res://game/hero_motion/battle/liss_battle_actor.tscn", "yaw_deg": -90.0},
       "stillguard_inquisitor": {"shape": "capsule", "color": "#6E6A62", "radius": 0.3, "height": 1.86, "tint": "#8A8478",
                                 "scene": "res://game/characters/foes/moll_battle.tscn", "yaw_deg": 90.0},
@@ -70,7 +70,7 @@
     "vowbound_doc": "M2-UI-05: a called Vowbound stands on party slot vowbound_slot (the middle one) while the party is off the field.",
     "vowbound_slot": 1,
     "boss_seats_doc": "M3-CRB-011 (pillar 4): a lone Act I boss too tall or wide for EnemySlots/Slot0 at the default camera sits on its own mark instead (EnemySlots space, metres, the slot's facing kept), so the whole silhouette reads. Applied at spawn, before the line-up; a foe that joins later uses the slots as before.",
-    "boss_seats": {"spar_wraith": [-2.0, 0.0, -1.4], "cinder_matron": [-2.6, 0.0, -1.2], "undertows_reach": [-2.6, 0.0, -2.4]},
+    "boss_seats": {"spar_wraith": [-2.0, 0.0, -1.4], "cinder_matron": [-2.6, 0.0, -1.2], "undertows_reach": [-5.0, 0.0, -2.4]},
     "part_cues_doc": "M3-C05-07 (BattlePartCues): model parts shown or hidden by battle events rather than a phase, per creatures.json row id. parts: node names; show_on_skills: a skill landing on it; show_on_reaction: a hit on it with reacted (enemies.json reactions); hide_on_statuses: a status a hit added to it. Applied on the contact beat, hides before shows.",
     "part_cues": {
       "cinder_matron": {"parts": ["Crust"], "show_on_skills": ["recrust"], "show_on_reaction": true,

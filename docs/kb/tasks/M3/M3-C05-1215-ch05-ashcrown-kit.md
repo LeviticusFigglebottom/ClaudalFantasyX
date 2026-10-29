@@ -2,10 +2,11 @@
 id: M3-C05-1215
 title: Ch5 greybox to final, ch05/ashcrown on env-art's Ashcrown kit (blocked on steep-stair traversal)
 role: cinematics
-status: blocked
+status: review
 owner_session: act1-chapters (claude/act1-chapters)
 depends_on: [M3-ENV-09, M3-C05-02, M3-ARC-1216]
 milestone: M3
+reviewer: qa
 request-from: ""
 ---
 ## Goal
@@ -28,3 +29,6 @@ the flights under 40°. Until then the zone stays the greybox.
   their own material slot (`ac_vein_t<k>`) so the strike can light a tier at a time (`ac_copper_live`).
 
 ## Review log
+- 2026-10-29 act1-chapters: superseded by env-art-b's M3-ENV-1303 (Ashcrown on its kit, with M3-ARC-1216's steep
+  stairs), on the integration branch. My side, the story cameras and Kahre's staging, is done (see M3-ENV-1303's
+  review log). To review, for closing.

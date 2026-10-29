@@ -132,6 +132,11 @@ func _return_to(scene_path: String, spawn: StringName) -> void:
 	if story != null:
 		story.autostart = false
 	_host().add_child(zone)
+	if spawn == &"" and zone.has_method(&"spawn_names"):  # Haluna's spawns are scene markers, not layout rows
+		var names := zone.call(&"spawn_names") as Array[StringName]
+		spawn = names[0] if not names.is_empty() else &""
+	if zone.has_method(&"place_at"):
+		assert_ne(spawn, &"", "%s: a spawn to return to" % scene_path)
 	if zone.has_method(&"place_at") and zone.has_method(&"spawn_yaw_deg"):
 		zone.call(&"place_at", spawn, zone.call(&"spawn_yaw_deg", spawn))
 	var player: FieldController = null

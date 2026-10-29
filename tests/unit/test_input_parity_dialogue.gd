@@ -98,10 +98,7 @@ func test_the_backlog_opens_scrolls_and_closes_with_each_device() -> void:
 		else:
 			d.press(&"ui_up")
 		assert_true(page.scroll_value() < at, "%s: it scrolls back" % d.label())
-		if kind == InputDriver.Kind.MOUSE:
-			InputDriver.right_click(page)
-		else:
-			d.press(&"ui_cancel")
+		ParityHost.back(d, page)  # a right click for the mouse; the page's fade ends, so its layer goes
 		assert_false(assist.backlog_open(), "%s: Cancel closes it" % d.label())
 		assert_false(_tree().paused, "%s: and lets the scene go on" % d.label())
 		_confirm(d, box)

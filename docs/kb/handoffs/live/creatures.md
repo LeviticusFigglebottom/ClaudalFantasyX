@@ -783,3 +783,83 @@ Merged `origin/gpu/gate-big14-shots` and the integration branch, then fixed on t
   - The crowd GLBs already ran their category script (`crowd_post_import.gd`, set in each .glb.import). The crowd category (`game/data/import/crowd.json`) exists, but test_post_import's `KINDS` list lacked `crowd`, so every crowd GLB read as "in no import category". `crowd` is added; no import needed regenerating.
   - The integration branch is merged in.
   - Checks: post_import 21/0, villager 35/0, crowd 7/0.
+
+## FROM 2026-10-29 (new Lead session_01Bg3iP7cPGyjbX4CyniBahc; integration claude/new-session-mj8c3c)
+Merged `origin/claude/new-session-mj8c3c` (pc-gpu.md conflict: kept ours, the newer PC text) and **claude/characters @ 3346484b** (the head big17 carries). The crowd generator avoids the Haluna/Act I villager faces in `assets_src/characters/villagers/params`, so its output can only match on a tree with characters' new villagers.
+
+### big17 gate reds (mine): fixed
+- **test_npc:** characters' new Act I villagers (M3-CHR-512: three wrights and others) changed the faces the crowd must avoid. `gen_crowd.py` re-run: only **crowd_girl_teen** changes (now clears wright_child_a, ≥0.28). Rebuilt in Blender (+ the child clip library it owns). Verify: `crowd_girl_teen` 21 identical.
+- **test_post_import (tools):** `tools/tests/test_post_import.py` KINDS lacked `crowd` (the big15 fix only did the Godot test).
+- **Confirmed on big17 itself:** cherry-picked onto `origin/lead/gate-big17` in a scratch worktree: test_npc + test_post_import 33/0.
+- **Also:** dropped a stale `shrine_offering.glb` PROVENANCE row the characters merge re-added (big17 has none): validate_data 0/0.
+- **villager_shopkeeper_front (NO BASE):** SELF-RENDERED and viewed: a full Haluna shopkeeper in T-pose on the review stage, clean, no placeholder (characters' M3-CHR-512 villager). **LEAD-ASK: approve villager_shopkeeper_front's baseline at the gate (I wrote none).**
+- Checks: tools test_npc 27/0, test_post_import 6/0; Godot crowd 7/0, villager 35/0, post_import 21/0, npc 10/0; validate_data, lint, format.
+
+### M3-HER-1142: Corrow's storm figure (audit row, high): done, in review
+- The capsule `figure` in `corrow.tscn` is the cyan silhouette in the storm wall (act1_ch08 W22). It is now `corrow_storm_figure` in `zones/ch08_corrow.json`: the Oruvel diver's crowd body (`crowd_man_lean_a`) drawn as one `#5fd6e0` silhouette.
+  - New VillagerLayer row keys: `body` (a crowd body with no crowd person), `silhouette` (NpcSilhouette: an unshaded fresnel-rim shader that fades in from the feet, depth prepass, no shadow, no TIME, render priority 1 so the storm sea doesn't paint over it) and `tuning` (zeroes its glance and talk radii). Validator and docs (field_npc.md "Silhouette rows") updated.
+  - It rides inside the `figure` stage actor, so the layout's flags and the cutscene's `@mark figure figure_gone walk` drive it.
+- **New shots:** `npc_corrow_storm_figure` (from the wall, about 31 m) and `npc_corrow_storm_figure_near`.
+- **Still needed in game:** M3-CRE-657 (GreyboxZone adds the VillagerLayer; patch in `live/patches/`). Until then Corrow's crowd and the figure appear only where a layer is wired (the shot stages, tests).
+
+### GPU QA row 40: the Oil Slug's read at battle distance: done
+- Flank-on in battle (`stand_in.yaw_deg` 60) at 1.3× (its battle scene's Model). A lighter back, a stronger oil sheen, a body rim sheen, brighter cerata tips.
+- `LampGlow`: a small shadowless `oil_lamp` omni light over the cerata (the design's "the only warm light in the underway"), which lights its back and a pool of floor. CreatureActor now fades a creature's lights with its KO (test).
+- New shot `creature_oil_slug_battle` (its real ch01_oil_slug encounter). Portrait re-baked (margin 1.2: its head had always been cropped). Blender verify identical.
+
+### Primitive pass
+- Rendered the current builds of the shoal skipper, raid hound and hullgnaw: they read finished (the old baselines predate their rebuilds).
+- **The tide crawler read primitive** (a plain ellipsoid on smooth cone legs), so it's rebuilt, 4.8k tris, rig and clips unchanged:
+  - a crab's carapace: a low dome widest forward, a rim lip, grooved plates split by glowing seams, a dorsal ridge, brow teeth and mandible hooks;
+  - jointed legs with coxa, knee and ankle knobs, dull joint membranes, a glowing seam along each femur, femur spines;
+  - serrated scythe forelegs.
+  - The paused Act II rim crawler imports this build, so it was rebuilt (verify identical).
+
+### Checks (this batch)
+- tools: test_npc, test_post_import, test_creatures OK; validate_data 0/0; taskboard; gdlint and gdformat on game/tests clean.
+- Godot: creature 85/0, portrait 21/0, crowd 9/0, villager 37/0, npc 10/0, post_import 21/0.
+- Blender verify identical: crowd_girl_teen, creature_oil_slug, creature_tide_crawler, creature_rim_crawler.
+- Skipped: coverage (nothing in game/battle or game/progression changed), the full manifest.
+
+### SELF-RENDERED (all viewed; no baselines written)
+- villager_shopkeeper_front (NO BASE): a clean villager.
+- crowd_zone_pemakar, crowd_zone_brine_shoals: crowd bodies, no capsules.
+- crowd_lineup_a/b/c/back: every body present. A first render came out empty because I had edited field_npc.gd mid-capture before the class cache was re-imported; re-rendered after the import.
+- npc_corrow_storm_figure(_near) (new): one cyan man's shape in the storm sea.
+- creature_oil_slug, creature_oil_slug_battle (new): it reads; a warm glow and crest at battle distance.
+- creature_tide_crawler: drift expected (rebuilt).
+- creature_shoal_skipper, creature_raid_hound, creature_hullgnaw: current builds; the old baselines are stale.
+- **LEAD-ASK: at the gate, approve baselines for villager_shopkeeper_front, creature_oil_slug_battle, npc_corrow_storm_figure, npc_corrow_storm_figure_near (new), and re-approve creature_oil_slug, creature_tide_crawler, creature_rim_crawler, plus the stale creature_shoal_skipper, creature_raid_hound, creature_hullgnaw and creature_slag_tortoise. Crowd shots for crowd_girl_teen's zones (pemakar, brine_shoals, lineups) may drift slightly.**
+
+### PC-QUEUE
+- GPU QA row 40: recheck the Oil Slug in ch01_oil_slug on the RX 9070 XT (LampGlow on real GPU; the arena's lit floor patches are env-art-b's row 15).
+- The Corrow storm figure on real GPU (bloom on the rim; rain over it).
+
+### Primitive pass (continued)
+- Rendered the other 15 Act I regulars' current builds (ashwing, bottle hermit, flue moth, gull harrier, lantern eel, reef crab, sail leech, scuttler, squall wing, stormgull, tower limpet, vein sparker, wall polyp, wallcrab, wreck crab) and viewed them.
+- **The tower limpet read primitive** (a smooth striped cone), so it's rebuilt, 9.1k tris, rig and clips unchanged:
+  - sharp primary and secondary ribs running out into a scalloped margin, growth ledges, a worn pitted apex;
+  - the shutter as louvred slats in a frame with two rusted iron straps, the shell growing over its ends;
+  - barnacle clusters and a fringe of mantle tentacles round the foot.
+  - Portrait re-baked; verify identical. The doc's budget is raised to ≤10k (a lone foe).
+- **Read finished, left as they are:** the wall polyp's stone (worn, chipped, mortared laterite with the carved Watcher; its blockiness is masonry) and the reef crab family (7.9k of an 8k budget; shaped, banded legs, no blockiness at battle distance). The rest read finished.
+- Battle suite on this tree: 790 run, 3 failed, all on the known list (test_battle_act1_ability_vfx's Act II foe effects, test_battle_party_stand_ins' Liss tint, test_battle_result_motion), none from these changes.
+- **Add to the LEAD-ASK baseline list:** creature_tower_limpet (rebuilt).
+
+MERGE-READY @ (this push): the big17 gate reds (test_npc, test_post_import), M3-HER-1142 (the Corrow storm figure), GPU QA row 40 (the Oil Slug), and the primitive pass on the tide crawler and the tower limpet. Checks run: validate_data 0/0, taskboard, gdlint and gdformat (game, tests), tools test_npc, test_post_import and test_creatures; Godot creature 85/0, portrait 21/0, crowd 9/0, villager 37/0, npc 10/0, post_import 21/0, battle 790/3 (known); Blender verify identical for every changed job (crowd_girl_teen, oil_slug, tide_crawler, rim_crawler, tower_limpet). Skipped: coverage (no game/battle or game/progression change) and the full manifest.
+
+BACKLOG EMPTY: the Lead's four items are done.
+- No todo or request tasks for creatures on the board.
+- Every Act I regular reads final in fresh renders.
+- Open items are others': M3-CRE-657 (slice-polish adds the VillagerLayer to GreyboxZone; without it Corrow's crowd and the storm figure appear only in the stages), the baselines (the Lead, at the gate) and the PC-QUEUE (real GPU).
+
+### big17 red from the Lead (20:46): test_zone_cast::test_a_cast_actor_shows_its_model_and_idles_out_of_step: fixed
+- Reproduced on `lead/gate-big17` in a scratch worktree; it passes on my head, which doesn't have M3-CRE-657.
+- **Two causes, both from M3-CRE-657** (GreyboxZone wires the VillagerLayer after ZoneCast):
+  1. The test read ZoneCast's `Cast` model, but Tamsule's crowd rows replace it with the crowd person. The test now reads the body the actor wears through `HeroMotion.player_of(actor)`, as the cutscene sequencer does, and accepts a resting clip (idle or work). `tests/unit/test_zone_cast.gd` is act1-chapters' file: edited on the Lead's routing.
+  2. **A real bug of mine:** FieldNpc phased only the idle loop per villager, so the crowd fisher and boatman both started `haul` at 0.0 and hauled in step. Work and storm loops now start at a per-villager phase plus the clock (`FieldNpc.loop_phase`). New test in test_crowd_villagers.
+- Checks: on big17 with these files, zone_cast 3/0, crowd 10/0, villager 38/0; on my head, crowd 10/0, villager 38/0, npc 10/0, zone_cast 3/0; lint and format clean.
+- **Shots:** crowd zone shots where people work (crowd_work, crowd_market and the crowd_zone_* shots) will drift, because work clips now start at each person's own phase. Expected; re-approve at the gate.
+
+MERGE-READY @ (this push): the test_zone_cast fix (plus everything in the previous MERGE-READY).
+BACKLOG EMPTY (again): no other items.

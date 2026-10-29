@@ -5,6 +5,7 @@ extends TestCase
 ## action and hit clips from its choreography (BattleChoreo through BattleClips; phases and parts: BattleActorMotion).
 
 const CRAB := "res://game/creatures/reef_crab/reef_crab_battle.tscn"
+const SLUG := "res://game/creatures/oil_slug/oil_slug_battle.tscn"
 const BELL := "res://game/creatures/drownbell/drownbell_battle.tscn"
 const GNAW := "res://game/creatures/hullgnaw/hullgnaw_battle.tscn"
 const MATRON := "res://game/creatures/cinder_matron/cinder_matron_battle.tscn"
@@ -904,3 +905,22 @@ func test_the_flat_engine_presses_the_water_flat_and_splits_on_its_ko() -> void:
 func _turn_deg(skel: Skeleton3D, bone: String) -> float:
 	var b := skel.find_bone(bone)
 	return rad_to_deg(skel.get_bone_rest(b).basis.get_rotation_quaternion().angle_to(skel.get_bone_pose_rotation(b)))
+
+
+## GPU QA row 40: the Oil Slug carries its eaten lamplight (an omni light); a KO fades it with the surfaces, and a
+## revive lights it again.
+func test_a_creatures_own_light_fades_with_its_ko() -> void:
+	var a := _actor(SLUG)
+	var lights := a.find_children("*", "Light3D", true, false)
+	assert_eq(lights.size(), 1, "the slug's LampGlow")
+	if lights.is_empty():
+		before_each()
+		return
+	var glow := lights[0] as Light3D
+	var full := glow.light_energy
+	assert_true(full > 0.0, "lit while it stands")
+	a.call(&"_set_transparency", 0.75)
+	assert_true(is_equal_approx(glow.light_energy, full * 0.25), "fades with the surfaces")
+	a.call(&"_set_transparency", 0.0)
+	assert_true(is_equal_approx(glow.light_energy, full), "back at full")
+	before_each()

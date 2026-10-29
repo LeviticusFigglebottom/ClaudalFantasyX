@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://c4mt0dyhp2kcy"
-path="res://.godot/imported/banyan_placeholder.glb-b3801b6ac4ed22ed93ba4632b4a4e034.scn"
+uid="uid://dg8yl20s0v1xu"
+path="res://.godot/imported/raft_deck_small_tucked.glb-edc4a0a86e6d418e7dad6c7d13a7cce5.scn"
 
 [deps]
 
-source_file="res://assets/environments/kits/haluna/banyan_placeholder.glb"
-dest_files=["res://.godot/imported/banyan_placeholder.glb-b3801b6ac4ed22ed93ba4632b4a4e034.scn"]
+source_file="res://assets/environments/kits/oruvel/raft_deck_small_tucked.glb"
+dest_files=["res://.godot/imported/raft_deck_small_tucked.glb-edc4a0a86e6d418e7dad6c7d13a7cce5.scn"]
 
 [params]
 
@@ -33,7 +33,7 @@ animation/fps=30
 animation/trimming=false
 animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false
-import_script/path="res://game/core/import/haluna_kit_post_import.gd"
+import_script/path="res://game/core/import/oruvel_kit_post_import.gd"
 materials/extract=0
 materials/extract_format=0
 materials/extract_path=""

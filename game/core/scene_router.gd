@@ -107,7 +107,8 @@ var split_swap := true
 ## Last swap: {scene_path, instantiate_ms, instantiated_on_thread, unload_ms, prewarm_ms, fonts_warmed,
 ## font_warm_ms, frame_ms: Array[float] (MEASURE_FRAMES hidden frames from the swap), max_frame_ms,
 ## budget_ms (HIDDEN_FRAME_BUDGET_MS), over_budget (a hidden frame over it), entry_ms, entry_budget_ms,
-## entry_over_budget}, then, once the visible window ends (M1-ARC-16): {visible_frame_ms: Array[float],
+## entry_over_budget, cover_alpha_min, covered (ADR 0042 §4: the swap and its hidden frames under the opaque fade)},
+## then, once the visible window ends (M1-ARC-16): {visible_frame_ms: Array[float],
 ## lift_frames (how many of them were while the fade lifted), max_visible_frame_ms, visible_budget_ms,
 ## visible_over_budget, visible_complete}.
 var last_swap_stats: Dictionary = {}
@@ -156,6 +157,11 @@ func _ready() -> void:
 	world_return = WorldReturn.new()
 	world_return.name = "WorldReturn"
 	add_child(world_return)
+
+
+## The opaque fade's alpha now (0 clear, 1 covering the screen).
+func fade_alpha() -> float:
+	return _fade_rect.color.a
 
 
 func is_busy() -> bool:
@@ -367,17 +373,21 @@ func _swap(
 	# Zone render globals (M1-RND-15) reset on this signal: the new zone starts from the project
 	# defaults, so one that never writes them does not inherit the last zone's sea-glow or tide line.
 	scene_swapping.emit(scene_path)
+	var cover: Array[float] = [fade_alpha()]
 	attach_graphics_hook(node, stats)
 	get_tree().change_scene_to_node(node)
 	for i in MEASURE_FRAMES:
 		await get_tree().process_frame
 		frames.append(_swap_clock.lap())
+		cover.append(fade_alpha())
 		if i == 0:
 			if spawn != &"" and node.is_inside_tree():
 				WorldReturn.place_player(node, spawn)
 			EventBus.scene_changed.emit(scene_path)
 	if entry_start_usec >= 0:
 		judge_entry(stats, _ms_since(entry_start_usec))
+	for w in judge_cover(stats, cover):
+		push_warning("%s: %s: %s" % [LOG_PREFIX, w, scene_path])
 	_record(stats, frames)
 
 
@@ -456,6 +466,19 @@ static func judge_hidden(stats: Dictionary, frames: Array[float]) -> Array[Strin
 			)
 		)
 	return out
+
+
+## ADR 0042 §4: the fade's alpha at the swap and at each hidden frame after it (`cover`). Writes cover_alpha_min and
+## covered (every one fully opaque) into `stats` and returns the warnings to raise (empty when covered).
+static func judge_cover(stats: Dictionary, cover: Array[float]) -> Array[String]:
+	var low := 1.0
+	for a in cover:
+		low = minf(low, a)
+	stats["cover_alpha_min"] = low
+	stats["covered"] = not cover.is_empty() and low >= 1.0
+	if bool(stats["covered"]):
+		return []
+	return ["a hidden swap frame was not under the opaque fade (alpha %.2f; ADR 0042 §4)" % low]
 
 
 ## ADR 0029's entry limit: writes entry_ms, entry_budget_ms and entry_over_budget into `stats`.

@@ -144,6 +144,23 @@ class AudioTests(unittest.TestCase):
 
 
 class ScanTests(unittest.TestCase):
+    def test_routes_send_rows_their_owner_rules_misplace(self) -> None:
+        """The Lead, 2026-10-29: the Prologue's vigil capsule is characters' (Pell); the Bell's drop proxies are
+        env-art-b's (M3-RND-26), whatever the zone or kit owner rule says."""
+        vigil = pa.Item("game/levels/prologue/prologue.tscn", "zone greybox: 1 visible primitive/CSG meshes "
+                        "(1 CapsuleMesh), under City/Vigils 1", 0, pa.OWNER_ZONES_EARLY, "high", "greybox")
+        self.assertEqual(pa.route(vigil).owner, pa.OWNER_PEOPLE)
+        for path in ("assets/environments/kits/tamsule_bell/reefball_drop_proxy.glb",
+                     "assets/environments/kits/tamsule_bell/materials/tb_drop_proxy.tres"):
+            item = pa.Item(path, "asset file named as a placeholder", None, pa.OWNER_ZONES_EARLY, "low", "named_file")
+            self.assertEqual(pa.route(item).owner, pa.OWNER_ZONES_LATE, path)
+        other = pa.Item("game/levels/prologue/prologue.tscn", "zone greybox: 2 visible primitive/CSG meshes "
+                        "(2 BoxMesh), under Harbour 2", 0, pa.OWNER_ZONES_EARLY, "high", "greybox")
+        self.assertEqual(pa.route(other).owner, pa.OWNER_ZONES_EARLY, "other prologue greybox stays env-art's")
+        banyan = pa.Item("assets/environments/kits/haluna/banyan_placeholder.glb", "asset file named as a placeholder",
+                         None, pa.OWNER_ZONES_EARLY, "low", "named_file")
+        self.assertEqual(pa.route(banyan).owner, pa.OWNER_ZONES_EARLY)
+
     def test_runtime_items_group_into_rows_with_owners(self) -> None:
         scan = [
             {"scene": "res://game/levels/ch05/pemakar/pemakar.tscn", "kind": "capsule", "node": "Actors/garo",

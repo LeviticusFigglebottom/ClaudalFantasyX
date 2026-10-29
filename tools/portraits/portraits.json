@@ -98,7 +98,7 @@
       "face_poses": "res://game/levels/_tests/characters/pell/pell_face_poses.json",
       "out_dir": "res://assets/ui/portraits/heroes",
       "emotions": ["neutral", "smile", "determined", "worried", "grief"],
-      "camera": {"distance": 0.8, "aim_drop": -0.01}
+      "camera": {"distance": 0.86, "aim_drop": 0.05}
     },
     {
       "id": "stillguard",
