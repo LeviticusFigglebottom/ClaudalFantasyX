@@ -83,6 +83,8 @@ const LOOK_NAME := &"NpcLook"
 @export var tints: Dictionary = {}
 ## M3-CRE-659: merged over its npc.json tuning (a crowd person's work clip and focus, a child's pace).
 @export var tuning_over: Dictionary = {}
+## M3-HER-1142: when opaque, the body is drawn as one glowing silhouette in this colour (NpcSilhouette).
+@export var silhouette := Color(0.0, 0.0, 0.0, 0.0)
 
 var tuning: Dictionary = {}
 var loco: HeroLocomotion
@@ -246,6 +248,8 @@ func _attach_actor() -> void:
 		push_warning("FieldNpc %s: no actor" % npc_id)
 		return
 	NpcTints.apply(actor, tints)
+	if silhouette.a > 0.0:
+		NpcSilhouette.apply(actor, silhouette)
 	anim = HeroMotion.player_of(actor)
 	HeroMotion.add_micro_motion(actor, npc_id)
 	var skel := HeroMotion.skeleton_of(actor)

@@ -25,6 +25,11 @@ extends Node3D
 ## their crowd body's actor (assets/crowd/<body>/<body>_actor.tscn), their tints (NpcTints, per instance) and their
 ## age band's and work clip's tuning (FieldNpc.tuning_over). `offset` [x, y, z] or [x, y, z, yaw_deg] places an
 ## `attach: child` villager inside its stand-in (several people standing for one group capsule).
+##
+## `body: <crowd body id>` wears that crowd body with no crowd person (no tints, npc.json tuning); `silhouette:
+## "#RRGGBB"` draws the villager as one glowing silhouette in that colour (NpcSilhouette; M3-HER-1142: the figure
+## in Corrow's storm wall); `tuning` is merged over the villager's tuning (the figure never glances or turns to the
+## party).
 
 const DATA_DIR := "res://game/data/world/npc/zones/"
 const ACTOR_PATH := "res://assets/characters/villagers/%s/%s_actor.tscn"
@@ -170,8 +175,9 @@ func _make(row: Dictionary) -> FieldNpc:
 		adopted.work_target = _marker(row.get("work_at", null), String(stand_in.name) + "Villager" + WORK_SUFFIX)
 		return adopted
 	var scene: PackedScene = null
-	if not person.is_empty():
-		var body := str(person.get("body", ""))
+	if not person.is_empty() or row.has("body"):
+		# `body` (M3-HER-1142): a crowd body worn by no crowd person (the Corrow storm figure's silhouette)
+		var body := str(person.get("body", row.get("body", "")))
 		scene = load(CROWD_ACTOR_PATH % [body, body]) as PackedScene if body != "" else null
 	else:
 		# `actor` (optional): wear another villager's model until this one has its own (M3-CRE-100: the shop bodies).
@@ -188,6 +194,10 @@ func _make(row: Dictionary) -> FieldNpc:
 	npc.actor_scene = scene
 	npc.auto_process = auto_build
 	_dress(npc, person)
+	if row.has("silhouette"):
+		npc.silhouette = Color.html(str(row["silhouette"]))
+	if row.get("tuning", null) is Dictionary:
+		npc.tuning_over = FieldNpc.merged(npc.tuning_over, row["tuning"] as Dictionary)
 	# `attach: child` (a cutscene-staged actor, which a cutscene moves): the villager rides inside the stand-in and
 	# keeps no route; otherwise it stands beside the stand-in and carries the stand-in along when it walks.
 	var inside := str(row.get("attach", ATTACH_BESIDE)) == ATTACH_CHILD
