@@ -5,7 +5,8 @@ extends RefCounted
 ## motion, rate; docs/kb/tech/glimmer.md "`.dlg` cues"), sequencer.json's "vfx" row sizes and lifts its emission
 ## volume (spread_m, the half-extent across, half that in height; center_y_m above the place) and sets an uncounted
 ## field's density (amount_multiplier). The scene's end frees it (a counted field keeps its motes, no respawn), or
-## end_after_sec (scene time) for a light that belongs to one shot. M2-FP-120: `form=<id>` stands the motes still on a
+## end_after_sec of scene time for a light that belongs to one shot (the sequencer's clock: a paused or held scene
+## keeps it). M2-FP-120: `form=<id>` stands the motes still on a
 ## creature's outline (game/data/cutscene/glimmer_forms.json, tools/cutscene/glimmer_forms.py), one mote a point.
 
 const FORMS_PATH := "res://game/data/cutscene/glimmer_forms.json"
@@ -35,10 +36,14 @@ static func spawn(
 		field.queue_free()
 		return null
 	finished.connect(field.queue_free.unbind(1), CONNECT_ONE_SHOT)
-	var end_after := float(row.get("end_after_sec", 0.0))  # a light that belongs to one shot (S08's bound Ilun)
-	if end_after > 0.0:
-		host.get_tree().create_timer(end_after).timeout.connect(field.queue_free)
 	return field
+
+
+## A motion step (the sequencer's clock, t 0..1) that frees `field` when it completes: end_after_sec.
+static func ender(field: GlimmerField) -> Callable:
+	return func(t: float) -> void:
+		if t >= 1.0 and is_instance_valid(field):
+			field.queue_free()
 
 
 ## The form's points as the field's spawn points, a mote each, never respawned. False for an unknown form.

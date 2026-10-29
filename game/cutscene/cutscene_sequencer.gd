@@ -320,8 +320,8 @@ func _begin(scene_id: StringName, stage: CutsceneStage) -> void:
 	if _starts_black(scene_id):
 		overlay.set_fade(1.0)
 	runner.event_triggered.connect(_on_event)
-	runner.node_started.connect(_grade_header)  # M2-FP-120: a node's `grade:` header, the first one now
-	_grade_header(runner.current_node())
+	runner.node_started.connect(func(n: StringName) -> void: _grade(runner.headers(n).get("grade", "")))  # M2-FP-120
+	_grade(runner.headers().get("grade", ""))
 
 
 func _finish() -> void:
@@ -476,7 +476,7 @@ func _cue_camera(step: DialogueStep) -> void:
 			overlay.box.visible = false
 		_key_for(_stage.shot_node(id))
 		_director.play_shot(shot, blend, ease)
-		_grade(StringName(str(step.kwargs.get("grade", ""))))
+		_grade(step.kwargs.get("grade", ""))
 	await _land()
 
 
@@ -674,20 +674,20 @@ func _cue_vfx(step: DialogueStep) -> void:
 	var host: Node3D = at if at != null else _stage
 	if host == null:
 		return
-	if CutsceneVfx.spawn(rows[effect], effect, step.kwargs, host, "Vfx_%s_%d" % [effect, _vfx_count], finished) == null:
+	var vfx_name := "Vfx_%s_%d" % [effect, _vfx_count]
+	var field := CutsceneVfx.spawn(rows[effect], effect, step.kwargs, host, vfx_name, finished)
+	if field == null:
 		_warn("no @vfx %s %s" % [effect, step.kwargs])
+	elif float(rows[effect].get("end_after_sec", 0.0)) > 0.0:  # one shot's light (S08's bound Ilun), on scene time
+		_start_motion(StringName("vfx_end:%d" % _vfx_count), rows[effect]["end_after_sec"], CutsceneVfx.ender(field))
 	_vfx_count += 1
 
 
-## M2-FP-120: a grade (CutsceneGrade) on the stage's level. One nobody has built yet is not a stage gap: it
-## waits on Rendering (test_cutscene_directives' known list), and CutsceneGrade warns once.
-func _grade(id: StringName) -> void:
-	if id != &"":
-		grade.apply(_stage, id)
-
-
-func _grade_header(node: StringName) -> void:
-	_grade(StringName(str(runner.headers(node).get("grade", ""))))
+## M2-FP-120: a grade (CutsceneGrade) on the stage's level, from a node's `grade:` header or `@camera grade=`. One
+## nobody has built yet is not a stage gap: it waits on Rendering (test_cutscene_directives' list); it warns once.
+func _grade(id: Variant) -> void:
+	if str(id) != "":
+		grade.apply(_stage, StringName(str(id)))
 
 
 ## M2-FP-102: `@light <name> on|off [sec]` (CutsceneLight).
