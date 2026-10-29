@@ -905,7 +905,24 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     walks). Tools: test_glimmer_forms. dlgc, validate_data 0/0, gdlint and gdformat clean. test_screenshots is red
     only on other tracks' unbaselined shots (kerrid_front …).
   - **Skipped:** coverage and Blender (no battle, progression or Blender source).
+- **Cutscene A watched in motion** (tools/cutscene_frames from New Game's Beach arrival, every 1 s, 200 s):
+  - **Pace reads:**
+    - the VO lines open at 19.6 s, after the fade;
+    - the joke, the spear and the lantern beat hold their 4–7 s each;
+    - the H06/H05 cuts land on their lines;
+    - the H01 VO plays on the walk-off;
+    - the field takes over at 170 s.
+  - **Fixed (this branch):** in the stay branch the pair rose on H05 (the kneeling height), so for 1.2 s the frame was
+    Rhen's legs at the lens before H05_up. The cut to H05_up now comes first, and they rise in the standing two-shot.
+    A frame pass to view it is running.
+  - **Not mine, seen:**
+    - the skirt balloon on H05 and H06 (row 31, M3-CHR-102, characters);
+    - the field opens with the camera far back and the party small on the beach. That is integration-qa's party-start
+      fix (M3-HER-1149, claude/hero-integration), not on this branch; big17 brings it.
+  - The wash runs over Rhen in the shallows now and then; that is as staged (the human's fast-track).
 ### PC-QUEUE
+- New Game → the beach: 15 s of black before the fade on lavapipe (the load and prewarm at a fixed 30 fps). Measure it on
+  the GPU against ADR 0042's ≤ 1 s hidden-frames target.
 - Re-check PC GPU QA rows 18 (C07 harrier) and 32 (beach standing lines) on the GPU: both are fixed here (rendered on
   lavapipe), and the sheet still lists them open.
 
