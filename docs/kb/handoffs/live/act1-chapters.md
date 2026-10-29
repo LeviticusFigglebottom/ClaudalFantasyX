@@ -316,6 +316,15 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
   were already in my tree; re-verified in the fresh playthrough below.
 - My five kit-swap tasks (M3-C04-1204, C05-1213, C07-1211, C08-1210, C09-1209) to review (94beed00): their shots
   have baselines from the Lead's gates.
+- **MERGE-READY @ c56cce89: ch04_the_ink's H15 close-up was filled by Rhen's hip.** The ink trigger's centre is
+  Ysolde's own spot at the wall gap, so the player stood between the lens and her hand. The flow now places him at a
+  new `InkLamp` spawn just behind the camera, turned to her (`tools/act1/ch04_haluna_wake.py`, floors re-probed);
+  `test_ch04_thread` checks it. Checks: `--filter=ch04` 13/0; validate_data, dlgc --check, taskboard --check,
+  gdlint, gdformat clean; `test_chapter_flow`, `test_act1_poi_views` OK. Skipped: coverage, sim (no battle or
+  progression code); shots (no manifest shot uses the ink scene). Stills re-render queued behind the full pass.
+- Playthrough so far (Ch4, Ch5 Pemakar, Ashcrown): only the known rows (the derelict and harbour grades, Ashcrown's
+  greybox). Ashcrown on its kit (env-art-b's M3-ENV-1303, reviewer cinematics) is in big16, not on the integration
+  branch yet; reviewing it from a `lead/gate-big16` worktree next.
 - IN PROGRESS: a fresh title → Ch9 headless playthrough (all `_thread` tests; Ch1 and Ch4–Ch9 cutscene stills).
 
 ### Render requests
