@@ -1,5 +1,16 @@
 # CONSOLIDATED HANDOFF: the new Lead starts here
 
+## STATE 2026-10-29 21:30 UTC (Lead `session_01Bg3iP7cPGyjbX4CyniBahc`)
+- **big17 is merged** into `claude/new-session-mj8c3c` @ 96222b30, ahead of its shots, at the human's request to play it now.
+  - The non-render checks are green except 5 suite reds: 4 pre-existing (routed: env-art ×2, creatures, env-art-b) and Pell's portrait (fixed on claude/ui).
+  - big17's shots are capturing in the gate session `session_01UPFyE6NmbMsX7kaGj7ousX`, with GATE-DONE expected around 01:00–03:00 UTC. The Lead then approves the baselines, commits them to the integration branch and posts `BASELINES big17 APPROVED @ <sha>` in lead-cloud.md.
+  - `main` is not fast-forwarded until a batch is fully green, shots included (ADR 0042).
+- **big18:** the gate session `session_01UPFyEAXofxWazWNnRTzFGJ` builds `lead/gate-big18` from the integration branch plus every track head, runs the non-render checks now, and captures shots after the big17 baselines are approved. Its log is `gate-big18.md`.
+- **Decisions today:** ADR 0201 (Pell's niche wording, SPEC v1.5, `i:blue mage` banned).
+  - Battle-presentation took combat's M3-C05-06 and M3-C06-05 (the Kerrid and Liss Swell techniques).
+  - creatures and creatures-b were started.
+  - act1-chapters' duplicate M3-CRE-627 request becomes M3-CRE-700.
+
 ## TAKEOVER 2026-10-29 (Lead `session_01Bg3iP7cPGyjbX4CyniBahc`). This overrides §0–§4 where they differ
 - **Integration branch: `claude/new-session-mj8c3c`**, fast-forwarded to `claude/undertow-lead-handoff-ze8rrn` @ 4d64a73e. That is the only branch this Lead can push, so -ze8rrn is retired. Tracks merge `origin/claude/new-session-mj8c3c`.
 - **The PC is OFFLINE for an extended period** (the human). Nothing waits on it:
