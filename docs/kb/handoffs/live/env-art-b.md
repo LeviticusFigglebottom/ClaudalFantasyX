@@ -403,6 +403,14 @@ that test at this branch's zones.
   pemakar 10/0, ashcrown 22/0, ch05 13/0, ch06 5/0, brine 5/0, zone_kit 12/0, battle_arena 18/0; tools test_b_arenas,
   test_arenas, test_pemakar_kit, test_brine_shoals_kit. **MERGE-READY @ cff5dfd3.**
 
+- **The Lead's "known red: test_arenas for ash_terrace_lanternfall" (lead-cloud.md):** not reproducible. `test_arenas`
+  + `test_b_arenas` pass on `lead/gate-big17` @ be74f9a0 and on a trial merge of this head into it (env-art's
+  M3-ENV-1306 table change doesn't clash: `b_lanternfall.py` starts from the raw `_terrace_arena()`, so its votives
+  are never doubled). That trial did find a real latent bug of mine: Ashcrown's and Coilspire's kit modules were both
+  `b_trial.py`, so a one-process `unittest discover` failed whichever kit test ran second. Coilspire's is now
+  `b_spire_trial.py` (PROVENANCE sources updated; `flue_gate` rebuilt in Blender: byte-identical). Both orders pass.
+  **MERGE-READY @ feafc90e.**
+
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
   on the PC presets (two large and three small fires in `ch06/brine_shoals` and `salvage_camp_burning`).
