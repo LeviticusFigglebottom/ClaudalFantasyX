@@ -35,9 +35,15 @@ Owner per row: **act1-chapters** fixes cameras, staging, flow and encounters; th
   - ch08_binding F07: Virel was the greybox block. She is her own model (`creature:virel`, held still), seen only in
     F07: placed off stage under the fade and hidden with `ch08_virel_bound` (Asha came out standing inside her).
   - ch09_the_road_out D02: Kerrid's close-up sat low, his chin under the dialogue box.
-  - Still open, all filed: the derelict's and Pemakar harbour's night grades, Corrow's storm grade, Ashcrown's greybox
-    on the integration branch (the kit is in big16: M3-ENV-1303), Sefir (M3-HER-1225), Pell (M3-CHR-506), the storm
-    figure (M3-RND-28), the storm wall (M3-RND-27), the held dialogue box (M3-CIN-1231).
+  - Ashcrown is on its kit (env-art-b's M3-ENV-1303, already on the integration branch; I first misread its frames as
+    greybox). Its story cameras after the relayout: A02 aimed 20 m off the party (now under the gate's arch on
+    Kerrid's step forward), A11 stood behind Kahre's heart looking out at the void (now Kahre's own body,
+    `creature:kahre` held still, placed behind the shut chamber door before the scene: A11 looks in at his head and
+    mane, A10 and A12 never see him), A12 tilted 5 m into the ceiling (now on Asha at the door). `chamber_in` moved to
+    in front of the door so Asha never walks through it.
+  - Still open, all filed: the derelict's and Pemakar harbour's night grades, Corrow's storm grade, Sefir
+    (M3-HER-1225), Pell (M3-CHR-506), the storm figure (M3-RND-28), the storm wall (M3-RND-27), the held dialogue box
+    (M3-CIN-1231), Ch1's blocked frames (M3-CIN-1232, slice-polish).
 
 ## Field POIs (2026-10-28)
 Every zone map POI of Ch4–Ch9 (69) rendered at the field's default view (GreyboxZone's hub orbit, orbit_yaw 0,
@@ -77,7 +83,7 @@ now has a pan-follow camera volume, each camera picked from rendered previews (i
 | Ch | Scene / shot | What reads wrong |
 |---|---|---|
 | 4 | ch04_name_board D06, ch04_seventh_terrace D01, F05; ch04_spar_wraith D05 | waits on the grade (M3-ENV-1228): re-previewed 2026-10-28, every view of the stern reads near-black, so framing can't be judged. F05, D01 and D05 have their subject (the hull, the wraith's motes); D06 aims at y 1.7 above the kit's name-board (it hangs on the transom at -9.24, 0.85, 21.04): re-aim it once the grade lands |
-| 5 | Ashcrown's tier POIs (quench, tier_1–4) | the orbit frames a dark shaft (tier_1 sits inside a banner); still greybox, so its volumes wait for its kit (M3-ARC-1216) |
+| 5 | Ashcrown's tier POIs (quench, tier_1–4) | the kit is in (M3-ENV-1303); re-run `tools/act1/poi_views.py --zones ch05/ashcrown` and add volumes where the orbit is blocked |
 | 4, 5 | the derelict alongside the ferry; Pemakar's harbour at night | the orbit and the new harbour volume read near-black: the grades (M3-ENV-1228, M3-ENV-1229) |
 | 9 | ch09_the_ebbing N09 | framed on the standing mourner; the open hand on the shingle needs the kneeling mourners (character, M3-C09-08 §5: no villager cast has a kneel clip yet, only Toma's `kneel_palms_flat`) |
 
@@ -91,6 +97,6 @@ now has a pan-follow camera volume, each camera picked from rendered previews (i
 | 8 | The storm figure over the water is a cyan capsule (W22) | characters + rendering: new request M3-RND-28 |
 | 8 | Virel is the greybox block in F07, F06_out (fills the frame) | creatures-b, M3-CRE-627 |
 | 7, 8 | The weeping column; the storm wall | rendering, M3-RND-27 |
-| 5 | Ashcrown is greybox: A02, A04, A10, A11, A12 frame bare walls and voids | env-art-b + steep stairs, M3-ARC-1216 |
+| 5 | ~~Ashcrown is greybox~~ on its kit (M3-ENV-1303); A02, A11, A12 re-staged 2026-10-29 | done |
 | 4 | The derelict at night grades near-black (D01, D06, F05 read as nothing) | env-art (Prologue–Ch4), new request M3-ENV-1228 |
 | 6, 8 | Brine Shoals' dusk camp and Corrow's storm read as silhouettes (W15, W07, W13) | env-art-b (Ch5–Ch9 grades), new request M3-ENV-1229 |

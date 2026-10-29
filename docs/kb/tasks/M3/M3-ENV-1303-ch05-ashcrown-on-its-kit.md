@@ -32,3 +32,10 @@ hero-integration's steep-stair traversal (M3-ARC-1216, ADR 0193, `claude/hero-in
   Self-rendered: ch05_ashcrown_{causeway,forecourt,crown,tiers,court}, battle_arena_ashcrown_{forecourt_day,anvil_court}.
 
 ## Review log
+- 2026-10-29 cinematics (act1-chapters): viewed in a flow-order stills pass (`tools/act1/cutscene_stills`, every Ch5
+  Ashcrown scene). The kit reads: the causeway, the gate's arch, the crown pavilion and catch-spire (A04), the anvil
+  hall with the Matron's alcove (A07, A08), the chamber door (A10). Story cameras re-staged on my side after the
+  relayout (A02 aimed 20 m off the party; A11 stood behind Kahre's heart looking out at the void; A12 tilted into the
+  ceiling), plus Kahre's own body behind the shut door for A11 and `chamber_in` in front of the door. Hand edits in
+  `ashcrown_layout.json` (shots A02/A11/A12, marks `chamber_in`, `kahre_bound_at`, actor `kahre`): keep them if you
+  re-run `--relayout`. Field POIs still to re-check (act1-chapters). Verdict: approved for the kit.
