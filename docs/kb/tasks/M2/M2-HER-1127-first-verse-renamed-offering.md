@@ -3,7 +3,7 @@ id: M2-HER-1127
 title: "Request (slice-polish): the First Verse's shrine offerings point at a prop env-art renamed (shrine_offering -> wayside_offering)"
 role: environment
 status: review
-owner_session: ""
+owner_session: "env-art (claude/env-art, 2026-10-29)"
 reviewer: qa
 depends_on: []
 milestone: M2
