@@ -1,0 +1,18 @@
+{
+ "format": 1,
+ "scene": "test_cutscene_arrive",
+ "source": "game/data/dialogue/test/test_cutscene_arrive.dlg",
+ "start": "test_cutscene_arrive",
+ "nodes": {
+  "test_cutscene_arrive": {
+   "headers": {},
+   "ops": [
+    {"op": "cue", "cue": "mark", "args": ["asha", "spot", "walk"], "kwargs": {}, "src": 5},
+    {"op": "cue", "cue": "wait", "args": [], "kwargs": {"arrive": "asha"}, "src": 6},
+    {"op": "line", "id": "test_cutscene_arrive_001", "key": "DLG_TEST_CUTSCENE_ARRIVE_001", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 7},
+    {"op": "cue", "cue": "wait", "args": [], "kwargs": {"arrive": "asha"}, "src": 8},
+    {"op": "line", "id": "test_cutscene_arrive_002", "key": "DLG_TEST_CUTSCENE_ARRIVE_002", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 9}
+   ]
+  }
+ }
+}

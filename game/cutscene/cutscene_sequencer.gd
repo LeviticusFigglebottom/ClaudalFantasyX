@@ -497,6 +497,10 @@ func _cue_wait(step: DialogueStep) -> void:
 		if runner.is_waiting_for_marker():
 			runner.release_wait()
 		return
+	var walk: Dictionary = _motions.get(StringName("move:%s" % step.kwargs.get("arrive", "")), {})
+	if step.kwargs.has("arrive"):  # M2-FP-119: until that actor's walk lands, wherever it set off from
+		await _wait_for(float(walk.get("duration", 0.0)) - float(walk.get("elapsed", 0.0)))
+		return
 	await _wait_for(float(step.args[0]) if not step.args.is_empty() else 0.0)
 
 

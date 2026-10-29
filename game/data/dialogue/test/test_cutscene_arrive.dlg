@@ -1,0 +1,10 @@
+// Fixture for tests/unit/test_cutscene_sequencer.gd (M2-FP-119): `@wait arrive=` holds until a walk lands.
+// Never played by game content.
+title: test_cutscene_arrive
+---
+@mark asha spot walk
+@wait arrive=asha
+Asha [neutral]: Arrive fixture line. #line:test_cutscene_arrive_001
+@wait arrive=asha
+Asha [neutral]: Arrive fixture closing line. #line:test_cutscene_arrive_002
+===

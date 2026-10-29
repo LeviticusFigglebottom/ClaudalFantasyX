@@ -48,7 +48,7 @@ CutsceneStage (director_path, player_path)
 |---|---|
 | `@camera <id> [blend] [ease]` | `play_shot(shot, blend or 0, ease)`, then waits for the move to land. A missing shot warns once and keeps the current camera. |
 | `@camera release [blend] [ease]` | `release(blend or -1, ease)`, then waits. A scene that ends still holding a shot is released with the defaults. |
-| `@wait sec` | Waits. `@wait music=<m> max=<s>` waits `max` (no music markers are reported yet), then `release_wait()`. |
+| `@wait sec` | Waits. `@wait music=<m> max=<s>` waits `max` (no music markers are reported yet), then `release_wait()`. `@wait arrive=<actor>` (M2-FP-119) waits until that actor's current `@mark` walk lands, at once if it isn't walking: for a walk whose length depends on where the player started it (B11). |
 | `@fade in\|out sec [color]` | Fades the overlay and waits for it. A scene whose first fade is `in` starts black. Fading out hides the box. |
 | `@letterbox on\|off` | Slides the bars (`letterbox_sec`) without waiting. |
 | `@mark actor mark [walk\|run]` | Plays the rig's `walk`/`run` clip if it has one (then `idle` on arrival). Turns the actor toward the mark and moves it there at `walk_mps`/`run_mps`, **without waiting**: the next lines play over the walk, and several actors can walk at once. The scene's end completes every move. |

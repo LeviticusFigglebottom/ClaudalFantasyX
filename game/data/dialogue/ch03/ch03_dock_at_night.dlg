@@ -9,8 +9,11 @@
 title: ch03_dock_at_night
 location: ch02/haluna
 ---
+// M2-FP-119: the player sets the scene off from anywhere on the dock, so the walk is as long as it is:
+// the scene waits for him to reach her, then a breath before either turns.
 @mark rhen rhen_by_asha walk
-@wait 6.0
+@wait arrive=rhen
+@wait 0.6
 @anim rhen look_at asha
 @anim asha look_at rhen
 <<if $ch03_rhen_asked_after>>
