@@ -589,6 +589,12 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ 4629dfa6: M3-ENV-1228, the Ch4 derelict at night**, to review. Cold moon fill outboard of her ferry side and
+  astern of her transom (the earlier fill lit only her deck). D01 reads; the transom and name-board read from astern.
+  **Camera split:** D06 and F05 are act1-chapters' cameras (D06 frames the rail over the board; re-aim it). **Checks:**
+  `test_ch04_validate`, `test_brightwater_ferry_kit` (39 OK), validate_data. **SELF-RENDERED:** the Ch4 ferry stills twice,
+  player-eye frames of the transom; `ch04_ferry_derelict` 0.014 and `ch04_ferry_deck` 0.012 from today's earlier renders.
+- **M3-HER-1156 routed to slice-polish** (the causeway's camera volumes are in its ch03 layout; env-art's read in the task).
 - **MERGE-READY @ 2ff511ab (+ this log): M3-ENV-103, Asha's packed bag**, to review (slice-polish swaps it in; the note is in
   the task file). `travel_bundle` in the Haluna kit: indigo cloth packed full, a rolled mat strapped on, rope bands and a
   strap; the BoxMesh's size, origin at its centre. **Checks:** Blender `haluna_kit` (others identical), `test_haluna_kit`,
@@ -674,6 +680,7 @@ Read this section first; everything below it is history. The branch is `claude/e
     (characters/slice-polish), and `reefball_drop_proxy` / `tb_drop_proxy` are env-art-b's (M3-RND-26).
 
 ### PC-QUEUE
+- The Ch4 derelict at night (M3-ENV-1228): how her moon-fill reads at High (D01, the transom, the name-board).
 - `ch01_bell_room`: the room reads washed out in its warm haze on lavapipe (walls, door and Rhen visible). Judge the
   haze and lantern brightness on the real GPU. Also row 4's deck brightness at High.
 - The Ch4 wake night's lagoon reads bright turquoise close to the dock (lavapipe). It is the water shader's night
