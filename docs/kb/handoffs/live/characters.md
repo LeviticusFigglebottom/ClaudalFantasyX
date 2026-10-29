@@ -355,8 +355,12 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
   fp_prologue vigil test, and the union of the portrait manifest (Pell added to ui-menus' 30). Post-merge: Godot
   fp_prologue 8/0, ch01_stage_models 1/0, dialogue_box 26/0, hero_portraits 9/0; zone_cast 3/1 (the fisher idle,
   known since big16); validate_data and taskboard OK.
-- **Next:** M3-CHR-592's last item (Moll's square fringe line: a hairline hook through toma_hair/moll_hair, with the
-  bare-headed Stillguards and Ivo re-verified), then Pell's leftovers (pell_review.md "Still open").
+- MERGE-READY @ fb707070: **M3-CHR-592, Moll's fringe** ends on a broken edge (`_hair.front_break`; toma_hair takes an
+  optional hairline, default Toma's). moll_face viewed before and after. Verify: moll 40/40 identical on all three
+  numpy paths; toma 38, stillguard 178 and ivo 27 identical natively (unchanged); test_moll, test_toma,
+  test_stillguard, test_short_hair_dialogue OK. M3-CHR-592 is in review (rendering).
+- **Next:** Pell's leftovers are GPU-dependent (PC-QUEUE). BACKLOG check: no Lead-routed items open; the self-directed
+  backlog continues with the Act I NPCs' dialogue-range audit.
 - (was) **In progress:** Pell's second look-dev pass (M3-CHR-506, pell_review.md "What still does not read" 1–5): rounder
   lid openings and a dark eye ring, round flat ears, a flat right hand in storm_call and cast, the fur pattern, the
   nape ridge.
