@@ -834,3 +834,21 @@ Merged `origin/claude/new-session-mj8c3c` (pc-gpu.md conflict: kept ours, the ne
 ### PC-QUEUE
 - GPU QA row 40: recheck the Oil Slug in ch01_oil_slug on the RX 9070 XT (LampGlow on real GPU; the arena's lit floor patches are env-art-b's row 15).
 - The Corrow storm figure on real GPU (bloom on the rim; rain over it).
+
+### Primitive pass (continued)
+- Rendered the other 15 Act I regulars' current builds (ashwing, bottle hermit, flue moth, gull harrier, lantern eel, reef crab, sail leech, scuttler, squall wing, stormgull, tower limpet, vein sparker, wall polyp, wallcrab, wreck crab) and viewed them.
+- **The tower limpet read primitive** (a smooth striped cone), so it's rebuilt, 9.1k tris, rig and clips unchanged:
+  - sharp primary and secondary ribs running out into a scalloped margin, growth ledges, a worn pitted apex;
+  - the shutter as louvred slats in a frame with two rusted iron straps, the shell growing over its ends;
+  - barnacle clusters and a fringe of mantle tentacles round the foot.
+  - Portrait re-baked; verify identical. The doc's budget is raised to ≤10k (a lone foe).
+- **Read finished, left as they are:** the wall polyp's stone (worn, chipped, mortared laterite with the carved Watcher; its blockiness is masonry) and the reef crab family (7.9k of an 8k budget; shaped, banded legs, no blockiness at battle distance). The rest read finished.
+- Battle suite on this tree: 790 run, 3 failed, all on the known list (test_battle_act1_ability_vfx's Act II foe effects, test_battle_party_stand_ins' Liss tint, test_battle_result_motion), none from these changes.
+- **Add to the LEAD-ASK baseline list:** creature_tower_limpet (rebuilt).
+
+MERGE-READY @ (this push): the big17 gate reds (test_npc, test_post_import), M3-HER-1142 (the Corrow storm figure), GPU QA row 40 (the Oil Slug), and the primitive pass on the tide crawler and the tower limpet. Checks run: validate_data 0/0, taskboard, gdlint and gdformat (game, tests), tools test_npc, test_post_import and test_creatures; Godot creature 85/0, portrait 21/0, crowd 9/0, villager 37/0, npc 10/0, post_import 21/0, battle 790/3 (known); Blender verify identical for every changed job (crowd_girl_teen, oil_slug, tide_crawler, rim_crawler, tower_limpet). Skipped: coverage (no game/battle or game/progression change) and the full manifest.
+
+BACKLOG EMPTY: the Lead's four items are done.
+- No todo or request tasks for creatures on the board.
+- Every Act I regular reads final in fresh renders.
+- Open items are others': M3-CRE-657 (slice-polish adds the VillagerLayer to GreyboxZone; without it Corrow's crowd and the storm figure appear only in the stages), the baselines (the Lead, at the gate) and the PC-QUEUE (real GPU).
