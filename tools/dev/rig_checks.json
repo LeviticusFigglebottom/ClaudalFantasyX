@@ -403,6 +403,36 @@
         }
       }
     },
+    "pell": {
+      "garments": ["Costume", "Wraps", "Crest"],
+      "props": ["Staff", "NameShell", "NameShellBlank", "NameShellCarved"],
+      "seams": {
+        "groups": [["Body", "Head:skin_head"], ["Costume"], ["Wraps"]],
+        "max_exposed": 23
+      },
+      "_stage_poses": "The crest's two keys (crest_raise, crest_flat) are morph targets, which rig_probe does not apply; tools/tests/test_pell.py checks the Crest clear of the head in both keys (its crest_raise stage pose) instead.",
+      "_allowances": "M3-CHR-506 after the look-dev review (cloud probe at the default stride; every-key worst in brackets). The defaults hold in the idle, walk, talk and the story stand clips except where noted. Costume 45/6 (41.8, the ko/revive squat: the mantle's front fall folds into the belly as he sinks onto his heels and bows his neck to the floor; 36-37 in finisher and cast, 25-28 in attack, item, storm_call: the mantle's arm band against the raised right arm). Body 103/113 (102.8, ko/revive: both forearms on the knees take the right upper arm's front up through the mantle's shoulder cap; 77-78 in cast and storm_call, the right palm on the throat, the elbow kept 22 cm under the shoulder, seen in pell_clip_storm_call and pell_storm_ch8 as the cap's underside at the armpit; 42-46 in item and defend). Wraps 19/6 (18.7, ko/revive: the forearm wrap on the knee; 13.3 in storm_call, the wrap's top turn in the full elbow fold). NameShell 45/6 (42.6, ko/revive: the throat cord with the neck bowed 125 degrees; 16-27 in defend, finisher, storm_call, cast as the trapezius and the thick neck rise under it), NameShellBlank/Carved 20/6 (19.6, ko/revive; 18.9 in storm_call: the palm lies over the shell on the throat, as the sheet stages it; 6-8 in defend, run, attack). Crest 5/4 (4.5, ko/revive: the bowed head lays the crest's tips on the left thigh). max_exposed 23 (15 seen; ko/revive up to 44 mm: the cut edge under the mantle's front fall shows at the belly in the deep squat; 12 verts up to 13 mm in run, attack, defend, read, hit at the right breast under the mantle's front edge). Lower them when the mantle gets a squat-aware fold.",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 45.0,
+          "Wraps": 19.0,
+          "Crest": 5.0,
+          "NameShell": 45.0,
+          "NameShellBlank": 20.0,
+          "NameShellCarved": 20.0,
+          "Body": 103.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Wraps": 6,
+          "Crest": 4,
+          "NameShell": 6,
+          "NameShellBlank": 6,
+          "NameShellCarved": 6,
+          "Body": 113
+        }
+      }
+    },
     "stillguard_a": {
       "garments": [
         "Costume",

@@ -24,7 +24,10 @@
       "id": "slice_end_card_voice",
       "pending_baseline": true,
       "scene": "res://game/flow/end_card.tscn",
-      "resolution": [1920, 1080],
+      "resolution": [
+        1920,
+        1080
+      ],
       "settle_frames": 180,
       "threshold_rmse": 0.004
     },
@@ -32,7 +35,10 @@
       "id": "slice_end_card",
       "pending_baseline": true,
       "scene": "res://game/flow/end_card.tscn",
-      "resolution": [1920, 1080],
+      "resolution": [
+        1920,
+        1080
+      ],
       "settle_frames": 1000,
       "threshold_rmse": 0.004
     },
@@ -7662,6 +7668,146 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "pell_front",
+      "scene": "res://game/levels/_tests/characters/pell/pell_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "pell_back",
+      "scene": "res://game/levels/_tests/characters/pell/pell_stage.tscn",
+      "camera": "Cameras/Back",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "pell_three_quarter",
+      "scene": "res://game/levels/_tests/characters/pell/pell_stage.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "pell_profile",
+      "scene": "res://game/levels/_tests/characters/pell/pell_stage.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "pell_face",
+      "scene": "res://game/levels/_tests/characters/pell/pell_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "pell_face_stylized",
+      "scene": "res://game/levels/_tests/characters/pell/pell_face_stylized.tscn",
+      "camera": "Cameras/Compare",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "pell_face_surprised",
+      "scene": "res://game/levels/_tests/characters/pell/pell_face_surprised.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "pell_face_grief",
+      "scene": "res://game/levels/_tests/characters/pell/pell_face_grief.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "pell_silhouette_lineup",
+      "scene": "res://game/levels/_tests/characters/pell/pell_silhouette_lineup.tscn",
+      "camera": "Cameras/Lineup",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "pell_clip_storm_call",
+      "scene": "res://game/levels/_tests/characters/pell/pell_clip_storm_call.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "pell_clip_walk",
+      "scene": "res://game/levels/_tests/characters/pell/pell_clip_walk.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "pell_battle_idle",
+      "scene": "res://game/levels/_tests/characters/pell/pell_battle_idle.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "pell_battle_attack",
+      "scene": "res://game/levels/_tests/characters/pell/pell_battle_attack.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "pell_storm_ch8",
+      "scene": "res://game/levels/_tests/characters/pell/pell_storm_ch8.tscn",
+      "camera": "Cameras/Parapet",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
     }
   ]
 }
