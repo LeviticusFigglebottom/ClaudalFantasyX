@@ -1,17 +1,25 @@
-# Track rules for the new account (2026-10-25)
+# Track rules (2026-10-25; updated 2026-10-29)
+
+## FROM 2026-10-29: NEW LEAD; THE PC IS OFFLINE FOR A WHILE (this overrides everything below)
+- **Lead:** `session_01Bg3iP7cPGyjbX4CyniBahc`. **Integration branch:** `claude/new-session-mj8c3c`.
+- **The PC (pc-gpu) is OFFLINE for an extended period** (the human's note). Do not wait on it or plan around it.
+  - Keep SELF-RENDERING your own changed shots in your own container, as in the "SELF-RENDERING" section below: ≤15 ids, HYMN_SKIP_BLENDER=1, a unique XDG_DATA_HOME, and VIEW them.
+  - Batch gates run in a cloud **gate** session that the Lead creates.
+  - Real-GPU-only items (GPU QA rows, GPU perf, benchmarks) stay queued for the PC. Log them under `### PC-QUEUE` in your live log, then move on.
+- **Channel:** unchanged. Use `LEAD-ASK:` lines in your live log, plus `MERGE-READY @ <sha>` lines; the Lead polls every 20 min.
 
 Every track session reads this file. The Lead owns it.
 
 ## COMMON RULES (every track)
-- **Project:** "Hymn of the Undertow", an original cinematic CTB RPG in Godot 4.6.3. The repo LeviticusFigglebottom/ClaudalFantasyX is your only memory. The **Lead** is cloud session `session_018aiGwGLGkxsnMnu8VfCu1m`.
-- **Integration branch:** `claude/undertow-lead-handoff-ze8rrn`. It replaces `-423ixt`: wherever a doc says -423ixt, read -ze8rrn. Push ONLY your own track branch. Never push to `main`, the integration branch, or another track's branch.
+- **Project:** "Hymn of the Undertow", an original cinematic CTB RPG in Godot 4.6.3. The repo LeviticusFigglebottom/ClaudalFantasyX is your only memory. The **Lead** is cloud session `session_01Bg3iP7cPGyjbX4CyniBahc` (from 2026-10-29).
+- **Integration branch (from 2026-10-29): `claude/new-session-mj8c3c`.** It was fast-forwarded to `claude/undertow-lead-handoff-ze8rrn` @ 4d64a73e and replaces it. Wherever a doc says -ze8rrn or -423ixt, read `claude/new-session-mj8c3c`. Push ONLY your own track branch. Never push to `main`, the integration branch, or another track's branch.
 - **Read first:**
   1. CLAUDE.md (binding);
   2. `docs/kb/handoffs/live/CONSOLIDATED.md` on the integration branch (§4 process rules, §7 gotchas);
   3. your live log's "STATE AT HANDOVER (2026-10-25)" section on your branch;
   4. docs/kb/STATUS.md, your role's KB folder, and `python3 tools/taskboard.py --role <role>`.
 - **Setup:** `pip install -r tools/requirements.txt`, `python3 tools/dev/fetch_godot.py`, `python3 tools/dev/fetch_render_deps.py`, plus `tools/dev/fetch_blender.py` if you build Blender assets. Then run `godot --headless --path . --import` after every merge.
-- **Start:** `git fetch origin`, then merge `origin/claude/undertow-lead-handoff-ze8rrn` into your branch (merge commits, no rebase or force-push), re-import, and run your scoped tests.
+- **Start:** `git fetch origin`, then merge `origin/claude/new-session-mj8c3c` into your branch (merge commits, no rebase or force-push), re-import, and run your scoped tests.
 - **Guardrails:**
   - the pillars;
   - no Final Fantasy or Square Enix names, terms, music, UI or spell-tier echoes (tools/banned_terms.txt);
@@ -57,6 +65,18 @@ The protocol:
 Batch requests: one line per push, covering every shot your recent items can affect.
 - **Portrait renders:** post `RENDER-REQUEST @ <sha>: portraits:<id>[,portraits:<id>...]; tool: tools/portraits/render.sh --only <id>`. The PC runs render.sh and pushes the PNGs on the same kind of branch. Shot ids must exist in `tests/screenshots/shots.json` at the requested sha; anything else is skipped.
 - **PC import crashes:** if Godot's import aborts, the PC retries it up to 3 times on a fresh `.godot` and never publishes black captures.
+
+## TALKING TO THE LEAD (10-28 13:30): `LEAD-ASK:` lines
+Tracks can't message the Lead directly: send_message and send_later are blocked by permission prompts. So:
+- **To ask the Lead anything** (a decision, a blocker, a merge, a baseline to view), add one line to your live log that starts with `LEAD-ASK:`, then push.
+  - Example: `LEAD-ASK: M2-CHR-542 skirt: option a, b or c?`
+- The Lead scans every track's live log for `LEAD-ASK:` lines every ~20 min and answers by message.
+- **Don't stop and wait for the answer.** Pick the most reasonable option, note it, and keep going. The Lead can overrule.
+- When an ask is answered, change it to `LEAD-ANSWERED:` in your log.
+- **Owners for roles with no track (Lead decision, 10-28):**
+  - rendering tasks: battle-presentation for battle VFX and `effects.json` (M3-BPR-411); env-art-b for zone and kit looks (M3-RND-26, the Reefball drop);
+  - narrative tasks: ui-menus for the codex and field records (M3-NAR-01);
+  - architect and tech: integration-qa.
 
 ## ACT I AT FINAL QUALITY FIRST (ADR 0041, the human's directive, 2026-10-28): THIS OVERRIDES EVERYTHING BELOW
 - **Scope:** the game as it is played, from the title through the end of Act I (Prologue, the slice, Ch1–Ch9, the Reefball match). Every zone, prop, NPC, enemy, boss, Vowbound, cutscene, VFX, sound and menu on that path reaches final quality. **No greybox, no capsules or box stand-ins, no placeholder art or sound.**
