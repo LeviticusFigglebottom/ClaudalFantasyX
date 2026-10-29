@@ -8,6 +8,10 @@
   raft_deck_small  6 x 5 m on two 8 m hulls and four lashed barrels, deck top +0.70
   plank_bridge     6 m span along +Z between deck edges at local y 0 (both ends), 1.1 m wide: sagging stringers,
                    planks lashed across, a rope handrail, lashings wrapped hard round the stringer ends, two stays
+  hull_lashed      the run's low hull (C1-12/13): a 3.2 m open skiff, 1.3 m beam, thrown up across the plank bridge
+                   by the swell and lashed there, keel on the planks at y 0 (origin under its middle), listing; two
+                   lashing lines out to the cut points (lashing_a 2.5 m along +X, lashing_b 6 m along +X and 1.5 m
+                   along +Z), each made off round a stake
   net_pen          the Reefball practice pen and Hullgnaw's arena: a 12 m square of 1.4 m walkways on float logs
                    round a 9.2 m pool, the pen net hung from the walkways into the water, a practice net between
                    two posts on the north side; deck top +0.60, origin at the pool's middle at the waterline
@@ -30,6 +34,7 @@ TRI_BUDGET = {
     "raft_deck_small": (12000, 600),
     "plank_bridge": (5000, 200),
     "net_pen": (16000, 800),
+    "hull_lashed": (4500, 300),
 }
 
 RAFT_DECK_Y = 0.80
@@ -92,6 +97,40 @@ def build_hull_cabin(seed: int = 702) -> list[kc.MeshBuilder]:
             kc.rounded_block(mb, (0.0, -0.18, -1.6), (0.18, 0.12, 0.18), timber, radius=0.02, seg=1)  # mast step
             oc.coil(mb, (0.5, -0.27, 2.9), 0.2, mb.material(oc.M_ROPE), turns=5)
             oc.basket(mb, (-0.5, -0.27, 3.0), 0.2, 0.25, rng)
+        out.append(mb)
+    return out
+
+
+LASHED_LINES = (((0.55, 0.5, 0.25), (2.5, 0.05, 0.0)), ((0.35, 0.62, 1.3), (6.0, 0.05, 1.5)))
+LASHED_LIST_DEG = 7.0
+
+
+def build_hull_lashed(seed: int = 707) -> list[kc.MeshBuilder]:
+    """The run's low hull, lashed across the bridge (see the module docstring)."""
+    out = []
+    roll = math.radians(LASHED_LIST_DEG)
+    for lod in (False, True):
+        rng = kc.rng_for("hull_lashed", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("hull_lashed" + (oc.LOD if lod else ""))
+        h = oc.hull("h", 3.2, 1.3, 0.6, rng, noise, waterline=-0.3, lod=lod, sheer=0.18, open_top=True,
+                    frames=not lod, paint=oc.M_PAINT_TEAL, wear=0.3)
+        mb.merge(h, kc.rot_z(roll), (0.0, 0.6, 0.0))
+        rope = mb.material(oc.M_ROPE)
+        timber = mb.material(oc.M_TIMBER)
+        for a, b in LASHED_LINES:
+            if lod:
+                kc.tube(mb, np.array([a, b], float), 0.02, 3, rope)
+                continue
+            oc.rope(mb, a, b, 0.12, 0.016, rope, n=10)
+            stake_top = np.asarray(b, float) + np.array([0.0, 0.3, 0.0])
+            village_post(mb, np.asarray(b, float) - np.array([0.0, 0.1, 0.0]), stake_top, 0.045, rng, noise, sides=6)
+            oc.lashing(mb, b, (0.0, 1.0, 0.0), 0.045, rope, turns=3)
+        if not lod:
+            # A bailer and an oar in the bilge, a coil of the cut line's spare.
+            kc.plank(mb, (-0.3, 0.2, -1.1), (0.25, 0.24, 1.0), 0.07, 0.03, timber, variation=0.6)
+            oc.coil(mb, (0.15, 0.12, -0.6), 0.13, rope, turns=4, rope_r=0.012)
+        del rng
         out.append(mb)
     return out
 
@@ -315,4 +354,5 @@ TARGETS = {
     "raft_deck_small": build_raft_deck_small,
     "plank_bridge": build_plank_bridge,
     "net_pen": build_net_pen,
+    "hull_lashed": build_hull_lashed,
 }

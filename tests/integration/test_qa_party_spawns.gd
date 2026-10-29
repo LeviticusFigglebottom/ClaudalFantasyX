@@ -86,13 +86,40 @@ func test_the_game_start_hands_the_party_back_after_cutscene_a() -> void:
 	for id: String in ["asha", "toma"]:
 		var a := stage.actor(StringName(id))
 		assert_true(a != null and not a.is_visible_in_tree(), "the stage %s is handed back to the field" % id)
-	assert_eq(party.followers.size(), 1, "Asha follows (Toma waits in reserve)")
+	assert_eq(party.followers.size(), 2, "Asha follows, and Toma from the reserve (followers.include_reserve)")
 	if not party.followers.is_empty():
 		var f := party.followers[0]
 		assert_true(f.is_visible_in_tree(), "her follower shows")
 		var gap := float((HeroFieldActor.field_data().get("followers", {}) as Dictionary).get("min_gap_m", 0.0))
 		assert_true(_flat(f.global_position, player.global_position) >= gap - EPS_M, "clear of Rhen")
 		_assert_follow(player, party, "after Cutscene A")
+	zone.free()
+	Game.state = _state_was
+
+
+## The human's "Trying to cast a freed object" entering a fight: a sequencer the party watches, freed before the party
+## (a zone's teardown, a stage despawned), must not be cast on the party's next frame.
+func test_a_freed_sequencer_is_not_cast() -> void:
+	Game.new_game()
+	var zone := (load(HALUNA) as PackedScene).instantiate() as Node3D
+	_host().add_child(zone)
+	var player := _controller(zone)
+	player.set_physics_process(false)
+	player.set_process_unhandled_input(false)
+	var party := player.get_node(NodePath(String(HeroFieldParty.NAME))) as HeroFieldParty
+	party.set_physics_process(false)
+	party.rescan()
+	var seqs := HeroFieldParty.find_scripted(zone, &"CutsceneSequencer")
+	assert_true(not seqs.is_empty(), "Haluna has a sequencer to watch")
+	var qa := QaLogger.new()
+	OS.add_logger(qa)
+	for s in seqs:
+		s.free()
+	party.should_hide()
+	party.advance(DT)
+	OS.remove_logger(qa)
+	for e in qa.take():
+		assert_true(e["kind"] == QaLogger.KIND_WARNING, "no error with its sequencers freed: %s" % e["text"])
 	zone.free()
 	Game.state = _state_was
 

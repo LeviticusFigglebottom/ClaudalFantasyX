@@ -32,7 +32,7 @@ Liss [determined]: Seat the pin. Seat it. She'll hold. #line:ch08_hoist_003
 @wait 1.0
 @anim toma look_at watchers_mouths
 @wait 1.0
-@mark toma hoist_toma walk
+@mark toma hoist_toma walk via=way_approach_east,way_approach_foot
 @anim toma haul_rope
 @wait 1.0
 ===

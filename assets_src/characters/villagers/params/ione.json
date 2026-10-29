@@ -1,0 +1,114 @@
+{
+  "_about": "Ione Sabe, captain of the Sorrin side at the Tidecup (Ch7, speaker `ione`; act1_ch07.md: a stocky atoll woman with reach-bands to the elbow; names her drowned brother Aldo at the naming), about 34. Broad, strong, short; black hair cropped short for the pool; the Sorrin side kit: a deep-green sleeveless top, slate knee trousers, a coral sash (a coral top read as bare skin against hers); barefoot. Reach-bands left 11, right 10, to the elbow. (M3-CHR-534.) Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials, villager_clips), not by bb_params.",
+  "name": "ione",
+  "height_m": 1.6,
+  "heads_tall": 7.0,
+  "shoulder_width_heads": 1.78,
+  "chest_width_heads": 1.3,
+  "chest_depth_heads": 0.98,
+  "waist_width_heads": 1.2,
+  "hip_width_heads": 1.5,
+  "crotch_height_heads": 3.35,
+  "arm_span_ratio": 1.0,
+  "hand_length_heads": 0.82,
+  "foot_length_ratio": 0.152,
+  "neck_length_heads": 0.36,
+  "neck_width_ratio": 0.58,
+  "head_width_ratio": 0.69,
+  "femininity": 0.85,
+  "muscle": 0.8,
+  "mass": 0.35,
+  "breast": 0.35,
+  "eye_scale": 1.06,
+  "ipd_m": 0.063,
+  "arm_abduction_deg": 47.0,
+  "skin_hex": "#7A4C32",
+  "eye_tilt_deg": 1.0,
+  "jaw_width": 1.06,
+  "cheekbone_height": 0.002,
+  "cheekbone_width": 1.1,
+  "chin_size": 1.02,
+  "nose_bridge_width": 1.14,
+  "nose_tip_projection": 0.9,
+  "lip_fullness": 0.9,
+  "lip_close": 0.6,
+  "lip_seal": 0.96,
+  "lip_lower_fullness": 0.8,
+  "mouth_corner_lift": 0.0,
+  "brow_ridge": 1.0,
+  "donor_mix_african": 0.6,
+  "donor_mix_asian": 0.35,
+  "donor_mix_caucasian": 0.05,
+  "_skin": {
+    "hex": "#7A4C32",
+    "age": 0.2,
+    "freckles": 0,
+    "reach_bands": {
+      "L": 11,
+      "R": 10
+    },
+    "ink_opacity": 0.7,
+    "seed": 134,
+    "lip": "#5E3A30"
+  },
+  "_hair": {
+    "hairline_feather": 1.0,
+    "kind": "short",
+    "hairline": "female",
+    "seed": 54,
+    "length_m": [
+      0.015,
+      0.028
+    ],
+    "scalp_cards": [
+      220,
+      170,
+      110
+    ],
+    "hairline_cards": 50,
+    "rise": 0.8,
+    "colour": "#141417",
+    "underpaint": "#16161A",
+    "spec": "#6A6460"
+  },
+  "_eyes": {
+    "iris": "#22160E"
+  },
+  "_costume": {
+    "top": {
+      "mat": "cloth_c",
+      "hem": "hip",
+      "sleeve": 0.0,
+      "neck_v_m": 0.04,
+      "armhole_drop_m": 0.115,
+      "cover_margin_m": 0.02,
+      "armhole_cut": "tank"
+    },
+    "trousers": {
+      "mat": "cloth_b",
+      "hem": "knee",
+      "loose_m": 0.008
+    },
+    "sash": {
+      "mat": "cloth_a",
+      "width_m": 0.06,
+      "turns": 1
+    }
+  },
+  "_tints": {
+    "cloth_a": "#C46A4E",
+    "cloth_b": "#3A3F48",
+    "cloth_c": "#2E5A4A",
+    "leather": "#FFFFFF"
+  },
+  "_build": {
+    "shapes": "all",
+    "host_snaps": true,
+    "garment_fit": true
+  },
+  "_persona": {
+    "sway": 1.0,
+    "lean": 1.0,
+    "arms_down": 39.0
+  }
+}

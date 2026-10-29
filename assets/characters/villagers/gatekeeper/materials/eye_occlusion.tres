@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/character/character_eye_occlusion.gdshader" id="sh"]
+
+[resource]
+resource_name = "eye_occlusion"
+render_priority = 2
+shader = ExtResource("sh")
+shader_parameter/corner_strength = 0.7
+shader_parameter/upper_strength = 0.95

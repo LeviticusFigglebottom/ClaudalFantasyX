@@ -115,7 +115,7 @@
     {"op": "set", "flag": "ch09_asha_said_they_hung_back", "value": ["lit", true], "src": 152},
     {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 153},
     {"op": "cue", "cue": "camera", "args": ["N17"], "kwargs": {}, "src": 154},
-    {"op": "cue", "cue": "mark", "args": ["pell", "rocks_foot", "walk"], "kwargs": {}, "src": 155},
+    {"op": "cue", "cue": "mark", "args": ["pell", "rocks_foot", "walk"], "kwargs": {"via": "way_rocks_top,way_rocks_down,way_rocks_turn"}, "src": 155},
     {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 156},
     {"op": "cue", "cue": "anim", "args": ["toma", "hand_on_spear"], "kwargs": {}, "src": 157},
     {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 158},

@@ -89,3 +89,26 @@ Before the column build-up (the glow at its surface value), the outside view was
 Glow cost (GPU median, on against off): Inside High 1440p 1.423 / 1.341 ms (+0.08); Outside High 1440p
 1.129 / 1.119 (+0.01); Inside Low 1080p 0.595 / 0.564 (+0.03). Rule 3 never cuts it for performance.
 
+
+## The Tamsule Bell's held drop (M3-RND-26, env-art-b for Rendering, 2026-10-28)
+
+The same rig holds the Ch7 drop through a **profile**: `WaterSphereRig.profile = "tamsule_drop"` lays the data's
+`profiles.tamsule_drop` row over the sections above, key by key (`WaterSphereRig.profile_data`). The empty profile is
+the Reefball arena's ball, unchanged: at `sphere_flatten` 1 and `under.strength` 0 every pass computes what it did.
+
+| Part | How |
+|---|---|
+| **The contract's shape** | `sphere.semi_axis_y_m` (11.5) under `radius_m` (14.0): the passes take `sphere_flatten` = 0.82 and solve the ray in the space where the drop is a unit ball (`sphere_hit`, so the distances stay metres); the wall's normal is `(p − c) / axes²`; the inside distance (`sphere_inside_m`) is exact for a ball and scaled by the short axis for the drop. The mesh is a SphereMesh of the same proportions, grown by the facets' sag; the shafts' FogVolume is 28 × 23 × 28 m. |
+| **Still** (N-12) | `swell_m` 0 and `caustics.speed` 0: the bound drop has no swell, and its web holds. |
+| **Pushed cyan** (colour script ch07) | Transmit and scatter `turquoise_shallow`, deep `lagoon_teal`, over 18 m (the drop reads as a body of water from every side, not clear glass), in-scatter 0.9. |
+| **Its bound light** | The add pass's `bound_glow_*`: `glimmer_bound` × 0.25 × (1 − transmittance), steady (colour rule 2: no sea-glow noise; `sea_glow_strength` 0). |
+| **Light under it** (the shade disc, tamsule_bell.md §0) | `sphere_under_light` in the add pass: an opaque point outside the drop whose ray to the sun crosses it gets the web, in `glimmer_lift_hi` × `under.strength` 2.4, strongest where the ray crossed `lens_m` or more of water, fading over `reach_m` below it; vertical faces (the posts, the pool's coping) take half, faces turned from the sun none. Faces turned down within `reflect_radius_m` of the axis between `floor_m` and `top_m` (the bell's inside, under the gantry head) take the pool's reflected web × `reflect`. It may clip to white (ch07). It's added after the multiply, times the drop's transmittance in front of it. |
+| **God rays** | As the ball's (High and Ultra). |
+
+The weep column is env-art-b's kit piece (`b_column.py`, M3-ENV-1321): the contract's 0.8 → 0.6 m fall from the pool's
+surface 0.3 m up into the drop, in the zones' turquoise `weep_column_water_material`. Placements: the preview
+(`SphereAnchor/Drop`, `SphereAnchor/WeepColumn`), and both Ch7 zones through ZoneKitDressing's `drops` rows.
+
+**Open:** the cost on the PC presets (it adds one web evaluation per pixel in the add pass where `under.strength` > 0;
+the ball's own cost is above). A weep cusp at the drop's foot (the contract allows one) isn't modelled: the column
+enters the drop's lowest point.

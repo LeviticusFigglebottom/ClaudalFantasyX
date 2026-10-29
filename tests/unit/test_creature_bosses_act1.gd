@@ -36,17 +36,20 @@ func test_every_act1_boss_has_the_full_clip_set() -> void:
 		var a := _actor(id)
 		for clip in BOSS_CLIPS:
 			assert_true(a.has_clip(clip), "%s has %s" % [id, clip])
+	before_each()
 
 
 func test_every_act1_boss_intro_fits_the_camera_hold() -> void:
 	for id in BOSSES:
 		var sec := _actor(id).clip_length(&"intro")
 		assert_true(sec >= INTRO_MIN_SEC and sec <= INTRO_MAX_SEC, "%s intro is %.2f s" % [id, sec])
+	before_each()
 
 
 func test_every_act1_boss_has_its_vfx_anchor_bones() -> void:
 	for id in BOSSES:
 		_assert_anchors(id, BOSS_ANCHORS)
+	before_each()
 
 
 func test_every_act1_vowbound_has_its_clips_and_anchor_bones() -> void:
@@ -55,6 +58,7 @@ func test_every_act1_vowbound_has_its_clips_and_anchor_bones() -> void:
 		for clip in VOWBOUND_CLIPS:
 			assert_true(a.has_clip(clip), "%s has %s" % [id, clip])
 		_assert_anchors(id, VOWBOUND_ANCHORS)
+	before_each()
 
 
 func test_every_act1_boss_and_vowbound_stands_in_as_a_real_body() -> void:

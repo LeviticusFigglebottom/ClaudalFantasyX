@@ -12,21 +12,21 @@
     {"op": "cue", "cue": "sfx", "args": ["gulls_far"], "kwargs": {}, "src": 16},
     {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 17},
     {"op": "cue", "cue": "camera", "args": ["W02"], "kwargs": {}, "src": 18},
-    {"op": "cue", "cue": "mark", "args": ["townsfolk_a", "mole_greet_a", "walk"], "kwargs": {}, "src": 19},
-    {"op": "cue", "cue": "mark", "args": ["townsfolk_b", "mole_greet_b", "walk"], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "mark", "args": ["townsfolk_a", "mole_greet_a", "walk"], "kwargs": {"via": "way_mole_parapet"}, "src": 19},
+    {"op": "cue", "cue": "mark", "args": ["townsfolk_b", "mole_greet_b", "walk"], "kwargs": {"via": "way_mole_parapet"}, "src": 20},
     {"op": "cue", "cue": "face", "args": ["asha", "smile", 0.4], "kwargs": {}, "src": 21},
     {"op": "line", "id": "ch08_landfall_001", "key": "DLG_CH08_LANDFALL_001", "speaker": "townsfolk", "emotion": "smile", "voice": "", "src": 22},
     {"op": "line", "id": "ch08_landfall_002", "key": "DLG_CH08_LANDFALL_002", "speaker": "asha", "emotion": "smile", "voice": "", "src": 23},
     {"op": "line", "id": "ch08_landfall_003", "key": "DLG_CH08_LANDFALL_003", "speaker": "townsfolk", "emotion": "soft_smile", "voice": "", "src": 24},
-    {"op": "cue", "cue": "mark", "args": ["asha", "mole_steps_asha", "walk"], "kwargs": {}, "src": 25},
-    {"op": "cue", "cue": "mark", "args": ["toma", "mole_steps_toma", "walk"], "kwargs": {}, "src": 26},
+    {"op": "cue", "cue": "mark", "args": ["asha", "day_asha", "walk"], "kwargs": {"via": "way_mole_parapet,wall_foot"}, "src": 25},
+    {"op": "cue", "cue": "mark", "args": ["toma", "day_toma", "walk"], "kwargs": {"via": "way_mole_parapet,wall_foot"}, "src": 26},
     {"op": "cue", "cue": "wait", "args": [0.8], "kwargs": {}, "src": 27},
     {"op": "line", "id": "ch08_landfall_004", "key": "DLG_CH08_LANDFALL_004", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 28},
-    {"op": "cue", "cue": "mark", "args": ["kerrid", "wall_foot", "walk"], "kwargs": {}, "src": 29},
+    {"op": "cue", "cue": "mark", "args": ["kerrid", "wall_foot", "walk"], "kwargs": {"via": "way_mole_parapet"}, "src": 29},
     {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 30},
     {"op": "line", "id": "ch08_landfall_005", "key": "DLG_CH08_LANDFALL_005", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 31},
     {"op": "line", "id": "ch08_landfall_006", "key": "DLG_CH08_LANDFALL_006", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 32},
-    {"op": "cue", "cue": "wait", "args": [0.6], "kwargs": {}, "src": 33}
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 33}
    ]
   }
  }

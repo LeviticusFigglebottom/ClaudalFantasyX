@@ -46,6 +46,8 @@
     "bell_moorings": [7.0, 0.0, -53.3, 0],
     "east_water": [60, 0, -10, 90],
     "way_quay_bridge_s": [0, 0, 16.4, 180],
+    "drift_liss": [-0.4, 0, 16.6, 180],
+    "drift_ysolde": [0.7, 0, 17.6, 180],
     "way_quay_bridge_n": [0, 0, 11.6, 180],
     "way_gantry_bridge_s": [0, 0, -3.6, 180],
     "way_gantry_bridge_n": [0, 0, -8.4, 180]
@@ -73,6 +75,9 @@
     "T08": {"pos": [31, 2.4, 15], "look_at": [0, 14, -75], "fov": 55},
     "T09": {"pos": [26, 1.5, 0], "look_at": [7.0, 0.6, -53.3], "fov": 20}
   },
+  "camera_volumes": [
+    {"id": "StiltLane", "mode": "pan_follow", "at": [-20.0, 2.0, 4.0], "size": [13.0, 5.0, 6.0], "pos": [-10.5, 4.0, 2.5], "look_at": [-20.0, 1.2, 4.0], "fov": 46.4, "priority": 1}
+  ],
   "triggers": [
     {"id": "npc_market", "activation": "interact", "at": [-6, 0, 3.5], "size": [2, 0, 2], "prompt_key": "FIELD_PROMPT_LISTEN", "payload": {"dialogue": "ch07_bark_market"}},
     {"id": "npc_board", "activation": "interact", "at": [6, 0, -0.5], "size": [2, 0, 2], "prompt_key": "FIELD_PROMPT_LISTEN", "payload": {"dialogue": "ch07_bark_board"}},

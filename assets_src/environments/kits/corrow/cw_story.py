@@ -244,6 +244,30 @@ def build_hoist_basket(seed: int = 887) -> list[kc.MeshBuilder]:
     return out
 
 
+TRADER_BALE_MATS = ("cw_kite_ochre", M_WICKER, "cw_kite_red", M_WICKER)
+
+
+def _bale(mb, c, half, mat_name: str, rng, noise) -> None:
+    """A bale or crate of cargo: a soft block bulging under two rope bands (across its length and its width)."""
+    c = np.asarray(c, float)
+    yaw = float(rng.normal(0.0, 0.12))
+    rot = kc.rot_y(yaw)
+    kc.rounded_block(mb, c, half, mb.material(mat_name), rot=rot, radius=min(half) * 0.45, seg=3, noise=noise,
+                     disp_m=0.04, disp_period_m=0.2, variation=float(rng.random()))
+    hx, hy, hz = half
+    # Two bands round its length and one round its width, drawn tight just outside the softened corners.
+    for ax, frac in (("z", -0.45), ("z", 0.45), ("x", 0.0)):
+        a, b = (hx + 0.02, hy + 0.02) if ax == "z" else (hz + 0.02, hy + 0.02)
+        k = 0.7  # the band pulls the corners in
+        pts = [(a * k, b), (a, b * k), (a, -b * k), (a * k, -b), (-a * k, -b), (-a, -b * k), (-a, b * k), (-a * k, b),
+               (a * k, b)]
+        if ax == "z":
+            ring = np.array([[u, v, frac * hz] for u, v in pts])
+        else:
+            ring = np.array([[frac * hx, v, u] for u, v in pts])
+        kc.tube(mb, ring @ rot.T + c, 0.018, 4, mb.material(cw.M_ROPE), variation=0.3)
+
+
 def build_trader_boat(seed: int = 888, *, length: float = 11.6, beam: float = 3.4) -> list[kc.MeshBuilder]:
     out = []
     for lod in (False, True):
@@ -289,8 +313,11 @@ def build_trader_boat(seed: int = 888, *, length: float = 11.6, beam: float = 3.
                 kc.tube(mb, np.array([mast + [0, 8.3, 0], [side * beam * 0.45, 1.5, mast[2] + 0.3]]), 0.012, 3,
                         mb.material(cw.M_ROPE))
             kc.tube(mb, np.array([mast + [0, 8.3, 0], [0.0, 2.2, -half_l - 0.3]]), 0.012, 3, mb.material(cw.M_ROPE))
-            for (x, z, s) in ((-0.6, 1.2, 0.5), (0.6, 1.4, 0.45), (0.0, 2.6, 0.55), (-0.5, 3.4, 0.4)):
-                _block(mb, (x, 1.49 + s * 0.8, z), (s, s * 0.8, s * 0.9), mb.material(M_SAIL), rng, noise)
+            # The cargo (M3-ENV-1316: plain sail-white blocks read as cubes at Act I's near range): cloth-wrapped bales
+            # in dyed cloth and wicker crates, each bulging under two rope bands, set down a little askew.
+            for k, (x, z, s) in enumerate(((-0.6, 1.2, 0.5), (0.6, 1.4, 0.45), (0.0, 2.6, 0.55), (-0.5, 3.4, 0.4))):
+                _bale(mb, (x, 1.49 + s * 0.8, z), (s, s * 0.8, s * 0.9), TRADER_BALE_MATS[k % len(TRADER_BALE_MATS)],
+                      rng, noise)
         out.append(mb)
     return out
 

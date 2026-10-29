@@ -34,6 +34,7 @@
         ]},
         "raid": {"when": {"set": ["ch06_arrived"], "unset": ["ch06_inquisitor_yielded"]}, "steps": [
           {"place": "LastRidge"},
+          {"zone": "refresh_states"},
           {"play": "ch06_smoke"},
           {"zone": "show_actor", "args": ["liss", true]},
           {"play": "ch06_raid"},

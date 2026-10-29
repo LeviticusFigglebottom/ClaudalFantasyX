@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/npc/haluna_villagers.gd" id="stage"]
+
+[node name="CrowdBrineShoals" type="Node3D"]
+script = ExtResource("stage")
+zone_scene = "res://game/levels/ch06/brine_shoals/brine_shoals.tscn"
+zone_id = &"ch06/brine_shoals"
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Crowd" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.826927, -0.0616251, 0.558923, 0, 0.993977, 0.109593, -0.56231, -0.0906251, 0.821946, -2.5, 1.7, -36.5)
+fov = 45.0

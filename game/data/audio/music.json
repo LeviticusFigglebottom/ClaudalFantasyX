@@ -182,6 +182,9 @@
       "file": "res://assets/audio/music/act3/kerrid_last_night.ogg",
       "_note": "Ch19, Kerrid's last quiet night with Rhen: the stair at rest at 48 BPM under a solo cello, the night sea; 73.7 s, ends open on a held chord (never slows: goodbye_kerrid owns that) (M3-AUD-858); Git LFS"
     },
+    "seawall_hold_rope": {"stems": ["res://assets/audio/music/seawall_hold_p1.ogg", "res://assets/audio/music/seawall_hold_p2.ogg", "res://assets/audio/music/seawall_hold_p3.ogg"], "start_stems": [0, 1], "_note": "M3-AUD-861: wave 2 'The Rope' (ch08_stair_hold_2): seawall_hold's stems, starting with stem 2 already in (the cue's intended wave 2)"},
+    "seawall_hold_last": {"stems": ["res://assets/audio/music/seawall_hold_p1.ogg", "res://assets/audio/music/seawall_hold_p2.ogg", "res://assets/audio/music/seawall_hold_p3.ogg"], "start_stems": [0, 1, 2], "_note": "M3-AUD-861: wave 3 'The Last of the Low Town' (ch08_stair_hold_3): all three of seawall_hold's stems from the start"},
+    "undertow_reach": {"stems": ["res://assets/audio/music/undertows_reach_p1.ogg", "res://assets/audio/music/undertows_reach_p2.ogg", "res://assets/audio/music/undertows_reach_p3.ogg"], "start_stems": [0], "_note": "M3-AUD-861: the scripts' id for `undertows_reach` (ch08_the_reach.dlg): the same stems, so the cutscene plays the whole cue on the deck (CutsceneSound.music)"},
     "cinder_matron": {
       "stems": [
         "res://assets/audio/music/cinder_matron_p1.ogg",
@@ -201,7 +204,7 @@
       "start_stems": [
         0
       ],
-      "_note": "Ch8 boss (M3-AUD-09). No encounter or phase rows until the fight exists; intended: battle.encounters undertows_reach -> undertows_reach, phase `reach_strikes` -> stems_on [1] over 4 s, phase `wall_falls` (the scripted escape) -> stems_on [2] over 2 s"
+      "_note": "Ch8 boss (M3-AUD-09): battle.encounters undertows_reach plays it; its phases `dark` (60% HP) and `breach` (30%) bring in stems 1 and 2 (M3-AUD-861)"
     },
     "oruvel": {
       "file": "res://assets/audio/music/oruvel.ogg",
@@ -343,7 +346,7 @@
       "start_stems": [
         0
       ],
-      "_note": "Ch8 B10-B14, the seawall's three waves (ch08_first_down.dlg, ch08_hoist.dlg, ch08_stranger_on_wall.dlg) (M3-AUD-822). No encounter or wave rows until the set piece exists; intended: wave 2 `The Rope` -> stems_on [1], wave 3 -> stems_on [2], each over 3 s"
+      "_note": "Ch8 B10-B14, the seawall's three waves (ch08_first_down.dlg, ch08_hoist.dlg, ch08_stranger_on_wall.dlg) (M3-AUD-822). The set piece's waves play it: ch08_stair_hold_1 here, 2 as seawall_hold_rope (stems 0-1 in), 3 as seawall_hold_last (all three) (M3-AUD-861)"
     }
 ,
     "hearer_hum": {
@@ -353,7 +356,7 @@
 ,
     "ysolde_theme": {
       "file": "res://assets/audio/music/ysolde_theme.ogg",
-      "_note": "Ysolde's theme, a sketch: Ch4 C4-07 The Ink (ch04_the_ink.dlg) and C4-09 the gangplank (ch04_gangplank.dlg); a loop (M3-AUD-820); the sequencer plays it by name"
+      "_note": "Ysolde's theme, the final (M3-AUD-863, grown from M3-AUD-820's first version): Ch4 C4-07 The Ink (ch04_the_ink.dlg) and C4-09 the gangplank (ch04_gangplank.dlg); a 91.4 s loop; the sequencer plays it by name"
     }
 ,
     "name_board_home": {
@@ -442,7 +445,8 @@
     "default": "battle_standard_v2",
     "encounters": {
       "drownbell": "drownbell",
-      "ch01_hullgnaw": "hullgnaw", "ch04_spar_wraith": "spar_wraith", "ch05_cinder_matron": "cinder_matron", "ch06_inquisitor": "stillguard_inquisitor"
+      "ch01_hullgnaw": "hullgnaw", "ch04_spar_wraith": "spar_wraith", "ch05_cinder_matron": "cinder_matron", "ch06_inquisitor": "stillguard_inquisitor",
+      "ch08_stair_hold_1": "seawall_hold", "ch08_stair_hold_2": "seawall_hold_rope", "ch08_stair_hold_3": "seawall_hold_last", "undertows_reach": "undertows_reach"
     },
     "phases": {
       "flood": {
@@ -451,7 +455,9 @@
         ],
         "sec": 4.0,
         "_note": "the Flood (phase 2): low strings and the rising water come in over 4 s"
-      }, "pour": {"stems_on": [1], "sec": 3.0, "_note": "M3-AUD-828: the Cinder Matron's Pour (phase 2): its second stem over 3 s"}
+      }, "pour": {"stems_on": [1], "sec": 3.0, "_note": "M3-AUD-828: the Cinder Matron's Pour (phase 2): its second stem over 3 s"},
+      "dark": {"stems_on": [1], "sec": 4.0, "_note": "M3-AUD-861: the Undertow's Reach at 60% HP (the storm goes dark): its second stem over 4 s"},
+      "breach": {"stems_on": [2], "sec": 2.0, "_note": "M3-AUD-861: the Reach's Breach at 30% HP (the wall gives; the scripted escape follows): its third stem over 2 s"}
     }
   }
 }

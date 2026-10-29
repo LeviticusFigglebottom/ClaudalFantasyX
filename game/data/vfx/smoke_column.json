@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "doc": "M3-RND-21: SmokeColumn (game/vfx/smoke/smoke_column.gd, game/vfx/smoke/smoke_column.gdshader). docs/kb/tech/smoke.md. A column is a row of `columns` (its shape and light, in the kit plume's frame: up +Y, leaning downwind toward +X); `quality` sets the march's steps per preset. Colours are palette swatches (named in `swatches`) or the colour script's ch06 smoke values.",
+  "columns": {
+    "camp": {
+      "_note": "The Brine Shoals raid camp (colour script ch06; the kit's bs_smoke values): grey to grey-brown, a darker core, lit tops, backlit glow, warmed at the base by the fire. The shape is the kit's smoke_plume (bs_camp.py): 14 m up, leaning 9 m downwind, 0.45 to 4.0 m.",
+      "height_m": 14.0,
+      "lean_m": 9.0,
+      "base_radius_m": 0.45,
+      "top_radius_m": 4.0,
+      "density": 1.2,
+      "top_thin": 0.65,
+      "base_fade": 0.06,
+      "top_fade": 0.35,
+      "edge_noise": 0.9,
+      "noise_scale_per_m": 0.32,
+      "rise_m_s": 0.5,
+      "col_lit": "#C4BCAE",
+      "col_core": "#2E2C2A",
+      "col_fire": "#E0702E",
+      "light_energy": 1.3,
+      "fire_glow": 0.3,
+      "fire_band": 0.12,
+      "forward_scatter": 0.6
+    }
+  },
+  "swatches": {
+    "col_fire": "ember_orange"
+  },
+  "quality": {
+    "low": {
+      "steps": 12
+    },
+    "medium": {
+      "steps": 20
+    },
+    "high": {
+      "steps": 32
+    },
+    "ultra": {
+      "steps": 48
+    }
+  }
+}

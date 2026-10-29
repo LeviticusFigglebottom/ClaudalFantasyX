@@ -2,7 +2,7 @@
 id: M3-ENV-743
 title: "Ch4 wake night: a ZoneKitDressing for the haluna_wake greybox, with its ground, lane houses and short dock"
 role: environment
-status: review
+status: done
 owner_session: "env-art (session_01YbaV2c8yquRHqj6afQYg89)"
 depends_on: [M3-ENV-709]
 milestone: M3
@@ -37,4 +37,12 @@ own frame from the Haluna kit and M3-ENV-709's wake set (the M3-C04-03 wake-nigh
   stands 0.5 m from Neme's house front, so the house fills the left half (as in the greybox); C01's camera is
   1.5 m south of the 2 m wall and below its top, so the frame is the wall's coping, not the causeway.
 
+- 2026-10-28 (env-art): **DROPPED, superseded** (the Lead's word, 10-28). Ch4's wake no longer stands on a greybox
+  zone: act1-chapters' M3-C04-1226 put it on the real Haluna at night (ADR 0041). This dressing's frame (the
+  greybox blocks) is gone, and its preview cameras landed inside walls (the GPU QA's row 24). Removed:
+  `wake_zone_dressing.py`, `assets/environments/zones/ch04/**`, the preview `game/levels/_tests/haluna_wake_dressing/`,
+  the eight `zone_wake_*` shots and their PROVENANCE rows. The kit pieces it made (`wake_ground`, `wake_shell_set`,
+  the lane houses, `dock_haluna_short`) stay in the Haluna kit.
+
 ## Review log
+- 2026-10-28 Lead (relayed by env-art from the Lead's message: "Drop M3-ENV-743/744 if they're dead (superseded); say so in their task files"): dropped, superseded by M3-C04-1226. No cinematics review is owed; nothing was mounted.

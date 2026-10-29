@@ -86,15 +86,24 @@ def _height(X, Z, noise_h):
     return h * (1.0 - w) + (landing()[1] + LAND_BED_DY) * w
 
 
+# M3-ENV-1316: the kit's fine grid stops 8.5 m north of the landing (z -50); the hill the arena's cameras see rises
+# beyond it on 8-9 m cells (broad facets, and scrub set on the ground's true height floated over them). The arena's
+# ground carries the fine grid on north to ARENA_FINE_Z's start, a little coarser there to stay in budget.
+ARENA_FINE_Z = (-120.0, 6.0, 1.75)
+
+
 def build_ground(name: str = "arena_headland_ground", seed: int = 1101) -> list[kc.MeshBuilder]:
     old = cs.ground_height
+    old_fine = ch.FINE_Z
     noise_h = cs.headland_noise()
     with _Levelled():
         cs.ground_height = lambda X, Z, noise=None: _height(X, Z, noise_h)
+        ch.FINE_Z = ARENA_FINE_Z
         try:
             out = ch.build_ground(name, seed)
         finally:
             cs.ground_height = old
+            ch.FINE_Z = old_fine
     return out
 
 

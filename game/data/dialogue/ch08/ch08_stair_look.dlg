@@ -11,5 +11,5 @@ location: ch08/corrow
 @face asha neutral
 @wait 1.0
 @wait 1.5
-@mark asha stair_head_on walk
+@mark asha stair_head_on walk via=way_approach_top
 ===

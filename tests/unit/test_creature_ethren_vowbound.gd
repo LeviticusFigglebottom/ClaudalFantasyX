@@ -77,6 +77,7 @@ func test_the_vowbound_stand_in_resolves_to_the_model() -> void:
 	assert_true(is_equal_approx(float(spec["height"]), HEIGHT_M), "his own height drives the VFX anchors")
 	assert_true(is_equal_approx(float(spec["radius"]), RADIUS_M), "and his ring fits the robe's hem")
 	assert_false(CreatureModels.models().has("ethren"), "he is no enemy")
+	before_each()
 
 
 func test_the_scene_loads_headless_with_its_clips() -> void:
@@ -94,6 +95,7 @@ func test_the_scene_loads_headless_with_its_clips() -> void:
 	assert_true(skel.find_bone("finger_l1") >= 0, "the ring hand's ring-finger group")
 	var veil := a.find_children("ethren_veil", "MeshInstance3D", true, false)
 	assert_eq(veil.size(), 1, "the veil is its own mesh, so cinematics can drop it")
+	before_each()
 
 
 func test_the_stand_in_plays_the_stage_clips_on_the_model() -> void:
@@ -107,6 +109,7 @@ func test_the_stand_in_plays_the_stage_clips_on_the_model() -> void:
 	assert_true(BattleClips.play(f, &"ko"), "the fall's clip")
 	f.set_ko(true, 0.25, 0.35)
 	assert_true(f.creature().is_ko())
+	before_each()
 
 
 func test_the_idle_is_still_and_the_veil_never_moves() -> void:
@@ -129,6 +132,7 @@ func test_the_idle_is_still_and_the_veil_never_moves() -> void:
 				pose.origin.distance_to(rest.origin) < VEIL_TOL and pose.basis.is_equal_approx(rest.basis),
 				"the veil is still on the head in %s at %.2f s" % [clip, t]
 			)
+	before_each()
 
 
 func test_the_wings_open_only_when_he_acts() -> void:
@@ -139,6 +143,7 @@ func test_the_wings_open_only_when_he_acts() -> void:
 	for clip: StringName in OPEN_IN:
 		var skel := _pose(a, clip, float(OPEN_IN[clip]))
 		assert_true(_wing_span(skel) > OPEN_M, "the wings open in %s" % clip)
+	before_each()
 
 
 func test_the_clips_follow_the_sheet() -> void:
@@ -167,6 +172,7 @@ func test_the_clips_follow_the_sheet() -> void:
 	var pressed := _bone_at(skel, "hand_l").y
 	assert_true(held - pressed > SPECIAL_PRESS_M, "Still Water presses both hands down at the contact")
 	assert_true(pressed < hands0, "below where they rest")
+	before_each()
 
 
 func _wing_span(skel: Skeleton3D) -> float:

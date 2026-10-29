@@ -1,0 +1,13 @@
+{
+  "_about": "Pell's name as his clutch would whistle it, carved on the Act III name-shell (pell.md §3, art decision on the Kirru whistle-click speech, §12 Q4 carried with this default): a spiral of notches from the rim to the centre, long (`L`) and short (`S`), in the order of the whistle. Never letters of any script. pell_textures draws the carving on the `shell_carved` island from these numbers: `turns` round the shell, the spiral from `r_outer` to `r_inner` (fractions of the shell's radius), each notch `long_frac` or `short_frac` of the spiral's pitch deep across the groove and `width_deg` wide along it, with `gap_deg` between notches.",
+  "sequence": "LSSLSLLSLSSLLSLS",
+  "turns": 2.25,
+  "r_outer": 0.86,
+  "r_inner": 0.18,
+  "long_frac": 0.8,
+  "short_frac": 0.42,
+  "width_deg": 9.0,
+  "gap_deg": 14.0,
+  "scratch_count": 40,
+  "_scratch_about": "the blank shell's faint radial scratches where the old carving was ground off (bible §8: 'ground blank'), seeded"
+}

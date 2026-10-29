@@ -14,7 +14,7 @@ const SCENES: Array[String] = [
 	"res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn",
 ]
 ## The battle arenas these zones fight in, by their arenas.json id (env-art's kits; the greybox ones under
-## game/battle/arenas/ only feed their preview shots).
+## game/battle/arenas/ were retired, M3-ENV-737).
 const ARENAS: Array[StringName] = [
 	&"tideline_dawn",
 	&"causeway_route_afternoon",
@@ -30,7 +30,6 @@ const KNOWN: Dictionary = {
 	"Set/ChamberPassage": "env-art's passage behind the shrine's east door (part of its dressing)",
 	"Dressing/ChamberPassage": "the same, in the shrine level",
 	"Room/InnerPoolWater/": "the First Verse's pool water (a flat octagon, the shrine level's own shape)",
-	"Greybox/LowHull/": "Ch1's lashed low hull (C1-13's run), kept greybox until a kit piece fits it",
 	"Underwater/UnderwaterPost": "the UnderwaterRig's full-screen post passes (quads, never seen as shapes)",
 }
 

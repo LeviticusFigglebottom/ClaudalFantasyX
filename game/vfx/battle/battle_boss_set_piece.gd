@@ -3,7 +3,8 @@ extends Node
 ## M3-BPR-420 / M3-HER-1148 (ADR 0041): an Act I boss's set-piece VFX (boss_vfx.json `bosses`, kind "set_piece"):
 ## `gather` plays on the boss as it starts gathering a charge and on each later turn of it, `phases` plays a phase's
 ## moment when it changes, and `ko` plays once when the boss falls. Every value is an effects.json id that BattleVfx
-## plays. The Drownbell's rig is BattleBossVfx. A view: it never writes combat state.
+## plays, on the model's anchor bone when it names one (M3-CRB-009), else at the stand-in's anchor heights. The
+## Drownbell's rig is BattleBossVfx. A view: it never writes combat state.
 
 const KIND := "set_piece"
 
@@ -12,6 +13,7 @@ var boss_id: StringName = &""
 var played: Array = []
 
 var _vfx: BattleVfx
+var _ctl: BattleController
 var _engine: BattleEngine
 var _row: Dictionary = {}
 var _fell := false
@@ -29,6 +31,7 @@ static func attach_all(vfx: BattleVfx, controller: BattleController, engine: Bat
 		sp.name = "SetPiece_%s" % String(c.id).replace("#", "_")
 		sp.boss_id = c.id
 		sp._vfx = vfx
+		sp._ctl = controller
 		sp._engine = engine
 		sp._row = row
 		vfx.add_child(sp)
@@ -47,8 +50,23 @@ static func attach_all(vfx: BattleVfx, controller: BattleController, engine: Bat
 func _play(moment: String, effect: String) -> void:
 	if effect == "":
 		return
-	_vfx.play(StringName(effect), boss_id)
+	var at := _model_anchor(moment)
+	if at != Vector3.INF:
+		_vfx.play_at(StringName(effect), at)  # M3-CRB-009: on the model's own anchor bone
+	else:
+		_vfx.play(StringName(effect), boss_id)
 	played.append([moment, effect])
+
+
+## M3-CRB-009: the boss model's anchor bone for a moment (creatures.json vfx_anchors through CreatureActor.vfx_anchor):
+## `phase` for a phase change, else `core`; Vector3.INF when the model names none (the stand-in's anchor heights).
+func _model_anchor(moment: String) -> Vector3:
+	var f := _ctl.stage.stand_in(boss_id) if _ctl != null and _ctl.stage.has_fighter(boss_id) else null
+	var actor := f.creature() if f != null else null
+	if actor == null:
+		return Vector3.INF
+	var at := actor.vfx_anchor(&"phase") if moment == "phase" else Vector3.INF
+	return at if at != Vector3.INF else actor.vfx_anchor(CreatureActor.ANCHOR_CORE)
 
 
 func _on_charge_started(actor: BattleCombatant, _skill_id: StringName, _turns: int) -> void:

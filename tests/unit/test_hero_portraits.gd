@@ -9,7 +9,39 @@ extends TestCase
 const MANIFEST := "res://tools/portraits/portraits.json"
 const PROVENANCE := "res://assets/PROVENANCE.md"
 const EMOTIONS := "res://game/data/dialogue/emotions.json"
-const HEROES: Array[StringName] = [&"rhen", &"asha", &"toma", &"ysolde", &"liss", &"kerrid", &"moll", &"sefir"]
+const HEROES: Array[StringName] = [
+	&"rhen",
+	&"asha",
+	&"toma",
+	&"ysolde",
+	&"liss",
+	&"kerrid",
+	&"moll",
+	&"sefir",
+	&"stillguard",
+	&"ivo",
+	# The Act I townsfolk who speak (claude/characters' villager stages; dialogue speaker ids).
+	&"tavi",
+	&"kell",
+	&"garo",
+	&"neme",
+	&"osu",
+	&"fenn",
+	&"hobb",
+	&"marra",
+	&"sabe",
+	&"ione",
+	&"skipper_sadi",
+	&"poolkeeper",
+	&"scaleman",
+	&"ferrymaster",
+	&"tender",
+	&"reed",
+	&"netmender",
+	&"fisher",
+	&"vendor",
+	&"child"
+]
 ## The six party heroes (the pages below stand them up).
 const PARTY: Array[StringName] = [&"rhen", &"asha", &"toma", &"ysolde", &"liss", &"kerrid"]
 ## The party the formation case stands up (Kerrid, with no portrait yet, joins it in reserve).
@@ -29,7 +61,11 @@ func test_every_manifest_portrait_exists_with_a_provenance_row() -> void:
 	var manifest := _json(MANIFEST)
 	var heroes: Array = manifest.get("heroes", [])
 	var size: Array = (manifest.get("defaults", {}) as Dictionary).get("size", [])
-	assert_eq(heroes.size(), HEROES.size(), "the party, and the people who speak or fight with a face (Moll, Sefir)")
+	assert_eq(
+		heroes.size(),
+		HEROES.size(),
+		"the party, and the people who speak or fight with a face (Moll, Sefir, the Stillguard, the townsfolk)"
+	)
 	assert_true(manifest.get("creatures") is Array, "room for the bestiary's creatures")
 	var provenance := FileAccess.get_file_as_string(PROVENANCE)
 	var tags: Array[String] = []
@@ -39,8 +75,10 @@ func test_every_manifest_portrait_exists_with_a_provenance_row() -> void:
 		var id := StringName(str(h["id"]))
 		var emotions: Array = h["emotions"]
 		assert_true(emotions.has(str(HeroPortraits.fallback_emotion())), "%s has the fallback portrait" % id)
-		assert_true(emotions.size() >= 3, "%s has expressions" % id)
-		var poses: Dictionary = _json(str(h["face_poses"])).get("emotions", {})
+		# A speaking extra whose stage has no face-pose table (the Stillguard) has the neutral portrait alone.
+		var posed := str(h["face_poses"]) != ""
+		assert_true(emotions.size() >= 3 if posed else emotions == ["neutral"], "%s has expressions" % id)
+		var poses: Dictionary = _json(str(h["face_poses"])).get("emotions", {}) if posed else {"neutral": {}}
 		for emotion: String in emotions:
 			var path := HeroPortraits.path_for(id, StringName(emotion))
 			assert_eq(path, str(h["out_dir"]).path_join("%s_%s.png" % [id, emotion]), "the lookup's path")

@@ -108,97 +108,178 @@ def piers(corners: list[tuple[float, float]], centre: tuple[float, float]) -> li
             for x, z in corners]
 
 
+def gb_wall(b: dict, wid: str, inside: int, kinds: tuple[str, ...], **kw) -> list[dict]:
+    """Bays on greybox wall block `wid` (M3-ENV-105): each bay's inner face on the block's inner face (the side
+    `inside` points to), along the block's own span, so what the player sees is what stops them."""
+    blk = b[wid]
+    (px, _py, pz), (sx, _sy, sz) = blk["pos"], blk["size"]
+    if sx >= sz:  # along x
+        return wall(pz + inside * sz * 0.5, px - sx * 0.5, px + sx * 0.5, along="x", inside=inside, kinds=kinds, **kw)
+    return wall(px + inside * sx * 0.5, pz - sz * 0.5, pz + sz * 0.5, along="z", inside=inside, kinds=kinds, **kw)
+
+
+def inner(b: dict, wid: str, inside: int) -> float:
+    """A wall block's inner face (its line coordinate on the room's side)."""
+    (px, _py, pz), (sx, _sy, sz) = b[wid]["pos"], b[wid]["size"]
+    return pz + inside * sz * 0.5 if sx >= sz else px + inside * sx * 0.5
+
+
+def room_piers(b: dict, xw: tuple[str, int], zw: tuple[str, int], centre: tuple[float, float]) -> list[dict]:
+    """A pier at the corner of two walls' inner faces."""
+    return piers([(inner(b, *xw), inner(b, *zw))], centre)
+
+
 def pieces() -> list[dict]:
     b = _blocks()
     out: list[dict] = []
-    # The crown (x -8..8, z -2..18): the tower's broken top, open to Oruvel's hulls; the tether down from them.
-    out += floor(-8.0, 8.0, -2.0, 18.0, 4.0)
-    out += wall(-2.0, -8.0, 8.0, along="x", inside=1, kinds=CROWN_BAYS)
-    out += wall(18.0, -8.0, 8.0, along="x", inside=-1, kinds=CROWN_BAYS[1:] + CROWN_BAYS[:1])
-    out += wall(-8.0, -2.0, 18.0, along="z", inside=1, kinds=CROWN_BAYS)
-    out += wall(8.0, -2.0, 18.0, along="z", inside=-1, kinds=CROWN_BAYS[2:] + CROWN_BAYS[:2])
-    out += piers([(-8.0, -2.0), (8.0, -2.0), (-8.0, 18.0), (8.0, 18.0)], (0.0, 8.0))
+    # The crown: the tower's broken top, open to Oruvel's hulls; the tether down from them.
+    out += floor(-9.0, 9.0, -4.0, 20.0, SLAB)
+    out += gb_wall(b, "CrownWallN", 1, CROWN_BAYS)
+    out += gb_wall(b, "CrownWallS", -1, CROWN_BAYS[1:] + CROWN_BAYS[:1])
+    out += gb_wall(b, "CrownWallW", 1, CROWN_BAYS)
+    out += gb_wall(b, "CrownWallE", -1, CROWN_BAYS[2:] + CROWN_BAYS[:2])
+    for xw in (("CrownWallW", 1), ("CrownWallE", -1)):
+        for zw in (("CrownWallN", 1), ("CrownWallS", -1)):
+            out += room_piers(b, xw, zw, (0.0, 8.0))
     lat = b["SurfaceLattice"]
     out.append(put("hull_keels", lat["pos"][0] - 3.0, SURFACE_Y, lat["pos"][2] + 3.0, 70.0, block="SurfaceLattice"))
     ct = b["CrownTether"]
     out.append(put("tether_line", ct["pos"][0], TETHER_Y, ct["pos"][2], 0.0, block="CrownTether"))
-    out.append(put("coral_head_a", -6.4, 0.0, 16.2, 40.0))
-    out.append(put("coral_head_b", 6.3, 0.0, 9.0, 160.0))
-    out.append(put("seagrass_patch", -5.5, 0.0, 9.5, 20.0))
-    out.append(put("lit_fragments", 5.6, 0.0, 15.8, 210.0))
-    # The first bell-room (x 34..46, z 2..14): sealed, blind bays; the hinge door in the north wall on BellDoor.
+    out.append(put("coral_head_a", -7.2, 0.0, 18.2, 40.0))
+    out.append(put("coral_head_b", 7.2, 0.0, 9.0, 160.0))
+    out.append(put("seagrass_patch", -6.0, 0.0, 9.5, 20.0))
+    out.append(put("lit_fragments", 6.4, 0.0, 17.0, 210.0))
+    # The first bell-room: sealed, blind bays; the hinge door in the north wall on BellDoor; its walls dressed (the
+    # tower's service pipe, coral where the current reaches, a fallen lamp-column, the divers' lantern at the rest).
     door = b["BellDoor"]
     out += floor(34.0, 46.0, 2.0, 14.0)
-    out += wall(2.0, 34.0, 46.0, along="x", inside=1, kinds=("tower_bay_solid",),
-                centres=[door["pos"][0] - 2 * ot.BAY_W, door["pos"][0] - ot.BAY_W, door["pos"][0]],
-                overrides={2: "hinge_door"})
-    out += wall(14.0, 34.0, 46.0, along="x", inside=-1, kinds=("tower_bay_solid",))
-    out += wall(34.0, 2.0, 14.0, along="z", inside=1, kinds=("tower_bay_solid",))
-    out += wall(46.0, 2.0, 14.0, along="z", inside=-1, kinds=("tower_bay_solid",))
-    out += piers([(34.0, 2.0), (46.0, 2.0), (34.0, 14.0), (46.0, 14.0)], (40.0, 8.0))
+    out += gb_wall(b, "BellWallN", 1, ("tower_bay_solid",),
+                   centres=[door["pos"][0] - 2 * ot.BAY_W, door["pos"][0] - ot.BAY_W, door["pos"][0]],
+                   overrides={2: "hinge_door"})
+    out += gb_wall(b, "BellWallS", -1, ("tower_bay_solid",))
+    out += gb_wall(b, "BellWallW", 1, ("tower_bay_solid",))
+    out += gb_wall(b, "BellWallE", -1, ("tower_bay_solid",))
+    for xw in (("BellWallW", 1), ("BellWallE", -1)):
+        for zw in (("BellWallN", 1), ("BellWallS", -1)):
+            out += room_piers(b, xw, zw, (40.0, 8.0))
     bt = b["BellTether"]
     out.append(put("tether_line", bt["pos"][0], TETHER_Y, bt["pos"][2], 0.0, block="BellTether"))
-    out.append(put("diver_lantern", 45.0, 0.25, 13.2, 30.0))
-    out.append(put("lit_fragments", 35.2, 0.0, 12.6, 100.0))
-    # The galleries (x 74..86, z -40..20): window and blind bays, the tin's alcove off the west wall (z -6..-2) behind
-    # the coral curtain, open to the gauge room on the east (z -40..-20); the four lamp-columns on their blocks.
+    out += [put("diver_lantern", 44.8, 0.25, 13.1, 30.0), put("lit_fragments", 35.6, 0.0, 12.6, 100.0),
+            put("pipe_run", 34.6, 0.0, 9.0, 90.0), put("coral_head_a", 35.4, 0.0, 13.0, 75.0, scale=0.8),
+            put("coral_head_b", 45.0, 0.0, 11.0, 210.0, scale=0.7), put("lamp_column_fallen", 42.5, 0.0, 9.0, 160.0),
+            put("seagrass_patch", 37.0, 0.0, 12.6, 40.0)]
+    # The galleries: window and blind bays; the tin's alcove off the west wall behind the coral curtain (the gap
+    # between GalleryWallW1 and W2); open to the gauge room on the east (below GalleryWallE); the four lamp-columns.
     out += floor(74.0, 86.0, -34.0, 20.0)
     out += stairwell(b)
-    out += wall(74.0, -2.0, 20.0, along="z", inside=1, kinds=GALLERY_BAYS, anchor="a0")
-    out += wall(74.0, -40.0, -6.0, along="z", inside=1, kinds=GALLERY_BAYS, anchor="a1")
-    out += wall(86.0, -20.0, 20.0, along="z", inside=-1, kinds=GALLERY_BAYS[::-1], anchor="a0")
-    out += wall(20.0, 74.0, 86.0, along="x", inside=-1, kinds=GALLERY_BAYS)
-    out += wall(-40.0, 74.0, 100.0, along="x", inside=1, kinds=("tower_bay_solid",))
-    out += piers([(74.0, 20.0), (86.0, 20.0), (74.0, -2.0), (74.0, -6.0), (86.0, -20.0), (74.0, -40.0)], (80.0, -10.0))
+    out += gb_wall(b, "GalleryWallW1", 1, GALLERY_BAYS, anchor="a0")
+    out += gb_wall(b, "GalleryWallW2", 1, GALLERY_BAYS, anchor="a1")
+    out += gb_wall(b, "GalleryWallE", -1, GALLERY_BAYS[::-1], anchor="a0")
+    out += gb_wall(b, "GalleryWallS", -1, GALLERY_BAYS)
+    out += gb_wall(b, "GalleryWallN", 1, ("tower_bay_solid",))
+    w, e = inner(b, "GalleryWallW1", 1), inner(b, "GalleryWallE", -1)
+    s_, n_ = inner(b, "GalleryWallS", -1), inner(b, "GalleryWallN", 1)
+    out += piers([(w, s_), (e, s_), (w, n_), (w, b["GalleryWallW1"]["pos"][2] - b["GalleryWallW1"]["size"][2] * 0.5),
+                  (w, b["GalleryWallW2"]["pos"][2] + b["GalleryWallW2"]["size"][2] * 0.5),
+                  (e, b["GalleryWallE"]["pos"][2] - b["GalleryWallE"]["size"][2] * 0.5)], (80.0, -10.0))
     for k in range(1, 5):
         lc = b[f"LampColumn{k}"]
-        out.append(put("lamp_column", lc["pos"][0], 0.0, lc["pos"][2], 47.0 * k))
+        out.append(put("lamp_column", lc["pos"][0], 0.0, lc["pos"][2], 47.0 * k, block=f"LampColumn{k}"))
     out.append(put("lit_fragments", 74.9, 0.0, -14.0, 300.0))
     out.append(put("lit_fragments", 85.2, 0.0, 9.0, 120.0))
-    # The tin's alcove (x 68.5..74, z -6..-2).
-    out += floor(68.5, 74.0, -6.75, -1.25, 5.5)
-    out += wall(68.5, -6.0, -2.0, along="z", inside=1, kinds=("tower_bay_solid",))
-    out += wall(-6.0, 68.5, 74.0, along="x", inside=1, kinds=("tower_bay_solid",), centres=[74.0 - ot.BAY_W * 0.5])
-    out += wall(-2.0, 68.5, 74.0, along="x", inside=-1, kinds=("tower_bay_solid",), centres=[74.0 - ot.BAY_W * 0.5])
+    # The tin's alcove.
+    out += floor(68.0, 74.0, -4.0, 2.0)
+    out += gb_wall(b, "TinAlcoveWallW", 1, ("tower_bay_solid",))
+    out += gb_wall(b, "TinAlcoveWallN", 1, ("tower_bay_solid",), centres=[71.0])
+    out += gb_wall(b, "TinAlcoveWallS", -1, ("tower_bay_solid",), centres=[71.0])
     cc = b["CoralCurtain"]
     out.append(put("coral_curtain", cc["pos"][0], 0.0, cc["pos"][2], 90.0, scale=round(cc["size"][2] / 3.0, 3),
                    block="CoralCurtain"))
-    # The gauge room (x 86..100, z -40..-20): the wheel on GaugeWheel, the pipe run on the east wall, the current
-    # shaft in its north-east corner, two storeys of it up into the dark (ShaftLight).
-    out += floor(86.0, 100.0, -40.0, -20.0, 5.0)
-    out += wall(100.0, -40.0, -20.0, along="z", inside=-1, kinds=("tower_bay_solid",))
-    out += wall(-20.0, 86.0, 100.0, along="x", inside=-1, kinds=("tower_bay_solid",), anchor="a0")
-    out += piers([(100.0, -20.0), (100.0, -40.0)], (93.0, -30.0))
+    # The gauge room: the wheel on GaugeWheel and its cut hub on GaugeWheelCut (C1-05: the salvage leaves the hub on
+    # its plinth), the pipe run on the east wall, the current shaft (ShaftLight), two storeys of it into the dark.
+    out += floor(86.0, 104.0, -40.0, -22.0)
+    out += gb_wall(b, "GaugeWallE", -1, ("tower_bay_solid",))
+    out += gb_wall(b, "GaugeWallS", -1, ("tower_bay_solid",), anchor="a1")
+    ge, gs = inner(b, "GaugeWallE", -1), inner(b, "GaugeWallS", -1)
+    out += piers([(ge, gs), (ge, n_), (e, gs)], (95.0, -31.0))
     gw = b["GaugeWheel"]
     out.append(put("gauge_wheel", gw["pos"][0], 0.0, gw["pos"][2], 90.0, block="GaugeWheel"))
-    out.append(put("pipe_run", 99.6, 0.0, -26.0, 90.0))
+    gc = b["GaugeWheelCut"]
+    out.append(put("gauge_wheel_cut", gc["pos"][0], 0.0, gc["pos"][2], 90.0, block="GaugeWheelCut"))
+    out.append(put("pipe_run", ge - 0.2, 0.0, -26.0, 90.0))
     sh = b["ShaftLight"]
     for n in range(2):
         out.append(put("current_shaft", sh["pos"][0], ot.STOREY * n, sh["pos"][2], 11.0, block="ShaftLight"))
     out.append(put("lit_fragments", 88.2, 0.0, -38.6, 20.0))
+    out += terrace()
+    return out
+
+
+# The podium the galleries stand on (oruvel_underway.md F9): seafloor cells at the silt datum round the rooms, its
+# broken lip on every side, seagrass on it, the drift through a breach and the dead ship's ribs to the east (M3-ENV-105's
+# check: the retired layout had them; carried over).
+TERRACE = (56.0, -64.0, 128.0, 44.0)
+SEAFLOOR_CELL = 12.0
+SILT_Y = -0.25
+EDGE_OUT = 6.0
+ROOMS_XZ = ((74.0, -40.0, 86.0, 20.0), (86.0, -40.0, 104.0, -22.0), (68.0, -4.0, 74.0, 2.0))
+SEAGRASS = 22
+
+
+def terrace() -> list[dict]:
+    import random  # noqa: PLC0415
+
+    x0, z0, x1, z1 = TERRACE
+    n = SEAFLOOR_CELL
+    out = []
+    for i in range(round((x1 - x0) / n)):
+        for k in range(round((z1 - z0) / n)):
+            c = (x0 + n * (i + 0.5), z0 + n * (k + 0.5))
+            if any(a < c[0] < cc and bz < c[1] < d for a, bz, cc, d in ((80.0, -46.0, 86.0, -34.0),)):
+                continue  # the stairwell stays open
+            out.append(put("seafloor_patch_a" if (i + k) % 2 else "seafloor_patch_b", c[0], SILT_Y, c[1],
+                           90.0 * ((i * 3 + k) % 4)))
+    for i in range(round((x1 - x0) / n)):
+        x = x0 + n * (i + 0.5)
+        out += [put("seafloor_edge", x, SILT_Y, z0 - EDGE_OUT, 180.0), put("seafloor_edge", x, SILT_Y, z1 + EDGE_OUT, 0.0)]
+    for k in range(round((z1 - z0) / n)):
+        z = z0 + n * (k + 0.5)
+        out += [put("seafloor_edge", x0 - EDGE_OUT, SILT_Y, z, 270.0), put("seafloor_edge", x1 + EDGE_OUT, SILT_Y, z, 90.0)]
+    rng = random.Random(5)
+    placed = 0
+    while placed < SEAGRASS:
+        x, z = rng.uniform(x0 + 2.0, x1 - 2.0), rng.uniform(z0 + 2.0, z1 - 2.0)
+        if any(a - 1.5 <= x <= c + 1.5 and bz - 1.5 <= z <= d + 1.5 for a, bz, c, d in ROOMS_XZ):
+            continue
+        out.append(put("seagrass_patch", x, SILT_Y, z, rng.uniform(0.0, 360.0)))
+        placed += 1
+    out += [put("sand_drift", 95.0, SILT_Y, 11.0, 180.0), put("wreck_ribs", 113.0, SILT_Y, 2.0, -24.4)]
     return out
 
 
 def stairwell(b: dict) -> list[dict]:
-    """The stairwell at the gallery's north end: the flight going down north from behind the divers' cord, the
-    floor round it in smaller slabs (the strip to the cord, then each side of the flight to the north wall)."""
-    cord = b["KnottedCord"]
-    lip = cord["pos"][2]
-    x = cord["pos"][0]
-    strip = -34.0 - lip  # the floor's last full row ends at z -34; the strip from there to the cord
-    out = [put("floor_slab", 74.0 + strip * (k + 0.5), 0.0, -34.0 - strip * 0.5, 0.0, scale=round(strip / SLAB, 4))
-           for k in range(round(12.0 / strip))]
-    side = (cord["size"][0] - ot.STAIR_W) * 0.5 + (cord["pos"][0] - cord["size"][0] * 0.5 - 74.0)  # 74 .. the flight
-    s = side / 2.0
-    for k in range(2):
-        for j in range(2):
-            z = lip - s * (j + 0.5)
-            out.append(put("floor_slab", 74.0 + s * (k + 0.5), 0.0, z, 0.0, scale=round(s / SLAB, 4)))
-            out.append(put("floor_slab", 86.0 - s * (k + 0.5), 0.0, z, 0.0, scale=round(s / SLAB, 4)))
+    """The stairwell in the gallery's north end over StairLip: the flight going down north from the divers' cord, a
+    strip of floor each side of it, the floor west of the well, and the well a storey down."""
+    lip_b = b["StairLip"]
+    (lx, _ly, lz), (lsx, _lsy, lsz) = lip_b["pos"], lip_b["size"]
+    x = lx
+    lip = lz + lsz * 0.5  # the well's south edge (the cord's line)
+    north = lz - lsz * 0.5
+    out = []
+    # The floor beside the well, west of it to the gallery's west wall (one 6 m slab), and the strips either side of
+    # the flight inside the well's width.
+    out += floor(74.0, lx - lsx * 0.5, north, lip)
+    strip = (lsx - ot.STAIR_W) * 0.5
+    if strip > 0.05:
+        k = max(1, round((lip - north) / strip))
+        step = (lip - north) / k
+        for j in range(k):
+            z = lip - step * (j + 0.5)
+            for sx in (-1.0, 1.0):
+                out.append(put("floor_slab", x + sx * (ot.STAIR_W * 0.5 + strip * 0.5), 0.0, z, 0.0,
+                               scale=round(strip / SLAB, 4)))
     out.append(put("stair_flight", x, 0.0, lip, 90.0))
     out.append(put("divers_cord", x, 0.0, lip + CORD_BACK, 90.0, block="KnottedCord"))
-    # The well a storey down (the kit preview's F8): blind bays each side of the flight and across its foot, the
-    # landing's slab, so the opening reads as a stairwell into the dark and not as a hole into the murk.
     hw = ot.STAIR_W * 0.5
     run = 2 * ot.BAY_W
     down = wall(x - hw, lip - run, lip, along="z", inside=1, kinds=("tower_bay_solid",))
@@ -207,8 +288,7 @@ def stairwell(b: dict) -> list[dict]:
     for d in down:
         d["y"] = -ot.STOREY
     out += down
-    land = ot.STAIR_W / SLAB
-    out.append(put("floor_slab", x, -ot.STOREY, lip - run + ot.STAIR_W * 0.5, 0.0, scale=round(land, 4)))
+    out.append(put("floor_slab", x, -ot.STOREY, lip - run + ot.STAIR_W * 0.5, 0.0, scale=round(ot.STAIR_W / SLAB, 4)))
     return out
 
 

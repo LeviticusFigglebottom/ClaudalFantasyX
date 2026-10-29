@@ -703,3 +703,83 @@ SUPERSEDED RENDER-REQUEST @ db895430: battle_choreo_hit, battle_choreo_ko, battl
   - **Already done:** raid_hound (M3-CRE-655) and slag_tortoise (M3-CRE-654) were both re-modelled after the sheets you viewed. Please look at their new renders (creature_raid_hound, creature_slag_tortoise and their portraits) on your next gate.
   - **"pumice_crawler" doesn't exist in the repo.** Did you mean scree_crawler (Act II, the tortoise's variant, already rebuilt with it)?
   - **avalanche_ram is Act II, paused by ADR 0041.** Say if it's back in scope.
+- **MERGE-READY: M3-CRE-659, Act I's background villagers (ADR 0152).**
+  - **What:** a crowd generator on the characters' villager modules (imported, unedited). 22 bodies (5 children, 10 adults in three builds and both sexes, 4 elders, 2 Order robes) wear 56 people in 10 zones (game/data/world/npc/crowd.json).
+  - **Variety:** per-person cloth and hair tints (palette swatches or mixes, never near skin); no body repeats in a zone; work clips for mend, sweep, carry, fold, haul, kneel and vigil.
+  - **Tamsule's `board`** is a person, the Reefball board-caller. **Brine Shoals' `wrights`** stands for six kneeling wrights.
+  - **Size:** assets/crowd is 43 MB (GLBs 15.6, maps 14.8, clip and material text 12.2), all under 5 MB per file. That's above ADR 0152's estimate; trimming the clip libraries is a follow-up.
+  - **Checks run:** Blender verify identical (all 22 by the agent; 3 spot-checked here); tools test_npc (the variety rule), test_blender_builds, test_creatures; Godot crowd 5/0, villager 32/0, field_npc 10/0, life_audio 12/0, creature 79/1 (the known portrait red); the manifest (428 valid); validate_data, lint, format.
+- SELF-RENDERED (the agent; viewed here):
+  - crowd_lineup_a/b/c, crowd_market, crowd_work, crowd_mourners and the zone shots (pemakar, brine_shoals, tamsule, corrow, corrow_night, oruvel, bell_galleries). At walking distance, no two read as clones.
+  - **One to watch:** two pale peach tops in lineup_a sit close to skin tone; the generator's skin clearance may need widening.
+  - **Lead: the 14 new crowd_* shots need baselines from your gate.**
+- **What still keeps them off the player's screen:** GreyboxZone adding the VillagerLayer (**slice-polish, M3-CRE-657**, one `if`). Until then only the review stages attach one.
+- **For characters (M3-CRE-661):** four small asks of the villager pipeline. The first, Saltwright line-marks and the brine-brand for the wrights, is the one that matters.
+- **MERGE-READY @ aceedf4a: M3-CRE-662, the crowd follow-up.**
+  - **Cloth never near skin:** a perceptual metric (CIELAB with lightness and hue down-weighted, floor 18.5), calibrated on the renders. There's no silent fallback any more: a draw widens to other sets, then errors. The validator uses the same function.
+    - 35 of 66 body defaults and 88 of 168 person tints changed; none is under the floor now.
+  - **Smaller:** four shared clip libraries (adult, elder, child, child_small) replace 22 per-body copies (clips 12.0 → 2.8 MB; assets/crowd 43 → 34 MB). Worst bone error is 1 cm against the per-body clips; feet still plant.
+  - **GOTCHA for every checkout (Lead, gates):** the post-import changed but Godot doesn't re-import unchanged GLBs. Run `rm -f .godot/imported/crowd_*.glb-*` and re-import, or the shared libraries don't apply.
+  - **Checks run:** Blender verify identical ×22 (by the agent); tools test_npc and test_blender_builds; gen_crowd --check; Godot crowd 6/0, villager 33/0, field_npc 10/0, life_audio 12/0; validate_data, taskboard.
+- SELF-RENDERED (the agent; viewed here): crowd_lineup_a/b/c, crowd_market, crowd_work, crowd_mourners, crowd_zone_brine_shoals and crowd_zone_bell_galleries. No cloth reads as skin; kneelers' knees are on the floor; children and elders stand at their own heights.
+- **Waiting (everything open is blocked on another track or on the Lead):**
+  - **M3-CRE-657 (slice-polish):** GreyboxZone adds the VillagerLayer. Without it the 56 crowd people and Kell's life don't appear in game. **This is the critical one.**
+  - **M3-CRE-660 (Lead):** confirm "pumice_crawler" (scree_crawler?) and whether avalanche_ram (Act II) is in scope. The raid hound and slag tortoise are already rebuilt.
+  - **M3-CRE-658 (act1-chapters):** the hound's model line in Brine Shoals.
+  - **M3-CRE-661 (characters):** Saltwright line-marks and the brand for the crowd's wrights.
+  - **M3-CRE-653 (battle VFX):** effects at the creature anchors.
+  - **M3-CRE-634 (ui):** limit the portrait test to enemies.
+  - **M3-CRE-633 (audio):** the shutdown cast.
+- **BACKLOG EMPTY (for now):** every creatures item is merged and every open item waits on the tracks above. The handoff is docs/kb/handoffs/2026-10-28-art-creatures-9.md.
+
+## big14 gate fixes (2026-10-28, the Lead's top priority)
+Merged `origin/gpu/gate-big14-shots` and the integration branch, then fixed on the merged tree:
+1. **test_villager_routines: no awaits, no crash at exit.** The tests build their layers directly. **test_crowd_villagers** had the same await (Brine Shoals) and was fixed the same way. The creature and Vowbound tests now free their actors at the end of each test: 0 nodes left (was 83).
+2. **Osu and the vendor at the wake:** the chat pair is dropped (cinematics stages them apart: M3-CIN-1220).
+3. **Blender:**
+   - **avalanche_ram.glb** is deterministic. numpy's SIMD path put the head's midline at ±1e-17 on one host and 0 on another; the build snaps |x| < 1e-9 to 0. It is identical natively, under `NPY_DISABLE_CPU_FEATURES="X86_V4"` (the PC's AVX2 path, which reproduced the gate's 8d990e hash) and on baseline. Rebuilt GLB committed.
+   - **kirru_roost.glb** is env-art's (M3-ENV-718): request **M3-CRE-663**, with the same diagnosis.
+4. **cord_moth has its actor:** a foe whose enemies.json row names no `model` uses its same-id creatures.json scene. That also covers the nine Act II foes the gate listed (fen_leech, gallery_ray, glass_skate, ridge_lynx, rim_crawler, rime_urchin, root_crab, scree_crawler, tannin_archer). `test_every_foe_and_vowbound_has_a_body` passes.
+5. **Portraits:** ilun, kahre, virel, nhoa, hesk and ethren, plus their six `_held` forms, are rendered, viewed and committed with PROVENANCE rows. test_creature_portraits passes 21/0.
+6. **Also from the merged tree's QA capsule test:** Haluna's seven villagers showed as capsules, because the layer deferred its build when added in the zone's `_ready` and the test steps no frame.
+   - VillagerLayer now builds at once.
+   - The shop rows sit inside their bodies under a new row key `node_name: "Villager"`, so HalunaVillagers.populate skips them and nothing doubles.
+- **Not ours, left as they are:**
+  - `ossa_fen.tscn shows pell as a capsule`: a named Act II person (env-art and characters).
+  - `test_battle_act1_ability_vfx` cord_moth `unravel` has no effect: battle VFX.
+- **GOTCHA (local checkouts after a disk-full):** a truncated `.godot/imported` file loads as "corrupt" or "Failed loading" (it was 64 KiB-aligned here). Delete it and its `.md5` and re-import.
+- **Checks run:**
+  - Godot: creature 84/0 (0 left), vowbound 87/0 (1 left: test_battle_vowbound, battle UI's), villager 33/0, crowd 6/0, haluna 65/0, field_npc 10/0, portrait 21/0, qa_capsules 2/3 (pell only).
+  - Blender verify for avalanche_ram: identical ×3 paths.
+  - validate_data, lint and format.
+- **Battle suite (merged tree): 790 run, 3 failed, all from the gate's own list, none ours:**
+  - test_battle_act1_ability_vfx (eight foe skills with no Act I effect, M3-BPR-420 and M4-C11-03);
+  - test_battle_party_stand_ins (Liss's timeline tint);
+  - test_battle_result_motion.
+  - Wildlife 14/0, npc 10/0.
+- **MERGE-READY @ (this push): the big14 gate fixes above.**
+- **BACKLOG EMPTY (after big14):**
+  - The villager generator waits on M3-CRE-657 (slice-polish: GreyboxZone adds the VillagerLayer) and M3-CRE-661 (characters).
+  - The primitive pass waits on M3-CRE-660 (the Lead: "pumice_crawler" and avalanche_ram scope).
+  - The open character-role todos are creatures-b's (M3-HER-1134, M3-HER-1143: Act I bosses) or characters' named people (M3-C07-07, M3-CHR-5xx).
+
+## The Lead's 10:34 orders (2026-10-28)
+- **MERGE-READY @ (this push): M3-CRE-660, the primitive pass on raid_hound and slag_tortoise.** pumice_crawler and avalanche_ram are Act II and skipped, per the Lead.
+  - **Tortoise:** the crust breaks into tilted slag slabs at dark, copper-lipped seams on a 44×112 lathe, with less gloss, 12 clinkers and overlapping leg scutes. The scree crawler is rebuilt from the same build.
+  - **Hound:** the shoulder sits in the chest, and the leg tops blend into the body's shading and colour, so no flat plate shows. Fuller, folded rose ears.
+  - Portraits re-baked.
+  - Blender identical ×3 numpy paths for raid_hound, slag_tortoise and scree_crawler; Godot creature 84/0.
+- **MERGE-READY @ (this push): the crowd in every Act I zone with background people.**
+  - Crowd rows already covered every generic person in Oruvel, Brightwater Ferry, the Ch4 wake, Pemakar, Ashcrown, Tamsule (and the bell galleries), Brine Shoals and Corrow (day and night). The audit's remaining capsules there are named people or heroes (characters, act1-chapters).
+  - **New finding:** cinematics' ZoneCast (M3-CIN-1217) dresses those zones' generic stage actors as Haluna's villagers. A crowd row now replaces that body (ADR 0152: Haluna's faces stand for no other town); a named row adopts its Cast. With both, the Ashcrown tender had two bodies.
+  - `VillagerLayer.wire` reuses a zone's own layer.
+  - **Still needed in game: M3-CRE-657** (slice-polish's GreyboxZone adds the layer). A trialled, ready patch is in `live/patches/m3-cre-657-greybox-villagers.patch`. Apply it with cinematics' test_zone_cast change (in the task).
+  - **For characters and cinematics:** ZoneCast also dresses named people in other towns as Haluna's villagers. That is outside my rows.
+- **SELF-RENDERED (walking distance), all ten viewed:** crowd_zone_oruvel, crowd_zone_brightwater_ferry (new), npc_wake_feast (re-aimed), crowd_zone_pemakar (re-aimed), crowd_zone_ashcrown (new), crowd_zone_tamsule, crowd_zone_bell_galleries, crowd_zone_brine_shoals, crowd_zone_corrow (re-aimed), crowd_zone_corrow_night.
+  - Each shows its people as distinct crowd bodies with one body per actor.
+  - The Corrow children face the sea as staged. **No baselines written:** the Lead's gate does that.
+- **Checks:** villager 35/0, crowd 7/0, zone_cast 3/0, field_npc 10/0, haluna 65/0, creature 84/0; qa_capsules: Pell only (Act II, not ours).
+- **MERGE-READY @ (this push): the big15 post_import fix.**
+  - The crowd GLBs already ran their category script (`crowd_post_import.gd`, set in each .glb.import). The crowd category (`game/data/import/crowd.json`) exists, but test_post_import's `KINDS` list lacked `crowd`, so every crowd GLB read as "in no import category". `crowd` is added; no import needed regenerating.
+  - The integration branch is merged in.
+  - Checks: post_import 21/0, villager 35/0, crowd 7/0.

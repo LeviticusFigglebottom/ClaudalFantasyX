@@ -4,6 +4,8 @@
 // Camera grammar (decisions_log N-13): H05, H06 and H01 are unrelated setups, so every change is a
 // cut (blend=0.0). The cut to H01 lands on the walk, after Asha's last line on H05.
 // H05 is Rhen's POV and follows his eye: lying, sitting, or standing in the "Get up" branch (N-17).
+// The human's playtest (2026-10-28): H05 and H06 are now low two-shots from the sea side that hold both
+// faces (his on the sand, hers above him), not his POV.
 // Light rule: the motes that came ashore with Rhen are HELD (glimmer_held: cool cyan, drifting
 // sideways and down toward the water). Nothing rises in this scene. The first rising light is Ch3.
 // Asha's stillness is recognition of the make: at seven she saw this lantern's twin on the stranger
@@ -18,6 +20,10 @@ grade: ch02
 // until it is built sequencer.json clip_stand_ins kneels him, half risen, rather than standing him up).
 @anim rhen lie_in_shallows
 // M2-FP-103: she is already kneeling over him when the dawn fades in (the clip settles under the black).
+// The human's playtest: she kneels at his left side, turned in toward his head and shoulders (across
+// his body, not alongside it), leaning over him with a hand at his back and her eyes down on his face,
+// which lies cheek to the sand on the sea side. haluna.tscn stages them up the beach where the wash is
+// only a film (Spawns/Beach, Actors/asha), and H05 and H06 look in from the sea at both faces.
 @anim asha kneel_over_rhen
 @music haluna_dawn fade=4.0
 @fade in 2.5
@@ -60,7 +66,8 @@ Toma [sad]: She woke the house before light. We came down so they would not come
 -> Stay with them a minute. #line:ch02_beach_022
     <<set $ch02_rhen_stayed_with_dead = true>>
     @anim rhen sit_in_shallows
-    @mark asha kneel_beside_rhen
+    // She is already kneeling beside him: she turns to him where she kneels (a walk would stand her up).
+    @anim asha look_at rhen
     @wait 2.5
     Rhen [grief]: Mother Kell can't swim. Never learned. Said the sea owed her a favour. #line:ch02_beach_023
     Asha [tender]: You don't have to be anything yet. Not on this beach. #line:ch02_beach_024
@@ -81,7 +88,8 @@ Toma [sad]: She woke the house before light. We came down so they would not come
     @anim asha rise_to_stand
     // Let her finish rising before H05 opens: haluna.md H05 has her already standing.
     @wait 0.8
-    @camera H05 blend=0.0
+    // H05 is the kneeling height: once they are up, H05_up is the standing two-shot along the beach.
+    @camera H05_up blend=0.0
 Asha [soft_smile]: I'm Asha. That's Toma. He's nicer than his spear. #line:ch02_beach_030
 <<if $ch02_rhen_stayed_with_dead>>
     // Stay branch (decisions_log N-19, N-22): he takes the hand she offered as soon as she has
@@ -91,6 +99,7 @@ Asha [soft_smile]: I'm Asha. That's Toma. He's nicer than his spear. #line:ch02_
     @anim rhen rise_to_stand
     @anim asha rise_to_stand
     @wait 1.2
+    @camera H05_up blend=0.0
 <<endif>>
 Toma [neutral]: Toma Okeru, of Haluna. You are speaking to the Lady— #line:ch02_beach_031
 Asha [smile]: To Asha. Who is very glad you aren't dead. #line:ch02_beach_032

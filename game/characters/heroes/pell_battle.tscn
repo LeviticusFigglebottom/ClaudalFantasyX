@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/characters/pell/pell_lod1.glb" id="model"]
+
+[node name="PellBattle" type="Node3D"]
+metadata/hymn_battle_actor = &"pell"
+
+[node name="Model" parent="." instance=ExtResource("model")]
+
+[node name="NameShellCarved" parent="Model/pell_skeleton/Skeleton3D"]
+visible = false
+
+[editable path="Model"]

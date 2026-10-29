@@ -119,7 +119,7 @@ No job of this session is running. WSL `hymn` is idle: the batch (PIDs 302 and 2
 
 ## Gate results (newest first)
 
-- **GATE lead/gate-big14@8707ff90 (+ the shrine GI rebake 8f6fd29f): FAIL (Lead to view).** The suite and the manifest finished at 2026-10-28 ~04:30; coverage is re-running with 3 h (its 600 s default cut it off).
+- **GATE lead/gate-big14@8707ff90 (+ the shrine GI rebake 8f6fd29f): FAIL (Lead to view).** The suite and the manifest finished at 2026-10-28 ~04:30. Coverage (3 h limit, 2809 s): FAIL with no numbers, "suite did not pass under instrumentation (exit -6)": the 15 failures plus the crash at exit.
   - Shrine GI rebaked first; test_shrine_gi_bake passes.
   - Tools: 6 failing units: test_arenas (known), test_screenshots, test_pemakar_kit, test_zone_dressing_ch01, test_zone_map_pois, test_hero_clips.
   - Godot: 3161 run, 15 failed. Then a **segfault at exit** in test_villager_routines.gd:489 (creatures), which stops ci_local's pipefail on its own.
@@ -177,9 +177,8 @@ No job of this session is running. WSL `hymn` is idle: the batch (PIDs 302 and 2
 - **M2-CHR-11 verify (2026-10-27):** claude/characters @ 3723f3eb (incl. 20773234), AVX2 i9-12900K: base_body, rhen, toma
   and 9 villagers 12/12 identical (664 s). Reported to the Lead and characters.
 - **In progress (2026-10-28 05:20 EDT):**
-  - big14 coverage in WSL (single process, 3 h limit; started 04:33).
   - Act I QA pass B, visual, on lead/gate-ft-beach on the RX 9070 XT: every zone, spawn, battle and boss of Act I, stills every 5 s.
-  - Next: the per-zone budget run (`--budget`, no stills) once coverage ends, since a benchmark never runs during a gate step. Then the rows and sheets go to gpu/act1-qa-*.
+  - Next: the per-zone budget run (`--budget`, no stills) after the visual walk (coverage is done). Then the rows and sheets go to gpu/act1-qa-*.
 - **M1-QA-09 on hardware (heroes, 2026-10-27):** 49 shots at High 2× and Ultra on ze8rrn@f580e756, `gpu/m1-qa-09-heroes`
   `docs/kb/qa/gpu/2026-10-27-m1-qa-09-heroes/`. Asha's staff and Toma's spear aren't gripped (open hands; they float upright
   in run/walk_cycle/offer_hand). The staff goes through the skirt when kneeling. Asha's underskirt is a rigid tube in

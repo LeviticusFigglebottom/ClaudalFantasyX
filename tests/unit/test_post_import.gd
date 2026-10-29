@@ -22,6 +22,7 @@ const KINDS: Array[String] = [
 	"coilspire_kit",
 	"corrow_kit",
 	"creatures",
+	"crowd",
 	"haluna_kit",
 	"oruvel_kit",
 	"oruvel_underway_kit",
@@ -175,7 +176,7 @@ func test_kit_placeholder_pieces_are_tagged_and_finished_pieces_are_not() -> voi
 		var notes: PackedStringArray = root.get_meta(AssetImportRules.NOTES_META, PackedStringArray())
 		assert_true(notes.size() == 1 and notes[0].begins_with("PLACEHOLDER: "), "%s note %s" % [piece, notes])
 	# M2-ENV-07: the two trees are real now (they keep their old piece names, untagged).
-	for piece: String in ["dock_haluna", "banyan_placeholder", "windbreak_placeholder"]:
+	for piece: String in ["dock_haluna", "banyan_hero", "windbreak_tree"]:
 		var finished := _scene(KIT_DIR + piece + ".glb")
 		assert_false(finished.has_meta(AssetImportRules.TAG_META), "%s is not placeholder" % piece)
 	_done()

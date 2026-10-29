@@ -80,6 +80,16 @@ WEIR_LIGHTS = [
     {"at": [WEIR_LAMP_AT[0], WEIR_LAMP_AT[1] + 1.35, WEIR_LAMP_AT[2]], "color": "#FFA757", "energy": 1.6, "range": 7.0},
     {"at": [WEIR_AT[0], WEIR_AT[1] + 0.3, WEIR_AT[2] + 0.5], "color": "#FF9A4A", "energy": 1.1, "range": 5.0},
 ]
+# The plume at night (the Lead's gate review, 10-28): the kit's far plume material is a hard-edged near-black
+# silhouette from the harbour, so it read as a blob in the sky. The zone's own night material (the same
+# env_ash_plume shader) softens and thins its edges and lifts the crater's ember up its underside, so it reads as
+# smoke lit from below. It is written here (PLUME_NIGHT_PARAMS) and the plume row takes it by slot.
+PLUME_NIGHT = "pemakar_plume_night"
+PLUME_NIGHT_PARAMS = {
+    "col_body": "Color(0.29, 0.27, 0.26, 1)", "col_body_top": "Color(0.36, 0.35, 0.36, 1)", "body_darken": 0.42,
+    "mottle": 0.55, "opacity": 0.92, "edge_soft": 0.65, "top_fade": 0.45, "alpha_mottle": 0.55,
+    "ember_energy": 0.55, "ember_height": 0.32, "ember_underside": 1.0, "town_glow": 0.05, "rim_energy": 0.0,
+}
 # The story pieces env-art built for the greybox's stand-ins (M3-ENV-1214): each follows its block
 # The leat feeding the weir (b_leat.py, M3-ENV-1307): from a culvert in tier 0's wall down the flank to the back of
 # the weir's cut (its bed 0.05 under the crest, 3 m upstream of it); it follows the weir's block
@@ -278,6 +288,8 @@ def dressing() -> dict:
             row.update(at=[r3(WEIR_AT[0]), r3(WEIR_AT[2])], y=r3(WEIR_AT[1]))
         if p["piece"] in STORY_PIECES:
             row["block"] = STORY_PIECES[p["piece"]]
+        if p["piece"] == "ash_plume":
+            row.update(kit_dir=KIT, materials={"kit_plume": PLUME_NIGHT}, materials_dir=RES_ZONE)
         if p["piece"] == "mountain_massif":
             row["collide"] = "trimesh_lod0"
         elif p["piece"] in COLLIDE_BOX:
@@ -319,6 +331,14 @@ def dressing() -> dict:
         "far_lights": far,
         "pieces": pieces,
     }
+
+
+def write_plume_night() -> None:
+    lines = ['[gd_resource type="ShaderMaterial" load_steps=2 format=3]', "",
+             '[ext_resource type="Shader" path="res://game/shaders/environment/env_ash_plume.gdshader" id="1_shader"]',
+             "", "[resource]", f'resource_name = "{PLUME_NIGHT}"', 'shader = ExtResource("1_shader")']
+    lines += [f"shader_parameter/{k} = {v}" for k, v in sorted(PLUME_NIGHT_PARAMS.items())]
+    (ZONE / f"{PLUME_NIGHT}.tres").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def copy_grades() -> None:
@@ -503,6 +523,7 @@ def weir_relayout() -> None:
 
 def main() -> None:
     copy_grades()
+    write_plume_night()
     if "--relayout" in sys.argv:
         relayout()
     if "--weir-relayout" in sys.argv:
