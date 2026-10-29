@@ -1,5 +1,14 @@
 # CONSOLIDATED HANDOFF: the new Lead starts here
 
+## TAKEOVER 2026-10-29 (Lead `session_01Bg3iP7cPGyjbX4CyniBahc`). This overrides §0–§4 where they differ
+- **Integration branch: `claude/new-session-mj8c3c`**, fast-forwarded to `claude/undertow-lead-handoff-ze8rrn` @ 4d64a73e. That is the only branch this Lead can push, so -ze8rrn is retired. Tracks merge `origin/claude/new-session-mj8c3c`.
+- **The PC is OFFLINE for an extended period** (the human). Nothing waits on it:
+  - **Tracks self-render** their own changed shots (TRACK-RULES "FROM 2026-10-29").
+  - **Batch gates** run in a dedicated cloud **gate session**, which builds `lead/gate-bigN`, runs the full `tools/ci_local.sh` and publishes `lead/gate-bigN-shots`. The Lead views every shot, approves and merges.
+  - **GPU-only work waits** under `### PC-QUEUE` lines in each track's log and in pc-gpu.md: real-GPU QA rows, perf, benchmarks, and the PC's unfinished M2-RND-01, RND-22, M2-RND-02/03/04. When the PC returns, the Lead sends it the PC brief plus that queue.
+- **big16 was never gated:** `lead/gate-big16-shots` doesn't exist. **The next batch is big17** = `lead/gate-big16` @ ff82858c, plus the current heads of env-art, characters (Pell), creatures, battle-presentation, ui, hero-integration and m2-slice. Already in big16: env-art-b, creatures-b, act1-chapters, audio.
+- **Sessions created on 10-29:** the 8 "start small" tracks from SESSION-BRIEFS.md, plus the gate session. Ids are in lead-cloud.md.
+
 **Handover:** 2026-10-28 ~18:30 UTC, from Lead `session_018aiGwGLGkxsnMnu8VfCu1m` (old account, out of usage). It is written for a **new Lead on a new account with no context**. At handover only two sessions exist: you (the new Lead) and one remote session (the human's PC, via Remote Control). You recreate every other environment yourself, as §4 says.
 
 The previous version is `CONSOLIDATED-history-2026-10-28.md`. It has the deep history, the toolchain gotchas (its §7) and the old roster.
@@ -50,6 +59,25 @@ The previous version is `CONSOLIDATED-history-2026-10-28.md`. It has the deep hi
   Estimate: two or three batches.
 
 ## LIVE STATUS (kept current by the outgoing Lead; newest at top)
+- **22:50 UTC:**
+  - PELL is MERGE-READY (claude/characters @ 3346484b; a second look-dev pass follows). Fold it in with big16, or with big17 if big16 is already gating.
+  - big16 cloud gate: 533/~600 shots; the published results are expected within ~1 h.
+- **21:30 UTC:**
+  - PELL is built (claude/characters @ b51dcc3d) and in a look-dev pass before MERGE-READY.
+  - big16 cloud gate: 396/~600 shots; the slow beach and Haluna crowd shots take 6–10 min each.
+  - The integration branch now has HYMN_STEP_TIMEOUT 3 h by default (036245a7) and STALE-BRANCHES.md.
+  - The PC is still offline.
+- **19:40 UTC:**
+  - The human's 4th fix (the PARTY START) is fixed on claude/hero-integration @ 5c11d034, re-rendered and viewed on big16. Fold that head into big16.
+  - big16 cloud gate: 282/~600 shots.
+  - characters is still on Pell.
+- **19:20 UTC:**
+  - big16 cloud gate: 238/~600 shots.
+  - battle-presentation is MERGE-READY @ e641579e (the Ch8 Climb's camera cut with stair effects) and its backlog is empty.
+  - characters is building PELL (M3-CHR-506).
+  - integration-qa is rendering the party-start lane-turn fix.
+  - The PC is still offline.
+  - No open LEAD-ASKs.
 - **18:45 UTC:**
   - The cloud gate of big16 (/home/user/wt/gate16 in the old Lead's container) had 171/~600 shots captured. Expect `lead/gate-big16-shots` around 22:00 UTC if the container survives. If that branch doesn't exist, re-gate big16 on the PC.
   - Every track is idle, with its Act I list done or waiting, except three just nudged: characters (Pell's model), integration-qa (verify or fix the party-start camera), battle-presentation (hook the Fisher Stair).
@@ -129,9 +157,11 @@ The previous version is `CONSOLIDATED-history-2026-10-28.md`. It has the deep hi
   - slice-polish: the cutscene side of the slice and Ch1;
   - capsules: party → integration-qa, villagers → creatures, named NPCs → characters.
 - Git LFS is LIVE (ADR 0039) for `assets/audio/music/actN/**`, `assets/audio/sfx/act3/**` and `assets/lfs/**`. Run `git lfs pull` before importing.
-- Known: big14-era coverage fails while the suite has reds. The suite takes ~45 min, so use HYMN_STEP_TIMEOUT=10800 (branch `gpu/ci-step-timeout-3h` makes that the default; merge it).
+- Known: big14-era coverage fails while the suite has reds. The suite takes ~45 min, so use HYMN_STEP_TIMEOUT=10800 (the default since 036245a7, merged from gpu/ci-step-timeout-3h).
 
 ## 6. Tools (`tools/dev/lead/`)
+- **Branch hygiene:** `STALE-BRANCHES.md` lists ~79 merged or retired branches that are safe to delete. Cloud sessions get a 403 on deletes, so do it from the PC or in the GitHub UI.
+
 - `leadask.sh`: scans the tracks' live logs for `LEAD-ASK:` lines.
 - `contact_grid.py`: six contact sheets per image, for fast viewing.
 - `approve_shots.py`: copies the out PNGs and writes the real baseline metadata.
