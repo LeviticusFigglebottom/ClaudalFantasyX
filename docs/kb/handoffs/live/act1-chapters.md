@@ -309,6 +309,15 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
   - Checks: `--filter=` ch04 12/0, ch05 8/0, ch07 12/0, ch08 23/0, ch09 12/0, kit_dressing 10/0, zone_cast 3/0,
     zone_map 20/0, battle 720/0; validate_data, taskboard, gdlint, gdformat clean.
 
+## 2026-10-29 (new Lead session_01Bg3iP7cPGyjbX4CyniBahc; integration `claude/new-session-mj8c3c`)
+- Merged `origin/claude/new-session-mj8c3c` @ b60a8f61 (65f76b85; pc-gpu.md taken from the integration branch).
+- Filed requests checked: none landed on the integration branch since my last pass (it holds only Lead docs commits
+  since big13; big16/17 are not merged yet). M3-CHR-505 (Kerrid) and M3-ARC-1216 (steep stairs) are in review and
+  were already in my tree; re-verified in the fresh playthrough below.
+- My five kit-swap tasks (M3-C04-1204, C05-1213, C07-1211, C08-1210, C09-1209) to review (94beed00): their shots
+  have baselines from the Lead's gates.
+- IN PROGRESS: a fresh title → Ch9 headless playthrough (all `_thread` tests; Ch1 and Ch4–Ch9 cutscene stills).
+
 ### Render requests
 DONE @ 180510e1 (viewed gpu/render-act1-chapters-180510e): ch04_ferry_derelict approved (df86873f); ch04_ferry_deck re-aimed (the camera stood 0.6 m from the ferrymaster), re-requested below
 DONE @ 77a6a777 (viewed gpu/render-act1-chapters-77a6a77): ch08_corrow_arrival, ch08_corrow_stair, ch06_brine_camp pass (rmse 0); ch06_brine_road re-approved (its drift is the real hero model in front), ch09_corrow_road approved (df86873f); ch09_corrow_strand was near-black: vigil lamps and a brighter moon added, re-requested below
