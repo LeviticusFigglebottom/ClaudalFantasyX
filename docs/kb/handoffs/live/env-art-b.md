@@ -387,6 +387,12 @@ that test at this branch's zones.
   fails to parse at 5c11d034: its `_motes()` checks `c is CutsceneMotes`, a class that branch removed (CutsceneVfx
   replaced it). Counting nodes named `Vfx_*` (the sequencer's names) works whatever draws the placeholder.
 
+- **M3-C09-04's last piece:** the kit's `flood_debris` (built for it, never placed) now drifts among the low town's
+  drowned roofs (12, seeded, 5–12 m from a house). Checks: Godot `--filter=ch09` 13/0; viewed from over the lake.
+- **Stale placement tasks closed to review** (they were env-art's "placement is act1-chapters'" notes; Ch5–Ch9 dressing
+  is mine since 10-28): M3-C05-03, M3-C08-102, M3-C09-04, each with what is built and where. B01's SaveShrine
+  interactable and chandler stay act1-chapters' (systems). **MERGE-READY @ 078f3e07.**
+
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
   on the PC presets (two large and three small fires in `ch06/brine_shoals` and `salvage_camp_burning`).
