@@ -589,6 +589,10 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ 2ff511ab (+ this log): M3-ENV-103, Asha's packed bag**, to review (slice-polish swaps it in; the note is in
+  the task file). `travel_bundle` in the Haluna kit: indigo cloth packed full, a rolled mat strapped on, rope bands and a
+  strap; the BoxMesh's size, origin at its centre. **Checks:** Blender `haluna_kit` (others identical), `test_haluna_kit`,
+  `test_haluna_dressing` (31 OK). **Viewed** in a scratch scene beside `woven_bag`. No shot moves until the swap.
 - **MERGE-READY @ 2ff511ab: M3-ENV-104 (Oruvel), to review (cinematics).** Ridge gulls on the cabin and the chandlery; the
   cabin's ridge under the roof child's feet (it was scaled to the greybox and she floated 1 m over it); Kell's beacon is
   the chandlery's own roof lantern (the storm light moved into it; no extra lamp); the low hull's salvage load; the storm
