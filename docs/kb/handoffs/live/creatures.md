@@ -852,3 +852,14 @@ BACKLOG EMPTY: the Lead's four items are done.
 - No todo or request tasks for creatures on the board.
 - Every Act I regular reads final in fresh renders.
 - Open items are others': M3-CRE-657 (slice-polish adds the VillagerLayer to GreyboxZone; without it Corrow's crowd and the storm figure appear only in the stages), the baselines (the Lead, at the gate) and the PC-QUEUE (real GPU).
+
+### big17 red from the Lead (20:46): test_zone_cast::test_a_cast_actor_shows_its_model_and_idles_out_of_step: fixed
+- Reproduced on `lead/gate-big17` in a scratch worktree; it passes on my head, which doesn't have M3-CRE-657.
+- **Two causes, both from M3-CRE-657** (GreyboxZone wires the VillagerLayer after ZoneCast):
+  1. The test read ZoneCast's `Cast` model, but Tamsule's crowd rows replace it with the crowd person. The test now reads the body the actor wears through `HeroMotion.player_of(actor)`, as the cutscene sequencer does, and accepts a resting clip (idle or work). `tests/unit/test_zone_cast.gd` is act1-chapters' file: edited on the Lead's routing.
+  2. **A real bug of mine:** FieldNpc phased only the idle loop per villager, so the crowd fisher and boatman both started `haul` at 0.0 and hauled in step. Work and storm loops now start at a per-villager phase plus the clock (`FieldNpc.loop_phase`). New test in test_crowd_villagers.
+- Checks: on big17 with these files, zone_cast 3/0, crowd 10/0, villager 38/0; on my head, crowd 10/0, villager 38/0, npc 10/0, zone_cast 3/0; lint and format clean.
+- **Shots:** crowd zone shots where people work (crowd_work, crowd_market and the crowd_zone_* shots) will drift, because work clips now start at each person's own phase. Expected; re-approve at the gate.
+
+MERGE-READY @ (this push): the test_zone_cast fix (plus everything in the previous MERGE-READY).
+BACKLOG EMPTY (again): no other items.
