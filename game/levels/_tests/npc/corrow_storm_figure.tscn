@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/npc/haluna_villagers.gd" id="stage"]
+
+[node name="CorrowStormFigure" type="Node3D"]
+script = ExtResource("stage")
+zone_scene = "res://game/levels/ch08/corrow/corrow.tscn"
+zone_id = &"ch08/corrow"
+flags = PackedStringArray("ch08_arrived_corrow", "ch08_beacon_opened", "ch08_wave1_held", "ch08_hoist_rigged", "ch08_wave2_held", "ch08_pell_seen", "ch08_wave3_held", "ch08_reach_survived")
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="W22" type="Camera3D" parent="Cameras"]
+transform = Transform3D(-0.931017, 0.122666, -0.343743, 0, 0.941828, 0.336094, 0.364975, 0.31291, -0.876859, -23.45, 13.7, 2.523)
+fov = 30.0
+
+[node name="Near" type="Camera3D" parent="Cameras"]
+transform = Transform3D(-0.925489, 0.0955951, -0.366512, 0, 0.967628, 0.25238, 0.378774, 0.233575, -0.895529, -14.2, 3.2, 26.4)
+fov = 35.0

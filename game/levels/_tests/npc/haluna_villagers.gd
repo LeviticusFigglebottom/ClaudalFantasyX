@@ -5,12 +5,16 @@ extends Node3D
 
 @export_file("*.tscn") var zone_scene: String = "res://game/levels/ch02/haluna/haluna.tscn"
 @export var zone_id: StringName = &"ch02/haluna"
+## Set before the zone loads, so a stage can show a later story state (M3-HER-1142: Corrow's storm figure).
+@export var flags: PackedStringArray = []
 
 var zone: Node3D
 var layer: VillagerLayer
 
 
 func _ready() -> void:
+	for f: String in flags:
+		Game.set_flag(StringName(f))
 	zone = (load(zone_scene) as PackedScene).instantiate() as Node3D
 	add_child(zone)
 	# A zone that adds its own layer (Haluna, M2-FP-113) keeps it: a second one would show every villager twice
