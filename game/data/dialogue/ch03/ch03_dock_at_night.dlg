@@ -12,6 +12,10 @@ location: ch02/haluna
 // M2-FP-119: the player sets the scene off from anywhere on the dock, so the walk is as long as it is:
 // the scene waits for him to reach her, then a breath before either turns.
 @mark rhen rhen_by_asha walk
+// M2-FP-119: Toma starts at the dock's root, behind H04's lens (he had stood on its axis, his shield filling the
+// opening frame and hiding Rhen), and walks up the whole dock: DockEnd looks back up it, so he arrives in the
+// background while they talk, as the beat says.
+@mark toma dock_toma walk
 @wait arrive=rhen
 @wait 0.6
 @anim rhen look_at asha
@@ -23,7 +27,6 @@ Rhen [tender]: ...Long. Good, mostly. #line:ch03_dock_003
 <<endif>>
 Rhen [neutral]: You leave the day after tomorrow. #line:ch03_dock_004
 Asha [neutral]: At first tide. The causeway won't wait for me. #line:ch03_dock_005
-@mark toma dock_toma walk
 Rhen [determined]: Then let me come. As your guardian. I can dive, and I can carry, and I don't scare. #line:ch03_dock_006
 Asha [smile]: Yes. #line:ch03_dock_007
 Toma [worried]: Asha. A guardian is not chosen on a dock, at night— #line:ch03_dock_008
