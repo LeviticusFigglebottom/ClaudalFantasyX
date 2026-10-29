@@ -178,7 +178,7 @@ func _sweep(enc: StringName, out: String) -> Dictionary:
 			intro2.skip()
 		_ctl.tick(FAST_STEP_SEC)
 	_pending.clear()
-	for i in 72:  # the victory beat (BattleOutro's poses)
+	for i in 150:  # the victory beat (BattleOutro's poses), before the result panel
 		await get_tree().process_frame
 	await _capture("end_" + String(engine.outcome))
 	_checks["outcome"] = String(engine.outcome)
@@ -335,6 +335,16 @@ func _check_framing(result: ActionResult, tag: String) -> void:
 						issue = "under %s" % panel.name
 		if issue != "":
 			_checks["framing"].append({"shot": tag, "fighter": String(cid), "issue": issue})
+	# Hidden behind someone: another fighter across the lens's sight line to a target's middle (the director's test).
+	var dir := _ctl.stage.choreo.camera
+	var plan := _ctl.stage.choreo.current()
+	if dir != null and not plan.is_empty():
+		var pose := {"pos": _cam.transform.origin}
+		var mids := dir._target_mids(plan, result.actor_id)
+		for b: AABB in dir._bystander_boxes(result.actor_id, plan["targets"]):
+			if BattleCameraDirector._blocked(pose, b, mids):
+				_checks["framing"].append({"shot": tag, "issue": "a target hidden behind a bystander"})
+				break
 
 
 func _args() -> Dictionary:

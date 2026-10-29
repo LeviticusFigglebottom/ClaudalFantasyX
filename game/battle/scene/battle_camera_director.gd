@@ -246,12 +246,19 @@ func _setup(plan: Dictionary) -> void:
 	# M3-BPR-420: a foe's body at its strike point must not stand between the lens and its targets (the Reach's lunge)
 	var body := _body_box(actor_id) if actor != null and actor.team != BattleCombatant.TEAM_PARTY else AABB()
 	body.position += to - from
+	# The encounter sweep (10-29): an ally on its mark hid the target from the lead and contact shots (Toma's shield
+	# over the Reef Crab on Rhen's Lamp Dive). A contact shot whose sight line to a target's middle crosses a bystander
+	# keeps the default frame instead.
+	var bystanders := _bystander_boxes(actor_id, plan["targets"])
+	var mids := _target_mids(plan, actor_id)
 	for slot: String in [LEAD, CONTACT]:
 		var id := str(pair.get(slot, ""))
 		var pose := shot_pose(id, from, to, aim)
 		var actor_pts: Array[Vector3] = [head + to - from]  # the actor at its strike point: who acts
 		if pose.is_empty() or not _frames(pose, targets, actor_pts) or _blocked(pose, body, targets):
 			continue
+		if slot == CONTACT and bystanders.any(func(b: AABB) -> bool: return _blocked(pose, b, mids)):
+			continue  # the lead frames who acts; at the contact the target must show
 		shot_ids[slot] = id
 		if slot == LEAD:
 			_lead = pose
@@ -389,6 +396,39 @@ func _target_points(plan: Dictionary, actor_id: StringName) -> Array[Vector3]:
 			continue
 		out.append(to_local * f.global_position)
 		out.append(to_local * f.head_position())
+	return out
+
+
+## Each target's middle, halfway between its feet and its head (camera parent space), the actor left out.
+func _target_mids(plan: Dictionary, actor_id: StringName) -> Array[Vector3]:
+	var pts := _target_points(plan, actor_id)
+	var out: Array[Vector3] = []
+	for i in range(0, pts.size() - 1, 2):
+		out.append(pts[i].lerp(pts[i + 1], 0.5))
+	return out
+
+
+## The bounds (camera parent space) of every fighter on stage that is neither the actor nor a target, shrunk about
+## their middles by camera.bystanders.shrink (a held spear or a cloak's hem should not veto a shot). A fallen or
+## hidden fighter is left out.
+func _bystander_boxes(actor_id: StringName, target_ids: Array) -> Array[AABB]:
+	var out: Array[AABB] = []
+	if _ctl == null or _ctl.engine == null:
+		return out
+	var k := float((data.get("bystanders", {}) as Dictionary).get("shrink", 1.0))
+	var inv := _parent_inverse()
+	for c in _ctl.engine.party_active + _ctl.engine.enemies:
+		var f := _ctl.stage.stand_in(c.id)
+		if c.id == actor_id or target_ids.has(c.id) or f == null or not f.is_visible_in_tree() or not c.is_alive():
+			continue
+		var box := _body_box(c.id)
+		if box.size == Vector3.ZERO:  # a primitive: its radius and height on its mark
+			var r := float(f.spec.get("radius", 0.0))
+			var foot := inv * f.global_position
+			box = AABB(foot - Vector3(r, 0.0, r), Vector3(2.0 * r, (inv * f.head_position()).y - foot.y, 2.0 * r))
+		if box.size == Vector3.ZERO:
+			continue
+		out.append(AABB(box.get_center() - box.size * k * 0.5, box.size * k))
 	return out
 
 

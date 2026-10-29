@@ -299,6 +299,27 @@ func _is_party(cid: StringName) -> bool:
 	return c != null and c.team == BattleCombatant.TEAM_PARTY
 
 
+## The encounter sweep (10-29): Toma's shield on his mark hid the Reef Crab from Rhen's Lamp Dive. A bystander (an
+## ally or another foe, neither actor nor target) across the sight line to the target's middle drops that shot.
+func test_a_bystander_across_the_sight_line_keeps_the_default() -> void:
+	_to_turn_of(&"rhen")
+	ctl.pacing_scale = 1.0
+	var foe := _foe()
+	ctl.act(&"attack", [foe])
+	var plan := choreo.current()
+	assert_eq(director.shot_ids["contact"], "target", "clear: the contact shot frames the target")
+	var hit := director.shot_pose("target", plan["from"], plan["to"], plan["aim"])
+	var mid: Vector3 = director._target_mids(plan, &"rhen")[0]
+	var asha := ctl.stage.stand_in(&"asha")
+	var inv := director._parent_inverse()
+	var across := (hit["pos"] as Vector3).lerp(mid, 0.5)
+	asha.global_position = inv.affine_inverse() * (across - Vector3.UP * 0.9)  # her middle on the sight line
+	assert_false(director._bystander_boxes(&"rhen", plan["targets"]).is_empty(), "Asha is a bystander")
+	director._setup(plan)
+	assert_eq(director.shot_ids["contact"], "", "Asha across the line: the contact keeps the default frame")
+	_free()
+
+
 func _foe() -> StringName:
 	for e in ctl.engine.enemies:
 		if e.is_alive():
