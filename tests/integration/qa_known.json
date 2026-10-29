@@ -179,7 +179,5 @@
     ]
   },
   "unraised_doc": "test_qa_threads.gd: a flag a thread's chapter or main objectives wait on that its thread never raises -> why it isn't a softlock, and the task that closes the gap.",
-  "unraised": {
-    "ch02_ate_at_nemes": "test_fp_thread reloads Haluna after the tideline win without HalunaStory.begin(), so B02 (Neme's table, which sets it) never plays in the thread; the game plays it on arrival and test_haluna_slice_beats covers it. M2-HER-1128 (slice-polish): play B02 in the thread."
-  }
+  "unraised": {}
 }
