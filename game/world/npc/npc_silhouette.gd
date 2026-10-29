@@ -7,6 +7,10 @@ extends RefCounted
 
 const SHADER := preload("res://game/world/npc/npc_silhouette.gdshader")
 const PARAM_GLOW := &"glow"
+## Drawn after the other transparent surfaces at priority 0 (the storm sea, a blend_mix surface that writes depth):
+## seen from high on the wall the sea sorted after the figure and painted over it. It still depth-tests against the
+## sea, so what stands under the waves stays under them.
+const RENDER_PRIORITY := 1
 
 static var _cache: Dictionary = {}
 
@@ -31,6 +35,7 @@ static func material_for(glow: Color) -> ShaderMaterial:
 	if not _cache.has(key):
 		var mat := ShaderMaterial.new()
 		mat.shader = SHADER
+		mat.render_priority = RENDER_PRIORITY
 		mat.set_shader_parameter(PARAM_GLOW, glow)
 		_cache[key] = mat
 	return _cache[key] as ShaderMaterial
