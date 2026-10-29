@@ -59,7 +59,7 @@
     "sail_leech": {"scene": "res://game/creatures/sail_leech/sail_leech_battle.tscn", "vfx_anchors": {"core": "body", "wound": "body"}, "stand_in": {"hover": 1.38}, "contact": {"attack": 0.7}},
     "bottle_hermit": {"scene": "res://game/creatures/bottle_hermit/bottle_hermit_battle.tscn", "contact": {"attack": 0.45}, "loop": ["idle", "ready"], "stand_in": {"yaw_deg": 90.0, "height": 1.2, "radius": 0.75}},
     "glassfry": {"scene": "res://game/creatures/glassfry/glassfry_battle.tscn", "vfx_anchors": {"core": "cloud", "wound": "fry30"}, "contact": {"attack": 0.55}},
-    "oil_slug": {"scene": "res://game/creatures/oil_slug/oil_slug_battle.tscn", "vfx_anchors": {"core": "spine1", "wound": "spine1"}, "contact": {"attack": 0.55, "cast": 0.6}, "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}},
+    "oil_slug": {"scene": "res://game/creatures/oil_slug/oil_slug_battle.tscn", "vfx_anchors": {"core": "spine1", "wound": "spine1"}, "contact": {"attack": 0.55, "cast": 0.6}, "stand_in": {"yaw_deg": 60.0}, "portrait": {"rim_energy": 2.8, "kick_energy": 1.8, "margin": 1.2}},
     "tower_limpet": {"scene": "res://game/creatures/tower_limpet/tower_limpet_battle.tscn", "vfx_anchors": {"core": "shell", "wound": "shell"}, "contact": {"attack": 0.55}},
     "drownbell": {
       "scene": "res://game/creatures/drownbell/drownbell_battle.tscn", "contact": {"attack": 0.8, "cast": 1.0},

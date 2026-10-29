@@ -7838,6 +7838,53 @@
         540
       ],
       "settle_frames": 30
+    },
+    {
+      "id": "creature_oil_slug_battle",
+      "scene": "res://game/levels/_tests/creatures/shots/battle_oil_slug.tscn",
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
+    },
+    {
+      "id": "npc_corrow_storm_figure",
+      "scene": "res://game/levels/_tests/npc/corrow_storm_figure.tscn",
+      "camera": "Cameras/W22",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "npc_corrow_storm_figure_near",
+      "scene": "res://game/levels/_tests/npc/corrow_storm_figure.tscn",
+      "camera": "Cameras/Near",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }
