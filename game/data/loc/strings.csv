@@ -47,16 +47,16 @@ STATUS_HASTE,Haste
 STATUS_STOP,Stop
 STATUS_BERSERK,Berserk
 STATUS_CONFUSE,Confuse
-STATUS_DOOM,Doom
-STATUS_ZOMBIE,Zombie
-STATUS_SHELL,Shell
-STATUS_PROTECT,Protect
-STATUS_REFLECT,Reflect
-STATUS_REGEN,Regen
-STATUS_ARMOR_BREAK,Armor Break
-STATUS_MENTAL_BREAK,Mental Break
-STATUS_POWER_BREAK,Power Break
-STATUS_MAGIC_BREAK,Magic Break
+STATUS_DOOM,Last Tide
+STATUS_ZOMBIE,Hollowed
+STATUS_SHELL,Tide Ward
+STATUS_PROTECT,Bulwark
+STATUS_REFLECT,Mirrorwater
+STATUS_REGEN,Mending
+STATUS_ARMOR_BREAK,Sundered
+STATUS_MENTAL_BREAK,Unmoored
+STATUS_POWER_BREAK,Weakened
+STATUS_MAGIC_BREAK,Dimmed
 STATUS_PROVOKE,Provoke
 CHAR_LISS,Liss
 CHAR_KERRID,Kerrid
@@ -295,13 +295,13 @@ ABILITY_VOICE_WARD_DESC,Prevents Silence.
 ABILITY_SIGHT_WARD,Sightward
 ABILITY_SIGHT_WARD_DESC,Prevents Darkness.
 ABILITY_STANDING_GUARD,Standing Guard
-ABILITY_STANDING_GUARD_DESC,Protect for the whole battle.
+ABILITY_STANDING_GUARD_DESC,Bulwark for the whole battle.
 ABILITY_STANDING_MEND,Standing Mend
-ABILITY_STANDING_MEND_DESC,Regen for the whole battle.
+ABILITY_STANDING_MEND_DESC,Mending for the whole battle.
 ABILITY_LOW_TIDE_HASTE,Low Tide Haste
 ABILITY_LOW_TIDE_HASTE_DESC,Haste while HP is below half.
 ABILITY_LOW_TIDE_MEND,Low Tide Mend
-ABILITY_LOW_TIDE_MEND_DESC,Regen while HP is below half.
+ABILITY_LOW_TIDE_MEND_DESC,Mending while HP is below half.
 ABILITY_FULL_NET,Full Net
 ABILITY_FULL_NET_DESC,Doubles the lume won in battle.
 ABILITY_LIGHT_STEP,Light Step
@@ -378,12 +378,12 @@ HUD_TL_NOW,Acting now
 HUD_TL_BERSERK,Berserk: acts alone
 HUD_TL_CONFUSE,Confused: acts alone
 HUD_HELP_PROVOKED_FMT,provoked: must strike {name}
-HUD_HELP_REFLECT_FMT,Reflect bounces it onto {name}
-HUD_HELP_ZOMBIE_FMT,{name} is a Zombie: this heal will harm
+HUD_HELP_REFLECT_FMT,Mirrorwater turns it onto {name}
+HUD_HELP_ZOMBIE_FMT,{name} is Hollowed: this heal will harm
 HUD_FLOAT_REFLECTED,Reflected
 HUD_FLOAT_INVERTED,Heal turns to harm
-HUD_FLOAT_REGEN_INVERTED,Regen turns to harm
-HUD_FLOAT_DOOM,Doom
+HUD_FLOAT_REGEN_INVERTED,Mending turns to harm
+HUD_FLOAT_DOOM,Last Tide
 SET_REDUCED_MOTION,Reduced motion
 SET_REDUCED_MOTION_HELP,Turn-order chips change places without sliding. No screen shake and no pulsing.
 SET_TEXT_SCALE,Text size
@@ -410,8 +410,8 @@ HUD_HELP_ITEMS,"Tonics, salves and tools from the pack. Each use spends one."
 HUD_ITEM_COUNT_FMT,x{n}
 HUD_FAIL_NO_ITEM,None of those are left.
 HUD_FAIL_UNKNOWN_ITEM,That has no use in battle.
-HUD_HELP_ITEM_FELLS_FMT,{name} is a Zombie: this revive fells them
-HUD_HELP_ITEM_DEFEAT_FMT,"{name} is a Zombie and the last one standing: this revive fells them, and the fight is lost"
+HUD_HELP_ITEM_FELLS_FMT,{name} is Hollowed: this revive fells them
+HUD_HELP_ITEM_DEFEAT_FMT,"{name} is Hollowed and the last one standing: this revive fells them, and the fight is lost"
 GFX_VEGETATION_DETAIL,Vegetation Detail
 SKILL_LAMP_DIVE,Lamp Dive
 SWELL_MODE_BALLAST,Ballast
