@@ -50,7 +50,7 @@
     },
     "the_ink": {
      "when": {"set": ["ch04_dock_comforted"], "unset": ["ch04_saw_ysolde_ink"]},
-     "steps": [{"play": "ch04_the_ink"}, {"set": "ch04_saw_ysolde_ink"}, {"zone": "refresh_states"}]
+     "steps": [{"place": "InkLamp"}, {"play": "ch04_the_ink"}, {"set": "ch04_saw_ysolde_ink"}, {"zone": "refresh_states"}]
     },
     "dawn": {
      "when": {"set": ["ch04_dock_comforted"], "unset": ["ch04_left_haluna"]},

@@ -163,6 +163,7 @@ func _wake_night() -> void:
 	assert_true(_trigger(&"the_ink").try_interact())
 	assert_true(bool(Game.get_flag(&"ch04_saw_ysolde_ink")), "C4-07")
 	assert_true(&"ch04_ink_010" in lines, "'Once.'")
+	assert_true(_at(&"InkLamp"), "Rhen holds the lamp beside H15's lens, not between it and her hand")
 	assert_false(zone.block_shown("ysolde"), "she goes")
 	assert_false(_trigger(&"the_ink").is_available(), "once")
 
