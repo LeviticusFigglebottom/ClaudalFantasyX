@@ -72,8 +72,37 @@ Session `session_015hKkhtpX67kS4yZeA8AAhv`. Integration branch `claude/undertow-
 - **Sweep, Act I foe and boss actions:** every AI-picked skill of every Act I foe has its own effect (the Drownbell's
   toll is its BattleBossVfx set piece). The one hidden effect found was the Matron's recrust ring (0.75 m, inside her
   bulk). It is now 1.6 m (5b5d42d8). Re-rendered: ember motes ring her base.
-- **Pending:** the battle suite and the Ch5, Ch6 and Ch8 sim suites with Kerrid or Liss. The first run was lost to a
-  container restart, and they are re-running now. MERGE-READY follows when they are green.
+- **Off the tree (the Lead's 19:24, ui-menus' error sweep), e7aaf8cd:** BattleVfx play, play_at, anchor, entry_mark and
+  _half_depth, and BattleBossVfx's deferred polyp light, no longer read or set global transforms once the fight has
+  left the tree. New test test_battle_vfx_off_tree (2).
+- **test_battle_act1_ability_vfx:** after merging origin/claude/new-session-mj8c3c (cf2ffc15) it passes, 5/0.
+  - Its failure was the one I hit and fixed in 0c84c54b: the Swell techniques had no map.skills row of their own.
+  - A tree with 80e565ea but not 0c84c54b fails it.
+- **MERGE-READY @ 8da23b91** (+ this log commit): M3-C05-06 and M3-C06-05, the Swell part only (to review: combat),
+  the ground/knee anchors, the recrust ring, and the off-tree guards. The integration branch is merged in.
+  - **Checks run on the merged head:**
+    - Godot `--filter=` battle 812/0, swell 151/0, formulas 39/0, off_tree 2/0, vfx 28/0.
+    - `sim.py --check` on the 18 Ch5, Ch6 and Ch8 suites with Kerrid or Liss: exit 0, all 77 policy rows in band.
+    - validate_data 0/0, taskboard --check, gdlint, gdformat, `gen_act1_ability_vfx --check`.
+  - **Coverage:** the full gate exits 2 (the run failed, not a drop), and none of the failures are from this branch.
+    - Under instrumentation the whole suite fails 11 tests outside battle, then segfaults in
+      test_villager_routines.gd:434 (a freed instance).
+    - The 11 are: test_creature_portraits (nhoa, hesk, ethren portraits missing), test_field_audio,
+      test_hero_field_snaps (haluna_wake, drowned_choir), test_villager_routines (3), test_act1_cutscene_walks
+      (haluna_wake), test_fp_prologue (Liss's vigil), test_qa_capsules (Haluna villagers, Act II foes) and
+      test_qa_save_shrines (haluna_wake).
+    - These are the integration branch's reds. The Lead routes them.
+    - `--filter=battle` report: game/battle 96.57% (2588/2680). The files under baseline there are the ones tests
+      outside the filter cover (battle_swell, bestiary and others). This branch changes no game/battle/*.gd.
+  - **Skipped:** the screenshot manifest (no shot freezes a Swell or the low anchors; finisher stills viewed with the
+    new tool instead), Blender (none touched), and the tools suite (only tools/vfx scripts touched;
+    `gen_act1_ability_vfx --check` passes).
+- **Sweep, done:** every AI-picked skill of every Act I foe and boss has its own effect, timing and camera. The hidden
+  ones I found are fixed: Kerrid's sweep, Anchor Fall, Return Tide, Lamp Dive and the Matron's recrust.
+- **BACKLOG EMPTY (2026-10-29 ~21:xx):** the Lead's 17:59 and 19:24 items are done.
+  - Left open and not this pass: the rest of M3-C05-06 and M3-C06-05 (gear, Lattice, Liss's steal and gadgets,
+    Kahre, the shop tier).
+  - The integration branch's coverage reds.
 
 ### PC-QUEUE
 - GPU QA row 36 (the Reach): re-check in live play on the RX 9070 XT (M3-BPR-425's rest frame).
