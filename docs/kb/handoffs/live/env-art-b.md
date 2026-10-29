@@ -393,6 +393,10 @@ that test at this branch's zones.
   is mine since 10-28): M3-C05-03, M3-C08-102, M3-C09-04, each with what is built and where. B01's SaveShrine
   interactable and chandler stay act1-chapters' (systems). **MERGE-READY @ 078f3e07.**
 
+- **Tamsule's gilt** (`tb_gold_leaf`, flat): a worn-gold look by `kit_material_paths` in the port and the galleries.
+  Checks: Godot ch07 18/0, tamsule 7/0, zone_kit 12/0; viewed ch07_tamsule_market, ch07_bell_galleries.
+  **MERGE-READY @ f248bb57.**
+
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
   on the PC presets (two large and three small fires in `ch06/brine_shoals` and `salvage_camp_burning`).
