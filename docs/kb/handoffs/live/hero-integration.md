@@ -1210,3 +1210,33 @@ act1-chapters 483dcb91, m2-slice d0433789, audio 1cb9654d, hero-integration 5c11
   version. pc-gpu's log is the Lead's to merge.
 - For reference, a trial on bare integration (no prefold) also hits haluna.tscn as m2-slice vs env-art and
   test_battle_arena.gd as battle-presentation vs env-art. Those are the same three hunks, seen from before big16.
+
+### Audit on the big17 trial tree (full: import + runtime scan), 2026-10-29
+- **9 items, down from 13** (creatures 1, env-art 5, integration-qa 3). `act1_final_inventory.md` is rewritten from that tree.
+  - Gone: env-art's 4 medium rows (Haluna's and haluna_wake's `banyan_placeholder` / `windbreak_placeholder` nodes).
+  - Nothing new, so no new tasks: every row is already filed (M3-HER-1140 env-art, M3-HER-1142 creatures, M3-HER-1149 mine).
+  - My 3 rows are Pell's Ch8/Ch9 capsules. They clear when claude/characters (Pell, M3-CHR-506) merges with the
+    row below.
+- The import logs `TideNotchStyleBox` parse errors and a missing SourceSans3-Bold.otf. Both show up on any fresh
+  `.godot` (this branch too) and the files exist, so they're first-import order noise, not a finding.
+
+MERGE-READY @ fa046a497 (+ this log):
+- **M3-HER-1149, Pell's field row:** walk 1.27 m/s, run 3.13 m/s, measured by HeroClipGait on characters'
+  pell_lod1 in the trial tree. Ch9's `pell` and `vigil_pell` (via the `vigil_` prefix) take his body once his model
+  merges, and stay capsules before that. test_hero_field_actor's alias test handles both cases, and checks that a
+  no-row actor keeps its capsule. No battle wrapper, because Ch9 gives him no battle row in Act I (M3-C09-07).
+  - Note: ResidentLoads already preloads every field body that has a model, so `scene_loads.json` needs no regeneration.
+- **M3-HER-1227 → review:** the fix had been in since 41c277d26. Added the regression test (a freed cached
+  sequencer ahead of a playing one); it fails on the old order. hero_followers 13/0.
+- **M3-C09-09 → review (architect):** Ch9's grade ids `ch09`, `ch09_dawn`, `prologue` and the `act_card <int>`
+  event (ActCard already listens for it). **Ruling: `hold_input`/`hold_input_end` stay events.** Moving
+  ch09_the_road_out's card to `<<event act_card 2>>` is act1-chapters' edit. test_dlgc 129/0, dlgc --check 0/0.
+- **M3-ARC-1324 → review (architect, env-art-b's ask):** `apply_system_tiers` sets WaterSphereRig's and
+  SmokeColumn's tiers. test_graphics_runtime_system_tiers 2/0, underwater 8/0.
+- Checks: gdlint/gdformat on the touched files, validate_data 0/0, taskboard --check, hero_field_actor 15/0,
+  tools test_trial_merge 4/0.
+- Skipped: screenshots (no scene, shader or camera change; the Pell row only acts once his model is on the tree).
+- Act I GPU QA rows for me (act1_gpu_qa.md on gpu/act1-qa-2):
+  - 21 (party start) is fixed @ 5c11d034;
+  - 37 and 38 are fixed on the camera and follower side. The spawn and volume remainders are M3-HER-1156
+    (environment) and M3-HER-1157 (environment).
