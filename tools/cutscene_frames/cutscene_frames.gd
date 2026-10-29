@@ -11,6 +11,9 @@ extends Node
 ## <out>/f_<seconds*10>.png, plus a line per spoken line in <out>/lines.txt with its time, so a
 ## frame can be matched to its line. --tour places the party at each named spawn of the current scene
 ## (place_at) at that game time, to view a long route section by section. It quits after --max-sec.
+## M2-FP-119: --cut-frames=N also writes the N frames that follow any camera jump of more than
+## CUT_JUMP_M (a cut), every frame, as <out>/cut_<milliseconds>.png, so what a cut shows can be seen
+## frame by frame. --no-taa turns the viewport's TAA off (to tell temporal history from staging).
 ## Nothing is saved (autosaves held).
 
 const DEFAULT_EVERY_SEC := 1.0
@@ -18,6 +21,9 @@ const DEFAULT_MAX_SEC := 120.0
 ## The pause before a choice is taken, so the frame with the choices up is written.
 const CHOICE_HOLD_SEC := 1.5
 const FRAME_NAME_SCALE := 10.0
+## A camera move larger than this in one frame counts as a cut (--cut-frames).
+const CUT_JUMP_M := 5.0
+const CUT_NAME_SCALE := 1000.0
 
 var _every := DEFAULT_EVERY_SEC
 var _max_sec := DEFAULT_MAX_SEC
@@ -34,6 +40,10 @@ var _lines: PackedStringArray = []
 var _started := false
 ## [[spawn, sec], ...] still to visit (--tour), in time order.
 var _tour: Array = []
+var _cut_frames := 0
+var _cut_left := 0
+var _no_taa := false
+var _last_cam := Vector3.INF
 
 
 func _ready() -> void:
@@ -56,6 +66,10 @@ func _ready() -> void:
 				_out = value
 			"choice":
 				_choice = int(value)
+			"cut-frames":
+				_cut_frames = int(value)
+			"no-taa":
+				_no_taa = true
 			"tour":
 				for stop: String in value.split(",", false):
 					var pair := stop.split(":")
@@ -98,6 +112,7 @@ func _process(delta: float) -> void:
 			_lines.append("%06.1f TOUR %s" % [_elapsed, stop[0]])
 	_watch_line()
 	_watch_choices(delta)
+	_watch_cut()
 	if _elapsed >= _next_frame:
 		_next_frame += _every
 		var img := get_viewport().get_texture().get_image()
@@ -107,6 +122,23 @@ func _process(delta: float) -> void:
 		if f != null:
 			f.store_string("\n".join(_lines) + "\n")
 		get_tree().quit(0)
+
+
+## --cut-frames: writes every frame for a while after the camera jumps (a cut).
+func _watch_cut() -> void:
+	if _no_taa:
+		get_viewport().use_taa = false
+	if _cut_frames <= 0:
+		return
+	var cam := get_viewport().get_camera_3d()
+	if cam != null:
+		if _last_cam != Vector3.INF and _last_cam.distance_to(cam.global_position) > CUT_JUMP_M:
+			_cut_left = _cut_frames
+		_last_cam = cam.global_position
+	if _cut_left > 0:
+		_cut_left -= 1
+		var img := get_viewport().get_texture().get_image()
+		img.save_png("%s/cut_%06d.png" % [_out, int(round(_elapsed * CUT_NAME_SCALE))])
 
 
 func _watch_line() -> void:
