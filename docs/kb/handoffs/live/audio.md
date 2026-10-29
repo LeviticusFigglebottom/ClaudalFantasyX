@@ -1,5 +1,20 @@
 # Live log: audio (branch `claude/audio`)
 
+## FROM 2026-10-29 (Lead `session_01Bg3iP7cPGyjbX4CyniBahc`; integration `claude/new-session-mj8c3c`)
+Session `session_01UPFyE9L9BA3QodpCNJEfAs`. Brief: the final-quality audit of Act I sound as played, on lead/gate-big18 (M3-AUD-864). Newest first.
+
+- **LEAD-ASK: Git LFS uploads are blocked from this environment.** The network policy answers 403 to `lfs.github.com` (the LFS verify step), so the 58 new LFS objects below are NOT on GitHub (the batch API says 404). GitHub's pre-receive hook (GH008) refuses any push that references them, so **the work below is committed locally only (branch `audio-local` in this container, 7 commits on fe30f195) and only this log is pushed.** Nothing to merge yet. Every one of them renders byte-identically from source: `python3 tools/audio/render_all.py --only act1_ability_sfx act1_cutscene_foley`, then `git lfs push origin claude/audio` from any container that can reach lfs.github.com (or allow the host for this environment and I push them). I keep working meanwhile and push the moment uploads work.
+- **Done (local commits, not yet pushed; scratch worktree on big18 + this branch for the checks):**
+  1. **big18's 5 new ability gaps closed:** Kerrid's and Liss's Swell finishers (`long_hold`, `three_reel_charge`) have their own sounds, `abl_swell_weighted_swing` (the flat iron sweep and the wet sand) and `abl_swell_reel_stop` (the brass ring locking, the salt-glass flash). `grip_the_stair`, `rope_dive` and `hand_closes` play their skill's own row instead of `status_apply`. They're appended at the end of the ability JOBS, so every earlier render stays byte-identical (checked).
+  2. **Cutscene actions:** 102 Act I `@anim` clips played nothing. 28 new foley kinds (`assets_src/sfx/act1_cutscene_foley.py`, 56 files, Git LFS, deterministic) cover the handled things: the doors of Kahre's chamber and the crown pavilion, the sail over the hatch, the seized key, Kell's beacon, the brand in the brazier, rope, crockery, paper, ink, spears, sand, the Matron unfolding. Pure gestures map to `''`, silent on purpose.
+  3. **The audit widened and is now a gate:** new sections Cutscene actions, Battle events (element hits, heal, status and ticks, KO, openings, outcomes, Rim break, each Act I Vowbound's call sting, the items, Swell finishers, choreo styles and weapon accents), Footsteps (every Act I level names its ground; ten fell to the default) and UI core (cursor, confirm, cancel, error, each hook's rows on disk). `test_act1_audio_audit` fails on any open item. **All sections are 0** on claude/audio and on big18 + claude/audio.
+  4. **Music transitions on the beat:** MusicDeck held no beat. Now a change with a fade waits for the next beat of the cue sounding (the beat halved until it's ≤ 0.6 s, mix.json `beat_sync_max_wait_sec`), and a resumed cue picks up on a beat of its own. The 18 Act I cues without a `.loop.json` get a grid from their sources, or `"free"` (sung, rubato, drones). `test_music_transitions` (7 tests) also checks that every music fade the game asks for is at least `min_fade_sec` 0.2 s (no hard cuts).
+- **Checks run:** validate_data 0 errors; test_audio_loudness and test_audio_data OK (48); test_act1_audio_audit OK; Godot `--filter=audio` 175 run, 0 failed; `--filter=music_transitions` 7/0; gdlint/gdformat clean; render determinism identical. Running: Godot `cutscene`, `music`, `battle_audio`; the listening report (part 3).
+- **Next:** part 3, the listening pass by analysis (`tools/audio/act1_listening_report.py`: band balance for mud and harshness, loudness and timbre movement for monotony, spectrogram sheets), then revise the weakest cues in their sources.
+
+### PC-QUEUE
+- Listen on real speakers: the 28 new cutscene foley kinds in their scenes (levels against the lines), the two Swell finishers over their contacts, and zone/battle/cutscene changes landing on the beat (Haluna → battle → back, Ch3 shrine → first verse).
+
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
