@@ -267,7 +267,7 @@ DERELICT_FILL_AT = ((0.0, 2.5, 6.5), (0.0, 2.5, 1.0), (0.0, 2.5, -5.0))  # in th
 # Her topsides and transom read black from the ferry (M3-ENV-1228: F05, D01 and D06; the low moon is behind them), so the
 # same fill, weaker, stands just outboard of her ferry side (+x, the half beam is 3.0) and astern of her transom (z 10),
 # where the name-board hangs: the hull reads as pale dead timber, still unlit by any lamp.
-DERELICT_HULL_FILL_AT = ((3.8, 1.1, -6.0, 0.9), (3.8, 1.1, 1.0, 0.9), (3.8, 1.1, 7.0, 0.9), (0.0, 1.4, 11.6, 1.1))
+DERELICT_HULL_FILL_AT = ((3.8, 1.1, -6.0, 0.9), (3.8, 1.1, 1.0, 0.9), (3.8, 1.1, 7.0, 0.9), (1.4, 1.1, 14.5, 1.6))
 
 
 # The ferry's own deck between its lamps read near black on a real GPU too (the GPU QA's row 4, ch04_ferry_deck): the
