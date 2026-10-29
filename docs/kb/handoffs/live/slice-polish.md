@@ -927,6 +927,16 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   already carried this branch through f8f4d802); validate_data 0/0, dlgc and taskboard clean. The beat-by-beat pass
   (every line's speaker in frame, eyelines, timing, dead frames, music on the beats) now continues on this merged tree:
   Ch1 next, then the slice scenes again on big18.
+- **On big18, the guard earned its keep (MERGE-READY @ the branch head):**
+  - **`@vfx follow=` / `anchors=`** (integration-qa's M3-ARC-1326) are in cues.json and reach a stage VFX host, but no
+    host reads them yet; EbbingMotes doesn't. They are now in the sequencer's UNSUPPORTED_KWARGS, so a scene that
+    uses them warns, and no Act I scene does. **For integration-qa:** when Ch9's Ebbing host reads them, drop them
+    from that list and test_cutscene_directives stays green.
+  - **test_cutscene_vfx_hosts** (integration-qa's) failed to load on big18. It counted M2-FP-01's CutsceneMotes,
+    which I deleted at 47f7707b (the cutscene VFX at final quality). It now counts the sequencer's GlimmerFields
+    (test-only), 4/0.
+  - On the merged tree: cutscene_directives 2, cutscene_grade 3, cutscene_sequencer 18, first_verse 3, fp_ 30,
+    haluna 65, prologue 8, ch01 20, all 0 failed.
 ### PC-QUEUE
 - New Game → the beach: 15 s of black before the fade on lavapipe (the load and prewarm at a fixed 30 fps). Measure it on
   the GPU against ADR 0042's ≤ 1 s hidden-frames target.
