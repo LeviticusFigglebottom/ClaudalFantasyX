@@ -4,6 +4,9 @@
                 with glass floats on the head-rope, a basket of floats at the foot; origin at the deck
   salvage_heap  3 x 2 m of the drowned city brought up: Lit Age ceramic panels stacked and leaning, brass pipe lengths,
                 an empty lamp housing (its glass long gone), two crates, a basket, a coil of rope; origin at the deck
+  gull_post     a carved gull's perch on a deck (the walk-through audit, 2026-10-29: the dive raft's gull stood on air): a
+                weathered pole lashed to the deck and a short lintel across its head, the lintel's top at GULL_POST_H;
+                origin at the deck, the lintel along X
   town_far      a 64 x 30 m strip of rafts, hulls, cabins, keel-roofs and masts for 80 m and beyond (the town past the
                 preview's edge); origin at the waterline, the strip centred on it, its long side along X
 """
@@ -22,7 +25,9 @@ TRI_BUDGET = {
     "net_frame": (5000, 300),
     "salvage_heap": (8000, 400),
     "town_far": (4000, 1500),
+    "gull_post": (1200, 120),
 }
+GULL_POST_H = 2.7  # the lintel's top over the deck: the dive raft's gull's feet (DiveGull, O10)
 
 
 def build_net_frame(seed: int = 761) -> list[kc.MeshBuilder]:
@@ -178,8 +183,31 @@ def build_town_far(seed: int = 763) -> list[kc.MeshBuilder]:
     return out
 
 
+def build_gull_post(seed: int = 764) -> list[kc.MeshBuilder]:
+    out = []
+    h = GULL_POST_H
+    for lod in (False, True):
+        rng = kc.rng_for("gull_post", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("gull_post" + (oc.LOD if lod else ""))
+        timber, rope = mb.material(oc.M_TIMBER), mb.material(oc.M_ROPE)
+        lean = np.array([rng.normal(0, 0.02), 0.0, rng.normal(0, 0.02)])
+        kc.tube(mb, np.array([[0.0, -0.2, 0.0], [0.0, h - 0.16, 0.0] + lean]), np.array([0.075, 0.06]),
+                4 if lod else 8, timber, noise=None if lod else noise, disp_m=0.006, cap_end=True,
+                variation=float(rng.random()))
+        top = np.array([0.0, h - 0.07, 0.0]) + lean
+        kc.rounded_block(mb, top, (0.32, 0.07, 0.08), timber, radius=0.02, seg=1 if lod else 2,
+                         noise=None if lod else noise, disp_m=0.004, variation=float(rng.random()))
+        if not lod:
+            oc.lashing(mb, (0.0, 0.3, 0.0), (0.0, 1.0, 0.0), 0.085, rope, turns=4)
+            oc.lashing(mb, top - np.array([0.0, 0.1, 0.0]), (0.0, 1.0, 0.0), 0.07, rope, turns=3)
+        out.append(mb)
+    return out
+
+
 TARGETS = {
     "net_frame": build_net_frame,
     "salvage_heap": build_salvage_heap,
     "town_far": build_town_far,
+    "gull_post": build_gull_post,
 }
