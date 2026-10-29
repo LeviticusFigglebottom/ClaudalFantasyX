@@ -6,6 +6,8 @@ extends Node
 ## Run headless after a zone's cast or dressing changes (the test checks every zone has a list):
 ##   godot --headless --path . res://tools/loading/scene_loads.tscn
 
+## Frames each zone runs before its holdings are collected, so deferred builds are in.
+const SETTLE_FRAMES := 3
 const LOCATIONS := "res://game/data/world/locations.json"
 const OUT := "res://game/data/ui/scene_loads.json"
 ## Act I (ADR 0041): the prologue and chapters 1-9.
@@ -37,6 +39,9 @@ func _ready() -> void:
 			continue
 		var node := (load(scene) as PackedScene).instantiate()
 		get_tree().root.add_child(node)
+		# Deferred builds (VillagerLayer builds once the zone's own set-up is done) load at runtime too.
+		for f in SETTLE_FRAMES:
+			await get_tree().process_frame
 		var found := {}
 		_collect(node, found)
 		found.erase(scene)
