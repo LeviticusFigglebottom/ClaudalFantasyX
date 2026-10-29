@@ -378,6 +378,15 @@ that test at this branch's zones.
   table unchanged and adds KitSlotSwaps (`test_b_arenas` WRAPPED updated). Checks: test_b_arenas + test_arenas,
   Godot battle_arena 18/0. **MERGE-READY @ 2b882105.**
 
+- **M3-C09-03, verified against the hook (trial merge of `origin/claude/hero-integration` @ 5c11d034, not pushed):**
+  new `tests/integration/test_ch09_ebbing_cues.gd` runs every compiled Ch9 `@vfx glimmer_held` cue through
+  `CutsceneSequencer._cue_vfx` on `ch09/corrow_night`: with the hook, the Ebbing takes all of them and no placeholder
+  spawns (PASS on the trial tree; on this branch it only checks the cues until the hook arrives). Nothing else is
+  needed from me; the task closes when M3-ARC-1326 lands on integration. **MERGE-READY @ 7dc2ba55.**
+- **For integration-qa (FAST-TRACK, found on that trial):** hero-integration's own `tests/unit/test_cutscene_vfx_hosts.gd`
+  fails to parse at 5c11d034: its `_motes()` checks `c is CutsceneMotes`, a class that branch removed (CutsceneVfx
+  replaced it). Counting nodes named `Vfx_*` (the sequencer's names) works whatever draws the placeholder.
+
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
   on the PC presets (two large and three small fires in `ch06/brine_shoals` and `salvage_camp_burning`).
