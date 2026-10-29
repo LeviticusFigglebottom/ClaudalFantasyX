@@ -819,7 +819,7 @@ def build_clips() -> list[ck.Clip]:
 # the intro the whole model lifts the least it takes to stay on the floor.
 GROUNDED_LIMBS = ([(f"leg_{tag}{i}_a", 2, 1.0 if tag == "l" else -1.0, 60.0) for tag in "lr" for i in range(2)]
                   + [("claw_arm", 0, -1.0, 45.0), ("claw_small_arm", 0, -1.0, 45.0),
-                     ("root", gr.LIFT, 1.0, 0.15, ("ko", "intro", "cast"))])
+                     ("root", gr.LIFT, 1.0, 0.15, ("ko", "intro", "cast", "attack", "hit"))])
 
 
 def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
