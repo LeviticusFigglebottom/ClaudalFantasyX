@@ -37,4 +37,8 @@ ADR 0041: everything a player meets from the title to the end of Ch9 reaches fin
 - **low**, all: `assets/environments/kits/tamsule_bell/materials/tb_drop_proxy.tres`: asset file named as a placeholder
 - **low**, all: `assets/environments/kits/tamsule_bell/reefball_drop_proxy.glb`: asset file named as a placeholder
 
+## Notes (integration-qa)
+- 2026-10-29 ~23:40 integration-qa: **the audit lists nothing for this owner on lead/gate-big18** (full scan; 2 items
+  in all, both env-art-b's). The owner can tick the boxes and send this to review (reviewer: qa).
+
 ## Review log

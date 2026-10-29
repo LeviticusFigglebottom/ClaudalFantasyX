@@ -24,4 +24,8 @@ ADR 0041: everything a player meets from the title to the end of Ch9 reaches fin
 - **high**, Ch6: `game/levels/ch06/brine_shoals/brine_shoals.tscn`: hound is a capsule stand-in
 - **high**, Ch6: `game/levels/ch06/brine_shoals/brine_shoals.tscn`: inquisitor is a capsule stand-in
 
+## Notes (integration-qa)
+- 2026-10-29 ~23:40 integration-qa: **the audit lists nothing for this owner on lead/gate-big18** (full scan; 2 items
+  in all, both env-art-b's). The owner can tick the boxes and send this to review (reviewer: qa).
+
 ## Review log
