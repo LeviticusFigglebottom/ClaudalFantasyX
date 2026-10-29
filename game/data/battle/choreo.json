@@ -63,7 +63,7 @@
                             "kerrid": "swing", "liss": "reel"},
     "style_by_kind": {"physical": "melee", "magical": "cast", "heal": "support", "support": "support"},
     "style_by_target": {"self": "guard"},
-    "style_by_skill": {"read": "read", "lamp_dive": "dive", "return_tide": "brace", "brine_lash": "finisher",
+    "style_by_skill": {"read": "read", "lamp_dive": "dive", "return_tide": "brace", "long_hold": "swing", "three_reel_charge": "reel", "brine_lash": "finisher",
                        "shallows_verse": "verse", "written_light": "glyph", "tidal_ward": "chant",
                        "floodnet": "chant", "breakwater": "finisher", "toll": "toll",
                        "reel_shot": "item", "anchor_fall": "finisher",
