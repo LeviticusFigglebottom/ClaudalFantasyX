@@ -1354,3 +1354,25 @@ trial_merge --prefold, merge_union's virtual base, test_post_import's crowd, fre
   inventory re-run. The inventory is redone above. The full suite is NOT re-run; the gate session has it. From now on
   I run one Godot at a time.
 MERGE-READY @ (this commit): ROUTES, the taskboard duplicate check, the inventory.
+
+### TRIAL MERGE, 2026-10-29 ~20:00 (prefold lead/gate-big17)
+TRIAL MERGE @ integration ccf44ba4 + lead/gate-big17 be74f9a0: env-art 8d48173e, env-art-b c28b7b01,
+creatures 02d0280e, creatures-b 4d0150e3, characters 3b55279e, ui a9ae00b7, battle-presentation b1316ebb,
+act1-chapters a9c44edc, m2-slice 530b8551, audio 1cb9654d, hero-integration 4059ada9
+- **trial_merge now runs this checkout's merge_union** (it ran the tree's own copy, which is big17's, without the
+  virtual-base fix). With it, **every `shots.json` clash resolves** (creatures, ui).
+- `pc-gpu.md` (characters, ui, battle-presentation, act1-chapters, mine): take integration's. Lead.
+- **Mine, fixed @ 32dd72a34:** `tools/tests/test_post_import.py` (creatures added the same `crowd` row, wrapped
+  differently: I took theirs) and `M3-C05-1215`'s task file (act1-chapters moved it to review itself: took theirs).
+- **env-art:** `M3-ENV-750` task file again. Take env-art's (done + review line).
+- **env-art-b:** `docs/kb/ownership.md`. Resolve by hand. merge_union doesn't union it, because line union would keep
+  both old and new versions of an edited row. TRACK-RULES' list says it does; that line is wrong, so resolve it by hand.
+- **characters (M3-CHR-519, casting named NPCs as themselves) vs the layout owners.** The layouts were written once
+  by the generators, so hand edits are fine. Resolver: whoever merges second keeps the layout owner's side and
+  re-applies characters' one-field `cast` changes. Those are `tender: reed→tender`, `fenn: fisher→fenn`, and the
+  like in 9 layouts.
+  - `ch01/oruvel/oruvel_layout.json` vs env-art-b and creatures;
+  - `ch05/ashcrown/ashcrown_layout.json` vs act1-chapters (M3-CIN-1220 cameras) and env-art-b (M3-ENV-1325);
+  - `ch08/coilspire/coilspire_layout.json` vs act1-chapters (M3-CRE-627 Virel).
+- **act1-chapters vs env-art-b: `tools/act1/ch08_coilspire_dressing.py`** (Virel's chamber vs M3-ENV-1326's zone looks).
+  A generator, so act1-chapters resolves it and re-runs it. Also the `M3-ENV-744` task file: take act1-chapters'.
