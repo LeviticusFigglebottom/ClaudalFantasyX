@@ -589,6 +589,10 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ e1db6170: M3-CRE-663** (the big14 Blender gate's haluna_kit diff), to review: `kirru_roost`'s arch crown
+  (`cos(pi/2)`, ~6e-17) snapped to 0 before export. `verify_blender_builds --job haluna_kit` 199 identical natively, under
+  `X86_V4` and under `X86_V3 X86_V4`. Only `kirru_roost.glb` changed. Also **M2-HER-1127** to review (the First Verse points at
+  `wayside_offering` on both branches; `--filter=qa_threads` 1/0) and **M3-ENV-105** to review (done 10-28, df2c8384a).
 - **MERGE-READY @ 4629dfa6: M3-ENV-1228, the Ch4 derelict at night**, to review. Cold moon fill outboard of her ferry side and
   astern of her transom (the earlier fill lit only her deck). D01 reads; the transom and name-board read from astern.
   **Camera split:** D06 and F05 are act1-chapters' cameras (D06 frames the rail over the board; re-aim it). **Checks:**
