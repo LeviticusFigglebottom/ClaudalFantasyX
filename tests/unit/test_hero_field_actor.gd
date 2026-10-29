@@ -250,7 +250,8 @@ func test_aliased_stage_actors_get_their_heroes_bodies() -> void:
 	var vigil := _capsule_actor("vigil_asha")
 	var edge := _capsule_actor("ysolde_edge")
 	var pell := _capsule_actor("vigil_pell")
-	for a in [vigil, edge, pell]:
+	var sefir := _capsule_actor("vigil_sefir")  # a hero with no field row
+	for a in [vigil, edge, pell, sefir]:
 		actors.add_child(a)
 	zone.add_child(stage)
 	var bodies := HeroFieldActor.attach_stage(stage)
@@ -258,9 +259,12 @@ func test_aliased_stage_actors_get_their_heroes_bodies() -> void:
 	for b in bodies:
 		ids.append(String(b.hero_id))
 	ids.sort()
-	assert_eq(ids, ["asha", "ysolde"] as Array[String], "Asha's vigil and Ysolde at the edge get bodies")
+	assert_eq(
+		ids, ["asha", "pell", "ysolde"] as Array[String], "Asha's and Pell's vigils and Ysolde at the edge get bodies"
+	)
 	assert_false((vigil.get_node("StandIn") as Node3D).visible, "the vigil's capsule hides")
-	assert_true((pell.get_node("StandIn") as Node3D).visible, "Pell (no model yet) keeps his")
+	assert_false((pell.get_node("StandIn") as Node3D).visible, "Pell's too (M3-CHR-506)")
+	assert_true((sefir.get_node("StandIn") as Node3D).visible, "a hero with no field row keeps his")
 	_done()
 
 

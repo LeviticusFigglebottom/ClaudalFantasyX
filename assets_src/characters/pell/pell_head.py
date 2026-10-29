@@ -23,6 +23,8 @@ Deterministic: no random terms; numpy only.
 """
 from __future__ import annotations
 
+import copy
+
 import numpy as np
 
 import bb_donor
@@ -107,6 +109,7 @@ class KirruWarp:
                        oh["whisker_pad"][1]) for sg in (1.0, -1.0)]
         # the rigid regions' targets
         self.eye0 = {sd: lm.side_pt("eye", sd).copy() for sd in ("L", "R")}
+        self.frames = {sd: copy.copy(face.eyes[sd]) for sd in ("L", "R")}  # the donor's eye frames (round_eyes)
         self.eye_d = self._eye_shift(lm, face)
         m0 = lm.P("mouth")
         self.mouth0 = m0.copy()
@@ -202,6 +205,41 @@ class KirruWarp:
         r0, r1 = (float(x) for x in self.oh["eye_region_m"])
         return 1.0 - smoothstep(r0, r1, np.linalg.norm(P - self.eye0[sd], axis=1))
 
+    def round_eyes(self, P: np.ndarray) -> np.ndarray:
+        """Second look-dev pass (pell_review.md item 1: "the almond lids read as human eyes"): each eye opening made
+        rounder before the eye rides to its place. Inside the lids (field r < region[0], fading out by region[1], and
+        only near the eye) the skin is scaled about the eye's centre by `width` along the fissure and `height` across
+        it, and moved back by the globe's change in depth under it, so the margins still rest on the globe.
+        `round_frames` gives the eye frames the same scale (the lashes, globes and blink shapes are cut from them)."""
+        er = self.oh.get("eye_round")
+        if not er:
+            return P
+        ka, kb = float(er["width"]), float(er["height"])
+        r0, r1 = (float(x) for x in er["region"])
+        out = np.asarray(P, dtype=float).copy()
+        for sd in ("L", "R"):
+            fr = self.frames[sd]
+            rr, _t = fr.field(out[:, 0], out[:, 2])
+            w = (1.0 - smoothstep(r0, r1, rr)) * self.eye_weight(P, sd)
+            if not (w > 0.0).any():
+                continue
+            E = fr.E
+            a0, b0 = out[:, 0] - E[0], out[:, 2] - E[2]
+            a1, b1 = a0 * (1.0 + (ka - 1.0) * w), b0 * (1.0 + (kb - 1.0) * w)
+            R = float(fr.R)
+
+            def depth(a: np.ndarray, b: np.ndarray) -> np.ndarray:
+                sc = np.minimum(np.hypot(a, b), 0.985 * R)
+                return np.sqrt(np.maximum(R * R - sc * sc, 0.0))
+
+            out[:, 0] = E[0] + a1
+            out[:, 2] = E[2] + b1
+            out[:, 1] = out[:, 1] + (depth(a0, b0) - depth(a1, b1)) * w
+        return out
+
+    def round_frames(self, face) -> None:
+        round_eye_frames(face, self.oh.get("eye_round"))
+
     def mouth_weight(self, P: np.ndarray) -> np.ndarray:
         q = (P - self.mouth0) / self.mouth_r
         return 1.0 - smoothstep(1.0, 1.8, np.linalg.norm(q, axis=1))
@@ -226,7 +264,7 @@ class KirruWarp:
                 if self.sdf(q)[0] > 0.0:
                     break
             c2 = self.project(q)[0] + self.normal(q)[0] * 0.004 * self.s
-            tgt = c2 + (P - c) * sc
+            tgt = c2 + self._ear_shape((P - c) * sc, m, self.normal(q)[0])
             nt = self.kp.get("ear_notch", {})
             if nt and str(nt.get("side", "L")).upper() == sd:
                 Q = tgt[m]
@@ -240,6 +278,24 @@ class KirruWarp:
             out = out + (tgt - out) * w[:, None]
             wsum = np.maximum(wsum, w)
         return out, wsum
+
+    def _ear_shape(self, v: np.ndarray, m: np.ndarray, n: np.ndarray) -> np.ndarray:
+        """Second look-dev pass (pell_review.md item 2: "small human ears"): an otter's ear is a small rounded flap
+        lying close to the skull. The scaled ear's offsets from its centre are split along the skull's normal `n`,
+        up, and fore-aft; the height is drawn in toward the ear's own width by `ear_round` (1 = as tall as it is
+        wide: round), and the depth off the skull scaled by `ear_flat`."""
+        er = self.kp.get("ear_shape")
+        if not er:
+            return v
+        up = np.array([0.0, 0.0, 1.0]) - n * float(n[2])
+        up /= max(float(np.linalg.norm(up)), 1e-9)
+        fa = np.cross(n, up)
+        vn, vu, vf = v @ n, v @ up, v @ fa
+        hu = float(np.percentile(np.abs(vu[m]), 95))
+        hf = float(np.percentile(np.abs(vf[m]), 95))
+        k = 1.0 + (min(hf / max(hu, 1e-9), 1.0) - 1.0) * float(er["ear_round"])
+        return (n[None, :] * (vn * float(er["ear_flat"]))[:, None] + up[None, :] * (vu * k)[:, None]
+                + fa[None, :] * vf[:, None])
 
     def radial(self, P: np.ndarray) -> np.ndarray:
         """Each point moved along its ray from the head's centre (`centre`) to the surface: one-to-one, so the
@@ -292,7 +348,8 @@ class KirruWarp:
 
     def __call__(self, P: np.ndarray, ear_w: dict | None = None) -> np.ndarray:
         P = thicken_neck(np.asarray(P, dtype=float), self.lm, self.kp)
-        Q = P + self.move(P)
+        Pr = self.round_eyes(P)
+        Q = Pr + self.move(Pr)
         if ear_w is not None:
             E, we = self.ears(P, ear_w)
             Q = Q + (E - Q) * we[:, None]
@@ -307,6 +364,16 @@ def head_vertices(F: np.ndarray, freg: np.ndarray, n: int) -> tuple[np.ndarray, 
     vh[np.unique(F[hf][F[hf] >= 0])] = True
     vb[np.unique(F[~hf][F[~hf] >= 0])] = True
     return vh, vh & vb
+
+
+def round_eye_frames(face, er: dict | None) -> None:
+    """The eye frames scaled as `KirruWarp.round_eyes` scaled the lids (`eye_round`; pell_textures reads it too)."""
+    if not er:
+        return
+    ka, kb = float(er["width"]), float(er["height"])
+    for fr in face.eyes.values():
+        fr.half_w, fr.inner_extra = fr.half_w * ka, fr.inner_extra * ka
+        fr.up, fr.lo = fr.up * kb, fr.lo * kb
 
 
 def thicken_neck(V: np.ndarray, lm, kp: dict) -> np.ndarray:
@@ -342,6 +409,7 @@ def kirru_warp(V: np.ndarray, F: np.ndarray, freg: np.ndarray, lm, face, kp: dic
     out[ids] = warp(V[ids], {k: w[ids] for k, w in ew.items()})
     for sd in ("L", "R"):  # the eye frames ride with their regions (the lids, lashes and globes are built on them)
         face.eyes[sd].E = face.eyes[sd].E + warp.eye_d[sd]
+    warp.round_frames(face)
     lm.pts["eye"] = face.eyes["L"].E.copy()
     return out, warp
 

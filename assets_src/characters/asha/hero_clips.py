@@ -165,6 +165,7 @@ class Skeleton:
         helpers_init(self, glb, nodes, parent)  # M1-CHR-15: the skirt and shoulder helper bones, if the GLB has them
         hooks_init(self, nodes, parent)  # M2-CHR-513: Rhen's reef-hooks and the grips that hold them
         grips_init(self, glb, js, nodes, parent)  # M2-CHR-515: the held prop's bone, and the fingers closed round it
+        flat_init(self, nodes, parent)  # M3-CHR-506: the flat free hand, for the heroes of FLAT_HAND
 
     def local_pose(self, turns: dict, hips=None, hold=None) -> dict:
         """World-axis turns (bone -> quaternion) -> local rotations, parents first. `hips` is the pose's hips offset
@@ -191,6 +192,7 @@ class Skeleton:
         pivot = prop_pivot(self, g, hips, carry) if down < 1.0 else None
         prop_pose(self, g, out, hips, carry, pivot, down)
         grip_pose(self, out, hold or {})
+        flat_pose(self, out, hold or {})  # M3-CHR-506: a free hand laid flat (Pell's palm on the throat)
         return out
 
 
@@ -2949,6 +2951,8 @@ def hook_hold(hero: str, clip: str, u: float) -> dict:
         out["_down"] = down
     for side, (a, b, c, d) in HOOK_HOLD.get(hero, {}).get(clip, {}).items():
         out[side] = smooth((u - a) / (b - a)) * (1.0 - smooth((u - c) / (d - c)))
+    for side, (a, b, c, d) in FLAT_HAND.get(hero, {}).get(clip, {}).items():  # M3-CHR-506
+        out.setdefault("_flat", {})[side] = smooth((u - a) / (b - a)) * (1.0 - smooth((u - c) / (d - c)))
     return out
 
 
@@ -3717,6 +3721,96 @@ def grip_pose(sk: "Skeleton", out: dict, hold: dict) -> None:
 
 
 def grip_bones(sk: "Skeleton") -> list:
+    held = grip_bones_held(sk)
+    return held + [n for side in sorted(getattr(sk, "flat", {})) for n in sk.flat[side] if n not in held]
+
+
+# ---------------------------------------------------------------------------------------------
+# M3-CHR-506 (pell_review.md item 4: "the right hand is open in storm_call"): a free hand laid flat on the body. The
+# rest hand's fingers splay, so a palm set on the throat read as a spread hand. FLAT_HAND gives, per hero and clip,
+# each side's window (u in, held, out, gone: hook_hold's form); in it the fingers close together beside the middle
+# finger (each .01 turned about its own z to lie parallel to it), curl a little (FLAT_CURL degrees on .01/.02/.03,
+# the sign GRIP's solve finds for a fist on the same side) and the thumb lies in along the index (its .01 turned about
+# x and z to bring its tip nearest FLAT_THUMB_AT of the way along the index's first bone). Keyed only for these heroes.
+# ---------------------------------------------------------------------------------------------
+FLAT_HAND: dict = {}
+FLAT_CURL = (6.0, 10.0, 8.0)
+# M3-CHR-590: a hero's side may close to a fist instead (HAND_SHAPE: the torch's and a held forearm's grip); the same
+# solve with the fingers curled FIST_CURL degrees
+HAND_SHAPE: dict = {}
+FIST_CURL = (55.0, 85.0, 60.0)
+FLAT_SPREAD = range(-30, 31)  # degrees: each finger's .01 turn about its z, searched
+FLAT_THUMB_TURN = range(-40, 41, 2)
+FLAT_THUMB_AT = 0.6
+FLAT_FINGERS = ("f_index", "f_ring", "f_pinky")  # turned to the middle finger, which only curls
+
+
+def flat_init(sk: "Skeleton", nodes: list, parent: dict) -> None:
+    sk.flat = {}
+    hero = next((h for h in FLAT_HAND if sk.root_name.startswith(h + "_")), None)
+    if hero is None:
+        return
+    idx = {n.get("name"): i for i, n in enumerate(nodes)}
+    gq, gt = _node_globals(nodes, parent)
+    x, z = np.array([1.0, 0.0, 0.0]), np.array([0.0, 0.0, 1.0])
+    for side in sorted({sd for spec in FLAT_HAND[hero].values() for sd in spec}):
+        def chain(f: str) -> list:
+            return [f"DEF-{f}.0{k}.{side}" for k in (1, 2, 3)]
+
+        if not all(n in idx for f in GRIP_FINGERS + ("thumb",) for n in chain(f)):
+            continue
+        sgn = 1.0  # the fist's curl sign on this side (as GRIP solves it); -1 only if the fingers would bend back
+        shape = FIST_CURL if HAND_SHAPE.get(hero, {}).get(side) == "fist" else FLAT_CURL
+        curl = [qaxis(x, sgn * a) for a in shape]
+        mid = _chain_points(chain("f_middle"), curl, nodes, parent, idx, gq, gt)
+        m0 = gt[idx[chain("f_middle")[0]]]
+        md = (mid[-1] - m0) / np.linalg.norm(mid[-1] - m0)
+        out = {}
+        rots = {"f_middle": curl}
+        for f in FLAT_FINGERS:
+            k0 = gt[idx[chain(f)[0]]]
+            best = None
+            for a in FLAT_SPREAD:
+                r = [qmul(qaxis(z, a), curl[0]), curl[1], curl[2]]
+                tip = _chain_points(chain(f), r, nodes, parent, idx, gq, gt)[-1]
+                v = tip - k0
+                e = float(np.linalg.norm(v - md * float(v @ md)))  # off the middle finger's line
+                if best is None or e < best[0] - 1e-12:
+                    best = (e, r)
+            rots[f] = best[1]
+        i1 = _chain_points(chain("f_index"), rots["f_index"], nodes, parent, idx, gq, gt)[0]
+        i0 = gt[idx[chain("f_index")[0]]]
+        at = i0 + (i1 - i0) * FLAT_THUMB_AT
+        best = None
+        for ax in FLAT_THUMB_TURN:
+            for az in FLAT_THUMB_TURN:
+                r = [qmul(qaxis(x, ax), qaxis(z, az)), curl[1], curl[2]]
+                tip = _chain_points(chain("thumb"), r, nodes, parent, idx, gq, gt)[-1]
+                e = float(np.linalg.norm(tip - at))
+                if best is None or e < best[0] - 1e-12:
+                    best = (e, r)
+        rots["thumb"] = best[1]
+        for f, r in rots.items():
+            for name, dq in zip(chain(f), r):
+                q = qmul(np.array(nodes[idx[name]].get("rotation", [0.0, 0.0, 0.0, 1.0]), dtype=float), dq)
+                out[name] = q / np.linalg.norm(q)
+                sk.rest_q[name] = np.array(nodes[idx[name]].get("rotation", [0.0, 0.0, 0.0, 1.0]), dtype=float)
+        sk.flat[side] = out
+
+
+def flat_pose(sk: "Skeleton", out: dict, hold: dict) -> None:
+    """The flat hands' finger rotations (into out), weighted by hold["_flat"][side]; a held grip's fingers win."""
+    held = set(grip_bones_held(sk))
+    for side, rots in getattr(sk, "flat", {}).items():
+        w = float(hold.get("_flat", {}).get(side, 0.0))
+        for name, q1 in rots.items():
+            if name in held:
+                continue
+            q0 = sk.rest_q[name]
+            out[name] = q0 if w <= 0.0 else (q1 if w >= 1.0 else _slerp(q0, q1, w))
+
+
+def grip_bones_held(sk: "Skeleton") -> list:
     return [n for side in sorted(getattr(sk, "grips", {})) for n in sk.grips[side]]
 
 
@@ -4357,6 +4451,27 @@ for _i, _v in enumerate(SG_VARIANTS):
     GRIP[_h] = {"R": ("mesh", "Spear", "DEF-spear")}
     GRIP_ALWAYS.add(_h)
     IDLE_GROUNDED.add(_h)
+# M3-CHR-590: the squad's dialogue clips (Ch6 raid and barge, Ch8 cut_rope). `walk_torch` is the walk with a torch held
+# up in the shield hand (a loop; the torch is the scene's prop on DEF-hand.L). The rest are story specs
+# (requested_clips.json `heroes.stillguard_<v>`): `hold_arm` (the shield hand closes on the wright girl's forearm held
+# out over the brazier, at about a metre, a forearm's length in front of him: the contact point for Cinematics),
+# `let_go` (hold_arm played back), the shared `kneel_palms_flat` (the spear set down over the posture change,
+# PROP_DOWN) and `shake_head`, on the legs' solvers with Moll's kit (FOOT_FLAT) and Toma's kneel.
+SG_TORCH = ("L", 36.0, -4.0, 22.0)  # the torch arm (a reach): carried low and forward, the arm nearly straight
+# (a bent forearm brings the strapped shield's rim back into the shoulder)
+SG_STORY = ["walk_torch"]
+LOOPS.add("walk_torch")
+LENGTHS["walk_torch"] = LENGTHS["walk"]
+for _v in SG_VARIANTS:
+    _h = f"stillguard_{_v}"
+    CLIPS[_h] = CLIPS[_h] + SG_STORY
+    STORY_LEG_HEROES = STORY_LEG_HEROES + (_h,)
+    FOOT_FLAT[_h] = FOOT_FLAT["moll"]
+    KO_LEGS[_h] = dict(KO_LEGS["toma"])
+    PROP_DOWN[_h] = {}
+    FLAT_HAND[_h] = {"walk_torch": {"L": (-1.0, 0.0, 2.0, 3.0)}, "hold_arm": {"L": (0.2, 0.5, 2.0, 3.0)},
+                     "let_go": {"L": (-1.0, 0.0, 0.2, 0.5)}}
+    HAND_SHAPE[_h] = {"L": "fist"}
 
 
 def sg_pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> dict:
@@ -4373,6 +4488,12 @@ def sg_pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) 
             "DEF-spine.002": (0.0, 0.2 * turn, 0.0), "DEF-spine.003": (0.0, 0.2 * turn, 0.0),
             "DEF-spine.005": (0.4 * lift, 0.25 * turn, 0.0), "DEF-spine.006": (0.6 * lift - MOLL_HEAD_DOWN, 0.35 * turn,
                                                                              0.0)})
+    if clip == "walk_torch":  # M3-CHR-590: the walk, the shield arm held up with the torch instead of swinging
+        p = walk_pose(u, shared, *SG_WALK)
+        base = planted(sk, shared)
+        for b in SG_ARM_L:  # the stand's arm (lowered from the rest pose), not the walk's swing
+            p[b] = base.get(b, (0.0, 0.0, 0.0))
+        return add(add(p, carry), _gesture(["reach", *SG_TORCH], sk, shared))
     if clip == "shield_up":  # the shield brought up across the chest, the shoulder into it; held
         return sg_guard(planted(sk, shared), carry, smooth(u / SG_RAISE))
     if clip == "level_spear":  # Toma's path for the spear arm (one-handed); the shield arm comes up into a low guard
@@ -4843,6 +4964,8 @@ KO_OWN.add("pell")
 # the idle
 GRIP["pell"] = {"L": ("mesh", "Staff", "DEF-staff")}
 GRIP_ALWAYS.add("pell")
+# M3-CHR-506: the right palm flat on the throat in storm_call (all through) and in cast's call (its 0.3-0.6 hold)
+FLAT_HAND["pell"] = {"storm_call": {"R": (-1.0, 0.0, 2.0, 3.0)}, "cast": {"R": (0.1, 0.28, 0.62, 0.75)}}
 IDLE_GROUNDED.add("pell")
 
 
