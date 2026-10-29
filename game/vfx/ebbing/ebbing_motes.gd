@@ -157,7 +157,7 @@ func _set_mourner(field: GlimmerField, node: Node3D, strength: float) -> void:
 
 
 func _process(delta: float) -> void:
-	if _mourners.is_empty() or staff_head == null or not is_instance_valid(staff_head):
+	if _mourners.is_empty() or not is_instance_valid(staff_head):
 		return
 	var m := data.get("mourners", {}) as Dictionary
 	var pass_r := float(m.get("pass_radius_m", 3.5))
@@ -165,10 +165,10 @@ func _process(delta: float) -> void:
 	var head := staff_head.global_position
 	for id: String in _mourners.keys():
 		var row := _mourners[id] as Dictionary
-		var node := row["node"] as Node3D
-		if not is_instance_valid(node):
+		if not is_instance_valid(row["node"]):  # check the stored ref before casting it (a freed one fails the cast)
 			_mourners.erase(id)
 			continue
+		var node := row["node"] as Node3D
 		var p := node.global_position
 		var passed := float(row["passed_s"])
 		if passed < 0.0 and Vector2(head.x - p.x, head.z - p.z).length() <= pass_r:
