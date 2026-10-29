@@ -1,5 +1,5 @@
 ---
-id: M3-CRE-627
+id: M3-CRE-700
 title: "Request: Virel, the Fire Vowbound, as a field body in Coilspire's gallery (the last greybox block on Ch8's path)"
 role: character
 status: review
@@ -29,4 +29,4 @@ creatures-b (the Act I bosses and the Vowbound, CONSOLIDATED 2-FOCUS).
   seen only there (off stage under the fade, hidden with `ch08_virel_bound`). Commits ed235044, 46c9811b; viewed in
   the stills. For character's review: is the battle form (glimmer_bound seams) the right one for the binding's frame,
   or should the field use `virel_held` (glimmer_held)? The beat sheet says the seams read as steady glimmer_bound.
-  Note: this file shares its id with `M3-CRE-627-act2-regulars-ch10-11.md` (LEAD-ASK in the act1-chapters live log).
+  Renamed from M3-CRE-627 (it shared that id with the Act II regulars file; the Lead, 2026-10-29).

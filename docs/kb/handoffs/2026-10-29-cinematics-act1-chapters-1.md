@@ -13,7 +13,7 @@ Branch: `claude/act1-chapters`. Live log: `docs/kb/handoffs/live/act1-chapters.m
   - Ch4: the ink's H15;
   - Ch6: B10's wade (the party's stage bodies), W06_after;
   - Ch7: R07;
-  - Ch8: the kites through the run back; Virel's own body in F07 (my request M3-CRE-627-virel-field-body, now in
+  - Ch8: the kites through the run back; Virel's own body in F07 (my request M3-CRE-700-virel-field-body, renamed from M3-CRE-627, now in
     review); ZoneCast `cast_still`;
   - Ch9: D02;
   - Ch5 Ashcrown on its kit: A02, A11 with Kahre's own body behind the shut door, A12, `chamber_in`, seven POI
@@ -42,7 +42,7 @@ M3-ENV-1228/1229 (grades), M3-HER-1225 (Sefir), M3-CHR-506 (Pell), M3-RND-27/28 
   their mark.
 - Regenerate the stills plan after any flow edit: the plan embeds each beat's steps.
 - `pgrep -f cutscene_stills.tscn` in a wait loop matches the loop's own command line. Wait on the PID, not the name.
-- Two task files share the id M3-CRE-627 (LEAD-ASK in the live log).
+- My Virel request was renamed M3-CRE-700 (the Lead, 10-29); the Act II file keeps M3-CRE-627.
 
 ## Files touched
 game/levels/act1/zone_cast.gd; game/levels/ch04/haluna_wake, ch05/ashcrown, ch06/brine_shoals,

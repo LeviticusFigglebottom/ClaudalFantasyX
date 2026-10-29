@@ -331,7 +331,7 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
     W06_after holds Liss in profile (the wrights walked into the old lens).
   - Ch8 (ba54943c): the kites stay up through the run back (W04_kite framed an empty sky); they come down with
     `ch08_wave1_held`. **Manifest shot ch08_corrow_storm can now show the kites** (its flags: arrived + beacon_opened).
-  - Ch8 Virel (ed235044, my request M3-CRE-627-virel-field-body): `creature:virel` on `virel_coil`, `cast_still`
+  - Ch8 Virel (ed235044, my request M3-CRE-700-virel-field-body, was M3-CRE-627): `creature:virel` on `virel_coil`, `cast_still`
     (new ZoneCast row key), `Virel` dropped from Coilspire's `greybox.keep`, hidden after the binding.
     **For env-art-b:** the keep-list line in `tools/act1/ch08_coilspire_dressing.py` changed (the request named me).
   - Ch7 R07 and Ch9 D02 re-aimed (4b07cd09).
@@ -356,8 +356,10 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
     hero_cutscene_snaps 1/0; validate_data, dlgc --check, taskboard --check, gdlint, gdformat clean;
     `test_act1_poi_views`, `test_chapter_flow` OK. Viewed: every Ashcrown still and POI view. Skipped: coverage and
     sim (no battle or progression code), manifest shots (no shot camera changed; the court's shut door hides Kahre).
-- LEAD-ASK: two task files share the id M3-CRE-627 (`act2-regulars-ch10-11`, blocked by ADR 0041, and my
-  `virel-field-body` request). Rename one? I'll leave both as they are unless you say otherwise.
+- LEAD-ANSWERED (10-29): two task files shared the id M3-CRE-627. **My Virel request is now M3-CRE-700**
+  (`docs/kb/tasks/M3/M3-CRE-700-virel-field-body.md`, status review, reviewer character); the Act II regulars file
+  keeps M3-CRE-627. **For creatures:** review Virel's field body under M3-CRE-700. `test_zone_kit_dressing`'s
+  Coilspire keep list is now empty.
 - (superseded) IN PROGRESS: a fresh title → Ch9 headless playthrough (all `_thread` tests; Ch1 and Ch4–Ch9 cutscene stills).
 
 ### Render requests

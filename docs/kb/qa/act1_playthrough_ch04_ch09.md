@@ -95,7 +95,7 @@ now has a pan-follow camera volume, each camera picked from rendered previews (i
 | 8, 9 | Kerrid is a capsule (W23, W24; Ch9 stair N13, road) | characters, M3-CHR-505 |
 | 9 | Pell is a capsule on the strand and road (N17) | characters, M3-CHR-506 |
 | 8 | The storm figure over the water is a cyan capsule (W22) | characters + rendering: new request M3-RND-28 |
-| 8 | Virel is the greybox block in F07, F06_out (fills the frame) | creatures-b, M3-CRE-627 |
+| 8 | ~~Virel is the greybox block in F07, F06_out~~ her own body, F07 only (2026-10-29) | done, M3-CRE-700 (review) |
 | 7, 8 | The weeping column; the storm wall | rendering, M3-RND-27 |
 | 5 | ~~Ashcrown is greybox~~ on its kit (M3-ENV-1303); A02, A11, A12 re-staged 2026-10-29 | done |
 | 4 | The derelict at night grades near-black (D01, D06, F05 read as nothing) | env-art (Prologue–Ch4), new request M3-ENV-1228 |
