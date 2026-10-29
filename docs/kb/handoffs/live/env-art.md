@@ -589,6 +589,23 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **2026-10-29, IN PROGRESS (pushed, not merge-ready until viewed): the player-height walk-through on this tree**
+  (`tools/act1/walkthrough.py`, all nine walks).
+  - **Viewed, fine:** Haluna (14 frames), Haluna's shop, forge and save shrine from the customer's side, the Prologue
+    (9), the Underway (10). Frames looking out of a wall or the water are my straight-line path, not the dressing.
+  - **Fixed, 7a930176 + ee270be4:**
+    - **Oruvel's commons:** boat-hull outlines lay across the deck planks. The commons tiles `raft_deck`s every 7 m, but
+      each raft's hulls ran 2.1–2.6 m past its own deck and rose 0.42 m over it at the stems, up through the next
+      raft's planks. New `raft_deck_tucked` / `raft_deck_small_tucked` (`raft(tucked=True)`: hulls inside the deck,
+      stems ≥ 6 cm under the deck line) for the commons only; the freestanding rafts keep their bows. Every other
+      Oruvel glb is byte-identical.
+    - **Haluna's inn:** the innkeeper stood under a bare awning. New Haluna kit piece `inn_hearth` (a stone cook
+      hearth with a lidded pot, split wood, a serving bench with bowls, a ladle and a jar), 2.4 m behind the
+      innkeeper as the forge stands behind the smith. Every other Haluna glb is byte-identical.
+  - Run so far: `test_oruvel_kit`, `test_zone_dressing_ch01`, `test_haluna_kit`, `test_haluna_dressing` (59 OK after
+    the kit-row fix), validate_data. Next: view the re-rendered Oruvel walk and the inn close-ups, self-render
+    `zone_oruvel_o01/o07/o09/o12/o16`, `ch01_oruvel_dressed`, `ch01_scale_hull`, `ch01_kell_stall`, `ch01_net_pen`,
+    `oruvel_o01_surfacing`; then the causeway, Shell Shrine, ferry and wake walks.
 - **MERGE-READY @ 3bd6865f: M3-ENV-750 done; the inventory's four Haluna tree rows are gone.** The checks that were
   still owed have now run:
   - `haluna_kit` Blender verify: 197 identical, the hand-trimmed manifest included;
