@@ -783,3 +783,14 @@ Merged `origin/gpu/gate-big14-shots` and the integration branch, then fixed on t
   - The crowd GLBs already ran their category script (`crowd_post_import.gd`, set in each .glb.import). The crowd category (`game/data/import/crowd.json`) exists, but test_post_import's `KINDS` list lacked `crowd`, so every crowd GLB read as "in no import category". `crowd` is added; no import needed regenerating.
   - The integration branch is merged in.
   - Checks: post_import 21/0, villager 35/0, crowd 7/0.
+
+## FROM 2026-10-29 (new Lead session_01Bg3iP7cPGyjbX4CyniBahc; integration claude/new-session-mj8c3c)
+Merged `origin/claude/new-session-mj8c3c` (pc-gpu.md conflict: kept ours, the newer PC text) and **claude/characters @ 3346484b** (the head big17 carries). The crowd generator avoids the Haluna/Act I villager faces in `assets_src/characters/villagers/params`, so its output can only match on a tree with characters' new villagers.
+
+### big17 gate reds (mine): fixed
+- **test_npc:** characters' new Act I villagers (M3-CHR-512: three wrights and others) changed the faces the crowd must avoid. `gen_crowd.py` re-run: only **crowd_girl_teen** changes (now clears wright_child_a, ≥0.28). Rebuilt in Blender (+ the child clip library it owns). Verify: `crowd_girl_teen` 21 identical.
+- **test_post_import (tools):** `tools/tests/test_post_import.py` KINDS lacked `crowd` (the big15 fix only did the Godot test).
+- **Confirmed on big17 itself:** cherry-picked onto `origin/lead/gate-big17` in a scratch worktree: test_npc + test_post_import 33/0.
+- **Also:** dropped a stale `shrine_offering.glb` PROVENANCE row the characters merge re-added (big17 has none): validate_data 0/0.
+- **villager_shopkeeper_front (NO BASE):** SELF-RENDERED and viewed: a full Haluna shopkeeper in T-pose on the review stage, clean, no placeholder (characters' M3-CHR-512 villager). **LEAD-ASK: approve villager_shopkeeper_front's baseline at the gate (I wrote none).**
+- Checks: tools test_npc 27/0, test_post_import 6/0; Godot crowd 7/0, villager 35/0, post_import 21/0, npc 10/0; validate_data, lint, format.
