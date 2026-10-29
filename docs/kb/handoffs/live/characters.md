@@ -324,7 +324,25 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
   drowned_choir: hero-integration's and act1-chapters', known, not this change). test_qa_capsules still lists
   Haluna's villager capsules (static scan; VillagerLayer swaps them at runtime). The vigil's pose and mark stay
   slice-polish's (`back_to_sea` is Pell's vigil clip).
-- **Next:** M3-CHR-102 (Lead routing: Asha's kneeling skirt over Rhen on the beach), then M3-CHR-592's other crops.
+- MERGE-READY @ 23ee1e74: **M3-CHR-102 (Lead routing; PC QA row 31), Asha's skirt over Rhen on the beach.** The cause
+  is the posture, not the cloth settings: on one knee with the left foot planted, the raised knee (0.44 m up, 0.38 m
+  forward) carries the floor-length skirt 0.63 m in front of her, and Rhen lies inside that. Asha's kneel is now the
+  two-knee kneel with the same lean (persona key `kneel_both`, Asha only): kneel_over_rhen, laugh, offer_hand,
+  take_hand and rise_to_stand. The hem now reaches 0.24 m in front (0.66 m to the side). Self-rendered
+  slice_beach_h05_asha on lead/gate-big17's marks with the new clips: the skirt lies on the sand beside him, no blue
+  mass, and both faces still read. **Slice-polish: the marks can stay.** Their static `world_pose` on
+  CutsceneStage/Actors/asha (haluna.tscn) is still the one-knee pose; the clip replaces it when it starts, but they may
+  want it on both knees to match (theirs to change). slice_beach_h06_toma hung in capture (600 s) on cloud lavapipe
+  on the gate-big17 tree, both before and after; not rendered. Checks: test_hero_clips (every other library
+  byte-identical), test_asha, test_hero_battle_clips, test_hero_locomotion (99 with villagers) OK; rig_probe asha OK;
+  Godot hero_stage 11 (the stage solve matches the baked kneel), cutscene_pose 5, post_import 21 OK.
+- MERGE-READY @ a3efec09: **M3-CHR-592, more crops on the short-hair tufts**: the gatekeeper, the clerk, Kell and
+  Tavi. Kell's white crop read as chips and now reads as soft dense hair (before/after viewed); the clerk's too; the
+  gatekeeper's and Tavi's sit mostly under their headbands. All four identical on the three numpy paths;
+  test_villagers OK. Not changed: the strand-tuned grey crops (Fenn, the ferrymaster, Garo, Hobb, Sabe, the
+  scaleman; `grey_strands`), and Moll's square fringe line (toma_hair's shared hairline table).
+- **Next:** M3-CHR-592's last two (the strand-tuned grey crops on tufts with grey strands, Moll's line), then Pell's
+  leftovers (pell_review.md "Still open").
 - (was) **In progress:** Pell's second look-dev pass (M3-CHR-506, pell_review.md "What still does not read" 1–5): rounder
   lid openings and a dark eye ring, round flat ears, a flat right hand in storm_call and cast, the fur pattern, the
   nape ridge.
