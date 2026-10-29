@@ -814,7 +814,7 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - slice_beach_h05_asha: both faces read, Asha toward Rhen. **The beach staging: fixed**, with two faults left:
     - Asha's kneeling skirt still balloons into a blue mass over Rhen (PC row 31, M3-CHR-102, characters);
     - Toma stood mid-left 5 m from the lens with his head above the top bar (fixed below, M2-FP-119).
-- LEAD-ASK: M3-CHR-102 (Asha's kneeling skirt balloons over Rhen on the beach, row 31) exists only on claude/m2-slice,
+- LEAD-ANSWERED (17:58: routed to characters as a cloth-side fix; the marks stay; Pell's vigil mark and staging are mine, his model is characters'; big17 @ 1a986abf carries 595be6eb): M3-CHR-102 (Asha's kneeling skirt balloons over Rhen on the beach, row 31) exists only on claude/m2-slice,
   so characters can't see it until big17. Please route it to characters now (their `helper_bones.json` gather_flare,
   or a `kneel_over_rhen` override). My default meanwhile: the marks stay; I move Asha only if they say the cloth
   can't clear him.
