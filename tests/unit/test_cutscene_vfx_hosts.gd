@@ -1,8 +1,8 @@
 extends TestCase
 ## M3-ARC-1326: an `@vfx` cue goes first to the stage's VFX hosts (CutsceneVfxHosts: the `cutscene_vfx_hosts` group,
-## `play_vfx(effect, at_id, kwargs) -> bool`). A host that takes it means no CutsceneMotes placeholder; a host that
-## declines (or none at all) leaves the placeholder drawing as before. The cue's kwargs, cues.json's `follow` and
-## `anchors` among them, reach the host whole.
+## `play_vfx(effect, at_id, kwargs) -> bool`). A host that takes it means the sequencer spawns no field of its own
+## (CutsceneVfx's GlimmerField); a host that declines (or none at all) leaves the sequencer's field drawing as before.
+## The cue's kwargs, cues.json's `follow` and `anchors` among them, reach the host whole.
 
 const EFFECT := "glimmer_held"
 const MARK := &"by_the_stair"
@@ -24,7 +24,7 @@ func test_a_host_that_takes_the_cue_means_no_placeholder() -> void:
 	var host := _host_node(EFFECT)
 	var seq := _sequencer(stage)
 	seq._cue_vfx(_step({"at": String(MARK), "follow": "asha_staff", "anchors": "mourners"}))
-	assert_eq(_motes(stage), 0, "the host played it: no placeholder")
+	assert_eq(_motes(stage), 0, "the host played it: no fallback field")
 	var offers: Array = host.get(&"offers")
 	assert_eq(offers.size(), 1, "offered once")
 	assert_eq(offers[0][0], EFFECT)
@@ -41,7 +41,7 @@ func test_a_host_that_declines_leaves_the_placeholder() -> void:
 	var seq := _sequencer(stage)
 	seq._cue_vfx(_step({"at": String(MARK)}))
 	assert_eq((host.get(&"offers") as Array).size(), 1, "it was offered")
-	assert_eq(_motes(stage), 1, "declined: the placeholder draws")
+	assert_eq(_motes(stage), 1, "declined: the sequencer's field draws")
 	_done()
 
 
@@ -49,7 +49,7 @@ func test_with_no_host_the_placeholder_draws() -> void:
 	var stage := _stage()
 	var seq := _sequencer(stage)
 	seq._cue_vfx(_step({"at": String(MARK)}))
-	assert_eq(_motes(stage), 1, "no host: the placeholder draws")
+	assert_eq(_motes(stage), 1, "no host: the sequencer's field draws")
 	_done()
 
 
@@ -106,11 +106,12 @@ func _step(kwargs: Dictionary) -> DialogueStep:
 	return step
 
 
-## CutsceneMotes placeholders spawned under the stage.
+## The sequencer's own @vfx fields spawned under the stage (CutsceneVfx's GlimmerField, `Vfx_<effect>_<n>`; it
+## replaced M2-FP-01's CutsceneMotes in 93c1aa2df).
 func _motes(stage: Node) -> int:
 	var n := 0
-	for c in stage.find_children("*", "", true, false):
-		if c is CutsceneMotes:
+	for c in stage.find_children("Vfx_*", "", true, false):
+		if c is GlimmerField and not c.is_queued_for_deletion():
 			n += 1
 	return n
 
