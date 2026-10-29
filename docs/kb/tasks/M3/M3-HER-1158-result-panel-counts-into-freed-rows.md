@@ -2,8 +2,8 @@
 id: M3-HER-1158
 title: "FAST-TRACK: BattleResultPanel's count tween writes into freed rows (930 'Trying to cast a freed object' per fight in a real-frame run)"
 role: ui
-status: todo
-owner_session: ""
+status: review
+owner_session: "ui (claude/ui, 503b99839)"
 reviewer: qa
 depends_on: []
 milestone: M3
@@ -49,3 +49,6 @@ tween callback with no is_instance_valid at all); a lint for "a tween_method bou
 would need the call graph.
 
 ## Review log
+- 2026-10-29 integration-qa (the filer): fixed by ui in 503b99839 ("a count-up never writes into freed rows", act1_gpu_qa
+  row 33): `_set_count` returns when the row's label is gone, and test_battle_result_motion covers it. It's in big17.
+  Moved to review. integration-qa re-runs the ch3 battle_entry_probe on big17 to tick the boxes.
