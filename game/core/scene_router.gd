@@ -267,6 +267,17 @@ func _wait_for_reveal(stats: Dictionary) -> void:
 		push_warning("%s: %s: %s" % [LOG_PREFIX, w, stats.get("scene_path", "")])
 
 
+## ADR 0111: the summed swap_wait_progress() of the swap `holders` that report loading work (ResidentLoads), or -1
+## when none does. Only such a holder keeps a swap waiting past PREWARM_WAIT_MAX_FRAMES; ShaderPrewarm's
+## wait_progress() counts frames (the reveal's stall check), not work, so it never extends the swap.
+static func swap_progress(holders: Array[Object]) -> int:
+	var total := -1
+	for h in holders:
+		if h != null and h.has_method(&"swap_wait_progress"):
+			total = maxi(total, 0) + int(h.call(&"swap_wait_progress"))
+	return total
+
+
 ## M2-ARC-08: the summed wait_progress() of `holders` that report one (a BootCard; others count 0).
 static func holders_progress(holders: Array[Object]) -> int:
 	var total := 0
@@ -328,14 +339,15 @@ func _swap(
 	var waited := 0
 	var wait_start := _now_usec()
 	var last_move := wait_start
-	var progress := holders_progress(swap_holders())
+	var progress := swap_progress(swap_holders())
 	while not swap_holders().is_empty():
-		var now := holders_progress(swap_holders())
+		var now := swap_progress(swap_holders())
 		var clock := _now_usec()
 		if now != progress:
 			progress = now
 			last_move = clock
-		if not swap_wait_continues(waited, (clock - last_move) / USEC_PER_MSEC, (clock - wait_start) / USEC_PER_MSEC):
+		var stalled_ms := (clock - last_move) / USEC_PER_MSEC if now >= 0 else INF  # no loader: the frame cap only
+		if not swap_wait_continues(waited, stalled_ms, (clock - wait_start) / USEC_PER_MSEC):
 			break
 		await get_tree().process_frame
 		waited += 1
@@ -369,10 +381,10 @@ func _swap(
 	_record(stats, frames)
 
 
-## Whether a swap held by its holders (hold_swap) waits another frame: always up to PREWARM_WAIT_MAX_FRAMES; past
-## that only while the holders still make progress (their wait_progress() moved within the last SWAP_STALL_MS of
-## wall time; ADR 0111: a zone's threaded loads, ResidentLoads, where one model can take a second and more), and
-## never past SWAP_WAIT_CAP_MS in all. Wall time, not frames: frames under the fade are short and uncapped.
+## Whether a swap held by its holders (hold_swap) waits another frame: always up to PREWARM_WAIT_MAX_FRAMES;
+## past that only while a loading holder still makes progress (its swap_wait_progress() moved within the last
+## SWAP_STALL_MS of wall time; ADR 0111: a zone's threaded loads, ResidentLoads, where one model can take a second
+## and more), and never past SWAP_WAIT_CAP_MS in all. Wall time, not frames: frames under the fade are uncapped.
 static func swap_wait_continues(waited: int, stalled_ms: float, waited_ms: float) -> bool:
 	if waited < PREWARM_WAIT_MAX_FRAMES:
 		return true
