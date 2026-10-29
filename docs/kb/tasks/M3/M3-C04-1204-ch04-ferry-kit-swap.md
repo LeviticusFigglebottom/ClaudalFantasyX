@@ -2,10 +2,11 @@
 id: M3-C04-1204
 title: Ch4 greybox to final, the Brightwater ferry and the Seventh Terrace dress ch04/brightwater_ferry (ADR 0200)
 role: cinematics
-status: doing
+status: review
 owner_session: act1-chapters (claude/act1-chapters)
 depends_on: [M3-ENV-08, M3-ENV-08B, M3-C04-02, M3-C06-1200]
 milestone: M3
+reviewer: qa
 request-from: ""
 ---
 ## Goal
@@ -22,7 +23,7 @@ Swap Ch4's greybox ferry, derelict and islet for env-art's ferry kit (M3-ENV-08)
       to lie off the starboard gangway (the kit boards midships); `SternGate` now closes that gangway.
 - [x] The night: the moon low in the east (#9DB4D9 at 0.28), the preview's `ch04` grade and the night sea's glow.
 - [x] `test_ch04_thread` 11/0; `test_ch04_validate` reads the collision file's ids.
-- [ ] Shots `ch04_ferry_deck`, `ch04_ferry_derelict` rendered on the PC, viewed and approved.
+- [x] Shots `ch04_ferry_deck`, `ch04_ferry_derelict` rendered on the PC, viewed and approved. Baselines approved by the Lead's gates (big13 1fa92b81 / a4410fd9; tracks never write baselines, TRACK-RULES).
 
 ## Notes
 - The derelict's daylight sub-frame (C4-11 to C4-14, `ch04_derelict`) is Rendering's; Ch04Zone has no light rows,
@@ -30,3 +31,4 @@ Swap Ch4's greybox ferry, derelict and islet for env-art's ferry kit (M3-ENV-08)
 - `haluna_wake` (the wake night on Haluna) is next: it is a stand-in for Haluna's night variant (M3-C04-03).
 
 ## Review log
+- 2026-10-29 act1-chapters: to review (every criterion met; the stand-ins listed in Notes wait on their own requests).

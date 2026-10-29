@@ -2,10 +2,11 @@
 id: M3-C05-1213
 title: Ch5 greybox to final, ch05/pemakar on env-art's Pemakar kit (the quay, the stair, the market, forge, inn, graves, the crown)
 role: cinematics
-status: doing
+status: review
 owner_session: act1-chapters (claude/act1-chapters)
 depends_on: [M3-ENV-03, M3-C05-02]
 milestone: M3
+reviewer: qa
 request-from: ""
 ---
 ## Goal
@@ -23,7 +24,7 @@ day variant.
 - [x] KitWalkProbe reads the kit's box colliders and (opt-in) queries the physics space for the trimesh pieces.
 - [x] `test_ch05_pemakar_kit`: the night follows Lamps; the quay climbs to the crown; the tiers reach the market,
       forge, inn gate and graves; every mark, actor, spawn and trigger stands on a floor in the open.
-- [ ] Shots `ch05_pemakar_harbour`, `ch05_pemakar_crown` rendered on the PC, viewed, approved.
+- [x] Shots `ch05_pemakar_harbour`, `ch05_pemakar_crown` rendered on the PC, viewed, approved. Baselines approved by the Lead's gates (big13 1fa92b81 / a4410fd9; tracks never write baselines, TRACK-RULES).
 
 ## Notes
 - The kit's tiers are dressing, not lanes: house_b's veranda and house_a's plinth close a tier's front lane, and each
@@ -34,3 +35,4 @@ day variant.
 - The wake-wall, the sea-cut weir's lip and the crown bell stay greybox stand-ins (M3-ENV-1214).
 
 ## Review log
+- 2026-10-29 act1-chapters: to review (every criterion met; the stand-ins listed in Notes wait on their own requests).

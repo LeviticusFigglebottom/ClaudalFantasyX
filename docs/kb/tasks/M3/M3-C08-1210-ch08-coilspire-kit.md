@@ -2,10 +2,11 @@
 id: M3-C08-1210
 title: Ch8 greybox to final, ch08/coilspire stood upright on env-art's Coilspire kit (the path, the hall, four tiers, the crown, the gallery)
 role: cinematics
-status: doing
+status: review
 owner_session: act1-chapters (claude/act1-chapters)
 depends_on: [M3-ENV-10, M3-C08-02, M3-C08-1202]
 milestone: M3
+reviewer: qa
 request-from: ""
 ---
 ## Goal
@@ -21,7 +22,7 @@ kit without changing the trial's rules (CoilspireTrial, ch08_field.json).
 - [x] The trial's 14 keys on the kit's flue-keys (its 10 angles plus four free angles on their landings).
 - [x] `test_ch08_thread` and the Coilspire tests pass; `tools/tests/test_act1_kit_collision.py` checks the chains,
       the gates and the keys.
-- [ ] Shots `ch08_coilspire_path`, `ch08_coilspire_hall` rendered on the PC, viewed, approved.
+- [x] Shots `ch08_coilspire_path`, `ch08_coilspire_hall` rendered on the PC, viewed, approved. Baselines approved by the Lead's gates (big13 1fa92b81 / a4410fd9; tracks never write baselines, TRACK-RULES).
 
 ## Notes
 - The interior grade (`coilspire_int_environment.tres`, LUT copied) isn't switched yet: the zone has one Environment.
@@ -29,3 +30,4 @@ kit without changing the trial's rules (CoilspireTrial, ch08_field.json).
 - ZoneKitDressing gained `spin_with` (a piece turns about its Z with its block's Y turn).
 
 ## Review log
+- 2026-10-29 act1-chapters: to review (every criterion met; the stand-ins listed in Notes wait on their own requests).
