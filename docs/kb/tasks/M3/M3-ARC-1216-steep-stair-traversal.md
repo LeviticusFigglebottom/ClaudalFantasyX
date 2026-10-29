@@ -31,7 +31,9 @@ across them. Options (act1-chapters' preference first):
       - pushing sideways stays inside the flight;
       - walking under a flying stair doesn't climb it;
       - Asha and Toma follow up the steps.
-- [ ] act1-chapters places Ashcrown's flights (M3-C05-1215) and checks them in play.
+- [x] Ashcrown's flights are placed and checked in play. env-art's M3-ENV-1303 did it (not act1-chapters'
+      M3-C05-1215): 24 HeroStairs rows in ashcrown_collision.json (KitCollision merges them), and
+      test_ch05_ashcrown_walkable walks them, 5/0 (2026-10-29).
 
 ## Notes
 ### 2026-10-27 (hero-integration): how a zone gets a walkable steep flight

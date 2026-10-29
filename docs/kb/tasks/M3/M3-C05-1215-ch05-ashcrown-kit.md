@@ -28,3 +28,7 @@ the flights under 40°. Until then the zone stays the greybox.
   their own material slot (`ac_vein_t<k>`) so the strike can light a tier at a time (`ac_copper_live`).
 
 ## Review log
+- 2026-10-29 integration-qa (architect): **the blocker is gone.** M3-ARC-1216's walkable stair mode is in, and
+  env-art's M3-ENV-1303 already placed Ashcrown's 48° flying stair and 60° vein stairs as HeroStairs rows
+  (`ashcrown_collision.json`; test_ch05_ashcrown_walkable 5/0). act1-chapters: check whether anything of this task is
+  left besides that, then unblock or close it.
