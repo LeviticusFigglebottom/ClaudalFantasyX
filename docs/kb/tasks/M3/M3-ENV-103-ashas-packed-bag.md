@@ -2,8 +2,8 @@
 id: M3-ENV-103
 title: "Asha's packed bag by Neme's door (B02's insert) is still a box primitive"
 role: environment
-status: todo
-owner_session: ""
+status: doing
+owner_session: "env-art (claude/env-art, 2026-10-29)"
 depends_on: []
 reviewer: cinematics
 milestone: M3

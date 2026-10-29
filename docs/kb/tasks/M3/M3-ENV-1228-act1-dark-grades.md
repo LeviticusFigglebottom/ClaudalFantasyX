@@ -2,8 +2,8 @@
 id: M3-ENV-1228
 title: "Request (env-art): the Ch4 derelict at night grades near-black: D01, D06 and F05 read as nothing (ch04/brightwater_ferry)"
 role: environment
-status: todo
-owner_session: ""
+status: doing
+owner_session: "env-art (claude/env-art, 2026-10-29)"
 depends_on: []
 milestone: M3
 request-from: cinematics
