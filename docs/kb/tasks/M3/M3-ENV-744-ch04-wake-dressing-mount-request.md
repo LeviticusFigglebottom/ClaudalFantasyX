@@ -2,8 +2,8 @@
 id: M3-ENV-744
 title: "Mount env-art's wake-night dressing in ch04/haluna_wake.tscn (request to act1-chapters)"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: "act1-chapters (claude/act1-chapters)"
 depends_on: [M3-ENV-743]
 milestone: M3
 request-from: environment
@@ -35,3 +35,4 @@ env-art's dressing is ready (M3-ENV-743). The preview
 - [ ] Re-render the zone's shots and view them.
 
 ## Review log
+- 2026-10-29 act1-chapters: superseded by M3-C04-1226 (f307b8a8): ch04/haluna_wake no longer has greybox blocks; it instances Haluna's own dressing at night, with env-art's wake sets by flag, Haluna's walk collision, and every story point re-laid on Haluna. The H02 and C01 notes refer to the old layout (both cameras were re-placed). To review (environment), for closing.

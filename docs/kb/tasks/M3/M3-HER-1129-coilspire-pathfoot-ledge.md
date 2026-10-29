@@ -1,7 +1,7 @@
 ---
 id: M3-HER-1129
 title: "Request (act1-chapters): at Coilspire's PathFoot spawn, Rhen walks off a 2 m drop and lands with a 0.3 m snap"
-role: cinematics
+role: environment
 status: todo
 owner_session: ""
 reviewer: qa
@@ -31,5 +31,14 @@ blocker.
 
 ## Notes
 Found by integration-qa (M3-HER-1121) on claude/hero-integration with big12 merged in.
+
+- 2026-10-29 act1-chapters: re-checked on `claude/act1-chapters` (integration b60a8f61 merged). The 2 m drop is gone:
+  the path's verges (`VergeL0`, `VergeL1` in `coilspire_collision.json`) stop the walk at z ≈ 105.8. Two snaps remain,
+  frames 37–38 at 8.1–8.8 m/s, z ≈ 106.7: the strafe steps off the side of the path ramp `Path0` (2.6 m wide,
+  centred on z 108.3, so its edge is at z ≈ 107.0) onto the kit's trimesh ground about 0.12 m lower, which the floor
+  snap takes in one frame. Re-routed to **env-art-b** (the Lead's 10-28 decision: Ch5–Ch9 dressing and its collision
+  are env-art-b's; `tools/act1/ch08_coilspire_dressing.py` writes the ramps). A fix: widen `Path0`/`Path1` to meet
+  the verges (half-width about 2.5 m), or lay the ramp's edge flush with the trimesh. The PathFoot spawn itself is
+  fine (on the ramp, facing up the path).
 
 ## Review log
