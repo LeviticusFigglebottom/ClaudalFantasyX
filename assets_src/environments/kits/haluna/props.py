@@ -24,6 +24,9 @@
   hand_broom          a 1.4 m palm-rib broom (a timber handle, the ribs bound on in two lashings), origin at its middle,
                       along +Y (the reed's broom; drops in for the NPC's CylinderMesh)
   woven_bag           a 0.45 x 0.40 x 0.28 m woven carrying bag with a rope handle, origin at its centre (Neme's)
+  travel_bundle       Asha's bag packed for the road (B02's insert, M3-ENV-103): an indigo cloth bundle packed full and
+                      knotted at the top, a rolled sleeping mat strapped on it, two rope bands round it and a carrying
+                      strap; 0.45 x 0.40 x 0.28 m, origin at its centre (drops in for the NPC's BoxMesh)
   clay_bowl           a 0.44 m earthenware serving bowl, 0.12 m tall, origin at its centre (Osu's)
   wake_shell_loose    one wake-shell off its stand (walls.py's shell), 0.14 m, lying face up, origin at its centre
                       (the one Osu washes in the bowl)
@@ -70,6 +73,7 @@ TRI_BUDGET = {
     "hand_broom": (1500, 120),
     "woven_bag": (1500, 120),
     "clay_bowl": (900, 100),
+    "travel_bundle": (2400, 200),
     "wake_shell_loose": (600, 80),
 }
 M_IRON = "kit_rebar"  # the kit's rusted iron
@@ -565,6 +569,52 @@ def build_clay_bowl(seed: int = 164) -> list[kc.MeshBuilder]:
     return out
 
 
+TRAVEL_BUNDLE = (0.45, 0.40, 0.28)  # w, h, d: Neme's door's BoxMesh
+
+
+def build_travel_bundle(seed: int = 167) -> list[kc.MeshBuilder]:
+    out = []
+    w, h, d = TRAVEL_BUNDLE
+    cloth_w = kc.Weathering(moss=0.0, salt=0.1, wet=0.0, erosion=0.2)
+    for lod in (False, True):
+        rng = kc.rng_for("travel_bundle", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("travel_bundle" + ("-lod1" if lod else ""))
+        cloth, rope = mb.material("kit_cloth_indigo"), mb.material(M_LASHING)
+        # The bundle: packed full, lumpy where the things inside push at the cloth.
+        cy, hy = -h * 0.5 + 0.15, 0.15
+        kc.rounded_block(mb, (0.0, cy, 0.0), (w * 0.44, hy, d * 0.46), cloth, seg=1 if lod else 3, radius=0.08,
+                         noise=None if lod else noise, disp_m=0.014, disp_period_m=0.09, weather=cloth_w,
+                         variation=float(rng.random()))
+        # The rolled mat strapped along the top.
+        mat_y, mat_r = cy + hy + 0.035, 0.045
+        kc.tube(mb, np.array([[-w * 0.46, mat_y, -d * 0.12], [w * 0.46, mat_y, -d * 0.12]]), mat_r,
+                6 if lod else 12, mb.material(M_WOVEN), cap_start=True, cap_end=True, variation=float(rng.random()))
+        if not lod:
+            # The knot: the cloth's two corners tied over the mat, their ears standing up.
+            lathe(mb, [(0.0, -0.02), (0.035, 0.0), (0.03, 0.03), (0.0, 0.04)], "kit_cloth_indigo", rng, sides=8,
+                  at=(0.02, mat_y + mat_r - 0.01, d * 0.1), weather=cloth_w)
+            for sx in (-1.0, 1.0):
+                kc.tube(mb, np.array([[0.02, mat_y + mat_r + 0.02, d * 0.1],
+                                      [0.02 + sx * 0.06, mat_y + mat_r + 0.045, d * 0.1 + 0.02]]),
+                        np.array([0.022, 0.006]), 6, cloth, cap_end=True, weather=cloth_w)
+            # Two rope bands round bundle and mat.
+            a = np.linspace(0.0, 2.0 * math.pi, 17)
+            for x in (-w * 0.24, w * 0.24):
+                ry, rz = hy + 0.012, d * 0.46 + 0.012
+                loop = np.stack([np.full_like(a, x), cy + np.sin(a) * ry, np.cos(a) * rz], axis=-1)
+                top = loop[:, 1] > cy + ry * 0.8
+                loop[top, 1] = mat_y + mat_r + 0.008  # over the mat
+                kc.tube(mb, loop, 0.008, 5, rope)
+            # The carrying strap, looped down the front from band to band.
+            t = np.linspace(0.0, 1.0, 9)
+            strap = np.stack([-w * 0.24 + w * 0.48 * t, cy + hy * 0.5 - 0.07 * np.sin(math.pi * t),
+                              np.full_like(t, d * 0.46 + 0.02)], axis=-1)
+            kc.tube(mb, strap, 0.009, 5, rope)
+        out.append(mb)
+    return out
+
+
 WAKE_SHELL_LOOSE_M = 0.14
 
 
@@ -653,6 +703,7 @@ TARGETS = {
     "hand_broom": build_hand_broom,
     "woven_bag": build_woven_bag,
     "clay_bowl": build_clay_bowl,
+    "travel_bundle": build_travel_bundle,
     "beach_forge": build_beach_forge,
     "inn_hearth": build_inn_hearth,
     "shop_sign_goods": build_shop_sign_goods,

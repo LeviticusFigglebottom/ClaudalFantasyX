@@ -1964,6 +1964,17 @@
         "timber_stilt_post-lod1": 15
       }
     },
+    "travel_bundle": {
+      "budget": [
+        2400,
+        200
+      ],
+      "bytes": 36428,
+      "lods": {
+        "travel_bundle": 648,
+        "travel_bundle-lod1": 36
+      }
+    },
     "vey_arcade_bay": {
       "budget": [
         12000,
