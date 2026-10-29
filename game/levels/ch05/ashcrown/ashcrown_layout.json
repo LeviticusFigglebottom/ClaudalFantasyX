@@ -55,7 +55,7 @@
     "toma": {"at": [-1.5, -81.44, 148.26, 0.0], "color": "#6a7a5a", "radius": 0.34, "height": 1.85},
     "ysolde": {"at": [1.5, -81.44, 150.76, 0.0], "color": "#2a2a4a"},
     "kerrid": {"at": [0.0, -81.44, 152.26, 0.0], "color": "#8a7a5a", "radius": 0.38, "height": 1.95},
-    "tender": {"cast": "reed", "at": [-1.6, 42.0, -3.6, 180.0], "color": "#8a2a2a"},
+    "tender": {"cast": "tender", "at": [-1.6, 42.0, -3.6, 180.0], "color": "#8a2a2a"},
     "matron": {"cast": "creature:cinder_matron", "at": [-5.3, -4.0, -10.4, 270.0], "color": "#5a3a2a", "radius": 0.7, "height": 3.0}
   },
   "shots": {
