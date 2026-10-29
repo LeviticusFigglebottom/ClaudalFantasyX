@@ -342,7 +342,7 @@ TRADER_DRAFT_M = 0.9  # the trader's keel below the tide
 # Borrowed pieces' flat slots (M3-ENV-1326): the Brine Shoals Level-stone read as a white box; the Order's shrine stone
 # as Haluna's shrines (and Ch6's) wear it.
 OTHER_KIT_SLOTS = {
-    "level_stone_shrine": {"bs_level_stone": "res://assets/environments/kits/haluna/materials/kit_shrine_stone.tres"}}
+    "level_stone_shrine": {"bs_level_stone": "res://game/levels/ch06/brine_shoals/brine_shoals_level_stone_material.tres"}}
 
 
 def story_pieces() -> list[dict]:

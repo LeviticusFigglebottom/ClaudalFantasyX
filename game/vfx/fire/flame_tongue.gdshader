@@ -5,7 +5,8 @@
 // - rising noise tears the upper half of each tongue into licks (discard), so the tips break and re-form;
 // - the colour runs from the slot's base to its tip colour and flickers with slow noise per fire.
 // - the tongue is translucent: dense at its heart and foot, thinning toward its silhouette and its torn tips (opaque,
-//   the camp's fires read as cut card against the noon flats; M3-ENV-1326).
+//   the camp's fires read as cut card against the noon flats; M3-ENV-1326), and broken into licks so that at arm's
+//   length no smooth cone shows (the 10-29 audit).
 // All on the held weather clock (hymn_wind_time), never TIME, so a capture is deterministic. Unshaded: the flame is
 // its own light (the zone's fire lights do the lighting). Never glimmer colours (references.md §1.4 rule 10).
 shader_type spatial;
@@ -36,11 +37,11 @@ uniform float tear = 0.55;
 uniform float tear_scale_per_m = 2.6;
 uniform float rise_m_s = 1.6;
 // Opacity: a tongue's heart (facing the camera) at its foot, its silhouette, and how much the tips thin it.
-uniform float heart_alpha : hint_range(0.0, 1.0) = 0.9;
+uniform float heart_alpha : hint_range(0.0, 1.0) = 0.78;
 uniform float rim_alpha : hint_range(0.0, 1.0) = 0.0;
-uniform float tip_thin : hint_range(0.0, 1.0) = 0.6;
+uniform float tip_thin : hint_range(0.0, 1.0) = 0.75;
 // The rising noise also thins the body into licks (0: an even sheet).
-uniform float lick_breakup : hint_range(0.0, 1.0) = 0.6;
+uniform float lick_breakup : hint_range(0.0, 1.0) = 0.85;
 // The heart runs toward this hot colour where it faces the camera, low in the tongue.
 uniform vec3 hot_color : source_color = vec3(1.0, 0.86, 0.55);
 
