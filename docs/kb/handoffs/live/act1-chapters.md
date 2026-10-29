@@ -325,7 +325,26 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
 - Playthrough so far (Ch4, Ch5 Pemakar, Ashcrown): only the known rows (the derelict and harbour grades, Ashcrown's
   greybox). Ashcrown on its kit (env-art-b's M3-ENV-1303, reviewer cinematics) is in big16, not on the integration
   branch yet; reviewing it from a `lead/gate-big16` worktree next.
-- IN PROGRESS: a fresh title → Ch9 headless playthrough (all `_thread` tests; Ch1 and Ch4–Ch9 cutscene stills).
+- **MERGE-READY @ 4b07cd09: the fresh playthrough's fixes** (details: `docs/kb/qa/act1_playthrough_ch04_ch09.md`,
+  "Fourth pass"). All 40 `_thread` tests pass on the merged tree (title, Prologue, slice, Ch1–Ch16).
+  - Ch6 (5a8a6d06, c13057f5): B10's party wades the channel with Rhen (`channel_*` marks, dawn beat), W10_dawn re-aimed;
+    W06_after holds Liss in profile (the wrights walked into the old lens).
+  - Ch8 (ba54943c): the kites stay up through the run back (W04_kite framed an empty sky); they come down with
+    `ch08_wave1_held`. **Manifest shot ch08_corrow_storm can now show the kites** (its flags: arrived + beacon_opened).
+  - Ch8 Virel (ed235044, my request M3-CRE-627-virel-field-body): `creature:virel` on `virel_coil`, `cast_still`
+    (new ZoneCast row key), `Virel` dropped from Coilspire's `greybox.keep`, hidden after the binding.
+    **For env-art-b:** the keep-list line in `tools/act1/ch08_coilspire_dressing.py` changed (the request named me).
+  - Ch7 R07 and Ch9 D02 re-aimed (4b07cd09).
+  - Checks: `--filter=` thread 40/0, ch04 13/0, ch06 5/0, ch08 25/0, zone_cast 5/0, kit_dressing 9/0,
+    hero_cutscene_snaps 1/0; validate_data, dlgc --check, taskboard --check, gdlint, gdformat clean.
+    Known reds not mine: qa_capsules (ch02/haluna's villager capsules, slice-polish), hero_field_snaps (drowned_choir,
+    Act II, M3-HER-1230; Coilspire's PathFoot row re-routed to env-art-b as M3-HER-1129). Skipped: coverage, sim (no
+    battle or progression code).
+  - IN PROGRESS: stills of Coilspire (F07), the galleries (R07) and Ch9 (D02) to view; then self-render
+    ch08_corrow_storm, Ch1's stills, and the big16 review of Ashcrown (M3-ENV-1303).
+- LEAD-ASK: two task files share the id M3-CRE-627 (`act2-regulars-ch10-11`, blocked by ADR 0041, and my
+  `virel-field-body` request). Rename one? I'll leave both as they are unless you say otherwise.
+- (superseded) IN PROGRESS: a fresh title → Ch9 headless playthrough (all `_thread` tests; Ch1 and Ch4–Ch9 cutscene stills).
 
 ### Render requests
 DONE @ 180510e1 (viewed gpu/render-act1-chapters-180510e): ch04_ferry_derelict approved (df86873f); ch04_ferry_deck re-aimed (the camera stood 0.6 m from the ferrymaster), re-requested below
