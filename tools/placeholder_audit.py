@@ -523,8 +523,10 @@ def render(items: list[Item], source: str, scanned: list[str] | None = None) -> 
         "bodies, arenas, portraits, audio cues and files, and placeholder-named assets.",
         "- **Severity:** high = on screen in play or battle; medium = heard, or seen in a menu or in passing; low = "
         "a name only.",
-        "- **Not audited yet, with the reason:** item and skill icons (the Act I menus have none: items carry no "
-        "icon field and status glyphs are drawn); battle VFX beyond the bosses' set pieces (every hit falls back to "
+        "- **Covered elsewhere:** item, equipment and skill icons and the battle HUD's faces are UI's "
+        "`test_menu_glyphs` and `test_battle_portraits` (M3-UI-211; `docs/kb/qa/ui_act1_menu_audit.md`); sounds are "
+        "`tools/audio/act1_audio_audit.py` (audio's, M3-AUD-861).",
+        "- **Not audited yet, with the reason:** battle VFX beyond the bosses' set pieces (every hit falls back to "
         "its element's effect, so whether a skill needs a signature effect is battle-presentation's call).",
         "- **Source:** %s." % source,
     ]
