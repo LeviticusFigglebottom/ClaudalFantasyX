@@ -30,6 +30,7 @@ ROOT = Path(__file__).resolve().parents[2]
 KIT_SRC = ROOT / "assets_src" / "environments" / "kits" / "coilspire"
 sys.path.insert(0, str(KIT_SRC))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import ch05_09_zone_looks as zl  # noqa: E402
 import cs_common as cs  # noqa: E402
 import cs_headland as ch  # noqa: E402
 import cs_preview_layout as cpl  # noqa: E402
@@ -239,7 +240,7 @@ def door_boxes() -> list[dict]:
 # StormWall block (shown when Virel is bound).
 STORM = {"name": "Undertow", "at": [308.745, 77.285, 159.418], "preset": "ch08_seawall", "azimuth_deg": 170.0,
          "block": "StormWall"}
-# env-art-b's flue-trial pieces (the Coilspire kit's b_trial.py, M3-ENV-1222) on their blocks: (block, piece, origin)
+# env-art-b's flue-trial pieces (the Coilspire kit's b_spire_trial.py, M3-ENV-1222; renamed from b_trial.py so it never shadows Ashcrown's) on their blocks: (block, piece, origin)
 TRIAL_PIECES = (("Gate_t1", "flue_gate", "foot"), ("Gate_t2", "flue_gate", "foot"), ("Gate_t3", "flue_gate", "foot"),
                 ("Gate_t4", "flue_gate", "foot"), ("NicheSeal", "niche_seal", "foot"), ("Niche", "lamp_niche", "foot"),
                 ("WrightMark", "wright_mark", "centre"))
@@ -303,6 +304,21 @@ def trial_pieces() -> list[dict]:
     return out
 
 
+# The kit's metals at player height (M3-ENV-1326): `cs_copper`'s patina covered almost all of it, so the flue pipes,
+# key housings and the roof read pale flat mint; the wheels' worn copper and the gates' iron are flat StandardMaterials.
+# Swapped on every Coilspire piece (`kit_material_paths`).
+KIT_LOOKS = {
+    "cs_copper": ("coilspire_copper_material.tres", dict(zl.VERDIGRIS, patina_coverage=(0.1, 0.7))),
+    "cs_copper_worn": ("coilspire_copper_worn_material.tres", {
+        "col_bronze": (0.5020, 0.2706, 0.1255), "col_worn": (0.8000, 0.4784, 0.2706),
+        "col_patina": (0.2706, 0.3804, 0.3373), "col_patina_pale": (0.4314, 0.5137, 0.4706),
+        "metallic_bronze": 1.0, "roughness_bronze": 0.42, "roughness_worn": 0.25, "patina_coverage": (0.0, 0.25),
+        "patina_roughness": 0.85, "streak_strength": 0.3, "wear_strength": 0.9, "detail_scale_m": 0.5,
+        "normal_strength": 0.4, "normal_tile_m": 1.6}),
+    "cs_iron": ("coilspire_iron_material.tres", dict(zl.SEA_IRON)),
+}
+
+
 def dressing() -> dict:
     preview = json.loads((PREVIEW / "coilspire_layout.json").read_text(encoding="utf-8"))
     pieces = []
@@ -352,6 +368,7 @@ def dressing() -> dict:
         "storms": [STORM],
         "fire_light_color": preview.get("hearth_light_color", "#FFB16E"),
         "fire_lights": lights,
+        "kit_material_paths": {slot: RES_ZONE + name for slot, (name, _) in KIT_LOOKS.items()},
         "pieces": pieces,
     }
 
@@ -503,6 +520,8 @@ def copy_grades() -> None:
 def main() -> None:
     copy_grades()
     write_inner_material()
+    for name, params in KIT_LOOKS.values():
+        (ZONE / name).write_text(zl.bronze_material(name, params), encoding="utf-8")
     if "--relayout" in sys.argv:
         relayout()
     (ZONE / "coilspire_collision.json").write_text(json.dumps(collision(), indent=1) + "\n", encoding="utf-8")

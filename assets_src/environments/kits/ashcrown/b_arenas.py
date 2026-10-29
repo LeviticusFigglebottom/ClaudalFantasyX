@@ -68,7 +68,9 @@ def _preview() -> dict:
 TEMPLE_LIGHT = {  # ashcrown.md §0 `ch05_temple` (13:00): the sun through the ash veil, ash haze
     "sub_frame": "ch05_temple",
     "sun": {"elev": 58.0, "az": 225.0, "color": "#FFF0DC", "energy": 2.8},
-    "fill": {"color": "#8E959C", "energy": 0.45},
+    # the fill is the zone's (tools/act1/ch05_ashcrown_dressing.py ZONE_AMBIENT_ENERGY, M3-ENV-1325): at 0.45 the tiers'
+    # shaded faces behind the enemy line were black planes
+    "fill": {"color": "#8E959C", "energy": 1.8},
     "exposure": 0.72,
     "glow": (0.35, 0.03, 1.1),
     "fog": {"color": "#8C8882", "aerial": 0.5, "density": 0.0018, "sky_affect": 0.25, "height": 0.0,
@@ -179,12 +181,23 @@ def plume_day(text: str) -> str:
     return text
 
 
+# The zone's slot swaps (M3-ENV-1325: weathered copper, gold and lacquer, the stone's lighter baked occlusion), applied
+# to the written scene by a KitSlotSwaps node (tools/act1/ch05_09_zone_looks.py).
+def _zone_looks():
+    spec = importlib.util.spec_from_file_location("ch05_09_zone_looks", ROOT / "tools" / "act1" / "ch05_09_zone_looks.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
 def main(out_dir: Path | None = None) -> int:
     if out_dir is not None:  # tools/tests/test_b_arenas.py writes to a scratch dir
         AS.OUT_DIR = out_dir
+    zl = _zone_looks()
+    paths = zl.load_generator("ch05_ashcrown_dressing").metal_paths()
     for aid, fn in ARENAS.items():
         path = AS.write_arena(fn())
-        path.write_text(plume_day(path.read_text(encoding="utf-8")), encoding="utf-8")
+        path.write_text(zl.add_kit_slot_swaps(plume_day(path.read_text(encoding="utf-8")), paths), encoding="utf-8")
         print(f"ARENA {path.name}")
     return 0
 

@@ -32,6 +32,33 @@ CHANNEL_X = -24.0
 CHANNEL_FROM_Z = -24.0  # the channel's silted head; cells run north of it
 
 
+# The Level-stone's kit slot is a flat pale StandardMaterial that read as white plastic on the flats (M3-ENV-1326); it
+# takes the Order's shrine stone, as Haluna's shrines wear it.
+LEVEL_STONE = {"bs_level_stone": "res://assets/environments/kits/haluna/materials/kit_shrine_stone.tres"}
+
+
+# The kit's flat StandardMaterial metals and lacquer (M3-ENV-1326): the camp's brass, gold and iron and the barge's
+# lacquer read as plastic. Zone looks by slot on every Brine Shoals piece (`kit_material_paths`).
+KIT_LOOKS = {
+    "bs_lacquer_red": ("brine_shoals_lacquer_red_material.tres", None),
+    "bs_brass": ("brine_shoals_brass_material.tres", None),
+    "bs_gold": ("brine_shoals_gold_material.tres", None),
+    "bs_iron": ("brine_shoals_iron_material.tres", None),
+}
+
+
+def kit_looks() -> dict:
+    import ch05_09_zone_looks as zl  # noqa: PLC0415
+
+    return {
+        "bs_lacquer_red": zl.lacquer((0.702, 0.149, 0.1176)),
+        "bs_brass": dict(zl.NEW_COPPER, col_bronze=(0.5490, 0.4235, 0.2353), col_worn=(0.7804, 0.6353, 0.3922),
+                         patina_coverage=(0.05, 0.4)),
+        "bs_gold": dict(zl.GOLD),
+        "bs_iron": dict(zl.SEA_IRON),
+    }
+
+
 def piece(name: str, x: float, z: float, y: float = 0.0, yaw: float = 0.0, **extra: object) -> dict:
     row: dict = {"piece": name, "at": [round(x, 3), round(z, 3)], "y": round(y, 3), "yaw_deg": round(yaw, 2)}
     row.update(extra)
@@ -116,7 +143,7 @@ def dusk_camp() -> list[dict]:
         # M3-ENV-1201's pieces on their blocks: the party's fire, the purser's boat, the Level-stone shrine in the bow
         piece("ridge_fire", 22.0, -40.0, y=0.0, block="Fire"),
         piece("vendor_boat", 29.0, -37.0, y=0.0, block="VendorBoat"),
-        piece("level_stone_shrine", 27.0, -44.5, y=0.0, block="Shrine"),
+        piece("level_stone_shrine", 27.0, -44.5, y=0.0, block="Shrine", material_paths=dict(LEVEL_STONE)),
     ]
 
 
@@ -212,6 +239,7 @@ def layout() -> dict:
             {"at": [9.0, 2.4, -35.0], "energy": 1.4, "range": 7.0, "block": "TideWheel"},  # the burning wheel
             {"at": [27.0, 1.2, -44.0], "energy": 0.6, "range": 3.0, "color": "#9fd8e0", "block": "Shrine"},  # rest
         ],
+        "kit_material_paths": {slot: RES_ZONE + name for slot, (name, _) in KIT_LOOKS.items()},
         "pieces": ground() + road() + wrecks() + camp() + dusk_camp() + story_marks() + road_aftermath()
         + raid_fires(),
         "smokes": smokes(),
@@ -238,6 +266,11 @@ def copy_grade() -> None:
 
 def main() -> None:
     (ZONE / "brine_shoals_dressing.json").write_text(json.dumps(layout(), indent=1) + "\n", encoding="utf-8")
+    import ch05_09_zone_looks as zl  # noqa: PLC0415
+
+    looks = kit_looks()
+    for slot, (name, _) in KIT_LOOKS.items():
+        (ZONE / name).write_text(zl.bronze_material(name, looks[slot]), encoding="utf-8")
     copy_grade()
 
 
