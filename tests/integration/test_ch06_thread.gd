@@ -278,6 +278,10 @@ func _camp_and_dawn() -> void:
 	assert_true(_trigger(&"channel_out").on_touched())
 	assert_true(bool(Game.get_flag(&"ch06_done")), "B10")
 	assert_true(&"ch06_dawn_003" in lines)
+	var liss := zone.stage.actor(&"liss")
+	assert_true(
+		liss.global_position.distance_to(zone.player.global_position) < 4.0, "B10: Liss wades the channel with Rhen"
+	)
 	assert_eq(hand_offs.back(), [ZoneStory.KIND_GO, {"location": "ch07/tamsule", "spawn": "RiverMouth"}], "on to Ch7")
 	_close()
 
