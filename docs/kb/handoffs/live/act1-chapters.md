@@ -344,8 +344,10 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
     R07 (the walkway, Oruvel's side going out), D02 (Kerrid's face clear of the box), W10_dawn, W06_after, H15.
   - SELF-RENDERED @ 46c9811b: ch08_corrow_storm (no baseline: the kite lines now hang in the top of the frame, as
     the story has them at the run back; the Watchers read as silhouettes, the known storm grade M3-ENV-1229).
-  - IN PROGRESS: Ch1's stills (slice-polish's chapter: anything found is filed), then the big16 review of Ashcrown
-    (M3-ENV-1303).
+  - Ch1's stills (24, slice-polish's chapter): five frames show a wall, a post or nothing (O02, O09, U03, U09, U11);
+    filed as M3-CIN-1232 (request to slice-polish). The rest read; the storm is M3-ENV-751's.
+  - IN PROGRESS: the big16 review of Ashcrown on its kit (M3-ENV-1303, reviewer cinematics), from a lead/gate-big16
+    worktree (its tests: ashcrown 22/0, ch05 13/0).
 - LEAD-ASK: two task files share the id M3-CRE-627 (`act2-regulars-ch10-11`, blocked by ADR 0041, and my
   `virel-field-body` request). Rename one? I'll leave both as they are unless you say otherwise.
 - (superseded) IN PROGRESS: a fresh title → Ch9 headless playthrough (all `_thread` tests; Ch1 and Ch4–Ch9 cutscene stills).
