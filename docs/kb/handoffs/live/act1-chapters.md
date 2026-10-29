@@ -340,8 +340,12 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
     Known reds not mine: qa_capsules (ch02/haluna's villager capsules, slice-polish), hero_field_snaps (drowned_choir,
     Act II, M3-HER-1230; Coilspire's PathFoot row re-routed to env-art-b as M3-HER-1129). Skipped: coverage, sim (no
     battle or progression code).
-  - IN PROGRESS: stills of Coilspire (F07), the galleries (R07) and Ch9 (D02) to view; then self-render
-    ch08_corrow_storm, Ch1's stills, and the big16 review of Ashcrown (M3-ENV-1303).
+  - Viewed in re-rendered stills: F07 (46c9811b: Virel side-on, head to tail, Asha before her), F06_out (Asha alone),
+    R07 (the walkway, Oruvel's side going out), D02 (Kerrid's face clear of the box), W10_dawn, W06_after, H15.
+  - SELF-RENDERED @ 46c9811b: ch08_corrow_storm (no baseline: the kite lines now hang in the top of the frame, as
+    the story has them at the run back; the Watchers read as silhouettes, the known storm grade M3-ENV-1229).
+  - IN PROGRESS: Ch1's stills (slice-polish's chapter: anything found is filed), then the big16 review of Ashcrown
+    (M3-ENV-1303).
 - LEAD-ASK: two task files share the id M3-CRE-627 (`act2-regulars-ch10-11`, blocked by ADR 0041, and my
   `virel-field-body` request). Rename one? I'll leave both as they are unless you say otherwise.
 - (superseded) IN PROGRESS: a fresh title → Ch9 headless playthrough (all `_thread` tests; Ch1 and Ch4–Ch9 cutscene stills).
