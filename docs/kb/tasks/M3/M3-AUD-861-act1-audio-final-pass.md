@@ -2,7 +2,7 @@
 id: M3-AUD-861
 title: "Act I as played, every sound final (ADR 0041): audit title→Ch9 for silent, temp or reused sounds and fix them"
 role: audio
-status: review
+status: done
 owner_session: "audio (cloud session_01Wmj8xaLtwcqiS3qwC6PciW, branch claude/audio)"
 reviewer: integration-qa
 depends_on: []
@@ -51,3 +51,9 @@ docs/kb/handoffs/live/audio.md.
       - Godot `--filter=audio`: 173 run, 0 failed.
 
 ## Review log
+- 2026-10-29 integration-qa (reviewer): **accepted, done.** On `lead/gate-big17` (audio's head included) the audit
+  shows Zones, Enemies, Battles, Intros, Skills, Cutscenes, UI and temp notes at 0. The 5 blockers named above are
+  cleared: the three one-stem cutscenes and the two pending ui hooks. The BY_DESIGN reasons read right.
+  test_act1_audio_audit and test_audio_data pass. **3 new items** came later, from battle-presentation's
+  M3-BPR-1325 (the Climb's stair skills got effect rows mapped to `status_apply`, which layers under their own
+  sounds). They're outside this task's pass, so they're filed as **M3-HER-1163 (audio)** with the 3-row fix.

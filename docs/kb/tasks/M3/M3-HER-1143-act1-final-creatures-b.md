@@ -2,7 +2,7 @@
 id: M3-HER-1143
 title: "ADR 0041 (Act I at final quality): creatures-b's items in the placeholder inventory (6: 6 high, 0 medium, 0 low)"
 role: character
-status: review
+status: done
 owner_session: "creatures-b (claude/creatures-b)"
 reviewer: qa
 depends_on: []
@@ -15,9 +15,9 @@ ADR 0041: everything a player meets from the title to the end of Ch9 reaches fin
 **creatures-b** owns bosses and the Vowbound. This task carries those rows; the inventory's "creatures-b" section is the live list.
 
 ## Acceptance criteria
-- [ ] Every row of the inventory's "creatures-b" section is final (fix the item, then re-run the audit; don't edit the
+- [x] Every row of the inventory's "creatures-b" section is final (fix the item, then re-run the audit; don't edit the
       table by hand).
-- [ ] The audit lists nothing for creatures-b: `python3 tools/placeholder_audit.py` (with Godot on PATH; it runs the zone
+- [x] The audit lists nothing for creatures-b: `python3 tools/placeholder_audit.py` (with Godot on PATH; it runs the zone
       scan itself) shows no "creatures-b" line.
 
 ## The rows as first audited (2026-10-28)
@@ -40,3 +40,6 @@ ADR 0041: everything a player meets from the title to the end of Ch9 reaches fin
   tests/unit/test_creature_bosses_act1.gd.
 
 ## Review log
+- 2026-10-29 integration-qa (qa, reviewer): **accepted, done.** The full audit (import + runtime scan of every Act I
+  zone, variant and arena) on the merged tree, which was big16 + every track head (17:40) and then also Pell's row
+  (18:30), lists **nothing for creatures-b**. Both criteria hold. act1_final_inventory.md on claude/hero-integration shows it.

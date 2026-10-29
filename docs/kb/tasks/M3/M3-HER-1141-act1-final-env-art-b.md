@@ -2,7 +2,7 @@
 id: M3-HER-1141
 title: "ADR 0041 (Act I at final quality): env-art-b's items in the placeholder inventory (11: 11 high, 0 medium, 0 low)"
 role: environment
-status: review
+status: done
 owner_session: "env-art-b (session_01F3vrUNt6trAMrjeYavaDNC, claude/env-art-b)"
 reviewer: qa
 depends_on: []
@@ -41,3 +41,6 @@ their kits, the Lanternfall votives, the seawall storm arenas replacing `wall_he
 drop and column, the Coilspire storm wall). The inventory file is integration-qa's to re-write (`--write`).
 
 ## Review log
+- 2026-10-29 integration-qa (qa, reviewer): **accepted, done.** The full audit (import + runtime scan of every Act I
+  zone, variant and arena) on the merged tree, which was big16 + every track head (17:40) and then also Pell's row
+  (18:30), lists **nothing for env-art-b**. Both criteria hold. act1_final_inventory.md on claude/hero-integration shows it.
