@@ -9,7 +9,7 @@ long striking forelegs. Built for waves of them on the Fisher Stair, so it is ch
 
 Primitive pass (2026-10-29, ADR 0041): the carapace is a crab's (a low dome widest forward, a rim lip, plates in
 grooves that split open into glowing seams, teeth on the brow, mandible hooks); the legs have coxa, knee and ankle
-knobs with paler joint membranes and femur spines; the forelegs end in serrated scythe blades. Rig and clips unchanged.
+knobs with dull joint membranes, glowing femur seams and femur spines; the forelegs end in serrated scythe blades. Rig and clips unchanged.
 """
 
 from __future__ import annotations
@@ -157,10 +157,10 @@ def _spine(mesh: ck.Mesh, at: np.ndarray, out: np.ndarray, length: float, radius
 
 def legs(mesh: ck.Mesh, rig: ck.Rig) -> None:
     """Twelve walking legs in three visible segments (a coxa knob, the femur arching up to a knee knob, the tibia and
-    dactyl down to a needle tip), the joints a paler wet membrane, two spines on each femur; the two striking forelegs
+    dactyl down to a needle tip), the joints a dull, dry membrane, two spines on each femur; the two striking forelegs
     end in flattened, serrated scythe blades."""
     base = ck.mix(PAL["lacquer_black"], PAL["storm_slate"], 0.2)
-    membrane = ck.mix(PAL["storm_slate"] * 1.1, PAL["spawn_wound"], 0.15)
+    membrane = PAL["storm_slate"] * 0.75  # a dull, dry joint between the lacquered segments
     for s, tag in ((1.0, "l"), (-1.0, "r")):
         for i in range(NLEG):
             hip, knee, tip = leg_pts(s, i)
@@ -171,7 +171,7 @@ def legs(mesh: ck.Mesh, rig: ck.Rig) -> None:
                 P, T = ck.tube(path, radii, LEG_SEGS, squash=LEG_SQUASH)
                 t = _ring_t(len(radii), LEG_SEGS)
                 joint = np.maximum(np.exp(-((t - joints[0]) / 0.045) ** 2), np.exp(-((t - joints[1]) / 0.045) ** 2))
-                col = ck.mix(base, membrane, (0.75 * joint)[:, None])
+                col = ck.mix(base, membrane, (0.5 * joint)[:, None])
                 col = ck.mix(col, PAL["lacquer_black"] * 0.6, ck.smoothstep(0.75, 1.0, t)[:, None] * (seg == "b"))
                 # a wound seam split along the femur's top, glowing like the carapace's
                 side = np.concatenate([np.tile(np.cos(np.arange(LEG_SEGS) * 2.0 * math.pi / LEG_SEGS), len(radii)),
@@ -180,8 +180,8 @@ def legs(mesh: ck.Mesh, rig: ck.Rig) -> None:
                     0.85, 0.7, t)
                 col = ck.mix(col, PAL["spawn_wound"] * 0.55, seam[:, None])
                 bone = rig.rigid(f"leg_{tag}{i}_{seg}")
-                ck.finish(mesh, P, T, "carapace", col, bone, wet=1.0 - 0.2 * joint, cavity=0.35 * joint,
-                          emission=np.maximum(seam, 0.12 * joint))
+                ck.finish(mesh, P, T, "carapace", col, bone, wet=1.0 - 0.6 * joint, cavity=0.35 * joint,
+                          emission=seam)
                 if seg == "a":
                     for u in FEMUR_SPINES:
                         k = int(round(u * (len(path) - 1)))
