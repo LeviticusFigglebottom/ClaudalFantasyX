@@ -472,6 +472,16 @@ that test at this branch's zones.
   no failures, not scoped to these changes); coverage (no battle/progression code).
 - **MERGE-READY @ 98d582ef.**
 
+- **The Lead's 23:10 ask: a final-quality audit of Ch5–Ch9 as played. IN PROGRESS.** On `lead/gate-big18` @ d00d3284
+  with this head merged on top (a trial worktree, not pushed).
+  - Each zone at eye height: every spawn, trigger (doors, transitions, interactables) and mark (the NPC and story
+    spots), deduped at 5 m, looking N, E, S and W.
+  - The variants sampled: Pemakar's day, the dusk camp, Corrow's storm and its fall, Coilspire after the binding,
+    Ch9's dawn.
+  - Every Ch5–Ch9 arena I own, from the battle camera and each CameraHint.
+  - **The Reefball venue:** the match itself is UI's 2D HUD (`game/ui/reefball/`, no 3D). Its in-world venue is the
+    Tamsule Bell galleries (the catch-pool, the held drop), audited as a zone.
+
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
   on the PC presets (two large and three small fires in `ch06/brine_shoals` and `salvage_camp_burning`).
