@@ -13,6 +13,9 @@
   "hide_all": true,
   "keep": []
  },
+ "kit_material_paths": {
+  "tb_gold_leaf": "res://game/levels/ch07/tamsule/tamsule_gold_leaf_material.tres"
+ },
  "pieces": [
   {
    "name": "QuayDeckW",

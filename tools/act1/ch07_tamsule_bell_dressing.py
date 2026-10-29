@@ -297,6 +297,7 @@ def dressing() -> dict:
         "environment": RES_ZONE + "tamsule_noon_environment.tres",
         "time_of_day_h": 12.25,
         "greybox": {"hide_all": True, "keep": []},
+        "kit_material_paths": {"tb_gold_leaf": "res://game/levels/ch07/tamsule/tamsule_gold_leaf_material.tres"},
         "pieces": pieces,
         "drops": drop_rows(),
     }

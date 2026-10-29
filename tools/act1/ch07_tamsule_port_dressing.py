@@ -28,6 +28,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 KIT_SRC = ROOT / "assets_src" / "environments" / "kits" / "tamsule_bell"
 sys.path.insert(0, str(KIT_SRC))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import ch05_09_zone_looks as zl  # noqa: E402
 import bell  # noqa: E402
 import port_preview as pp  # noqa: E402
 
@@ -120,6 +122,7 @@ def layout() -> dict:
         "environment": env,
         "time_of_day_h": tod,
         "greybox": {"hide_all": True, "keep": []},
+        "kit_material_paths": dict(KIT_SLOTS),
         "pieces": rows() + weep_rows(),
         "drops": drop_rows(),
     }
@@ -211,6 +214,17 @@ def relayout(text: str) -> str:
     return text
 
 
+# The kit's gilt (`tb_gold_leaf`, the boards' and counters' edges, the Bell's ring trim) is a flat StandardMaterial: worn
+# gilt by slot on every Tamsule piece in both Ch7 zones (M3-ENV-1326; the galleries' dressing names the same file).
+GOLD_NAME = "tamsule_gold_leaf_material.tres"
+GOLD = {"col_bronze": (0.8314, 0.6431, 0.2157), "col_worn": (0.5490, 0.3922, 0.1961),
+        "col_patina": (0.3725, 0.5412, 0.4706), "col_patina_pale": (0.5216, 0.6588, 0.5843),
+        "metallic_bronze": 1.0, "roughness_bronze": 0.28, "roughness_worn": 0.45, "patina_coverage": (0.0, 0.15),
+        "patina_shade_bias": 0.1, "patina_roughness": 0.85, "streak_strength": 0.2, "wear_strength": 0.6,
+        "detail_scale_m": 0.5, "normal_strength": 0.3, "normal_tile_m": 1.6}
+KIT_SLOTS = {"tb_gold_leaf": "res://game/levels/ch07/tamsule/" + GOLD_NAME}
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--relayout", action="store_true")
@@ -219,6 +233,7 @@ def main(argv: list[str] | None = None) -> int:
         LAYOUT.write_text(relayout(LAYOUT.read_text(encoding="utf-8")), encoding="utf-8")
     data = json.loads(LAYOUT.read_text(encoding="utf-8"))
     (ZONE / "tamsule_dressing.json").write_text(json.dumps(layout(), indent=1) + "\n", encoding="utf-8")
+    (ZONE / GOLD_NAME).write_text(zl.bronze_material(GOLD_NAME, GOLD), encoding="utf-8")
     (ZONE / "tamsule_collision.json").write_text(json.dumps(collision(data["blocks"]), indent=1) + "\n",
                                                  encoding="utf-8")
     return 0
