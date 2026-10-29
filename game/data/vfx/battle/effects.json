@@ -5623,7 +5623,7 @@
             "volcanic_stone",
             "ember_orange"
           ],
-          "amount": 44,
+          "amount": 60,
           "lifetime_s": 0.9,
           "explosiveness": 0.85,
           "velocity_m_s": [
@@ -5641,7 +5641,7 @@
             0.3
           ],
           "energy": 1.4,
-          "emission_radius_m": 0.75,
+          "emission_radius_m": 1.6,
           "turbulence": 0.0,
           "direction": [
             0,

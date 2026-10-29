@@ -199,7 +199,8 @@ SKILLS = {
                     "The Cinder Matron pours slag over the party."),
     "torch_hulk": fx("head", sink("volcanic_stone", "lacquer_black", 40), "The Inquisitor torches the hulk: smoke over each foe."),
     "breach": fx("chest", heavy("spawn_wound", "glimmer_held", "deep_teal_shadow", "abyss_navy", 60), "The Breach: the wall gives under the Reach."),
-    "recrust": fx("feet", ring("volcanic_stone", "ember_orange", 44), "The Cinder Matron's crust closes over her."),
+    # Her bulk is ~2.9 m: the default 0.75 m ring closed inside her and never showed (M3-C05-06 sweep).
+    "recrust": fx("feet", ring("volcanic_stone", "ember_orange", 60, 1.6), "The Cinder Matron's crust closes over her."),
     "flood_surge": fx("chest", spray("turquoise_shallow", "lagoon_teal", 60), "The Drownbell's flood surges over each foe."),
     "undertow_surge": fx("feet", sink("deep_teal_shadow", "abyss_navy", 40), "The Drownbell's undertow drags at each foe's feet."),
 }
