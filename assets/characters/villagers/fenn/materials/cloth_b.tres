@@ -1,0 +1,20 @@
+[gd_resource type="ShaderMaterial" load_steps=7 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/character/character_cloth.gdshader" id="sh"]
+[ext_resource type="Texture2D" path="res://assets/characters/villagers/textures/villagers_cloth_albedo.png" id="t0"]
+[ext_resource type="Texture2D" path="res://assets/characters/villagers/textures/villagers_cloth_clothmask.png" id="t1"]
+[ext_resource type="Texture2D" path="res://assets/characters/asha/textures/asha_thread_detail_normal.png" id="t2"]
+[ext_resource type="Texture2D" path="res://assets/characters/villagers/textures/villagers_cloth_normal.png" id="t3"]
+[ext_resource type="Texture2D" path="res://assets/characters/villagers/textures/villagers_cloth_orm.png" id="t4"]
+
+[resource]
+resource_name = "cloth_b"
+render_priority = 0
+shader = ExtResource("sh")
+shader_parameter/tex_albedo = ExtResource("t0")
+shader_parameter/tex_cloth_mask = ExtResource("t1")
+shader_parameter/tex_detail_normal = ExtResource("t2")
+shader_parameter/tex_normal = ExtResource("t3")
+shader_parameter/tex_orm = ExtResource("t4")
+shader_parameter/col_albedo = Color(0.353, 0.380, 0.416, 1)
+shader_parameter/detail_tiling = 150.0

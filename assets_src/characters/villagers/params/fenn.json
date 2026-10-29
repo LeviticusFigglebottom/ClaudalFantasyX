@@ -1,0 +1,141 @@
+{
+  "_about": "Old Fenn, who has kept Coilspire's low flame for forty-one years (Ch8-9, speaker `fenn`; act1_ch08.md: 'Shut the door, Lady. She doesn't like a draught'; feeds the fire, hands Asha the driftwood and the key), about 74. Lean, stooped, cheerful; thin white hair cropped and receding, a white stubble; a soot-dark slate long-sleeved coat-shirt with the sleeves pushed to the forearm, storm-grey shin trousers, a long scorched hide apron over them, a faded copper-green sash, sandals. Soot-dark fingertips. Reach-bands left 4, right 3 (fisher years before the flame). (M3-CHR-536.) Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials, villager_clips), not by bb_params.",
+  "name": "fenn",
+  "height_m": 1.66,
+  "heads_tall": 7.2,
+  "shoulder_width_heads": 1.66,
+  "chest_width_heads": 1.18,
+  "chest_depth_heads": 0.9,
+  "waist_width_heads": 1.08,
+  "hip_width_heads": 1.32,
+  "crotch_height_heads": 3.5,
+  "arm_span_ratio": 1.0,
+  "hand_length_heads": 0.82,
+  "foot_length_ratio": 0.15,
+  "neck_length_heads": 0.42,
+  "neck_width_ratio": 0.5,
+  "head_width_ratio": 0.65,
+  "femininity": 0.0,
+  "muscle": 0.35,
+  "mass": 0.08,
+  "breast": 0.0,
+  "eye_scale": 1.02,
+  "ipd_m": 0.063,
+  "arm_abduction_deg": 47.0,
+  "skin_hex": "#9A6A4E",
+  "eye_tilt_deg": -0.5,
+  "jaw_width": 0.98,
+  "cheekbone_height": 0.003,
+  "cheekbone_width": 1.06,
+  "chin_size": 1.06,
+  "nose_bridge_width": 1.04,
+  "nose_tip_projection": 1.12,
+  "lip_fullness": 0.64,
+  "lip_close": 0.6,
+  "lip_seal": 0.96,
+  "lip_lower_fullness": 0.64,
+  "mouth_corner_lift": 0.0004,
+  "brow_ridge": 1.1,
+  "donor_mix_african": 0.3,
+  "donor_mix_asian": 0.4,
+  "donor_mix_caucasian": 0.3,
+  "_skin": {
+    "brow_strands": {"count": 70, "dark_share": 0.3, "dark_hex": "#4A4640", "light_hex": "#BDB6AA", "opacity": 0.9},
+    "hex": "#9A6A4E",
+    "age": 1.0,
+    "freckles": 0,
+    "reach_bands": {
+      "L": 4,
+      "R": 3
+    },
+    "ink_opacity": 0.42,
+    "stubble": 0.7,
+    "stubble_grey": 0.9,
+    "fingertip_oil": 0.4,
+    "scalp_density": 0.5,
+    "seed": 136,
+    "lip": "#7A4A40",
+    "stubble_shadow": 0.2
+  },
+  "_hair": {
+    "brow_params": {"alpha_boost": "1.0", "strand_value_jitter": "0.4"},
+    "kind": "cropped",
+    "hairline": "male",
+    "seed": 56,
+    "length_m": [
+      0.006,
+      0.01
+    ],
+    "recede": 0.045,
+    "scalp_cards": [
+      380,
+      290,
+      180
+    ],
+    "hairline_cards": 0,
+    "colour": "#BDB6AA",
+    "grey": "#E2DED6",
+    "grey_share": 0.6,
+    "underpaint": "#B39A86",
+    "brow": "#8E877C",
+    "spec": "#CFC8BC",
+    "grey_strands": "all",
+    "grey_width_k": 1.3
+  },
+  "_eyes": {
+    "iris": "#3A2A1A"
+  },
+  "_costume": {
+    "top": {
+      "mat": "cloth_c",
+      "hem": "hip",
+      "sleeve": 0.7,
+      "cuff_roll_m": 0.006,
+      "neck_v_m": 0.05
+    },
+    "trousers": {
+      "mat": "cloth_b",
+      "hem": "shin",
+      "loose_m": 0.016
+    },
+    "apron": {
+      "mat": "cloth_d",
+      "hem": "knee",
+      "half_deg": 58,
+      "seed": 171,
+      "over_trousers": true,
+      "flare": 0.1,
+      "extra_m": 0.018
+    },
+    "sash": {
+      "mat": "cloth_a",
+      "width_m": 0.04,
+      "turns": 1,
+      "tails_m": 0.14
+    },
+    "sandals": "leather"
+  },
+  "_tints": {
+    "cloth_a": "#5E8A80",
+    "cloth_b": "#5A616A",
+    "cloth_c": "#3E4650",
+    "leather": "#FFFFFF",
+    "cloth_d": "#3A2A20"
+  },
+  "_cloth_params": {
+    "cloth_d": {
+      "roughness_scale": "0.75",
+      "sheen_intensity": "0.2"
+    }
+  },
+  "_build": {
+    "shapes": "all",
+    "host_snaps": true,
+    "garment_fit": true
+  },
+  "_persona": {
+    "sway": 0.4,
+    "lean": 7.0,
+    "arms_down": 39.0
+  }
+}
