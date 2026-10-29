@@ -49,7 +49,8 @@
     "ashwing": {"scene": "res://game/creatures/ashwing/ashwing_battle.tscn", "vfx_anchors": {"core": "thorax", "wound": "fore_l"}, "stand_in": {"hover": 1.38}, "contact": {"attack": 0.6}, "hit_snap": {"preroll_sec": 0.1}},
     "scuttler": {"scene": "res://game/creatures/scuttler/scuttler_battle.tscn", "vfx_anchors": {"core": "back", "wound": "front"}, "contact": {"attack": 0.45}, "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}},
     "spar_wraith": {
-      "scene": "res://game/creatures/spar_wraith/spar_wraith_battle.tscn", "contact": {"attack": 0.8, "attack_deck": 0.8},
+      "scene": "res://game/creatures/spar_wraith/spar_wraith_battle.tscn", "stand_in": {"yaw_deg": 45.0},
+      "contact": {"attack": 0.8, "attack_deck": 0.8},
       "loop": ["idle", "ready", "idle_deck"],
       "phases": {
         "hauled_down": {"clip": "phase_drop", "idle": "idle_deck", "hide": ["Shroud"], "show_after": ["Sheath"], "sec": 0,
