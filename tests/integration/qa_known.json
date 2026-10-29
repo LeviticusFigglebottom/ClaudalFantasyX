@@ -20,142 +20,8 @@
   ],
   "capsules_doc": "test_qa_capsules.gd: zone file name -> the actors (StandIn's parent) still shown as capsules, and 'battle' -> party members with no battle actor scene. All handed to their owners: M3-HER-1125 (characters: the Act I cast's models), M3-HER-1120 (ui-menus: Liss's battle row; her actor is ready). Remove a name when its model lands; the guard then fails if the capsule comes back. Each zone is checked as it loads and again under every layout variant's flags (Ch9's dawn road: Kerrid at the milestone, act1-chapters' staging of characters' M3-CHR-505 model). 'battle_foes' -> every encounter enemy, spawn, summon and Vowbound with no actor scene, with its owner and task.",
   "capsules": {
-    "ashcrown.tscn": [
-      "kerrid",
-      "matron",
-      "tender"
-    ],
-    "brightwater_ferry.tscn": [
-      "ferrymaster",
-      "passenger_child",
-      "passenger_reed",
-      "purser",
-      "spar_wraith",
-      "trader_a",
-      "trader_b"
-    ],
-    "brine_shoals.tscn": [
-      "brand_girl",
-      "clerk",
-      "hound",
-      "inquisitor",
-      "kerrid",
-      "stillguard_a",
-      "stillguard_b",
-      "stillguard_c",
-      "wright_child_a",
-      "wright_child_b",
-      "wrights"
-    ],
-    "coilspire.tscn": [
-      "fenn",
-      "liss",
-      "tender"
-    ],
     "corrow.tscn": [
-      "boy",
-      "child_a",
-      "child_b",
-      "child_c",
-      "figure",
-      "fisher_a",
-      "gatekeeper",
-      "hobb",
-      "ivo",
-      "kerrid",
-      "liss",
-      "marra",
-      "netmender",
-      "officer",
-      "pell",
-      "stillguard_a",
-      "stillguard_b",
-      "townsfolk_a",
-      "townsfolk_b",
-      "watch_a",
-      "watch_b"
-    ],
-    "corrow_night.tscn": [
-      "child",
-      "fenn",
-      "hobb",
-      "kerrid",
-      "kerrid_stair",
-      "liss",
-      "marra",
-      "mourner_1",
-      "mourner_2",
-      "mourner_3",
-      "mourner_4",
-      "pell",
-      "stillguard",
-      "tender",
-      "vigil_asha",
-      "vigil_kerrid",
-      "vigil_liss",
-      "vigil_pell",
-      "vigil_rhen",
-      "vigil_toma",
-      "vigil_ysolde"
-    ],
-    "haluna_wake.tscn": [
-      "child",
-      "fisher",
-      "neme",
-      "netmender",
-      "osu",
-      "reed",
-      "vendor",
-      "ysolde_edge"
-    ],
-    "oruvel.tscn": [
-      "cook",
-      "kell",
-      "netmender",
-      "netmender_2",
-      "pen_child",
-      "roof_child",
-      "sabe",
-      "scaleman",
-      "skipper_sadi"
-    ],
-    "pemakar.tscn": [
-      "boat_fisher",
-      "boat_seller",
-      "elder",
-      "ferryman",
-      "ferryman_mate",
-      "folder",
-      "folder_2",
-      "forge_child",
-      "garo",
-      "grave_child",
-      "lacquerer",
-      "sweeper",
-      "weir_child"
-    ],
-    "tamsule.tscn": [
-      "board",
-      "boatman",
-      "child",
-      "fisher",
-      "kerrid",
-      "liss",
-      "netmender",
-      "tavi",
-      "trader_boatman",
-      "vendor"
-    ],
-    "tamsule_bell_galleries.tscn": [
-      "ione",
-      "kerrid",
-      "liss",
-      "oruvel_diver_1",
-      "oruvel_diver_2",
-      "poolkeeper",
-      "sorrin_diver_1",
-      "sorrin_diver_2",
-      "tavi"
+      "figure"
     ],
     "battle": [],
     "battle_foes": {
@@ -173,10 +39,7 @@
       "scree_crawler": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
       "glass_skate": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
       "rim_crawler": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts"
-    },
-    "ossa_fen.tscn": [
-      "pell"
-    ]
+    }
   },
   "unraised_doc": "test_qa_threads.gd: a flag a thread's chapter or main objectives wait on that its thread never raises -> why it isn't a softlock, and the task that closes the gap.",
   "unraised": {}
