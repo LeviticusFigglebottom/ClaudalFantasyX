@@ -11,7 +11,7 @@ flags = PackedStringArray("ch08_arrived_corrow", "ch08_beacon_opened", "ch08_wav
 [node name="Cameras" type="Node3D" parent="."]
 
 [node name="W22" type="Camera3D" parent="Cameras"]
-transform = Transform3D(-0.931017, 0.122666, -0.343743, 0, 0.941828, 0.336094, 0.364975, 0.31291, -0.876859, -23.45, 13.7, 2.523)
+transform = Transform3D(-0.98088, 0.082393, -0.176314, 0, 0.90596, 0.423363, 0.194616, 0.415268, -0.888638, -17, 14.6, 5.5)
 fov = 30.0
 
 [node name="Near" type="Camera3D" parent="Cameras"]
