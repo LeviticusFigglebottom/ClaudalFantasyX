@@ -21,7 +21,7 @@ the slice's most-read UI (Pillar 4), so the initials are the most visible placeh
       the intent glyph and the boss colour, and an identity mark (shape, not hue alone).
 - [x] Party rows show the hero portrait. Petrify's stone strata still apply over it.
 - [x] The fallback to the initial stays for any id with no portrait.
-- [x] The battle shots re-approved after viewing.
+- [ ] The battle shots re-approved after viewing (self-rendered and viewed; the Lead approves baselines at the gate).
 
 ## Notes
 - 2026-10-29 ui-menus: done on claude/ui (faces in the timeline and party rows 71689a7b; the foe picture fills its diamond and a petrified face greys under the strata, f6db67f0f). Self-rendered and viewed: battle_statuses, battle_boss_intro_drownbell, battle_hud_preview (live log 2026-10-28 06:00). Baselines are the Lead's gate. For cinematics to review.
