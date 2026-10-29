@@ -1,5 +1,14 @@
 # CONSOLIDATED HANDOFF: the new Lead starts here
 
+## TAKEOVER 2026-10-29 (Lead `session_01Bg3iP7cPGyjbX4CyniBahc`). This overrides §0–§4 where they differ
+- **Integration branch: `claude/new-session-mj8c3c`**, fast-forwarded to `claude/undertow-lead-handoff-ze8rrn` @ 4d64a73e. That is the only branch this Lead can push, so -ze8rrn is retired. Tracks merge `origin/claude/new-session-mj8c3c`.
+- **The PC is OFFLINE for an extended period** (the human). Nothing waits on it:
+  - **Tracks self-render** their own changed shots (TRACK-RULES "FROM 2026-10-29").
+  - **Batch gates** run in a dedicated cloud **gate session**, which builds `lead/gate-bigN`, runs the full `tools/ci_local.sh` and publishes `lead/gate-bigN-shots`. The Lead views every shot, approves and merges.
+  - **GPU-only work waits** under `### PC-QUEUE` lines in each track's log and in pc-gpu.md: real-GPU QA rows, perf, benchmarks, and the PC's unfinished M2-RND-01, RND-22, M2-RND-02/03/04. When the PC returns, the Lead sends it the PC brief plus that queue.
+- **big16 was never gated:** `lead/gate-big16-shots` doesn't exist. **The next batch is big17** = `lead/gate-big16` @ ff82858c, plus the current heads of env-art, characters (Pell), creatures, battle-presentation, ui, hero-integration and m2-slice. Already in big16: env-art-b, creatures-b, act1-chapters, audio.
+- **Sessions created on 10-29:** the 8 "start small" tracks from SESSION-BRIEFS.md, plus the gate session. Ids are in lead-cloud.md.
+
 **Handover:** 2026-10-28 ~18:30 UTC, from Lead `session_018aiGwGLGkxsnMnu8VfCu1m` (old account, out of usage). It is written for a **new Lead on a new account with no context**. At handover only two sessions exist: you (the new Lead) and one remote session (the human's PC, via Remote Control). You recreate every other environment yourself, as §4 says.
 
 The previous version is `CONSOLIDATED-history-2026-10-28.md`. It has the deep history, the toolchain gotchas (its §7) and the old roster.

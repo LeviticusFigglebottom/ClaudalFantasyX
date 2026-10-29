@@ -9,7 +9,7 @@ The Lead creates each cloud track with `mcp__claude-code-remote__create_session`
 
 The PC is a Remote Control session the human starts on their machine. The Lead finds it with `list_sessions` (environment_kind `bridge`) and sends it the PC brief with `send_message`.
 
-Change `<LEAD_SESSION_ID>` to the new Lead's session id (from `get_session` with no id).
+Change `<LEAD_SESSION_ID>` to the Lead's session id (from 2026-10-29: `session_01Bg3iP7cPGyjbX4CyniBahc`). The integration branch is `claude/new-session-mj8c3c`.
 
 ---
 
