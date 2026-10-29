@@ -4,7 +4,7 @@ The old **ui** and **menus** tracks merged into one (Lead, 2026-10-25). `claude/
 
 **Owns:** the HUD, objectives and map, prompts, title, tips, the dialogue box, settings, input parity, pseudo-loc, resolutions, and the field menu (Lattice, Equip, Items, Status, Formation, portraits, bestiary, codex, save).
 **Id block:** tasks 200–399 (ui 200s, menus 300s), ADRs 0110–0129 (0120 is taken), handoffs `<date>-ui-ui-menus-<n>.md`.
-**Integration branch:** `claude/undertow-lead-handoff-ze8rrn`.
+**Integration branch:** `claude/new-session-mj8c3c` (from 2026-10-29; Lead `session_01Bg3iP7cPGyjbX4CyniBahc`).
 
 ## NEW ACCOUNT (from 2026-10-25)
 
