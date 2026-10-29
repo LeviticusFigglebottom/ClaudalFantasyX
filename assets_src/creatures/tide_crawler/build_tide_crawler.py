@@ -101,10 +101,11 @@ def body(mesh: ck.Mesh, rig: ck.Rig) -> None:
     branchial = np.exp(-((np.abs(ux) - 0.55 - 0.25 * uz) / 0.06) ** 2) * ck.smoothstep(0.5, -0.1, uz)
     groove = np.clip(np.maximum(np.maximum(median, sulci), branchial) * top, 0.0, 1.0)
     grain = ck.fbm(U * 9.0, SEED + 3)
-    P = P + nrm * (-0.012 * groove + 0.004 * grain * top)[:, None]
+    ridge = np.exp(-(ux / 0.12) ** 2) * ck.smoothstep(-0.6, 0.2, uz) * top  # a raised spine down the back
+    P = P + nrm * (-0.014 * groove + 0.008 * grain * top + 0.018 * ridge * (1.0 - median))[:, None]
     n = ck.fbm(U * 4.0, SEED)
-    split = ck.smoothstep(0.35, 0.65, ck.fbm(U * 2.5, SEED + 5))  # where the plates have split open
-    wound = ck.smoothstep(0.5, 0.9, groove) * split
+    split = ck.smoothstep(0.2, 0.45, ck.fbm(U * 2.5, SEED + 5))  # where the plates have split open
+    wound = ck.smoothstep(0.35, 0.8, groove) * split
     belly = ck.smoothstep(0.0, -0.4, U[:, 1])
     lip = np.exp(-(U[:, 1] / 0.1) ** 2)
     col = ck.mix(PAL["lacquer_black"], PAL["abyss_navy"], ck.smoothstep(-0.2, 0.5, n)[:, None])
@@ -135,8 +136,8 @@ def body(mesh: ck.Mesh, rig: ck.Rig) -> None:
 
 
 # Leg sections (radius per ring, hip to knee and knee to tip): knobs at the coxa, the knee and the ankle.
-LEG_A_R = np.array([0.036, 0.04, 0.031, 0.028, 0.027, 0.028, 0.033, 0.03])
-LEG_B_R = np.array([0.03, 0.025, 0.021, 0.02, 0.022, 0.016, 0.009, 0.003])
+LEG_A_R = np.array([0.04, 0.05, 0.032, 0.028, 0.027, 0.03, 0.044, 0.035])
+LEG_B_R = np.array([0.036, 0.025, 0.021, 0.02, 0.027, 0.016, 0.009, 0.003])
 LEG_SEGS = 6
 LEG_SQUASH = 0.8  # a crab leg's section is flattened
 FEMUR_SPINES = (0.45, 0.72)  # where on the femur its two spines stand
@@ -159,7 +160,7 @@ def legs(mesh: ck.Mesh, rig: ck.Rig) -> None:
     dactyl down to a needle tip), the joints a paler wet membrane, two spines on each femur; the two striking forelegs
     end in flattened, serrated scythe blades."""
     base = ck.mix(PAL["lacquer_black"], PAL["storm_slate"], 0.2)
-    membrane = ck.mix(PAL["storm_slate"], PAL["spawn_wound"], 0.12)
+    membrane = ck.mix(PAL["storm_slate"] * 1.4, PAL["spawn_wound"], 0.3)
     for s, tag in ((1.0, "l"), (-1.0, "r")):
         for i in range(NLEG):
             hip, knee, tip = leg_pts(s, i)
@@ -172,8 +173,15 @@ def legs(mesh: ck.Mesh, rig: ck.Rig) -> None:
                 joint = np.maximum(np.exp(-((t - joints[0]) / 0.07) ** 2), np.exp(-((t - joints[1]) / 0.07) ** 2))
                 col = ck.mix(base, membrane, (0.75 * joint)[:, None])
                 col = ck.mix(col, PAL["lacquer_black"] * 0.6, ck.smoothstep(0.75, 1.0, t)[:, None] * (seg == "b"))
+                # a wound seam split along the femur's top, glowing like the carapace's
+                side = np.concatenate([np.tile(np.cos(np.arange(LEG_SEGS) * 2.0 * math.pi / LEG_SEGS), len(radii)),
+                                       [0.0, 0.0]])
+                seam = (seg == "a") * ck.smoothstep(0.75, 1.0, side) * ck.smoothstep(0.2, 0.35, t) * ck.smoothstep(
+                    0.85, 0.7, t)
+                col = ck.mix(col, PAL["spawn_wound"] * 0.55, seam[:, None])
                 bone = rig.rigid(f"leg_{tag}{i}_{seg}")
-                ck.finish(mesh, P, T, "carapace", col, bone, wet=1.0 - 0.2 * joint, cavity=0.35 * joint)
+                ck.finish(mesh, P, T, "carapace", col, bone, wet=1.0 - 0.2 * joint, cavity=0.35 * joint,
+                          emission=np.maximum(seam, 0.3 * joint))
                 if seg == "a":
                     for u in FEMUR_SPINES:
                         k = int(round(u * (len(path) - 1)))
