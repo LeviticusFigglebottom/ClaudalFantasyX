@@ -46,6 +46,7 @@ KIT_SRC = ROOT / "assets_src" / "environments" / "kits" / "ashcrown"
 sys.path.insert(0, str(KIT_SRC))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import ac_approach  # noqa: E402
+import ch05_09_zone_looks as zl  # noqa: E402
 import ac_common as ac  # noqa: E402
 
 ZONE = ROOT / "game" / "levels" / "ch05" / "ashcrown"
@@ -452,9 +453,6 @@ def preview_pieces() -> tuple[list[dict], list[dict]]:
 # The kit's copper, gold and lacquer slots are flat StandardMaterials: at player height the trial's bowls, rods and
 # veins read as mint plastic and its posts as red plastic (GPU QA row 26, the 10-29 walk). The zone swaps those slots
 # (ZoneKitDressing `material_paths`) for env_bronze looks with patina, streaks and edge wear, written here.
-BRONZE_SHADER = "res://game/shaders/environment/env_bronze.gdshader"
-BRONZE_TEX = {"tex_detail": "res://assets/environments/kits/haluna/textures/weathering_detail.png",
-              "tex_normal": "res://assets/environments/kits/haluna/textures/coral_concrete_normal.png"}
 # slot -> (zone material file, env_bronze parameters). Colours are the kit's own (ac_materials.py) unless noted.
 ZONE_METALS = {
     # the veins: old copper gone to verdigris (the kit's #5F8A78) over a dark copper body showing at the edges
@@ -516,34 +514,6 @@ ZONE_GRADE_OVERRIDES = {"ambient_light_energy": str(ZONE_AMBIENT_ENERGY)}
 # everything else and take the occlusion lighter.
 ZONE_STONES = {"ac_ashlar": ("ashcrown_ashlar_material.tres", {"ao_strength": "0.3"}),
                "ac_dressed": ("ashcrown_dressed_material.tres", {"ao_strength": "0.35"})}
-
-
-def zone_stone(slot: str, name: str, overrides: dict) -> str:
-    src = (ROOT / KIT.removeprefix("res://") / "materials" / (slot + ".tres")).read_text(encoding="utf-8")
-    for key, value in overrides.items():
-        src, n = re.subn(r"(?m)^shader_parameter/%s = .*$" % key, "shader_parameter/%s = %s" % (key, value), src)
-        assert n == 1, key
-    return src.replace('resource_name = "%s"' % slot, 'resource_name = "%s"' % name.removesuffix(".tres"))
-
-
-def _tres_value(v) -> str:
-    if isinstance(v, tuple) and len(v) == 3:
-        return "Color(%.4f, %.4f, %.4f, 1)" % v
-    if isinstance(v, tuple):
-        return "Vector2(%g, %g)" % v
-    return "%g" % v
-
-
-def zone_metal(name: str, params: dict) -> str:
-    lines = ['[gd_resource type="ShaderMaterial" load_steps=4 format=3]', "",
-             '[ext_resource type="Shader" path="%s" id="1_shader"]' % BRONZE_SHADER,
-             '[ext_resource type="Texture2D" path="%s" id="2_tex"]' % BRONZE_TEX["tex_normal"],
-             '[ext_resource type="Texture2D" path="%s" id="3_tex"]' % BRONZE_TEX["tex_detail"], "",
-             "[resource]", 'resource_name = "%s"' % name.removesuffix(".tres"), 'shader = ExtResource("1_shader")']
-    for k in sorted(params):
-        lines.append("shader_parameter/%s = %s" % (k, _tres_value(params[k])))
-    lines += ['shader_parameter/tex_detail = ExtResource("3_tex")', 'shader_parameter/tex_normal = ExtResource("2_tex")']
-    return "\n".join(lines) + "\n"
 
 
 def zone_grade() -> str:
@@ -720,9 +690,9 @@ def main() -> None:
     (ZONE / "ashcrown_collision.json").write_text(json.dumps(collision(), indent=1) + "\n", encoding="utf-8")
     (ZONE / "ashcrown_dressing.json").write_text(json.dumps(dressing(), indent=1) + "\n", encoding="utf-8")
     for name, params in ZONE_METALS.values():
-        (ZONE / name).write_text(zone_metal(name, params), encoding="utf-8")
+        (ZONE / name).write_text(zl.bronze_material(name, params), encoding="utf-8")
     for slot, (name, overrides) in ZONE_STONES.items():
-        (ZONE / name).write_text(zone_stone(slot, name, overrides), encoding="utf-8")
+        (ZONE / name).write_text(zl.copy_material(KIT + "materials/" + slot + ".tres", name, overrides), encoding="utf-8")
     (ZONE / ZONE_GRADE_NAME).write_text(zone_grade(), encoding="utf-8")
     # Ch05Zone.apply_variant writes the layout's `environment` row over the grade, so the fill goes there too
     # (a one-key text edit: the layout is hand-formatted and act1-chapters edits it too)

@@ -25,3 +25,8 @@ These are env-art's kit meshes, so env-art-b can't fix them from the zones:
     materials).
   - Row 5: the Brine Shoals mudflat reads flat at High, and `camp_tent` reads as a box.
   Same ask as above: these are kit materials and meshes, which env-art-b can't fix from the zones.
+- **2026-10-29 (env-art-b): fixed from the zones** (M3-ENV-1325, M3-ENV-1326): Ashcrown's black tier faces (fill and
+  baked occlusion) and its flat copper, gold and lacquer; the trader's box bales (a new `trader_cargo` piece in
+  `b_cargo.py`); Corrow's and Coilspire's flat lacquer, copper, iron and canvas; the Brine Shoals Level-stone. Still
+  env-art's: the kits' own flat StandardMaterial slots (`ac_*`, `cw_*`, `cs_*`, `bs_level_stone`) for the previews and
+  other users; the headland's far facets; Tamsule's `market_boat_a` umbrella (a flat 16-gon disc, no ribs).

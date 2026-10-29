@@ -1,0 +1,25 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/environment/env_bronze.gdshader" id="1_shader"]
+[ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/coral_concrete_normal.png" id="2_tex"]
+[ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/weathering_detail.png" id="3_tex"]
+
+[resource]
+resource_name = "corrow_copper_material"
+shader = ExtResource("1_shader")
+shader_parameter/col_bronze = Color(0.3529, 0.2039, 0.1412, 1)
+shader_parameter/col_patina = Color(0.2706, 0.3804, 0.3373, 1)
+shader_parameter/col_patina_pale = Color(0.4314, 0.5137, 0.4706, 1)
+shader_parameter/col_worn = Color(0.6510, 0.3529, 0.1647, 1)
+shader_parameter/detail_scale_m = 0.6
+shader_parameter/metallic_bronze = 0.8
+shader_parameter/normal_strength = 0.5
+shader_parameter/normal_tile_m = 2
+shader_parameter/patina_coverage = Vector2(0, 0.55)
+shader_parameter/patina_roughness = 0.88
+shader_parameter/roughness_bronze = 0.5
+shader_parameter/roughness_worn = 0.3
+shader_parameter/streak_strength = 0.6
+shader_parameter/wear_strength = 0.7
+shader_parameter/tex_detail = ExtResource("3_tex")
+shader_parameter/tex_normal = ExtResource("2_tex")

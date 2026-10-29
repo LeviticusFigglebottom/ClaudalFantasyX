@@ -182,34 +182,22 @@ def plume_day(text: str) -> str:
 
 
 # The zone's slot swaps (M3-ENV-1325: weathered copper, gold and lacquer, the stone's lighter baked occlusion), applied
-# to the written scene by a KitSlotSwaps node at its end (after every kit piece is ready).
-SWAPS_SCRIPT = "res://game/levels/act1/kit_slot_swaps.gd"
-
-
-def _zone_slot_paths() -> dict:
-    spec = importlib.util.spec_from_file_location("ch05_ashcrown_dressing", ROOT / "tools" / "act1" / "ch05_ashcrown_dressing.py")
+# to the written scene by a KitSlotSwaps node (tools/act1/ch05_09_zone_looks.py).
+def _zone_looks():
+    spec = importlib.util.spec_from_file_location("ch05_09_zone_looks", ROOT / "tools" / "act1" / "ch05_09_zone_looks.py")
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
-    return mod.metal_paths()
-
-
-def slot_swaps(text: str, paths: dict) -> str:
-    head = re.match(r"\[gd_scene load_steps=(\d+) format=3\]", text)
-    text = text.replace(head.group(0), f"[gd_scene load_steps={int(head.group(1)) + 1} format=3]", 1)
-    last = list(re.finditer(r"^\[ext_resource [^\n]*\]$", text, flags=re.M))[-1]
-    text = text[:last.end()] + f'\n[ext_resource type="Script" path="{SWAPS_SCRIPT}" id="slot_swaps"]' + text[last.end():]
-    body = ", ".join(f'"{k}": "{v}"' for k, v in sorted(paths.items()))
-    return text.rstrip("\n") + ('\n\n[node name="KitSlotSwaps" type="Node" parent="."]\n'
-                                 'script = ExtResource("slot_swaps")\npaths = {%s}\n' % body)
+    return mod
 
 
 def main(out_dir: Path | None = None) -> int:
     if out_dir is not None:  # tools/tests/test_b_arenas.py writes to a scratch dir
         AS.OUT_DIR = out_dir
-    paths = _zone_slot_paths()
+    zl = _zone_looks()
+    paths = zl.load_generator("ch05_ashcrown_dressing").metal_paths()
     for aid, fn in ARENAS.items():
         path = AS.write_arena(fn())
-        path.write_text(slot_swaps(plume_day(path.read_text(encoding="utf-8")), paths), encoding="utf-8")
+        path.write_text(zl.add_kit_slot_swaps(plume_day(path.read_text(encoding="utf-8")), paths), encoding="utf-8")
         print(f"ARENA {path.name}")
     return 0
 

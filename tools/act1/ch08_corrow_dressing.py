@@ -25,6 +25,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import ch05_09_zone_looks as zl  # noqa: E402
 import corrow_frame as cf  # noqa: E402
 
 cwl = cf.cwl
@@ -356,11 +357,51 @@ def story_pieces() -> list[dict]:
     return out
 
 
+# The trader's furled sail and its deck cargo take the kit's `cw_sail`, a flat StandardMaterial: at player distance
+# the bales read as plain white cubes (M3-ENV-1316). The zone's canvas (M3-ENV-1326) is the Ferry kit's tan sailcloth
+# (woven, sun-faded, salted at the seams) projected triplanar, since the kit's bales carry no cloth UVs. Ch7's port
+# moors the same boat and takes the same slot swap (ch07_tamsule_port_dressing.py).
+CANVAS_NAME = "corrow_canvas_material.tres"
+CANVAS_SRC = cf.ROOT / "assets" / "environments" / "kits" / "brightwater_ferry" / "materials" / "bf_canvas_tan.tres"
+CANVAS_OVERRIDES = {"base_triplanar": "true", "tile_m": "Vector2(0.12, 0.12)", "salt_coverage": "Vector2(0.05, 0.4)",
+                    "variation_value": "0.2", "normal_strength": "0.7"}
+TRADER_SLOTS = {"cw_sail": RES_ZONE + CANVAS_NAME}
+# The kit's other flat StandardMaterial slots (M3-ENV-1326): the Bastion's and the watch's lacquered doors and posts
+# read as flat red planes, the copper and iron as plastic. Swapped on every Corrow piece (`kit_material_paths`), Ch9
+# too (its dressing starts from this one).
+KIT_LOOKS = {
+    "cw_lacquer_red": ("corrow_lacquer_red_material.tres", dict(zl.LACQUER, col_bronze=(0.6, 0.1294, 0.1020),
+                                                                patina_coverage=(0.05, 0.45))),
+    "cw_watch_red": ("corrow_watch_red_material.tres", dict(zl.LACQUER, col_bronze=(0.5608, 0.1647, 0.1412),
+                                                            roughness_bronze=0.6, patina_coverage=(0.1, 0.6),
+                                                            wear_strength=0.7)),
+    "cw_lacquer_dark": ("corrow_lacquer_dark_material.tres", dict(zl.LACQUER, col_bronze=(0.1294, 0.0980, 0.0824),
+                                                                  col_worn=(0.3216, 0.1176, 0.0863))),
+    "cw_copper": ("corrow_copper_material.tres", dict(zl.VERDIGRIS)),
+    "cw_iron": ("corrow_iron_material.tres", dict(zl.SEA_IRON)),
+}
+
+
+def kit_material_paths() -> dict:
+    paths = {slot: RES_ZONE + name for slot, (name, _) in KIT_LOOKS.items()}
+    paths["cw_sail"] = RES_ZONE + CANVAS_NAME
+    return paths
+
+
+def canvas_material() -> str:
+    text = CANVAS_SRC.read_text(encoding="utf-8")
+    for key, value in CANVAS_OVERRIDES.items():
+        text, n = re.subn(rf"(?m)^shader_parameter/{key} = .*$", f"shader_parameter/{key} = {value}", text)
+        assert n == 1, key
+    return text.replace('resource_name = "bf_canvas_tan"', 'resource_name = "corrow_canvas"')
+
+
 def trader() -> list[dict]:
     """The trader the party comes in on (B01), on the Trader block, bow to -Z (M3-ENV-707's trader_boat)."""
     b = next(r for r in json.loads(LAYOUT.read_text(encoding="utf-8"))["blocks"] if r["id"] == "Trader")
-    return [{"piece": "trader_boat", "at": [b["pos"][0], b["pos"][2]], "y": cf.r3(cf.SEA_Y - TRADER_DRAFT_M),
-             "yaw_deg": b["yaw"], "block": "Trader"}]
+    boat = {"piece": "trader_boat", "at": [b["pos"][0], b["pos"][2]], "y": cf.r3(cf.SEA_Y - TRADER_DRAFT_M),
+            "yaw_deg": b["yaw"], "block": "Trader", "material_paths": dict(TRADER_SLOTS)}
+    return [boat, dict(boat, piece="trader_cargo")]  # its deck cargo as lashed bales (b_cargo.py, M3-ENV-1326)
 
 
 def mole_pieces() -> list[dict]:
@@ -449,6 +490,7 @@ def dressing() -> dict:
         "storms": [dict(STORM, block="Storm")],
         "fire_light_color": preview.get("fire_light_color", "#E0702E"),
         "fire_lights": [{"at": f[:3], "energy": f[3], "range": f[4]} for f in preview.get("fire_lights", [])],
+        "kit_material_paths": kit_material_paths(),
         "pieces": pieces,
     }
 
@@ -483,6 +525,9 @@ def main() -> None:
     (ZONE / "corrow_collision.json").write_text(json.dumps(collision(), indent=1) + "\n", encoding="utf-8")
     (ZONE / "corrow_dressing.json").write_text(json.dumps(dressing(), indent=1) + "\n", encoding="utf-8")
     copy_grades()
+    (ZONE / CANVAS_NAME).write_text(canvas_material(), encoding="utf-8")
+    for name, params in KIT_LOOKS.values():
+        (ZONE / name).write_text(zl.bronze_material(name, params), encoding="utf-8")
 
 
 if __name__ == "__main__":

@@ -39,6 +39,11 @@ RES_GALLERIES = "res://game/levels/ch07/tamsule_bell_galleries/"
 KIT = pp.KIT
 CW = pp.CW
 OTHER_KIT = {"trader_boat": CW}
+# Corrow's canvas on the trader's sail and bales (M3-ENV-1326; written by ch08_corrow_dressing.py)
+OTHER_SLOTS = {"trader_boat": {"cw_sail": "res://game/levels/ch08/corrow/corrow_canvas_material.tres"},
+               "trader_cargo": {"cw_sail": "res://game/levels/ch08/corrow/corrow_canvas_material.tres"}}
+# The trader's deck cargo as lashed bales over the boat's box bales (M3-ENV-1326, Corrow's b_cargo.py)
+RIDERS = {"trader_boat": "trader_cargo"}
 # Story pieces that follow a greybox block (hide_block / show_block / states drive them).
 BLOCKS = {"Trader": "Trader", "StallA": "MarketStallA", "StallB": "MarketStallB"}
 WATER_Y = pp.WATER_Y
@@ -65,9 +70,13 @@ def rows() -> list[dict]:
         if piece in OTHER_KIT:
             row["kit_dir"] = OTHER_KIT[piece]
             row["materials_dir"] = OTHER_KIT[piece] + "materials/"
+        if piece in OTHER_SLOTS:
+            row["material_paths"] = dict(OTHER_SLOTS[piece])
         if name in BLOCKS:
             row["block"] = BLOCKS[name]
         out.append(row)
+        if piece in RIDERS:  # a piece riding on this one at its transform (the trader's lashed bales)
+            out.append(dict(row, name=name + "_" + RIDERS[piece], piece=RIDERS[piece]))
     return out
 
 

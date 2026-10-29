@@ -597,6 +597,25 @@
    "yaw_deg": 0.0,
    "kit_dir": "res://assets/environments/kits/corrow/",
    "materials_dir": "res://assets/environments/kits/corrow/materials/",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch08/corrow/corrow_canvas_material.tres"
+   },
+   "block": "Trader"
+  },
+  {
+   "name": "Trader_trader_cargo",
+   "piece": "trader_cargo",
+   "at": [
+    30.6,
+    10.0
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "kit_dir": "res://assets/environments/kits/corrow/",
+   "materials_dir": "res://assets/environments/kits/corrow/materials/",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch08/corrow/corrow_canvas_material.tres"
+   },
    "block": "Trader"
   },
   {

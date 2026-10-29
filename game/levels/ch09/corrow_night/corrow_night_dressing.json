@@ -397,6 +397,14 @@
    "block": "LampD"
   }
  ],
+ "kit_material_paths": {
+  "cw_lacquer_red": "res://game/levels/ch08/corrow/corrow_lacquer_red_material.tres",
+  "cw_watch_red": "res://game/levels/ch08/corrow/corrow_watch_red_material.tres",
+  "cw_lacquer_dark": "res://game/levels/ch08/corrow/corrow_lacquer_dark_material.tres",
+  "cw_copper": "res://game/levels/ch08/corrow/corrow_copper_material.tres",
+  "cw_iron": "res://game/levels/ch08/corrow/corrow_iron_material.tres",
+  "cw_sail": "res://game/levels/ch08/corrow/corrow_canvas_material.tres"
+ },
  "pieces": [
   {
    "piece": "corrow_far",

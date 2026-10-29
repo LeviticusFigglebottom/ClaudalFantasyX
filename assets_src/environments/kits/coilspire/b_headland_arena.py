@@ -72,13 +72,25 @@ def scrub(AS, table: dict) -> list[dict]:
     return out
 
 
+def _zone_looks():
+    """tools/act1/ch05_09_zone_looks.py: the zones' slot looks, which the arena wears too (KitSlotSwaps)."""
+    spec = importlib.util.spec_from_file_location("ch05_09_zone_looks", ROOT / "tools" / "act1" / "ch05_09_zone_looks.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
 def main(out_dir: Path | None = None) -> int:
     AS = _arena_scenes()
     if out_dir is not None:  # tools/tests/test_b_arenas.py writes to a scratch dir
         AS.OUT_DIR = out_dir
+    zl = _zone_looks()
+    mod = zl.load_generator("ch08_coilspire_dressing")
+    paths = {slot: mod.RES_ZONE + name for slot, (name, _) in mod.KIT_LOOKS.items()}  # the zone's slot looks (M3-ENV-1326)
     table = AS.HEADLAND
     extra = scrub(AS, table)
     path = AS.write_arena({**table, "pieces": list(table["pieces"]) + extra})
+    path.write_text(zl.add_kit_slot_swaps(path.read_text(encoding="utf-8"), paths), encoding="utf-8")
     print(f"ARENA {path.name} (+{len(extra)} scrub clumps)")
     return 0
 

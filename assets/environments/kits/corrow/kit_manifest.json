@@ -409,6 +409,17 @@
         "trader_boat-lod1": 147
       }
     },
+    "trader_cargo": {
+      "budget": [
+        9000,
+        600
+      ],
+      "bytes": 155660,
+      "lods": {
+        "trader_cargo": 3840,
+        "trader_cargo-lod1": 48
+      }
+    },
     "wall_apron": {
       "budget": [
         6000,
