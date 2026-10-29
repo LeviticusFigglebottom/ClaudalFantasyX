@@ -155,4 +155,10 @@ face and the 15 face poses, before the rest) → build → face poses → clips 
   `pell_review.md` is rewritten with before/after notes and what still does not read (the almond human lids, the small
   human ears, the uniform fur at full figure, the open right hand, a ridge at the nape).
 
+- 2026-10-29 (claude/characters, new Lead's session): **second look-dev pass @ 2c2acb54** on pell_review.md's five open
+  items (the review's new section has the before/after): rounder lids, a dark eye ring and a dark lid margin; round flat
+  ears; a flat right hand in storm_call and cast (hero_clips FLAT_HAND, Pell's library only: every other library
+  rebuilds byte-identical, test_hero_clips); a stronger saddle pattern, body clumps and a soft throat stripe; a thicker
+  upper neck under the skull. pell.glb 4.79 MB, LOD1 1.32 MB. Checks are in the live log's MERGE-READY line.
+
 ## Review log
