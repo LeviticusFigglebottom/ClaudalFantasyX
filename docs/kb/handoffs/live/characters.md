@@ -341,8 +341,22 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
   gatekeeper's and Tavi's sit mostly under their headbands. All four identical on the three numpy paths;
   test_villagers OK. Not changed: the strand-tuned grey crops (Fenn, the ferrymaster, Garo, Hobb, Sabe, the
   scaleman; `grey_strands`), and Moll's square fringe line (toma_hair's shared hairline table).
-- **Next:** M3-CHR-592's last two (the strand-tuned grey crops on tufts with grey strands, Moll's line), then Pell's
-  leftovers (pell_review.md "Still open").
+- MERGE-READY @ e374376b + 21a3f966: **Pell's dialogue portraits** (big17's one new red,
+  test_dialogue_box "pell has a model, so a portrait"): his entry in tools/portraits/portraits.json (a closer camera:
+  at 2.3 m the default framed his neck), five emotions rendered and viewed, PROVENANCE rows. test_hero_portraits
+  counts him (31) and its no-portrait example is now the purser. Godot dialogue_box 26/0, hero_portraits 9/0.
+  speakers.json still names `portrait_pell_placeholder` (ui-menus' row; the test passes on the files).
+- MERGE-READY @ (the grey crops commit) + 21a3f966: **M3-CHR-592, the grey crops on the tufts** (the ferrymaster,
+  Garo, Hobb, Sabe, the scaleman; `grey_strands` now has a tufts form: grey cards take the short atlas's sparse column,
+  narrower). Before/after viewed: soft dense crops, no chips. Fenn reverted (on the tufts his thin white hair read as
+  a bald dome). All five identical on the three numpy paths; test_villagers OK. Their manifest portraits (and Ione's,
+  Kell's, Tavi's) re-rendered to match, viewed.
+- Merged the integration branch (big17) @ ba7913e7: kept big17's scaleman mark with his own model, its data-driven
+  fp_prologue vigil test, and the union of the portrait manifest (Pell added to ui-menus' 30). Post-merge: Godot
+  fp_prologue 8/0, ch01_stage_models 1/0, dialogue_box 26/0, hero_portraits 9/0; zone_cast 3/1 (the fisher idle,
+  known since big16); validate_data and taskboard OK.
+- **Next:** M3-CHR-592's last item (Moll's square fringe line: a hairline hook through toma_hair/moll_hair, with the
+  bare-headed Stillguards and Ivo re-verified), then Pell's leftovers (pell_review.md "Still open").
 - (was) **In progress:** Pell's second look-dev pass (M3-CHR-506, pell_review.md "What still does not read" 1–5): rounder
   lid openings and a dark eye ring, round flat ears, a flat right hand in storm_call and cast, the fur pattern, the
   nape ridge.
