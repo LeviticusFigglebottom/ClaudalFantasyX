@@ -58,7 +58,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck",
+   "piece": "raft_deck_tucked",
    "at": [
     -13.5,
     -3.5
@@ -67,7 +67,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck",
+   "piece": "raft_deck_tucked",
    "at": [
     -13.5,
     -10.5
@@ -76,7 +76,7 @@
    "yaw_deg": 180.0
   },
   {
-   "piece": "raft_deck",
+   "piece": "raft_deck_tucked",
    "at": [
     -13.5,
     -17.5
@@ -85,7 +85,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck_small",
+   "piece": "raft_deck_small_tucked",
    "at": [
     -15.0,
     -22.6
@@ -94,7 +94,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck_small",
+   "piece": "raft_deck_small_tucked",
    "at": [
     -10.5,
     -22.6
@@ -103,7 +103,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck",
+   "piece": "raft_deck_tucked",
    "at": [
     -4.5,
     -3.5
@@ -112,7 +112,7 @@
    "yaw_deg": 180.0
   },
   {
-   "piece": "raft_deck",
+   "piece": "raft_deck_tucked",
    "at": [
     -4.5,
     -10.5
@@ -121,7 +121,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck",
+   "piece": "raft_deck_tucked",
    "at": [
     -4.5,
     -17.5
@@ -130,7 +130,7 @@
    "yaw_deg": 180.0
   },
   {
-   "piece": "raft_deck_small",
+   "piece": "raft_deck_small_tucked",
    "at": [
     -6.0,
     -22.6
@@ -139,7 +139,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck_small",
+   "piece": "raft_deck_small_tucked",
    "at": [
     -1.5,
     -22.6
@@ -148,7 +148,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck",
+   "piece": "raft_deck_tucked",
    "at": [
     4.5,
     -3.5
@@ -157,7 +157,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck",
+   "piece": "raft_deck_tucked",
    "at": [
     4.5,
     -10.5
@@ -166,7 +166,7 @@
    "yaw_deg": 180.0
   },
   {
-   "piece": "raft_deck",
+   "piece": "raft_deck_tucked",
    "at": [
     4.5,
     -17.5
@@ -175,7 +175,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck_small",
+   "piece": "raft_deck_small_tucked",
    "at": [
     3.0,
     -22.6
@@ -184,7 +184,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck_small",
+   "piece": "raft_deck_small_tucked",
    "at": [
     7.5,
     -22.6
@@ -193,7 +193,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck",
+   "piece": "raft_deck_tucked",
    "at": [
     13.5,
     -3.5
@@ -202,7 +202,7 @@
    "yaw_deg": 180.0
   },
   {
-   "piece": "raft_deck",
+   "piece": "raft_deck_tucked",
    "at": [
     13.5,
     -10.5
@@ -211,7 +211,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck",
+   "piece": "raft_deck_tucked",
    "at": [
     13.5,
     -17.5
@@ -220,7 +220,7 @@
    "yaw_deg": 180.0
   },
   {
-   "piece": "raft_deck_small",
+   "piece": "raft_deck_small_tucked",
    "at": [
     12.0,
     -22.6
@@ -229,7 +229,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck_small",
+   "piece": "raft_deck_small_tucked",
    "at": [
     16.5,
     -22.6

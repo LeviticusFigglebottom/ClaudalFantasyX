@@ -684,6 +684,17 @@
         "ink_kit-lod1": 12
       }
     },
+    "inn_hearth": {
+      "budget": [
+        3000,
+        400
+      ],
+      "bytes": 110072,
+      "lods": {
+        "inn_hearth": 1720,
+        "inn_hearth-lod1": 330
+      }
+    },
     "iskarra_arcade_sunk": {
       "budget": [
         5000,

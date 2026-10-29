@@ -98,10 +98,12 @@ def pieces() -> list[dict]:
     # north edge; the cabin with the child on its roof, the cook's boat, the menders' nets.
     for i, x in enumerate((-13.5, -4.5, 4.5, 13.5)):
         for j, z in enumerate((-3.5, -10.5, -17.5)):
-            # Every other deck turned end for end (the same footprint), so the deck props don't repeat in rows.
-            out.append(pl.put("raft_deck", x, WATER_Y + 0.004 * ((i + j) % 2), z, 180.0 * ((i + j) % 2)))
-        out.append(pl.put("raft_deck_small", x - 1.5, -ohl.RAFT_SMALL_Y + 0.008, -22.6, 0.0))
-        out.append(pl.put("raft_deck_small", x + 3.0, -ohl.RAFT_SMALL_Y + 0.012, -22.6, 0.0))
+            # Every other deck turned end for end (the same footprint), so the deck props don't repeat in rows. The
+            # tucked decks keep their hulls under their own planks: an open raft's bows would rise through the next
+            # deck (the walk-through, 2026-10-29).
+            out.append(pl.put("raft_deck_tucked", x, WATER_Y + 0.004 * ((i + j) % 2), z, 180.0 * ((i + j) % 2)))
+        out.append(pl.put("raft_deck_small_tucked", x - 1.5, -ohl.RAFT_SMALL_Y + 0.008, -22.6, 0.0))
+        out.append(pl.put("raft_deck_small_tucked", x + 3.0, -ohl.RAFT_SMALL_Y + 0.012, -22.6, 0.0))
     roof = b["CabinRoof"]
     s = round((roof["pos"][1] + roof["size"][1] * 0.5) / ocab.KEELROOF_RIDGE_Y, 3)  # its ridge at the roof's top
     out.append(decor("cabin_keelroof", roof["pos"][0], 0.0, roof["pos"][2], 90.0, scale=s))

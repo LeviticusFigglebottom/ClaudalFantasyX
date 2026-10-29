@@ -14,6 +14,10 @@
                       hearth with an ember bed and a clay chimney cowl at the back, goatskin bellows on its left with a
                       nozzle in, an anvil on a driftwood stump at its right, a timber quench trough in front of the
                       stump, a tool rack (tongs, hammers, a hook) behind; 3.2 x 2.0 m, the working side faces +Z
+  inn_hearth          the inn's open-air kitchen behind the innkeeper (the walk-through, 2026-10-29): a low ring of
+                      dry-laid coral stones round an ember bed with a lidded clay cook pot on it, split wood stacked
+                      at its left, a trestle serving bench at its right with bowls, a ladle and a water jar; 3.4 x
+                      1.0 m, the serving side faces +Z
   shop_sign_goods     a 2.4 m post with an arm and a hanging carved board (0.62 x 0.46 m) painted with the trade's mark
   shop_sign_forge     (the jar: the goods stall; the anvil: the forge; the steaming bowl: the inn), the board on two
   shop_sign_inn       cords from the arm's end at +X, its face to +Z
@@ -59,6 +63,7 @@ TRI_BUDGET = {
     "market_stall": (6000, 600),
     "sandals": (400, 60),
     "beach_forge": (9000, 700),
+    "inn_hearth": (3000, 400),
     "shop_sign_goods": (1800, 200),
     "shop_sign_forge": (1800, 200),
     "shop_sign_inn": (1800, 200),
@@ -71,6 +76,7 @@ M_IRON = "kit_rebar"  # the kit's rusted iron
 M_LEATHER = "kit_dried_fish"  # tannin-dark: the bellows' goatskin
 M_CHAR = "kit_interior_dark"
 M_CARVED = "kit_carved_wood"
+M_DRIFT_SPLIT = "kit_driftwood"  # split firewood, the ladle's shell
 
 
 def lathe(mb: kc.MeshBuilder, profile, mat_name: str, rng, *, sides: int = 16, at=(0.0, 0.0, 0.0),
@@ -575,12 +581,80 @@ def build_wake_shell_loose(seed: int = 165) -> list[kc.MeshBuilder]:
     return out
 
 
+def build_inn_hearth(seed: int = 166) -> list[kc.MeshBuilder]:
+    """The inn's open-air kitchen (see the module docstring)."""
+    out = []
+    stone_w = kc.Weathering(moss=0.05, salt=0.3, wet=0.05, erosion=0.6)
+    soot = kc.Weathering(moss=0.0, salt=0.1, wet=0.0, erosion=0.3)
+    clay_w = kc.Weathering(moss=0.0, salt=0.1, wet=0.1, erosion=0.2)
+    for lod in (False, True):
+        rng = kc.rng_for("inn_hearth", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("inn_hearth" + ("-lod1" if lod else ""))
+        stone, tm = mb.material(M_STONE), mb.material(M_TIMBER)
+        # The hearth ring: eight stones round the ember bed, the pot seated on three of them.
+        hx, hz, ring_r = -0.35, -0.05, 0.42
+        if lod:
+            kc.rounded_block(mb, (hx, 0.14, hz), (0.5, 0.14, 0.5), stone, seg=1, radius=0.05)
+        else:
+            for k in range(8):
+                a = k * math.pi / 4 + rng.normal(0, 0.06)
+                kc.rounded_block(mb, (hx + math.cos(a) * ring_r, 0.13, hz + math.sin(a) * ring_r),
+                                 (0.12 + rng.random() * 0.03, 0.13 + rng.random() * 0.03, 0.1), stone, radius=0.04,
+                                 seg=1, noise=noise, disp_m=0.01, weather=stone_w, variation=float(rng.random()))
+        kc.rounded_block(mb, (hx, 0.04, hz), (0.32, 0.04, 0.32), mb.material(M_CHAR), seg=1, radius=0.03,
+                         weather=soot)
+        lathe(mb, [(0.0, 0.0), (0.2, 0.0), (0.16, 0.04), (0.0, 0.06)], M_FLAME, rng, sides=12 if not lod else 6,
+              at=(hx, 0.07, hz), weather=kc.Weathering(0, 0, 0, 0), cap_start=False)
+        # The cook pot: a round-bellied earthenware pot, soot-dark at the foot, its lid with a knob.
+        pot = [(0.12, 0.0), (0.25, 0.1), (0.29, 0.24), (0.24, 0.38), (0.19, 0.42), (0.2, 0.45)]
+        lathe(mb, pot if not lod else pot[::2], M_CLAY, rng, sides=18 if not lod else 8, at=(hx, 0.24, hz),
+              noise=None if lod else noise, disp_m=0.004, weather=soot, cap_start=True)
+        lathe(mb, [(0.21, 0.0), (0.16, 0.05), (0.04, 0.08), (0.035, 0.12), (0.0, 0.13)], M_CLAY, rng,
+              sides=16 if not lod else 6, at=(hx, 0.69, hz), weather=clay_w, cap_start=True)
+        # Split wood stacked at the hearth's left.
+        wx = hx - 0.95
+        if lod:
+            kc.rounded_block(mb, (wx, 0.14, hz), (0.3, 0.14, 0.2), tm, seg=1, radius=0.04)
+        else:
+            for row in range(3):
+                for i in range(4 - row):
+                    x = wx + (i - (3 - row) * 0.5) * 0.15 + rng.normal(0, 0.01)
+                    y = 0.06 + row * 0.11
+                    kc.tube(mb, np.array([[x, y, hz - 0.28], [x + rng.normal(0, 0.02), y, hz + 0.28]]),
+                            0.055 + rng.random() * 0.01, 6, mb.material(M_DRIFT_SPLIT), cap_start=True, cap_end=True,
+                            variation=float(rng.random()))
+        # The serving bench at the right: a plank top on two trestles, bowls, a ladle and a water jar.
+        bx, by, bw = 0.75, 0.55, 1.1
+        kc.plank(mb, (bx - bw * 0.5, by, hz), (bx + bw * 0.5, by, hz), 0.42, 0.04, tm,
+                 up=np.array([0.0, 1.0, 0.0]), variation=float(rng.random()))
+        for x in (bx - bw * 0.38, bx + bw * 0.38):
+            for dz in (-0.15, 0.15):
+                kc.tube(mb, np.array([[x, 0.0, hz + dz * 1.3], [x, by - 0.02, hz + dz * 0.6]]), 0.03, 5, tm,
+                        cap_end=True, variation=float(rng.random()))
+        if not lod:
+            rim, foot, h = 0.11, 0.05, 0.06
+            prof = [(0.0, 0.0), (foot, 0.0), (rim * 0.9, h * 0.75), (rim, h), (rim - 0.008, h), (rim * 0.85, h * 0.7),
+                    (0.0, 0.015)]
+            for x, z in ((bx - 0.38, hz + 0.08), (bx - 0.12, hz - 0.09), (bx + 0.12, hz + 0.07)):
+                lathe(mb, prof, M_CLAY, rng, sides=14, at=(x, by + 0.02, z), weather=clay_w, cap_start=False)
+            # The ladle: a coconut-shell cup on a stick, laid across the bench.
+            lathe(mb, [(0.0, 0.0), (0.05, 0.01), (0.065, 0.04), (0.06, 0.045)], M_DRIFT_SPLIT, rng, sides=10,
+                  at=(bx + 0.32, by + 0.02, hz - 0.06), cap_start=False)
+            kc.tube(mb, np.array([[bx + 0.36, by + 0.05, hz - 0.06], [bx - 0.02, by + 0.04, hz + 0.16]]), 0.01, 5,
+                    tm, cap_start=True, cap_end=True)
+        _jar(mb, (bx + bw * 0.5 + 0.3, 0.0, hz + 0.05), 0.6, rng, noise, lod)
+        out.append(mb)
+    return out
+
+
 TARGETS = {
     "wake_shell_loose": build_wake_shell_loose,
     "hand_broom": build_hand_broom,
     "woven_bag": build_woven_bag,
     "clay_bowl": build_clay_bowl,
     "beach_forge": build_beach_forge,
+    "inn_hearth": build_inn_hearth,
     "shop_sign_goods": build_shop_sign_goods,
     "shop_sign_forge": build_shop_sign_forge,
     "shop_sign_inn": build_shop_sign_inn,
