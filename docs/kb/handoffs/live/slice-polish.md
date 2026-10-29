@@ -898,7 +898,8 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     Ch4's `ch04_long_way_round` (H08, C01 and C02 take `grade=ch02`, the dawn) and the slice's Ch2–Ch3 scenes change
     grade. No other Act I chapter uses a grade or a form.
   - **SELF-RENDERED (viewed):** slice_verse_s08 (new, pending): Ilun in bound light above the inner pool, seen from
-    behind, about 4% of the frame. slice_dock_night_yes is rendering.
+    behind, about 4% of the frame. slice_dock_night_yes: holds "Yes." (line 007) on B11, the pair face to
+    face at the dock end with the village lights behind.
   - **Checks:** cutscene_directives 2, cutscene_grade 3, cutscene_sequencer 18, first_verse 3, fp_ 30, prologue 8,
     haluna 65, ch01 20, dialogue 84, glimmer 36, slice_shots 1, all 0 failed; cutscene 90 (1 failed: the known Ch4
     walks). Tools: test_glimmer_forms. dlgc, validate_data 0/0, gdlint and gdformat clean. test_screenshots is red
