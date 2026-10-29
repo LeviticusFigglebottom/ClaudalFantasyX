@@ -16,6 +16,8 @@ extends Node3D
 
 signal effect_played(effect_id: StringName, position: Vector3)
 
+## An entry's nominal height over its arena mark (a group of climbers on the stair head), for anchor_heights.
+const ENTRY_HEIGHT_M := 1.6
 const DATA_PATH := "res://game/data/vfx/battle/effects.json"
 const DRAW_MATERIAL := "res://game/vfx/battle/materials/battle_spark_draw.tres"
 const PROCESS_MATERIAL := "res://game/vfx/battle/materials/battle_spark_process.tres"
@@ -315,12 +317,13 @@ func _is_down(target: StringName) -> bool:
 	return c != null and c.hp <= 0
 
 
-## A fighter's point at `at` (an anchor_heights key: feet, rim, chest, hood, head); this node's position
-## when the fighter is not on the stage.
+## A fighter's point at `at` (an anchor_heights key: feet, rim, chest, hood, head). A set piece's entry with no
+## fighter (the Climb) anchors on its arena mark (entry_mark); anything else not on the stage, this node's position.
 func anchor(target: StringName, at: String) -> Vector3:
 	var frac := float((data.get("anchor_heights", {}) as Dictionary).get(at, 0.5))
 	if _ctl == null or not _ctl.stage.has_fighter(target):
-		return global_position
+		var mark := entry_mark(target)
+		return mark + Vector3.UP * ENTRY_HEIGHT_M * frac if mark != Vector3.INF else global_position
 	var f := _ctl.stage.stand_in(target)
 	var spec := BattleStage.stand_in_spec(target)
 	var height := float(spec.get("height", 1.7))
@@ -351,6 +354,21 @@ func _half_depth(target: StringName, f: FighterStandIn) -> float:
 		r = 0.0 if first else minf(box.size.x, box.size.z) * 0.5
 	_depth_cache[target] = r
 	return r
+
+
+## M3-BPR-1325: where a set piece's entry "is" in the arena: its role's StairHead_<role> mark (env-art-b's
+## seawall arenas: the head of the Fisher Stair, where a group of climbers arrives), else EntryMarker_<role>;
+## Vector3.INF for a fighter, or when the arena has no such mark.
+func entry_mark(target: StringName) -> Vector3:
+	var c := _engine.find(target) if _engine != null else null
+	var arena := _ctl.get_node_or_null(NodePath(String(BattleArena.ARENA_NODE))) if _ctl != null else null
+	if c == null or c.entry_role == &"" or arena == null:
+		return Vector3.INF
+	for mark: String in ["StairHead_%s", "EntryMarker_%s"]:
+		var n := arena.get_node_or_null(NodePath(mark % c.entry_role)) as Node3D
+		if n != null:
+			return n.global_position
+	return Vector3.INF
 
 
 func _emitter(effect_id: StringName, def: Dictionary) -> GPUParticles3D:

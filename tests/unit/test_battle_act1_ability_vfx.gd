@@ -1,10 +1,9 @@
 extends TestCase
 ## ADR 0041 (Act I at final quality): every Act I ability plays its own battle VFX, not only its element's generic
 ## hit: every party kit skill, Swell, Vowbound skill, Act I creature skill and battle item
-## (tools/vfx/gen_act1_ability_vfx.py). The only exceptions are skills aimed at the stair entry (`ward`): an entry
-## has no fighter to play on, and its own motion is the push reaction. Every effect has a sound (validate_data).
+## (tools/vfx/gen_act1_ability_vfx.py); the ones aimed at the stair entry (`ward`) play on its arena mark
+## (M3-BPR-1325). Every effect has a sound (validate_data).
 
-const WARD := "ward"
 ## The Drownbell's toll and its gather are played by its boss view (BattleBossVfx, boss_vfx.json), not the skills map.
 const BOSS_OWN: Array[String] = ["toll", "toll_gather"]
 
@@ -49,8 +48,8 @@ func test_every_act_one_skill_has_its_own_effect() -> void:
 				ids[str(sid)] = String(eid)
 	var checked := 0
 	for sid: String in ids:
-		if sid == "attack" or BOSS_OWN.has(sid) or str(db.skill(StringName(sid)).get("target", "")) == WARD:
-			continue  # the plain attack is the element hit; a ward-aimed skill has no fighter to play on
+		if sid == "attack" or BOSS_OWN.has(sid):
+			continue  # the plain attack is the element hit (a ward-aimed skill plays on the stair head, M3-BPR-1325)
 		_assert_own("skills", sid, str(ids[sid]))
 		checked += 1
 	assert_true(checked > 60, "the Act I abilities are covered (%d)" % checked)
