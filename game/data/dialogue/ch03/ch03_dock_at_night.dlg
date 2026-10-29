@@ -12,11 +12,12 @@ location: ch02/haluna
 // M2-FP-119: the player sets the scene off from anywhere on the dock, so the walk is as long as it is:
 // the scene waits for him to reach her, then a breath before either turns.
 @mark rhen rhen_by_asha walk
-// M2-FP-119: Toma starts at the dock's root, behind H04's lens (he had stood on its axis, his shield filling the
-// opening frame and hiding Rhen), and walks up the whole dock: DockEnd looks back up it, so he arrives in the
-// background while they talk, as the beat says.
-@mark toma dock_toma walk
 @wait arrive=rhen
+// M2-FP-119: Toma starts at the dock's root, behind H04's lens (he had stood on its axis, his shield filling the
+// opening frame and hiding Rhen), and walks up the whole dock: DockEnd looks back up it, so he comes up in the
+// background while they talk and arrives on his own last line, as the beat says. He sets off only once Rhen is
+// at Asha's side (well inside DockEnd), because his way passes through H04's lens.
+@mark toma dock_toma walk
 @wait 0.6
 @anim rhen look_at asha
 @anim asha look_at rhen
