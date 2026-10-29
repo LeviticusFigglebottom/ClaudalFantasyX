@@ -221,6 +221,11 @@ func _ashcrown() -> void:
 	assert_true(bool(Game.get_flag(&"ch05_second_verse_sung")))
 	assert_true(&"ch05_kahre_012" in lines, "Asha on the Quench Charm")
 	assert_true(&"ch05_kahre_020" in lines, "Lift your chin")
+	var kahre := zone.stage.actor(&"kahre")
+	assert_true(
+		kahre.global_position.distance_to(zone.stage.mark(&"kahre_bound_at").global_position) < 0.01,
+		"A11: Kahre's own body stands behind the chamber door"
+	)
 	assert_eq(hand_offs.back(), [ZoneStory.KIND_GO, {"location": "ch05/pemakar", "spawn": "FromAshcrown"}])
 	assert_true((zone as Ch05AshcrownZone).trial.done, "a return after the landing builds the trial solved")
 	_close()

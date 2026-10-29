@@ -16,7 +16,7 @@ const ACT1_DRESSINGS := {
 	"res://game/levels/ch07/tamsule/tamsule_dressing.json": [],
 	"res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries_dressing.json": ["Column"],  # M3-RND-27
 	"res://game/levels/ch08/corrow/corrow_dressing.json": [],
-	"res://game/levels/ch08/coilspire/coilspire_dressing.json": ["Virel"],  # M3-CRE-627
+	"res://game/levels/ch08/coilspire/coilspire_dressing.json": [],  # Virel is her own body (M3-CRE-700)
 	"res://game/levels/ch09/corrow_night/corrow_night_dressing.json": [],
 }
 

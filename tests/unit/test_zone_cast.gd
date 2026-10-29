@@ -85,3 +85,27 @@ func test_a_creature_or_a_hero_cast_finds_its_body() -> void:
 	assert_true(a != null and a.is_playing(), "it idles")
 	assert_eq(HeroMotion.body_of(zone.stage.actor(&"board")), null, "no battle play_clip for the sequencer to call")
 	_close()
+
+
+func test_a_cast_row_can_hold_its_body_still() -> void:
+	Game.new_game()
+	zone = (load(PORT) as PackedScene).instantiate() as GreyboxZone
+	zone.story.autostart = false
+	(Engine.get_main_loop() as SceneTree).current_scene.add_child(zone)
+	var cast := zone.get_node(^"Cast") as ZoneCast
+	var model := cast.cast_actor(&"board", "creature:virel")
+	assert_true(model != null, "Virel stands on the actor")
+	ZoneCast.shape(model, {"cast_still": true})
+	var a := HeroMotion.player_of(model)
+	assert_true(a != null and not a.is_playing(), "held still on her idle's first frame")
+	var micro := HeroMotion.micro_of(model)
+	assert_true(micro == null or not micro.active, "and no breathing")
+	_close()
+
+
+func test_coilspire_draws_virel_as_her_body_not_the_block() -> void:
+	var layout := GreyboxZone.read_json("res://game/levels/ch08/coilspire/coilspire_layout.json")
+	var row: Dictionary = (layout["actors"] as Dictionary).get("virel", {})
+	assert_eq(str(row.get("cast", "")), "creature:virel")
+	var dressing := GreyboxZone.read_json("res://game/levels/ch08/coilspire/coilspire_dressing.json")
+	assert_false("Virel" in (dressing["greybox"]["keep"] as Array), "the greybox block is hidden")
