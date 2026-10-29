@@ -874,6 +874,36 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     and the header, and restored at the scene's end; `form=` through glimmer.json; a guard test that fails on any
     Act I directive or argument the sequencer doesn't perform. Grades with no Environment yet wait on env-art-b's
     M3-ENV-106; the guard will name them.
+- **M2-FP-120, the unperformed cutscene directives (the Lead's 19:24 item), MERGE-READY @ the branch head:**
+  - **Grades (CutsceneGrade):** a node's `grade:` header and `@camera grade=` now apply. The scene's end restores the
+    level's own Environment and sun. The look comes from the zones' grade tables
+    (`assets/environments/zones/*/*_grades.json`), the same rows the zones' own light rows use. Unit-tested on
+    env-art's `ch05_harbour_dusk`.
+  - **No Act I grade has a row yet:** ch02, ch03, ch03_boss, ch03_shrine_int, ch03_steps. They change nothing and warn
+    once. `tests/integration/cutscene_directives_known.json` lists them for M3-ENV-106 (env-art-b).
+  - **`@vfx form=`:** a Vowbound form in bound light, per palette.json glimmer_bound ("Vowbound forms… Steady").
+    Ilun's rest-pose model stands as translucent, emissive bound light in the field's own colour and energy, with 16
+    still motes on his outline (`tools/cutscene/glimmer_forms.py` → `game/data/cutscene/glimmer_forms.json`).
+    S08's ilun_chamber turns 90°, so his face is off screen (colour script).
+  - **Guard: `test_cutscene_directives`.** It fails when an Act I cue uses a key the sequencer doesn't perform, a
+    cues.json key has no code reading it, a grade has neither a row nor a known entry, or a form is unknown. The
+    sequencer's unsupported list is now only `@anim loop=`, which Act I doesn't use.
+  - **Also:**
+    - end_after_sec now runs on the scene's own clock;
+    - the shot rig gains `hold_cue`;
+    - `CutsceneLight` is split out of the sequencer (its line cap);
+    - `DialogueRunner.headers()` is new (additive);
+    - `slice_dock_night_yes` holds line 007.
+  - **For act1-chapters (whose beats change):** nothing changes on screen today. Once M3-ENV-106 lands its rows,
+    Ch4's `ch04_long_way_round` (H08, C01 and C02 take `grade=ch02`, the dawn) and the slice's Ch2–Ch3 scenes change
+    grade. No other Act I chapter uses a grade or a form.
+  - **SELF-RENDERED (viewed):** slice_verse_s08 (new, pending): Ilun in bound light above the inner pool, seen from
+    behind, about 4% of the frame. slice_dock_night_yes is rendering.
+  - **Checks:** cutscene_directives 2, cutscene_grade 3, cutscene_sequencer 18, first_verse 3, fp_ 30, prologue 8,
+    haluna 65, ch01 20, dialogue 84, glimmer 36, slice_shots 1, all 0 failed; cutscene 90 (1 failed: the known Ch4
+    walks). Tools: test_glimmer_forms. dlgc, validate_data 0/0, gdlint and gdformat clean. test_screenshots is red
+    only on other tracks' unbaselined shots (kerrid_front …).
+  - **Skipped:** coverage and Blender (no battle, progression or Blender source).
 ### PC-QUEUE
 - Re-check PC GPU QA rows 18 (C07 harrier) and 32 (beach standing lines) on the GPU: both are fixed here (rendered on
   lavapipe), and the sheet still lists them open.
