@@ -2,10 +2,10 @@
 
 [resource]
 resource_name = "kit_keth_seep"
-albedo_color = Color(0.498, 0.7765, 0.851, 0.55)
+albedo_color = Color(0.498, 0.7765, 0.851, 0.35)
 cull_mode = 2
 emission = Color(0.498, 0.7765, 0.851, 1)
 emission_enabled = true
-emission_energy_multiplier = 1.4
+emission_energy_multiplier = 0.7
 roughness = 0.15
 transparency = 1

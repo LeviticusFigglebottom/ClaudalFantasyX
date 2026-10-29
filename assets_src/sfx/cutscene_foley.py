@@ -272,6 +272,20 @@ def pole_water(v: int) -> np.ndarray:
     return _tail_fade(buf, 0.15)
 
 
+def lamp_crackle(v: int) -> np.ndarray:
+    """An oil wick burning (M3-AUD-847: Rhen's lamp at the Iskarra vigil): a few tiny spits of the wick and a breath
+    of the flame between them. Played at the lamp at random gaps while it is lit (cutscene_foley.json `lamps`)."""
+    g = _g("lamp_crackle", v)
+    buf = np.zeros(int(0.7 * SR))
+    for _ in range(int(g.integers(2, 6))):
+        k = int(0.004 * SR)
+        spit = filt(g.standard_normal(k), [bq_bandpass(float(g.uniform(2500, 5500)), 1.2)])
+        spit *= np.exp(-np.arange(k) / (0.0012 * SR))
+        _place(buf, spit * float(g.uniform(0.3, 1.0)), float(g.uniform(0.0, 0.45)))
+    _place(buf, _noise(g, 0.5, [bq_lowpass(600, 0.7), bq_highpass(120, 0.7)], 0.05, 0.2) * 0.15, 0.0)
+    return _tail_fade(buf, 0.08)
+
+
 KINDS = {
     "cs_book_shut": (book_shut, 2, -22.0),
     "cs_lantern_catch": (lantern_catch, 2, -21.0),
@@ -289,6 +303,7 @@ KINDS = {
     "cs_feed_fire": (feed_fire, 2, -23.0),
     "cs_trim_wicks": (trim_wicks, 2, -26.0),
     "cs_pole_water": (pole_water, 2, -23.0),
+    "cs_lamp_crackle": (lamp_crackle, 4, -30.0),
 }
 
 

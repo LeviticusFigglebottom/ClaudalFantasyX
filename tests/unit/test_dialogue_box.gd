@@ -210,3 +210,54 @@ func test_speaker_table_loads() -> void:
 	assert_eq(sp.portrait_id(&"asha"), &"portrait_asha_placeholder")
 	assert_eq(sp.blip_pitch(&"nobody"), DialogueSpeakers.UNPITCHED)
 	_done()
+
+
+## Act I final pass (ADR 0041): a spoken line shows its speaker's portrait in the line's emotion (an untagged line
+## keeps it); a speaker without a portrait, and narration, show none (dialogue_portrait.json).
+func test_the_speaker_s_portrait_shows_beside_the_line() -> void:
+	box.show_text(&"rhen", LINE_KEY)
+	box.show_portrait(&"rhen", &"worried")
+	var frame := box.portrait()
+	assert_true(frame != null and frame.picture().texture != null, "Rhen's face")
+	assert_eq(frame.emotion(), &"worried")
+	box.show_portrait(&"crowd")
+	assert_eq(box.portrait(), null, "a speaker with no portrait: none, not a letter")
+	box.show_portrait(&"")
+	assert_eq(box.portrait(), null, "narration: none")
+	assert_eq(DialogueBox.portrait_for(&"inquisitor"), &"moll", "an alias names the character he is")
+	_done()
+
+
+## Lead 2026-10-28: each Act I speaker whose model has landed (a hero stage or a villager stage on
+## claude/characters) shows a portrait: a new model without a baked face fails here.
+func test_every_act1_speaker_with_a_model_has_a_portrait() -> void:
+	var dir := "res://game/data/dialogue/compiled"
+	var speakers := {}
+	for f: String in DirAccess.get_files_at(dir):
+		if f.ends_with(".json") and f.begins_with("ch0"):
+			var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(dir.path_join(f)))
+			_collect_speakers(parsed, speakers)
+	var modelled := 0
+	for s: String in speakers:
+		var who := String(DialogueBox.portrait_for(StringName(s)))
+		var stages := [
+			"res://game/levels/_tests/characters/villagers/%s_stage.tscn" % s,
+			"res://game/levels/_tests/characters/%s/%s_stage.tscn" % [s, s],
+		]
+		if stages.any(func(p: String) -> bool: return ResourceLoader.exists(p)):
+			modelled += 1
+			assert_eq(who, s, "%s has a model, so a portrait" % s)
+	assert_true(modelled > 20, "the party and the townsfolk were found")
+	_done()
+
+
+func _collect_speakers(v: Variant, out: Dictionary) -> void:
+	if v is Dictionary:
+		var d := v as Dictionary
+		if d.has("speaker") and str(d["speaker"]) != "":
+			out[str(d["speaker"])] = true
+		for x: Variant in d.values():
+			_collect_speakers(x, out)
+	elif v is Array:
+		for x: Variant in v as Array:
+			_collect_speakers(x, out)

@@ -1,0 +1,247 @@
+[gd_scene load_steps=21 format=3]
+
+[ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
+[ext_resource type="Shader" path="res://game/shaders/environment/env_sky_low_sun.gdshader" id="2_r"]
+[ext_resource type="Texture3D" path="res://assets/environments/zones/ch05/lut_ch05_ashcrown.png" id="3_r"]
+[ext_resource type="Script" path="res://game/world/arenas/arena_sea.gd" id="4_r"]
+[ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="5_r"]
+[ext_resource type="Material" path="res://game/levels/ch02/haluna/haluna_water_material.tres" id="6_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/ashcrown/forecourt.glb" id="7_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/ashcrown/ashcrown_tiers.glb" id="8_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/ashcrown/flying_stair.glb" id="9_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/ashcrown/crown_pavilion.glb" id="10_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/ashcrown/pilgrim_causeway.glb" id="11_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/ashcrown/crest_ground.glb" id="12_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/ashcrown/plume_vent.glb" id="13_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/pemakar/open_hand_gate.glb" id="14_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/pemakar/lamp_pillar.glb" id="15_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/pemakar/ash_plume_near.glb" id="16_r"]
+[ext_resource type="Material" path="res://assets/environments/kits/ashcrown/materials/ac_plume_day.tres" id="plume_day"]
+
+[sub_resource type="ShaderMaterial" id="SkyMat"]
+shader = ExtResource("2_r")
+shader_parameter/azimuth_power = 2.0
+shader_parameter/band_energy = 0.5
+shader_parameter/band_height = 0.04
+shader_parameter/cloud_ambient_energy = 1.35
+shader_parameter/cloud_coverage = 0.55
+shader_parameter/cloud_height_m = 1800.0
+shader_parameter/cloud_horizon_fade = 0.08
+shader_parameter/cloud_opacity = 0.96
+shader_parameter/cloud_scale_m = 5000.0
+shader_parameter/cloud_softness = 0.22
+shader_parameter/cloud_stretch = Vector2(1, 2.5)
+shader_parameter/cloud_sun_energy = 2.6
+shader_parameter/cloud_wind_deg = 135.0
+shader_parameter/col_band = Color(1, 0.8235, 0.6588, 1)
+shader_parameter/col_cloud_lit = Color(0.902, 0.8784, 0.8392, 1)
+shader_parameter/col_cloud_shadow = Color(0.5412, 0.549, 0.5647, 1)
+shader_parameter/col_glow = Color(1, 0.8941, 0.8078, 1)
+shader_parameter/col_ground = Color(0.2902, 0.2824, 0.2745, 1)
+shader_parameter/col_horizon_away = Color(0.7882, 0.7373, 0.6549, 1)
+shader_parameter/col_horizon_sun = Color(0.8392, 0.7843, 0.698, 1)
+shader_parameter/col_zenith = Color(0.3725, 0.4314, 0.502, 1)
+shader_parameter/glow_energy = 0.4
+shader_parameter/glow_power = 6.0
+shader_parameter/halo_energy = 0.8
+shader_parameter/halo_power = 200.0
+shader_parameter/horizon_curve = 0.25
+shader_parameter/mid_strength = 0.0
+shader_parameter/sky_energy = 1.2
+shader_parameter/sun_disc_energy = 4.0
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMat")
+process_mode = 2
+
+[sub_resource type="Environment" id="Env"]
+resource_name = "ashcrown_forecourt_day_ch05_temple"
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 2
+ambient_light_color = Color(0.5569, 0.5843, 0.6118, 1)
+ambient_light_energy = 0.45
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 0.72
+tonemap_agx_white = 12.0
+ssao_enabled = true
+ssao_radius = 1.2
+ssao_intensity = 1.2
+glow_enabled = true
+glow_intensity = 0.35
+glow_bloom = 0.03
+glow_hdr_threshold = 1.1
+fog_enabled = true
+fog_mode = 0
+fog_light_color = Color(0.549, 0.5333, 0.5098, 1)
+fog_aerial_perspective = 0.5
+fog_density = 0.0018
+fog_sky_affect = 0.25
+fog_height = 0.0
+fog_height_density = 0.0
+adjustment_enabled = true
+adjustment_color_correction = ExtResource("3_r")
+
+[node name="AshcrownForecourtDay" type="Node3D"]
+script = ExtResource("1_r")
+arena_id = &"ashcrown_forecourt_day"
+sub_frame = &"ch05_temple"
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.707107, 0.599661, -0.37471, -0, 0.529919, 0.848048, 0.707107, -0.599661, 0.37471, 0, 30, 0)
+light_color = Color(1, 0.9412, 0.8627, 1)
+light_energy = 2.8
+shadow_enabled = true
+shadow_bias = 0.03
+shadow_normal_bias = 1.0
+shadow_blur = 1.0
+directional_shadow_mode = 2
+directional_shadow_split_1 = 0.06
+directional_shadow_split_2 = 0.18
+directional_shadow_split_3 = 0.45
+directional_shadow_max_distance = 120.0
+
+[node name="Sea" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -302.717, 0)
+script = ExtResource("4_r")
+wave_set = ExtResource("5_r")
+material = ExtResource("6_r")
+sea_glow_energy = 0.0
+tide_line_y = -302.717
+
+[node name="Ground" parent="." instance=ExtResource("7_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.0, 4.0, -30.0)
+
+[node name="Dressing" type="Node3D" parent="."]
+
+[node name="ashcrown_tiers_1" parent="Dressing" instance=ExtResource("8_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -12, 4, -30)
+
+[node name="flying_stair_1" parent="Dressing" instance=ExtResource("9_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -12, 4, -30)
+
+[node name="crown_pavilion_1" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -12, 4, -30)
+
+[node name="pilgrim_causeway_1" parent="Dressing" instance=ExtResource("11_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -12, 4, -30)
+
+[node name="crest_ground_1" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -12, 4, -30)
+
+[node name="plume_vent_1" parent="Dressing" instance=ExtResource("13_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -12, 4, -30)
+
+[node name="open_hand_gate_1" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, -0, 0, 1.6, -12, 0, 15.5)
+
+[node name="lamp_pillar_1" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -42.6, 0, -8)
+
+[node name="lamp_pillar_2" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -42.6, 0, -2)
+
+[node name="lamp_pillar_3" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -42.6, 0, 4)
+
+[node name="lamp_pillar_4" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -42.6, 0, 10)
+
+[node name="lamp_pillar_5" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 18.6, 0, -8)
+
+[node name="lamp_pillar_6" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 18.6, 0, -2)
+
+[node name="lamp_pillar_7" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 18.6, 0, 4)
+
+[node name="lamp_pillar_8" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 18.6, 0, 10)
+
+[node name="lamp_pillar_9" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -13.55, -7.04, 25.06)
+
+[node name="lamp_pillar_10" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -10.45, -7.04, 25.06)
+
+[node name="lamp_pillar_11" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -13.55, -14.08, 34.22)
+
+[node name="lamp_pillar_12" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -10.45, -14.08, 34.22)
+
+[node name="lamp_pillar_13" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -13.55, -21.12, 43.38)
+
+[node name="lamp_pillar_14" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -10.45, -21.12, 43.38)
+
+[node name="lamp_pillar_15" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -13.55, -28.16, 52.54)
+
+[node name="lamp_pillar_16" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -10.45, -28.16, 52.54)
+
+[node name="lamp_pillar_17" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -13.55, -35.2, 61.7)
+
+[node name="lamp_pillar_18" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -10.45, -35.2, 61.7)
+
+[node name="lamp_pillar_19" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -13.55, -42.24, 70.86)
+
+[node name="lamp_pillar_20" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -10.45, -42.24, 70.86)
+
+[node name="lamp_pillar_21" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -13.55, -49.28, 80.02)
+
+[node name="lamp_pillar_22" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -10.45, -49.28, 80.02)
+
+[node name="lamp_pillar_23" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -13.55, -56.32, 89.18)
+
+[node name="lamp_pillar_24" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -10.45, -56.32, 89.18)
+
+[node name="lamp_pillar_25" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -13.55, -63.36, 98.34)
+
+[node name="lamp_pillar_26" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -10.45, -63.36, 98.34)
+
+[node name="lamp_pillar_27" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -13.55, -70.4, 107.5)
+
+[node name="lamp_pillar_28" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -10.45, -70.4, 107.5)
+
+[node name="ash_plume_near_1" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -12, -52.717, -108)
+
+[node name="CameraHints" type="Node3D" parent="."]
+
+[node name="wide_high" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.99613, 0.0361477, -0.0801166, -0, 0.911516, 0.411265, 0.0878938, -0.409674, 0.907988, -1.5, 8, 14)
+
+[node name="party_side" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.543251, -0.049669, 0.8381, 0, 0.998249, 0.05916, -0.83957, -0.0321387, 0.5423, 7, 1.6, 5)
+
+[node name="foe_side" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.485643, 0.0508571, -0.872677, -0, 0.998306, 0.0581784, 0.874157, -0.0282539, 0.48482, -7.5, 1.6, 5)
+
+[node name="to_the_crown" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.937222, 0.185406, 0.295364, 0, 0.846961, -0.531655, -0.348734, 0.498279, 0.79379, 4, 1.2, 7)
+
+[node name="ash_plume_near" parent="Dressing/ash_plume_near_1" index="0"]
+surface_material_override/0 = ExtResource("plume_day")
+
+[node name="ash_plume_near-lod1" parent="Dressing/ash_plume_near_1" index="1"]
+surface_material_override/0 = ExtResource("plume_day")

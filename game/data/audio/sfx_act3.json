@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "doc": "M3-AUD-859: the Kite's foley (assets_src/sfx/act3/kite_foley.py; Git LFS, ADR 0039). The deck beds kite_deck and kite_deck_dark are ambience loops in the same folder, for music.json's ch18/kite zone row once that scene exists.",
+  "sfx": {
+    "kite_engine_stop": {
+      "files": [
+        "res://assets/audio/sfx/act3/kite_engine_stop.ogg"
+      ],
+      "bus": "World",
+      "voices": 1,
+      "_note": "H09: both lift engines winding down to nothing"
+    },
+    "kite_lantern_out": {
+      "files": [
+        "res://assets/audio/sfx/act3/kite_lantern_out_1.ogg",
+        "res://assets/audio/sfx/act3/kite_lantern_out_2.ogg"
+      ],
+      "bus": "World",
+      "voices": 2,
+      "pitch_jitter": 0.03,
+      "_note": "H09: a lantern's bound light leaving its glass"
+    },
+    "kite_sail_fill": {
+      "files": [
+        "res://assets/audio/sfx/act3/kite_sail_fill_1.ogg",
+        "res://assets/audio/sfx/act3/kite_sail_fill_2.ogg"
+      ],
+      "bus": "World",
+      "voices": 2,
+      "pitch_jitter": 0.03,
+      "cooldown_ms": 300,
+      "_note": "a wing filling at once"
+    },
+    "kite_rope_strain": {
+      "files": [
+        "res://assets/audio/sfx/act3/kite_rope_strain_1.ogg",
+        "res://assets/audio/sfx/act3/kite_rope_strain_2.ogg",
+        "res://assets/audio/sfx/act3/kite_rope_strain_3.ogg"
+      ],
+      "bus": "World",
+      "voices": 2,
+      "pitch_jitter": 0.04,
+      "cooldown_ms": 400,
+      "_note": "E4: the strain on a sheet (the hold input)"
+    },
+    "kite_landing": {
+      "files": [
+        "res://assets/audio/sfx/act3/kite_landing.ogg"
+      ],
+      "bus": "World",
+      "voices": 1,
+      "_note": "E4: the hull meeting the water hard"
+    },
+    "kite_tiller": {
+      "files": [
+        "res://assets/audio/sfx/act3/kite_tiller_1.ogg",
+        "res://assets/audio/sfx/act3/kite_tiller_2.ogg"
+      ],
+      "bus": "World",
+      "voices": 1,
+      "pitch_jitter": 0.03,
+      "cooldown_ms": 300,
+      "_note": "the tiller worked"
+    },
+    "kite_chest_open": {
+      "files": [
+        "res://assets/audio/sfx/act3/kite_chest_open.ogg"
+      ],
+      "bus": "World",
+      "voices": 1,
+      "_note": "the ledger chest by the hatch"
+    }
+  }
+}

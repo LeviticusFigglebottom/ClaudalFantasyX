@@ -1,0 +1,1362 @@
+{
+ "doc": "M4-C13-02 greybox (tools/act1/ch13_greybox.py; do not edit by hand): Ansedra, the holy city on its mirror lagoon at an overcast 16:30 (colour script ch13). The outer moorings (Moorings; kerrid_moorings: Kerrid sits out the nights there among the barge-polers, ADR 0022 (c)), a causeway north to the central island and Sefir's house (sefir_door), west to Corran's old house (corran_house: Ysolde's side scene), east to the Lamp Archive (to_archive), north to the Sanctum (to_sanctum); gold bowl-domes. The story waits on the beat sheet (M4-C13-01).",
+ "sun": {
+  "pitch_deg": -25.0,
+  "yaw_deg": 130.0,
+  "energy": 1.6,
+  "color": "#fff9f2"
+ },
+ "environment": {
+  "background": "#c8c4ba",
+  "ambient_color": "#8a96a4",
+  "ambient_energy": 0.6
+ },
+ "block_color": "#bab4a8",
+ "blocks": [
+  {
+   "id": "Water",
+   "pos": [
+    0.0,
+    -0.35,
+    -45.0
+   ],
+   "size": [
+    120.0,
+    0.1,
+    150.0
+   ],
+   "color": "#5e6e80",
+   "solid": false
+  },
+  {
+   "id": "Bed",
+   "pos": [
+    0.0,
+    -2.1,
+    -45.0
+   ],
+   "size": [
+    120.0,
+    1.0,
+    150.0
+   ],
+   "color": "#1e1511"
+  },
+  {
+   "id": "Moorings",
+   "pos": [
+    0.0,
+    -0.25,
+    10.0
+   ],
+   "size": [
+    16.0,
+    0.5,
+    16.0
+   ],
+   "color": "#bab4a8"
+  },
+  {
+   "id": "MooringsWallN0",
+   "pos": [
+    -5.1,
+    0.5,
+    2.0
+   ],
+   "size": [
+    5.8,
+    1.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "MooringsWallN1",
+   "pos": [
+    5.1,
+    0.5,
+    2.0
+   ],
+   "size": [
+    5.8,
+    1.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "MooringsWallS0",
+   "pos": [
+    0.0,
+    0.5,
+    18.0
+   ],
+   "size": [
+    16.0,
+    1.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "MooringsWallW0",
+   "pos": [
+    -8.0,
+    0.5,
+    10.0
+   ],
+   "size": [
+    0.5,
+    1.0,
+    16.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "MooringsWallE0",
+   "pos": [
+    8.0,
+    0.5,
+    10.0
+   ],
+   "size": [
+    0.5,
+    1.0,
+    16.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "BargeA",
+   "pos": [
+    -11.0,
+    -0.1,
+    10.0
+   ],
+   "size": [
+    2.0,
+    0.6,
+    9.0
+   ],
+   "color": "#7a2a24",
+   "solid": false
+  },
+  {
+   "id": "BargeB",
+   "pos": [
+    11.0,
+    -0.1,
+    12.0
+   ],
+   "size": [
+    2.0,
+    0.6,
+    9.0
+   ],
+   "color": "#7a2a24",
+   "solid": false
+  },
+  {
+   "id": "CausewayN",
+   "pos": [
+    0.0,
+    -0.25,
+    -14.0
+   ],
+   "size": [
+    35.6,
+    0.5,
+    3.6
+   ],
+   "yaw": 90.0,
+   "color": "#bab4a8"
+  },
+  {
+   "id": "CausewayNRailL",
+   "pos": [
+    2.0,
+    0.25,
+    -14.0
+   ],
+   "size": [
+    28.4,
+    0.5,
+    0.4
+   ],
+   "yaw": 90.0,
+   "color": "#8a8478"
+  },
+  {
+   "id": "CausewayNLampL0",
+   "pos": [
+    4.2,
+    1.3,
+    -1.5
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewayNLampL1",
+   "pos": [
+    5.0,
+    1.3,
+    -8.5
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewayNLampL2",
+   "pos": [
+    4.2,
+    1.3,
+    -15.5
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewayNLampL3",
+   "pos": [
+    5.0,
+    1.3,
+    -22.5
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewayNLampL4",
+   "pos": [
+    4.2,
+    1.3,
+    -29.5
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewayNRailR",
+   "pos": [
+    -2.0,
+    0.25,
+    -14.0
+   ],
+   "size": [
+    28.4,
+    0.5,
+    0.4
+   ],
+   "yaw": 90.0,
+   "color": "#8a8478"
+  },
+  {
+   "id": "CausewayNLampR0",
+   "pos": [
+    -4.2,
+    1.3,
+    -1.5
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewayNLampR1",
+   "pos": [
+    -5.0,
+    1.3,
+    -8.5
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewayNLampR2",
+   "pos": [
+    -4.2,
+    1.3,
+    -15.5
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewayNLampR3",
+   "pos": [
+    -5.0,
+    1.3,
+    -22.5
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewayNLampR4",
+   "pos": [
+    -4.2,
+    1.3,
+    -29.5
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "Centre",
+   "pos": [
+    0.0,
+    -0.25,
+    -40.0
+   ],
+   "size": [
+    20.0,
+    0.5,
+    20.0
+   ],
+   "color": "#bab4a8"
+  },
+  {
+   "id": "CentreWallN0",
+   "pos": [
+    -6.1,
+    0.5,
+    -50.0
+   ],
+   "size": [
+    7.8,
+    1.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "CentreWallN1",
+   "pos": [
+    6.1,
+    0.5,
+    -50.0
+   ],
+   "size": [
+    7.8,
+    1.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "CentreWallS0",
+   "pos": [
+    -6.1,
+    0.5,
+    -30.0
+   ],
+   "size": [
+    7.8,
+    1.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "CentreWallS1",
+   "pos": [
+    6.1,
+    0.5,
+    -30.0
+   ],
+   "size": [
+    7.8,
+    1.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "CentreWallW0",
+   "pos": [
+    -10.0,
+    0.5,
+    -46.1
+   ],
+   "size": [
+    0.5,
+    1.0,
+    7.8
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "CentreWallW1",
+   "pos": [
+    -10.0,
+    0.5,
+    -33.9
+   ],
+   "size": [
+    0.5,
+    1.0,
+    7.8
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "CentreWallE0",
+   "pos": [
+    10.0,
+    0.5,
+    -46.1
+   ],
+   "size": [
+    0.5,
+    1.0,
+    7.8
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "CentreWallE1",
+   "pos": [
+    10.0,
+    0.5,
+    -33.9
+   ],
+   "size": [
+    0.5,
+    1.0,
+    7.8
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "SefirHouse",
+   "pos": [
+    5.0,
+    3.0,
+    -46.0
+   ],
+   "size": [
+    8.0,
+    6.0,
+    6.0
+   ],
+   "color": "#7a2a24"
+  },
+  {
+   "id": "SefirHouseDome",
+   "pos": [
+    5.0,
+    7.0,
+    -46.0
+   ],
+   "size": [
+    6.0,
+    2.0,
+    5.0
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewayW",
+   "pos": [
+    -22.0,
+    -0.25,
+    -40.0
+   ],
+   "size": [
+    27.6,
+    0.5,
+    3.6
+   ],
+   "yaw": -180.0,
+   "color": "#bab4a8"
+  },
+  {
+   "id": "CausewayWRailL",
+   "pos": [
+    -22.0,
+    0.25,
+    -42.0
+   ],
+   "size": [
+    20.4,
+    0.5,
+    0.4
+   ],
+   "yaw": -180.0,
+   "color": "#8a8478"
+  },
+  {
+   "id": "CausewayWLampL0",
+   "pos": [
+    -13.5,
+    1.3,
+    -44.2
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewayWLampL1",
+   "pos": [
+    -20.5,
+    1.3,
+    -45.0
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewayWLampL2",
+   "pos": [
+    -27.5,
+    1.3,
+    -44.2
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewayWRailR",
+   "pos": [
+    -22.0,
+    0.25,
+    -38.0
+   ],
+   "size": [
+    20.4,
+    0.5,
+    0.4
+   ],
+   "yaw": -180.0,
+   "color": "#8a8478"
+  },
+  {
+   "id": "CausewayWLampR0",
+   "pos": [
+    -13.5,
+    1.3,
+    -35.8
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewayWLampR1",
+   "pos": [
+    -20.5,
+    1.3,
+    -35.0
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewayWLampR2",
+   "pos": [
+    -27.5,
+    1.3,
+    -35.8
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CorranIsle",
+   "pos": [
+    -42.0,
+    -0.25,
+    -40.0
+   ],
+   "size": [
+    16.0,
+    0.5,
+    16.0
+   ],
+   "color": "#bab4a8"
+  },
+  {
+   "id": "CorranIsleWallN0",
+   "pos": [
+    -42.0,
+    0.5,
+    -48.0
+   ],
+   "size": [
+    16.0,
+    1.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "CorranIsleWallS0",
+   "pos": [
+    -42.0,
+    0.5,
+    -32.0
+   ],
+   "size": [
+    16.0,
+    1.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "CorranIsleWallW0",
+   "pos": [
+    -50.0,
+    0.5,
+    -40.0
+   ],
+   "size": [
+    0.5,
+    1.0,
+    16.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "CorranIsleWallE0",
+   "pos": [
+    -34.0,
+    0.5,
+    -45.1
+   ],
+   "size": [
+    0.5,
+    1.0,
+    5.8
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "CorranIsleWallE1",
+   "pos": [
+    -34.0,
+    0.5,
+    -34.9
+   ],
+   "size": [
+    0.5,
+    1.0,
+    5.8
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "CorranHouse",
+   "pos": [
+    -44.0,
+    2.5,
+    -44.0
+   ],
+   "size": [
+    6.0,
+    5.0,
+    5.0
+   ],
+   "color": "#8a8478"
+  },
+  {
+   "id": "CausewayE",
+   "pos": [
+    22.0,
+    -0.25,
+    -40.0
+   ],
+   "size": [
+    27.6,
+    0.5,
+    3.6
+   ],
+   "color": "#bab4a8"
+  },
+  {
+   "id": "CausewayERailL",
+   "pos": [
+    22.0,
+    0.25,
+    -38.0
+   ],
+   "size": [
+    20.4,
+    0.5,
+    0.4
+   ],
+   "color": "#8a8478"
+  },
+  {
+   "id": "CausewayELampL0",
+   "pos": [
+    13.5,
+    1.3,
+    -35.8
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewayELampL1",
+   "pos": [
+    20.5,
+    1.3,
+    -35.0
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewayELampL2",
+   "pos": [
+    27.5,
+    1.3,
+    -35.8
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewayERailR",
+   "pos": [
+    22.0,
+    0.25,
+    -42.0
+   ],
+   "size": [
+    20.4,
+    0.5,
+    0.4
+   ],
+   "color": "#8a8478"
+  },
+  {
+   "id": "CausewayELampR0",
+   "pos": [
+    13.5,
+    1.3,
+    -44.2
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewayELampR1",
+   "pos": [
+    20.5,
+    1.3,
+    -45.0
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewayELampR2",
+   "pos": [
+    27.5,
+    1.3,
+    -44.2
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "ArchiveIsle",
+   "pos": [
+    42.0,
+    -0.25,
+    -40.0
+   ],
+   "size": [
+    16.0,
+    0.5,
+    16.0
+   ],
+   "color": "#bab4a8"
+  },
+  {
+   "id": "ArchiveIsleWallN0",
+   "pos": [
+    42.0,
+    0.5,
+    -48.0
+   ],
+   "size": [
+    16.0,
+    1.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "ArchiveIsleWallS0",
+   "pos": [
+    42.0,
+    0.5,
+    -32.0
+   ],
+   "size": [
+    16.0,
+    1.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "ArchiveIsleWallW0",
+   "pos": [
+    34.0,
+    0.5,
+    -45.1
+   ],
+   "size": [
+    0.5,
+    1.0,
+    5.8
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "ArchiveIsleWallW1",
+   "pos": [
+    34.0,
+    0.5,
+    -34.9
+   ],
+   "size": [
+    0.5,
+    1.0,
+    5.8
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "ArchiveIsleWallE0",
+   "pos": [
+    50.0,
+    0.5,
+    -40.0
+   ],
+   "size": [
+    0.5,
+    1.0,
+    16.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "ArchiveIsleDome",
+   "pos": [
+    42.0,
+    4.0,
+    -40.0
+   ],
+   "size": [
+    7.2,
+    8.0,
+    7.2
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewaySanctum",
+   "pos": [
+    0.0,
+    -0.25,
+    -66.0
+   ],
+   "size": [
+    35.6,
+    0.5,
+    3.6
+   ],
+   "yaw": 90.0,
+   "color": "#bab4a8"
+  },
+  {
+   "id": "CausewaySanctumRailL",
+   "pos": [
+    2.0,
+    0.25,
+    -66.0
+   ],
+   "size": [
+    28.4,
+    0.5,
+    0.4
+   ],
+   "yaw": 90.0,
+   "color": "#8a8478"
+  },
+  {
+   "id": "CausewaySanctumLampL0",
+   "pos": [
+    4.2,
+    1.3,
+    -53.5
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewaySanctumLampL1",
+   "pos": [
+    5.0,
+    1.3,
+    -60.5
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewaySanctumLampL2",
+   "pos": [
+    4.2,
+    1.3,
+    -67.5
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewaySanctumLampL3",
+   "pos": [
+    5.0,
+    1.3,
+    -74.5
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewaySanctumLampL4",
+   "pos": [
+    4.2,
+    1.3,
+    -81.5
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewaySanctumRailR",
+   "pos": [
+    -2.0,
+    0.25,
+    -66.0
+   ],
+   "size": [
+    28.4,
+    0.5,
+    0.4
+   ],
+   "yaw": 90.0,
+   "color": "#8a8478"
+  },
+  {
+   "id": "CausewaySanctumLampR0",
+   "pos": [
+    -4.2,
+    1.3,
+    -53.5
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewaySanctumLampR1",
+   "pos": [
+    -5.0,
+    1.3,
+    -60.5
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewaySanctumLampR2",
+   "pos": [
+    -4.2,
+    1.3,
+    -67.5
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewaySanctumLampR3",
+   "pos": [
+    -5.0,
+    1.3,
+    -74.5
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "CausewaySanctumLampR4",
+   "pos": [
+    -4.2,
+    1.3,
+    -81.5
+   ],
+   "size": [
+    0.3,
+    3.2,
+    0.3
+   ],
+   "color": "#b8a070",
+   "solid": false
+  },
+  {
+   "id": "SanctumIsle",
+   "pos": [
+    0.0,
+    -0.25,
+    -94.0
+   ],
+   "size": [
+    24.0,
+    0.5,
+    24.0
+   ],
+   "color": "#bab4a8"
+  },
+  {
+   "id": "SanctumIsleWallN0",
+   "pos": [
+    0.0,
+    0.5,
+    -106.0
+   ],
+   "size": [
+    24.0,
+    1.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "SanctumIsleWallS0",
+   "pos": [
+    -7.1,
+    0.5,
+    -82.0
+   ],
+   "size": [
+    9.8,
+    1.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "SanctumIsleWallS1",
+   "pos": [
+    7.1,
+    0.5,
+    -82.0
+   ],
+   "size": [
+    9.8,
+    1.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "SanctumIsleWallW0",
+   "pos": [
+    -12.0,
+    0.5,
+    -94.0
+   ],
+   "size": [
+    0.5,
+    1.0,
+    24.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "SanctumIsleWallE0",
+   "pos": [
+    12.0,
+    0.5,
+    -94.0
+   ],
+   "size": [
+    0.5,
+    1.0,
+    24.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "SanctumIsleDome",
+   "pos": [
+    0.0,
+    4.0,
+    -94.0
+   ],
+   "size": [
+    10.8,
+    8.0,
+    10.8
+   ],
+   "color": "#b8a070",
+   "solid": false
+  }
+ ],
+ "spawns": {
+  "Moorings": [
+   0.0,
+   0.0,
+   12.0,
+   0.0
+  ],
+  "FromSanctum": [
+   0.0,
+   0.0,
+   -78.0,
+   180.0
+  ],
+  "FromArchive": [
+   38.0,
+   0.0,
+   -40.0,
+   90.0
+  ]
+ },
+ "marks": {
+  "kerrid_moorings": [
+   -6.0,
+   0.0,
+   14.0,
+   90.0
+  ],
+  "sefir_door": [
+   5.0,
+   0.0,
+   -42.4,
+   180.0
+  ],
+  "corran_house": [
+   -44.0,
+   0.0,
+   -40.8,
+   180.0
+  ]
+ },
+ "actors": {},
+ "shots": {
+  "A01": {
+   "pos": [
+    0.0,
+    2.5,
+    16.0
+   ],
+   "look_at": [
+    0.0,
+    6.0,
+    -94.0
+   ],
+   "fov": 40
+  }
+ },
+ "triggers": [
+  {
+   "id": "to_sanctum",
+   "activation": "touch",
+   "at": [
+    0.0,
+    0.0,
+    -84.0
+   ],
+   "size": [
+    4.0,
+    0,
+    1.5
+   ],
+   "payload": {
+    "beat": "to_sanctum"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "to_archive",
+   "activation": "touch",
+   "at": [
+    46.0,
+    0.0,
+    -40.0
+   ],
+   "size": [
+    2.0,
+    0,
+    4.0
+   ],
+   "payload": {
+    "beat": "to_archive"
+   },
+   "yaw": 0.0
+  }
+ ]
+}

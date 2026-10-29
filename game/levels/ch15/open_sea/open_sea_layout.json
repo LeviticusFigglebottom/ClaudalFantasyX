@@ -1,0 +1,212 @@
+{
+ "doc": "M4-C15-02 greybox (tools/act1/ch15_16_greybox.py; do not edit by hand): the open sea at night aboard the bridal barge, unlamped (colour script ch15: the only light the sea and the dead). The deck (Deck), Tobin's bier under the bridal cloth (tobin_bier), the stern where Kerrid sits (kerrid_sits), the shoal of an old Rising's held dead under the water (Shoal), the bow (bow: to_hollowmere at dawn). The Wakefin's fight is on this deck. The story waits on the beat sheet (M4-C15-01).",
+ "sun": {
+  "pitch_deg": -20.0,
+  "yaw_deg": 0.0,
+  "energy": 0.25,
+  "color": "#9fb4d6"
+ },
+ "environment": {
+  "background": "#0b1630",
+  "ambient_color": "#1c2a40",
+  "ambient_energy": 0.35
+ },
+ "block_color": "#7a2a22",
+ "blocks": [
+  {
+   "id": "Water",
+   "pos": [
+    0.0,
+    -0.35,
+    0.0
+   ],
+   "size": [
+    160.0,
+    0.1,
+    160.0
+   ],
+   "color": "#061a2b",
+   "solid": false
+  },
+  {
+   "id": "Bed",
+   "pos": [
+    0.0,
+    -2.1,
+    0.0
+   ],
+   "size": [
+    160.0,
+    1.0,
+    160.0
+   ],
+   "color": "#1e1511"
+  },
+  {
+   "id": "Deck",
+   "pos": [
+    0.0,
+    -0.25,
+    0.0
+   ],
+   "size": [
+    4.0,
+    0.5,
+    10.0
+   ],
+   "color": "#7a2a22"
+  },
+  {
+   "id": "RailW",
+   "pos": [
+    -2.1,
+    0.3,
+    0.0
+   ],
+   "size": [
+    0.2,
+    0.6,
+    10.0
+   ],
+   "color": "#8a7650"
+  },
+  {
+   "id": "RailE",
+   "pos": [
+    2.1,
+    0.3,
+    0.0
+   ],
+   "size": [
+    0.2,
+    0.6,
+    10.0
+   ],
+   "color": "#8a7650"
+  },
+  {
+   "id": "RailN",
+   "pos": [
+    0.0,
+    0.3,
+    -5.1
+   ],
+   "size": [
+    4.4,
+    0.6,
+    0.2
+   ],
+   "color": "#8a7650"
+  },
+  {
+   "id": "RailS",
+   "pos": [
+    0.0,
+    0.3,
+    5.1
+   ],
+   "size": [
+    4.4,
+    0.6,
+    0.2
+   ],
+   "color": "#8a7650"
+  },
+  {
+   "id": "Bier",
+   "pos": [
+    0.0,
+    0.3,
+    1.5
+   ],
+   "size": [
+    1.2,
+    0.6,
+    2.4
+   ],
+   "color": "#a83228"
+  },
+  {
+   "id": "Shoal",
+   "pos": [
+    6.0,
+    -3.0,
+    -8.0
+   ],
+   "size": [
+    30.0,
+    0.5,
+    20.0
+   ],
+   "color": "#061a2b",
+   "emission": "#2fb8c8",
+   "emission_energy": 0.3,
+   "solid": false
+  }
+ ],
+ "spawns": {
+  "Deck": [
+   0.0,
+   0.0,
+   3.5,
+   0.0
+  ]
+ },
+ "marks": {
+  "tobin_bier": [
+   0.8,
+   0.0,
+   1.5,
+   270.0
+  ],
+  "kerrid_sits": [
+   0.0,
+   0.0,
+   4.2,
+   0.0
+  ],
+  "bow": [
+   0.0,
+   0.0,
+   -4.2,
+   0.0
+  ]
+ },
+ "actors": {},
+ "shots": {
+  "U01": {
+   "pos": [
+    1.6,
+    1.4,
+    -3.0
+   ],
+   "look_at": [
+    0.0,
+    0.8,
+    4.2
+   ],
+   "fov": 40
+  }
+ },
+ "triggers": [
+  {
+   "id": "dawn",
+   "activation": "interact",
+   "at": [
+    0.0,
+    0.0,
+    -4.2
+   ],
+   "size": [
+    2.0,
+    0,
+    1.2
+   ],
+   "prompt_key": "FIELD_PROMPT_CH15_BOW",
+   "payload": {
+    "beat": "to_hollowmere"
+   },
+   "yaw": 0.0
+  }
+ ]
+}

@@ -131,6 +131,35 @@ table, asset_import.md §3) would add a distance cutoff, which battles, held at 
   creatures.json's `stand_in` overrides (`yaw_deg` 90 turns a +Z-facing model toward the party). The spec's
   `height` (battle_sandbox.json) still places the damage numbers and the VFX anchors (effects.json
   `anchor_heights`), so **build the model to that height**. An enemy without `model` keeps its primitive.
+- **A Vowbound (M3-CRE-638)** has no enemies.json row. Its creatures.json row has the Vowbound's id (a
+  game/data/battle/vowbound.json row) and `"vowbound": true`, and `CreatureModels.stand_in_overrides` gives that id's
+  stand-in the row's `scene` and `stand_in` the same way (Ilun: `yaw_deg` −90, facing the foes as the heroes do).
+  validate_creatures.py checks the id and that no enemy uses the scene. The VFX anchors are fractions of the height
+  from the ground and ignore `hover`, so a hovering Vowbound is built hovering (origin at the water) instead.
+  A Vowbound with no battle_sandbox.json stand-in row (UI's) gives its own `height` and `radius` in its `stand_in`
+  (M3-CRE-640, Kahre: 3.3 and 0.75), merged last, so the anchors and the ring fit the model. **Check the default
+  camera**: the Vowbound slot's mark sits at 0.765 of the screen width and the safe frame's right edge at 0.85, so
+  only about 0.85 m behind the mark is inside it; a model long along the battle axis has to be built compact.
+  A Vowbound built ahead of its vowbound.json row (Combat's) carries `vowbound_pending` (M3-CRE-642, Nhoa): a
+  string naming the task that asks for the row. The validator then allows the missing row, and it is an error once
+  the row exists, so drop the key when the row lands. Its integration test binds an in-test copy of a live row under
+  its id. The summon shot's bottom safe line is about 0.6 m up on the mark, so anything lower (feet, strands) sits
+  under the HUD there, which is expected; check the top edge on that shot instead.
+- **A Vowbound as a foe (M3-CRE-647, the Ch20 releases)** is a second creatures.json row, `<id>_held`, with no
+  `vowbound` key (validate_creatures.py forbids an enemy using the ally's scene). Its scene
+  `game/creatures/<id>/<id>_held_battle.tscn` instances **the same GLB** (one model, so ally and foe never drift)
+  and sets `CreatureActor.material_dir = "res://assets/creatures/<id>/materials_held"`. **Why an actor override,
+  not the import:** one GLB has one import, and the post-import already bakes the `materials/` set onto it as
+  surface overrides, so a second set cannot come from the import. In `_ready` the actor puts
+  `<material_dir>/<slot>.tres` on each surface whose current material's `resource_name` is `<slot>` (the import's
+  `.tres` names itself by slot), the same slot mapping the post-import uses. The set is written by
+  `write_materials.py` from a `held` block in materials.json (`emission_from` glimmer_bound, `emission_to`
+  glimmer_held): every emissive slot swapped at the same energy, steady, the rest copied, so the job lists
+  `materials_held/*.tres` as an output. Without the block nothing more is written. The row's `ko` is the `release`
+  clip, `stand_in.yaw_deg` is 90 (a foe faces the party), and `phases.release` is `{"clip": "release", "hold":
+  true}`: a **`hold`** phase stays on its clip's last frame instead of going back to idle, `settle()` jumps there,
+  and a KO whose clip is the held one doesn't replay it. The change back to `glimmer_lift` and the rising motes are
+  presentation (battle VFX), not the model. No enemies.json row: Combat and the chapter designer add those.
 - **`game/creatures/<id>/<id>_battle.tscn`**: a `Node3D` root with `creature_actor.gd` (`creature_id = &"<id>"`,
   `metadata/hymn_battle_actor = true`) and the GLB instanced as its first child, `Model`.
 - **`CreatureActor`** (`game/creatures/creature_actor.gd`) plays what creatures.json says: an action's clip
@@ -170,3 +199,12 @@ sandbox's noon light, holds a clip at a time, frames the camera from a named vie
 7. Shots (CreatureStage) and the battle shots it changes, viewed and re-approved.
 8. Gates: `validate_data.py`, `python3 -m unittest discover -s tools/tests -p "test_creatures.py"` (and
    `test_post_import.py`), gdlint/gdformat, Godot `--filter=creature`, `--filter=post_import`, `--filter=battle`.
+
+## VFX anchors (M3-CRE-651, ADR 0041)
+
+A creatures.json row may name `vfx_anchors`: `{"core": "<bone>", "wound": "<bone>"}`. **core** is the body's centre
+(a thorax, a chest, a shell), **wound** the bone that carries its `spawn_wound` weak point (ADR 0151): the bone
+with the most masked vertices (`TEXCOORD_1.y`). `CreatureActor.vfx_anchor(&"core" | &"wound")` returns that bone's
+world position as the clip has posed it this frame; a row without a wound uses its core, and a row without anchors
+answers `Vector3.INF` (the caller falls back to the stand-in's `anchor_heights`). Every Act I regular has them
+(tools/tests/test_creatures.py `ACT1_REGULARS`). Battle VFX starts the spawn effect and the KO effect there.

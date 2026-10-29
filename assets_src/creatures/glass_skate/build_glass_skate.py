@@ -10,6 +10,10 @@ surface). A broad rounded disc 1.4 m across with a pointed snout and a thick tai
 flat (y 0 is the sand; the disc's underside lies on it). The eyes are lacquer_black on raised turrets; the belly
 bone; the weak point a small spawn_wound split at the tail root.
 
+**The battle read (M3-CRE-645).** The clear back stays, but its edges read: a thornback row of dark-tipped thorns
+down the midline and the tail (and a short row on each shoulder), a rim of darker `sand_wet` pigment round the disc's
+margin, and the eyes raised higher on darker turrets, each rimmed black.
+
 Run without Blender (`python3 build_glass_skate.py --report`) for the triangle count and each clip's numbers.
 """
 
@@ -28,12 +32,14 @@ import creature_kit as ck  # noqa: E402
 SEED = 8251
 PAL = {k: ck.hexrgb(v) for k, v in {
     "foam_white": "#EEF6F4", "cumulus_lit": "#FFF8EE", "salt_glass": "#BFE6E0", "lacquer_black": "#1D1916",
-    "bone": "#E6DAC0", "spawn_wound": "#3FE0C8",
+    "bone": "#E6DAC0", "spawn_wound": "#3FE0C8", "sand_wet": "#B59D74",
 }.items()}
 BACK = ck.mix(PAL["foam_white"] * 0.9, PAL["cumulus_lit"] * 0.88, 0.4)  # both held under the albedo ceiling
 GLASS = PAL["salt_glass"] * 0.92
 BLACK = PAL["lacquer_black"]
 BELLY = PAL["bone"] * 0.95
+RIM = PAL["sand_wet"]  # the margin's darker pigment
+THORN = ck.mix(PAL["sand_wet"], PAL["lacquer_black"], 0.35)  # a thorn's base; its tip goes to lacquer_black
 
 HALF_W = 0.7  # the disc is 1.4 m across
 NOSE_Z, REAR_Z = 0.66, -0.5
@@ -45,7 +51,10 @@ DISC = 3  # bones per side
 TAIL = np.array([(0.0, 0.06, -0.42), (0.0, 0.06, -0.65), (0.0, 0.055, -0.88), (0.0, 0.05, -1.1), (0.0, 0.045, -1.32)])
 TAIL_R = (0.055, 0.045, 0.034, 0.022, 0.01)
 EYE_X, EYE_Z = 0.085, 0.27
-TURRET_H = 0.045
+SPIRACLE_X, SPIRACLE_Z = 0.1, 0.17
+TURRET_H = 0.045  # the eye bone's length above its head (the rig; the turret mesh is taller)
+TURRET_TOP = 0.072  # the turret's height over the back
+DISC_RINGS = 14  # the back's rings, centre to margin
 WOUND_Z = -0.47  # the split at the tail root (the weak point)
 
 
@@ -110,12 +119,13 @@ def top_height(P: np.ndarray, r: np.ndarray) -> np.ndarray:
 
 
 def disc(mesh: ck.Mesh, rig: ck.Rig) -> None:
-    segs, rings = 44, 12
+    segs, rings = 44, DISC_RINGS
     ang = np.linspace(0, 2 * math.pi, segs, endpoint=False)
     edge = outline(ang)
     skin = disc_skin(rig)
-    r = np.repeat(np.linspace(0.0, 1.0, rings + 1) ** 0.85, segs)
-    P = np.vstack([edge * rr for rr in np.linspace(0.0, 1.0, rings + 1) ** 0.85])
+    radii = np.linspace(0.0, 1.0, rings + 1) ** 0.75  # rings closer together toward the margin, for the rim
+    r = np.repeat(radii, segs)
+    P = np.vstack([edge * rr for rr in radii])
     P[:, 1] = top_height(P, r)
     P[:segs, 0] = 0.0
     P[:segs, 2] = 0.0
@@ -128,10 +138,11 @@ def disc(mesh: ck.Mesh, rig: ck.Rig) -> None:
     col = BACK * (0.92 + 0.08 * n)[:, None]
     col = ck.mix(col, GLASS, (0.75 * ck.smoothstep(0.55, 0.98, r))[:, None])  # glassy toward the thin margins
     col = ck.mix(col, GLASS * 0.9, (0.35 * mottle)[:, None])  # a faint ripple-light mottle, like sand under water
-    # two dark spiracles behind the eyes
-    for s in (-1.0, 1.0):
-        sp = np.exp(-((P[:, 0] - s * 0.1) / 0.02) ** 2 - ((P[:, 2] - 0.17) / 0.025) ** 2)
-        col = ck.mix(col, BLACK, (0.85 * sp)[:, None])
+    # the rim: a band of darker pigment round the margin, broken a little by the mottle, darkest at the edge
+    rim = ck.smoothstep(0.8, 0.95, r) * (0.75 + 0.25 * (1.0 - mottle))
+    col = ck.mix(col, RIM, (0.85 * rim)[:, None])
+    # (the two dark spiracles behind the eyes are their own small parts, in eyes(): painted on this coarse a back
+    # they smeared grey)
     # the weak point: a short split across the spine at the tail root
     split = np.exp(-(P[:, 0] / 0.035) ** 2 - ((P[:, 2] - WOUND_Z) / 0.014) ** 2)
     glow = ck.smoothstep(0.35, 0.8, split)
@@ -158,19 +169,70 @@ def disc(mesh: ck.Mesh, rig: ck.Rig) -> None:
     fn = np.cross(Pr[Tr[:, 1]] - Pr[Tr[:, 0]], Pr[Tr[:, 2]] - Pr[Tr[:, 0]])
     if float((fn[:, [0, 2]] * c[:, [0, 2]]).sum()) < 0:
         Tr = ck.flip(Tr)
-    ck.finish(mesh, Pr, Tr, "back", np.tile(GLASS, (len(Pr), 1)), skin, wet=0.85)
+    ck.finish(mesh, Pr, Tr, "back", np.tile(RIM * 0.9, (len(Pr), 1)), skin, wet=0.85)
 
 
 def eyes(mesh: ck.Mesh, rig: ck.Rig) -> None:
+    turret = ck.mix(ck.mix(BACK, GLASS, 0.4), RIM, 0.45)
     for s, tag in ((1.0, "l"), (-1.0, "r")):
         b = rig.bones[rig.index(f"eye_{tag}")]
         h0 = np.asarray(b.head)
         base = np.array([h0[0], top_height(h0[None], np.array([0.0]))[0] - 0.01, h0[2]])
-        path = ck.bezier([base, base + np.array([0.0, TURRET_H * 0.6, 0.0]), base + np.array([0.0, TURRET_H, 0.004])], 5)
-        P, T = ck.tube(path, np.array([0.034, 0.03, 0.026, 0.024, 0.022]), 10, cap_start=False)
-        ck.finish(mesh, P, T, "back", ck.mix(BACK, GLASS, 0.4), rig.rigid(f"eye_{tag}"), wet=0.85, cavity=0.2)
-        Pe, Te = ck.ellipsoid(path[-1] + np.array([s * 0.004, 0.012, 0.0]), (0.021, 0.019, 0.023), 6, 10)
+        path = ck.bezier([base, base + np.array([0.0, TURRET_TOP * 0.6, 0.0]),
+                          base + np.array([0.0, TURRET_TOP, 0.006])], 5)
+        P, T = ck.tube(path, np.array([0.04, 0.032, 0.027, 0.025, 0.024]), 10, cap_start=False)
+        up = ck.smoothstep(0.0, TURRET_TOP, P[:, 1] - base[1])
+        ck.finish(mesh, P, T, "back", ck.mix(ck.mix(BACK, GLASS, 0.4), turret, up[:, None]), rig.rigid(f"eye_{tag}"),
+                  wet=0.85, cavity=0.2)
+        eye = path[-1] + np.array([s * 0.004, 0.012, 0.0])
+        Pe, Te = ck.ellipsoid(eye, (0.024, 0.021, 0.026), 6, 10)
         ck.finish(mesh, Pe, Te, "eye", BLACK, rig.rigid(f"eye_{tag}"), wet=1.0)
+        # the black lid round the eye's base, so it reads as an eye on a stalk, not a bead
+        a = np.linspace(0.0, 2.0 * math.pi, 11)
+        lid = eye + np.column_stack([0.026 * np.cos(a), np.full(11, -0.008), 0.028 * np.sin(a)])
+        Pl, Tl = ck.tube(lid, 0.005, 4, cap_start=False, cap_end=False)
+        ck.finish(mesh, Pl, Tl, "back", ck.mix(RIM, BLACK, 0.7), rig.rigid(f"eye_{tag}"), wet=0.9, cavity=0.3)
+        # the spiracle behind it: a small dark opening, sunk into the back
+        sp = np.array([s * SPIRACLE_X, 0.0, SPIRACLE_Z])
+        sp[1] = back_y(sp[0], sp[2]) - 0.001
+        Ps, Ts = ck.ellipsoid(sp, (0.017, 0.006, 0.022), 4, 8)
+        ck.finish(mesh, Ps, Ts, "back", ck.mix(RIM, BLACK, 0.8), disc_skin(rig), wet=1.0, cavity=0.6)
+
+
+def back_y(x: float, z: float) -> float:
+    """The back's height at (x, z) on the rest disc."""
+    a = math.atan2(z, x)
+    e = outline(np.array([a]))[0]
+    r = min(math.hypot(x, z) / max(math.hypot(e[0], e[2]), 1e-6), 1.0)
+    return float(top_height(np.array([[x, 0.0, z]]), np.array([r]))[0])
+
+
+def thorn(mesh: ck.Mesh, at, h: float, rb: float, bones) -> None:
+    """A thorn raked back from the surface point `at`: a dark-tipped cone, its base sunk into the skin."""
+    x, y, z = at
+    path = np.array([(x, y - 0.004, z + 0.006), (x, y + 0.55 * h, z - 0.006), (x, y + h, z - 0.018)])
+    P, T = ck.tube(path, np.array([rb, rb * 0.5, 0.0012]), 5, cap_start=False)
+    tip = ck.smoothstep(y + 0.2 * h, y + h, P[:, 1])
+    ck.finish(mesh, P, T, "back", ck.mix(THORN, BLACK, tip[:, None]), bones, wet=0.9, cavity=0.2 * (1.0 - tip))
+
+
+def thorns(mesh: ck.Mesh, rig: ck.Rig) -> None:
+    """The thornback rows: down the midline from behind the eyes to the tail root (stopping short of the split), a
+    short row on each shoulder, and on along the tail to the first dorsal fin."""
+    skin = disc_skin(rig)
+    for k, z in enumerate(np.linspace(0.16, WOUND_Z + 0.07, 10)):
+        h = 0.036 - 0.01 * k / 9
+        thorn(mesh, (0.0, back_y(0.0, z), z), h, 0.012, skin)
+    for s in (1.0, -1.0):
+        for z in (0.06, -0.02, -0.1):
+            x = s * (0.12 - 0.15 * (0.06 - z))
+            thorn(mesh, (x, back_y(x, z), z), 0.018, 0.008, skin)
+    tskin = rig.chain([f"tail{k}" for k in range(4)], TAIL)
+    path = ck.bezier(list(TAIL), 18)
+    rad = np.interp(np.linspace(0.0, 1.0, 18), np.linspace(0.0, 1.0, len(TAIL_R)), TAIL_R)
+    for k, z in enumerate(np.linspace(-0.55, -0.9, 6)):
+        y = float(np.interp(-z, -path[:, 2], path[:, 1])) + float(np.interp(-z, -path[:, 2], rad)) - 0.002
+        thorn(mesh, (0.0, y, z), 0.026 - 0.01 * k / 5, 0.01 - 0.003 * k / 5, tskin)
 
 
 def tail(mesh: ck.Mesh, rig: ck.Rig) -> None:
@@ -214,6 +276,7 @@ def build_mesh(rig: ck.Rig) -> ck.Mesh:
     mesh = ck.Mesh("glass_skate")
     disc(mesh, rig)
     eyes(mesh, rig)
+    thorns(mesh, rig)
     tail(mesh, rig)
     wound(mesh, rig)
     return mesh

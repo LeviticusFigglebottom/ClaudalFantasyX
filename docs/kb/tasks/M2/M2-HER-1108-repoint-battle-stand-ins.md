@@ -3,7 +3,8 @@ id: M2-HER-1108
 title: "Repoint the battle hero stand_ins at the HeroBattleActor wrappers (request to ui-menus)"
 role: ui
 status: done
-owner_session: ""
+owner_session: "ui-menus (claude/ui, session_01KGBUwbYgXe9JS6D8jXw6ZG)"
+reviewer: combat
 depends_on: [M2-HER-1103, M2-UI-07]
 milestone: M2
 request-from: combat
@@ -30,6 +31,12 @@ path, so no code change is needed.
   claude/ui and claude/battle-presentation (`fighter_stand_in.gd` set_ko), and the three choreo test hunks are on
   claude/battle-presentation. Only the stand_ins repoint is left.
 - The hero track will check every clip transition on the integration branch after the repoint (M2-HER-1103).
+- **2026-10-27, ui-menus:**
+  - Rhen, Asha and Toma were repointed with big9 (M2-HER-1103).
+  - **Ysolde now points at `ysolde_battle_actor.tscn`.**
+  - Liss's row names her wrapper too (M3-HER-1120); it is on claude/hero-integration until it merges.
+  - test_battle_party_stand_ins checks that every hero with a wrapper on the branch is shown through it.
+  - The battle shots with Ysolde in frame are in the ui-menus render request.
 
 - 2026-10-27, Ysolde FAST-TRACK on the Lead's instruction (she was a tan capsule in the PC gate's battle shots): the
   hero track made her row's change itself (`stand_ins.ysolde.scene` → her wrapper, `yaw_deg` -90). It also changed

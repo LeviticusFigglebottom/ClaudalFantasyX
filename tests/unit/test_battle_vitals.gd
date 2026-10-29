@@ -146,6 +146,7 @@ func test_victory_writes_vitals_back_and_a_shrine_heals_them() -> void:
 	assert_false(Game.state.party_vitals.is_empty(), "the reef leaves marks")
 	# The next battle (Retry) starts from what was saved.
 	var hurt := _hp_by_id()
+	ctl.hud.result.finish_open()  # the numbers finish counting first (a first Confirm would only skip the count)
 	_press(&"ui_accept")
 	assert_eq(ctl.battles_started, 2)
 	for cid: StringName in hurt:

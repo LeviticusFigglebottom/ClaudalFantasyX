@@ -2,7 +2,7 @@
 id: M3-BPR-403
 title: "Battle line-up: space the slots by the real models' footprints"
 role: combat
-status: doing
+status: review
 owner_session: claude/battle-presentation
 depends_on: [M3-BPR-402]
 milestone: M3
@@ -17,6 +17,7 @@ shots' safe frames.
 
 ## Acceptance criteria
 - [x] No two fighters on their marks overlap (a test over every encounter's line-up, with models).
-- [ ] Every battle shot viewed and re-approved; the camera director's safe-frame tests pass.
+- [x] Every battle shot viewed and re-approved: the integration's big11/big12 approvals (viewed on the PC gate)
+      and this track's view of render db0819b (2026-10-27, superseded by them); the safe-frame tests pass.
 
 ## Review log

@@ -1,0 +1,281 @@
+[gd_scene load_steps=18 format=3]
+
+[ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
+[ext_resource type="Shader" path="res://game/shaders/environment/env_sky_low_sun.gdshader" id="2_r"]
+[ext_resource type="Texture3D" path="res://assets/environments/zones/ch05/lut_ch05_ashcrown.png" id="3_r"]
+[ext_resource type="Script" path="res://game/world/arenas/arena_sea.gd" id="4_r"]
+[ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="5_r"]
+[ext_resource type="Material" path="res://game/levels/ch02/haluna/haluna_water_material.tres" id="6_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/ashcrown/anvil_hall.glb" id="7_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/ashcrown/anvil_altar.glb" id="8_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/ashcrown/ashcrown_tiers.glb" id="9_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/ashcrown/crest_ground.glb" id="10_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/ashcrown/plume_vent.glb" id="11_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/ashcrown/matron_alcove.glb" id="12_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/pemakar/ash_plume_near.glb" id="13_r"]
+[ext_resource type="Material" path="res://assets/environments/kits/ashcrown/materials/ac_plume_day.tres" id="plume_day"]
+
+[sub_resource type="ShaderMaterial" id="SkyMat"]
+shader = ExtResource("2_r")
+shader_parameter/azimuth_power = 2.0
+shader_parameter/band_energy = 0.5
+shader_parameter/band_height = 0.04
+shader_parameter/cloud_ambient_energy = 1.35
+shader_parameter/cloud_coverage = 0.55
+shader_parameter/cloud_height_m = 1800.0
+shader_parameter/cloud_horizon_fade = 0.08
+shader_parameter/cloud_opacity = 0.96
+shader_parameter/cloud_scale_m = 5000.0
+shader_parameter/cloud_softness = 0.22
+shader_parameter/cloud_stretch = Vector2(1, 2.5)
+shader_parameter/cloud_sun_energy = 2.6
+shader_parameter/cloud_wind_deg = 135.0
+shader_parameter/col_band = Color(1, 0.8235, 0.6588, 1)
+shader_parameter/col_cloud_lit = Color(0.902, 0.8784, 0.8392, 1)
+shader_parameter/col_cloud_shadow = Color(0.5412, 0.549, 0.5647, 1)
+shader_parameter/col_glow = Color(1, 0.8941, 0.8078, 1)
+shader_parameter/col_ground = Color(0.2902, 0.2824, 0.2745, 1)
+shader_parameter/col_horizon_away = Color(0.7882, 0.7373, 0.6549, 1)
+shader_parameter/col_horizon_sun = Color(0.8392, 0.7843, 0.698, 1)
+shader_parameter/col_zenith = Color(0.3725, 0.4314, 0.502, 1)
+shader_parameter/glow_energy = 0.4
+shader_parameter/glow_power = 6.0
+shader_parameter/halo_energy = 0.8
+shader_parameter/halo_power = 200.0
+shader_parameter/horizon_curve = 0.25
+shader_parameter/mid_strength = 0.0
+shader_parameter/sky_energy = 1.2
+shader_parameter/sun_disc_energy = 4.0
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMat")
+process_mode = 2
+
+[sub_resource type="Environment" id="Env"]
+resource_name = "ashcrown_anvil_court_ch05_temple_int"
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 2
+ambient_light_color = Color(0.1686, 0.149, 0.1333, 1)
+ambient_light_energy = 1.4
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 1.35
+tonemap_agx_white = 12.0
+ssao_enabled = true
+ssao_radius = 1.2
+ssao_intensity = 1.2
+glow_enabled = true
+glow_intensity = 0.35
+glow_bloom = 0.03
+glow_hdr_threshold = 1.1
+fog_enabled = true
+fog_mode = 0
+fog_light_color = Color(0.2275, 0.2, 0.1882, 1)
+fog_aerial_perspective = 0.2
+fog_density = 0.004
+fog_sky_affect = 0.0
+fog_height = 0.0
+fog_height_density = 0.0
+adjustment_enabled = true
+adjustment_color_correction = ExtResource("3_r")
+
+[node name="AshcrownAnvilCourt" type="Node3D"]
+script = ExtResource("1_r")
+arena_id = &"ashcrown_anvil_court"
+sub_frame = &"ch05_temple_int"
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.707107, 0.599661, -0.37471, -0, 0.529919, 0.848048, 0.707107, -0.599661, 0.37471, 0, 30, 0)
+light_color = Color(1, 0.9412, 0.8627, 1)
+light_energy = 2.8
+shadow_enabled = true
+shadow_bias = 0.03
+shadow_normal_bias = 1.0
+shadow_blur = 1.0
+directional_shadow_mode = 2
+directional_shadow_split_1 = 0.06
+directional_shadow_split_2 = 0.18
+directional_shadow_split_3 = 0.45
+directional_shadow_max_distance = 120.0
+
+[node name="Sea" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -302.717, 0)
+script = ExtResource("4_r")
+wave_set = ExtResource("5_r")
+material = ExtResource("6_r")
+sea_glow_energy = 0.0
+tide_line_y = -302.717
+
+[node name="Ground" parent="." instance=ExtResource("7_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, 4.0, -1.0)
+
+[node name="Dressing" type="Node3D" parent="."]
+
+[node name="anvil_altar_1" parent="Dressing" instance=ExtResource("8_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 4, -1)
+
+[node name="ashcrown_tiers_1" parent="Dressing" instance=ExtResource("9_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 4, -1)
+
+[node name="crest_ground_1" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 4, -1)
+
+[node name="plume_vent_1" parent="Dressing" instance=ExtResource("11_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 4, -1)
+
+[node name="matron_alcove_1" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -5.55, 0, -11.4)
+
+[node name="ash_plume_near_1" parent="Dressing" instance=ExtResource("13_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, -52.717, -79)
+
+[node name="Lamps" type="Node3D" parent="."]
+
+[node name="Lamp0" type="OmniLight3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.65, 1.92, 8.5)
+light_color = Color(1, 0.6941, 0.4314, 1)
+light_energy = 2.4
+omni_range = 6.0
+omni_attenuation = 1.2
+light_volumetric_fog_energy = 0.0
+shadow_enabled = true
+shadow_bias = 0.05
+
+[node name="Lamp1" type="OmniLight3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.65, 1.92, 8.5)
+light_color = Color(1, 0.6941, 0.4314, 1)
+light_energy = 2.4
+omni_range = 6.0
+omni_attenuation = 1.2
+light_volumetric_fog_energy = 0.0
+
+[node name="Lamp2" type="OmniLight3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.65, 1.92, 3.5)
+light_color = Color(1, 0.6941, 0.4314, 1)
+light_energy = 2.4
+omni_range = 6.0
+omni_attenuation = 1.2
+light_volumetric_fog_energy = 0.0
+
+[node name="Lamp3" type="OmniLight3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.65, 1.92, 3.5)
+light_color = Color(1, 0.6941, 0.4314, 1)
+light_energy = 2.4
+omni_range = 6.0
+omni_attenuation = 1.2
+light_volumetric_fog_energy = 0.0
+
+[node name="Lamp4" type="OmniLight3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.65, 1.92, -1.5)
+light_color = Color(1, 0.6941, 0.4314, 1)
+light_energy = 2.4
+omni_range = 6.0
+omni_attenuation = 1.2
+light_volumetric_fog_energy = 0.0
+
+[node name="Lamp5" type="OmniLight3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.65, 1.92, -1.5)
+light_color = Color(1, 0.6941, 0.4314, 1)
+light_energy = 2.4
+omni_range = 6.0
+omni_attenuation = 1.2
+light_volumetric_fog_energy = 0.0
+
+[node name="Lamp6" type="OmniLight3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.65, 1.92, -6.5)
+light_color = Color(1, 0.6941, 0.4314, 1)
+light_energy = 2.4
+omni_range = 6.0
+omni_attenuation = 1.2
+light_volumetric_fog_energy = 0.0
+
+[node name="Lamp7" type="OmniLight3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.65, 1.92, -6.5)
+light_color = Color(1, 0.6941, 0.4314, 1)
+light_energy = 2.4
+omni_range = 6.0
+omni_attenuation = 1.2
+light_volumetric_fog_energy = 0.0
+
+[node name="Lamp8" type="OmniLight3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.65, 1.92, -11.5)
+light_color = Color(1, 0.6941, 0.4314, 1)
+light_energy = 2.4
+omni_range = 6.0
+omni_attenuation = 1.2
+light_volumetric_fog_energy = 0.0
+
+[node name="Lamp9" type="OmniLight3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.65, 1.92, -11.5)
+light_color = Color(1, 0.6941, 0.4314, 1)
+light_energy = 2.4
+omni_range = 6.0
+omni_attenuation = 1.2
+light_volumetric_fog_energy = 0.0
+
+[node name="Lamp10" type="OmniLight3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, 0.55, -6.8)
+light_color = Color(0.8784, 0.4392, 0.1804, 1)
+light_energy = 1.6
+omni_range = 7.0
+omni_attenuation = 1.2
+light_volumetric_fog_energy = 0.0
+
+[node name="Lamp11" type="OmniLight3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, 11.2, -9.4)
+light_color = Color(0.7882, 0.8235, 0.8549, 1)
+light_energy = 5.0
+omni_range = 14.0
+omni_attenuation = 1.2
+light_volumetric_fog_energy = 0.0
+
+[node name="Lamp12" type="OmniLight3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, 3.5, 16.0)
+light_color = Color(0.851, 0.7961, 0.7216, 1)
+light_energy = 3.0
+omni_range = 18.0
+omni_attenuation = 1.2
+light_volumetric_fog_energy = 0.0
+
+[node name="Lamp13" type="OmniLight3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, -34.387, -43.0)
+light_color = Color(0.8784, 0.4392, 0.1804, 1)
+light_energy = 6.0
+omni_range = 40.0
+omni_attenuation = 1.2
+light_volumetric_fog_energy = 0.0
+
+[node name="Lamp14" type="OmniLight3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 3.2, 0.4)
+light_color = Color(1, 0.6941, 0.4314, 1)
+light_energy = 1.6
+omni_range = 9.0
+omni_attenuation = 1.2
+light_volumetric_fog_energy = 0.0
+
+[node name="CameraHints" type="Node3D" parent="."]
+
+[node name="wide_high" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.997785, 0.0253614, -0.0614945, -0, 0.924465, 0.381266, 0.066519, -0.380422, 0.922418, -1, 6.5, 12)
+
+[node name="party_side" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.609711, -0.057838, 0.790511, 0, 0.997334, 0.0729702, -0.792624, -0.0444907, 0.608085, 5, 1.6, 4.5)
+
+[node name="foe_side" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.524097, 0.0667469, -0.849039, -0, 0.996924, 0.0783728, 0.851658, -0.041075, 0.522485, -5, 1.6, 4)
+
+[node name="to_the_shaft" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.997597, 0.034219, 0.0602366, 0, 0.869496, -0.49394, -0.0692776, 0.492753, 0.867407, 1, 0.8, 5)
+
+[node name="BossAnchor" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4, 0.0, 0.9)
+
+[node name="ash_plume_near" parent="Dressing/ash_plume_near_1" index="0"]
+surface_material_override/0 = ExtResource("plume_day")
+
+[node name="ash_plume_near-lod1" parent="Dressing/ash_plume_near_1" index="1"]
+surface_material_override/0 = ExtResource("plume_day")

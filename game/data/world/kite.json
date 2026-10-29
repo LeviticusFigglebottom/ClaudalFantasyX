@@ -1,0 +1,31 @@
+{
+  "kite": {
+    "doc": "The Kite's world map (SPEC §6.6, Act III; act_outline.md Ch18; M3-UI-205, ui-menus). The chart is Maresh's sea in grid cells, columns A..H west to east and rows 1..6 north to south; every 'at' is [column, row] as fractions of the chart (0..1, x east, y south). regions: where each people lives (bible §5), drawn as a name on the chart. destinations: places the Kite can land, each a locations.json location and spawn, shown once requires_flag is set (the Kite itself needs open_flag). secrets: coordinate-search places (SPEC §6.6): the cell the player names, the flag set when it is found (then it is a destination), and its location. The Act I rows are the revisitable places that exist today; M3-UI-205 added Act II's towns and Lowlight (Ansedra stays off: the party are heretics there after Ch14); Act III adds its towns as their zones land. Positions are provisional, for Narrative and art to move.",
+    "open_flag": "kite_flying",
+    "columns": ["A", "B", "C", "D", "E", "F", "G", "H"],
+    "rows": 6,
+    "regions": [
+      {"id": "low_reaches", "name_key": "KITE_REGION_LOW_REACHES", "at": [0.16, 0.78]},
+      {"id": "pemakar", "name_key": "KITE_REGION_PEMAKAR", "at": [0.42, 0.56]},
+      {"id": "tamsule", "name_key": "KITE_REGION_TAMSULE", "at": [0.56, 0.42]},
+      {"id": "corrow", "name_key": "KITE_REGION_CORROW", "at": [0.74, 0.30]},
+      {"id": "ossa_fen", "name_key": "KITE_REGION_OSSA_FEN", "at": [0.62, 0.18]},
+      {"id": "sunken_vey", "name_key": "KITE_REGION_SUNKEN_VEY", "at": [0.30, 0.34]},
+      {"id": "ullar", "name_key": "KITE_REGION_ULLAR", "at": [0.50, 0.08]},
+      {"id": "ansedra", "name_key": "KITE_REGION_ANSEDRA", "at": [0.86, 0.50]},
+      {"id": "hollowmere", "name_key": "KITE_REGION_HOLLOWMERE", "at": [0.24, 0.62]},
+      {"id": "pale_rim", "name_key": "KITE_REGION_PALE_RIM", "at": [0.50, 0.94]}
+    ],
+    "destinations": [
+      {"id": "haluna", "region": "low_reaches", "location_id": "ch02/haluna", "spawn": "Beach", "requires_flag": "ch02_met_asha", "at": [0.14, 0.82]},
+      {"id": "pemakar", "region": "pemakar", "location_id": "ch05/pemakar", "spawn": "Harbour", "requires_flag": "ch05_arrived", "at": [0.42, 0.60]},
+      {"id": "tamsule", "region": "tamsule", "location_id": "ch07/tamsule", "spawn": "RiverMouth", "requires_flag": "ch07_arrived", "at": [0.56, 0.46]},
+      {"id": "corrow", "region": "corrow", "location_id": "ch08/corrow", "spawn": "Mole", "requires_flag": "ch08_arrived_corrow", "at": [0.74, 0.34]},
+      {"id": "reedhollow", "region": "ossa_fen", "location_id": "ch10/reedhollow", "spawn": "Gate", "requires_flag": "ch10_reached_reedhollow", "at": [0.66, 0.22]},
+      {"id": "lowlight", "region": "sunken_vey", "location_id": "ch11/lowlight", "spawn": "Gate", "requires_flag": "ch11_reached_lowlight", "at": [0.32, 0.38]},
+      {"id": "quellan", "region": "ullar", "location_id": "ch12/quellan", "spawn": "FromPass", "requires_flag": "ch12_reached_quellan", "at": [0.50, 0.12]},
+      {"id": "hollowmere", "region": "hollowmere", "location_id": "ch17/hollowmere", "spawn": "Dock", "requires_flag": "ch15_reached_hollowmere", "at": [0.24, 0.66]}
+    ],
+    "secrets": []
+  }
+}

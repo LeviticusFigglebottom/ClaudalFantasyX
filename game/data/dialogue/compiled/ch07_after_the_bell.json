@@ -31,15 +31,11 @@
     {"op": "cue", "cue": "mark", "args": ["oruvel_diver_1", "divers_boat", "walk"], "kwargs": {}, "src": 37},
     {"op": "cue", "cue": "mark", "args": ["oruvel_diver_2", "divers_boat", "walk"], "kwargs": {}, "src": 38},
     {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 39},
-    {"op": "cue", "cue": "mark", "args": ["asha", "asha_rim", "walk"], "kwargs": {}, "src": 40},
-    {"op": "cue", "cue": "mark", "args": ["toma", "toma_rim", "walk"], "kwargs": {}, "src": 41},
-    {"op": "cue", "cue": "mark", "args": ["liss", "liss_rim", "walk"], "kwargs": {}, "src": 42},
-    {"op": "cue", "cue": "mark", "args": ["ysolde", "ysolde_rim", "walk"], "kwargs": {}, "src": 43},
-    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 44},
-    {"op": "cue", "cue": "anim", "args": ["asha", "hand_jacket", "rhen"], "kwargs": {}, "src": 45},
-    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 46},
-    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 47},
-    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 48}
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 40},
+    {"op": "cue", "cue": "anim", "args": ["asha", "hand_jacket", "rhen"], "kwargs": {}, "src": 41},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 42},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 43},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 44}
    ]
   }
  }

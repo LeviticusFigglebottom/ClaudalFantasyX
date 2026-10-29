@@ -1,0 +1,300 @@
+{
+ "doc": "M4-C16-02 greybox (tools/act1/ch15_16_greybox.py; do not edit by hand): the Pale Rim, the white shallows at a white overcast noon (colour script ch16: no shadows). The ship waits at the Rim (west, Rim), then a long wade east over white sand a hand deep in water, the cairns the waders keep to, Kerrid last in the line (the party's order is the beat sheet's), to the Choir's edge (to_choir). The story waits on the beat sheet (M4-C16-01).",
+ "sun": {
+  "pitch_deg": -70.0,
+  "yaw_deg": 0.0,
+  "energy": 1.6,
+  "color": "#f2f2ee"
+ },
+ "environment": {
+  "background": "#f2f2ee",
+  "ambient_color": "#d8dee4",
+  "ambient_energy": 0.9
+ },
+ "block_color": "#e8e4d8",
+ "blocks": [
+  {
+   "id": "Sand",
+   "pos": [
+    90.0,
+    -0.5,
+    0.0
+   ],
+   "size": [
+    260.0,
+    1.0,
+    60.0
+   ],
+   "color": "#e8e4d8"
+  },
+  {
+   "id": "Shallows",
+   "pos": [
+    90.0,
+    0.12,
+    0.0
+   ],
+   "size": [
+    260.0,
+    0.04,
+    60.0
+   ],
+   "color": "#5e8c90",
+   "solid": false
+  },
+  {
+   "id": "Haze0",
+   "pos": [
+    90.0,
+    1.5,
+    -30.5
+   ],
+   "size": [
+    260.0,
+    3.0,
+    1.0
+   ],
+   "color": "#e8e4d8"
+  },
+  {
+   "id": "Haze1",
+   "pos": [
+    90.0,
+    1.5,
+    30.5
+   ],
+   "size": [
+    260.0,
+    3.0,
+    1.0
+   ],
+   "color": "#e8e4d8"
+  },
+  {
+   "id": "Haze2",
+   "pos": [
+    -40.5,
+    1.5,
+    0.0
+   ],
+   "size": [
+    1.0,
+    3.0,
+    60.0
+   ],
+   "color": "#e8e4d8"
+  },
+  {
+   "id": "Haze3",
+   "pos": [
+    240.5,
+    1.5,
+    0.0
+   ],
+   "size": [
+    1.0,
+    3.0,
+    60.0
+   ],
+   "color": "#e8e4d8"
+  },
+  {
+   "id": "Ship",
+   "pos": [
+    -30.0,
+    1.5,
+    0.0
+   ],
+   "size": [
+    6.0,
+    3.0,
+    18.0
+   ],
+   "color": "#5a4636"
+  },
+  {
+   "id": "Cairn0",
+   "pos": [
+    10.0,
+    0.6,
+    4.0
+   ],
+   "size": [
+    0.8,
+    1.2,
+    0.8
+   ],
+   "color": "#c8c4b8"
+  },
+  {
+   "id": "Cairn1",
+   "pos": [
+    38.571,
+    0.6,
+    -4.0
+   ],
+   "size": [
+    0.8,
+    1.2,
+    0.8
+   ],
+   "color": "#c8c4b8"
+  },
+  {
+   "id": "Cairn2",
+   "pos": [
+    67.143,
+    0.6,
+    4.0
+   ],
+   "size": [
+    0.8,
+    1.2,
+    0.8
+   ],
+   "color": "#c8c4b8"
+  },
+  {
+   "id": "Cairn3",
+   "pos": [
+    95.714,
+    0.6,
+    -4.0
+   ],
+   "size": [
+    0.8,
+    1.2,
+    0.8
+   ],
+   "color": "#c8c4b8"
+  },
+  {
+   "id": "Cairn4",
+   "pos": [
+    124.286,
+    0.6,
+    4.0
+   ],
+   "size": [
+    0.8,
+    1.2,
+    0.8
+   ],
+   "color": "#c8c4b8"
+  },
+  {
+   "id": "Cairn5",
+   "pos": [
+    152.857,
+    0.6,
+    -4.0
+   ],
+   "size": [
+    0.8,
+    1.2,
+    0.8
+   ],
+   "color": "#c8c4b8"
+  },
+  {
+   "id": "Cairn6",
+   "pos": [
+    181.429,
+    0.6,
+    4.0
+   ],
+   "size": [
+    0.8,
+    1.2,
+    0.8
+   ],
+   "color": "#c8c4b8"
+  },
+  {
+   "id": "Cairn7",
+   "pos": [
+    210.0,
+    0.6,
+    -4.0
+   ],
+   "size": [
+    0.8,
+    1.2,
+    0.8
+   ],
+   "color": "#c8c4b8"
+  }
+ ],
+ "spawns": {
+  "Rim": [
+   -24.0,
+   0.0,
+   0.0,
+   270.0
+  ]
+ },
+ "marks": {
+  "choir_edge": [
+   220.0,
+   0.0,
+   0.0,
+   270.0
+  ]
+ },
+ "actors": {},
+ "shots": {
+  "P01": {
+   "pos": [
+    -22.0,
+    1.8,
+    3.0
+   ],
+   "look_at": [
+    120.0,
+    1.0,
+    0.0
+   ],
+   "fov": 40
+  }
+ },
+ "triggers": [
+  {
+   "id": "to_choir",
+   "activation": "touch",
+   "at": [
+    230.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    0,
+    20.0
+   ],
+   "payload": {
+    "beat": "to_choir"
+   },
+   "yaw": 0.0
+  }
+ ],
+ "encounters": {
+  "table": [
+   {
+    "encounter": "ch16_rim_skates",
+    "weight": 1
+   },
+   {
+    "encounter": "ch16_rim_crawlers",
+    "weight": 1
+   }
+  ],
+  "min_m": 30,
+  "max_m": 50,
+  "when": {
+   "set": [
+    "ch16_started"
+   ]
+  },
+  "seed": 16
+ }
+}

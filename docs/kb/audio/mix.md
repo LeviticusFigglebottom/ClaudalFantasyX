@@ -114,8 +114,8 @@ The plan in §4 is now the game's mix: the `Audio` autoload (ADR 0031; docs/kb/t
   Voice. Every bus sits at 0 dB plus the player's setting plus any duck. `MusicStems` became unnecessary: a boss
   cue's stems are one `AudioStreamSynchronized` on the Music bus whose per-stem volumes fade (music.json `stems`).
   `WorldVerb` is not built yet: world SFX carry their own room (the shrine's sounds are rendered in its room).
-- **Ducks** (by reason, ramped, additive): `dialogue` (any DialogueBox visible) Music −4 dB, Ambience −2 dB over
-  0.25 s; `battle` (a BattleController in the tree) Ambience −3 dB over 0.5 s.
+- **Ducks** (by reason, ramped, additive): `dialogue` (any DialogueBox visible) Music −4 dB, Ambience −2 dB, World
+  −3 dB (M3-AUD-850) over 0.25 s; `battle` (a BattleController in the tree) Ambience −3 dB over 0.5 s.
 - **Cutscenes:** while a cutscene's music plays (and to the end of a scene that started music), the zone bed holds
   silent; it comes back over 2 s.
 - **Player volume:** `master_volume`, `music_volume`, `sfx_volume` (SFX and Ambience) and `voice_volume`, 0–100 % in
@@ -187,3 +187,26 @@ decoded file plus its data row's `volume_db`. Re-run it after any batch of new a
 pacing both come to about 9 blips a second, so the change of pace needed no level change. The stream was simply too
 far down. `mix_db` is audio's own offset, and `text_box.json` (the UI track's) is untouched. **Listen:** if the blips
 now crowd the text, lower `mix_db`; −23 is a starting point, not a verdict.
+
+
+## The slice mix pass (M3-AUD-850, 2026-10-27)
+
+The slice's world layers measured together (docs/kb/audio/mix_report.md, regenerated), effective momentary max under
+a line of dialogue (the files' level, the row's volume_db and walk_db, then the dialogue duck):
+
+| Layer | Bus | Plain | Under a line |
+|---|---|---|---|
+| Dialogue blips (voices.json `mix_db` +6) | Voice | about −21 | about −21 (never ducked) |
+| Hero footsteps (walk_db −3) | World | −21 | −24 |
+| Villagers' footsteps (walk_db −9) | World | −27 | −30 |
+| A near gull's call | World | −22 (less with distance) | −25 |
+| Villagers' work | World | −25 | −28 |
+| Villagers' chat murmur | World | −26 | **held**: LifeAudio never starts a murmur while a line is on screen |
+| Cutscene foley | World | −21 to −30 | −24 to −33 |
+| Zone beds (−26 integrated) | Ambience | −26 | −28 |
+| Zone music (−16 integrated) | Music | −16 | −20 |
+
+Every world layer sits at least 3 LU under the voice while a line is up, and the beds and music keep their places
+under it. The one thing that competed with lines before this pass was the villagers' chat (−26, a voice-like
+sound at the voice's own pitch), so it is now held, not just ducked. Re-check this table by ear on the slice once
+the human's listening pass comes (listening_notes.md).

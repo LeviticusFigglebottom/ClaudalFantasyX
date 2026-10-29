@@ -3468,6 +3468,26 @@
  },
  "triggers": [
   {
+   "id": "causeway_notice",
+   "at": [
+    10.912,
+    0.132,
+    -5.029
+   ],
+   "size": [
+    8.0,
+    0,
+    1.5
+   ],
+   "yaw": -65.7,
+   "activation": "interact",
+   "prompt_key": "FIELD_PROMPT_DEFAULT",
+   "once": true,
+   "payload": {
+    "record": "causeway_notice"
+   }
+  },
+  {
    "id": "banter_posts",
    "at": [
     28.594,
@@ -4402,12 +4422,12 @@
    "mode": "fixed",
    "pos": [
     75.97,
-    0.55,
+    1.2,
     -47.42
    ],
    "look_at": [
     85.05,
-    4.42,
+    1.6,
     -51.63
    ],
    "fov": 53.1

@@ -51,7 +51,7 @@ The greybox's frame is kept (`tamsule_layout.json`, M3-C07-02):
 |---|---|---|
 | `port_deck_8m` | A market deck on 3 × 3 piles to the riverbed: bearers, a plank deck (planks along X), the pile heads proud with rope collars. `port_deck_8m_rail` adds a rail on the +Z side. | 8 × 6, deck y 0, piles to −5.1 |
 | `plank_bridge_4m` | A plank bridge along X, arched 0.15 m, on two pile bents, with rope hand-lines on posts both sides | 4 long × 2.4 wide |
-| `market_stall` | A deck stall: four posts, a woven awning dyed in a side colour, a lacquered counter, baskets and wrapped bundles of goods, a small gilded board hung from the awning's front | 3 × 1.6 × 2.6 high |
+| `market_stall` | A deck stall: four posts, a woven awning dyed in a side colour, a lacquered counter (black plinth and posts, the red front in three gold-edged sunk panels, a black top on a gilt edge, a cloth runner hanging over it), baskets and wrapped bundles of goods bound both ways with cord, a small gilded board hung from the awning's front | 3 × 1.6 × 2.6 high |
 | `market_boat_a` | The watch-boat's crescent hull (8 m), loaded: baskets, wrapped bundles in the cloth dyes, jars, a sun umbrella on a pole, a gilded bow eye | 8.0 × 1.9 |
 | `market_boat_b` | A shorter (6 m) boat with an awning frame over stacked trays and hanging bunches | 6.0 × 1.7 |
 | `bunting_12m` | A rope across a lane from post to post, sagging 0.8 m, 20 two-sided pennants in one side's colours (the slot is the dye: place with a material override for another side) | 12 long |

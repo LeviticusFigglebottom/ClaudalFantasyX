@@ -26,7 +26,9 @@ func before_each() -> void:
 
 func test_the_slice_steps_name_their_objectives() -> void:
 	assert_eq(t.current(HALUNA), {}, "before the beach cutscene nothing calls")
-	assert_eq(t.line(HALUNA), tr("OBJ_NONE"))
+	assert_eq(t.line(HALUNA), tr("OBJ_NONE_HALUNA"), "Haluna's own idle line (idle_keys)")
+	assert_eq(t.line(&"ch12/keth_pass"), tr("OBJ_NONE"), "M3-UI-206: elsewhere it never names Haluna")
+	assert_false(tr("OBJ_NONE").contains(tr("LOCATION_CH02_HALUNA")))
 	var steps := [
 		[&"ch02_met_asha", HALUNA, &"up_the_beach"],
 		[&"ch02_tideline_won", HALUNA, &"to_nemes"],
@@ -71,7 +73,7 @@ func test_zone_maps_find_zones_by_scene() -> void:
 	var maps := ZoneMaps.new()
 	assert_eq(maps.zone_for_scene("res://game/levels/ch02/haluna/haluna.tscn"), HALUNA)
 	assert_eq(maps.zone_for_scene("res://nowhere.tscn"), &"")
-	assert_eq(maps.route().size(), 15, "Act I, the Underway to Corrow (M3-UI-04; the Brine Shoals and Ch8's two zones)")
+	assert_eq(maps.route().size(), 30, "Act I, the Underway to Corrow (M3-UI-04), then Act II's fifteen (M3-UI-206)")
 	assert_eq(StringName(str(maps.route()[2]["id"])), HALUNA, "Ch1's two zones come before Haluna")
 	assert_eq(maps.poi_position(HALUNA, &"shrine"), Vector3(-67.0, 0.0, 44.3))
 	assert_eq(maps.zone_for_scene("res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn"), UNDERWAY)

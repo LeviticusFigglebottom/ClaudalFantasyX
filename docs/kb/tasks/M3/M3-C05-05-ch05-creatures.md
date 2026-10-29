@@ -31,4 +31,7 @@ Then build the Ch5 humans the sheet lists (Character Art 8–10):
 ## Notes
 - **The stair is two foes per group for now.** The sheet's "2 ashwings + 1 vein sparker" was cut in tuning (balance_targets.md, Ch5). If you want a three-foe group back, it needs a combat pass (M3-C05-06).
 
+## Notes (creatures)
+- 2026-10-27, creatures: **the creature half is done.** ashwing, slag_tortoise, vein_sparker and cinder_matron all stand in battle as models (enemies.json `model`, creatures.json rows). The Matron's phase `pour` hides `Crust`. Her skills now play their clips through creatures.json `clip_by_skill`: slag_pour → the ladle pour-swing (`attack`); bank_the_fire, recrust_gather and recrust → `cast`. test_ch05_thread stays green. Not in the model, and noted in the sheet (docs/kb/art/creatures/act1/cinder_matron.md): the re-crust telegraph, the quench reaction, and the bank-not-break end state (the slag cooling to black over about 4 s, no motes). Those are VFX and battle-presentation work. The humans in this task are the characters track's.
+
 ## Review log

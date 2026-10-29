@@ -35,6 +35,8 @@ sys.path.append(str(HERE.parent / "brine_shoals"))  # the Brine Shoals arena gro
 
 OUT_DIR = ROOT / "assets" / "environments" / "arenas"
 KIT = "res://assets/environments/kits/haluna/"
+FLAME_KIT_RADIUS_M = 0.06  # props.build_lamp_flame's radius: an arena scales the kit flame to its lamp_spec's
+FLAME_KIT_COLOURS = {"#FFB16E", "#FFA757"}  # the oil flames lamp_flame (kit_lamp_flame_hot) stands in for
 VEG = "res://assets/environments/vegetation/"
 LOW_SUN_SKY = "res://game/shaders/environment/env_sky_low_sun.gdshader"
 WATER_MAT = "res://game/levels/ch02/haluna/haluna_water_material.tres"
@@ -583,7 +585,29 @@ def _terrace_arena() -> dict:
     }
 
 
-ASH_TERRACE = _terrace_arena()
+PEMAKAR_VOTIVE = "res://assets/environments/kits/pemakar/votive_lamp.glb"
+VOTIVE_YAW_SPREAD_DEG = 25.0  # the spouts face the fight, each set down by hand
+
+
+def _with_votive_lamps(table: dict) -> dict:
+    """env-art-b's votive lamps (M3-ENV-1305/1306; b_lanternfall.py's arena(), the same rows in the same order): each
+    votive row keeps its light but draws no writer flame, and a kit `votive_lamp` (b_votive.py) stands under it.
+    `arena_scenes.py` writes the arena with them, so b_lanternfall.py's write and this one are the same file."""
+    votives = {tuple(v["at"]) for v in _terrace_votives()}
+    rng = np.random.default_rng(np.random.SeedSequence([6006, 51]))
+    lamps, pieces = [], list(table["pieces"])
+    for lp in table["lamps"]:
+        if tuple(lp["at"]) in votives:
+            lp = {**lp, "flame": False}
+            x, _, z = lp["at"]
+            yaw = round(float(rng.uniform(-VOTIVE_YAW_SPREAD_DEG, VOTIVE_YAW_SPREAD_DEG)), 2)
+            # At the grave wall's foot, the floor's edge (the writer's flames stood there): a structure's clearance.
+            pieces.append({"glb": PEMAKAR_VOTIVE, "at": (x, 0.0, z), "yaw": yaw, "structure": True})
+        lamps.append(lp)
+    return {**table, "lamps": lamps, "pieces": pieces}
+
+
+ASH_TERRACE = _with_votive_lamps(_terrace_arena())
 
 
 # ---------------------------------------------------------------------------------------------
@@ -689,7 +713,10 @@ UNDERWAY_TOWER = {
     # oruvel_underway.md §0 `ch01_underway_int` (the lamp gallery): the dive's sun (08:45, 42 deg / 105 deg in the kit,
     # 15 deg here), the ch01 key #FFEFE1 3.0 and fill #8FC3E0 tinted by 21 m of water (the downwelling stand-in), the
     # ambient 0.22, the in-scatter x0.33 (ArenaUnderwater), exposure 0.65, lut_ch01_raft's intent.
-    "sun": {"elev": 42.0, "az": 15.0, "color": water_tinted(CH01_KEY, UW_DEPTH_M), "energy": 3.0},
+    # The sun through 21 m of water arrives soft (M3-ENV-1323, the GPU QA's rows 15 and 40: the windows' light lay on
+    # the floor as hard-edged rectangles).
+    "sun": {"elev": 42.0, "az": 15.0, "color": water_tinted(CH01_KEY, UW_DEPTH_M), "energy": 3.0, "angular_deg": 9.0,
+            "shadow_blur": 4.0},
     "fill": {"color": water_tinted(CH01_FILL, UW_DEPTH_M), "energy": UW_AMBIENT},
     "exposure": 0.65,
     "fog": {"color": "#1FA3A6", "density": 0.0, "sky_affect": 0.0, "height": 0.0, "height_density": 0.0},
@@ -975,7 +1002,9 @@ CW = "res://assets/environments/kits/corrow/"
 CW_LAYOUT = ROOT / "game" / "levels" / "_tests" / "corrow_kit" / "corrow_layout.json"  # the kit preview's, read-only
 CW_WALK_Y = 12.0  # cw_common.WALK_Y: the walk's paving, the arena's floor
 CW_ARC_R = 300.0  # cw_common.ARC_R_M
-WALLHEAD_S = -30.0  # the arena's segment (a segment centre): the stair foot at s -40 is 10 m to the party's right
+# M3-BPR-407: the arena's segment (a segment centre) sits so the Fisher Stair's head lands on the party's right
+# (its foot is at s -40, its head landing at s ~ -17.4: x ~ +11 here) with Liss's hoist (s -16.5) beside it.
+WALLHEAD_S = -6.0
 WALLHEAD_Z = 0.7  # the walk's centre line in the arena: parapet from z -2.3, inner kerb from +3.1 (slots + 1 m clear)
 WALLHEAD_RADIUS_M = 170.0  # the preview's wall, town and far pieces kept within this of the arena (the far land always)
 WALLHEAD_ALWAYS = ("corrow_far", "coilspire_headland")
@@ -1040,10 +1069,11 @@ WALLHEAD_DRESSING = [
     {"glb": BS + "crate_stack.glb", "at": (-7.7, 0.0, -1.3), "yaw": 95.0},
     {"glb": KIT + "cargo_sacks.glb", "at": (8.8, 0.0, 0.4), "yaw": 160.0},
 ]
-WALLHEAD_HOIST_DRESSING = [
-    {"glb": CW + "hoist_basket.glb", "at": (-11.6, 0.0, 2.2), "yaw": 30.0},
-    {"glb": KIT + "rope_coil.glb", "at": (-12.4, 0.0, 1.0), "yaw": 40.0},
+WALLHEAD_HOIST_DRESSING = [  # by the hoist, on the party's right with the stair head (M3-BPR-407)
+    {"glb": CW + "hoist_basket.glb", "at": (8.4, 0.0, -1.7), "yaw": 30.0},
+    {"glb": KIT + "rope_coil.glb", "at": (9.4, 0.0, -0.6), "yaw": 40.0},
 ]
+WALLHEAD_ENTRY_WARD = (10.6, 0.0, 2.4)  # EntryMarker_ward: the walk at the stair head, where the Climb arrives
 # The kites still up over the wall in the afternoon (they come down on the run back, B08): along the parapet.
 WALLHEAD_KITES = [{"glb": CW + "kite_line.glb", "at": (0.0, 0.0, -2.9), "yaw": 180.0, "structure": True}]
 
@@ -1093,7 +1123,7 @@ def _wallhead_arena(arena_id: str, *, hoist: bool, surge: bool) -> dict:
             "along_the_walk": ((-9.5, 1.8, 1.4), (3.0, 1.0, -0.2)),
             "the_storm_wall": ((2.0, 0.7, 5.0), (-3.0, 3.5, -14.0)),
         },
-        "anchors": {"BossAnchor": (-6.0, 0.9, -3.4)} if surge else {},
+        "anchors": ({"BossAnchor": (-6.0, 0.9, -3.4)} if surge else {}) | {"EntryMarker_ward": WALLHEAD_ENTRY_WARD},
     }
 
 
@@ -1495,7 +1525,9 @@ ANSEDRA_ESCAPE = {
     "lut": "res://assets/environments/arenas/ansedra_lagoon_escape/lut_ch14_wedding.png",
     # Colour script ch14 (18:30): sun 1 deg / 270 deg, key #FFAA5F 1.4, fill #4A5A78 0.4, sky #2E3448 / #B85A3A, fog
     # #4A3A3A, exposure 0.90, lut_ch14_wedding. The city's windows lit far off; no lamp on the barges.
-    "sun": {"elev": 1.0, "az": 270.0, "color": "#FFAA5F", "energy": 1.4, "max_distance": 80.0},
+    # The sun stands at 5 deg here, not the script's 1 deg: at 1 deg the bow rail's shadow (20 m) covered the whole
+    # deck and the fighting floor read black (c770380's render).
+    "sun": {"elev": 5.0, "az": 270.0, "color": "#FFAA5F", "energy": 1.4, "max_distance": 80.0},
     "fill": {"color": "#4A5A78", "energy": 0.4},
     "exposure": 0.9,
     "glow": (0.5, 0.06, 1.0),
@@ -1526,9 +1558,213 @@ ANSEDRA_ESCAPE = {
     "anchors": {"BossAnchor": (PURSUIT_AT[0] - 2.5, -0.2, PURSUIT_AT[1] + 0.6)},
 }
 
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-722: Sefir's Abiding guard in the Drowned Choir at moonrise (drowned_choir.py; pale_rim.md §2)
+# ---------------------------------------------------------------------------------------------
+def _choir():
+    import drowned_choir  # noqa: PLC0415
+
+    return drowned_choir
+
+
+CHOIR_RING_R = 44.0
+CHOIR_SINGERS = 10
+PALE_RIM_NIGHT = {  # the colour script's `pale_rim` look (absorption x0.8) at night: the deep darkened under the moon
+    "name": "arena_pale_rim_night", "shader": "res://game/shaders/water/water_ocean.gdshader",
+    "params": [("col_deep", "#2E4C50"), ("col_scatter_shallow", "#7FB8B4"), ("absorption_per_m", "Vector3(2, 0.5, 0.42)"),
+               ("absorption_scale", 0.8), ("scatter_energy", 0.12), ("caustic_strength", 0.0), ("col_foam", "#EEF4F4"),
+               ("col_sss", "#7FB8B4"), ("foam_crest_threshold", 0.95), ("roughness_far", 0.04), ("use_caustics", "false"),
+               ("use_ssr", "true"), ("use_sss", "false")]}
+
+
+def _choir_arena() -> dict:
+    dc = _choir()
+    singers = []
+    for k in range(CHOIR_SINGERS):
+        th = 2 * math.pi * (k + 0.5) / CHOIR_SINGERS
+        x, z = math.cos(th) * CHOIR_RING_R, math.sin(th) * CHOIR_RING_R
+        singers.append({"glb": KIT + "choir_singer.glb", "at": (round(x, 3), dc.SAND_Y, round(z, 3)),
+                        "yaw": round(math.degrees(math.atan2(-math.cos(th), -math.sin(th))), 3), "structure": True})
+    return {
+        "id": "drowned_choir_ring",
+        "sub_frame": "ch16",
+        "ground": "deck",
+        "ground_glb": KIT + "choir_amphitheatre.glb",
+        "lut": "res://assets/environments/arenas/drowned_choir_ring/lut_ch16_choir.png",
+        # pale_rim.md §0 (the Choir at moonrise): the moon low behind the enemy line #D2DFFF 0.35, fill #2A3A4E 0.25,
+        # the pale_rim water at night, sea-glow 0.1, exposure 1.1, lut_ch16_choir. The moon stands in the gap between
+        # two singers (az 306 bisects one: they stand at 18 + 36k deg) and at 12 deg, so no singer's shadow (24 m tall)
+        # and not the tiers' rim falls on the dais: at 9 deg / 320 one lay across the whole party (fca9987's render).
+        "sun": {"elev": 12.0, "az": 306.0, "color": "#D2DFFF", "energy": 0.35, "max_distance": 80.0, "moon": True},
+        "fill": {"color": "#2A3A4E", "energy": 0.25},
+        "exposure": 1.1,
+        "glow": (0.5, 0.06, 1.0),
+        "fog": {"color": "#3A4A5A", "density": 0.003, "sky_affect": 0.0, "height": 0.0, "height_density": 0.0},
+        "sky_shader": "res://game/shaders/environment/env_sky_night.gdshader",
+        "sky": {"col_zenith": "#0E1626", "col_horizon": "#3A4A60", "col_ground": "#2E4C50", "moon_disc_energy": 10.0,
+                "col_moon": "#D2DFFF"},
+        "sea": {"y": dc.WATER_Y, "tide_line_y": dc.WATER_Y, "sea_glow": 0.1, "material": PALE_RIM_NIGHT,
+                "waves": [(30.0, 4.0, 0.006, 0.08), (110.0, 2.0, 0.003, 0.05)]},
+        "pieces": singers,
+        "extra_glbs": [KIT + "pale_rim_flats.glb"],
+        "scatters": [],
+        "hints": {
+            "wide_high": ((-1.5, 7.5, 13.5), (0.0, 0.8, -3.0)),
+            "party_side": ((5.6, 1.7, 4.5), (-1.5, 1.0, -0.5)),
+            "foe_side": ((-5.6, 1.7, 4.0), (1.5, 1.0, 0.0)),
+            "the_mouths": ((1.0, 0.8, 3.0), (-10.0, 22.0, -40.0)),
+            "the_ring": ((0.0, 6.0, 12.0), (-20.0, 10.0, -50.0)),
+        },
+    }
+
+
+CHOIR_ARENA = _choir_arena()
+
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-726: Warden Hesper Oan and Ilsabet Rue on the Iskarra Lamp Spire's crown at nightfall (iskarra_spire.py;
+# iskarra.md §3)
+# ---------------------------------------------------------------------------------------------
+def _spire():
+    import iskarra_spire  # noqa: PLC0415
+
+    return iskarra_spire
+
+
+SPIRE_CROWN = {
+    "id": "iskarra_spire_crown",
+    "sub_frame": "ch19",
+    "ground": "deck",
+    "ground_glb": KIT + "spire_crown_floor.glb",
+    "lut": "res://assets/environments/arenas/iskarra_spire_crown/lut_ch19_spire.png",
+    # Colour script ch19 (the spire climbed into night): the afterglow low in the west #FF9F46 0.7 behind the party,
+    # fill #5A7FA8 0.4, the sky #22304E over a #C8763E horizon, the warm fog thin; the anchor-engine's bound teal
+    # the only lamp. The drowned city 112 m below. The afterglow is behind the party (+x: az 100 in the arena's frame),
+    # so the anchor-engine's long shadow falls away from the slots (az 285 laid it across the enemy line).
+    "sun": {"elev": 2.0, "az": 100.0, "color": "#FF9F46", "energy": 0.7, "max_distance": 60.0},
+    "fill": {"color": "#5A7FA8", "energy": 0.4},
+    "exposure": 1.0,
+    "glow": (0.6, 0.08, 1.0),
+    "fog": {"color": "#8A6A5A", "aerial": 0.6, "density": 0.0016, "sky_affect": 0.15, "height": 0.0,
+            "height_density": 0.0},
+    "sky_shader": LOW_SUN_SKY,
+    "sky": dict(CORROW_SKY, col_zenith="#22304E", col_horizon_sun="#C8763E", col_horizon_away="#3E4A66",
+                col_ground="#1A2232", sky_energy=0.9, sun_disc_energy=0.0, halo_energy=0.7, glow_energy=0.6,
+                cloud_coverage=0.3, col_cloud_lit="#E08A5A", col_cloud_shadow="#2E3650"),
+    "sea": {"y": -_spire().ELEVATION_M, "tide_line_y": -_spire().ELEVATION_M, "sea_glow": 0.06},
+    "pieces": [{"glb": KIT + "anchor_engine.glb", "at": (_spire().ENGINE_AT[0], 0.0, _spire().ENGINE_AT[1]),
+                "yaw": 0.0, "structure": True}],
+    "extra_glbs": [(KIT + "iskarra_far_towers.glb", (0.0, -_spire().ELEVATION_M, 0.0))],
+    "scatters": [],
+    "lamp_spec": {"color": "#4FB3B0", "energy": 2.6, "range_m": 14.0, "attenuation": 1.2},
+    "lamps": [{"at": (_spire().ENGINE_AT[0], 3.6, _spire().ENGINE_AT[1]), "flame": False, "shadow": True}],
+    "hints": {
+        "wide_high": ((-1.5, 7.5, 13.5), (0.0, 0.8, -3.0)),
+        "party_side": ((5.6, 1.7, 4.5), (-1.5, 1.0, -0.5)),
+        "foe_side": ((-5.6, 1.7, 4.0), (1.5, 1.0, 0.0)),
+        "the_engine": ((-1.0, 2.0, 2.0), (_spire().ENGINE_AT[0], 3.5, _spire().ENGINE_AT[1])),
+        "the_city_below": ((6.0, 2.5, 6.0), (40.0, -90.0, -60.0)),
+    },
+}
+
+
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-727: the Cage in the Undertow's last remembered room (undertow_layers.py; undertow_layers.md §2)
+# ---------------------------------------------------------------------------------------------
+HELD_PILLARS = ((-6.5, -4.5), (-4.0, -6.8), (-7.6, -1.0), (-1.3, -7.4))  # round the Cage, behind the enemy line
+UNDERTOW_CAGE = {
+    "id": "undertow_cage",
+    "sub_frame": "ch20",
+    "ground": "deck",
+    "ground_glb": KIT + "memory_island.glb",
+    "lut": "res://assets/environments/arenas/undertow_cage/lut_ch20_abyss.png",
+    # Colour script ch20: no sun; key #C4D6FF 0.8 (the motes' cold light from above), fill #061A2B 0.2, fog #0E3A48
+    # dense, sky #020610 / #0E2A3A, exposure 1.1, lut_ch20_abyss; the held pillars' cyan the practical light.
+    "sun": {"elev": 70.0, "az": 200.0, "color": "#C4D6FF", "energy": 0.8, "max_distance": 60.0, "moon": True},
+    "fill": {"color": "#061A2B", "energy": 0.2},
+    "exposure": 1.1,
+    "glow": (0.7, 0.1, 0.9),
+    "fog": {"color": "#0E3A48", "density": 0.02, "sky_affect": 0.6, "height": 0.0, "height_density": 0.0},
+    "sky_shader": "res://game/shaders/environment/env_sky_night.gdshader",
+    "sky": {"col_zenith": "#020610", "col_horizon": "#0E2A3A", "col_ground": "#020610"},
+    "sea": {"y": -60.0, "tide_line_y": -60.0, "sea_glow": 0.15},
+    "pieces": [{"glb": KIT + "held_pillar.glb", "at": (x, 0.0, z), "yaw": round(37.0 * k, 1), "structure": True}
+               for k, (x, z) in enumerate(HELD_PILLARS)] + [
+        {"glb": KIT + "memory_kitchen.glb", "at": (-17.0, -5.0, -22.0), "yaw": 25.0},
+        {"glb": KIT + "memory_market.glb", "at": (19.0, 3.5, -27.0), "yaw": -30.0},
+        {"glb": KIT + "memory_stands.glb", "at": (-30.0, 7.0, -44.0), "yaw": 40.0},
+        {"glb": KIT + "memory_island.glb", "at": (34.0, -12.0, -55.0), "yaw": 10.0, "scale": 0.7},
+        {"glb": KIT + "memory_kitchen.glb", "at": (8.0, 12.0, -60.0), "yaw": 160.0, "scale": 0.9},
+    ],
+    "scatters": [],
+    "lamp_spec": {"color": "#7FC6D9", "energy": 1.8, "range_m": 8.0, "attenuation": 1.3},
+    "lamps": [{"at": (x, 4.0, z), "flame": False, "shadow": k == 0} for k, (x, z) in enumerate(HELD_PILLARS)],
+    "hints": {
+        "wide_high": ((-1.5, 7.5, 13.5), (0.0, 0.8, -3.0)),
+        "party_side": ((5.6, 1.7, 4.5), (-1.5, 1.0, -0.5)),
+        "foe_side": ((-5.6, 1.7, 4.0), (1.5, 1.0, 0.0)),
+        "the_rooms": ((4.0, 1.5, 6.0), (-17.0, -3.0, -22.0)),
+        "the_cage": ((0.5, 1.6, 3.0), (-5.0, 3.0, -5.0)),
+    },
+}
+
+
+
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-728: the Heart of the Undertow, Sefir's fight (undertow_heart.py; undertow_layers.md §3). Two states:
+# `undertow_heart` (phases 1-2, held: lut_ch20_abyss, the column's cyan) and `undertow_heart_letting` (phase 3, the
+# Letting: lut_ch21_heart, the colour script's warm key and rim).
+# ---------------------------------------------------------------------------------------------
+def _heart():
+    import undertow_heart  # noqa: PLC0415
+
+    return undertow_heart
+
+
+HEART_HINTS = {
+    "wide_high": ((-1.5, 7.5, 13.5), (0.0, 0.8, -3.0)),
+    "party_side": ((5.6, 1.7, 4.5), (-1.5, 1.0, -0.5)),
+    "foe_side": ((-5.6, 1.7, 4.0), (1.5, 1.0, 0.0)),
+    "the_column": ((3.0, 1.2, 6.0), (_heart().COLUMN_AT[0], 12.0, _heart().COLUMN_AT[1])),
+    "the_eyewall": ((-2.0, 1.6, 4.0), (60.0, 40.0, -140.0)),
+}
+UNDERTOW_HEART = {
+    "id": "undertow_heart",
+    "sub_frame": "ch21",
+    "ground": "deck",
+    "ground_glb": KIT + "heart_floor.glb",
+    "lut": "res://assets/environments/arenas/undertow_heart/lut_ch20_abyss.png",
+    # Colour script ch21, phases 1-2 (held): no sun; the motes' cold key from above #C4D6FF 0.8, fill #0E4A55 0.3,
+    # sky #020610 / #061A2B, fog #0E2A3A, exposure 1.05, lut_ch20_abyss; Imra's column the practical light, cyan.
+    "sun": {"elev": 70.0, "az": 200.0, "color": "#C4D6FF", "energy": 0.8, "max_distance": 60.0, "moon": True},
+    "fill": {"color": "#0E4A55", "energy": 0.3},
+    "exposure": 1.05,
+    "glow": (0.7, 0.1, 0.9),
+    "fog": {"color": "#0E2A3A", "density": 0.008, "sky_affect": 0.5, "height": 0.0, "height_density": 0.0},
+    "sky_shader": "res://game/shaders/environment/env_sky_night.gdshader",
+    "sky": {"col_zenith": "#020610", "col_horizon": "#061A2B", "col_ground": "#020610"},
+    "sea": {"y": _heart().WATER_Y, "tide_line_y": _heart().WATER_Y, "sea_glow": 0.15},
+    "pieces": [{"glb": KIT + "heart_column.glb", "at": (_heart().COLUMN_AT[0], 0.0, _heart().COLUMN_AT[1]),
+                "yaw": 0.0, "structure": True}],
+    "extra_glbs": [KIT + "heart_eyewall.glb"],
+    "scatters": [],
+    "lamp_spec": {"color": "#7FC6D9", "energy": 3.0, "range_m": 18.0, "attenuation": 1.1},
+    "lamps": [{"at": (_heart().COLUMN_AT[0], 3.0, _heart().COLUMN_AT[1]), "flame": False, "shadow": True}],
+    "hints": HEART_HINTS,
+}
+# Phase 3, the Letting: the colour script's warm key #FFDCBF 1.2 from the column's side, the rim #FFE9B8 2.0 its
+# lamp; lut_ch21_heart.
+UNDERTOW_HEART_LETTING = dict(
+    UNDERTOW_HEART, id="undertow_heart_letting",
+    lut="res://assets/environments/arenas/undertow_heart_letting/lut_ch21_heart.png",
+    sun={"elev": 35.0, "az": 140.0, "color": "#FFDCBF", "energy": 1.2, "max_distance": 60.0},
+    lamp_spec={"color": "#FFE9B8", "energy": 2.0, "range_m": 22.0, "attenuation": 1.0},
+    sky={"col_zenith": "#061A2B", "col_horizon": "#3A3428", "col_ground": "#020610"},
+)
+
 ARENAS = {a["id"]: a for a in (TIDELINE, CAUSEWAY, CAUSEWAY_ROUTE, DERELICT_DECK, ASH_TERRACE, UNDERWAY_TOWER,
                                RAFT_MORNING, SHOALS, CAMP, WALLHEAD_STORM, WALLHEAD_HOIST, WALLHEAD_SURGE, HEADLAND, TIER_HALL, KETH_ARENA,
-                               LOWLIGHT_ARENA, FEN_ARENA, BRIDAL_ARENA, ANSEDRA_ESCAPE)}
+                               LOWLIGHT_ARENA, FEN_ARENA, BRIDAL_ARENA, ANSEDRA_ESCAPE, CHOIR_ARENA,
+                               SPIRE_CROWN, UNDERTOW_CAGE, UNDERTOW_HEART, UNDERTOW_HEART_LETTING)}
 
 
 # ---------------------------------------------------------------------------------------------
@@ -1642,7 +1878,9 @@ def write_arena(a: dict) -> Path:
         "transform": sun_xform(s["elev"], s["az"]), "light_color": hexc(s["color"]), "light_energy": s["energy"],
         "shadow_enabled": "true", "shadow_bias": 0.03, "shadow_normal_bias": 1.0, "shadow_blur": 1.0,
         "directional_shadow_mode": 2, "directional_shadow_split_1": 0.06, "directional_shadow_split_2": 0.18,
-        "directional_shadow_split_3": 0.45, "directional_shadow_max_distance": s.get("max_distance", 120.0)})
+        "directional_shadow_split_3": 0.45, "directional_shadow_max_distance": s.get("max_distance", 120.0),
+        # M3-ENV-1323: an underwater sun's light is diffused by the water above: soft-edged pools, not hard panes.
+        **({"light_angular_distance": s["angular_deg"], "shadow_blur": s["shadow_blur"]} if "angular_deg" in s else {})})
     sea = a["sea"]
     sea_props = {
         "transform": f"Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, {sea['y']}, 0)",
@@ -1680,6 +1918,10 @@ def write_arena(a: dict) -> Path:
         sc.node("Disc", None, ".", {"transform": f"Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, {cx}, 0, {cz})"},
                 instance=sc.res("PackedScene", a["disc"]["glb"]))
     for k, glb in enumerate(a.get("extra_glbs", [])):
+        if isinstance(glb, tuple):  # M3-ENV-726: (glb, (x, y, z)), a backdrop set off the origin (the city below)
+            glb, at = glb
+            sc.node(f"Kit{k}", None, ".", {"transform": _xyz(at)}, instance=sc.res("PackedScene", glb))
+            continue
         sc.node(f"Kit{k}", None, ".", {}, instance=sc.res("PackedScene", glb))
     sc.node("Dressing", "Node3D", ".", {})
     counts: dict[str, int] = {}
@@ -1731,15 +1973,18 @@ def _write_lamps(sc: Scene, a: dict) -> None:
     if not lamps:
         return
     spec = a["lamp_spec"]
+    flame, flame_r = None, spec.get("flame_radius_m", FLAME_KIT_RADIUS_M)
     if any(lp.get("flame", False) for lp in lamps):
-        sc.sub.append("\n".join([
-            '[sub_resource type="StandardMaterial3D" id="FlameMat"]', "shading_mode = 0",
-            f"albedo_color = {hexc(spec['color'])}", "emission_enabled = true", f"emission = {hexc(spec['color'])}",
-            f"emission_energy_multiplier = {spec['flame_energy']}"]))
-        r = spec["flame_radius_m"]
-        sc.sub.append("\n".join([
-            '[sub_resource type="SphereMesh" id="FlameMesh"]', 'material = SubResource("FlameMat")',
-            f"radius = {r}", f"height = {round(r * 2.4, 4)}", "radial_segments = 12", "rings = 6"]))
+        if spec["color"].upper() in FLAME_KIT_COLOURS:
+            flame = sc.res("PackedScene", KIT + "lamp_flame.glb")
+        else:  # a flame the kit has no piece for yet (Lowlight's bound light, Act II): the emissive bead
+            sc.sub.append("\n".join([
+                '[sub_resource type="StandardMaterial3D" id="FlameMat"]', "shading_mode = 0",
+                f"albedo_color = {hexc(spec['color'])}", "emission_enabled = true", f"emission = {hexc(spec['color'])}",
+                f"emission_energy_multiplier = {spec['flame_energy']}"]))
+            sc.sub.append("\n".join([
+                '[sub_resource type="SphereMesh" id="FlameMesh"]', 'material = SubResource("FlameMat")',
+                f"radius = {flame_r}", f"height = {round(flame_r * 2.4, 4)}", "radial_segments = 12", "rings = 6"]))
     # `lamp_parent` "." with a `lamp_name` writes the lights at the arena's root under that name (the burning
     # camp's FireLight<k>, M3-BPR-03's contract), else they go under a Lamps node as Lamp<k>.
     parent, name = a.get("lamp_parent", "Lamps"), a.get("lamp_name", "Lamp")
@@ -1761,9 +2006,16 @@ def _write_lamps(sc: Scene, a: dict) -> None:
             props["shadow_bias"] = 0.05
         if lp.get("light", True):  # a votive's flame alone (`light` false) has no light of its own
             sc.node(f"{name}{k}", "OmniLight3D", parent, props)
-        if lp.get("flame", False):
+        if lp.get("flame", False) and flame is None:
             sc.node(f"Flame{k}", "MeshInstance3D", parent, {"transform": _xyz(at), "cast_shadow": 0,
                                                              "mesh": 'SubResource("FlameMesh")'})
+        elif lp.get("flame", False):
+            # The kit's flame (M3-ENV-746), its base a little under the lamp's point so the flame stands on it.
+            s = flame_r / FLAME_KIT_RADIUS_M
+            base = (at[0], round(at[1] - flame_r * 1.2, 4), at[2])
+            sc.node(f"Flame{k}", None, parent, {"transform": f"Transform3D({s:g}, 0, 0, 0, {s:g}, 0, 0, 0, {s:g}, "
+                                                                f"{base[0]:g}, {base[1]:g}, {base[2]:g})"},
+                    instance=flame)
 
 
 def _write_far_lights(sc: Scene, a: dict) -> None:

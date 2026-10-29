@@ -36,6 +36,16 @@ func test_at_instant_pacing_it_is_there_at_once() -> void:
 	_free()
 
 
+func test_a_capture_settles_it_on_its_mark() -> void:
+	# The drownbell_flood freeze-frame (cloud render ed3a458): its polyps were caught mid-rise, dim and small.
+	ctl.pacing_scale = 1.0
+	var polyp := BossMechanics.spawn(ctl.engine, &"spawn_polyp")
+	ctl.boss._on_joined([polyp] as Array[BattleCombatant])
+	ctl.stage.settle_actors()
+	assert_true(ctl.stage.choreo.entering(polyp.id).is_empty(), "on its mark for the frame")
+	_free()
+
+
 func _free() -> void:
 	ctl.get_parent().remove_child(ctl)
 	ctl.free()

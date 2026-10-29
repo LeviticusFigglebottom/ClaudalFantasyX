@@ -357,6 +357,11 @@ The human's top priority for the playable intro: a map, so the player knows wher
   - **POI sources.** A greybox scene is only its root, so POI sources name layout points: `spawn:`, `trigger:`, `actor:` or `mark:`. `test_zone_map_pois.py` checks them, and that every hint names a block that still exists.
   - **The route.** It runs the whole act (12 stops). `RouteStrip` shows two stops either side of the current one (route `before` / `after`), in a rect widened to fit five names.
   - **Shot:** `field_menu_map_underway` shows the Underway after the glassfry shoal: the objective is the stairwell lip, and the hinge is listed as an errand.
+- **Act II greybox zones (M3-UI-206).** All fifteen act1-chapters greybox zones of Ch10 to Ch16 are mapped and follow Corrow on the route (30 stops). They are Ossa Fen and Reedhollow; Sunken Vey and Lowlight; Keth Pass, Quellan and Cloudloom; Ansedra, the Sanctum, the Lamp Archive and the Lacquer Court; the open sea; Hollowmere; and the Pale Rim and the Drowned Choir.
+  - **Shapes.** Their layouts lay a non-solid `Water` sheet over a solid `Bed`, so `Water` is hinted `sea` and `Bed` `skip`. The pass, the summit hall and Quellan's road top stand high, so their floors and walls are hinted `floors` and `structures`.
+  - **Flights.** A layout's own `ramps` (Keth Pass, Lowlight, Cloudloom, Quellan, the Lacquer Court's water-steps) are now drawn as pads, like a collision file's.
+  - **Names.** They are in `game/data/loc/maps_act2.csv` and say where, not what: "The root clearing" and "The terrace shelf", never a boss's name. Act II has no objectives yet, so there is no marker.
+  - **Shots:** `field_menu_map_keth_pass`, `field_menu_map_lowlight` and `field_menu_map_ansedra`, the three that read hardest. They are in the pseudo-loc walk.
 - **Left as they are:** the causeway has no map of its own yet (a route stop only). The map does not zoom or pan: Haluna's bounds fit at about 2.8 px/m at 1080p, and its houses read as blocks. The glyph shapes' proportions live in `MapGlyphs` (they are the drawing), while their sizes are data.
 
 ## Known gaps
@@ -747,6 +752,27 @@ It shows even with damage numbers off, because it is speech. `said` keeps the ba
 - **The match HUD's framing panel** names what the side wears.
 
 Tests: `test_reefball_outfitter.gd`. The shot is `reefball_outfitter`; it is in the pseudo-loc walk and the aspect audit.
+
+## The Kite's world map (M3-UI-205)
+
+SPEC §6.6's late-game airship-equivalent (act_outline.md Ch18) gets its menu ahead of Act III, as the Lead allowed on 2026-10-27. KiteMapMenu (`game/ui/kite/`, a `FieldSubmenu`; layout `game/data/ui/kite_map.json`, strings `game/data/loc/kite.csv`) sits over KiteMapModel, which is node-free. Its data is `game/data/world/kite.json`:
+- `open_flag` (`kite_flying`): with it unset, the Kite flies nowhere.
+- `columns` and `rows`: the chart's grid.
+- `regions`: names drawn on the chart where their people live.
+- `destinations`: each shows once its `requires_flag` is set. A row names its `location_id` and `spawn` in `locations.json` and its `at` (fractions of the chart). Its name is its location's.
+- `secrets`: each is found by searching its `cell`, which sets its `found_flag`. It then joins the destinations under its own `name_key`. The list is empty until Design places Act III's hidden places.
+
+**The page.** The list shows the places by name, then "Search the chart", then Leave. The place the party stands in is marked Here and is skipped by the cursor. The line names the place, its region and its chart square. KiteChart draws the grid, the regions and a gem per place, with a ring on the one under the cursor.
+- **Choosing a place** asks first (Stay under the cursor). Fly closes the page and goes through `ShrineNetwork.travel_to` (the SceneRouter, through the location registry). A refused trip says so and keeps the list.
+- **Search** names a square. Left and Right change the column, Up and Down the row; with the mouse, the pointer over the chart names it and a click searches. Confirm searches it.
+
+**In the field menu.** Once `kite_flying` is set, the field menu lists **The Kite** after Map. Before that the row isn't there at all, because it would name Act III's ship early.
+- It is kept out of `FieldMenuModel.ROOT_IDS`, so every other row keeps its index there. `root_ids()` adds it.
+- While it shows, `FieldMenu.grown_for` makes the panel a row taller, using field_menu.json `extra_rows`. The panel and root grow by a pitch and move up by half; Objective and Last saved move down by half. All thirteen rows show (MenuPage would otherwise scroll Close out of sight without a mark).
+- The map opens over the menu. Cancel comes back, and a flight (`KiteMapMenu.flown`) closes the menu too.
+- The Kite vehicle (Act III) only has to set the flag. Tests: `test_field_menu_kite.gd`; the shot is `field_menu_kite`.
+
+Tests: `test_kite_map.gd`, `test_input_parity_kite_map.gd`; validator `check_kite` (`tools/tests/test_kite_validate.py`). The shot is `kite_map` (KiteMapShot's fixed flags, the party in Haluna, the cursor on Tamsule). It is in the pseudo-loc walk and the aspect audit.
 
 ## "Parts look primitive": the pass of 2026-10-27
 

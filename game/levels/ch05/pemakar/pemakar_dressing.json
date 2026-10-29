@@ -11,11 +11,7 @@
  "time_of_day_h": 20.0,
  "greybox": {
   "hide_all": true,
-  "keep": [
-   "WakeWall",
-   "SeaCutWeir",
-   "CrownBell"
-  ]
+  "keep": []
  },
  "fire_light_color": "#FFA757",
  "fire_lights": [
@@ -4285,6 +4281,28 @@
     39.662,
     30.751,
     -77.83
+   ],
+   "block": "Lamps"
+  },
+  {
+   "color": "#FFA757",
+   "energy": 1.6,
+   "range": 7.0,
+   "at": [
+    15.4,
+    2.55,
+    23.527272727272734
+   ],
+   "block": "Lamps"
+  },
+  {
+   "color": "#FF9A4A",
+   "energy": 1.1,
+   "range": 5.0,
+   "at": [
+    20.2,
+    1.0,
+    28.1
    ],
    "block": "Lamps"
   }
@@ -42573,6 +42591,45 @@
    "collide": true
   },
   {
+   "piece": "harbour_quay",
+   "yaw_deg": 0.0,
+   "at": [
+    0.0,
+    27.0
+   ],
+   "y": 1.2
+  },
+  {
+   "piece": "wake_wall",
+   "yaw_deg": 0.0,
+   "at": [
+    8.0,
+    22.7
+   ],
+   "y": 1.2,
+   "block": "WakeWall"
+  },
+  {
+   "piece": "sea_cut_weir",
+   "yaw_deg": 0.0,
+   "at": [
+    20.2,
+    27.6
+   ],
+   "y": 0.7,
+   "block": "SeaCutWeir"
+  },
+  {
+   "piece": "crown_bell",
+   "yaw_deg": 0.0,
+   "at": [
+    3.0,
+    -67.054
+   ],
+   "y": 29.68,
+   "block": "CrownBell"
+  },
+  {
    "piece": "mountain_massif",
    "yaw_deg": 0.0,
    "at": [
@@ -42581,6 +42638,330 @@
    ],
    "y": 0.0,
    "collide": "trimesh_lod0"
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 168.382,
+   "at": [
+    91.002,
+    -41.582
+   ],
+   "y": 10.697
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 318.649,
+   "at": [
+    18.785,
+    10.435
+   ],
+   "y": 2.72
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 123.43,
+   "at": [
+    106.726,
+    -44.189
+   ],
+   "y": 12.011
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 59.035,
+   "at": [
+    -9.245,
+    5.03
+   ],
+   "y": 4.694
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 178.635,
+   "at": [
+    82.011,
+    -48.01
+   ],
+   "y": 12.926
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 90.542,
+   "at": [
+    93.39,
+    -46.36
+   ],
+   "y": 12.597
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 270.661,
+   "at": [
+    40.551,
+    -0.533
+   ],
+   "y": 4.464
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 103.902,
+   "at": [
+    13.563,
+    7.335
+   ],
+   "y": 3.86
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 337.683,
+   "at": [
+    -60.43,
+    -5.422
+   ],
+   "y": 3.776
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 340.14,
+   "at": [
+    3.198,
+    3.615
+   ],
+   "y": 4.65
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 291.139,
+   "at": [
+    -108.075,
+    -19.65
+   ],
+   "y": 3.19
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 131.818,
+   "at": [
+    -67.185,
+    -13.454
+   ],
+   "y": 4.98
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 292.978,
+   "at": [
+    -140.673,
+    -26.32
+   ],
+   "y": 4.164
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 275.428,
+   "at": [
+    11.786,
+    10.273
+   ],
+   "y": 3.049
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 157.21,
+   "at": [
+    5.764,
+    6.127
+   ],
+   "y": 4.46
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 137.224,
+   "at": [
+    -110.043,
+    -42.092
+   ],
+   "y": 8.055
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 109.91,
+   "at": [
+    17.658,
+    10.788
+   ],
+   "y": 2.666
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 272.856,
+   "at": [
+    147.923,
+    -34.224
+   ],
+   "y": 12.659
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 329.64,
+   "at": [
+    -125.274,
+    -28.155
+   ],
+   "y": 3.754
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 153.107,
+   "at": [
+    -143.581,
+    -44.332
+   ],
+   "y": 9.044
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 109.228,
+   "at": [
+    -49.556,
+    -3.522
+   ],
+   "y": 4.443
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 135.028,
+   "at": [
+    -112.966,
+    -22.298
+   ],
+   "y": 3.456
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 327.611,
+   "at": [
+    92.69,
+    -25.947
+   ],
+   "y": 6.544
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 295.144,
+   "at": [
+    93.488,
+    -29.301
+   ],
+   "y": 6.956
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 63.18,
+   "at": [
+    77.607,
+    -31.661
+   ],
+   "y": 9.427
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 251.213,
+   "at": [
+    -10.36,
+    9.213
+   ],
+   "y": 3.412
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 65.716,
+   "at": [
+    -121.502,
+    -18.856
+   ],
+   "y": 1.591
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 26.431,
+   "at": [
+    -106.595,
+    -17.939
+   ],
+   "y": 3.043
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 239.636,
+   "at": [
+    69.86,
+    -15.22
+   ],
+   "y": 5.694
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 294.602,
+   "at": [
+    99.517,
+    -35.208
+   ],
+   "y": 9.889
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 329.255,
+   "at": [
+    -18.611,
+    4.066
+   ],
+   "y": 4.616
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 328.809,
+   "at": [
+    86.162,
+    -23.831
+   ],
+   "y": 6.409
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 309.246,
+   "at": [
+    74.886,
+    -18.19
+   ],
+   "y": 5.981
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 17.021,
+   "at": [
+    -142.245,
+    -43.999
+   ],
+   "y": 8.96
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 15.246,
+   "at": [
+    -121.005,
+    -22.005
+   ],
+   "y": 3.349
+  },
+  {
+   "piece": "flank_rocks",
+   "yaw_deg": 72.577,
+   "at": [
+    24.185,
+    1.992
+   ],
+   "y": 4.65
   },
   {
    "piece": "ashcrown_tiers",
@@ -42649,7 +43030,12 @@
     0.0,
     -760.0
    ],
-   "y": 250.0
+   "y": 250.0,
+   "kit_dir": "res://assets/environments/kits/pemakar/",
+   "materials": {
+    "kit_plume": "pemakar_plume_night"
+   },
+   "materials_dir": "res://game/levels/ch05/pemakar/"
   },
   {
    "piece": "frangipani_b",
@@ -43107,150 +43493,6 @@
    "collide": true
   },
   {
-   "piece": "terrace_wall_4m",
-   "at": [
-    -14.0,
-    27.0
-   ],
-   "y": 1.2,
-   "yaw_deg": 0.0
-  },
-  {
-   "piece": "terrace_tread_4m",
-   "at": [
-    -14.0,
-    27.0
-   ],
-   "y": 1.2,
-   "yaw_deg": 0.0
-  },
-  {
-   "piece": "terrace_wall_4m",
-   "at": [
-    -10.0,
-    27.0
-   ],
-   "y": 1.2,
-   "yaw_deg": 0.0
-  },
-  {
-   "piece": "terrace_tread_4m",
-   "at": [
-    -10.0,
-    27.0
-   ],
-   "y": 1.2,
-   "yaw_deg": 0.0
-  },
-  {
-   "piece": "terrace_wall_4m",
-   "at": [
-    -6.0,
-    27.0
-   ],
-   "y": 1.2,
-   "yaw_deg": 0.0
-  },
-  {
-   "piece": "terrace_tread_4m",
-   "at": [
-    -6.0,
-    27.0
-   ],
-   "y": 1.2,
-   "yaw_deg": 0.0
-  },
-  {
-   "piece": "terrace_wall_4m",
-   "at": [
-    -2.0,
-    27.0
-   ],
-   "y": 1.2,
-   "yaw_deg": 0.0
-  },
-  {
-   "piece": "terrace_tread_4m",
-   "at": [
-    -2.0,
-    27.0
-   ],
-   "y": 1.2,
-   "yaw_deg": 0.0
-  },
-  {
-   "piece": "terrace_wall_4m",
-   "at": [
-    2.0,
-    27.0
-   ],
-   "y": 1.2,
-   "yaw_deg": 0.0
-  },
-  {
-   "piece": "terrace_tread_4m",
-   "at": [
-    2.0,
-    27.0
-   ],
-   "y": 1.2,
-   "yaw_deg": 0.0
-  },
-  {
-   "piece": "terrace_wall_4m",
-   "at": [
-    6.0,
-    27.0
-   ],
-   "y": 1.2,
-   "yaw_deg": 0.0
-  },
-  {
-   "piece": "terrace_tread_4m",
-   "at": [
-    6.0,
-    27.0
-   ],
-   "y": 1.2,
-   "yaw_deg": 0.0
-  },
-  {
-   "piece": "terrace_wall_4m",
-   "at": [
-    10.0,
-    27.0
-   ],
-   "y": 1.2,
-   "yaw_deg": 0.0
-  },
-  {
-   "piece": "terrace_tread_4m",
-   "at": [
-    10.0,
-    27.0
-   ],
-   "y": 1.2,
-   "yaw_deg": 0.0
-  },
-  {
-   "piece": "terrace_wall_4m",
-   "at": [
-    14.0,
-    27.0
-   ],
-   "y": 1.2,
-   "yaw_deg": 0.0
-  },
-  {
-   "piece": "terrace_tread_4m",
-   "at": [
-    14.0,
-    27.0
-   ],
-   "y": 1.2,
-   "yaw_deg": 0.0
-  },
-  {
    "piece": "ferry_hull",
    "kit_dir": "res://assets/environments/kits/brightwater_ferry/",
    "at": [
@@ -43304,6 +43546,27 @@
    "y": 1.6,
    "yaw_deg": 90.0,
    "block": "Ferry"
+  },
+  {
+   "piece": "lamp_pillar",
+   "at": [
+    15.4,
+    23.527
+   ],
+   "y": 1.2,
+   "yaw_deg": 0.0,
+   "block": "Lamps",
+   "collide": true
+  },
+  {
+   "piece": "weir_leat",
+   "at": [
+    20.2,
+    24.6
+   ],
+   "y": 0.65,
+   "yaw_deg": 0.0,
+   "block": "SeaCutWeir"
   }
  ]
 }

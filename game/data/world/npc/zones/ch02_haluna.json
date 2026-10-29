@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "doc": "Haluna's villagers alive (M3-CRE-613; docs/kb/tech/field_npc.md, VillagerLayer). Each row turns the zone's stand-in at `stand_in` (a path from the zone root) into the M2-CHR-03 villager `npc_id` driven by FieldNpc: `hide` lists the stand-in's placeholder children to hide (default StandIn and Facing), `talk` is the Interactable that starts the villager's talk, `follow` lists nodes that ride along when it walks (the stand-in body always does). Routines: `route` (zone-root points, or {at, pause_sec, activity}), `chat_with` (another row's npc_id), `work_at` (where the head looks while it works; default npc.json work.look_at), `shelter` ([x, y, z, yaw_deg] it hurries to in a storm; Haluna has no storm in the slice). Ground heights were probed against the zone's collision (2026-10-25). The Town's shopkeeper, smith and innkeeper keep their stand-ins until they have bodies (request M3-CRE-614). Since big11, HalunaVillagers (slice-polish, M2-FP-102) places Haluna's villagers inside their bodies in HalunaZone.prebuild(); HalunaZone then calls VillagerLayer.wire(self, &\"ch02/haluna\"), which adopts them and wires the chat pair, work and shelter points from these rows. The `route` rows (Reed, the child) apply only when the layer places those villagers itself (docs/kb/tech/field_npc.md, Who owns what).",
+  "doc": "Haluna's villagers alive (M3-CRE-613; docs/kb/tech/field_npc.md, VillagerLayer). Each row turns the zone's stand-in at `stand_in` (a path from the zone root) into the M2-CHR-03 villager `npc_id` driven by FieldNpc: `hide` lists the stand-in's placeholder children to hide (default StandIn and Facing), `talk` is the Interactable that starts the villager's talk, `follow` lists nodes that ride along when it walks (the stand-in body always does). Routines: `route` (zone-root points, or {at, pause_sec, activity}), `chat_with` (another row's npc_id), `work_at` (where the head looks while it works; default npc.json work.look_at), `shelter` ([x, y, z, yaw_deg] it hurries to in a storm; Haluna has no storm in the slice). Ground heights were probed against the zone's collision (2026-10-25). The Town's shopkeeper, smith and innkeeper keep their stand-ins until they have bodies (request M3-CRE-614). Since big11, HalunaVillagers (slice-polish, M2-FP-102) places Haluna's villagers inside their bodies in HalunaZone.prebuild(); HalunaZone then calls VillagerLayer.wire(self, &\"ch02/haluna\"), which adopts them and wires the chat pair, work and shelter points from these rows. The `route` rows (Reed, the child) apply only when the layer places those villagers itself (docs/kb/tech/field_npc.md, Who owns what). The shop rows (`actor`: another villager's model) sit inside their bodies (`attach: child`) as a FieldNpc named by `node_name` `Villager`, where HalunaVillagers.populate looks, so the layer builds at once in the zone's _ready and populate skips those bodies instead of doubling them (big14 gate).",
   "zone": "ch02/haluna",
   "storm_flag": "",
   "villagers": [
@@ -107,6 +107,33 @@
         "Bowl"
       ],
       "talk": "NPCs/Osu/Talk"
+    },
+    {
+      "npc_id": "shopkeeper",
+      "attach": "child",
+      "node_name": "Villager",
+      "actor": "netmender",
+      "_note": "M3-CRE-100: the shopkeeper wears the netmender's model until M2-CHR-100 (moved here from game/data/flow/haluna_villagers.json).",
+      "stand_in": "NPCs/Town/Shopkeeper",
+      "talk": "NPCs/Town/ShopkeeperTalk"
+    },
+    {
+      "npc_id": "smith",
+      "attach": "child",
+      "node_name": "Villager",
+      "actor": "fisher",
+      "_note": "M3-CRE-100: the smith wears the fisher's model until M2-CHR-100 (moved here from game/data/flow/haluna_villagers.json).",
+      "stand_in": "NPCs/Town/Smith",
+      "talk": "NPCs/Town/SmithTalk"
+    },
+    {
+      "npc_id": "innkeeper",
+      "attach": "child",
+      "node_name": "Villager",
+      "actor": "vendor",
+      "_note": "M3-CRE-100: the innkeeper wears the vendor's model until M2-CHR-100 (moved here from game/data/flow/haluna_villagers.json).",
+      "stand_in": "NPCs/Town/Innkeeper",
+      "talk": "NPCs/Town/InnkeeperTalk"
     }
   ]
 }

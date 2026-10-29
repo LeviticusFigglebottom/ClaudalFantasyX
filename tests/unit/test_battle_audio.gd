@@ -78,10 +78,12 @@ func test_a_fire_hit_plays_the_fire_sound() -> void:
 	var r := _result(&"ember", [{"target_id": _foe(), "hit": true, "amount": 12, "statuses_added": []}])
 	_view_plays(r)
 	engine.action_resolved.emit(r)
-	assert_eq(audio.played, [&"hit_fire"] as Array[StringName])
-	var last: Array = dir.sfx.history[dir.sfx.history.size() - 1]
-	assert_eq(last[0], &"hit_fire")
-	assert_true(str(last[1]).contains("/battle/hit_fire_"), "one of the fire variants: %s" % last[1])
+	# M3-BPR-421 / M3-AUD-861: Ember's own effect has its own sound (a small flame climbing), and the damage it does
+	# plays the fire hit under it.
+	assert_eq(audio.played[0], &"abl_ember", "Ember's own sound")
+	assert_true(audio.played.has(&"hit_fire"), "and the fire hit lands: %s" % [audio.played])
+	var fire: Array = dir.sfx.history.filter(func(h: Array) -> bool: return h[0] == &"hit_fire")
+	assert_true(not fire.is_empty() and str(fire[0][1]).contains("/battle/hit_fire_"), "one of the fire variants")
 	_teardown()
 
 
@@ -110,6 +112,31 @@ func test_the_flood_phase_surges_and_brings_its_stem_in() -> void:
 			assert_true(dir.music.stem_gain(int(i)) > 0.99, "stem %s comes in at the Flood" % i)
 	engine.field_cleared.emit(FLOOD, [] as Array[BattleCombatant])
 	assert_true(audio.played.has(&"floodnet"), "Floodnet: Ilun clears the field")
+	_teardown()
+
+
+## M3-AUD-861: the Undertow's Reach plays its own cue, its Dark and Breach bring its stems in, and each seawall
+## wave starts heavier than the last.
+func test_the_reach_and_the_seawall_waves_play_their_stems() -> void:
+	_attach()
+	var cue := AudioData.battle_cue(dir.music_data, &"undertows_reach")
+	assert_eq(cue, &"undertows_reach", "the Reach is not the default battle music")
+	assert_true(dir.play_music(cue, 0.0), "its cue plays")
+	var phases := (dir.music_data.get("battle", {}) as Dictionary).get("phases", {}) as Dictionary
+	for ph: StringName in [&"dark", &"breach"]:
+		var row := phases.get(String(ph), {}) as Dictionary
+		engine.phase_changed.emit(engine.enemies[0], ph)
+		dir.music.advance(float(row.get("sec", 0.0)) + 0.1)
+		for i: Variant in row.get("stems_on", []):
+			assert_true(dir.music.stem_gain(int(i)) > 0.99, "%s brings stem %s in" % [ph, i])
+	var starts: Array[int] = []
+	for enc: StringName in [&"ch08_stair_hold_1", &"ch08_stair_hold_2", &"ch08_stair_hold_3"]:
+		var row := (
+			(dir.music_data.get("cues", {}) as Dictionary).get(String(AudioData.battle_cue(dir.music_data, enc)), {})
+			as Dictionary
+		)
+		starts.append((row.get("start_stems", []) as Array).size())
+	assert_eq(starts, [1, 2, 3] as Array[int], "each wave starts with one more stem of seawall_hold")
 	_teardown()
 
 

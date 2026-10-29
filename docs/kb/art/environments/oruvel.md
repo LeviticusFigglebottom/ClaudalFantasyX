@@ -313,7 +313,13 @@ frame): A (0, 0, −5.3), B (−5.3, 0, 5.3), C (5.3, 0, 5.3). Open: A drifts 1.
 - **The colour-script row.** `ch01_storm` here is a stand-in (Art: color_script.md `ch01`, act1_ch01 §9 Art item 1).
 - **The *Seventh Terrace*** (act1_ch01 §9 item 4): built in M3-ENV-08B (brightwater_ferry.md §7); O13 (under sail,
   running) is the storm variant's frame (`terrace_sails_set` in place of the furled sails and `terrace_moored`).
-- **The rebuilt variant** (act3_ending E7, `post_credits`): the same moorings rebuilt, not the same hulls.
+- **The rebuilt variant** (act3_ending E7, `post_credits`; M3-ENV-730, `ov_rebuilt.py`): the same moorings rebuilt,
+  not the same hulls. `raft_deck_rebuilt` is rc on three new hulls (teal, ochre, sea-blue) with about a third of its
+  planks new timber (`ov_timber_new`, a warm pale #D9B98C, not yet silvered); `lamp_post` is the first lamp of a world
+  without glimmer, a new post with an iron bracket and an oil lantern, its flame the stager's light. The layout's
+  `states.rebuilt` hides rc and the cabin and gull it carried, places both pieces, and gives `first_lamp` (the
+  lantern's world position for `ending_grades.json` post_credits `lamp`). No preview phase shows it yet; the grade is
+  `post_credits` (ending.md §3).
 
 ## Revisions
 - 2026-10-24 (env-art, M3-ENV-07B): the storm state (§0 stand-in `ch01_storm` row, §2 storm pieces and budgets, §4 O17
@@ -327,3 +333,4 @@ frame): A (0, 0, −5.3), B (−5.3, 0, 5.3), C (5.3, 0, 5.3). Open: A drifts 1.
   script's `ch01` row and the sibling oruvel_underway.md (the shared frame, the tether at (−9.9, 5.2), the
   `hull_keels` neighbour raft at (−3, 11)), before any geometry. The layout (seaward edge south, the gulls facing
   south-south-east, the dive raft over the tether, the keel-hull at the town's middle) is this sheet's call.
+- 2026-10-27 (env-art, M3-ENV-730): §7, the rebuilt variant (raft_deck_rebuilt, lamp_post, `states.rebuilt`).

@@ -32,16 +32,39 @@ func test_a_ferry_loaded_after_the_boss_comes_up_with_the_sails_down() -> void:
 	_done()
 
 
-func test_later_rows_win_and_a_fresh_wake_shows_its_lit_windows() -> void:
+func test_later_rows_win_and_a_fresh_wake_shows_its_lamps() -> void:
 	Game.set_flag(&"ch03_rhen_sworn_guardian")
 	_open(WAKE)
-	assert_true(zone.block_shown("WindowLit1"))
-	assert_false(zone.block_shown("AshaShell"), "hidden by the first row")
+	assert_true(zone.story_set_shown("ch04_wake"), "the lamps to the wall and the feast")
+	assert_true(zone.story_set_shown("ch04_shell_imra_faded"), "Imra's shell, faded")
+	assert_false(zone.story_set_shown("ch04_shell_asha"), "the gap in the wall is still a gap")
 	Game.set_flag(&"ch04_started")
 	Game.set_flag(&"ch04_shell_set")
 	zone.refresh_states()
-	assert_false(zone.block_shown("WindowLit1"))
-	assert_true(zone.block_shown("AshaShell"), "shown again by a later row")
+	assert_true(zone.story_set_shown("ch04_shell_asha"), "shown by a later row")
+	_done()
+
+
+func test_the_wake_is_the_real_haluna_at_night() -> void:
+	Game.set_flag(&"ch03_rhen_sworn_guardian")
+	_open(WAKE)
+	assert_true(zone.dressing is HalunaMood, "Haluna's own dressing (ADR 0041)")
+	assert_true((zone.dressing as HalunaMood).is_night(), "at its night mood")
+	assert_true(zone.haluna_collision != null and zone.haluna_collision.shape_count > 0, "on Haluna's walk collision")
+	assert_eq(zone.get_node(^"Greybox").get_child_count(), 0, "no greybox block left")
+	_done()
+
+
+func test_the_wakes_field_camera_is_halunas() -> void:
+	Game.set_flag(&"ch03_rhen_sworn_guardian")
+	_open(WAKE)
+	var vols := zone.get_node(^"HalunaCameraVolumes")
+	assert_eq(vols.get_child_count(), 8, "ch02/haluna's eight volumes")
+	var market := vols.get_node(^"Market") as CameraVolume
+	assert_eq(market.shot.id, &"H09", "with their shots")
+	assert_true(market.contains_point(Vector3(-46.5, 3.0, -0.5)), "and their shapes, where Haluna has them")
+	zone.director.collect_volumes()
+	assert_true(zone.director.volumes.has(market), "the director picks them up")
 	_done()
 
 

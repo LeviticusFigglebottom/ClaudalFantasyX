@@ -206,6 +206,20 @@ JOBS = [
                            "ui_customize_open", "ui_craft", "ui_map_pan")], "sfx"),
     # M3-AUD-838: the `charge` choreography style (the Avalanche Ram's run, M3-BPR-410)
     ("assets_src/sfx/charge_sfx.py", "assets/audio/sfx/choreo", _source_files("assets_src/sfx/charge_sfx.py"), "sfx"),
+    # M3-AUD-846: Ilun the Vowbound's voice and his layers on the summon (creatures and choreo folders)
+    ("assets_src/sfx/vowbound_sfx.py", "assets/audio/sfx", _source_files("assets_src/sfx/vowbound_sfx.py"), "sfx"),
+    # M3-AUD-861 (ADR 0173): Act I's last borrowed and silent foes, in Git LFS
+    ("assets_src/sfx/act1_final_creature_sfx.py", "assets/lfs/audio/sfx/creatures",
+     _source_files("assets_src/sfx/act1_final_creature_sfx.py"), "sfx"),
+    ("assets_src/sfx/act1_skill_sfx.py", "assets/lfs/audio/sfx/battle", _source_files("assets_src/sfx/act1_skill_sfx.py"),
+     "sfx"),
+    ("assets_src/sfx/act1_boss_stings.py", "assets/lfs/audio/sfx/battle",
+     _source_files("assets_src/sfx/act1_boss_stings.py"), "sfx"),
+    ("assets_src/sfx/act1_ability_sfx.py", "assets/lfs/audio/sfx", _source_files("assets_src/sfx/act1_ability_sfx.py"),
+     "sfx"),
+    ("assets_src/sfx/act1_final_ambience.py", "assets/lfs/audio/ambience",
+     _source_files("assets_src/sfx/act1_final_ambience.py"), "sfx_set"),
+    ("assets_src/music/prologue_dusk.py", "assets/lfs/audio/music", ["prologue_dusk.ogg", "prologue_dusk.loop.json"], "music_loop"),
     # M3-AUD-832: the UI track's new screens (menu motion, the title's reveal, save slots, shrine travel, Reefball HUD)
     ("assets_src/sfx/screen_sfx.py", "assets/audio/sfx", _source_files("assets_src/sfx/screen_sfx.py"), "sfx"),
     # M3-AUD-19: Act I temple and dungeon music (Ch5 Ashcrown, Ch8 Coilspire, Ch7 the Tamsule Bell's galleries)
@@ -303,8 +317,37 @@ ACT2_FINALS: list[tuple] = [
     ("assets_src/music/act2/unlamped.py", "assets/audio/music/act2", ["unlamped.ogg", "unlamped.loop.json"], "music_loop"),
     ("assets_src/music/act2/pale_rim.py", "assets/audio/music/act2", ["pale_rim.ogg", "pale_rim.loop.json"], "music_loop"),
     ("assets_src/music/act2/drowned_choir.py", "assets/audio/music/act2", ["drowned_choir.ogg", "drowned_choir.loop.json"], "music_loop"),
+    ("assets_src/music/act2/avalanche_ram.py", "assets/audio/music/act2",
+     [f"avalanche_ram_p{i}{ext}" for i in (1, 2) for ext in (".ogg", ".loop.json")], "music_loop"),
+    ("assets_src/music/act2/wakefin.py", "assets/audio/music/act2",
+     [f"wakefin_p{i}{ext}" for i in (1, 2) for ext in (".ogg", ".loop.json")], "music_loop"),
+    ("assets_src/music/act2/mangrove_drowner.py", "assets/audio/music/act2",
+     [f"mangrove_drowner_p{i}{ext}" for i in (1, 2) for ext in (".ogg", ".loop.json")], "music_loop"),
+    ("assets_src/music/act2/lamp_engine.py", "assets/audio/music/act2",
+     [f"lamp_engine_p{i}{ext}" for i in (1, 2) for ext in (".ogg", ".loop.json")], "music_loop"),
 ]
 ACT2_DIR = "assets/audio/music/act2"
+# M3-AUD-852: Act III's cues (act3_plan.md), the same way: assets_src/music/act3/ -> assets/audio/music/act3/ (Git LFS,
+# ADR 0039), rendered only with --act3 and never committed until LFS is live.
+ACT3_FINALS: list[tuple] = [
+    ("assets_src/music/act3/hollowmere.py", "assets/audio/music/act3", ["hollowmere.ogg", "hollowmere.loop.json"], "music_loop"),
+    ("assets_src/music/act3/dace_ledger.py", "assets/audio/music/act3", ["dace_ledger.ogg"], "music"),
+    ("assets_src/music/act3/the_kite.py", "assets/audio/music/act3", ["the_kite.ogg", "the_kite.loop.json"], "music_loop"),
+    ("assets_src/music/act3/kite_maiden_flight.py", "assets/audio/music/act3", ["kite_maiden_flight.ogg"], "music"),
+    ("assets_src/music/act3/iskarra_ruins.py", "assets/audio/music/act3", ["iskarra_ruins.ogg", "iskarra_ruins.loop.json"], "music_loop"),
+    ("assets_src/music/act3/iskarra_spire.py", "assets/audio/music/act3", ["iskarra_spire.ogg", "iskarra_spire.loop.json"], "music_loop"),
+    ("assets_src/music/act3/hesper_and_ilsabet.py", "assets/audio/music/act3",
+     [f"hesper_and_ilsabet_s{i}{ext}" for i in (0, 1) for ext in (".ogg", ".loop.json")], "music_loop"),
+    ("assets_src/music/act3/kerrid_last_night.py", "assets/audio/music/act3", ["kerrid_last_night.ogg"], "music"),
+]
+ACT3_DIR = "assets/audio/music/act3"
+# M3-AUD-859: Act III's SFX the same way (plain git has about 0.5 MiB of its budget left): assets_src/sfx/act3/ ->
+# assets/audio/sfx/act3/, rendered with --act3 too and held for LFS.
+ACT3_SFX: list[tuple] = [
+    ("assets_src/sfx/act3/kite_foley.py", "assets/audio/sfx/act3", _source_files("assets_src/sfx/act3/kite_foley.py"),
+     "sfx_set"),
+]
+ACT3_SFX_DIR = "assets/audio/sfx/act3"
 
 
 def _load(path):
@@ -388,15 +431,18 @@ def main() -> int:
     ap.add_argument("--determinism", action="store_true", help="render twice and compare bytes")
     ap.add_argument("--only", default="", help="only the jobs whose source path contains this text")
     ap.add_argument("--act2", action="store_true", help="Act II's final cues (ACT2_FINALS, Git LFS) instead of JOBS")
+    ap.add_argument("--act3", action="store_true", help="Act III's cues and SFX (ACT3_FINALS, ACT3_SFX: Git LFS) instead of JOBS")
     args = ap.parse_args()
 
     self_test()  # BS.1770 meter sanity (48 kHz coefficients, 997 Hz reference)
 
-    jobs = [j for j in (ACT2_FINALS if args.act2 else JOBS) if not args.only or args.only in j[0]]
+    lfs = args.act2 or args.act3
+    jobs = [j for j in (ACT2_FINALS if args.act2 else ACT3_FINALS + ACT3_SFX if args.act3 else JOBS)
+            if not args.only or args.only in j[0]]
     rows, total, new_total, amb_total, ok = [], 0, 0, 0, True
     amb_jobs: dict = {}
     for src, rel_dir, files, kind in jobs:
-        m1 = not args.act2 and JOBS.index((src, rel_dir, files, kind)) < M1_JOBS
+        m1 = not lfs and JOBS.index((src, rel_dir, files, kind)) < M1_JOBS
         out_dir = os.path.join(ROOT, rel_dir)
         print(f"rendering {src} ...", flush=True)
         _render_job(src, out_dir, files, kind)
@@ -459,9 +505,10 @@ def main() -> int:
         if size > AMBIENCE_JOB_BUDGETS[src]:
             print(f"FAIL: {src}'s beds over their size budget")
             ok = False
-    if args.act2:
-        act2 = sum(r[1] for r in rows)
-        print(f"Act II finals {act2} bytes ({act2 / 1048576:.2f} MiB): Git LFS (ADR 0039), outside the plain-git budget")
+    if lfs:
+        size = sum(r[1] for r in rows)
+        print(f"{'Act II finals' if args.act2 else 'Act III cues'} {size} bytes ({size / 1048576:.2f} MiB): Git LFS (ADR "
+              "0039), outside the plain-git budget")
     elif not args.only:
         print(f"total {total} bytes ({total / 1048576:.2f} MiB), budget {SIZE_BUDGET / 1048576:.0f} MiB; "
               f"M1-AUD-02 cues {new_total / 1048576:.2f} MiB, budget {NEW_AUDIO_BUDGET / 1048576:.0f} MiB")

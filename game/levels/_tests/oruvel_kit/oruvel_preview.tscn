@@ -120,9 +120,9 @@ dof_blur_amount = 0.06
 [sub_resource type="Resource" id="ShotO10"]
 script = ExtResource("10_shot")
 id = &"O10"
-position = Vector3(-13, 1.95, 2.6)
-look_at = Vector3(-15.45, 4.02, -2.3)
-fov_deg = 16.1
+position = Vector3(-12, 4.6, -0.6)
+look_at = Vector3(-15.6, 4.45, -2.3)
+fov_deg = 26
 
 [sub_resource type="Resource" id="ShotO19"]
 script = ExtResource("10_shot")

@@ -21,6 +21,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
+import b_column  # noqa: E402  (env-art-b, M3-ENV-1321)
 import bell  # noqa: E402
 import gallery  # noqa: E402
 import gantry  # noqa: E402
@@ -31,7 +32,8 @@ import waterline  # noqa: E402
 
 kc = tb.kc
 MAX_GLB_BYTES = 5 * 1024 * 1024  # ADR 0005
-MODULES = (bell, gantry, gallery, waterline, port, market)  # market: M3-C07-04 the port
+MODULES = (bell, gantry, gallery, waterline, port, market,  # market: M3-C07-04 the port
+           b_column)  # env-art-b, M3-ENV-1321
 
 
 def targets() -> dict:

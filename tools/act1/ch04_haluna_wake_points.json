@@ -1,0 +1,330 @@
+{
+ "spawn:NemeDoor": [
+  -58.0,
+  -3.6
+ ],
+ "spawn:FeastEdge": [
+  -4.0,
+  -100.0
+ ],
+ "spawn:DockEnd": [
+  23.49,
+  39.35
+ ],
+ "spawn:DockShore": [
+  -2.72,
+  57.71
+ ],
+ "spawn:WallDawn": [
+  -12.5,
+  -118.0
+ ],
+ "spawn:Shrine": [
+  -67.0,
+  44.3
+ ],
+ "mark:table_lane": [
+  -0.5,
+  -102.5
+ ],
+ "mark:lane_toma": [
+  -52.5,
+  -4.5
+ ],
+ "mark:neme_table": [
+  4.0,
+  -111.5
+ ],
+ "mark:wall_gap": [
+  -13.9,
+  -119.6
+ ],
+ "mark:wall_osu": [
+  -13.51,
+  -118.25
+ ],
+ "mark:wall_neme": [
+  -14.61,
+  -116.28
+ ],
+ "mark:wall_toma": [
+  -12.3,
+  -116.94
+ ],
+ "mark:wall_vendor": [
+  -15.98,
+  -115.26
+ ],
+ "mark:wall_fisher": [
+  -8.24,
+  -117.27
+ ],
+ "mark:feast_edge": [
+  10.5,
+  -108.0
+ ],
+ "mark:dock_end": [
+  23.08,
+  39.64
+ ],
+ "mark:dock_shore": [
+  -3.54,
+  58.28
+ ],
+ "mark:dock_asha_from": [
+  16.53,
+  44.23
+ ],
+ "mark:dock_toma_from": [
+  -8.05,
+  61.43
+ ],
+ "mark:wall_away": [
+  -8.5,
+  -123.0
+ ],
+ "mark:dawn_neme": [
+  -15.4,
+  -117.6
+ ],
+ "mark:leave_rhen": [
+  -7.07,
+  -116.25
+ ],
+ "mark:leave_asha": [
+  -6.92,
+  -114.56
+ ],
+ "mark:leave_toma": [
+  -9.51,
+  -115.81
+ ],
+ "mark:causeway_toma": [
+  12.55,
+  -130.0
+ ],
+ "mark:causeway_asha": [
+  10.4,
+  -128.5
+ ],
+ "mark:causeway_rhen": [
+  8.6,
+  -127.2
+ ],
+ "mark:way_feast_s": [
+  8.0,
+  -110.0
+ ],
+ "mark:way_lane_n": [
+  -6.0,
+  -95.0
+ ],
+ "mark:way_wall_east": [
+  -9.5,
+  -121.5
+ ],
+ "mark:way_rail_gap": [
+  4.0,
+  -120.0
+ ],
+ "mark:way_flats": [
+  7.0,
+  -126.0
+ ],
+ "actor:asha": [
+  -10.2,
+  -115.8
+ ],
+ "actor:toma": [
+  -56.4,
+  -3.4
+ ],
+ "actor:neme": [
+  -59.6,
+  -3.3
+ ],
+ "actor:osu": [
+  6.0,
+  -103.3
+ ],
+ "actor:vendor": [
+  3.4,
+  -104.6
+ ],
+ "actor:fisher": [
+  8.3,
+  -107.6
+ ],
+ "actor:child": [
+  -70.0,
+  -9.5
+ ],
+ "actor:netmender": [
+  -5.2,
+  56.4
+ ],
+ "actor:reed": [
+  -116.3,
+  33.6
+ ],
+ "actor:ysolde_edge": [
+  10.5,
+  -108.0
+ ],
+ "actor:ysolde": [
+  -13.6,
+  -119.2
+ ],
+ "trigger:npc_child": [
+  -70.0,
+  -9.5
+ ],
+ "trigger:npc_netmender": [
+  -5.2,
+  56.4
+ ],
+ "trigger:npc_reed": [
+  -116.3,
+  33.6
+ ],
+ "trigger:inn_door": [
+  -30.0,
+  57.5
+ ],
+ "trigger:feast": [
+  -2.5,
+  -101.5
+ ],
+ "trigger:table_vendor": [
+  2.5,
+  -106.5
+ ],
+ "trigger:table_osu": [
+  6.0,
+  -104.5
+ ],
+ "trigger:table_fisher": [
+  7.3,
+  -108.5
+ ],
+ "trigger:table_neme": [
+  5.0,
+  -112.5
+ ],
+ "trigger:wall": [
+  -12.5,
+  -118.8
+ ],
+ "trigger:the_ink": [
+  -13.4,
+  -119.4
+ ],
+ "trigger:neme_door": [
+  -58.0,
+  -2.8
+ ],
+ "shot:H02": [
+  -47.0,
+  -1.5
+ ],
+ "look:H02": [
+  -64.0,
+  -7.5
+ ],
+ "shot:H04": [
+  -34.0,
+  6.0
+ ],
+ "look:H04": [
+  -41.0,
+  0.0
+ ],
+ "shot:H07": [
+  -108.0,
+  36.0
+ ],
+ "look:H07": [
+  -117.0,
+  32.0
+ ],
+ "shot:H09": [
+  -3.5,
+  60.5
+ ],
+ "look:H09": [
+  14.0,
+  47.0
+ ],
+ "shot:H08": [
+  -13.2,
+  -117.2
+ ],
+ "look:H08": [
+  -14.4,
+  -120.6
+ ],
+ "shot:H12": [
+  16.0,
+  -98.0
+ ],
+ "look:H12": [
+  -6.0,
+  -114.0
+ ],
+ "shot:H13": [
+  26.9,
+  44.2
+ ],
+ "look:H13": [
+  23.1,
+  39.6
+ ],
+ "shot:H14": [
+  19.4,
+  42.2
+ ],
+ "look:H14": [
+  23.1,
+  39.6
+ ],
+ "shot:H15": [
+  -12.6,
+  -118.8
+ ],
+ "look:H15": [
+  -13.9,
+  -120.2
+ ],
+ "shot:H16": [
+  -15.05,
+  -117.82
+ ],
+ "look:H16": [
+  -14.61,
+  -116.28
+ ],
+ "shot:H17": [
+  -9.7,
+  -114.1
+ ],
+ "look:H17": [
+  -10.2,
+  -115.8
+ ],
+ "shot:C01": [
+  -12.0,
+  -113.0
+ ],
+ "look:C01": [
+  8.0,
+  -127.0
+ ],
+ "shot:C02": [
+  6.0,
+  -112.0
+ ],
+ "look:C02": [
+  14.0,
+  -136.0
+ ]
+}

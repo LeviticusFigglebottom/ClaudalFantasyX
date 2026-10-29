@@ -1,0 +1,61 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/oruvel_zone_dressing/oruvel_storm_preview.gd" id="1_zone"]
+[ext_resource type="Script" path="res://game/levels/act1/zone_kit_dressing.gd" id="2_dressing"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/weathering_tide.gd" id="3_tide"]
+[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="4_water"]
+[ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="5_waves"]
+[ext_resource type="Material" path="res://game/levels/_tests/oruvel_kit/oruvel_water_material.tres" id="6_water_mat"]
+[ext_resource type="Script" path="res://game/world/camera_shot.gd" id="7_shot"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_shot_camera.gd" id="8_cam"]
+
+[sub_resource type="Resource" id="ShotO12"]
+script = ExtResource("7_shot")
+id = &"O12"
+position = Vector3(10, 8, 14)
+look_at = Vector3(10, 1, -20)
+fov_deg = 55
+
+[sub_resource type="Resource" id="ShotO16"]
+script = ExtResource("7_shot")
+id = &"O16"
+position = Vector3(36, 3.5, -15)
+look_at = Vector3(30, 0.5, -22)
+fov_deg = 50
+
+[node name="Oruvel" type="Node3D"]
+script = ExtResource("1_zone")
+location_id = &"ch01/oruvel"
+layout_path = "res://game/levels/ch01/oruvel/oruvel_layout.json"
+
+[node name="Water" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.8, 0)
+script = ExtResource("4_water")
+publishes_water_level = true
+wave_set = ExtResource("5_waves")
+material = ExtResource("6_water_mat")
+
+[node name="Tide" type="Node" parent="." node_paths=PackedStringArray("water")]
+script = ExtResource("3_tide")
+tide_line_y = -0.8
+water_height_y = -0.8
+water = NodePath("../Water")
+
+[node name="Dressing" type="Node3D" parent="." node_paths=PackedStringArray("tide")]
+script = ExtResource("2_dressing")
+layout_path = "res://assets/environments/zones/ch01/oruvel_dressing.json"
+tide = NodePath("../Tide")
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="O12" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 40000.0
+script = ExtResource("8_cam")
+shot = SubResource("ShotO12")
+
+[node name="O16" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 40000.0
+script = ExtResource("8_cam")
+shot = SubResource("ShotO16")

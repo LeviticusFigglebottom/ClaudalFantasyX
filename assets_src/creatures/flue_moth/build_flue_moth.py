@@ -24,11 +24,21 @@ import grounding as gr  # noqa: E402
 SEED = 8411
 PAL = {k: ck.hexrgb(v) for k, v in {
     "lacquer_black": "#1D1916", "volcanic_stone": "#3A3A3F", "overcast_slate": "#6F7E8E", "ember_orange": "#E0702E",
-    "dusk_gold": "#F2A64A", "bone": "#E6DAC0", "lacquer_red_deep": "#7A1712",
+    "dusk_gold": "#F2A64A", "bone": "#E6DAC0", "lacquer_red_deep": "#7A1712", "spawn_wound": "#3FE0C8",
 }.items()}
 
 THORAX = np.array([0.0, 0.24, 0.12])
 WING_ROOT = THORAX + np.array([0.0, 0.1, 0.02])
+# The weak point (ADR 0151, M3-CRE-650): one small closed mark, a seam seared shut across its brow above the eyes,
+# where the keeping flame once caught it, a little to its near side (its right, -x: the battle camera's side once the
+# stage turns it to the party). The brow faces forward and up, so the battle camera and the review three-quarter (+x
+# front) both see it; the head is smooth, where the shaggy thorax would bury a mark. Its own slot, `wound`: the fur's
+# emission is the embers.
+SEAR_AT = THORAX + np.array([-0.016, 0.032, 0.232])  # projected onto the head's surface
+SEAR_ALONG = np.array([1.0, 0.15, 0.0])  # it runs across the brow, a little aslant
+SEAR_HALF = (0.038, 0.013)  # the glowing seam's half length and half width (m)
+SEAR_LIP = (1.25, 1.9, 0.008)  # the dark healed lip round it: x the seam's length, x its width, raised (m)
+SEAR_BEND_R = 0.09  # the head's curvature across the brow (m): the mark bends to lie on it
 
 
 def wing_frame(side: float, hind: bool) -> tuple[np.ndarray, np.ndarray, float, float]:
@@ -92,9 +102,41 @@ def body(mesh: ck.Mesh, rig: ck.Rig) -> None:
     P, T = ck.ellipsoid(hc, (0.09, 0.08, 0.07), 8, 12)
     col, _ = fur(P, SEED + 3, 0.0)
     ck.finish(mesh, P, T, "fur", col, rig.rigid("head"), cavity=0.4)
+    seared_brow(mesh, rig, P, T)
     for s in (-1.0, 1.0):
         Pe, Te = ck.ellipsoid(hc + np.array([s * 0.06, 0.0, 0.03]), (0.035, 0.04, 0.035), 6, 10)
         ck.finish(mesh, Pe, Te, "eye", PAL["lacquer_black"] * 0.5, rig.rigid("head"), wet=1.0)
+
+
+def on_surface(P: np.ndarray, T: np.ndarray, q: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """The point of the part (P, T) nearest q, and its face's outward normal: q projected onto each triangle's plane,
+    kept where it falls inside the triangle, the nearest of those (degenerate triangles, as at a pole, are skipped)."""
+    a, b, c = P[T[:, 0]], P[T[:, 1]], P[T[:, 2]]
+    fn = np.cross(b - a, c - a)
+    area = np.linalg.norm(fn, axis=1)
+    fn /= np.maximum(area, 1e-12)[:, None]
+    d = ((q - a) * fn).sum(axis=1)
+    p = q - d[:, None] * fn
+    inside = area > 1e-12
+    for u, v in ((a, b), (b, c), (c, a)):
+        inside &= (np.cross(v - u, p - u) * fn).sum(axis=1) >= 0.0
+    k = int(np.argmin(np.where(inside, np.abs(d), np.inf)))
+    return p[k], fn[k]
+
+
+def seared_brow(mesh: ck.Mesh, rig: ck.Rig, P: np.ndarray, T: np.ndarray) -> None:
+    """The weak point (ADR 0151): a closed seam of spawn_wound light in a raised soot-dark lip, laid on the head at
+    SEAR_AT and bent to its curve. Never open, never shedding motes: it is a beast, and this is an old burn."""
+    at, n = on_surface(P, T, SEAR_AT)
+    a = SEAR_ALONG - n * (SEAR_ALONG @ n)
+    a /= np.linalg.norm(a)
+    R = np.column_stack([a, n, np.cross(a, n)])  # local x along the seam, y out of the head, z across it
+    (hl, hw), (gl, gw, rise) = SEAR_HALF, SEAR_LIP
+    for radii, lift, slot, col, glow in (((hl * gl, rise, hw * gw), 0.0, "fur", PAL["lacquer_black"], 0.0),
+                                         ((hl, rise * 0.75, hw), rise * 0.5, "wound", PAL["spawn_wound"] * 0.65, 1.0)):
+        Pl, Tl = ck.ellipsoid((0.0, lift, 0.0), radii, 4, 10)
+        Pl[:, 1] -= Pl[:, 0] ** 2 / (2.0 * SEAR_BEND_R)
+        ck.finish(mesh, at + Pl @ R.T, Tl, slot, col, rig.rigid("head"), cavity=0.4 * (1.0 - glow), emission=glow)
 
 
 def antennae(mesh: ck.Mesh, rig: ck.Rig) -> None:
@@ -215,17 +257,23 @@ def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
     return gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS)
 
 
-def main() -> None:
-    argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--out", required=True)
-    args = ap.parse_args(argv)
+def build_mesh() -> tuple[ck.Rig, ck.Mesh]:
+    """The rig and the skinned mesh, without Blender (M3-CRE-650: the preview sheets build from this too)."""
     rig = build_rig()
     mesh = ck.Mesh("flue_moth")
     body(mesh, rig)
     antennae(mesh, rig)
     wings(mesh, rig)
     legs(mesh, rig)
+    return rig, mesh
+
+
+def main() -> None:
+    argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--out", required=True)
+    args = ap.parse_args(argv)
+    rig, mesh = build_mesh()
     info = ck.export_creature(mesh, rig, export_clips(rig, mesh), args.out, extras={"hymn_creature": "flue_moth"})
     print(f"flue_moth: {info}")
 

@@ -27,7 +27,11 @@ extends RefCounted
 ##   wider than post_max_m, solid blocks that start overhead_m up, and other non-solid blocks
 ##   (lamps, sails, glows) are left off. The zone's shape_hints (zone_maps.json) name blocks by
 ##   id where the height alone would read them wrong: "sea" (open water under everything: the
-##   harbour, the river), "water", "floors", "pads", "buildings", "structures" and "skip".
+##   harbour, the river), "water", "floors", "pads", "buildings", "structures" and "skip"; a hint ending
+##   in "*" names every block whose id starts with what comes before it (a kit's numbered pieces).
+##   A zone dressed from an env-art kit (ADR 0200) keeps its walkable shape in the layout's
+##   collision_path file: its blocks are read the same way, and each ramp is a pad (its from-to run,
+##   width wide), so the map follows the kit's frame. A layout's own ramps (flights of steps) are pads too.
 ## Every polygon is a PackedVector2Array of world (x, z) points.
 
 const KIND_HALUNA := &"haluna_layout"
@@ -202,7 +206,10 @@ func _greybox(layout: Dictionary, rules: Dictionary, hints: Dictionary) -> void:
 	var overhead := float(rules.get("overhead_m", INF))
 	var thin := float(rules.get("wall_thick_m", 0.0))
 	var post := float(rules.get("post_max_m", 0.0))
-	for b: Variant in layout.get("blocks", []):
+	var collision := _collision_of(layout)
+	for r: Variant in layout.get("ramps", []) + collision.get("ramps", []):  # flights, the layout's own too
+		pads.append(_ramp(r as Dictionary))
+	for b: Variant in layout.get("blocks", []) + collision.get("blocks", []):
 		var row := b as Dictionary
 		var size: Array = row.get("size", [1.0, 1.0, 1.0])
 		var pos: Array = row.get("pos", [0.0, 0.0, 0.0])
@@ -235,8 +242,9 @@ static func greybox_layer(
 ) -> StringName:
 	var id := str(row.get("id", ""))
 	for layer in HINT_LAYERS:
-		if (hints.get(String(layer), []) as Array).has(id):
-			return layer
+		for hint: Variant in hints.get(String(layer), []):
+			if hint_names(str(hint), id):
+				return layer
 	var size: Array = row.get("size", [1.0, 1.0, 1.0])
 	var pos: Array = row.get("pos", [0.0, 0.0, 0.0])
 	var top := float(pos[1]) + float(size[1]) * 0.5
@@ -250,6 +258,33 @@ static func greybox_layer(
 	if maxf(float(size[0]), float(size[2])) <= post:
 		return LAYER_SKIP
 	return LAYER_STRUCTURE if across <= thin else LAYER_BUILDING
+
+
+## True when shape hint `hint` names block `id`: the same id, or a prefix of it before a final "*".
+static func hint_names(hint: String, id: String) -> bool:
+	return id.begins_with(hint.trim_suffix("*")) if hint.ends_with("*") else hint == id
+
+
+## The layout's collision_path file ({blocks, ramps}; {} when it names none or it can't be read).
+static func _collision_of(layout: Dictionary) -> Dictionary:
+	var path := str(layout.get("collision_path", ""))
+	if path == "" or not FileAccess.file_exists(path):
+		return {}
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+	return parsed as Dictionary if typeof(parsed) == TYPE_DICTIONARY else {}
+
+
+## A ramp's footprint: its from-to run on the ground, `width` wide.
+static func _ramp(r: Dictionary) -> PackedVector2Array:
+	var a := _xz(r.get("from", [0.0, 0.0, 0.0]))
+	var b := _xz(r.get("to", [0.0, 0.0, 0.0]))
+	var side := (b - a).normalized().orthogonal() * float(r.get("width", 0.0)) * 0.5
+	return PackedVector2Array([a + side, b + side, b - side, a - side])
+
+
+static func _xz(v: Variant) -> Vector2:
+	var arr := v as Array
+	return Vector2(float(arr[0]), float(arr[2]))
 
 
 # --- The Shell Shrine ----------------------------------------------------------------------------

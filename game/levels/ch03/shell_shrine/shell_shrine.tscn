@@ -18,6 +18,7 @@
 [ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/tide_debris.glb" id="sd_debris"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/net_heap.glb" id="sd_net"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/wayside_offering.glb" id="sd_offering"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/offering_step.glb" id="sd_step"]
 [sub_resource type="StandardMaterial3D" id="Mat_rhen"]
 albedo_color = Color(0.368627, 0.603922, 0.588235, 1)
 roughness = 0.7
@@ -39,6 +40,9 @@ size = Vector3(28, 6, 18)
 
 [sub_resource type="BoxShape3D" id="Box_threshold"]
 size = Vector3(3.2, 4, 6)
+
+[sub_resource type="BoxShape3D" id="Box_offering_step"]
+size = Vector3(1.2, 0.46, 0.64)
 
 [sub_resource type="FogMaterial" id="Fog_hall"]
 density = 0.02
@@ -194,6 +198,60 @@ transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, -13.15, 0.0, 2.7)
 
 [node name="OfferingS" parent="SetDressing" instance=ExtResource("sd_offering")]
 transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, -13.15, 0.0, -2.7)
+
+[node name="StepIsletN" parent="SetDressing" instance=ExtResource("sd_step")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -20.9, -1.77, -5.0)
+
+[node name="Body" type="StaticBody3D" parent="SetDressing/StepIsletN"]
+
+[node name="Shape" type="CollisionShape3D" parent="SetDressing/StepIsletN/Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.23, 0)
+shape = SubResource("Box_offering_step")
+
+[node name="StepIsletS" parent="SetDressing" instance=ExtResource("sd_step")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -20.9, -1.77, 5.0)
+
+[node name="Body" type="StaticBody3D" parent="SetDressing/StepIsletS"]
+
+[node name="Shape" type="CollisionShape3D" parent="SetDressing/StepIsletS/Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.23, 0)
+shape = SubResource("Box_offering_step")
+
+[node name="StepHallNW" parent="SetDressing" instance=ExtResource("sd_step")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0, -8.5)
+
+[node name="Body" type="StaticBody3D" parent="SetDressing/StepHallNW"]
+
+[node name="Shape" type="CollisionShape3D" parent="SetDressing/StepHallNW/Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.23, 0)
+shape = SubResource("Box_offering_step")
+
+[node name="StepHallNE" parent="SetDressing" instance=ExtResource("sd_step")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 0, -8.5)
+
+[node name="Body" type="StaticBody3D" parent="SetDressing/StepHallNE"]
+
+[node name="Shape" type="CollisionShape3D" parent="SetDressing/StepHallNE/Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.23, 0)
+shape = SubResource("Box_offering_step")
+
+[node name="StepHallSW" parent="SetDressing" instance=ExtResource("sd_step")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -2.5, 0, 8.5)
+
+[node name="Body" type="StaticBody3D" parent="SetDressing/StepHallSW"]
+
+[node name="Shape" type="CollisionShape3D" parent="SetDressing/StepHallSW/Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.23, 0)
+shape = SubResource("Box_offering_step")
+
+[node name="StepHallSE" parent="SetDressing" instance=ExtResource("sd_step")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 2.5, 0, 8.5)
+
+[node name="Body" type="StaticBody3D" parent="SetDressing/StepHallSE"]
+
+[node name="Shape" type="CollisionShape3D" parent="SetDressing/StepHallSE/Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.23, 0)
+shape = SubResource("Box_offering_step")
 
 [node name="Spawns" type="Node3D" parent="."]
 

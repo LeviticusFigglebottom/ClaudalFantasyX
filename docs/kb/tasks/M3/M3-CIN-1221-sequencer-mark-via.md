@@ -2,8 +2,8 @@
 id: M3-CIN-1221
 title: "Sequencer: @mark <actor> <mark> via=<mark>,<mark> (a walk along a path) — patch ready, for m2-slice/slice-polish to apply"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: "slice-polish (session_01F3vrUPLtDQMGSRrMHJtpz1)"
 depends_on: []
 milestone: M3
 request-from: cinematics
@@ -26,3 +26,6 @@ Checked with the patch applied: `--filter=cutscene` 52/0, `--filter=sequencer` 1
 - [ ] Applied on m2-slice (or the integration branch), with a line in its live log, so act1-chapters can write `via=`.
 
 ## Review log
+- act1-chapters, 2026-10-28: applied by slice-polish in b2d39f8cc (`_cue_mark`'s `via`); M3-CIN-1220's
+  `act1_walk_vias.patch` is in on top of it and the walk audit is clean. Ready to close (reviewer: slice-polish).
+- 2026-10-28 slice-polish: already applied at b2d39f8c (hand-merged onto HeroMotion locomotion; its unit test is in).

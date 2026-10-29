@@ -1,0 +1,19 @@
+{
+  "_doc": "Virel's surfaces (docs/kb/art/creatures/vowbound/virel.md). Slots are the glTF material names; write_materials.py writes assets/creatures/virel/materials/<slot>.tres on game/shaders/creature/creature.gdshader. She is bound light (color_script.md rule 2; act1_ch08.md F07 and section 9 item 2): every emissive slot is glimmer_bound #4FB3B0 at energy 1.2 with no pulse (steady: no flicker, no drift, no shed motes). Her fire is bound, so her seams are glimmer_bound, never ember_orange: ember_orange is 'flame and horizon only; never a surface albedo' and the Fire VFX base, so fire-coloured light belongs to her attack VFX and Flare Line (battle-vfx's), never to her form. sail is all the cloth (M3-CRB-008): the panels (sand, tanned, sun-faded, stained, scorched to char round every seam), the mends, the hem tapes (their stitching smoulders: a patchy mask), the head's cheeks, jaw, frills and pennant (the inside of the head and mouth glows), the streamers and bows. seam is the bound fire: the cross-seams' burning cores and ember rings, the head's lip and neck seams, the frozen flame tongues and the lantern-eyes (emission masks 0.06-1). spar is the cane frame (bamboo: thatch to timber_weathered, darker nodes), cord the lashings, bridle, whiskers, tassels and the key's cord, key the brass tuning key and the hem grommets: the keepsake, not lit (worn bright on its rim: the glint). Colours are palette.json swatches.",
+  "held": {"_doc": "M3-CRE-647, the held form for the Ch20 release fight (act3_roster.md, The Vowbound as foes): write_materials.py writes materials_held/, every emissive slot's glimmer_bound (#4FB3B0) as glimmer_held (#7FC6D9) at the same energy, steady (color_script.md rule 1: held light is cool cyan); the other slots as they are. The held battle scene wears it; the release turns it to glimmer_lift (presentation).",
+           "emission_from": "#4FB3B0", "emission_to": "#7FC6D9"},
+  "slots": {
+    "sail": {"roughness_dry": 0.86, "roughness_wet": 0.5, "specular": 0.28, "wet_darken": 0.8, "clearcoat_wet": 0.1,
+             "detail_scale": 70.0, "detail_albedo": 0.13, "detail_bump": 0.22, "cavity_albedo": 0.4, "rim_sheen": 0.3,
+             "emission_color": "#4FB3B0", "emission_energy": 1.2},
+    "seam": {"roughness_dry": 0.5, "roughness_wet": 0.3, "specular": 0.3, "detail_albedo": 0.0, "detail_bump": 0.0,
+             "emission_color": "#4FB3B0", "emission_energy": 1.2},
+    "spar": {"roughness_dry": 0.75, "roughness_wet": 0.45, "specular": 0.35, "wet_darken": 0.75, "detail_scale": 90.0,
+             "detail_albedo": 0.15, "detail_bump": 0.3, "cavity_albedo": 0.3, "emission_energy": 0.0},
+    "cord": {"roughness_dry": 0.85, "roughness_wet": 0.55, "specular": 0.3, "wet_darken": 0.75, "detail_scale": 120.0,
+             "detail_albedo": 0.2, "detail_bump": 0.4, "cavity_albedo": 0.4, "emission_energy": 0.0},
+    "key": {"roughness_dry": 0.24, "roughness_wet": 0.12, "metallic": 0.75, "specular": 0.7, "wet_darken": 0.9,
+            "detail_scale": 40.0, "detail_albedo": 0.06, "detail_bump": 0.05, "cavity_albedo": 0.5, "rim_sheen": 0.5,
+            "emission_energy": 0.0}
+  }
+}

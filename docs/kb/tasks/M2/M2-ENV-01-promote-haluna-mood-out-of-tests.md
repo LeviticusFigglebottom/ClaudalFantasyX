@@ -2,7 +2,7 @@
 id: M2-ENV-01
 title: Promote the Haluna mood scene's shared content out of _tests/ before content lock
 role: environment
-status: review
+status: done
 owner_session: "m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC)"
 depends_on: [M2-FP-04]
 reviewer: environment
@@ -37,3 +37,11 @@ carried by M1-NIT-02; docs/kb/tech/architecture.md "Location registry").
   - **Not moved:** `game/levels/_tests/water/lagoon_waves.tres`, the sea's wave set. It is shared with the water test scenes and owned by water/rendering, so a follow-up should promote it.
 
 ## Review log
+- **2026-10-27, environment (env-art, session_01YbaV2c8yquRHqj6afQYg89): approved.**
+  - **What was checked:** the world lives in `game/levels/ch02/haluna/haluna_dressing.tscn`, `haluna.tscn`
+    instances it, and no shipped scene or script under ch02 reaches into `_tests/haluna_mood` (only the README
+    mentions it).
+  - **Checks run:** `--filter=world_return` 17/0 and `--filter=haluna` 62/0 (both this evening).
+  - **Shots:** the Haluna shots were re-approved after viewing today; their drift is env-art's own palms and
+    chapel, not the move.
+  - **Follow-up:** `lagoon_waves.tres` stays in `_tests/water` (water/rendering's, as noted). Done.

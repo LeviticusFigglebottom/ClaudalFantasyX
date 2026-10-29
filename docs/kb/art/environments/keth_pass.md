@@ -117,6 +117,29 @@ The shadow-writing needs hard shadows (the shadow blur low). No snow or ice insi
 | K06 ◆★ | 35 mm | The floor at noon | The cords' shadows written across the white stone, a figure reading them. |
 | K07 ◆ | 28 mm | A Quellan lane | Stepped stone, the awnings, a pass-cord across the lane. |
 
+## 6. Quellan's inn and well, Hesk's dais, and the swap for act1-chapters' Ch12 greybox (M4-C12-02; M3-ENV-734)
+
+| Piece | What it is | Size | Budget |
+|---|---|---|---|
+| `quellan_inn` | The inn (Ysolde's confession to Asha that night): the houses' dry stone, two rows of shuttered windows in the front, a timber gallery along it, the turf roof, the red banner over the door | 10 × 8 × 5 | 12k / 700 |
+| `quellan_well` | The square's well: a dry-laid ring 0.9 m high, posts and a windlass, the rope to a bucket on the rim, a stone trough beside it | 1.6 (+ trough) | 2.5k / 200 |
+| `hesk_dais` | Hesk's place at the north end of Cloudloom's hall: the hall's white stone in two steps (0.4 m), a woven mat with red weft-bands, a low stone seat | 6 × 3 | 3k / 200 |
+
+**Swap** (the greybox's block ids → pieces):
+- **Keth Pass:**
+  - `Flight*Cliff` → `keth_scree_slope`; the flights themselves → `keth_road_switchback`; `Flight*Parapet` and
+    `Flight*Cord*` → `pass_cord`.
+  - `KnotPost` and `Knots` → `pass_cord`'s end post; `RamArena` and `TerraceWall` → the `keth_seep_terrace` arena's
+    `keth_terrace_ground` and `lit_terrace_wall`.
+  - `Saddle` and `Snowfield` → `keth_terrace_ground` (no ice; ADR 0015); a `cairn` at the saddle.
+- **Quellan:**
+  - `House*` and `Roof*` → `quellan_house`, its awning toward the street; `Inn`, `InnRoof`, `InnBanner` →
+    `quellan_inn`; `Well` → `quellan_well`.
+  - `Terrace` → `keth_terrace_ground`; the `woolback_trough` and `woven_awning` along the street.
+- **Cloudloom:**
+  - `Hall`, `HallWall*` and `Beam*` → `cloudloom_hall`; the `Keth*_*` hangings → `keth_curtain`.
+  - `HeskDais` → `hesk_dais`; `StairCliff` and `StairParapet` → `keth_road_switchback` and `pass_cord`.
+
 ## Open question (for the creatures track)
 
 `avalanche_ram.md` gives the Ram fleece "matted into plates of ice", an ice beard, and snow shed by its cast. ADR
@@ -140,3 +163,4 @@ live log for the creatures track.
 - 2026-10-27 (env-art, M3-ENV-717): §5 Quellan and Cloudloom, and their pieces: `cloudloom_hall` (the rock-cut
   hall, the beam lattice over the open roof, the loom-frame), `keth_curtain` (one beam's 240 keth, two-sided so they
   cast the floor's writing), `quellan_house` and `woven_awning`. Nothing frozen.
+- 2026-10-28 (env-art, M3-ENV-734): §6, the inn, the well, the dais and the Ch12 greybox swap.

@@ -1,7 +1,8 @@
 """Pemakar graves, gates, lamps and offerings (pemakar.md §2.2). Pure numpy.
 
   grave_stele_a     an ash-stone: a dark stele on a two-step plinth, a shouldered top, a lamp niche cut
-                    through near the top (its wick lit), a carved tide-line band and an offering ledge
+                    through near the top (its wick lit), a carved tide-line band, the names in a framed panel of
+                    terrace script cut in and sooted, and an offering ledge
   grave_stele_b     a family stone: wider, three niches in a row, older, one top corner broken off
   grave_cairn       a poor grave: rounded stones under a flat capstone, one niche stone with a wick
   grave_curb        a low kerb round a family plot, pale ash gravel inside
@@ -89,6 +90,29 @@ def _slab_with_niches(mb: kc.MeshBuilder, x_half: float, y0: float, y1: float, t
                          seg=1, radius=0.002)
 
 
+
+def _inscription(mb: kc.MeshBuilder, x_half: float, y0: float, y1: float, z: float, rng, weather) -> None:
+    """The dead's names on the front face (M3-ENV-705: P03 read the stones as plain blocks): a framed panel, and in it
+    rows of Pemakar terrace script, short stepped bars cut in and darkened with lamp soot."""
+    stone, soot = mb.material(pc.M_DRESSED), mb.material(pc.M_SOOT)
+    px = x_half - 0.06
+    if y1 - y0 < 0.1 or px < 0.08:
+        return
+    for c, half in (((0.0, y1, z), (px + 0.012, 0.01, 0.006)), ((0.0, y0, z), (px + 0.012, 0.01, 0.006)),
+                    ((-px, (y0 + y1) * 0.5, z), (0.01, (y1 - y0) * 0.5, 0.006)),
+                    ((px, (y0 + y1) * 0.5, z), (0.01, (y1 - y0) * 0.5, 0.006))):
+        kc.rounded_block(mb, c, half, stone, radius=0.004, seg=1, weather=weather)
+    rows = max(1, int((y1 - y0 - 0.04) / 0.07))
+    for r in range(rows):
+        yy = y1 - 0.045 - r * 0.07
+        x = -px + 0.035
+        while x < px - 0.06:
+            bw = float(rng.uniform(0.025, 0.07))
+            step = 0.012 if rng.random() < 0.3 else 0.0  # the script's stepped bars
+            kc.rounded_block(mb, (x + bw * 0.5, yy + step, z + 0.001), (bw * 0.5, 0.007, 0.002), soot, radius=0.002,
+                             seg=1)
+            x += bw + float(rng.uniform(0.012, 0.03))
+
 def stele(name: str, seed: int, *, lod: bool = False, kind: str = "a") -> kc.MeshBuilder:
     rng = kc.rng_for(name, seed)
     noise = kc.Noise3(rng)
@@ -111,6 +135,7 @@ def stele(name: str, seed: int, *, lod: bool = False, kind: str = "a") -> kc.Mes
     y = _plinth(mb, w + 0.1, t + 0.25, rng, noise, lod=lod, weather=weather)
     _slab_with_niches(mb, w * 0.5, y, y + h, t, niches, y + h - 0.2, rng, noise, lod=lod, weather=weather, broken=broken)
     if not lod:
+        _inscription(mb, w * 0.5, y + h * 0.35 + 0.05, y + h - 0.2 - NICHE_M * 0.5 - 0.05, t * 0.5, rng, weather)
         # The carved tide-line band (a shallow proud ring) and the offering ledge in front.
         kc.rounded_block(mb, (0.0, y + h * 0.35, 0.0), (w * 0.5 + 0.012, 0.022, t * 0.5 + 0.012),
                          mb.material(pc.M_DRESSED), radius=0.01, seg=2, weather=weather)

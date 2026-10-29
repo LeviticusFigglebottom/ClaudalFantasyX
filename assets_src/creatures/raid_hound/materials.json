@@ -1,5 +1,5 @@
 {
-  "_doc": "Raid-hound (act1/raid_hound.md): coat (mud-coloured), leather (the harness, the red-lacquered muzzle cage, the Order's mark, brass rings), eye. No weak-point glow, on purpose. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "_doc": "Raid-hound (act1/raid_hound.md): coat (mud-coloured; vertex colour, cavity and wetness carry the saddle, the brindle, the pale underparts and the flats' mud), leather (the Y-harness and the headstall, oiled tortoiseshell), lacquer (the red-lacquered muzzle cage and the Order's plate at the withers; clearcoated through vertex wetness, which does not darken it), metal (the brass rings and buckles), eye. The coat's emission mask is the one small closed spawn_wound mark, the old gaff scar on its breast (the weak point, ADR 0151; M3-CRE-650). M3-CRE-655 added the lacquer and metal slots. write_materials.py on game/shaders/creature/creature.gdshader.",
   "slots": {
     "coat": {
       "roughness_dry": 0.9,
@@ -7,7 +7,11 @@
       "detail_scale": 120.0,
       "detail_albedo": 0.18,
       "detail_bump": 0.6,
-      "cavity_albedo": 0.4
+      "cavity_albedo": 0.4,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 1.4,
+      "emission_pulse_hz": 0.35,
+      "emission_pulse_depth": 0.35
     },
     "leather": {
       "roughness_dry": 0.55,
@@ -16,6 +20,29 @@
       "detail_albedo": 0.15,
       "detail_bump": 0.3,
       "cavity_albedo": 0.4
+    },
+    "lacquer": {
+      "roughness_dry": 0.3,
+      "roughness_wet": 0.16,
+      "specular": 0.6,
+      "wet_darken": 1.0,
+      "clearcoat_wet": 1.0,
+      "detail_scale": 80.0,
+      "detail_albedo": 0.05,
+      "detail_bump": 0.05,
+      "cavity_albedo": 0.45
+    },
+    "metal": {
+      "metallic": 0.6,
+      "roughness_dry": 0.38,
+      "roughness_wet": 0.25,
+      "specular": 0.6,
+      "wet_darken": 0.85,
+      "clearcoat_wet": 0.2,
+      "detail_scale": 60.0,
+      "detail_albedo": 0.12,
+      "detail_bump": 0.15,
+      "cavity_albedo": 0.5
     },
     "eye": {
       "roughness_dry": 0.12,

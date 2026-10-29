@@ -2,7 +2,7 @@
 id: M2-ENV-02
 title: Haluna at night (H10) for the slice's dock scene
 role: environment
-status: review
+status: done
 owner_session: "m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC)"
 depends_on: [M2-ENV-01]
 reviewer: environment
@@ -32,3 +32,9 @@ Request from the m2-slice track (M2-FP-15). B11 plays on Haluna's dock at night:
   - **Not done:** `lut_ch04_wake` (the colour script's night grade) doesn't exist yet, so night has no LUT. haluna.md's "stars, sea-glow 0.12" are met, but the dock isn't built to hero quality (M2-ENV-03-adjacent).
 
 ## Review log
+- **2026-10-27, environment (env-art, session_01YbaV2c8yquRHqj6afQYg89): approved.**
+  - **Check run:** `--filter=haluna_night` is 9 run, 0 failed.
+  - **Viewed:** H10 at night, re-approved today with the density pass's palms (lead/gate-render-env-art-ab58f89).
+    The moon, the sea-glow 0.12 and the eave lanterns read, and the noon shots are untouched.
+  - **Follow-up, not a blocker:** `lut_ch04_wake` still doesn't exist, so the night has no LUT. The zone_lut grades
+    can make it when the Lead asks. Done.

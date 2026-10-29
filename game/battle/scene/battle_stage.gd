@@ -8,6 +8,7 @@ extends Node3D
 const CONFIG_PATH := "res://game/data/ui/battle_sandbox.json"
 const SETTING_SHAKE := &"screen_shake"  # M3-BPR-401: accessibility.json
 const WITHDRAWN_META := &"hymn_withdrawn"  # M3-BPR-406: the retreat started
+const WITHDRAW_TWEEN_META := &"hymn_withdraw_tween"  # its tween, so a freeze-frame can hold it mid-way
 
 static var _config: Dictionary = {}
 
@@ -68,7 +69,28 @@ static func stand_in_spec(cid: StringName) -> Dictionary:
 	var base := String(cid).get_slice("#", 0)
 	var row: Dictionary = (cfg.get("stand_ins", {}) as Dictionary).get(base, {})
 	var spec := (cfg.get("stand_in_defaults", {}) as Dictionary).merged(row, true)
-	return spec.merged(CreatureModels.stand_in_overrides(base), true)
+	var model := CreatureModels.stand_in_overrides(base)
+	return spec.merged(model if not model.is_empty() else vowbound_model(base), true)
+
+
+## A Vowbound's own creature model (M3-BPR-417): a creatures.json row keyed by the Vowbound's id with `vowbound` true
+## and a `scene` replaces the capsule, with that row's stand_in keys. The same rule as the creatures track's
+## CreatureModels.vowbound_creature (M3-CRE-638); once that reaches this branch it answers first and this stopgap can
+## go. {} for anyone else or a row with no scene (the capsule stays).
+static func vowbound_model(base: String) -> Dictionary:
+	var rows := CreatureActor.data().get("creatures", {}) as Dictionary
+	var own := rows.get(base, {}) as Dictionary
+	if not bool(own.get("vowbound", false)) or str(own.get("scene", "")) == "":
+		return {}
+	var is_vowbound := false
+	for v: Dictionary in BattleVowbound.load_config():
+		is_vowbound = is_vowbound or str(v.get("id", "")) == base
+	if not is_vowbound:
+		return {}
+	var row := CreatureActor.row_for(StringName(base))
+	var out := (row.get("stand_in", {}) as Dictionary).duplicate()
+	out["scene"] = str(row["scene"])
+	return out
 
 
 func _ready() -> void:
@@ -88,6 +110,7 @@ func spawn(engine: BattleEngine) -> void:
 	_enemy_slot_of.clear()
 	for i in engine.enemies.size():
 		_seat_enemy(engine.enemies[i].id, mini(i, _enemy_slots.size() - 1))
+	_seat_lone_boss(engine)
 	if is_inside_tree():  # M3-BPR-403: the opening line-up keeps the real models' footprints apart
 		var data := BattleChoreo.load_data()
 		var axis := camera.global_basis.x if camera != null else Vector3.RIGHT  # sideways on screen
@@ -124,6 +147,22 @@ func add_enemy(c: BattleCombatant, engine: BattleEngine) -> void:
 	_seat_enemy(c.id, slot)
 	if choreo != null:
 		choreo.enter(c.id)  # M3-BPR-411: a summoned foe walks onto its mark, not just appears
+
+
+## M3-CRB-011: a lone boss with a battle_sandbox.json `boss_seats` mark stands there (EnemySlots space), not on Slot0,
+## so the default camera sees all of it. Only when it is the only foe at spawn; its slot bookkeeping is unchanged.
+func _seat_lone_boss(engine: BattleEngine) -> void:
+	if engine.enemies.size() != 1 or _enemy_slots.is_empty() or not is_inside_tree():
+		return
+	var cid := engine.enemies[0].id
+	var seat: Variant = (config().get("boss_seats", {}) as Dictionary).get(String(cid).get_slice("#", 0))
+	var f := _fighters.get(cid) as FighterStandIn
+	if not (seat is Array and (seat as Array).size() == 3) or f == null:
+		return
+	var v := seat as Array
+	f.global_position = (_enemy_slots[0].get_parent() as Node3D).to_global(
+		Vector3(float(v[0]), float(v[1]), float(v[2]))
+	)
 
 
 func _seat_enemy(cid: StringName, slot: int) -> void:
@@ -191,6 +230,7 @@ func _withdraw(f: FighterStandIn) -> void:
 	var tw := create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 	tw.tween_property(f, "position", f.position + away, sec)
 	tw.tween_callback(f.hide)
+	f.set_meta(WITHDRAW_TWEEN_META, tw)
 
 
 ## How long the result panel waits after the battle ends: `base`, or longer for the victory pose or the escape.
@@ -242,11 +282,15 @@ static func shake_setting() -> float:
 	return float(settings.get_value(SETTING_SHAKE)) if settings.settings().has(SETTING_SHAKE) else 1.0
 
 
-## Jumps every creature's phase change to its end (CreatureActor.settle; M2-CRE-08), for captures.
+## Jumps every creature's phase change to its end (CreatureActor.settle; M2-CRE-08), and every entrance in progress
+## onto its mark (a summoned foe's walk, M3-BPR-416), for captures.
 func settle_actors() -> void:
-	for f: FighterStandIn in _fighters.values():
+	for cid: StringName in _fighters.keys():
+		var f := _fighters[cid] as FighterStandIn
 		if f.creature() != null:
 			f.creature().settle()
+		if choreo != null:
+			choreo.skip_entering(cid)
 
 
 func stand_in(cid: StringName) -> FighterStandIn:

@@ -1,8 +1,13 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://game/world/zone/greybox_zone.gd" id="1_zone"]
+[ext_resource type="Script" path="res://game/levels/ch03/saltgrass_causeway/causeway_harrier.gd" id="2_harrier"]
 
 [node name="SaltgrassCauseway" type="Node3D"]
 script = ExtResource("1_zone")
 location_id = &"ch03/saltgrass_causeway"
 layout_path = "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway_layout.json"
+
+[node name="Harrier" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 90.96, 5.06, -57.36)
+script = ExtResource("2_harrier")

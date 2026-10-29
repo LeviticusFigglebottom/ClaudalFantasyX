@@ -45,11 +45,20 @@ cold: wealth, not warmth.
 
 | Piece | What it is | Size | Budget |
 |---|---|---|---|
-| `bowl_dome` | A bowl-dome on its island: a white stone plinth at the water, three tiered red-lacquer drums with gilt bands, the inverted gilded bowl, and a thin spire with rings; scaled per placement | 14 × 30 | 6k / 400 |
+| `bowl_dome` | A bowl-dome on its island: a white stone plinth at the water, three tiered red-lacquer drums with gilt bands (each drum ringed with black lacquer pilasters, dark windows under gilt heads between them, a black eave on its brackets), the inverted gilded bowl ribbed in gilt, and a thin spire with rings; the plinth steps down into the water; scaled per placement | 14 × 30 | 6k / 400 |
 | `ansedra_far_domes` | The skyline ring: low-poly domes and their islands round the lagoon at 300–700 m | r 700 | 4k / 800 |
 | `pursuit_barge` | The Conclave's pursuit barge: long, black lacquer with gilt, a raised poop for the Warden, and at its stern the **bound flat-engine** (a bronze disc on a gimbal, its bound core in `glimmer_bound`) that pulls the water level and still | 14 × 5 | 10k / 700 |
+| `lacquer_hall` | One hall of the Lacquer Court: a white plinth, red-lacquer columns with gilt capitals, a lacquered back wall, and a three-tier hip roof of red tile with gilt eaves whose tips sweep up; open on +Z | 15 × 10 × 10 | 8k / 500 |
+| `lacquer_court_ground` | The court: white slabs with the Level line inlaid in gilt, eight water-steps down into the lagoon on +Z, and the water-gate over them (two red posts, a lintel, the lacquered drop-gate held up) | 40 × 33 | 12k / 800 |
+| `sanctum_basin` | The Sanctum's basin: 14 m square, 1 m deep, salt-glass tiles over the bound light, a white rim with a gilt Level line and two kneeling steps outside it; the scene fills it with still water to −0.1 | 19 × 19 | 8k / 500 |
+| `archive_stacks` | One bay of the Lamp Archive: two black-lacquer ledger cases across a 2.4 m aisle, red shelves of ledgers (cream and red spines), a rolling ladder, and the lectern with the Cantor roll at the aisle's end | 7 × 4 × 3.3 | 9k / 500 |
 
-The Lacquer Court, the Sanctum basin and the Archive stacks follow with their zones.
+**Composition notes** for the zones (act1-chapters places them):
+- **The Lacquer Court:** halls on three sides of `lacquer_court_ground`, the open side toward the steps and the gate;
+  domes behind. Keep halls' fronts 6 m back from the steps so the gate scene has the court floor.
+- **The Sanctum:** the basin centred under a white vault (use `lowlight_nave_bay` scaled, or plain walls); no other
+  light source than the floor. The basin's mirror is the scene's water at −0.1, roughness 0.
+- **The Archive:** bays in a row along X (7 m pitch), the lectern of the last bay facing the entrance.
 
 ## 2. The Warden's arena (`ansedra_lagoon_escape`)
 
@@ -68,3 +77,5 @@ The Lacquer Court, the Sanctum basin and the Archive stacks follow with their zo
 ## Revisions
 
 - 2026-10-27 (env-art, M3-ENV-721): first issue, with the Ch14 boss arena.
+- 2026-10-27 (env-art, M3-ENV-721): the zone pieces (`lacquer_hall`, `lacquer_court_ground`, `sanctum_basin`,
+  `archive_stacks`) and composition notes.

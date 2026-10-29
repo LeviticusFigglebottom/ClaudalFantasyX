@@ -9,6 +9,9 @@ birds, no voices, no insects.
   (two very quiet tones, snapped to whole cycles per loop, swelling with the gusts).
 * drips: far drips falling into still water inside the drowned storeys.
 * far: the open sea far beyond the city, a slow low surge.
+* vigil (M3-AUD-847): the seven keeping their vigils apart. Now and then, far across the plaza, a voice murmurs a
+  few words to itself (the villagers' murmur, life_sfx.py, low-passed and set back), never close enough to follow.
+  Rhen's lamp crackles at the lamp itself (cutscene_foley.json `lamps`), not in this bed.
 
 All synthesized from the building blocks in field_ambience.py (circular noise on the loop's own FFT grid, periodic
 LFOs, laps); no recordings. Every event is placed in loop time (it wraps) and every modulation runs whole cycles
@@ -37,6 +40,9 @@ _spec = importlib.util.spec_from_file_location("field_ambience", os.path.join(os
                                                                                "field_ambience.py"))
 FA = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(FA)
+_lspec = importlib.util.spec_from_file_location("life_sfx", os.path.join(os.path.dirname(__file__), "life_sfx.py"))
+LIFE = importlib.util.module_from_spec(_lspec)
+_lspec.loader.exec_module(LIFE)
 
 OUT_DIR = os.path.join(ROOT, "assets", "audio", "ambience")
 SEED = 20261127
@@ -45,8 +51,9 @@ CEILING_DB = -6.0
 QUALITY = 1.0
 LOOPS = {"iskarra_dusk": 44.0}
 # Bus gains (dB) from measured bus loudness (render_bed(stats=True)): the towers' wind lead at 0; water -4, the far
-# sea -8, drips -12.
-GAINS = {"iskarra_dusk": {"towers": 0.0, "water": 23.6, "drips": 34.2, "far": -4.4}}
+# sea -8, drips -12, the vigil's murmurs about -15 while one speaks (M3-AUD-847).
+GAINS = {"iskarra_dusk": {"towers": 0.0, "water": 23.6, "drips": 34.2, "far": -4.4, "vigil": 15.0}}
+VIGIL_EVERY_SEC = 13.0  # about three murmurs a loop, each from somewhere else on the plaza
 
 
 def _mixer(name: str) -> tuple[LoopMixer, int]:
@@ -89,6 +96,10 @@ def iskarra_dusk(g):
                gain=float(g.uniform(0.2, 0.7)))
     mx.add("far", FA.stereo_noise(L, g, [bq_lowpass(250, 0.6), bq_highpass(35, 0.7)], 0.6)
            * (0.6 + 0.4 * FA.plfo(L, 0.045, g))[:, None], 0.0)
+    mx.bus("vigil", 0.0, send=0.9, process=lambda x: filt(x, [bq_lowpass(1600, 0.7), bq_highpass(220, 0.7)]))
+    for i, t in enumerate(FA.schedule(L, VIGIL_EVERY_SEC, g, 0.4)):
+        mx.add("vigil", LIFE.murmur(i, bool(g.random() < 0.4)), t, pan=float(g.uniform(-0.8, 0.8)),
+               gain=float(g.uniform(0.6, 1.0)))
     verb = ModFDNReverb(rt60=2.4, rt60_high=1.0, predelay=0.04, size=1.8, mod_depth=6.0, mod_rate=0.25,
                         early_level=0.25, lowcut=120.0, highcut=6500.0, seed=SEED % 9973 + 3)
     return mx, verb

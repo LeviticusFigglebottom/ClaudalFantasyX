@@ -11,6 +11,8 @@ extends RefCounted
 const DATA_PATH := "res://game/data/flow/objectives.json"
 
 var rows: Array[Dictionary] = []
+## Zone id -> the loc key of its own line for when nothing calls (objectives.json idle_keys).
+var idle_keys: Dictionary = {}
 ## Callable(flag: StringName) -> bool.
 var is_set: Callable
 
@@ -19,6 +21,9 @@ func _init(flag_check: Callable = Callable(), path: String = DATA_PATH) -> void:
 	is_set = flag_check if flag_check.is_valid() else func(f: StringName) -> bool: return bool(Game.get_flag(f))
 	for r: Variant in load_rows(path):
 		rows.append(r as Dictionary)
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+	if typeof(parsed) == TYPE_DICTIONARY and typeof((parsed as Dictionary).get("objectives")) == TYPE_DICTIONARY:
+		idle_keys = ((parsed as Dictionary)["objectives"] as Dictionary).get("idle_keys", {}) as Dictionary
 
 
 static func load_rows(path: String = DATA_PATH) -> Array:
@@ -58,10 +63,12 @@ func side(zone: StringName) -> Array[Dictionary]:
 	return out
 
 
-## The current objective's line in words (OBJ_NONE when nothing calls).
+## The current objective's line in words; when nothing calls, the zone's own idle line (idle_keys), else
+## OBJ_NONE.
 func line(zone: StringName) -> String:
 	var row := current(zone)
-	return TranslationServer.translate(str(row.get("line_key", "OBJ_NONE")))
+	var idle := str(idle_keys.get(String(zone), "OBJ_NONE"))
+	return TranslationServer.translate(str(row.get("line_key", idle)))
 
 
 ## The current objective's target {zone, poi}, or {} when it has none.

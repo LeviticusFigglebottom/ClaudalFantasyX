@@ -2,8 +2,8 @@
 id: M3-ENV-1203
 title: Corrow pieces the seawall kit lacks (the harbour mole and its sea stair, the Bastion's walls and ground, kite posts, shield racks, the wall-gate, net racks)
 role: environment
-status: todo
-owner_session: ""
+status: review
+owner_session: "env-art (session_01YbaV2c8yquRHqj6afQYg89)"
 depends_on: [M3-C08-1202]
 milestone: M3
 request-from: cinematics
@@ -31,8 +31,15 @@ When a piece lands, act1-chapters adds it to `tools/act1/ch08_corrow_dressing.py
 from `greybox.keep` (tell act1-chapters in its live log).
 
 ## Acceptance criteria
-- [ ] Each piece built, reproducible, PROVENANCE rows, LOD chain, fitting its footprint.
+- [x] Each piece built, reproducible, PROVENANCE rows, LOD chain, fitting its footprint.
+  - All pieces are built, except `Flood` and `Lake`.
+  - **`Flood` and `Lake` are not env-art's.** They are water surfaces (Rendering's water), not kit pieces.
 
 ## Notes
+- **2026-10-27 (env-art):** delivered by M3-ENV-707 (`docs/kb/tasks/M3/M3-ENV-707-corrow-story-pieces.md` lists
+  each piece and the block it fits).
+  - **Batch A (bbd4b5ad):** the barracks, the wall-gate, the kites, the hoist rig, the trader and Marra's step.
+  - **Then:** the mole and its sea stair, and the Bastion's ground, revetment and rim.
+  - **Placing them is act1-chapters':** `tools/act1/ch08_corrow_dressing.py`, and drop each id from `greybox.keep`.
 
 ## Review log

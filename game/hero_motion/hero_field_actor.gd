@@ -187,10 +187,25 @@ static func attach_stage(stage: CutsceneStage) -> Array[HeroFieldActor]:
 	for child in folder.get_children():
 		var a := child as Node3D
 		if a != null and not a is FieldController:
-			var b := attach_actor(a, StringName(a.name))
+			var b := attach_actor(a, hero_of(StringName(a.name)))
 			if b != null:
 				out.append(b)
 	return out
+
+
+## The hero a stage actor plays: its node name when that is a hero id, else field.actor_aliases[name], else the name
+## with a field.actor_prefixes prefix stripped (vigil_asha -> asha). &"" when it plays no hero.
+static func hero_of(actor_name: StringName) -> StringName:
+	var name := String(actor_name)
+	if (field_data().get("heroes", {}) as Dictionary).has(name):
+		return actor_name
+	var alias := str((field_data().get("actor_aliases", {}) as Dictionary).get(name, ""))
+	if alias != "":
+		return StringName(alias)
+	for prefix: Variant in field_data().get("actor_prefixes", []):
+		if name.begins_with(str(prefix)):
+			return StringName(name.trim_prefix(str(prefix)))
+	return actor_name
 
 
 ## A body on a cutscene actor root `actor` for hero `id`, or null when the hero has no body or the
@@ -265,8 +280,23 @@ func _setup(m: Node3D) -> void:
 	HeroMotion.add_foot_ik(model)  # M2-HER-1116: feet on slopes and steps, after the micro-motion
 
 
+## The clips this body's locomotion plays for idle, walk and run: field.locomotion_clips, under the hero row's own
+## `clips` (Sefir's walk and run are his walk_glide: he has no stepping walk, M3-HER-1225).
+func locomotion_clips() -> Dictionary:
+	return HeroFieldActor.clips_of(hero_id)
+
+
+## locomotion_clips() for hero `id`, without a body (the clip-speed tests measure what the body will play).
+static func clips_of(id: StringName) -> Dictionary:
+	var f := field_data()
+	var clips := (f.get("locomotion_clips", {}) as Dictionary).duplicate()
+	var row := (f.get("heroes", {}) as Dictionary).get(String(id), {}) as Dictionary
+	clips.merge(row.get("clips", {}) as Dictionary, true)
+	return clips
+
+
 func _build_tree() -> void:
-	var clips := _field.get("locomotion_clips", {}) as Dictionary
+	var clips := locomotion_clips()
 	var bs := AnimationNodeBlendSpace1D.new()
 	bs.min_space = 0.0
 	bs.max_space = maxf(loco.run_clip_mps, loco.walk_clip_mps)
@@ -489,7 +519,7 @@ func play_clip(clip_name: StringName, blend: float = -1.0, hold: bool = false) -
 	if tree == null:
 		return false
 	var fade := blend if blend >= 0.0 else float(_field.get("clip_blend_sec", 0.0))
-	if String(clip_name) in (_field.get("locomotion_clips", {}) as Dictionary).values():
+	if String(clip_name) in locomotion_clips().values():
 		if action == &"" and gait != null and gait.clip != &"":
 			return true  # a start, stop or turn is the locomotion already: let it finish
 		_to_locomotion(fade)
@@ -556,7 +586,7 @@ func _emit_contacts() -> void:
 			if w[i] > w[idx]:
 				idx = i
 		var names := [&"idle", &"walk", &"run"]
-		clip = StringName(str((_field.get("locomotion_clips", {}) as Dictionary).get(String(names[idx]), "")))
+		clip = StringName(str(locomotion_clips().get(String(names[idx]), "")))
 		node = StringName("loco/%d" % idx)
 	if clip == &"" or not tree.has_animation(clip):
 		return

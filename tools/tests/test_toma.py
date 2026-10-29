@@ -233,7 +233,8 @@ class TestGeometry(unittest.TestCase):
         self.assertGreater(float(sh[:, 0].max() - sh[:, 0].min()), 0.9)
         sp = toma_props.spear(self.lm, c, toma_costume.ATLAS["grip"]).varr()
         self.assertLess(float(sp[:, 0].max()), 0.0)
-        self.assertAlmostEqual(float(sp[:, 2].max()), c["spear_length_m"], delta=0.03)
+        along = sp @ toma_props.spear_axis(self.lm)  # M2-CHR-515: built through the fist, along the held line
+        self.assertAlmostEqual(float(along.max() - along.min()), c["spear_length_m"], delta=0.03)
 
     def test_scutes_are_thirteen_cells_in_the_disc(self):
         import numpy as np

@@ -1,0 +1,145 @@
+[gd_scene load_steps=13 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/characters/stillguard_a/stillguard_a.glb" id="a"]
+[ext_resource type="PackedScene" path="res://assets/characters/stillguard_b/stillguard_b.glb" id="b"]
+[ext_resource type="PackedScene" path="res://assets/characters/stillguard_c/stillguard_c.glb" id="c"]
+[ext_resource type="PackedScene" path="res://assets/characters/stillguard_d/stillguard_d.glb" id="d"]
+[ext_resource type="PackedScene" path="res://assets/characters/stillguard_e/stillguard_e.glb" id="e"]
+[ext_resource type="PackedScene" path="res://assets/characters/stillguard_f/stillguard_f.glb" id="f"]
+
+[sub_resource type="ProceduralSkyMaterial" id="Sky_mat"]
+sky_top_color = Color(0.46, 0.53, 0.63, 1)
+sky_horizon_color = Color(0.86, 0.79, 0.71, 1)
+sky_curve = 0.12
+ground_bottom_color = Color(0.36, 0.33, 0.31, 1)
+ground_horizon_color = Color(0.478, 0.431, 0.392, 1)
+ground_curve = 0.06
+sun_angle_max = 1.0
+sun_curve = 0.01
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("Sky_mat")
+
+[sub_resource type="Environment" id="Env"]
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 3
+ambient_light_energy = 0.5
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 1.0
+tonemap_white = 12.0
+ssao_enabled = true
+ssao_radius = 0.04
+ssao_intensity = 1.0
+glow_enabled = true
+glow_intensity = 0.35
+glow_bloom = 0.02
+glow_hdr_threshold = 1.2
+
+[sub_resource type="StandardMaterial3D" id="Studio_mat"]
+albedo_color = Color(0.26, 0.255, 0.25, 1)
+roughness = 0.95
+
+[sub_resource type="PlaneMesh" id="Floor_mesh"]
+material = SubResource("Studio_mat")
+size = Vector2(16, 16)
+
+[sub_resource type="CylinderMesh" id="Cyc_mesh"]
+material = SubResource("Studio_mat")
+flip_faces = true
+top_radius = 5.5
+bottom_radius = 5.5
+height = 7.0
+radial_segments = 48
+rings = 1
+cap_top = false
+cap_bottom = false
+
+[node name="StillguardLineup" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="StillguardA" parent="." instance=ExtResource("a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0, 0)
+
+[node name="StillguardB" parent="." instance=ExtResource("b")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, 0)
+
+[node name="StillguardC" parent="." instance=ExtResource("c")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0, 0)
+
+[node name="StillguardD" parent="." instance=ExtResource("d")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 0)
+
+[node name="StillguardE" parent="." instance=ExtResource("e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, 0)
+
+[node name="StillguardF" parent="." instance=ExtResource("f")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 0, 0)
+
+[node name="KeyLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.683157, 0.381423, -0.622746, -0, 0.85276, 0.522303, 0.730271, -0.356815, 0.582569, 0, 4, 0)
+light_color = Color(1, 0.722, 0.482, 1)
+light_energy = 2.4
+shadow_enabled = true
+shadow_bias = 0.02
+shadow_normal_bias = 4.5
+shadow_blur = 0.6
+directional_shadow_max_distance = 8.0
+
+[node name="RimLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.738956, -0.25716, 0.622746, 0, 0.924293, 0.381683, -0.673754, 0.282047, -0.683012, 0, 4, 0)
+light_color = Color(0.949, 0.651, 0.29, 1)
+light_energy = 1.8
+shadow_enabled = true
+shadow_bias = 0.02
+shadow_normal_bias = 4.5
+directional_shadow_max_distance = 8.0
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+mesh = SubResource("Floor_mesh")
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Lineup" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, 0, 0, 0.996195, 0.0871557, 0, -0.0871557, 0.996195, 0, 1.15, 7.4)
+fov = 34.0
+near = 0.05
+current = true
+
+[node name="LineupThreeQuarter" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.866025, 0.0435779, -0.497867, 0, 0.996195, 0.0871557, 0.5, -0.0754791, 0.862316, -3.6, 1.15, 6.3)
+fov = 34.0
+near = 0.05
+
+[node name="AnimationPlayer" parent="StillguardA"]
+autoplay = &"idle"
+
+[node name="AnimationPlayer" parent="StillguardB"]
+autoplay = &"idle"
+
+[node name="AnimationPlayer" parent="StillguardC"]
+autoplay = &"idle"
+
+[node name="AnimationPlayer" parent="StillguardD"]
+autoplay = &"idle"
+
+[node name="AnimationPlayer" parent="StillguardE"]
+autoplay = &"idle"
+
+[node name="AnimationPlayer" parent="StillguardF"]
+autoplay = &"idle"
+
+[editable path="StillguardA"]
+
+[editable path="StillguardB"]
+
+[editable path="StillguardC"]
+
+[editable path="StillguardD"]
+
+[editable path="StillguardE"]
+
+[editable path="StillguardF"]

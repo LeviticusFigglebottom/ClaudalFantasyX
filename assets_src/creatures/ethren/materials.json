@@ -1,0 +1,25 @@
+{
+  "_doc": "Ethren's surfaces (docs/kb/art/creatures/vowbound/ethren.md). Slots are the glTF material names; write_materials.py writes assets/creatures/ethren/materials/<slot>.tres on game/shaders/creature/creature.gdshader. He is lacquer over bound light (color_script.md rule 2): the light is inside the shell and shows only at the seams and the halo's inner face, glimmer_bound #4FB3B0 at 1.2 with no pulse (steady: no flicker, no drift, no motes). lacquer is the black lacquer shell (lacquer_black; glossy, its highlights carry the light) and lacquer_red the deep-red panels (lacquer_red_deep), neither lit. gold is gold leaf on the edges only (gold_leaf, metallic 1.0): palette.json caps gold at 5% of the frame. seam is the bound light at the armour's seams (emission mask 1). halo is the bowl-halo's inner face (emission mask 1). veil is the still gauze veil (gauze_white), faintly lit from behind at 0.2. ring is the plain copper wedding ring (laterite toward tortoiseshell), rough, not metallic-shiny and never lit: the keepsake. Colours are palette.json swatches.",
+  "held": {"_doc": "M3-CRE-647, the held form for the Ch20 release fight (act3_roster.md, The Vowbound as foes): write_materials.py writes materials_held/, every emissive slot's glimmer_bound (#4FB3B0) as glimmer_held (#7FC6D9) at the same energy, steady (color_script.md rule 1: held light is cool cyan); the other slots as they are. The held battle scene wears it; the release turns it to glimmer_lift (presentation).",
+           "emission_from": "#4FB3B0", "emission_to": "#7FC6D9"},
+  "slots": {
+    "lacquer": {"roughness_dry": 0.2, "roughness_wet": 0.12, "specular": 0.6, "wet_darken": 0.9, "clearcoat_wet": 0.3,
+                "detail_scale": 30.0, "detail_albedo": 0.03, "detail_bump": 0.03, "cavity_albedo": 0.3,
+                "rim_sheen": 0.25, "emission_energy": 0.0},
+    "lacquer_red": {"roughness_dry": 0.22, "roughness_wet": 0.14, "specular": 0.6, "wet_darken": 0.9,
+                    "clearcoat_wet": 0.3, "detail_scale": 30.0, "detail_albedo": 0.04, "detail_bump": 0.03,
+                    "cavity_albedo": 0.3, "rim_sheen": 0.25, "emission_energy": 0.0},
+    "gold": {"roughness_dry": 0.3, "roughness_wet": 0.2, "metallic": 1.0, "specular": 0.6, "wet_darken": 0.95,
+             "detail_scale": 50.0, "detail_albedo": 0.06, "detail_bump": 0.05, "emission_energy": 0.0},
+    "seam": {"roughness_dry": 0.5, "roughness_wet": 0.3, "specular": 0.3, "detail_albedo": 0.0, "detail_bump": 0.0,
+             "emission_color": "#4FB3B0", "emission_energy": 1.2},
+    "halo": {"roughness_dry": 0.4, "roughness_wet": 0.3, "specular": 0.3, "detail_albedo": 0.0, "detail_bump": 0.0,
+             "emission_color": "#4FB3B0", "emission_energy": 1.2},
+    "veil": {"roughness_dry": 0.85, "roughness_wet": 0.6, "specular": 0.25, "wet_darken": 0.9, "detail_scale": 140.0,
+             "detail_albedo": 0.05, "detail_bump": 0.05, "rim_sheen": 0.4, "emission_color": "#4FB3B0",
+             "emission_energy": 0.2},
+    "ring": {"roughness_dry": 0.8, "roughness_wet": 0.6, "metallic": 0.3, "specular": 0.35, "wet_darken": 0.85,
+             "detail_scale": 200.0, "detail_albedo": 0.1, "detail_bump": 0.1, "cavity_albedo": 0.4,
+             "emission_energy": 0.0}
+  }
+}

@@ -2,7 +2,8 @@
 id: M3-CRE-627
 title: "Build four Act II regulars (Ch10-11): tannin archer, gallery ray, rime urchin, conduit crawler"
 role: character
-status: review
+status: blocked
+blocked-by: ADR 0041
 owner_session: "worktree-agent-a754445358ec40463 (creatures, cloud session_01EbDaRQ5n7hpvwuRG6jEDQY)"
 reviewer: art
 depends_on: [M3-CRE-620]
@@ -215,3 +216,4 @@ squall_wing (0.101), and the Wakefin (0.113). All four regulars sit well above 0
   - the crawler's crown glow through the shell, and its thin legs at 9 m.
 
 ## Review log
+- 2026-10-28, creatures: **paused by ADR 0041** (Act I at final quality first; the human's directive). The work done so far is merged on claude/creatures as is; nothing reverted. Resume when a new ADR lifts the pause.

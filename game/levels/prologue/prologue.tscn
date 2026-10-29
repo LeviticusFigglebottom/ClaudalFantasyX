@@ -1,11 +1,15 @@
-[gd_scene load_steps=48 format=3]
+[gd_scene load_steps=23 format=3]
 
+[ext_resource type="PackedScene" path="res://assets/environments/zones/iskarra/iskarra_city.tscn" id="iskarra_city"]
 [ext_resource type="Script" path="res://game/levels/prologue/prologue_scene.gd" id="1_root"]
 [ext_resource type="Script" path="res://game/world/camera_shot.gd" id="2_shot"]
 [ext_resource type="Script" path="res://game/world/field_camera_director.gd" id="3_director"]
 [ext_resource type="Script" path="res://game/cutscene/cutscene_stage.gd" id="4_stage"]
 [ext_resource type="Script" path="res://game/cutscene/cutscene_shot_node.gd" id="5_shot_node"]
 [ext_resource type="PackedScene" path="res://assets/characters/ysolde/ysolde.glb" id="6_ysolde"]
+[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="7_water"]
+[ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="8_waves"]
+[ext_resource type="Material" path="res://assets/environments/zones/iskarra/iskarra_water_material.tres" id="9_water_mat"]
 
 [sub_resource type="Resource" id="ShotP01"]
 script = ExtResource("2_shot")
@@ -56,22 +60,13 @@ glow_bloom = 0.08
 fog_enabled = true
 fog_mode = 1
 fog_light_color = Color(0.788, 0.541, 0.353, 1)
-fog_density = 0.3
+fog_density = 0.2
 fog_sky_affect = 0.2
-fog_depth_begin = 30.0
+fog_depth_begin = 70.0
 fog_depth_end = 220.0
 adjustment_enabled = true
 adjustment_saturation = 1.05
 adjustment_color_correction = SubResource("Grade_dusk_tex")
-
-[sub_resource type="StandardMaterial3D" id="Mat_ceramic"]
-albedo_color = Color(0.91, 0.886, 0.839, 1)
-roughness = 0.35
-metallic_specular = 0.7
-
-[sub_resource type="StandardMaterial3D" id="Mat_stone"]
-albedo_color = Color(0.725, 0.682, 0.596, 1)
-roughness = 0.95
 
 [sub_resource type="StandardMaterial3D" id="Mat_cloth_sand"]
 albedo_color = Color(0.788, 0.706, 0.557, 1)
@@ -88,172 +83,6 @@ roughness = 0.9
 [sub_resource type="StandardMaterial3D" id="Mat_cloth_indigo"]
 albedo_color = Color(0.169, 0.227, 0.42, 1)
 roughness = 0.9
-
-[sub_resource type="StandardMaterial3D" id="Mat_water"]
-albedo_color = Color(0.055, 0.29, 0.333, 1)
-roughness = 0.08
-metallic_specular = 0.9
-
-[sub_resource type="StandardMaterial3D" id="Mat_lamp"]
-albedo_color = Color(0.29, 0.271, 0.255, 1)
-roughness = 0.8
-
-[sub_resource type="PlaneMesh" id="Mesh_0"]
-material = SubResource("Mat_water")
-size = Vector2(600, 600)
-
-[sub_resource type="BoxMesh" id="Mesh_1"]
-material = SubResource("Mat_stone")
-size = Vector3(34, 1.2, 18)
-
-[sub_resource type="BoxMesh" id="Mesh_2"]
-material = SubResource("Mat_stone")
-size = Vector3(10, 0.8, 6)
-
-[sub_resource type="CylinderMesh" id="Mesh_3"]
-material = SubResource("Mat_ceramic")
-top_radius = 5.16
-bottom_radius = 6
-height = 52
-radial_segments = 24
-
-[sub_resource type="CylinderMesh" id="Mesh_4"]
-material = SubResource("Mat_ceramic")
-top_radius = 1.8
-bottom_radius = 5.16
-height = 7.2
-radial_segments = 24
-
-[sub_resource type="CylinderMesh" id="Mesh_5"]
-material = SubResource("Mat_ceramic")
-top_radius = 4.3
-bottom_radius = 5
-height = 40
-radial_segments = 24
-
-[sub_resource type="CylinderMesh" id="Mesh_6"]
-material = SubResource("Mat_ceramic")
-top_radius = 1.5
-bottom_radius = 4.3
-height = 6
-radial_segments = 24
-
-[sub_resource type="CylinderMesh" id="Mesh_7"]
-material = SubResource("Mat_ceramic")
-top_radius = 3.44
-bottom_radius = 4
-height = 22
-radial_segments = 24
-
-[sub_resource type="CylinderMesh" id="Mesh_8"]
-material = SubResource("Mat_ceramic")
-top_radius = 2.8
-bottom_radius = 3.36
-height = 9.9
-radial_segments = 24
-
-[sub_resource type="CylinderMesh" id="Mesh_9"]
-material = SubResource("Mat_ceramic")
-top_radius = 6.02
-bottom_radius = 7
-height = 58
-radial_segments = 24
-
-[sub_resource type="CylinderMesh" id="Mesh_10"]
-material = SubResource("Mat_ceramic")
-top_radius = 2.1
-bottom_radius = 6.02
-height = 8.4
-radial_segments = 24
-
-[sub_resource type="CylinderMesh" id="Mesh_11"]
-material = SubResource("Mat_ceramic")
-top_radius = 3.87
-bottom_radius = 4.5
-height = 30
-radial_segments = 24
-
-[sub_resource type="CylinderMesh" id="Mesh_12"]
-material = SubResource("Mat_ceramic")
-top_radius = 1.35
-bottom_radius = 3.87
-height = 5.4
-radial_segments = 24
-
-[sub_resource type="CylinderMesh" id="Mesh_13"]
-material = SubResource("Mat_ceramic")
-top_radius = 5.16
-bottom_radius = 6
-height = 46
-radial_segments = 24
-
-[sub_resource type="CylinderMesh" id="Mesh_14"]
-material = SubResource("Mat_ceramic")
-top_radius = 4.73
-bottom_radius = 5.5
-height = 34
-radial_segments = 24
-
-[sub_resource type="CylinderMesh" id="Mesh_15"]
-material = SubResource("Mat_ceramic")
-top_radius = 1.65
-bottom_radius = 4.73
-height = 6.6
-radial_segments = 24
-
-[sub_resource type="CylinderMesh" id="Mesh_16"]
-material = SubResource("Mat_ceramic")
-top_radius = 2.58
-bottom_radius = 3
-height = 14
-radial_segments = 24
-
-[sub_resource type="CylinderMesh" id="Mesh_17"]
-material = SubResource("Mat_ceramic")
-top_radius = 2.1
-bottom_radius = 2.52
-height = 6.3
-radial_segments = 24
-
-[sub_resource type="CylinderMesh" id="Mesh_18"]
-material = SubResource("Mat_ceramic")
-top_radius = 3.01
-bottom_radius = 3.5
-height = 18
-radial_segments = 24
-
-[sub_resource type="CylinderMesh" id="Mesh_19"]
-material = SubResource("Mat_ceramic")
-top_radius = 1.05
-bottom_radius = 3.01
-height = 4.2
-radial_segments = 24
-
-[sub_resource type="BoxMesh" id="Mesh_20"]
-material = SubResource("Mat_ceramic")
-size = Vector3(1.4, 10, 1.4)
-
-[sub_resource type="BoxMesh" id="Mesh_21"]
-material = SubResource("Mat_ceramic")
-size = Vector3(9, 1.4, 1.6)
-
-[sub_resource type="BoxMesh" id="Mesh_22"]
-material = SubResource("Mat_ceramic")
-size = Vector3(1.4, 3.5, 1.4)
-
-[sub_resource type="CylinderMesh" id="Mesh_23"]
-material = SubResource("Mat_lamp")
-top_radius = 0.14
-bottom_radius = 0.2
-height = 5.5
-radial_segments = 12
-
-[sub_resource type="SphereMesh" id="Mesh_24"]
-material = SubResource("Mat_lamp")
-radius = 0.38
-height = 0.76
-radial_segments = 12
-rings = 6
 
 [sub_resource type="CapsuleMesh" id="Mesh_25"]
 material = SubResource("Mat_cloth_sand")
@@ -287,152 +116,12 @@ light_energy = 0.35
 
 [node name="City" type="Node3D" parent="."]
 
-[node name="Water" type="MeshInstance3D" parent="City"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-cast_shadow = 0
-mesh = SubResource("Mesh_0")
+[node name="Water" type="Node3D" parent="City"]
+script = ExtResource("7_water")
+wave_set = ExtResource("8_waves")
+material = ExtResource("9_water_mat")
 
-[node name="Terrace" type="MeshInstance3D" parent="City"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 2)
-mesh = SubResource("Mesh_1")
-
-[node name="Rise" type="MeshInstance3D" parent="City"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.6, -2)
-mesh = SubResource("Mesh_2")
-
-[node name="Towers" type="Node3D" parent="City"]
-
-[node name="TowerA" type="MeshInstance3D" parent="City/Towers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -46, 23, -70)
-mesh = SubResource("Mesh_3")
-
-[node name="TowerACap" type="MeshInstance3D" parent="City/Towers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -46, 52.6, -70)
-mesh = SubResource("Mesh_4")
-
-[node name="TowerB" type="MeshInstance3D" parent="City/Towers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24, 17, -92)
-mesh = SubResource("Mesh_5")
-
-[node name="TowerBCap" type="MeshInstance3D" parent="City/Towers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24, 40, -92)
-mesh = SubResource("Mesh_6")
-
-[node name="TowerC" type="MeshInstance3D" parent="City/Towers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 8, -60)
-mesh = SubResource("Mesh_7")
-
-[node name="TowerCCrown" type="MeshInstance3D" parent="City/Towers"]
-transform = Transform3D(0.5878, -0.809, 0, 0.7694, 0.559, 0.309, -0.25, -0.1816, 0.9511, -1.6, 2.64, -56)
-mesh = SubResource("Mesh_8")
-
-[node name="TowerD" type="MeshInstance3D" parent="City/Towers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 26, -84)
-mesh = SubResource("Mesh_9")
-
-[node name="TowerDCap" type="MeshInstance3D" parent="City/Towers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 59.2, -84)
-mesh = SubResource("Mesh_10")
-
-[node name="TowerE" type="MeshInstance3D" parent="City/Towers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34, 12, -66)
-mesh = SubResource("Mesh_11")
-
-[node name="TowerECap" type="MeshInstance3D" parent="City/Towers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34, 29.7, -66)
-mesh = SubResource("Mesh_12")
-
-[node name="TowerF" type="MeshInstance3D" parent="City/Towers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 58, 20, -100)
-mesh = SubResource("Mesh_13")
-
-[node name="TowerFCap" type="MeshInstance3D" parent="City/Towers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 58, 46.6, -100)
-mesh = SubResource("Mesh_4")
-
-[node name="TowerG" type="MeshInstance3D" parent="City/Towers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -70, 14, -110)
-mesh = SubResource("Mesh_14")
-
-[node name="TowerGCap" type="MeshInstance3D" parent="City/Towers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -70, 34.3, -110)
-mesh = SubResource("Mesh_15")
-
-[node name="TowerH" type="MeshInstance3D" parent="City/Towers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 4, -40)
-mesh = SubResource("Mesh_16")
-
-[node name="TowerHCrown" type="MeshInstance3D" parent="City/Towers"]
-transform = Transform3D(0.309, -0.9511, 0, 0.8688, 0.2823, 0.4067, -0.3868, -0.1257, 0.9135, 30.8, 1.68, -37)
-mesh = SubResource("Mesh_17")
-
-[node name="TowerI" type="MeshInstance3D" parent="City/Towers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -34, 6, -44)
-mesh = SubResource("Mesh_18")
-
-[node name="TowerICap" type="MeshInstance3D" parent="City/Towers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -34, 17.1, -44)
-mesh = SubResource("Mesh_19")
-
-[node name="Arches" type="Node3D" parent="City"]
-
-[node name="ArchLeft" type="MeshInstance3D" parent="City/Arches"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 4.5, -18)
-mesh = SubResource("Mesh_20")
-
-[node name="ArchRight" type="MeshInstance3D" parent="City/Arches"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.4, 4.5, -18)
-mesh = SubResource("Mesh_20")
-
-[node name="ArchLintel" type="MeshInstance3D" parent="City/Arches"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.2, 10.2, -18)
-mesh = SubResource("Mesh_21")
-
-[node name="FallenPillar" type="MeshInstance3D" parent="City/Arches"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 4.5, -22)
-mesh = SubResource("Mesh_20")
-
-[node name="FallenStump" type="MeshInstance3D" parent="City/Arches"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.6, 1.25, -22)
-mesh = SubResource("Mesh_22")
-
-[node name="FallenLintel" type="MeshInstance3D" parent="City/Arches"]
-transform = Transform3D(0.9781, -0.2079, 0, 0.2059, 0.9686, 0.1392, -0.0289, -0.1361, 0.9903, 21, 0.6, -19)
-mesh = SubResource("Mesh_21")
-
-[node name="LampColumns" type="Node3D" parent="City"]
-
-[node name="Lamp0" type="MeshInstance3D" parent="City/LampColumns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 3.15, -6.2)
-mesh = SubResource("Mesh_23")
-
-[node name="Lamp0Head" type="MeshInstance3D" parent="City/LampColumns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 6.1, -6.2)
-mesh = SubResource("Mesh_24")
-
-[node name="Lamp1" type="MeshInstance3D" parent="City/LampColumns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 3.15, -6.2)
-mesh = SubResource("Mesh_23")
-
-[node name="Lamp1Head" type="MeshInstance3D" parent="City/LampColumns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 6.1, -6.2)
-mesh = SubResource("Mesh_24")
-
-[node name="Lamp2" type="MeshInstance3D" parent="City/LampColumns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 3.15, -6.2)
-mesh = SubResource("Mesh_23")
-
-[node name="Lamp2Head" type="MeshInstance3D" parent="City/LampColumns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 6.1, -6.2)
-mesh = SubResource("Mesh_24")
-
-[node name="Lamp3" type="MeshInstance3D" parent="City/LampColumns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 3.15, -6.2)
-mesh = SubResource("Mesh_23")
-
-[node name="Lamp3Head" type="MeshInstance3D" parent="City/LampColumns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 6.1, -6.2)
-mesh = SubResource("Mesh_24")
+[node name="Iskarra" parent="City" instance=ExtResource("iskarra_city")]
 
 [node name="Vigils" type="Node3D" parent="City"]
 

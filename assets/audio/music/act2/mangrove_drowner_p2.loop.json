@@ -1,0 +1,15 @@
+{
+  "bar_beats": 4,
+  "beat_count": 80,
+  "bpm": 62.0,
+  "downbeat_offset_s": 0.16129251700680272,
+  "loop_bars": 20,
+  "loop_length_samples": 3414194,
+  "loop_length_seconds": 77.41936507936508,
+  "loop_offset_seconds": 0.0,
+  "loop_start_samples": 0,
+  "meter": "12/8 (bpm counts dotted quarters)",
+  "sample_rate": 44100,
+  "stems_of": "mangrove_drowner",
+  "total_samples": 3414194
+}

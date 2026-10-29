@@ -53,10 +53,30 @@ func test_a_cast_actor_shows_its_model_and_idles_out_of_step() -> void:
 	var fisher := zone.stage.actor(&"fisher")
 	var boatman := zone.stage.actor(&"boatman")
 	assert_false((fisher.get_node(^"StandIn") as Node3D).visible, "the capsule is hidden")
-	assert_true(fisher.get_node_or_null(^"Cast") != null, "the model is on the actor")
-	var a := HeroMotion.player_of(fisher.get_node(^"Cast"))
-	var b := HeroMotion.player_of(boatman.get_node(^"Cast"))
+	# The body is the Cast, or a crowd person that replaced it once the zone has a villager file (M3-CRE-657):
+	# either way the actor's AnimationPlayer is the one the cutscenes' @anim lines play.
+	var a := HeroMotion.player_of(fisher)
+	var b := HeroMotion.player_of(boatman)
 	assert_true(a != null and a.is_playing() and a.current_animation == "idle", "the fisher idles")
 	assert_true(b != null and b.is_playing(), "the boatman idles")
 	assert_true(absf(a.current_animation_position - b.current_animation_position) > 0.05, "out of step")
+	_close()
+
+
+func test_a_creature_or_a_hero_cast_finds_its_body() -> void:
+	var hound := ZoneCast.scene_path("creature:raid_hound")
+	assert_ne(hound, "", "a creature: cast names the creature's model scene")
+	assert_eq(ZoneCast.scene_path("creature:no_such_beast"), "", "an unknown creature has none")
+	assert_ne(ZoneCast.scene_path("hero:rhen"), "", "a hero: cast takes the hero's field body")
+	Game.new_game()
+	zone = (load(PORT) as PackedScene).instantiate() as GreyboxZone
+	zone.story.autostart = false
+	(Engine.get_main_loop() as SceneTree).current_scene.add_child(zone)
+	var cast := zone.get_node(^"Cast") as ZoneCast
+	var model := cast.cast_actor(&"board", "creature:raid_hound")
+	assert_true(model != null, "the hound stands on the actor")
+	assert_true(is_equal_approx(model.rotation.y, PI), "turned to face the actor's -Z")
+	var a := HeroMotion.player_of(model)
+	assert_true(a != null and a.is_playing(), "it idles")
+	assert_eq(HeroMotion.body_of(zone.stage.actor(&"board")), null, "no battle play_clip for the sequencer to call")
 	_close()

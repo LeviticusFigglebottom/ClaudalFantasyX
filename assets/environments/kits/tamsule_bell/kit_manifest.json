@@ -151,9 +151,9 @@
         4000,
         300
       ],
-      "bytes": 82400,
+      "bytes": 155692,
       "lods": {
-        "market_stall": 1008,
+        "market_stall": 2324,
         "market_stall-lod1": 72
       }
     },
@@ -291,6 +291,17 @@
       "lods": {
         "watch_boat": 2924,
         "watch_boat-lod1": 160
+      }
+    },
+    "weep_column": {
+      "budget": [
+        6000,
+        600
+      ],
+      "bytes": 105952,
+      "lods": {
+        "weep_column": 2399,
+        "weep_column-lod1": 355
       }
     }
   },

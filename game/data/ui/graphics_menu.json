@@ -1,7 +1,7 @@
 {
   "graphics_menu": {
     "doc": "The Graphics settings page (M1-UI-10; docs/kb/tech/graphics_settings.md, 'The Graphics menu'). Rects are top-left x, y, w, h at the 1920 x 1080 reference. 'page' are MenuPage metrics. value_keys: loc key per string option of graphics_presets.json 'settings' (booleans use on_key / off_key; numbers print as they are, except percent_settings, shown as a percentage, and multiplier_settings, shown with a times sign). The rows are the preset, then every setting in graphics_presets.json order. M2-UI-09: every settings page (SettingsPage: Graphics, Accessibility) and the Settings hub (SettingsMenu) share 'page', 'help' and 'backdrop_alpha', so they read as one family; the help line wraps to two lines; 'hub' canvas_layer is the hub's layer when the field menu opens it (over the field menu's 60 and the bestiary's 64).",
-    "backdrop_alpha": 0.82,
+    "backdrop_alpha": 0.82, "speed_preview": {"doc": "The Accessibility page's live preview of text speed and battle speed (SpeedPreview): right of the page, a caption, the sample, and for battle speed a pip that crosses track_px high in one action's hold; each loop holds hold_sec; pip_ease is the crossing's ease() curve.", "rect": [1383, 150, 471, 264], "track_px": 12, "hold_sec": 0.8, "pip_ease": 0.4},
     "page": {
       "rect": [560, 150, 800, 0],
       "max_rows": 14,

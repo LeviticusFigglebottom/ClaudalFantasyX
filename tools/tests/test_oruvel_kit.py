@@ -160,6 +160,7 @@ class PreviewTests(unittest.TestCase):
         self.assertEqual(self.LAYOUT["kit_dir"], "res://assets/environments/kits/oruvel/")
         names = {p["piece"] for p in self.LAYOUT["pieces"]}
         storm = {p["piece"] for p in self.LAYOUT["states"]["storm"]["pieces"]}
+        storm |= {p["piece"] for p in self.LAYOUT["states"]["rebuilt"]["pieces"]}  # M3-ENV-730, E7's rebuilt state
         self.assertTrue(names | storm <= set(TARGETS), (names | storm) - set(TARGETS))
         self.assertEqual(names | storm, set(TARGETS), "every piece is in the preview (the kit rows at least)")
         self.assertFalse(names & set(STORM.TARGETS), "the storm pieces show only in the storm state")
@@ -219,8 +220,11 @@ class PreviewTests(unittest.TestCase):
         self.assertAlmostEqual(o07["fov"], bt.INSERT_FOV, places=3)
 
     def test_nothing_shipped_names_the_preview(self) -> None:
-        for p in list(SRC.glob("*.py")) + [ROOT / "game" / "data" / "import" / "oruvel_kit.json"]:
-            if p.name == "ov_preview_layout.py":
+        # The two preview writers name their own preview folders; what the zone dressing ships (its JSON and
+        # Environment under assets/environments/zones/ch01/) is checked instead.
+        shipped = sorted((ROOT / "assets" / "environments" / "zones" / "ch01").glob("oruvel_*"))
+        for p in list(SRC.glob("*.py")) + [ROOT / "game" / "data" / "import" / "oruvel_kit.json"] + shipped:
+            if p.name in ("ov_preview_layout.py", "ov_zone_dressing.py"):
                 continue
             self.assertNotIn("_tests/", p.read_text(encoding="utf-8"), p.name)
 

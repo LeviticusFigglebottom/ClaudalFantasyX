@@ -68,7 +68,7 @@ CODEX_CORROW_BODY,"A town that lives behind a seawall of grey laterite blocks ca
 CODEX_MOTHER_KELL_TITLE,Mother Kell
 CODEX_MOTHER_KELL_BODY,"Oruvel's chandler, who has sold the lamp-divers their oil and trimmed their wicks for forty years from a hull she will not step off. She never learned to swim. She took Rhen in when he was eight and nobody came for him, the way she took in every stray the raft-town had, and she gives every diver a wick before they go down. ""For luck."""
 CODEX_NEME_TITLE,Neme
-CODEX_NEME_BODY,"Asha's aunt, who mends nets and pretends not to be afraid. She feeds Rhen the way she would talk to a stray dog she has decided to keep: often, and far too much."
+CODEX_NEME_BODY,"Asha's aunt, who mends nets and pretends not to be afraid. She feeds Rhen the way you would feed a stray you have decided to keep: often, and far too much."
 CODEX_YSOLDE_TITLE,Ysolde Ysel
 CODEX_YSOLDE_BODY,"A scholar of Lamptongue from Ansedra, appointed by the Order to tutor the Cantor on her pilgrimage. She came aboard at the islet's landing with the Order's letter and very little else to say. She is exacting, correct and witheringly polite, and she keeps a step apart from everyone."
 CODEX_KERRID_TITLE,Old Kerrid
@@ -87,3 +87,43 @@ CODEX_COILSPIRE_TITLE,Coilspire
 CODEX_COILSPIRE_BODY,"The temple of Fire, a hollow stone spire on the headland beyond Corrow's wall-gate, with copper flue-pipes coiled up its outside like vines. Its Tenders keep a flame that a Cantor must walk up the flues, tier by tier, to the crown. From the beacon gallery at the top you can see out to where the storms always break."
 CODEX_IVO_TITLE,Ivo Brannick
 CODEX_IVO_BODY,"A Stillguard of Corrow's wall, Toma's shield-mate for seven years. He hugged Toma hard enough to lift him off the wall-head, knelt properly to the Cantor, and took to Rhen at once. Toma laughed out loud when he saw him."
+CODEX_KIRRU_TITLE,The Kirru
+CODEX_KIRRU_BODY,"A people of the estuaries, far taller than any human, with dark fur, a pale throat, an otter's face and a crest of heron feathers, who live some two hundred and fifty years. They speak softly and mean exactly what they say; among themselves they talk in whistle-clicks and hand-shapes. They live in clutches of brothers and sisters, led by the eldest who still swims, and each of them wears a name-shell at the throat. The Order tolerates them, has never tried to convert them, and keeps them out of its temples."
+CODEX_ULLARI_TITLE,The Ullari
+CODEX_ULLARI_BODY,"The people of the Ullar Heights, where the air is thin and the skies are enormous. They herd woolbacks on terraced valleys, weave a dense cloth, much of it, oddly, in tide patterns so far from the sea, and keep their records in keth, bundles of knotted cord read by touch. Up here the dead lift quickly, and the Ullari are calm about death in a way the coast finds cold."
+CODEX_OSSA_FEN_TITLE,Ossa Fen
+CODEX_OSSA_FEN_BODY,"Where the coast road from Corrow gives out, the land goes soft. Ossa Fen is a Kirru estuary of mangrove channels and tannin water, brown-black as steeped tea, and the only ways across it are the root-walks the Kirru keep between the trunks. White egrets stand in the shallows and do not startle. Something else lives in the roots."
+CODEX_REEDHOLLOW_TITLE,Reedhollow
+CODEX_REEDHOLLOW_BODY,"A Kirru roost-village of woven reed lodges raised on mangrove roots round a still lagoon, reached by a causeway of reeds. Each lodge is a clutch's. The shore on its far side is where the clutches gather at dusk."
+CODEX_SUNKEN_VEY_TITLE,Sunken Vey
+CODEX_SUNKEN_VEY_BODY,"The largest Lit Age ruin still above water: stone galleries standing chest-deep in a turquoise lagoon, wrapped in strangler fig, their roofs the only dry way through. Ceramic conduits still run along the walls, and some of them still pulse faintly with bound light. Silent, gorgeous, and dead."
+CODEX_LOWLIGHT_TITLE,Lowlight
+CODEX_LOWLIGHT_BODY,"A temple of the Order half under water, built round the foot of a Lit Age well-shaft. Below the waterline its galleries are flooded, and in the sanctum at the bottom the deep's own cold wells up through the floor, carrying drowned glimmer down through it like silt. Nothing in it is frozen."
+CODEX_KETH_PASS_TITLE,Keth Pass
+CODEX_KETH_PASS_BODY,"The road up into the Ullar Heights climbs a cliff in switchbacks, with cords strung post to post along the drop. These are the pass-cords. An Ullari who has lost someone ties a knot on them for the dead, and then walks on without looking back."
+CODEX_QUELLAN_TITLE,Quellan
+CODEX_QUELLAN_BODY,"A highland town of stone and woven awnings on a terrace under the open sky: one street, an inn under a red banner, and a well in the square. Its walls are laid without mortar, many-sided stones fitted so close a blade would not go between them. The road north climbs on to Cloudloom."
+CODEX_CLOUDLOOM_TITLE,Cloudloom
+CODEX_CLOUDLOOM_BODY,"A weaving-hall cut into the summit rock above Quellan, its roof open to the sky and hung with thousands of keth that stir in the thin wind. At noon the sun comes straight down through the roof, and the cords lay their shadows on the white stone floor like writing. It is stone and cord and sky, and a temple of the Order."
+CODEX_ANSEDRA_TITLE,Ansedra
+CODEX_ANSEDRA_BODY,"The holy city, the Order's seat, built on a lagoon kept perfectly flat. No wind ripples it and no wake is permitted; barges are poled, never rowed. Its skyline is bowl-domes, gilded and upturned on tiers of red lacquer, and the city has no seabirds, no dogs, and no games in its squares."
+CODEX_SANCTUM_OF_THE_LEVEL_TITLE,The Sanctum of the Level
+CODEX_SANCTUM_OF_THE_LEVEL_BODY,"The Glimmer temple at the heart of Ansedra. Its inner basin is so still it is a perfect mirror, lit from beneath by a steady light that never moves, and the Order calls it a miracle: water that has not stirred in four hundred years. Pilgrims kneel at the ledge that rings it. Nobody walks on it."
+CODEX_LAMP_ARCHIVE_TITLE,The Lamp Archive
+CODEX_LAMP_ARCHIVE_BODY,"The Order's library of Lit Age records, a long reading room between the stacks in Ansedra. The founders' lamp-ledgers and the full roll of the Cantors are kept here in plain sight, for anyone the Order lets in to read them."
+CODEX_LACQUER_COURT_TITLE,The Lacquer Court
+CODEX_LACQUER_COURT_BODY,"The ceremonial heart of Ansedra: a stone floor on the still water under a red-lacquered colonnade, with galleries for guests, a dais for vows, and water-steps down to the moorings. A water-gate closes the canal beyond. The unions that matter to the faith are made here, before the Conclave of Elders."
+CODEX_HOLLOWMERE_TITLE,Hollowmere
+CODEX_HOLLOWMERE_BODY,"The largest of the Saltwright flotillas: a raft-city of some four thousand people on lashed hulls, turning windmills and tide-wheels, that moves with the seasons among the outer shoals to keep ahead of the Order's patrols. No chief rules it; a council of hull-captains does. Its people find their way by current-songs."
+CODEX_PALE_RIM_TITLE,The Pale Rim
+CODEX_PALE_RIM_BODY,"The southern edge of the known sea. For days of wading the water runs ankle to waist deep over white sand, the horizon goes white and the sky with it, and there is nothing to steer by but the cairns the waders keep."
+CODEX_DROWNED_CHOIR_TITLE,The Drowned Choir
+CODEX_DROWNED_CHOIR_BODY,"A ring of colossal stone figures standing in the water round a sunken amphitheatre, their mouths open. Those who know of it say it is where every Cantor ends."
+CODEX_THE_CALM_TITLE,The Calm
+CODEX_THE_CALM_BODY,"The years between one Undertow and the next. The Order counts them from the Level, and the coast lives by that count: this is the year 1012, at the end of the sixty-first Calm. Calms used to last a lifetime. This one has lasted eleven years."
+CODEX_CANTORS_TITLE,The Cantors
+CODEX_CANTORS_BODY,"When a Calm begins to fail, the Order names a Cantor to sing the next one. She walks a pilgrim's road from temple to temple with a tutor in Lamptongue and a sworn guardian, and with anyone else she chooses to take, learning a verse of the Hush at each. At the road's end she sings the Hush whole, and the storm sleeps. Her village holds her funeral before she leaves, and no one says why."
+CODEX_EBBING_TITLE,The Ebbing
+CODEX_EBBING_BODY,"The Order's dance for the dead. After a drowning a priest dances on a floating platform with a long lantern-staff, and the motes of the dead follow the staff out to sea while the mourners kneel facing the water. After an Undertow the dance falls to a Cantor, and the whole strand watches her. It is the most beautiful thing the Order does."
+CODEX_MOLL_TITLE,Inquisitor Hadric Moll
+CODEX_MOLL_BODY,"An Inquisitor of the Stillguard, one of the officers who enforce the Salt Edicts, met on the Brine Shoals with a raid-hound and a long-hafted brine-iron. He is in his forties, tired, and sincere: he believes in what he burns. When the fight was done he knelt in the mud, and when the High Warden told him to put the iron in the water, he did not argue."

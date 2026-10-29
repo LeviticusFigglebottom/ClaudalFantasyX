@@ -1,0 +1,30 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/character/character_hair.gdshader" id="sh"]
+[ext_resource type="Texture2D" path="res://assets/characters/kerrid/textures/kerrid_fibre.png" id="t0"]
+
+[resource]
+resource_name = "fibre"
+render_priority = 0
+shader = ExtResource("sh")
+shader_parameter/tex_hair = ExtResource("t0")
+shader_parameter/alpha_boost = 1.1
+shader_parameter/col_root = Color(0.627, 0.549, 0.4, 1.0)
+shader_parameter/col_spec_primary = Color(0.902, 0.863, 0.784, 1.0)
+shader_parameter/col_spec_secondary = Color(0.549, 0.463, 0.314, 1.0)
+shader_parameter/col_tip = Color(0.761, 0.69, 0.541, 1.0)
+shader_parameter/col_transmission = Color(0.69, 0.565, 0.376, 1.0)
+shader_parameter/depth_occlusion = 0.55
+shader_parameter/diffuse_wrap = 0.4
+shader_parameter/flow_strength = 0.0
+shader_parameter/indirect_specular = 0.04
+shader_parameter/kajiya_diffuse_mix = 0.3
+shader_parameter/root_occlusion = 0.55
+shader_parameter/secondary_sparkle = 0.5
+shader_parameter/spec_primary_exponent = 30.0
+shader_parameter/spec_primary_intensity = 0.12
+shader_parameter/spec_secondary_intensity = 0.05
+shader_parameter/strand_hue_jitter = 0.02
+shader_parameter/strand_value_jitter = 0.18
+shader_parameter/tip_start = 0.7
+shader_parameter/transmission_strength = 0.5

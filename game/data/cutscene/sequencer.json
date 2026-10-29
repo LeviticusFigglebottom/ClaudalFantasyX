@@ -21,7 +21,7 @@
   "light_ease": 2.2,
   "_hold_note": "M2-FP-103 (the playtest: a kneeling Asha stood up for her first line): an @anim of one of hold_clips is a pose the actor holds (a hero body's play_clip hold) until its own next @anim or @mark, and its lines don't play the talk or idle clip over it. Any other @anim is a gesture, after which lines play talk and idle again.",
   "hold_clips": ["kneel_over_rhen", "laugh", "offer_hand", "face_west", "sit_in_shallows", "sit_up", "sit_steps", "spear_level", "catch_rhen", "take_hand", "vigil_book_shut", "stand_apart", "kneel", "lie_in_shallows"],
-  "_stand_in_note": "M2-FP-103: clip_stand_ins maps '<actor>/<clip>' to a clip the rig has, played while the requested clip (assets_src/characters/requested_clips.json) is not built yet; the real clip plays as soon as the rig carries it. Rhen's beach clips stand in as his kneel (half risen in the shallows) and his rise.",
+  "_stand_in_note": "M2-FP-103: clip_stand_ins maps '<actor>/<clip>' to a clip the rig has, played while the requested clip (assets_src/characters/requested_clips.json) is not built yet; the real clip plays as soon as the rig carries it. Rhen lies in the shallows as his KO pose (the human's playtest: his kneel twinned Asha's), sits up into his kneel and stands as his rise.",
   "camera_breath": {
     "doc": "M2-FP-104: a landed scripted shot turns by a slow sum of sines (yaw_deg / pitch_deg amplitude, averaged over the periods), easing in over ramp_sec; a cut or blend resets it. Deterministic.",
     "enabled": true,
@@ -32,7 +32,7 @@
     "pitch_periods_sec": [9.1, 13.7]
   },
   "clip_stand_ins": {
-    "rhen/lie_in_shallows": "kneel_over_rhen",
+    "rhen/lie_in_shallows": "ko",
     "rhen/sit_up": "kneel_over_rhen",
     "rhen/sit_in_shallows": "kneel_over_rhen",
     "rhen/stand_unsteady": "rise_to_stand"
@@ -51,7 +51,7 @@
     "shell_shrine_interior": "temple_trial",
     "hush_first_verse": "hush_theme_v2",
     "corrow_day": "corrow_seawall",
-    "coilspire_flues": "temple_trial",
+    "coilspire_flues": "coilspire",
     "undertow_reach": "undertows_reach_p1",
     "oruvel_raft": "oruvel",
     "oruvel_underway": "lamp_diver",
@@ -76,6 +76,8 @@
       "color": "#7FC6D9",
       "energy": 3.0,
       "size_m": 0.05,
+      "amount_multiplier": 0.15,
+      "center_y_m": 0.4,
       "spread_m": 1.2,
       "life_sec": 9.0,
       "velocity": [
@@ -88,6 +90,8 @@
       "color": "#FFE9B8",
       "energy": 3.0,
       "size_m": 0.05,
+      "amount_multiplier": 0.07,
+      "center_y_m": 1.1,
       "spread_m": 0.5,
       "life_sec": 10.0,
       "velocity": [
@@ -102,6 +106,9 @@
       "color": "#4FB3B0",
       "energy": 2.5,
       "size_m": 0.06,
+      "amount_multiplier": 0.12,
+      "end_after_sec": 4.5,
+      "center_y_m": 0.0,
       "spread_m": 0.8,
       "life_sec": 6.0,
       "velocity": [

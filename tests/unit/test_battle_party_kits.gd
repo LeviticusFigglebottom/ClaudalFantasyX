@@ -91,6 +91,20 @@ func test_foes_stage_ranged_sweeping_and_heavy_blows_by_their_reach() -> void:
 	assert_true(checked >= 4, "ranged and sweeping foe skills are checked (%d)" % checked)
 
 
+## The staging audit's "parts look primitive" pass: every hero has its own stand-in until its model lands (Kerrid's and
+## Liss's sheets give their height), and its own timeline tint, never the shared default nor another hero's.
+func test_every_hero_has_its_own_stand_in_and_tint() -> void:
+	var db := BattleDB.load_default()
+	var rows := BattleStage.config()["stand_ins"] as Dictionary
+	var seen: Dictionary = {}
+	for cid: StringName in db.characters:
+		assert_true(rows.has(String(cid)), "%s has a stand-in row" % cid)
+		var tint := str(BattleStage.stand_in_spec(cid).get("tint", "")).to_upper()
+		assert_ne(tint, "", "%s has a tint" % cid)
+		assert_false(seen.has(tint), "%s's tint %s is its own (also %s)" % [cid, tint, seen.get(tint, "")])
+		seen[tint] = cid
+
+
 func _style_for(data: Dictionary, db: BattleDB, r: ActionResult) -> String:
 	var by_skill := data["style_by_skill"] as Dictionary
 	if by_skill.has(String(r.skill_id)):

@@ -13,6 +13,11 @@ var layer: VillagerLayer
 func _ready() -> void:
 	zone = (load(zone_scene) as PackedScene).instantiate() as Node3D
 	add_child(zone)
-	layer = VillagerLayer.new()
-	layer.zone_id = zone_id
-	zone.add_child(layer)
+	# A zone that adds its own layer (Haluna, M2-FP-113) keeps it: a second one would show every villager twice
+	# (M3-CRE-100). Only a zone without one gets one here.
+	layer = zone.get_node_or_null(^"VillagerLayer") as VillagerLayer
+	if layer == null:
+		layer = VillagerLayer.new()
+		layer.name = "VillagerLayer"
+		layer.zone_id = zone_id
+		zone.add_child(layer)

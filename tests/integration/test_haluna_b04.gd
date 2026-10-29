@@ -106,8 +106,10 @@ func test_osu_stands_on_dry_ground_clear_of_the_causeway_trigger() -> void:
 func test_osu_and_the_bag_are_gone_at_night() -> void:
 	var cfg := FirstPlayableConfig.section(FirstPlayableConfig.SECTION_HALUNA)
 	zone.set_night(cfg.get("night", {}), cfg.get("night_hide", []))
-	assert_true(zone.get_node_or_null("NPCs/Osu") == null, "Osu and her stand-in wall went home")
-	assert_true(zone.get_node_or_null("NPCs/Neme/Bag") == null, "Asha took her bag")
+	# Hidden and stopped, not freed (the VillagerLayer still holds them).
+	for path: String in ["NPCs/Osu", "NPCs/Neme/Bag"]:
+		var n := zone.get_node_or_null(path) as Node3D
+		assert_true(n == null or (not n.is_visible_in_tree() and not n.can_process()), "%s is gone at night" % path)
 	_done()
 
 

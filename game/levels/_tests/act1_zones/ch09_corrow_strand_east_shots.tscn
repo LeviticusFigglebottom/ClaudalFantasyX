@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/act1_zones/act1_zone_rig.gd" id="1_rig"]
+[ext_resource type="PackedScene" path="res://game/levels/ch09/corrow_night/corrow_night.tscn" id="2_zone"]
+
+[node name="Ch09CorrowStrandEastShots" type="Node3D"]
+script = ExtResource("1_rig")
+zone_scene = ExtResource("2_zone")
+flags = PackedStringArray("ch09_started")
+views = {
+"Landing": [[-33.0, 2.4, 24.5], [-25.5, 0.6, 35.0], 55.0],
+"Rocks": [[-2.0, 3.0, 32.0], [5.0, 2.2, 20.5], 55.0]
+}

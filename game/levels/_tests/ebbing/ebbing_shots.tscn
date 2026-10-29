@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/ebbing/ebbing_shot_rig.gd" id="1_rig"]
+[ext_resource type="PackedScene" path="res://game/levels/ch09/corrow_night/corrow_night.tscn" id="2_zone"]
+
+[node name="EbbingShots" type="Node3D"]
+script = ExtResource("1_rig")
+zone_scene = ExtResource("2_zone")
+flags = PackedStringArray("ch09_started")
+views = {
+"N11": [[-33.466, -0.1, 73.459], [-19.123, 2.6, 39.701], 75],
+"N08": [[0.0, 7.6, 69.0], [-26.057, 0.6, 40.304], 62],
+"Strand": [[-40.0, 3.2, 14.0], [-26.0, 1.5, 28.0], 60.0]
+}

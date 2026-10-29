@@ -170,6 +170,10 @@ func _glow(tier: StringName, on: bool) -> void:
 	var n := _block(BOWL % tier)
 	if n == null:
 		return
+	var color := Color.html(str((layout.get(KEY_VIEW, {}) as Dictionary).get("charge_color", "#ffffff")))
+	var dressing := get_node_or_null(^"Dressing") as ZoneKitDressing
+	if dressing != null and dressing.glow(String(BOWL % tier), on, color) > 0:
+		return  # the kit's bowl holds the charge (env-art-b); the greybox block is hidden
 	var mi := n.get_node_or_null(^"Mesh") as MeshInstance3D
 	if mi == null or not mi.mesh is BoxMesh:
 		return

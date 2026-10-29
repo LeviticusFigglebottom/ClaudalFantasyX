@@ -1,0 +1,13 @@
+keys,en
+LOCATION_CH10_OSSA_FEN,Ossa Fen
+LOCATION_CH10_REEDHOLLOW,Reedhollow
+ENEMY_TANNIN_ARCHER,Tannin Archer
+LORE_TANNIN_ARCHER,"An archerfish grown to a dog's length in the fen's tea-dark water. It knocks beetles off the roots with a jet of water, and lately it has started aiming higher."
+ENEMY_ROOT_CRAB,Root Crab
+LORE_ROOT_CRAB,"A tree-crab of the mangroves, bark-brown and spotted with lichen. It lives in the prop-roots and drags what it catches into them to eat later."
+ENEMY_FEN_LEECH,Fen Leech
+LORE_FEN_LEECH,"A leech as flat and long as a ribbon, its underside faintly amber. The Kirru wade the channels with their legs wrapped, and still come home bitten."
+SKILL_TANNIN_JET,Tannin Jet
+SKILL_ROOT_DRAG,Root Drag
+SKILL_LEECH_BITE,Leech Bite
+ENC_CH10_FEN,Ossa Fen

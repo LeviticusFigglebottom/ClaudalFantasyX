@@ -27,10 +27,11 @@ import ac_common as ac  # noqa: E402
 import ac_ground  # noqa: E402
 import ac_hall  # noqa: E402
 import ac_temple  # noqa: E402
+import b_trial  # noqa: E402
 
 kc = ac.kc
 MAX_GLB_BYTES = 5 * 1024 * 1024  # ADR 0005
-MODULES = (ac_temple, ac_approach, ac_hall, ac_ground)
+MODULES = (ac_temple, ac_approach, ac_hall, ac_ground, b_trial)  # b_trial: env-art-b (the trial's pieces)
 
 
 def targets() -> dict:

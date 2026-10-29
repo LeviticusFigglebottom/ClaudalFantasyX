@@ -68,6 +68,45 @@
       "volume_db": -8.0,
       "voices": 1,
       "cooldown_ms": 150
+    },
+    "ui_count_run": {
+      "files": [
+        "res://assets/audio/sfx/ui_count_run.ogg"
+      ],
+      "bus": "UI",
+      "volume_db": -8.0,
+      "voices": 1,
+      "cooldown_ms": 400,
+      "_note": "M3-AUD-848: the result's numbers counting up"
+    },
+    "ui_count_done": {
+      "files": [
+        "res://assets/audio/sfx/ui_count_done.ogg"
+      ],
+      "bus": "UI",
+      "volume_db": -4.0,
+      "voices": 1,
+      "_note": "M3-AUD-848: the count settled"
+    },
+    "ui_prompt_in": {
+      "files": [
+        "res://assets/audio/sfx/ui_prompt_in.ogg"
+      ],
+      "bus": "UI",
+      "volume_db": -14.0,
+      "voices": 1,
+      "cooldown_ms": 900,
+      "_note": "M3-AUD-854: the interact prompt appearing; very quiet, at most once in 0.9 s"
+    },
+    "ui_interact": {
+      "files": [
+        "res://assets/audio/sfx/ui_interact.ogg"
+      ],
+      "bus": "UI",
+      "volume_db": -8.0,
+      "voices": 1,
+      "cooldown_ms": 200,
+      "_note": "M3-AUD-854: using an interactable, under whatever it opens"
     }
   }
 }

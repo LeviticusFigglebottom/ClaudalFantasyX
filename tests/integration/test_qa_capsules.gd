@@ -9,11 +9,16 @@ const KNOWN := "res://tests/integration/qa_known.json"
 const STANDIN := "StandIn"
 const SANDBOX := "res://game/data/ui/battle_sandbox.json"
 const CHAPTERS_DIR := "res://game/data/flow/chapters"
+const ENCOUNTERS := "res://game/data/battle/encounters.json"
+const ENEMIES := "res://game/data/battle/enemies.json"
+const SKILLS := "res://game/data/battle/skills.json"
+const VOWBOUND := "res://game/data/battle/vowbound.json"
 
 
 func test_no_zone_shows_a_capsule_the_owners_do_not_know_of() -> void:
 	var known := _json(KNOWN).get("capsules", {}) as Dictionary
-	var party_was: Array[StringName] = Game.state.party_ids.duplicate()
+	var state_was := Game.state  # a fresh state: no flags left by earlier tests pick a zone's variant
+	Game.state = GameStateData.new()
 	Game.state.party_ids = [&"rhen", &"asha", &"toma"] as Array[StringName]
 	var paths: Array[String] = HeroGuardSources.field_zones()
 	var prologue := str(HeroGuardSources.scenes_by_location().get(HeroGuardSources.PROLOGUE_ID, ""))
@@ -28,6 +33,31 @@ func test_no_zone_shows_a_capsule_the_owners_do_not_know_of() -> void:
 			story.autostart = false
 		_host().add_child(zone)
 		var shown := capsules(zone)
+		for flags in _variant_flags(zone):  # the zone as each layout variant shows it (Ch9's dawn road)
+			var default_state := Game.state
+			Game.state = GameStateData.new()
+			Game.state.party_ids = [&"rhen", &"asha", &"toma"] as Array[StringName]
+			for f in flags:
+				Game.set_flag(StringName(f))
+			zone.call(&"apply_variant")
+			for who in capsules(zone):
+				if not shown.has(who):
+					shown.append(who)
+			Game.state = default_state
+		if zone.has_method(&"refresh_states") and "layout" in zone:  # each layout state's flag, in story order
+			var default_state := Game.state
+			Game.state = GameStateData.new()
+			Game.state.party_ids = [&"rhen", &"asha", &"toma"] as Array[StringName]
+			for row: Variant in (zone.get(&"layout") as Dictionary).get("states", []):
+				var flag := str((row as Dictionary).get("flag", "")) if row is Dictionary else ""
+				if flag == "":
+					continue
+				Game.set_flag(StringName(flag))
+				zone.call(&"refresh_states")
+				for who in capsules(zone):
+					if not shown.has(who):
+						shown.append(who)
+			Game.state = default_state
 		var listed: Array = known.get(path.get_file(), [])
 		for who in shown:
 			if listed.has(who):
@@ -35,7 +65,7 @@ func test_no_zone_shows_a_capsule_the_owners_do_not_know_of() -> void:
 			else:
 				fail("%s shows %s as a capsule" % [path.get_file(), who])
 		zone.free()
-	Game.state.party_ids = party_was
+	Game.state = state_was
 
 
 func test_every_party_member_has_a_battle_actor() -> void:
@@ -51,6 +81,68 @@ func test_every_party_member_has_a_battle_actor() -> void:
 			print("  KNOWN capsule battle: %s" % id)
 		else:
 			fail("%s is a party member with no battle actor scene (battle_sandbox stand_ins)" % id)
+
+
+## Every foe an encounter seats, every add a boss spawns or summons, and every Vowbound the party can call must
+## have a real body: BattleStage.stand_in_spec(id) names a scene that exists (else FighterStandIn draws a primitive).
+## The ones already assigned are in qa_known.json "capsules"."battle_foes" (id -> owner and task).
+func test_every_foe_and_vowbound_has_a_body() -> void:
+	var known := (_json(KNOWN).get("capsules", {}) as Dictionary).get("battle_foes", {}) as Dictionary
+	var ids := battle_body_ids()
+	assert_true(ids.size() > 10, "the encounters, spawns, summons and Vowbound are read (%d ids)" % ids.size())
+	for id in ids:
+		var scene := str(BattleStage.stand_in_spec(StringName(id)).get("scene", ""))
+		if scene != "" and ResourceLoader.exists(scene):
+			continue
+		if known.has(id):
+			print("  KNOWN capsule battle foe: %s (%s)" % [id, known[id]])
+		else:
+			fail("%s fights as a primitive stand-in (no actor scene in battle_sandbox or creatures)" % id)
+
+
+## Every combatant id a battle can seat on the far side or call in: encounters.json enemies, enemies.json `spawn`
+## lists, skills.json `summon`s and vowbound.json's Vowbound.
+static func battle_body_ids() -> Array[String]:
+	var out: Array[String] = []
+	_collect_key(_json(ENCOUNTERS).get("encounters", {}), "enemies", out)
+	_collect_key(_json(ENEMIES), "spawn", out)
+	_collect_key(_json(SKILLS), "summon", out)
+	for row: Variant in _json(VOWBOUND).get("vowbound", []):
+		_add_ids([(row as Dictionary).get("id", "")], out)
+	out.sort()
+	return out
+
+
+static func _collect_key(v: Variant, key: String, out: Array[String]) -> void:
+	if v is Dictionary:
+		for k: Variant in v:
+			if str(k) == key:
+				_add_ids(v[k] if v[k] is Array else [v[k]], out)
+			else:
+				_collect_key(v[k], key, out)
+	elif v is Array:
+		for x: Variant in v:
+			_collect_key(x, key, out)
+
+
+static func _add_ids(ids: Array, out: Array[String]) -> void:
+	for id: Variant in ids:
+		var s := str(id).get_slice("#", 0)
+		if s != "" and not out.has(s):
+			out.append(s)
+
+
+## The flags of each of the zone layout's "variants" rows (`when.set`), when the zone applies variants.
+static func _variant_flags(zone: Node) -> Array[Array]:
+	var out: Array[Array] = []
+	if not zone.has_method(&"apply_variant") or not "layout" in zone:
+		return out
+	for row: Variant in (zone.get(&"layout") as Dictionary).get("variants", []):
+		var when := (row as Dictionary).get("when", {}) as Dictionary
+		var flags: Array = when.get("set", [])
+		if not flags.is_empty():
+			out.append(flags)
+	return out
 
 
 ## The visible stand-in capsules under `zone`, by their actor's name (the StandIn's parent).

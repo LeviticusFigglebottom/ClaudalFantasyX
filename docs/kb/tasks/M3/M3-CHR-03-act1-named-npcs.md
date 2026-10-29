@@ -137,5 +137,7 @@ criteria below are already separate.
     her dialogue calls in test_hero_clips; test_liss (77 standard bones with the correctives).
   - **Shots:** the 7 liss_* shots are in shots.json, requested from the PC; not seen yet.
   - **Remaining for review:** view the PC render, approve the baselines, write liss_review.md and the handoff.
+- Dialogue polish, Tavi (chr-npc-polish): before, his mourning band stood about a centimetre off the brow, high and wide, with hair poking through it and yellow-brown highlight chips on the black hair. After: the band's edges drawn in to the skin and its face rounder (`headwrap.edge_off_m`, `off_m`), the hair under it pressed inside the band (`headwrap.press_hair`), and a dimmer, cooler hair specular (`_hair.spec`); the band now grips the head and the hair reads as dark strands.
 
 ## Review log
+- 2026-10-27 characters: viewed the render lead/gate-render-characters-ee3bd33 (cloud lavapipe). Approved liss_front, liss_back, liss_three_quarter, liss_face, liss_face_stylized, liss_silhouette_vs_rhen and liss_clip_haul_rope as baselines. Notes in docs/kb/art/characters/liss_review.md (hair fringe follow-up). Over to Rendering for the review.

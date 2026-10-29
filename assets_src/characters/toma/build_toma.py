@@ -286,6 +286,8 @@ def main() -> int:
     auto = np.zeros((len(me.vertices), 3))
     me.vertices.foreach_get("normal", auto.ravel())
     auto[:n_skin] = np.array(normals_h)
+    if len(beard.V):  # M2-CHR-524: the beard cards shade with the skin's normal (no separately lit flakes)
+        auto[beard_start:beard_start + len(beard.V)] = toma_hair.surface_normals(beard.varr(), beard.F, surf)
     me.normals_split_custom_set_from_vertices([tuple(map(float, n)) for n in auto])
     cat = np.where(res["face_mask"][is_head], 1, np.where(res["face_socket"][is_head], 3,
                                                        np.where(fh_reg == "mouth", 4, 2)))
@@ -372,7 +374,7 @@ def main() -> int:
         ob_p.name = "Spear"
         grip = toma_props.spear_grip(lm)
         bone_specs += [(SHIELD_BONE, centre, centre + up_d * SHIELD_BONE_LEN, CHEST_BONE),
-                       (SPEAR_BONE, grip, grip + np.array([0.0, 0.0, SPEAR_BONE_LEN]), HAND_BONE)]
+                       (SPEAR_BONE, grip, grip + toma_props.spear_axis(lm) * SPEAR_BONE_LEN, HAND_BONE)]
         add_bones(skel, bone_specs)
         log(f"rig extras: {len(bone_specs)} bones ({', '.join(b[0] for b in bone_specs)}), "
             f"{len(skel.data.bones)} in all")
@@ -393,7 +395,8 @@ def main() -> int:
         rigid_parts = Part("HairHead")
         for p in hair.values():
             rigid_parts.extend(p)
-        ob = hb.part_object_snapped(rigid_parts)
+        # M2-CHR-524: the cards shade with the scalp's normal
+        ob = hb.part_object_snapped(rigid_parts, toma_hair.surface_normals(rigid_parts.varr(), rigid_parts.F, surf))
         Wr = np.zeros((len(rigid_parts.V), len(wnames)), dtype=np.float32)
         Wr[:, head_i] = 1.0
         hb.apply_weights(ob, Wr, wnames, skel)

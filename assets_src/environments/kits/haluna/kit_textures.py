@@ -24,6 +24,8 @@ Outputs (8-bit PNG; all tile seamlessly in both directions):
 | roof_tile      | 512^2      | 2.0 x 2.4   | 8 cover-tile columns (0.25 m) x 8 courses, white lime seams |
 | woven_panel    | 512^2      | 0.8 x 0.8   | pandanus-style 2/2 twill mat for house infill               |
 | sand           | 512^2      | 2.0 x 2.0   | beach sand: wind ripples, grains, shell grit (ground shader) |
+| iskarra_tile   | 512^2      | 1.6 x 1.6   | Lit Age glazed cladding: 0.4 x 0.2 m tiles in running bond, crazed, chipped (M3-ENV-724) |
+| iskarra_flag   | 512^2      | 1.5 x 1.5   | the plaza's flagstone: fine pale limestone, speckle and fossil grit, foot-worn, no grain (M3-ENV-724) |
 """
 
 from __future__ import annotations
@@ -64,6 +66,8 @@ TILE_M = {
     "roof_tile": (2.0, 2.4),
     "woven_panel": (0.8, 0.8),
     "sand": (2.0, 2.0),
+    "iskarra_tile": (1.6, 1.6),
+    "iskarra_flag": (1.5, 1.5),
 }
 ROOF_COLUMN_M = 0.25  # cover-tile column pitch; roof geometry corrugates at the same pitch
 ROOF_COURSE_M = 0.30  # tile course length down the slope
@@ -242,6 +246,74 @@ def build_coral_concrete(out: Path, n: int) -> list[Path]:
     col = col * (1 - film) + hex_lin("#5E6650") * film
     col = col * (0.88 + 0.12 * big)[..., None]
     return save_pair(out, "coral_concrete", col, hgt, nx, ny, cav)
+
+
+def build_iskarra_tile(out: Path, n: int) -> list[Path]:
+    """Iskarra's glazed ceramic cladding (M3-ENV-724): 0.4 x 0.2 m tiles in running bond with thin grout, each a
+    touch different in value; the glaze crazed into a fine net, and chipped at a few corners to the grey bisque.
+    White (lit_ceramic): kit_iskarra_glaze tints the same map teal for the bands and hoods."""
+    rng = kc.rng_for("iskarra_tile_tex", SEED)
+    shape = (n, n)
+    tw, th = TILE_M["iskarra_tile"]
+    cols, rows = round(tw / 0.4), round(th / 0.2)
+    u = (np.arange(n) + 0.5) / n
+    U, V = np.meshgrid(u, u)
+    rv = V * rows
+    rid = np.floor(rv)
+    cu = U * cols + (rid % 2) * 0.5
+    cid = np.floor(cu)
+    x, y = cu - cid, rv - rid
+    gx = 0.006 / 0.4  # grout half-width in tile units
+    gy = 0.006 / 0.2
+    d = np.minimum(np.minimum(x, 1 - x) / gx, np.minimum(y, 1 - y) / gy)
+    grout = 1.0 - smoothstep_np(0.6, 1.4, d)
+    ids = rng.random((rows + 1, cols + 2))
+    tid = ids[np.clip(rid.astype(int), 0, rows), np.clip(cid.astype(int) % (cols + 1), 0, cols + 1)]
+    f1, f2, _ = worley(shape, (28, 28), rng)
+    craze = np.clip(1.0 - (f2 - f1) / 0.05, 0, 1) * 0.6
+    chip_n = fbm(shape, (10, 10), rng, 3)
+    corner = np.clip(1.0 - np.minimum(np.minimum(x, 1 - x) * 0.4 / 0.4, np.minimum(y, 1 - y)) / 0.18, 0, 1)
+    chip = (chip_n > 0.66) * (tid > 0.7) * corner
+    pillow = np.sin(np.clip(x, 0, 1) * np.pi) ** 0.3 * np.sin(np.clip(y, 0, 1) * np.pi) ** 0.3
+    fine = fbm(shape, (64, 64), rng, 2)
+    hgt = _norm01(0.6 * pillow - 0.5 * grout - 0.35 * chip - 0.04 * craze + 0.05 * fine)
+    nx, ny = height_to_normal(hgt, n / 256.0 * 1.5)
+    cav = np.clip(cavity_from_height(hgt, 3) + grout * 0.6 + chip * 0.5, 0, 1)
+    tone = 0.9 + 0.12 * (tid - 0.5) + 0.05 * fbm(shape, (4, 4), rng, 3)
+    col = LIT_CERAMIC * tone[..., None]
+    col = col * (1 - craze[..., None] * 0.18)
+    col = col * (1 - chip[..., None]) + CORAL_W * 0.85 * chip[..., None]
+    col = col * (1 - grout[..., None]) + hex_lin("#A9A89E") * grout[..., None]
+    age = np.clip((fbm(shape, (3, 3), rng, 4) - 0.45) * 1.6, 0, 1)[..., None] * 0.22  # a thousand years' film
+    col = col * (1 - age) + CORAL_W * age
+    return save_pair(out, "iskarra_tile", col, hgt, nx, ny, cav)
+
+
+def build_iskarra_flag(out: Path, n: int) -> list[Path]:
+    """The plaza's flagstone (M3-ENV-724): a fine pale limestone, evenly speckled with shell grit, a few small
+    fossil whorls and pits, its surface foot-worn into soft hollows. No directional grain: it is laid in every
+    direction, and the slabs' own joints are geometry."""
+    rng = kc.rng_for("iskarra_flag_tex", SEED)
+    shape = (n, n)
+    big = fbm(shape, (3, 3), rng, octaves=4)
+    mid = fbm(shape, (12, 12), rng, octaves=3)
+    f1, _, cid = worley(shape, (70, 70), rng)
+    grit = np.clip((0.22 - f1) * 8.0, 0, 1) * (cid > 0.6)
+    pf1, _, pid = worley(shape, (30, 30), rng)
+    pits = np.clip((0.12 - pf1) * 10.0, 0, 1) * (pid > 0.8)
+    wf1, _, wid = worley(shape, (6, 6), rng)
+    whorl = np.clip(1.0 - np.abs(np.sin(wf1 * 40.0)) * 3.0, 0, 1) * np.clip((0.2 - wf1) * 6.0, 0, 1) * (wid > 0.75)
+    fine = fbm(shape, (96, 96), rng, 2)
+    hgt = _norm01(0.5 + 0.25 * big + 0.1 * mid + 0.05 * fine - 0.3 * pits - 0.08 * whorl + 0.04 * grit)
+    nx, ny = height_to_normal(hgt, n / 256.0 * 1.2)
+    cav = np.clip(cavity_from_height(hgt, 5) + pits * 0.6, 0, 1)
+    tone = 0.8 + 0.18 * big + 0.08 * mid
+    col = hex_lin("#E4DDCF") * tone[..., None]
+    stain = np.clip((fbm(shape, (5, 5), rng, 4) - 0.55) * 2.0, 0, 1)[..., None] * 0.3  # old spray stains
+    col = col * (1 - stain) + CORAL_W * stain
+    col = col * (1 - grit[..., None] * 0.35) + BONE * grit[..., None] * 0.35
+    col = col * (1.0 - 0.35 * cav)[..., None]
+    return save_pair(out, "iskarra_flag", col, hgt, nx, ny, cav)
 
 
 def smoothstep_np(e0, e1, x):
@@ -573,6 +645,8 @@ BUILDERS = {
     "weathering_detail": (build_weathering_detail, 512),
     "net": (build_net, 512),
     "shell_glyph": (build_shell_glyph, 512),
+    "iskarra_tile": (build_iskarra_tile, 512),
+    "iskarra_flag": (build_iskarra_flag, 512),
 }
 
 

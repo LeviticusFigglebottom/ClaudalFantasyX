@@ -7,6 +7,7 @@ exported here, as kit pieces, so the Haluna dresser places them with no layout o
 
   banyan_placeholder     the hero banyan, 14 m, ~25 m across (piece name kept; see below)
   windbreak_placeholder  the windbreak tree, 8 m, an upright oval crown (piece name kept)
+  banyan_hero, windbreak_tree  the same two trees under their real names (M3-ENV-746); the zone moves to them
 
 The piece names are the scene contract: haluna_layout.json places them, the zone's collision table
 and test_haluna_zone.gd name them. They are no longer placeholders: build.py writes no PLACEHOLDER
@@ -48,6 +49,8 @@ SLOTS = {
 TRI_BUDGET = {
     "banyan_placeholder": tuple(banyan.TRI_BUDGET),
     "windbreak_placeholder": tuple(windbreak.TRI_BUDGET),
+    "banyan_hero": tuple(banyan.TRI_BUDGET),
+    "windbreak_tree": tuple(windbreak.TRI_BUDGET),
 }
 
 
@@ -71,12 +74,15 @@ def _export(builders: list, piece: str) -> list[kc.MeshBuilder]:
     return [to_kit(b, piece if i == 0 else f"{piece}-lod{i}") for i, b in enumerate(builders)]
 
 
-def build_banyan() -> list[kc.MeshBuilder]:
-    return _export(banyan.build("hero"), "banyan_placeholder")
+def build_banyan(piece: str = "banyan_placeholder") -> list[kc.MeshBuilder]:
+    return _export(banyan.build("hero"), piece)
 
 
-def build_windbreak() -> list[kc.MeshBuilder]:
-    return _export(windbreak.build("a"), "windbreak_placeholder")
+def build_windbreak(piece: str = "windbreak_placeholder") -> list[kc.MeshBuilder]:
+    return _export(windbreak.build("a"), piece)
 
 
-TARGETS = {"banyan_placeholder": build_banyan, "windbreak_placeholder": build_windbreak}
+# M3-ENV-746: the same two trees under names that aren't "placeholder" (the Act I inventory flags the old ones). The
+# old names stay until the zone's layout, collision rules and tests move to the new ones (M3-ENV-750); then they go.
+TARGETS = {"banyan_placeholder": build_banyan, "windbreak_placeholder": build_windbreak,
+           "banyan_hero": lambda: build_banyan("banyan_hero"), "windbreak_tree": lambda: build_windbreak("windbreak_tree")}

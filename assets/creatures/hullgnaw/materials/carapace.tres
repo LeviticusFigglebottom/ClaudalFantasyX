@@ -5,15 +5,15 @@
 [resource]
 resource_name = "carapace"
 shader = ExtResource("1_shader")
-shader_parameter/cavity_albedo = 0.3
-shader_parameter/clearcoat_wet = 0.9
-shader_parameter/detail_albedo = 0.1
-shader_parameter/detail_bump = 0.35
-shader_parameter/detail_scale = 16
+shader_parameter/cavity_albedo = 0.45
+shader_parameter/clearcoat_wet = 0.45
+shader_parameter/detail_albedo = 0.14
+shader_parameter/detail_bump = 0.85
+shader_parameter/detail_scale = 22
 shader_parameter/emission_color = Color(0.247059, 0.878431, 0.784314, 1)
 shader_parameter/emission_energy = 2.2
 shader_parameter/emission_pulse_depth = 0.45
 shader_parameter/emission_pulse_hz = 0.3
-shader_parameter/roughness_dry = 0.3
-shader_parameter/roughness_wet = 0.12
-shader_parameter/specular = 0.6
+shader_parameter/roughness_dry = 0.62
+shader_parameter/roughness_wet = 0.26
+shader_parameter/specular = 0.5

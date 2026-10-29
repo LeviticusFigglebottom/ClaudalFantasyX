@@ -255,57 +255,52 @@
     },
     "wreck_crab": {
       "family": "crab",
-      "variant_of": "reef_crab",
-      "pitch": 0.9,
+      "_note": "M3-AUD-861: Ch6: the reef crab in a broken Saltwright lamp housing: brass knocks and rings, the crazed panes rattle; assets_src/sfx/act1_final_creature_sfx.py (Git LFS, ADR 0173)",
       "events": {
-        "idle": "cre_reef_crab_idle",
-        "attack": "cre_reef_crab_attack",
-        "hurt": "cre_reef_crab_hurt",
-        "death": "cre_reef_crab_death",
-        "move": "cre_reef_crab_skitter"
+        "idle": "cre_wreck_crab_idle",
+        "attack": "cre_wreck_crab_attack",
+        "hurt": "cre_wreck_crab_hurt",
+        "death": "cre_wreck_crab_death",
+        "move": "cre_wreck_crab_skitter"
       }
     },
     "wallcrab": {
       "family": "crab",
-      "variant_of": "reef_crab",
-      "pitch": 1.07,
+      "_note": "M3-AUD-861: Ch8: the laterite seawall's crab: heavier, grit and stone in every step; assets_src/sfx/act1_final_creature_sfx.py (Git LFS, ADR 0173)",
       "events": {
-        "idle": "cre_reef_crab_idle",
-        "attack": "cre_reef_crab_attack",
-        "hurt": "cre_reef_crab_hurt",
-        "death": "cre_reef_crab_death",
-        "move": "cre_reef_crab_skitter"
+        "idle": "cre_wallcrab_idle",
+        "attack": "cre_wallcrab_attack",
+        "hurt": "cre_wallcrab_hurt",
+        "death": "cre_wallcrab_death",
+        "move": "cre_wallcrab_skitter"
       }
     },
     "wall_polyp": {
       "family": "polyp",
-      "variant_of": "spawn_polyp",
-      "pitch": 0.88,
+      "_note": "M3-AUD-861: Ch8: the spawn-polyp on a Watcher: under its wet voice the carved face hums, and stops with a crack when it is burned off; assets_src/sfx/act1_final_creature_sfx.py (Git LFS, ADR 0173)",
       "events": {
-        "idle": "cre_spawn_polyp_idle",
-        "attack": "cre_spawn_polyp_attack",
-        "hurt": "cre_spawn_polyp_hurt",
-        "death": "cre_spawn_polyp_death",
-        "move": "cre_spawn_polyp_squelch"
+        "idle": "cre_wall_polyp_idle",
+        "attack": "cre_wall_polyp_attack",
+        "hurt": "cre_wall_polyp_hurt",
+        "death": "cre_wall_polyp_death",
+        "move": "cre_wall_polyp_squelch"
       }
     },
     "stormgull": {
       "family": "bird",
-      "variant_of": "gull_harrier",
-      "pitch": 1.06,
+      "_note": "M3-AUD-861: Ch8: the gull harrier gone dark with the weather: lower, rougher calls, static on its wings, a spark on the strike; assets_src/sfx/act1_final_creature_sfx.py (Git LFS, ADR 0173)",
       "events": {
-        "idle": "cre_gull_harrier_idle",
-        "attack": "cre_gull_harrier_attack",
-        "hurt": "cre_gull_harrier_hurt",
-        "death": "cre_gull_harrier_death",
-        "move": "cre_gull_harrier_wingbeat"
+        "idle": "cre_stormgull_idle",
+        "attack": "cre_stormgull_attack",
+        "hurt": "cre_stormgull_hurt",
+        "death": "cre_stormgull_death",
+        "move": "cre_stormgull_wingbeat"
       }
     },
     "wickfry": {
       "family": "swarm",
-      "variant_of": "glassfry",
       "pitch": 1.12,
-      "_note": "the integration branch's new shoal enemy (enemies.json): glassfry's swarm, smaller and quicker",
+      "_note": "Ch1's wickfry, the glass-shrimp shoals (act1_ch01.md): its model is the creatures track's `glassfry` (act1_roster.md row 1), so this is its own set, glassfry's rows, a little quicker (M3-AUD-861: no longer marked a borrowed variant)",
       "events": {
         "idle": "cre_glassfry_idle",
         "attack": "cre_glassfry_attack",
@@ -314,7 +309,17 @@
         "move": "cre_glassfry_shimmer"
       }
     },
-    "stillguard_inquisitor": "silent",
+    "stillguard_inquisitor": {
+      "family": "person",
+      "_note": "M3-AUD-861: Ch6 boss, Inquisitor Hadric Moll (a person, no voice): lacquered shell armour, the brine-iron's haft, the round shield, his breath; `death` is his yield (the iron laid down, the kneel); assets_src/sfx/act1_final_creature_sfx.py (Git LFS, ADR 0173)",
+      "events": {
+        "idle": "cre_stillguard_inquisitor_idle",
+        "attack": "cre_stillguard_inquisitor_attack",
+        "hurt": "cre_stillguard_inquisitor_hurt",
+        "death": "cre_stillguard_inquisitor_yield",
+        "move": "cre_stillguard_inquisitor_step"
+      }
+    },
     "mangrove_drowner": {
       "family": "drowner",
       "_note": "Ch10 boss (M3-CRE-621): prop-roots creaking, the drag through the water, a low spawn moan; assets_src/sfx/act2_creature_sfx.py (M3-AUD-831)",
@@ -401,6 +406,135 @@
         "hurt": "cre_conduit_crawler_hurt",
         "death": "cre_conduit_crawler_death",
         "move": "cre_conduit_crawler_tick"
+      }
+    },
+    "root_crab": {
+      "family": "crab",
+      "variant_of": "reef_crab",
+      "pitch": 0.85,
+      "_note": "Ch10 variant: a bark-and-root reef crab, a little heavier (M3-AUD-849; its parent's set at another pitch, as its model reuses the parent's rig)",
+      "events": {
+        "idle": "cre_reef_crab_idle",
+        "attack": "cre_reef_crab_attack",
+        "hurt": "cre_reef_crab_hurt",
+        "death": "cre_reef_crab_death",
+        "move": "cre_reef_crab_skitter"
+      }
+    },
+    "fen_leech": {
+      "family": "leech",
+      "variant_of": "sail_leech",
+      "pitch": 0.9,
+      "_note": "Ch10 variant: a longer, ribbon-flat sail leech (M3-AUD-849; its parent's set at another pitch, as its model reuses the parent's rig)",
+      "events": {
+        "idle": "cre_sail_leech_idle",
+        "attack": "cre_sail_leech_attack",
+        "hurt": "cre_sail_leech_hurt",
+        "death": "cre_sail_leech_death",
+        "move": "cre_sail_leech_flap"
+      }
+    },
+    "ridge_lynx": {
+      "family": "lynx",
+      "_note": "Ch12 regular: a high-pass lynx's growl, hiss and yowl, snowshoe paws; assets_src/sfx/act2_creature_sfx.py (M3-AUD-849)",
+      "events": {
+        "idle": "cre_ridge_lynx_idle",
+        "attack": "cre_ridge_lynx_attack",
+        "hurt": "cre_ridge_lynx_hurt",
+        "death": "cre_ridge_lynx_death",
+        "move": "cre_ridge_lynx_pad"
+      }
+    },
+    "cord_moth": {
+      "family": "moth",
+      "_note": "Ch12 regular: the Act I moth family, pale and a little brighter; assets_src/sfx/act2_creature_sfx.py (M3-AUD-849)",
+      "events": {
+        "idle": "cre_cord_moth_idle",
+        "attack": "cre_cord_moth_attack",
+        "hurt": "cre_cord_moth_hurt",
+        "death": "cre_cord_moth_death",
+        "move": "cre_cord_moth_flutter"
+      }
+    },
+    "scree_crawler": {
+      "family": "tortoise",
+      "variant_of": "slag_tortoise",
+      "pitch": 1.08,
+      "_note": "Ch12 variant: a frost-split scree shell (M3-AUD-849; its parent's set at another pitch, as its model reuses the parent's rig)",
+      "events": {
+        "idle": "cre_slag_tortoise_idle",
+        "attack": "cre_slag_tortoise_attack",
+        "hurt": "cre_slag_tortoise_hurt",
+        "death": "cre_slag_tortoise_death",
+        "move": "cre_slag_tortoise_plod"
+      }
+    },
+    "glass_skate": {
+      "family": "skate",
+      "_note": "Ch16 regular: buried in white sand under shallow water; it erupts and slaps; assets_src/sfx/act2_creature_sfx.py (M3-AUD-849)",
+      "events": {
+        "idle": "cre_glass_skate_idle",
+        "attack": "cre_glass_skate_attack",
+        "hurt": "cre_glass_skate_hurt",
+        "death": "cre_glass_skate_death",
+        "move": "cre_glass_skate_glide"
+      }
+    },
+    "rim_crawler": {
+      "family": "crab",
+      "variant_of": "tide_crawler",
+      "pitch": 1.06,
+      "_note": "Ch16 variant: a bleached, chalky tide crawler (M3-AUD-849; its parent's set at another pitch, as its model reuses the parent's rig)",
+      "events": {
+        "idle": "cre_tide_crawler_idle",
+        "attack": "cre_tide_crawler_attack",
+        "hurt": "cre_tide_crawler_hurt",
+        "death": "cre_tide_crawler_death",
+        "move": "cre_tide_crawler_skitter"
+      }
+    },
+    "ilun": {
+      "family": "vowbound",
+      "_note": "M3-AUD-846: Ilun the Net-Warden (Asha's Vowbound): heard by his combatant id and, once M3-CRE-638's model lands, its clips; assets_src/sfx/vowbound_sfx.py",
+      "events": {
+        "idle": "cre_ilun_idle",
+        "attack": "cre_ilun_attack",
+        "hurt": "cre_ilun_hurt",
+        "death": "cre_ilun_death",
+        "move": "cre_ilun_glide"
+      }
+    },
+    "kahre": {
+      "family": "vowbound",
+      "_note": "M3-AUD-857: Kahre the Forge-Crowned (Asha's Lightning Vowbound): the hornbill's boom, the mane's sparks, thunder off the anvil, his knuckle-walk; heard by his combatant id and his model's clips (M3-CRE-640); assets_src/sfx/vowbound_sfx.py",
+      "events": {
+        "idle": "cre_kahre_idle",
+        "attack": "cre_kahre_attack",
+        "hurt": "cre_kahre_hurt",
+        "death": "cre_kahre_death",
+        "move": "cre_kahre_step"
+      }
+    },
+    "virel": {
+      "family": "vowbound",
+      "_note": "M3-AUD-857: Virel the Kite-Serpent (Asha's Fire Vowbound): sailcloth luffing, the seams' flame, the brass tuning key; heard by her combatant id and her model's clips; assets_src/sfx/vowbound_sfx.py",
+      "events": {
+        "idle": "cre_virel_idle",
+        "attack": "cre_virel_attack",
+        "hurt": "cre_virel_hurt",
+        "death": "cre_virel_death",
+        "move": "cre_virel_drift"
+      }
+    },
+    "flat_engine": {
+      "family": "flat_engine",
+      "_note": "Ch14 boss part (Malcor Venn's barge): a bound iron drum pressing the lagoon flat, its hum steady; assets_src/sfx/act2_creature_sfx.py (M3-AUD-849)",
+      "events": {
+        "idle": "cre_flat_engine_idle",
+        "attack": "cre_flat_engine_attack",
+        "hurt": "cre_flat_engine_hurt",
+        "death": "cre_flat_engine_death",
+        "move": "cre_flat_engine_clank"
       }
     }
   }

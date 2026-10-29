@@ -33,4 +33,9 @@ shrine in `first_run_live_scenes`. It ran on `claude/m2-slice` @ 8f74db3a, cold,
 - The cold first launch's boot grew by about 5 s, under the card.
 - M2-RND-17 adds the shrine to `first_run_live_scenes` (rendering's registry). It takes effect once this lands.
 
+- **2026-10-27 (env-art):** already implemented by m2-slice: `ShellShrineLevel._notification` builds on
+  `NOTIFICATION_SCENE_INSTANTIATED` off the main thread (`game/levels/ch03/shell_shrine/shell_shrine_level.gd:105`;
+  m2-slice's live log, "M2-ENV-12 (the shrine's hall built off the tree)"). Nothing left for env-art. For the Lead:
+  close it, or have Rendering check M2-RND-17's measure on hardware.
+
 ## Review log

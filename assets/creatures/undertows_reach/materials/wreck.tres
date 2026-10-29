@@ -6,7 +6,7 @@
 resource_name = "wreck"
 shader = ExtResource("1_shader")
 shader_parameter/cavity_albedo = 0.4
-shader_parameter/detail_albedo = 0.2
+shader_parameter/detail_albedo = 0.28
 shader_parameter/detail_bump = 0.5
 shader_parameter/detail_scale = 8
 shader_parameter/roughness_dry = 0.7

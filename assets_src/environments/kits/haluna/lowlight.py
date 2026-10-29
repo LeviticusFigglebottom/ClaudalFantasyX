@@ -59,7 +59,7 @@ M_DARK = "kit_interior_dark"
 TRI_BUDGET = {"engine_hall": (34000, 2400), "conduit_run": (1500, 120), "lamp_niche_tier": (3000, 200),
               "conduit_housing": (3000, 120), "lowlight_nave_bay": (24000, 1500), "well_shaft": (14000, 900),
               "vey_arcade_bay": (12000, 900), "vey_gallery_bridge": (4000, 300), "lowlight_sanctum": (18000, 1200),
-              "strangler_fig": (8000, 600)}
+              "strangler_fig": (8000, 600), "vey_gallery_walk_6m": (6000, 300), "lowlight_lamp_bench": (2500, 150)}
 BUDGET_KEY = {"lowlight_nave_bay_broken": "lowlight_nave_bay"}
 
 HALL_HALF = 12.0
@@ -104,6 +104,23 @@ def _slab(mb, x0, x1, z0, z1, y_top, thick, mat, rng, noise, *, flag=None, lod=F
         z += w
 
 
+def _pier_trim(mb, x, z, y0: float, y1: float, half: float, lod: bool) -> None:
+    """A pier's articulation (M3-ENV-705 audit: the hall's piers read as plain blocks): a sunk panel on each face
+    (a dark reveal in a ceramic frame), a copper conduit band a third of the way up, and a stepped capital."""
+    if lod:
+        return
+    dark, copper, cer = mb.material(M_DARK), mb.material(M_COPPER), mb.material(M_CERAMIC)
+    h = y1 - y0
+    for nx, nz in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+        c = (x + nx * (half + 0.004), y0 + h * 0.55, z + nz * (half + 0.004))
+        hs = (0.006, h * 0.28, half * 0.55) if nx else (half * 0.55, h * 0.28, 0.006)
+        kc.rounded_block(mb, c, hs, dark, radius=0.0, seg=1)
+    band_y = y0 + h * 0.3
+    kc.rounded_block(mb, (x, band_y, z), (half + 0.05, 0.09, half + 0.05), copper, radius=0.02, seg=1)
+    for k, (dy, grow) in enumerate(((0.0, 0.08), (0.16, 0.16))):
+        kc.rounded_block(mb, (x, y1 - 0.1 + dy, z), (half + grow, 0.08, half + grow), cer, radius=0.02, seg=1)
+
+
 def _pier(mb, x, z, rng, noise, lod):
     kc.rounded_block(mb, (x, FLOOR_Y + 0.45, z), (0.85, 0.45, 0.85), mb.material(M_STONE), radius=0.06, seg=1,
                      weather=STONE, variation=float(rng.random()))
@@ -111,6 +128,7 @@ def _pier(mb, x, z, rng, noise, lod):
                      mb.material(M_CERAMIC), radius=0.08, seg=1 if lod else 2, noise=None if lod else noise,
                      disp_m=0.02, weather=CERAMIC, variation=float(rng.random()))
     kc.rounded_block(mb, (x, 7.4, z), (0.85, 0.2, 0.85), mb.material(M_STONE), radius=0.05, seg=1, weather=STONE)
+    _pier_trim(mb, x, z, FLOOR_Y + 0.9, 7.2, 0.62, lod)
 
 
 def _walls(mb, rng, noise, lod):
@@ -402,6 +420,7 @@ def _pier_at(mb, x, z, rng, noise, lod) -> None:
                      mb.material(M_CERAMIC), radius=0.08, seg=1 if lod else 2, noise=None if lod else noise,
                      disp_m=0.02, weather=CERAMIC, variation=float(rng.random()))
     kc.rounded_block(mb, (x, top + 0.18, z), (0.8, 0.18, 0.8), mb.material(M_STONE), radius=0.05, seg=1, weather=STONE)
+    _pier_trim(mb, x, z, NAVE_FLOOR_Y + 1.1, top, 0.58, lod)
 
 
 WELL_R = 3.5
@@ -667,8 +686,108 @@ def build_strangler_fig(seed: int = 1610) -> list[kc.MeshBuilder]:
     return out
 
 
+
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-735: the Sunken Vey's gallery walks and Lowlight's lamp bench (act1-chapters' Ch11 greybox, M4-C11-02)
+# ---------------------------------------------------------------------------------------------
+WALK_HALF_W = 1.8
+WALK_RAIL_Z = 2.0
+WALK_RAIL_H = 0.5
+
+
+def build_gallery_walk(seed: int = 1611) -> list[kc.MeshBuilder]:
+    """A gallery walk on the drowned arcades' roofs (the greybox's GalleryIn*, GalleryOut*, GallerySide: 3.6 m, its
+    top at y 0, rails 0.5 m at z +-2.0), 6 m along X: ceramic slabs on the arcade's top course, a cornice under them,
+    a ceramic balustrade along each side, and on each side the arcade's upper arch dropping into the lagoon (its
+    spandrels white ceramic, its piers grey stone, drowned at -2). The greybox's pillars beside it are
+    `ruin_column_broken`."""
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("vey_gallery_walk_6m", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("vey_gallery_walk_6m" + ("-lod1" if lod else ""))
+        cer, stone = mb.material(M_CERAMIC), mb.material(M_STONE)
+        hl = 3.0
+        if lod:
+            kc.rounded_block(mb, (0.0, -0.15, 0.0), (hl, 0.15, WALK_HALF_W + 0.2), cer, radius=0.03, seg=1)
+            kc.rounded_block(mb, (0.0, -1.3, 0.0), (hl, 1.0, WALK_HALF_W), stone, radius=0.05, seg=1)
+            for sz in (-1.0, 1.0):
+                kc.rounded_block(mb, (0.0, WALK_RAIL_H * 0.5, sz * WALK_RAIL_Z), (hl, WALK_RAIL_H * 0.5, 0.15), cer,
+                                 radius=0.03, seg=1)
+            out.append(mb)
+            continue
+        # The slabs: 1.2 m squares in two rows, a joint round each, a few lifted or cracked.
+        for x in np.arange(-hl + 0.6, hl, 1.2):
+            for z in (-0.9, 0.9):
+                dy = rng.normal(0.0, 0.006) + (0.015 if rng.random() < 0.08 else 0.0)
+                v0 = mb.vertex_count
+                kc.rounded_block(mb, (x, -0.06 + dy, z), (0.585, 0.06, 0.885), cer, rot=kc.rot_y(rng.normal(0, 0.006)),
+                                 radius=0.015, seg=1, noise=noise, disp_m=0.003, weather=CERAMIC,
+                                 variation=float(rng.random()))
+                n = np.asarray(mb.nrm[v0:])
+                n[n[:, 1] > 0.85] = (0.0, 1.0, 0.0)  # flat-shaded tops (no pillows)
+                mb.nrm[v0:] = n.tolist()
+        # The cornice under the slabs and the arcade's top course.
+        for sz in (-1.0, 1.0):
+            kc.rounded_block(mb, (0.0, -0.18, sz * (WALK_HALF_W + 0.1)), (hl, 0.08, 0.16), cer, radius=0.02, seg=1,
+                             weather=CERAMIC)
+            kc.rounded_block(mb, (0.0, -0.45, sz * (WALK_HALF_W - 0.05)), (hl, 0.2, 0.22), stone, radius=0.03, seg=1,
+                             noise=noise, disp_m=0.01, weather=STONE)
+        # The balustrade: a plinth, balusters and a coping rail at z +-2.0.
+        for sz in (-1.0, 1.0):
+            zr = sz * WALK_RAIL_Z
+            kc.rounded_block(mb, (0.0, 0.05, zr), (hl, 0.05, 0.16), cer, radius=0.015, seg=1, weather=CERAMIC)
+            kc.rounded_block(mb, (0.0, WALK_RAIL_H - 0.05, zr), (hl, 0.05, 0.18), cer, radius=0.02, seg=1,
+                             weather=CERAMIC)
+            for x in np.arange(-hl + 0.2, hl, 0.4):
+                if rng.random() < 0.08:
+                    continue  # a baluster lost
+                kc.tube(mb, np.array([[x, 0.1, zr], [x, WALK_RAIL_H - 0.1, zr]]), np.array([0.05, 0.035]), 6, cer,
+                        weather=CERAMIC)
+        # The arcade's upper arch on each side, its crown under the walk, its piers into the water at -2.
+        for sz in (-1.0, 1.0):
+            zf = sz * (WALK_HALF_W + 0.05)
+            t = np.linspace(0.0, math.pi, 13)
+            arch = np.stack([np.cos(t) * 2.2, -0.65 - (1.0 - np.sin(t)) * 1.35, np.full_like(t, zf)], -1)
+            kc.tube(mb, arch, 0.14, 6, cer, weather=CERAMIC)  # the arch's moulded ring
+            for sx in (-1.0, 1.0):
+                kc.rounded_block(mb, (sx * 2.65, -1.4, zf), (0.35, 0.9, 0.25), stone, radius=0.04, seg=1, noise=noise,
+                                 disp_m=0.01, weather=STONE)  # the piers, drowned
+                # the spandrel between the arch's ring and the top course
+                kc.rounded_block(mb, (sx * 2.3, -0.75, zf), (0.6, 0.12, 0.22), cer, radius=0.02, seg=1,
+                                 weather=CERAMIC)
+        out.append(mb)
+    return out
+
+
+def build_lamp_bench(seed: int = 1612) -> list[kc.MeshBuilder]:
+    """Lowlight's lamp bench in the atrium (the greybox's LampBench, 2.4 x 0.9 x 1.0: Rhen and Liss's side scene): a
+    ceramic bench on two stone ends against the wall, a row of three empty glass lamp housings on its back ledge with
+    bronze trim-arms, the conduit's copper running under it."""
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("lowlight_lamp_bench", seed)
+        mb = kc.MeshBuilder("lowlight_lamp_bench" + ("-lod1" if lod else ""))
+        cer, stone, cu = mb.material(M_CERAMIC), mb.material(M_STONE), mb.material(M_COPPER)
+        for sx in (-1.0, 1.0):
+            kc.rounded_block(mb, (sx * 1.05, 0.22, 0.0), (0.15, 0.22, 0.35), stone, radius=0.03, seg=1, weather=STONE)
+        kc.rounded_block(mb, (0.0, 0.47, 0.0), (1.2, 0.05, 0.4), cer, radius=0.02, seg=1, weather=CERAMIC)
+        kc.rounded_block(mb, (0.0, 0.75, -0.4), (1.2, 0.3, 0.08), cer, radius=0.02, seg=1, weather=CERAMIC)  # the back
+        kc.rounded_block(mb, (0.0, 1.08, -0.38), (1.2, 0.03, 0.12), cer, radius=0.01, seg=1)  # the ledge
+        if not lod:
+            for x in (-0.7, 0.0, 0.7):
+                kc.tube(mb, np.array([[x, 1.11, -0.38], [x, 1.3, -0.38]]), np.array([0.07, 0.06]), 8,
+                        mb.material(M_GLASS), cap_end=True)
+                kc.tube(mb, np.array([[x - 0.09, 1.11, -0.38], [x - 0.09, 1.34, -0.38], [x + 0.09, 1.34, -0.38],
+                                      [x + 0.09, 1.11, -0.38]]), 0.008, 4, cu)
+            kc.tube(mb, np.array([[-1.2, 0.3, -0.42], [1.2, 0.3, -0.42]]), 0.03, 6, cu)
+        del rng
+        out.append(mb)
+    return out
+
 TARGETS = {"engine_hall": build_hall, "conduit_run": build_conduit, "lamp_niche_tier": build_niche_tier,
            "conduit_housing": build_housing, "lowlight_nave_bay": build_nave_bay,
            "lowlight_nave_bay_broken": lambda: build_nave_bay(broken=True), "well_shaft": build_well_shaft,
            "vey_arcade_bay": build_arcade_bay, "vey_gallery_bridge": build_gallery_bridge,
-           "lowlight_sanctum": build_sanctum, "strangler_fig": build_strangler_fig}
+           "lowlight_sanctum": build_sanctum, "strangler_fig": build_strangler_fig,
+           "vey_gallery_walk_6m": build_gallery_walk, "lowlight_lamp_bench": build_lamp_bench}

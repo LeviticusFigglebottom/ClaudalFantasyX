@@ -312,6 +312,7 @@ func test_a_live_battle_carries_gauges_modes_and_unlocks_through_a_victory() -> 
 	assert_eq(Game.state.swell["unlocked"], ["tether"] as Array[String])
 	assert_eq(int(Game.state.swell["progress"]["old_rule"]), 7, "unknown rule ids are kept")
 	var ended := Game.state.swell_of(&"rhen")
+	ctl.hud.result.finish_open()  # the numbers finish counting first (a first Confirm would only skip the count)
 	_press(&"ui_accept")
 	assert_eq(ctl.battles_started, 2)
 	assert_eq(ctl.engine.find(&"rhen").swell, ended, "Retry starts from the saved gauge")

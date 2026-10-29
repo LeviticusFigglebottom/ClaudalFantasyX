@@ -47,8 +47,8 @@ fov_deg = 53.1
 script = ExtResource("6_shot")
 id = &"H10"
 position = Vector3(23.0, 2.9, 38.4)
-look_at = Vector3(-30, 6.5, 12)
-fov_deg = 37.8
+look_at = Vector3(-14, 4.2, 47)
+fov_deg = 30.0
 
 [node name="HalunaMood" instance=ExtResource("1_dressing")]
 

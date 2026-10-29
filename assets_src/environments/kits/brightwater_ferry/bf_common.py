@@ -63,6 +63,7 @@ M_WRECK = "bf_wreck_timber"
 M_WRECK_TAR = "bf_wreck_tar"
 M_WRECK_CANVAS = "bf_wreck_canvas"
 M_REEF = "bf_reef"
+M_ISLET = "bf_islet_rock"
 
 # Haluna generator slots reused (the lintel-gull carving) -> this kit's slots.
 RENAME = {"kit_carved_wood": M_CARVED, "kit_timber": M_TIMBER, "kit_lashing": M_ROPE}

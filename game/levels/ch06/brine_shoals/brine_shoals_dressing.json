@@ -11,11 +11,7 @@
  "time_of_day_h": 15.5,
  "greybox": {
   "hide_all": true,
-  "keep": [
-   "ChalkMark",
-   "Hatch",
-   "Shrine"
-  ]
+  "keep": []
  },
  "fire_light_color": "#E0702E",
  "fire_lights": [
@@ -46,6 +42,27 @@
    ],
    "energy": 1.2,
    "range": 7.0
+  },
+  {
+   "at": [
+    9.0,
+    2.4,
+    -35.0
+   ],
+   "energy": 1.4,
+   "range": 7.0,
+   "block": "TideWheel"
+  },
+  {
+   "at": [
+    27.0,
+    1.2,
+    -44.0
+   ],
+   "energy": 0.6,
+   "range": 3.0,
+   "color": "#9fd8e0",
+   "block": "Shrine"
   }
  ],
  "pieces": [
@@ -936,39 +953,6 @@
    "block": "BurningHulk"
   },
   {
-   "piece": "smoke_plume",
-   "at": [
-    11.5,
-    -45.5
-   ],
-   "y": 1.2,
-   "yaw_deg": -150.0,
-   "scale": 1.0,
-   "block": "Smoke"
-  },
-  {
-   "piece": "smoke_plume",
-   "at": [
-    -11.5,
-    -33.0
-   ],
-   "y": 0.6,
-   "yaw_deg": -152.0,
-   "scale": 0.7,
-   "block": "Smoke"
-  },
-  {
-   "piece": "smoke_plume",
-   "at": [
-    2.5,
-    -45.0
-   ],
-   "y": 0.6,
-   "yaw_deg": -154.0,
-   "scale": 0.55,
-   "block": "Smoke"
-  },
-  {
    "piece": "white_barge",
    "at": [
     -22.5,
@@ -1027,25 +1011,328 @@
    "block": "Lamp"
   },
   {
-   "piece": "salvage_pile_burned",
+   "piece": "ridge_fire",
    "at": [
     22.0,
     -40.0
    ],
-   "y": -0.25,
-   "yaw_deg": 40.0,
-   "scale": 0.35,
+   "y": 0.0,
+   "yaw_deg": 0.0,
    "block": "Fire"
   },
   {
-   "piece": "crate_stack",
+   "piece": "vendor_boat",
    "at": [
     29.0,
     -37.0
    ],
-   "y": 0.05,
-   "yaw_deg": 80.0,
+   "y": 0.0,
+   "yaw_deg": 0.0,
    "block": "VendorBoat"
+  },
+  {
+   "piece": "level_stone_shrine",
+   "at": [
+    27.0,
+    -44.5
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.0,
+   "block": "Shrine"
+  },
+  {
+   "piece": "tide_wheel_burned",
+   "at": [
+    9.0,
+    -36.0
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.0,
+   "block": "TideWheel"
+  },
+  {
+   "piece": "chalk_mark",
+   "at": [
+    4.45,
+    -2.0
+   ],
+   "y": 1.2,
+   "yaw_deg": 0.0,
+   "block": "ChalkMark"
+  },
+  {
+   "piece": "hatch",
+   "at": [
+    3.45,
+    -17.0
+   ],
+   "y": 0.7,
+   "yaw_deg": 0.0,
+   "block": "Hatch"
+  },
+  {
+   "piece": "net_heap",
+   "at": [
+    -6.795,
+    70.227
+   ],
+   "y": -0.05,
+   "yaw_deg": 291.51,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/"
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    4.688,
+    69.284
+   ],
+   "y": -0.0,
+   "yaw_deg": 249.54,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/"
+  },
+  {
+   "piece": "crate_stack",
+   "at": [
+    -6.058,
+    62.163
+   ],
+   "y": -0.05,
+   "yaw_deg": 118.73,
+   "collide": true
+  },
+  {
+   "piece": "rope_coil",
+   "at": [
+    3.84,
+    63.069
+   ],
+   "y": -0.0,
+   "yaw_deg": 321.76,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/"
+  },
+  {
+   "piece": "cargo_sacks",
+   "at": [
+    -7.4,
+    53.825
+   ],
+   "y": -0.05,
+   "yaw_deg": 156.07,
+   "collide": true,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/"
+  },
+  {
+   "piece": "salvage_pile",
+   "at": [
+    -5.257,
+    49.509
+   ],
+   "y": -0.1,
+   "yaw_deg": 122.52,
+   "collide": true
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    8.73,
+    48.057
+   ],
+   "y": -0.0,
+   "yaw_deg": 274.02,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/"
+  },
+  {
+   "piece": "vendor_boat",
+   "at": [
+    -4.302,
+    40.553
+   ],
+   "y": -0.25,
+   "yaw_deg": 93.16,
+   "collide": true
+  },
+  {
+   "piece": "net_heap",
+   "at": [
+    5.923,
+    38.224
+   ],
+   "y": -0.05,
+   "yaw_deg": 21.04,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/"
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    -3.142,
+    32.14
+   ],
+   "y": -0.0,
+   "yaw_deg": 306.05,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/"
+  },
+  {
+   "piece": "crate_stack",
+   "at": [
+    9.428,
+    32.291
+   ],
+   "y": -0.05,
+   "yaw_deg": 38.84,
+   "collide": true
+  },
+  {
+   "piece": "cargo_sacks",
+   "at": [
+    7.498,
+    26.028
+   ],
+   "y": -0.05,
+   "yaw_deg": 11.29,
+   "collide": true,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/"
+  },
+  {
+   "piece": "salvage_pile",
+   "at": [
+    4.819,
+    17.671
+   ],
+   "y": -0.1,
+   "yaw_deg": 36.81,
+   "collide": true
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    -6.678,
+    10.554
+   ],
+   "y": -0.0,
+   "yaw_deg": 146.7,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/"
+  },
+  {
+   "piece": "vendor_boat",
+   "at": [
+    9.157,
+    9.514
+   ],
+   "y": -0.25,
+   "yaw_deg": 73.38,
+   "collide": true
+  },
+  {
+   "piece": "net_heap",
+   "at": [
+    -8.396,
+    1.55
+   ],
+   "y": -0.05,
+   "yaw_deg": 274.92,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/"
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    8.784,
+    4.327
+   ],
+   "y": -0.0,
+   "yaw_deg": 167.62,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/"
+  },
+  {
+   "piece": "camp_fire_large",
+   "at": [
+    11.0,
+    -46.0
+   ],
+   "y": 0.0,
+   "yaw_deg": 30.0,
+   "block": "Smoke"
+  },
+  {
+   "piece": "camp_fire_small",
+   "at": [
+    13.6,
+    -44.6
+   ],
+   "y": 0.0,
+   "yaw_deg": 200.0,
+   "block": "Smoke"
+  },
+  {
+   "piece": "camp_fire_small",
+   "at": [
+    8.4,
+    -45.4
+   ],
+   "y": 0.0,
+   "yaw_deg": 110.0,
+   "block": "Smoke"
+  },
+  {
+   "piece": "camp_fire_large",
+   "at": [
+    9.6,
+    -35.2
+   ],
+   "y": 0.0,
+   "yaw_deg": 300.0,
+   "block": "Smoke"
+  }
+ ],
+ "smokes": [
+  {
+   "name": "SmokeHulk",
+   "at": [
+    11.5,
+    1.2,
+    -45.5
+   ],
+   "yaw_deg": -150.0,
+   "scale": 1.0,
+   "profile": "camp",
+   "seed": 0.0,
+   "block": "Smoke"
+  },
+  {
+   "name": "SmokeTentWest",
+   "at": [
+    -11.5,
+    0.6,
+    -33.0
+   ],
+   "yaw_deg": -152.0,
+   "scale": 0.7,
+   "profile": "camp",
+   "seed": 0.37,
+   "block": "Smoke"
+  },
+  {
+   "name": "SmokeTentSouth",
+   "at": [
+    2.5,
+    0.6,
+    -45.0
+   ],
+   "yaw_deg": -154.0,
+   "scale": 0.55,
+   "profile": "camp",
+   "seed": 0.71,
+   "block": "Smoke"
   }
  ]
 }

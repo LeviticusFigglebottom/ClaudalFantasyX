@@ -1,0 +1,1329 @@
+{
+ "doc": "M4-C10-02 greybox (tools/act1/ch10_greybox.py; do not edit by hand): Ossa Fen at the overcast dusk (colour script ch10). The fen's edge is the dry bank at the west, where the coast road from Corrow ends and Pell stops (act1_ch09.md \u00a710: the first image of Act II); the Kirru's root-walks run east over tannin water between mangrove trunks, a side pocket north, the Drowner's clearing (the boss's arena, DrownerArena) and the way on to Reedhollow (to_reedhollow). The story waits on the beat sheet (M4-C10-01).",
+ "sun": {
+  "pitch_deg": -8.0,
+  "yaw_deg": -85.0,
+  "energy": 0.9,
+  "color": "#fffefa"
+ },
+ "environment": {
+  "background": "#9a9488",
+  "ambient_color": "#6f7e8e",
+  "ambient_energy": 0.5
+ },
+ "block_color": "#4a3c2c",
+ "blocks": [
+  {
+   "id": "Water",
+   "pos": [
+    75.0,
+    -0.35,
+    -2.5
+   ],
+   "size": [
+    170.0,
+    0.1,
+    85.0
+   ],
+   "color": "#3a2a18",
+   "solid": false
+  },
+  {
+   "id": "Bed",
+   "pos": [
+    75.0,
+    -2.1,
+    -2.5
+   ],
+   "size": [
+    170.0,
+    1.0,
+    85.0
+   ],
+   "color": "#1e1511"
+  },
+  {
+   "id": "Bank",
+   "pos": [
+    -14.0,
+    -0.5,
+    0.0
+   ],
+   "size": [
+    28.0,
+    1.0,
+    30.0
+   ],
+   "color": "#4f4a3a"
+  },
+  {
+   "id": "BankBoundW",
+   "pos": [
+    -28.5,
+    1.0,
+    0.0
+   ],
+   "size": [
+    1.0,
+    2.0,
+    30.0
+   ],
+   "color": "#4f4a3a"
+  },
+  {
+   "id": "Walk0",
+   "pos": [
+    12.0,
+    -0.25,
+    2.5
+   ],
+   "size": [
+    28.115,
+    0.5,
+    3.6
+   ],
+   "yaw": -11.768,
+   "color": "#4a3c2c"
+  },
+  {
+   "id": "Walk0RailL",
+   "pos": [
+    11.592,
+    0.25,
+    4.458
+   ],
+   "size": [
+    20.915,
+    0.5,
+    0.4
+   ],
+   "yaw": -11.768,
+   "color": "#2e241a"
+  },
+  {
+   "id": "Walk0TrunkL0",
+   "pos": [
+    2.57,
+    3.2,
+    4.826
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk0TrunkL1",
+   "pos": [
+    9.26,
+    3.2,
+    7.036
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk0TrunkL2",
+   "pos": [
+    16.276,
+    3.2,
+    7.681
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk0TrunkL3",
+   "pos": [
+    22.965,
+    3.2,
+    9.892
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk0RailR",
+   "pos": [
+    12.408,
+    0.25,
+    0.542
+   ],
+   "size": [
+    20.915,
+    0.5,
+    0.4
+   ],
+   "yaw": -11.768,
+   "color": "#2e241a"
+  },
+  {
+   "id": "Walk0TrunkR0",
+   "pos": [
+    4.283,
+    3.2,
+    -3.398
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk0TrunkR1",
+   "pos": [
+    11.299,
+    3.2,
+    -2.753
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk0TrunkR2",
+   "pos": [
+    17.989,
+    3.2,
+    -0.543
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk0TrunkR3",
+   "pos": [
+    25.005,
+    3.2,
+    0.102
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk1",
+   "pos": [
+    32.0,
+    -0.25,
+    -2.0
+   ],
+   "size": [
+    24.86,
+    0.5,
+    3.6
+   ],
+   "yaw": 41.186,
+   "color": "#4a3c2c"
+  },
+  {
+   "id": "Walk1RailL",
+   "pos": [
+    33.317,
+    0.25,
+    -0.495
+   ],
+   "size": [
+    17.66,
+    0.5,
+    0.4
+   ],
+   "yaw": 41.186,
+   "color": "#2e241a"
+  },
+  {
+   "id": "Walk1TrunkL0",
+   "pos": [
+    29.4,
+    3.2,
+    5.856
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk1TrunkL1",
+   "pos": [
+    35.195,
+    3.2,
+    1.849
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk1TrunkL2",
+   "pos": [
+    39.936,
+    3.2,
+    -3.363
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk1RailR",
+   "pos": [
+    30.683,
+    0.25,
+    -3.505
+   ],
+   "size": [
+    17.66,
+    0.5,
+    0.4
+   ],
+   "yaw": 41.186,
+   "color": "#2e241a"
+  },
+  {
+   "id": "Walk1TrunkR0",
+   "pos": [
+    23.868,
+    3.2,
+    -0.466
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk1TrunkR1",
+   "pos": [
+    28.61,
+    3.2,
+    -5.677
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk1TrunkR2",
+   "pos": [
+    34.404,
+    3.2,
+    -9.685
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk2",
+   "pos": [
+    51.0,
+    -0.25,
+    -7.5
+   ],
+   "size": [
+    25.804,
+    0.5,
+    3.6
+   ],
+   "yaw": -7.765,
+   "color": "#4a3c2c"
+  },
+  {
+   "id": "Walk2RailL",
+   "pos": [
+    50.73,
+    0.25,
+    -5.518
+   ],
+   "size": [
+    18.604,
+    0.5,
+    0.4
+   ],
+   "yaw": -7.765,
+   "color": "#2e241a"
+  },
+  {
+   "id": "Walk2TrunkL0",
+   "pos": [
+    42.9,
+    3.2,
+    -4.366
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk2TrunkL1",
+   "pos": [
+    49.728,
+    3.2,
+    -2.627
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk2TrunkL2",
+   "pos": [
+    56.772,
+    3.2,
+    -2.474
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk2RailR",
+   "pos": [
+    51.27,
+    0.25,
+    -9.482
+   ],
+   "size": [
+    18.604,
+    0.5,
+    0.4
+   ],
+   "yaw": -7.765,
+   "color": "#2e241a"
+  },
+  {
+   "id": "Walk2TrunkR0",
+   "pos": [
+    44.035,
+    3.2,
+    -12.689
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk2TrunkR1",
+   "pos": [
+    51.079,
+    3.2,
+    -12.535
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk2TrunkR2",
+   "pos": [
+    57.907,
+    3.2,
+    -10.797
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk3",
+   "pos": [
+    73.0,
+    -0.25,
+    1.0
+   ],
+   "size": [
+    29.677,
+    0.5,
+    3.6
+   ],
+   "yaw": -32.471,
+   "color": "#4a3c2c"
+  },
+  {
+   "id": "Walk3RailL",
+   "pos": [
+    71.926,
+    0.25,
+    2.687
+   ],
+   "size": [
+    22.477,
+    0.5,
+    0.4
+   ],
+   "yaw": -32.471,
+   "color": "#2e241a"
+  },
+  {
+   "id": "Walk3TrunkL0",
+   "pos": [
+    62.698,
+    3.2,
+    -0.578
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk3TrunkL1",
+   "pos": [
+    68.174,
+    3.2,
+    3.856
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk3TrunkL2",
+   "pos": [
+    74.509,
+    3.2,
+    6.939
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk3TrunkL3",
+   "pos": [
+    79.985,
+    3.2,
+    11.372
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk3RailR",
+   "pos": [
+    74.074,
+    0.25,
+    -0.687
+   ],
+   "size": [
+    22.477,
+    0.5,
+    0.4
+   ],
+   "yaw": -32.471,
+   "color": "#2e241a"
+  },
+  {
+   "id": "Walk3TrunkR0",
+   "pos": [
+    67.208,
+    3.2,
+    -7.664
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk3TrunkR1",
+   "pos": [
+    73.543,
+    3.2,
+    -4.581
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk3TrunkR2",
+   "pos": [
+    79.019,
+    3.2,
+    -0.148
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk3TrunkR3",
+   "pos": [
+    85.354,
+    3.2,
+    2.935
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk4",
+   "pos": [
+    94.0,
+    -0.25,
+    4.5
+   ],
+   "size": [
+    24.79,
+    0.5,
+    3.6
+   ],
+   "yaw": 19.29,
+   "color": "#4a3c2c"
+  },
+  {
+   "id": "Walk4RailL",
+   "pos": [
+    94.661,
+    0.25,
+    6.388
+   ],
+   "size": [
+    17.59,
+    0.5,
+    0.4
+   ],
+   "yaw": 19.29,
+   "color": "#2e241a"
+  },
+  {
+   "id": "Walk4TrunkL0",
+   "pos": [
+    88.691,
+    3.2,
+    10.808
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk4TrunkL1",
+   "pos": [
+    95.562,
+    3.2,
+    9.251
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk4TrunkL2",
+   "pos": [
+    101.905,
+    3.2,
+    6.183
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk4RailR",
+   "pos": [
+    93.339,
+    0.25,
+    2.612
+   ],
+   "size": [
+    17.59,
+    0.5,
+    0.4
+   ],
+   "yaw": 19.29,
+   "color": "#2e241a"
+  },
+  {
+   "id": "Walk4TrunkR0",
+   "pos": [
+    85.916,
+    3.2,
+    2.88
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk4TrunkR1",
+   "pos": [
+    92.259,
+    3.2,
+    -0.188
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Walk4TrunkR2",
+   "pos": [
+    99.13,
+    3.2,
+    -1.745
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Pocket",
+   "pos": [
+    64.0,
+    -0.25,
+    -15.0
+   ],
+   "size": [
+    22.039,
+    0.5,
+    3.6
+   ],
+   "yaw": 77.471,
+   "color": "#4a3c2c"
+  },
+  {
+   "id": "PocketRailL",
+   "pos": [
+    65.952,
+    0.25,
+    -14.566
+   ],
+   "size": [
+    14.839,
+    0.5,
+    0.4
+   ],
+   "yaw": 77.471,
+   "color": "#2e241a"
+  },
+  {
+   "id": "PocketTrunkL0",
+   "pos": [
+    66.859,
+    3.2,
+    -8.506
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "PocketTrunkL1",
+   "pos": [
+    69.159,
+    3.2,
+    -15.165
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "PocketTrunkL2",
+   "pos": [
+    69.896,
+    3.2,
+    -22.172
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "PocketRailR",
+   "pos": [
+    62.048,
+    0.25,
+    -15.434
+   ],
+   "size": [
+    14.839,
+    0.5,
+    0.4
+   ],
+   "yaw": 77.471,
+   "color": "#2e241a"
+  },
+  {
+   "id": "PocketTrunkR0",
+   "pos": [
+    58.659,
+    3.2,
+    -10.328
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "PocketTrunkR1",
+   "pos": [
+    59.397,
+    3.2,
+    -17.335
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "PocketTrunkR2",
+   "pos": [
+    61.696,
+    3.2,
+    -23.994
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "PocketEnd",
+   "pos": [
+    66.0,
+    -0.25,
+    -27.0
+   ],
+   "size": [
+    6.0,
+    0.5,
+    6.0
+   ],
+   "color": "#4a3c2c"
+  },
+  {
+   "id": "Clearing",
+   "pos": [
+    112.0,
+    -0.25,
+    0.0
+   ],
+   "size": [
+    18.0,
+    0.5,
+    18.0
+   ],
+   "color": "#4a3c2c"
+  },
+  {
+   "id": "ClearingRoots0",
+   "pos": [
+    112.0,
+    0.6,
+    -9.0
+   ],
+   "size": [
+    18.0,
+    1.2,
+    0.4
+   ],
+   "color": "#3a3026"
+  },
+  {
+   "id": "ClearingRoots1",
+   "pos": [
+    112.0,
+    0.6,
+    9.0
+   ],
+   "size": [
+    18.0,
+    1.2,
+    0.4
+   ],
+   "color": "#3a3026"
+  },
+  {
+   "id": "ClearingRoots2",
+   "pos": [
+    103.0,
+    0.6,
+    -5.65
+   ],
+   "size": [
+    0.4,
+    1.2,
+    6.7
+   ],
+   "color": "#3a3026"
+  },
+  {
+   "id": "ClearingRoots3",
+   "pos": [
+    103.0,
+    0.6,
+    5.65
+   ],
+   "size": [
+    0.4,
+    1.2,
+    6.7
+   ],
+   "color": "#3a3026"
+  },
+  {
+   "id": "ClearingRoots4",
+   "pos": [
+    121.0,
+    0.6,
+    -5.65
+   ],
+   "size": [
+    0.4,
+    1.2,
+    6.7
+   ],
+   "color": "#3a3026"
+  },
+  {
+   "id": "ClearingRoots5",
+   "pos": [
+    121.0,
+    0.6,
+    5.65
+   ],
+   "size": [
+    0.4,
+    1.2,
+    6.7
+   ],
+   "color": "#3a3026"
+  },
+  {
+   "id": "DrownerRoots",
+   "pos": [
+    115.0,
+    1.5,
+    -6.5
+   ],
+   "size": [
+    6.0,
+    3.0,
+    2.0
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "Exit",
+   "pos": [
+    130.5,
+    -0.25,
+    0.0
+   ],
+   "size": [
+    22.6,
+    0.5,
+    3.6
+   ],
+   "color": "#4a3c2c"
+  },
+  {
+   "id": "ExitRailL",
+   "pos": [
+    130.5,
+    0.25,
+    2.0
+   ],
+   "size": [
+    15.4,
+    0.5,
+    0.4
+   ],
+   "color": "#2e241a"
+  },
+  {
+   "id": "ExitTrunkL0",
+   "pos": [
+    124.5,
+    3.2,
+    4.2
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "ExitTrunkL1",
+   "pos": [
+    131.5,
+    3.2,
+    5.0
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "ExitTrunkL2",
+   "pos": [
+    138.5,
+    3.2,
+    4.2
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "ExitRailR",
+   "pos": [
+    130.5,
+    0.25,
+    -2.0
+   ],
+   "size": [
+    15.4,
+    0.5,
+    0.4
+   ],
+   "color": "#2e241a"
+  },
+  {
+   "id": "ExitTrunkR0",
+   "pos": [
+    124.5,
+    3.2,
+    -4.2
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "ExitTrunkR1",
+   "pos": [
+    131.5,
+    3.2,
+    -5.0
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "ExitTrunkR2",
+   "pos": [
+    138.5,
+    3.2,
+    -4.2
+   ],
+   "size": [
+    0.7,
+    7.0,
+    0.7
+   ],
+   "color": "#3a3026",
+   "solid": false
+  },
+  {
+   "id": "ExitBound",
+   "pos": [
+    141.5,
+    1.0,
+    0.0
+   ],
+   "size": [
+    1.0,
+    2.0,
+    4.6
+   ],
+   "color": "#2e241a"
+  }
+ ],
+ "spawns": {
+  "FenEdge": [
+   -8.0,
+   0.0,
+   0.0,
+   270.0
+  ],
+  "DrownerArena": [
+   104.0,
+   0.0,
+   0.0,
+   270.0
+  ],
+  "FromReedhollow": [
+   134.0,
+   0.0,
+   0.0,
+   90.0
+  ]
+ },
+ "marks": {
+  "pell_edge": [
+   -3.0,
+   0.0,
+   2.5,
+   270.0
+  ],
+  "fen_mouth": [
+   2.0,
+   0.0,
+   0.0,
+   270.0
+  ],
+  "pocket_end": [
+   66.0,
+   0.0,
+   -27.0,
+   0.0
+  ]
+ },
+ "actors": {
+  "pell": {
+   "at": [
+    -3.0,
+    0.0,
+    2.5,
+    270.0
+   ],
+   "color": "#7a8a6a",
+   "radius": 0.34,
+   "height": 1.9
+  }
+ },
+ "shots": {
+  "F01": {
+   "pos": [
+    -14.0,
+    2.2,
+    6.0
+   ],
+   "look_at": [
+    20.0,
+    1.0,
+    0.0
+   ],
+   "fov": 40
+  }
+ },
+ "triggers": [
+  {
+   "id": "to_reedhollow",
+   "activation": "touch",
+   "at": [
+    138.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    0,
+    3.6
+   ],
+   "payload": {
+    "beat": "to_reedhollow"
+   },
+   "yaw": 0.0
+  }
+ ],
+ "encounters": {
+  "table": [
+   {
+    "encounter": "ch10_fen_archers",
+    "weight": 2
+   },
+   {
+    "encounter": "ch10_fen_roots",
+    "weight": 1
+   },
+   {
+    "encounter": "ch10_fen_leeches",
+    "weight": 1
+   }
+  ],
+  "min_m": 30,
+  "max_m": 50,
+  "when": {
+   "set": [
+    "ch10_started"
+   ]
+  },
+  "seed": 10
+ }
+}

@@ -2,11 +2,12 @@
 id: M2-HER-1113
 title: "Cutscene stage actors whip-turn (~800 deg/s), jump to their mark when a scene ends, and glide across far clip marks (request to slice-polish, FAST-TRACK)"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: "slice-polish (claude/m2-slice, session_01KZCgTqxhHKjvMCm1dAosvZ)"
 depends_on: [M2-HER-1110]
 milestone: M2
 request-from: combat
+reviewer: hero-integration
 ---
 ## Goal
 The hero track's cutscene snap guard (`tests/integration/test_hero_cutscene_snaps.gd`, M2-HER-1110) plays 26 in-engine
@@ -35,15 +36,13 @@ d4921946:
 - the via helpers' test (test_cutscene_mark_via.gd).
 
 ## Acceptance criteria
-- [ ] Apply `docs/kb/tech/cutscene_no_snap.patch` (on claude/hero-integration; **re-cut 2026-10-27 against claude/m2-slice
-      d4921946**, `git apply --check` clean). It does three things:
+- [x] Apply `docs/kb/tech/cutscene_no_snap.patch` (on claude/hero-integration; cut against claude/m2-slice 7d981830,
+      `git apply --check` clean). It does two things:
       - `sequencer.json` `turn_sec` 0.45 → 0.9, so the peak is about 400 deg/s; a quarter turn is 0.575 s;
       - `_finish` lets a running walk or turn play out before the scene closes. A skip or an abort still completes it
         at once. The helper `CutsceneMotion.actor_motion_left` is in cutscene_motion.gd, so the sequencer gains
-        3 lines;
-      - a stand-in clip mark farther than `standin_cut_m` (2.5 m, the guard's cut distance) is placed at once, a cut,
-        and a nearer one still glides. The sequencer ends at 984 of its 1000-line cap.
-- [ ] Verified on claude/m2-slice 7d981830 + the patch (hero track, 2026-10-27): the cutscene guard 1/0 with every
+        3 lines (991 of the 1000-line cap).
+- [x] Verified on claude/m2-slice 7d981830 + the patch (hero track, 2026-10-27): the cutscene guard 1/0 with every
       pair clean; cutscene 61/0, fp_ 28/0, haluna 55/0, prologue 7/0, _thread 34/0. gdlint and gdformat clean.
 - [ ] After it lands, the hero track empties the guard's KNOWN list, so the test holds all 26 scenes.
 
@@ -61,5 +60,10 @@ d4921946:
   failure, test_ch01_oruvel_kit's storm environment swap, passes alone with the patch (twice) and without it. It
   fails only in the broad ch0 sweep, so it depends on what ran before it, not on cutscene motion. Worth a look by its
   owner.
+
+- **slice-polish, 2026-10-27:** applied earlier on claude/m2-slice (turn_sec 0.9 and standin_cut_m 2.5 in
+  sequencer.json; `_finish` waits on `CutsceneMotion.actor_motion_left` unless skipped or aborted). This board entry
+  was left at todo by mistake. Re-checked at 37f8bb9b: `hero_cutscene_snaps` 1/0. The third box (emptying the
+  guard's KNOWN list) is the hero track's; this goes to review for them.
 
 ## Review log

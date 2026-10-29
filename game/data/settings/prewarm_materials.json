@@ -782,7 +782,8 @@
         "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
         "res://game/levels/ch02/haluna/haluna.tscn",
         "res://game/battle/scene/battle_sandbox.tscn",
-        "res://game/flow/field_battle.tscn"
+        "res://game/flow/field_battle.tscn",
+        "res://game/levels/prologue/prologue.tscn"
       ],
       "note": "M1-RND-07: ocean tier variant drawn on the ocean grid's exact surface format (water_grid_prewarm.tres, tested equal to WaterMeshBuilder). Zones with a WaterSurface add their scene paths. M2-ENV-05 (Lead 2026-10-24): resident, so a second launch's Haluna entry stays under ADR 0029's 3 s (gpu/m2-rnd-11-sweep-r).",
       "preset_tier": {
@@ -800,7 +801,8 @@
         "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
         "res://game/levels/ch02/haluna/haluna.tscn",
         "res://game/battle/scene/battle_sandbox.tscn",
-        "res://game/flow/field_battle.tscn"
+        "res://game/flow/field_battle.tscn",
+        "res://game/levels/prologue/prologue.tscn"
       ],
       "note": "M1-RND-07: ocean tier variant drawn on the ocean grid's exact surface format (water_grid_prewarm.tres, tested equal to WaterMeshBuilder). Zones with a WaterSurface add their scene paths. M2-ENV-05 (Lead 2026-10-24): resident, so a second launch's Haluna entry stays under ADR 0029's 3 s (gpu/m2-rnd-11-sweep-r).",
       "preset_tier": {
@@ -818,7 +820,8 @@
         "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
         "res://game/levels/ch02/haluna/haluna.tscn",
         "res://game/battle/scene/battle_sandbox.tscn",
-        "res://game/flow/field_battle.tscn"
+        "res://game/flow/field_battle.tscn",
+        "res://game/levels/prologue/prologue.tscn"
       ],
       "note": "M1-RND-07: ocean tier variant drawn on the ocean grid's exact surface format (water_grid_prewarm.tres, tested equal to WaterMeshBuilder). Zones with a WaterSurface add their scene paths. M2-ENV-05 (Lead 2026-10-24): resident, so a second launch's Haluna entry stays under ADR 0029's 3 s (gpu/m2-rnd-11-sweep-r).",
       "preset_tier": {
@@ -836,7 +839,8 @@
         "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
         "res://game/levels/ch02/haluna/haluna.tscn",
         "res://game/battle/scene/battle_sandbox.tscn",
-        "res://game/flow/field_battle.tscn"
+        "res://game/flow/field_battle.tscn",
+        "res://game/levels/prologue/prologue.tscn"
       ],
       "note": "M1-RND-07: ocean tier variant drawn on the ocean grid's exact surface format (water_grid_prewarm.tres, tested equal to WaterMeshBuilder). Zones with a WaterSurface add their scene paths. M2-ENV-05 (Lead 2026-10-24): resident, so a second launch's Haluna entry stays under ADR 0029's 3 s (gpu/m2-rnd-11-sweep-r).",
       "preset_tier": {

@@ -2,9 +2,9 @@
   "version": 1,
   "doc": "Menu sounds by listening (M2-AUD-05; ADR 0031; docs/kb/tech/audio_runtime.md). UiAudio (game/audio/ui_audio.gd) watches every node whose script's global class (or a base class) has a hook here, and never writes it. signals: signal -> sfx row (the signal's arguments are dropped). on_enter / on_exit: a row when the menu is attached (deferred, after its _ready) or leaves the tree. watch: Expressions over `node` read once a frame (the first read is the baseline; a failed read changes nothing): a change plays sfx; rise / fall when a number goes up / down; values maps the new value (as text) to a row; on_true plays only when the new value is truthy. page_with_row(page, row_id) is in scope: the page's instance id when it shows that row, else 0. priority: one frame plays at most one UI row, the first of this list among those asked for (unlisted rows come last). pending: the class has not landed on this branch yet; the checker skips its class and signal names until it does, and the hook does nothing until then. tools/audio/data_check.py checks every row, class and signal. layer: a watch row that plays beside the frame's chosen row instead of competing with it; initial: a watch row that may play on its first read; motion: {accessor, in, out}, the menu motion whooshes (M3-AUD-832).",
   "priority": ["ui_error", "ui_shrine_travel", "ui_title_confirm", "ui_save_slot", "ui_load_slot", "ui_lattice_node", "ui_lattice_unlock", "ui_craft", "ui_item_use",
-               "ui_formation_swap", "ui_unequip", "ui_equip", "ui_map_marker", "ui_lattice_step", "ui_customize_open",
+               "ui_formation_swap", "ui_buy", "ui_unequip", "ui_equip", "ui_map_marker", "ui_lattice_step", "ui_customize_open",
                "ui_formation_pick", "ui_menu_close", "ui_map_close", "ui_cancel", "ui_vowbound_open",
-               "ui_menu_open", "ui_reefball_choices", "ui_map_open", "ui_title_swell", "ui_inn_rest", "ui_buy", "ui_tip", "ui_confirm",
+               "ui_menu_open", "ui_reefball_choices", "ui_map_open", "ui_title_swell", "ui_inn_rest", "ui_count_done", "ui_count_run", "ui_tip", "ui_confirm",
                "ui_item_sort", "ui_page", "ui_map_tick", "ui_map_pan", "ui_cursor"],
   "hooks": [
     {
@@ -330,7 +330,48 @@
          "sfx": "ui_reefball_glint", "_note": "the preview shows a scoring choice under the cursor"}
       ],
       "_note": "M3-AUD-832: the UI track's Reefball HUD (claude/ui, M3-UI-01): the menu's sounds; the match's own are reefball_audio's. Pending until it merges"
-    }
+    },
+    {
+      "class": "Interactable",
+      "signals": {"used": "ui_interact"},
+      "_note": "M3-AUD-854: a soft touch when anything in the field is used; the menu or dialogue it opens outranks it in that frame (it is unlisted in priority). SaveShrine and every other subclass share it unless they get their own hook"
+    },
+    {
+      "class": "InteractPrompt",
+      "watch": [{"expr": "node.is_showing()", "on_true": true, "sfx": "ui_prompt_in", "_note": "the prompt appears over something you can use"}],
+      "_note": "M3-AUD-854"
+    },
+    {
+      "class": "CodexNotice",
+      "watch": [{"expr": "node.is_showing()", "on_true": true, "sfx": "ui_tip", "_note": "a codex entry learned"}],
+      "_note": "M3-AUD-854: the codex notice, as a tip card"
+    },
+    {
+      "class": "BattleResultPanel",
+      "signals": {"choice_made": "ui_confirm"},
+      "watch": [
+        {"expr": "node.is_counting()", "values": {"true": "ui_count_run", "false": "ui_count_done"},
+         "_note": "M3-AUD-848: the UI track's count-up (claude/ui); the read fails harmlessly until it lands"},
+        {"expr": "node.current_choice()", "sfx": "ui_cursor"}
+      ],
+      "_note": "M3-AUD-848: the battle result panel (its victory jingle is the battle's own)"
+    },
+    {
+      "class": "ReefballOutfitterMenu",
+      "on_enter": "ui_menu_open",
+      "signals": {"closed": "ui_menu_close"},
+      "watch": [
+        {"expr": "node.root_page().cursor", "sfx": "ui_cursor"},
+        {"expr": "node.model.wallet.amount()", "fall": "ui_buy", "_note": "a piece bought"},
+        {"expr": "str(node.model.rows())", "sfx": "ui_equip", "_note": "a piece put on, swapped or taken off (a buy outranks it)"},
+        {"expr": "node._notice.get('ok', true) == false", "on_true": true, "sfx": "ui_error", "_note": "can't afford it: the line says why"}
+      ],
+      "_note": "M3-AUD-848: the UI track's Reefball outfitter (claude/ui, ADR 0040, M3-C07-05). Live since big14 merged it (M3-AUD-861)"
+    },
+    {"class": "CodexMenu", "on_enter": "ui_page", "signals": {"closed": "ui_page"}, "watch": [{"expr": "node.column", "rise": "ui_confirm", "fall": "ui_cancel", "_note": "CodexMenu.Column CATEGORIES 0, ENTRIES 1, TEXT 2: in is a confirm, back is a cancel"}, {"expr": "node.categories_page().cursor", "sfx": "ui_cursor"}, {"expr": "node.entries_page().cursor", "sfx": "ui_cursor"}], "_note": "M3-AUD-861: the codex (the Bestiary's sibling: it opens and closes as a page)"},
+    {"class": "SettingsMenu", "on_enter": "ui_menu_open", "signals": {"closed": "ui_menu_close"}, "watch": [{"expr": "node.current()", "sfx": "ui_cursor"}, {"expr": "node.is_page_open()", "values": {"true": "ui_confirm"}, "_note": "a settings page opened (a bool: `values`, as rise/fall read numbers only); its close is SettingsPage's row"}], "_note": "M3-AUD-861: the settings list that opens Audio, Graphics, Accessibility and Controls"},
+    {"class": "ReadPanel", "watch": [{"expr": "node.is_open()", "sfx": "ui_page", "_note": "a bool: any change turns the page"}], "_note": "M3-AUD-861: the battle's Read panel (the Read itself is battle_sfx's `read`): the page turning in and out"},
+    {"class": "ObjectiveHud", "watch": [{"expr": "node.phase", "values": {"1": "ui_tip"}, "_note": "ObjectiveHud.Phase.IN: the objective fades in"}], "_note": "M3-AUD-861: the field objective card, heard as the tip card is"}
   ],
   "motion": {
     "doc": "M3-AUD-832: menu motion whooshes. A watched node whose `accessor` method returns its MenuMotion layers `in` as it rises into place and `out` as it sinks away (FieldMenu, every FieldSubmenu page, and SaveMenu once claude/ui gives it one). Reduced motion makes the transitions instant: nothing moves, so nothing plays. Their rows' volume_db keep them about 12 dB under the open and close sounds.",

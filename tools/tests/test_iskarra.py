@@ -44,6 +44,17 @@ PRIMITIVE_TOP_Y = {"TowerA": 56.2, "TowerB": 43.0, "TowerC": 19.0, "TowerD": 63.
 TERRACE_TOP_Y = 0.4
 
 
+def _actors() -> list[tuple[str, float, float, float]]:
+    """The Prologue cast's marks (CutsceneStage/Actors): name, x, y (feet), z."""
+    text = PROLOGUE.read_text()
+    out = []
+    for m in re.finditer(r'\[node name="(\w+)" type="Node3D" parent="CutsceneStage/Actors"\]\ntransform = '
+                         r"Transform3D\(([^)]*)\)", text):
+        v = [float(x) for x in m.group(2).split(",")]
+        out.append((m.group(1), v[9], v[10], v[11]))
+    return out
+
+
 def _vigils() -> list[tuple[float, float]]:
     text = PROLOGUE.read_text()
     out = []
@@ -79,6 +90,31 @@ class IskarraKitTests(unittest.TestCase):
         self.assertLess(col[high, 2].mean(), 0.05, "dry glaze above")
 
 
+    def test_the_shafts_face_out(self) -> None:
+        """M3-ENV-724: the shafts were wound inside out (Godot drew their back walls); every cladding face of a
+        whole tower points away from its axis, and every glazed band too."""
+        for name in ("iskarra_tower_spire", "iskarra_tower_stepped", "iskarra_tower_small", "iskarra_lamp_column"):
+            with self.subTest(piece=name):
+                mb = iskarra.TARGETS[name]()[0]
+                p, t = np.asarray(mb.pos), np.asarray(mb.tris)
+                for mat in (iskarra.M_CLAD, iskarra.M_GLAZE):
+                    if mat not in mb.materials:
+                        continue
+                    sel = np.asarray(mb.tri_mat) == mb.materials.index(mat)
+                    tri = p[t[sel]]
+                    n = np.cross(tri[:, 1] - tri[:, 0], tri[:, 2] - tri[:, 0])
+                    c = tri.mean(axis=1)
+                    big = np.linalg.norm(n, axis=1) > 1e-6
+                    radial = np.einsum("ij,ij->i", n[:, [0, 2]], c[:, [0, 2]])[big]
+                    self.assertGreater(float((radial > 0).mean()), 0.99, mat)
+
+    def test_the_towers_have_windows_and_glaze(self) -> None:
+        mb = iskarra.TARGETS["iskarra_tower_spire"]()[0]
+        self.assertIn(iskarra.M_GLAZE, mb.materials)
+        dark = sum(1 for m in mb.tri_mat if mb.materials[m] == iskarra.M_DARK)
+        self.assertGreater(dark, 100 * 24, "a hundred windows or more (two dark blocks each)")
+
+
 class IskarraCityTests(unittest.TestCase):
     def test_the_committed_scene_is_generated(self) -> None:
         self.assertEqual(CITY.OUT_DEFAULT.read_text(), CITY.scene_text())
@@ -105,11 +141,35 @@ class IskarraCityTests(unittest.TestCase):
         centres = pos[tris[paving]].mean(axis=1)
         top = centres[centres[:, 1] > -0.1]
         vigils = _vigils()
-        self.assertGreater(len(vigils), 0, "the stand-in vigils left after M2-FP-103's real cast")
+        # All seven keep the vigil (act_outline, the Prologue): the cast's actors plus the stand-in vigils.
+        self.assertGreaterEqual(len(vigils) + len(_actors()), 7, "seven on the plaza")
         for vx, vz in vigils:
             with self.subTest(vigil=(vx, vz)):
                 d = np.hypot(top[:, 0] - (vx - plaza[2]), top[:, 2] - (vz - plaza[4])).min()
                 self.assertLess(d, 1.2, "a slab under the vigil (within a slab's half-diagonal)")
+
+    def test_the_cast_stands_on_the_paving_or_the_dais(self) -> None:
+        """M3-ENV-724 (the vigil gap): every cast mark of the Prologue has stone under its feet: a paving slab at the
+        plaza's top, or the dais's top inside its footprint."""
+        plaza = next(p for p in CITY.PIECES if p[1] == "iskarra_plaza")
+        rise = next(p for p in CITY.PIECES if p[1] == "iskarra_plaza_rise")
+        mb = iskarra.TARGETS["iskarra_plaza"]()[0]
+        pos, tris = np.asarray(mb.pos), np.asarray(mb.tris)
+        paving = [i for i, m in enumerate(mb.tri_mat) if mb.materials[m] == iskarra.M_PAVING]
+        centres = pos[tris[paving]].mean(axis=1)
+        top = centres[centres[:, 1] > -0.1]
+        rlo, rhi = iskarra.TARGETS["iskarra_plaza_rise"]()[0].bounds()
+        actors = _actors()
+        self.assertGreaterEqual(len(actors), 4)
+        for name, x, y, z in actors:
+            with self.subTest(actor=name):
+                if y > TERRACE_TOP_Y + 0.3:
+                    self.assertAlmostEqual(y, rise[3] + float(rhi[1]), delta=0.05, msg="on the dais's top")
+                    self.assertTrue(rlo[0] + 0.3 < x - rise[2] < rhi[0] - 0.3 and rlo[2] + 0.3 < z - rise[4] < rhi[2])
+                else:
+                    self.assertAlmostEqual(y, TERRACE_TOP_Y, delta=0.05)
+                    d = np.hypot(top[:, 0] - (x - plaza[2]), top[:, 2] - (z - plaza[4])).min()
+                    self.assertLess(d, 1.2)
 
 
 if __name__ == "__main__":

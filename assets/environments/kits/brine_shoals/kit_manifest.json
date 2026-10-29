@@ -79,6 +79,28 @@
         "brine_vat_burned-lod1": 36
       }
     },
+    "camp_fire_large": {
+      "budget": [
+        9000,
+        1200
+      ],
+      "bytes": 126108,
+      "lods": {
+        "camp_fire_large": 1928,
+        "camp_fire_large-lod1": 536
+      }
+    },
+    "camp_fire_small": {
+      "budget": [
+        5000,
+        700
+      ],
+      "bytes": 89272,
+      "lods": {
+        "camp_fire_small": 1172,
+        "camp_fire_small-lod1": 386
+      }
+    },
     "camp_hard": {
       "budget": [
         4200,
@@ -95,9 +117,9 @@
         9000,
         900
       ],
-      "bytes": 96668,
+      "bytes": 120884,
       "lods": {
-        "camp_tent": 1856,
+        "camp_tent": 2432,
         "camp_tent-lod1": 8
       }
     },
@@ -425,9 +447,9 @@
         12000,
         1200
       ],
-      "bytes": 151480,
+      "bytes": 280244,
       "lods": {
-        "white_barge": 2544,
+        "white_barge": 4588,
         "white_barge-lod1": 108
       }
     },

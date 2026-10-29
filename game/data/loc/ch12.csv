@@ -1,0 +1,13 @@
+keys,en
+LOCATION_CH12_KETH_PASS,Keth Pass
+LOCATION_CH12_QUELLAN,Quellan
+LOCATION_CH12_CLOUDLOOM,Cloudloom
+ENEMY_RIDGE_LYNX,Ridge Lynx
+LORE_RIDGE_LYNX,"A lynx of the high pass in its slate-grey winter coat, ear tufts white with frost. It takes the slowest of a line, the way it takes the last of a flock."
+ENEMY_CORD_MOTH,Cord Moth
+LORE_CORD_MOTH,"A pale moth whose larvae live in old keth cords. The knots it ate come out on its wings, and the Ullari say a few of them can still be read."
+ENEMY_SCREE_CRAWLER,Scree Crawler
+LORE_SCREE_CRAWLER,A mountain tortoise whose shell is frost-split scree. It sleeps through the summers and the passes are cleared around it.
+SKILL_UNRAVEL,Unravel
+SKILL_SCREE_SLIDE,Scree Slide
+ENC_CH12_PASS,Keth Pass

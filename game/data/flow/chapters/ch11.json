@@ -1,0 +1,95 @@
+{
+ "doc": "M4-C11-02 (docs/kb/tech/chapter_flow.md): Ch11 'Lowlight' as a greybox walk before the beat sheet (M4-C11-01): the party arrives at Sunken Vey's landing (the chapter becomes 11), walks the drowned galleries to Lowlight's gate and can walk back; in Lowlight the well-shaft's flights go down to the drowned sanctum. The housing-mark scene, the Lamp Engine, Nhoa's binding and the lamp-repair side scene come with the beat sheet; Pell joins the formation when his kit lands (M3-C09-07).",
+ "chapter": "ch11",
+ "zones": {
+  "ch11/sunken_vey": {
+   "party": {
+    "party": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde",
+     "kerrid",
+     "liss"
+    ]
+   },
+   "arrive": [
+    {
+     "when": {
+      "unset": [
+       "ch11_started"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Landing"
+      },
+      {
+       "chapter": 11
+      },
+      {
+       "set": "ch11_started"
+      }
+     ]
+    }
+   ],
+   "beats": {
+    "to_lowlight": {
+     "steps": [
+      {
+       "go": {
+        "location": "ch11/lowlight",
+        "spawn": "Gate"
+       }
+      }
+     ]
+    }
+   }
+  },
+  "ch11/lowlight": {
+   "party": {
+    "party": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde",
+     "kerrid",
+     "liss"
+    ]
+   },
+   "arrive": [
+    {
+     "when": {
+      "unset": [
+       "ch11_reached_lowlight"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Gate"
+      },
+      {
+       "set": "ch11_reached_lowlight"
+      }
+     ]
+    }
+   ],
+   "beats": {
+    "to_vey": {
+     "steps": [
+      {
+       "go": {
+        "location": "ch11/sunken_vey",
+        "spawn": "FromLowlight"
+       }
+      }
+     ]
+    }
+   }
+  }
+ }
+}

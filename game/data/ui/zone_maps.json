@@ -1,6 +1,6 @@
 {
   "zone_maps": {
-    "doc": "M2-UI-16/18: the zones the objective system and the field menu's map know. Each zone: its scene (the field's current scene is matched against it), its name_key, its route_index on the pilgrimage strip (Haluna -> the Saltgrass Causeway -> the Shell Shrine), the world rectangle the map shows ([x, z, width, depth] in metres), its shape source (Haluna: its layout JSON; the Shell Shrine: its trial JSON), and its points of interest. A POI is {id, name_key, kind, at: [x, z], source}: `at` is a world position (x east, z south), `source` names where it comes from ('node:<path in the zone scene>' or 'layout:<key in the shape source>'), and tools/tests/test_zone_map_pois.py checks the two agree. Kinds draw as glyphs: shrine, shop, inn, talk, path, door, pool, dock, home. route lists the pilgrimage strip in order; a route stop with no zone is a place the party passes through without a map of its own yet. M3-UI-04: the Act I greybox zones (Ch1, Ch4 to Ch9) are shape_kind greybox_layout: their shapes are the layout's blocks (ZoneMapShapes.greybox_layer), with shape_hints naming blocks by layer where height alone reads them wrong (sea: open water under everything; water, floors, pads, buildings, structures, skip). A greybox zone's scene is only its root, so its POI sources name layout points instead of nodes: 'spawn:<id>', 'trigger:<id>' (the trigger's at), 'actor:<id>' (the actor's at) and 'mark:<id>'. The route runs the whole of Act I; the strip shows only the stops near the current one (zone_map_menu.json route before/after).",
+    "doc": "M2-UI-16/18: the zones the objective system and the field menu's map know. Each zone: its scene (the field's current scene is matched against it), its name_key, its route_index on the pilgrimage strip (Haluna -> the Saltgrass Causeway -> the Shell Shrine), the world rectangle the map shows ([x, z, width, depth] in metres), its shape source (Haluna: its layout JSON; the Shell Shrine: its trial JSON), and its points of interest. A POI is {id, name_key, kind, at: [x, z], source}: `at` is a world position (x east, z south), `source` names where it comes from ('node:<path in the zone scene>' or 'layout:<key in the shape source>'), and tools/tests/test_zone_map_pois.py checks the two agree. Kinds draw as glyphs: shrine, shop, inn, talk, path, door, pool, dock, home. route lists the pilgrimage strip in order; a route stop with no zone is a place the party passes through without a map of its own yet. M3-UI-04: the Act I greybox zones (Ch1, Ch4 to Ch9) are shape_kind greybox_layout: their shapes are the layout's blocks (ZoneMapShapes.greybox_layer), with shape_hints naming blocks by layer where height alone reads them wrong (sea: open water under everything; water, floors, pads, buildings, structures, skip). A greybox zone's scene is only its root, so its POI sources name layout points instead of nodes: 'spawn:<id>', 'trigger:<id>' (the trigger's at), 'actor:<id>' (the actor's at) and 'mark:<id>'. The route runs the whole of Act I; the strip shows only the stops near the current one (zone_map_menu.json route before/after). M3-UI-206: the Act II greybox zones (Ch10 to Ch16, from act1-chapters) follow on the route; their layouts lay a 'Water' sheet over a 'Bed', hinted sea and skip, and their flights of steps are layout 'ramps', drawn as pads. A zone laid on another zone's map (Ch4's wake on Haluna's shapes) names its own GreyboxZone layout in 'points': its POIs' spawn/trigger/actor/mark sources are looked up there (tools/tests/test_zone_map_pois.py).",
     "route": [
       {"id": "ch01/oruvel_underway", "name_key": "MAP_ROUTE_UNDERWAY"},
       {"id": "ch01/oruvel", "name_key": "MAP_ROUTE_ORUVEL"},
@@ -16,7 +16,22 @@
       {"id": "ch07/tamsule_bell_galleries", "name_key": "MAP_ROUTE_BELL_GALLERIES"},
       {"id": "ch08/corrow", "name_key": "MAP_ROUTE_SEAWALL"},
       {"id": "ch08/coilspire", "name_key": "MAP_ROUTE_COILSPIRE"},
-      {"id": "ch09/corrow_night", "name_key": "MAP_ROUTE_CORROW"}
+      {"id": "ch09/corrow_night", "name_key": "MAP_ROUTE_CORROW"},
+      {"id": "ch10/ossa_fen", "name_key": "MAP_ROUTE_OSSA_FEN"},
+      {"id": "ch10/reedhollow", "name_key": "MAP_ROUTE_REEDHOLLOW"},
+      {"id": "ch11/sunken_vey", "name_key": "MAP_ROUTE_SUNKEN_VEY"},
+      {"id": "ch11/lowlight", "name_key": "MAP_ROUTE_LOWLIGHT"},
+      {"id": "ch12/keth_pass", "name_key": "MAP_ROUTE_KETH_PASS"},
+      {"id": "ch12/quellan", "name_key": "MAP_ROUTE_QUELLAN"},
+      {"id": "ch12/cloudloom", "name_key": "MAP_ROUTE_CLOUDLOOM"},
+      {"id": "ch13/ansedra", "name_key": "MAP_ROUTE_ANSEDRA"},
+      {"id": "ch13/sanctum", "name_key": "MAP_ROUTE_SANCTUM"},
+      {"id": "ch13/lamp_archive", "name_key": "MAP_ROUTE_LAMP_ARCHIVE"},
+      {"id": "ch13/ansedra_lacquer_court", "name_key": "MAP_ROUTE_LACQUER_COURT"},
+      {"id": "ch15/open_sea", "name_key": "MAP_ROUTE_OPEN_SEA"},
+      {"id": "ch17/hollowmere", "name_key": "MAP_ROUTE_HOLLOWMERE"},
+      {"id": "ch16/pale_rim", "name_key": "MAP_ROUTE_PALE_RIM"},
+      {"id": "ch16/drowned_choir", "name_key": "MAP_ROUTE_DROWNED_CHOIR"}
     ],
     "zones": [
       {
@@ -27,7 +42,7 @@
         "shape_kind": "haluna_layout",
         "bounds": [-150.0, -150.0, 210.0, 230.0],
         "pois": [
-          {"id": "beach", "name_key": "MAP_POI_BEACH", "kind": "path", "at": [-1.0, 8.0], "source": "node:Spawns/Beach"},
+          {"id": "beach", "name_key": "MAP_POI_BEACH", "kind": "path", "at": [-4.0, 8.0], "source": "node:Spawns/Beach"},
           {"id": "village", "name_key": "MAP_POI_NEMES_HOUSE", "kind": "home", "at": [-54.1, -1.9], "source": "node:NPCs/Neme/Neme"},
           {"id": "market", "name_key": "MAP_POI_MARKET", "kind": "talk", "at": [-40.0, 1.5], "source": "node:NPCs/Market/Vendor"},
           {"id": "shop", "name_key": "MAP_POI_SHOP", "kind": "shop", "at": [-35.5, -0.6], "source": "node:NPCs/Town/Shopkeeper"},
@@ -67,7 +82,7 @@
           {"id": "bell_room", "name_key": "MAP_POI_U_BELL_ROOM", "kind": "inn", "at": [40.0, 11.0], "source": "trigger:bell_room_1"},
           {"id": "hinge", "name_key": "MAP_POI_U_HINGE", "kind": "door", "at": [44.0, 3.0], "source": "trigger:hinge"},
           {"id": "bell_tether", "name_key": "MAP_POI_U_BELL_TETHER", "kind": "path", "at": [36.0, 3.6], "source": "trigger:tether_bell"},
-          {"id": "galleries", "name_key": "MAP_POI_U_GALLERIES", "kind": "path", "at": [80.0, 18.0], "source": "spawn:Gallery"},
+          {"id": "galleries", "name_key": "MAP_POI_U_GALLERIES", "kind": "path", "at": [80.0, 12.0], "source": "spawn:Gallery"},
           {"id": "bell_room_2", "name_key": "MAP_POI_U_BELL_ROOM_2", "kind": "inn", "at": [80.0, -20.0], "source": "trigger:bell_rest_2"},
           {"id": "stair_lip", "name_key": "MAP_POI_U_STAIR_LIP", "kind": "path", "at": [80.0, -33.0], "source": "trigger:low_lights"},
           {"id": "gauge_room", "name_key": "MAP_POI_U_GAUGE_ROOM", "kind": "door", "at": [93.0, -26.0], "source": "spawn:GaugeRoom"},
@@ -84,7 +99,7 @@
         "shape_hints": {"sea": ["Sea"]},
         "bounds": [-40.0, -44.0, 92.0, 62.0],
         "pois": [
-          {"id": "scale_hull", "name_key": "MAP_POI_O_SCALE_HULL", "kind": "shop", "at": [0.0, 8.0], "source": "spawn:ScaleHull"},
+          {"id": "scale_hull", "name_key": "MAP_POI_O_SCALE_HULL", "kind": "shop", "at": [-4.6, 10.5], "source": "spawn:ScaleHull"},
           {"id": "cookboats", "name_key": "MAP_POI_O_COOKBOATS", "kind": "talk", "at": [-12.0, -6.0], "source": "actor:cook"},
           {"id": "net_lanes", "name_key": "MAP_POI_O_NET_LANES", "kind": "talk", "at": [12.0, -6.0], "source": "actor:netmender"},
           {"id": "outer_mooring", "name_key": "MAP_POI_O_OUTER_MOORING", "kind": "dock", "at": [-28.0, -12.0], "source": "actor:skipper_sadi"},
@@ -101,19 +116,19 @@
         "id": "ch04/haluna_wake",
         "scene": "res://game/levels/ch04/haluna_wake/haluna_wake.tscn",
         "name_key": "LOCATION_CH04_HALUNA_WAKE",
-        "shapes": "res://game/levels/ch04/haluna_wake/haluna_wake_layout.json",
-        "shape_kind": "greybox_layout",
-        "shape_hints": {"sea": ["Sea", "SeaNorth"], "skip": ["GrassLamps"]},
-        "bounds": [-34.0, -46.0, 82.0, 63.0],
+        "points": "res://game/levels/ch04/haluna_wake/haluna_wake_layout.json",
+        "shapes": "res://game/levels/ch02/haluna/haluna_layout.json",
+        "shape_kind": "haluna_layout",
+        "bounds": [-150.0, -150.0, 210.0, 230.0],
         "pois": [
-          {"id": "neme_house", "name_key": "MAP_POI_NEMES_HOUSE", "kind": "home", "at": [0.0, 7.0], "source": "spawn:NemeDoor"},
-          {"id": "lane", "name_key": "MAP_POI_W_LANE", "kind": "talk", "at": [-3.0, -3.0], "source": "trigger:npc_child"},
-          {"id": "inn", "name_key": "MAP_POI_W_INN", "kind": "inn", "at": [-15.5, -20.0], "source": "trigger:inn_door"},
-          {"id": "chapel", "name_key": "MAP_POI_CHAPEL_COURT", "kind": "talk", "at": [16.0, -6.0], "source": "actor:reed"},
-          {"id": "dock", "name_key": "MAP_POI_DOCK", "kind": "dock", "at": [32.0, -20.0], "source": "spawn:DockShore"},
-          {"id": "feast", "name_key": "MAP_POI_W_FEAST", "kind": "talk", "at": [0.0, -27.5], "source": "trigger:feast"},
-          {"id": "neme_table", "name_key": "MAP_POI_W_NEME_TABLE", "kind": "talk", "at": [6.0, -30.0], "source": "trigger:table_neme"},
-          {"id": "wall", "name_key": "MAP_POI_W_WALL", "kind": "path", "at": [0.0, -35.5], "source": "trigger:wall"}
+          {"id": "neme_house", "name_key": "MAP_POI_NEMES_HOUSE", "kind": "home", "at": [-58.0, -3.6], "source": "spawn:NemeDoor"},
+          {"id": "lane", "name_key": "MAP_POI_W_LANE", "kind": "talk", "at": [-70.0, -9.5], "source": "trigger:npc_child"},
+          {"id": "inn", "name_key": "MAP_POI_W_INN", "kind": "inn", "at": [-30.0, 57.5], "source": "trigger:inn_door"},
+          {"id": "chapel", "name_key": "MAP_POI_CHAPEL_COURT", "kind": "talk", "at": [-116.3, 33.6], "source": "actor:reed"},
+          {"id": "dock", "name_key": "MAP_POI_DOCK", "kind": "dock", "at": [-2.72, 57.71], "source": "spawn:DockShore"},
+          {"id": "feast", "name_key": "MAP_POI_W_FEAST", "kind": "talk", "at": [-2.5, -101.5], "source": "trigger:feast"},
+          {"id": "neme_table", "name_key": "MAP_POI_W_NEME_TABLE", "kind": "talk", "at": [5.0, -112.5], "source": "trigger:table_neme"},
+          {"id": "wall", "name_key": "MAP_POI_W_WALL", "kind": "path", "at": [-12.5, -118.8], "source": "trigger:wall"}
         ]
       },
       {
@@ -146,7 +161,7 @@
         "bounds": [-48.0, -74.0, 96.0, 108.0],
         "pois": [
           {"id": "harbour", "name_key": "MAP_POI_P_HARBOUR", "kind": "dock", "at": [0.0, 26.5], "source": "trigger:harbour_road"},
-          {"id": "weir", "name_key": "MAP_POI_P_WEIR", "kind": "path", "at": [9.0, 25.2], "source": "spawn:Weir"},
+          {"id": "weir", "name_key": "MAP_POI_P_WEIR", "kind": "path", "at": [13.6, 25.2], "source": "spawn:Weir"},
           {"id": "market", "name_key": "MAP_POI_P_MARKET", "kind": "talk", "at": [-1.7, -1.6], "source": "trigger:bark_boat_folders"},
           {"id": "forge", "name_key": "MAP_POI_P_FORGE", "kind": "shop", "at": [6.3, -1.7], "source": "actor:garo"},
           {"id": "inn", "name_key": "MAP_POI_P_INN", "kind": "inn", "at": [-3.6, -15.6], "source": "spawn:InnGate"},
@@ -161,18 +176,18 @@
         "shapes": "res://game/levels/ch05/ashcrown/ashcrown_layout.json",
         "shape_kind": "greybox_layout",
         "shape_hints": {"structures": ["g1", "g2a", "g2b", "g3a", "g3b", "g3c", "g4a", "g4b"], "pads": ["TenderGraves"]},
-        "bounds": [-9.0, -103.0, 70.0, 122.0],
+        "bounds": [-25.0, -37.8, 66.3, 213.6],
         "pois": [
-          {"id": "stair_foot", "name_key": "MAP_POI_A_STAIR_FOOT", "kind": "path", "at": [0.0, 2.0], "source": "spawn:StairFoot"},
-          {"id": "grave_tier", "name_key": "MAP_POI_A_GRAVE_TIER", "kind": "talk", "at": [0.0, -35.0], "source": "trigger:banter_grave_tier"},
-          {"id": "copper_tier", "name_key": "MAP_POI_A_COPPER_TIER", "kind": "talk", "at": [0.0, -60.0], "source": "trigger:banter_copper_tier"},
-          {"id": "crown", "name_key": "MAP_POI_A_CROWN", "kind": "path", "at": [18.0, -94.0], "source": "trigger:crown"},
-          {"id": "tier_1", "name_key": "MAP_POI_A_TIER_1", "kind": "path", "at": [34.0, -88.0], "source": "trigger:rod_t1"},
-          {"id": "tier_2", "name_key": "MAP_POI_A_TIER_2", "kind": "path", "at": [34.0, -68.0], "source": "trigger:rod_t2"},
-          {"id": "tier_3", "name_key": "MAP_POI_A_TIER_3", "kind": "path", "at": [34.0, -48.0], "source": "trigger:rod_t3"},
-          {"id": "tier_4", "name_key": "MAP_POI_A_TIER_4", "kind": "path", "at": [34.0, -28.0], "source": "trigger:rod_t4"},
-          {"id": "quench", "name_key": "MAP_POI_A_QUENCH", "kind": "pool", "at": [54.0, -46.0], "source": "trigger:quench_charm"},
-          {"id": "anvil_court", "name_key": "MAP_POI_A_ANVIL_COURT", "kind": "door", "at": [41.0, -12.0], "source": "trigger:anvil_court"}
+          {"id": "stair_foot", "name_key": "MAP_POI_A_STAIR_FOOT", "kind": "path", "at": [0.0, 150.8], "source": "spawn:StairFoot"},
+          {"id": "grave_tier", "name_key": "MAP_POI_A_GRAVE_TIER", "kind": "talk", "at": [0.0, 100.9], "source": "trigger:banter_grave_tier"},
+          {"id": "copper_tier", "name_key": "MAP_POI_A_COPPER_TIER", "kind": "talk", "at": [0.0, 30.0], "source": "trigger:banter_copper_tier"},
+          {"id": "crown", "name_key": "MAP_POI_A_CROWN", "kind": "path", "at": [0.0, -2.4], "source": "trigger:crown"},
+          {"id": "tier_1", "name_key": "MAP_POI_A_TIER_1", "kind": "path", "at": [6.0, -10.8], "source": "trigger:rod_t1"},
+          {"id": "tier_2", "name_key": "MAP_POI_A_TIER_2", "kind": "path", "at": [9.5, -12.0], "source": "trigger:rod_t2"},
+          {"id": "tier_3", "name_key": "MAP_POI_A_TIER_3", "kind": "path", "at": [12.9, -10.4], "source": "trigger:rod_t3"},
+          {"id": "tier_4", "name_key": "MAP_POI_A_TIER_4", "kind": "path", "at": [16.3, -9.1], "source": "trigger:rod_t4"},
+          {"id": "quench", "name_key": "MAP_POI_A_QUENCH", "kind": "pool", "at": [12.9, -12.8], "source": "trigger:quench_charm"},
+          {"id": "anvil_court", "name_key": "MAP_POI_A_ANVIL_COURT", "kind": "door", "at": [10.9, 7.7], "source": "trigger:anvil_court"}
         ]
       },
       {
@@ -218,7 +233,7 @@
         "name_key": "LOCATION_CH07_TAMSULE_BELL_GALLERIES",
         "shapes": "res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries_layout.json",
         "shape_kind": "greybox_layout",
-        "shape_hints": {"sea": ["River"], "water": ["CatchPool"], "buildings": ["MapGallery0", "MapGallery1", "MapGallery2", "MapGallery3", "MapGallery4", "MapGallery5", "MapGallery6", "MapGallery7", "MapGallery8", "MapGallery9", "MapGallery10", "MapGallery11"]},
+        "shape_hints": {"sea": ["River"], "water": ["CatchPool", "WaterFloor"], "buildings": ["MapGallery0", "MapGallery1", "MapGallery2", "MapGallery3", "MapGallery4", "MapGallery5", "MapGallery6", "MapGallery7", "MapGallery8", "MapGallery9", "MapGallery10", "MapGallery11"], "floors": ["Walk0", "Walk1", "Walk2", "Walk3", "Walk4", "Walk5", "Walk6", "Walk7", "Walk8", "Walk9", "Walk10", "Walk11", "Walk12", "Walk13", "Walk14", "Walk15", "Walk16", "Walk17", "Walk18", "Walk19", "Walk20", "Walk21", "Walk22", "Walk23", "Walk24", "Walk25", "Walk26", "Walk27", "Walk28", "Walk29", "WalkEnd*", "OurPlatform", "TheirPlatform", "OurProw*", "TheirProw*", "Staging", "StagingEnd*", "TierFront*"], "structures": ["WalkRail*", "BridgeRail*", "OurRail*", "TheirRail*", "StagingRail*"]},
         "bounds": [-44.0, -44.0, 88.0, 88.0],
         "pois": [
           {"id": "gallery", "name_key": "MAP_POI_G_GALLERY", "kind": "path", "at": [-32.5, 4.6], "source": "spawn:Gallery"},
@@ -234,19 +249,18 @@
         "shapes": "res://game/levels/ch08/corrow/corrow_layout.json",
         "shape_kind": "greybox_layout",
         "shape_hints": {
-          "sea": ["SeaW", "SeaE"],
-          "structures": ["SeaWallW", "WallSection", "SeaWallE1", "SeaWallE2"],
-          "skip": ["Flood", "Lake", "Breach", "Kites", "KitesHigh", "WatchersW", "WatchersSection", "WatchersE"]
+          "floors": ["Wall-*", "Wall+*", "WallSection", "WalkEnd*", "TownFloor", "BastionPlatform", "MolePier", "MoleEnd"],
+          "structures": ["Parapet*", "Kerb*", "WallSectionKerb", "WallSectionParapet", "TownBound*", "BastionRim*", "MoleRail*", "PaleBlocks"],
+          "skip": ["WatchersSection", "Kites", "KitesHigh", "Flood", "Lake", "Breach"]
         },
-        "bounds": [-70.0, -85.0, 140.0, 170.0],
+        "bounds": [-125.0, -78.0, 178.0, 138.0],
         "pois": [
-          {"id": "mole", "name_key": "MAP_POI_K_MOLE", "kind": "dock", "at": [30.0, 74.0], "source": "spawn:Mole"},
-          {"id": "wall_head", "name_key": "MAP_POI_K_WALL_HEAD", "kind": "path", "at": [0.0, 29.0], "source": "spawn:WallHead"},
-          {"id": "fisher_stair", "name_key": "MAP_POI_K_FISHER_STAIR", "kind": "path", "at": [0.0, 25.5], "source": "trigger:stair_look"},
-          {"id": "low_town", "name_key": "MAP_POI_K_LOW_TOWN", "kind": "talk", "at": [6.0, -28.5], "source": "trigger:bark_netmender"},
-          {"id": "shrine", "name_key": "MAP_POI_K_SHRINE", "kind": "shrine", "at": [-30.0, 19.2], "source": "trigger:shrine"},
-          {"id": "chandler", "name_key": "MAP_POI_K_CHANDLER", "kind": "shop", "at": [-42.0, 20.2], "source": "trigger:chandler"},
-          {"id": "wall_gate", "name_key": "MAP_POI_K_WALL_GATE", "kind": "door", "at": [46.0, 31.0], "source": "spawn:WallGate"}
+          {"id": "mole", "name_key": "MAP_POI_K_MOLE", "kind": "dock", "at": [12.988, 40.46], "source": "spawn:Mole"},
+          {"id": "fisher_stair", "name_key": "MAP_POI_K_FISHER_STAIR", "kind": "path", "at": [-15.104, -1.822], "source": "trigger:stair_look"},
+          {"id": "low_town", "name_key": "MAP_POI_K_LOW_TOWN", "kind": "talk", "at": [-34.634, -20.946], "source": "trigger:bark_netmender"},
+          {"id": "shrine", "name_key": "MAP_POI_K_SHRINE", "kind": "shrine", "at": [-66.479, -2.01], "source": "trigger:shrine"},
+          {"id": "chandler", "name_key": "MAP_POI_K_CHANDLER", "kind": "shop", "at": [-78.3, 1.664], "source": "trigger:chandler"},
+          {"id": "wall_gate", "name_key": "MAP_POI_K_WALL_GATE", "kind": "door", "at": [30.945, 1.6], "source": "spawn:WallGate"}
         ]
       },
       {
@@ -255,15 +269,13 @@
         "name_key": "LOCATION_CH08_COILSPIRE",
         "shapes": "res://game/levels/ch08/coilspire/coilspire_layout.json",
         "shape_kind": "greybox_layout",
-        "shape_hints": {"skip": ["StormWall", "Virel"]},
-        "bounds": [-40.0, -120.0, 80.0, 190.0],
+        "shape_hints": {"structures": ["VergeL*", "VergeR*", "Gate_t*"], "skip": ["WellGuard_t*", "StormWall", "Virel"]},
+        "bounds": [225.0, 98.0, 95.0, 72.0],
         "pois": [
-          {"id": "path_foot", "name_key": "MAP_POI_Q_PATH_FOOT", "kind": "path", "at": [0.0, 62.0], "source": "spawn:PathFoot"},
-          {"id": "keepers_hut", "name_key": "MAP_POI_Q_KEEPERS_HUT", "kind": "home", "at": [-12.5, -1.0], "source": "trigger:hearth"},
-          {"id": "spire_door", "name_key": "MAP_POI_Q_SPIRE_DOOR", "kind": "door", "at": [0.0, -9.5], "source": "trigger:door"},
-          {"id": "second_tier", "name_key": "MAP_POI_Q_SECOND_TIER", "kind": "path", "at": [0.0, -38.0], "source": "spawn:Tier2"},
-          {"id": "fourth_tier", "name_key": "MAP_POI_Q_FOURTH_TIER", "kind": "path", "at": [0.0, -78.0], "source": "spawn:Tier4"},
-          {"id": "crown", "name_key": "MAP_POI_Q_CROWN", "kind": "pool", "at": [0.0, -97.0], "source": "trigger:crown"}
+          {"id": "path_foot", "name_key": "MAP_POI_Q_PATH_FOOT", "kind": "path", "at": [233.853, 108.306], "source": "spawn:PathFoot"},
+          {"id": "path_mid", "name_key": "MAP_POI_Q_PATH_MID", "kind": "path", "at": [284.8, 111.3], "source": "trigger:path_fight"},
+          {"id": "keepers_hut", "name_key": "MAP_POI_Q_KEEPERS_HUT", "kind": "home", "at": [310.8, 152.1], "source": "trigger:hearth"},
+          {"id": "spire_door", "name_key": "MAP_POI_Q_SPIRE_DOOR", "kind": "door", "at": [302.9, 153.1], "source": "trigger:door"}
         ]
       },
       {
@@ -272,7 +284,7 @@
         "name_key": "LOCATION_CH09_CORROW_NIGHT",
         "shapes": "res://game/levels/ch09/corrow_night/corrow_night_layout.json",
         "shape_kind": "greybox_layout",
-        "shape_hints": {"sea": ["LowTownLake"]},
+        "shape_hints": {"sea": ["LowTownLake", "Harbour"], "floors": ["Wall-*", "Wall+*", "WalkEnd*", "TownFloor", "BastionPlatform", "MolePier", "MoleEnd", "StrandFloor", "RoadEnd"], "structures": ["Parapet*", "Kerb*", "BastionRim*", "MoleRail*", "MoleBridgeRail*", "StrandBound*", "PaleBlocks"], "skip": ["WatchersSection"]},
         "bounds": [-62.0, -34.0, 150.0, 72.0],
         "pois": [
           {"id": "strand", "name_key": "MAP_POI_C_STRAND", "kind": "path", "at": [-53.7, 25.7], "source": "spawn:Strand"},
@@ -281,6 +293,226 @@
           {"id": "landing", "name_key": "MAP_POI_C_LANDING", "kind": "dock", "at": [-27.1, 29.9], "source": "trigger:landing"},
           {"id": "gate", "name_key": "MAP_POI_C_GATE", "kind": "door", "at": [36.9, 2.3], "source": "spawn:RoadGate"},
           {"id": "milestone", "name_key": "MAP_POI_C_MILESTONE", "kind": "path", "at": [60.6, 6.2], "source": "trigger:milestone"}
+        ]
+      },
+      {
+        "id": "ch10/ossa_fen",
+        "scene": "res://game/levels/ch10/ossa_fen/ossa_fen.tscn",
+        "name_key": "LOCATION_CH10_OSSA_FEN",
+        "shapes": "res://game/levels/ch10/ossa_fen/ossa_fen_layout.json",
+        "shape_kind": "greybox_layout",
+        "shape_hints": {"sea": ["Water"], "skip": ["Bed", "BankBoundW", "ExitBound"]},
+        "bounds": [-34.0, -38.0, 182.0, 58.0],
+        "pois": [
+          {"id": "fen_edge", "name_key": "MAP_POI_FEN_EDGE", "kind": "path", "at": [-8.0, 0.0], "source": "spawn:FenEdge"},
+          {"id": "pell", "name_key": "MAP_POI_FEN_PELL", "kind": "talk", "at": [-3.0, 2.5], "source": "actor:pell"},
+          {"id": "side_pocket", "name_key": "MAP_POI_FEN_POCKET", "kind": "path", "at": [66.0, -27.0], "source": "mark:pocket_end"},
+          {"id": "clearing", "name_key": "MAP_POI_FEN_CLEARING", "kind": "path", "at": [104.0, 0.0], "source": "spawn:DrownerArena"},
+          {"id": "to_reedhollow", "name_key": "MAP_POI_FEN_TO_REEDHOLLOW", "kind": "door", "at": [138.0, 0.0], "source": "trigger:to_reedhollow"}
+        ]
+      },
+      {
+        "id": "ch10/reedhollow",
+        "scene": "res://game/levels/ch10/reedhollow/reedhollow.tscn",
+        "name_key": "LOCATION_CH10_REEDHOLLOW",
+        "shapes": "res://game/levels/ch10/reedhollow/reedhollow_layout.json",
+        "shape_kind": "greybox_layout",
+        "shape_hints": {"sea": ["Water"], "skip": ["Bed", "CausewayBoundW", "ShoreBoundE", "ClutchStone"]},
+        "bounds": [-6.0, -26.0, 78.0, 52.0],
+        "pois": [
+          {"id": "gate", "name_key": "MAP_POI_REED_GATE", "kind": "door", "at": [-1.0, 0.0], "source": "trigger:to_fen"},
+          {"id": "shore", "name_key": "MAP_POI_REED_SHORE", "kind": "path", "at": [61.8, 0.0], "source": "spawn:Shore"},
+          {"id": "clutch", "name_key": "MAP_POI_REED_CLUTCH", "kind": "talk", "at": [64.3, 0.0], "source": "mark:clutch"}
+        ]
+      },
+      {
+        "id": "ch11/sunken_vey",
+        "scene": "res://game/levels/ch11/sunken_vey/sunken_vey.tscn",
+        "name_key": "LOCATION_CH11_SUNKEN_VEY",
+        "shapes": "res://game/levels/ch11/sunken_vey/sunken_vey_layout.json",
+        "shape_kind": "greybox_layout",
+        "shape_hints": {"sea": ["Water"], "skip": ["Bed", "LandingBoundW", "GateBound"]},
+        "bounds": [-16.0, -62.0, 114.0, 70.0],
+        "pois": [
+          {"id": "landing", "name_key": "MAP_POI_VEY_LANDING", "kind": "dock", "at": [-4.0, 0.0], "source": "spawn:Landing"},
+          {"id": "conduit", "name_key": "MAP_POI_VEY_CONDUIT", "kind": "path", "at": [34.0, -27.8], "source": "mark:conduit_mark"},
+          {"id": "fig_end", "name_key": "MAP_POI_VEY_FIG", "kind": "path", "at": [38.0, -54.0], "source": "mark:fig_end"},
+          {"id": "to_lowlight", "name_key": "MAP_POI_VEY_TO_LOWLIGHT", "kind": "door", "at": [92.0, -16.0], "source": "trigger:to_lowlight"}
+        ]
+      },
+      {
+        "id": "ch11/lowlight",
+        "scene": "res://game/levels/ch11/lowlight/lowlight.tscn",
+        "name_key": "LOCATION_CH11_LOWLIGHT",
+        "shapes": "res://game/levels/ch11/lowlight/lowlight_layout.json",
+        "shape_kind": "greybox_layout",
+        "shape_hints": {"water": ["Waterline"], "skip": ["GateStepBound", "WellShaft"]},
+        "bounds": [-6.0, -38.0, 82.0, 54.0],
+        "pois": [
+          {"id": "gate", "name_key": "MAP_POI_LOW_GATE", "kind": "door", "at": [-0.5, 0.0], "source": "trigger:to_vey"},
+          {"id": "lamp_bench", "name_key": "MAP_POI_LOW_LAMP_BENCH", "kind": "path", "at": [4.0, 6.4], "source": "mark:lamp_bench"},
+          {"id": "engine_hall", "name_key": "MAP_POI_LOW_HALL", "kind": "path", "at": [10.0, -20.0], "source": "spawn:EngineHall"},
+          {"id": "sanctum", "name_key": "MAP_POI_LOW_SANCTUM", "kind": "pool", "at": [68.0, 4.0], "source": "mark:nhoa"}
+        ]
+      },
+      {
+        "id": "ch12/keth_pass",
+        "scene": "res://game/levels/ch12/keth_pass/keth_pass.tscn",
+        "name_key": "LOCATION_CH12_KETH_PASS",
+        "shapes": "res://game/levels/ch12/keth_pass/keth_pass_layout.json",
+        "shape_kind": "greybox_layout",
+        "shape_hints": {"floors": ["Landing1", "RamArena", "Saddle", "ExitStep"], "structures": ["Landing1Wall*", "RamArenaWall*", "SaddleWall*", "TerraceWall", "SaddleCliff"], "skip": ["Snowfield", "ExitBound", "KnotPost"]},
+        "bounds": [-10.0, -54.0, 122.0, 64.0],
+        "pois": [
+          {"id": "pass_foot", "name_key": "MAP_POI_KETH_FOOT", "kind": "path", "at": [0.0, 3.0], "source": "spawn:PassFoot"},
+          {"id": "knot_post", "name_key": "MAP_POI_KETH_KNOT_POST", "kind": "path", "at": [-1.6, -43.6], "source": "mark:knot_post"},
+          {"id": "terrace", "name_key": "MAP_POI_KETH_TERRACE", "kind": "path", "at": [40.0, -40.0], "source": "spawn:RamArena"},
+          {"id": "saddle", "name_key": "MAP_POI_KETH_SADDLE", "kind": "path", "at": [95.0, -47.0], "source": "mark:cold_ledge"},
+          {"id": "to_quellan", "name_key": "MAP_POI_KETH_TO_QUELLAN", "kind": "door", "at": [108.5, -40.0], "source": "trigger:to_quellan"}
+        ]
+      },
+      {
+        "id": "ch12/quellan",
+        "scene": "res://game/levels/ch12/quellan/quellan.tscn",
+        "name_key": "LOCATION_CH12_QUELLAN",
+        "shapes": "res://game/levels/ch12/quellan/quellan_layout.json",
+        "shape_kind": "greybox_layout",
+        "shape_hints": {"floors": ["RoadTop"], "skip": ["Snowfield", "RoadTopBound"]},
+        "bounds": [-10.0, -48.0, 80.0, 74.0],
+        "pois": [
+          {"id": "road_in", "name_key": "MAP_POI_QUEL_ROAD_IN", "kind": "path", "at": [-4.5, 0.0], "source": "trigger:to_pass"},
+          {"id": "inn", "name_key": "MAP_POI_QUEL_INN", "kind": "inn", "at": [32.0, -3.6], "source": "mark:inn_door"},
+          {"id": "well", "name_key": "MAP_POI_QUEL_WELL", "kind": "pool", "at": [52.4, 10.0], "source": "mark:well"},
+          {"id": "road_up", "name_key": "MAP_POI_QUEL_ROAD_UP", "kind": "path", "at": [56.0, -42.5], "source": "trigger:to_cloudloom"}
+        ]
+      },
+      {
+        "id": "ch12/cloudloom",
+        "scene": "res://game/levels/ch12/cloudloom/cloudloom.tscn",
+        "name_key": "LOCATION_CH12_CLOUDLOOM",
+        "shapes": "res://game/levels/ch12/cloudloom/cloudloom_layout.json",
+        "shape_kind": "greybox_layout",
+        "shape_hints": {"floors": ["Hall"], "pads": ["HeskDais"], "structures": ["HallWall*"]},
+        "bounds": [-20.0, -64.0, 40.0, 72.0],
+        "pois": [
+          {"id": "approach", "name_key": "MAP_POI_LOOM_STAIR", "kind": "path", "at": [0.0, 2.0], "source": "spawn:Approach"},
+          {"id": "hall", "name_key": "MAP_POI_LOOM_HALL", "kind": "door", "at": [0.0, -24.0], "source": "spawn:Hall"},
+          {"id": "dais", "name_key": "MAP_POI_LOOM_DAIS", "kind": "path", "at": [0.0, -54.0], "source": "mark:hesk"}
+        ]
+      },
+      {
+        "id": "ch13/ansedra",
+        "scene": "res://game/levels/ch13/ansedra/ansedra.tscn",
+        "name_key": "LOCATION_CH13_ANSEDRA",
+        "shapes": "res://game/levels/ch13/ansedra/ansedra_layout.json",
+        "shape_kind": "greybox_layout",
+        "shape_hints": {"sea": ["Water"], "buildings": ["ArchiveIsleDome", "SanctumIsleDome"], "skip": ["Bed"]},
+        "bounds": [-56.0, -110.0, 112.0, 132.0],
+        "pois": [
+          {"id": "moorings", "name_key": "MAP_POI_ANS_MOORINGS", "kind": "dock", "at": [0.0, 12.0], "source": "spawn:Moorings"},
+          {"id": "sefir", "name_key": "MAP_POI_ANS_SEFIR", "kind": "home", "at": [5.0, -42.4], "source": "mark:sefir_door"},
+          {"id": "corran", "name_key": "MAP_POI_ANS_CORRAN", "kind": "home", "at": [-44.0, -40.8], "source": "mark:corran_house"},
+          {"id": "archive", "name_key": "MAP_POI_ANS_ARCHIVE", "kind": "door", "at": [46.0, -40.0], "source": "trigger:to_archive"},
+          {"id": "sanctum", "name_key": "MAP_POI_ANS_SANCTUM", "kind": "door", "at": [0.0, -84.0], "source": "trigger:to_sanctum"}
+        ]
+      },
+      {
+        "id": "ch13/sanctum",
+        "scene": "res://game/levels/ch13/sanctum/sanctum.tscn",
+        "name_key": "LOCATION_CH13_SANCTUM",
+        "shapes": "res://game/levels/ch13/sanctum/sanctum_layout.json",
+        "shape_kind": "greybox_layout",
+        "shape_hints": {"water": ["Basin"], "skip": ["BasinBed", "GateStepBound"]},
+        "bounds": [-16.0, -52.0, 32.0, 58.0],
+        "pois": [
+          {"id": "gate", "name_key": "MAP_POI_SANC_GATE", "kind": "door", "at": [0.0, -2.0], "source": "spawn:Gate"},
+          {"id": "ledge", "name_key": "MAP_POI_SANC_LEDGE", "kind": "talk", "at": [0.0, -19.4], "source": "mark:pilgrims"},
+          {"id": "head", "name_key": "MAP_POI_SANC_HEAD", "kind": "path", "at": [0.0, -42.0], "source": "mark:ethren"}
+        ]
+      },
+      {
+        "id": "ch13/lamp_archive",
+        "scene": "res://game/levels/ch13/lamp_archive/lamp_archive.tscn",
+        "name_key": "LOCATION_CH13_LAMP_ARCHIVE",
+        "shapes": "res://game/levels/ch13/lamp_archive/lamp_archive_layout.json",
+        "shape_kind": "greybox_layout",
+        "shape_hints": {"skip": ["DoorStepBound"]},
+        "bounds": [-14.0, -36.0, 28.0, 40.0],
+        "pois": [
+          {"id": "door", "name_key": "MAP_POI_ARCH_DOOR", "kind": "door", "at": [0.0, -2.0], "source": "spawn:Door"},
+          {"id": "ledgers", "name_key": "MAP_POI_ARCH_LEDGERS", "kind": "path", "at": [-3.2, -12.0], "source": "mark:ledgers"},
+          {"id": "roll", "name_key": "MAP_POI_ARCH_ROLL", "kind": "path", "at": [3.2, -24.0], "source": "mark:cantor_roll"}
+        ]
+      },
+      {
+        "id": "ch13/ansedra_lacquer_court",
+        "scene": "res://game/levels/ch13/ansedra_lacquer_court/ansedra_lacquer_court.tscn",
+        "name_key": "LOCATION_CH14_LACQUER_COURT",
+        "shapes": "res://game/levels/ch13/ansedra_lacquer_court/ansedra_lacquer_court_layout.json",
+        "shape_kind": "greybox_layout",
+        "shape_hints": {"sea": ["Water"], "structures": ["WaterGate"], "skip": ["Bed", "EntryBound"]},
+        "bounds": [-22.0, -30.0, 44.0, 52.0],
+        "pois": [
+          {"id": "entry", "name_key": "MAP_POI_COURT_ENTRY", "kind": "door", "at": [13.0, -2.5], "source": "spawn:CourtEntry"},
+          {"id": "dais", "name_key": "MAP_POI_COURT_DAIS", "kind": "path", "at": [0.0, -18.5], "source": "mark:vows"},
+          {"id": "steps", "name_key": "MAP_POI_COURT_STEPS", "kind": "path", "at": [0.0, -0.8], "source": "mark:kerrid_steps"},
+          {"id": "barge", "name_key": "MAP_POI_COURT_BARGE", "kind": "dock", "at": [0.0, 10.0], "source": "mark:barge_deck"},
+          {"id": "water_gate", "name_key": "MAP_POI_COURT_GATE", "kind": "door", "at": [4.0, 14.6], "source": "mark:merel_gate"}
+        ]
+      },
+      {
+        "id": "ch15/open_sea",
+        "scene": "res://game/levels/ch15/open_sea/open_sea.tscn",
+        "name_key": "LOCATION_CH15_OPEN_SEA",
+        "shapes": "res://game/levels/ch15/open_sea/open_sea_layout.json",
+        "shape_kind": "greybox_layout",
+        "shape_hints": {"sea": ["Water"], "skip": ["Bed", "Shoal"]},
+        "bounds": [-12.0, -12.0, 24.0, 24.0],
+        "pois": [
+          {"id": "stern", "name_key": "MAP_POI_SEA_STERN", "kind": "path", "at": [0.0, 4.2], "source": "mark:kerrid_sits"},
+          {"id": "bier", "name_key": "MAP_POI_SEA_BIER", "kind": "path", "at": [0.8, 1.5], "source": "mark:tobin_bier"},
+          {"id": "bow", "name_key": "MAP_POI_SEA_BOW", "kind": "path", "at": [0.0, -4.2], "source": "trigger:dawn"}
+        ]
+      },
+      {
+        "id": "ch17/hollowmere",
+        "scene": "res://game/levels/ch17/hollowmere/hollowmere.tscn",
+        "name_key": "LOCATION_CH17_HOLLOWMERE",
+        "shapes": "res://game/levels/ch17/hollowmere/hollowmere_layout.json",
+        "shape_kind": "greybox_layout",
+        "shape_hints": {"sea": ["Water"], "skip": ["Bed", "DockBoundW", "DockBoundE"]},
+        "bounds": [-6.0, -28.0, 76.0, 42.0],
+        "pois": [
+          {"id": "dock", "name_key": "MAP_POI_HOLL_DOCK", "kind": "dock", "at": [2.0, 0.0], "source": "spawn:Dock"},
+          {"id": "house", "name_key": "MAP_POI_HOLL_HOUSE", "kind": "home", "at": [28.0, -16.6], "source": "mark:fathers_door"},
+          {"id": "ship", "name_key": "MAP_POI_HOLL_SHIP", "kind": "dock", "at": [30.0, 1.6], "source": "trigger:ship"},
+          {"id": "pyre_raft", "name_key": "MAP_POI_HOLL_PYRE", "kind": "path", "at": [60.5, 0.0], "source": "mark:pyre_raft"}
+        ]
+      },
+      {
+        "id": "ch16/pale_rim",
+        "scene": "res://game/levels/ch16/pale_rim/pale_rim.tscn",
+        "name_key": "LOCATION_CH16_PALE_RIM",
+        "shapes": "res://game/levels/ch16/pale_rim/pale_rim_layout.json",
+        "shape_kind": "greybox_layout",
+        "shape_hints": {"floors": ["Sand"], "skip": ["Shallows", "Haze*"]},
+        "bounds": [-40.0, -32.0, 282.0, 64.0],
+        "pois": [
+          {"id": "rim", "name_key": "MAP_POI_RIM_SHIP", "kind": "dock", "at": [-24.0, 0.0], "source": "spawn:Rim"},
+          {"id": "choir_edge", "name_key": "MAP_POI_RIM_CHOIR_EDGE", "kind": "path", "at": [220.0, 0.0], "source": "mark:choir_edge"}
+        ]
+      },
+      {
+        "id": "ch16/drowned_choir",
+        "scene": "res://game/levels/ch16/drowned_choir/drowned_choir.tscn",
+        "name_key": "LOCATION_CH16_DROWNED_CHOIR",
+        "shapes": "res://game/levels/ch16/drowned_choir/drowned_choir_layout.json",
+        "shape_kind": "greybox_layout",
+        "shape_hints": {"sea": ["Water"], "buildings": ["Mouth*"], "skip": ["Bed", "ApproachBound"]},
+        "bounds": [-32.0, -32.0, 64.0, 68.0],
+        "pois": [
+          {"id": "approach", "name_key": "MAP_POI_CHOIR_WAY_IN", "kind": "path", "at": [0.0, 27.0], "source": "spawn:Approach"},
+          {"id": "head", "name_key": "MAP_POI_CHOIR_HEAD", "kind": "path", "at": [0.0, -20.0], "source": "mark:kesh"}
         ]
       },
       {"id": "ch03/saltgrass_causeway", "scene": "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn", "name_key": "LOCATION_CH03_SALTGRASS_CAUSEWAY", "shapes": "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway_layout.json", "shape_kind": "greybox_layout", "bounds": [-14.0, -196.0, 264.0, 210.0], "pois": [{"id": "causeway_head", "name_key": "MAP_POI_CAUSEWAY_HEAD", "kind": "path", "at": [1.35, -0.65], "source": "spawn:FromHaluna"}, {"id": "posts", "name_key": "MAP_POI_SC_POSTS", "kind": "talk", "at": [28.59, -14.4], "source": "trigger:banter_posts"}, {"id": "tidepools", "name_key": "MAP_POI_SC_TIDEPOOLS", "kind": "pool", "at": [58.67, -37.73], "source": "trigger:banter_tidepool"}, {"id": "harrier", "name_key": "MAP_POI_SC_HARRIER", "kind": "path", "at": [75.97, -47.42], "source": "trigger:harrier"}, {"id": "ring", "name_key": "MAP_POI_SC_RING", "kind": "talk", "at": [111.04, -70.05], "source": "trigger:banter_ring"}, {"id": "shrine_steps", "name_key": "MAP_POI_SC_SHRINE_STEPS", "kind": "shrine", "at": [233.87, -181.16], "source": "trigger:to_shrine"}]}

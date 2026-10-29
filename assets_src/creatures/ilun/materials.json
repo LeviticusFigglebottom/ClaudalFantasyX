@@ -1,0 +1,24 @@
+{
+  "_doc": "Ilun's surfaces (docs/kb/art/creatures/vowbound/ilun.md). Slots are the glTF material names; write_materials.py writes assets/creatures/ilun/materials/<slot>.tres on game/shaders/creature/creature.gdshader. He is bound light (color_script.md rule 2, C10): every emissive slot is glimmer_bound #4FB3B0 at energy 1.2 with no pulse (steady: no flicker, no drift). body is the disc, head lobes and tail (deep_teal_shadow to lagoon_teal by vertex colour, a pale belly), membrane the wings (paling to salt_glass at the thin margins); both carry a faint inner light (a low emission mask) and a back-lit rim sheen, so the opaque shader reads him as spectral. net is the knotted net of light on the membranes (emission mask 1). crest is the heron's plumes (salt_glass, lit along the shafts). eye is soft and glowing. glass is the keepsake, the child's net-float: salt_glass, wet and glossy, and not lit (it is the one part of him that is an object). cord is its sand_cloth net and tie. Colours are palette.json swatches.",
+  "held": {"_doc": "M3-CRE-647, the held form for the Ch20 release fight (act3_roster.md, The Vowbound as foes): write_materials.py writes materials_held/, every emissive slot's glimmer_bound (#4FB3B0) as glimmer_held (#7FC6D9) at the same energy, steady (color_script.md rule 1: held light is cool cyan); the other slots as they are. The held battle scene wears it; the release turns it to glimmer_lift (presentation).",
+           "emission_from": "#4FB3B0", "emission_to": "#7FC6D9"},
+  "slots": {
+    "body": {"roughness_dry": 0.32, "roughness_wet": 0.12, "specular": 0.5, "wet_darken": 0.6, "clearcoat_wet": 0.5,
+             "detail_scale": 6.0, "detail_albedo": 0.05, "detail_bump": 0.05, "rim_sheen": 0.45,
+             "emission_color": "#4FB3B0", "emission_energy": 1.2},
+    "membrane": {"roughness_dry": 0.3, "roughness_wet": 0.12, "specular": 0.5, "wet_darken": 0.6, "clearcoat_wet": 0.5,
+                 "detail_scale": 8.0, "detail_albedo": 0.04, "detail_bump": 0.03, "rim_sheen": 0.55,
+                 "emission_color": "#4FB3B0", "emission_energy": 1.2},
+    "net": {"roughness_dry": 0.4, "roughness_wet": 0.2, "specular": 0.3, "detail_albedo": 0.0, "detail_bump": 0.0,
+            "emission_color": "#4FB3B0", "emission_energy": 1.2},
+    "crest": {"roughness_dry": 0.35, "roughness_wet": 0.2, "specular": 0.4, "detail_scale": 30.0, "detail_albedo": 0.05,
+              "detail_bump": 0.05, "rim_sheen": 0.7, "emission_color": "#4FB3B0", "emission_energy": 1.2},
+    "eye": {"roughness_dry": 0.12, "roughness_wet": 0.06, "specular": 0.7, "clearcoat_wet": 1.0, "detail_albedo": 0.0,
+            "detail_bump": 0.0, "emission_color": "#4FB3B0", "emission_energy": 1.2},
+    "glass": {"roughness_dry": 0.1, "roughness_wet": 0.04, "specular": 0.7, "wet_darken": 0.85, "clearcoat_wet": 1.0,
+              "detail_scale": 20.0, "detail_albedo": 0.03, "detail_bump": 0.02, "rim_sheen": 0.6,
+              "emission_energy": 0.0},
+    "cord": {"roughness_dry": 0.85, "roughness_wet": 0.55, "specular": 0.3, "wet_darken": 0.75, "detail_scale": 120.0,
+             "detail_albedo": 0.2, "detail_bump": 0.4, "cavity_albedo": 0.4, "emission_energy": 0.0}
+  }
+}

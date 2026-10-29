@@ -32,6 +32,8 @@ func test_data_names_swatches_effects_skills_and_the_haluna_flood() -> void:
 		assert_true(db.enemies.has(StringName(boss)), "%s is an enemy" % boss)
 		var row := bosses[boss] as Dictionary
 		for part: String in row:
+			if not row[part] is Dictionary:
+				continue  # a set piece's kind, note and effect ids (M3-BPR-420; test_battle_boss_set_piece plays them)
 			var block := row[part] as Dictionary
 			for key: String in block.get("swatches", {}):
 				var sw := str((block["swatches"] as Dictionary)[key])

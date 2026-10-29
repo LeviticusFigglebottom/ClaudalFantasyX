@@ -79,6 +79,17 @@
         "hull_capsized-lod1": 144
       }
     },
+    "hull_lashed": {
+      "budget": [
+        4500,
+        300
+      ],
+      "bytes": 179436,
+      "lods": {
+        "hull_lashed": 4236,
+        "hull_lashed-lod1": 156
+      }
+    },
     "hull_outrigger": {
       "budget": [
         4500,
@@ -99,6 +110,17 @@
       "lods": {
         "keel_hull": 25283,
         "keel_hull-lod1": 443
+      }
+    },
+    "lamp_post": {
+      "budget": [
+        1500,
+        150
+      ],
+      "bytes": 44672,
+      "lods": {
+        "lamp_post": 634,
+        "lamp_post-lod1": 112
       }
     },
     "lintel_gull_open": {
@@ -209,6 +231,17 @@
       "lods": {
         "raft_deck_broken": 17866,
         "raft_deck_broken-lod1": 628
+      }
+    },
+    "raft_deck_rebuilt": {
+      "budget": [
+        18000,
+        900
+      ],
+      "bytes": 724496,
+      "lods": {
+        "raft_deck_rebuilt": 17064,
+        "raft_deck_rebuilt-lod1": 604
       }
     },
     "raft_deck_small": {

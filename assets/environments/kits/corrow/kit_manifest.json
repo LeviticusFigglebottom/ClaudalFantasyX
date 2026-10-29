@@ -18,9 +18,9 @@
         9000,
         1500
       ],
-      "bytes": 282552,
+      "bytes": 335380,
       "lods": {
-        "coilspire_headland": 7268,
+        "coilspire_headland": 8837,
         "coilspire_headland-lod1": 658
       }
     },
@@ -222,6 +222,17 @@
         "milestone-lod1": 12
       }
     },
+    "mole_bridge": {
+      "budget": [
+        9000,
+        800
+      ],
+      "bytes": 197472,
+      "lods": {
+        "mole_bridge": 2528,
+        "mole_bridge-lod1": 552
+      }
+    },
     "mole_pier": {
       "budget": [
         40000,
@@ -365,14 +376,36 @@
         "strand_lamp-lod1": 66
       }
     },
+    "strand_landing": {
+      "budget": [
+        9000,
+        800
+      ],
+      "bytes": 196636,
+      "lods": {
+        "strand_landing": 2840,
+        "strand_landing-lod1": 620
+      }
+    },
+    "strand_rocks": {
+      "budget": [
+        12000,
+        900
+      ],
+      "bytes": 392132,
+      "lods": {
+        "strand_rocks": 7664,
+        "strand_rocks-lod1": 208
+      }
+    },
     "trader_boat": {
       "budget": [
         12000,
         1000
       ],
-      "bytes": 123816,
+      "bytes": 166756,
       "lods": {
-        "trader_boat": 2781,
+        "trader_boat": 3789,
         "trader_boat-lod1": 147
       }
     },

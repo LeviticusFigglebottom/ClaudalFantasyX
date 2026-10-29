@@ -70,7 +70,7 @@ Module grid 0.5 m; heights from the tread or ground the piece stands on. All pie
 ### 2.2 Graves, gates, lamps and offerings
 | Piece | Dimensions and parameters | Budget |
 |---|---|---|
-| `grave_stele_a` | An **ash-stone** (original): a dark volcanic stele 0.45 × 0.95 × 0.18 m on a two-step plinth, top rounded like a shoulder, with a **lamp niche** (0.14 m) cut through near the top, a carved tide-line band and an offering ledge. Ash on the shoulders, lichen orange spots. | 1,600 / 220 |
+| `grave_stele_a` | An **ash-stone** (original): a dark volcanic stele 0.45 × 0.95 × 0.18 m on a two-step plinth, top rounded like a shoulder, with a **lamp niche** (0.14 m) cut through near the top, a carved tide-line band, the names cut in a framed panel of terrace script and darkened with soot (M3-ENV-705), and an offering ledge. Ash on the shoulders, lichen orange spots. | 1,600 / 220 |
 | `grave_stele_b` | A family stone: wider (0.9 × 0.75 m), three niches in a row, older, one corner broken off. | 2,000 / 260 |
 | `grave_cairn` | A poor grave: a cairn of rounded stones (0.6 m) with a flat capstone and one niche stone. | 1,400 / 200 |
 | `grave_curb` | A low kerb (0.18 m) round a family plot, 2.0 × 1.2 m, with pale ash gravel inside. | 900 / 140 |

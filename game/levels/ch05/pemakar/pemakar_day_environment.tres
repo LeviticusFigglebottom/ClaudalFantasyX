@@ -1,0 +1,67 @@
+[gd_resource type="Environment" load_steps=3 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/environment/env_sky_low_sun.gdshader" id="1_sky"]
+
+[sub_resource type="ShaderMaterial" id="SkyMat"]
+shader = ExtResource("1_sky")
+shader_parameter/col_zenith = Color(0.3725, 0.498, 0.6588, 1)
+shader_parameter/col_horizon_sun = Color(0.9216, 0.7843, 0.6039, 1)
+shader_parameter/col_horizon_away = Color(0.6902, 0.7176, 0.7412, 1)
+shader_parameter/col_ground = Color(0.3529, 0.3373, 0.3137, 1)
+shader_parameter/sky_energy = 1.7
+shader_parameter/horizon_curve = 0.35
+shader_parameter/azimuth_power = 1.5
+shader_parameter/col_band = Color(0.8549, 0.7843, 0.6745, 1)
+shader_parameter/band_energy = 0.25
+shader_parameter/band_height = 0.08
+shader_parameter/mid_strength = 0.0
+shader_parameter/col_glow = Color(1, 0.8784, 0.7098, 1)
+shader_parameter/glow_energy = 0.6
+shader_parameter/glow_power = 4.0
+shader_parameter/halo_energy = 0.8
+shader_parameter/halo_power = 60.0
+shader_parameter/sun_disc_energy = 3.0
+shader_parameter/col_cloud_lit = Color(0.9412, 0.8431, 0.7216, 1)
+shader_parameter/col_cloud_shadow = Color(0.3529, 0.3686, 0.3922, 1)
+shader_parameter/cloud_coverage = 0.4
+shader_parameter/cloud_softness = 0.35
+shader_parameter/cloud_opacity = 0.7
+shader_parameter/cloud_height_m = 1600.0
+shader_parameter/cloud_scale_m = 4000.0
+shader_parameter/cloud_stretch = Vector2(1, 2.0)
+shader_parameter/cloud_wind_deg = 270.0
+shader_parameter/cloud_sun_energy = 1.2
+shader_parameter/cloud_ambient_energy = 1.1
+shader_parameter/cloud_horizon_fade = 0.1
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMat")
+process_mode = 2
+
+[resource]
+resource_name = "pemakar_day"
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 2
+ambient_light_color = Color(0.5412, 0.6118, 0.6902, 1)
+ambient_light_energy = 0.55
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 0.75
+tonemap_agx_white = 12.0
+ssao_enabled = true
+ssao_radius = 1.4
+ssao_intensity = 1.6
+sdfgi_enabled = false
+glow_enabled = true
+glow_intensity = 0.35
+glow_bloom = 0.03
+glow_hdr_threshold = 1.1
+fog_enabled = true
+fog_light_color = Color(0.7216, 0.6588, 0.5686, 1)
+fog_density = 0.0018
+fog_aerial_perspective = 0.5
+fog_sky_affect = 0.25
+volumetric_fog_enabled = false
+adjustment_enabled = true
+adjustment_saturation = 1.08

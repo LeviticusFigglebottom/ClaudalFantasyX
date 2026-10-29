@@ -13,6 +13,7 @@ title: ch08_cut_rope
 location: ch08/corrow
 ---
 @camera W26
+@mark kerrid way_stair_flight2_foot walk via=way_approach_top,way_stair_head_w
 @music corrow_aftermath fade=3.0
 @sfx rain_easing
 @wait 3.0
@@ -39,7 +40,6 @@ Toma [worried]: Brannick? Has anyone seen Ivo Brannick? #line:ch08_cut_rope_005
 @anim stillguard_a shake_head
 @wait 1.0
 @mark toma shield_line_end walk
-@mark kerrid kerrid_gone walk
 @wait 2.0
 @anim rhen look_at drowned_stair
 @camera W25_empty

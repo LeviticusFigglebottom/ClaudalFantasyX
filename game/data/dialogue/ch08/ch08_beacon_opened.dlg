@@ -18,6 +18,7 @@ location: ch08/coilspire
 <<set $ch08_beacon_opened = true>>
 @camera F08
 Toma [determined]: Down. Now. The stair. #line:ch08_beacon_opened_001
-@mark toma gallery_out run
+@mark toma gallery_out run via=way_gallery_door
+@wait 0.6
 @fade out 0.6
 ===

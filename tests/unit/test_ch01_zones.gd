@@ -96,7 +96,9 @@ func test_oruvel_comes_up_in_the_storm_once_the_gulls_have_cried() -> void:
 	town.set_storm(true)
 	assert_true(town.sun.light_energy < day_energy, "the storm light")
 	assert_false(town.block_shown("SeventhTerrace") or town.block_shown("cook") or town.block_shown("DiveBridge"))
-	assert_true(town.block_shown("StormWall") and town.block_shown("pen_child_2"))
+	var undertow := town.get_node_or_null(^"Undertow") as Node3D
+	var wall := town.block_shown("StormWall") or (undertow != null and undertow.visible)
+	assert_true(wall and town.block_shown("pen_child_2"), "the storm stands up (the Undertow, or its greybox wall)")
 	_done()
 	Game.set_flag(&"ch01_gulls_cried")
 	_open(ORUVEL)

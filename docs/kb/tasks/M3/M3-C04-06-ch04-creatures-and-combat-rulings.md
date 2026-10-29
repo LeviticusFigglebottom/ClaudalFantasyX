@@ -27,4 +27,7 @@ M3-C04-02 added the derelict's foes to the battle tables with stand-in shapes. T
 
 ## Notes
 
+## Notes (creatures)
+- 2026-10-27, creatures: the creatures part is in place. sail_leech, bottle_hermit and spar_wraith have enemies.json `model` rows and stand on the battle stage. The Spar-Wraith's phase models are in creatures.json `phases`. The rulings are Combat's.
+
 ## Review log

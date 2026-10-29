@@ -40,8 +40,10 @@
       "sec": 0.25,
       "buses": {
         "Music": -4.0,
-        "Ambience": -2.0
-      }
+        "Ambience": -2.0,
+        "World": -3.0
+      },
+      "_note": "M3-AUD-850: World too (footsteps, villagers' work, wildlife, cutscene foley sit under a line); villagers' chat is held outright (LifeAudio.quiet)"
     },
     "battle": {
       "sec": 0.5,

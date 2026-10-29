@@ -1,0 +1,681 @@
+{
+ "doc": "M4-C14-02 greybox (tools/act1/ch14_greybox.py; do not edit by hand): the Lacquer Court at dusk (colour script ch14). The court's floor under a red-lacquered colonnade, the wedding dais (vows: Sefir officiates), the guests' galleries, the Conclave's gallery (north-west), the water-steps down (a ramp; kerrid_steps: he holds them) to the bridal barge (barge_deck; the barge trigger runs the escape out across the water) and the water-gate beyond (merel_gate). Entered from the city at the east (CourtEntry). The story waits on the beat sheet (M4-C14-01).",
+ "sun": {
+  "pitch_deg": -4.0,
+  "yaw_deg": -90.0,
+  "energy": 1.2,
+  "color": "#ffb48a"
+ },
+ "environment": {
+  "background": "#b85a3a",
+  "ambient_color": "#2e3448",
+  "ambient_energy": 0.5
+ },
+ "block_color": "#bab4a8",
+ "blocks": [
+  {
+   "id": "Water",
+   "pos": [
+    0.0,
+    -0.35,
+    -10.0
+   ],
+   "size": [
+    120.0,
+    0.1,
+    100.0
+   ],
+   "color": "#2e3448",
+   "solid": false
+  },
+  {
+   "id": "Bed",
+   "pos": [
+    0.0,
+    -2.1,
+    -10.0
+   ],
+   "size": [
+    120.0,
+    1.0,
+    100.0
+   ],
+   "color": "#1e1511"
+  },
+  {
+   "id": "Court",
+   "pos": [
+    0.0,
+    -0.25,
+    -12.0
+   ],
+   "size": [
+    30.0,
+    0.5,
+    24.0
+   ],
+   "color": "#bab4a8"
+  },
+  {
+   "id": "CourtWallN0",
+   "pos": [
+    0.0,
+    0.5,
+    -24.0
+   ],
+   "size": [
+    30.0,
+    1.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "CourtWallS0",
+   "pos": [
+    -9.1,
+    0.5,
+    0.0
+   ],
+   "size": [
+    11.8,
+    1.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "CourtWallS1",
+   "pos": [
+    9.1,
+    0.5,
+    0.0
+   ],
+   "size": [
+    11.8,
+    1.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "CourtWallW0",
+   "pos": [
+    -15.0,
+    0.5,
+    -12.0
+   ],
+   "size": [
+    0.5,
+    1.0,
+    24.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "CourtWallE0",
+   "pos": [
+    15.0,
+    0.5,
+    -14.0
+   ],
+   "size": [
+    0.5,
+    1.0,
+    20.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "CourtWallE1",
+   "pos": [
+    15.0,
+    0.5,
+    -0.5
+   ],
+   "size": [
+    0.5,
+    1.0,
+    1.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "ColumnN0",
+   "pos": [
+    -14.0,
+    3.0,
+    -23.0
+   ],
+   "size": [
+    0.6,
+    6.0,
+    0.6
+   ],
+   "color": "#9a2a20",
+   "solid": false
+  },
+  {
+   "id": "ColumnN1",
+   "pos": [
+    -9.333,
+    3.0,
+    -23.0
+   ],
+   "size": [
+    0.6,
+    6.0,
+    0.6
+   ],
+   "color": "#9a2a20",
+   "solid": false
+  },
+  {
+   "id": "ColumnN2",
+   "pos": [
+    -4.667,
+    3.0,
+    -23.0
+   ],
+   "size": [
+    0.6,
+    6.0,
+    0.6
+   ],
+   "color": "#9a2a20",
+   "solid": false
+  },
+  {
+   "id": "ColumnN3",
+   "pos": [
+    0.0,
+    3.0,
+    -23.0
+   ],
+   "size": [
+    0.6,
+    6.0,
+    0.6
+   ],
+   "color": "#9a2a20",
+   "solid": false
+  },
+  {
+   "id": "ColumnN4",
+   "pos": [
+    4.667,
+    3.0,
+    -23.0
+   ],
+   "size": [
+    0.6,
+    6.0,
+    0.6
+   ],
+   "color": "#9a2a20",
+   "solid": false
+  },
+  {
+   "id": "ColumnN5",
+   "pos": [
+    9.333,
+    3.0,
+    -23.0
+   ],
+   "size": [
+    0.6,
+    6.0,
+    0.6
+   ],
+   "color": "#9a2a20",
+   "solid": false
+  },
+  {
+   "id": "ColumnN6",
+   "pos": [
+    14.0,
+    3.0,
+    -23.0
+   ],
+   "size": [
+    0.6,
+    6.0,
+    0.6
+   ],
+   "color": "#9a2a20",
+   "solid": false
+  },
+  {
+   "id": "ColumnW0",
+   "pos": [
+    -14.0,
+    3.0,
+    -21.0
+   ],
+   "size": [
+    0.6,
+    6.0,
+    0.6
+   ],
+   "color": "#9a2a20",
+   "solid": false
+  },
+  {
+   "id": "ColumnW1",
+   "pos": [
+    -14.0,
+    3.0,
+    -16.5
+   ],
+   "size": [
+    0.6,
+    6.0,
+    0.6
+   ],
+   "color": "#9a2a20",
+   "solid": false
+  },
+  {
+   "id": "ColumnW2",
+   "pos": [
+    -14.0,
+    3.0,
+    -12.0
+   ],
+   "size": [
+    0.6,
+    6.0,
+    0.6
+   ],
+   "color": "#9a2a20",
+   "solid": false
+  },
+  {
+   "id": "ColumnW3",
+   "pos": [
+    -14.0,
+    3.0,
+    -7.5
+   ],
+   "size": [
+    0.6,
+    6.0,
+    0.6
+   ],
+   "color": "#9a2a20",
+   "solid": false
+  },
+  {
+   "id": "ColumnW4",
+   "pos": [
+    -14.0,
+    3.0,
+    -3.0
+   ],
+   "size": [
+    0.6,
+    6.0,
+    0.6
+   ],
+   "color": "#9a2a20",
+   "solid": false
+  },
+  {
+   "id": "GalleryW",
+   "pos": [
+    -12.0,
+    0.3,
+    -12.0
+   ],
+   "size": [
+    3.0,
+    0.6,
+    16.0
+   ],
+   "color": "#9a2a20"
+  },
+  {
+   "id": "ColumnE0",
+   "pos": [
+    14.0,
+    3.0,
+    -21.0
+   ],
+   "size": [
+    0.6,
+    6.0,
+    0.6
+   ],
+   "color": "#9a2a20",
+   "solid": false
+  },
+  {
+   "id": "ColumnE1",
+   "pos": [
+    14.0,
+    3.0,
+    -16.5
+   ],
+   "size": [
+    0.6,
+    6.0,
+    0.6
+   ],
+   "color": "#9a2a20",
+   "solid": false
+  },
+  {
+   "id": "ColumnE2",
+   "pos": [
+    14.0,
+    3.0,
+    -12.0
+   ],
+   "size": [
+    0.6,
+    6.0,
+    0.6
+   ],
+   "color": "#9a2a20",
+   "solid": false
+  },
+  {
+   "id": "ColumnE3",
+   "pos": [
+    14.0,
+    3.0,
+    -7.5
+   ],
+   "size": [
+    0.6,
+    6.0,
+    0.6
+   ],
+   "color": "#9a2a20",
+   "solid": false
+  },
+  {
+   "id": "ColumnE4",
+   "pos": [
+    14.0,
+    3.0,
+    -3.0
+   ],
+   "size": [
+    0.6,
+    6.0,
+    0.6
+   ],
+   "color": "#9a2a20",
+   "solid": false
+  },
+  {
+   "id": "GalleryE",
+   "pos": [
+    12.0,
+    0.3,
+    -12.0
+   ],
+   "size": [
+    3.0,
+    0.6,
+    16.0
+   ],
+   "color": "#9a2a20"
+  },
+  {
+   "id": "Dais",
+   "pos": [
+    0.0,
+    0.4,
+    -21.0
+   ],
+   "size": [
+    8.0,
+    0.8,
+    3.0
+   ],
+   "color": "#b8a070"
+  },
+  {
+   "id": "ConclaveGallery",
+   "pos": [
+    -12.0,
+    1.0,
+    -21.5
+   ],
+   "size": [
+    5.0,
+    2.0,
+    3.0
+   ],
+   "color": "#9a2a20"
+  },
+  {
+   "id": "WaterStepsWallW",
+   "pos": [
+    -3.25,
+    0.5,
+    2.0
+   ],
+   "size": [
+    0.5,
+    2.0,
+    4.0
+   ],
+   "color": "#bab4a8"
+  },
+  {
+   "id": "WaterStepsWallE",
+   "pos": [
+    3.25,
+    0.5,
+    2.0
+   ],
+   "size": [
+    0.5,
+    2.0,
+    4.0
+   ],
+   "color": "#bab4a8"
+  },
+  {
+   "id": "Barge",
+   "pos": [
+    0.0,
+    -0.85,
+    9.0
+   ],
+   "size": [
+    4.0,
+    0.5,
+    10.0
+   ],
+   "color": "#b03a2a"
+  },
+  {
+   "id": "BargeRailW",
+   "pos": [
+    -2.1,
+    -0.3,
+    9.0
+   ],
+   "size": [
+    0.2,
+    0.6,
+    10.0
+   ],
+   "color": "#b8a070"
+  },
+  {
+   "id": "BargeRailE",
+   "pos": [
+    2.1,
+    -0.3,
+    9.0
+   ],
+   "size": [
+    0.2,
+    0.6,
+    10.0
+   ],
+   "color": "#b8a070"
+  },
+  {
+   "id": "BargeStern",
+   "pos": [
+    0.0,
+    -0.3,
+    14.1
+   ],
+   "size": [
+    4.2,
+    0.6,
+    0.2
+   ],
+   "color": "#b8a070"
+  },
+  {
+   "id": "WaterGate",
+   "pos": [
+    0.0,
+    2.0,
+    18.0
+   ],
+   "size": [
+    10.0,
+    5.0,
+    0.8
+   ],
+   "color": "#9a2a20",
+   "solid": false
+  },
+  {
+   "id": "EntryStep",
+   "pos": [
+    16.5,
+    -0.25,
+    -2.5
+   ],
+   "size": [
+    3.0,
+    0.5,
+    3.0
+   ],
+   "color": "#bab4a8"
+  },
+  {
+   "id": "EntryBound",
+   "pos": [
+    18.25,
+    1.0,
+    -2.5
+   ],
+   "size": [
+    0.5,
+    2.0,
+    3.0
+   ],
+   "color": "#bab4a8"
+  }
+ ],
+ "ramps": [
+  {
+   "id": "WaterSteps",
+   "from": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "to": [
+    0.0,
+    -0.6,
+    4.0
+   ],
+   "width": 6.0,
+   "color": "#bab4a8"
+  }
+ ],
+ "spawns": {
+  "CourtEntry": [
+   13.0,
+   0.0,
+   -2.5,
+   90.0
+  ],
+  "Barge": [
+   0.0,
+   -0.6,
+   7.0,
+   180.0
+  ]
+ },
+ "marks": {
+  "vows": [
+   0.0,
+   0.0,
+   -18.5,
+   0.0
+  ],
+  "tobin_falls": [
+   1.5,
+   0.0,
+   -18.0,
+   0.0
+  ],
+  "kerrid_steps": [
+   0.0,
+   0.0,
+   -0.8,
+   0.0
+  ],
+  "barge_deck": [
+   0.0,
+   -0.6,
+   10.0,
+   180.0
+  ],
+  "merel_gate": [
+   4.0,
+   -0.6,
+   14.6,
+   180.0
+  ]
+ },
+ "actors": {},
+ "shots": {
+  "W01": {
+   "pos": [
+    0.0,
+    2.4,
+    -2.0
+   ],
+   "look_at": [
+    0.0,
+    1.4,
+    -21.0
+   ],
+   "fov": 45
+  }
+ },
+ "triggers": [
+  {
+   "id": "barge",
+   "activation": "touch",
+   "at": [
+    0.0,
+    -0.6,
+    12.0
+   ],
+   "size": [
+    3.0,
+    0,
+    3.0
+   ],
+   "payload": {
+    "beat": "escape"
+   },
+   "yaw": 0.0
+  }
+ ]
+}

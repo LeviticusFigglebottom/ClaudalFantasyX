@@ -87,7 +87,10 @@ class ZoneMapPoiTest(unittest.TestCase):
                 elif kind == "layout":
                     got = tuple(layout[ref]) if ref in layout else None
                 elif kind in GREYBOX_SOURCES:
-                    got = greybox_point(shapes, kind, ref)
+                    # A story zone laid on another zone's map (Ch4's wake on Haluna) keeps its spawns,
+                    # triggers, actors and marks in its own layout: the entry's "points" names it.
+                    points = json.loads(res(z["points"]).read_text(encoding="utf-8")) if "points" in z else shapes
+                    got = greybox_point(points, kind, ref)
                 else:
                     got = None
                 where = f"{z['id']}/{p['id']} ({p['source']})"
@@ -99,14 +102,26 @@ class ZoneMapPoiTest(unittest.TestCase):
 
     def test_greybox_shape_hints_name_blocks_in_the_layout(self) -> None:
         """M3-UI-04: a hint that names a block the layout no longer has means the map reads that
-        block by height alone again; fail so the hint follows the layout."""
+        block by height alone again; fail so the hint follows the layout. A kit-dressed zone's blocks
+        include its collision_path file's (ADR 0200), and a hint ending in "*" names every block whose
+        id starts with what comes before it (ZoneMapShapes.hint_names)."""
         bad = []
         for z in self.maps["zones"]:
             if z.get("shape_kind") != "greybox_layout":
                 continue
-            blocks = {b.get("id") for b in json.loads(res(z["shapes"]).read_text(encoding="utf-8")).get("blocks", [])}
+            layout = json.loads(res(z["shapes"]).read_text(encoding="utf-8"))
+            rows = list(layout.get("blocks", []))
+            if layout.get("collision_path"):
+                rows += json.loads(res(layout["collision_path"]).read_text(encoding="utf-8")).get("blocks", [])
+            blocks = {b.get("id") for b in rows}
+
+            def named(hint: str) -> bool:
+                if hint.endswith("*"):
+                    return any(str(b).startswith(hint[:-1]) for b in blocks)
+                return hint in blocks
+
             for layer, ids in z.get("shape_hints", {}).items():
-                bad += [f"{z['id']}: {layer} hint '{i}' is not a block" for i in ids if i not in blocks]
+                bad += [f"{z['id']}: {layer} hint '{i}' is not a block" for i in ids if not named(i)]
         self.assertEqual(bad, [], "\n".join(bad))
 
     def test_every_poi_is_inside_its_map(self) -> None:

@@ -31,6 +31,7 @@ Modules (placed by the level or the dressing scene):
   shrine_side_pool       the round side pool, 3 m across, silt floor
   shrine_door_valve      the carved shell valve that sinks into the floor (moving)
   shrine_charm_net_float the net-float charm: salt-glass, 6 cm, in a lashed net
+  shrine_chamber_passage the passage behind the shell-valve door: coursed walls, a corbelled roof, the dark beyond
 
 SHRINE_LAYOUT mirrors the parts of game/data/trials/shell_shrine.json that the hall pieces are cut
 for (the pools and the oculus targets); tools/tests/test_shell_shrine_kit.py keeps the two equal, so
@@ -122,6 +123,7 @@ TRI_BUDGET = {
     "shrine_side_pool": (6000, 900),
     "shrine_door_valve": (6000, 600),
     "shrine_charm_net_float": (3600, 200),
+    "shrine_chamber_passage": (9000, 400),
 }
 
 
@@ -1316,6 +1318,78 @@ def build_charm(seed: int = 354) -> list[kc.MeshBuilder]:
     return out
 
 
+
+PASSAGE = (2.5, 3.4, 3.8)  # depth (along +X, east from the door), width, clear height: the old ChamberPassage box's
+M_DARK = "kit_interior_dark"
+
+
+def _ashlar_run(mb, x0: float, x1: float, z: float, face: float, top: float, stone, rng, noise) -> None:
+    """Coursed ashlar from x0 to x1 up to `top`, its face on z, the blocks behind it (away from `face`, +-1)."""
+    y, course = 0.0, 0
+    while y < top - 0.05:
+        ch = min(0.32 if course == 0 else rng.uniform(0.36, 0.46), top - y)
+        x = x0 - (rng.uniform(0.2, 0.5) if course % 2 else 0.0)
+        while x < x1 - 1e-4:
+            bl = rng.uniform(0.6, 1.0)
+            a, b = max(x, x0), min(x + bl, x1)
+            x += bl
+            if b - a < 0.12:
+                continue
+            block(mb, ((a + b) * 0.5, y + ch * 0.5, z - face * 0.2), ((b - a) * 0.5 - 0.008, ch * 0.5 - 0.008, 0.2),
+                  stone, rng, noise)
+        y += ch
+        course += 1
+
+
+def build_chamber_passage(seed: int = 320) -> list[kc.MeshBuilder]:
+    """M3-ENV-746: the short passage behind the Vowbound chamber's shell-valve door, seen when the valve sinks: the
+    flagged floor carried through, coursed walls either side, a corbelled roof of three oversailing courses and
+    lintel slabs, and the chamber beyond in darkness. Origin on the floor at the passage's middle; it runs along +X
+    (`PASSAGE`); its faces look inward, as the dark box it replaces (shell_shrine_dressing's ChamberPassage)."""
+    depth, width, height = PASSAGE
+    hd, hw = depth * 0.5, width * 0.5
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("shrine_chamber_passage", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("shrine_chamber_passage" + ("-lod1" if lod else ""))
+        stone, mortar, dark = mb.material(M_STONE), mb.material(M_MORTAR), mb.material(M_DARK)
+        spring = height - 0.9  # the walls stand to here; three courses step in above
+        if lod:
+            for z, f in ((-hw, 1.0), (hw, -1.0)):
+                kc.rounded_block(mb, (0.0, height * 0.5, z - f * 0.2), (hd, height * 0.5, 0.2), stone, seg=1,
+                                 radius=0.02)
+            kc.rounded_block(mb, (0.0, height + 0.15, 0.0), (hd, 0.15, hw + 0.4), stone, seg=1, radius=0.02)
+            kc.rounded_block(mb, (hd + 0.1, height * 0.5, 0.0), (0.1, height * 0.5, hw), dark, seg=1, radius=0.0)
+            kc.rounded_block(mb, (0.0, -0.05, 0.0), (hd, 0.05, hw), stone, seg=1, radius=0.01)
+            out.append(mb)
+            continue
+        # The floor: flags in two rows across, on the mortar bed.
+        kc.rounded_block(mb, (0.0, -0.08, 0.0), (hd, 0.06, hw), mortar, radius=0.01, seg=1, weather=INTERIOR)
+        x = -hd
+        while x < hd - 1e-4:
+            fl = min(rng.uniform(0.7, 1.1), hd - x)
+            for z0, z1 in ((-hw, 0.0), (0.0, hw)):
+                block(mb, (x + fl * 0.5, -0.04, (z0 + z1) * 0.5), (fl * 0.5 - 0.01, 0.04, (z1 - z0) * 0.5 - 0.01),
+                      stone, rng, noise)
+            x += fl
+        # The walls, then the corbel courses stepping in 0.25 m each, and the lintel slabs across.
+        for z, f in ((-hw, 1.0), (hw, -1.0)):
+            _ashlar_run(mb, -hd, hd, z, f, spring, stone, rng, noise)
+            for k in range(3):
+                step = 0.25 * (k + 1)
+                block(mb, (0.0, spring + 0.15 + 0.3 * k, z + f * (step - 0.2)), (hd, 0.15, 0.2), stone, rng, noise)
+        zl = hw - 0.75
+        n = max(2, round(depth / 0.6))
+        for k in range(n):
+            xc = -hd + depth * (k + 0.5) / n
+            block(mb, (xc, height + 0.12, 0.0), (depth / n * 0.5 - 0.01, 0.12, zl + 0.2), stone, rng, noise)
+        # The chamber beyond: no light reaches it.
+        kc.rounded_block(mb, (hd + 0.1, height * 0.5, 0.0), (0.1, height * 0.5 + 0.2, hw), dark, radius=0.0, seg=1,
+                         weather=INTERIOR)
+        out.append(mb)
+    return out
+
 TARGETS = {
     "shrine_floor": build_floor,
     "shrine_vault": build_vault,
@@ -1336,4 +1410,5 @@ TARGETS = {
     "shrine_side_pool": build_side_pool,
     "shrine_door_valve": build_door_valve,
     "shrine_charm_net_float": build_charm,
+    "shrine_chamber_passage": build_chamber_passage,
 }

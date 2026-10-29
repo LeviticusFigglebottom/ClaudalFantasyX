@@ -1,72 +1,177 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=17 format=3]
 
-[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/iskarra_arch.glb" id="1_iskarra_arch"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/iskarra_arch_fallen.glb" id="2_iskarra_arch_fallen"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/iskarra_crown_fallen.glb" id="3_iskarra_crown_fallen"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/iskarra_lamp_column.glb" id="4_iskarra_lamp_column"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/iskarra_plaza.glb" id="5_iskarra_plaza"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/iskarra_plaza_rise.glb" id="6_iskarra_plaza_rise"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/iskarra_tower_broken.glb" id="7_iskarra_tower_broken"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/iskarra_tower_small.glb" id="8_iskarra_tower_small"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/iskarra_tower_small_broken.glb" id="9_iskarra_tower_small_broken"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/iskarra_tower_spire.glb" id="10_iskarra_tower_spire"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/iskarra_tower_stepped.glb" id="11_iskarra_tower_stepped"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/iskarra_arcade_sunk.glb" id="1_iskarra_arcade_sunk"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/iskarra_arch.glb" id="2_iskarra_arch"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/iskarra_arch_fallen.glb" id="3_iskarra_arch_fallen"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/iskarra_crown_fallen.glb" id="4_iskarra_crown_fallen"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/iskarra_drowned_block.glb" id="5_iskarra_drowned_block"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/iskarra_drowned_dome.glb" id="6_iskarra_drowned_dome"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/iskarra_far_towers.glb" id="7_iskarra_far_towers"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/iskarra_lamp_column.glb" id="8_iskarra_lamp_column"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/iskarra_plaza.glb" id="9_iskarra_plaza"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/iskarra_plaza_rise.glb" id="10_iskarra_plaza_rise"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/iskarra_tower_broken.glb" id="11_iskarra_tower_broken"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/iskarra_tower_small.glb" id="12_iskarra_tower_small"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/iskarra_tower_small_broken.glb" id="13_iskarra_tower_small_broken"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/iskarra_tower_spire.glb" id="14_iskarra_tower_spire"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/iskarra_tower_stepped.glb" id="15_iskarra_tower_stepped"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/iskarra_vigil_dressing.glb" id="16_iskarra_vigil_dressing"]
 
 [node name="IskarraCity" type="Node3D"]
 
-[node name="Plaza" parent="." instance=ExtResource("5_iskarra_plaza")]
+[node name="Plaza" parent="." instance=ExtResource("9_iskarra_plaza")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.4, 2)
 
-[node name="Rise" parent="." instance=ExtResource("6_iskarra_plaza_rise")]
+[node name="Rise" parent="." instance=ExtResource("10_iskarra_plaza_rise")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -3, 0.2, -2)
 
-[node name="TowerA" parent="." instance=ExtResource("10_iskarra_tower_spire")]
+[node name="VigilDressing" parent="." instance=ExtResource("16_iskarra_vigil_dressing")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.4, 2)
+
+[node name="TowerA" parent="." instance=ExtResource("14_iskarra_tower_spire")]
 transform = Transform3D(0.93969, 0, 0.34202, 0, 1, 0, -0.34202, 0, 0.93969, -46, -3, -70)
 
-[node name="TowerB" parent="." instance=ExtResource("11_iskarra_tower_stepped")]
+[node name="TowerB" parent="." instance=ExtResource("15_iskarra_tower_stepped")]
 transform = Transform3D(0.91, 0, 0, 0, 1, 0, -0, 0, 0.91, -24, -3, -92)
 
-[node name="TowerC" parent="." instance=ExtResource("7_iskarra_tower_broken")]
+[node name="TowerC" parent="." instance=ExtResource("11_iskarra_tower_broken")]
 transform = Transform3D(-0.61284, 0, 0.51423, 0, 0.6, 0, -0.51423, 0, -0.61284, -8, -3, -60)
 
-[node name="TowerCCrown" parent="." instance=ExtResource("3_iskarra_crown_fallen")]
+[node name="TowerCCrown" parent="." instance=ExtResource("4_iskarra_crown_fallen")]
 transform = Transform3D(0.90631, 0, -0.42262, 0, 1, 0, 0.42262, 0, 0.90631, -1.6, 0, -56)
 
-[node name="TowerD" parent="." instance=ExtResource("10_iskarra_tower_spire")]
+[node name="TowerD" parent="." instance=ExtResource("14_iskarra_tower_spire")]
 transform = Transform3D(0.95841, 0, -0.67108, 0, 1.12, 0, 0.67108, 0, 0.95841, 14, -3, -84)
 
-[node name="TowerE" parent="." instance=ExtResource("11_iskarra_tower_stepped")]
+[node name="TowerE" parent="." instance=ExtResource("15_iskarra_tower_stepped")]
 transform = Transform3D(0.41, 0, 0.71014, 0, 0.77, 0, -0.71014, 0, 0.41, 34, -3, -66)
 
-[node name="TowerF" parent="." instance=ExtResource("10_iskarra_tower_spire")]
+[node name="TowerF" parent="." instance=ExtResource("14_iskarra_tower_spire")]
 transform = Transform3D(0.25882, 0, 0.96593, 0, 0.88, 0, -0.96593, 0, 0.25882, 58, -3, -100)
 
-[node name="TowerG" parent="." instance=ExtResource("10_iskarra_tower_spire")]
+[node name="TowerG" parent="." instance=ExtResource("14_iskarra_tower_spire")]
 transform = Transform3D(0.46, 0, -0.79674, 0, 0.68, 0, 0.79674, 0, 0.46, -70, -3, -110)
 
-[node name="TowerH" parent="." instance=ExtResource("9_iskarra_tower_small_broken")]
+[node name="TowerH" parent="." instance=ExtResource("13_iskarra_tower_small_broken")]
 transform = Transform3D(-0.93969, 0, -0.34202, 0, 1, 0, 0.34202, 0, -0.93969, 26, -3, -40)
 
-[node name="TowerHCrown" parent="." instance=ExtResource("3_iskarra_crown_fallen")]
+[node name="TowerHCrown" parent="." instance=ExtResource("4_iskarra_crown_fallen")]
 transform = Transform3D(-0.72505, 0, 0.33809, 0, 0.8, 0, -0.33809, 0, -0.72505, 30.8, 0, -37)
 
-[node name="TowerI" parent="." instance=ExtResource("8_iskarra_tower_small")]
+[node name="TowerI" parent="." instance=ExtResource("12_iskarra_tower_small")]
 transform = Transform3D(0.98481, 0, 0.17365, 0, 1, 0, -0.17365, 0, 0.98481, -34, -3, -44)
 
-[node name="Arch" parent="." instance=ExtResource("1_iskarra_arch")]
+[node name="Arch" parent="." instance=ExtResource("2_iskarra_arch")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -14.2, -0.5, -18)
 
-[node name="ArchFallen" parent="." instance=ExtResource("2_iskarra_arch_fallen")]
+[node name="ArchFallen" parent="." instance=ExtResource("3_iskarra_arch_fallen")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 19.8, -0.5, -22)
 
-[node name="Lamp0" parent="." instance=ExtResource("4_iskarra_lamp_column")]
+[node name="Lamp0" parent="." instance=ExtResource("8_iskarra_lamp_column")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -15, 0.4, -6.2)
 
-[node name="Lamp1" parent="." instance=ExtResource("4_iskarra_lamp_column")]
+[node name="Lamp1" parent="." instance=ExtResource("8_iskarra_lamp_column")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5, 0.4, -6.2)
 
-[node name="Lamp2" parent="." instance=ExtResource("4_iskarra_lamp_column")]
+[node name="Lamp2" parent="." instance=ExtResource("8_iskarra_lamp_column")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, -0, 0, -1, 5, 0.4, -6.2)
 
-[node name="Lamp3" parent="." instance=ExtResource("4_iskarra_lamp_column")]
+[node name="Lamp3" parent="." instance=ExtResource("8_iskarra_lamp_column")]
 transform = Transform3D(-0, 0, -1, 0, 1, 0, 1, 0, -0, 15, 0.4, -6.2)
+
+[node name="DrownedBlockA" parent="." instance=ExtResource("5_iskarra_drowned_block")]
+transform = Transform3D(0.97815, 0, 0.20791, 0, 1, 0, -0.20791, 0, 0.97815, -30, 0, -30)
+
+[node name="DrownedBlockB" parent="." instance=ExtResource("5_iskarra_drowned_block")]
+transform = Transform3D(0.99694, 0, -0.46488, 0, 1, 0, 0.46488, 0, 0.99694, 44, 0, -46)
+
+[node name="DrownedDomeA" parent="." instance=ExtResource("6_iskarra_drowned_dome")]
+transform = Transform3D(0.86603, 0, 0.5, 0, 1, 0, -0.5, 0, 0.86603, -58, 0, -52)
+
+[node name="DrownedDomeB" parent="." instance=ExtResource("6_iskarra_drowned_dome")]
+transform = Transform3D(0.89124, 0, 0.12526, 0, 0.9, 0, -0.12526, 0, 0.89124, 38, 0, -24)
+
+[node name="ArcadeSunk" parent="." instance=ExtResource("1_iskarra_arcade_sunk")]
+transform = Transform3D(0.25882, 0, 0.96593, 0, 1, 0, -0.96593, 0, 0.25882, -40, 0, -20)
+
+[node name="FarTowers" parent="." instance=ExtResource("7_iskarra_far_towers")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0, 0)
+
+[node name="VigilLights" type="Node3D" parent="."]
+
+[node name="Lamp0Light" type="OmniLight3D" parent="VigilLights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -15, 6.18, -6.2)
+light_color = Color(1, 0.69, 0.43, 1)
+light_energy = 1.4
+light_volumetric_fog_energy = 0.0
+omni_range = 9
+
+[node name="Lamp1Light" type="OmniLight3D" parent="VigilLights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -5, 6.18, -6.2)
+light_color = Color(1, 0.69, 0.43, 1)
+light_energy = 1.4
+light_volumetric_fog_energy = 0.0
+omni_range = 9
+
+[node name="Lamp2Light" type="OmniLight3D" parent="VigilLights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 5, 6.18, -6.2)
+light_color = Color(1, 0.69, 0.43, 1)
+light_energy = 1.4
+light_volumetric_fog_energy = 0.0
+omni_range = 9
+
+[node name="Lamp3Light" type="OmniLight3D" parent="VigilLights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 15, 6.18, -6.2)
+light_color = Color(1, 0.69, 0.43, 1)
+light_energy = 1.4
+light_volumetric_fog_energy = 0.0
+omni_range = 9
+
+[node name="Offering0Light" type="OmniLight3D" parent="VigilLights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -4.26, 0.52, 8.45)
+light_color = Color(1, 0.69, 0.43, 1)
+light_energy = 0.35
+light_volumetric_fog_energy = 0.0
+omni_range = 2.2
+
+[node name="Offering1Light" type="OmniLight3D" parent="VigilLights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -2.76, 0.52, 8.45)
+light_color = Color(1, 0.69, 0.43, 1)
+light_energy = 0.35
+light_volumetric_fog_energy = 0.0
+omni_range = 2.2
+
+[node name="Offering2Light" type="OmniLight3D" parent="VigilLights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -1.26, 0.52, 8.45)
+light_color = Color(1, 0.69, 0.43, 1)
+light_energy = 0.35
+light_volumetric_fog_energy = 0.0
+omni_range = 2.2
+
+[node name="Offering3Light" type="OmniLight3D" parent="VigilLights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0.24, 0.52, 8.45)
+light_color = Color(1, 0.69, 0.43, 1)
+light_energy = 0.35
+light_volumetric_fog_energy = 0.0
+omni_range = 2.2
+
+[node name="Offering4Light" type="OmniLight3D" parent="VigilLights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 1.74, 0.52, 8.45)
+light_color = Color(1, 0.69, 0.43, 1)
+light_energy = 0.35
+light_volumetric_fog_energy = 0.0
+omni_range = 2.2
+
+[node name="Offering5Light" type="OmniLight3D" parent="VigilLights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 3.24, 0.52, 8.45)
+light_color = Color(1, 0.69, 0.43, 1)
+light_energy = 0.35
+light_volumetric_fog_energy = 0.0
+omni_range = 2.2
+
+[node name="Offering6Light" type="OmniLight3D" parent="VigilLights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 4.74, 0.52, 8.45)
+light_color = Color(1, 0.69, 0.43, 1)
+light_energy = 0.35
+light_volumetric_fog_energy = 0.0
+omni_range = 2.2

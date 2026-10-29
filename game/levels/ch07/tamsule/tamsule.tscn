@@ -1,12 +1,50 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://game/levels/ch07/ch07_zone.gd" id="1_zone"]
+[ext_resource type="Script" path="res://game/levels/act1/zone_kit_dressing.gd" id="2_dressing"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/weathering_tide.gd" id="3_tide"]
+[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="4_water"]
+[ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="5_waves"]
+[ext_resource type="Material" path="res://game/levels/ch07/tamsule_bell_galleries/tamsule_water_material.tres" id="6_water_mat"]
+[ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/sand_albedo.png" id="7_sand"]
 [ext_resource type="Script" path="res://game/levels/act1/zone_cast.gd" id="90_cast"]
+
+[sub_resource type="PlaneMesh" id="RiverbedMesh"]
+size = Vector2(2400, 2400)
+
+[sub_resource type="StandardMaterial3D" id="RiverbedMat"]
+albedo_color = Color(0.612, 0.557, 0.463, 1)
+albedo_texture = ExtResource("7_sand")
+roughness = 0.95
+uv1_triplanar = true
+uv1_scale = Vector3(0.5, 0.5, 0.5)
 
 [node name="Tamsule" type="Node3D"]
 script = ExtResource("1_zone")
 location_id = &"ch07/tamsule"
 layout_path = "res://game/levels/ch07/tamsule/tamsule_layout.json"
+
+[node name="Water" type="Node3D" parent="."]
+position = Vector3(0, -1.6, 0)
+script = ExtResource("4_water")
+publishes_water_level = true
+wave_set = ExtResource("5_waves")
+material = ExtResource("6_water_mat")
+
+[node name="Riverbed" type="MeshInstance3D" parent="."]
+position = Vector3(0, -5.1, 0)
+mesh = SubResource("RiverbedMesh")
+surface_material_override/0 = SubResource("RiverbedMat")
+
+[node name="Tide" type="Node" parent="." node_paths=PackedStringArray("water")]
+script = ExtResource("3_tide")
+water_height_y = -1.6
+water = NodePath("../Water")
+
+[node name="Dressing" type="Node3D" parent="." node_paths=PackedStringArray("tide")]
+script = ExtResource("2_dressing")
+layout_path = "res://game/levels/ch07/tamsule/tamsule_dressing.json"
+tide = NodePath("../Tide")
 
 [node name="Cast" type="Node" parent="."]
 script = ExtResource("90_cast")

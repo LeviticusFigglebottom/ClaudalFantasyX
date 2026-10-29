@@ -23,8 +23,9 @@ import hero_clips  # noqa: E402
 REQUESTED = {"idle", "walk", "run", "talk", "kneel_over_rhen", "laugh", "rise_to_stand", "offer_hand",
              "walk_to_chamber", "emerge_doorway", "face_west"}  # docs/kb/tasks/M2/M2-FP-07-asha-clips-request.md
 # M3-CHR-05: 2 -> 3 MB with the Act I story clips (Rhen alone calls 46); they carry only the keys a straight line
-# between neighbours does not give. A text sanity bound, well under the repo's 5 MB file cap.
-MAX_BYTES = 3 * 1024 * 1024
+# between neighbours does not give. M2-CHR-515: 3 -> 4 MB with the grips (15 finger tracks per held hand in every
+# clip, mostly track headers). A text sanity bound, under the repo's 5 MB file cap; past it, save them binary (.res).
+MAX_BYTES = 4 * 1024 * 1024
 # Act I clips requested but not built yet (M3-CHR-1000): the dialogue may call them, nothing else.
 PENDING = {
     hero: set(clips)
@@ -72,7 +73,8 @@ class TestHeroClips(unittest.TestCase):
         """Every `@anim <hero> <clip>` in the dialogue has a clip (look_at is the sequencer's own turn), or is still
         on the requested list (PENDING, M3-CHR-1000): Asha, Toma, and Rhen and Ysolde, who had no such check before
         M3-CHR-05."""
-        for hero in ("asha", "rhen", "toma", "ysolde", "liss"):  # M3-CHR-03: Liss, with her library
+        # M3-CHR-03: Liss; M3-CHR-505: Kerrid; M3-CHR-540: Ivo Brannick; M3-CHR-506: Pell
+        for hero in ("asha", "rhen", "toma", "ysolde", "liss", "kerrid", "ivo", "pell"):
             called = slice_calls(hero)
             self.assertTrue(called, hero)
             missing = called - set(hero_clips.CLIPS[hero]) - {"look_at"} - PENDING.get(hero, set())

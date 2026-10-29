@@ -88,6 +88,12 @@ var _aim_warned: Dictionary = {}
 var _settle_pending := false
 ## True from _exit_tree until the director enters a tree again (M1-ARC-07 review-sweep-E S1).
 var _leaving := false
+## Occlusion pull-in (field_camera.json "occlusion"): how far in (m) the camera stands now, the zone's occluder
+## meshes (collect_occluders) and each mesh resource's TriangleMesh.
+var _pull_m := 0.0
+var _occluders: Array[MeshInstance3D] = []
+var _occluders_read := false
+var _tri_cache: Dictionary = {}
 
 
 func _ready() -> void:
@@ -140,6 +146,8 @@ func snap() -> void:
 		elif active_shot == null and initial_shot != null:
 			_activate(initial_shot, null, true, 0.0)
 	var was_blending := _blending
+	_pull_m = 0.0  # a cut starts from the shot's own place: pulled in again at once if a wall is there
+	collect_occluders()  # a zone load or a teleport: the zone's walls as they stand now
 	_end_blend()
 	if active_shot != null:
 		_shot_state.erase(active_shot)
@@ -325,6 +333,8 @@ func update(delta: float) -> void:
 			landed = true
 	else:
 		current_pose = to_pose
+	if _scripted_shot == null and subject_node(active_shot) == target:
+		current_pose = clear_view(current_pose, delta)
 	if camera != null:
 		current_pose.apply_to(camera)
 	# Snapshot, clear, then emit last: a play_shot()/release() made by a handler sets its own flags,
@@ -374,6 +384,101 @@ func state_snapshot() -> Dictionary:
 	}
 
 
+# --- Occlusion -----------------------------------------------------------------------------------
+
+
+## `pose`, pulled in toward the leader when a wall a player sees (view_blocker) stands between it and his chest
+## (field_camera.json "occlusion"): at once to margin_m short of the wall, then eased back out at release_mps once the
+## view is clear.
+## Never nearer him than min_distance_m. The pose keeps its rotation (sliding along its line to him keeps him framed).
+func clear_view(pose: CameraPose, delta: float) -> CameraPose:
+	var cfg := data.get("occlusion", {}) as Dictionary
+	if target == null or not bool(cfg.get("enabled", false)) or not target.is_inside_tree():
+		_pull_m = 0.0
+		return pose
+	var chest := target.global_position + Vector3.UP * float(cfg.get("chest_m", 0.0))
+	var line := pose.origin - chest
+	var length := line.length()
+	if length < 1e-3:
+		return pose
+	var want := 0.0
+	var hit := view_blocker(chest, pose.origin)
+	if not hit.is_empty():
+		var free := chest.distance_to(hit["position"] as Vector3) - float(cfg.get("margin_m", 0.0))
+		want = clampf(length - maxf(free, float(cfg.get("min_distance_m", 0.0))), 0.0, length)
+	if want >= _pull_m:
+		_pull_m = want
+	else:
+		_pull_m = maxf(want, _pull_m - float(cfg.get("release_mps", 0.0)) * delta)
+	if _pull_m <= 0.0:
+		return pose
+	var out := pose.copy()
+	out.origin = pose.origin - line / length * minf(_pull_m, length)
+	return out
+
+
+## The nearest wall a player sees on the segment `from` -> `to`: {"position", "node"} of the first visible occluder
+## mesh it crosses (see occluders()), or {} when the view is clear. Tested against the drawn triangles, not collision:
+## a collider can miss a wall the player sees (Coilspire's shell) and walls nobody sees have colliders (bounds, a
+## greybox wall hidden for a cutaway).
+func view_blocker(from: Vector3, to: Vector3) -> Dictionary:
+	if _occluders.is_empty() and not _occluders_read:
+		collect_occluders()
+	var seg := AABB(from, Vector3.ZERO).expand(to)
+	var best := {}
+	var best_d := INF
+	for mi in _occluders:
+		if not is_instance_valid(mi) or not mi.is_visible_in_tree():
+			continue
+		var xf := mi.global_transform
+		if not (xf * mi.get_aabb()).intersects(seg):
+			continue
+		var inv := xf.affine_inverse()
+		var hit := _triangles(mi.mesh).intersect_segment(inv * from, inv * to)
+		if hit.is_empty():
+			continue
+		var at := xf * (hit["position"] as Vector3)
+		var d := from.distance_to(at)
+		if d < best_d:
+			best_d = d
+			best = {"position": at, "node": mi}
+	return best
+
+
+## Re-reads the zone's occluder meshes (visible or not; visibility is checked each frame): every MeshInstance3D under
+## the rail root at least min_size_m across, with no transparent surface (foliage, glass, water), and not part of the
+## target. Called on snap() and on the first check.
+func collect_occluders() -> void:
+	_occluders.clear()
+	_occluders_read = true
+	var cfg := data.get("occlusion", {}) as Dictionary
+	var min_size := float(cfg.get("min_size_m", 0.0))
+	var base: Node = rail_root if rail_root != null else self
+	for n in base.find_children("*", "MeshInstance3D", true, false):
+		var mi := n as MeshInstance3D
+		if mi.mesh == null or (target != null and target.is_ancestor_of(mi)):
+			continue
+		var size := mi.get_aabb().size * mi.global_basis.get_scale().abs()
+		if maxf(size.x, maxf(size.y, size.z)) < min_size or _see_through(mi):
+			continue
+		_occluders.append(mi)
+
+
+static func _see_through(mi: MeshInstance3D) -> bool:
+	for k in mi.mesh.get_surface_count():
+		var mat := mi.get_active_material(k) as BaseMaterial3D
+		if mat != null and mat.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED:
+			return true
+	return false
+
+
+## The mesh's triangles for segment tests, built once per mesh resource.
+func _triangles(mesh: Mesh) -> TriangleMesh:
+	if not _tri_cache.has(mesh):
+		_tri_cache[mesh] = mesh.generate_triangle_mesh()
+	return _tri_cache[mesh] as TriangleMesh
+
+
 # --- Shot evaluation -----------------------------------------------------------------------------
 
 
@@ -402,6 +507,16 @@ func evaluate(shot: CameraShot, delta: float) -> CameraPose:
 			var offset := Basis(Vector3.UP, orbit_yaw) * Vector3(0.0, height, dist)
 			var centre := subject.global_position if subject != null else _to_world(shot.look_at)
 			return CameraPose.looking(centre + offset, aim_target, fov, shot.dof_dict(), shot.roll_deg)
+		CameraShot.Mode.FOLLOW:
+			var heading := _to_world(shot.look_at) - _to_world(shot.position)
+			heading = Vector3(heading.x, 0.0, heading.z).normalized()
+			var dist := shot.follow_distance if shot.follow_distance > 0.0 else _follow_value("distance_m")
+			var height := shot.follow_height if shot.follow_height > 0.0 else _follow_value("height_m")
+			var centre := subject.global_position if subject != null else _to_world(shot.look_at)
+			var desired := centre - heading * dist + Vector3.UP * height
+			var rate := _rate(shot.follow_smoothing, "follow_smoothing_per_sec")
+			var from := _smoothed(shot, "follow_pos", desired, rate, delta) as Vector3
+			return CameraPose.looking(from, aim_target, fov, shot.dof_dict(), shot.roll_deg)
 	var fixed_aim := aim_target if subject != target else _to_world(shot.look_at)
 	return CameraPose.looking(_to_world(shot.position), fixed_aim, fov, shot.dof_dict(), shot.roll_deg)
 
@@ -581,6 +696,10 @@ func _end_blend() -> void:
 	_blend_elapsed = 0.0
 	_blend_duration = 0.0
 	_blend_weight = 1.0
+
+
+func _follow_value(key: String) -> float:
+	return float((data.get("follow", {}) as Dictionary).get(key, 0.0))
 
 
 func _effective_mode(shot: CameraShot) -> CameraShot.Mode:

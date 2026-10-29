@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/villagers/reed_a_stage.tscn" id="stage"]
+[ext_resource type="PackedScene" path="res://assets/characters/villagers/reed_b/reed_b.glb" id="reed_b"]
+[ext_resource type="PackedScene" path="res://assets/characters/villagers/reed_c/reed_c.glb" id="reed_c"]
+[ext_resource type="PackedScene" path="res://assets/characters/villagers/reed_d/reed_d.glb" id="reed_d"]
+
+[node name="ReedsLineup" instance=ExtResource("stage")]
+
+[node name="Others" type="Node3D" parent="."]
+
+[node name="ReedB" parent="Others" instance=ExtResource("reed_b")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.95, 0, 0.0)
+
+[node name="ReedC" parent="Others" instance=ExtResource("reed_c")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.95, 0, 0.0)
+
+[node name="ReedD" parent="Others" instance=ExtResource("reed_d")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9, 0, 0.0)
+
+[node name="Lineup" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, 0, 0, 0.996195, 0.0871557, 0, -0.0871557, 0.996195, 0.475, 1.05, 5.6)
+fov = 34.0
+near = 0.05

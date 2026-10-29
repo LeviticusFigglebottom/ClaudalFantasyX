@@ -85,6 +85,7 @@ func build() -> void:
 
 
 func _ready() -> void:
+	_build_villagers()
 	if encounters != null:
 		encounters.setup(self, layout.get("encounters", {}), defaults.get("encounters", {}))
 
@@ -253,6 +254,15 @@ func _build_wildlife() -> void:
 	w.name = "WildlifeLayer"
 	w.zone_id = location_id
 	add_child(w)
+
+
+## ADR 0152 (M3-CRE-657): the villagers and the crowd for any location with a villager zone file
+## (game/data/world/npc/zones/). Added in _ready, after every child's (ZoneCast's casts included): the layer then
+## replaces ZoneCast's stand-in villagers with the zone's crowd people and adopts the named ones' models.
+func _build_villagers() -> void:
+	if location_id == &"" or not FileAccess.file_exists(VillagerLayer.path_for(location_id)):
+		return
+	VillagerLayer.wire(self, location_id)
 
 
 func _build_player() -> void:

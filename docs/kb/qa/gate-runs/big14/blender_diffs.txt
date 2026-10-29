@@ -1,0 +1,83 @@
+base ref: origin/claude/undertow-lead-handoff-ze8rrn (608db549); 2395 changed path(s)
+Blender 5.0.1: asha, rhen, toma, villager_neme, villager_osu, villager_child, villager_vendor, villager_reed, villager_netmender, villager_fisher, villager_tavi, villager_kell, haluna_kit, tamsule_bell_kit, brine_shoals_kit, pemakar_kit, corrow_kit, coilspire_kit, oruvel_underway_kit, sefir, ysolde, creature_reef_crab, creature_drownbell, creature_hullgnaw, creature_tower_limpet, creature_lantern_eel, creature_oil_slug, creature_spawn_polyp, creature_glassfry, creature_bottle_hermit, creature_gull_harrier, creature_sail_leech, creature_spar_wraith, creature_scuttler, creature_ashwing, creature_slag_tortoise, creature_cinder_matron, creature_shoal_skipper, creature_raid_hound, creature_tide_crawler, creature_vein_sparker, creature_undertows_reach, creature_flue_moth, creature_wallcrab, creature_stormgull, creature_squall_wing, creature_wreck_crab, creature_wall_polyp, brightwater_ferry_kit, oruvel_kit, ashcrown_kit, creature_mangrove_drowner, creature_lamp_engine, creature_avalanche_ram, creature_wakefin, liss, kerrid, moll, stillguard, creature_tannin_archer, creature_gallery_ray, creature_rime_urchin, creature_conduit_crawler, creature_ridge_lynx, creature_cord_moth, creature_glass_skate, creature_root_crab, creature_fen_leech, creature_scree_crawler, creature_rim_crawler, creature_flat_engine, creature_ilun, creature_kahre, creature_virel, creature_nhoa, creature_hesk, creature_ethren
+BLENDER ok   asha  140.4 s  44 identical
+BLENDER ok   rhen  99.6 s  31 identical
+BLENDER ok   toma  141.5 s  38 identical
+BLENDER ok   villager_neme  40.7 s  34 identical
+BLENDER ok   villager_osu  32.3 s  30 identical
+BLENDER ok   villager_child  28.6 s  30 identical
+BLENDER ok   villager_vendor  29.7 s  30 identical
+BLENDER ok   villager_reed  28.6 s  30 identical
+BLENDER ok   villager_netmender  31.8 s  30 identical
+BLENDER ok   villager_fisher  29.2 s  30 identical
+BLENDER ok   villager_tavi  29.2 s  30 identical
+BLENDER ok   villager_kell  29.2 s  30 identical
+BLENDER FAIL haluna_kit  33.6 s  1 DIFF, 190 identical
+    DIFF      assets/environments/kits/haluna/kirru_roost.glb  sha256 06403c78b472 committed vs cbda5fa9fac1 rebuilt; data differs: kirru_roost-lod1.POSITION  [kirru_roost-lod1.POSITION]
+BLENDER ok   tamsule_bell_kit  3.3 s  26 identical
+BLENDER ok   brine_shoals_kit  7.3 s  81 identical
+BLENDER ok   pemakar_kit  10.4 s  70 identical
+BLENDER ok   corrow_kit  6.8 s  80 identical
+BLENDER ok   coilspire_kit  7.1 s  36 identical
+BLENDER ok   oruvel_underway_kit  5.2 s  60 identical
+BLENDER ok   sefir  108.5 s  32 identical
+BLENDER ok   ysolde  138.8 s  37 identical
+BLENDER ok   creature_reef_crab  4.1 s  4 identical
+BLENDER ok   creature_drownbell  14.4 s  5 identical
+BLENDER ok   creature_hullgnaw  1.7 s  3 identical
+BLENDER ok   creature_tower_limpet  5.5 s  3 identical
+BLENDER ok   creature_lantern_eel  1.0 s  7 identical
+BLENDER ok   creature_oil_slug  2.2 s  3 identical
+BLENDER ok   creature_spawn_polyp  7.2 s  5 identical
+BLENDER ok   creature_glassfry  3.7 s  3 identical
+BLENDER ok   creature_bottle_hermit  4.5 s  5 identical
+BLENDER ok   creature_gull_harrier  1.6 s  5 identical
+BLENDER ok   creature_sail_leech  0.8 s  2 identical
+BLENDER ok   creature_spar_wraith  11.7 s  6 identical
+BLENDER ok   creature_scuttler  1.7 s  2 identical
+BLENDER ok   creature_ashwing  1.0 s  4 identical
+BLENDER ok   creature_slag_tortoise  3.0 s  4 identical
+BLENDER ok   creature_cinder_matron  2.9 s  6 identical
+BLENDER ok   creature_shoal_skipper  1.9 s  4 identical
+BLENDER ok   creature_raid_hound  1.8 s  6 identical
+BLENDER ok   creature_tide_crawler  3.5 s  2 identical
+BLENDER ok   creature_vein_sparker  2.2 s  4 identical
+BLENDER ok   creature_undertows_reach  3.5 s  4 identical
+BLENDER ok   creature_flue_moth  3.0 s  5 identical
+BLENDER ok   creature_wallcrab  4.0 s  4 identical
+BLENDER ok   creature_stormgull  1.7 s  5 identical
+BLENDER ok   creature_squall_wing  1.3 s  4 identical
+BLENDER ok   creature_wreck_crab  5.6 s  8 identical
+BLENDER ok   creature_wall_polyp  8.3 s  6 identical
+BLENDER ok   brightwater_ferry_kit  4.1 s  67 identical
+BLENDER ok   oruvel_kit  4.3 s  56 identical
+BLENDER ok   ashcrown_kit  9.4 s  51 identical
+BLENDER ok   creature_mangrove_drowner  38.0 s  3 identical
+BLENDER ok   creature_lamp_engine  7.3 s  5 identical
+BLENDER FAIL creature_avalanche_ram  6.0 s  1 DIFF, 4 identical
+    DIFF      assets/creatures/avalanche_ram/avalanche_ram.glb  sha256 6549c8a918c4 committed vs 8d990e155ff6 rebuilt; data differs: avalanche_ram.POSITION  [avalanche_ram.POSITION]
+BLENDER ok   creature_wakefin  1.3 s  5 identical
+BLENDER ok   liss  141.7 s  40 identical
+BLENDER ok   kerrid  194.4 s  43 identical
+BLENDER ok   moll  122.5 s  40 identical
+BLENDER ok   stillguard  197.3 s  178 identical
+BLENDER ok   creature_tannin_archer  0.8 s  5 identical
+BLENDER ok   creature_gallery_ray  0.9 s  4 identical
+BLENDER ok   creature_rime_urchin  1.0 s  4 identical
+BLENDER ok   creature_conduit_crawler  1.0 s  4 identical
+BLENDER ok   creature_ridge_lynx  1.3 s  3 identical
+BLENDER ok   creature_cord_moth  0.9 s  5 identical
+BLENDER ok   creature_glass_skate  1.0 s  4 identical
+BLENDER ok   creature_root_crab  3.9 s  4 identical
+BLENDER ok   creature_fen_leech  0.8 s  2 identical
+BLENDER ok   creature_scree_crawler  4.1 s  4 identical
+BLENDER ok   creature_rim_crawler  3.5 s  2 identical
+BLENDER ok   creature_flat_engine  4.8 s  5 identical
+BLENDER ok   creature_ilun  2.2 s  15 identical
+BLENDER ok   creature_kahre  2.7 s  15 identical
+BLENDER ok   creature_virel  2.4 s  11 identical
+BLENDER ok   creature_nhoa  2.4 s  11 identical
+BLENDER ok   creature_hesk  4.5 s  13 identical
+BLENDER ok   creature_ethren  2.2 s  15 identical
+Blender builds: 77 job(s), 2 failed, 0 uncovered, 1852 s
+blender exit 1 in 1856 s

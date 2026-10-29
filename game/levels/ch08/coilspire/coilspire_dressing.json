@@ -11,17 +11,21 @@
  "time_of_day_h": 12.0,
  "greybox": {
   "hide_all": true,
-  "keep": [
-   "Gate_t1",
-   "Gate_t2",
-   "Gate_t3",
-   "Gate_t4",
-   "NicheSeal",
-   "WrightMark",
-   "Virel",
-   "StormWall"
-  ]
+  "keep": []
  },
+ "storms": [
+  {
+   "name": "Undertow",
+   "at": [
+    308.745,
+    77.285,
+    159.418
+   ],
+   "preset": "ch08_seawall",
+   "azimuth_deg": 170.0,
+   "block": "StormWall"
+  }
+ ],
  "fire_light_color": "#FFB16E",
  "fire_lights": [
   {
@@ -90,6 +94,150 @@
    ],
    "energy": 6.0,
    "range": 60.0
+  },
+  {
+   "at": [
+    310.914,
+    41.485,
+    160.053
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    306.967,
+    41.485,
+    161.11
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    305.909,
+    41.485,
+    157.163
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    309.857,
+    41.485,
+    156.105
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    308.95,
+    50.485,
+    160.619
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    306.401,
+    50.485,
+    159.147
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    307.873,
+    50.485,
+    156.597
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    310.423,
+    50.485,
+    158.069
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    309.594,
+    59.485,
+    159.291
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    307.729,
+    59.485,
+    159.79
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    307.229,
+    59.485,
+    157.925
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    309.094,
+    59.485,
+    157.425
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    308.608,
+    68.485,
+    159.341
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    307.678,
+    68.485,
+    158.804
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    308.215,
+    68.485,
+    157.874
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    309.145,
+    68.485,
+    158.411
+   ],
+   "energy": 1.3,
+   "range": 7.5
   }
  ],
  "pieces": [
@@ -151,7 +299,10 @@
      ],
      "yaw": 16.156
     }
-   ]
+   ],
+   "material_paths": {
+    "cs_laterite_inner": "res://game/levels/ch08/coilspire/coilspire_inner_material.tres"
+   }
   },
   {
    "piece": "coilspire_flues",
@@ -200,7 +351,10 @@
      ],
      "yaw": 16.156
     }
-   ]
+   ],
+   "material_paths": {
+    "cs_laterite_inner": "res://game/levels/ch08/coilspire/coilspire_inner_material.tres"
+   }
   },
   {
    "piece": "keepers_hut",
@@ -1254,6 +1408,88 @@
    "y": 67.535,
    "yaw_deg": -105.0,
    "spin_with": "Key_t4_d"
+  },
+  {
+   "piece": "flue_gate",
+   "at": [
+    304.573,
+    158.766
+   ],
+   "y": 39.885,
+   "yaw_deg": 92.364,
+   "block": "Gate_t1"
+  },
+  {
+   "piece": "flue_gate",
+   "at": [
+    305.567,
+    159.619
+   ],
+   "y": 48.885,
+   "yaw_deg": 109.578,
+   "block": "Gate_t2"
+  },
+  {
+   "piece": "flue_gate",
+   "at": [
+    308.941,
+    160.908
+   ],
+   "y": 57.885,
+   "yaw_deg": -167.049,
+   "block": "Gate_t3"
+  },
+  {
+   "piece": "flue_gate",
+   "at": [
+    308.282,
+    156.879
+   ],
+   "y": 66.885,
+   "yaw_deg": 4.271,
+   "block": "Gate_t4"
+  },
+  {
+   "piece": "niche_seal",
+   "at": [
+    305.892,
+    156.568
+   ],
+   "y": 49.285,
+   "yaw_deg": 51.0,
+   "block": "NicheSeal"
+  },
+  {
+   "piece": "lamp_niche",
+   "at": [
+    305.776,
+    156.473
+   ],
+   "y": 49.385,
+   "yaw_deg": 51.0,
+   "block": "Niche"
+  },
+  {
+   "piece": "wright_mark",
+   "at": [
+    306.369,
+    156.832
+   ],
+   "y": 58.535,
+   "yaw_deg": 49.0,
+   "block": "WrightMark"
+  },
+  {
+   "piece": "virel",
+   "kit_dir": "res://assets/creatures/virel/",
+   "materials_dir": "res://assets/creatures/virel/materials/",
+   "block": "Virel",
+   "yaw_deg": 0.0,
+   "at": [
+    308.745,
+    159.418
+   ],
+   "y": 74.285
   },
   {
    "piece": "corrow_far",

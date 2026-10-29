@@ -2,8 +2,8 @@
 id: M3-C09-03
 title: "The Ebbing's motes: held fields, the staff and mourner attractors, the hero frame (Ch9)"
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: "env-art-b (session_01F3vrUNt6trAMrjeYavaDNC, claude/env-art-b; the Lead, 2026-10-28 14:47)"
 depends_on: [M3-C09-02]
 milestone: M3
 request-from: cinematics
@@ -25,8 +25,8 @@ The Ebbing is built on `GlimmerField` (tech/glimmer.md). Everything here stays i
 9. **The `.dlg` cue vocabulary** has no way to say "follow the staff" or "anchor on the mourners" yet (`cues.json` `vfx` takes `drift`, `motion`, `rate` and `count`). This is a joint request with Systems: a `follow=<actor|prop>` kwarg for an attractor host and a way to name anchor actors (for example `@vfx glimmer_held at=harbour drift=down_seaward follow=asha_staff anchors=mourners`), or a sequencer event that Cinematics drives.
 
 ## Acceptance criteria
-- [ ] A test scene for the Ebbing (the harbour stream, the low town and the strand fields), with the cost measured per tier.
-- [ ] Every Ch9 field is `HELD`: no `release()` call, no gold, nothing that rises (rule 1). Item 3's test: a still at the staff's highest point has a downward median mote heading.
+- [x] A test scene for the Ebbing (the harbour stream, the low town and the strand fields), with the cost measured per tier.
+- [x] Every Ch9 field is `HELD`: no `release()` call, no gold, nothing that rises (rule 1). Item 3's test: a still at the staff's highest point has a downward median mote heading.
 - [ ] The staff attractor (item 3) and the mourner attractors (item 4), driven from the scene. Agree the cue or event (item 9) with Cinematics and the Architect (M3-C09-09).
 - [ ] The cutaway's field (N13, item 8): seaward behind Kerrid, with no attractor on him. `tests/integration/test_ch09_thread.gd` (`test_kerrid_cutaway_is_one_shot_alone`, `test_every_mote_is_held_down_and_seaward`) stays green.
 - [ ] `ch09_the_ebbing.dlg`'s placeholder `@vfx` cues give way to the real fields, and the shots stay N08–N15 (the zone layout's `shots`).
@@ -34,5 +34,20 @@ The Ebbing is built on `GlimmerField` (tech/glimmer.md). Everything here stays i
 ## Notes
 - **Where the motes are cued today:** the marks `lowtown_motes`, `strand_motes`, `mourners_motes`, `mourner_hand`, `harbour_stream`, `stream_overhead`, `harbour_mouth` and `wallhead_motes` in `corrow_night_layout.json`. In that greybox, +Z is south, out to sea, so `sea_direction` there is +Z. On env-art's real Corrow it is south-west (item 2).
 - **The three movements are no-fail held inputs.** `CutsceneHoldGate` runs the scene's time only while the player holds interact. Fields that animate on their own clock keep drifting while the dance waits ("breathing"), and that is the intent.
+
+## Notes (env-art-b, 2026-10-28)
+- Built: `EbbingMotes` (`game/vfx/ebbing/`, data `game/data/vfx/ebbing.json`, docs `docs/kb/tech/ebbing.md`), placed
+  in `ch09/corrow_night` by its dressing. It has eight HELD fields by the cue marks, the staff attractor (a
+  `StaffHead` on Asha), the mourners' anchors that let go over 4 s as the staff passes, and the cutaway's field with
+  no attractor and no focus. The reflection is on for the harbour fields.
+- Test scene: `game/levels/_tests/ebbing/ebbing_shots.tscn`. New shots `ebbing_n11` and `ebbing_n08` are viewed
+  and awaiting baselines.
+- Tests: `tests/unit/test_ebbing_motes.gd` (item 3's still: a CPU replica of the process shader; the share of motes
+  rising under the raised staff is under 5 %, and the test also shows a full-strength pull would lift 38 %).
+- Still open:
+  - **The cue hook and vocabulary (item 9):** requested from integration-qa in **M3-ARC-1326**. Until it lands, the
+    `.dlg` cues still draw the placeholder, so the last criterion waits on it.
+  - **Cost per tier:** for the PC's QA pass.
+  - **Item 7:** cut for now.
 
 ## Review log

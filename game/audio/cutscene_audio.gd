@@ -5,16 +5,64 @@ extends Node
 ## game/data/audio/cutscene_foley.json's row for an `@anim` clip, an `@light` switch or an `@vfx` effect, at the
 ## actor, the light or the place. It never writes the cutscene, and plays nothing while the sequencer is skipping.
 ## The actors' steps are their own FootstepAudio listeners (AudioDirector.attach_cast), not this.
+## M3-AUD-847: a stage's lit lamps (cutscene_foley.json `lamps`: lights named by `match`, globs) crackle at the
+## lamp at random gaps while they are visible and lit; the director steps it once a frame.
 
 ## Plays a row at a place: (id: StringName, at: Vector3) -> void.
 var player_at: Callable = Callable()
 var data: Dictionary = {}
 ## Every row played, in order (tests).
 var played: Array[StringName] = []
+## Each watched lamp: {light: Light3D, left: float (seconds to its next crackle)}.
+var lamps: Array[Dictionary] = []
+var _rng := RandomNumberGenerator.new()
 
 
 func _init(table: Dictionary = {}) -> void:
 	data = table
+	_rng.seed = hash("cutscene_lamps")
+
+
+## Watches every light under `stage` that `lamps.match` names (once each).
+func watch_lamps(stage: Node) -> void:
+	var cfg := data.get("lamps", {}) as Dictionary
+	if not is_instance_valid(stage) or cfg.is_empty():
+		return
+	for n in stage.find_children("*", "Light3D", true, false):
+		if lamps.any(func(l: Dictionary) -> bool: return l["light"] == n):
+			continue
+		for pattern: Variant in cfg.get("match", []):
+			if String(n.name).match(str(pattern)):
+				lamps.append({"light": n, "left": _gap(cfg)})
+				break
+
+
+## Steps the lamps: a lit, visible lamp crackles when its gap runs out.
+func advance(delta: float) -> void:
+	var cfg := data.get("lamps", {}) as Dictionary
+	for i in range(lamps.size() - 1, -1, -1):
+		var l := lamps[i]
+		if not is_instance_valid(l["light"]) or not (l["light"] as Node).is_inside_tree():
+			lamps.remove_at(i)
+			continue
+		var light := l["light"] as Light3D
+		if not light.is_visible_in_tree() or light.light_energy <= 0.0:
+			continue
+		l["left"] = float(l["left"]) - delta
+		if float(l["left"]) <= 0.0:
+			_play(str(cfg.get("row", "")), light.global_position)
+			l["left"] = _gap(cfg)
+
+
+func _gap(cfg: Dictionary) -> float:
+	var pair: Variant = cfg.get("every_sec", [1.0, 1.0])
+	if pair is Array and (pair as Array).size() == 2:
+		return _rng.randf_range(float(pair[0]), float(pair[1]))
+	return 1.0
+
+
+func _exit_tree() -> void:
+	lamps.clear()
 
 
 func bind_director(dir: AudioDirector) -> void:

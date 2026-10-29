@@ -60,169 +60,53 @@ Branch `claude/characters` (this environment; cloud session_01JqzzxgJU9Dmu7fRhmC
 - **Ids:** characters uses the 500–599 block, ADRs 0140–0149, and handoffs named `<date>-character-characters-<n>.md`.
 - **send_message to the Lead's session** is refused ("trusted device"), so this file is the channel. The battle-presentation and hero-integration sessions do accept messages.
 
-## Now
-- **M3-CHR-02 Sefir → review (rendering), worktree subagent, not pushed.** Hero build on the shared modules: LOD0 58,426,
-  LOD1 27,118, sefir.glb 4.42 MB; rig probe all ok with no ratchet; `verify --job sefir` 32 identical (also on the AVX2
-  numpy path). Mantle gold lowered to 14% so a waist-up frame is <= 5% (front 4.96%); chest-up close-ups are 8-9%
-  (the crown). 7 sefir_* baselines. Requests M3-CIN-01, M3-RND-03, M3-ENV-01. Handoff 2026-10-24-character-11.md,
-  review `docs/kb/art/characters/sefir_review.md`.
-- **M3-CHR-01 Ysolde → review (reviewer: rendering).** Worktree subagent off cd01d151, commits aa4cc74b, cb9c3ade +
-  docs; not pushed. Handoff 2026-10-24-character-10.md, review ysolde_review.md.
-  - LOD0 58,918 / LOD1 27,894; 4.31 / 1.27 MB. `verify --job ysolde` 37 identical, also under the AVX2-only numpy path.
-  - Probe: props and collar 0 mm, seams 0; ratchets costume 31/6 (run knee fold), body 45/70 (armpit), 4 exposed.
-  - hero_clips.py edits are self-contained (persona, clips, a Ysolde block after `pose_at`; `.get()` branches);
-    Asha's, Rhen's and Toma's libraries byte-identical. Merging with e32848cc touches only the append-only lists.
-- **MERGE-READY @ e253f302 (CHR-14 braid and clipping, villagers, Rhen and Toma, host determinism).**
-  - **Full `tools/ci_local.sh` at ad6e232:** merged with the integration branch, run with `taskset -c 0-3`, HYMN_BLENDER_REQUIRED=1, every shot and its own HYMN_LOG_DIR. It exited 0:
-    - 580 tool tests, 1459 Godot tests;
-    - 120 shots compared, 0 failed;
-    - Blender identical: asha 44, rhen 31, toma 38, and the 7 villager jobs (34 + 6×30).
-  - **What changed between ad6e232 and e253f302:** your 1-ULP head UV fix only. `quantize_uvs` puts Asha's head and body UVs on a 2^-16 grid right after the unwrap, before the bake dump and the export.
-  - **Scoped re-check for that delta:**
-    - `verify --job asha` under taskset (4 CPUs): 44 identical;
-    - the GLBs are identical with numpy's AVX-512 and AVX2 paths;
-    - the 18 asha_* shots pass unchanged (max RMSE 0.00797, asha_front, the same as before);
-    - test_asha and test_rig_integrity: OK.
-  - **Threads:** pinned at 4 on every character and villager job (ad6e232).
-- **Later heads (docs plus your branch only):** the M3 design sheets merge (Ysolde, Sefir, Liss, Tavi Orse, Mother Kell; M3-CHR-01 to 04) and an integration-branch merge that touches no character file.
-  - Per the new gate rules I stopped the second full `ci_local`. Scoped checks: `character_shading` 17/17, validate_data and taskboard OK.
-- **MERGE-READY @ (this commit): M2-CHR-07, the hero battle clip set** (review: combat). Handoff: 2026-10-24-character-12.md.
-  - Asha, Rhen and Toma each have the battle track's 12 contract clips: in place, with a `contact` Animation marker at contact_at.
-  - **Scoped gates:**
-    - tools/tests 590 OK;
-    - test_rig_integrity 34 OK;
-    - hero_stage 6/6 and post_import 19/19;
-    - verify asha 44, rhen 31, toma 38 identical (the existing clip sub-resources are byte-identical);
-    - asha_clip_*, rhen_clip_*, toma_clip_* and the battle_idle shots pass;
-    - 3 new shots (`<hero>_battle_attack`), viewed and approved.
-  - **Ratchet:** Asha's VerseSleeve count limit rose 4 → 6 (sleeve-top vertices under the sleeve at hit and defend; viewed). The depth limit is unchanged.
-  - **Requests sent to the battle track:** read the `contact` marker (contact currently lands late), finisher and support per-style timing, and ko revive.
-  - **The battle track has wired all three:** strikes land on the `contact` marker, the shared finisher and cast clips are fine, and a revive returns a hero to idle. **M2-BPR-10 reviewed (approved; sent to them to log):** the axis conventions match hero_clips. The placeholders cover heroes without a battle set (Ysolde, and Liss and Kerrid later). This was a data-only review; the poses weren't seen rendered.
-- **MERGE-READY @ e32848cc: M3-CHR-02 Sefir Aurane** (review: rendering). Handoff: 2026-10-24-character-11.md; review: sefir_review.md.
-  - **Build:** LOD0 58,426 tris, sefir.glb 4.42 MB.
-  - **Probe:** passes at the default limits, with no ratchet.
-  - **Reproducibility:** `verify --job sefir` 32 identical, on both numpy SIMD paths.
-  - **Gold:** the mantle's gold is cut to 14%, which gives a waist-up frame of 4.96% (under the 5% limit). Chest-up close-ups are still 8–9%, from the crown. That needs a Cinematics framing rule or an Art Director ruling; no exception claimed.
-  - **New shots:** 7, viewed and approved. Request tasks: M3-CIN-01 (slow blink), M3-RND-03, M3-ENV-01.
-  - **Gates after merging with M2-CHR-07:**
-    - hero_clips merged as the union of both blocks; all four clip libraries regenerate byte-identical;
-    - test_hero_clips, test_hero_battle_clips, test_sefir and test_rig_integrity: OK;
-    - post_import 19/19.
-- **MERGE-READY @ (this commit): M3-CHR-01 Ysolde (review: rendering) and M3-CHR-03, villager half: Tavi Orse and Mother Kell.**
-  - **Ysolde:** LOD0 58,918, ysolde.glb 4.31 MB. `verify --job ysolde` 37 identical, on both numpy SIMD paths. Collar, book and ink-guards 0 mm.
-    - Ratchets: costume 31/6 (a run knee fold under the robe), body 45/70 (armpit), 4 exposed.
-    - 9 shots, viewed. Handoff 2026-10-24-character-10.md; review ysolde_review.md.
-  - **Tavi and Kell:** LOD0 30,198 and 33,596. Opt-in params keep the seven M2 villagers byte-identical. The wick props are a new job, `props_wick`.
-    - `verify` on the 9 villager jobs plus props_wick: identical.
-    - Ratchets: the armpit only.
-    - 9 shots, viewed. Handoff 2026-10-24-character-13.md.
-    - Neither has a level slot yet (there is no Ch1 or Ch7 scene); the actor scenes are listed in the handoff.
-  - **Gates on the merged head (075838e6):**
-    - validate_data, taskboard, a manifest of 148 shots;
-    - test_villagers, test_rig_integrity (7 characters), test_blender_builds, test_hero_clips, test_hero_battle_clips: OK;
-    - post_import 19/19, hero_stage 9/9;
-    - all five hero clip libraries regenerate byte-identical.
-- **RE-PRIORITISED (the Lead, after the human's playtest): the M3 heroes are PAUSED** (Liss and Kerrid stop after their current commit; Ysolde and Sefir are already merged). Top of the queue:
-  1. **M2-CHR-07, the battle clip set:** DONE and merge-ready (see its line above). Its clips are idle, ready, attack, cast, item, read, defend, finisher (= "special"), hit, dodge, ko and victory, for Asha, Rhen and Toma.
-  2. **M2-CHR-12, field locomotion** (new): idle variants, walk and run with starts and stops, turns in place. Worktree sub-agent.
-  3. **M2-CHR-11, host snaps** (new): rhen and toma are folded into M1-CHR-15, which is rebuilding them anyway; base_body and the seven villagers go to a worktree sub-agent.
-  - The hero-integration track's live log is read each cycle. The branch didn't exist at 2026-10-24 ~20:00.
-- **MERGE-READY @ (this commit): M2-CHR-11, base_body and villager half.** Handoff: 2026-10-24-character-18.md.
-  - **Fix:** a 1 µm position grid on the donor skin right after the fit, so the head, body, scalp and normals follow, plus the hair cards before HairHead and LOD1 decimation, and UVs on 2^-16. All nine villagers now have `host_snaps: true`.
-  - **Verified:** base_body plus the nine villager jobs are identical on THREE numpy paths: native AVX-512, `X86_V4` off (the i9-12900K's AVX2 path) and `X86_V3 X86_V4` off.
-  - **Before the fix:** reproduced here. All 8 in-scope jobs differed under the AVX2 paths, in exactly the PC gate's accessors. Tavi and Kell also failed: a midline coordinate above 1e-9, and up to 80 µm of hair-card drift.
-  - **Shots:** 39 base_body and villager shots pass (max 6.3e-3, mostly drift that predates this; the change alone is ~4e-4).
-  - **Gates:** test_villagers, test_base_body and test_blender_builds OK; test_rig_integrity 71 OK; post_import 19/19.
-  - **For the Lead:** please re-run the PC gate for base_body and `villager_*`. Consider re-approving the M2 villager baselines in a render batch (about 6e-3 of the 8e-3 headroom is already used).
-  - **Still pending:** rhen and toma, in M1-CHR-15.
-- **MERGE-READY @ (this commit): M2-CHR-12, field locomotion for Asha, Rhen and Toma** (review: lead). Handoff: 2026-10-24-character-17.md.
-  - **New clips, in place:** walk_start, walk_stop, run_start, run_stop, turn_in_place_l90/_r90/_180, idle_breathe and idle_shift. walk and run are rebuilt: footprint IK with heel, flat and ball contacts, and per-hero lengths, so the loops close on 15 fps keys.
-  - **Controller data:** `game/data/characters/locomotion.json` holds stride_m and speed_mps (Asha walk 1.00 m, 0.88 m/s; Rhen 1.05 m, 0.98; Toma 1.25 m, 1.04), plus root_travel and yaw for the starts, stops and turns. `foot_l_down`/`foot_r_down` markers.
-  - **Ratchets:** none raised. Toma's Body count sits at its limit of 200.
-  - **Gates:**
-    - hero_stage 9/9, post_import 19/19;
-    - locomotion, clips and battle tests: 32 OK; test_rig_integrity 71 OK;
-    - libraries regenerate identical after the merge;
-    - re-approved after viewing: asha_clip_walk .041, asha_clip_run .048, toma_clip_walk .053;
-    - 6 new shots (walk_cycle and turn), viewed.
-  - **Still stiff:**
-    - 15 fps keys, so feet may slip by millimetres;
-    - Rhen's and Toma's early heel lift;
-    - Toma's walk is wide;
-    - the short transitions are brisk.
-- **hero-integration clip requests (M2-HER-1105 on claude/hero-integration), which I take:**
-  - **Locomotion, in M2-CHR-12 (in flight; names aligned):** walk_start, walk_stop, run_stop, turn_in_place_l90, turn_in_place_r90, turn_in_place_180, idle_shift.
-  - **Battle fixes, next after M2-CHR-12 lands:**
-    - a livelier `victory` (it barely moves);
-    - `ko` as a fall that lies down, unless battle-presentation rewords the contract;
-    - Rhen's hooks in hand for attack and finisher (needs a hook bone; with M1-CHR-15's Rhen rebuild);
-    - a ~0.8 s `revive`.
-- **Id blocks (the Lead's rule, CONSOLIDATED §4):** my new task ids are 500–599, ADRs 0140–0149, and handoffs are named `<date>-character-characters-<n>.md`.
-  - Kerrid and Pell are renumbered M3-CHR-05/06 → **M3-CHR-505/506**, so they don't collide with big8's M3-CHR-05 (the 32 Ch4–Ch9 clips). That task folds into the clip work when it lands.
-  - The duplicate M2-CHR-11 is removed. The canonical `M2-CHR-11-host-snaps-heroes-villagers.md` is claimed, with the PC evidence that hair positions and the LOD1 decimate inputs differ too.
-  - Kerrid's paused branch still names the task M3-CHR-05; rename it when it resumes.
-- **Un-pushed paused WIP (local worktree branches; not merged on purpose):**
-  - **Kerrid, M3-CHR-505:** branch `worktree-agent-a163619bbd2d21786` @ e67e6aba. The build runs end to end, but the GLB is 5.30 MB (cap 5) and LOD1 is 35k (budget ~28k). His hero_clips block makes a no-argument `hero_clips.py` run fail until kerrid.glb exists, so he isn't merged. The next step is in the task's Notes.
-  - **Liss, M3-CHR-03 hero half:** branch `worktree-agent-a61329e979970a83f` @ c5e3a320. LOD0 55,820, about 4.1 MB, with the 10 story clips and 11 battle clips. Not merged: two source edits (`TAIL_ROOT_H`, `SLEEVE_KEEP_NEAR_TORSO`) aren't built into the committed files yet, and the probe, Godot tests, shots and verify are still to run. The next step is in the task's Notes.
-- **Kerrid and Pell design sheets merged** (kerrid.md, pell.md; M3-CHR-505 and 06).
-  - Pell (M3-CHR-506) waits on **M3-NAR-01**: in outline, Pell's arc is close to the inspiring series' beast-folk guardian; the costume avoids every visual cue, but Narrative must rule on the arc. That task also carries the sheets' story questions and the stale ADR 0020 and glossary rows.
-- **From the M3 sheets:**
-  - Liss is a party member, so she is on the hero path; she stays in M3-CHR-03.
-  - Mother Kell is Oruvel's chandler, not the diver. The story corrected this; glossary rows 195 and 254 are stale.
-  - Ysolde's Swell input is Glyph Trace.
-- **Blocker cleared (d523d43):** Toma's mouth/teeth/tongue are on `character_mouth`; the integration branch is merged;
-  `--filter=character_shading` 17/17, hero_stage 6/6, post_import 19/19; `verify --job toma` 38 identical. Ready to merge.
-  (send_message to the Lead was refused: "needs a trusted device", so this log is the channel.)
-- **To the Lead: the asha reproducibility gate (your two messages; send_message back to you is refused for "needs a trusted device").**
-  - **Threads aren't the cause.** `default_threads` is 4 in blender_builds.json, and verify applies it to every job without its own pin. This container is 4 vCPU, and my asha verify was 44 identical at ddc5eb2, 47b36c5 and again now.
-  - **The cause is the host CPU's SIMD level**, which numpy dispatches at runtime. I reproduced it here with `NPY_DISABLE_CPU_FEATURES="X86_V3 X86_V4"`:
-    - (a) the face solve leaves midline coordinates at 0 or ~1e-16;
-    - (b) float32 rounding of tiny morph deltas flips;
-    - (c) `asha_textures.write` rounds a few float texels that sit exactly on an 8-bit .5 boundary either way: 6 head-normal texels.
-  - **Fixed in the commit after this note:**
-    - Asha's head coordinates below 1e-9 snap to 0 (`MIDLINE_SNAP`).
-    - Shape-key deltas go on a 1 µm grid (`snap_shape_noise`).
-    - Asha's texture run pre-rounds to 6 decimals before the 8-bit rounding (`PRE_ROUND`).
-  - **Result:**
-    - Asha's GLBs, LOD1 and all 20 textures are byte-identical between the AVX-512 and AVX2-only numpy paths.
-    - `verify --job asha` is 44 identical.
-    - The asha_* shots are unchanged (RMSE ≤ 0.0003; no re-approval needed).
-  - **Other jobs:** rhen, toma and the villagers keep their bytes (they don't opt in to `PRE_ROUND` yet; see M1-CHR-15). They are identical on both our hosts.
-  - **Still to confirm:** your report also showed a Head `TEXCOORD_0` diff, which I couldn't reproduce on this host. The midline snap removes the likeliest trigger. Please re-run your gate at my latest head. If it still differs, push your rebuilt asha outputs to a scratch branch and I'll diff the UVs.
-- **M1-CHR-14 → review (reviewer: rendering). Ready to merge.** Handoff: 2026-10-24-character-8.md.
-  - **Braid (ddc5eb2):** seated on the scalp; scalp cards run to within 12 mm of the root; scalp_cards 122. Probe gap 1.9 mm, drift 0.
-  - **Guards:** `tools/dev/rig_probe.py`, `rig_checks.json`, `tools/tests/test_rig_integrity.py` (34 tests, passing). Docs: pipeline.md §16.
-  - **Asha (47b36c5):**
-    - Skirts follow the legs; the shins stay under the skirts, so there is no floating foot.
-    - Sandals ride the feet; the vest, bodice and collar ride the torso, with deeper armholes; the staff sits 1 cm out.
-    - LOD0 64,624 (target now 65k).
-  - **Toma (0e2f769):** the tunic armhole drops; the shield clears his head; the spear's offset, splay and binding are fixed; the spear clips are staggered.
-  - **Rhen:** clean in two new clip shots.
-  - **Probe, worst mm before → after:**
-    - Asha skin through cloth: 264 → 47 (armpit only).
-    - Asha exposed boundary: 51 vertices → 2.
-    - Asha staff: 6.7 → 0.
-    - Toma shield: 26 → 0.
-    - Toma spear: 27 → 15.
-    - What remains is linear-skinning limits, pinned per hero as ratchets in rig_checks.json.
-  - **Follow-up M1-CHR-15 (todo):** skirt and corrective bones. The deepest lunge still stretches Asha's tube skirts (asha_clip_offer_hand).
-  - **RMSE of the re-approved shots (all viewed side by side):**
-    - Braid round, 18 shots: face_neutral .0311, face_smile .0316, face_grief .0314, stylized_compare .0269, smile_variant .0270, sleeve_s0 .0138, sleeve_s4 .0138, profile .0110, q34 .0108, clip_run .0107, clip_face_west .0104, clip_walk .0103, front .0100, extreme_pose .0092, battle_idle .0078, clip_laugh .0077, kneel .0075, offer_hand .0065. This round includes the CHR-10 to 13 drift.
-    - Clipping round, 13 shots: offer_hand .0558, kneel .0453, laugh .0448, run .0309, extreme_pose .0221, walk .0188, stylized .0158, smile_variant .0158, battle_idle .0141, face_west .0120, sleeve_s0 .0100, sleeve_s4 .0100, q34 .0098.
-    - Toma: face_neutral .0212, face_smile .0212, back .0181, profile .0179, battle_idle .0132, front .0122, q34 .0098.
-    - New baselines: rhen_clip_take_hand, rhen_clip_kneel, toma_clip_walk, toma_clip_talk.
-- **M2-CHR-03 villagers → review:**
-  - Merged (6b39760) and rebuilt on the shared costume and mouth changes (8e57be6).
-  - 9 villager shots re-approved after viewing: osu_face .0222, child_face .0215, reed_face .0191, fisher_face .0145, neme_face .0134, reed_front .0120, vendor_face .0112, netmender_front .0103, lineup .0088.
-  - The capsule → actor scene table for m2-slice is in 2026-10-24-character-7.md.
-- **Gates run:**
-  - `verify --job asha`: 44 identical.
-  - Godot `hero_stage` 6/6, `post_import` 19/19.
-  - validate_data and taskboard: OK.
-  - `test_rig_integrity` 34 OK; `test_asha` OK.
-  - Verify, with the host-determinism fix in the tree: asha 44, rhen 31, toma 38, and all seven villager jobs (34/30/30/30/30/30/30) identical.
-  - Shots: the 37 rhen_/toma_/villager_ shots and the 18 asha_ shots all pass their baselines unchanged.
-  - Full `tools/tests`: 580 OK (4 skipped).
+## Now (2026-10-28)
+- **Act I inventory scope (M3-HER-1144, the Lead's split, 10-28 01:54).** Mine: the named story NPCs, in story order:
+  - Ch1: sabe, scaleman, skipper_sadi.
+  - Ch4: ferrymaster, purser.
+  - Ch5: tender, elder, garo.
+  - Ch6: clerk, stillguard_a, stillguard_b, stillguard_c.
+  - Ch7: ione, poolkeeper.
+  - Ch8/9: fenn, gatekeeper, hobb, ivo, marra.
+  - Agents are on them: one on the villager pipeline (the NPCs), one on Moll's kit (the Stillguard).
+  - neme, osu, reed and tavi already have models; their capsules are the level owners' swap (M3-CHR-519).
+  - Kerrid's battle actor is mine and done; it now holds the cleaver (b815df60).
+  - Liss's battle actor and the party capsules are integration-qa's; generic villagers are the creatures track's.
+- **The Lead's big12 review:**
+  - (1) "Asha's staff is gone from her static views" does not reproduce. In `gpu/gate-big12-shots`, asha_front,
+    asha_q34 and asha_sleeve_s0 all show the staff (beside the open hand: the grip is M2-CHR-515, not in big12). Headless
+    on the current head, DEF-staff stands upright at the hand with its foot on the floor, and the Staff mesh is visible.
+  - (2) The stiff bell is real. Measured: the front panel's lower bone stands 40-70 degrees out through walk and run.
+    The two-bone panel can't hang from the knee; tuning the gait and the leg clearances changed nothing. Fix in
+    progress: M2-CHR-522, a third panel bone per panel (agent in `/home/user/skirt-wt`).
+- **Pushed, MERGE-READY (see the NEW ACCOUNT section):** M2-CHR-515 grip + guards @ 1b5277f6 (with the big11+ merge and
+  Rhen's lie_in_shallows); M2-CHR-520, the staff set down in the kneels, @ 70efe4f1. M2-CHR-11 done (pc-gpu).
+- **Renders:** Liss approved (ee3bd33). 038d565 and 7f56d64 were viewed but not approved; the 1b5277f6 and 70efe4f1
+  requests supersede them.
+- **In flight (local worktrees, not pushed):**
+  - Kerrid (M3-CHR-505), `/home/user/chr-wt`, branch `chr-kerrid-wip`:
+    - built: GLB 4.96 MB, LOD1 28.6k, textures, materials, 34 clips;
+    - the yoke clears the jaw; probe ratchets pinned;
+    - an agent is wiring the stage, shots, tests, verify job, import files and PROVENANCE.
+  - Moll (M3-CHR-507): design sheet pushed (`docs/kb/art/characters/hadric_moll.md`). An agent is building him in
+    `/home/user/moll-wt` (branch `chr-moll-wip`).
+- **Next:**
+  - Merge `chr-kerrid-wip`, then `chr-moll-wip`, into claude/characters; gate; MERGE-READY; render requests.
+  - Liss and Rhen hair fringe (liss_review.md).
+  - Toma's beard edge, once the toma_face render is back.
+  - Pell stays blocked on M3-NAR-01.
+- **Pell (M3-CHR-506), 2026-10-28, worktree `/home/user/pell-wt`, branch `chr-pell-wip` (local, not pushed):** built
+  and in `review` (reviewer rendering), the sheet's §12 questions carried with their defaults (M3-NAR-1000 still todo).
+  LOD0 47.0k / 4.09 MB, LOD1 27.3k / 1.33 MB; 21 clips (story + contract + revive), other libraries byte-identical;
+  battle actor, name-shell toggle, 14 shots self-rendered and viewed (no baselines); rig probe passes with pinned
+  allowances; job `pell` verified natively and on the two numpy paths (see the task notes). Not final art: the face reads
+  as a muzzled human and the fur as a carving at full figure (`docs/kb/art/characters/pell_review.md`). Next: merge it,
+  render the 14 `pell_*` shots, Rendering decides the face/fur pass. Handoff `2026-10-28-character-pell-1.md`.
+  **Look-dev pass done (same branch, 4 commits after the coordinator's review):** an otter-like head (the warp now
+  reshapes the donor head onto a Kirru head surface; no ADR needed), short soft fur with standing outline fur, the split
+  reed girdle (§12 Q3's default overridden: it read as nudity), the crest skinned (it floated), stronger face shapes,
+  storm_call's palm on the throat. Verified on three numpy paths, rig probe and tests green. Left: the almond lids,
+  human ears, uniform fur at full figure (pell_review.md).
 
 ## Queue
 1. ~~M2-CHR-01 Rhen~~ (review) → 2. ~~M2-CHR-02 Toma~~ (review) → 3. ~~M2-FP-07 clips~~ (review) → 4. ~~M1-CHR-12~~ (review;
@@ -295,8 +179,99 @@ Branch `claude/characters` (this environment; cloud session_01JqzzxgJU9Dmu7fRhmC
 - MERGE-READY @ 7f56d643: M3-CHR-05 (every `@anim` call in the dialogue now has a clip: Asha 20, Toma 12, Rhen 46, Ysolde 9, Sefir 1 incl. `bow_from_barge`, which fixes the integration branch's red TestSefirClips) and M2-CHR-514 (field life: idle_look_around, idle_fidget, talk_explain, talk_emphatic, listen_nod, look_left/right/up/down for Asha, Rhen, Toma, Ysolde). Built from data, `assets_src/characters/requested_clips.json` (act1-chapters can add clips there). Checks run: test_hero_clips (every chapter's calls exist; libraries byte-identical; cap now 3 MB), test_hero_battle_clips, test_hero_locomotion, test_rig_integrity 71 OK, test_asha/toma/sefir/ysolde OK; rig probe clean at the existing ratchets (13 overruns found and fixed in the poses, none raised); Godot hero_stage 10/10, post_import 21/21, cutscene 37/37. No Blender source touched (verify not needed). For hero-integration: see M2-CHR-514's Notes (the look poses are neck-only for a look-at blend).
 - Integration branch (big10) merged @ ecb657b8: M3-CHR-1000's requested_clips.json pending list combined with my specs; the 8 new Ch8-Ch9 calls for Asha and Toma built (pending now only Kerrid 8, Liss 11). Re-approved 27 asha_*/toma_* shots from the PC render gpu/render-characters-dc93a5d @ 265bbcf0. Checks: test_hero_clips/battle/locomotion/rig_integrity/sefir/ysolde/asha/toma/blender_builds OK; Godot hero_stage 10, post_import 21, cutscene 51, character_shading 17 OK. Pell (M3-CHR-506) still blocked on M3-NAR-01 (pell-arc-echo request task, todo). Next: Liss (M3-CHR-03 hero half), then Kerrid.
 - MERGE-READY @ ee3bd335: M3-CHR-03 Liss hero half (review: rendering after the PC render). GLB 4.19 MB, LOD1 26k. Checks: verify --job liss identical on native / X86_V4-off / X86_V3+V4-off; test_liss, test_hero_clips, test_hero_battle_clips (Liss in HEROES), test_hero_locomotion, test_rig_integrity (TestRigIntegrityLiss) OK; Godot hero_stage 10, post_import 21 (liss .glb.import files carry the characters script), character_shading 17, cutscene 51 OK; validate_data, taskboard, gdlint. Ratchets pinned with reasons. PC confirmed M2-CHR-11 on AVX2 hardware (12/12). Filed M2-CHR-515 from M1-QA-09: props not gripped (next item).
+- MERGE-READY @ 1b5277f6 (FAST-TRACK, M1-QA-09): M2-CHR-515, the grip, plus the integration merge (big11+) and Rhen's new lie_in_shallows (M2-FP-103). Asha's staff and Toma's spear are built through the fist, ride their own bones (DEF-staff, DEF-spear) under the right hand, and are held by an exact hold with the fingers closed round them. They slide to rest on the floor, and pivot in the fist clear of the skirt and legs (prop_pivot). **New rig-probe guards, as asked:** `prop grip` (the shaft stays through the fist) and `prop through_garment` (no line along the shaft crosses a garment), with tests. Walk, run and the stands are clean for Asha, and every clip is clean for Toma. **Not fixed, and tracked:** Asha's kneel, sit and bow clips (including kneel_over_rhen, laugh and offer_hand) still cross the pooled skirt. They are documented allowances for M2-CHR-520 (set the staff down); M2-CHR-515's ⚠3 is unticked. Checks run (on the merged tree): verify asha and toma identical on native, X86_V4-off and X86_V3+V4-off (before the clip-only changes; clips aren't job outputs); test_hero_clips, test_hero_battle_clips, test_hero_locomotion, test_rig_integrity (new prop tests), test_asha, test_toma, test_blender_builds OK; Godot hero_stage 10, post_import 21, character_shading 17, cutscene 67 OK; gdlint, gdformat, validate_data, taskboard OK. Skipped: none that can catch this diff. Also: M2-CHR-11 is done (pc-gpu review logged). Filed M3-CHR-507 (Inquisitor Hadric Moll), 508 to 512 and 516 to 518 (the Act I people still capsules), and 519 (a request to swap capsules whose characters already exist).
+
+- MERGE-READY @ 70efe4f1 (FAST-TRACK, M1-QA-09 ⚠2/⚠3): M2-CHR-520. Asha sets the staff down on the floor beside her where she kneels, sits or crouches (kneel_over_rhen, laugh, offer_hand, rise_to_stand, sit, sit_beside, bow_palms_flat, kneel_hum, kneel_touch_ring, feed_fire, float_boat), and takes it up again when she rises. Held, it crossed her pooled skirt; the guard proved neither pivot clears that. The rig-probe allowance list is now only pole_in, pole_out and one attack sleeve line. Checks: test_hero_clips, test_hero_battle_clips, test_hero_locomotion, test_rig_integrity, test_asha, test_toma OK; Godot hero_stage 10, post_import 21, cutscene 67 OK; validate_data, taskboard OK. Verify not needed: clips only, no Blender source changed.
+
+- MERGE-READY @ (this commit): M2-CHR-521, Liss's and Rhen's fringe ends stagger (the helmet edge in liss_review.md). Checks: verify --job liss and --job rhen identical natively, X86_V4-off and X86_V3+V4-off; test_liss, test_hero_clips, test_hero_battle_clips, TestRigIntegrityLiss and TestRigIntegrityRhen OK. Merged with the integration head (big12+), which is clean. Its shots are in the one open render request.
+
+- MERGE-READY @ (this commit): M3-CHR-505 Kerrid, for M3-HER-100's prologue vigils too.
+  - Budgets: kerrid.glb 4.96 MB (no LFS needed), LOD1 28.6k and 1.48 MB, LOD0 58k.
+  - The yoke clears the jaw (48 mm below the chin); the chest rope sits 141 mm under the shoulder. Textures and materials are in; 34 clips cover every dialogue call; the battle clips pass the contract.
+  - kerrid_battle.tscn: the back cleaver is hidden and the hand cleaver is on DEF-hand.R.
+  - Checks: verify --job kerrid identical on all three numpy paths. On the merged tree, test_kerrid, test_hero_clips, test_hero_battle_clips, test_hero_locomotion, test_rig_integrity (Kerrid ratchets documented), test_asha, test_toma, test_liss and test_blender_builds pass. Godot hero_stage 10, post_import 21, character_shading 17 and cutscene 67 OK; gdlint, gdformat, validate_data and taskboard OK. Every other hero's library is byte-identical after the merge.
+  - Known: his battle idle has the hands at his sides (the sheet wants both hands on the haft). This needs a battle idle pass after the render.
+
+- MERGE-READY @ 9053b9cf: M2-CHR-522 and M3-CHR-507.
+  - **M2-CHR-522**, Asha's skirt hangs from the knee. A third panel bone, DEF-skirt_<k>.002, runs below the knee. The front panel's lowest bone stays within 2 degrees of vertical in walk and run; the old lower bone stood up to 69 degrees out. The stage port (hero_helper_bones.gd) matches.
+  - **M3-CHR-507**, Inquisitor Hadric Moll: LOD0 54.4k, moll.glb 4.15 MB, 16 clips. ko is his yield, held kneeling. The brine-iron is gripped. Battle actor at game/characters/foes/moll_battle.tscn. M3-CHR-523 asks Combat to point stillguard_inquisitor at it.
+  - Checks: verify --job asha and --job moll identical on all three numpy paths (and --job toma for the builder hooks). On the merged tree: test_hero_clips, test_hero_battle_clips, test_hero_locomotion, test_kerrid, test_moll, test_asha, test_toma, test_liss, test_blender_builds and test_rig_integrity OK; Godot hero_stage 10, post_import 21, character_shading 17 and cutscene 67 OK; gdlint, gdformat, validate_data and taskboard OK.
+  - Self-render of the affected shots is running; a SELF-RENDERED line follows.
+- **ADR 0041 refocus (Act I final):** in order, (1) Moll's battle actor (done; the enemies.json pointer is Combat's, M3-CHR-523), (2) the skirt (done) and the staff in every view (self-render checks it), (3) the Act I NPC capsules (agents building them now: villager-path townsfolk, clerk, Reeds and wrights; Stillguard on Moll's kit), (4) party outfits and faces at dialogue range (next). Paused: Kerrid's later-act looks.
+
+- MERGE-READY @ (this commit): M3-CHR-505, Kerrid's battle stance (b815df60 + the PROVENANCE row). His battle actor plays anim/kerrid_battle_clips.tres: the idle holds the cleaver low with both hands on the haft. The field library is unchanged. rig_probe also samples the battle library. Checks: test_hero_clips, test_hero_battle_clips, test_kerrid and test_rig_integrity (all heroes) OK; Godot hero_stage 10 and post_import 21 OK; validate_data OK. Self-rendered kerrid_battle_idle (reads right) and kerrid_battle_attack (reads as a thrust: M3-CHR-525).
+
+- MERGE-READY @ (this commit) **FAST-TRACK** (the human's playtest: Asha's run "flops"): a grounded run for Asha, Toma and Rhen, who share the run base (`_RUN` in hero_clips.py). The free arm stays bent near the body and folds more as it comes forward (no straight-arm reach). It barely moves out from the side (abduction 12° to 6–7°) and lags less. The hip and chest counter-turn is smaller (7°/7° to 4.5°/4°), the swing-foot lift is lower (0.12 to 0.09 m, bump 10° to 6°) and the staff and spear follow is steadier (5° to 2.5°). Rhen keeps his sprinter arm, a little smaller (36° to 30°, lift 0.14 to 0.12 m). Foot plants unchanged in kind (test_hero_locomotion green). Checks: test_hero_locomotion 8, test_hero_clips 19, test_rig_integrity 184 OK (44 skipped); Godot `--filter=hero` 98 run, 0 failed. Verify not needed: clips only, no Blender source changed.
+
+- MERGE-READY @ 68ca13c9: M3-CHR-508, the Stillguard soldiers (stillguard_a, _b, _c on Moll's kit, worn and unmarked, with field and battle clips), plus M3-CHR-590 filed for their dialogue clips. The level owners swap the capsules (M3-CHR-519). Checks on the merged tree: validate_data, taskboard, gdlint, gdformat; test_hero_clips, test_hero_battle_clips, test_stillguard, test_moll, test_kerrid, test_blender_builds and test_rig_integrity OK (44 skipped); Godot hero_stage 10 and post_import 21 OK. The clip regen left the tree unchanged.
+
+- MERGE-READY @ 9ea8d3d7: the named Act I NPCs, M3-CHR-526..539 (sabe, scaleman, skipper_sadi, ferrymaster, purser, elder, garo, tender, ione, poolkeeper, fenn, gatekeeper, hobb, marra), plus the generic villagers built before the re-split (shopkeeper 512, smith 516, innkeeper 517, the clerk 509, four Reed polers 510, the Saltwright girl and two children 511). All are on the villager pipeline: 27–36k triangles, LOD1 13.6–17k, under 2.2 MB, and every job is byte-identical on native, X86_V4-off and X86_V3+V4-off. It also fixes build_villager.clear_teeth_strip (the teeth texture showed on seven heads' temples). Not built: Ivo, who is in Stillguard armour (M3-CHR-540, mine next), and the ferryman and mate (another track's). The level owners' swaps are listed by actor path in M3-CHR-519. M3-CHR-518 is blocked: the Prologue vigil is the seven party members, not strangers. Checks on the merged tree: validate_data, taskboard, gdlint, gdformat; test_villagers, test_blender_builds, test_hero_clips, test_rig_integrity OK (the 169 skips are villagers with no braid or prop); Godot post_import 21 and villager 23 OK. 45 new shots, no baselines.
+- MERGE-READY @ 95489b3d: M2-CHR-521, Liss's fringe (big13's review: blocky teeth at dialogue range). Every card ends on the atlas's fading tip and tapers to a point. The cards gather in clumps of five whose tips draw together, and the stagger is wider, so the ends fall at different depths over the brow. Checks: verify --job liss identical on all three numpy paths; test_liss, test_hero_clips and TestRigIntegrityLiss OK. Self-rendered liss_face and liss_face_stylized before and after: the orange square-ended cards are gone and the edge is broken. A darker band still follows the hairline (the painted scalp under the cards); that is the next look-dev step if the Lead still sees it.
+- Done: Asha's stand_at_pool (efe1447d, big13's request for the First Verse S08), rendered and viewed.
+
+- MERGE-READY @ (this commit): M2-CHR-522 follow-up, big13's review that Asha's skirt was still a stiff white bell in asha_clip_bow_palms_flat. Pooling cloth now drapes onto the floor: where a lowest panel bone would gather shorter than drape_below_gather (0.75), it first swings out, by the least swing up to drape_max_deg (70), that lays its full cloth on the floor, and gathers only the rest. Both are new keys in helper_bones.json, and the change is in both hero_clips.skirt_solve and HeroHelperBones. Walk and run are unchanged: their gathers are all at or above 0.92. Only asha_clips.tres changed. Checks: validate_data, gdlint, gdformat; test_hero_clips, test_hero_locomotion, test_asha and TestRigIntegrityAsha OK; Godot hero_stage 10 (the stage solve matches the baked clips), post_import 21 and cutscene 77 OK. Self-rendered bow_palms_flat and kneel_over_rhen before and after. In the kneel the white underskirt now spreads on the floor beside her. In the bow the vertical white wall is lower and slopes out. **Partial:** the overskirt is still a smooth panelled bell with no folds. Folds need more panel bones or a cloth pass, which I propose as the next skirt step if the Lead still reads it as stiff.
+
+- MERGE-READY @ (this commit): big14's test_hero_clips failures (gpu/gate-big14-shots merged here). big14 took claude/characters at 441bebe3, before efe1447d built stand_at_pool and struck it from the pending list, and before the later clip regens. With big14 merged on this head, test_hero_clips runs 19 OK: asha's library rebuilds byte for byte and the pending list is empty. validate_data OK. Merge this head, not 441bebe3; it also carries the NPCs, Liss's fringe and the skirt drape (their MERGE-READY lines above).
+
+- MERGE-READY @ (this commit): M2-CHR-524, short hair and beards at dialogue range (Toma, Kerrid, Moll and the netmender; cause and changes in the task file), with the six Stillguard soldiers rebuilt on the same hair code, and M3-CHR-540, Ivo Brannick: a named Stillguard with his face uncovered, the shield on his left arm and no spear, plus hug_lift and kneel_palms_flat. His output is assets/characters/ivo/ (the speaker id); the level owners' swap notes are in M3-CHR-519. Checks: toma, kerrid, moll, villager_netmender, stillguard and ivo identical on native, X86_V4-off and X86_V3+V4-off (moll re-verified after Ivo's spear opt-out); test_short_hair_dialogue, test_toma, test_kerrid, test_moll, test_stillguard, test_villagers, test_hero_clips, test_blender_builds, TestRigIntegrityIvo OK; Godot post_import 21 OK. Self-rendered toma_face_neutral, kerrid_face, moll_face, ivo_face and ivo_front: the beards read short and dense, the crops fine, with no notch round Kerrid's mouth. Left: faint mottling on Toma's crown up close; Kerrid's grey is quiet (Art's call); Moll's fringe ends in a straight line; toma_lod1 is 1.55 MB (pipeline.md §14 says under 1.5, not enforced). In Ivo's test stages the shield stays on his arm, so it juts out in the hug (the scene drops it first). The helmeted soldiers' scalp keeps its old paint (Moll's scalp shade is Moll-only). Also filed M3-CHR-541: validate_creatures only accepts game/creatures/ models, so the Inquisitor's pointer to moll_battle.tscn waits on the creatures track.
+
+- Asha's skirt as cloth (the Lead's queue): **not merge-ready, needs a decision.** A 16-panel prototype (fluting pooled hems) makes the kneels' hem fold visibly, but asha_clips.tres grows to 4.94 MB (over test_hero_clips' 4 MB text bound), the staff's skirt-clearing pivot regresses in pole_out and walk, and turn_in_place is 2 mm worse. Filed as M2-CHR-542 with the patch (docs/kb/art/characters/asha_skirt16.patch) and three options for the size: (a) binary .res libraries, (b) no baked skirt tracks (runtime HeroHelperBones everywhere), (c) sparser skirt keys. **Lead: which?** Until then the merged 8-panel floor drape (8e7d5f67) stands.
+
+- MERGE-READY @ (this commit): M2-CHR-542, Asha's skirt as cloth, per the Lead's decision. It was option (b), but measured: HeroHelperBones.drive costs about 107 ms per hero in GDScript (the budget is 0.2), and the (c) fallback, sparser keys, was still 4.62 MB. So it is ADR 0140:
+  - 16 panels. The 8 odd panels lie over the legs; they are solved and baked as before.
+  - The 8 even panels are derived each frame by HeroSkirtFolds, a SkeletonModifier3D that the characters import adds to every Asha GLB. A derived panel takes the larger of its neighbours' swings, their mean at the hem and in gathers, and a 6° fold where the hem drapes out. It costs 0.037 ms per hero.
+  - asha_clips.tres is 3.82 MB.
+  - The staff pivot is fixed: it keeps 50 mm from the cloth and stays clear of the head. Neither pole_out nor walk regresses.
+  - Self-rendered and viewed: in kneel_over_rhen, bow_palms_flat and float_boat the pooled hem rolls in soft folds (the first try made spikes and was toned down). walk_cycle and run read as before.
+  - Checks: test_asha, test_hero_clips, test_hero_locomotion, test_hero_battle_clips, test_blender_builds, TestRigIntegrityAsha OK (Body count ratchet 24 -> 25, reasoned); Godot hero_stage 11 (including the new test_skirt_folds_are_derived_at_runtime: the modifier is there, no clip bakes a derived panel, under budget), post_import 21, character_shading 17; cutscene 84/1, the known failure in test_act1_cutscene_walks (Toma's dock_shore, a level's floor, in big14's gate too); asha identical on all three numpy paths.
+  - Note for gates: Asha's GLB changed, so stale import caches re-import it and pick up the modifier.
+
+- MERGE-READY @ 6ee094df: the Act I NPCs polished at dialogue range, in the Lead's story order (M3-CHR-526..539 plus tavi, neme, osu and reed):
+  - Grey hair is fine strands, not white chips.
+  - Stubble has a soft shadow.
+  - Head wraps and headbands sit on the skin, with no dark band and no floating.
+  - Hobb's cord has its three knots, Marra has her netting shawl and wrist cord, Garo his forearm burns, and the pool-keeper chalky fingertips.
+  - Eight committed head textures that predated M2-CHR-524 were rebuilt, so every villager job verifies again.
+  - All are optional data keys: the other villagers are byte-identical. All 34 villager jobs are identical natively, and every changed one on all three numpy paths.
+  - Checks on the merged tree: validate_data, taskboard, test_villagers (with TestDialoguePolish), test_blender_builds, test_hero_clips and test_rig_integrity OK (173 skips: no braid or prop); Godot post_import 21. `--filter=villager`: 3 failures in test_villager_routines, the same ones big14's gate lists (not models).
+  - Self-rendered and viewed (marra, tavi, osu, garo before and after): they read right.
+  - **Left:** Sabe's and Ione's sleeveless tops still cut like a halter (a cap sleeve and broader straps both broke the rig limits, so they need a garment-fit pass). The cropped hair ends bluntly at the forehead (the shared painted scalp). The old villagers' brows are a flat smear up close.
+- Act I GPU QA row 31 (big15: Asha's skirt over Rhen on the beach) is staging, not the skirt. She kneels with her knees at his chest; the kneeling skirt reaches 0.67 m forward and 0.85 m to each side. Filed M3-CHR-543 to cinematics / m2-slice: kneel her beside him. The skirt itself is also reworked since big14 (8e7d5f67 drape, 67a1b2a0 folds).
+
+- MERGE-READY @ (this commit): M2-CHR-544, real closed-hand grips (the PC's M1-QA-09 on big15: open hands on the staff and spear).
+  - **Cause:** the GLBs build the shaft through the open rest hand's fingers (joints 6–36 mm from a 19.6 mm shaft's axis), so no curl could wrap it.
+  - **Fix:** the fingers first close to a fist, and the prop's bone moves in the hand's frame so its shaft runs through the fist's hole (Asha 13 mm, Toma 24 mm). Each finger joint is then solved on its own, kept level with its knuckle, and the thumb's search is wider. The offset is in every clip's prop keys, in grips.json for the stages, and in rig_probe.
+  - **Who:** Asha, Toma, Moll and the six Stillguard soldiers; Rhen's hooks get the per-joint solve.
+  - **Checks:** test_hero_clips, test_hero_battle_clips, test_hero_locomotion, test_asha, test_toma, test_moll, test_stillguard, test_villagers OK; rig probe Asha, Toma, Rhen, Moll and Stillguard A–F OK (grip offset under 2 mm on every posed frame); Godot hero_stage 11, post_import 21. Clips and data only, no Blender source changed.
+  - **Seen:** self-rendered at 1920×1080 and viewed zoomed in: Toma's and Moll's hands are closed fists round the shaft. Asha's fingers wrap the staff, a looser grip on her small hand.
+  - The staff in the kneels was already set down beside her (M2-CHR-520), so nothing crosses the skirt there.
+
+- MERGE-READY @ (this commit): the NPC polish's leftovers.
+  - **Sleeveless tops:** Sabe's and Ione's tops are ordinary tank tops with straps over the shoulders, not halters (new `_costume.top.armhole_cut: "tank"`). Their rig limits went down, not up.
+  - **Hairline:** the painted hairline under cropped hair is feathered into a broken edge for Sabe, Ione and Hobb (opt-in `HAIRLINE_FEATHER`; the heroes are byte-identical, asha verified).
+  - **Brows:** the old villagers' brows (Fenn, Marra, Osu, and Sabe) are wiry painted strands under lighter cards, not a flat smear.
+  - **Checks:** the six changed jobs identical on all three numpy paths; a native verify of the other 28 villager jobs and 10 hero jobs, 38/38 identical; test_villagers 45 (with TestDialoguePolish2), test_blender_builds, test_hero_clips, test_asha, and rig probes Sabe, Ione, Hobb, Fenn and Marra OK; validate_data and taskboard OK.
+  - **Seen:** self-rendered and viewed before and after.
+  - **Left:** Ione's top stands out under the arms like short cap sleeves (it did before); a faint edge where each strap lies over the panel; Ione's fringe shows the card tips as short dark dashes.
+  - **Shots to re-approve:** these six NPCs' face and front shots.
+
+- MERGE-READY @ 787211f1: **Pell (M3-CHR-506)**, the Kirru hero. ui-menus can bake his portrait from pell_face.
+  - **Head:** the MPFB2 donor head warped onto an otter-like head (broad low skull, short muzzle, nose pad, whisker pads, thick neck). It reads as otter or weasel in profile and three-quarter. All 40 face shapes, no ADR needed.
+  - **Build:** short soft fur with 4,200 outline fur cards; the reed mantle, name-shell (blank and carved), the staff in a closed left fist; pell.md §4.2's reed girdle (the §12 Q3 default overridden on review: it read as nudity).
+  - **Clips and actor:** 21 clips (9 story, the 12-clip battle contract, revive) and pell_battle.tscn. LOD0 52.3k, 4.72 MB; LOD1 27.2k, 1.31 MB.
+  - **Checks:** verify --job pell 37/37 identical on all three numpy paths; test_pell 20, test_hero_clips, test_hero_battle_clips, test_blender_builds and TestRigIntegrityPell OK (ratchets reasoned in rig_checks.json: ko squat, arm across the chest); Godot post_import 21, hero_stage 11, pell 3; validate_data, taskboard, gdlint and gdformat OK.
+  - **Seen:** self-rendered all 14 pell_* shots and viewed them.
+  - **Not yet Kerrid's bar** (a second look-dev pass is running): the eyes are human almond lids with whites, the ears small human ears, the face's fur smooth up close, the body thin and smooth between the fur cards; the right hand is open in storm_call.
+  - **Requests:** M3-BPR-1340 (battle framing for his height), M3-CIN-1240 (crest values with face tags). Narrative's pell.md §12 questions are carried with their defaults.
+
 ### Render requests
-RENDER-REQUEST @ dc93a5de: asha_front,asha_q34,asha_profile,asha_face_neutral,asha_face_smile,asha_face_grief,asha_sleeve_s0,asha_sleeve_s4,asha_extreme_pose,asha_face_stylized_compare,asha_clip_kneel_over_rhen,asha_clip_walk,asha_clip_offer_hand,asha_clip_face_west,asha_clip_laugh,asha_clip_run,asha_smile_variant_compare,asha_battle_idle,rhen_battle_idle,toma_battle_idle,rhen_front,rhen_q34,rhen_profile,rhen_back,rhen_face_neutral,rhen_face_smile,toma_front,toma_q34,toma_profile,toma_back,toma_face_neutral,toma_face_smile,rhen_clip_take_hand,rhen_clip_kneel,toma_clip_walk,toma_clip_talk,asha_battle_attack,rhen_battle_attack,toma_battle_attack,asha_clip_walk_cycle,asha_clip_turn,rhen_clip_walk_cycle,rhen_clip_turn,toma_clip_walk_cycle,toma_clip_turn; why: M1-CHR-15 rebuilt Asha, Rhen and Toma (skirt gathers, shoulder correctives, spear) on top of M2-CHR-12's clips
-RENDER-REQUEST @ 038d5651: rhen_battle_idle,rhen_front,rhen_q34,rhen_profile,rhen_back,rhen_face_neutral,rhen_face_smile,rhen_clip_take_hand,rhen_clip_kneel,rhen_battle_attack,rhen_clip_walk_cycle,rhen_clip_turn,rhen_battle_ko,rhen_battle_victory,rhen_battle_finisher,asha_battle_ko,asha_battle_victory,toma_battle_ko,toma_battle_victory; why: M2-CHR-513 (new ko/victory/revive clips, Rhen rebuilt with hook bones and his hooks in hand in attack and finisher; 7 new shots)
-RENDER-REQUEST @ 7f56d643: asha_clip_bow_palms_flat,rhen_clip_lift_housing,toma_clip_stack_bowls,ysolde_clip_read_letter,rhen_clip_talk_explain; why: M3-CHR-05 story clips and M2-CHR-514 field-life samples (new shots, never rendered)
-RENDER-REQUEST @ ee3bd335: liss_front,liss_back,liss_three_quarter,liss_face,liss_face_stylized,liss_silhouette_vs_rhen,liss_clip_haul_rope,toma_clip_walk_cycle; why: M3-CHR-03 Liss built (7 new shots, no baselines); toma_clip_walk_cycle only as a control
+RENDERED+APPROVED (gpu/render-characters-dc93a5d) RENDER-REQUEST @ dc93a5de: asha_front,asha_q34,asha_profile,asha_face_neutral,asha_face_smile,asha_face_grief,asha_sleeve_s0,asha_sleeve_s4,asha_extreme_pose,asha_face_stylized_compare,asha_clip_kneel_over_rhen,asha_clip_walk,asha_clip_offer_hand,asha_clip_face_west,asha_clip_laugh,asha_clip_run,asha_smile_variant_compare,asha_battle_idle,rhen_battle_idle,toma_battle_idle,rhen_front,rhen_q34,rhen_profile,rhen_back,rhen_face_neutral,rhen_face_smile,toma_front,toma_q34,toma_profile,toma_back,toma_face_neutral,toma_face_smile,rhen_clip_take_hand,rhen_clip_kneel,toma_clip_walk,toma_clip_talk,asha_battle_attack,rhen_battle_attack,toma_battle_attack,asha_clip_walk_cycle,asha_clip_turn,rhen_clip_walk_cycle,rhen_clip_turn,toma_clip_walk_cycle,toma_clip_turn; why: M1-CHR-15 rebuilt Asha, Rhen and Toma (skirt gathers, shoulder correctives, spear) on top of M2-CHR-12's clips
+SUPERSEDED (by the request @ f5f509ac) RENDER-REQUEST @ 038d5651: rhen_battle_idle,rhen_front,rhen_q34,rhen_profile,rhen_back,rhen_face_neutral,rhen_face_smile,rhen_clip_take_hand,rhen_clip_kneel,rhen_battle_attack,rhen_clip_walk_cycle,rhen_clip_turn,rhen_battle_ko,rhen_battle_victory,rhen_battle_finisher,asha_battle_ko,asha_battle_victory,toma_battle_ko,toma_battle_victory; why: M2-CHR-513 (new ko/victory/revive clips, Rhen rebuilt with hook bones and his hooks in hand in attack and finisher; 7 new shots)
+SUPERSEDED (by the request @ f5f509ac) RENDER-REQUEST @ 7f56d643: asha_clip_bow_palms_flat,rhen_clip_lift_housing,toma_clip_stack_bowls,ysolde_clip_read_letter,rhen_clip_talk_explain; why: M3-CHR-05 story clips and M2-CHR-514 field-life samples (new shots, never rendered)
+RENDERED+APPROVED (lead/gate-render-characters-ee3bd33) RENDER-REQUEST @ ee3bd335: liss_front,liss_back,liss_three_quarter,liss_face,liss_face_stylized,liss_silhouette_vs_rhen,liss_clip_haul_rope,toma_clip_walk_cycle; why: M3-CHR-03 Liss built (7 new shots, no baselines); toma_clip_walk_cycle only as a control
+SUPERSEDED (by the request @ f5f509ac) RENDER-REQUEST @ 1b5277f6: asha_front,asha_q34,asha_profile,asha_face_neutral,asha_face_smile,asha_face_grief,asha_sleeve_s0,asha_sleeve_s4,asha_extreme_pose,asha_face_stylized_compare,asha_clip_kneel_over_rhen,asha_clip_walk,asha_clip_offer_hand,asha_clip_face_west,asha_clip_laugh,asha_clip_run,asha_smile_variant_compare,asha_battle_idle,rhen_battle_idle,toma_battle_idle,rhen_front,rhen_q34,rhen_profile,rhen_back,rhen_face_neutral,rhen_face_smile,toma_front,toma_q34,toma_profile,toma_back,toma_face_neutral,toma_face_smile,rhen_clip_take_hand,rhen_clip_kneel,toma_clip_walk,toma_clip_talk,asha_battle_attack,rhen_battle_attack,toma_battle_attack,asha_clip_walk_cycle,asha_clip_turn,rhen_clip_walk_cycle,rhen_clip_turn,toma_clip_walk_cycle,toma_clip_turn,asha_battle_ko,asha_battle_victory,rhen_battle_ko,rhen_battle_victory,rhen_battle_finisher,toma_battle_ko,toma_battle_victory,asha_clip_bow_palms_flat,rhen_clip_lift_housing,toma_clip_stack_bowls,rhen_clip_talk_explain,ysolde_clip_read_letter; why: M2-CHR-515. The staff and spear are gripped, slide and pivot in the fist, which changes every Asha and Toma clip and Rhen's hook fingers. Rhen's lie_in_shallows is new. This supersedes the unapproved renders 038d565 and 7f56d64.
+- Viewed 038d565 (M2-CHR-513) and 7f56d64 (story samples). The poses read right: the kneel drift is the arm change, Rhen's ko and victory are good, and his hooks are in hand in the finisher. Not approved, because they show the ungripped staff and spear (Asha's victory, her bow_palms_flat, Toma's stack_bowls) that M2-CHR-515 replaces. Approve from the render above.
+SUPERSEDED (by the request @ f5f509ac) RENDER-REQUEST @ 70efe4f1: asha_clip_kneel_over_rhen,asha_clip_laugh,asha_clip_offer_hand,asha_clip_bow_palms_flat,asha_clip_walk,asha_clip_run,asha_battle_idle,asha_battle_ko; why: M2-CHR-520, the staff set down beside her in the kneels (view whether the lowering reads as deliberate). If the 1b5277f6 request hasn't run yet, run this one in its place for these ids.
+RENDER-REQUEST @ f5f509ac: toma_battle_idle,toma_battle_attack,toma_battle_ko,toma_battle_victory,toma_clip_walk_cycle,toma_clip_stack_bowls,rhen_front,rhen_face_neutral,rhen_battle_ko,rhen_battle_victory,rhen_battle_finisher,rhen_clip_kneel,rhen_clip_take_hand,liss_face,liss_face_stylized; why: the shots changed since my last approvals. They cover M2-CHR-515 (Toma's spear gripped), M2-CHR-513 (Rhen's ko, victory and finisher, plus the kneel drift), and M2-CHR-521 (Liss's and Rhen's fringe ends stagger). 15 shots. Asha's shots wait for M2-CHR-522 (the skirt rework), so they render once, with the grip, the set-down and the new skirt together.
+SELF-RENDERED @ 9053b9cf: asha_clip_run, asha_clip_walk_cycle, asha_clip_turn, asha_extreme_pose, asha_front, asha_clip_kneel_over_rhen, asha_clip_offer_hand, asha_clip_laugh, asha_battle_idle, kerrid_front, kerrid_face, kerrid_clip_collar_haul, moll_front, moll_face, moll_clip_yield. All drift or are new, as expected; no baselines written. What I saw: the staff is in her fist in every standing view, and laid on the floor beside her in the kneels. The skirt hangs below the knee in walk and run, with no flat disc. extreme_pose still has the flat raised-knee front (stress stage, M2-CHR-515 item 5). Kerrid and Moll read well at full figure. **At dialogue range the short-hair cards and the beards are blotchy** (Toma's too, the M1-QA-09 beard finding). Kerrid's beard has a hard notch round the mouth and white flecks in the hair. Look-dev task M2-CHR-524 is next.
+SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4 phases from the side and the 3/4 front, her walk at 2 phases, and Toma's and Rhen's runs from the side at 2 phases (plus the same Asha run strip before the fix). What I saw: before, the free left arm went near-straight out to chest height on the forward swing and swung wide of the body from behind. After, the elbow stays bent near the body and the hand comes up to the chest, matching the walk's quiet arm. Toma's and Rhen's runs read compact and grounded. The staff still leans in the fist mid-stride (the M2-CHR-515 pivot clearing the skirt), as before. No baselines written; the walk shots are unaffected; asha_clip_run will drift.

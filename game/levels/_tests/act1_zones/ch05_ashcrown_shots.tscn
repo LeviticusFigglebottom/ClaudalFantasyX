@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/act1_zones/act1_zone_rig.gd" id="1_rig"]
+[ext_resource type="PackedScene" path="res://game/levels/ch05/ashcrown/ashcrown.tscn" id="2_zone"]
+
+[node name="Ch05AshcrownShots" type="Node3D"]
+script = ExtResource("1_rig")
+zone_scene = ExtResource("2_zone")
+flags = PackedStringArray("ch05_tortoises_won")
+views = {
+"Causeway": [[3.0, -79.4, 154.0], [0.0, -70.0, 125.0], 50.0],
+"Forecourt": [[14.0, -1.8, 43.0], [0.0, 14.0, 10.0], 55.0],
+"Crown": [[-3.0, 43.8, -0.6], [6.0, 43.0, -9.0], 55.0],
+"Tiers": [[26.0, 46.0, 20.0], [11.0, 30.0, -4.0], 55.0],
+"Court": [[2.0, -2.0, 4.5], [-2.5, -2.4, -9.0], 55.0]
+}

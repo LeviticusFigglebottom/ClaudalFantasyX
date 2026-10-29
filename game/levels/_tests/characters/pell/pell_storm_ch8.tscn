@@ -1,0 +1,51 @@
+[gd_scene load_steps=18 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/pell/pell_stage.tscn" id="stage"]
+[ext_resource type="Material" path="res://assets/characters/pell/materials/skin_head_wet.tres" id="m_skin_head"]
+[ext_resource type="Material" path="res://assets/characters/pell/materials/skin_body_wet.tres" id="m_skin_body"]
+[ext_resource type="Material" path="res://assets/characters/pell/materials/mouth.tres" id="m_mouth"]
+[ext_resource type="Material" path="res://assets/characters/pell/materials/teeth.tres" id="m_teeth"]
+[ext_resource type="Material" path="res://assets/characters/pell/materials/tongue.tres" id="m_tongue"]
+[ext_resource type="Material" path="res://assets/characters/pell/materials/lash.tres" id="m_lash"]
+[ext_resource type="Material" path="res://assets/characters/pell/materials/eye.tres" id="m_eye"]
+[ext_resource type="Material" path="res://assets/characters/pell/materials/cornea.tres" id="m_cornea"]
+[ext_resource type="Material" path="res://assets/characters/pell/materials/eye_occlusion.tres" id="m_eye_occlusion"]
+[ext_resource type="Material" path="res://assets/characters/pell/materials/tear_line.tres" id="m_tear_line"]
+[ext_resource type="Material" path="res://assets/characters/pell/materials/fur_wet.tres" id="m_fur"]
+[ext_resource type="Material" path="res://assets/characters/pell/materials/fur_brow.tres" id="m_fur_brow"]
+[ext_resource type="Material" path="res://assets/characters/pell/materials/whisker.tres" id="m_whisker"]
+[ext_resource type="Material" path="res://assets/characters/pell/materials/crest_wet.tres" id="m_crest"]
+[ext_resource type="Material" path="res://assets/characters/pell/materials/cloth.tres" id="m_cloth"]
+[ext_resource type="Material" path="res://assets/characters/pell/materials/web.tres" id="m_web"]
+
+[node name="PellStage" instance=ExtResource("stage")]
+emotion = "determined"
+face_extra = {
+"crest_flat": 1.0,
+"crest_raise": 0.0
+}
+clip = &"storm_call"
+clip_time = 2.0
+materials = {
+"skin_head": ExtResource("m_skin_head"),
+"skin_body": ExtResource("m_skin_body"),
+"mouth": ExtResource("m_mouth"),
+"teeth": ExtResource("m_teeth"),
+"tongue": ExtResource("m_tongue"),
+"lash": ExtResource("m_lash"),
+"eye": ExtResource("m_eye"),
+"cornea": ExtResource("m_cornea"),
+"eye_occlusion": ExtResource("m_eye_occlusion"),
+"tear_line": ExtResource("m_tear_line"),
+"fur": ExtResource("m_fur"),
+"fur_brow": ExtResource("m_fur_brow"),
+"whisker": ExtResource("m_whisker"),
+"crest": ExtResource("m_crest"),
+"cloth": ExtResource("m_cloth"),
+"web": ExtResource("m_web")
+}
+
+[node name="Parapet" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.862698, -0.130792, -0.488514, -0.000000, 0.965978, -0.258625, 0.505719, 0.223115, 0.833347, -1.7, 0.95, 2.9)
+fov = 30.0
+near = 0.05

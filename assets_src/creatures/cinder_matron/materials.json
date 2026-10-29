@@ -1,5 +1,5 @@
 {
-  "_doc": "The Cinder Matron (act1/cinder_matron.md): metal (riveted brass and copper plates, iron hoops; ember emission for the firebox, the mouth grille, the ladle's slag and the molten seams), crust (cooled slag, ember cracks; its own `Crust` mesh, hidden in phase 2), heart (her bound heart: glimmer_bound, steady, never pulsing, color_script.md rule 2). Ember emission is the mountain's fire, not glimmer. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "_doc": "The Cinder Matron (act1/cinder_matron.md): metal (riveted brass and copper plates, iron hoops; ember emission for the firebox, the mouth grille, the ladle's slag and the molten seams), crust (cooled slag, ember cracks; its own `Crust` mesh, hidden in phase 2), heart (her bound heart: glimmer_bound, steady, never pulsing, color_script.md rule 2), leather (M3-CRB-006: the smith's apron, its strap and stitching; ember emission for its one smouldering burn hole), wound (M3-CRB-006: the weak point, ADR 0151: the cracked sight-glass, spawn_wound, one small closed mark). Ember emission is the mountain's fire, not glimmer. write_materials.py on game/shaders/creature/creature.gdshader.",
   "slots": {
     "metal": {
       "metallic": 0.55,
@@ -19,9 +19,9 @@
       "roughness_dry": 0.72,
       "roughness_wet": 0.4,
       "specular": 0.35,
-      "detail_scale": 20.0,
-      "detail_albedo": 0.15,
-      "detail_bump": 0.7,
+      "detail_scale": 24.0,
+      "detail_albedo": 0.2,
+      "detail_bump": 0.95,
       "cavity_albedo": 0.4,
       "emission_color": "#E0702E",
       "emission_energy": 1.8,
@@ -35,6 +35,32 @@
       "detail_bump": 0.0,
       "emission_color": "#4FB3B0",
       "emission_energy": 1.6
+    },
+    "leather": {
+      "metallic": 0.0,
+      "roughness_dry": 0.78,
+      "roughness_wet": 0.45,
+      "specular": 0.35,
+      "detail_scale": 26.0,
+      "detail_albedo": 0.16,
+      "detail_bump": 0.55,
+      "cavity_albedo": 0.5,
+      "emission_color": "#E0702E",
+      "emission_energy": 1.4,
+      "emission_pulse_hz": 0.2,
+      "emission_pulse_depth": 0.5
+    },
+    "wound": {
+      "metallic": 0.0,
+      "roughness_dry": 0.12,
+      "roughness_wet": 0.08,
+      "specular": 0.7,
+      "detail_albedo": 0.0,
+      "detail_bump": 0.0,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 2.2,
+      "emission_pulse_hz": 0.3,
+      "emission_pulse_depth": 0.3
     }
   }
 }

@@ -5,7 +5,8 @@ alongside, C4-11 to C4-14): "build it once" (act1_ch01.md §9). Her hull is the 
 hull_sides, deck_planks, bulwark), so she and the ferry and the drowned read as ships of one sea; her finish is
 Pemakar's: black lacquer topsides with a red sheer strake and wale, copper sheathing below the waterline.
 
-  terrace_hull        hull (copper below y COPPER_Y, black lacquer above, the red wale and sheer strake), flat main
+  terrace_hull        hull (copper below y COPPER_Y, black lacquer above, the red wale and sheer strake; the red
+                      counter planked, framed in a black moulding, copper nail-heads along the wale), flat main
                       deck and poop, covering boards, bulwarks with the two gangways, the open main hatch, the poop's
                       break and ladders, the taffrail, the scuttle, the rudder (its head inside the counter, so nothing
                       crosses the name-board), the stern-lantern post, the bowsprit and stem, windlass and bitts,
@@ -169,6 +170,38 @@ def _transom_banded(mb: kc.MeshBuilder, *, lod: bool) -> None:
         col = (0.0, 0.45, 0.35, 0.4) if mat == M_COPPER else (0.0, 0.1, 0.05, 0.1)
         bf._surface(mb, grid, mb.material(mat), outward=np.array([0.0, 0.0, 1.0]), uv=grid[..., [0, 1]], col=col,
                     uv2=(0.8, 0.5))
+    if not lod:
+        _counter_trim(mb)
+
+
+COUNTER_PLANK_M = 0.24  # the counter's planking, seam to seam
+
+
+def _counter_trim(mb: kc.MeshBuilder) -> None:
+    """The counter's finish (M3-ENV-705: O07 read it as one flat red wall): the planks' seams across it, a black
+    lacquer moulding framing it inside its edges, and a row of copper nail-heads along the wale. Everything stands
+    proud of the transom by millimetres, behind the name-board's brackets."""
+    z = FORM.transom_z
+    top = float(FORM.sheer_y(z))
+    black, copper = mb.material(M_LACQUER), mb.material(M_COPPER_BRIGHT)
+    for y in np.arange(RED_WALE_Y + COUNTER_PLANK_M, top - 0.1, COUNTER_PLANK_M):
+        hw = float(FORM.section_x(z, np.array([y]))[0]) - 0.04
+        kc.rounded_block(mb, (0.0, float(y), z + 0.003), (hw, 0.006, 0.003), black, radius=0.002, seg=1,
+                         weather=LACQUER_W, variation=0.2)
+    inset = 0.14
+    ys = np.linspace(RED_WALE_Y + inset, top - inset, 9)
+    xs = FORM.section_x(z, ys) - inset
+    for side in (-1.0, 1.0):  # the moulding's sides follow the section, its top and bottom run straight across
+        pts = np.stack([xs * side, ys, np.full_like(ys, z + 0.012)], -1)
+        kc.tube(mb, pts, 0.022, 4, black, weather=LACQUER_W)
+    for y, x in ((ys[0], xs[0]), (ys[-1], xs[-1])):
+        kc.tube(mb, np.array([[-x, y, z + 0.012], [x, y, z + 0.012]]), 0.022, 4, black, weather=LACQUER_W)
+    hw = float(FORM.section_x(z, np.array([RED_WALE_Y + 0.05]))[0]) - 0.08
+    for x in np.linspace(-hw, hw, 17):
+        if abs(x) < 0.2:  # the rudder's stock crosses the transom there
+            continue
+        kc.rounded_block(mb, (float(x), RED_WALE_Y + 0.06, z + 0.008), (0.014, 0.014, 0.008), copper, radius=0.006,
+                         seg=1)
 
 
 def _hatch(mb: kc.MeshBuilder, rng, *, lod: bool) -> None:

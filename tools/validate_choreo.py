@@ -13,7 +13,7 @@ CLIPS = {"idle", "ready", "attack", "cast", "item", "read", "defend", "finisher"
 TRAVELS = {"target", "step", "none"}
 STYLE_TIMES = ("approach_sec", "recover_sec", "return_sec")
 STYLE_SHAPES = ("lunge_m", "lift_m", "crouch_m", "lean_deg")
-REACTIONS = ("damage", "heal", "miss", "push")
+REACTIONS = ("damage", "heal", "miss", "push", "immune")
 ## M2-BPR-03: the battle camera director (game/battle/scene/battle_camera_director.gd).
 CAMERA_SHOTS = ("default", "actor", "target", "cast", "finisher")
 CAMERA_ANCHORS = {"actor", "strike", "target", "default"}
@@ -93,6 +93,8 @@ def _move_errors(where: str, m: object, nums: tuple[str, ...]) -> list[str]:
         errs.append(f"{where}.sec: must be > 0")
     if m.get("clip") not in CLIPS:
         errs.append(f"{where}.clip: must be a contract clip")
+    if "clip_own" in m and not (isinstance(m["clip_own"], str) and m["clip_own"]):  # M3-CRE-639: a model's own clip
+        errs.append(f"{where}.clip_own: must be a clip name")
     return errs
 
 
@@ -215,6 +217,10 @@ def camera_errors(cam: object, styles: dict) -> list[str]:
     for eid, pair in enemy_by_actor.items():
         if eid != "doc":
             pairs.append((f"enemy_by_actor.{eid}", pair))
+    enemy_by_skill = cam.get("enemy_by_skill", {}) if isinstance(cam.get("enemy_by_skill", {}), dict) else {}
+    for sid, pair in enemy_by_skill.items():  # M3-BPR-420: a boss's big moves
+        if sid != "doc":
+            pairs.append((f"enemy_by_skill.{sid}", pair))
     for where, pair in pairs:
         if not isinstance(pair, dict):
             errs.append(f"{w}.{where}: must be an object with lead and contact")
@@ -257,6 +263,10 @@ def choreo_errors(doc: object, skills: object) -> list[str]:
         for kind, sid in (table.items() if isinstance(table, dict) else []):
             if sid not in styles:
                 errs.append(f"{CHOREO_FILE}: style_by_actor.{actor}.{kind} names an unknown style '{sid}'")
+    swells = c.get("swell_style_by_hero", {})
+    for hero, sid in (swells.items() if isinstance(swells, dict) else []):  # M3-BPR-422
+        if hero != "doc" and sid not in styles:
+            errs.append(f"{CHOREO_FILE}: swell_style_by_hero.{hero} names an unknown style '{sid}'")
     by_kind = c.get("style_by_kind") if isinstance(c.get("style_by_kind"), dict) else {}
     for kind in sorted(kinds - set(by_kind)):
         errs.append(f"{CHOREO_FILE}: style_by_kind has no style for skill kind '{kind}'")

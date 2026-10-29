@@ -1,0 +1,165 @@
+[gd_scene load_steps=15 format=3]
+
+[ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
+[ext_resource type="Shader" path="res://game/shaders/environment/env_sky_night.gdshader" id="2_r"]
+[ext_resource type="Texture3D" path="res://assets/environments/arenas/undertow_cage/lut_ch20_abyss.png" id="3_r"]
+[ext_resource type="Script" path="res://game/world/arenas/arena_sea.gd" id="4_r"]
+[ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="5_r"]
+[ext_resource type="Material" path="res://game/levels/ch02/haluna/haluna_water_material.tres" id="6_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/memory_island.glb" id="7_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/held_pillar.glb" id="8_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/memory_kitchen.glb" id="9_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/memory_market.glb" id="10_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/memory_stands.glb" id="11_r"]
+
+[sub_resource type="ShaderMaterial" id="SkyMat"]
+shader = ExtResource("2_r")
+shader_parameter/col_ground = Color(0.007843, 0.02353, 0.06275, 1)
+shader_parameter/col_horizon = Color(0.0549, 0.1647, 0.2275, 1)
+shader_parameter/col_zenith = Color(0.007843, 0.02353, 0.06275, 1)
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMat")
+process_mode = 2
+
+[sub_resource type="Environment" id="Env"]
+resource_name = "undertow_cage_ch20"
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 2
+ambient_light_color = Color(0.02353, 0.102, 0.1686, 1)
+ambient_light_energy = 0.2
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 1.1
+tonemap_agx_white = 12.0
+ssao_enabled = true
+ssao_radius = 1.2
+ssao_intensity = 1.2
+glow_enabled = true
+glow_intensity = 0.7
+glow_bloom = 0.1
+glow_hdr_threshold = 0.9
+fog_enabled = true
+fog_mode = 0
+fog_light_color = Color(0.0549, 0.2275, 0.2824, 1)
+fog_density = 0.02
+fog_sky_affect = 0.6
+fog_height = 0.0
+fog_height_density = 0.0
+adjustment_enabled = true
+adjustment_color_correction = ExtResource("3_r")
+
+[node name="UndertowCage" type="Node3D"]
+script = ExtResource("1_r")
+arena_id = &"undertow_cage"
+sub_frame = &"ch20"
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.939693, 0.321394, -0.116978, -0, 0.34202, 0.939693, 0.34202, -0.883022, 0.321394, 0, 30, 0)
+light_color = Color(0.7686, 0.8392, 1, 1)
+light_energy = 0.8
+shadow_enabled = true
+shadow_bias = 0.03
+shadow_normal_bias = 1.0
+shadow_blur = 1.0
+directional_shadow_mode = 2
+directional_shadow_split_1 = 0.06
+directional_shadow_split_2 = 0.18
+directional_shadow_split_3 = 0.45
+directional_shadow_max_distance = 60.0
+
+[node name="Sea" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -60.0, 0)
+script = ExtResource("4_r")
+wave_set = ExtResource("5_r")
+material = ExtResource("6_r")
+sea_glow_energy = 0.15
+tide_line_y = -60.0
+
+[node name="Ground" parent="." instance=ExtResource("7_r")]
+
+[node name="Dressing" type="Node3D" parent="."]
+
+[node name="held_pillar_1" parent="Dressing" instance=ExtResource("8_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -6.5, 0, -4.5)
+
+[node name="held_pillar_2" parent="Dressing" instance=ExtResource("8_r")]
+transform = Transform3D(0.798636, 0, 0.601815, 0, 1, 0, -0.601815, 0, 0.798636, -4, 0, -6.8)
+
+[node name="held_pillar_3" parent="Dressing" instance=ExtResource("8_r")]
+transform = Transform3D(0.275637, 0, 0.961262, 0, 1, 0, -0.961262, 0, 0.275637, -7.6, 0, -1)
+
+[node name="held_pillar_4" parent="Dressing" instance=ExtResource("8_r")]
+transform = Transform3D(-0.358368, 0, 0.93358, 0, 1, 0, -0.93358, 0, -0.358368, -1.3, 0, -7.4)
+
+[node name="memory_kitchen_1" parent="Dressing" instance=ExtResource("9_r")]
+transform = Transform3D(0.906308, 0, 0.422618, 0, 1, 0, -0.422618, 0, 0.906308, -17, -5, -22)
+
+[node name="memory_market_1" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 19, 3.5, -27)
+
+[node name="memory_stands_1" parent="Dressing" instance=ExtResource("11_r")]
+transform = Transform3D(0.766044, 0, 0.642788, 0, 1, 0, -0.642788, 0, 0.766044, -30, 7, -44)
+
+[node name="memory_island_1" parent="Dressing" instance=ExtResource("7_r")]
+transform = Transform3D(0.689365, 0, 0.121554, 0, 0.7, 0, -0.121554, 0, 0.689365, 34, -12, -55)
+
+[node name="memory_kitchen_2" parent="Dressing" instance=ExtResource("9_r")]
+transform = Transform3D(-0.845723, 0, 0.307818, 0, 0.9, 0, -0.307818, 0, -0.845723, 8, 12, -60)
+
+[node name="Lamps" type="Node3D" parent="."]
+
+[node name="Lamp0" type="OmniLight3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5, 4.0, -4.5)
+light_color = Color(0.498, 0.7765, 0.851, 1)
+light_energy = 1.8
+omni_range = 8.0
+omni_attenuation = 1.3
+light_volumetric_fog_energy = 0.0
+shadow_enabled = true
+shadow_bias = 0.05
+
+[node name="Lamp1" type="OmniLight3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.0, 4.0, -6.8)
+light_color = Color(0.498, 0.7765, 0.851, 1)
+light_energy = 1.8
+omni_range = 8.0
+omni_attenuation = 1.3
+light_volumetric_fog_energy = 0.0
+
+[node name="Lamp2" type="OmniLight3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.6, 4.0, -1.0)
+light_color = Color(0.498, 0.7765, 0.851, 1)
+light_energy = 1.8
+omni_range = 8.0
+omni_attenuation = 1.3
+light_volumetric_fog_energy = 0.0
+
+[node name="Lamp3" type="OmniLight3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3, 4.0, -7.4)
+light_color = Color(0.498, 0.7765, 0.851, 1)
+light_energy = 1.8
+omni_range = 8.0
+omni_attenuation = 1.3
+light_volumetric_fog_energy = 0.0
+
+[node name="CameraHints" type="Node3D" parent="."]
+
+[node name="wide_high" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.995893, 0.0339417, -0.0839326, -0, 0.927066, 0.374899, 0.0905357, -0.373359, 0.923258, -1.5, 7.5, 13.5)
+
+[node name="party_side" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.575779, -0.0656933, 0.814962, 0, 0.996767, 0.0803484, -0.817606, -0.0462629, 0.573917, 5.6, 1.7, 4.5)
+
+[node name="foe_side" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.490844, 0.0745636, -0.868051, -0, 0.996331, 0.0855825, 0.871248, -0.0420076, 0.489043, -5.6, 1.7, 4)
+
+[node name="the_rooms" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.8, -0.076513, 0.595101, 0, 0.991836, 0.127522, -0.6, -0.102017, 0.793469, 4, 1.5, 6)
+
+[node name="the_cage" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.824042, 0.0808612, 0.560728, 0, 0.989762, -0.142731, -0.566529, 0.117616, 0.815605, 0.5, 1.6, 3)

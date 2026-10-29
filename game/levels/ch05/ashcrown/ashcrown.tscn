@@ -1,12 +1,17 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://game/levels/ch05/ashcrown/ashcrown_zone.gd" id="1_zone"]
+[ext_resource type="Script" path="res://game/levels/act1/zone_kit_dressing.gd" id="2_dressing"]
 [ext_resource type="Script" path="res://game/levels/act1/zone_cast.gd" id="90_cast"]
 
 [node name="Ashcrown" type="Node3D"]
 script = ExtResource("1_zone")
 location_id = &"ch05/ashcrown"
 layout_path = "res://game/levels/ch05/ashcrown/ashcrown_layout.json"
+
+[node name="Dressing" type="Node3D" parent="."]
+script = ExtResource("2_dressing")
+layout_path = "res://game/levels/ch05/ashcrown/ashcrown_dressing.json"
 
 [node name="Cast" type="Node" parent="."]
 script = ExtResource("90_cast")

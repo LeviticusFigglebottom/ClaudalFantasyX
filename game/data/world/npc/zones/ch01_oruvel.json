@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "doc": "Oruvel's villagers alive (M3-CRE-656; docs/kb/tech/field_npc.md, VillagerLayer). Oruvel is a GreyboxZone: its stage actors stand under CutsceneStage/Actors/<id>, and a layout row's `model` (M2-FP-111) puts a villager actor there in place of the capsule. Each row here names one such actor (`attach: child`): VillagerLayer adopts that model into a FieldNpc, so the villager glances at the party, turns to talk and breathes out of step instead of only idling. Rows for the other Oruvel speakers (the scaleman, the cook, Sabe, Skipper Sadi, the children) are added when M3-CHR-100 gives them bodies and their layout rows a `model`. M3-CRE-659 adds the crowd: the cook, the two net-lane menders (they talk) and the pen and roof children, crowd people (game/data/world/npc/crowd.json, ADR 0152) in their stage actors' capsules.",
+  "zone": "ch01/oruvel",
+  "villagers": [
+    {
+      "npc_id": "kell",
+      "_note": "Mother Kell at her chandlery stall: the wick scene (B04) talks here.",
+      "stand_in": "CutsceneStage/Actors/kell",
+      "attach": "child",
+      "talk": "Triggers/kell_stall"
+    },
+    {
+      "npc_id": "oruvel_cook",
+      "crowd": "oruvel_cook",
+      "stand_in": "CutsceneStage/Actors/cook",
+      "attach": "child",
+      "talk": "Triggers/npc_cook"
+    },
+    {
+      "npc_id": "oruvel_netmender",
+      "crowd": "oruvel_netmender",
+      "stand_in": "CutsceneStage/Actors/netmender",
+      "attach": "child",
+      "talk": "Triggers/npc_nets",
+      "chat_with": "oruvel_netmender_2"
+    },
+    {
+      "npc_id": "oruvel_netmender_2",
+      "crowd": "oruvel_netmender_2",
+      "stand_in": "CutsceneStage/Actors/netmender_2",
+      "attach": "child",
+      "talk": "Triggers/npc_nets",
+      "chat_with": "oruvel_netmender"
+    },
+    {
+      "npc_id": "oruvel_pen_child",
+      "crowd": "oruvel_pen_child",
+      "stand_in": "CutsceneStage/Actors/pen_child",
+      "attach": "child",
+      "talk": "Triggers/npc_pen"
+    },
+    {
+      "npc_id": "oruvel_roof_child",
+      "crowd": "oruvel_roof_child",
+      "stand_in": "CutsceneStage/Actors/roof_child",
+      "attach": "child",
+      "talk": "Triggers/npc_roof"
+    }
+  ]
+}

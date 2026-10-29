@@ -1,0 +1,33 @@
+keys,en
+KITE_TITLE,The Kite
+KITE_HELP,Up and Down: choose · Confirm: fly or search · Cancel: leave
+KITE_HELP_CONFIRM,Up and Down: choose · Confirm · Cancel: back
+KITE_HELP_SEARCH,Left and Right: column · Up and Down: row · Confirm: search · Cancel: back
+KITE_HERE,Here
+KITE_SEARCH,Search the chart
+KITE_SEARCH_ROW_DESC,"Name a square of the chart, and the Kite will look there for what the maps forgot."
+KITE_LEAVE,Leave the helm
+KITE_LEAVE_DESC,Stay where the Kite is moored.
+KITE_STAY,Stay
+KITE_STAY_DESC,Keep the Kite where it is.
+KITE_FLY,Fly
+KITE_PLACE_FMT,"{place}, in {region}. Square {cell}."
+KITE_CONFIRM_FMT,Fly to {place}?
+KITE_REFUSED_FMT,The Kite can't set down at {place} now.
+KITE_SEARCH_DESC_FMT,Search square {cell}.
+KITE_SEARCH_NOTHING_FMT,"Square {cell}: open water, and nothing under it."
+KITE_SEARCH_FOUND_FMT,"Square {cell}: {place}. It is on the chart now."
+KITE_UNKNOWN_PLACE,An unnamed place
+KITE_REGION_LOW_REACHES,The Low Reaches
+KITE_REGION_PEMAKAR,The Pemakar Terraces
+KITE_REGION_TAMSULE,Tamsule
+KITE_REGION_CORROW,Corrow
+KITE_REGION_OSSA_FEN,Ossa Fen
+KITE_REGION_SUNKEN_VEY,Sunken Vey
+KITE_REGION_ULLAR,The Ullar Heights
+KITE_REGION_ANSEDRA,Ansedra
+KITE_REGION_HOLLOWMERE,Hollowmere
+KITE_REGION_PALE_RIM,The Pale Rim
+FIELD_MENU_KITE,The Kite
+FIELD_MENU_KITE_DESC,"Where the Kite can carry you, on the chart of the sea."
+KITE_PLACE_SHORT_FMT,"{place}. Square {cell}."

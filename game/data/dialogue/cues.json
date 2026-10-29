@@ -48,9 +48,9 @@
    "kwargs": {}
   },
   "music": {
-   "doc": "Change the music bed. 'silence' is reserved (see reserved.music).",
+   "doc": "Change the music bed. 'silence' is reserved (see reserved.music). stem= brings that stem of the cue in over the fade (the cue carries on if it is already playing).",
    "args": [{"name": "track", "type": "id"}],
-   "kwargs": {"fade": {"type": "number", "min": 0}}
+   "kwargs": {"fade": {"type": "number", "min": 0}, "stem": {"type": "int", "min": 0}}
   },
   "sfx": {
    "doc": "Play a one-shot sound. vol is a linear gain (1.0 = as authored); at= places it on an actor or mark.",
@@ -70,7 +70,7 @@
    "kwargs": {}
   },
   "vfx": {
-   "doc": "Trigger a VFX. Glimmer light rules: glimmer_lift rises (motion=spiral_up), glimmer_held sinks (drift=down_seaward), glimmer_bound is still.",
+   "doc": "Trigger a VFX. Glimmer light rules: glimmer_lift rises (motion=spiral_up), glimmer_held sinks (drift=down_seaward), glimmer_bound is still. The cue goes first to the stage's VFX hosts (CutsceneVfxHosts, M3-ARC-1326), then to the motes placeholder. follow=<actor> or <actor>_staff: one attractor on that body; anchors=<actor group>: grief anchors that let go as the follow-host passes (hosts read them; the placeholder ignores them).",
    "args": [{"name": "effect", "type": "enum", "set": "vfx_effects"}],
    "kwargs": {
     "at": {"type": "id"},
@@ -78,7 +78,9 @@
     "drift": {"type": "enum", "set": "vfx_drift"},
     "motion": {"type": "enum", "set": "vfx_motion"},
     "rate": {"type": "enum", "set": "vfx_rate"},
-    "form": {"type": "id"}
+    "form": {"type": "id"},
+    "follow": {"type": "id"},
+    "anchors": {"type": "id"}
    }
   },
   "wait": {

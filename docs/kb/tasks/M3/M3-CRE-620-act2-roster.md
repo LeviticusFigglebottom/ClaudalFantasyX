@@ -2,7 +2,8 @@
 id: M3-CRE-620
 title: "Act II bestiary: roster proposal, then design sheets (bosses first), then builds"
 role: character
-status: doing
+status: blocked
+blocked-by: ADR 0041
 owner_session: "creatures (cloud session_01EbDaRQ5n7hpvwuRG6jEDQY, branch claude/creatures)"
 reviewer: art
 depends_on: []
@@ -21,3 +22,4 @@ every branch has a model except stillguard_inquisitor, a person: characters).
 - [ ] Builds in the same order: mangrove_drowner (M3-CRE-621), lamp_engine (623), avalanche_ram (624), wakefin (626) built, and the regulars and variants (627, 628): every Act II creature on the roster is built; first PC renders pending
 
 ## Review log
+- 2026-10-28, creatures: **paused by ADR 0041** (Act I at final quality first; the human's directive). The work done so far is merged on claude/creatures as is; nothing reverted. Resume when a new ADR lifts the pause.

@@ -14,6 +14,11 @@ The legs hang from a `body` carrier (like the Avalanche Ram's), so the spine bre
 are posed in their own planes by a two-bone solve that keeps each planted paw where it stands, level, while the body
 crouches, launches, lands or lies down.
 
+**The battle read (M3-CRE-645).** The first muzzle (an ellipsoid) read short and pug-like at review distance, so the
+face is a cat's: a longer wedge muzzle from the brow to a blunt front, a dark nose leather, pale whisker pads with
+rows of dark whisker spots and pale whiskers, a dark mouth line, and a longer chin. The ear tufts stay. The head
+bone is unchanged (its tail stays at NOSE); the new muzzle reaches past it on the same bone.
+
 Run without Blender (`python3 build_ridge_lynx.py --report`) for the triangle count and each clip's numbers.
 """
 
@@ -51,8 +56,14 @@ TORSO_R = (0.05, 0.14, 0.15, 0.13, 0.17, 0.145, 0.07)  # rump, haunch, waist, ch
 TORSO_RINGS, TORSO_SEGS = 30, 22
 NECK = np.array([(0, 0.64, 0.4), (0, 0.73, 0.5), (0, 0.8, 0.58)])
 HEAD_C = np.array([0.0, 0.84, 0.645])  # the cranium
-MUZZLE_C = np.array([0.0, 0.805, 0.725])
-NOSE = np.array([0.0, 0.822, 0.78])
+NOSE = np.array([0.0, 0.822, 0.78])  # the head bone's tail (the rig)
+# the wedge muzzle, lofted from inside the cranium to its blunt front: (z, top y, bottom y, half-width) per station
+MUZZLE = ((0.668, 0.85, 0.77, 0.058), (0.71, 0.842, 0.771, 0.053), (0.75, 0.834, 0.774, 0.046),
+          (0.782, 0.83, 0.777, 0.039), (0.804, 0.827, 0.781, 0.034), (0.816, 0.822, 0.786, 0.028))
+MUZZLE_ROUND = 2.6  # the section's superellipse exponent: 2 an oval, higher squarer
+NOSE_TIP = np.array([0.0, 0.818, 0.817])  # the nose leather's centre
+PAD_AT = (0.017, 0.791, 0.806)  # a whisker pad's centre (x on the left)
+PAD_R = (0.02, 0.019, 0.022)  # its radii (kept inside the cheek's width: the KO lays the head on its side)
 EYE_AT = (0.042, 0.858, 0.712)
 EAR = ((0.054, 0.905, 0.615), (0.07, 1.0, 0.595))  # an ear's base and tip (x on the left)
 TUFT_LEN = 0.06
@@ -206,12 +217,7 @@ def head(mesh: ck.Mesh, rig: ck.Rig) -> None:
     streak = np.exp(-((np.abs(P[:, 0]) - 0.06) / 0.012) ** 2 - ((P[:, 1] - 0.83) / 0.01) ** 2) * (P[:, 2] < 0.7)
     col = ck.mix(col, BLACK, (0.45 * streak)[:, None])
     ck.finish(mesh, P, T, "coat", col, hb, cavity=0.2 * (1.0 - clump))
-    Pm, Tm = ck.ellipsoid(MUZZLE_C, (0.055, 0.045, 0.06), 8, 12)
-    pale = ck.smoothstep(MUZZLE_C[1] + 0.02, MUZZLE_C[1] - 0.03, Pm[:, 1])
-    cm = ck.mix(COAT, ck.mix(BELLY, PAL["salt_glass"] * 0.8, 0.3), pale[:, None])
-    ck.finish(mesh, Pm, Tm, "coat", cm, hb, cavity=0.15)
-    Pn, Tn = ck.ellipsoid(NOSE + np.array([0.0, -0.004, -0.012]), (0.02, 0.013, 0.014), 5, 8)
-    ck.finish(mesh, Pn, Tn, "coat", BLACK, hb, wet=0.6, cavity=0.2)
+    muzzle(mesh, hb)
     for s in (-1.0, 1.0):
         c = np.array([s * EYE_AT[0], EYE_AT[1], EYE_AT[2]])
         Pe, Te = ck.ellipsoid(c, (0.016, 0.013, 0.012), 6, 8)
@@ -222,9 +228,64 @@ def head(mesh: ck.Mesh, rig: ck.Rig) -> None:
         Pl, Tl = ck.ellipsoid(c + np.array([0.0, 0.0, -0.003]), (0.02, 0.016, 0.011), 6, 8)
         ck.finish(mesh, Pl, Tl, "coat", BLACK, hb, cavity=0.3)
     jb = rig.bones[rig.index("jaw")]
-    Pj, Tj = ck.tube(np.array([jb.head, (np.asarray(jb.head) + np.asarray(jb.tail)) / 2, jb.tail]),
-                     np.array([0.035, 0.03, 0.018]), 8, squash=0.7, up_hint=(1.0, 0.0, 0.0))
+    h0, h1 = np.asarray(jb.head), np.asarray(jb.tail)
+    chin = h1 + np.array([0.0, 0.004, 0.024])  # the chin reaches under the whisker pads
+    Pj, Tj = ck.tube(np.array([h0, (h0 + h1) / 2, h1, chin]), np.array([0.035, 0.03, 0.022, 0.012]), 8, squash=0.7,
+                     up_hint=(1.0, 0.0, 0.0))
     ck.finish(mesh, Pj, Tj, "coat", ck.mix(BELLY, PAL["salt_glass"] * 0.8, 0.3), rig.rigid("jaw"), cavity=0.2)
+
+
+def muzzle(mesh: ck.Mesh, hb: int) -> None:
+    """The wedge muzzle on the head bone: a lofted superellipse section narrowing to a blunt front, coat on top and
+    pale below; the nose leather, the whisker pads with their dark spots and pale whiskers, and the mouth line."""
+    segs = 12
+    th = np.arange(segs) * (2.0 * math.pi / segs)
+    ex = 2.0 / MUZZLE_ROUND
+    cx, cy = np.sign(np.cos(th)) * np.abs(np.cos(th)) ** ex, np.sign(np.sin(th)) * np.abs(np.sin(th)) ** ex
+    rings = []
+    for z, top, bot, w in MUZZLE:
+        rings.append(np.column_stack([w * cx, (top + bot) / 2 + (top - bot) / 2 * cy, np.full(segs, z)]))
+    P = np.vstack(rings + [np.array([[0.0, (MUZZLE[-1][1] + MUZZLE[-1][2]) / 2, MUZZLE[-1][0] + 0.006]])])
+    T = ck.grid_tris(len(MUZZLE), segs, True)
+    r0 = (len(MUZZLE) - 1) * segs
+    T = np.vstack([T, [(r0 + k, r0 + (k + 1) % segs, len(P) - 1) for k in range(segs)]])
+    axis_y = np.interp(P[:, 2], [m[0] for m in MUZZLE], [(m[1] + m[2]) / 2 for m in MUZZLE])
+    fn = np.cross(P[T[:, 1]] - P[T[:, 0]], P[T[:, 2]] - P[T[:, 0]])
+    out = P[T].mean(axis=1) - np.column_stack([np.zeros(len(T)), axis_y[T].mean(axis=1), P[T].mean(axis=1)[:, 2]])
+    out[-segs:] = (0.0, 0.0, 1.0)  # the front cap faces forward
+    T = np.where(((fn * out).sum(axis=1) < 0)[:, None], T[:, ::-1], T)
+    pale = ck.smoothstep(axis_y + 0.004, axis_y - 0.018, P[:, 1])
+    col = ck.mix(COAT, ck.mix(BELLY, PAL["salt_glass"] * 0.8, 0.4), pale[:, None])
+    col = col * (0.95 + 0.06 * ck.fbm(P * 40.0, SEED + 32))[:, None]
+    ck.finish(mesh, P, T, "coat", col, hb, cavity=0.15)
+    # the nose leather: a rounded triangle, broad at the top, on the muzzle's front
+    Pn, Tn = ck.ellipsoid(NOSE_TIP, (0.02, 0.012, 0.011), 5, 8)
+    Pn[:, 0] *= 0.55 + 0.45 * ck.smoothstep(NOSE_TIP[1] - 0.012, NOSE_TIP[1] + 0.008, Pn[:, 1])
+    ck.finish(mesh, Pn, Tn, "coat", ck.mix(PAD, BLACK, 0.4), hb, wet=0.7, cavity=0.2)
+    # the whisker pads, pale and full, with three rows of dark whisker spots and the whiskers themselves
+    whisk = PAL["salt_glass"] * 0.95
+    for sx in (1.0, -1.0):
+        c = np.array([sx * PAD_AT[0], PAD_AT[1], PAD_AT[2]])
+        Pp, Tp = ck.ellipsoid(c, PAD_R, 5, 8)
+        q = (Pp - c) / np.array(PAD_R)
+        spots = ((np.sin(q[:, 1] * 7.0) > 0.55) & (np.abs(q[:, 0]) > 0.45) & (q[:, 2] > -0.2)).astype(np.float64)
+        cp = ck.mix(ck.mix(BELLY, PAL["salt_glass"] * 0.9, 0.75), BLACK, (0.6 * spots)[:, None])
+        ck.finish(mesh, Pp, Tp, "coat", cp, hb, cavity=0.1)
+        for k in range(4):
+            root = c + np.array([sx * 0.02, 0.008 - 0.007 * k, -0.002 - 0.003 * k])
+            fan = math.radians(12.0 - 10.0 * k)
+            d = np.array([sx * math.cos(fan) * 0.5, math.sin(fan) * 0.5 - 0.05, -0.8])  # swept back along the cheek
+            d /= np.linalg.norm(d)
+            length = 0.075 - 0.008 * k
+            path = np.array([root, root + d * length * 0.5 + np.array([0, 0.004, 0]), root + d * length])
+            Pw, Tw = ck.tube(path, np.array([0.0016, 0.0011, 0.0005]), 3, cap_start=False)
+            ck.finish(mesh, Pw, Tw, "coat", whisk, hb, cavity=0.0)
+    # the mouth line: down from the nose between the pads, and back under each pad
+    mouth = np.array([(0.036, 0.774, 0.78), (0.022, 0.772, 0.797), (0.006, 0.777, 0.814), (0.0, 0.785, 0.819),
+                      (0.0, 0.806, 0.82)])
+    for sx in (1.0, -1.0):
+        Pm, Tm = ck.tube(mouth * np.array([sx, 1.0, 1.0]), 0.0028, 4)
+        ck.finish(mesh, Pm, Tm, "coat", BLACK, hb, cavity=0.5)
 
 
 def ears(mesh: ck.Mesh, rig: ck.Rig) -> None:
@@ -545,7 +606,8 @@ def build_ko() -> ck.Clip:
     for t, neck, head, ears, yaw in ((0.0, (0, 0), 0, 0, 0.0), (0.72, (8, 2), -4, -12, 0.0),
                                      (KO_STEP[1][1], (2, 0), 0, -6, 0.0), (KO_SAG[1], (10, 4), 0, -14, 0.0),
                                      (KO_ROLL[1], (16, 6), 4, -22, 0.6), (KO_SEC, (20, 8), 6, -28, 1.0)):
-        key_head(ko, t, neck, head, 0.0, ears, yaw=(18.0 * yaw, 14.0 * yaw, 8.0 * yaw))
+        # the head turns less than the neck, so the longer muzzle (M3-CRE-645) lies on the snow, not in it
+        key_head(ko, t, neck, head, 0.0, ears, yaw=(18.0 * yaw, 14.0 * yaw, 4.0 * yaw))
     for t, a, y in ((0.0, 0, 0), (1.2, 10, 0), (KO_ROLL[1], 20, 18), (KO_SEC, 22, 24)):
         ko.key("tail0", t, (a, y, 0.0))
         ko.key("tail1", t, (a * 0.4, y * 0.6, 0.0))

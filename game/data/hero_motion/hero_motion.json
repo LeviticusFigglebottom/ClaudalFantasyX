@@ -55,8 +55,22 @@
         "scene": "res://assets/characters/liss/liss_lod1.glb",
         "walk_clip_mps": 0.97,
         "run_clip_mps": 2.19
+      },
+      "sefir": {
+        "scene": "res://assets/characters/sefir/sefir_lod1.glb",
+        "clips": {"walk": "walk_glide", "run": "walk_glide"},
+        "walk_clip_mps": 0.21,
+        "run_clip_mps": 0.21
+      },
+      "kerrid": {
+        "scene": "res://assets/characters/kerrid/kerrid_lod1.glb",
+        "walk_clip_mps": 0.71,
+        "run_clip_mps": 1.8
       }
     },
+    "actor_aliases_doc": "ADR 0041 (the party's stage capsules): a stage actor whose node name isn't a hero id but plays that hero takes the hero's body. actor_aliases names them one by one (Ysolde at the Wake's edge, Kerrid on the stair in Ch9); actor_prefixes strips a prefix (Ch9's vigil_<hero> at the dawn road). An actor whose hero has no field row stays its capsule.",
+    "actor_aliases": {"ysolde_edge": "ysolde", "kerrid_stair": "kerrid"},
+    "actor_prefixes": ["vigil_"],
     "model_yaw_offset_deg": 180.0,
     "ground_offset_m": 0.0,
     "standin_names": [
@@ -123,8 +137,9 @@
       "idle_variant_spread_sec": 5.0
     },
     "followers": {
-      "doc": "HeroFieldParty: at most `max` followers (party order, the leader excluded) walk the leader's breadcrumb trail (a crumb every trail_sample_m, at most trail_max_points), follower i at (i + 1) * spacing_m of trail behind the leader. Each steers to its trail point at up to max_speed_mps, faster the bigger the gap (follow_gain per second), accelerating at accel_mps2 and braking at decel_mps2, and never closer than min_gap_m to the body ahead. Further than catch_up_m from its point (a zone load, a long jump, the end of a cutscene) it is put on the trail at once. A ray from ray_up_m above to ray_down_m below its point sets its feet on the floor, but only a floor within step_m of the height the leader walked at there (a rail or a crate top above, a gap at a pier's edge below is not his floor: his height stands; M2-HER-1110 found Asha dropping 2 m through the Brightwater Ferry's pier edge), and the feet ease toward it at vertical_mps (stairs and slopes never pop). When the leader talks to someone (FieldController.interacted), every follower moving at most face_release_mps turns to face the speaker (eased by its body), until the leader walks on faster than that. A follower never steps into a wall: body_radius_m at body_height_m over its feet is checked against the world, and a step that would enter one slides along it (or waits). A follower nearer than min_gap_m to the body ahead is eased back at gap_push_mps, never shoved. catch_up lays the trail straight back, else turned by the first of catch_up_turns_deg where every follower stands clear (arriving with his back to a wall). rescan_sec: how often the zone is searched again for cutscene stages and sequencers.",
+      "doc": "HeroFieldParty: at most `max` followers (party order, the leader excluded) walk the leader's breadcrumb trail (a crumb every trail_sample_m, at most trail_max_points), follower i at (i + 1) * spacing_m of trail behind the leader. Each steers to its trail point at up to max_speed_mps, faster the bigger the gap (follow_gain per second), accelerating at accel_mps2 and braking at decel_mps2, and never closer than min_gap_m to the body ahead. Further than catch_up_m from its point (a zone load, a long jump, the end of a cutscene) it is put on the trail at once. A ray from ray_up_m above to ray_down_m below its point sets its feet on the floor, but only a floor within step_m of the height the leader walked at there (a rail or a crate top above, a gap at a pier's edge below is not his floor: his height stands; M2-HER-1110 found Asha dropping 2 m through the Brightwater Ferry's pier edge), and the feet ease toward it at vertical_mps (stairs and slopes never pop). When the leader talks to someone (FieldController.interacted), every follower moving at most face_release_mps turns to face the speaker (eased by its body), until the leader walks on faster than that. A follower never steps into a wall: body_radius_m at body_height_m over its feet is checked against the world, and a step that would enter one slides along it (or waits). A follower nearer than min_gap_m to the body ahead is eased back at gap_push_mps, never shoved. When a held cutscene finishes, the party members it cued that it left within hand_off_radius_m of the leader hand back to the field: their stage actors hide and the followers take over (a later cutscene that cues them shows them again). A follower standing in the leader's way steps aside and lets him pass (the min-gap push turns sideways to his travel), then falls in behind. A step that a wall blocks slides along it (when the slide keeps at least slide_min_share of the step), else turns by steer_turns_deg (smallest first) around a post or rail end, so no follower freezes. catch_up lays every follower at least min_gap_m from every other body (its trail spot, else further back, else a ring around the leader, up to spawn_search_steps rings), never stacked. catch_up lays the trail straight back, else turned by the first of catch_up_turns_deg where every follower stands clear (arriving with his back to a wall). rescan_sec: how often the zone is searched again for cutscene stages and sequencers.",
       "max": 2,
+      "include_reserve": true,
       "spacing_m": 1.15,
       "trail_sample_m": 0.2,
       "trail_max_points": 80,
@@ -140,6 +155,16 @@
       "body_radius_m": 0.25,
       "body_height_m": 0.9,
       "gap_push_mps": 2.0,
+      "hand_off_radius_m": 3.0,
+      "spawn_search_steps": 6,
+      "steer_turns_deg": [30.0, -30.0, 60.0, -60.0, 90.0, -90.0],
+      "slide_min_share": 0.3,
+      "sight_clear_m": 1.1,
+      "sight_clear_shares": [1.0, 0.75, 0.55],
+      "sight_depth_m": 0.3,
+      "sight_chest_m": 1.3,
+      "head_m": 1.8,
+      "jump_mps": 20.0,
       "catch_up_turns_deg": [0.0, 45.0, -45.0, 90.0, -90.0, 135.0, -135.0, 180.0],
       "step_m": 0.45,
       "vertical_mps": 4.0,

@@ -2,7 +2,7 @@
 id: M2-FP-108
 title: "FAST-TRACK: B06 Saltgrass Causeway plays on env-art's final route, not the greybox"
 role: cinematics
-status: review
+status: done
 owner_session: "slice-polish (claude/m2-slice, session_01KZCgTqxhHKjvMCm1dAosvZ)"
 depends_on: [M2-ENV-10, M3-CRE-611]
 reviewer: environment
@@ -32,3 +32,11 @@ with a swap-in note for m2-slice) has been on the integration branch since big8.
 - [ ] Viewed in tools/cutscene_frames (see the live log).
 
 ## Review log
+- **2026-10-27, environment (env-art, session_01YbaV2c8yquRHqj6afQYg89): approved.**
+  - **Checks run:** `tools/causeway/build_causeway_gameplay.py --check` reports up to date, and
+    `--filter=causeway` is 13 run, 0 failed.
+  - **The PC baselines show the final route in play:** `slice_causeway_head`, the kit's flats and saltgrass with
+    the heroes on the stone causeway; and `slice_causeway_harrier_view`.
+  - **What was checked:** the walk floor and the spawns sit on the route's own heights, and the wildlife is moved
+    onto the route.
+  - The last box (viewed in cutscene_frames) is covered by those baselines. Done.

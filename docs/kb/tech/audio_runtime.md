@@ -614,3 +614,7 @@ Reduced audio skips `reduced_skip`.
   a refused trip and `travel_chosen` (`ui_shrine_travel` outranks the page's close); and the HUD's choices rising
   (`ui_reefball_choices`), its cursor, a scoring preview's glint and `action_chosen`. Sources:
   `assets_src/sfx/screen_sfx.py`.
+- **Lamps (M3-AUD-847):** `AudioDirector.attach_cast` also hands the stage to `CutsceneAudio.watch_lamps`. Every
+  Light3D whose name matches `cutscene_foley.json` `lamps.match` (Rhen's `LanternLight`, wicks, candles) crackles
+  (`cs_lamp_crackle`) at the lamp at a random gap of `every_sec`, while it is visible and lit. A dark lamp is silent,
+  and a freed one is dropped.

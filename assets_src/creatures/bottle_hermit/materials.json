@@ -1,13 +1,9 @@
 {
-  "_doc": "Bottle hermit surfaces (docs/kb/art/creatures/act1/bottle_hermit.md): glass is the salt-frosted lamp chimney lit from inside by the crab's own sea_glow (not glimmer), metal the brass collars, chitin the crab (its soft abdomen's spawn_wound glow from the mask), eye. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "_doc": "Bottle hermit surfaces (docs/kb/art/creatures/act1/bottle_hermit.md): glass is the salt-frosted lamp chimney lit from inside by the crab's own sea_glow (not glimmer), rough where the salt frost is and glossy where it is clear (the vertex wetness); metal the green-bronze collar, the brass seat, rivets and barnacles; chitin the crab, the weed and the weak point's small closed mark (its spawn_wound glow from the mask); eye the faceted eye caps. Polish: chitin is dry, weathered shell, not a wet toy (roughness 0.86 dry / 0.42 wet, specular 0.3, clearcoat 0.15, detail albedo 0.2 and bump 0.6; was 0.62 / 0.22 / 0.5 / 0.55 / 0.12 / 0.45): the vertex wetness keeps the top dry and the lower parts damp. write_materials.py on game/shaders/creature/creature.gdshader.",
   "slots": {
-    "glass": {"roughness_dry": 0.12, "roughness_wet": 0.06, "specular": 0.8, "clearcoat_wet": 1.0, "detail_albedo": 0.04,
-              "detail_bump": 0.08, "detail_scale": 60.0, "rim_sheen": 0.6, "emission_color": "#1C6B78", "emission_energy": 2.2,
-              "emission_pulse_hz": 0.25, "emission_pulse_depth": 0.3},
-    "metal": {"metallic": 0.7, "roughness_dry": 0.45, "roughness_wet": 0.3, "detail_scale": 40.0, "detail_albedo": 0.15,
-              "detail_bump": 0.3, "cavity_albedo": 0.5},
-    "chitin": {"roughness_dry": 0.5, "roughness_wet": 0.22, "clearcoat_wet": 0.55, "detail_scale": 40.0, "detail_albedo": 0.08,
-               "detail_bump": 0.2, "cavity_albedo": 0.5, "emission_color": "#3FE0C8", "emission_energy": 1.6},
+    "glass": {"roughness_dry": 0.75, "roughness_wet": 0.06, "specular": 0.5, "clearcoat_wet": 0.6, "detail_albedo": 0.22, "detail_bump": 0.5, "detail_scale": 45.0, "rim_sheen": 0.25, "emission_color": "#1C6B78", "emission_energy": 1.9, "emission_pulse_hz": 0.25, "emission_pulse_depth": 0.3},
+    "metal": {"metallic": 0.7, "roughness_dry": 0.45, "roughness_wet": 0.3, "detail_scale": 40.0, "detail_albedo": 0.15, "detail_bump": 0.3, "cavity_albedo": 0.5},
+    "chitin": {"roughness_dry": 0.86, "roughness_wet": 0.42, "specular": 0.3, "clearcoat_wet": 0.15, "detail_scale": 90.0, "detail_albedo": 0.2, "detail_bump": 0.6, "cavity_albedo": 0.5, "emission_color": "#3FE0C8", "emission_energy": 1.6},
     "eye": {"roughness_dry": 0.12, "roughness_wet": 0.06, "specular": 0.7, "clearcoat_wet": 1.0, "detail_albedo": 0.0, "detail_bump": 0.0}
   }
 }

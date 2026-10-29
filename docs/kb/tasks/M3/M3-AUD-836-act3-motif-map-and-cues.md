@@ -2,12 +2,13 @@
 id: M3-AUD-836
 title: "Act III planning: the motif map and the cue list"
 role: audio
-status: review
+status: blocked
 owner_session: "audio (cloud session_01Wmj8xaLtwcqiS3qwC6PciW, branch claude/audio)"
 reviewer: story
 depends_on: []
 milestone: M3
 request-from: lead
+blocked-by: ADR 0041
 ---
 ## Goal
 The Lead's queue item 5 (2026-10-27): plan Act III's music before its chapters are designed. The plan needs a motif

@@ -2,24 +2,7 @@
  "_doc": "M3-CHR-05: the story clips the chapters' dialogue calls (`@anim <hero> <clip>`) past each hero's own clips, built by assets_src/characters/asha/hero_clips.py (see its M3-CHR-05 block for the gesture vocabulary). A spec is `frames` (15 fps) and either `alias` (a clip the hero already has, `reverse` to play it backwards) or a base posture (`from`, default stand; `to` with `change` = [start, end] fractions for a change of posture) plus `keys`: [u, [gesture, ...]] eased between. `like` names a spec in `shared`. One-shots hold their last frame; most gestures settle back to the base. act1-chapters may add clips here (a request task to characters). `field` holds the field-life clips (loops unless noted): idle and talk variants, a listening nod, and look_left/right/up/down key poses (two frames, the head and neck only on the idle's first frame) for a runtime look-at blend; HeroIdleMicro (hero-integration) layers breathing and weight shifts on top.",
  "doc": "Body clips the Act I dialogue (M3, m2-slice) stages with `@anim <hero> <clip>` that the heroes don't have yet: requested from the character track in docs/kb/tasks/M3/M3-CHR-1000-act1-body-clips.md. Until a clip is built its call is skipped at runtime (CutsceneSequencer checks has_animation). tools/tests/test_hero_clips.py allows these and still fails on any call that is neither built nor listed here (a typo). Remove a clip from here when it is built.",
  "task": "M3-CHR-1000",
- "clips": {
-  "kerrid": [
-   "catch_collar",
-   "hold_rib_on_shoulder",
-   "set_bowl_down",
-   "shake_head",
-   "stand_apart",
-   "stand_watch_seaward",
-   "unsling_cleaver",
-   "push_climber"
-  ],
-  "rhen": [
-   "lie_in_shallows"
-  ],
-  "asha": [
-   "stand_at_pool"
-  ]
- },
+ "clips": {},
  "key_tolerance_m": 0.0005,
  "shared": {
   "sit_down": {
@@ -1690,7 +1673,7 @@
         "bone",
         "DEF-spine",
         0,
-        30,
+        22,
         0
        ],
        [
@@ -1707,7 +1690,7 @@
         "bone",
         "DEF-spine",
         0,
-        32,
+        24,
         0
        ],
        [
@@ -2205,6 +2188,13 @@
         54,
         -4,
         50
+       ],
+       [
+        "reach",
+        "R",
+        0,
+        8,
+        0
        ]
       ]
      ],
@@ -2216,10 +2206,6 @@
         10
        ],
        [
-        "turn",
-        -8.4
-       ],
-       [
         "crouch",
         0.04
        ],
@@ -2229,6 +2215,13 @@
         50,
         -14,
         56
+       ],
+       [
+        "reach",
+        "R",
+        0,
+        8,
+        0
        ]
       ]
      ],
@@ -2240,10 +2233,6 @@
         10
        ],
        [
-        "turn",
-        -10.8
-       ],
-       [
         "crouch",
         0.05
        ],
@@ -2253,6 +2242,13 @@
         48,
         -18,
         58
+       ],
+       [
+        "reach",
+        "R",
+        0,
+        8,
+        0
        ]
       ]
      ],
@@ -2264,10 +2260,6 @@
         9
        ],
        [
-        "turn",
-        -10.8
-       ],
-       [
         "crouch",
         0.05
        ],
@@ -2277,6 +2269,53 @@
         48,
         -18,
         58
+       ],
+       [
+        "reach",
+        "R",
+        0,
+        8,
+        0
+       ]
+      ]
+     ]
+    ]
+   },
+   "stand_at_pool": {
+    "frames": 30,
+    "loop": true,
+    "keys": [
+     [
+      0.0,
+      [
+       [
+        "bone",
+        "DEF-spine.003",
+        -3,
+        0,
+        0
+       ],
+       [
+        "look",
+        0,
+        -12
+       ]
+      ]
+     ],
+     [
+      1.0,
+      [
+       [
+        "bone",
+        "DEF-spine.003",
+        -3,
+        0,
+        0
+       ],
+       [
+        "look",
+        0,
+        -12
        ]
       ]
      ]
@@ -5361,6 +5400,11 @@
       []
      ]
     ]
+   },
+   "lie_in_shallows": {
+    "alias": "ko",
+    "at": 1.0,
+    "loop": true
    }
   },
   "ysolde": {
@@ -6568,6 +6612,588 @@
      ]
     ]
    }
+  },
+  "kerrid": {
+   "catch_collar": {
+    "alias": "collar_catch"
+   },
+   "set_bowl_down": {
+    "alias": "set_bowl_on_post"
+   },
+   "stand_watch_seaward": {
+    "alias": "stand_watch"
+   },
+   "shake_head": {
+    "frames": 24,
+    "keys": [
+     [
+      0.0,
+      []
+     ],
+     [
+      0.2,
+      [
+       [
+        "look",
+        -9,
+        -3
+       ]
+      ]
+     ],
+     [
+      0.45,
+      [
+       [
+        "look",
+        8,
+        -3
+       ]
+      ]
+     ],
+     [
+      0.7,
+      [
+       [
+        "look",
+        -6,
+        -2
+       ]
+      ]
+     ],
+     [
+      1.0,
+      []
+     ]
+    ]
+   },
+   "stand_apart": {
+    "frames": 60,
+    "loop": true,
+    "keys": [
+     [
+      0.0,
+      [
+       [
+        "turn",
+        14
+       ],
+       [
+        "look",
+        6,
+        -8
+       ]
+      ]
+     ],
+     [
+      0.5,
+      [
+       [
+        "turn",
+        14
+       ],
+       [
+        "look",
+        4,
+        -10
+       ],
+       [
+        "lean",
+        2
+       ]
+      ]
+     ],
+     [
+      1.0,
+      [
+       [
+        "turn",
+        14
+       ],
+       [
+        "look",
+        6,
+        -8
+       ]
+      ]
+     ]
+    ]
+   },
+   "unsling_cleaver": {
+    "frames": 24,
+    "keys": [
+     [
+      0.0,
+      []
+     ],
+     [
+      0.35,
+      [
+       [
+        "reach",
+        "R",
+        150,
+        -25,
+        100
+       ],
+       [
+        "look",
+        -12,
+        0
+       ]
+      ]
+     ],
+     [
+      0.6,
+      [
+       [
+        "reach",
+        "R",
+        140,
+        -20,
+        110
+       ],
+       [
+        "look",
+        -14,
+        2
+       ]
+      ]
+     ],
+     [
+      1.0,
+      [
+       [
+        "reach",
+        "R",
+        40,
+        8,
+        60
+       ]
+      ]
+     ]
+    ]
+   },
+   "hold_rib_on_shoulder": {
+    "frames": 45,
+    "loop": true,
+    "keys": [
+     [
+      0.0,
+      [
+       [
+        "crouch",
+        0.06
+       ],
+       [
+        "reach",
+        "R",
+        105,
+        30,
+        125
+       ],
+       [
+        "reach",
+        "L",
+        95,
+        -10,
+        120
+       ],
+       [
+        "look",
+        -10,
+        -4
+       ]
+      ]
+     ],
+     [
+      0.5,
+      [
+       [
+        "crouch",
+        0.07
+       ],
+       [
+        "reach",
+        "R",
+        106,
+        30,
+        126
+       ],
+       [
+        "reach",
+        "L",
+        96,
+        -10,
+        121
+       ],
+       [
+        "look",
+        -12,
+        -6
+       ]
+      ]
+     ],
+     [
+      1.0,
+      [
+       [
+        "crouch",
+        0.06
+       ],
+       [
+        "reach",
+        "R",
+        105,
+        30,
+        125
+       ],
+       [
+        "reach",
+        "L",
+        95,
+        -10,
+        120
+       ],
+       [
+        "look",
+        -10,
+        -4
+       ]
+      ]
+     ]
+    ]
+   }
+  },
+  "ivo": {
+   "hug_lift": {
+    "frames": 48,
+    "keys": [
+     [
+      0.0,
+      []
+     ],
+     [
+      0.2,
+      [
+       [
+        "lean",
+        -4
+       ],
+       [
+        "look",
+        0,
+        -8
+       ],
+       [
+        "shrug",
+        3
+       ],
+       [
+        "reach",
+        "L",
+        30,
+        30,
+        25,
+        0
+       ],
+       [
+        "reach",
+        "R",
+        30,
+        45,
+        25,
+        0
+       ]
+      ]
+     ],
+     [
+      0.42,
+      [
+       [
+        "crouch",
+        0.05
+       ],
+       [
+        "lean",
+        8
+       ],
+       [
+        "look",
+        14,
+        4
+       ],
+       [
+        "reach",
+        "L",
+        62,
+        4,
+        0,
+        0
+       ],
+       [
+        "reach",
+        "R",
+        62,
+        22,
+        0,
+        0
+       ],
+       [
+        "bone",
+        "DEF-forearm.L",
+        0,
+        -64,
+        0
+       ],
+       [
+        "bone",
+        "DEF-forearm.R",
+        0,
+        60,
+        0
+       ]
+      ]
+     ],
+     [
+      0.6,
+      [
+       [
+        "crouch",
+        0.1
+       ],
+       [
+        "lean",
+        12
+       ],
+       [
+        "look",
+        16,
+        6
+       ],
+       [
+        "reach",
+        "L",
+        64,
+        4,
+        0,
+        0
+       ],
+       [
+        "reach",
+        "R",
+        64,
+        22,
+        0,
+        0
+       ],
+       [
+        "bone",
+        "DEF-forearm.L",
+        0,
+        -70,
+        0
+       ],
+       [
+        "bone",
+        "DEF-forearm.R",
+        0,
+        66,
+        0
+       ]
+      ]
+     ],
+     [
+      0.82,
+      [
+       [
+        "lean",
+        -10
+       ],
+       [
+        "hips",
+        0,
+        0,
+        0.04
+       ],
+       [
+        "look",
+        18,
+        -3
+       ],
+       [
+        "reach",
+        "L",
+        52,
+        4,
+        0,
+        0
+       ],
+       [
+        "reach",
+        "R",
+        52,
+        22,
+        0,
+        0
+       ],
+       [
+        "bone",
+        "DEF-forearm.L",
+        0,
+        -70,
+        0
+       ],
+       [
+        "bone",
+        "DEF-forearm.R",
+        0,
+        66,
+        0
+       ]
+      ]
+     ],
+     [
+      1.0,
+      [
+       [
+        "lean",
+        -8,
+        3
+       ],
+       [
+        "hips",
+        0,
+        0,
+        0.04
+       ],
+       [
+        "look",
+        20,
+        -2,
+        2
+       ],
+       [
+        "reach",
+        "L",
+        52,
+        4,
+        0,
+        0
+       ],
+       [
+        "reach",
+        "R",
+        52,
+        22,
+        0,
+        0
+       ],
+       [
+        "bone",
+        "DEF-forearm.L",
+        0,
+        -70,
+        0
+       ],
+       [
+        "bone",
+        "DEF-forearm.R",
+        0,
+        66,
+        0
+       ]
+      ]
+     ]
+    ]
+   },
+   "kneel_palms_flat": {
+    "frames": 36,
+    "from": "stand",
+    "to": "kneel_both",
+    "change": [
+     0.05,
+     0.5
+    ],
+    "keys": [
+     [
+      0.0,
+      []
+     ],
+     [
+      0.45,
+      [
+       [
+        "lean",
+        10
+       ]
+      ]
+     ],
+     [
+      0.8,
+      [
+       [
+        "lean",
+        34
+       ],
+       [
+        "look",
+        0,
+        14
+       ],
+       [
+        "reach",
+        "L",
+        54,
+        -32,
+        10,
+        0,
+        -30
+       ],
+       [
+        "reach",
+        "R",
+        54,
+        -32,
+        10,
+        0,
+        -30
+       ]
+      ]
+     ],
+     [
+      1.0,
+      [
+       [
+        "lean",
+        36
+       ],
+       [
+        "look",
+        0,
+        16
+       ],
+       [
+        "reach",
+        "L",
+        56,
+        -34,
+        10,
+        0,
+        -32
+       ],
+       [
+        "reach",
+        "R",
+        56,
+        -34,
+        10,
+        0,
+        -32
+       ]
+      ]
+     ]
+    ]
+   }
   }
  },
  "field": {
@@ -6713,6 +7339,13 @@
         "look",
         -12,
         -2
+       ],
+       [
+        "bone",
+        "DEF-upper_arm.R",
+        0,
+        0,
+        -6
        ]
       ]
      ],
@@ -6731,6 +7364,13 @@
         -14,
         0,
         -2
+       ],
+       [
+        "bone",
+        "DEF-upper_arm.R",
+        0,
+        0,
+        -6
        ]
       ]
      ],

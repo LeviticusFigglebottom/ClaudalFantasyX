@@ -186,11 +186,14 @@ func set_night(night: Dictionary, hide: Array = []) -> void:
 		lamp.light_energy = float(night.get("lamp_energy", 1.0))
 		lamp.omni_range = float(night.get("lamp_range_m", 1.0))
 		lamps.add_child(lamp)
+	# Hidden and stopped, not freed: creatures' VillagerLayer keeps ticking the villagers and the stand-ins it
+	# carries (the dock's), so freeing them left it moving freed nodes every frame.
 	for path: Variant in hide:
 		var n := get_node_or_null(NodePath(str(path)))
 		if n != null:
-			n.get_parent().remove_child(n)
-			n.queue_free()
+			n.process_mode = Node.PROCESS_MODE_DISABLED
+			if n is Node3D:
+				(n as Node3D).visible = false
 	is_night = true
 
 

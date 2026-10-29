@@ -1,6 +1,6 @@
 {
   "arenas": {
-    "doc": "M2-BPR-07: battle arena scenes by id; an encounter names its arena in encounters.json `arena` (docs/kb/tech/battle_presentation.md, Arenas; env-art's docs/kb/tech/battle_arenas.md). The scene's WorldEnvironment and Sun replace the battle scene's; every other child goes under a new Arena node (a child named Sea is the flat sea the Drownbell's flood rig hides). An encounter with no arena fights on the sandbox's own (the sandbox and every capture fixture). Every path is env-art's arena scene, assets/environments/arenas/<id>/<id>.tscn (BattleArenaRoot.path_for; M2-ENV-11, M3-ENV-06), repointed from the greybox at the big8 Lead merge; the greybox scenes under game/battle/arenas/ stay for their preview shots. brine_shoals_afternoon and salvage_camp_burning (M3-BPR-03, Ch6) are env-art's since M3-ENV-706 (the Brine Shoals kit).",
+    "doc": "M2-BPR-07: battle arena scenes by id; an encounter names its arena in encounters.json `arena` (docs/kb/tech/battle_presentation.md, Arenas; env-art's docs/kb/tech/battle_arenas.md). The scene's WorldEnvironment and Sun replace the battle scene's; every other child goes under a new Arena node (a child named Sea is the flat sea the Drownbell's flood rig hides). An encounter with no arena fights on the sandbox's own (the sandbox and every capture fixture). Every path is env-art's arena scene, assets/environments/arenas/<id>/<id>.tscn (BattleArenaRoot.path_for; M2-ENV-11, M3-ENV-06), repointed from the greybox at the big8 Lead merge; the greybox scenes under game/battle/arenas/ were retired (M3-ENV-737). brine_shoals_afternoon and salvage_camp_burning (M3-BPR-03, Ch6) are env-art's since M3-ENV-706 (the Brine Shoals kit).",
     "scenes": {
       "tideline_dawn": "res://assets/environments/arenas/tideline_dawn/tideline_dawn.tscn",
       "causeway_disc_sunset": "res://assets/environments/arenas/causeway_disc_sunset/causeway_disc_sunset.tscn",
@@ -11,7 +11,9 @@
       "ash_terrace_lanternfall": "res://assets/environments/arenas/ash_terrace_lanternfall/ash_terrace_lanternfall.tscn",
       "brine_shoals_afternoon": "res://assets/environments/arenas/brine_shoals_afternoon/brine_shoals_afternoon.tscn",
       "salvage_camp_burning": "res://assets/environments/arenas/salvage_camp_burning/salvage_camp_burning.tscn",
-      "wall_head_storm": "res://game/battle/arenas/wall_head_storm.tscn",
+      "ashcrown_forecourt_day": "res://assets/environments/arenas/ashcrown_forecourt_day/ashcrown_forecourt_day.tscn",
+      "ashcrown_anvil_court": "res://assets/environments/arenas/ashcrown_anvil_court/ashcrown_anvil_court.tscn",
+      "wall_head_storm": "res://assets/environments/arenas/seawall_stairhead_hoist/seawall_stairhead_hoist.tscn",
       "seawall_stairhead_storm": "res://assets/environments/arenas/seawall_stairhead_storm/seawall_stairhead_storm.tscn",
       "seawall_stairhead_hoist": "res://assets/environments/arenas/seawall_stairhead_hoist/seawall_stairhead_hoist.tscn",
       "seawall_stairhead_surge": "res://assets/environments/arenas/seawall_stairhead_surge/seawall_stairhead_surge.tscn",
@@ -21,7 +23,12 @@
       "lowlight_engine_hall": "res://assets/environments/arenas/lowlight_engine_hall/lowlight_engine_hall.tscn",
       "ossa_fen_roots": "res://assets/environments/arenas/ossa_fen_roots/ossa_fen_roots.tscn",
       "bridal_barge_night": "res://assets/environments/arenas/bridal_barge_night/bridal_barge_night.tscn",
-      "ansedra_lagoon_escape": "res://assets/environments/arenas/ansedra_lagoon_escape/ansedra_lagoon_escape.tscn"
+      "ansedra_lagoon_escape": "res://assets/environments/arenas/ansedra_lagoon_escape/ansedra_lagoon_escape.tscn",
+      "drowned_choir_ring": "res://assets/environments/arenas/drowned_choir_ring/drowned_choir_ring.tscn",
+      "iskarra_spire_crown": "res://assets/environments/arenas/iskarra_spire_crown/iskarra_spire_crown.tscn",
+      "undertow_cage": "res://assets/environments/arenas/undertow_cage/undertow_cage.tscn",
+      "undertow_heart": "res://assets/environments/arenas/undertow_heart/undertow_heart.tscn",
+      "undertow_heart_letting": "res://assets/environments/arenas/undertow_heart_letting/undertow_heart_letting.tscn"
     },
     "staging": {
       "doc": "M3-BPR-01: per-arena choreography (BattleChoreo): travel_scale scales every run, step, walk-in and exit (with reduced motion's on top); tempo scales the battle speed (under 1 = slower). Arenas with no row stage as the sandbox.",
@@ -34,6 +41,18 @@
         "tempo": 1.0
       },
       "wall_head_storm": {
+        "travel_scale": 0.85,
+        "tempo": 1.0
+      },
+      "seawall_stairhead_storm": {
+        "travel_scale": 0.85,
+        "tempo": 1.0
+      },
+      "seawall_stairhead_hoist": {
+        "travel_scale": 0.85,
+        "tempo": 1.0
+      },
+      "seawall_stairhead_surge": {
         "travel_scale": 0.85,
         "tempo": 1.0
       }

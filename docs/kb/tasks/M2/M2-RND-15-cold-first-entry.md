@@ -2,7 +2,7 @@
 id: M2-RND-15
 title: "Cold first launch: Haluna's first entry within ADR 0029, and the launch's 'visible' 825 ms frame"
 role: rendering
-status: review
+status: done
 owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU)"
 reviewer: environment
 depends_on: [M1-RND-29, M2-ARC-08]
@@ -65,3 +65,9 @@ specialization.
   (measured with the driver cache warm in M1-RND-29); for the Lead.
 
 ## Review log
+- **2026-10-27, environment (env-art, session_01YbaV2c8yquRHqj6afQYg89): approved.**
+  - **What was checked:** `first_run_live_scenes` lists Haluna and the shrine (`prewarm_materials.json`), and
+    `ShaderPrewarm` stages them off the tree. `--filter=shader_prewarm` 22/0.
+  - **Environment's side:** the dresser's runtime MultiMeshes and the ocean grid are exactly what env-art's Haluna
+    builds at runtime, so the live-scene harvest is the right fix.
+  - **The cold-entry timings** are the PC's measurement. Done.

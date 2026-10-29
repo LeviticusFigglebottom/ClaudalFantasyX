@@ -272,7 +272,7 @@ func test_the_vowbound_call_rise_and_fall() -> void:
 	var ilun := BattleCombatant.new()
 	ilun.id = &"ilun"
 	engine.vowbound.called.emit(ilun)
-	assert_eq(_ids(), [&"vowbound_beckon"], "the caller calls")
+	assert_eq(_ids(), [&"vowbound_beckon", &"ilun_call"], "the caller calls; his net-float answers")
 	heard.clear()
 	var outs := {&"rhen": {"t": -0.5, "spec": {"sec": 0.5}}}
 	standin.set(&"moves_out", outs)
@@ -285,26 +285,44 @@ func test_the_vowbound_call_rise_and_fall() -> void:
 	var ins := {&"ilun": {"t": 0.01, "spec": {"sec": 1.3}}}
 	standin.set(&"moves_in", ins)
 	_step(0.1)
-	assert_eq(_ids(), [&"vowbound_rise"], "once, as he rises")
+	assert_eq(_ids(), [&"vowbound_rise", &"ilun_rise"], "once, as he rises, with his own wings and float")
 	heard.clear()
 	ins[&"ilun"] = {"t": 0.0, "spec": {"sec": 2.6}}
 	standin.set(&"moves_in", {})
 	audio.advance(0.0)
 	standin.set(&"moves_in", ins)
 	audio.advance(0.0)
-	assert_eq(_ids(), [&"vowbound_rise_long"], "the first call's slow rise")
+	assert_eq(_ids(), [&"vowbound_rise_long", &"ilun_rise"], "the first call's slow rise")
 	heard.clear()
 	engine.vowbound.departed.emit(ilun, true)
 	standin.set(&"moves_out", {&"ilun": {"t": 0.0, "spec": {"sec": 1.5}}})
 	audio.advance(0.0)
-	assert_eq(_ids(), [&"vowbound_fall"], "struck down: drawn under")
+	assert_eq(_ids(), [&"vowbound_fall", &"ilun_sink"], "struck down: drawn under")
 	heard.clear()
 	standin.set(&"moves_out", {})
 	audio.advance(0.0)
 	engine.vowbound.departed.emit(ilun, false)
 	standin.set(&"moves_out", {&"ilun": {"t": 0.0, "spec": {"sec": 0.9}}})
 	audio.advance(0.0)
-	assert_eq(_ids(), [&"vowbound_sink"], "dismissed: he sinks back")
+	assert_eq(_ids(), [&"vowbound_sink", &"ilun_sink"], "dismissed: he sinks back")
+	_teardown()
+
+
+func test_a_vowbound_without_layers_plays_only_the_shared_rows() -> void:
+	var other := BattleCombatant.new()
+	other.id = &"unvoiced_vowbound"
+	engine.vowbound.called.emit(other)
+	assert_eq(_ids(), [&"vowbound_beckon"], "no layer row for it: the shared call only")
+	_teardown()
+
+
+func test_kahre_and_virel_answer_the_call_with_their_own_layer() -> void:
+	for vid: StringName in [&"kahre", &"virel"]:
+		var v := BattleCombatant.new()
+		v.id = vid
+		engine.vowbound.called.emit(v)
+		assert_eq(_ids(), [&"vowbound_beckon", StringName(String(vid) + "_call")], "%s's keepsake answers" % vid)
+		heard.clear()
 	_teardown()
 
 

@@ -84,6 +84,7 @@ func apply() -> void:
 		var parent_basis := Basis.IDENTITY if parent < 0 else skeleton.get_bone_global_pose(parent).basis
 		skeleton.set_bone_pose_rotation(idx, (parent_basis.inverse() * global_pose).get_rotation_quaternion())
 	skeleton.force_update_all_bone_transforms()
+	HeroHelperBones.drive(skeleton)  # M2-ENV-14: the skirt panels and shoulder correctives follow the hand-set pose
 	if ground_bones.is_empty():
 		return
 	var lowest := INF

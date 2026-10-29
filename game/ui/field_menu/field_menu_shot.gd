@@ -3,7 +3,8 @@ extends Control
 ## Capture driver for the field menu shots (M2-UI-04, tests/screenshots/shots.json). It opens
 ## FieldMenu on a fixed scratch save, so the player's save never moves a baseline:
 ##   - "root": the root page, the cursor on Swell (its line under the right page);
-##   - "swell_modes": Rhen's fill modes with Tether unlocked and Wake in use, the cursor on Tether.
+##   - "swell_modes": Rhen's fill modes with Tether unlocked and Wake in use, the cursor on Tether;
+##   - "kite": the root once the Kite flies (M3-UI-205: a row taller, KiteMapShot's places), the cursor on Kite.
 ## The modes themselves come from swell.json (BattleSwellCarry), as in play. The party stands in
 ## Haluna (a MapModel on no flags), so the Map row (M2-UI-18) is on, as it is there in play. The root's
 ## Last saved block (M2-MNU-300) reads a fixed autosave at Haluna (FixedSaves), at UTC.
@@ -17,7 +18,7 @@ const SAVED_LOCATION_KEY := "LOCATION_CH02_HALUNA"
 ## 2026-10-24 14:05 UTC.
 const SAVED_AT := 1792850700
 
-## Which view to stage: &"root" or &"swell_modes".
+## Which view to stage: &"root", &"swell_modes" or &"kite".
 @export var view: StringName = &"root"
 
 var menu: FieldMenu
@@ -53,12 +54,15 @@ func _ready() -> void:
 	var saves := FixedSaves.new()
 	add_child(saves)
 	model.save_system = saves
+	if view == &"kite":
+		model.kite = KiteMapShot.fixed_model()
 	menu = (load(FieldMenu.SCENE_PATH) as PackedScene).instantiate() as FieldMenu
 	menu.pause_tree = false
 	menu.configure(model)
 	add_child(menu)
-	for i in FieldMenuModel.ROOT_IDS.find(FieldMenuModel.ROW_SWELL):
-		menu.handle_input(_ev(&"ui_down"))  # down to Swell
+	var to := FieldMenuModel.ROW_KITE if view == &"kite" else FieldMenuModel.ROW_SWELL
+	for i in model.root_ids().find(to):
+		menu.handle_input(_ev(&"ui_down"))  # down to Swell (or Kite)
 	if view != &"swell_modes":
 		return
 	menu.accept()  # the heroes, Rhen first

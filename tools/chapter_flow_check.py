@@ -12,7 +12,7 @@ STARTS_FILE = "game/data/debug/chapter_select.json"
 CHAPTERS_FILE = "game/data/flow/chapters.json"
 GREYBOX_SCRIPT = "res://game/world/zone/greybox_zone.gd"
 LAYOUT_PATH_RE = re.compile(r'^layout_path = "(res://[^"]+)"', re.M)
-ZONE_KEYS = {"party", "arrive", "beats", "barks", "overheard_hold_sec", "doc"}
+ZONE_KEYS = {"party", "arrive", "beats", "barks", "overheard_hold_sec", "overheard_read_cps", "doc"}
 END_STEPS = {"battle", "go", "scene"}
 STEP_KEYS = {"play", "place", "set", "chapter", "party", "zone", "beat", "if_event"} | END_STEPS
 STEP_EXTRA = {"battle": {"return_spawn", "escape_spawn", "victory_flag", "objective_flag", "party", "reserve", "seed"},

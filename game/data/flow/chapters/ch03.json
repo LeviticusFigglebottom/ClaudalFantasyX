@@ -3,6 +3,8 @@
  "chapter": "ch03",
  "zones": {
   "ch03/saltgrass_causeway": {
+   "overheard_hold_sec": 2.4,
+   "overheard_read_cps": 15.0,
    "arrive": [
     {
      "when": {

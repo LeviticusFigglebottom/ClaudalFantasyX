@@ -162,7 +162,9 @@ func rows() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	if view == VIEW_KEY:
 		for iid in item_ids():
-			out.append({"id": iid, "label": item_name(iid), "right": "", "enabled": true})
+			out.append(
+				{"id": iid, "label": item_name(iid), "right": "", "enabled": true, "glyph": MenuGlyph.for_goods(iid)}
+			)
 		return out
 	for iid in item_ids():
 		(
@@ -175,6 +177,7 @@ func rows() -> Array[Dictionary]:
 					"right": count_text(iid),
 					"right_role": &"text" if item_error(iid) == RESULT_OK else &"text_dim",
 					"enabled": true,
+					"glyph": MenuGlyph.for_goods(iid),
 				}
 			)
 		)

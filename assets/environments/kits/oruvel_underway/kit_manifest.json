@@ -282,9 +282,9 @@
         3500,
         200
       ],
-      "bytes": 76856,
+      "bytes": 117844,
       "lods": {
-        "tower_bay": 1279,
+        "tower_bay": 1927,
         "tower_bay-lod1": 48
       }
     },
@@ -293,9 +293,9 @@
         4500,
         200
       ],
-      "bytes": 88352,
+      "bytes": 127608,
       "lods": {
-        "tower_bay_broken": 1594,
+        "tower_bay_broken": 2276,
         "tower_bay_broken-lod1": 36
       }
     },
@@ -304,9 +304,9 @@
         3500,
         200
       ],
-      "bytes": 47592,
+      "bytes": 104960,
       "lods": {
-        "tower_bay_solid": 888,
+        "tower_bay_solid": 1920,
         "tower_bay_solid-lod1": 12
       }
     },

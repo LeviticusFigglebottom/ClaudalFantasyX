@@ -1,0 +1,150 @@
+{
+  "version": 1,
+  "doc": "M3-AUD-861 (ADR 0041; Git LFS, ADR 0173): Act I's boss and set-piece skills that hit, heal and status nobody, each with its own sound (assets_src/sfx/act1_skill_sfx.py). battle_sfx.json `skills` maps each skill id to its row here.",
+  "sfx": {
+    "skill_rouse_polyp": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/rouse_polyp.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861: rouse polyp"
+    },
+    "skill_gnaw_coil": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/gnaw_coil.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861: gnaw coil"
+    },
+    "skill_recrust_gather": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/recrust_gather.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861: recrust gather"
+    },
+    "skill_lines_taut": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/lines_taut.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861: lines taut"
+    },
+    "skill_reach_for_stair": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/reach_for_stair.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861: reach for stair"
+    },
+    "skill_grip_the_stair": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/grip_the_stair.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861: grip the stair"
+    },
+    "skill_rope_dive": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/rope_dive.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861: rope dive"
+    },
+    "skill_climb_up": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/climb_up.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861: The Climb makes the wall-head: a hand slapping onto the parapet, boots scrabbling on stone, the rope pulled"
+    },
+    "skill_surge_crawler": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/surge_crawler.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861: surge crawler"
+    },
+    "skill_surge_wing": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/surge_wing.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861: surge wing"
+    },
+    "skill_surge_ebb": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/surge_ebb.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861: surge ebb"
+    },
+    "skill_storm_call_sound": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/storm_call_sound.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861: Pell's telegraph: a deep breath drawn in, and the note's first growl, low in his chest."
+    },
+    "skill_storm_call": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/storm_call.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861: Storm-Call itself: Pell's huge low note (the cutscene's own voice), and one spawn going off the wall after it."
+    },
+    "skill_close_the_hand": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/close_the_hand.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861: close the hand"
+    },
+    "skill_hand_closes": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/hand_closes.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861: hand closes"
+    },
+    "skill_breach_gather": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/breach_gather.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-861: Four turns out: the sea drawing back off the wall, slowly, the deep building under it."
+    }
+  }
+}

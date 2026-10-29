@@ -9,7 +9,43 @@ extends TestCase
 const MANIFEST := "res://tools/portraits/portraits.json"
 const PROVENANCE := "res://assets/PROVENANCE.md"
 const EMOTIONS := "res://game/data/dialogue/emotions.json"
-const HEROES: Array[StringName] = [&"rhen", &"asha", &"toma"]
+const HEROES: Array[StringName] = [
+	&"rhen",
+	&"asha",
+	&"toma",
+	&"ysolde",
+	&"liss",
+	&"kerrid",
+	&"moll",
+	&"sefir",
+	&"stillguard",
+	&"ivo",
+	# The Act I townsfolk who speak (claude/characters' villager stages; dialogue speaker ids).
+	&"tavi",
+	&"kell",
+	&"garo",
+	&"neme",
+	&"osu",
+	&"fenn",
+	&"hobb",
+	&"marra",
+	&"sabe",
+	&"ione",
+	&"skipper_sadi",
+	&"poolkeeper",
+	&"scaleman",
+	&"ferrymaster",
+	&"tender",
+	&"reed",
+	&"netmender",
+	&"fisher",
+	&"vendor",
+	&"child"
+]
+## The six party heroes (the pages below stand them up).
+const PARTY: Array[StringName] = [&"rhen", &"asha", &"toma", &"ysolde", &"liss", &"kerrid"]
+## The party the formation case stands up (Kerrid, with no portrait yet, joins it in reserve).
+const LINE: Array[StringName] = [&"rhen", &"asha", &"toma"]
 
 var state: GameStateData
 var page: FieldSubmenu
@@ -17,7 +53,7 @@ var page: FieldSubmenu
 
 func before_each() -> void:
 	state = GameStateData.new()
-	state.party_ids = HEROES.duplicate()
+	state.party_ids = PARTY.duplicate()
 	page = null
 
 
@@ -25,7 +61,11 @@ func test_every_manifest_portrait_exists_with_a_provenance_row() -> void:
 	var manifest := _json(MANIFEST)
 	var heroes: Array = manifest.get("heroes", [])
 	var size: Array = (manifest.get("defaults", {}) as Dictionary).get("size", [])
-	assert_eq(heroes.size(), HEROES.size(), "Rhen, Asha and Toma")
+	assert_eq(
+		heroes.size(),
+		HEROES.size(),
+		"the party, and the people who speak or fight with a face (Moll, Sefir, the Stillguard, the townsfolk)"
+	)
 	assert_true(manifest.get("creatures") is Array, "room for the bestiary's creatures")
 	var provenance := FileAccess.get_file_as_string(PROVENANCE)
 	var tags: Array[String] = []
@@ -35,8 +75,10 @@ func test_every_manifest_portrait_exists_with_a_provenance_row() -> void:
 		var id := StringName(str(h["id"]))
 		var emotions: Array = h["emotions"]
 		assert_true(emotions.has(str(HeroPortraits.fallback_emotion())), "%s has the fallback portrait" % id)
-		assert_true(emotions.size() >= 3, "%s has expressions" % id)
-		var poses: Dictionary = _json(str(h["face_poses"])).get("emotions", {})
+		# A speaking extra whose stage has no face-pose table (the Stillguard) has the neutral portrait alone.
+		var posed := str(h["face_poses"]) != ""
+		assert_true(emotions.size() >= 3 if posed else emotions == ["neutral"], "%s has expressions" % id)
+		var poses: Dictionary = _json(str(h["face_poses"])).get("emotions", {}) if posed else {"neutral": {}}
 		for emotion: String in emotions:
 			var path := HeroPortraits.path_for(id, StringName(emotion))
 			assert_eq(path, str(h["out_dir"]).path_join("%s_%s.png" % [id, emotion]), "the lookup's path")
@@ -74,7 +116,7 @@ func test_the_lookup_falls_back_to_neutral_then_to_nothing() -> void:
 	assert_false(HeroPortraits.has(&"rhen", &"laugh"), "no laugh portrait is baked")
 	assert_eq(HeroPortraits.texture(&"rhen", &"laugh"), neutral, "an emotion without a portrait: neutral")
 	assert_eq(HeroPortraits.texture(&"rhen"), neutral, "no emotion: neutral")
-	assert_eq(HeroPortraits.texture(&"ysolde", &"grief"), null, "a hero without portraits: null")
+	assert_eq(HeroPortraits.texture(&"pell", &"grief"), null, "someone without portraits: null")
 	assert_eq(HeroPortraits.texture(&"", &"neutral"), null)
 	var face := HeroPortraits.face(&"asha", &"smile") as AtlasTexture
 	assert_true(face != null, "the head crop")
@@ -82,7 +124,7 @@ func test_the_lookup_falls_back_to_neutral_then_to_nothing() -> void:
 		var r: Array = HeroPortraits.data()["face_region"]
 		assert_eq(face.region, Rect2(float(r[0]), float(r[1]), float(r[2]), float(r[3])))
 		assert_eq(face.atlas, HeroPortraits.texture(&"asha", &"smile"))
-	assert_eq(HeroPortraits.face(&"ysolde"), null)
+	assert_eq(HeroPortraits.face(&"pell"), null)
 	assert_eq(HeroPortraits.page_emotion(&"status"), &"neutral")
 	assert_eq(HeroPortraits.page_emotion(&"status", true), &"worried", "a fallen hero looks worried")
 	assert_eq(HeroPortraits.page_emotion(&"equip", true), &"determined", "no fallen pose: the page's own")
@@ -98,9 +140,9 @@ func test_the_frame_shows_the_picture_or_the_initial() -> void:
 	assert_eq(frame.picture().texture, HeroPortraits.texture(&"toma", &"worried"))
 	assert_true(frame.picture().visible)
 	assert_eq(frame.initial_text(), "", "no initial over a picture")
-	frame.show_hero(&"ysolde", "Ysolde")
+	frame.show_hero(&"pell", "Pell")
 	assert_true(frame.picture().texture == null, "no picture")
-	assert_eq(frame.initial_text(), "Y", "the old initial as the last fallback")
+	assert_eq(frame.initial_text(), "P", "the old initial as the last fallback")
 	frame.crop = HeroPortraitFrame.Crop.FACE
 	frame.show_hero(&"asha", "Asha")
 	assert_true(frame.picture().texture is AtlasTexture, "the head crop")
@@ -110,7 +152,7 @@ func test_the_frame_shows_the_picture_or_the_initial() -> void:
 
 
 func test_status_shows_the_hero_on_show() -> void:
-	page = StatusMenu.create(PartySheet.new(state, HEROES))
+	page = StatusMenu.create(PartySheet.new(state, PARTY))
 	page.pause_tree = false
 	_root().add_child(page)
 	var status := page as StatusMenu
@@ -130,7 +172,7 @@ func test_status_shows_the_hero_on_show() -> void:
 
 func test_status_shows_a_fallen_hero_worried() -> void:
 	state.party_vitals = {"asha": {"hp": 0}}
-	page = StatusMenu.create(PartySheet.new(state, HEROES))
+	page = StatusMenu.create(PartySheet.new(state, PARTY))
 	page.pause_tree = false
 	_root().add_child(page)
 	var status := page as StatusMenu
@@ -142,7 +184,7 @@ func test_status_shows_a_fallen_hero_worried() -> void:
 
 
 func test_equip_shows_the_highlighted_hero() -> void:
-	page = EquipMenu.create(PartySheet.new(state, HEROES))
+	page = EquipMenu.create(PartySheet.new(state, PARTY))
 	page.pause_tree = false
 	_root().add_child(page)
 	var equip := page as EquipMenu
@@ -156,8 +198,9 @@ func test_equip_shows_the_highlighted_hero() -> void:
 
 
 func test_formation_shows_the_highlighted_hero_beside_the_detail() -> void:
-	state.reserve_ids = [&"ysolde"] as Array[StringName]
-	page = FormationMenu.create(PartySheet.new(state, HEROES + ([&"ysolde"] as Array[StringName])))
+	state.party_ids = LINE.duplicate()
+	state.reserve_ids = [&"kerrid"] as Array[StringName]
+	page = FormationMenu.create(PartySheet.new(state, LINE + ([&"kerrid"] as Array[StringName])))
 	page.pause_tree = false
 	_root().add_child(page)
 	var formation := page as FormationMenu
@@ -165,8 +208,8 @@ func test_formation_shows_the_highlighted_hero_beside_the_detail() -> void:
 	assert_eq(frame.hero(), &"rhen")
 	assert_true(frame.picture().texture != null)
 	formation.handle_input(_ev(&"ui_right"))
-	assert_eq(formation.current_hero(), &"ysolde")
-	assert_eq(frame.initial_text(), "Y", "no portrait yet: the initial")
+	assert_eq(formation.current_hero(), &"kerrid")
+	assert_true(frame.picture().texture != null, "Kerrid has his portrait now (M3-CHR-505)")
 	formation.handle_input(_ev(&"ui_down"))
 	assert_eq(formation.current_hero(), &"", "the open place")
 	assert_false(frame.visible, "no portrait for an open place")
@@ -174,7 +217,7 @@ func test_formation_shows_the_highlighted_hero_beside_the_detail() -> void:
 
 
 func test_lattice_shows_the_hero_on_show_as_a_head() -> void:
-	page = LatticeMenu.create(PartySheet.new(state, HEROES))
+	page = LatticeMenu.create(PartySheet.new(state, PARTY))
 	page.pause_tree = false
 	_root().add_child(page)
 	var lattice := page as LatticeMenu

@@ -9,11 +9,18 @@ extends Node3D
 const DATA_PATH := "res://game/data/creatures/creatures.json"
 ## Buckets a path hash is cut into for the fidget interval.
 const FIDGET_BUCKETS := 10007
+## The `vfx_anchors` keys (M3-CRE-651).
+const ANCHOR_WOUND := &"wound"
+const ANCHOR_CORE := &"core"
 
 static var _data: Dictionary = {}
 
 ## The creatures.json row this actor reads.
 @export var creature_id: StringName = &""
+## A material set that replaces the import's (M3-CRE-647, a Vowbound's held form: res://assets/creatures/<id>/
+## materials_held/, written by write_materials.py). Each surface wearing the import's <slot>.tres (its resource_name
+## is the glTF slot) takes <material_dir>/<slot>.tres in its place when that file exists. Empty: the import's set.
+@export_dir var material_dir: String = ""
 
 ## The clip playing now (or the last one), for tests and captures.
 var current_clip: StringName = &""
@@ -31,6 +38,7 @@ var _phase_tween: Tween
 var _phase_pose: Array = []  # [position, rotation] the phase moves the model to
 var _hide_after: Array = []  # nodes a phase hides once its clip has played (hullgnaw's falling frames)
 var _show_after: Array = []  # nodes a phase shows once its clip has played (the spar-wraith's water sheath)
+var _hold_clip: StringName = &""  # a `hold` phase's clip: it stays on its last frame instead of idling (the release)
 ## Hits taken (rotates the row's `hit_variants`).
 var _hits := 0
 ## Seconds idling since the last fidget, and when the next one plays (the row's `idle_variety`).
@@ -66,6 +74,7 @@ static func row_for(id: StringName) -> Dictionary:
 func _ready() -> void:
 	_row = row_for(creature_id)
 	_idle = StringName(str(_row.get("idle", "idle")))
+	_apply_material_dir()
 	for n in find_children("*", "GeometryInstance3D", true, false):
 		_surfaces.append(n as GeometryInstance3D)
 	var players := find_children("*", "AnimationPlayer", true, false)
@@ -83,6 +92,22 @@ func _ready() -> void:
 			if node != null:
 				node.visible = false
 	_play(_idle)
+
+
+func _apply_material_dir() -> void:
+	if material_dir == "":
+		return
+	for n in find_children("*", "MeshInstance3D", true, false):
+		var mi := n as MeshInstance3D
+		if mi.mesh == null:
+			continue
+		for i in mi.mesh.get_surface_count():
+			var cur := mi.get_active_material(i)
+			if cur == null or cur.resource_name == "":
+				continue
+			var path := material_dir.path_join(cur.resource_name + ".tres")
+			if ResourceLoader.exists(path):
+				mi.set_surface_override_material(i, load(path) as Material)
 
 
 func has_clip(clip: StringName) -> bool:
@@ -109,8 +134,9 @@ func play_hit() -> bool:
 ## Plays a one-shot clip, then idles again. Refused while KO'd or petrified. In a phase whose `clips` map names a
 ## stand-in for `clip` (the Undertow's Reach strikes from its lifted or drawn-back pose), that clip plays instead.
 ## A hit rotates through the row's `hit_variants` (the hit, then its mirrored heavier `hit_b`, ...) outside phases
-## that map their own hit.
-func play_clip(clip: StringName) -> bool:
+## that map their own hit. `_blend_sec` is HeroMotion.play's (a field stage plays a creature like a hero body,
+## M3-HER-1142's hound in Brine Shoals); the creature keeps its own blend times.
+func play_clip(clip: StringName, _blend_sec: float = -1.0) -> bool:
 	var mapped := phase_clip(clip)
 	if mapped == clip and clip == StringName(str(_row.get("hit", "hit"))) and not _ko and not _frozen:
 		mapped = _next_hit(clip)
@@ -194,7 +220,11 @@ func set_ko(on: bool, alpha: float) -> void:
 	if on:
 		var clip := StringName(str(_row.get("ko", "ko")))
 		var wait := 0.0
-		if has_clip(clip) and not _frozen:
+		if has_clip(clip) and not _frozen and clip == _hold_clip and current_clip == clip:
+			# the KO is the clip a `hold` phase already played (a Vowbound's release): it isn't played twice
+			if _player.is_playing():
+				wait = maxf(_player.get_animation(clip).length - _player.current_animation_position, 0.0)
+		elif has_clip(clip) and not _frozen:
 			_play(clip)
 			wait = _player.get_animation(clip).length
 		if is_inside_tree():
@@ -230,7 +260,8 @@ func set_frozen(on: bool) -> void:
 ## Matron's crust bursting off), hides its `hide_after` and shows its `show_after` nodes once the clip has played
 ## (the hullgnaw's frames fall first; the spar-wraith's water sheath comes after its drop), moves the model by its
 ## offset and tilt over its time (at once when `instant`, for captures), and idles on the phase's idle clip
-## afterwards. An unknown phase does nothing.
+## afterwards; a phase with `hold` true stays on its clip's last frame instead (M3-CRE-647: a Vowbound's release,
+## which its KO then does not replay). An unknown phase does nothing.
 func enter_phase(phase_id: StringName, instant := false) -> bool:
 	var phases: Dictionary = _row.get("phases", {})
 	if not phases.has(String(phase_id)) or phase_id == _phase:
@@ -266,6 +297,7 @@ func enter_phase(phase_id: StringName, instant := false) -> bool:
 		if node != null:
 			node.visible = true
 	var clip := StringName(str(p.get("clip", "")))
+	_hold_clip = clip if bool(p.get("hold", false)) and has_clip(clip) else &""
 	if not _ko and not _frozen:
 		_play(clip if has_clip(clip) else _idle)
 	_hide_after = p.get("hide_after", [])
@@ -304,7 +336,12 @@ func settle() -> void:
 		model.position = _phase_pose[0]
 		model.rotation = _phase_pose[1]
 	if not _ko and not _frozen and _phase != &"":
-		_play(_idle)
+		if _hold_clip != &"":  # a `hold` phase settles on its clip's last frame
+			current_clip = _hold_clip
+			_player.play(_hold_clip, 0.0)
+			_player.seek(_player.get_animation(_hold_clip).length, true)
+		else:
+			_play(_idle)
 	_apply_hide_after(_phase)
 
 
@@ -332,6 +369,26 @@ func _show_part(skill_id: StringName, broken: bool) -> void:
 		var node := find_child(str(n), true, false) as Node3D
 		if node != null:
 			node.visible = broken
+
+
+## M3-CRE-651: where on this body a spawn or death effect starts. `anchor` is a key of the row's `vfx_anchors`
+## (`wound`: the weak point, ADR 0151; `core`: the body's centre), each naming a bone. A row without a `wound` uses
+## its `core`. Returns the bone's world position now (it follows the clip playing), or Vector3.INF when the row names
+## no bone (the caller falls back to the stand-in's anchor heights, effects.json `anchor_heights`).
+func vfx_anchor(anchor: StringName) -> Vector3:
+	var anchors: Dictionary = _row.get("vfx_anchors", {})
+	var bone := str(anchors.get(String(anchor), ""))
+	if bone == "" and anchor == ANCHOR_WOUND:
+		bone = str(anchors.get(String(ANCHOR_CORE), ""))
+	if bone == "":
+		return Vector3.INF
+	for n in find_children("*", "Skeleton3D", true, false):
+		var sk := n as Skeleton3D
+		var i := sk.find_bone(bone)
+		if i >= 0:
+			sk.force_update_all_bone_transforms()  # the pose the clip set this frame, not last frame's cache
+			return sk.global_transform * sk.get_bone_global_pose(i).origin
+	return Vector3.INF
 
 
 func _model() -> Node3D:
@@ -376,7 +433,7 @@ func _play(clip: StringName) -> void:
 
 
 func _on_clip_finished(clip: StringName) -> void:
-	if _ko or _frozen or clip != current_clip:
+	if _ko or _frozen or clip != current_clip or clip == _hold_clip:
 		return
 	_play(_idle)
 

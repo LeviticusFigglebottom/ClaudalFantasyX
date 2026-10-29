@@ -42,7 +42,7 @@ much bigger. FAST-TRACK playtest fix.
   - The search orbits the shot about the boss (`fit.yaw_steps_deg`, its own angle first) to find such a frame.
   - Test `test_no_party_member_crowds_a_boss_intro` covers every boss intro with its full party. Without the orbit,
     only the Drownbell fails it, so the other five keep their frames.
-- [ ] PC render of all six (FAST-TRACK) viewed; the Lead merges.
+- [x] PC render of all six (FAST-TRACK) viewed: drownbell, matron, wraith at 7aa31b6f; hullgnaw after the 0.36 fix (cloud render 60cbb21). The Lead merges.
 
 ## Moved shots
 All six, re-approved after viewing (captured on the integration branch + 404 only):

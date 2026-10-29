@@ -308,6 +308,87 @@
       "voices": 2,
       "volume_db": 0.0,
       "_note": "M3-AUD-838: the charge style's strike"
+    },
+    "ilun_rise": {
+      "files": [
+        "res://assets/audio/sfx/choreo/ilun_rise.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-846: Ilun's layer (vowbound_sfx.py)"
+    },
+    "ilun_call": {
+      "files": [
+        "res://assets/audio/sfx/choreo/ilun_call.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-846: Ilun's layer (vowbound_sfx.py)"
+    },
+    "ilun_sink": {
+      "files": [
+        "res://assets/audio/sfx/choreo/ilun_sink.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-846: Ilun's layer (vowbound_sfx.py)"
+    },
+    "kahre_rise": {
+      "files": [
+        "res://assets/audio/sfx/choreo/kahre_rise.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-857: Kahre's layer (vowbound_sfx.py)"
+    },
+    "kahre_call": {
+      "files": [
+        "res://assets/audio/sfx/choreo/kahre_call.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-857: Kahre's layer (vowbound_sfx.py)"
+    },
+    "kahre_sink": {
+      "files": [
+        "res://assets/audio/sfx/choreo/kahre_sink.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-857: Kahre's layer (vowbound_sfx.py)"
+    },
+    "virel_rise": {
+      "files": [
+        "res://assets/audio/sfx/choreo/virel_rise.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-857: Virel's layer (vowbound_sfx.py)"
+    },
+    "virel_call": {
+      "files": [
+        "res://assets/audio/sfx/choreo/virel_call.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-857: Virel's layer (vowbound_sfx.py)"
+    },
+    "virel_sink": {
+      "files": [
+        "res://assets/audio/sfx/choreo/virel_sink.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-857: Virel's layer (vowbound_sfx.py)"
     }
   }
 }

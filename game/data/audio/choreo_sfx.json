@@ -30,7 +30,12 @@
               "needs_hit": false},
     "glyph": {"approach": "choreo_step", "approach_steps": 1, "strike": "whoosh_cast", "contact": "swell_ysolde",
               "needs_hit": false},
-    "toll": {"strike": "", "contact": "toll_wave", "needs_hit": false}
+    "toll": {"strike": "", "contact": "toll_wave", "needs_hit": false},
+    "swing": {"_note": "M3-BPR-422 / M3-AUD-861: Kerrid's Swell, the weighted swing: the anchor swung round on its line, then landing",
+              "approach": "choreo_step", "approach_steps": 3, "strike": "whoosh_swing", "contact": "swell_kerrid",
+              "return": "choreo_step", "return_steps": 3},
+    "reel": {"_note": "M3-BPR-422 / M3-AUD-861: Liss's Swell, the reel-stop: the line paid out and snubbed, then the brass strike",
+             "approach": "choreo_step", "approach_steps": 1, "strike": "reel_whir", "contact": "swell_liss"}
   },
   "skills": {
     "flood_surge": "flood_surge",
@@ -42,6 +47,8 @@
     "whoosh_melee": 0.12,
     "whoosh_heavy": 0.22,
     "whoosh_charge": 0.42,
+    "whoosh_swing": 0.36,
+    "reel_whir": 0.39,
     "whoosh_cast": 0.3,
     "whoosh_throw": 0.1,
     "whoosh_guard": 0.14
@@ -70,12 +77,19 @@
     "bell_hood": "accent_bell_hood",
     "none": ""
   },
-  "no_steps": ["gull_harrier", "lantern_eel", "drownbell", "spawn_polyp", "ilun"],
+  "no_steps": ["gull_harrier", "lantern_eel", "drownbell", "spawn_polyp", "ilun", "virel"],
   "ko": "ko_collapse",
   "enter": {"sfx": "choreo_step", "steps": 2},
   "step_off": {"sfx": "choreo_step", "steps": 3},
   "vowbound": {"call": "vowbound_beckon", "rise": "vowbound_rise", "rise_long": "vowbound_rise_long",
-               "long_sec": 2.0, "sink": "vowbound_sink", "fall": "vowbound_fall"},
+               "long_sec": 2.0, "sink": "vowbound_sink", "fall": "vowbound_fall",
+    "layers": {"ilun": {"call": "ilun_call", "rise": "ilun_rise", "sink": "ilun_sink", "fall": "ilun_sink",
+                        "_note": "M3-AUD-846: the net-float and the wings over the shared rows (assets_src/sfx/vowbound_sfx.py)"},
+               "kahre": {"call": "kahre_call", "rise": "kahre_rise", "sink": "kahre_sink", "fall": "kahre_sink",
+                         "_note": "M3-AUD-857: the hammer on the anvil, the sparks and the thunder (vowbound_sfx.py)"},
+               "virel": {"call": "virel_call", "rise": "virel_rise", "sink": "virel_sink", "fall": "virel_sink",
+                         "_note": "M3-AUD-857: the sailcloth filling, the seams' fire, the brass key (vowbound_sfx.py)"}}
+  },
   "flood": {"sfx": "flood_brace"},
   "reduced_skip": ["contact", "steps"]
 }

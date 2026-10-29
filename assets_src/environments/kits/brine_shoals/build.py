@@ -20,6 +20,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
+import b_fire  # noqa: E402  (env-art-b, M3-ENV-1313)
 import bs_barge  # noqa: E402
 import bs_camp  # noqa: E402
 import bs_arenas  # noqa: E402
@@ -34,7 +35,8 @@ import bs_wrecks  # noqa: E402
 kc = bc.kc
 MAX_GLB_BYTES = 5 * 1024 * 1024  # ADR 0005
 # bs_derelict: M3-ENV-06's arena deck; bs_story: M3-ENV-703; bs_arenas: M3-ENV-706; bs_wake: M3-ENV-1000; bs_tideline: M3-C06-03
-MODULES = (bs_ground, bs_wrecks, bs_camp, bs_barge, bs_derelict, bs_story, bs_arenas, bs_wake, bs_tideline)
+MODULES = (bs_ground, bs_wrecks, bs_camp, bs_barge, bs_derelict, bs_story, bs_arenas, bs_wake, bs_tideline,
+           b_fire)  # b_fire: env-art-b, M3-ENV-1313
 
 
 def targets() -> dict:

@@ -6,9 +6,9 @@
 resource_name = "crust"
 shader = ExtResource("1_shader")
 shader_parameter/cavity_albedo = 0.4
-shader_parameter/detail_albedo = 0.15
-shader_parameter/detail_bump = 0.7
-shader_parameter/detail_scale = 20
+shader_parameter/detail_albedo = 0.2
+shader_parameter/detail_bump = 0.95
+shader_parameter/detail_scale = 24
 shader_parameter/emission_color = Color(0.878431, 0.439216, 0.180392, 1)
 shader_parameter/emission_energy = 1.8
 shader_parameter/emission_pulse_depth = 0.4

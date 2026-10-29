@@ -24,4 +24,7 @@ Ch6's cast are capsules in the greybox (`brine_shoals_layout.json` `actors`). ac
 
 ## Notes
 
+## Notes (creatures)
+- 2026-10-27, creatures: **item 5 is done.** shoal_skipper, wreck_crab and raid_hound stand in battle as models (enemies.json `model`; approved renders, PC render fce2e82). Items 1–4 and 6 (Sefir, Liss, Moll, NPCs, clips) are the characters track's; Moll's battle model is M3-CRE-625.
+
 ## Review log

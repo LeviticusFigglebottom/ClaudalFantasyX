@@ -1,0 +1,365 @@
+{
+ "_about": "M3-CHR-508: the Ch6 Stillguard soldiers, six variants on Moll's kit (hadric_moll.md: the standard Stillguard his derives from), built by build_stillguard.py --variant <id> on build_moll.build. `_shared` is the bb_params block every variant starts from (Moll's), each variant overrides its build, face sliders and skin tone and carries `_variant` (hair: crop or shaved; helm: the open-face helm; weathered: the worn cloth and shield atlases), `_hair` (its colour over `_hair_shared`) and `_skin` (the villager age terms and stubble over `_skin_shared`). `_costume` is Moll's without the brine-iron and the sash, plus Toma's spear and the helm. Heights 1.70-1.84 m.",
+ "_shared": {
+  "height_m": 1.78,
+  "heads_tall": 7.4,
+  "shoulder_width_heads": 1.8,
+  "chest_width_heads": 1.43,
+  "chest_depth_heads": 1.0,
+  "waist_width_heads": 1.2,
+  "hip_width_heads": 1.4,
+  "crotch_height_heads": 3.58,
+  "arm_span_ratio": 1.03,
+  "hand_length_heads": 0.8,
+  "foot_length_ratio": 0.152,
+  "neck_length_heads": 0.4,
+  "neck_width_ratio": 0.57,
+  "head_width_ratio": 0.62,
+  "femininity": 0.0,
+  "muscle": 0.6,
+  "mass": 0.2,
+  "breast": 0.0,
+  "eye_scale": 1.08,
+  "ipd_m": 0.064,
+  "arm_abduction_deg": 47.0,
+  "skin_hex": "#A47A5E",
+  "eye_tilt_deg": 0.0,
+  "canthus_offset_m": 0.0,
+  "jaw_width": 0.98,
+  "cheekbone_height": 0.002,
+  "cheekbone_width": 0.97,
+  "chin_size": 1.04,
+  "nose_bridge_width": 0.94,
+  "nose_tip_projection": 1.0,
+  "lip_fullness": 0.6,
+  "lip_close": 0.6,
+  "lip_seal": 0.96,
+  "lip_lower_fullness": 0.6,
+  "mouth_corner_lift": -0.0005,
+  "brow_ridge": 1.2,
+  "donor_mix_african": 0.25,
+  "donor_mix_asian": 0.3,
+  "donor_mix_caucasian": 0.45
+ },
+ "_costume": {
+  "jack_bottom_below_waist_m": 0.03,
+  "cuirass_rows": 4,
+  "cuirass_top_above_nipple_m": 0.075,
+  "cuirass_side_below_shoulder_m": 0.13,
+  "cuirass_bottom_below_waist_m": 0.02,
+  "lame_thickness_m": 0.005,
+  "lame_overlap": 0.22,
+  "pauldron_lames": 5,
+  "pauldron_top_m": [
+   0.3,
+   0.25
+  ],
+  "pauldron_lift_m": 0.0,
+  "pauldron_thickness_m": 0.006,
+  "scar_radius_m": 0.055,
+  "scar_strokes": 0,
+  "emblem_radius_m": 0.042,
+  "emblem_stroke_m": 0.009,
+  "emblem_bar_past_m": 0.012,
+  "emblem_relief_m": 0.0008,
+  "sash_width_m": 0.14,
+  "sash_tail_below_crotch_m": 0.15,
+  "tunic_hem_below_crotch_m": 0.13,
+  "trouser_hem_shin": 0.42,
+  "wrap_span": [
+   0.03,
+   0.46
+  ],
+  "sleeve_off_m": 0.003,
+  "sleeve_cap_off_m": 0.005,
+  "sleeve_cap_radius_m": 0.085,
+  "sleeve_cap_blend_m": 0.04,
+  "bracer_span": [
+   0.08,
+   0.62
+  ],
+  "shield_diameter_m": 0.62,
+  "shield_dome_m": 0.06,
+  "shield_scutes": 1,
+  "shield_rim_m": 0.045,
+  "shield_boss_m": 0.11,
+  "shield_forearm_gap_m": 0.012,
+  "seed": 41,
+  "sash": false,
+  "spear_length_m": 2.1,
+  "spear_hook_m": 0.06,
+  "helm_clear_m": 0.012,
+  "helm_thickness_m": 0.004,
+  "helm_brim_m": 0.01
+ },
+ "_hair_shared": {
+  "grey_hex": "#9A958C",
+  "length_m": [
+   0.016,
+   0.024
+  ],
+  "card_width_m": [
+   0.007,
+   0.01
+  ],
+  "scalp_cards": [
+   380,
+   300,
+   200
+  ],
+  "temple_grey": 0.0,
+  "grey_elsewhere": 0.0,
+  "seed": 29
+ },
+ "_skin_shared": {
+  "stubble_grey": 0.0,
+  "stubble_grey_hex": "#8E8880"
+ },
+ "variants": {
+  "a": {
+   "height_m": 1.76,
+   "heads_tall": 7.4,
+   "muscle": 0.62,
+   "mass": 0.18,
+   "skin_hex": "#A47A5E",
+   "jaw_width": 1.04,
+   "chin_size": 1.02,
+   "nose_bridge_width": 1.0,
+   "brow_ridge": 1.25,
+   "lip_fullness": 0.7,
+   "cheekbone_width": 1.0,
+   "donor_mix_african": 0.3,
+   "donor_mix_asian": 0.3,
+   "donor_mix_caucasian": 0.4,
+   "_variant": {
+    "hair": "crop",
+    "helm": true,
+    "weathered": false
+   },
+   "_hair": {
+    "colour": "#2A2018",
+    "underpaint": "#261D16"
+   },
+   "_skin": {
+    "age": 0.15,
+    "stubble": 0.3
+   }
+  },
+  "b": {
+   "height_m": 1.82,
+   "heads_tall": 7.5,
+   "shoulder_width_heads": 1.9,
+   "chest_width_heads": 1.5,
+   "waist_width_heads": 1.32,
+   "muscle": 0.78,
+   "mass": 0.32,
+   "skin_hex": "#8A5A3E",
+   "jaw_width": 1.1,
+   "chin_size": 1.08,
+   "nose_bridge_width": 1.12,
+   "nose_tip_projection": 0.95,
+   "brow_ridge": 1.35,
+   "lip_fullness": 0.85,
+   "cheekbone_width": 1.04,
+   "donor_mix_african": 0.5,
+   "donor_mix_asian": 0.25,
+   "donor_mix_caucasian": 0.25,
+   "_variant": {
+    "hair": "shaved",
+    "helm": false,
+    "weathered": true
+   },
+   "_hair": {
+    "colour": "#1E1814",
+    "underpaint": "#1E1814"
+   },
+   "_skin": {
+    "age": 0.3,
+    "stubble": 0.5
+   }
+  },
+  "c": {
+   "height_m": 1.71,
+   "heads_tall": 7.3,
+   "shoulder_width_heads": 1.72,
+   "chest_width_heads": 1.36,
+   "waist_width_heads": 1.12,
+   "muscle": 0.55,
+   "mass": 0.1,
+   "skin_hex": "#B9876A",
+   "jaw_width": 0.94,
+   "chin_size": 0.96,
+   "nose_bridge_width": 0.92,
+   "nose_tip_projection": 1.04,
+   "brow_ridge": 1.1,
+   "lip_fullness": 0.65,
+   "cheekbone_width": 1.03,
+   "eye_tilt_deg": 2.0,
+   "donor_mix_african": 0.15,
+   "donor_mix_asian": 0.5,
+   "donor_mix_caucasian": 0.35,
+   "_variant": {
+    "hair": "crop",
+    "helm": true,
+    "weathered": true
+   },
+   "_hair": {
+    "colour": "#16141A",
+    "underpaint": "#15131A"
+   },
+   "_skin": {
+    "age": 0.05,
+    "stubble": 0.15
+   }
+  },
+  "d": {
+   "height_m": 1.84,
+   "heads_tall": 7.6,
+   "shoulder_width_heads": 1.82,
+   "waist_width_heads": 1.18,
+   "muscle": 0.58,
+   "mass": 0.14,
+   "skin_hex": "#9C6E52",
+   "jaw_width": 0.97,
+   "chin_size": 1.06,
+   "nose_bridge_width": 0.98,
+   "nose_tip_projection": 1.06,
+   "brow_ridge": 1.2,
+   "lip_fullness": 0.55,
+   "cheekbone_width": 0.96,
+   "donor_mix_african": 0.2,
+   "donor_mix_asian": 0.25,
+   "donor_mix_caucasian": 0.55,
+   "_variant": {
+    "hair": "crop",
+    "helm": false,
+    "weathered": false
+   },
+   "_hair": {
+    "colour": "#3A3028",
+    "underpaint": "#352B23",
+    "temple_grey": 0.9,
+    "grey_elsewhere": 0.35
+   },
+   "_skin": {
+    "age": 0.5,
+    "stubble": 0.35
+   }
+  },
+  "e": {
+   "height_m": 1.73,
+   "heads_tall": 7.2,
+   "shoulder_width_heads": 1.88,
+   "chest_width_heads": 1.48,
+   "chest_depth_heads": 1.06,
+   "waist_width_heads": 1.35,
+   "muscle": 0.7,
+   "mass": 0.3,
+   "skin_hex": "#6E4630",
+   "jaw_width": 1.08,
+   "chin_size": 1.0,
+   "nose_bridge_width": 1.14,
+   "nose_tip_projection": 0.94,
+   "brow_ridge": 1.25,
+   "lip_fullness": 0.95,
+   "cheekbone_width": 1.05,
+   "donor_mix_african": 0.65,
+   "donor_mix_asian": 0.15,
+   "donor_mix_caucasian": 0.2,
+   "_variant": {
+    "hair": "shaved",
+    "helm": true,
+    "weathered": false
+   },
+   "_hair": {
+    "colour": "#141110",
+    "underpaint": "#141110"
+   },
+   "_skin": {
+    "age": 0.2,
+    "stubble": 0.4
+   }
+  },
+  "f": {
+   "height_m": 1.78,
+   "heads_tall": 7.4,
+   "muscle": 0.5,
+   "mass": 0.12,
+   "skin_hex": "#C49478",
+   "jaw_width": 0.95,
+   "chin_size": 0.94,
+   "nose_bridge_width": 0.94,
+   "nose_tip_projection": 1.0,
+   "brow_ridge": 1.05,
+   "lip_fullness": 0.7,
+   "cheekbone_width": 0.98,
+   "donor_mix_african": 0.15,
+   "donor_mix_asian": 0.35,
+   "donor_mix_caucasian": 0.5,
+   "_variant": {
+    "hair": "crop",
+    "helm": false,
+    "weathered": true
+   },
+   "_hair": {
+    "colour": "#4A2C1C",
+    "underpaint": "#43281A"
+   },
+   "_skin": {
+    "age": 0.0,
+    "stubble": 0.2
+   }
+  }
+ },
+ "_named_about": "M3-CHR-540: `named` holds the named Stillguards, each built like a variant (build_stillguard.py --variant <id>) but output under its own id (assets/characters/<id>/, the dialogue's speaker id) and never one of the six squad variants. A named entry carries the same keys as a variant plus `_seed` (its skin and hair noise seed, where a variant uses ord(<letter>)) and in `_variant` `spear` (false: no spear, the right hand free) and `broken_tooth` (the chip off the upper central incisor, its depth as a share of the crown's height).",
+ "named": {
+  "ivo": {
+   "_doc": "Ivo Brannick (act1_ch08.md B02 and Character Art 2; act1_ch09.md B02): a Stillguard of the Corrow garrison, about 33, Toma's shield-mate for seven years; broad, warm, a broad grin, a broken front tooth. No helm (in Ch9 his is the only uncovered face), the crop visible; the weathered kit (seven years on the wall), the shield on the left arm, no spear.",
+   "height_m": 1.81,
+   "heads_tall": 7.4,
+   "shoulder_width_heads": 1.9,
+   "chest_width_heads": 1.52,
+   "chest_depth_heads": 1.06,
+   "waist_width_heads": 1.32,
+   "head_width_ratio": 0.64,
+   "neck_width_ratio": 0.6,
+   "muscle": 0.74,
+   "mass": 0.36,
+   "skin_hex": "#A86F52",
+   "jaw_width": 1.07,
+   "chin_size": 1.03,
+   "cheekbone_width": 1.06,
+   "cheekbone_height": 0.0,
+   "nose_bridge_width": 1.05,
+   "nose_tip_projection": 0.97,
+   "brow_ridge": 1.12,
+   "lip_fullness": 0.78,
+   "lip_lower_fullness": 0.7,
+   "mouth_corner_lift": 0.0006,
+   "eye_tilt_deg": -1.5,
+   "donor_mix_african": 0.3,
+   "donor_mix_asian": 0.3,
+   "donor_mix_caucasian": 0.4,
+   "_seed": 540,
+   "_variant": {
+    "hair": "crop",
+    "helm": false,
+    "weathered": true,
+    "spear": false,
+    "broken_tooth": 0.35
+   },
+   "_hair": {
+    "colour": "#2E2117",
+    "underpaint": "#2A1E15",
+    "length_m": [
+     0.02,
+     0.03
+    ]
+   },
+   "_skin": {
+    "age": 0.25,
+    "stubble": 0.55
+   }
+  }
+ }
+}

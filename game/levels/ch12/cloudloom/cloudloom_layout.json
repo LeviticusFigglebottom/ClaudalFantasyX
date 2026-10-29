@@ -1,0 +1,904 @@
+{
+ "doc": "M4-C12-02 greybox (tools/act1/ch12_greybox.py; do not edit by hand): Cloudloom, the summit temple (colour script ch12: white stone under open sky, no ice anywhere in it, ADR 0015). The stair up from the south (Approach; a ramp), the open-roofed weaving-hall on white stone, rows of keth hanging from its beams with an aisle up the middle, and Hesk's place on the dais at its north end (hesk). Back down to Quellan at to_quellan. The story waits on the beat sheet (M4-C12-01).",
+ "sun": {
+  "pitch_deg": -75.0,
+  "yaw_deg": 10.0,
+  "energy": 2.2,
+  "color": "#faf6ff"
+ },
+ "environment": {
+  "background": "#c8d8e8",
+  "ambient_color": "#7fa6dc",
+  "ambient_energy": 0.8
+ },
+ "block_color": "#e6e2da",
+ "blocks": [
+  {
+   "id": "Approach",
+   "pos": [
+    0.0,
+    -0.25,
+    0.0
+   ],
+   "size": [
+    10.0,
+    0.5,
+    10.0
+   ],
+   "color": "#8a8478"
+  },
+  {
+   "id": "ApproachWallN0",
+   "pos": [
+    -3.6,
+    0.55,
+    -5.0
+   ],
+   "size": [
+    2.8,
+    1.1,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "ApproachWallN1",
+   "pos": [
+    3.6,
+    0.55,
+    -5.0
+   ],
+   "size": [
+    2.8,
+    1.1,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "ApproachWallS0",
+   "pos": [
+    0.0,
+    0.55,
+    5.0
+   ],
+   "size": [
+    10.0,
+    1.1,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "ApproachWallW0",
+   "pos": [
+    -5.0,
+    0.55,
+    0.0
+   ],
+   "size": [
+    0.5,
+    1.1,
+    10.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "ApproachWallE0",
+   "pos": [
+    5.0,
+    0.55,
+    0.0
+   ],
+   "size": [
+    0.5,
+    1.1,
+    10.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "StairCliff",
+   "pos": [
+    2.25,
+    7.75,
+    -12.5
+   ],
+   "size": [
+    15.0,
+    16.5,
+    0.5
+   ],
+   "yaw": 90.0,
+   "color": "#6a6e74"
+  },
+  {
+   "id": "StairParapet",
+   "pos": [
+    -2.25,
+    3.3,
+    -12.5
+   ],
+   "size": [
+    15.0,
+    7.6,
+    0.5
+   ],
+   "yaw": 90.0,
+   "color": "#4a4038"
+  },
+  {
+   "id": "Hall",
+   "pos": [
+    0.0,
+    5.75,
+    -40.0
+   ],
+   "size": [
+    28.0,
+    0.5,
+    40.0
+   ],
+   "color": "#e6e2da"
+  },
+  {
+   "id": "HallWallN0",
+   "pos": [
+    0.0,
+    7.5,
+    -60.0
+   ],
+   "size": [
+    28.0,
+    3.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HallWallS0",
+   "pos": [
+    -8.1,
+    7.5,
+    -20.0
+   ],
+   "size": [
+    11.8,
+    3.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HallWallS1",
+   "pos": [
+    8.1,
+    7.5,
+    -20.0
+   ],
+   "size": [
+    11.8,
+    3.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HallWallW0",
+   "pos": [
+    -14.0,
+    7.5,
+    -40.0
+   ],
+   "size": [
+    0.5,
+    3.0,
+    40.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HallWallE0",
+   "pos": [
+    14.0,
+    7.5,
+    -40.0
+   ],
+   "size": [
+    0.5,
+    3.0,
+    40.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "Beam0",
+   "pos": [
+    0.0,
+    12.0,
+    -52.0
+   ],
+   "size": [
+    28.0,
+    0.4,
+    0.4
+   ],
+   "color": "#5a4a40",
+   "solid": false
+  },
+  {
+   "id": "Beam1",
+   "pos": [
+    0.0,
+    12.0,
+    -44.0
+   ],
+   "size": [
+    28.0,
+    0.4,
+    0.4
+   ],
+   "color": "#5a4a40",
+   "solid": false
+  },
+  {
+   "id": "Beam2",
+   "pos": [
+    0.0,
+    12.0,
+    -36.0
+   ],
+   "size": [
+    28.0,
+    0.4,
+    0.4
+   ],
+   "color": "#5a4a40",
+   "solid": false
+  },
+  {
+   "id": "Beam3",
+   "pos": [
+    0.0,
+    12.0,
+    -28.0
+   ],
+   "size": [
+    28.0,
+    0.4,
+    0.4
+   ],
+   "color": "#5a4a40",
+   "solid": false
+  },
+  {
+   "id": "Keth0_0",
+   "pos": [
+    -12.0,
+    9.6,
+    -56.0
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth0_1",
+   "pos": [
+    -9.0,
+    9.6,
+    -56.0
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth0_2",
+   "pos": [
+    -6.0,
+    9.6,
+    -56.0
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth0_6",
+   "pos": [
+    6.0,
+    9.6,
+    -56.0
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth0_7",
+   "pos": [
+    9.0,
+    9.6,
+    -56.0
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth0_8",
+   "pos": [
+    12.0,
+    9.6,
+    -56.0
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth1_0",
+   "pos": [
+    -12.0,
+    9.6,
+    -50.4
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth1_1",
+   "pos": [
+    -9.0,
+    9.6,
+    -50.4
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth1_2",
+   "pos": [
+    -6.0,
+    9.6,
+    -50.4
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth1_6",
+   "pos": [
+    6.0,
+    9.6,
+    -50.4
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth1_7",
+   "pos": [
+    9.0,
+    9.6,
+    -50.4
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth1_8",
+   "pos": [
+    12.0,
+    9.6,
+    -50.4
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth2_0",
+   "pos": [
+    -12.0,
+    9.6,
+    -44.8
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth2_1",
+   "pos": [
+    -9.0,
+    9.6,
+    -44.8
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth2_2",
+   "pos": [
+    -6.0,
+    9.6,
+    -44.8
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth2_6",
+   "pos": [
+    6.0,
+    9.6,
+    -44.8
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth2_7",
+   "pos": [
+    9.0,
+    9.6,
+    -44.8
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth2_8",
+   "pos": [
+    12.0,
+    9.6,
+    -44.8
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth3_0",
+   "pos": [
+    -12.0,
+    9.6,
+    -39.2
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth3_1",
+   "pos": [
+    -9.0,
+    9.6,
+    -39.2
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth3_2",
+   "pos": [
+    -6.0,
+    9.6,
+    -39.2
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth3_6",
+   "pos": [
+    6.0,
+    9.6,
+    -39.2
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth3_7",
+   "pos": [
+    9.0,
+    9.6,
+    -39.2
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth3_8",
+   "pos": [
+    12.0,
+    9.6,
+    -39.2
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth4_0",
+   "pos": [
+    -12.0,
+    9.6,
+    -33.6
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth4_1",
+   "pos": [
+    -9.0,
+    9.6,
+    -33.6
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth4_2",
+   "pos": [
+    -6.0,
+    9.6,
+    -33.6
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth4_6",
+   "pos": [
+    6.0,
+    9.6,
+    -33.6
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth4_7",
+   "pos": [
+    9.0,
+    9.6,
+    -33.6
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth4_8",
+   "pos": [
+    12.0,
+    9.6,
+    -33.6
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth5_0",
+   "pos": [
+    -12.0,
+    9.6,
+    -28.0
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth5_1",
+   "pos": [
+    -9.0,
+    9.6,
+    -28.0
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth5_2",
+   "pos": [
+    -6.0,
+    9.6,
+    -28.0
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth5_6",
+   "pos": [
+    6.0,
+    9.6,
+    -28.0
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth5_7",
+   "pos": [
+    9.0,
+    9.6,
+    -28.0
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Keth5_8",
+   "pos": [
+    12.0,
+    9.6,
+    -28.0
+   ],
+   "size": [
+    0.25,
+    3.6,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "HeskDais",
+   "pos": [
+    0.0,
+    6.2,
+    -57.0
+   ],
+   "size": [
+    6.0,
+    0.4,
+    3.0
+   ],
+   "color": "#e6e2da"
+  }
+ ],
+ "ramps": [
+  {
+   "id": "Stair",
+   "from": [
+    0.0,
+    0.0,
+    -5.0
+   ],
+   "to": [
+    0.0,
+    6.0,
+    -20.0
+   ],
+   "width": 4.0,
+   "color": "#8a8478"
+  }
+ ],
+ "spawns": {
+  "Approach": [
+   0.0,
+   0.0,
+   2.0,
+   0.0
+  ],
+  "Hall": [
+   0.0,
+   6.0,
+   -24.0,
+   0.0
+  ]
+ },
+ "marks": {
+  "hesk": [
+   0.0,
+   6.0,
+   -54.0,
+   180.0
+  ]
+ },
+ "actors": {},
+ "shots": {
+  "C01": {
+   "pos": [
+    0.0,
+    8.0,
+    -23.0
+   ],
+   "look_at": [
+    0.0,
+    8.0,
+    -57.0
+   ],
+   "fov": 50
+  }
+ },
+ "triggers": [
+  {
+   "id": "to_quellan",
+   "activation": "touch",
+   "at": [
+    0.0,
+    0.0,
+    4.25
+   ],
+   "size": [
+    4.0,
+    0,
+    1.5
+   ],
+   "payload": {
+    "beat": "to_quellan"
+   },
+   "yaw": 0.0
+  }
+ ]
+}

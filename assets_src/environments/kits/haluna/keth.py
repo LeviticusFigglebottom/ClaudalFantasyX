@@ -53,7 +53,8 @@ M_TIMBER = "kit_timber"
 TRI_BUDGET = {"cloudloom_hall": (16000, 1200), "keth_curtain": (4000, 300), "quellan_house": (7000, 500),
               "woven_awning": (1500, 120), "keth_road_switchback": (8000, 500), "keth_scree_slope": (12000, 1000), "woolback_trough": (2000, 150),
               "keth_terrace_ground": (26000, 2400), "lit_terrace_wall": (16000, 1200), "seep_pool": (5000, 300),
-              "pass_cord": (7000, 400), "cairn": (2500, 150), "keth_far_ridges": (4000, 1500)}
+              "pass_cord": (7000, 400), "cairn": (2500, 150), "keth_far_ridges": (4000, 1500),
+              "quellan_inn": (12000, 700), "quellan_well": (2500, 200), "hesk_dais": (3000, 200)}
 
 FLOOR_HALF_X = 9.5  # the old road's level top, the battle floor
 FLOOR_FRONT_Z = 4.6
@@ -174,9 +175,13 @@ def build_wall(seed: int = 1502) -> list[kc.MeshBuilder]:
                     continue  # the broken coping: a block gone
                 cy = y + ch * 0.5
                 fz = -cy * 0.06  # a slight batter
-                kc.rounded_block(mb, (xa + ln * 0.5, cy, fz - WALL_T * 0.5), (ln * 0.5 - 0.02, ch * 0.5 - 0.02, WALL_T * 0.5),
-                                 lit, rot=kc.rot_z(rng.normal(0.0, 0.015)), radius=0.12, seg=2, noise=noise, disp_m=0.05,
-                                 disp_period_m=0.6, weather=LIT, variation=float(rng.random()))
+                # M3-ENV-717 rework (95be611's render): crisper arrises and a deeper joint, each block set a hair
+                # proud or back of its neighbours, so the courses read as cut stone, not pillows.
+                proud = rng.uniform(-0.05, 0.06)
+                kc.rounded_block(mb, (xa + ln * 0.5, cy, fz - WALL_T * 0.5 + proud), (ln * 0.5 - 0.035,
+                                 ch * 0.5 - 0.035, WALL_T * 0.5), lit, rot=kc.rot_z(rng.normal(0.0, 0.015)),
+                                 radius=0.05, seg=1, noise=noise, disp_m=0.03, disp_period_m=0.6, weather=LIT,
+                                 variation=float(rng.random()))
                 x += ln
             y += ch
             course += 1
@@ -190,7 +195,8 @@ def build_wall(seed: int = 1502) -> list[kc.MeshBuilder]:
 
 def _seeps(mb, rng, *, lod: bool) -> None:
     """The seep: thin sheets of cold light from the joints down the face to the foot (both faces built)."""
-    sheets = ((-3.0, 6.4, 0.42), (3.2, 5.6, 0.36), (-0.6, 3.8, 0.7), (4.8, 2.6, 0.5))
+    # M3-ENV-717 rework: threads, not ribbons (95be611 read them as pale-blue bands).
+    sheets = ((-3.0, 6.4, 0.16), (3.2, 5.6, 0.13), (-0.6, 3.8, 0.22), (4.8, 2.6, 0.18))
     for k, (x, y0, w) in enumerate(sheets):
         rows = 3 if lod else 9
         t = np.linspace(0.0, 1.0, rows)
@@ -542,6 +548,32 @@ def build_keth_curtain(seed: int = 1511) -> list[kc.MeshBuilder]:
     return out
 
 
+
+def _dry_stone_walls(mb, rng, noise, crag: int, w: float, d: float, h: float, *, door_half: float = 0.6,
+                     door_h: float = 2.0, openings=()) -> None:
+    """Dry-laid courses: rows of blocks round the four walls (the front at z 0, the back at -d), 0.35 m courses, the
+    joints staggered; the door at x 0 in the front, and `openings` [(x0, x1, y0, y1)] left in the front wall."""
+    y = 0.0
+    course = 0
+    while y < h - 0.01:
+        ch = min(rng.uniform(0.3, 0.4), h - y)
+        for (a, b, z_or_x, along_x) in ((-w * 0.5, w * 0.5, 0.0, True), (-w * 0.5, w * 0.5, -d, True),
+                                        (-d, 0.0, -w * 0.5, False), (-d, 0.0, w * 0.5, False)):
+            t = a + (0.3 if course % 2 else 0.0)
+            while t < b - 0.05:
+                ln = min(rng.uniform(0.5, 0.9), b - t)
+                door = along_x and z_or_x == 0.0 and abs(t + ln * 0.5) < door_half and y < door_h
+                door = door or (along_x and z_or_x == 0.0 and any(o[0] < t + ln * 0.5 < o[1] and o[2] <= y < o[3]
+                                                                   for o in openings))
+                if not door:
+                    c = (t + ln * 0.5, y + ch * 0.5, z_or_x) if along_x else (z_or_x, y + ch * 0.5, t + ln * 0.5)
+                    half = (ln * 0.5 - 0.015, ch * 0.5 - 0.01, 0.25) if along_x else (0.25, ch * 0.5 - 0.01, ln * 0.5 - 0.015)
+                    kc.rounded_block(mb, c, half, crag, radius=0.04, seg=1, noise=noise, disp_m=0.015,
+                                     weather=ROCK, variation=float(rng.random()))
+                t += ln
+        y += ch
+        course += 1
+
 def build_quellan_house(seed: int = 1512) -> list[kc.MeshBuilder]:
     out = []
     for lod in (False, True):
@@ -553,25 +585,7 @@ def build_quellan_house(seed: int = 1512) -> list[kc.MeshBuilder]:
         if lod:
             kc.rounded_block(mb, (0.0, h * 0.5, -d * 0.5), (w * 0.5, h * 0.5, d * 0.5), crag, radius=0.1, seg=1)
         else:
-            # Dry-laid courses: rows of blocks round the four walls, 0.35 m courses, the joints staggered.
-            y = 0.0
-            course = 0
-            while y < h - 0.01:
-                ch = min(rng.uniform(0.3, 0.4), h - y)
-                for (a, b, z_or_x, along_x) in ((-w * 0.5, w * 0.5, 0.0, True), (-w * 0.5, w * 0.5, -d, True),
-                                                (-d, 0.0, -w * 0.5, False), (-d, 0.0, w * 0.5, False)):
-                    t = a + (0.3 if course % 2 else 0.0)
-                    while t < b - 0.05:
-                        ln = min(rng.uniform(0.5, 0.9), b - t)
-                        door = along_x and z_or_x == 0.0 and abs(t + ln * 0.5) < 0.6 and y < 2.0
-                        if not door:
-                            c = (t + ln * 0.5, y + ch * 0.5, z_or_x) if along_x else (z_or_x, y + ch * 0.5, t + ln * 0.5)
-                            half = (ln * 0.5 - 0.015, ch * 0.5 - 0.01, 0.25) if along_x else (0.25, ch * 0.5 - 0.01, ln * 0.5 - 0.015)
-                            kc.rounded_block(mb, c, half, crag, radius=0.04, seg=1, noise=noise, disp_m=0.015,
-                                             weather=ROCK, variation=float(rng.random()))
-                        t += ln
-                y += ch
-                course += 1
+            _dry_stone_walls(mb, rng, noise, crag, w, d, h)
             kc.rounded_block(mb, (0.0, 2.05, 0.05), (0.7, 0.08, 0.3), timber, radius=0.02, seg=1)  # the lintel
         # The flat roof, its turf edge, and the door's woven awning on two poles.
         kc.rounded_block(mb, (0.0, h + 0.12, -d * 0.5), (w * 0.5 + 0.2, 0.12, d * 0.5 + 0.2), timber, radius=0.03, seg=1)
@@ -625,7 +639,128 @@ def build_woven_awning(seed: int = 1513) -> list[kc.MeshBuilder]:
     return out
 
 
+
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-734: Quellan's inn and well, Hesk's dais in Cloudloom (act1-chapters' Ch12 greybox, M4-C12-02)
+# ---------------------------------------------------------------------------------------------
+INN_W, INN_D, INN_H = 10.0, 8.0, 5.0
+INN_WINDOWS = ((-3.6, -2.4, 1.0, 2.2), (2.4, 3.6, 1.0, 2.2), (-3.6, -2.4, 3.0, 4.0), (2.4, 3.6, 3.0, 4.0))
+
+
+def build_quellan_inn(seed: int = 1514) -> list[kc.MeshBuilder]:
+    """Quellan's inn (the greybox's Inn, 10 x 8 x 5 m; Ysolde's confession to Asha that night): the houses' dry
+    stone, wider, two rows of shuttered windows in the front, a timber gallery along it under the eaves, the flat
+    turf roof, and the red banner hung from a bracket over the door (InnBanner). Front +Z at z 0."""
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("quellan_inn", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("quellan_inn" + ("-lod1" if lod else ""))
+        crag, timber, red = mb.material(M_CRAG), mb.material(M_TIMBER), mb.material(M_RED)
+        w, d, h = INN_W, INN_D, INN_H
+        if lod:
+            kc.rounded_block(mb, (0.0, h * 0.5, -d * 0.5), (w * 0.5, h * 0.5, d * 0.5), crag, radius=0.1, seg=1)
+        else:
+            _dry_stone_walls(mb, rng, noise, crag, w, d, h, door_half=0.75, door_h=2.3, openings=INN_WINDOWS)
+            kc.rounded_block(mb, (0.0, 2.36, 0.05), (0.95, 0.09, 0.3), timber, radius=0.02, seg=1)  # the door's lintel
+            for x0, x1, y0, y1 in INN_WINDOWS:  # the dark openings, their lintels and a shutter each side
+                cx = (x0 + x1) * 0.5
+                kc.rounded_block(mb, (cx, (y0 + y1) * 0.5, -0.12), ((x1 - x0) * 0.5, (y1 - y0) * 0.5, 0.02),
+                                 mb.material(M_DARK), radius=0.01, seg=1)
+                kc.rounded_block(mb, (cx, y1 + 0.06, 0.05), ((x1 - x0) * 0.5 + 0.15, 0.06, 0.28), timber, radius=0.02,
+                                 seg=1)
+                for sx in (-1.0, 1.0):
+                    kc.rounded_block(mb, (cx + sx * ((x1 - x0) * 0.5 + 0.3), (y0 + y1) * 0.5, 0.3),
+                                     (0.28, (y1 - y0) * 0.5, 0.025), timber, rot=kc.rot_y(sx * 0.35), radius=0.01,
+                                     seg=1)
+            # The gallery: a timber walk along the front at the upper floor, on brackets, with a rail.
+            gy = 2.75
+            kc.rounded_block(mb, (0.0, gy, 0.6), (w * 0.5 - 0.3, 0.06, 0.55), timber, radius=0.02, seg=1)
+            for x in np.linspace(-w * 0.5 + 0.6, w * 0.5 - 0.6, 6):
+                kc.tube(mb, np.array([[x, gy - 0.7, 0.26], [x, gy - 0.06, 1.05]]), 0.05, 5, timber)
+                kc.tube(mb, np.array([[x, gy, 1.1], [x, gy + 0.95, 1.1]]), 0.035, 5, timber, cap_end=True)
+            kc.tube(mb, np.array([[-w * 0.5 + 0.4, gy + 0.95, 1.1], [w * 0.5 - 0.4, gy + 0.95, 1.1]]), 0.04, 5, timber)
+        kc.rounded_block(mb, (0.0, h + 0.12, -d * 0.5), (w * 0.5 + 0.25, 0.12, d * 0.5 + 0.25), timber, radius=0.03,
+                         seg=1)
+        kc.rounded_block(mb, (0.0, h + 0.3, -d * 0.5), (w * 0.5 + 0.2, 0.08, d * 0.5 + 0.2), mb.material(M_GRASS),
+                         radius=0.06, seg=1, noise=None if lod else noise, disp_m=0.03)
+        # The red banner on its bracket by the door (the greybox's InnBanner at x 0, y 2.3-4.1, z +0.1).
+        kc.tube(mb, np.array([[0.0, 4.2, 0.05], [0.0, 4.2, 0.75]]), 0.03, 4 if lod else 6, timber, cap_end=True)
+        nu, nv = (2, 2) if lod else (4, 8)
+        u = np.linspace(-0.6, 0.6, nu)
+        v = np.linspace(0.0, 1.0, nv)
+        U, V = np.meshgrid(u, v)
+        grid = np.stack([U, 4.15 - V * 1.8, 0.7 + 0.04 * np.sin(V * 3.0) + 0.02 * U], -1)
+        for flip in (False, True):
+            kc.quad_strip(mb, grid + np.array([0.0, 0.0, 0.004 if flip else 0.0]), red, uv=np.stack([U, V], -1),
+                          col=(0, 0, 0, 0.3), uv2=(0.9, 0.5), flip=flip, smooth=False)
+        out.append(mb)
+    return out
+
+
+def build_quellan_well(seed: int = 1515) -> list[kc.MeshBuilder]:
+    """The square's well (the greybox's Well, 1.6 m): a ring of dry-laid stones 0.9 m high, two timber posts and
+    a windlass across it, its rope down to a bucket on the rim, and a stone trough beside it."""
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("quellan_well", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("quellan_well" + ("-lod1" if lod else ""))
+        crag, timber = mb.material(M_CRAG), mb.material(M_TIMBER)
+        if lod:
+            kc.tube(mb, np.array([[0.0, 0.0, 0.0], [0.0, 0.9, 0.0]]), 0.8, 8, crag, cap_end=True)
+        else:
+            for course, y in enumerate((0.15, 0.45, 0.75)):
+                n = 9
+                for k in range(n):
+                    a = 2 * math.pi * (k + 0.5 * (course % 2)) / n
+                    kc.rounded_block(mb, (math.cos(a) * 0.65, y, math.sin(a) * 0.65), (0.25, 0.14, 0.16), crag,
+                                     rot=kc.rot_y(-a), radius=0.04, seg=1, noise=noise, disp_m=0.015, weather=ROCK,
+                                     variation=float(rng.random()))
+            kc.tube(mb, np.array([[0.0, -0.4, 0.0], [0.0, 0.85, 0.0]]), 0.5, 10, mb.material(M_DARK))  # the dark shaft
+        for sx in (-1.0, 1.0):
+            kc.tube(mb, np.array([[sx * 0.85, 0.0, 0.0], [sx * 0.85, 1.9, 0.0]]), 0.06, 4 if lod else 6, timber,
+                    cap_end=True)
+        kc.tube(mb, np.array([[-0.9, 1.6, 0.0], [0.9, 1.6, 0.0]]), 0.08, 4 if lod else 8, timber, cap_start=True,
+                cap_end=True)
+        if not lod:
+            kc.tube(mb, np.array([[0.9, 1.6, 0.0], [1.05, 1.6, 0.0], [1.05, 1.4, 0.15]]), 0.02, 4, timber)  # the crank
+            kc.tube(mb, np.array([[0.1, 1.55, 0.0], [0.1, 1.0, 0.0], [0.35, 0.95, 0.55]]), 0.012, 4,
+                    mb.material(M_WOOL))  # the rope
+            kc.tube(mb, np.array([[0.4, 0.9, 0.62], [0.4, 1.15, 0.62]]), np.array([0.13, 0.15]), 8, timber,
+                    cap_start=True)  # the bucket on the rim
+            kc.rounded_block(mb, (1.6, 0.3, 0.2), (0.7, 0.3, 0.3), crag, radius=0.05, seg=2, noise=noise,
+                             disp_m=0.01, weather=ROCK)  # the trough
+            kc.rounded_block(mb, (1.6, 0.58, 0.2), (0.6, 0.02, 0.2), mb.material(M_DARK), radius=0.01, seg=1)
+        out.append(mb)
+    return out
+
+
+def build_hesk_dais(seed: int = 1516) -> list[kc.MeshBuilder]:
+    """Hesk's place at the north end of Cloudloom's hall (the greybox's HeskDais, 6 x 3 x 0.4): the hall's white
+    stone in two steps, a woven wool mat with red weft-bands on it, and a low stone seat at its back."""
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("hesk_dais", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("hesk_dais" + ("-lod1" if lod else ""))
+        white = mb.material(M_LIT)
+        kc.rounded_block(mb, (0.0, 0.1, 0.0), (3.0, 0.1, 1.5), white, radius=0.02, seg=1)
+        kc.rounded_block(mb, (0.0, 0.3, -0.2), (2.7, 0.1, 1.2), white, radius=0.02, seg=1)
+        kc.rounded_block(mb, (0.0, 0.62, -1.05), (0.6, 0.22, 0.3), white, radius=0.04, seg=1 if lod else 2)
+        if not lod:
+            kc.rounded_block(mb, (0.0, 0.415, -0.1), (1.6, 0.015, 0.9), mb.material(M_WOOL), radius=0.01, seg=1,
+                             noise=noise, disp_m=0.004)
+            for z in (-0.6, 0.0, 0.6):  # the red weft-bands across the mat
+                kc.rounded_block(mb, (0.0, 0.432, z - 0.1), (1.6, 0.003, 0.06), mb.material(M_RED), radius=0.002,
+                                 seg=1)
+        out.append(mb)
+    return out
+
 TARGETS = {
+    "quellan_inn": build_quellan_inn,
+    "quellan_well": build_quellan_well,
+    "hesk_dais": build_hesk_dais,
     "keth_terrace_ground": build_ground,
     "lit_terrace_wall": build_wall,
     "seep_pool": build_pool,

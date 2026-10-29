@@ -717,8 +717,8 @@
             0
           ],
           "size_m": [
-            1.8,
-            2.2
+            0.9,
+            1.15
           ],
           "energy": 0.9,
           "emission_radius_m": 0.02,
@@ -758,7 +758,7 @@
           ]
         }
       ],
-      "note": "KO: the fighter dissolves into released glimmer rising in slow spirals, 0.15-0.4 m/s (color_script.md rule 1)."
+      "note": "KO: the fighter dissolves into released glimmer rising in slow spirals, 0.15-0.4 m/s (color_script.md rule 1). M3-BPR-420 (ADR 0041, arena self-render): the core flash trimmed from 1.8-2.2 m to 0.9-1.15 m; at battle distance it had bleached the fighters beside the fallen one."
     },
     "flash_preemptive": {
       "kind": "flash",
@@ -1061,6 +1061,6015 @@
         "foam_white"
       ],
       "note": "The toll: a pale pulse (photosensitivity-capped like every flash)."
+    },
+    "quick_hit": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#EEF6F4",
+          "color_end": "#E6DAC0",
+          "swatches": [
+            "foam_white",
+            "bone"
+          ],
+          "amount": 40,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "Rhen: a quick light cut, foam-white."
+    },
+    "undertow_cut": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#1FA3A6",
+          "color_end": "#0E4A55",
+          "swatches": [
+            "lagoon_teal",
+            "deep_teal_shadow"
+          ],
+          "amount": 60,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            -1.0,
+            0.25,
+            0
+          ]
+        },
+        {
+          "color": "#0E4A55",
+          "color_end": "#061A2B",
+          "swatches": [
+            "deep_teal_shadow",
+            "abyss_navy"
+          ],
+          "amount": 18,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "Rhen: a cut that drags down like the undertow: teal spray pulled under."
+    },
+    "mend": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3FD0C9",
+          "color_end": "#EEF6F4",
+          "swatches": [
+            "turquoise_shallow",
+            "foam_white"
+          ],
+          "amount": 30,
+          "lifetime_s": 1.1,
+          "explosiveness": 0.3,
+          "velocity_m_s": [
+            0.4,
+            0.9
+          ],
+          "spread_deg": 25,
+          "gravity": [
+            0,
+            0.4,
+            0
+          ],
+          "size_m": [
+            0.15,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Asha: shallow water lifting off the wound (water, not glimmer)."
+    },
+    "hasten": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "feet",
+      "layers": [
+        {
+          "color": "#A9DCF2",
+          "color_end": "#EEF6F4",
+          "swatches": [
+            "sky_horizon_noon",
+            "foam_white"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.6,
+          "velocity_m_s": [
+            2.5,
+            4.0
+          ],
+          "spread_deg": 10,
+          "gravity": [
+            0,
+            -0.5,
+            0
+          ],
+          "size_m": [
+            0.05,
+            0.12
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.3,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Asha: quick pale streaks rising past the ally."
+    },
+    "ward": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "feet",
+      "layers": [
+        {
+          "color": "#1569A0",
+          "color_end": "#A9DCF2",
+          "swatches": [
+            "reef_blue",
+            "sky_horizon_noon"
+          ],
+          "amount": 40,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.85,
+          "velocity_m_s": [
+            0.05,
+            0.15
+          ],
+          "spread_deg": 5,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.75,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Asha: a ring of reef-blue light lifting around the ally."
+    },
+    "shell_breaker": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#6B3A1E",
+          "color_end": "#E6DAC0",
+          "swatches": [
+            "tortoiseshell",
+            "bone"
+          ],
+          "amount": 32,
+          "lifetime_s": 0.8,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.2,
+            2.4
+          ],
+          "spread_deg": 60,
+          "gravity": [
+            0,
+            -6.5,
+            0
+          ],
+          "size_m": [
+            0.18,
+            0.36
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#E6DAC0",
+          "color_end": "#B9AE98",
+          "swatches": [
+            "bone",
+            "coral_stone_weathered"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -2.5,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Toma: shell plates cracking off the target."
+    },
+    "hold_the_stair": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "feet",
+      "layers": [
+        {
+          "color": "#2B3A6B",
+          "color_end": "#3C78A8",
+          "swatches": [
+            "indigo_dye",
+            "sea_blue_cloth"
+          ],
+          "amount": 44,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.85,
+          "velocity_m_s": [
+            0.05,
+            0.15
+          ],
+          "spread_deg": 5,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.75,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Toma (Ch8): he sets his shield over the stair."
+    },
+    "stand_firm": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "feet",
+      "layers": [
+        {
+          "color": "#E6DAC0",
+          "color_end": "#C9B48E",
+          "swatches": [
+            "bone",
+            "sand_cloth"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.85,
+          "velocity_m_s": [
+            0.05,
+            0.15
+          ],
+          "spread_deg": 5,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.75,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Toma (Ch8): feet set, dust settling."
+    },
+    "challenge": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "head",
+      "layers": [
+        {
+          "color": "#E0702E",
+          "color_end": "#F2A64A",
+          "swatches": [
+            "ember_orange",
+            "dusk_gold"
+          ],
+          "amount": 34,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Toma (Ch8): the challenge, a spark at the foe's head."
+    },
+    "stand_fast": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "feet",
+      "layers": [
+        {
+          "color": "#C9B48E",
+          "color_end": "#E6DAC0",
+          "swatches": [
+            "sand_cloth",
+            "bone"
+          ],
+          "amount": 26,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.85,
+          "velocity_m_s": [
+            0.05,
+            0.15
+          ],
+          "spread_deg": 5,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.75,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Ch8: a hero braces on the wall-walk."
+    },
+    "ember": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#E0702E",
+          "color_end": "#F2A64A",
+          "swatches": [
+            "ember_orange",
+            "dusk_gold"
+          ],
+          "amount": 50,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            2.5,
+            4.5
+          ],
+          "spread_deg": 8,
+          "gravity": [
+            0,
+            -1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.28
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Ysolde: a small flame climbing the target."
+    },
+    "frost": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#BFE6E0",
+          "color_end": "#DCE6FF",
+          "swatches": [
+            "salt_glass",
+            "starlight"
+          ],
+          "amount": 32,
+          "lifetime_s": 0.8,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.2,
+            2.4
+          ],
+          "spread_deg": 60,
+          "gravity": [
+            0,
+            -6.5,
+            0
+          ],
+          "size_m": [
+            0.18,
+            0.36
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Ysolde: salt-glass shards of rime falling."
+    },
+    "slow_hex": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "head",
+      "layers": [
+        {
+          "color": "#2B3A6B",
+          "color_end": "#24323A",
+          "swatches": [
+            "indigo_dye",
+            "tattoo_ink"
+          ],
+          "amount": 34,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "Ysolde: ink-dark motes settling over the target."
+    },
+    "fluke_cleave": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#5E6E80",
+          "color_end": "#E6DAC0",
+          "swatches": [
+            "cold_blue_stone",
+            "bone"
+          ],
+          "amount": 50,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.4,
+            3.0
+          ],
+          "spread_deg": 70,
+          "gravity": [
+            0,
+            -7.0,
+            0
+          ],
+          "size_m": [
+            0.14,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#B59D74",
+          "color_end": "#7E6A55",
+          "swatches": [
+            "sand_wet",
+            "timber_weathered"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            0.8,
+            1.6
+          ],
+          "spread_deg": 85,
+          "gravity": [
+            0,
+            -0.6,
+            0
+          ],
+          "size_m": [
+            0.22,
+            0.46
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.3,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Kerrid: the anchor-fluke bites: iron chips and splinters."
+    },
+    "snub_line": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#C9B48E",
+          "color_end": "#7E6A55",
+          "swatches": [
+            "sand_cloth",
+            "timber_weathered"
+          ],
+          "amount": 44,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            -1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "Kerrid: the line snubbed hard: rope fibres snapping."
+    },
+    "anchor_fall": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "feet",
+      "layers": [
+        {
+          "color": "#5E6E80",
+          "color_end": "#E6DAC0",
+          "swatches": [
+            "cold_blue_stone",
+            "bone"
+          ],
+          "amount": 70,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.4,
+            3.0
+          ],
+          "spread_deg": 70,
+          "gravity": [
+            0,
+            -7.0,
+            0
+          ],
+          "size_m": [
+            0.14,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#EFDDB4",
+          "color_end": "#A8573A",
+          "swatches": [
+            "sand_dry",
+            "laterite"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            0.8,
+            1.6
+          ],
+          "spread_deg": 85,
+          "gravity": [
+            0,
+            -0.6,
+            0
+          ],
+          "size_m": [
+            0.22,
+            0.46
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.3,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Kerrid: the anchor comes down: dust and stone."
+    },
+    "reel_shot": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#B08D57",
+          "color_end": "#EEF6F4",
+          "swatches": [
+            "brass",
+            "foam_white"
+          ],
+          "amount": 36,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "Liss: the line strikes home, brass bright."
+    },
+    "flash_housing": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "head",
+      "layers": [
+        {
+          "color": "#FFB16E",
+          "color_end": "#FFF4E0",
+          "swatches": [
+            "oil_lamp",
+            "sun_noon"
+          ],
+          "amount": 2,
+          "lifetime_s": 0.3,
+          "explosiveness": 1.0,
+          "velocity_m_s": [
+            0.0,
+            0.05
+          ],
+          "spread_deg": 0,
+          "gravity": [
+            0,
+            0,
+            0
+          ],
+          "size_m": [
+            1.4,
+            1.8199999999999998
+          ],
+          "energy": 1.2,
+          "emission_radius_m": 0.02,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#FFB16E",
+          "color_end": "#F2A64A",
+          "swatches": [
+            "oil_lamp",
+            "dusk_gold"
+          ],
+          "amount": 40,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Liss: the lamp housing's flash in the foe's eyes (oil light; capped by particles, not a screen flash)."
+    },
+    "hoist_haul": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#C9B48E",
+          "color_end": "#E6DAC0",
+          "swatches": [
+            "sand_cloth",
+            "bone"
+          ],
+          "amount": 24,
+          "lifetime_s": 0.8,
+          "explosiveness": 0.3,
+          "velocity_m_s": [
+            0.4,
+            0.9
+          ],
+          "spread_deg": 25,
+          "gravity": [
+            0,
+            0.4,
+            0
+          ],
+          "size_m": [
+            0.15,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Liss (Ch8): the hoist hauls a group up."
+    },
+    "return_tide": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "feet",
+      "layers": [
+        {
+          "color": "#3FD0C9",
+          "color_end": "#EEF6F4",
+          "swatches": [
+            "turquoise_shallow",
+            "foam_white"
+          ],
+          "amount": 80,
+          "lifetime_s": 0.7,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            1.5,
+            3.0
+          ],
+          "spread_deg": 50,
+          "gravity": [
+            0,
+            -6.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Toma's Swell: the tide thrown back out from the stair."
+    },
+    "written_light": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#DCE6FF",
+          "color_end": "#BFE6E0",
+          "swatches": [
+            "starlight",
+            "salt_glass"
+          ],
+          "amount": 50,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.5,
+          "velocity_m_s": [
+            0.6,
+            1.4
+          ],
+          "spread_deg": 15,
+          "gravity": [
+            0,
+            0.2,
+            0
+          ],
+          "size_m": [
+            0.04,
+            0.1
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.4,
+          "turbulence": 0.0,
+          "direction": [
+            1,
+            0.3,
+            0
+          ]
+        },
+        {
+          "color": "#DCE6FF",
+          "color_end": "#DCE3E0",
+          "swatches": [
+            "starlight",
+            "lit_ceramic"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -2.5,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Ysolde's Swell: written strokes of pale light across each foe (not glimmer)."
+    },
+    "floodnet": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#4FB3B0",
+          "color_end": "#1FA3A6",
+          "swatches": [
+            "glimmer_bound",
+            "lagoon_teal"
+          ],
+          "amount": 40,
+          "lifetime_s": 1.2,
+          "explosiveness": 0.6,
+          "velocity_m_s": [
+            0.05,
+            0.2
+          ],
+          "spread_deg": 90,
+          "gravity": [
+            0,
+            0,
+            0
+          ],
+          "size_m": [
+            0.06,
+            0.12
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.6,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Ilun's Swell: a steady net of bound threads over each foe (bound light: no drift)."
+    },
+    "last_strike": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#DCE6FF",
+          "color_end": "#9DB4D9",
+          "swatches": [
+            "starlight",
+            "moon_blue"
+          ],
+          "amount": 80,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            2.5,
+            4.5
+          ],
+          "spread_deg": 8,
+          "gravity": [
+            0,
+            -1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.28
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Kahre's Swell: raw lightning down onto the foe."
+    },
+    "flare_line": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#E0702E",
+          "color_end": "#F2A64A",
+          "swatches": [
+            "ember_orange",
+            "dusk_gold"
+          ],
+          "amount": 50,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            1.2,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Virel's Swell: the kite-string burning, a flare on each foe."
+    },
+    "brine_lash": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3FD0C9",
+          "color_end": "#EEF6F4",
+          "swatches": [
+            "turquoise_shallow",
+            "foam_white"
+          ],
+          "amount": 70,
+          "lifetime_s": 0.7,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            1.5,
+            3.0
+          ],
+          "spread_deg": 50,
+          "gravity": [
+            0,
+            -6.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#1FA3A6",
+          "color_end": "#EEF6F4",
+          "swatches": [
+            "lagoon_teal",
+            "foam_white"
+          ],
+          "amount": 40,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "Ilun: a lash of brine."
+    },
+    "tidal_ward": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "feet",
+      "layers": [
+        {
+          "color": "#1FA3A6",
+          "color_end": "#3FD0C9",
+          "swatches": [
+            "lagoon_teal",
+            "turquoise_shallow"
+          ],
+          "amount": 50,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.85,
+          "velocity_m_s": [
+            0.05,
+            0.15
+          ],
+          "spread_deg": 5,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.75,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Ilun: water rising in a ring around itself."
+    },
+    "forge_bolt": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#DCE6FF",
+          "color_end": "#E0702E",
+          "swatches": [
+            "starlight",
+            "ember_orange"
+          ],
+          "amount": 60,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            2.5,
+            4.5
+          ],
+          "spread_deg": 8,
+          "gravity": [
+            0,
+            -1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.28
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Kahre: a forge-hot bolt."
+    },
+    "kite_flare": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "head",
+      "layers": [
+        {
+          "color": "#FFB16E",
+          "color_end": "#E0702E",
+          "swatches": [
+            "oil_lamp",
+            "ember_orange"
+          ],
+          "amount": 36,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -0.8,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Virel: a kite's flare drifting down on the foe."
+    },
+    "pinch": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#E6DAC0",
+          "color_end": "#B9AE98",
+          "swatches": [
+            "bone",
+            "coral_stone_weathered"
+          ],
+          "amount": 36,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "A crab's pinch: shell grit."
+    },
+    "scuttle_claw": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#B9AE98",
+          "color_end": "#B59D74",
+          "swatches": [
+            "coral_stone_weathered",
+            "sand_wet"
+          ],
+          "amount": 36,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            -1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "A scuttler's claw."
+    },
+    "tide_claw": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3FE0C8",
+          "color_end": "#7FC6D9",
+          "swatches": [
+            "spawn_wound",
+            "glimmer_held"
+          ],
+          "amount": 38,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            -1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "A tide crawler's claw: the Undertow's light, sideways."
+    },
+    "limpet_clamp": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#5E6E80",
+          "color_end": "#E6DAC0",
+          "swatches": [
+            "cold_blue_stone",
+            "bone"
+          ],
+          "amount": 32,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -2.5,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "A limpet clamps down."
+    },
+    "skim_bite": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#EEF6F4",
+          "color_end": "#3FD0C9",
+          "swatches": [
+            "foam_white",
+            "turquoise_shallow"
+          ],
+          "amount": 40,
+          "lifetime_s": 0.7,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            1.5,
+            3.0
+          ],
+          "spread_deg": 50,
+          "gravity": [
+            0,
+            -6.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "A skipper's bite out of the shallows."
+    },
+    "shoal_nip": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#EEF6F4",
+          "color_end": "#1FA3A6",
+          "swatches": [
+            "foam_white",
+            "lagoon_teal"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.7,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            1.5,
+            3.0
+          ],
+          "spread_deg": 50,
+          "gravity": [
+            0,
+            -6.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "A wickfry's nip."
+    },
+    "hound_bite": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#E6DAC0",
+          "color_end": "#B59D74",
+          "swatches": [
+            "bone",
+            "sand_wet"
+          ],
+          "amount": 36,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -2.5,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Order's hound bites."
+    },
+    "gnaw": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3FE0C8",
+          "color_end": "#7FC6D9",
+          "swatches": [
+            "spawn_wound",
+            "glimmer_held"
+          ],
+          "amount": 60,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.4,
+            3.0
+          ],
+          "spread_deg": 70,
+          "gravity": [
+            0,
+            -7.0,
+            0
+          ],
+          "size_m": [
+            0.14,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#0E4A55",
+          "color_end": "#061A2B",
+          "swatches": [
+            "deep_teal_shadow",
+            "abyss_navy"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            0.8,
+            1.6
+          ],
+          "spread_deg": 85,
+          "gravity": [
+            0,
+            -0.6,
+            0
+          ],
+          "size_m": [
+            0.22,
+            0.46
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.3,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Hullgnaw's gnaw: the spawn's wound-light, sinking."
+    },
+    "dive_rake": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#FFF8EE",
+          "color_end": "#8FA7C4",
+          "swatches": [
+            "cumulus_lit",
+            "cumulus_shadow"
+          ],
+          "amount": 40,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "A gull's raking dive: pale feathers."
+    },
+    "wing_peck": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#8FA7C4",
+          "color_end": "#3E4A57",
+          "swatches": [
+            "cumulus_shadow",
+            "storm_slate"
+          ],
+          "amount": 32,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "A squall wing pecks."
+    },
+    "ash_rake": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3A3A3F",
+          "color_end": "#3E4A57",
+          "swatches": [
+            "volcanic_stone",
+            "storm_slate"
+          ],
+          "amount": 44,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "An ashwing rakes: ash streaks."
+    },
+    "spar_stab": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#7E6A55",
+          "color_end": "#E6DAC0",
+          "swatches": [
+            "timber_weathered",
+            "bone"
+          ],
+          "amount": 36,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "The spar-wraith's spar: splinters."
+    },
+    "glass_jab": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#BFE6E0",
+          "color_end": "#DCE3E0",
+          "swatches": [
+            "salt_glass",
+            "lit_ceramic"
+          ],
+          "amount": 24,
+          "lifetime_s": 0.8,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.2,
+            2.4
+          ],
+          "spread_deg": 60,
+          "gravity": [
+            0,
+            -6.5,
+            0
+          ],
+          "size_m": [
+            0.18,
+            0.36
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The bottle hermit's glass."
+    },
+    "rib_lash": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3FE0C8",
+          "color_end": "#0E4A55",
+          "swatches": [
+            "spawn_wound",
+            "deep_teal_shadow"
+          ],
+          "amount": 40,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "Hullgnaw's ribs lash."
+    },
+    "haft_strike": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#B08D57",
+          "color_end": "#E6DAC0",
+          "swatches": [
+            "brass",
+            "bone"
+          ],
+          "amount": 32,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -2.5,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Inquisitor's haft."
+    },
+    "shell_ram": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#5E6E80",
+          "color_end": "#E6DAC0",
+          "swatches": [
+            "cold_blue_stone",
+            "bone"
+          ],
+          "amount": 44,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.4,
+            3.0
+          ],
+          "spread_deg": 70,
+          "gravity": [
+            0,
+            -7.0,
+            0
+          ],
+          "size_m": [
+            0.14,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#3A3A3F",
+          "color_end": "#3E4A57",
+          "swatches": [
+            "volcanic_stone",
+            "storm_slate"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            0.8,
+            1.6
+          ],
+          "spread_deg": 85,
+          "gravity": [
+            0,
+            -0.6,
+            0
+          ],
+          "size_m": [
+            0.22,
+            0.46
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.3,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "A slag tortoise rams."
+    },
+    "ladle_swing": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#E0702E",
+          "color_end": "#F2A64A",
+          "swatches": [
+            "ember_orange",
+            "dusk_gold"
+          ],
+          "amount": 56,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.4,
+            3.0
+          ],
+          "spread_deg": 70,
+          "gravity": [
+            0,
+            -7.0,
+            0
+          ],
+          "size_m": [
+            0.14,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#3A3A3F",
+          "color_end": "#3E4A57",
+          "swatches": [
+            "volcanic_stone",
+            "storm_slate"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            0.8,
+            1.6
+          ],
+          "spread_deg": 85,
+          "gravity": [
+            0,
+            -0.6,
+            0
+          ],
+          "size_m": [
+            0.22,
+            0.46
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.3,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Cinder Matron's ladle: molten slag."
+    },
+    "hood_slam": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#5F8A78",
+          "color_end": "#B08D57",
+          "swatches": [
+            "bronze_patina",
+            "brass"
+          ],
+          "amount": 50,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.4,
+            3.0
+          ],
+          "spread_deg": 70,
+          "gravity": [
+            0,
+            -7.0,
+            0
+          ],
+          "size_m": [
+            0.14,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#B59D74",
+          "color_end": "#7E6A55",
+          "swatches": [
+            "sand_wet",
+            "timber_weathered"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            0.8,
+            1.6
+          ],
+          "spread_deg": 85,
+          "gravity": [
+            0,
+            -0.6,
+            0
+          ],
+          "size_m": [
+            0.22,
+            0.46
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.3,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Drownbell's hood comes down."
+    },
+    "crust_slam": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3FE0C8",
+          "color_end": "#7FC6D9",
+          "swatches": [
+            "spawn_wound",
+            "glimmer_held"
+          ],
+          "amount": 60,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.4,
+            3.0
+          ],
+          "spread_deg": 70,
+          "gravity": [
+            0,
+            -7.0,
+            0
+          ],
+          "size_m": [
+            0.14,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#5E6E80",
+          "color_end": "#3E4A57",
+          "swatches": [
+            "cold_blue_stone",
+            "storm_slate"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            0.8,
+            1.6
+          ],
+          "spread_deg": 85,
+          "gravity": [
+            0,
+            -0.6,
+            0
+          ],
+          "size_m": [
+            0.22,
+            0.46
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.3,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Reach's crust slams."
+    },
+    "oil_slap": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#1D1916",
+          "color_end": "#3A3A3F",
+          "swatches": [
+            "lacquer_black",
+            "volcanic_stone"
+          ],
+          "amount": 40,
+          "lifetime_s": 0.7,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            1.5,
+            3.0
+          ],
+          "spread_deg": 50,
+          "gravity": [
+            0,
+            -6.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#FFB16E",
+          "color_end": "#F2A64A",
+          "swatches": [
+            "oil_lamp",
+            "dusk_gold"
+          ],
+          "amount": 34,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "An oil slug slaps: black oil."
+    },
+    "sail_drop": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "head",
+      "layers": [
+        {
+          "color": "#EBE7DF",
+          "color_end": "#C9B48E",
+          "swatches": [
+            "gauze_white",
+            "sand_cloth"
+          ],
+          "amount": 28,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "A sail leech drops over the target."
+    },
+    "pounce": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#E6DAC0",
+          "color_end": "#B59D74",
+          "swatches": [
+            "bone",
+            "sand_wet"
+          ],
+          "amount": 44,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.4,
+            3.0
+          ],
+          "spread_deg": 70,
+          "gravity": [
+            0,
+            -7.0,
+            0
+          ],
+          "size_m": [
+            0.14,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#EFDDB4",
+          "color_end": "#A8573A",
+          "swatches": [
+            "sand_dry",
+            "laterite"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            0.8,
+            1.6
+          ],
+          "spread_deg": 85,
+          "gravity": [
+            0,
+            -0.6,
+            0
+          ],
+          "size_m": [
+            0.22,
+            0.46
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.3,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The hound pounces."
+    },
+    "brine_spit": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#1FA3A6",
+          "color_end": "#EEF6F4",
+          "swatches": [
+            "lagoon_teal",
+            "foam_white"
+          ],
+          "amount": 50,
+          "lifetime_s": 0.7,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            1.5,
+            3.0
+          ],
+          "spread_deg": 50,
+          "gravity": [
+            0,
+            -6.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "A crab spits brine."
+    },
+    "lure_glow": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "head",
+      "layers": [
+        {
+          "color": "#1C6B78",
+          "color_end": "#7FC6D9",
+          "swatches": [
+            "sea_glow",
+            "glimmer_held"
+          ],
+          "amount": 56,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.5,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 60,
+          "gravity": [
+            0,
+            -0.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.6,
+          "emission_radius_m": 0.45,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The lantern eel's lure: a cold glow."
+    },
+    "spark_spit": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#DCE6FF",
+          "color_end": "#9DB4D9",
+          "swatches": [
+            "starlight",
+            "moon_blue"
+          ],
+          "amount": 40,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -1.5,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "A vein sparker spits sparks."
+    },
+    "glass_flare": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#FFB16E",
+          "color_end": "#F2A64A",
+          "swatches": [
+            "oil_lamp",
+            "dusk_gold"
+          ],
+          "amount": 40,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            0.8,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The hermit's bottle flares."
+    },
+    "brine_iron": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#E0702E",
+          "color_end": "#BFE6E0",
+          "swatches": [
+            "ember_orange",
+            "salt_glass"
+          ],
+          "amount": 44,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Inquisitor's brine-iron: a salt burn."
+    },
+    "smother": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "head",
+      "layers": [
+        {
+          "color": "#1D1916",
+          "color_end": "#3A3A3F",
+          "swatches": [
+            "lacquer_black",
+            "volcanic_stone"
+          ],
+          "amount": 34,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        },
+        {
+          "color": "#FFB16E",
+          "color_end": "#F2A64A",
+          "swatches": [
+            "oil_lamp",
+            "dusk_gold"
+          ],
+          "amount": 14,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "An oil slug smothers."
+    },
+    "wing_dust": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "head",
+      "layers": [
+        {
+          "color": "#3A3A3F",
+          "color_end": "#3E4A57",
+          "swatches": [
+            "volcanic_stone",
+            "storm_slate"
+          ],
+          "amount": 30,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "Ash shaken from a wing over each foe."
+    },
+    "housing_glare": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "head",
+      "layers": [
+        {
+          "color": "#FFB16E",
+          "color_end": "#FFF4E0",
+          "swatches": [
+            "oil_lamp",
+            "sun_noon"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            0.4,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "A wreck crab's lamp-housing glare."
+    },
+    "polyp_mend_hit": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#7FC6D9",
+          "color_end": "#3FE0C8",
+          "swatches": [
+            "glimmer_held",
+            "spawn_wound"
+          ],
+          "amount": 24,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "A polyp's held motes mend its ally (sinking, never rising)."
+    },
+    "shroud_sweep": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#8FA7C4",
+          "color_end": "#3E4A57",
+          "swatches": [
+            "cumulus_shadow",
+            "storm_slate"
+          ],
+          "amount": 40,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            -1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "The spar-wraith's shroud sweeps the party."
+    },
+    "undertow_pull": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "feet",
+      "layers": [
+        {
+          "color": "#0E4A55",
+          "color_end": "#061A2B",
+          "swatches": [
+            "deep_teal_shadow",
+            "abyss_navy"
+          ],
+          "amount": 30,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "The Reach pulls at the party's footing."
+    },
+    "gnaw_coil": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3FE0C8",
+          "color_end": "#0E4A55",
+          "swatches": [
+            "spawn_wound",
+            "deep_teal_shadow"
+          ],
+          "amount": 40,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.0,
+          "velocity_m_s": [
+            0.1,
+            0.3
+          ],
+          "spread_deg": 40,
+          "gravity": [
+            0,
+            1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.26
+          ],
+          "energy": 1.3,
+          "emission_radius_m": 1.0,
+          "turbulence": 0.4,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Hullgnaw coils."
+    },
+    "pull_in": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#5E6E80",
+          "color_end": "#3E4A57",
+          "swatches": [
+            "cold_blue_stone",
+            "storm_slate"
+          ],
+          "amount": 30,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.0,
+          "velocity_m_s": [
+            0.1,
+            0.3
+          ],
+          "spread_deg": 40,
+          "gravity": [
+            0,
+            1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.26
+          ],
+          "energy": 1.3,
+          "emission_radius_m": 1.0,
+          "turbulence": 0.4,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "A slag tortoise pulls into its shell."
+    },
+    "bank_the_fire": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#E0702E",
+          "color_end": "#F2A64A",
+          "swatches": [
+            "ember_orange",
+            "dusk_gold"
+          ],
+          "amount": 40,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.0,
+          "velocity_m_s": [
+            0.1,
+            0.3
+          ],
+          "spread_deg": 40,
+          "gravity": [
+            0,
+            1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.26
+          ],
+          "energy": 1.3,
+          "emission_radius_m": 1.0,
+          "turbulence": 0.4,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Cinder Matron banks her fire."
+    },
+    "shell_wall": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "feet",
+      "layers": [
+        {
+          "color": "#7A1712",
+          "color_end": "#B08D57",
+          "swatches": [
+            "lacquer_red_deep",
+            "brass"
+          ],
+          "amount": 36,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.85,
+          "velocity_m_s": [
+            0.05,
+            0.15
+          ],
+          "spread_deg": 5,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.75,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Inquisitor's red shell armour closes."
+    },
+    "reach_for_stair": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3FE0C8",
+          "color_end": "#7FC6D9",
+          "swatches": [
+            "spawn_wound",
+            "glimmer_held"
+          ],
+          "amount": 30,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.0,
+          "velocity_m_s": [
+            0.1,
+            0.3
+          ],
+          "spread_deg": 40,
+          "gravity": [
+            0,
+            1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.26
+          ],
+          "energy": 1.3,
+          "emission_radius_m": 1.0,
+          "turbulence": 0.4,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "A crawler reaches for the stair."
+    },
+    "close_the_hand": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3FE0C8",
+          "color_end": "#061A2B",
+          "swatches": [
+            "spawn_wound",
+            "abyss_navy"
+          ],
+          "amount": 50,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.0,
+          "velocity_m_s": [
+            0.1,
+            0.3
+          ],
+          "spread_deg": 40,
+          "gravity": [
+            0,
+            1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.26
+          ],
+          "energy": 1.3,
+          "emission_radius_m": 1.0,
+          "turbulence": 0.4,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Reach's hand closes."
+    },
+    "breach_gather": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#7FC6D9",
+          "color_end": "#061A2B",
+          "swatches": [
+            "glimmer_held",
+            "abyss_navy"
+          ],
+          "amount": 60,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.0,
+          "velocity_m_s": [
+            0.1,
+            0.3
+          ],
+          "spread_deg": 40,
+          "gravity": [
+            0,
+            1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.26
+          ],
+          "energy": 1.3,
+          "emission_radius_m": 1.0,
+          "turbulence": 0.4,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Breach gathers."
+    },
+    "recrust_gather": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3A3A3F",
+          "color_end": "#E0702E",
+          "swatches": [
+            "volcanic_stone",
+            "ember_orange"
+          ],
+          "amount": 40,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.0,
+          "velocity_m_s": [
+            0.1,
+            0.3
+          ],
+          "spread_deg": 40,
+          "gravity": [
+            0,
+            1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.26
+          ],
+          "energy": 1.3,
+          "emission_radius_m": 1.0,
+          "turbulence": 0.4,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Matron's crust re-forms."
+    },
+    "lines_taut": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#C9B48E",
+          "color_end": "#7E6A55",
+          "swatches": [
+            "sand_cloth",
+            "timber_weathered"
+          ],
+          "amount": 30,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.0,
+          "velocity_m_s": [
+            0.1,
+            0.3
+          ],
+          "spread_deg": 40,
+          "gravity": [
+            0,
+            1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.26
+          ],
+          "energy": 1.3,
+          "emission_radius_m": 1.0,
+          "turbulence": 0.4,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Spar-Wraith's lines go taut."
+    },
+    "climb_up": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "feet",
+      "layers": [
+        {
+          "color": "#C9B48E",
+          "color_end": "#E6DAC0",
+          "swatches": [
+            "sand_cloth",
+            "bone"
+          ],
+          "amount": 20,
+          "lifetime_s": 0.8,
+          "explosiveness": 0.3,
+          "velocity_m_s": [
+            0.4,
+            0.9
+          ],
+          "spread_deg": 25,
+          "gravity": [
+            0,
+            0.4,
+            0
+          ],
+          "size_m": [
+            0.15,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Climb: a group goes up the stair."
+    },
+    "surge_ebb": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "feet",
+      "layers": [
+        {
+          "color": "#0E4A55",
+          "color_end": "#1C6B78",
+          "swatches": [
+            "deep_teal_shadow",
+            "sea_glow"
+          ],
+          "amount": 20,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "The Surge ebbs."
+    },
+    "rouse_polyp": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#7FC6D9",
+          "color_end": "#3FE0C8",
+          "swatches": [
+            "glimmer_held",
+            "spawn_wound"
+          ],
+          "amount": 30,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.0,
+          "velocity_m_s": [
+            0.1,
+            0.3
+          ],
+          "spread_deg": 40,
+          "gravity": [
+            0,
+            1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.26
+          ],
+          "energy": 1.3,
+          "emission_radius_m": 1.0,
+          "turbulence": 0.4,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Drownbell rouses a polyp."
+    },
+    "surge_crawler": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "feet",
+      "layers": [
+        {
+          "color": "#0E4A55",
+          "color_end": "#1C6B78",
+          "swatches": [
+            "deep_teal_shadow",
+            "sea_glow"
+          ],
+          "amount": 40,
+          "lifetime_s": 0.7,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            1.5,
+            3.0
+          ],
+          "spread_deg": 50,
+          "gravity": [
+            0,
+            -6.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Surge throws up a crawler."
+    },
+    "surge_wing": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "feet",
+      "layers": [
+        {
+          "color": "#3E4A57",
+          "color_end": "#1C6B78",
+          "swatches": [
+            "storm_slate",
+            "sea_glow"
+          ],
+          "amount": 40,
+          "lifetime_s": 0.7,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            1.5,
+            3.0
+          ],
+          "spread_deg": 50,
+          "gravity": [
+            0,
+            -6.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Surge throws up a squall wing."
+    },
+    "storm_call_sound": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "head",
+      "layers": [
+        {
+          "color": "#9DB4D9",
+          "color_end": "#3E4A57",
+          "swatches": [
+            "moon_blue",
+            "storm_slate"
+          ],
+          "amount": 30,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.0,
+          "velocity_m_s": [
+            0.1,
+            0.3
+          ],
+          "spread_deg": 40,
+          "gravity": [
+            0,
+            1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.26
+          ],
+          "energy": 1.3,
+          "emission_radius_m": 1.0,
+          "turbulence": 0.4,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Pell sounds the storm-call."
+    },
+    "storm_call": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#DCE6FF",
+          "color_end": "#9DB4D9",
+          "swatches": [
+            "starlight",
+            "moon_blue"
+          ],
+          "amount": 50,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            2.5,
+            4.5
+          ],
+          "spread_deg": 8,
+          "gravity": [
+            0,
+            -1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.28
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Pell's storm-call strikes and drives a foe off."
+    },
+    "bitterleaf": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3E7A3A",
+          "color_end": "#B9B26A",
+          "swatches": [
+            "palm_green",
+            "saltgrass"
+          ],
+          "amount": 24,
+          "lifetime_s": 1.1,
+          "explosiveness": 0.3,
+          "velocity_m_s": [
+            0.4,
+            0.9
+          ],
+          "spread_deg": 25,
+          "gravity": [
+            0,
+            0.4,
+            0
+          ],
+          "size_m": [
+            0.15,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Bitterleaf: a clean green lift (cleanse)."
+    },
+    "brine_eyewash": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "head",
+      "layers": [
+        {
+          "color": "#BFE6E0",
+          "color_end": "#EEF6F4",
+          "swatches": [
+            "salt_glass",
+            "foam_white"
+          ],
+          "amount": 22,
+          "lifetime_s": 1.1,
+          "explosiveness": 0.3,
+          "velocity_m_s": [
+            0.4,
+            0.9
+          ],
+          "spread_deg": 25,
+          "gravity": [
+            0,
+            0.4,
+            0
+          ],
+          "size_m": [
+            0.15,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Brine eyewash: clear water at the eyes (cleanse)."
+    },
+    "drag_net": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#C9B48E",
+          "color_end": "#7E6A55",
+          "swatches": [
+            "sand_cloth",
+            "timber_weathered"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.8,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            0.8,
+            1.6
+          ],
+          "spread_deg": 70,
+          "gravity": [
+            0,
+            -5.0,
+            0
+          ],
+          "size_m": [
+            0.05,
+            0.1
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.4,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The drag net thrown over a foe (delay)."
+    },
+    "quiet_tea": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#1569A0",
+          "color_end": "#A9DCF2",
+          "swatches": [
+            "reef_blue",
+            "sky_horizon_noon"
+          ],
+          "amount": 24,
+          "lifetime_s": 1.1,
+          "explosiveness": 0.3,
+          "velocity_m_s": [
+            0.4,
+            0.9
+          ],
+          "spread_deg": 25,
+          "gravity": [
+            0,
+            0.4,
+            0
+          ],
+          "size_m": [
+            0.15,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Quiet tea: calm blue rising (MP)."
+    },
+    "relighting_wick": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#FFB16E",
+          "color_end": "#F2A64A",
+          "swatches": [
+            "oil_lamp",
+            "dusk_gold"
+          ],
+          "amount": 2,
+          "lifetime_s": 0.4,
+          "explosiveness": 1.0,
+          "velocity_m_s": [
+            0.0,
+            0.05
+          ],
+          "spread_deg": 0,
+          "gravity": [
+            0,
+            0,
+            0
+          ],
+          "size_m": [
+            1.0,
+            1.3
+          ],
+          "energy": 1.2,
+          "emission_radius_m": 0.02,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#FFB16E",
+          "color_end": "#F2A64A",
+          "swatches": [
+            "oil_lamp",
+            "dusk_gold"
+          ],
+          "amount": 28,
+          "lifetime_s": 1.1,
+          "explosiveness": 0.3,
+          "velocity_m_s": [
+            0.4,
+            0.9
+          ],
+          "spread_deg": 25,
+          "gravity": [
+            0,
+            0.4,
+            0
+          ],
+          "size_m": [
+            0.15,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "A relighting wick: a small oil flame lit again (revive; oil light, never glimmer)."
+    },
+    "smelling_salts": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "head",
+      "layers": [
+        {
+          "color": "#BFE6E0",
+          "color_end": "#EEF6F4",
+          "swatches": [
+            "salt_glass",
+            "foam_white"
+          ],
+          "amount": 28,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Smelling salts (cleanse)."
+    },
+    "throat_honey": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#D4A437",
+          "color_end": "#EFDDB4",
+          "swatches": [
+            "gold_leaf",
+            "sand_dry"
+          ],
+          "amount": 20,
+          "lifetime_s": 1.1,
+          "explosiveness": 0.3,
+          "velocity_m_s": [
+            0.4,
+            0.9
+          ],
+          "spread_deg": 25,
+          "gravity": [
+            0,
+            0.4,
+            0
+          ],
+          "size_m": [
+            0.15,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Throat honey (cleanse)."
+    },
+    "tidewash_salve": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3FD0C9",
+          "color_end": "#BFE6E0",
+          "swatches": [
+            "turquoise_shallow",
+            "salt_glass"
+          ],
+          "amount": 24,
+          "lifetime_s": 1.1,
+          "explosiveness": 0.3,
+          "velocity_m_s": [
+            0.4,
+            0.9
+          ],
+          "spread_deg": 25,
+          "gravity": [
+            0,
+            0.4,
+            0
+          ],
+          "size_m": [
+            0.15,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Tidewash salve (cleanse)."
+    },
+    "vowbound_call": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "feet",
+      "layers": [
+        {
+          "color": "#4FB3B0",
+          "color_end": "#1FA3A6",
+          "swatches": [
+            "glimmer_bound",
+            "lagoon_teal"
+          ],
+          "amount": 90,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.85,
+          "velocity_m_s": [
+            0.05,
+            0.15
+          ],
+          "spread_deg": 5,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 1.6,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#4FB3B0",
+          "color_end": "#BFE6E0",
+          "swatches": [
+            "glimmer_bound",
+            "salt_glass"
+          ],
+          "amount": 44,
+          "lifetime_s": 1.4,
+          "explosiveness": 0.3,
+          "velocity_m_s": [
+            0.4,
+            0.9
+          ],
+          "spread_deg": 25,
+          "gravity": [
+            0,
+            0.4,
+            0
+          ],
+          "size_m": [
+            0.15,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 1.1,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "A Vowbound answers: a steady ring of bound light lifting around it."
+    },
+    "vowbound_dismiss": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#4FB3B0",
+          "color_end": "#0E4A55",
+          "swatches": [
+            "glimmer_bound",
+            "deep_teal_shadow"
+          ],
+          "amount": 56,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.9,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "A Vowbound leaves: its bound light settles."
+    },
+    "vowbound_fell": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#4FB3B0",
+          "color_end": "#061A2B",
+          "swatches": [
+            "glimmer_bound",
+            "abyss_navy"
+          ],
+          "amount": 80,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.9,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "A Vowbound falls: its bound light sinks (not a release)."
+    },
+    "thrash": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3FE0C8",
+          "color_end": "#0E4A55",
+          "swatches": [
+            "spawn_wound",
+            "deep_teal_shadow"
+          ],
+          "amount": 50,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.4,
+            3.0
+          ],
+          "spread_deg": 70,
+          "gravity": [
+            0,
+            -7.0,
+            0
+          ],
+          "size_m": [
+            0.14,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#B59D74",
+          "color_end": "#7E6A55",
+          "swatches": [
+            "sand_wet",
+            "timber_weathered"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            0.8,
+            1.6
+          ],
+          "spread_deg": 85,
+          "gravity": [
+            0,
+            -0.6,
+            0
+          ],
+          "size_m": [
+            0.22,
+            0.46
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.3,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Hullgnaw thrashes in its ribs."
+    },
+    "haul": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#7E6A55",
+          "color_end": "#E6DAC0",
+          "swatches": [
+            "timber_weathered",
+            "bone"
+          ],
+          "amount": 60,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.4,
+            3.0
+          ],
+          "spread_deg": 70,
+          "gravity": [
+            0,
+            -7.0,
+            0
+          ],
+          "size_m": [
+            0.14,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#C9B48E",
+          "color_end": "#7E6A55",
+          "swatches": [
+            "sand_cloth",
+            "timber_weathered"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            0.8,
+            1.6
+          ],
+          "spread_deg": 85,
+          "gravity": [
+            0,
+            -0.6,
+            0
+          ],
+          "size_m": [
+            0.22,
+            0.46
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.3,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Spar-Wraith hauls its spar down on a foe."
+    },
+    "sea_lash": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#1FA3A6",
+          "color_end": "#EEF6F4",
+          "swatches": [
+            "lagoon_teal",
+            "foam_white"
+          ],
+          "amount": 60,
+          "lifetime_s": 0.7,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            1.5,
+            3.0
+          ],
+          "spread_deg": 50,
+          "gravity": [
+            0,
+            -6.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Spar-Wraith lashes the party with the sea."
+    },
+    "slag_pour": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#E0702E",
+          "color_end": "#F2A64A",
+          "swatches": [
+            "ember_orange",
+            "dusk_gold"
+          ],
+          "amount": 70,
+          "lifetime_s": 0.7,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            1.5,
+            3.0
+          ],
+          "spread_deg": 50,
+          "gravity": [
+            0,
+            -6.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#3A3A3F",
+          "color_end": "#3E4A57",
+          "swatches": [
+            "volcanic_stone",
+            "storm_slate"
+          ],
+          "amount": 20,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "The Cinder Matron pours slag over the party."
+    },
+    "torch_hulk": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "head",
+      "layers": [
+        {
+          "color": "#3A3A3F",
+          "color_end": "#1D1916",
+          "swatches": [
+            "volcanic_stone",
+            "lacquer_black"
+          ],
+          "amount": 40,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "The Inquisitor torches the hulk: smoke over each foe."
+    },
+    "breach": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3FE0C8",
+          "color_end": "#7FC6D9",
+          "swatches": [
+            "spawn_wound",
+            "glimmer_held"
+          ],
+          "amount": 70,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.4,
+            3.0
+          ],
+          "spread_deg": 70,
+          "gravity": [
+            0,
+            -7.0,
+            0
+          ],
+          "size_m": [
+            0.14,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#0E4A55",
+          "color_end": "#061A2B",
+          "swatches": [
+            "deep_teal_shadow",
+            "abyss_navy"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            0.8,
+            1.6
+          ],
+          "spread_deg": 85,
+          "gravity": [
+            0,
+            -0.6,
+            0
+          ],
+          "size_m": [
+            0.22,
+            0.46
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.3,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Breach: the wall gives under the Reach."
+    },
+    "recrust": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "feet",
+      "layers": [
+        {
+          "color": "#3A3A3F",
+          "color_end": "#E0702E",
+          "swatches": [
+            "volcanic_stone",
+            "ember_orange"
+          ],
+          "amount": 44,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.85,
+          "velocity_m_s": [
+            0.05,
+            0.15
+          ],
+          "spread_deg": 5,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.75,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Cinder Matron's crust closes over her."
+    },
+    "boss_hullgnaw_coil": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3FE0C8",
+          "color_end": "#0E4A55",
+          "swatches": [
+            "spawn_wound",
+            "deep_teal_shadow"
+          ],
+          "amount": 60,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.0,
+          "velocity_m_s": [
+            0.1,
+            0.3
+          ],
+          "spread_deg": 40,
+          "gravity": [
+            0,
+            1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.26
+          ],
+          "energy": 1.3,
+          "emission_radius_m": 1.0,
+          "turbulence": 0.4,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Hullgnaw draws itself in: its wound-light gathers."
+    },
+    "boss_hullgnaw_breaking": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#E6DAC0",
+          "color_end": "#7E6A55",
+          "swatches": [
+            "bone",
+            "timber_weathered"
+          ],
+          "amount": 46,
+          "lifetime_s": 0.8,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.2,
+            2.4
+          ],
+          "spread_deg": 60,
+          "gravity": [
+            0,
+            -6.5,
+            0
+          ],
+          "size_m": [
+            0.18,
+            0.36
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#3FE0C8",
+          "color_end": "#7FC6D9",
+          "swatches": [
+            "spawn_wound",
+            "glimmer_held"
+          ],
+          "amount": 50,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "Hullgnaw's ribs break: bone and timber fall, the wound-light leaks out sideways."
+    },
+    "boss_spawn_release": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#FFE9B8",
+          "color_end": "#F4F8FF",
+          "swatches": [
+            "glimmer_lift",
+            "glimmer_lift_hi"
+          ],
+          "amount": 80,
+          "lifetime_s": 2.2,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.4,
+            1.0
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            0.6,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.24
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.8,
+          "turbulence": 0.4,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "A spawn falls: the dead it held are let go, rising (released glimmer, color_script rule 1)."
+    },
+    "boss_wraith_lines": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#C9B48E",
+          "color_end": "#8FA7C4",
+          "swatches": [
+            "sand_cloth",
+            "cumulus_shadow"
+          ],
+          "amount": 50,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.0,
+          "velocity_m_s": [
+            0.1,
+            0.3
+          ],
+          "spread_deg": 40,
+          "gravity": [
+            0,
+            1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.26
+          ],
+          "energy": 1.3,
+          "emission_radius_m": 1.0,
+          "turbulence": 0.4,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Spar-Wraith's lines draw taut."
+    },
+    "boss_wraith_hauled": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#7E6A55",
+          "color_end": "#C9B48E",
+          "swatches": [
+            "timber_weathered",
+            "sand_cloth"
+          ],
+          "amount": 46,
+          "lifetime_s": 0.8,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.2,
+            2.4
+          ],
+          "spread_deg": 60,
+          "gravity": [
+            0,
+            -6.5,
+            0
+          ],
+          "size_m": [
+            0.18,
+            0.36
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#EBE7DF",
+          "color_end": "#8FA7C4",
+          "swatches": [
+            "gauze_white",
+            "cumulus_shadow"
+          ],
+          "amount": 30,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "The Spar-Wraith is hauled down: spars fall, its shroud tears and settles."
+    },
+    "boss_matron_recrust": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3A3A3F",
+          "color_end": "#E0702E",
+          "swatches": [
+            "volcanic_stone",
+            "ember_orange"
+          ],
+          "amount": 50,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.0,
+          "velocity_m_s": [
+            0.1,
+            0.3
+          ],
+          "spread_deg": 40,
+          "gravity": [
+            0,
+            1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.26
+          ],
+          "energy": 1.3,
+          "emission_radius_m": 1.0,
+          "turbulence": 0.4,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Cinder Matron's crust re-forms."
+    },
+    "boss_matron_pour": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#E0702E",
+          "color_end": "#F2A64A",
+          "swatches": [
+            "ember_orange",
+            "dusk_gold"
+          ],
+          "amount": 80,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            2.5,
+            4.5
+          ],
+          "spread_deg": 8,
+          "gravity": [
+            0,
+            -1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.28
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#3A3A3F",
+          "color_end": "#3E4A57",
+          "swatches": [
+            "volcanic_stone",
+            "storm_slate"
+          ],
+          "amount": 30,
+          "lifetime_s": 1.1,
+          "explosiveness": 0.3,
+          "velocity_m_s": [
+            0.4,
+            0.9
+          ],
+          "spread_deg": 25,
+          "gravity": [
+            0,
+            0.4,
+            0
+          ],
+          "size_m": [
+            0.15,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Matron turns to pouring: the ladle runs molten, smoke climbs."
+    },
+    "boss_matron_fall": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#E0702E",
+          "color_end": "#3A3A3F",
+          "swatches": [
+            "ember_orange",
+            "volcanic_stone"
+          ],
+          "amount": 60,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "The Cinder Matron's fire banks for good: embers settle."
+    },
+    "boss_inquisitor_torch": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#FFB16E",
+          "color_end": "#E0702E",
+          "swatches": [
+            "oil_lamp",
+            "ember_orange"
+          ],
+          "amount": 60,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            2.5,
+            4.5
+          ],
+          "spread_deg": 8,
+          "gravity": [
+            0,
+            -1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.28
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#3A3A3F",
+          "color_end": "#1D1916",
+          "swatches": [
+            "volcanic_stone",
+            "lacquer_black"
+          ],
+          "amount": 40,
+          "lifetime_s": 1.1,
+          "explosiveness": 0.3,
+          "velocity_m_s": [
+            0.4,
+            0.9
+          ],
+          "spread_deg": 25,
+          "gravity": [
+            0,
+            0.4,
+            0
+          ],
+          "size_m": [
+            0.15,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Inquisitor torches the hulk: flame and smoke at his side."
+    },
+    "boss_reach_gather": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3FE0C8",
+          "color_end": "#061A2B",
+          "swatches": [
+            "spawn_wound",
+            "abyss_navy"
+          ],
+          "amount": 70,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.0,
+          "velocity_m_s": [
+            0.1,
+            0.3
+          ],
+          "spread_deg": 40,
+          "gravity": [
+            0,
+            1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.26
+          ],
+          "energy": 1.3,
+          "emission_radius_m": 1.0,
+          "turbulence": 0.4,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Reach gathers itself against the wall."
+    },
+    "boss_reach_dark": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "head",
+      "layers": [
+        {
+          "color": "#3E4A57",
+          "color_end": "#050A14",
+          "swatches": [
+            "storm_slate",
+            "night_sky"
+          ],
+          "amount": 80,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "The storm-dark comes down over the wall-head."
+    },
+    "boss_reach_breach": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3FE0C8",
+          "color_end": "#7FC6D9",
+          "swatches": [
+            "spawn_wound",
+            "glimmer_held"
+          ],
+          "amount": 80,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        },
+        {
+          "color": "#061A2B",
+          "color_end": "#0E4A55",
+          "swatches": [
+            "abyss_navy",
+            "deep_teal_shadow"
+          ],
+          "amount": 50,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Breach: the Reach's crust parts and its wound-light floods out sideways."
+    },
+    "flood_surge": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3FD0C9",
+          "color_end": "#1FA3A6",
+          "swatches": [
+            "turquoise_shallow",
+            "lagoon_teal"
+          ],
+          "amount": 70,
+          "lifetime_s": 0.7,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            1.5,
+            3.0
+          ],
+          "spread_deg": 50,
+          "gravity": [
+            0,
+            -6.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Drownbell's flood surges over each foe."
+    },
+    "undertow_surge": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "feet",
+      "layers": [
+        {
+          "color": "#0E4A55",
+          "color_end": "#061A2B",
+          "swatches": [
+            "deep_teal_shadow",
+            "abyss_navy"
+          ],
+          "amount": 40,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "The Drownbell's undertow drags at each foe's feet."
+    },
+    "swell_weighted_swing": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "feet",
+      "layers": [
+        {
+          "color": "#B08D57",
+          "color_end": "#5E6E80",
+          "swatches": [
+            "brass",
+            "cold_blue_stone"
+          ],
+          "amount": 70,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            3.0,
+            5.0
+          ],
+          "spread_deg": 22,
+          "gravity": [
+            0,
+            -3.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.25,
+          "turbulence": 0.0,
+          "direction": [
+            -1.0,
+            0.12,
+            0
+          ]
+        },
+        {
+          "color": "#B59D74",
+          "color_end": "#3E4A57",
+          "swatches": [
+            "sand_wet",
+            "storm_slate"
+          ],
+          "amount": 50,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.4,
+            3.0
+          ],
+          "spread_deg": 70,
+          "gravity": [
+            0,
+            -7.0,
+            0
+          ],
+          "size_m": [
+            0.14,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#EFDDB4",
+          "color_end": "#8FA7C4",
+          "swatches": [
+            "sand_dry",
+            "cumulus_shadow"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            0.8,
+            1.6
+          ],
+          "spread_deg": 85,
+          "gravity": [
+            0,
+            -0.6,
+            0
+          ],
+          "size_m": [
+            0.22,
+            0.46
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.3,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Kerrid's Swell (the weighted swing): one flat, low sweep of iron across the foe at knee height, wet sand thrown out with it; never overhead, so it reads apart from Toma's blow."
+    },
+    "swell_reel_stop": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#B08D57",
+          "color_end": "#4FB3B0",
+          "swatches": [
+            "brass",
+            "glimmer_bound"
+          ],
+          "amount": 36,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.85,
+          "velocity_m_s": [
+            0.05,
+            0.15
+          ],
+          "spread_deg": 5,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.75,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#BFE6E0",
+          "color_end": "#4FB3B0",
+          "swatches": [
+            "salt_glass",
+            "glimmer_bound"
+          ],
+          "amount": 60,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Liss's Swell (the reel-stop): the gadget's parts lock (a brass ring closing) and it goes off on the foe in a salt-glass flash; its light is bound glimmer, steady."
+    },
+    "tick_poison": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3E7A3A",
+          "color_end": "#1E4A3A",
+          "swatches": [
+            "palm_green",
+            "foliage_shadow"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.8,
+          "explosiveness": 0.55,
+          "velocity_m_s": [
+            0.3,
+            0.8
+          ],
+          "spread_deg": 45,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.1,
+            0.2
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.3,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Poison takes its turn's toll: sick green welling out of the fighter."
+    },
+    "tick_regen": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3FD0C9",
+          "color_end": "#EEF6F4",
+          "swatches": [
+            "turquoise_shallow",
+            "foam_white"
+          ],
+          "amount": 24,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.3,
+          "velocity_m_s": [
+            0.4,
+            0.9
+          ],
+          "spread_deg": 25,
+          "gravity": [
+            0,
+            0.4,
+            0
+          ],
+          "size_m": [
+            0.15,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Regen mends a little: shallow water lifting off (water, not glimmer)."
+    },
+    "tick_doom": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "head",
+      "layers": [
+        {
+          "color": "#050A14",
+          "color_end": "#061A2B",
+          "swatches": [
+            "night_sky",
+            "abyss_navy"
+          ],
+          "amount": 20,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        },
+        {
+          "color": "#9DB4D9",
+          "color_end": "#050A14",
+          "swatches": [
+            "moon_blue",
+            "night_sky"
+          ],
+          "amount": 10,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "A Doom count falls: a little dark settling."
+    },
+    "tick_doom_fall": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#061A2B",
+          "color_end": "#050A14",
+          "swatches": [
+            "abyss_navy",
+            "night_sky"
+          ],
+          "amount": 64,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.5,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        },
+        {
+          "color": "#9DB4D9",
+          "color_end": "#3E4A57",
+          "swatches": [
+            "moon_blue",
+            "storm_slate"
+          ],
+          "amount": 26,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.5,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "Doom comes due: the dark comes down whole."
+    },
+    "tick_sleep": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "head",
+      "layers": [
+        {
+          "color": "#9DB4D9",
+          "color_end": "#DCE6FF",
+          "swatches": [
+            "moon_blue",
+            "starlight"
+          ],
+          "amount": 14,
+          "lifetime_s": 1.4,
+          "explosiveness": 0.2,
+          "velocity_m_s": [
+            0.1,
+            0.3
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            0.25,
+            0
+          ],
+          "size_m": [
+            0.08,
+            0.16
+          ],
+          "energy": 1.3,
+          "emission_radius_m": 0.25,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "A turn lost to Sleep: slow pale motes drifting over the sleeper."
+    },
+    "tick_stop": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "feet",
+      "layers": [
+        {
+          "color": "#BFE6E0",
+          "color_end": "#5E6E80",
+          "swatches": [
+            "salt_glass",
+            "cold_blue_stone"
+          ],
+          "amount": 48,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.85,
+          "velocity_m_s": [
+            0.05,
+            0.15
+          ],
+          "spread_deg": 5,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 1.05,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "A turn lost to Stop: a still ring of salt-glass."
+    },
+    "grip_the_stair": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "feet",
+      "layers": [
+        {
+          "color": "#3FE0C8",
+          "color_end": "#7FC6D9",
+          "swatches": [
+            "spawn_wound",
+            "glimmer_held"
+          ],
+          "amount": 44,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        },
+        {
+          "color": "#0E4A55",
+          "color_end": "#061A2B",
+          "swatches": [
+            "deep_teal_shadow",
+            "abyss_navy"
+          ],
+          "amount": 18,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "A crawler grips the stair head: wound-light clawing sideways, the climbers falter."
+    },
+    "rope_dive": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#C9B48E",
+          "color_end": "#8FA7C4",
+          "swatches": [
+            "sand_cloth",
+            "cumulus_shadow"
+          ],
+          "amount": 40,
+          "lifetime_s": 0.5,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.5,
+            4.0
+          ],
+          "spread_deg": 20,
+          "gravity": [
+            0,
+            -3.0,
+            0
+          ],
+          "size_m": [
+            0.06,
+            0.14
+          ],
+          "energy": 1.3,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            -0.4,
+            0
+          ]
+        }
+      ],
+      "note": "A squall wing dives the hand-line: spray and rope fibre whipped down across the stair."
+    },
+    "hand_closes": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#061A2B",
+          "color_end": "#3E4A57",
+          "swatches": [
+            "abyss_navy",
+            "storm_slate"
+          ],
+          "amount": 70,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.9,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        },
+        {
+          "color": "#3FE0C8",
+          "color_end": "#0E4A55",
+          "swatches": [
+            "spawn_wound",
+            "deep_teal_shadow"
+          ],
+          "amount": 40,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The storm's hand closes on the stair head: the dark comes down whole, wound-light crushed out."
     }
   },
   "map": {
@@ -1076,19 +7085,132 @@
     "skills": {
       "lamp_dive": "lamp_dive",
       "shallows_verse": "shallows_verse",
-      "read": "read"
+      "read": "read",
+      "quick_hit": "quick_hit",
+      "undertow_cut": "undertow_cut",
+      "mend": "mend",
+      "hasten": "hasten",
+      "ward": "ward",
+      "shell_breaker": "shell_breaker",
+      "hold_the_stair": "hold_the_stair",
+      "stand_firm": "stand_firm",
+      "challenge": "challenge",
+      "stand_fast": "stand_fast",
+      "ember": "ember",
+      "frost": "frost",
+      "slow_hex": "slow_hex",
+      "fluke_cleave": "fluke_cleave",
+      "snub_line": "snub_line",
+      "anchor_fall": "anchor_fall",
+      "reel_shot": "reel_shot",
+      "flash_housing": "flash_housing",
+      "hoist_haul": "hoist_haul",
+      "return_tide": "return_tide",
+      "written_light": "written_light",
+      "floodnet": "floodnet",
+      "last_strike": "last_strike",
+      "flare_line": "flare_line",
+      "brine_lash": "brine_lash",
+      "tidal_ward": "tidal_ward",
+      "forge_bolt": "forge_bolt",
+      "kite_flare": "kite_flare",
+      "pinch": "pinch",
+      "scuttle_claw": "scuttle_claw",
+      "tide_claw": "tide_claw",
+      "limpet_clamp": "limpet_clamp",
+      "skim_bite": "skim_bite",
+      "shoal_nip": "shoal_nip",
+      "hound_bite": "hound_bite",
+      "gnaw": "gnaw",
+      "dive_rake": "dive_rake",
+      "wing_peck": "wing_peck",
+      "ash_rake": "ash_rake",
+      "spar_stab": "spar_stab",
+      "glass_jab": "glass_jab",
+      "rib_lash": "rib_lash",
+      "haft_strike": "haft_strike",
+      "shell_ram": "shell_ram",
+      "ladle_swing": "ladle_swing",
+      "hood_slam": "hood_slam",
+      "crust_slam": "crust_slam",
+      "oil_slap": "oil_slap",
+      "sail_drop": "sail_drop",
+      "pounce": "pounce",
+      "brine_spit": "brine_spit",
+      "lure_glow": "lure_glow",
+      "spark_spit": "spark_spit",
+      "glass_flare": "glass_flare",
+      "brine_iron": "brine_iron",
+      "smother": "smother",
+      "wing_dust": "wing_dust",
+      "housing_glare": "housing_glare",
+      "polyp_mend": "polyp_mend_hit",
+      "shroud_sweep": "shroud_sweep",
+      "undertow_pull": "undertow_pull",
+      "gnaw_coil": "gnaw_coil",
+      "pull_in": "pull_in",
+      "bank_the_fire": "bank_the_fire",
+      "shell_wall": "shell_wall",
+      "reach_for_stair": "reach_for_stair",
+      "close_the_hand": "close_the_hand",
+      "breach_gather": "breach_gather",
+      "recrust_gather": "recrust_gather",
+      "lines_taut": "lines_taut",
+      "climb_up": "climb_up",
+      "surge_ebb": "surge_ebb",
+      "rouse_polyp": "rouse_polyp",
+      "surge_crawler": "surge_crawler",
+      "surge_wing": "surge_wing",
+      "storm_call_sound": "storm_call_sound",
+      "storm_call": "storm_call",
+      "thrash": "thrash",
+      "haul": "haul",
+      "sea_lash": "sea_lash",
+      "slag_pour": "slag_pour",
+      "torch_hulk": "torch_hulk",
+      "breach": "breach",
+      "recrust": "recrust",
+      "flood_surge": "flood_surge",
+      "undertow_surge": "undertow_surge",
+      "grip_the_stair": "grip_the_stair",
+      "rope_dive": "rope_dive",
+      "hand_closes": "hand_closes"
     },
-    "items": {},
+    "items": {
+      "bitterleaf": "bitterleaf",
+      "brine_eyewash": "brine_eyewash",
+      "drag_net": "drag_net",
+      "quiet_tea": "quiet_tea",
+      "relighting_wick": "relighting_wick",
+      "smelling_salts": "smelling_salts",
+      "throat_honey": "throat_honey",
+      "tidewash_salve": "tidewash_salve"
+    },
     "events": {
       "heal": "heal",
       "status": "status_apply",
       "ko": "ko_release",
       "ambush": "flash_ambush",
-      "preemptive": "flash_preemptive"
+      "preemptive": "flash_preemptive",
+      "vowbound_call": "vowbound_call",
+      "vowbound_dismiss": "vowbound_dismiss",
+      "vowbound_fell": "vowbound_fell"
     },
     "ko_overrides": {
       "drownbell": "bell_release"
     },
-    "ko_overrides_doc": "Enemy ids whose KO plays another effect than events.ko (the Drownbell's motes are held: they slide seaward, they never rise)."
+    "ko_overrides_doc": "Enemy ids whose KO plays another effect than events.ko (the Drownbell's motes are held: they slide seaward, they never rise).",
+    "swell_by_hero": {
+      "kerrid": "swell_weighted_swing",
+      "liss": "swell_reel_stop"
+    },
+    "ticks": {
+      "poison": "tick_poison",
+      "regen": "tick_regen",
+      "doom_tick": "tick_doom",
+      "doom": "tick_doom_fall",
+      "sleep": "tick_sleep",
+      "stop": "tick_stop"
+    }
   }
 }

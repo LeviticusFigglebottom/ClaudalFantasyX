@@ -1,0 +1,1145 @@
+{
+ "doc": "M4-C15-02 greybox (tools/act1/ch15_16_greybox.py; do not edit by hand): Hollowmere at dawn in the fog, its first visit (colour script ch15; Act III's zone). The dock the barge comes in to (Dock), jetties to hull-houses on their platforms, Liss's father's (fathers_door), the pyre-raft off the dock's end (pyre_raft), the supper on the dock (supper: the side scene) and the Hollowmere ship moored along the dock (to_rim). The story waits on the beat sheet (M4-C15-01).",
+ "sun": {
+  "pitch_deg": -6.0,
+  "yaw_deg": 90.0,
+  "energy": 0.6,
+  "color": "#c8d0d8"
+ },
+ "environment": {
+  "background": "#a8b0b8",
+  "ambient_color": "#8a96a0",
+  "ambient_energy": 0.6
+ },
+ "block_color": "#6a5640",
+ "blocks": [
+  {
+   "id": "Water",
+   "pos": [
+    25.0,
+    -0.35,
+    -5.0
+   ],
+   "size": [
+    130.0,
+    0.1,
+    90.0
+   ],
+   "color": "#4a5a60",
+   "solid": false
+  },
+  {
+   "id": "Bed",
+   "pos": [
+    25.0,
+    -2.1,
+    -5.0
+   ],
+   "size": [
+    130.0,
+    1.0,
+    90.0
+   ],
+   "color": "#1e1511"
+  },
+  {
+   "id": "Dock",
+   "pos": [
+    30.0,
+    -0.25,
+    0.0
+   ],
+   "size": [
+    63.6,
+    0.5,
+    3.6
+   ],
+   "color": "#6a5640"
+  },
+  {
+   "id": "DockPileL0",
+   "pos": [
+    3.5,
+    1.2,
+    4.2
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "DockPileL1",
+   "pos": [
+    10.5,
+    1.2,
+    5.0
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "DockPileL2",
+   "pos": [
+    17.5,
+    1.2,
+    4.2
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "DockPileL3",
+   "pos": [
+    24.5,
+    1.2,
+    5.0
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "DockPileL4",
+   "pos": [
+    31.5,
+    1.2,
+    4.2
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "DockPileL5",
+   "pos": [
+    38.5,
+    1.2,
+    5.0
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "DockPileL6",
+   "pos": [
+    45.5,
+    1.2,
+    4.2
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "DockPileL7",
+   "pos": [
+    52.5,
+    1.2,
+    5.0
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "DockPileL8",
+   "pos": [
+    59.5,
+    1.2,
+    4.2
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "DockPileR0",
+   "pos": [
+    3.5,
+    1.2,
+    -4.2
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "DockPileR1",
+   "pos": [
+    10.5,
+    1.2,
+    -5.0
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "DockPileR2",
+   "pos": [
+    17.5,
+    1.2,
+    -4.2
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "DockPileR3",
+   "pos": [
+    24.5,
+    1.2,
+    -5.0
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "DockPileR4",
+   "pos": [
+    31.5,
+    1.2,
+    -4.2
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "DockPileR5",
+   "pos": [
+    38.5,
+    1.2,
+    -5.0
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "DockPileR6",
+   "pos": [
+    45.5,
+    1.2,
+    -4.2
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "DockPileR7",
+   "pos": [
+    52.5,
+    1.2,
+    -5.0
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "DockPileR8",
+   "pos": [
+    59.5,
+    1.2,
+    -4.2
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "DockBoundW",
+   "pos": [
+    -2.5,
+    1.0,
+    0.0
+   ],
+   "size": [
+    1.0,
+    2.0,
+    4.6
+   ],
+   "color": "#5a4636"
+  },
+  {
+   "id": "DockBoundE",
+   "pos": [
+    62.3,
+    1.0,
+    0.0
+   ],
+   "size": [
+    1.0,
+    2.0,
+    4.6
+   ],
+   "color": "#5a4636"
+  },
+  {
+   "id": "DockRailN0",
+   "pos": [
+    4.0,
+    0.25,
+    -2.0
+   ],
+   "size": [
+    12.0,
+    0.5,
+    0.4
+   ],
+   "color": "#5a4636"
+  },
+  {
+   "id": "DockRailN1",
+   "pos": [
+    20.0,
+    0.25,
+    -2.0
+   ],
+   "size": [
+    12.0,
+    0.5,
+    0.4
+   ],
+   "color": "#5a4636"
+  },
+  {
+   "id": "DockRailN2",
+   "pos": [
+    36.0,
+    0.25,
+    -2.0
+   ],
+   "size": [
+    12.0,
+    0.5,
+    0.4
+   ],
+   "color": "#5a4636"
+  },
+  {
+   "id": "DockRailN3",
+   "pos": [
+    53.9,
+    0.25,
+    -2.0
+   ],
+   "size": [
+    15.8,
+    0.5,
+    0.4
+   ],
+   "color": "#5a4636"
+  },
+  {
+   "id": "DockRailS0",
+   "pos": [
+    11.0,
+    0.25,
+    2.0
+   ],
+   "size": [
+    26.0,
+    0.5,
+    0.4
+   ],
+   "color": "#5a4636"
+  },
+  {
+   "id": "DockRailS1",
+   "pos": [
+    48.9,
+    0.25,
+    2.0
+   ],
+   "size": [
+    25.8,
+    0.5,
+    0.4
+   ],
+   "color": "#5a4636"
+  },
+  {
+   "id": "Jetty0",
+   "pos": [
+    12.0,
+    -0.25,
+    -7.9
+   ],
+   "size": [
+    15.8,
+    0.5,
+    3.6
+   ],
+   "yaw": 90.0,
+   "color": "#6a5640"
+  },
+  {
+   "id": "Jetty0RailL",
+   "pos": [
+    14.0,
+    0.25,
+    -7.9
+   ],
+   "size": [
+    12.2,
+    0.5,
+    0.4
+   ],
+   "yaw": 90.0,
+   "color": "#5a4636"
+  },
+  {
+   "id": "Jetty0PileL0",
+   "pos": [
+    16.2,
+    1.2,
+    -5.3
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "Jetty0PileL1",
+   "pos": [
+    17.0,
+    1.2,
+    -12.3
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "Jetty0RailR",
+   "pos": [
+    10.0,
+    0.25,
+    -7.9
+   ],
+   "size": [
+    12.2,
+    0.5,
+    0.4
+   ],
+   "yaw": 90.0,
+   "color": "#5a4636"
+  },
+  {
+   "id": "Jetty0PileR0",
+   "pos": [
+    7.8,
+    1.2,
+    -5.3
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "Jetty0PileR1",
+   "pos": [
+    7.0,
+    1.2,
+    -12.3
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "HousePlatform0",
+   "pos": [
+    12.0,
+    -0.25,
+    -19.0
+   ],
+   "size": [
+    10.0,
+    0.5,
+    8.0
+   ],
+   "color": "#6a5640"
+  },
+  {
+   "id": "HousePlatform0WallN0",
+   "pos": [
+    12.0,
+    0.25,
+    -23.0
+   ],
+   "size": [
+    10.0,
+    0.5,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HousePlatform0WallS0",
+   "pos": [
+    8.4,
+    0.25,
+    -15.0
+   ],
+   "size": [
+    2.8,
+    0.5,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HousePlatform0WallS1",
+   "pos": [
+    15.6,
+    0.25,
+    -15.0
+   ],
+   "size": [
+    2.8,
+    0.5,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HousePlatform0WallW0",
+   "pos": [
+    7.0,
+    0.25,
+    -19.0
+   ],
+   "size": [
+    0.5,
+    0.5,
+    8.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HousePlatform0WallE0",
+   "pos": [
+    17.0,
+    0.25,
+    -19.0
+   ],
+   "size": [
+    0.5,
+    0.5,
+    8.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HullHouse0",
+   "pos": [
+    12.0,
+    2.2,
+    -21.0
+   ],
+   "size": [
+    7.0,
+    4.4,
+    4.0
+   ],
+   "color": "#5a4636"
+  },
+  {
+   "id": "Jetty1",
+   "pos": [
+    28.0,
+    -0.25,
+    -7.9
+   ],
+   "size": [
+    15.8,
+    0.5,
+    3.6
+   ],
+   "yaw": 90.0,
+   "color": "#6a5640"
+  },
+  {
+   "id": "Jetty1RailL",
+   "pos": [
+    30.0,
+    0.25,
+    -7.9
+   ],
+   "size": [
+    12.2,
+    0.5,
+    0.4
+   ],
+   "yaw": 90.0,
+   "color": "#5a4636"
+  },
+  {
+   "id": "Jetty1PileL0",
+   "pos": [
+    32.2,
+    1.2,
+    -5.3
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "Jetty1PileL1",
+   "pos": [
+    33.0,
+    1.2,
+    -12.3
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "Jetty1RailR",
+   "pos": [
+    26.0,
+    0.25,
+    -7.9
+   ],
+   "size": [
+    12.2,
+    0.5,
+    0.4
+   ],
+   "yaw": 90.0,
+   "color": "#5a4636"
+  },
+  {
+   "id": "Jetty1PileR0",
+   "pos": [
+    23.8,
+    1.2,
+    -5.3
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "Jetty1PileR1",
+   "pos": [
+    23.0,
+    1.2,
+    -12.3
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "HousePlatform1",
+   "pos": [
+    28.0,
+    -0.25,
+    -19.0
+   ],
+   "size": [
+    10.0,
+    0.5,
+    8.0
+   ],
+   "color": "#6a5640"
+  },
+  {
+   "id": "HousePlatform1WallN0",
+   "pos": [
+    28.0,
+    0.25,
+    -23.0
+   ],
+   "size": [
+    10.0,
+    0.5,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HousePlatform1WallS0",
+   "pos": [
+    24.4,
+    0.25,
+    -15.0
+   ],
+   "size": [
+    2.8,
+    0.5,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HousePlatform1WallS1",
+   "pos": [
+    31.6,
+    0.25,
+    -15.0
+   ],
+   "size": [
+    2.8,
+    0.5,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HousePlatform1WallW0",
+   "pos": [
+    23.0,
+    0.25,
+    -19.0
+   ],
+   "size": [
+    0.5,
+    0.5,
+    8.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HousePlatform1WallE0",
+   "pos": [
+    33.0,
+    0.25,
+    -19.0
+   ],
+   "size": [
+    0.5,
+    0.5,
+    8.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HullHouse1",
+   "pos": [
+    28.0,
+    2.2,
+    -21.0
+   ],
+   "size": [
+    7.0,
+    4.4,
+    4.0
+   ],
+   "color": "#5a4636"
+  },
+  {
+   "id": "Jetty2",
+   "pos": [
+    44.0,
+    -0.25,
+    -7.9
+   ],
+   "size": [
+    15.8,
+    0.5,
+    3.6
+   ],
+   "yaw": 90.0,
+   "color": "#6a5640"
+  },
+  {
+   "id": "Jetty2RailL",
+   "pos": [
+    46.0,
+    0.25,
+    -7.9
+   ],
+   "size": [
+    12.2,
+    0.5,
+    0.4
+   ],
+   "yaw": 90.0,
+   "color": "#5a4636"
+  },
+  {
+   "id": "Jetty2PileL0",
+   "pos": [
+    48.2,
+    1.2,
+    -5.3
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "Jetty2PileL1",
+   "pos": [
+    49.0,
+    1.2,
+    -12.3
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "Jetty2RailR",
+   "pos": [
+    42.0,
+    0.25,
+    -7.9
+   ],
+   "size": [
+    12.2,
+    0.5,
+    0.4
+   ],
+   "yaw": 90.0,
+   "color": "#5a4636"
+  },
+  {
+   "id": "Jetty2PileR0",
+   "pos": [
+    39.8,
+    1.2,
+    -5.3
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "Jetty2PileR1",
+   "pos": [
+    39.0,
+    1.2,
+    -12.3
+   ],
+   "size": [
+    0.4,
+    3.0,
+    0.4
+   ],
+   "color": "#5a4636",
+   "solid": false
+  },
+  {
+   "id": "HousePlatform2",
+   "pos": [
+    44.0,
+    -0.25,
+    -19.0
+   ],
+   "size": [
+    10.0,
+    0.5,
+    8.0
+   ],
+   "color": "#6a5640"
+  },
+  {
+   "id": "HousePlatform2WallN0",
+   "pos": [
+    44.0,
+    0.25,
+    -23.0
+   ],
+   "size": [
+    10.0,
+    0.5,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HousePlatform2WallS0",
+   "pos": [
+    40.4,
+    0.25,
+    -15.0
+   ],
+   "size": [
+    2.8,
+    0.5,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HousePlatform2WallS1",
+   "pos": [
+    47.6,
+    0.25,
+    -15.0
+   ],
+   "size": [
+    2.8,
+    0.5,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HousePlatform2WallW0",
+   "pos": [
+    39.0,
+    0.25,
+    -19.0
+   ],
+   "size": [
+    0.5,
+    0.5,
+    8.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HousePlatform2WallE0",
+   "pos": [
+    49.0,
+    0.25,
+    -19.0
+   ],
+   "size": [
+    0.5,
+    0.5,
+    8.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HullHouse2",
+   "pos": [
+    44.0,
+    2.2,
+    -21.0
+   ],
+   "size": [
+    7.0,
+    4.4,
+    4.0
+   ],
+   "color": "#5a4636"
+  },
+  {
+   "id": "PyreRaft",
+   "pos": [
+    66.0,
+    -0.15,
+    0.0
+   ],
+   "size": [
+    3.0,
+    0.3,
+    4.0
+   ],
+   "color": "#6a5640",
+   "solid": false
+  },
+  {
+   "id": "Ship",
+   "pos": [
+    30.0,
+    1.0,
+    7.0
+   ],
+   "size": [
+    16.0,
+    3.0,
+    5.0
+   ],
+   "color": "#5a4636"
+  }
+ ],
+ "spawns": {
+  "Dock": [
+   2.0,
+   0.0,
+   0.0,
+   270.0
+  ]
+ },
+ "marks": {
+  "fathers_door": [
+   28.0,
+   0.0,
+   -16.6,
+   0.0
+  ],
+  "pyre_raft": [
+   60.5,
+   0.0,
+   0.0,
+   270.0
+  ],
+  "supper": [
+   40.0,
+   0.0,
+   -0.8,
+   180.0
+  ]
+ },
+ "actors": {},
+ "shots": {
+  "H01": {
+   "pos": [
+    -1.0,
+    2.6,
+    2.0
+   ],
+   "look_at": [
+    40.0,
+    1.5,
+    -10.0
+   ],
+   "fov": 45
+  }
+ },
+ "triggers": [
+  {
+   "id": "ship",
+   "activation": "interact",
+   "at": [
+    30.0,
+    0.0,
+    1.6
+   ],
+   "size": [
+    6.0,
+    0,
+    1.2
+   ],
+   "prompt_key": "FIELD_PROMPT_CH15_SHIP",
+   "payload": {
+    "beat": "to_rim"
+   },
+   "yaw": 0.0
+  }
+ ]
+}

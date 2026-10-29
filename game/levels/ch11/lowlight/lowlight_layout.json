@@ -1,0 +1,627 @@
+{
+ "doc": "M4-C11-02 greybox (tools/act1/ch11_greybox.py; do not edit by hand): Lowlight, the temple half underwater (colour script ch11). The atrium at the gate (Gate; the lamp bench for Rhen and Liss's side scene, lamp_bench), the Lamp Engine's hall north of it (EngineHall: the boss's arena, its conduits bleeding bound teal), and east the well-shaft: two flights down (ramps) past the waterline (y -2: the temple is drowned below it) to the drowned sanctum at the shaft's foot (Sanctum, nhoa: Nhoa's binding; the light from the well-shaft above). Back to Sunken Vey at to_vey. The story, and whether the lower temple is swum or walked, wait on the beat sheet (M4-C11-01).",
+ "sun": {
+  "pitch_deg": -65.0,
+  "yaw_deg": 160.0,
+  "energy": 1.4,
+  "color": "#f3f2ff"
+ },
+ "environment": {
+  "background": "#a8b4b8",
+  "ambient_color": "#7fa3a8",
+  "ambient_energy": 0.7
+ },
+ "block_color": "#8a9a98",
+ "blocks": [
+  {
+   "id": "Atrium",
+   "pos": [
+    10.0,
+    -0.25,
+    0.0
+   ],
+   "size": [
+    20.0,
+    0.5,
+    20.0
+   ],
+   "color": "#8a9a98"
+  },
+  {
+   "id": "AtriumWallN0",
+   "pos": [
+    3.75,
+    2.0,
+    -10.0
+   ],
+   "size": [
+    7.5,
+    4.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "AtriumWallN1",
+   "pos": [
+    16.25,
+    2.0,
+    -10.0
+   ],
+   "size": [
+    7.5,
+    4.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "AtriumWallS0",
+   "pos": [
+    10.0,
+    2.0,
+    10.0
+   ],
+   "size": [
+    20.0,
+    4.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "AtriumWallW0",
+   "pos": [
+    0.0,
+    2.0,
+    -6.25
+   ],
+   "size": [
+    0.5,
+    4.0,
+    7.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "AtriumWallW1",
+   "pos": [
+    0.0,
+    2.0,
+    6.25
+   ],
+   "size": [
+    0.5,
+    4.0,
+    7.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "AtriumWallE0",
+   "pos": [
+    20.0,
+    2.0,
+    -4.0
+   ],
+   "size": [
+    0.5,
+    4.0,
+    12.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "AtriumWallE1",
+   "pos": [
+    20.0,
+    2.0,
+    8.0
+   ],
+   "size": [
+    0.5,
+    4.0,
+    4.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "GateStep",
+   "pos": [
+    -1.5,
+    -0.25,
+    0.0
+   ],
+   "size": [
+    3.0,
+    0.5,
+    5.0
+   ],
+   "color": "#8a9a98"
+  },
+  {
+   "id": "GateStepBound",
+   "pos": [
+    -3.25,
+    1.0,
+    0.0
+   ],
+   "size": [
+    0.5,
+    2.0,
+    5.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "LampBench",
+   "pos": [
+    4.0,
+    0.45,
+    7.5
+   ],
+   "size": [
+    2.4,
+    0.9,
+    1.0
+   ],
+   "color": "#1c3a3e"
+  },
+  {
+   "id": "HallWay",
+   "pos": [
+    10.0,
+    -0.25,
+    -14.0
+   ],
+   "size": [
+    5.0,
+    0.5,
+    9.0
+   ],
+   "color": "#8a9a98"
+  },
+  {
+   "id": "HallWayWallW",
+   "pos": [
+    7.25,
+    2.0,
+    -14.0
+   ],
+   "size": [
+    0.5,
+    4.0,
+    9.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HallWayWallE",
+   "pos": [
+    12.75,
+    2.0,
+    -14.0
+   ],
+   "size": [
+    0.5,
+    4.0,
+    9.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "Hall",
+   "pos": [
+    10.0,
+    -0.25,
+    -26.0
+   ],
+   "size": [
+    18.0,
+    0.5,
+    18.0
+   ],
+   "color": "#8a9a98"
+  },
+  {
+   "id": "HallWallN0",
+   "pos": [
+    10.0,
+    3.0,
+    -35.0
+   ],
+   "size": [
+    18.0,
+    6.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HallWallS0",
+   "pos": [
+    4.25,
+    3.0,
+    -17.0
+   ],
+   "size": [
+    6.5,
+    6.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HallWallS1",
+   "pos": [
+    15.75,
+    3.0,
+    -17.0
+   ],
+   "size": [
+    6.5,
+    6.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HallWallW0",
+   "pos": [
+    1.0,
+    3.0,
+    -26.0
+   ],
+   "size": [
+    0.5,
+    6.0,
+    18.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "HallWallE0",
+   "pos": [
+    19.0,
+    3.0,
+    -26.0
+   ],
+   "size": [
+    0.5,
+    6.0,
+    18.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "LampEngine",
+   "pos": [
+    10.0,
+    3.0,
+    -30.0
+   ],
+   "size": [
+    6.0,
+    6.0,
+    4.0
+   ],
+   "color": "#1c3a3e",
+   "emission": "#2fb8c8",
+   "emission_energy": 1.2
+  },
+  {
+   "id": "Flight1WallN",
+   "pos": [
+    28.0,
+    -0.5,
+    2.25
+   ],
+   "size": [
+    16.0,
+    8.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "Flight1WallS",
+   "pos": [
+    28.0,
+    -0.5,
+    5.75
+   ],
+   "size": [
+    16.0,
+    8.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "Flight2WallN",
+   "pos": [
+    48.0,
+    -4.5,
+    2.25
+   ],
+   "size": [
+    16.0,
+    8.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "Flight2WallS",
+   "pos": [
+    48.0,
+    -4.5,
+    5.75
+   ],
+   "size": [
+    16.0,
+    8.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "ShaftLanding",
+   "pos": [
+    38.0,
+    -4.25,
+    4.0
+   ],
+   "size": [
+    4.0,
+    0.5,
+    3.0
+   ],
+   "color": "#8a9a98"
+  },
+  {
+   "id": "ShaftLandingWallN",
+   "pos": [
+    38.0,
+    -2.0,
+    2.25
+   ],
+   "size": [
+    4.0,
+    4.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "ShaftLandingWallS",
+   "pos": [
+    38.0,
+    -2.0,
+    5.75
+   ],
+   "size": [
+    4.0,
+    4.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "Sanctum",
+   "pos": [
+    64.0,
+    -8.25,
+    4.0
+   ],
+   "size": [
+    16.0,
+    0.5,
+    16.0
+   ],
+   "color": "#8a9a98"
+  },
+  {
+   "id": "SanctumWallN0",
+   "pos": [
+    64.0,
+    -3.0,
+    -4.0
+   ],
+   "size": [
+    16.0,
+    10.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "SanctumWallS0",
+   "pos": [
+    64.0,
+    -3.0,
+    12.0
+   ],
+   "size": [
+    16.0,
+    10.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "SanctumWallW0",
+   "pos": [
+    56.0,
+    -3.0,
+    -0.75
+   ],
+   "size": [
+    0.5,
+    10.0,
+    6.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "SanctumWallW1",
+   "pos": [
+    56.0,
+    -3.0,
+    8.75
+   ],
+   "size": [
+    0.5,
+    10.0,
+    6.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "SanctumWallE0",
+   "pos": [
+    72.0,
+    -3.0,
+    4.0
+   ],
+   "size": [
+    0.5,
+    10.0,
+    16.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "WellShaft",
+   "pos": [
+    64.0,
+    6.0,
+    4.0
+   ],
+   "size": [
+    6.0,
+    0.2,
+    6.0
+   ],
+   "color": "#0e4a55",
+   "solid": false
+  },
+  {
+   "id": "Waterline",
+   "pos": [
+    52.0,
+    -2.05,
+    4.0
+   ],
+   "size": [
+    40.0,
+    0.1,
+    20.0
+   ],
+   "color": "#0e4a55",
+   "solid": false
+  }
+ ],
+ "ramps": [
+  {
+   "id": "Flight1",
+   "from": [
+    20.0,
+    0.0,
+    4.0
+   ],
+   "to": [
+    36.0,
+    -4.0,
+    4.0
+   ],
+   "width": 3.0,
+   "color": "#8a9a98"
+  },
+  {
+   "id": "Flight2",
+   "from": [
+    40.0,
+    -4.0,
+    4.0
+   ],
+   "to": [
+    56.0,
+    -8.0,
+    4.0
+   ],
+   "width": 3.0,
+   "color": "#8a9a98"
+  }
+ ],
+ "spawns": {
+  "Gate": [
+   2.0,
+   0.0,
+   0.0,
+   270.0
+  ],
+  "EngineHall": [
+   10.0,
+   0.0,
+   -20.0,
+   180.0
+  ],
+  "Sanctum": [
+   60.0,
+   -8.0,
+   4.0,
+   270.0
+  ]
+ },
+ "marks": {
+  "lamp_bench": [
+   4.0,
+   0.0,
+   6.4,
+   0.0
+  ],
+  "nhoa": [
+   68.0,
+   -8.0,
+   4.0,
+   90.0
+  ]
+ },
+ "actors": {},
+ "shots": {
+  "L01": {
+   "pos": [
+    58.0,
+    -6.2,
+    9.0
+   ],
+   "look_at": [
+    68.0,
+    -5.0,
+    4.0
+   ],
+   "fov": 50
+  }
+ },
+ "triggers": [
+  {
+   "id": "to_vey",
+   "activation": "touch",
+   "at": [
+    -0.5,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.0,
+    0,
+    4.0
+   ],
+   "payload": {
+    "beat": "to_vey"
+   },
+   "yaw": 0.0
+  }
+ ]
+}

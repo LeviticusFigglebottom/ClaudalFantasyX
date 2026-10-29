@@ -18,10 +18,21 @@
         20000,
         1400
       ],
-      "bytes": 286024,
+      "bytes": 594520,
       "lods": {
-        "anvil_hall": 4950,
+        "anvil_hall": 7950,
         "anvil_hall-lod1": 12
+      }
+    },
+    "ash_drift": {
+      "budget": [
+        2000,
+        200
+      ],
+      "bytes": 30388,
+      "lods": {
+        "ash_drift": 660,
+        "ash_drift-lod1": 62
       }
     },
     "ashcrown_tiers": {
@@ -29,10 +40,32 @@
         30000,
         2400
       ],
-      "bytes": 2317336,
+      "bytes": 2454476,
       "lods": {
-        "ashcrown_tiers": 25278,
+        "ashcrown_tiers": 26622,
         "ashcrown_tiers-lod1": 154
+      }
+    },
+    "catch_rod": {
+      "budget": [
+        2500,
+        200
+      ],
+      "bytes": 35588,
+      "lods": {
+        "catch_rod": 564,
+        "catch_rod-lod1": 110
+      }
+    },
+    "chamber_door": {
+      "budget": [
+        4000,
+        300
+      ],
+      "bytes": 95060,
+      "lods": {
+        "chamber_door": 1332,
+        "chamber_door-lod1": 60
       }
     },
     "crest_ground": {
@@ -57,14 +90,25 @@
         "crown_pavilion-lod1": 452
       }
     },
+    "floor_plate": {
+      "budget": [
+        1200,
+        60
+      ],
+      "bytes": 12220,
+      "lods": {
+        "floor_plate": 72,
+        "floor_plate-lod1": 12
+      }
+    },
     "flying_stair": {
       "budget": [
         14000,
         1200
       ],
-      "bytes": 649620,
+      "bytes": 800856,
       "lods": {
-        "flying_stair": 10836,
+        "flying_stair": 12228,
         "flying_stair-lod1": 174
       }
     },
@@ -77,6 +121,17 @@
       "lods": {
         "forecourt": 5950,
         "forecourt-lod1": 8
+      }
+    },
+    "matron_alcove": {
+      "budget": [
+        5000,
+        300
+      ],
+      "bytes": 71920,
+      "lods": {
+        "matron_alcove": 792,
+        "matron_alcove-lod1": 120
       }
     },
     "pilgrim_causeway": {
@@ -99,6 +154,72 @@
       "lods": {
         "plume_vent": 2950,
         "plume_vent-lod1": 352
+      }
+    },
+    "quench_seal": {
+      "budget": [
+        4000,
+        200
+      ],
+      "bytes": 52772,
+      "lods": {
+        "quench_seal": 744,
+        "quench_seal-lod1": 12
+      }
+    },
+    "quench_trough": {
+      "budget": [
+        2500,
+        200
+      ],
+      "bytes": 29532,
+      "lods": {
+        "quench_trough": 264,
+        "quench_trough-lod1": 72
+      }
+    },
+    "release_lever": {
+      "budget": [
+        1500,
+        150
+      ],
+      "bytes": 20868,
+      "lods": {
+        "release_lever": 200,
+        "release_lever-lod1": 40
+      }
+    },
+    "stair_chain": {
+      "budget": [
+        1500,
+        150
+      ],
+      "bytes": 25380,
+      "lods": {
+        "stair_chain": 264,
+        "stair_chain-lod1": 94
+      }
+    },
+    "strike_bowl": {
+      "budget": [
+        4000,
+        300
+      ],
+      "bytes": 45996,
+      "lods": {
+        "strike_bowl": 684,
+        "strike_bowl-lod1": 120
+      }
+    },
+    "vein_gate": {
+      "budget": [
+        2500,
+        200
+      ],
+      "bytes": 33028,
+      "lods": {
+        "vein_gate": 300,
+        "vein_gate-lod1": 42
       }
     }
   },

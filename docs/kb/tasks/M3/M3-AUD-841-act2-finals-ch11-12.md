@@ -2,12 +2,13 @@
 id: M3-AUD-841
 title: "Act II finals: lowlight, keth_pass, quellan (Ch11-12 zone loops from the sketches)"
 role: audio
-status: review
+status: blocked
 owner_session: "audio worktree agent"
 reviewer: design
 depends_on: [M3-AUD-839]
 milestone: M3
 request-from: lead
+blocked-by: ADR 0041
 ---
 ## Goal
 Grow three Act II sketches (M3-AUD-804) into their finals, per docs/kb/audio/act2_finals.md: `lowlight` (Ch11),

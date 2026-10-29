@@ -1,17 +1,19 @@
 {
   "hero_portraits": {
-    "doc": "Hero portraits in the menus (M2-MNU-301, ADR 0120). The PNGs are baked by tools/portraits/render.sh from tools/portraits/portraits.json (which heroes and emotions exist); HeroPortraits finds <dir><hero>_<emotion>.png, falling back to fallback_emotion, then to nothing (the page shows the hero's initial). 'face_region' (x, y, w, h in the 256 px image) is the head crop small slots use. 'frame': HeroPortraitFrame's panel variation and the inset (reference px) between its frame and the picture. 'pages': the emotion each page shows ('fallen', where given, for a fallen hero).",
+    "doc": "Hero portraits in the menus (M2-MNU-301, ADR 0120). The PNGs are baked by tools/portraits/render.sh from tools/portraits/portraits.json (which heroes and emotions exist); HeroPortraits finds <dir><hero>_<emotion>.png, falling back to fallback_emotion, then to nothing (the page shows the hero's initial). 'face_region' (x, y, w, h in the 256 px image) is the head crop small slots use; 'face_regions' overrides it per hero whose framing differs (Ysolde's top-knot pulls her camera back, so her face sits lower and smaller). 'frame': HeroPortraitFrame's panel variation and the inset (reference px) between its frame and the picture. 'pages': the emotion each page shows ('fallen', where given, for a fallen hero).",
     "dir": "res://assets/ui/portraits/heroes/",
     "file_fmt": "{hero}_{emotion}.png",
     "fallback_emotion": "neutral",
     "face_region": [58, 2, 152, 152],
+    "face_regions": {"ysolde": [64, 30, 152, 152]},
     "frame": {"panel_variation": "PanelSmall", "inset": 6, "initial_variation": "BannerLabel"},
     "pages": {
       "status": {"emotion": "neutral", "fallen": "worried"},
       "equip": {"emotion": "determined"},
       "lattice": {"emotion": "determined"},
       "formation": {"emotion": "neutral", "fallen": "worried"},
-      "field_menu": {"emotion": "smile", "fallen": "worried"}
+      "field_menu": {"emotion": "smile", "fallen": "worried"},
+      "battle": {"emotion": "determined", "fallen": "worried"}
     }
   }
 }

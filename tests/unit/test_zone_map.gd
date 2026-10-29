@@ -71,7 +71,7 @@ func test_the_objective_points_at_its_place_and_errands_list() -> void:
 	assert_eq(m.errand_lines(), [tr("OBJ_SIDE_TOWN")] as Array[String])
 	var early := MapModel.new(HALUNA, BEACH, 0.0, _flags([]))
 	assert_eq(early.objective_poi(), &"", "nothing calls before the beach")
-	assert_eq(early.objective_line(), tr("OBJ_NONE"))
+	assert_eq(early.objective_line(), tr("OBJ_NONE_HALUNA"))
 	assert_false(early.objective_at().is_finite())
 	assert_eq(early.errands_text(), tr("MAP_ERRANDS_NONE"))
 	assert_eq(early.first_index(), 0)
@@ -109,8 +109,11 @@ func test_the_route_strip_marks_the_current_stop() -> void:
 	var first := MapModel.new(UNDERWAY, Vector3.INF, 0.0, _flags([])).route_stops()
 	assert_eq(first.size(), 3, "at the start of the road: itself and the two ahead")
 	assert_true(first[0]["current"])
-	var last := MapModel.new(&"ch09/corrow_night", Vector3.INF, 0.0, _flags([])).route_stops()
-	assert_eq(last.size(), 3, "at the end of Act I: the two behind and itself")
+	var act_break := MapModel.new(&"ch09/corrow_night", Vector3.INF, 0.0, _flags([])).route_stops()
+	assert_eq(act_break.size(), 5, "M3-UI-206: Act I's end runs on into Act II")
+	assert_eq(StringName(str(act_break[3]["id"])), &"ch10/ossa_fen", "Ossa Fen next")
+	var last := MapModel.new(&"ch16/drowned_choir", Vector3.INF, 0.0, _flags([])).route_stops()
+	assert_eq(last.size(), 3, "at the end of Act II: the two behind and itself")
 	assert_true(last[2]["current"])
 	assert_eq(MapModel.new(&"nowhere").route_stops().size(), 5, "off the route: the first stops")
 	assert_false(MapModel.new(&"nowhere").has_map())
@@ -178,7 +181,8 @@ func test_shrine_shapes_come_from_its_trial() -> void:
 # --- Act I greybox zones (M3-UI-04) --------------------------------------------------------------
 
 
-func test_every_act_one_greybox_zone_builds_a_map() -> void:
+## M3-UI-04, and M3-UI-206 for Act II's fifteen (Ch10 to Ch16).
+func test_every_greybox_zone_builds_a_map() -> void:
 	var maps := ZoneMaps.new()
 	var data := MapModel.load_data()
 	var seen := 0
@@ -211,8 +215,11 @@ func test_every_act_one_greybox_zone_builds_a_map() -> void:
 		assert_true(on_route, "%s is on the route" % id)
 	assert_eq(
 		seen,
-		13,
-		"Ch1's two zones, Ch3's causeway (M2-FP-1000), Ch4's two, Ch5's two, Ch6's, Ch7's two, Ch8's two and Ch9's"
+		27,
+		(
+			"Act I's twelve (Ch1, Ch3's causeway (M2-FP-1000), Ch4's ferry (its wake reads Haluna's layout), Ch5 to Ch9)"
+			+ " and Act II's fifteen (Ch10 to Ch16, M3-UI-206)"
+		)
 	)
 
 
@@ -459,3 +466,18 @@ func _ev(action: StringName) -> InputEventAction:
 	ev.action = action
 	ev.pressed = true
 	return ev
+
+
+## ADR 0200 kits: a hint ending in "*" names a kit's numbered pieces, and a zone dressed from a kit reads its
+## walkable shape from the layout's collision_path (blocks, and ramps as pads).
+func test_kit_dressed_zones_read_their_collision_and_prefix_hints() -> void:
+	assert_true(ZoneMapShapes.hint_names("Wall-*", "Wall-10"))
+	assert_false(ZoneMapShapes.hint_names("Wall-*", "WallSection"), "a prefix, not a substring")
+	assert_true(ZoneMapShapes.hint_names("WallSection", "WallSection"))
+	assert_false(ZoneMapShapes.hint_names("WallSection", "WallSectionKerb"), "no star: the id itself")
+	var data := MapModel.load_data()
+	var m := MapModel.new(&"ch08/coilspire", Vector3.INF, 0.0, _flags([]))
+	var s := ZoneMapShapes.build(
+		m.shape_kind(), m.shape_source(), m.bounds(), data["map"], data["pieces"], data["greybox"], m.shape_hints()
+	)
+	assert_true(s.pads.size() >= 89, "every ramp of the spire's flights is ground to walk")

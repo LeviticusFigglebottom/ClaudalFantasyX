@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT / "tools" / "audio"))
 import targets  # noqa: E402
 
 ACT2 = ("mangrove_drowner", "lamp_engine", "avalanche_ram", "wakefin", "tannin_archer", "gallery_ray",
-        "rime_urchin", "conduit_crawler")
+        "rime_urchin", "conduit_crawler", "ridge_lynx", "cord_moth", "glass_skate", "flat_engine")
 EVENTS = ("idle", "attack", "hurt", "death", "move")
 
 

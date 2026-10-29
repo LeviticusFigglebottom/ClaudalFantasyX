@@ -34,13 +34,15 @@ Asha [tender]: Toma. #line:ch06_raid_002
 @wait 2.0
 @camera W05
 @sfx hatch_burst
-@mark liss ridge_run run
+@mark liss ridge_run run via=way_hull_sw
 @sfx raid_hound_bay
+@mark inquisitor inq_halt walk via=way_pile_e
+@mark hound hound_halt walk via=way_pile_e
 @anim liss collide rhen
 Liss [determined]: Move or hide me, pick one. #line:ch06_raid_003
 Asha [determined]: Here. #line:ch06_raid_004
-@mark asha hold_asha walk
-@mark liss hold_liss walk
+@mark asha hold_asha walk via=way_hull_ne
+@mark liss hold_liss walk via=way_hull_ne
 @anim rhen throw_sail hatch
 @mark rhen hold_rhen walk
 @camera W08
@@ -51,8 +53,6 @@ Rhen [worried]: Not now. #line:ch06_raid_006 #whisper
 <<set $ch06_sheltered_liss = true>>
 @wait 1.0
 @sfx sail_pulled
-@mark inquisitor hatch walk
-@mark hound hatch_side walk
 @camera W08_hatch
 Inquisitor [neutral]: Lady Cantor. Step away from the hold. #line:ch06_raid_007
 Asha [determined]: No. #line:ch06_raid_008
@@ -63,7 +63,7 @@ Ysolde [cold]: —does not give you a Cantor's party, Inquisitor. #line:ch06_rai
 Inquisitor [exhausted]: Loose. #line:ch06_raid_011
 @sfx raid_hound_bay
 @mark hound hold_mouth run
-@mark toma shield_line run
+@mark toma shield_line run via=way_tents_e
 @anim toma shield_up
 Toma [determined]: On my shield. #line:ch06_raid_012
 Ysolde [cold]: They have raised a hand to a Cantor. The Edict does not cover that. #line:ch06_raid_013

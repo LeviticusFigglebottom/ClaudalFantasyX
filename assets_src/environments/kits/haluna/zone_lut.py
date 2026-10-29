@@ -135,6 +135,55 @@ GRADES = {
                      "black_floor": 0.6, "highlight_hex": "#FFD0A8", "highlight_start": 0.7, "highlight_strength": 0.35,
                      "warm_deg": (-20.0, 25.0), "warm_sat": 1.15, "cool_sat": 0.85, "cool_hex": "#B8C4E0",
                      "cool_strength": 0.3},
+    # M3-ENV-722: lut_ch16_choir (colour script ch16, the Choir variant): moonlit, the stone faces cold, Kesh's held
+    # light a pale cyan; low contrast (the Rim's), saturation x0.7, the toe a cold slate.
+    # M3-ENV-723: lut_act3_dusk (colour script ch17, Hollowmere): the Act III base grade. Gold gain returns in the
+    # highlights but held under 0.92 (evening, not noon), shadows a cool slate-blue, S-curve 0.5, saturation x1.05.
+    "act3_dusk": {"saturation": 1.05, "s_curve": 0.5, "toe_hex": "#24324A", "toe_strength": 0.4, "toe_end": 0.3,
+                  "black_floor": 0.4, "highlight_hex": "#FFD9A8", "highlight_start": 0.62, "highlight_strength": 0.45,
+                  "warm_deg": (-20.0, 60.0), "warm_sat": 1.12, "cool_sat": 0.95, "cool_hex": "#B8C8E0",
+                  "cool_strength": 0.25, "white_cap": 0.92},
+    # M3-ENV-726: lut_ch19_spire (colour script ch19, the Lamp Spire's crown at nightfall): the Prologue's dusk
+    # gone to blue in the shadows, the afterglow's gold kept in the highlights, the engine's bound teal clean; skin
+    # held warm (the warm band's saturation up), S-curve 0.55, saturation x1.05.
+    "ch19_spire": {"saturation": 1.05, "s_curve": 0.55, "toe_hex": "#1C2840", "toe_strength": 0.45, "toe_end": 0.32,
+                   "black_floor": 0.45, "highlight_hex": "#FFD2A0", "highlight_start": 0.66, "highlight_strength": 0.4,
+                   "warm_deg": (-20.0, 55.0), "warm_sat": 1.12, "cool_sat": 1.0, "cool_hex": "#B0C8DC",
+                   "cool_strength": 0.25},
+    # M3-ENV-727: lut_ch20_abyss (colour script ch20): navy-black base, the held cyan the light source; saturation
+    # x0.9, S-curve 0.6, the toe deep navy, highlights a cold cyan-white.
+    "ch20_abyss": {"saturation": 0.9, "s_curve": 0.6, "toe_hex": "#061A2B", "toe_strength": 0.55, "toe_end": 0.36,
+                   "black_floor": 0.6, "highlight_hex": "#D8F0F6", "highlight_start": 0.62, "highlight_strength": 0.4,
+                   "warm_deg": (-20.0, 60.0), "warm_sat": 0.85, "cool_sat": 1.05, "cool_hex": "#9CC8DA",
+                   "cool_strength": 0.3},
+    # M3-ENV-728: lut_ch21_heart (colour script ch21, the Letting): the abyss's navy toe kept, the held cyan turned
+    # to a warm gold gain in the highlights as the motes rise; S-curve 0.55, saturation x1.0, skin warm.
+    "ch21_heart": {"saturation": 1.0, "s_curve": 0.55, "toe_hex": "#0A1E30", "toe_strength": 0.5, "toe_end": 0.34,
+                   "black_floor": 0.55, "highlight_hex": "#FFE2B4", "highlight_start": 0.6, "highlight_strength": 0.5,
+                   "warm_deg": (-20.0, 60.0), "warm_sat": 1.15, "cool_sat": 0.9, "cool_hex": "#A8C4D4",
+                   "cool_strength": 0.2},
+    # M3-ENV-729: the Ending's three grades (colour script `ending_unbinding`, `ending_dock`, `post_credits`).
+    # lut_ending_lift: warm motes over a navy world; the navy toe, a warm gold gain only in the highlights (the motes),
+    # S-curve 0.5, saturation x0.95.
+    "ending_lift": {"saturation": 0.95, "s_curve": 0.5, "toe_hex": "#0B1630", "toe_strength": 0.5, "toe_end": 0.34,
+                    "black_floor": 0.55, "highlight_hex": "#FFE2B8", "highlight_start": 0.64, "highlight_strength": 0.45,
+                    "warm_deg": (-20.0, 60.0), "warm_sat": 1.1, "cool_sat": 0.9, "cool_hex": "#A8B8D4",
+                    "cool_strength": 0.25},
+    # lut_ending_dock: starlight only. Cool and quiet, saturation x0.8, S-curve 0.55; skin kept just warm of grey.
+    "ending_dock": {"saturation": 0.8, "s_curve": 0.55, "toe_hex": "#050A14", "toe_strength": 0.55, "toe_end": 0.34,
+                    "black_floor": 0.6, "highlight_hex": "#E4ECFF", "highlight_start": 0.66, "highlight_strength": 0.4,
+                    "warm_deg": (-20.0, 55.0), "warm_sat": 0.95, "cool_sat": 0.85, "cool_hex": "#C0CCE6",
+                    "cool_strength": 0.3},
+    # lut_post_credits: blue hour cool everywhere but the one oil lamp's pool (the warm band's saturation held up),
+    # S-curve 0.45, saturation x0.9.
+    "post_credits": {"saturation": 0.9, "s_curve": 0.45, "toe_hex": "#1A2E58", "toe_strength": 0.45, "toe_end": 0.32,
+                     "black_floor": 0.45, "highlight_hex": "#FFD6A8", "highlight_start": 0.7, "highlight_strength": 0.35,
+                     "warm_deg": (-20.0, 55.0), "warm_sat": 1.15, "cool_sat": 0.9, "cool_hex": "#9DB4D9",
+                     "cool_strength": 0.3},
+    "ch16_choir": {"saturation": 0.7, "s_curve": 0.3, "toe_hex": "#1E2A3A", "toe_strength": 0.45, "toe_end": 0.32,
+                   "black_floor": 0.5, "highlight_hex": "#E6EEFA", "highlight_start": 0.68, "highlight_strength": 0.4,
+                   "warm_deg": (-20.0, 60.0), "warm_sat": 0.7, "cool_sat": 0.9, "cool_hex": "#C8DCEE",
+                   "cool_strength": 0.35},
 }
 
 
@@ -262,6 +311,8 @@ def grade(srgb: np.ndarray, g: dict | None = None) -> np.ndarray:
         out = np.maximum(out, lin_to_srgb(hex_lin(g["toe_hex"]) * g["black_floor"]))
     if "band_sat" in g:
         out = band_saturation(out, g["band_sat"])
+    if "white_cap" in g:  # M3-ENV-723: the highlights held under a ceiling (Act III's evening grade)
+        out = np.minimum(out, g["white_cap"])
     return out
 
 

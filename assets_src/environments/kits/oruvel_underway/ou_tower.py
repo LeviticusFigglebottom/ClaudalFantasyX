@@ -2,7 +2,9 @@
 four hundred years under the sea. Pure numpy; see ou_common.py.
 
   tower_bay          6.0 x 3.2 x 0.35 m wall bay: a 2.4 x 1.7 m window (sill 0.8 m), white ceramic cladding in a sill
-                     band and a spandrel band on the outer face (+Z) with about half fallen, coral on the sill
+                     band and a spandrel band on the outer face (+Z) with about half fallen, coral on the sill; the
+                     inner face (-Z, the gallery's) with a cast skirting, a stepped cornice, pier fillets, the window's
+                     reveal framed and growth crusted low (M3-ENV-705)
   tower_bay_solid    the same bay without a window (a recessed panel): the facade's rhythm
   tower_bay_broken   the top broken away along a falling line, a bite out of one pier, rebar stubs: the crown
   tower_pier         a 0.7 m chamfered corner column, 3.2 m
@@ -90,6 +92,41 @@ def _cladding(mb: kc.MeshBuilder, rng, noise, *, keep_above: float = 0.5, top_fn
                      rng=rng, rot=rot, seg=1, radius=0.006, weather=oc.CAST)
 
 
+def _inner_face(mb: kc.MeshBuilder, rng, noise, *, window: bool, top_fn=None) -> None:
+    """The gallery's side (-Z), which the fight sees: a cast skirting and a stepped cornice the bay's whole width, a
+    fillet down each pier's inner edge, the window's reveal framed, and growth crusted low on the wall where the silt
+    settles. Everything above a broken top is left off."""
+    mat = mb.material(oc.M_CONCRETE)
+    z = -WALL_T * 0.5
+    top = (lambda x: float(top_fn(np.array(x), 0.0))) if top_fn is not None else (lambda x: STOREY)
+    kw = dict(rng=rng, noise=noise, seg=1, weather=oc.CAST)
+    oc.block(mb, (0.0, 0.11, z - 0.03), (BAY_W * 0.5, 0.11, 0.035), mat, radius=0.012, **kw)
+    if top_fn is None:  # a broken bay has lost its cornice with its top
+        oc.block(mb, (0.0, STOREY - 0.1, z - 0.04), (BAY_W * 0.5, 0.1, 0.045), mat, radius=0.015, **kw)
+        oc.block(mb, (0.0, STOREY - 0.25, z - 0.02), (BAY_W * 0.5, 0.05, 0.025), mat, radius=0.01, **kw)
+    for x in (-2.82, -1.38, 1.38, 2.82):
+        if window or abs(x) > 2.0:
+            y1 = min(STOREY - 0.3, top(x) - 0.05)
+            if y1 > 0.5:
+                oc.block(mb, (x, (0.22 + y1) * 0.5, z - 0.02), (0.06, (y1 - 0.22) * 0.5, 0.025), mat, radius=0.01,
+                         **kw)
+    if window:
+        x0, x1, y0, y1 = WIN
+        oc.block(mb, (0.0, y0 - 0.04, z - 0.03), ((x1 - x0) * 0.5 + 0.12, 0.04, 0.04), mat, radius=0.012, **kw)
+        if top_fn is None:
+            oc.block(mb, (0.0, y1 + 0.06, z - 0.03), ((x1 - x0) * 0.5 + 0.12, 0.06, 0.04), mat, radius=0.012, **kw)
+    # Growth: sponges and coral crust low on the wall, thinning upward.
+    for _k in range(9):
+        x = float(rng.uniform(-2.8, 2.8))
+        y = float(rng.uniform(0.25, 1.6) ** 1.4)
+        if window and WIN[0] < x < WIN[1] and y > WIN[2] - 0.05:
+            continue
+        if y > top(x) - 0.2:
+            continue
+        slot = oc.CORALS[int(rng.integers(0, len(oc.CORALS)))]
+        oc.coral_knob(mb, (x, y, z - 0.02), float(rng.uniform(0.05, 0.12)), rng, noise, slot, squash=0.35)
+
+
 def _sill_growth(mb: kc.MeshBuilder, rng, noise, y: float, x0: float, x1: float, count: int) -> None:
     for _k in range(count):
         x = rng.uniform(x0 + 0.15, x1 - 0.15)
@@ -138,6 +175,7 @@ def bay(name: str, seed: int, *, window: bool = True, broken: bool = False) -> k
                 if rng.random() < 0.55:
                     _rebar_up(mb, (x, y0, zz), rng, length=rng.uniform(0.15, 0.6))
     _cladding(mb, rng, noise, top_fn=top_fn)
+    _inner_face(mb, rng, noise, window=window, top_fn=top_fn)
     if window and not broken:
         _sill_growth(mb, rng, noise, WIN[2], WIN[0], WIN[1], 4)
         if rng.random() < 0.6:

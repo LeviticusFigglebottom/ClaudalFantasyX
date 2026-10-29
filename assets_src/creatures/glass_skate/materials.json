@@ -1,5 +1,5 @@
 {
-  "_doc": "Glass skate (act2/glass_skate.md): back (the nearly clear back: glossy and clear-coated, wet but barely darkened, a salt_glass rim sheen, the tail-root split's spawn_wound on its emission mask), belly (bone) and eye. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "_doc": "Glass skate (act2/glass_skate.md): back (the nearly clear back: glossy and clear-coated, wet but barely darkened, a salt_glass rim sheen; its sand_wet margin rim, the thornback rows, the eye turrets and the spiracles by vertex colour; the tail-root split's spawn_wound on its emission mask), belly (bone) and eye. write_materials.py on game/shaders/creature/creature.gdshader.",
   "slots": {
     "back": {
       "roughness_dry": 0.3,

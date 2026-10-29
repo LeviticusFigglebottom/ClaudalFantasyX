@@ -7,7 +7,7 @@
     {"flag": "ch08_beacon_opened", "sun": {"pitch_deg": -22.0, "yaw_deg": -75.0, "energy": 0.35, "color": "#ffe4ce"}, "environment": {"background": "#2c3640", "ambient_color": "#4a6070", "ambient_energy": 0.3}},
     {"flag": "ch08_wall_fell", "sun": {"pitch_deg": -11.0, "yaw_deg": 68.0, "energy": 0.6, "color": "#e2e6ec"}, "environment": {"background": "#141c2a", "ambient_color": "#33415a", "ambient_energy": 0.3}, "environment_res": "res://game/levels/ch08/corrow/corrow_fallen_environment.tres"}
   ],
-  "start_hidden": ["Flood", "Lake", "Breach", "HoistPins", "HoistRope", "Basket", "RopeCoil"],
+  "start_hidden": ["Flood", "Lake", "Breach", "HoistPins", "HoistRope", "Basket", "RopeCoil", "Storm"],
   "blocks": [
     {"id": "Trader", "pos": [7.909, 1.9, 36.454], "size": [3.6, 2.4, 12], "color": "#6a5038", "solid": false, "yaw": -1.72},
     {"id": "Kites", "pos": [-14.919, 25.0, 1.873], "size": [80, 2, 0.2], "color": "#e0a040", "emission": "#e0a040", "emission_energy": 0.2, "solid": false, "yaw": 2.86},
@@ -25,10 +25,12 @@
     {"id": "Chapel", "pos": [-77.101, 13.5, -10.573], "size": [6, 3, 6], "color": "#cfc8b8", "yaw": 13.94},
     {"id": "Shrine", "pos": [-66.685, 12.8, -2.947], "size": [1, 1.6, 0.6], "color": "#cfd8dc", "emission": "#9fd8e0", "emission_energy": 0.6, "yaw": 12.41},
     {"id": "Chandler", "pos": [-78.747, 13.0, -0.038], "size": [3, 2, 3], "color": "#7a6040", "yaw": 14.71},
-    {"id": "WallGate", "pos": [34.921, 14.0, 2.039], "size": [0.6, 4, 6], "color": "#a8302a", "solid": false, "yaw": -6.68}
+    {"id": "WallGate", "pos": [34.921, 14.0, 2.039], "size": [0.6, 4, 6], "color": "#a8302a", "solid": false, "yaw": -6.68},
+    {"id": "Storm", "pos": [-19.985, 12.0, 0.666], "size": [0.2, 0.2, 0.2], "color": "#2fb8c8", "solid": false}
   ],
   "spawns": {
     "Mole": [12.988, 1.2, 40.46, -2.86],
+    "MoleStair": [13.6, 6.1, 18.0, 0.0],
     "WallHead": [-15.044, 12.0, -0.624, 2.86],
     "WallGate": [30.945, 12.0, 1.6, 84.08],
     "Bastion": [-66.169, 12.0, -0.603, 12.41]
@@ -38,6 +40,7 @@
     "mole_greet_b": [15.448, 9.674, 10.623, 176.94],
     "mole_steps_asha": [13.695, 8.399, 12.912, -2.73],
     "mole_steps_toma": [15.034, 8.399, 12.979, -3.0],
+    "landfall_kerrid": [14.4, 7.65, 14.4, 0.0],
     "wall_foot": [14.0, 12.0, 0.6, 90.95],
     "day_asha": [11.957, 12.0, 1.239, -2.29],
     "day_toma": [17.929, 12.0, 1.538, -3.44],
@@ -98,7 +101,7 @@
     "stair_up_kerrid": [-15.006, 12.15, 0.125, -177.14],
     "breach_lip": [-22.901, 12.0, 1.878, -85.61],
     "figure_storm": [-11.586, 0.5, 32.787, 2.48],
-    "figure_gone": [-46.336, 0.5, 50.095, 100.5],
+    "figure_gone": [-16.07, 0.5, 35.02, 100.5],
     "kerrid_collar": [-14.899, 12.0, 2.273, -177.14],
     "rhen_fallen": [-14.956, 12.0, 1.124, -177.14],
     "kerrid_drowned_stair": [-15.104, 12.494, -1.822, 2.86],
@@ -134,11 +137,11 @@
     "kerrid": {"at": [12.798, 1.2, 44.256, -2.86], "color": "#5a4a3a", "radius": 0.4, "height": 2.0},
     "townsfolk_a": {"cast": "vendor", "at": [13.913, 12.338, 2.075, 177.33], "color": "#b09070"},
     "townsfolk_b": {"cast": "netmender", "at": [15.899, 12.338, 2.174, 176.94], "color": "#a07a60"},
-    "ivo": {"at": [20.948, 12.0, 1.233, -94.01], "color": "#a8302a", "radius": 0.36, "height": 1.9},
+    "ivo": {"cast": "netmender", "at": [20.948, 12.0, 1.233, -94.01], "color": "#a8302a", "radius": 0.36, "height": 1.9},
     "hobb": {"cast": "fisher", "at": [-17.48, 12.53, -4.546, 93.28], "color": "#7a5a40", "radius": 0.34, "height": 1.8},
     "fisher_a": {"cast": "fisher", "at": [-18.66, 12.33, -3.495, -86.48], "color": "#8a7a60"},
-    "stillguard_a": {"at": [-29.85, 12.0, 2.494, -174.27], "color": "#a8302a"},
-    "stillguard_b": {"at": [-34.979, 12.0, 1.543, 96.68], "color": "#a8302a"},
+    "stillguard_a": {"cast": "fisher", "at": [-29.85, 12.0, 2.494, -174.27], "color": "#a8302a"},
+    "stillguard_b": {"cast": "netmender", "at": [-34.979, 12.0, 1.543, 96.68], "color": "#a8302a"},
     "gatekeeper": {"cast": "fisher", "at": [34.097, 12.0, 0.434, -96.49], "color": "#8a3a2a"},
     "child_a": {"cast": "child", "at": [0.0, 12.0, 1.0, 180.0], "color": "#c09070", "radius": 0.2, "height": 1.2},
     "child_b": {"cast": "child", "at": [1.495, 12.0, 1.004, 179.71], "color": "#c8a070", "radius": 0.2, "height": 1.2},
@@ -146,44 +149,47 @@
     "netmender": {"cast": "netmender", "at": [-34.634, 1.0, -21.946, 180.0], "color": "#8a8070"},
     "marra": {"cast": "netmender", "at": [-48.634, 1.0, -10.446, 90.0], "color": "#9a8a7a", "radius": 0.28, "height": 1.55},
     "boy": {"cast": "child", "at": [-42.634, 1.0, -17.446, 0.0], "color": "#c09070", "radius": 0.18, "height": 1.0},
-    "watch_a": {"at": [-16.512, 12.53, -3.598, 93.11], "color": "#8a3a2a", "hidden": true},
-    "watch_b": {"at": [-16.555, 12.53, -4.397, 93.11], "color": "#8a3a2a", "hidden": true},
+    "watch_a": {"cast": "fisher", "at": [-16.512, 12.53, -3.598, 93.11], "color": "#8a3a2a", "hidden": true},
+    "watch_b": {"cast": "netmender", "at": [-16.555, 12.53, -4.397, 93.11], "color": "#8a3a2a", "hidden": true},
     "climber_a": {"cast": "fisher", "at": [-23.569, 9.326, -3.47, -85.56], "color": "#8a7a6a", "hidden": true},
     "climber_b": {"cast": "fisher", "at": [-28.883, 6.4, -4.123, -84.57], "color": "#7a6a5a", "hidden": true},
     "climber_c": {"cast": "fisher", "at": [-34.074, 4.935, -3.337, -83.59], "color": "#9a8a7a", "hidden": true},
     "pell": {"at": [-6.915, 12.9, 3.681, 1.34], "color": "#5a6e78", "radius": 0.3, "height": 2.6, "hidden": true},
     "figure": {"at": [-11.586, 0.5, 32.787, 2.48], "color": "#5fd6e0", "radius": 0.3, "height": 1.9, "hidden": true},
-    "officer": {"at": [-27.009, 12.0, 0.716, 95.16], "color": "#a8302a", "radius": 0.34, "height": 1.85, "hidden": true}
+    "officer": {"cast": "vendor", "at": [-27.009, 12.0, 0.716, 95.16], "color": "#a8302a", "radius": 0.34, "height": 1.85, "hidden": true}
   },
   "shots": {
     "W01": {"pos": [9.248, 2.5, 47.905], "look_at": [-14.859, 18.0, 3.072], "fov": 50},
-    "W02": {"pos": [17.89, 3.0, 17.902], "look_at": [14.507, 10.929, 10.098], "fov": 45},
+    "W02": {"pos": [17.2, 10.6, 21.0], "look_at": [14.4, 9.4, 11.5], "fov": 48},
     "W04": {"pos": [22.054, 14.0, -0.191], "look_at": [14.944, 13.2, 1.374], "fov": 42},
     "W04_kite": {"pos": [-5.025, 14.0, -1.458], "look_at": [-14.919, 26.0, 1.873], "fov": 55},
     "W05": {"pos": [-14.994, 18.0, 0.375], "look_at": [-39.322, 1.787, -3.035], "fov": 45},
-    "W07": {"pos": [27.143, 14.0, -0.778], "look_at": [34.921, 13.8, 2.039], "fov": 45},
-    "W07_storm": {"pos": [25.794, 13.8, 3.118], "look_at": [33.984, 13.5, 1.428], "fov": 45},
+    "W07": {"pos": [24.5, 14.6, -2.5], "look_at": [34.0, 12.8, 1.5], "fov": 40},
+    "W07_storm": {"pos": [25.5, 14.2, 3.8], "look_at": [33.5, 12.9, 1.0], "fov": 40},
     "W09": {"pos": [-17.989, 19.0, 0.54], "look_at": [-40.634, 1.0, -6.446], "fov": 50},
     "W10": {"pos": [-22.916, 13.6, 1.679], "look_at": [-17.445, 13.93, -3.947], "fov": 40},
     "W10_below": {"pos": [-40.634, 1.6, -10.446], "look_at": [-15.104, 18.0, -1.822], "fov": 40},
-    "W12": {"pos": [-15.992, 13.8, 0.427], "look_at": [-19.805, 14.0, 3.36], "fov": 45},
-    "W13": {"pos": [-13.995, 13.6, 0.327], "look_at": [-17.076, 13.3, -1.016], "fov": 30},
+    "W12": {"pos": [-12.59, 14.18, 3.47], "look_at": [-16.38, 13.4, 2.45], "fov": 45},
+    "W13": {"pos": [-12.63, 13.93, 1.19], "look_at": [-17.08, 13.4, -1.02], "fov": 30},
     "W13_boy": {"pos": [-19.087, 13.33, -5.092], "look_at": [-15.632, 13.43, -4.246], "fov": 40},
     "W14": {"pos": [-15.019, 15.0, -0.124], "look_at": [-6.915, 14.4, 3.681], "fov": 35},
-    "W15": {"pos": [-40.634, 1.8, -12.446], "look_at": [-40.634, 2.0, -2.946], "fov": 55},
-    "W16": {"pos": [-39.09, 3.444, -3.291], "look_at": [-39.834, 2.4, -4.646], "fov": 25},
+    "W15": {"pos": [-40.634, 2.4, -12.446], "look_at": [-40.634, 2.2, -2.946], "fov": 55},
+    "W16": {"pos": [-39.09, 3.444, -3.291], "look_at": [-40.2, 2.45, -3.0], "fov": 25},
     "W17": {"pos": [-41.134, 2.9, -5.046], "look_at": [-41.134, 2.9, -6.946], "fov": 30},
-    "W18": {"pos": [-13.083, 12.5, -1.716], "look_at": [-14.602, 9.0, 8.201], "fov": 70},
+    "W18": {"pos": [-13.46, 11.64, 0.73], "look_at": [-14.602, 9.0, 8.201], "fov": 70},
     "W20": {"pos": [-68.061, 24.0, -9.198], "look_at": [-14.859, 12.0, 3.072], "fov": 55},
     "W21": {"pos": [-18.47, 13.7, 0.87], "look_at": [-29.451, 12.6, 6.474], "fov": 45},
-    "W22": {"pos": [-23.45, 13.7, 2.523], "look_at": [-11.586, 2.1, 32.787], "fov": 30},
-    "W23": {"pos": [-21.717, 14.6, 4.397], "look_at": [-17.49, 13.4, 0.51], "fov": 30},
+    "W22": {"pos": [-14.34, 4.79, 25.77], "look_at": [-11.586, 2.1, 32.787], "fov": 30},
+    "W23": {"pos": [-22.33, 14.6, 3.6], "look_at": [-17.49, 13.4, 0.51], "fov": 30},
     "W24": {"pos": [-16.991, 13.7, 0.482], "look_at": [-14.881, 13.4, 2.622], "fov": 40},
     "W25": {"pos": [-9.014, 14.0, -0.365], "look_at": [-15.104, 12.8, -1.822], "fov": 45},
     "W25_empty": {"pos": [-9.014, 14.0, -0.365], "look_at": [-15.104, 12.8, -1.822], "fov": 45},
     "W26": {"pos": [-34.862, 22.0, 2.536], "look_at": [-40.634, 1.0, -22.446], "fov": 55},
     "W27": {"pos": [-5.036, 13.7, -2.158], "look_at": [-10.015, 13.3, -0.333], "fov": 45}
   },
+  "camera_volumes": [
+    {"id": "WallGate", "mode": "pan_follow", "at": [31.5, 13.5, 1.2], "size": [7.0, 4.0, 5.0], "pos": [24.5, 14.6, -2.5], "look_at": [32.0, 12.8, 1.5], "fov": 46.4, "priority": 1}
+  ],
   "triggers": [
     {"id": "ivo", "at": [14.894, 12.0, 2.372], "size": [4, 0, 2], "requires_flag": "ch08_arrived_corrow", "blocked_by_flag": "ch08_met_ivo", "payload": {"beat": "ivo"}, "yaw": -2.86},
     {"id": "stair_look", "at": [-15.104, 12.0, -1.822], "size": [8, 0, 2], "requires_flag": "ch08_met_ivo", "blocked_by_flag": "ch08_saw_the_stair", "payload": {"beat": "stair_look"}, "yaw": 2.86},
@@ -197,7 +203,7 @@
   ],
   "states": [
     {"flag": "ch08_arrived_corrow", "hide": ["kerrid"], "place": {"asha": "day_asha", "toma": "day_toma", "ysolde": "day_ysolde", "liss": "day_liss", "townsfolk_a": "mole_greet_a", "townsfolk_b": "mole_greet_b"}},
-    {"flag": "ch08_beacon_opened", "hide": ["Kites", "KitesHigh", "townsfolk_a", "townsfolk_b", "child_a", "child_b", "child_c", "netmender", "fisher_a", "gatekeeper"], "show": ["watch_a", "watch_b", "climber_a", "climber_b", "climber_c"], "place": {"asha": "storm_asha", "toma": "storm_toma", "ysolde": "storm_ysolde", "liss": "storm_liss", "ivo": "shield_line_ivo", "hobb": "stair_head_hobb", "stillguard_a": "shield_line_a", "stillguard_b": "shield_line_b", "marra": "stair_crowd_marra", "boy": "stair_crowd_boy", "climber_a": "stair_crowd_a", "climber_b": "stair_crowd_b", "climber_c": "stair_crowd_c"}},
+    {"flag": "ch08_beacon_opened", "hide": ["Kites", "KitesHigh", "townsfolk_a", "townsfolk_b", "child_a", "child_b", "child_c", "netmender", "fisher_a", "gatekeeper"], "show": ["watch_a", "watch_b", "climber_a", "climber_b", "climber_c", "Storm"], "place": {"asha": "storm_asha", "toma": "storm_toma", "ysolde": "storm_ysolde", "liss": "storm_liss", "ivo": "shield_line_ivo", "hobb": "stair_head_hobb", "stillguard_a": "shield_line_a", "stillguard_b": "shield_line_b", "marra": "stair_crowd_marra", "boy": "stair_crowd_boy", "climber_a": "stair_crowd_a", "climber_b": "stair_crowd_b", "climber_c": "stair_crowd_c"}},
     {"flag": "ch08_wave1_held", "hide": ["hobb", "watch_a", "watch_b"], "show": ["child_a", "child_b", "child_c"], "place": {"asha": "wh_asha", "toma": "shield_line_toma", "ysolde": "wh_ysolde", "liss": "wh_liss", "child_a": "basket_low_a", "child_b": "basket_low_b", "child_c": "basket_low_c"}},
     {"flag": "ch08_hoist_rigged", "show": ["HoistPins", "HoistRope", "Basket"], "place": {"child_a": "basket_top_a", "child_b": "basket_top_b", "child_c": "basket_top_c", "liss": "hoist_liss", "toma": "shield_line_toma"}},
     {"flag": "ch08_wave2_held", "show": ["pell"], "place": {"pell": "parapet_pell", "boy": "boy_stair"}},
@@ -206,7 +212,7 @@
     {"flag": "ch08_fishwife_called", "place": {"marra": "marra_up", "kerrid": "foot_kerrid_deeper"}},
     {"flag": "ch08_reach_survived", "show": ["figure"], "hide": ["climber_a", "climber_b", "climber_c"], "place": {"kerrid": "stair_up_kerrid", "figure": "figure_storm"}},
     {"flag": "ch08_wall_fell", "hide": ["WallSection", "WatchersSection", "PaleBlocks", "Flood", "figure", "pell", "ivo", "marra", "boy", "child_a", "child_b", "child_c", "WallSectionParapet", "WallSectionKerb", "StairFlight1Upper", "StairLanding", "StairFlight2"], "show": ["Lake", "Breach", "officer", "hobb"], "place": {"hobb": "hobb_after", "officer": "officer_post", "kerrid": "kerrid_drowned_stair", "toma": "aft_toma", "liss": "aft_liss", "asha": "aft_asha", "ysolde": "aft_ysolde"}},
-    {"flag": "ch08_hoist_cut_down", "hide": ["HoistRope", "Basket", "kerrid"], "show": ["RopeCoil"], "place": {"liss": "liss_coil"}}
+    {"flag": "ch08_hoist_cut_down", "hide": ["HoistRope", "Basket", "kerrid", "Storm"], "show": ["RopeCoil"], "place": {"liss": "liss_coil"}}
   ],
   "collision_path": "res://game/levels/ch08/corrow/corrow_collision.json"
 }

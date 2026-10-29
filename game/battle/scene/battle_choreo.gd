@@ -38,6 +38,7 @@ const BEAT_KO := &"ko"
 const REACT_DAMAGE := "damage"
 const REACT_HEAL := "heal"
 const REACT_MISS := "miss"
+const REACT_IMMUNE := "immune"  # M3-BPR-406: a blow on a damage-immune foe: a hard stop, no recoil
 const REACT_PUSH := "push"  # M3-BPR-411: a landed push down the timeline with no damage (the ward shoved back)
 const FALLBACK_STYLE := "melee"
 const SETTING_SPEED := &"battle_speed"
@@ -132,6 +133,9 @@ static func attached(controller: BattleController, engine: BattleEngine) -> Batt
 	c.summon = BattleSummonCinematic.attached(c, controller, engine)  # M2-BPR-08: C10
 	c.impact = BattleImpact.attached(c, controller, engine)  # M3-BPR-401: battle feel
 	BattleBossIntro.attached(c, controller, engine)  # M3-BPR-02: a boss's intro at the first turn
+	BattlePhaseLooks.attached(c, controller, engine)  # M3-BPR-406: an untargetable phase shows it
+	BattleBossCamera.attached(c, engine)  # M3-BPR-426: a boss's phase change and fall get a shot
+	BattleEntryCamera.attached(c, engine)  # M3-BPR-1325: the Climb's turn shows the stair
 	return c
 
 
@@ -247,7 +251,17 @@ func busy_sec() -> float:
 	var left := 0.0
 	for e: Dictionary in _entering.values() + _leaving + _accents.values():
 		left = maxf(left, float((e["spec"] as Dictionary).get("sec", 0.0)) - float(e["t"]))
+	left = maxf(left, camera.moment_left() if camera != null else 0.0)  # M3-BPR-426: a boss's camera moment
 	return maxf(left / speed, summon.remaining_sec() if summon != null else 0.0)
+
+
+## M3-CRE-639: an entrance's or exit's clip: its `clip_own` when the fighter's model has that clip (Ilun's `rise`,
+## `dismiss`), else its contract `clip`.
+static func spec_clip(f: Node, spec: Dictionary) -> StringName:
+	var own := StringName(str(spec.get("clip_own", "")))
+	if own != &"" and BattleClips.has_clip(f, own):
+		return own
+	return StringName(str(spec.get("clip", "")))
 
 
 ## Runs `cb` once the current sequence has finished (at once when none plays).
@@ -385,6 +399,8 @@ func _start(result: ActionResult, plan: Dictionary) -> void:
 ## Moves the current sequence (and any accent, exit or entrance) on by `delta` real seconds.
 func advance(delta: float) -> void:
 	_advance_accents(delta)
+	if _plan.is_empty() and camera != null:
+		camera.advance_moment(delta * speed)
 	_advance_leaving(delta)
 	_advance_entering(delta)
 	if _plan.is_empty():
@@ -403,6 +419,7 @@ func seek(t: float) -> void:
 	if _plan.is_empty():
 		return
 	_t = clampf(t, 0.0, float(_plan["total"]))
+	_apply()  # everyone where they stand at `t` first: a beat's VFX lands there, not on a mark left long ago
 	_step_beats()
 	if impact != null:
 		impact.finish()  # a freeze-frame jump carries no hit-stop
@@ -759,7 +776,7 @@ func _advance_entering(delta: float) -> void:
 		f.visible = t >= 0.0
 		if t >= 0.0 and not bool(e["clip"]):
 			e["clip"] = true
-			BattleClips.play(f, StringName(str(spec.get("clip", ""))), speed)
+			BattleClips.play(f, spec_clip(f, spec), speed)
 		var k := 1.0 - _ease(maxf(t, 0.0) / maxf(sec, 0.0001))
 		var fwd: Vector3 = e["fwd"]
 		var off := -fwd * float(spec.get("back_m", 0.0)) * travel + Vector3.DOWN * float(spec.get("depth_m", 0.0))
@@ -808,7 +825,7 @@ func _advance_leaving(delta: float) -> void:
 			continue  # still on the field: the sequence (and an accent) pose it
 		if not bool(e["clip"]):
 			e["clip"] = true
-			BattleClips.play(f, StringName(str(spec.get("clip", ""))), speed)
+			BattleClips.play(f, spec_clip(f, spec), speed)
 		var u := _ease(float(e["t"]) / sec)
 		var back := -(e["fwd"] as Vector3)
 		var off := back * float(spec.get("back_m", 0.0)) * travel + Vector3.DOWN * float(spec.get("depth_m", 0.0))

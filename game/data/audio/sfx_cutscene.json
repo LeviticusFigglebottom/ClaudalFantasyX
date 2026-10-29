@@ -179,6 +179,20 @@
       "cooldown_ms": 150,
       "voices": 2,
       "unit_size_m": 6.0
+    },
+    "cs_lamp_crackle": {
+      "files": [
+        "res://assets/audio/sfx/cutscene/cs_lamp_crackle_1.ogg",
+        "res://assets/audio/sfx/cutscene/cs_lamp_crackle_2.ogg",
+        "res://assets/audio/sfx/cutscene/cs_lamp_crackle_3.ogg",
+        "res://assets/audio/sfx/cutscene/cs_lamp_crackle_4.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.06,
+      "cooldown_ms": 300,
+      "voices": 2,
+      "unit_size_m": 2.5,
+      "_note": "M3-AUD-847: a lamp's wick, heard only near it"
     }
   }
 }

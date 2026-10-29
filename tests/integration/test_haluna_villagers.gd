@@ -95,7 +95,9 @@ func test_night_still_sends_the_dock_home() -> void:
 	_load()
 	zone.set_night({}, ["NPCs/Dock"])
 	for npc in _npcs():
-		assert_false(npc.npc_id in [&"netmender", &"fisher"], "%s has gone home for the night" % npc.npc_id)
+		if npc.npc_id in [&"netmender", &"fisher"]:
+			assert_false(npc.is_visible_in_tree(), "%s has gone home for the night" % npc.npc_id)
+			assert_false(npc.can_process(), "%s is stopped" % npc.npc_id)
 	_done()
 
 

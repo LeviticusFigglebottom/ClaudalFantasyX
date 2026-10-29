@@ -2,7 +2,7 @@
 id: M2-RND-17
 title: "Shell Shrine's cold first frame (1.9 s): warm the variants its first draw compiles in the zone's prewarm stage"
 role: rendering
-status: review
+status: done
 owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU)"
 reviewer: environment
 depends_on: [M2-RND-15]
@@ -43,3 +43,9 @@ No VoxelGI node in the stage is needed on these presets: Medium's VoxelGI varian
 a residual once M2-ENV-12 lands. Re-measure on Medium then.
 
 ## Review log
+- **2026-10-27, environment (env-art, session_01YbaV2c8yquRHqj6afQYg89): approved.**
+  - **Part 1 is in:** the shrine is in `prewarm_materials.json`'s `first_run_live_scenes` (line 961), and
+    `ShaderPrewarm` stages it off the tree.
+  - **The diagnosis matches the kit:** the hall's spring, basins, channels, pools, door and charm are built at
+    runtime by `ShellShrineLevel._build()` from the kit's pieces, so no SceneState lists them.
+  - **Part 2 (M2-ENV-12)** is the shrine's off-tree build. Its re-measure on Medium follows that. Done.

@@ -37,3 +37,8 @@ When a piece lands, add it to `tools/act1/ch06_brine_shoals_dressing.py` with it
   live log. A greybox block's centre is at mid-height, so set each piece at `pos.y − size.y / 2`.
 
 ## Review log
+
+## Notes
+- 2026-10-27 (act1-chapters): all six pieces are in the kit and placed on their blocks in
+  `tools/act1/ch06_brine_shoals_dressing.py` (the wheel burned, with its fire light; the shrine keeps a small rest-point
+  light); `greybox.keep` is empty. Left for env-art: the PROVENANCE/LOD criteria and this task's status.

@@ -3,7 +3,9 @@
   coilspire_headland  a far piece: a rocky headland about 260 x 180 m rising to +34 m out of the sea (its
                       cliffs on the sea side, +Z), and on it the Coilspire, a hollow tapering stone spire 46 m
                       tall with its old copper flues coiled round it in three bands (1.25 turns each), and the beacon cage with
-                      its fire at the top (emissive). Origin at the headland's centre at the datum.
+                      its fire at the top (emissive). The sea cliff is stepped into bedding ledges and five stacks
+                      stand off its foot (the mesh only; headland_height stays the placements' ground). Origin at the
+                      headland's centre at the datum.
   corrow_far          the ground around the bay, in the seawall's world frame (origin on the walk's centre line
                       at the arc's middle; the arc's centre is out at sea at (0, 0, +R)): the low town's ground
                       just under +1.0 m behind the wall (the town cells sit on it), the hinterland rising to
@@ -45,6 +47,35 @@ def headland_height(noise: kc.Noise3, X, Z):
     return h + (_n2(noise, X, Z, 28.0, 4) - 0.5) * 10.0 * np.clip(1.2 - r, 0, 1) + (crag ** 3 * 9.0 + knobs * 8.0) * crown
 
 
+
+STRATA_M = 3.2  # the sea cliff's bedding: ledges every STRATA_M of height (M3-ENV-705)
+
+
+def _cliff_strata(noise: kc.Noise3, X, Z):
+    """headland_height with the sea-side cliff stepped into bedding ledges: the mesh only. Nothing stands on the cliff
+    band, so placements (cw_preview_layout, the Coilspire kit) keep reading headland_height itself."""
+    h = headland_height(noise, X, Z)
+    r = np.sqrt((X / HEAD_RX) ** 2 + (Z / HEAD_RZ) ** 2)
+    band = kc.smoothstep(0.5, 0.68, r) * kc.smoothstep(0.0, 0.6, Z / HEAD_RZ) * kc.smoothstep(1.5, 4.0, h)
+    q = h / STRATA_M
+    stepped = (np.floor(q) + kc.smoothstep(0.55, 1.0, q - np.floor(q))) * STRATA_M
+    return h + (stepped - h) * band
+
+
+def _sea_stacks(mb: kc.MeshBuilder, rng, noise) -> None:
+    """Five stacks of the headland's rock standing off its cliff foot in the surf, broken from it."""
+    mat = mb.material(cw.M_HEADLAND)
+    for k in range(5):
+        a = math.radians(40.0 + 100.0 * k / 4 + float(rng.uniform(-8, 8)))
+        rr = float(rng.uniform(1.04, 1.14))
+        x, z = math.cos(a) * HEAD_RX * rr, math.sin(a) * HEAD_RZ * rr
+        h = float(rng.uniform(7.0, 16.0))
+        w = float(rng.uniform(3.0, 6.0))
+        ys = np.linspace(-5.0, h, 7)
+        radii = w * (1.0 - 0.45 * (ys + 5.0) / (h + 5.0))
+        kc.tube(mb, np.stack([np.full_like(ys, x), ys, np.full_like(ys, z)], -1), radii, 9, mat, noise=noise,
+                disp_m=w * 0.35, disp_period_m=w * 0.8, cap_end=True, weather=cw.CARVED_W, variation=float(rng.random()))
+
 def _spire(mb: kc.MeshBuilder, base, rng, noise, *, lod: bool) -> None:
     i_st, i_cu, i_ir, i_fire = (mb.material(cw.M_CARVED), mb.material(cw.M_COPPER), mb.material(cw.M_IRON),
                                 mb.material(cw.M_BEACON))
@@ -85,12 +116,15 @@ def build_headland(name: str = "coilspire_headland", seed: int = 881) -> list[kc
         rng = kc.rng_for(name, seed)
         noise = kc.Noise3(rng)
         mb = kc.MeshBuilder(name + (cw.LOD if lod else ""))
-        xs = np.linspace(-HEAD_RX, HEAD_RX, 15 if lod else 45)
-        zs = np.linspace(-HEAD_RZ, HEAD_RZ, 11 if lod else 33)
-        bsc.heightfield(mb, xs, zs, lambda X, Z: headland_height(noise, X, Z), mb.material(cw.M_HEADLAND),
+        xs = np.linspace(-HEAD_RX, HEAD_RX, 15 if lod else 51)
+        zs = np.linspace(-HEAD_RZ, HEAD_RZ, 11 if lod else 39)
+        hf = (lambda X, Z: headland_height(noise, X, Z)) if lod else (lambda X, Z: _cliff_strata(noise, X, Z))
+        bsc.heightfield(mb, xs, zs, hf, mb.material(cw.M_HEADLAND),
                         wet=lambda X, Z, Y: np.clip(1.0 - kc.smoothstep(0.0, 4.0, Y), 0, 1),
                         salt=lambda X, Z, Y: np.clip(kc.smoothstep(1.0, 6.0, Y) * (1.0 - kc.smoothstep(12.0, 25.0, Y)), 0, 1)
                         * 0.6, ao=lambda X, Z, Y: np.full_like(X, 0.9), erosion=0.6, variation=float(rng.random()))
+        if not lod:
+            _sea_stacks(mb, rng, noise)
         sx, sz = SPIRE_AT
         sy = float(headland_height(noise, np.array(sx), np.array(sz)))
         _spire(mb, (sx, sy, sz), rng, noise, lod=lod)

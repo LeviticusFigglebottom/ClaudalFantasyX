@@ -98,11 +98,8 @@ def camp() -> list[dict]:
         piece("brine_vat_burned", -11.0, -45.0, y=0.05, yaw=40.0, collide=True),
         piece("branding_brazier", -6.0, -43.0, y=0.05, block="Brazier"),
         piece("liss_crate", 8.0, -18.0, y=0.05, yaw=12.0),
-        # the burning hulk east of the camp, and its smoke (hidden with the Smoke block at dusk)
+        # the burning hulk east of the camp (its smoke is SMOKES')
         piece("wreck_hull_section", 11.0, -47.0, y=0.0, yaw=0.0, block="BurningHulk"),
-        piece("smoke_plume", 11.5, -45.5, y=1.2, yaw=-150.0, scale=1.0, block="Smoke"),
-        piece("smoke_plume", -11.5, -33.0, y=0.6, yaw=-152.0, scale=0.7, block="Smoke"),
-        piece("smoke_plume", 2.5, -45.0, y=0.6, yaw=-154.0, scale=0.55, block="Smoke"),
         # the Warden's barge in the channel (shown from the Inquisitor's yielding to Sefir's leaving)
         piece("white_barge", -22.5, -44.0, y=-0.15, yaw=90.0, block="Barge"),
     ]
@@ -116,10 +113,81 @@ def dusk_camp() -> list[dict]:
         piece("tideline_wrack", 18.0, -58.0, y=0.0, yaw=2.0),
         piece("tideline_wrack", 26.0, -58.3, y=0.0, yaw=-3.0),
         piece("lamp_burial", 22.0, -58.0, y=0.0, yaw=20.0, block="Lamp"),
-        # stand-ins until M3-ENV-1201's pieces: the fire's ember bed, the purser's goods (the shrine is the bow)
-        piece("salvage_pile_burned", 22.0, -40.0, y=-0.25, yaw=40.0, scale=0.35, block="Fire"),
-        piece("crate_stack", 29.0, -37.0, y=0.05, yaw=80.0, block="VendorBoat"),
+        # M3-ENV-1201's pieces on their blocks: the party's fire, the purser's boat, the Level-stone shrine in the bow
+        piece("ridge_fire", 22.0, -40.0, y=0.0, block="Fire"),
+        piece("vendor_boat", 29.0, -37.0, y=0.0, block="VendorBoat"),
+        piece("level_stone_shrine", 27.0, -44.5, y=0.0, block="Shrine"),
     ]
+
+
+def story_marks() -> list[dict]:
+    """M3-ENV-1201's pieces for the raid: the burning tide-wheel (W14's two-shot), the chalk sign on the hull (B02) and
+    the hold's hatch in its side (B03), each on its block (the chalk mark and the hatch are centred on theirs)."""
+    return [
+        piece("tide_wheel_burned", 9.0, -36.0, y=0.0, block="TideWheel"),
+        piece("chalk_mark", 4.45, -2.0, y=1.2, block="ChalkMark"),
+        piece("hatch", 3.45, -17.0, y=0.7, block="Hatch"),
+    ]
+
+
+HALUNA = "res://assets/environments/kits/haluna/"
+# What the raid left strewn on the flats either side of the plank road (env-art's note from viewing ch06_brine_road, and
+# the shoals arena's mix): (piece, kit_dir or "", sink m, collides)
+AFTERMATH = (("net_heap", HALUNA, 0.05, False), ("tide_debris", HALUNA, 0.0, False), ("crate_stack", "", 0.05, True),
+             ("rope_coil", HALUNA, 0.0, False), ("cargo_sacks", HALUNA, 0.05, True), ("tideline_wrack", "", 0.0, False),
+             ("salvage_pile", "", 0.1, True), ("tide_debris", HALUNA, 0.0, False), ("vendor_boat", "", 0.25, True))
+AFTERMATH_CLEAR_M = 2.5  # off every story point (marks, actors, spawns, triggers)
+
+
+# The raid's flames (M3-ENV-1313, B02-B04 "by the burning hulk"): the kit's b_fire.py pieces at the burning hulk and
+# the tide-wheel's foot, on the Smoke block, so they go out with the smoke when the evening camp is made
+RAID_FIRES = (("camp_fire_large", 11.0, -46.0, 30.0), ("camp_fire_small", 13.6, -44.6, 200.0),
+              ("camp_fire_small", 8.4, -45.4, 110.0), ("camp_fire_large", 9.6, -35.2, 300.0))
+
+
+def raid_fires() -> list[dict]:
+    return [piece(name, x, z, yaw=yaw, block="Smoke") for name, x, z, yaw in RAID_FIRES]
+
+
+# The camp's smoke (M3-RND-21): Rendering's volumetric columns (SmokeColumn, the "camp" profile) where the kit's
+# smoke_plume shells stood, in their frame (+X downwind, the same yaw and scale), off the burning hulk and the two
+# burned tents; hidden with the Smoke block at dusk. (name, x, y, z, yaw, scale, seed)
+SMOKES = (("SmokeHulk", 11.5, 1.2, -45.5, -150.0, 1.0, 0.0), ("SmokeTentWest", -11.5, 0.6, -33.0, -152.0, 0.7, 0.37),
+          ("SmokeTentSouth", 2.5, 0.6, -45.0, -154.0, 0.55, 0.71))
+
+
+def smokes() -> list[dict]:
+    return [{"name": n, "at": [x, y, z], "yaw_deg": yaw, "scale": s, "profile": "camp", "seed": sd, "block": "Smoke"}
+            for n, x, y, z, yaw, s, sd in SMOKES]
+
+
+def road_aftermath() -> list[dict]:
+    import random
+
+    rng = random.Random(61)
+    g = json.loads((ZONE / "brine_shoals_layout.json").read_text(encoding="utf-8"))
+    keep = [v[:3] for v in list(g.get("marks", {}).values()) + list(g.get("spawns", {}).values())]
+    keep += [a["at"][:3] for a in g.get("actors", {}).values()] + [t["at"][:3] for t in g.get("triggers", [])]
+    blocks = [b for b in g["blocks"] if b.get("solid", True) is not False and b["pos"][1] > 0.2]
+    rows = []
+    z, k = 70.0, 0
+    while z > 2.0:
+        for side in (-1.0, 1.0):
+            name, kit, sink, collides = AFTERMATH[k % len(AFTERMATH)]
+            k += 1
+            x = side * rng.uniform(3.5, 9.0) + 0.6 * math.sin(z / 14.0)
+            zz = z + rng.uniform(-2.0, 2.0)
+            if any(math.hypot(x - p[0], zz - p[2]) < AFTERMATH_CLEAR_M for p in keep):
+                continue
+            if any(abs(x - b["pos"][0]) < b["size"][0] * 0.5 + 1.5 and abs(zz - b["pos"][2]) < b["size"][2] * 0.5 + 1.5
+                   for b in blocks):
+                continue
+            extra: dict = {"collide": True} if collides else {}
+            if kit:
+                extra.update(kit_dir=kit, materials_dir=kit + "materials/")
+            rows.append(piece(name, x, zz, y=-sink, yaw=rng.uniform(0.0, 360.0), **extra))
+        z -= rng.uniform(6.0, 9.0)
+    return rows
 
 
 def layout() -> dict:
@@ -135,15 +203,18 @@ def layout() -> dict:
         "lod_margin_m": 2.0,
         "environment": RES_ZONE + "brine_shoals_environment.tres",
         "time_of_day_h": 15.5,
-        # the shrine is a rest point: its greybox stands in until M3-ENV-1201
-        "greybox": {"hide_all": True, "keep": ["ChalkMark", "Hatch", "Shrine"]},
+        "greybox": {"hide_all": True, "keep": []},
         "fire_light_color": "#E0702E",
         "fire_lights": [
             {"at": [11.5, 2.4, -45.5], "energy": 1.6, "range": 9.0, "block": "Smoke"},
             {"at": [-6.0, 1.2, -43.0], "energy": 0.8, "range": 4.0},
             {"at": [22.0, 0.6, -40.0], "energy": 1.2, "range": 7.0},
+            {"at": [9.0, 2.4, -35.0], "energy": 1.4, "range": 7.0, "block": "TideWheel"},  # the burning wheel
+            {"at": [27.0, 1.2, -44.0], "energy": 0.6, "range": 3.0, "color": "#9fd8e0", "block": "Shrine"},  # rest
         ],
-        "pieces": ground() + road() + wrecks() + camp() + dusk_camp(),
+        "pieces": ground() + road() + wrecks() + camp() + dusk_camp() + story_marks() + road_aftermath()
+        + raid_fires(),
+        "smokes": smokes(),
     }
 
 

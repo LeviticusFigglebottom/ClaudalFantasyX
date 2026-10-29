@@ -24,11 +24,28 @@ import grounding as gr  # noqa: E402
 SEED = 5207
 PAL = {k: ck.hexrgb(v) for k, v in {
     "bronze_patina": "#5F8A78", "hair_copper": "#A65A2A", "starlight": "#DCE6FF", "lacquer_black": "#1D1916",
-    "sand_dry": "#EFDDB4", "foliage_shadow": "#1E4A3A",
+    "sand_dry": "#EFDDB4", "foliage_shadow": "#1E4A3A", "spawn_wound": "#3FE0C8",
 }.items()}
 
 NS = 4  # spine bones, head end first
 NT = 7  # tail bones
+COIL_AXIS = (0.5, -0.68)  # the coil's centre (y, z): it winds round an axis along x above the rump
+# The stored charge (M3-CRE-650): starlight is a point-source swatch (palette.json: point sources only, <=0.5% of the
+# frame), so the charge glows only in points: the ridge spines' tips and a few sparks on the coil's outer face. The
+# coil's last third is bare copper (it glowed starlight over its whole surface before, against that rule).
+COIL_CHARGE = (0.5, 1.0)  # where along the tail (0 hips .. 1 tip) the copper shows through, fading in
+COIL_SPARKS = np.linspace(0.66, 0.94, 4)  # the sparks along the tail, on the coil's flanks
+COIL_SPARK_R = 0.008  # each spark's radius (m)
+# The weak point (ADR 0151, M3-CRE-650): one small closed mark, an old break in the tail's root, healed over, where
+# the tail lifts off the rump to climb into the coil: the one place its stored charge leaks to ground. It lies on top
+# of the root, clear of the ridge spines, a little to its near side (its right, -x: the battle camera's side once the
+# stage turns it to the party), where it faces up and forward to the battle camera and the review three-quarter (+x
+# front) alike. In the scale slot, whose emission is now this mark alone.
+BREAK_AT = np.array([-0.03, 0.34, -0.44])  # projected onto the tail's surface
+BREAK_ALONG = np.array([1.0, 0.0, 0.25])  # it rings part way round the tail, a little aslant
+BREAK_HALF = (0.034, 0.011)  # the glowing seam's half length and half width (m)
+BREAK_LIP = (1.25, 1.9, 0.008)  # the dark healed ridge round it: x the seam's length, x its width, raised (m)
+BREAK_BEND_R = 0.07  # the tail's curvature round the root (m): the mark bends to lie on it
 
 
 def spine(n: int) -> np.ndarray:
@@ -41,7 +58,7 @@ def tail(n: int) -> np.ndarray:
     lead = ck.smoothstep(0.0, 0.35, u)
     ang = math.pi * 2.6 * ck.smoothstep(0.2, 1.0, u)
     r = 0.17 - 0.12 * u
-    cy, cz = 0.5, -0.68
+    cy, cz = COIL_AXIS
     coil = np.column_stack([np.zeros(n), cy - r * np.cos(ang), cz - r * np.sin(ang)])
     start = np.column_stack([np.zeros(n), 0.15 + 0.18 * u, -0.22 - 0.46 * u])
     return start * (1 - lead)[:, None] + coil * lead[:, None]
@@ -104,15 +121,70 @@ def body(mesh: ck.Mesh, rig: ck.Rig, js: np.ndarray, jt: np.ndarray) -> None:
     for s in (-1.0, 1.0):
         Pe, Te = ck.ellipsoid(np.asarray(hb.head) + np.array([s * 0.06, 0.05, 0.06]), (0.02,) * 3, 5, 8)
         ck.finish(mesh, Pe, Te, "eye", PAL["lacquer_black"], rig.rigid("head"), wet=1.0)
-    # the tail, the coil brightening toward its tip
+    # the tail, the coil's last third bare copper (the stored charge's sparks are coil_sparks)
     nt = 48
     tpath = tail(nt)
     ut = np.linspace(0, 1, nt)
-    P, T = ck.tube(tpath, 0.085 * (1 - ut) ** 1.3 + 0.012, 10)
+    P, T = ck.tube(tpath, tail_radius(ut), 10)
     along = ut[np.argmin(((P[:, None, :] - tpath[None, :, :]) ** 2).sum(-1), axis=1)]  # nearest ring
-    charge = ck.smoothstep(0.5, 1.0, along) * 0.8
-    col = ck.mix(scales(P, SEED + 2), PAL["starlight"] * 0.7, charge[:, None])
-    ck.finish(mesh, P, T, "scale", col, rig.chain([f"tail{i}" for i in range(NT)], jt), cavity=0.3, emission=charge)
+    charge = ck.smoothstep(*COIL_CHARGE, along) * 0.8
+    col = ck.mix(scales(P, SEED + 2), PAL["hair_copper"], charge[:, None])
+    ck.finish(mesh, P, T, "scale", col, rig.chain([f"tail{i}" for i in range(NT)], jt), cavity=0.3)
+    old_break(mesh, rig, P, T, jt)
+    coil_sparks(mesh, rig, tpath, jt)
+
+
+def tail_radius(u: np.ndarray) -> np.ndarray:
+    return 0.085 * (1 - u) ** 1.3 + 0.012
+
+
+def nearest_tail_bone(p: np.ndarray, jt: np.ndarray) -> str:
+    mid = (jt[:-1] + jt[1:]) / 2.0
+    return f"tail{int(np.argmin(np.linalg.norm(mid - p, axis=1)))}"
+
+
+def on_surface(P: np.ndarray, T: np.ndarray, q: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """The point of the part (P, T) nearest q, and its face's outward normal: q projected onto each triangle's plane,
+    kept where it falls inside the triangle, the nearest of those (degenerate triangles, as at a pole, are skipped)."""
+    a, b, c = P[T[:, 0]], P[T[:, 1]], P[T[:, 2]]
+    fn = np.cross(b - a, c - a)
+    area = np.linalg.norm(fn, axis=1)
+    fn /= np.maximum(area, 1e-12)[:, None]
+    d = ((q - a) * fn).sum(axis=1)
+    p = q - d[:, None] * fn
+    inside = area > 1e-12
+    for u, v in ((a, b), (b, c), (c, a)):
+        inside &= (np.cross(v - u, p - u) * fn).sum(axis=1) >= 0.0
+    k = int(np.argmin(np.where(inside, np.abs(d), np.inf)))
+    return p[k], fn[k]
+
+
+def old_break(mesh: ck.Mesh, rig: ck.Rig, P: np.ndarray, T: np.ndarray, jt: np.ndarray) -> None:
+    """The weak point (ADR 0151): a closed seam of spawn_wound light in a raised dark ridge, laid on the tail's root at
+    BREAK_AT and bent to its curve. Never open, never shedding motes: it is a beast, and this is an old injury."""
+    at, n = on_surface(P, T, BREAK_AT)
+    a = BREAK_ALONG - n * (BREAK_ALONG @ n)
+    a /= np.linalg.norm(a)
+    R = np.column_stack([a, n, np.cross(a, n)])  # local x along the seam, y out of the scales, z across it
+    (hl, hw), (gl, gw, rise) = BREAK_HALF, BREAK_LIP
+    bone = rig.rigid(nearest_tail_bone(at, jt))
+    for radii, lift, col, glow in (((hl * gl, rise, hw * gw), 0.0, PAL["lacquer_black"], 0.0),
+                                   ((hl, rise * 0.75, hw), rise * 0.5, PAL["spawn_wound"] * 0.65, 1.0)):
+        Pl, Tl = ck.ellipsoid((0.0, lift, 0.0), radii, 4, 10)
+        Pl[:, 1] -= Pl[:, 0] ** 2 / (2.0 * BREAK_BEND_R)
+        ck.finish(mesh, at + Pl @ R.T, Tl, "scale", col, bone, cavity=0.4 * (1.0 - glow), emission=glow)
+
+
+def coil_sparks(mesh: ck.Mesh, rig: ck.Rig, tpath: np.ndarray, jt: np.ndarray) -> None:
+    """The coil's stored charge as starlight points (the copper slot's emission), on the coil's flanks, turn about on
+    its near (-x, the battle camera's) and far (+x, the review three-quarter's) side: the coil's outer face is hidden
+    where it tightens, each turn inside the last."""
+    for k, u in enumerate(COIL_SPARKS):
+        c = tpath[int(round(u * (len(tpath) - 1)))]
+        side = -1.0 if k % 2 == 0 else 1.0
+        p = c + np.array([side, 0.0, 0.0]) * float(tail_radius(np.array([u]))[0])
+        Ps, Ts = ck.ellipsoid(p, (COIL_SPARK_R,) * 3, 4, 6)
+        ck.finish(mesh, Ps, Ts, "copper", PAL["starlight"], rig.rigid(nearest_tail_bone(p, jt)), emission=1.0)
 
 
 def ridge(mesh: ck.Mesh, rig: ck.Rig, js: np.ndarray) -> None:
@@ -196,16 +268,22 @@ def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
     return gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS)
 
 
-def main() -> None:
-    argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--out", required=True)
-    args = ap.parse_args(argv)
+def build_mesh() -> tuple[ck.Rig, ck.Mesh]:
+    """The rig and the skinned mesh, without Blender (M3-CRE-650: the preview sheets build from this too)."""
     rig, js, jt = build_rig()
     mesh = ck.Mesh("vein_sparker")
     body(mesh, rig, js, jt)
     ridge(mesh, rig, js)
     legs(mesh, rig)
+    return rig, mesh
+
+
+def main() -> None:
+    argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--out", required=True)
+    args = ap.parse_args(argv)
+    rig, mesh = build_mesh()
     info = ck.export_creature(mesh, rig, export_clips(rig, mesh), args.out, extras={"hymn_creature": "vein_sparker"})
     print(f"vein_sparker: {info}")
 

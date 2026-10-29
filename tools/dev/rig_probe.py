@@ -32,6 +32,13 @@ Three checks (thresholds in `tools/dev/rig_checks.json`, per-hero overrides unde
 * **seams**: (a) positions that coincide at rest across meshes and primitives (the neck seam between Head and Body,
   UV-seam duplicates) must stay coincident; (b) the Body's open boundary (the holes where hidden faces were deleted)
   must stay under a garment; (c) every vertex's skin weights sum to 1 and name real joints.
+* **prop grip** (M2-CHR-515, from M1-QA-09: the staff and spear floated upright beside open hands): for a hero whose
+  hand never lets go of its prop (`game/data/characters/grips.json`), in every pose (a) the prop keeps its rest turn
+  in the hand's frame (`turn`, degrees) and its shaft's axis passes through the fist's grip point (`offset`; the
+  shaft may slide through the fist, so only the distance across the axis counts), and (b) the shaft does not pass
+  through a garment (`through_garment`: rays along the shaft's centre line and four lines on its surface, outside
+  `grip_clear_mm` of the fist, against every garment; the staff through the skirt in a kneel). A pose with the prop
+  set down (M2-CHR-520, hero_clips.prop_down) skips (a); (b) still holds for the laid prop.
 
 `tools/tests/test_rig_integrity.py` runs all three for every hero; docs/kb/art/characters/pipeline.md ("Rig
 integrity guards") explains how to read the numbers.
@@ -61,11 +68,13 @@ import asha_glb  # noqa: E402
 import hero_clips  # noqa: E402
 
 CONFIG = Path(__file__).resolve().with_name("rig_checks.json")
+GRIPS = ROOT / "game" / "data" / "characters" / "grips.json"  # M2-CHR-515: written by hero_clips.write_grip_data
 VILLAGERS_DIR = ROOT / "assets_src" / "characters" / "villagers"
 # HYMN_RIG_ROOT=<checkout>: read the hero GLBs from another checkout's assets/characters (e.g. a GLB being rebuilt in
 # the main checkout while this code runs from a worktree). Everything else comes from this checkout.
 ROOT_ENV = "HYMN_RIG_ROOT"
 GRID_CELLS = (0.012, 0.025)  # nearest-vertex grids (m), finer first: most queries resolve in the first
+BATTLE_LIB_PREFIX = "battle:"  # pose labels sampled from a hero's battle library (hero_clips.BATTLE_STANCE)
 CONFIRM_BATCH = 6  # penetration candidates confirmed by winding number per batch, deepest first
 
 
@@ -433,6 +442,7 @@ class Pose:
     local_q: dict
     hips_t: object = None
     kind: str = "clip"  # rest | stage | clip
+    down: float = 0.0  # M2-CHR-520: how far a held prop is set down (released: the grip check skips the pose)
 
 
 def parse_world_pose(tscn: Path) -> dict:
@@ -491,6 +501,15 @@ def clip_poses(rig: Rig, every: int, clips: list | None = None, max_samples: int
         is_loop, pose_fn = hero_clips.LOOPS.__contains__, hero_clips.pose_at
     sk = rig.skeleton
     out = []
+    if not clips and not is_villager(rig.hero) and rig.hero in hero_clips.BATTLE_STANCE:
+        # the battle actor's own library (hero_clips.build_battle): its idle has the stance, its strikes build on it
+        hero_clips._STANCE_ACTIVE.add(rig.hero)
+        try:
+            names = ["idle"] + [c for c in clip_names(rig.hero) if c in hero_clips.BATTLE_FRAMES or c == "revive"]
+            out += [Pose(BATTLE_LIB_PREFIX + p.label, p.local_q, p.hips_t, p.kind, p.down)
+                    for p in clip_poses(rig, every, names, max_samples)]
+        finally:
+            hero_clips._STANCE_ACTIVE.discard(rig.hero)
     for clip in clips or clip_names(rig.hero):
         length = length_of(clip)
         loop = is_loop(clip)
@@ -507,7 +526,7 @@ def clip_poses(rig: Rig, every: int, clips: list | None = None, max_samples: int
             hold = {} if is_villager(rig.hero) else hero_clips.hook_hold(rig.hero, clip, tt / length)
             local = sk.local_pose(turns, pose.get("hips"), hold)
             hips = sk.rest_t[hero_clips.HIPS] + np.asarray(pose.get("hips", (0.0, 0.0, 0.0)), dtype=float)
-            out.append(Pose(f"{clip}@{f}", local, hips, "clip"))
+            out.append(Pose(f"{clip}@{f}", local, hips, "clip", float(hold.get("_down", 0.0))))
     return out
 
 
@@ -729,6 +748,11 @@ class Probe:
         self.garments = [p for p in (rig.part(s, s) for s in self.cfg["garments"]) if p is not None]
         self.props = [p for p in (rig.part(s, s) for s in self.cfg["props"]) if p is not None]
         self.groups = [(p, False) for p in self.garments] + [(p, True) for p in self.props]
+        # props a scene hides in some clips: {mesh: "battle"} (the battle clip contract, e.g. Kerrid's back cleaver,
+        # which his battle actor hides for the instance in his hand) or a list of clip names
+        battle = set(hero_clips.BATTLE_CLIPS) | {"revive"}
+        self.hidden = {m: (battle if v == "battle" else set(v)) for m, v in self.cfg.get("hidden_props", {}).items()}
+        self.hidden_in_battle = {m for m, v in self.cfg.get("hidden_props", {}).items() if v == "battle"}
         grip = re.compile(pen["grip_bones"])
         self.grip_vertex = np.array([bool(grip.search(dominant_bone(rig, self.skin, i)))
                                      for i in range(len(self.skin.P))])
@@ -768,6 +792,74 @@ class Probe:
         cells = np.floor(self.skin.P[bb] / 0.05).astype(np.int64)  # spatially compact ray chunks
         self.body_boundary = bb[np.lexsort((cells[:, 2], cells[:, 0], cells[:, 1]))]
         self.braid = self._braid_setup(self.cfg.get("braid"))
+        self.grip = self._grip_setup(self.cfg.get("prop_grip"))
+
+    # -- prop grip (M2-CHR-515) ------------------------------------------------------------------
+    def _grip_setup(self, gc: dict | None):
+        entry = None
+        if gc and GRIPS.exists():
+            entry = json.loads(GRIPS.read_text(encoding="utf-8"))["skeletons"].get(f"{self.hero}_skeleton")
+        if not entry or not self.props:
+            return None
+        rig = self.rig
+        b, h = rig.index[entry["bone"]], rig.index[entry["hand"]]
+        g = rig.globals()
+        G_b, G_h = g[b], g[h]
+        rel0 = np.linalg.inv(G_h) @ G_b
+        bind = rel0.copy()  # the prop as the GLB binds it: no clip or stage solve has placed it (the bind pose)
+        # M2-CHR-544: the grip moves the prop's bone (in the hand's frame) so its shaft runs through the closed fist
+        rel0[:3, 3] += np.asarray(entry.get("offset", (0.0, 0.0, 0.0)), dtype=float)
+        # the shaft: the prop vertices skinned to its bone, in the bone's frame (its local y runs up the shaft)
+        loc = []
+        for part in self.props:
+            own = part.J[np.arange(len(part.P)), np.argmax(part.W, axis=1)] == rig.joints.index(b)
+            if own.any():
+                loc.append((np.linalg.inv(G_b) @ np.c_[part.P[own], np.ones(int(own.sum()))].T).T[:, :3])
+        if not loc:
+            raise ValueError(f"{self.hero}: no prop vertex skinned to {entry['bone']}")
+        loc = np.concatenate(loc)
+        radial = np.hypot(loc[:, 0], loc[:, 2])
+        return {"bone": b, "hand": h, "rel0": rel0, "bind": bind, "y": (float(loc[:, 1].min()), float(loc[:, 1].max())),
+                "r": float(np.median(radial)) * float(gc["surface_lines_at"]),
+                "clear": float(gc["grip_clear_mm"]) / 1000.0, "name": entry["bone"]}
+
+    def _grip_rows(self, pose: Pose, cloth_P) -> list[dict]:
+        gr, rig = self.grip, self.rig
+        g = rig.globals(pose.local_q, pose.hips_t)
+        G_b, G_h = g[gr["bone"]], g[gr["hand"]]
+        rel = np.linalg.inv(G_h) @ G_b
+        R = gr["rel0"][:3, :3].T @ rel[:3, :3]
+        turn = math.degrees(math.acos(float(np.clip((np.trace(R) - 1.0) / 2.0, -1.0, 1.0))))
+        # the fist's grip point (the prop bone's head at rest, carried by the hand) against the posed shaft axis
+        grip = (G_h @ gr["rel0"][:, 3])[:3]
+        o, d = G_b[:3, 3], G_b[:3, 1] / np.linalg.norm(G_b[:3, 1])
+        v = grip - o
+        offset = float(np.linalg.norm(v - (v @ d) * d))
+        unposed = np.allclose(rel, gr["bind"], atol=1e-6)  # the bind pose: nothing places the prop there
+        rows = [] if pose.down > 0.0 or unposed else [{"pose": pose.label, "kind": "grip", "group": gr["name"],
+                                              "turn_deg": round(turn, 3), "offset_mm": _mm(offset)}]
+        if self.cloth is not None:
+            if cloth_P is None:
+                cloth_P = rig.skin(self.cloth, mats=rig.skin_matrices(pose.local_q, pose.hips_t))
+            ax, az = G_b[:3, 0], G_b[:3, 2]
+            ax, az = ax / np.linalg.norm(ax), az / np.linalg.norm(az)
+            lines = [np.zeros(3)] + [gr["r"] * c for c in (ax, -ax, az, -az)]
+            lo, hi = gr["y"]
+            hits, where = 0, "-"
+            for a, z in ((lo, -gr["clear"]), (gr["clear"], hi)):  # below the fist, then above it
+                if z <= a:
+                    continue
+                O = np.array([o + d * a + c for c in lines])
+                t, tri, _ = ray_hits(O, np.tile(d, (len(O), 1)), cloth_P, self.cloth.F, z - a, detail=True)
+                hit = np.isfinite(t)
+                hits += int(hit.sum())
+                if hit.any() and where == "-":
+                    k = int(np.nonzero(hit)[0][0])
+                    pr = self.cloth.prims[int(self.cloth.src[int(self.cloth.F[tri[k], 0])])]
+                    where = f"{pr.mesh}:{pr.material} on {dominant_bone(rig, self.cloth, int(self.cloth.F[tri[k], 0]))}"
+            rows.append({"pose": pose.label, "kind": "through_garment", "group": gr["name"], "count": hits,
+                         "where": where})
+        return rows
 
     # -- braid ----------------------------------------------------------------------------------
     def _braid_setup(self, bc: dict | None):
@@ -833,7 +925,13 @@ class Probe:
         reach = max_depth + float(pen["reach_margin_mm"]) / 1000.0
         confirm, wmin = int(pen["confirm_deepest"]), float(pen["winding_min"])
         rows = []
+        clip = pose.label.split("@")[0]
+        in_battle_lib = clip.startswith(BATTLE_LIB_PREFIX)  # the battle actor's own library: its scene hides these
+        clip = clip[len(BATTLE_LIB_PREFIX):] if in_battle_lib else clip
         for part, is_prop in self.groups:
+            hidden = clip in self.hidden.get(part.name, ()) or (in_battle_lib and part.name in self.hidden_in_battle)
+            if is_prop and hidden:  # hidden in this clip (a battle actor's back prop)
+                continue
             P = rig.skin(part, mats)
             h = skin_surf.query(P, k, reach)
             valid = (h.facing >= fmin) & (h.sd >= -max_depth)
@@ -937,7 +1035,7 @@ class Probe:
         rig = self.rig
         mats_rest = rig.skin_matrices()
         out = {"hero": self.hero, "poses": [p.label for p in poses], "braid": [], "penetration": [], "seams": [],
-               "weights": self.weights_report()}
+               "grip": [], "weights": self.weights_report()}
         for pose in poses:
             mats = rig.skin_matrices(pose.local_q, pose.hips_t)
             skin_surf = Surface(self.skin_topo, rig.skin(self.skin, mats))
@@ -946,6 +1044,8 @@ class Probe:
             rows, cloth_P = self._penetration_rows(pose, mats, skin_surf)
             out["penetration"] += rows
             out["seams"] += self._seam_rows(pose, mats, skin_surf, cloth_P)
+            if self.grip:
+                out["grip"] += self._grip_rows(pose, cloth_P)
         return out
 
 
@@ -989,6 +1089,24 @@ def verdicts(result: dict, cfg: dict) -> list[dict]:
             out.append({"check": f"seam coincident {group}", "value_mm": w["open_mm"], "limit_mm": lim,
                         "ok": w["open_mm"] <= lim, "pose": w["pose"],
                         "where": f"{w['where']} ({w['bone']}), rest {w['rest']} ({w['count']} verts past {lim} mm)"})
+    gc = cfg.get("prop_grip") or {}
+    grows = result.get("grip", [])
+    for key, lim, kind in (("turn_deg", "max_turn_deg", "grip"), ("offset_mm", "max_offset_mm", "grip")):
+        rows = [r for r in grows if r["kind"] == kind]
+        if rows:
+            w = max(rows, key=lambda r: r[key])
+            out.append({"check": f"prop grip {key[:-3] if key.endswith('_mm') else key[:-4]}", "value": w[key],
+                        "limit": gc[lim], "ok": w[key] <= float(gc[lim]), "pose": w["pose"],
+                        "where": f"{w['group']} in its hand ({key})"})
+    allow = set(gc.get("allow_clips", []))  # documented per hero (a follow-up task each), never a default
+    rows = [r for r in grows if r["kind"] == "through_garment"]
+    if rows:
+        kept = [r for r in rows if r["pose"].split("@")[0] not in allow] or [dict(rows[0], count=0)]
+        n_allowed = sum(1 for r in rows if r["pose"].split("@")[0] in allow and r["count"] > 0)
+        w = max(kept, key=lambda r: r["count"])
+        out.append({"check": "prop through_garment", "value": w["count"], "limit": 0, "ok": w["count"] == 0,
+                    "pose": w["pose"], "where": f"{w['group']} shaft lines crossing {w['where']}"
+                    f" ({n_allowed} poses in the {len(allow)} allowed clips)"})
     wr = result["weights"]
     out.append({"check": "skin weights", "value": round(wr["sum_err"], 6), "limit": seams["weight_sum_tol"],
                 "ok": wr["ok"], "pose": "-",

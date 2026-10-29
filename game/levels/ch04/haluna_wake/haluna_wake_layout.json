@@ -1,124 +1,815 @@
 {
-  "doc": "M3-C04-02 greybox: ch04/haluna_wake, Haluna on the Pilgrim's Wake night (act1_ch04.md C4-01 to C4-08), a stand-in for ch02/haluna's night variant: HalunaStory is not data-driven (ADR 0035), so Ch4's night is its own zone until Haluna moves to ZoneStory, and env-art's wake-night dressing (M3-C04-03) lands on the real Haluna. Layout, north is -z: Neme's house and door (south), the lane north past dark houses (four lit windows that go dark once the lamps leave), the shut market and the closed inn (west), the chapel court (east), the dock running east into the sea (no lamps, the sea-glow only), and the causeway head (north) with the wake-shell wall, its gap and Imra's shell, the lamps on its top, the four feast tables, and the causeway's dark line beyond it under the tide. states (Ch04Zone): the windows dark from ch04_started; Asha's shell in the wall from ch04_shell_set; the village gone home, the wall's lamps low and the stranger kneeling at the wall from ch04_dock_comforted; gone again from ch04_saw_ysolde_ink. The sea is a solid floor 1.2 m down behind rails: there is no swimming in the greybox.",
-  "block_color": "#4a4f5a",
-  "sun": {"pitch_deg": -38.0, "yaw_deg": 150.0, "energy": 0.28, "color": "#9fb4d8"},
-  "environment": {"background": "#0b1626", "ambient_color": "#2a3a55", "ambient_energy": 0.4},
-  "blocks": [
-    {"id": "Ground", "pos": [0, -0.5, -14], "size": [60, 1, 56], "color": "#3e4048"},
-    {"id": "Sea", "pos": [40, -1.7, -14], "size": [60, 1, 90], "color": "#0f4a5a", "emission": "#1fb5c8", "emission_energy": 0.35},
-    {"id": "SeaNorth", "pos": [0, -1.7, -66], "size": [60, 1, 50], "color": "#0f4a5a", "emission": "#1fb5c8", "emission_energy": 0.35},
-    {"id": "RailEastN", "pos": [30.5, 0.5, -31.2], "size": [1, 1, 19.6], "color": "#2e3138"},
-    {"id": "RailEastS", "pos": [30.5, 0.5, -1.8], "size": [1, 1, 33.2], "color": "#2e3138"},
-    {"id": "RailNorth", "pos": [-15, 0.5, -41.5], "size": [30, 1, 1], "color": "#2e3138"},
-    {"id": "RailNorthE", "pos": [19, 0.5, -41.5], "size": [22, 1, 1], "color": "#2e3138"},
-    {"id": "RailWest", "pos": [-30.5, 0.5, -14], "size": [1, 1, 56], "color": "#2e3138"},
-    {"id": "RailSouth", "pos": [0, 0.5, 14.5], "size": [60, 1, 1], "color": "#2e3138"},
-    {"id": "Lane", "pos": [0, 0.02, -12], "size": [4, 0.04, 40], "color": "#55524c", "solid": false},
-    {"id": "NemeHouse", "pos": [0, 1.5, 11], "size": [8, 3, 5], "color": "#5b5048"},
-    {"id": "HouseW1", "pos": [-7, 1.5, 0], "size": [6, 3, 6], "color": "#565049"},
-    {"id": "HouseE1", "pos": [7, 1.5, 0], "size": [6, 3, 6], "color": "#565049"},
-    {"id": "HouseW2", "pos": [-7, 1.5, -14], "size": [6, 3, 6], "color": "#565049"},
-    {"id": "HouseE2", "pos": [7, 1.5, -14], "size": [6, 3, 6], "color": "#565049"},
-    {"id": "WindowLit1", "pos": [-3.95, 1.6, 0], "size": [0.1, 0.8, 1.0], "color": "#f2c27a", "emission": "#ffb35c", "emission_energy": 2.0, "solid": false},
-    {"id": "WindowLit2", "pos": [3.95, 1.6, 0], "size": [0.1, 0.8, 1.0], "color": "#f2c27a", "emission": "#ffb35c", "emission_energy": 2.0, "solid": false},
-    {"id": "WindowLit3", "pos": [-3.95, 1.6, -14], "size": [0.1, 0.8, 1.0], "color": "#f2c27a", "emission": "#ffb35c", "emission_energy": 2.0, "solid": false},
-    {"id": "WindowLit4", "pos": [3.95, 1.6, -14], "size": [0.1, 0.8, 1.0], "color": "#f2c27a", "emission": "#ffb35c", "emission_energy": 2.0, "solid": false},
-    {"id": "MarketStallA", "pos": [-18, 0.8, -4], "size": [4, 1.6, 2], "color": "#6a5a44"},
-    {"id": "MarketStallB", "pos": [-18, 0.8, -10], "size": [4, 1.6, 2], "color": "#6a5a44"},
-    {"id": "Inn", "pos": [-20, 2, -20], "size": [8, 4, 6], "color": "#5e5245"},
-    {"id": "Chapel", "pos": [20, 2.5, -4], "size": [6, 5, 7], "color": "#6b6a70"},
-    {"id": "ChapelSteps", "pos": [16.4, 0.15, -4], "size": [1.2, 0.3, 3], "color": "#77767c", "solid": false},
-    {"id": "Dock", "pos": [37, -0.1, -20], "size": [14, 0.2, 2.4], "color": "#6e5a40"},
-    {"id": "DockRailN", "pos": [37, 0.3, -21.4], "size": [14, 0.6, 0.2], "color": "#4e3e2c"},
-    {"id": "DockRailS", "pos": [37, 0.3, -18.6], "size": [14, 0.6, 0.2], "color": "#4e3e2c"},
-    {"id": "DockEndStop", "pos": [44.2, 0.3, -20], "size": [0.2, 0.6, 2.4], "color": "#4e3e2c"},
-    {"id": "DockPost", "pos": [30.8, 0.5, -20], "size": [0.4, 1.0, 0.4], "color": "#4e3e2c", "solid": false},
-    {"id": "WakeWall", "pos": [0, 1.0, -38.5], "size": [16, 2, 1], "color": "#8c8578"},
-    {"id": "ImraShell", "pos": [2.2, 1.5, -37.95], "size": [0.35, 0.3, 0.1], "color": "#d8d2c4", "solid": false},
-    {"id": "AshaShell", "pos": [1.4, 1.5, -37.95], "size": [0.35, 0.3, 0.1], "color": "#fbf8f0", "emission": "#ffffff", "emission_energy": 0.4, "solid": false},
-    {"id": "WallLamps", "pos": [0, 2.06, -38.5], "size": [16, 0.12, 0.4], "color": "#ffcf8a", "emission": "#ffb35c", "emission_energy": 3.0, "solid": false},
-    {"id": "WallLampsLow", "pos": [0, 2.06, -38.5], "size": [16, 0.12, 0.4], "color": "#a67a4a", "emission": "#ff9a40", "emission_energy": 0.6, "solid": false},
-    {"id": "GrassLamps", "pos": [0, 0.05, -35.5], "size": [18, 0.1, 1.2], "color": "#ffcf8a", "emission": "#ffb35c", "emission_energy": 1.5, "solid": false},
-    {"id": "InkLamp", "pos": [1.0, 0.2, -37.6], "size": [0.2, 0.3, 0.2], "color": "#ffcf8a", "emission": "#ffb35c", "emission_energy": 3.0, "solid": false},
-    {"id": "TableVendor", "pos": [-6, 0.4, -31], "size": [2.4, 0.8, 1], "color": "#6e5a40"},
-    {"id": "TableOsu", "pos": [-2, 0.4, -31], "size": [2.4, 0.8, 1], "color": "#6e5a40"},
-    {"id": "TableFisher", "pos": [2, 0.4, -31], "size": [2.4, 0.8, 1], "color": "#6e5a40"},
-    {"id": "TableNeme", "pos": [6, 0.4, -31], "size": [2.4, 0.8, 1], "color": "#6e5a40"},
-    {"id": "Causeway", "pos": [0, -1.15, -66], "size": [4, 0.1, 50], "color": "#3a3a34", "solid": false}
+ "doc": "M3-C04-1226 (tools/act1/ch04_haluna_wake.py; do not edit by hand): ch04/haluna_wake, Haluna on the Pilgrim's Wake night (act1_ch04.md C4-01 to C4-08), on the real Haluna (ADR 0041): Haluna's dressing at its night mood, its walk collision, and env-art's wake-night story sets (M3-ENV-709) shown by flag. Neme's house on the tidewall lane, the lane's child, the shut inn, Reed at the chapel court, the dark dock, the feast on the sand at the causeway head and the wake-shell wall with Imra's shell, the causeway's first slabs at dawn. states (Ch04Zone): the lamps, feast and Imra's faded shell from the start; Asha's shell from ch04_shell_set; the village gone home and the stranger at the wall from ch04_dock_comforted; gone again, Imra's shell re-inked, from ch04_saw_ysolde_ink.",
+ "dressing": {
+  "scene": "res://game/levels/ch02/haluna/haluna_dressing.tscn",
+  "adopt": "res://game/levels/ch02/haluna/haluna_zone_dresser.gd"
+ },
+ "dressing_mood": "night",
+ "blocks": [],
+ "spawns": {
+  "NemeDoor": [
+   -58.0,
+   1.9,
+   -3.6,
+   0.0
   ],
-  "spawns": {
-    "NemeDoor": [0, 0, 7, 0],
-    "FeastEdge": [0, 0, -26, 0],
-    "DockEnd": [42.5, 0, -19.6, 270],
-    "DockShore": [32, 0, -20, 90],
-    "WallDawn": [0, 0, -35, 0]
-  },
-  "marks": {
-    "table_lane": [1, 0, -29, 0],
-    "neme_table": [6, 0, -32, 0],
-    "wall_gap": [1.4, 0, -37.4, 0],
-    "feast_edge": [10, 0, -28, 90],
-    "dock_end": [42.5, 0, -20.4, 270],
-    "dock_shore": [31, 0, -20, 90],
-    "wall_away": [14, 0, -36, 90],
-    "causeway_toma": [0, -1.1, -60, 0],
-    "causeway_asha": [0, -1.1, -58, 0],
-    "causeway_rhen": [0, -1.1, -56, 0],
-    "way_feast_s": [8.5, 0, -34, 90],
-    "way_lane_n": [1, 0, -22, 0],
-    "way_wall_east": [9, 0, -40.3, 270],
-    "way_rail_gap": [4, 0, -40.3, 0],
-    "way_flats": [4, -1.2, -46, 0]
-  },
-  "actors": {
-    "asha": {"at": [-1, 0, -34, 180], "color": "#d9c3a0"},
-    "toma": {"at": [1.5, 0, 7, 0], "color": "#6f7f8f", "radius": 0.36, "height": 1.9},
-    "neme": {"cast": "neme", "at": [-1.5, 0, 7.5, 0], "color": "#8f6f5f"},
-    "osu": {"cast": "osu", "at": [-2, 0, -32, 0], "color": "#9a8a7a"},
-    "vendor": {"cast": "vendor", "at": [-6, 0, -32, 0], "color": "#7a8a5a"},
-    "fisher": {"cast": "fisher", "at": [2, 0, -32, 0], "color": "#5a7a8a"},
-    "child": {"cast": "child", "at": [-3, 0, -3, 90], "color": "#d4b07a", "radius": 0.2, "height": 1.1},
-    "netmender": {"cast": "netmender", "at": [33, 0, -21, 0], "color": "#8a9a7a"},
-    "reed": {"cast": "reed", "at": [16, 0, -6, 270], "color": "#b8b2a8"},
-    "ysolde_edge": {"at": [12, 0, -34, 270], "color": "#2a2440", "radius": 0.26, "height": 1.85},
-    "ysolde": {"at": [1.4, 0, -37.1, 180], "color": "#2a2440", "radius": 0.26, "height": 1.0, "hidden": true}
-  },
-  "shots": {
-    "H02": {"pos": [5, 2.4, 8], "look_at": [-1, 1.5, -6], "fov": 46},
-    "H04": {"pos": [-12, 3, 0], "look_at": [-18, 1, -8], "fov": 46},
-    "H07": {"pos": [12, 2, -2], "look_at": [18, 1.5, -5], "fov": 40},
-    "H09": {"pos": [30, 2.2, -16], "look_at": [40, 0, -20], "fov": 46},
-    "H08": {"pos": [1.6, 1.6, -35.6], "look_at": [1.8, 1.5, -37.95], "fov": 28},
-    "H12": {"pos": [-9, 2.5, -22], "look_at": [3, 1.0, -38], "fov": 62},
-    "H13": {"pos": [43.5, -0.75, -16.5], "look_at": [40, 0.6, -20], "fov": 54},
-    "H14": {"pos": [41.2, 0.75, -21.6], "look_at": [42.5, 0.75, -20.4], "fov": 16},
-    "H15": {"pos": [0.2, 0.9, -36.2], "look_at": [1.4, 1.4, -37.95], "fov": 18},
-    "H16": {"pos": [-1, 1.6, -27], "look_at": [0, 1.6, -29], "fov": 16},
-    "C01": {"pos": [0, 1.8, -36.5], "look_at": [0, -0.5, -70], "fov": 40},
-    "C02": {"pos": [6, 1.0, -62], "look_at": [0, -0.6, -58], "fov": 30}
-  },
-  "triggers": [
-    {"id": "npc_child", "activation": "interact", "at": [-3, 0, -3], "size": [2, 0, 2], "prompt_key": "FIELD_PROMPT_LISTEN", "requires_flag": "ch04_started", "blocked_by_flag": "ch04_shell_set", "payload": {"dialogue": "ch04_bark_lane_rhyme"}},
-    {"id": "npc_netmender", "activation": "interact", "at": [33, 0, -20], "size": [2, 0, 2], "prompt_key": "FIELD_PROMPT_LISTEN", "requires_flag": "ch04_started", "blocked_by_flag": "ch04_shell_set", "payload": {"dialogue": "ch04_bark_dock_netmender"}},
-    {"id": "npc_reed", "activation": "interact", "at": [16, 0, -6], "size": [2, 0, 2], "prompt_key": "FIELD_PROMPT_LISTEN", "requires_flag": "ch04_started", "blocked_by_flag": "ch04_shell_set", "payload": {"dialogue": "ch04_bark_chapel_reed"}},
-    {"id": "inn_door", "activation": "interact", "at": [-15.5, 0, -20], "size": [1.5, 0, 2], "prompt_key": "FIELD_PROMPT_LOOK", "payload": {"dialogue": "ch04_bark_inn_closed"}},
-    {"id": "feast", "at": [0, 0, -27.5], "size": [18, 0, 1.5], "requires_flag": "ch04_started", "blocked_by_flag": "ch04_shell_set", "once": true, "payload": {"beat": "the_wake"}},
-    {"id": "table_vendor", "activation": "interact", "at": [-6, 0, -30], "size": [2, 0, 1.5], "prompt_key": "FIELD_PROMPT_LISTEN", "blocked_by_flag": "ch04_shell_set", "payload": {"dialogue": "ch04_wake_vendor"}},
-    {"id": "table_osu", "activation": "interact", "at": [-2, 0, -30], "size": [2, 0, 1.5], "prompt_key": "FIELD_PROMPT_LISTEN", "blocked_by_flag": "ch04_shell_set", "payload": {"dialogue": "ch04_wake_osu"}},
-    {"id": "table_fisher", "activation": "interact", "at": [2, 0, -30], "size": [2, 0, 1.5], "prompt_key": "FIELD_PROMPT_LISTEN", "blocked_by_flag": "ch04_shell_set", "payload": {"dialogue": "ch04_wake_fisher"}},
-    {"id": "table_neme", "activation": "interact", "at": [6, 0, -30], "size": [2, 0, 1.5], "prompt_key": "FIELD_PROMPT_LISTEN", "blocked_by_flag": "ch04_shell_set", "payload": {"beat": "neme_table"}},
-    {"id": "wall", "at": [0, 0, -35.5], "size": [14, 0, 2], "requires_flag": "ch04_feast_neme", "blocked_by_flag": "ch04_shell_set", "payload": {"beat": "shell_set"}},
-    {"id": "the_ink", "activation": "interact", "at": [1.4, 0, -36], "size": [2, 0, 1.5], "prompt_key": "FIELD_PROMPT_LOOK", "requires_flag": "ch04_dock_comforted", "blocked_by_flag": "ch04_saw_ysolde_ink", "payload": {"beat": "the_ink"}},
-    {"id": "neme_door", "activation": "interact", "at": [0, 0, 8.2], "size": [2, 0, 1.2], "prompt_key": "FIELD_PROMPT_SLEEP", "requires_flag": "ch04_dock_comforted", "payload": {"beat": "dawn"}}
+  "FeastEdge": [
+   -4.0,
+   0.837,
+   -100.0,
+   0.0
   ],
-  "states": [
-    {"flag": "ch03_rhen_sworn_guardian", "hide": ["AshaShell", "WallLampsLow", "InkLamp"]},
-    {"flag": "ch04_started", "hide": ["WindowLit1", "WindowLit2", "WindowLit3", "WindowLit4"]},
-    {"flag": "ch04_shell_set", "show": ["AshaShell"], "hide": ["ysolde_edge"]},
-    {"flag": "ch04_dock_comforted", "hide": ["vendor", "fisher", "osu", "child", "netmender", "reed", "WallLamps", "GrassLamps"], "show": ["WallLampsLow", "InkLamp", "ysolde"]},
-    {"flag": "ch04_saw_ysolde_ink", "hide": ["ysolde", "InkLamp"]}
+  "DockEnd": [
+   23.49,
+   1.4,
+   39.35,
+   305.0
   ],
-  "ramps": [
-    {"id": "CausewayDown", "from": [4.0, 0.0, -41.3], "to": [4.0, -1.2, -45.5], "width": 6.0, "color": "#3e4048"}
+  "DockShore": [
+   -2.72,
+   1.4,
+   57.71,
+   125.0
+  ],
+  "WallDawn": [
+   -12.5,
+   1.469,
+   -118.0,
+   16.0
+  ],
+  "Shrine": [
+   -67.0,
+   2.019,
+   44.3,
+   180.0
   ]
+ },
+ "marks": {
+  "table_lane": [
+   -0.5,
+   0.673,
+   -102.5,
+   0.0
+  ],
+  "lane_toma": [
+   -52.5,
+   1.869,
+   -4.5,
+   270.0
+  ],
+  "neme_table": [
+   4.0,
+   0.566,
+   -111.5,
+   315.0
+  ],
+  "wall_gap": [
+   -13.9,
+   1.488,
+   -119.6,
+   16.0
+  ],
+  "wall_osu": [
+   -13.51,
+   1.477,
+   -118.25,
+   16.0
+  ],
+  "wall_neme": [
+   -14.61,
+   1.466,
+   -116.28,
+   16.0
+  ],
+  "wall_toma": [
+   -12.3,
+   1.432,
+   -116.94,
+   16.0
+  ],
+  "wall_vendor": [
+   -15.98,
+   1.479,
+   -115.26,
+   16.0
+  ],
+  "wall_fisher": [
+   -8.24,
+   1.353,
+   -117.27,
+   16.0
+  ],
+  "feast_edge": [
+   10.5,
+   0.122,
+   -108.0,
+   90.0
+  ],
+  "dock_end": [
+   23.08,
+   1.4,
+   39.64,
+   305.0
+  ],
+  "dock_shore": [
+   -3.54,
+   1.4,
+   58.28,
+   125.0
+  ],
+  "dock_asha_from": [
+   16.53,
+   1.401,
+   44.23,
+   305.0
+  ],
+  "dock_toma_from": [
+   -8.05,
+   0.982,
+   61.43,
+   305.0
+  ],
+  "wall_away": [
+   -8.5,
+   1.607,
+   -123.0,
+   90.0
+  ],
+  "dawn_neme": [
+   -15.4,
+   1.482,
+   -117.6,
+   -37.0
+  ],
+  "leave_rhen": [
+   -7.07,
+   1.311,
+   -116.25,
+   -115.0
+  ],
+  "leave_asha": [
+   -6.92,
+   1.263,
+   -114.56,
+   -111.0
+  ],
+  "leave_toma": [
+   -9.51,
+   1.33,
+   -115.81,
+   -111.0
+  ],
+  "causeway_toma": [
+   12.55,
+   0.322,
+   -130.0,
+   300.0
+  ],
+  "causeway_asha": [
+   10.4,
+   0.432,
+   -128.5,
+   300.0
+  ],
+  "causeway_rhen": [
+   8.6,
+   0.536,
+   -127.2,
+   300.0
+  ],
+  "way_feast_s": [
+   8.0,
+   0.29,
+   -110.0,
+   90.0
+  ],
+  "way_lane_n": [
+   -6.0,
+   0.973,
+   -95.0,
+   0.0
+  ],
+  "way_wall_east": [
+   -9.5,
+   1.533,
+   -121.5,
+   270.0
+  ],
+  "way_rail_gap": [
+   4.0,
+   0.768,
+   -120.0,
+   0.0
+  ],
+  "way_flats": [
+   7.0,
+   0.628,
+   -126.0,
+   300.0
+  ]
+ },
+ "actors": {
+  "asha": {
+   "color": "#d9c3a0",
+   "at": [
+    -10.2,
+    1.337,
+    -115.8,
+    196.0
+   ]
+  },
+  "toma": {
+   "color": "#6f7f8f",
+   "radius": 0.36,
+   "height": 1.9,
+   "at": [
+    -56.4,
+    1.868,
+    -3.4,
+    0.0
+   ]
+  },
+  "neme": {
+   "cast": "neme",
+   "color": "#8f6f5f",
+   "at": [
+    -59.6,
+    1.986,
+    -3.3,
+    0.0
+   ]
+  },
+  "osu": {
+   "cast": "osu",
+   "color": "#9a8a7a",
+   "at": [
+    6.0,
+    0.281,
+    -103.3,
+    51.0
+   ]
+  },
+  "vendor": {
+   "cast": "vendor",
+   "color": "#7a8a5a",
+   "at": [
+    3.4,
+    0.439,
+    -104.6,
+    47.0
+   ]
+  },
+  "fisher": {
+   "cast": "fisher",
+   "color": "#5a7a8a",
+   "at": [
+    8.3,
+    0.235,
+    -107.6,
+    62.0
+   ]
+  },
+  "child": {
+   "cast": "child",
+   "color": "#d4b07a",
+   "radius": 0.2,
+   "height": 1.1,
+   "at": [
+    -70.0,
+    2.194,
+    -9.5,
+    90.0
+   ]
+  },
+  "netmender": {
+   "cast": "netmender",
+   "color": "#8a9a7a",
+   "at": [
+    -5.2,
+    0.463,
+    56.4,
+    0.0
+   ]
+  },
+  "reed": {
+   "cast": "reed",
+   "color": "#b8b2a8",
+   "at": [
+    -116.3,
+    2.7,
+    33.6,
+    270.0
+   ]
+  },
+  "ysolde_edge": {
+   "color": "#2a2440",
+   "radius": 0.26,
+   "height": 1.85,
+   "at": [
+    10.5,
+    0.122,
+    -108.0,
+    90.0
+   ]
+  },
+  "ysolde": {
+   "color": "#2a2440",
+   "radius": 0.26,
+   "height": 1.0,
+   "hidden": true,
+   "at": [
+    -13.6,
+    1.488,
+    -119.2,
+    196.0
+   ]
+  }
+ },
+ "shots": {
+  "H02": {
+   "pos": [
+    -47.0,
+    3.832,
+    -1.5
+   ],
+   "look_at": [
+    -64.0,
+    3.465,
+    -7.5
+   ],
+   "fov": 46
+  },
+  "H04": {
+   "pos": [
+    -34.0,
+    4.722,
+    6.0
+   ],
+   "look_at": [
+    -41.0,
+    2.866,
+    0.0
+   ],
+   "fov": 46
+  },
+  "H07": {
+   "pos": [
+    -108.0,
+    4.9,
+    36.0
+   ],
+   "look_at": [
+    -117.0,
+    4.3,
+    32.0
+   ],
+   "fov": 40
+  },
+  "H09": {
+   "pos": [
+    -3.5,
+    2.976,
+    60.5
+   ],
+   "look_at": [
+    14.0,
+    -0.037,
+    47.0
+   ],
+   "fov": 46
+  },
+  "H08": {
+   "pos": [
+    -13.2,
+    2.956,
+    -117.2
+   ],
+   "look_at": [
+    -14.4,
+    2.799,
+    -120.6
+   ],
+   "fov": 28
+  },
+  "H12": {
+   "pos": [
+    16.0,
+    2.732,
+    -98.0
+   ],
+   "look_at": [
+    -6.0,
+    2.225,
+    -114.0
+   ],
+   "fov": 62
+  },
+  "H13": {
+   "pos": [
+    26.9,
+    0.9,
+    44.2
+   ],
+   "look_at": [
+    23.1,
+    2.1,
+    39.6
+   ],
+   "fov": 54
+  },
+  "H14": {
+   "pos": [
+    19.4,
+    3.0,
+    42.2
+   ],
+   "look_at": [
+    23.1,
+    2.9,
+    39.6
+   ],
+   "fov": 16
+  },
+  "H15": {
+   "pos": [
+    -12.6,
+    2.485,
+    -118.8
+   ],
+   "look_at": [
+    -13.9,
+    2.695,
+    -120.2
+   ],
+   "fov": 18
+  },
+  "H16": {
+   "pos": [
+    -15.05,
+    3.026,
+    -117.82
+   ],
+   "look_at": [
+    -14.61,
+    3.016,
+    -116.28
+   ],
+   "fov": 22
+  },
+  "H17": {
+   "pos": [
+    -9.7,
+    2.825,
+    -114.1
+   ],
+   "look_at": [
+    -10.2,
+    2.887,
+    -115.8
+   ],
+   "fov": 24
+  },
+  "C01": {
+   "pos": [
+    -12.0,
+    5.5,
+    -113.0
+   ],
+   "look_at": [
+    8.0,
+    0.5,
+    -127.0
+   ],
+   "fov": 45
+  },
+  "C02": {
+   "pos": [
+    6.0,
+    6.5,
+    -112.0
+   ],
+   "look_at": [
+    14.0,
+    0.5,
+    -136.0
+   ],
+   "fov": 50
+  }
+ },
+ "triggers": [
+  {
+   "id": "npc_child",
+   "activation": "interact",
+   "at": [
+    -70.0,
+    2.194,
+    -9.5
+   ],
+   "size": [
+    2,
+    0,
+    2
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch04_started",
+   "blocked_by_flag": "ch04_shell_set",
+   "payload": {
+    "dialogue": "ch04_bark_lane_rhyme"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "npc_netmender",
+   "activation": "interact",
+   "at": [
+    -5.2,
+    0.463,
+    56.4
+   ],
+   "size": [
+    2,
+    0,
+    2
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch04_started",
+   "blocked_by_flag": "ch04_shell_set",
+   "payload": {
+    "dialogue": "ch04_bark_dock_netmender"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "npc_reed",
+   "activation": "interact",
+   "at": [
+    -116.3,
+    2.7,
+    33.6
+   ],
+   "size": [
+    2,
+    0,
+    2
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch04_started",
+   "blocked_by_flag": "ch04_shell_set",
+   "payload": {
+    "dialogue": "ch04_bark_chapel_reed"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "inn_door",
+   "activation": "interact",
+   "at": [
+    -30.0,
+    1.792,
+    57.5
+   ],
+   "size": [
+    1.5,
+    0,
+    2
+   ],
+   "prompt_key": "FIELD_PROMPT_LOOK",
+   "payload": {
+    "dialogue": "ch04_bark_inn_closed"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "feast",
+   "at": [
+    -2.5,
+    0.782,
+    -101.5
+   ],
+   "size": [
+    24,
+    0,
+    1.5
+   ],
+   "requires_flag": "ch04_started",
+   "blocked_by_flag": "ch04_shell_set",
+   "once": true,
+   "payload": {
+    "beat": "the_wake"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "table_vendor",
+   "activation": "interact",
+   "at": [
+    2.5,
+    0.532,
+    -106.5
+   ],
+   "size": [
+    2.4,
+    0,
+    2.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "blocked_by_flag": "ch04_shell_set",
+   "payload": {
+    "dialogue": "ch04_wake_vendor"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "table_osu",
+   "activation": "interact",
+   "at": [
+    6.0,
+    0.299,
+    -104.5
+   ],
+   "size": [
+    2.4,
+    0,
+    2.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "blocked_by_flag": "ch04_shell_set",
+   "payload": {
+    "dialogue": "ch04_wake_osu"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "table_fisher",
+   "activation": "interact",
+   "at": [
+    7.3,
+    0.306,
+    -108.5
+   ],
+   "size": [
+    2.4,
+    0,
+    2.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "blocked_by_flag": "ch04_shell_set",
+   "payload": {
+    "dialogue": "ch04_wake_fisher"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "table_neme",
+   "activation": "interact",
+   "at": [
+    5.0,
+    0.523,
+    -112.5
+   ],
+   "size": [
+    2.4,
+    0,
+    2.4
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "blocked_by_flag": "ch04_shell_set",
+   "payload": {
+    "beat": "neme_table"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "wall",
+   "at": [
+    -12.5,
+    1.485,
+    -118.8
+   ],
+   "size": [
+    9,
+    0,
+    2.5
+   ],
+   "requires_flag": "ch04_feast_neme",
+   "blocked_by_flag": "ch04_shell_set",
+   "payload": {
+    "beat": "shell_set"
+   },
+   "yaw": -31.1
+  },
+  {
+   "id": "the_ink",
+   "activation": "interact",
+   "at": [
+    -13.4,
+    1.491,
+    -119.4
+   ],
+   "size": [
+    2,
+    0,
+    1.5
+   ],
+   "prompt_key": "FIELD_PROMPT_LOOK",
+   "requires_flag": "ch04_dock_comforted",
+   "blocked_by_flag": "ch04_saw_ysolde_ink",
+   "payload": {
+    "beat": "the_ink"
+   },
+   "yaw": -31.1
+  },
+  {
+   "id": "neme_door",
+   "activation": "interact",
+   "at": [
+    -58.0,
+    1.909,
+    -2.8
+   ],
+   "size": [
+    2,
+    0,
+    1.2
+   ],
+   "prompt_key": "FIELD_PROMPT_SLEEP",
+   "requires_flag": "ch04_dock_comforted",
+   "payload": {
+    "beat": "dawn"
+   },
+   "yaw": 0.0
+  }
+ ],
+ "camera_volumes": [
+  {
+   "id": "NemeDoor",
+   "mode": "pan_follow",
+   "at": [
+    -58.0,
+    3.0,
+    -3.6
+   ],
+   "size": [
+    10.0,
+    6.0,
+    10.0
+   ],
+   "pos": [
+    -64.0,
+    5.5,
+    -11.0
+   ],
+   "look_at": [
+    -58.0,
+    2.4,
+    -3.6
+   ],
+   "fov": 46.4,
+   "priority": 1
+  }
+ ],
+ "states": [
+  {
+   "flag": "ch03_rhen_sworn_guardian",
+   "show_sets": [
+    "ch04_wake",
+    "ch04_shell_imra_faded"
+   ]
+  },
+  {
+   "flag": "ch04_shell_set",
+   "show_sets": [
+    "ch04_shell_asha"
+   ],
+   "hide": [
+    "ysolde_edge"
+   ]
+  },
+  {
+   "flag": "ch04_dock_comforted",
+   "hide": [
+    "vendor",
+    "fisher",
+    "osu",
+    "child",
+    "netmender",
+    "reed"
+   ],
+   "show": [
+    "ysolde"
+   ]
+  },
+  {
+   "flag": "ch04_saw_ysolde_ink",
+   "hide": [
+    "ysolde"
+   ],
+   "hide_sets": [
+    "ch04_shell_imra_faded"
+   ],
+   "show_sets": [
+    "ch04_shell_imra_inked"
+   ]
+  }
+ ]
 }

@@ -22,6 +22,9 @@ extends Node3D
 ## A story method to run instead of `scene_id` (e.g. HalunaStory's `_night`: B11's night mood, cast and scene),
 ## on the level's `Story` node with its dialogue advancing by itself; its hand-off is recorded, never travelled.
 @export var story_call: StringName = &""
+## The line (its #line id) the scene stops on: once it shows, lines stop advancing, so the shot holds that line on
+## its own camera whatever the frame count (a slower or faster capture can't land on the wrong line). Empty = run on.
+@export var hold_line: StringName = &""
 
 var level: Node3D
 var sequencer: CutsceneSequencer
@@ -56,6 +59,7 @@ func start() -> void:
 			story.set(&"hand_off", func(_kind: StringName, _target: String) -> void: pass)
 			sequencer = story.get(&"sequencer") as CutsceneSequencer
 			sequencer.auto_advance = true
+			_hold(sequencer)
 			sequencer.auto_choice = choice
 			story.call(story_call)
 		return
@@ -66,8 +70,21 @@ func start() -> void:
 	sequencer.name = "ShotSequencer"
 	sequencer.auto_advance = true
 	sequencer.auto_choice = choice
-	add_child(sequencer)
+	_hold(sequencer)
+	# Under the level, as a zone's own sequencer is: HeroFieldParty finds it there and hides the followers while
+	# a held scene plays (B02 showed Asha at Neme's table, who is "at the market").
+	level.add_child(sequencer)
 	sequencer.play(scene_id, stage)
+
+
+func _hold(seq: CutsceneSequencer) -> void:
+	if hold_line != &"":
+		seq.line_shown.connect(_on_line_shown)
+
+
+func _on_line_shown(step: DialogueStep) -> void:
+	if step.line_id == hold_line:
+		sequencer.auto_advance = false
 
 
 func _exit_tree() -> void:

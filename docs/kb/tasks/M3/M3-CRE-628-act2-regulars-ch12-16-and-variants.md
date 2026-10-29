@@ -2,7 +2,8 @@
 id: M3-CRE-628
 title: "Build three Act II regulars (ridge lynx, cord moth, glass skate) and four variants from their sheets"
 role: character
-status: review
+status: blocked
+blocked-by: ADR 0041
 owner_session: "worktree-agent-aac484d16edeb5a00 (creatures, cloud session_01EbDaRQ5n7hpvwuRG6jEDQY)"
 reviewer: art
 depends_on: [M3-CRE-620]
@@ -269,3 +270,4 @@ every clip but the KO.
 - **The moth's unravel** (removing a buff) is the cast clip only. The ability is battle design's.
 
 ## Review log
+- 2026-10-28, creatures: **paused by ADR 0041** (Act I at final quality first; the human's directive). The work done so far is merged on claude/creatures as is; nothing reverted. Resume when a new ADR lifts the pause.

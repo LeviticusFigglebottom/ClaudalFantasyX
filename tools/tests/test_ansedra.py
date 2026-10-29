@@ -55,6 +55,25 @@ class AnsedraTests(unittest.TestCase):
         self.assertLess(abs(z - pz), ansedra.PURSUIT_HALF_BEAM, "inside the beam")
         self.assertLess(abs(x - px), ansedra.PURSUIT_LEN * 0.5)
 
+    def test_the_hall_roofs_face_up(self) -> None:
+        for mb in ansedra.build_lacquer_hall():
+            p, t = np.asarray(mb.pos), np.asarray(mb.tris)
+            tile = np.asarray(mb.tri_mat) == mb.materials.index(ansedra.M_TILE)
+            tri = p[t[tile]]
+            n = np.cross(tri[:, 1] - tri[:, 0], tri[:, 2] - tri[:, 0])
+            area = np.linalg.norm(n, axis=1) > 1e-6
+            self.assertTrue(np.all(n[area, 1] > 0.0), "every tile face points up")
+
+    def test_the_basin_floor_is_under_its_still_water(self) -> None:
+        lo, hi = ansedra.build_sanctum_basin()[0].bounds()
+        self.assertAlmostEqual(float(hi[1]), 0.0, delta=0.02, msg="the rim's top is the floor level")
+        self.assertLess(float(lo[1]), -ansedra.BASIN_DEPTH)
+
+    def test_the_court_is_level_and_its_steps_reach_the_water(self) -> None:
+        lo, hi = ansedra.build_court_ground()[0].bounds()
+        self.assertLess(float(lo[1]), -1.2, "the steps go under the lagoon (-0.6)")
+        self.assertGreater(float(hi[2]), ansedra.COURT[1] + 4.0, "the water-gate stands out past the steps")
+
     def test_inside_budget(self) -> None:
         for name, fn in ansedra.TARGETS.items():
             lod0, lod1 = fn()

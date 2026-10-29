@@ -38,6 +38,15 @@ TAIL_ROOT_H = 0.40  # head heights above the chin: the tail's root on the back o
 TAIL_RINGS = 140  # rings per strand tube (each strand >= 300 vertices: the probe's braid strand)
 TAIL_AROUND = 6
 FRINGE_SPILL = 0.05  # head heights a front card may run past the hairline
+FRINGE_STAGGER = (0.1, 2.6)  # each crop card's own share of FRINGE_SPILL: the fringe's ends stagger (liss_review.md;
+# widened at big13's review so the clumps break the edge at different depths over the brow)
+# the Lead's gate review (big13): the fringe read as blocky "teeth" at dialogue range: stopped cards ended square on the
+# atlas's opaque mid-strand, all on one line. Cards now gather in clumps that draw together toward their tips, every
+# card ends on the atlas's fading tip, and the tips taper to a point
+CLUMP_SIZE = 5  # crop cards per clump
+CLUMP_PULL = 0.6  # how far a card's tip is drawn onto its clump's lead card (0 at the root)
+CLUMP_EASE = 1.5  # the pull's power along the card: the roots stay spread, the tips gather
+TIP_TAPER = (0.75, 0.85, 0.9)  # the width lost by the tip: hairline row, layers, tufts
 BEAD_MATS = {"salt": "bead_salt", "green": "bead_green", "amber": "bead_amber"}
 
 
@@ -93,9 +102,13 @@ def _flow_dir(lm, P: np.ndarray, N: np.ndarray, G: np.ndarray) -> np.ndarray:
 # The crop
 # ---------------------------------------------------------------------------------------------
 def _trace(scalp, lm, roots: np.ndarray, length: np.ndarray, lift: float, G: np.ndarray, seg: int,
-           rise: np.ndarray | None, stop_at: np.ndarray | None, stop_r: float) -> tuple[np.ndarray, np.ndarray]:
+           rise: np.ndarray | None, stop_at: np.ndarray | None, stop_r: float,
+           spill: np.ndarray | None = None) -> tuple[np.ndarray, np.ndarray]:
     """Paths of `seg` steps along the flow (rhen_hair._trace with her hairline), each stopped where it would come
-    within `stop_r` of `stop_at` (the tail root). Returns (paths, points kept per path)."""
+    within `stop_r` of `stop_at` (the tail root), or where it would pass the hairline by more than its own `spill`
+    (head heights, at the front; default FRINGE_SPILL): a stopped card ends there, so the fringe's ends stagger instead
+    of piling up on one line (liss_review.md). Returns (paths, points kept per path)."""
+    spill = np.full(len(roots), FRINGE_SPILL) if spill is None else spill
     step = length / seg
     paths = [scalp.project(roots, lift)]
     keep = np.full(len(roots), seg + 1)
@@ -108,8 +121,10 @@ def _trace(scalp, lm, roots: np.ndarray, length: np.ndarray, lift: float, G: np.
         N = scalp.normal(cur)
         nxt = scalp.project(cur + _flow_dir(lm, cur, N, G) * step[:, None], lift, iters=3)
         front = np.clip(-(nxt[:, 1] - yc) / (0.3 * lm.h), 0.0, 1.0) ** 2
-        ok = (nxt[:, 2] - zc) / lm.h > hairline_v(lm, nxt) - FRINGE_SPILL * front - 0.01
+        ok = (nxt[:, 2] - zc) / lm.h > hairline_v(lm, nxt) - spill * front - 0.01
         nxt = np.where(ok[:, None], nxt, cur)
+        stopped = ~ok & (keep > k + 1)
+        keep[stopped] = k + 1
         if stop_at is not None:
             near = (np.linalg.norm(nxt - stop_at, axis=1) < stop_r) & (keep > k + 1)
             keep[near] = k + 1
@@ -145,16 +160,26 @@ def _hairline_roots(scalp, lm, phi: np.ndarray, inside_h) -> np.ndarray:
     return p
 
 
+def _clump(paths: np.ndarray, rng: np.random.Generator) -> np.ndarray:
+    """Each card drawn toward the lead card of its clump (the nearest lead by root), more toward the tip. A stopped
+    path holds its last point, so a card that runs on past its lead's end converges on it."""
+    n, m = paths.shape[:2]
+    lead = rng.choice(n, max(1, n // CLUMP_SIZE), replace=False)
+    own = lead[np.argmin(np.linalg.norm(paths[:, None, 0] - paths[None, lead, 0], axis=2), axis=1)]
+    w = CLUMP_PULL * (np.arange(m) / (m - 1)) ** CLUMP_EASE
+    return paths + (paths[own] - paths) * w[None, :, None]
+
+
 def _emit_kept(part: Part, scalp, paths: np.ndarray, keep: np.ndarray, widths, slots, rng, taper: float, v_range,
                wind: float, twist: float = 0.0) -> None:
-    """rhen_hair._emit for the cards that keep at least two points (a stopped card ends where it stopped)."""
+    """rhen_hair._emit for the cards that keep at least two points (a stopped card ends where it stopped, on the
+    atlas's tip all the same: a cut V range ended it square on the opaque mid-strand)."""
     for c in range(len(paths)):
         k = int(keep[c])
         if k < 2:
             rng.random()  # keep the stream aligned whether or not a card is emitted
             continue
-        rhen_hair._emit(part, scalp, paths[c:c + 1, :k], widths[c:c + 1], slots[c:c + 1], rng, taper,
-                        (v_range[0], v_range[0] + (v_range[1] - v_range[0]) * (k - 1) / (paths.shape[1] - 1)), wind,
+        rhen_hair._emit(part, scalp, paths[c:c + 1, :k], widths[c:c + 1], slots[c:c + 1], rng, taper, v_range, wind,
                         twist)
 
 
@@ -170,9 +195,10 @@ def crop(lm, params: dict, rng: np.random.Generator, scalp, root: np.ndarray | N
     phi = np.sort(np.linspace(-lim, lim, n_hl) + rng.uniform(-0.4, 0.4, n_hl) * (2 * lim / n_hl))
     roots = _hairline_roots(scalp, lm, phi, rng.uniform(-0.001, 0.007, n_hl))
     length = rng.uniform(0.5 * lo, 0.8 * lo, n_hl) * s
-    paths, keep = _trace(scalp, lm, roots, length, 0.0009 * s, G, 3, rng.uniform(0.0, 0.002, n_hl) * s, root, stop_r)
-    _emit_kept(part, scalp, paths, keep, rng.uniform(0.004, 0.007, n_hl) * s, rng.choice(SLOTS_HAIRLINE, n_hl), rng,
-               0.3, (0.0, 0.75), 0.0)
+    paths, keep = _trace(scalp, lm, roots, length, 0.0009 * s, G, 3, rng.uniform(0.0, 0.002, n_hl) * s, root, stop_r,
+                         rng.uniform(*FRINGE_STAGGER, n_hl) * FRINGE_SPILL)
+    _emit_kept(part, scalp, _clump(paths, rng), keep, rng.uniform(0.004, 0.007, n_hl) * s,
+               rng.choice(SLOTS_HAIRLINE, n_hl), rng, TIP_TAPER[0], (0.0, 0.75), 0.0)
     wlo, whi = params["card_width_m"]
     layers = [(0.0012 * s, params["scalp_cards"][0], 1.0, 0.002, 0.0),
               (0.0026 * s, params["scalp_cards"][1], 0.85, 0.004, 0.5 * WIND_OUTER),
@@ -181,13 +207,14 @@ def crop(lm, params: dict, rng: np.random.Generator, scalp, root: np.ndarray | N
         r = _roots_inside(scalp, lm, rng, int(count), 0.012 + 0.01 * li)
         n = len(r)
         length = rng.uniform(lo, hi, n) * s
-        paths, keep = _trace(scalp, lm, r, length, lift, G, seg, rng.uniform(0.3, 1.0, n) * rise * s, root, stop_r)
+        paths, keep = _trace(scalp, lm, r, length, lift, G, seg, rng.uniform(0.3, 1.0, n) * rise * s, root, stop_r,
+                             rng.uniform(*FRINGE_STAGGER, n) * FRINGE_SPILL)
         if li == 2:
             slots = np.where(rng.random(n) < 0.5, rng.choice(SLOTS_SPARSE, n), rng.integers(SLOTS_FULL, size=n))
         else:
             slots = rng.integers(SLOTS_FULL, size=n)
-        _emit_kept(part, scalp, paths, keep, rng.uniform(wlo, whi, n) * wk * s, slots, rng, 0.45, (0.0, 0.9), wind,
-                   0.25 * li)
+        _emit_kept(part, scalp, _clump(paths, rng), keep, rng.uniform(wlo, whi, n) * wk * s, slots, rng, TIP_TAPER[1],
+                   (0.0, 0.9), wind, 0.25 * li)
     # ruffled tufts on the crown and at the front (rough cut: the silhouette breaks)
     n_t = 40
     r = _roots_inside(scalp, lm, rng, n_t * 3, 0.03)
@@ -197,10 +224,11 @@ def crop(lm, params: dict, rng: np.random.Generator, scalp, root: np.ndarray | N
     yc = lm.P("head_c")[1]
     front = np.clip(-(r[:, 1] - yc) / (0.3 * lm.h), 0.0, 1.0)
     paths, keep = _trace(scalp, lm, r, rng.uniform(0.9 * lo, 1.05 * hi, m) * s, 0.0048 * s, G, seg,
-                         (0.004 + 0.006 * front) * rng.uniform(0.6, 1.2, m) * s, root, stop_r)
+                         (0.004 + 0.006 * front) * rng.uniform(0.6, 1.2, m) * s, root, stop_r,
+                         rng.uniform(*FRINGE_STAGGER, m) * FRINGE_SPILL)
     slots = np.where(rng.random(m) < 0.4, rng.choice(SLOTS_SPARSE, m), rng.integers(SLOTS_FULL, size=m))
-    _emit_kept(part, scalp, paths, keep, rng.uniform(0.004, 0.0065, m) * s, slots, rng, 0.6, (0.05, 0.9),
-               WIND_OUTER, 0.4)
+    _emit_kept(part, scalp, _clump(paths, rng), keep, rng.uniform(0.004, 0.0065, m) * s, slots, rng, TIP_TAPER[2],
+               (0.05, 0.9), WIND_OUTER, 0.4)
     return part
 
 

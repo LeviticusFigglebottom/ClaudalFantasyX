@@ -1,7 +1,7 @@
 class_name PrologueScene
 extends Node3D
 ## The prologue (SPEC §3.5; M2-FP-03; docs/kb/tech/first_playable_flow.md): New Game lands here
-## (locations.json new_game). A placeholder dead city at dusk built from primitives, staged for the
+## (locations.json new_game). The dead city of Iskarra at dusk (env-art's kit, M3-ENV-711), staged for the
 ## `prologue_dead_city` cutscene: one Camera3D under a FieldCameraDirector, a CutsceneStage with
 ## Shots/P01 and P02, the vigil's cast under Actors (Rhen, Asha and Toma take their HeroFieldActor
 ## bodies at _ready, Ysolde is her model; M2-FP-103), and Spawns/Start. There is no player; place_at()
@@ -18,6 +18,8 @@ signal handed_off(location_id: StringName, spawn: StringName)
 const KEY_SCENE_ID := "scene_id"
 const KEY_NEXT_LOCATION := "next_location"
 const KEY_NEXT_SPAWN := "next_spawn"
+const VIGILS := ^"City/Vigils"
+const VIGIL_FEET := &"Feet"
 
 ## Play the cutscene on entering the tree as the current scene. Tests turn it off.
 @export var autoplay := true
@@ -41,8 +43,30 @@ var finished := false
 func _ready() -> void:
 	# M2-FP-103: the vigil's heroes wear their real bodies (HeroFieldActor), not capsules.
 	HeroFieldActor.attach_stage(stage)
+	dress_vigils()
 	if autoplay:
 		_autoplay.call_deferred()
+
+
+## M3-ENV-724: the vigils still without a model (City/Vigils: Kerrid, Pell, Liss) stand as cloth-coloured
+## capsules centred on the figure. Each takes its hero's field body once hero_motion.json lists one (the
+## character track's hero tasks), feet at the capsule's foot, and its capsule goes. Returns the bodies.
+func dress_vigils() -> Array[HeroFieldActor]:
+	var out: Array[HeroFieldActor] = []
+	for n in get_node(VIGILS).get_children():
+		var fig := n as MeshInstance3D
+		var id := StringName(String(n.name).to_lower())
+		if fig == null or fig.mesh == null or HeroFieldActor.scene_path(id) == "":
+			continue
+		var feet := Marker3D.new()
+		feet.name = VIGIL_FEET
+		fig.add_child(feet)
+		feet.position = Vector3(0.0, fig.get_aabb().position.y, 0.0)
+		var body := HeroFieldActor.attach_actor(feet, id)
+		if body != null:
+			fig.mesh = null
+			out.append(body)
+	return out
 
 
 ## The player stand-in WorldReturn calls after a swap: the camera is the shot's, so there is

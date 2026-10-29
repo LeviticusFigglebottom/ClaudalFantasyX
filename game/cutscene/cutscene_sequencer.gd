@@ -21,7 +21,7 @@ extends Node
 ## `instant` (tests) makes every wait, fade and move take no time and lines advance by themselves.
 ## Cues the first playable has no content for are placeholders: `@face` only records, `@anim`
 ## turns the actor for `look_at` and otherwise plays a same-named AnimationPlayer clip when the
-## actor has one, `@vfx` spawns CutsceneMotes, `@music` falls back to music_stand_ins.
+## actor has one, `@vfx` spawns a GlimmerField (CutsceneVfx), `@music` falls back to music_stand_ins.
 
 signal finished(scene_id: StringName)
 signal event_requested(event_name: StringName, args: Array)
@@ -46,17 +46,21 @@ const META_LIGHT_ENERGY := &"cutscene_authored_energy"
 ## Process after the FieldCameraDirector (priority 0), so the breath turns the pose it just set.
 const PROCESS_AFTER_DIRECTOR := 10
 ## cues.json keys this sequencer accepts but does not perform yet; each warns once per scene.
+## A line tagged #timed shows and the scene goes on: its @waits pace it (a sung verse in time with its cue).
+const TAG_TIMED := "timed"
 const UNSUPPORTED_KWARGS := {
 	&"camera": ["grade"],
 	&"anim": ["loop"],
-	&"vfx": ["drift", "motion", "rate", "form"],
+	&"vfx": ["form"],
 }
 
 ## Tests and captures: no waits, no typewriter, lines and options answer themselves.
 var instant := false
-## Lines advance by themselves once revealed (autoplay, captures), after `auto_advance_hold_sec`.
+## Lines advance by themselves once revealed (autoplay, captures), after `auto_advance_hold_sec`, or longer when
+## `auto_advance_read_cps` > 0: a line stays up until it could be read at that pace (overheard barks).
 var auto_advance := false
 var auto_advance_hold_sec := 1.5
+var auto_advance_read_cps := 0.0
 ## The option index chosen when `instant` or `auto_advance`.
 var auto_choice := 0
 ## When a scene ends faded out, fade back in. A host that changes scene right after sets false.
@@ -383,10 +387,12 @@ func _line(step: DialogueStep) -> void:
 	if _fast():
 		overlay.box.skip_reveal()
 		return
+	if TAG_TIMED in step.tags:
+		return  # held by the script's own @wait, in time with its music (the first verse), not by input
 	if auto_advance:
 		if overlay.box.is_revealing():
 			await _await_on(&"line", overlay.box.reveal_finished, _on_awaited_plain)
-		await _wait_for(auto_advance_hold_sec)
+		await _wait_for(CutsceneMotion.read_hold(overlay.box, auto_advance_read_cps, auto_advance_hold_sec))
 		return
 	await _await_on(&"line", overlay.box.advance_requested, _on_awaited_plain)
 	if speaker != null and is_instance_valid(speaker):
@@ -577,7 +583,7 @@ func _cue_anim(step: DialogueStep) -> void:
 	var clip := StringName(str(step.args[1]))
 	var standin := _stage.clip_mark(StringName(str(step.args[0])), clip) if _stage != null else null
 	if standin != null:
-		# A placeholder clip: stand on its mark, facing the mark's -Z (CutsceneStage.clip_marks).
+		# Stand on the clip's mark, facing its -Z (CutsceneStage.clip_marks); a built clip then plays there too.
 		# M2-FP-29: glide onto it and turn, eased, rather than appear there.
 		_motions.erase(&"move:%s" % step.args[0])
 		var start := actor.global_position
@@ -592,7 +598,8 @@ func _cue_anim(step: DialogueStep) -> void:
 			func(t: float) -> void: _place(actor, start.lerp(end, CutsceneMotion.eased(t, curve)))
 		)
 		_turn_to(StringName(str(step.args[0])), actor, -standin.global_basis.z)
-		return
+		if not CutsceneClips.has_clip(actor, clip):
+			return
 	if clip == ANIM_LOOK_AT and step.args.size() > 2:
 		var tid := StringName(str(step.args[2]))
 		var target := _stage.place(tid) if _stage != null else null
@@ -624,7 +631,7 @@ func _cue_music(step: DialogueStep) -> void:
 		_fade_music(silent, fade, true)
 		return
 	var track := StringName(str(step.args[0]))
-	music_by_audio = CutsceneSound.music(track, fade)  # M2-AUD-07; music_track stays "" (Audio holds its bed for it)
+	music_by_audio = CutsceneSound.music(track, fade, int(step.kwargs.get("stem", -1)))  # M2-AUD-07, M3-AUD-829
 	if music_by_audio:
 		music_track = &""
 		_fade_music(silent, fade, true)
@@ -659,15 +666,10 @@ func _cue_vfx(step: DialogueStep) -> void:
 		_warn("cannot place @vfx %s at '%s'" % [effect, at_id])
 		return
 	var host: Node3D = at if at != null else _stage
-	if host == null:
+	if host == null or CutsceneVfxHosts.offer(get_tree(), effect, at_id, step.kwargs):  # M3-ARC-1326: a stage host
 		return
-	var motes := CutsceneMotes.new()
-	motes.name = "Vfx_%s_%d" % [effect, _vfx_count]
+	CutsceneVfx.spawn(rows[effect], effect, step.kwargs, host, "Vfx_%s_%d" % [effect, _vfx_count], finished)
 	_vfx_count += 1
-	host.add_child(motes)
-	motes.build(
-		rows[effect], int(step.kwargs.get("count", config.get("vfx_default_count", 1))), DEFAULT_SEED + _vfx_count
-	)
 
 
 ## M2-FP-102: `@light <name> on|off [sec]` eases a stage practical's energy (a Light3D found by name under
@@ -717,7 +719,7 @@ func _wants_key(sn: CutsceneShotNode) -> bool:
 	if sn.key_light != CutsceneShotNode.KeyLight.AUTO:
 		return sn.key_light == CutsceneShotNode.KeyLight.ON
 	var shot := sn.shot
-	if shot.mode == CameraShot.Mode.DOLLY or shot.mode == CameraShot.Mode.ORBIT or _director.rail_root == null:
+	if shot.moves_with_player() or _director.rail_root == null:
 		return false  # the camera moves with the player: no fixed framing to judge
 	var root := _director.rail_root.global_transform
 	var aim := _director.aim_point(shot) if not shot.aim_node.is_empty() else root * shot.look_at

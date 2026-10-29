@@ -2,7 +2,7 @@
 id: M3-ENV-100
 title: "Request: an Iskarra plaza kit for the Prologue (the game's first frames are still primitives)"
 role: environment
-status: todo
+status: done
 owner_session: ""
 depends_on: []
 reviewer: cinematics
@@ -52,3 +52,4 @@ One kit should serve all three: build it as a kit with a design note, in the usu
   Cinematics swaps them into `prologue.tscn` and keeps the staging and the shots.
 
 ## Review log
+- 2026-10-27, slice-polish: superseded. Env-art built the Iskarra kit and a drop-in scene under M3-ENV-710 (big12), and slice-polish swapped it into the prologue under M3-ENV-711.

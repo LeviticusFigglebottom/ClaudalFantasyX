@@ -153,6 +153,49 @@
           "color": "glimmer_bound"
         }
       }
+    },
+    "hullgnaw": {
+      "kind": "set_piece",
+      "_note": "M3-BPR-420/M3-HER-1148 (ADR 0041): BattleBossSetPiece plays gather (each turn of a charge), phases and ko on the boss; effects.json ids (tools/vfx/gen_act1_ability_vfx.py).",
+      "gather": "boss_hullgnaw_coil",
+      "phases": {
+        "breaking": "boss_hullgnaw_breaking"
+      },
+      "ko": "boss_spawn_release"
+    },
+    "spar_wraith": {
+      "kind": "set_piece",
+      "_note": "M3-BPR-420/M3-HER-1148 (ADR 0041): BattleBossSetPiece plays gather (each turn of a charge), phases and ko on the boss; effects.json ids (tools/vfx/gen_act1_ability_vfx.py).",
+      "gather": "boss_wraith_lines",
+      "phases": {
+        "hauled_down": "boss_wraith_hauled"
+      },
+      "ko": "boss_spawn_release"
+    },
+    "cinder_matron": {
+      "kind": "set_piece",
+      "_note": "M3-BPR-420/M3-HER-1148 (ADR 0041): BattleBossSetPiece plays gather (each turn of a charge), phases and ko on the boss; effects.json ids (tools/vfx/gen_act1_ability_vfx.py).",
+      "gather": "boss_matron_recrust",
+      "phases": {
+        "pour": "boss_matron_pour"
+      },
+      "ko": "boss_matron_fall"
+    },
+    "stillguard_inquisitor": {
+      "kind": "set_piece",
+      "_note": "M3-BPR-420/M3-HER-1148 (ADR 0041): BattleBossSetPiece plays gather (each turn of a charge), phases and ko on the boss; effects.json ids (tools/vfx/gen_act1_ability_vfx.py).",
+      "phases": {
+        "torch_the_hulk": "boss_inquisitor_torch"
+      }
+    },
+    "undertows_reach": {
+      "kind": "set_piece",
+      "_note": "M3-BPR-420/M3-HER-1148 (ADR 0041): BattleBossSetPiece plays gather (each turn of a charge), phases and ko on the boss; effects.json ids (tools/vfx/gen_act1_ability_vfx.py).",
+      "gather": "boss_reach_gather",
+      "phases": {
+        "dark": "boss_reach_dark",
+        "breach": "boss_reach_breach"
+      }
     }
   },
   "reduced_motion": {

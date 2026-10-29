@@ -3,12 +3,26 @@
   water_jar           a 0.7 m earthenware water jar (laterite clay, a darker wet band at the foot, a
                       wooden lid) on a coral-stone ring
   basket_set          three woven baskets (a tall carrying basket, a shallow tray, a lidded fish basket)
+  lamp_flame          an oil flame, a teardrop 6 cm across, for an arena lamp with none of its own (M3-ENV-746)
   oil_lamp_post       a 2.2 m timber lamp post with a brass and salt-glass lantern on an arm (the
                       night lamps' daytime body)
   fish_drying_rack    a 2.4 m A-frame rack with split fish drying on cords
   net_float_cluster   five salt-glass floats (8-15 cm) in a twine net, as hung from a post or eave
   market_stall        a 2 x 3 m stall frame for the awning cloth, with a slatted table and jars on it
   sandals             a pair of woven-sole sandals, set by a doorway
+  beach_forge         the forge-shop's open-air smithy on the beach (haluna_forge; M3-ENV-746): a dry-laid coral-stone
+                      hearth with an ember bed and a clay chimney cowl at the back, goatskin bellows on its left with a
+                      nozzle in, an anvil on a driftwood stump at its right, a timber quench trough in front of the
+                      stump, a tool rack (tongs, hammers, a hook) behind; 3.2 x 2.0 m, the working side faces +Z
+  shop_sign_goods     a 2.4 m post with an arm and a hanging carved board (0.62 x 0.46 m) painted with the trade's mark
+  shop_sign_forge     (the jar: the goods stall; the anvil: the forge; the steaming bowl: the inn), the board on two
+  shop_sign_inn       cords from the arm's end at +X, its face to +Z
+  hand_broom          a 1.4 m palm-rib broom (a timber handle, the ribs bound on in two lashings), origin at its middle,
+                      along +Y (the reed's broom; drops in for the NPC's CylinderMesh)
+  woven_bag           a 0.45 x 0.40 x 0.28 m woven carrying bag with a rope handle, origin at its centre (Neme's)
+  clay_bowl           a 0.44 m earthenware serving bowl, 0.12 m tall, origin at its centre (Osu's)
+  wake_shell_loose    one wake-shell off its stand (walls.py's shell), 0.14 m, lying face up, origin at its centre
+                      (the one Osu washes in the bowl)
 
 Origins on the ground plane, +Y up; the front of a piece faces +Z. Leaf-boats are the shrine kit's
 (M2-ENV-03), not duplicated here.
@@ -33,16 +47,30 @@ M_STONE = "kit_coral_stone"
 M_NET = "kit_net"
 M_FISH = "kit_dried_fish"
 M_FLAME = "kit_lamp_flame"
+M_FLAME_HOT = "kit_lamp_flame_hot"  # a practical lamp's flame at night (the arenas' flame_energy)
 
 TRI_BUDGET = {
     "water_jar": (2400, 300),
     "basket_set": (3600, 300),
     "oil_lamp_post": (2600, 300),
+    "lamp_flame": (200, 40),
     "fish_drying_rack": (5000, 400),
     "net_float_cluster": (2400, 200),
     "market_stall": (6000, 600),
     "sandals": (400, 60),
+    "beach_forge": (9000, 700),
+    "shop_sign_goods": (1800, 200),
+    "shop_sign_forge": (1800, 200),
+    "shop_sign_inn": (1800, 200),
+    "hand_broom": (1500, 120),
+    "woven_bag": (1500, 120),
+    "clay_bowl": (900, 100),
+    "wake_shell_loose": (600, 80),
 }
+M_IRON = "kit_rebar"  # the kit's rusted iron
+M_LEATHER = "kit_dried_fish"  # tannin-dark: the bellows' goatskin
+M_CHAR = "kit_interior_dark"
+M_CARVED = "kit_carved_wood"
 
 
 def lathe(mb: kc.MeshBuilder, profile, mat_name: str, rng, *, sides: int = 16, at=(0.0, 0.0, 0.0),
@@ -287,7 +315,276 @@ def build_sandals(seed: int = 157) -> list[kc.MeshBuilder]:
     return out
 
 
+FLAME_PROFILE = [(0.0, -0.02), (0.6, 0.0), (0.85, 0.22), (0.72, 0.5), (0.42, 0.78), (0.14, 0.95), (0.0, 1.0)]
+
+
+def build_lamp_flame(seed: int = 157, radius: float = 0.06) -> list[kc.MeshBuilder]:
+    """M3-ENV-746: a lantern's oil flame, for an arena's practical lamp whose kit piece has none: a teardrop drawn
+    up off the wick, `radius` its widest, 2.4 radii tall, its base at the origin (`kit_lamp_flame_hot`, emissive at the arenas' flame energy)."""
+    out = []
+    h = radius * 2.4
+    for lod in (False, True):
+        rng = kc.rng_for("lamp_flame", seed)
+        mb = kc.MeshBuilder("lamp_flame" + ("-lod1" if lod else ""))
+        prof = [(r * radius / 0.85, y * h) for r, y in FLAME_PROFILE]
+        if lod:
+            prof = prof[::2]
+        lathe(mb, prof, M_FLAME_HOT, rng, sides=10 if not lod else 5, weather=kc.Weathering(0, 0, 0, 0))
+        out.append(mb)
+    return out
+
+
+def build_beach_forge(seed: int = 158) -> list[kc.MeshBuilder]:
+    """The forge-shop's open-air smithy (see the module docstring)."""
+    out = []
+    stone_w = kc.Weathering(moss=0.05, salt=0.3, wet=0.05, erosion=0.6)
+    soot = kc.Weathering(moss=0.0, salt=0.1, wet=0.0, erosion=0.3)
+    for lod in (False, True):
+        rng = kc.rng_for("beach_forge", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("beach_forge" + ("-lod1" if lod else ""))
+        stone, tm, iron = mb.material(M_STONE), mb.material(M_TIMBER), mb.material(M_IRON)
+        # The hearth: two dry-laid courses round an ember bed, the bed's top 0.78 m.
+        hx, hz = -0.75, -0.2
+        if lod:
+            kc.rounded_block(mb, (hx, 0.4, hz), (0.65, 0.4, 0.5), stone, seg=1, radius=0.05)
+        else:
+            for k, (y0, y1) in enumerate(((0.0, 0.4), (0.4, 0.8))):
+                for i in range(4):
+                    x = hx - 0.65 + 0.325 * (i + 0.5)
+                    for z in (hz - 0.42, hz + 0.42):
+                        kc.rounded_block(mb, (x + rng.normal(0, 0.01), (y0 + y1) * 0.5, z), (0.155, 0.19, 0.08),
+                                         stone, radius=0.03, seg=1, noise=noise, disp_m=0.008, weather=stone_w,
+                                         variation=float(rng.random()))
+                for z in (-0.25, 0.0, 0.25):
+                    for x in (hx - 0.57, hx + 0.57):
+                        kc.rounded_block(mb, (x, (y0 + y1) * 0.5, hz + z), (0.08, 0.19, 0.12), stone, radius=0.03,
+                                         seg=1, noise=noise, disp_m=0.008, weather=stone_w,
+                                         variation=float(rng.random()))
+                del k
+            kc.rounded_block(mb, (hx, 0.36, hz), (0.5, 0.36, 0.34), stone, radius=0.02, seg=1, weather=stone_w)
+        # The ember bed: char round a glowing heart.
+        kc.rounded_block(mb, (hx, 0.74, hz), (0.46, 0.04, 0.3), mb.material(M_CHAR), seg=1, radius=0.03,
+                         weather=soot)
+        lathe(mb, [(0.0, 0.0), (0.24, 0.0), (0.2, 0.05), (0.0, 0.07)], M_FLAME, rng, sides=12 if not lod else 6,
+              at=(hx, 0.77, hz), weather=kc.Weathering(0, 0, 0, 0), cap_start=False)
+        # The clay chimney cowl at the back, drawing the smoke up over the smith's head.
+        lathe(mb, [(0.42, 0.0), (0.36, 0.25), (0.16, 0.7), (0.12, 1.3), (0.13, 1.36)], M_CLAY, rng,
+              sides=14 if not lod else 7, at=(hx, 0.8, hz - 0.3), noise=None if lod else noise, disp_m=0.006,
+              weather=soot, cap_start=False)
+        # The anvil on its driftwood stump, right of the hearth.
+        ax, az = 0.75, 0.05
+        lathe(mb, [(0.26, 0.0), (0.24, 0.12), (0.22, 0.5), (0.21, 0.55)], M_TIMBER, rng, sides=12 if not lod else 6,
+              at=(ax, 0.0, az), noise=None if lod else noise, disp_m=0.01, cap_end=True)
+        kc.rounded_block(mb, (ax, 0.63, az), (0.26, 0.08, 0.1), iron, seg=1, radius=0.015, weather=soot)
+        kc.rounded_block(mb, (ax, 0.58, az), (0.14, 0.05, 0.08), iron, seg=1, radius=0.01, weather=soot)
+        if not lod:
+            horn = np.array([[ax + 0.26, 0.66, az], [ax + 0.38, 0.665, az], [ax + 0.48, 0.67, az]])
+            kc.tube(mb, horn, np.array([0.06, 0.035, 0.008]), 8, iron, weather=soot, cap_end=True)
+            # A hammer resting on the face.
+            kc.tube(mb, np.array([[ax - 0.05, 0.725, az + 0.02], [ax + 0.25, 0.73, az + 0.16]]), 0.014, 6, tm,
+                    cap_start=True, cap_end=True)
+            kc.rounded_block(mb, (ax - 0.06, 0.74, az + 0.015), (0.03, 0.025, 0.05), iron, seg=1, radius=0.006)
+            # The quench trough in front of the stump.
+            tx, tz = 0.85, 0.75
+            for zz in (tz - 0.18, tz + 0.18):
+                kc.plank(mb, (tx - 0.45, 0.2, zz), (tx + 0.45, 0.2, zz), 0.36, 0.03, tm, up=np.array([0.0, 0.0, 1.0]),
+                         variation=float(rng.random()))
+            for xx in (tx - 0.45, tx + 0.45):
+                kc.plank(mb, (xx, 0.2, tz - 0.18), (xx, 0.2, tz + 0.18), 0.36, 0.03, tm, up=np.array([1.0, 0.0, 0.0]),
+                         variation=float(rng.random()))
+            kc.rounded_block(mb, (tx, 0.33, tz), (0.42, 0.005, 0.15), mb.material(M_CHAR), seg=1, radius=0.002)
+            # The bellows: two boards and a goatskin between, the nozzle into the hearth's side.
+            bx, bz = hx - 0.95, hz + 0.15
+            # On the sand (the smith works them kneeling), the nozzle rising into the hearth's side.
+            for y in (0.015, 0.215):
+                kc.rounded_block(mb, (bx, y, bz), (0.22, 0.015, 0.16), tm, seg=1, radius=0.01,
+                                 variation=float(rng.random()))
+            lathe(mb, [(0.15, 0.0), (0.19, 0.06), (0.19, 0.14), (0.15, 0.2)], M_LEATHER, rng, sides=10,
+                  at=(bx, 0.015, bz), cap_start=False)
+            kc.tube(mb, np.array([[bx + 0.22, 0.1, bz], [hx - 0.62, 0.35, hz + 0.1]]), 0.025, 6, iron, cap_end=True)
+            kc.tube(mb, np.array([[bx - 0.22, 0.23, bz], [bx - 0.42, 0.28, bz]]), 0.018, 5, tm, cap_end=True)
+            # The tool rack behind the anvil: two posts, a bar, tongs and hammers on hooks.
+            rx, rz = 0.9, -0.75
+            for x in (rx - 0.55, rx + 0.55):
+                village.post(mb, (x, -0.2, rz), (x, 1.55, rz), 0.045, rng, noise, sides=6, lash=False)
+            kc.tube(mb, np.array([[rx - 0.6, 1.4, rz + 0.04], [rx + 0.6, 1.4, rz + 0.04]]), 0.025, 6, tm,
+                    cap_start=True, cap_end=True)
+            for k, x in enumerate(np.linspace(rx - 0.4, rx + 0.4, 5)):
+                drop = 0.55 + 0.12 * (k % 2)
+                kc.tube(mb, np.array([[x, 1.38, rz + 0.07], [x + 0.03, 1.38 - drop, rz + 0.08]]), 0.012, 4, iron,
+                        cap_end=True)
+                if k % 2 == 0:  # tongs: a second leg
+                    kc.tube(mb, np.array([[x, 1.38, rz + 0.07], [x - 0.04, 1.38 - drop, rz + 0.09]]), 0.012, 4,
+                            iron, cap_end=True)
+        out.append(mb)
+    return out
+
+
+SIGN_BOARD = (0.62, 0.46, 0.035)  # width, height, thickness
+SIGN_POST_H = 2.4
+SIGN_ARM = 0.95
+# The trades' marks, outlines in the board's plane (x across, y up, from the board's centre), painted proud of it.
+_JAR = [(0.0, -0.17), (0.09, -0.15), (0.13, -0.06), (0.12, 0.04), (0.06, 0.1), (0.05, 0.15), (0.08, 0.17),
+        (-0.08, 0.17), (-0.05, 0.15), (-0.06, 0.1), (-0.12, 0.04), (-0.13, -0.06), (-0.09, -0.15)]
+_ANVIL = [(-0.12, -0.15), (0.12, -0.15), (0.08, -0.1), (0.05, -0.02), (0.15, 0.03), (0.2, 0.08), (0.15, 0.1),
+          (-0.17, 0.1), (-0.17, 0.03), (-0.06, -0.02), (-0.08, -0.1)]
+_BOWL = [(-0.17, 0.0), (0.17, 0.0), (0.14, -0.08), (0.08, -0.13), (0.0, -0.145), (-0.08, -0.13), (-0.14, -0.08)]
+SIGN_MARKS = {"shop_sign_goods": ("kit_paint_sea_blue", [_JAR]), "shop_sign_forge": ("kit_paint_red", [_ANVIL]),
+              "shop_sign_inn": ("kit_paint_red", [_BOWL])}
+
+
+def _sign(name: str, seed: int) -> list[kc.MeshBuilder]:
+    paint, marks = SIGN_MARKS[name]
+    out = []
+    w, h, t = SIGN_BOARD
+    for lod in (False, True):
+        rng = kc.rng_for(name, seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder(name + ("-lod1" if lod else ""))
+        tm = mb.material(M_TIMBER)
+        cx, cy = SIGN_ARM - 0.12, SIGN_POST_H - 0.32 - h * 0.5
+        if lod:
+            kc.tube(mb, np.array([[0, 0, 0], [0, SIGN_POST_H, 0]]), 0.06, 4, tm, cap_end=True)
+            kc.rounded_block(mb, (cx, cy, 0.0), (w * 0.5, h * 0.5, t * 0.5), mb.material(M_CARVED), seg=1,
+                             radius=0.01)
+            out.append(mb)
+            continue
+        village.post(mb, (0.0, -0.3, 0.0), (0.0, SIGN_POST_H, 0.0), 0.06, rng, noise, sides=7, lash=False)
+        kc.plank(mb, (-0.05, SIGN_POST_H - 0.12, 0.0), (SIGN_ARM, SIGN_POST_H - 0.12, 0.0), 0.07, 0.06, tm,
+                 variation=float(rng.random()), noise=noise)
+        kc.plank(mb, (0.0, SIGN_POST_H - 0.62, 0.0), (0.45, SIGN_POST_H - 0.14, 0.0), 0.05, 0.04, tm,
+                 up=np.array([0.0, 0.0, 1.0]), variation=float(rng.random()))  # the brace
+        kc.rounded_block(mb, (cx, cy, 0.0), (w * 0.5, h * 0.5, t * 0.5), mb.material(M_CARVED), seg=1,
+                         radius=0.015, noise=noise, disp_m=0.002, variation=float(rng.random()))
+        for x in (cx - w * 0.38, cx + w * 0.38):  # the cords from the arm to the board's top
+            kc.tube(mb, np.array([[x, SIGN_POST_H - 0.12, 0.0], [x, cy + h * 0.5, 0.0]]), 0.008, 4,
+                    mb.material(M_LASHING))
+        for outline in marks:
+            mark = kc.MeshBuilder("mark")
+            pts = np.array([(x, -y) for x, y in outline])
+            kc.polygon_prism(mark, pts, 0.0, 0.006, mark.material(paint), col=np.array([0.0, 0.0, 0.0, 0.2]),
+                             uv2=np.array([0.3, float(rng.random())]), uv_scale=2.0)
+            mb.merge(mark, kc.rot_x(math.pi * 0.5), (cx, cy, t * 0.5))
+        if name == "shop_sign_inn":  # the bowl's steam, three painted wisps
+            for k in (-1, 0, 1):
+                ys = np.linspace(0.03, 0.17, 6)
+                wisp = np.stack([cx + 0.07 * k + 0.02 * np.sin(ys * 40.0 + k), cy + ys, np.full_like(ys, t * 0.5 + 0.004)],
+                                axis=-1)
+                kc.tube(mb, wisp, 0.008, 4, mb.material(paint))
+        out.append(mb)
+    return out
+
+
+def build_shop_sign_goods(seed: int = 159) -> list[kc.MeshBuilder]:
+    return _sign("shop_sign_goods", seed)
+
+
+def build_shop_sign_forge(seed: int = 160) -> list[kc.MeshBuilder]:
+    return _sign("shop_sign_forge", seed)
+
+
+def build_shop_sign_inn(seed: int = 161) -> list[kc.MeshBuilder]:
+    return _sign("shop_sign_inn", seed)
+
+
+BROOM_L = 1.4
+BAG = (0.45, 0.4, 0.28)
+BOWL = (0.22, 0.15, 0.12)  # rim radius, foot radius, height
+
+
+def build_hand_broom(seed: int = 162) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("hand_broom", seed)
+        mb = kc.MeshBuilder("hand_broom" + ("-lod1" if lod else ""))
+        y0, y1 = -BROOM_L * 0.5, BROOM_L * 0.5
+        kc.tube(mb, np.array([[0.0, y0 + 0.38, 0.0], [0.0, y1, 0.0]]), 0.018, 4 if lod else 7, mb.material(M_TIMBER),
+                cap_start=True, cap_end=True, variation=float(rng.random()))
+        if lod:
+            kc.tube(mb, np.array([[0.0, y0, 0.0], [0.0, y0 + 0.45, 0.0]]), np.array([0.09, 0.035]), 5,
+                    mb.material(M_LASHING), cap_start=True, cap_end=True)
+            out.append(mb)
+            continue
+        for k in range(22):  # the palm ribs, splayed at the foot
+            a = 2.0 * math.pi * k / 22 + rng.uniform(-0.1, 0.1)
+            r = rng.uniform(0.05, 0.1)
+            top = np.array([0.025 * math.cos(a), y0 + 0.5, 0.025 * math.sin(a)])
+            foot = np.array([r * math.cos(a), y0 + rng.uniform(0.0, 0.04), r * 0.6 * math.sin(a)])
+            kc.tube(mb, np.array([top, (top + foot) * 0.5 + [0, 0.02, 0], foot]), 0.0035, 3, mb.material(M_LASHING),
+                    variation=float(rng.random()))
+        for y in (y0 + 0.42, y0 + 0.3):
+            lathe(mb, [(0.034, -0.012), (0.04, 0.0), (0.034, 0.012)], M_LASHING, rng, sides=8, at=(0.0, y, 0.0))
+        out.append(mb)
+    return out
+
+
+def build_woven_bag(seed: int = 163) -> list[kc.MeshBuilder]:
+    out = []
+    w, h, d = BAG
+    for lod in (False, True):
+        rng = kc.rng_for("woven_bag", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("woven_bag" + ("-lod1" if lod else ""))
+        kc.rounded_block(mb, (0.0, -0.03, 0.0), (w * 0.5, h * 0.5 - 0.03, d * 0.5), mb.material(M_WOVEN),
+                         seg=1 if lod else 3, radius=0.07, noise=None if lod else noise, disp_m=0.008,
+                         disp_period_m=0.1, variation=float(rng.random()))
+        if not lod:
+            # The rope handle over the top, its ends knotted to the rim.
+            t = np.linspace(0.0, math.pi, 9)
+            handle = np.stack([-w * 0.32 * np.cos(t), h * 0.5 - 0.06 + 0.16 * np.sin(t), np.zeros_like(t)], axis=-1)
+            kc.tube(mb, handle, 0.011, 5, mb.material(M_LASHING))
+            for x in (-w * 0.32, w * 0.32):
+                lathe(mb, [(0.018, -0.015), (0.024, 0.0), (0.018, 0.015)], M_LASHING, rng, sides=6,
+                      at=(x, h * 0.5 - 0.07, 0.0))
+            # A fold of cloth at the mouth.
+            kc.rounded_block(mb, (0.03, h * 0.5 - 0.04, 0.0), (w * 0.3, 0.02, d * 0.36), mb.material("kit_cloth"),
+                             seg=2, radius=0.015, noise=noise, disp_m=0.006)
+        out.append(mb)
+    return out
+
+
+def build_clay_bowl(seed: int = 164) -> list[kc.MeshBuilder]:
+    out = []
+    rim, foot, h = BOWL
+    for lod in (False, True):
+        rng = kc.rng_for("clay_bowl", seed)
+        mb = kc.MeshBuilder("clay_bowl" + ("-lod1" if lod else ""))
+        y0 = -h * 0.5
+        prof = [(0.0, y0), (foot, y0), (foot * 1.1, y0 + 0.02), (rim * 0.9, y0 + h * 0.75), (rim, y0 + h),
+                (rim - 0.012, y0 + h), (rim * 0.86, y0 + h * 0.72), (foot * 0.95, y0 + 0.03), (0.0, y0 + 0.03)]
+        lathe(mb, prof if not lod else prof[::2], M_CLAY, rng, sides=20 if not lod else 8,
+              weather=kc.Weathering(moss=0.0, salt=0.1, wet=0.1, erosion=0.2), cap_start=False)
+        out.append(mb)
+    return out
+
+
+WAKE_SHELL_LOOSE_M = 0.14
+
+
+def build_wake_shell_loose(seed: int = 165) -> list[kc.MeshBuilder]:
+    import walls  # noqa: PLC0415
+
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("wake_shell_loose", seed)
+        mb = kc.MeshBuilder("wake_shell_loose" + ("-lod1" if lod else ""))
+        walls._shell(mb, (0.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0), WAKE_SHELL_LOOSE_M, 0 if lod else 5, 0.0,
+                     rng, mb.material("kit_wake_shell"))
+        out.append(mb)
+    return out
+
+
 TARGETS = {
+    "wake_shell_loose": build_wake_shell_loose,
+    "hand_broom": build_hand_broom,
+    "woven_bag": build_woven_bag,
+    "clay_bowl": build_clay_bowl,
+    "beach_forge": build_beach_forge,
+    "shop_sign_goods": build_shop_sign_goods,
+    "shop_sign_forge": build_shop_sign_forge,
+    "shop_sign_inn": build_shop_sign_inn,
+    "lamp_flame": build_lamp_flame,
     "water_jar": build_water_jar,
     "basket_set": build_basket_set,
     "oil_lamp_post": build_oil_lamp_post,

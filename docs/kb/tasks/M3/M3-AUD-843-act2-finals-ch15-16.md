@@ -2,12 +2,13 @@
 id: M3-AUD-843
 title: "Act II zone finals, Ch15-16: unlamped, pale_rim, drowned_choir"
 role: audio
-status: review
+status: blocked
 owner_session: "audio worktree agent"
 reviewer: design
 depends_on: [M3-AUD-839]
 milestone: M3
 request-from: lead
+blocked-by: ADR 0041
 ---
 ## Goal
 Grow three Act II sketches (M3-AUD-805) into finals (docs/kb/audio/act2_finals.md): 2-3 minute seamless loops with

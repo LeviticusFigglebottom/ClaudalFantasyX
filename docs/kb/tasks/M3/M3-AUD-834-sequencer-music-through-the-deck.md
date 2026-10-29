@@ -2,7 +2,7 @@
 id: M3-AUD-834
 title: "Request (cutscene owner): play @music through the director's MusicDeck, and an @stem cue"
 role: cinematics
-status: todo
+status: done
 owner_session: ""
 depends_on: [M3-AUD-833]
 milestone: M3
@@ -17,6 +17,17 @@ The CutsceneSequencer plays `@music` on its own AudioStreamPlayer from `<music_d
 Until this lands, M3-AUD-833's stand-ins play each cue's first stem only. That is correct for the opening, but the
 second-stem trigger can't happen.
 
+**ADR 0041 (2026-10-28): this is now an Act I blocker.** The audio audit (M3-AUD-861,
+`tools/audio/act1_audio_audit.py`) finds three Act I cutscenes that play only the first stem of a stem cue, because
+the sequencer can't reach music.json:
+- `undertow_rising` in ch01_the_rising.dlg;
+- `seawall_hold` in ch08_first_down.dlg;
+- `undertow_reach` (`undertows_reach`) in ch08_the_reach.dlg.
+
+The smallest fix: `_cue_music` asks the AudioDirector's MusicDeck for the cue by id (music.json `cues`, so stems,
+start_stems and the LFS files under `assets/lfs/audio/` resolve), and falls back to `<music_dir><id>.ogg` only when
+no director is present (the headless tests).
+
 ## Acceptance criteria
 - [ ] `@music <id>`: when music.json has the cue, play it through `AudioDirector.play_music` (or its MusicDeck),
       keeping the sequencer's fade and volume semantics. A file or stand-in is the fallback.
@@ -29,3 +40,6 @@ second-stem trigger can't happen.
       `@stem 1 on fade=2.0` line to the run (M3-AUD-829).
 
 ## Review log
+- 2026-10-28 (audio, the requester): **satisfied by M2-AUD-07** on lead/gate-big14. CutsceneSound.music plays a
+  music.json cue on Audio's deck, so stems, start_stems and LFS files resolve (and `stem=` brings one in). The Act I
+  audit's Cutscenes section is 0 with `undertow_reach` added as a same-stems alias of `undertows_reach` (M3-AUD-861).

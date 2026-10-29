@@ -28,6 +28,9 @@ const MIN_FIGURE_VALUE := 0.4
 ## M2-FP-103: the three of the seven without a model yet stand as cloth-coloured silhouettes (City/Vigils);
 ## the other four are the cast (CutsceneStage/Actors), three of them on HeroFieldActor bodies.
 const SILHOUETTE_COUNT := 3
+## Iskarra's plaza paving top (env-art's TERRACE_TOP_Y).
+const PAVING_TOP_Y := 0.4
+const FEET_TOLERANCE := 0.01
 const BODY_CAST: Array[StringName] = [&"rhen", &"asha", &"toma"]
 const MODEL_CAST: Array[StringName] = [&"ysolde"]
 ## Colour script prologue_iskarra_dusk: saturation x1.05; the grade stand-in's points (lut_prologue_dusk).
@@ -188,6 +191,8 @@ func test_the_figures_and_the_grade_carry_colour_while_the_line_is_up() -> void:
 		)
 	for n in figures:
 		var mi := n as MeshInstance3D
+		if mi.mesh == null:
+			continue  # dressed in its hero's body (dress_vigils)
 		var mat := mi.material_override if mi.material_override != null else mi.mesh.surface_get_material(0)
 		var std := mat as StandardMaterial3D
 		assert_true(std != null, "%s has a plain material" % mi.name)
@@ -243,4 +248,29 @@ func test_the_lantern_catches_and_glimmer_rises() -> void:
 		FACING_TOLERANCE,
 		"his body turns to Asha (%.0f vs %.0f)" % [rad_to_deg(got), rad_to_deg(want)]
 	)
+	_done()
+
+
+## M3-ENV-724: a vigil takes its hero's field body once hero_motion.json lists one, feet on the paving, and its
+## capsule goes. Kerrid borrows Ysolde's model here, since no vigil hero has a body yet.
+func test_a_vigil_takes_its_body_when_its_hero_has_one() -> void:
+	var saved: Dictionary = HeroFieldActor._data_cache
+	var data := HeroFieldActor.data().duplicate(true)
+	var heroes: Dictionary = data["field"]["heroes"]
+	heroes["kerrid"] = heroes["ysolde"]
+	HeroFieldActor._data_cache = data
+	_make_scene()
+	var kerrid := scene.get_node(^"City/Vigils/Kerrid") as MeshInstance3D
+	assert_true(kerrid.mesh == null, "his capsule goes")
+	var feet := kerrid.get_node_or_null(NodePath(String(PrologueScene.VIGIL_FEET))) as Node3D
+	assert_true(feet != null and feet.get_node_or_null(NodePath(String(HeroFieldActor.NAME))) != null, "his body")
+	if feet != null:
+		var y := feet.global_position.y
+		assert_between(y, PAVING_TOP_Y - FEET_TOLERANCE, PAVING_TOP_Y + FEET_TOLERANCE, "feet on the paving")
+	# The others follow the data: Liss has had her body since M3-HER-100; Pell waits for his.
+	for id: String in ["Pell", "Liss"]:
+		var has_body := heroes.has(id.to_lower())
+		var capsule := (scene.get_node(NodePath("City/Vigils/" + id)) as MeshInstance3D).mesh != null
+		assert_true(capsule != has_body, id + (" takes its body" if has_body else " waits"))
+	HeroFieldActor._data_cache = saved
 	_done()

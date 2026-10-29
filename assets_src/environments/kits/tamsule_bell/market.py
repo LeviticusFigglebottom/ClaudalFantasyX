@@ -5,8 +5,8 @@
   port_deck_8m_rail the same with a rail along its +Z (water) side
   plank_bridge_4m   a plank bridge along X, 2.4 m wide, arched 0.15 m, on a pile bent at each end, rope hand-lines on
                     posts both sides
-  market_stall      a deck stall: four posts, a woven awning in a side colour, a lacquered counter, baskets and
-                    wrapped bundles, a small gilded board hung from the awning's front (front +Z)
+  market_stall      a deck stall: four posts, a woven awning in a side colour, a lacquered counter (panelled,
+                    gilt-edged, a cloth runner), baskets and corded bundles, a small gilded board hung from the awning's front (front +Z)
   market_boat_a     the watch-boat's 8 m crescent hull, loaded: baskets, bundles in the cloth dyes, jars, a sun
                     umbrella on a pole, the gilded bow eye
   market_boat_b     a 6 m boat with an awning frame over stacked trays and hanging bunches
@@ -123,9 +123,64 @@ def _basket(mb, at, r, h, rng, fill: str | None) -> None:
                          weather=tb.LACQUER, variation=float(rng.random()))
 
 
-def _bundle(mb, at, size, dye: str, rng) -> None:
-    kc.rounded_block(mb, at, size, mb.material(dye), rot=kc.rot_y(rng.uniform(0, 3)), radius=min(size) * 0.6, seg=2,
-                     weather=tb.TIMBER, variation=float(rng.random()))
+def _bundle(mb, at, size, dye: str, rng, noise=None) -> None:
+    """A wrapped bundle. Given `noise` (the stall's, M3-ENV-705: it read as a plain rounded box), the parcel is lumpy
+    where the goods push it out, bound both ways with cord, its knot on top; without it, the plain parcel the boats
+    load."""
+    at = np.asarray(at, float)
+    rot = kc.rot_y(rng.uniform(0, 3))
+    if noise is None:
+        kc.rounded_block(mb, at, size, mb.material(dye), rot=rot, radius=min(size) * 0.6, seg=2, weather=tb.TIMBER,
+                         variation=float(rng.random()))
+        return
+    kc.rounded_block(mb, at, size, mb.material(dye), rot=rot, radius=min(size) * 0.6, seg=3, noise=noise, disp_m=0.02,
+                     disp_period_m=0.12, weather=tb.TIMBER, variation=float(rng.random()))
+    rope = mb.material(M_ROPE)
+    sx, sy, sz = size
+    ang = np.linspace(0.0, 2.0 * math.pi, 13)
+    c, sn = np.cos(ang), np.sin(ang)
+    zero = np.zeros_like(ang)
+    for loop in (np.stack([zero, sn * (sy + 0.012), c * (sz + 0.012)], -1),  # round the parcel across X
+                 np.stack([c * (sx + 0.012), sn * (sy + 0.012), zero], -1)):  # and across Z
+        kc.tube(mb, loop @ np.asarray(rot).T + at, 0.011, 4, rope)
+    kc.rounded_block(mb, at + np.array([0.0, sy + 0.02, 0.0]), (0.035, 0.025, 0.035), rope, radius=0.02, seg=1)
+
+
+def _counter(mb, hx: float, z: float, rng) -> None:
+    """The lacquered counter (M3-ENV-705: it read as one red box): a black plinth and corner posts, the red front in
+    three sunk panels each edged in gold leaf, a black top overhanging on a gilt edge, and a cloth runner over it
+    hanging down the front."""
+    red, black, gold = mb.material(M_RED), mb.material(M_BLACK), mb.material(M_GOLD)
+    w, d, h = hx - 0.1, 0.3, 0.9
+    kc.rounded_block(mb, (0.0, 0.05, z), (w + 0.03, 0.05, d + 0.03), black, radius=0.01, seg=1, weather=tb.LACQUER)
+    kc.rounded_block(mb, (0.0, 0.5, z - 0.02), (w - 0.02, 0.4, d - 0.03), red, radius=0.01, seg=1, weather=tb.LACQUER)
+    for x in (-w, w):
+        kc.rounded_block(mb, (x, 0.5, z + d - 0.02), (0.05, 0.4, 0.04), black, radius=0.01, seg=1, weather=tb.LACQUER)
+    pw = (2 * w - 0.1) / 3.0
+    for k in range(3):
+        cx = -w + 0.05 + pw * (k + 0.5)
+        kc.rounded_block(mb, (cx, 0.5, z + d - 0.03), (pw * 0.5 - 0.06, 0.3, 0.012), red, radius=0.006, seg=1,
+                         weather=tb.LACQUER)  # the sunk panel's field, set back from the rails
+        for dx, dy, hw, hh in ((0.0, 0.3, pw * 0.5 - 0.06, 0.008), (0.0, -0.3, pw * 0.5 - 0.06, 0.008),
+                               (pw * 0.5 - 0.06, 0.0, 0.008, 0.3), (-(pw * 0.5 - 0.06), 0.0, 0.008, 0.3)):
+            kc.rounded_block(mb, (cx + dx, 0.5 + dy, z + d - 0.012), (hw, hh, 0.006), gold, radius=0.003, seg=1,
+                             weather=tb.LACQUER)
+    for y, hh in ((0.88, 0.04), (0.14, 0.04)):  # the rails above and below the panels
+        kc.rounded_block(mb, (0.0, y, z + d - 0.01), (w - 0.04, hh, 0.02), red, radius=0.006, seg=1, weather=tb.LACQUER)
+    kc.rounded_block(mb, (0.0, 0.93, z), (w + 0.05, 0.03, d + 0.04), black, radius=0.01, seg=1, weather=tb.LACQUER)
+    kc.rounded_block(mb, (0.0, 0.93, z + d + 0.045), (w + 0.05, 0.012, 0.006), gold, radius=0.003, seg=1,
+                     weather=tb.LACQUER)
+    # A cloth runner laid along the top and hanging over the front edge.
+    dye = DYES[int(rng.integers(len(DYES)))]
+    cloth = mb.material(dye)
+    rx0, rx1 = -w * 0.55, -w * 0.05
+    top = np.array([[rx0, 0.965, z - d + 0.05], [rx1, 0.965, z - d + 0.05]])
+    edge = np.array([[rx0, 0.965, z + d + 0.06], [rx1, 0.965, z + d + 0.06]])
+    hang = np.array([[rx0 - 0.01, 0.62, z + d + 0.075], [rx1 + 0.01, 0.6, z + d + 0.075]])
+    for flip, off in ((False, -0.003), (True, 0.0)):  # both faces of the cloth, the outer one facing out
+        g = np.stack([top, edge, hang]) + np.array([0.0, off, off])
+        kc.quad_strip(mb, g, cloth, uv=g[..., [0, 2]] + g[..., [1, 1]], col=np.array([0.0, 0.0, 0.0, 0.3]),
+                      uv2=(0.8, 0.5), flip=flip)
 
 
 def build_stall(seed: int = 763) -> list[kc.MeshBuilder]:
@@ -150,19 +205,15 @@ def build_stall(seed: int = 763) -> list[kc.MeshBuilder]:
             continue
         gallery._cloth(mb, [(-hx - 0.25, 2.35, hz + 0.45), (hx + 0.25, 2.35, hz + 0.45), (hx + 0.2, 2.62, -hz - 0.1),
                             (-hx - 0.2, 2.62, -hz - 0.1)], dye, rng, rows=4, cols=6, sag=0.12)
-        kc.rounded_block(mb, (0.0, 0.45, 0.42), (hx - 0.1, 0.45, 0.3), mb.material(M_RED), radius=0.02, seg=1,
-                         weather=tb.LACQUER)
-        kc.rounded_block(mb, (0.0, 0.92, 0.42), (hx - 0.05, 0.03, 0.34), mb.material(M_BLACK), radius=0.01, seg=1,
-                         weather=tb.LACQUER)
+        _counter(mb, hx, 0.42, rng)
         for k in range(5):
             x = -hx + 0.35 + k * 0.62
             _basket(mb, (x, 0.95, 0.42), 0.2, 0.16, rng, DYES[(k + 2) % len(DYES)] if k % 2 else "tb_cloth_sand")
         for k in range(4):
             _bundle(mb, (rng.uniform(-1.2, 1.2), 0.18, rng.uniform(-0.6, -0.2)), (0.25, 0.18, 0.2),
-                    DYES[k % len(DYES)], rng)
+                    DYES[k % len(DYES)], rng, noise)
         tb.signboard(mb, (0.0, 2.05, hz + 0.47), 1.1, 0.32, 0.0, rng, thick=0.04, strokes=5)
         out.append(tb.rename(mb))
-        del noise
     return out
 
 

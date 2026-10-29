@@ -15,6 +15,10 @@
                   its foot's centre, the boards' face toward +Z.
   crown_bell      the top tier's single bell (B04): a bronze bell under a little fibre-thatch roof on two dark posts
                   on stone pads, its striker log hung on fibre ropes. Origin at the foot's centre, front +Z.
+  flank_rocks     (M3-ENV-705, P04/P11 read the massif's lower flank as a bare smooth slope) a 14 x 10 m patch of
+                  the flank: basalt boulders half sunk in the ash, a fan of loose scree, dry scrub tufts in the
+                  hollows. Origin at its centre on the ground; the layout scatters it over the flank round the
+                  harbour, tilted to the slope.
 """
 
 from __future__ import annotations
@@ -29,7 +33,7 @@ import props  # Haluna's props, read-only: lathe
 from pemakar_common import kc
 
 TRI_BUDGET = {"harbour_quay": (26000, 1500), "sea_cut_weir": (14000, 1000), "wake_wall": (12000, 900),
-              "crown_bell": (5000, 500)}
+              "crown_bell": (5000, 500), "flank_rocks": (5000, 300)}
 
 QUAY_HALF_M = 16.0
 QUAY_DEPTH_M = 4.3  # front edge to the slope (act1-chapters' QUAY_BACK_Z 22.7 against the front at 27)
@@ -256,9 +260,58 @@ def crown_bell(name: str, seed: int, *, lod: bool = False) -> kc.MeshBuilder:
     return mb
 
 
+def flank_rocks(name: str, seed: int, *, lod: bool = False) -> kc.MeshBuilder:
+    rng = kc.rng_for(name, seed)
+    noise = kc.Noise3(rng)
+    mb = kc.MeshBuilder(pc.lod_name(name, lod))
+    stone, soil, scrub = mb.material(pc.M_STONE), mb.material(pc.M_SOIL), mb.material(pc.M_STUBBLE)
+    # Boulders: a few big ones, more small, each half sunk.
+    for k in range(5 if lod else 18):
+        big = k < 4
+        r = float(rng.uniform(0.9, 1.8) if big else rng.uniform(0.25, 0.7))
+        x, z = float(rng.uniform(-6.0, 6.0)), float(rng.uniform(-4.0, 4.0))
+        kc.rounded_block(mb, (x, r * 0.25, z), (r * rng.uniform(0.9, 1.4), r * 0.6, r * rng.uniform(0.8, 1.2)),
+                         stone, rot=kc.rot_y(rng.uniform(0, 3.1)) @ kc.rot_z(rng.normal(0, 0.15)),
+                         radius=r * 0.35, seg=1 if lod else 2, noise=None if lod else noise, disp_m=r * 0.12,
+                         disp_period_m=r * 0.8, variation=float(rng.random()))
+    if lod:  # two scrub cards, so LOD1 keeps LOD0's slots
+        for x, z in ((-3.0, 1.0), (2.5, -2.0)):
+            g = np.array([[[x - 0.3, 0.0, z], [x + 0.3, 0.0, z]], [[x - 0.1, 0.45, z], [x + 0.1, 0.45, z]]])
+            kc.quad_strip(mb, g, scrub, uv=np.array([[[0, 0], [1, 0]], [[0, 1], [1, 1]]]), col=(0.5, 0.3, 0.5, 0.4),
+                          uv2=(0.9, 0.5), smooth=False)
+    if not lod:
+        # Scree: a fan of fist-to-head stones below the big boulders.
+        for k in range(40):
+            s_ = float(rng.uniform(0.06, 0.18))
+            x, z = float(rng.normal(0.0, 3.0)), float(rng.uniform(0.0, 4.5))
+            kc.rounded_block(mb, (x, s_ * 0.4, z), (s_, s_ * 0.6, s_ * 0.8), stone, rot=kc.rot_y(rng.uniform(0, 3)),
+                             radius=s_ * 0.4, seg=1, variation=float(rng.random()))
+        # Dry scrub: crossed blade cards in the hollows.
+        for k in range(22):
+            x, z = float(rng.uniform(-6.5, 6.5)), float(rng.uniform(-4.5, 4.5))
+            h = float(rng.uniform(0.25, 0.6))
+            for j in range(5):
+                th = j * math.pi / 5 + float(rng.uniform(0, 0.4))
+                d = np.array([math.cos(th), 0.0, math.sin(th)]) * 0.18
+                base = np.array([x, 0.0, z])
+                lean = np.array([rng.normal(0, 0.08), h, rng.normal(0, 0.08)])
+                g = np.array([[base - d, base + d], [base - d * 0.3 + lean, base + d * 0.3 + lean]])
+                kc.quad_strip(mb, g, scrub, uv=np.array([[[0, 0], [1, 0]], [[0, 1], [1, 1]]]),
+                              col=(0.5, 0.3, 0.5, 0.4), uv2=(0.9, float(rng.random())), smooth=False)
+                kc.quad_strip(mb, g, scrub, uv=np.array([[[0, 0], [1, 0]], [[0, 1], [1, 1]]]),
+                              col=(0.5, 0.3, 0.5, 0.4), uv2=(0.9, float(rng.random())), flip=True, smooth=False)
+    # Ash patches: low dark lenses where the soil shows through.
+    for k in range(2 if lod else 6):
+        x, z = float(rng.uniform(-5.0, 5.0)), float(rng.uniform(-3.5, 3.5))
+        kc.rounded_block(mb, (x, 0.0, z), (rng.uniform(1.0, 2.2), 0.05, rng.uniform(0.8, 1.6)), soil,
+                         rot=kc.rot_y(rng.uniform(0, 3)), radius=0.04, seg=1)
+    return mb
+
+
 TARGETS = {
     "harbour_quay": lambda: [quay("harbour_quay", 741), quay("harbour_quay", 741, lod=True)],
     "sea_cut_weir": lambda: [weir("sea_cut_weir", 742), weir("sea_cut_weir", 742, lod=True)],
     "wake_wall": lambda: [wake_wall("wake_wall", 743), wake_wall("wake_wall", 743, lod=True)],
     "crown_bell": lambda: [crown_bell("crown_bell", 744), crown_bell("crown_bell", 744, lod=True)],
+    "flank_rocks": lambda: [flank_rocks("flank_rocks", 745), flank_rocks("flank_rocks", 745, lod=True)],
 }

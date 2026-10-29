@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/act1_zones/act1_zone_rig.gd" id="1_rig"]
+[ext_resource type="PackedScene" path="res://game/levels/ch04/haluna_wake/haluna_wake.tscn" id="2_zone"]
+
+[node name="Ch04HalunaWakeShots" type="Node3D"]
+script = ExtResource("1_rig")
+zone_scene = ExtResource("2_zone")
+flags = PackedStringArray("ch03_rhen_sworn_guardian", "ch04_started")
+views = {
+"Wake": [[16.0, 4.5, -98.0], [-6.0, 1.5, -114.0], 62.0],
+"Shells": [[-13.6, 2.885, -119.0], [-14.5, 2.698, -120.5], 28.0],
+"Lane": [[-47.0, 3.832, -1.5], [-64.0, 3.465, -7.5], 46.0],
+"Dock": [[-3.5, 2.976, 60.5], [14.0, -0.037, 47.0], 46.0]
+}

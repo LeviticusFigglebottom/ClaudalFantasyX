@@ -1,0 +1,86 @@
+FAILURE test_battle_act1_ability_vfx.gd::test_every_act_one_skill_has_its_own_effect: did not expect <> tannin_archer tannin_jet has its own effect
+FAILURE test_battle_act1_ability_vfx.gd::test_every_act_one_skill_has_its_own_effect: tannin_archer tannin_jet: effect  exists
+FAILURE test_battle_act1_ability_vfx.gd::test_every_act_one_skill_has_its_own_effect: did not expect <> root_crab root_drag has its own effect
+FAILURE test_battle_act1_ability_vfx.gd::test_every_act_one_skill_has_its_own_effect: root_crab root_drag: effect  exists
+FAILURE test_battle_act1_ability_vfx.gd::test_every_act_one_skill_has_its_own_effect: did not expect <> fen_leech leech_bite has its own effect
+FAILURE test_battle_act1_ability_vfx.gd::test_every_act_one_skill_has_its_own_effect: fen_leech leech_bite: effect  exists
+FAILURE test_battle_act1_ability_vfx.gd::test_every_act_one_skill_has_its_own_effect: did not expect <> gallery_ray glide_lash has its own effect
+FAILURE test_battle_act1_ability_vfx.gd::test_every_act_one_skill_has_its_own_effect: gallery_ray glide_lash: effect  exists
+FAILURE test_battle_act1_ability_vfx.gd::test_every_act_one_skill_has_its_own_effect: did not expect <> rime_urchin rime_spine has its own effect
+FAILURE test_battle_act1_ability_vfx.gd::test_every_act_one_skill_has_its_own_effect: rime_urchin rime_spine: effect  exists
+FAILURE test_battle_act1_ability_vfx.gd::test_every_act_one_skill_has_its_own_effect: did not expect <> cord_moth unravel has its own effect
+FAILURE test_battle_act1_ability_vfx.gd::test_every_act_one_skill_has_its_own_effect: cord_moth unravel: effect  exists
+FAILURE test_battle_act1_ability_vfx.gd::test_every_act_one_skill_has_its_own_effect: did not expect <> scree_crawler scree_slide has its own effect
+FAILURE test_battle_act1_ability_vfx.gd::test_every_act_one_skill_has_its_own_effect: scree_crawler scree_slide: effect  exists
+FAILURE test_battle_act1_ability_vfx.gd::test_every_act_one_skill_has_its_own_effect: did not expect <> glass_skate skate_sting has its own effect
+FAILURE test_battle_act1_ability_vfx.gd::test_every_act_one_skill_has_its_own_effect: glass_skate skate_sting: effect  exists
+FAILURE test_battle_party_stand_ins.gd::test_liss_names_her_battle_wrapper_with_a_capsule_until_it_lands: expected <#7A8F6A> got <#7A8C5A> her timeline tint
+FAILURE test_battle_result_motion.gd::test_the_rows_arrive_in_turn_then_the_choices: the open ends before a capture's settle
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/ilun.png exists
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/ilun.png is imported
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/ilun.png has a PROVENANCE row
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/kahre.png exists
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/kahre.png is imported
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/kahre.png has a PROVENANCE row
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/virel.png exists
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/virel.png is imported
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/virel.png has a PROVENANCE row
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/nhoa.png exists
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/nhoa.png is imported
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/nhoa.png has a PROVENANCE row
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/hesk.png exists
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/hesk.png is imported
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/hesk.png has a PROVENANCE row
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/ethren.png exists
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/ethren.png is imported
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/ethren.png has a PROVENANCE row
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/ilun_held.png exists
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/ilun_held.png is imported
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/ilun_held.png has a PROVENANCE row
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/kahre_held.png exists
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/kahre_held.png is imported
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/kahre_held.png has a PROVENANCE row
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/virel_held.png exists
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/virel_held.png is imported
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/virel_held.png has a PROVENANCE row
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/hesk_held.png exists
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/hesk_held.png is imported
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/hesk_held.png has a PROVENANCE row
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/nhoa_held.png exists
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/nhoa_held.png is imported
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/nhoa_held.png has a PROVENANCE row
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/ethren_held.png exists
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/ethren_held.png is imported
+FAILURE test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row: res://assets/ui/portraits/creatures/ethren_held.png has a PROVENANCE row
+FAILURE test_field_audio.gd::test_change_rows_and_live_hooks: expected <false> got <true> ReefballOutfitterMenu: pending only while its class is absent
+FAILURE test_hero_field_snaps.gd::test_no_hero_body_snaps_in_any_zone: haluna_wake.tscn: rhen never snaps (38 snaps)
+FAILURE test_hero_field_snaps.gd::test_no_hero_body_snaps_in_any_zone: drowned_choir.tscn: rhen never snaps (2 snaps)
+FAILURE test_title_reveal.gd::test_the_reveal_ends_inside_boot_title_s_settle_frames: boot_title captures the title at rest
+FAILURE test_villager_routines.gd::test_wake_villagers_ride_inside_their_cutscene_actors: Osu and the vendor stand 4 m apart: within chat range
+FAILURE test_villager_routines.gd::test_wake_villagers_ride_inside_their_cutscene_actors: expected 0.27304817430276 in [-0.05, 0.05] she turns to the vendor, though each rides in its own actor
+FAILURE test_villager_routines.gd::test_a_layer_added_in_the_zones_ready_adopts_what_the_zone_places_after: suspended on an await and never resumed: the runner steps no frame, so nothing after it ran
+FAILURE test_villager_routines.gd::test_oruvels_kell_comes_alive_in_the_real_zone: suspended on an await and never resumed: the runner steps no frame, so nothing after it ran
+FAILURE test_act1_cutscene_walks.gd::test_every_act1_cutscene_walk_stays_on_the_floor: a cutscene walk leaves the floor or passes through a box: ch04/haluna_wake ch04_dock_in_the_dark: @mark toma dock_shore: off the floor at (8.0, 0.35, -77.9), floor -0.10; from (10.5, 0.12, -108.0) to (-3.5, 1.40, 58.3)
+FAILURE test_act1_cutscene_walks.gd::test_every_act1_cutscene_walk_stays_on_the_floor: a cutscene walk leaves the floor or passes through a box: ch04/haluna_wake ch04_lamps_to_the_wall: @mark toma table_lane: off the floor at (-32.4, 1.35, -46.0), floor -inf; from (-56.4, 1.87, -3.4) to (-0.5, 0.67, -102.5)
+FAILURE test_act1_cutscene_walks.gd::test_every_act1_cutscene_walk_stays_on_the_floor: ch04/haluna_wake ch04_shell_is_set: @mark asha feast_edge is clean now: take it off res://tests/integration/act1_cutscene_walks_known.json
+FAILURE test_fp_prologue.gd::test_a_vigil_takes_its_body_when_its_hero_has_one: Liss waits
+FAILURE test_qa_capsules.gd::test_no_zone_shows_a_capsule_the_owners_do_not_know_of: haluna.tscn shows Child as a capsule
+FAILURE test_qa_capsules.gd::test_no_zone_shows_a_capsule_the_owners_do_not_know_of: haluna.tscn shows Fisher as a capsule
+FAILURE test_qa_capsules.gd::test_no_zone_shows_a_capsule_the_owners_do_not_know_of: haluna.tscn shows Neme as a capsule
+FAILURE test_qa_capsules.gd::test_no_zone_shows_a_capsule_the_owners_do_not_know_of: haluna.tscn shows Netmender as a capsule
+FAILURE test_qa_capsules.gd::test_no_zone_shows_a_capsule_the_owners_do_not_know_of: haluna.tscn shows Osu as a capsule
+FAILURE test_qa_capsules.gd::test_no_zone_shows_a_capsule_the_owners_do_not_know_of: haluna.tscn shows Reed as a capsule
+FAILURE test_qa_capsules.gd::test_no_zone_shows_a_capsule_the_owners_do_not_know_of: haluna.tscn shows Vendor as a capsule
+FAILURE test_qa_capsules.gd::test_no_zone_shows_a_capsule_the_owners_do_not_know_of: ossa_fen.tscn shows pell as a capsule
+FAILURE test_qa_capsules.gd::test_every_foe_and_vowbound_has_a_body: cord_moth fights as a primitive stand-in (no actor scene in battle_sandbox or creatures)
+FAILURE test_qa_capsules.gd::test_every_foe_and_vowbound_has_a_body: fen_leech fights as a primitive stand-in (no actor scene in battle_sandbox or creatures)
+FAILURE test_qa_capsules.gd::test_every_foe_and_vowbound_has_a_body: gallery_ray fights as a primitive stand-in (no actor scene in battle_sandbox or creatures)
+FAILURE test_qa_capsules.gd::test_every_foe_and_vowbound_has_a_body: glass_skate fights as a primitive stand-in (no actor scene in battle_sandbox or creatures)
+FAILURE test_qa_capsules.gd::test_every_foe_and_vowbound_has_a_body: ridge_lynx fights as a primitive stand-in (no actor scene in battle_sandbox or creatures)
+FAILURE test_qa_capsules.gd::test_every_foe_and_vowbound_has_a_body: rim_crawler fights as a primitive stand-in (no actor scene in battle_sandbox or creatures)
+FAILURE test_qa_capsules.gd::test_every_foe_and_vowbound_has_a_body: rime_urchin fights as a primitive stand-in (no actor scene in battle_sandbox or creatures)
+FAILURE test_qa_capsules.gd::test_every_foe_and_vowbound_has_a_body: root_crab fights as a primitive stand-in (no actor scene in battle_sandbox or creatures)
+FAILURE test_qa_capsules.gd::test_every_foe_and_vowbound_has_a_body: scree_crawler fights as a primitive stand-in (no actor scene in battle_sandbox or creatures)
+FAILURE test_qa_capsules.gd::test_every_foe_and_vowbound_has_a_body: tannin_archer fights as a primitive stand-in (no actor scene in battle_sandbox or creatures)
+FAILURE test_qa_save_shrines.gd::test_every_shrine_saves_and_loads_back_where_it_stands: haluna_wake.tscn/SaveShrine: its respawn spawn 'Shrine' exists in the zone
+FAILURE test_qa_save_shrines.gd::test_every_shrine_saves_and_loads_back_where_it_stands: expected <res://game/levels/ch04/haluna_wake/haluna_wake.tscn> got <res://game/levels/ch02/haluna/haluna.tscn> haluna_wake.tscn/SaveShrine: the respawn location 'ch02/haluna' is this zone

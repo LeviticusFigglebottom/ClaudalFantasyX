@@ -7,6 +7,9 @@ const ZONE := "res://game/levels/_tests/save_shrine/save_shrine_test.tscn"
 const TEST_DIR := "user://test_save_shrine"
 const GLIMMER_CONFIG := "res://game/data/vfx/glimmer.json"
 
+## The kit stores colours to four places: within one 8-bit step.
+const COLOR_STEP := 1.0 / 255.0
+
 var zone: Node3D
 var player: FieldController
 var shrine: SaveShrine
@@ -129,10 +132,14 @@ func test_shrine_light_is_bound_and_still() -> void:
 	var cfg: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(GLIMMER_CONFIG))
 	var bound := Color(str((cfg["colors"] as Dictionary)["machine"]))
 	assert_true(field.current_color().is_equal_approx(bound), "glimmer_bound teal")
-	var mesh := (shrine.get_node("Visual/Core") as MeshInstance3D).mesh as PrimitiveMesh
-	var mat := mesh.material as StandardMaterial3D
+	# M3-ENV-101: the core is the Haluna kit's save_shrine_core piece (kit_bound_core).
+	var cores := shrine.get_node("Visual/Core").find_children("*", "MeshInstance3D", true, false)
+	assert_false(cores.is_empty(), "the salt-glass core is modelled")
+	var core := cores[0] as MeshInstance3D
+	var mat := core.get_active_material(0) as StandardMaterial3D  # the kit's surface override (AssetImportRules)
 	assert_true(mat.emission_enabled)
-	assert_true(mat.emission.is_equal_approx(bound), "the salt-glass core glows glimmer_bound")
+	var off := Vector3(mat.emission.r - bound.r, mat.emission.g - bound.g, mat.emission.b - bound.b)
+	assert_true(off.length() < COLOR_STEP, "the salt-glass core glows glimmer_bound")
 	_done()
 
 

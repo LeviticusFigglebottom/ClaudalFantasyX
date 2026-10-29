@@ -39,6 +39,7 @@ import ov_cabins as ocab  # noqa: E402
 import ov_heroes as oh  # noqa: E402
 import ov_hulls as ohl  # noqa: E402
 import ov_common as oc  # noqa: E402
+import ov_rebuilt as orb  # noqa: E402
 import ov_storm as ost  # noqa: E402
 from ov_common import kc  # noqa: E402
 
@@ -206,7 +207,7 @@ def kit_row() -> list[dict]:
     """O20: every piece on the open water east of the town: the small pieces each on a raft deck in front, the hulls
     and rafts behind, the two biggest heroes at the back."""
     front = ["cabin_keelroof", "cabin_patched", "stall_awning", "lintel_gull_open", "net_frame", "salvage_heap",
-             "plank_bridge"]
+             "plank_bridge", "hull_lashed"]
     back = ["hull_outrigger", "hull_cabin", "raft_deck_small", "dive_raft", "scale_hull", "cookboat", "chandlery"]
     out = []
     for k, name in enumerate(front):
@@ -327,6 +328,35 @@ def storm(day: list[dict]) -> dict:
             "hide": hide, "pieces": pieces}
 
 
+
+# M3-ENV-730, the rebuilt state (act3_ending E7, `post_credits`): the same moorings rebuilt, not the same hulls.
+REBUILT_ROW_Z = STORM_ROW_Z + 20.0  # its review row, south of the storm's
+FIRST_LAMP_CORNER = (-4.1, -3.1)  # rc's local corner (x, z) the first lamp post stands on, toward the landing
+
+
+def rebuilt(day: list[dict]) -> dict:
+    """The rebuilt state (E7): rc, the raft the storm tore, on new hulls with new planks among the old; the cabin and
+    gull it carried gone (a new mooring, not the old house); the first lamp post on its corner. `first_lamp` is the
+    lantern's world position for the stager's OmniLight (ending_grades.json post_credits `lamp`)."""
+    def find(piece: str, x: float, z: float) -> dict:
+        return next(p for p in day if p["piece"] == piece and abs(p["at"][0] - x) < 0.05 and abs(p["at"][1] - z) < 0.05)
+
+    rc = find("raft_deck", STORM_RAFT[0], STORM_RAFT[1])
+    cab = find("cabin_patched", *local(rc["at"][0], rc["at"][1], rc["yaw_deg"], -2.3, 0.6))
+    gx, gz = local(cab["at"][0], cab["at"][1], cab["yaw_deg"], -1.85, 0.0)
+    hide = [spec_key(rc), spec_key(cab), spec_key(find("lintel_gull_open", gx, gz))]
+    px, pz = local(rc["at"][0], rc["at"][1], rc["yaw_deg"], *FIRST_LAMP_CORNER)
+    lx, lz = local(px, pz, rc["yaw_deg"], orb.LAMP_AT[0], orb.LAMP_AT[2])
+    pieces = [put("raft_deck_rebuilt", rc["at"][0], 0.0, rc["at"][1], rc["yaw_deg"]),
+              put("lamp_post", px, ohl.RAFT_DECK_Y, pz, rc["yaw_deg"]),
+              put("raft_deck_rebuilt", KIT_ROW_X0, 0.0, REBUILT_ROW_Z, 0.0),
+              put("lamp_post", KIT_ROW_X0 + 8.0, 0.0, REBUILT_ROW_Z, 0.0)]
+    return {"_about": "M3-ENV-730: the rebuilt variant (act3_ending E7, post_credits). `hide` names the day's "
+                      "placements it replaces; `pieces` are placed in their stead (HalunaDresser format); "
+                      "`first_lamp` is the one warm light's position. No preview phase shows it yet.",
+            "hide": hide, "pieces": pieces,
+            "first_lamp": [round(lx, 3), round(ohl.RAFT_DECK_Y + orb.LAMP_AT[1], 3), round(lz, 3)]}
+
 def rigs() -> dict:
     """The pen's split rig for Combat and m2-slice (ov_storm.SPLIT_SECTIONS, in world terms for this layout)."""
     sections = []
@@ -368,7 +398,7 @@ SHOTS = {
     "O03": {"eye": (0.0, 2.25, -4.4), "look": (-3.0, 2.4, -30.0), "fov": 53.1},
     "O08": {"eye": (-12.5, 2.35, -14.6), "look": (-17.5, 3.6, -36.0), "fov": 37.8},
     "O09": {"eye": (-34.3, 2.05, -13.4), "look": (-36.9, 1.72, -14.0), "fov": 20.9, "dof": (2.9, 2.5, 0.06)},
-    "O10": {"eye": (-13.0, 1.95, 2.6), "look": (-15.45, 4.02, -2.3), "fov": 16.1},
+    "O10": {"eye": (-12.0, 4.6, -0.6), "look": (-15.6, 4.45, -2.3), "fov": 26.0},  # the carving at its height, close
     "O19": {"eye": (-15.5, 5.2, 14.5), "look": (-9.9, 0.0, 4.4), "fov": 46.4},
     "O20": {"eye": (KIT_ROW_X0 + 28.0, 7.5, KIT_ROW_Z[0] + 30.0), "look": (KIT_ROW_X0 + 28.0, 0.0, KIT_ROW_Z[1] + 2.0),
             "fov": 53.1},
@@ -522,7 +552,7 @@ def main() -> int:
         "Oruvel Underway's frame (x east, z south, north = -Z, the sea surface at y 0); every piece carries its own y "
         "(no terrain). The dive raft's well is over the Underway's tether at (-9.9, 5.2); the neighbour raft at "
         "(-3, 11) is the Underway's hull_keels. The kit row (O20) is on the open water east of the town (x 70+).",
-        shots=shots, anchors=anchors(), states={"storm": storm(pieces)}, rigs=rigs(), storm_lights=storm_lights())
+        shots=shots, anchors=anchors(), states={"storm": storm(pieces), "rebuilt": rebuilt(pieces)}, rigs=rigs(), storm_lights=storm_lights())
     (OUT_DIR / "oruvel_layout.json").write_text(json.dumps(main_layout, indent=1) + "\n", encoding="utf-8")
     crown = drowned()
     drowned_layout = layout(

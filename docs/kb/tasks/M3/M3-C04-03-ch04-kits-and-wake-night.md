@@ -32,4 +32,8 @@ Keep every spawn, mark, trigger, shot and `states` id (Ch04Zone hides and shows 
     act1-chapters' log keeps `haluna_wake` on the real Haluna once it is ZoneStory (slice-polish). For the Lead:
     re-route this task, or close it into act1-chapters' swap task.
 
+- **env-art, 2026-10-28 (ADR 0041):** the wake night is dressed on the greybox stand-in itself
+  (M3-ENV-743, mount request M3-ENV-744 to act1-chapters), so Ch4 needn't wait for Haluna's ZoneStory move.
+  The ferry zone is dressed (`brightwater_ferry_dressing.json`, mounted).
+
 ## Review log

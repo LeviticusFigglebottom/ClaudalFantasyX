@@ -5,6 +5,17 @@
   name real skills, `phases` name a phase some enemy has.
 - game/data/battle/enemies.json: an enemy's optional `model` is a res://game/creatures/...tscn that exists and that
   a creatures.json row names as its `scene`.
+- A row with `vowbound` true (M3-CRE-638) is a Vowbound's actor: its id is a game/data/battle/vowbound.json row (the
+  stand-in CreatureModels gives that Vowbound), and no enemy uses its scene as a `model`.
+- `vfx_anchors` (M3-CRE-651): {"core": bone, "wound": bone} where spawn and death effects start (CreatureActor
+  .vfx_anchor); a non-empty map needs a core. tools/tests/test_creatures.py checks the bones are in the GLB.
+- `stand_in` may also carry `height` and `radius` (M3-CRE-640, numbers > 0): a Vowbound with no battle_sandbox.json
+  stand-in row (UI's) gives its own, so the VFX anchors and the ring fit the model.
+- `vowbound_pending` (M3-CRE-642): a Vowbound built ahead of its game row names, as a non-empty string, the task
+  that adds its vowbound.json row (Combat's file). While it is set the missing row is allowed; once the row exists it
+  is an error, so the key is dropped with the row's arrival. Only on a `vowbound` true row.
+- A phase may carry `hold` (M3-CRE-647, true or false, with a `clip`): the actor stays on the clip's last frame instead
+  of idling (a Vowbound's release, on its `<id>_held` foe row).
 """
 
 from __future__ import annotations
@@ -15,14 +26,17 @@ from typing import Callable
 CREATURES_FILE = "game/data/creatures/creatures.json"
 ENEMIES_FILE = "game/data/battle/enemies.json"
 SKILLS_FILE = "game/data/battle/skills.json"
+VOWBOUND_FILE = "game/data/battle/vowbound.json"
 SCENE_PREFIX = "res://game/creatures/"
 
 DEFAULT_KEYS = {"idle", "hit", "ko", "loop", "blend_sec", "clip_by_kind", "clip_by_skill", "ko_fade_sec",
                 "stand_in", "phases", "break_parts", "portrait", "contact", "hit_variants", "idle_variety",
                 "hit_snap"}
-ROW_KEYS = DEFAULT_KEYS | {"scene"}
-STAND_IN_KEYS = {"yaw_deg", "hover"}
-PHASE_KEYS = {"clip", "idle", "offset_m", "tilt_deg", "sec", "show", "hide", "hide_after", "show_after", "clips"}
+ROW_KEYS = DEFAULT_KEYS | {"scene", "vowbound", "vowbound_pending", "vfx_anchors"}
+VFX_ANCHOR_KEYS = {"wound", "core"}
+STAND_IN_KEYS = {"yaw_deg", "hover", "height", "radius"}
+PHASE_KEYS = {"clip", "idle", "offset_m", "tilt_deg", "sec", "show", "hide", "hide_after", "show_after", "clips",
+              "hold"}
 PART_KEYS = {"whole", "broken"}
 HIT_SNAP_KEYS = {"preroll_sec", "blend_sec", "_note"}
 PORTRAIT_KEYS = {"clip", "clip_time", "yaw_deg", "pitch_deg", "fov_deg", "margin", "key_energy", "rim_energy",
@@ -53,6 +67,13 @@ def _row_errors(w: str, row: dict, skills: set[str], phase_ids: set[str] | None)
     for sid in row.get("clip_by_skill", {}) if isinstance(row.get("clip_by_skill"), dict) else []:
         if sid not in skills:
             errs.append(f"{w}.clip_by_skill: unknown skill '{sid}'")
+    va = row.get("vfx_anchors", {})
+    if not (isinstance(va, dict) and all(isinstance(v, str) and v for v in va.values())):
+        errs.append(f"{w}.vfx_anchors: must map anchor names to bone names")
+    else:
+        errs += [f"{w}.vfx_anchors: unknown anchor '{k}'" for k in sorted(set(va) - VFX_ANCHOR_KEYS)]
+        if va and "core" not in va:
+            errs.append(f"{w}.vfx_anchors: needs a core (a wound falls back to it)")
     st = row.get("stand_in", {})
     if not isinstance(st, dict):
         errs.append(f"{w}.stand_in: must be an object")
@@ -60,6 +81,9 @@ def _row_errors(w: str, row: dict, skills: set[str], phase_ids: set[str] | None)
         errs += [f"{w}.stand_in: unknown key '{k}'" for k in sorted(set(st) - STAND_IN_KEYS)]
         if "yaw_deg" in st and not _num(st["yaw_deg"]):
             errs.append(f"{w}.stand_in.yaw_deg: must be a number")
+        for k in ("height", "radius"):
+            if k in st and not (_num(st[k]) and st[k] > 0):
+                errs.append(f"{w}.stand_in.{k}: must be a number > 0")
     con = row.get("contact", {})
     if not (isinstance(con, dict) and all(isinstance(k, str) and _num(v) and v >= 0 for k, v in con.items())):
         errs.append(f"{w}.contact: must map clip names to seconds >= 0")
@@ -120,6 +144,10 @@ def _row_errors(w: str, row: dict, skills: set[str], phase_ids: set[str] | None)
         if "clips" in p and not (isinstance(p["clips"], dict)
                                  and all(isinstance(a, str) and a and isinstance(b, str) and b for a, b in p["clips"].items())):
             errs.append(f"{pw}.clips: must map clip names to clip names")
+        if "hold" in p and not isinstance(p["hold"], bool):
+            errs.append(f"{pw}.hold: must be true or false")
+        elif p.get("hold") and "clip" not in p:
+            errs.append(f"{pw}.hold: holds the phase's clip, so it needs a `clip`")
         if "sec" in p and not (_num(p["sec"]) and p["sec"] >= 0):
             errs.append(f"{pw}.sec: must be a number >= 0")
     parts = row.get("break_parts", {})
@@ -139,8 +167,10 @@ def _row_errors(w: str, row: dict, skills: set[str], phase_ids: set[str] | None)
     return errs
 
 
-def creature_errors(creatures: object, enemies: object, skills: object, scene_exists: Callable[[str], bool]) -> list[str]:
-    """Errors for creatures.json and enemies.json `model`. `scene_exists(res_path) -> bool`."""
+def creature_errors(creatures: object, enemies: object, skills: object, scene_exists: Callable[[str], bool],
+                    vowbound: object = None) -> list[str]:
+    """Errors for creatures.json and enemies.json `model`. `scene_exists(res_path) -> bool`. `vowbound` is
+    vowbound.json (None: a `vowbound` row's id is not checked against it)."""
     w0 = CREATURES_FILE
     if not isinstance(creatures, dict):
         return [f"{w0}: must be an object"]
@@ -181,6 +211,10 @@ def creature_errors(creatures: object, enemies: object, skills: object, scene_ex
                 errs.append(f"{w}.scene: {scene} does not exist")
         used = isinstance(scene, str) and any(e.get("model") == scene for e in enemy_rows)
         errs += _row_errors(w, row, skill_ids, phase_ids if used else None)
+        if "vowbound" in row:
+            errs += _vowbound_errors(w, cid, row["vowbound"], used, vowbound, row.get("vowbound_pending"))
+        elif "vowbound_pending" in row:
+            errs.append(f"{w}.vowbound_pending: only on a row with vowbound true")
     for e in enemy_rows:
         if "model" not in e:
             continue
@@ -196,6 +230,28 @@ def creature_errors(creatures: object, enemies: object, skills: object, scene_ex
     return errs
 
 
+def _vowbound_errors(w: str, cid: str, flag: object, used: bool, vowbound: object, pending: object = None) -> list[str]:
+    if not isinstance(flag, bool):
+        return [f"{w}.vowbound: must be true or false"]
+    errs: list[str] = []
+    if pending is not None and not (isinstance(pending, str) and pending.strip()):
+        errs.append(f"{w}.vowbound_pending: must name the task that adds the {VOWBOUND_FILE} row")
+    if not flag:
+        if pending is not None:
+            errs.append(f"{w}.vowbound_pending: only on a row with vowbound true")
+        return errs
+    if used:
+        errs.append(f"{w}.vowbound: a Vowbound's scene may not be an enemy's model")
+    if vowbound is not None:
+        rows = vowbound.get("vowbound", []) if isinstance(vowbound, dict) else []
+        has_row = cid in {v.get("id") for v in rows if isinstance(v, dict)}
+        if not has_row and pending is None:
+            errs.append(f"{w}.vowbound: no {VOWBOUND_FILE} row '{cid}'")
+        elif has_row and pending is not None:
+            errs.append(f"{w}.vowbound_pending: {VOWBOUND_FILE} has the row '{cid}' now; drop the key")
+    return errs
+
+
 def check_creatures(root: Path, files: dict[str, object], rep) -> None:
     def exists(res: str) -> bool:
         return (root / res[len("res://"):]).is_file()
@@ -203,5 +259,6 @@ def check_creatures(root: Path, files: dict[str, object], rep) -> None:
     if CREATURES_FILE not in files:
         rep.err(f"{CREATURES_FILE}: missing")
         return
-    for e in creature_errors(files[CREATURES_FILE], files.get(ENEMIES_FILE), files.get(SKILLS_FILE), exists):
+    for e in creature_errors(files[CREATURES_FILE], files.get(ENEMIES_FILE), files.get(SKILLS_FILE), exists,
+                             files.get(VOWBOUND_FILE)):
         rep.err(e)

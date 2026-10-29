@@ -2,12 +2,13 @@
 id: M3-AUD-842
 title: "Act II finals, Ch13-14: ansedra, lamp_archive, peace_wedding"
 role: audio
-status: review
+status: blocked
 owner_session: "audio worktree agent"
 reviewer: design
 depends_on: [M3-AUD-839]
 milestone: M3
 request-from: lead
+blocked-by: ADR 0041
 ---
 ## Goal
 Grow the three Ch13-14 Act II sketches (M3-AUD-805) into their finals (act2_finals.md): 2-3 minute seamless loops

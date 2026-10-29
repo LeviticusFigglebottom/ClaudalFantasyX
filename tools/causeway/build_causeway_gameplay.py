@@ -149,6 +149,10 @@ def build(route):
         return t
 
     triggers = [
+        # M3-NAR-01: the Tide-Readers' Notice nailed to the first marker post past the head (C02), read before the
+        # first banter post. A record: CodexNotice marks codex_causeway_notice_found and shows its card.
+        trigger("causeway_notice", nearest_s(path, *anchors["marker_posts"][0]), activation="interact",
+                prompt_key="FIELD_PROMPT_DEFAULT", once=True, payload={"record": "causeway_notice"}),
         trigger("banter_posts", nearest_s(path, *anchors["marker_posts"][1]), once=True,
                 sets_flag="ch03_banter_posts",
                 payload={"dialogue": "ch03_bark_causeway_posts", "overheard": True}),
@@ -181,7 +185,9 @@ def build(route):
     beats = {
         "C01": ([-3.62, 1.84, 1.70], [129.76, 1.08, -98.68], 67.4, [0.0, 0.0], "pan_follow"),
         "C04": ([39.72, 1.30, -27.52], [95.44, 0.95, -57.62], 37.8, anchors["broken_post"], "pan_follow"),
-        "C07": ([75.97, 0.55, -47.42], [85.05, 4.42, -51.63], 53.1, None, "fixed"),
+        # C07 levelled (the Lead's 10-27 review: the preview's 22-degree tilt left a sliver of ground): the causeway
+        # runs on toward the harrier's flats with the cumulus over it.
+        "C07": ([75.97, 1.2, -47.42], [85.05, 1.6, -51.63], 53.1, None, "fixed"),
         "C03": ([67.20, -0.35, -19.65], [63.92, -0.70, -23.98], 13.7, tidepool[:2], "pan_follow"),
         "C05": ([102.70, 0.66, -79.49], [106.09, 0.57, -75.68], 46.4, ring, "pan_follow"),
         "C06": ([104.87, 0.39, -44.99], [193.11, 1.34, -147.18], 20.9, None, "pan_follow"),

@@ -178,10 +178,13 @@ func choose(index: int) -> void:
 	_close_confirm()
 	if StringName(str(row.get("id", ""))) != ROW_DO:
 		return
+	var action := StringName(str(model.plan(cursor)["action"]))
 	var result := model.act(cursor)
 	_board.center_on(cursor, true)
 	_refresh()
 	_say(str(result["text"]), bool(result["ok"]))
+	if bool(result["ok"]) and action in [LatticeMenuModel.ACT_ACTIVATE, LatticeMenuModel.ACT_OPEN]:
+		_board.play_wake(cursor)  # pillar 5: the node visibly wakes
 
 
 func is_confirming() -> bool:
@@ -430,6 +433,8 @@ func _refresh() -> void:
 
 
 func _tag(p: Dictionary, path: Array[StringName]) -> String:
+	if p.has("need") and bool(p["ok"]):
+		return tr("LATTICE_MENU_TAG_FACET_FMT").format({"n": int(p["need"]), "facet": str(p["facet"])})
 	if path.is_empty():
 		return ""
 	var cost := int(p["cost"])

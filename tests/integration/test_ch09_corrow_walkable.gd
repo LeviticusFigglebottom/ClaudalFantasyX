@@ -65,3 +65,20 @@ func test_the_party_marks_stand_on_a_floor() -> void:
 		var f := floor_y(p.x, p.z, p.y + 0.3)
 		assert_true(absf(f - p.y) < 0.35, "%s stands on a floor (mark y %.2f, floor %.2f)" % [m.name, p.y, f])
 	close()
+
+
+func test_the_strand_and_the_vigil_are_kit_pieces() -> void:
+	var counts: Dictionary = {}
+	var squat: Node3D = null
+	for n: Node in zone.get_node(^"Dressing").get_children():
+		var kind := (n as Node3D).scene_file_path.get_file().get_basename() if n is Node3D else ""
+		counts[kind] = int(counts.get(kind, 0)) + 1
+		if kind == "iskarra_tower_broken":
+			squat = n as Node3D
+	assert_true(int(counts.get("shroud_a", 0)) + int(counts.get("shroud_b", 0)) > 20, "the drowned lie in their rows")
+	assert_true(int(counts.get("strand_lamp", 0)) > 20, "a clay lamp under each vigil light")
+	assert_true(counts.has("iskarra_plaza"), "the vigil stands in Iskarra's plaza")
+	assert_true(squat != null, "Iskarra's broken tower")
+	var s := squat.basis.get_scale()
+	assert_true(absf(s.x - 0.8) < 0.01 and absf(s.y - 0.6) < 0.01, "scale_y: squat, not uniform (%s)" % s)
+	close()

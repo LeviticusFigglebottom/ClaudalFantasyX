@@ -113,6 +113,13 @@ MATERIALS: dict[str, dict] = {
                        roughness_base=0.8, cavity_darken=0.5, variation_value=0.18, barnacle_coverage=0.5,
                        algae_band_m="Vector2(-1.5, 0.3)", algae_coverage="Vector2(0.55, 0.9)",
                        salt_coverage="Vector2(0.0, 0.15)", wet_darken=0.5, wet_roughness=0.08, detail_scale_m=1.0),
+    # M3-ENV-746: the islet's landing, the reef's rock lifted clear of the tide: paler, salted, the weed only
+    # below the walk.
+    "bf_islet_rock": weather(*CORAL, (1.6, 1.6), base_triplanar=True, col_tint=hexc("#A49E92"), normal_strength=1.3,
+                             roughness_base=0.85, cavity_darken=0.45, variation_value=0.16, barnacle_coverage=0.25,
+                             algae_band_m="Vector2(-1.6, -0.45)", algae_coverage="Vector2(0.5, 0.85)",
+                             salt_coverage="Vector2(0.1, 0.4)", wet_darken=0.45, wet_roughness=0.08,
+                             detail_scale_m=1.0),
 }
 # Cloth: the sails' sand_cloth, the reef band's sea_blue_cloth, the awning's faded_teal_cloth, the passengers'
 # indigo, sand and deep-red bundles, the rotted rag on the drowned hull, and the baskets in thatch.

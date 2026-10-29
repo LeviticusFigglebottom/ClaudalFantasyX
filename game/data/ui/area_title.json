@@ -8,7 +8,7 @@
     "out_sec": 1.0,
     "drift_px": 12,
     "shadow_px": 3,
-    "band_alpha": 0.55,
+    "band_alpha": 0.65,
     "band_feather_px": 45,
     "rule_px": 3,
     "rule_node_px": 9,

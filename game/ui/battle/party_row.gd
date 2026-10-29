@@ -4,7 +4,8 @@ extends Control
 ## bars. Reads a BattleCombatant; never writes to it.
 ## - The fighter acting now gets a raised fill, a solid focus bar on the left edge and a ▶ mark
 ##   (hollow when Berserk/Confuse plays the turn for them).
-## - Petrify greys the row and turns the portrait to stone (strata lines, not hue alone).
+## - The portrait is the hero's face (BattlePortraits; worried while down), its initial only where none
+##   is baked yet. Petrify greys the row and turns the portrait to stone (strata lines, not hue alone).
 ## - Doom shows its count beside the hourglass glyph; Regen under Zombie shows inverted.
 ## - A hero with a Swell (BattleCombatant.swell_mode set) whose input the HUD draws
 ##   (SwellRingView.draws_hero, M2-CMB-01) gets the Swell gauge under the name
@@ -25,6 +26,8 @@ var show_swell := false
 var _m: Dictionary = {}
 var _name: Label
 var _initial: Label
+var _face: Texture2D
+var _face_down := false
 var _hp_label: Label
 var _mp_label: Label
 var _hp: HudGauge
@@ -57,6 +60,7 @@ func setup(metrics: Dictionary, c: BattleCombatant, label: String, portrait_tint
 	_initial = _label(&"HudNumber", portrait)
 	_initial.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_initial.text = label.left(1)
+	_sync_face()
 	_name = _label(&"HudName", Rect2(name_x, strip * 0.5, name_w, h - strip * 0.5 * 2.0))
 	_name.text = label
 	_name.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
@@ -105,6 +109,7 @@ func refresh(animate: bool, drain_sec: float = 0.0) -> void:
 	_mp_label.text = "%d" % combatant.mp
 	_refresh_swell(sec)
 	var low := _hp.is_low() or combatant.hp <= 0
+	_sync_face()
 	if is_stone():
 		_initial.add_theme_color_override(&"font_color", _c(&"stone_crack"))
 	else:
@@ -239,6 +244,9 @@ func _draw_portrait() -> void:
 	var r := portrait_rect()
 	if is_stone():
 		draw_rect(r, _c(&"stone"))
+		if _face != null:  # the face turned to stone: greyed under the strata
+			var inset := HudLayout.num(_m, "portrait_inset")
+			draw_texture_rect(_face, r.grow(-inset), false, _c(&"stone"))
 		var crack := _c(&"stone_crack")
 		var third := r.size.y / 3.0
 		draw_line(r.position + Vector2(0, third), r.position + Vector2(r.size.x, third * 0.8), crack, 1.0)
@@ -249,6 +257,20 @@ func _draw_portrait() -> void:
 	if combatant != null and not combatant.is_alive():
 		col.a *= _c(&"text_disabled").a
 	draw_rect(r, col)
+	if _face != null:
+		var inset := HudLayout.num(_m, "portrait_inset")
+		draw_texture_rect(_face, r.grow(-inset), false, Color(1.0, 1.0, 1.0, col.a))
+
+
+## The face for this fighter (worried while down); the initial shows only where there is none.
+func _sync_face() -> void:
+	if combatant == null:
+		return
+	var down := not combatant.is_alive()
+	if _face == null or down != _face_down:
+		_face = BattlePortraits.texture(combatant.id, down)
+		_face_down = down
+	_initial.visible = _face == null
 
 
 func _c(role: StringName) -> Color:

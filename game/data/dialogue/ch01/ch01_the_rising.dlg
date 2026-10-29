@@ -8,7 +8,8 @@
 // Rhen's lines are few and short (a sudden short line when it matters). No VO.
 // After the letterbox: Kell, on her roof, sees him and points away from herself. The run's choice
 // (C1-13): "Kell first." sets ch01_ran_for_kell and reports <<event ch01_kell_first>>, so the
-// chapter flow starts the run at her bridge. Both paths end at the net-pen hull.
+// chapter flow starts the run at her bridge. Both paths end at the net-pen hull. As the letterbox lifts, the
+// cue's second stem (the pulse) comes in over 2 s for the run (M3-AUD-829).
 title: ch01_the_rising
 location: ch01/oruvel
 ---
@@ -30,6 +31,7 @@ Skipper_Sadi [determined]: Cast off! Sea room, all of you, find sea room! #line:
 @wait 2.0
 @camera release
 @letterbox off
+@music undertow_rising stem=1 fade=2.0
 Rhen [afraid]: Kell! #line:ch01_rising_006
 Kell [angry]: Not me, you fool! The net-pen! The little ones! #line:ch01_rising_007
 -> Go to the net-pen. #line:ch01_rising_008

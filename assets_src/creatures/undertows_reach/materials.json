@@ -1,15 +1,15 @@
 {
-  "_doc": "The Undertow's Reach (act1/undertows_reach.md): water (the forearm: black water, slate streaks, the door-sized wounds), crust (the spawn-crust hand and the drowned spawn bodies, spawn_wound seams), wreck (spars driven through it). The storm's own water look is the PC GPU session's; this is the creature-shader stand-in. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "_doc": "The Undertow's Reach (act1/undertows_reach.md; final pass M3-CRB-007): water (the forearm, the palm and the digits' cores: black storm-water, slate streaks, foam crests, the door-sized wounds), crust (the crust plates, claws and keel spurs, barnacles, the drowned spawn bodies), wreck (masts, yard, planks, the wheel, chain, rope, the lantern). wet_darken 0.55 on water (was 0.2, which crushed the vertex colours to black). The storm's own water look is the PC GPU session's; this is the creature-shader stand-in. Polish: crust is a dry, rough shell (roughness 0.8 dry / 0.32 wet, specular 0.35, clearcoat 0.3, a finer, deeper grain: detail scale 12, albedo 0.38, bump 2.0; was 0.45 / 0.15 / 0.5 / 0.8 and 5 / 0.3 / 1.2, which read as polished black facets), its wetness pooled in the plates' grooves and low ground by the vertex data. write_materials.py on game/shaders/creature/creature.gdshader.",
   "slots": {
     "water": {
       "roughness_dry": 0.12,
       "roughness_wet": 0.05,
       "specular": 0.6,
       "clearcoat_wet": 1.0,
-      "wet_darken": 0.2,
+      "wet_darken": 0.55,
       "detail_scale": 3.0,
-      "detail_albedo": 0.1,
-      "detail_bump": 0.6,
+      "detail_albedo": 0.22,
+      "detail_bump": 0.8,
       "rim_sheen": 0.6,
       "emission_color": "#3FE0C8",
       "emission_energy": 3.0,
@@ -17,24 +17,26 @@
       "emission_pulse_depth": 0.35
     },
     "crust": {
-      "roughness_dry": 0.45,
-      "roughness_wet": 0.15,
-      "clearcoat_wet": 0.8,
-      "detail_scale": 6.0,
-      "detail_albedo": 0.15,
-      "detail_bump": 0.7,
+      "roughness_dry": 0.8,
+      "roughness_wet": 0.32,
+      "specular": 0.35,
+      "clearcoat_wet": 0.3,
+      "detail_scale": 12.0,
+      "detail_albedo": 0.38,
+      "detail_bump": 2.0,
       "cavity_albedo": 0.5,
       "cavity_ao": 0.6,
       "emission_color": "#3FE0C8",
       "emission_energy": 2.4,
       "emission_pulse_hz": 0.4,
-      "emission_pulse_depth": 0.35
+      "emission_pulse_depth": 0.35,
+      "wet_darken": 0.75
     },
     "wreck": {
       "roughness_dry": 0.7,
       "roughness_wet": 0.3,
       "detail_scale": 8.0,
-      "detail_albedo": 0.2,
+      "detail_albedo": 0.28,
       "detail_bump": 0.5,
       "cavity_albedo": 0.4
     }

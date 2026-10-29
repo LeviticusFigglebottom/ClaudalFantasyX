@@ -9,7 +9,9 @@
     "pemakar_terraces": {"file": "res://assets/audio/music/terraces_of_ash.ogg", "resume": true, "_note": "M3-AUD-823: the scripts' id for `terraces_of_ash`: Ch5's Pemakar terraces. Same file, so the cue is composed once."},
     "ashcrown_trial": {"file": "res://assets/audio/music/ashcrown.ogg", "resume": true, "_note": "M3-AUD-823: the scripts' id for `ashcrown`: Ch5's Ashcrown temple trial. Same file, so the cue is composed once."},
     "tamsule_port": {"file": "res://assets/audio/music/tamsule.ogg", "resume": true, "_note": "M3-AUD-823: the scripts' id for `tamsule`: Ch7's Tamsule port. Same file, so the cue is composed once."},
-    "coilspire_flues": {"file": "res://assets/audio/music/coilspire.ogg", "resume": true, "_note": "M3-AUD-823: the scripts' id for `coilspire`: Ch8's Coilspire flues (replaces the sequencer's temple_trial stand-in). Same file, so the cue is composed once."},
+    "prologue_dusk": {"file": "res://assets/lfs/audio/music/prologue_dusk.ogg", "_note": "the prologue (prologue_dead_city.dlg; M3-AUD-862): MEL_A in its own register on a breath flute over a drone on A, split by the narrator's line (the 300 Hz-3 kHz band left clear under it); a 30.5 s intro timed to the scene, then a quiet 24 s loop; plays over the iskarra_dusk bed; Git LFS"},
+    "corrow_day": {"file": "res://assets/audio/music/corrow_seawall.ogg", "_note": "M3-AUD-861: the scripts' id for `corrow_seawall` (ch08_landfall.dlg): Corrow by day before the storm. Same file, so the cue is composed once."},
+    "coilspire_flues": {"file": "res://assets/audio/music/coilspire.ogg", "resume": true, "_note": "M3-AUD-823/861: the scripts' id for `coilspire`: Ch8's Coilspire flues (ch08_spire_door.dlg). Same file, so the cue is composed once."},
     "battle_standard": {
       "file": "res://assets/audio/music/battle_standard.ogg",
       "_note": "the M1-AUD-02 prototype (v1), kept for A/B; battles play v2"
@@ -97,6 +99,92 @@
       "file": "res://assets/audio/music/spar_wraith.ogg",
       "_note": "Ch4 boss, the Spar-Wraith on the drowned trader's deck (M3-AUD-08); no battle.encounters row until the encounter exists"
     },
+    "mangrove_drowner": {
+      "stems": [
+        "res://assets/audio/music/act2/mangrove_drowner_p1.ogg",
+        "res://assets/audio/music/act2/mangrove_drowner_p2.ogg"
+      ],
+      "start_stems": [
+        0
+      ],
+      "_note": "Ch10 boss, the Mangrove Drowner (M3-AUD-844; Git LFS). No encounter or phase row until the fight exists; intended: battle.encounters <its id> -> mangrove_drowner, phase `uprooted` -> stems_on [1] over 3 s"
+    },
+    "lamp_engine": {
+      "stems": [
+        "res://assets/audio/music/act2/lamp_engine_p1.ogg",
+        "res://assets/audio/music/act2/lamp_engine_p2.ogg"
+      ],
+      "start_stems": [
+        0
+      ],
+      "_note": "Ch11 boss, the Lamp Engine (M3-AUD-844; Git LFS). No encounter or phase row until the fight exists; intended: phase `opened` (the core exposed) -> stems_on [1] over 3 s"
+    },
+    "avalanche_ram": {
+      "stems": [
+        "res://assets/audio/music/act2/avalanche_ram_p1.ogg",
+        "res://assets/audio/music/act2/avalanche_ram_p2.ogg"
+      ],
+      "start_stems": [
+        0
+      ],
+      "_note": "Ch12 boss, the Avalanche Ram (M3-AUD-845; Git LFS). No phases: stem 2 is the bellow's rage, intended to come in under 50% HP once the fight exists"
+    },
+    "wakefin": {
+      "stems": [
+        "res://assets/audio/music/act2/wakefin_p1.ogg",
+        "res://assets/audio/music/act2/wakefin_p2.ogg"
+      ],
+      "start_stems": [
+        0
+      ],
+      "_note": "Ch15 boss, the Wakefin, in the dark (M3-AUD-845; Git LFS). No encounter or phase row until the fight exists"
+    },
+    "hollowmere": {
+      "file": "res://assets/audio/music/act3/hollowmere.ogg",
+      "resume": true,
+      "_note": "Ch17, the Hollowmere flotilla and Dace's dry-dock (M3-AUD-852): Saltwright work music, a 135 s loop; the current-song in the wright's whistle; Git LFS"
+    },
+    "dace_ledger": {
+      "file": "res://assets/audio/music/act3/dace_ledger.ogg",
+      "_note": "Ch17, Rhen reads Dace's ledger (M3-AUD-852): a 90 s through-composed bed for reading; the 300 Hz-3 kHz band is left light; it breaks off at 80.3 s and ends in silence; Git LFS"
+    },
+    "the_kite": {
+      "file": "res://assets/audio/music/act3/the_kite.ogg",
+      "resume": true,
+      "_note": "Ch18, the Kite (the hub): the star-path flying home, Liss's theme in B, the sea's glow in C; a 142.2 s loop (M3-AUD-853); zone row ch18/kite once it exists; Git LFS"
+    },
+    "kite_maiden_flight": {
+      "file": "res://assets/audio/music/act3/kite_maiden_flight.ogg",
+      "_note": "Ch18, the maiden flight's lift-off: from Hollowmere's D dorian whistle (the current-song) into the_kite's A; 46.9 s, through-composed, ends on the A chord so the_kite's bar 1 follows (M3-AUD-853); the sequencer plays it by name, then the_kite; Git LFS"
+    },
+    "iskarra_ruins": {
+      "file": "res://assets/audio/music/act3/iskarra_ruins.ogg",
+      "resume": true,
+      "_note": "Ch19, the Iskarra Ruins in full, the prologue's place understood (M3-AUD-856): a 136.8 s loop; MEL_A two octaves down over the drone on A, rising glass motes, dusk-gold strings; plays over the iskarra_dusk bed; Git LFS"
+    },
+    "iskarra_spire": {
+      "file": "res://assets/audio/music/act3/iskarra_spire.ogg",
+      "resume": true,
+      "_note": "Ch19, the Lamp Spire climb to the founders' anchor-engine (M3-AUD-856): a 129.2 s loop; the Lamp Engine's tick, steady just-tuned glass, ORDER_HUM as the engine's drone; Git LFS"
+    },
+    "hesper_and_ilsabet": {
+      "stems": [
+        "res://assets/audio/music/act3/hesper_and_ilsabet_s0.ogg",
+        "res://assets/audio/music/act3/hesper_and_ilsabet_s1.ogg"
+      ],
+      "start_stems": [
+        0,
+        1
+      ],
+      "_note": "Ch19 boss, Wardens Hesper Oan (stem 0) and Ilsabet Rue (stem 1) on the Lamp Spire's crown: two lines that never meet over the Order's hum as a ground; 90.0 s loop, both stems from the start; when one Warden falls their stem goes out and the other plays alone (M3-AUD-858); Git LFS; intended: battle.encounters ch19_hesper_ilsabet -> hesper_and_ilsabet, phases hesper_fallen -> stems_off [0], ilsabet_fallen -> stems_off [1] over 2.5 s, once the fight exists"
+    },
+    "kerrid_last_night": {
+      "file": "res://assets/audio/music/act3/kerrid_last_night.ogg",
+      "_note": "Ch19, Kerrid's last quiet night with Rhen: the stair at rest at 48 BPM under a solo cello, the night sea; 73.7 s, ends open on a held chord (never slows: goodbye_kerrid owns that) (M3-AUD-858); Git LFS"
+    },
+    "seawall_hold_rope": {"stems": ["res://assets/audio/music/seawall_hold_p1.ogg", "res://assets/audio/music/seawall_hold_p2.ogg", "res://assets/audio/music/seawall_hold_p3.ogg"], "start_stems": [0, 1], "_note": "M3-AUD-861: wave 2 'The Rope' (ch08_stair_hold_2): seawall_hold's stems, starting with stem 2 already in (the cue's intended wave 2)"},
+    "seawall_hold_last": {"stems": ["res://assets/audio/music/seawall_hold_p1.ogg", "res://assets/audio/music/seawall_hold_p2.ogg", "res://assets/audio/music/seawall_hold_p3.ogg"], "start_stems": [0, 1, 2], "_note": "M3-AUD-861: wave 3 'The Last of the Low Town' (ch08_stair_hold_3): all three of seawall_hold's stems from the start"},
+    "undertow_reach": {"stems": ["res://assets/audio/music/undertows_reach_p1.ogg", "res://assets/audio/music/undertows_reach_p2.ogg", "res://assets/audio/music/undertows_reach_p3.ogg"], "start_stems": [0], "_note": "M3-AUD-861: the scripts' id for `undertows_reach` (ch08_the_reach.dlg): the same stems, so the cutscene plays the whole cue on the deck (CutsceneSound.music)"},
     "cinder_matron": {
       "stems": [
         "res://assets/audio/music/cinder_matron_p1.ogg",
@@ -116,7 +204,7 @@
       "start_stems": [
         0
       ],
-      "_note": "Ch8 boss (M3-AUD-09). No encounter or phase rows until the fight exists; intended: battle.encounters undertows_reach -> undertows_reach, phase `reach_strikes` -> stems_on [1] over 4 s, phase `wall_falls` (the scripted escape) -> stems_on [2] over 2 s"
+      "_note": "Ch8 boss (M3-AUD-09): battle.encounters undertows_reach plays it; its phases `dark` (60% HP) and `breach` (30%) bring in stems 1 and 2 (M3-AUD-861)"
     },
     "oruvel": {
       "file": "res://assets/audio/music/oruvel.ogg",
@@ -168,70 +256,70 @@
       "_note": "Ch6 boss, the Stillguard Inquisitor and a raid-hound in the Brine Shoals (M3-AUD-20); no battle.encounters row until the encounter exists; intended: battle.encounters stillguard_inquisitor -> stillguard_inquisitor"
     },
     "ossa_fen": {
-      "file": "res://assets/audio/music/ossa_fen.ogg",
+      "file": "res://assets/audio/music/act2/ossa_fen.ogg",
       "resume": true,
-      "_note": "Ch10, Ossa Fen, the mangrove channels: Act II sketch (M3-AUD-804); no zone row until ch10/ossa_fen exists"
+      "_note": "Ch10, Ossa Fen, the mangrove channels: Act II final (M3-AUD-840; Git LFS; the sketch assets/audio/music/ossa_fen.ogg stays as the fallback); no zone row until ch10/ossa_fen exists"
     },
     "reedhollow": {
-      "file": "res://assets/audio/music/reedhollow.ogg",
+      "file": "res://assets/audio/music/act2/reedhollow.ogg",
       "resume": true,
-      "_note": "Ch10, Reedhollow, the Kirru roost-village: Act II sketch (M3-AUD-804); no zone row until ch10/reedhollow exists"
+      "_note": "Ch10, Reedhollow, the Kirru roost-village: Act II final (M3-AUD-840; Git LFS; the sketch assets/audio/music/reedhollow.ogg stays as the fallback); no zone row until ch10/reedhollow exists"
     },
     "sunken_vey": {
-      "file": "res://assets/audio/music/sunken_vey.ogg",
+      "file": "res://assets/audio/music/act2/sunken_vey.ogg",
       "resume": true,
-      "_note": "Ch11, Sunken Vey, the drowned galleries: Act II sketch (M3-AUD-804); no zone row until ch11/sunken_vey exists"
+      "_note": "Ch11, Sunken Vey, the drowned galleries: Act II final (M3-AUD-841; Git LFS; the sketch assets/audio/music/sunken_vey.ogg stays as the fallback); no zone row until ch11/sunken_vey exists"
     },
     "lowlight": {
-      "file": "res://assets/audio/music/lowlight.ogg",
+      "file": "res://assets/audio/music/act2/lowlight.ogg",
       "resume": true,
-      "_note": "Ch11, the Lowlight temple and the Lamp Engine's pulse: Act II sketch (M3-AUD-804); no zone row until ch11/lowlight exists"
+      "_note": "Ch11, the Lowlight temple and the Lamp Engine's pulse: Act II final (M3-AUD-841; Git LFS; the sketch assets/audio/music/lowlight.ogg stays as the fallback); no zone row until ch11/lowlight exists"
     },
     "keth_pass": {
-      "file": "res://assets/audio/music/keth_pass.ogg",
+      "file": "res://assets/audio/music/act2/keth_pass.ogg",
       "resume": true,
-      "_note": "Ch12, Keth Pass, the mountain route: Act II sketch (M3-AUD-804); no zone row until ch12/keth_pass exists"
+      "_note": "Ch12, Keth Pass, the mountain route: Act II final (M3-AUD-842; Git LFS; the sketch assets/audio/music/keth_pass.ogg stays as the fallback); no zone row until ch12/keth_pass exists"
     },
     "quellan": {
-      "file": "res://assets/audio/music/quellan.ogg",
+      "file": "res://assets/audio/music/act2/quellan.ogg",
       "resume": true,
-      "_note": "Ch12, Quellan, the highland town: Act II sketch (M3-AUD-804); no zone row until ch12/quellan exists"
+      "_note": "Ch12, Quellan, the highland town: Act II final (M3-AUD-842; Git LFS; the sketch assets/audio/music/quellan.ogg stays as the fallback); no zone row until ch12/quellan exists"
     }
 ,
     "ansedra": {
-      "file": "res://assets/audio/music/ansedra.ogg",
+      "file": "res://assets/audio/music/act2/ansedra.ogg",
       "resume": true,
-      "_note": "Ch13, Ansedra, the holy city: gold and lacquer. Act II sketch (M3-AUD-805); no zone row until ch13/ansedra/ansedra.tscn exists"
+      "_note": "Ch13, Ansedra, the holy city: gold and lacquer. Act II final (M3-AUD-843; Git LFS; the sketch assets/audio/music/ansedra.ogg stays as the fallback); no zone row until ch13/ansedra/ansedra.tscn exists"
     }
 ,
     "lamp_archive": {
-      "file": "res://assets/audio/music/lamp_archive.ogg",
+      "file": "res://assets/audio/music/act2/lamp_archive.ogg",
       "resume": true,
-      "_note": "Ch13, the Lamp Archive, the founding truth on paper. Act II sketch (M3-AUD-805); no zone row until ch13/lamp_archive/lamp_archive.tscn exists"
+      "_note": "Ch13, the Lamp Archive, the founding truth on paper. Act II final (M3-AUD-843; Git LFS; the sketch assets/audio/music/lamp_archive.ogg stays as the fallback); no zone row until ch13/lamp_archive/lamp_archive.tscn exists"
     }
 ,
     "peace_wedding": {
-      "file": "res://assets/audio/music/peace_wedding.ogg",
+      "file": "res://assets/audio/music/act2/peace_wedding.ogg",
       "resume": true,
-      "_note": "Ch14, the peace wedding in the Lacquer Court at dusk. Act II sketch (M3-AUD-805); no zone row until ch13/ansedra_lacquer_court/ansedra_lacquer_court.tscn exists"
+      "_note": "Ch14, the peace wedding in the Lacquer Court at dusk. Act II final (M3-AUD-843; Git LFS; the sketch assets/audio/music/peace_wedding.ogg stays as the fallback); no zone row until ch13/ansedra_lacquer_court/ansedra_lacquer_court.tscn exists"
     }
 ,
     "unlamped": {
-      "file": "res://assets/audio/music/unlamped.ogg",
+      "file": "res://assets/audio/music/act2/unlamped.ogg",
       "resume": true,
-      "_note": "Ch15, the open sea at night aboard the bridal barge. Act II sketch (M3-AUD-805); no zone row until ch15/open_sea/open_sea.tscn exists"
+      "_note": "Ch15, the open sea at night aboard the bridal barge. Act II final (M3-AUD-843; Git LFS; the sketch assets/audio/music/unlamped.ogg stays as the fallback); no zone row until ch15/open_sea/open_sea.tscn exists"
     }
 ,
     "pale_rim": {
-      "file": "res://assets/audio/music/pale_rim.ogg",
+      "file": "res://assets/audio/music/act2/pale_rim.ogg",
       "resume": true,
-      "_note": "Ch16, the Pale Rim, the white shallows. Act II sketch (M3-AUD-805); no zone row until ch16/pale_rim/pale_rim.tscn exists"
+      "_note": "Ch16, the Pale Rim, the white shallows. Act II final (M3-AUD-843; Git LFS; the sketch assets/audio/music/pale_rim.ogg stays as the fallback); no zone row until ch16/pale_rim/pale_rim.tscn exists"
     }
 ,
     "drowned_choir": {
-      "file": "res://assets/audio/music/drowned_choir.ogg",
+      "file": "res://assets/audio/music/act2/drowned_choir.ogg",
       "resume": true,
-      "_note": "Ch16, the Drowned Choir. Act II sketch (M3-AUD-805); no zone row until ch16/drowned_choir/drowned_choir.tscn exists"
+      "_note": "Ch16, the Drowned Choir. Act II final (M3-AUD-843; Git LFS; the sketch assets/audio/music/drowned_choir.ogg stays as the fallback); no zone row until ch16/drowned_choir/drowned_choir.tscn exists"
     },
     "tidecup_after": {
       "file": "res://assets/audio/music/tidecup_after.ogg",
@@ -258,7 +346,7 @@
       "start_stems": [
         0
       ],
-      "_note": "Ch8 B10-B14, the seawall's three waves (ch08_first_down.dlg, ch08_hoist.dlg, ch08_stranger_on_wall.dlg) (M3-AUD-822). No encounter or wave rows until the set piece exists; intended: wave 2 `The Rope` -> stems_on [1], wave 3 -> stems_on [2], each over 3 s"
+      "_note": "Ch8 B10-B14, the seawall's three waves (ch08_first_down.dlg, ch08_hoist.dlg, ch08_stranger_on_wall.dlg) (M3-AUD-822). The set piece's waves play it: ch08_stair_hold_1 here, 2 as seawall_hold_rope (stems 0-1 in), 3 as seawall_hold_last (all three) (M3-AUD-861)"
     }
 ,
     "hearer_hum": {
@@ -268,7 +356,7 @@
 ,
     "ysolde_theme": {
       "file": "res://assets/audio/music/ysolde_theme.ogg",
-      "_note": "Ysolde's theme, a sketch: Ch4 C4-07 The Ink (ch04_the_ink.dlg) and C4-09 the gangplank (ch04_gangplank.dlg); a loop (M3-AUD-820); the sequencer plays it by name"
+      "_note": "Ysolde's theme, the final (M3-AUD-863, grown from M3-AUD-820's first version): Ch4 C4-07 The Ink (ch04_the_ink.dlg) and C4-09 the gangplank (ch04_gangplank.dlg); a 91.4 s loop; the sequencer plays it by name"
     }
 ,
     "name_board_home": {
@@ -347,13 +435,18 @@
     {"scene": "res://game/levels/ch07/tamsule/tamsule.tscn", "music": "tamsule", "_note": "M3-AUD-828: Ch7, the port; the scene has landed"},
     {"scene": "res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries.tscn", "music": "tamsule_bell_galleries", "_note": "M3-AUD-828: Ch7, the Bell's galleries; the scene has landed"},
     {"scene": "res://game/levels/ch09/corrow_night/corrow_night.tscn", "music": "corrow_night", "_note": "M3-AUD-819/828: Ch9, Corrow's night strand"},
-    {"scene": "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn", "music": "saltgrass_causeway", "reverb": "open_sea", "_note": "B06 (M2-AUD-12): the route from Haluna to the shrine"}
+    {"scene": "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn", "music": "saltgrass_causeway", "reverb": "open_sea", "_note": "M3-AUD-861: Ch3 B06, the causeway walk (the scene has landed)"},
+    {"scene": "res://game/levels/ch07/tidecup_match/tidecup_match.tscn", "music": "tidecup_match", "_note": "M3-AUD-861: Ch7, the story Reefball match (TidecupMatch); the crowd beds come from ReefballAudio"},
+    {"scene": "res://game/levels/ch08/corrow/corrow.tscn", "music": "corrow_seawall", "_note": "M3-AUD-861: Ch8, Corrow Bastion before the storm (the scene has landed)"},
+    {"scene": "res://game/levels/ch08/coilspire/coilspire.tscn", "music": "coilspire", "_note": "M3-AUD-861: Ch8, the Coilspire temple's flues (the scene has landed)"},
+    {"scene": "res://game/levels/prologue/prologue.tscn", "music": "prologue_dusk", "_note": "M3-AUD-862: the prologue, the first music after the title; the scene's fade-out and the router's fade take it away"}
   ],
   "battle": {
     "default": "battle_standard_v2",
     "encounters": {
       "drownbell": "drownbell",
-      "ch01_hullgnaw": "hullgnaw", "ch04_spar_wraith": "spar_wraith", "ch05_cinder_matron": "cinder_matron", "ch06_inquisitor": "stillguard_inquisitor"
+      "ch01_hullgnaw": "hullgnaw", "ch04_spar_wraith": "spar_wraith", "ch05_cinder_matron": "cinder_matron", "ch06_inquisitor": "stillguard_inquisitor",
+      "ch08_stair_hold_1": "seawall_hold", "ch08_stair_hold_2": "seawall_hold_rope", "ch08_stair_hold_3": "seawall_hold_last", "undertows_reach": "undertows_reach"
     },
     "phases": {
       "flood": {
@@ -362,7 +455,9 @@
         ],
         "sec": 4.0,
         "_note": "the Flood (phase 2): low strings and the rising water come in over 4 s"
-      }, "pour": {"stems_on": [1], "sec": 3.0, "_note": "M3-AUD-828: the Cinder Matron's Pour (phase 2): its second stem over 3 s"}
+      }, "pour": {"stems_on": [1], "sec": 3.0, "_note": "M3-AUD-828: the Cinder Matron's Pour (phase 2): its second stem over 3 s"},
+      "dark": {"stems_on": [1], "sec": 4.0, "_note": "M3-AUD-861: the Undertow's Reach at 60% HP (the storm goes dark): its second stem over 4 s"},
+      "breach": {"stems_on": [2], "sec": 2.0, "_note": "M3-AUD-861: the Reach's Breach at 30% HP (the wall gives; the scripted escape follows): its third stem over 2 s"}
     }
   }
 }

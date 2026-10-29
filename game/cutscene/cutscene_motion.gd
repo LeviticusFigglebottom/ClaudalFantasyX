@@ -115,3 +115,14 @@ static func flat_dir(path: PackedVector3Array, i: int) -> Vector3:
 	if i + 1 >= path.size():
 		return Vector3.ZERO
 	return Vector3(path[i + 1].x - path[i].x, 0.0, path[i + 1].z - path[i].z)
+
+
+## How long an auto-advancing line holds once `box` has revealed it: at least `min_hold`, and long enough that the
+## whole line was up for its length / `read_cps` seconds (no reading pace when `read_cps` <= 0).
+static func read_hold(box: DialogueBox, read_cps: float, min_hold: float) -> float:
+	if read_cps <= 0.0 or box == null:
+		return min_hold
+	var chars := float(box.shown_text().length())
+	var reveal_cps := box.settings.chars_per_sec if box.settings != null else 0.0
+	var revealed := chars / reveal_cps if reveal_cps > 0.0 else 0.0
+	return maxf(min_hold, chars / read_cps - revealed)

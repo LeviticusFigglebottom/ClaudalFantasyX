@@ -6,7 +6,7 @@
   "blocks": [
     {"id": "Sea", "pos": [10, -1.5, -12], "size": [120, 1, 90], "color": "#2f6f86"},
     {"id": "ScaleHull", "pos": [0, -0.5, 10], "size": [10, 1, 10]},
-    {"id": "ScaleCounter", "pos": [0, 0.5, 5.5], "size": [4, 1, 0.8], "color": "#6f5a3e"},
+    {"id": "ScaleCounter", "pos": [-7.2, 0.5, 10.5], "size": [2, 1, 2.4], "color": "#6f5a3e"},
     {"id": "ScaleBridge", "pos": [0, -0.5, 2.5], "size": [2, 1, 5], "color": "#c2a77f"},
     {"id": "Commons", "pos": [0, -0.5, -12], "size": [36, 1, 24]},
     {"id": "CabinRoof", "pos": [-12, 1.2, -19], "size": [5, 2.4, 4], "color": "#7d6a52"},
@@ -33,7 +33,7 @@
     {"id": "StormWall", "pos": [60, 30, -90], "size": [160, 60, 4], "color": "#1f2a33", "solid": false}
   ],
   "spawns": {
-    "ScaleHull": [0, 0, 8, 0],
+    "ScaleHull": [-4.6, 0, 10.5, 90],
     "Surface": [0, 0, 13, 0],
     "KellRun": [42.5, 0, -6, 90],
     "RunStart": [45, 0, -8.5, 180],
@@ -46,7 +46,7 @@
     "bridge": [21, 0, -22, 270]
   },
   "actors": {
-    "scaleman": {"at": [0, 0, 4.5, 0], "color": "#6e7f8c", "model": "res://assets/characters/villagers/netmender/netmender_actor.tscn"},
+    "scaleman": {"at": [-7.2, -0.4, 10.5, 270], "color": "#6e7f8c", "model": "res://assets/characters/villagers/netmender/netmender_actor.tscn"},
     "cook": {"at": [-12, 0, -6, 90], "color": "#c48a5a", "model": "res://assets/characters/villagers/vendor/vendor_actor.tscn"},
     "netmender": {"at": [12, 0, -6, 270], "color": "#8a9a7a", "model": "res://assets/characters/villagers/netmender/netmender_actor.tscn"},
     "netmender_2": {"at": [13, 0, -8, 270], "color": "#7a8a6a", "model": "res://assets/characters/villagers/fisher/fisher_actor.tscn"},
@@ -60,10 +60,10 @@
   },
   "shots": {
     "O01": {"pos": [0, 0.3, 26], "look_at": [0, 1.2, 0], "fov": 52},
-    "O02": {"pos": [3, 1.6, 7], "look_at": [0, 1.3, 5], "fov": 40},
-    "O07": {"pos": [-33.1, 1.8, -4], "look_at": [-36.6, 1.65, -5.8], "fov": 22},
+    "O02": {"pos": [-2.6, 1.75, 11.4], "look_at": [-7.3, 1.2, 10.3], "fov": 40},
+    "O07": {"pos": [-33.1, 1.8, -4], "look_at": [-35.8, 0.95, -5.8], "fov": 22},
     "O09": {"pos": [28.5, 1.5, -4.5], "look_at": [31, 1.2, -7.5], "fov": 25},
-    "O10": {"pos": [44, 1.0, -4], "look_at": [33.4, 3.45, -8.6], "fov": 14},
+    "O10": {"pos": [44, 1.0, -4], "look_at": [47, 3.0, -9], "fov": 14},
     "O11": {"pos": [45, 3, -6], "look_at": [60, 20, -90], "fov": 60},
     "O12": {"pos": [10, 8, 14], "look_at": [10, 1, -20], "fov": 55},
     "O13": {"pos": [-30, 3, 6], "look_at": [-45, 1, -30], "fov": 45},
@@ -88,11 +88,12 @@
     {"id": "hullgnaw", "at": [30, 0, -21], "size": [8, 0, 6], "requires_flag": "ch01_children_safe", "blocked_by_flag": "ch01_hullgnaw_defeated", "payload": {"beat": "hullgnaw"}}
   ],
   "storm": {
-    "flag": "ch01_gulls_cried", "environment_res": "res://game/levels/ch01/oruvel/oruvel_storm_environment.tres",
+    "flag": "ch01_gulls_cried", "environment_res": "res://assets/environments/zones/ch01/oruvel_ch01_storm_environment.tres",
     "sun": {"pitch_deg": -40.0, "energy": 0.55, "color": "#a9bccd"},
     "environment": {"background": "#5d84a6", "ambient_color": "#6f8294", "ambient_energy": 0.45},
     "hide": ["scaleman", "cook", "netmender", "netmender_2", "roof_child", "skipper_sadi", "sabe", "SeventhTerrace", "NameBoard", "DiveBridge"],
     "show": ["StormWall", "pen_child_2", "pen_child_3"],
+    "undertow": {"preset": "ch01_arrival", "azimuth_deg": 0.0, "quality": "high", "time_s": 205.0, "ambient": 0.6, "replaces": "StormWall", "camera_far_m": 40000.0},
     "lashings": {"flags": ["ch01_cut_lashing_a", "ch01_cut_lashing_b"], "frees": "LowHull"}
   }
 }

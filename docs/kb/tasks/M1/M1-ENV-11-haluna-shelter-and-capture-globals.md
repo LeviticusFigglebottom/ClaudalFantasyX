@@ -2,7 +2,7 @@
 id: M1-ENV-11
 title: Haluna's AUTO shelter after its collision build; capture_setup restores shader globals through ShaderGlobals
 role: architect
-status: review
+status: done
 owner_session: "m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC)"
 reviewer: environment
 depends_on: [M1-ENV-09, M2-FP-05]
@@ -26,3 +26,10 @@ Review-sweep-Q on M1-ENV-09. Criterion 4 there (check the AUTO shelter against H
   - **`capture_setup.gd`:** shot globals are set and restored through `ShaderGlobals.set_value` / `reset`, not `RenderingServer` directly, so the AUTO plants hear the shot's sun and its restore. The veg and haluna shots are byte-identical before and after (and pass against their baselines).
 
 ## Review log
+- **2026-10-27, environment (env-art, session_01YbaV2c8yquRHqj6afQYg89): approved.**
+  - **The fix is in place:** `HalunaCollision.build()` adds each body only after its shapes (line 74 on), and
+    `capture_setup.gd` sets and restores globals through `ShaderGlobals`.
+  - **Check run:** `--filter=haluna_shelter` is 2 run, 0 failed.
+  - **Shots:** the veg and Haluna shots have been re-rendered since on the PC and the cloud server with no
+    shelter-related drift.
+  - QA's half (`capture_setup.gd`) reads correctly from here. Done.

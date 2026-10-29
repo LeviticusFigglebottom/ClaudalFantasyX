@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3]
+[gd_scene load_steps=21 format=3]
 
 [ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
 [ext_resource type="Shader" path="res://game/shaders/environment/env_sky_night.gdshader" id="2_r"]
@@ -15,6 +15,7 @@
 [ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/wreck_hull_section.glb" id="13_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/wreck_ribs_large.glb" id="14_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/wreck_mast_fallen.glb" id="15_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/lamp_flame.glb" id="16_r"]
 
 [sub_resource type="ShaderMaterial" id="SkyMat"]
 shader = ExtResource("2_r")
@@ -67,20 +68,6 @@ shader_parameter/caustic_strength = 0.25
 shader_parameter/col_foam = Color(0.9333, 0.9647, 0.9569, 1)
 shader_parameter/col_sss = Color(0.2471, 0.8157, 0.7882, 1)
 shader_parameter/foam_crest_threshold = 0.62
-
-[sub_resource type="StandardMaterial3D" id="FlameMat"]
-shading_mode = 0
-albedo_color = Color(1, 0.6941, 0.4314, 1)
-emission_enabled = true
-emission = Color(1, 0.6941, 0.4314, 1)
-emission_energy_multiplier = 8.0
-
-[sub_resource type="SphereMesh" id="FlameMesh"]
-material = SubResource("FlameMat")
-radius = 0.06
-height = 0.144
-radial_segments = 12
-rings = 6
 
 [node name="DerelictDeckNight" type="Node3D"]
 script = ExtResource("1_r")
@@ -170,10 +157,8 @@ light_volumetric_fog_energy = 0.0
 shadow_enabled = true
 shadow_bias = 0.05
 
-[node name="Flame0" type="MeshInstance3D" parent="Lamps"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.6, 1.76, 3.0)
-cast_shadow = 0
-mesh = SubResource("FlameMesh")
+[node name="Flame0" parent="Lamps" instance=ExtResource("16_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.6, 1.688, 3)
 
 [node name="Lamp1" type="OmniLight3D" parent="Lamps"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.6, 1.76, 2.6)
@@ -185,10 +170,8 @@ light_volumetric_fog_energy = 0.0
 shadow_enabled = true
 shadow_bias = 0.05
 
-[node name="Flame1" type="MeshInstance3D" parent="Lamps"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.6, 1.76, 2.6)
-cast_shadow = 0
-mesh = SubResource("FlameMesh")
+[node name="Flame1" parent="Lamps" instance=ExtResource("16_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.6, 1.688, 2.6)
 
 [node name="Lamp2" type="OmniLight3D" parent="Lamps"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.6, 1.76, -4.8)
@@ -198,10 +181,8 @@ omni_range = 9.0
 omni_attenuation = 1.0
 light_volumetric_fog_energy = 0.0
 
-[node name="Flame2" type="MeshInstance3D" parent="Lamps"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.6, 1.76, -4.8)
-cast_shadow = 0
-mesh = SubResource("FlameMesh")
+[node name="Flame2" parent="Lamps" instance=ExtResource("16_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.6, 1.688, -4.8)
 
 [node name="Lamp3" type="OmniLight3D" parent="Lamps"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.6, 1.76, -7.6)
@@ -211,10 +192,8 @@ omni_range = 9.0
 omni_attenuation = 1.0
 light_volumetric_fog_energy = 0.0
 
-[node name="Flame3" type="MeshInstance3D" parent="Lamps"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.6, 1.76, -7.6)
-cast_shadow = 0
-mesh = SubResource("FlameMesh")
+[node name="Flame3" parent="Lamps" instance=ExtResource("16_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.6, 1.688, -7.6)
 
 [node name="Lamp4" type="OmniLight3D" parent="Lamps"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0, 2.7, -9.7)
@@ -224,10 +203,8 @@ omni_range = 9.0
 omni_attenuation = 1.0
 light_volumetric_fog_energy = 0.0
 
-[node name="Flame4" type="MeshInstance3D" parent="Lamps"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0, 2.7, -9.7)
-cast_shadow = 0
-mesh = SubResource("FlameMesh")
+[node name="Flame4" parent="Lamps" instance=ExtResource("16_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 2.628, -9.7)
 
 [node name="Lamp5" type="OmniLight3D" parent="Lamps"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0.45, 5.0)
@@ -239,10 +216,8 @@ light_volumetric_fog_energy = 0.0
 shadow_enabled = true
 shadow_bias = 0.05
 
-[node name="Flame5" type="MeshInstance3D" parent="Lamps"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0.45, 5.0)
-cast_shadow = 0
-mesh = SubResource("FlameMesh")
+[node name="Flame5" parent="Lamps" instance=ExtResource("16_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0.378, 5)
 
 [node name="Lamp6" type="OmniLight3D" parent="Lamps"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.62, -5.75)
@@ -252,10 +227,8 @@ omni_range = 8.0
 omni_attenuation = 1.0
 light_volumetric_fog_energy = 0.0
 
-[node name="Flame6" type="MeshInstance3D" parent="Lamps"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.62, -5.75)
-cast_shadow = 0
-mesh = SubResource("FlameMesh")
+[node name="Flame6" parent="Lamps" instance=ExtResource("16_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.548, -5.75)
 
 [node name="CameraHints" type="Node3D" parent="."]
 

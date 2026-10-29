@@ -1145,6 +1145,328 @@
       "p90_turns_max": 35,
       "loadout": "ch08_seawall",
       "swell": "good"
+    },
+    {
+      "id": "ch10_fen_archers",
+      "chapter": "Ch10 route (Ossa Fen's root-walks): two tannin archers (role_answer report only: lightning is Kahre's, no hero's role answers them; a logged exception as for ch06_ridge_gulls)",
+      "kind": "regular",
+      "encounter": "ch10_fen_archers",
+      "active": [
+        "rhen",
+        "asha",
+        "toma"
+      ],
+      "reserve": [
+        "ysolde",
+        "liss"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": null,
+        "smart": [
+          97,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch08_seawall",
+      "swell": "good"
+    },
+    {
+      "id": "ch10_fen_roots",
+      "chapter": "Ch10 route: two root crabs (Toma cracks them)",
+      "kind": "regular",
+      "encounter": "ch10_fen_roots",
+      "active": [
+        "rhen",
+        "asha",
+        "toma"
+      ],
+      "reserve": [
+        "ysolde",
+        "liss"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          92,
+          100
+        ],
+        "smart": [
+          97,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch08_seawall",
+      "swell": "good"
+    },
+    {
+      "id": "ch10_fen_leeches",
+      "chapter": "Ch10 route: two fen leeches (role_answer report only: the role play focuses and never heals, and the leeches' poison is a healing lesson; a logged exception until their drain lands, M4-CMB-1001)",
+      "kind": "regular",
+      "encounter": "ch10_fen_leeches",
+      "active": [
+        "rhen",
+        "asha",
+        "toma"
+      ],
+      "reserve": [
+        "ysolde",
+        "liss"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": null,
+        "smart": [
+          97,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch08_seawall",
+      "swell": "good"
+    },
+    {
+      "id": "ch11_vey_rays",
+      "chapter": "Ch11 route (Sunken Vey's galleries): two gallery rays (role_answer report only: Rhen's answer, a logged exception as for ch06_ridge_gulls and ch08_headland_gulls)",
+      "kind": "regular",
+      "encounter": "ch11_vey_rays",
+      "active": [
+        "rhen",
+        "asha",
+        "toma"
+      ],
+      "reserve": [
+        "ysolde",
+        "liss"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": null,
+        "smart": [
+          97,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch08_seawall",
+      "swell": "good"
+    },
+    {
+      "id": "ch11_vey_urchins",
+      "chapter": "Ch11 route: a rime urchin and a gallery ray (Ysolde's magic for the urchin)",
+      "kind": "regular",
+      "encounter": "ch11_vey_urchins",
+      "active": [
+        "rhen",
+        "asha",
+        "toma"
+      ],
+      "reserve": [
+        "ysolde",
+        "liss"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          92,
+          100
+        ],
+        "smart": [
+          97,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch08_seawall",
+      "swell": "good"
+    },
+    {
+      "id": "ch12_pass_lynxes",
+      "chapter": "Ch12 route (Keth Pass): two ridge lynxes (role_answer report only: Rhen's answer, a logged exception as for ch06_ridge_gulls and ch08_headland_gulls)",
+      "kind": "regular",
+      "encounter": "ch12_pass_lynxes",
+      "active": [
+        "rhen",
+        "asha",
+        "toma"
+      ],
+      "reserve": [
+        "ysolde",
+        "kerrid"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": null,
+        "smart": [
+          97,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch08_seawall",
+      "swell": "good"
+    },
+    {
+      "id": "ch12_pass_moths",
+      "chapter": "Ch12 route: two cord moths (Ysolde: frost)",
+      "kind": "regular",
+      "encounter": "ch12_pass_moths",
+      "active": [
+        "rhen",
+        "asha",
+        "toma"
+      ],
+      "reserve": [
+        "ysolde",
+        "kerrid"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          92,
+          100
+        ],
+        "smart": [
+          97,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch08_seawall",
+      "swell": "good"
+    },
+    {
+      "id": "ch12_pass_scree",
+      "chapter": "Ch12 route: two scree crawlers (Kerrid breaks the shells; active, as on Ashcrown's stair)",
+      "kind": "regular",
+      "encounter": "ch12_pass_scree",
+      "active": [
+        "rhen",
+        "asha",
+        "kerrid"
+      ],
+      "reserve": [
+        "toma",
+        "ysolde"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          92,
+          100
+        ],
+        "smart": [
+          97,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch08_seawall",
+      "swell": "good"
+    },
+    {
+      "id": "ch16_rim_skates",
+      "chapter": "Ch16 route (the Pale Rim): two glass skates, an ambush (role_answer report only: Rhen's answer, a logged exception as for ch06_ridge_gulls and ch08_headland_gulls)",
+      "kind": "regular",
+      "encounter": "ch16_rim_skates",
+      "active": [
+        "rhen",
+        "asha",
+        "toma"
+      ],
+      "reserve": [
+        "ysolde",
+        "liss"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": null,
+        "smart": [
+          97,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch08_seawall",
+      "swell": "good"
+    },
+    {
+      "id": "ch16_rim_crawlers",
+      "chapter": "Ch16 route: three rim crawlers in the open (role_answer report only: the role play focuses one at a time and a swarm of three is the lesson)",
+      "kind": "regular",
+      "encounter": "ch16_rim_crawlers",
+      "active": [
+        "rhen",
+        "asha",
+        "toma"
+      ],
+      "reserve": [
+        "ysolde",
+        "liss"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": null,
+        "smart": [
+          97,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch08_seawall",
+      "swell": "good"
     }
   ]
 }

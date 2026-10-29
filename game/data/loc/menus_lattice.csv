@@ -37,7 +37,7 @@ LATTICE_MENU_CONFIRM_CANCEL,Not now
 LATTICE_MENU_DONE_WALK_FMT,{name} walked there for {cost} movement; {left} left.
 LATTICE_MENU_DONE_WAKE_FMT,{name} woke {node}. {facet}: {held} left.
 LATTICE_MENU_DONE_OPEN_FMT,The gate stands open for everyone. {facet}: {held} left.
-LATTICE_MENU_TAG_COST_FMT,Cost {n}
+LATTICE_MENU_TAG_COST_FMT,{n} movement
 LATTICE_MENU_TAG_FREE,Free
 LATTICE_MENU_ERR_UNKNOWN_CHARACTER,{name} has no path on the Lattice yet.
 LATTICE_MENU_ERR_UNKNOWN_NODE,There is no such node on this board.
@@ -67,3 +67,4 @@ LATTICE_MENU_CONFIRM_GATE_WALK_FREE,Walk beside the gate (free)
 LATTICE_MENU_OVERVIEW_FMT,Whole board ({key})
 LATTICE_MENU_OVERVIEW_BACK_FMT,Back to the cursor ({key})
 CTRL_ACT_LATTICE_OVERVIEW,Lattice: whole board
+LATTICE_MENU_TAG_FACET_FMT,{n} {facet}

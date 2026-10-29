@@ -1,0 +1,129 @@
+[gd_scene format=3]
+
+[ext_resource type="Environment" path="res://assets/environments/zones/ch17/ch17_hollowmere_dusk_environment.tres" id="1_env"]
+[ext_resource type="Script" path="res://game/world/camera_shot.gd" id="2_shot"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_shot_camera.gd" id="3_cam"]
+[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="4_water"]
+[ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="5_waves"]
+[ext_resource type="Material" path="res://game/levels/ch02/haluna/haluna_water_material.tres" id="6_water_mat"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/dace_hull_frame.glb" id="7_dace_hull_frame"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/hm_far_flotilla.glb" id="8_hm_far_flotilla"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/hm_lashed_hulls.glb" id="9_hm_lashed_hulls"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/hm_signal_lamp.glb" id="10_hm_signal_lamp"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/hm_tide_wheel.glb" id="11_hm_tide_wheel"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/hm_windmill.glb" id="12_hm_windmill"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/kite_engine.glb" id="13_kite_engine"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/kite_hull.glb" id="14_kite_hull"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/kite_rig.glb" id="15_kite_rig"]
+
+[sub_resource type="Resource" id="ShotM01"]
+script = ExtResource("2_shot")
+id = &"M01"
+position = Vector3(7, 2.4, -13)
+look_at = Vector3(-1, 2, 0.5)
+fov_deg = 50
+
+[sub_resource type="Resource" id="ShotM02"]
+script = ExtResource("2_shot")
+id = &"M02"
+position = Vector3(44, 7, -42)
+look_at = Vector3(-8, 3, 8)
+fov_deg = 45
+
+[sub_resource type="Resource" id="ShotK01"]
+script = ExtResource("2_shot")
+id = &"K01"
+position = Vector3(84, 3, -16)
+look_at = Vector3(70, 4.5, 0)
+fov_deg = 50
+
+[node name="HollowmerePreview" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("1_env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.173648, 0.137059, -0.975224, 0, 0.990268, 0.139173, 0.984808, 0.0241672, -0.171958, 0, 30, 0)
+light_color = Color(1, 0.6941, 0.4314, 1)
+light_energy = 2.4
+shadow_enabled = true
+directional_shadow_max_distance = 150.0
+
+[node name="Water" type="Node3D" parent="."]
+script = ExtResource("4_water")
+publishes_water_level = true
+wave_set = ExtResource("5_waves")
+material = ExtResource("6_water_mat")
+
+[node name="Pieces" type="Node3D" parent="."]
+
+[node name="DaceHullFrame" parent="Pieces" instance=ExtResource("7_dace_hull_frame")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0, 0)
+
+[node name="HmLashedHulls" parent="Pieces" instance=ExtResource("9_hm_lashed_hulls")]
+transform = Transform3D(0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, 0.939693, -22, 0, -6)
+
+[node name="HmLashedHulls2" parent="Pieces" instance=ExtResource("9_hm_lashed_hulls")]
+transform = Transform3D(0.819152, 0, -0.573576, 0, 1, 0, 0.573576, 0, 0.819152, 18, 0, -15)
+
+[node name="HmLashedHulls3" parent="Pieces" instance=ExtResource("9_hm_lashed_hulls")]
+transform = Transform3D(0.34202, 0, 0.939693, 0, 1, 0, -0.939693, 0, 0.34202, -15, 0, 21)
+
+[node name="HmLashedHulls4" parent="Pieces" instance=ExtResource("9_hm_lashed_hulls")]
+transform = Transform3D(-0.34202, 0, 0.939693, 0, 1, 0, -0.939693, 0, -0.34202, 27, 0, 15)
+
+[node name="HmLashedHulls5" parent="Pieces" instance=ExtResource("9_hm_lashed_hulls")]
+transform = Transform3D(0.984808, 0, -0.173648, 0, 1, 0, 0.173648, 0, 0.984808, -36, 0, 13)
+
+[node name="HmWindmill" parent="Pieces" instance=ExtResource("12_hm_windmill")]
+transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, -30, 0, -27)
+
+[node name="HmWindmill2" parent="Pieces" instance=ExtResource("12_hm_windmill")]
+transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, 35, 0, -3)
+
+[node name="HmWindmill3" parent="Pieces" instance=ExtResource("12_hm_windmill")]
+transform = Transform3D(-1, 0, 1.22465e-16, 0, 1, 0, -1.22465e-16, 0, -1, 7, 0, 34)
+
+[node name="HmTideWheel" parent="Pieces" instance=ExtResource("11_hm_tide_wheel")]
+transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 13, 0, -27)
+
+[node name="HmSignalLamp" parent="Pieces" instance=ExtResource("10_hm_signal_lamp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -20, 0.9, -4.5)
+
+[node name="HmSignalLamp2" parent="Pieces" instance=ExtResource("10_hm_signal_lamp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 16.5, 0.9, -13)
+
+[node name="HmFarFlotilla" parent="Pieces" instance=ExtResource("8_hm_far_flotilla")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0, 0)
+
+[node name="KiteHull" parent="Pieces" instance=ExtResource("14_kite_hull")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 70, 1.2, 0)
+
+[node name="KiteRig" parent="Pieces" instance=ExtResource("15_kite_rig")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 70, 1.2, 0)
+
+[node name="KiteEngine" parent="Pieces" instance=ExtResource("13_kite_engine")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 70, 1.2, 0)
+
+[node name="KiteEngine2" parent="Pieces" instance=ExtResource("13_kite_engine")]
+transform = Transform3D(-1, 0, 1.22465e-16, 0, 1, 0, -1.22465e-16, 0, -1, 70, 1.2, 0)
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="M01" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 2000.0
+script = ExtResource("3_cam")
+shot = SubResource("ShotM01")
+
+[node name="M02" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 2000.0
+script = ExtResource("3_cam")
+shot = SubResource("ShotM02")
+
+[node name="K01" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 2000.0
+script = ExtResource("3_cam")
+shot = SubResource("ShotK01")

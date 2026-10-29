@@ -1,0 +1,82 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/levels/ch01/oruvel_underway/underway_zone.gd" id="1_zone"]
+[ext_resource type="Script" path="res://game/levels/act1/zone_kit_dressing.gd" id="2_dressing"]
+[ext_resource type="Script" path="res://game/world/camera_shot.gd" id="3_shot"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_shot_camera.gd" id="4_cam"]
+
+[sub_resource type="Resource" id="ShotU01"]
+script = ExtResource("3_shot")
+id = &"U01"
+position = Vector3(0, 0.4, 18)
+look_at = Vector3(0, 5, 4)
+fov_deg = 60
+
+[sub_resource type="Resource" id="ShotU03"]
+script = ExtResource("3_shot")
+id = &"U03"
+position = Vector3(37.2, 2.1, 8.6)
+look_at = Vector3(40, 1.45, 11.6)
+fov_deg = 45
+
+[sub_resource type="Resource" id="ShotU06"]
+script = ExtResource("3_shot")
+id = &"U06"
+position = Vector3(83, 1.6, -33)
+look_at = Vector3(80, -0.5, -38)
+fov_deg = 30
+
+[sub_resource type="Resource" id="ShotU07"]
+script = ExtResource("3_shot")
+id = &"U07"
+position = Vector3(93, 1.6, -27)
+look_at = Vector3(97, 1.2, -31)
+fov_deg = 40
+
+[sub_resource type="Resource" id="ShotU08"]
+script = ExtResource("3_shot")
+id = &"U08"
+position = Vector3(97, 7, -34)
+look_at = Vector3(97, 0, -38)
+fov_deg = 45
+
+[node name="OruvelUnderway" type="Node3D"]
+script = ExtResource("1_zone")
+location_id = &"ch01/oruvel_underway"
+layout_path = "res://game/levels/ch01/oruvel_underway/oruvel_underway_layout.json"
+
+[node name="Dressing" type="Node3D" parent="."]
+script = ExtResource("2_dressing")
+layout_path = "res://assets/environments/zones/ch01/oruvel_underway_dressing.json"
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="U01" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 400.0
+script = ExtResource("4_cam")
+shot = SubResource("ShotU01")
+
+[node name="U03" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 400.0
+script = ExtResource("4_cam")
+shot = SubResource("ShotU03")
+
+[node name="U06" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 400.0
+script = ExtResource("4_cam")
+shot = SubResource("ShotU06")
+
+[node name="U07" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 400.0
+script = ExtResource("4_cam")
+shot = SubResource("ShotU07")
+
+[node name="U08" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 400.0
+script = ExtResource("4_cam")
+shot = SubResource("ShotU08")

@@ -3,6 +3,7 @@
   dock_haluna    38 m long, deck 1.4 m above mean sea level, 2.4 m wide, paired pilings every 2.5 m,
                  0.3 m planks (a few new, a few missing), mooring posts, a 4 x 4 m end platform and a
                  ladder. Built to hero quality: it is also the game's final shot (`ending_dock`).
+  dock_haluna_short  the same dock 14.4 m long (M3-ENV-743, Ch4's wake-night dock)
                  Origin at the landward end on the tide datum (y = 0 = mean sea level); runs along +X.
   outrigger_7m   a lashed outrigger canoe: lofted hull (sea-blue and red bands at the bow), float,
                  two booms, lashings, a paddle. Origin at the waterline centre; bow towards +X.
@@ -30,6 +31,7 @@ M_GLASS = "kit_salt_glass"
 
 TRI_BUDGET = {
     "dock_haluna": (26000, 1500),
+    "dock_haluna_short": (12000, 800),
     "outrigger_7m": (7000, 700),
     "net_rack": (5000, 500),
 }
@@ -38,10 +40,10 @@ DOCK_DECK_Y = 1.4
 
 
 def build_dock(seed: int = 71, *, length_m: float = 38.0, width_m: float = 2.4, bay_m: float = 2.5,
-               missing_p: float = 0.03) -> list[kc.MeshBuilder]:
+               missing_p: float = 0.03, name: str = "dock_haluna") -> list[kc.MeshBuilder]:
     rng = kc.rng_for("dock_haluna", seed)
     noise = kc.Noise3(rng)
-    mb = kc.MeshBuilder("dock_haluna")
+    mb = kc.MeshBuilder(name)
     tm = mb.material(M_TIMBER)
     y = DOCK_DECK_Y
     hz = width_m * 0.5
@@ -77,7 +79,7 @@ def build_dock(seed: int = 71, *, length_m: float = 38.0, width_m: float = 2.4, 
     for k in range(7):
         yy = -0.9 + k * 0.38
         kc.plank(mb, (x_l, yy, -0.27), (x_l, yy, 0.27), 0.05, 0.04, tm, variation=float(rng.random()))
-    lod = kc.MeshBuilder("dock_haluna-lod1")
+    lod = kc.MeshBuilder(name + "-lod1")
     kc.rounded_block(lod, (length_m * 0.5 - plat * 0.5, y - 0.05, 0), ((length_m - plat) * 0.5, 0.05, hz),
                      lod.material(M_TIMBER), seg=1, radius=0.01)
     kc.rounded_block(lod, (length_m - plat * 0.5, y - 0.05, 0), (plat * 0.5, 0.05, plat * 0.5),
@@ -225,4 +227,12 @@ def build_net_rack(seed: int = 73) -> list[kc.MeshBuilder]:
     return out
 
 
-TARGETS = {"dock_haluna": build_dock, "outrigger_7m": build_outrigger, "net_rack": build_net_rack}
+DOCK_SHORT_M = 14.4  # M3-ENV-743: Ch4's wake-night dock (the greybox's 14 m deck and its end stop)
+
+
+def build_dock_short(seed: int = 71) -> list[kc.MeshBuilder]:
+    return build_dock(seed, length_m=DOCK_SHORT_M, name="dock_haluna_short")
+
+
+TARGETS = {"dock_haluna": build_dock, "dock_haluna_short": build_dock_short, "outrigger_7m": build_outrigger,
+           "net_rack": build_net_rack}

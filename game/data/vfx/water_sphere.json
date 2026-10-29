@@ -82,5 +82,51 @@
       "god_rays": true,
       "caustics": true
     }
+  },
+  "profiles": {
+    "_note": "M3-RND-26: per-use rows laid over the sections above key by key (WaterSphereRig.profile). Colours are palette swatches (named in each row's swatches).",
+    "tamsule_drop": {
+      "_note": "The Tamsule Bell's held drop (tamsule_bell.md §1, the contract: a 14.0 x 11.5 m oblate spheroid centred on SphereAnchor). N-12: perfectly still at rest (no swell, a steady caustic web), pushed cyan (colour script ch07), glowing with the bound light that holds it (glimmer_bound, steady, no sea-glow noise), and throwing its web on the catch-pool, the posts and the bell's underside, allowed to clip to white (the shade disc, §0). under.top_m and floor_m are relative to the centre: the drop's equator (the bell's inside above the rim) and under the catch-pool's floor (y -2.5).",
+      "colors": {
+        "transmit": "#3FD0C9",
+        "scatter": "#3FD0C9",
+        "deep": "#1FA3A6",
+        "under": "#F4F8FF",
+        "bound": "#4FB3B0"
+      },
+      "swatches": {
+        "transmit": "turquoise_shallow",
+        "scatter": "turquoise_shallow",
+        "deep": "lagoon_teal",
+        "under": "glimmer_lift_hi",
+        "bound": "glimmer_bound"
+      },
+      "sphere": {
+        "radius_m": 14.0,
+        "semi_axis_y_m": 11.5
+      },
+      "optics": {
+        "transmit_distance_m": 18.0,
+        "scatter_strength": 0.9,
+        "swell_m": 0.0,
+        "sea_glow_strength": 0.0
+      },
+      "caustics": {
+        "speed": 0.0
+      },
+      "under": {
+        "strength": 2.4,
+        "reach_m": 30.0,
+        "lens_m": 6.0,
+        "reflect": 0.8,
+        "reflect_radius_m": 17.5,
+        "top_m": 0.0,
+        "floor_m": -34.5,
+        "scale_per_m": 0.5
+      },
+      "bound_glow": {
+        "energy": 0.25
+      }
+    }
   }
 }

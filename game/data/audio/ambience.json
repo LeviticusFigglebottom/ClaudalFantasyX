@@ -36,13 +36,13 @@
       "file": "res://assets/audio/ambience/underwater_deep.ogg",
       "volume_db": 0.0,
       "bus": "Ambience",
-      "_note": "M3-AUD-06: open deep water; no zone yet"
+      "_note": "M3-AUD-06: open deep water. Act I has no open-water zone (Ch1's dive is the drowned tower, with its own bed): kept for Act II"
     },
     "drowned_tower": {
       "file": "res://assets/audio/ambience/drowned_tower.ogg",
       "volume_db": 0.0,
       "bus": "Ambience",
-      "_note": "M3-AUD-06: inside Ch1's drowned tower (ch01/oruvel_underway); no scene yet"
+      "_note": "M3-AUD-06: inside Ch1's drowned tower (ch01/oruvel_underway; wired by M3-AUD-861)"
     },
     "reefball_crowd_murmur": {
       "file": "res://assets/audio/sfx/reefball/crowd_murmur.ogg",
@@ -104,6 +104,9 @@
       "volume_db": 0.0,
       "_note": "M3-AUD-16 (assets_src/sfx/act1_ambience.py)"
     },
+    "oruvel_raft": {"file": "res://assets/lfs/audio/ambience/oruvel_raft.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M3-AUD-861 (assets_src/sfx/act1_final_ambience.py; Git LFS, ADR 0173): Ch1, Oruvel: lashed hulls knocking on the swell, water in the gaps, cook-boat stoves, the market, gulls"},
+    "brightwater_deck": {"file": "res://assets/lfs/audio/ambience/brightwater_deck.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M3-AUD-861 (assets_src/sfx/act1_final_ambience.py; Git LFS, ADR 0173): Ch4, the Brightwater ferry at sea: the bow wash, sails and rigging, her timbers, the caged lamp, the far reef"},
+    "coilspire_flues": {"file": "res://assets/lfs/audio/ambience/coilspire_flues.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M3-AUD-861 (assets_src/sfx/act1_final_ambience.py; Git LFS, ADR 0173): Ch8, Coilspire: the keeping fire drawn up the copper flues, copper ticking, the storm outside the stone"},
     "iskarra_dusk": {
       "file": "res://assets/audio/ambience/iskarra_dusk.ogg",
       "bus": "Ambience",
@@ -174,7 +177,62 @@
       "wind": true,
       "_note": "M3-AUD-16: Corrow's shoreline on the night of the Ebbing (claude/m2-slice); the seawall bed under the_ebbing"
     },
-    "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn": {"day": ["causeway_wind", "tidepools", "surf"], "wind": true, "_note": "B06 (M2-AUD-12)"}
+    "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn": {
+      "day": [
+        "causeway_wind",
+        "tidepools"
+      ],
+      "wind": true,
+      "_note": "M3-AUD-861: B06, saltgrass, gusts and the tidepools at low tide (the scene has landed)"
+    },
+    "res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn": {
+      "day": [
+        "drowned_tower"
+      ],
+      "_note": "M3-AUD-861: inside Ch1's drowned tower (the scene has landed)"
+    },
+    "res://game/levels/ch03/first_verse/first_verse.tscn": {
+      "day": [
+        "shrine_interior"
+      ],
+      "_note": "M3-AUD-861: Cutscene B in the Shell Shrine: the shrine's room tone under the cutscene's own @music"
+    },
+    "res://game/levels/ch04/haluna_wake/haluna_wake.tscn": {
+      "day": [
+        "haluna_night",
+        "surf",
+        "dock"
+      ],
+      "wind": true,
+      "_note": "M3-AUD-861: Ch4, Haluna by night for Asha's wake: the same place and the same night beds as Ch2's dock"
+    },
+    "res://game/levels/ch08/corrow/corrow.tscn": {
+      "day": [
+        "corrow_seawall"
+      ],
+      "wind": true,
+      "_note": "M3-AUD-861: Ch8, Corrow before the storm: the seawall bed it was made for (M3-AUD-16)"
+    },
+    "res://game/levels/ch01/oruvel/oruvel.tscn": {
+      "day": [
+        "oruvel_raft"
+      ],
+      "wind": true,
+      "_note": "M3-AUD-861: Ch1, the raft-town by morning"
+    },
+    "res://game/levels/ch04/brightwater_ferry/brightwater_ferry.tscn": {
+      "day": [
+        "brightwater_deck"
+      ],
+      "wind": true,
+      "_note": "M3-AUD-861: Ch4, the ferry deck at sea"
+    },
+    "res://game/levels/ch08/coilspire/coilspire.tscn": {
+      "day": [
+        "coilspire_flues"
+      ],
+      "_note": "M3-AUD-861: Ch8, inside the spire (the storm is in the bed, through the stone)"
+    }
   },
   "wind": {
     "bed": "wind",

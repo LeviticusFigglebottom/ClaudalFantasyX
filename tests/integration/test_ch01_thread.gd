@@ -187,7 +187,8 @@ func _oruvel() -> void:
 
 	assert_true(_trigger(&"dive_mooring").on_touched())
 	assert_true(bool(Game.get_flag(&"ch01_gulls_cried")), "C1-11")
-	assert_true(town.storm and town.block_shown("StormWall"), "the storm variant")
+	var undertow := town.get_node_or_null(^"Undertow") as Node3D
+	assert_true(town.storm and (town.block_shown("StormWall") or (undertow != null and undertow.visible)), "the storm")
 	assert_false(town.block_shown("SeventhTerrace"), "the Seventh Terrace has run for sea room")
 	assert_false(bool(Game.get_flag(&"ch01_ran_for_kell")), "'Go to the net-pen.' (the first option)")
 	assert_true(_at(&"RunStart"))

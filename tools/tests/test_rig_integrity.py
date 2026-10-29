@@ -162,7 +162,7 @@ class _HeroGuards:
     # the probe covered what it should
     def test_poses_sampled(self):
         cfg, result, _ = run_probe(self.hero)
-        clips = {p.split("@")[0] for p in result["poses"] if "@" in p}
+        clips = {p.split("@")[0] for p in result["poses"] if "@" in p and not p.startswith(rig_probe.BATTLE_LIB_PREFIX)}
         self.assertEqual(clips, set(rig_probe.clip_names(self.hero)))
         self.assertIn("rest", result["poses"])
         for label in cfg["stage_poses"]:
@@ -190,6 +190,18 @@ class _HeroGuards:
         if not cfg["props"]:
             self.skipTest(f"{self.hero} has no props")
         self.assert_verdicts("penetration prop_in_body")
+
+    # M2-CHR-515 (M1-QA-09): a held prop stays in its fist and out of the clothes
+    def test_prop_follows_its_hand(self):
+        if not self.verdict("prop grip"):
+            self.skipTest(f"{self.hero} holds no prop for good (game/data/characters/grips.json)")
+        self.assert_verdicts("prop grip turn")
+        self.assert_verdicts("prop grip offset")
+
+    def test_prop_stays_out_of_the_garments(self):
+        if not self.verdict("prop grip"):
+            self.skipTest(f"{self.hero} holds no prop for good (game/data/characters/grips.json)")
+        self.assert_verdicts("prop through_garment")
 
     def test_skin_stays_under_the_garments(self):
         self.assert_verdicts("penetration skin_through_garment")
@@ -229,6 +241,47 @@ class TestRigIntegrityLiss(_HeroGuards, unittest.TestCase):  # M3-CHR-03
     hero = "liss"
 
 
+class TestRigIntegrityKerrid(_HeroGuards, unittest.TestCase):  # M3-CHR-505
+    hero = "kerrid"
+
+
+class TestRigIntegrityPell(_HeroGuards, unittest.TestCase):  # M3-CHR-506
+    hero = "pell"
+
+
+class TestRigIntegrityMoll(_HeroGuards, unittest.TestCase):  # M3-CHR-507
+    hero = "moll"
+
+
+# M3-CHR-508: the Ch6 Stillguard soldiers, six variants on Moll's build (assets_src/characters/stillguard/)
+class TestRigIntegrityStillguardA(_HeroGuards, unittest.TestCase):
+    hero = "stillguard_a"
+
+
+class TestRigIntegrityStillguardB(_HeroGuards, unittest.TestCase):
+    hero = "stillguard_b"
+
+
+class TestRigIntegrityStillguardC(_HeroGuards, unittest.TestCase):
+    hero = "stillguard_c"
+
+
+class TestRigIntegrityStillguardD(_HeroGuards, unittest.TestCase):
+    hero = "stillguard_d"
+
+
+class TestRigIntegrityStillguardE(_HeroGuards, unittest.TestCase):
+    hero = "stillguard_e"
+
+
+class TestRigIntegrityStillguardF(_HeroGuards, unittest.TestCase):
+    hero = "stillguard_f"
+
+
+class TestRigIntegrityIvo(_HeroGuards, unittest.TestCase):  # M3-CHR-540: the named Stillguard
+    hero = "ivo"
+
+
 # M3-CHR-03: villager builds with a `"villager": true` entry in rig_checks.json (GLB under assets/characters/villagers/,
 # clips from villager_clips.py)
 class TestRigIntegrityTavi(_HeroGuards, unittest.TestCase):
@@ -239,9 +292,114 @@ class TestRigIntegrityKell(_HeroGuards, unittest.TestCase):
     hero = "kell"
 
 
+class TestRigIntegrityShopkeeper(_HeroGuards, unittest.TestCase):  # M3-CHR-509..517
+    hero = "shopkeeper"
+
+
+class TestRigIntegritySmith(_HeroGuards, unittest.TestCase):  # M3-CHR-509..517
+    hero = "smith"
+
+
+class TestRigIntegrityInnkeeper(_HeroGuards, unittest.TestCase):  # M3-CHR-509..517
+    hero = "innkeeper"
+
+
+class TestRigIntegrityClerk(_HeroGuards, unittest.TestCase):  # M3-CHR-509..517
+    hero = "clerk"
+
+
+class TestRigIntegrityReedA(_HeroGuards, unittest.TestCase):  # M3-CHR-509..517
+    hero = "reed_a"
+
+
+class TestRigIntegrityReedB(_HeroGuards, unittest.TestCase):  # M3-CHR-509..517
+    hero = "reed_b"
+
+
+class TestRigIntegrityReedC(_HeroGuards, unittest.TestCase):  # M3-CHR-509..517
+    hero = "reed_c"
+
+
+class TestRigIntegrityReedD(_HeroGuards, unittest.TestCase):  # M3-CHR-509..517
+    hero = "reed_d"
+
+
+class TestRigIntegrityWrightGirl(_HeroGuards, unittest.TestCase):  # M3-CHR-509..517
+    hero = "wright_girl"
+
+
+class TestRigIntegrityWrightChildA(_HeroGuards, unittest.TestCase):  # M3-CHR-509..517
+    hero = "wright_child_a"
+
+
+class TestRigIntegrityWrightChildB(_HeroGuards, unittest.TestCase):  # M3-CHR-509..517
+    hero = "wright_child_b"
+
+
+class TestRigIntegritySabe(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "sabe"
+
+
+class TestRigIntegrityScaleman(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "scaleman"
+
+
+class TestRigIntegritySkipperSadi(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "skipper_sadi"
+
+
+class TestRigIntegrityFerrymaster(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "ferrymaster"
+
+
+class TestRigIntegrityPurser(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "purser"
+
+
+class TestRigIntegrityElder(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "elder"
+
+
+class TestRigIntegrityGaro(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "garo"
+
+
+class TestRigIntegrityTender(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "tender"
+
+
+class TestRigIntegrityIone(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "ione"
+
+
+class TestRigIntegrityPoolkeeper(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "poolkeeper"
+
+
+class TestRigIntegrityFenn(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "fenn"
+
+
+class TestRigIntegrityGatekeeper(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "gatekeeper"
+
+
+class TestRigIntegrityHobb(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "hobb"
+
+
+class TestRigIntegrityMarra(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "marra"
+
+
 class TestVillagerProbeWiring(unittest.TestCase):
     def test_villagers_read_their_own_glb_and_clips(self):
-        self.assertEqual(rig_probe.villagers(), ["kell", "tavi"])
+        self.assertEqual(rig_probe.villagers(), sorted(["kell", "tavi", "shopkeeper", "smith", "innkeeper", "clerk", "reed_a",
+                                                       "reed_b", "reed_c", "reed_d", "wright_girl", "wright_child_a",
+                                                       "wright_child_b", "sabe", "scaleman", "skipper_sadi",
+                                                       "ferrymaster", "purser", "elder", "garo", "tender", "ione",
+                                                       "poolkeeper", "fenn", "gatekeeper", "hobb", "marra"]))
+        self.assertIn("pole_barge", rig_probe.clip_names("reed_a"))
         self.assertIn("villagers/kell/kell.glb", rig_probe.hero_glb("kell").as_posix())
         self.assertIn("press_wick", rig_probe.clip_names("kell"))
         self.assertEqual(rig_probe.hero_glb("asha").parent.name, "asha")  # heroes unchanged

@@ -1,0 +1,355 @@
+{
+ "doc": "M4-C13-02 greybox (tools/act1/ch13_greybox.py; do not edit by hand): the Lamp Archive, the Order's library of Lit Age records (ADR 0016): the reading room between long stacks, the table where Liss lays the founders' lamp-ledgers side by side (ledgers) and the one with the Cantor roll (cantor_roll). Back to the city at to_city. The story waits on the beat sheet (M4-C13-01).",
+ "sun": {
+  "pitch_deg": -25.0,
+  "yaw_deg": 130.0,
+  "energy": 1.6,
+  "color": "#fff9f2"
+ },
+ "environment": {
+  "background": "#2a2620",
+  "ambient_color": "#8a8478",
+  "ambient_energy": 0.5
+ },
+ "block_color": "#bab4a8",
+ "blocks": [
+  {
+   "id": "ReadingRoom",
+   "pos": [
+    0.0,
+    -0.25,
+    -16.0
+   ],
+   "size": [
+    20.0,
+    0.5,
+    32.0
+   ],
+   "color": "#bab4a8"
+  },
+  {
+   "id": "DoorStep",
+   "pos": [
+    0.0,
+    -0.25,
+    1.0
+   ],
+   "size": [
+    5.2,
+    0.5,
+    2.0
+   ],
+   "color": "#bab4a8"
+  },
+  {
+   "id": "DoorStepBound",
+   "pos": [
+    0.0,
+    1.0,
+    2.25
+   ],
+   "size": [
+    5.2,
+    2.0,
+    0.5
+   ],
+   "color": "#8a8478"
+  },
+  {
+   "id": "ReadingRoomWallN0",
+   "pos": [
+    0.0,
+    4.0,
+    -32.0
+   ],
+   "size": [
+    20.0,
+    8.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "ReadingRoomWallS0",
+   "pos": [
+    -6.1,
+    4.0,
+    0.0
+   ],
+   "size": [
+    7.8,
+    8.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "ReadingRoomWallS1",
+   "pos": [
+    6.1,
+    4.0,
+    0.0
+   ],
+   "size": [
+    7.8,
+    8.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "ReadingRoomWallW0",
+   "pos": [
+    -10.0,
+    4.0,
+    -16.0
+   ],
+   "size": [
+    0.5,
+    8.0,
+    32.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "ReadingRoomWallE0",
+   "pos": [
+    10.0,
+    4.0,
+    -16.0
+   ],
+   "size": [
+    0.5,
+    8.0,
+    32.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "Stack0W",
+   "pos": [
+    -7.0,
+    3.0,
+    -6.0
+   ],
+   "size": [
+    5.0,
+    6.0,
+    1.0
+   ],
+   "color": "#4a3a2c"
+  },
+  {
+   "id": "Stack0E",
+   "pos": [
+    7.0,
+    3.0,
+    -6.0
+   ],
+   "size": [
+    5.0,
+    6.0,
+    1.0
+   ],
+   "color": "#4a3a2c"
+  },
+  {
+   "id": "Stack1W",
+   "pos": [
+    -7.0,
+    3.0,
+    -11.5
+   ],
+   "size": [
+    5.0,
+    6.0,
+    1.0
+   ],
+   "color": "#4a3a2c"
+  },
+  {
+   "id": "Stack1E",
+   "pos": [
+    7.0,
+    3.0,
+    -11.5
+   ],
+   "size": [
+    5.0,
+    6.0,
+    1.0
+   ],
+   "color": "#4a3a2c"
+  },
+  {
+   "id": "Stack2W",
+   "pos": [
+    -7.0,
+    3.0,
+    -17.0
+   ],
+   "size": [
+    5.0,
+    6.0,
+    1.0
+   ],
+   "color": "#4a3a2c"
+  },
+  {
+   "id": "Stack2E",
+   "pos": [
+    7.0,
+    3.0,
+    -17.0
+   ],
+   "size": [
+    5.0,
+    6.0,
+    1.0
+   ],
+   "color": "#4a3a2c"
+  },
+  {
+   "id": "Stack3W",
+   "pos": [
+    -7.0,
+    3.0,
+    -22.5
+   ],
+   "size": [
+    5.0,
+    6.0,
+    1.0
+   ],
+   "color": "#4a3a2c"
+  },
+  {
+   "id": "Stack3E",
+   "pos": [
+    7.0,
+    3.0,
+    -22.5
+   ],
+   "size": [
+    5.0,
+    6.0,
+    1.0
+   ],
+   "color": "#4a3a2c"
+  },
+  {
+   "id": "Stack4W",
+   "pos": [
+    -7.0,
+    3.0,
+    -28.0
+   ],
+   "size": [
+    5.0,
+    6.0,
+    1.0
+   ],
+   "color": "#4a3a2c"
+  },
+  {
+   "id": "Stack4E",
+   "pos": [
+    7.0,
+    3.0,
+    -28.0
+   ],
+   "size": [
+    5.0,
+    6.0,
+    1.0
+   ],
+   "color": "#4a3a2c"
+  },
+  {
+   "id": "LedgerTable",
+   "pos": [
+    -1.5,
+    0.45,
+    -12.0
+   ],
+   "size": [
+    2.0,
+    0.9,
+    4.0
+   ],
+   "color": "#6a5640"
+  },
+  {
+   "id": "RollTable",
+   "pos": [
+    1.5,
+    0.45,
+    -24.0
+   ],
+   "size": [
+    2.0,
+    0.9,
+    4.0
+   ],
+   "color": "#6a5640"
+  }
+ ],
+ "spawns": {
+  "Door": [
+   0.0,
+   0.0,
+   -2.0,
+   0.0
+  ]
+ },
+ "marks": {
+  "ledgers": [
+   -3.2,
+   0.0,
+   -12.0,
+   270.0
+  ],
+  "cantor_roll": [
+   3.2,
+   0.0,
+   -24.0,
+   90.0
+  ]
+ },
+ "actors": {},
+ "shots": {
+  "R01": {
+   "pos": [
+    0.0,
+    2.2,
+    -4.0
+   ],
+   "look_at": [
+    0.0,
+    1.0,
+    -24.0
+   ],
+   "fov": 50
+  }
+ },
+ "triggers": [
+  {
+   "id": "to_city",
+   "activation": "touch",
+   "at": [
+    0.0,
+    0.0,
+    0.5
+   ],
+   "size": [
+    4.0,
+    0,
+    1.0
+   ],
+   "payload": {
+    "beat": "to_city"
+   },
+   "yaw": 0.0
+  }
+ ]
+}

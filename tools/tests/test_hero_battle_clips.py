@@ -26,7 +26,8 @@ sys.path.insert(0, str(ROOT / "assets_src" / "characters" / "asha"))
 
 import hero_clips  # noqa: E402
 
-HEROES = ("asha", "rhen", "toma", "liss")  # M3-CHR-03: Liss, a party member from Ch6
+# M3-CHR-03: Liss; M3-CHR-505: Kerrid; M3-CHR-507: Moll, the Ch6 boss; M3-CHR-506: Pell
+HEROES = ("asha", "rhen", "toma", "liss", "kerrid", "moll", "pell")
 # the contract (battle_presentation.md § Clip contract)
 LOOPING = {"idle", "victory"}
 ONE_SHOT = {"ready", "attack", "cast", "item", "read", "defend", "finisher", "hit", "dodge"}
@@ -59,7 +60,20 @@ EXISTING = {  # the clips before M2-CHR-07; their sub-resources must stay byte-i
              "turn_seaward"],
     "liss": ["idle", "walk", "run", "talk", "crouch_shelter", "carry_crate", "bury_lamp", "clock_lantern", "point_up",
              "haul_rope"],  # M3-CHR-03: her own clips, then the contract
+    "kerrid": ["idle", "walk", "run", "talk", "collar_catch", "go_still", "turn_at_name", "set_bowl_on_post",
+               "stand_watch", "wade", "push_climber", "down_a_step", "collar_haul", "look_down_stair",
+               "carry_child"],  # M3-CHR-505: his own clips, then the contract
+    "moll": ["idle", "walk", "look_at", "kneel"],  # M3-CHR-507: his own clips, then the contract
+    "pell": ["idle", "walk", "run", "talk", "storm_call", "descend_rocks", "go_still", "listen_tilt",
+             "back_to_sea"],  # M3-CHR-506: his own clips, then the contract
 }
+# M3-CHR-507: a foe's `ko` is his own (hero_clips.KO_OWN): Moll's is the yield, held kneeling, not a fall; and he has
+# no revive (optional in the contract)
+YIELD_HIPS_M = (0.35, 0.7)  # the hips joint over the floor on one knee
+YIELD_TORSO_MIN_DEG = 55.0  # the torso stays upright-ish (he does not lie down)
+YIELD_GRIP_M = 0.12  # each hand within this of the iron's haft (both hands on it)
+YIELD_IRON_TILT_MAX_DEG = 15.0
+YIELD_HEROES = ("moll",)  # the KO_OWN heroes whose ko is a yield on the haft (Pell's is his own fall: test_pell)
 
 
 def _subresources(text: str) -> dict:
@@ -113,9 +127,12 @@ class TestHeroBattleClips(unittest.TestCase):
             # the existing clips keep their names and their order (their sub-resource ids stay put)
             self.assertEqual(hero_clips.CLIPS[hero][:len(EXISTING[hero])], EXISTING[hero], hero)
 
+    def _optional(self, hero: str) -> set:
+        return {c for c in OPTIONAL if c in hero_clips.CLIPS[hero]}
+
     def test_loop_flags_and_the_ko_hold(self):
         for hero in HEROES:
-            for clip in CONTRACT | OPTIONAL:
+            for clip in CONTRACT | self._optional(hero):
                 loop_mode = int(re.search(r"loop_mode = (\d)", self.subs[hero][clip]).group(1))
                 self.assertEqual(loop_mode, 1 if clip in LOOPING else 0, f"{hero} {clip}")
             # ko holds: a one-shot stops on its last frame, and the pose is already still before it
@@ -131,16 +148,18 @@ class TestHeroBattleClips(unittest.TestCase):
         travel: one-shots end where they start."""
         for hero in HEROES:
             root = self.sk[hero].root_name
-            for clip in CONTRACT | OPTIONAL:
+            for clip in CONTRACT | self._optional(hero):
                 sub = self.subs[hero][clip]
                 for kind, path in re.findall(r'tracks/\d+/type = "(\w+)"\ntracks/\d+/imported = false\n'
                                              r'tracks/\d+/enabled = true\ntracks/\d+/path = NodePath\("([^"]+)"\)', sub):
                     node, _, bone = path.partition(":")
                     self.assertEqual(node, f"{root}/Skeleton3D", f"{hero} {clip} {path}")
                     hooks = [hero_clips.HOOK_BONE + s for s in self.sk[hero].hooks]  # M2-CHR-513: Rhen's reef-hooks
-                    self.assertIn(bone, self.sk[hero].keyed + hooks, f"{hero} {clip} {path}")  # M1-CHR-15: helpers
+                    prop = [self.sk[hero].prop["bone"]] if self.sk[hero].prop else []  # M2-CHR-515: the held prop
+                    extra = hooks + prop + hero_clips.grip_bones(self.sk[hero])  # and the fingers round it
+                    self.assertIn(bone, self.sk[hero].keyed + extra, f"{hero} {clip} {path}")  # M1-CHR-15: helpers
                     if kind == "position_3d":
-                        self.assertIn(bone, [hero_clips.HIPS] + hooks, f"{hero} {clip}")
+                        self.assertIn(bone, [hero_clips.HIPS] + hooks + prop, f"{hero} {clip}")
                 hips = [np.asarray(p.get("hips", (0.0, 0.0, 0.0)), dtype=float) for _t, p in self._keys(hero, clip)]
                 if clip in HOLD_LAST | OPTIONAL:  # a body lying down is in place when centred on the spot (below)
                     continue
@@ -214,6 +233,8 @@ class TestHeroBattleClips(unittest.TestCase):
         """revive comes after every clip before it (their sub-resource ids stay put; only M3-CHR-05's story clips
         follow it) and lasts about 0.8 s."""
         for hero in HEROES:
+            if "revive" not in hero_clips.CLIPS[hero]:  # a foe (Moll) has none
+                continue
             story = list(hero_clips.STORY.get(hero, {}))
             clips = hero_clips.CLIPS[hero]
             self.assertEqual(clips[len(clips) - len(story) - 1:], ["revive"] + story, hero)
@@ -246,6 +267,8 @@ class TestHeroBattleClips(unittest.TestCase):
     def test_ko_lies_down(self):
         """ko's held frame lies on the floor: the hips joint low, the torso near horizontal, the body centred."""
         for hero in HEROES:
+            if hero in hero_clips.KO_OWN:  # the yield kneels (test_yield_kneels_on_the_haft); Pell's own (test_pell)
+                continue
             _t, last = list(self._keys(hero, "ko"))[-1]
             _g, t = self._globals(hero, last)
             hips, neck, head = t["DEF-spine"], t["DEF-spine.004"], t["DEF-spine.006"]
@@ -267,6 +290,8 @@ class TestHeroBattleClips(unittest.TestCase):
             body = rig.part("Body")
             persona = hero_clips.PERSONA[hero]
             for clip in ("ko", "revive"):
+                if clip not in hero_clips.CLIPS[hero]:
+                    continue
                 keys = list(self._keys(hero, clip))
                 for i, (t, pose) in enumerate(keys):
                     pose = hero_clips.staff_hold(pose, persona)
@@ -279,6 +304,8 @@ class TestHeroBattleClips(unittest.TestCase):
     def test_revive_joins_ko_to_idle(self):
         """revive starts on ko's held frame and ends on the idle's first, rotations and hips both."""
         for hero in HEROES:
+            if "revive" not in hero_clips.CLIPS[hero]:
+                continue
             sk = self.sk[hero]
             persona = hero_clips.PERSONA[hero]
 
@@ -295,6 +322,42 @@ class TestHeroBattleClips(unittest.TestCase):
                 self.assertTrue(np.allclose(ha, hb, atol=1e-6), f"{hero} revive vs {what}: hips")
                 for bone in hero_clips.BONES:
                     self.assertGreater(abs(float(np.dot(a[bone], b[bone]))), 1.0 - 1e-9, f"{hero} revive vs {what} {bone}")
+
+    def test_yield_kneels_on_the_haft(self):
+        """M3-CHR-507: Moll's ko is the yield (hadric_moll.md §9): held on the right knee, the torso upright, the iron
+        upright with its foot on the floor and both hands on the haft; `yield` is the same clip."""
+        for hero in YIELD_HEROES:
+            sk, persona = self.sk[hero], hero_clips.PERSONA[hero]
+            _t, last = list(self._keys(hero, "ko"))[-1]
+            g, t = self._globals(hero, last)
+            hips, neck = t["DEF-spine"], t["DEF-spine.004"]
+            self.assertTrue(YIELD_HIPS_M[0] < hips[1] < YIELD_HIPS_M[1], f"{hero} yield: hips at {hips[1]:.3f} m")
+            v = neck - hips
+            self.assertGreater(math.degrees(math.atan2(v[1], math.hypot(v[0], v[2]))), YIELD_TORSO_MIN_DEG, hero)
+            self.assertLess(t["DEF-shin.R"][1], 0.1, f"{hero} yield: the right knee is down")
+            self.assertGreater(t["DEF-shin.L"][1], 0.35, f"{hero} yield: the left knee is up")
+            local = sk.local_pose({b: hero_clips.qeuler(v) for b, v in
+                                   hero_clips.staff_hold(last, persona).items() if b != "hips"}, last.get("hips"),
+                                  hero_clips.hook_hold(hero, "ko", 1.0))
+            gq = {}
+            for b in hero_clips.BONES:
+                p = sk.parent[b]
+                gq[b] = local[b] if p is None else hero_clips.qmul(gq[p], local[b])
+            pr = sk.prop
+            hand = pr["hand"]
+            gb = hero_clips.qmul(gq[hand], local[pr["bone"]])
+            d = hero_clips.qrot(gb, np.array([0.0, 1.0, 0.0]))
+            o = t[hand] + hero_clips.qrot(gq[hand], np.asarray(local[hero_clips.POS_KEY][pr["bone"]]))
+            self.assertLess(math.degrees(math.acos(min(1.0, float(d[1])))), YIELD_IRON_TILT_MAX_DEG, hero)
+            self.assertLess(abs(float((o + d * pr["foot"])[1])), 0.03, f"{hero} yield: the iron's foot is grounded")
+            for side in "LR":
+                q = t[f"DEF-hand.{side}"] + hero_clips.qrot(g[f"DEF-hand.{side}"], np.array([0.0, 0.07, 0.0])) - o
+                off = float(np.linalg.norm(q - (q @ d) * d))
+                self.assertLess(off, YIELD_GRIP_M, f"{hero} yield: hand {side} {off:.3f} m off the haft")
+            self.assertIn("yield", hero_clips.CLIPS[hero])
+            ko = re.sub(r'(id="clip_\d+"|resource_name = &"\w+")', "", self.subs[hero]["ko"])
+            yd = re.sub(r'(id="clip_\d+"|resource_name = &"\w+")', "", self.subs[hero]["yield"])
+            self.assertEqual(ko.replace(hero_clips.CONTACT_MARKER, ""), yd.replace(hero_clips.CONTACT_MARKER, ""), hero)
 
 
 if __name__ == "__main__":

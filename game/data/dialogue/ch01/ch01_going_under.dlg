@@ -29,7 +29,7 @@ Rhen [afraid]: Go! Don't look back, go! #line:ch01_under_001
 @vfx glimmer_held at=rhen count=60 drift=down_seaward
 @wait 4.0
 @camera U11
-@wait 6.0
+@wait 17.4
 @fade out 2.5
 @music silence fade=2.0
 Narrator(rhen) [neutral]: My father used to sing the currents. I hadn't heard it in eleven years. Then nothing. #line:ch01_under_002 #vo

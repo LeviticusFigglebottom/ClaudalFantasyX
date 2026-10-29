@@ -275,9 +275,23 @@ the lagoon (water at −0.6, still and then rippling on its own short wave set).
 | Alongside, behind the enemy line | `pursuit_barge` at (−2, −7.6), black lacquer and gilt, the bound flat-engine on its poop; the `BossAnchor` on its deck at the near rail (−4.5, −0.2, −7.0) |
 | Behind it | Four `bowl_dome`s on their islands at 70–140 m, and the skyline ring `ansedra_far_domes_lit` (the windows lit: the city watching the water move) |
 
-Light `ch14`: sun 1° / 270°, key `#FFAA5F` 1.4, fill `#4A5A78` 0.4, exposure 0.90, `lut_ch14_wedding` (`zone_lut.py`:
+Light `ch14`: sun 5° / 270° (the script's 1° let the bow rail's shadow cover the whole deck, so the floor read black in c770380's render), key `#FFAA5F` 1.4, fill `#4A5A78` 0.4, exposure 0.90, `lut_ch14_wedding` (`zone_lut.py`:
 the reds pushed, the rest cooled, S-curve 0.7, the toe navy). No lamp on either barge. Hints: `the_engine`,
 `the_city_watching`.
+
+### The Drowned Choir at moonrise (`drowned_choir_ring`, M3-ENV-722, the Haluna kit's drowned_choir.py)
+
+For Sefir's Abiding guard (Ch16; a group, so no `BossAnchor`). The floor is the singer's dais at the bottom of the
+sunken amphitheatre: laid ceramic flags, r 7.5, level at y 0. The flooded ring channel lies round it (the water at
+−0.25); six broken seat-tiers rise to r 21.5; the white sand flats run under the water to the horizon.
+
+| Where | What |
+|---|---|
+| Round the arena, r 44 | Ten `choir_singer`s (24 m, hooded, the heads tilted up and the mouths open) standing in the sea, all facing the centre; the far side of the ring fills the frame behind the enemy line |
+| The sky | The moon low behind the enemy line (`#D2DFFF` 0.35, 12° at azimuth 306°: in the gap between two singers, so no singer's shadow and not the tiers' rim falls on the dais; tested), the night sky shader's disc |
+
+Light (pale_rim.md §0, the Choir at moonrise): fill `#2A3A4E` 0.25, `pale_rim` water at night, sea-glow 0.1,
+exposure 1.1, `lut_ch16_choir` (`zone_lut.py`: ×0.7, low contrast, the stone cold). Hints: `the_mouths`, `the_ring`.
 
 ### The underwater arena (`underway_tower`)
 
@@ -393,3 +407,49 @@ the encounter row. The first fight (Haluna beach) and the Drownbell get their ar
   deck so the contract's floor tests stay as they were.
 - **The sunset party stands in the bell's shadow:** at 2° the bell stand-in's shadow runs 60 m east over party
   slot 0. It reads (dark figures on lit paving around it) and it is the light the script asks for.
+
+### The Lamp Spire's crown at nightfall (`iskarra_spire_crown`, M3-ENV-726, the Haluna kit's iskarra_spire.py)
+
+For Warden Hesper Oan and Ilsabet Rue (Ch19). Iskarra's Lamp Spire is crowned 112 m over the drowned city.
+
+**The floor** is a round deck of the city's flags (r 12), level at y 0, with flush glazed rings and rays. A
+balustrade runs round its edge, and an arcade of twelve columns carries round arches; two bays have fallen.
+
+| Where | What |
+|---|---|
+| Behind the enemy line, (−7.2, −4.6) | The founders' `anchor_engine`: a salt-glass column round a bound core, caged in three bronze rings; its teal is the one practical light (`Lamp0`, shadowed) |
+| Below, y −112 | `iskarra_far_towers`, the drowned city, set off the origin by `extra_glbs`' new `(glb, (x, y, z))` form |
+
+- **Light** (iskarra.md §3): the afterglow low in the west `#FF9F46` 0.7, set behind the party (azimuth 100° in the arena's frame) so the engine's long shadow falls away from the slots (tested); fill `#5A7FA8` 0.4, exposure 1.0, `lut_ch19_spire`.
+- **Hints:** `the_engine`, `the_city_below`.
+
+### The Cage in the last remembered room (`undertow_cage`, M3-ENV-727, the Haluna kit's undertow_layers.py)
+
+For the Cage (Ch20; the four bound founders, a multi-part boss). The floor is `memory_island`: the founders' Iskarra
+flags on a floating fragment (r 9), level at y 0, with the Lit Age sunburst behind the enemy line.
+
+| Where | What |
+|---|---|
+| Behind the enemy line | Four `held_pillar`s, broken lamp columns threaded with held glimmer, each with a cyan `Lamp` |
+| Round the floor, 25–65 m | The other remembered rooms hanging in the dark (`memory_kitchen`, `memory_market`, `memory_stands`, a bare island) |
+
+- **Light** (undertow_layers.md §0): `#C4D6FF` 0.8 from above, fill `#061A2B`, dense fog `#0E3A48`, exposure 1.1,
+  `lut_ch20_abyss`.
+- **Hints:** `the_rooms`, `the_cage`.
+
+### The Heart, Sefir's fight (`undertow_heart`, `undertow_heart_letting`, M3-ENV-728, the Haluna kit's undertow_heart.py)
+
+For Sefir (Ch21, three phases). The floor is `heart_floor`: a disc (r 11) of salt-glass plates over held glimmer, the
+seams lit, level at y 0, stepping down at its rim to still water at −0.3.
+
+| Where | What |
+|---|---|
+| Behind the enemy line, in the water | `heart_column`, Imra's light: a 40 m column of held glimmer in glass sleeves, with a `Lamp` |
+| Round everything, r 160 m | `heart_eyewall`, the storm's inner wall, dark, banded with held light spiralling down and in |
+
+- **`undertow_heart`** (phases 1–2, held): `#C4D6FF` 0.8 from above, fill `#0E4A55` 0.3, fog `#0E2A3A`, exposure
+  1.05, `lut_ch20_abyss`; the column's lamp cyan `#7FC6D9`.
+- **`undertow_heart_letting`** (phase 3, the Letting): the colour script's warm key `#FFDCBF` 1.2, the column's lamp
+  the rim `#FFE9B8` 2.0, `lut_ch21_heart`. The cross-fade between the two over the countdown is the battle stage's
+  (or Rendering's) to drive; these are its two ends.
+- **Hints:** `the_column`, `the_eyewall`.

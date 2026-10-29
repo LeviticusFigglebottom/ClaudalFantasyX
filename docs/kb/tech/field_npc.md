@@ -177,7 +177,8 @@ For each row the layer:
 
 | Row key | Meaning |
 |---|---|
-| `npc_id` | The villager (child, fisher, neme, netmender, osu, reed, vendor) |
+| `npc_id` | The villager (child, fisher, neme, netmender, osu, reed, vendor; or a role with no model yet, such as the shopkeeper) |
+| `actor` | Optional: another villager whose model it wears until it has its own (M3-CRE-100). Its own `npc_id` still names its talk, tuning and chat |
 | `stand_in` | The stand-in node, a path from the zone root |
 | `hide` | Stand-in children to hide (default `["StandIn", "Facing"]`) |
 | `talk` | The Interactable that starts its talk |
@@ -192,11 +193,55 @@ here braces). `python3 tools/validate_data.py` (via `tools/validate_npc.py`) che
 
 | Zone | File | Villagers |
 |---|---|---|
-| `ch02/haluna` | `zones/ch02_haluna.json` | All seven: the vendor setting out the stall; Reed sweeping the chapel court between two sweep stations; the netmender mending and chatting with the fisher on the dock (both turn to the player at the dock's talk spot); the child wandering the lane; Neme watching the lane by her house; Osu with her bowl. The Town's shopkeeper, smith and innkeeper keep their stand-ins until they have bodies (M3-CRE-614). |
+| `ch02/haluna` | `zones/ch02_haluna.json` | All seven: the vendor setting out the stall; Reed sweeping the chapel court between two sweep stations; the netmender mending and chatting with the fisher on the dock (both turn to the player at the dock's talk spot); the child wandering the lane; Neme watching the lane by her house; Osu with her bowl. Plus the Town's shopkeeper, smith and innkeeper (M3-CRE-100), wearing the netmender's, fisher's and vendor's models until M2-CHR-100 gives them their own. |
 
 Review: `game/levels/_tests/npc/haluna_villagers.tscn` (the real zone with a layer), shots `npc_haluna_dock`,
 `npc_haluna_market`, `npc_haluna_chapel`, `npc_haluna_lane`. Tests: `tests/unit/test_villager_routines.gd`,
 `tools/tests/test_npc.py`.
+
+### Crowd rows (M3-CRE-659, ADR 0152)
+
+Act I's generic background people (56 in 10 greybox zones) are **crowd people**: rows of
+`game/data/world/npc/crowd.json`, each wearing one of 22 crowd bodies (`assets/crowd/<body>/`, the characters'
+villager pipeline at a crowd tier: [`docs/kb/art/creatures/crowd.md`](../art/creatures/crowd.md)). A zone row names
+one with `crowd`:
+
+```json
+{"npc_id": "corrow_netmender", "crowd": "corrow_netmender", "stand_in": "CutsceneStage/Actors/netmender",
+ "attach": "child", "talk": "Triggers/bark_netmender"}
+```
+
+| Row key | Meaning |
+|---|---|
+| `crowd` | A person id in `crowd.json`: their body's actor (`assets/crowd/<body>/<body>_actor.tscn`), their `tints`, their age band's tuning (`age_tuning`) and their `work` clip with its tuning (`work_tuning`) |
+| `offset` | `[x, y, z]` or `[x, y, z, yaw_deg]` inside the stand-in (`attach: child` only): several people at one group capsule (Brine Shoals' six kneeling wrights) |
+
+- **Tints** (`NpcTints`, `game/world/npc/npc_tints.gd`): FieldNpc's `tints` (`cloth_a`, `cloth_b`, `cloth_c`,
+  `hair` -> a colour) become per-instance surface overrides: a copy of the material each surface wears, with
+  `col_albedo` (cloth) or `col_root` and `col_tip` (hair) set; copies are shared between people of one colour.
+- **Tuning**: FieldNpc's `tuning_over` is merged over its `npc.json` tuning: the clip map's `work` (mend, sweep,
+  carry, fold, haul, kneel_mourn, vigil) and the `work` focus, a child's pace, a kneeling head's height.
+- The crowd row names the FieldNpc after the person (several can stand inside one stage actor) and never adopts a
+  FieldNpc already there; a stage actor with a greybox `Model` is adopted as before, with the person's tints.
+- Every zone row resolves (person in this zone, at this stage actor, body built); `validate_npc.py` also checks
+  `crowd.json` (palette-mix tints, planned bodies, one zone row each) and the **variety rule**: no body twice in a
+  zone, and two people on one body anywhere dress at least 24 sRGB units apart in some cloth slot.
+
+| Zone | File | Crowd |
+|---|---|---|
+| `ch01/oruvel` | `zones/ch01_oruvel.json` | the cook, the two net-lane menders (chat), the pen and roof children |
+| `ch04/brightwater_ferry` | `zones/ch04_brightwater_ferry.json` | a child, a Reed, two traders (chat) |
+| `ch05/ashcrown` | `zones/ch05_ashcrown.json` | the tender (vigil) |
+| `ch05/pemakar` | `zones/ch05_pemakar.json` | folders, boat seller, lacquerer, sweeper, the ferryman's mate, a boat fisher, four children |
+| `ch06/brine_shoals` | `zones/ch06_brine_shoals.json` | the brand girl, the clerk, two wright children, six kneeling wrights at the `wrights` capsule |
+| `ch07/tamsule` | `zones/ch07_tamsule.json` | vendor, board-caller, child, fisher, lane elder, gantry boatman, trader |
+| `ch07/tamsule_bell_galleries` | `zones/ch07_tamsule_bell_galleries.json` | two Oruvel and two Sorrin divers in their sides' colours |
+| `ch08/coilspire` | `zones/ch08_coilspire.json` | the beacon tender |
+| `ch08/corrow` | `zones/ch08_corrow.json` | four kite children, a stair-watch fisher, the netmender, two townsfolk (chat) |
+| `ch09/corrow_night` | `zones/ch09_corrow_night.json` | four kneeling mourners, a child, the tender |
+
+These zones are GreyboxZones, which do not add a VillagerLayer yet: M3-CRE-657 (slice-polish) asks for the two
+lines. Until then the review stages (`crowd_<zone>.tscn`) and the tests wire one with `VillagerLayer.wire`.
 
 ## Who owns what (decided 2026-10-27, creatures with slice-polish's M2-FP-102)
 
@@ -212,6 +257,14 @@ Review: `game/levels/_tests/npc/haluna_villagers.tscn` (the real zone with a lay
   (`VillagerLayer.placed_on`) and wires only what needs the zone: the chat partner, the work and shelter points,
   the storm flag. It never adds a second villager. Glances, look-arounds and work already come with FieldNpc from
   `npc.json`, so they work under either wiring.
+- **When the layer builds (M3-CRE-100).** Added together with its zone (a prebuilt zone entering the tree), it
+  builds at once: the zone's own placement has already run. Added while the zone is in its own `_ready`, or later
+  (`wire`), it builds one call later (deferred), after the zone has placed its villagers, so it adopts them. Either
+  way each villager shows once. Haluna adds its layer itself (M2-FP-113); the review stage reuses that one.
+- **Greybox stage actors (M3-CRE-656).** In a GreyboxZone a layout row's `model` (M2-FP-111) puts a villager actor
+  under `CutsceneStage/Actors/<id>/Model`. A row whose `stand_in` is that actor (`attach: child`) makes the layer
+  wrap that very model in a FieldNpc inside the actor node, so it is alive (glances, talk turns) and cutscenes still
+  find it. Oruvel's Kell is the first (`zones/ch01_oruvel.json`). GreyboxZone adding the layer is M3-CRE-657.
 - **Routes** need a villager beside its stand-in (it carries the body). An adopted villager rides inside its body,
   so its row's `route` and `follow` do not apply; Haluna's routes (Reed's sweep, the child's lane) wait until the
   zone owner places those two beside their bodies (or lets the layer place them).

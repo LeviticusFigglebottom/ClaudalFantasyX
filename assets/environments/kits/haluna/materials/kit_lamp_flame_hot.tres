@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" load_steps=1 format=3]
+
+[resource]
+resource_name = "kit_lamp_flame_hot"
+albedo_color = Color(1, 0.6941, 0.4314, 1)
+emission = Color(1, 0.6941, 0.4314, 1)
+emission_enabled = true
+emission_energy_multiplier = 8
+shading_mode = 0

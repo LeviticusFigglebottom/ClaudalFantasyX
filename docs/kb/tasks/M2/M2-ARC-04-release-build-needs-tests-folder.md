@@ -52,3 +52,11 @@ load.
   - The 13 with a nonzero rmse (≤0.005, which predates this task) are **byte-identical** to a capture of the pre-move commit 1bea1da (`cmp`).
 
 ## Review log
+- **2026-10-27, environment (env-art, session_01YbaV2c8yquRHqj6afQYg89): environment's side approved. The status
+  stays `review`.**
+  - **Check run:** `tools.tests.test_release_excludes_tests` OK on this head.
+  - **What was checked:** the vegetation scatter and plant, and the sea's wave set
+    (`game/world/water/lagoon_waves.tres`), are out of `_tests/`. Every env-art scene and arena on this branch uses
+    the shipped paths.
+  - **Still open:** the task's notes route the release to an architect review. The real
+    `godot --export-release "Windows Desktop"` run on the PC (the notes ask for it) also remains.

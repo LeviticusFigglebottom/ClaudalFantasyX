@@ -1,0 +1,24 @@
+{
+  "_about": "Old Kerrid's emotion tags -> face blendshape weights (docs/kb/art/characters/kerrid.md §6.2). A pair is [L, R]; a scalar sets both sides of a paired shape. His rest lid_squint [0.15, 0.10] (the left eye squints a little more, the side the light came from at the gate) is added to every row. He answers with the body, not the face: most rows are small and the clip carries the beat; his feeling shows in the brow and the jaw (jaw_clench under the beard), his rare smiles through cheek_raise and lid_squint, the left cheek ahead (toward the broken side of the nose). No breath or sigh shapes, no tear layer (kerrid.md §12 Q1, Q2). Blend 0.30 s, measured, no overshoot. Tags: game/data/dialogue/emotions.json. Read by the hero stage for the M3-CHR-505 review shots; the sequencer.json face_poses entry is Cinematics'.",
+  "blend_in_s": 0.30,
+  "rest": {"lid_squint": [0.15, 0.10]},
+  "overshoot": {},
+  "head_notes": {"neutral": "watching the sea; most of Act I; nothing moves", "laugh": "short and low, the head down 5 degrees (never back); Act III only", "sad": "gaze drops 6 degrees", "grief": "Ch15 and Ch16; held, no tear layer", "angry": "Ch16 at Sefir, held, no shouting", "cold": "Ch6, his back to the barge", "surprised": "small; Ch5 P12 is neutral with the go_still clip, not this", "afraid": "not used by the story; shipped for completeness", "determined": "his battle face, the Ch8 stair foot", "guilty": "Ch15, to Rhen: gaze down 15 degrees, then he makes himself look up; jaw_clench falls to 0 over Rhen's name", "exhausted": "head pitch -5 degrees; Act II only"},
+  "emotions": {
+    "neutral": {"lid_squint": [0.15, 0.1]},
+    "soft_smile": {"lid_squint": [0.27, 0.22], "cheek_raise": [0.18, 0.12], "mouth_smile": 0.12},
+    "smile": {"lid_squint": [0.5, 0.45], "cheek_raise": [0.45, 0.35], "mouth_smile": 0.4},
+    "laugh": {"lid_squint": [0.7, 0.65], "cheek_raise": [0.65, 0.55], "mouth_smile": 0.6, "jaw_open": 0.18},
+    "worried": {"lid_squint": [0.15, 0.1], "brow_inner_up": 0.35, "brow_down": 0.3},
+    "sad": {"lid_squint": [0.15, 0.1], "brow_inner_up": 0.45, "lid_close": 0.2, "mouth_frown": 0.15},
+    "grief": {"lid_squint": [0.55, 0.5], "brow_inner_up": 0.8, "brow_down": 0.45, "mouth_frown": 0.35, "jaw_clench": 0.45},
+    "angry": {"lid_squint": [0.45, 0.4], "brow_down": 0.8, "jaw_clench": 0.55, "nose_sneer": 0.1},
+    "cold": {"lid_squint": [0.15, 0.1], "brow_down": 0.3, "mouth_press": 0.35},
+    "surprised": {"lid_squint": [0.15, 0.1], "brow_outer_up": 0.45, "brow_inner_up": 0.3, "lid_wide": 0.25},
+    "afraid": {"lid_squint": [0.15, 0.1], "brow_inner_up": 0.6, "lid_wide": 0.35},
+    "determined": {"lid_squint": [0.4, 0.35], "brow_down": 0.45, "jaw_clench": 0.4},
+    "tender": {"lid_squint": [0.15, 0.1], "brow_inner_up": 0.25, "cheek_raise": [0.12, 0.08], "lid_close": 0.18},
+    "guilty": {"lid_squint": [0.15, 0.1], "brow_inner_up": 0.5, "lid_close": 0.35, "jaw_clench": 0.2},
+    "exhausted": {"lid_squint": [0.15, 0.1], "lid_close": 0.35, "brow_inner_up": 0.15}
+  }
+}

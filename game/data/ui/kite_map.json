@@ -1,0 +1,27 @@
+{
+  "kite_map": {
+    "doc": "The Kite's world map (KiteMapMenu, M3-UI-205; SPEC 6.6). Rects x, y, w, h at the 1920 x 1080 reference, multiples of 3, centred. Left: the places (rows, max_rows before it scrolls: every Act I and II place, Search and Leave fit; Search and Leave last) and the line about the highlighted row (desc). Right: the chart (KiteChart): the grid's cell lines grid_px wide at grid_alpha (2 px so none is lost when the screen is scaled down), each column letter centred over its column label_pad above the grid and each row number centred on its row row_label_px left of it, region names, a gem_px gem on each place's own point, the cursor ring ring_gap_px outside the gem with the place's name name_gap_px right of the ring, and the searched cell outlined, both cursor_px wide.",
+    "canvas_layer": 64,
+    "dim_alpha": 0.45,
+    "panel": {"rect": [195, 120, 1530, 840], "pad": 27, "title_height": 56, "help_height": 40},
+    "rows": {
+      "rect": [234, 219, 540, 0],
+      "header_height": 0,
+      "row_pitch": 48,
+      "max_rows": 10,
+      "row_inset": 12,
+      "text_indent": 40,
+      "cost_width": 120,
+      "rank_width": 120,
+      "submenu_dim": 0.5,
+      "cursor_sec": 0.09,
+      "mote_lag_sec": 0.03,
+      "mote_px": 10,
+      "mote_offset": 14,
+      "breath_sec": 2.4,
+      "breath_min": 0.75
+    },
+    "desc": {"gap": 12, "height": 120},
+    "chart": {"rect": [840, 234, 846, 600], "grid_alpha": 0.25, "label_pad": 6, "row_label_px": 24, "gem_px": 7, "ring_gap_px": 6, "cursor_px": 3, "grid_px": 2, "name_gap_px": 6}
+  }
+}

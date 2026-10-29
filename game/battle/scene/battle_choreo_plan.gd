@@ -5,7 +5,8 @@ extends RefCounted
 ## and style_id_for() call these with its data and engine; tests call either.
 
 
-## The style an action plays: item_style for an item, else style_by_skill, style_by_target, style_by_kind.
+## The style an action plays: item_style for an item, else style_by_skill, swell_style_by_hero (a Swell technique),
+## style_by_actor, style_by_target, style_by_kind.
 static func style_id_for(data: Dictionary, engine: BattleEngine, result: ActionResult) -> String:
 	if result.item_id != &"":
 		return str(data.get("item_style", BattleChoreo.FALLBACK_STYLE))
@@ -14,6 +15,10 @@ static func style_id_for(data: Dictionary, engine: BattleEngine, result: ActionR
 	if by_skill.has(sid):
 		return str(by_skill[sid])
 	var row: Dictionary = engine.db.skill(result.skill_id) if engine != null else {}
+	var swells := data.get("swell_style_by_hero", {}) as Dictionary
+	var hero := String(result.actor_id).get_slice("#", 0)
+	if bool(row.get("swell", false)) and swells.has(hero):  # M3-BPR-422: a Swell technique with no row of its own
+		return str(swells[hero])
 	var actors := data.get("style_by_actor", {}) as Dictionary
 	var by_actor := actors.get(String(result.actor_id).get_slice("#", 0), {}) as Dictionary
 	if by_actor.has(str(row.get("kind", ""))):  # M3-BPR-408: the Avalanche Ram's charge
@@ -64,6 +69,8 @@ static func plan_for(data: Dictionary, engine: BattleEngine, result: ActionResul
 			kind = BattleChoreo.REACT_HEAL
 		elif kind == "" and int(hit.get("delay_ticks", 0)) > 0:
 			kind = BattleChoreo.REACT_PUSH
+		elif kind == "" and _immune(engine, tid, result.skill_id):
+			kind = BattleChoreo.REACT_IMMUNE  # M3-BPR-406: the blow lands on nothing it can hurt
 		var blow := BattleImpact.strength(data, engine, hit)  # M3-BPR-401: the blow's weight
 		peak = maxf(peak, blow)
 		if kind != "":
@@ -77,6 +84,7 @@ static func plan_for(data: Dictionary, engine: BattleEngine, result: ActionResul
 		"style": sid,
 		"shot": str(st.get("shot", "")),
 		"actor": result.actor_id,
+		"skill": result.skill_id,  # M3-BPR-420: a boss's big moves get their own shot (camera.enemy_by_skill)
 		"targets": targets,
 		"reactions": reactions,
 		"kos": kos,
@@ -98,11 +106,21 @@ static func retime(data: Dictionary, plan: Dictionary) -> void:
 	var kos: Array = plan["kos"]
 	var react_end := float(plan["contact"])
 	var ko_from := react_end
+	var riposte_end := -1.0
 	for r: Dictionary in plan["reactions"]:
 		var at := float(r["at"])
-		react_end = maxf(react_end, at + float((reaction.get(r["kind"], {}) as Dictionary).get("sec", 0.0)))
+		var end := at + float((reaction.get(r["kind"], {}) as Dictionary).get("sec", 0.0))
+		react_end = maxf(react_end, end)
+		if str(r.get("counter_by", "")) != "":
+			riposte_end = maxf(riposte_end, end)
 		if kos.has(r["target"]):
 			ko_from = maxf(ko_from, at)
+	# The attacker stays where it struck until the riposte has landed on it and played out, then goes home (the
+	# self-rendered battle_ch08_counter showed it already back on its mark when the answer landed).
+	var hold := riposte_end - float(plan["recover_end"])
+	if hold > 0.0:
+		plan["recover_end"] = float(plan["recover_end"]) + hold
+		plan["return_end"] = float(plan["return_end"]) + hold
 	if kos.has(plan["actor"]):  # felled by a counter: it falls once it is home (M3-BPR-406)
 		ko_from = maxf(ko_from, float(plan["return_end"]))
 	var ko := data.get("ko", {}) as Dictionary
@@ -206,8 +224,22 @@ static func reaction_pose(
 			return [away * float(def.get("recoil_m", 0.0)) * w, away, float(def.get("tilt_deg", 0.0)) * w * tilt_k]
 		BattleChoreo.REACT_PUSH:  # shoved back down the timeline: a stagger, no blow's weight
 			return [away * float(def.get("recoil_m", 0.0)) * w, away, float(def.get("tilt_deg", 0.0)) * w * tilt_k]
+		BattleChoreo.REACT_IMMUNE:  # a hard stop: a stiff sideways shudder, no recoil, none under reduced motion
+			var side := Vector3.UP.cross(away).normalized()
+			var buzz := sin(TAU * float(def.get("shudders", 1.0)) * clampf((t - c) / sec, 0.0, 1.0))
+			return [side * float(def.get("shudder_m", 0.0)) * buzz * w * tilt_k, away, 0.0]
 		BattleChoreo.REACT_HEAL:
 			return [Vector3.UP * float(def.get("lift_m", 0.0)) * w, away, 0.0]
 		BattleChoreo.REACT_MISS:
 			return [Vector3.UP.cross(away).normalized() * float(def.get("dodge_m", 0.0)) * w, away, 0.0]
 	return [Vector3.ZERO, away, 0.0]
+
+
+## True when `tid` is damage-immune now (a set-piece phase) and `skill_id` would have hurt it (a physical or magical
+## blow with power).
+static func _immune(engine: BattleEngine, tid: StringName, skill_id: StringName) -> bool:
+	var t := engine.find(tid) if engine != null else null
+	if t == null or not t.damage_immune:
+		return false
+	var row := engine.db.skill(skill_id)
+	return str(row.get("kind", "")) in ["physical", "magical"] and float(row.get("power", 0)) > 0.0

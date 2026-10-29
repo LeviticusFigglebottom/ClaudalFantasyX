@@ -352,6 +352,47 @@ func test_a_click_puts_the_cursor_on_a_node_and_a_second_click_acts() -> void:
 	_teardown()
 
 
+## Pillar 5 polish: a woken node blooms on the board (none under reduced motion), its Facet cost is on the
+## cursor's tag before Confirm, and the drawn path marks which steps cost movement and which are free.
+func test_waking_blooms_the_node_and_its_facet_cost_is_on_the_tag() -> void:
+	_open({"facet_speed": 1})
+	menu.model.traveler().movement_points = 1
+	var view := menu.board_view()
+	view.reduced_motion = false
+	_tap(view, view.screen_point(&"rh_01"))
+	_tap(view, view.screen_point(&"rh_01"))
+	menu.choose(0)
+	assert_false(view.is_waking(), "a walk does not bloom")
+	_tap(view, view.screen_point(&"rh_01"))
+	assert_eq(view.tag_text, tr("LATTICE_MENU_TAG_FACET_FMT").format({"n": 1, "facet": tr("FACET_SPEED")}))
+	_tap(view, view.screen_point(&"rh_01"))
+	menu.choose(0)
+	assert_true(view.is_waking(), "the woken node blooms")
+	assert_eq(view.waking, &"rh_01")
+	view.finish_wake()
+	assert_false(view.is_waking(), "and settles")
+	_teardown()
+
+
+func test_reduced_motion_wakes_without_a_bloom() -> void:
+	_open({"facet_speed": 1})
+	var view := menu.board_view()
+	view.reduced_motion = true
+	view.play_wake(&"rh_01")
+	assert_false(view.is_waking())
+	_teardown()
+
+
+func test_the_path_marks_paid_and_free_steps() -> void:
+	_open({})
+	var view := menu.board_view()
+	assert_true(view.is_paid_step(&"rh_01"), "nobody has woken it: the step costs")
+	menu.model.progress().traveler(&"rhen").activated[&"rh_01"] = true
+	assert_false(view.is_paid_step(&"rh_01"), "woken: the step is free")
+	assert_eq(tr("LATTICE_MENU_TAG_COST_FMT").format({"n": 2}), "2 movement", "the tag names its unit")
+	_teardown()
+
+
 ## M2-MNU-05: at every text size the side panel's lines, key, status line and confirm never overlap
 ## and stay inside the panel (they flow by measured height; the key shrinks or hides first).
 func test_a_drag_is_readable_while_it_pans_and_ends_on_release() -> void:
@@ -496,6 +537,31 @@ func test_the_overview_names_who_woke_each_node() -> void:
 	assert_eq(m.woken_initials(&"rh_02"), "", "nobody woke it")
 	assert_eq(m.woken_initials(&"asha_start"), tr("CHAR_ASHA").left(1), "a start is its owner's")
 	assert_true(InputMap.has_action(LatticeMenu.OVERVIEW_ACTION) or _ensured(), "the action exists")
+
+
+## The overview's name tags: one per hero, the hero on show framed in gold, none overlapping (tags on a
+## shared node stack); initials that would touch a tag are left off in _draw_overview_words.
+func test_the_overview_tags_name_every_hero_apart() -> void:
+	_open({})
+	menu.toggle_overview(false)
+	var tags := menu.board_view().overview_tags()
+	assert_eq(tags.size(), menu.model.heroes().size())
+	var gold := 0
+	for i in tags.size():
+		gold += (
+			1
+			if (tags[i]["edge"] as Color).is_equal_approx(
+				menu.get_theme_color(&"focus_gold", HymnThemeBuilder.PALETTE_TYPE)
+			)
+			else 0
+		)
+		for j in range(i + 1, tags.size()):
+			assert_false(
+				(tags[i]["box"] as Rect2).intersects(tags[j]["box"] as Rect2),
+				"%s and %s apart" % [tags[i]["text"], tags[j]["text"]]
+			)
+	assert_eq(gold, 1, "only the hero on show in gold")
+	_teardown()
 
 
 func _ensured() -> bool:

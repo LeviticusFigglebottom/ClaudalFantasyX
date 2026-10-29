@@ -22,7 +22,8 @@ The Lead's new mission for this track (2026-10-27): the human's next playtest fi
 - [x] A save and load round trip at every save shrine in the slice and Act I (state, flags, party, position):
       tests/integration/test_qa_save_shrines.gd. It covers Haluna's SaveShrine and Act I's 8 rest beats; the Ch6 and Ch8
       checkpoints' spawns exist and resolve to their zones.
-- [ ] The guards run against the integration branch and each track head; failures filed to their owners.
+- [x] The guards run against the integration branch and each track head; failures filed to their owners
+      (2026-10-27: big12 clean; m2-slice -> M2-HER-1127; Vowbound bodies -> M3-HER-1126). Re-run per batch.
 
 ## Notes
 ### 2026-10-27: first run, on claude/hero-integration (big11 in)
@@ -30,5 +31,9 @@ The Lead's new mission for this track (2026-10-27): the human's next playtest fi
   features (M3-HER-1123, slice-polish).
 - Seen after the suite ends (deferred, so the guard can't attribute it to a thread): `refresh_bounce_passes` called
   with a freed scene root, twice (M3-HER-1124, PC rendering).
+
+### 2026-10-27: big12 and every track head
+- See the live log's INTEGRATION-QA section. The capsule guard now also checks battle foes, summons, the Vowbound and
+  each zone's layout variants.
 
 ## Review log

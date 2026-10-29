@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "doc": "Ashcrown's background people (M3-CRE-659, ADR 0152): the temple tender on the caldera stair, a crowd person (game/data/world/npc/crowd.json) inside its GreyboxZone stage actor (attach child), standing vigil. VillagerLayer hides the capsule.",
+  "zone": "ch05/ashcrown",
+  "villagers": [
+    {
+      "npc_id": "ashcrown_tender",
+      "crowd": "ashcrown_tender",
+      "stand_in": "CutsceneStage/Actors/tender",
+      "attach": "child"
+    }
+  ]
+}

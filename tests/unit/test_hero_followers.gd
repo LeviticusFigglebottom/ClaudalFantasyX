@@ -29,6 +29,8 @@ func before_each() -> void:
 	player.set_process_unhandled_input(false)
 	party = player.get_node(NodePath(String(HeroFieldParty.NAME))) as HeroFieldParty
 	party.set_physics_process(false)
+	party._cfg = party._cfg.duplicate()
+	party._cfg["sight_clear_m"] = 0.0  # the trail itself: the step off the camera's line is test_qa_field_camera's
 	zone.call("place_at", &"Court")
 	party.advance(DT)
 
@@ -75,6 +77,24 @@ func test_followers_keep_their_spacing_on_the_trail() -> void:
 	assert_between(
 		_flat(player.global_position, party.followers[0].global_position), spacing - SLACK_M, spacing + SLACK_M
 	)
+	_done()
+
+
+## Rhen runs, then turns back through his followers: each is pushed off him while it steers for its trail point,
+## and the push never adds to its top speed (Ch7's galleries: Asha at 6.9 m/s, a snap to the field guard).
+func test_a_follower_pushed_aside_keeps_its_top_speed() -> void:
+	var top := float(party._cfg["max_speed_mps"]) * DT + 1e-4
+	var fastest := 0.0
+	for move: Vector2 in [UP, -UP]:
+		player.input_override = move
+		for i in RUN_FRAMES / 3:
+			var was: Array[Vector3] = []
+			for f in party.followers:
+				was.append(f.global_position)
+			_step()
+			for k in party.followers.size():
+				fastest = maxf(fastest, _flat(was[k], party.followers[k].global_position))
+	assert_true(fastest <= top, "a follower's step is at most max_speed_mps (fastest %.3f m a frame)" % fastest)
 	_done()
 
 

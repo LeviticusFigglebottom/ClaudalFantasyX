@@ -11,41 +11,39 @@
  "time_of_day_h": 22.0,
  "greybox": {
   "hide_all": true,
-  "keep": [
-   "Landing",
-   "LandingEnd",
-   "LandingW",
-   "LandingE",
-   "Raft",
-   "Rocks",
-   "RocksDown",
-   "LowTownLake",
-   "ShroudRow1",
-   "ShroudRow2",
-   "ShroudRow3",
-   "ShroudRow4",
-   "StillguardRow",
-   "StillguardShields",
-   "IvoShroud",
-   "LampA",
-   "LampB",
-   "LampC",
-   "LampD",
-   "HoistCoil",
-   "Milestone",
-   "MolePier",
-   "MoleRamp",
-   "MoleOverParapet",
-   "MoleDown",
-   "MoleBridge",
-   "IskarraWater",
-   "IskarraPlaza",
-   "IskarraSteps",
-   "IskarraTowerA",
-   "IskarraTowerB",
-   "VigilBurner"
-  ]
+  "keep": []
  },
+ "waters": [
+  {
+   "name": "LowTownLakeWater",
+   "pos": [
+    -49.016,
+    3.5,
+    -24.317
+   ],
+   "size": [
+    120.0,
+    56.0
+   ],
+   "material": "res://game/levels/ch08/corrow/corrow_water_material.tres",
+   "block": "LowTownLake"
+  },
+  {
+   "name": "IskarraWaterWater",
+   "pos": [
+    2000.0,
+    -1.1,
+    30.0
+   ],
+   "size": [
+    200,
+    60
+   ],
+   "material": "res://game/levels/ch08/corrow/corrow_water_material.tres",
+   "block": "IskarraWater"
+  }
+ ],
+ "storms": [],
  "fire_light_color": "#E0702E",
  "fire_lights": [
   {
@@ -59,331 +57,342 @@
   },
   {
    "at": [
-    -52.761,
-    1.4,
-    24.957
+    -52.805,
+    1.5,
+    24.66
    ],
-   "energy": 1.4,
-   "range": 6.0,
+   "energy": 0.9,
+   "range": 8.0,
    "color": "#FFB46B",
    "block": "LampA"
   },
   {
    "at": [
-    -48.804,
-    1.4,
-    24.372
+    -48.848,
+    1.5,
+    24.075
    ],
-   "energy": 1.4,
-   "range": 6.0,
+   "energy": 0.9,
+   "range": 8.0,
    "color": "#FFB46B",
    "block": "LampA"
   },
   {
    "at": [
-    -44.847,
-    1.4,
-    23.788
+    -44.891,
+    1.5,
+    23.491
    ],
-   "energy": 1.4,
-   "range": 6.0,
+   "energy": 0.9,
+   "range": 8.0,
    "color": "#FFB46B",
    "block": "LampA"
   },
   {
    "at": [
-    -40.89,
-    1.4,
-    23.204
+    -40.934,
+    1.5,
+    22.907
    ],
-   "energy": 1.4,
-   "range": 6.0,
+   "energy": 0.9,
+   "range": 8.0,
    "color": "#FFB46B",
    "block": "LampA"
   },
   {
    "at": [
-    -36.933,
-    1.4,
-    22.619
+    -36.977,
+    1.5,
+    22.322
    ],
-   "energy": 1.4,
-   "range": 6.0,
+   "energy": 0.9,
+   "range": 8.0,
    "color": "#FFB46B",
    "block": "LampB"
   },
   {
    "at": [
-    -32.976,
-    1.4,
-    22.035
+    -33.02,
+    1.5,
+    21.738
    ],
-   "energy": 1.4,
-   "range": 6.0,
+   "energy": 0.9,
+   "range": 8.0,
    "color": "#FFB46B",
    "block": "LampB"
   },
   {
    "at": [
-    -29.019,
-    1.4,
-    21.451
+    -29.062,
+    1.5,
+    21.154
    ],
-   "energy": 1.4,
-   "range": 6.0,
+   "energy": 0.9,
+   "range": 8.0,
    "color": "#FFB46B",
    "block": "LampB"
   },
   {
    "at": [
-    -52.542,
-    1.4,
-    26.441
+    -52.586,
+    1.5,
+    26.144
    ],
-   "energy": 1.4,
-   "range": 6.0,
+   "energy": 0.9,
+   "range": 8.0,
    "color": "#FFB46B",
    "block": "LampA"
   },
   {
    "at": [
-    -48.585,
-    1.4,
-    25.856
+    -48.629,
+    1.5,
+    25.559
    ],
-   "energy": 1.4,
-   "range": 6.0,
+   "energy": 0.9,
+   "range": 8.0,
    "color": "#FFB46B",
    "block": "LampA"
   },
   {
    "at": [
-    -44.628,
-    1.4,
-    25.272
+    -44.672,
+    1.5,
+    24.975
    ],
-   "energy": 1.4,
-   "range": 6.0,
+   "energy": 0.9,
+   "range": 8.0,
    "color": "#FFB46B",
    "block": "LampA"
   },
   {
    "at": [
-    -40.671,
-    1.4,
-    24.688
+    -40.715,
+    1.5,
+    24.391
    ],
-   "energy": 1.4,
-   "range": 6.0,
+   "energy": 0.9,
+   "range": 8.0,
    "color": "#FFB46B",
    "block": "LampA"
   },
   {
    "at": [
-    -36.714,
-    1.4,
-    24.103
+    -36.758,
+    1.5,
+    23.806
    ],
-   "energy": 1.4,
-   "range": 6.0,
+   "energy": 0.9,
+   "range": 8.0,
    "color": "#FFB46B",
    "block": "LampB"
   },
   {
    "at": [
-    -32.757,
-    1.4,
+    -32.801,
+    1.5,
+    23.222
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampB"
+  },
+  {
+   "at": [
+    -28.843,
+    1.5,
+    22.638
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampB"
+  },
+  {
+   "at": [
+    -52.367,
+    1.5,
+    27.628
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampA"
+  },
+  {
+   "at": [
+    -48.41,
+    1.5,
+    27.043
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampA"
+  },
+  {
+   "at": [
+    -44.453,
+    1.5,
+    26.459
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampA"
+  },
+  {
+   "at": [
+    -40.496,
+    1.5,
+    25.875
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampA"
+  },
+  {
+   "at": [
+    -36.539,
+    1.5,
+    25.29
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampB"
+  },
+  {
+   "at": [
+    -32.582,
+    1.5,
+    24.706
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampB"
+  },
+  {
+   "at": [
+    -28.624,
+    1.5,
+    24.122
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampB"
+  },
+  {
+   "at": [
+    -24.782,
+    1.5,
+    20.884
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampC"
+  },
+  {
+   "at": [
+    -20.789,
+    1.5,
+    20.644
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampC"
+  },
+  {
+   "at": [
+    -16.796,
+    1.5,
+    20.404
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampC"
+  },
+  {
+   "at": [
+    -12.803,
+    1.5,
+    20.164
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampD"
+  },
+  {
+   "at": [
+    -8.81,
+    1.5,
+    19.924
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampD"
+  },
+  {
+   "at": [
+    -22.605,
+    1.5,
+    23.759
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampC"
+  },
+  {
+   "at": [
+    -18.612,
+    1.5,
     23.519
    ],
-   "energy": 1.4,
-   "range": 6.0,
-   "color": "#FFB46B",
-   "block": "LampB"
-  },
-  {
-   "at": [
-    -28.8,
-    1.4,
-    22.935
-   ],
-   "energy": 1.4,
-   "range": 6.0,
-   "color": "#FFB46B",
-   "block": "LampB"
-  },
-  {
-   "at": [
-    -52.323,
-    1.4,
-    27.925
-   ],
-   "energy": 1.4,
-   "range": 6.0,
-   "color": "#FFB46B",
-   "block": "LampA"
-  },
-  {
-   "at": [
-    -48.366,
-    1.4,
-    27.34
-   ],
-   "energy": 1.4,
-   "range": 6.0,
-   "color": "#FFB46B",
-   "block": "LampA"
-  },
-  {
-   "at": [
-    -44.409,
-    1.4,
-    26.756
-   ],
-   "energy": 1.4,
-   "range": 6.0,
-   "color": "#FFB46B",
-   "block": "LampA"
-  },
-  {
-   "at": [
-    -40.452,
-    1.4,
-    26.172
-   ],
-   "energy": 1.4,
-   "range": 6.0,
-   "color": "#FFB46B",
-   "block": "LampA"
-  },
-  {
-   "at": [
-    -36.495,
-    1.4,
-    25.587
-   ],
-   "energy": 1.4,
-   "range": 6.0,
-   "color": "#FFB46B",
-   "block": "LampB"
-  },
-  {
-   "at": [
-    -32.538,
-    1.4,
-    25.003
-   ],
-   "energy": 1.4,
-   "range": 6.0,
-   "color": "#FFB46B",
-   "block": "LampB"
-  },
-  {
-   "at": [
-    -28.581,
-    1.4,
-    24.419
-   ],
-   "energy": 1.4,
-   "range": 6.0,
-   "color": "#FFB46B",
-   "block": "LampB"
-  },
-  {
-   "at": [
-    -24.764,
-    1.4,
-    21.183
-   ],
-   "energy": 1.4,
-   "range": 6.0,
+   "energy": 0.9,
+   "range": 8.0,
    "color": "#FFB46B",
    "block": "LampC"
   },
   {
    "at": [
-    -20.771,
-    1.4,
-    20.943
+    -14.62,
+    1.5,
+    23.279
    ],
-   "energy": 1.4,
-   "range": 6.0,
-   "color": "#FFB46B",
-   "block": "LampC"
-  },
-  {
-   "at": [
-    -16.778,
-    1.4,
-    20.703
-   ],
-   "energy": 1.4,
-   "range": 6.0,
-   "color": "#FFB46B",
-   "block": "LampC"
-  },
-  {
-   "at": [
-    -12.785,
-    1.4,
-    20.463
-   ],
-   "energy": 1.4,
-   "range": 6.0,
+   "energy": 0.9,
+   "range": 8.0,
    "color": "#FFB46B",
    "block": "LampD"
   },
   {
    "at": [
-    -8.792,
-    1.4,
-    20.223
+    -10.627,
+    1.5,
+    23.039
    ],
-   "energy": 1.4,
-   "range": 6.0,
+   "energy": 0.9,
+   "range": 8.0,
    "color": "#FFB46B",
    "block": "LampD"
   },
   {
    "at": [
-    -22.587,
-    1.4,
-    24.058
+    -4.235,
+    1.5,
+    23.832
    ],
-   "energy": 1.4,
-   "range": 6.0,
-   "color": "#FFB46B",
-   "block": "LampC"
-  },
-  {
-   "at": [
-    -18.594,
-    1.4,
-    23.818
-   ],
-   "energy": 1.4,
-   "range": 6.0,
-   "color": "#FFB46B",
-   "block": "LampC"
-  },
-  {
-   "at": [
-    -14.602,
-    1.4,
-    23.578
-   ],
-   "energy": 1.4,
-   "range": 6.0,
-   "color": "#FFB46B",
-   "block": "LampD"
-  },
-  {
-   "at": [
-    -10.609,
-    1.4,
-    23.338
-   ],
-   "energy": 1.4,
-   "range": 6.0,
+   "energy": 1.1,
+   "range": 9.0,
    "color": "#FFB46B",
    "block": "LampD"
   }
@@ -425,7 +434,10 @@
     31.184
    ],
    "y": 0.0,
-   "yaw_deg": 26.356
+   "yaw_deg": 26.356,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -497,7 +509,10 @@
     26.073
    ],
    "y": 0.0,
-   "yaw_deg": 24.064
+   "yaw_deg": 24.064,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -569,7 +584,10 @@
     21.401
    ],
    "y": 0.0,
-   "yaw_deg": 21.772
+   "yaw_deg": 21.772,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -641,7 +659,10 @@
     17.174
    ],
    "y": 0.0,
-   "yaw_deg": 19.481
+   "yaw_deg": 19.481,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -713,7 +734,10 @@
     13.399
    ],
    "y": 0.0,
-   "yaw_deg": 17.189
+   "yaw_deg": 17.189,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -785,7 +809,10 @@
     10.083
    ],
    "y": 0.0,
-   "yaw_deg": 14.897
+   "yaw_deg": 14.897,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -857,7 +884,10 @@
     7.231
    ],
    "y": 0.0,
-   "yaw_deg": 12.605
+   "yaw_deg": 12.605,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -929,7 +959,10 @@
     4.847
    ],
    "y": 0.0,
-   "yaw_deg": 10.313
+   "yaw_deg": 10.313,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -992,7 +1025,10 @@
     2.935
    ],
    "y": 0.0,
-   "yaw_deg": 8.021
+   "yaw_deg": 8.021,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -1046,7 +1082,10 @@
     1.499
    ],
    "y": 0.0,
-   "yaw_deg": 5.73
+   "yaw_deg": 5.73,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "wall_apron",
@@ -1055,7 +1094,10 @@
     0.54
    ],
    "y": 0.0,
-   "yaw_deg": 3.438
+   "yaw_deg": 3.438,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head_cracked",
@@ -1118,7 +1160,10 @@
     0.06
    ],
    "y": 0.0,
-   "yaw_deg": 1.146
+   "yaw_deg": 1.146,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -1190,7 +1235,10 @@
     0.06
    ],
    "y": 0.0,
-   "yaw_deg": -1.146
+   "yaw_deg": -1.146,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -1262,7 +1310,10 @@
     0.54
    ],
    "y": 0.0,
-   "yaw_deg": -3.438
+   "yaw_deg": -3.438,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -1316,7 +1367,10 @@
     1.499
    ],
    "y": 0.0,
-   "yaw_deg": -5.73
+   "yaw_deg": -5.73,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -1388,7 +1442,10 @@
     2.935
    ],
    "y": 0.0,
-   "yaw_deg": -8.021
+   "yaw_deg": -8.021,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -1460,7 +1517,10 @@
     4.847
    ],
    "y": 0.0,
-   "yaw_deg": -10.313
+   "yaw_deg": -10.313,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -1532,7 +1592,10 @@
     7.231
    ],
    "y": 0.0,
-   "yaw_deg": -12.605
+   "yaw_deg": -12.605,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -1604,7 +1667,10 @@
     10.083
    ],
    "y": 0.0,
-   "yaw_deg": -14.897
+   "yaw_deg": -14.897,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -1676,7 +1742,10 @@
     13.399
    ],
    "y": 0.0,
-   "yaw_deg": -17.189
+   "yaw_deg": -17.189,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -1748,7 +1817,10 @@
     17.174
    ],
    "y": 0.0,
-   "yaw_deg": -19.481
+   "yaw_deg": -19.481,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -1820,7 +1892,10 @@
     21.401
    ],
    "y": 0.0,
-   "yaw_deg": -21.772
+   "yaw_deg": -21.772,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -1892,7 +1967,10 @@
     26.073
    ],
    "y": 0.0,
-   "yaw_deg": -24.064
+   "yaw_deg": -24.064,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -1964,7 +2042,10 @@
     31.184
    ],
    "y": 0.0,
-   "yaw_deg": -26.356
+   "yaw_deg": -26.356,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2036,7 +2117,10 @@
     36.725
    ],
    "y": 0.0,
-   "yaw_deg": -28.648
+   "yaw_deg": -28.648,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2108,7 +2192,10 @@
     42.687
    ],
    "y": 0.0,
-   "yaw_deg": -30.94
+   "yaw_deg": -30.94,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2180,7 +2267,10 @@
     49.061
    ],
    "y": 0.0,
-   "yaw_deg": -33.232
+   "yaw_deg": -33.232,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2252,7 +2342,10 @@
     55.836
    ],
    "y": 0.0,
-   "yaw_deg": -35.523
+   "yaw_deg": -35.523,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2324,7 +2417,10 @@
     63.002
    ],
    "y": 0.0,
-   "yaw_deg": -37.815
+   "yaw_deg": -37.815,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2396,7 +2492,10 @@
     70.547
    ],
    "y": 0.0,
-   "yaw_deg": -40.107
+   "yaw_deg": -40.107,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2468,7 +2567,10 @@
     78.459
    ],
    "y": 0.0,
-   "yaw_deg": -42.399
+   "yaw_deg": -42.399,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2540,7 +2642,10 @@
     86.726
    ],
    "y": 0.0,
-   "yaw_deg": -44.691
+   "yaw_deg": -44.691,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2612,7 +2717,10 @@
     95.334
    ],
    "y": 0.0,
-   "yaw_deg": -46.983
+   "yaw_deg": -46.983,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2684,7 +2792,10 @@
     104.269
    ],
    "y": 0.0,
-   "yaw_deg": -49.274
+   "yaw_deg": -49.274,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2756,7 +2867,10 @@
     113.517
    ],
    "y": 0.0,
-   "yaw_deg": -51.566
+   "yaw_deg": -51.566,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2828,7 +2942,10 @@
     123.064
    ],
    "y": 0.0,
-   "yaw_deg": -53.858
+   "yaw_deg": -53.858,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2900,7 +3017,10 @@
     132.893
    ],
    "y": 0.0,
-   "yaw_deg": -56.15
+   "yaw_deg": -56.15,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head",
@@ -2972,7 +3092,10 @@
     2.935
    ],
    "y": 0.0,
-   "yaw_deg": 8.021
+   "yaw_deg": 8.021,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "seawall_breach_a",
@@ -2981,7 +3104,10 @@
     1.499
    ],
    "y": 0.0,
-   "yaw_deg": 5.73
+   "yaw_deg": 5.73,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "seawall_breach_end_e",
@@ -2990,7 +3116,10 @@
     0.54
    ],
    "y": 0.0,
-   "yaw_deg": 3.438
+   "yaw_deg": 3.438,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "watcher_head_fallen",
@@ -3035,7 +3164,10 @@
     -12.473
    ],
    "y": 1.0,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
   },
   {
    "piece": "lowtown_ground",
@@ -3466,7 +3598,11 @@
     -1.306
    ],
    "y": 12.02,
-   "yaw_deg": 16.81
+   "yaw_deg": 16.81,
+   "material_paths": {
+    "cw_earth": "res://assets/environments/kits/corrow/materials/cw_paving.tres",
+    "cw_cobble": "res://assets/environments/kits/corrow/materials/cw_paving.tres"
+   }
   },
   {
    "piece": "lowtown_ground",
@@ -3475,44 +3611,209 @@
     -6.221
    ],
    "y": 12.02,
-   "yaw_deg": 13.37
+   "yaw_deg": 13.37,
+   "material_paths": {
+    "cw_earth": "res://assets/environments/kits/corrow/materials/cw_paving.tres",
+    "cw_cobble": "res://assets/environments/kits/corrow/materials/cw_paving.tres"
+   }
   },
   {
-   "piece": "lowtown_house_a",
+   "piece": "crate_stack",
    "at": [
-    -95.163,
-    -7.008
+    -92.557,
+    7.704
    ],
    "y": 12.0,
-   "yaw_deg": 106.62
+   "yaw_deg": 27.57,
+   "kit_dir": "res://assets/environments/kits/brine_shoals/",
+   "materials_dir": "res://assets/environments/kits/brine_shoals/materials/",
+   "collide": true
   },
   {
-   "piece": "lowtown_house_b",
+   "piece": "cargo_sacks",
    "at": [
-    -88.839,
-    -8.895
+    -90.157,
+    7.164
    ],
    "y": 12.0,
-   "yaw_deg": 106.62
+   "yaw_deg": 97.11,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/",
+   "collide": true
   },
   {
-   "piece": "lowtown_house_b",
+   "piece": "round_shield",
+   "at": [
+    -84.518,
+    -6.978
+   ],
+   "y": 12.0,
+   "yaw_deg": 30.39
+  },
+  {
+   "piece": "round_shield",
+   "at": [
+    -83.933,
+    -7.656
+   ],
+   "y": 12.0,
+   "yaw_deg": -24.74
+  },
+  {
+   "piece": "rope_coil",
+   "at": [
+    -70.893,
+    1.709
+   ],
+   "y": 12.0,
+   "yaw_deg": 13.37,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/"
+  },
+  {
+   "piece": "cargo_sacks",
+   "at": [
+    -66.592,
+    -8.392
+   ],
+   "y": 12.0,
+   "yaw_deg": 132.18,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/",
+   "collide": true
+  },
+  {
+   "piece": "rope_coil",
+   "at": [
+    -76.463,
+    -10.215
+   ],
+   "y": 12.0,
+   "yaw_deg": 13.85,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/"
+  },
+  {
+   "piece": "crate_stack",
+   "at": [
+    -67.856,
+    -13.234
+   ],
+   "y": 12.0,
+   "yaw_deg": 107.22,
+   "kit_dir": "res://assets/environments/kits/brine_shoals/",
+   "materials_dir": "res://assets/environments/kits/brine_shoals/materials/",
+   "collide": true
+  },
+  {
+   "piece": "net_heap",
+   "at": [
+    -95.138,
+    1.284
+   ],
+   "y": 12.0,
+   "yaw_deg": -142.33,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/"
+  },
+  {
+   "piece": "cargo_sacks",
+   "at": [
+    -83.487,
+    -1.66
+   ],
+   "y": 12.0,
+   "yaw_deg": 30.47,
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "materials_dir": "res://assets/environments/kits/haluna/materials/",
+   "collide": true
+  },
+  {
+   "piece": "stillguard_barracks",
+   "at": [
+    -91.905,
+    -7.98
+   ],
+   "y": 12.0,
+   "yaw_deg": 16.62
+  },
+  {
+   "piece": "order_chapel",
    "at": [
     -77.101,
     -10.573
    ],
    "y": 12.0,
-   "yaw_deg": 103.94
+   "yaw_deg": 103.94,
+   "kit_dir": "res://assets/environments/kits/haluna/"
   },
   {
-   "piece": "crate_stack",
-   "kit_dir": "res://assets/environments/kits/brine_shoals/",
+   "piece": "market_stall",
    "at": [
     -78.747,
     -0.038
    ],
    "y": 12.0,
-   "yaw_deg": 14.71
+   "yaw_deg": 14.71,
+   "kit_dir": "res://assets/environments/kits/haluna/"
+  },
+  {
+   "piece": "awning_cloth",
+   "at": [
+    -78.747,
+    -0.038
+   ],
+   "y": 12.0,
+   "yaw_deg": 14.71,
+   "kit_dir": "res://assets/environments/kits/haluna/"
+  },
+  {
+   "piece": "wall_gate",
+   "at": [
+    34.921,
+    2.039
+   ],
+   "y": 12.0,
+   "yaw_deg": -6.68
+  },
+  {
+   "piece": "hoist_pins",
+   "at": [
+    -16.343,
+    3.15
+   ],
+   "y": 16.6,
+   "yaw_deg": 3.15
+  },
+  {
+   "piece": "level_stone_shrine",
+   "at": [
+    -66.685,
+    -2.947
+   ],
+   "y": 12.0,
+   "yaw_deg": 12.41,
+   "kit_dir": "res://assets/environments/kits/brine_shoals/"
+  },
+  {
+   "piece": "mole_pier",
+   "at": [
+    13.694,
+    26.342
+   ],
+   "y": 1.2,
+   "yaw_deg": -2.865,
+   "lod1_from_m": 150.0
+  },
+  {
+   "piece": "mole_sea_stair",
+   "at": [
+    13.694,
+    26.342
+   ],
+   "y": 1.2,
+   "yaw_deg": -2.865,
+   "lod1_from_m": 150.0
   },
   {
    "piece": "camp_hard",
@@ -3593,6 +3894,1275 @@
    "y": 2.5999999999999996,
    "yaw_deg": 138.95,
    "block": "Rocks"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -52.645,
+    25.742
+   ],
+   "y": 0.6,
+   "yaw_deg": 97.64,
+   "block": "ShroudRow1"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -50.278,
+    25.34
+   ],
+   "y": 0.6,
+   "yaw_deg": 100.6,
+   "block": "ShroudRow1"
+  },
+  {
+   "piece": "shroud_small",
+   "at": [
+    -47.907,
+    24.969
+   ],
+   "y": 0.6,
+   "yaw_deg": 98.42,
+   "block": "ShroudRow1"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -45.512,
+    24.759
+   ],
+   "y": 0.6,
+   "yaw_deg": 95.88,
+   "block": "ShroudRow1"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -43.146,
+    24.354
+   ],
+   "y": 0.6,
+   "yaw_deg": 99.1,
+   "block": "ShroudRow1"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -40.784,
+    23.922
+   ],
+   "y": 0.6,
+   "yaw_deg": 97.67,
+   "block": "ShroudRow1"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -38.394,
+    23.677
+   ],
+   "y": 0.6,
+   "yaw_deg": 98.11,
+   "block": "ShroudRow1"
+  },
+  {
+   "piece": "shroud_small",
+   "at": [
+    -36.019,
+    23.329
+   ],
+   "y": 0.6,
+   "yaw_deg": 96.34,
+   "block": "ShroudRow1"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -33.656,
+    22.902
+   ],
+   "y": 0.6,
+   "yaw_deg": 96.07,
+   "block": "ShroudRow1"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -31.276,
+    22.594
+   ],
+   "y": 0.6,
+   "yaw_deg": 100.94,
+   "block": "ShroudRow1"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -28.9,
+    22.256
+   ],
+   "y": 0.6,
+   "yaw_deg": 100.05,
+   "block": "ShroudRow1"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -52.428,
+    27.214
+   ],
+   "y": 0.6,
+   "yaw_deg": 99.88,
+   "block": "ShroudRow2"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -50.06,
+    26.818
+   ],
+   "y": 0.6,
+   "yaw_deg": 97.15,
+   "block": "ShroudRow2"
+  },
+  {
+   "piece": "shroud_small",
+   "at": [
+    -47.673,
+    26.558
+   ],
+   "y": 0.6,
+   "yaw_deg": 99.75,
+   "block": "ShroudRow2"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -45.304,
+    26.168
+   ],
+   "y": 0.6,
+   "yaw_deg": 95.93,
+   "block": "ShroudRow2"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -42.934,
+    25.793
+   ],
+   "y": 0.6,
+   "yaw_deg": 96.66,
+   "block": "ShroudRow2"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -40.559,
+    25.444
+   ],
+   "y": 0.6,
+   "yaw_deg": 100.26,
+   "block": "ShroudRow2"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -38.187,
+    25.081
+   ],
+   "y": 0.6,
+   "yaw_deg": 100.72,
+   "block": "ShroudRow2"
+  },
+  {
+   "piece": "shroud_small",
+   "at": [
+    -35.797,
+    24.838
+   ],
+   "y": 0.6,
+   "yaw_deg": 95.73,
+   "block": "ShroudRow2"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -33.434,
+    24.408
+   ],
+   "y": 0.6,
+   "yaw_deg": 98.35,
+   "block": "ShroudRow2"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -31.068,
+    24.001
+   ],
+   "y": 0.6,
+   "yaw_deg": 97.95,
+   "block": "ShroudRow2"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -28.673,
+    23.79
+   ],
+   "y": 0.6,
+   "yaw_deg": 96.07,
+   "block": "ShroudRow2"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -52.204,
+    28.731
+   ],
+   "y": 0.6,
+   "yaw_deg": 96.13,
+   "block": "ShroudRow3"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -49.83,
+    28.378
+   ],
+   "y": 0.6,
+   "yaw_deg": 100.77,
+   "block": "ShroudRow3"
+  },
+  {
+   "piece": "shroud_small",
+   "at": [
+    -47.465,
+    27.968
+   ],
+   "y": 0.6,
+   "yaw_deg": 95.45,
+   "block": "ShroudRow3"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -45.093,
+    27.598
+   ],
+   "y": 0.6,
+   "yaw_deg": 98.64,
+   "block": "ShroudRow3"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -42.721,
+    27.237
+   ],
+   "y": 0.6,
+   "yaw_deg": 95.91,
+   "block": "ShroudRow3"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -40.335,
+    26.962
+   ],
+   "y": 0.6,
+   "yaw_deg": 100.93,
+   "block": "ShroudRow3"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -37.963,
+    26.6
+   ],
+   "y": 0.6,
+   "yaw_deg": 97.79,
+   "block": "ShroudRow3"
+  },
+  {
+   "piece": "shroud_small",
+   "at": [
+    -35.583,
+    26.284
+   ],
+   "y": 0.6,
+   "yaw_deg": 95.96,
+   "block": "ShroudRow3"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -33.21,
+    25.924
+   ],
+   "y": 0.6,
+   "yaw_deg": 96.44,
+   "block": "ShroudRow3"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -30.835,
+    25.578
+   ],
+   "y": 0.6,
+   "yaw_deg": 101.15,
+   "block": "ShroudRow3"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -28.474,
+    25.139
+   ],
+   "y": 0.6,
+   "yaw_deg": 98.73,
+   "block": "ShroudRow3"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -25.114,
+    22.023
+   ],
+   "y": 0.6,
+   "yaw_deg": 91.34,
+   "block": "ShroudRow4"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -22.721,
+    21.825
+   ],
+   "y": 0.6,
+   "yaw_deg": 96.41,
+   "block": "ShroudRow4"
+  },
+  {
+   "piece": "shroud_small",
+   "at": [
+    -20.319,
+    21.798
+   ],
+   "y": 0.6,
+   "yaw_deg": 91.17,
+   "block": "ShroudRow4"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -17.926,
+    21.607
+   ],
+   "y": 0.6,
+   "yaw_deg": 96.15,
+   "block": "ShroudRow4"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -15.535,
+    21.388
+   ],
+   "y": 0.6,
+   "yaw_deg": 94.11,
+   "block": "ShroudRow4"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -13.141,
+    21.213
+   ],
+   "y": 0.6,
+   "yaw_deg": 92.64,
+   "block": "ShroudRow4"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -10.739,
+    21.17
+   ],
+   "y": 0.6,
+   "yaw_deg": 93.98,
+   "block": "ShroudRow4"
+  },
+  {
+   "piece": "shroud_small",
+   "at": [
+    -8.342,
+    21.042
+   ],
+   "y": 0.6,
+   "yaw_deg": 90.96,
+   "block": "ShroudRow4"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -22.541,
+    24.833
+   ],
+   "y": 0.6,
+   "yaw_deg": 95.62,
+   "block": "StillguardRow"
+  },
+  {
+   "piece": "round_shield",
+   "at": [
+    -22.509,
+    25.356
+   ],
+   "y": 0.6,
+   "yaw_deg": -149.71,
+   "block": "StillguardShields"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -20.144,
+    24.705
+   ],
+   "y": 0.6,
+   "yaw_deg": 92.85,
+   "block": "StillguardRow"
+  },
+  {
+   "piece": "round_shield",
+   "at": [
+    -20.114,
+    25.212
+   ],
+   "y": 0.6,
+   "yaw_deg": -5.01,
+   "block": "StillguardShields"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -17.747,
+    24.581
+   ],
+   "y": 0.6,
+   "yaw_deg": 90.55,
+   "block": "StillguardRow"
+  },
+  {
+   "piece": "round_shield",
+   "at": [
+    -17.718,
+    25.068
+   ],
+   "y": 0.6,
+   "yaw_deg": -72.23,
+   "block": "StillguardShields"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -15.354,
+    24.398
+   ],
+   "y": 0.6,
+   "yaw_deg": 93.04,
+   "block": "StillguardRow"
+  },
+  {
+   "piece": "round_shield",
+   "at": [
+    -15.322,
+    24.924
+   ],
+   "y": 0.6,
+   "yaw_deg": 76.83,
+   "block": "StillguardShields"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -12.957,
+    24.272
+   ],
+   "y": 0.6,
+   "yaw_deg": 92.39,
+   "block": "StillguardRow"
+  },
+  {
+   "piece": "round_shield",
+   "at": [
+    -12.926,
+    24.78
+   ],
+   "y": 0.6,
+   "yaw_deg": 31.97,
+   "block": "StillguardShields"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -10.56,
+    24.158
+   ],
+   "y": 0.6,
+   "yaw_deg": 91.06,
+   "block": "StillguardRow"
+  },
+  {
+   "piece": "round_shield",
+   "at": [
+    -10.531,
+    24.636
+   ],
+   "y": 0.6,
+   "yaw_deg": -77.72,
+   "block": "StillguardShields"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -52.805,
+    24.66
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampA"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -48.848,
+    24.075
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampA"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -44.891,
+    23.491
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampA"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -40.934,
+    22.907
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampA"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -36.977,
+    22.322
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampB"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -33.02,
+    21.738
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampB"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -29.062,
+    21.154
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampB"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -52.586,
+    26.144
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampA"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -48.629,
+    25.559
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampA"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -44.672,
+    24.975
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampA"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -40.715,
+    24.391
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampA"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -36.758,
+    23.806
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampB"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -32.801,
+    23.222
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampB"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -28.843,
+    22.638
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampB"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -52.367,
+    27.628
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampA"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -48.41,
+    27.043
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampA"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -44.453,
+    26.459
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampA"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -40.496,
+    25.875
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampA"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -36.539,
+    25.29
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampB"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -32.582,
+    24.706
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampB"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -28.624,
+    24.122
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampB"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -24.782,
+    20.884
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampC"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -20.789,
+    20.644
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampC"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -16.796,
+    20.404
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampC"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -12.803,
+    20.164
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampD"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -8.81,
+    19.924
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampD"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -22.605,
+    23.759
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampC"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -18.612,
+    23.519
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampC"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -14.62,
+    23.279
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampD"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -10.627,
+    23.039
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampD"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -4.235,
+    23.832
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampD"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -46.161,
+    25.606
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampA"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -33.13,
+    25.24
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampB"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -20.387,
+    22.498
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampC"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -11.067,
+    23.471
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampD"
+  },
+  {
+   "piece": "ebbing_raft",
+   "at": [
+    -24.06,
+    60.204
+   ],
+   "y": -0.4,
+   "yaw_deg": 5.73,
+   "block": "Raft"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -8.279,
+    24.124
+   ],
+   "y": 0.6,
+   "yaw_deg": 1.72,
+   "block": "IvoShroud"
+  },
+  {
+   "piece": "rope_coil",
+   "at": [
+    -17.348,
+    -0.5
+   ],
+   "y": 12.0,
+   "yaw_deg": 3.3,
+   "block": "HoistCoil",
+   "kit_dir": "res://assets/environments/kits/haluna/"
+  },
+  {
+   "piece": "milestone",
+   "at": [
+    64.224,
+    8.235
+   ],
+   "y": 12.0,
+   "yaw_deg": -12.41,
+   "block": "Milestone",
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
+  },
+  {
+   "piece": "iskarra_plaza",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2000.0,
+    0.0
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_plaza_rise",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    1997.0,
+    -4.0
+   ],
+   "y": -0.2,
+   "yaw_deg": 0.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_vigil_dressing",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2000.0,
+    0.0
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_tower_spire",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    1954.0,
+    -72.0
+   ],
+   "y": -3.4,
+   "yaw_deg": 20.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_tower_stepped",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    1976.0,
+    -94.0
+   ],
+   "y": -3.4,
+   "yaw_deg": 0.0,
+   "block": "IskarraPlaza",
+   "scale": 0.91,
+   "scale_y": 1.0
+  },
+  {
+   "piece": "iskarra_tower_broken",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    1992.0,
+    -62.0
+   ],
+   "y": -3.4,
+   "yaw_deg": 140.0,
+   "block": "IskarraPlaza",
+   "scale": 0.8,
+   "scale_y": 0.6
+  },
+  {
+   "piece": "iskarra_crown_fallen",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    1998.4,
+    -58.0
+   ],
+   "y": -0.4,
+   "yaw_deg": -25.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_tower_spire",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2014.0,
+    -86.0
+   ],
+   "y": -3.4,
+   "yaw_deg": -35.0,
+   "block": "IskarraPlaza",
+   "scale": 1.17,
+   "scale_y": 1.12
+  },
+  {
+   "piece": "iskarra_tower_stepped",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2034.0,
+    -68.0
+   ],
+   "y": -3.4,
+   "yaw_deg": 60.0,
+   "block": "IskarraPlaza",
+   "scale": 0.82,
+   "scale_y": 0.77
+  },
+  {
+   "piece": "iskarra_tower_spire",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2058.0,
+    -102.0
+   ],
+   "y": -3.4,
+   "yaw_deg": 75.0,
+   "block": "IskarraPlaza",
+   "scale_y": 0.88
+  },
+  {
+   "piece": "iskarra_tower_spire",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    1930.0,
+    -112.0
+   ],
+   "y": -3.4,
+   "yaw_deg": -60.0,
+   "block": "IskarraPlaza",
+   "scale": 0.92,
+   "scale_y": 0.68
+  },
+  {
+   "piece": "iskarra_tower_small_broken",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2026.0,
+    -42.0
+   ],
+   "y": -3.4,
+   "yaw_deg": -160.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_crown_fallen",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2030.8,
+    -39.0
+   ],
+   "y": -0.4,
+   "yaw_deg": 155.0,
+   "block": "IskarraPlaza",
+   "scale": 0.8
+  },
+  {
+   "piece": "iskarra_tower_small",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    1966.0,
+    -46.0
+   ],
+   "y": -3.4,
+   "yaw_deg": 10.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_arch",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    1985.8,
+    -20.0
+   ],
+   "y": -0.9,
+   "yaw_deg": 0.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_arch_fallen",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2019.8,
+    -24.0
+   ],
+   "y": -0.9,
+   "yaw_deg": 0.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_lamp_column",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    1985.0,
+    -8.2
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_lamp_column",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    1995.0,
+    -8.2
+   ],
+   "y": 0.0,
+   "yaw_deg": 90.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_lamp_column",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2005.0,
+    -8.2
+   ],
+   "y": 0.0,
+   "yaw_deg": 180.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_lamp_column",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2015.0,
+    -8.2
+   ],
+   "y": 0.0,
+   "yaw_deg": -90.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_drowned_block",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    1970.0,
+    -32.0
+   ],
+   "y": -0.4,
+   "yaw_deg": 12.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_drowned_block",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2044.0,
+    -48.0
+   ],
+   "y": -0.4,
+   "yaw_deg": -25.0,
+   "block": "IskarraPlaza",
+   "scale": 1.1,
+   "scale_y": 1.0
+  },
+  {
+   "piece": "iskarra_drowned_dome",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    1942.0,
+    -54.0
+   ],
+   "y": -0.4,
+   "yaw_deg": 30.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_drowned_dome",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2038.0,
+    -26.0
+   ],
+   "y": -0.4,
+   "yaw_deg": 8.0,
+   "block": "IskarraPlaza",
+   "scale": 0.9
+  },
+  {
+   "piece": "iskarra_arcade_sunk",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    1960.0,
+    -22.0
+   ],
+   "y": -0.4,
+   "yaw_deg": 75.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_far_towers",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2000.0,
+    -2.0
+   ],
+   "y": -0.4,
+   "yaw_deg": 0.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "strand_landing",
+   "at": [
+    -26.855,
+    32.344
+   ],
+   "y": 0.6,
+   "yaw_deg": 5.73,
+   "block": "Landing"
+  },
+  {
+   "piece": "strand_rocks",
+   "at": [
+    5.6,
+    20.056
+   ],
+   "y": 0.0,
+   "yaw_deg": -1.15,
+   "block": "Rocks",
+   "material_paths": {
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+   }
+  },
+  {
+   "piece": "ground_lamp",
+   "at": [
+    2001.2,
+    -4.6
+   ],
+   "y": 0.8,
+   "yaw_deg": 0.0,
+   "block": "VigilBurner",
+   "kit_dir": "res://assets/environments/kits/haluna/"
+  },
+  {
+   "piece": "mole_bridge",
+   "at": [
+    0.0,
+    28.0
+   ],
+   "y": 0.6,
+   "yaw_deg": -1.25
   }
- ]
+ ],
+ "ebbing": {}
 }

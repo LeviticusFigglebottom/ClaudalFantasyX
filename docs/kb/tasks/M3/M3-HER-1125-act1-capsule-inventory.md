@@ -29,6 +29,9 @@ guard keeps it from coming back.
 - **tamsule.tscn**: board, boatman, child, fisher, kerrid, liss, netmender, tavi, trader_boatman, vendor
 - **tamsule_bell_galleries.tscn**: ione, kerrid, liss, oruvel_diver_1, oruvel_diver_2, poolkeeper, sorrin_diver_1, sorrin_diver_2, tavi
 - **battle**: kerrid, liss
+- **Added 2026-10-27 (the guard now checks each layout variant too):** corrow_night.tscn's dawn road shows **kerrid** at
+  the milestone (the Lead's "Ch9 road capsule": act1-chapters stages it, characters' M3-CHR-505 builds him);
+  pemakar.tscn's variant shows **boat_fisher**.
 
 ## Notes
 - **Party members first:**

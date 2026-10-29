@@ -7,9 +7,9 @@
         20000,
         2000
       ],
-      "bytes": 594628,
+      "bytes": 771088,
       "lods": {
-        "arena_headland_ground": 13216,
+        "arena_headland_ground": 19488,
         "arena_headland_ground-lod1": 1536
       }
     },
@@ -90,6 +90,17 @@
         "coilspire_tiers-lod1": 632
       }
     },
+    "flue_gate": {
+      "budget": [
+        6000,
+        400
+      ],
+      "bytes": 99668,
+      "lods": {
+        "flue_gate": 968,
+        "flue_gate-lod1": 60
+      }
+    },
     "flue_key": {
       "budget": [
         2500,
@@ -134,14 +145,36 @@
         "keepers_hut-lod1": 36
       }
     },
+    "lamp_niche": {
+      "budget": [
+        1600,
+        120
+      ],
+      "bytes": 19092,
+      "lods": {
+        "lamp_niche": 240,
+        "lamp_niche-lod1": 24
+      }
+    },
+    "niche_seal": {
+      "budget": [
+        3000,
+        200
+      ],
+      "bytes": 36684,
+      "lods": {
+        "niche_seal": 474,
+        "niche_seal-lod1": 12
+      }
+    },
     "scrub_clump_a": {
       "budget": [
         2000,
         160
       ],
-      "bytes": 43664,
+      "bytes": 98476,
       "lods": {
-        "scrub_clump_a": 848,
+        "scrub_clump_a": 1532,
         "scrub_clump_a-lod1": 24
       }
     },
@@ -150,9 +183,9 @@
         2000,
         160
       ],
-      "bytes": 43664,
+      "bytes": 98476,
       "lods": {
-        "scrub_clump_b": 848,
+        "scrub_clump_b": 1532,
         "scrub_clump_b-lod1": 24
       }
     },
@@ -165,6 +198,17 @@
       "lods": {
         "tier_brazier": 820,
         "tier_brazier-lod1": 168
+      }
+    },
+    "wright_mark": {
+      "budget": [
+        1200,
+        60
+      ],
+      "bytes": 30072,
+      "lods": {
+        "wright_mark": 576,
+        "wright_mark-lod1": 12
       }
     }
   },

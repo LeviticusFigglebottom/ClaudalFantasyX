@@ -59,6 +59,47 @@ class TitleStandIn:
 	var reveal := Reveal.new()
 
 
+class ResultStandIn:
+	extends Control
+	signal choice_made(choice_id: StringName)
+	var counting := false
+	var choice: StringName = &"continue"
+
+	func is_counting() -> bool:
+		return counting
+
+	func current_choice() -> StringName:
+		return choice
+
+
+class Purse:
+	extends RefCounted
+	var lume := 500
+
+	func amount() -> int:
+		return lume
+
+
+class OutfitModel:
+	extends RefCounted
+	var wallet := Purse.new()
+	var worn := ""
+
+	func rows() -> Array:
+		return [{"id": "float", "right": worn}]
+
+
+class OutfitterStandIn:
+	extends Control
+	signal closed
+	var model := OutfitModel.new()
+	var _notice: Dictionary = {}
+	var _rows := Rows.new()
+
+	func root_page() -> Rows:
+		return _rows
+
+
 class SaveStandIn:
 	extends Control
 	signal saved(slot: int)
@@ -256,6 +297,69 @@ func test_the_hud_hook_reads_on_the_real_reefball_hud() -> void:
 	hud.set_cursor(1)
 	ui.step()
 	assert_true(played.has(&"ui_cursor"), "a move under the real cursor")
+	_done()
+
+
+func test_the_result_counts_up_and_settles() -> void:
+	var ui := _ui()
+	var panel := _stand_in(ResultStandIn.new(), "BattleResultPanel") as ResultStandIn
+	ui.watch(panel)
+	ui.step()
+	panel.counting = true
+	ui.step()
+	assert_eq(played, [&"ui_count_run"] as Array[StringName], "the numbers start counting")
+	played.clear()
+	panel.counting = false
+	ui.step()
+	assert_eq(played, [&"ui_count_done"] as Array[StringName], "and settle")
+	played.clear()
+	panel.choice = &"retry"
+	ui.step()
+	panel.choice_made.emit(&"retry")
+	ui.step()
+	assert_eq(played, [&"ui_cursor", &"ui_confirm"] as Array[StringName])
+	_done()
+
+
+func test_the_outfitter_buys_wears_and_refuses() -> void:
+	var ui := _ui()
+	var shop := _stand_in(OutfitterStandIn.new(), "ReefballOutfitterMenu") as OutfitterStandIn
+	ui.watch(shop)
+	ui.step()
+	assert_eq(played, [&"ui_menu_open"] as Array[StringName])
+	played.clear()
+	shop.model.wallet.lume = 380
+	shop.model.worn = "worn"
+	shop._notice = {"ok": true}
+	ui.step()
+	assert_eq(played, [&"ui_buy"] as Array[StringName], "bought (and worn at once): the buy is heard")
+	played.clear()
+	shop.model.worn = ""
+	ui.step()
+	assert_eq(played, [&"ui_equip"] as Array[StringName], "taken off: the gear moves")
+	played.clear()
+	shop._notice = {"ok": false}
+	ui.step()
+	assert_eq(played, [&"ui_error"] as Array[StringName], "can't afford it")
+	_done()
+
+
+func test_the_field_prompt_ticks_and_using_something_touches() -> void:
+	var ui := _ui()
+	var thing := Interactable.new()
+	_host.add_child(thing)
+	assert_eq(str(ui.hook_for(thing).get("class", "")), "Interactable", "any interactable has the touch")
+	ui.watch(thing)
+	ui.step()
+	thing.used.emit(thing)
+	ui.step()
+	assert_eq(played, [&"ui_interact"] as Array[StringName])
+	played.clear()
+	var prompt := InteractPrompt.new()
+	_host.add_child(prompt)
+	ui.watch(prompt)
+	ui.step()
+	assert_eq(played, [] as Array[StringName], "no prompt shown, no tick")
 	_done()
 
 

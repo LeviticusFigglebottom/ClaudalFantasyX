@@ -777,6 +777,95 @@ func _play_steps(ui: UiAudio, steps: Array) -> void:
 
 
 ## Presses each [action, row, note] on a real menu and hears exactly that row (&"" for silence) that frame.
+## M3-AUD-861 (ADR 0041): Act I's last unhooked screens, heard on the real classes.
+func test_ui_hooks_play_the_real_codex_and_settings() -> void:
+	var ui := _ui()
+	FieldInput.ensure_actions()
+	var codex := CodexMenu.open_in(_host())
+	assert_true(ui.wants(codex), "CodexMenu has a hook")
+	played.clear()
+	ui.watch(codex)
+	ui.step()
+	assert_eq(played, [&"ui_page"], "the codex opens as a page")
+	_keys(
+		ui,
+		codex,
+		[[&"ui_down", &"ui_cursor", "a category"], [&"ui_cancel", &"ui_page", "back from the categories closes"]]
+	)
+	ui.step()
+	var settings := SettingsMenu.open_in(_host())
+	assert_true(ui.wants(settings), "SettingsMenu has a hook")
+	played.clear()
+	ui.watch(settings)
+	ui.step()
+	assert_eq(played, [&"ui_menu_open"], "the settings list opens")
+	_keys(ui, settings, [[&"ui_down", &"ui_cursor", "the next settings page in the list"]])
+	played.clear()
+	settings.open_page(settings.row_ids()[0])
+	ui.step()
+	assert_true(played.has(&"ui_confirm"), "a settings page opening is a confirm (a bool watch, by `values`)")
+	settings.close()
+	ui.step()
+	assert_eq(played.back(), &"ui_menu_close", "and closes")
+	(Engine.get_main_loop() as SceneTree).paused = false
+	for layer: Node in [codex.get_parent(), settings.get_parent()]:  # open_in's CanvasLayers
+		if is_instance_valid(layer):
+			layer.get_parent().remove_child(layer)
+			layer.free()
+	ui.free()
+
+
+## M3-AUD-861: the Reefball outfitter (claude/ui, live since big14) heard on the real class: a cursor, a buy.
+func test_ui_hooks_play_the_real_reefball_outfitter() -> void:
+	var ui := _ui()
+	FieldInput.ensure_actions()
+	var state := GameStateData.new()
+	state.currency = 1000
+	var bag: Dictionary = {}
+	var model := ReefballOutfitterModel.new(
+		ReefballDB.load_default(),
+		Wallet.new(state, 9999),
+		func(f: StringName) -> Variant: return bag.get(f, ""),
+		func(f: StringName, v: Variant) -> void: bag[f] = v
+	)
+	var menu := (load(ReefballOutfitterMenu.SCENE_PATH) as PackedScene).instantiate() as ReefballOutfitterMenu
+	menu.configure(model)
+	_watch_real(ui, menu)
+	assert_eq(played, [&"ui_menu_open"], "the outfitter opens")
+	played.clear()
+	menu.accept()
+	ui.step()
+	assert_true(played.has(&"ui_buy"), "Confirm buys the first piece: %s" % [played])
+	_keys(ui, menu, [[&"ui_down", &"ui_cursor", "the next piece"]])
+	_free_real(menu)
+	ui.free()
+
+
+func test_ui_hooks_play_the_real_read_panel_and_objective_card() -> void:
+	var ui := _ui()
+	var panel := ReadPanel.new()
+	_watch_real(ui, panel)
+	panel.visible = false
+	ui.step()
+	played.clear()
+	panel.visible = true
+	ui.step()
+	assert_eq(played, [&"ui_page"], "the Read panel turns in")
+	panel.close()
+	ui.step()
+	assert_eq(played, [&"ui_page", &"ui_page"], "and out")
+	_free_real(panel)
+	played.clear()
+	var hud := ObjectiveHud.new()
+	_watch_real(ui, hud)
+	played.clear()
+	hud.phase = ObjectiveHud.Phase.IN
+	ui.step()
+	assert_eq(played, [&"ui_tip"], "an objective card fades in, heard as a tip")
+	_free_real(hud)
+	ui.free()
+
+
 func _keys(ui: UiAudio, menu: Node, steps: Array) -> void:
 	for step: Array in steps:
 		played.clear()

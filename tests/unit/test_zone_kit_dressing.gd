@@ -7,6 +7,19 @@ extends TestCase
 const SHOALS := "res://game/levels/ch06/brine_shoals/brine_shoals.tscn"
 const DRESSING := "res://game/levels/ch06/brine_shoals/brine_shoals_dressing.json"
 
+## ADR 0041: no greybox on Act I's played path. Each dressed zone may keep only the blocks that wait on another track's
+## asset (the request named), and every piece it places, from any kit, exists.
+const ACT1_DRESSINGS := {
+	"res://game/levels/ch04/brightwater_ferry/brightwater_ferry_dressing.json": [],
+	"res://game/levels/ch05/pemakar/pemakar_dressing.json": [],
+	"res://game/levels/ch06/brine_shoals/brine_shoals_dressing.json": [],
+	"res://game/levels/ch07/tamsule/tamsule_dressing.json": [],
+	"res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries_dressing.json": ["Column"],  # M3-RND-27
+	"res://game/levels/ch08/corrow/corrow_dressing.json": [],
+	"res://game/levels/ch08/coilspire/coilspire_dressing.json": ["Virel"],  # M3-CRE-627
+	"res://game/levels/ch09/corrow_night/corrow_night_dressing.json": [],
+}
+
 var zone: Ch06Zone
 
 
@@ -45,10 +58,10 @@ func test_every_kit_piece_and_every_block_id_exists() -> void:
 	var kit := String(layout["kit_dir"])
 	var seen: Dictionary = {}
 	for spec: Dictionary in layout["pieces"]:
-		var piece := String(spec["piece"])
-		if not seen.has(piece):
-			seen[piece] = true
-			assert_true(ResourceLoader.exists(kit + piece + ".glb"), "%s is a kit piece" % piece)
+		var glb := String(spec.get("kit_dir", kit)) + String(spec["piece"]) + ".glb"
+		if not seen.has(glb):
+			seen[glb] = true
+			assert_true(ResourceLoader.exists(glb), "%s is a kit piece" % glb)
 		if spec.has("block"):
 			assert_true(_dressing().block(String(spec["block"])) != null, "block %s exists" % spec["block"])
 	assert_eq(_dressing().placed.get("plank_walk", 0) > 10, true, "the plank walk runs up the road")
@@ -64,7 +77,9 @@ func test_story_pieces_follow_their_blocks() -> void:
 	assert_true(kit_barge.is_visible_in_tree(), "shown with the block")
 	zone.hide_block("Barge")
 	assert_false(kit_barge.is_visible_in_tree(), "hidden with the block")
-	assert_eq(_dressing().followers("Smoke").size(), 4, "three plumes and the hulk's fire")
+	assert_eq(
+		_dressing().followers("Smoke").size(), 8, "three plumes, the hulk's fire light and the raid's four flames"
+	)
 	zone.hide_block("Smoke")
 	for n: Node3D in _dressing().followers("Smoke"):
 		assert_false(n.visible, "%s goes out with the Smoke block at dusk" % n.name)
@@ -87,7 +102,7 @@ func test_the_zone_takes_the_kit_grade_and_lamps_obey_the_fog_rule() -> void:
 	assert_eq(env.background_mode, Environment.BG_SKY, "the kit's sky")
 	assert_true(env.adjustment_enabled and env.adjustment_color_correction != null, "the ch06 LUT")
 	var fires := _dressing().find_children("*", "OmniLight3D", true, false)
-	assert_eq(fires.size(), 3, "the hulk, the brazier and the dusk fire")
+	assert_eq(fires.size(), 5, "the hulk, the brazier, the dusk fire, the burning tide-wheel and the shrine")
 	for l: Node in fires:
 		assert_eq((l as OmniLight3D).light_volumetric_fog_energy, 0.0, "fog-lamp rule")
 	_close()
@@ -144,8 +159,92 @@ func test_a_lod0_box_clips_lod1_out_and_lod0_in() -> void:
 	_close()
 
 
+## ADR 0111 (Coilspire's 1.4 s of trimesh clipping): a triangle wholly past one face of a box skips the per-plane cut,
+## and the clip gives the same triangles as cutting every one. A grid of quads, far and near a turned box, both ways.
+func test_the_quick_reject_keeps_the_clip_exact() -> void:
+	var faces := PackedVector3Array()
+	for x in range(-6, 6):
+		for z in range(-6, 6):
+			var a := Vector3(x, 0.1 * x, z)
+			faces.append_array(
+				[a, a + Vector3(1, 0, 0), a + Vector3(1, 0, 1), a, a + Vector3(1, 0, 1), a + Vector3(0, 0, 1)]
+			)
+	var boxes := ZoneKitDressing.lod0_boxes(
+		[
+			{"pos": [0.3, 0.0, -0.2], "size": [2.5, 3.0, 1.5], "yaw": 30.0},
+			{"pos": [4.0, 0.4, 4.0], "size": [1.0, 1.0, 1.0]}
+		]
+	)
+	var to_parent := Transform3D(Basis(Vector3.UP, 0.4), Vector3(0.5, 0.0, 0.25))
+	# The old clip also split polygons that never touch a box (the planes tried first cut them before a later plane
+	# found them wholly outside), so the triangles differ; the surface does not: the same area on both sides.
+	for inside: bool in [false, true]:
+		var fast := ZoneKitDressing._clip_faces(faces, to_parent, boxes, inside)
+		var slow := _clip_faces_every(faces, to_parent, boxes, inside)
+		assert_true(
+			absf(_area(fast) - _area(slow)) < 1e-3,
+			"the same surface (inside %s: %.5f vs %.5f)" % [inside, _area(fast), _area(slow)]
+		)
+		assert_true(fast.size() <= slow.size(), "no more triangles than before (inside %s)" % inside)
+	var whole := _area(faces)
+	var parts := (
+		_area(ZoneKitDressing._clip_faces(faces, to_parent, boxes, false))
+		+ _area(ZoneKitDressing._clip_faces(faces, to_parent, boxes, true))
+	)
+	assert_true(absf(parts - whole) < 1e-3, "outside and inside still add up to the mesh")
+
+
+## The clip as it was before the quick reject: every polygon cut by every box.
+static func _clip_faces_every(
+	faces: PackedVector3Array, to_parent: Transform3D, boxes: Array[Array], inside: bool
+) -> PackedVector3Array:
+	var out := PackedVector3Array()
+	var back := to_parent.affine_inverse()
+	for i in range(0, faces.size(), 3):
+		var outside: Array[PackedVector3Array] = [
+			PackedVector3Array([to_parent * faces[i], to_parent * faces[i + 1], to_parent * faces[i + 2]])
+		]
+		var kept: Array[PackedVector3Array] = []
+		for box: Array in boxes:
+			var frame: Transform3D = box[0]
+			var to_box := frame.affine_inverse()
+			var rest: Array[PackedVector3Array] = []
+			for poly in outside:
+				var pieces := ZoneKitDressing._cut_by_box(to_box * poly, box[1])
+				for k in pieces.size():
+					var world := frame * pieces[k]
+					if k == 0:
+						if inside and world.size() >= 3:
+							kept.append(world)
+					elif world.size() >= 3:
+						rest.append(world)
+			outside = rest
+		if not inside:
+			kept = outside
+		for poly in kept:
+			for k in range(1, poly.size() - 1):
+				out.append_array([back * poly[0], back * poly[k], back * poly[k + 1]])
+	return out
+
+
 static func _area(faces: PackedVector3Array) -> float:
 	var total := 0.0
 	for i in range(0, faces.size(), 3):
 		total += (faces[i + 1] - faces[i]).cross(faces[i + 2] - faces[i]).length() * 0.5
 	return total
+
+
+func test_act1_dressings_keep_only_blocks_that_wait_on_a_request() -> void:
+	_close()
+	for path: String in ACT1_DRESSINGS:
+		var layout := HalunaDresser._load_json(path)
+		var keep: Array = (layout.get("greybox", {}) as Dictionary).get("keep", [])
+		for id: Variant in keep:
+			assert_true((ACT1_DRESSINGS[path] as Array).has(id), "%s keeps %s, which waits on no request" % [path, id])
+		var kit := String(layout["kit_dir"])
+		var seen: Dictionary = {}
+		for spec: Dictionary in layout["pieces"]:
+			var glb := String(spec.get("kit_dir", kit)) + String(spec["piece"]) + ".glb"
+			if not seen.has(glb):
+				seen[glb] = true
+				assert_true(ResourceLoader.exists(glb), "%s: %s exists" % [path, glb])

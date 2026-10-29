@@ -81,7 +81,11 @@ Bus faders, ducks and the player's volume settings come on top at runtime and ar
 | `sfx/choreo/accent_teeth` | 2 | momentary | -21.2 | -21.2 | -21.2 | +0.0 |
 | `sfx/choreo/flood_brace` | 2 | momentary | -21.2 | -21.2 | -21.2 | +0.0 |
 | `sfx/choreo/flood_surge` | 1 | momentary | -18.2 | -18.2 | -18.2 | +0.0 |
+| `sfx/choreo/ilun_call` | 1 | momentary | -22.0 | -22.0 | -22.0 | +0.0 |
+| `sfx/choreo/ilun_rise` | 1 | momentary | -22.1 | -22.1 | -22.1 | +0.0 |
+| `sfx/choreo/ilun_sink` | 1 | momentary | -22.0 | -22.0 | -22.0 | +0.0 |
 | `sfx/choreo/ko_collapse` | 2 | momentary | -18.0 | -18.0 | -18.0 | +0.0 |
+| `sfx/choreo/step_hoof` | 3 | momentary | -21.0 | -21.0 | -21.0 | +0.0 |
 | `sfx/choreo/step_sand` | 4 | momentary | -21.8 | -22.1 | -21.6 | +0.0 |
 | `sfx/choreo/swell_asha` | 1 | momentary | -19.1 | -19.1 | -19.1 | +0.0 |
 | `sfx/choreo/swell_rhen` | 1 | momentary | -19.1 | -19.1 | -19.1 | +0.0 |
@@ -94,21 +98,28 @@ Bus faders, ducks and the player's volume settings come on top at runtime and ar
 | `sfx/choreo/vowbound_rise_long` | 1 | momentary | -18.2 | -18.2 | -18.2 | +0.0 |
 | `sfx/choreo/vowbound_sink` | 1 | momentary | -20.2 | -20.2 | -20.2 | +0.0 |
 | `sfx/choreo/whoosh_cast` | 2 | momentary | -20.3 | -20.3 | -20.3 | +0.0 |
+| `sfx/choreo/whoosh_charge` | 2 | momentary | -20.2 | -20.2 | -20.2 | +0.0 |
 | `sfx/choreo/whoosh_guard` | 2 | momentary | -20.2 | -20.4 | -20.0 | +0.0 |
 | `sfx/choreo/whoosh_heavy` | 2 | momentary | -20.1 | -20.2 | -20.1 | +0.0 |
 | `sfx/choreo/whoosh_melee` | 3 | momentary | -20.4 | -20.4 | -20.1 | +0.0 |
 | `sfx/choreo/whoosh_throw` | 2 | momentary | -20.2 | -20.2 | -20.2 | +0.0 |
-| `sfx/creatures/*_attack` | 46 | momentary | -18.1 | -18.3 | -18.0 | +0.0 |
+| `sfx/creatures/*_attack` | 72 | momentary | -18.1 | -18.3 | -18.0 | +0.0 |
+| `sfx/creatures/*_clank` | 4 | momentary | -21.0 | -21.1 | -21.0 | +0.0 |
 | `sfx/creatures/*_creak` | 2 | momentary | -21.2 | -21.2 | -21.2 | +0.0 |
-| `sfx/creatures/*_death` | 23 | momentary | -18.1 | -18.3 | -18.0 | +0.0 |
+| `sfx/creatures/*_cut` | 2 | momentary | -21.2 | -21.2 | -21.1 | +0.0 |
+| `sfx/creatures/*_death` | 36 | momentary | -18.1 | -18.3 | -18.0 | +0.0 |
 | `sfx/creatures/*_flap` | 2 | momentary | -21.1 | -21.1 | -21.1 | +0.0 |
-| `sfx/creatures/*_flutter` | 4 | momentary | -21.2 | -21.2 | -21.2 | +0.0 |
+| `sfx/creatures/*_flutter` | 6 | momentary | -21.2 | -21.2 | -21.2 | +0.0 |
+| `sfx/creatures/*_glide` | 6 | momentary | -21.2 | -21.2 | -21.1 | +0.0 |
 | `sfx/creatures/*_grind` | 2 | momentary | -21.0 | -21.0 | -21.0 | +0.0 |
+| `sfx/creatures/*_heave` | 2 | momentary | -21.1 | -21.1 | -21.1 | +0.0 |
 | `sfx/creatures/*_hop` | 2 | momentary | -21.0 | -21.0 | -21.0 | +0.0 |
-| `sfx/creatures/*_hurt` | 51 | momentary | -18.2 | -18.4 | -18.0 | +0.0 |
-| `sfx/creatures/*_idle` | 23 | momentary | -20.1 | -20.3 | -20.0 | +0.0 |
-| `sfx/creatures/*_pad` | 2 | momentary | -21.0 | -21.0 | -21.0 | +0.0 |
+| `sfx/creatures/*_hurt` | 82 | momentary | -18.1 | -18.4 | -18.0 | +0.0 |
+| `sfx/creatures/*_idle` | 36 | momentary | -20.1 | -20.3 | -20.0 | +0.0 |
+| `sfx/creatures/*_pad` | 4 | momentary | -21.0 | -21.0 | -21.0 | +0.0 |
 | `sfx/creatures/*_plod` | 2 | momentary | -21.0 | -21.0 | -21.0 | +0.0 |
+| `sfx/creatures/*_rattle` | 2 | momentary | -21.2 | -21.3 | -21.2 | +0.0 |
+| `sfx/creatures/*_scull` | 2 | momentary | -21.2 | -21.3 | -21.2 | +0.0 |
 | `sfx/creatures/*_scurry` | 2 | momentary | -21.3 | -21.3 | -21.2 | +0.0 |
 | `sfx/creatures/*_shift` | 3 | momentary | -21.2 | -21.2 | -21.1 | +0.0 |
 | `sfx/creatures/*_shimmer` | 2 | momentary | -21.2 | -21.2 | -21.1 | +0.0 |
@@ -116,6 +127,8 @@ Bus faders, ducks and the player's volume settings come on top at runtime and ar
 | `sfx/creatures/*_slither` | 5 | momentary | -21.2 | -21.4 | -21.2 | +0.0 |
 | `sfx/creatures/*_squelch` | 7 | momentary | -21.1 | -21.1 | -21.1 | +0.0 |
 | `sfx/creatures/*_surge` | 2 | momentary | -21.2 | -21.2 | -21.1 | +0.0 |
+| `sfx/creatures/*_tick` | 2 | momentary | -21.5 | -21.6 | -21.5 | +0.0 |
+| `sfx/creatures/*_trudge` | 2 | momentary | -21.1 | -21.1 | -21.1 | +0.0 |
 | `sfx/creatures/*_wingbeat` | 5 | momentary | -21.1 | -21.2 | -21.1 | +0.0 |
 
 ## Music
@@ -218,6 +231,8 @@ Bus faders, ducks and the player's volume settings come on top at runtime and ar
 | `sfx/ui_buy` | 1 | momentary | -20.0 | -20.0 | -20.0 | +0.0 |
 | `sfx/ui_cancel` | 1 | momentary | -20.0 | -20.0 | -20.0 | +0.0 |
 | `sfx/ui_confirm` | 1 | momentary | -20.0 | -20.0 | -20.0 | +0.0 |
+| `sfx/ui_count_done` | 1 | momentary | -23.9 | -23.9 | -23.9 | -4.0 |
+| `sfx/ui_count_run` | 1 | momentary | -28.1 | -28.1 | -28.1 | -8.0 |
 | `sfx/ui_craft` | 1 | momentary | -20.0 | -20.0 | -20.0 | +0.0 |
 | `sfx/ui_cursor` | 1 | momentary | -20.5 | -20.5 | -20.5 | +0.0 |
 | `sfx/ui_customize_open` | 1 | momentary | -20.0 | -20.0 | -20.0 | +0.0 |
@@ -231,6 +246,7 @@ Bus faders, ducks and the player's volume settings come on top at runtime and ar
 | `sfx/ui_lattice_node` | 1 | momentary | -20.0 | -20.0 | -20.0 | +0.0 |
 | `sfx/ui_lattice_step` | 1 | momentary | -20.2 | -20.2 | -20.2 | +0.0 |
 | `sfx/ui_lattice_unlock` | 1 | momentary | -20.2 | -20.2 | -20.2 | +0.0 |
+| `sfx/ui_load_slot` | 1 | momentary | -21.0 | -21.0 | -21.0 | -1.0 |
 | `sfx/ui_map_close` | 1 | momentary | -20.2 | -20.2 | -20.2 | +0.0 |
 | `sfx/ui_map_marker` | 1 | momentary | -20.5 | -20.5 | -20.5 | +0.0 |
 | `sfx/ui_map_open` | 1 | momentary | -20.1 | -20.1 | -20.1 | +0.0 |
@@ -239,11 +255,18 @@ Bus faders, ducks and the player's volume settings come on top at runtime and ar
 | `sfx/ui_menu_close` | 1 | momentary | -20.0 | -20.0 | -20.0 | +0.0 |
 | `sfx/ui_menu_open` | 1 | momentary | -20.0 | -20.0 | -20.0 | +0.0 |
 | `sfx/ui_page` | 1 | momentary | -20.6 | -20.6 | -20.6 | +0.0 |
+| `sfx/ui_reefball_choices` | 1 | momentary | -24.1 | -24.1 | -24.1 | -4.0 |
+| `sfx/ui_reefball_glint` | 1 | momentary | -28.0 | -28.0 | -28.0 | -8.0 |
+| `sfx/ui_save_slot` | 1 | momentary | -21.0 | -21.0 | -21.0 | -1.0 |
+| `sfx/ui_shrine_travel` | 1 | momentary | -20.0 | -20.0 | -20.0 | +0.0 |
 | `sfx/ui_tip` | 1 | momentary | -20.0 | -20.0 | -20.0 | +0.0 |
 | `sfx/ui_title_confirm` | 1 | momentary | -20.0 | -20.0 | -20.0 | +0.0 |
+| `sfx/ui_title_reveal` | 1 | momentary | -24.9 | -24.9 | -24.9 | -5.0 |
 | `sfx/ui_title_swell` | 1 | momentary | -20.0 | -20.0 | -20.0 | +0.0 |
 | `sfx/ui_unequip` | 1 | momentary | -20.3 | -20.3 | -20.3 | +0.0 |
 | `sfx/ui_vowbound_open` | 1 | momentary | -19.9 | -19.9 | -19.9 | +0.0 |
+| `sfx/ui_whoosh_in` | 1 | momentary | -32.3 | -32.3 | -32.3 | -12.0 |
+| `sfx/ui_whoosh_out` | 1 | momentary | -33.3 | -33.3 | -33.3 | -13.0 |
 
 ## Voice
 
@@ -278,6 +301,7 @@ Bus faders, ducks and the player's volume settings come on top at runtime and ar
 | `sfx/cutscene/cs_glimmer_bound` | 2 | momentary | -25.0 | -25.0 | -25.0 | +0.0 |
 | `sfx/cutscene/cs_glimmer_held` | 2 | momentary | -27.0 | -27.0 | -27.0 | +0.0 |
 | `sfx/cutscene/cs_glimmer_lift` | 2 | momentary | -25.0 | -25.0 | -25.0 | +0.0 |
+| `sfx/cutscene/cs_lamp_crackle` | 4 | momentary | -30.3 | -30.4 | -30.0 | +0.0 |
 | `sfx/cutscene/cs_lantern_catch` | 2 | momentary | -21.2 | -21.2 | -21.1 | +0.0 |
 | `sfx/cutscene/cs_lantern_snuff` | 2 | momentary | -24.1 | -24.1 | -24.1 | +0.0 |
 | `sfx/cutscene/cs_pole_water` | 2 | momentary | -23.1 | -23.1 | -23.1 | +0.0 |
