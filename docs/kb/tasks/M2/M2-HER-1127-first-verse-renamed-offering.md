@@ -2,7 +2,7 @@
 id: M2-HER-1127
 title: "Request (slice-polish): the First Verse's shrine offerings point at a prop env-art renamed (shrine_offering -> wayside_offering)"
 role: environment
-status: todo
+status: review
 owner_session: ""
 reviewer: qa
 depends_on: []
@@ -25,14 +25,19 @@ Node 'SetDressing/OfferingN' / 'SetDressing/OfferingS' was modified from inside 
 - Each branch passes alone. Merged, the offerings vanish from the First Verse and the thread logs two load errors.
 
 ## Acceptance criteria
-- [ ] When m2-slice merges the integration branch, first_verse.tscn points OfferingN/OfferingS at
+- [x] When m2-slice merges the integration branch, first_verse.tscn points OfferingN/OfferingS at
       `res://assets/environments/kits/haluna/wayside_offering.glb`, and m2-slice's copy of `shrine_offering.glb` is gone
       (keep the name out of `shrine_*`, or the shrine GI guard hashes it again).
-- [ ] `--filter=qa_threads` is clean on the merged tree.
+- [x] `--filter=qa_threads` is clean on the merged tree.
 
 ## Notes
 The same trial merge also conflicts in assets/levels/ch03/shell_shrine/shrine_gi_inputs.json, game/data/audio/music.json,
 game/data/loc/strings.csv and tests/integration/test_causeway_route.gd. Those are the ordinary merge with the integration
 branch, listed here so they aren't a surprise.
+
+## Notes (env-art, 2026-10-29)
+- Met on `claude/env-art` (integration `claude/new-session-mj8c3c` merged in): `first_verse.tscn` instances
+  `kits/haluna/wayside_offering.glb` (so does `claude/m2-slice`), no `shrine_offering.glb` exists, and Godot
+  `--filter=qa_threads` is 1 run, 0 failed, with no load error.
 
 ## Review log
