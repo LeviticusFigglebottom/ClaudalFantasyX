@@ -43,6 +43,7 @@ func set_read(text: String) -> void:
 	_read.text = text
 	_read.visible = text != ""
 	_read.custom_minimum_size.x = _inner_width()
+	_fit_read()
 
 
 func header_text() -> String:
@@ -66,6 +67,7 @@ func set_rows(rows: Array[Dictionary]) -> void:
 	for i in rows.size():
 		_fill(_rows[i], rows[i])
 		_row_ids.append(StringName(str(rows[i].get("id", ""))))
+	_fit_read()
 
 
 ## The tag shown on diver `id`'s row ("" when none or no such row).
@@ -150,6 +152,21 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_THEME_CHANGED:
 		for row in _rows:
 			_fit_row(row)
+		_fit_read()
+
+
+## At 130 % text the rows grow, and the panel grew past its rect into the drop panel below. The wrapped read line
+## takes what the header and rows leave of the rect, its font shrinking a little to fit (HudLayout.fit_lines).
+func _fit_read() -> void:
+	if _read == null or not _read.visible:
+		return
+	_read.remove_theme_font_size_override(&"font_size")
+	_read.size.x = _inner_width()
+	var sb := get_theme_stylebox(&"panel")
+	var sep := float(_box.get_theme_constant(&"separation"))
+	var others := _box.get_combined_minimum_size().y - _read.get_combined_minimum_size().y - sep
+	var room := HudLayout.rect_of(_m).size.y - (sb.get_minimum_size().y if sb != null else 0.0) - others
+	HudLayout.fit_lines(_read, room)
 
 
 func _label(variation: StringName) -> Label:

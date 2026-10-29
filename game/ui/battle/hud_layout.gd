@@ -130,17 +130,18 @@ static func wrap_upward(l: Label) -> Label:
 	return l
 
 
-## Shrinks single-line label `l`'s font (to FIT_MIN_FONT_SCALE of its theme size at the least) until its text fits
-## `width` px (its own width when `width` <= 0). Call it again whenever the text, the width or the theme changes: it
-## starts from the theme's size each time, so a shorter text or a smaller text scale gets the full size back.
-static func fit_label(l: Label, width: float = 0.0) -> void:
+## Shrinks single-line label `l`'s font (to FIT_MIN_FONT_SCALE of its theme size at the least, or `min_scale` for a
+## cell with no room to grow) until its text fits `width` px (its own width when `width` <= 0). Call it again whenever
+## the text, the width or the theme changes: it starts from the theme's size each time, so a shorter text or a smaller
+## text scale gets the full size back.
+static func fit_label(l: Label, width: float = 0.0, min_scale: float = FIT_MIN_FONT_SCALE) -> void:
 	l.remove_theme_font_size_override(&"font_size")
 	var w := width if width > 0.0 else l.size.x
 	if l.text == "" or w <= 0.0:
 		return
 	var font := l.get_theme_font(&"font")
 	var fs := l.get_theme_font_size(&"font_size")
-	var floor_fs := ceili(fs * FIT_MIN_FONT_SCALE)
+	var floor_fs := ceili(fs * min_scale)
 	var size := fs
 	while size > floor_fs and font.get_string_size(l.text, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x > w:
 		size -= 1
