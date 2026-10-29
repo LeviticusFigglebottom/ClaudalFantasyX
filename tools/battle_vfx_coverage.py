@@ -86,9 +86,6 @@ def _skill_gap(s: dict, mapped: set[str], elements: set[str]) -> str:
 
 # Gaps kept on purpose (M3-BPR-411 closed by M3-BPR-420's Act I effects): skill id -> why it plays no effect of its own.
 INTENDED = {
-    "grip_the_stair": "aimed at the stair entry, which has no fighter to play on; its motion is the push reaction",
-    "rope_dive": "aimed at the stair entry (no fighter); staged by its style and the push reaction",
-    "hand_closes": "aimed at the stair entry (no fighter); staged by its style and the push reaction",
     "toll_gather": "the Drownbell's gather plays through its own rig (BattleBossVfx on charge_started)",
     "unravel": "Act II (Ch12's cord moth), paused by ADR 0041; its effect comes with Act II",
 }

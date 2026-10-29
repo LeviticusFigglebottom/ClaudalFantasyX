@@ -51,42 +51,6 @@ material = SubResource("Mat_lantern")
 radius = 0.08
 height = 0.16
 
-[sub_resource type="StandardMaterial3D" id="Mat_vendor"]
-albedo_color = Color(0.658824, 0.341176, 0.227451, 1)
-roughness = 0.8
-
-[sub_resource type="StandardMaterial3D" id="Mat_reed"]
-albedo_color = Color(0.921569, 0.905882, 0.87451, 1)
-roughness = 0.8
-
-[sub_resource type="StandardMaterial3D" id="Mat_netmender"]
-albedo_color = Color(0.494118, 0.415686, 0.333333, 1)
-roughness = 0.8
-
-[sub_resource type="StandardMaterial3D" id="Mat_fisher"]
-albedo_color = Color(0.788235, 0.705882, 0.556863, 1)
-roughness = 0.8
-
-[sub_resource type="CapsuleMesh" id="Mesh_vendor"]
-material = SubResource("Mat_vendor")
-radius = 0.3
-height = 1.64
-
-[sub_resource type="CapsuleMesh" id="Mesh_reed"]
-material = SubResource("Mat_reed")
-radius = 0.27
-height = 1.7
-
-[sub_resource type="CapsuleMesh" id="Mesh_netmender"]
-material = SubResource("Mat_netmender")
-radius = 0.31
-height = 1.6
-
-[sub_resource type="CapsuleMesh" id="Mesh_fisher"]
-material = SubResource("Mat_fisher")
-radius = 0.29
-height = 1.74
-
 [sub_resource type="CapsuleShape3D" id="Shape_npc"]
 radius = 0.32
 height = 1.7
@@ -275,14 +239,6 @@ look_at = Vector3(-54.74, 2.0, -2.49)
 fov_deg = 32.0
 hard_cut = true
 
-[sub_resource type="StandardMaterial3D" id="Mat_osu"]
-albedo_color = Color(0.415686, 0.45098, 0.509804, 1)
-roughness = 0.8
-
-[sub_resource type="CapsuleMesh" id="Mesh_osu"]
-material = SubResource("Mat_osu")
-radius = 0.3
-height = 1.5
 
 [sub_resource type="StandardMaterial3D" id="Mat_shopkeep"]
 albedo_color = Color(0.25098, 0.462745, 0.556863, 1)
@@ -384,24 +340,6 @@ size = Vector3(22.508818, 5, 3.5)
 [sub_resource type="BoxShape3D" id="Box_causeway"]
 size = Vector3(32, 5, 6)
 
-[sub_resource type="StandardMaterial3D" id="Mat_neme"]
-albedo_color = Color(0.513725, 0.388235, 0.32549, 1)
-roughness = 0.8
-
-[sub_resource type="CapsuleMesh" id="Mesh_neme"]
-material = SubResource("Mat_neme")
-radius = 0.32
-height = 1.6
-
-[sub_resource type="StandardMaterial3D" id="Mat_child"]
-albedo_color = Color(0.72549, 0.611765, 0.403922, 1)
-roughness = 0.8
-
-[sub_resource type="CapsuleMesh" id="Mesh_child"]
-material = SubResource("Mat_child")
-radius = 0.2
-height = 1.1
-
 [sub_resource type="CapsuleShape3D" id="Shape_child"]
 radius = 0.22
 height = 1.1
@@ -424,7 +362,7 @@ shore_step_m = 2.0
 shore_gaps = Array[Vector3]([Vector3(7.9, 50.2, 1.6)])
 piece_rules = {
 "awning_cloth": {"shape": "none"},
-"banyan_placeholder": {"shape": "cylinder", "radius_m": 2.2, "height_m": 6.0},
+"banyan_hero": {"shape": "cylinder", "radius_m": 2.2, "height_m": 6.0},
 "beach_vine_patch": {"shape": "none"},
 "dock_haluna": {"shape": "trimesh", "extra_boxes": [[16.75, 1.25, 0.0, 33.5, 0.3, 2.6], [36.05, 1.25, 0.0, 5.1, 0.3, 4.4], [19.75, 1.4, 1.45, 27.5, 4.0, 0.3], [19.75, 1.4, -1.45, 27.5, 4.0, 0.3], [36.05, 1.4, 2.35, 5.1, 4.0, 0.3], [36.05, 1.4, -2.35, 5.1, 4.0, 0.3], [33.5, 1.4, 1.9, 0.3, 4.0, 1.2], [33.5, 1.4, -1.9, 0.3, 4.0, 1.2], [38.75, 1.4, 0.0, 0.3, 4.0, 5.0]], "ramps": [[-5.0, 0.72, 1.5, 1.4, 2.6]]},
 "frangipani_a": {"shape": "cylinder", "radius_m": 0.3, "height_m": 2.5},
@@ -442,7 +380,7 @@ piece_rules = {
 "palm_coconut_b": {"shape": "cylinder", "radius_m": 0.3, "height_m": 3.0},
 "palm_coconut_c": {"shape": "cylinder", "radius_m": 0.3, "height_m": 3.0},
 "tidewall_gate": {"shape": "none"},
-"windbreak_placeholder": {"shape": "cylinder", "radius_m": 1.0, "height_m": 6.0},
+"windbreak_tree": {"shape": "cylinder", "radius_m": 1.0, "height_m": 6.0},
 "rope_coil": {"shape": "none"},
 "sandals": {"shape": "none"},
 "tide_debris": {"shape": "none"},
@@ -622,13 +560,7 @@ transform = Transform3D(-0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, -0.939693, 
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
 shape = SubResource("Shape_npc")
 
-[node name="StandIn" type="MeshInstance3D" parent="NPCs/Market/Vendor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.82, 0)
-mesh = SubResource("Mesh_vendor")
 
-[node name="Facing" type="MeshInstance3D" parent="NPCs/Market/Vendor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.39, -0.26)
-mesh = SubResource("Mesh_npc_facing")
 
 [node name="Talk" type="Area3D" parent="NPCs/Market"]
 script = ExtResource("8_int")
@@ -651,13 +583,7 @@ transform = Transform3D(-0.939693, 0, -0.34202, 0, 1, 0, 0.34202, 0, -0.939693, 
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
 shape = SubResource("Shape_npc")
 
-[node name="StandIn" type="MeshInstance3D" parent="NPCs/Chapel/Reed"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
-mesh = SubResource("Mesh_reed")
 
-[node name="Facing" type="MeshInstance3D" parent="NPCs/Chapel/Reed"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, -0.26)
-mesh = SubResource("Mesh_npc_facing")
 
 [node name="Broom" parent="NPCs/Chapel/Reed" instance=ExtResource("14_broom")]
 transform = Transform3D(1, 0, 0, 0, 0.906308, 0.422618, 0, -0.422618, 0.906308, 0.22, 0.75, -0.3)
@@ -683,13 +609,7 @@ transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, 24.554541,
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
 shape = SubResource("Shape_npc")
 
-[node name="StandIn" type="MeshInstance3D" parent="NPCs/Dock/Netmender"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
-mesh = SubResource("Mesh_netmender")
 
-[node name="Facing" type="MeshInstance3D" parent="NPCs/Dock/Netmender"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.35, -0.26)
-mesh = SubResource("Mesh_npc_facing")
 
 [node name="Fisher" type="StaticBody3D" parent="NPCs/Dock"]
 transform = Transform3D(-0.984808, 0, -0.173648, 0, 1, 0, 0.173648, 0, -0.984808, 22.260576, 1.4, 38.990957)
@@ -698,13 +618,7 @@ transform = Transform3D(-0.984808, 0, -0.173648, 0, 1, 0, 0.173648, 0, -0.984808
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
 shape = SubResource("Shape_npc")
 
-[node name="StandIn" type="MeshInstance3D" parent="NPCs/Dock/Fisher"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.87, 0)
-mesh = SubResource("Mesh_fisher")
 
-[node name="Facing" type="MeshInstance3D" parent="NPCs/Dock/Fisher"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.49, -0.26)
-mesh = SubResource("Mesh_npc_facing")
 
 [node name="Talk" type="Area3D" parent="NPCs/Dock"]
 script = ExtResource("8_int")
@@ -727,13 +641,7 @@ transform = Transform3D(0.971961, 0, -0.235142, 0, 1, 0, 0.235142, 0, 0.971961, 
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
 shape = SubResource("Shape_child")
 
-[node name="StandIn" type="MeshInstance3D" parent="NPCs/Lane/Child"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
-mesh = SubResource("Mesh_child")
 
-[node name="Facing" type="MeshInstance3D" parent="NPCs/Lane/Child"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, -0.17)
-mesh = SubResource("Mesh_npc_facing")
 
 [node name="Talk" type="Area3D" parent="NPCs/Lane"]
 script = ExtResource("8_int")
@@ -756,13 +664,7 @@ transform = Transform3D(0.3355, 0, -0.942, 0, 1, 0, 0.942, 0, 0.3355, -54.1, 1.8
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
 shape = SubResource("Shape_npc")
 
-[node name="StandIn" type="MeshInstance3D" parent="NPCs/Neme/Neme"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
-mesh = SubResource("Mesh_neme")
 
-[node name="Facing" type="MeshInstance3D" parent="NPCs/Neme/Neme"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.36, -0.26)
-mesh = SubResource("Mesh_npc_facing")
 
 [node name="Bag" parent="NPCs/Neme" instance=ExtResource("15_bag")]
 transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -54.74, 2.05, -2.49)
@@ -776,13 +678,7 @@ transform = Transform3D(-0.856, 0, 0.517, 0, 1, 0, -0.517, 0, -0.856, -15, 1.53,
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
 shape = SubResource("Shape_npc")
 
-[node name="StandIn" type="MeshInstance3D" parent="NPCs/Osu/Osu"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
-mesh = SubResource("Mesh_osu")
 
-[node name="Facing" type="MeshInstance3D" parent="NPCs/Osu/Osu"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.28, -0.24)
-mesh = SubResource("Mesh_npc_facing")
 
 [node name="Bowl" parent="NPCs/Osu/Osu" instance=ExtResource("16_bowl")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, -0.5)

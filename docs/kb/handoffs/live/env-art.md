@@ -589,6 +589,32 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **The Lead's 17:37 follow-up (big15's `test_the_town_is_dressed_over_the_greybox`, "LowHull (a story block) is not
+  hidden by the kit"): fixed in big16; nothing to change.**
+  - **Cause:** on big15 the zone mounted the old `tools/ch01/ch01_oruvel_dressing.py` output. My walk-through batch 1
+    (62409951b) had that generator dress `LowHull` with `hull_lashed` and stop keeping its greybox mesh, while big15's
+    test still listed `LowHull` in `KEPT`.
+  - **big16 (ff82858c):**
+    - The zone mounts `ov_zone_dressing`'s layout: all greybox hidden, `hull_outrigger` following `LowHull`.
+    - The test expects exactly that (`KEPT = []`; "the low hull follows its block").
+    - Run here: 3 run, 0 failed.
+  - **The booth and chandlery orientation:** viewed on big16 in `ch01_scale_hull` and `ch01_kell_stall` (entry above).
+    Both counters face their customers.
+  - **No code change. LEAD-ASK:** none. If the cloud suite still fails it on big16, send me its log line.
+- **MERGE-READY @ 2666255bb: the Lead's big16 checks (lead/gate-big16 @ ff82858c, this branch fast-forwarded to it).
+  No code change was needed.**
+  - **U03 on my mounted Underway dressing:** `ch01_bell_room` was rendered and viewed. The camera is in the bell-room
+    behind Rhen's shoulder, with the door and the lantern in frame; it is not in a wall. Row 23's bell-room is fine.
+  - **The booths:** in big16, `ov_zone_dressing` places `scale_hull` at yaw 0 and `chandlery` at -90, and slice-polish
+    staged the actors to them. Rendered and viewed:
+    - `ch01_scale_hull`: the scale-man behind his counter, the brass scales between him and Rhen.
+    - `ch01_kell_stall`: Kell before her lamp racks under the striped awning.
+    - Both counters face their customers. My retired generator's flip (845287999) is moot.
+  - **`ch01_o10_gull`:** the carved gull side-on against the sky. A rigging pole crosses the frame on the left; it
+    reads, but the camera is slice-polish's to trim if wanted.
+  - **`test_ch01_oruvel_kit`:** 3 run, 0 failed on big16. big15 failed because big15 still mounted the old dressing.
+  - **`test_footsteps_slice_zones`:** 5 run, 0 failed on big16, so the Haluna sand, dock and shallows groups read
+    right. Nothing to fix or file.
 - **MERGE-READY @ df2c8384a: M3-ENV-105 (high), the Underway's walls on the walk walls; M3-ENV-740 needs nothing.**
   - **Cause:** `ou_zone_dressing.py` hard-coded the rooms from an older greybox. The layout has since moved its walls
     (the crown to x ±9 and z -4/20, the gauge room's east wall to x 104, the tin alcove to z -4..2).

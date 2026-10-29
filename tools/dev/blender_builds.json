@@ -842,6 +842,23 @@
       ]
     },
     {
+      "id": "pell",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-506: Pell, the Kirru hero. Reuses Asha's modules (build_asha as a helper library, asha_textures, asha_costume, asha_staff, Asha's write_materials), Toma's (build_toma's rig helpers, toma_hair's card rules, toma_textures' strand columns), Rhen's costume helpers and Ysolde's rig helpers (build_ysolde), so all their sources are his too. One build writes pell.glb and pell_lod1.glb.",
+      "sources": ["assets_src/characters/pell/**", "assets_src/characters/ysolde/**", "assets_src/characters/toma/**",
+                  "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**",
+                  "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/pell/*.glb", "assets/characters/pell/textures/*.png",
+                  "assets/characters/pell/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/pell/build_pell.py", "--", "--out",
+         "assets/characters/pell/pell.glb", "--bake-dir", "{scratch}/pell_bake"],
+        ["{python}", "assets_src/characters/pell/pell_textures.py", "--bake-dir", "{scratch}/pell_bake"],
+        ["{python}", "assets_src/characters/pell/write_materials.py"]
+      ]
+    },
+    {
       "id": "creature_tannin_archer",
       "owner": "character",
       "sources": ["assets_src/creatures/tannin_archer/**", "assets_src/creatures/common/**"],

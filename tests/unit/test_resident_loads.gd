@@ -97,7 +97,8 @@ func test_a_change_loads_the_zone_s_list_and_drops_the_last() -> void:
 		OS.delay_msec(5)
 	assert_false(r.scene.is_empty(), "the zone's resources are in")
 	assert_true(
-		r.wait_progress() >= r.scene.size() * ResidentLoads.PROGRESS_SCALE, "its progress counts every finished load"
+		r.swap_wait_progress() >= r.scene.size() * ResidentLoads.PROGRESS_SCALE,
+		"its progress counts every finished load"
 	)
 	assert_false(r.holding, "released")
 	var one := r.scene.keys()[0] as String

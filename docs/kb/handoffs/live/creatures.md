@@ -779,3 +779,7 @@ Merged `origin/gpu/gate-big14-shots` and the integration branch, then fixed on t
   - Each shows its people as distinct crowd bodies with one body per actor.
   - The Corrow children face the sea as staged. **No baselines written:** the Lead's gate does that.
 - **Checks:** villager 35/0, crowd 7/0, zone_cast 3/0, field_npc 10/0, haluna 65/0, creature 84/0; qa_capsules: Pell only (Act II, not ours).
+- **MERGE-READY @ (this push): the big15 post_import fix.**
+  - The crowd GLBs already ran their category script (`crowd_post_import.gd`, set in each .glb.import). The crowd category (`game/data/import/crowd.json`) exists, but test_post_import's `KINDS` list lacked `crowd`, so every crowd GLB read as "in no import category". `crowd` is added; no import needed regenerating.
+  - The integration branch is merged in.
+  - Checks: post_import 21/0, villager 35/0, crowd 7/0.
