@@ -297,3 +297,49 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   clip playback), the Spar-wraith's home-camera fit (M3-CRB-011 note), M3-CRB-010, M3-CRB-012, and the Act II Vowbound
   portraits (creatures, paused). The one full battle run on 052d69a2 showed only the pre-existing Act II
   test_battle_act1_ability_vfx failures.
+
+## 2026-10-29: the new Lead's brief (integration `claude/new-session-mj8c3c` merged at 1d0f272b, then lead/gate-big17 at its head)
+- **Merges:** integration (one conflict, pc-gpu.md, not mine: took theirs), then `origin/lead/gate-big17` (the
+  Lead's "newest everything"; same pc-gpu.md conflict, same resolution). This branch now holds big17 + the below.
+- **Rows 12 and 35 (Moll a grey capsule in his fight): verified fixed on big17.** Pass B (lead/gate-ft-beach @
+  93d0741e, 07:06) predates the fix (066cc8b9, 12:31, his battle_sandbox.json stand-in `scene`). On big17, Moll
+  draws his actor in ch06_inquisitor at the default camera, with the hound (scratch fixture, viewed).
+  **New test** `test_every_act1_boss_encounter_seats_real_bodies_not_capsules` (test_creature_bosses_act1): for every
+  encounter that fields an Act I boss, Moll included, it builds each boss's FighterStandIn as the battle does and
+  fails if it falls back to the primitive. Shown live: with Moll's `scene` removed it fails.
+- **Row 36 (the Reach's arm over the party): fixed model-side, a654ccc5.** At the old seat the digits reached x
+  1.2-1.7, between Asha and Toma. Its boss seat [-2.6,0,-2.4] -> [-5.0,0,-2.4] (out along the arm's own axis): the
+  hand still grips the wall-head and reads, with a clear gap before the party, in every clip (idle, the phase idles,
+  attacks, casts, hits, intro: bones below 4 m stay at x <= -1.25; Asha's body starts at -0.1). Test
+  `test_the_reach_keeps_its_arm_out_of_the_party_lane` (test_battle_boss_seat) fails at the old seat.
+  **For battle-presentation:** rendered with your M3-BPR-425 `rest_by_enemy` row (4 m back, 2 m up) in place; the
+  hand stays in frame at the left. With the arm now clear of the lane you may want less pull-back; your call.
+  The intro frame is unchanged.
+- **Row 30 (capsules in drowned_choir_ring, iskarra_spire_crown, undertow_cage, undertow_heart(_letting),
+  keth_seep_terrace): still record only.** On big17 no encounter uses any of them (arenas.json only): later acts,
+  paused by ADR 0041.
+- **Primitive-at-battle-distance sweep** (all seven Act I boss fights at the default camera, big17 tree, scratch
+  fixture, viewed as a contact sheet): Hullgnaw, Bottle hermit, Matron, Moll, Drownbell read well. **The Spar-wraith
+  read as ship's rigging:** the camera saw its A-frame edge-on (one mast, the body behind it). **Fixed, d4d52043:**
+  creatures.json `spar_wraith.stand_in.yaw_deg` 45 (stormgull and squall_wing already use 60); the frame, hanging
+  body and glowing seam now read. Its intro still reads.
+- **Clips battle-presentation's choreography asks for:** their log (claude/battle-presentation, 10-29) asks nothing
+  of creatures-b; the earlier check (every Act I Vowbound skill and finisher has its clip) still passes.
+- **Checks:** validate_data 0/0; gdlint, gdformat; tools test_creatures OK; Godot boss 86/0, creature_bosses 7/0,
+  ch08 25/0, ch04 13/1 (**pre-existing on big17, not mine:** test_ch04_zones `test_the_wakes_field_camera_is_halunas`,
+  10 volumes vs 8; it fails the same on an untouched big17 worktree). **Skipped:** Blender (no source touched),
+  coverage (no game/battle or game/progression code), the tools suite (no tools/ change).
+- SELF-RENDERED @ d4d52043 (scratch default-camera fixture for all seven fights, never committed; plus
+  battle_boss_intro_reach and battle_boss_intro_wraith): viewed. Intro shots are drift against their old baselines
+  (which predate the models), not a regression: battle_boss_intro_reach rendered the same at the old and new seat.
+- **MERGE-READY @ d4d52043** (+ this log commit): a654ccc5 (rows 35/36 and both tests), d4d52043 (the Spar-wraith's
+  yaw). Shots that can move: battle_boss_intro_reach, battle_boss_intro_wraith, any battle shot fielding the Reach
+  or the Spar-wraith.
+
+### PC-QUEUE
+- GPU QA rows 12/35 (Moll) and 36 (the Reach, now seat + battle-presentation's rest frame): re-check on the RX 9070 XT.
+- The Spar-wraith's 45° turn: check in live play on the derelict deck at night.
+
+- **BACKLOG EMPTY (2026-10-29):** rows 12/35/36 fixed and pinned by tests, row 30 is later-act (record only), no clip
+  is asked of this track, and the boss sweep's one weak read (the Spar-wraith) is fixed. What's left is real-GPU only
+  (PC-QUEUE).
