@@ -404,6 +404,12 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   re-apply mine (cb97a0cf's Ch1 hunks lose to theirs on merge). After big18 lands, if a speaker is still out of frame
   there, file a request to slice-polish with the still. O09 (Kell) is not named; check it after big18 too.
 
+- **MERGE-READY @ ae713835: Kell's zone-map POI** (Lead, big18 gate 10-29 22:38). `zone_maps.json` ch01/oruvel
+  `kell` moved to [29.0, -7.0] with her actor (cb97a0cf). `python3 -m unittest tools.tests.test_zone_map_pois`: OK on
+  lead/gate-big18 with this row (5/0). On this branch alone the test still lists the eight ch04/haluna_wake rows as
+  "source not found": big18 already fixes those (the wake's map row names its own layout in `points`, dd52da35), and
+  they clear once that reaches the integration branch. For big19.
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
