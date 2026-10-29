@@ -589,6 +589,16 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ 2ff511ab: M3-ENV-104 (Oruvel), to review (cinematics).** Ridge gulls on the cabin and the chandlery; the
+  cabin's ridge under the roof child's feet (it was scaled to the greybox and she floated 1 m over it); Kell's beacon is
+  the chandlery's own roof lantern (the storm light moved into it; no extra lamp); the low hull's salvage load; the storm
+  frame's sky in storm_slate (it had the shader's noon blue). Details in the task file.
+  - **Checks:** `test_zone_dressing_ch01`, `test_oruvel_kit` (28 OK). **Skipped:** Godot tests (layout data only).
+  - **SELF-RENDERED and viewed:** walk frames at the beacon, the cabin and the low hull; `ch01_oruvel_storm`,
+    `zone_oruvel_storm_o12/o16`, `oruvel_o17_pen_split` (drifts: the slate overcast replaces the day-blue; re-approve),
+    `zone_oruvel_o09`, `zone_oruvel_o12`.
+  - **Note:** 2ff511ab also carries M3-ENV-103's `travel_bundle` (builder, glb, import, manifest, PROVENANCE): built and
+    in the kit, not merge-ready until viewed (next entry).
 - **The Lead's 18:43 ask: my open real-GPU rows (`act1_gpu_qa.md` on `gpu/act1-qa-2`, last checked on big15), re-checked
   on this tree. All were fixed at 4c85ffb7b (10-28), after the big15 re-check; each SELF-RENDERED here and viewed.**
   - **Row 4 `ch04_ferry_deck`:** the deck, deckhouse face, rails and sails read under the cold sky fill. The "orange
