@@ -46,6 +46,11 @@
    "id": "hold_input_end",
    "doc": "Ends the held input hold_input began: the scene's time runs on its own again and the prompt goes.",
    "args": []
+  },
+  {
+   "id": "act_card",
+   "doc": "Shows the act card between acts (M3-C09-09; act1_ch09.md B11, the end of Act I). ActCard (game/ui/cards/act_card.gd) listens to the scene's sequencer and shows act's row of game/data/ui/act_card.json.",
+   "args": [{"name": "act", "type": "int"}]
   }
  ]
 }

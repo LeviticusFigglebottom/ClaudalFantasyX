@@ -403,6 +403,15 @@ class CueVocabularyTests(DlgcTestBase):
         errors = dlgc.compile_project(self.tmp).errors
         self.assertTrue(any("t_scene.dlg:1: unknown grade 'ch99'" in e for e in errors), errors)
 
+    def test_ch09_grades_and_the_act_card_event(self) -> None:
+        """M3-C09-09: Ch9's night and dawn grades, the Prologue's for the act-break vigil, and <<event act_card>>."""
+        for grade in ("ch09", "ch09_dawn", "prologue"):
+            self.write("t_scene", f"title: t_scene\ngrade: {grade}\n---\nRhen: Hi. #line:t_001\n===\n")
+            self.assertEqual(dlgc.compile_project(self.tmp).errors, [], grade)
+        ops = self.ops("<<event act_card 2>>\n<<stop>>")
+        self.assertEqual(ops[0], {"op": "event", "name": "act_card", "args": [2], "src": 3})
+        self.assert_error("<<event act_card two>>", "act_card", 3)
+
     def test_repo_cues_json_covers_its_sets(self) -> None:
         cues = json.loads((ROOT / "game/data/dialogue/cues.json").read_text(encoding="utf-8"))
         for name, spec in cues["cues"].items():
