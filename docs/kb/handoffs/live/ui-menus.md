@@ -688,7 +688,7 @@ Checks:
 - lint and validate_data are clean.
 Skipped: coverage (no game/battle core or game/progression change; game/ui/battle is the scene layer). I did not
 re-render all 51 views after the text fixes; the five shots they touch are self-rendered below.
-- 2026-10-29 21:40, **BACKLOG EMPTY:** the Lead's 19:24 list is done. What's left waits on the PC (PC-QUEUE) or on other
+- 2026-10-29 21:40 (superseded by the Lead's 23:10 list below) **BACKLOG EMPTY:** the Lead's 19:24 list is done. What's left waits on the PC (PC-QUEUE) or on other
   tracks' routed findings.
 SELF-RENDERED @ d7840ba0 (1280x720): equip_menu, equip_customize, shop_menu_buy, shop_menu_sell, inn_menu. What I saw:
 - the Customize header reads whole ("Customize Coral-Bitten Hooks");
@@ -696,3 +696,54 @@ SELF-RENDERED @ d7840ba0 (1280x720): equip_menu, equip_customize, shop_menu_buy,
 - the shop's shorter lume line wraps cleanly onto two lines;
 - sell and inn are unchanged.
 Baselines will move for equip_menu, equip_customize and shop_menu_buy.
+- 2026-10-30 00:30, **the Lead's 23:10 list: the Act I narrative and onboarding seat.** Audited on lead/gate-big18 @ d00d3284 (a
+  scratch worktree); the fixes are on claude/ui, which has claude/new-session-mj8c3c merged in (dae73fd8).
+  1. **Codex, bestiary and item/skill/status text:** a scripted audit of every *_key in the codex, the 25 Act I foes'
+     names and bestiary lore, the skills, statuses, items, equipment, gear types, abilities and Vowbound. Every key
+     exists, is final text and is not its own id. Every codex unlock flag is declared in flags.tres and set by the
+     story. There is no separate in-game glossary: the codex is it.
+     - **Fixed:** statuses had names but no player-facing description (only the engine's notes, "x0.2").
+       STATUS_<ID>_DESC is now written for all 21, and the Status page explains each carried status under its name
+       (test_status_menu::test_every_status_has_a_description). Self-rendered status_menu: "Poison", then "Loses a
+       tenth of their health at the end of each of their turns."
+  2. **Tutorials and first-time prompts:**
+     - field tips: objective, field menu, save shrine, shop, menu save;
+     - battle prompts: commands (Ch1), items, escape, the timeline (tideline, Hullgnaw), Swap and Read (Ch4 hermit),
+       armour break, fliers, the set pieces.
+     Each shows once: the tips per save, the prompts in their one scripted fight, with a retry repeating its line.
+     The tips name the bindings of the device in use; the prompts name none.
+     - **Fixed: nothing taught Swell or the Vowbound** (c4ef3370):
+       - a Swell tip (the gauge, techniques, the field menu's fill modes) follows the menu-save tip;
+       - Asha's first turn in Ch4's first fight (ch04_sail_leeches; the call only needs ch03_ilun_bound) prompts the
+         call. encounters.json is combat's table; one row gains turn_prompt fields, as Ch4's hermit has.
+       test_tutorial_tips::test_the_swell_tip_follows_the_menu_tips. The tip test no longer leaves a card in the tree.
+     - **Dismissal:** the tips never take input. Each fades after its reading time, hides while a menu is open, and
+       the Accessibility page turns them off. I did not add a dismiss key: it would take a binding from the field.
+       The Lead can overrule.
+  3. **Save and load at every Act I save point:** test_qa_save_shrines (every shrine and rest point: zone, party,
+     flags, respawn) passes. **Added test_save_music:** every Act I zone has music, and a save round trip, with each
+     variant flag set, picks the same cue (eeb20c31).
+  4. **Banned terms and tone:** validate_data's banned scan is clean.
+     - Grepped every Act I line for meta, game-speak and slang. Three hits, all in-world: a Reefball "player", "one
+       joke", and "cool" as temperature.
+     - Read every grief or sad line followed by a smile or laugh within two lines: Osu's grandfather, the first
+       verse, Neme, the wake vendor. All tender; none undercuts.
+     - Ch2's "he's allowed one joke" comes before Rhen learns Oruvel is gone, and the scene then turns to grief.
+     - **Fixed** (52ca86c1): the Ch8 net-mender bark shipped "Old Net-Mender [neutral]: ..." as its text. dlgc read
+       the hyphenated name as narration. The speaker is now Netmender (CHAR_NETMENDER is "Old Net-Mender"), and dlgc's
+       speaker-like check takes hyphenated and apostrophe-joined names (test_dlgc).
+LEAD-ASK: SPEC §6.8 names the statuses, and several are the series' own set: Shell, Protect, Reflect, Regen, Doom,
+Zombie and the four Breaks (Armor, Mental, Power, Magic). Rename them in SPEC (like ADR 0201)? My proposal:
+- Shell → Tide Ward, Protect → Bulwark, Reflect → Mirrorwater, Regen → Mending, Doom → Last Tide, Zombie → Hollowed;
+- Armor/Mental/Power/Magic Break → Sundered, Unmoored, Weakened, Dimmed.
+Poison, Sleep, Silence, Darkness, Petrify, Slow, Haste, Stop, Berserk, Confuse and Provoke are generic. Until you
+answer, nothing is renamed: the names are SPEC's.
+MERGE-READY @ 1d1bf96e7: the Act I narrative and onboarding pass (status descriptions, the Swell tip and Vowbound
+prompt, the save-music test, the net-mender bark and dlgc's check).
+Checks: status_menu 6/0, tutorial_tips 5/0, save_music 1/0, qa_save_shrines 2/0, boss_hud 4/0, aspect 18/0,
+pseudo_loc 26/0, input_parity_glyphs 7/0, field_hud_legibility 3/0; tools test_dlgc and the corpus test (131) OK;
+dlgc --check clean; validate_data has 0 errors; the text audit shows 0 problems.
+Not this track's: test_ch04_zones::test_the_wakes_field_camera_is_halunas (Haluna's camera volumes).
+Skipped: coverage (no game/battle core change).
+- 2026-10-30 00:30, **BACKLOG EMPTY:** the 23:10 list is done and clean. The LEAD-ASK on the SPEC status names is open,
+  with nothing renamed until you answer.
