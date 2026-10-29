@@ -339,6 +339,10 @@ STORY_PIECES = {
     "Shrine": [("level_stone_shrine", BRINE, "foot", 0.0)],
 }
 TRADER_DRAFT_M = 0.9  # the trader's keel below the tide
+# Borrowed pieces' flat slots (M3-ENV-1326): the Brine Shoals Level-stone read as a white box; the Order's shrine stone
+# as Haluna's shrines (and Ch6's) wear it.
+OTHER_KIT_SLOTS = {
+    "level_stone_shrine": {"bs_level_stone": "res://assets/environments/kits/haluna/materials/kit_shrine_stone.tres"}}
 
 
 def story_pieces() -> list[dict]:
@@ -353,6 +357,8 @@ def story_pieces() -> list[dict]:
                    "yaw_deg": cf.yaw_norm(float(b.get("yaw", 0.0)) + dyaw), "block": bid}
             if kit:
                 row["kit_dir"] = kit
+            if piece in OTHER_KIT_SLOTS:
+                row["material_paths"] = dict(OTHER_KIT_SLOTS[piece])
             out.append(row)
     return out
 
@@ -370,13 +376,19 @@ TRADER_SLOTS = {"cw_sail": RES_ZONE + CANVAS_NAME}
 # read as flat red planes, the copper and iron as plastic. Swapped on every Corrow piece (`kit_material_paths`), Ch9
 # too (its dressing starts from this one).
 KIT_LOOKS = {
-    "cw_lacquer_red": ("corrow_lacquer_red_material.tres", dict(zl.LACQUER, col_bronze=(0.6, 0.1294, 0.1020),
-                                                                patina_coverage=(0.05, 0.45))),
-    "cw_watch_red": ("corrow_watch_red_material.tres", dict(zl.LACQUER, col_bronze=(0.5608, 0.1647, 0.1412),
-                                                            roughness_bronze=0.6, patina_coverage=(0.1, 0.6),
-                                                            wear_strength=0.7)),
+    # (the hollows dull to an aged lacquer of the same red, not a grey dust: on a door's broad leaves a grey patina
+    # gathered in the normal map's pits and read as camouflage)
+    "cw_lacquer_red": ("corrow_lacquer_red_material.tres", dict(
+        zl.LACQUER, col_bronze=(0.6, 0.1294, 0.1020), col_patina=(0.3608, 0.1098, 0.0902),
+        col_patina_pale=(0.4510, 0.1843, 0.1490), patina_coverage=(0.05, 0.3))),
+    "cw_watch_red": ("corrow_watch_red_material.tres", dict(
+        zl.LACQUER, col_bronze=(0.5608, 0.1647, 0.1412), col_patina=(0.3412, 0.1255, 0.1059),
+        col_patina_pale=(0.4314, 0.2000, 0.1647), roughness_bronze=0.6, patina_coverage=(0.05, 0.35),
+        wear_strength=0.7)),
     "cw_lacquer_dark": ("corrow_lacquer_dark_material.tres", dict(zl.LACQUER, col_bronze=(0.1294, 0.0980, 0.0824),
-                                                                  col_worn=(0.3216, 0.1176, 0.0863))),
+                                                                  col_worn=(0.3216, 0.1176, 0.0863),
+                                                                  col_patina=(0.2000, 0.1725, 0.1569),
+                                                                  col_patina_pale=(0.2706, 0.2431, 0.2235))),
     "cw_copper": ("corrow_copper_material.tres", dict(zl.VERDIGRIS)),
     "cw_iron": ("corrow_iron_material.tres", dict(zl.SEA_IRON)),
 }

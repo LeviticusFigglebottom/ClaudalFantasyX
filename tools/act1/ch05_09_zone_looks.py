@@ -57,7 +57,8 @@ def copy_material(src_res: str, name: str, overrides: dict) -> str:
 LACQUER = {  # a lacquer over a black undercoat: chipped at the edges, ash or salt in the hollows (not metal)
     "col_worn": (0.0784, 0.0667, 0.0627), "col_patina": (0.4196, 0.3961, 0.3725),
     "col_patina_pale": (0.5490, 0.5333, 0.5098), "metallic_bronze": 0.0, "roughness_bronze": 0.32,
-    "roughness_worn": 0.6, "patina_coverage": (0.0, 0.35), "patina_roughness": 0.95, "streak_strength": 0.35,
+    "roughness_worn": 0.6, "patina_coverage": (0.0, 0.35), "patina_roughness": 0.95, "patina_shade_bias": 0.0,
+    "streak_strength": 0.35,
     "wear_strength": 0.5, "detail_scale_m": 0.6, "normal_strength": 0.25, "normal_tile_m": 1.6,
     "variation_value": 0.12}
 VERDIGRIS = {  # old copper: verdigris over a dark copper body showing at the edges
