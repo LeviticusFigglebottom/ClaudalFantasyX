@@ -298,7 +298,7 @@ def dressing() -> dict:
         "lod_margin_m": float(preview.get("lod_margin_m", 2.0)),
         "environment": RES_ZONE + "coilspire_ch08_environment.tres",
         "time_of_day_h": 12.0,
-        "greybox": {"hide_all": True, "keep": ["Virel"]},  # Virel: the Vowbound's own body (creatures-b)
+        "greybox": {"hide_all": True, "keep": []},  # Virel is her own body now: the layout's `virel` actor (ZoneCast)
         "storms": [STORM],
         "fire_light_color": preview.get("hearth_light_color", "#FFB16E"),
         "fire_lights": lights,

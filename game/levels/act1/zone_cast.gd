@@ -13,13 +13,15 @@ extends Node
 ## Two prefixes name other bodies: `"cast": "creature:<id>"` puts the creature's model (game/data/creatures/
 ## creatures.json `scene`, which faces +Z) on the actor, turned to its -Z, idling (the raid hound, the Cinder
 ## Matron); `"cast": "hero:<id>"` gives an actor whose id isn't the hero's own (Ch9's `vigil_asha`) that hero's
-## field body (HeroFieldActor), nothing when the hero has none yet.
+## field body (HeroFieldActor), nothing when the hero has none yet. A row's `"cast_still": true` holds the body on its
+## idle's first frame with no breathing (Coilspire's Virel in the binding's F07: "perfectly still").
 
 const VILLAGER_SCENE := "res://assets/characters/villagers/%s/%s_actor.tscn"
 const CREATURES_PATH := "res://game/data/creatures/creatures.json"
 const PREFIX_CREATURE := "creature:"
 const PREFIX_HERO := "hero:"
 const KEY_CAST := "cast"
+const KEY_STILL := "cast_still"
 const CAST := &"Cast"
 const STAND_IN := &"StandIn"
 const CLIP_IDLE := &"idle"
@@ -37,9 +39,10 @@ func _ready() -> void:
 		return
 	var rows: Dictionary = zone.layout.get("actors", {})
 	for id: String in rows.keys():
-		var villager := str((rows[id] as Dictionary).get(KEY_CAST, ""))
+		var row := rows[id] as Dictionary
+		var villager := str(row.get(KEY_CAST, ""))
 		if villager != "":
-			cast_actor(StringName(id), villager)
+			shape(cast_actor(StringName(id), villager), row)
 
 
 ## Puts `villager` (or a "creature:" / "hero:" body) on the stage actor `id` and starts its idle; returns the
@@ -72,6 +75,21 @@ func cast_actor(id: StringName, villager: String) -> Node3D:
 	HeroMotion.add_micro_motion(model, id)
 	cast[id] = model
 	return model
+
+
+## Applies a layout row's `cast_still` to a cast body (null: nothing to shape).
+static func shape(model: Node3D, row: Dictionary) -> void:
+	if model == null:
+		return
+	if bool(row.get(KEY_STILL, false)):
+		var micro := HeroMotion.micro_of(model)
+		if micro != null:
+			micro.active = false  # kept, inactive: the sequencer's add_micro_motion finds it and adds no other
+		var anim := HeroMotion.player_of(model)
+		if anim != null and anim.has_animation(CLIP_IDLE):
+			anim.play(CLIP_IDLE)
+			anim.seek(0.0, true)
+			anim.pause()
 
 
 ## The villager's actor scene (or a "creature:" id's model scene), or "" when there is none. A "hero:" cast has no

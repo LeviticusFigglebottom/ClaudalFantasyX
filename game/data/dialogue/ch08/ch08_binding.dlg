@@ -23,6 +23,7 @@ location: ch08/coilspire
 @wait 3.0
 @fade out 0.6
 <<set $ch08_virel_bound = true>>
+@mark virel virel_gone
 @mark asha crown_out
 @camera F06_out
 @fade in 0.8
