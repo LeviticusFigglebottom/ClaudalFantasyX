@@ -54,6 +54,7 @@
   },
   "_hair": {
     "kind": "short",
+    "tufts": true,
     "hairline": "female",
     "seed": 32,
     "length_m": [
