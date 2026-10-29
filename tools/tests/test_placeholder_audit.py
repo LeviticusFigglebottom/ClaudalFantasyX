@@ -119,6 +119,16 @@ class BattleTests(unittest.TestCase):
         self.assertIn("waits for its model", liss[0].what)
 
 
+    def test_a_vowbound_with_its_own_creature_row_has_a_body(self) -> None:
+        """M3-CRB-012: the game finds a Vowbound's model in creatures.json (`vowbound: true` and a `scene`), not only
+        in the sandbox's stand_ins, so such a Vowbound is no placeholder row."""
+        self.assertTrue(any("Vowbound ilun" in i.what for i in pa.check_battle(self.repo.root)), "no row, no body")
+        _write(self.repo.root, "game/data/creatures/creatures.json",
+               {"creatures": {"ilun": {"vowbound": True, "scene": "res://ilun.tscn"}}})
+        _write(self.repo.root, "ilun.tscn", '[node name="Ilun" type="Node3D"]\n')
+        self.assertFalse(any("Vowbound ilun" in i.what for i in pa.check_battle(self.repo.root)))
+
+
 class VfxTests(unittest.TestCase):
     def test_an_act1_boss_without_set_piece_vfx_is_battle_presentations(self) -> None:
         repo = Repo()

@@ -266,8 +266,12 @@ def check_battle(root: Path = ROOT) -> list[Item]:
             out.append(Item("game/data/battle/enemies.json#%s" % fid, "foe %s fights as a primitive stand-in (no model)" % fid, ch, owner, "high", "battle_body"))
         elif not res_to_path(model, root).exists():
             out.append(Item(model.removeprefix("res://"), "foe %s's model scene is missing" % fid, ch, owner, "high", "battle_body"))
+    creature_rows = _json(root / "game/data/creatures/creatures.json").get("creatures", {}) or {}
     for vid in vowbound:
         scene = str((sandbox.get(vid, {}) or {}).get("scene", ""))
+        own = creature_rows.get(vid, {}) or {}
+        if scene == "" and own.get("vowbound"):  # the game's own rule: CreatureModels.vowbound_creature (M3-CRE-638)
+            scene = str(own.get("scene", ""))
         if scene == "" or not res_to_path(scene, root).exists():
             out.append(Item("game/data/battle/vowbound.json#%s" % vid, "Vowbound %s is drawn as a primitive (no actor scene)" % vid, None, OWNER_BOSS, "high", "battle_body"))
     for hero in PARTY:
