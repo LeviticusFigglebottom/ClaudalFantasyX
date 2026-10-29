@@ -1,7 +1,9 @@
 extends TestCase
 ## Queue item "real casts": ZoneCast puts the villager models on the Act I zones' stage actors. Every "cast" in a
 ## zone layout names a villager actor scene, and every zone with casts has a Cast node; in a zone (Tamsule's port),
-## a cast actor shows its model and not its capsule, idles, and two actors with the same model idle out of step.
+## a cast actor shows its model and not its capsule, idles, and two actors with the same model idle out of step. Since
+## M3-CRE-657 a zone's crowd row replaces a generic actor's cast model with its crowd person, so the port test reads the
+## body the actor wears (HeroMotion.player_of), whichever it is.
 
 const ZONES := [
 	"res://game/levels/ch04/brightwater_ferry/brightwater_ferry.tscn",
@@ -53,12 +55,16 @@ func test_a_cast_actor_shows_its_model_and_idles_out_of_step() -> void:
 	var fisher := zone.stage.actor(&"fisher")
 	var boatman := zone.stage.actor(&"boatman")
 	assert_false((fisher.get_node(^"StandIn") as Node3D).visible, "the capsule is hidden")
-	assert_true(fisher.get_node_or_null(^"Cast") != null, "the model is on the actor")
-	var a := HeroMotion.player_of(fisher.get_node(^"Cast"))
-	var b := HeroMotion.player_of(boatman.get_node(^"Cast"))
-	assert_true(a != null and a.is_playing() and a.current_animation == "idle", "the fisher idles")
-	assert_true(b != null and b.is_playing(), "the boatman idles")
-	assert_true(absf(a.current_animation_position - b.current_animation_position) > 0.05, "out of step")
+	# The body the actor wears: ZoneCast's `Cast` model, or (M3-CRE-657, ADR 0152: GreyboxZone wires the zone's
+	# VillagerLayer after ZoneCast) the crowd person who replaces it. The cutscene sequencer finds either the same way.
+	var a := HeroMotion.player_of(fisher)
+	var b := HeroMotion.player_of(boatman)
+	assert_true(a != null and a.get_parent() != fisher.get_node(^"StandIn"), "a body is on the actor")
+	assert_true(a != null and a.is_playing() and a.current_animation != "", "the fisher rests (idles, or works)")
+	assert_true(b != null and b.is_playing(), "the boatman rests")
+	var phase_a := a.current_animation_position / maxf(a.current_animation_length, 0.001) if a != null else 0.0
+	var phase_b := b.current_animation_position / maxf(b.current_animation_length, 0.001) if b != null else 0.0
+	assert_true(a != b and absf(phase_a - phase_b) > 0.01, "out of step")
 	_close()
 
 
