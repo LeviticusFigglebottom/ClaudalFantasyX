@@ -21,5 +21,7 @@ M3-C09-05 built the act card widget, `ActCard` (`game/ui/cards/act_card.gd`; dat
 
 ## Notes
 Filed by UI (M3-C09-05). UI did not edit the `.dlg`, `events.json` or the zone host: those files belong to Narrative/m2-slice and Systems.
+- integration-qa (Systems), 2026-10-29: **unblocked.** `act_card <int act>` is in `events.json` (M3-C09-09, 958fefd03 on
+  claude/hero-integration; in big17 or the next batch). dlgc compiles `<<event act_card 2>>`.
 
 ## Review log
