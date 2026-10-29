@@ -30,7 +30,7 @@ lanes=${HYMN_GATE_LANES:-AB}
 pa=""; pb=""
 [[ $lanes == *A* ]] && (
   export GODOT=$G4/godot HYMN_GODOT_RENDER=/nonexistent HYMN_LOG_DIR=$R/ci HYMN_BLENDER_BASE=$base HYMN_BLENDER_REQUIRED=1
-  export HYMN_BLENDER=$HOME/.cache/hymn/blender-5.0.1+dfsg-5/blender HYMN_STEP_TIMEOUT=2400
+  export HYMN_BLENDER=$HOME/.cache/hymn/blender-5.0.1+dfsg-5/blender HYMN_STEP_TIMEOUT=10800
   mkdir -p $R/ci; a0=$(date +%s)
   bash tools/ci_local.sh > $R/laneA.log 2>&1; echo "laneA exit $? in $(( $(date +%s) - a0 )) s" >> $R/laneA.log
 ) &
