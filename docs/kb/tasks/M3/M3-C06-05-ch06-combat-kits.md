@@ -2,7 +2,7 @@
 id: M3-C06-05
 title: Ch6 combat follow-ups (Liss's real kit, the hound's guard, the Smoke field, Toma's shove, two band exceptions)
 role: combat
-status: doing
+status: review
 owner_session: claude/battle-presentation (session_01UPFyEA8QkJULH74MGgnMvJ; the Lead, 10-29: the Swell techniques)
 depends_on: [M3-C06-02]
 milestone: M3
@@ -37,5 +37,6 @@ M3-C06-02 made Ch6 playable with provisional combat data (`_note` PROVISIONAL ro
     hoist with `tools/vfx/swell_finisher_sheet.gd`.
   - **Still open in item 1 (not this pass):** steal, combine and her gadgets, and her Lattice start. Items 2–9 are
     untouched.
+  - **To review (combat):** the Swell part only. The other items stay open on this task for a combat pass.
 
 ## Review log
