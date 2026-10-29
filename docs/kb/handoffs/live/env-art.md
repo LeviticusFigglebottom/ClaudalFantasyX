@@ -589,6 +589,8 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **To review (checked on this tree, no code change): M2-ENV-12** (m2-slice's off-tree shrine build is in), **M3-C01-04**
+  and **M3-C04-03** (the kits are mounted; `--filter=ch01_thread` 2/0, `--filter=ch04_thread` 3/0).
 - **MERGE-READY @ e1db6170: M3-CRE-663** (the big14 Blender gate's haluna_kit diff), to review: `kirru_roost`'s arch crown
   (`cos(pi/2)`, ~6e-17) snapped to 0 before export. `verify_blender_builds --job haluna_kit` 199 identical natively, under
   `X86_V4` and under `X86_V3 X86_V4`. Only `kirru_roost.glb` changed. Also **M2-HER-1127** to review (the First Verse points at
@@ -684,6 +686,7 @@ Read this section first; everything below it is history. The branch is `claude/e
     (characters/slice-polish), and `reefball_drop_proxy` / `tb_drop_proxy` are env-art-b's (M3-RND-26).
 
 ### PC-QUEUE
+- M2-ENV-12 / M2-RND-17: the Shell Shrine's cold first frame (188 ms measured on m2-slice) on hardware.
 - The Ch4 derelict at night (M3-ENV-1228): how her moon-fill reads at High (D01, the transom, the name-board).
 - `ch01_bell_room`: the room reads washed out in its warm haze on lavapipe (walls, door and Rhen visible). Judge the
   haze and lantern brightness on the real GPU. Also row 4's deck brightness at High.
