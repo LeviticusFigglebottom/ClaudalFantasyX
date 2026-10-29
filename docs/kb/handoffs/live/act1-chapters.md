@@ -346,8 +346,16 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
     the story has them at the run back; the Watchers read as silhouettes, the known storm grade M3-ENV-1229).
   - Ch1's stills (24, slice-polish's chapter): five frames show a wall, a post or nothing (O02, O09, U03, U09, U11);
     filed as M3-CIN-1232 (request to slice-polish). The rest read; the storm is M3-ENV-751's.
-  - IN PROGRESS: the big16 review of Ashcrown on its kit (M3-ENV-1303, reviewer cinematics), from a lead/gate-big16
-    worktree (its tests: ashcrown 22/0, ch05 13/0).
+- **MERGE-READY @ f67d6134: Ashcrown on its kit, staged** (8fc911c7). M3-ENV-1303 was already on the integration
+  branch (I first misread its frames as greybox). A02, A11 and A12 re-staged; Kahre's own body (`creature:kahre`,
+  `cast_still`) stands behind the shut chamber door, seen only in A11; `chamber_in` sits in front of the door; seven
+  POI camera volumes (shot_check solver). **For env-art-b:** hand edits in `ashcrown_layout.json` (shots A02/A11/A12,
+  marks chamber_in/kahre_bound_at, actor kahre, camera_volumes): keep them if you re-run `--relayout`.
+  M3-ENV-1303 reviewed (approved); M3-C05-1215 superseded (to review).
+  - Checks: `--filter=` ch05 13/0, camera 54/0, zone_map 21/0, act1_cutscene_walks 1/0, zone_cast 5/0,
+    hero_cutscene_snaps 1/0; validate_data, dlgc --check, taskboard --check, gdlint, gdformat clean;
+    `test_act1_poi_views`, `test_chapter_flow` OK. Viewed: every Ashcrown still and POI view. Skipped: coverage and
+    sim (no battle or progression code), manifest shots (no shot camera changed; the court's shut door hides Kahre).
 - LEAD-ASK: two task files share the id M3-CRE-627 (`act2-regulars-ch10-11`, blocked by ADR 0041, and my
   `virel-field-body` request). Rename one? I'll leave both as they are unless you say otherwise.
 - (superseded) IN PROGRESS: a fresh title → Ch9 headless playthrough (all `_thread` tests; Ch1 and Ch4–Ch9 cutscene stills).
@@ -368,6 +376,17 @@ RETIRED (TRACK-RULES 10-28 01:00, tracks self-render; rendered below) @ 760a0e4c
 SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbour view reads, the stair and lit houses under Ashcrown's lamps; approve at the gate), ch06_brine_road PASS 0.0032 (Kerrid still a capsule, M3-CHR-505), ch06_brine_camp drift 0.0115 (Ch6's kit pieces in place of the last greybox; the Stillguard casts read as red robes at this distance), ch08_corrow_arrival drift 0.072 (the trader boat and the story pieces; the mole's top is flat, env-art's mole_pier), ch08_corrow_stair drift 0.0087 (Kerrid's capsule in the foreground), ch08_coilspire_hall PASS 0, ch09_corrow_strand drift 0.109 (the lit night: shrouds, lamps, the vigil; the landing still greybox, being replaced now), ch09_corrow_road PASS 0.0072 (Kerrid's capsule). For the Lead's gate: all intended.
 
 ## Exact next step
+**BACKLOG EMPTY (2026-10-29, @ f67d6134):** the fresh title → Ch9 playthrough is done (handoff
+`docs/kb/handoffs/2026-10-29-cinematics-act1-chapters-1.md`). Every `_thread` test passes. Every Act I cutscene of
+Ch1 and Ch4–Ch9 was viewed in flow-order stills, and every problem in my lane is fixed and re-viewed (the fourth pass in
+`docs/kb/qa/act1_playthrough_ch04_ch09.md`). Ashcrown's POIs have camera volumes. What is left waits on filed requests:
+M3-ENV-1228/1229 (night and storm grades), M3-HER-1225 (Sefir), M3-CHR-506 (Pell, on claude/characters), M3-RND-27/28
+(the storm wall and figure), M3-CIN-1231 (the held box), M3-CIN-1232 (Ch1's five frames, slice-polish), M3-HER-1129
+(Coilspire's ramp edge, env-art-b). Act II is paused (ADR 0041).
+1. When any of them lands on the integration branch, re-run that zone's stills and POI views (commands in the
+   handoff) and re-aim D06 at the name-board once the derelict's grade reads.
+
+### Earlier exact next step (2026-10-28, superseded)
 **BACKLOG EMPTY (2026-10-28, @ fe9bb143b):** in act1-chapters' lane, the Ch4-Ch9 playthrough is done. That covers
 cutscene cameras and staging (three passes of stills), field cameras at every zone-map POI, every Act I walk on
 the floor (known list empty), and pacing (no scene holds past its script beyond a visible walk ending). Ch1-Ch3 are
