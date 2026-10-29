@@ -249,6 +249,15 @@
    "scale": 0.686
   },
   {
+   "piece": "lintel_gull_open",
+   "at": [
+    -13.989,
+    -19.0
+   ],
+   "y": 2.249,
+   "yaw_deg": -75.91
+  },
+  {
    "piece": "cookboat",
    "at": [
     -19.6,
@@ -417,7 +426,7 @@
     -36.6
    ],
    "y": 5.69,
-   "yaw_deg": -75.91,
+   "yaw_deg": -69.21,
    "scale": 1.35
   },
   {
@@ -468,6 +477,26 @@
    "yaw_deg": -90.0
   },
   {
+   "piece": "lintel_gull_open",
+   "at": [
+    31.1,
+    -11.7
+   ],
+   "y": 3.25,
+   "yaw_deg": -70.07
+  },
+  {
+   "piece": "ferry_lantern",
+   "at": [
+    32,
+    -9
+   ],
+   "y": 3.0,
+   "yaw_deg": 0.0,
+   "kit_dir": "res://assets/environments/kits/brightwater_ferry/",
+   "block": "KellBeacon"
+  },
+  {
    "piece": "plank_bridge",
    "at": [
     35.0,
@@ -494,7 +523,7 @@
     -9
    ],
    "y": 2.7,
-   "yaw_deg": -69.21
+   "yaw_deg": -76.41
   },
   {
    "piece": "plank_bridge",
@@ -531,6 +560,17 @@
    ],
    "y": -0.5,
    "yaw_deg": 0.0,
+   "block": "LowHull"
+  },
+  {
+   "piece": "salvage_heap",
+   "at": [
+    39,
+    -17
+   ],
+   "y": -0.05,
+   "yaw_deg": 90.0,
+   "scale": 0.65,
    "block": "LowHull"
   },
   {
