@@ -614,7 +614,8 @@ Read this section first; everything below it is history. The branch is `claude/e
     `assets/crowd/*` (creatures', fixed on their branch per CONSOLIDATED); the tree check passes;
   - gdlint and gdformat clean; `placeholder_audit.py` (runtime scan) puts env-art at 3 (was 9), none medium;
   - **skipped:** shots (same geometry under new names; nothing moves).
-- **LEAD-ASK:** the audit still files three rows under env-art (M3-HER-1140) that env-art can't close:
+- **LEAD-ANSWERED (10-29 ~18:00): integration-qa re-routes the three rows; env-art is done with them.** (Was: the
+  audit still files three rows under env-art (M3-HER-1140) that env-art can't close:)
   - the Prologue `City/Vigils` capsule: Pell's vigil, which characters' Pell (big17) or slice-polish's staging replaces;
   - `tamsule_bell/reefball_drop_proxy.glb` and `materials/tb_drop_proxy.tres`: M3-RND-26, which the Lead gave env-art-b.
 
