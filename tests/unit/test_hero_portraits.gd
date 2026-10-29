@@ -18,6 +18,7 @@ const HEROES: Array[StringName] = [
 	&"kerrid",
 	&"moll",
 	&"sefir",
+	&"pell",
 	&"stillguard",
 	&"ivo",
 	# The Act I townsfolk who speak (claude/characters' villager stages; dialogue speaker ids).
@@ -116,7 +117,7 @@ func test_the_lookup_falls_back_to_neutral_then_to_nothing() -> void:
 	assert_false(HeroPortraits.has(&"rhen", &"laugh"), "no laugh portrait is baked")
 	assert_eq(HeroPortraits.texture(&"rhen", &"laugh"), neutral, "an emotion without a portrait: neutral")
 	assert_eq(HeroPortraits.texture(&"rhen"), neutral, "no emotion: neutral")
-	assert_eq(HeroPortraits.texture(&"pell", &"grief"), null, "someone without portraits: null")
+	assert_eq(HeroPortraits.texture(&"purser", &"grief"), null, "someone without portraits: null")
 	assert_eq(HeroPortraits.texture(&"", &"neutral"), null)
 	var face := HeroPortraits.face(&"asha", &"smile") as AtlasTexture
 	assert_true(face != null, "the head crop")
@@ -124,7 +125,7 @@ func test_the_lookup_falls_back_to_neutral_then_to_nothing() -> void:
 		var r: Array = HeroPortraits.data()["face_region"]
 		assert_eq(face.region, Rect2(float(r[0]), float(r[1]), float(r[2]), float(r[3])))
 		assert_eq(face.atlas, HeroPortraits.texture(&"asha", &"smile"))
-	assert_eq(HeroPortraits.face(&"pell"), null)
+	assert_eq(HeroPortraits.face(&"purser"), null)
 	assert_eq(HeroPortraits.page_emotion(&"status"), &"neutral")
 	assert_eq(HeroPortraits.page_emotion(&"status", true), &"worried", "a fallen hero looks worried")
 	assert_eq(HeroPortraits.page_emotion(&"equip", true), &"determined", "no fallen pose: the page's own")
@@ -140,7 +141,7 @@ func test_the_frame_shows_the_picture_or_the_initial() -> void:
 	assert_eq(frame.picture().texture, HeroPortraits.texture(&"toma", &"worried"))
 	assert_true(frame.picture().visible)
 	assert_eq(frame.initial_text(), "", "no initial over a picture")
-	frame.show_hero(&"pell", "Pell")
+	frame.show_hero(&"purser", "Purser")
 	assert_true(frame.picture().texture == null, "no picture")
 	assert_eq(frame.initial_text(), "P", "the old initial as the last fallback")
 	frame.crop = HeroPortraitFrame.Crop.FACE
