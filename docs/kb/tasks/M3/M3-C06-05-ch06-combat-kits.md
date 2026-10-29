@@ -2,8 +2,8 @@
 id: M3-C06-05
 title: Ch6 combat follow-ups (Liss's real kit, the hound's guard, the Smoke field, Toma's shove, two band exceptions)
 role: combat
-status: todo
-owner_session: ""
+status: doing
+owner_session: claude/battle-presentation (session_01UPFyEA8QkJULH74MGgnMvJ; the Lead, 10-29: the Swell techniques)
 depends_on: [M3-C06-02]
 milestone: M3
 request-from: cinematics

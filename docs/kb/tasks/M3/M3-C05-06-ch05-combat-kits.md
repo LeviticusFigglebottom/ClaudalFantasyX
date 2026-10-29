@@ -2,8 +2,8 @@
 id: M3-C05-06
 title: Ch5 combat follow-ups (Kerrid's real kit, Kahre, the Matron's smart band, the Quench Charm)
 role: combat
-status: todo
-owner_session: ""
+status: doing
+owner_session: claude/battle-presentation (session_01UPFyEA8QkJULH74MGgnMvJ; the Lead, 10-29: the Swell techniques)
 depends_on: [M3-C05-02]
 milestone: M3
 request-from: cinematics
