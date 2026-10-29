@@ -37,3 +37,5 @@ SET_PREVIEW_TEXT_CAPTION,The words appear this fast:
 SET_PREVIEW_TEXT_SAMPLE,"The tide came in at dawn, and the whole village went down to meet it."
 SET_PREVIEW_BATTLE_CAPTION,Each action holds this long:
 SET_PREVIEW_BATTLE_FMT,{sec} seconds an action
+TIP_SWELL_TITLE,Swell
+TIP_SWELL_BODY,"Each hero's Swell gauge fills as they fight. When it is full, choose Swell in battle to unleash a technique. Under Swell in the field menu, choose what fills it."

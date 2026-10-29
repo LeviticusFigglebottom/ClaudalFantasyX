@@ -231,5 +231,6 @@ flags = {
 "codex_the_calm_read": "Codex (ui-menus, M3-NAR-01 Act I additions, game/data/lore/codex.json): the entry 'the_calm' has been opened in the Codex (clears its New marker).",
 "codex_cantors_read": "Codex (ui-menus, M3-NAR-01 Act I additions, game/data/lore/codex.json): the entry 'cantors' has been opened in the Codex (clears its New marker).",
 "codex_ebbing_read": "Codex (ui-menus, M3-NAR-01 Act I additions, game/data/lore/codex.json): the entry 'ebbing' has been opened in the Codex (clears its New marker).",
-"codex_moll_read": "Codex (ui-menus, M3-NAR-01 Act I additions, game/data/lore/codex.json): the entry 'moll' has been opened in the Codex (clears its New marker)."
+"codex_moll_read": "Codex (ui-menus, M3-NAR-01 Act I additions, game/data/lore/codex.json): the entry 'moll' has been opened in the Codex (clears its New marker).",
+"tut_swell_seen": "Tutorial seen-flag (ui-menus, the Lead's Act I onboarding pass, 2026-10-29): the tip about the Swell gauge, its techniques and its fill modes has been shown."
 }
