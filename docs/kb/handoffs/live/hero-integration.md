@@ -1432,3 +1432,20 @@ MERGE-READY @ 37adb2fb3 (+ this log):
 ### PC-QUEUE
 - **M1-QA-09** (qa, todo): the next Asha real-GPU re-check (grief) with the QA-08 rigour fixes. It needs the PC's GPU
   and waits on M1-RND-24 and M1-CHR-12. Not runnable in a cloud container.
+
+### big17 is on integration (96222b301, 22:00); merged here @ 198230aed
+- pc-gpu.md: took integration's. Tools suites green (trial_merge, merge_union, taskboard, placeholder_audit,
+  post_import, freed_cast_lint, dlgc). validate_data 0/0. taskboard --check shows only M3-CRE-627's duplicate
+  (act1-chapters' rename pending).
+
+### TRIAL MERGE, 2026-10-29 ~22:10 @ integration 502f6999 (big17 in; no prefold)
+env-art d63eeea3, env-art-b 0e9db81d, creatures 93829b74, creatures-b 4d0150e3, characters a5b60821, ui a8df61a8,
+battle-presentation 8da23b91, act1-chapters 72254f9f, m2-slice 7e0bba54, audio 1cb9654d, hero-integration 294d98de.
+The same clashes as at 21:00, with the same resolvers, now against integration itself:
+- M3-ENV-750 task file (env-art: take env-art's);
+- ownership.md (env-art-b: by hand);
+- test_zone_cast.gd (creatures vs env-art-b);
+- characters' `cast` edits in oruvel, ashcrown and coilspire layouts, plus test_fp_prologue.gd;
+- act1-chapters' generated layouts, ch08_coilspire_dressing.py and M3-ENV-744;
+- **test_hero_field_actor.gd: take hero-integration's** (characters' assumes Sefir has no field row).
+- shots.json resolves everywhere (merge_union's virtual-base path).
