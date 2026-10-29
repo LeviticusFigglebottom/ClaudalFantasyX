@@ -63,5 +63,5 @@ GATE-PLAYABLE big17 @ 1a986abf (21:00 UTC, the human asked to play it at once): 
 Data 0/0, lint and format clean, the suite has 3241 run and 5 failed (only the Pell portrait is new; see above), the boot
 smoke is clean, and Blender so far is 12/12 identical. The screenshots (67/612 at 21:00, ~01:00 UTC to finish) and
 the rest of Blender keep running for the Lead's baseline review; GATE-DONE follows.
-LEAD-ASK: the human wants to play big17 now. Merge lead/gate-big17 @ 1a986abf into the integration branch ahead of the
+LEAD-ANSWERED (21:07, merged into claude/new-session-mj8c3c @ 96222b30): the human wants to play big17 now. Merge lead/gate-big17 @ 1a986abf into the integration branch ahead of the
 shots? The gate session doesn't touch the integration branch; until then the human can play `lead/gate-big17` directly.
