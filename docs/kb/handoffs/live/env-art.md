@@ -589,6 +589,10 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **2026-10-29 ~23:15, IN PROGRESS: the Lead's final-quality audit of Prologue–Ch4 as played, on `lead/gate-big18`
+  @ d00d3284** (a scratch worktree; it holds env-art's head). Per zone, at player eye: four-way vistas at every spawn,
+  every NPC from the front, every interactable, door and zone transition from its approach (~330 stills, points from
+  each zone's layout and a headless dump of its scene). Findings and fixes follow here as they land.
 - **MERGE-READY @ e557740d: the Lead's two big17 reds (both already red on big16 @ ff82858c), fixed; integration
   ccf44ba4 merged in first.**
   - **`test_iskarra_city::test_the_city_instances_its_pieces_with_kit_materials`** ("VigilLights has meshes"): my lit vigil
