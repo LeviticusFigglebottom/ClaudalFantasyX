@@ -589,7 +589,7 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
-- **2026-10-29, IN PROGRESS (pushed, not merge-ready until viewed): the player-height walk-through on this tree**
+- **MERGE-READY @ c3038a18: the player-height walk-through on this tree, done (all nine walks viewed)**
   (`tools/act1/walkthrough.py`, all nine walks).
   - **Viewed, fine:** Haluna (14 frames), Haluna's shop, forge and save shrine from the customer's side, the Prologue
     (9), the Underway (10). Frames looking out of a wall or the water are my straight-line path, not the dressing.
@@ -602,10 +602,18 @@ Read this section first; everything below it is history. The branch is `claude/e
     - **Haluna's inn:** the innkeeper stood under a bare awning. New Haluna kit piece `inn_hearth` (a stone cook
       hearth with a lidded pot, split wood, a serving bench with bowls, a ladle and a jar), 2.4 m behind the
       innkeeper as the forge stands behind the smith. Every other Haluna glb is byte-identical.
-  - Run so far: `test_oruvel_kit`, `test_zone_dressing_ch01`, `test_haluna_kit`, `test_haluna_dressing` (59 OK after
-    the kit-row fix), validate_data. Next: view the re-rendered Oruvel walk and the inn close-ups, self-render
-    `zone_oruvel_o01/o07/o09/o12/o16`, `ch01_oruvel_dressed`, `ch01_scale_hull`, `ch01_kell_stall`, `ch01_net_pen`,
-    `oruvel_o01_surfacing`; then the causeway, Shell Shrine, ferry and wake walks.
+  - **Also viewed, fine:** the causeway (11), the Shell Shrine (7), the ferry (8), the Ch4 wake night (12).
+  - **Checks run:** `test_oruvel_kit`, `test_zone_dressing_ch01`, `test_haluna_kit`, `test_haluna_dressing` (59 OK),
+    validate_data, gdlint; Blender `haluna_kit` and `oruvel_kit` full rebuilds (only the new pieces and the manifests
+    changed). **Skipped:** Godot tests (no code changed; the layouts' pieces load through the existing dressers).
+  - **SELF-RENDERED and viewed:** the Oruvel walk again (the decks are clean planking; seams show water between lashed
+    rafts), four inn close-ups (hearth, pot, wood, bench, jar read behind the innkeeper), and 10 shots:
+    - `oruvel_o01_surfacing` rmse 0.0046 (pass);
+    - `ch01_oruvel_dressed` 0.22: its baseline predates big16's Oruvel re-layout; the commons now reads clean.
+      **Re-approve at the gate.**
+    - first renders, no baseline yet (viewed, read right): `zone_oruvel_o01/o07/o09/o12/o16`, `ch01_kell_stall`,
+      `ch01_scale_hull`, `ch01_net_pen`.
+    - Haluna shots that frame the inn (lane 2, the town) drift by the hearth; the gate's full run shows which.
 - **MERGE-READY @ 3bd6865f: M3-ENV-750 done; the inventory's four Haluna tree rows are gone.** The checks that were
   still owed have now run:
   - `haluna_kit` Blender verify: 197 identical, the hand-trimmed manifest included;
@@ -634,6 +642,8 @@ Read this section first; everything below it is history. The branch is `claude/e
     (characters/slice-polish), and `reefball_drop_proxy` / `tb_drop_proxy` are env-art-b's (M3-RND-26).
 
 ### PC-QUEUE
+- The Ch4 wake night's lagoon reads bright turquoise close to the dock (lavapipe). It is the water shader's night
+  sea-glow, the same look as the approved `haluna_h10_dock_night`, only nearer. Judge its brightness on the real GPU.
 - GPU QA rows 4, 19, 23, 24 and 25 (`act1_gpu_qa.md` on `gpu/act1-qa-2`): fixed @ 4c85ffb7b, after the QA file was
   written. They need the PC to look again on the real GPU.
 - **The Lead's 17:37 follow-up (big15's `test_the_town_is_dressed_over_the_greybox`, "LowHull (a story block) is not
