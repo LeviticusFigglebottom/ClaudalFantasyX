@@ -7,7 +7,7 @@
  "lod1_from_m": 70.0,
  "lod_end_m": 4000.0,
  "lod_margin_m": 2.0,
- "environment": "res://assets/environments/zones/ch05/ch05_ashcrown_day_environment.tres",
+ "environment": "res://game/levels/ch05/ashcrown/ashcrown_day_environment.tres",
  "time_of_day_h": 13.0,
  "greybox": {
   "hide_all": true,
@@ -175,7 +175,24 @@
    ],
    "y": 0.0,
    "yaw_deg": 0.0,
-   "lod1_from_m": 200.0
+   "lod1_from_m": 200.0,
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "anvil_hall",
@@ -185,7 +202,24 @@
    ],
    "y": 0.0,
    "yaw_deg": 0.0,
-   "lod1_from_m": 200.0
+   "lod1_from_m": 200.0,
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "ashcrown_tiers",
@@ -195,7 +229,24 @@
    ],
    "y": 0.0,
    "yaw_deg": 0.0,
-   "lod1_from_m": 600.0
+   "lod1_from_m": 600.0,
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "crest_ground",
@@ -206,7 +257,24 @@
    "y": 0.0,
    "yaw_deg": 0.0,
    "lod1_from_m": 3000.0,
-   "collide": "trimesh"
+   "collide": "trimesh",
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "crown_pavilion",
@@ -216,7 +284,24 @@
    ],
    "y": 0.0,
    "yaw_deg": 0.0,
-   "lod1_from_m": 600.0
+   "lod1_from_m": 600.0,
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "flying_stair",
@@ -226,7 +311,24 @@
    ],
    "y": 0.0,
    "yaw_deg": 0.0,
-   "lod1_from_m": 600.0
+   "lod1_from_m": 600.0,
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "forecourt",
@@ -236,7 +338,24 @@
    ],
    "y": 0.0,
    "yaw_deg": 0.0,
-   "lod1_from_m": 600.0
+   "lod1_from_m": 600.0,
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "pilgrim_causeway",
@@ -246,7 +365,24 @@
    ],
    "y": 0.0,
    "yaw_deg": 0.0,
-   "lod1_from_m": 600.0
+   "lod1_from_m": 600.0,
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "plume_vent",
@@ -256,7 +392,24 @@
    ],
    "y": 0.0,
    "yaw_deg": 0.0,
-   "lod1_from_m": 600.0
+   "lod1_from_m": 600.0,
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "ash_plume_near",
@@ -574,7 +727,24 @@
    ],
    "y": 42.0,
    "yaw_deg": 0.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "vein_gate",
@@ -585,7 +755,24 @@
    "y": 42.0,
    "yaw_deg": 0.0,
    "block": "g1",
-   "turn_with": "g1"
+   "turn_with": "g1",
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "strike_bowl",
@@ -595,7 +782,24 @@
    ],
    "y": 42.0,
    "yaw_deg": 0.0,
-   "block": "Bowl_t1"
+   "block": "Bowl_t1",
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "catch_rod",
@@ -605,7 +809,24 @@
    ],
    "y": 42.0,
    "yaw_deg": 0.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "release_lever",
@@ -615,7 +836,24 @@
    ],
    "y": 36.0,
    "yaw_deg": 0.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "vein_gate",
@@ -626,7 +864,24 @@
    "y": 36.0,
    "yaw_deg": 0.0,
    "block": "g2a",
-   "turn_with": "g2a"
+   "turn_with": "g2a",
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "vein_gate",
@@ -637,7 +892,24 @@
    "y": 36.0,
    "yaw_deg": 0.0,
    "block": "g2b",
-   "turn_with": "g2b"
+   "turn_with": "g2b",
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "strike_bowl",
@@ -647,7 +919,24 @@
    ],
    "y": 36.0,
    "yaw_deg": 0.0,
-   "block": "Bowl_t2"
+   "block": "Bowl_t2",
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "catch_rod",
@@ -657,7 +946,24 @@
    ],
    "y": 36.0,
    "yaw_deg": 0.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "ash_drift",
@@ -667,7 +973,24 @@
    ],
    "y": 36.0,
    "yaw_deg": 90.0,
-   "block": "AshDrift"
+   "block": "AshDrift",
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "release_lever",
@@ -677,7 +1000,24 @@
    ],
    "y": 30.0,
    "yaw_deg": 0.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "vein_gate",
@@ -688,7 +1028,24 @@
    "y": 30.0,
    "yaw_deg": 0.0,
    "block": "g3a",
-   "turn_with": "g3a"
+   "turn_with": "g3a",
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "vein_gate",
@@ -699,7 +1056,24 @@
    "y": 30.0,
    "yaw_deg": 0.0,
    "block": "g3b",
-   "turn_with": "g3b"
+   "turn_with": "g3b",
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "vein_gate",
@@ -710,7 +1084,24 @@
    "y": 30.0,
    "yaw_deg": 0.0,
    "block": "g3c",
-   "turn_with": "g3c"
+   "turn_with": "g3c",
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "strike_bowl",
@@ -720,7 +1111,24 @@
    ],
    "y": 30.0,
    "yaw_deg": 0.0,
-   "block": "Bowl_t3"
+   "block": "Bowl_t3",
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "catch_rod",
@@ -730,7 +1138,24 @@
    ],
    "y": 30.0,
    "yaw_deg": 0.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "quench_seal",
@@ -740,7 +1165,24 @@
    ],
    "y": 30.0,
    "yaw_deg": 90.0,
-   "block": "QuenchSeal"
+   "block": "QuenchSeal",
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "quench_trough",
@@ -750,7 +1192,24 @@
    ],
    "y": 30.0,
    "yaw_deg": 0.0,
-   "block": "QuenchTrough"
+   "block": "QuenchTrough",
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "release_lever",
@@ -760,7 +1219,24 @@
    ],
    "y": 24.0,
    "yaw_deg": 0.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "vein_gate",
@@ -771,7 +1247,24 @@
    "y": 24.0,
    "yaw_deg": 0.0,
    "block": "g4a",
-   "turn_with": "g4a"
+   "turn_with": "g4a",
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "floor_plate",
@@ -781,7 +1274,24 @@
    ],
    "y": 24.0,
    "yaw_deg": 0.0,
-   "block": "PlateA"
+   "block": "PlateA",
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "floor_plate",
@@ -791,7 +1301,24 @@
    ],
    "y": 24.0,
    "yaw_deg": 0.0,
-   "block": "PlateB"
+   "block": "PlateB",
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "vein_gate",
@@ -802,7 +1329,24 @@
    "y": 24.0,
    "yaw_deg": 0.0,
    "block": "g4b",
-   "turn_with": "g4b"
+   "turn_with": "g4b",
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "strike_bowl",
@@ -812,7 +1356,24 @@
    ],
    "y": 24.0,
    "yaw_deg": 0.0,
-   "block": "Bowl_t4"
+   "block": "Bowl_t4",
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "catch_rod",
@@ -822,7 +1383,24 @@
    ],
    "y": 24.0,
    "yaw_deg": 0.0,
-   "collide": true
+   "collide": true,
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "stair_chain",
@@ -832,7 +1410,24 @@
    ],
    "y": 42.0,
    "yaw_deg": 90.0,
-   "block": "Stair_t2"
+   "block": "Stair_t2",
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "stair_chain",
@@ -842,7 +1437,24 @@
    ],
    "y": 36.0,
    "yaw_deg": 90.0,
-   "block": "Stair_t3"
+   "block": "Stair_t3",
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "stair_chain",
@@ -852,7 +1464,24 @@
    ],
    "y": 30.0,
    "yaw_deg": 90.0,
-   "block": "Stair_t4"
+   "block": "Stair_t4",
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "stair_chain",
@@ -862,7 +1491,24 @@
    ],
    "y": 24.0,
    "yaw_deg": 90.0,
-   "block": "StairDownChained"
+   "block": "StairDownChained",
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "stair_chain",
@@ -871,7 +1517,24 @@
     16.015
    ],
    "y": 12.0,
-   "yaw_deg": 90.0
+   "yaw_deg": 90.0,
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "stair_chain",
@@ -880,7 +1543,24 @@
     16.015
    ],
    "y": 12.0,
-   "yaw_deg": 90.0
+   "yaw_deg": 90.0,
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "stair_chain",
@@ -889,7 +1569,24 @@
     12.579
    ],
    "y": 18.0,
-   "yaw_deg": 90.0
+   "yaw_deg": 90.0,
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "stair_chain",
@@ -898,7 +1595,24 @@
     12.579
    ],
    "y": 18.0,
-   "yaw_deg": 90.0
+   "yaw_deg": 90.0,
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "stair_chain",
@@ -907,7 +1621,24 @@
     9.144
    ],
    "y": 24.0,
-   "yaw_deg": 90.0
+   "yaw_deg": 90.0,
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "stair_chain",
@@ -916,7 +1647,24 @@
     5.709
    ],
    "y": 30.0,
-   "yaw_deg": 90.0
+   "yaw_deg": 90.0,
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "stair_chain",
@@ -925,7 +1673,24 @@
     2.274
    ],
    "y": 36.0,
-   "yaw_deg": 90.0
+   "yaw_deg": 90.0,
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "stair_chain",
@@ -934,7 +1699,24 @@
     -1.162
    ],
    "y": 42.0,
-   "yaw_deg": 90.0
+   "yaw_deg": 90.0,
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "grave_curb",
@@ -1025,7 +1807,24 @@
    ],
    "y": -4.0,
    "yaw_deg": 90.0,
-   "block": "MatronAlcove"
+   "block": "MatronAlcove",
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "chamber_door",
@@ -1035,7 +1834,24 @@
    ],
    "y": -4.0,
    "yaw_deg": 0.0,
-   "block": "ChamberDoor"
+   "block": "ChamberDoor",
+   "material_paths": {
+    "ac_copper_vein": "res://game/levels/ch05/ashcrown/ashcrown_copper_vein_material.tres",
+    "ac_vein_t0": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_copper_new": "res://game/levels/ch05/ashcrown/ashcrown_copper_new_material.tres",
+    "ac_gold_leaf": "res://game/levels/ch05/ashcrown/ashcrown_gold_leaf_material.tres",
+    "ac_lacquer_red": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_red_material.tres",
+    "ac_lacquer_black": "res://game/levels/ch05/ashcrown/ashcrown_lacquer_black_material.tres",
+    "ac_ashlar": "res://game/levels/ch05/ashcrown/ashcrown_ashlar_material.tres",
+    "ac_dressed": "res://game/levels/ch05/ashcrown/ashcrown_dressed_material.tres",
+    "ac_vein_t1": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t2": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t3": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t4": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t5": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_t6": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres",
+    "ac_vein_floor": "res://game/levels/ch05/ashcrown/ashcrown_vein_material.tres"
+   }
   },
   {
    "piece": "open_hand_gate",
