@@ -793,6 +793,18 @@ that test at this branch's zones.
 - **Next:** what's open in my lane: Ch14's after-the-trap state (M4-A2P-104), Ch15's shoal and dawn (M4-A2P-105) and
   the Choir (M4-A2P-106) all wait on chapters. Meanwhile I'll make the Ebbing rig per-zone, so the shoal is ready
   when its mark lands.
+- **Merged integration (big19) @ 8714e3bf.** `PROVENANCE.md` and `shots.json` were unions: all 31 of my shots are
+  kept, 654 ids, all unique. Re-checked on the merged tree:
+  - Godot: ansedra, sanctum, lamp_archive, lacquer_court, hollowmere, open_sea, pale_rim, ripple, battle_arenas 10,
+    water 49, zone_kit 13, dressing 31, pemakar 10, ashcrown 22, corrow 18, all 0 failed;
+  - every tools test of my generators and kits; validate_data 0/0; taskboard; lint.
+- **The Ebbing reads a zone's own data (M4-A2P-045) @ 3c2ba4cb.**
+  - `EbbingMotes.data_path` defaults to Ch9's file, and `ZoneKitDressing` passes `"ebbing": {"data": ...}` through.
+  - `game/data/vfx/ebbing_ch15_open_sea.json`: one held field at the `shoal` mark under the barge, its attractor at
+    Kerrid's hands. The open sea's dressing names it, and it plays when chapters' reveal cue names the mark
+    (M4-A2P-105).
+  - Godot ebbing 8/0 (new `test_ebbing_zone_data`), ch09 13/0, open_sea 2/0.
+  - **MERGE-READY @ 3c2ba4cb.**
 
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
