@@ -477,3 +477,21 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - **LEAD-ASK:** the drafts run under the sheets' §8 word budgets. Ch17 is about 460 spoken against an 880–1,300 band; Ch18's critical path about 265 against about 650. The hinge scenes are spare on purpose. Grow the field barks, revisits and heirlooms to the band, or revise §8?
 - MERGE-READY Act III drafts Ch17–Ch18 @ 9c44186b7
 - BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114 (act1-chapters), M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Act III drafts, Ch19–Ch20 and the Ending (Lead; planning only)
+- The Lead's answer to the word-budget LEAD-ASK: drafts stay lean, and expansion comes when Act III production opens. **Closed.**
+- `docs/kb/story/act3/drafts/` now holds **73 draft files** (46 new: Ch19 7, Ch20 18, Ch21 and the Ending 21). Every beat on the three sheets is drafted. Nothing under `game/` reads them.
+- **check_drafts.py:** 73 files, 0/0.
+  - It now adds draft speakers from the README table to its temporary copy only.
+  - New light rules: rising only in a lifting, a release, the Letting's sleeve, Sefir's lift, and from H09 on; nothing held or bound after H09. A planted bad file trips the H09 rule.
+- Other checks: validate_data 0/0 · dlgc --check 0/0 (the game unchanged) · taskboard clean.
+- **For review** (drafts/README, decisions 10–16):
+  - shot ids: I, U, HT and E;
+  - the vigil line has its own id, verbatim;
+  - Lamptongue placeholders (Audio owns the lyrics; H07's sung text isn't written);
+  - fight lines as bark nodes: **Combat needs a mid-battle line hook**, plus new encounter ids;
+  - Dace speaks only in E2;
+  - T-08 and T-09 as optional inserts;
+  - a new flag, `ch21_unbound`.
+- MERGE-READY Act III drafts Ch19–Ending @ 3a7f19d73
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114 (act1-chapters), M4-A2P-112 items 3, 5 and 6.
