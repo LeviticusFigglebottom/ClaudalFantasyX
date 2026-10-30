@@ -37,6 +37,7 @@ RIGS = {
     "ch12/cloudloom": "ch12_cloudloom_shots",
     "ch13/ansedra": "ch13_ansedra_shots", "ch13/sanctum": "ch13_sanctum_shots",  # M4-A2P-013
     "ch13/lamp_archive": "ch13_lamp_archive_shots",
+    "ch13/ansedra_lacquer_court": "ch14_lacquer_court_shots",  # M4-A2P-014
 }
 RIG_DIR = "game/levels/_tests/act1_zones"
 PREVIEW = ROOT / RIG_DIR / "_preview"

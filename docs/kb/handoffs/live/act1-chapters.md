@@ -537,6 +537,12 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - Next: Ch14's cameras (W02–W07; the lagoon L01–L04 waits on the night variant).
 - MERGE-READY @ 882564c90
 
+- **Ch14 court cameras (M4-A2P-014, claimed):**
+  - Added W02–W07 (viewed), `court_*` marks, the `Steps` spawn, and the Entry, Colonnade and Barge volumes.
+  - field_camera, ch14 and layout are green.
+  - Next: Ch15's open_sea and Hollowmere cameras (U02–U07, H02–H04).
+- MERGE-READY @ (this push)
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
