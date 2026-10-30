@@ -585,7 +585,7 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - Requested the on-stage readout from battle-presentation (M3-BPR-440).
   - Checks: drain, formulas, battle_engine (59/0), validate, lint and format.
   - Next: M4-A2P-020, rooted (the root crab's Root Drag refuses the swap).
-- MERGE-READY @ (this push)
+- MERGE-READY @ 1993229a2
 
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
