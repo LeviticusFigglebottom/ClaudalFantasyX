@@ -792,7 +792,7 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
       (the Lead, 10-29). I'll take it if the Lead hands it back.
   - **Next:** "Ch10 shots after these". Ch10's shots are on the dressing now (M4-A2P-0401 viewed F01–F03).
     Re-checking the rest against the dressing next.
-- MERGE-READY @ (this push)
+- MERGE-READY @ a063bbad3 (rows 39 fixed, 34 traced)
 
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
