@@ -22,8 +22,9 @@ sound a player can meet from the title through Ch9, from the data the runtime re
   ui core     the cursor, confirm, cancel and error rows, and every hook's signal rows, on disk
   notes       audio data rows whose own note says stand-in, temp, placeholder, sketch or "no scene yet"
 
-Run: python3 tools/audio/act1_audio_audit.py [--md]   (exit 1 while any item is open:
-tools/tests/test_act1_audio_audit.py gates on it, M3-AUD-864)"""
+Run: python3 tools/audio/act1_audio_audit.py [--md] [--act 2]   (exit 1 while any Act I item is open:
+tools/tests/test_act1_audio_audit.py gates on it, M3-AUD-864. `--act 2` audits Ch10-Ch16 the same way as a report,
+exit 0: the Act II audio inventory for ADR 0203's gate.)"""
 from __future__ import annotations
 
 import argparse
@@ -34,6 +35,39 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 ACT1_DIRS = ["prologue"] + [f"ch0{i}" for i in range(1, 10)]
+# The act under audit (set_act): its level and dialogue folders, its encounter, flag and dialogue-path patterns, and
+# the later acts a data note may name without being a temp note. Act I's are the defaults; `--act 2` (ADR 0203
+# preparation, report-only) audits Ch10-Ch16 the same way.
+ACT = 1
+IN_ACT_ENC = re.compile(r"(?!ch(1[0-9]|2[0-9])_)")   # Act I: every encounter id but Ch10+'s
+ACT_FLAG = re.compile(r"ch0[1-9]_")
+ACT_DLG = re.compile(r"(prologue|ch0[1-9]|slice|act1|vertical)")
+LATER_NOTE = re.compile(r"act[23]|Act I{2,3}\b|Ch1[0-9]|Ch2[0-9]")
+
+
+def set_act(n: int) -> None:
+    """Point every section at act `n` (1 or 2)."""
+    global ACT, ACT1_DIRS, IN_ACT_ENC, ACT_FLAG, ACT_DLG, LATER_NOTE
+    ACT = n
+    if n == 1:
+        ACT1_DIRS = ["prologue"] + [f"ch0{i}" for i in range(1, 10)]
+        IN_ACT_ENC = re.compile(r"(?!ch(1[0-9]|2[0-9])_)")
+        ACT_FLAG = re.compile(r"ch0[1-9]_")
+        ACT_DLG = re.compile(r"(prologue|ch0[1-9]|slice|act1|vertical)")
+        LATER_NOTE = re.compile(r"act[23]|Act I{2,3}\b|Ch1[0-9]|Ch2[0-9]")
+    elif n == 2:
+        ACT1_DIRS = [f"ch1{i}" for i in range(0, 7)]
+        IN_ACT_ENC = re.compile(r"ch1[0-6]_")
+        ACT_FLAG = re.compile(r"ch1[0-6]_")
+        ACT_DLG = re.compile(r"/ch1[0-6]/|act2")
+        LATER_NOTE = re.compile(r"act3|Act III\b|Ch1[7-9]|Ch2[0-9]")
+    else:
+        raise ValueError(f"no act {n}")
+
+
+def _later(enc_id: str) -> bool:
+    """An encounter outside the act under audit."""
+    return not IN_ACT_ENC.match(enc_id)
 DATA = ROOT / "game" / "data"
 AUDIO = DATA / "audio"
 # Reported cases that are right as they are, each with its reason (printed under "By design", never counted)
@@ -110,7 +144,7 @@ def _act1_enemies() -> list[str]:
     ids = list(enemies) if isinstance(enemies, dict) else [r["id"] for r in enemies]
     fielded: dict[str, set] = {}
     for e in _json(DATA / "battle" / "encounters.json")["encounters"]:
-        later = bool(re.match(r"ch(1[0-9]|2[0-9])_", e["id"]))
+        later = _later(e["id"])
         for f in e.get("enemies", []):
             fielded.setdefault(f, set()).add(later)
     return [i for i in ids if i not in fielded or False in fielded[i]]
@@ -163,7 +197,7 @@ def audit_skills() -> list[str]:
     named += (DATA / "vfx" / "battle" / "boss_vfx.json").read_text(encoding="utf-8")
     # a skill only later-act foes use is paused with them (ADR 0041)
     later = {e for enc in _json(DATA / "battle" / "encounters.json")["encounters"]
-             if re.match(r"ch(1[0-9]|2[0-9])_", enc["id"]) for e in enc.get("enemies", [])}
+             if _later(enc["id"]) for e in enc.get("enemies", [])}
     act1_foes = set(_act1_enemies())
     users: dict[str, set] = {}
     for f in _json(DATA / "battle" / "enemies.json")["enemies"]:
@@ -217,7 +251,7 @@ def audit_abilities() -> list[str]:
     vmap = _json(DATA / "vfx" / "battle" / "effects.json")["map"].get("skills", {})
     rows = _json(AUDIO / "battle_sfx.json")["vfx"]
     later = {e for enc in _json(DATA / "battle" / "encounters.json")["encounters"]
-             if re.match(r"ch(1[0-9]|2[0-9])_", enc["id"]) for e in enc.get("enemies", [])}
+             if _later(enc["id"]) for e in enc.get("enemies", [])}
     act1_foes = set(_act1_enemies())
     users: dict[str, set] = {}
     for f in _json(DATA / "battle" / "enemies.json")["enemies"]:
@@ -240,7 +274,7 @@ def audit_intros() -> list[str]:
     by = stings.get("by_arg", {})
     out = []
     for enc, row in intro.get("rows", {}).items():
-        if re.match(r"ch(1[0-9]|2[0-9])_", enc):
+        if _later(enc):
             continue
         if enc not in by:
             out.append(f"boss intro `{enc}` ({row.get('enemy')}) plays the shared `{stings.get('sfx')}` sting")
@@ -254,7 +288,7 @@ def _dlg_files() -> list[Path]:
     act1 = []
     for p in out:
         rel = p.relative_to(ROOT).as_posix()
-        m = re.search(r"(prologue|ch0[1-9]|slice|act1|vertical)", rel)
+        m = ACT_DLG.search(rel)
         if m:
             act1.append(p)
     return act1
@@ -343,7 +377,7 @@ def audit_notes() -> list[str]:
             if isinstance(o, dict):
                 for k, v in o.items():
                     if k in ("_note", "note") and isinstance(v, str) and TEMP_WORDS.search(v) \
-                            and not re.search(r"act[23]|Act I{2,3}\b|Ch1[0-9]|Ch2[0-9]", v):
+                            and not LATER_NOTE.search(v):
                         out.append(f"{p.name}:{path}: {v[:140]}")
                     else:
                         walk(v, f"{path}.{k}" if path else k)
@@ -425,8 +459,8 @@ def audit_battle_events() -> list[str]:
     stings = bsfx.get("vowbound_stings", {})
     for v in _json(DATA / "battle" / "vowbound.json")["vowbound"]:
         flag = str(v.get("bound_flag", ""))
-        if not re.match(r"ch0[1-9]_", flag):
-            continue  # bound after Act I (paused, ADR 0041)
+        if not ACT_FLAG.match(flag):
+            continue  # bound in another act
         if v["id"] not in stings:
             out.append(f"Vowbound `{v['id']}` (bound by {flag}): no call sting in battle_sfx vowbound_stings")
         elif _row_problem(rows, stings[v["id"]]):
@@ -500,7 +534,9 @@ SECTIONS = [("Zones", audit_zones), ("Enemies", audit_enemies), ("Battles", audi
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--md", action="store_true", help="print as a markdown list")
+    ap.add_argument("--act", type=int, default=1, help="1 (the gate) or 2 (ADR 0203 preparation: a report, exit 0)")
     args = ap.parse_args()
+    set_act(args.act)
     total = 0
     held = []
     for name, fn in SECTIONS:
@@ -514,7 +550,7 @@ def main() -> int:
     for it in held:
         print(f"- {it}: {BY_DESIGN[it]}" if args.md else f"  {it}: {BY_DESIGN[it]}")
     print(f"\n{total} item(s)")
-    return 1 if total else 0
+    return 1 if total and ACT == 1 else 0
 
 
 if __name__ == "__main__":

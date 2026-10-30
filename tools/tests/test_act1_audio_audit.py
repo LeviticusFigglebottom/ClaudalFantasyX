@@ -37,6 +37,16 @@ class Act1AudioAuditTest(unittest.TestCase):
         self.assertIn("names no file", audit._row_problem(rows, "empty"))
         self.assertIn("no sfx row", audit._row_problem(rows, "absent"))
 
+    def test_the_act2_scope_reports_without_touching_the_act1_gate(self) -> None:
+        try:
+            audit.set_act(2)
+            self.assertTrue(all(s.startswith("res://game/levels/ch1") for s in audit.act1_scenes()))
+            for name, fn in audit.SECTIONS:
+                self.assertIsInstance(fn(), list, name)
+        finally:
+            audit.set_act(1)
+        self.assertTrue(any("/levels/prologue/" in s for s in audit.act1_scenes()), "back on Act I")
+
 
 if __name__ == "__main__":
     unittest.main()
