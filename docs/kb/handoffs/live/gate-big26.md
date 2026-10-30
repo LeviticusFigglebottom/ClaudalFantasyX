@@ -33,3 +33,4 @@ GATE-BUILT @ d40e4864
 ## Fast gate
 - Selected: 120 test files (the diff's, plus test_qa_field_camera, test_causeway_route and test_aspect_layouts to
   re-check the routed reds).
+- Lane A (mine): 60; lane B (GATE-HELPER): 60, in `gate-big26-lanes-b.txt` @ e8ae9b74.
