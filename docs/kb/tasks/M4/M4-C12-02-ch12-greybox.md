@@ -2,8 +2,7 @@
 id: M4-C12-02
 title: Ch12 "The Cold Road" greybox (ch12/keth_pass, ch12/quellan, ch12/cloudloom) before the beat sheet
 role: cinematics
-status: blocked
-blocked-by: ADR 0041
+status: todo
 owner_session: act1-chapters (claude/act1-chapters)
 depends_on: [M4-C11-02]
 reviewer: environment

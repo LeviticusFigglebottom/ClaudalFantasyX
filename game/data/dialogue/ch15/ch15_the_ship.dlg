@@ -7,15 +7,17 @@ location: ch17/hollowmere
 ---
 @letterbox on
 @camera H16
-@mark liss ship_deck walk
+@mark liss ship_deck_1 walk
 @wait 2.0
 @anim aldous_varrow look_at liss
 Aldous_varrow as "Dock-master" [neutral]: Bring it back. #line:ch15_ship_001 #tn:"Deliberately ambiguous: the lamp, the ship, or herself."
-@mark toma ship_deck walk
-@mark asha ship_deck walk
-@mark rhen ship_deck walk
+@mark toma ship_deck_2 walk
+@mark asha ship_deck_3 walk
+@mark rhen ship_deck_4 walk
+@mark ysolde ship_deck_6 walk
+@mark pell ship_deck_7 walk
 @wait 2.0
-@mark kerrid ship_deck walk
+@mark kerrid ship_deck_5 walk
 @wait 3.0
 <<set $ch15_complete = true>>
 @fade out 2.0

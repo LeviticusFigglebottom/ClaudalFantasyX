@@ -7,7 +7,11 @@
   "ch15_bark_outside_the_level": {
    "headers": {"location": "ch17/hollowmere"},
    "ops": [
-    {"op": "line", "id": "ch15_heresy_hollowmere_001", "key": "DLG_CH15_HERESY_HOLLOWMERE_001", "speaker": "hull_captain", "emotion": "smile", "voice": "", "src": 5, "name_key": "DLG_NAME_HULL_CAPTAIN_HOLLOWMERE_WRIGHT"}
+    {"op": "if_not", "cond": ["flag", "ch15_toma_carried_tobin"], "to": 3, "src": 5},
+    {"op": "line", "id": "ch15_heresy_hollowmere_001", "key": "DLG_CH15_HERESY_HOLLOWMERE_001", "speaker": "hull_captain", "emotion": "smile", "voice": "", "src": 6, "name_key": "DLG_NAME_HULL_CAPTAIN_HOLLOWMERE_WRIGHT"},
+    {"op": "goto", "to": 5, "src": 5},
+    {"op": "line", "id": "ch15_heresy_hollowmere_002", "key": "DLG_CH15_HERESY_HOLLOWMERE_002", "speaker": "hull_captain", "emotion": "neutral", "voice": "", "src": 8, "name_key": "DLG_NAME_HULL_CAPTAIN_HOLLOWMERE_WRIGHT"},
+    {"op": "goto", "to": 5, "src": 7}
    ]
   }
  }

@@ -1,0 +1,32 @@
+{
+ "format": 1,
+ "scene": "ch20_thank_you",
+ "source": "game/data/dialogue/ch20/ch20_thank_you.dlg",
+ "start": "ch20_thank_you",
+ "nodes": {
+  "ch20_thank_you": {
+   "headers": {"location": "ch20/undertow_layers"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "camera", "args": ["U29"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "music", "args": ["thank_you"], "kwargs": {"fade": 1.0}, "src": 11},
+    {"op": "line", "id": "ch20_thanks_001", "key": "DLG_CH20_THANKS_001", "speaker": "orin_tesk", "emotion": "tender", "voice": "", "src": 12, "name_key": "DLG_NAME_ORIN_TESK_ORIN_TESK"},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 13},
+    {"op": "line", "id": "ch20_thanks_002", "key": "DLG_CH20_THANKS_002", "speaker": "halde_moor", "emotion": "tender", "voice": "", "src": 14, "name_key": "DLG_NAME_HALDE_MOOR_HALDE_MOOR"},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 15},
+    {"op": "line", "id": "ch20_thanks_003", "key": "DLG_CH20_THANKS_003", "speaker": "isse_varan", "emotion": "tender", "voice": "", "src": 16, "name_key": "DLG_NAME_ISSE_VARAN_ISSE_VARAN"},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "camera", "args": ["U30"], "kwargs": {}, "src": 18},
+    {"op": "line", "id": "ch20_thanks_004", "key": "DLG_CH20_THANKS_004", "speaker": "cael_imbrey", "emotion": "tender", "voice": "", "src": 19, "name_key": "DLG_NAME_CAEL_IMBREY_CAEL_IMBREY"},
+    {"op": "cue", "cue": "anim", "args": ["cael_imbrey", "look_at", "well_down"], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 21},
+    {"op": "line", "id": "ch20_thanks_005", "key": "DLG_CH20_THANKS_005", "speaker": "cael_imbrey", "emotion": "neutral", "voice": "", "src": 22, "name_key": "DLG_NAME_CAEL_IMBREY_CAEL_IMBREY"},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "founders", "count": 4}, "src": 23},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 24},
+    {"op": "set", "flag": "ch20_complete", "value": ["lit", true], "src": 25},
+    {"op": "cue", "cue": "fade", "args": ["out", 2.0], "kwargs": {}, "src": 26},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 27}
+   ]
+  }
+ }
+}

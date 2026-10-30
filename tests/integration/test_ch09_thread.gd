@@ -273,13 +273,19 @@ func _strand() -> void:
 	assert_eq(Game.state.chapter, 9, "B01 moves the story to chapter 9")
 	assert_true(bool(Game.get_flag(&"ch09_started")))
 	assert_eq(Game.state.party_ids, [&"rhen", &"asha", &"toma"] as Array[StringName])
-	assert_eq(Game.state.reserve_ids, [&"kerrid", &"ysolde"] as Array[StringName])
+	assert_eq(Game.state.reserve_ids, [&"ysolde"] as Array[StringName], "Kerrid is gone since the stair")
 	assert_false(&"pell" in Game.state.party_ids or &"pell" in Game.state.reserve_ids, "Pell has no battle row")
 	assert_true(_at(&"Strand"))
 	assert_true(SaveSystem.has_pending_autosave(), "the chapter autosave")
 	SaveSystem.cancel_pending_autosave()
 	assert_eq(lines.size(), 0, "B01 opens on the dead, without a word")
 	assert_true(vfx.size() > 0, "the held motes hang over the low town and the strand")
+	# act1_gpu_qa row 39 (the Lead, 10-30): on the night strand Asha and Toma follow Rhen; their stage bodies wait hidden
+	# until a scene shows them (Toma's talk by the fire, the ebbing).
+	var party := zone.player.get_node_or_null(NodePath(String(HeroFieldParty.NAME))) as HeroFieldParty
+	for id: StringName in [&"asha", &"toma"]:
+		assert_false(zone.stage.actor(id).visible, "%s's stage body is off on the strand" % id)
+		assert_true(party == null or not party.staged(id), "%s follows Rhen on the strand" % id)
 
 	assert_true(_trigger(&"npc_marra").try_interact())
 	assert_true(&"ch09_bark_marra_003" in lines, "'Not while there's anyone below.'")
@@ -292,6 +298,7 @@ func _strand() -> void:
 	assert_true(_trigger(&"toma").try_interact())
 	assert_eq(lines.back(), &"ch09_toma_002", "without Ch8's Ivo, Toma is asked after Kerrid: 'Not since the stair.'")
 	assert_false(bool(Game.get_flag(&"ch09_toma_knelt_with_ivo")))
+	assert_false(zone.stage.actor(&"toma").visible, "after the talk his body goes and he follows again")
 	assert_false(_trigger(&"milestone").is_available(), "the road waits for dawn")
 
 
@@ -348,6 +355,7 @@ func _road_out_and_act_break() -> void:
 	assert_false(asha_in_below_frame, "Asha is off frame: 'below' never means her")
 	assert_true(bool(Game.get_flag(&"ch09_pell_named")), "'Pell.'")
 	assert_true(bool(Game.get_flag(&"ch09_kerrid_on_road")))
+	assert_true(Game.state.reserve_ids.has(&"kerrid"), "he walks last in the line, and is back in the reserve")
 	# D03: Kerrid walks last, behind the whole line (the road heads east, +X).
 	var kx := zone.stage.actor(&"kerrid").position.x
 	for id in LINE_WALKERS:

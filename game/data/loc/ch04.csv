@@ -30,4 +30,4 @@ FIELD_PROMPT_REST,Rest
 SHOP_BRIGHTWATER_PURSER,The Purser's Chest
 ITEM_NAME_BOARD_SEVENTH_TERRACE,Name-Board of the Seventh Terrace
 ITEM_NAME_BOARD_SEVENTH_TERRACE_DESC,"Carved and lacquered, the ship's name in Pemakar terrace script. Taken off a drowned hull to go home. Nobody paid for it."
-TUT_CH04_VOWBOUND,"Ilun answers Asha now. Call her from Asha's commands: she fights in the party's place until she leaves."
+TUT_CH04_VOWBOUND,A called Vowbound takes the party's place until you dismiss him or he falls. Asha's next turn waits the call's cost.

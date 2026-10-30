@@ -463,6 +463,146 @@
     "sash": true,
     "halberd_length_m": 2.25
    }
+  },
+  "abiding_halberd": {
+   "heads_tall": 7.5,
+   "head_width_ratio": 0.64,
+   "neck_width_ratio": 0.62,
+   "skin_hex": "#B08468",
+   "_hair": {
+    "colour": "#2A2420",
+    "underpaint": "#241E1A"
+   },
+   "_skin": {
+    "age": 0.3,
+    "stubble": 0.3
+   },
+   "_doc": "The High Warden's Abiding guard (act2_ch16.md C10, 5a; M4-A2P-051): Stillguard elite in veiled gold lacquer, living sworn guards (rule 4: no revenant is fought openly before Ch19), faces unseen under the helm's veil (sg_helm.veil). The kit's lames in gold lacquer piped in gold leaf, the tunic order_marble, the veil a pale gold gauze (`palette`). The Veiled halberdiers (B08: two, who Slow a target: 'settle'): Venn's halberd (sg_halberd) and no shield; the sash in their gauze (an elite's, and it holds the jack in the battle extremes); Moll's battle contract with Venn's parry.",
+   "height_m": 1.88,
+   "shoulder_width_heads": 1.9,
+   "chest_width_heads": 1.48,
+   "waist_width_heads": 1.28,
+   "muscle": 0.66,
+   "mass": 0.26,
+   "_seed": 561,
+   "_variant": {
+    "hair": "crop",
+    "helm": true,
+    "weathered": false,
+    "spear": false,
+    "shield": false,
+    "palette": {
+     "lacquer": "#A67C2A",
+     "lacquer_deep": "#5E4416",
+     "bone": "#E4DED3",
+     "linen": "#A88A4A",
+     "indigo": "#2A2622"
+    },
+    "halberd": true
+   },
+   "_costume": {
+    "veil": true,
+    "veil_clear_m": 0.012,
+    "veil_drop_m": 0.05,
+    "halberd_length_m": 2.2,
+    "sash": true
+   },
+   "chest_depth_heads": 1.04
+  },
+  "abiding_bulwark": {
+   "skin_hex": "#B08468",
+   "_hair": {
+    "colour": "#2A2420",
+    "underpaint": "#241E1A"
+   },
+   "_skin": {
+    "age": 0.3,
+    "stubble": 0.3
+   },
+   "_doc": "The High Warden's Abiding guard (act2_ch16.md C10, 5a; M4-A2P-051): Stillguard elite in veiled gold lacquer, living sworn guards (rule 4: no revenant is fought openly before Ch19), faces unseen under the helm's veil (sg_helm.veil). The kit's lames in gold lacquer piped in gold leaf, the tunic order_marble, the veil a pale gold gauze (`palette`). The Veiled Bulwark casters (B08: two): Moll's own brine-iron and round shield (`iron`), his battle contract as it is.",
+   "height_m": 1.88,
+   "muscle": 0.66,
+   "mass": 0.26,
+   "_seed": 562,
+   "_variant": {
+    "hair": "crop",
+    "helm": true,
+    "weathered": false,
+    "spear": false,
+    "shield": true,
+    "palette": {
+     "lacquer": "#A67C2A",
+     "lacquer_deep": "#5E4416",
+     "bone": "#E4DED3",
+     "linen": "#A88A4A",
+     "indigo": "#2A2622"
+    },
+    "iron": true
+   },
+   "_costume": {
+    "veil": true,
+    "veil_clear_m": 0.012,
+    "veil_drop_m": 0.05,
+    "iron_haft_m": 2.1,
+    "iron_haft_diameter_m": 0.032,
+    "iron_ring_m": 0.22,
+    "iron_stock_m": 0.024,
+    "iron_bar_past_m": 0.04,
+    "iron_band_m": 0.08,
+    "sash": true
+   },
+   "shoulder_width_heads": 1.9,
+   "chest_width_heads": 1.48,
+   "chest_depth_heads": 1.04,
+   "waist_width_heads": 1.28,
+   "head_width_ratio": 0.64,
+   "neck_width_ratio": 0.62,
+   "heads_tall": 7.5
+  },
+  "abiding_captain": {
+   "heads_tall": 7.5,
+   "head_width_ratio": 0.64,
+   "neck_width_ratio": 0.62,
+   "skin_hex": "#B08468",
+   "_hair": {
+    "colour": "#2A2420",
+    "underpaint": "#241E1A"
+   },
+   "_skin": {
+    "age": 0.3,
+    "stubble": 0.3
+   },
+   "_doc": "The High Warden's Abiding guard (act2_ch16.md C10, 5a; M4-A2P-051): Stillguard elite in veiled gold lacquer, living sworn guards (rule 4: no revenant is fought openly before Ch19), faces unseen under the helm's veil (sg_helm.veil). The kit's lames in gold lacquer piped in gold leaf, the tunic order_marble, the veil a pale gold gauze (`palette`). The Captain of the Veil (B08: joins at the first wave's half, a duellist who reads the timeline): the halberd, the Inquisitor's sash and a veil in lacquer_red, so he reads apart from his four at battle scale.",
+   "height_m": 1.88,
+   "shoulder_width_heads": 1.9,
+   "chest_width_heads": 1.48,
+   "waist_width_heads": 1.28,
+   "muscle": 0.66,
+   "mass": 0.26,
+   "_seed": 563,
+   "_variant": {
+    "hair": "crop",
+    "helm": true,
+    "weathered": false,
+    "spear": false,
+    "shield": false,
+    "palette": {
+     "lacquer": "#A67C2A",
+     "lacquer_deep": "#5E4416",
+     "bone": "#E4DED3",
+     "linen": "#B3261E",
+     "indigo": "#2A2622"
+    },
+    "halberd": true
+   },
+   "_costume": {
+    "veil": true,
+    "veil_clear_m": 0.012,
+    "veil_drop_m": 0.05,
+    "sash": true,
+    "halberd_length_m": 2.25
+   },
+   "chest_depth_heads": 1.04
   }
  }
 }

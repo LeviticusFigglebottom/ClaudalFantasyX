@@ -45,3 +45,37 @@ Checks at the build: validate_data 0/0; taskboard ok; dlgc 0/0; gdlint and gdfor
 codex ids, PROVENANCE rows or shot ids (687 shots); no conflict markers.
 (Lead, 10:47: ownership.md and act2_tracks.md stand. env-art-b owns Ch13–Ch16 dressing, so keep env-art-b's on every
 conflict; env-art owns Ch10–Ch12 and hands any useful Ch13–15 pieces to env-art-b by request task.)
+
+### Fast gate (10:37 UTC; a container restart at ~10:55 killed it, resumed 11:03 from the files already done)
+- Godot import clean; **boot smoke 0 ERROR lines**.
+- **Filtered Godot tests: 100 files**, no script errors in any log. 3 red:
+  - test_battle_act1_ability_vfx: known since big21, routed (battle-presentation and act1-chapters).
+  - **test_battle_act2_ability_vfx (branch content, act1-chapters):** "conduit_crawler brush_jab / crawler_mend /
+    crawler_tend … has its own effect" (6 foe skills). Red on claude/act1-chapters alone, green on
+    claude/battle-presentation alone: new Act II foe skills with no effects yet. Route to battle-presentation (the
+    effects) and act1-chapters.
+  - **test_qa_threads (cross-branch):** "test_ch10_thread … ch13_thread: the chapter waits on ch11_started / ch12_started /
+    ch13_started / ch14_started / ch15_started / ch14_declared_heretics, and the thread never raises it (a softlock?)".
+    **Green on claude/act1-chapters at its pinned head a64a87da.** The flags come from ui's 8287ca8b ("Act II
+    objectives: one main-path line per Act II zone"): the guard requires every main objective's requires/until flag to
+    be raised by its chapter's thread, and the Act II threads stop before the next chapter starts. Checking ui alone.
+- **Tools suite: 202 units, 8 failing** (big21: 22). characters' 13 villager rig checks are green now.
+  - known and routed: test_blender_builds (the seabed's job), test_cutscene_sfx_files and test_status_names (act2-plan),
+    test_palette_check, test_villagers, test_screenshots.
+  - **test_avalanche_ram (branch content, creatures-b):** "skills are combat's: the clip map waits in the sheets", but
+    creatures-b's own 9781d0fe (M4-CRB-002..005) added the Ram's clip_by_skill. Red on claude/creatures-b alone.
+  - **test_zone_map_pois (branch content, act1-chapters):** "ch13/sanctum/gate (spawn:Gate)" isn't where its POI says.
+    Red on claude/act1-chapters alone.
+- test_qa_threads: **red on claude/ui alone too** (ui @ 650efd74, which has 8287ca8b and big21's Act II threads): the same
+  6 failures. So it's branch content: ui's objectives and act1-chapters' threads, routed to both by the Lead (the
+  objectives end on a flag raised inside the chapter, or the thread test takes the next chapter's start flag as the
+  handoff). Not dropped from big22.
+
+GATE-FAST-DONE big22 @ b6151a05 (12:25 UTC). Every red is branch content (red on its owner's branch alone) or already
+routed; no merge fallout is left. **Merge-approved under the Lead's standing rule.** FAST-TRACK list:
+- ui + act1-chapters: test_qa_threads (the Act II objectives' requires/until flags vs the Ch10–13 threads).
+- act1-chapters: test_battle_act2_ability_vfx (with battle-presentation for the effects), test_zone_map_pois (the
+  Sanctum gate POI).
+- creatures-b: test_avalanche_ram (its clip map vs its own test).
+- Still open from big21: test_battle_act1_ability_vfx, test_blender_builds (the seabed's job), test_cutscene_sfx_files and
+  test_status_names (act2-plan), test_palette_check, test_villagers, test_screenshots.

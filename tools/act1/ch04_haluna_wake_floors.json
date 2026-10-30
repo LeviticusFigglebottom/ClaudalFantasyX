@@ -1,7 +1,7 @@
 {
  "actor:asha": 1.337,
  "actor:child": 2.194,
- "actor:fisher": 0.235,
+ "actor:fisher": 0.343,
  "actor:neme": 1.986,
  "actor:netmender": 0.463,
  "actor:osu": 0.281,
@@ -76,7 +76,7 @@
  "trigger:npc_child": 2.194,
  "trigger:npc_netmender": 0.463,
  "trigger:npc_reed": 2.7,
- "trigger:table_fisher": 0.306,
+ "trigger:table_fisher": 0.414,
  "trigger:table_neme": 0.523,
  "trigger:table_osu": 0.299,
  "trigger:table_vendor": 0.532,

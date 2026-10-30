@@ -61,13 +61,16 @@
     "pen_child_3": {"at": [31, 0, -25, 0], "color": "#b4907a", "radius": 0.18, "height": 0.9, "hidden": true, "model": "res://assets/characters/villagers/child/child_actor.tscn"},
     "hullgnaw": {"at": [31.0, -1.2, -21.8, 39], "hidden": true, "model": "res://assets/creatures/hullgnaw/hullgnaw.glb"},
     "dive_lamp": {"at": [30.5, -3.9, -14.6, 0], "model": "res://game/levels/ch01/oruvel/dive_lamp.tscn"},
-    "seabed": {"at": [30, -11, -25, 0], "model": "res://assets/cutscene/ch01/oruvel_seabed.glb"}
+    "seabed": {"at": [30, -11, -25, 0], "model": "res://assets/cutscene/ch01/oruvel_seabed.glb"},
+    "hullgnaw_lights": {"at": [31.0, -1.2, -21.8, 0], "model": "res://game/levels/ch01/oruvel/hullgnaw_lights.tscn"},
+    "pen_lights": {"at": [30, 0, -24, 0], "model": "res://game/levels/ch01/oruvel/pen_lights.tscn"}
   },
   "shots": {
     "O01": {"pos": [0, 0.3, 26], "look_at": [0, 1.2, 0], "fov": 52},
     "O02": {"pos": [-2.6, 1.75, 11.4], "look_at": [-7.3, 1.2, 10.3], "fov": 40},
     "O07": {"pos": [-37.1, 2.0, -1.4], "look_at": [-37.1, 1.65, -5.8], "fov": 30},
-    "P01": {"pos": [37.2, 2.3, -14.6], "look_at": [31.0, 0.7, -23.0], "fov": 40},
+    "O07_sadi": {"pos": [-25.6, 1.7, -11.2], "look_at": [-28.0, 1.55, -12.0], "fov": 30},
+    "P01": {"pos": [37.2, 2.3, -14.6], "look_at": [30.4, 0.9, -24.3], "fov": 28},
     "O09": {"pos": [27.0, 1.71, -0.76], "look_at": [26.0, 1.4, -6.5], "fov": 55},
     "O10": {"pos": [44, 1.0, -4], "look_at": [47, 3.0, -9], "fov": 14},
     "O11": {"pos": [45, 3, -6], "look_at": [60, 20, -90], "fov": 60},
@@ -86,6 +89,7 @@
     {"id": "npc_sadi", "activation": "interact", "at": [-28, 0, -12], "size": [2, 0, 2], "prompt_key": "FIELD_PROMPT_LISTEN", "blocked_by_flag": "ch01_gulls_cried", "payload": {"dialogue": "ch01_bark_outer_mooring"}},
     {"id": "npc_sabe", "activation": "interact", "at": [0, 0, -37], "size": [2, 0, 2], "prompt_key": "FIELD_PROMPT_LISTEN", "blocked_by_flag": "ch01_gulls_cried", "payload": {"dialogue": "ch01_bark_keel_hull"}},
     {"id": "kell_stall", "at": [23, 0, -6], "size": [2, 0, 2.5], "requires_flag": "ch01_sold_gauge_wheel", "blocked_by_flag": "ch01_has_kell_wick", "payload": {"beat": "kell_stall"}},
+    {"id": "kell_talk", "activation": "interact", "at": [29, 0, -7.0], "size": [1.8, 0, 1.8], "prompt_key": "FIELD_PROMPT_CH01_KELL", "requires_flag": "ch01_sold_gauge_wheel", "blocked_by_flag": "ch01_has_kell_wick", "payload": {"beat": "kell_stall"}},
     {"id": "dive_mooring", "at": [45, 0, -5], "size": [4, 0, 4], "requires_flag": "ch01_has_kell_wick", "blocked_by_flag": "ch01_gulls_cried", "payload": {"beat": "gulls"}},
     {"id": "scuttlers", "at": [45, 0, -11.5], "size": [2, 0, 1], "requires_flag": "ch01_gulls_cried", "blocked_by_flag": "ch01_scuttlers_won", "payload": {"beat": "scuttlers"}},
     {"id": "lashing_a", "activation": "interact", "at": [41.5, 0, -17], "size": [1.5, 0, 2], "prompt_key": "FIELD_PROMPT_CUT", "requires_flag": "ch01_scuttlers_won", "sets_flag": "ch01_cut_lashing_a", "once": true, "payload": {"beat": "cut_lashing"}},

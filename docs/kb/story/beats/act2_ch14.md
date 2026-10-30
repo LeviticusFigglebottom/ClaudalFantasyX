@@ -22,7 +22,7 @@ Scripts: none yet (M4-A2P-005). Sample lines set the voice only.
 - They agreed to say nothing until Tobin is married and they can get him out. Tobin won't call the wedding off: it is his people's peace.
 - Sefir knows exactly what Liss read; he let her.
 - Ethren is bound (`ch13_ethren_bound`).
-- Kerrid has sat out every night at the outer moorings.
+- Kerrid has stood out every night at the outer moorings (he stands until Ch15 K05, ADR 0204).
 - Tobin and Merel have each had at least one scene (Ch13's "the wedding announced"), so the player has met them before today.
 
 **The rules this chapter must keep** (ADR 0016's echo check; plan §2a):
@@ -193,7 +193,7 @@ Declared in `game/data/flags.tres` when the gate passes (M4-A2P-014 adds them). 
 | `ch14_steps_held` | B06 | Ch15, Ch21 | **Ch15:** Kerrid's confession: "I held a stair again. At a wedding." (one line, if Narrative keeps it); **Ch21:** the stair motif |
 | `ch14_merel_taken` | B08 (critical) | Ch15, Ch18, the Ending | **Ch18:** an optional revisit of Ansedra learns what became of her (Narrative's call: she lives, held in her father's house) |
 | `ch14_engine_broken` | B09 phase 1 | Ch17 | Liss asks the Kite's engines not to forgive her for breaking that one. Narrative, keep or cut |
-| `ch14_venn_beaten` | B09 | Ch19 | Venn is fought again, openly a revenant, in Act III (ADR 0016: revenants are first fought openly in Ch19) |
+| `ch14_venn_beaten` | B09 | — | ~~Venn fought again in Ch19~~ **Corrected (act3_ch19 §10 Q1):** Venn isn't one of the Abiding and isn't refought. The revenants first fought openly in Ch19 are Hesper Oan and Ilsabet Rue (ADR 0016) |
 | `ch14_complete` | B10 (end) | flow (Ch15 gate) | — |
 
 **Act II flags this chapter reads:** `ch13_ethren_bound`, `ch13_met_tobin`, `ch13_archive_read`, `ch13_pact_of_silence` (all declared in act2_ch13.md §3).
@@ -246,7 +246,7 @@ act_outline Ch14: "No side scene; the chapter runs straight on." The only option
    - **The engine is a part** (`break_parts`, M3-CRE-637's `EngineBroken` mesh). Only **Liss** can break it, with a lent skill `strip_the_drum` (a charge skill, one turn's telegraph on the timeline, which the part rule needs: M4-A2P-023). Others' hits on the drum do nothing but chip it.
    - **Liss's grief, in the fight:** she isn't `unavailable` here: she *wants* this machine. When her charge lands, the battle plays her bark over the hit: *"Drum seam. Left. Hinge pins, out. She's bound, she'll fight you—"* (her tell: narrating the work instead of the grief). On the break: the drum splits, the window goes dark, the paddles fall slack, the pulse row leaves the timeline, and **the water moves again**: ripples come back round both barges, and the domes' reflections break apart behind (the arena's water reacts: M4-A2P-047).
    - Breaking the engine ends phase 1 whatever Venn's HP.
-2. **The boarding (to 0%).** Venn crosses to the bridal barge (stem 2 enters on the boarding). He fights as a living-seeming man: a heavy halberd, disciplined, with a tactician's buffs (he Slows a target with a "settle", a measured strike that pushes the struck hero back on the timeline) and a parry stance that punishes physical spam (Ysolde's magic and Pell's learned skills are the role answers).
+2. **The boarding (to 0%).** Venn crosses to the bridal barge (stem 2 enters on the boarding). He fights as a living-seeming man: a heavy halberd, disciplined, with a tactician's buffs (he Slows a target with a "settle", a measured strike that pushes the struck hero back on the timeline) and a parry stance that punishes physical spam (Ysolde's magic is the role answer; Pell has no battle kit yet, M3-C09-07).
    - **Rule 2:** he bleeds like a man, staggers like a man, and doesn't regenerate, glow or speak strangely.
    - Lines (combat barks, ~20 words): *"Lay down the pole."* / *"You were guests."* / at 25%: *"Enough."*
    - **At 0%** he doesn't die: he is driven back over the rail onto his own crippled barge, and the barges drift apart (a scripted end, the battle's `victory_key`: "The barges part"). That is B10.

@@ -1,6 +1,6 @@
 // Ch14 B01: one of the six Lamplighters who carry the flames in.
 title: ch14_bark_lamplighter
-location: ch14/lacquer_court
+location: ch13/ansedra_lacquer_court
 ---
-Townsfolk as "Lamplighter" [neutral]: Six of us carry the lamps in. The whole length of the court, and the flame mustn't lean. I've practised all week. #line:ch14_bark_lamp_001
+Townsfolk as "Lamp-bearer" [neutral]: Six of us carry the lamps in. The whole length of the court, and the flame mustn't lean. I've practised all week. #line:ch14_bark_lamp_001
 ===

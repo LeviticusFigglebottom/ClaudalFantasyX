@@ -18,6 +18,9 @@ const LIFE := "life"
 const IMPACT := "impact_audio"
 const CUTSCENE_FOLEY := "cutscene_foley"
 const ASHCROWN_SFX := "ashcrown_sfx"
+const COILSPIRE_SFX := "coilspire_sfx"
+const INTERACT_SFX := "interact_sfx"
+const PROP_SFX := "prop_sfx"
 ## The reserved music id meaning "fade the bed out" (the .dlg format's `@music silence`).
 const SILENCE := &"silence"
 
@@ -126,6 +129,27 @@ static func merge_zone_beds(row: Dictionary, amb: Dictionary, scene_path: String
 		beds.append(wind_bed)
 	var out := row.duplicate(true)
 	out["ambience"] = beds
+	return out
+
+
+## The beds battle arena `arena` plays in place of the field's (ambience.json `arenas`; empty for an arena with none,
+## which keeps the field's beds under the battle).
+static func arena_beds(amb: Dictionary, arena: String) -> Array[StringName]:
+	var out: Array[StringName] = []
+	for b: Variant in (amb.get("arenas", {}) as Dictionary).get(arena, []) as Array:
+		out.append(StringName(str(b)))
+	return out
+
+
+## The beds a battle against `encounter` in arena `arena` plays: ambience.json `encounters` (a set piece whose arena
+## changes, the storm waking at the Choir) first, else the arena's (arena_beds).
+static func battle_beds(amb: Dictionary, encounter: String, arena: String) -> Array[StringName]:
+	var by_enc := amb.get("encounters", {}) as Dictionary
+	if not by_enc.has(encounter):
+		return arena_beds(amb, arena)
+	var out: Array[StringName] = []
+	for b: Variant in by_enc[encounter] as Array:
+		out.append(StringName(str(b)))
 	return out
 
 

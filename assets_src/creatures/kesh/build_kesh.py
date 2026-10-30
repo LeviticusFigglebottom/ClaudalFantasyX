@@ -1555,7 +1555,7 @@ def over_base(pose: dict) -> dict:
 IDLE_SEC = 4.0
 IDLE_B_SEC = 1.6
 READY_SEC = 1.4
-RISE_SEC = 3.0
+RISE_SEC = 2.6  # choreo.json vowbound entry.sec: the battle holds a call this long (the other six rise in 2.6 s too)
 DISMISS_SEC = 1.2
 ATTACK_SEC, ATTACK_CONTACT = 1.2, 0.55
 CAST_SEC, CAST_CONTACT = 1.6, 0.8
@@ -1749,13 +1749,13 @@ def build_rise() -> ck.Clip:
     """The column climbs out of the water and she forms from it, head last."""
     c = ck.Clip("rise", RISE_SEC)
     keyp(c, 0.0, FOLDED)
-    keyp(c, 0.35, FOLDED)
-    keyp(c, 1.4, merge(FOLDED, body_pose(spine=(22.0, 18.0, 14.0), neck=14.0, head=18.0, lift=0.0, sink=SUNK * 0.75),
+    keyp(c, 0.3, FOLDED)
+    keyp(c, 1.2, merge(FOLDED, body_pose(spine=(22.0, 18.0, 14.0), neck=14.0, head=18.0, lift=0.0, sink=SUNK * 0.75),
                        robes(out=(26.0, 14.0, 8.0))))
-    keyp(c, 2.2, merge(body_pose(spine=(6.0, 8.0, 8.0), neck=16.0, head=20.0, sink=0.05),
+    keyp(c, 1.9, merge(body_pose(spine=(6.0, 8.0, 8.0), neck=16.0, head=20.0, sink=0.05),
                        arms(upper=(-20.0, -10.0, 4.0), fore=(-30.0, 0.0, 0.0)), robes(out=(6.0, 4.0, 2.0)),
                        hair_pose(back=(-30.0, -15.0, -6.0))))
-    keyp(c, 2.65, merge(body_pose(neck=4.0, head=6.0), arms(upper=(-6.0, 0.0, 6.0), fore=(-10.0, 0.0, 0.0))))
+    keyp(c, 2.3, merge(body_pose(neck=4.0, head=6.0), arms(upper=(-6.0, 0.0, 6.0), fore=(-10.0, 0.0, 0.0))))
     keyp(c, RISE_SEC, REST)
     return c
 
@@ -1772,6 +1772,29 @@ def build_dismiss() -> ck.Clip:
 def all_open(k: float) -> dict:
     """Every mouth of the robe open to the foes: the panels swung wide like a bell."""
     return robes(out=(9.0 * k, 15.0 * k, 13.0 * k))
+
+
+RELEASE_SEC = 3.5  # M5-A3P-1850: the held form's release (Ch21 H03), its KO, as the Ch20 six
+RELEASE_LIFT = 2.2  # she rises out of the top of the frame (act3_ending H03: "her light rises out of the top of frame")
+
+
+def build_release() -> ck.Clip:
+    """M5-A3P-1850, the held form's KO (act3_ending H03: "She lifts and doesn't look at him"). The arms open low
+    and wide, palms out, letting go; every mouth of the robe opens; the face lifts and turns away (her left, from
+    Sefir), eyes to the sky; and the column carries her up, slowly, then gone up out of the frame."""
+    c = ck.Clip("release", RELEASE_SEC)
+    keyp(c, 0.0, REST)
+    for t, k, rise in ((0.8, 0.45, 0.15), (1.6, 0.85, 0.55), (2.4, 1.0, 1.25), (RELEASE_SEC, 1.0, RELEASE_LIFT)):
+        # the face lifts and turns from her resting gaze (idle's own head turn) the other way: keyed over the base
+        lifted = body_pose(neck=-8.0 * k, head=-16.0 * k, turn=-40.0 * k)
+        face = {bone: lifted[bone] for bone in ("neck", "head")}
+        keyp(c, t, merge(body_pose(spine=(-3.0 * k, -4.0 * k, -5.0 * k), lift=rise),
+                         arms(clav=(0.0, 0.0, 4.0 * k), upper=(-14.0 * k, 0.0, 38.0 * k),
+                              fore=(-12.0 * k, 0.0, 0.0), hand=(0.0, 28.0 * k, 0.0)),
+                         all_open(0.7 * k),
+                         hair_pose(back=(14.0 * k, 10.0 * k, 6.0 * k), out=(6.0 * k, 5.0 * k, 4.0 * k)),
+                         over_base(face)))
+    return c
 
 
 def build_special() -> ck.Clip:
@@ -1996,7 +2019,7 @@ def build_clips() -> list[ck.Clip]:
     BASE.update(idle_first(idle))
     clips = [idle, build_idle_b(), build_ready(), build_rise(), build_dismiss(), build_attack(), build_cast(),
              build_hit(), build_hit("hit_b", -1.0, ck.HIT_B["amp"]), build_defend(), build_ko(), build_victory(),
-             build_special(), build_shift()]
+             build_special(), build_shift(), build_release()]
     clips += [build_shift(e) for e in ELEMENTS]
     clips += [build_voice_water(), build_voice_lightning(), build_voice_fire(), build_voice_ice(),
               build_voice_holy(), build_voice_glimmer()]

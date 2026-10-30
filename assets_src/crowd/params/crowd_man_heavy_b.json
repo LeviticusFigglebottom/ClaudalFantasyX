@@ -117,7 +117,9 @@
   },
   "_work": [
     "carry",
+    "fold",
     "haul",
-    "kneel_mourn"
+    "kneel_mourn",
+    "mend"
   ]
 }

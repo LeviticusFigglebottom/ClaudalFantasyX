@@ -9,7 +9,8 @@ const ENCOUNTERS_PATH := "res://game/data/battle/encounters.json"
 const ACT1_ID := "^ch0[1-9]_"
 ## Act II (ADR 0205): its rows too, but four wait on their arenas (env-art-b; act2/chapters ch11.md, ch16.md).
 const ACT2_ID := "^ch1[0-6]_"
-const ACT2_NO_ARENA_YET: Array[String] = ["ch11_vey_rays", "ch11_vey_urchins", "ch16_rim_skates", "ch16_rim_crawlers"]
+## Every Act II encounter names its arena now (the Ch16 randoms' pale_rim_shallows landed 10-30).
+const ACT2_NO_ARENA_YET: Array[String] = []
 const LOCATION := &"ch06/brine_shoals"
 const SPAWN := &"Entry"
 

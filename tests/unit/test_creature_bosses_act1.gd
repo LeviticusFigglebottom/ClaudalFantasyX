@@ -20,6 +20,10 @@ const VOWBOUND_PATH := "res://game/data/battle/vowbound.json"
 const ENCOUNTERS_PATH := "res://game/data/battle/encounters.json"
 const INTRO_MIN_SEC := 1.5
 const INTRO_MAX_SEC := 3.5
+## The as-played pass (10-30): the engine ends the turn that crosses a phase's HP after the action resolved, so the
+## phase change used to play at once and the blow's hit reaction then cut it (Hullgnaw's phase_break, the Drownbell's
+## phase_change were never seen). The phase clip waits for the action's sequence, under the camera's phase hold.
+const PHASE_SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 
 var made: Array[Node] = []
 
@@ -169,3 +173,34 @@ func _weighted_bones(skel: Skeleton3D) -> Dictionary:
 func _bind_bone_name(skel: Skeleton3D, skin: Skin, bind: int) -> String:
 	var b := skin.get_bind_name(bind)
 	return String(b) if b != &"" else skel.get_bone_name(skin.get_bind_bone(bind))
+
+
+func test_a_boss_phase_clip_waits_for_the_blow_that_turned_it() -> void:
+	var ctl := (load(PHASE_SANDBOX) as PackedScene).instantiate() as BattleController
+	ctl.auto_start = false
+	ctl.pacing_scale = 0.0
+	ctl.persist_progress = false
+	var tree := Engine.get_main_loop() as SceneTree
+	(tree.current_scene if tree.current_scene != null else tree.root).add_child(ctl)
+	made.append(ctl)
+	ctl.set_meta(BattleBossIntro.META_PLAYED, "ch01_hullgnaw")
+	ctl.start_battle([&"rhen"] as Array[StringName], [], &"ch01_hullgnaw", 20261030)
+	var choreo := ctl.stage.choreo
+	choreo.force_play = true
+	choreo.reduced_motion = false
+	choreo.skip = false
+	choreo.speed = 1.0
+	var boss := ctl.engine.enemies[0]
+	var body := ctl.stage.stand_in(boss.id).creature()
+	var r := ActionResult.new()
+	r.actor_id = ctl.engine.party_active[0].id
+	r.skill_id = &"attack"
+	r.hits.append({"target_id": boss.id, "hit": true, "amount": 10, "crit": false})
+	ctl.engine.action_resolved.emit(r)
+	assert_true(choreo.playing(), "the blow plays (the check is live)")
+	ctl.engine.phase_changed.emit(boss, &"breaking")
+	assert_eq(body.phase(), &"", "no phase while the blow that turned it plays")
+	choreo.finish()
+	assert_eq(body.phase(), &"breaking", "the phase once the blow has played")
+	assert_eq(body.current_clip, &"phase_break", "its phase clip, not cut by the hit reaction")
+	before_each()

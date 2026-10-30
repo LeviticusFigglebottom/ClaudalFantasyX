@@ -244,7 +244,17 @@ def build_clips() -> list[ck.Clip]:
         for b, sd, i in legs_:
             ko.key(f"{b}_a", t, (0, 0, KO_LEG[0] * s * sd))
             ko.key(f"{b}_b", t, (0, 0, KO_LEG[1] * s * sd))
-    return [idle, attack, cast, hit, ko]
+    # its own fidget (the animation polish pass, 2026-10-30: the kit's idle_b, the cast's heave at 0.3, moved 2 cm and
+    # read as a still frame): it tests the air, the striking legs lifting and tapping twice, the body shifting under
+    # them
+    idle_b = ck.Clip("idle_b", 1.0)
+    for t, s, tap in ((0.0, 0.0, 0.0), (0.25, 1.0, 0.0), (0.4, 0.4, 1.0), (0.6, 0.9, 0.0), (0.75, 0.3, 1.0),
+                      (1.0, 0.0, 0.0)):
+        idle_b.key("body", t, (4.0 * s, 0, 2.0 * s), (0, 0.025 * s, 0))
+        for k, tag in enumerate(("l", "r")):
+            idle_b.key(f"strike_{tag}", t, (-22.0 * s * (1.0 if k == 0 else 0.7), 0, 0))
+            idle_b.key(f"strike_{tag}_b", t, (14.0 * tap, 0, 0))
+    return [idle, attack, cast, hit, ko, idle_b]
 
 
 def build_mesh(rig: ck.Rig, name: str = "tide_crawler") -> ck.Mesh:

@@ -57,7 +57,9 @@
        "label_key": "SET_VOLUME_VOICE", "help_key": "SET_VOLUME_VOICE_HELP"},
       {"id": "screen_shake", "type": "enum", "default": 1.0, "options": [1.0, 0.5, 0.0],
        "option_keys": ["SET_SCREEN_SHAKE_FULL", "SET_SCREEN_SHAKE_HALF", "SET_SCREEN_SHAKE_OFF"],
-       "label_key": "SET_SCREEN_SHAKE", "help_key": "SET_SCREEN_SHAKE_HELP"}
+       "label_key": "SET_SCREEN_SHAKE", "help_key": "SET_SCREEN_SHAKE_HELP"},
+      {"id": "mono_audio", "type": "bool", "default": false, "label_key": "SET_MONO_AUDIO",
+       "help_key": "SET_MONO_AUDIO_HELP"}
     ],
     "battle_speed": {
       "doc": "M2-UI-23: battle_speed options are presentation speed multipliers (the same id and values as M2-BPR-03's BattleChoreo speed). Every battle presentation duration is divided by the speed (UiSettings.battle_time_scale): the controller's pacing waits, damage numbers and float words, the camera shake and the hit recoil. Never the engine, never a Swell input window (those stay real time).",
@@ -79,7 +81,7 @@
     },
     "palettes": {
       "standard": {},
-      "colorblind": {"danger": ["#D15E1F", 1.0], "enemy_chip": ["#2A2414", 0.85]}
+      "colorblind": {"danger": ["#C76E10", 1.0], "enemy_chip": ["#2A2414", 0.85]}
     },
     "timing_assist": {
       "doc": "M2-UI-01: what each timing_assist option does to a Swell input row (swell.json inputs, every kind) before the input is built. window_scale widens the windows, clamped per kind so the row still passes validate_data (max_duration_sec is its longest input, edge_margin_sec keeps the brace's counter window clear of the last blow); assist_floor is the quality a miss is recorded at (SwellInput._record); assist_hold (M2-UI-14, 'hold') applies that floor only while Confirm is held, so holding Confirm plays the input by itself; tag_key is the short tag the input panel shows while the assist is on. Numbers: docs/kb/design/formulas.md section Swell, Timing assist.",

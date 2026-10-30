@@ -19,6 +19,7 @@ Shares Ch10's builders (tools/act1/ch10_greybox.py). x is east, north is -Z.
 from __future__ import annotations
 
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -121,7 +122,7 @@ def sunken_vey() -> dict:
                       "payload": {"beat": "to_lowlight"}, "yaw": 0.0}],
         # M4-C11-03: the galleries' random fights (act2_roster.md Ch11); none in Lowlight
         "encounters": {"table": [{"encounter": "ch11_vey_rays", "weight": 1}, {"encounter": "ch11_vey_urchins", "weight": 1}],
-                       "min_m": 30, "max_m": 50, "when": {"set": ["ch11_started"]}, "seed": 11},
+                       "min_m": 95, "max_m": 145, "when": {"set": ["ch11_started"]}, "seed": 11},
     }
 
 
@@ -134,6 +135,8 @@ SANCTUM_Y = -8.0
 WATERLINE_Y = -2.0  # the temple is drowned below this: the lower flight goes under, the sanctum is underwater
 FLIGHTS = (((20.0, 4.0), (36.0, 4.0)), ((40.0, 4.0), (56.0, 4.0)))  # x runs; flight 1 y 0 -> -4, flight 2 -4 -> -8
 SANCTUM = (64.0, 4.0, 8.0)
+WELL_R = 3.1  # M4-A2P-0411: the collision ring round the well's mouth (env-art's r 3.0)
+WELL_SIDES = 10
 
 
 def lowlight() -> dict:
@@ -170,6 +173,13 @@ def lowlight() -> dict:
     blocks.append(floor("Sanctum", sx, sz, sh, sh, SANCTUM_Y))
     blocks += walls("Sanctum", sx, sz, sh, sh, SANCTUM_Y, 10.0, {"w": (-1.5, 1.5)})
     blocks.append(box("WellShaft", sx, SANCTUM_Y + 14.0, sz, 6.0, 0.2, 6.0, color=COL_LAGOON, solid=False))
+    # M4-A2P-0411: the well's mouth is open in the sanctum's floor (env-art's well_shaft, r 3.0); a low collision ring
+    # (r 3.1, hidden under the dressing like the rest) keeps the party round it, never over it
+    for k in range(WELL_SIDES):
+        a = 2 * math.pi * (k + 0.5) / WELL_SIDES
+        blocks.append(box(f"WellRim{k}", r3(sx + WELL_R * math.cos(a)), SANCTUM_Y + 0.3, r3(sz + WELL_R * math.sin(a)),
+                          r3(2 * WELL_R * math.tan(math.pi / WELL_SIDES) + 0.3), 0.6, 0.4, r3(-math.degrees(a) + 90.0),
+                          color=COL_PARAPET))
     blocks.append(box("Waterline", 52.0, WATERLINE_Y - 0.05, 4.0, 40.0, 0.1, 20.0, color=COL_LAGOON, solid=False))
     return {
         "doc": "M4-C11-02 greybox (tools/act1/ch11_greybox.py; do not edit by hand): Lowlight, the temple half "
@@ -187,8 +197,10 @@ def lowlight() -> dict:
         "spawns": {"Gate": [2.0, 0.0, 0.0, 270.0], "EngineHall": [10.0, 0.0, -20.0, 180.0],
                    "Sanctum": [r3(sx - 4.0), SANCTUM_Y, r3(sz), 270.0]},
         "marks": {"lamp_bench": [r3(cx - 6.0), 0.0, r3(cz + 6.4), 0.0], "nhoa": [r3(sx + 4.0), SANCTUM_Y, r3(sz), 90.0],
-                  "pell_kneel": [r3(sx + 1.0), SANCTUM_Y, r3(sz + 2.0), 90.0]},  # M4-A2P-011: C3, before his sister
-        "actors": {},
+                  "pell_kneel": [r3(sx + 3.2), SANCTUM_Y, r3(sz + 1.6), 90.0]},  # M4-A2P-011: C3, before his sister
+        # M4-A2P-0411: the Lamp Engine stands in its hall as creatures' model (the dressing hides the block)
+        "actors": {"lamp_engine": {"at": [hx, 0.0, r3(hz - 4.0), 180.0], "cast": "creature:lamp_engine",
+                                   "color": COL_CONDUIT, "radius": 2.0, "height": 3.4}},
         "shots": {"L01": {"pos": [r3(sx - 6.0), SANCTUM_Y + 1.8, r3(sz + 5.0)], "look_at": [r3(sx + 4.0), SANCTUM_Y + 3.0,
                                                                                          r3(sz)], "fov": 50},
                   # M4-A2P-011: C2 the Engine hall and its bared core; C3 down the shaft, the sanctum, Pell kneeling;
@@ -198,12 +210,16 @@ def lowlight() -> dict:
                   "L04": {"pos": [17.0, 2.5, 4.0], "look_at": [34.0, -3.0, 4.0], "fov": 50},
                   "L05": {"pos": [r3(sx - 6.0), SANCTUM_Y + 2.5, r3(sz - 4.0)], "look_at": [r3(sx + 4.0), SANCTUM_Y + 1.5,
                                                                                           r3(sz)], "fov": 45},
-                  "L06": {"pos": [r3(sx + 1.0), SANCTUM_Y + 1.2, r3(sz - 3.5)], "look_at": [r3(sx + 1.0), SANCTUM_Y + 1.0,
-                                                                                            r3(sz + 2.0)], "fov": 40},
+                  "L06": {"pos": [r3(sx + 3.2), SANCTUM_Y + 1.2, r3(sz - 3.5)], "look_at": [r3(sx + 3.2), SANCTUM_Y + 1.0,
+                                                                                            r3(sz + 1.6)], "fov": 40},
                   "L07": {"pos": [r3(cx - 4.5), 1.3, r3(cz + 5.8)], "look_at": [r3(cx - 6.0), 0.9, r3(cz + 7.5)], "fov": 35}},
         "camera_volumes": [
             {"id": "Atrium", "mode": "pan_follow", "at": [cx, 1.5, cz], "size": [2 * h, 4.0, 2 * h],
              "pos": [r3(cx + h - 1.5), 5.0, r3(cz + h - 1.5)], "look_at": [cx, 0.5, cz], "fov": 55, "priority": 1},
+            # the gate step outside the west door: seen from inside the atrium through the door (the POI stills, 10-30:
+            # with no volume the hub orbit hugged the outside of the atrium wall)
+            {"id": "GateStep", "mode": "pan_follow", "at": [-1.5, 1.5, 0.0], "size": [3.5, 4.0, 5.0],
+             "pos": [6.0, 3.5, 3.0], "look_at": [-1.5, 0.8, 0.0], "fov": 50, "priority": 2},
             {"id": "Hall", "mode": "pan_follow", "at": [hx, 1.5, r3(hz + 3.0)], "size": [2 * hh, 4.0, r3(2 * hh + 10.0)],
              "pos": [11.88, 5.0, -13.61], "look_at": [hx, 1.0, hz], "fov": 55, "priority": 1},
             {"id": "Flight1", "mode": "pan_follow", "at": [28.0, -2.0, 4.0], "size": [18.0, 6.0, 3.5],
@@ -214,7 +230,15 @@ def lowlight() -> dict:
              "pos": [r3(sx - sh + 1.5), SANCTUM_Y + 4.0, r3(sz + sh - 1.5)], "look_at": [sx, SANCTUM_Y + 0.5, sz], "fov": 55,
              "priority": 2}],
         "triggers": [{"id": "to_vey", "activation": "touch", "at": [-0.5, 0.0, 0.0], "size": [1.0, 0, 4.0],
-                      "payload": {"beat": "to_vey"}, "yaw": 0.0}],
+                      "payload": {"beat": "to_vey"}, "yaw": 0.0},
+                     # M4-A2P-114: the engine hall's entry (the Lamp Engine wakes, B06) and the well-shaft's foot in the
+                     # drowned sanctum (Nhoa, B09)
+                     {"id": "engine", "activation": "touch", "at": [hx, 0.0, -19.0], "size": [4.0, 0, 1.5],
+                      "requires_flag": "ch11_reached_lowlight", "blocked_by_flag": "ch11_engine_released",
+                      "payload": {"beat": "engine"}, "yaw": 0.0},
+                     {"id": "sanctum", "activation": "touch", "at": [58.5, -8.0, 4.0], "size": [1.5, 0, 4.0],
+                      "requires_flag": "ch11_engine_released", "blocked_by_flag": "ch11_nhoa_bound",
+                      "payload": {"beat": "sanctum"}, "yaw": 0.0}],
     }
 
 

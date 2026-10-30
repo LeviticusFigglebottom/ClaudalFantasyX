@@ -163,6 +163,17 @@
       "_note": "M3-AUD-15: any field-menu page without its own hook opens and closes (hook_for takes the most derived class)"
     },
     {
+      "class": "KiteMapMenu",
+      "on_enter": "ui_menu_open",
+      "signals": {"closed": "ui_menu_close", "flight_chosen": "ui_confirm"},
+      "watch": [
+        {"expr": "node.rows_page().cursor", "sfx": "ui_cursor", "_note": "the destination list"},
+        {"expr": "node.cell", "sfx": "ui_cursor", "_note": "the chart's cursor, a cell at a time"},
+        {"expr": "node.level", "sfx": "ui_page", "_note": "list <-> chart <-> confirm"}
+      ],
+      "_note": "the Lead's 10-30 18:24 polish pass: the Kite's flight map (M5) had only FieldSubmenu's open and close; choosing a flight (flight_chosen) was silent. A hook here replaces the base's, so it repeats them"
+    },
+    {
       "class": "LatticeMenu",
       "on_enter": "ui_menu_open",
       "signals": {"closed": "ui_menu_close"},
@@ -372,7 +383,8 @@
     {"class": "SettingsMenu", "on_enter": "ui_menu_open", "signals": {"closed": "ui_menu_close"}, "watch": [{"expr": "node.current()", "sfx": "ui_cursor"}, {"expr": "node.is_page_open()", "values": {"true": "ui_confirm"}, "_note": "a settings page opened (a bool: `values`, as rise/fall read numbers only); its close is SettingsPage's row"}], "_note": "M3-AUD-861: the settings list that opens Audio, Graphics, Accessibility and Controls"},
     {"class": "ReadPanel", "watch": [{"expr": "node.is_open()", "sfx": "ui_page", "_note": "a bool: any change turns the page"}], "_note": "M3-AUD-861: the battle's Read panel (the Read itself is battle_sfx's `read`): the page turning in and out"},
     {"class": "ObjectiveHud", "watch": [{"expr": "node.phase", "values": {"1": "ui_tip"}, "_note": "ObjectiveHud.Phase.IN: the objective fades in"}], "_note": "M3-AUD-861: the field objective card, heard as the tip card is"},
-    {"class": "DocumentReader", "on_enter": "ui_page", "signals": {"closed": "ui_page", "hand_found": "ui_hand_found"}, "watch": [{"expr": "node.pane", "sfx": "ui_cursor"}, {"expr": "node.cursors[node.pane]", "sfx": "ui_cursor"}, {"expr": "str(node.model.marks)", "sfx": "ui_mark", "_note": "a mark set, moved or cleared"}], "_note": "M4-A2P-080 (claude/ui): the document reader opens and closes as the codex's page; a found hand has its own row, ui_hand_found, and a mark its pen-like ui_mark (M4-AUD-1080)"}
+    {"class": "DocumentReader", "on_enter": "ui_page", "signals": {"closed": "ui_page", "hand_found": "ui_hand_found"}, "watch": [{"expr": "node.pane", "sfx": "ui_cursor"}, {"expr": "node.cursors[node.pane]", "sfx": "ui_cursor"}, {"expr": "str(node.model.marks)", "sfx": "ui_mark", "_note": "a mark set, moved or cleared"}], "_note": "M4-A2P-080 (claude/ui): the document reader opens and closes as the codex's page; a found hand has its own row, ui_hand_found, and a mark its pen-like ui_mark (M4-AUD-1080)"},
+    {"class": "CreditsRoll", "signals": {"finished": "ui_page"}, "_note": "M5-A3P-1700 (claude/ui): the closing credits run under credits_suite, so nothing sounds while they climb, hold or speed up; only their end (run out or skipped) turns the page"}
   ],
   "motion": {
     "doc": "M3-AUD-832: menu motion whooshes. A watched node whose `accessor` method returns its MenuMotion layers `in` as it rises into place and `out` as it sinks away (FieldMenu, every FieldSubmenu page, and SaveMenu once claude/ui gives it one). Reduced motion makes the transitions instant: nothing moves, so nothing plays. Their rows' volume_db keep them about 12 dB under the open and close sounds.",

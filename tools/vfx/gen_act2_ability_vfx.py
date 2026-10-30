@@ -131,6 +131,16 @@ VOWBOUND = {
                     "The Seven (Kesh's Swell): every voice at once over every foe, water, fire, lightning and glimmer together."),
 }
 
+# Act II foes whose rows land later (act1-chapters' M4-A2P-022, on gate-big22): written once each skill exists.
+FOES_PENDING = {
+    # the conduit crawler (the Lamp Engine's tender): a Lit Age machine, its light bound and steady (rule 2)
+    "brush_jab": fx("chest", slash("brass", "bronze_patina", 34), "The conduit crawler's brush arm jabs: brass grit and old patina."),
+    "crawler_mend": fx("chest", charge("glimmer_bound", "brass", 36),
+                       "The crawler relights a broken part of the engine: bound light drawn back into it, steady (no drift, no flicker)."),
+    "crawler_tend": fx("ground", ring("brass", "glimmer_bound", 20, 0.6),
+                       "The crawler tends the engine: a small brass ring at its feet; it pays the party no mind."),
+}
+
 
 def main() -> int:
     text = A1.EFFECTS.read_text()
@@ -141,7 +151,7 @@ def main() -> int:
         print("unknown ids:", missing)
         return 1
     rows = dict(SKILLS)
-    rows.update({sid: eff for sid, eff in VOWBOUND.items() if sid in sk})  # each as its skill row lands
+    rows.update({sid: eff for sid, eff in {**VOWBOUND, **FOES_PENDING}.items() if sid in sk})  # each as its row lands
     for sid, eff in rows.items():
         mapped = data["map"]["skills"].get(sid)
         if mapped not in (None, sid, sid + "_hit") and data["effects"].get(mapped, {}).get("note") != eff["note"]:
@@ -166,7 +176,8 @@ def main() -> int:
         return 0 if out == text and sfx_out == sfx_text else 1
     A1.EFFECTS.write_text(out)
     A1.SFX.write_text(sfx_out)
-    print("effects.json: %d Act II skills, %d of %d Vowbound" % (len(SKILLS), len(rows) - len(SKILLS), len(VOWBOUND)))
+    pending = len(VOWBOUND) + len(FOES_PENDING)
+    print("effects.json: %d Act II skills, %d of %d pending (Vowbound, later foes)" % (len(SKILLS), len(rows) - len(SKILLS), pending))
     return 0
 
 

@@ -1,0 +1,20 @@
+{
+ "format": 1,
+ "scene": "ch18_revisit_pemakar",
+ "source": "game/data/dialogue/ch18/ch18_revisit_pemakar.dlg",
+ "start": "ch18_revisit_pemakar",
+ "nodes": {
+  "ch18_revisit_pemakar": {
+   "headers": {"location": "ch05/pemakar"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["K19"], "kwargs": {}, "src": 6},
+    {"op": "if_not", "cond": ["flag", "ch05_told_the_smith"], "to": 5, "src": 7},
+    {"op": "line", "id": "ch18_pemakar_001", "key": "DLG_CH18_PEMAKAR_001", "speaker": "garo", "emotion": "neutral", "voice": "", "src": 8},
+    {"op": "line", "id": "ch18_pemakar_002", "key": "DLG_CH18_PEMAKAR_002", "speaker": "garo", "emotion": "soft_smile", "voice": "", "src": 9},
+    {"op": "goto", "to": 7, "src": 7},
+    {"op": "line", "id": "ch18_pemakar_003", "key": "DLG_CH18_PEMAKAR_003", "speaker": "townsfolk", "emotion": "neutral", "voice": "", "src": 11, "name_key": "DLG_NAME_TOWNSFOLK_BOAT_FOLDER"},
+    {"op": "goto", "to": 7, "src": 10}
+   ]
+  }
+ }
+}

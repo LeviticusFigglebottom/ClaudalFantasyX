@@ -117,6 +117,24 @@ func spawn(engine: BattleEngine) -> void:
 		var axis := camera.global_basis.x if camera != null else Vector3.RIGHT  # sideways on screen
 		BattleLineup.apply(_side(engine.party_active), data, axis)
 		BattleLineup.apply(_side(engine.enemies), data, axis)
+		_spread_on_screen(engine, data)
+
+
+## Creatures' audit (10-30): the opening foes kept apart on the fight's rest frame and clear of the command menu
+## (BattleScreenSpread, choreo.json spacing.screen).
+func _spread_on_screen(engine: BattleEngine, data: Dictionary) -> void:
+	if camera == null:
+		return
+	var xf := camera.transform
+	var fov := camera.fov
+	if camera.has_meta(BattleCameraDirector.META_DEFAULT):  # a retry: the authored frame, not the last fight's
+		xf = camera.get_meta(BattleCameraDirector.META_DEFAULT) as Transform3D
+		fov = float(camera.get_meta(BattleCameraDirector.META_FOV))
+	var ids: Array[StringName] = []
+	for e in engine.enemies:
+		ids.append(StringName(String(e.id).get_slice("#", 0)))
+	var fit := BattleCameraDirector.rest_fit(data.get("camera", {}) as Dictionary, xf, fov, ids)
+	BattleScreenSpread.apply(_side(engine.enemies), camera, fit[0] as Transform3D, float(fit[1]), data)
 
 
 ## Each opening foe's slot. The encounter sweep (10-30): on the causeway the 2.9 m Lantern Eel, first in the list, took
@@ -232,8 +250,22 @@ func sync_party(engine: BattleEngine) -> void:
 		if not _fighters.has(cid):
 			var slot := clampi(int(config().get("vowbound_slot", i)), 0, _party_slots.size() - 1) if out else i
 			_place(cid, _party_slots[slot])
+			if out and engine.vowbound.summon != null and engine.vowbound.summon.id == cid:
+				_clear_of_hud(cid)
 			if choreo != null:
 				choreo.enter(cid)
+
+
+## A called Vowbound (a wide body on the middle party slot) kept clear of the timeline and the party panel on the rest
+## frame (BattleScreenSpread.clear_of_hud).
+func _clear_of_hud(cid: StringName) -> void:
+	var dir := choreo.camera if choreo != null else null
+	var xf := dir.default_transform if dir != null else (camera.transform if camera != null else Transform3D.IDENTITY)
+	var fov := dir.rest_fov() if dir != null else (camera.fov if camera != null else 50.0)
+	var rects: Array = [
+		HudLayout.rect_of(HudLayout.section(&"timeline")), HudLayout.rect_of(HudLayout.section(&"party"))
+	]
+	BattleScreenSpread.clear_of_hud(stand_in(cid), camera, xf, fov, rects, BattleChoreo.load_data())
 
 
 func refresh_ko(engine: BattleEngine) -> void:

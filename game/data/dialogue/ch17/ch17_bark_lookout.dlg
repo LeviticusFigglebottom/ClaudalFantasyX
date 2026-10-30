@@ -1,0 +1,30 @@
+// M5-A3P-1000. Ch17 B12 "Hollowmere at work" (P, 6 min): field barks, kind and practical
+// (act3_ch17.md §2 B02, B12). The tally hull's record-keeper (Ch15's clerk) nods to Toma (ch15_toma_on_the_tally); the lookout bark is the only sign
+// of the Order's patrols (§10 Q5). Tobin's absence is felt, never explained. One node per bark.
+title: ch17_bark_lookout
+location: ch17/hollowmere
+---
+Hull_captain as "Lookout" [neutral]: Nothing on the water but us. I'll call it if that changes. #line:ch17_bark_001
+===
+title: ch17_bark_tally_keeper
+---
+<<if $ch15_toma_on_the_tally>>
+    @anim clerk nod toma
+    Clerk as "Record-keeper" [neutral]: Your name's where you asked. Under the camp. Nobody's crossed it out. #line:ch17_bark_002
+<<else>>
+    Clerk as "Record-keeper" [neutral]: Every camp that burned, written down. Somebody has to keep the list. #line:ch17_bark_003
+<<endif>>
+===
+title: ch17_bark_chandler
+---
+Vendor as "Chandler" [neutral]: Oil, rope, glass. Tobin used to fetch the glass. Take what you need. #line:ch17_bark_004
+===
+title: ch17_bark_pell_windmills
+---
+Pell [neutral]: They turn with nobody singing to them. I like that. #line:ch17_bark_005
+===
+title: ch17_bark_ysolde_asleep
+---
+@anim ysolde sleep_over keth_cord
+Liss [soft_smile]: Leave her. She's been at it since dawn. #line:ch17_bark_006
+===

@@ -162,7 +162,9 @@ def ossa_fen() -> dict:
         "camera_volumes": follow_volumes("Walk", FEN_ROUTE) + follow_volumes("Pocket", list(FEN_POCKET))
         + follow_volumes("Exit", list(FEN_EXIT))
         + [{"id": "Clearing", "mode": "pan_follow", "at": [112.0, 1.5, 0.0], "size": [18.0, 4.0, 18.0],
-            "pos": [101.05, 5.98, -7.97], "look_at": [112.0, 0.8, 0.0], "fov": 55, "priority": 2}],
+            # the camera stands in the clearing's east side, back to the Drowner's water, and looks west over the platform
+            # at the way in (the POI stills, 10-30: from outside the root ring it sat in the mangrove canopy)
+            "pos": [118.0, 5.0, 6.0], "look_at": [106.0, 0.8, 0.0], "fov": 55, "priority": 2}],
         "triggers": [{"id": "clearing", "activation": "touch", "at": [96.0, 0.0, 0.5], "size": [2.0, 0, WALK_W],
                       "requires_flag": "ch10_started", "blocked_by_flag": "ch10_drowner_defeated",
                       "payload": {"beat": "drowner"}, "yaw": 0.0},  # M4-A2P-010: the Drowner's clearing
@@ -171,7 +173,7 @@ def ossa_fen() -> dict:
         # M4-C10-03: the root-walks' random fights (act2_roster.md Ch10); none in Reedhollow (the roster's proposal)
         "encounters": {"table": [{"encounter": "ch10_fen_archers", "weight": 2}, {"encounter": "ch10_fen_roots", "weight": 1},
                                  {"encounter": "ch10_fen_leeches", "weight": 1}],
-                       "min_m": 30, "max_m": 50, "when": {"set": ["ch10_started"]}, "seed": 10},
+                       "min_m": 95, "max_m": 145, "when": {"set": ["ch10_started"]}, "seed": 10},
     }
 
 
@@ -248,7 +250,11 @@ def reedhollow() -> dict:
             {"id": "Shore", "mode": "pan_follow", "at": [r3(shore[0]), 1.5, r3(shore[1])], "size": [8.0, 4.0, 12.0],
              "pos": [56.17, 3.94, -4.9], "look_at": [r3(shore[0] + 0.5), 0.8, 0.0], "fov": 50, "priority": 2}],
         "triggers": [{"id": "to_fen", "activation": "touch", "at": [-1.0, 0.0, 0.0], "size": [1.5, 0, WALK_W],
-                      "payload": {"beat": "to_fen"}, "yaw": 0.0}],
+                      "payload": {"beat": "to_fen"}, "yaw": 0.0},
+                     # M4-A2P-114: the shore, where the farewell-tide is watched (B09), then the dawn gate (B11)
+                     {"id": "shore", "activation": "touch", "at": [61.8, 0.0, 0.0], "size": [2.0, 0, 3.0],
+                      "requires_flag": "ch10_reached_reedhollow", "blocked_by_flag": "ch10_complete",
+                      "payload": {"beat": "shore"}, "yaw": 0.0}],
     }
 
 

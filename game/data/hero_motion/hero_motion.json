@@ -153,7 +153,7 @@
       "accel_mps2": 9.0,
       "decel_mps2": 12.0,
       "min_gap_m": 0.8,
-      "camera_near_m": 3.0,
+      "camera_near_m": 4.0,
       "catch_up_m": 6.0,
       "ray_up_m": 1.0,
       "ray_down_m": 3.0,

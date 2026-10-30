@@ -1,0 +1,45 @@
+// M5-A3P-1003. Ch18 K07 "The Kite at night" (E, 3 min). act3_ch18.md §2 K07, §10 Q4: one short
+// follow-up per camp pair the player saw (ch10..ch16_camp_talk); if none were seen, the generic deck scene.
+// Kerrid stands at the stern rail throughout. Each follow-up is one exchange, never a recap of the camp.
+title: ch18_night_aboard
+location: ch18/kite
+---
+@camera K14
+@music kite_night fade=3.0
+@mark kerrid stern_rail walk
+@wait 3.0
+<<if not ($ch10_camp_talk or $ch11_camp_talk or $ch12_camp_talk or $ch13_camp_talk or $ch14_camp_talk or $ch15_camp_talk or $ch16_camp_talk)>>
+    Toma [neutral]: Quiet up here. You can hear the lamps. #line:ch18_night_001
+    Liss [neutral]: That's the engine. The lamps don't make a sound. #line:ch18_night_002
+<<endif>>
+<<if $ch10_camp_talk>>
+    Rhen [neutral]: You said I'd know what it cost. #line:ch18_night_003
+    Pell [neutral]: Now you do. I am sorry it was this. #line:ch18_night_004
+<<endif>>
+<<if $ch11_camp_talk>>
+    Asha [tender]: You said glad was the word you would want. #line:ch18_night_005
+    Pell [neutral]: It still is. #line:ch18_night_006
+<<endif>>
+<<if $ch12_camp_talk>>
+    Ysolde [neutral]: The end of the road is further than you said. #line:ch18_night_007
+    Toma [soft_smile]: I'm still walking it. #line:ch18_night_008
+<<endif>>
+<<if $ch13_camp_talk>>
+    Asha [neutral]: Did you learn the difference? In the end? #line:ch18_night_009
+    Ysolde [neutral]: Most days. #line:ch18_night_010
+<<endif>>
+<<if $ch14_camp_talk>>
+    Rhen [neutral]: Do you still want it to cost them? #line:ch18_night_011
+    Liss [sad]: It costs everyone. That was the part I didn't want. #line:ch18_night_012
+<<endif>>
+<<if $ch15_camp_talk>>
+    Toma [neutral]: Bottom step's still yours? #line:ch18_night_013
+    Kerrid [neutral]: Till I'm relieved. #line:ch18_night_014
+<<endif>>
+<<if $ch16_camp_talk>>
+    Asha [soft_smile]: Still counting? #line:ch18_night_015
+    Rhen [tender]: Every night. #line:ch18_night_016
+<<endif>>
+@wait 3.0
+<<set $ch18_night_aboard = true>>
+===

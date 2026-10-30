@@ -47,7 +47,14 @@ LEATHER = "#FFFFFF"  # the villagers' untinted leather (write_materials: a white
 PERSON_KEYS = ("id", "zone", "stage_actor", "role", "island", "community", "age_band", "sex", "build", "body", "tints",
                "work", "about")
 DIGITS = 4
+ACT2_CHAPTER = 10  # Act II's first chapter (Ch10, Ossa Fen): its zones are assigned after every Act I zone
 FINE_DIGITS = 5  # metres of mouth_corner_lift and canthus_offset_m
+
+
+def chapter_of(zone: str) -> int:
+    """A zone id's chapter number (ch17/hollowmere -> 17; 0 when it names none)."""
+    head = zone.split("/")[0]
+    return int(head[2:]) if head.startswith("ch") and head[2:].isdigit() else 0
 
 
 def seed_of(*parts: object) -> int:
@@ -379,19 +386,31 @@ def feasible(ranges: dict, person: dict, bodies: dict, used_in_zone: set) -> lis
     return out
 
 
+def is_late(ranges: dict, person: dict) -> bool:
+    """A person added after the rest (ranges.json assign `late_zones`, `late_prefixes`): assigned after everyone else."""
+    w = ranges["assign"]
+    return person["zone"] in w.get("late_zones", []) or any(
+        str(person["id"]).startswith(pre) for pre in w.get("late_prefixes", []))
+
+
 def assign(ranges: dict, roster: dict) -> dict[str, str]:
-    """person id -> body. Zones with the most people go first; within a zone, the person with the fewest choices."""
+    """person id -> body. Zones with the most people go first (Act I's before Act II's, so a new Act II town never
+    reshuffles Act I's bodies); within a zone, the person with the fewest choices. Late people (`is_late`: crowds
+    added after the rest, such as the slice towns' vignettes) go after everyone, for the same reason, zone by zone,
+    never wearing a body their zone already shows."""
     w = ranges["assign"]
     bodies = roster["bodies"]
     people = roster["people"]
-    zones: dict[str, list[int]] = {}
+    groups: dict[tuple[bool, str], list[int]] = {}
     for i, p in enumerate(people):
-        zones.setdefault(p["zone"], []).append(i)
+        groups.setdefault((is_late(ranges, p), p["zone"]), []).append(i)
     uses = {bid: 0 for bid in bodies}
+    used_in: dict[str, set] = {}
     out: dict[str, str] = {}
-    for zone in sorted(zones, key=lambda z: (-len(zones[z]), z)):
-        used: set = set()
-        left = list(zones[zone])
+    order = sorted(groups, key=lambda g: (g[0], chapter_of(g[1]) >= ACT2_CHAPTER, -len(groups[g]), g[1]))
+    for late, zone in order:
+        used = used_in.setdefault(zone, set())
+        left = list(groups[(late, zone)])
         while left:
             left.sort(key=lambda i: (len(feasible(ranges, people[i], bodies, used)), i))
             p = people[left.pop(0)]

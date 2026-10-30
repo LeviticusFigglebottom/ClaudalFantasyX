@@ -46,7 +46,7 @@ M1_AUD_02 = ("hush_theme_v2", "battle_standard.", "temple_trial")
 # M2-AUD-03's cues, held to the music targets (-16 +- 0.5 LUFS, true peak <= -1 dBTP). drownbell_p1 is one stem of a
 # stack measured whole by its source (the full stack is -16; stem 1 alone is quieter by design, mix.md §2).
 M2_CUES = ("haluna_village", "haluna_night", "battle_standard_v2", "hush_first_verse", "hush_coda", "haluna_dawn",
-           "shell_shrine_interior", "ilun_summon", "saltgrass_causeway", "lamp_diver", "sefir_theme", "the_ebbing",
+           "shell_shrine_interior", "ilun_summon", "saltgrass_causeway", "lamp_diver", "sefir_theme", "the_ebbing", "the_ebbing_release",
            "tidecup_match", "terraces_of_ash", "corrow_seawall", "hullgnaw", "spar_wraith", "oruvel", "pilgrims_wake",
            "tamsule", "iskarra_vigil", "brightwater_ferry", "brine_shoals", "ashcrown", "coilspire",
            "tamsule_bell_galleries", "stillguard_inquisitor", "ossa_fen", "reedhollow", "sunken_vey", "lowlight",
@@ -62,7 +62,8 @@ AMBIENCE_BUDGET = int(2.5 * 1024 * 1024)  # the M2-AUD-05 field beds together
 # Per-job budgets for later "ambience_loop" jobs (each job's beds together; the M2-AUD-05 job keeps AMBIENCE_BUDGET).
 AMBIENCE_JOB_BUDGETS = {"assets_src/sfx/causeway_ambience.py": int(1.2 * 1024 * 1024),
                         "assets_src/sfx/act1_ambience.py": int(3.0 * 1024 * 1024),  # M2-AUD-13: two q1 beds; M3-AUD-16: six
-                        "assets_src/sfx/prologue_ambience.py": int(0.6 * 1024 * 1024)}  # M3-AUD-817: one q1 bed
+                        "assets_src/sfx/prologue_ambience.py": int(0.6 * 1024 * 1024),  # M3-AUD-817: one q1 bed
+                        "assets_src/sfx/act1_walla_ambience.py": int(1.2 * 1024 * 1024)}  # M3-AUD-864: two q1 layers
 AMBIENCE_LUFS, AMBIENCE_MAX_TP = -26.0, -5.0  # mix.md §2: ambience loops at -26 LUFS, rendered at <= -6 dBFS
 
 
@@ -120,7 +121,7 @@ JOBS = [
      ["saltgrass_causeway.ogg", "saltgrass_causeway.loop.json"], "music_loop"),
     ("assets_src/music/lamp_diver.py", "assets/audio/music", ["lamp_diver.ogg", "lamp_diver.loop.json"], "music_loop"),
     ("assets_src/music/sefir_theme.py", "assets/audio/music", ["sefir_theme.ogg", "sefir_theme.loop.json"], "music_loop"),
-    ("assets_src/music/the_ebbing.py", "assets/audio/music", ["the_ebbing.ogg"], "music"),
+    ("assets_src/music/the_ebbing.py", "assets/audio/music", ["the_ebbing.ogg", "the_ebbing_release.ogg"], "music"),
     ("assets_src/sfx/act1_ambience.py", "assets/audio/ambience",
      [f"{b}{ext}" for b in ("tamsule_port", "tamsule_bell", "brine_shoals", "pemakar_terraces", "ashcrown",
                            "corrow_seawall") for ext in (".ogg", ".loop.json")], "ambience_loop"),
@@ -240,8 +241,14 @@ JOBS = [
     ("assets_src/sfx/act2_cutscene_sfx.py", "assets/audio/sfx",
      _source_files("assets_src/sfx/act2_cutscene_sfx.py"), "sfx"),
     ("assets_src/sfx/act2_ui_sfx.py", "assets/audio/sfx", _source_files("assets_src/sfx/act2_ui_sfx.py"), "sfx"),
+    ("assets_src/sfx/act1_foley_detail_sfx.py", "assets/audio/sfx", _source_files("assets_src/sfx/act1_foley_detail_sfx.py"),
+     "sfx"),
+    ("assets_src/sfx/act1_struck_sfx.py", "assets/audio/sfx/choreo", _source_files("assets_src/sfx/act1_struck_sfx.py"), "sfx"),
+    ("assets_src/sfx/act1_walla_ambience.py", "assets/audio/ambience",
+     [f"{b}{ext}" for b in ("corrow_town", "haluna_mourners") for ext in (".ogg", ".loop.json")], "ambience_loop"),
     # M4-A2P-090 (ADR 0175): Act II scene cues, plain git under assets/audio/act2/music/
-    ("assets_src/music/act2/farewell_tide.py", "assets/audio/act2/music", ["farewell_tide.ogg"], "music"),
+    ("assets_src/music/act2/farewell_tide.py", "assets/audio/act2/music",
+     ["farewell_tide.ogg", "farewell_tide.loop.json", "farewell_tide_release.ogg"], "music_loop"),  # M4-CIN-1301
     ("assets_src/music/act2/peace_wedding_break.py", "assets/audio/act2/music", ["peace_wedding_break.ogg"], "music"),
     ("assets_src/music/act2/lagoon_escape.py", "assets/audio/act2/music", ["lagoon_escape.ogg"], "music"),
     ("assets_src/music/act2/kerrid_at_sea.py", "assets/audio/act2/music", ["kerrid_at_sea.ogg"], "music"),
@@ -509,7 +516,9 @@ def main() -> int:
             if f.endswith(".json"):
                 rows.append((os.path.join(rel_dir, f), size, None, None, None, None, _sha(p)))
                 continue
-            looped = kind in ("music_loop", "ambience_loop")
+            # a loop job may carry a one-shot beside its loop (farewell_tide_release): only a file with its own
+            # .loop.json sidecar is checked as a loop
+            looped = kind in ("music_loop", "ambience_loop") and os.path.isfile(os.path.splitext(p)[0] + ".loop.json")
             one_shot = kind == "sfx"
             if kind == "sfx_set":
                 looped = os.path.splitext(f)[0] + ".loop.json" in files

@@ -37,7 +37,8 @@
     "rhen/lie_in_shallows": "ko",
     "rhen/sit_up": "kneel_over_rhen",
     "rhen/sit_in_shallows": "kneel_over_rhen",
-    "rhen/stand_unsteady": "rise_to_stand"
+    "rhen/stand_unsteady": "rise_to_stand",
+    "matron/bank": "bank_the_fire", "matron/unfold": "intro"
   },
   "fade_color": "#05080B",
   "fade_back_sec": 0.8,
@@ -70,6 +71,7 @@
     "cloudloom": "../act2/music/cloudloom",
     "ethren_bound": "../act2/music/stings/ethren_bound",
     "farewell_tide": "../act2/music/farewell_tide",
+    "farewell_tide_release": "../act2/music/farewell_tide_release",
     "hesk_bound": "../act2/music/stings/hesk_bound",
     "hollowmere_answers": "../act2/music/hollowmere_answers",
     "kerrid_at_sea": "../act2/music/kerrid_at_sea",

@@ -67,7 +67,8 @@ func build() -> void:
 	_build_lighting()
 	_build_blocks()
 	var spawns: Dictionary = (layout.get("spawns", {}) as Dictionary).duplicate()
-	if layout.has("encounters"):
+	if layout.has("encounters") and not spawns.has(String(FieldEncounters.RETURN_SPAWN)):
+		# where the last fight left Rhen (place_at); a layout may name its own fallback (M3-HER-1159)
 		spawns[String(FieldEncounters.RETURN_SPAWN)] = [0, 0, 0, 0]
 	_build_markers(SPAWNS, spawns)
 	_build_player()
@@ -95,6 +96,14 @@ func _ready() -> void:
 		encounters.setup(self, layout.get("encounters", {}), defaults.get("encounters", {}))
 
 
+## SceneRouter's resident field (kept through a fight, re-attached; nothing re-runs _ready): the flag-driven
+## layout states and variants are applied again, since a win may have set their flags.
+func on_resident_return() -> void:
+	for method: StringName in [&"refresh_states", &"apply_variant"]:
+		if has_method(method):
+			call(method)
+
+
 ## Moves the player to Spawns/<spawn> facing `yaw_deg` and snaps the camera. The "Encounter" spawn
 ## is where the last field encounter here left Rhen (FieldEncounters.return_points).
 func place_at(spawn: StringName, yaw_deg: float = 0.0) -> bool:
@@ -105,6 +114,12 @@ func place_at(spawn: StringName, yaw_deg: float = 0.0) -> bool:
 	player.position = marker.position
 	if spawn == FieldEncounters.RETURN_SPAWN and FieldEncounters.return_points.has(String(location_id)):
 		player.position = FieldEncounters.return_points[String(location_id)]
+	elif spawn == FieldEncounters.RETURN_SPAWN and not _layout_spawns().has(String(spawn)):
+		# no fight here yet and no fallback of the layout's own: its first spawn, not the world's origin (the PC's
+		# row 38: Coilspire's Encounter, at the origin, looked at open sea far off the tower)
+		var first := _layout_spawns().keys()
+		if not first.is_empty():
+			player.position = spawn_marker(StringName(str(first[0]))).position
 	player.rotation.y = deg_to_rad(yaw_deg)
 	player.velocity = Vector3.ZERO
 	if encounters != null:
@@ -114,6 +129,11 @@ func place_at(spawn: StringName, yaw_deg: float = 0.0) -> bool:
 	if director.is_inside_tree():
 		director.snap()
 	return true
+
+
+## The layout's own spawns (the Encounter return spawn is added beside them when the zone has encounters).
+func _layout_spawns() -> Dictionary:
+	return layout.get("spawns", {}) as Dictionary
 
 
 func spawn_marker(spawn: StringName) -> Marker3D:
@@ -367,11 +387,13 @@ func _build_triggers() -> void:
 		var size := _vec3(t.get("size", [1, 1, 1]))
 		if size.y <= 0.0:
 			size.y = float(setting("trigger_height"))
+		var sink := float(setting("trigger_sink_m"))  # a body settled a hair under the floor still stands in it
+		size.y += sink
 		shape.size = size
 		var cs := CollisionShape3D.new()
 		cs.name = "Shape"
 		cs.shape = shape
-		cs.position.y = size.y * 0.5
+		cs.position.y = size.y * 0.5 - sink
 		area.add_child(cs)
 		root.add_child(area)
 

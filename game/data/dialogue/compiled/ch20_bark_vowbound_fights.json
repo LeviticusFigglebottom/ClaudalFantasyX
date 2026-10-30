@@ -1,0 +1,47 @@
+{
+ "format": 1,
+ "scene": "ch20_bark_vowbound_fights",
+ "source": "game/data/dialogue/ch20/ch20_bark_vowbound_fights.dlg",
+ "start": "ch20_bark_vowbound_fights",
+ "nodes": {
+  "ch20_bark_vowbound_fights": {
+   "headers": {"location": "ch20/undertow_layers"},
+   "ops": [
+    {"op": "line", "id": "ch20_fight_001", "key": "DLG_CH20_FIGHT_001", "speaker": "ilun", "emotion": "worried", "voice": "", "src": 10, "name_key": "DLG_NAME_ILUN_TEYO"}
+   ]
+  },
+  "ch20_bark_kahre_kerrid": {
+   "headers": {},
+   "ops": [
+    {"op": "line", "id": "ch20_fight_002", "key": "DLG_CH20_FIGHT_002", "speaker": "kahre", "emotion": "tender", "voice": "", "src": 15, "name_key": "DLG_NAME_KAHRE_DARO"},
+    {"op": "cue", "cue": "anim", "args": ["kerrid", "nod", "kahre"], "kwargs": {}, "src": 16}
+   ]
+  },
+  "ch20_bark_kahre_garo": {
+   "headers": {},
+   "ops": [
+    {"op": "if_not", "cond": ["flag", "ch05_told_the_smith"], "to": 3, "src": 21},
+    {"op": "line", "id": "ch20_fight_003", "key": "DLG_CH20_FIGHT_003", "speaker": "kahre", "emotion": "soft_smile", "voice": "", "src": 22, "name_key": "DLG_NAME_KAHRE_DARO"},
+    {"op": "goto", "to": 3, "src": 21}
+   ]
+  },
+  "ch20_bark_nhoa_echo": {
+   "headers": {},
+   "ops": [
+    {"op": "line", "id": "ch20_fight_004", "key": "DLG_CH20_FIGHT_004", "speaker": "nhoa", "emotion": "neutral", "voice": "", "src": 28, "name_key": "DLG_NAME_NHOA_RESSA"}
+   ]
+  },
+  "ch20_bark_cage_seat": {
+   "headers": {},
+   "ops": [
+    {"op": "line", "id": "ch20_fight_005", "key": "DLG_CH20_FIGHT_005", "speaker": "orin_tesk", "emotion": "tender", "voice": "", "src": 33, "name_key": "DLG_NAME_ORIN_TESK_ORIN_TESK"}
+   ]
+  },
+  "ch20_bark_cage_lamptongue": {
+   "headers": {},
+   "ops": [
+    {"op": "line", "id": "ch20_fight_006", "key": "DLG_CH20_FIGHT_006", "speaker": "isse_varan", "emotion": "grief", "voice": "", "src": 39, "name_key": "DLG_NAME_ISSE_VARAN_ISSE_VARAN", "tags": ["lamptongue", "notr"]}
+   ]
+  }
+ }
+}

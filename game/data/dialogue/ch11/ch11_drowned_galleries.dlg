@@ -6,10 +6,15 @@ title: ch11_drowned_galleries
 location: ch11/sunken_vey
 ---
 @letterbox on
-@camera L01
+// Shot ids: V00 is lowlight.md's L01 (the Vey hero frame). Renamed so it can't resolve to the greybox layout's own L01
+// (a sanctum view in ch11/lowlight); see act2_ch11_direction.md.
+// M4-CIN-1304 (cinematics): staged from act2_ch11_direction.md (shots and marks in game/data/cutscene/ch11/).
+@mark liss liss_landing
+@mark pell pell_landing_back
+@camera V00
 @music sunken_vey fade=2.0
 @vfx glimmer_bound at=cornice_conduits count=12
-@wait 5.0
+@wait 9.0
 @camera V01
 Liss [smile]: Four hundred years and she's still lit. Nobody's touched her. Look at her. #line:ch11_vey_001
 Pell [neutral]: Many in there. #line:ch11_vey_002 #tn:"He means the bound dead inside the lights."

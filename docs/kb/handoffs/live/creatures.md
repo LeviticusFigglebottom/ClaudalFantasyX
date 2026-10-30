@@ -1069,3 +1069,272 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - The one roster id with no enemy row is `conduit_crawler`. Its model is built (jointed legs @ 563eda19); the row is Combat's (M4-A2P-022, the Lamp Engine's add). When that row lands I add its `model` and portrait the same hour.
   - Act II zone wildlife from the beat sheets is all done (Ch10, Ch12, Ch16 and Hollowmere; none in Ansedra or the Ch15 open sea).
 - **BACKLOG EMPTY:** no Act II enemy id lacks a model. Next: conduit_crawler's row (Combat) and any new Ch13+ ids.
+- **Your 10:27 relay: the as-played pass, batch 1 (35 encounters).**
+  - Every Act I and Act II regular rendered in its encounter's real battle, at battle distance: `arena_shot.gd` runs the real BattleController with the encounter's arena, lighting and lineup. All 35 stills viewed.
+  - **Fixed @ 3bf5cb75:**
+    - **Fen leech:** side-on in the Ossa Fen arena it still read as a plank hung over the mud. The mesh is now bowed lengthwise (ARCH 0.28 m) with a thicker body, and it reads as a humped animal.
+    - **Glass skate:** it vanished on the Rim's white sand. Clearcoat and rim sheen are cut, the rim is wider and darker, and each wing has a dark eyespot. It is still camouflaged, by design.
+    - Both portraits re-rendered; both builds verified byte-identical.
+    - SELF-RENDERED and viewed: `creature_fen_leech` and `creature_glass_skate`. **Both baselines need rewriting.**
+  - **No other creature reads blocky, untextured, mis-scaled or through the floor.**
+  - **Findings for others** (not this track's paths):
+    1. **Battle layout:** two enemies in one rank overlap heavily: ch02_tideline (eel and crab), ch05_stair_tortoises, ch10_fen_roots, ch06_flats_crabs. The bottom-left enemy also sits partly under the command menu in the underway_tower encounters. Battle presentation's slot spacing.
+    2. **Missing arenas:** Ch11 (`ch11_vey_rays`, `ch11_vey_urchins`) and Ch16 (`ch16_rim_skates`, `ch16_rim_crawlers`) encounters name no `arena` in encounters.json, so they fight on the default stage. Combat or env-art.
+    3. **Pre-existing reds on the integration branch:** `test_palette_check` fails on the committed baseline `haluna_h07_chapel_court` (order_marble ΔE 0.042 against a max of 0.03). verify_blender_builds reports `assets/cutscene/ch01/oruvel_seabed.glb` uncovered (no job).
+  - Checks: validate_data clean; taskboard OK; tools test_creatures and test_palette_rules OK; Godot creature 155/0.
+- **MERGE-READY @ 3bf5cb75** (the as-played fixes).
+- **Crowd variety, batch 1 (Haluna) @ 92f60b06 and its test commit:**
+  - Haluna's shopkeeper, smith and innkeeper wore the netmender's, fisher's and vendor's models. They are now crowd people: `haluna_shopkeeper`, `haluna_smith` and `haluna_innkeeper`, from a new `haluna` community and `smith` role in ranges.json.
+  - They stand at the town's own stand-ins. validate_npc now reads a stage actor that contains a `/` as the stand-in path itself.
+  - VillagerLayer replaces the borrowed-model villager that HalunaVillagers places first, so each shows once.
+  - Viewed in the real zone (temporary cameras). No crowd body changed and no clip library changed, so nothing needed a Blender rebuild.
+  - **LEAD-ASK:** M3-CHR-512 (characters, in review) built bespoke `shopkeeper`, `smith` and `innkeeper` villagers, and their task note says you decide which ships. To ship those instead, two edits are needed:
+    - drop the `crowd` key from the three rows in `ch02_haluna.json` (mine);
+    - delete game/data/flow/haluna_villagers.json's rows (slice-polish's), or the layer adopts its borrowed actors.
+  - Oruvel, Pemakar, Ashcrown and every other Act I zone: no body repeats within a zone and no row borrows a model (checked across all 12 zone files).
+    - Ashcrown's beat sheet names only Tender Ruwen, who has a crowd body.
+  - Checks: validate_data; gen_crowd --check; tools test_npc 28 OK; Godot crowd 12/0, villager 40/0, haluna 65/0, npc 10/0.
+- **MERGE-READY @ 7b5deabd** (the crowd commits; the log commit after it is docs only).
+- **The Act II towns' crowds are not this track's paths.** act2_tracks.md row 55 gives characters the Kirru (base, Owa, child, clutch: Reedhollow's `clutch_0..7`, `kirru_child`), the Ansedran, Hollowmere and Quellan crowd sets, and the Act II rows of crowd.json. None has landed. When they do, I wire their VillagerLayer zone rows (game/data/world/npc/zones, mine) the same hour.
+- **BACKLOG EMPTY:**
+  - The as-played pass is done.
+  - Act I crowd variety is done: no adjacent clones in any zone.
+  - The Act II town crowds are characters' sets (row 55) and have not landed.
+  - Waiting on the Haluna LEAD-ASK and on Combat's conduit_crawler row.
+- **Your 12:08 relay:**
+  1. **The Haluna shopkeepers wear M3-CHR-512's bespoke models**, in two commits as asked:
+     - `ch02_haluna.json` drops its `crowd` keys @ 708e5719. The three crowd people, the `haluna` community and the `smith` role are gone, and crowd.json and the params are back byte-for-byte.
+     - `haluna_villagers.json`'s three rows are deleted in their own commit @ 4d2a4e99.
+     - Request task **M3-ARC-1327** asks slice-polish to retire the now-empty file and the populate call.
+     - I did not edit slice-polish.md: §7a forbids editing another environment's live file. Please carry the line there.
+     - Checks: Godot villager 40/0, haluna 65/0, crowd 12/0, npc 10/0; tools test_npc OK.
+  2. **Act II crowds from the bodies that exist:**
+     - **Hollowmere:** 10 Saltwright townsfolk on the hull-house platforms and dock edges (Ch15 B11).
+     - **Ansedra:** 3 barge-polers in plain grey (a stand-in `ansedra` community and a `poler` role), 2 Tenders in Order robes, 4 pilgrims from the islands and a pilgrim's child.
+     - **The Sanctum:** 6 pilgrims kneeling at the basin's ledges (S01).
+     - **Quellan:** 9 Ullari townsfolk from a stand-in `quellan` community.
+     - **Mechanics:**
+       - The Act II greyboxes name no actors, so a row's new `at` key makes its stand-in at `CrowdSpots/<id>` (VillagerLayer). validate_npc checks the form, and both sides have tests.
+       - gen_crowd now assigns Act II zones after every Act I zone, so a new town never reshuffles Act I's bodies (tested). Every Act I person is unchanged, and no shared clip library changed, so no Blender rebuild was needed.
+     - **One fix on the way:** `at` yaws follow HeroLocomotion (yaw 0 faces −z). My first commits had them half a turn out, corrected @ ab7fbabb.
+     - All viewed in the zones: dressed Hollowmere, Ansedra and Sanctum; greybox Quellan.
+     - **Not crowded, by the beat sheets:** the Sunken Vey and Lowlight are drowned, with no living townsfolk. Cloudloom's hall names nobody. Reedhollow's clutch is the Kirru: no human body fits, so it waits on characters.
+     - Named speakers stay characters': Ullari woman, innkeeper, weaver, herder, keth-reader, trader, Stillguard, Liss's father, widow, old woman.
+     - The stand-in communities' notes say characters' Ansedran and Ullari sets replace them.
+     - Checks: validate_data clean; gen_crowd --check; tools test_npc 30 OK; Godot crowd 13/0, villager 41/0.
+- **MERGE-READY @ 35e467a3** (the bespoke shopkeepers and the Act II crowds).
+- **BACKLOG EMPTY:** every Act II town whose bodies exist has its crowd. Reedhollow's Kirru clutch waits on characters (no human body fits). Still waiting on Combat's conduit_crawler row.
+- **Your 13:08 relay: the Kirru crowd and Reedhollow.**
+  - **Four Kirru bodies @ c6105cbf:** `kirru_man` (2.38 m), `kirru_woman` (2.20 m), `kirru_elder_woman` (2.16 m) and `kirru_youngster` (1.62 m).
+    - **Built on Pell's own build.** `assets_src/crowd/kirru/build_kirru.py` runs build_pell.py as a library on pell_params.json with each body's overrides (kirru_bodies.json). They share his head warp, fur, crest, whiskers, webs, mantle, name-shell, staff and palette rules, and a fix to Pell reaches them on their next rebuild.
+    - **Variety:** age and sex show in proportion, fur shade, grey guard hairs, crest and mantle reed. Costume and shell measures scale with height.
+    - **What ships:** the LOD1 (about 27k triangles) with Pell's maps at half resolution, about 8.5 MB a body.
+    - **Clips:** `crowd_kirru_clips.tres` is Pell's idle, talk and walk on the crowd armature; the import fits the hips per body.
+    - **Pipeline:** 4 `crowd_kirru_*` blender_builds jobs, verified byte-identical (37 files each); PROVENANCE rows; validate_npc and tests cover them.
+    - **Review stage `kirru_lineup`:** shots `kirru_lineup_front` and `kirru_lineup_faces`, the four beside Pell. SELF-RENDERED and viewed. **Their baselines are needed.**
+    - Art note: docs/kb/art/characters/kirru_crowd.md. Ownership row appended. The named Pell, Owa and the Kirru child stay characters'.
+  - **Reedhollow @ 1e31f521:**
+    - The clutch: eight bodies on the greybox's hidden `clutch_0..7` stage actors, so the farewell-tide shows Kirru. No two neighbours match in either line.
+    - Watchers: one on each house platform, facing the lagoon (R01), on CrowdSpots.
+    - Viewed in the zone, with the clutch revealed in a temporary scene.
+    - Which way the clutch faces is the layout's and the cutscene's (chapters).
+  - Checks: validate_data clean; taskboard; gdlint; tools test_npc 33 OK; Godot crowd 14/0, villager 42/0, npc 10/0; verify_blender_builds 4/4 identical.
+    - The `oruvel_seabed.glb` "uncovered" line is the pre-existing one, already routed to slice-polish.
+- **MERGE-READY @ 1e31f521** (the Kirru crowd and Reedhollow).
+- **BACKLOG EMPTY:** every Act II town has its crowd, Reedhollow included. Still waiting on Combat's conduit_crawler row.
+- **Your 14:08 FAST-TRACK (big23 test_resident_loads) @ 9b29d8b3:**
+  - The three crowd rows were already dropped @ 708e5719, and the shop villagers already wear their bespoke models.
+  - The red was the resident list: `game/data/ui/scene_loads.json` still held the borrowed actors. Regenerated with tools/loading/scene_loads.gd, so haluna.tscn now lists shopkeeper_actor, smith_actor and innkeeper_actor.
+  - The rerun also refreshed stale lists in Oruvel, Pemakar, Coilspire, Corrow and Corrow night (generated output; nothing hand-edited).
+  - Checks: Godot resident_loads 8/0, haluna 65/0.
+- **MERGE-READY @ 9b29d8b3.** The Kirru crowd is done (see above, MERGE-READY @ the 13:08 entry).
+- **Your 14:28 relay:**
+  1. **conduit_crawler:** request task **M4-CRE-702** (role combat, for act1-chapters under M4-A2P-022) asks for its enemies.json row.
+     - The model was already built from the lore and act2_roster: a salt-glass dome on six jointed brass legs (563eda19), with clips, portrait, creatures.json row and review shot. It needs only the row.
+  2. **Crowd behaviour pass @ 14b55254:**
+     - **Idle variety:** each villager idles and works at its own pace (npc.json `idle_playback` [0.88, 1.12], from its id), on top of the existing phase offsets.
+     - **Look-ats:** the existing party glances work for every crowd member. Reedhollow's Kirru now aim from their own eye height (2.05 m, the youngster's 1.45) and keep the Kirru stillness.
+     - **Doorways and edges:** the new **tools/creatures/crowd_spot_audit.gd** (`godot --headless --path . res://tools/creatures/crowd_spot_audit.tscn`) checks every crowd member in all 17 zones against door nodes and marks, and against drops within 0.6 m.
+       - Six moved by row offsets: Pemakar's weir child, the two Bell Galleries divers, Coilspire's tender off `door_liss`, and three in Corrow.
+       - The audit now reports 0 flagged. Corrow's storm figure is exempt: a silhouette over the water by design.
+     - **Baselines:** the idle pace changes the settled pose in every shot with field villagers (crowd_*, villager zone shots and the zone and mood shots that show villagers). **Those baselines need rewriting.** I self-rendered crowd_lineup_a and crowd_market and viewed them; they look right.
+     - Checks: validate_data; tools test_npc 33 OK; Godot crowd 15/0, villager 43/0, npc 10/0, haluna 65/0.
+- **MERGE-READY @ 14b55254.**
+- **BACKLOG EMPTY:** the crowd behaviour pass is done; the conduit crawler waits on M4-CRE-702.
+- **Your 15:08 relay:**
+  - **Baselines:** understood. I write none; the shots session captures them after the merge.
+  - **conduit_crawler is already complete and placeholder-free**, built earlier from the beat sheet, the lore and act2_roster:
+    - an 18-bone rig (body, six legs of two, two arms of two);
+    - the full clip contract (idle, attack, cast for its mend, hit, ko, hit_b, idle_b), feet on the floor in every clip;
+    - 4,608 triangles, with its battle scene (`creature_actor`), creatures.json row, portrait and review shot.
+    - It is ready to wire up the moment M4-CRE-702's enemies.json row lands, using `model`: `res://game/creatures/conduit_crawler/conduit_crawler_battle.tscn`.
+  - **Act II wildlife idle behaviours @ 3a287760:** the fen kingfisher's plunge-dive (the one behaviour its plan sheet listed as not built).
+    - From a perch it drops wings-folded to the water ahead, holds a moment, and beats back to the same perch; gulls never dive.
+    - The other Act II animals already do what their sheets describe: woolbacks graze, look up and amble; fireflies drift and blink; rim rays swim, turn and startle (their sheet: "they never bury"). Hollowmere's gulls and fish are Act I's.
+    - Checks: validate_data; tools test_wildlife 20 OK; Godot wildlife 23/0.
+- **MERGE-READY @ 3a287760.**
+- **BACKLOG EMPTY:** Act II wildlife behaviours are done; the conduit crawler waits only on M4-CRE-702's row.
+- **Your 16:08 relay:**
+  1. **conduit_crawler wired, M4-CRE-702 → review** @ 35bb8972e.
+     - The row (fc316eda4) is on the integration branch, merged here @ efe7fb10d.
+     - creatures.json `clip_by_skill`: `brush_jab` plays attack, `crawler_mend` cast, `crawler_tend` idle_b (it tends and pays the party no mind). Godot creature 159/0.
+     - **Finding for battle-presentation and env-art:** as played, `ch11_lamp_engine` on `lowlight_engine_hall` has a black slab of the arena covering the enemy half of the frame. The engine and both crawlers barely read; only one crawler's dome shows at the edge. The camera or the arena wall needs checking.
+  2. **Act III bestiary (planning, docs only) @ d7509e52b:** docs/kb/art/creatures/act3_roster.md, "Reconciled with the Act III beat sheets".
+     - **Changes and additions:**
+       - Ch17's optional mooring foes: `deep_scuttler` moved up from Ch18, `hull_rasp` new (a hullgnaw variant).
+       - Ch18: no foes inside the changed towns (its rule 3); the Kite's gulls as wildlife.
+       - Ch19: the conduit crawler reused in the Lamp Spire.
+       - Ch20: **held-shape crowds** per memory layer (crowd silhouettes in glimmer_held; the Reefball layer needs 30+).
+       - The Cage sheet amended to four chained **seats** round the well, one combatant with four parts.
+     - Also: a revised order of work, and two questions for the chapter designer.
+  3. **Act II wildlife idle behaviours** @ 517c22705: each woolback grazes at its own pace (`graze_pace`), on top of the kingfisher plunge-dive (earlier today).
+     - With that, every Act II animal does what its sheet describes. Checks: tools test_wildlife OK; Godot wildlife 24/0.
+- **MERGE-READY @ 517c22705.**
+- **BACKLOG EMPTY:** M4-CRE-702 is in review (character); Act III stays planning-only until its gate.
+- **Your 16:27 relay:** both items had already landed. Your message likely crossed with the 16:08 entry above.
+  - **The Act III bestiary list** @ d7509e52b, planning only, no assets. It is in docs/kb/art/creatures/act3_roster.md, section "Reconciled with the Act III beat sheets (2026-10-30)": every creature docs/kb/story/act3/ implies, chapter by chapter (Ch17 to Ch21), with design notes, status against the 10-28 roster, a revised order of work and two questions for the chapter designer.
+  - **The Act II wildlife idle behaviours:** the kingfisher plunge-dive and per-woolback grazing pace, @ 3a287760b (dive) and 517c22705 (pace). Every Act II animal now does what its plan sheet describes.
+- **MERGE-READY @ 517c22705** (unchanged since 16:08). **BACKLOG EMPTY.**
+- **Your 16:45 relay: Act I animation polish @ b2b5678b6.**
+  - **tools/creatures/clip_audit.gd** now judges what you asked for across all 22 Act I regulars:
+    - stiff idles: skin motion under 3% of the actor's size;
+    - hit reacts that don't read: under 6% travel, or under 70% of it by 0.25 s;
+    - KOs that float or pop: the whole mesh's lowest point at the end, counting the battle hover. A KO "sinks" only if it ends below where it started; the hullgnaw's slide back into its breach is exempt by design.
+  - **Fixed:**
+    - the tower limpet's idle (it read as a still frame);
+    - the tide crawler's and sail leech's `idle_b` (now authored);
+    - the sail leech's KO (it ended 9 cm in the air; its sails now drape onto the deck);
+    - the fen leech's KO (6 cm up after today's bow; the mesh is set down 1 cm over its floor).
+    - Root drops still equal the hovers (test_creatures). The rim crawler and fen leech were rebuilt on their bases.
+  - **Clean, no change needed:** every other idle, hit and KO. The eel's KO stays in the water it stands in, and the scuttler's and squall wing's hits get 70%+ of their travel in early.
+  - Checks: builds byte-identical (5 jobs); tools test_creatures OK; Godot creature 159/0; validate_data.
+  - **Shots that need new baselines** (the shots session): `creature_tower_limpet`, `creature_tide_crawler`, `creature_sail_leech`, `creature_fen_leech`, `creature_rim_crawler`, and the fen_leech portrait.
+- **MERGE-READY @ b2b5678b6.**
+- **BACKLOG EMPTY:** M4-CRE-702 is in review; Act III stays planning-only.
+- **Your 17:24 relay, part 1: Act II animation polish @ d91a783fb.**
+  - The clip audit was run across all 11 Act II regulars. Two needed work:
+    - the glass skate's idle (it read as a held frame): it now breathes deeper, ripples its disc margins front to back and sweeps its tail;
+    - the cord moth's hit (it snapped, with only 8–12% of its travel eased): its wings and root roll now ease in and out over five keys.
+  - **Clean, no change needed:** every other idle, hit and KO. The tannin archer's KO ends 8 cm down, by design: it stands in water and ends where it started.
+  - Checks: builds byte-identical (2 jobs); Godot creature 159/0.
+  - **Shots that need new baselines** (the shots session): `creature_glass_skate`, `creature_cord_moth`, and the glass_skate portrait.
+- **Part 2: Act I wildlife reactions @ cbcd5b5cc.**
+  - **Birds lift.** A gull perched within 6 m of the party (a kingfisher within 4 m) takes off after its own delay (gulls 0–0.9 s, kingfishers 0–0.4 s), so a rail of birds goes up one after another. Landing birds avoid perches by the party, and a kingfisher there won't plunge.
+  - **Fish scatter.** A startled school spreads to 2.2× (rays 1.4×) and closes up as the startle fades. The shoal's bounds include the wider spread.
+  - New kind keys: `flush_radius_m`, `flush_delay_s` (gull, kingfisher) and `scatter_spread` (fish, ray), in the validator's schema. Documented in docs/kb/art/wildlife.md.
+  - Checks: validate_data; tools test_wildlife 20 OK; Godot wildlife 26/0 (two new tests).
+  - **Shots:**
+    - `wildlife_stage` changes (rmse 0.020): the stage's player stands by the left post, so that gull is in the air and the school is scattered. It needs a new baseline (shots session).
+    - `wildlife_zone_brine_wrecks` passes.
+    - `wildlife_zone_ossa_fen_rail0` and `wildlife_zone_pale_rim_wade` have no baselines yet.
+- **MERGE-READY @ cbcd5b5cc.**
+- **BACKLOG EMPTY:** M4-CRE-702 is in review (character); Act III stays planning-only.
+- **Your 17:45 relay: Haluna lived in, M3-CRE-666 @ ba2445136.** (The Act II enemy polish was already done, @ d91a783fb.)
+  - **Who is there.** Fifteen crowd people (community `haluna`, new faces) at work by what they work on, on ground probed against the zone's collision:
+    - **causeway head:** fish laid on the drying rack, a buyer with her basket at the stall, a line hauled at the water's edge, two children at a game of stones;
+    - **tide-wall lane:** an old woman mending at the net heap, a basket carrier, two children at a clapping game, a sweeper between two stations;
+    - **dock:** a mender at the net heap, fish turned on the rack, a mooring line hauled, a basket of the catch.
+  - **New clips:** `play_stones` (knelt, toss, sweep and catch) and `play_clap` (clap and palms out, the pair 0.6 m apart where the palms meet), in the child libraries.
+  - **The dock at night:** VillagerLayer rows take `shown: day|night`, read from the zone's `is_night` (HalunaZone.set_night). No zone code changed.
+    - The dock's people and the children are gone home.
+    - The lane's mender and sweeper work by lamplight.
+    - One woman brings the last basket home past the market.
+  - **No reshuffle:** `assign.late_zones` keeps every body already placed in other zones (a tools test holds it).
+  - **Checks:**
+    - tools test_npc 35 OK; validate_data/npc; gen_crowd --check;
+    - Godot crowd 17/0, villager 45/0, npc 10/0, haluna 65/0;
+    - the rebuilt child libraries match the jobs' output.
+  - **FAST-TRACK (not mine, pre-existing):** every crowd body's `materials/brow.tres` and crowd_woman_lean_a's head textures and UVs rebuild differently from the committed files on an unchanged tree. That is drift from the shared villager sources (characters, likely 7fbc2da2c). The crowd jobs are owned "character"; a rebuild of all 22 crowd jobs would commit it.
+  - **Shots:** new `npc_haluna_vignette_*` shots (no baselines).
+    - Viewed: lane_mender, dock and night_market (the vendor and the night carrier by lamplight). All good.
+    - causeway and lane_games: re-aimed (the first frames were behind the tide wall and inside a wall), re-rendering now.
+    - The existing `npc_haluna_dock`, `npc_haluna_lane` and `npc_haluna_market`, and `slice_haluna_villagers_village`, will gain people. They need new baselines (shots session).
+- **MERGE-READY @ ba2445136.** Next: the same vignettes for Oruvel (Ch1) and the Pemakar harbour (your 18:45 relay).
+- **Your 18:45 relay: Oruvel and the Pemakar quay lived in @ 4e09b97b7, plus Haluna fixes, HEAD 30e39d407.**
+  - **Oruvel's commons deck:** six people at the deck's edges, so the paths stay clear:
+    - a girl at stones by the north rail, and a man mending a diver's net bag;
+    - a man sweeping along the west rail, and a woman with her basket by the cookboat;
+    - along the south edge, a man laying fish to dry and a man hauling a line in.
+  - **The Pemakar quay at Lanternfall:** five people on the quay's two ends (the middle is the story's staging):
+    - an old man mending;
+    - two Low Reaches traders off the Brightwater crossing, one hauling his skiff in and one with a basket of salt fish;
+    - a woman come down with a basket of lanterns;
+    - an old woman folding leaf-boats.
+  - **Fewer children than Haluna.** No body repeats within a zone, and each community accepts only some bodies:
+    - Oruvel had one child body left, so its child plays stones alone;
+    - Pemakar had no child body and no Pemakar-accepted man left, hence the ferry traders.
+    - **LEAD-ASK (optional):** more children in these towns needs more planned child bodies (a characters-track body plan). Say if you want me to request it.
+  - **The late tier now goes by id prefix too** (`late_prefixes`: `oruvel_deck_`, `pemakar_quay_`). Late people are assigned after everyone else and never wear a body their zone already shows, so nothing already placed moved (tools test).
+  - **Haluna fixes after viewing the renders:**
+    - the stones pair moved out of the dune grass onto open sand;
+    - the hauler moved to the water's edge;
+    - the clapping pair moved into the open yard, clear of the tide wall;
+    - the dock hauler was over the water past the deck's visible edge; he is now on the planks.
+  - **Checks:** tools test_npc 35 OK; validate_data/npc; gen_crowd --check; Godot crowd 18/0. The libraries are unchanged by the towns (the play clips were already in).
+  - **Shots, all viewed and good:**
+    - `npc_haluna_vignette_causeway`, `_lane_games`, `_lane_mender`, `_dock`, `_night_market`, `_night_lane`;
+    - `crowd_vignette_oruvel_north`, `_oruvel_south`, `_pemakar_west`, `_pemakar_east`.
+    - These are new, with no baselines. The existing `npc_haluna_dock` (re-rendered and viewed), `npc_haluna_lane`, `npc_haluna_market`, `slice_haluna_villagers_village`, `crowd_zone_oruvel` and `crowd_zone_pemakar` gain people and need new baselines (shots session).
+- **MERGE-READY @ 30e39d407.**
+- **BACKLOG EMPTY:** M4-CRE-702 is in review (character); Act III stays planning-only; the brow.tres drift FAST-TRACK is characters'.
+- **Your 20:26 relay: test_villager_routines fixed @ 533d27512.**
+  - **Cause:** `test_a_greybox_actor_model_is_adopted_into_a_villager` builds ch01/oruvel's real rows on a bare zone and expected only Kell to resolve. Oruvel's `at`-row vignettes make their own spots, so 7 built.
+  - **Fix:** the test now counts the `at` rows (1 + 6).
+  - **Checks** (Godot):
+    - test_villager_routines 19/0, villager 46/0, npc 10/0, crowd 18/0;
+    - oruvel 17/0, pemakar 10/0, haluna 65/0, ch01 20/0, ch05 13/0.
+  - My miss: I ran the villager filter before the Oruvel rows went in. From now on I re-run it after any zone data change.
+- **MERGE-READY @ 533d27512.** Next: the Act II town vignettes (Hollowmere, Ansedra, Quellan, Reedhollow).
+- **Your 20:45 FAST-TRACK: M3-HER-1168 @ 445d5888e** (branch merged with lead/gate-big30 first, @ 0019a65b8; shots.json conflict resolved by taking big30's and appending my 7 new shots).
+  - **Cause, timed per row on Haluna:** a row's cost was mostly loading its actor scene (100–250 ms the first time). A row whose scene is loaded costs ~20 ms. Haluna now has 25 rows with the vignettes.
+  - **Fix** (`VillagerLayer._build_spread`):
+    1. Under the fade, every row's actor scene is requested on worker threads (`load_threaded_request`, sub-threads).
+    2. Once loaded, the rows go in as many a frame as fit 30 ms.
+    3. The reveal waits 2 frames for the first ticks.
+  - **scene_swap_probe → Haluna (headless):**
+    - cold: reveal held 1854 ms → 179–201 ms; hidden frames after the zone's own are 28, 4 and 2 ms;
+    - resident loads, warm: 1348 ms → 16–25 ms;
+    - worst visible frame 27 ms.
+    - The zone's own entry frame (2.5–3.0 s cold) is unchanged; it is not the layer's.
+  - return_probe (the Drownbell case) isn't committed on any branch, so integration-qa re-measures it. The task is at `review` with that box open.
+  - **Tests** (Godot): villager 47/0, crowd 20/0 (new actor-path test), npc 10/0, haluna 66/0, scene_router 17/0, swap 17/0, resident_loads 11/0, zone_cast 5/0.
+- **MERGE-READY @ 445d5888e.** It also carries the Act II vignettes:
+  - Quellan, Hollowmere and Ansedra (`late_prefixes`), plus Reedhollow's Kirru: fishers wading, a pair talking, a youngster watching, on the clips the Kirru have;
+  - shots `crowd_vignette_{quellan,hollowmere,ansedra,reedhollow}_*`;
+  - viewed: Quellan square and well, Hollowmere dock, Ansedra moorings. The Hollowmere platform cameras are re-aimed, and they and Reedhollow are still to view (next).
+- **The Act II town vignettes, done @ f2588bcc7** (your 20:26 relay):
+  - **Quellan** (8): children clapping and at stones in the square, a well rope hauled, cloth folded and cord mended at the doors, a sweeper.
+  - **Hollowmere's dawn** (4): work only, no games, after the burning.
+  - **Ansedra's moorings** (7): the polers' families.
+  - **Reedhollow** (6 Kirru): fishers on the ring's edge (the lagoon is a mangrove stand, so wading was dropped), a pair talking, a youngster watching, on the Kirru's own clips.
+  - **Checks:** tools test_npc OK; Godot crowd 20/0, villager 47/0.
+  - **Shots, all viewed:** `crowd_vignette_quellan_{square,well}`, `_hollowmere_{dock,platforms,mender}`, `_ansedra_moorings`, `_reedhollow_lagoon`. All new, no baselines. The existing Act II crowd shots gain people (shots session).
+- **MERGE-READY @ f2588bcc7** (includes M3-HER-1168 @ 445d5888e).
+- **BACKLOG EMPTY:**
+  - M4-CRE-702 and M3-CRE-666 are in review (character);
+  - M3-HER-1168's Drownbell re-measure is integration-qa's;
+  - Act III stays planning-only.
+- **Your 21:56 relay (ADR 0207): Act III production started.**
+  - **Tasks:** M5-A3P-1800..1808, the lane's regulars and wildlife:
+    - wick_crawler, chain_lamp, spire_moth (Ch19);
+    - held_shoal, drowned_lantern (Ch20);
+    - deep_scuttler, hull_rasp (Ch17);
+    - the conduit crawler's Act III row; the Kite's gulls.
+    - The Act III bosses (the Cage, the tide matron, the old leviathan) are not in this range. **LEAD-ASK:** say if they're mine or creatures-b's.
+  - **M5-A3P-1805, the deep scuttler @ b82b920e4:**
+    - the scuttler's rig and clips; darker plates, seams opened, small raw wounds, a second pair of eyes, a barbed spine ridge (the new silhouette); 1.3× the scuttler's size in battle;
+    - byte-identical build, PROVENANCE, portrait, review shot `creature_deep_scuttler` (viewed; no baseline);
+    - tools test_creatures OK; Godot creature 160/0.
+    - For Combat: an enemies.json row and the Ch17 moorings encounter.
+- **MERGE-READY @ b82b920e4.** Next: M5-A3P-1806, the hull rasp (claimed).
+- **M5-A3P-1806, the hull rasp @ 63c6157ef:**
+  - the hullgnaw's rig, clips and breach; a darker, salt-scabbed body; eleven glowing bore-holes; salt-white keel timbers as the breakable part; 0.62× the hullgnaw;
+  - byte-identical build, PROVENANCE, portrait, shot `creature_hull_rasp` (viewed);
+  - tools test_creatures OK (floor and sink exemptions as the hullgnaw's); Godot creature 160/0.
+- **MERGE-READY @ 63c6157ef.** Next: M5-A3P-1800, the wick crawler (claimed; a new build from its sheet).
+- **M5-A3P-1800, the wick crawler @ 8cc959b6e:**
+  - the sheet as written: 5.6k triangles, 44 bones; feet pinned; KO eased (only the collapse slide flags);
+  - byte-identical build, PROVENANCE, portrait, shot `creature_wick_crawler` (viewed);
+  - tools test_creatures OK; Godot creature 160/0.
+  - `clip_by_skill` waits for Combat's skill ids.
+- **MERGE-READY @ 8cc959b6e.** Next: M5-A3P-1801, the chain lamp (claimed).

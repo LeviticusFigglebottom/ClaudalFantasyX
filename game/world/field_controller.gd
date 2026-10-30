@@ -26,6 +26,8 @@ var data: Dictionary = {}
 ## When set (not NAN), used instead of the device stick. Vector2(NAN, NAN) = read devices.
 var input_override := Vector2(NAN, NAN)
 var walk_override := false
+## Walkable ground at the water's edge: no step off a dock into the sea (FieldShore, field_movement.json "shore").
+var shore: FieldShore
 
 var _gravity := 0.0
 var _max_fall := 0.0
@@ -42,6 +44,7 @@ func _ready() -> void:
 	_max_fall = float(data.get("max_fall_speed_mps", 0.0))
 	_reach = float(data.get("interact_reach_m", 0.0))
 	floor_snap_length = float(data.get("floor_snap_m", floor_snap_length))
+	shore = FieldShore.new(data)
 	motor.facing_yaw = rotation.y
 	director = get_node_or_null(director_path) as FieldCameraDirector
 	if director != null:
@@ -62,7 +65,7 @@ func _physics_process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if accepts_input and event.is_action_pressed(FieldInput.INTERACT):
+	if accepts_input and screen_clear() and event.is_action_pressed(FieldInput.INTERACT):
 		if interact() != null:
 			get_viewport().set_input_as_handled()
 	elif accepts_input and event.is_action_pressed(FieldMenu.OPEN_ACTION):  # M2-UI-04: the field menu
@@ -84,11 +87,19 @@ func step(delta: float) -> void:
 		velocity.y = 0.0
 	else:
 		velocity.y = maxf(velocity.y - _gravity * delta, -_max_fall)
+	var from := global_position
+	var was_grounded := _grounded
 	if Engine.is_in_physics_frame():
 		move_and_slide()
 		_grounded = is_on_floor()
 	else:
 		_slide(velocity * delta)
+	if shore.enabled() and shore.refuses(self, from, global_position):
+		global_position = from  # the water's edge holds him as a wall would
+		velocity = Vector3.ZERO
+		_grounded = was_grounded
+	elif shore.enabled():
+		shore.settle(self, _grounded)
 	rotation.y = motor.facing_yaw
 	_check_touch()
 
@@ -117,7 +128,15 @@ func _slide(motion: Vector3) -> void:
 func current_stick() -> Vector2:
 	if not is_nan(input_override.x):
 		return input_override
-	return FieldInput.move_vector() if accepts_input else Vector2.ZERO
+	return FieldInput.move_vector() if accepts_input and screen_clear() else Vector2.ZERO
+
+
+## False while SceneRouter's fade still covers the screen (a scene change, the way back from a fight): the player
+## gets the stick and the interact button when he can see (the human's playtest: the hero moved ~0.3 s before the
+## fade cleared). Tests and cutscenes (input_override, interact()) are not gated.
+func screen_clear() -> bool:
+	var router := get_node_or_null(^"/root/SceneRouter")
+	return router == null or not router.has_method(&"fade_alpha") or float(router.call(&"fade_alpha")) <= 0.0
 
 
 ## The available interact-mode Interactable nearest the player within reach, or null.

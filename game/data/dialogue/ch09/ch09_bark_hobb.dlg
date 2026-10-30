@@ -1,8 +1,9 @@
 // Ch9 B01, bark 3: Hobb, Corrow's living captain, on the strand, reading names off a slate in a flat
-// voice. Overheard as Rhen walks past (it never blocks him). The names are Corrow's own, invented here.
+// voice. Overheard as Rhen walks past (it never blocks him). The names are Corrow's own, invented here, and no cast member's
+// or founder's surname (M4-A2P-116 C1: Rhen's own name is Dace's withheld secret).
 title: ch09_bark_hobb
 location: ch09/corrow_night
 ---
-Hobb [exhausted]: Jory Sallow. Mag Sallow. Anni Tesk, nine years. #line:ch09_bark_hobb_001 #tn:"A list of the drowned, read flat off a slate. Keep the names as they are."
+Hobb [exhausted]: Jory Wend. Mag Wend. Anni Lusk, nine years. #line:ch09_bark_hobb_001 #tn:"A list of the drowned, read flat off a slate. Keep the names as they are."
 Hobb [exhausted]: Bren Coyle. The Coyle boys, both of them. Next row. #line:ch09_bark_hobb_002
 ===

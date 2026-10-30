@@ -80,12 +80,14 @@ const FLAT_PRESSED_MAX_DEG := 1.0
 const FLAT_HIT_PEAK_SEC := 0.1
 const FLAT_KICK_MIN_DEG := 15.0
 const FLAT_SPLIT_DEG := [12.0, 16.0]
-## The Act II variants (M3-CRE-628) and their bases: the same rig and clips.
+## The Act II variants (M3-CRE-628) and the Act III ones (M5-A3P-1805) and their bases: the same rig and clips.
 const VARIANTS := {
 	"root_crab": "reef_crab",
 	"fen_leech": "sail_leech",
 	"scree_crawler": "slag_tortoise",
 	"rim_crawler": "tide_crawler",
+	"deep_scuttler": "scuttler",
+	"hull_rasp": "hullgnaw",
 }
 const RING := {"radius_factor": 1.4, "inner_soft_m": 0.25, "notches": 6}
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"

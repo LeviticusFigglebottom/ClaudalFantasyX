@@ -18,4 +18,28 @@ SKILL_THE_SEVEN,The Seven
 HUD_FAIL_OUT_OF_CYCLE,Not this turn's voice: she holds another element now.
 CHAR_KESH,Kesh
 ENEMY_ABIDING_GUARD,The Abiding Guard
-LORE_ABIDING_GUARD,"Three tall hooded figures carrying Lamplighters' hooks, the lamp cages empty. They stand on the Choir's dais as if they have always stood there. They fight in silence, and they never look up."
+LORE_ABIDING_GUARD,"The High Warden's own guard: four in veiled gold lacquer, and the Veil-First, who reads the fight before it happens. They hold still the way the Order teaches. They fight in silence, and they never look up."
+OBJ_CH16_WADE,Wade south. Follow the cairns.
+OBJ_CH16_CHOIR,Go in among the singers.
+OBJ_CH16_HOLD,Hold the line.
+OBJ_CH16_SIDE_CAIRN,A cairn has fallen into the water.
+TUT_CH16_CYCLE,"Kesh speaks one element each turn, in a fixed order. Only that turn's Voice can be used."
+TUT_CH16_HOLD_LINE,Hold for three breaths. Kerrid can't leave the line; his Attack takes the blows aimed at it.
+OBJ_CH16_HOLD_LINE_FMT,Hold the line: {count} of {quota}
+OBJ_CH16_HOLD_LINE_DONE,The line held.
+HUD_LOCKED_KERRID_LINE,Holding the line
+TIP_SWELL_MODE_TITLE,A New Swell
+TIP_SWELL_MODE_BODY,A new fill mode is open. Choose it under Swell in the field menu.
+ITEM_RIM_SALT,Rim Salt
+ITEM_RIM_SALT_DESC,"White salt scraped from the cairns on the Pale Rim, fine as flour. Used in Customize."
+EQUIP_KERRID_RIM_WRAPS,Salt-White Wraps
+EQUIP_KERRID_RIM_WRAPS_DESC,Arm wraps bleached white by days of wading. He keeps retying them.
+ENEMY_ABIDING_FIRST,The First of the Abiding
+PHASE_ABIDING_GUARD_FIRST,The Guard Holds
+PHASE_ABIDING_STORM_WAKES,The Storm Wakes
+ENC_CH16_ABIDING_GUARD,The Abiding Guard
+SKILL_HOOK_SWEEP,Hook Sweep
+SKILL_HOOK_DRAW,Hook Draw
+SKILL_HOOK_THRUST,Hook Thrust
+SKILL_CLOSE_RANKS,Close Ranks
+SKILL_STORM_BEARING,Storm Bearing

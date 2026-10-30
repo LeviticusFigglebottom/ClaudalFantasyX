@@ -18,7 +18,9 @@ M3-CHR-540: a named Stillguard (sg_table.named(), Ivo Brannick) builds the same 
 under its own id; its table can drop the spear (`_variant.spear` false: the shield only, build_moll's `no_prop`) and
 chip an upper front tooth (`_variant.broken_tooth`, broken_tooth below). M4-A2P-051: Warden Malcor Venn takes the
 halberd (`_variant.halberd`, sg_halberd, on the spear's bone) and no shield (`_variant.shield` false), and keeps Moll's
-sash (his `_costume`).
+sash (his `_costume`). The Abiding guard (Ch16, named `abiding_*`): the gold-lacquer kit under the helm with a veil
+(sg_helm.veil, `_costume.veil`); the halberdiers and the captain take the halberd, the Bulwark casters Moll's own
+brine-iron and shield (`_variant.iron`).
 """
 from __future__ import annotations
 
@@ -107,9 +109,11 @@ def spec_for(v: str) -> dict:
     var = extra["_variant"]
     if var.get("broken_tooth"):
         asha_mouth.mouth_interior = broken_tooth(asha_mouth.mouth_interior, float(var["broken_tooth"]))
-    prop = halberd if var.get("halberd") else spear if var.get("spear", True) else None  # M4-A2P-051: Venn's halberd
+    # M4-A2P-051: Venn's halberd; `iron` keeps Moll's brine-iron (build_moll's own prop: the Abiding guard's casters)
+    prop = halberd if var.get("halberd") else None if var.get("iron") else spear if var.get("spear", True) else None
     return {"name": name(v), "params": TABLE, "extra": extra, "subdiv_face": False,
-            "hair": var["hair"] == "crop" and not var["helm"], "prop": prop, "no_prop": prop is None,
+            "hair": var["hair"] == "crop" and not var["helm"], "prop": prop,
+            "no_prop": prop is None and not var.get("iron"),
             "no_shield": not var.get("shield", True), "helm": sg_helm.helm if var["helm"] else None}
 
 

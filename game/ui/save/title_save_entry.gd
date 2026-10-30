@@ -33,6 +33,16 @@ static func continue_slot(save_system: Node = null) -> int:
 	return best
 
 
+## The location Continue would load into (the newest readable record's location_id), read without loading it;
+## &"" when there is none (M3-HER-1167: the title starts that zone's loads while it shows).
+static func continue_location(save_system: Node = null) -> StringName:
+	var slot := continue_slot(save_system)
+	if slot < 0:
+		return &""
+	var info: Dictionary = _saves(save_system).call(&"slot_info", slot)
+	return StringName(str(info.get("location_id", "")))
+
+
 ## M1-ARC-08: true when slot 0 holds an autosave that a new run's first chapter autosave would
 ## write over: a readable one, or one from a newer build (still somebody's run). An empty or
 ## damaged slot 0 has nothing to lose. The title asks before New Game when this is true.

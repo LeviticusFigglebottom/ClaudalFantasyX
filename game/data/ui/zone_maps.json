@@ -84,7 +84,7 @@
           {"id": "bell_tether", "name_key": "MAP_POI_U_BELL_TETHER", "kind": "path", "at": [36.0, 3.6], "source": "trigger:tether_bell"},
           {"id": "galleries", "name_key": "MAP_POI_U_GALLERIES", "kind": "path", "at": [80.0, 12.0], "source": "spawn:Gallery"},
           {"id": "bell_room_2", "name_key": "MAP_POI_U_BELL_ROOM_2", "kind": "inn", "at": [80.0, -20.0], "source": "trigger:bell_rest_2"},
-          {"id": "stair_lip", "name_key": "MAP_POI_U_STAIR_LIP", "kind": "path", "at": [80.0, -33.0], "source": "trigger:low_lights"},
+          {"id": "stair_lip", "name_key": "MAP_POI_U_STAIR_LIP", "kind": "path", "at": [80.0, -28.0], "source": "trigger:low_lights"},
           {"id": "gauge_room", "name_key": "MAP_POI_U_GAUGE_ROOM", "kind": "door", "at": [93.0, -26.0], "source": "spawn:GaugeRoom"},
           {"id": "gauge_wheel", "name_key": "MAP_POI_U_GAUGE_WHEEL", "kind": "talk", "at": [96.0, -31.0], "source": "trigger:gauge_wheel"},
           {"id": "current_shaft", "name_key": "MAP_POI_U_CURRENT_SHAFT", "kind": "path", "at": [97.0, -38.0], "source": "trigger:current_shaft"}
@@ -260,7 +260,8 @@
           {"id": "low_town", "name_key": "MAP_POI_K_LOW_TOWN", "kind": "talk", "at": [-34.634, -20.946], "source": "trigger:bark_netmender"},
           {"id": "shrine", "name_key": "MAP_POI_K_SHRINE", "kind": "shrine", "at": [-66.479, -2.01], "source": "trigger:shrine"},
           {"id": "chandler", "name_key": "MAP_POI_K_CHANDLER", "kind": "shop", "at": [-78.3, 1.664], "source": "trigger:chandler"},
-          {"id": "wall_gate", "name_key": "MAP_POI_K_WALL_GATE", "kind": "door", "at": [30.945, 1.6], "source": "spawn:WallGate"}
+          {"id": "wall_gate", "name_key": "MAP_POI_K_WALL_GATE", "kind": "door", "at": [30.945, 1.6], "source": "spawn:WallGate"},
+          {"id": "ivo", "name_key": "MAP_POI_K_IVO", "kind": "talk", "at": [14.894, 2.372], "source": "trigger:ivo"}
         ]
       },
       {
@@ -275,7 +276,9 @@
           {"id": "path_foot", "name_key": "MAP_POI_Q_PATH_FOOT", "kind": "path", "at": [233.853, 108.306], "source": "spawn:PathFoot"},
           {"id": "path_mid", "name_key": "MAP_POI_Q_PATH_MID", "kind": "path", "at": [284.8, 111.3], "source": "trigger:path_fight"},
           {"id": "keepers_hut", "name_key": "MAP_POI_Q_KEEPERS_HUT", "kind": "home", "at": [310.8, 152.1], "source": "trigger:hearth"},
-          {"id": "spire_door", "name_key": "MAP_POI_Q_SPIRE_DOOR", "kind": "door", "at": [302.9, 153.1], "source": "trigger:door"}
+          {"id": "spire_door", "name_key": "MAP_POI_Q_SPIRE_DOOR", "kind": "door", "at": [302.9, 153.1], "source": "trigger:door"},
+          {"id": "crown", "name_key": "MAP_POI_Q_CROWN", "kind": "path", "at": [308.465, 159.112], "source": "trigger:crown"},
+          {"id": "great_key", "name_key": "MAP_POI_Q_GREAT_KEY", "kind": "door", "at": [307.892, 161.556], "source": "trigger:great_key"}
         ]
       },
       {
@@ -364,7 +367,7 @@
         "shape_hints": {"floors": ["Landing1", "RamArena", "Saddle", "ExitStep"], "structures": ["Landing1Wall*", "RamArenaWall*", "SaddleWall*", "TerraceWall", "SaddleCliff"], "skip": ["Snowfield", "ExitBound", "KnotPost"]},
         "bounds": [-10.0, -54.0, 122.0, 64.0],
         "pois": [
-          {"id": "pass_foot", "name_key": "MAP_POI_KETH_FOOT", "kind": "path", "at": [0.0, 3.0], "source": "spawn:PassFoot"},
+          {"id": "pass_foot", "name_key": "MAP_POI_KETH_FOOT", "kind": "path", "at": [-1.0, 1.0], "source": "spawn:PassFoot"},
           {"id": "knot_post", "name_key": "MAP_POI_KETH_KNOT_POST", "kind": "path", "at": [-1.6, -43.6], "source": "mark:knot_post"},
           {"id": "terrace", "name_key": "MAP_POI_KETH_TERRACE", "kind": "path", "at": [40.0, -40.0], "source": "spawn:RamArena"},
           {"id": "saddle", "name_key": "MAP_POI_KETH_SADDLE", "kind": "path", "at": [95.0, -47.0], "source": "mark:cold_ledge"},
@@ -425,7 +428,7 @@
         "shape_hints": {"water": ["Basin"], "skip": ["BasinBed", "GateStepBound"]},
         "bounds": [-16.0, -52.0, 32.0, 58.0],
         "pois": [
-          {"id": "gate", "name_key": "MAP_POI_SANC_GATE", "kind": "door", "at": [0.0, -2.0], "source": "spawn:Gate"},
+          {"id": "gate", "name_key": "MAP_POI_SANC_GATE", "kind": "door", "at": [0.0, -5.0], "source": "spawn:Gate"},
           {"id": "ledge", "name_key": "MAP_POI_SANC_LEDGE", "kind": "talk", "at": [0.0, -19.4], "source": "mark:pilgrims"},
           {"id": "head", "name_key": "MAP_POI_SANC_HEAD", "kind": "path", "at": [0.0, -42.0], "source": "mark:ethren"}
         ]

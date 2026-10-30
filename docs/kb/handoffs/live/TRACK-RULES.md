@@ -124,3 +124,29 @@ Ending a turn is fine only while a background job of yours is running (it will w
 - **New Act II and later final music** goes in `assets/audio/music/act2/` (`act3/`, …). Any other new binary over 5 MB goes in `assets/lfs/<area>/`. Those paths are stored in LFS automatically (`.gitattributes`).
 - Never move existing files into LFS paths, and never migrate history. Screenshot baselines stay plain git.
 - After `git pull` or `git merge`, run `git lfs pull`: cloud checkouts skip LFS downloads by default. `tools/ci_local.sh` does it for you.
+
+## FROM 2026-10-30 18:05: Act II task-id ranges (no more M4-A2P races)
+A new `M4-A2P-NNNN` task takes the next free number inside the filing track's own range. Run `python3 tools/taskboard.py --check` against the integration branch before pushing it.
+
+| Track | Range |
+|---|---|
+| act2-plan (story) | 1000–1199 |
+| act1-chapters (chapters, combat) | 1200–1399 |
+| env-art | 1400–1499 |
+| env-art-b | 1500–1599 |
+| slice-polish (cinematics) | 1600–1699 |
+| ui-menus | 1700–1799 |
+| creatures | 1800–1849 |
+| creatures-b | 1850–1899 |
+| battle-presentation | 1900–1949 |
+| audio | 1950–1979 |
+| integration-qa, cloud-qa, characters | 1980–1999 (one shared block; check before filing) |
+
+Existing ids keep their numbers. The gate renumbers any clash into the filer's range.
+
+## FROM 2026-10-30 21:50: empty queue → supplement or Act III (ADR 0207)
+If your own Act I and Act II lanes are empty, or wait only on others:
+1. Help a busier track. Agree it by request task in both logs first, Act I items first.
+2. Or start Act III production in your lane, from docs/kb/story/act3/, at the same final-quality bar. Task ids are M5-A3P-NNNN from your ADR-0205 range.
+
+Act I and Act II FAST-TRACKs always come first.

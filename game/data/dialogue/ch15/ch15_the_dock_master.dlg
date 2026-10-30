@@ -1,0 +1,27 @@
+// Ch15 B10 "The dock-master" (C, 2 min). act2_ch15.md §2 B10, split out of ch15_current_song (that file is the open
+// sea; this one is staged in Hollowmere). H04: Hollowmere at dawn, the first oil lamps on the hulls (rule 3 ends).
+// H05: Aldous Varrow, the dock-master, at his hull-house door; he looks at the canopy, then at his daughter.
+// H06: FROM THE BARGE, at a distance, Liss tells him. NO DIALOGUE IS HEARD in this beat: the errand is hers.
+title: ch15_the_dock_master
+location: ch17/hollowmere
+---
+@letterbox on
+@fade in 1.5
+@camera H04
+@wait 4.0
+@camera H05
+@mark aldous_varrow fathers_door walk
+@anim aldous_varrow look_at tobin_bier
+@wait 2.0
+@anim aldous_varrow look_at liss
+@wait 2.0
+@camera H06
+@mark liss fathers_door walk
+@wait 6.0
+@anim aldous_varrow embrace liss
+@wait 4.0
+@music silence fade=3.0
+<<set $ch15_liss_told_father = true>>
+@letterbox off
+@camera release
+===

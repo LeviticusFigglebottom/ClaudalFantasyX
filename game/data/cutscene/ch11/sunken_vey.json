@@ -1,0 +1,202 @@
+{
+ "_doc": "M4-CIN-1304: Ch11 Sunken Vey's cutscene shots and marks (cinematics'), staged from docs/kb/story/beats/act2_ch11_direction.md (the story track's notes; their frustum-checked positions kept). V00 and V10 are lowlight.md's L01 and L03 (the layout's own V01-V04 stay the chapter's). gallery_away is moved into the north gallery: the notes' (26, 0, -21) is past the court's west wall, on the water.",
+ "shots": {
+  "V00": {
+   "pos": [
+    -10.0,
+    1.2,
+    -2.0
+   ],
+   "look_at": [
+    30.0,
+    2.5,
+    -8.0
+   ],
+   "fov": 53
+  },
+  "V10": {
+   "pos": [
+    39.0,
+    1.5,
+    -21.0
+   ],
+   "look_at": [
+    34.5,
+    1.3,
+    -28.5
+   ],
+   "fov": 38
+  },
+  "V05": {
+   "pos": [
+    37.5,
+    1.5,
+    -24.5
+   ],
+   "look_at": [
+    34.7,
+    1.4,
+    -27.2
+   ],
+   "fov": 27
+  },
+  "V05_rhen": {
+   "pos": [
+    33.0,
+    1.55,
+    -26.0
+   ],
+   "look_at": [
+    35.5,
+    1.55,
+    -26.5
+   ],
+   "fov": 18
+  },
+  "V05_liss": {
+   "pos": [
+    36.2,
+    1.55,
+    -29.0
+   ],
+   "look_at": [
+    34.0,
+    1.5,
+    -27.8
+   ],
+   "fov": 18
+  },
+  "V06": {
+   "pos": [
+    36.5,
+    1.6,
+    -28.5
+   ],
+   "look_at": [
+    30.5,
+    1.2,
+    -24.0
+   ],
+   "fov": 38
+  },
+  "V07": {
+   "pos": [
+    37.6,
+    1.65,
+    -21.2
+   ],
+   "look_at": [
+    38.5,
+    1.6,
+    -22.5
+   ],
+   "fov": 14
+  },
+  "V08": {
+   "pos": [
+    1.5,
+    1.5,
+    3.5
+   ],
+   "look_at": [
+    -2.3,
+    1.4,
+    0.9
+   ],
+   "fov": 27
+  },
+  "V09": {
+   "pos": [
+    -6.0,
+    1.7,
+    0.5
+   ],
+   "look_at": [
+    6.0,
+    1.2,
+    0.0
+   ],
+   "fov": 38
+  }
+ },
+ "marks": {
+  "cornice_conduits": [
+   6.0,
+   3.5,
+   -4.0,
+   0.0
+  ],
+  "liss_landing": [
+   2.0,
+   0.0,
+   -1.5,
+   270.0
+  ],
+  "pell_landing_back": [
+   -1.5,
+   0.0,
+   1.0,
+   270.0
+  ],
+  "rhen_court": [
+   35.5,
+   0.0,
+   -26.5,
+   49.0
+  ],
+  "rhen_lantern": [
+   35.6,
+   1.1,
+   -26.3,
+   0.0
+  ],
+  "asha_court": [
+   38.5,
+   0.0,
+   -22.5,
+   140.0
+  ],
+  "court_edge": [
+   30.5,
+   0.0,
+   -24.0,
+   90.0
+  ],
+  "gallery_away": [
+   33.0,
+   0.0,
+   -13.0,
+   0.0
+  ],
+  "landing_pell": [
+   -2.5,
+   0.0,
+   1.5,
+   90.0
+  ],
+  "landing_asha": [
+   -1.6,
+   0.0,
+   0.4,
+   90.0
+  ],
+  "line_front": [
+   4.0,
+   0.0,
+   -0.2,
+   270.0
+  ],
+  "line_back_a": [
+   1.5,
+   0.0,
+   0.3,
+   270.0
+  ],
+  "line_back_b": [
+   0.0,
+   0.0,
+   -0.3,
+   270.0
+  ]
+ }
+}

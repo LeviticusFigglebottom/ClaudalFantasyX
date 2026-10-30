@@ -535,6 +535,155 @@
    "solid": false
   },
   {
+   "id": "WellRim0",
+   "pos": [
+    66.948,
+    -7.7,
+    4.958
+   ],
+   "size": [
+    2.315,
+    0.6,
+    0.4
+   ],
+   "yaw": 72.0,
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "WellRim1",
+   "pos": [
+    65.822,
+    -7.7,
+    6.508
+   ],
+   "size": [
+    2.315,
+    0.6,
+    0.4
+   ],
+   "yaw": 36.0,
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "WellRim2",
+   "pos": [
+    64.0,
+    -7.7,
+    7.1
+   ],
+   "size": [
+    2.315,
+    0.6,
+    0.4
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "WellRim3",
+   "pos": [
+    62.178,
+    -7.7,
+    6.508
+   ],
+   "size": [
+    2.315,
+    0.6,
+    0.4
+   ],
+   "yaw": -36.0,
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "WellRim4",
+   "pos": [
+    61.052,
+    -7.7,
+    4.958
+   ],
+   "size": [
+    2.315,
+    0.6,
+    0.4
+   ],
+   "yaw": -72.0,
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "WellRim5",
+   "pos": [
+    61.052,
+    -7.7,
+    3.042
+   ],
+   "size": [
+    2.315,
+    0.6,
+    0.4
+   ],
+   "yaw": -108.0,
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "WellRim6",
+   "pos": [
+    62.178,
+    -7.7,
+    1.492
+   ],
+   "size": [
+    2.315,
+    0.6,
+    0.4
+   ],
+   "yaw": -144.0,
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "WellRim7",
+   "pos": [
+    64.0,
+    -7.7,
+    0.9
+   ],
+   "size": [
+    2.315,
+    0.6,
+    0.4
+   ],
+   "yaw": -180.0,
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "WellRim8",
+   "pos": [
+    65.822,
+    -7.7,
+    1.492
+   ],
+   "size": [
+    2.315,
+    0.6,
+    0.4
+   ],
+   "yaw": -216.0,
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "WellRim9",
+   "pos": [
+    66.948,
+    -7.7,
+    3.042
+   ],
+   "size": [
+    2.315,
+    0.6,
+    0.4
+   ],
+   "yaw": -252.0,
+   "color": "#5e6a6a"
+  },
+  {
    "id": "Waterline",
    "pos": [
     52.0,
@@ -616,13 +765,26 @@
    90.0
   ],
   "pell_kneel": [
-   65.0,
+   67.2,
    -8.0,
-   6.0,
+   5.6,
    90.0
   ]
  },
- "actors": {},
+ "actors": {
+  "lamp_engine": {
+   "at": [
+    10.0,
+    0.0,
+    -30.0,
+    180.0
+   ],
+   "cast": "creature:lamp_engine",
+   "color": "#1c3a3e",
+   "radius": 2.0,
+   "height": 3.4
+  }
+ },
  "shots": {
   "L01": {
    "pos": [
@@ -691,14 +853,14 @@
   },
   "L06": {
    "pos": [
-    65.0,
+    67.2,
     -6.8,
     0.5
    ],
    "look_at": [
-    65.0,
+    67.2,
     -7.0,
-    6.0
+    5.6
    ],
    "fov": 40
   },
@@ -742,6 +904,32 @@
    ],
    "fov": 55,
    "priority": 1
+  },
+  {
+   "id": "GateStep",
+   "mode": "pan_follow",
+   "at": [
+    -1.5,
+    1.5,
+    0.0
+   ],
+   "size": [
+    3.5,
+    4.0,
+    5.0
+   ],
+   "pos": [
+    6.0,
+    3.5,
+    3.0
+   ],
+   "look_at": [
+    -1.5,
+    0.8,
+    0.0
+   ],
+   "fov": 50,
+   "priority": 2
   },
   {
    "id": "Hall",
@@ -864,6 +1052,46 @@
    ],
    "payload": {
     "beat": "to_vey"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "engine",
+   "activation": "touch",
+   "at": [
+    10.0,
+    0.0,
+    -19.0
+   ],
+   "size": [
+    4.0,
+    0,
+    1.5
+   ],
+   "requires_flag": "ch11_reached_lowlight",
+   "blocked_by_flag": "ch11_engine_released",
+   "payload": {
+    "beat": "engine"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "sanctum",
+   "activation": "touch",
+   "at": [
+    58.5,
+    -8.0,
+    4.0
+   ],
+   "size": [
+    1.5,
+    0,
+    4.0
+   ],
+   "requires_flag": "ch11_engine_released",
+   "blocked_by_flag": "ch11_nhoa_bound",
+   "payload": {
+    "beat": "sanctum"
    },
    "yaw": 0.0
   }

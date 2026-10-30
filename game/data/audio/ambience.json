@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "doc": "Field ambience beds (M2-AUD-05; docs/kb/tech/audio_runtime.md). ambience: bed id -> file, volume_db (0: the beds ship at -26 LUFS), bus. The director merges these beds into music.json's ambience table (music.json's rows win on a clash). zones: scene -> the beds that play there by day; once night_flag is set, the night list instead; wind: true adds the wind bed. A zone's beds here apply when music.json's row for the scene names none (no ambience key, or an empty list), so music.json can still override a scene. wind: the wind bed's level follows the zone's wind speed (WeatherClock.zone_wind, game/data/world/zone_weather.json): min_db at or below min_m_s, max_db at or above max_m_s, linear in between. tools/validate_data.py checks every file, bed, scene and flag.",
+  "doc": "Field ambience beds (M2-AUD-05; docs/kb/tech/audio_runtime.md). ambience: bed id -> file, volume_db (0: the beds ship at -26 LUFS), bus. The director merges these beds into music.json's ambience table (music.json's rows win on a clash). zones: scene -> the beds that play there by day; once night_flag is set, the night list instead; wind: true adds the wind bed. A zone's beds here apply when music.json's row for the scene names none (no ambience key, or an empty list), so music.json can still override a scene. wind: the wind bed's level follows the zone's wind speed (WeatherClock.zone_wind, game/data/world/zone_weather.json): min_db at or below min_m_s, max_db at or above max_m_s, linear in between. tools/validate_data.py checks every file, bed, scene and flag. arenas (the Lead's 10-30 13:08 item): a battle arena id (game/data/battle/arenas.json) -> the beds BattleAudio plays in its battle in place of the field's, fading over arena_fade_sec; the field's come back when the battle leaves (AudioDirector.release_arena_ambience). An arena with no row keeps the field's beds under the battle. Act II's arenas first; an arena that is the same place as a zone bed uses that bed. encounters (the Lead's 10-30 13:48 item): an encounter id -> the beds its battle plays, tried before its arena's (a set piece whose arena changes: the storm waking at the Choir); pending_encounters lists planned ids combat has not written yet.",
   "ambience": {
     "haluna_day": {
       "file": "res://assets/audio/ambience/haluna_day.ogg",
@@ -104,6 +104,8 @@
       "volume_db": 0.0,
       "_note": "M3-AUD-16 (assets_src/sfx/act1_ambience.py)"
     },
+    "corrow_town": {"file": "res://assets/audio/ambience/corrow_town.ogg", "bus": "Ambience", "volume_db": -4.0, "_note": "M3-AUD-864 (assets_src/sfx/act1_walla_ambience.py): Ch8, Corrow by day, its people: murmured voices along the mole, a mallet, a cart, a door; a layer 4 dB under corrow_seawall"},
+    "haluna_mourners": {"file": "res://assets/audio/ambience/haluna_mourners.ogg", "bus": "Ambience", "volume_db": -7.0, "_note": "7 dB under its bed (was 4; the Lead's 10-30 18:24 polish pass: the wake stacks four beds and the wind, and a line's blips need their 2.5 LU, tools/tests/test_dialogue_clarity.py). M3-AUD-864 (assets_src/sfx/act1_walla_ambience.py): Ch4, the wake at Haluna: low voices at the tables, cups set down, a bench; a layer 4 dB under haluna_night"},
     "oruvel_raft": {"file": "res://assets/lfs/audio/ambience/oruvel_raft.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M3-AUD-861 (assets_src/sfx/act1_final_ambience.py; Git LFS, ADR 0173): Ch1, Oruvel: lashed hulls knocking on the swell, water in the gaps, cook-boat stoves, the market, gulls"},
     "brightwater_deck": {"file": "res://assets/lfs/audio/ambience/brightwater_deck.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M3-AUD-861 (assets_src/sfx/act1_final_ambience.py; Git LFS, ADR 0173): Ch4, the Brightwater ferry at sea: the bow wash, sails and rigging, her timbers, the caged lamp, the far reef"},
     "coilspire_flues": {"file": "res://assets/lfs/audio/ambience/coilspire_flues.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M3-AUD-861 (assets_src/sfx/act1_final_ambience.py; Git LFS, ADR 0173): Ch8, Coilspire: the keeping fire drawn up the copper flues, copper ticking, the storm outside the stone"},
@@ -126,7 +128,15 @@
     "sanctum_basin": {"file": "res://assets/audio/act2/ambience/sanctum_basin.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch13, the Sanctum: the basin's air, just above silence"},
     "open_sea_night": {"file": "res://assets/audio/act2/ambience/open_sea_night.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch15, the unlamped barge: the sea on the hull, timbers, the bridal cloth stirring"},
     "pale_rim_shallows": {"file": "res://assets/audio/act2/ambience/pale_rim_shallows.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch16, the Pale Rim: soft wind, a thin wash over the flats, far ripples, a cairn stone"},
-    "choir_bowl": {"file": "res://assets/audio/act2/ambience/choir_bowl.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch16, the Drowned Choir: wind moaning through the stone mouths, water in the bowl"}
+    "choir_bowl": {"file": "res://assets/audio/act2/ambience/choir_bowl.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch16, the Drowned Choir: wind moaning through the stone mouths, water in the bowl"},
+    "arena_fen_roots": {"file": "res://assets/audio/act2/ambience/arena_fen_roots.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): battle arena, Ch10 the dead mangrove (the Mangrove Drowner): still fen air, mud and silt bubbles, dead roots creaking"},
+    "arena_engine_hall": {"file": "res://assets/audio/act2/ambience/arena_engine_hall.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): battle arena, Ch11 the flooded engine hall (the Lamp Engine): the engine's throb near, the conduits' hum, water at the dais"},
+    "arena_seep_terrace": {"file": "res://assets/audio/act2/ambience/arena_seep_terrace.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): battle arena, Ch12 Keth Pass seep terrace (the Avalanche Ram): rock seeping, trickles over the kerb, wind, a loosed stone"},
+    "arena_lagoon_dusk": {"file": "res://assets/audio/act2/ambience/arena_lagoon_dusk.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): battle arena, Ch14 Ansedra's lagoon at the wedding's dusk (Malcor Venn): rippled water, the barge, a far bell, far raised voices"},
+    "arena_court_steps": {"file": "res://assets/audio/act2/ambience/arena_court_steps.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): battle arena, Ch14 the Lacquer Court's water-steps: the crowd drawn back and far, silk, water on the steps, a far gong"},
+    "hollowmere_flotilla": {"file": "res://assets/audio/act2/ambience/hollowmere_flotilla.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch15, Hollowmere's first visit (ambience only, beats act2_ch15.md §6): water among the hulls, tide-wheels, a pump, gulls, far hammers, low voices"},
+    "open_sea_fog": {"file": "res://assets/audio/act2/ambience/open_sea_fog.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch15 B09, the bow at dawn in fog: flat calm, a low swell, fog-damp drips off the canopy, the barge barely creaking"},
+    "choir_storm": {"file": "res://assets/audio/act2/ambience/choir_storm.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch16, the storm waking early at the Choir (ch16_holding_the_line): the mouths roaring in a gale, surge and spray, the sea's roar"}
   },
   "zones": {
     "res://game/levels/prologue/prologue.tscn": {"day": ["iskarra_dusk"], "_note": "M3-AUD-817: Iskarra's drowned plaza at dusk, the room tone under the prologue cutscene"},
@@ -215,14 +225,16 @@
       "day": [
         "haluna_night",
         "surf",
-        "dock"
+        "dock",
+        "haluna_mourners"
       ],
       "wind": true,
       "_note": "M3-AUD-861: Ch4, Haluna by night for Asha's wake: the same place and the same night beds as Ch2's dock"
     },
     "res://game/levels/ch08/corrow/corrow.tscn": {
       "day": [
-        "corrow_seawall"
+        "corrow_seawall",
+        "corrow_town"
       ],
       "wind": true,
       "_note": "M3-AUD-861: Ch8, Corrow before the storm: the seawall bed it was made for (M3-AUD-16)"
@@ -258,10 +270,25 @@
     "res://game/levels/ch13/ansedra_lacquer_court/ansedra_lacquer_court.tscn": {"day": ["lacquer_court"], "_note": "M4-A2P-093"},
     "res://game/levels/ch13/lamp_archive/lamp_archive.tscn": {"day": ["archive_room"], "_note": "M4-A2P-093"},
     "res://game/levels/ch13/sanctum/sanctum.tscn": {"day": ["sanctum_basin"], "_note": "M4-A2P-093"},
-    "res://game/levels/ch15/open_sea/open_sea.tscn": {"day": ["open_sea_night"], "_note": "M4-A2P-093"},
+    "res://game/levels/ch15/open_sea/open_sea.tscn": {"day": ["open_sea_night"], "night": ["open_sea_fog"], "night_flag": "ch15_pell_said_he_knew", "_note": "M4-A2P-093; the Lead's 10-30 13:48 item: the night at sea, then the dawn fog at the bow (B09) once B08's ch15_pell_said_he_knew is set (`night` is just the later list here)"},
+    "res://game/levels/ch17/hollowmere/hollowmere.tscn": {"day": ["hollowmere_flotilla"], "_note": "the Lead's 10-30 13:48 item: Ch15's first visit is ambience only, no zone loop (beats act2_ch15.md §6); Ch17's music row is Act III's"},
     "res://game/levels/ch16/pale_rim/pale_rim.tscn": {"day": ["pale_rim_shallows"], "_note": "M4-A2P-093"},
     "res://game/levels/ch16/drowned_choir/drowned_choir.tscn": {"day": ["choir_bowl"], "_note": "M4-A2P-093"}
   },
+  "arena_fade_sec": 1.0,
+  "arenas": {
+    "ossa_fen_roots": ["arena_fen_roots"],
+    "lowlight_engine_hall": ["arena_engine_hall"],
+    "keth_seep_terrace": ["arena_seep_terrace"],
+    "lacquer_court_steps": ["arena_court_steps"],
+    "ansedra_lagoon_escape": ["arena_lagoon_dusk"],
+    "bridal_barge_night": ["open_sea_night"],
+    "drowned_choir_ring": ["choir_bowl"]
+  },
+  "encounters": {
+    "ch16_holding_the_line": ["choir_storm", "choir_bowl"]
+  },
+  "pending_encounters": ["ch16_holding_the_line"],
   "wind": {
     "bed": "wind",
     "min_m_s": 2.0,

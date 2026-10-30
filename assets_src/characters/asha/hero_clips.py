@@ -1102,7 +1102,7 @@ def _victory(hero: str, u: float, sk: Skeleton, persona: dict) -> dict:
     s1, c1 = math.sin(ph), math.cos(ph)
     if hero == "kerrid":  # M3-CHR-505: the look back down the line (his block)
         return kerrid_victory(u, sk, persona)
-    if hero in ("moll", "venn"):  # M3-CHR-507: the iron grounded, the long look over the field (his block; Venn's)
+    if hero in ("moll", "venn") or hero.startswith("abiding_"):  # M3-CHR-507: his block (Venn's, the guard's)
         return moll_victory(u, sk, persona)
     if hero == "pell":  # M3-CHR-506: very still, listening to the quiet (his block); never his back turned
         return pell_victory(u, sk, persona)
@@ -1537,7 +1537,7 @@ LOOPS |= LOCO_LOOPS
 LENGTHS.update({c: n / FPS for c, n in LOCO_FRAMES.items()})
 # The cycles' lengths, per hero, in whole keys (so a loop's last key is its first): the shared 1.1 s walk and 0.7 s
 # run fall between keys. Rhen's quicker cadence, Toma's slower one.
-LOCO_CYCLE_FRAMES = {"asha": {"walk": 17, "run": 11}, "rhen": {"walk": 16, "run": 10},
+LOCO_CYCLE_FRAMES = {"asha": {"walk": 17, "run": 11}, "rhen": {"walk": 16, "run": 11},
                      "toma": {"walk": 18, "run": 11}}
 HEEL_BACK = 0.05  # m: the heel's contact point behind the ankle (the heel-strike pivot)
 ANKLE_DORSI = 10.0  # degrees a swinging foot may turn toes-up past its standing angle to the shin
@@ -1562,26 +1562,31 @@ _WALK = {"beta": 0.6, "c": 0.0, "width": 0.0, "hs": 14.0, "to": 24.0, "rh": 0.12
 # hips and chest wrung, the knee kicked high, the staff whipped). A grounded run: the elbow held bent near the body and
 # folding more as the arm comes forward (the `fwd` terms of M2-CHR-513), little abduction, less follow-through lag, a
 # smaller hip and chest counter-turn, a lower swing-foot lift and a steadier staff
-_RUN = dict(_WALK, beta=0.36, c=-0.08, hs=5.0, to=26.0, rh=0.06, rb=0.26, clear=0.09, peak=0.4, bump=6.0, drop=0.06,
-            bob=0.025, run=True, sway=0.012, yaw=4.5, tilt=1.5, chest=4.0, lean=8.0, flex=2.5, nod=1.2, arm=20.0,
-            elbow=16.0, fore=68.0, fore_s=40.0, abd=6.0, lag=0.025, staff=2.5, fwd=0.55, fwd_elbow=28.0, fwd_abd=3.0)
+# the human's second playtest (FAST-TRACK, 2026-10-30): the run still read "janky and jagged, the arms flailing up".
+# A brisk, grounded jog: the elbows held at 80-100 degrees (fore + the swing's bend), the hands low (waist to chest), a
+# compact counter-swing with the forward swing folded only a little and barely opened (no elbows flying up), a slight
+# lean, a soft bob, a clear heel strike; the stride (S, per hero below) matched to the field's run speed at about
+# 165 steps a minute, and the cycles keyed cubic (CUBIC_CLIPS), not linear, so the 15 fps keys read as one curve
+_RUN = dict(_WALK, beta=0.36, c=-0.08, hs=8.0, to=26.0, rh=0.06, rb=0.26, clear=0.09, peak=0.4, bump=6.0, drop=0.06,
+            bob=0.03, run=True, sway=0.012, yaw=4.0, tilt=1.5, chest=3.5, lean=7.0, flex=2.5, nod=1.0, arm=18.0,
+            elbow=8.0, fore=85.0, fore_s=40.0, abd=4.0, lag=0.02, staff=2.5, fwd=0.6, fwd_elbow=10.0, fwd_abd=2.0)
+CUBIC_CLIPS = {"walk", "run"}  # the three heroes' cycles: keyed cubic (smooth through the 15 fps keys)
 LOCO_GAIT = {
     # asha.md §1: stillness (sway 0.4): a short, level, quiet walk, the staff carried upright in the right hand
     "asha": {"walk": dict(_WALK, S=1.0, c=-0.02, sway=0.014, yaw=3.5, tilt=0.5, chest=3.0, lean=1.5, arm=13.0,
                           bob=0.016, drop=0.035, abd=7.0, clear=0.04),  # abd: the verse sleeve's bag clears the thigh
-             "run": dict(_RUN, S=1.9, sway=0.008, lean=7.0, arm=18.0, abd=7.0)},  # abd: as the walk's
+             "run": dict(_RUN, S=2.6, sway=0.008, lean=6.0, arm=16.0, abd=7.0)},  # abd: as the walk's
     # rhen.md §1: light and quick (sway 1.3, the 4 degree lean): springier, leaning, a bigger arm swing, a shorter
     # stride for his legs, so the controller plays him at a quicker cadence for the same ground speed
     "rhen": {"walk": dict(_WALK, S=1.05, c=-0.02, sway=0.022, yaw=4.0, tilt=1.0, chest=1.5, lean=4.0, arm=17.0, abd=5.0, back_r=0.35, bob=0.026,
                           drop=0.03, clear=0.065, hs=16.0, to=28.0),
-             "run": dict(_RUN, S=2.0, c=-0.13, sway=0.014, lean=12.0, arm=30.0, bob=0.035, hs=0.0, to=32.0,
-                         clear=0.12, fwd=0.7, fwd_elbow=45.0,
-                         fwd_abd=10.0)},  # M2-CHR-513: a sprinter's arm, not a reach
+             "run": dict(_RUN, S=2.6, c=-0.13, sway=0.014, lean=8.0, arm=20.0, to=30.0, abd=8.0, back_r=0.5,
+                         clear=0.11)},  # the jog: the shared arm (his sprinter's arm flew up); abd: the underarm clear
     # toma.md §1: broad, the weight low, the spear held like the staff: a long, heavy, rolling stride, the feet
     # tracking wide, a lower body and a big side-to-side transfer, little bounce
     "toma": {"walk": dict(_WALK, S=1.25, sway=0.03, yaw=4.0, tilt=2.0, chest=3.0, lean=2.0, arm=11.0,
                           bob=0.012, drop=0.045, clear=0.05),
-             "run": dict(_RUN, S=2.1, width=0.12, sway=0.018, lean=8.0, arm=18.0, bob=0.02, drop=0.07)},
+             "run": dict(_RUN, S=2.65, width=0.12, sway=0.018, lean=7.0, arm=16.0, bob=0.025, drop=0.07)},
 }
 SUPPORT_K = {"asha": 0.45, "rhen": 0.5, "toma": 0.35}  # how far the hips follow the weight-bearing foot
 
@@ -4619,6 +4624,26 @@ GRIP_ALWAYS.add("venn")
 IDLE_GROUNDED.add("venn")
 PROP_DOWN["venn"] = dict(PROP_DOWN["moll"])
 
+# M4-A2P-051: Sefir's Abiding guard (act2_ch16.md 5a), three named builds on the same kit, veiled: the halberdiers and
+# the Captain of the Veil fight as Venn does (his keys, the halberd on DEF-spear), the Bulwark casters as Moll does
+# (his keys as they are, the brine-iron on DEF-iron and the shield on the left arm). Each its own persona (their
+# skeletons differ), a little stiller than Moll: sworn guards.
+for _h, _keys, _grip in (("abiding_halberd", _venn_keys, ("Spear", "DEF-spear")),
+                         ("abiding_captain", _venn_keys, ("Spear", "DEF-spear")),
+                         ("abiding_bulwark", _moll_keys, ("Iron", "DEF-iron"))):
+    PERSONA[_h] = dict(PERSONA["moll"], sway=0.25)
+    CLIPS[_h] = list(CLIPS["moll"])
+    BATTLE_HEROES = BATTLE_HEROES + (_h,)
+    FOOT_FLAT[_h] = FOOT_FLAT["moll"]
+    STANCE_DORSI[_h] = STANCE_DORSI["moll"]
+    BATTLE_STRIKER[_h] = dict(BATTLE_STRIKER["moll"])
+    _BATTLE_KEYS[_h] = _keys
+    KO_OWN.add(_h)
+    GRIP[_h] = {"R": ("mesh", *_grip)}
+    GRIP_ALWAYS.add(_h)
+    IDLE_GROUNDED.add(_h)
+    PROP_DOWN[_h] = dict(PROP_DOWN["moll"])
+
 
 # ---------------------------------------------------------------------------------------------
 # Pell (M3-CHR-506, pell.md §1, §10): the wading-bird stand. Plumb from the heels to the shoulders, the long neck
@@ -5036,6 +5061,19 @@ GRIP_ALWAYS.add("pell")
 FLAT_HAND["pell"] = {"storm_call": {"R": (-1.0, 0.0, 2.0, 3.0)}, "cast": {"R": (0.1, 0.28, 0.62, 0.75)}}
 IDLE_GROUNDED.add("pell")
 
+# M4-A2P-053: the Kirru people on Pell's build (assets_src/characters/pell/pell_variant.py, kirru/variants/): his
+# idiom (the neck's S, the staff in the left hand, one movement then stillness) and his own clips, never a fight (no
+# battle contract: the Kirru are a people, never monsters). `back_to_sea` is the farewell-tide's turning away (the
+# back to the party, the head bowed). Each its own persona (their skeletons differ by height); the elder stiller.
+KIRRU_CLIPS = ["idle", "walk", "talk", "go_still", "listen_tilt", "back_to_sea"]
+for _h, _sw in (("kirru_elder", 0.1), ("kirru_adult", 0.15), ("kirru_child", 0.35)):
+    PERSONA[_h] = dict(PERSONA["pell"], sway=_sw)
+    CLIPS[_h] = list(KIRRU_CLIPS)
+    HERO_LENGTHS[_h] = {c: HERO_LENGTHS["pell"][c] for c in KIRRU_CLIPS if c in HERO_LENGTHS["pell"]}
+    GRIP[_h] = dict(GRIP["pell"])
+    GRIP_ALWAYS.add(_h)
+    IDLE_GROUNDED.add(_h)
+
 
 # M3-CHR-05: the story clips go after each hero's own (every hero's block above has set its list by now)
 for _h, _clips in STORY.items():
@@ -5114,13 +5152,16 @@ def build(hero: str, names: list | None = None) -> str:
         if persona.get("book") and clip in BLEND_SHAPES:  # ysolde: the book opens on its shape
             node, shape = BLEND_SHAPES[clip]
             tracks.append(("blend_shape", f"/{node}:{shape}", [(t, [book_fan_weight(clip, t)]) for t in times]))
+        # the cycles' body tracks keyed cubic (every key kept); the helper, prop and grip tracks stay linear: their
+        # keys are reduced against a linear slerp, which cubic would overshoot between
+        cubic = hero in LOCO_HEROES and clip in CUBIC_CLIPS
         for ti, (kind, bone, keys) in enumerate(tracks):
             vals = []
             for t, v in keys:
                 vals += [fmt(t), "1"] + [fmt(x) for x in v]
             lines += [f'tracks/{ti}/type = "{kind}"', f"tracks/{ti}/imported = false", f"tracks/{ti}/enabled = true",
                       f'tracks/{ti}/path = NodePath("{base[:-1] + bone if kind == "blend_shape" else base + bone}")',
-                      f"tracks/{ti}/interp = 1",
+                      f"tracks/{ti}/interp = {2 if cubic and (bone in BONES or bone == HIPS) else 1}",
                       f"tracks/{ti}/loop_wrap = true", f"tracks/{ti}/keys = PackedFloat32Array({', '.join(vals)})"]
         subs.append("\n".join(lines))
     data = ",\n".join(f'&"{c}": SubResource("clip_{i}")' for i, c in enumerate(names))

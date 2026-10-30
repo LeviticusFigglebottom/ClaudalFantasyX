@@ -32,3 +32,5 @@ shader_parameter/use_barnacles = false
 shader_parameter/use_moss = false
 shader_parameter/use_salt = true
 shader_parameter/variation_value = 0.14
+shader_parameter/wet_flatten = 0.1
+shader_parameter/wet_roughness = 0.6

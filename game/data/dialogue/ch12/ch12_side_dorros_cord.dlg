@@ -1,12 +1,13 @@
-// Ch12 side errand (optional; requires ch12_ram_felled). The red herd-cord the party cut from the Ram's fleece
-// belonged to Dorro, the herder in ch12_bark_herder. His daughter takes it. She does not keep it; she will tie it on the
-// pass. The Ullari way, stated without comment. Sets ch12_returned_herd_cord.
+// Ch12 side errand (optional; requires ch12_ram_felled). The Ram was Dorro's (ch12_bark_herder); his daughter asks
+// after it. Pell already tied its red herd-cord on a pass-cord in B07 (ch12_herd_cord), so the party only tells her
+// where it is. She is glad: on the road with him is where it belongs. The Ullari way, stated without comment. Sets
+// ch12_returned_herd_cord.
 title: ch12_side_dorros_cord
 location: ch12/quellan
 ---
-Ullari_woman as "Dorro's daughter" [neutral]: That's my father's cord. Red, with the double knot. He tied it on her the spring she was born. #line:ch12_dcord_001 #long
-Asha [sad]: I'm sorry. About her. And him. #line:ch12_dcord_002
+Ullari_woman as "Dorro's daughter" [neutral]: You came down the terrace road. Did you see her? The big one. Red cord, double knot. My father tied it on her the spring she was born. #line:ch12_dcord_001 #long
+Asha [sad]: We saw her. I'm sorry. Pell tied her cord on the pass. #line:ch12_dcord_002
 Ullari_woman as "Dorro's daughter" [neutral]: She went wild after he died. Nobody walked her home. #line:ch12_dcord_003
-Ullari_woman as "Dorro's daughter" [neutral]: I'll tie it on the pass, next to his. Then they're both on the road together. #line:ch12_dcord_004
+Ullari_woman as "Dorro's daughter" [neutral]: Then she's on the road with him. Good. That's where she belongs. #line:ch12_dcord_004
 <<set $ch12_returned_herd_cord = true>>
 ===

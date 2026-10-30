@@ -54,6 +54,18 @@ extends HalunaDresser
 ##   ebbing       {"data"?}: the Ebbing's motes (EbbingMotes; Ch9's game/data/vfx/ebbing.json, M3-C09-03, or the
 ##                  zone's own "data" file, as Ch15's held dead): the held fields
 ##                  the chapter's `@vfx glimmer_held` cues play, on the zone's stage.
+##   pieces[].snap  a float: after every piece is placed, the piece drops onto the collision under its origin plus
+##                  this offset (graves on a slope whose built mesh lies off the analytic surface they were set on).
+##   edge_walls   [{"pos": [x, y, z], "size": [x, y, z], "yaw"?, "while_hidden"?: <id>}]: invisible static boxes along
+##                  the walkways' edges over the water (assets_src/environments/zone_edges.py), so the hero can't
+##                  step off; a "while_hidden" wall collides only while Greybox/<id> is hidden (a bridge the story
+##                  takes away leaves no open edge).
+##   pieces[].drift  {"bob_m"?, "period_s"?, "tilt_deg"?, "wander_m"?, "wander_s"?}: a piece afloat (flotsam on a
+##                  sea) rides a slow swell: it bobs `bob_m` over `period_s`, rocks `tilt_deg`, and wanders round its
+##                  placed point in a `wander_m` eddy every `wander_s` (each piece's phase from its position).
+##   fire_light_fade  [begin_m, length_m]: every fire light fades out with distance from the camera (a town of lamps
+##                  whose far ones are "far_lights" quads: the omnis beyond leave the clustered light list).
+##   fire_lights[].flicker  0..1: the share of the light's energy a flame's flicker takes away at its deepest.
 ##   environment  a res:// Environment: the zone's WorldEnvironment takes a copy (sky, grade, fog).
 ##   time_of_day_h  the hymn_time_of_day the sky reads.
 ## It writes hymn_sun_direction from the zone's sun every frame, so the sky's sun follows the story's
@@ -81,6 +93,29 @@ const KEY_STORMS := "storms"
 const KEY_DROPS := "drops"
 const KEY_SMOKES := "smokes"
 const KEY_EBBING := "ebbing"
+const KEY_EDGE_WALLS := "edge_walls"
+const KEY_SNAP := "snap"
+const SNAP_FROM_M := 4.0
+const KEY_DRIFT := "drift"
+## A drifting piece's defaults: a calm sea's swell under a plank, a slow eddy.
+const DRIFT_BOB_M := 0.06
+const DRIFT_PERIOD_S := 5.5
+const DRIFT_TILT_DEG := 3.0
+const DRIFT_WANDER_M := 1.2
+const DRIFT_WANDER_S := 70.0
+## The rock's two axes out of step (rad lag, rate against the swell), and the piece's slow turn per eddy.
+const DRIFT_ROCK_LAG := 1.1
+const DRIFT_ROLL_RATE := 0.7
+const DRIFT_TURN_RATE := 0.25
+## A position hash to a phase (s): x and z weights, and the wrap.
+const PHASE_HASH := Vector3(12.9898, 78.233, 997.0)
+const KEY_FLICKER := "flicker"
+const KEY_FIRE_FADE := "fire_light_fade"
+## A flame's flicker: two incommensurate wavers (Hz) and a quick gutter, mixed so it never repeats in a shot.
+const FLICKER_HZ := Vector3(1.7, 4.3, 9.1)
+const FLICKER_MIX := Vector3(0.5, 0.3, 0.2)
+const SNAP_DOWN_M := 16.0
+const EDGE_WALLS := &"EdgeWalls"
 const KEY_MATERIAL_PATHS := "material_paths"
 const KEY_KIT_MATERIAL_PATHS := "kit_material_paths"
 const DEFAULT_WAVES := "res://game/world/water/lagoon_waves.tres"
@@ -105,6 +140,9 @@ var _followers: Dictionary = {}  ## block id -> Array of kit nodes
 var _kit_caches: Dictionary = {}  ## materials dir -> that kit's material cache
 var _spinners: Array[Array] = []  ## [piece, block, the piece's own basis]
 var _turners: Array[Array] = []  ## [piece, block, the piece's own basis]
+var _drifters: Array[Array] = []  ## [piece, its placed transform, its drift row, phase]
+var _flickers: Array[Array] = []  ## [light, its energy, flicker share, phase]
+var _clock_s := 0.0
 
 
 func dress() -> void:
@@ -115,6 +153,8 @@ func dress() -> void:
 	zone = get_parent() as GreyboxZone
 	_rng.seed = int(layout.get("seed", 1))
 	var kit_paths: Dictionary = layout.get(KEY_KIT_MATERIAL_PATHS, {})
+	var snaps: Array[Array] = []  ## [piece, offset]
+	var grounds: Array[Node3D] = []  ## the pieces that collide as a LOD1 trimesh (a terrain)
 	for spec: Dictionary in layout.get("pieces", []):
 		var piece := _place_from_kit(spec)
 		if piece == null:
@@ -129,6 +169,7 @@ func dress() -> void:
 		var collide: Variant = spec.get(KEY_COLLIDE, false)
 		if collide is String and collide == COLLIDE_TRIMESH:
 			piece.add_child(trimesh_collider(piece, true, lod0_boxes(spec.get(KEY_COLLIDE_LOD0_IN, []))))
+			grounds.append(piece)
 		elif collide is String and collide == COLLIDE_TRIMESH_LOD0:
 			piece.add_child(trimesh_collider(piece, false))
 		elif collide is bool and collide:
@@ -140,6 +181,11 @@ func dress() -> void:
 		var turn := block(str(spec.get(KEY_TURN, "")))
 		if turn != null:
 			_turners.append([piece, turn, piece.basis])
+		if spec.has(KEY_SNAP):
+			snaps.append([piece, float(spec[KEY_SNAP])])
+		if spec.has(KEY_DRIFT):
+			_drifters.append([piece, piece.transform, spec[KEY_DRIFT], _phase(piece.position)])
+	_snap_to_ground(snaps, grounds)
 	_place_fire_lights()
 	_place_multimeshes()
 	_place_far_lights()
@@ -148,6 +194,7 @@ func dress() -> void:
 	_place_drops()
 	_place_smokes()
 	_place_ebbing()
+	_place_edge_walls()
 	_hide_greybox()
 	_apply_environment()
 	if layout.has(KEY_TIME_OF_DAY):
@@ -155,7 +202,15 @@ func dress() -> void:
 	dressed.emit()
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	_clock_s += delta
+	for d: Array in _drifters:
+		_drift(d)
+	for f: Array in _flickers:
+		var t := _clock_s + float(f[3])
+		var w := Vector3(sin(t * TAU * FLICKER_HZ.x), sin(t * TAU * FLICKER_HZ.y), sin(t * TAU * FLICKER_HZ.z))
+		var dip := ((w + Vector3.ONE) * 0.5).dot(FLICKER_MIX)  # each waver 0..1
+		(f[0] as OmniLight3D).light_energy = float(f[1]) * (1.0 - float(f[2]) * dip)
 	for sp: Array in _spinners:
 		var turn := deg_to_rad((sp[1] as Node3D).rotation_degrees.y)
 		(sp[0] as Node3D).basis = (sp[2] as Basis) * Basis(Vector3.BACK, turn)
@@ -167,6 +222,28 @@ func _process(_delta: float) -> void:
 	if not toward.is_equal_approx(_sun_written):
 		_sun_written = toward
 		ShaderGlobals.set_value(GLOBAL_SUN, toward)
+
+
+## A phase (s) from a point, so neighbouring flames and floats never move in step.
+static func _phase(at: Vector3) -> float:
+	return fposmod(at.x * PHASE_HASH.x + at.z * PHASE_HASH.y, PHASE_HASH.z)
+
+
+func _drift(d: Array) -> void:
+	var piece := d[0] as Node3D
+	var base := d[1] as Transform3D
+	var row: Dictionary = d[2]
+	var t := _clock_s + float(d[3])
+	var swell := t * TAU / float(row.get("period_s", DRIFT_PERIOD_S))
+	var eddy := t * TAU / float(row.get("wander_s", DRIFT_WANDER_S))
+	var wander := float(row.get("wander_m", DRIFT_WANDER_M))
+	var tilt := deg_to_rad(float(row.get("tilt_deg", DRIFT_TILT_DEG)))
+	var offset := Vector3(cos(eddy) * wander, sin(swell) * float(row.get("bob_m", DRIFT_BOB_M)), sin(eddy) * wander)
+	var rock := (
+		Basis(Vector3.RIGHT, sin(swell + DRIFT_ROCK_LAG) * tilt)
+		* Basis(Vector3.BACK, sin(swell * DRIFT_ROLL_RATE) * tilt)
+	)
+	piece.transform = Transform3D(Basis(Vector3.UP, eddy * DRIFT_TURN_RATE) * rock * base.basis, base.origin + offset)
 
 
 ## Every surface of `root`'s meshes whose kit slot (its source material's name) is a key of `paths` takes that
@@ -421,6 +498,65 @@ func _follow(block_id: String) -> void:
 		_pause_hidden(n)
 
 
+## Drops each "snap" piece onto the ground under its origin (its own bodies excluded), plus its offset: a prop
+## placed on an analytic surface sits on the built ground, whose coarse mesh can lie metres off it. A terrain that
+## collides as its LOD1 gets a LOD0 body for the while, so the prop sits on the ground that draws.
+func _snap_to_ground(snaps: Array[Array], grounds: Array[Node3D]) -> void:
+	if snaps.is_empty() or not is_inside_tree():
+		return
+	var coarse: Array[RID] = []  ## the terrains' own LOD1 bodies: the snap looks past them
+	for g: Node3D in grounds:
+		for b: Node in g.find_children("*", "CollisionObject3D", true, false):
+			coarse.append((b as CollisionObject3D).get_rid())
+	var drawn: Array[StaticBody3D] = []
+	for g: Node3D in grounds:
+		var body := trimesh_collider(g, false)
+		g.add_child(body)
+		drawn.append(body)
+	var space := get_world_3d().direct_space_state
+	for row: Array in snaps:
+		var piece := row[0] as Node3D
+		var mine: Array[RID] = coarse.duplicate()
+		for b: Node in piece.find_children("*", "CollisionObject3D", true, false):
+			mine.append((b as CollisionObject3D).get_rid())
+		var at := piece.global_position
+		var q := PhysicsRayQueryParameters3D.create(at + Vector3.UP * SNAP_FROM_M, at + Vector3.DOWN * SNAP_DOWN_M)
+		q.exclude = mine
+		var hit := space.intersect_ray(q)
+		if not hit.is_empty():
+			piece.global_position.y = float(hit["position"].y) + float(row[1])
+	for body: StaticBody3D in drawn:
+		body.get_parent().remove_child(body)
+		body.free()
+
+
+func _place_edge_walls() -> void:
+	var rows: Array = layout.get(KEY_EDGE_WALLS, [])
+	if rows.is_empty():
+		return
+	var root := Node3D.new()
+	root.name = EDGE_WALLS
+	add_child(root)
+	for row: Dictionary in rows:
+		var body := StaticBody3D.new()
+		body.position = _vec3(row["pos"])
+		body.rotation_degrees.y = float(row.get("yaw", 0.0))
+		var shape := BoxShape3D.new()
+		shape.size = _vec3(row["size"])
+		var cs := CollisionShape3D.new()
+		cs.shape = shape
+		body.add_child(cs)
+		root.add_child(body)
+		var b := block(str(row.get("while_hidden", "")))
+		if b != null:
+			cs.disabled = b.visible
+			b.visibility_changed.connect(func() -> void: cs.disabled = b.visible)
+
+
+static func _vec3(v: Array) -> Vector3:
+	return Vector3(float(v[0]), float(v[1]), float(v[2]))
+
+
 func _place_fire_lights() -> void:
 	var rows: Array = layout.get(KEY_FIRE, [])
 	if rows.is_empty():
@@ -429,6 +565,7 @@ func _place_fire_lights() -> void:
 	root.name = FIRE_LIGHTS
 	add_child(root)
 	var color := Color.html(str(layout.get("fire_light_color", "#E0702E")))
+	var fade: Array = layout.get(KEY_FIRE_FADE, [])
 	for r: Variant in rows:
 		var row: Dictionary = r
 		var at: Array = row.get("at", [0.0, 0.0, 0.0])
@@ -440,8 +577,14 @@ func _place_fire_lights() -> void:
 		light.omni_attenuation = float(row.get("attenuation", light.omni_attenuation))
 		light.light_specular = float(row.get("specular", light.light_specular))
 		light.light_volumetric_fog_energy = 0.0  # the fog-lamp rule (test_fog_lamps)
+		if fade.size() == 2:
+			light.distance_fade_enabled = true
+			light.distance_fade_begin = float(fade[0])
+			light.distance_fade_length = float(fade[1])
 		light.position = Vector3(float(at[0]), float(at[1]), float(at[2]))
 		root.add_child(light)
+		if row.has(KEY_FLICKER):
+			_flickers.append([light, light.light_energy, float(row[KEY_FLICKER]), _phase(light.position)])
 		_attach(light, str(row.get(KEY_BLOCK, "")))
 
 

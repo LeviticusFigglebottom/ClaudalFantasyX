@@ -103,3 +103,64 @@ open questions for Combat and the chapter designer.
 - Ch20: does each release fight happen inside that Vowbound's remembered layer (the Shell Shrine for Ilun, Ashcrown
   for Kahre, …), so the arenas come from env-art's existing kits?
 - The Cage: one combatant with break parts (as the flat-engine), or four combatants plus a frame?
+
+## Reconciled with the Act III beat sheets (2026-10-30)
+
+The story track's Act III sheets (docs/kb/story/act3/, act3_ch17–ch20, with act3_ending.md) postdate this roster.
+This is the creatures they imply, checked against them. **Planning only:** no asset is built before the Act III gate
+(ADR 0203/0205). Ids are proposals for the chapter designer and Combat. ✓ = the roster above already covers it,
+**new** = implied by the sheets and not in the roster, **changed** = the sheets alter the roster's entry.
+
+| Ch | Where | Id | Status | Design note |
+|---|---|---|---|---|
+| 17 | Hollowmere's outer moorings (§5: "optional fights only, Act III regulars") | `deep_scuttler` | **changed** (moved up from Ch18) | The Act I scuttler variant: spawn crawled up the hull-lines as the Calm fails. Darker, more wounds open. Fought on the flotilla's outermost hulls, never inside the town: Ch17 stays grief among allies. |
+| 17 | the outer moorings | `hull_rasp` | **new** | A variant of the hullgnaw (Ch1): a rasping hull-borer in the flotilla's keels, an echo of Oruvel at Dace's yard. Reuses the hullgnaw rig and clips with a new shell and palette: wet lacquer, salt-crust, `spawn_wound` bore-holes. A single optional foe that rewards breaking its part first, the Ch1 lesson grown up. |
+| 18 | revisited zones | `tide_matron`, `old_leviathan` | ✓, placement narrowed | The sheet's rule 3 ("every revisited town has changed … its grief, not its quest log") answers the roster's open question: **no new foes inside the towns.** The optional boss and the superboss live on the old wild routes and the secret coordinates only. |
+| 18 | the Kite (hub) | wildlife: `kite_gulls` | **new (wildlife)** | Gulls riding the Kite's wake at altitude as the world opens (K02). Act I's gull kind in a flock row centred on the Kite (a moving centre: WildlifeGullFlock needs a parent-relative centre). No new mesh. |
+| 18 | Reedhollow (K05, the farewell-tide again) | the Kirru crowd | ✓ built (2026-10-30) | assets/crowd/kirru_* on the clutch's stand-ins; the Ch18 variant needs only a variants row on `ch17_complete`. |
+| 18 | Haluna, "Backs to the Water" | Haluna's crowd | ✓ (crowd generator) | The village lifts its own: Haluna's villagers plus crowd people turned backs-to-the-water (a zone-file variant), no new body. |
+| 19 | the Lamp Spire, tiers 1–4 (I06: "lamp-engines, conduits … Act III regulars") | `wick_crawler`, `chain_lamp`, `spire_moth` | ✓ (sheets exist) | As sheeted. The spire's "lamp-engines" and "conduits" fit them. |
+| 19 | the Lamp Spire | `conduit_crawler` (reuse) | **new use** | The Act II crawler (built, wired 2026-10-30) tends the spire's conduits as well. Same model, an Act III enemy row: the cheapest regular, and it says the founders' machines are one family. |
+| 19 | the crown (I08) | Warden Hesper Oan, Ilsabet Rue | not ours | People (revenants): the characters track's. The crown's anchor-engine is a set piece (env-art), not a foe. |
+| 20 | each layer (U01–U06) | `ilun_held` … `ethren_held` | ✓ built (M3-CRE-647) | The six release fights. Their `release` clips and held materials exist; only the enemies.json rows (Combat) and the `_held` portraits wait. |
+| 20 | the memory layers (U01 market, U02 terrace, U03 kitchen, U04 Reefball crowd) | **held shapes** | **new (crowd)** | "Held shapes buying and selling": the remembered townsfolk as held light. Crowd bodies in the silhouette mode (M3-HER-1142's `silhouette` rows) in `glimmer_held`, with no faces or tints, posed in the layer's activity (the market's work clips, the Reefball crowd's roar). A crowd-generator task per layer, no new mesh. The Reefball layer needs a crowd of 30+, so it needs a cheap MultiMesh path for distant rows. |
+| 20 | U05 the drowned gallery, U03 | `held_shoal`, `drowned_lantern` | ✓ (sheets exist) | The shoal drifts in the drowned gallery; the lanterns hang in the Oruvel and Corrow rooms. |
+| 20 | U07 the founders' floor | `the_cage` | ✓, **amend the sheet** | The beat sheet: "four seats of bound light round a well, each founder chained into one; break a seat's chains and that founder stops fighting and thanks you." The sheet's four bays on an arc (the near quarter of a ring round the heart) fit the well. **Amend:** each bay becomes a **seat** (the figure seated, chained at wrists and ankles), with the chains as the breakable part per seat. Its open question (one combatant with parts, or four) leans to **one combatant, four parts**, as the flat engine. |
+| 21 | the walk and the heart | none | ✓ | H01 "one rail, no encounters". Kesh is creatures-b's; Sefir and the Undertow-heart are the characters' and rendering's. |
+
+**Order of work at the gate (art), revised:**
+1. The Cage amendment (seats and chains).
+2. The held shapes (crowd silhouettes, per layer). The memories carry Ch20.
+3. Ch19's three plus the conduit crawler's Act III row.
+4. Ch20's two regulars.
+5. Ch17's two optional mooring foes.
+6. Ch18's optional set and the Kite's gulls.
+
+**Questions for the chapter designer and Combat (not the human):**
+- Ch17: are the moorings' optional fights wanted at all, given Ch17's "no forced fight"? Default: two optional
+  encounters, `deep_scuttler` ×3 and `hull_rasp` alone.
+- Ch20: does the held-shapes crowd react to the fight (scatter like held light), or stay a backdrop? Default: a
+  backdrop, which dims as each Vowbound is released (SPEC §6.3: the lights shrink).
+
+## As built (Act III production, ADR 0207)
+- **`deep_scuttler`** (M5-A3P-1805, 2026-10-30), from `assets_src/creatures/deep_scuttler/build_deep_scuttler.py`. The
+  scuttler's rig and clips, imported, so a fix to the scuttler reaches it, with its plates rebuilt:
+  - darker (lacquer black sunk toward abyss navy);
+  - every seam opened wider, and small raw wounds broken through the plates (`spawn_wound`, brighter and faster than
+    the scuttler's: energy 2.6, 0.45 Hz);
+  - a second pair of eyes;
+  - a ridge of short bone-tipped barbs along the spine, the new silhouette (the scuttler's arch with a saw edge).
+  - It stands 1.3 times the scuttler's size (the battle scene's `Model` scale).
+  - Clip audit: the scuttler's own profile, scaled up.
+  - Portrait and review shot `creature_deep_scuttler`.
+  - The enemies.json row and the Ch17 moorings encounter are Combat's and the chapter designer's.
+- **`hull_rasp`** (M5-A3P-1806, 2026-10-30), from `assets_src/creatures/hull_rasp/build_hull_rasp.py`. The hullgnaw's
+  rig, clips and breach (it bores up through the hull it was eating), imported, with a new shell:
+  - its body sunk darker and scabbed with dried salt over its back;
+  - its seams bored: eleven small round bore-holes along the gaps between the frames, round the one large seam the
+    weak point (`vfx_wound`) keeps;
+  - its frames salt-white keel timbers crusted thick, the rust bled pale (`Ribs`: the `breaking` phase throws them
+    off, the part to break first).
+  - It stands 0.62 times the hullgnaw's size, a single optional foe.
+  - The hullgnaw's audit profile, scaled. The floor and sink tests exempt it as they do the hullgnaw.
+  - Portrait and shot `creature_hull_rasp`.

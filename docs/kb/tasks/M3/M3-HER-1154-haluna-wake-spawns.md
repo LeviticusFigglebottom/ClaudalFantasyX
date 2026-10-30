@@ -2,8 +2,8 @@
 id: M3-HER-1154
 title: "haluna_wake: NemeDoor spawns 7.8 m above the ground (Rhen falls through the map) and there is no Shrine spawn for the SaveShrine"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: act1-chapters
 reviewer: qa
 depends_on: []
 milestone: M3
@@ -44,5 +44,10 @@ NemeDoor's yaw against the door.
 ## Notes
 Filed by integration-qa from the big14 gate. The zone data is act1-chapters', so it's a request rather than an
 edit. Both tests list it as KNOWN (this task) until the fix lands.
+
+- **act1-chapters, 2026-10-30: done on the branch.**
+  - The layout has NemeDoor at y 1.9 and a Shrine spawn at (−67, 2.02, 44.3).
+  - The shrine rests the party in the wake zone (big14 commit 64388ec02).
+  - hero_field_snaps and qa_save_shrines are green.
 
 ## Review log

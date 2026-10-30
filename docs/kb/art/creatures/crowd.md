@@ -13,7 +13,7 @@ person at runtime. Runtime and zone rows: [`docs/kb/tech/field_npc.md`](../../te
 | Ranges | `assets_src/crowd/ranges.json` | per community: skin endpoints, hair mixes, cloth mixes (a, b, c), reach-bands, `accepts`; per role: kits, work clip, cloth; per age band / sex / build: body sliders; per band: face sliders; per hair kind; per kit: villager_costume pieces |
 | Generator | `assets_src/crowd/gen_crowd.py` | seeded (crc32 of names), deterministic: `params/<body>.json` in the villager schema (+ `_work`) and the roster's generated fields. `--check` for CI |
 | Build | `assets_src/crowd/build_crowd.py` | Blender: `build_villager.main` with its `PARAMS_DIR` moved; LOD0 to the bake dir, LOD1 shipped as `assets/crowd/<body>/<body>.glb`. python3: `villager_textures.skin` (head 512/256, body 256), `write_materials.tables` re-rooted (only the GLB's slots), `<body>_actor.tscn`; a library's reference body also writes its group's shared clip library (§5) |
-| Work clips | `assets_src/crowd/crowd_clips.py` | `mend`, `sweep`, `carry`, `fold`, `haul`, `kneel_mourn`, `vigil` on hero_clips; kneels solved from the skeleton's bone lengths |
+| Work clips | `assets_src/crowd/crowd_clips.py` | `mend`, `sweep`, `carry`, `fold`, `haul`, `kneel_mourn`, `vigil`, and the children's games `play_stones` and `play_clap`, on hero_clips; kneels solved from the skeleton's bone lengths |
 | Import | `game/data/import/crowd.json`, `crowd_post_import.gd`, `write_imports.py`, `game/world/npc/crowd_clip_library.gd` | as the characters rule: slot materials, auto LODs; plus the group's shared clip library on an AnimationPlayer, the armature renamed and the hips track scaled to the body (§5) |
 | Jobs | `tools/dev/blender_builds.json` `crowd_<body>` | verified byte for byte by `verify_blender_builds.py` |
 
@@ -98,3 +98,70 @@ bodies are `ranges.json` `clip_libraries`. The import map is the same table, whi
   so the wrights' forearms are bare.
 - No hand props: the work clips read through the hands and head alone (M3-CRE-614 covers props for the villagers).
 - The build still makes and discards LOD0 (about a third of each Blender run).
+
+## 7. Haluna's vignettes (the Lead, 2026-10-30)
+"The slice zones lived in: mending nets, carrying baskets, children playing." Haluna had only its named villagers;
+fifteen crowd people now work in it (`zones/ch02_haluna.json`, `at` spots, ground heights probed against the zone's
+collision). Each stands beside something it would work on:
+- **The causeway head:** a woman laying fish on the drying rack, a buyer with her basket at the stall, a man hauling a
+  line at the water's edge below the causeway steps, and two children at a game of stones on the sand.
+- **The tide-wall lane:** an old woman mending at the net heap by her door, a woman back from the dock with her basket
+  by the sacks, two children at a clapping game, and a man sweeping between two stations in front of his house.
+- **The dock:** a man mending at the net heap, an old woman turning fish on the rack, a man hauling a mooring line, and
+  a man with a basket of the catch by the jars.
+- **At night** (the dock at night, after the Drownbell): the dock's, the causeway head's and the children's rows are
+  gone home (`shown: day`). The lane's mender and sweeper work on by lamplight, and one woman brings the last basket
+  home past the market (`shown: night`).
+
+The details:
+- **Roster.** The community is `haluna` (ranges.json: Low Reaches, the haluna.md palette of indigo, sea blue and sand
+  with one red note), with new faces only (ADR 0152).
+- **No reshuffling.** Late people (`assign.late_zones`: Haluna; `assign.late_prefixes`: `oruvel_deck_`,
+  `pemakar_quay_`) are assigned after everyone else, zone by zone, never wearing a body their zone already shows, so
+  no body already placed moved (tools test `test_late_people_never_reshuffle_the_others`).
+- **The children's games** (`crowd_clips.py`, roles `child_stones` and `child_clap`):
+  - `play_stones`, 4 s: knelt back on the heels, a stone tossed to 0.66 m, the eyes up after it, a sweep of the
+    ground and the catch, twice a loop;
+  - `play_clap`, 3.2 s: a clap and both palms pushed out to the partner's, on a knee-bounce, eight beats a loop. The
+    pair stand 0.6 m apart, where their palms meet.
+- **Libraries.** The child and child_small libraries carry them.
+- **Review:** `npc_haluna_vignette_causeway`, `_lane_games`, `_lane_mender`, `_dock`, `_night_market` and `_night_lane`
+  (game/levels/_tests/npc/haluna_villagers.tscn; `night` stages the story's dock at night).
+
+### Oruvel and the Pemakar quay (the Lead, 2026-10-30)
+- **Oruvel's commons deck** (`zones/ch01_oruvel.json`), six people at its edges so the deck's paths stay clear:
+  - a girl at stones by the north rail, and a man mending a diver's net bag;
+  - a man sweeping along the west rail between two stations, and a woman with her basket by the cookboat;
+  - along the south rail, a man laying fish to dry and a man hauling a line in.
+- **The Pemakar quay at Lanternfall** (`zones/ch05_pemakar.json`), five people on the quay's two ends (the middle is
+  the story's):
+  - an old man mending a net;
+  - two Low Reaches traders off the Brightwater crossing, one hauling his skiff in and one with a basket of salt fish;
+  - a woman come down for the folded boats with a basket of lanterns;
+  - an old woman folding leaf-boats.
+- **Why so few children.** Body capacity decides the cast, because no body repeats within a zone and each community
+  accepts only some bodies:
+  - Oruvel had one child body left, so its child plays stones alone, and men carry most of its work;
+  - Pemakar had no child body and no Pemakar-accepted man left. Its quay men are traders from the ferry
+    (community `brightwater`, which the crossing brings), with Pemakar's own elders and a woman.
+  - More children would need more planned child bodies (a characters-track body plan).
+- **Review:** `crowd_vignette_oruvel_north`, `_oruvel_south`, `_pemakar_west` and `_pemakar_east`.
+
+### The Act II towns (the Lead, 2026-10-30)
+- **Quellan** (8 people):
+  - in the square below the tower: two children at a clapping game, a girl at stones, a woman with a basket of wool,
+    and an old man sweeping;
+  - at the doors: a woman folding cloth and an old woman mending keth-cord;
+  - at the well: a man hauling the bucket.
+- **Hollowmere at the Ch15 dawn** (4 people): only the morning's work after the burning, no games (pillar 1). A
+  salvage line hauled, what was saved carried, a scorched net mended, and a girl folding saved cloths.
+- **Ansedra's moorings** (7 people), the polers' families: a girl and her brother clapping, a girl at stones, a
+  basket carrier, a woman folding the barge awning, a poler mending a net, and an old poler sweeping.
+- **Reedhollow** (6 Kirru `body` rows), as still as the Kirru are, on their own clips (Pell's idle and talk):
+  - three fishers on the ring's inner edge with their staffs out over the mangrove water. The lagoon is a mangrove
+    stand, so wading was dropped;
+  - a pair talking in bouts (a chat pair);
+  - a youngster watching.
+  - No work clips: their 2.4 m staffs would go through any mending or hauling pose.
+- **Review:** `crowd_vignette_quellan_{square,well}`, `_hollowmere_{dock,platforms,mender}`, `_ansedra_moorings`,
+  `_reedhollow_lagoon`.

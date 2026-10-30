@@ -1,0 +1,22 @@
+{
+ "format": 1,
+ "scene": "ch18_revisit_tamsule",
+ "source": "game/data/dialogue/ch18/ch18_revisit_tamsule.dlg",
+ "start": "ch18_revisit_tamsule",
+ "nodes": {
+  "ch18_revisit_tamsule": {
+   "headers": {"location": "ch07/tamsule"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["K20"], "kwargs": {}, "src": 6},
+    {"op": "if_not", "cond": ["flag", "ch07_blessed_moorings"], "to": 7, "src": 7},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "gull_ring", "walk"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 9},
+    {"op": "line", "id": "ch18_tamsule_001", "key": "DLG_CH18_TAMSULE_001", "speaker": "rhen", "emotion": "sad", "voice": "", "src": 10},
+    {"op": "line", "id": "ch18_tamsule_002", "key": "DLG_CH18_TAMSULE_002", "speaker": "asha", "emotion": "tender", "voice": "", "src": 11},
+    {"op": "goto", "to": 9, "src": 7},
+    {"op": "line", "id": "ch18_tamsule_003", "key": "DLG_CH18_TAMSULE_003", "speaker": "townsfolk", "emotion": "smile", "voice": "", "src": 13, "name_key": "DLG_NAME_TOWNSFOLK_SUPPORTER"},
+    {"op": "goto", "to": 9, "src": 12}
+   ]
+  }
+ }
+}

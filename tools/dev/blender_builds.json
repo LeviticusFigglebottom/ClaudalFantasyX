@@ -190,6 +190,17 @@
       ]
     },
     {
+      "id": "props_act2_hand",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M4-A2P-050/052: the Act II hand props (Aldous's dock-hook and salt-glass housing, the wedding cord) on wick.py's mesh helpers, with their StandardMaterial3D slots.",
+      "sources": ["assets_src/characters/props/act2_hand_props.py", "assets_src/characters/props/wick.py"],
+      "outputs": ["assets/characters/props/act2/*.glb", "assets/characters/props/act2/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/props/act2_hand_props.py"]
+      ]
+    },
+    {
       "id": "shader_test",
       "owner": "rendering",
       "sources": ["assets_src/characters/shader_test/build_shader_test_meshes.py", "assets_src/characters/shader_test/layout.py"],
@@ -917,6 +928,60 @@
       ]
     },
     {
+      "id": "abiding_halberd",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M4-A2P-051: Sefir's Abiding guard (Ch16), the Veiled halberdier: the halberd, no shield; the gold-lacquer dyes (sg_textures.dyed_cloth) and the veil (sg_helm.veil) on the Stillguard kit.",
+      "sources": ["assets_src/characters/stillguard/**", "assets_src/characters/moll/**", "assets_src/characters/villagers/**",
+                  "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**",
+                  "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/abiding_halberd/*.glb", "assets/characters/abiding_halberd/textures/*.png",
+                  "assets/characters/abiding_halberd/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/stillguard/build_stillguard.py", "--", "--variant", "abiding_halberd",
+         "--bake-dir", "{scratch}/abiding_halberd_bake"],
+        ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--variant", "abiding_halberd", "--bake-dir",
+         "{scratch}/abiding_halberd_bake"],
+        ["{python}", "assets_src/characters/stillguard/write_materials.py", "--variant", "abiding_halberd"]
+      ]
+    },
+    {
+      "id": "abiding_bulwark",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M4-A2P-051: Sefir's Abiding guard (Ch16), the Veiled Bulwark caster: Moll's brine-iron and shield; the gold-lacquer dyes (sg_textures.dyed_cloth) and the veil (sg_helm.veil) on the Stillguard kit.",
+      "sources": ["assets_src/characters/stillguard/**", "assets_src/characters/moll/**", "assets_src/characters/villagers/**",
+                  "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**",
+                  "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/abiding_bulwark/*.glb", "assets/characters/abiding_bulwark/textures/*.png",
+                  "assets/characters/abiding_bulwark/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/stillguard/build_stillguard.py", "--", "--variant", "abiding_bulwark",
+         "--bake-dir", "{scratch}/abiding_bulwark_bake"],
+        ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--variant", "abiding_bulwark", "--bake-dir",
+         "{scratch}/abiding_bulwark_bake"],
+        ["{python}", "assets_src/characters/stillguard/write_materials.py", "--variant", "abiding_bulwark"]
+      ]
+    },
+    {
+      "id": "abiding_captain",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M4-A2P-051: Sefir's Abiding guard (Ch16), the Captain of the Veil: the halberd, the sash and a red veil; the gold-lacquer dyes (sg_textures.dyed_cloth) and the veil (sg_helm.veil) on the Stillguard kit.",
+      "sources": ["assets_src/characters/stillguard/**", "assets_src/characters/moll/**", "assets_src/characters/villagers/**",
+                  "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**",
+                  "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/abiding_captain/*.glb", "assets/characters/abiding_captain/textures/*.png",
+                  "assets/characters/abiding_captain/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/stillguard/build_stillguard.py", "--", "--variant", "abiding_captain",
+         "--bake-dir", "{scratch}/abiding_captain_bake"],
+        ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--variant", "abiding_captain", "--bake-dir",
+         "{scratch}/abiding_captain_bake"],
+        ["{python}", "assets_src/characters/stillguard/write_materials.py", "--variant", "abiding_captain"]
+      ]
+    },
+    {
       "id": "pell",
       "threads": 4,
       "owner": "character",
@@ -931,6 +996,57 @@
          "assets/characters/pell/pell.glb", "--bake-dir", "{scratch}/pell_bake"],
         ["{python}", "assets_src/characters/pell/pell_textures.py", "--bake-dir", "{scratch}/pell_bake"],
         ["{python}", "assets_src/characters/pell/write_materials.py"]
+      ]
+    },
+    {
+      "id": "kirru_elder",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M4-A2P-053: the Kirru eldest, a Kirru variant on Pell's build (pell_variant.py, kirru/variants/kirru_elder.json): its own head and body maps, Pell's atlases shared.",
+      "sources": ["assets_src/characters/pell/**", "assets_src/characters/kirru/**", "assets_src/characters/ysolde/**", "assets_src/characters/toma/**",
+                  "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**",
+                  "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/kirru_elder/*.glb", "assets/characters/kirru_elder/textures/*.png",
+                  "assets/characters/kirru_elder/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/pell/build_pell.py", "--", "--variant", "kirru_elder",
+         "--bake-dir", "{scratch}/kirru_elder_bake"],
+        ["{python}", "assets_src/characters/pell/pell_textures.py", "--variant", "kirru_elder", "--bake-dir", "{scratch}/kirru_elder_bake"],
+        ["{python}", "assets_src/characters/pell/write_materials.py", "--variant", "kirru_elder"]
+      ]
+    },
+    {
+      "id": "kirru_adult",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M4-A2P-053: a Kirru of the ring, a Kirru variant on Pell's build (pell_variant.py, kirru/variants/kirru_adult.json): its own head and body maps, Pell's atlases shared.",
+      "sources": ["assets_src/characters/pell/**", "assets_src/characters/kirru/**", "assets_src/characters/ysolde/**", "assets_src/characters/toma/**",
+                  "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**",
+                  "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/kirru_adult/*.glb", "assets/characters/kirru_adult/textures/*.png",
+                  "assets/characters/kirru_adult/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/pell/build_pell.py", "--", "--variant", "kirru_adult",
+         "--bake-dir", "{scratch}/kirru_adult_bake"],
+        ["{python}", "assets_src/characters/pell/pell_textures.py", "--variant", "kirru_adult", "--bake-dir", "{scratch}/kirru_adult_bake"],
+        ["{python}", "assets_src/characters/pell/write_materials.py", "--variant", "kirru_adult"]
+      ]
+    },
+    {
+      "id": "kirru_child",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M4-A2P-053: a Kirru child, a Kirru variant on Pell's build (pell_variant.py, kirru/variants/kirru_child.json): its own head and body maps, Pell's atlases shared.",
+      "sources": ["assets_src/characters/pell/**", "assets_src/characters/kirru/**", "assets_src/characters/ysolde/**", "assets_src/characters/toma/**",
+                  "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**",
+                  "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/kirru_child/*.glb", "assets/characters/kirru_child/textures/*.png",
+                  "assets/characters/kirru_child/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/pell/build_pell.py", "--", "--variant", "kirru_child",
+         "--bake-dir", "{scratch}/kirru_child_bake"],
+        ["{python}", "assets_src/characters/pell/pell_textures.py", "--variant", "kirru_child", "--bake-dir", "{scratch}/kirru_child_bake"],
+        ["{python}", "assets_src/characters/pell/write_materials.py", "--variant", "kirru_child"]
       ]
     },
     {
@@ -1041,6 +1157,36 @@
       "runs": [
         ["{blender}", "--python", "assets_src/creatures/rim_crawler/build_rim_crawler.py", "--", "--out", "assets/creatures/rim_crawler/rim_crawler.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "rim_crawler"]
+      ]
+    },
+    {
+      "id": "creature_deep_scuttler",
+      "owner": "character",
+      "sources": ["assets_src/creatures/deep_scuttler/**", "assets_src/creatures/scuttler/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/deep_scuttler/*.glb", "assets/creatures/deep_scuttler/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/deep_scuttler/build_deep_scuttler.py", "--", "--out", "assets/creatures/deep_scuttler/deep_scuttler.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "deep_scuttler"]
+      ]
+    },
+    {
+      "id": "creature_hull_rasp",
+      "owner": "character",
+      "sources": ["assets_src/creatures/hull_rasp/**", "assets_src/creatures/hullgnaw/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/hull_rasp/*.glb", "assets/creatures/hull_rasp/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/hull_rasp/build_hull_rasp.py", "--", "--out", "assets/creatures/hull_rasp/hull_rasp.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "hull_rasp"]
+      ]
+    },
+    {
+      "id": "creature_wick_crawler",
+      "owner": "character",
+      "sources": ["assets_src/creatures/wick_crawler/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/wick_crawler/*.glb", "assets/creatures/wick_crawler/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/wick_crawler/build_wick_crawler.py", "--", "--out", "assets/creatures/wick_crawler/wick_crawler.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "wick_crawler"]
       ]
     },
     {
@@ -1264,10 +1410,38 @@
       ]
     },
     {
+      "id": "villager_aldous",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M4-A2P-052: Aldous Varrow, Hollowmere's dock-master (Ch15), on the villager build: Liss's family face, his line-marks to the shoulders; push_raft and hold_up_housing.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/aldous/*.glb", "assets/characters/villagers/aldous/textures/*.png", "assets/characters/villagers/aldous/materials/*.tres", "assets/characters/villagers/aldous/*.tscn", "assets/characters/villagers/aldous/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "aldous", "--bake-dir", "{scratch}/aldous_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "aldous", "--bake-dir", "{scratch}/aldous_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "aldous"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "aldous"]
+      ]
+    },
+    {
+      "id": "villager_ullari_woman",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M4-A2P-053: the Ullari woman at the pass-cord (Ch12) on the villager build: layered weaving, the solid shawl, her keth cord; tie_knot and touch_knot.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/ullari_woman/*.glb", "assets/characters/villagers/ullari_woman/textures/*.png", "assets/characters/villagers/ullari_woman/materials/*.tres", "assets/characters/villagers/ullari_woman/*.tscn", "assets/characters/villagers/ullari_woman/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "ullari_woman", "--bake-dir", "{scratch}/ullari_woman_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "ullari_woman", "--bake-dir", "{scratch}/ullari_woman_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "ullari_woman"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "ullari_woman"]
+      ]
+    },
+    {
       "id": "villager_merel",
       "threads": 4,
       "owner": "character",
-      "_note": "M4-A2P-050: Merel Dask (Ch13-14) on the villager build: wedding red, the bridal cloth (a solid shawl), the bloodied-sleeve variant (`_blood`: textures/merel_blood_albedo.png, materials/cloth_a_blood.tres; it reads the shared cloth atlas, so the job builds that first, as build.sh does); hold_hands and pole_barge.",
+      "_note": "M4-A2P-050: Merel Dask (Ch13-14) on the villager build: wedding red, the bridal cloth (a solid shawl), the bloodied-sleeve variant (`_blood`: textures/merel_blood_albedo.png, materials/cloth_a_blood.tres; it reads the shared cloth atlas, so the job builds that first, as build.sh does); hold_hands, pole_barge, pull_pin and pole_push (ch14_first_ripple).",
       "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
       "outputs": ["assets/characters/villagers/merel/*.glb", "assets/characters/villagers/merel/textures/*.png", "assets/characters/villagers/merel/materials/*.tres", "assets/characters/villagers/merel/*.tscn", "assets/characters/villagers/merel/anim/*.tres"],
       "runs": [
@@ -1743,6 +1917,63 @@
       "runs": [
         ["{blender}", "--python", "assets_src/crowd/build_crowd.py", "--", "--body", "crowd_woman_medium_b", "--bake-dir", "{scratch}/crowd_woman_medium_b_bake"],
         ["{python}", "assets_src/crowd/build_crowd.py", "--body", "crowd_woman_medium_b", "--bake-dir", "{scratch}/crowd_woman_medium_b_bake"]
+      ]
+    },
+    {
+      "id": "oruvel_seabed",
+      "owner": "cinematics",
+      "sources": ["assets_src/cutscene/ch01/oruvel_seabed.py"],
+      "outputs": ["assets/cutscene/ch01/oruvel_seabed.glb"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/cutscene/ch01/oruvel_seabed.py", "--"]
+      ]
+    },
+    {
+      "id": "crowd_kirru_man",
+      "threads": 4,
+      "owner": "character",
+      "_note": "The Kirru crowd (the Lead, 2026-10-30): Pell's build (build_pell as a library) on pell_params.json with kirru_man's overrides (assets_src/crowd/kirru/kirru_bodies.json); its LOD1 ships. Pell's sources are this job's too.",
+      "sources": ["assets_src/crowd/kirru/**", "assets_src/characters/pell/**", "assets_src/characters/ysolde/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/crowd/kirru_man/*.glb", "assets/crowd/kirru_man/textures/*.png", "assets/crowd/kirru_man/materials/*.tres", "assets/crowd/kirru_man/*.tscn"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/kirru/build_kirru.py", "--", "--body", "kirru_man", "--bake-dir", "{scratch}/kirru_man_bake"],
+        ["{python}", "assets_src/crowd/kirru/kirru_textures.py", "--body", "kirru_man", "--bake-dir", "{scratch}/kirru_man_bake"]
+      ]
+    },
+    {
+      "id": "crowd_kirru_woman",
+      "threads": 4,
+      "owner": "character",
+      "_note": "The Kirru crowd (the Lead, 2026-10-30): Pell's build (build_pell as a library) on pell_params.json with kirru_woman's overrides (assets_src/crowd/kirru/kirru_bodies.json); its LOD1 ships. Pell's sources are this job's too.",
+      "sources": ["assets_src/crowd/kirru/**", "assets_src/characters/pell/**", "assets_src/characters/ysolde/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/crowd/kirru_woman/*.glb", "assets/crowd/kirru_woman/textures/*.png", "assets/crowd/kirru_woman/materials/*.tres", "assets/crowd/kirru_woman/*.tscn"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/kirru/build_kirru.py", "--", "--body", "kirru_woman", "--bake-dir", "{scratch}/kirru_woman_bake"],
+        ["{python}", "assets_src/crowd/kirru/kirru_textures.py", "--body", "kirru_woman", "--bake-dir", "{scratch}/kirru_woman_bake"]
+      ]
+    },
+    {
+      "id": "crowd_kirru_elder_woman",
+      "threads": 4,
+      "owner": "character",
+      "_note": "The Kirru crowd (the Lead, 2026-10-30): Pell's build (build_pell as a library) on pell_params.json with kirru_elder_woman's overrides (assets_src/crowd/kirru/kirru_bodies.json); its LOD1 ships. Pell's sources are this job's too.",
+      "sources": ["assets_src/crowd/kirru/**", "assets_src/characters/pell/**", "assets_src/characters/ysolde/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/crowd/kirru_elder_woman/*.glb", "assets/crowd/kirru_elder_woman/textures/*.png", "assets/crowd/kirru_elder_woman/materials/*.tres", "assets/crowd/kirru_elder_woman/*.tscn"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/kirru/build_kirru.py", "--", "--body", "kirru_elder_woman", "--bake-dir", "{scratch}/kirru_elder_woman_bake"],
+        ["{python}", "assets_src/crowd/kirru/kirru_textures.py", "--body", "kirru_elder_woman", "--bake-dir", "{scratch}/kirru_elder_woman_bake"]
+      ]
+    },
+    {
+      "id": "crowd_kirru_youngster",
+      "threads": 4,
+      "owner": "character",
+      "_note": "The Kirru crowd (the Lead, 2026-10-30): Pell's build (build_pell as a library) on pell_params.json with kirru_youngster's overrides (assets_src/crowd/kirru/kirru_bodies.json); its LOD1 ships. Pell's sources are this job's too.",
+      "sources": ["assets_src/crowd/kirru/**", "assets_src/characters/pell/**", "assets_src/characters/ysolde/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/crowd/kirru_youngster/*.glb", "assets/crowd/kirru_youngster/textures/*.png", "assets/crowd/kirru_youngster/materials/*.tres", "assets/crowd/kirru_youngster/*.tscn"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/crowd/kirru/build_kirru.py", "--", "--body", "kirru_youngster", "--bake-dir", "{scratch}/kirru_youngster_bake"],
+        ["{python}", "assets_src/crowd/kirru/kirru_textures.py", "--body", "kirru_youngster", "--bake-dir", "{scratch}/kirru_youngster_bake"]
       ]
     }
   ]

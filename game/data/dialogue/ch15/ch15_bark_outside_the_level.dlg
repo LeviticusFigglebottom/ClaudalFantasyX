@@ -2,5 +2,9 @@
 title: ch15_bark_outside_the_level
 location: ch17/hollowmere
 ---
-Hull_captain as "Hollowmere wright" [smile]: Outside the Level, are you? Welcome aboard. So's everyone on this hull. #line:ch15_heresy_hollowmere_001
+<<if $ch15_toma_carried_tobin>>
+    Hull_captain as "Hollowmere wright" [smile]: Outside the Level, are you? Welcome aboard. So's everyone on this hull. #line:ch15_heresy_hollowmere_001
+<<else>>
+    Hull_captain as "Hollowmere wright" [neutral]: You came in off the sea. Sit. We'll hear it when you're ready. #line:ch15_heresy_hollowmere_002
+<<endif>>
 ===

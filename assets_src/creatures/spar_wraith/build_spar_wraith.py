@@ -1557,13 +1557,15 @@ def ko_clip() -> ck.Clip:
 
 def ko_deck_clip() -> ck.Clip:
     """The KO from the deck (`hauled_down` maps `ko` to it): the last lines part with a jerk (0.4 s), the body slumps
-    flat along the planks and the face goes down; the spars fall outward. Played from the deck pose."""
+    flat along the planks and the head turns aside onto them; the spars fall outward. Played from the deck pose. The
+    as-played pass (10-30): the face had pitched 40° down into the planks, more than grounding's head turn takes back,
+    so the whole body was lifted half a metre off the deck as it died (it read as rising back into the web)."""
     c = ck.Clip("ko_deck", 2.2)
     for t, d, jerk in ((0.0, 0.0, 0.0), (0.4, 0.08, 1.0), (1.05, 1.0, 0.0), (1.4, 1.03, 0.0), (2.2, 1.03, 0.0)):
         c.key("body0", t, (2.5 * d - 4.0 * jerk, 0, 0), (0, -0.63 * d + 0.1 * jerk, -0.04 * d))
         for i, b in enumerate(LOWER, 1):
             c.key(b, t, ((6.9 if i % 2 else -3.6) * d, 0, 6.0 * d))
-        c.key("head", t, (40.0 * d - 12.0 * jerk, 0, 0))
+        c.key("head", t, (4.0 * d - 12.0 * jerk, 18.0 * d, 0))
         c.key("spar_l", t, (0, 0, 22.0 * d))
         c.key("spar_r", t, (0, 0, -22.0 * d))
     return follow_sail(c, drag=0.6)

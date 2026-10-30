@@ -65,6 +65,11 @@ def lacquer_court() -> dict:
                           color=COL_GOLD))
     blocks.append(box("BargeStern", cx, DECK_Y + 0.3, cz + hz + 14.1, 4.2, 0.6, 0.2, color=COL_GOLD))
     blocks.append(box("WaterGate", cx, 2.0, cz + hz + 18.0, 10.0, 5.0, 0.8, color=COL_LACQUER, solid=False))
+    # M4-A2P-104 (ch14_lacquer_court.md "After the trap"): env-art-b binds the eight gilt lamp stands and their lights
+    # to CeremonyLamps (shown at the wedding) and the fallen, unlit stands to CeremonyLampsFallen (after the trap);
+    # anchors only (no mesh, no collision), swapped by the variants rows below
+    for lid in ("CeremonyLamps", "CeremonyLampsFallen"):
+        blocks.append(box(lid, cx, 0.5, cz - 2.0, 2 * hx - 4.0, 1.0, 2 * hz - 6.0, solid=False, visible=False))
     blocks.append(box("EntryStep", cx + hx + 1.5, -0.25, cz + 9.5, 3.0, 0.5, 3.0, color=COL_STONE))
     blocks.append(box("EntryBound", cx + hx + 3.25, 1.0, cz + 9.5, 0.5, 2.0, 3.0, color=COL_STONE))
     return {
@@ -110,8 +115,15 @@ def lacquer_court() -> dict:
              "pos": [cx + 8.0, 6.0, cz + hz + 2.0], "look_at": [cx, 0.5, cz - 2.0], "fov": 50, "priority": 1},
             {"id": "Barge", "mode": "pan_follow", "at": [cx, 0.5, cz + hz + 8.0], "size": [8.0, 4.0, 14.0],
              "pos": [cx, 4.5, cz + hz - 5.0], "look_at": [cx, -0.5, cz + hz + 10.0], "fov": 50, "priority": 2}],
+        "variants": [{"when": {"unset": ["ch14_declared_heretics"]}, "hide": ["CeremonyLampsFallen"]},
+                     {"when": {"set": ["ch14_declared_heretics"]}, "hide": ["CeremonyLamps"],
+                      "show": ["CeremonyLampsFallen"]}],
         "triggers": [{"id": "barge", "activation": "touch", "at": [cx, DECK_Y, cz + hz + 12.0], "size": [3.0, 0, 3.0],
-                      "payload": {"beat": "escape"}, "yaw": 0.0}],
+                      "requires_flag": "ch14_complete", "payload": {"beat": "escape"}, "yaw": 0.0},
+                     # M4-A2P-1200: the dais, where the vows are spoken and the trap is sprung (B02-B05)
+                     {"id": "dais", "activation": "touch", "at": [cx, 0.0, cz - hz + 7.5], "size": [4.0, 0, 1.5],
+                      "requires_flag": "ch14_started", "blocked_by_flag": "ch14_vows_spoken",
+                      "payload": {"beat": "dais"}, "yaw": 0.0}],
     }
 
 

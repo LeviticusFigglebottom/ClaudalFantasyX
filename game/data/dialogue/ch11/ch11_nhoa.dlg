@@ -13,6 +13,9 @@ title: ch11_nhoa
 location: ch11/lowlight
 ---
 @letterbox on
+// M4-CIN-1304 (cinematics): staged from act2_ch11_direction.md (shots and marks in game/data/cutscene/ch11/).
+@mark pell pell_back walk
+@mark asha asha_ledge walk
 @camera N02
 @music lowlight fade=2.0
 @vfx glimmer_bound at=nhoa count=1
@@ -25,11 +28,11 @@ location: ch11/lowlight
 @camera N04
 @wait 2.5
 @camera N05
-@mark pell ledge_edge walk
+@mark pell pell_kneel walk
 @wait 1.5
 Pell [grief]: She is here. She is not lifted. Do not speak yet. Please. #line:ch11_nhoa_001 #tn:"'Lifted': the Kirru word for the dead who have gone up. Pell speaks of his sister."
 @anim pell kneel
-@wait 4.0
+@wait 7.0
 @camera N06
 @anim asha look_at pell
 @wait 2.0
@@ -39,14 +42,14 @@ Pell [grief]: She is here. She is not lifted. Do not speak yet. Please. #line:ch
 @anim asha raise_staff
 @music nhoa_bound fade=0.0
 @wait 8.0
-@vfx glimmer_bound at=asha_sleeve count=4
+@vfx glimmer_bound at=asha count=4
 @wait 3.0
 @camera N08
 @anim nhoa turn_head pell
 @wait 3.0
 @camera N09
 @mark kerrid ledge_behind_pell walk
-@wait 6.0
+@wait 8.0
 <<set $ch11_nhoa_bound = true>>
 <<set $ch11_pell_knelt = true>>
 @music lowlight fade=2.0

@@ -1,0 +1,30 @@
+{
+ "format": 1,
+ "scene": "ending_the_dark_sea",
+ "source": "game/data/dialogue/ending/ending_the_dark_sea.dlg",
+ "start": "ending_the_dark_sea",
+ "nodes": {
+  "ending_the_dark_sea": {
+   "headers": {"location": "ch02/haluna"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "fade", "args": ["in", 3.0], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "camera", "args": ["E11"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "music", "args": ["ending_dock"], "kwargs": {"fade": 2.0}, "src": 13},
+    {"op": "cue", "cue": "wait", "args": [6.0], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "anim", "args": ["asha", "turn_to", "haluna"], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "anim", "args": ["asha", "draw_breath"], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "anim", "args": ["asha", "smile"], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 20},
+    {"op": "line", "id": "ending_sea_001", "key": "DLG_ENDING_SEA_001", "speaker": "", "emotion": "tender", "voice": "", "src": 21, "narrator": "rhen", "tags": ["vo"]},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 22},
+    {"op": "line", "id": "ending_sea_002", "key": "DLG_ENDING_SEA_002", "speaker": "", "emotion": "tender", "voice": "", "src": 23, "narrator": "rhen", "tags": ["vo"]},
+    {"op": "cue", "cue": "wait", "args": [6.0], "kwargs": {}, "src": 24},
+    {"op": "cue", "cue": "fade", "args": ["out", 4.0], "kwargs": {}, "src": 25},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 26}
+   ]
+  }
+ }
+}

@@ -42,6 +42,10 @@ GLOW_STILL = "#f0e8c8"  # the light under the basin that never moves (glimmer_bo
 SUN = {"pitch_deg": -25.0, "yaw_deg": 130.0, "energy": 1.6, "color": "#fff9f2"}
 ENV = {"background": "#c8c4ba", "ambient_color": "#8a96a4", "ambient_energy": 0.6}
 INTERIOR_ENV = {"background": "#2a2620", "ambient_color": "#8a8478", "ambient_energy": 0.5}
+# M4-A2P-103 (env-art-b, ch13_sanctum_dressing.py REQUESTED_SUN_ENERGY / REQUESTED_FILL): the Sanctum's only light is
+# the bound light under the basin, so no sun through the vault's seams and a dim cool fill
+SANCTUM_SUN = dict(SUN, energy=0.0)
+SANCTUM_ENV = {"background": "#2a2620", "ambient_color": "#8a96a4", "ambient_energy": 0.2}
 
 
 def causeway(cid: str, a: tuple[float, float], b: tuple[float, float]) -> list[dict]:
@@ -150,8 +154,8 @@ def sanctum() -> dict:
         "four hundred years, lit from beneath by a light that never moves (Basin; a kneeling ledge rings it: nobody "
         "walks on it), Ethren's place at its head (ethren) and Corran's (corran). Kerrid never comes in. Back to the "
         "city at to_city. The story waits on the beat sheet (M4-C13-01).",
-        "sun": SUN,
-        "environment": INTERIOR_ENV,
+        "sun": SANCTUM_SUN,
+        "environment": SANCTUM_ENV,
         "block_color": COL_STONE,
         "blocks": blocks,
         "spawns": {"Gate": [0.0, 0.0, -5.0, 0.0]},  # in from the door: the followers trail inside the vestibule
@@ -168,7 +172,11 @@ def sanctum() -> dict:
             {"id": "BasinEdge", "mode": "pan_follow", "at": [0.0, 1.5, -30.0], "size": [24.0, 4.0, 36.0],
              "pos": [0.0, 5.5, -13.0], "look_at": [0.0, 0.5, -32.0], "fov": 55, "priority": 1}],
         "triggers": [{"id": "to_city", "activation": "touch", "at": [0.0, 0.0, 0.5], "size": [4.0, 0, 1.0],
-                      "payload": {"beat": "to_city"}, "yaw": 0.0}],
+                      "payload": {"beat": "to_city"}, "yaw": 0.0},
+                     # M4-A2P-114: the basin's edge among the pilgrims, where Ethren is bound (B05-B06)
+                     {"id": "ledge", "activation": "touch", "at": [0.0, 0.0, -19.4], "size": [4.0, 0, 1.5],
+                      "requires_flag": "ch13_entered_sanctum", "blocked_by_flag": "ch13_ethren_bound",
+                      "payload": {"beat": "ledge"}, "yaw": 0.0}],
     }
 
 
@@ -205,11 +213,20 @@ def lamp_archive() -> dict:
         # M4-A2P-013: the two reading bays between the stacks
         "camera_volumes": [
             {"id": "LedgerBay", "mode": "pan_follow", "at": [0.0, 1.5, -10.0], "size": [10.0, 4.0, 16.0],
-             "pos": [0.0, 2.6, 1.5], "look_at": [-0.5, 0.8, -8.0], "fov": 50, "priority": 1},
+             # in the aisle inside the door, over the ledger table (the POI stills, 10-30: at z 1.5 it stood outside the
+             # south wall, in the door frame)
+             "pos": [2.0, 3.4, -3.0], "look_at": [-1.5, 0.8, -11.0], "fov": 50, "priority": 1},
             {"id": "RollBay", "mode": "pan_follow", "at": [0.0, 1.5, -24.0], "size": [10.0, 4.0, 12.0],
              "pos": [0.0, 3.5, -15.0], "look_at": [1.0, 0.8, -24.0], "fov": 50, "priority": 1}],
         "triggers": [{"id": "to_city", "activation": "touch", "at": [0.0, 0.0, 0.5], "size": [4.0, 0, 1.0],
-                      "payload": {"beat": "to_city"}, "yaw": 0.0}],
+                      "payload": {"beat": "to_city"}, "yaw": 0.0},
+                     # M4-A2P-114: the ledger table (B07, the first day) and the Cantor roll's table (B08, the second)
+                     {"id": "ledgers", "activation": "touch", "at": [-3.2, 0.0, -12.0], "size": [1.5, 0, 3.0],
+                      "requires_flag": "ch13_entered_archive", "blocked_by_flag": "ch13_read_ledgers",
+                      "payload": {"beat": "ledgers"}, "yaw": 0.0},
+                     {"id": "roll", "activation": "touch", "at": [3.2, 0.0, -24.0], "size": [1.5, 0, 3.0],
+                      "requires_flag": "ch13_read_ledgers", "blocked_by_flag": "ch13_read_cantor_roll",
+                      "payload": {"beat": "roll"}, "yaw": 0.0}],
     }
 
 

@@ -70,6 +70,10 @@ extends Node
 signal prewarm_requested(scene_path: String)
 ## ADR 0111: emitted when change_scene() starts (before the fade): ResidentLoads starts its threaded loads here.
 signal change_started(scene_path: String)
+## Emitted under the opaque fade with the new scene's root once it is instantiated (on the worker thread, when
+## instantiate_on_thread), before it enters the tree: a profiler can watch its nodes' ready (SceneSwapProbe
+## --ready-profile; slice-polish's Haluna add-to-tree frame).
+signal scene_instantiated(node: Node)
 ## Emitted under the opaque fade, just before the new scene enters the tree (zone globals reset here).
 signal scene_swapping(scene_path: String)
 ## Emitted after each successful swap with the same dictionary stored in last_swap_stats.
@@ -100,6 +104,12 @@ const SWAP_STALL_MS := 3000.0
 const SWAP_WAIT_CAP_MS := 15000.0
 const USEC_PER_MSEC := 1000.0
 const LOG_PREFIX := "SceneRouter"
+## The scenes a field zone stays resident through (see keep_field_resident).
+const RESIDENT_THROUGH: Array[String] = ["res://game/flow/field_battle.tscn"]
+## Called on every node of a resident zone when it comes back (ZoneStory, HalunaStory, GreyboxZone implement it).
+const RESIDENT_RETURN_METHOD := &"on_resident_return"
+## Frames the resident zone may take to be back in the tree before its arrival runs anyway (a safety cap).
+const RESIDENT_ENTER_MAX_FRAMES := 30
 
 ## Tuning switches (all on in the game; tests and the profiler flip them to compare).
 var instantiate_on_thread := true
@@ -115,6 +125,19 @@ var split_swap := true
 var last_swap_stats: Dictionary = {}
 ## Return-to-world on load (M1-ARC-06). Disabled until boot.gd sets world_return.enabled.
 var world_return: WorldReturn
+## The field kept resident through a random fight (the human's playtest: seconds of black after every won battle,
+## the whole zone loaded, instantiated and readied again on the way back). A change from a field zone into one of
+## RESIDENT_THROUGH for a fight (BattleRequest.pending(), random or scripted) detaches the zone instead of freeing
+## it, with its zone shader globals and its outside links (zone_links); the change back to that zone re-attaches the
+## same instance (no load, no instantiate, no _ready), restores its links, calls RESIDENT_RETURN_METHOD through it (its
+## story arrives again: a scripted win's scene plays; its flag states are applied) and puts the party on its spawn.
+## A fight that returns elsewhere starts loading that scene (_prewarm_return). Any other change, or a loaded game,
+## frees the kept zone.
+var keep_field_resident := true
+var _resident: Node = null
+var _resident_path := ""
+var _resident_globals := {}
+var _resident_links := {}
 
 var _fade_layer: CanvasLayer
 var _fade_rect: ColorRect
@@ -158,6 +181,7 @@ func _ready() -> void:
 	world_return = WorldReturn.new()
 	world_return.name = "WorldReturn"
 	add_child(world_return)
+	EventBus.game_loaded.connect(func(_slot: int) -> void: drop_resident())  # a loaded game reloads its zone
 
 
 ## The opaque fade's alpha now (0 clear, 1 covering the screen).
@@ -230,22 +254,161 @@ func change_scene(scene_path: String, spawn: StringName = &"") -> void:
 	cancel_visible_window()
 	var entry_start := _now_usec()
 	var stats := {"scene_path": scene_path, "budget_ms": HIDDEN_FRAME_BUDGET_MS}
-	ResourceLoader.load_threaded_request(scene_path)
+	var keep := keeps_resident(scene_path)
+	var back := _resident != null and is_instance_valid(_resident) and scene_path == _resident_path
+	stats["resident"] = back
+	if not back:
+		ResourceLoader.load_threaded_request(scene_path)
 	change_started.emit(scene_path)
 	_start_font_warm(stats)
 	await _fade_to(1.0)
-	while ResourceLoader.load_threaded_get_status(scene_path) == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
-		await get_tree().process_frame
-	var packed := ResourceLoader.load_threaded_get(scene_path) as PackedScene
-	if packed == null:
-		push_error("SceneRouter: failed to load %s" % scene_path)
-	else:
-		await _swap(packed, scene_path, stats, spawn, entry_start)
+	if keep:
+		_detach_resident()
+		_prewarm_return()
+	if back:
+		await _swap_resident(scene_path, stats, spawn, entry_start)
 		await _wait_for_reveal(stats)
+	else:
+		while ResourceLoader.load_threaded_get_status(scene_path) == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
+			await get_tree().process_frame
+		var packed := ResourceLoader.load_threaded_get(scene_path) as PackedScene
+		if packed == null:
+			push_error("SceneRouter: failed to load %s" % scene_path)
+		else:
+			await _swap(packed, scene_path, stats, spawn, entry_start)
+			await _wait_for_reveal(stats)
+	if not keep and not back:
+		drop_resident()  # gone anywhere else: the field kept for the fight isn't coming back
 	if stats.has("frame_ms"):
 		_measure_visible(stats, _fade_lifted)
 	await _fade_to(0.0)
 	_busy = false
+
+
+## True when the change to `scene_path` keeps the current field zone resident (see keep_field_resident).
+func keeps_resident(scene_path: String) -> bool:
+	if not keep_field_resident or not RESIDENT_THROUGH.has(scene_path) or not is_inside_tree():
+		return false
+	var cur := get_tree().current_scene
+	if cur == null or cur.scene_file_path == "" or cur.find_children("*", "FieldController", true, false).is_empty():
+		return false
+	return BattleRequest.pending() != null  # a fight: random or scripted (its return re-runs the zone's arrival)
+
+
+## The resident field zone (null when none is kept) and its scene path.
+func resident() -> Node:
+	return _resident if _resident != null and is_instance_valid(_resident) else null
+
+
+func resident_path() -> String:
+	return _resident_path
+
+
+## Frees the resident field zone, if one is kept.
+func drop_resident() -> void:
+	if _resident != null and is_instance_valid(_resident):
+		_resident.queue_free()
+	_resident = null
+	_resident_path = ""
+	_resident_globals = {}
+	_resident_links = {}
+
+
+## What `zone` wires up outside itself and drops when it leaves the tree: its nodes' EventBus connections and its
+## shrines in the ShrineNetwork. Many nodes let these go in _exit_tree and take them in _ready, which a resident zone
+## re-attached never re-runs (every ZoneStory's interactions and triggers went dead after a fight).
+static func zone_links(zone: Node) -> Dictionary:
+	var conns: Array = []
+	for s: Dictionary in EventBus.get_signal_list():
+		for c: Dictionary in EventBus.get_signal_connection_list(str(s["name"])):
+			var target: Variant = (c["callable"] as Callable).get_object()
+			if target is Node and (target == zone or zone.is_ancestor_of(target as Node)):
+				conns.append([StringName(str(s["name"])), c["callable"], int(c.get("flags", 0))])
+	var shrines: Array = []
+	for shrine: Variant in ShrineNetwork.loaded_shrines().values():
+		if shrine is Node and is_instance_valid(shrine) and zone.is_ancestor_of(shrine as Node):
+			shrines.append(shrine)
+	return {"connections": conns, "shrines": shrines}
+
+
+## Puts back what zone_links() saw and the zone's _exit_tree let go (after it is in the tree again).
+static func restore_links(links: Dictionary) -> void:
+	for c: Array in links.get("connections", []):
+		var callable := c[1] as Callable
+		if callable.is_valid() and not EventBus.is_connected(c[0] as StringName, callable):
+			EventBus.connect(c[0] as StringName, callable, int(c[2]))
+	for shrine: Variant in links.get("shrines", []):
+		if is_instance_valid(shrine):
+			ShrineNetwork.register(shrine as SaveShrine)
+
+
+## A fight that returns somewhere other than the field kept for it (BattleRequest.return_scene, or another
+## location): that scene starts loading on a worker thread now, so the way back after the victory panel finds it
+## in. Its change drops the kept field as usual.
+func _prewarm_return() -> void:
+	var r := BattleRequest.pending()
+	if r == null:
+		return
+	var dest := r.return_scene
+	if dest == "" and r.return_location != &"" and world_return != null and world_return.registry != null:
+		dest = world_return.registry.scene_of(r.return_location)
+	if dest != "" and dest != _resident_path and ResourceLoader.exists(dest):
+		ResourceLoader.load_threaded_request(dest)
+
+
+## Takes the current scene out of the tree, kept (not freed), with its zone shader globals.
+func _detach_resident() -> void:
+	drop_resident()
+	var cur := get_tree().current_scene
+	if cur == null:
+		return
+	_resident_globals = ShaderGlobals.zone_snapshot()
+	_resident_links = zone_links(cur)
+	_resident_path = cur.scene_file_path
+	cur.get_parent().remove_child(cur)
+	get_tree().current_scene = null
+	_resident = cur
+
+
+## The swap back to the resident field zone: the same instance re-enters the tree (no load, no instantiate, no
+## _ready), its zone globals are given back after the swap's reset, and the party is put on `spawn`.
+func _swap_resident(scene_path: String, stats: Dictionary, spawn: StringName, entry_start_usec: int) -> void:
+	var node := _resident
+	var globals := _resident_globals
+	var links := _resident_links
+	_resident = null
+	_resident_path = ""
+	_resident_globals = {}
+	_resident_links = {}
+	stats["instantiate_ms"] = 0.0
+	var frames: Array[float] = []
+	_swap_clock.reset_at(_now_usec())
+	scene_swapping.emit(scene_path)
+	ShaderGlobals.restore_zone(globals)
+	var cover: Array[float] = [fade_alpha()]
+	get_tree().change_scene_to_node(node)
+	var arrived := false
+	var i := 0
+	while i < MEASURE_FRAMES or not arrived:
+		await get_tree().process_frame
+		if i < MEASURE_FRAMES:
+			frames.append(_swap_clock.lap())
+			cover.append(fade_alpha())
+		i += 1
+		# The battle scene is replaced at the end of a frame, so the zone may not be in yet on the first one: its
+		# links, its arrival and the spawn wait for it (they did not, and a scripted win's arrival never ran).
+		if not arrived and (node.is_inside_tree() or i > RESIDENT_ENTER_MAX_FRAMES):
+			arrived = true
+			restore_links(links)  # before the spawn and scene_changed: the zone's story hears what follows
+			node.propagate_call(RESIDENT_RETURN_METHOD)  # the zone arrives again (its story, its flag states)
+			if spawn != &"" and node.is_inside_tree():
+				WorldReturn.place_player(node, spawn)
+			EventBus.scene_changed.emit(scene_path)
+	if entry_start_usec >= 0:
+		judge_entry(stats, _ms_since(entry_start_usec))
+	for w in judge_cover(stats, cover):
+		push_warning("%s: %s: %s" % [LOG_PREFIX, w, scene_path])
+	_record(stats, frames)
 
 
 ## M2-ARC-03: keeps the fade opaque while anything holds the reveal (boot's warm-up), recording the wait.
@@ -364,6 +527,7 @@ func _swap(
 	if node == null:
 		push_error("SceneRouter: failed to instantiate %s" % scene_path)
 		return
+	scene_instantiated.emit(node)
 	if split_swap:
 		if get_tree().current_scene != null:
 			t = _now_usec()

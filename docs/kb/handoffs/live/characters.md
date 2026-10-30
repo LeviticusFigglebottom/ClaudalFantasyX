@@ -468,3 +468,155 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
   - In the parry the left hand stops at the chest, short of the haft.
 - MERGE-READY @ 3f0f5d67
 - **Next:** the Abiding guard (veiled gold lacquer: halberdier, Bulwark caster, the Captain of the Veil), in progress.
+
+## 2026-10-30, Lead FAST-TRACKs: the human's run playtest and GPU pass 5
+- **The jog (the human's #1 complaint), b344b974.** The default run for Asha, Rhen and Toma is now a brisk, grounded
+  jog.
+  - **Cause:** the cycle covered 2.6 m/s while the field runs at 3.6 m/s, so playback ran 1.4x fast (about 228 steps
+    a minute). Rhen's sprinter arm flung his hands to his face, and the 15 fps keys were linear.
+  - **Now:** elbows at 80-100 degrees with the hands between the waist and the chest, a compact counter-swing, a
+    slight lean, a soft bob and a heel strike.
+  - **Speed:** 164 steps a minute over a 2.6 m stride, so the cycle speed is 3.55-3.61 m/s and playback is about 1.0
+    at the field's 3.6 m/s, with no foot slide. integration-qa: locomotion.json's `run.speed_mps` changed to match.
+  - **Keys:** the body tracks are cubic.
+  - Asha's skirt and the white underskirt move with the legs (row 56 below).
+  - **Evidence:** side, front and three-quarter sheets at 6 phases, before and after, in
+    `docs/kb/qa/characters/jog_2026-10-30/` (`<hero>_run_before.jpg`, `<hero>_run_after.jpg`), rendered by
+    `tools/dev/loco_sheet.gd`.
+  - **Checks:** test_hero_clips 19, test_hero_locomotion OK; Godot hero_field_actor 15, locomotion 9, field_motor 9,
+    hero_stage 11, follower 13. The rig probes pass. Rhen's Body count is 44 -> 47 with a per-mesh reason: the right
+    armpit's inner crease, under the arm in every frame of the sheets.
+- **GPU pass 5 rows**, all re-rendered and viewed:
+  - **Row 46 (4c706a3f):** moll_face_yield is on the prop-free face stage.
+  - **Row 55 (7fbc2da2):** Fenn's and Sabe's white crops sit over a mid underpaint (no white cap).
+  - **Row 54 (a3494fea):** Sefir's front locks fall along the cheek and jaw, fuller.
+  - **Row 56 (5bb7e0ed):** the underskirt's hem follows the legs, so the stride shows.
+  - **Pell (5bb7e0ed):** stronger fur break-up, a calmer face, mass 0.25.
+  - **Checks:** asha, pell, sefir, villager_fenn and villager_sabe are identical on all 3 numpy paths.
+- **The 13 villagers' rig limits (6154f6d4).** The Lead (10:07) says not to raise limits without a reason per mesh.
+  I rendered every re-pinned overrun at its worst pose (front, three-quarter, back three-quarter).
+  - **Visible:** the Reeds, the scaleman and the smith showed skin through the top at the back of the shoulders as
+    the arms came forward. The fix is in the build: villager_costume hides a sleeved arm's skin from
+    `SLEEVE_HIDE_FROM` -0.35, not -0.10. On reed_b, skin-through went from 6.4 mm/10 to 2.0/0 and the exposed boundary
+    from 14 to 3, and the render is clean.
+  - **In progress:** all 36 villagers are rebuilding with it. I'll then lower each re-pinned limit back to what passes
+    and write a per-mesh reason for any that stays above the original.
+  - The remaining overruns at full figure (elder: the sandal sole under the foot; fenn, garo, gatekeeper, marra,
+    purser, ferrymaster, skipper_sadi) read clean in those renders.
+- MERGE-READY @ b344b974 (jog + pass-5 rows; the villager-limit follow-up is next)
+- **Rhen's armpit count (the Lead, 14:28: fix the skinning, don't stiffen the arm).** I tried giving the shirt over
+  the underarm the corrective's weights (helper_bones.armpit_cloth_weights, a per-hero `mix` and `reach`). It trades
+  one failure for another rather than fixing it:
+  - mix 0.8: the count is 44 (pass), but throw_sail reaches 67 mm (limit 62);
+  - mix 0.65: the count is 44, but throw_sail reaches 69 mm;
+  - mix 0.5: the depth is 56 mm, but the count is 46.
+
+  I reverted it, so b344b974 stands: the jog is unchanged with the count at 47 and the per-mesh reason (the right
+  armpit's inner crease under the arm, covered in every jog frame of the sheets). The arm was not stiffened.
+- LEAD-ASK: a proper fix is a shirt underarm gusset (a cloth patch bridging the armhole and the side, weighted to the
+  armpit corrective) in rhen_costume plus a 3-path rebuild, about 2 h. Shall I do it now, or after the villager limit
+  pass?
+- **For integration-qa (the run speed):** per loop of `run`, the root travels 2.6 m (Asha and Rhen) or 2.65 m (Toma)
+  in 0.733 s, two steps, 164 steps a minute, so `speed_mps` is 3.545 / 3.545 / 3.614 in
+  game/data/characters/locomotion.json. The field's run_speed_mps 3.6 plays it at 1.00-1.02x.
+- **Villager limits done (ff1b0544).** villager_costume hides a sleeved arm's skin from -0.35 of the arm, which fixes
+  the shoulder poke-through. All 36 villagers were rebuilt and are identical on all 3 numpy paths; test_villagers
+  passes.
+  - **Original limits restored and passing:** ferrymaster, garo, gatekeeper, reed_d, smith.
+  - **Small raises, each with a per-mesh "covered" reason checked by a render at the worst pose:** elder (the sandal
+    sole under the foot), fenn, reed_b, reed_c, scaleman, skipper_sadi (cloth inside a resting forearm), marra (edge
+    verts under the kerchief knot), purser (the sleeve edge under the arm).
+- MERGE-READY @ ff1b0544
+
+## 2026-10-30, Act II: M4-A2P-051 done (Venn and Sefir's Abiding guard)
+- **Venn** is merge-ready since 3f0f5d67. **The Abiding guard** (veiled gold lacquer, living sworn guards per Ch16
+  5a):
+  - **abiding_halberd:** Venn's halberd and keys.
+  - **abiding_bulwark:** Moll's brine-iron and shield.
+  - **abiding_captain:** a red veil and sash.
+- **Build:** the veil is the opt-in sg_helm.veil. Each guard has a battle actor, stages and viewed shots.
+- **Checks:** the rig probes pass, with limits pinned only where Moll's own mechanisms show, each with its reason. Moll,
+  the squad, Ivo, the officer, Venn and the guards are identical on all 3 numpy paths. test_stillguard 46 and
+  test_hero_clips 19 pass; Godot battle_actor 5, post_import 21.
+- **Known limits:** the veil reads stiff at a close-up; Venn's parry hand stops short of the haft.
+- LEAD-ASK: abiding_guard.md (the pale lamp-hook bearers) and the newer Ch16 beat sheet (veiled gold lacquer)
+  disagree. I built the beat sheet's version; shall combat and act2-plan drop the sheet's version?
+- MERGE-READY @ eaad9906
+- **Next (Act II queue):** M4-A2P-052 (Liss's father and the crowds), then M4-A2P-053 (the Kirru and the Ullari).
+
+## 2026-10-30, Act II: M4-A2P-052 part 1, Aldous Varrow (the dock-master)
+- Built on the villager build: the family face, line-marks to the shoulders, a held-in grief row, and the push_raft
+  and hold_up_housing clips. 5 shots were viewed; identical on the 3 numpy paths; test_villagers passes.
+- LEAD-ASK: M4-A2P-052's three crowd costume sets (Ansedran, Saltwright, Ullari) go in the crowd generator
+  (assets_src/crowd/**, crowd.json), which ownership.md gives to creatures. Route them there, or move the claim to
+  characters?
+- MERGE-READY @ 088cf7d1
+- **Next:** M4-A2P-053 (the Kirru and the Ullari).
+
+## 2026-10-30, Act II: M4-A2P-053 the Kirru and the Ullari woman
+- **The Kirru:** variants on Pell's build (pell_variant.py, `--variant`; Pell is unchanged byte for byte). The elder,
+  the adult and the child each have their own coat, size, crest and cloth dye, and Pell's clips with `back_to_sea`
+  as the turning away. No battle contract.
+- **The Ullari woman:** on the villager build (layered weaving, a keth cord, tie_knot).
+- **Checks:** all shots viewed; probes OK; identical on 3 paths; the tests pass. The task is in review (combat).
+- **Known limit:** the Kirru faces are Pell's head re-coloured at a close-up.
+- MERGE-READY @ 39b1ed81
+- **Next:** M4-A2P-055 (Sefir in person), M4-A2P-057 (Kesh), and the prop request (the dock-hook, the salt-glass
+  housing, the wedding cord).
+
+## 2026-10-30, Act II: M4-A2P-055 Sefir in person
+- The temptation's tender and sad now read at 85 mm (raised in the data, the sheet and the test). The memory's
+  grief-grey is a material variant (skin_head_grief, via CostumeVariant). The officiant is the Act I model.
+- **Checks:** close-ups viewed; sefir identical on 3 paths; test_sefir, Godot hero_stage 11.
+- LEAD-ASK (crowd sets, M4-A2P-052): act2_tracks gives characters the Act II crowd sets, but the Act II layouts
+  (ch12/quellan, ch13/ansedra, ch17/hollowmere) have no actors yet, and gen_crowd.py reads one ranges.json (the
+  creatures track's). Proposal: once env-art places the crowd stage actors, I add the ansedra and quellan
+  communities (Saltwright exists) in assets_src/crowd/{ansedra,quellan}_ranges.json, with a three-line loader in
+  gen_crowd.py. creatures to OK the loader?
+- MERGE-READY @ dd590bd7
+- **Next:** the hand-prop request (Aldous's dock-hook and salt-glass housing, the wedding cord) to cinematics. Then
+  the Act II queue is done for characters, apart from the crowd sets (blocked as above) and Owa (Act III).
+- **Hand props (Act II):** assets/characters/props/act2/{dock_hook,salt_glass_housing,wedding_cord}.glb. Each
+  origin is the grip, for a BoneAttachment3D. The housing's bound glow is `emission_energy_multiplier` on
+  housing_glass.tres, off by default. The shot was viewed and the job is identical on 3 paths. MERGE-READY @ 1d4f93cb
+
+## 2026-10-30, M3-CHR-1000: every queued story clip, Act II's included (and the Ch14 Character Art list)
+- **Ch14 Character Art list:**
+  - Liss: `press_wound` (kneeling, both hands on the wound) and `fight_free`.
+  - Toma: `lift`, one-armed. ch14_the_vows cues it on Liss; ch15_let_me_carry_him reuses it on Tobin.
+  - The Stillguard: `withdraw_wounded` (falling back hurt, not dying), on all six variants.
+  - Merel: `pull_pin` and `pole_push`, renamed to ch14_first_ripple's cues.
+  - The Tender: `paint_gilt_line` (ch13_ethren). This was big27's test_villagers red.
+- **The queue** (`requested_clips.json` `clips` was 81 rows; it is now empty):
+  - Asha 8, Rhen 13, Toma 4, Liss 20, Kerrid 9, Ysolde 7, Pell 6 and Sefir 5 rows are built.
+  - Merel (`bow`, `offer_palm`, `lay_cloth`) and Tobin (`give_cord`, `lift`, `shield_merel`, `sit_down`) are on the
+    villager path.
+  - New shared specs: `turn_back`, `nod`, `raise_hand`, `step_back`, `tie_knot`, `wake`, `touch_hip`, `hold_out_r`.
+- **Hand heights** were measured by FK against the shoulder and hip heights, not guessed.
+  - Sefir's idle already bends his elbows, so his table work uses negative elbow values.
+  - Ysolde's book hand sits about 0.18 m higher than her free hand, so it is compensated.
+  - Asha's hair touches and her take_hand use her free hand, the left.
+- **big29 reds fixed:**
+  - test_cutscene_face_per_actor: Sefir's shipped pose table is synced with the source.
+  - test_hero_clips: the gate merged a WIP head; it rebuilds byte for byte now.
+- **Shots:** 15 new, all pending_baseline:
+  - Ch14: liss_clip_{press_wound,fight_free}, toma_clip_lift, stillguard_c_clip_withdraw_wounded,
+    villager_merel_pull_pin.
+  - kerrid_clip_turn_palms, pell_clip_kneel, ysolde_clip_remove_pin, sefir_clip_square_pages, liss_clip_wash_hand,
+    rhen_clip_knock, asha_clip_{touch,sleep_sitting}, toma_clip_bow, villager_tobin_lift.
+  - All viewed; the ones that read wrong were fixed and rendered again.
+- **Libraries:** Asha's is 4.02 MB and Rhen's 3.99 MB, against test_hero_clips' 4 MiB (4.19 MB) text bound. The
+  next batch of story clips for them needs a binary .res (the test's own note).
+- **Known limits:**
+  - A free hand has no per-clip finger curl, so Rhen's knock is an open hand.
+  - Toma's `lift` is one-armed for both cues; ch15's carry may want a two-arm cradle (cinematics' call).
+- **Script actor ids with no library** (cinematics/story to route):
+  - `aldous_varrow` (the build is `aldous`).
+  - `stillguard` (ch14: the builds are stillguard_a…f).
+  - `kirru` (ch10: the builds are kirru_{adult,child,elder}).
+  - `young_sefir`, `owa`, `householder`, `conclave`.
+- **ADR 0207 supplement:** the M3-CHR-1000 queue is built, apart from the final checks. The parts another track can
+  take cleanly are filed as M4-A2P-1980 (todo, for creatures-b or anyone free):
+  - a per-clip fist for a free hand (Rhen's knock);
+  - binary .res libraries for Asha and Rhen, which are at the 4 MiB text bound.
+  Act III (M5-A3P-1980…1999) comes after.

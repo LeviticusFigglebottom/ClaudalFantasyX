@@ -15,6 +15,7 @@
           {"place": "Harbour"},
           {"chapter": 5},
           {"play": "ch05_ferry_comes_in"},
+          {"zone": "give", "args": [{"name_board_seventh_terrace": -1}, 0]},
           {"set": "ch05_arrived"}
         ]}
       ],
@@ -61,6 +62,8 @@
           {"battle": "ch05_stair_tortoises", "return_spawn": "AfterTortoises", "victory_flag": "ch05_tortoises_won"}
         ]},
         "crown": {"when": {"unset": ["ch05_trial_begun"]}, "steps": [
+          {"set": "ch05_passed_grave_tier"},
+          {"set": "ch05_passed_copper_tier"},
           {"play": "ch05_crown_pavilion"},
           {"set": "ch05_trial_begun"},
           {"place": "Crown"}

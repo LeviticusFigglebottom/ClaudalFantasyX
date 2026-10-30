@@ -6,7 +6,8 @@
 The spec is docs/kb/plan/act2/zones/ch13_lamp_archive.md. Dressed in the greybox's own frame (chapters' M4-C13-02
 layout): a ledger case stands on every Stack block, the tables on theirs, and the room's walls and floor on the
 greybox's, so the greybox keeps the collision and no story point moves. The light is the city's grey daylight through
-the clerestories (Ansedra's grade and `lut_ch13_still`); no lamp is lit.
+the clerestories (Ansedra's grade and `lut_ch13_still`); no lamp is lit. The room takes a copy of Ansedra's grade
+with dust in the air and less sky fill (env-art-b's Act II beauty pass), so the daylight falls in the spec's shafts.
 
 Writes game/levels/ch13/lamp_archive/lamp_archive_dressing.json; reuses Ansedra's looks and grade; adds the Dressing
 node to lamp_archive.tscn (once).
@@ -42,6 +43,30 @@ TABLES = {"LedgerTable": "reading_table", "RollTable": "roll_table"}
 LEDGER_STACKS = ((-8.5, -8.7, 20.0), (8.3, -14.2, 75.0), (-8.2, -19.8, 140.0), (8.6, -25.2, 300.0))
 
 
+# The beauty pass (10-30): under Ansedra's open-air grade the room read as one flat grey wash, no shaft in it. Less
+# ambient (the vault is lit by its windows, not the sky) and a dusty volumetric fog that scatters forward, so the
+# clerestories' light hangs in the aisles as shafts.
+ENV_NAME = "lamp_archive_environment.tres"
+ENV_SET = {"ambient_light_energy": "0.28", "tonemap_exposure": "0.85"}
+ENV_ADD = {"volumetric_fog_enabled": "true", "volumetric_fog_density": "0.045",
+           "volumetric_fog_albedo": "Color(0.86, 0.84, 0.8, 1)", "volumetric_fog_anisotropy": "0.55",
+           "volumetric_fog_length": "48.0", "volumetric_fog_ambient_inject": "0.15", "volumetric_fog_sky_affect": "0.0"}
+
+
+def environment() -> str:
+    """Ansedra's grade with ENV_SET replaced and ENV_ADD appended."""
+    text = (ROOT / (ans.RES_ZONE + ans.ENV_NAME).removeprefix("res://")).read_text(encoding="utf-8")
+    text = text.replace('resource_name = "ansedra_ch13"', 'resource_name = "lamp_archive_ch13"')
+    for key, value in ENV_SET.items():
+        line = f"{key} = "
+        assert text.count("\n" + line) == 1, key
+        start = text.index("\n" + line) + 1
+        text = text[:start] + line + value + text[text.index("\n", start):]
+    for key, value in ENV_ADD.items():
+        assert ("\n" + key + " = ") not in text, key
+    return text.rstrip("\n") + "\n" + "".join(f"{k} = {v}\n" for k, v in ENV_ADD.items())
+
+
 def blocks() -> dict:
     g = json.loads(LAYOUT.read_text(encoding="utf-8"))
     return {b["id"]: b for b in g["blocks"]}
@@ -69,7 +94,7 @@ def dressing() -> dict:
         "lod1_from_m": 120.0,
         "lod_end_m": 4000.0,
         "lod_margin_m": 2.0,
-        "environment": ans.RES_ZONE + ans.ENV_NAME,
+        "environment": RES_ZONE + ENV_NAME,
         "time_of_day_h": 16.5,
         "greybox": {"hide_all": True, "keep": []},
         "kit_material_paths": looks,
@@ -97,6 +122,7 @@ def wire_scene() -> None:
 
 def main() -> None:
     (ZONE / "lamp_archive_dressing.json").write_text(json.dumps(dressing(), indent=1) + "\n", encoding="utf-8")
+    (ZONE / ENV_NAME).write_text(environment(), encoding="utf-8")
     wire_scene()
 
 

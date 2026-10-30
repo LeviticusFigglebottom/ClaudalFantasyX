@@ -348,7 +348,7 @@ func _the_wall_falls() -> void:
 	assert_true(bool(Game.get_flag(&"ch08_hoist_cut_down")), "B18: the cut rope")
 	assert_true(&"ch08_cut_rope_005" in lines, "'Has anyone seen Ivo Brannick?'")
 	assert_true(bool(Game.get_flag(&"ch08_done")))
-	assert_true(Game.state.reserve_ids.has(&"kerrid"), "Kerrid walks with them again")
+	assert_false(Game.state.reserve_ids.has(&"kerrid"), "Kerrid is gone since the stair (he rejoins on Ch9's road)")
 	assert_eq(hand_offs.back(), [ZoneStory.KIND_GO, {"location": "ch09/corrow_night", "spawn": "Strand"}], "on to Ch9")
 	_check_the_freeze()
 	_close()

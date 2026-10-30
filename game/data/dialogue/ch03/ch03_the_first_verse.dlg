@@ -196,6 +196,10 @@ Asha [worried]: Something heard that. #line:ch03_verse_059
 @camera C08 blend=0.0 grade=ch03_boss
 @sfx drownbell_toll at=drownbell
 @vfx glimmer_held at=drownbell drift=down_seaward
+// The slice beat audit on 7dc3ab41 (every speaker in frame): the Drownbell's rise gets its beat on C08, then Toma's
+// command is his own, low and close as he brings the shield up (C08_toma, a stage variant of C08).
+@wait 1.2
+@camera C08_toma
 Toma [determined]: On my shield. Everyone, on my shield, now. #line:ch03_verse_060
 @letterbox off
 <<event start_battle drownbell>>

@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/characters/abiding_halberd/abiding_halberd_lod1.glb" id="model"]
+
+[node name="AbidingHalberdBattle" type="Node3D"]
+metadata/hymn_battle_actor = &"abiding_halberd"
+
+[node name="Model" parent="." instance=ExtResource("model")]

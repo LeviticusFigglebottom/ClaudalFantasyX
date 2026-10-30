@@ -37,11 +37,12 @@ ENC_CH01_SHAFT_LIMPET,The Current Shaft
 ENC_CH01_SCUTTLERS,The Breaking Raft
 ENC_CH01_HULLGNAW,Hullgnaw
 TUT_CH01_COMMANDS,"Choose a command, then its target, then confirm."
-TUT_CH01_ITEMS,"Blinded? Brine Eyewash, under Items, clears your eyes."
+TUT_CH01_ITEMS,"Smother leaves you in Darkness, and your blows rarely land. Brine Eyewash, under Items, cures it."
 TUT_CH01_ESCAPE,A fight the story doesn't need can be fled.
 TUT_HULLGNAW_TIMELINE,"Every action costs time. Watch the order shift before you choose: quick strikes bring your next turn sooner."
-TUT_HULLGNAW_KICK_OFF,"Kick Off the Wall costs almost no time. Use it to take your turns before Hullgnaw takes its own."
+TUT_HULLGNAW_KICK_OFF,Kick Off the Wall takes a third of an Attack's time. Use it to act more often than Hullgnaw.
 ITEM_GAUGE_WHEEL_BRASS,Gauge-Wheel Rim
 ITEM_GAUGE_WHEEL_BRASS_DESC,"The brass rim of a Lit Age tide-gauge, two metres across, cut free in one piece. Its teeth are worth a month's oil."
 ITEM_KELL_WICK,Kell's Wick
 ITEM_KELL_WICK_DESC,"A fresh wick from Mother Kell's own spool, pressed into your hand for luck. Every diver gets one going down."
+FIELD_PROMPT_CH01_KELL,Talk to Kell

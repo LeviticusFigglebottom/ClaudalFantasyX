@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/stillguard/stillguard_c_stage.tscn" id="stage"]
+
+[node name="StillguardCStage" instance=ExtResource("stage")]
+clip = &"withdraw_wounded"
+clip_time = 1.5

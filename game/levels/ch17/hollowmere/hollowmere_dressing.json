@@ -22,7 +22,8 @@
     -16.95
    ],
    "energy": 0.9,
-   "range": 5.0
+   "range": 5.0,
+   "flicker": 0.3
   },
   {
    "at": [
@@ -31,7 +32,8 @@
     -16.95
    ],
    "energy": 0.9,
-   "range": 5.0
+   "range": 5.0,
+   "flicker": 0.3
   },
   {
    "at": [
@@ -40,7 +42,8 @@
     -16.95
    ],
    "energy": 0.9,
-   "range": 5.0
+   "range": 5.0,
+   "flicker": 0.3
   },
   {
    "at": [
@@ -49,7 +52,8 @@
     1.4
    ],
    "energy": 0.9,
-   "range": 5.0
+   "range": 5.0,
+   "flicker": 0.3
   },
   {
    "at": [
@@ -58,7 +62,8 @@
     -1.4
    ],
    "energy": 0.9,
-   "range": 5.0
+   "range": 5.0,
+   "flicker": 0.3
   },
   {
    "at": [
@@ -67,7 +72,8 @@
     1.4
    ],
    "energy": 0.9,
-   "range": 5.0
+   "range": 5.0,
+   "flicker": 0.3
   },
   {
    "at": [
@@ -76,7 +82,8 @@
     0.75
    ],
    "energy": 0.6,
-   "range": 3.5
+   "range": 3.5,
+   "flicker": 0.3
   },
   {
    "at": [
@@ -86,7 +93,8 @@
    ],
    "energy": 0.8,
    "range": 6.0,
-   "color": "#4FB3B0"
+   "color": "#4FB3B0",
+   "flicker": 0.12
   },
   {
    "at": [
@@ -96,7 +104,8 @@
    ],
    "energy": 0.8,
    "range": 6.0,
-   "color": "#4FB3B0"
+   "color": "#4FB3B0",
+   "flicker": 0.12
   },
   {
    "at": [
@@ -106,7 +115,8 @@
    ],
    "energy": 0.8,
    "range": 6.0,
-   "color": "#4FB3B0"
+   "color": "#4FB3B0",
+   "flicker": 0.12
   },
   {
    "at": [
@@ -116,7 +126,8 @@
    ],
    "energy": 0.8,
    "range": 6.0,
-   "color": "#4FB3B0"
+   "color": "#4FB3B0",
+   "flicker": 0.12
   }
  ],
  "pieces": [
@@ -499,8 +510,8 @@
   {
    "piece": "hm_windmill",
    "at": [
-    76.0,
-    -10.0
+    66.0,
+    -14.0
    ],
    "y": -0.9,
    "yaw_deg": -60.0
@@ -687,6 +698,33 @@
    "yaw_deg": 30.0
   },
   {
+   "piece": "hm_drydock_berth",
+   "at": [
+    82.25,
+    -16.639
+   ],
+   "y": -0.9,
+   "yaw_deg": 30.0
+  },
+  {
+   "piece": "hm_drydock_berth",
+   "at": [
+    86.5,
+    -9.278
+   ],
+   "y": -0.9,
+   "yaw_deg": 30.0
+  },
+  {
+   "piece": "hm_drydock_berth_first",
+   "at": [
+    90.75,
+    -1.916
+   ],
+   "y": -0.9,
+   "yaw_deg": 30.0
+  },
+  {
    "piece": "hm_far_flotilla",
    "at": [
     25.0,
@@ -694,6 +732,250 @@
    ],
    "y": -0.9,
    "yaw_deg": 0.0
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    3.5,
+    4.2
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.792
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    10.5,
+    5.0
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.792
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    17.5,
+    4.2
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.792
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    24.5,
+    5.0
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.792
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    31.5,
+    4.2
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.792
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    38.5,
+    5.0
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.792
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    45.5,
+    4.2
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.792
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    52.5,
+    5.0
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.792
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    59.5,
+    4.2
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.792
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    3.5,
+    -4.2
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.792
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    10.5,
+    -5.0
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.792
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    17.5,
+    -4.2
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.792
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    24.5,
+    -5.0
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.792
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    31.5,
+    -4.2
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.792
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    38.5,
+    -5.0
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.792
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    45.5,
+    -4.2
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.792
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    52.5,
+    -5.0
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.792
+  },
+  {
+   "piece": "timber_stilt_post",
+   "at": [
+    59.5,
+    -4.2
+   ],
+   "y": -1.6,
+   "yaw_deg": 0.0,
+   "scale": 1.792
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    14.0,
+    12.5
+   ],
+   "y": -0.85,
+   "yaw_deg": 30.0,
+   "drift": {
+    "bob_m": 0.05,
+    "period_s": 6.0,
+    "tilt_deg": 2.5,
+    "wander_m": 1.0,
+    "wander_s": 80.0
+   }
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    46.0,
+    13.0
+   ],
+   "y": -0.85,
+   "yaw_deg": 205.0,
+   "drift": {
+    "bob_m": 0.05,
+    "period_s": 6.0,
+    "tilt_deg": 2.5,
+    "wander_m": 1.0,
+    "wander_s": 80.0
+   }
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    57.0,
+    7.5
+   ],
+   "y": -0.85,
+   "yaw_deg": 110.0,
+   "drift": {
+    "bob_m": 0.05,
+    "period_s": 6.0,
+    "tilt_deg": 2.5,
+    "wander_m": 1.0,
+    "wander_s": 80.0
+   }
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    2.0,
+    9.0
+   ],
+   "y": -0.85,
+   "yaw_deg": 290.0,
+   "drift": {
+    "bob_m": 0.05,
+    "period_s": 6.0,
+    "tilt_deg": 2.5,
+    "wander_m": 1.0,
+    "wander_s": 80.0
+   }
   }
  ]
 }

@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/sefir/sefir_stage.tscn" id="stage"]
+[ext_resource type="Script" path="res://game/characters/costume_variant.gd" id="variant"]
+[ext_resource type="Material" path="res://assets/characters/sefir/materials/skin_head_grief.tres" id="grief"]
+
+[node name="SefirStage" instance=ExtResource("stage")]
+emotion = "grief"
+face_distance = 0.5
+face_yaw_degrees = -15.0
+
+[node name="GriefGrey" type="Node" parent="."]
+script = ExtResource("variant")
+slot = &"skin_head"
+material = ExtResource("grief")

@@ -13,6 +13,17 @@
         "alongside_gear-lod1": 348
       }
     },
+    "deck_shrine": {
+      "budget": [
+        3000,
+        200
+      ],
+      "bytes": 41940,
+      "lods": {
+        "deck_shrine": 444,
+        "deck_shrine-lod1": 72
+      }
+    },
     "derelict_hulk_a": {
       "budget": [
         16000,
@@ -183,7 +194,7 @@
         10000,
         1000
       ],
-      "bytes": 427268,
+      "bytes": 427276,
       "lods": {
         "terrace_galley": 4436,
         "terrace_galley-lod1": 636

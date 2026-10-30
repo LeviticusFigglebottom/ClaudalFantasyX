@@ -11,7 +11,7 @@
         "res://assets/audio/sfx/life/villager_murmur_low_5.ogg",
         "res://assets/audio/sfx/life/villager_murmur_low_6.ogg"
       ],
-      "bus": "World",
+      "bus": "Walla",
       "pitch_jitter": 0.03,
       "cooldown_ms": 400,
       "voices": 3,
@@ -26,7 +26,7 @@
         "res://assets/audio/sfx/life/villager_murmur_high_5.ogg",
         "res://assets/audio/sfx/life/villager_murmur_high_6.ogg"
       ],
-      "bus": "World",
+      "bus": "Walla",
       "pitch_jitter": 0.03,
       "cooldown_ms": 400,
       "voices": 3,

@@ -1,0 +1,32 @@
+{
+ "format": 1,
+ "scene": "ending_imra",
+ "source": "game/data/dialogue/ending/ending_imra.dlg",
+ "start": "ending_imra",
+ "nodes": {
+  "ending_imra": {
+   "headers": {"location": "ch18/kite"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "camera", "args": ["E01"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 1.0}, "src": 13},
+    {"op": "cue", "cue": "anim", "args": ["imra", "kneel", "asha"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "imra", "count": 30, "motion": "spiral_up", "rate": "slow"}, "src": 15},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 16},
+    {"op": "line", "id": "ending_imra_001", "key": "DLG_ENDING_IMRA_001", "speaker": "imra", "emotion": "tender", "voice": "", "src": 17},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "anim", "args": ["imra", "take_hands", "asha"], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "sfx", "args": ["velamir_lullaby_hum"], "kwargs": {"at": "imra", "vol": 0.7}, "src": 20},
+    {"op": "cue", "cue": "wait", "args": [12.0], "kwargs": {}, "src": 21},
+    {"op": "line", "id": "ending_imra_002", "key": "DLG_ENDING_IMRA_002", "speaker": "imra", "emotion": "soft_smile", "voice": "", "src": 22},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "camera", "args": ["E02"], "kwargs": {}, "src": 24},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "imra", "count": 60, "motion": "spiral_up", "rate": "slow"}, "src": 25},
+    {"op": "cue", "cue": "wait", "args": [6.0], "kwargs": {}, "src": 26},
+    {"op": "cue", "cue": "music", "args": ["goodbye_imra"], "kwargs": {"fade": 0.0}, "src": 27},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 28},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 29}
+   ]
+  }
+ }
+}

@@ -1,8 +1,9 @@
 extends TestCase
 ## M3-AUD-18: stings on the battle presentation's announcements. StingAudio plays battle_stings.json's row for an
 ## EventBus.dialogue_event (the encounter's own row first), swaps in the version without sub-bass under reduced
-## audio, holds the boss intro's music duck for its time and lets it go, ignores events with no row; every row
-## resolves and imports; and the director listens to EventBus and drives its ducks.
+## audio, holds the boss intro's music duck for its time and lets it go, dips the field under the tide line until the
+## router's black, ignores events with no row; every row resolves and imports; and the director listens to EventBus
+## and drives its ducks.
 
 var played: Array[StringName] = []
 var duck_calls: Array = []
@@ -43,6 +44,8 @@ func test_events_play_their_rows() -> void:
 	assert_eq(s.on_event(&"boss_intro", ["ch01_hullgnaw", "TITLE"]), &"sting_boss_hullgnaw", "Hullgnaw has its own")
 	assert_eq(s.on_event(&"boss_intro", ["drownbell", "TITLE"]), &"sting_boss_bell", "the Drownbell has its own")
 	assert_eq(s.on_event(&"line_shown", []), &"", "an event with no row plays nothing")
+	assert_eq(played, [&"sting_tideline", &"sting_bark"] as Array[StringName], "the boss stings wait for their cards")
+	s.advance(_card_delay())
 	assert_eq(
 		played,
 		(
@@ -96,8 +99,22 @@ func test_the_boss_intro_holds_its_duck_then_lets_go() -> void:
 	s.advance(sec)
 	assert_eq(duck_calls, [[&"boss_intro", true], [&"boss_intro", false]], "and let go after duck_sec")
 	assert_true(s.held.is_empty(), "nothing left held")
+	_done()
+
+
+func test_the_tide_line_dips_the_field_and_lets_go_before_the_black() -> void:
+	var s := _listener()
+	var row := (s.data["events"] as Dictionary)["battle_stinger"] as Dictionary
+	var sec := float(row["duck_sec"])
 	s.on_event(&"battle_stinger", ["x"])
-	assert_eq(duck_calls.size(), 2, "the tide line ducks nothing")
+	assert_eq(duck_calls, [[&"encounter", true]], "the field music dips as the field dims")
+	s.advance(sec + 0.01)
+	assert_eq(duck_calls, [[&"encounter", true], [&"encounter", false]], "and lets go after duck_sec")
+	var c := BattleStinger.load_config()
+	var ramp := float(((AudioData.table(AudioData.MIX)["ducks"] as Dictionary)["encounter"] as Dictionary)["sec"])
+	var black := BattleStinger.duration(c, false) + float(preload("res://game/core/scene_router.gd").FADE_SEC)
+	assert_true(sec <= BattleStinger.duration(c, false) + 0.001, "held no longer than the rise and hold")
+	assert_true(sec + ramp < black, "back at level before the router's black, so the battle cue never enters ducked")
 	_done()
 
 
@@ -108,8 +125,10 @@ func test_the_director_listens_and_ducks() -> void:
 	assert_true(EventBus.dialogue_event.is_connected(dir.stings.on_event), "the director hears dialogue_event")
 	dir.stings.player = func(id: StringName) -> void: played.append(id)
 	dir.stings.on_event(&"boss_intro", ["ch01_hullgnaw", "TITLE"])
-	assert_eq(played, [&"sting_boss_hullgnaw"] as Array[StringName], "the boss's own sting")
-	assert_true(dir.ducks.has(&"boss_intro"), "the director's boss_intro duck is on")
+	assert_true(dir.ducks.has(&"boss_intro"), "the director's boss_intro duck is on at once, as the camera moves")
+	assert_eq(played, [] as Array[StringName], "the sting waits for the title card")
+	dir.stings.advance(_card_delay())
+	assert_eq(played, [&"sting_boss_hullgnaw"] as Array[StringName], "the boss's own sting, with the card")
 	assert_true(dir.duck_target_db(&"Music") < 0.0, "and dips the music")
 	dir.advance(10.0)
 	assert_false(dir.ducks.has(&"boss_intro"), "released in advance()")
@@ -120,7 +139,27 @@ func test_the_director_listens_and_ducks() -> void:
 	_done()
 
 
+func test_the_boss_sting_lands_with_the_title_card() -> void:
+	# the Lead's 10-30 19:45 item: BattleBossIntro announces itself as its camera starts to move; its card shows
+	# card_at_sec later (choreo.json), and the sting's hit (at its first frames) lands there
+	var choreo := JSON.parse_string(FileAccess.get_file_as_string("res://game/data/battle/choreo.json")) as Dictionary
+	var card_at := float(((choreo["choreo"] as Dictionary)["boss_intro"] as Dictionary)["card_at_sec"])
+	assert_true(absf(_card_delay() - 0.01 - card_at) < 0.001, "delay_sec follows the card")
+	var s := _listener()
+	s.on_event(&"boss_intro", ["ch10_mangrove_drowner", "TITLE"])
+	s.advance(card_at - 0.05)
+	assert_eq(played, [] as Array[StringName], "not before the card")
+	s.advance(0.1)
+	assert_eq(played, [&"sting_boss_mangrove_drowner"] as Array[StringName], "with it")
+	_done()
+
+
 # --------------------------------------------------------------------------- helpers
+
+
+func _card_delay() -> float:
+	var rows := AudioData.table(AudioData.BATTLE_STINGS)["events"] as Dictionary
+	return float((rows["boss_intro"] as Dictionary).get("delay_sec", 0.0)) + 0.01
 
 
 func _listener() -> StingAudio:

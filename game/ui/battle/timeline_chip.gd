@@ -124,11 +124,17 @@ func _layout_children() -> void:
 	var name_w := maxf(size.x - name_x - right, 0.0)
 	var show_caption := caption != "" and size.y > HudLayout.num(_metrics, "chip_height")
 	var cap_h := HudLayout.num(_metrics, "caption_height") if show_caption else 0.0
+	if show_caption:  # the readability pass (10-30): at 130 % text the caption grew past the chip's bottom border
+		cap_h = maxf(cap_h, _caption.get_combined_minimum_size().y)
 	_name.position = Vector2(name_x, 0.0)
 	_name.size = Vector2(name_w, size.y - cap_h)
 	_caption.visible = show_caption
 	_caption.position = Vector2(name_x, size.y - cap_h - pad)
 	_caption.size = Vector2(name_w, cap_h)
+	# The Act I UI pass (2026-10-30): at 130 % text "Acting now" read "Acting ..." and long names lost their ends;
+	# both shrink a little (to 80 % at most) before an ellipsis cuts them. Who acts next stays readable (pillar 4).
+	HudLayout.fit_label(_name, name_w)
+	HudLayout.fit_label(_caption, name_w)
 	_layout_doom(right)
 	var dim := skipped or ghost
 	_name.modulate = Color(1, 1, 1, HudLayout.num(_metrics, "skipped_alpha")) if skipped else Color.WHITE

@@ -2,9 +2,9 @@
 id: M3-ENV-1327
 title: "Request: kit items from env-art-b's Ch5–Ch9 final-quality audit (Tamsule's empty ground floors, Corrow's puddle holes)"
 role: environment
-status: todo
+status: doing
 request-from: environment (env-art-b)
-owner_session: ""
+owner_session: "env-art (claude/env-art, 2026-10-30)"
 depends_on: []
 milestone: M3
 ---
@@ -20,5 +20,18 @@ The zones and env-art-b's own pieces were fixed in place. These are in env-art's
 - Still open from M3-ENV-1316: Tamsule's `market_boat_a` umbrella (a flat 16-gon disc), the kits' own flat
   StandardMaterial slots for their previews, the headland's far facets, `camp_tent` end-on.
 - Still open from M3-ENV-102: Haluna's `order_chapel` reads as a plain white box. Corrow's Bastion shows it too.
+
+- 2026-10-30 (env-art): **Corrow's puddles done.**
+  - `lowtown_ground` bakes its hollows damp (wetness up to 0.6), not mirror-wet (it was up to 1.0).
+  - Viewed at `foot_kerrid` looking three ways: soft damp sheens, no black holes.
+  - Also done (M3-ENV-1330): the per-triangle cobble patches are gone.
+  - **`market_boat_a`'s umbrella done:** eight timber ribs under the cloth, the cloth sagging between them and its
+    hem scalloped. Rebuilt at 3904 tris (budget 9000); viewed on the boat in Ch7.
+  - **Tamsule's shophouses stocked:** a lacquered counter across the open front with jars and a folded cloth, two
+    shelves on the back panel with jars, cloth bolts and baskets, and dyed cloth lengths hung from a pole
+    (`port._shop_stock`, its own rng). `shophouse_a/b` rebuilt (15.7k/15.9k of 20k); viewed from the lane.
+  - **`camp_tent` end-on:** the rear gable is two panels bellying out, with a sewn centre seam and a lashed hem.
+    `camp_tent` and `camp_tent_burned` rebuilt; viewed from the rear, the quarter and the side.
+  - Still open here: the kits' own flat preview slots, the headland's far facets, the order chapel.
 
 ## Review log

@@ -18,6 +18,8 @@ DLG_CH01_BARK_PEN_002,We're winning the Tidecup this year. Tavi says.
 DLG_CH01_BARK_PEN_003,Tavi says that every year. Keep your elbows in.
 DLG_CH01_BARK_ROOF_001,Rhen! Off the cabin roof! Ma says you used to.
 DLG_CH01_BARK_ROOF_002,I was young and foolish then. Now I'm just foolish.
+DLG_CH01_BARK_ROOF_006,Do it again!
+DLG_CH01_BARK_ROOF_007,Once. You get once.
 DLG_CH01_BARK_ROOF_003,Scared!
 DLG_CH01_BARK_ROOF_004,Fine. Fine. Watch how it's done.
 DLG_CH01_BARK_ROOF_005,He did it!
@@ -91,25 +93,36 @@ DLG_CH01_RISING_007,"Not me, you fool! The net-pen! The little ones!"
 DLG_CH01_RISING_008,Go to the net-pen.
 DLG_CH01_RISING_009,Kell first.
 DLG_CH01_TUT_001,"Walk with the left stick or {field_move_forward}, {field_move_left}, {field_move_back}, {field_move_right}. The right stick or {field_camera_left} and {field_camera_right} turn the camera."
-DLG_CH01_TUT_003,"Hold {field_lantern_shutter} to open the shutter. The more you light, the more you see, and the more that sees you."
-DLG_CH01_TUT_002,"A tether point. Press {field_interact} beside it to drop to the floor below, or to climb back up."
+DLG_CH01_TUT_003,"Hold {field_lantern_shutter} to open the shutter. Open, the lamp finds hidden things, but more creatures find you."
+DLG_CH01_TUT_002,A tether point. Press {field_interact} beside it to drop to the floor below.
 DLG_CH02_BARK_CAUSEWAY_UNSAVED_001,"Hold, Rhen. No one walks the causeway without resting at the town shrine first."
 DLG_CH02_BARK_CAUSEWAY_UNSAVED_002,"It only takes a moment. Sit at the little shrine in town, then we'll go."
 DLG_CH02_BARK_CHAPEL_001,The Lady Cantor's shell is cut. They'll set it at the wake.
 DLG_CH02_BARK_CHAPEL_002,I'm sorry. Was she very old?
 DLG_CH02_BARK_CHAPEL_003,"Mind the steps, please. I've only just swept them."
+DLG_CH02_BARK_CHAPEL_LISTEN_001,The steps are swept. The shell's cut. There's nothing left to do but wait.
+DLG_CH02_BARK_CHAPEL_LISTEN_002,Wait for what?
+DLG_CH02_BARK_CHAPEL_LISTEN_003,The tide. It always comes.
 DLG_CH02_BARK_DOCK_001,Her mother went from this dock too. Same age near enough.
 DLG_CH02_BARK_DOCK_002,Then she'll have fair weather. Her mother did.
 DLG_CH02_BARK_DOCK_003,Went where?
 DLG_CH02_BARK_DOCK_004,"Out. Pass me that float, would you?"
+DLG_CH02_BARK_DOCK_LISTEN_001,Float's mended. Thank you for holding it.
+DLG_CH02_BARK_DOCK_LISTEN_002,Weather'll hold. You can feel it in the rope.
 DLG_CH02_BARK_LANE_001,"One for the shell and two for the ash,"
 DLG_CH02_BARK_LANE_002,three for the bell and four for the hush...
 DLG_CH02_BARK_LANE_003,What comes after four?
 DLG_CH02_BARK_LANE_004,You start again. Everybody knows that.
+DLG_CH02_BARK_LANE_LISTEN_001,Do you know the shell song?
+DLG_CH02_BARK_LANE_LISTEN_002,Only up to four.
+DLG_CH02_BARK_LANE_LISTEN_003,That's all of it. Then you start again.
 DLG_CH02_BARK_MARKET_001,"Two days. Two days, and she's still helping me wrap fish."
 DLG_CH02_BARK_MARKET_002,Salt and stone. Her knots are neater than mine ever were.
 DLG_CH02_BARK_MARKET_003,Who's leaving? You've wrapped enough for a whole crew.
 DLG_CH02_BARK_MARKET_004,"Hold this end, would you? The leaf tears if you pull it."
+DLG_CH02_BARK_MARKET_LISTEN_001,Take a fig. There's more than anyone can carry.
+DLG_CH02_BARK_MARKET_LISTEN_002,For the crew who's leaving?
+DLG_CH02_BARK_MARKET_LISTEN_003,For whoever's hungry. Go on.
 DLG_CH02_BEACH_001,The sea gave me back at dawn. Somebody was humming.
 DLG_CH02_BEACH_016,A star-path. The one they teach children for finding the way home.
 DLG_CH02_BEACH_002,"There you are. No, don't sit up yet. You've swallowed half the bay."
@@ -137,21 +150,21 @@ DLG_CH02_BEACH_026,Don't look at them. Get up.
 DLG_CH02_BEACH_027,"No. Up. I'm getting up. The beach is moving, but I'm getting up."
 DLG_CH02_BEACH_028,Slowly.
 DLG_CH02_BEACH_029,"Lean on him. He likes it, he just won't say so."
-DLG_CH02_BEACH_030,I'm Asha. That's Toma. He's nicer than his spear.
+DLG_CH02_BEACH_030,I'm Asha. And that's Toma.
 DLG_CH02_BEACH_031,"Toma Okeru, of Haluna. You are speaking to the Lady—"
-DLG_CH02_BEACH_032,To Asha. Who is very glad you aren't dead.
+DLG_CH02_BEACH_032,To Asha. Who is glad you're here.
 DLG_CH02_BEACH_033,Lady what?
 DLG_CH02_BEACH_034,Later. You're shaking.
 DLG_CH02_BEACH_014,"Come up to the village. Bring your father's light. You'll eat first, and then we'll tell you what we know."
 DLG_CH02_BEACH_015,"Come up to the village. You'll eat first, and then we'll tell you what we know."
 DLG_CH02_BEACH_035,She smiled first. Every time. It took me a long while to understand why.
 DLG_CH02_LOOK_LINTEL_GULL_001,"Every roof's got one, and every one faces the sea. Nobody carves a gull to watch the land."
+DLG_CH02_LOW_TIDE_001,The tide-readers set the day. The causeway opens this far twice a month.
+DLG_CH02_LOW_TIDE_002,"Come and see it, Rhen. It's the most beautiful thing we have."
 DLG_CH02_LOW_TIDE_005,"Once we cross, we won't be back before dark. Is there anyone you want to see first?"
 DLG_CH02_LOW_TIDE_006,Go now.
 DLG_CH02_LOW_TIDE_007,Not yet.
 DLG_CH02_LOW_TIDE_008,Then go and see them. The tide will hold a while yet.
-DLG_CH02_LOW_TIDE_001,The tide-readers set the day. The causeway opens this far twice a month.
-DLG_CH02_LOW_TIDE_002,"Come and see it, Rhen. It's the most beautiful thing we have."
 DLG_CH02_LOW_TIDE_003,"He is not sworn to anything, Asha."
 DLG_CH02_LOW_TIDE_004,"I know. I'm already walking, Toma."
 DLG_CH02_NEMES_TABLE_001,"Up, then. Sit. Not that stool, it bites."
@@ -180,7 +193,7 @@ DLG_CH03_BARK_CAUSEWAY_RING_001,"There's light in that crack. Lit Age ceramic, s
 DLG_CH03_BARK_CAUSEWAY_RING_002,Leave it.
 DLG_CH03_BARK_CAUSEWAY_RING_003,...Leaving it.
 DLG_CH03_BARK_CAUSEWAY_TIDEPOOL_001,"Look. Star-snail, comb-anemone, and a little lamp-crab under the ledge."
-DLG_CH03_BARK_CAUSEWAY_TIDEPOOL_002,"Two copper, nothing, and four if you catch him before he sheds."
+DLG_CH03_BARK_CAUSEWAY_TIDEPOOL_002,"Two lume, nothing, and four if you catch him before he sheds."
 DLG_CH03_BARK_CAUSEWAY_TIDEPOOL_003,Is that all a pool is to a diver? A price on every shell?
 DLG_CH03_BARK_CAUSEWAY_TIDEPOOL_004,The anemone was free. I'm not a monster.
 DLG_CH03_BARK_CHAPEL_NIGHT_001,Guardian. Keep her feet dry and her lamp lit. That's the whole of the rite.
@@ -194,8 +207,8 @@ DLG_CH03_BARK_MARKET_NIGHT_002,I'll carry it for both of us.
 DLG_CH03_DOCK_001,"Asha. On the shrine steps, Toma said..."
 DLG_CH03_DOCK_002,"How was your day, Rhen? Truly."
 DLG_CH03_DOCK_003,"...Long. Good, mostly."
-DLG_CH03_DOCK_004,You leave the day after tomorrow.
-DLG_CH03_DOCK_005,At first tide. The causeway won't wait for me.
+DLG_CH03_DOCK_012,"You're leaving, aren't you? The bag at Neme's."
+DLG_CH03_DOCK_005,The day after tomorrow. At first tide. The causeway won't wait for me.
 DLG_CH03_DOCK_006,"Then let me come. As your guardian. I can dive, and I can carry, and I don't scare."
 DLG_CH03_DOCK_007,Yes.
 DLG_CH03_DOCK_008,"Asha. A guardian is not chosen on a dock, at night—"
@@ -282,7 +295,7 @@ DLG_CH04_BARK_BOWLS_001,Four bowls. They were at their food.
 DLG_CH04_BARK_BOWLS_002,"In a house where someone has died, you clear the table. That is all."
 DLG_CH04_BARK_HOUSING_001,That's the housing I sold Sadi. She paid me for half of it.
 DLG_CH04_BARK_HOUSING_002,...It goes where she stowed it.
-DLG_CH04_BARK_GLASS_001,"The glass was turned at the morning watch and never again. Three days ago, a little after eight."
+DLG_CH04_BARK_GLASS_001,"The glass was turned at the morning watch and never again. Three days ago, a little after eleven."
 DLG_CH04_BARK_INN_001,"A slate hangs on the inn door: ""Closed. We are all at the wall."""
 DLG_CH04_BARK_RHYME_001,"You said teach you. So listen. ...three for the bell and four for the hush, and then you start again."
 DLG_CH04_BARK_RHYME_002,Start what again?
@@ -363,6 +376,7 @@ DLG_CH04_SHELL_024,Then I can leave it if I like.
 DLG_CH04_WRAITH_001,"Stand back from the rigging, please."
 DLG_CH04_WRAITH_002,On my shield.
 DLG_CH04_INK_001,"Hold the lamp, if you are going to stand there."
+DLG_NAME_YSOLDE_THE_STRANGER,The stranger
 DLG_CH04_INK_002,What's wrong with the ink?
 DLG_CH04_INK_003,"They cut the name well. They inked it with fishing-ink, soot and oil. Salt lifts that in a season."
 DLG_CH04_INK_004,Ansedran lacquer outlasts the stone it is in.
@@ -428,7 +442,7 @@ DLG_CH05_KAHRE_001,She'll sleep now. She always does.
 DLG_CH05_KAHRE_002,"We will be here, Lady Cantor."
 DLG_CH05_KAHRE_003,Toma.
 DLG_CH05_KAHRE_004,...Asha.
-DLG_CH05_KAHRE_005,Three hundred years in there with a hammer. You'd think he'd run out of things to hit.
+DLG_CH05_KAHRE_005,All those years in there with a hammer. You'd think he'd run out of things to hit.
 DLG_CH05_KAHRE_006,You've got a look like you're pricing it.
 DLG_CH05_KAHRE_007,The roll says he repaired the hinges of every temple door he passed through. Unasked.
 DLG_CH05_KAHRE_008,That sounds like a smith.
@@ -456,6 +470,7 @@ DLG_CH05_BOATS_008,It's what they do.
 DLG_CH05_BOATS_009,Level preserve them.
 DLG_CH05_WEIR_001,"Rhen Sallow, if you fall in that channel I am not coming in after you."
 DLG_CH05_WEIR_002,I held a stair for your mother once.
+DLG_NAME_KERRID_X2D86C2,???
 DLG_CH05_WEIR_003,Where?
 DLG_CH05_WEIR_004,...Then another time.
 DLG_CH05_WEIR_005,"Your name, sir?"
@@ -528,8 +543,8 @@ DLG_CH06_BARGE_022,"Be level, High Warden."
 DLG_CH06_BARGE_023,"And still, Toma Okeru."
 DLG_CH06_BARGE_024,"Go gently, Lady Cantor."
 DLG_CH06_BARK_ASHA_001,"How was your day, Rhen?"
-DLG_CH06_BARK_ASHA_002,...You always ask me that.
-DLG_CH06_BARK_ASHA_003,Then answer it one day.
+DLG_CH06_BARK_ASHA_002,...You're asking about mine.
+DLG_CH06_BARK_ASHA_003,Someone should.
 DLG_CH06_BARK_TOMA_001,"""Liss Varrow, wright, in the service of the Lady Cantor's party."" It reads well, I think."
 DLG_CH06_BARK_YSOLDE_001,The light goes early on the shoals. I will read until it does.
 DLG_CH06_LAMP_001,Don't touch that.
@@ -580,13 +595,15 @@ DLG_CH07_AFTER_006,I'll hang a lamp.
 DLG_CH07_BARK_BOARD_001,"Tidecup draw! First round at noon: Oruvel against Sorrin, at the Bell."
 DLG_NAME_VENDOR_BOARD_CALLER,Board-caller
 DLG_CH07_BARK_BOARD_002,The captains name their dead at the rim first. Be quiet for it.
+DLG_CH07_BARK_BOARD_AFTER_001,Second round's chalked for after the bells.
+DLG_CH07_BARK_BOARD_AFTER_002,Oruvel's line is wiped. Withdrawn. Nobody's to write anything beside it.
 DLG_CH07_BARK_CHILD_001,If you bring the float up you get to ring the little bell! The little one!
 DLG_CH07_BARK_ELDER_001,"Reefball's a rescue drill, that's all it ever was."
 DLG_NAME_NETMENDER_OLD_WOMAN,Old woman
 DLG_CH07_BARK_ELDER_002,You bring the float up like you'd bring up a body. People forget.
 DLG_CH07_BARK_GANTRY_001,Oruvel's side is still here. A week now. Nobody's had the heart to ask them.
 DLG_CH07_BARK_GANTRY_AFTER_001,Next round's in. Listen to them up there.
-DLG_CH07_BARK_GANTRY_AFTER_002,Oruvel's boat went out the river mouth an hour ago. Nobody cheered. They just moved aside.
+DLG_CH07_BARK_GANTRY_AFTER_002,Oruvel's crew came down from the Bell to ready their boat. Nobody cheered. They just moved aside.
 DLG_CH07_BARK_LANE_001,Hot year. Fast water. Good for the atoll sides.
 DLG_CH07_BARK_LANE_AFTER_001,Where'd they go?
 DLG_CH07_BARK_LANE_AFTER_002,Home.
@@ -599,17 +616,17 @@ DLG_CH07_MOOR_002,"I'm not a priest, Tavi."
 DLG_CH07_MOOR_003,You're the Cantor.
 DLG_CH07_MOOR_004,Then I'll do it the way we do it at home. Tell me what tied up here.
 DLG_CH07_MOOR_005,The Tallow Hen.
-DLG_CH07_MOOR_006,"Ollo's. Brann's uncle, and his wife."
-DLG_CH07_MOOR_007,"Brann's uncle, and his wife."
+DLG_CH07_MOOR_006,"Ollo's. Noa's uncle, and his wife."
+DLG_CH07_MOOR_007,"Noa's uncle, and his wife."
 DLG_CH07_MOOR_008,The Second Mooring.
-DLG_CH07_MOOR_009,The Ketters. All of them but Mae.
+DLG_CH07_MOOR_009,The Ketters. All of them.
 DLG_CH07_MOOR_010,The Ketters.
 DLG_CH07_MOOR_011,The Wicklight.
 DLG_CH07_MOOR_012,Kell.
 DLG_CH07_MOOR_013,Kell.
 DLG_CH07_MOOR_014,The Brass Thrush. The Low Lantern.
-DLG_CH07_MOOR_015,Dovic's brothers. Old Arro and his daughter.
-DLG_CH07_MOOR_016,"Dovic's brothers. Old Arro, and his daughter."
+DLG_CH07_MOOR_015,Ama's brothers. Old Arro and his daughter.
+DLG_CH07_MOOR_016,"Ama's brothers. Old Arro, and his daughter."
 DLG_CH07_MOOR_017,Pio.
 DLG_CH07_MOOR_018,...Yes. Pio.
 DLG_CH07_MOOR_019,Pio.
@@ -623,7 +640,7 @@ DLG_CH07_INTO_001,Tidecup week. Every purse-cutter on the coast is here.
 DLG_CH07_INTO_002,"Then hold on to yours, Mistress Varrow."
 DLG_CH07_INTO_003,...Oruvel always came up for this.
 DLG_CH07_LEAVE_001,"That'll be Tamsule's cup, then."
-DLG_CH07_NAMING_001,Aldo Sabe. My brother.
+DLG_CH07_NAMING_001,Aldo Merrow. My brother.
 DLG_CH07_NAMING_002,Up.
 DLG_CH07_NAMING_003,Oruvel.
 DLG_CH07_NAMING_004,Up.
@@ -732,7 +749,7 @@ DLG_CH08_WALL_FALLS_002,Someone. In the storm. Humming a current-song.
 DLG_CH08_WALL_FALLS_003,I heard them too. All of them.
 DLG_CH08_WALL_FALLS_004,Storm. Just the storm.
 DLG_CH08_WALL_FALLS_005,All right.
-DLG_CH09_BARK_HOBB_001,"Jory Sallow. Mag Sallow. Anni Tesk, nine years."
+DLG_CH09_BARK_HOBB_001,"Jory Wend. Mag Wend. Anni Lusk, nine years."
 DLG_CH09_BARK_HOBB_002,"Bren Coyle. The Coyle boys, both of them. Next row."
 DLG_CH09_BARK_LISS_001,Thirty-one baskets. I counted. Don't ask me to count anything else.
 DLG_CH09_BARK_MARRA_001,"When the last one's up, the captain calls it. ""Stair's clear."" That's how you know you can come off the wall."
@@ -748,7 +765,7 @@ DLG_CH09_WRONG_WAY_005,The rite has been danced the same way for nine hundred ye
 DLG_CH09_WRONG_WAY_006,Yes.
 DLG_CH09_WRONG_WAY_007,Which way should they point?
 DLG_CH09_WRONG_WAY_008,You go where it sleeps.
-DLG_CH09_WRONG_WAY_009,The Choir. Yes.
+DLG_CH09_WRONG_WAY_009,The Drowned Choir. Yes.
 DLG_CH09_WRONG_WAY_010,I will walk there too.
 DLG_CH09_WRONG_WAY_011,Who are you?
 DLG_CH09_WRONG_WAY_012,"...Walk behind me, then."
@@ -782,7 +799,7 @@ DLG_CH09_SHIELD_012,I'll take him first.
 DLG_CH10_BARK_GLOW_001,No glow.
 DLG_CH10_KIRRU_BOOK_001,You keep words in a box. We keep them in the throat.
 DLG_NAME_KIRRU_OLD_KIRRU,Old Kirru
-DLG_CH10_BARK_KCHILD_001,They went up. All three. I counted. My mother says you do not count. I counted anyway.
+DLG_CH10_BARK_KCHILD_001,They went up. So many. I counted. My mother says you do not count. I counted anyway.
 DLG_NAME_KIRRU_CHILD_KIRRU_CHILD,Kirru child
 DLG_CH10_BARK_KCHILD_002,"Tonight is the tide. You will see. You will have to turn around, though."
 DLG_CH10_KIRRU_DUSK_001,At dusk. You may watch. Do not stay watching.
@@ -797,32 +814,24 @@ DLG_NAME_KIRRU_NET_MENDER,Net-mender
 DLG_CH10_KIRRU_RESSA_001,The tall one at the gate. Pell. What did he do?
 DLG_CH10_KIRRU_RESSA_002,Ressa's brother. She went to the sea. We sang. He watched.
 DLG_CH10_BARK_CARVER_001,The name goes on the inside. Against the throat. You hear it with your skin.
-DLG_NAME_KIRRU_SHELL_CARVER,Shell-carver
-DLG_CH10_BARK_CARVER_002,"I scraped one blank, the spring before last. I was asked to. My hands remember it."
+DLG_NAME_KIRRU_NAME_CARVER,Name-carver
+DLG_CH10_BARK_CARVER_002,"I scraped one blank, long ago, before my crest was white. I was asked to. My hands remember it."
 DLG_CH10_BARK_KNOTS_001,Somebody knows knots. Three turns and a lock. She'll hold a cart.
-DLG_CH10_BARK_OWA_001,You kept your backs to the water. Good. The three did not have to see you while they went.
+DLG_CH10_BARK_OWA_001,You kept your backs to the water. Good. The season's dead did not have to see you while they went.
 DLG_NAME_OWA_THE_ELDEST,The eldest
 DLG_CH10_BARK_OWA_002,At dusk we go to the shore. Stand at the back. Do not sing. You do not know the song.
 DLG_CH10_BARK_PEDGE_001,The roots are quiet. They will grow back over the cut. That is right.
 DLG_CH10_BARK_PEDGE_002,Something drags in the roots. Walk where the bark is pale. It does not like the pale.
 DLG_CH10_BARK_PGATE_001,I wait here. I am good at waiting. Go in. Eat what they give you. It is rude not to.
 DLG_CH10_BARK_PGATE_002,"If they say her name, do not say it back to me. Not yet."
-DLG_CH10_BARK_WALKWAY_001,Love a walkway that moves. Really. Big fan.
+DLG_CH10_BARK_WALKWAY_001,Love a walkway that moves. Really. My favourite kind.
 DLG_CH10_BARK_COUNTRY_001,The Order calls this country empty. It is not empty.
 DLG_CH10_BARK_EGRETS_001,Herons are sacred to nobody. It is restful.
 DLG_CH10_CAMP_001,You're still up.
 DLG_CH10_CAMP_002,The fen is loud at night. Frogs. The water under the roots. I like to hear it.
-DLG_CH10_CAMP_003,Can I ask you something? Your shell. Why's it blank?
-DLG_CH10_CAMP_004,"When one of us goes into the sea, the clutch turns its back and sings. So the one going does not look back at us."
-DLG_CH10_CAMP_005,I did not turn around.
-DLG_CH10_CAMP_006,Why not?
-DLG_CH10_CAMP_007,"When a thing is given, somebody should see it given. Otherwise it is only gone."
-DLG_CH10_CAMP_008,So they took my name. That is fair. I knew it would cost that.
-DLG_CH10_CAMP_009,Would you do it again?
-DLG_CH10_CAMP_010,Yes.
 DLG_CH10_CAMP_011,You keep a tin at your belt. You touch it when you think nobody sees.
 DLG_CH10_CAMP_012,"Everybody sees, apparently."
-DLG_CH10_CAMP_013,It's a wick. My mother's. Kell's. She gave it to me before I went under. I haven't lit it.
+DLG_CH10_CAMP_013,It's a wick. Kell's. She raised me. She gave it to me before I went under. I haven't lit it.
 DLG_CH10_CAMP_014,You are waiting for the right thing to light it for.
 DLG_CH10_CAMP_015,Something like that.
 DLG_CH10_CAMP_016,You will know it. It will cost you something. That is how you will know.
@@ -837,7 +846,7 @@ DLG_CH10_DAWN_004,You are very good at asking.
 DLG_CH10_DAWN_005,Your shell. They scraped it because of her. Ressa.
 DLG_CH10_DAWN_006,Your shell. Why's it blank?
 DLG_CH10_DAWN_007,I did not turn around.
-DLG_CH10_DAWN_008,She went into the sea. I watched her go. Seventy years.
+DLG_CH10_DAWN_008,Ressa. My sister. She went into the sea. I watched her go. Seventy years.
 DLG_CH10_CHANNEL_001,Three of the clutch. Drowned here. At the full moon before last.
 DLG_CH10_CHANNEL_002,They're still here.
 DLG_CH10_CHANNEL_003,Held.
@@ -852,6 +861,8 @@ DLG_CH10_STRAP_004,Many walked through. Some walked back.
 DLG_CH10_STRAP_005,I will leave it. It is where he put it down.
 DLG_CH10_SCRAPE_001,Not ours. Not wright marks. Somebody counting.
 DLG_CH10_SCRAPE_002,Standing places.
+DLG_CH10_SHRINE_001,A ring of shells hangs from a mangrove root over the water. Every one has a name cut on the inside. They knock together softly when the wind moves.
+DLG_CH10_SHRINE_002,The Kirru never asked what the Order thinks of you. The shells go on knocking.
 DLG_CH10_NETS_001,It is in the water now. Thank you.
 DLG_NAME_KIRRU_KIRRU_WIDOW,Kirru widow
 DLG_CH10_NETS_002,My mate's net is still in the channel. Where the three went. I cannot go there yet.
@@ -874,8 +885,8 @@ DLG_CH10_SWIM_007,Because we're afraid to let them go.
 DLG_CH10_SWIM_008,Yes. You-people hold everything.
 DLG_CH10_SWIM_009,"I didn't finish the sentence, Rhen. I've said it all my life."
 DLG_CH11_BARK_LIFT_001,Nobody comes to lift them.
-DLG_CH11_BARK_KGAL_001,"Somebody built this to last, and it did. The stone did, anyway."
-DLG_CH11_BARK_KEEPER_001,"The cold came up the shaft last night, and then it stopped. Forty years I've kept this temple. It has never stopped."
+DLG_CH11_BARK_KGAL_001,Built to last. The stone did.
+DLG_CH11_BARK_KEEPER_001,"The cold came up the shaft an hour ago, and then it stopped. Forty years I've come down to this temple. It has never stopped."
 DLG_NAME_TENDER_LOWLIGHT_KEEPER,Lowlight keeper
 DLG_CH11_BARK_KEEPER_002,The water takes a step a year. We pray on the step above it. There are not many steps left.
 DLG_CH11_BARK_PCOND_001,I keep listening for her in the pipes. She is not in the pipes. I keep listening.
@@ -886,7 +897,7 @@ DLG_CH11_BARK_SALVAGE_002,You could have.
 DLG_CH11_BARK_WINDOWS_001,People lived here. The Order says the Lit Age were a wicked people.
 DLG_CH11_BARK_WINDOWS_002,They had window boxes.
 DLG_CH11_BARK_BRACKETS_001,Lamptongue on the brackets. 'Kept for the gathering.' The gathering has been under water for some time.
-DLG_CH11_CAMP_001,"Pell. I should have stopped. When I saw your face, I should have stopped."
+DLG_CH11_CAMP_001,Pell. At the ledge. I didn't know it was her until it was done.
 DLG_CH11_CAMP_002,You did not know her name.
 DLG_CH11_CAMP_003,I do now. Ressa.
 DLG_CH11_CAMP_004,Yes.
@@ -895,14 +906,13 @@ DLG_CH11_CAMP_006,She was alone down there a long time. Now someone is calling h
 DLG_CH11_CAMP_007,I do not know if glad is the right word. It is the word I would want.
 DLG_CH11_CAMP_008,Then I'll call her by name. Every time. Not the Saint's. Hers.
 DLG_CH11_CAMP_009,Good.
-DLG_CH11_CAMP_010,"You are holding her now, Lady Cantor. Someone should see it. I will."
 DLG_CH11_VEY_001,Four hundred years and she's still lit. Nobody's touched her. Look at her.
 DLG_CH11_VEY_002,Many in there.
 DLG_CH11_FIG_001,Held. In the roots. Like the fen.
 DLG_CH11_PLATE_001,"A maker's plate. Lamptongue, the old court hand. Give me a moment."
 DLG_CH11_PLATE_002,"""We borrow the light. At the end of the day we give it back."""
 DLG_CH11_PLATE_003,Give it back to what?
-DLG_CH11_PLATE_004,"It doesn't say. To the sky, I suppose. The way the Kirru do."
+DLG_CH11_PLATE_004,"It does not say. To the sky, I suppose. The way the Kirru do."
 DLG_CH11_PLATE_005,Every lamp in these galleries is still lit.
 DLG_CH11_PLATE_006,Somebody stopped giving it back.
 DLG_CH11_HELD_001,I didn't know. Pell. If I'd known—
@@ -925,8 +935,10 @@ DLG_CH11_MARK_012,He was the best of us. Everybody says. And you're sitting on h
 DLG_CH11_BENCH_001,Pair-built.
 DLG_CH11_BENCH_002,Yeah.
 DLG_CH11_NHOA_001,She is here. She is not lifted. Do not speak yet. Please.
+DLG_CH11_SHRINE_001,"The Level-stone is cold. The lamp beside it still burns, but the shrine doesn't know you any more."
+DLG_CH11_SHRINE_002,"A Level-stone on the highest dry step, and beside it a lamp the tenders who come down say has never once gone out. The water is two steps down."
 DLG_CH11_ALTAR_001,"One more year, on that step. Thank you."
-DLG_CH11_ALTAR_002,The altar lamp has to go up a step before the water reaches it. There used to be four of us to lift it.
+DLG_CH11_ALTAR_002,The altar lamp has to go up a step before the water reaches it. There used to be four of us who came down to lift it.
 DLG_CH11_ALTAR_003,Toma lifts it.
 DLG_CH11_ALTAR_004,Show me where.
 DLG_CH11_ALTAR_005,Gently. It has never once gone out.
@@ -939,7 +951,7 @@ DLG_CH11_ENGINE_002,She's beautiful.
 DLG_CH11_ENGINE_003,Break her.
 DLG_CH11_TWICE_001,That is twice.
 DLG_CH11_TWICE_002,They were waiting. Inside it. All this time.
-DLG_CH11_WENNA_001,Same hand as Coilspire. Somebody went through every temple and left her name for us. Nobody ever looked.
+DLG_CH11_WENNA_001,Same hand as Coilspire. Somebody went through every temple and left a mark for us. Nobody ever looked.
 DLG_CH12_BARK_EVEN_001,Even here.
 DLG_CH12_BARK_CKEEPER_001,"We keep the Order's hours, and the Ullari keep the cords. Nobody has asked which of us the roof is for."
 DLG_NAME_TENDER_CLOUDLOOM_KEEPER,Cloudloom keeper
@@ -962,7 +974,7 @@ DLG_NAME_ULLARI_KETH_READER,Keth-reader
 DLG_CH12_BARK_READER_002,You tied one on the pass. Good. The cord holds it now. You don't have to.
 DLG_CH12_BARK_CAIRN_001,They tie a knot and walk on. In Haluna we would sit with them for three days.
 DLG_CH12_BARK_KINDER_001,"Three days, in Haluna. Sitting with them."
-DLG_CH12_BARK_KINDER_002,I do not know anymore which is kinder.
+DLG_CH12_BARK_KINDER_002,I do not know any more which is kinder.
 DLG_CH12_BARK_TRAV_001,Don't read the knots on the pass. They're not for reading. They're for leaving.
 DLG_NAME_ULLARI_TRAVELLER,Traveller
 DLG_CH12_BARK_WEAVER_001,Tide patterns. My grandmother's. Nobody here has seen the sea. We weave it anyway.
@@ -975,7 +987,7 @@ DLG_CH12_CAMP_002,"Forty-seven Cantors, up to Ama Quillo's own name. And the one
 DLG_CH12_CAMP_003,And then the Lady Cantor's mother.
 DLG_CH12_CAMP_004,Yes.
 DLG_CH12_CAMP_005,And then her.
-DLG_CH12_CAMP_006,The cords don't say that.
+DLG_CH12_CAMP_006,The cords do not say that.
 DLG_CH12_CAMP_007,They do not need to.
 DLG_CH12_CAMP_008,"When I took the oath, they said, keep her safe to the end of the road. I said I would. I meant it."
 DLG_CH12_CAMP_009,Nobody told me what was at the end of it.
@@ -988,14 +1000,14 @@ DLG_CH12_CAMP_015,Then I will keep her safe to the end of the road. And then I w
 DLG_CH12_ROAD_001,Quick. Up here.
 DLG_CH12_VOICES_001,I read the cords. I lied to you about them. I would like to stop doing that now.
 DLG_CH12_VOICES_002,What do they say?
-DLG_CH12_VOICES_003,"They are a count. Hers. Ama Quillo's. Every Cantor on the roll up to her own name, one knot each. Forty-seven."
+DLG_CH12_VOICES_003,"They are a count. Hers. Ama Quillo's, the Saint at the dais, before she was Hesk. Every Cantor on the roll up to her own name, one knot each. Forty-seven."
 DLG_CH12_VOICES_004,And then the Saints. The houses that keep one. One knot each.
 DLG_CH12_VOICES_005,Forty-seven voices. Seven houses.
 DLG_CH12_VOICES_006,...Where did the rest go?
 DLG_CH12_VOICES_007,"She tied that too. A question-knot. Hanging at the end of the count, by itself."
 DLG_CH12_VOICES_008,She sang anyway. She believed faith could hold a question.
 DLG_CH12_VOICES_009,Could it?
-DLG_CH12_VOICES_010,"I have visited my husband every year for twenty-four years, Lady Cantor. I would very much like it to."
+DLG_CH12_VOICES_010,"I have visited my husband every year for eleven years, Lady Cantor. I would very much like it to."
 DLG_CH12_VOICES_011,Seven houses.
 DLG_CH12_VOICES_012,I stood guard at four of them.
 DLG_CH12_CORD_001,Three names. The herder's family.
@@ -1003,11 +1015,13 @@ DLG_CH12_CORD_002,Somebody loved this animal.
 DLG_CH12_PRAYERS_001,What do they say?
 DLG_CH12_PRAYERS_002,Prayers. A pilgrim's devotions. The Cantor who stayed here was Ullari: they tie everything.
 DLG_CH12_PRAYERS_003,It is very old wool.
-DLG_CH12_DCORD_001,"That's my father's cord. Red, with the double knot. He tied it on her the spring she was born."
+DLG_CH12_SHRINE_001,"The Order's stone won't answer. The cords the Ullari hung on it are still there, knotted for the dead, and nobody has taken them down."
+DLG_CH12_SHRINE_002,"A Level-stone by the well, hung all over with Ullari cords. Somebody has knotted a name onto the Order's stone, and somebody else has left it there."
+DLG_CH12_DCORD_001,"You came down the terrace road. Did you see her? The big one. Red cord, double knot. My father tied it on her the spring she was born."
 DLG_NAME_ULLARI_WOMAN_DORRO_S_DAUGHTER,Dorro's daughter
-DLG_CH12_DCORD_002,I'm sorry. About her. And him.
+DLG_CH12_DCORD_002,We saw her. I'm sorry. Pell tied her cord on the pass.
 DLG_CH12_DCORD_003,She went wild after he died. Nobody walked her home.
-DLG_CH12_DCORD_004,"I'll tie it on the pass, next to his. Then they're both on the road together."
+DLG_CH12_DCORD_004,Then she's on the road with him. Good. That's where she belongs.
 DLG_CH12_BOY_001,You tied it? Good. Now she can stop waiting for me.
 DLG_CH12_BOY_002,My gran's knot isn't on the pass. I'm not old enough to walk the road. Would you tie it? You're going that way.
 DLG_CH12_BOY_003,Show me how.
@@ -1055,16 +1069,15 @@ DLG_NAME_TOWNSFOLK_PILGRIM,Pilgrim
 DLG_CH13_BARK_PCHILD_001,Mother says if I'm very still I can hear the water not moving.
 DLG_CH13_BARK_SEAM_001,They took the red thread down. I kept a spool. I don't know why I'm telling you.
 DLG_NAME_TOWNSFOLK_SEAMSTRESS,Seamstress
-DLG_CH13_BARK_SEAM_002,Red thread for a Cantor's wedding. I haven't slept. I don't mind.
+DLG_CH13_BARK_SEAM_002,Red thread for the wedding. I haven't slept. I don't mind.
 DLG_CH13_BARK_SEAM_003,"Red for weddings, white for the Order, and nothing for anything else."
 DLG_CH13_BARK_GUARD_001,Okeru? From the Corrow wall?
 DLG_CH13_BARK_GUARD_002,Once.
 DLG_CH13_BARK_TENDER_001,Lady Cantor. The water has not moved in four hundred years. Isn't it peaceful?
 DLG_CH13_BARK_HOLINESS_001,I grew up here. I used to think the quiet was holiness.
-DLG_CH13_CAMP_001,Ysolde. Today. I didn't know he was your husband until you said his name.
+DLG_CH13_CAMP_001,Ysolde. Today. I didn't know he was your husband until you stood in front of him.
 DLG_CH13_CAMP_002,"I know. I didn't tell you. That was mine to carry, not yours."
 DLG_CH13_CAMP_003,Every year on our day I came to the ledge and told him the news. Who married. Who died. That the bread was worse without him.
-DLG_CH13_CAMP_004,He was a terrible cook. He'd have been delighted.
 DLG_CH13_CAMP_005,Did he hear you?
 DLG_CH13_CAMP_006,I don't know. I told him anyway.
 DLG_CH13_CAMP_007,If there were a way to break it. To end all this. Would you want him back?
@@ -1077,13 +1090,15 @@ DLG_CH13_REG_001,"Rhen. Look. ""Velamir, of Haluna."""
 DLG_CH13_REG_002,Your family?
 DLG_CH13_REG_003,One of them. The ink's gone on the first name. She came all this way and wrote her name in a book by a door.
 DLG_CH13_REG_004,Her letters lean the same way mine do.
-DLG_CH13_REG_005,Mother never got this far.
+DLG_CH13_REG_005,Mother would have stood right here.
 DLG_CH13_REG_006,You did.
 DLG_CH13_REG_007,I'll write mine under hers.
 DLG_CH13_MOORINGS_001,They pole well here.
 DLG_CH13_MOORINGS_002,Too well.
+DLG_CH13_SHRINE_001,"The basin is still, as it always is. It shows your faces. It doesn't show you anything else."
+DLG_CH13_SHRINE_002,A small basin of still water on a white plinth. It holds the sky without a ripple. Pilgrims touch the rim and don't touch the water.
 DLG_CH13_FLAME_001,Straight as a mast. I've walked it twenty times. Thank you.
-DLG_NAME_TOWNSFOLK_YOUNG_LAMPLIGHTER,Young Lamplighter
+DLG_NAME_TOWNSFOLK_YOUNG_LAMP_BEARER,Young lamp-bearer
 DLG_CH13_FLAME_002,"It leans. Every time I walk, it leans. Six of us carry them in, and mine's the one that leans."
 DLG_CH13_FLAME_003,Give it here.
 DLG_CH13_FLAME_004,Wick-seat's cracked. You're not walking crooked. The lamp is. There.
@@ -1100,7 +1115,7 @@ DLG_CH13_HOUSE_SIDE_007,"Should we paint over it again, Mistress?"
 DLG_NAME_HOUSEHOLDER_THE_HOUSEHOLDER,The householder
 DLG_CH13_HOUSE_SIDE_008,No. Please. Leave it.
 DLG_CH13_HOUSE_SIDE_009,"Thank you, Master Sallow. I have decided to notice."
-DLG_CH13_CITY_001,They're not making ripples. How are they not making ripples?
+DLG_CH13_CITY_001,They're not making ripples. How are they not making ripples? I make ripples in a bath.
 DLG_CH13_HOUSE_001,"Lady Cantor. You have come further than most, and faster. Ansedra is yours. Rest here. Nothing in this city will hurry you."
 DLG_CH13_HOUSE_002,"And you have come at a good time. In four days a Saltwright will marry a Warden's daughter, in the Lacquer Court, and I will say the words."
 DLG_CH13_HOUSE_003,Mistress Varrow's brother. I believe she had something to do with it.
@@ -1127,7 +1142,7 @@ DLG_CH13_TOBIN_004,He talks about you all the time. Mostly complaints.
 DLG_CH13_TOBIN_005,Good. Accurate.
 DLG_CH13_TOBIN_006,"You're the diver. She mentioned you. She said, 'Don't trust the diver.' So I like you already."
 DLG_CH13_TOBIN_007,Why marry into the Order?
-DLG_CH13_TOBIN_008,Somebody had to go first. I volunteered. Nobody had to be chosen.
+DLG_CH13_TOBIN_008,Peace has to start with somebody's wedding. Might as well be a good one.
 DLG_CH13_TOBIN_009,Good luck.
 DLG_CH13_TOBIN_010,I'll need it. Her knots are terrible.
 DLG_CH13_WENNA_001,In the Sanctum. She came here. She knelt here and scratched her name under their noses.
@@ -1137,7 +1152,7 @@ DLG_NAME_TOWNSFOLK_WEDDING_GUEST,Wedding guest
 DLG_CH14_BARK_CAPTAIN_001,Sea-coat in a lacquer hall. I feel like a stain.
 DLG_NAME_HULL_CAPTAIN_HULL_CAPTAIN,Hull-captain
 DLG_CH14_BARK_LAMP_001,"Six of us carry the lamps in. The whole length of the court, and the flame mustn't lean. I've practised all week."
-DLG_NAME_TOWNSFOLK_LAMPLIGHTER,Lamplighter
+DLG_NAME_TOWNSFOLK_LAMP_BEARER,Lamp-bearer
 DLG_CH14_HERESY_SHOP_001,"Outside the Level. I can't sell to you. I'm sorry. Go, before someone sees me being sorry."
 DLG_NAME_VENDOR_ORDER_PURVEYOR,Order purveyor
 DLG_CH14_BARK_SGCOURT_001,Keep to the galleries. The floor is for the vowed.
@@ -1145,12 +1160,6 @@ DLG_CH14_BARK_TENDER_001,Still water. Not a ripple. Look at the domes: you can't
 DLG_CH14_BARK_COMMANDER_001,That is my old commander.
 DLG_CH14_BARK_SMILE_001,"Smile, Lady Cantor. It is a wedding."
 DLG_CH14_CAMP_001,Liss.
-DLG_CH14_CAMP_002,Don't.
-DLG_CH14_CAMP_003,I wasn't going to say anything. I'll just sit.
-DLG_CH14_CAMP_004,He volunteered. They wanted a groom and he put his hand up so nobody would get picked. That's the whole of him.
-DLG_CH14_CAMP_005,That's the whole of a lot of people we've met.
-DLG_CH14_CAMP_006,Don't make him a lesson.
-DLG_CH14_CAMP_007,Sorry. You're right.
 DLG_CH14_CAMP_008,Here. Hold this. My hands won't stop.
 DLG_CH14_CAMP_009,What is it?
 DLG_CH14_CAMP_010,His wick-tool. He lent it to me in the morning. I was going to give it back after.
@@ -1163,7 +1172,7 @@ DLG_CH14_GATE_003,Merel.
 DLG_CH14_GATE_004,I know. I know. Go.
 DLG_CH14_LAMPS_001,Look. Straight. I'm third in. Watch for me.
 DLG_CH14_LAMPS_002,I'll be watching.
-DLG_CH14_LAMPS_003,It's leaning. It's leaning and we go in after the bells.
+DLG_CH14_LAMPS_003,It's leaning. It's leaning and we go in after the vows.
 DLG_CH14_LAMPS_004,Hold still. Cracked wick-seat. There.
 DLG_CH14_LAMPS_005,"Oh. Oh, thank you."
 DLG_CH14_LAMPS_006,Tobin's going to cry when the lamps come in. He cries at everything. Don't tell him I said.
@@ -1172,9 +1181,9 @@ DLG_CH14_PIN_002,"You're Order. Stillguard, once. We can't go up to the dais. Wo
 DLG_CH14_PIN_003,What is it?
 DLG_CH14_PIN_004,An oar-pin. Every hull in Hollowmere put a cut in it. It's to say: you're crew now.
 DLG_CH14_PIN_005,I will carry it.
-DLG_CH14_LISS_001,Don't. Don't say anything nice. I'll fall apart and I've got to hand him the ring.
+DLG_CH14_LISS_001,"Not now. If you're nice to me I'll fall apart, and I've got to hand him the ring."
 DLG_CH14_LISS_002,Three years I spent on this. Three years of being polite to Wardens.
-DLG_CH14_MEREL_001,Lady Cantor. Thank you for coming. He talks about you all. He talks about everyone.
+DLG_CH14_MEREL_001,Lady Cantor. Thank you for coming. I know all your names. I've had letters.
 DLG_CH14_TOBIN_001,She chose the sash. I chose the coat. We argued for a week. Best week of my life.
 DLG_CH14_TOBIN_002,Look at her. She's pretending she isn't happy. She's terrible at it.
 DLG_CH14_TOBIN_003,"Nobody had to be chosen, Rhen. I volunteered. That's the whole point. Somebody has to go first."
@@ -1207,29 +1216,33 @@ DLG_CH15_BARK_LOOK_001,"Order sail, three days west. We'll move the flotilla ton
 DLG_NAME_TOWNSFOLK_LOOKOUT,Lookout
 DLG_CH15_HERESY_HOLLOWMERE_001,"Outside the Level, are you? Welcome aboard. So's everyone on this hull."
 DLG_NAME_HULL_CAPTAIN_HOLLOWMERE_WRIGHT,Hollowmere wright
+DLG_CH15_HERESY_HOLLOWMERE_002,You came in off the sea. Sit. We'll hear it when you're ready.
 DLG_CH15_BARK_RCHILD_001,We watched the fire go out on the water. Mam says the man on it was brave. Was he?
 DLG_CH15_BARK_RCHILD_002,You can walk the whole city without touching water. I've done it. Twice.
 DLG_CH15_BARK_RCOOK_001,"Eat. Outside the Level or in it, nobody leaves my hull hungry."
 DLG_NAME_COOK_RAFT_COOK,Raft cook
+DLG_CH15_BARK_RCOOK_002,Eat. Nobody leaves my hull hungry.
 DLG_CH15_BARK_WIDOW_001,They took my husband in his good coat. He hates that coat.
 DLG_NAME_HULL_WIDOW_CAPTAIN_S_WIFE,Captain's wife
+DLG_CH15_BARK_WIDOW_002,The captains went south for a wedding. Back by the new moon.
 DLG_CH15_BARK_PUMP_001,She's a grandmother of mine. Pumps the bilge every night. Best worker on the hull.
 DLG_CH15_CAMP_001,Fourteen years on that stair.
 DLG_CH15_CAMP_002,And since.
-DLG_CH15_CAMP_003,I stood a watch on the seawall at Haluna once. One night. I counted the hours.
+DLG_CH15_CAMP_003,"My first night on the Corrow wall, I counted the hours."
 DLG_CH15_CAMP_004,Everybody counts the first night.
 DLG_CH15_CAMP_005,When it is over. When there is nobody left below. Do you go?
 DLG_CH15_CAMP_006,I expect so.
 DLG_CH15_CAMP_007,Do you want to?
 DLG_CH15_CAMP_008,I want to be relieved. That's what a watch is for. Somebody comes and takes the step. You go down and sleep.
 DLG_CH15_CAMP_009,Who takes the step?
-DLG_CH15_CAMP_010,"Nobody, if she does it right."
+DLG_CH15_CAMP_010,I don't know. Somebody always has.
 DLG_CH15_CAMP_011,Then I will stand it with you. Until then.
 DLG_CH15_CAMP_012,Bottom step's mine. You take the one above.
 DLG_CH15_DECK_ASHA_001,No. I'm not going to ask about your night. Mine's awful. Sit down.
 DLG_CH15_DECK_LISS_001,"Lacquer over cedar. Pegged, not nailed. Ansedrans peg everything. Tobin said they'd peg the sea down if they could."
 DLG_CH15_DECK_LISS_002,Sit with her.
 DLG_CH15_DECK_LISS_003,Don't. Don't say anything kind.
+DLG_CH15_DECK_LISS_006,I'll learn your quiet.
 DLG_CH15_DECK_LISS_004,Leave her be.
 DLG_CH15_DECK_LISS_005,"Go and sit somewhere else, Sallow."
 DLG_CH15_DECK_PELL_001,The sea is full here. Under.
@@ -1245,6 +1258,7 @@ DLG_CH15_CARRY_006,I have said 'Be level' every morning of my life. I am not goi
 DLG_CH15_CARRY_007,I know what a camp looks like after. I've stood in two.
 DLG_CH15_CARRY_008,I'm not going to say it's all right.
 DLG_CH15_CARRY_009,Let me carry him. Please. I don't ask you to forgive me. Let me carry him.
+DLG_CH15_SHRINE_001,"A carved prow on an old hull, hung with small lamps, one for each of Hollowmere's drowned. Somebody keeps them trimmed. Nobody here asks whether you're inside the Level."
 DLG_CH15_PHRASE_001,"You're the Cantor. You sing for a living, then. Try this one. It's for the water off the bow."
 DLG_CH15_PHRASE_002,There are no words.
 DLG_CH15_PHRASE_003,The water doesn't know words. It knows low and high. Low in the middle. Like that.
@@ -1308,11 +1322,13 @@ DLG_CH15_DACES_003,Yeah.
 DLG_CH15_DACES_004,You've got his hands. Wright's hands. Don't let the diving fool you.
 DLG_CH15_DACES_005,He came through here twenty years ago trading salvage. Could hear a current in the water before he saw it.
 DLG_CH15_DACES_006,Sang every chart he knew. Too loud.
-DLG_CH15_DACES_007,"Built a hull in my dry-dock for a season, left it half-done, never came back for it. Best ear in the flotilla. Worst at finishing things."
-DLG_CH15_DACES_008,He hummed the same song every night. Came home from the Low Reaches with salt in his beard.
+DLG_CH15_DACES_007,"Came back years after. Built a hull in my dry-dock for a season, left it half-done, never came back for it. Best ear in the flotilla. Worst at finishing things."
+DLG_CH15_DACES_008,He hummed the same song every night. Came home off the wrecks with salt in his beard.
 DLG_CH15_DACES_009,Went up the coast for wall-work when I was eight. Didn't come back.
 DLG_CH15_DACES_010,He left his lantern on its hook. That's the one thing he finished.
 DLG_CH15_DACES_011,He never said he had a son. Not once.
+DLG_CH15_DACES_013,You talked to my boy. Before. What did he say?
+DLG_CH15_DACES_014,He said nobody had to be chosen. He volunteered.
 DLG_CH15_DACES_012,Now I know why he never finished anything here.
 DLG_CH16_BARK_MOTHER_001,My mother walked here.
 DLG_CH16_BARK_CAIRN_001,Put a stone on as you pass. Not for luck. So the next one can find the way.
@@ -1345,11 +1361,12 @@ DLG_CH16_COUNT_006,Put a stone on it. For whoever it was.
 DLG_CH16_SHIP_001,This is as far as she floats. We'll wait. As long as it takes.
 DLG_NAME_HULL_CAPTAIN_SHIP_S_CAPTAIN,Ship's captain
 DLG_CH16_SHIP_002,Keep it dry.
+DLG_CH16_SHRINE_001,"A cairn taller than Kerrid, white with salt. The waders say whoever reaches it may rest here. Every stone was carried out by someone who meant to walk home again."
 DLG_CH16_CAIRN_001,This one fell. The next ones will walk past it and be lost.
 DLG_CH16_CAIRN_002,Then we put it back.
 DLG_CH16_CAIRN_003,Big stones first. Then small.
-DLG_CH16_CAIRN_004,I know how to build a wall.
-DLG_CH16_CAIRN_005,"This is not a wall. It is a voice. It says, this way."
+DLG_CH16_CAIRN_004,I know. I've set steps.
+DLG_CH16_CAIRN_005,"This is not a step. It is a voice. It says, this way."
 DLG_CH16_CAIRN_006,Then it's the same thing.
 DLG_CH16_BREAK_001,"Everybody I loved had a reason to stay where they were. That night, all of us stopped."
 DLG_CH16_ACT_CARD_001,Act III: The Unbinding
@@ -1377,6 +1394,281 @@ DLG_CH16_SEFIR_015,"You loved him. So did I, in my way. He is kept."
 DLG_CH16_SEFIR_016,I carried her up so you could do this.
 DLG_CH16_SEFIR_017,Captain.
 DLG_CH16_SEFIR_018,Then I am sorry for what comes next. I would have given you a long life.
+DLG_CH17_BLANK_001,"He was first down the stair. He'd have been first into that, too."
+DLG_CH17_KESH_001,"You chose. A thousand years, and one of you finally chose."
+DLG_CH17_KESH_002,"I hold. Call, and I will come."
+DLG_CH17_BARK_001,Nothing on the water but us. I'll call it if that changes.
+DLG_NAME_HULL_CAPTAIN_LOOKOUT,Lookout
+DLG_CH17_BARK_002,Your name's where you asked. Under the camp. Nobody's crossed it out.
+DLG_CH17_BARK_003,"Every camp that burned, written down. Somebody has to keep the list."
+DLG_CH17_BARK_004,"Oil, rope, glass. Tobin used to fetch the glass. Take what you need."
+DLG_NAME_VENDOR_CHANDLER,Chandler
+DLG_CH17_BARK_005,They turn with nobody singing to them. I like that.
+DLG_CH17_BARK_006,Leave her. She's been at it since dawn.
+DLG_CH17_POINTS_001,He's not going to say it. Last berth.
+DLG_CH17_BERTH_001,Your father built his first boat here. Badly.
+DLG_CH17_BERTH_002,Sang to the keel while he fitted it. As if it would listen.
+DLG_CH17_BERTH_003,Tobin used to sit on that post and tell him so.
+DLG_CH17_BERTH_004,He'd have told me too.
+DLG_CH17_BERTH_005,Tell him what Tobin said before the vows.
+DLG_CH17_BERTH_006,Before the vows he told me nobody had to be chosen. He volunteered. Somebody had to go first.
+DLG_CH17_BERTH_007,That's him. Every word of it.
+DLG_CH17_BERTH_008,Say nothing.
+DLG_CH17_BERTH_009,Your father's hull's in my last berth eleven years. I'd sooner it flew.
+DLG_CH17_HULL_001,That's not a Saltwright cut.
+DLG_CH17_HULL_002,Nobody sails a kite-cut on a hull. Nobody I know.
+DLG_CH17_HULL_003,Same make as mine.
+DLG_CH17_HULL_004,Same nick in the left one.
+DLG_CH17_HULL_005,"Corrow, circled. Three times, in three inks."
+DLG_CH17_HULL_006,That's my stair.
+DLG_CH17_PULLED_001,That's ours. That's the answer.
+DLG_CH17_PULLED_002,Said we'd wait.
+DLG_CH17_PULLED_003,Kept it dry.
+DLG_CH17_PULLED_004,Thank you.
+DLG_CH17_CHOICE_001,"I've been thinking since the Choir. I want to say it once, properly."
+DLG_CH17_CHOICE_002,I'm not going to sing myself in. And I'm not going home to sing nothing.
+DLG_CH17_CHOICE_003,"If I sing myself in, I hold it thirteen years. Then somebody's daughter does."
+DLG_CH17_CHOICE_004,"If I go home, my mother holds it, and the High Warden spends someone else."
+DLG_CH17_CHOICE_005,I'm going to end it. All of it.
+DLG_CH17_CHOICE_006,Everything that's held goes. The lamps. Their engines. Ressa. Corran. Kerrid.
+DLG_CH17_CHOICE_007,I stopped asking them to stay a while ago. I just hadn't said so.
+DLG_CH17_CHOICE_008,Corran would have said yes before you finished the sentence.
+DLG_CH17_CHOICE_009,Ressa too. She has waited long enough to be lifted.
+DLG_CH17_CHOICE_010,Coming up slow. I said I'd count.
+DLG_CH17_CHOICE_011,Then we go down and do it.
+DLG_CH17_CHOICE_012,First down the stair.
+DLG_CH17_CHOICE_013,The Kite flies on bound light. Everything we make does.
+DLG_CH17_CHOICE_014,Then I'd better build you something that gets you there.
+DLG_CH17_LAMP_001,That's bound light. Same as every lamp we ever made.
+DLG_CH17_LAMP_002,It'll fly on them. To let them go.
+DLG_CH17_LEDGER_PAGE_001,Corrow. The stair. A Cantor came down it for me. I learned her name halfway up: Imra.
+DLG_CH17_LEDGER_PAGE_002,The watch captain held the hand-line to the last. I reached back. I missed.
+DLG_CH17_LEDGER_PAGE_003,"She hummed going up. The Haluna tune, the one I hum Rhen to sleep with."
+DLG_CH17_LEDGER_PAGE_004,"Haluna. Took her comb to her girl. Sleeves down, after dark. Did not stay."
+DLG_CH17_LEDGER_PAGE_005,Rhen would like a town with this many lanterns.
+DLG_CH17_LEDGER_PAGE_006,My sleeves tore on the stair. They saw the line-marks. The Bastion wants the marked diver by morning.
+DLG_CH17_LEDGER_PAGE_007,A hunted wright going home brings the Order to Oruvel. To Rhen.
+DLG_CH17_LEDGER_PAGE_008,"So I don't go home. Haluna I risked once, after dark. Never Oruvel."
+DLG_CH17_LEDGER_PAGE_016,Sent Rhen word through the traders' post. Helping a friend on a long trip. All I could put my name to.
+DLG_CH17_LEDGER_001,He could have sent word.
+DLG_CH17_LEDGER_PAGE_009,A season after Corrow. A Hollowmere trader says the chandler has the boy. Kell. Of course.
+DLG_CH17_LEDGER_PAGE_010,Rhen is eating. Rhen has a hammock. Rhen is learning the lamps.
+DLG_CH17_LEDGER_002,He knew where I was.
+DLG_CH17_LEDGER_003,He knew where I was the whole time.
+DLG_CH17_LEDGER_PAGE_011,Varrow's last berth. Begun a hull. Not for trade. To follow her.
+DLG_CH17_LEDGER_PAGE_012,"She's in the storm. I heard her in it, at the Rim, holding it together."
+DLG_CH17_LEDGER_PAGE_013,Rhen is nine at midwinter. When it flies I could take him up in it.
+DLG_CH17_LEDGER_PAGE_014,The hull won't be ready. The storm goes down to sleep tonight. I'm going in after her.
+DLG_CH17_LEDGER_PAGE_015,Rhen. If I bring him here he's a wright's son for life. Oruvel thinks he's a diver's boy. Let him be one. After the storm
+DLG_CH17_TABLE_001,"Ama's count. Seven houses, and a question-knot hanging at the end. The question is the eighth place."
+DLG_CH17_TABLE_002,The words are cut in the Choir stones. Lamptongue. I can read Lamptongue.
+DLG_CH17_TABLE_003,Words I can do. The tune isn't mine to learn.
+DLG_CH17_TABLE_004,"I counted wrong once, on purpose. Not this time."
+DLG_CH18_HALUNA_001,Everyone who has someone in the water. Come and stand with me.
+DLG_CH18_HALUNA_002,Without a Cantor?
+DLG_CH18_HALUNA_003,We don't need a Cantor for this. We need each other.
+DLG_CH18_HALUNA_004,Backs to the water. Say their names to the person beside you. Not to the sea.
+DLG_CH18_HALUNA_005,Only a few.
+DLG_CH18_HALUNA_006,Then those few are home. We'll do it again.
+DLG_CH18_CHILD_001,You came back. Did you find out how to stop?
+DLG_CH18_CHILD_002,I think so. It's going to cost a lot.
+DLG_CH18_CHILD_003,I'm finding out.
+DLG_CH18_CHILD_004,"Will you turn around, when it's yours?"
+DLG_CH18_CHILD_005,I hope someone will turn around for me.
+DLG_CH18_TIDE_001,Hum it with me. Then turn your back. Then hum it again. That is all children are told.
+DLG_CH18_TIDE_002,That's the Letting.
+DLG_CH18_TIDE_003,You have it. Your back was the right way.
+DLG_CH18_TIDE_004,"A trade, then. I will keep it."
+DLG_CH18_HEIR_001,Same nick in the left one.
+DLG_CH18_HEIR_002,Put an edge on them. He never did.
+DLG_CH18_HEIR_003,Your mother left this with me. She said you'd need a longer one.
+DLG_CH18_HEIR_004,She was right.
+DLG_CH18_HEIR_005,Ivo's. The watch kept it. They want you to have it.
+DLG_CH18_HEIR_006,He'd have said it was too heavy for me.
+DLG_CH18_HEIR_007,Corran's recipes. He was a terrible cook.
+DLG_CH18_HEIR_008,He wrote them all down anyway. In case one came out.
+DLG_CH18_HEIR_009,Tobin drew this when he was twelve. It never worked.
+DLG_CH18_HEIR_010,It works now.
+DLG_CH18_HEIR_011,Watch's anchor. We set it every season.
+DLG_CH18_HEIR_012,Heavier than I remember.
+DLG_CH18_HEIR_013,"Ressa's. We kept it with her name. Now you have yours, take hers."
+DLG_CH18_HEIR_014,I will carry it the right way round.
+DLG_CH18_ISKARRA_001,Iskarra. Where it started. Where we go in.
+DLG_CH18_FLIGHT_001,He'd have hated the trim.
+DLG_CH18_FLIGHT_002,He'd have sung to it till it listened.
+DLG_CH18_NIGHT_001,Quiet up here. You can hear the lamps.
+DLG_CH18_NIGHT_002,That's the engine. The lamps don't make a sound.
+DLG_CH18_NIGHT_003,You said I'd know what it cost.
+DLG_CH18_NIGHT_004,Now you do. I am sorry it was this.
+DLG_CH18_NIGHT_005,You said glad was the word you would want.
+DLG_CH18_NIGHT_006,It still is.
+DLG_CH18_NIGHT_007,The end of the road is further than you said.
+DLG_CH18_NIGHT_008,I'm still walking it.
+DLG_CH18_NIGHT_009,Did you learn the difference? In the end?
+DLG_CH18_NIGHT_010,Most days.
+DLG_CH18_NIGHT_011,Do you still want it to cost them?
+DLG_CH18_NIGHT_012,It costs everyone. That was the part I didn't want.
+DLG_CH18_NIGHT_013,Bottom step's still yours?
+DLG_CH18_NIGHT_014,Till I'm relieved.
+DLG_CH18_NIGHT_015,Still counting?
+DLG_CH18_NIGHT_016,Every night.
+DLG_CH18_ANSEDRA_001,That's her. That's Merel.
+DLG_CH18_ANSEDRA_002,She's tied a red thread on the sill. Her wedding colour.
+DLG_CH18_CORROW_001,Stair's clear.
+DLG_NAME_CHILD_MARRA_S_CHILD,Marra's child
+DLG_CH18_CORROW_002,The children asked for a watch. So there's a watch.
+DLG_CH18_CORROW_003,I told him I'd come back. I didn't say it would be like this.
+DLG_CH18_HOLLOWMERE_001,Children want windmills. I'm teaching them. Badly.
+DLG_CH18_HOLLOWMERE_002,You never did anything badly.
+DLG_CH18_HOLLOWMERE_003,"Dock-master's back at the berths. Doesn't say much. Works, though."
+DLG_CH18_ORUVEL_001,Gran's frame. I kept it standing. Didn't know what else to do with it.
+DLG_CH18_ORUVEL_002,That's the right thing to do with it.
+DLG_CH18_ORUVEL_003,We're lashing three new hulls on. You could dive the old keel for us.
+DLG_CH18_ORUVEL_004,After.
+DLG_CH18_ORUVEL_005,"New hulls on the old keel. Slow, but she floats."
+DLG_NAME_TOWNSFOLK_HULL_WRIGHT,Hull-wright
+DLG_CH18_PEMAKAR_001,I fold them for anyone now. Takes my mind off the tongs.
+DLG_CH18_PEMAKAR_002,You still fold like a man who ties knots.
+DLG_CH18_PEMAKAR_003,"Mooring rings, for the little boats. The smith makes them now."
+DLG_CH18_QUELLAN_001,"A new cord. Father's knot, my hands."
+DLG_CH18_QUELLAN_002,The cords hold. They always held.
+DLG_CH18_TAMSULE_001,Pio's band. Somebody's been re-tying it.
+DLG_CH18_TAMSULE_002,Every ring has one now.
+DLG_CH18_TAMSULE_003,Season's back on. Salt and stone!
+DLG_NAME_TOWNSFOLK_SUPPORTER,Supporter
+DLG_CH18_CHART_001,I have the words. Pell has the tune. We go to Reedhollow.
+DLG_CH18_CHART_002,They will not let me in.
+DLG_CH18_CHART_003,Then we'll ask again.
+DLG_CH18_GATE_001,You came in by yourself. Last time you waited to be told.
+DLG_CH18_GATE_002,"Next time, I will turn around."
+DLG_CH18_GATE_003,Then you may have your name back.
+DLG_CH18_GATE_004,We heard where you knelt. Under the old city. Before her.
+DLG_CH18_GATE_005,I scraped this one. My hands remember. Let them carve it.
+DLG_CH18_GATE_006,Pell.
+DLG_CH19_WARDENS_001,"Go home, children. We have this watch."
+DLG_NAME_HESPER_OAN_WARDEN_HESPER_OAN,Warden Hesper Oan
+DLG_CH19_WARDENS_002,Noted.
+DLG_NAME_ILSABET_RUE_ILSABET_RUE,Ilsabet Rue
+DLG_CH19_WARDENS_003,Four hundred years and nobody has asked to relieve us.
+DLG_CH19_WARDENS_004,You kept a watch.
+DLG_CH19_WARDENS_005,I did. I'd have liked relieving.
+DLG_CH19_WARDENS_006,Mark the time.
+DLG_CH19_ENGINE_001,That's the first one.
+DLG_CH19_ENGINE_002,There's the stair.
+DLG_CH19_HITCH_001,Give me your hands.
+DLG_CH19_HITCH_002,Your father's. He showed me eight times. I got it on the ninth.
+DLG_CH19_HITCH_003,Now lean on it. All of you.
+DLG_CH19_HITCH_004,"Holds anything. Then one pull, and it lets go."
+DLG_CH19_HITCH_005,Why are you teaching me this now?
+DLG_CH19_HITCH_006,Somebody should have it.
+DLG_CH19_HITCH_007,He wrote about the stair. In the ledger. He said the watch captain held the line to the last.
+DLG_CH19_HITCH_008,Eight tides. He talked about you every one.
+DLG_CH19_ROLL_001,"Duty roll, the anchor-engine, Iskarra: Watch kept. H. Oan. Entered, I. Rue."
+DLG_CH19_SIG_001,I've seen these hands. In the Archive. On every page.
+DLG_CH19_SIG_002,The same two hands. Every watch. Four hundred years of them.
+DLG_CH19_SIG_003,"Somebody's still on watch, then."
+DLG_CH19_VIGIL_001,"Everyone I'm going to tell you about is still here tonight. Remember that, later."
+DLG_CH19_WORDS_001,"Ish oan, ish oan. Vey hal, ennu tash. Oan re, oan re... tash."
+DLG_CH19_WORDS_002,"Ish oan, ish oan... tash."
+DLG_CH19_WORDS_003,Never the words and the tune together. Not until it's time.
+DLG_CH19_WORDS_004,I came to give you a good death.
+DLG_CH19_WORDS_005,"I would like to give you a long, dull life instead."
+DLG_CH19_WORDS_007,I'll try.
+DLG_CH20_FIGHT_001,Stay behind me. It's dark past here.
+DLG_NAME_ILUN_TEYO,Teyo
+DLG_CH20_FIGHT_002,"It doesn't hurt, son. It's like setting the tools down."
+DLG_NAME_KAHRE_DARO,Daro
+DLG_CH20_FIGHT_003,That boat's folded right. Somebody taught that hand.
+DLG_CH20_FIGHT_004,You always did that. Now me.
+DLG_NAME_NHOA_RESSA,Ressa
+DLG_CH20_FIGHT_005,Thank you.
+DLG_NAME_ORIN_TESK_ORIN_TESK,Orin Tesk
+DLG_CH20_FIGHT_006,"Mir, mir. Tash."
+DLG_NAME_ISSE_VARAN_ISSE_VARAN,Isse Varan
+DLG_CH20_EYE_001,He volunteered. So nobody'd have to be chosen.
+DLG_CH20_ETHREN_001,I heard you. Every visit. Every one.
+DLG_NAME_ETHREN_CORRAN,Corran
+DLG_CH20_ETHREN_002,I'm not coming back to the Sanctum. Not anymore.
+DLG_CH20_ETHREN_003,Someone else lives in our house now. A family. They kept the step clean.
+DLG_CH20_ETHREN_004,It's all right.
+DLG_CH20_ETHREN_005,Good. Go and be somewhere else.
+DLG_CH20_HESK_001,Did anyone read my cords?
+DLG_NAME_HESK_AMA,Ama
+DLG_CH20_HESK_002,I did. Ysolde read them to me. All forty-seven. And the question.
+DLG_CH20_HESK_003,I did. All forty-seven. And the question.
+DLG_CH20_HESK_004,They broke my faith.
+DLG_CH20_HESK_005,Thank you.
+DLG_CH20_HESK_006,"I stopped saying it. ""Be level."" I say your count instead."
+DLG_CH20_ILUN_001,Did Pila have a good life?
+DLG_CH20_ILUN_002,She lived to ninety-one. Her granddaughter is the eldest in Haluna now.
+DLG_CH20_ILUN_003,Ninety-one. She'd have hated being old.
+DLG_CH20_ILUN_004,I don't know. I hope so.
+DLG_CH20_ILUN_005,That's all right. I hope so too.
+DLG_CH20_ILUN_006,Haluna lifts its own now. Backs to the water.
+DLG_CH20_KAHRE_001,"Finally. Hit harder, I'm old."
+DLG_CH20_KAHRE_002,There. Tools down.
+DLG_CH20_NHOA_001,I knew about him too. I did not say. I am learning when to say.
+DLG_CH20_NHOA_002,You got old.
+DLG_CH20_NHOA_003,I'm glad. I'm sorry. Both.
+DLG_CH20_NHOA_004,They gave you your name back.
+DLG_CH20_THANKS_001,Thank you.
+DLG_CH20_THANKS_002,Thank you.
+DLG_NAME_HALDE_MOOR_HALDE_MOOR,Halde Moor
+DLG_CH20_THANKS_003,Thank you.
+DLG_CH20_THANKS_004,Thank you.
+DLG_NAME_CAEL_IMBREY_CAEL_IMBREY,Cael Imbrey
+DLG_CH20_THANKS_005,She's waiting for you. Both of them are.
+DLG_CH20_CAGE_001,Four seats. Four of the six. They bound themselves here first.
+DLG_CH20_CAGE_002,I'll hold the line. Break the seats.
+DLG_CH20_VIREL_001,"A wright! A real one, with the marks and everything!"
+DLG_NAME_VIREL_WENNA,Wenna
+DLG_CH20_VIREL_002,Coilspire. Lowlight. Ansedra. I found three of your marks.
+DLG_CH20_VIREL_003,"I found two of your marks. Coilspire, and one more."
+DLG_CH20_VIREL_004,I found your mark at Coilspire.
+DLG_CH20_VIREL_005,Somebody found them.
+DLG_CH20_VIREL_006,That's mine. Keep it.
+DLG_CH20_VIREL_007,What have you built? Since me. Tell me what you've built.
+DLG_CH20_VIREL_008,A kite. A big one. It flies on a hull.
+DLG_CH20_VIREL_009,Its sails. He cut them to your shape.
+DLG_CH20_VIREL_010,He flew your kite. We all did.
+DLG_CH20_VIREL_011,Then I flew!
+DLG_CH21_SEFIR_001,"Sit down, all of you. Nobody has to be brave down here."
+DLG_CH21_SEFIR_002,There. Nothing moves until I say. Isn't that a kindness?
+DLG_CH21_SEFIR_003,"You would be the last, Lady Cantor. Nobody would ever be named again."
+DLG_CH21_SEFIR_004,Give it to me. I will hold it. I will hold all of it.
+DLG_CH21_SEFIR_005,I have held her for a thousand years. I can hold the rest.
+DLG_CH21_HEART_001,Let go of her. I can hold her better than you ever could.
+DLG_CH21_KESH_001,"Make them strong, then. All of you. Hit me as hard as you can."
+DLG_CH21_LETSGO_001,Kesh.
+DLG_CH21_LETSGO_002,"Go on, then."
+DLG_CH21_BANDS_001,He's right there. I can wait a bit longer.
+DLG_CH21_BANDS_002,Seven bands. One more song.
+DLG_CH21_BANDS_003,The line held this far. It'll hold.
+DLG_CH21_BANDS_004,I have the words. You have the rest.
+DLG_CH21_BANDS_005,"Kite's waiting up top. Dark, but waiting."
+DLG_CH21_BANDS_006,My back is ready.
+DLG_CH21_BANDS_007,Stair's not clear yet. Soon.
+DLG_CH21_LETTING_001,"Ish oan, ish oan,"
+DLG_CH21_LETTING_002,"vey hal, ennu tash,"
+DLG_CH21_LETTING_003,"oan re, oan re..."
+DLG_CH21_LETTING_004,...tash.
+DLG_CH21_LAMPS_001,Lady Cantor.
+DLG_CH21_LAMPS_002,You came all the way down. Of course you did.
+DLG_ENDING_BEACH_001,Backs to the water. Like this. They go easier when nobody watches.
+DLG_ENDING_DACE_001,Rhen.
+DLG_ENDING_DACE_002,You took the old one down. Off the hook.
+DLG_ENDING_DACE_003,The winter I turned nine.
+DLG_ENDING_DACE_004,Good. It was always the better of the two.
+DLG_ENDING_DACE_005,"I'm sorry, son. I should have come home."
+DLG_ENDING_DACE_006,"Goodbye, Rhen."
+DLG_ENDING_DACE_007,"Goodbye, Dad."
+DLG_ENDING_IMRA_001,There you are.
+DLG_ENDING_IMRA_002,You let me go right.
+DLG_ENDING_KERRID_001,Stair's clear.
+DLG_ENDING_KERRID_002,Stand up straight. Your father slouched.
+DLG_ENDING_SEA_001,"She never sang again. She says the stars do it better now. She's wrong, but I let her have it."
+DLG_ENDING_SEA_002,Everyone I told you about is gone. I remembered.
+DLG_PROLOGUE_DEAD_CITY_000,Prologue
 DLG_PROLOGUE_DEAD_CITY_001,"Everyone I'm going to tell you about is still here tonight. Remember that, later."
 DLG_TEST_CUTSCENE_ARRIVE_001,Arrive fixture line.
 DLG_TEST_CUTSCENE_ARRIVE_002,Arrive fixture closing line.

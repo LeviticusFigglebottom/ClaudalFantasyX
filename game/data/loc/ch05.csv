@@ -35,9 +35,9 @@ SKILL_FORGE_BOLT,Forge Bolt
 SKILL_LAST_STRIKE,Last Strike
 ENC_CH05_PILGRIM_STAIR,The Pilgrim Stair
 ENC_CH05_CINDER_MATRON,The Cinder Matron
-TUT_CH05_ARMOR_BREAK,"Armored foes turn ordinary blows aside. Kerrid's Fluke Cleave breaks their armor for a while: watch the timeline for how long."
+TUT_CH05_ARMOR_BREAK,Armoured foes turn ordinary blows aside. Kerrid's Fluke Cleave breaks their armour for three of their turns.
 TUT_CINDER_MATRON_CRUST,The Matron's crust turns blows aside. Kerrid can break it.
-TUT_CINDER_MATRON_POUR,Water and cold will harden her again.
+TUT_CINDER_MATRON_POUR,"Water and ice will crust her over again, and so will her Recrust. Break her armour again after each."
 VOWBOUND_KAHRE,Kahre
 GEAR_TYPE_ANCHOR_CLEAVER,Anchor-Cleaver
 GEAR_TYPE_WATCH_WRAPS,Arm Wraps

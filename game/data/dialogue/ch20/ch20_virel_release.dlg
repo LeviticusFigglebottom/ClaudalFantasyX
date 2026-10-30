@@ -1,0 +1,26 @@
+// M5-A3P-1010. Ch20 U03 the release: Virel. Wenna asks what they've built since. Liss names the Kite,
+// and only now sees (planted in Ch17 B04) that Dace cut its sails to Virel's shape. Wenna lifts LAUGHING. Liss gets her
+// people's history back moments before she gives up her machines. The brass tuning key (the keepsake) goes last.
+title: ch20_virel_release
+location: ch20/undertow_layers
+---
+@letterbox on
+@camera U14
+@music silence fade=1.0
+Virel as "Wenna" [neutral]: What have you built? Since me. Tell me what you've built. #line:ch20_virel_007
+@wait 2.0
+Liss [neutral]: A kite. A big one. It flies on a hull. #line:ch20_virel_008
+@anim liss look_at virel
+@wait 3.0
+Liss [surprised]: Its sails. He cut them to your shape. #line:ch20_virel_009
+@wait 2.0
+Liss [tender]: He flew your kite. We all did. #line:ch20_virel_010
+@music release_sting fade=0.0
+Virel as "Wenna" [laugh]: Then I flew! #line:ch20_virel_011
+@vfx glimmer_lift at=virel count=40 motion=spiral_up rate=slow
+@wait 6.0
+@vfx glimmer_lift at=tuning_key count=1 motion=spiral_up rate=slow
+@wait 4.0
+<<set $ch20_virel_released = true>>
+@letterbox off
+===

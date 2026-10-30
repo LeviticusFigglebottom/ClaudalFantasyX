@@ -206,3 +206,561 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
   - chapters and towns: place the interactables, NPC actors and camp rest points;
   - ui-menus: add the errands' `side` rows in objectives.json, with `OBJ_SIDE_*` keys.
 - BACKLOG EMPTY (story track).
+
+## 2026-10-30: M4-A2P-109, Act II objectives, tips, items and shrine text (Lead request)
+- Integration merged first (clean).
+- **Checks:** validate_data 0/0 · dlgc --check 0/0 · taskboard clean · tools tests `test_loc_key_names`, `test_loc_literals`, `test_loc_readiness`, `test_tutorial_tips` and `test_cutscene_sfx_files` OK · Godot `objective` 15/0, `act2_dialogue` 1/0, `zone_map` 22/0, `pseudo_loc` 26/0.
+- **Coordinating ids with act1-chapters, progression, combat and ui-menus:** `docs/kb/plan/act2/act2_text_ids.md` lists every id and its owner. I don't use send_message, so this file is the handoff.
+- MERGE-READY Ch10 @ 11f5c5c18: 5 objective rows; `TUT_CH10_*`, `TUT_DROWNER_ROOTS`, `FORMATION_AWAY_PELL_FEN`; `tannin_bark`, `reed_salve`, `rhen_fenroot_hooks`, `INN_REEDHOLLOW`; `ch10_shrine_reedhollow`.
+- MERGE-READY Ch11 @ 11f5c5c18: 5 rows; `TUT_LAMP_ENGINE_CRAWLERS`; `conduit_glass`, `asha_conduit_staff`, `liss_lowlight_sleeve`; `ch11_shrine_lowlight`.
+- MERGE-READY Ch12 @ 11f5c5c18: 8 rows; `TUT_CH12_UNRAVEL`, `TUT_RAM_FIELD`; `woolback_felt`, `butter_tea`, `asha_keth_bangle`, `toma_felt_shield`; `ch12_shrine_quellan`.
+- MERGE-READY Ch13 @ 11f5c5c18: 9 rows; `TIP_RECORDS_*`; `torn_ledger_line`, `ysolde_archive_copybook`, `INN_ANSEDRA`; `ch13_shrine_ansedra`.
+- MERGE-READY Ch14 @ 11f5c5c18: 4 rows; `TUT_CH14_HOLD_STEPS`, `TUT_MALCOR_ENGINE`, the step-hold HUD lines, `TIP_DARK_SHRINE_*`; `red_lacquer_chip`, `tobins_cracked_lamp`, `ysolde_red_lacquer_guards`.
+- MERGE-READY Ch15 @ 11f5c5c18: 7 rows; `TUT_WAKEFIN_DARK`; `seaglow_scale`, `current_broth`, four gear pieces; `ch15_shrine_hollowmere`.
+- MERGE-READY Ch16 @ 11f5c5c18: 4 rows; `TUT_CH16_*`, the line-hold HUD lines, `TIP_SWELL_MODE_*`; `rim_salt`, `kerrid_rim_wraps`; `ch16_shrine_pale_rim`.
+- **LEAD-ASK (route to progression or ui):** `ITEM_RIME_SHARD_DESC` says "Highland ice that does not melt", which breaks ADR 0015 if the item drops in Ch12–Ch15.
+- BACKLOG EMPTY (story track).
+
+## 2026-10-30: ADR 0015 text sweep (Lead answer to the Rime Shard ask)
+- I grepped every loc csv, `dialogue.csv` and the Act II `.dlg` files for ice, icy, frost, frozen, freeze, glacier, rime, icicle, snow and sleet. Fixed:
+  - `ITEM_RIME_SHARD_DESC`: "Highland salt-rime that never dissolves, even in the sea."
+  - `LORE_RIME_URCHIN` (Ch11): the rime is now a salt crust ("the water never takes it back"). Lowlight is "nothing frozen".
+  - `LORE_RIDGE_LYNX` (Ch12): frost → blown snow. `LORE_SCREE_CRAWLER` (Ch12): frost-split → weather-split scree and grit. Both follow ADR 0204 §2.
+- **Kept on purpose:**
+  - Ch12's snow on the road (`OBJ_CH12_WALL`, `TUT_RAM_FIELD`, the Ram's lore). ADR 0015 calls the pass's snow weather, which is allowed outside temples.
+  - The game element Ice (`ELEMENT_ICE`, `ABILITY_RIME_*`, `SKILL_FROST`, Kesh's `SKILL_VOICE_ICE` in Ch16). These are element names, not Ch12–15 imagery.
+  - "cold" lines in Ch11 (the deep's cold).
+- validate_data 0/0; loc tools tests OK.
+- MERGE-READY @ dc18517e3
+
+## 2026-10-30: Act I proofread pass (Lead request), in progress
+- **Mechanical checks on Act I text (about 2,900 strings):** doubled words, spacing, unbalanced quotes and brackets, a spell-check against the glossary, and near-duplicate proper nouns. No defects found. Every hit was intentional: ellipses, spaced formats, coined words, and Daro Pemakan's surname.
+- **LEAD-ASK (needs an ADR; it touches ui-menus, combat and progression):** the house spelling is mixed.
+  - Prose, lore and the glossary use British: colour, armour, grey, harbour, honour, favour, traveller, practised, metres.
+  - The UI and stat strings use American: `STAT_DEFENSE` "Defense", `STATUS_*_BREAK_DESC` "defense", `EQUIP_MENU_SLOT_ARMOR` and `STATUS_MENU_ARMOR` "Armor", `FIELD_MENU_EQUIP_DESC` "armor", `TUT_CH05_ARMOR_BREAK` "Armored … armor" (while the same chapter's `ROLE_KERRID` says "Breaks armour"), `SET_PALETTE*` "Color palette / colors / Colorblind-friendly", `TITLE_HELP_SETTINGS`, `FIELD_MENU_SETTINGS_DESC`, `SET_MENU_HELP_ACCESSIBILITY`.
+  - "Customize" (‑ize) is consistent and fine under Oxford spelling.
+  - **Proposal:** British (Oxford) everywhere a player reads it, as the glossary already does. That means Defence, Armour, Colour palette, Colour-blind-friendly; keys unchanged. It's about 15 strings; I'll do it as one FAST-TRACK when you say yes.
+- **Act I proofread, read-through:** a reviewer read every Act I string against the glossary and voice guide, and I checked each finding against the source. I applied 9 and skipped 1 as style. All are FAST-TRACKs:
+  - **Two rows truncated in game:** `ITEMS_MENU_ERR_KEY_FMT` and `FORMATION_MENU_ERR_OPEN_PLACE` had an unquoted comma, so the player saw "It is kept" and "Pick a hero first". They're quoted now. A new `tools/tests/test_loc_csv_shape.py` fails on any loc row whose column count is wrong; these were the only two in the repo.
+  - `TUT_CH04_VOWBOUND`: Ilun is Teyo Marrin, so "Call him … he fights … he leaves" (the codex and Ch3 already say "him").
+  - `RBL_SIDE_PEMAKAR` and `RBL_DIVER_PEM_*` showed "Pemakar Terraces", but Ch7's opponent is **Sorrin** (act1_ch07.md §203, the board and market barks). The display text now says Sorrin. **For reefball's owner:** the side id `pemakar` in sides.json and matches.json could be renamed to match, at your call.
+  - `DLG_CH03_BARK_CAUSEWAY_TIDEPOOL_002`: "Two copper" → "Two lume". The glossary has one currency.
+  - `FLOW_END_CARD_TITLE` and `CREDITS_SLICE`: "Act One" → "Act I", to match the act cards' "Act II" and "Act III".
+  - `ITEM_TIDEWASH_SALVE_DESC`: "every Break" → "Sundered, Unmoored, Weakened and Dimmed", the names the player sees.
+  - `ABILITY_DEEP_LUNGS_DESC` "Max HP"; `HUD_ITEM_COUNT_FMT` "×{n}", like every other count; `CODEX_BELL_GALLERIES_BODY` "where the Tidecup is played".
+  - Skipped: `DLG_CH07_TAVI_016` ("Asha. I'm so sorry…"). It reads as an introduction in context; that's style, not a defect.
+- **Checks:** validate_data 0/0 · dlgc --check 0/0 · loc tools tests plus the new one OK · Godot `formation` 18/0, `items_menu` 13/0, `reefball` 80/0, `end_card` 5/0, `pseudo_loc` 26/0.
+- MERGE-READY @ 090457c88
+- BACKLOG EMPTY (story track). The British-spelling LEAD-ASK above is still open.
+
+## 2026-10-30: British spelling (Lead decision)
+- 18 player-facing strings, keys unchanged:
+  - Armour, armoured;
+  - Defence and Magic Defence (the stat names, the Break status descriptions, the Lattice facets and the abilities);
+  - Colour palette, colours, colour blindness, Colour-blind-friendly.
+- Files: `ch05.csv` (`TUT_CH05_ARMOR_BREAK`), `menus.csv`, `menus_equip.csv`, `menus_items.csv`, `strings.csv`. No American forms are left in any loc csv.
+- The rule is now in the glossary (an appended "Spelling" section) and in the voice guide's global rules: British with Oxford -ize (Customize stays), and keys and ids keep their spelling.
+- **Checks:** validate_data 0/0 · loc tools tests OK · Godot `settings` 48/0, `equip` 66/0, `status_menu` 7/0, `lattice` 67/0, `pseudo_loc` 26/0.
+- MERGE-READY @ 73c2cb482
+
+## 2026-10-30: Act II proofread and spelling pass (Lead request)
+- The automated pass over 822 Act II strings (spell, spacing, quotes, American spellings) found nothing. A reviewer then read all of them against the glossary, voice guide, beat sheets and ADRs 0015, 0016 and 0204. I checked all 13 findings against the source and applied all 13.
+- **Continuity, the important ones:**
+  - **Imra walked on to the Choir** (Ch15 K "She walked on to the Choir"; Ch16 "My mother walked here"). My Ch13 register line "Mother never got this far" was wrong. It's now "Mother would have stood right here", and the script note and M4-A2P-108 are corrected.
+  - **Herd-cord errand:** Pell already ties the cord on the pass in B07, so the errand no longer hands the cord over. Dorro's daughter asks after the animal and learns it's on the road with him. `OBJ_CH12_SIDE_CORD` and the flag's description are updated.
+  - **"Lamplighters"** is the glossary's proper noun for the six founders. The wedding's lamp-carriers I invented are now **lamp-bearers**: the speaker labels in `ch13_side_the_leaning_flame`, `ch14_side_six_lamps` and `ch14_bark_lamplighter`, plus `OBJ_CH13_SIDE_FLAME`. The ids and flags keep "lamplighter".
+  - **Seamstress:** "a Cantor's wedding" → "the wedding". The bride is Merel, not Asha.
+  - **Wakefin lore:** it's now Undertow-spawn that "followed the first ripples out of Ansedra's lagoon" (glossary and ADR 0016), not a fish the Saltwrights know.
+  - **Drowner lore:** "the full moon before last", to match Pell.
+- **Codex rows** (ui-menus wrote them; I fixed them as proofread):
+  - `CODEX_HERESY_BODY`: "Outside the Level" capitalised.
+  - `CODEX_LOWLIGHT_BODY`: the cold wells up *and* the glimmer sifts down.
+  - `CODEX_SUNKEN_VEY_BODY`: copper conduits holding a steady light, not ceramic and not pulsing (Ch11 rule 3).
+  - `CODEX_REEDHOLLOW_BODY`: one clutch, so each lodge is a family's.
+  - `CODEX_MALCOR_VENN_BODY`: "decree" → "declaration".
+- **Voice:**
+  - Rhen's "Big fan" → "My favourite kind". It came from the beat sheet, but it's modern slang.
+  - Toma's "anymore" → "any more" (British).
+- **Checks:** dlgc --check 0/0 · validate_data 0/0 · taskboard clean · loc tools tests OK · Godot `act2_dialogue` 1/0, `codex` 16/0, `bestiary` 37/0.
+- MERGE-READY @ 348b65795
+- BACKLOG EMPTY (story track).
+
+## 2026-10-30: Act III planning sheets (Lead request; docs only, Act III production stays paused)
+- New folder `docs/kb/story/act3/`:
+  - `README.md`: the act in one paragraph, a pillar-6 table (what each person does not keep), and rules for every sheet.
+  - `act3_ch17.md` "Hollowmere": the ledger read on screen and never voiced, with ADR 0022's facts exact; Asha chooses the Unbinding; the Kite's first lamp is bound light, said aloud.
+  - `act3_ch18.md` "The Kite": a short critical path. Pell walks through the gate, is named again and teaches the farewell-tide wordless. Eight revisits, each showing its grief changed; Haluna lifts its own (optional, flagged); seven heirloom errands.
+  - `act3_ch19.md` "Iskarra": the Prologue vigil shot for shot, with the line verbatim. Kerrid teaches Rhen Dace's hitch (holds, then one pull and it lets go). The Lamp Spire; Hesper Oan and Ilsabet Rue fought openly as revenants; the eye opens.
+  - `act3_ch20.md` "Undertow": six memory layers and six releases in vowbound.md's order, each with its companion, then the Cage and "thank you".
+  - `act3_threads.md`: the consistency pass.
+- Each sheet uses the Act II format §0–§10, and §10 holds the open questions and defaults. Ch21 and the Ending stay in the existing `beats/act3_ending.md`.
+- **Consistency pass:**
+  - All 37 Act I/II flags the Act III sheets read are declared.
+  - Every companion's Act III arc in their character sheet is traced to a beat; three gaps were filled (Toma, Ysolde, Kerrid's teaching).
+  - Every Vowbound is traced from binding to release.
+  - 14 mismatches are logged, T-01 to T-14. Applied: T-02 (act2_ch14's Venn row corrected: no Ch19 rematch), T-09, T-12, T-14.
+- **LEAD-ASKs** (act3_threads §4):
+  - **T-01:** act3_ending H03 "raises Kesh from the stones", but Ch16 binds her to Asha. I propose Asha calls her out of the sleeve one last time and Kesh is released like the six.
+  - **T-04:** the Eighth Verse's sources disagree across vowbound.md, pell.md and ysolde.md. I propose: the melody is in the stones, read through the farewell-tide; the words are in the stones; the count is Ama's question-knot.
+  - **T-07:** the Prologue's "glimmer rises" breaks light grammar for a Ch19-dusk frame. I propose the motes drift instead.
+- **Checks:** banned-terms scan of the new docs: 0 hits. validate_data 0/0. taskboard clean. No game file touched.
+- MERGE-READY @ 49ae12a1f
+- BACKLOG EMPTY (story track).
+
+## 2026-10-30: Lead answers applied; the ending-cost audit
+- **Spelling (ADR 0206):** the FAST-TRACK was already applied (18 strings, keys unchanged). I merged integration with ADR 0206: no American forms are left in any loc csv.
+- **T-01 (accepted):** act3_ending H03 now has Asha call Kesh out of the sleeve one last time; she is released like the six. vowbound §7 gains a Release line.
+- **T-04 (accepted):** the Eighth Verse's sources are reconciled in vowbound.md (Kesh §7, Hesk §4), pell.md and ysolde.md, and act3_ch19 I04 matches: the words are in the stones; the melody is in the stones, read through the farewell-tide; the count is Ama's question-knot.
+- **T-07 (accepted):** act_outline's Prologue now says the held glimmer drifts and never rises. The cue in `prologue_dead_city.dlg` (`glimmer_lift`) and its shot baseline (`slice_prologue_vigil_line`) are **M4-A2P-111** (cinematics, todo), because it moves a rendered baseline.
+- **Reefball `pemakar` → `sorrin`:** **M4-A2P-110** (progression, the reefball data owner, todo).
+- **Ending-cost audit** (`docs/kb/story/act3/ending_cost_audit.md`): for every companion, what they lose, the chain of scenes that earns it, a verdict and a fix. Three gaps, all closed in my Act III sheets:
+  - Asha's voice was only ever heard as a Cantor's. Ch18 K05 now has her give Pell the Velamir lullaby, the one time she hums for herself.
+  - Liss never chose to let go of anything. Ch20 U00 now has her seat Tobin's lamp in the Kite's engine and spend it on the last charge.
+  - Ysolde's want ("a good death") never turned. Ch19 I04 adds "a long, dull life instead".
+- One proposal for act3_ending: Toma's beach rite gets a fallback line when Ch18's lifting was skipped. Rhen's E2 needs a check that it rhymes with Ch8 B17.
+- **Checks:** banned-terms scan of every edited doc: 0 hits. validate_data 0/0. taskboard clean.
+- MERGE-READY @ 39859600c
+- BACKLOG EMPTY (story track).
+
+## 2026-10-30: ending-cost proposals applied; Ch10 staging review (Lead request)
+- **act3_ending (accepted):**
+  - E2 now rhymes with Ch8 B17: Dace's turn toward Rhen mirrors W22's turn away, and the reverse at "Goodbye, Dad." uses W23's lens and distance.
+  - CR stages Toma's beach rite as a credits vignette. Its fallback line, when `ch18_haluna_lifted` is unset: "Backs to the water. Like this. They go easier when nobody watches."
+  - ending_cost_audit.md is marked accordingly.
+- **ADR 0206 spelling FAST-TRACK:** pushed on `origin/claude/act2-plan` (bdc5be59d, 18 strings). Integration has ADR 0206 but not this commit yet; it lands with this branch's next merge.
+- **Ch10 staging review** (slice-polish, `origin/claude/m2-slice`, M4-A2P-070/M4-CIN-1304): **M4-A2P-112** (cinematics, todo). I can't edit another environment's live log, so the notes are in that task. The review walked each scene's cues and checked every spoken line against the active shot. Findings:
+  1. Their farewell-tide still sets the retired `ch10_tide_witnessed`. Take `ch10_farewell_tide_seen` at merge.
+  2. Dawn gate: R10 framed empty air, because Pell was never placed on `causeway_last_root`. **Fixed here** in `ch10_dawn_gate`.
+  3. B06: Owa's first line is about 38° off R02's axis (R02 is the layout's shot, never staged). It needs the 50 mm singles.
+  4. B05: Pell's "It is the direction." was spoken from behind O07's lens. **Fixed here**: the line now comes before his exit.
+  5. B09: Ysolde has no mark for "Turn around".
+  6. Pacing: every staged scene runs 3–5× shorter than act2_ch10 §1, with specific holds proposed.
+- **Checks:** dlgc --check 0/0 · validate_data 0/0 · taskboard clean · Godot `act2_dialogue` 1/0 and `dialogue` 86/0.
+- MERGE-READY @ 4185052e2
+- BACKLOG EMPTY (story track).
+
+## 2026-10-30: big22 merged; two tools reds fixed (Lead FAST-TRACK)
+- Merged integration (big22) @ 3ef552f87. The fixes are in the merge commit:
+  - **test_cutscene_sfx_files:** big22 delivered all 11 pending SFX and `kesh_memory`, so `SFX_TODO` and `MUSIC_TODO` are now empty, as the test demands. `kesh_memory`'s stand-in row came with the merge. M4-A2P-107's audio rows are ticked; characters' clips remain.
+  - **test_status_names:** the Kirru speaker label "Shell-carver" collided with ADR 0202's retired status name Shell. It's now **"Name-carver"** (she carves the name-shells), and act3_ch18 is updated to match.
+- **Conflicts:**
+  - `ch11.csv`: both appends kept.
+  - `objectives.json`: integration's zone-level main rows (8287ca8b3) are pinned by `test_act_two_zones_point_along_the_main_path`, and my beat-level main rows clash with them in either order. **I dropped my 30 main rows and their `OBJ_CH1N_*` text and kept my 13 side errands.** M4-A2P-109 and act2_text_ids.md are updated.
+- **LEAD-ASK:** later, when the chapter flows set the story flags, should the beat-level main lines replace the zone-level ones? They're in git history at 1a3aa7b9a. Owner of the test: whoever wrote 8287ca8b3.
+- **Checks:**
+  - tools: test_cutscene_sfx_files and test_status_names (8 tests) OK; loc_csv_shape, loc_key_names, loc_literals and loc_readiness OK; the hero-clip subset (7 tests) OK.
+  - validate_data 0/0 · taskboard clean · dlgc 0/0.
+  - Godot: `objective` 16/0, `zone_map` 22/0, `pseudo_loc` 26/0, `act2_dialogue` 1/0, `codex` 16/0.
+- MERGE-READY @ 3ef552f87
+
+## 2026-10-30: dropped objective rows checked; Ch10 staging re-checked; Ch11 direction notes
+- **The 30 dropped main objective rows. Were they duplicates of the existing rows? Partly, not wholly.** I compared each against integration's 17 zone-level rows (8287ca8b3):
+  - **16 had a direct counterpart** (same zone and target): the fen to Reedhollow, the galleries to Lowlight, Lowlight's sanctum, the pass to Quellan, Quellan to Cloudloom, Cloudloom's dais, the Sanctum, the Archive, the ledgers, the court dais, the barge, the sea watch, Hollowmere, the Rim, and the Choir. That content isn't lost; it's said in their words.
+  - **14 were beat-level steps with no counterpart in the shipped rows**:
+    - Ch10: the Drowner's clearing, the shore at dusk, Pell at the gate;
+    - Ch11: back up and out of Lowlight;
+    - Ch12: the snow wall on the terrace, the Quellan inn night, the descent;
+    - Ch13: the ledge, the Cantor roll, Kerrid at the moorings, the High Warden's house;
+    - Ch14: hold the water-steps, the water-gate;
+    - Ch15: the dock-master, the pyre-raft, the ship south;
+    - Ch16: hold the line.
+
+    Those are **out of the game data, but not lost**: the rows and their text are in git (1a3aa7b9a). The LEAD-ASK above stands: when the flows set the story flags, restore them as finer steps under the zone rows.
+- **Ch10 staging re-check** (m2-slice @ a9e826427), recorded in M4-A2P-112's status section:
+  - resolved: 1 (the flag);
+  - fixed in my scripts, reaching their branch with the next merge of this branch: 2 (dawn gate) and 4 (Pell's exit);
+  - still open: 3 (R02 singles for Owa), 5 (Ysolde's mark; waits on M4-CIN-1305) and 6 (pacing). Their new stills are greybox, before the actors.
+- **Ch11 direction notes:** `docs/kb/story/beats/act2_ch11_direction.md`, per scene. Each has the blocking (proposed marks with coordinates in the greybox frame), every shot (lens, position and target), and for **every spoken line who is in frame**, each checked with the frustum test, plus the pauses against §1's minutes.
+  - **A collision caught and fixed in the scripts:** the greybox layout's own L01–L07 aren't lowlight.md's composed shots (the layout's L05 is a sanctum view), so `@camera L05` would have staged the engine scene in the wrong room with no error. The scripts now use V00, V10 and T00 for the art doc's L01, L03 and L05, and Pell kneels on the layout's `pell_kneel`.
+- **Checks:** dlgc --check 0/0 · validate_data 0/0 · taskboard clean · Godot `dialogue` 86/0.
+- MERGE-READY @ e25478fd1
+- BACKLOG EMPTY (story track).
+
+## 2026-10-30: Ch12 and Ch13 direction notes (Lead request)
+- `docs/kb/story/beats/act2_ch12_direction.md` and `act2_ch13_direction.md`, in the Ch11 format.
+- A script (kept in the scratchpad, not the repo) frames each shot on its subjects in the greybox frame, runs each scene's cues and checks every spoken line's speaker against the active shot. **Ch12:** all lines in frame, one deliberately off (Ysolde over the Ram). **Ch13:** 58 in frame, 5 deliberately off (voices over the reader, Rhen over the polers' wide).
+- Each doc lists the **greybox ids that collide with a different picture**, to replace in staging (Ch12: K01, K04, C02, C03; Ch13: A03–A06, S02), and the pacing per beat against §1. Every scene runs 2–8× short; the notes say where the holds go.
+- **Blocking bugs fixed in my scripts:**
+  - Kerrid and Tobin shared `outer_moorings`, so Kerrid now stands on the layout's `kerrid_moorings`;
+  - Merel and Tobin shared `guest_moorings`, so Merel uses `guest_moorings_b`;
+  - the house side scene now cuts between A15b (the street) and A15 (the front room), with Rhen on his own marks.
+- act2_ch13 §7's A03 said Kerrid sits; it now says he stands, per ADR 0204.
+- **Checks:** dlgc --check 0/0 · validate_data 0/0 · taskboard clean · Godot `dialogue` 86/0.
+- MERGE-READY Ch12 @ d56bcb66d · MERGE-READY Ch13 @ d56bcb66d
+- Next: the Ch14–Ch16 notes.
+
+## 2026-10-30: Ch14, Ch15 and Ch16 direction notes (Lead request)
+- `docs/kb/story/beats/act2_ch14_direction.md`, `act2_ch15_direction.md` and `act2_ch16_direction.md`, in the Ch12 and Ch13 format. Each has the greybox ids to replace, the script fixes, pacing per beat against §1, and per scene every shot (lens, cam → look, fov) with who is in frame on every spoken line.
+  - **Ch14:** 25 lines in frame. Replace the greybox's W03–W07 (the Lacquer Court, in ch13's level folder).
+  - **Ch15:** 72 lines in frame, 1 deliberately off (Pell over the fin). Replace U01–U07 (open_sea) and H01–H04 (hollowmere).
+  - **Ch16:** 25 lines in frame, 4 deliberately off (Kesh's voice in the memory, and Ysolde over Sefir's smile). No greybox collision. The vigil's P04 shares its name with pale_rim's P04 (legal, because ids are per zone; the doc suggests `P04_vigil`).
+- **Script fixes (story's own files):**
+  - **Ch14:** Merel goes to the layout's `merel_gate`.
+  - **Ch15:**
+    - `ch15_current_song` played sea and Hollowmere in one scene, so B10 is now its own scene, **`ch15_the_dock_master`** (`ch17/hollowmere`). It still sets `ch15_liss_told_father`.
+    - The party uses the layout's `reveal_*`, `bow_liss`, `confess_toma` and `supper` marks.
+    - Each actor gets their own jetty-end and ship-deck marks.
+    - K18b and K19b are added, so Rhen and the group are in frame for their lines.
+  - **Ch16:**
+    - Asha, Toma and Rhen walked onto `kesh` (the Saint's own mark), and four of the party never reached the dais. All seven now walk to new `dais_*` marks, with Kerrid behind.
+    - Sefir's `015` cuts back to C12.
+- **For Chapters (one line):** no flow plays `ch15_current_song` yet. When the Ch15 flow is wired, play `ch15_the_dock_master` on arrival at Hollowmere.
+- **Merged integration:**
+  - The Lead restored my beat-level objective rows (fbecf6051), so **the objectives LEAD-ASK above is answered**.
+  - I took integration's `objectives.json` and the `ch10`–`ch16` loc files with their `OBJ_CH1x_*` rows.
+- **Checks:** dlgc --check 0/0 · validate_data 0/0 · taskboard clean · tools dialogue, cutscene and loc tests 183 OK · Godot (after the merge and an `--import`): `dialogue` 86/0, `cutscene_directives` 2/0, `cutscene_music_resolves` 3/0, `cutscene_vfx_hosts` 4/0, `cutscene_mark_via` 4/0, `cutscene_staging` 2/0. Skipped: the QA motion audit (report-only, Act I) and the render tests (no scene, shader or asset touched).
+- MERGE-READY Ch14 @ 603fb1f36 · MERGE-READY Ch15 @ 603fb1f36 · MERGE-READY Ch16 @ 603fb1f36
+- BACKLOG EMPTY (story track).
+
+## 2026-10-30: Lead FAST-TRACK (big23 reds on this branch)
+1. **test_qa_threads** (19 waits in Ch10–13: the guard counts a row against the thread of its zone's chapter):
+   - The greybox Ch10–Ch14 flows play **no** Act II scene, so no thread raises a story flag. That includes `ch10_farewell_tide_seen` (set by `ch10_farewell_tide`) and the `chNN_complete`s.
+   - A `<<set>>` in my scripts can't make the threads raise them, so I used the Lead's second option.
+   - The Ch10–13 main rows now wait only on what the threads raise: `chNN_started`, the reached/entered flags and the Drowner's victory. Each zone's last row has no `until`.
+   - The Lacquer Court's `lc_vows` has no `requires` or `until` (the court is only visited in Ch14, and Ch13's thread is the one that checks it).
+   - **10 rows were cut:** r_gate, l_out, k_to_quellan, q_inn, q_on, la_roll, a_moorings, a_rest, lc_steps, lc_gate. They're in git at 089c254d4, and their loc keys stay.
+   - **Request M4-A2P-114 (cinematics, act1-chapters' flows):** play each scene from the flow, then restore the rows. It has a flag → scene → row table. The Avalanche Ram needs a `victory_flag` (`ch12_ram_felled`).
+2. **test_qa_flag_reach:** `ch14_steps_held` had no setter. `ch14_first_ripple` now sets it as it opens (the scene after the set piece; Ch15's shoal reads it), and its flags.tres row says so. The test passes.
+3. **test_cutscene_sfx_files and test_status_names:** already green on this branch since the earlier fixes (8 OK). Integration still shows them red until this branch is merged.
+- **Checks:**
+  - dlgc 0/0, validate_data 0/0, taskboard clean;
+  - tools: test_qa_flag_reach OK, test_zone_map_pois OK;
+  - Godot: `dialogue` 86/0.
+  - Godot `qa_threads` 1/0 (no "never raises").
+- MERGE-READY big23 FAST-TRACK @ 31c4ff8d2
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114 (flows play the scenes, restore the rows), M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: the 10 cut objectives back in (Lead, after big25's pick of 31c4ff8d2)
+- The Ch14–Ch16 direction notes were already written (MERGE-READY @ 603fb1f36).
+- **Rows:** `objectives.json`'s Act II block is back as at 089c254d4: all 91 rows, and the 10 cut rows unchanged (r_gate, l_out, k_to_quellan, q_inn, q_on, la_roll, a_moorings, a_rest, lc_steps, lc_gate).
+- **Keeping test_qa_threads green until act1-chapters adds the setters:** each of the 19 flags the greybox threads can't raise yet has a row in `tests/integration/qa_known.json` `"unraised"`. That is the guard's own mechanism: flag → why it isn't a softlock, and the task that closes the gap.
+  - Each row names the scene or battle that sets the flag, and **M4-A2P-114**.
+  - An objective's `until` gates no beat, and no chapter `when` waits on these flags.
+  - The 5 Lacquer Court flags are listed because those Ch14 rows sit in a `ch13/` zone (M3-UI-1242).
+- **M4-A2P-114 (act1-chapters) is updated:** add the `play` or `victory_flag` setter, and delete that flag's `unraised` row in the same commit. The rows need no change.
+- **Checks:** validate_data 0/0 · taskboard clean · test_qa_flag_reach OK · my static check of every Ch10–13 wait against flow sets, thread sets and the known rows: 0 failures.
+  - Godot `qa_threads` 1/0, reporting 19 KNOWN unraised and no failure.
+- MERGE-READY objectives restored @ 86262eb93
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114 (act1-chapters adds the setters and empties `unraised`), M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: the setters for the 19 unraised flags (Lead)
+- **M4-A2P-114** (the one request task to act1-chapters, now rewritten) gives each of the 19 flags a row: zone, trigger, `when` and `steps`. The trigger is an existing arrive row or a new trigger at the objective row's target POI. The rows follow the Act I pattern (ch05.json) and §1's running order. Every scene already sets its flag, so the flow only has to play it.
+- Found while writing it:
+  - Two victory flags must be declared in flags.tres: `ch11_engine_released` and `ch14_venn_beaten`.
+  - Two encounters are missing from encounters.json: `ch14_water_steps` and `ch14_malcor_venn`.
+  - `ch14_started` is already set; it shows as unraised only because the court's rows sit in a `ch13/` zone.
+  - `ch12_herd_cord` is B07 (main), not a side scene: the earlier note was wrong.
+- The Ch14–Ch16 direction notes were already written (MERGE-READY @ 603fb1f36).
+- **Checks** (docs only): validate_data 0/0 · taskboard clean. No Godot run: nothing it tests changed.
+- MERGE-READY setters request @ bb7817771
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114 (act1-chapters), M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Ch12–Ch16 direction notes, complete (Lead)
+- All five were already written: Ch12 and Ch13 are on integration; **Ch14, Ch15 and Ch16 are on this branch only** (since 603fb1f36), so this merge brings them.
+- **For audio:** each of the five now ends with **"Audio cues by shot"**: every `@music` and `@sfx` in the chapter's scenes, in script order, with the shot it lands on and the line or hold that follows (Ch12 10, Ch13 14, Ch14 14, Ch15 15, Ch16 17). Hard cuts are the `fade=0.0` rows.
+- **Checks** (docs only): validate_data 0/0 · taskboard clean.
+- MERGE-READY Ch12–Ch16 direction notes @ f5f0be211
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114 (act1-chapters), M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Act III script pass, Ch17–Ch18 drafts (Lead; planning only)
+- `docs/kb/story/act3/drafts/`: **27 draft `.dlg` files** (Ch17: 11, every beat B01–B12; Ch18: 16, K01–K08 plus the 8 revisits and 7 heirlooms). Format as in Act II. **Nothing under `game/` reads them**: no flag, loc row, shot, mark or music cue was added.
+- **Checks:** `check_drafts.py` (new, in the drafts folder) compiles the drafts with dlgc on a temporary copy of `game/data` (speakers, emotions, cues, events, ids unique game-wide). It then checks the Act II runtime rules statically (the letterbox closes; light rules) and the Act III rules (nothing rises but the Haluna lifting, no line in Dace's voice, no "revenant", no Eighth Verse sung, every flag declared or listed). **27 files, 0/0.** A planted bad file trips all five rules.
+- Other checks: validate_data 0/0 (its banned-term scan covers `docs/kb/story/` .dlg and .py) · dlgc --check 0/0 (the game unchanged) · taskboard clean.
+- **For review** (drafts/README "Decisions"):
+  - Ch17 shots renamed to D01–D18 (H-ids are taken in `ch17/hollowmere`).
+  - Ch15's "twenty years" kept over the sheet's "thirty".
+  - The ledger dated by rhen_sallow.md: eight years old; "a Hollowmere trader"; "helping a friend on a long trip".
+  - Ama's 47 knots: the question-knot is the eighth place.
+  - The tally keeper is Ch15's record-keeper.
+  - B09 has no call-bark hook.
+  - `ch17_complete` is set by the flow.
+- **LEAD-ASK:** the drafts run under the sheets' §8 word budgets. Ch17 is about 460 spoken against an 880–1,300 band; Ch18's critical path about 265 against about 650. The hinge scenes are spare on purpose. Grow the field barks, revisits and heirlooms to the band, or revise §8?
+- MERGE-READY Act III drafts Ch17–Ch18 @ 9c44186b7
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114 (act1-chapters), M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Act III drafts, Ch19–Ch20 and the Ending (Lead; planning only)
+- The Lead's answer to the word-budget LEAD-ASK: drafts stay lean, and expansion comes when Act III production opens. **Closed.**
+- `docs/kb/story/act3/drafts/` now holds **73 draft files** (46 new: Ch19 7, Ch20 18, Ch21 and the Ending 21). Every beat on the three sheets is drafted. Nothing under `game/` reads them.
+- **check_drafts.py:** 73 files, 0/0.
+  - It now adds draft speakers from the README table to its temporary copy only.
+  - New light rules: rising only in a lifting, a release, the Letting's sleeve, Sefir's lift, and from H09 on; nothing held or bound after H09. A planted bad file trips the H09 rule.
+- Other checks: validate_data 0/0 · dlgc --check 0/0 (the game unchanged) · taskboard clean.
+- **For review** (drafts/README, decisions 10–16):
+  - shot ids: I, U, HT and E;
+  - the vigil line has its own id, verbatim;
+  - Lamptongue placeholders (Audio owns the lyrics; H07's sung text isn't written);
+  - fight lines as bark nodes: **Combat needs a mid-battle line hook**, plus new encounter ids;
+  - Dace speaks only in E2;
+  - T-08 and T-09 as optional inserts;
+  - a new flag, `ch21_unbound`.
+- MERGE-READY Act III drafts Ch19–Ending @ 3a7f19d73
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114 (act1-chapters), M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Act I as-played read-through, New Game → Ch9 (Lead)
+- **Read:** integration @ 4b1988109, the scenes in play order:
+  - Title → the Prologue → Ch1 (the Underway, then Oruvel) → the slice (Ch2 Haluna, Ch3 the causeway, the shrine, the Drownbell, the dock at night);
+  - the chapter card → Ch4–Ch9 → the Act I end card.
+  - `tools/act1/flow_audit.py` is clean (no never-set or late flags), so this was a content read.
+- **Overall:** every flow plays in its beat sheet's §1 order; every one-shot story beat has its gate; no Act II or III secret is stated.
+- **26 findings**, filed with file:line evidence and a one-line fix each:
+  - **M4-A2P-115 → slice-polish** (Prologue–Ch3), 8 rows. The worst:
+    - **A1:** "You leave the day after tomorrow." No line on any path ever tells Rhen.
+    - **A2:** the Ch1 low lights (the first held light, "never cut") can be skipped.
+    - **A3:** Rhen agrees to go before he's invited.
+    - **A4:** B03 content is reachable at dawn.
+  - **M4-A2P-116 → act1-chapters** (Ch4–Ch9), 17 rows. The worst:
+    - **C1:** Hobb reads "Jory Sallow. Mag Sallow." among Corrow's drowned. That is Rhen's surname at Corrow (Dace's withheld secret), and the line also uses a founder's surname, Tesk.
+    - **C2:** a teammates' roster mismatch.
+    - **C3, C4:** two beats out of order.
+    - **B1:** Ysolde's and Kerrid's nameplates show before they introduce themselves.
+    - **B2:** the derelict's payoff is spent early.
+  - **M4-A2P-117 → Progression:** the Brine Shoals vendor uses the Ch4 ferry's shop.
+- Every dialogue finding was re-read line by line. The layout-based ones (A2, A4–A6) are traced from trigger coordinates and flags: the tasks say to check the walk in-engine.
+- **Checks** (docs only): taskboard clean · validate_data 0/0.
+- MERGE-READY Act I read-through @ 9be201224
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114–117, M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Lamptongue (Lead; Audio's lamptongue.md)
+- **Source:** `docs/kb/audio/lamptongue.md` is on `origin/claude/audio` only (688bd032d), not yet on integration. I read it there.
+- **§3 into the drafts:**
+  - `ch19_words_001` is verse 8 whole, spoken;
+  - `ch19_words_002` is its first line and last word;
+  - `ch20_fight_006` is kept as written;
+  - **H07 now sings verse 8 whole**, in a new node `ch21_the_letting_verse` (4 sung lines);
+  - every line is tagged `#lamptongue #notr` (`#sung` where sung), per §4.
+- **check_drafts.py** now holds every `#lamptongue` line to §1's 17 roots, and verse 8 to H07; a planted bad line trips both. 73 files, 0/0.
+- **Act I/II verses in play match §2:**
+  - verse 1 (`ch03_verse_042`–`045`) and verse 2 (`ch05_kahre_014`–`017`) match word for word, punctuation included, in the scripts and dialogue.csv;
+  - Ch4's "Vey enu" is the deliberate mispronunciation that Ysolde corrects;
+  - verses 3–7 have no sung text in play (the bound stings are instrumental, as §2 says);
+  - no Lamptongue elsewhere in loc or codex. **No request needed.**
+- **Checks:** validate_data 0/0 · dlgc --check 0/0.
+- MERGE-READY Lamptongue pass @ 9a036d6e1
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114–117, M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Act II as-played read-through, Ch10–Ch13 (Lead)
+- **Task ids:** from the 18:05 TRACK-RULES, mine are **M4-A2P-1000–1199**. big27 renumbered my earlier 115/116/117 to **118/119/120**.
+- **Read base:** `lead/gate-big27` @ ce18caafa, where act1-chapters mounted M4-A2P-114's setters. The flows now play 16 Act II scenes (Ch10 2, Ch11 4, Ch12 5, Ch13 5).
+- **No leaks:**
+  - no secret said early (Kerrid, the Hush, Dace/Imra, Sefir, "revenant");
+  - Kerrid never sits and never enters the Sanctum;
+  - no ice;
+  - every beat gated except one replay (E6, `ch12_herd_cord`).
+- **The real problems are mounting gaps** (29 findings):
+  - **no chapter hands off to the next** (Ch10 → 14 can't be played through);
+  - the Archive and pact can run before Ethren is bound;
+  - the played scenes lean on unplayed setup: B06 causeway, B03 breath, Ch13 still city and Tobin, Ch11 housing-mark.
+- **Story fixes (mine, done):**
+  - Ressa is named at dawn (Pell);
+  - the shell-carver's "seventy years";
+  - the tide's dead are "the season's", not "the three";
+  - the Lowlight keeper is now a visiting tender (the temple's congregation drowned);
+  - repeated lines cut from the Ch10, Ch11 and Ch13 camps; "Kell's. She raised me.";
+  - Wenna's "mark", not "her name";
+  - Ama Quillo tied to Hesk;
+  - two bark locations fixed;
+  - the Ch18 draft callback updated to match.
+- **M4-A2P-1000 → act1-chapters:** 17 flow and layout rows with fixes. It also corrects two rows of my own M4-A2P-114 table (the pact at the moorings; the roll as day two).
+- **Checks:** dlgc 0/0 (328 scenes) · validate_data 0/0 · taskboard clean · tools dialogue tests OK · check_drafts 73/0 · Godot `dialogue` 86/0 after an import.
+- MERGE-READY Act II read-through @ 98e94c41c
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 118–120, 1000; M4-A2P-112 items 3, 5 and 6.
+- **Correction (task ids):** big27's final renumbering moved my Act I read-through tasks 115/116/117 to **M4-A2P-1000/1001/1002**, not 118–120. This branch now carries the gate's three files. The Act II read-through request I had filed as 1000 is now **M4-A2P-1003**. Taskboard clean.
+
+## 2026-10-30: Act I tutorial and tip-card clarity pass (Lead; pillar 4)
+- **Read in play order against the code:** 25 battle `TUT_*` lines, the field tip cards, Ch1's story prompts and the trial hints. Every claim was traced in `game/battle`, the field code and the data, and I re-checked the main ones myself (the rim rule, armour-break turns, the field-clearing finishers, the UI names).
+- **Text fixed (13 `TUT_*` rows plus 2 Ch1 prompts; an in-place wording change of other tracks' loc rows, at the Lead's request, no reorder):**
+  - **Drownbell rim:** says only fast physical hits while it gathers count. The hidden rule was invisible before.
+  - **Vowbound call (Ch4):** no longer says "answers Asha now"; Ilun answered from Ch3. It says how a call ends and what it costs.
+  - **Flood / dark:** say the *finisher* clears them (Floodnet, Flare Line), not the call.
+  - **Armour break:** "three of their turns". The timeline shows no durations.
+  - **Hound:** says what it actually does (the guard isn't built).
+  - **Kick Off:** "a third of an Attack's time", not "almost no time".
+  - **Fliers:** dodge "more than most", not "most".
+  - **"Hold it on a shield":** now names Toma's Hold the Stair.
+  - **Blinded:** now Darkness, the game's name.
+  - **Polyp:** says why to kill it.
+  - **Matron:** "ice", and her Recrust.
+  - **Tether:** no climbing back up.
+  - **Shutter:** says what opening it does.
+- **Filed (mechanics, not words):**
+  - **M4-A2P-1004 → ui-menus:** the field-menu, menu-save and Swell tips **never fire** (their flag is set inside the battle scene); the tips start a chapter late since ADR 0042; layout shrines miss the shrine tip.
+  - **M4-A2P-1005 → slice-polish:** two Ch1 prompts (tether, shutter) are **lost before they show**; the Ch3 hint holds 1.5 s.
+  - **M4-A2P-1006 → act1-chapters' combat seat:** the hound's guard isn't built; Swap, the timeline and Poison are taught chapters late (turn prompts at the wickfry and the Tideline).
+- **Checks:** validate_data 0/0 · dlgc 0/0 · loc tests OK · taskboard clean. Godot: `tutorial` 5/0, `tip` 5/0, `battle_boss_prompts` 1/0, `battle_boss_status` 5/0, `ch01_battles` 5/0, `ch04_battles` 5/0, `set_piece_hud` 8/0, `input_parity_glyphs` 7/0.
+  - `ch01_zones` is 6/6 red, **and red the same on the unchanged tree**: an integration script error in its setup (`test_ch01_zones.gd:128` `auto_update` on Nil), not this change.
+- MERGE-READY tutorial pass @ 16b18b2c1
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1006; M4-A2P-112 items 3, 5 and 6.
+- **Correction (ch01_zones):** not a real red. After a fresh `--import`, `test_ch01_zones` passes 6/0. My run, and its "red on the unchanged tree" check, both used an import cache made stale by the integration merge: `raft_deck_square.glb` changed in bc790ea89, its import failed, so `scene_router.gd` didn't compile and `zone.director` was null at `_open`. **Nothing to file**, so no task for act1-chapters. Lesson for me: re-import after every merge before trusting a Godot red.
+
+## 2026-10-30: Act II tutorial and tip clarity pass (Lead; pillar 4)
+- **Main finding: every Act II tutorial and tip is dead except `seven`.**
+  - No encounter, enemy or phase references any Act II `TUT_*` (no `prompt_key` or `turn_prompt_key`).
+  - Records, Dark shrine and Swell-mode have no tip rows.
+  - `seven` said "four wait" when the party is six (Pell isn't a hero yet).
+  - Several fights the lines describe aren't built: the Ch14 steps and Venn, the Ch16 guard and storm, Pell's Listen, the Drowner's roots, the Ram's scree field.
+  - **The Kite is Act III only**: no Act II data.
+- **Text fixed (13 rows plus one lore row):**
+  - **Built mechanics, now matching the data:** Root Drag (2 turns, 2 ranks, no Swap), Leech Bite (heals half), Unravel (strips Haste, Bulwark, Tide Ward, Mending), the Lamp Engine (two quick blows while the lamps turn; the crawlers relight), the Wakefin (Sound Dive means a Breach next turn), the dark shrine (no heal, no save), Swell mode (on unlock), `seven` ("the rest wait").
+  - **Unbuilt set pieces, now precise to the beat sheets:** the steps (four lines; Hold the Steps), the flat-engine (Slows the party; Strip the Drum), the line (three breaths).
+  - **TUT_RAM_FIELD:** scree, not snow (act2_consistency P2).
+  - **TUT_CH16_CYCLE:** now Kesh's cycle (Act III).
+  - **LORE_ABIDING_GUARD:** four in veiled gold lacquer plus the Veil-First (act2_ch16 §5a), not "three hooded figures".
+- **Filed:**
+  - **M4-A2P-1007 → ui-menus:** raise the Records, Dark-shrine and Swell-mode tips; re-gate `seven` on Pell's join; the battle help hides Echo's copied action, Cord Lift's cures, Rooted and the rays' and skates' cover; the timeline doesn't label a cycle.
+  - **M4-A2P-1008 → act1-chapters' combat seat:** wire each `TUT_*` at its first fight (with a seen flag: `prompt_key` has none, and these sit on random groups); the unbuilt fights and mechanics; Kesh's Call shows in Ch16 although vowbound.md says Act III.
+- **Checks:** validate_data 0/0 · loc tests OK · taskboard clean · Godot `tip` 5/0, `tutorial` 5/0, `codex` 16/0 (after a fresh import).
+- MERGE-READY Act II tutorial pass @ 5e03ea26e
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1008; M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Act I emotional-beats pass (Lead; pillars 1 and 6)
+- **Read in play order:** the Prologue line; the Ch1 storm (the Rising, Hullgnaw, going under); Haluna's welcome (the beach, Neme's table); the Drownbell (the first verse, the lullaby, the dock at night); the Ch4 wake (the shell set, the keeps, the song, the dark dock); Corrow's drowned (the wall falls, the cut rope, the strand barks, the Ebbing); the road out and the vigil voice-over.
+- **What holds (and why I kept it):**
+  - **Rhen's jokes in danger** ("I'm not scared. I'm busy.") are his defence (rhen_sallow.md), not humour over grief.
+  - **Asha's stool joke at her own wake** is staged as her consoling Neme, whose laugh breaks back into grief: humour carrying sorrow, not undercutting it.
+  - **The Drownbell's light lines** come before the lullaby reveal.
+  - **Liss's "Thirty-one baskets. I counted."** is grief.
+  - **Earned:** "Every night until he didn't.", Marra's "Stair's clear." teaching, Kerrid's "Somebody's still below.", and the closing seven-count voice-over (it pays off the Prologue).
+- **Tightened (two slice lines, one Ch4 emotion):**
+  - **The beach (pillar 1):** straight after "Those are ours.", Asha's "He's nicer than his spear." is now "I'm Asha. And that's Toma.", and "Who is very glad you aren't dead." is now "Who is glad you're here." (tender).
+  - **The dark dock:** "Eat your cake, Rhen." is now tender, not soft_smile. She spares him the answer about Oruvel's held dead.
+- **Staging filed:**
+  - **M4-A2P-1009 → slice-polish:** two 2 s holds on the beach's grief beat.
+  - **M4-A2P-1010 → act1-chapters:** a 3 s hold before Asha's non-answer, eyes on the sea.
+  - The beats' other problems were already filed in the read-through (1000/1001: the dock's "day after tomorrow", Hobb's Sallows, the Act II card before "The end of Act I").
+- **Checks:** dlgc 0/0 · validate_data 0/0 · taskboard clean. Godot `dialogue` 87/0, `haluna_zone` 7/0, `memories` 15/0, `cutscene_sequencer` 22/0. No screenshot shows the changed lines (`slice_beach_standing` holds line 031, which is unchanged).
+- MERGE-READY emotional-beats pass @ 5b401f65a
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1010; M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Act II emotional-beats pass, Ch10–Ch13 staged and Ch14–Ch16 on paper (Lead; pillars 1 and 6)
+- **Read:** the key scenes in order.
+  - Ch10: the farewell-tide, the dawn gate.
+  - Ch11: the housing-mark, twice, Nhoa, "By you, now.".
+  - Ch12: the herd-cord, Hesk, forty-seven voices.
+  - Ch13: Ethren, the roll, the hands, the pact, the house.
+  - Ch14: the vows, the declaration, Tobin, Merel.
+  - Ch15: the confession, "Let me carry him.".
+  - Ch16: the High Warden, swept away.
+- **Lines: no change needed.**
+  - **Sincerity:** no Act II line undercuts sorrow. Every [laugh] and [smile] in the main scenes sits before a loss (Tobin's joy in Ch13), never after it. Tobin's dying "Your knots are terrible." pays off Ch13's knots: his tenderness, not a release.
+  - **Pillar 6 (no one keeps everything):** "You are very good at asking." (the Hush's cost, Ch10); "She is held. By you, now."; Ysolde's "I would very much like it to."; Liss's "I'm not going to say it's all right." to Toma.
+- **Earned beats depend on mounting.** Tobin's death needs `ch13_tobin` played; "Your breath. In Ullar." needs `ch12_breath`; Ch11's split needs `ch11_housing_mark`. All are filed in M4-A2P-1003.
+- **Tightened (my scripts' holds, to the direction notes):**
+  - V00: 5 → 9 s;
+  - Pell's kneel (N05): 4 → 7 s;
+  - N09: 6 → 8 s;
+  - Ch13's A01: 5 → 8 s;
+  - Ethren's rise (S05): 4 → 6 s.
+- **Staging filed: M4-A2P-1011 → slice-polish.** A Ch10–Ch16 checklist of the beats staging can break, each pointing at its direction note: the backs to the tide, Pell's ledge, Tobin's fall, Merel from the barge, Kerrid's eye height and K11, the dock-master unheard, Pell's turn last, Sefir's smile, the hard cuts.
+- **Checks:** dlgc 0/0 · taskboard clean · Godot `dialogue` 87/0 · tools music-sync test OK.
+- MERGE-READY Act II emotional pass @ 270c32419
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1011; M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Act II read-through, Ch14–Ch16 on paper (Lead)
+- **Read:** every Ch14–Ch16 script in the beat sheets' order, against the sheets, the ADRs and the earlier chapters.
+- **The required facts hold:**
+  - Kerrid sits only at K05, and the confession matches its RULE 4;
+  - the Hush is told only in Kesh's memory; no "revenant";
+  - the one `glimmer_lift` is the sheet's;
+  - no ice; Tobin, Merel and the lamp are right;
+  - Imra, Dace and Kerrid are never grouped; Pell has no battle kit.
+- **No leak** (one possible: Kerrid's "Nobody, if she does it right." in the Ch15 camp implied the Act III premise; now "I don't know. Somebody always has.").
+- **Story fixes (my scripts and sheets):**
+  - **Repeats:**
+    - the Ch14 camp repeated Ch15's deck beat and the "volunteered" line. It keeps the wick-tool and "I want it to cost them", and moves to `ch15/open_sea`.
+    - Tobin's Ch13 "volunteered" is now "Peace has to start with somebody's wedding." (Ch14 carries the line).
+    - Liss's and Merel's Ch14 talks are reworded.
+  - **Flags now paid:**
+    - the supper reads `ch14_spoke_with_tobin` (Aldous asks; Rhen: "He said nobody had to be chosen. He volunteered.");
+    - the barge reads `ch14_vows_spoken` (Liss says Tobin's vow back, "I'll learn your quiet.").
+  - **Order:**
+    - the pyre-raft now ends on Pell's turn;
+    - three Hollowmere barks wait for the news (`ch15_toma_carried_tobin`), with arrival lines before it.
+  - **Continuity:**
+    - Ysolde and Pell board the ship;
+    - 13 zone headers named `ch14/lacquer_court` or `ch15/hollowmere`, which don't exist, and now name the real zones;
+    - "after the bells" is now "after the vows";
+    - Dace's hull is "years after" his first visit.
+  - **Docs:** kerrid.md and act2_ch14 "sat out" are now "stood out"; Pell is out of two boss role-answers.
+- **Filed:**
+  - **M4-A2P-1012 → act1-chapters:** the Ch14–16 flows play no scene; the dock-master on arrival; four missing encounters (`ch14_water_steps`, `ch14_malcor_venn`, `ch16_abiding_guard`, `ch16_storm_wakes`); the battle chaining.
+  - **M4-A2P-1013 → slice-polish:** Warden Dask on the steps (L09); the lamp-bearers' entrance and the oar-pin (W03/W05); two ship marks.
+- **Checks:** dlgc 0/0 · validate_data 0/0 · taskboard clean · tools dlgc, sfx and flag-reach tests OK · check_drafts 73/0 · Godot `dialogue` 87/0. It was 1 red until a fresh `--import` rebuilt the translations for the two new supper lines.
+- MERGE-READY Ch14–16 read-through @ e8825bce8
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1013; M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Act II character-voice pass (Lead request)
+I merged integration (big28) first; the two conflicted compiled ch11 JSONs were rebuilt by dlgc. I read each hero's Act II lines in play order (Ch10–Ch16) against voice_guide.md, the character sheets and their Act I lines.
+- **Arcs move.**
+  - **Rhen:** he admits the name (Ch11), keeps the wick unlit, and carries the half-story into the Choir.
+  - **Asha:** "I didn't finish the sentence" (Ch10); the comfort tell turns over at `ch15_deck_asha` ("I'm not going to ask about your night"); her refusal at the Choir is unsmiling.
+  - **Toma:** "And still" in Ch13, no "Be level" from Ch14, and no scripture after Ch15.
+  - **Ysolde:** she lies, confesses, reads the roll and denounces Sefir. Her contractions now start with the private Ch13 camp, about Corran.
+  - **Kerrid:** terse before the reveal, plain and dry after it.
+  - **Pell:** the arc lives in staging after Ch11 (he has no lines in Ch13–14; he turns his back at the Ch15 pyre). "My neck is very tired" stays held for Act III, per act2_ch10.
+  - **Liss:** narrates repairs in grief, and "Sallow" replaces "diver" after Ch11.
+- **Fixes (script text and beat sheets, my lane):**
+  - **Ysolde, timeline:** she has visited Ethren for *eleven* years, because he was placed in the Sanctum when Imra sang (vowbound.md). The "twenty-four years" of visits was wrong in `ch12_voices_010`, act2_ch12 and act2_ch13 S06. Twenty-four stays for the grief (the Ch13 camp, act3_ch20).
+  - **Ysolde, contractions:** none before the thaw. "It does not say" (`ch11_plate_004`) and "The cords do not say that" (`ch12_camp_006`).
+  - **Toma:** "I stood a watch on the seawall at Haluna once. One night." contradicted his seven years on the Corrow wall. It is now "My first night on the Corrow wall, I counted the hours." (`ch15_camp_003`), and Kerrid's "Everybody counts the first night" still lands.
+  - **Rhen, place:** "came home from the Low Reaches" made no sense, because Oruvel *is* in the Low Reaches. It is now "came home off the wrecks" (`ch15_daces_008`, act2_ch15 §4).
+  - **Rhen, joke:** he jokes harder when scared, and Act II had almost no fear-jokes. He now adds "I make ripples in a bath." at the still city (`ch13_city_001`, act2_ch13 A02). It also sets up Liss's "you're making ripples" at Tobin's.
+  - **Kerrid, before the reveal:** "Built to last. The stone did." (`ch11_bark_kgal_001`; it was two clauses of wit, the post-reveal voice too early).
+  - **Kerrid, diction:** "The wall's the Order's. The stair's ours." So at the fallen cairn he says "I know. I've set steps.", and Pell answers "This is not a step. It is a voice." (`ch16_cairn_004/005`).
+- **Request filed:** **M4-A2P-1014 → ui (M4-A2P-081):** `test_every_act2_speaker_with_a_model_has_a_portrait` is red because `ullari_woman` got a stage in M4-A2P-053 but has no portrait. This is not a story change.
+- **Checks:** dlgc 0/0, validate_data 0/0, taskboard clean, check_drafts 73/0. Godot `dialogue` after `--import` was 86/1; the one red is 1014 above. Tools unittest skipped (no `tools/` change).
+- MERGE-READY Act II voice pass @ cf6888744
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1014; M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Ch6 and Ch8 objective text, and the Act II objective lines (Lead request)
+- **Ch6 and Ch8 (with act1-chapters):** there were no objective rows for either chapter, so the field said OBJ_NONE across the Brine Shoals, Corrow and Coilspire.
+  - I wrote 11 lines (appended): OBJ_CH06_SHOALS / CHANNEL / SIDE_TIDELINE in `ch06.csv`, and OBJ_CH08_WALL_HEAD / WALL_GATE / SIDE_STAIR / PATH / SIDE_HEARTH / FLUES / CROWN / BEACON in `ch08.csv`.
+  - **M4-A2P-1015 → act1-chapters** holds the rows, ready to paste. Each row's flags, triggers and POIs come from the flows and layouts.
+  - Four targets are left open for want of POIs (the Corrow wall-head; the Coilspire tiers and crown). The Ch8 night gets no rows, because it runs from `arrive` with no walking.
+  - `ch08_flame_at_crown` is set by the flue puzzle, so `test_qa_threads` may need a `qa_known` "unraised" reason.
+- **Act II objective lines (the field menu's objective and errand list, the only quest log the game has), Ch10–Ch16.** I made them match Act I's convention: a main line is an imperative, side errands describe, and nothing uses a contraction.
+  - **Now imperative:** OBJ_CH10_GATE "Go back out through the gate. Pell is waiting."; CH13_MOORINGS "Go out to the outer moorings. Kerrid is standing there."; CH15_FATHER "Go with Liss to the dry-dock berths. Her father keeps them."; CH15_PYRE "At dusk, go down to the pyre-raft."; CH15_SHIP "…Go aboard."; CH14_GATE "Get through the water-gate to Merel's barge."; CH13_ARCHIVE "Go to the Lamp Archive." (the two rows inside it say what to read).
+  - **Continuity:** CH13_REST now reads "The wedding is tomorrow, at dusk." It had said "at dusk", but the pact the same night says "Tobin's married tomorrow".
+  - **Contractions removed:** CH11_SIDE_BENCH, CH12_ON ("Do not look back."), CH13_SIDE_HOUSE, CH13_SIDE_FLAME, and my own CH06_SIDE_TIDELINE.
+- **Checks:** validate_data 0/0; taskboard clean; Godot `objective` 16/0 after `--import`. dlgc, tools unittest and check_drafts were not run: no .dlg, `tools/` or draft change.
+- MERGE-READY Ch6/Ch8 objective text + Act II objective lines @ 6141bf440
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1015; M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Act III production, Ch17–Ch20 (ADR 0207; ids M5-A3P-1000+)
+- **Correction to MERGE-READY @ 6141bf440:** OBJ_CH13_REST had an unquoted comma ("tomorrow, at dusk"), which split the loc row; `test_loc_csv_shape` caught it. It is quoted now.
+- **No Act I/II FAST-TRACK is open in my lane**, so I went straight to Act III. Each chapter's drafts were moved with `git mv` into `game/data/dialogue/chNN/`, so no line id exists twice. Their headers are no longer marked as drafts, and their flags are declared in `flags.tres`.
+  - **M5-A3P-1000 Ch17:** 11 scenes, 8 flags. Prompts in `loc/ch17.csv` (new, registered in `project.godot`).
+  - **M5-A3P-1003 Ch18:** 16 scenes, 15 flags (each heirloom flag names its object). Prompts in `loc/ch18.csv`.
+  - **M5-A3P-1006 Ch19:** 7 scenes, 7 flags. New speakers `hesper_oan` and `ilsabet_rue`; names and six prompts in `loc/ch19.csv`.
+  - **M5-A3P-1010 Ch20:** 18 scenes, 9 flags. Ten new speakers (the six Vowbound, the four founders); names in `loc/ch20.csv`.
+  - **Speakers:** every new speaker has a placeholder portrait, as the Act II bosses do, and a voice row appended to `game/data/audio/voices.json` (audio's file; `validate_data` requires a row per speaker).
+- **Tests:**
+  - `tests/unit/test_act3_dialogue.gd`: every Act III scene, every path, under Act II's bar.
+  - `tools/act3_rules.py`: the Act III rules, moved out of `check_drafts.py`, which now imports them.
+  - `tools/tests/test_act3_rules.py`: the production scripts, plus a planted bad scene that trips every rule.
+  - **`test_dlgc` near-miss probe:** "Karen [sad] sang." now expects "did you mean Kahre" (Kahre is a speaker now).
+- **Requests filed:**
+  - **Cinematics, staging and flow:** M5-A3P-1001 (Ch17), 1004 (Ch18), 1007 (Ch19), 1011 (Ch20).
+  - **Audio, cues and sounds:** M5-A3P-1002, 1005, 1008, 1012. Each lists exactly what's new against `music.json` and `assets/audio/sfx/`.
+  - **Combat:** M5-A3P-1009 (Ch19's Wardens' encounter, plus one general mid-battle line hook for every Act III fight) and 1013 (Ch20's seven fights and the release flags).
+- **LEAD-ASK (word budget, drafts README decision 9):** the drafts are spare, against their sheets' §8 budgets. Ch17 has about 460 spoken words (budget ~1,200; SPEC band 880–1,300), and Ch18 about 610 (~2,400). Grow the non-hinge parts (barks, interactables, revisits, heirlooms) to the band, or revise the §8 budgets? I'm proceeding as written and will grow them if told to.
+- **Checks:**
+  - dlgc 0/0, validate_data 0/0, taskboard clean, check_drafts (21 files left) 0/0.
+  - Godot `act3` 1/0 and `objective` 16/0. `dialogue` 87/1: the one red is the Ullari woman's portrait (M4-A2P-1014, not mine).
+  - Tools tests touching my areas pass: act3_rules, dlgc, loc_*, banned_scan, qa_flag_reach, taskboard, vowbound_flag, audio_data and others.
+  - The full tools suite was stopped part-way. Its reds were `test_rig_integrity` (gate-big31's known characters red), plus `test_audio_loudness` and `test_dialogue_clarity` beds. Those two fail because the audio files in this container are LFS pointers; none of the three is in my diff.
+- MERGE-READY Act III Ch17–Ch20 (M5-A3P-1000/1003/1006/1010) + OBJ_CH13_REST fix @ df6f46e17
+
+## 2026-10-30: Act III production, Ch21 and the Ending (M5-A3P-1014)
+- 10 `ch21_*` scenes are now in `game/data/dialogue/ch21/`, and 11 `ending_*` in `game/data/dialogue/ending/`. Flag `ch21_unbound`. New speakers `imra` and `dace`, with placeholder portraits and voice rows. `loc/ch21.csv` (new, registered) holds their names and FIELD_PROMPT_ENDING_TAKE_THE_STRAIN.
+- **Every Act III draft is now in the game.** `docs/kb/story/act3/drafts/` keeps only the README (as the record) and `check_drafts.py`, which now has nothing left to check. `tools/tests/test_act3_rules.py` holds the production scripts to the rules.
+- **Requests filed:**
+  - **M5-A3P-1015 → cinematics:** the `ch21/heart` zone (HT01–HT22), the Ending's E01–E13 on the Kite, the dock and Oruvel, and the flow H01 → E7, with the credits before `ending_first_lamp`.
+  - **M5-A3P-1016 → audio:** 15 music cues (the Letting is the one sung verse 8) and 6 sounds.
+  - **M5-A3P-1017 → combat:** Kesh; Sefir's Warden, heart and Letting phases; his fight lines (hook: M5-A3P-1009).
+- **Checks:**
+  - dlgc 0/0 (407 scenes), validate_data 0/0, taskboard clean.
+  - Tools: act3_rules, dlgc, loc_csv_shape, loc_key_names, qa_flag_reach, taskboard, audio_data all OK.
+  - Godot: `act3` 1/0; `dialogue` 87/1, the one red being M4-A2P-1014's portrait.
+- **Next for this track:** Act III objective text once 1001/1004/1007/1011/1015 land flags and POIs, the word-budget growth if the Lead says so (LEAD-ASK above), and any FAST-TRACK first.
+- MERGE-READY Act III Ch21 + Ending (M5-A3P-1014) @ ac9bc6521
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1015; M4-A2P-112 items 3, 5 and 6; M5-A3P-1001/1002/1004/1005/1007/1008/1009/1011/1012/1013/1015/1016/1017.

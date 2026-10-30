@@ -7,7 +7,11 @@
   "ch15_bark_widow": {
    "headers": {"location": "ch17/hollowmere"},
    "ops": [
-    {"op": "line", "id": "ch15_bark_widow_001", "key": "DLG_CH15_BARK_WIDOW_001", "speaker": "hull_widow", "emotion": "grief", "voice": "", "src": 5, "name_key": "DLG_NAME_HULL_WIDOW_CAPTAIN_S_WIFE"}
+    {"op": "if_not", "cond": ["flag", "ch15_toma_carried_tobin"], "to": 3, "src": 5},
+    {"op": "line", "id": "ch15_bark_widow_001", "key": "DLG_CH15_BARK_WIDOW_001", "speaker": "hull_widow", "emotion": "grief", "voice": "", "src": 6, "name_key": "DLG_NAME_HULL_WIDOW_CAPTAIN_S_WIFE"},
+    {"op": "goto", "to": 5, "src": 5},
+    {"op": "line", "id": "ch15_bark_widow_002", "key": "DLG_CH15_BARK_WIDOW_002", "speaker": "hull_widow", "emotion": "soft_smile", "voice": "", "src": 8, "name_key": "DLG_NAME_HULL_WIDOW_CAPTAIN_S_WIFE"},
+    {"op": "goto", "to": 5, "src": 7}
    ]
   }
  }

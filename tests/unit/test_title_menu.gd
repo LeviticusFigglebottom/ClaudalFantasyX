@@ -79,6 +79,22 @@ func test_without_a_record_only_new_game_is_offered() -> void:
 	_done()
 
 
+## M3-HER-1167: the zone each choice enters first, for the title to start its loads while it shows: New Game's
+## location, and the newest record's location for Continue (read without loading it); nothing for the other rows.
+func test_each_choice_names_the_zone_it_enters_first() -> void:
+	_open()
+	assert_eq(menu.first_zone_of(TitleMenuModel.CHOICE_NEW_GAME), reg.scene_of(reg.new_game_location))
+	assert_eq(menu.first_zone_of(TitleMenuModel.CHOICE_CONTINUE), "", "no record, no Continue zone")
+	assert_eq(menu.first_zone_of(TitleMenuModel.CHOICE_SETTINGS), "")
+	menu.get_parent().remove_child(menu)
+	menu.free()
+	_write_record(2, 4)
+	_open()
+	assert_eq(menu.first_zone_of(TitleMenuModel.CHOICE_CONTINUE), reg.scene_of(&"field_test"))
+	assert_eq(Game.state.chapter, 0, "the record was only read, not loaded")
+	_done()
+
+
 func test_new_game_starts_fresh_at_the_data_location() -> void:
 	Game.state.chapter = 9
 	_open()

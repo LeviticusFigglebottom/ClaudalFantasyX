@@ -855,9 +855,9 @@
  ],
  "spawns": {
   "PassFoot": [
+   -1.0,
    0.0,
-   0.0,
-   3.0,
+   1.0,
    0.0
   ],
   "RamArena": [
@@ -917,14 +917,14 @@
   },
   "K04": {
    "pos": [
-    36.0,
-    14.5,
-    -36.0
+    44.0,
+    15.5,
+    -33.0
    ],
    "look_at": [
     48.0,
-    14.0,
-    -49.0
+    13.5,
+    -46.0
    ],
    "fov": 50
   },
@@ -1118,6 +1118,26 @@
     "beat": "to_quellan"
    },
    "yaw": 0.0
+  },
+  {
+   "id": "terrace",
+   "activation": "touch",
+   "at": [
+    40.0,
+    12.0,
+    -40.0
+   ],
+   "size": [
+    2.0,
+    0,
+    4.0
+   ],
+   "requires_flag": "ch12_started",
+   "blocked_by_flag": "ch12_ram_felled",
+   "payload": {
+    "beat": "terrace"
+   },
+   "yaw": 0.0
   }
  ],
  "encounters": {
@@ -1135,8 +1155,8 @@
     "weight": 1
    }
   ],
-  "min_m": 30,
-  "max_m": 50,
+  "min_m": 95,
+  "max_m": 145,
   "when": {
    "set": [
     "ch12_started"

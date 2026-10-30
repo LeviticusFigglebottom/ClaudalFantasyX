@@ -30,6 +30,10 @@ extends Node3D
 ## "#RRGGBB"` draws the villager as one glowing silhouette in that colour (NpcSilhouette; M3-HER-1142: the figure
 ## in Corrow's storm wall); `tuning` is merged over the villager's tuning (the figure never glances or turns to the
 ## party).
+##
+## Day and night (the Lead, 2026-10-30: Haluna's vignettes): a row's `shown` (`day` or `night`; none: always) shows
+## the villager only while the zone's `is_night` (HalunaZone.set_night: the dock at night) is false or true. Hidden, it
+## is stopped and not ticked, as HalunaZone's night_hide stops its own villagers.
 
 const DATA_DIR := "res://game/data/world/npc/zones/"
 const ACTOR_PATH := "res://assets/characters/villagers/%s/%s_actor.tscn"
@@ -46,6 +50,16 @@ const WORK_SUFFIX := "Work"
 const GREYBOX_MODEL := "Model"
 ## ZoneCast's villager model on an Act I stage actor (M3-CIN-1217; game/levels/act1/zone_cast.gd).
 const ZONE_CAST := "Cast"
+## Where a row's `at` spot is made when the zone has no stand-in for it (a crowd on a greybox that names no actors).
+const CROWD_SPOTS := "CrowdSpots"
+## M3-HER-1168: during a scene change, rows are added as many a frame as fit this (their scenes loaded first), and
+## the reveal waits this many frames more for the villagers' first ticks.
+const SPREAD_BUDGET_MS := 30
+const SETTLE_FRAMES := 2
+## Row `shown`: only by day, only at night (the zone's `is_night`).
+const SHOWN_DAY := "day"
+const SHOWN_NIGHT := "night"
+const NIGHT_PROPERTY := &"is_night"
 
 ## crowd.json, read once (crowd_data) and its people by id.
 static var _crowd: Dictionary = {}
@@ -63,11 +77,14 @@ static var _crowd_people: Dictionary = {}
 var data: Dictionary = {}
 var villagers: Array[FieldNpc] = []
 var storm := false
+var night := false
 ## FieldNpc -> [[Node3D, Transform3D relative to the villager], ...] (keys are checked with is_instance_valid as
 ## Variants before any cast: see live_villagers)
 var _followers: Dictionary = {}
 var _storm_flag: StringName = &""
 var _built := false
+## FieldNpc -> its row's `shown` (only rows that set one)
+var _shown: Dictionary = {}
 
 
 func _ready() -> void:
@@ -119,9 +136,13 @@ func build() -> int:
 	return villagers.size()
 
 
-## ADR 0111 amendment 4 (the PC's pass 3: Pemakar's entry stayed over 1 s hidden): adopting a villager moves its
-## whole model out of the tree and back under a FieldNpc (100-240 ms headless each), so built during a scene change
-## the layer adds one villager a frame and holds the router's reveal until the last is in. The fade stays opaque.
+## ADR 0111 amendment 4 (the PC's pass 3: Pemakar's entry stayed over 1 s hidden): built during a scene change, the
+## layer holds the router's reveal until the last villager is in; the fade stays opaque. M3-HER-1168 (Haluna's reveal
+## held 3.1 s, one row a frame at ~180 ms): a row's cost was mostly loading its actor scene (the GLB, its materials and
+## textures, 100-250 ms the first time), so every row's actor scene is first loaded on worker threads
+## (ResourceLoader.load_threaded_request) while the frames stay light, then the rows are added as many a frame as
+## fit SPREAD_BUDGET_MS (a row with its scene loaded costs ~20 ms), and the reveal waits SETTLE_FRAMES more for the
+## villagers' first ticks, so no heavy frame shows as the fade lifts.
 func _build_spread() -> void:
 	if _built:
 		return
@@ -129,16 +150,58 @@ func _build_spread() -> void:
 	var router := get_tree().root.get_node_or_null(^"SceneRouter")
 	router.call(&"hold_reveal", self)
 	var rows := _begin_build()
+	var requested: Array[String] = []
+	for row: Variant in rows:
+		var path := _actor_path(row)
+		if path != "" and not path in requested and ResourceLoader.exists(path) and not ResourceLoader.has_cached(path):
+			if ResourceLoader.load_threaded_request(path, "", true) == OK:
+				requested.append(path)
+	var pending := requested.duplicate()
+	while not pending.is_empty():
+		await get_tree().process_frame
+		if not is_inside_tree():
+			router.call(&"release_reveal", self)
+			return
+		pending = pending.filter(
+			func(p: String) -> bool:
+				return ResourceLoader.load_threaded_get_status(p) == ResourceLoader.THREAD_LOAD_IN_PROGRESS
+		)
+	var loaded: Array[Resource] = []  # held until the rows are built, so the cache keeps them
+	for path in requested:
+		loaded.append(ResourceLoader.load_threaded_get(path))
 	var by_id: Dictionary = {}
+	var frame_start := Time.get_ticks_usec()
 	for i in rows.size():
 		_add_row(rows[i], by_id)
-		if i < rows.size() - 1:
+		if i < rows.size() - 1 and Time.get_ticks_usec() - frame_start > SPREAD_BUDGET_MS * 1000:
 			await get_tree().process_frame
 			if not is_inside_tree():
 				router.call(&"release_reveal", self)
 				return
+			frame_start = Time.get_ticks_usec()
 	_finish_build(rows, by_id)
+	for i in SETTLE_FRAMES:
+		await get_tree().process_frame
+		if not is_inside_tree():
+			break
 	router.call(&"release_reveal", self)
+
+
+## The actor scene a row's villager will wear (what _make loads), or "" when it wears none of its own (an adopted
+## model, a bad row).
+func _actor_path(row: Variant) -> String:
+	if not row is Dictionary:
+		return ""
+	var r := row as Dictionary
+	var crowd_id := StringName(str(r.get("crowd", "")))
+	if crowd_id != &"":
+		var body := str(crowd_person(crowd_id).get("body", ""))
+		return CROWD_ACTOR_PATH % [body, body] if body != "" else ""
+	if r.has("body"):
+		var bare := str(r["body"])
+		return CROWD_ACTOR_PATH % [bare, bare] if bare != "" else ""
+	var actor_id := str(r.get("actor", r.get("npc_id", "")))
+	return ACTOR_PATH % [actor_id, actor_id] if actor_id != "" else ""
 
 
 ## True while SceneRouter (when there is one) is changing scene: its fade covers the screen.
@@ -159,6 +222,9 @@ func _add_row(row: Variant, by_id: Dictionary) -> void:
 		if npc != null:
 			villagers.append(npc)
 			by_id[npc.npc_id] = npc
+			var shown := str((row as Dictionary).get("shown", ""))
+			if shown == SHOWN_DAY or shown == SHOWN_NIGHT:
+				_shown[npc] = shown
 
 
 func _finish_build(rows: Array, by_id: Dictionary) -> void:
@@ -169,6 +235,7 @@ func _finish_build(rows: Array, by_id: Dictionary) -> void:
 		if by_id.has(mate):
 			(by_id[StringName(str(row["npc_id"]))] as FieldNpc).partner = by_id[mate] as FieldNpc
 	_check_storm()
+	_apply_shown()
 
 
 ## Adds a layer for `zone_id` under `zone` (after the zone has placed any villagers of its own) and builds it; a zone
@@ -182,6 +249,27 @@ static func wire(zone: Node3D, zone_id: StringName) -> VillagerLayer:
 	layer.zone_id = zone_id
 	zone.add_child(layer)
 	return layer
+
+
+## A row's `at` ([x, y, z] or [x, y, z, yaw_deg] in the zone's space): the empty stand-in at `path`
+## (CrowdSpots/<name>) made for it, for a zone whose greybox names no actor there (the Act II towns' crowds).
+func _spot(root: Node, path: String, at: Variant) -> Node3D:
+	var parts := path.split("/")
+	if parts.size() != 2 or parts[0] != CROWD_SPOTS or _vec3(at) == Vector3.INF:
+		push_warning(
+			"VillagerLayer %s: an `at` row's stand-in must be %s/<name>, not %s" % [zone_id, CROWD_SPOTS, path]
+		)
+		return null
+	var holder := root.get_node_or_null(CROWD_SPOTS) as Node3D
+	if holder == null:
+		holder = Node3D.new()
+		holder.name = CROWD_SPOTS
+		root.add_child(holder)
+	var spot := Node3D.new()
+	spot.name = parts[1]
+	spot.transform = offset_transform(at)
+	holder.add_child(spot)
+	return spot
 
 
 ## The FieldNpc a zone already put on `stand_in` (itself, or a child), or null.
@@ -198,12 +286,21 @@ func _make(row: Dictionary) -> FieldNpc:
 	var root := _root()
 	var id := StringName(str(row.get("npc_id", "")))
 	var stand_in := root.get_node_or_null(NodePath(str(row.get("stand_in", "")))) as Node3D
+	if stand_in == null and row.has("at"):
+		stand_in = _spot(root, str(row.get("stand_in", "")), row["at"])
 	var crowd_id := StringName(str(row.get("crowd", "")))
 	var person := crowd_person(crowd_id) if crowd_id != &"" else {}
 	if crowd_id != &"" and person.is_empty():
 		push_warning("VillagerLayer %s: %s names no crowd person %s" % [zone_id, id, crowd_id])
 		return null
-	var adopted := placed_on(stand_in) if stand_in != null and person.is_empty() else null
+	var placed := placed_on(stand_in) if stand_in != null else null
+	if placed != null and placed != stand_in and not person.is_empty() and not placed in villagers:
+		# a crowd person replaces a villager the zone placed earlier in another's model (HalunaVillagers' shop bodies,
+		# which populate before the layer builds), so one body shows; a group's other people are the layer's own
+		stand_in.remove_child(placed)
+		placed.free()
+		placed = null
+	var adopted := placed if person.is_empty() else null
 	var model := stand_in.get_node_or_null(NodePath(GREYBOX_MODEL)) as Node3D if stand_in != null else null
 	var cast := stand_in.get_node_or_null(NodePath(ZONE_CAST)) as Node3D if stand_in != null else null
 	if cast != null and not person.is_empty():
@@ -419,11 +516,36 @@ func _check_storm() -> void:
 		set_storm(on)
 
 
-## One frame: the villagers (when the owner drives them), the storm flag and the riders.
+## Night falls (or lifts) here: the `shown` rows' villagers appear or go (called by tick from the zone's `is_night`).
+func set_night(on: bool) -> void:
+	night = on
+	_apply_shown()
+
+
+func _apply_shown() -> void:
+	for key: Variant in _shown.keys():
+		if not is_instance_valid(key):
+			_shown.erase(key)
+			continue
+		var npc := key as FieldNpc
+		var on := (str(_shown[key]) == SHOWN_NIGHT) == night
+		npc.visible = on
+		npc.process_mode = Node.PROCESS_MODE_INHERIT if on else Node.PROCESS_MODE_DISABLED
+
+
+func _check_night() -> void:
+	var v: Variant = _root().get(NIGHT_PROPERTY)
+	if v is bool and bool(v) != night:
+		set_night(bool(v))
+
+
+## One frame: the villagers (when the owner drives them), the storm flag, the night and the riders.
 func tick(delta: float) -> void:
+	_check_night()
 	if not auto_build:
 		for n in live_villagers():
-			n.tick(delta)
+			if n.visible:
+				n.tick(delta)
 	_check_storm()
 	for key: Variant in _followers.keys():
 		if not is_instance_valid(key):

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "doc": "Haluna's villagers alive (M3-CRE-613; docs/kb/tech/field_npc.md, VillagerLayer). Each row turns the zone's stand-in at `stand_in` (a path from the zone root) into the M2-CHR-03 villager `npc_id` driven by FieldNpc: `hide` lists the stand-in's placeholder children to hide (default StandIn and Facing), `talk` is the Interactable that starts the villager's talk, `follow` lists nodes that ride along when it walks (the stand-in body always does). Routines: `route` (zone-root points, or {at, pause_sec, activity}), `chat_with` (another row's npc_id), `work_at` (where the head looks while it works; default npc.json work.look_at), `shelter` ([x, y, z, yaw_deg] it hurries to in a storm; Haluna has no storm in the slice). Ground heights were probed against the zone's collision (2026-10-25). The Town's shopkeeper, smith and innkeeper keep their stand-ins until they have bodies (request M3-CRE-614). Since big11, HalunaVillagers (slice-polish, M2-FP-102) places Haluna's villagers inside their bodies in HalunaZone.prebuild(); HalunaZone then calls VillagerLayer.wire(self, &\"ch02/haluna\"), which adopts them and wires the chat pair, work and shelter points from these rows. The `route` rows (Reed, the child) apply only when the layer places those villagers itself (docs/kb/tech/field_npc.md, Who owns what). The shop rows (`actor`: another villager's model) sit inside their bodies (`attach: child`) as a FieldNpc named by `node_name` `Villager`, where HalunaVillagers.populate looks, so the layer builds at once in the zone's _ready and populate skips those bodies instead of doubling them (big14 gate).",
+  "doc": "Haluna's villagers alive (M3-CRE-613; docs/kb/tech/field_npc.md, VillagerLayer). Each row turns the zone's stand-in at `stand_in` (a path from the zone root) into the M2-CHR-03 villager `npc_id` driven by FieldNpc: `hide` lists the stand-in's placeholder children to hide (default StandIn and Facing), `talk` is the Interactable that starts the villager's talk, `follow` lists nodes that ride along when it walks (the stand-in body always does). Routines: `route` (zone-root points, or {at, pause_sec, activity}), `chat_with` (another row's npc_id), `work_at` (where the head looks while it works; default npc.json work.look_at), `shelter` ([x, y, z, yaw_deg] it hurries to in a storm; Haluna has no storm in the slice). Ground heights were probed against the zone's collision (2026-10-25). The Town's shopkeeper, smith and innkeeper keep their stand-ins until they have bodies (request M3-CRE-614). Since big11, HalunaVillagers (slice-polish, M2-FP-102) places Haluna's villagers inside their bodies in HalunaZone.prebuild(); HalunaZone then calls VillagerLayer.wire(self, &\"ch02/haluna\"), which adopts them and wires the chat pair, work and shelter points from these rows. The `route` rows (Reed, the child) apply only when the layer places those villagers itself (docs/kb/tech/field_npc.md, Who owns what). The shop rows (`actor`: another villager's model) sit inside their bodies (`attach: child`) as a FieldNpc named by `node_name` `Villager`, where HalunaVillagers.populate looks, so the layer builds at once in the zone's _ready and populate skips those bodies instead of doubling them (big14 gate). The vignettes (the Lead, 2026-10-30: the slice zones lived in): fifteen crowd people (crowd.json, community `haluna`) on `at` spots, each at work by something it would work on, ground heights probed against the zone's collision (2026-10-30). At the causeway head: a woman laying fish on the drying rack, a buyer with her basket at the stall, a man hauling a line at the water's edge, two children at a game of stones on the sand. In the tide-wall lane: an old woman mending at the net heap by her door, a woman back from the dock with her basket, two children at a clapping game, a man sweeping in front of his house between two stations. At the dock: a man mending at the net heap, an old woman turning fish on the rack, a man hauling a mooring line, a man with a basket of the catch. `shown`: the causeway head's, the dock's and the children are `day` (gone home on the dock at night, as night_hide hides the dock villagers); the lane's mender and sweeper work by lamplight too; one woman brings the last basket home past the market only at night.",
   "zone": "ch02/haluna",
   "storm_flag": "",
   "villagers": [
@@ -112,8 +112,7 @@
       "npc_id": "shopkeeper",
       "attach": "child",
       "node_name": "Villager",
-      "actor": "netmender",
-      "_note": "M3-CRE-100: the shopkeeper wears the netmender's model until M2-CHR-100 (moved here from game/data/flow/haluna_villagers.json).",
+      "_note": "M3-CRE-100: the shopkeeper wore the netmender's model until M3-CHR-512 built their own (the Lead, 2026-10-30: named interactable villagers wear their bespoke models).",
       "stand_in": "NPCs/Town/Shopkeeper",
       "talk": "NPCs/Town/ShopkeeperTalk"
     },
@@ -121,8 +120,7 @@
       "npc_id": "smith",
       "attach": "child",
       "node_name": "Villager",
-      "actor": "fisher",
-      "_note": "M3-CRE-100: the smith wears the fisher's model until M2-CHR-100 (moved here from game/data/flow/haluna_villagers.json).",
+      "_note": "M3-CRE-100: the smith wore the fisher's model until M3-CHR-512 built their own (the Lead, 2026-10-30: named interactable villagers wear their bespoke models).",
       "stand_in": "NPCs/Town/Smith",
       "talk": "NPCs/Town/SmithTalk"
     },
@@ -130,10 +128,207 @@
       "npc_id": "innkeeper",
       "attach": "child",
       "node_name": "Villager",
-      "actor": "vendor",
-      "_note": "M3-CRE-100: the innkeeper wears the vendor's model until M2-CHR-100 (moved here from game/data/flow/haluna_villagers.json).",
+      "_note": "M3-CRE-100: the innkeeper wore the vendor's model until M3-CHR-512 built their own (the Lead, 2026-10-30: named interactable villagers wear their bespoke models).",
       "stand_in": "NPCs/Town/Innkeeper",
       "talk": "NPCs/Town/InnkeeperTalk"
+    },
+    {
+      "npc_id": "haluna_rack_folder",
+      "crowd": "haluna_rack_folder",
+      "stand_in": "CrowdSpots/haluna_rack_folder",
+      "at": [
+        -3.0,
+        0.9,
+        -104.6,
+        -121.0
+      ],
+      "shown": "day"
+    },
+    {
+      "npc_id": "haluna_stall_buyer",
+      "crowd": "haluna_stall_buyer",
+      "stand_in": "CrowdSpots/haluna_stall_buyer",
+      "at": [
+        -11.0,
+        1.3,
+        -99.8,
+        132.0
+      ],
+      "shown": "day"
+    },
+    {
+      "npc_id": "haluna_beach_hauler",
+      "crowd": "haluna_beach_hauler",
+      "stand_in": "CrowdSpots/haluna_beach_hauler",
+      "at": [
+        8.5,
+        0.32,
+        -114.0,
+        -90.0
+      ],
+      "shown": "day"
+    },
+    {
+      "npc_id": "haluna_stones_girl",
+      "crowd": "haluna_stones_girl",
+      "stand_in": "CrowdSpots/haluna_stones_girl",
+      "at": [
+        3.0,
+        0.46,
+        -104.5,
+        -90.0
+      ],
+      "shown": "day"
+    },
+    {
+      "npc_id": "haluna_stones_boy",
+      "crowd": "haluna_stones_boy",
+      "stand_in": "CrowdSpots/haluna_stones_boy",
+      "at": [
+        3.9,
+        0.41,
+        -104.5,
+        90.0
+      ],
+      "shown": "day"
+    },
+    {
+      "npc_id": "haluna_lane_mender",
+      "crowd": "haluna_lane_mender",
+      "stand_in": "CrowdSpots/haluna_lane_mender",
+      "at": [
+        -65.2,
+        2.11,
+        -8.4,
+        -68.2
+      ]
+    },
+    {
+      "npc_id": "haluna_lane_carrier",
+      "crowd": "haluna_lane_carrier",
+      "stand_in": "CrowdSpots/haluna_lane_carrier",
+      "at": [
+        -77.6,
+        2.37,
+        -12.4,
+        45.0
+      ],
+      "shown": "day"
+    },
+    {
+      "npc_id": "haluna_clap_girl",
+      "crowd": "haluna_clap_girl",
+      "stand_in": "CrowdSpots/haluna_clap_girl",
+      "at": [
+        -82.0,
+        2.33,
+        -6.0,
+        0.0
+      ],
+      "shown": "day"
+    },
+    {
+      "npc_id": "haluna_clap_boy",
+      "crowd": "haluna_clap_boy",
+      "stand_in": "CrowdSpots/haluna_clap_boy",
+      "at": [
+        -82.0,
+        2.33,
+        -6.6,
+        180.0
+      ],
+      "shown": "day"
+    },
+    {
+      "npc_id": "haluna_lane_sweeper",
+      "crowd": "haluna_lane_sweeper",
+      "stand_in": "CrowdSpots/haluna_lane_sweeper",
+      "at": [
+        -87.5,
+        2.34,
+        -10.4,
+        -180.0
+      ],
+      "route": [
+        {
+          "at": [
+            -87.5,
+            2.34,
+            -10.4
+          ],
+          "pause_sec": 7.0,
+          "activity": "work"
+        },
+        {
+          "at": [
+            -89.5,
+            2.39,
+            -10.9
+          ],
+          "pause_sec": 6.0,
+          "activity": "work"
+        }
+      ]
+    },
+    {
+      "npc_id": "haluna_dock_mender",
+      "crowd": "haluna_dock_mender",
+      "stand_in": "CrowdSpots/haluna_dock_mender",
+      "at": [
+        -8.2,
+        0.53,
+        38.4,
+        126.9
+      ],
+      "shown": "day"
+    },
+    {
+      "npc_id": "haluna_dock_folder",
+      "crowd": "haluna_dock_folder",
+      "stand_in": "CrowdSpots/haluna_dock_folder",
+      "at": [
+        -14.0,
+        0.92,
+        45.4,
+        35.5
+      ],
+      "shown": "day"
+    },
+    {
+      "npc_id": "haluna_dock_hauler",
+      "crowd": "haluna_dock_hauler",
+      "stand_in": "CrowdSpots/haluna_dock_hauler",
+      "at": [
+        26.3,
+        1.4,
+        38.6,
+        -46.5
+      ],
+      "shown": "day"
+    },
+    {
+      "npc_id": "haluna_dock_carrier",
+      "crowd": "haluna_dock_carrier",
+      "stand_in": "CrowdSpots/haluna_dock_carrier",
+      "at": [
+        -9.0,
+        0.73,
+        55.6,
+        132.0
+      ],
+      "shown": "day"
+    },
+    {
+      "npc_id": "haluna_night_carrier",
+      "crowd": "haluna_night_carrier",
+      "stand_in": "CrowdSpots/haluna_night_carrier",
+      "at": [
+        -42.0,
+        1.83,
+        2.2,
+        -70.7
+      ],
+      "shown": "night"
     }
   ]
 }

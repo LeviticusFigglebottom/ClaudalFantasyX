@@ -1,0 +1,8 @@
+// Ch2 B03 (M4-A2P-115 A5): the Listen follow-up. The fragment itself is overheard once in passing (ch02_bark_dock);
+// talking to them afterwards is a short exchange of its own, not the fragment again. Still nobody says "Cantor".
+title: ch02_bark_dock_listen
+location: ch02/haluna
+---
+Netmender [neutral]: Float's mended. Thank you for holding it. #line:ch02_bark_dock_listen_001
+Fisher [neutral]: Weather'll hold. You can feel it in the rope. #line:ch02_bark_dock_listen_002
+===

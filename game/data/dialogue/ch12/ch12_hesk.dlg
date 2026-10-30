@@ -27,7 +27,7 @@ location: ch12/cloudloom
 @anim asha raise_staff
 @music hesk_bound fade=0.0
 @wait 8.0
-@vfx glimmer_bound at=asha_sleeve count=5
+@vfx glimmer_bound at=asha count=5
 @wait 2.0
 <<set $ch12_hesk_bound = true>>
 @camera C04

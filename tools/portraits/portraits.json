@@ -319,6 +319,46 @@
       "out_dir": "res://assets/ui/portraits/heroes",
       "emotions": ["neutral", "smile", "determined", "worried", "grief"],
       "camera": {}
+    },
+    {
+      "id": "venn",
+      "stage": "res://game/levels/_tests/characters/stillguard/venn_face_cold.tscn",
+      "model": "res://assets/characters/venn/venn.glb",
+      "materials": "res://assets/characters/venn/materials/",
+      "face_poses": "res://game/data/cutscene/asha_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "cold", "determined"],
+      "camera": {}
+    },
+    {
+      "id": "clerk",
+      "stage": "res://game/levels/_tests/characters/villagers/clerk_stage.tscn",
+      "model": "res://assets/characters/villagers/clerk/clerk.glb",
+      "materials": "res://assets/characters/villagers/clerk/materials/",
+      "face_poses": "res://game/levels/_tests/characters/villagers/clerk_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "cold", "worried"],
+      "camera": {}
+    },
+    {
+      "id": "merel",
+      "stage": "res://game/levels/_tests/characters/villagers/merel_stage.tscn",
+      "model": "res://assets/characters/villagers/merel/merel.glb",
+      "materials": "res://assets/characters/villagers/merel/materials/",
+      "face_poses": "res://game/levels/_tests/characters/villagers/merel_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "soft_smile", "tender", "determined", "sad", "angry"],
+      "camera": {}
+    },
+    {
+      "id": "tobin",
+      "stage": "res://game/levels/_tests/characters/villagers/tobin_stage.tscn",
+      "model": "res://assets/characters/villagers/tobin/tobin.glb",
+      "materials": "res://assets/characters/villagers/tobin/materials/",
+      "face_poses": "res://game/levels/_tests/characters/villagers/tobin_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "soft_smile", "laugh", "tender", "determined", "exhausted"],
+      "camera": {}
     }
   ],
   "creatures": [
@@ -369,6 +409,13 @@
       "out_dir": "res://assets/ui/portraits/creatures"
     },
     {
+      "id": "hull_rasp",
+      "light_scale": {"key": 3.0, "rim": 3.0, "fill": 3.0},
+      "stage_environment": {"background_color": [0.35, 0.55, 0.65, 0.0]},
+      "scene": "res://game/creatures/hull_rasp/hull_rasp_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
       "id": "lantern_eel",
       "scene": "res://game/creatures/lantern_eel/lantern_eel_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures",
@@ -403,6 +450,13 @@
       "light_scale": {"key": 3.0, "rim": 3.0, "fill": 3.0},
       "stage_environment": {"background_color": [0.35, 0.55, 0.65, 0.0]},
       "scene": "res://game/creatures/scuttler/scuttler_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "deep_scuttler",
+      "light_scale": {"key": 3.0, "rim": 3.0, "fill": 3.0},
+      "stage_environment": {"background_color": [0.35, 0.55, 0.65, 0.0]},
+      "scene": "res://game/creatures/deep_scuttler/deep_scuttler_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures"
     },
     {
@@ -530,6 +584,11 @@
       "out_dir": "res://assets/ui/portraits/creatures"
     },
     {
+      "id": "wick_crawler",
+      "scene": "res://game/creatures/wick_crawler/wick_crawler_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
       "id": "ridge_lynx",
       "scene": "res://game/creatures/ridge_lynx/ridge_lynx_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures"
@@ -635,6 +694,11 @@
     {
       "id": "ethren_held",
       "scene": "res://game/creatures/ethren/ethren_held_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "kesh_held",
+      "scene": "res://game/creatures/kesh/kesh_held_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures"
     }
   ],

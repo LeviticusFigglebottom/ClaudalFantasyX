@@ -551,6 +551,36 @@
    "solid": false
   },
   {
+   "id": "CeremonyLamps",
+   "pos": [
+    0.0,
+    0.5,
+    -14.0
+   ],
+   "size": [
+    26.0,
+    1.0,
+    18.0
+   ],
+   "solid": false,
+   "visible": false
+  },
+  {
+   "id": "CeremonyLampsFallen",
+   "pos": [
+    0.0,
+    0.5,
+    -14.0
+   ],
+   "size": [
+    26.0,
+    1.0,
+    18.0
+   ],
+   "solid": false,
+   "visible": false
+  },
+  {
    "id": "EntryStep",
    "pos": [
     16.5,
@@ -858,6 +888,31 @@
    "priority": 2
   }
  ],
+ "variants": [
+  {
+   "when": {
+    "unset": [
+     "ch14_declared_heretics"
+    ]
+   },
+   "hide": [
+    "CeremonyLampsFallen"
+   ]
+  },
+  {
+   "when": {
+    "set": [
+     "ch14_declared_heretics"
+    ]
+   },
+   "hide": [
+    "CeremonyLamps"
+   ],
+   "show": [
+    "CeremonyLampsFallen"
+   ]
+  }
+ ],
  "triggers": [
   {
    "id": "barge",
@@ -872,8 +927,29 @@
     0,
     3.0
    ],
+   "requires_flag": "ch14_complete",
    "payload": {
     "beat": "escape"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "dais",
+   "activation": "touch",
+   "at": [
+    0.0,
+    0.0,
+    -16.5
+   ],
+   "size": [
+    4.0,
+    0,
+    1.5
+   ],
+   "requires_flag": "ch14_started",
+   "blocked_by_flag": "ch14_vows_spoken",
+   "payload": {
+    "beat": "dais"
    },
    "yaw": 0.0
   }

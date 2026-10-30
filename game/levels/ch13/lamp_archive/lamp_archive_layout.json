@@ -373,14 +373,14 @@
     16.0
    ],
    "pos": [
-    0.0,
-    2.6,
-    1.5
+    2.0,
+    3.4,
+    -3.0
    ],
    "look_at": [
-    -0.5,
+    -1.5,
     0.8,
-    -8.0
+    -11.0
    ],
    "fov": 50,
    "priority": 1
@@ -428,6 +428,46 @@
    ],
    "payload": {
     "beat": "to_city"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "ledgers",
+   "activation": "touch",
+   "at": [
+    -3.2,
+    0.0,
+    -12.0
+   ],
+   "size": [
+    1.5,
+    0,
+    3.0
+   ],
+   "requires_flag": "ch13_entered_archive",
+   "blocked_by_flag": "ch13_read_ledgers",
+   "payload": {
+    "beat": "ledgers"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "roll",
+   "activation": "touch",
+   "at": [
+    3.2,
+    0.0,
+    -24.0
+   ],
+   "size": [
+    1.5,
+    0,
+    3.0
+   ],
+   "requires_flag": "ch13_read_ledgers",
+   "blocked_by_flag": "ch13_read_cantor_roll",
+   "payload": {
+    "beat": "roll"
    },
    "yaw": 0.0
   }

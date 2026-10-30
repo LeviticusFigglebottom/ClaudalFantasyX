@@ -541,6 +541,42 @@ MATERIALS["kit_keth_turf"] = _ext_stone(_PEM + "ash_soil_albedo.png", _PEM + "as
                                         roughness_base=0.95, cavity_darken=0.3, variation_value=0.16,
                                         col_lichen=hexc("#8E9A6E"), **_DRY)
 
+# ---- The Prologue dressing pass (appended by env-art; the Lead, 10-30: beautiful and doomed at dusk) ----------------
+# The lit lamp globes read as white electric street lamps across P01 (albedo near white, emission 2.5 into the bloom).
+# Oil behind old salt-glass: amber and dim, so the four lamps glow as embers and Rhen's lantern stays the frame's flame.
+STANDARD["kit_lamp_glass_lit"] = {"albedo_color": hexc("#C98A4E"), "roughness": 0.35, "emission_enabled": "true",
+                                  "emission": hexc("#FF9447"), "emission_energy_multiplier": 1.2}
+# The towers' painted wet (the tide band, the old high-water ring, the rain streaks under each ledge) reads as dry grime
+# (env_weathering grime_from_wet): wet gloss mirrored the dusk sky and the stains vanished at P01's distance.
+MATERIALS["kit_iskarra_cladding"]["params"]["grime_from_wet"] = 1.0
+MATERIALS["kit_iskarra_cladding"]["params"]["col_grime"] = hexc("#5E5A4C")
+
+# ---- M4-A2P-1400 (appended by env-art): the Haluna beauty pass (the Lead, 10-30) -----------------------------------------
+# The windbreak trees read as black blots at eye height, lit side and backlit alike: their sprays are the atlas's
+# darkest blue-green cluster (about #2F5A45), and the dense crown's baked occlusion (ao_in_albedo 0.55) under a dim tint
+# left no green. A tint over 1 lifts the cluster, half the baked darkening, more sun let through the thick leaves and a
+# softer wrap: dark-green shade trees, their leaves catching the sea light.
+MATERIALS["kit_windbreak_leaf"]["params"].update({"col_tint": "Color(1.75, 1.8, 1.6, 1)", "ao_in_albedo": 0.25,
+                                                  "ao_strength": 0.6, "translucency": 0.7, "diffuse_wrap": 0.5})
+
+# ---- M4-A2P-1402 (appended by env-art): the Act II beauty pass (the Lead, 10-30) ------------------------------------------
+# Ossa Fen's mud read as black tarmac with white sky glare at eye height (the fen edge, Pell's mark):
+# the shader's default wet layer (roughness 0.12, normals 60 % flattened) mirrors. Wet mud glistens, it does not mirror.
+MATERIALS["kit_fen_mud"]["params"].update({"wet_roughness": 0.4, "wet_flatten": 0.2})
+# The level bank (kit_fen_bank) carries the land's painted damp (fen_zones LAND_WET) under the same mirror defaults: the
+# fen edge's whole floor glared. Damp earth, matte.
+MATERIALS["kit_fen_bank"]["params"].update({"wet_roughness": 0.6, "wet_flatten": 0.1})
+# The reed platforms read plastic green under the fen grade (lut_ch10_fen takes the greens further): cut reed, dried
+# toward straw-grey.
+STANDARD["kit_fen_reed"]["albedo_color"] = hexc("#8E8466")
+# Ch12 (Keth Pass, Quellan, Cloudloom) at eye height: the volcanic crag behind every cliff block read as flat black
+# masses (several walker stills near-black), against keth_pass.md's "grey crags" under an enormous sky. The crag lifts
+# to grey (a neutral tint over 1 on the dark volcanic albedo: a cool one read blue under the cold light); Kerrid's
+# breath frame keeps its dark ground in shade. The road's granite (the paving, the parapets, the houses' walls) read
+# near black in the overcast too, so it lifts a step.
+MATERIALS["kit_keth_crag"]["params"]["col_tint"] = "Color(1.55, 1.55, 1.5, 1)"
+MATERIALS["kit_keth_road"]["params"]["col_tint"] = "Color(1.3, 1.29, 1.24, 1)"
+
 
 if __name__ == "__main__":
     sys.exit(main())

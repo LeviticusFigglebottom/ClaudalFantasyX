@@ -8,16 +8,18 @@
    "headers": {"location": "ch11/sunken_vey"},
    "ops": [
     {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 8},
-    {"op": "cue", "cue": "camera", "args": ["L01"], "kwargs": {}, "src": 9},
-    {"op": "cue", "cue": "music", "args": ["sunken_vey"], "kwargs": {"fade": 2.0}, "src": 10},
-    {"op": "cue", "cue": "vfx", "args": ["glimmer_bound"], "kwargs": {"at": "cornice_conduits", "count": 12}, "src": 11},
-    {"op": "cue", "cue": "wait", "args": [5.0], "kwargs": {}, "src": 12},
-    {"op": "cue", "cue": "camera", "args": ["V01"], "kwargs": {}, "src": 13},
-    {"op": "line", "id": "ch11_vey_001", "key": "DLG_CH11_VEY_001", "speaker": "liss", "emotion": "smile", "voice": "", "src": 14},
-    {"op": "line", "id": "ch11_vey_002", "key": "DLG_CH11_VEY_002", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 15},
-    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 16},
-    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 17},
-    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 18}
+    {"op": "cue", "cue": "mark", "args": ["liss", "liss_landing"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "mark", "args": ["pell", "pell_landing_back"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "camera", "args": ["V00"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "music", "args": ["sunken_vey"], "kwargs": {"fade": 2.0}, "src": 15},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_bound"], "kwargs": {"at": "cornice_conduits", "count": 12}, "src": 16},
+    {"op": "cue", "cue": "wait", "args": [9.0], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "camera", "args": ["V01"], "kwargs": {}, "src": 18},
+    {"op": "line", "id": "ch11_vey_001", "key": "DLG_CH11_VEY_001", "speaker": "liss", "emotion": "smile", "voice": "", "src": 19},
+    {"op": "line", "id": "ch11_vey_002", "key": "DLG_CH11_VEY_002", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 20},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 23}
    ]
   }
  }

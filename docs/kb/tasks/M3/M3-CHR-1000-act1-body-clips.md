@@ -2,8 +2,8 @@
 id: M3-CHR-1000
 title: Act I body clips the chapter dialogue stages (Rhen, Asha, Toma, Ysolde, Kerrid, Liss)
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "claude/characters"
 depends_on: []
 milestone: M3
 request-from: cinematics
@@ -31,5 +31,11 @@ Until a clip exists, its call is skipped at runtime (`CutsceneSequencer` checks 
 - Filed by m2-slice on 2026-10-24, when merging big7 brought in the clip-call tests.
 
 - **Renumbered (Lead merge, big9, 2026-10-24):** filed as M3-CHR-01. M3-CHR-01 is the characters track's Ysolde build (named in code and docs); m2-slice filed this request under the same id. Now M3-CHR-1000, from the Lead's id block (CONSOLIDATED §4).
+
+- 2026-10-30 (characters): claimed. The list in `requested_clips.json` now holds the Act II scripts' calls too
+  (Ch10-16, merged with big27); the Act I rows were built under M3-CHR-05. Toma's `lift` (ch14_the_vows: off
+  Tobin, one-armed; ch15_let_me_carry_him reuses it) is built with the Ch14 Character Art clips (Liss press_wound,
+  fight_free; the Stillguard's withdraw_wounded; Merel's pull_pin and pole_push; the Tender's paint_gilt_line).
+  Next: the rest of the list, hero by hero. Asha's and Rhen's libraries are near test_hero_clips' 4 MB text bound.
 
 ## Review log

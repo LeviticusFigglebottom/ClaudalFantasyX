@@ -412,7 +412,7 @@
     0.0,
     0.0
    ],
-   "y": 0.0,
+   "y": -0.03,
    "yaw_deg": 0.0,
    "lod1_from_m": 5000.0
   },
@@ -3634,8 +3634,8 @@
   {
    "piece": "seawall_curve",
    "at": [
-    -63.505,
-    -1.893
+    -63.557,
+    -2.138
    ],
    "y": 0.0,
    "yaw_deg": 101.88
@@ -3643,8 +3643,8 @@
   {
    "piece": "seawall_curve",
    "at": [
-    -96.849,
-    7.096
+    -96.927,
+    6.859
    ],
    "y": 0.0,
    "yaw_deg": -71.7
@@ -3652,8 +3652,8 @@
   {
    "piece": "seawall_curve",
    "at": [
-    -66.078,
-    -14.125
+    -66.027,
+    -13.881
    ],
    "y": 0.0,
    "yaw_deg": 101.88
@@ -3661,8 +3661,8 @@
   {
    "piece": "seawall_curve",
    "at": [
-    -100.773,
-    -4.772
+    -100.694,
+    -4.534
    ],
    "y": 0.0,
    "yaw_deg": -71.7
@@ -5363,7 +5363,8 @@
    "yaw_deg": -1.15,
    "block": "Rocks",
    "material_paths": {
-    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres",
+    "cw_headland": "res://game/levels/ch09/corrow_night/corrow_strand_rocks_material.tres"
    }
   },
   {

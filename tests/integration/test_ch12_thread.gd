@@ -46,6 +46,45 @@ func test_the_cold_road_runs_from_the_pass_to_the_summit_and_back() -> void:
 	Game.state = saved_state
 
 
+## M4-A2P-114: the chapter's story in order: the weeping wall and the Avalanche Ram (B06), the herd-cord on the return
+## (B07), Hesk at the Cloudloom's dais (B10-B11), the night at Quellan's inn (B12) and down the other side (B13).
+func test_the_cold_road_plays_its_scenes_in_order() -> void:
+	_open(PASS)
+	story.begin()
+	assert_true(_trigger(&"terrace").on_touched())
+	assert_true(not hand_offs.is_empty() and hand_offs.back()[0] == ZoneStory.KIND_BATTLE, "the Ram comes down")
+	var r := hand_offs.back()[1] as BattleRequest
+	assert_eq(r.encounter, &"ch12_avalanche_ram")
+	assert_eq(r.victory_flag, &"ch12_ram_felled")
+	Game.set_flag(&"ch12_ram_felled")  # the battle's victory
+	_close()
+	_open(PASS)
+	story.begin()
+	assert_false(_trigger(&"terrace").is_available(), "the terrace is quiet")
+	_go(&"to_quellan", "ch12/quellan", "FromPass")
+	_close()
+	_open(QUELLAN)
+	story.begin()
+	_go(&"to_cloudloom", "ch12/cloudloom", "Approach")
+	_close()
+	_open(CLOUDLOOM)
+	story.begin()
+	assert_true(_trigger(&"dais").on_touched())
+	assert_true(bool(Game.get_flag(&"ch12_hesk_bound")), "Hesk is bound")
+	_go(&"to_quellan", "ch12/quellan", "FromCloudloom")
+	_close()
+	_open(QUELLAN)
+	story.begin()
+	assert_true(bool(Game.get_flag(&"ch12_ysolde_confessed")), "the night at the inn")
+	_go(&"to_pass", "ch12/keth_pass", "FromQuellan")
+	_close()
+	_open(PASS)
+	story.begin()
+	assert_true(bool(Game.get_flag(&"ch12_complete")), "down the other side closes the chapter")
+	_close()
+	Game.state = saved_state
+
+
 func _go(trigger: StringName, location: String, spawn: String) -> void:
 	var t := _trigger(trigger)
 	assert_true(t.on_touched(), "%s fires" % trigger)

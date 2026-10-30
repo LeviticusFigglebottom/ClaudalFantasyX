@@ -9,7 +9,11 @@ title: ch11_housing_mark
 location: ch11/sunken_vey
 ---
 @letterbox on
-@camera L03
+// V10 is lowlight.md's L03 (the conduit court), renamed off the greybox's L03 (act2_ch11_direction.md).
+// M4-CIN-1304 (cinematics): staged from act2_ch11_direction.md (shots and marks in game/data/cutscene/ch11/).
+@mark rhen rhen_court
+@mark asha asha_court
+@camera V10
 @anim liss wipe conduit_mark
 @wait 2.0
 @camera V04
@@ -24,6 +28,7 @@ Liss [neutral]: Same hand. Same seats. Pair-built. This mark's older than you. W
 Rhen [smile]: Told you. Somebody who liked oil. #line:ch11_mark_003
 Liss [cold]: Don't. #line:ch11_mark_004
 @wait 2.0
+@camera V05_rhen
 Rhen [sad]: Dace Sallow. My father. #line:ch11_mark_005
 <<if $ch08_liss_found_marks>>
     Rhen [sad]: I nearly said it at Coilspire. #line:ch11_mark_006
@@ -32,8 +37,10 @@ Rhen [sad]: Dace Sallow. My father. #line:ch11_mark_005
 @wait 1.5
 Liss [angry]: Your father built a ship nobody can fly. You hid his name in your sleeve. Real proud family, Sallow. #line:ch11_mark_007
 Rhen [angry]: I didn't hide it. Nobody asked. #line:ch11_mark_008
+@camera V05_liss
 Liss [angry]: I asked. On the shoals. I asked you whose it was. #line:ch11_mark_009
 @wait 1.5
+@camera V05_rhen
 Rhen [grief]: He left. That's what I know about him. He went up the coast and didn't come back. #line:ch11_mark_010
 Rhen [grief]: You lot got the legend. I got a lantern on a hook. #line:ch11_mark_011
 @camera V06
