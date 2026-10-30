@@ -703,6 +703,15 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - **Next:** the Lamp Engine's parts and the conduit crawler (M4-A2P-022's data), now that its row is here.
 - MERGE-READY @ 2551e68b1
 
+- **M4-A2P-022 data (combat seat): the Lamp Engine's lamps are a breakable part, and two conduit crawlers tend
+  them.**
+  - The crawler row and its three skills are added; the encounter is the engine plus two crawlers.
+  - `ch11_lamp_engine` has a real role band now. All four Act II boss suites are `--check` clean at 1,000 seeds.
+  - Checks: act2_bosses, battle_parts, boss, arena, encounters_resolve, validate, vfx_coverage, balance_sim,
+    creatures, banned.
+  - Next: the rest of my queue waits on other lanes (see the BACKLOG line).
+- MERGE-READY @ (this push)
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
