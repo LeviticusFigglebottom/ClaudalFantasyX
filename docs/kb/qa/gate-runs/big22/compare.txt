@@ -1,0 +1,6 @@
+# big22: 5 shots: 4 PASS, 0 DRIFT (0 size mismatch), 1 NO-BASELINE, 0 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
+PASS boot_title rmse 0.00000 (limit 0.00400)
+NO-BASELINE slice_end_card (pending_baseline)
+PASS lighting_probe rmse 0.00000 (limit 0.00800)
+PASS lighting_probe_low rmse 0.00000 (limit 0.00800)
+PASS glimmer_night_held rmse 0.00000 (limit 0.00800)
