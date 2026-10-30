@@ -942,3 +942,12 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
 - Checks: crowd 11/0 (×2), villager 39/0, npc 10/0; lint and format clean.
 - MERGE-READY @ (this push).
 - **PC-QUEUE:** confirm no "material is null" after the Corrow shots on hardware; the storm figure's detail with bloom.
+
+### ADR 0205: Act II regulars (the Lead's directive, 2026-10-30)
+- **M4-CRE-670, the frost-to-snow swap: in review** @ 87edc76c. The ridge lynx's back holds settled snow and its paws carry grit; the scree crawler is patinated snow-grey and gritty. The lynx's paws stay planted (grounding.pinned gains an opt-in hip roll plus a rest pull; the three-turn path is byte-identical, verified).
+- **Ch10, the fen leech** @ 35816168: it hangs at 0.85 m (stand-in hover and KO fall matched), so its back faces the battle camera instead of its edge.
+- **Ch11, the gallery ray** @ c4360dfb: the back is dusky (cumulus_shadow toward lacquer_black, dark rosettes, salt-glass freckles); the margin's sea_glow is doubled; the wet clearcoat drops to 0.25 (its sheen washed the back white at the grazing battle angle); the hover drops from 1.4 to 0.95 m, and the cast pool and the KO follow it. Portrait re-baked. SELF-RENDERED and viewed: audit ch11_vey_rays (slate discs with a teal rim on pale sand) and creature_gallery_ray. **The creature_gallery_ray baseline needs the Lead's re-approval** (the colour and the hover changed).
+- **Ch11, the rime urchin's KO** @ 8152d4de: the spines fall open 50 degrees, with their tips lifting so the low ones lie on the floor, not in it, and the test slumps and tips. Viewed on the clip sheet: the idle ball turns into a flat, parted star. The ice cracking is left to the KO effect (VFX).
+- Checks: validate_data 0/0; tools test_creatures OK; Godot creature 87/0 (test_creature_actor's ray constants now 0.95 m hover and 0.8 m pool drop); gdlint and gdformat clean; Blender verify identical (gallery_ray, rime_urchin, plus ridge_lynx, scree_crawler and fen_leech for the earlier commits). Skipped: coverage (no battle or progression code) and the full manifest.
+- **MERGE-READY @ 8152d4de** (it includes 87edc76c, 35816168 and c4360dfb).
+- Next: the conduit crawler's legs (Ch11), the cord moth's battle scale (Ch12), the rim crawler's value (Ch16), the ridge lynx's leg shaping, then the Act II wildlife builds.
