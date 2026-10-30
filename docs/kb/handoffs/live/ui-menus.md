@@ -1004,3 +1004,21 @@ MERGE-READY @ 8287ca8b: the portraits re-baked on big20's models, and the Act II
     - Combat: Pell's row, the rooted status, the enemy model links;
     - Narrative: records.json and the Vowbound text;
     - the PC's row 67 verification.
+- 2026-10-30 13:40, **the Lead's 09:58 note:** big21 (0347aa74) carries row 67's fix, and the PC is measuring it.
+  - **Merged big21** (59202bae1). Its own resolution wins for the codex, flags and Sefir's portraits (the characters
+    track's GPU-QA re-render). strings.csv keeps my Act II objective lines; its four Act II LORE rows now live in
+    ch10/ch15.csv. I redid the merge once, after a stash dropped its MERGE_HEAD, so the commit is a true merge.
+  - **The Status page's Bound section** (5e1e8d38a): a caller (Asha) lists the Vowbound bound so far, in bind order, or "None
+    yet". It sits under Lattice in the right column, because the left one has no room once seven heroes are listed
+    (screens.md updated). I viewed it with all six of Act II. test_status_menu 8/0, aspect 18/0,
+    pseudo_loc_screens 17/0.
+  - **Act II inns** (92151e255): `ansedra_guest` (shops.json, `order: true`, price 0, from `ch13_started`).
+    - The rest reads "No charge" and "A night here costs nothing."; an empty purse still rests.
+    - Any inn marked `order` refuses those outside the Level ("The door stays shut. The Order keeps no guests
+      outside the Level."). Saltwright inns still take them.
+    - I viewed it through the inn shot (temporarily pointed at the guest house). test_inn_menu and test_inn 11/0,
+      shop 28/0.
+    - **For the Ch13 zone's owner:** place a trigger at Sefir's house (the `sefir` POI) with
+      `{"inn": "ansedra_guest"}`, as Quellan's inn does.
+  - **Portraits:** Malcor Venn and the three Abiding guards aren't in big21 yet; I'll bake them as soon as they land.
+MERGE-READY @ 92151e255: big21 merged; the Bound section; Act II inns.
