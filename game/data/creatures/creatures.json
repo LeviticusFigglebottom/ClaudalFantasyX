@@ -239,21 +239,21 @@
     "nhoa": {
       "scene": "res://game/creatures/nhoa/nhoa_battle.tscn",
       "vowbound": true,
-      "vowbound_pending": "M3-CRE-642 asks Combat for the vowbound.json row (docs/kb/art/creatures/vowbound/nhoa.md, open questions)",
+      "clip_by_skill": {"silt_fall": "cast", "deep_well": "cast", "nhoa_echo": "cast", "farewell_tide": "special"},
       "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45},
       "stand_in": {"yaw_deg": -90.0, "height": 3.2, "radius": 0.5}
     },
     "hesk": {
       "scene": "res://game/creatures/hesk/hesk_battle.tscn",
       "vowbound": true,
-      "vowbound_pending": "M3-CRE-643",
+      "clip_by_skill": {"knot_light": "cast", "cord_lift": "cast", "hesk_mending": "cast", "pass_cord": "special"},
       "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45},
       "stand_in": {"yaw_deg": -90.0, "height": 2.4, "radius": 0.6}
     },
     "ethren": {
       "scene": "res://game/creatures/ethren/ethren_battle.tscn",
       "vowbound": true,
-      "vowbound_pending": "M3-CRE-644",
+      "clip_by_skill": {"level_hand": "cast", "hold_the_hour": "cast", "lacquer_screen": "cast", "still_water": "special"},
       "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45},
       "stand_in": {"yaw_deg": -90.0, "height": 2.5, "radius": 0.6}
     },
