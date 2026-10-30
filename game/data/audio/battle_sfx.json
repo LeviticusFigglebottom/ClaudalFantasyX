@@ -197,6 +197,9 @@
   "vowbound_stings": {
     "ilun": "ilun_summon",
     "virel": "virel_summon",
-    "kahre": "kahre_summon"
+    "kahre": "kahre_summon",
+    "nhoa": "nhoa_summon",
+    "hesk": "hesk_summon",
+    "ethren": "ethren_summon"
   }
 }
