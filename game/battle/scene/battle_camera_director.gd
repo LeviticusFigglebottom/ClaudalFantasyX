@@ -116,6 +116,39 @@ func play_moment(tag: StringName, pose: Dictionary, in_sec: float, hold_sec: flo
 	return true
 
 
+## `pose` lifted (lens and look together) so the lens stays camera.water_clear_m above a boss's flood water (the
+## Drownbell's): the phase moment's hero shot sat at the risen waterline, the surface edge-on and gone (the big17
+## gate's dry drownbell_flood). Unchanged when no flood is up.
+func _above_water(pose: Dictionary) -> Dictionary:
+	var vfx := _ctl.stage.get_node_or_null(^"BattleVfx") as BattleVfx if _ctl != null else null
+	var boss := vfx.boss if vfx != null else null
+	# the rising water's target, not where it is: the moment starts while the flood is still coming up
+	var level := maxf(boss.water_y(), boss.flood_target_m) if boss != null and boss.water != null else NAN
+	if is_nan(level) or pose.is_empty():
+		return pose
+	var lift := maxf(
+		(
+			(_parent_inverse() * Vector3(0.0, level, 0.0)).y
+			+ float(data.get("water_clear_m", 0.0))
+			- (pose["pos"] as Vector3).y
+		),
+		0.0
+	)
+	if lift <= 0.0:
+		return pose
+	var out := pose.duplicate()
+	out["pos"] = (pose["pos"] as Vector3) + Vector3.UP * lift
+	out["look"] = (pose["look"] as Vector3) + Vector3.UP * lift
+	return out
+
+
+## Drops the camera moment in play and puts the camera on the default frame (a screenshot fixture that forces a
+## boss's phase wants the phase's frame, not the moment's push-in on the boss).
+func end_moment() -> void:
+	_moment = {}
+	rest()
+
+
 ## Seconds (battle speed applied by the caller) the camera moment still needs; 0 when none plays.
 func moment_left() -> float:
 	if _moment.is_empty():
@@ -137,7 +170,8 @@ func advance_moment(delta: float) -> void:
 	var home := _default_pose()
 	var w_in := _weight(t, 0.0, float(_moment["in"]))
 	var w_out := _weight(t, total - float(_moment["out"]), total)
-	var pose := _mix(_mix(home, _moment["pose"] as Dictionary, w_in), home, w_out)
+	# lifted each step: the flood's rise is set after the moment (both answer the same phase change)
+	var pose := _mix(_mix(home, _above_water(_moment["pose"] as Dictionary), w_in), home, w_out)
 	var pos: Vector3 = pose["pos"]
 	camera.transform = Transform3D(Basis.looking_at((pose["look"] as Vector3) - pos, Vector3.UP), pos)
 	camera.fov = float(pose["fov"])
