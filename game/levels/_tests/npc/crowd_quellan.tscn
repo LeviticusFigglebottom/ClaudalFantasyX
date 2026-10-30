@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/npc/haluna_villagers.gd" id="stage"]
+
+[node name="CrowdQuellan" type="Node3D"]
+script = ExtResource("stage")
+zone_scene = "res://game/levels/ch12/quellan/quellan.tscn"
+zone_id = &"ch12/quellan"
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Square" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.635707, 0.164388, -0.754223, -0, 0.977062, 0.212957, 0.77193, -0.135378, 0.621125, 24, 3.2, 16)
+fov = 50.0
+
+[node name="Well" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.675725, 0.15071, -0.721583, -0, 0.978877, 0.204449, 0.737154, -0.138151, 0.661451, 52, 2.6, 17.5)
+fov = 50.0

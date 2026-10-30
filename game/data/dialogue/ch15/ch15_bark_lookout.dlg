@@ -1,6 +1,6 @@
 // Ch15: a lookout on a windmill mast. The flotilla always moves.
 title: ch15_bark_lookout
-location: ch15/hollowmere
+location: ch17/hollowmere
 ---
 Townsfolk as "Lookout" [worried]: Order sail, three days west. We'll move the flotilla tonight. We always move. #line:ch15_bark_look_001
 ===

@@ -8,6 +8,8 @@
   "sun": {"pitch_deg": -50.0, "yaw_deg": 30.0, "energy": 1.2, "color": "#fff4e0"},
   "environment": {"background": "#a9c4d6", "ambient_color": "#c8d4dc", "ambient_energy": 0.6},
   "trigger_height": 3.0,
+  "_trigger_sink_note": "cloud-qa playthrough (the Lead, 10-30): a touch box starts trigger_sink_m below its `at` height, so a hero who lands on a deck from above and settles a hair under it (y -0.0004) still stands in it.",
+  "trigger_sink_m": 0.1,
   "encounters": {
     "_note": "M2-FP-28: FieldEncounters defaults a layout's encounters block may override. grace_m: metres walked after a random battle before the meter runs again. max_step_m: a frame's move longer than this is a placement, never walking. The Lead's FAST-TRACK (10-30, the human's playtest: fights too close together): every battle, scripted or random, owes the grace; grace_s: seconds of field time after it (counted from Rhen's first step back, while the story is free, so the fade back never counts); min_gap_m: the least gap any zone draws. At the 3.6 m/s run (field_movement.json) a zone's 95-145 m gap plus grace_m is a 31-44 s breather; tools/act1/encounter_pacing.py checks every zone.",
     "grace_m": 15.0,

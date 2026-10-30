@@ -1142,7 +1142,7 @@ DLG_CH13_TOBIN_004,He talks about you all the time. Mostly complaints.
 DLG_CH13_TOBIN_005,Good. Accurate.
 DLG_CH13_TOBIN_006,"You're the diver. She mentioned you. She said, 'Don't trust the diver.' So I like you already."
 DLG_CH13_TOBIN_007,Why marry into the Order?
-DLG_CH13_TOBIN_008,Somebody had to go first. I volunteered. Nobody had to be chosen.
+DLG_CH13_TOBIN_008,Peace has to start with somebody's wedding. Might as well be a good one.
 DLG_CH13_TOBIN_009,Good luck.
 DLG_CH13_TOBIN_010,I'll need it. Her knots are terrible.
 DLG_CH13_WENNA_001,In the Sanctum. She came here. She knelt here and scratched her name under their noses.
@@ -1160,12 +1160,6 @@ DLG_CH14_BARK_TENDER_001,Still water. Not a ripple. Look at the domes: you can't
 DLG_CH14_BARK_COMMANDER_001,That is my old commander.
 DLG_CH14_BARK_SMILE_001,"Smile, Lady Cantor. It is a wedding."
 DLG_CH14_CAMP_001,Liss.
-DLG_CH14_CAMP_002,Don't.
-DLG_CH14_CAMP_003,I wasn't going to say anything. I'll just sit.
-DLG_CH14_CAMP_004,He volunteered. They wanted a groom and he put his hand up so nobody would get picked. That's the whole of him.
-DLG_CH14_CAMP_005,That's the whole of a lot of people we've met.
-DLG_CH14_CAMP_006,Don't make him a lesson.
-DLG_CH14_CAMP_007,Sorry. You're right.
 DLG_CH14_CAMP_008,Here. Hold this. My hands won't stop.
 DLG_CH14_CAMP_009,What is it?
 DLG_CH14_CAMP_010,His wick-tool. He lent it to me in the morning. I was going to give it back after.
@@ -1178,7 +1172,7 @@ DLG_CH14_GATE_003,Merel.
 DLG_CH14_GATE_004,I know. I know. Go.
 DLG_CH14_LAMPS_001,Look. Straight. I'm third in. Watch for me.
 DLG_CH14_LAMPS_002,I'll be watching.
-DLG_CH14_LAMPS_003,It's leaning. It's leaning and we go in after the bells.
+DLG_CH14_LAMPS_003,It's leaning. It's leaning and we go in after the vows.
 DLG_CH14_LAMPS_004,Hold still. Cracked wick-seat. There.
 DLG_CH14_LAMPS_005,"Oh. Oh, thank you."
 DLG_CH14_LAMPS_006,Tobin's going to cry when the lamps come in. He cries at everything. Don't tell him I said.
@@ -1187,9 +1181,9 @@ DLG_CH14_PIN_002,"You're Order. Stillguard, once. We can't go up to the dais. Wo
 DLG_CH14_PIN_003,What is it?
 DLG_CH14_PIN_004,An oar-pin. Every hull in Hollowmere put a cut in it. It's to say: you're crew now.
 DLG_CH14_PIN_005,I will carry it.
-DLG_CH14_LISS_001,Don't. Don't say anything nice. I'll fall apart and I've got to hand him the ring.
+DLG_CH14_LISS_001,"Not now. If you're nice to me I'll fall apart, and I've got to hand him the ring."
 DLG_CH14_LISS_002,Three years I spent on this. Three years of being polite to Wardens.
-DLG_CH14_MEREL_001,Lady Cantor. Thank you for coming. He talks about you all. He talks about everyone.
+DLG_CH14_MEREL_001,Lady Cantor. Thank you for coming. I know all your names. I've had letters.
 DLG_CH14_TOBIN_001,She chose the sash. I chose the coat. We argued for a week. Best week of my life.
 DLG_CH14_TOBIN_002,Look at her. She's pretending she isn't happy. She's terrible at it.
 DLG_CH14_TOBIN_003,"Nobody had to be chosen, Rhen. I volunteered. That's the whole point. Somebody has to go first."
@@ -1222,12 +1216,15 @@ DLG_CH15_BARK_LOOK_001,"Order sail, three days west. We'll move the flotilla ton
 DLG_NAME_TOWNSFOLK_LOOKOUT,Lookout
 DLG_CH15_HERESY_HOLLOWMERE_001,"Outside the Level, are you? Welcome aboard. So's everyone on this hull."
 DLG_NAME_HULL_CAPTAIN_HOLLOWMERE_WRIGHT,Hollowmere wright
+DLG_CH15_HERESY_HOLLOWMERE_002,You came in off the sea. Sit. We'll hear it when you're ready.
 DLG_CH15_BARK_RCHILD_001,We watched the fire go out on the water. Mam says the man on it was brave. Was he?
 DLG_CH15_BARK_RCHILD_002,You can walk the whole city without touching water. I've done it. Twice.
 DLG_CH15_BARK_RCOOK_001,"Eat. Outside the Level or in it, nobody leaves my hull hungry."
 DLG_NAME_COOK_RAFT_COOK,Raft cook
+DLG_CH15_BARK_RCOOK_002,Eat. Nobody leaves my hull hungry.
 DLG_CH15_BARK_WIDOW_001,They took my husband in his good coat. He hates that coat.
 DLG_NAME_HULL_WIDOW_CAPTAIN_S_WIFE,Captain's wife
+DLG_CH15_BARK_WIDOW_002,The captains went south for a wedding. Back by the new moon.
 DLG_CH15_BARK_PUMP_001,She's a grandmother of mine. Pumps the bilge every night. Best worker on the hull.
 DLG_CH15_CAMP_001,Fourteen years on that stair.
 DLG_CH15_CAMP_002,And since.
@@ -1238,13 +1235,14 @@ DLG_CH15_CAMP_006,I expect so.
 DLG_CH15_CAMP_007,Do you want to?
 DLG_CH15_CAMP_008,I want to be relieved. That's what a watch is for. Somebody comes and takes the step. You go down and sleep.
 DLG_CH15_CAMP_009,Who takes the step?
-DLG_CH15_CAMP_010,"Nobody, if she does it right."
+DLG_CH15_CAMP_010,I don't know. Somebody always has.
 DLG_CH15_CAMP_011,Then I will stand it with you. Until then.
 DLG_CH15_CAMP_012,Bottom step's mine. You take the one above.
 DLG_CH15_DECK_ASHA_001,No. I'm not going to ask about your night. Mine's awful. Sit down.
 DLG_CH15_DECK_LISS_001,"Lacquer over cedar. Pegged, not nailed. Ansedrans peg everything. Tobin said they'd peg the sea down if they could."
 DLG_CH15_DECK_LISS_002,Sit with her.
 DLG_CH15_DECK_LISS_003,Don't. Don't say anything kind.
+DLG_CH15_DECK_LISS_006,I'll learn your quiet.
 DLG_CH15_DECK_LISS_004,Leave her be.
 DLG_CH15_DECK_LISS_005,"Go and sit somewhere else, Sallow."
 DLG_CH15_DECK_PELL_001,The sea is full here. Under.
@@ -1324,11 +1322,13 @@ DLG_CH15_DACES_003,Yeah.
 DLG_CH15_DACES_004,You've got his hands. Wright's hands. Don't let the diving fool you.
 DLG_CH15_DACES_005,He came through here twenty years ago trading salvage. Could hear a current in the water before he saw it.
 DLG_CH15_DACES_006,Sang every chart he knew. Too loud.
-DLG_CH15_DACES_007,"Built a hull in my dry-dock for a season, left it half-done, never came back for it. Best ear in the flotilla. Worst at finishing things."
+DLG_CH15_DACES_007,"Came back years after. Built a hull in my dry-dock for a season, left it half-done, never came back for it. Best ear in the flotilla. Worst at finishing things."
 DLG_CH15_DACES_008,He hummed the same song every night. Came home from the Low Reaches with salt in his beard.
 DLG_CH15_DACES_009,Went up the coast for wall-work when I was eight. Didn't come back.
 DLG_CH15_DACES_010,He left his lantern on its hook. That's the one thing he finished.
 DLG_CH15_DACES_011,He never said he had a son. Not once.
+DLG_CH15_DACES_013,You talked to my boy. Before. What did he say?
+DLG_CH15_DACES_014,He said nobody had to be chosen. He volunteered.
 DLG_CH15_DACES_012,Now I know why he never finished anything here.
 DLG_CH16_BARK_MOTHER_001,My mother walked here.
 DLG_CH16_BARK_CAIRN_001,Put a stone on as you pass. Not for luck. So the next one can find the way.

@@ -1168,6 +1168,46 @@ All four are moved in the generators (ch10/11/12/13_greybox.py) and regenerated;
   - ui-menus: M3-UI-1242.
   - The PC re-check of rows 34 and 39.
 
+### The Lead's 19:45 and 20:05 messages (10-30)
+- **19:45 status:** everything it listed was already pushed at 3e62a3256 (MERGE-READY in the 18:24 entry): the Pale Rim
+  exit, the three encounters, all 19 M4-A2P-114 setters, and the Ch14 court.
+  - The **ch01_zones red** isn't real. act2-plan's own log corrects it (a stale import cache after the merge), and it
+    passes 6/0 here.
+  - Ch14–16 mounts: the Choir's dressing still isn't anywhere.
+- **cloud-qa 1 (touch boxes):** GreyboxZone extends every trigger box `trigger_sink_m` (0.1 m, greybox_defaults.json)
+  below its `at` height, so a hero who settles at y -0.0004 still stands in it. New test:
+  `test_a_touch_box_reaches_below_its_floor`.
+- **cloud-qa 2 (o_kell):** a `kell_talk` interact trigger on Kell herself (29, 0, -7) plays the same `kell_stall` beat,
+  under the same flags. Its prompt is "Talk to Kell" (FIELD_PROMPT_CH01_KELL, appended). test_ch01_thread checks it.
+- **Checks:** zone_story (19/0), ch01 (20/0), ch04 (13/0), ch08 (25/0), ch09 (13/0), validate_data, flow check.
+  `layout`'s only red is the inherited test_aspect_layouts (ui's).
+- MERGE-READY @ 2f9f87dd9
+
+### The Lead's 21:05 list (10-30)
+- **Ch14–16 mounts:** done, except the Drowned Choir, whose dressing still isn't on env-art-b or integration
+  (M4-A2P-046 `doing`).
+- **M4-A2P-1500:** done at 3c0ebc49e/e057ab2a2 (18:24 entry).
+- **The Act II balance pass, Ch10–Ch13 as played:**
+  - Setup: all 11 Ch10–Ch13 suites (eight regulars and three bosses; Ch13 has no fight), 1,000 seeds, `--check`,
+    the ch08_seawall loadout. All in band.
+  - **Nothing trivial:**
+    - Regulars' naive wins run 24–58%, the bosses' 0.2–2.2%.
+    - Smart never wins a regular in fewer than 12.6 mean turns.
+    - The bosses' role answers sit at 61–63%, and the boss length climbs: the Drowner 23 smart turns, the Lamp
+      Engine 33, the Ram 43.
+  - **One spike:** `ch10_fen_leeches`.
+    - It cost smart about 3 items over 25 turns, and role answer won only 51%. Act I's last regulars cost 1.0–2.65
+      items over 12–18 turns (Ch6 skippers; Ch8 gulls, crabs, moths, 500 seeds).
+    - The cause was evasion 25 (misses stretch the fight), so it's now 18.
+    - At 1,000 seeds: naive 35.2, role 65.3, smart 99.6 at 23.2 turns and 2.83 items. That's about Ch8's gulls; the
+      longer fight is the leech's drain.
+  - **Per suite** (naive / role / smart, % win; smart turns):
+    - Fen archers 54 / 74 / 98 (17); fen roots 34 / 94 / 100 (18); fen leeches 35 / 65 / 100 (23).
+    - Vey rays 37 / 63 / 98 (22); Vey urchins 50 / 100 / 100 (13).
+    - Pass lynxes 48 / 68 / 100 (16); pass moths 58 / 96 / 100 (13); pass scree 56 / 94 / 100 (16).
+    - Drowner 1 / 62 / 100 (23); Lamp Engine 0 / 63 / 100 (33); Ram 2 / 61 / 100 (43).
+- MERGE-READY @ 6047d9d26
+
 ## Exact next step
 **BACKLOG EMPTY (2026-10-30 ~02:00):** the flow and pacing pass is done (`docs/kb/qa/act1_flow_pacing_pass.md`) and the
 Act II chapter drafts are written (`docs/kb/plan/act2/chapters/`, pre-gate). Waiting on:

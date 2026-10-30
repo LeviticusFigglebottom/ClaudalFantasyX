@@ -22,7 +22,8 @@
     -16.95
    ],
    "energy": 0.9,
-   "range": 5.0
+   "range": 5.0,
+   "flicker": 0.3
   },
   {
    "at": [
@@ -31,7 +32,8 @@
     -16.95
    ],
    "energy": 0.9,
-   "range": 5.0
+   "range": 5.0,
+   "flicker": 0.3
   },
   {
    "at": [
@@ -40,7 +42,8 @@
     -16.95
    ],
    "energy": 0.9,
-   "range": 5.0
+   "range": 5.0,
+   "flicker": 0.3
   },
   {
    "at": [
@@ -49,7 +52,8 @@
     1.4
    ],
    "energy": 0.9,
-   "range": 5.0
+   "range": 5.0,
+   "flicker": 0.3
   },
   {
    "at": [
@@ -58,7 +62,8 @@
     -1.4
    ],
    "energy": 0.9,
-   "range": 5.0
+   "range": 5.0,
+   "flicker": 0.3
   },
   {
    "at": [
@@ -67,7 +72,8 @@
     1.4
    ],
    "energy": 0.9,
-   "range": 5.0
+   "range": 5.0,
+   "flicker": 0.3
   },
   {
    "at": [
@@ -76,7 +82,8 @@
     0.75
    ],
    "energy": 0.6,
-   "range": 3.5
+   "range": 3.5,
+   "flicker": 0.3
   },
   {
    "at": [
@@ -86,7 +93,8 @@
    ],
    "energy": 0.8,
    "range": 6.0,
-   "color": "#4FB3B0"
+   "color": "#4FB3B0",
+   "flicker": 0.12
   },
   {
    "at": [
@@ -96,7 +104,8 @@
    ],
    "energy": 0.8,
    "range": 6.0,
-   "color": "#4FB3B0"
+   "color": "#4FB3B0",
+   "flicker": 0.12
   },
   {
    "at": [
@@ -106,7 +115,8 @@
    ],
    "energy": 0.8,
    "range": 6.0,
-   "color": "#4FB3B0"
+   "color": "#4FB3B0",
+   "flicker": 0.12
   },
   {
    "at": [
@@ -116,7 +126,8 @@
    ],
    "energy": 0.8,
    "range": 6.0,
-   "color": "#4FB3B0"
+   "color": "#4FB3B0",
+   "flicker": 0.12
   }
  ],
  "pieces": [
@@ -874,6 +885,70 @@
    "y": -1.6,
    "yaw_deg": 0.0,
    "scale": 1.792
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    14.0,
+    12.5
+   ],
+   "y": -0.85,
+   "yaw_deg": 30.0,
+   "drift": {
+    "bob_m": 0.05,
+    "period_s": 6.0,
+    "tilt_deg": 2.5,
+    "wander_m": 1.0,
+    "wander_s": 80.0
+   }
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    46.0,
+    13.0
+   ],
+   "y": -0.85,
+   "yaw_deg": 205.0,
+   "drift": {
+    "bob_m": 0.05,
+    "period_s": 6.0,
+    "tilt_deg": 2.5,
+    "wander_m": 1.0,
+    "wander_s": 80.0
+   }
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    57.0,
+    7.5
+   ],
+   "y": -0.85,
+   "yaw_deg": 110.0,
+   "drift": {
+    "bob_m": 0.05,
+    "period_s": 6.0,
+    "tilt_deg": 2.5,
+    "wander_m": 1.0,
+    "wander_s": 80.0
+   }
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    2.0,
+    9.0
+   ],
+   "y": -0.85,
+   "yaw_deg": 290.0,
+   "drift": {
+    "bob_m": 0.05,
+    "period_s": 6.0,
+    "tilt_deg": 2.5,
+    "wander_m": 1.0,
+    "wander_s": 80.0
+   }
   }
  ]
 }
