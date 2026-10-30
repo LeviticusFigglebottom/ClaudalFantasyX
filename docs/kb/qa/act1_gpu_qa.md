@@ -52,6 +52,17 @@ every zone, one battle per arena and every Act I boss intro. Contact sheets go o
   - Ashcrown greybox (26); Corrow's sphere rocks (28).
 - Rows 21–22 and 30–42 need the walk (next).
 
+**Battle-UI pass (2026-10-30, the Lead's pillar-4 ask), integration @ 0347aa74 (big21), High 2560×1440.** One fight per chapter: the Oil Slug, the tideline, the causeway shore, the Drownbell, the Spar-wraith, the Cinder Matron, Moll, the Tidecup match (Ch7) and the Undertow's Reach. Stills every 3 s; the sheets are in `docs/kb/qa/gpu/act1/pass5/battle_ui/`.
+- **Reads well:**
+  - the timeline (who acts next, foes marked);
+  - the "Physical, one foe · acts again in N turns" help line;
+  - the boss telegraphs ("The Toll comes in 2 of its turns · Rim 0/3"; "Close the Hand comes on its next turn");
+  - "HP unknown until Read";
+  - the greyed Escape/Swap with their reasons;
+  - the Tidecup's costs ("Costs 2 on the clock, 2 breath", odds, the miss outcome).
+- **New rows:** 69 (a wrong plural), 70 (faint damage numbers), 71 (the Spar-wraith dark at night), 72 (the Reach fight's party unreadable in the rain), 73 (Attack's "R3" label with no legend).
+- The walk starts each fight from its location, not the chapter, so most fights field only Rhen. That's a walk artefact, not a finding.
+
 **Pass 5 (2026-10-30), the Lead's open-row list, integration claude/new-session-mj8c3c @ 7dc3ab41 (big20), RX 9070 XT, High 2560×1440.** Stills are in `docs/kb/qa/gpu/act1/pass5/` (`index.txt`). The method matches pass 4: 47 shots, the row walk, the clean budget walk, and fresh-process probes.
 - **Fixed (12):** 23, 25, 43, 44, 45, 49, 50, 52, 53, 57, 60, and **67, the hitch regression.**
   - Every walk entry is under 1 s hidden.
@@ -203,6 +214,11 @@ every zone, one battle per arena and every Act I boss intro. Contact sheets go o
 | 66 | ch04 (F8 chapter start), after the opening cutscene | For about 10 s the field camera sits inside an orange wall (ch04_03/05 nearly fully dark), then settles above the lane. **pass 5: still about 10 s with the camera inside a wall (ch04_02/03/05).** | hero-integration (field camera), env-art | still open @ 7dc3ab41 | pass 4 (2026-10-30, integration @ 2f544938) |
 | 67 | Heavy zone entries on big19: Ch6 Brine Shoals, Corrow, Ch7 | **Over ADR 0205's 2 s again (a regression from big18).** Clean walk: Ch6 2557 ms hidden (big18 1653), Ch7 1567 (936), Ch8 1915. Fresh-process GPU swap: Brine Shoals 2857 ms hidden with a 4.5 s entry, and one of two runs printed no stats within 600 s (a hang). Corrow 3769 ms hidden with a 5.2 s entry (big18 2151). **pass 5 on big20: every walk entry is under 1 s (Ch5 950, Pemakar 917, Coilspire 488, Ch6 295, Ch8 414). Fresh-process swaps: Brine Shoals 5/5 with no hang, 321–336 ms hidden (instantiate 2398 ms, prewarm_wait_frames 416, a 6.1–6.4 s covered entry); Corrow 451/453 ms; Tamsule 450; Coilspire 542. claude/ui @ 329e7bce was not needed, so not measured.** **Re-probe on big21 (integration @ 0347aa74, which includes ui-menus' 329e7bce):** fresh Brine Shoals 5/5 with no hang, 240–248 ms hidden, though the covered entries lengthen to 8.1–8.4 s (6.1–6.4 on big20). Corrow 375/377 ms (entries 8.3–8.5 s); Tamsule 444; Coilspire 518. Walk ×2: Ch6 254–262, Ch7 412, the Bell Galleries 420–447, Ch8 344–348, Coilspire 496–499. The first of three walks crashed on the Ch6 entry: row 68. | tech / ui-menus (loading), env-art-b (ch06/ch08 weight) | fixed @ 7dc3ab41 | pass 4 hitches (2026-10-30, integration @ 2f544938) |
 | 68 | Ch6 (Brine Shoals) entry in the hitch walk, big21 @ 0347aa74 | **A segfault (exit 139) in 1 of 3 walks**, right after the title, on the Ch6 entry, with no crash backtrace. Just before it come "Another resource is loaded from path ... (possible cyclic resource inclusion)" errors for reed_b.glb and reed_d.glb, two threaded loads of the same villager model. The 2 walks that completed print 10 of these lines each. It fits ui-menus' four-loads-in-flight change (329e7bce) loading one model twice; the Godot 4.6.3 threaded-load crash path. | ui-menus (ResidentLoads / scene_loads), creatures (reed variants share sub-resources?) | open | row 67 re-probe (2026-10-30, integration @ 0347aa74) |
+| 69 | Battle help line (the Drownbell, Spar-wraith, Matron and Reach fights) | "Physical, one foe · Rhen acts again in **1 turns**": a wrong plural ("next" is used for 0). | ui-menus | open | battle-UI pass (2026-10-30, integration @ 0347aa74, High 1440p) |
+| 70 | Damage numbers: ch02_tideline, ch08 undertows_reach (and other bright or rain arenas) | The party's damage numbers on foes are a faint translucent grey (115, 62, 203 over the beach sand; 132 in the Reach's rain). They barely read. Damage taken (red) and the dark Underway's white numbers read fine. | battle-presentation (damage numbers), ui-menus | open | battle-UI pass (2026-10-30, integration @ 0347aa74, High 1440p) |
+| 71 | ch04_spar_wraith (the derelict deck at night) | At battle distance the Spar-Wraith is a black silhouette against the night sea; only its cyan spine glow reads. It's hard to see what is acting. | creatures-b (rim or emissive), env-art-b (the arena's night fill) | open | battle-UI pass (2026-10-30, integration @ 0347aa74, High 1440p) |
+| 72 | ch08 undertows_reach | In the rain the party is tiny, dark figures at the frame's right and the boss is a dark mass. The heavy rain overlay hides the party's turns. | battle-presentation (camera), env-art-b (the arena light) | open | battle-UI pass (2026-10-30, integration @ 0347aa74, High 1440p) |
+| 73 | The command menu (every fight) | Attack is labelled "R3" at the right, with no legend, where the other commands show a cost or a reason (Swell "Ballast", Escape 70%, Swap "No time"). Pillar 4: what does an action cost? | ui-menus | open | battle-UI pass (2026-10-30, integration @ 0347aa74, High 1440p) |
 
 ## Pass 3 hitches (2026-10-30, ADR 0205: hidden ≤ 2 s, visible ≤ 50 ms), High 2560×1440
 

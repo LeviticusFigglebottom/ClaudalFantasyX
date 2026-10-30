@@ -1,0 +1,88 @@
+{
+ "version": 1,
+ "doc": "Act I battle-UI pass (pc-gpu, pillar 4): one fight per chapter (Ch7: the Tidecup match), dwell 24 s, stills every 3 s.",
+ "segments": [
+  {
+   "id": "launch",
+   "kind": "launch",
+   "arg": "res://game/core/boot.tscn"
+  },
+  {
+   "id": "title",
+   "kind": "scene",
+   "arg": "res://game/core/boot.tscn"
+  },
+  {
+   "id": "ch01_b_ch01_oil_slug",
+   "kind": "battle",
+   "arg": "ch01_oil_slug",
+   "dwell": 24,
+   "return": "ch01/oruvel_underway",
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch02_b_ch02_tideline",
+   "kind": "battle",
+   "arg": "ch02_tideline",
+   "spawn": "BattleReturn",
+   "dwell": 24,
+   "return": "ch02/haluna",
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch03_b_ch03_causeway_shore",
+   "kind": "battle",
+   "arg": "ch03_causeway_shore",
+   "dwell": 24,
+   "return": "ch03/saltgrass_causeway",
+   "press": "ui_accept"
+  },
+  {
+   "id": "shell_shrine_b_drownbell",
+   "kind": "battle",
+   "arg": "drownbell",
+   "dwell": 24,
+   "return": "ch03/shell_shrine",
+   "press": "ui_accept"
+  },
+  {
+   "id": "brightwater_ferry_b_ch04_spar_wraith",
+   "kind": "battle",
+   "arg": "ch04_spar_wraith",
+   "dwell": 24,
+   "return": "ch04/brightwater_ferry",
+   "press": "ui_accept"
+  },
+  {
+   "id": "ashcrown_b_ch05_cinder_matron",
+   "kind": "battle",
+   "arg": "ch05_cinder_matron",
+   "dwell": 24,
+   "return": "ch05/ashcrown",
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch06_b_ch06_inquisitor",
+   "kind": "battle",
+   "arg": "ch06_inquisitor",
+   "dwell": 24,
+   "return": "ch06/brine_shoals",
+   "press": "ui_accept"
+  },
+  {
+   "id": "tidecup_match",
+   "kind": "scene",
+   "arg": "res://game/levels/ch07/tidecup_match/tidecup_match.tscn",
+   "dwell": 24,
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch08_b_undertows_reach",
+   "kind": "battle",
+   "arg": "undertows_reach",
+   "dwell": 24,
+   "return": "ch08/corrow",
+   "press": "ui_accept"
+  }
+ ]
+}
