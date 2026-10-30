@@ -3,6 +3,17 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ 425b1109: the Lead's 19:45 item.**
+  - **Ch11–Ch13 cutscene cues:** Ch13 has no staging yet on any branch (Ch11 and Ch12's were checked at faaa30a0). act2-plan's cue tables have no missing cue (17:50), so there is nothing to render. I'll rerun the staged check when Ch13 lands.
+  - **The Act II boss themes as played in battle-presentation's intros** (bdc5ef22 and the Ch10–Ch12 intros on big25; choreo.json boss_intro: camera_in 1.1 s, hold 2.0–2.4 s, camera_out 0.8 s; the title card at 0.7 s).
+    - **Found:** BattleBossIntro announces `boss_intro` "as the intro starts", as the camera begins to move, but every boss sting (Act I's and Act II's) hits in its first 0–0.2 s. So the hit came before the boss's name was on screen.
+    - **Fixed in audio's layer** (no battle-presentation change): battle_stings.json rows take a `delay_sec`, and `boss_intro`'s is 0.7 s (= choreo.json `card_at_sec`). StingAudio holds the row and plays it on time from `advance()`. The `boss_intro` duck still starts with the event, so the boss cue dips as the camera moves and the hit lands with the card.
+    - A test ties `delay_sec` to `card_at_sec`, so a retimed card can't leave the sting behind.
+    - **Levels:** the boss cues sit at ~-18 LUFS, -23 under the duck; the stings hit at -16 momentary. The shortest stings now ring until 2.5 s (Drowner) and 2.8 s (Wakefin) of a 3.9–4.3 s intro, and the ducked cue plays under the rest: not silence.
+    - The battle cue enters at the battle's attach (battle_in_sec 0.3), before the reveal, as Act I's do.
+  - **Checks:** validate_data 0; Godot battle_stings 8/0 (one new), battle_audio 22/0 (test_battle_audio_live now steps through the delay), audio_runtime 11/0, impact_audio 6/0. **Skipped:** screenshots, Blender, coverage.
+  - **PC-QUEUE:** a boss intro by ear (the hit with the card).
+- **BACKLOG EMPTY (after 425b1109):** waiting on Ch13's staging, combat's Ch14–Ch16 fights, and the listening verdict.
 - **MERGE-READY @ 3d9476ea: the Lead's 19:25 item, the music of Act I's emotional beats as played** (cbc63b39 WIP, 3d9476ea).
   - **Scenes checked:** each key scene's cues traced against the scene's timeline (`act1_playthrough.py`'s pacing, including the player-paced hold gates): the Prologue, the Ch1 storm (the rising, going under, the Hullgnaw), the Drownbell, the Ch4 wake, Corrow (the storm against the wind, the Reach, Virel's binding, the Ebbing) and the Act I end (the road out, the vigil, the act card, the end card).
   - **Fine as they were:** the rising's loop gains its stem on cue; going_under fades 3 s before its own end; Hullgnaw, the Reach and the wake are loops; the storm against the wind is silent on purpose. The Drownbell is battle-driven (its stems on the Flood).
