@@ -1022,3 +1022,9 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - Both sheets now note ~18k LOD0 / 8k LOD1.
 - M4-A2P-056: the task file already says `review` (owner claude/creatures). It rides the next fast batch.
 - **MERGE-READY @ 664e7c86.**
+- **BACKLOG EMPTY (04:40):**
+  - Act I: test_npc fixed; M3-CIN-1250 already fixed upstream.
+  - The tortoise LOD1 is done.
+  - Act II: regulars done; wildlife in review.
+  - Waiting on others: the skill effects (M4-A2P-060), the conduit crawler's row (M4-A2P-022), the dressed kits, the Rim's arena, and the baselines.
+  - PC-QUEUE unchanged.
