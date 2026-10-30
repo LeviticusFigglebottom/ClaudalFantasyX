@@ -389,3 +389,5 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
 ### PC-QUEUE
 - Pell (M3-CHR-506) on the real GPU: the fur's read at full figure and the face's warm orange under the warm key
   (lavapipe has no real sheen/SSS balance); pell_front, pell_face, pell_storm_ch8.
+- **WIP on the branch head (2026-10-30):** the Lead's big17-review items (Asha's skirt as soft cloth in big poses, the
+  villagers' face variety) are rebuilding. **Merge only up to MERGE-READY @ 440c1f9e** until a new MERGE-READY line.
