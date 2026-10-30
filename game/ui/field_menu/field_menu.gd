@@ -555,6 +555,11 @@ func _build() -> void:
 	title.size.y = HudLayout.num(pm, "title_height")
 	title.text = tr("FIELD_MENU_TITLE")
 	_title_rule(Rect2(title.position, Vector2(pr.size.x * 0.5, title.size.y)))
+	if _heretics():  # Act II (M4-A2P-082): the act's one quiet reminder, never red
+		var sub := _label(&"HelpDimLabel", Rect2(title.position, title.size))
+		sub.text = tr("FIELD_MENU_SUBTITLE_HERETIC")
+		sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		sub.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	var help_h := HudLayout.num(pm, "help_height")
 	var help_at := Vector2(pr.position.x + pad, pr.end.y - pad - help_h)
 	_help = HudLayout.wrap_upward(_label(&"HelpDimLabel", Rect2(help_at, Vector2(pr.size.x - pad * 2.0, help_h))))
@@ -648,6 +653,11 @@ func _on_clicked(index: int, page_level: Level) -> void:
 		return
 	(_root if level == Level.ROOT else _detail).set_cursor(index, false)
 	accept()
+
+
+## True once the party are heretics (Act II, ch14_declared_heretics): the title row carries the subtitle.
+func _heretics() -> bool:
+	return model != null and model.state != null and bool(model.state.flags.get("ch14_declared_heretics", false))
 
 
 func _label(variation: StringName, r: Rect2) -> Label:
