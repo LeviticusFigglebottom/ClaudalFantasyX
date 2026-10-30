@@ -20,3 +20,6 @@ and reports; it never edits game or test files.
   test_causeway_route (1 failed: fewer than 2 fights on the 206 m walk after the harrier) and test_resident_loads
   (1 failed: haluna.tscn's resident list lacks the shopkeeper, smith and innkeeper actors; rerun
   tools/loading/scene_loads.gd). Result: gate-big24-lanes-b-result.md.
+- big25 @ 829b09a6: lanes B 16 files, 16:13-16:28 UTC (15 min, import included). 15 green, 1 red:
+  test_causeway_route (1 failed, the same as big24's: fewer than 2 fights on the 206 m walk after the harrier).
+  Result: gate-big25-lanes-b-result.md.
