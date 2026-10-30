@@ -277,7 +277,7 @@ New shot ids for `ch13/ansedra`, `ch13/sanctum` and `ch13/lamp_archive` (to add 
 |---|---|---|
 | A01 | Ansedra from the lagoon: domes doubled in the mirror | 24 mm, low over the water; **roughness 0** |
 | A02 | The outer moorings; a poler's stroke leaving no wake | 50 mm |
-| A03 | Kerrid stepping off and sitting among the polers; Asha looking back | 35 mm |
+| A03 | Kerrid stepping off and **standing** among the polers (ADR 0204: he never sits until Ch15); Asha looking back | 35 mm |
 | A04 | Sefir at his door | 50 mm; **no idle motion** |
 | A05 | Sefir's half-beat glance toward the outer moorings | 85 mm |
 | A06 | Toma's bow; "Be level" / "And still" | 50 mm |

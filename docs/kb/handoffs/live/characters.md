@@ -468,3 +468,39 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
   - In the parry the left hand stops at the chest, short of the haft.
 - MERGE-READY @ 3f0f5d67
 - **Next:** the Abiding guard (veiled gold lacquer: halberdier, Bulwark caster, the Captain of the Veil), in progress.
+
+## 2026-10-30, Lead FAST-TRACKs: the human's run playtest and GPU pass 5
+- **The jog (the human's #1 complaint), b344b974.** The default run for Asha, Rhen and Toma is now a brisk, grounded
+  jog.
+  - **Cause:** the cycle covered 2.6 m/s while the field runs at 3.6 m/s, so playback ran 1.4x fast (about 228 steps
+    a minute). Rhen's sprinter arm flung his hands to his face, and the 15 fps keys were linear.
+  - **Now:** elbows at 80-100 degrees with the hands between the waist and the chest, a compact counter-swing, a
+    slight lean, a soft bob and a heel strike.
+  - **Speed:** 164 steps a minute over a 2.6 m stride, so the cycle speed is 3.55-3.61 m/s and playback is about 1.0
+    at the field's 3.6 m/s, with no foot slide. integration-qa: locomotion.json's `run.speed_mps` changed to match.
+  - **Keys:** the body tracks are cubic.
+  - Asha's skirt and the white underskirt move with the legs (row 56 below).
+  - **Evidence:** side, front and three-quarter sheets at 6 phases, before and after, in
+    `docs/kb/qa/characters/jog_2026-10-30/` (`<hero>_run_before.jpg`, `<hero>_run_after.jpg`), rendered by
+    `tools/dev/loco_sheet.gd`.
+  - **Checks:** test_hero_clips 19, test_hero_locomotion OK; Godot hero_field_actor 15, locomotion 9, field_motor 9,
+    hero_stage 11, follower 13. The rig probes pass. Rhen's Body count is 44 -> 47 with a per-mesh reason: the right
+    armpit's inner crease, under the arm in every frame of the sheets.
+- **GPU pass 5 rows**, all re-rendered and viewed:
+  - **Row 46 (4c706a3f):** moll_face_yield is on the prop-free face stage.
+  - **Row 55 (7fbc2da2):** Fenn's and Sabe's white crops sit over a mid underpaint (no white cap).
+  - **Row 54 (a3494fea):** Sefir's front locks fall along the cheek and jaw, fuller.
+  - **Row 56 (5bb7e0ed):** the underskirt's hem follows the legs, so the stride shows.
+  - **Pell (5bb7e0ed):** stronger fur break-up, a calmer face, mass 0.25.
+  - **Checks:** asha, pell, sefir, villager_fenn and villager_sabe are identical on all 3 numpy paths.
+- **The 13 villagers' rig limits (6154f6d4).** The Lead (10:07) says not to raise limits without a reason per mesh.
+  I rendered every re-pinned overrun at its worst pose (front, three-quarter, back three-quarter).
+  - **Visible:** the Reeds, the scaleman and the smith showed skin through the top at the back of the shoulders as
+    the arms came forward. The fix is in the build: villager_costume hides a sleeved arm's skin from
+    `SLEEVE_HIDE_FROM` -0.35, not -0.10. On reed_b, skin-through went from 6.4 mm/10 to 2.0/0 and the exposed boundary
+    from 14 to 3, and the render is clean.
+  - **In progress:** all 36 villagers are rebuilding with it. I'll then lower each re-pinned limit back to what passes
+    and write a per-mesh reason for any that stays above the original.
+  - The remaining overruns at full figure (elder: the sandal sole under the foot; fenn, garo, gatekeeper, marra,
+    purser, ferrymaster, skipper_sadi) read clean in those renders.
+- MERGE-READY @ b344b974 (jog + pass-5 rows; the villager-limit follow-up is next)

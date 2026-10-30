@@ -69,7 +69,7 @@ lift their own dead the Kirru way, with their backs to the water; Asha stands at
 
 ### K04. The new shell (C, 3 min)
 - Pell to Owa (sample, voice only): *"Next time, I will turn around."* Owa: *"Then you may have your name back."*
-- The shell-carver from Ch10 (`ch10_bark_kirru_shellcarver`) carves it. The scraped shell goes into the lagoon; Pell
+- The name-carver from Ch10 (`ch10_bark_kirru_shellcarver`) carves it. The scraped shell goes into the lagoon; Pell
   does not watch it sink (he turns his back: the first time). Costume state change: the new shell (pell.md).
 - If `ch11_pell_knelt`: Owa says she heard where he knelt. Sets `ch18_pell_named`.
 

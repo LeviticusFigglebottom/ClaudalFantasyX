@@ -1101,3 +1101,50 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - Act I crowd variety is done: no adjacent clones in any zone.
   - The Act II town crowds are characters' sets (row 55) and have not landed.
   - Waiting on the Haluna LEAD-ASK and on Combat's conduit_crawler row.
+- **Your 12:08 relay:**
+  1. **The Haluna shopkeepers wear M3-CHR-512's bespoke models**, in two commits as asked:
+     - `ch02_haluna.json` drops its `crowd` keys @ 708e5719. The three crowd people, the `haluna` community and the `smith` role are gone, and crowd.json and the params are back byte-for-byte.
+     - `haluna_villagers.json`'s three rows are deleted in their own commit @ 4d2a4e99.
+     - Request task **M3-ARC-1327** asks slice-polish to retire the now-empty file and the populate call.
+     - I did not edit slice-polish.md: §7a forbids editing another environment's live file. Please carry the line there.
+     - Checks: Godot villager 40/0, haluna 65/0, crowd 12/0, npc 10/0; tools test_npc OK.
+  2. **Act II crowds from the bodies that exist:**
+     - **Hollowmere:** 10 Saltwright townsfolk on the hull-house platforms and dock edges (Ch15 B11).
+     - **Ansedra:** 3 barge-polers in plain grey (a stand-in `ansedra` community and a `poler` role), 2 Tenders in Order robes, 4 pilgrims from the islands and a pilgrim's child.
+     - **The Sanctum:** 6 pilgrims kneeling at the basin's ledges (S01).
+     - **Quellan:** 9 Ullari townsfolk from a stand-in `quellan` community.
+     - **Mechanics:**
+       - The Act II greyboxes name no actors, so a row's new `at` key makes its stand-in at `CrowdSpots/<id>` (VillagerLayer). validate_npc checks the form, and both sides have tests.
+       - gen_crowd now assigns Act II zones after every Act I zone, so a new town never reshuffles Act I's bodies (tested). Every Act I person is unchanged, and no shared clip library changed, so no Blender rebuild was needed.
+     - **One fix on the way:** `at` yaws follow HeroLocomotion (yaw 0 faces −z). My first commits had them half a turn out, corrected @ ab7fbabb.
+     - All viewed in the zones: dressed Hollowmere, Ansedra and Sanctum; greybox Quellan.
+     - **Not crowded, by the beat sheets:** the Sunken Vey and Lowlight are drowned, with no living townsfolk. Cloudloom's hall names nobody. Reedhollow's clutch is the Kirru: no human body fits, so it waits on characters.
+     - Named speakers stay characters': Ullari woman, innkeeper, weaver, herder, keth-reader, trader, Stillguard, Liss's father, widow, old woman.
+     - The stand-in communities' notes say characters' Ansedran and Ullari sets replace them.
+     - Checks: validate_data clean; gen_crowd --check; tools test_npc 30 OK; Godot crowd 13/0, villager 41/0.
+- **MERGE-READY @ 35e467a3** (the bespoke shopkeepers and the Act II crowds).
+- **BACKLOG EMPTY:** every Act II town whose bodies exist has its crowd. Reedhollow's Kirru clutch waits on characters (no human body fits). Still waiting on Combat's conduit_crawler row.
+- **Your 13:08 relay: the Kirru crowd and Reedhollow.**
+  - **Four Kirru bodies @ c6105cbf:** `kirru_man` (2.38 m), `kirru_woman` (2.20 m), `kirru_elder_woman` (2.16 m) and `kirru_youngster` (1.62 m).
+    - **Built on Pell's own build.** `assets_src/crowd/kirru/build_kirru.py` runs build_pell.py as a library on pell_params.json with each body's overrides (kirru_bodies.json). They share his head warp, fur, crest, whiskers, webs, mantle, name-shell, staff and palette rules, and a fix to Pell reaches them on their next rebuild.
+    - **Variety:** age and sex show in proportion, fur shade, grey guard hairs, crest and mantle reed. Costume and shell measures scale with height.
+    - **What ships:** the LOD1 (about 27k triangles) with Pell's maps at half resolution, about 8.5 MB a body.
+    - **Clips:** `crowd_kirru_clips.tres` is Pell's idle, talk and walk on the crowd armature; the import fits the hips per body.
+    - **Pipeline:** 4 `crowd_kirru_*` blender_builds jobs, verified byte-identical (37 files each); PROVENANCE rows; validate_npc and tests cover them.
+    - **Review stage `kirru_lineup`:** shots `kirru_lineup_front` and `kirru_lineup_faces`, the four beside Pell. SELF-RENDERED and viewed. **Their baselines are needed.**
+    - Art note: docs/kb/art/characters/kirru_crowd.md. Ownership row appended. The named Pell, Owa and the Kirru child stay characters'.
+  - **Reedhollow @ 1e31f521:**
+    - The clutch: eight bodies on the greybox's hidden `clutch_0..7` stage actors, so the farewell-tide shows Kirru. No two neighbours match in either line.
+    - Watchers: one on each house platform, facing the lagoon (R01), on CrowdSpots.
+    - Viewed in the zone, with the clutch revealed in a temporary scene.
+    - Which way the clutch faces is the layout's and the cutscene's (chapters).
+  - Checks: validate_data clean; taskboard; gdlint; tools test_npc 33 OK; Godot crowd 14/0, villager 42/0, npc 10/0; verify_blender_builds 4/4 identical.
+    - The `oruvel_seabed.glb` "uncovered" line is the pre-existing one, already routed to slice-polish.
+- **MERGE-READY @ 1e31f521** (the Kirru crowd and Reedhollow).
+- **BACKLOG EMPTY:** every Act II town has its crowd, Reedhollow included. Still waiting on Combat's conduit_crawler row.
+- **Your 14:08 FAST-TRACK (big23 test_resident_loads) @ 9b29d8b3:**
+  - The three crowd rows were already dropped @ 708e5719, and the shop villagers already wear their bespoke models.
+  - The red was the resident list: `game/data/ui/scene_loads.json` still held the borrowed actors. Regenerated with tools/loading/scene_loads.gd, so haluna.tscn now lists shopkeeper_actor, smith_actor and innkeeper_actor.
+  - The rerun also refreshed stale lists in Oruvel, Pemakar, Coilspire, Corrow and Corrow night (generated output; nothing hand-edited).
+  - Checks: Godot resident_loads 8/0, haluna 65/0.
+- **MERGE-READY @ 9b29d8b3.** The Kirru crowd is done (see above, MERGE-READY @ the 13:08 entry).

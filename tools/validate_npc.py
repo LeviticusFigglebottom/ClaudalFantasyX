@@ -12,7 +12,8 @@
 * Crowd rows (M3-CRE-659, ADR 0152): a row's `crowd` names a person in game/data/world/npc/crowd.json who stands
   in this zone at this stage actor (stand_in CutsceneStage/Actors/<stage_actor>, or the stage actor itself when it is
   a scene path with a "/", attach child); their body's actor
-  scene exists; `offset` is [x, y, z] or [x, y, z, yaw_deg], inside the stand-in only.
+  scene exists; `offset` is [x, y, z] or [x, y, z, yaw_deg], inside the stand-in only. A row's `at` (the same
+  form) makes its stand-in at CrowdSpots/<name> where the zone has none (an Act II town's crowd on a greybox).
 * game/data/world/npc/crowd.json: ids unique; each person's zone is a location, their body a planned body with an
   actor scene whose age band and sex are theirs, their work a crowd work clip (or none), their tints exactly
   cloth_a, cloth_b, cloth_c and hair, each a palette.json swatch or a two-swatch mix of the cloth, earth, stone,
@@ -24,7 +25,7 @@
   function).
 * Shared clips (M3-CRE-662): every planned body sits in exactly one of ranges.json's `clip_libraries` (its
   reference among the members), each library's file is committed, and the crowd import rules map bodies to the
-  same libraries.
+  same libraries, plus the Kirru bodies of assets_src/crowd/kirru/kirru_bodies.json to theirs (each with its actor).
 """
 
 from __future__ import annotations
@@ -46,6 +47,7 @@ ATTACH = {"beside", "child"}
 CROWD_FILE = "game/data/world/npc/crowd.json"
 CROWD_ACTOR = "assets/crowd/{id}/{id}_actor.tscn"
 STAGE_ACTORS = "CutsceneStage/Actors/"
+CROWD_SPOTS = "CrowdSpots"  # VillagerLayer.CROWD_SPOTS: where an `at` row's stand-in is made
 PALETTE_FILE = "docs/kb/art/palette.json"
 TINT_SLOTS = {"cloth_a", "cloth_b", "cloth_c", "hair"}
 CLOTH_SLOTS = ("cloth_a", "cloth_b", "cloth_c")
@@ -56,6 +58,7 @@ CROWD_RANGES = "assets_src/crowd/ranges.json"
 CROWD_PARAMS = "assets_src/crowd/params/{id}.json"
 CROWD_LIBRARY = "assets/crowd/clips/crowd_{lib}_clips.tres"
 CROWD_IMPORT_RULES = "game/data/import/crowd.json"
+KIRRU_BODIES = "assets_src/crowd/kirru/kirru_bodies.json"  # built on Pell's build, not the villager generator
 # CIELAB from sRGB (D65): the sRGB transfer curve, the sRGB -> XYZ matrix, the D65 white, the CIE f(t) knee
 SRGB_KNEE = 0.04045
 SRGB_LINEAR_SLOPE = 12.92
@@ -216,6 +219,13 @@ def zone_errors(root: Path, rel: str, locations: set[str], flags: set[str],
                 errs.append(f"{where}: an offset places a villager inside its stand-in (attach child) only")
         if not str(row.get("stand_in", "")):
             errs.append(f"{where}: no stand_in")
+        if "at" in row:
+            if not _point(row["at"]):
+                errs.append(f"{where}: at is not [x, y, z] or [x, y, z, yaw_deg]")
+            parts = str(row.get("stand_in", "")).split("/")
+            if len(parts) != 2 or parts[0] != CROWD_SPOTS or not parts[1]:
+                errs.append(f"{where}: an `at` row stands at {CROWD_SPOTS}/<name> (the spot VillagerLayer makes), "
+                            f"not {row.get('stand_in')!r}")
         if "silhouette" in row and not re.fullmatch(r"#[0-9A-Fa-f]{6}", str(row["silhouette"])):
             errs.append(f"{where}: silhouette is not a #RRGGBB colour")
         if "tuning" in row and not isinstance(row["tuning"], dict):
@@ -366,11 +376,21 @@ def clip_library_errors(root: Path, bodies: dict) -> list[str]:
         errs.append(f"{CROWD_RANGES}: body {b} is in no clip library")
     for b in sorted(set(member) - set(bodies)):
         errs.append(f"{CROWD_RANGES}: clip library member {b} is not a planned body")
+    # the Kirru bodies (kirru_bodies.json) share their own library, Pell's field clips (kirru_clips.py)
+    kirru = _load(root / KIRRU_BODIES, errs) if (root / KIRRU_BODIES).exists() else {}
+    for b in sorted(kirru.get("bodies", {})):
+        lib = str(kirru.get("library", ""))
+        member[b] = lib
+        if not (root / CROWD_ACTOR.format(id=b)).exists():
+            errs.append(f"{KIRRU_BODIES}: body {b} has no {CROWD_ACTOR.format(id=b)}")
+        if not (root / CROWD_LIBRARY.format(lib=lib)).exists():
+            errs.append(f"{KIRRU_BODIES}: clip library {lib} has no {CROWD_LIBRARY.format(lib=lib)}")
     rules_path = root / CROWD_IMPORT_RULES
     if rules_path.exists():
         mapped = _load(rules_path, errs).get("animations", {}).get("libraries", {})
         if mapped != member:
-            errs.append(f"{CROWD_IMPORT_RULES}: animations.libraries differs from {CROWD_RANGES} clip_libraries")
+            errs.append(f"{CROWD_IMPORT_RULES}: animations.libraries differs from {CROWD_RANGES} clip_libraries "
+                        f"and {KIRRU_BODIES}")
     return errs
 
 
