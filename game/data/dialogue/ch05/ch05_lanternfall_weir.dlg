@@ -36,7 +36,7 @@ Toma [worried]: Rhen Sallow, if you fall in that channel I am not coming in afte
 @wait 1.0
 @anim kerrid look_at asha
 @wait 0.6
-Kerrid [neutral]: I held a stair for your mother once. #line:ch05_weir_002
+Kerrid as "???" [neutral]: I held a stair for your mother once. #line:ch05_weir_002
 @face asha neutral 0.2
 @wait 0.8
 Asha [tender]: Where? #line:ch05_weir_003

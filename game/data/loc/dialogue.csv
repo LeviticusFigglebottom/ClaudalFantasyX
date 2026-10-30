@@ -282,7 +282,7 @@ DLG_CH04_BARK_BOWLS_001,Four bowls. They were at their food.
 DLG_CH04_BARK_BOWLS_002,"In a house where someone has died, you clear the table. That is all."
 DLG_CH04_BARK_HOUSING_001,That's the housing I sold Sadi. She paid me for half of it.
 DLG_CH04_BARK_HOUSING_002,...It goes where she stowed it.
-DLG_CH04_BARK_GLASS_001,"The glass was turned at the morning watch and never again. Three days ago, a little after eight."
+DLG_CH04_BARK_GLASS_001,"The glass was turned at the morning watch and never again. Three days ago, a little after eleven."
 DLG_CH04_BARK_INN_001,"A slate hangs on the inn door: ""Closed. We are all at the wall."""
 DLG_CH04_BARK_RHYME_001,"You said teach you. So listen. ...three for the bell and four for the hush, and then you start again."
 DLG_CH04_BARK_RHYME_002,Start what again?
@@ -363,6 +363,7 @@ DLG_CH04_SHELL_024,Then I can leave it if I like.
 DLG_CH04_WRAITH_001,"Stand back from the rigging, please."
 DLG_CH04_WRAITH_002,On my shield.
 DLG_CH04_INK_001,"Hold the lamp, if you are going to stand there."
+DLG_NAME_YSOLDE_THE_STRANGER,The stranger
 DLG_CH04_INK_002,What's wrong with the ink?
 DLG_CH04_INK_003,"They cut the name well. They inked it with fishing-ink, soot and oil. Salt lifts that in a season."
 DLG_CH04_INK_004,Ansedran lacquer outlasts the stone it is in.
@@ -428,7 +429,7 @@ DLG_CH05_KAHRE_001,She'll sleep now. She always does.
 DLG_CH05_KAHRE_002,"We will be here, Lady Cantor."
 DLG_CH05_KAHRE_003,Toma.
 DLG_CH05_KAHRE_004,...Asha.
-DLG_CH05_KAHRE_005,Three hundred years in there with a hammer. You'd think he'd run out of things to hit.
+DLG_CH05_KAHRE_005,All those years in there with a hammer. You'd think he'd run out of things to hit.
 DLG_CH05_KAHRE_006,You've got a look like you're pricing it.
 DLG_CH05_KAHRE_007,The roll says he repaired the hinges of every temple door he passed through. Unasked.
 DLG_CH05_KAHRE_008,That sounds like a smith.
@@ -456,6 +457,7 @@ DLG_CH05_BOATS_008,It's what they do.
 DLG_CH05_BOATS_009,Level preserve them.
 DLG_CH05_WEIR_001,"Rhen Sallow, if you fall in that channel I am not coming in after you."
 DLG_CH05_WEIR_002,I held a stair for your mother once.
+DLG_NAME_KERRID_X2D86C2,???
 DLG_CH05_WEIR_003,Where?
 DLG_CH05_WEIR_004,...Then another time.
 DLG_CH05_WEIR_005,"Your name, sir?"
@@ -528,8 +530,8 @@ DLG_CH06_BARGE_022,"Be level, High Warden."
 DLG_CH06_BARGE_023,"And still, Toma Okeru."
 DLG_CH06_BARGE_024,"Go gently, Lady Cantor."
 DLG_CH06_BARK_ASHA_001,"How was your day, Rhen?"
-DLG_CH06_BARK_ASHA_002,...You always ask me that.
-DLG_CH06_BARK_ASHA_003,Then answer it one day.
+DLG_CH06_BARK_ASHA_002,...You're asking about mine.
+DLG_CH06_BARK_ASHA_003,Someone should.
 DLG_CH06_BARK_TOMA_001,"""Liss Varrow, wright, in the service of the Lady Cantor's party."" It reads well, I think."
 DLG_CH06_BARK_YSOLDE_001,The light goes early on the shoals. I will read until it does.
 DLG_CH06_LAMP_001,Don't touch that.
@@ -580,13 +582,15 @@ DLG_CH07_AFTER_006,I'll hang a lamp.
 DLG_CH07_BARK_BOARD_001,"Tidecup draw! First round at noon: Oruvel against Sorrin, at the Bell."
 DLG_NAME_VENDOR_BOARD_CALLER,Board-caller
 DLG_CH07_BARK_BOARD_002,The captains name their dead at the rim first. Be quiet for it.
+DLG_CH07_BARK_BOARD_AFTER_001,Second round's chalked for after the bells.
+DLG_CH07_BARK_BOARD_AFTER_002,Oruvel's line is wiped. Withdrawn. Nobody's to write anything beside it.
 DLG_CH07_BARK_CHILD_001,If you bring the float up you get to ring the little bell! The little one!
 DLG_CH07_BARK_ELDER_001,"Reefball's a rescue drill, that's all it ever was."
 DLG_NAME_NETMENDER_OLD_WOMAN,Old woman
 DLG_CH07_BARK_ELDER_002,You bring the float up like you'd bring up a body. People forget.
 DLG_CH07_BARK_GANTRY_001,Oruvel's side is still here. A week now. Nobody's had the heart to ask them.
 DLG_CH07_BARK_GANTRY_AFTER_001,Next round's in. Listen to them up there.
-DLG_CH07_BARK_GANTRY_AFTER_002,Oruvel's boat went out the river mouth an hour ago. Nobody cheered. They just moved aside.
+DLG_CH07_BARK_GANTRY_AFTER_002,Oruvel's crew came down from the Bell to ready their boat. Nobody cheered. They just moved aside.
 DLG_CH07_BARK_LANE_001,Hot year. Fast water. Good for the atoll sides.
 DLG_CH07_BARK_LANE_AFTER_001,Where'd they go?
 DLG_CH07_BARK_LANE_AFTER_002,Home.
@@ -599,17 +603,17 @@ DLG_CH07_MOOR_002,"I'm not a priest, Tavi."
 DLG_CH07_MOOR_003,You're the Cantor.
 DLG_CH07_MOOR_004,Then I'll do it the way we do it at home. Tell me what tied up here.
 DLG_CH07_MOOR_005,The Tallow Hen.
-DLG_CH07_MOOR_006,"Ollo's. Brann's uncle, and his wife."
-DLG_CH07_MOOR_007,"Brann's uncle, and his wife."
+DLG_CH07_MOOR_006,"Ollo's. Noa's uncle, and his wife."
+DLG_CH07_MOOR_007,"Noa's uncle, and his wife."
 DLG_CH07_MOOR_008,The Second Mooring.
-DLG_CH07_MOOR_009,The Ketters. All of them but Mae.
+DLG_CH07_MOOR_009,The Ketters. All of them.
 DLG_CH07_MOOR_010,The Ketters.
 DLG_CH07_MOOR_011,The Wicklight.
 DLG_CH07_MOOR_012,Kell.
 DLG_CH07_MOOR_013,Kell.
 DLG_CH07_MOOR_014,The Brass Thrush. The Low Lantern.
-DLG_CH07_MOOR_015,Dovic's brothers. Old Arro and his daughter.
-DLG_CH07_MOOR_016,"Dovic's brothers. Old Arro, and his daughter."
+DLG_CH07_MOOR_015,Ama's brothers. Old Arro and his daughter.
+DLG_CH07_MOOR_016,"Ama's brothers. Old Arro, and his daughter."
 DLG_CH07_MOOR_017,Pio.
 DLG_CH07_MOOR_018,...Yes. Pio.
 DLG_CH07_MOOR_019,Pio.
@@ -623,7 +627,7 @@ DLG_CH07_INTO_001,Tidecup week. Every purse-cutter on the coast is here.
 DLG_CH07_INTO_002,"Then hold on to yours, Mistress Varrow."
 DLG_CH07_INTO_003,...Oruvel always came up for this.
 DLG_CH07_LEAVE_001,"That'll be Tamsule's cup, then."
-DLG_CH07_NAMING_001,Aldo Sabe. My brother.
+DLG_CH07_NAMING_001,Aldo Merrow. My brother.
 DLG_CH07_NAMING_002,Up.
 DLG_CH07_NAMING_003,Oruvel.
 DLG_CH07_NAMING_004,Up.
@@ -732,7 +736,7 @@ DLG_CH08_WALL_FALLS_002,Someone. In the storm. Humming a current-song.
 DLG_CH08_WALL_FALLS_003,I heard them too. All of them.
 DLG_CH08_WALL_FALLS_004,Storm. Just the storm.
 DLG_CH08_WALL_FALLS_005,All right.
-DLG_CH09_BARK_HOBB_001,"Jory Sallow. Mag Sallow. Anni Tesk, nine years."
+DLG_CH09_BARK_HOBB_001,"Jory Wend. Mag Wend. Anni Lusk, nine years."
 DLG_CH09_BARK_HOBB_002,"Bren Coyle. The Coyle boys, both of them. Next row."
 DLG_CH09_BARK_LISS_001,Thirty-one baskets. I counted. Don't ask me to count anything else.
 DLG_CH09_BARK_MARRA_001,"When the last one's up, the captain calls it. ""Stair's clear."" That's how you know you can come off the wall."
@@ -748,7 +752,7 @@ DLG_CH09_WRONG_WAY_005,The rite has been danced the same way for nine hundred ye
 DLG_CH09_WRONG_WAY_006,Yes.
 DLG_CH09_WRONG_WAY_007,Which way should they point?
 DLG_CH09_WRONG_WAY_008,You go where it sleeps.
-DLG_CH09_WRONG_WAY_009,The Choir. Yes.
+DLG_CH09_WRONG_WAY_009,The Drowned Choir. Yes.
 DLG_CH09_WRONG_WAY_010,I will walk there too.
 DLG_CH09_WRONG_WAY_011,Who are you?
 DLG_CH09_WRONG_WAY_012,"...Walk behind me, then."

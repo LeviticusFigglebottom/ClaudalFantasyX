@@ -7,9 +7,9 @@
   "ch06_bark_asha_day": {
    "headers": {"location": "ch06/brine_shoals"},
    "ops": [
-    {"op": "line", "id": "ch06_bark_asha_001", "key": "DLG_CH06_BARK_ASHA_001", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 6},
-    {"op": "line", "id": "ch06_bark_asha_002", "key": "DLG_CH06_BARK_ASHA_002", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 7},
-    {"op": "line", "id": "ch06_bark_asha_003", "key": "DLG_CH06_BARK_ASHA_003", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 8}
+    {"op": "line", "id": "ch06_bark_asha_001", "key": "DLG_CH06_BARK_ASHA_001", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 7},
+    {"op": "line", "id": "ch06_bark_asha_002", "key": "DLG_CH06_BARK_ASHA_002", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 8},
+    {"op": "line", "id": "ch06_bark_asha_003", "key": "DLG_CH06_BARK_ASHA_003", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 9}
    ]
   }
  }

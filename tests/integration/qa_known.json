@@ -52,10 +52,10 @@
   },
   "unraised_doc": "test_qa_threads.gd: a flag a thread's chapter or main objectives wait on that its thread never raises -> why it isn't a softlock, and the task that closes the gap.",
   "unraised": {
-    "ch14_started": "A Ch14 objective in a ch13/ zone (the Lacquer Court), so Ch13's thread checks it (M3-UI-1242); not a softlock. Set by ch14.json's arrive (Ch14's own chapter). Closes with M4-A2P-117 (Ch14's fights and court flow; then a row 'chapter' field, or Ch13's thread playing into Ch14).",
-    "ch14_vows_spoken": "A Ch14 objective in a ch13/ zone (the Lacquer Court), so Ch13's thread checks it (M3-UI-1242); not a softlock. Set by ch14_the_vows. Closes with M4-A2P-117 (Ch14's fights and court flow; then a row 'chapter' field, or Ch13's thread playing into Ch14).",
-    "ch14_declared_heretics": "A Ch14 objective in a ch13/ zone (the Lacquer Court), so Ch13's thread checks it (M3-UI-1242); not a softlock. Set by ch14_the_vows. Closes with M4-A2P-117 (Ch14's fights and court flow; then a row 'chapter' field, or Ch13's thread playing into Ch14).",
-    "ch14_steps_held": "A Ch14 objective in a ch13/ zone (the Lacquer Court), so Ch13's thread checks it (M3-UI-1242); not a softlock. Set by the water-steps set piece's escape, and ch14_first_ripple. Closes with M4-A2P-117 (Ch14's fights and court flow; then a row 'chapter' field, or Ch13's thread playing into Ch14).",
-    "ch14_complete": "A Ch14 objective in a ch13/ zone (the Lacquer Court), so Ch13's thread checks it (M3-UI-1242); not a softlock. Set by ch14_left_standing. Closes with M4-A2P-117 (Ch14's fights and court flow; then a row 'chapter' field, or Ch13's thread playing into Ch14)."
+    "ch14_started": "A Ch14 objective in a ch13/ zone (the Lacquer Court), so Ch13's thread checks it (M3-UI-1242); not a softlock. Set by ch14.json's arrive (Ch14's own chapter). Closes with M4-A2P-118 (Ch14's fights and court flow; then a row 'chapter' field, or Ch13's thread playing into Ch14).",
+    "ch14_vows_spoken": "A Ch14 objective in a ch13/ zone (the Lacquer Court), so Ch13's thread checks it (M3-UI-1242); not a softlock. Set by ch14_the_vows. Closes with M4-A2P-118 (Ch14's fights and court flow; then a row 'chapter' field, or Ch13's thread playing into Ch14).",
+    "ch14_declared_heretics": "A Ch14 objective in a ch13/ zone (the Lacquer Court), so Ch13's thread checks it (M3-UI-1242); not a softlock. Set by ch14_the_vows. Closes with M4-A2P-118 (Ch14's fights and court flow; then a row 'chapter' field, or Ch13's thread playing into Ch14).",
+    "ch14_steps_held": "A Ch14 objective in a ch13/ zone (the Lacquer Court), so Ch13's thread checks it (M3-UI-1242); not a softlock. Set by the water-steps set piece's escape, and ch14_first_ripple. Closes with M4-A2P-118 (Ch14's fights and court flow; then a row 'chapter' field, or Ch13's thread playing into Ch14).",
+    "ch14_complete": "A Ch14 objective in a ch13/ zone (the Lacquer Court), so Ch13's thread checks it (M3-UI-1242); not a softlock. Set by ch14_left_standing. Closes with M4-A2P-118 (Ch14's fights and court flow; then a row 'chapter' field, or Ch13's thread playing into Ch14)."
   }
 }
