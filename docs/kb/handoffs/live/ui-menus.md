@@ -963,3 +963,12 @@ MERGE-READY @ 578a6ceb: the heresy's words per ADR 0204, and four Act II codex e
   - Combat: Pell's row, the rooted status, the enemy model links;
   - Narrative: records.json and the Vowbound text.
   - Row 67's PC verification (gpu/row67-verify) would jump ahead of everything.
+- 2026-10-30 11:20, **the Lead's 09:01 items.** I merged big20 (7dc3ab41) as 0a85bf07.
+  - In the codex merge, Narrative's Act II people set wins: its `malcor_venn` and `conclave` replace mine. My `keth` and
+    `heresy` stay under World (test_codex 16/0).
+  - **LEAD-ASK, row 67: big20 has amendment 4 (5c662779) but not the row 67 fix (329e7bce), and they belong together.**
+    - Amendment 4 moves ZoneCast's model instancing into GreyboxZone.build. That runs on the router's instantiate
+      thread while ResidentLoads' threaded loads are in flight, so big20 widens the window in which the hang showed.
+    - 329e7bce closes it: the router waits on its loads before it instantiates.
+    - Please take 329e7bce, and this branch, into big21 ahead of the next PC pass. If big20's PC pass shows more
+      hangs, that is the reason.
