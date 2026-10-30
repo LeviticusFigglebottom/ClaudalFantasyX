@@ -1183,6 +1183,31 @@ All four are moved in the generators (ch10/11/12/13_greybox.py) and regenerated;
   `layout`'s only red is the inherited test_aspect_layouts (ui's).
 - MERGE-READY @ 2f9f87dd9
 
+### The Lead's 21:05 list (10-30)
+- **Ch14–16 mounts:** done, except the Drowned Choir, whose dressing still isn't on env-art-b or integration
+  (M4-A2P-046 `doing`).
+- **M4-A2P-1500:** done at 3c0ebc49e/e057ab2a2 (18:24 entry).
+- **The Act II balance pass, Ch10–Ch13 as played:**
+  - Setup: all 11 Ch10–Ch13 suites (eight regulars and three bosses; Ch13 has no fight), 1,000 seeds, `--check`,
+    the ch08_seawall loadout. All in band.
+  - **Nothing trivial:**
+    - Regulars' naive wins run 24–58%, the bosses' 0.2–2.2%.
+    - Smart never wins a regular in fewer than 12.6 mean turns.
+    - The bosses' role answers sit at 61–63%, and the boss length climbs: the Drowner 23 smart turns, the Lamp
+      Engine 33, the Ram 43.
+  - **One spike:** `ch10_fen_leeches`.
+    - It cost smart about 3 items over 25 turns, and role answer won only 51%. Act I's last regulars cost 1.0–2.65
+      items over 12–18 turns (Ch6 skippers; Ch8 gulls, crabs, moths, 500 seeds).
+    - The cause was evasion 25 (misses stretch the fight), so it's now 18.
+    - At 1,000 seeds: naive 35.2, role 65.3, smart 99.6 at 23.2 turns and 2.83 items. That's about Ch8's gulls; the
+      longer fight is the leech's drain.
+  - **Per suite** (naive / role / smart, % win; smart turns):
+    - Fen archers 54 / 74 / 98 (17); fen roots 34 / 94 / 100 (18); fen leeches 35 / 65 / 100 (23).
+    - Vey rays 37 / 63 / 98 (22); Vey urchins 50 / 100 / 100 (13).
+    - Pass lynxes 48 / 68 / 100 (16); pass moths 58 / 96 / 100 (13); pass scree 56 / 94 / 100 (16).
+    - Drowner 1 / 62 / 100 (23); Lamp Engine 0 / 63 / 100 (33); Ram 2 / 61 / 100 (43).
+- MERGE-READY @ 6047d9d26
+
 ## Exact next step
 **BACKLOG EMPTY (2026-10-30 ~02:00):** the flow and pacing pass is done (`docs/kb/qa/act1_flow_pacing_pass.md`) and the
 Act II chapter drafts are written (`docs/kb/plan/act2/chapters/`, pre-gate). Waiting on:
