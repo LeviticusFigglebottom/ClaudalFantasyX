@@ -17,6 +17,9 @@ const ALL_FOUND_KEY := "READER_ALL_FOUND"
 const PANE_FMT_KEY := "READER_PANE_FMT"
 const NO_MARK := -1
 
+## Where row_of reads records by default (tests point it at their fixture).
+static var records_path := DATA_PATH
+
 ## The record row: {id, title_key, panes: [{title_key, lines: [key]}], hands: [{id, lines: [[pane, line]]}], flag}.
 var record: Dictionary = {}
 ## Each pane's mark (a line index, or NO_MARK).
@@ -38,11 +41,12 @@ func _init(row: Dictionary, flag_setter: Callable = Callable(), translate: Calla
 		marks.append(NO_MARK)
 
 
-## The records.json row with id `record_id` from `path`, or {}.
-static func row_of(record_id: StringName, path: String = DATA_PATH) -> Dictionary:
-	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+## The records.json row with id `record_id` from `path` (records_path when ""), or {}.
+static func row_of(record_id: StringName, path: String = "") -> Dictionary:
+	var from := path if path != "" else records_path
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(from))
 	if typeof(parsed) != TYPE_DICTIONARY:
-		push_error("DocumentReaderModel: could not read %s" % path)
+		push_error("DocumentReaderModel: could not read %s" % from)
 		return {}
 	for r: Variant in (parsed as Dictionary).get("records", []):
 		if r is Dictionary and StringName(str((r as Dictionary).get("id", ""))) == record_id:

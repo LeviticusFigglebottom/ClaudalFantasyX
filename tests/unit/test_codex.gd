@@ -208,6 +208,33 @@ func test_a_record_reads_in_its_own_voice() -> void:
 	_free_made()  # the runner has no after_each: no menu may outlive its test
 
 
+func test_a_record_with_a_reader_row_opens_in_the_document_reader() -> void:
+	var was := DocumentReaderModel.records_path
+	DocumentReaderModel.records_path = "res://game/levels/_tests/document_reader/reader_fixture.json"
+	var doc := CodexModel.load_data().duplicate(true)
+	for e: Dictionary in doc["entries"]:
+		if e["id"] == "basin_steps":
+			e["reader"] = "fixture_one"
+	flags[&"codex_basin_steps_found"] = true
+	var menu := _menu(_model(doc))
+	menu.select_category(3)
+	menu.select_entry(0)
+	assert_eq(menu.current_id, &"basin_steps")
+	menu.handle_input(_ev(&"ui_accept"))
+	var reader := menu.reader()
+	assert_true(reader != null and reader.is_open(), "Confirm opens the record in the reader")
+	if reader != null:
+		assert_eq(reader.model.pane_count(), 1, "alone, one pane")
+		assert_false(menu.handle_input(_ev(&"ui_down")), "the reader has the input, not the codex")
+		reader.close()
+		reader.motion().finish()
+	assert_false(menu.reader_open())
+	assert_true(menu.handle_input(_ev(&"ui_up")), "the codex has it back")
+	assert_true(menu.is_open() and _tree().paused, "still open, still paused")
+	DocumentReaderModel.records_path = was
+	_free_made()  # the runner has no after_each: no menu may outlive its test
+
+
 func test_long_text_scrolls_and_a_pad_can_read_it_through_the_text_column() -> void:
 	var menu := _menu(_long_model())
 	menu.handle_input(_ev(&"ui_accept"))
