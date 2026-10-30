@@ -60,3 +60,5 @@ STATUS_MENTAL_BREAK_DESC,Their magic defense is gone.
 STATUS_POWER_BREAK_DESC,Their strength is halved.
 STATUS_MAGIC_BREAK_DESC,Their magic is halved.
 STATUS_PROVOKE_DESC,Attacks aimed at a single foe must aim at the one who provoked them.
+STATUS_ROOTED,Rooted
+STATUS_ROOTED_DESC,Held by roots: cannot be swapped out of the line.
