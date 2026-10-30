@@ -33,6 +33,12 @@ Ch15's first visit (M4-A2P-045, env-art-b; docs/kb/plan/act2/zones/ch15_hollowme
                       waterline.
   hm_supper_table     the side scene's supper on a deck: a low table, four stools, bowls and an oil lamp (lit by the
                       zone). Origin at its foot.
+  hm_drydock_berth    an empty floating berth in Dace's row (Ch17, M5-A3P-1500): his dry-dock's pontoon (16 x 7 m,
+                      top y 0.6), its cradle blocks waiting for a keel, a pair of shear-legs lashed at the head with
+                      a block hanging, and a fender post at the outer (+X, +Z) corner. Origin at the waterline.
+  hm_drydock_berth_first  the first berth, where Dace built his first hull (B07): the same, but its fender post's
+                      top is worn pale where Tobin sat, an old rope coiled at its foot, and the rotted keel and rib
+                      stubs of that first hull lie in the mud under the pontoon's open end.
   hm_oil_lamp         a hanging clay oil lamp on its bracket (the zone puts a real light at its flame). Origin at the
                       bracket's foot.
 """
@@ -62,7 +68,8 @@ TRI_BUDGET = {"hm_lashed_hulls": (9000, 700), "hm_windmill": (5000, 400), "hm_ti
               "hm_signal_lamp": (1500, 150), "dace_hull_frame": (24000, 1600), "hm_far_flotilla": (9000, 2500),
               "hm_dock_4m": (2500, 200), "hm_dock_4m_open_n": (2500, 200), "hm_dock_4m_open_s": (2500, 200), "hm_dock_4m_open_ns": (2500, 200),
               "pyre_raft": (2500, 320), "hm_ship": (14000, 900), "hm_supper_table": (1500, 150),
-              "hm_oil_lamp": (600, 80)}
+              "hm_oil_lamp": (600, 80),
+              "hm_drydock_berth": (5000, 400), "hm_drydock_berth_first": (6500, 500)}
 
 DECK_Y = 0.9
 HULL_LEN = 10.0
@@ -760,6 +767,73 @@ def build_oil_lamp(seed: int = 2315) -> list[kc.MeshBuilder]:
     return out
 
 
+POST_AT = (7.4, 3.1)  # the fender post at the pontoon's outer corner (x, z)
+POST_TOP = 1.75
+KEEL_MUD_Y = -0.75  # the first hull's keel in the shallows off the pontoon, its rib stubs breaking the water
+
+
+def _berth(name: str, first: bool, seed: int) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for(name, seed)
+        mb = kc.MeshBuilder(name + ("-lod1" if lod else ""))
+        timber, drift, tar, lash = mb.material(M_TIMBER), mb.material(M_DRIFT), mb.material(M_TAR), mb.material(M_LASH)
+        # The pontoon (Dace's dry-dock's) and the cradle blocks down its centre line, waiting for a keel.
+        kc.rounded_block(mb, (0.0, DOCK_TOP - 0.5, 0.0), (8.0, 0.5, 3.5), drift, radius=0.06, seg=1, weather=WOOD,
+                         variation=float(rng.random()))
+        if not lod:
+            for z in np.arange(-3.3, 3.31, 0.55):  # deck seams
+                kc.tube(mb, np.array([[-7.9, DOCK_TOP + 0.005, z], [7.9, DOCK_TOP + 0.005, z]]), 0.01, 3, tar)
+        for x in np.linspace(-4.5, 4.5, 4):
+            h = 0.35 + float(rng.uniform(-0.05, 0.05))
+            kc.rounded_block(mb, (x, DOCK_TOP + h * 0.5, 0.0), (0.3, h * 0.5, 0.7), tar, radius=0.02, seg=1)
+        # The shear-legs: two poles from the deck's edges, lashed where they cross over the centre line, a block hung.
+        head = np.array([-1.0, 6.2, 0.0])
+        for sz in (-1.0, 1.0):
+            kc.tube(mb, np.array([[-1.0, DOCK_TOP, sz * 3.2], head + [0.0, 0.3, -sz * 0.25]]), np.array([0.11, 0.08]),
+                    5 if lod else 7, drift, cap_end=True)
+        kc.tube(mb, np.array([head + [0.0, 0.1, 0.0], [-1.0, 3.6, 0.0]]), 0.015, 3, lash)
+        kc.rounded_block(mb, (-1.0, 3.45, 0.0), (0.09, 0.15, 0.06), timber, radius=0.03, seg=1)
+        if not lod:
+            a = np.linspace(0.0, 2.0 * math.pi, 9)
+            kc.tube(mb, np.stack([np.full_like(a, -1.0) + np.cos(a) * 0.14, head[1] + np.sin(a) * 0.14,
+                                  np.zeros_like(a)], -1), 0.022, 4, lash)
+            kc.tube(mb, np.array([head + [0.0, 0.2, 0.0], [-6.5, DOCK_TOP, 0.0]]), 0.012, 3, lash)  # the back-stay
+        # The fender post at the outer corner, its foot in the water beside the pontoon.
+        px, pz = POST_AT
+        kc.tube(mb, np.array([[px, -1.2, pz], [px, POST_TOP, pz]]), np.array([0.16, 0.14]), 6 if lod else 9, drift,
+                cap_end=True, weather=WOOD)
+        if first:
+            # Tobin's post: its top worn pale and smooth where he sat, an old rope coiled at its foot.
+            kc.rounded_block(mb, (px, POST_TOP + 0.01, pz), (0.13, 0.025, 0.13), mb.material(M_SAIL), radius=0.02,
+                             seg=1 if lod else 2)
+            if not lod:
+                for k in range(4):
+                    a = np.linspace(0.0, 2.0 * math.pi, 13)
+                    r = 0.32 - k * 0.05
+                    kc.tube(mb, np.stack([px - 0.6 + np.cos(a) * r, np.full_like(a, DOCK_TOP + 0.03 + k * 0.03),
+                                          pz - 0.4 + np.sin(a) * r], -1), 0.025, 4, lash)
+            # The first hull's rotted keel in the mud off the pontoon's open (-X) end, rib stubs standing from it.
+            kc.tube(mb, np.array([[-8.5, KEEL_MUD_Y, 0.3], [-14.0, KEEL_MUD_Y - 0.15, -0.4]]), 0.12, 5 if lod else 7, tar)
+            for k in range(2 if lod else 6):
+                x = -9.0 - k * 0.9
+                lean = float(rng.uniform(-0.25, 0.25))
+                for sz in (-1.0, 1.0):
+                    kc.tube(mb, np.array([[x, KEEL_MUD_Y, sz * 0.15], [x + lean, KEEL_MUD_Y + float(rng.uniform(0.4, 0.9)),
+                                                                   sz * (0.6 + float(rng.uniform(0.0, 0.3)))]]),
+                            np.array([0.06, 0.035]), 4, tar)
+        out.append(mb)
+    return out
+
+
+def build_drydock_berth(seed: int = 2401) -> list[kc.MeshBuilder]:
+    return _berth("hm_drydock_berth", False, seed)
+
+
+def build_drydock_berth_first(seed: int = 2402) -> list[kc.MeshBuilder]:
+    return _berth("hm_drydock_berth_first", True, seed)
+
+
 TARGETS = {
     "hm_lashed_hulls": build_lashed_hulls,
     "hm_windmill": build_windmill,
@@ -775,4 +849,6 @@ TARGETS = {
     "hm_ship": build_ship,
     "hm_supper_table": build_supper_table,
     "hm_oil_lamp": build_oil_lamp,
+    "hm_drydock_berth": build_drydock_berth,
+    "hm_drydock_berth_first": build_drydock_berth_first,
 }

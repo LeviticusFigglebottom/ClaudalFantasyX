@@ -915,6 +915,28 @@
         "hm_dock_4m_open_s-lod1": 156
       }
     },
+    "hm_drydock_berth": {
+      "budget": [
+        5000,
+        400
+      ],
+      "bytes": 40344,
+      "lods": {
+        "hm_drydock_berth": 295,
+        "hm_drydock_berth-lod1": 126
+      }
+    },
+    "hm_drydock_berth_first": {
+      "budget": [
+        6500,
+        500
+      ],
+      "bytes": 71256,
+      "lods": {
+        "hm_drydock_berth_first": 837,
+        "hm_drydock_berth_first-lod1": 180
+      }
+    },
     "hm_far_flotilla": {
       "budget": [
         9000,
