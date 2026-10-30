@@ -59,3 +59,4 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
   - Ch13 §10.2: the ledger phrase "the heart sung in"; does it spend the Choir truth early?
   - Ch16 §10.5: act3_ending H03 says Sefir "raises Kesh from the stones" in Ch21, but Ch16 binds her to Asha; Act III's to reconcile.
   - Names proposed (banned-terms clean): Commander Brannoc Hale, Warden Dask, the dock-master Aldous Varrow, the Kirru eldest Owa (or unnamed); "Outside the Level" as the heresy's words.
+- BACKLOG EMPTY (2026-10-30, second pass): the plan, the inventory, the tasks, the track split, the critical path and all seven Act II beat-sheet drafts are done and pushed. The rest waits on the Lead's review or the gate: no .dlg or game data before it (the Lead's instruction).
