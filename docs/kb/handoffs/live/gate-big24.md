@@ -67,3 +67,18 @@ GATE-BUILT @ 019596bb (merge tip; this log commit sits on top)
     scene_loads.json for exactly this; re-gated.
   - test_causeway_route: 5/1, "at least 2 fights (206 m walk)" after the Harrier. Classifying on big23's tree; re-gated
     on the jog build.
+- Per the Lead (14:48), also merged:
+  - claude/act1-chapters @ d137f127 (MERGE-READY b368c93a: the causeway's generator keeps the 95–145 m band, which fixes
+    test_causeway_gameplay's stale layout and big23's test_causeway_route expectation). Task file M4-A2P-0401
+    `owner_session` taken from its owner, act1-chapters.
+  - claude/env-art @ a01a7336 (MERGE-READY b45addab: the Prologue–Ch4 walk pass, H07 marble, Ch11 gallery arena). Clean.
+  - claude/env-art-b @ 42c30e8e (MERGE-READY 4516750e: Ashcrown/Coilspire eye-height pass). Clean.
+- **Merge fallout, fixed (08119e97):** tools test_npc `Kirru.test_the_clip_library_is_pells_and_up_to_date` was green on
+  claude/creatures and red on the merge. characters' 5bb7e0ed (Pell pass 5) regenerated `pell_clips.tres`, from which the
+  Kirru crowd's clips derive. Regenerated with `assets_src/crowd/kirru/kirru_clips.py`; test_npc is now 33/0.
+- Tools suite (-j 2): reds were test_causeway_gameplay (fixed by act1-chapters' b368c93a; re-run green on the final tree),
+  test_npc (fixed above), and the known test_palette_check, test_screenshots and test_villagers.
+- **Process note:** lane A's last 12 files ran after the hero-integration merge landed in the same worktree without a
+  re-import (FieldShore wasn't in the class cache), so they were invalid. All are re-run in the 83-file re-gate on
+  the final tree (fresh import), which also covers every mid-batch merge.
+- Checks on the final tree: validate_data 0/0 · taskboard clean · gdlint and gdformat clean (1052 files) · no new duplicate PROVENANCE rows.
