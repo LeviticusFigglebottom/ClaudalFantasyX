@@ -851,3 +851,19 @@ Skipped:
 - coverage (no game/battle or game/progression code changed);
 - Blender (no Blender source touched);
 - the full manifest (no committed shot changed).
+- 2026-10-30 07:20, **the document reader (M4-A2P-080, Ch13), all ui-menus.**
+  - **Commits:** b842d60e (the reader) and 2cb811fd (the codex hook).
+  - **What it does:** DocumentReader lays a record's one to three panes side by side in the codex's frame. Each pane
+    holds one mark. A "hand" is found when every one of its lines is marked; its lines then turn gold and a gold rule
+    draws on across the gaps (at once under Reduced motion). The last hand sets the record's `flag`, and the line
+    under the panes counts the hands left.
+  - **Input:** keys, pad and mouse (hover, click to mark, the wheel, right-click Cancel).
+  - **The codex:** a record entry with `"reader": "<records.json id>"` opens in the reader, single pane, and gets the
+    input back when the reader closes.
+  - **Data:** `game/data/lore/records.json` ships empty. Narrative writes the Archive's ledgers, the Cantor roll,
+    Corran's line, Wenna's marks and Ama's keth (RECORD_<ID>_<NN> keys and the hands). The Ch13 scene calls
+    `DocumentReader.open_in(host, DocumentReaderModel.new(DocumentReaderModel.row_of(&"<id>")))`.
+  - **Shots:** document_reader_three and document_reader_one, over a fixture record under `game/levels/_tests/`, are
+    viewed. They are in the manifest with **no baselines**: the Lead bakes them (ADR 0205: screenshots never block).
+  - **Next:** the Act II items still waiting on other tracks (the seven-hero formation check, Pell's Listen, the rooted
+    refusal reason, Act II NPC portraits, Kerrid's second codex body).
