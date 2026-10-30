@@ -531,3 +531,12 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   cleanse 0.9; hesk_mending -> mending 0.8; pass_cord -> special 1.45. Portraits re-baked. Checks: Blender identical;
   tools OK; Godot creature 125/0, vowbound 101/0.
 - **In progress:** M4-CRB-008 Ethren and M4-A2P-057 Kesh (a new model) (worktree agents).
+- **MERGE-READY @ (this commit): M4-CRB-008, Ethren** (worktree agent, viewed by him; review combat). He read as a
+  stack of cones under a lampshade: the seams and halo now glow bound teal (were white paint), a halo bowl with a
+  lacquer rim, a crown cap closing the veil (still unkeyed on its own bone for the Act III veil-fall), the veil drawn
+  in and pleated, the robe bells re-cut so no hem pokes through (≥1.9 cm), lacquer bands and thin gold rims, raised
+  wing insets. New `stop` (Hold the Hour, contact 0.9) and `ward` (the lacquer screen, 0.8). Anchors. 15,546
+  triangles (≤16k); portraits re-baked. **Clip map for combat (M4-A2P-024):** attack 0.55; level_hand -> cast 0.8;
+  hold_the_hour -> stop 0.9; lacquer_screen -> ward 0.8; still_water -> special 1.45. Checks: Blender identical;
+  tools OK; Godot creature 131/0, vowbound 107/0 (test_creature_vowbound_act2 holds Nhoa, Hesk, Ethren).
+- **In progress:** M4-A2P-057 Kesh (new model), M4-CRB-009 the flat-engine part (worktree agents).

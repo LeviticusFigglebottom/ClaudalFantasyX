@@ -8,9 +8,6 @@ extends TestCase
 ## A strike's wind-up reads before its blow (docs/kb/plan/act2/bosses/README.md, the standard, item 3).
 const VOWBOUND_WIND_UP_MIN_SEC := 0.45
 const VOWBOUND_ACT2_ANCHORS: Array[StringName] = [&"vfx_core", &"vfx_keepsake"]
-
-# --- Nhoa, the Ice Vowbound (M4-CRB-006, docs/kb/plan/act2/bosses/nhoa.md) ----------------------------------------
-
 const NHOA: StringName = &"nhoa"
 const NHOA_HELD: StringName = &"nhoa_held"
 ## The Vowbound contract, the held form's release, and one clip per skill on her move list: the sweep (`attack`),
@@ -123,7 +120,6 @@ const HESK_LIFT_M := 1.0
 const HESK_BUNDLE_RAISE_M := 0.2
 const HESK_BOW_M := 0.45
 const HESK_END_SEC := 0.001
-var hesk_made: Array[Node] = []
 const ETHREN: StringName = &"ethren"
 const ETHREN_HELD: StringName = &"ethren_held"
 ## The Vowbound contract, the held form's release, and one clip per skill on his move list: the level press
@@ -203,6 +199,8 @@ const ETHREN_CORE_Y := Vector2(1.6, 1.9)
 const ETHREN_CORE_FRONT_M := 0.1
 const ETHREN_KEEPSAKE_NEAR_M := 0.15
 const ETHREN_END_SEC := 0.001
+
+var hesk_made: Array[Node] = []
 
 
 func test_nhoa_has_the_vowbound_clip_set_and_a_clip_per_skill() -> void:
