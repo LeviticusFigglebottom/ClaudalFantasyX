@@ -61,6 +61,15 @@ const HIDDEN_MAX_MS := 1000.0
 const VISIBLE_MAX_MS := 50.0
 ## --pipeline-trace: frames over this (ms) are printed, and any frame with a draw-time pipeline compile.
 const PIPELINE_TRACE_MS := 50.0
+## A dwell frame over this (ms) counts as a hitch (two frames at 60 fps).
+const HITCH_MS := 33.3
+## --stills: seconds between stills in a dwell (--still-every overrides).
+const STILL_EVERY_S := 5.0
+const STILL_JPG_QUALITY := 0.9
+## A --walk row's "press" action is tapped this often (s) through its dwell.
+const PRESS_EVERY_S := 1.5
+## The F8 chapter select's starts (the walk's "chapter" rows).
+const CHAPTER_SELECT := "res://game/data/debug/chapter_select.json"
 const PIPELINE_MONITORS: Array[Performance.Monitor] = [
 	Performance.PIPELINE_COMPILATIONS_CANVAS,
 	Performance.PIPELINE_COMPILATIONS_MESH,
@@ -87,7 +96,8 @@ const CSV_FIELDS := [
 	"frame_max_ms",
 	"hidden_max_ms",
 	"hidden_total_ms",
-	"visible_max_ms"
+	"visible_max_ms",
+	"hitches_33ms"
 ]
 
 var _opts: Dictionary = {}
@@ -133,12 +143,18 @@ func _run() -> void:
 	if saves != null and saves.has_method(&"hold_autosave"):
 		saves.call(&"hold_autosave", self)
 	var wanted := str(_opts.get("segments", "")).split(",", false)
-	for seg: Array in SEGMENTS:
+	var segments: Array = SEGMENTS if not _opts.has("walk") else _walk_segments(str(_opts["walk"]))
+	for seg: Array in segments:
 		if not wanted.is_empty() and not wanted.has(str(seg[0])):
 			continue
 		if str(seg[0]) == "haluna_beach":
 			for f in SEEN_FLAGS:
 				Game.set_flag(f)
+		if str(seg[1]) == "spawns":
+			# Every spawn of the current scene, found at run time (many zones build their Spawns in code).
+			for spawn in _scene_spawns():
+				await _segment(["%s.%s" % [seg[0], spawn], "place", "", spawn, seg[4]], gs.preset_id)
+			continue
 		await _segment(seg, gs.preset_id)
 	if _opts.has("budget") and not _over_budget.is_empty():
 		printerr("SLICE_BUDGET over in: %s" % ", ".join(_over_budget))
@@ -156,15 +172,30 @@ func _segment(seg: Array, preset: String) -> void:
 	var hidden := PackedFloat64Array()
 	var visible := PackedFloat64Array()
 	match kind:
-		"scene", "battle":
+		"scene", "battle", "newgame", "chapter", "location":
 			var router := get_tree().root.get_node(^"SceneRouter")
 			var swapped := [false]
 			var on_swap := func(_p: String) -> void: swapped[0] = true
 			EventBus.scene_changed.connect(on_swap)
-			if kind == "scene":
-				router.call(&"change_scene", str(seg[2]), spawn)
-			else:
-				BattleRequest.start(StringName(str(seg[2])), HALUNA_ID, spawn if spawn != &"" else &"BattleReturn")
+			match kind:
+				"scene":
+					router.call(&"change_scene", str(seg[2]), spawn)
+				"battle":
+					# --walk rows name the field location the battle returns to (seg[5]); the slice's is Haluna.
+					var back := StringName(str(seg[5])) if seg.size() > 5 and str(seg[5]) != "" else HALUNA_ID
+					BattleRequest.start(StringName(str(seg[2])), back, spawn if spawn != &"" else &"BattleReturn")
+				"newgame":
+					# As New Game does: a fresh game at locations.json's new_game (the Prologue).
+					Game.new_game()
+					FlowRouting.go_to(StringName(str(seg[2])), spawn)
+				"chapter":
+					# As the F8 chapter select does (M3-ARC-02): the story so far, the chapter and the party.
+					for start: Dictionary in DebugReadouts.chapter_starts(CHAPTER_SELECT):
+						if str(start["id"]) == str(seg[2]):
+							DebugReadouts.apply_chapter_start(start)
+							FlowRouting.go_to(start["location"], start["spawn"])
+				"location":
+					FlowRouting.go_to(StringName(str(seg[2])), spawn)
 			# M2-ARC-03: the title's warm-up holds the router's reveal; its frames are under the fade too.
 			hidden = await _frames_until(func() -> bool: return bool(swapped[0]) and not _reveal_held(router))
 			_hidden_cued = _last_cued.duplicate()
@@ -202,6 +233,14 @@ func _segment(seg: Array, preset: String) -> void:
 		"place":
 			WorldReturn.place_player(get_tree().current_scene, spawn)
 			visible = await _frames(VISIBLE_FRAMES)
+		"run":
+			# Play as a player would (Act I real-GPU QA): from the spawn (if named), hold the arg's input actions
+			# ("+"-joined, e.g. field_move_forward+field_camera_left) through the dwell; released after it.
+			if spawn != &"":
+				WorldReturn.place_player(get_tree().current_scene, spawn)
+			for action in str(seg[2]).split("+", false):
+				Input.action_press(StringName(action))
+			visible = await _frames(VISIBLE_FRAMES)
 		"flood":
 			var ctl := get_tree().current_scene as BattleController
 			if ctl != null and ctl.engine != null and not ctl.engine.enemies.is_empty():
@@ -227,7 +266,25 @@ func _segment(seg: Array, preset: String) -> void:
 						% " ".join(Array(visible.slice(0, 12)).map(func(v: float) -> String: return "%.1f" % v))
 					)
 				)
-	var dwell_us := float(_opts.get("dwell", 8.0)) * 1e6
+	# A --walk row may set its own dwell (seg[4]: a cutscene or a battle intro runs longer than a view).
+	var dwell_s := float(_opts.get("dwell", 8.0))
+	if seg.size() > 4 and float(seg[4]) > 0.0:
+		dwell_s = float(seg[4])
+	var dwell_us := dwell_s * 1e6
+	# --stills=<dir> (Act I real-GPU QA): a PNG of the view at the start of the dwell and every --still-every
+	# seconds. Saving reads the frame back, so the frame after each still is left out of the timings.
+	var stills := str(_opts.get("stills", ""))
+	var still_every_us := float(_opts.get("still-every", STILL_EVERY_S)) * 1e6
+	# A --walk row's own still_every (e.g. 0.12 s: a filmstrip of a run cycle) overrides --still-every.
+	if seg.size() > 7 and float(seg[7]) > 0.0:
+		still_every_us = float(seg[7]) * 1e6
+	var next_still := 0.0
+	var still_n := 0
+	var skip := false
+	# A --walk row's "press" (e.g. ui_accept): tapped every PRESS_EVERY_S through the dwell, as a player taps
+	# through dialogue (the dialogue box reads input events, so the tap is a parsed InputEventAction).
+	var press := str(seg[6]) if seg.size() > 6 else ""
+	var next_press := 0.0
 	var walls := PackedFloat64Array()
 	var gpus := PackedFloat64Array()
 	var cpus := PackedFloat64Array()
@@ -236,10 +293,27 @@ func _segment(seg: Array, preset: String) -> void:
 	while float(Time.get_ticks_usec() - start) < dwell_us or walls.size() < VISIBLE_FRAMES:
 		await RenderingServer.frame_post_draw
 		var now := Time.get_ticks_usec()
-		walls.append(float(now - prev) / 1000.0)
-		prev = now
-		gpus.append(RenderingServer.viewport_get_measured_render_time_gpu(_rid))
-		cpus.append(RenderingServer.viewport_get_measured_render_time_cpu(_rid))
+		if not skip:
+			walls.append(float(now - prev) / 1000.0)
+			gpus.append(RenderingServer.viewport_get_measured_render_time_gpu(_rid))
+			cpus.append(RenderingServer.viewport_get_measured_render_time_cpu(_rid))
+		skip = false
+		if press != "" and float(now - start) >= next_press:
+			_tap(StringName(press))
+			next_press += PRESS_EVERY_S * 1e6
+		if stills != "" and float(now - start) >= next_still:
+			_save_still(stills, id, still_n)
+			still_n += 1
+			next_still += still_every_us
+			skip = true
+		prev = Time.get_ticks_usec()
+	if kind == "run":
+		for action in str(seg[2]).split("+", false):
+			Input.action_release(StringName(action))
+	var hitches := 0
+	for w in walls:
+		if w > HITCH_MS:
+			hitches += 1
 	var vp := get_viewport()
 	var internal := Vector2(vp.size) * vp.scaling_3d_scale
 	var row := {
@@ -262,12 +336,13 @@ func _segment(seg: Array, preset: String) -> void:
 		"hidden_max_ms": "%.1f" % _pct(hidden, 1.0),
 		"hidden_total_ms": "%.0f" % (_mean(hidden) * hidden.size()),
 		"visible_max_ms": "%.1f" % _pct(visible, 1.0),
+		"hitches_33ms": hitches,
 	}
 	print(
 		(
 			(
 				"SLICE_SWEEP %s %s gpu med %s mean %s p99 %s | frame med %s p99 %s max %s"
-				+ " | hidden max %s total %s (%d) | visible max %s (%d) | scene %s"
+				+ " | hidden max %s total %s (%d) | visible max %s (%d) | hitches>33ms %d | scene %s"
 			)
 			% [
 				id,
@@ -283,6 +358,7 @@ func _segment(seg: Array, preset: String) -> void:
 				hidden.size(),
 				row["visible_max_ms"],
 				visible.size(),
+				hitches,
 				get_tree().current_scene.scene_file_path if get_tree().current_scene != null else "-",
 			]
 		)
@@ -387,6 +463,64 @@ func _trace_pipelines(window: String, i: int, ms: float) -> void:
 				% [_segment_id, window, i, ms, d[0], d[1], d[2], d[3], d[4]]
 			)
 		)
+
+
+## --walk=<res://...json>: the segments from a file instead of SEGMENTS (tools/gpu_bench/act1_walk.json). Each row
+## {id, kind, arg, spawn, dwell, return, press, still_every}; kinds as SEGMENTS plus newgame (New Game: a fresh
+## game, then arg's location), chapter (an F8 chapter-select start by id), location (go to a locations.json id),
+## spawns (every spawn of the current scene in turn, each a place segment named <id>.<spawn>) and run (hold arg's
+## "+"-joined input actions through the dwell, from spawn if named). press: an action tapped through the dwell
+## (PRESS_EVERY_S); still_every: this row's seconds between stills.
+func _walk_segments(path: String) -> Array:
+	var out: Array = []
+	var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+	if not data is Dictionary:
+		push_error("SliceSweep: cannot read the walk %s" % path)
+		return out
+	for row: Dictionary in (data as Dictionary).get("segments", []):
+		(
+			out
+			. append(
+				[
+					str(row.get("id", "")),
+					str(row.get("kind", "")),
+					str(row.get("arg", "")),
+					str(row.get("spawn", "")),
+					float(row.get("dwell", 0.0)),
+					str(row.get("return", "")),
+					str(row.get("press", "")),
+					float(row.get("still_every", 0.0)),
+				]
+			)
+		)
+	return out
+
+
+## The current scene's spawn markers: the children of its root's Spawns node, in order.
+func _scene_spawns() -> Array[StringName]:
+	var out: Array[StringName] = []
+	var scene := get_tree().current_scene
+	# As WorldReturn.place_player resolves them: the scene root's own Spawns node (a nested scene may have one too).
+	var spawns := scene.get_node_or_null(NodePath(WorldReturn.SPAWNS_NODE)) if scene != null else null
+	if spawns != null:
+		for c in spawns.get_children():
+			if c is Node3D:
+				out.append(StringName(c.name))
+	return out
+
+
+func _tap(action: StringName) -> void:
+	for pressed in [true, false]:
+		var ev := InputEventAction.new()
+		ev.action = action
+		ev.pressed = pressed
+		Input.parse_input_event(ev)
+
+
+func _save_still(dir: String, id: String, n: int) -> void:
+	DirAccess.make_dir_recursive_absolute(dir)
+	var img := get_viewport().get_texture().get_image()
+	img.save_jpg("%s/%s_%02d.jpg" % [dir, id.replace("/", "_"), n], STILL_JPG_QUALITY)
 
 
 func _write_csv(row: Dictionary) -> void:

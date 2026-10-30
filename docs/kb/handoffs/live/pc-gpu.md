@@ -4,11 +4,62 @@ Seeded by the Lead on 2026-10-23. **This environment owns this file** (CLAUDE.md
 branch after every finished item, and it replaces `docs/kb/qa/gpu/2026-10-23-pc-queue-progress.md` as the canonical
 record. The newest copy is on the most recently pushed `gpu/*` branch.
 
-> **Current session:** `session_01F3vrUMSWVyLnG3asrc8viy` (Remote Control on this PC, from 2026-10-27; it replaces
-> `session_01DKdurcvrzq9PEvuSu5L2nA`, which died when the PC was switched off mid-gate). The Lead is
-> cloud session `session_018aiGwGLGkxsnMnu8VfCu1m`. The integration branch is now
-> **`claude/undertow-lead-handoff-ze8rrn`** (-423ixt is frozen).
-> **This copy, on `gpu/render-creatures-fce2e82`, is the newest.**
+> **Current session (from 2026-10-29 ~20:20 EDT):** a new Remote Control session on this PC. The Lead is
+> `session_01Bg3iP7cPGyjbX4CyniBahc`; the integration branch is **`claude/new-session-mj8c3c`**.
+> **This copy, on `gpu/act1-qa-3`, is the newest.**
+
+## BACK ONLINE @ 2026-10-29 ~20:20 EDT: the Lead's pass-3 queue
+
+- **LFS: this PC reaches lfs.github.com** (HTTP 302 from Git Bash). `git lfs pull` fetched all 197 LFS objects
+  into the big18 worktree. The PC can push LFS objects on request.
+- **GPU-QA-DONE pass3 @ gpu/act1-qa-3.** Rows and the pass-3 summary are in `docs/kb/qa/act1_gpu_qa.md`; contact
+  sheets are in `docs/kb/qa/gpu/act1/pass3/`.
+  - Pass A: 618 of 619 shots. field_hud_over_haluna_wake hangs on a missing scene (row 43).
+  - Pass B: the walk, 141 segments.
+  - Open rows: 14 fixed (4, 6, 12, 15, 18, 19, 26, 27, 28, 32, 33, 35, 36, 40). Still open: 17, 21, 23, 24, 25, 31, 34,
+    37, 38, 39.
+  - New rows 43–63, with owners.
+  - Every track's PC-QUEUE answer is in the summary. One example: hero-integration's `material is null` comes from
+    the Corrow storm figure (row 44, creatures).
+  - Pass B's budget (the walk with stills): hidden-frame entries are mostly < 1 s now. Still OVER: Ch5 1707,
+    Pemakar 1625, Ch6 1640, Ch8 1804, Ch9 1529 and Corrow-night 1279 ms. The clean, still-free numbers are item 3.
+- **Items 2 and 3 are done** (the PC-QUEUE, and the hitches as a quick confirm per ADR 0205). Results are in
+  act1_gpu_qa.md under "Pass 3 hitches" and "Pass 3 costs"; the per-zone rows are `act1_big18:*` in perf_baseline.csv.
+  - Clean High walk: every hidden frame is ≤ 1.82 s, so all pass the 2 s bar.
+  - Fresh-process GPU swap sweep: Corrow 2151 ms and Pemakar 2016 ms, just over 2 s.
+  - Row 64: fights show a visible frame over 50 ms after the fade (tideline 79, causeway 123, Drownbell 98, Hermit
+    108–121, Matron 142, Moll 55–70 ms). Owner battle-presentation / tech.
+  - Row 65: M3-RND-21's smoke is 0.31 ms for 3 columns, and M3-RND-26's drop is 0.36–0.43 ms, both over 0.3 ms. The
+    fires cost 0.03 ms.
+  - The Spar-wraith's 45° turn is still open: it needs a capture in motion.
+  - Low and Ultra were not run (the Lead's quick-confirm call).
+  - New tool options: `--hide=<glob>` in gpu_bench and capture_preset.
+- **Row 17 (Undertow eye), the Lead's ask: MERGE-READY `gpu/row17-undertow-eye-rings` @ 12cf79cb (M3-RND-29, in
+  review).**
+  - The sea shader only: the spiral patterns are anti-aliased, the throat streaks redirected, and the normal is now
+    computed per pixel.
+  - `--filter=undertow` 53/0. Cost +0.02–0.10 ms at High 1440p.
+  - Lavapipe: the undertow_* shots that see the storm's sea will drift; re-approve them after viewing.
+- **Item 5 (Blender verifies): skipped**, per the Lead (ADR 0205: non-blocking).
+- **Item 4 (my RND work):** every RND branch named (M2-RND-01/02/03/04, M1-RND-22) is already merged and `done`.
+  Taking the rendering request tasks instead:
+  - **MERGE-READY `gpu/m3-her-1152-1124-freed-casts` @ ef078a10**, which fixes M3-HER-1152 (the RevenantTells cast)
+    and M3-HER-1124 (the UnderwaterRig deferred root). Both tasks are in review (qa).
+    - Checks: `--filter=_thread` 40/0 with no deferred-call error; revenant 8/0; underwater 8/0; lint and format clean.
+    - test_freed_cast_lint's one remaining hit is env-art-b's ebbing_motes (fixed on their branch).
+  - M3-RND-28 (the Ch8 storm figure's capsule over the water) should be met by creatures' storm figure (M3-HER-1142,
+    MERGE-READY on claude/creatures); I'll check it in pass 4. M3-HER-1161 (EbbingMotes) is fixed by env-art-b on their
+    branch.
+- **NEXT:** waiting for big19 to merge into claude/new-session-mj8c3c. Then **pass 4**: a re-check of only the open
+  rows that tracks mark fixed, plus the hitches, published to gpu/act1-qa-4.
+- **Item 1 (the plan as started), Act I real-GPU QA pass 3:** on `gpu/act1-qa-3`. That's origin/lead/gate-big18 @ 37a90b4c,
+  plus integration cf03aa8d (4 commits ahead), plus gpu/act1-qa-2, which held act1_gpu_qa.md and had never been merged.
+  The worktree is C:/Users/Aaron/hymn_qa3.
+  - The walk gains the three Act I zones it lacked: ch04/haluna_wake, ch05/pemakar and ch09/corrow_night.
+  - Pass A (619 shots, High ×2.667, `--setup`), then pass B (the walk), then the swap sweep (`act1_swap_sweep.py`
+    run windowed on the GPU), then re-checks of the rows.
+- Items 2–5 follow, in the Lead's order.
+- **Audio's PC-QUEUE (listening on real speakers) needs the human: skipped.**
 
 ## RESUMED @ 2026-10-27 ~23:30 EDT (the Lead: ADR 0041, Act I final quality first)
 
@@ -176,9 +227,27 @@ No job of this session is running. WSL `hymn` is idle: the batch (PIDs 302 and 2
   test wave). Asha is unchanged. Rendering, env-art and art should view the shots and approve the baselines.
 - **M2-CHR-11 verify (2026-10-27):** claude/characters @ 3723f3eb (incl. 20773234), AVX2 i9-12900K: base_body, rhen, toma
   and 9 villagers 12/12 identical (664 s). Reported to the Lead and characters.
-- **In progress (2026-10-28 05:20 EDT):**
-  - Act I QA pass B, visual, on lead/gate-ft-beach on the RX 9070 XT: every zone, spawn, battle and boss of Act I, stills every 5 s.
-  - Next: the per-zone budget run (`--budget`, no stills) after the visual walk (coverage is done). Then the rows and sheets go to gpu/act1-qa-*.
+- **Act I real-GPU QA, passes A and B and the budget (2026-10-28):** `docs/kb/qa/act1_gpu_qa.md` on `gpu/act1-qa-2`, 41 rows with owners, plus sheets under docs/kb/qa/gpu/act1/.
+  - Pass B walked Act I on lead/gate-ft-beach: 122 segments, 401 stills.
+  - New in pass B:
+    - the BattleResultPanel freed-object error (506×);
+    - ch06_ridge_skippers fought on the test stage;
+    - Moll still a capsule in battle;
+    - the Reach's arm fills the frame;
+    - followers between the camera and Rhen (Ch3);
+    - the camera against the Coilspire wall;
+    - Ch9 without Asha and Toma.
+  - **Budget:** every scene entry and battle start is OVER the 1000 ms hidden-frame budget. It grows from ~1.2 s (Ch1) to 4.1–4.5 s (Ch5–Ch9) as video memory climbs, so it may be accumulation. Visible frames are all within 50 ms, and GPU p99 is ≤ 3.6 ms everywhere. Owner: tech / ui (loading).
+- **The human's four FAST-TRACKS on big15 (lead/gate-big15 @ 6466a6f5), RX 9070 XT, High 1440p (2026-10-28 ~09:30):** sheets in `docs/kb/qa/gpu/act1/playtest_big15/`.
+  1. **The Prologue colour: yes.** Domes, blue bands and banners are in colour.
+  2. **The beach: yes.** Rhen lies in the shallows with Asha kneeling beside him, both faces in frame. He then sits up and stands. Still open: Asha's skirt passes through him (row 31), and two lines are framed on his waist when he stands (row 32).
+  3. **The party start: partly.** **Rhen is now on screen** at the start, with his lantern, walking beside Asha up the beach (start15.jpg). But the camera opens ~15 m back over the shallows, Toma isn't in frame, and when the camera turns in the village lane it swings into the stone walls with Rhen hidden.
+  4. **The run: grounded** (the Ch1 filmstrip at 0.12 s).
+- **Act I re-check on big15:** 15 of the open rows fixed, 12 still open (act1_gpu_qa.md, gpu/act1-qa-2).
+- **Load: over 75% today.** While lane B ran, the big15 Windows import peaked at 94% total CPU for ~74 s, and the 48-shot re-check ran at a median of 85% (max 100%). The playtest walk ran during Blender at a median of 40% (max 67%). From now on, GPU work waits for the gate's single-process steps, or the gate drops to 1 shard.
+- **big15 gate (running), lead/gate-big15 @ 6466a6f5** (restarted 06:35 when big15 moved from a44fec70):
+  - Lane B done: 593 compared, 375 failed, wall 7538 s.
+  - Blender running, then the lane-A suite (3 h limit) and coverage. Results to gpu/gate-big15-shots.
 - **M1-QA-09 on hardware (heroes, 2026-10-27):** 49 shots at High 2× and Ultra on ze8rrn@f580e756, `gpu/m1-qa-09-heroes`
   `docs/kb/qa/gpu/2026-10-27-m1-qa-09-heroes/`. Asha's staff and Toma's spear aren't gripped (open hands; they float upright
   in run/walk_cycle/offer_hand). The staff goes through the skirt when kneeling. Asha's underskirt is a rigid tube in
