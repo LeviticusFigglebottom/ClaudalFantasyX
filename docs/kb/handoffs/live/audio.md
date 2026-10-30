@@ -3,6 +3,19 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ 114d5cf1: since 3ec09d01.**
+  - **The four creature bosses' intro stings** (the Drowner, the Lamp Engine, the Avalanche Ram, the Wakefin), with reduced-audio twins. Their encounters aren't written yet, so `battle_stings.json` keys them by the intro's title key (`BOSS_TITLE_*`, choreo.json `boss_intro.by_enemy`). StingAudio now tries the encounter first, then later arguments, so a staged intro is named the moment combat writes the encounter (a new test in test_battle_stings).
+  - **The Avalanche Ram's own voice lost its ice** (ADR 0204 §2): wet, matted wool shedding water. Only the ram's 7 files changed.
+  - **Checks:** test_battle_stings 6/0; Godot `--filter=audio` 175/0; loudness and data OK; validate_data 0 errors; renders byte-identical twice.
+  - LEAD-ASK: Ch11's `rime_urchin` is designed with "ice-crusted spines on an ice plinth" (its sound rattles like icicles), but act2_plan notes ADR 0015's "nothing frozen" for Lowlight. Keep, or re-material it (salt-glass spines)? Default: keep until creatures answer. If it changes, its sound follows.
+- **BACKLOG (Act II), what's left and why it waits:**
+  - the `@music` and `@sfx` lines in the Act II scripts: Story's `.dlg` don't exist yet;
+  - the boss encounter and phase rows: combat's encounters aren't written;
+  - `court_steps`: the step-hold set piece isn't designed in data yet;
+  - the rest of the cue sheet's §4 SFX families: each waits for its feature (ripples and bells with the lagoon scene, drain and rooted with M4-CMB-1001, repair and part breaks with the engine features, the Wakefin's telegraphs with its rows, heresy and reader UI with ui-menus);
+  - retiming each scene cue to the final beat sheets.
+  - Meanwhile I'll take Act I FAST-TRACK and PC rows first if any appear.
+
 - **MERGE-READY @ 3ec09d01: Act II audio, all of the cue sheet that needs no beat sheet or encounter.**
   - **Every Act II zone plays:** `music.json` zone rows for all 14 levels, and 14 beds of their own (plain git under `assets/audio/act2/`, ADR 0175). The Act II audit is at **0 in every section** (`act1_audio_audit.py --act 2`); Act I is still 0.
   - **Loops:** `cloudloom` (the weaving-hall) and `sanctum_of_the_level` (one chord that never changes, flat by design).
