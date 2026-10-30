@@ -612,7 +612,7 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - Requested the stage relight from battle-presentation (M3-BPR-441).
   - Checks: battle_parts, battle_engine, boss, set_piece, sim, validate, lint and format.
   - Next: M4-A2P-023, part-break targeting (the flat-engine).
-- MERGE-READY @ (this push)
+- MERGE-READY @ c9dd9bb63
 
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
