@@ -740,3 +740,10 @@ What the Act II fights still need from others: enemy rows and encounters (combat
 - **For battle-presentation/env-art: ch11_lamp_engine's default camera is broken on big22.** The left half of the
   frame is a dark wall and neither the Engine nor the crawlers are in view, only the party (my 09:30 render of the same
   fixture showed the Engine whole). The boss-intro hero shot is fine.
+- **For battle-presentation: the phase camera moment is cut short by the boss's next turn at real pacing.** A frame
+  trace of ch01_hullgnaw (pacing 1.0, an attack that crosses 50%): the blow plays (hit, f=38); with 650257ea the phase
+  then starts (f=66: `phase_break`, `moments_played` [phase], `moment_left` 2.10, `busy_sec` 2.10); at f=112 (0.77 s)
+  the boss's next turn starts anyway (`coil`), `moment_left` drops to 0 and the 1.9 s phase_break is cut at 40%. The
+  Matron's 2.2 s `phase_change` is cut the same way (no still reaches its middle). test_battle_boss_camera_moments
+  checks `busy_sec() > 1.0` but not that the controller waits for it before the next turn. Scratch trace:
+  game/_scratch_crb/r_hg/trace.gd (git-excluded; copy on request).
