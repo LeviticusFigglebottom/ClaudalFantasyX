@@ -1,0 +1,19 @@
+{
+ "format": 1,
+ "scene": "ch15_side_the_current_phrase",
+ "source": "game/data/dialogue/ch15/ch15_side_the_current_phrase.dlg",
+ "start": "ch15_side_the_current_phrase",
+ "nodes": {
+  "ch15_side_the_current_phrase": {
+   "headers": {"location": "ch15/hollowmere"},
+   "ops": [
+    {"op": "line", "id": "ch15_phrase_001", "key": "DLG_CH15_PHRASE_001", "speaker": "townsfolk", "emotion": "neutral", "voice": "", "src": 7, "name_key": "DLG_NAME_TOWNSFOLK_CURRENT_SINGER", "tags": ["long"]},
+    {"op": "line", "id": "ch15_phrase_002", "key": "DLG_CH15_PHRASE_002", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 8},
+    {"op": "line", "id": "ch15_phrase_003", "key": "DLG_CH15_PHRASE_003", "speaker": "townsfolk", "emotion": "neutral", "voice": "", "src": 9, "name_key": "DLG_NAME_TOWNSFOLK_CURRENT_SINGER"},
+    {"op": "line", "id": "ch15_phrase_004", "key": "DLG_CH15_PHRASE_004", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 10},
+    {"op": "line", "id": "ch15_phrase_005", "key": "DLG_CH15_PHRASE_005", "speaker": "townsfolk", "emotion": "smile", "voice": "", "src": 11, "name_key": "DLG_NAME_TOWNSFOLK_CURRENT_SINGER"},
+    {"op": "set", "flag": "ch15_learned_current_phrase", "value": ["lit", true], "src": 12}
+   ]
+  }
+ }
+}

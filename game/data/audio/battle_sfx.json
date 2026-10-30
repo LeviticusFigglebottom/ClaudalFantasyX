@@ -8,6 +8,7 @@
     "hit_lightning": "hit_lightning",
     "hit_water": "hit_water",
     "hit_holy": "hit_holy",
+    "hit_glimmer": "hit_holy",
     "lamp_dive": "lamp_dive",
     "shallows_verse": "shallows_verse",
     "read": "read",

@@ -1,0 +1,26 @@
+{
+ "format": 1,
+ "scene": "ch10_side_the_three_nets",
+ "source": "game/data/dialogue/ch10/ch10_side_the_three_nets.dlg",
+ "start": "ch10_side_the_three_nets",
+ "nodes": {
+  "ch10_side_the_three_nets": {
+   "headers": {"location": "ch10/reedhollow"},
+   "ops": [
+    {"op": "if_not", "cond": ["flag", "ch10_returned_net"], "to": 3, "src": 7},
+    {"op": "line", "id": "ch10_nets_001", "key": "DLG_CH10_NETS_001", "speaker": "kirru", "emotion": "neutral", "voice": "", "src": 8, "name_key": "DLG_NAME_KIRRU_KIRRU_WIDOW"},
+    {"op": "goto", "to": 13, "src": 7},
+    {"op": "line", "id": "ch10_nets_002", "key": "DLG_CH10_NETS_002", "speaker": "kirru", "emotion": "neutral", "voice": "", "src": 10, "name_key": "DLG_NAME_KIRRU_KIRRU_WIDOW"},
+    {"op": "options", "choices": [{"id": "ch10_nets_003", "key": "DLG_CH10_NETS_003", "to": 5, "src": 11}, {"id": "ch10_nets_007", "key": "DLG_CH10_NETS_007", "to": 10, "src": 16}], "src": 11, "next": 12},
+    {"op": "line", "id": "ch10_nets_004", "key": "DLG_CH10_NETS_004", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 12},
+    {"op": "line", "id": "ch10_nets_005", "key": "DLG_CH10_NETS_005", "speaker": "kirru", "emotion": "sad", "voice": "", "src": 13, "name_key": "DLG_NAME_KIRRU_KIRRU_WIDOW"},
+    {"op": "line", "id": "ch10_nets_006", "key": "DLG_CH10_NETS_006", "speaker": "asha", "emotion": "tender", "voice": "", "src": 14},
+    {"op": "set", "flag": "ch10_returned_net", "value": ["lit", true], "src": 15},
+    {"op": "goto", "to": 12, "src": 11},
+    {"op": "line", "id": "ch10_nets_008", "key": "DLG_CH10_NETS_008", "speaker": "kirru", "emotion": "neutral", "voice": "", "src": 17, "name_key": "DLG_NAME_KIRRU_KIRRU_WIDOW"},
+    {"op": "goto", "to": 12, "src": 16},
+    {"op": "goto", "to": 13, "src": 9}
+   ]
+  }
+ }
+}

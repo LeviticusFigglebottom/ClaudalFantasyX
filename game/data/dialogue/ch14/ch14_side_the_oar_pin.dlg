@@ -1,0 +1,16 @@
+// Ch14 side errand (optional, B01, before the vows). Saltwrights may not approach the dais, so a hull-captain asks Toma,
+// an Order man, to carry the flotilla's gift (a carved oar-pin) to the vow table. He does. It is still on the table
+// when the trap springs; nobody comments then. Sets ch14_carried_the_gift.
+title: ch14_side_the_oar_pin
+location: ch14/lacquer_court
+---
+<<if $ch14_carried_the_gift>>
+    Hull_captain as "Hull-captain" [soft_smile]: It's on the table. I saw. Thank you. #line:ch14_pin_001
+<<else>>
+    Hull_captain as "Hull-captain" [neutral]: You're Order. Stillguard, once. We can't go up to the dais. Would you carry this for us? #line:ch14_pin_002 #long
+    Toma [neutral]: What is it? #line:ch14_pin_003
+    Hull_captain as "Hull-captain" [neutral]: An oar-pin. Every hull in Hollowmere put a cut in it. It's to say: you're crew now. #line:ch14_pin_004
+    Toma [neutral]: I will carry it. #line:ch14_pin_005
+    <<set $ch14_carried_the_gift = true>>
+<<endif>>
+===

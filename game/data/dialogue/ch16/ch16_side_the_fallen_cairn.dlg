@@ -1,0 +1,13 @@
+// Ch16 side errand (optional, on the wade). A cairn has fallen into the white water. Kerrid and Pell set it back up,
+// stone by stone, for whoever comes next (ch16_bark_cairn_wader). Sets ch16_rebuilt_cairn.
+title: ch16_side_the_fallen_cairn
+location: ch16/pale_rim
+---
+Pell [neutral]: This one fell. The next ones will walk past it and be lost. #line:ch16_cairn_001
+Kerrid [neutral]: Then we put it back. #line:ch16_cairn_002
+Pell [neutral]: Big stones first. Then small. #line:ch16_cairn_003
+Kerrid [neutral]: I know how to build a wall. #line:ch16_cairn_004
+Pell [neutral]: This is not a wall. It is a voice. It says, this way. #line:ch16_cairn_005
+Kerrid [neutral]: Then it's the same thing. #line:ch16_cairn_006
+<<set $ch16_rebuilt_cairn = true>>
+===

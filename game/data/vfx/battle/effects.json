@@ -8,7 +8,8 @@
     "rim": 0.12,
     "hood": 0.85,
     "ground": 0.05,
-    "knee": 0.25
+    "knee": 0.25,
+    "crest": 1.0
   },
   "safety": {
     "doc": "Photosensitivity: every flash is capped at flash_max_alpha, and two flashes are at least flash_min_interval_s apart (at most 2 a second, under WCAG 2.3.1's 3). Flashes draw on a CanvasLayer below the HUD, so the timeline is never covered (pillar 4).",
@@ -442,6 +443,75 @@
           ]
         }
       ]
+    },
+    "hit_glimmer": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#FFE9B8",
+          "color_end": "#F4F8FF",
+          "swatches": [
+            "glimmer_lift",
+            "glimmer_lift_hi"
+          ],
+          "amount": 2,
+          "lifetime_s": 0.2,
+          "explosiveness": 1.0,
+          "velocity_m_s": [
+            0.0,
+            0.05
+          ],
+          "spread_deg": 0,
+          "gravity": [
+            0,
+            0,
+            0
+          ],
+          "size_m": [
+            0.55,
+            0.75
+          ],
+          "energy": 1.1,
+          "emission_radius_m": 0.02,
+          "turbulence": 0.0
+        },
+        {
+          "color": "#FFE9B8",
+          "color_end": "#F4F8FF",
+          "swatches": [
+            "glimmer_lift",
+            "glimmer_lift_hi"
+          ],
+          "amount": 44,
+          "lifetime_s": 1.1,
+          "explosiveness": 0.6,
+          "velocity_m_s": [
+            0.25,
+            0.6
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            0.35,
+            0
+          ],
+          "size_m": [
+            0.1,
+            0.22
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.4,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The glimmer element's hit (voice_glimmer, level_hand, still_water; the Lead, 10-30): a soft pale-gold shimmer, then motes rising off the target. Released glimmer (color_script.md rule 1): glimmer_lift brightening to glimmer_lift_hi, rising slowly, never the held cyan."
     },
     "lamp_dive": {
       "kind": "particles",
@@ -8171,7 +8241,7 @@
     "sound_dive": {
       "kind": "particles",
       "anchor": "target",
-      "at": "head",
+      "at": "crest",
       "layers": [
         {
           "color": "#1C6B78",
@@ -8333,7 +8403,8 @@
       "ice": "hit_ice",
       "lightning": "hit_lightning",
       "water": "hit_water",
-      "holy": "hit_holy"
+      "holy": "hit_holy",
+      "glimmer": "hit_glimmer"
     },
     "skills": {
       "lamp_dive": "lamp_dive",
@@ -8490,5 +8561,10 @@
       "sleep": "tick_sleep",
       "stop": "tick_stop"
     }
-  }
+  },
+  "anchor_centred": [
+    "crest",
+    "feet"
+  ],
+  "anchor_centred_doc": "Anchor heights placed on the body's middle, not its near face (BattleVfx.anchor). crest: the Wakefin's near face is 1.9 m out, against the barge's hull; its Sound Dive rises at its crest."
 }

@@ -1,0 +1,18 @@
+{
+ "format": 1,
+ "scene": "ch12_side_dorros_cord",
+ "source": "game/data/dialogue/ch12/ch12_side_dorros_cord.dlg",
+ "start": "ch12_side_dorros_cord",
+ "nodes": {
+  "ch12_side_dorros_cord": {
+   "headers": {"location": "ch12/quellan"},
+   "ops": [
+    {"op": "line", "id": "ch12_dcord_001", "key": "DLG_CH12_DCORD_001", "speaker": "ullari_woman", "emotion": "neutral", "voice": "", "src": 7, "name_key": "DLG_NAME_ULLARI_WOMAN_DORRO_S_DAUGHTER", "tags": ["long"]},
+    {"op": "line", "id": "ch12_dcord_002", "key": "DLG_CH12_DCORD_002", "speaker": "asha", "emotion": "sad", "voice": "", "src": 8},
+    {"op": "line", "id": "ch12_dcord_003", "key": "DLG_CH12_DCORD_003", "speaker": "ullari_woman", "emotion": "neutral", "voice": "", "src": 9, "name_key": "DLG_NAME_ULLARI_WOMAN_DORRO_S_DAUGHTER"},
+    {"op": "line", "id": "ch12_dcord_004", "key": "DLG_CH12_DCORD_004", "speaker": "ullari_woman", "emotion": "neutral", "voice": "", "src": 10, "name_key": "DLG_NAME_ULLARI_WOMAN_DORRO_S_DAUGHTER"},
+    {"op": "set", "flag": "ch12_returned_herd_cord", "value": ["lit", true], "src": 11}
+   ]
+  }
+ }
+}
