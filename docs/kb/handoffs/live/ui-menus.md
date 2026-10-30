@@ -990,3 +990,17 @@ MERGE-READY @ 578a6ceb: the heresy's words per ADR 0204, and four Act II codex e
       0/0.
     - The three map shots will drift on the gate.
 MERGE-READY @ 8287ca8b: the portraits re-baked on big20's models, and the Act II objectives.
+- 2026-10-30 12:30, **Malcor Venn's portrait** waits on its merge. His model and stage are on claude/characters
+  (3f0f5d679, M4-A2P-051), not on the integration branch. When they land, I add `malcor_venn` to portraits.json from
+  his stage (`venn_stage.tscn`), bake his five faces, view them and add their PROVENANCE rows. No other Act II speaker
+  has a model on any branch.
+- **BACKLOG EMPTY** after the 09:01 items:
+  - **Done:** big20 merged; portraits re-baked; Act II maps point along the main path; the heresy's words and four
+    codex entries; row 67's fix waiting for a batch.
+  - **Waits on others:**
+    - Malcor Venn's model (its merge);
+    - the other Act II speakers' models;
+    - Ch11–Ch16 beat flags (more codex);
+    - Combat: Pell's row, the rooted status, the enemy model links;
+    - Narrative: records.json and the Vowbound text;
+    - the PC's row 67 verification.
