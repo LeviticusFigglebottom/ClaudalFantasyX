@@ -1123,3 +1123,14 @@ MERGE-READY @ 8132685db: the battle text-size fixes.
     `scene_swap_probe.tscn -- --resident-loads --warm-resident --to=<brine shoals> --round-trip=ch06_flats_crabs`
     or by hand: win a fight and time from Return until you can walk.
   - **Tests:** resident_loads 9/0, scene_router 17/0, prewarm 27/0, act1_swap_sweep (tools) OK; lint and format clean.
+  - **test_qa_threads and act1-chapters (ca5ce4037):** the guard failed 6 ways on my Act II objective rows.
+    - **Cause:** a chapter's last row ran `until` the next chapter's start flag, which that chapter's thread never
+      raises.
+    - **Fix:** `reed_clutch`, `low_sanctum`, `cloudloom_dais`, `archive_ledgers` and `court_barge` now have
+      `until: null`, holding until the zone changes, as Act I's `t_harbour` does.
+    - **Still unraised:** Lacquer Court's `court_dais` and `court_barge` (filed under `ch13/`) wait on
+      `ch14_started` and `ch14_declared_heretics`. Ch14 has no thread yet, so both are listed in `qa_known.json`
+      "unraised" and point at M4-A2P-014.
+    - **To act1-chapters:** when the ch14 thread raises those two flags, drop both rows from `qa_known.json`.
+    - **Result:** qa_threads 1/0; objective 16/0, field_menu 37/0, zone_map 22/0; validate_data 0/0.
+MERGE-READY @ ca5ce4037: the battle-return black screen (ResidentLoads keeps the zone through a field battle) and the Act II objective flags for test_qa_threads.
