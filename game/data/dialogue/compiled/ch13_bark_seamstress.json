@@ -1,0 +1,21 @@
+{
+ "format": 1,
+ "scene": "ch13_bark_seamstress",
+ "source": "game/data/dialogue/ch13/ch13_bark_seamstress.dlg",
+ "start": "ch13_bark_seamstress",
+ "nodes": {
+  "ch13_bark_seamstress": {
+   "headers": {"location": "ch13/ansedra"},
+   "ops": [
+    {"op": "if_not", "cond": ["flag", "ch14_declared_heretics"], "to": 3, "src": 5},
+    {"op": "line", "id": "ch13_bark_seam_001", "key": "DLG_CH13_BARK_SEAM_001", "speaker": "townsfolk", "emotion": "sad", "voice": "", "src": 6, "name_key": "DLG_NAME_TOWNSFOLK_SEAMSTRESS"},
+    {"op": "goto", "to": 8, "src": 5},
+    {"op": "if_not", "cond": ["flag", "ch13_wedding_announced"], "to": 6, "src": 7},
+    {"op": "line", "id": "ch13_bark_seam_002", "key": "DLG_CH13_BARK_SEAM_002", "speaker": "townsfolk", "emotion": "smile", "voice": "", "src": 8, "name_key": "DLG_NAME_TOWNSFOLK_SEAMSTRESS"},
+    {"op": "goto", "to": 8, "src": 7},
+    {"op": "line", "id": "ch13_bark_seam_003", "key": "DLG_CH13_BARK_SEAM_003", "speaker": "townsfolk", "emotion": "neutral", "voice": "", "src": 10, "name_key": "DLG_NAME_TOWNSFOLK_SEAMSTRESS"},
+    {"op": "goto", "to": 8, "src": 9}
+   ]
+  }
+ }
+}

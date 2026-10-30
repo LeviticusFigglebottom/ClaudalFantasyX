@@ -1,0 +1,9 @@
+// Ch12: the keth-reader at the well (npc_reader). Warm, exact; after the pass, she lets them off reading.
+title: ch12_bark_reader
+location: ch12/quellan
+---
+Ullari as "Keth-reader" [neutral]: Feel this knot. That one is a wedding. This one is the same wedding, ten years on. #line:ch12_bark_reader_001
+<<if $ch12_heard_the_knot>>
+    Ullari as "Keth-reader" [soft_smile]: You tied one on the pass. Good. The cord holds it now. You don't have to. #line:ch12_bark_reader_002
+<<endif>>
+===

@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch14_bark_stillguard_court",
+ "source": "game/data/dialogue/ch14/ch14_bark_stillguard_court.dlg",
+ "start": "ch14_bark_stillguard_court",
+ "nodes": {
+  "ch14_bark_stillguard_court": {
+   "headers": {"location": "ch14/lacquer_court"},
+   "ops": [
+    {"op": "line", "id": "ch14_bark_sgcourt_001", "key": "DLG_CH14_BARK_SGCOURT_001", "speaker": "stillguard", "emotion": "cold", "voice": "", "src": 5}
+   ]
+  }
+ }
+}

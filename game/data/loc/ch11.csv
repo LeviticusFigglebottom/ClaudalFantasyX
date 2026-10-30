@@ -14,3 +14,7 @@ SKILL_DEEP_WELL,Deep Well
 SKILL_NHOA_ECHO,Echo
 SKILL_FAREWELL_TIDE,Farewell-Tide
 HUD_FAIL_NOTHING_TO_ECHO,Nothing to echo yet: no foe has acted.
+ENEMY_CONDUIT_CRAWLER,Conduit Crawler
+LORE_CONDUIT_CRAWLER,"A Lit Age machine for keeping the light-conduits clean: a glass dome on six brass feet, with a dim, steady light inside. It mends whatever it was told is broken. Nobody has told it anything new in a very long time."
+ENEMY_LAMP_ENGINE,Lamp Engine
+LORE_LAMP_ENGINE,"A ringed tower of lamps standing knee-deep in Lowlight's flooded hall, built in the Lit Age to keep the temple bright. Every lamp burns steady and none of them flickers. Its crawlers keep it whole, whatever that costs the lamps."
