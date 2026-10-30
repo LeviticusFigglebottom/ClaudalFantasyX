@@ -95,6 +95,7 @@ RULES = [
       for w in ("skitter", "flap", "plod")],
     ("act2/sfx/creatures/*_idle_*.ogg", "momentary", -20.0, 1.0, -1.0, "an Act II creature's idle voice"),
     ("act2/sfx/creatures/*.ogg", "momentary", -18.0, 1.0, -1.0, "Act II creature voices: attack, hurt, death"),
+    ("act2/sfx/battle/*.ogg", "momentary", -19.0, 2.5, -1.0, "Act II combat SFX (M4-A2P-093)"),
     # M3-AUD-802 (assets_src/sfx/hero_foley.py): the field heroes' steps (played at walk_db), scuffs and foley layers
     ("sfx/foley/step_*.ogg", "momentary", -18.5, 1.0, -1.0, "hero footsteps by surface and gait (-18, transients limited)"),
     ("sfx/foley/stop_*.ogg", "momentary", -20.0, 1.0, -1.0, "the halt scuff, after the last step"),

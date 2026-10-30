@@ -231,6 +231,8 @@ JOBS = [
      "sfx"),
     ("assets_src/sfx/act2_variant_creature_sfx.py", "assets/audio/act2/sfx/creatures",
      _source_files("assets_src/sfx/act2_variant_creature_sfx.py"), "sfx"),
+    ("assets_src/sfx/act2_skill_sfx.py", "assets/audio/act2/sfx/battle", _source_files("assets_src/sfx/act2_skill_sfx.py"),
+     "sfx"),
     # M4-A2P-090 (ADR 0175): Act II scene cues, plain git under assets/audio/act2/music/
     ("assets_src/music/act2/farewell_tide.py", "assets/audio/act2/music", ["farewell_tide.ogg"], "music"),
     ("assets_src/music/act2/peace_wedding_break.py", "assets/audio/act2/music", ["peace_wedding_break.ogg"], "music"),
