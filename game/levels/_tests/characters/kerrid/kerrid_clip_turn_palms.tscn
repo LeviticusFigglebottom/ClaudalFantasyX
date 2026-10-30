@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/kerrid/kerrid_stage.tscn" id="stage"]
+[ext_resource type="AnimationLibrary" path="res://assets/characters/kerrid/anim/kerrid_clips.tres" id="clips"]
+
+[node name="KerridStage" instance=ExtResource("stage")]
+clip = &"turn_palms"
+clip_time = 2.3
+clip_library = ExtResource("clips")
