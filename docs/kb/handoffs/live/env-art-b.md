@@ -685,8 +685,30 @@ that test at this branch's zones.
   - **Checks:** tools test_ch13_archive/sanctum/ansedra_dressing, test_ansedra; validate_data 0/0; taskboard; gdlint
     and gdformat. Godot: lamp_archive 2/0, sanctum 3/0, ansedra 4/0, ch13 4/0.
   - **MERGE-READY @ 9b2f4e2f.**
-  - **Next:** Ch14: the Lacquer Court (`ch14_lacquer_court.md`, M4-A2P-044), then the ripples (M4-A2P-047's second
-    half) and the `lacquer_court_steps` arena.
+- **Ch13 fix: no bier before Ch15.** `bridal_barge.py`'s canopy takes a `bier` switch, and a new target
+  `bridal_barge_wedding` drops it. Ansedra's two mooring barges use it (they showed Tobin's bier before he dies).
+  `bridal_barge` itself rebuilds byte-identical. @ 5ef3f163.
+- **The Lacquer Court at the wedding (ch14; M4-A2P-044 claimed and in progress):**
+  - **New pieces** in `ansedra.py`, all in the greybox's frame:
+    - `court_ground` (the court, the terrace that carries the halls, the lagoon edge), `court_balustrades` (on the
+      greybox's edge walls), `court_water_steps`, `court_colonnade_roofs`, `court_water_gate`.
+    - `court_column`, solid: the greybox's columns aren't, so the party could have walked through red lacquer.
+    - `court_gallery`, `wedding_dais`, `conclave_gallery`, `gilt_lamp_stand`, `stillguard_rack`.
+  - **`tools/act2/ch14_lacquer_court_dressing.py`:** no mark moves (the spec's relayout isn't needed). It places
+    three `lacquer_hall`s ×1.25, the wedding barge at the `Barge` block (deck −0.6), the pursuit barge moored off,
+    the lit city, and eight lamp-stands, each with its light. The lagoon is Ansedra's still water at −1.0. The ch14
+    grade uses `lut_ch14_wedding` at exposure 1.15: at the spec's 0.90 the court floor went black under the
+    layout's fill (chapters' row).
+  - **Caught before shipping:** my first court builder shadowed env-art's `build_court_ground` (the arena's
+    `lacquer_court_ground`); `test_ansedra` caught it. Renamed; both glbs rebuild byte-identical, nothing shipped
+    wrong.
+  - **Shots (new):** `ch14_court_entry`, `_ceremony`, `_steps`, `_gate`, all viewed.
+  - **Checks:** tools test_ch14_lacquer_court_dressing (new), test_ch13_ansedra_dressing, test_ansedra and
+    test_haluna_kit; validate_data 0/0; gdlint and gdformat. Godot: lacquer_court 2/0, ansedra 4/0, ch13 4/0,
+    zone_kit 13/0, dressing 25/0, placeholder 8/0, party_spawns 3/0.
+  - **MERGE-READY @ 9fa8dce4.**
+  - **Next, still in M4-A2P-044:** the after-the-trap `states` row (stands down, lights out); the ripples
+    (M4-A2P-047's second half); the `lacquer_court_steps` arena; the `ch14_court_after` shot.
 
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
