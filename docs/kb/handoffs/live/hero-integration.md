@@ -1996,3 +1996,20 @@ MERGE-READY @ (this commit).
     the 1.2 s cross-town blend; settles on NemeDoor at 9.8 m.
   - **21 (Haluna beach start), real time:** 0 of 121 samples out of frame; settles on beach_shallows at 7.5 m.
 MERGE-READY @ (this commit) (it includes 314559cfc and b335f0325).
+
+### URGENT, found while extending the resident return (the Lead 10-30 17:24): a resident zone came back deaf
+- **The bug, live in big24 and big25 for random fights:** a re-attached zone doesn't re-run `_ready`, and many nodes
+  let go of things in `_exit_tree` that they only take in `_ready`.
+  - Every ZoneStory and HalunaStory dropped its `field_interacted` and `field_trigger_entered` connections.
+  - Ashcrown and Coilspire dropped one more `field_interacted` connection each.
+  - Haluna's and the wake's shrines unregistered from the ShrineNetwork.
+  - **So after a random fight, that zone's story triggers and talk interactions stopped answering.**
+- **Fix (SceneRouter, generic; no other track's file touched):**
+  - `zone_links(zone)` records, at detach, every EventBus connection whose target is inside the zone, and its
+    registered shrines.
+  - `restore_links()` puts back whatever is missing on the first frame after the re-attach, before the spawn and
+    `scene_changed`.
+- **Guard:** new `tests/integration/test_resident_reattach.gd` detaches and re-attaches every field zone the way the
+  router does, then compares EventBus connections per signal, registered shrines and root children. Before the fix
+  it failed in every zone; now it passes. battle_return 1/0 and scene_router 17/0.
+MERGE-READY @ (this commit). **Take it into the next batch:** big24 and big25 carry the bug.
