@@ -68,8 +68,9 @@ row's `"chapter"` or Ch13's thread plays into Ch14.
 
 ## Acceptance criteria
 - [x] The beat-level rows are back in `objectives.json` (story, 2026-10-30).
-- [x] Each Ch10–Ch13 flow plays its scenes and battles in §1's order (Ch14: M4-A2P-1200).
-- [ ] `qa_known.json` `"unraised"` is empty again, and test_qa_threads stays green. (Down from 19 to Ch14's 5, which wait on M4-A2P-1200; green.)
+- [x] Each Ch10–Ch14 flow plays its scenes and battles in §1's order (Ch14 with M4-A2P-1200).
+- [x] `qa_known.json` `"unraised"` is empty again, and test_qa_threads stays green (the five Ch14 flags closed with
+  M4-A2P-1200: Ch13's thread plays the court).
 
 ## Notes (act1-chapters, 2026-10-30)
 - **Wired (§1 rows 1–14):** the triggers come from the generators: reedhollow `shore`, lowlight `engine` and
