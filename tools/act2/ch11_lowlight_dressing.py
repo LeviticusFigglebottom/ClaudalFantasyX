@@ -28,6 +28,8 @@ KIT_SRC = ROOT / "assets_src" / "environments" / "kits" / "haluna"
 sys.path.insert(0, str(KIT_SRC))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import arena_scenes as ar  # noqa: E402
+sys.path.insert(0, str(KIT_SRC.parent.parent))
+import zone_edges  # noqa: E402
 import ch10_fen_dressing as fen  # noqa: E402  (the shared helpers: _put, _axes, _look_xform, write_water_material)
 import lowlight as ll  # noqa: E402
 import lowlight_zones as lz  # noqa: E402
@@ -207,7 +209,14 @@ def layout(zone: str) -> dict:
         "environment": f"res://game/levels/ch11/{zone}/{zone}_environment.tres",
         "time_of_day_h": 12.5,
         **body,
+        # Invisible walls along the walks' open edges over the water (the human's playtest in Oruvel, 10-30).
+        "edge_walls": edge_walls(zone),
     }
+
+
+def edge_walls(zone: str) -> list[dict]:
+    lay = _layout(zone)
+    return zone_edges.walls(lay, zone_edges.hideable_ids(lay))
 
 
 # The arena's sky is Corrow's with a grey horizon; its warm cloud deck and band hide behind the hall's vault, but over the

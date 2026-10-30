@@ -1,0 +1,17 @@
+# sha 829b09a65f51cf3d7d6f9c3cc9e7509097612140
+res://tests/integration/test_causeway_route.gd
+res://tests/integration/test_qa_capsules.gd
+res://tests/integration/test_qa_threads.gd
+res://tests/unit/test_audio_live_hooks.gd
+res://tests/unit/test_controls_menu.gd
+res://tests/unit/test_crowd_villagers.gd
+res://tests/unit/test_field_audio.gd
+res://tests/unit/test_flags.gd
+res://tests/unit/test_input_parity_pad_walk.gd
+res://tests/unit/test_input_parity_settings.gd
+res://tests/unit/test_objective_hud.gd
+res://tests/unit/test_pseudo_loc_screens.gd
+res://tests/unit/test_save_menu.gd
+res://tests/unit/test_screen_motion.gd
+res://tests/unit/test_ui_input_repeat.gd
+res://tests/unit/test_villager_snaps.gd

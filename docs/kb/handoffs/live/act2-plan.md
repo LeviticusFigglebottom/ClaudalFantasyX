@@ -388,3 +388,69 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - **Checks:** dlgc --check 0/0 · validate_data 0/0 · taskboard clean · Godot `dialogue` 86/0.
 - MERGE-READY Ch12 @ d56bcb66d · MERGE-READY Ch13 @ d56bcb66d
 - Next: the Ch14–Ch16 notes.
+
+## 2026-10-30: Ch14, Ch15 and Ch16 direction notes (Lead request)
+- `docs/kb/story/beats/act2_ch14_direction.md`, `act2_ch15_direction.md` and `act2_ch16_direction.md`, in the Ch12 and Ch13 format. Each has the greybox ids to replace, the script fixes, pacing per beat against §1, and per scene every shot (lens, cam → look, fov) with who is in frame on every spoken line.
+  - **Ch14:** 25 lines in frame. Replace the greybox's W03–W07 (the Lacquer Court, in ch13's level folder).
+  - **Ch15:** 72 lines in frame, 1 deliberately off (Pell over the fin). Replace U01–U07 (open_sea) and H01–H04 (hollowmere).
+  - **Ch16:** 25 lines in frame, 4 deliberately off (Kesh's voice in the memory, and Ysolde over Sefir's smile). No greybox collision. The vigil's P04 shares its name with pale_rim's P04 (legal, because ids are per zone; the doc suggests `P04_vigil`).
+- **Script fixes (story's own files):**
+  - **Ch14:** Merel goes to the layout's `merel_gate`.
+  - **Ch15:**
+    - `ch15_current_song` played sea and Hollowmere in one scene, so B10 is now its own scene, **`ch15_the_dock_master`** (`ch17/hollowmere`). It still sets `ch15_liss_told_father`.
+    - The party uses the layout's `reveal_*`, `bow_liss`, `confess_toma` and `supper` marks.
+    - Each actor gets their own jetty-end and ship-deck marks.
+    - K18b and K19b are added, so Rhen and the group are in frame for their lines.
+  - **Ch16:**
+    - Asha, Toma and Rhen walked onto `kesh` (the Saint's own mark), and four of the party never reached the dais. All seven now walk to new `dais_*` marks, with Kerrid behind.
+    - Sefir's `015` cuts back to C12.
+- **For Chapters (one line):** no flow plays `ch15_current_song` yet. When the Ch15 flow is wired, play `ch15_the_dock_master` on arrival at Hollowmere.
+- **Merged integration:**
+  - The Lead restored my beat-level objective rows (fbecf6051), so **the objectives LEAD-ASK above is answered**.
+  - I took integration's `objectives.json` and the `ch10`–`ch16` loc files with their `OBJ_CH1x_*` rows.
+- **Checks:** dlgc --check 0/0 · validate_data 0/0 · taskboard clean · tools dialogue, cutscene and loc tests 183 OK · Godot (after the merge and an `--import`): `dialogue` 86/0, `cutscene_directives` 2/0, `cutscene_music_resolves` 3/0, `cutscene_vfx_hosts` 4/0, `cutscene_mark_via` 4/0, `cutscene_staging` 2/0. Skipped: the QA motion audit (report-only, Act I) and the render tests (no scene, shader or asset touched).
+- MERGE-READY Ch14 @ 603fb1f36 · MERGE-READY Ch15 @ 603fb1f36 · MERGE-READY Ch16 @ 603fb1f36
+- BACKLOG EMPTY (story track).
+
+## 2026-10-30: Lead FAST-TRACK (big23 reds on this branch)
+1. **test_qa_threads** (19 waits in Ch10–13: the guard counts a row against the thread of its zone's chapter):
+   - The greybox Ch10–Ch14 flows play **no** Act II scene, so no thread raises a story flag. That includes `ch10_farewell_tide_seen` (set by `ch10_farewell_tide`) and the `chNN_complete`s.
+   - A `<<set>>` in my scripts can't make the threads raise them, so I used the Lead's second option.
+   - The Ch10–13 main rows now wait only on what the threads raise: `chNN_started`, the reached/entered flags and the Drowner's victory. Each zone's last row has no `until`.
+   - The Lacquer Court's `lc_vows` has no `requires` or `until` (the court is only visited in Ch14, and Ch13's thread is the one that checks it).
+   - **10 rows were cut:** r_gate, l_out, k_to_quellan, q_inn, q_on, la_roll, a_moorings, a_rest, lc_steps, lc_gate. They're in git at 089c254d4, and their loc keys stay.
+   - **Request M4-A2P-114 (cinematics, act1-chapters' flows):** play each scene from the flow, then restore the rows. It has a flag → scene → row table. The Avalanche Ram needs a `victory_flag` (`ch12_ram_felled`).
+2. **test_qa_flag_reach:** `ch14_steps_held` had no setter. `ch14_first_ripple` now sets it as it opens (the scene after the set piece; Ch15's shoal reads it), and its flags.tres row says so. The test passes.
+3. **test_cutscene_sfx_files and test_status_names:** already green on this branch since the earlier fixes (8 OK). Integration still shows them red until this branch is merged.
+- **Checks:**
+  - dlgc 0/0, validate_data 0/0, taskboard clean;
+  - tools: test_qa_flag_reach OK, test_zone_map_pois OK;
+  - Godot: `dialogue` 86/0.
+  - Godot `qa_threads` 1/0 (no "never raises").
+- MERGE-READY big23 FAST-TRACK @ 31c4ff8d2
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114 (flows play the scenes, restore the rows), M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: the 10 cut objectives back in (Lead, after big25's pick of 31c4ff8d2)
+- The Ch14–Ch16 direction notes were already written (MERGE-READY @ 603fb1f36).
+- **Rows:** `objectives.json`'s Act II block is back as at 089c254d4: all 91 rows, and the 10 cut rows unchanged (r_gate, l_out, k_to_quellan, q_inn, q_on, la_roll, a_moorings, a_rest, lc_steps, lc_gate).
+- **Keeping test_qa_threads green until act1-chapters adds the setters:** each of the 19 flags the greybox threads can't raise yet has a row in `tests/integration/qa_known.json` `"unraised"`. That is the guard's own mechanism: flag → why it isn't a softlock, and the task that closes the gap.
+  - Each row names the scene or battle that sets the flag, and **M4-A2P-114**.
+  - An objective's `until` gates no beat, and no chapter `when` waits on these flags.
+  - The 5 Lacquer Court flags are listed because those Ch14 rows sit in a `ch13/` zone (M3-UI-1242).
+- **M4-A2P-114 (act1-chapters) is updated:** add the `play` or `victory_flag` setter, and delete that flag's `unraised` row in the same commit. The rows need no change.
+- **Checks:** validate_data 0/0 · taskboard clean · test_qa_flag_reach OK · my static check of every Ch10–13 wait against flow sets, thread sets and the known rows: 0 failures.
+  - Godot `qa_threads` 1/0, reporting 19 KNOWN unraised and no failure.
+- MERGE-READY objectives restored @ 86262eb93
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114 (act1-chapters adds the setters and empties `unraised`), M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: the setters for the 19 unraised flags (Lead)
+- **M4-A2P-114** (the one request task to act1-chapters, now rewritten) gives each of the 19 flags a row: zone, trigger, `when` and `steps`. The trigger is an existing arrive row or a new trigger at the objective row's target POI. The rows follow the Act I pattern (ch05.json) and §1's running order. Every scene already sets its flag, so the flow only has to play it.
+- Found while writing it:
+  - Two victory flags must be declared in flags.tres: `ch11_engine_released` and `ch14_venn_beaten`.
+  - Two encounters are missing from encounters.json: `ch14_water_steps` and `ch14_malcor_venn`.
+  - `ch14_started` is already set; it shows as unraised only because the court's rows sit in a `ch13/` zone.
+  - `ch12_herd_cord` is B07 (main), not a side scene: the earlier note was wrong.
+- The Ch14–Ch16 direction notes were already written (MERGE-READY @ 603fb1f36).
+- **Checks** (docs only): validate_data 0/0 · taskboard clean. No Godot run: nothing it tests changed.
+- MERGE-READY setters request @ bb7817771
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114 (act1-chapters), M4-A2P-112 items 3, 5 and 6.

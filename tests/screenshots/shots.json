@@ -9183,6 +9183,38 @@
         },
         "time_scale": 4.0
       }
+    },
+    {
+      "id": "ch01_sadi_mooring",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch01/oruvel/oruvel.tscn",
+            "spawn": "ScaleHull",
+            "scene_id": "ch01_bark_outer_mooring",
+            "flags": [
+              "ch01_started"
+            ],
+            "hold_line": "ch01_bark_sadi_003"
+          }
+        },
+        "time_scale": 4.0
+      }
     }
   ]
 }

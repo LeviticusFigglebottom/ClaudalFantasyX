@@ -24,6 +24,13 @@ is taken from any existing music.
     kesh_summon    Kesh called: the six colours again, quick (a flick each), and the Hush's A minor under them. About
                    5 s.
 
+Each `*_bound` sting then holds its light (the Lead's 10-30 13:48 item; tools/audio/act1_playthrough.py --act 2): the
+binding scenes hold on faces after the sting with no `@music` for 4-15 s (ch11_nhoa ~12 s, longer under the Ch11
+direction notes' holds; ch12_hesk ~13, ch13_ethren ~7, ch16_the_choir ~4), which played as the music simply stopping.
+So the sting's last colour is held under them, quiet and steady (bound light never pulses), and fades out by TAIL's
+end; the scene's next `@music` cross-fades over it. The tail sits well under the relative gate, so it does not move
+the sting's -16 LUFS.
+
 Stereo, -16 LUFS integrated, Vorbis q4, under assets/audio/act2/music/stings/ (plain git, ADR 0175).
 
 Render:  python3 tools/audio/render_all.py --only vowbound_stings
@@ -185,6 +192,25 @@ def kesh_summon(mx: Mixer, g) -> float:
     return 5.0
 
 
+# The held light after each binding, in seconds past the sting's own length: its notes (the sting's last colour),
+# and the scene gap it covers (above).
+TAIL: dict[str, tuple[float, tuple[str, ...]]] = {
+    "nhoa_bound": (16.0, ("C#5", "F#5", "C#6")),
+    "hesk_bound": (14.0, ("A3", "E4", "C#5")),
+    "ethren_bound": (9.0, ("C3", "G3", "E4")),
+    "kesh_bound": (6.0, ("A2", "E3", "C4")),
+}
+
+
+def held_light(mx: Mixer, name: str, at: float) -> None:
+    """The binding's light held after the sting: a soft pad on the sting's last colour with one glass ring at its top,
+    no attack and no pulse, fading out over the tail."""
+    sec, notes = TAIL[name]
+    mx.add("pad", pad_chord([n(p) for p in notes], sec, 0.16, seed=SEED + 900 + len(name), attack=2.0,
+                            release=sec * 0.6), at - 1.5)
+    mx.add("glass", _glass(n(notes[-1]) + 12, 0.08, SEED + 950 + len(name), decay=6.0), at + 1.0, pan=0.2)
+
+
 STINGS = {"nhoa_bound": nhoa_bound, "nhoa_summon": nhoa_summon, "hesk_bound": hesk_bound, "hesk_summon": hesk_summon,
           "ethren_bound": ethren_bound, "ethren_summon": ethren_summon, "kesh_bound": kesh_bound,
           "kesh_summon": kesh_summon}
@@ -193,7 +219,7 @@ FILES = [f"{s}.ogg" for s in STINGS]
 
 def render_one(name: str, out_dir: str = OUT_DIR, verbose: bool = True) -> dict:
     g = rng(SEED + 1000 * (list(STINGS).index(name) + 1))
-    mx = Mixer(10.5)
+    mx = Mixer(10.5 + TAIL.get(name, (0.0,))[0])
     mx.bus("voice", -2.0, send=0.45, process=lambda x: filt(x, [bq_highpass(200, 0.7), bq_lowpass(5500, 0.7)]))
     mx.bus("glass", -6.0, send=0.6, process=lambda x: filt(x, [bq_lowpass(9000, 0.7)]))
     mx.bus("air", -12.0, send=0.4, process=lambda x: filt(x, [bq_lowpass(7000, 0.7)]))
@@ -202,6 +228,9 @@ def render_one(name: str, out_dir: str = OUT_DIR, verbose: bool = True) -> dict:
     mx.bus("pad", -4.0, send=0.45, process=lambda x: string_body(x, cutoff=1600.0))
     mx.bus("bow", -2.0, send=0.4, process=lambda x: filt(KS.cello_body(x), [bq_lowpass(1500, 0.7)]))
     length = STINGS[name](mx, g)
+    if name in TAIL:
+        held_light(mx, name, length)
+        length += TAIL[name][0]
     hall = ModFDNReverb(rt60=2.6, rt60_high=1.1, predelay=0.03, size=1.3, mod_depth=8.0, mod_rate=0.4,
                         early_level=0.25, lowcut=110.0, seed=SEED % 9973)
     y = mx.render(reverb=hall, reverb_return_db=-3.0)[: int(length * SR)]
