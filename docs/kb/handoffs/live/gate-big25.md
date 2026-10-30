@@ -37,3 +37,8 @@ GATE-BUILT @ ca5d12c6
 ## Fast gate
 - Selected: 33 test files.
 - Lane A (mine): 17; lane B (GATE-HELPER): 16, in `gate-big25-lanes-b.txt` @ 829b09a6.
+- Lead list (16:09), checked against the build: battle-presentation's aa227a57, 7c3307df, ef997f3d, 4c4a3dd3, 6f3608a7
+  (head c3d06333), act2-plan's 86262eb9, creatures' conduit crawler and kingfisher (7096ae41), ui's controls line
+  (db67f48b) and env-art are all in. Newer heads merged during the gate: audio @ c7f22ea1 (an integration merge; only
+  the comment-only test_cutscene_sfx_files.py conflict again, owner's wording; tools test OK), env-art @ 526f1a8a (log),
+  act2-plan @ 85e9e554 (M4-A2P-114 setters, docs). None touches game/, assets/ or tests/, so the running lanes stand.
