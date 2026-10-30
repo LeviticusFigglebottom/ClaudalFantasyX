@@ -589,6 +589,31 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ 79fc304f: M4-A2P-041, Ch11 (the Sunken Vey and Lowlight) dressed.** The change is additive: new pieces,
+  dressing JSONs, grades and previews. No played scene changes until chapters mount it (M4-A2P-0411, filed). The
+  details are in lowlight.md's revision line.
+  - **Built from the greybox** (§5's 6 m walk and nave bay don't fit it):
+    - `vey_zones.py`: walks at their own lengths, the balustrade on the rail blocks, the paved courts, parapets,
+      conduit stand, gate facade, and the lagoon bed with its lit street conduits.
+    - `lowlight_zones.py`: rooms on the greybox's walls, an arch at every doorway, pointed vaults with broken bays,
+      the hall's rail and twelve lamps, the flights under sloped vaults, and the domed drowned sanctum.
+  - **Kit placed round them:** arcades, columns, figs, the housing with the mark, the bench, the well-shaft, and the
+    nave over the gate.
+  - **The grade:** the arena's sky with an overcast deck (its warm deck read as a sunset over open water), and still
+    water (no crest foam, the detail ripple damped).
+  - **Gates:**
+    - Viewed at 20 cameras (`_tests/ch11_zones/*_dressed.tscn`).
+    - Python suites OK: test_ch11 (7), test_ch10, test_haluna_kit, test_haluna_dressing.
+    - Godot `post_import` 21/21 and `ch11` 3/3.
+    - validate_data, taskboard and gdlint clean.
+    - The full haluna_kit build reproduces all 210 glbs byte for byte (the manifest is updated).
+    - No screenshot is affected (new shots none; HYMN_SHOTS empty).
+  - **For chapters (M4-A2P-0411):**
+    - the mount;
+    - the Engine's field look (creatures' `lamp_engine`);
+    - the well's mouth, open in the sanctum floor: a collision ring, or the beat sheet's ledge;
+    - wading (L02's "knee-deep" needs the floor lowered);
+    - the underwater rig below −2.05.
 - **LEAD-ANSWER (big19 review, `oruvel_o17_pen_split` grey sky): yes, intended; keep it.** O17 runs `phase: ch01_storm`, and
   M3-ENV-104 (e2358df5) gave both storm environments (`oruvel_storm_environment.tres` and the zone's
   `oruvel_ch01_storm_environment.tres`) a storm-slate sky with no sun disc. Before that, the storm frame wore a clear blue
