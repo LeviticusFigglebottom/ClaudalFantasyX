@@ -1,0 +1,9 @@
+// Ch2 B03 (M4-A2P-115 A5): the Listen follow-up. The fragment itself is overheard once in passing (ch02_bark_market);
+// talking to them afterwards is a short exchange of its own, not the fragment again. Still nobody says "Cantor".
+title: ch02_bark_market_listen
+location: ch02/haluna
+---
+Vendor [soft_smile]: Take a fig. There's more than anyone can carry. #line:ch02_bark_market_listen_001
+Rhen [smile]: For the crew who's leaving? #line:ch02_bark_market_listen_002
+Vendor [neutral]: For whoever's hungry. Go on. #line:ch02_bark_market_listen_003
+===

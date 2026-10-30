@@ -116,9 +116,13 @@
       },
       "night_barks": {
         "ch02_bark_market": "ch03_bark_market_night",
+        "ch02_bark_market_listen": "ch03_bark_market_night",
         "ch02_bark_chapel": "ch03_bark_chapel_night",
+        "ch02_bark_chapel_listen": "ch03_bark_chapel_night",
         "ch02_bark_dock": "ch03_bark_dock_night",
-        "ch02_bark_lane": "ch03_bark_lane_night"
+        "ch02_bark_dock_listen": "ch03_bark_dock_night",
+        "ch02_bark_lane": "ch03_bark_lane_night",
+        "ch02_bark_lane_listen": "ch03_bark_lane_night"
       }
     },
     "first_verse": {
