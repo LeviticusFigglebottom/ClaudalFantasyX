@@ -589,6 +589,9 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **LEAD (18:24), IN PROGRESS: the Ch2 Haluna and Ch3 causeway beauty pass** (ids M4-A2P-1400..1499). Started 18:25.
+  Eye-height stills along the walkthrough path are rendered for Haluna (22) and the causeway (12); the Shell Shrine's
+  approach is rendering. Next: view them, then fix and log MERGE-READY.
 - **LEAD (17:45), answered: the Ch1 Underway and Oruvel dressing pass. MERGE-READY @ 922cd122.**
   - **Stills viewed before and after:**
     - the Underway's four walkthrough dive legs, 22 points at eye height;
