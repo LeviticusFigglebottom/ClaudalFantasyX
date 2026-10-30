@@ -216,10 +216,10 @@
         14000,
         1000
       ],
-      "bytes": 305808,
+      "bytes": 301744,
       "lods": {
-        "sea_cut_weir": 4346,
-        "sea_cut_weir-lod1": 380
+        "sea_cut_weir": 4298,
+        "sea_cut_weir-lod1": 368
       }
     },
     "shrine_box": {
