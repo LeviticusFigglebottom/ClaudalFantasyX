@@ -137,7 +137,7 @@ Shot ids are proposed in §7 (W = the white wade, C = the Choir, K = Kesh's memo
 **Staging:** Kesh's memory, from inside, a thousand years ago. **A new cinematic look** (M4-A2P-071): desaturated toward white, soft edges, sound underwater, and no UI. The same seven verses the player has heard all game, heard now from the other side. ~40 words in all, Kesh's voice only.
 
 - **K01:** Iskarra drowning, the First Rising: white towers in a black sea, a storm wider than the sky (bible §2). Brief, overwhelming.
-- **K02:** the Choir as it was, new and white, with six Lamplighters in a ring on the dais, singing, and **Kesh in the middle**, young, holding a lamp-key, unafraid. Among the six, a tall man with silver hair stands at her shoulder: **Sefir**, young, mortal, in love (sefir_aurane.md). The player who has seen him in Ch13 knows the face at once. Nobody names him.
+- **K02:** the Choir as it was, new and white, with the **six Lamplighters** (bible §2: Kesh is one of the six): **Kesh in the middle**, young, holding a lamp-key, unafraid, and the other five in a ring round her, singing. Among the five, a tall man with silver hair stands at her shoulder: **Sefir**, young, mortal, in love (sefir_aurane.md). The player who has seen him in Ch13 knows the face at once. Nobody names him.
 - **K03:** Kesh sings, and the storm comes down to her. She walks out into it, into the sea, singing.
 - **K04 (the truth, from inside):** **inside the storm.** Darkness lit by motes, millions, held, and Kesh at the centre of them with her arms out, and the light **closing round her**, holding to her, her own light becoming the thing that holds it all together. The storm goes quiet around her, not calmed but **held in place, by her**. *She is its heart.* (bible §2; ADR 0016: the singer becomes the storm's next heart.) Kesh's voice, the only words: *"It doesn't sleep. It holds on. To us."*
 - **K05:** time passing inside: forty years in a few seconds. Then another voice singing far above, a second Cantor at the Choir, and **Kesh is pushed out**: the new singer's light takes the heart, and Kesh's is shoved out of the storm, spent, drifting up out of the sea at the Choir, **lifting**: for one moment her light starts to go up (the only rising light in the chapter, and it's a memory: rule 5 holds for the present).
@@ -373,7 +373,7 @@ New shot ids for `ch16/pale_rim` and `ch16/drowned_choir` (to add to pale_rim.md
 1. **Sefir** in close-up for the temptation (C11–C17), and **young Sefir** for the memory (K02, K06–K07: younger, grief-grey, then smooth), a face variant.
 2. **Kesh** (sheet and model: M4-A2P-057): the colossal water-woman, and **young Kesh** as a woman for K02–K03 (a person, characters track).
 3. **The Abiding guard** (the Veiled and their captain): veiled gold lacquer, living, battle actors.
-4. **The Lamplighters** in the memory (K02: six figures, four of them the Cage in Act III; silhouettes are enough).
+4. **The Lamplighters** in the memory (K02: five figures round Kesh, four of them the Cage in Act III and the fifth Sefir; silhouettes are enough for the four).
 5. **Animation:**
    - the wade (a slow heavy walk in shin- to waist-deep water);
    - Kesh's rise and her hand;

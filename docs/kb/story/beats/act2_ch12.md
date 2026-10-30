@@ -76,7 +76,7 @@ Shot ids: K01–K07 are keth_pass.md's composed shots; the rest are proposed in 
 | B09 | **Cloudloom** | `ch12/cloudloom`, the stair and the hall | 11:50 (day 2) | P → C | 3.0 | K05, C01 | `cloudloom` | White stone under open sky; thousands of keth. | `ch12_reached_cloudloom` (exists) |
 | B10 | **Hesk** | Hesk's dais (`hesk`), noon | 12:00 | C | 3.5 | K06, C02–C06 | `cloudloom` → `hesk_bound` (sting) | The binding at noon, the cords' shadows writing on the floor. | `ch12_hesk_bound` |
 | B11 | **"Prayers."** | the hall's aisle | 12:10 | C | 1.0 | C07, C08 | `cloudloom` (stripped) | Ysolde reads Ama's keth and lies. | `ch12_ysolde_lied` |
-| B12 | **Forty-seven voices** | the Quellan inn (`inn_door`), night | 22:00 | E | 3.0 | Q03–Q06 | `silence` → `quellan` (night, fire-side) | The confession. A number. | `ch12_ysolde_confessed` |
+| B12 | **Forty-seven voices** | the Quellan inn (`inn_door`), night | 22:00 | E | 3.0 | Q03–Q06 | `silence` → `ysolde_theme` (reprise, ADR 0204 §12) | The confession. A number. | `ch12_ysolde_confessed` |
 | B13 | **Down the other side** | `ch12/keth_pass` north descent | 07:30 (day 3) | E | 1.0 | P08 | `keth_pass` (morning) | They walk on without looking back, Ullari-fashion. Toma last but one. | `ch12_complete` |
 
 **Totals:** critical path **37.0 min** (all but B04). With B04, **40.0 min**. Split: **24 min playable (65%)**, 7.0 min cutscene, 9.0 min in-engine.

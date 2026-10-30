@@ -186,7 +186,7 @@ Sets `ch15_kerrid_told`. ~360 words, of which ~280 are Kerrid's.
 - **Barks** (~110 words):
   1. A hull-captain's widow (one of those seized at the wedding): *"They took my husband in his good coat. He hates that coat."*
   2. A child, to Pell: *"You're very tall."* Pell: *"Yes."*
-  3. A wright, at a pump: *"She's a grandmother of mine. Pumps the bilge every night. Best worker on the hull."* (The dead want to be useful: bible §7. Asha, passing, looks at the pump's glow a long time. She saw the farewell-tide four days ago.)
+  3. A wright, at a pump: *"She's a grandmother of mine. Pumps the bilge every night. Best worker on the hull."* (The dead want to be useful: bible §7. Asha, passing, looks at the pump's glow a long time. She saw the farewell-tide at Reedhollow, not so long ago.)
   4. **Toma, everywhere he walks:** people stop and look at his **red-lacquered pauldron** with the Level emblem chiselled off. One old woman, with a brine-brand across her line-marks, follows him with her eyes from one end of the jetty to the other. Nobody says anything to him. That is worse.
   5. Liss is nowhere: she is with her father.
 
@@ -299,7 +299,7 @@ Declared in `game/data/flags.tres` when the gate passes (M4-A2P-015 adds them). 
 |---|---|---|---|
 | `unlamped` | B01, B02, B05 (stripped) | Zone loop (exists, M3-AUD-843) | — |
 | `wakefin` | B04 | Boss, two stems (exists, M3-AUD-845) | — |
-| `kerrid_at_sea` | B06 (enters on K04), B07, B08 (tail) | **Cutscene bed**, ~2.5 min (not yet written, act2_finals.md; M4-A2P-090) | A bed for a voice, as `iskarra_vigil`: low, slow, almost nothing. **KERRID_STAIR far below** (his motif from Ch8's stair). It must never swell under a line: it sits under his speech the way the sea sits under the barge. On K10 ("Your father, Rhen.") it drops out entirely for two bars, then returns. It ends on K20's wide. |
+| `kerrid_at_sea` | B06 (enters on K04), B07, B08 (tail) | **Cutscene bed** (not yet written, act2_finals.md; M4-A2P-090). act2_finals.md estimates ~2.5 min, but B06–B08 run **about 7–8 min**, so it must be a seamless ~2.5 min loop with a separate tail, or a ~7 min through-composed piece: Audio's choice. | A bed for a voice, as `iskarra_vigil`: low, slow, almost nothing. **KERRID_STAIR far below** (his motif from Ch8's stair). It must never swell under a line: it sits under his speech the way the sea sits under the barge. On K10 ("Your father, Rhen.") it drops out entirely for two bars, then returns. It ends on K20's wide. |
 | `hollowmere_answers` | B09 | **Cue**, ~60 s (not yet written; M4-A2P-090) | CURRENT_SONG: one rough voice into nothing; a silence; then many voices answering out of the fog, the chart's next phrase. Diegetic: voices only, no instruments until the hulls appear (then the flotilla's windmills and tide-wheels as a soft rhythmic layer). **Keep it distinct from `current_song`** (Dace's, Ch1/Ch8). |
 | ambience only | B10, B11, B12 | — | Hollowmere's own sound (gulls, tide-wheels, hammers, a pump's hum), with **no zone loop**. The act3 `hollowmere` cue (M3-AUD-852: "warmth returns, low and long") is **Ch17's**, and the first visit is grief. |
 | `hush_first_verse` (reprise) | B13 | Reprise (ADR 0204 §12) | The pyre-raft reprises the Hush's first verse, sparse. ~~`tobin_pyre`~~ is withdrawn. |

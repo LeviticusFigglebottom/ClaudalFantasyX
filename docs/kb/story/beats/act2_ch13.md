@@ -97,7 +97,7 @@ Shot ids are proposed in §7 (A = Ansedra, S = the Sanctum, R = the Archive's re
 ### B01. The still city (C, 1.5 min)
 - **A01:** day 1, 16:30, overcast, perfectly still air (color script `ch13`). From a poled barge at the lagoon's edge: **Ansedra**, gold bowl-domes on tiered red-lacquer bases on islands of white stone, every one doubled exactly in a lagoon so flat it's a mirror, so that you can't tell which way is up (ansedra.md). Gold everywhere, and it feels cold.
 - **A02:** the outer moorings: lacquered barges, barge-polers in plain grey, oil lamps on poles (the only warm light: rule 5). The polers who meet the party push off with long careful strokes that leave **no wake** (rule 4). Rhen, quietly, a diver watching the water: *"They're not making ripples. How are they not making ripples?"* Nobody answers.
-- **A03:** **Kerrid steps off at the outer moorings** and doesn't get into the city barge. He sits down on a mooring post's stone among the polers. (He sits now: Ch15 makes it legible that he never used to. Here, at the moorings, he sits among working men at night, and that's all anyone sees.) Asha looks back; he lifts a hand. The party goes in without him (rule 3; the flow's `party` step, as `chapters/ch13.json` already does).
+- **A03:** **Kerrid steps off at the outer moorings** and doesn't get into the city barge. He takes his place standing by a mooring post among the polers. ("Sits out the nights" in kerrid.md means stays out; **he never sits**, Prologue to Ch15, and Ch15's K05 is the first time anyone sees him sit. He stands among working men all night, and that's all anyone sees.) Asha looks back; he lifts a hand. The party goes in without him (rule 3; the flow's `party` step, as `chapters/ch13.json` already does).
 
 ### B02. The High Warden's house (C, 2 min)
 - **A04:** Sefir's house on the central island (`sefir_door`): white stone, lacquer, a garden of raked white gravel where nothing grows. **Sefir** meets them himself, in pale still-water silk with the gold half-mantle and bowl-crown, unnaturally still, with no breathing idle (sefir_aurane.md). He is delighted to see them.
@@ -106,7 +106,7 @@ Shot ids are proposed in §7 (A = Ansedra, S = the Sanctum, R = the Archive's re
   - **The wedding:** *"And you have come at a good time. In four days a Saltwright will marry a Warden's daughter, in the Lacquer Court, and I will say the words. Mistress Varrow's brother. I believe she had something to do with it."* Liss, despite herself, flushes. Sets `ch13_wedding_announced`.
   - **The two keys:** to Asha, *"The Sanctum is open to you tomorrow."* And then, to **Liss**, kindly, holding out a heavy bronze key: *"And to you, Mistress Varrow, the Lamp Archive, for as long as you are our guest. You were told for years the Order hides the Lit Age from your people. Read whatever you like. We have nothing to hide from a wright."*
   - Liss takes the key. She doesn't say thank you. (Act I: she never forgave him for being kind about the Shoals.)
-- **A05:** Sefir glances past them toward the lagoon, toward the outer moorings where a big man sits among the polers. Half a beat. Then back to Asha, warm. (ADR 0022 (c): he knows what Kerrid is and lets him be. Rule 3.)
+- **A05:** Sefir glances past them toward the lagoon, toward the outer moorings where a big man stands among the polers. Half a beat. Then back to Asha, warm. (ADR 0022 (c): he knows what Kerrid is and lets him be. Rule 3.)
 - **A06:** Toma bows to the High Warden as a former Stillguard does, deeply. Sefir: *"Be level, Okeru."* Toma: *"And still, High Warden."* (Toma's faith is cracked but still answering. Ch14 B04 is the first time he doesn't.)
 
 ### B03. Tobin (E, 3 min)
@@ -127,7 +127,7 @@ Shot ids are proposed in §7 (A = Ansedra, S = the Sanctum, R = the Archive's re
   - an inn (Sefir's house is the party's rest);
   - an Order shrine (it goes dark at Ch14's heresy: plan §4.2);
   - **no fights**.
-- **The outer moorings at dusk** (optional, sets `ch13_sat_at_moorings`): Kerrid on his mooring stone among the polers, an oil lamp on a pole. Rhen can sit with him. Kerrid says nothing for a long time, then: *"They pole well here."* (Beat.) *"Too well."* (A stair-watch captain's eye on water that won't move.) A poler offers him a bowl of rice; he sets it down untouched (kerrid.md's clue list: he never eats).
+- **The outer moorings at dusk** (optional, sets `ch13_sat_at_moorings`): Kerrid on his mooring stone among the polers, an oil lamp on a pole. Rhen can stand with him. Kerrid says nothing for a long time, then: *"They pole well here."* (Beat.) *"Too well."* (A stair-watch captain's eye on water that won't move.) A poler offers him a bowl of rice; he sets it down untouched (kerrid.md's clue list: he never eats).
 - **Barks** (~100 words):
   1. A Tender, to Asha, rapt: *"Lady Cantor. The water has not moved in four hundred years. Isn't it peaceful?"*
   2. A pilgrim at a causeway, to her child, very low: *"Hush. You'll stir the water."* (There are children. They don't play.)
@@ -177,16 +177,16 @@ Shot ids are proposed in §7 (A = Ansedra, S = the Sanctum, R = the Archive's re
   - That's as far as it goes. Sets `ch13_archive_read`. ~20 words.
 
 ### B10. The pact (C, 2.5 min)
-- **A11:** day 4, 22:00, the outer moorings, lamps on poles over still black water. The party has come to Kerrid, out of the city, because it's the one place in Ansedra they don't feel watched. Kerrid stands up when they come (he was sitting). He listens.
+- **A11:** day 4, 22:00, the outer moorings, lamps on poles over still black water. The party has come to Kerrid, out of the city, because it's the one place in Ansedra they don't feel watched. Kerrid is standing where he always stands. He turns when they come, and listens.
 - **The pact** (~120 words):
-  - Liss: *"Tobin's married the day after tomorrow. Then we get him out. Then we say it. All of it. Not before."*
+  - Liss: *"Tobin's married tomorrow. Then we get him out. Then we say it. All of it. Not before."*
   - Toma: *"If we say it before, they will not let him marry. They will not let him leave."*
   - Rhen: *"So we smile at the wedding."* Ysolde: *"We have all smiled at worse."*
   - Asha: *"And the High Warden?"* A silence. Nobody answers.
 - **A12:** Tobin has come out to the moorings after them, because his sister is out at night. He heard the end of it. Liss tells him, fast, in a whisper. He listens. Then:
   - Tobin: *"No."* (Sincere, and not stupid.) *"If I run, there's no peace. Hollowmere's captains are here, Liss. They came because I said it was safe. If I run the night before, they're all hostages. If I marry her, they go home as family."* (Beat.) *"Somebody has to go first."*
   - Liss: *"Tobin."*
-  - Tobin: *"Two days. Then you can get me out of whatever you like."*
+  - Tobin: *"One day. Then you can get me out of whatever you like."*
 - **A13:** Kerrid, at the edge of the lamplight, watching the still water. He says nothing. (He knows what it is to hold a gate past the hour for someone.)
 - **A14:** wide: the party on the moorings, small, and the city behind them, gold domes doubled in black water, absolutely still. Sets `ch13_pact_of_silence`.
 
