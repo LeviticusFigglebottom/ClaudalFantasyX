@@ -1,5 +1,5 @@
 {
-  "_doc": "The Coilspire headland: a few gulls ride the wind over the scrub on the headland path and stand on the keeper's hut (top 3.0 m). Nothing inside the spire (a sealed Lit Age tower). Placed on the greybox layout (M3-CRE-636); move the coordinates when env-art's kit replaces the blocks (same keys as ch02_haluna.json).",
+  "_doc": "The Coilspire headland: a few gulls ride the wind over the scrub on the headland path and stand on the keeper's hut (top 3.0 m). Nothing inside the spire (a sealed Lit Age tower). Placed on the greybox layout (M3-CRE-636); move the coordinates when env-art's kit replaces the blocks (same keys as ch02_haluna.json). Re-seated on the dressed kit (the Act I audit, 2026-10-29: tools/creatures/wildlife_snap.gd and wildlife_audit.gd, which ray against the zone's visible meshes).",
   "zone": "ch08/coilspire",
   "flocks": [
     {
@@ -18,14 +18,14 @@
       "perches": [
         [
           -17.0,
-          3.0,
-          -3.0,
+          3.23,
+          -3.5,
           90.0
         ],
         [
           -15.5,
-          3.0,
-          -3.0,
+          3.97,
+          -3.5,
           -90.0
         ]
       ]

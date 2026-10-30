@@ -812,8 +812,13 @@ GROUNDED_LIMBS = ([(f"leg_{tag}{i}_a", 2, 1.0 if tag == "l" else -1.0, 60.0) for
                      ("root", gr.LIFT, 1.0, 0.15, ("ko", "intro", "cast"))])
 
 
+# The planted feet held where they touch down (common/grounding.py pinned(); the Act I audit's foot sliding).
+PINNED_LEGS = [(f"leg_{tag}{i}_a", f"leg_{tag}{i}_b", 2, 1.0 if tag == "l" else -1.0) for tag in "lr" for i in range(2)]
+
+
 def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
-    return gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS)
+    pinned = gr.pinned(rig, mesh, gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS), PINNED_LEGS)
+    return gr.reground(rig, mesh, pinned, GROUNDED_LIMBS)  # a held foot's toes back above the floor
 
 
 def build_mesh(rig: ck.Rig) -> ck.Mesh:

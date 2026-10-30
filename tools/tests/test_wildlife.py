@@ -79,6 +79,16 @@ class ValidatorTest(unittest.TestCase):
         self.assertTrue(any("belongs in ch02_elsewhere.json" in e for e in errs))
         self.assertTrue(any("not a locations.json location" in e for e in errs))
 
+    def test_ground_is_a_node_method_or_physics_alone(self) -> None:
+        # the Act I audit (2026-10-29): crabs may follow the zone's collision instead of a terrain method
+        z = copy.deepcopy(self.zone)
+        z["ground"] = {"physics": True}
+        self.assertFalse(any(".ground" in e for e in self.zone_errs(z)))
+        z["ground"] = {"physics": True, "node": "Terrain"}
+        self.assertTrue(any(".ground" in e for e in self.zone_errs(z)))
+        z["ground"] = {"physics": False}
+        self.assertTrue(any(".ground" in e for e in self.zone_errs(z)))
+
     def test_perches_must_be_inside_the_flock(self) -> None:
         z = copy.deepcopy(self.zone)
         z["flocks"][0]["perches"].append([500.0, 2.0, 500.0, 0.0])

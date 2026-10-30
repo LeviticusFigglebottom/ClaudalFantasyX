@@ -853,6 +853,12 @@ def build_clips() -> list[ck.Clip]:
         attack.key("jaw", t, (28.0 * bite, 0, 0))
         for n in ("bl", "br"):
             attack.key(f"{n}_upper", t, (-20.0 * crouch, 0, 0))
+    # the forepaws step with the lunge (the audit: they slid 37 cm along the floor): a lifted step forward into the
+    # crouch's bow, up and reaching as it springs, down ahead for the bite, up again and back as it recovers
+    for t, reach, fold in ATTACK_FORE_STEP:
+        for n in ("fl", "fr"):
+            attack.key(f"{n}_upper", t, (-reach, 0, 0))
+            attack.key(f"{n}_lower", t, (fold, 0, 0))
     cast = ck.Clip("cast", 1.6)  # a howl: head up, jaw open
     for t, s in ((0.0, 0.0), (0.4, 1.0), (1.2, 1.0), (1.6, 0.0)):
         cast.key("neck", t, (-35.0 * s, 0, 0))
@@ -887,8 +893,16 @@ def build_clips() -> list[ck.Clip]:
 GROUNDED_LIMBS = [(f"{n}_upper", 0, -1.0, 55.0 if n[0] == "f" else 30.0) for n in ("fl", "fr", "bl", "br")]
 
 
+# The planted feet held where they touch down (common/grounding.py pinned(); the Act I audit's foot sliding).
+# The forepaws' steps in the lunge: (time, reach forward, knee fold) in degrees (a negative fold tucks the paw up).
+ATTACK_FORE_STEP = ((0.0, 0.0, 0.0), (0.15, 18.0, -60.0), (0.3, 20.0, -40.0), (0.4, 35.0, -70.0), (0.5, 22.0, -20.0),
+                    (0.65, 22.0, -20.0), (0.8, 30.0, -70.0), (0.95, 5.0, -20.0), (1.1, 0.0, 0.0))
+PINNED_LEGS = [(f"{n}_upper", f"{n}_lower", 0, -1.0) for n in ("fl", "fr", "bl", "br")]
+
+
 def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
-    return gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS)
+    pinned = gr.pinned(rig, mesh, gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS), PINNED_LEGS)
+    return gr.reground(rig, mesh, pinned, GROUNDED_LIMBS)  # a held foot's toes back above the floor
 
 
 def build_mesh() -> tuple[ck.Rig, ck.Mesh]:
