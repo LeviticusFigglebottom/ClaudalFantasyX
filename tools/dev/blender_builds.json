@@ -1220,6 +1220,16 @@
       ]
     },
     {
+      "id": "creature_drowned_lantern",
+      "owner": "character",
+      "sources": ["assets_src/creatures/drowned_lantern/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/drowned_lantern/*.glb", "assets/creatures/drowned_lantern/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/drowned_lantern/build_drowned_lantern.py", "--", "--out", "assets/creatures/drowned_lantern/drowned_lantern.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "drowned_lantern"]
+      ]
+    },
+    {
       "id": "creature_flat_engine",
       "owner": "character",
       "sources": ["assets_src/creatures/flat_engine/**", "assets_src/creatures/common/**"],

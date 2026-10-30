@@ -606,6 +606,11 @@
       "out_dir": "res://assets/ui/portraits/creatures"
     },
     {
+      "id": "drowned_lantern",
+      "scene": "res://game/creatures/drowned_lantern/drowned_lantern_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
       "id": "ridge_lynx",
       "scene": "res://game/creatures/ridge_lynx/ridge_lynx_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures"

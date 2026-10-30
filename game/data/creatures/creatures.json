@@ -233,6 +233,13 @@
       "ko_fade_sec": 1.2,
       "portrait": {"pitch_deg": 22.0}
     },
+    "drowned_lantern": {
+      "scene": "res://game/creatures/drowned_lantern/drowned_lantern_battle.tscn",
+      "vfx_anchors": {"core": "heart", "wound": "globe"},
+      "contact": {"attack": 0.5, "cast": 0.8},
+      "ko_fade_sec": 1.0,
+      "portrait": {"pitch_deg": 12.0}
+    },
     "ridge_lynx": {
       "scene": "res://game/creatures/ridge_lynx/ridge_lynx_battle.tscn",
       "contact": {"attack": 0.7, "cast": 0.75},

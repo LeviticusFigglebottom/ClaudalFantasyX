@@ -10358,6 +10358,14 @@
         960,
         720
       ]
+    },
+    {
+      "id": "creature_drowned_lantern",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_drowned_lantern.tscn",
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }
