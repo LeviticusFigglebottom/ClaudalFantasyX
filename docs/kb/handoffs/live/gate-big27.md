@@ -47,3 +47,4 @@ GATE-BUILT @ b7b09c5e
 
 ## Fast gate
 - Selected: 54 test files (plus test_aspect_layouts, to re-check the routed red).
+- Lane A (mine): 27; lane B (GATE-HELPER): 27, in `gate-big27-lanes-b.txt` @ 66ae0cc2.
