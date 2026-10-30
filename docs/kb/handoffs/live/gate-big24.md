@@ -38,3 +38,12 @@ GATE-BUILT @ 019596bb (merge tip; this log commit sits on top)
 ## Fast gate
 - Selected: 71 test files (changed tests plus tests naming changed res:// paths or class_names). Lane A (mine) has 36;
   lane B (GATE-HELPER) has 35, in `gate-big24-lanes-b.txt` @ 797b02cc.
+
+## Mid-batch playtest FAST-TRACK (14:3x)
+- claude/hero-integration @ 99989c2b (MERGE-READY): the field stays resident through a random fight (the return
+  re-attaches the zone: 389 ms black, not 1.7–6.5 s); FieldShore keeps the hero off dock edges into the sea.
+  `scene_swap_probe.gd` conflicted with ui's 8df5fe2b (keeps the zone's loads through a field battle, also in big24):
+  two independent probe modes, so both are kept (`--round-trip=` from ui, plus `--return=`/`--no-resident` from hero-integration).
+  The runtime fixes compose: ui's in `resident_loads.gd`, hero-integration's in `scene_router.gd`.
+- Re-gated: re-import, boot, and the 46 test files this merge touches (scene_router/field/shore users), run by me after my lane A.
+- Characters' jog (b344b974): pushed at 14:15 but not yet MERGE-READY; it will be merged into big24 the moment it is.
