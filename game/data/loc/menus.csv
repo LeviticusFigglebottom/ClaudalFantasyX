@@ -75,3 +75,5 @@ READER_HELP_ONE,Up and Down: read · Cancel: close
 READER_HANDS_LEFT_FMT,Hands still to find: {n} of {count}
 READER_ALL_FOUND,Every hand is found.
 READER_PANE_FMT,{n} of {count}
+STATUS_MENU_BOUND,Bound
+STATUS_MENU_BOUND_NONE,None yet
