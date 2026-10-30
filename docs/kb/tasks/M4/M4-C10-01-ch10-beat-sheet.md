@@ -2,9 +2,8 @@
 id: M4-C10-01
 title: Ch10 "Fen of the Kirru" beat sheet (the first of Act II)
 role: narrative
-status: blocked
-blocked-by: ADR 0041
-owner_session: ""
+status: review
+owner_session: "act2 story track (claude/act2-plan, ADR 0205)"
 depends_on: []
 reviewer: cinematics
 milestone: M4

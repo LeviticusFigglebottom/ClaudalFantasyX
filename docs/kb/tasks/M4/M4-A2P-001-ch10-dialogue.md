@@ -2,9 +2,8 @@
 id: M4-A2P-001
 title: "Ch10 “Fen of the Kirru” dialogue scripts (.dlg), barks and codex text"
 role: narrative
-status: blocked
-blocked-by: ADR 0203
-owner_session: ""
+status: doing
+owner_session: "act2 story track (claude/act2-plan, ADR 0205)"
 depends_on: [M4-C10-01]
 reviewer: cinematics
 milestone: M4
