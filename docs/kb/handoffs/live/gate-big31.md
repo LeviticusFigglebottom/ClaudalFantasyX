@@ -55,3 +55,17 @@ GATE-BUILT @ 3a1ad626
   no new duplicate PROVENANCE rows.
 - Re-gate on a fresh import: the 28 test files these merges touch, plus every villager/crowd/haluna/scene_router/resident_loads
   test (the Lead's list) and test_qa_capsules.
+- Re-gate (28 files, fresh import): import check clean · boot 0 ERROR lines · log check 0 · 27 green. Every
+  villager, crowd, haluna, scene_router and resident_loads test is green with M3-HER-1168 in. The red is test_qa_capsules
+  (routed, as above).
+- Tools suite (-j 2, 211 units; it overlapped the mid-batch merges, so the audits were re-run on the final tree):
+  - Now green: test_hero_clips, test_zone_map_pois and **test_villagers** (the long-known red is gone).
+  - test_act1_audio_audit and test_battle_vfx_coverage (cut_the_line, court_reinforce, court_wait): unchanged since big30.
+    Still routed: **act1-chapters**.
+  - test_rig_integrity (Asha, Liss, Pell, Rhen, Ysolde, Stillguards A/C/D/E, and now **Sefir**): still routed:
+    **characters** (classified by failing pose in big30, not probed).
+  - Known: test_palette_check, test_screenshots.
+
+GATE-FAST-DONE @ 47561982 (merge-approved: no batch-caused red). M3-HER-1168 is in. Routed: act1-chapters
+(test_qa_capsules, test_act1_audio_audit, test_battle_vfx_coverage); characters (test_rig_integrity). Known: test_palette_check,
+test_screenshots.
