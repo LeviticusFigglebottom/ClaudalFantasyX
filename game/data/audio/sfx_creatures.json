@@ -2038,6 +2038,218 @@
       "pitch_jitter": 0.04,
       "voices": 3,
       "cooldown_ms": 120
+    },
+    "cre_nhoa_idle": {
+      "files": [
+        "res://assets/audio/sfx/creatures/nhoa_idle_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2,
+      "cooldown_ms": 120
+    },
+    "cre_nhoa_attack": {
+      "files": [
+        "res://assets/audio/sfx/creatures/nhoa_attack_1.ogg",
+        "res://assets/audio/sfx/creatures/nhoa_attack_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2,
+      "cooldown_ms": 120
+    },
+    "cre_nhoa_hurt": {
+      "files": [
+        "res://assets/audio/sfx/creatures/nhoa_hurt_1.ogg",
+        "res://assets/audio/sfx/creatures/nhoa_hurt_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2,
+      "cooldown_ms": 120
+    },
+    "cre_nhoa_death": {
+      "files": [
+        "res://assets/audio/sfx/creatures/nhoa_death_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2,
+      "cooldown_ms": 120
+    },
+    "cre_nhoa_drift": {
+      "files": [
+        "res://assets/audio/sfx/creatures/nhoa_drift_1.ogg",
+        "res://assets/audio/sfx/creatures/nhoa_drift_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3,
+      "cooldown_ms": 120
+    },
+    "cre_hesk_idle": {
+      "files": [
+        "res://assets/audio/sfx/creatures/hesk_idle_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2,
+      "cooldown_ms": 120
+    },
+    "cre_hesk_attack": {
+      "files": [
+        "res://assets/audio/sfx/creatures/hesk_attack_1.ogg",
+        "res://assets/audio/sfx/creatures/hesk_attack_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2,
+      "cooldown_ms": 120
+    },
+    "cre_hesk_hurt": {
+      "files": [
+        "res://assets/audio/sfx/creatures/hesk_hurt_1.ogg",
+        "res://assets/audio/sfx/creatures/hesk_hurt_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2,
+      "cooldown_ms": 120
+    },
+    "cre_hesk_death": {
+      "files": [
+        "res://assets/audio/sfx/creatures/hesk_death_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2,
+      "cooldown_ms": 120
+    },
+    "cre_hesk_wingbeat": {
+      "files": [
+        "res://assets/audio/sfx/creatures/hesk_wingbeat_1.ogg",
+        "res://assets/audio/sfx/creatures/hesk_wingbeat_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3,
+      "cooldown_ms": 120
+    },
+    "cre_ethren_idle": {
+      "files": [
+        "res://assets/audio/sfx/creatures/ethren_idle_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2,
+      "cooldown_ms": 120
+    },
+    "cre_ethren_attack": {
+      "files": [
+        "res://assets/audio/sfx/creatures/ethren_attack_1.ogg",
+        "res://assets/audio/sfx/creatures/ethren_attack_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2,
+      "cooldown_ms": 120
+    },
+    "cre_ethren_hurt": {
+      "files": [
+        "res://assets/audio/sfx/creatures/ethren_hurt_1.ogg",
+        "res://assets/audio/sfx/creatures/ethren_hurt_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2,
+      "cooldown_ms": 120
+    },
+    "cre_ethren_death": {
+      "files": [
+        "res://assets/audio/sfx/creatures/ethren_death_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2,
+      "cooldown_ms": 120
+    },
+    "cre_ethren_drift": {
+      "files": [
+        "res://assets/audio/sfx/creatures/ethren_drift_1.ogg",
+        "res://assets/audio/sfx/creatures/ethren_drift_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3,
+      "cooldown_ms": 120
+    },
+    "cre_kesh_idle": {
+      "files": [
+        "res://assets/audio/sfx/creatures/kesh_idle_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2,
+      "cooldown_ms": 120
+    },
+    "cre_kesh_attack": {
+      "files": [
+        "res://assets/audio/sfx/creatures/kesh_attack_1.ogg",
+        "res://assets/audio/sfx/creatures/kesh_attack_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2,
+      "cooldown_ms": 120
+    },
+    "cre_kesh_hurt": {
+      "files": [
+        "res://assets/audio/sfx/creatures/kesh_hurt_1.ogg",
+        "res://assets/audio/sfx/creatures/kesh_hurt_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2,
+      "cooldown_ms": 120
+    },
+    "cre_kesh_death": {
+      "files": [
+        "res://assets/audio/sfx/creatures/kesh_death_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2,
+      "cooldown_ms": 120
+    },
+    "cre_kesh_surge": {
+      "files": [
+        "res://assets/audio/sfx/creatures/kesh_surge_1.ogg",
+        "res://assets/audio/sfx/creatures/kesh_surge_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3,
+      "cooldown_ms": 120
     }
   }
 }

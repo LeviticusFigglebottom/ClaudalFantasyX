@@ -61,6 +61,7 @@ RULES = [
     ("sfx/step_*.ogg", "momentary", -18.5, 1.5, -1.0, "footsteps"),
     ("sfx/drownbell_toll.ogg", "momentary", -18.0, 1.0, -1.0, "the cutscene's far toll"),
     ("sfx/text_blip.ogg", "momentary", -27.0, 1.0, -3.0, "one dialogue blip"),
+    ("sfx/ui_mark.ogg", "momentary", -24.0, 1.0, -2.5, "the reader's mark, under the found hand (M4-AUD-1080)"),
     ("sfx/ui_*.ogg", "momentary", -20.0, 1.0, -2.5, "UI SFX"),
     ("sfx/voice/blip_*.ogg", "momentary", -27.0, 1.0, -3.0, "per-speaker dialogue blips (M3-AUD-07)"),
     # M3-AUD-06 (assets_src/sfx/reefball_sfx.py, underwater_sfx.py); the ambience/ beds fall under ambience/*.ogg
@@ -83,6 +84,10 @@ RULES = [
     ("sfx/choreo/ilun_*.ogg", "momentary", -22.0, 1.0, -1.0, "Ilun's layers under the shared Vowbound rows (M3-AUD-846)"),
     ("sfx/choreo/kahre_*.ogg", "momentary", -22.0, 1.0, -1.0, "Kahre's layers under the shared Vowbound rows (M3-AUD-857)"),
     ("sfx/choreo/virel_*.ogg", "momentary", -22.0, 1.0, -1.0, "Virel's layers under the shared Vowbound rows (M3-AUD-857)"),
+    ("sfx/choreo/nhoa_*.ogg", "momentary", -22.0, 1.0, -1.0, "Nhoa's layers under the shared Vowbound rows (M4-AUD-1010)"),
+    ("sfx/choreo/hesk_*.ogg", "momentary", -22.0, 1.0, -1.0, "Hesk's layers under the shared Vowbound rows (M4-AUD-1010)"),
+    ("sfx/choreo/ethren_*.ogg", "momentary", -22.0, 1.0, -1.0, "Ethren's layers under the shared Vowbound rows (M4-AUD-1010)"),
+    ("sfx/choreo/kesh_*.ogg", "momentary", -22.0, 1.0, -1.0, "Kesh's layers under the shared Vowbound rows (M4-AUD-1010)"),
     ("sfx/choreo/*.ogg", "momentary", -18.0, 1.0, -1.0, "KO collapse, toll wave, surge, the Vowbound's rise and fall"),
     # M3-AUD-14 (assets_src/sfx/creature_sfx.py): movement repeats on every action, idles sit under the battle
     *[(f"sfx/creatures/*_{w}_*.ogg", "momentary", -21.0, 1.0, -1.0, f"creature movement ({w})")

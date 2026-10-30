@@ -14,7 +14,8 @@ import targets  # noqa: E402
 
 EVENTS = ("idle", "attack", "hurt", "death", "move")
 MOMENTS = ("call", "rise", "sink", "fall")
-FLIERS = ("ilun", "virel")  # Ilun glides, Virel is flown; Kahre walks on his fists
+FLIERS = ("ilun", "virel", "nhoa", "hesk", "ethren", "kesh")  # Ilun glides, Virel is flown; Kahre walks on his
+# fists; M4-AUD-1010: Nhoa and Ethren hover, Hesk flies, Kesh is a column of water
 
 
 def _json(rel: str) -> dict:
