@@ -2,9 +2,8 @@
 id: M4-A2P-047
 title: "The still mirror and the first ripples: Ansedra's water look"
 role: rendering
-status: blocked
-blocked-by: ADR 0203
-owner_session: ""
+status: doing
+owner_session: env-art-b
 depends_on: []
 reviewer: environment
 milestone: M4
@@ -20,5 +19,6 @@ A still-water mode of the water shader (no waves, an exact reflection) for Ansed
 ## Notes
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). Plan §2 Ch13–14. env-art-b holds rendering's zone looks (TRACK-RULES).
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
+- 2026-10-30: started by env-art-b under ADR 0205 (Act II per track once its Act I rows are closed).
 
 ## Review log
