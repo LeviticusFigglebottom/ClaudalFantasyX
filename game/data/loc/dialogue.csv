@@ -363,6 +363,7 @@ DLG_CH04_SHELL_024,Then I can leave it if I like.
 DLG_CH04_WRAITH_001,"Stand back from the rigging, please."
 DLG_CH04_WRAITH_002,On my shield.
 DLG_CH04_INK_001,"Hold the lamp, if you are going to stand there."
+DLG_NAME_YSOLDE_THE_STRANGER,The stranger
 DLG_CH04_INK_002,What's wrong with the ink?
 DLG_CH04_INK_003,"They cut the name well. They inked it with fishing-ink, soot and oil. Salt lifts that in a season."
 DLG_CH04_INK_004,Ansedran lacquer outlasts the stone it is in.
@@ -456,6 +457,7 @@ DLG_CH05_BOATS_008,It's what they do.
 DLG_CH05_BOATS_009,Level preserve them.
 DLG_CH05_WEIR_001,"Rhen Sallow, if you fall in that channel I am not coming in after you."
 DLG_CH05_WEIR_002,I held a stair for your mother once.
+DLG_NAME_KERRID_X2D86C2,???
 DLG_CH05_WEIR_003,Where?
 DLG_CH05_WEIR_004,...Then another time.
 DLG_CH05_WEIR_005,"Your name, sir?"
@@ -586,7 +588,7 @@ DLG_NAME_NETMENDER_OLD_WOMAN,Old woman
 DLG_CH07_BARK_ELDER_002,You bring the float up like you'd bring up a body. People forget.
 DLG_CH07_BARK_GANTRY_001,Oruvel's side is still here. A week now. Nobody's had the heart to ask them.
 DLG_CH07_BARK_GANTRY_AFTER_001,Next round's in. Listen to them up there.
-DLG_CH07_BARK_GANTRY_AFTER_002,Oruvel's boat went out the river mouth an hour ago. Nobody cheered. They just moved aside.
+DLG_CH07_BARK_GANTRY_AFTER_002,Oruvel's crew came down from the Bell to ready their boat. Nobody cheered. They just moved aside.
 DLG_CH07_BARK_LANE_001,Hot year. Fast water. Good for the atoll sides.
 DLG_CH07_BARK_LANE_AFTER_001,Where'd they go?
 DLG_CH07_BARK_LANE_AFTER_002,Home.
@@ -599,17 +601,17 @@ DLG_CH07_MOOR_002,"I'm not a priest, Tavi."
 DLG_CH07_MOOR_003,You're the Cantor.
 DLG_CH07_MOOR_004,Then I'll do it the way we do it at home. Tell me what tied up here.
 DLG_CH07_MOOR_005,The Tallow Hen.
-DLG_CH07_MOOR_006,"Ollo's. Brann's uncle, and his wife."
-DLG_CH07_MOOR_007,"Brann's uncle, and his wife."
+DLG_CH07_MOOR_006,"Ollo's. Noa's uncle, and his wife."
+DLG_CH07_MOOR_007,"Noa's uncle, and his wife."
 DLG_CH07_MOOR_008,The Second Mooring.
-DLG_CH07_MOOR_009,The Ketters. All of them but Mae.
+DLG_CH07_MOOR_009,The Ketters. All of them.
 DLG_CH07_MOOR_010,The Ketters.
 DLG_CH07_MOOR_011,The Wicklight.
 DLG_CH07_MOOR_012,Kell.
 DLG_CH07_MOOR_013,Kell.
 DLG_CH07_MOOR_014,The Brass Thrush. The Low Lantern.
-DLG_CH07_MOOR_015,Dovic's brothers. Old Arro and his daughter.
-DLG_CH07_MOOR_016,"Dovic's brothers. Old Arro, and his daughter."
+DLG_CH07_MOOR_015,Ama's brothers. Old Arro and his daughter.
+DLG_CH07_MOOR_016,"Ama's brothers. Old Arro, and his daughter."
 DLG_CH07_MOOR_017,Pio.
 DLG_CH07_MOOR_018,...Yes. Pio.
 DLG_CH07_MOOR_019,Pio.
@@ -732,7 +734,7 @@ DLG_CH08_WALL_FALLS_002,Someone. In the storm. Humming a current-song.
 DLG_CH08_WALL_FALLS_003,I heard them too. All of them.
 DLG_CH08_WALL_FALLS_004,Storm. Just the storm.
 DLG_CH08_WALL_FALLS_005,All right.
-DLG_CH09_BARK_HOBB_001,"Jory Sallow. Mag Sallow. Anni Tesk, nine years."
+DLG_CH09_BARK_HOBB_001,"Jory Wend. Mag Wend. Anni Lusk, nine years."
 DLG_CH09_BARK_HOBB_002,"Bren Coyle. The Coyle boys, both of them. Next row."
 DLG_CH09_BARK_LISS_001,Thirty-one baskets. I counted. Don't ask me to count anything else.
 DLG_CH09_BARK_MARRA_001,"When the last one's up, the captain calls it. ""Stair's clear."" That's how you know you can come off the wall."

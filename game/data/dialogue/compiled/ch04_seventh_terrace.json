@@ -11,7 +11,7 @@
     {"op": "cue", "cue": "sfx", "args": ["lookout_call"], "kwargs": {}, "src": 20},
     {"op": "line", "id": "ch04_terrace_001", "key": "DLG_CH04_TERRACE_001", "speaker": "ferrymaster", "emotion": "surprised", "voice": "", "src": 21},
     {"op": "cue", "cue": "camera", "args": ["F05"], "kwargs": {}, "src": 22},
-    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "derelict_rigging", "count": 12, "drift": "down_seaward", "rate": "slow"}, "src": 23},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "derelict_rigging", "count": 12, "rate": "hang"}, "src": 23},
     {"op": "cue", "cue": "sfx", "args": ["derelict_wheel_turning"], "kwargs": {}, "src": 24},
     {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 3.0}, "src": 25},
     {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 26},

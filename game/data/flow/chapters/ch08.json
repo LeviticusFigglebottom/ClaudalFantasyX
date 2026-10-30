@@ -111,7 +111,7 @@
         "path_fight": {"when": {"unset": ["ch08_path_fight_won"]}, "steps": [
           {"battle": "ch08_headland_gulls", "return_spawn": "PathMid", "victory_flag": "ch08_path_fight_won"}
         ]},
-        "keeping_flame": {"when": {"unset": ["ch08_fed_the_beacon"]}, "steps": [
+        "keeping_flame": {"when": {"unset": ["ch08_entered_coilspire"]}, "steps": [
           {"play": "ch08_keeping_flame"}
         ]},
         "door": {"when": {"unset": ["ch08_entered_coilspire"]}, "steps": [
