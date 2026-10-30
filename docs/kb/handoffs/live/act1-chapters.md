@@ -576,7 +576,7 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - field_camera, ch14_16 and layout are green.
   - Every Act II chapter (Ch10–Ch16) now has its scene shots and field cameras on the greybox.
   - Next: the Act II triggers and beats that need no story text (story's scenes gate the rest).
-- MERGE-READY @ (this push)
+- MERGE-READY @ fb9304836
 
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
