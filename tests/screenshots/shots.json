@@ -8527,6 +8527,186 @@
       "id": "document_reader_one",
       "pending_baseline": true,
       "scene": "res://game/levels/_tests/document_reader/document_reader_one.tscn"
+    },
+    {
+      "id": "ch10_edge_o02",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 480,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch10/ossa_fen/ossa_fen.tscn",
+            "scene_id": "ch10_fen_edge",
+            "spawn": "FenEdge",
+            "hold_line": "ch10_edge_001",
+            "flags": [
+              "ch10_started"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch10_causeway_r03",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 480,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch10/reedhollow/reedhollow.tscn",
+            "scene_id": "ch10_causeway",
+            "spawn": "Gate",
+            "hold_line": "ch10_causeway_002",
+            "flags": [
+              "ch10_started"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch10_tide_f02",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 480,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch10/reedhollow/reedhollow.tscn",
+            "scene_id": "ch10_farewell_tide",
+            "spawn": "Shore",
+            "hold_cue": "camera F02",
+            "show": [
+              "clutch_0",
+              "clutch_1",
+              "clutch_2",
+              "clutch_3",
+              "clutch_4",
+              "clutch_5",
+              "clutch_6",
+              "clutch_7"
+            ],
+            "flags": [
+              "ch10_started"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch10_tide_t04",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 480,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch10/reedhollow/reedhollow.tscn",
+            "scene_id": "ch10_farewell_tide",
+            "spawn": "Shore",
+            "hold_cue": "anim clutch",
+            "show": [
+              "clutch_0",
+              "clutch_1",
+              "clutch_2",
+              "clutch_3",
+              "clutch_4",
+              "clutch_5",
+              "clutch_6",
+              "clutch_7"
+            ],
+            "flags": [
+              "ch10_started"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch10_outside_r07",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 900,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch10/reedhollow/reedhollow.tscn",
+            "scene_id": "ch10_farewell_tide",
+            "spawn": "Gate",
+            "hold_cue": "camera R07",
+            "flags": [
+              "ch10_started"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
     }
   ]
 }
