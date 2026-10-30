@@ -838,6 +838,21 @@ that test at this branch's zones.
     after-the-trap blocks), 105 (Ch15's shoal mark and dawn row) and 106 (the Choir's relayout).
   - The looks only the PC can judge are queued.
   - The next step for each request is in the handoff.
+- **GPU pass 4 (10-30, re-checked on big20 7dc3ab41 merged into this branch).** Pass 4 ran on big19, which had none of
+  my pass-3 fixes.
+  - 45 (crown steps), 52 (brine_b05 barge painted), 53 (headland textured), 62 (weir stone) and 63 (matron): fine on
+    this head in self-rendered stills, so no change.
+  - 49 (Pemakar harbour foreground black): the night fill goes from 0.6 to 0.8 (`ch05_pemakar_dressing.py`). The
+    party reads from every spawn, and the quay foreground is lifted but still night-dark. It's a PC-QUEUE look.
+  - 51 (Ch9 graves not readable): the shrouds were flat slabs at field range. They now have a rounded superellipse
+    outline, are fuller (1.4) with a wider hem and shallower creases, and read as a row of bound mounds with rope
+    ties from the strand spawn.
+  - `lacquer_court_steps`' PROVENANCE row: it came in with big20 (one row, no duplicate added).
+  - Ch16 Pale Rim: dressed (MERGE-READY @ ab41c94b, not in big20 yet). The Choir's amphitheatre stays mounted on
+    M4-A2P-106: its kit pieces are built, and the zone's dressing slot is left empty until the relayout.
+  - Checks: test_corrow_kit, test_pemakar_kit (50 OK), validate_data, taskboard; Godot --filter=corrow (18) and
+    pemakar (10) pass.
+  - **MERGE-READY @ c6abd321.**
 
 ### PC-QUEUE
 - Pass 3 row 65 (@ edb18aae): re-measure the camp's smoke columns (24 steps at High) and the Tamsule drop (High has no
@@ -874,3 +889,4 @@ SELF-RENDERED @ f51f81f2: battle_boss_intro_matron (the anvil court), battle_bos
 SELF-RENDERED @ 22b289bf: Virel in the Coilspire crown chamber (three scratch views) and ch08_coilspire_storm/_hall (unchanged), viewed.
 SELF-RENDERED @ 8c535d1e: ch07_bell_galleries, ch07_bell_moorings (the weeping column reads), ch07_tamsule_gantry, ch07_tamsule_mouth (the column sits behind the gantry leg head-on), all viewed.
 SELF-RENDERED @ 3be35a85: ch06_brine_camp, _road, ch08_coilspire_hall, _gate, ch08_corrow_arrival, ch09_corrow_strand, _rocks, battle_arena_underway, _underway_tower, _terrace, _ash_terrace_lanternfall, ch05_ashcrown_tiers (the GPU QA rows on this head), all viewed; hall, gate, rocks and Lanternfall re-rendered after the fixes.
+SELF-RENDERED @ c6abd321: zz_pem_harbour, zz_pem_road, zz_pem_weir, zz_cor_strand (scratch spawn views), ch05_ashcrown_crown, crowd_zone_ashcrown, ch05_pemakar_harbour, ch09_corrow_strand, brine_b05_barge_channel, battle_arena_coilspire_headland_path, pemakar_p11_sea_cut_weir_day, battle_boss_intro_matron (GPU pass 4 rows on big20), all viewed; the strand re-rendered after each shroud change.
