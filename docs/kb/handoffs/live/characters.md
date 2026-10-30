@@ -446,3 +446,25 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
   pending key; that predates these.
 - MERGE-READY @ 83b8326c
 - **Next:** M4-A2P-051 (Malcor Venn on Moll's kit with a halberd and Moll's battle set; then the Abiding guard).
+
+## 2026-10-30, Act II: M4-A2P-051 part 1, Warden Malcor Venn
+- **Build:** a named build on the Stillguard and Moll kit (`stillguard_variants.json` `named.venn`).
+  - **Costume:** a Warden's dyes, black lacquer with gold piping, an order_marble tunic and a lacquer_red sash. They
+    come from the opt-in `palette` in moll_textures.cloth_atlas and `sg_textures.dyed_cloth`.
+  - **Head:** a grey crop.
+  - **Weapon:** a heavy **halberd** (`sg_halberd.py`, on the spear's bone) and **no shield** (build_moll `no_shield`).
+- **Clips:** Moll's battle contract and yield (B09's "driven back") plus a two-handed parry for `defend`
+  (`venn_parry`).
+- **Actors:** a battle actor (`game/characters/foes/venn_battle.tscn`), a field actor wrapper
+  (`assets/characters/villagers/venn/venn_actor.tscn`), stages and 7 viewed shots (pending_baseline).
+- **Checks:**
+  - The rig probe passes; limits are pinned with reasons, as Moll's.
+  - test_stillguard, test_hero_clips and test_blender_builds pass (63 tests).
+  - Godot post_import 21, hero_stage 11, battle_actor 5.
+  - venn, moll, the stillguard squad, ivo and the officer are identical on all 3 numpy paths, so the opt-in switches
+    leave the existing builds unchanged.
+- **Known limits:**
+  - His face and crop are at Ivo's level.
+  - In the parry the left hand stops at the chest, short of the haft.
+- MERGE-READY @ 3f0f5d67
+- **Next:** the Abiding guard (veiled gold lacquer: halberdier, Bulwark caster, the Captain of the Veil), in progress.
