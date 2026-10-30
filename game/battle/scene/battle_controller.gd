@@ -923,7 +923,13 @@ func _rebuild_party_panel() -> void:
 ## Screen position over `cid`'s head, offset by `section`'s head_offset_m (HUD coordinates).
 func head_pos(cid: StringName, section: StringName = &"actor_marker") -> Vector2:
 	var m := _damage_m if section == &"damage" else _marker_m
-	return stage.screen_pos(cid, HudLayout.num(m, "head_offset_m"))
+	var p := stage.screen_pos(cid, HudLayout.num(m, "head_offset_m"))
+	var safe: Array = m.get("safe_px", [])
+	if safe.size() == 4 and is_inside_tree():  # a float starts on screen, clear of the help line (damage)
+		var size := get_viewport().get_visible_rect().size
+		p.x = clampf(p.x, float(safe[0]), size.x - float(safe[2]))
+		p.y = clampf(p.y, float(safe[1]), size.y - float(safe[3]))
+	return p
 
 
 func _tint(cid: StringName) -> Color:

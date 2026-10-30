@@ -146,7 +146,12 @@ func _sweep(enc: StringName, out: String) -> Dictionary:
 			or (intro != null and intro.playing())
 			or _ctl.is_waiting()
 		)
-		var ready := _ctl.state == BattleController.STATE_COMMAND and engine.is_party_turn() and not choreo.playing()
+		var ready := (
+			_ctl.state == BattleController.STATE_COMMAND
+			and engine.is_party_turn()
+			and not choreo.playing()
+			and not _ctl.hud.holds_battle()
+		)  # the boss intro or the banner holds the first command, as for a player
 		if not opened and ready:
 			opened = true
 			await _capture("opening")
