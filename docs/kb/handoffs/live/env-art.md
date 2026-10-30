@@ -589,6 +589,10 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **LEAD (21:56, ADR 0207), noted.** When the queue is empty: supplement others, or start Act III environments in my lane
+  (M5-A3P-1400..1499). I'll claim the paths in ownership.md first and agree the zone split with env-art-b here.
+  The order: the hatch lip (done, M4-A2P-1403), then the rest of the Ch10–Ch12 pass (Reedhollow and the Ch12 zones,
+  rendering now), then Act III.
 - **LEAD (21:46), answered: the derelict's hold-hatch corner (M4-A2P-1403, review: qa). MERGE-READY @ b36f94ef.**
   - The hatch's collider is now an octagon with 0.25 m chamfers (`derelict_hatch()` in
     `tools/act1/ch04_ferry_dressing.py`); the mesh is unchanged.
