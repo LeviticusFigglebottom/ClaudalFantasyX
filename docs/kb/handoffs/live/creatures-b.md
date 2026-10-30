@@ -383,3 +383,41 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   - **For env-art (no action needed now):** the raft arena has no hole at the Hullgnaw's mark; the model carries it.
   - **Still running:** Drownbell; Spar-wraith + Cinder Matron (worktree agents). Re-renders of my changed creatures
     are queued (the shared CPU is at load ~14).
+- **01:30 (10-30), M3-CRB-013 DONE, MERGE-READY @ (this commit):** every move of the six Act I bosses and three Act I
+  Vowbound has its own clip, a telegraph that reads before contact, and stays on the floor; all nine re-rendered from
+  the battle camera on the combined tree and **viewed** (task to review, reviewer combat).
+  - **Drownbell (0bc132c5):** feet planted by IK every frame (they slid up to 32 cm); `toll` (1.0, unchanged; clip now
+    2.4 s), `toll_gather` (1.6), `flood_surge` (1.0), `undertow_surge` (1.3), `rouse_polyp` (1.2, three knocks at
+    0.92/1.2/1.5), Hood Slam `attack` (0.8); a lower, slumped flood stance with `attack_flood`, `hit_flood`,
+    `ready_flood`; a real intro (it rises, unfolds, tolls once ~2.02 s), hit and phase change.
+  - **Spar-wraith (57522318):** a `sail` bone (the shroud billows); Spar Stab `attack` (0.8, 0.48 s telegraph),
+    `shroud_sweep` (1.0), deck `lines_taut_deck` (0.8), `haul_deck` (1.1), `sea_lash_deck` (1.0), `ko_deck`;
+    `phase_drop` slam 0.82, the Shroud hides after the clip (`hide_after`, ~1.8 s, as the sheath appears).
+  - **Cinder Matron (f808f149):** `slag_pour` (1.15; slag leaves the bowl ~0.95-1.5 s), `bank_the_fire` (1.0),
+    `recrust_gather` (1.1), `recrust` (0.8: show `Crust` again here); hits rock her on her hem; `phase_change` burst at
+    0.85 (on `vfx_phase`).
+  - **Reach (fcd7c3a0):** the Breach stance is now 1.8 m back, 0.6 m up (it stays in frame); the crash rescaled.
+  - **Kit change, for creatures (request M3-CRB-014):** `CreatureActor.set_ko` plays the KO through the phase `clips`
+    map (the wraith's `ko_deck`); test_creature_actor updated for the Drownbell and wraith. Small, tested; creatures to
+    review.
+  - **For battle-presentation:** the full contact list is above (00:40) and here; the Toll's own lean/wind-up in
+    choreo.json's `toll` style now plays on top of a big clip, worth toning down; support VFX should start at the
+    supports' contacts (`toll_gather` 1.6, `lines_taut_deck` 0.8, `bank_the_fire` 1.0, `recrust_gather` 1.1);
+    `shroud_sweep` and `sea_lash_deck` cross the party lane ~0.85-1.2 s (a wide hold suits them).
+  - **Checks (combined tree):** Blender verify identical for all nine jobs changed; tools test_creatures +
+    test_blender_builds OK (incl. the new HullgnawBreachTest and every-vertex-above-the-floor); validate_data 0/0;
+    taskboard --check; gdlint/gdformat clean; Godot creature 88/0, boss 86/0, choreo 58/0, vowbound 89/0, ch01 20/0,
+    ch04 13/0, ch05 13/0, ch08 25/0, battle_lineup 5/0, set_piece 48/0, part_cues 6/0, boss_seat 3/0 (the Reach lane
+    test). **Pre-existing on big18, not mine:** test_slice_shots `slice_dock_night_yes holds a line of its scene
+    (ch03_dock_007)` (a dialogue check; my diff touches no dialogue). **Skipped:** coverage (no game/battle or
+    game/progression change), the screenshot manifest (the Lead's).
+  - **Shots that move** (for the gate; I wrote no baselines): every creature_* shot of the nine, every
+    battle_boss_intro_*, battle_vowbound_*, battle_choreo_vowbound_rise/summon, drownbell_flood, and any battle shot
+    fielding these models. The Hullgnaw portrait is re-baked (0fae8988, viewed).
+
+### PC-QUEUE
+- M3-CRB-013: view the nine bosses' and Vowbound's moves live on the RX 9070 XT (pops, foot contact, the Hullgnaw's
+  breach water, the night arenas' reads), plus GPU QA rows 12/35/36 as before.
+
+- **Next (the Lead's 01:08 message, ADR 0203, docs only):** the Act II boss and Vowbound design sheets
+  (docs/kb/plan/act2/bosses/, `draft: pre-gate`), with the Avalanche Ram's wool swap filed as my M4 task. In progress.

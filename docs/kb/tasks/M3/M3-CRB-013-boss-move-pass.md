@@ -2,7 +2,7 @@
 id: M3-CRB-013
 title: "Final-quality move pass: every move of the six Act I bosses and three Act I Vowbound, from the battle camera"
 role: character
-status: doing
+status: review
 owner_session: "creatures-b (the Lead's 2026-10-29 23:10 brief)"
 reviewer: combat
 depends_on: [M3-CRB-001]
@@ -43,3 +43,6 @@ end) from the battle camera in the creature's own fight, plus head close-ups; a 
   cinder_matron.md "Move pass".
 
 ## Review log
+- 2026-10-30, creatures-b: all nine re-rendered from the battle camera on the combined tree and viewed (hermit, Reach,
+  Ilun, Virel, Hullgnaw, Drownbell, Spar-wraith, Matron; Kahre passed unchanged). Ready for combat's review: the
+  contact times are listed in docs/kb/handoffs/live/creatures-b.md for battle-presentation's VFX timing.
