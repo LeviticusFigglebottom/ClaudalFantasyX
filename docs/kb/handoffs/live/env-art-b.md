@@ -759,7 +759,21 @@ that test at this branch's zones.
     validate_data 0/0 (after the fix); taskboard; gdlint and gdformat. Godot: hollowmere 2/0 (the dock to the pyre,
     a jetty to the father's door, lamps lit), dressing 27/0, placeholder 8/0, party_spawns 3/0.
   - **MERGE-READY @ bb1d7aca.**
-  - **Next:** Ch15's open sea (`ch15_open_sea.md`), then Ch16 (the Pale Rim and the Drowned Choir, M4-A2P-046).
+- **Ch15's open sea at night (M4-A2P-045):**
+  - **The barge:** `bridal_barge.py`'s canopy and bier take a shift, and `bridal_barge_sea` carries them mid-deck.
+    The other two barges rebuild byte-identical.
+  - **`tools/act2/ch15_open_sea_dressing.py`:** the barge at ×0.65 fits the greybox's 4 × 10 m deck, so no mark
+    moves, and its bier lands on the greybox `Bier`. The sea is `night_sea` at the barge's waterline, sea-glow 0.12.
+  - **The grade:** a starlit night with `lut_ch15_unlamped`, at exposure 1.4 against the spec's 1.10 (at 1.10 the bier
+    and the party were black from the field camera, Act I's row 49). No light of any kind, per the rule.
+  - **Shots (new):** `ch15_sea_deck`, `_bier`, `_wide`, all viewed.
+  - **Checks:** Godot open_sea 2/0; tools test_ch15_hollowmere_dressing (open-sea cases) and test_haluna_kit;
+    validate_data 0/0; taskboard.
+  - **Requested of chapters (M4-A2P-105):** a `shoal` mark and the reveal's cue (the held dead: I'll make the Ebbing
+    rig per-zone, with an attractor that follows Kerrid), and the dawn `variants` row (then I add the dawn grade and
+    the bow's fog bank).
+  - **MERGE-READY @ b49e37a5.**
+  - **Next:** Ch16: the Pale Rim and the Drowned Choir (M4-A2P-046).
 
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
