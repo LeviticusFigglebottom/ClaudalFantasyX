@@ -37,6 +37,10 @@ func pop(
 	add_theme_color_override(&"font_color", get_theme_color(_role(kind, on_ally, role), HymnThemeBuilder.PALETTE_TYPE))
 	reset_size()
 	position = at - size * 0.5
+	# Kept whole on the screen: a foe stood at its edge (the left rank at 4:3) floats its words inward.
+	var view := get_viewport_rect()
+	var edge := HudLayout.num(m, "edge_px")
+	global_position.x = clampf(global_position.x, view.position.x + edge, maxf(view.end.x - size.x - edge, edge))
 	pivot_offset = size * 0.5
 	var rise := HudLayout.num(m, "rise_px") * motion_scale
 	var rise_sec := HudLayout.num(m, "rise_sec")
