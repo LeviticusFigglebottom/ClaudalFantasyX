@@ -132,7 +132,7 @@
                   "lamp_burn_opened": 0.8, "call_opened": 0.7, "twin_trim_opened": 0.85},
       "loop": ["idle", "idle_opened", "ready", "ready_opened"],
       "ko_fade_sec": 1.2,
-      "stand_in": {"yaw_deg": 55.0},
+      "stand_in": {"yaw_deg": 80.0},
       "phases": {
         "opened": {"clip": "phase_change", "idle": "idle_opened", "sec": 0,
                    "clips": {"attack": "attack_opened", "cast": "cast_opened", "hit": "hit_opened",
