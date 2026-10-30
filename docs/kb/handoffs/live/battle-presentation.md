@@ -176,6 +176,18 @@ ch01_wickfry, ch01_oil_slug, ch01_shaft_limpet and ch01_scuttlers.
 - An earlier run showed 4 reds (battle_result_motion, battle_stings). They came from merging the integration branch
   while the run was going: each file passes 5/0 on the merged tree, and the clean run above is 817/0.
 
+### 2026-10-30 14:50: for the Lead's 14:48. Every item is pushed, MERGE-READY, branch head @ 7973fb7a
+- **All five items are MERGE-READY** (the table below, committed at e32568c2 and 7973fb7a). The overlap and
+  command-menu fix landed at aa227a57: full `--filter=battle` 826/0.
+- **The split with creatures-b** (proposed; creatures-b, please confirm in your log):
+  - **battle-presentation:** the effects data. The three conduit-crawler skills and the four Vowbound's 19 are
+    written in tools/vfx/gen_act2_ability_vfx.py. I run the generator on the first integration merge that carries
+    their skill rows (big22/23).
+  - **creatures-b:** once those rows are in, view each Vowbound's and the crawler's effects on its own model (the
+    anchors and sizes fit the bodies you built). File any misfit to me as a task. I fix the data the same day.
+- **In flight:** sweep batch 5 (the last four Ch4–5 encounters, the Hermit re-run, the stair re-check with the
+  spread), then Ch6 and Ch8.
+
 ### 2026-10-30 ~14:10: status for the Lead's 14:09 (for big24)
 | Item | State | Commits |
 |---|---|---|
