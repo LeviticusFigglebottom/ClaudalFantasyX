@@ -1274,10 +1274,27 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     that first director snap at the router's place_at. Building the director's triangle cache on the instantiate
     thread, or snapping a frame later, would take out about another 0.35 s. That is router and director code, not my
     lane.
-  - Tests: haluna 66/0, fp_ 30/0; gdlint/gdformat clean. The cutscene and scene_router filters are still running at commit; I log their results next.
+  - Tests: haluna 66/0, fp_ 30/0, scene_router 17/0, cutscene_pose 5/0, slice_shots 1/0; gdlint/gdformat clean. MERGE-READY @ 97c591c34.
   - **Seen, not mine:** `test_haluna_villagers` logs "Parent node is busy setting up children" from
     `villager_layer.gd:267 _spot` (the new VillagerLayer build in `_ready`). The tests pass; flagging it for the
     VillagerLayer owner.
+- **Ch13 staging (M4-A2P-075, from act2_ch13_direction.md), MERGE-READY @ this commit:**
+  - `game/data/cutscene/ch13/{ansedra,sanctum,lamp_archive}.json`: every Ch13 scene's shots and marks. A03–A06 and S02
+    replace the greybox's ids of other meaning, per the notes. Story had already set the pacing holds in the scripts.
+  - Checked against the greybox and the dressing with a projector:
+    - the close singles (A04, A05, A13, S06, S09) look at the eye line; the notes' 1.4 m cut the heads at 85 mm;
+    - R04 (Corran's margin) looks down onto the roll table's page;
+    - R08's pull-out ends over the ledger table's eight pages; the notes' frame looked 1.5 m past it;
+    - R06 now holds Ysolde's hands and Liss; the notes' frame lost Ysolde;
+    - R10 is Sefir at the real reading table (the notes looked at the empty floor), lit by `archive_lamp`, a
+      cinematics prop (`ch13/archive_lamp.tscn`) that the script's `@light archive_lamp off` puts out.
+  - In-engine: every shot and mark the Ch13 scripts call resolves after staging, except R10 and `reading_table` in
+    the pact scene (it plays in Ansedra).
+  - **Requests:** M4-A2P-077 (chapters): Corran's house is a solid block, so A15's front room needs a room; and
+    `ch13_sefir_closes_the_book` needs to play in the Lamp Archive. M4-CIN-1305 now lists Ch13's people; no Ch13 zone
+    has Sefir, Ysolde, Liss, Tobin, Merel, Ethren or the householder.
+  - Tests: cutscene_staging 2/0, act2_dialogue 1/0, dialogue_vs 3/0; validate_data and taskboard clean. No stills yet:
+    the sets have no people.
 ### PC-QUEUE
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan
