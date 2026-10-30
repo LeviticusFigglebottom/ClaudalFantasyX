@@ -900,6 +900,8 @@
       ],
       "note": "M2-RND-03 battle VFX: every effect draws through this billboard pipeline (its process material is a per-effect copy)."
     },
+    {"path": "res://game/vfx/battle/materials/battle_spark_process_ramp.tres", "draw_material": "res://game/vfx/battle/materials/battle_spark_draw.tres", "scenes": ["res://game/battle/scene/battle_sandbox.tscn", "res://game/flow/field_battle.tscn"], "note": "The PC pass 5 row 64 (a 73-119 ms frame in the 60 after the fade, five fights): every battle effect sets a color ramp, a shader variant the base spark material above never compiled. BattleVfx's ramped variant, warmed behind the fade."},
+    {"path": "res://game/vfx/battle/materials/battle_spark_process_ramp_turb.tres", "draw_material": "res://game/vfx/battle/materials/battle_spark_draw.tres", "scenes": ["res://game/battle/scene/battle_sandbox.tscn", "res://game/flow/field_battle.tscn"], "note": "Row 64, as above: the ramped variant with turbulence (most motes: the glimmer, the sea-glow, the summons' motes)."},
     {
       "path": "res://game/shaders/water/underwater_post_mul.gdshader",
       "scenes": [
