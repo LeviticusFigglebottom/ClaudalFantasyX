@@ -14,7 +14,7 @@ them, so Rhen's shoulder and Toma's shield filled both sides of the frame, and R
 
 ## Acceptance criteria
 - [x] S07 pulls back and up to a clear over-the-shoulder on Asha (pos (-18.4, 1.75, -0.35), fov 42).
-- [x] A new reverse, S07R, from inside the hall: Rhen and Toma answer her on their faces (lines 002, 004, 006);
+- [x] A new reverse, S07_reverse (a stage variant of haluna.md S07), from inside the hall: Rhen and Toma answer her on their faces (lines 002, 004, 006);
       Asha's lines (003, 005) cut back to S07.
 - [x] slice_verse_hall re-rendered and viewed: Rhen speaks in frame, Toma beside him, Asha's shoulder at the edge.
 

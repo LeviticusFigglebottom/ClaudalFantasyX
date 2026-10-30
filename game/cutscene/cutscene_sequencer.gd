@@ -684,6 +684,10 @@ func _cue_vfx(step: DialogueStep) -> void:
 		_warn("cannot place @vfx %s at '%s'" % [effect, at_id])
 		return
 	var host: Node3D = at if at != null else _stage
+	if host != null and step.kwargs.has("release"):  # M4-CIN-1303: the light already there lets go and rises
+		if not CutsceneVfx.release(host, float(step.kwargs["release"])):
+			_warn("@vfx release=: nothing held at '%s'" % at_id)
+		return
 	if host == null or CutsceneVfxHosts.offer(get_tree(), effect, at_id, step.kwargs):  # M3-ARC-1326: a stage host
 		return
 	var vfx_name := "Vfx_%s_%d" % [effect, _vfx_count]

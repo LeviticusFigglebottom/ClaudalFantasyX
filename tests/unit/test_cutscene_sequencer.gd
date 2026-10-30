@@ -10,6 +10,7 @@ const BEACH := &"ch02_girl_on_the_beach"
 const ARRIVE := &"test_cutscene_arrive"
 const TRACK := &"test_cutscene_track"
 const GROUP := &"test_cutscene_group"
+const RELEASE_VFX := &"test_cutscene_release_vfx"
 const CARD := &"test_cutscene_card"
 const DT := 1.0 / 30.0
 const MAX_FRAMES := 3000
@@ -393,6 +394,19 @@ func test_a_group_anim_plays_on_every_member_each_in_its_own_time() -> void:
 		assert_true((-k.global_basis.z).dot(to_spot) > 0.99, "%s turned to the spot" % k.name)
 	assert_eq(started.size(), 3, "each member turned on its own: %s" % [started])
 	assert_true(started.values().max() > started.values().min(), "not all on the same frame")
+	_drive()
+	_free()
+
+
+func test_a_release_lets_the_held_light_already_there_go() -> void:
+	# M4-CIN-1303 (act2_ch10.md B05, T03): the snagged lights hang, then rise and turn gold; nothing new appears.
+	_start(RELEASE_VFX)
+	_drive_until(func() -> bool: return lines_seen > 0)
+	var spot := stage.mark(&"spot")
+	var fields := spot.find_children("*", "GlimmerField", true, false)
+	assert_eq(fields.size(), 1, "release= spawned no second field")
+	var field := fields[0] as GlimmerField
+	assert_true(field.is_releasing() or field.get_mode() == GlimmerState.Mode.RELEASED, "the held field is letting go")
 	_drive()
 	_free()
 

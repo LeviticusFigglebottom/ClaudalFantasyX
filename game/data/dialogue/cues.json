@@ -71,7 +71,7 @@
    "kwargs": {}
   },
   "vfx": {
-   "doc": "Trigger a VFX. Glimmer light rules: glimmer_lift rises (motion=spiral_up), glimmer_held sinks (drift=down_seaward), glimmer_bound is still. The cue goes first to the stage's VFX hosts (CutsceneVfxHosts, M3-ARC-1326), then to the motes placeholder. follow=<actor> or <actor>_staff: one attractor on that body; anchors=<actor group>: grief anchors that let go as the follow-host passes (hosts read them; the placeholder ignores them).",
+   "doc": "Trigger a VFX. Glimmer light rules: glimmer_lift rises (motion=spiral_up), glimmer_held sinks (drift=down_seaward), glimmer_bound is still. The cue goes first to the stage's VFX hosts (CutsceneVfxHosts, M3-ARC-1326), then to the motes placeholder. follow=<actor> or <actor>_staff: one attractor on that body; anchors=<actor group>: grief anchors that let go as the follow-host passes (hosts read them; the placeholder ignores them). release=<sec> spawns nothing: the held (or bound) light already at at= lets go over that many seconds, cyan to lift gold, rising (M4-CIN-1303).",
    "args": [{"name": "effect", "type": "enum", "set": "vfx_effects"}],
    "kwargs": {
     "at": {"type": "id"},
@@ -81,7 +81,8 @@
     "rate": {"type": "enum", "set": "vfx_rate"},
     "form": {"type": "id"},
     "follow": {"type": "id"},
-    "anchors": {"type": "id"}
+    "anchors": {"type": "id"},
+    "release": {"type": "number", "min": 0}
    }
   },
   "wait": {

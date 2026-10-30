@@ -1010,7 +1010,7 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     - O07 (ch01_bark_outer_mooring): square on the Seventh Terrace's name-board, which fills the frame. The 1.5 s
       insert now ends before Sadi's answer, and the shot holds the insert (`hold_cue: camera O07`).
   - **Row 60, M3-CIN-1236 (viewed):** S07 sat between Rhen and Toma, 1.6 m behind them. It is pulled back to a clear
-    over-the-shoulder on Asha, and a new reverse, S07R, plays Rhen's and Toma's answers on their faces.
+    over-the-shoulder on Asha, and a new reverse, S07_reverse, plays Rhen's and Toma's answers on their faces.
     slice_verse_hall shows Rhen speaking in frame, Toma beside him, Asha's shoulder at the edge.
   - **The dive, M3-CIN-1232 (viewed):**
     - Oruvel gets an UnderwaterRig on its Water.
