@@ -2,8 +2,8 @@
 id: M5-A3P-1803
 title: "Ch20: the held shoal, a school of held light (act3/held_shoal.md)"
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "creatures (claude/creatures)"
 depends_on: []
 milestone: M5
 reviewer: character

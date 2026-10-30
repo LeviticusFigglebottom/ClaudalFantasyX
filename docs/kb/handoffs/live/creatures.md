@@ -1345,3 +1345,8 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - audit clean; byte-identical, PROVENANCE, portrait, shot `creature_chain_lamp` (viewed).
   - **Also fixed:** the wick crawler's thimble, cup and reservoir were inside out (lathe order). Its portrait is re-rendered; `creature_wick_crawler` has no baseline yet.
 - **MERGE-READY @ a22b86fa5.** Next: M5-A3P-1802, the spire moth (claimed).
+- **M5-A3P-1802, the spire moth @ b89f039ec:**
+  - the flue moth's rig, mesh, clips and brow mark; pale fur, no embers, glassy wings; `creature_flue_moth` still identical;
+  - byte-identical, PROVENANCE, portrait, shot `creature_spire_moth` (viewed).
+  - **Also:** the chain lamp's `lit_ceramic` hex corrected, rebuilt.
+- **MERGE-READY @ b89f039ec.** Ch19's three are done. Next: M5-A3P-1803, the held shoal (claimed).
