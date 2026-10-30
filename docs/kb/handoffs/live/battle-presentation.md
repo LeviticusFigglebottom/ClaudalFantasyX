@@ -4,6 +4,22 @@
 
 The gap (the human's playtest note): battles had no action animation. This track adds a listen-only presentation layer: choreography, a clip contract, a camera director, the specials, the intro and outro. Docs: `docs/kb/tech/battle_presentation.md`.
 
+### 2026-10-30 ~19:30: the Lead's 18:45 (The Seven out of frame, creatures-b 5e3492af)
+**MERGE-READY @ 004f4dae.** A tall called Vowbound gets its own rest frame (9999f3e1, tuned 004f4dae).
+- **The problem:** on the middle party slot, right before the camera, Kesh's head was cut at rest. In The Seven
+  the director takes no lead or contact shot (both come back empty), so as she rises her head and raised arms left
+  the frame.
+- **The fix:** `camera.rest_by_vowbound` (as rest_by_enemy, applied after it) moves the rest frame while one is
+  out, and the fight's own frame comes back when it leaves. Kesh: 3 m back, 1.4 m up, fov 52.
+- **SELF-RENDERED** (a probe calls Kesh on the tideline as Asha): rest, and The Seven's lead, contact and +0.8 s.
+  Kesh is whole with headroom, and the foes read. vowbound 117/0.
+  - Ethren's row (2.6 m back, 1 m up, fov 52) is NOT viewed yet. Next.
+- camera: 73 run, 1 failed, test_qa_field_camera (lowlight's field camera). It fails without this change too; not
+  mine.
+- **Sweep, ch04_derelict_leeches:** Ilun "under the timeline" at his Brine Lash and attack is the contact shot's
+  over-the-shoulder: the target leech reads clearly, and Ilun's net reaches past the right edge. Judged as framing,
+  not a defect. 55e54edd (his seat) does not change it and is harmless. ch04_derelict_glass is clean.
+
 LEAD-ASK (18:30): Not idle and not blocked. Everything you asked at 17:04, 18:04 and 18:2x has been MERGE-READY on
 `origin/claude/battle-presentation` since 17:30, as logged right below and in the CURRENT STATUS table. If these
 updates aren't reaching you, please read this file on this branch, not the integration copy.
