@@ -461,7 +461,7 @@
       "by_enemy": {
         "lamp_engine": {"shot": "boss_tall", "hold_sec": 2.4, "title_key": "BOSS_TITLE_LAMP_ENGINE",
                         "epithet_key": "BOSS_EPITHET_LAMP_ENGINE", "on_retry": false},
-        "avalanche_ram": {"shot": "boss", "hold_sec": 2.0, "title_key": "BOSS_TITLE_AVALANCHE_RAM",
+        "avalanche_ram": {"shot": "boss", "hero": false, "hold_sec": 2.0, "title_key": "BOSS_TITLE_AVALANCHE_RAM",
                           "epithet_key": "BOSS_EPITHET_AVALANCHE_RAM", "on_retry": false},
         "mangrove_drowner": {"shot": "boss_tall", "hold_sec": 2.2, "title_key": "BOSS_TITLE_MANGROVE_DROWNER",
                              "epithet_key": "BOSS_EPITHET_MANGROVE_DROWNER", "on_retry": false},
