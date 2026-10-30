@@ -97,6 +97,7 @@ def _stake_and_guy(mb: kc.MeshBuilder, top, ground, rng, noise) -> None:
 # Tent
 # ---------------------------------------------------------------------------------------------
 TENT_W, TENT_L, TENT_RIDGE = 3.0, 4.0, 2.1
+GABLE_BILLOW_M = 0.14  # the rear gable's two panels bellying out
 TENT_SAG_M = 0.26  # the canvas between the frames (M3-ENV-1316, GPU QA row 5: the slopes read as one flat box)
 
 
@@ -158,15 +159,24 @@ def tent(name: str, seed: int, *, burned: bool, lod: bool) -> kc.MeshBuilder:
                 seam = np.array([canvas_pt(s, zs[k], g, 0.015) for g in gs])
                 kc.tube(mb, seam, 0.012, 3, mb.material(bc.M_ROPE), variation=0.2)
     # The rear gable, closed; the front flaps tied back.
-    rows = np.linspace(0.0, 1.0, 5 if not burned else 10)
-    cols = np.linspace(-1.0, 1.0, 7 if not burned else 13)
+    # The rear gable, closed: two sewn panels billowing out between the frame's legs, so end-on it is cloth with weight,
+    # not a flat triangle (M3-ENV-1316, "camp_tent end-on").
+    rows = np.linspace(0.0, 1.0, 9 if not burned else 10)
+    cols = np.linspace(-1.0, 1.0, 13)
     gable = np.zeros((len(rows), len(cols), 3))
     ry = float(ridge_y(-hl))
     for i, v in enumerate(rows):
         for j, u in enumerate(cols):
             y = ry * (1 - v) + 0.18 * v
-            gable[i, j] = (u * (0.03 + (hw + 0.08) * v), y, -hl + 0.02 + 0.03 * v)
+            billow = GABLE_BILLOW_M * math.sin(math.pi * v) * (1.0 - u * u) * (0.6 + 0.4 * abs(math.sin(math.pi * u)))
+            gable[i, j] = (u * (0.03 + (hw + 0.08) * v), y, -hl + 0.02 + 0.03 * v - billow)
     _cloth(mb, gable, rng)
+    if not burned:
+        # The centre seam down the gable, and a lashed hem along the ground.
+        seam = gable[:, len(cols) // 2] + np.array([0.0, 0.0, -0.012])
+        kc.tube(mb, seam, 0.012, 3, mb.material(bc.M_ROPE), variation=0.2)
+        hem = gable[-1] + np.array([0.0, 0.03, -0.01])
+        kc.tube(mb, hem, 0.018, 4, mb.material(bc.M_ROPE), variation=0.3)
     if not burned:
         for s in (-1.0, 1.0):
             roll = np.array([[s * 0.6, 1.6, hl], [s * 1.05, 0.9, hl + 0.05], [s * 1.45, 0.25, hl + 0.02]])

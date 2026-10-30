@@ -30,6 +30,8 @@ The zones and env-art-b's own pieces were fixed in place. These are in env-art's
   - **Tamsule's shophouses stocked:** a lacquered counter across the open front with jars and a folded cloth, two
     shelves on the back panel with jars, cloth bolts and baskets, and dyed cloth lengths hung from a pole
     (`port._shop_stock`, its own rng). `shophouse_a/b` rebuilt (15.7k/15.9k of 20k); viewed from the lane.
-  - Still open here: the kits' preview slots, the headland's far facets, `camp_tent` end-on, the order chapel.
+  - **`camp_tent` end-on:** the rear gable is two panels bellying out, with a sewn centre seam and a lashed hem.
+    `camp_tent` and `camp_tent_burned` rebuilt; viewed from the rear, the quarter and the side.
+  - Still open here: the kits' own flat preview slots, the headland's far facets, the order chapel.
 
 ## Review log

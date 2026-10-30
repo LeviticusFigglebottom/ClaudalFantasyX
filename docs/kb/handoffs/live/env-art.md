@@ -598,8 +598,9 @@ Read this section first; everything below it is history. The branch is `claude/e
     - On lavapipe they follow the F9 slabs' edges against the sand.
     - A softer sun (trial, reverted) only brightened the floor.
     - A/B on the PC-QUEUE.
-  - **Still open in M3-ENV-1316/1327:** the kits' own flat preview slots, the Coilspire headland's far facets,
-    `camp_tent` end-on, the order chapel.
+  - **`camp_tent` end-on** (next commit): the rear gable has a belly, a seam and a hem.
+  - **Still open in M3-ENV-1316/1327:** the kits' own flat preview slots, the Coilspire headland's far facets, the
+    order chapel.
 - **MERGE-READY @ 990bdbb2: the Lead's 14:48 batch (the Ch10–Ch12 walk and dock-edge check; env-art-b's kit requests,
   first three). The integration branch (big24) is merged in.**
   - **Dock edges, Ch10–Ch11** (b01d806e):
