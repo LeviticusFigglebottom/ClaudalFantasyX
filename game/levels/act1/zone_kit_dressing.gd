@@ -54,6 +54,10 @@ extends HalunaDresser
 ##   ebbing       {"data"?}: the Ebbing's motes (EbbingMotes; Ch9's game/data/vfx/ebbing.json, M3-C09-03, or the
 ##                  zone's own "data" file, as Ch15's held dead): the held fields
 ##                  the chapter's `@vfx glimmer_held` cues play, on the zone's stage.
+##   edge_walls   [{"pos": [x, y, z], "size": [x, y, z], "yaw"?, "while_hidden"?: <id>}]: invisible static boxes along
+##                  the walkways' edges over the water (assets_src/environments/zone_edges.py), so the hero can't
+##                  step off; a "while_hidden" wall collides only while Greybox/<id> is hidden (a bridge the story
+##                  takes away leaves no open edge).
 ##   environment  a res:// Environment: the zone's WorldEnvironment takes a copy (sky, grade, fog).
 ##   time_of_day_h  the hymn_time_of_day the sky reads.
 ## It writes hymn_sun_direction from the zone's sun every frame, so the sky's sun follows the story's
@@ -81,6 +85,8 @@ const KEY_STORMS := "storms"
 const KEY_DROPS := "drops"
 const KEY_SMOKES := "smokes"
 const KEY_EBBING := "ebbing"
+const KEY_EDGE_WALLS := "edge_walls"
+const EDGE_WALLS := &"EdgeWalls"
 const KEY_MATERIAL_PATHS := "material_paths"
 const KEY_KIT_MATERIAL_PATHS := "kit_material_paths"
 const DEFAULT_WAVES := "res://game/world/water/lagoon_waves.tres"
@@ -148,6 +154,7 @@ func dress() -> void:
 	_place_drops()
 	_place_smokes()
 	_place_ebbing()
+	_place_edge_walls()
 	_hide_greybox()
 	_apply_environment()
 	if layout.has(KEY_TIME_OF_DAY):
@@ -419,6 +426,33 @@ func _follow(block_id: String) -> void:
 	for n: Node3D in followers(block_id):
 		n.visible = shown
 		_pause_hidden(n)
+
+
+func _place_edge_walls() -> void:
+	var rows: Array = layout.get(KEY_EDGE_WALLS, [])
+	if rows.is_empty():
+		return
+	var root := Node3D.new()
+	root.name = EDGE_WALLS
+	add_child(root)
+	for row: Dictionary in rows:
+		var body := StaticBody3D.new()
+		body.position = _vec3(row["pos"])
+		body.rotation_degrees.y = float(row.get("yaw", 0.0))
+		var shape := BoxShape3D.new()
+		shape.size = _vec3(row["size"])
+		var cs := CollisionShape3D.new()
+		cs.shape = shape
+		body.add_child(cs)
+		root.add_child(body)
+		var b := block(str(row.get("while_hidden", "")))
+		if b != null:
+			cs.disabled = b.visible
+			b.visibility_changed.connect(func() -> void: cs.disabled = b.visible)
+
+
+static func _vec3(v: Array) -> Vector3:
+	return Vector3(float(v[0]), float(v[1]), float(v[2]))
 
 
 func _place_fire_lights() -> void:
