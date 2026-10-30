@@ -1134,3 +1134,4 @@ MERGE-READY @ 8132685db: the battle text-size fixes.
     - **To act1-chapters:** when the ch14 thread raises those two flags, drop both rows from `qa_known.json`.
     - **Result:** qa_threads 1/0; objective 16/0, field_menu 37/0, zone_map 22/0; validate_data 0/0.
 MERGE-READY @ ca5ce4037: the battle-return black screen (ResidentLoads keeps the zone through a field battle) and the Act II objective flags for test_qa_threads.
+  - **To integration-qa:** the measurement method and the remaining end-to-end check are in request task **M4-UI-212** (role qa), per the Lead's 13:48 note.
