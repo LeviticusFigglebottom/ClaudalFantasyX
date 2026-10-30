@@ -2,8 +2,8 @@
 id: M4-A2P-114
 title: "lowlight_engine_hall: a hall wall fills the left half of the battle camera"
 role: environment
-status: todo
-owner_session: ""
+status: review
+owner_session: "env-art-b (claude/env-art-b; done-by env-art-b with the Lead's leave, 10-30)"
 depends_on: []
 reviewer: environment
 milestone: M4
@@ -39,7 +39,8 @@ PIER_AT = ((-8.5, -8.5), (0.0, -9.0), (8.5, -8.5), (-9.0, 0.0), (9.0, 0.0), (-8.
   the arena instead (a `structure` override is not available, so moving it in the kit is the simple route).
 
 ## Acceptance criteria
-- [ ] `battle_arena_lowlight_engine_hall` shows the fight floor, the party and the enemy line with no wall
+- [x] `battle_arena_lowlight_engine_hall` shows the fight floor, the party and the enemy line with no wall
       across the frame, at 16:9 and 21:9.
 
 ## Review log
+- 2026-10-30, env-art-b: done in f6442153 (the pier to (0, 11.0), `engine_hall.glb` rebuilt). Re-rendered the battle camera at 16:9: the dais, the party and the Lamp Engine in full view, no pier. Reviewer: env-art (its kit).
