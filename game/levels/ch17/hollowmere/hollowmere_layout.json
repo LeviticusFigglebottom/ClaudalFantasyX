@@ -1301,6 +1301,27 @@
    "yaw": 0.0
   },
   {
+   "id": "shrine",
+   "activation": "interact",
+   "at": [
+    3.0,
+    0.0,
+    1.4
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_REST",
+   "requires_flag": "ch15_reached_hollowmere",
+   "payload": {
+    "beat": "shrine",
+    "save_shrine": "hollowmere_shrine"
+   },
+   "yaw": 0.0
+  },
+  {
    "id": "supper",
    "activation": "interact",
    "at": [

@@ -189,6 +189,10 @@ def hollowmere() -> dict:
                       "once": True, "requires_flag": "ch15_liss_told_father", "blocked_by_flag": "ch15_toma_confessed",
                       "payload": {"beat": "jetty"}, "yaw": 0.0},
                      # B14 and the side errands, the camp, Hollowmere's people (B11)
+                     # Hollowmere's shrine by the dock's head, and the Rim's by the ship: save shrines
+                     {"id": "shrine", "activation": "interact", "at": [3.0, 0.0, 1.4], "size": [1.6, 0, 1.6],
+                      "prompt_key": "FIELD_PROMPT_REST", "requires_flag": "ch15_reached_hollowmere",
+                      "payload": {"beat": "shrine", "save_shrine": "hollowmere_shrine"}, "yaw": 0.0},
                      listen("supper", "ch15_two_daces", (40.0, 0.0, -1.2), "ch15_pyre_raft", "ch15_supper_with_father",
                             "FIELD_PROMPT_REST"),
                      listen("side_current_phrase", "ch15_side_the_current_phrase", (8.0, 0.0, -1.4),
@@ -275,6 +279,9 @@ def pale_rim() -> dict:
                   "ch16_started", "ch16_found_counting_stone", "FIELD_PROMPT_LOOK"),
            listen("fallen_cairn", "ch16_side_the_fallen_cairn", (cairn(5)[0], 0.0, cairn(5)[1] + 1.4),
                   "ch16_started", "ch16_rebuilt_cairn", "FIELD_PROMPT_LOOK"),
+           {"id": "shrine", "activation": "interact", "at": [-20.0, 0.0, 3.0], "size": [1.6, 0, 1.6],
+            "prompt_key": "FIELD_PROMPT_REST", "requires_flag": "ch16_started",
+            "payload": {"beat": "shrine", "save_shrine": "pale_rim_shrine"}, "yaw": 0.0},
            listen("camp", "ch16_camp_coming_up", (RIM_LEN - 30.0, 0.0, 3.0), "ch16_started", "ch16_camp_talk",
                   "FIELD_PROMPT_REST")],
         # M4-C16-03: the rim's random fights (act2_roster.md Ch16); none in the Drowned Choir

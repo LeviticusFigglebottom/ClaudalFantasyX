@@ -1807,6 +1807,27 @@
    "yaw": 0.0
   },
   {
+   "id": "shrine",
+   "activation": "interact",
+   "at": [
+    4.0,
+    0.0,
+    15.0
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_REST",
+   "requires_flag": "ch13_started",
+   "payload": {
+    "beat": "shrine",
+    "save_shrine": "ansedra_shrine"
+   },
+   "yaw": 0.0
+  },
+  {
    "id": "npc_seamstress",
    "activation": "interact",
    "at": [

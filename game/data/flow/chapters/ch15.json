@@ -166,6 +166,13 @@
        "play": "ch15_pyre_raft"
       }
      ]
+    },
+    "shrine": {
+     "steps": [
+      {
+       "play": "ch15_shrine_hollowmere"
+      }
+     ]
     }
    }
   }

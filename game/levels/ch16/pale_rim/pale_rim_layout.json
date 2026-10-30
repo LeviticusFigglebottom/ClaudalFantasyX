@@ -688,6 +688,27 @@
    "blocked_by_flag": "ch16_rebuilt_cairn"
   },
   {
+   "id": "shrine",
+   "activation": "interact",
+   "at": [
+    -20.0,
+    0.0,
+    3.0
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_REST",
+   "requires_flag": "ch16_started",
+   "payload": {
+    "beat": "shrine",
+    "save_shrine": "pale_rim_shrine"
+   },
+   "yaw": 0.0
+  },
+  {
    "id": "camp",
    "activation": "interact",
    "at": [

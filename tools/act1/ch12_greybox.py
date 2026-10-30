@@ -256,7 +256,8 @@ def quellan() -> dict:
         "block_color": COL_PATH,
         "blocks": blocks,
         "ramps": ramps,
-        "spawns": {"FromPass": [2.0, 0.0, 0.0, 270.0], "FromCloudloom": [56.0, north_y, -38.0, 180.0]},
+        "spawns": {"FromPass": [2.0, 0.0, 0.0, 270.0], "FromCloudloom": [56.0, north_y, -38.0, 180.0],
+                   "Shrine": [56.0, 0.0, 7.5, 180.0]},
         "marks": {"inn_door": [32.0, 0.0, r3(sz - hw + 0.4), 0.0], "well": [52.4, 0.0, r3(sz + 10.0), 270.0]},
         "actors": {},
         "shots": {"Q01": {"pos": [-2.0, 3.0, 2.0], "look_at": [40.0, 2.0, -2.0], "fov": 50},
@@ -283,6 +284,10 @@ def quellan() -> dict:
                      listen("side_dorros_cord", "ch12_side_dorros_cord", (10.0, 0.0, -3.0), "ch12_ram_felled",
                             "ch12_returned_herd_cord"),
                      listen("side_the_boys_knot", "ch12_side_the_boys_knot", (42.0, 0.0, 3.0), "ch12_reached_quellan"),
+                     # M4-A2P-1003 E5: the Order's Level-stone by the well, a save shrine (ShrineServices)
+                     {"id": "shrine", "activation": "interact", "at": [56.0, 0.0, 10.0], "size": [1.6, 0, 1.6],
+                      "prompt_key": "FIELD_PROMPT_REST", "requires_flag": "ch12_reached_quellan",
+                      "payload": {"beat": "shrine", "save_shrine": "quellan_shrine"}, "yaw": 0.0},
                      listen("camp", "ch12_camp_the_end_of_the_road", (29.0, 0.0, -3.0), "ch12_ysolde_confessed",
                             "ch12_camp_talk", "FIELD_PROMPT_REST")],
     }

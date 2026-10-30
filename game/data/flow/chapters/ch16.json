@@ -48,6 +48,13 @@
        }
       }
      ]
+    },
+    "shrine": {
+     "steps": [
+      {
+       "play": "ch16_shrine_pale_rim"
+      }
+     ]
     }
    }
   },

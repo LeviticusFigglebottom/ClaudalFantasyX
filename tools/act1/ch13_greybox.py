@@ -165,6 +165,10 @@ def ansedra() -> dict:
                      overheard("ch13_bark_ysolde_holiness", (22.0, 0.0, -40.0), (2.0, 0, 4.0)),
                      overheard("ch13_bark_tender", (0.0, 0.0, -62.0), (4.0, 0, 2.0)),
                      listen("npc_bargeman", "ch13_bark_bargeman", (7.0, 0.0, 8.0), "ch13_started"),
+                     # the still basin on the moorings, a save shrine (ShrineServices)
+                     {"id": "shrine", "activation": "interact", "at": [4.0, 0.0, 15.0], "size": [1.6, 0, 1.6],
+                      "prompt_key": "FIELD_PROMPT_REST", "requires_flag": "ch13_started",
+                      "payload": {"beat": "shrine", "save_shrine": "ansedra_shrine"}, "yaw": 0.0},
                      listen("npc_seamstress", "ch13_bark_seamstress", (-6.0, 0.0, -35.0), "ch13_wedding_announced"),
                      listen("side_the_leaning_flame", "ch13_side_the_leaning_flame", (6.0, 0.0, -34.0),
                             "ch13_wedding_announced"),

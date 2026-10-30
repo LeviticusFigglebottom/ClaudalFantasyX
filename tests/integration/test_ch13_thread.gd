@@ -50,6 +50,7 @@ func test_the_still_city_plays_its_scenes_in_order() -> void:
 	assert_true(bool(Game.get_flag(&"ch13_wedding_announced")), "M4-A2P-1003 E3: the still city plays on arrival")
 	assert_true(bool(Game.get_flag(&"ch13_met_tobin")), "and Tobin after it")
 	assert_true(bool(Game.get_flag(&"ch13_guest_of_sefir")), "the party are Sefir's guests")
+	assert_true(_trigger(&"shrine").try_interact(), "the still basin on the moorings (a save shrine)")
 	_go(&"to_archive", "ch13/lamp_archive", "Door")
 	_visit(ARCHIVE)
 	assert_false(_trigger(&"ledgers").is_available(), "E2: the Archive waits on Ethren")

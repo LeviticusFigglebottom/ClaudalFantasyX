@@ -31,6 +31,7 @@ func test_the_cold_road_runs_from_the_pass_to_the_summit_and_back() -> void:
 	_open(QUELLAN)
 	story.begin()
 	assert_true(bool(Game.get_flag(&"ch12_reached_quellan")))
+	assert_true(_trigger(&"shrine").try_interact(), "the Level-stone by the well (a save shrine)")
 	_go(&"to_cloudloom", "ch12/cloudloom", "Approach")
 	_close()
 	_open(QUELLAN)  # a `go` ends the story's run: the way back is another visit
