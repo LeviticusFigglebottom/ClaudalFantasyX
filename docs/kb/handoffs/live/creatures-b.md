@@ -570,3 +570,15 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   faces. Could her head and torso start from the MPFB2 base topology (ADR 0021, the characters track's pipeline),
   built in her own job? Default: no; I keep her on the creature kit and push it (pass 3), and flag the bind-memory
   close-up (cinematics) as wanting a sculpted head later.
+- **MERGE-READY @ (this commit): M4-A2P-058, the four Act II bosses' own ambient VFX** (worktree agent, viewed by it;
+  review combat). One shared `CreatureAmbientVfx` (game/creatures/ambient_vfx/, reads CreatureActor, never drives it;
+  creature_actor.gd unchanged), all values in game/data/creatures/creature_vfx.json (palette swatches), fixed seeds.
+  Drowner: held motes drifting in the snag cradles, lifting on break/KO; silt drag on its hauls and stamp. Engine:
+  steady halos on the 12 lamps and the core (bound light never flickers: colour script rule 2), on KO they dim and
+  motes rise through the crack. Ram: breath every ~4 s (faster torn), snow puffs and drips on hits and the shake (no
+  ice; tested). Wakefin: sea-glow wake on the water line (it carries no light of its own). Particle counts 3-36;
+  4 prewarm entries, 5 PROVENANCE rows. Checks: Godot creature 155/0, prewarm 22/0, validate_data, gdlint. Weak: the
+  Drowner's drag (faint on the sand-bank preview) and the Ram's breath against the white wall; polish once the real
+  fights exist. Pre-existing, not mine: `--filter=vfx`'s test_cutscene_vfx_hosts (CutsceneMotes missing here).
+  **For battle-presentation:** the breach splash, the dive/rise glow ring and the lamp brightening in the gather are
+  skill VFX (yours). Ownership row added for the new paths.
