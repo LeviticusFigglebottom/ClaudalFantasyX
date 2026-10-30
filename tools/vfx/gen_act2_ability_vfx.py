@@ -52,7 +52,7 @@ SKILLS = {
                        "The Mangrove Drowner hauls the footing: fen water dragged back along the roots."),
     "rising_water": fx("ground", spray("lagoon_teal", "deep_teal_shadow", 60),
                        "The Drowner's rising water climbs around each of the party (water, never glimmer)."),
-    "root_stamp": fx("ground", heavy("timber_weathered", "foliage_shadow", "sand_wet", "deep_teal_shadow", 56),
+    "root_stamp": fx("ground", heavy("timber_weathered", "laterite", "sand_wet", "foliage_shadow", 56),
                      "Risen on its root-feet, the Drowner stamps: splinters and fen mud."),
     "lamp_trim": fx("chest", slash("brass", "salt_glass", 36), "The Lamp Engine's scissor arm snips: brass sparks."),
     "lamp_gather": fx("chest", charge("glimmer_bound", "salt_glass", 44),

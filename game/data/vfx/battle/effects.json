@@ -7699,10 +7699,10 @@
       "layers": [
         {
           "color": "#7E6A55",
-          "color_end": "#1E4A3A",
+          "color_end": "#A8573A",
           "swatches": [
             "timber_weathered",
-            "foliage_shadow"
+            "laterite"
           ],
           "amount": 66,
           "lifetime_s": 0.6,
@@ -7732,10 +7732,10 @@
         },
         {
           "color": "#B59D74",
-          "color_end": "#0E4A55",
+          "color_end": "#1E4A3A",
           "swatches": [
             "sand_wet",
-            "deep_teal_shadow"
+            "foliage_shadow"
           ],
           "amount": 30,
           "lifetime_s": 0.9,
