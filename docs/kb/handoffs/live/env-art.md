@@ -589,6 +589,55 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ eb887bc5 (supersedes 3389db19): the playtest FAST-TRACK is complete and pushed.**
+  - **What's in it:** the boats (7fbb9319) and the Oruvel edge walls (28b005ad), as the entry below says.
+  - **The interrupted step (the Lead, 13:48):** a long compound shell command stalled on a permission prompt. It is
+    redone as plain single steps inside the worktree and the scratchpad: no process kills, no writes outside, no
+    network. Nothing was refused this time.
+  - **Also in eb887bc5, the walk pass's first fix:** the Underway's two interact points had no prop.
+    - `old_tin` (the find behind the coral curtain) now has a Lit Age tin at the alcove's back.
+    - `limpet` ("Look", the shaft fight) now has a ribbed ochre limpet and three young ones on the gauge room's
+      north wall.
+    - New pieces `old_tin` and `shaft_limpet` in `ou_props.py`, with PROVENANCE rows. Viewed at player height.
+  - **The walk pass continues next.** The rest of the Prologue–Ch4 POI and interactable stills are rendered and being
+    reviewed: Haluna, the causeway, the ferry and the wake.
+- **MERGE-READY @ 925367eaf: FAST-TRACK, the human's playtest in Oruvel ("docked boats clip through the docks …
+  you can easily fall off and start walking in the water").**
+  - **(1) Boats, fixed (7fbb9319).**
+    - **The finder:** every piece of the dressing rebuilt from the kit and placed as dressed; a hull vertex (tar or
+      paint) inside another piece's walking planks is a clip. It found 11 real clips:
+      - the five free-standing mooring rafts' bows rose through the bridges next to them and the commons' north
+        decks (the keel-hull's two rafts by about 95 vertices each);
+      - the run's low hull lay in the water *through* its bridge;
+      - the cook's boat sat 0.8 m into the outer mooring's raft.
+    - **The fix:**
+      - the mooring rafts are the tucked rafts (hulls under their own planks);
+      - the low hull lies *on* the run's planks (C1-12's "thrown up across");
+      - the cook's boat moved clear and rides dry (the sea showed inside her);
+      - three outrigger canoes are moored in open water beside the decks, so the town keeps its boats.
+    - **Viewed:** before and after stills at ten spots from player height and above, plus the new moorings. The
+      scale booth's hull stays, its counter over the deck edge by design.
+    - **Test:** `tools/tests/test_oruvel_moorings.py` (11 failures on the old dressing, OK now).
+    - **Not added:** fenders and lines to cleats. Say if you want them.
+  - **(2) Edge walls, Oruvel (28b005ad).**
+    - **How:** `assets_src/environments/zone_edges.py` derives invisible walls (0.12 × 1.6 m) along every walkway
+      edge over the water from the greybox. Junctions stay open; a stall or hull taller than the deck already walls
+      itself. A wall at an opening a hideable block fills (the storm's lost dive bridge) collides only while that
+      block is hidden. 58 walls.
+    - **Runtime:** `ZoneKitDressing` builds them from the dressing's new `edge_walls` list (a small additive block:
+      **FYI act1-chapters**, it's your file).
+    - **Proved by walking:** without them the hero falls to the sea floor (y −1.0); with them he stops 0.3 m from
+      the edge.
+    - **Test:** `tests/integration/test_zone_edge_walls.gd` (walls collide and draw nothing; the dive bridge's ends
+      wall up only when it's hidden).
+    - **Brightwater's ferry:** already railed in its own collision (ferry, derelict, islet, gangplank). Nothing
+      needed.
+    - **Ch4 wake's dock (real Haluna):** walked off it in eight directions from the shore end, the middle and the
+      end. It's railed; only the shore end steps down onto the beach (Haluna's natural shallows).
+  - **Checks:** test_zone_dressing_ch01, test_oruvel_moorings, Godot `--filter=edge_walls` 2/0, `zone_kit` 13/0,
+    `ch01` 20/0, validate_data.
+  - **Shots that will drift:** the Oruvel shots that frame the moorings, the commons' north edge, the cook's boat or
+    the run (`ch01_oruvel_dressed`, `zone_oruvel_*`, `ch01_net_pen`, the storm shots).
 - **MERGE-READY @ 2adf2b2c: the Lead's 12:08 items (1) and (2).**
   - **(1) H07 chapel marble: already within ΔE 0.03 on this branch.**
     - The fix is b0eb0a49 (03:16). The committed baseline was approved at 00:46 (big17), before it, and that is
