@@ -26,4 +26,7 @@ Liss read; the side scene, Ysolde showing Rhen the house she shared with Corran.
 - [ ] `docs/kb/story/beats/act2_ch13.md`, every outline beat placed, timed and tagged C/E/P; flags `ch13_*` with setter
       and reader; requests to other roles listed; validate_data and the banned-terms grep clean.
 
+## Notes
+- 2026-10-30 (act2-plan track, the Lead's assignment): **draft: pre-gate** written at `docs/kb/story/beats/act2_ch13.md`. Not reviewed; stays `blocked` until the gate. It declares `ch13_archive_read` and `ch13_pact_of_silence`, which Ch14 reads.
+
 ## Review log

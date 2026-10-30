@@ -79,6 +79,28 @@ func test_rhen_climbs_a_48_degree_flight_step_by_step() -> void:
 	_done()
 
 
+## The Lead's 10-29 walk audit: a full stick is a stair run (slope_run_speed_mps), so a long flight isn't a minute's
+## crawl; holding walk keeps the slow climb (slope_speed_mps). Each holds its own speed along the slope.
+func test_a_run_climbs_faster_than_a_walk() -> void:
+	var f := _rig(RUN_48, RISE_48, 2.0)
+	var frames := {}
+	for walk: bool in [true, false]:
+		_place(Vector3(SITE_X, 0.0, 1.0))
+		player.walk_override = walk
+		var track := _walk(UP, func() -> bool: return player.global_position.z < -RUN_48 - 1.0)
+		_assert_smooth(track, f, "walk" if walk else "run")
+		frames[walk] = track.size()
+	player.walk_override = false
+	var walk_s := float(stairs.tuning["slope_speed_mps"])
+	var run_s := float(stairs.tuning["slope_run_speed_mps"])
+	assert_true(run_s > walk_s, "the stair run is faster than the walk")
+	assert_true(
+		int(frames[false]) < int(frames[true]) * 0.75,
+		"running up takes fewer frames (%d) than walking (%d)" % [frames[false], frames[true]]
+	)
+	_done()
+
+
 func test_rhen_comes_down_a_60_degree_flight() -> void:
 	var f := _rig(RUN_60, RISE_60, 1.6)
 	_place(Vector3(SITE_X, RISE_60 + 0.02, -RUN_60 - 1.0))
@@ -220,7 +242,7 @@ func _assert_smooth(track: Array[Transform3D], f: HeroStairFlight, what: String)
 	for s in snaps:
 		print("  %s frame %d: %s %.1f" % [what, s["frame"], s["kind"], s["value"]])
 	assert_true(snaps.is_empty(), "the %s never snaps (%d)" % [what, snaps.size()])
-	var cap := float(stairs.tuning["slope_speed_mps"])
+	var cap := float(stairs.tuning["slope_speed_mps" if player.walk_override else "slope_run_speed_mps"])
 	var path := 0.0
 	var frames := 0
 	for i in range(1, track.size()):

@@ -20,6 +20,8 @@ Usage:
   python3 tools/placeholder_audit.py --scan-json F    # use a scan already run (no Godot)
   python3 tools/placeholder_audit.py --static-only    # skip the runtime half
   python3 tools/placeholder_audit.py --check          # exit 1 while any item is left (ADR 0041's "done")
+  python3 tools/placeholder_audit.py --act 2 --write  # Act II (Ch10-Ch16), report-only: docs/kb/qa/act2_inventory.md
+                                                      # (ADR 0203: the inventory exists on day one; --check never fails)
 """
 
 from __future__ import annotations
@@ -40,14 +42,21 @@ ROOT = Path(__file__).resolve().parents[1]
 INVENTORY = ROOT / "docs" / "kb" / "qa" / "act1_final_inventory.md"
 SCAN_SCENE = "res://tools/placeholder/scan.tscn"
 
+# The scope: --act picks a row (ADR 0203: Act II's inventory is report-only until Act I passes its gate).
+ACTS = {
+    1: {"first": 0, "last": 9, "file": "act1_final_inventory.md", "title": "Act I final-quality inventory (ADR 0041)",
+        "span": "from the title to the end of Ch9", "report_only": False},
+    2: {"first": 10, "last": 16, "file": "act2_inventory.md", "title": "Act II inventory (ADR 0203, report-only)",
+        "span": "Ch10 to the end of Act II (Ch16)", "report_only": True},
+}
+ACT = 1
+FIRST_CHAPTER = 0
 LAST_CHAPTER = 9
 CHAPTER_RE = re.compile(r"(?:^|[/_])ch(\d\d)(?!\d)")
 NAME_RE = re.compile(r"(?i)(placeholder|(?:^|[_\W])temp(?:[_\W]|$)|greybox|graybox|proxy)")
 GREYBOX_ARENA_DIR = "res://game/battle/arenas/"
 TEST_DIR = "res://game/levels/_tests/"
 PARTY = ["rhen", "asha", "toma", "ysolde", "liss", "kerrid"]
-# Act I dialogue: the slice's (ch02, ch03), the prologue's and Ch1-Ch9's.
-DIALOGUE_DIRS = ["prologue"] + ["ch%02d" % n for n in range(1, LAST_CHAPTER + 1)]
 CUE_RE = re.compile(r"@(sfx|music|ambience)\s+([A-Za-z0-9_]+)")
 AUDIO_SKIP = {"silence", "stop", "off"}
 
@@ -73,6 +82,15 @@ OWNER_VFX = "battle-presentation"
 OWNER_AUDIO = "audio"
 OWNER_UI = "ui-menus"
 EARLY_LAST_CHAPTER = 4
+
+# Rows the owner rules above route to a role that can't close them (the Lead, 2026-10-29, env-art's LEAD-ASK on
+# M3-HER-1140): (path regex, what regex, owner, why). The first match wins; a row that matches none keeps its owner.
+ROUTES: list[tuple[str, str, str, str]] = [
+    (r"^game/levels/prologue/prologue\.tscn$", r"under City/Vigils", OWNER_PEOPLE,
+     "Pell's vigil stand-in: characters' model, slice-polish places him on his mark"),
+    (r"^assets/environments/kits/tamsule_bell/(reefball_drop_proxy\.glb|materials/tb_drop_proxy\.tres)$", r"",
+     OWNER_ZONES_LATE, "the Tamsule Bell's held drop is rendering's (M3-RND-26, env-art-b)"),
+]
 
 
 @dataclass
@@ -104,6 +122,28 @@ def res_to_path(res: str, root: Path = ROOT) -> Path:
     return root / res.removeprefix("res://")
 
 
+def set_scope(act: int) -> None:
+    """Points the audit at an act's chapters and inventory file (ACTS)."""
+    global ACT, FIRST_CHAPTER, LAST_CHAPTER, INVENTORY
+    row = ACTS[act]
+    ACT, FIRST_CHAPTER, LAST_CHAPTER = act, int(row["first"]), int(row["last"])
+    INVENTORY = ROOT / "docs" / "kb" / "qa" / str(row["file"])
+
+
+def in_scope(chapter: int | None) -> bool:
+    """A chapter inside the act's range. A row with no chapter (a shared asset's name) is Act I's: Act II's report
+    doesn't repeat it."""
+    if chapter is None:
+        return ACT == 1
+    return FIRST_CHAPTER <= chapter <= LAST_CHAPTER
+
+
+def dialogue_dirs() -> list[str]:
+    """The act's dialogue folders (Act I: the prologue's and Ch1-Ch9's)."""
+    chapters = ["ch%02d" % n for n in range(max(FIRST_CHAPTER, 1), LAST_CHAPTER + 1)]
+    return (["prologue"] if FIRST_CHAPTER == 0 else []) + chapters
+
+
 def chapter_of(path: str) -> int | None:
     """The chapter a path or id belongs to: chNN in it, 0 for the prologue, else None."""
     m = CHAPTER_RE.search(path.lower())
@@ -122,8 +162,9 @@ def zone_owner(chapter: int | None) -> str:
 
 
 def act1_encounters(root: Path = ROOT) -> dict[str, int]:
-    """Encounter id -> the chapter that fights it: every encounter id the chapter files, the slice's flow and the
-    Act I zone layouts name (an encounter only the sandbox or a test names is not part of the playable game)."""
+    """Encounter id -> the chapter that fights it, for the act in scope (set_scope; the name is Act I's, kept for its
+    callers): every encounter id the act's chapter files, the slice's flow and zone layouts name (an encounter only the
+    sandbox or a test names is not part of the playable game)."""
     ids = {str(e.get("id", "")) for e in _json(root / "game/data/battle/encounters.json").get("encounters", [])}
     found: dict[str, int] = {}
 
@@ -139,30 +180,30 @@ def act1_encounters(root: Path = ROOT) -> dict[str, int]:
 
     for p in sorted((root / "game/data/flow/chapters").glob("ch*.json")):
         ch = chapter_of(p.name)
-        if ch is not None and ch <= LAST_CHAPTER:
+        if ch is not None and in_scope(ch):
             walk(_json(p), ch)
-    fp = _json(root / "game/data/flow/first_playable.json")
-    walk(fp, 3)
+    if in_scope(3):
+        walk(_json(root / "game/data/flow/first_playable.json"), 3)
     for enc in ("ch02_tideline",):
-        if enc in ids:
+        if enc in ids and in_scope(2):
             found[enc] = min(found.get(enc, 2), 2)
-    for p in sorted((root / "game/levels").glob("ch0*/**/*_layout.json")):
+    for p in sorted((root / "game/levels").glob("ch*/**/*_layout.json")):
         ch = chapter_of(str(p.relative_to(root)))
-        if ch is not None:
+        if ch is not None and in_scope(ch):
             walk(_json(p), ch)
     # dialogue events (`<<event start_battle drownbell>>`) and scene files name encounters too
     token = re.compile(r"[a-z0-9_]+")
-    texts = [p for d in DIALOGUE_DIRS for p in sorted((root / "game/data/dialogue" / d).glob("*.dlg"))]
+    texts = [p for d in dialogue_dirs() for p in sorted((root / "game/data/dialogue" / d).glob("*.dlg"))]
     texts += [p for p in sorted((root / "game/levels").glob("**/*.tscn")) if "/_tests/" not in str(p)]
     for p in texts:
         ch = chapter_of(str(p.relative_to(root)))
-        if ch is None or ch > LAST_CHAPTER:
+        if ch is None or not in_scope(ch):
             continue
         for t in set(token.findall(p.read_text(encoding="utf-8", errors="ignore"))) & ids:
             found[t] = min(found.get(t, ch), ch)
     for p in sorted((root / "game/data/world").glob("**/*.json")):
         ch = chapter_of(str(p.relative_to(root)))
-        if ch is not None and ch <= LAST_CHAPTER:
+        if ch is not None and in_scope(ch):
             walk(_json(p), ch)
     return found
 
@@ -257,8 +298,12 @@ def check_battle(root: Path = ROOT) -> list[Item]:
             out.append(Item("game/data/battle/enemies.json#%s" % fid, "foe %s fights as a primitive stand-in (no model)" % fid, ch, owner, "high", "battle_body"))
         elif not res_to_path(model, root).exists():
             out.append(Item(model.removeprefix("res://"), "foe %s's model scene is missing" % fid, ch, owner, "high", "battle_body"))
+    creature_rows = _json(root / "game/data/creatures/creatures.json").get("creatures", {}) or {}
     for vid in vowbound:
         scene = str((sandbox.get(vid, {}) or {}).get("scene", ""))
+        own = creature_rows.get(vid, {}) or {}
+        if scene == "" and own.get("vowbound"):  # the game's own rule: CreatureModels.vowbound_creature (M3-CRE-638)
+            scene = str(own.get("scene", ""))
         if scene == "" or not res_to_path(scene, root).exists():
             out.append(Item("game/data/battle/vowbound.json#%s" % vid, "Vowbound %s is drawn as a primitive (no actor scene)" % vid, None, OWNER_BOSS, "high", "battle_body"))
     for hero in PARTY:
@@ -360,7 +405,7 @@ def check_audio(root: Path = ROOT) -> list[Item]:
         if isinstance(v, dict)
     }
     found: dict[tuple[str, str], list[str]] = collections.defaultdict(list)
-    for d in DIALOGUE_DIRS:
+    for d in dialogue_dirs():
         for p in sorted((root / "game/data/dialogue" / d).glob("*.dlg")):
             for kind, name in CUE_RE.findall(p.read_text(encoding="utf-8", errors="ignore")):
                 if kind in dirs and name not in AUDIO_SKIP:
@@ -412,7 +457,7 @@ def check_named_files(root: Path = ROOT) -> list[Item]:
                 continue
             rel = str(p.relative_to(root))
             ch = chapter_of(rel)
-            if ch is not None and ch > LAST_CHAPTER:
+            if not in_scope(ch):
                 continue
             out.append(Item(rel, "asset file named as a placeholder", ch, zone_owner(ch) if base.startswith("assets/environments") else OWNER_PEOPLE if "characters" in base else OWNER_REGULAR, "low", "named_file"))
     return out
@@ -497,11 +542,20 @@ def from_scan(scan: list[dict], root: Path = ROOT) -> list[Item]:
 # --- the inventory ----------------------------------------------------------------------------------------------
 
 
+def route(item: Item) -> Item:
+    """ROUTES' owner for an item one of its rows matches, else the item as it is."""
+    for path_re, what_re, owner, _why in ROUTES:
+        if re.search(path_re, item.path) and re.search(what_re, item.what):
+            item.owner = owner
+            break
+    return item
+
+
 def audit(scan: list[dict] | None, root: Path = ROOT) -> list[Item]:
     items = (from_scan(scan, root) if scan is not None else []) + check_battle(root) + check_portraits(root)
     items += check_vfx(root)
     items += check_audio(root) + check_named_files(root)
-    items = [i for i in items if i.chapter is None or i.chapter <= LAST_CHAPTER]
+    items = [route(i) for i in items if in_scope(i.chapter)]
     items.sort(key=lambda i: (i.owner, SEVERITY_ORDER[i.severity], i.chapter if i.chapter is not None else 99, i.path))
     return items
 
@@ -512,19 +566,27 @@ def render(items: list[Item], source: str, scanned: list[str] | None = None) -> 
         by_owner[i.owner].append(i)
     sev = collections.Counter(i.severity for i in items)
     lines = [
-        "# Act I final-quality inventory (ADR 0041)",
+        "# %s" % ACTS[ACT]["title"],
         "",
-        "Generated by `python3 tools/placeholder_audit.py --write` (integration-qa owns it). Don't hand-edit the "
-        "tables: fix the item and re-run. Act I is done when this lists nothing and a full headless playthrough "
-        "passes (ADR 0041 §4).",
+        (
+            "Generated by `python3 tools/placeholder_audit.py --write` (integration-qa owns it). Don't hand-edit the "
+            "tables: fix the item and re-run. Act I is done when this lists nothing and a full headless playthrough "
+            "passes (ADR 0041 §4)."
+            if ACT == 1
+            else "Generated by `python3 tools/placeholder_audit.py --act %d --write` (integration-qa owns it). Report-only "
+            "(ADR 0203): the act's work starts when Act I passes its completion gate, so these rows aren't filed as "
+            "tasks yet. Owners follow the Act I split until the act's own track list lands." % ACT
+        ),
         "",
-        "- **Scope:** everything a player meets from the title to the end of Ch9. The runtime scan loads every Act I "
-        "zone (each layout variant too) and every arena an Act I encounter uses. The static checks cover battle "
+        "- **Scope:** everything a player meets %s. The runtime scan loads every zone of the act " % ACTS[ACT]["span"]
+        + "(each layout variant too) and every arena its encounters use. The static checks cover battle "
         "bodies, arenas, portraits, audio cues and files, and placeholder-named assets.",
         "- **Severity:** high = on screen in play or battle; medium = heard, or seen in a menu or in passing; low = "
         "a name only.",
-        "- **Not audited yet, with the reason:** item and skill icons (the Act I menus have none: items carry no "
-        "icon field and status glyphs are drawn); battle VFX beyond the bosses' set pieces (every hit falls back to "
+        "- **Covered elsewhere:** item, equipment and skill icons and the battle HUD's faces are UI's "
+        "`test_menu_glyphs` and `test_battle_portraits` (M3-UI-211; `docs/kb/qa/ui_act1_menu_audit.md`); sounds are "
+        "`tools/audio/act1_audio_audit.py` (audio's, M3-AUD-861).",
+        "- **Not audited yet, with the reason:** battle VFX beyond the bosses' set pieces (every hit falls back to "
         "its element's effect, so whether a skill needs a signature effect is battle-presentation's call).",
         "- **Source:** %s." % source,
     ]
@@ -605,7 +667,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--write", action="store_true", help="write docs/kb/qa/act1_final_inventory.md")
     ap.add_argument("--check", action="store_true", help="exit 1 while any item is left")
     ap.add_argument("--source-note", default="", help="appended to the inventory's Source line (e.g. a trial merge)")
+    ap.add_argument("--act", type=int, choices=sorted(ACTS), default=1, help="the act to audit (2 is report-only)")
     args = ap.parse_args(argv)
+    set_scope(args.act)
     raw: dict | None = None
     source = "static checks only"
     if args.scan_json:
@@ -631,7 +695,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.write:
         INVENTORY.write_text(render(items, source, scanned), encoding="utf-8")
         print("wrote %s" % INVENTORY.relative_to(ROOT))
-    return 1 if args.check and items else 0
+    return 1 if args.check and items and not ACTS[ACT]["report_only"] else 0
 
 
 if __name__ == "__main__":

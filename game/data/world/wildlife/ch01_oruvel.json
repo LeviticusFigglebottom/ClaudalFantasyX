@@ -1,5 +1,5 @@
 {
-  "_doc": "Oruvel by day: gulls wheel over the raft-town and stand on the cabin roof (top 2.4), Kell's stall (2.0) and the Seventh Terrace (1.5). The sea under the hulls is a solid greybox floor, so no fish until the raft-town kit brings water; no crabs on the decks. Placed on the greybox layout (M3-CRE-615); move the coordinates when env-art's kit replaces the blocks (same keys as ch02_haluna.json).",
+  "_doc": "Oruvel by day: gulls wheel over the raft-town and stand on the cabin roof (top 2.4), Kell's stall (2.0) and the Seventh Terrace (1.5). no crabs on the decks. Placed on the greybox layout (M3-CRE-615); move the coordinates when env-art's kit replaces the blocks (same keys as ch02_haluna.json). Re-seated on the dressed kit (the Act I audit, 2026-10-29: tools/creatures/wildlife_snap.gd and wildlife_audit.gd, which ray against the zone's visible meshes). Fish: a shoal in the open sea off the raft-town's south edge (the water under the hulls is too shallow).",
   "zone": "ch01/oruvel",
   "flocks": [
     {
@@ -18,13 +18,13 @@
       "perches": [
         [
           -13.5,
-          2.4,
+          3.45,
           -19.0,
           0.0
         ],
         [
           -10.5,
-          2.4,
+          3.45,
           -18.0,
           90.0
         ],
@@ -48,7 +48,7 @@
         ],
         [
           -35.5,
-          1.5,
+          1.7,
           -9.0,
           -90.0
         ]
@@ -56,5 +56,16 @@
     }
   ],
   "beaches": [],
-  "shoals": []
+  "shoals": [
+    {
+      "id": "open_sea",
+      "center": [
+        0.0,
+        -1.5,
+        38.0
+      ],
+      "radius_m": 4.0,
+      "count": 8
+    }
+  ]
 }

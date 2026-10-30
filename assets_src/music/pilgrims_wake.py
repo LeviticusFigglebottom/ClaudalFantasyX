@@ -234,11 +234,14 @@ def render(out_path: str = OUT, verbose: bool = True, stats: dict | None = None)
                                                                      np.array([PEDAL_DEPTH, PEDAL_DEPTH]))))
     mx.bus("piano", 15.5, send=0.25, process=PianoBody(PedalCurve(np.array([0.0, 1.0e6]),
                                                                  np.array([PEDAL_DEPTH, PEDAL_DEPTH]))))
-    mx.bus("hum", 0.0, send=0.35, process=lambda x: filt(x, [bq_highpass(90, 0.7)]))
+    # M3-AUD-864: the Act I listening report found this the muddiest zone loop (250-800 Hz 13.5 dB over mid and
+    # presence; the set's median is +5): the hum's chest and the bell's 250 Hz boost stacked there. The hum gives
+    # 3 dB at 380 Hz and the bell keeps its tone without the boost.
+    mx.bus("hum", 0.0, send=0.35, process=lambda x: filt(x, [bq_highpass(90, 0.7), bq_peak(380, -3.0, 0.9)]))
     mx.bus("harp", -9.3, send=0.3, process=lambda x: filt(x, [bq_highpass(180, 0.7), bq_lowpass(7000, 0.7)]))
     mx.bus("drum", -4.2, send=0.18)
     mx.bus("claps", -16.3, send=0.3)
-    mx.bus("bell", -14.7, send=0.4, process=lambda x: filt(x, [bq_lowpass(3000, 0.7), bq_peak(250, 2.0, 1.0)]))
+    mx.bus("bell", -14.7, send=0.4, process=lambda x: filt(x, [bq_lowpass(3000, 0.7), bq_peak(250, 0.0, 1.0)]))
     mx.bus("gong", -12.2, send=0.4)
     build(mx)
     hall = ModFDNReverb(rt60=2.2, rt60_high=1.0, predelay=0.02, size=1.0, mod_depth=8.0, mod_rate=0.5,

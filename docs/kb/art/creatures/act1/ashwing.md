@@ -11,3 +11,7 @@ the weak point a `spawn_wound` speck in each eye-spot's pupil (it fed on grave-o
 dust (VFX). `hit`: it tumbles. `ko`: it spirals down, wings closing. Budget ≤ 5k.
 
 *Update (m2-slice act1_ch05 §9): the eye-spots are ember (`ember_orange` toward `dusk_gold`), reading like a leaf-boat's flame in the dark.*
+
+*Battle read (the Act I final-quality audit, 2026-10-29): at battle distance its flat wings read as two small pale slivers
+in the Ch5 stair arena. Its battle scene stands it at 1.35× (a 2.2 m span) and its `stand_in.hover` is 1.86 m (1.38 ×
+1.35, so its KO still lands on the floor; tools/tests/test_creatures.py reads the battle scene's Model scale).*

@@ -2,8 +2,8 @@
 id: M3-C06-05
 title: Ch6 combat follow-ups (Liss's real kit, the hound's guard, the Smoke field, Toma's shove, two band exceptions)
 role: combat
-status: todo
-owner_session: ""
+status: review
+owner_session: claude/battle-presentation (session_01UPFyEA8QkJULH74MGgnMvJ; the Lead, 10-29: the Swell techniques)
 depends_on: [M3-C06-02]
 milestone: M3
 request-from: cinematics
@@ -26,5 +26,17 @@ M3-C06-02 made Ch6 playable with provisional combat data (`_note` PROVISIONAL ro
 - [ ] No earlier band moves; if one does, re-measure it and log why.
 
 ## Notes
+- **2026-10-29, battle-presentation (the Lead's 10-29 assignment: the Swell part of item 1).**
+  - **Liss's Swell is Three-Reel Charge** (`three_reel_charge`): physical, power 9, every foe, accuracy 100, rank 3,
+    no MP. It pushes each foe 1 rank down the timeline, because her gadgets alter turn order.
+    - The band is Written Light's (every foe, power 10) less one point for the push: 13 at good, 17 perfect.
+    - It is not magic, so Silence does not stop it.
+  - **Its input is the reel-stop** (`swell.json` `reel_stop`): a three-beat `timing_ring`, one press per reel
+    (0.7 s beats, peak at 0.65). +45% at good, +90% perfect.
+  - The presentation was staged in M3-BPR-422 (choreo `reel`, effect `swell_reel_stop`). It was viewed on the Ch8
+    hoist with `tools/vfx/swell_finisher_sheet.gd`.
+  - **Still open in item 1 (not this pass):** steal, combine and her gadgets, and her Lattice start. Items 2–9 are
+    untouched.
+  - **To review (combat):** the Swell part only. The other items stay open on this task for a combat pass.
 
 ## Review log

@@ -74,7 +74,7 @@ flags = {
 "ch05_boat_for_oruvel": "Ch5 B04 choice: Rhen floated his Lanternfall boat for Oruvel (Ch7 B05). Exclusive with the other two boat flags.",
 "ch05_kept_leaf_boat": "Ch5 B04 choice 'Not yet': Rhen kept his leaf-boat folded and unlit (key item pemakar_leaf_boat; Ch7 B09). Exclusive with the other two boat flags.",
 "ch05_met_kerrid": "Ch5 B05: Kerrid caught the child at the sea-cut weir, spoke his one line to Asha and fell in at the back of the line; he is in the party from here.",
-"ch05_tortoises_won": "Ch5 B07: the scripted slag tortoise pair on the pilgrim stair (Kerrid's first fight, the Armor Break lesson) is won.",
+"ch05_tortoises_won": "Ch5 B07: the scripted slag tortoise pair on the pilgrim stair (Kerrid's first fight, the Sundered lesson) is won.",
 "ch05_trial_begun": "Ch5 B08: Tender Ruwen has opened the crown pavilion and given the rite; the Ashcrown trial is live.",
 "ch05_quench_alcove_open": "Ch5 B08 (optional): the tier-3 charge was routed into the sealed side vein and the quench-trough alcove is open.",
 "ch05_found_quench_charm": "Ch5 B08 (optional): the party took the Quench Charm from the quench-trough alcove (Asha's line in B10).",
@@ -232,5 +232,6 @@ flags = {
 "codex_the_calm_read": "Codex (ui-menus, M3-NAR-01 Act I additions, game/data/lore/codex.json): the entry 'the_calm' has been opened in the Codex (clears its New marker).",
 "codex_cantors_read": "Codex (ui-menus, M3-NAR-01 Act I additions, game/data/lore/codex.json): the entry 'cantors' has been opened in the Codex (clears its New marker).",
 "codex_ebbing_read": "Codex (ui-menus, M3-NAR-01 Act I additions, game/data/lore/codex.json): the entry 'ebbing' has been opened in the Codex (clears its New marker).",
-"codex_moll_read": "Codex (ui-menus, M3-NAR-01 Act I additions, game/data/lore/codex.json): the entry 'moll' has been opened in the Codex (clears its New marker)."
+"codex_moll_read": "Codex (ui-menus, M3-NAR-01 Act I additions, game/data/lore/codex.json): the entry 'moll' has been opened in the Codex (clears its New marker).",
+"tut_swell_seen": "Tutorial seen-flag (ui-menus, the Lead's Act I onboarding pass, 2026-10-29): the tip about the Swell gauge, its techniques and its fill modes has been shown."
 }

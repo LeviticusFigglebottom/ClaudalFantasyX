@@ -84,3 +84,32 @@ at mid-length, under `body2`), `vfx_phase` (the upper body, where it tears out o
 
 **Budget:** 17,983 triangles (15,633 body, rigging and spars; `Shroud` 1,642; `Sheath` 708), so the budget is now
 **≤ 18k** (a boss may take 25k). GLB 1.84 MB.
+
+## Move pass (M3-CRB-013)
+
+Seen from the battle camera it is small, far off and at night, so every move is now big in silhouette, and each skill
+has its own clip (creatures.json `clip_by_skill`, `contact`). Every strike is authored from rest and played from its
+phase's idle first frame (`ck.in_pose`), so each clip starts and ends exactly on `idle` or `idle_deck`.
+
+- **Rig:** a new `sail` bone (child of `body1`, `j2` to `j4`) carries the shroud's lower half (the shroud is now skinned
+  `body0`/`body1`/`sail`). Every clip keys it to follow the body below `body1`, plus a drag that trails `body0`'s swing,
+  so the sail billows and lags. A planted spar creaks by turning about its foot (`spar_lean`), so the foot never slides.
+- **`attack` (Spar Stab, 1.6 s, contact 0.8):** the near spar (-X) tears its foot off the deck and swings out, back and
+  up, wide of the frame, while the body coils back and the face lifts to the target (0.1-0.58 s). It drives the foot down
+  and across at the party, the body lunging after it, then plants it again. The far spar braces on its foot.
+- **`shroud_sweep` (1.9 s, contact 1.0):** it draws back and twists (0.35-0.62 s), then swings the whole body out over
+  the party in a wide arc, with the shroud flaring and trailing.
+- **`hit` / `hit_b`:** the body is kicked aside in its lines, the face snaps up, the segments ripple and the spars shudder
+  on their feet. `hit_b` is authored mirrored, not derived.
+- **`phase_drop` (1.8 s, contact 0.82, the slam):** every line snaps (0.2 s) and it jerks up in the web, hangs a beat
+  thrashing, then is hauled down onto the deck, with the shroud billowing up round it and slumping after. The shroud now
+  goes at the clip's end (`hide_after`), as the sheath shows.
+- **Deck stance** (`hauled_down`; the shroud hidden): `attack_deck` (Spar Stab from the deck),
+  `lines_taut_deck` (the buff, contact 0.8: every line snaps taut and hauls it half off the planks, trembling, while
+  the frame groans), `haul_deck` (contact 1.1: it rears, flings its block and hook at a foe, then yanks back across the
+  frame), `sea_lash_deck` (contact 1.0: it coils, then lashes its sheathed body across the party like a whip, the head
+  cracking last), `cast_deck`, `hit_deck` and **`ko_deck`** (the KO from the deck; the phase's `clips` map sends `ko` to
+  it, and CreatureActor.set_ko now maps the KO through the phase). On the deck the block and hook ride up against the
+  body (`DECK_GEAR`), so the hook's floor correction no longer flips from frame to frame.
+- Kept: `idle`, `ready`, `intro`, `ko` (the A-frame collapsing), `cast` (now hauled higher into the web). Grounding:
+  the sail turns back onto the planks before the body lifts (common/grounding.py). 16 bones, 17,983 triangles.

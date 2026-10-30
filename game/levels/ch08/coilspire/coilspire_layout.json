@@ -101,8 +101,8 @@
     "toma": {"at": [302.824, 38.824, 150.394, 75.0], "color": "#6f7f8f", "radius": 0.36, "height": 1.9},
     "ysolde": {"at": [302.127, 38.713, 148.917, 75.0], "color": "#2a2440", "radius": 0.26, "height": 1.85},
     "liss": {"at": [301.647, 38.631, 147.817, 206.32], "color": "#5fa0a0", "radius": 0.24, "height": 1.5},
-    "fenn": {"cast": "fisher", "at": [311.874, 38.633, 152.312, 255.0], "color": "#4a3a2a", "radius": 0.28, "height": 1.6},
-    "tender": {"cast": "reed", "at": [304.381, 38.935, 152.456, 30.51], "color": "#e8e0c8"},
+    "fenn": {"cast": "fenn", "at": [311.874, 38.633, 152.312, 255.0], "color": "#4a3a2a", "radius": 0.28, "height": 1.6},
+    "tender": {"cast": "tender", "at": [304.381, 38.935, 152.456, 30.51], "color": "#e8e0c8"},
     "virel": {"cast": "creature:virel", "at": [308.745, 74.612, 159.418, -40.0], "cast_still": true, "color": "#c8a070", "radius": 0.8, "height": 2.6}
   },
   "shots": {

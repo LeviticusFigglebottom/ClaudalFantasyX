@@ -36,7 +36,8 @@ SPEAR_TEX = {"albedo_texture": M + "moll_iron_albedo.png", "normal_texture": M +
              "metallic_texture": M + "moll_iron_orm.png", "roughness_texture": M + "moll_iron_orm.png"}
 IRIS = {"a": "Color(0.20, 0.15, 0.10, 1)", "b": "Color(0.12, 0.08, 0.05, 1)", "c": "Color(0.16, 0.12, 0.09, 1)",
         "d": "Color(0.26, 0.28, 0.27, 1)", "e": "Color(0.10, 0.07, 0.05, 1)", "f": "Color(0.30, 0.24, 0.14, 1)",
-        "ivo": "Color(0.24, 0.15, 0.08, 1)"}  # M3-CHR-540: Ivo's warm brown
+        "ivo": "Color(0.24, 0.15, 0.08, 1)",  # M3-CHR-540: Ivo's warm brown
+        "officer": "Color(0.22, 0.20, 0.17, 1)"}  # M3-CHR-593: the Ch8 officer's grey-brown
 
 
 def hexcol(h: str, k: float = 1.0) -> str:

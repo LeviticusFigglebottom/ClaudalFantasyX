@@ -112,7 +112,9 @@ EMO_AFTER_COLON_RE = re.compile(r"^\[\s*(" + WORD + r")\s*\]\s*(.*)$")
 SPEAKER_LIKE_RE = re.compile(r"""^([A-Z][^:.!?;,…—"]*?)(?<!\\):""")
 SPEAKER_LIKE_ERROR_WORDS = 2
 SPEAKER_LIKE_MAX_WORDS = 6
-NAME_WORD_RE = re.compile(r"[A-Z][A-Za-z0-9_]*|\([^()]*\)|\{[^{}]*\}|\[[^\[\]]*\]")
+# A capitalized word may be hyphen- or apostrophe-joined (`Old Net-Mender [neutral]:`, `O'Rourke:`): the Ch8 bark
+# that shipped its own speaker head as text (the Lead's Act I text pass, 2026-10-29).
+NAME_WORD_RE = re.compile(r"[A-Z][A-Za-z0-9_]*(?:['’\-][A-Za-z0-9_]+)*|\([^()]*\)|\{[^{}]*\}|\[[^\[\]]*\]")
 NAME_JOINERS = frozenset({"of", "the", "from", "in", "on", "at", "by", "de", "van", "von"})
 # Capitalized words that are never part of a name: `I Remember Corrow:`, `North of Corrow:`.
 NOT_NAME_WORDS = frozenset({"I", "North", "South", "East", "West", "Northeast", "Northwest", "Southeast",

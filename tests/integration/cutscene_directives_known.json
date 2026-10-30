@@ -1,0 +1,10 @@
+{
+ "_about": "test_cutscene_directives.gd: grades Act I scenes name (a `grade:` header or `@camera grade=`) that no zone grade table (assets/environments/zones/*/*_grades.json) has yet. Each needs its Environment and sun row from Rendering (M3-ENV-106, env-art-b). The test fails on a missing grade not listed here, and on a listed grade that now has a row (take it off the list).",
+ "grades": [
+  "ch02",
+  "ch03",
+  "ch03_boss",
+  "ch03_shrine_int",
+  "ch03_steps"
+ ]
+}
