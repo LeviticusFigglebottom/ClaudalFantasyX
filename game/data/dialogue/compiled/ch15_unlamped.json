@@ -1,0 +1,26 @@
+{
+ "format": 1,
+ "scene": "ch15_unlamped",
+ "source": "game/data/dialogue/ch15/ch15_unlamped.dlg",
+ "start": "ch15_unlamped",
+ "nodes": {
+  "ch15_unlamped": {
+   "headers": {"location": "ch15/open_sea"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "fade", "args": ["in", 2.0], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "camera", "args": ["U01"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "music", "args": ["unlamped"], "kwargs": {"fade": 2.0}, "src": 12},
+    {"op": "cue", "cue": "wait", "args": [5.0], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "camera", "args": ["U02"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "touch", "tinder_pouch"], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "camera", "args": ["U03"], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "tobin_bier", "count": 6, "rate": "slow"}, "src": 18},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 21}
+   ]
+  }
+ }
+}

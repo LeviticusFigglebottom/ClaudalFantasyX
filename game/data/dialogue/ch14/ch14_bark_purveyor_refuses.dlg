@@ -1,0 +1,10 @@
+// M4-A2P-008 heresy state: an Order shop's keeper once the party is Outside the Level (ch14_declared_heretics;
+// plan §4.2). The menus refuse the sale (ui-menus, M4-A2P-082); this is the keeper's line. Sincere: she is
+// afraid, not cruel. Before the heresy the shop plays its normal greeting (no line here).
+title: ch14_bark_purveyor_refuses
+location: ch13/ansedra
+---
+<<if $ch14_declared_heretics>>
+    Vendor as "Order purveyor" [afraid]: Outside the Level. I can't sell to you. I'm sorry. Go, before someone sees me being sorry. #line:ch14_heresy_shop_001 #long
+<<endif>>
+===

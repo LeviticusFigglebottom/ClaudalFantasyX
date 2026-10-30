@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch16_bark_asha_mother",
+ "source": "game/data/dialogue/ch16/ch16_bark_asha_mother.dlg",
+ "start": "ch16_bark_asha_mother",
+ "nodes": {
+  "ch16_bark_asha_mother": {
+   "headers": {"location": "ch16/pale_rim"},
+   "ops": [
+    {"op": "line", "id": "ch16_bark_mother_001", "key": "DLG_CH16_BARK_MOTHER_001", "speaker": "asha", "emotion": "sad", "voice": "", "src": 5}
+   ]
+  }
+ }
+}

@@ -28,6 +28,25 @@ func _ready() -> void:
 	add_child(stage)
 	_seat(stage, party, layout["party"])
 	_seat(stage, enemies, layout["enemy"])
+	_frame_as_the_fight(stage, layout)
+
+
+## The PC's GPU QA row 61: a boss previewed on Slot0 under the authored camera is not the frame its fight shows. As the
+## battle does, a boss with a battle_sandbox.json boss_seats mark stands there (EnemySlots space; M3-CRB-011) and the
+## camera takes its camera.rest_by_enemy fit (BattleCameraDirector.rest_fit; M3-BPR-425).
+func _frame_as_the_fight(stage: Node3D, layout: Dictionary) -> void:
+	if enemies.is_empty():
+		return
+	var seat: Variant = (BattleStage.config().get("boss_seats", {}) as Dictionary).get(String(enemies[0]))
+	if seat is Array and (seat as Array).size() == 3:
+		var v := seat as Array
+		var f := stage.get_child(party.size()) as Node3D
+		f.position = (layout["enemy_slots"] as Transform3D) * Vector3(float(v[0]), float(v[1]), float(v[2]))
+	var fit := BattleCameraDirector.rest_fit(
+		BattleChoreo.load_data().get("camera", {}) as Dictionary, _camera.transform, _camera.fov, enemies
+	)
+	_camera.transform = fit[0]
+	_camera.fov = float(fit[1])
 
 
 func _seat(stage: Node3D, ids: Array[StringName], slots: Array) -> void:

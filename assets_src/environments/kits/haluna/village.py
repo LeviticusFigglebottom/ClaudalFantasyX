@@ -679,14 +679,17 @@ GULLS = {"lintel_gull_a": ("folded", 0.72, 31), "lintel_gull_b": ("raised", 0.82
          "lintel_gull_c": ("crying", 0.66, 33)}
 
 
-def lintel_gull(name: str, pose: str, length: float, seed: int, lod: bool = False) -> kc.MeshBuilder:
+def lintel_gull(name: str, pose: str, length: float, seed: int, lod: bool = False, fine: bool = False) -> kc.MeshBuilder:
+    """`fine`: a hero carving for close shots (Oruvel's O10): denser lofts and finer adze facets, feather grooves cut
+    along the wings, eyes, and a moulded perch. Haluna's lintel gulls keep the plain carving (fine False)."""
     rng = kc.rng_for(name, seed)
     noise = kc.Noise3(rng)
     mb = kc.MeshBuilder(name + ("-lod1" if lod else ""))
     mat = mb.material(M_CARVING)
     s = length / 0.72
-    sides = 6 if lod else 9
-    n = 5 if lod else 9
+    fine = fine and not lod
+    sides = 6 if lod else (16 if fine else 9)
+    n = 5 if lod else (17 if fine else 9)
     start_v, start_t = mb.vertex_count, mb.triangle_count
     # Body: tail (-X) to breast (+X); sits on a carved perch block.
     t = np.linspace(0.0, 1.0, n)
@@ -713,7 +716,7 @@ def lintel_gull(name: str, pose: str, length: float, seed: int, lod: bool = Fals
         beak = beak_root[None, :] + d[None, :] * (tb[:, None] * 0.11 * s)
         beak[:, 1] -= (tb ** 2) * 0.012 * s * (1 if gape >= 0 else -1)
         _loft(mb, beak, (0.016 * (1 - tb) + 0.002) * s, (0.02 * (1 - tb) + 0.002) * s * (0.6 if gape else 1),
-              5, mat, rng, noise)
+              8 if fine else 5, mat, rng, noise)
     # Wings: long flattened lofts from the shoulder back past the tail.
     for side in (-1.0, 1.0):
         tw = np.linspace(0.0, 1.0, n)
@@ -724,14 +727,40 @@ def lintel_gull(name: str, pose: str, length: float, seed: int, lod: bool = Fals
             spine_w = np.stack([(0.14 - 0.56 * tw) * s, (0.19 + 0.01 * tw) * s, side * (0.085 - 0.03 * tw) * s],
                                axis=-1)
         wp = np.sin(np.clip(tw, 0.05, 1.0) * math.pi) ** 0.5 * (1.0 - 0.6 * tw)
-        _loft(mb, spine_w, (0.012 + 0.03 * wp) * s, (0.006 + 0.075 * wp) * s, 5, mat, rng, noise)
+        _loft(mb, spine_w, (0.012 + 0.03 * wp) * s, (0.006 + 0.075 * wp) * s, 9 if fine else 5, mat, rng, noise)
+        if fine:  # the primaries: three grooves raised along the wing's outer face, fanning to the tip
+            for k, f in enumerate((-0.45, 0.0, 0.45)):
+                g = spine_w.copy()
+                g[:, 1] += f * (0.05 * wp) * s
+                g[:, 2] += side * (0.012 + 0.03 * wp) * s * 0.92
+                kc.tube(mb, g[2:], np.full(len(g) - 2, 0.0045 * s), 4, mat, weather=kc.VILLAGE,
+                        variation=float(rng.random()))
     # Tail wedge.
     tt = np.linspace(0.0, 1.0, 4)
     tail = np.stack([(-0.34 - 0.14 * tt) * s, (0.14 + 0.02 * tt) * s, np.zeros_like(tt)], axis=-1)
-    _loft(mb, tail, (0.04 + 0.03 * tt) * s, (0.02 - 0.012 * tt) * s, 5, mat, rng, noise)
-    # Perch block with a tenon into the ridge roll.
-    kc.rounded_block(mb, (0.0, 0.045 * s, 0.0), (0.2 * s, 0.045 * s, 0.07 * s), mat, radius=0.012, seg=1,
-                     variation=float(rng.random()))
+    _loft(mb, tail, (0.04 + 0.03 * tt) * s, (0.02 - 0.012 * tt) * s, 9 if fine else 5, mat, rng, noise)
+    if fine:
+        # The eyes, drilled and darkened with oil: a small boss each side of the head.
+        for side in (-1.0, 1.0):
+            eye = head_c + np.array([0.012 * s, 0.012 * s, side * 0.042 * s])
+            kc.rounded_block(mb, eye, (0.009 * s, 0.009 * s, 0.006 * s), mb.material(M_DARK), radius=0.004 * s, seg=2)
+        # A moulded perch: a plinth with a rolled moulding under a narrower seat, the feet carved onto it.
+        kc.rounded_block(mb, (0.0, 0.022 * s, 0.0), (0.21 * s, 0.022 * s, 0.075 * s), mat, radius=0.008 * s, seg=2,
+                         variation=float(rng.random()))
+        kc.tube(mb, np.array([[-0.2 * s, 0.047 * s, 0.07 * s], [0.2 * s, 0.047 * s, 0.07 * s],
+                              [0.2 * s, 0.047 * s, -0.07 * s], [-0.2 * s, 0.047 * s, -0.07 * s],
+                              [-0.2 * s, 0.047 * s, 0.07 * s]]), 0.008 * s, 6, mat)
+        kc.rounded_block(mb, (0.0, 0.07 * s, 0.0), (0.17 * s, 0.022 * s, 0.06 * s), mat, radius=0.008 * s, seg=2,
+                         variation=float(rng.random()))
+        for side in (-1.0, 1.0):
+            for toe in (-0.6, 0.0, 0.6):
+                a = np.array([0.04 * s, 0.092 * s, side * 0.03 * s])
+                kc.tube(mb, np.array([a, a + np.array([0.035 * s, 0.0, toe * 0.02 * s])]), 0.006 * s, 5, mat,
+                        cap_end=True)
+    else:
+        # Perch block with a tenon into the ridge roll.
+        kc.rounded_block(mb, (0.0, 0.045 * s, 0.0), (0.2 * s, 0.045 * s, 0.07 * s), mat, radius=0.012, seg=1,
+                         variation=float(rng.random()))
     if not lod:
         _facet(mb, start_v, start_t)
     return mb

@@ -124,7 +124,7 @@ See §5.
 
 ### B06. The causeway (C, 2.5 min)
 - **R01:** Reedhollow at the fen's heart. A ring of reed platforms round a dark lagoon, woven roost-shells on poles, and the shore with the clutch's stone (greybox; ossa_fen.md §4). The Kirru are already watching from the platforms: very tall, very still, crests half-lifted. They knew the party was coming, and they heard the Drowner fall.
-- **R02:** at the causeway gate, **the eldest who still swims**: an old Kirru woman, grey at the muzzle, crest white. (Name: **Owa-of-the-Clutch**, or the eldest only; Narrative's call. Checked against `tools/banned_terms.txt`.) She looks at the humans one by one, long and plain.
+- **R02:** at the causeway gate, **the eldest who still swims**: an old Kirru woman, grey at the muzzle, crest white. Her name is **Owa** (approved by ADR 0204 §4; banned-terms clean). The party learns it from the clutch, never from her. She looks at the humans one by one, long and plain.
   - At **Kerrid** her crest lifts a little, the way Pell's did on the Corrow road (act1_ch09 B09; Kirru can smell anchored motes: pell.md). She says nothing to him or of him. **Rule 4:** the beat is a look, never a line.
   - The eldest: *"You cut the roots. The three are lifted. Come in."*
   - **R03:** then she looks past them at Pell, at the blank shell on his throat.
@@ -231,7 +231,7 @@ Declared in `game/data/flags.tres` when the gate passes (M4-A2P-010 adds them). 
 
 **Phases (two):**
 1. **Rooted (100–50%).** It is a tree first, and its roots are the fight.
-   - **The drag:** a telegraphed charge (`root_drag`-class, one turn's warning on the timeline). The water rises along the roots and pulls the party's footing: the field rule gives **Slow** to the front hero for a turn, so the timeline visibly stretches.
+   - **The drag:** a telegraphed charge (its own skill, `drowner_haul` in the bosses lane; `root_drag` is the root crab's; one turn's warning on the timeline). The water rises along the roots and pulls the party's footing: the field rule gives **Slow** to the front hero for a turn, so the timeline visibly stretches.
    - **The snagged roots:** two **break parts**, the two root clusters with the most snagged lights (the sheet's proposal; M3-CRE-621's notes). Breaking one frees its lights: a short in-battle beat where three or four motes rise straight up past the dead crown (VFX, M4-A2P-058). This is **the first upward lift in the game**. Breaking both roots shortens phase 1.
    - **Weakness:** fire (dead wood), so Ysolde is the role answer. Kerrid's armour break works on the roots.
 2. **Uprooted (below 50%).** It tears the trunk up and stands on three root-clusters. It reaches for the drag every other turn, and its crushing roots strike the back line. It is faster and less armoured, so Rhen's turn manipulation is the answer.
@@ -381,6 +381,6 @@ The farewell-tide's choreography and the hold-then-release pacing are yours.
 
 ## 10. Open questions for review
 
-1. **The eldest's name:** "Owa" is a proposal (checked against the banned-terms list). Narrative may leave her unnamed ("the eldest"), which suits the Kirru's sparing speech.
+1. ~~The eldest's name~~: **resolved by ADR 0204 §4: Owa.**
 2. **Kerrid in Reedhollow:** the plan default keeps him outside with Pell (B06, B10). If the flow needs him walkable in the ring, he must still be absent from B09's frames.
 3. **"Ressa" spoken in B07:** this sheet names her once, as Pell's sister, so Ch11's binding lands as a recognition. If Narrative wants Ch11's reveal colder, cut the name from the bark and let Pell name her first in Ch11.

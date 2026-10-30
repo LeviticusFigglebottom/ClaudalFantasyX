@@ -1,0 +1,46 @@
+// Ch10 B06 "The causeway" (C, 2.5 min). R01: Reedhollow at the fen's heart, the Kirru watching from the
+// platforms; they heard the Drowner fall. R02: Owa, the eldest who still swims (grey muzzle, white crest;
+// ADR 0204 §4), looks at each human, long and plain. At KERRID her crest lifts a little, as Pell's did on
+// the Corrow road (Kirru can smell anchored motes). She says NOTHING to him or of him: the beat is a look,
+// the same length as her look at the others; only the crest differs (rule 4). R03: "Not you." Pell steps
+// back off the causeway onto the last root and stands. Kerrid stays outside too, unasked, on the root
+// beside Pell, facing the water. Nobody comments.
+title: ch10_causeway
+location: ch10/reedhollow
+---
+@letterbox on
+@camera R01
+@music reedhollow fade=1.0
+@wait 3.0
+@camera R02
+@mark owa causeway_gate walk
+@wait 1.5
+@anim owa look_at toma
+@wait 1.0
+@anim owa look_at asha
+@wait 1.0
+@anim owa look_at rhen
+@wait 1.0
+@anim owa look_at kerrid
+@anim owa crest_lift
+@wait 1.0
+@anim owa look_at asha
+Owa as "The eldest" [neutral]: You cut the roots. The three are lifted. Come in. #line:ch10_causeway_001
+@wait 1.0
+@camera R03
+@anim owa look_at pell
+@wait 2.0
+Owa as "The eldest" [cold]: Not you. #line:ch10_causeway_002
+@mark pell causeway_last_root walk
+@wait 1.5
+Asha [tender]: He brought us here. He walked behind us the whole way. #line:ch10_causeway_003
+Owa as "The eldest" [neutral]: Yes. Behind. He is good at standing behind. #line:ch10_causeway_004 #tn:"Literal, not sarcastic: the Kirru speak the human tongue without idioms."
+@mark owa ring_owa walk
+@wait 1.0
+@mark kerrid causeway_last_root_b walk
+@anim kerrid look_at water
+@wait 2.0
+<<set $ch10_pell_kept_out = true>>
+@letterbox off
+@camera release
+===

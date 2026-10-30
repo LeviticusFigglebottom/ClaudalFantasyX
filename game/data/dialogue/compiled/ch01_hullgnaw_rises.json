@@ -9,13 +9,14 @@
    "ops": [
     {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 8},
     {"op": "cue", "cue": "camera", "args": ["O16"], "kwargs": {}, "src": 9},
-    {"op": "cue", "cue": "sfx", "args": ["hullgnaw_ribs_creak"], "kwargs": {}, "src": 10},
-    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "net_pen", "count": 8, "drift": "down_seaward"}, "src": 11},
-    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 12},
-    {"op": "line", "id": "ch01_hullgnaw_001", "key": "DLG_CH01_HULLGNAW_001", "speaker": "rhen", "emotion": "afraid", "voice": "", "src": 13},
-    {"op": "cue", "cue": "music", "args": ["hullgnaw"], "kwargs": {"fade": 0.5}, "src": 14},
-    {"op": "line", "id": "ch01_hullgnaw_002", "key": "DLG_CH01_HULLGNAW_002", "speaker": "rhen", "emotion": "determined", "voice": "", "src": 15},
-    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 16}
+    {"op": "cue", "cue": "anim", "args": ["hullgnaw", "intro"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "sfx", "args": ["hullgnaw_ribs_creak"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "net_pen", "count": 8, "drift": "down_seaward"}, "src": 14},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 15},
+    {"op": "line", "id": "ch01_hullgnaw_001", "key": "DLG_CH01_HULLGNAW_001", "speaker": "rhen", "emotion": "afraid", "voice": "", "src": 16},
+    {"op": "cue", "cue": "music", "args": ["hullgnaw"], "kwargs": {"fade": 0.5}, "src": 17},
+    {"op": "line", "id": "ch01_hullgnaw_002", "key": "DLG_CH01_HULLGNAW_002", "speaker": "rhen", "emotion": "determined", "voice": "", "src": 18},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 19}
    ]
   }
  }

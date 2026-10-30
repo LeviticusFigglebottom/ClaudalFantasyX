@@ -92,6 +92,7 @@ SHADER_MATERIALS: dict[str, tuple[str, int, dict, dict]] = {
                                    "spec_secondary_intensity": "0.3", "col_transmission": HAIR_TT,
                                    "transmission_strength": "0.6", "indirect_specular": "0.1",
                                    "root_occlusion": "0.45", "depth_occlusion": "0.5", "strand_value_jitter": "0.1",
+                                   "alpha_boost": "1.5",  # GPU QA row 54: the cap read translucent at 1.15
                                    **WIND},
              {"tex_hair": A + "asha_hair.png", "tex_hairflow": A + "asha_hairflow.png"}),
     # ivory and still-blue silk, the mantle's gold leaf (G) on black lacquer (B); the gold is a little rougher than

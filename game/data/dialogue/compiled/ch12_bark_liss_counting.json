@@ -1,0 +1,18 @@
+{
+ "format": 1,
+ "scene": "ch12_bark_liss_counting",
+ "source": "game/data/dialogue/ch12/ch12_bark_liss_counting.dlg",
+ "start": "ch12_bark_liss_counting",
+ "nodes": {
+  "ch12_bark_liss_counting": {
+   "headers": {"location": "ch12/keth_pass"},
+   "ops": [
+    {"op": "if_not", "cond": ["flag", "ch10_found_scrape_mark"], "to": 3, "src": 5},
+    {"op": "line", "id": "ch12_bark_counting_001", "key": "DLG_CH12_BARK_COUNTING_001", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 6},
+    {"op": "goto", "to": 5, "src": 5},
+    {"op": "line", "id": "ch12_bark_counting_002", "key": "DLG_CH12_BARK_COUNTING_002", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 8},
+    {"op": "goto", "to": 5, "src": 7}
+   ]
+  }
+ }
+}

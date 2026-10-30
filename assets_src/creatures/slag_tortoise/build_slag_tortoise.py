@@ -39,6 +39,7 @@ HEAD_STATIONS = 14
 HEAD_ANGLES = 18
 NECK_FOLDS = 4.5
 CLINKERS = 12
+SCUTE_RES = (4, 8)  # a leg scute's ellipsoid rings and segments
 SHELL_R = np.array([0.6, 0.42, 0.68])
 # A variant's parameters (the scree crawler's frost-split scree and shaggier skin, M3-CRE-628); these values are the
 # slag tortoise's: the shell's plate count, each plate's lift, faceted plates, and the skin's shag (metres).
@@ -235,7 +236,7 @@ def leg(mesh: ck.Mesh, rig: ck.Rig, tag: str) -> None:
             out -= tan[i0] * (out @ tan[i0])
             out /= np.linalg.norm(out)
             # a scute: domed, its lower edge lifted over the next row (overlapping, as a tortoise's leg)
-            Ps, Ts = ck.ellipsoid((0.0, 0.0, 0.0), (0.038, 0.013, 0.032), 4, 8)
+            Ps, Ts = ck.ellipsoid((0.0, 0.0, 0.0), (0.038, 0.013, 0.032), *SCUTE_RES)
             Ps[:, 1] += 0.006 * ck.smoothstep(0.0, -0.03, Ps[:, 2])
             Ps = ck.transform(Ps, _frame(out, tan[i0]) @ ck.rot_x(-18.0), c + out * (rad - 0.006))
             tone = rng.uniform(0.0, 1.0)
@@ -342,6 +343,27 @@ def build_mesh(rig: ck.Rig, name: str = "slag_tortoise") -> ck.Mesh:
     return mesh
 
 
+# The authored LOD1 (the Lead, 2026-10-30): LOD0 is about 17.5k triangles since M3-CRE-660's pass; past LOD_END_M
+# (game/data/import/creatures.json `lods`) the import shows this lighter build instead, at most 8k: a coarser crust
+# lathe, fewer clinker lumps, a coarser head and lighter leg scutes. Same rig, clips and slots: `<name>-lod1` in the
+# same GLB, which AssetImportRules chains to LOD0 with visibility ranges.
+LOD1 = {"SHELL_RINGS": 24, "SHELL_SEGS": 64, "CLINKERS": 6, "HEAD_STATIONS": 9, "HEAD_ANGLES": 12, "SCUTE_RES": (2, 5)}
+LOD1_SUFFIX = "-lod1"
+
+
+def build_lod1(rig: ck.Rig, name: str = "slag_tortoise") -> ck.Mesh:
+    """The build again with the LOD1 settings (the module's own globals, restored afterwards)."""
+    module = sys.modules[__name__]
+    saved = {k: getattr(module, k) for k in LOD1}
+    try:
+        for k, v in LOD1.items():
+            setattr(module, k, v)
+        return build_mesh(rig, name + LOD1_SUFFIX)
+    finally:
+        for k, v in saved.items():
+            setattr(module, k, v)
+
+
 def build_clips() -> list[ck.Clip]:
     idle = ck.Clip("idle", 3.2, loop=True)
     for t, out in ((0.0, 0.0), (0.8, 0.0), (1.4, -0.08), (2.2, -0.08), (2.8, 0.0), (3.2, 0.0)):
@@ -395,7 +417,8 @@ def main() -> None:
     args = ap.parse_args(argv)
     rig = build_rig()
     mesh = build_mesh(rig)
-    info = ck.export_creature(mesh, rig, export_clips(rig, mesh), args.out, extras={"hymn_creature": "slag_tortoise"})
+    info = ck.export_creature(mesh, rig, export_clips(rig, mesh), args.out, extra_meshes=[build_lod1(rig)],
+                              extras={"hymn_creature": "slag_tortoise"})
     print(f"slag_tortoise: {info}")
 
 

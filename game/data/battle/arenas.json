@@ -28,7 +28,8 @@
       "iskarra_spire_crown": "res://assets/environments/arenas/iskarra_spire_crown/iskarra_spire_crown.tscn",
       "undertow_cage": "res://assets/environments/arenas/undertow_cage/undertow_cage.tscn",
       "undertow_heart": "res://assets/environments/arenas/undertow_heart/undertow_heart.tscn",
-      "undertow_heart_letting": "res://assets/environments/arenas/undertow_heart_letting/undertow_heart_letting.tscn"
+      "undertow_heart_letting": "res://assets/environments/arenas/undertow_heart_letting/undertow_heart_letting.tscn",
+      "lacquer_court_steps": "res://assets/environments/arenas/lacquer_court_steps/lacquer_court_steps.tscn"
     },
     "staging": {
       "doc": "M3-BPR-01: per-arena choreography (BattleChoreo): travel_scale scales every run, step, walk-in and exit (with reduced motion's on top); tempo scales the battle speed (under 1 = slower). Arenas with no row stage as the sandbox.",

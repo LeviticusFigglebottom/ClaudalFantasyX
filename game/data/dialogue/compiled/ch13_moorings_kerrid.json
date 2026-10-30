@@ -1,0 +1,21 @@
+{
+ "format": 1,
+ "scene": "ch13_moorings_kerrid",
+ "source": "game/data/dialogue/ch13/ch13_moorings_kerrid.dlg",
+ "start": "ch13_moorings_kerrid",
+ "nodes": {
+  "ch13_moorings_kerrid": {
+   "headers": {"location": "ch13/ansedra"},
+   "ops": [
+    {"op": "cue", "cue": "mark", "args": ["rhen", "outer_moorings_rhen", "walk"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "wait", "args": [6.0], "kwargs": {}, "src": 8},
+    {"op": "line", "id": "ch13_moorings_001", "key": "DLG_CH13_MOORINGS_001", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 9},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 10},
+    {"op": "line", "id": "ch13_moorings_002", "key": "DLG_CH13_MOORINGS_002", "speaker": "kerrid", "emotion": "cold", "voice": "", "src": 11},
+    {"op": "cue", "cue": "anim", "args": ["kerrid", "set_down", "rice_bowl"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 13},
+    {"op": "set", "flag": "ch13_sat_at_moorings", "value": ["lit", true], "src": 14}
+   ]
+  }
+ }
+}

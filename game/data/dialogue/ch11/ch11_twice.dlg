@@ -1,0 +1,21 @@
+// Ch11 B07 "Twice" (C, 1 min). T03: the core's bound light goes still, then goes UP: a small lift of motes
+// rising in slow spirals through the collapsed vault bay, turning glimmer_lift gold (rule 3: what is
+// released rises); the 3 s warm grade lift. T04: the party watching; this time somebody says it. Liss looks
+// at the dead frame with her jaw tight: every lamp in her own gear is the same kind of light (unspoken).
+title: ch11_twice
+location: ch11/lowlight
+---
+@letterbox on
+@camera T03
+@vfx glimmer_lift at=engine_core count=16 motion=spiral_up rate=slow
+@wait 5.0
+@camera T04
+<<if $ch10_drowner_felled>>
+    Ysolde [neutral]: That is twice. #line:ch11_twice_001
+<<endif>>
+Asha [sad]: They were waiting. Inside it. All this time. #line:ch11_twice_002
+@anim liss look_at lamp_engine
+@wait 3.0
+@letterbox off
+@camera release
+===

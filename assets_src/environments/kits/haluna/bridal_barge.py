@@ -9,6 +9,8 @@ Built in the Haluna kit (its import kind and materials), as iskarra.py, keth.py,
                 empty lamp hook (wedding barges carry no lamp); the punt poles laid along the rails.
 
 Nothing on it gives light: no lamp, no flame (the colour script's ch15).
+
+  bridal_barge_wedding  the same barge before Ch15 (Ansedra's moorings, the Lacquer Court): the canopy without the bier.
 """
 
 from __future__ import annotations
@@ -25,7 +27,7 @@ M_DECK = "kit_timber"
 M_CLOTH = "kit_keth_red"  # the bridal cloth: a woven red, matte (the keth's red wool)
 M_SEAM = "kit_interior_dark"
 
-TRI_BUDGET = {"bridal_barge": (16000, 1200)}
+TRI_BUDGET = {"bridal_barge": (16000, 1200), "bridal_barge_wedding": (16000, 1200)}
 
 BOW_X, STERN_X = -8.6, 8.0
 HALF_BEAM = 3.75
@@ -45,12 +47,12 @@ def half_beam(x) -> np.ndarray:
     return HALF_BEAM * bow * stern
 
 
-def build_barge(seed: int = 2001) -> list[kc.MeshBuilder]:
+def build_barge(seed: int = 2001, *, bier: bool = True, name: str = "bridal_barge") -> list[kc.MeshBuilder]:
     out = []
     for lod in (False, True):
         rng = kc.rng_for("bridal_barge", seed)
         noise = kc.Noise3(rng)
-        mb = kc.MeshBuilder("bridal_barge" + ("-lod1" if lod else ""))
+        mb = kc.MeshBuilder(name + ("-lod1" if lod else ""))
         hull, gilt, deck = mb.material(M_HULL), mb.material(M_GILT), mb.material(M_DECK)
         n = 12 if lod else 33
         # The deck, level at y 0: a grid between the stations' rails (the bow's taper is not convex enough for a
@@ -95,7 +97,7 @@ def build_barge(seed: int = 2001) -> list[kc.MeshBuilder]:
                 for p in top:
                     kc.tube(mb, np.array([[p[0], 0.0, p[2]], [p[0], RAIL_H, p[2]]]), 0.03, 5, hull)
                     kc.rounded_block(mb, p + [0.0, 0.03, 0.0], (0.04, 0.03, 0.04), gilt, radius=0.02, seg=1)
-        _canopy(mb, rng, noise, lod)
+        _canopy(mb, rng, noise, lod, bier=bier)
         _bow_hook(mb, lod)
         if not lod:  # the punt poles, laid along the rails
             for side, x0 in ((-1.0, -5.0), (1.0, -3.0)):
@@ -105,8 +107,8 @@ def build_barge(seed: int = 2001) -> list[kc.MeshBuilder]:
     return out
 
 
-def _canopy(mb, rng, noise, lod) -> None:
-    """Four gilt posts, a sagging roof of red bridal cloth with swags, and Tobin's bier under it."""
+def _canopy(mb, rng, noise, lod, *, bier: bool = True) -> None:
+    """Four gilt posts, a sagging roof of red bridal cloth with swags, and (with `bier`) Tobin's bier under it."""
     gilt, cloth = mb.material(M_GILT), mb.material(M_CLOTH)
     h = 2.4
     corners = [(x, s * w) for x, w in CANOPY for s in (-1.0, 1.0)]
@@ -133,6 +135,8 @@ def _canopy(mb, rng, noise, lod) -> None:
             for flip in (False, True):
                 kc.quad_strip(mb, g, cloth, uv=np.stack(np.broadcast_arrays(t[:, None], np.array([0.0, 1.0])[None, :]), -1),
                               col=(0, 0, 0, 0.3), uv2=(0.9, 0.5), flip=flip)
+    if not bier:
+        return
     # The bier: a low timber platform, and Tobin's body under Merel's bridal cloth (the cloth's heightfield over him).
     bx, bz = BIER_AT
     kc.rounded_block(mb, (bx, 0.2, bz), (1.05, 0.2, 0.45), mb.material(M_DECK), radius=0.03, seg=1)
@@ -161,4 +165,6 @@ def _bow_hook(mb, lod) -> None:
         kc.tube(mb, hook, 0.012, 5, gilt)
 
 
-TARGETS = {"bridal_barge": build_barge}
+TARGETS = {"bridal_barge": build_barge,
+           # M4-A2P-043/044 (env-art-b): the same barge before Ch15, dressed for the wedding (no bier: Tobin lives).
+           "bridal_barge_wedding": lambda: build_barge(bier=False, name="bridal_barge_wedding")}

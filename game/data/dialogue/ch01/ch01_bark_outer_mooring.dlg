@@ -7,8 +7,10 @@ location: ch01/oruvel
 ---
 Skipper_Sadi [smile]: Sallow! Come to complain about my arithmetic again? #line:ch01_bark_sadi_001
 Rhen [smile]: You paid me for half a lamp-housing. I sold you a whole one. #line:ch01_bark_sadi_002
+// M3-CIN-1235 (PC GPU QA row 58): O07 had been pressed against the hull's side with no board; it now looks at the
+// name-board on her stern, and the insert ends before Sadi's answer, which she gives in the field camera.
 @camera O07
 @wait 1.5
-Skipper_Sadi [laugh]: The other half was my company. We sail at the turn. #line:ch01_bark_sadi_003
 @camera release
+Skipper_Sadi [laugh]: The other half was my company. We sail at the turn. #line:ch01_bark_sadi_003
 ===

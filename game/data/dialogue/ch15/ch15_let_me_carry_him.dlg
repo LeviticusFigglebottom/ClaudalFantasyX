@@ -1,0 +1,50 @@
+// Ch15 B12 "Let me carry him." (E, 3 min). act2_ch15.md §2 B12. H09: a jetty at mid-morning; Liss alone,
+// washing Tobin's hand; Toma comes down the jetty and stops at a distance, then closer. The 1003 Brine
+// Shoals burning: nobody needed to know (Ivo is dead); he tells her anyway, and that makes it a choice.
+// RULE 7: his faith breaks here, out loud, ONCE; no "Be level" again in Act II. H10: Liss doesn't forgive
+// him (she never says it). The choice to let him carry Tobin is HERS, not the player's: no prompt. She
+// steps back from the board. H11: Toma carries Tobin, cloth and all; Liss beside him with her hand on the
+// cloth; Rhen falls in on Toma's other side if he gave Ivo the answer at Corrow.
+title: ch15_let_me_carry_him
+location: ch17/hollowmere
+---
+@letterbox on
+@camera H09
+@anim liss wash_hand tobin
+@mark toma jetty_near walk
+@wait 3.0
+Toma [sad]: Liss. There is something I have to say to you, and then I will go. #line:ch15_carry_001
+@wait 2.0
+Toma [guilty]: In 1003 I was on the line at a camp in the Brine Shoals. A salvage camp. Like yours. #line:ch15_carry_002
+@wait 2.0
+Toma [guilty]: I was twenty-two. I held the torch. I did not throw it. I tell myself that is different. It is not. #line:ch15_carry_003
+<<if $ch09_toma_knelt_with_ivo>>
+    Toma [grief]: The man beside me at the shoals threw his. He is in the sea at Corrow now. I asked her to take him gently. #line:ch15_carry_004 #long
+<<endif>>
+<<if $ch14_toma_refused>>
+    Toma [determined]: I have said 'Be level' every morning of my life. I did not say it to my commander. I am not going to say it again. #line:ch15_carry_005 #long
+<<else>>
+    Toma [determined]: I have said 'Be level' every morning of my life. I am not going to say it again. #line:ch15_carry_006
+<<endif>>
+<<set $ch15_toma_confessed = true>>
+@camera H10
+@anim liss wash_hand tobin
+@wait 3.0
+Liss [cold]: I know what a camp looks like after. I've stood in two. #line:ch15_carry_007
+@wait 3.0
+Liss [grief]: I'm not going to say it's all right. #line:ch15_carry_008
+Toma [grief]: Let me carry him. Please. I don't ask you to forgive me. Let me carry him. #line:ch15_carry_009
+@wait 4.0
+@anim liss step_back
+@wait 2.0
+@camera H11
+@anim toma lift tobin
+@mark toma jetty_end walk
+@mark liss jetty_end walk
+<<if $ch09_rhen_answered_toma>>
+    @mark rhen jetty_end walk
+<<endif>>
+@wait 5.0
+<<set $ch15_toma_carried_tobin = true>>
+@letterbox off
+===

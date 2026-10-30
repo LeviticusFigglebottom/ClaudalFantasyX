@@ -1,0 +1,53 @@
+// Ch13 B05 "The Sanctum" (P → C, 3 min) and B06 "Ethren" (C, 3.5 min). act2_ch13.md §2. Kerrid is NOT here
+// (rule 3). S01: the basin: water held so still it is a perfect mirror, lit from beneath by a steady light
+// (glimmer_bound: the thing the Order forbids); pilgrims humming on the kneeling steps. S02: LISS LOOKS AT THE
+// LIGHT and says NOTHING; hold past comfort. S03: Ysolde's voice of twenty-four years. S04: the gilt line on
+// Asha's face (N-04). S05: Ethren rises out of the mirror WITHOUT A RIPPLE; a plain copper ring on one
+// gauntleted finger. S06: Ysolde stands before her husband with a Cantor beside her for the first time.
+// S07: the sixth verse comes out of the still light in a patient, kind man's voice (`ethren_bound`; no words
+// written here: Audio's Lamptongue); Ysolde closes her eyes on the first word; the sleeve reaches S6.
+// S08: the veiled head turns once toward Ysolde (the veil never falls: Act III's).
+title: ch13_ethren
+location: ch13/sanctum
+---
+@letterbox on
+@camera S01
+@music sanctum_of_the_level fade=2.0
+@vfx glimmer_bound at=basin_light count=1
+@wait 5.0
+@camera S02
+@mark liss basin_rim walk
+@anim liss look_at basin_light
+@wait 8.0
+@camera S03
+Ysolde [neutral]: The Saints are at peace. I visit my husband every year. He has never once been anything but at peace. #line:ch13_ethren_001
+@anim asha take_hand ysolde
+@wait 2.0
+@camera S04
+@anim tender paint_gilt_line asha
+@wait 3.0
+@camera S05
+@vfx glimmer_bound at=ethren count=1
+@wait 4.0
+@camera S06
+@mark ysolde before_ethren walk
+@anim ysolde look_at ethren_ring
+@wait 4.0
+@camera S07
+@anim asha raise_staff
+@music ethren_bound fade=0.0
+@anim ysolde close_eyes
+@wait 8.0
+@vfx glimmer_bound at=asha_sleeve count=6
+@wait 2.0
+@camera S08
+@anim ethren turn_head ysolde
+@wait 3.0
+@camera S09
+Ysolde [grief]: Thank you, Lady Cantor. #line:ch13_ethren_002
+<<set $ch13_ethren_bound = true>>
+@music sanctum_of_the_level fade=2.0
+@wait 2.0
+@letterbox off
+@camera release
+===

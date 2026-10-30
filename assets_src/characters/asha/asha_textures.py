@@ -1316,6 +1316,11 @@ def facehair_atlas(size: int = 1024) -> None:
 # ---------------------------------------------------------------------------------------------
 # Cloth
 # ---------------------------------------------------------------------------------------------
+UNDERSKIRT_FOLDS = 9  # fold periods across the underskirt's island (GPU QA row 56)
+UNDERSKIRT_TUCKS_V = (0.80, 0.84)  # the two pintucks' heights in the island (0 top, 1 hem)
+UNDERSKIRT_BAND_V = 0.92  # the drawn-thread band above the hem
+
+
 def weave(h: int, w: int, threads: int) -> np.ndarray:
     y = np.arange(h)[:, None] / h * threads * 2 * np.pi
     x = np.arange(w)[None, :] / w * threads * 2 * np.pi
@@ -1383,9 +1388,16 @@ def cloth_atlas(size: int = 2048) -> None:
     _ = S
     # inner skirt: white cotton lawn
     m, iu, iv = island("skirt_inner")
-    alb[m] = white * 0.96
+    # GPU QA row 56 (the run read as a rigid untextured cone): soft vertical fold relief and value, two pintucks and
+    # a drawn-thread band above the hem, so the lawn reads as cloth in motion
+    folds = 0.5 + 0.5 * np.sin(2.0 * np.pi * (UNDERSKIRT_FOLDS * iu + 0.15 * np.sin(2.0 * np.pi * 3.0 * iu)))
+    tucks = np.zeros_like(iv)
+    for v0 in UNDERSKIRT_TUCKS_V:
+        tucks = np.maximum(tucks, np.exp(-((iv - v0) / 0.006) ** 2))
+    band = np.exp(-((iv - UNDERSKIRT_BAND_V) / 0.012) ** 2) * (0.5 + 0.5 * np.sin(2.0 * np.pi * 180.0 * iu))
+    alb[m] = (white * (0.93 + 0.04 * folds - 0.06 * band)[..., None])[m]
     mask[m] = (0, 0, 0, 0.3)
-    hgt[m] = (weave(size, size, 500) * 0.2)[m]
+    hgt[m] = (weave(size, size, 500) * 0.2 + folds * 0.35 + tucks * 0.6 - band * 0.2)[m]
     # vest: black lacquered leather with gold-leaf wave figures (~18%, 70:30 to the right side)
     m, iu, iv = island("vest")
     rngv = np.random.default_rng(57)

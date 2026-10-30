@@ -1,0 +1,8 @@
+// Ch15 B02 talk: Toma at the bow, shield across his knees.
+title: ch15_deck_toma
+location: ch15/open_sea
+---
+Toma [sad]: Merel's father served at the Bastion with my commander. I have eaten at his table. #line:ch15_deck_toma_001
+@wait 2.0
+Toma [grief]: I did not know a man could stand on steps and watch that. #line:ch15_deck_toma_002
+===

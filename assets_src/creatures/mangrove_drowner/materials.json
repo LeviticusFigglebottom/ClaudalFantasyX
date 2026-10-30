@@ -1,10 +1,12 @@
 {
-  "_doc": "The Mangrove Drowner's surfaces (docs/kb/art/creatures/act2/mangrove_drowner.md). Slots are the glTF material names; write_materials.py writes assets/creatures/mangrove_drowner/materials/<slot>.tres on game/shaders/creature/creature.gdshader. bark is the twelve prop-roots, the barnacles and the trunk stump (sun-bleached bone on top, weathered timber down the arch, lacquer black and clearcoated below the waterline, by vertex colour and wetness); carapace is the Undertow-spawn core and its spawn_wound seams. Colours are palette.json swatches.",
+  "_doc": "The Mangrove Drowner's surfaces (docs/kb/art/creatures/act2/mangrove_drowner.md). Slots are the glTF material names; write_materials.py writes assets/creatures/mangrove_drowner/materials/<slot>.tres on game/shaders/creature/creature.gdshader. bark is the twelve prop-roots, the barnacles and the trunk stump (sun-bleached bone on top, weathered timber down the arch, lacquer black and clearcoated below the waterline, by vertex colour and wetness); carapace is the Undertow-spawn core and its spawn_wound seams; mote_snag is the snagged motes held in the two drag roots' cradles (M4-CRB-002, the break parts): glimmer_held and steady (held light never pulses or drifts; it rises only once released, as VFX). Colours are palette.json swatches.",
   "slots": {
     "bark": {"roughness_dry": 0.82, "roughness_wet": 0.14, "wet_darken": 0.7, "clearcoat_wet": 0.85,
              "detail_scale": 22.0, "detail_albedo": 0.2, "detail_bump": 0.55, "cavity_albedo": 0.45},
     "carapace": {"roughness_dry": 0.3, "roughness_wet": 0.12, "specular": 0.6, "clearcoat_wet": 0.9,
                  "detail_scale": 14.0, "detail_albedo": 0.1, "detail_bump": 0.35, "cavity_albedo": 0.3,
-                 "emission_color": "#3FE0C8", "emission_energy": 2.6, "emission_pulse_hz": 0.25, "emission_pulse_depth": 0.4}
+                 "emission_color": "#3FE0C8", "emission_energy": 2.6, "emission_pulse_hz": 0.25, "emission_pulse_depth": 0.4},
+    "mote_snag": {"roughness_dry": 0.35, "roughness_wet": 0.2, "specular": 0.4, "detail_albedo": 0.0, "detail_bump": 0.0,
+                  "cavity_albedo": 0.0, "emission_color": "#7FC6D9", "emission_energy": 2.4}
   }
 }

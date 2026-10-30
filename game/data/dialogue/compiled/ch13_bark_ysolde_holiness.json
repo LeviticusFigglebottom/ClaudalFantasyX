@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch13_bark_ysolde_holiness",
+ "source": "game/data/dialogue/ch13/ch13_bark_ysolde_holiness.dlg",
+ "start": "ch13_bark_ysolde_holiness",
+ "nodes": {
+  "ch13_bark_ysolde_holiness": {
+   "headers": {"location": "ch13/ansedra"},
+   "ops": [
+    {"op": "line", "id": "ch13_bark_holiness_001", "key": "DLG_CH13_BARK_HOLINESS_001", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 5}
+   ]
+  }
+ }
+}

@@ -23,11 +23,20 @@ signal travel_opened(menu: ShrineTravelMenu)
 const DEFAULT_PROMPT_KEY := "SAVE_SHRINE_PROMPT"
 ## Shown under the menu title after the party is restored.
 const RESTORED_KEY := "SAVE_SHRINE_RESTORED"
+## Act II's heresy (M4-A2P-082): the flag that darkens Order shrines, their prompt, and the bark a dark one plays.
+const HERETIC_FLAG := &"ch14_declared_heretics"
+const DARK_PROMPT_KEY := "SAVE_SHRINE_DARK_PROMPT"
+const DARK_SCENE := "dark_shrine"
+const KEY_DIALOGUE := "dialogue"
 
 ## The party's location after resting here (GameStateData.location_id); empty keeps it.
 @export var location_id: StringName = &""
 ## Off for shrines whose menu a cutscene opens itself (tests also use it).
 @export var opens_menu := true
+## An Order shrine (Act II, M4-A2P-082): from the heresy on (HERETIC_FLAG) it goes dark. Its bound light is out, it
+## heals and saves nothing, and using it plays the one-line DARK_SCENE bark (ZoneStory). Kirru and Saltwright shrines
+## leave this off and keep working.
+@export var order := false
 ## Teleport network node id (a "shrines" row in locations.json). Empty = not in the network.
 @export var network_id: StringName = &""
 ## Spawn marker the party respawns at after Continue. Empty: the shrine's registry row, else the
@@ -37,13 +46,41 @@ const RESTORED_KEY := "SAVE_SHRINE_RESTORED"
 var menu: SaveMenu
 ## The travel list, while open (null otherwise).
 var travel_menu: ShrineTravelMenu
+# The prompt and payload an Order shrine has while lit (it swaps them while dark).
+var _lit_prompt_key := ""
+var _lit_payload: Dictionary = {}
 
 
 func _ready() -> void:
 	if prompt_key == "":
 		prompt_key = DEFAULT_PROMPT_KEY
+	_lit_prompt_key = prompt_key
+	_lit_payload = payload.duplicate()
 	super()
 	ShrineNetwork.register(self)
+	EventBus.flag_changed.connect(_on_flag_changed)
+	_refresh_dark()
+
+
+## True for an Order shrine once the party are heretics (`order` and HERETIC_FLAG).
+func is_dark() -> bool:
+	return order and bool(Game.get_flag(HERETIC_FLAG))
+
+
+func _on_flag_changed(flag: StringName, _value: Variant) -> void:
+	if flag == HERETIC_FLAG:
+		_refresh_dark()
+
+
+## The dark shrine's prompt, payload and unlit core, or the lit ones back.
+func _refresh_dark() -> void:
+	var dark := is_dark()
+	prompt_key = DARK_PROMPT_KEY if dark else _lit_prompt_key
+	payload = {KEY_DIALOGUE: DARK_SCENE} if dark else _lit_payload.duplicate()
+	for path: NodePath in [^"Visual/Core", ^"Visual/BoundGlimmer"]:
+		var n := get_node_or_null(path) as Node3D
+		if n != null:
+			n.visible = not dark
 
 
 func _exit_tree() -> void:
@@ -52,7 +89,8 @@ func _exit_tree() -> void:
 
 func _fire(kind: StringName) -> void:
 	super(kind)
-	rest()
+	if not is_dark():  # a dark shrine only answers with its bark (the payload)
+		rest()
 
 
 ## Everything a use does after the base Interactable effects. Returns the opened menu (or null).

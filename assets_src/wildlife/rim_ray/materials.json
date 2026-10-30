@@ -1,0 +1,20 @@
+{
+  "_doc": "Rim ray surface (Ch16, M4-A2P-056; docs/kb/art/wildlife.md). One slot; write_materials.py writes assets/wildlife/rim_ray/materials/skin.tres on game/world/wildlife/wildlife.gdshader. A wet, slick skin (wetness 0.4 in build_rim_ray.py) under a hand of water. wing_pivot is build_rim_ray.py's body edge (BODY_X, at the disc's mid-height); the flap (mode 1) beats the fins about it, flap_lag carrying the wave out to the tips, flap_bob lifting the body a little on each beat.",
+  "slots": {
+    "skin": {
+      "roughness_dry": 0.6,
+      "roughness_wet": 0.2,
+      "specular": 0.5,
+      "wet_darken": 0.85,
+      "clearcoat_wet": 0.4,
+      "detail_scale": 220.0,
+      "detail_albedo": 0.05,
+      "cavity_albedo": 0.35,
+      "cavity_ao": 0.4,
+      "wing_pivot": [0.045, 0.008, 0.0],
+      "flap_angle": 0.45,
+      "flap_lag": 1.4,
+      "flap_bob": 0.004
+    }
+  }
+}

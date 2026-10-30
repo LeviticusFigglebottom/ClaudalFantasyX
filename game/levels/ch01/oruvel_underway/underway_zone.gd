@@ -26,6 +26,9 @@ const KEY_SWAPS := "swaps"
 const KEY_ENVIRONMENT_RES := "environment_res"
 const RIG := ^"Underwater"
 const GLOBAL_GLIMMER := &"hymn_glimmer"
+const LANTERN := "lantern"
+const HALO_STRENGTH := "halo_strength"
+const LAMP_SCATTER := &"lamp_scatter"
 const OPTICS := "optics"
 const LIGHT_REFERENCE := "light_reference"
 const TRANSMIT_DISTANCE := "transmit_distance_m"
@@ -172,6 +175,11 @@ func apply_lighting(lighting: String, depth_m: float) -> void:
 	if _base_light_reference <= 0.0:
 		_base_light_reference = float(optics.get(LIGHT_REFERENCE, 1.0))
 	optics[LIGHT_REFERENCE] = _base_light_reference / maxf(float(a[1]), MIN_SCALE)
+	# An optional third value scales the lantern's halo (in a walled room the camera stands inside it and its warm
+	# in-scatter washed the bell-room out; env-art, the Lead's real-GPU pass 3).
+	if a.size() > 2 and _rig.post_add_material != null:
+		var halo := float((_rig.data.get(LANTERN, {}) as Dictionary).get(HALO_STRENGTH, 0.0))
+		_rig.post_add_material.set_shader_parameter(LAMP_SCATTER, halo * float(a[2]))
 
 
 ## The rig's per-channel transmittance over `metres` of water (linear RGB), from its data's transmit colour.

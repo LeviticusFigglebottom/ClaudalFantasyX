@@ -227,13 +227,17 @@ func test_the_layer_reads_each_zone_file_within_budget() -> void:
 		var zone_id := StringName(str(data["zone"]))
 		assert_eq(WildlifeConfig.zone_path(zone_id), ZONE_DIR + f, "%s is named after its zone id" % f)
 		var layer := _layer("", zone_id)
-		var want := {"flocks": 0, "beaches": 0, "shoals": 0, "swarms": 0}
+		var want := {"flocks": 0, "kingfishers": 0, "beaches": 0, "shoals": 0, "rays": 0, "swarms": 0, "herds": 0}
 		for key: String in want:
 			for row: Dictionary in data.get(key, []):
 				want[key] += int(row["count"])
 		assert_eq(layer.gull_count(), want["flocks"], "%s gulls" % f)
+		assert_eq(layer.kingfisher_count(), want["kingfishers"], "%s kingfishers" % f)
+		assert_true(layer.kingfisher_count() <= int(budgets["kingfishers"]), "%s kingfisher budget" % f)
 		assert_eq(layer.crab_count(), want["beaches"], "%s crabs" % f)
 		assert_eq(layer.fish_count(), want["shoals"], "%s fish" % f)
+		assert_eq(layer.ray_count(), want["rays"], "%s rays" % f)
+		assert_eq(layer.woolback_count(), want["herds"], "%s woolbacks" % f)
 		assert_eq(layer.insect_count(), want["swarms"], "%s insects" % f)
 		assert_true(layer.insect_count() <= int(budgets["insects"]), "%s insect budget" % f)
 		assert_true(layer.gull_count() <= int(budgets["gulls"]), "%s gull budget" % f)
@@ -427,3 +431,180 @@ func test_insects_are_clamped_to_their_budget_and_draw_in_two_multimeshes() -> v
 		layer.step(DT, Vector3.ZERO, false)
 	layer.free()
 	DirAccess.remove_absolute(path)
+
+
+func test_fireflies_orbit_low_and_blink_each_on_its_own_beat() -> void:
+	var kind: Dictionary = _kinds["kinds"]["insect"]
+	var ff: Dictionary = kind["firefly"]
+	var a := WildlifeSwarm.new(_swarm_row("firefly"), kind, 1010, 5)
+	var b := WildlifeSwarm.new(_swarm_row("firefly"), kind, 1010, 5)
+	assert_true(a.is_firefly() and a.is_orbiter() and not a.is_moth(), "a firefly flies the moth's orbit")
+	var floor_glow := float(ff["glow_floor"])
+	var flashes := PackedInt32Array()
+	flashes.resize(a.count())
+	var lit := PackedByteArray()
+	lit.resize(a.count())
+	var together := 0
+	for f in 60 * 30:
+		a.step(DT, Vector3(4.0, 0.0, -3.0), true)
+		b.step(DT, Vector3.ZERO, false)
+		var on := 0
+		for i in a.count():
+			var m := a.insects[i]
+			assert_true(m.glow >= floor_glow - EPS and m.glow <= 1.0 + EPS, "the lantern stays in its range")
+			assert_true(absf(m.pos.y - a.center.y) <= float(ff["height_m"]) + EPS, "and the swarm's height band")
+			var now := 1 if m.glow > 0.5 else 0
+			if now == 1 and lit[i] == 0:
+				flashes[i] += 1
+			lit[i] = now
+			on += now
+		if on == a.count():
+			together += 1
+	for i in a.count():
+		assert_eq(a.insects[i].glow, b.insects[i].glow, "deterministic: the same seed blinks the same")
+		# 30 s at one flash every blink_s
+		var lo := int(30.0 / float(ff["blink_s"][1])) - 1
+		var hi := int(30.0 / float(ff["blink_s"][0])) + 1
+		assert_true(flashes[i] >= lo and flashes[i] <= hi, "firefly %d flashed %d times" % [i, flashes[i]])
+	assert_true(together < 30, "they do not all flash at once (%d frames)" % together)
+	var buf := WildlifeBuffer.new(5)
+	a.write(buf, 0)
+	assert_eq(buf.data[14], WildlifeBuffer.MODE_GLOW, "the shader's glow mode")
+	assert_true(is_equal_approx(buf.data[15], a.insects[0].glow), "carrying the blink (float32)")
+
+
+func test_a_firefly_swarm_draws_in_its_own_multimesh() -> void:
+	var path := "user://wildlife_fireflies.json"
+	var data := {
+		"zone": "_tests/fireflies",
+		"swarms":
+		[
+			{"id": "a", "type": "moth", "center": [0, 2, 0], "radius_m": 1, "count": 4},
+			{"id": "b", "type": "firefly", "center": [6, 0.6, 0], "radius_m": 3, "count": 8}
+		]
+	}
+	var fa := FileAccess.open(path, FileAccess.WRITE)
+	fa.store_string(JSON.stringify(data))
+	fa.close()
+	var layer := _layer(path)
+	assert_eq(layer.insect_count(WildlifeSwarm.TYPE_FIREFLY), 8, "eight fireflies")
+	assert_eq(layer.draw_calls(), 2, "moths and fireflies: two MultiMeshes")
+	var mmi := layer.multimeshes[WildlifeLayer.FIREFLIES] as MultiMeshInstance3D
+	var mat := mmi.material_override as ShaderMaterial
+	assert_true(mat != null and mat.resource_path.ends_with("/firefly.tres"), "the firefly material")
+	assert_true(float(mat.get_shader_parameter("glow_energy")) > 0.0, "whose lantern glows")
+	for f in 30:
+		layer.step(DT, Vector3.ZERO, false)
+	var fb := layer.buffers[WildlifeLayer.FIREFLIES] as WildlifeBuffer
+	assert_eq(fb.data[14], WildlifeBuffer.MODE_GLOW, "written in glow mode")
+	assert_eq((layer.buffers[WildlifeLayer.MOTHS] as WildlifeBuffer).data[14], WildlifeBuffer.MODE_FLUTTER, "moths not")
+	layer.free()
+	DirAccess.remove_absolute(path)
+
+
+func test_fen_kingfishers_fly_low_and_sit_on_the_rails() -> void:
+	var layer := _layer("", &"ch10/ossa_fen")
+	var data := WildlifeConfig.load_json(ZONE_DIR + "ch10_ossa_fen.json")
+	assert_eq(layer.kingfisher_count(), 6, "three pairs")
+	assert_eq(layer.gull_count(), 0, "and no gulls inland")
+	for key: StringName in [WildlifeLayer.KINGFISHERS_FLYING, WildlifeLayer.KINGFISHERS_PERCHED]:
+		var mmi := layer.multimeshes[key] as MultiMeshInstance3D
+		assert_true(mmi != null and mmi.multimesh.mesh != null, "%s has its own mesh" % key)
+		var mat := mmi.material_override as ShaderMaterial
+		assert_true(
+			mat != null and mat.resource_path.contains("/kingfisher/"), "%s wears the kingfisher's plumage" % key
+		)
+	var top := -INF
+	var perched_seen := false
+	for f in 60 * 60:
+		layer.step(DT, Vector3.ZERO, false)
+		for k in layer.kingfishers.size():
+			var row: Dictionary = (data["kingfishers"] as Array)[k]
+			var alt: Array = row["altitude_m"]
+			var flock := layer.kingfishers[k]
+			for b in flock.gulls:
+				top = maxf(top, b.pos.y)
+				assert_true(b.pos.y <= float(alt[1]) + float(_kinds["kinds"]["kingfisher"]["undulate_m"]) + EPS, "low")
+		perched_seen = perched_seen or (layer.kingfishers[0].perched_count() > 0)
+	assert_true(perched_seen, "they sit on the rails")
+	assert_true(top < 2.5, "never higher than a person (%.2f m)" % top)
+	layer.free()
+
+
+func test_woolbacks_graze_look_and_amble_within_their_area() -> void:
+	var kind: Dictionary = _kinds["kinds"]["woolback"]
+	var row := {"id": "h", "center": [2.0, -3.0], "radius_m": 3.0, "count": 3, "y": 0.5}
+	var a := WildlifeHerd.new(row, kind, 1212, 3, Callable())
+	var b := WildlifeHerd.new(row, kind, 1212, 3, Callable())
+	var seen := {}
+	var fastest := 0.0
+	for f in 60 * 240:
+		var before: Array[Vector2] = []
+		for w in a.animals:
+			before.append(w.pos)
+		a.step(DT, Vector3(50.0, 0.0, 50.0), true)
+		b.step(DT, Vector3.ZERO, false)
+		for i in a.count():
+			var w := a.animals[i]
+			seen[w.state] = true
+			fastest = maxf(fastest, before[i].distance_to(w.pos) / DT / w.scale)
+			assert_true(w.pos.distance_to(a.center) <= a.radius + EPS, "a woolback stays in its area")
+			assert_eq(w.y, 0.5, "on the row's ground")
+	for i in a.count():
+		assert_eq(a.animals[i].pos, b.animals[i].pos, "deterministic, and a player 50 m off changes nothing")
+	assert_eq(seen.size(), 3, "it grazes, looks round and ambles")
+	assert_true(
+		fastest <= float(kind["walk_speed_mps"]) + EPS, "never faster than the walk clip's hooves (%.3f)" % fastest
+	)
+
+
+func test_a_close_player_makes_a_grazing_woolback_look_up() -> void:
+	var kind: Dictionary = _kinds["kinds"]["woolback"]
+	var row := {"id": "h", "center": [0.0, 0.0], "radius_m": 2.0, "count": 1}
+	var h := WildlifeHerd.new(row, kind, 77, 1, Callable())
+	var w := h.animals[0]
+	w.timer = 1e6  # it would graze on
+	var looked := false
+	for f in 60 * 20:
+		h.step(DT, Vector3(w.pos.x + 1.0, 0.0, w.pos.y), true)
+		looked = looked or w.state == WildlifeHerd.State.LOOK
+	assert_true(looked, "it looks up at the player")
+
+
+func test_keth_pass_woolbacks_are_skinned_actors_playing_their_clips() -> void:
+	var layer := _layer("", &"ch12/keth_pass")
+	assert_eq(layer.woolback_count(), 5, "a pair at the foot, three on the saddle")
+	var root := layer.get_node(NodePath(WildlifeLayer.HERDS))
+	assert_eq(root.get_child_count(), 5, "one actor each")
+	assert_eq(layer.draw_calls(), 0, "no MultiMesh")
+	for f in 10:
+		layer.step(DT, Vector3.ZERO, false)
+	for h in layer.herds.size():
+		for i in layer.herds[h].count():
+			var actor := layer.herd_actors[h][i] as Node3D
+			var ap := layer.herd_players[h][i] as AnimationPlayer
+			assert_true(ap.is_playing(), "%s plays a clip" % actor.name)
+			assert_eq(str(ap.current_animation), str(layer.herds[h].animals[i].clip), "the one its herd names")
+			assert_true(actor.position.is_equal_approx(layer.herds[h].transform_of(layer.herds[h].animals[i]).origin))
+	layer.free()
+
+
+func test_rim_rays_glide_flat_over_the_sand_and_beat_their_fins() -> void:
+	var layer := _layer("", &"ch16/pale_rim")
+	assert_eq(layer.ray_count(), 16, "three loose groups")
+	var mmi := layer.multimeshes[WildlifeLayer.RAYS] as MultiMeshInstance3D
+	assert_true((mmi.material_override as ShaderMaterial).resource_path.ends_with("/rim_ray/materials/skin.tres"))
+	assert_eq(mmi.cast_shadow, GeometryInstance3D.SHADOW_CASTING_SETTING_ON, "their shadows carry them")
+	var start: Array[Vector3] = []
+	for r in layer.rays[0].fish:
+		start.append(r.pos)
+	for f in 60 * 30:
+		layer.step(DT, Vector3(0.0, 0.0, 60.0), true)
+		for s in layer.rays:
+			for r in s.fish:
+				assert_true(absf(r.pos.y - 0.04) < EPS, "flat in a hand of water (%.3f)" % r.pos.y)
+	assert_true(layer.rays[0].fish[0].pos.distance_to(start[0]) > 0.2, "always moving")
+	var buf := layer.buffers[WildlifeLayer.RAYS] as WildlifeBuffer
+	assert_eq(buf.data[14], WildlifeBuffer.MODE_FLAP, "the fins beat (the shader's flap)")
+	assert_eq((layer.buffers[WildlifeLayer.FISH] as WildlifeBuffer).count, 0, "and no fish here")
+	layer.free()

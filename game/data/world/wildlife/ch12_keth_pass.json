@@ -1,0 +1,8 @@
+{
+  "_doc": "Keth Pass on a morning (Ch12, M4-A2P-056; docs/kb/plan/act2/creatures/woolback.md): woolbacks grazing, a pair at the pass foot by the first flight (the Foot pad's top, y 0.05) and three on the saddle below the cliff (its top, y 18.05), the Ullari's ordinary herd animals the Avalanche Ram grew from. Placed on the greybox layout (keth_pass_layout.json): no herders' troughs are in it yet; move the herds to the Keth kit's woolback_trough and re-seat them with tools/creatures/wildlife_snap.gd and wildlife_audit.gd when the dressed kit replaces the blocks.",
+  "zone": "ch12/keth_pass",
+  "herds": [
+    {"id": "pass_foot", "center": [-2.6, -2.6], "radius_m": 2.0, "count": 2, "y": 0.05},
+    {"id": "saddle", "center": [97.0, -45.0], "radius_m": 3.5, "count": 3, "y": 18.05}
+  ]
+}

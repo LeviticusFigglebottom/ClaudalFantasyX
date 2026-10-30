@@ -45,6 +45,9 @@ const NO_LATTICE_KEY := "STATUS_MENU_NO_LATTICE"
 const PLUS_KEY := "STATUS_MENU_PLUS_FMT"
 const ZERO_KEY := "STATUS_MENU_ZERO"
 const JOIN_KEY := "ITEMS_MENU_LIST_JOIN"
+## A line under a hero's name and level once a story flag is set ({hero: [flag, loc key]}): Kerrid after his reveal
+## at sea (docs/kb/plan/act2/ui/kerrid.md section 3). No stat, gauge or colour changes with it.
+const NOTES := {&"kerrid": [&"ch15_kerrid_revealed", "STATUS_MENU_KERRID_UNRISEN"]}
 const SLOT_KEYS := {ItemDB.SLOT_WEAPON: "STATUS_MENU_WEAPON", ItemDB.SLOT_ARMOR: "STATUS_MENU_ARMOR"}
 
 var sheet: PartySheet
@@ -81,7 +84,7 @@ func hero_rows() -> Array[Dictionary]:
 
 
 ## Everything the page shows for `cid` ({} for an unknown hero):
-##   name, level_text, hp, max_hp, mp, max_mp, hp_text, mp_text, fallen,
+##   name, level_text, note ("" or the NOTES line), hp, max_hp, mp, max_mp, hp_text, mp_text, fallen,
 ##   stats: [{id, label, total, base, lattice, gear}] (VITAL_STATS then STATS),
 ##   gear: [{slot, slot_label, name, abilities}], swell: {has, points, max, mode, text},
 ##   lattice: {on_board, movement, woken, skills, lines: [String]}, statuses: [String].
@@ -93,6 +96,7 @@ func page(cid: StringName) -> Dictionary:
 		"id": cid,
 		"name": sheet.hero_name(cid),
 		"level_text": _tr(LEVEL_KEY).format({"level": c.level}),
+		"note": note_of(cid),
 		"hp": c.hp,
 		"max_hp": c.max_hp,
 		"mp": c.mp,
@@ -107,6 +111,14 @@ func page(cid: StringName) -> Dictionary:
 		"statuses": status_names(c),
 		"status_descs": status_descs(c),
 	}
+
+
+## The NOTES line for `cid` once its flag is set, else "".
+func note_of(cid: StringName) -> String:
+	var note: Array = NOTES.get(cid, [])
+	if note.is_empty() or not bool(sheet.state.flags.get(note[0], false)):
+		return ""
+	return _tr(str(note[1]))
 
 
 ## Each stat as total = base + Lattice + gear (VITAL_STATS, then STATS).

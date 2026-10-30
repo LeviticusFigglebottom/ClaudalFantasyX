@@ -385,8 +385,8 @@ shape.
   | `neck_width_ratio` | 0.42 | | `lip_seal` | 0.98 |
   | `head_width_ratio` | 0.52 | | `lip_lower_fullness` | 0.55 |
   | `femininity` | 0.0 | | `mouth_corner_lift` | 0.0 |
-  | `muscle` | 0.30 | | `brow_ridge` | 0.95 |
-  | `mass` | 0.05 | | `donor_mix_african` | 0.34 |
+  | `muscle` | 0.60 (0.30 until GPU QA pass 3: the arms read thin) | | `brow_ridge` | 0.95 |
+  | `mass` | 0.15 (was 0.05, the same pass) | | `donor_mix_african` | 0.34 |
   | `breast` | 0.0 | | `donor_mix_asian` | 0.33 |
   | `arm_abduction_deg` | 47.0 | | `donor_mix_caucasian` | 0.33 |
   | `skin_hex` | `#3B2B22` (the fur saddle; the fur map supplies the rest) | | | |

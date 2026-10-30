@@ -1,0 +1,21 @@
+// Ch14 B10 "Left standing" (C, 1.5 min, no dialogue). L10: Malcor Venn on his crippled barge among his
+// withdrawn Stillguard; the water round him is moving now; he watches them go and doesn't call after them
+// (rule 2: a man on a wrecked barge, nothing more). L11: out between the lagoon mouth's white moles into the
+// open sea; behind, the lit city and the bells; ahead, dark. No lamp may be struck. L12: the bridal cloth
+// over Tobin, Liss's hand flat on it, Kerrid at the stern looking back, last as always. `unlamped` enters.
+title: ch14_left_standing
+location: ch13/ansedra_lacquer_court
+---
+@letterbox on
+@camera L10
+@wait 4.0
+@camera L11
+@sfx stirring_bells vol=0.4
+@wait 5.0
+@camera L12
+@music unlamped fade=4.0
+@wait 5.0
+@fade out 3.0
+<<set $ch14_complete = true>>
+@letterbox off
+===

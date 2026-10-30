@@ -2,7 +2,7 @@
 id: M3-CIN-1233
 title: "Request (slice-polish, game/flow/**): the played path runs title → Ch9 without a break (Prologue → Ch1; the slice's end card → Ch4; Ch9's end card → the title)"
 role: cinematics
-status: todo
+status: done
 owner_session: ""
 depends_on: []
 milestone: M3
@@ -22,12 +22,12 @@ But one `end_card` block serves both end cards: Ch9's act break also ends on `re
 (ch09.json `road_out`). Setting `next_location` to Ch4 alone would send the player from Ch9 back to Ch4.
 
 ## Acceptance criteria
-- [ ] `prologue.next_location` = `ch01/oruvel_underway`, `next_spawn` = `Drop` (M3-C01-02). Ch1 already hands on to
+- [x] `prologue.next_location` = `ch01/oruvel_underway`, `next_spawn` = `Drop` (M3-C01-02). Ch1 already hands on to
       `ch02/haluna` @ Beach (ch01.json).
-- [ ] The slice's end card goes on to `ch04/haluna_wake` @ `NemeDoor`; Ch9's end card goes to the title (or Act II's
+- [x] The slice's end card goes on to `ch04/haluna_wake` @ `NemeDoor`; Ch9's end card goes to the title (or Act II's
       start once it isn't paused). For example, the end card reads its `next_*` only while `ch04_started` is unset, or
       a flow `scene` step can pass the end card a config key (Ch9's would name none).
-- [ ] An integration test walks the hand-offs: a new game's Prologue → Ch1 → Haluna; the slice's end card → Ch4's wake;
+- [x] An integration test walks the hand-offs: a new game's Prologue → Ch1 → Haluna; the slice's end card → Ch4's wake;
       Ch9's end card → the title. `tests/integration/test_qa_threads.gd` plays each chapter alone and can't see this.
 
 ## Notes
@@ -35,3 +35,11 @@ But one `end_card` block serves both end cards: Ch9's act break also ends on `re
   in the act1-chapters live log, since the notes say the Lead flips the switch.
 
 ## Review log
+- 2026-10-30 cinematics (act1-chapters), the requested review, on lead/gate-big19 @ eb3db1a8 (slice-polish's
+  fcf773d1a and the switch): **approved.**
+  - `--filter=` thread 40/0, act1_route 3/0 (New Game → Prologue → Ch1; B11 → the chapter card → Ch4; Ch9's end →
+    credits → title), end_card 5/0.
+  - Stills (tools/act1/cutscene_stills on big19): the Ch1 Drop arrival (U01 on Rhen as the fade comes up) and the Ch4
+    NemeDoor arrival (H02: the lane at night under the lamps) both read.
+  - The stills harness needed to drive M2-FP-121's time cards (0e6fae230); not a game issue.
+  - Ch9's act card now uses `#card` too (ef0ca2337).

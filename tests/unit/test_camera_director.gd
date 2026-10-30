@@ -129,6 +129,31 @@ func test_fixed_shot_holds_its_authored_frame() -> void:
 	_move(Vector3(1.5, 0, 4))
 	_settle()
 	assert_true(cam.global_position.distance_to(shot.position) < POS_TOLERANCE_M, "player motion moves nothing")
+	assert_true(-cam.global_basis.z.dot(aim) > AIM_TOLERANCE, "he is in frame, so the composition holds")
+	_free()
+
+
+## The PC's GPU QA row 37 (the causeway's C07 at BeforeHarrier): a FIXED shot that would lose the leader entirely turns
+## to hold him at the edge (keep_in_frame_fixed_share); one with him in frame is never moved (the test above).
+func test_a_fixed_shot_that_would_lose_him_turns_to_hold_him() -> void:
+	var shot := (zone.get_node("CameraVolumes/LaneVolume") as CameraVolume).shot
+	var from := shot.position
+	var aim := shot.look_at
+	var behind := from - (aim - from).normalized() * 4.0  # right behind the camera: no authored frame shows him
+	var kept := FieldCameraDirector.keep_in_frame(
+		from,
+		aim,
+		behind,
+		shot.fov_deg if shot.fov_deg > 0.0 else 37.8,
+		float(director.data.get("keep_in_frame_fixed_share", 1.0)),
+		float(director.data.get("keep_in_frame_aspect", 1.0))
+	)
+	assert_true((kept - from).normalized().dot((behind - from).normalized()) > 0.99, "turned to look at him")
+	var inside := aim + Vector3(0.3, 0.0, 0.0)
+	var same := FieldCameraDirector.keep_in_frame(
+		from, aim, inside, 37.8, float(director.data.get("keep_in_frame_fixed_share", 1.0)), 16.0 / 9.0
+	)
+	assert_true(same.is_equal_approx(aim), "with him in frame the locked aim is untouched")
 	_free()
 
 
@@ -145,8 +170,34 @@ func test_pan_follow_turns_toward_the_player_within_its_limit() -> void:
 	_move(Vector3(8, 0, 1))
 	_settle()
 	fwd = -cam.global_basis.z
-	assert_true(rad_to_deg(fwd.angle_to(authored)) <= shot.max_pan_deg + 0.5, "never past max_pan_deg")
+	assert_true(
+		(
+			rad_to_deg(fwd.angle_to(authored)) <= shot.max_pan_deg + 0.5
+			or cam.is_position_in_frustum(player.global_position + shot.target_offset)
+		),
+		"never past max_pan_deg, unless that would lose him (then just enough to hold him in frame)"
+	)
 	_free()
+
+
+## The Lead's 10-29 walk audit (Coilspire's spiral): keep_in_frame leaves an aim alone while the subject is inside
+## share x the frame's half angles (vertical from the fov, horizontal from the aspect), and otherwise turns it exactly
+## to that edge, toward him.
+func test_keep_in_frame_turns_the_aim_only_as_far_as_it_must() -> void:
+	var from := Vector3.ZERO
+	var aim := Vector3(0, 0, -10)
+	var inside := Vector3(0, 1, -10)  # ~5.7 degrees off
+	assert_eq(FieldCameraDirector.keep_in_frame(from, aim, inside, 40.0, 0.7, 16.0 / 9.0), aim, "inside: untouched")
+	# on a third across a 16:9 frame (11 degrees right; the horizontal limit is ~16.6 there): an authored composition
+	var third := Vector3(10.0 * tan(deg_to_rad(11.0)), 0, -10)
+	assert_eq(FieldCameraDirector.keep_in_frame(from, aim, third, 37.8, 0.5, 16.0 / 9.0), aim, "a third stays")
+	var above := Vector3(0, 10, -10)  # 45 degrees off; the vertical limit is 40 * 0.5 * 0.7 = 14 degrees
+	var kept := FieldCameraDirector.keep_in_frame(from, aim, above, 40.0, 0.7, 16.0 / 9.0)
+	var off := rad_to_deg((kept - from).angle_to(above - from))
+	assert_between(off, 13.9, 14.1, "turned until he is at the edge of the kept share (%.2f)" % off)
+	assert_true((kept - from).y > 0.0, "toward him")
+	assert_between((kept - from).length(), 9.99, 10.01, "the aim keeps its distance")
+	_free()  # before_each's zone
 
 
 func test_dolly_rides_the_rail_with_the_players_progress() -> void:

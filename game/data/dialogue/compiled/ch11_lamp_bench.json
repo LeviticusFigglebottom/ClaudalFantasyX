@@ -1,0 +1,37 @@
+{
+ "format": 1,
+ "scene": "ch11_lamp_bench",
+ "source": "game/data/dialogue/ch11/ch11_lamp_bench.dlg",
+ "start": "ch11_lamp_bench",
+ "nodes": {
+  "ch11_lamp_bench": {
+   "headers": {"location": "ch11/lowlight"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["T05"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 1.0}, "src": 10},
+    {"op": "cue", "cue": "anim", "args": ["liss", "pick_up", "lamp_housing"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "bench_end", "walk"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 13},
+    {"op": "event", "name": "hold_input", "args": ["hold_steady"], "src": 14},
+    {"op": "cue", "cue": "anim", "args": ["liss", "seat_burner_seat"], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 16},
+    {"op": "event", "name": "hold_input_end", "args": [], "src": 17},
+    {"op": "event", "name": "hold_input", "args": ["turn_collar"], "src": 18},
+    {"op": "cue", "cue": "anim", "args": ["liss", "turn_collar"], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 20},
+    {"op": "event", "name": "hold_input_end", "args": [], "src": 21},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "fit_oil_burner"], "kwargs": {}, "src": 22},
+    {"op": "event", "name": "hold_input", "args": ["seat_it"], "src": 23},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 24},
+    {"op": "event", "name": "hold_input_end", "args": [], "src": 25},
+    {"op": "cue", "cue": "anim", "args": ["liss", "light", "lamp_housing"], "kwargs": {}, "src": 26},
+    {"op": "cue", "cue": "sfx", "args": ["lamp_seat"], "kwargs": {}, "src": 27},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 28},
+    {"op": "line", "id": "ch11_bench_001", "key": "DLG_CH11_BENCH_001", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 29},
+    {"op": "line", "id": "ch11_bench_002", "key": "DLG_CH11_BENCH_002", "speaker": "rhen", "emotion": "soft_smile", "voice": "", "src": 30},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 31},
+    {"op": "set", "flag": "ch11_lamp_repaired", "value": ["lit", true], "src": 32}
+   ]
+  }
+ }
+}

@@ -1,0 +1,43 @@
+// Ch12 B12 "Forty-seven voices" (E, 3 min). act2_ch12.md §2 B12; RULE 4: the confession is Ysolde's own,
+// unprompted, the same night. The Quellan inn at night by the fire; Asha awake on a bench; Ysolde comes down
+// the stair, hair half down (the Level-pin is still in it: she drops it in Ch14). ADR 0204 §12: the scene
+// reprises `ysolde_theme`. She doesn't do the maths on Corran here (that is the Archive's, Ch13). Q05: Toma
+// on the stair has heard; he sits on the hearth step with his back to them, a guard's place.
+title: ch12_forty_seven_voices
+location: ch12/quellan
+---
+@letterbox on
+@camera Q03
+@music silence fade=2.0
+@mark ysolde inn_hearth walk
+@wait 3.0
+@camera Q04
+@music ysolde_theme fade=3.0
+Ysolde [guilty]: I read the cords. I lied to you about them. I would like to stop doing that now. #line:ch12_voices_001
+@wait 2.0
+Asha [neutral]: What do they say? #line:ch12_voices_002
+Ysolde [neutral]: They are a count. Hers. Ama Quillo's. Every Cantor on the roll up to her own name, one knot each. Forty-seven. #line:ch12_voices_003 #long
+@wait 1.5
+Ysolde [neutral]: And then the Saints. The houses that keep one. One knot each. #line:ch12_voices_004
+@wait 1.5
+Ysolde [cold]: Forty-seven voices. Seven houses. #line:ch12_voices_005
+@wait 2.5
+Asha [afraid]: ...Where did the rest go? #line:ch12_voices_006
+Ysolde [sad]: She tied that too. A question-knot. Hanging at the end of the count, by itself. #line:ch12_voices_007
+@wait 1.5
+Ysolde [sad]: She sang anyway. She believed faith could hold a question. #line:ch12_voices_008
+Asha [sad]: Could it? #line:ch12_voices_009
+Ysolde [grief]: I have visited my husband every year for twenty-four years, Lady Cantor. I would very much like it to. #line:ch12_voices_010
+<<set $ch12_ysolde_confessed = true>>
+@camera Q05
+@mark toma hearth_step walk
+@anim toma sit_back_turned
+@wait 3.0
+Toma [neutral]: Seven houses. #line:ch12_voices_011
+@wait 3.0
+Toma [grief]: I stood guard at four of them. #line:ch12_voices_012
+@camera Q06
+@wait 4.0
+@music silence fade=4.0
+@letterbox off
+===

@@ -47,7 +47,7 @@ SHEET_PARAMS = {
     "height_m": 2.3, "heads_tall": 8.36, "shoulder_width_heads": 1.55, "chest_width_heads": 1.12,
     "chest_depth_heads": 0.95, "waist_width_heads": 0.95, "hip_width_heads": 1.15, "crotch_height_heads": 4.05,
     "arm_span_ratio": 1.07, "hand_length_heads": 0.95, "foot_length_ratio": 0.17, "neck_length_heads": 0.95,
-    "neck_width_ratio": 0.55, "head_width_ratio": 0.52, "femininity": 0.0, "muscle": 0.3, "mass": 0.05,
+    "neck_width_ratio": 0.55, "head_width_ratio": 0.52, "femininity": 0.0, "muscle": 0.6, "mass": 0.15,
     "eye_scale": 0.85, "ipd_m": 0.07, "skin_hex": "#3B2B22", "jaw_width": 0.8, "cheekbone_width": 0.92,
     "chin_size": 0.8, "nose_bridge_width": 1.1, "lip_fullness": 0.55, "lip_close": 0.7, "lip_seal": 0.98,
     "lip_lower_fullness": 0.55, "brow_ridge": 0.95, "donor_mix_african": 0.34, "donor_mix_asian": 0.33,

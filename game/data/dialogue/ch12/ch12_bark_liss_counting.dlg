@@ -1,0 +1,10 @@
+// Ch12 B02 bark: Liss at the cords, if the party found the Kirru standing marks in Ch10.
+title: ch12_bark_liss_counting
+location: ch12/keth_pass
+---
+<<if $ch10_found_scrape_mark>>
+    Liss [neutral]: Like the Kirru's standing marks. Everybody up here counts things. Nobody down there reads them. #line:ch12_bark_counting_001
+<<else>>
+    Liss [neutral]: Everybody up here counts things. Nobody down there reads them. #line:ch12_bark_counting_002
+<<endif>>
+===
