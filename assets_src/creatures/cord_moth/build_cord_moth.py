@@ -14,7 +14,7 @@ thorax.
 
 Its origin is the hover point (the stand-in's `hover` lifts it), so its KO drifts down by exactly that height. In battle
 the model is scaled 1.35x (cord_moth_battle.tscn), like the ashwing, whose flat wings read as slivers at normal size
-(the Act II plan sheet): its KO falls HOVER in model space, 1.35 m in battle, the stand-in's `hover`.
+(the Act II plan sheet): its KO falls HOVER in model space, 1.12 m in battle, the stand-in's `hover`.
 
 Run without Blender (`python3 build_cord_moth.py --report`) for the triangle count and each clip's numbers.
 """
@@ -38,10 +38,14 @@ PAL = {k: ck.hexrgb(v) for k, v in {
 }.items()}
 WING_PALE = PAL["cumulus_lit"] * 0.9  # cumulus_lit held under the albedo ceiling
 WING_ROOT = PAL["sand_cloth"]
+FRINGE = ck.mix(PAL["overcast_slate"], PAL["lacquer_black"], 0.25)  # the wings' dusky margin
+FRINGE_FROM = (0.84, 0.72)  # where the margin starts toward the tip (u) and the trailing edge (v)
+FRINGE_DARK = 0.85
 DYES = (ck.mix(PAL["lacquer_red"], PAL["sand_cloth"], 0.3), ck.mix(PAL["sea_blue_cloth"], PAL["sand_cloth"], 0.25))
 BLACK = PAL["lacquer_black"]
 
-HOVER = 1.0  # the KO comes down by this (model space); at the battle scale of 1.35 it is the stand-in's 1.35 m hover
+HOVER = 0.83  # the KO comes down by this (model space); at the battle scale of 1.35 it is the stand-in's 1.12 m hover
+# (lowered from 1.35 m so the battle camera sees the wings from above; hit_b's dip still clears the floor)
 THORAX = np.array([0.0, 0.056, 0.03])
 THORAX_R = (0.05, 0.048, 0.07)
 HEAD = np.array([0.0, 0.061, 0.125])
@@ -115,8 +119,10 @@ def wings(mesh: ck.Mesh, rig: ck.Rig) -> None:
             n = ck.fbm(P * np.array([14.0, 14.0, 30.0]), SEED + (1 if wing == "fore" else 2))
             col = ck.mix(WING_ROOT, WING_PALE, ck.smoothstep(0.05, 0.5, U)[:, None])
             col = col * (0.94 + 0.06 * n)[:, None]
-            fringe = ck.smoothstep(0.82, 1.0, V) + ck.smoothstep(0.9, 1.0, U)
-            col = ck.mix(col, WING_ROOT * 0.85, np.clip(fringe, 0.0, 1.0)[:, None] * 0.5)  # a dusky fringe
+            fringe = ck.smoothstep(FRINGE_FROM[1], 1.0, V) + ck.smoothstep(FRINGE_FROM[0], 1.0, U)
+            # a dusky slate margin round each wing, so its outline holds against pale stone and sky (the Act II plan
+            # sheet: pale on Keth's white walls it read as a sliver)
+            col = ck.mix(col, FRINGE, np.clip(fringe, 0.0, 1.0)[:, None] * FRINGE_DARK)
             col = np.minimum(col, WING_PALE)
             for top in (True, False):
                 Pt = P + np.array([0.0, WING_T if top else -WING_T, 0.0])
