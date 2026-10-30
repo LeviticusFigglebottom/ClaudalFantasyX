@@ -7,7 +7,7 @@
  "lod1_from_m": 120.0,
  "lod_end_m": 4000.0,
  "lod_margin_m": 2.0,
- "environment": "res://game/levels/ch13/ansedra/ansedra_environment.tres",
+ "environment": "res://game/levels/ch13/lamp_archive/lamp_archive_environment.tres",
  "time_of_day_h": 16.5,
  "greybox": {
   "hide_all": true,
