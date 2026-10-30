@@ -214,7 +214,8 @@
                   "assets_src/environments/vegetation/windbreak.py", "assets_src/environments/vegetation/canopy.py",
                   "assets_src/environments/vegetation/veg_common.py",
                   "game/levels/ch10/ossa_fen/ossa_fen_layout.json",
-                  "game/levels/ch10/reedhollow/reedhollow_layout.json"],
+                  "game/levels/ch10/reedhollow/reedhollow_layout.json",
+                  "game/levels/ch11/sunken_vey/sunken_vey_layout.json"],
       "outputs": ["assets/environments/kits/haluna/*.glb", "assets/environments/kits/haluna/kit_manifest.json"],
       "runs": [
         ["{blender}", "--python", "assets_src/environments/kits/haluna/build.py", "--", "--all", "--out-dir", "assets/environments/kits/haluna", "--manifest", "assets/environments/kits/haluna/kit_manifest.json"]

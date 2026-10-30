@@ -525,6 +525,14 @@ MATERIALS["kit_fen_bank"] = _ext_stone(_BS + "mud_albedo.png", _BS + "mud_normal
                                        algae_coverage="Vector2(0.15, 0.45)", col_algae=hexc("#5A5E44"), use_moss=False,
                                        capillary_band_m=0.0)
 
+# ---- M4-A2P-041 (appended by env-art): the Sunken Vey's lagoon bed (vey_zones.py) -------------------------------------
+# The drowned town's floor under the turquoise lagoon: the Haluna sand gone to a pale grey-green silt, an algae film in the
+# hollows (the overcast_lagoon water's absorption takes it to teal at 2-3 m).
+MATERIALS["kit_vey_silt"] = stone("sand_albedo.png", "sand_normal.png", (2.5, 2.5), base_triplanar=True,
+                                  col_tint=hexc("#B9C2B4"), normal_strength=0.5, roughness_base=0.85, cavity_darken=0.25,
+                                  variation_value=0.1, use_moss=False, use_barnacles=False, use_salt=False,
+                                  algae_coverage="Vector2(0.3, 0.7)")
+
 
 if __name__ == "__main__":
     sys.exit(main())

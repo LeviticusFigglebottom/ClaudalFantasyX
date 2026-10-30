@@ -42,6 +42,7 @@ import undertow_layers  # noqa: E402
 import undertow_heart  # noqa: E402
 import reedhollow  # noqa: E402
 import fen_zones  # noqa: E402
+import vey_zones  # noqa: E402
 import kit_common as kc  # noqa: E402
 import props  # noqa: E402
 import ruins  # noqa: E402
@@ -128,6 +129,8 @@ def targets() -> dict:
         out[name] = (name, reedhollow, fn)
     for name, fn in sorted(fen_zones.TARGETS.items()):  # M4-A2P-040 the Ch10 zones' ground, from their greybox
         out[name] = (name, fen_zones, fn)
+    for name, fn in sorted(vey_zones.TARGETS.items()):  # M4-A2P-041 the Sunken Vey's walks and bed, from its greybox
+        out[name] = (name, vey_zones, fn)
     return out
 
 
