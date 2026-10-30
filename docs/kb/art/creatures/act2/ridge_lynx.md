@@ -30,3 +30,10 @@ names and contact times are unchanged):
 - **The KO:** the head turns a little less than the neck as it lies down (its yaw on the head bone halved), so the
   longer muzzle lies on the snow, not in it.
 - The weak point is unchanged: the one small sling-wound slit on the camera-side flank (ADR 0151).
+
+## Leg shaping (2026-10-30, ADR 0205)
+The legs read as plain rounded cylinders up close. Each is now flatter side to side (0.8 of its depth) and shaped
+along its length: the shoulder's or haunch's muscle at the top, a forearm or gaskin swelling below the elbow or
+stifle, a slim wrist or hock, and the pastern widening into the snowshoe paw. The tube starts inside the torso, so no
+rim shows where the leg meets the body. The four toes stand up out of the pad's fur as knuckles, creased where they
+meet. 7,544 triangles (budget 8k).

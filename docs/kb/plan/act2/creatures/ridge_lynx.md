@@ -4,7 +4,7 @@ id: ridge_lynx
 kind: beast
 chapter: 12
 exists: yes, on the integration branch (built; `creatures.json` row, review baseline, portrait)
-meets_bar: close (paws held and snow since M4-CRE-670; leg shaping left)
+meets_bar: yes (paws held and snow since M4-CRE-670; legs shaped 2026-10-30)
 ---
 # ridge_lynx (Ch12, Keth Pass)
 
@@ -35,4 +35,4 @@ Its own quadruped build; the raid hound's rig is its nearest sibling.
 **Below the bar:** its paws slide 18–29 cm on attack and hit (clip audit: the same `grounded()`-only slide the hound had), and its legs and paws read as plain rounded cylinders up close. At the gate: `grounding.pinned` on its four legs, and the hound's lunge treatment (forepaws step) on its pounce; a shaping pass on the legs and paws.
 
 ## Work at the gate (after `act1-complete`)
-DONE in M4-CRE-670: frost to snow and grit, paws pinned (hit 5 cm, hit_b 7 cm). Left: leg/paw shaping; `pounce` effect.
+DONE in M4-CRE-670: frost to snow and grit, paws pinned (hit 5 cm, hit_b 7 cm). Leg/paw shaping DONE 2026-10-30 (creatures track, ADR 0205): each leg is flatter side to side (0.8) with a shoulder or haunch muscle, a forearm or gaskin swelling, a slim wrist or hock and a pastern widening into the paw, its top buried in the torso (no rim); the toes stand up as knuckles with creases between them (7,544 triangles, budget 8k). Left: `pounce` effect.

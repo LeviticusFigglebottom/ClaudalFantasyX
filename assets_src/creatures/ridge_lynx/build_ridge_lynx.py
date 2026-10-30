@@ -79,6 +79,16 @@ FRONT_YZ = ((0.5, 0.28), (0.28, 0.22), (0.085, 0.27), (0.035, 0.38))
 HIND_YZ = ((0.53, -0.36), (0.33, -0.22), (0.15, -0.42), (0.035, -0.3))
 LEGS = ("fl", "fr", "bl", "br")
 PAW_R = (0.068, 0.04, 0.088)  # the snowshoe pad's radii
+LEG_PER = 7  # rings per leg segment
+# a leg's radius along it, (share of the way from the top to the paw, metres): the elbow or stifle is at a third, the
+# wrist or hock at two thirds
+LEG_PROFILE_FRONT = ((0.0, 0.068), (0.15, 0.056), (0.33, 0.043), (0.43, 0.047), (0.62, 0.032), (0.68, 0.029),
+                     (0.82, 0.036), (1.0, 0.05))
+LEG_PROFILE_HIND = ((0.0, 0.08), (0.14, 0.07), (0.31, 0.049), (0.42, 0.05), (0.63, 0.03), (0.7, 0.032),
+                    (0.83, 0.036), (1.0, 0.05))
+LEG_TOP_SINK = 0.07  # the leg's tube starts this far above the shoulder or hip, inside the torso (no rim shows)
+LEG_SQUASH = 0.8  # the legs' width side to side over front to back
+TOE_R = (0.024, 0.03, 0.028)  # a toe's radii: knuckles that stand up out of the pad's fur
 WOUND = np.array([-0.125, 0.6, -0.08])  # the old sling wound on the camera-side flank
 FUR = 0.016  # the coat's depth, pushed out in tufts
 
@@ -330,14 +340,14 @@ def legs(mesh: ck.Mesh, rig: ck.Rig) -> None:
         j = leg_joints(name)
         pc = pad_centre(name)
         pad_top = pc + np.array([0.0, PAW_R[1] * 0.7, 0.01])
-        pts = [j[0], j[1], j[2], pad_top]
-        per = 6
-        path = np.vstack([np.linspace(pts[k], pts[k + 1], per, endpoint=(k == 2)) for k in range(3)])
+        pts = [j[0] + np.array([0.0, LEG_TOP_SINK, 0.0]), j[1], j[2], pad_top]  # the top buried in the torso
+        path = np.vstack([np.linspace(pts[k], pts[k + 1], LEG_PER, endpoint=(k == 2)) for k in range(3)])
         u = np.linspace(0.0, 1.0, len(path))
-        front = name[0] == "f"
-        rad = np.interp(u, [0.0, 0.3, 0.42, 0.62, 0.72, 1.0],
-                        [0.068, 0.05, 0.04, 0.034, 0.038, 0.05] if front else [0.078, 0.058, 0.04, 0.033, 0.036, 0.05])
-        P, T = ck.tube(path, rad, 10, cap_start=True, cap_end=False)
+        # shaped, not a plain cylinder (the plan sheet): the shoulder or haunch's muscle, a forearm or gaskin swelling
+        # below the elbow or stifle, a slim wrist or hock, the pastern widening into the paw; flatter side to side
+        prof = LEG_PROFILE_FRONT if name[0] == "f" else LEG_PROFILE_HIND
+        rad = np.interp(u, [q[0] for q in prof], [q[1] for q in prof])
+        P, T = ck.tube(path, rad, 10, cap_start=True, cap_end=False, up_hint=(0.0, 0.0, 1.0), squash=LEG_SQUASH)
         P, clump = tufted(P, T, FUR * (0.6 + 0.6 * ck.smoothstep(0.35, 0.12, P[:, 1])), SEED + 50 + LEGS.index(name))
         inner = ck.smoothstep(0.02, -0.04, (P[:, 0] - j[0][0]) * np.sign(j[0][0]))
         under = np.maximum(inner * 0.6, ck.smoothstep(0.3, 0.1, P[:, 1]) * 0.5)
@@ -354,10 +364,11 @@ def legs(mesh: ck.Mesh, rig: ck.Rig) -> None:
         ck.finish(mesh, Pp, Tp, "coat", cp, rig.rigid(f"{name}_paw"), cavity=0.2 * sole)
         for k in range(4):
             a = (k - 1.5) * 0.42
-            c = pc + np.array([math.sin(a) * PAW_R[0] * 0.78, -0.006, math.cos(a) * PAW_R[2] * 0.82])
-            Pt, Tt = ck.ellipsoid(c, (0.022, 0.026, 0.026), 4, 6)
+            c = pc + np.array([math.sin(a) * PAW_R[0] * 0.78, 0.0, math.cos(a) * PAW_R[2] * 0.82])
+            Pt, Tt = ck.ellipsoid(c, TOE_R, 4, 6)
             Pt[:, 1] = np.maximum(Pt[:, 1], 0.0)
-            ck.finish(mesh, Pt, Tt, "coat", ck.mix(BELLY, COAT, 0.5), rig.rigid(f"{name}_paw"), cavity=0.2)
+            low = ck.smoothstep(c[1] + 0.01, c[1] - 0.015, Pt[:, 1])  # the crease where each toe meets the next
+            ck.finish(mesh, Pt, Tt, "coat", ck.mix(BELLY, COAT, 0.5), rig.rigid(f"{name}_paw"), cavity=0.2 + 0.5 * low)
 
 
 def build_mesh(rig: ck.Rig) -> ck.Mesh:
