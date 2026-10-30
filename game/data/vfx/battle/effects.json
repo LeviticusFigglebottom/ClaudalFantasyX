@@ -444,6 +444,75 @@
         }
       ]
     },
+    "hit_glimmer": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#FFE9B8",
+          "color_end": "#F4F8FF",
+          "swatches": [
+            "glimmer_lift",
+            "glimmer_lift_hi"
+          ],
+          "amount": 2,
+          "lifetime_s": 0.2,
+          "explosiveness": 1.0,
+          "velocity_m_s": [
+            0.0,
+            0.05
+          ],
+          "spread_deg": 0,
+          "gravity": [
+            0,
+            0,
+            0
+          ],
+          "size_m": [
+            0.55,
+            0.75
+          ],
+          "energy": 1.1,
+          "emission_radius_m": 0.02,
+          "turbulence": 0.0
+        },
+        {
+          "color": "#FFE9B8",
+          "color_end": "#F4F8FF",
+          "swatches": [
+            "glimmer_lift",
+            "glimmer_lift_hi"
+          ],
+          "amount": 44,
+          "lifetime_s": 1.1,
+          "explosiveness": 0.6,
+          "velocity_m_s": [
+            0.25,
+            0.6
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            0.35,
+            0
+          ],
+          "size_m": [
+            0.1,
+            0.22
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.4,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The glimmer element's hit (voice_glimmer, level_hand, still_water; the Lead, 10-30): a soft pale-gold shimmer, then motes rising off the target. Released glimmer (color_script.md rule 1): glimmer_lift brightening to glimmer_lift_hi, rising slowly, never the held cyan."
+    },
     "lamp_dive": {
       "kind": "particles",
       "anchor": "target",
@@ -8334,7 +8403,8 @@
       "ice": "hit_ice",
       "lightning": "hit_lightning",
       "water": "hit_water",
-      "holy": "hit_holy"
+      "holy": "hit_holy",
+      "glimmer": "hit_glimmer"
     },
     "skills": {
       "lamp_dive": "lamp_dive",
