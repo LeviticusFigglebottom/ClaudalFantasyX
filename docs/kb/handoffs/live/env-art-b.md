@@ -521,6 +521,20 @@ that test at this branch's zones.
   viewed, and what it found in my lane is fixed. The rest is filed (M3-ENV-1327, env-art) or belongs to other tracks
   (the capsules).
 
+- **The Lead's big17 gate review (00:47), both items fixed:**
+  - **Rejected `battle_arena_terrace`, the grey slab top left:** it was the near ash plume's coarse LOD1. The
+    Pemakar kit's chain switches at 70 m and the forecourt sits about 110 m from the plume, while the zone overrides
+    the plume to 900 m and the arenas didn't. `b_arenas.py` now keeps LOD0 to 900 m and narrows the plume to 0.75
+    across, as the zone does, in both Ashcrown arenas. My own audit still of the forecourt showed it too; I'd missed it.
+  - **`ch07_bell_moorings`, the white net on the dark water by the dock:** the drop's direct caustic web, cast along
+    the sun past the catch-pool onto the harbour water. A new `under.radius_m` (14.5 m, the pool's coping at
+    13.2 m plus a soft edge; 0 = unbounded, so the Reefball ball is unchanged) bounds it to the pool and coping.
+  - **Checks run:** Godot water_sphere 5/0, tamsule 7/0, reefball 80/0; tools test_b_arenas; validate_data; gdlint.
+    Self-rendered battle_arena_terrace, battle_arena_ashcrown_forecourt_day, battle_boss_intro_matron, ch07_bell_moorings,
+    ch07_bell_galleries, tamsule_t01_bell_from_the_mouth: the slab is gone (the crest's slope over the wall instead),
+    the dock water is clean, and the pool keeps its web.
+  - **MERGE-READY @ 9fdf14f9.** The shots that drift by design: the six above.
+
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
   on the PC presets (two large and three small fires in `ch06/brine_shoals` and `salvage_camp_burning`).
