@@ -86,8 +86,9 @@ func _init(
 		f.wobble_hz = _r("wobble_hz")
 		f.scale = scale * _r("scale")
 		fish.append(f)
-	var reach := radius + spread.length() + _f("wobble_m")
-	var ext := Vector3(reach, spread.y + _f("wobble_m"), reach)
+	var wide := spread * maxf(_scatter(), 1.0)  # a scattered school still fits its bounds
+	var reach := radius + wide.length() + _f("wobble_m")
+	var ext := Vector3(reach, wide.y + _f("wobble_m"), reach)
 	bounds = AABB(center - ext, ext * 2.0)
 
 
@@ -101,6 +102,11 @@ func _r(key: String) -> float:
 
 func count() -> int:
 	return fish.size()
+
+
+## How far a startle throws the school apart: its spread is scaled by up to this, easing back as the startle fades.
+func _scatter() -> float:
+	return float(_kind.get("scatter_spread", 1.0))
 
 
 ## How far the centre may wander from `center` (the school's spread stays inside the radius).
@@ -147,10 +153,11 @@ func step(delta: float, player: Vector3, has_player: bool) -> void:
 	var hz_per := _f("swim_hz_per_mps")
 	var inv_dt := 1.0 / maxf(delta, MIN_SPEED_MPS)
 	var turned := Basis(Vector3.UP, heading)
+	var apart := 1.0 + (_scatter() - 1.0) * (_startle / _f("startle_s") if _startle > 0.0 else 0.0)
 	for f in fish:
 		f.wobble_phase = fposmod(f.wobble_phase + TAU * f.wobble_hz * delta, TAU)
 		var w := Vector3(sin(f.wobble_phase), wob_y * sin(f.wobble_phase * 2.0), cos(f.wobble_phase)) * wob
-		var goal := lead + turned * (f.offset + w)
+		var goal := lead + turned * (f.offset * apart + w)
 		var before := f.pos
 		f.pos = f.pos.lerp(goal, follow)
 		var vx := f.pos.x - before.x

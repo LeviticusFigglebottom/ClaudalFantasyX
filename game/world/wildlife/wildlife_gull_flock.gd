@@ -6,7 +6,9 @@ extends RefCounted
 ## depends only on the seed and the frame deltas. Tuning is the `gull` kind of wildlife.json; placement is a
 ## zone file's `flocks` row. A kind with `dive_chance` (the kingfisher, Ch10: fen_kingfisher.md "it perches long, and
 ## plunges") on a row with a `water_y` sometimes leaves its perch in a plunge: wings folded, down to the water
-## dive_reach_m ahead of the perch, a moment there, and back up to the same perch, which it keeps meanwhile.
+## dive_reach_m ahead of the perch, a moment there, and back up to the same perch, which it keeps meanwhile. The party
+## coming within flush_radius_m of a perch lifts the bird off it after its own flush_delay_s (so a row of gulls goes
+## up one after another, not as one), and a landing bird never picks a perch the party is standing by.
 
 enum State { SOAR, APPROACH, PERCHED, TAKEOFF, DIVE, SURFACE }
 
@@ -46,6 +48,8 @@ class Gull:
 	var head_timer := 0.0
 	var nod := 0.0
 	var nod_phase := 0.0
+	## Its own delay before it lifts when the party comes near (the kind's flush_delay_s, drawn once).
+	var flush_at := 0.0
 
 
 var id := ""
@@ -69,6 +73,8 @@ var _undulate := 0.0
 var _amp_rate := 0.0
 var _flap_hz := 0.0
 var _dihedral := 0.0
+var _player := Vector2.ZERO
+var _has_player := false
 
 
 func _init(row: Dictionary, kind: Dictionary, seed_value: int, count: int) -> void:
@@ -127,6 +133,7 @@ func _spawn() -> Gull:
 	g.flap_timer = _r("flap_s" if g.flapping else "glide_s")
 	g.amp = 1.0 if g.flapping else 0.0
 	g.decide_timer = _r("decide_s")
+	g.flush_at = _r("flush_delay_s") if _kind.has("flush_delay_s") else 0.0
 	_soar_pose(g)
 	return g
 
@@ -151,7 +158,10 @@ func perched_count() -> int:
 	return n
 
 
-func step(delta: float) -> void:
+## `player` is in the layer's space; `has_player` false = nobody to flush them.
+func step(delta: float, player := Vector3.ZERO, has_player := false) -> void:
+	_player = Vector2(player.x, player.z)
+	_has_player = has_player
 	for g in gulls:
 		match g.state:
 			State.SOAR:
@@ -200,7 +210,7 @@ func _flap(g: Gull, delta: float, target: float) -> void:
 func _try_land(g: Gull) -> void:
 	var free: Array[int] = []
 	for k in perches.size():
-		if not _occupied[k]:
+		if not _occupied[k] and not _near_party(perches[k]):
 			free.append(k)
 	if free.is_empty():
 		return
@@ -268,7 +278,15 @@ func _step_segment(g: Gull, delta: float, landing: bool) -> void:
 		_soar_pose(g)
 
 
+## True when the party stands within the kind's flush_radius_m of perch `p` (a kind without one never flushes).
+func _near_party(p: Vector4) -> bool:
+	var r := float(_kind.get("flush_radius_m", 0.0))
+	return _has_player and r > 0.0 and _player.distance_to(Vector2(p.x, p.z)) < r
+
+
 func _step_perched(g: Gull, delta: float) -> void:
+	if _near_party(perches[g.perch]) and g.timer > g.flush_at:
+		g.timer = g.flush_at  # flushed: it goes after its own delay
 	g.timer -= delta
 	g.head_timer -= delta
 	if g.head_timer <= 0.0:
@@ -281,7 +299,11 @@ func _step_perched(g: Gull, delta: float) -> void:
 	g.nod_phase = fposmod(g.nod_phase + TAU * _f("nod_hz") * delta, TAU)
 	if g.timer > 0.0:
 		return
-	if not is_nan(water_y) and _rng.randf() < float(_kind.get("dive_chance", 0.0)):
+	if (
+		not is_nan(water_y)
+		and not _near_party(perches[g.perch])
+		and _rng.randf() < float(_kind.get("dive_chance", 0.0))
+	):
 		_begin_dive(g)
 		return
 	# take off along the perch's facing and climb back into the circle a little ahead of the perch
