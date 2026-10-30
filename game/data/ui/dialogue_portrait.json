@@ -3,6 +3,6 @@
     "doc": "Act I final pass (ADR 0041): the speaker's portrait in the dialogue box (DialogueBox). A spoken line whose speaker has a baked portrait (HeroPortraits; the speaker id, or 'aliases' maps it to the character it is) shows it at the box's left, size_px square at the 1920 x 1080 reference, gap_px from the name and text, in the line's emotion (an untagged line keeps that speaker's last one; a tag with no picture falls back to neutral). Narration, voice-over and speakers without a portrait show none, and the text keeps the box's full width.",
     "size_px": 156,
     "gap_px": 24,
-    "aliases": {"inquisitor": "moll"}
+    "aliases": {"inquisitor": "moll", "malcor_venn": "venn"}
   }
 }

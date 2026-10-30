@@ -184,65 +184,28 @@ func test_ch4_to_ch9_spot_checks() -> void:
 		assert_eq(_poi(c[1]), c[3], "%s with %s: the target" % [c[1], c[0]])
 
 
-## Act II: every Act II zone's line and map point move along its chapter's main path, beat by beat (act1-chapters'
-## rows; each case sets the beats before it in the same zone and the row's own requires).
+## Act II (ui-menus, the Lead's 09:01 list): every Act II zone's map points somewhere on its chapter's main path, and
+## Ansedra's line moves on from the Sanctum to the Archive (Ch13 visits the Sanctum first).
 func test_act_two_zones_point_along_the_main_path() -> void:
 	var checks := [
-		[[&"ch10_started"], &"ch10/ossa_fen", &"f_drowner", &"clearing"],
-		[[&"ch10_drowner_defeated", &"ch10_started"], &"ch10/ossa_fen", &"f_to_reedhollow", &"to_reedhollow"],
-		[[&"ch10_reached_reedhollow"], &"ch10/reedhollow", &"r_shore", &"shore"],
-		[[&"ch10_farewell_tide_seen", &"ch10_reached_reedhollow"], &"ch10/reedhollow", &"r_gate", &"gate"],
-		[[&"ch11_started"], &"ch11/sunken_vey", &"v_to_lowlight", &"to_lowlight"],
-		[[&"ch11_reached_lowlight"], &"ch11/lowlight", &"l_down", &"sanctum"],
-		[[&"ch11_nhoa_bound", &"ch11_reached_lowlight"], &"ch11/lowlight", &"l_out", &"gate"],
-		[[&"ch12_started"], &"ch12/keth_pass", &"k_wall", &"terrace"],
-		[[&"ch12_ram_felled", &"ch12_started"], &"ch12/keth_pass", &"k_to_quellan", &"to_quellan"],
-		[[&"ch12_reached_quellan"], &"ch12/quellan", &"q_road_up", &"road_up"],
-		[[&"ch12_reached_cloudloom"], &"ch12/cloudloom", &"c_dais", &"dais"],
-		[[&"ch12_hesk_bound", &"ch12_reached_cloudloom", &"ch12_reached_quellan"], &"ch12/quellan", &"q_inn", &"inn"],
-		[
-			[&"ch12_hesk_bound", &"ch12_reached_cloudloom", &"ch12_reached_quellan", &"ch12_ysolde_confessed"],
-			&"ch12/quellan",
-			&"q_on",
-			&""
-		],
-		[[&"ch13_started"], &"ch13/ansedra", &"a_sanctum", &"sanctum"],
-		[[&"ch13_entered_sanctum"], &"ch13/sanctum", &"s_ledge", &"ledge"],
-		[[&"ch13_ethren_bound", &"ch13_started"], &"ch13/ansedra", &"a_archive", &"archive"],
-		[[&"ch13_entered_archive"], &"ch13/lamp_archive", &"la_ledgers", &"ledgers"],
-		[[&"ch13_entered_archive", &"ch13_read_ledgers"], &"ch13/lamp_archive", &"la_roll", &"roll"],
-		[[&"ch13_archive_read", &"ch13_ethren_bound", &"ch13_started"], &"ch13/ansedra", &"a_moorings", &"moorings"],
-		[
-			[&"ch13_archive_read", &"ch13_ethren_bound", &"ch13_pact_of_silence", &"ch13_started"],
-			&"ch13/ansedra",
-			&"a_rest",
-			&"sefir"
-		],
-		[[&"ch14_started"], &"ch13/ansedra_lacquer_court", &"lc_vows", &"dais"],
-		[
-			[&"ch14_declared_heretics", &"ch14_started", &"ch14_vows_spoken"],
-			&"ch13/ansedra_lacquer_court",
-			&"lc_steps",
-			&"steps"
-		],
-		[
-			[&"ch14_declared_heretics", &"ch14_started", &"ch14_steps_held", &"ch14_vows_spoken"],
-			&"ch13/ansedra_lacquer_court",
-			&"lc_gate",
-			&"water_gate"
-		],
-		[[&"ch15_started"], &"ch15/open_sea", &"os_drift", &"bow"],
-		[[&"ch15_reached_hollowmere"], &"ch17/hollowmere", &"h_father", &"dock"],
-		[[&"ch15_liss_told_father", &"ch15_reached_hollowmere"], &"ch17/hollowmere", &"h_pyre", &"pyre_raft"],
-		[
-			[&"ch15_liss_told_father", &"ch15_pyre_raft", &"ch15_reached_hollowmere"],
-			&"ch17/hollowmere",
-			&"h_ship",
-			&"ship"
-		],
-		[[&"ch16_started"], &"ch16/pale_rim", &"pr_wade", &"choir_edge"],
-		[[&"ch16_reached_choir"], &"ch16/drowned_choir", &"dc_choir", &"head"],
-		[[&"ch16_kesh_bound", &"ch16_reached_choir", &"ch16_refused_sefir"], &"ch16/drowned_choir", &"dc_hold", &""],
+		[[&"ch10_started"], &"ch10/ossa_fen", &"fen_road", &"to_reedhollow"],
+		[[&"ch10_reached_reedhollow"], &"ch10/reedhollow", &"reed_clutch", &"clutch"],
+		[[&"ch11_started"], &"ch11/sunken_vey", &"vey_galleries", &"to_lowlight"],
+		[[&"ch11_reached_lowlight"], &"ch11/lowlight", &"low_sanctum", &"sanctum"],
+		[[&"ch12_started"], &"ch12/keth_pass", &"keth_road", &"to_quellan"],
+		[[&"ch12_reached_quellan"], &"ch12/quellan", &"quellan_road_up", &"road_up"],
+		[[&"ch12_reached_cloudloom"], &"ch12/cloudloom", &"cloudloom_dais", &"dais"],
+		[[&"ch13_started"], &"ch13/ansedra", &"ansedra_sanctum", &"sanctum"],
+		[[&"ch13_started", &"ch13_entered_sanctum"], &"ch13/ansedra", &"ansedra_archive", &"archive"],
+		[[&"ch13_entered_sanctum"], &"ch13/sanctum", &"sanctum_basin", &"head"],
+		[[&"ch13_entered_archive"], &"ch13/lamp_archive", &"archive_ledgers", &"ledgers"],
+		[[&"ch14_started"], &"ch13/ansedra_lacquer_court", &"court_dais", &"dais"],
+		[[&"ch14_started", &"ch14_declared_heretics"], &"ch13/ansedra_lacquer_court", &"court_barge", &"barge"],
+		[[&"ch15_started"], &"ch15/open_sea", &"sea_watch", &"bow"],
+		[[&"ch15_reached_hollowmere"], &"ch17/hollowmere", &"hollowmere_house", &"house"],
+		[[&"ch16_started"], &"ch16/pale_rim", &"rim_shallows", &"choir_edge"],
+		[[&"ch16_reached_choir"], &"ch16/drowned_choir", &"choir_ring", &"head"],
+		[[&"ch13_started", &"ch13_entered_sanctum", &"ch13_entered_archive"], &"ch13/ansedra", &"", &""],
 	]
 	for c: Array in checks:
 		flags = {}
