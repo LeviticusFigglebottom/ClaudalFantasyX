@@ -1103,8 +1103,8 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - Waiting on the Haluna LEAD-ASK and on Combat's conduit_crawler row.
 - **Your 12:08 relay:**
   1. **The Haluna shopkeepers wear M3-CHR-512's bespoke models**, in two commits as asked:
-     - `ch02_haluna.json` drops its `crowd` keys @ b0e7d2b8-range (see `git log`, "wear their bespoke models"). The three crowd people, the `haluna` community and the `smith` role are gone, and crowd.json and the params are back byte-for-byte.
-     - `haluna_villagers.json`'s three rows are deleted in their own commit.
+     - `ch02_haluna.json` drops its `crowd` keys @ 708e5719. The three crowd people, the `haluna` community and the `smith` role are gone, and crowd.json and the params are back byte-for-byte.
+     - `haluna_villagers.json`'s three rows are deleted in their own commit @ 4d2a4e99.
      - Request task **M3-ARC-1327** asks slice-polish to retire the now-empty file and the populate call.
      - I did not edit slice-polish.md: §7a forbids editing another environment's live file. Please carry the line there.
      - Checks: Godot villager 40/0, haluna 65/0, crowd 12/0, npc 10/0; tools test_npc OK.
@@ -1122,3 +1122,5 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
      - Named speakers stay characters': Ullari woman, innkeeper, weaver, herder, keth-reader, trader, Stillguard, Liss's father, widow, old woman.
      - The stand-in communities' notes say characters' Ansedran and Ullari sets replace them.
      - Checks: validate_data clean; gen_crowd --check; tools test_npc 30 OK; Godot crowd 13/0, villager 41/0.
+- **MERGE-READY @ 35e467a3** (the bespoke shopkeepers and the Act II crowds).
+- **BACKLOG EMPTY:** every Act II town whose bodies exist has its crowd. Reedhollow's Kirru clutch waits on characters (no human body fits). Still waiting on Combat's conduit_crawler row.
