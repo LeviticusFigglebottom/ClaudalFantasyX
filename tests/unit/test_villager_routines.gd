@@ -468,7 +468,12 @@ func test_a_greybox_actor_model_is_adopted_into_a_villager() -> void:
 	layer.zone_id = &"ch01/oruvel"
 	layer.auto_build = false
 	zone.add_child(layer)
-	assert_eq(layer.build(), 1, "Kell's row finds her stage actor")
+	# rows with an `at` (the deck's vignettes, M3-CRE-666) make their own spots; of the rest, only Kell's actor is here
+	var spots := 0
+	for row: Variant in VillagerLayer.load_data(VillagerLayer.path_for(&"ch01/oruvel"))["villagers"]:
+		if (row as Dictionary).has("at"):
+			spots += 1
+	assert_eq(layer.build(), 1 + spots, "Kell's row finds her stage actor")
 	var npc := layer.villager(&"kell")
 	assert_true(npc != null and npc.get_parent() == kell, "the villager rides inside the stage actor")
 	assert_true(npc.actor == model, "it carries the greybox model itself, not a second one")

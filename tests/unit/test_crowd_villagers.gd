@@ -615,12 +615,16 @@ func test_haluna_vignettes_come_alive_in_the_real_zone() -> void:
 	_done()
 
 
-## The slice towns lived in (the Lead, 2026-10-30): Oruvel's deck and Pemakar's quay at Lanternfall, at work.
-func test_oruvel_and_pemakar_vignettes_come_alive_in_their_zones() -> void:
+## The towns lived in (the Lead, 2026-10-30): Oruvel's deck, Pemakar's quay at Lanternfall, Quellan's square,
+## Hollowmere's dawn and Ansedra's moorings, at work.
+func test_town_vignettes_come_alive_in_their_zones() -> void:
 	var people := _people()
 	for z: Array in [
 		["res://game/levels/ch01/oruvel/oruvel.tscn", &"ch01/oruvel", "oruvel_deck_", 6],
-		["res://game/levels/ch05/pemakar/pemakar.tscn", &"ch05/pemakar", "pemakar_quay_", 5]
+		["res://game/levels/ch05/pemakar/pemakar.tscn", &"ch05/pemakar", "pemakar_quay_", 5],
+		["res://game/levels/ch12/quellan/quellan.tscn", &"ch12/quellan", "quellan_town_", 8],
+		["res://game/levels/ch17/hollowmere/hollowmere.tscn", &"ch17/hollowmere", "hollowmere_dawn_", 4],
+		["res://game/levels/ch13/ansedra/ansedra.tscn", &"ch13/ansedra", "ansedra_moorings_", 7]
 	]:
 		var zone := (load(str(z[0])) as PackedScene).instantiate() as Node3D
 		_holder().add_child(zone)
@@ -642,4 +646,20 @@ func test_oruvel_and_pemakar_vignettes_come_alive_in_their_zones() -> void:
 			if npc.route_points.is_empty():
 				assert_eq(npc.current_clip, work, "%s plays %s" % [id, work])
 		assert_eq(found, int(z[3]), "%s's vignette people" % z[1])
+	_done()
+
+
+## Reedhollow lived in (the Lead, 2026-10-30), as still as the Kirru are: fishers wading the lagoon, a pair talking in
+## bouts on the ring, a youngster watching, on the Kirru's own clips.
+func test_reedhollow_vignettes_wade_talk_and_watch() -> void:
+	var zone := (load("res://game/levels/ch10/reedhollow/reedhollow.tscn") as PackedScene).instantiate() as Node3D
+	_holder().add_child(zone)
+	var layer := VillagerLayer.wire(zone, &"ch10/reedhollow")
+	layer.build()
+	for id: StringName in [&"fisher_1", &"fisher_2", &"fisher_3", &"talker_1", &"talker_2", &"shore_youngster"]:
+		var npc := layer.villager(id)
+		assert_true(npc != null and npc.actor != null, "%s stands in Reedhollow wearing a Kirru body" % id)
+		if npc != null and id.begins_with("fisher"):
+			assert_true(npc.global_position.y < -1.0, "%s wades the lagoon" % id)
+	assert_eq(layer.villager(&"talker_1").partner, layer.villager(&"talker_2"), "the pair talk together")
 	_done()

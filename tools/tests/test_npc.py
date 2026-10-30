@@ -202,7 +202,8 @@ class Crowd(unittest.TestCase):
         act1 = [p for p in self.crowd["people"]
                 if int(p["zone"].split("/")[0][2:]) < 10 and not gen_crowd.is_late(ranges, p)]
         self.assertEqual(len(act1), 56)
-        self.assertEqual(vignettes, {"ch02/haluna": 15, "ch01/oruvel": 6, "ch05/pemakar": 5})
+        self.assertEqual(vignettes, {"ch02/haluna": 15, "ch01/oruvel": 6, "ch05/pemakar": 5, "ch12/quellan": 8,
+                                     "ch17/hollowmere": 4, "ch13/ansedra": 7})
         self.assertEqual(len(by_zone["ch17/hollowmere"]), 10, "Hollowmere's Saltwright townsfolk (Ch15 B11)")
 
     def test_crowd_rows_must_match_their_person(self) -> None:
