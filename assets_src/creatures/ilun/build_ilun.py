@@ -703,6 +703,8 @@ IDLE_SEC = 4.0
 READY_SEC = 1.4
 ATTACK_SEC = 1.2
 ATTACK_CONTACT = 0.55
+TAIL_SEC = 1.1
+TAIL_CONTACT = 0.5
 CAST_SEC = 1.6
 CAST_CONTACT = 0.8
 HIT_SEC = 0.5
@@ -805,7 +807,7 @@ def build_ready() -> ck.Clip:
 
 
 def build_attack() -> ck.Clip:
-    c = ck.Clip("attack", ATTACK_SEC)  # the brine lash: he banks, lifts his left wing and sweeps it forward and down
+    c = ck.Clip("brine_lash", ATTACK_SEC)  # he banks, lifts his left wing and sweeps it forward and down
     for t, rx, ry, rz, ly, wl, wr, sw, cr in (
             (0.0, 0, 0, 0, 0, (0, 0, 0), (0, 0, 0), 0.0, 0.0),
             (0.32, -6.0, -6.0, 11.0, 0.17, (26.0, 16.0, 10.0), (-4.0, -4.0, -2.0), -8.0, 12.0),
@@ -834,6 +836,20 @@ def build_cast() -> ck.Clip:
     return c
 
 
+def build_tail_whip() -> ck.Clip:
+    """His plain attack (M3-CRB-013: its own move, apart from Brine Lash's wing sweep): he turns away to wind up, the
+    tail cocked, then turns back hard and the tail whips through at TAIL_CONTACT, the float swinging after."""
+    c = ck.Clip("attack", TAIL_SEC)
+    for t, ry, rz, ly, tail_y, tail_x, w in ((0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.3, 16.0, -6.0, 0.1, -26.0, -6.0, 6.0),
+                                              (0.4, 18.0, -7.0, 0.12, -30.0, -8.0, 7.0),
+                                              (TAIL_CONTACT, -12.0, 6.0, 0.04, 38.0, 10.0, -6.0),
+                                              (0.7, -6.0, 3.0, 0.02, 18.0, 4.0, -3.0), (TAIL_SEC, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)):
+        c.key("body", t, (0.0, ry, rz), (0, ly, 0))
+        wings(c, t, (w, w * 0.8, w * 0.6), (-w, -w * 0.8, -w * 0.6))
+        tail_keys(c, t, ry=tail_y, rx=tail_x)
+    return c
+
+
 def build_hit(name: str = "hit", side: float = 1.0, amp: float = 1.0) -> ck.Clip:
     """Pushed back and pitched nose up, wings flinching up, crest snapped back, rolled a little to `side`.
     The kit's mirrored hit_b would flip the wings' flinch down, so hit_b is authored: the roll to the other side,
@@ -841,7 +857,7 @@ def build_hit(name: str = "hit", side: float = 1.0, amp: float = 1.0) -> ck.Clip
     c = ck.Clip(name, HIT_SEC)
     near, far = (12.0, 10.0, 8.0), (15.0, 12.0, 9.0)
     for t, s in ((0.0, 0.0), (HIT_PEAK, amp), (0.3, -0.25 * amp), (HIT_SEC, 0.0)):
-        c.key("body", t, (-11.0 * s, 0, 4.0 * s * side), (0, 0.04 * s, -0.08 * s))
+        c.key("body", t, (-12.0 * s, 0, 4.0 * s * side), (0, 0.14 * s, -0.28 * s))
         lw, rw = (near, far) if side > 0 else (far, near)
         wings(c, t, tuple(v * s for v in lw), tuple(v * s for v in rw))
         crest_keys(c, t, -10.0 * s)
@@ -864,11 +880,12 @@ def build_defend() -> ck.Clip:
 
 def build_ko() -> ck.Clip:
     c = ck.Clip("ko", KO_SEC)  # the fall: a flinch, then he tips back, folds his wings up and back, and settles
+    # (M3-CRB-013: he drops 22 cm (was 8) and folds his wings high, so the KO reads at battle distance)
     for t, rx, ly, w, sw, cr, tl in ((0.0, 0, 0, (0, 0, 0), 0.0, 0.0, 0.0),
-                                     (0.2, -8.0, 0.03, (10.0, 8.0, 6.0), 0.0, -8.0, 4.0),
-                                     (1.0, -20.0, -0.04, (30.0, 26.0, 18.0), -14.0, -14.0, 18.0),
-                                     (1.45, -24.0, -0.08, (36.0, 30.0, 22.0), -18.0, -16.0, 24.0),
-                                     (KO_SEC, -24.0, -0.08, (36.0, 30.0, 22.0), -18.0, -16.0, 24.0)):
+                                     (0.2, -8.0, 0.05, (10.0, 8.0, 6.0), 0.0, -8.0, 4.0),
+                                     (1.0, -22.0, -0.12, (44.0, 38.0, 28.0), -14.0, -14.0, 18.0),
+                                     (1.45, -26.0, -0.2, (56.0, 48.0, 36.0), -18.0, -16.0, 24.0),
+                                     (KO_SEC, -26.0, -0.22, (56.0, 48.0, 36.0), -18.0, -16.0, 24.0)):
         c.key("root", t, (0, 0, 0), (0, ly, 0))
         c.key("body", t, (rx, 0, 0))
         wings(c, t, w, sweep=(sw, sw))
@@ -950,7 +967,7 @@ def build_release() -> ck.Clip:
 
 
 def build_clips() -> list[ck.Clip]:
-    clips = [build_idle(), build_ready(), build_attack(), build_cast(), build_hit(),
+    clips = [build_idle(), build_ready(), build_attack(), build_tail_whip(), build_cast(), build_hit(),
              build_hit("hit_b", -1.0, ck.HIT_B["amp"]), build_defend(), build_ko(),
              build_victory(), build_rise(), build_dismiss(), build_special(), build_release()]
     return [hang_float(c) for c in clips]

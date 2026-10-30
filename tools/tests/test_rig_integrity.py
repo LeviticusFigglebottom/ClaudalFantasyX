@@ -282,6 +282,10 @@ class TestRigIntegrityIvo(_HeroGuards, unittest.TestCase):  # M3-CHR-540: the na
     hero = "ivo"
 
 
+class TestRigIntegrityOfficer(_HeroGuards, unittest.TestCase):  # M3-CHR-593: the Ch8 officer
+    hero = "officer"
+
+
 # M3-CHR-03: villager builds with a `"villager": true` entry in rig_checks.json (GLB under assets/characters/villagers/,
 # clips from villager_clips.py)
 class TestRigIntegrityTavi(_HeroGuards, unittest.TestCase):

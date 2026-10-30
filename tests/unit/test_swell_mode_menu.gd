@@ -206,7 +206,8 @@ func test_auto_floors_every_input_kind_at_its_played_at_good_result() -> void:  
 	for row: Variant in BattleSwell.load_config().get("inputs", []):
 		var plain := row as Dictionary
 		var input := SwellInput.create(s.timing_input(plain))
-		kinds.append(input.kind)
+		if not kinds.has(input.kind):
+			kinds.append(input.kind)
 		input.advance(input.duration_sec() + 1.0)  # the player does nothing at all
 		assert_true(input.is_done(), "%s ran out" % plain["id"])
 		var good := SwellInput.scripted_result(plain, SwellInput.QUALITY_GOOD)

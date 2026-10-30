@@ -115,6 +115,7 @@ def skin(bake_dir: Path, extra: dict, out: Path | None = None, prefix: str = "mo
 
     moll = hair_mod is None  # Moll himself (the Stillguard variants pass their own hair module)
     hair_mod = hair_mod or moll_hair
+    moll_hair.configure(extra.get("_hair", {}))  # M3-CHR-592: the broken front, where the params give one
     sk = dict(extra["_skin"], scalp_density=SCALP_DENSITY)
     if moll:  # M2-CHR-524: Toma's shaded scalp under the cards (the lit skin between the painted hairs read ginger);
         # the helmeted Stillguard variants keep their scalp until they are rebuilt with it

@@ -219,6 +219,11 @@ JOBS = [
      "sfx"),
     ("assets_src/sfx/act1_final_ambience.py", "assets/lfs/audio/ambience",
      _source_files("assets_src/sfx/act1_final_ambience.py"), "sfx_set"),
+    # M3-AUD-864: Act I's cutscene clips that still played nothing (CutsceneAudio, cutscene_foley.json `anim`)
+    ("assets_src/sfx/act1_cutscene_foley.py", "assets/audio/sfx/cutscene",
+     _source_files("assets_src/sfx/act1_cutscene_foley.py"), "sfx"),
+    ("assets_src/sfx/act1_swell_finisher_sfx.py", "assets/audio/sfx/battle",
+     _source_files("assets_src/sfx/act1_swell_finisher_sfx.py"), "sfx"),
     ("assets_src/music/prologue_dusk.py", "assets/lfs/audio/music", ["prologue_dusk.ogg", "prologue_dusk.loop.json"], "music_loop"),
     # M3-AUD-832: the UI track's new screens (menu motion, the title's reveal, save slots, shrine travel, Reefball HUD)
     ("assets_src/sfx/screen_sfx.py", "assets/audio/sfx", _source_files("assets_src/sfx/screen_sfx.py"), "sfx"),

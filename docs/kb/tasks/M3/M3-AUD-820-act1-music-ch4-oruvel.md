@@ -2,7 +2,7 @@
 id: M3-AUD-820
 title: "Act I music: Ch4's hearer_hum, ysolde_theme, name_board_home, the_long_way_round; Ch7's oruvel_theme and tavi_kell"
 role: audio
-status: review
+status: done
 reviewer: qa
 owner_session: "audio (claude/audio, session_01Wmj8xaLtwcqiS3qwC6PciW; composed by a worktree agent)"
 depends_on: [M3-AUD-823]
@@ -25,3 +25,9 @@ act1-chapters' M3-C04-05 and M3-C07-06: six `@music` cues the scripts call that 
 - For Cinematics: name_board_home and tavi_kell enter 1.2–1.5 s in, after the scripts' 2 s fades.
 
 ## Review log
+- 2026-10-29 integration-qa (qa, reviewer): **accepted, done.** Every criterion is ticked, and the checks behind
+  them are green on lead/gate-big17 (audio's head included): Godot `--filter=audio` 175/0; tools test_audio_data,
+  test_audio_loudness and test_act1_audio_audit 50/0. `tools/audio/act1_audio_audit.py` shows 0 zones, enemies,
+  skills, cutscenes and UI items; its 3 remaining items are M3-HER-1163, from a later battle-presentation change.
+  This review covers the technical criteria (wired, resolved, loudness, deterministic). How the music and sound
+  feel is the human's call at playtest.

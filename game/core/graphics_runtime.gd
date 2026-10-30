@@ -156,6 +156,14 @@ static func apply_system_tiers(root: Node, preset: String) -> int:
 			var rig := n as UnderwaterRig
 			if rig.get_quality() != UnderwaterRig.tier_for_preset(preset) and rig.set_quality(preset):
 				changed += 1
+		elif n is WaterSphereRig:  # M3-ARC-1324: the Reefball ball and the Tamsule Bell's held drop
+			var sphere := n as WaterSphereRig
+			if sphere.get_quality() != preset and sphere.set_quality(preset):
+				changed += 1
+		elif n is SmokeColumn:  # M3-ARC-1324: the Ch6 camp's smoke (its march steps per preset)
+			var smoke := n as SmokeColumn
+			if smoke.get_quality() != preset and smoke.set_quality(preset):
+				changed += 1
 	return changed + CharacterShaderTiers.apply_to_tree(root, CharacterShaderTiers.tier_for_preset(preset))
 
 

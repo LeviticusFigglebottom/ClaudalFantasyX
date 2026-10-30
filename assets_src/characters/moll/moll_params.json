@@ -62,6 +62,7 @@
     "card_width_m": [0.007, 0.010],
     "scalp_cards": [380, 300, 200],
     "temple_grey": 0.85,
+    "front_break": {"width_deg": 38.0, "amp": 0.022},
     "grey_elsewhere": 0.05,
     "seed": 29
   },

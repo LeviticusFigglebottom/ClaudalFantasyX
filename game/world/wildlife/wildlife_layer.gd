@@ -24,6 +24,9 @@ const USEC_PER_MS := 1000.0
 const VIS_HIDDEN := 0
 const VIS_PAUSED := 1
 const VIS_ACTIVE := 2
+## `"ground": {"physics": true}`: heights from the zone's collision, cached per cell (x, z quantized).
+const PHYSICS_GROUND_CELL_M := 0.25
+const PHYSICS_GROUND_TOP_M := 60.0
 
 ## The zone's location id (locations.json), e.g. ch02/haluna; it names the data file and seeds the animals.
 @export var zone_id: StringName = &""
@@ -55,6 +58,7 @@ var paused_groups := 0
 var hidden_groups := 0
 
 var _built := false
+var _ground_cache: Dictionary = {}
 var _last_vis := PackedInt32Array()
 var _player: Node3D
 var _seed := 0
@@ -141,6 +145,9 @@ func _group_seed(kind: String, row: Dictionary) -> int:
 func _resolve_ground(spec: Dictionary) -> Callable:
 	if spec.is_empty():
 		return Callable()
+	if bool(spec.get("physics", false)):
+		return _physics_ground  # the Act I audit: crabs follow uneven ground (a kit's terrain) by its collision
+
 	var base := get_parent() if get_parent() != null else self
 	var node := base.get_node_or_null(NodePath(str(spec.get("node", ""))))
 	var method := StringName(str(spec.get("method", "")))
@@ -148,6 +155,24 @@ func _resolve_ground(spec: Dictionary) -> Callable:
 		push_warning("WildlifeLayer %s: no ground %s.%s; areas use their flat y" % [zone_id, spec.get("node"), method])
 		return Callable()
 	return Callable(node, method)
+
+
+## The zone collision's height under (x, z): a ray straight down, cached on a PHYSICS_GROUND_CELL_M grid. Until the
+## zone's bodies are in the physics space (the first frames) it answers NAN, and the beach keeps its flat y.
+func _physics_ground(x: float, z: float) -> float:
+	var key := Vector2i(roundi(x / PHYSICS_GROUND_CELL_M), roundi(z / PHYSICS_GROUND_CELL_M))
+	if _ground_cache.has(key):
+		return float(_ground_cache[key])
+	if not is_inside_tree():
+		return NAN
+	var from := Vector3(x, PHYSICS_GROUND_TOP_M, z)
+	var q := PhysicsRayQueryParameters3D.create(from, from - Vector3(0.0, PHYSICS_GROUND_TOP_M * 2.0, 0.0))
+	var hit := get_world_3d().direct_space_state.intersect_ray(q)
+	if hit.is_empty():
+		return NAN
+	var y := float((hit["position"] as Vector3).y)
+	_ground_cache[key] = y
+	return y
 
 
 func gull_count() -> int:

@@ -181,7 +181,7 @@ def dialogue_calls(actor: str) -> set:
 class TestIvo(unittest.TestCase):
     def test_table(self):
         self.assertNotIn(IVO, sg_table.variants())  # the squad stays six
-        self.assertEqual(sg_table.named(), [IVO])
+        self.assertEqual(sg_table.named(), [IVO, "officer"])  # M3-CHR-593: and the Ch8 officer
         self.assertEqual(sg_table.name(IVO), IVO)  # his own folder and the dialogue's speaker id
         p = sg_table.variant_params(IVO)
         var = p["_variant"]

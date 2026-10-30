@@ -694,6 +694,24 @@
       "voices": 2,
       "volume_db": 0.0,
       "_note": "M3-AUD-861 / M3-BPR-422: Liss's Swell: the reel-stop's bright brass strike"
+        },
+    "abl_swell_weighted_swing": {
+      "files": [
+        "res://assets/audio/sfx/battle/abl_swell_weighted_swing.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-864: Kerrid's Swell finisher (long_hold): the flat iron sweep at knee height and the wet sand thrown out, over swell_kerrid's landing"
+    },
+    "abl_swell_reel_stop": {
+      "files": [
+        "res://assets/audio/sfx/battle/abl_swell_reel_stop.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-864: Liss's Swell finisher (three_reel_charge): the brass ring locking shut, then the salt-glass flash held on bound light"
     }
   }
 }

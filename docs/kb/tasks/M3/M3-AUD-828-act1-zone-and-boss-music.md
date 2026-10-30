@@ -2,7 +2,7 @@
 id: M3-AUD-828
 title: "Act I's zones and bosses play their music: zone rows, encounter rows and the Matron's Pour"
 role: audio
-status: review
+status: done
 reviewer: qa
 owner_session: "audio (claude/audio, session_01Wmj8xaLtwcqiS3qwC6PciW)"
 depends_on: [M3-AUD-827]
@@ -25,3 +25,9 @@ scenes and encounters have landed, so walking into those zones and starting thos
   encounter are on claude/act1-chapters, not yet here.
 
 ## Review log
+- 2026-10-29 integration-qa (qa, reviewer): **accepted, done.** Every criterion is ticked, and the checks behind
+  them are green on lead/gate-big17 (audio's head included): Godot `--filter=audio` 175/0; tools test_audio_data,
+  test_audio_loudness and test_act1_audio_audit 50/0. `tools/audio/act1_audio_audit.py` shows 0 zones, enemies,
+  skills, cutscenes and UI items; its 3 remaining items are M3-HER-1163, from a later battle-presentation change.
+  This review covers the technical criteria (wired, resolved, loudness, deterministic). How the music and sound
+  feel is the human's call at playtest.

@@ -112,7 +112,7 @@
       "centre": [0.0, 0.08, -0.03],
       "neck_fill": 0.0,
       "neck_top_m": 0.12,
-      "neck_scale": [1.04, 1.3],
+      "neck_scale": [1.04, 1.5],
       "eye_at": [0.055, 0.022],
       "eye_sink": 0.55,
       "eye_region_m": [0.022, 0.042],
@@ -123,7 +123,18 @@
       "sample_stride": 2,
       "smooth_m": 0.009,
       "detail_keep": 0.25,
-      "max_move_m": 0.1
+      "max_move_m": 0.1,
+      "eye_round": {
+        "_about": "M3-CHR-506 second look-dev pass (pell_head.KirruWarp.round_eyes): the lid opening scaled about the eye's centre, `width` along the fissure and `height` across it, inside the lid field radius region[0], fading out by region[1]; the eye frames take the same scale.",
+        "width": 0.72,
+        "height": 1.6,
+        "region": [1.35, 2.2]
+      }
+    },
+    "ear_shape": {
+      "_about": "M3-CHR-506 second look-dev pass (pell_head.KirruWarp._ear_shape): the ear drawn round (ear_round 1 = as tall as it is wide) and laid closer to the skull (ear_flat scales its depth off it).",
+      "ear_round": 0.85,
+      "ear_flat": 0.55
     }
   },
   "_costume": {
@@ -238,11 +249,13 @@
   },
   "_fur": {
     "_about": "pell.md \u00a75 (pell_fur.py, pell_textures.py): the fur colours and its flow, the silhouette fringe.",
-    "dark": "#3B2B22",
-    "mid": "#5A4434",
+    "dark": "#30241D",
+    "mid": "#6A5444",
     "pale": "#D9CDB4",
     "bare": "#2E2420",
     "nose_pad": "#2A201C",
+    "eye_ring": [1.25, 2.1],
+    "eye_ring_strength": 0.85,
     "stripe_width_m": [
       0.07,
       0.03

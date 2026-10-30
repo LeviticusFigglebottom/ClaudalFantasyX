@@ -49,3 +49,20 @@ reed mantle and girdle. The face is the weakest part at dialogue range (below).
 pell_front, pell_back, pell_three_quarter, pell_profile, pell_face, pell_face_stylized, pell_face_surprised,
 pell_face_grief, pell_silhouette_lineup, pell_clip_storm_call, pell_clip_walk, pell_battle_idle, pell_battle_attack,
 pell_storm_ch8 (the first build in three rounds; the look-dev pass after each of its four steps).
+
+## Second look-dev pass (2026-10-29, claude/characters @ 2c2acb54)
+Self-rendered all 14 `pell_*` shots on cloud lavapipe and viewed them, with close crops of the eyes, the hand and the
+nape. **No baselines written.** Against "What still does not read" above:
+
+| # | Was | Now |
+|---|---|---|
+| 1 | Almond lids with a dark lid line: human eyes in an otter's head | The opening is rounder (`_kirru.otter_head.eye_round`: 0.72 along the fissure, 1.6 across it, scaled inside the warp so the blink and the expression units follow), a soft dark fur ring round each eye, and a dark wet margin (Pell's own `tear_line` colour; the shared one is a pink human lid). At dialogue range they read as small round dark eyes. |
+| 2 | Small human ears | Drawn round and laid against the skull (`_kirru.ear_shape`). At this size they barely show, as an otter's do. |
+| 3 | Uniform fur at full figure | A darker saddle (`#30241D`) against a lighter, greyer mid brown (`#6A5444`); stronger body clumps and relief. The back view now shows the saddle down the spine and the outer limbs. The cream throat stripe's edge is soft and broken (it read as a painted bib). Still no sheen lobe along the flow (§12 Q8, Rendering's). |
+| 4 | The right hand open in storm_call | The fingers close together beside the middle finger with a slight curl, the thumb in along the index (`hero_clips` FLAT_HAND), in storm_call and in cast's call: a flat palm on the throat. |
+| 5 | A ridge where the head meets the neck | The upper neck is thicker (`neck_scale` 1.3 -> 1.5), so the back of the skull no longer overhangs it. A small knob remains behind the ear line in profile. |
+
+**Still open:** the head's skin reads smooth up close (the fur is in the maps, not in the silhouette, except the
+outline cards); the face is a warm orange under the warm key; the profile's small knob at the back of the skull; the
+body is still lean and smooth between the outline cards at full figure (more cards would pass the 5 MB GLB cap:
+pell.glb is 4.79 MB). These are the next look-dev steps if the Lead or the human still reads them.

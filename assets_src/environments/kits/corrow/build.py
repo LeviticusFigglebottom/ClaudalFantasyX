@@ -20,6 +20,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
+import b_cargo  # noqa: E402
 import b_strand  # noqa: E402
 import cw_breach  # noqa: E402
 import cw_common as cw  # noqa: E402
@@ -34,8 +35,10 @@ import cw_watchers  # noqa: E402
 
 kc = cw.kc
 MAX_GLB_BYTES = 5 * 1024 * 1024  # ADR 0005
-# cw_breach, cw_fallen: M3-ENV-04B; cw_story: M3-ENV-707; cw_night: M3-ENV-708; b_strand: env-art-b (Ch9's strand)
-MODULES = (cw_wall, cw_watchers, cw_stair, cw_town, cw_far, cw_breach, cw_fallen, cw_story, cw_night, b_strand)
+# cw_breach, cw_fallen: M3-ENV-04B; cw_story: M3-ENV-707; cw_night: M3-ENV-708; b_strand: env-art-b (Ch9's strand);
+# b_cargo: env-art-b (the trader's lashed bales, M3-ENV-1326)
+MODULES = (cw_wall, cw_watchers, cw_stair, cw_town, cw_far, cw_breach, cw_fallen, cw_story, cw_night, b_strand,
+           b_cargo)
 
 
 def targets() -> dict:

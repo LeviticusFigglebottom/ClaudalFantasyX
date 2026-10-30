@@ -656,8 +656,8 @@ DLG_CH08_BARK_HOBB_002,"First down, last up."
 DLG_CH08_BARK_HOBB_003,"Again, and mean it. The sea won't wait for you to wake up."
 DLG_CH08_BARK_KITES_001,Mine's higher. They like mine.
 DLG_CH08_BARK_KITES_002,"They can't even see yours, it's behind the cloud. Mine's got a tail."
-DLG_CH08_BARK_NETMENDER_001,Old Net-Mender [neutral]: Wall's been rebuilt after every Rising. You can count them in the stone.
-DLG_CH08_BARK_NETMENDER_002,Old Net-Mender [neutral]: The pale blocks are the last one.
+DLG_CH08_BARK_NETMENDER_001,Wall's been rebuilt after every Rising. You can count them in the stone.
+DLG_CH08_BARK_NETMENDER_002,The pale blocks are the last one.
 DLG_CH08_BARK_STILLGUARD_001,Beacon's been lit nine hundred years. Opened full maybe forty times. You'd think we'd get a better plan.
 DLG_CH08_BEACON_OPENED_001,Down. Now. The stair.
 DLG_CH08_BINDING_001,She's very warm.
@@ -1136,6 +1136,10 @@ DLG_CH16_SEFIR_016,I carried her up so you could do this.
 DLG_CH16_SEFIR_017,Captain.
 DLG_CH16_SEFIR_018,Then I am sorry for what comes next. I would have given you a long life.
 DLG_PROLOGUE_DEAD_CITY_001,"Everyone I'm going to tell you about is still here tonight. Remember that, later."
+DLG_TEST_CUTSCENE_ARRIVE_001,Arrive fixture line.
+DLG_TEST_CUTSCENE_ARRIVE_002,Arrive fixture closing line.
+DLG_TEST_CUTSCENE_CARD_001,Card fixture.
+DLG_TEST_CUTSCENE_CARD_002,After the card.
 DLG_TEST_CUTSCENE_001,First fixture line.
 DLG_TEST_CUTSCENE_002,Fixture option A.
 DLG_TEST_CUTSCENE_003,Fixture option B.

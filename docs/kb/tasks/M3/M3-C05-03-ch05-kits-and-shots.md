@@ -2,10 +2,11 @@
 id: M3-C05-03
 title: Ch5 kits swap-in (Pemakar terrace stone, Ashcrown) and the P/A shots
 role: environment
-status: todo
-owner_session: ""
+status: review
+owner_session: "env-art-b (claude/env-art-b; Ch5–Ch9 dressing is env-art-b's, Lead 2026-10-28)"
 depends_on: [M3-C05-02]
 milestone: M3
+reviewer: art
 request-from: cinematics
 ---
 ## Goal
@@ -42,5 +43,15 @@ Write `pemakar.md` and `ashcrown.md` mood briefs with the shot table (P01–P12 
     the zones' light rows as Ch6's (`environment_res` and the sun row).
   - **What's left is placement,** which is act1-chapters' (ADR 0200; their Ch5 swap waits on M3-ARC-1216 for the
     steep stair). For the Lead: re-route or close into act1-chapters' swap.
+
+- **env-art-b, 2026-10-29 (placement done; the Lead gave Ch5–Ch9 dressing to env-art-b on 10-28):**
+  - **Pemakar:** M3-ENV-1301 (the harbour quay, wake wall, crown bell, the sea-cut weir at the quay's east end),
+    M3-ENV-1305 (votive lamps), M3-ENV-1307 (the weir's leat), M3-ENV-1318 (the night plume); the dawn variant takes
+    `pemakar_day_environment.tres`. Spawns, marks, triggers and shots kept (`test_ch05_thread`, `--filter=pemakar`).
+  - **Ashcrown:** M3-ENV-1303 (the zone in the kit's frame: the causeway and flying stair on HeroStairs, the trial on
+    the east ambulatories with its bowls, gates, rods, chains, plates and seal, the anvil court), M3-ENV-1310 (the
+    loggia), M3-ENV-1325 (player-height looks: the fill, the metals and lacquer). Walkable: `test_ch05_ashcrown_walkable`.
+  - **Arenas:** M3-ENV-1303b (`ashcrown_forecourt_day`, `ashcrown_anvil_court`).
+  - **Left elsewhere:** the `ch05_harbour_dusk` light row in Pemakar's flow is act1-chapters' (story flow).
 
 ## Review log

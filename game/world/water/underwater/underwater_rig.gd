@@ -161,6 +161,13 @@ func _author_volumetric_fog() -> void:
 
 ## The nearest ancestor holding a WorldEnvironment: the zone (its environment and its lights).
 ## Searching from the current scene instead found another scene's environment under tools and tests.
+## The deferred half of _build_lantern: the scene root as it is now, if the rig is still in one.
+func _refresh_bounce_passes() -> void:
+	var root := _scene_root()
+	if root != null and is_instance_valid(root):
+		CharacterShaderTiers.refresh_bounce_passes(root)
+
+
 func _scene_root() -> Node:
 	var n := get_parent()
 	while n != null:
@@ -395,10 +402,9 @@ func _build_lantern(shadows: bool) -> void:
 		lantern = OmniLight3D.new()
 		lantern.name = "RhenLantern"
 		lantern_target.add_child(lantern)
-		# A positional light near the cast: the mouths' bounce passes now draw (M1-RND-26).
-		var root := _scene_root()
-		if root != null:
-			CharacterShaderTiers.refresh_bounce_passes.call_deferred(root)
+		# A positional light near the cast: the mouths' bounce passes now draw (M1-RND-26). Deferred through the rig,
+		# so a rig (or a scene) freed before the flush drops the call instead of handing a freed root on.
+		_refresh_bounce_passes.call_deferred()
 	var ln := data.get("lantern", {}) as Dictionary
 	lantern.light_color = Color(str(colors().get("lantern", "#FFB16E")))
 	lantern.light_energy = float(ln.get("energy", 5.0))

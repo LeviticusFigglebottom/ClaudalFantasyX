@@ -297,3 +297,158 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   clip playback), the Spar-wraith's home-camera fit (M3-CRB-011 note), M3-CRB-010, M3-CRB-012, and the Act II Vowbound
   portraits (creatures, paused). The one full battle run on 052d69a2 showed only the pre-existing Act II
   test_battle_act1_ability_vfx failures.
+
+## 2026-10-29: the new Lead's brief (integration `claude/new-session-mj8c3c` merged at 1d0f272b, then lead/gate-big17 at its head)
+- **Merges:** integration (one conflict, pc-gpu.md, not mine: took theirs), then `origin/lead/gate-big17` (the
+  Lead's "newest everything"; same pc-gpu.md conflict, same resolution). This branch now holds big17 + the below.
+- **Rows 12 and 35 (Moll a grey capsule in his fight): verified fixed on big17.** Pass B (lead/gate-ft-beach @
+  93d0741e, 07:06) predates the fix (066cc8b9, 12:31, his battle_sandbox.json stand-in `scene`). On big17, Moll
+  draws his actor in ch06_inquisitor at the default camera, with the hound (scratch fixture, viewed).
+  **New test** `test_every_act1_boss_encounter_seats_real_bodies_not_capsules` (test_creature_bosses_act1): for every
+  encounter that fields an Act I boss, Moll included, it builds each boss's FighterStandIn as the battle does and
+  fails if it falls back to the primitive. Shown live: with Moll's `scene` removed it fails.
+- **Row 36 (the Reach's arm over the party): fixed model-side, a654ccc5.** At the old seat the digits reached x
+  1.2-1.7, between Asha and Toma. Its boss seat [-2.6,0,-2.4] -> [-5.0,0,-2.4] (out along the arm's own axis): the
+  hand still grips the wall-head and reads, with a clear gap before the party, in every clip (idle, the phase idles,
+  attacks, casts, hits, intro: bones below 4 m stay at x <= -1.25; Asha's body starts at -0.1). Test
+  `test_the_reach_keeps_its_arm_out_of_the_party_lane` (test_battle_boss_seat) fails at the old seat.
+  **For battle-presentation:** rendered with your M3-BPR-425 `rest_by_enemy` row (4 m back, 2 m up) in place; the
+  hand stays in frame at the left. With the arm now clear of the lane you may want less pull-back; your call.
+  The intro frame is unchanged.
+- **Row 30 (capsules in drowned_choir_ring, iskarra_spire_crown, undertow_cage, undertow_heart(_letting),
+  keth_seep_terrace): still record only.** On big17 no encounter uses any of them (arenas.json only): later acts,
+  paused by ADR 0041.
+- **Primitive-at-battle-distance sweep** (all seven Act I boss fights at the default camera, big17 tree, scratch
+  fixture, viewed as a contact sheet): Hullgnaw, Bottle hermit, Matron, Moll, Drownbell read well. **The Spar-wraith
+  read as ship's rigging:** the camera saw its A-frame edge-on (one mast, the body behind it). **Fixed, d4d52043:**
+  creatures.json `spar_wraith.stand_in.yaw_deg` 45 (stormgull and squall_wing already use 60); the frame, hanging
+  body and glowing seam now read. Its intro still reads.
+- **Clips battle-presentation's choreography asks for:** their log (claude/battle-presentation, 10-29) asks nothing
+  of creatures-b; the earlier check (every Act I Vowbound skill and finisher has its clip) still passes.
+- **Checks:** validate_data 0/0; gdlint, gdformat; tools test_creatures OK; Godot boss 86/0, creature_bosses 7/0,
+  ch08 25/0, ch04 13/1 (**pre-existing on big17, not mine:** test_ch04_zones `test_the_wakes_field_camera_is_halunas`,
+  10 volumes vs 8; it fails the same on an untouched big17 worktree). **Skipped:** Blender (no source touched),
+  coverage (no game/battle or game/progression code), the tools suite (no tools/ change).
+- SELF-RENDERED @ d4d52043 (scratch default-camera fixture for all seven fights, never committed; plus
+  battle_boss_intro_reach and battle_boss_intro_wraith): viewed. Intro shots are drift against their old baselines
+  (which predate the models), not a regression: battle_boss_intro_reach rendered the same at the old and new seat.
+- **MERGE-READY @ d4d52043** (+ this log commit): a654ccc5 (rows 35/36 and both tests), d4d52043 (the Spar-wraith's
+  yaw). Shots that can move: battle_boss_intro_reach, battle_boss_intro_wraith, any battle shot fielding the Reach
+  or the Spar-wraith.
+
+### PC-QUEUE
+- GPU QA rows 12/35 (Moll) and 36 (the Reach, now seat + battle-presentation's rest frame): re-check on the RX 9070 XT.
+- The Spar-wraith's 45° turn: check in live play on the derelict deck at night.
+
+- **BACKLOG EMPTY (2026-10-29):** rows 12/35/36 fixed and pinned by tests, row 30 is later-act (record only), no clip
+  is asked of this track, and the boss sweep's one weak read (the Spar-wraith) is fixed. What's left is real-GPU only
+  (PC-QUEUE).
+
+## 2026-10-29 23:10: the Lead's move-pass brief (M3-CRB-013), on big18 (this branch fast-forwarded to lead/gate-big18)
+- **Method:** a scratch fixture freezes every clip at five beats from the battle camera in each creature's own fight
+  (plus head close-ups); a numeric pass samples every clip at 30 Hz (slide while grounded, depth under the floor,
+  per-frame jumps, loop seams, skill-to-clip sharing).
+- **Systemic finding:** most bosses play one `attack` and one `cast` for 2-6 skills (the Reach 6 on 2, the
+  Drownbell 5 on `cast`, the Spar-wraith 5 on 2, the Hullgnaw 3 on `attack`, the Matron 4 on 2). Each skill gets its
+  own clip via creatures.json `clip_by_skill` (phase `clips` maps for phase stances).
+- **Done: the Bottle hermit (9e2c4f93, 119af519):** its glass never moved, so every move read faint at battle
+  distance. Glass Jab rears back on its bulb (0.45 s telegraph) and lunges, **contact 0.45 -> 0.55**; Glass Flare
+  rocks up and aims its mouth, **new cast contact 0.75**; hits shove the glass; ready raises the claw. Blender verify
+  identical; tools test_creatures OK (grounding).
+- **In progress (worktree agents):** Hullgnaw (the strike plunged into the deck; its intro and KO rose from and sank
+  into solid raft planks, so it gets its own smashed-plank breach at its base; rib_lash, thrash, coil); Drownbell
+  (toll, toll_gather, flood_surge, undertow_surge, rouse_polyp; hits, flood phase); Spar-wraith and Cinder Matron.
+  Next: the Undertow's Reach, then the three Vowbound (Ilun's Brine Lash shares his basic attack).
+- **For battle-presentation:** every new clip changes when a blow lands. I will list each clip with its contact time
+  here before MERGE-READY; the hermit's are above (attack 0.55, cast 0.75).
+- **00:40 (10-30), M3-CRB-013 progress, pushed:**
+  - **Hullgnaw (6d92b013):** it now carries its own breach (a smashed hole in the deck with dark water, prised-up
+    boards, foam; its own `breach` root bone, so it stays put), and the intro, KO and phase_break go down into it,
+    not through planks. New tools test `HullgnawBreachTest`: nothing more than 5 mm under the deck outside the hole.
+    Gnaw `attack` is a level lunge-bite (contact 0.8); new `rib_lash` (0.8), `thrash` (1.25), `coil` (gnaw_coil, no
+    contact; a buff fits ~1.0 s); its own idle_b. 17.7k triangles (body 13.5k within 16k). **Portrait re-bake queued**
+    (the breach is in its bounds).
+  - **Undertow's Reach (7c24a9d2):** `undertow_pull` (1.35; Dark and Breach variants), `close_the_hand` (the 2-turn
+    telegraph, no contact), `hand_closes` (1.15), `breach_gather` (no contact), `breach` (1.2); Crust Slam stays
+    `attack` (1.2). **Its Breach stance is 2.6 m back (was 4.5):** further out it left the battle camera's frame for
+    the whole phase. Hits jolt harder. Lane test still passes.
+  - **Ilun (3c57b8c6):** his plain attack is its own tail whip `attack` (0.5); Brine Lash keeps the wing sweep as
+    `brine_lash` (0.55); hits shove him back; the KO drops 22 cm and folds the wings high. test_creature_ilun_vowbound
+    now pins brine_lash -> brine_lash.
+  - **Virel (b9ed133b):** strike, Kite Flare and hits about twice the reach; contacts unchanged.
+  - **Kahre: passes as is** (big distinct moves, each skill its own clip, hits and KO read).
+  - **For battle-presentation (contacts to sync VFX and hit-stops):** bottle_hermit attack 0.55 (was 0.45), cast
+    0.75 (new); hullgnaw attack 0.8, rib_lash 0.8, thrash 1.25; undertows_reach undertow_pull(_dark/_breach) 1.35,
+    hand_closes 1.15, breach 1.2; ilun attack 0.5, brine_lash 0.55. choreo.json style_by_skill is untouched.
+  - **For env-art (no action needed now):** the raft arena has no hole at the Hullgnaw's mark; the model carries it.
+  - **Still running:** Drownbell; Spar-wraith + Cinder Matron (worktree agents). Re-renders of my changed creatures
+    are queued (the shared CPU is at load ~14).
+- **01:30 (10-30), M3-CRB-013 DONE, MERGE-READY @ (this commit):** every move of the six Act I bosses and three Act I
+  Vowbound has its own clip, a telegraph that reads before contact, and stays on the floor; all nine re-rendered from
+  the battle camera on the combined tree and **viewed** (task to review, reviewer combat).
+  - **Drownbell (0bc132c5):** feet planted by IK every frame (they slid up to 32 cm); `toll` (1.0, unchanged; clip now
+    2.4 s), `toll_gather` (1.6), `flood_surge` (1.0), `undertow_surge` (1.3), `rouse_polyp` (1.2, three knocks at
+    0.92/1.2/1.5), Hood Slam `attack` (0.8); a lower, slumped flood stance with `attack_flood`, `hit_flood`,
+    `ready_flood`; a real intro (it rises, unfolds, tolls once ~2.02 s), hit and phase change.
+  - **Spar-wraith (57522318):** a `sail` bone (the shroud billows); Spar Stab `attack` (0.8, 0.48 s telegraph),
+    `shroud_sweep` (1.0), deck `lines_taut_deck` (0.8), `haul_deck` (1.1), `sea_lash_deck` (1.0), `ko_deck`;
+    `phase_drop` slam 0.82, the Shroud hides after the clip (`hide_after`, ~1.8 s, as the sheath appears).
+  - **Cinder Matron (f808f149):** `slag_pour` (1.15; slag leaves the bowl ~0.95-1.5 s), `bank_the_fire` (1.0),
+    `recrust_gather` (1.1), `recrust` (0.8: show `Crust` again here); hits rock her on her hem; `phase_change` burst at
+    0.85 (on `vfx_phase`).
+  - **Reach (fcd7c3a0):** the Breach stance is now 1.8 m back, 0.6 m up (it stays in frame); the crash rescaled.
+  - **Kit change, for creatures (request M3-CRB-014):** `CreatureActor.set_ko` plays the KO through the phase `clips`
+    map (the wraith's `ko_deck`); test_creature_actor updated for the Drownbell and wraith. Small, tested; creatures to
+    review.
+  - **For battle-presentation:** the full contact list is above (00:40) and here; the Toll's own lean/wind-up in
+    choreo.json's `toll` style now plays on top of a big clip, worth toning down; support VFX should start at the
+    supports' contacts (`toll_gather` 1.6, `lines_taut_deck` 0.8, `bank_the_fire` 1.0, `recrust_gather` 1.1);
+    `shroud_sweep` and `sea_lash_deck` cross the party lane ~0.85-1.2 s (a wide hold suits them).
+  - **Checks (combined tree):** Blender verify identical for all nine jobs changed; tools test_creatures +
+    test_blender_builds OK (incl. the new HullgnawBreachTest and every-vertex-above-the-floor); validate_data 0/0;
+    taskboard --check; gdlint/gdformat clean; Godot creature 88/0, boss 86/0, choreo 58/0, vowbound 89/0, ch01 20/0,
+    ch04 13/0, ch05 13/0, ch08 25/0, battle_lineup 5/0, set_piece 48/0, part_cues 6/0, boss_seat 3/0 (the Reach lane
+    test). **Pre-existing on big18, not mine:** test_slice_shots `slice_dock_night_yes holds a line of its scene
+    (ch03_dock_007)` (a dialogue check; my diff touches no dialogue). **Skipped:** coverage (no game/battle or
+    game/progression change), the screenshot manifest (the Lead's).
+  - **Shots that move** (for the gate; I wrote no baselines): every creature_* shot of the nine, every
+    battle_boss_intro_*, battle_vowbound_*, battle_choreo_vowbound_rise/summon, drownbell_flood, and any battle shot
+    fielding these models. The Hullgnaw portrait is re-baked (0fae8988, viewed).
+
+### PC-QUEUE
+- M3-CRB-013: view the nine bosses' and Vowbound's moves live on the RX 9070 XT (pops, foot contact, the Hullgnaw's
+  breach water, the night arenas' reads), plus GPU QA rows 12/35/36 as before.
+
+- **Next (the Lead's 01:08 message, ADR 0203, docs only):** the Act II boss and Vowbound design sheets
+  (docs/kb/plan/act2/bosses/, `draft: pre-gate`), with the Avalanche Ram's wool swap filed as my M4 task. In progress.
+
+## 2026-10-30 ~02:00: the Lead's 01:08 message (Act II preparation, docs only, ADR 0203)
+- Merged `origin/claude/new-session-mj8c3c` (clean).
+- **MERGE-READY @ (this commit): M3-CRB-015, the Act II boss and Vowbound design sheets**, `docs/kb/plan/act2/bosses/`
+  (all `draft: pre-gate`): README (index, the Act I move-pass rules every sheet follows, the Act II guardrails),
+  mangrove_drowner, lamp_engine (with the conduit-crawler adds), avalanche_ram, wakefin, malcor_venn (with the
+  flat-engine part), abiding_guard, nhoa, hesk, ethren, kesh (her first sheet). Each: silhouette at battle distance,
+  materials, rig and anchors, a clip per skill with telegraph and contact (ids marked proposed), phase stances,
+  arena read and seat/camera needs, balance curve, engine features, owners. People bosses' models are characters'.
+- **The Avalanche Ram's wool swap (ADR 0015)** is a was/becomes table in its sheet and filed as **M4-CRB-001**
+  (blocked by ADR 0203 until the Act I gate): ice plates, icicles, the ice beard and `salt_glass` become felted,
+  snow-caked wool with grit; slot `fleece_ice` -> `fleece_snow`. A build-script change, not a new model.
+- Checks: taskboard --check, validate_data 0/0, banned_terms grep clean, links resolve. No data, scene, asset or code.
+- LEAD-ASK: ADR 0015 covers temples and set pieces; `ridge_lynx` (frosted ear tufts) and `scree_crawler` (frost-split
+  scree, a frost counter) are Ch12 regulars. Default: file a creatures task to swap their frost for snow/grit too.
+- LEAD-ASK: people bosses' battle clips (Malcor Venn, the Abiding guard): creatures.json rows like Moll's stand-in
+  scene, or a characters table? Default: Moll's precedent (battle_sandbox stand-in scene + characters' clips).
+- LEAD-ASK: the Ram's `torn_fleece` and the Wakefin's `close_circle` are phases the plan doesn't name. Default: keep
+  them (each gives a mid-fight read); combat may cut.
+- LEAD-ASK: Wakefin (a fin fought from a boat's deck echoes the inspiring game): the draft keeps it one whole animal,
+  no deck adds, no separate fin target, an unlamped drifting barge. Confirm; and `sound_dive` = untargetable (draft)
+  or only evasion up?
+- LEAD-ASK: Kesh's battle scale 4.2 m (Kahre's summon frame), colossal only in the bind; element order = the order the
+  party met the Vowbound (draft). Confirm or set.
+- (Smaller design defaults, all in the sheets' "Open questions": Lamp Engine crawler start, Drowner snag-root effect,
+  Malcor Venn's engine break as a lent set-piece skill, the Abiding guard's identity and triggers, Nhoa's copy on
+  ordinary skills only, Hesk's Mending as its own skill, Ethren's Still Water as Stop on every foe.)
+
+- **BACKLOG EMPTY (2026-10-30 ~02:00):** M3-CRB-013 (the move pass) is in review with all nine viewed; GPU QA rows
+  12/35/36/30 answered (fixes on this branch); M3-CRB-015 sheets done; M4-CRB-001 waits on the Act I gate (ADR 0203);
+  M3-CRB-014 waits on creatures' review. Left: PC-QUEUE (real-GPU checks) and the LEAD-ASKs above (defaults chosen).

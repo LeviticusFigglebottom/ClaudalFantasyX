@@ -88,11 +88,24 @@ def arena(AS) -> dict:
     return {**table, "lamps": lamps + tier_lamps(AS) + [PARTY_KEY], "pieces": pieces}
 
 
+
+def _zone_looks():
+    """tools/act1/ch05_09_zone_looks.py: the zones' slot looks, which the arena wears too (KitSlotSwaps, M3-ENV-1326)."""
+    path = Path(__file__).resolve().parents[4] / "tools" / "act1" / "ch05_09_zone_looks.py"
+    spec = importlib.util.spec_from_file_location("ch05_09_zone_looks", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
 def main(out_dir: Path | None = None) -> int:
     AS = _arena_scenes()
     if out_dir is not None:  # tools/tests/test_b_arenas.py writes to a scratch dir
         AS.OUT_DIR = out_dir
-    print(f"ARENA {AS.write_arena(arena(AS)).name}")
+    zl = _zone_looks()
+    out = AS.write_arena(arena(AS))
+    out.write_text(zl.add_kit_slot_swaps(out.read_text(encoding="utf-8"),
+                                         zl.load_generator("ch05_pemakar_dressing").PEMAKAR_SLOTS), encoding="utf-8")
+    print(f"ARENA {out.name}")
     return 0
 
 

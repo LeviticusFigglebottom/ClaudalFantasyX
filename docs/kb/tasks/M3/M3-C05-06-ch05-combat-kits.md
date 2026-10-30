@@ -2,8 +2,8 @@
 id: M3-C05-06
 title: Ch5 combat follow-ups (Kerrid's real kit, Kahre, the Matron's smart band, the Quench Charm)
 role: combat
-status: todo
-owner_session: ""
+status: review
+owner_session: claude/battle-presentation (session_01UPFyEA8QkJULH74MGgnMvJ; the Lead, 10-29: the Swell techniques)
 depends_on: [M3-C05-02]
 milestone: M3
 request-from: cinematics
@@ -30,5 +30,16 @@ M3-C05-02 made Ch5 playable with provisional combat data. Each item below is mar
 - [ ] No pre-Ch5 band moves; if one does, re-measure it and log why.
 
 ## Notes
+- **2026-10-29, battle-presentation (the Lead's 10-29 assignment: the Swell part of item 1).**
+  - **Kerrid's Swell is The Long Hold** (`long_hold`): physical, power 14, one foe, accuracy 100, rank 3, no MP.
+    That is Return Tide's band (formulas.md § Swell, "Their techniques": 20 at good, 26 perfect).
+  - **Its input is the weighted swing** (`swell.json` `weighted_swing`). It is a `brace` row with one blow: hold
+    Confirm while the cleaver coils (graded at 1.1 s) and let go on the count at 2.4 s. +45% at good, +90% perfect,
+    like every input. No new input kind and no new constant.
+  - The presentation was staged in M3-BPR-422 (choreo `swing`, effect `swell_weighted_swing`). It was viewed in his
+    Matron fight with `tools/vfx/swell_finisher_sheet.gd`.
+  - **Still open in item 1 (not this pass):** his Lattice start node, his starting gear, and Fluke Cleave against
+    Shell Breaker. Items 2–7 are untouched.
+  - **To review (combat):** the Swell part only. The other items stay open on this task for a combat pass.
 
 ## Review log

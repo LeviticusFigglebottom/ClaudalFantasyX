@@ -2,7 +2,7 @@
 id: M3-HER-1141
 title: "ADR 0041 (Act I at final quality): env-art-b's items in the placeholder inventory (11: 11 high, 0 medium, 0 low)"
 role: environment
-status: review
+status: todo
 owner_session: "env-art-b (session_01F3vrUNt6trAMrjeYavaDNC, claude/env-art-b)"
 reviewer: qa
 depends_on: []
@@ -15,9 +15,9 @@ ADR 0041: everything a player meets from the title to the end of Ch9 reaches fin
 **env-art-b** owns Ch5–Ch9 zones and the arenas used there. This task carries those rows; the inventory's "env-art-b" section is the live list.
 
 ## Acceptance criteria
-- [x] Every row of the inventory's "env-art-b" section is final (fix the item, then re-run the audit; don't edit the
+- [ ] Every row of the inventory's "env-art-b" section is final (fix the item, then re-run the audit; don't edit the
       table by hand).
-- [x] The audit lists nothing for env-art-b: `python3 tools/placeholder_audit.py` (with Godot on PATH; it runs the zone
+- [ ] The audit lists nothing for env-art-b: `python3 tools/placeholder_audit.py` (with Godot on PATH; it runs the zone
       scan itself) shows no "env-art-b" line.
 
 ## The rows as first audited (2026-10-28)
@@ -41,3 +41,12 @@ their kits, the Lanternfall votives, the seawall storm arenas replacing `wall_he
 drop and column, the Coilspire storm wall). The inventory file is integration-qa's to re-write (`--write`).
 
 ## Review log
+- 2026-10-29 integration-qa (qa, reviewer): **accepted, done.** The full audit (import + runtime scan of every Act I
+  zone, variant and arena) on the merged tree, which was big16 + every track head (17:40) and then also Pell's row
+  (18:30), lists **nothing for env-art-b**. Both criteria hold. act1_final_inventory.md on claude/hero-integration shows it.
+- 2026-10-29 ~20:00 integration-qa: **reopened.** The Lead re-routed two rows here from env-art (who can't close
+  them): `assets/environments/kits/tamsule_bell/reefball_drop_proxy.glb` and `materials/tb_drop_proxy.tres`. Both
+  are named as placeholders, and the Bell's held drop is rendering's (M3-RND-26). Rename them, or replace them with
+  the final drop, and re-run the audit.
+- 2026-10-29 ~23:40 integration-qa: on lead/gate-big18 these two are **the only rows left in all of Act I**
+  (`tb_drop_proxy.tres`, `reefball_drop_proxy.glb`, both low: names only).

@@ -31,8 +31,8 @@ ARMPIT_BONE = "DEF-armpit."
 # the band about the panels' first joint over which the upper bone hands over to the middle one, and (M2-CHR-522) the
 # band about the second joint (below the knee) over which the middle bone hands over to the lowest
 SKIRT_TOP_BAND = 0.05
-SKIRT_KNEE_BAND = 0.06
-SKIRT_SHIN_BAND = 0.08
+SKIRT_KNEE_BAND = 0.16  # big17 review: 0.06 bent the cloth in a crease at the joint (a faceted plank)
+SKIRT_SHIN_BAND = 0.18  # and 0.08 here: the bend now spreads over the shin like cloth
 SKIRT_PIVOT_ABOVE_HIP = 0.09  # m (at s = 1): the panels pivot this far above the hip joints (over a raised thigh)
 SKIRT_HUG_NEAR = 0.012  # m (at s = 1): skirt cloth this near a leg's skin at rest follows that leg
 SKIRT_HUG_FAR = 0.035  # m: and from this far on it rides the panels

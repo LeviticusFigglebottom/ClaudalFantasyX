@@ -11,6 +11,11 @@ shader_parameter/background_energy = 1.5
 shader_parameter/horizon_curve = 0.14
 shader_parameter/cloud_coverage = 0.0
 shader_parameter/cloud_coverage_overhead = 0.0
+shader_parameter/col_zenith = Color(0.1412, 0.1804, 0.2196, 1)
+shader_parameter/col_horizon = Color(0.4392, 0.498, 0.549, 1)
+shader_parameter/col_ground = Color(0.2235, 0.2784, 0.3294, 1)
+shader_parameter/sun_disc_energy = 0.0
+shader_parameter/sun_glow = 0.1
 shader_parameter/cloud_lattice = ExtResource("3_lattice")
 shader_parameter/cloud_lattice2 = ExtResource("4_lattice2")
 

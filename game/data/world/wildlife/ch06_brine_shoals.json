@@ -1,6 +1,9 @@
 {
-  "_doc": "The Brine Shoals: shore crabs in clusters on the mud-flats west of the ridges and on the tideline below the camp's high hull; gulls work the wreck-ridges and stand on the wrecks (the Lit Age wreck top 2.4, the chalk hull 2.0, the hold hull 2.0) and the tide-wheel (4.0). No water in the greybox, so no fish. Placed on the greybox layout (M3-CRE-615); move the coordinates when env-art's kit replaces the blocks (same keys as ch02_haluna.json).",
+  "_doc": "The Brine Shoals: shore crabs in clusters on the mud-flats west of the ridges and on the tideline below the camp's high hull; gulls work the wreck-ridges and stand on the wrecks (the Lit Age wreck top 2.4, the chalk hull 2.0, the hold hull 2.0) and the tide-wheel (4.0). No water in the greybox, so no fish. Placed on the greybox layout (M3-CRE-615); move the coordinates when env-art's kit replaces the blocks (same keys as ch02_haluna.json). Re-seated on the dressed kit (the Act I audit, 2026-10-29: tools/creatures/wildlife_snap.gd and wildlife_audit.gd, which ray against the zone's visible meshes).",
   "zone": "ch06/brine_shoals",
+  "ground": {
+    "physics": true
+  },
   "flocks": [
     {
       "id": "south_wrecks",
@@ -63,8 +66,8 @@
           90.0
         ],
         [
-          9.0,
-          4.0,
+          9.5,
+          1.91,
           -35.0,
           0.0
         ]

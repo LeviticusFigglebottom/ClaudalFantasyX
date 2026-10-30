@@ -2,7 +2,7 @@
 id: M3-AUD-803
 title: Battle hit and KO sounds matched to battle-presentation's KO-once fix (M2-BPR-11)
 role: audio
-status: review
+status: done
 reviewer: qa
 owner_session: "audio (claude/audio)"
 depends_on: [M2-AUD-02]
@@ -32,3 +32,9 @@ M2-BPR-11 makes a felled foe's KO play once, then fade out and hide. Audio's KO 
     sound on the fade would double them.
 
 ## Review log
+- 2026-10-29 integration-qa (qa, reviewer): **accepted, done.** Every criterion is ticked, and the checks behind
+  them are green on lead/gate-big17 (audio's head included): Godot `--filter=audio` 175/0; tools test_audio_data,
+  test_audio_loudness and test_act1_audio_audit 50/0. `tools/audio/act1_audio_audit.py` shows 0 zones, enemies,
+  skills, cutscenes and UI items; its 3 remaining items are M3-HER-1163, from a later battle-presentation change.
+  This review covers the technical criteria (wired, resolved, loudness, deterministic). How the music and sound
+  feel is the human's call at playtest.

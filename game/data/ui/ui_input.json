@@ -1,8 +1,12 @@
 {
   "ui_input": {
-    "doc": "M2-UI-26 (ADR 0036): input every screen shares, read by the UiInput autoload (game/ui/input/ui_input.gd). cancel_mouse_buttons are Godot MouseButton values that mean Cancel on every screen (2 = right, 8 = the mouse's back button, XBUTTON1); a press becomes a ui_cancel press and release carrying device cancel_device (no real device uses it), so a screen can tell a mouse Cancel apart (the Controls page stops listening on it but swallows a plain ui_cancel). pad_deadzone: stick motion under it does not count as using the pad (for which glyphs show).",
+    "doc": "M2-UI-26 (ADR 0036): input every screen shares, read by the UiInput autoload (game/ui/input/ui_input.gd). cancel_mouse_buttons are Godot MouseButton values that mean Cancel on every screen (2 = right, 8 = the mouse's back button, XBUTTON1); a press becomes a ui_cancel press and release carrying device cancel_device (no real device uses it), so a screen can tell a mouse Cancel apart (the Controls page stops listening on it but swallows a plain ui_cancel). pad_deadzone: stick motion under it does not count as using the pad (for which glyphs show). Pad repeat (the Lead's Act I menu pass): a pad direction in repeat_actions held past repeat_delay_sec repeats every repeat_rate_sec, as the keyboard's held key does, carrying device repeat_device.",
     "cancel_mouse_buttons": [2, 8],
     "cancel_device": -7,
-    "pad_deadzone": 0.5
+    "pad_deadzone": 0.5,
+  "repeat_actions": ["ui_up", "ui_down", "ui_left", "ui_right"],
+  "repeat_delay_sec": 0.4,
+  "repeat_rate_sec": 0.08,
+  "repeat_device": -8
   }
 }

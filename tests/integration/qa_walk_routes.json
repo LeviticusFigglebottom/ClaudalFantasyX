@@ -1,0 +1,38 @@
+{
+  "doc": "test_qa_walk_audit.gd (the Lead's 10-29 list, item 4): scripted walks of the real party through Act I's stairs and narrow paths, driven through the real FieldController (stick toward each waypoint, as a player would) with the live camera director. Per route: start (a spawn, a stage mark or a point), the waypoints (xz pairs at the walker's height, xyz points, a stairs row's foot/head, or a ramp chain from the zone's collision file), run (a full stick) or walk, and the flags set first. Limits (the audit fails past them) and what it only reports: see the test's header.",
+  "party": ["rhen", "asha", "toma"],
+  "reserve": ["ysolde", "kerrid"],
+  "routes": {
+    "haluna_lane": {
+      "scene": "res://game/levels/ch02/haluna/haluna.tscn",
+      "flags": ["prologue_seen", "ch02_met_asha"],
+      "start_mark": "beach_path",
+      "points_xz": [[-18, 7], [-29, 6], [-36, 4], [-48, -1], [-52, -2.6]],
+      "run": true
+    },
+    "ashcrown_flying_stair_up": {
+      "scene": "res://game/levels/ch05/ashcrown/ashcrown.tscn",
+      "flags": [],
+      "start_point": [0.0, -4.0, 43.5],
+      "stairs_up": "flying_stair",
+      "beyond_m": 2.5,
+      "run": true
+    },
+    "ashcrown_flying_stair_down": {
+      "scene": "res://game/levels/ch05/ashcrown/ashcrown.tscn",
+      "flags": [],
+      "start_point": [0.0, 42.0, -4.5],
+      "stairs_down": "flying_stair",
+      "beyond_m": 2.5,
+      "run": true
+    },
+    "coilspire_spiral": {
+      "scene": "res://game/levels/ch08/coilspire/coilspire.tscn",
+      "flags": [],
+      "start_spawn": "SpireBase",
+      "hide_blocks": ["Gate_t1", "Gate_t2", "Gate_t3", "Gate_t4"],
+      "ramp_chain": ["Flight1"],
+      "run": true
+    }
+  }
+}

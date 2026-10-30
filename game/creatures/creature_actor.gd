@@ -33,6 +33,8 @@ var _frozen := false
 var _resume_after_freeze := false
 var _phase: StringName = &""
 var _surfaces: Array[GeometryInstance3D] = []
+## A creature's own lights (the Oil Slug's eaten lamplight) and their energy: they fade with the KO as its surfaces do.
+var _lights: Dictionary = {}
 var _fade: Tween
 var _phase_tween: Tween
 var _phase_pose: Array = []  # [position, rotation] the phase moves the model to
@@ -77,6 +79,8 @@ func _ready() -> void:
 	_apply_material_dir()
 	for n in find_children("*", "GeometryInstance3D", true, false):
 		_surfaces.append(n as GeometryInstance3D)
+	for n in find_children("*", "Light3D", true, false):
+		_lights[n] = (n as Light3D).light_energy
 	var players := find_children("*", "AnimationPlayer", true, false)
 	if not players.is_empty():
 		_player = players[0] as AnimationPlayer
@@ -209,8 +213,9 @@ func is_ko() -> bool:
 	return _ko
 
 
-## KO: plays the KO clip, holds its last pose, then fades every surface to `alpha` (battle_sandbox.json
-## ko_alpha). A revive brings it back to idle. Repeated calls with the same state do nothing.
+## KO: plays the KO clip (the phase's, when its `clips` map names one), holds its last pose, then fades every
+## surface to `alpha` (battle_sandbox.json ko_alpha). A revive brings it back to idle. Repeated calls with the same
+## state do nothing.
 func set_ko(on: bool, alpha: float) -> void:
 	if on == _ko:
 		return
@@ -218,7 +223,8 @@ func set_ko(on: bool, alpha: float) -> void:
 	if _fade != null and _fade.is_valid():
 		_fade.kill()
 	if on:
-		var clip := StringName(str(_row.get("ko", "ko")))
+		# M3-CRB-013: a phase's `clips` map may name its own KO (the Spar-wraith falls from the deck, not the web)
+		var clip := phase_clip(StringName(str(_row.get("ko", "ko"))))
 		var wait := 0.0
 		if has_clip(clip) and not _frozen and clip == _hold_clip and current_clip == clip:
 			# the KO is the clip a `hold` phase already played (a Vowbound's release): it isn't played twice
@@ -441,3 +447,5 @@ func _on_clip_finished(clip: StringName) -> void:
 func _set_transparency(t: float) -> void:
 	for s in _surfaces:
 		s.transparency = t
+	for l: Light3D in _lights:
+		l.light_energy = float(_lights[l]) * (1.0 - t)

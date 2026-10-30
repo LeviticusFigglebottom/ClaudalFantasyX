@@ -77,6 +77,21 @@ game/data/battle/enemies.json  "model": "res://game/creatures/<id>/<id>_battle.t
   exported tangents (Godot makes them on import). Two runs are byte-identical, which the gate checks.
 - **Budgets** are in each sheet (5k to 16k triangles). Keep each GLB well under 5 MB (the crab is about 0.8 MB).
 
+### Planted feet (the Act I final-quality audit, 2026-10-29)
+`grounded()` keeps a foot on the floor but let it slide along it while the body skitters, rears or recoils (the audit
+measured up to 37 cm). `common/grounding.py pinned(rig, mesh, clips, legs)` holds a planted foot where it touched down:
+while a leg's tip is within `PLANT_M` (3 cm) of the floor, a damped least-squares solve turns the hip (yaw and bend)
+and the knee so the tip keeps its spot, lifting the target when a toe or pad would go under the floor; the correction
+eases out over `RELEASE_FRAMES` once the foot lifts, and the turns are rounded so builds stay byte-identical. It runs
+on idle, ready, attack, cast and hit clips (a KO collapses: its feet go where it falls). A build that uses it:
+`gr.reground(rig, mesh, gr.pinned(rig, mesh, gr.grounded(...), PINNED_LEGS), GROUNDED_LIMBS)`; `PINNED_LEGS` is
+`(upper bone, lower bone or None, bend axis, sign)` per leg. On: the tide crawler, the crab family (reef, wall, wreck,
+root), the raid hound, the vein sparker, the bottle hermit, the shoal skipper.
+- **Measure:** `python3 tools/creatures/foot_slip.py <id>` (numpy, the build's own clips) and
+  `godot --headless --path . -s tools/creatures/clip_audit.gd [-- id ...]` (the imported GLBs: slip, one-frame pops,
+  loop seams, floor penetration, missing hit/KO/idle/talk/walk). `tools/creatures/clip_sheet.tscn` renders each
+  actor's close-up and its idle, attack, hit and KO poses on one fixed camera over a checker floor (see its header).
+
 ## 2. Materials
 
 `assets_src/creatures/<id>/materials.json` lists the slots and their parameters on

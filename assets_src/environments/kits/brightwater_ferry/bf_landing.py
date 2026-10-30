@@ -23,11 +23,13 @@ import numpy as np
 import bf_common as bf
 from bf_common import kc
 
-TRI_BUDGET = {"islet_landing": (16000, 1500), "gangplank": (4000, 300), "stern_gate": (1200, 100),
+TRI_BUDGET = {"islet_landing": (20000, 1500), "gangplank": (4000, 300), "stern_gate": (1200, 100),
               "terrace_name_board_wrapped": (3000, 200)}
 LANDING_HALF = (5.0, 9.0)  # x, z: the walk on top (the greybox's IsletRock)
 LANDING_SKIRT_M = 2.0  # the broken edge, top to the sea floor
 LANDING_FOOT_Y = -1.6
+WALK_CLEAR_M = 1.8  # the walk kept level: a band this wide either side of the gangway's line (z 0), all along the top
+LEDGE_M = 0.09  # the reef shelf's ledges, off the walk
 GANGPLANK_L = 3.6  # the islet's edge to the ferry's rail at the gangway (the zone's ISLET_AT less the half beam)
 GANGPLANK_W = 1.6
 RAIL_H = 0.9
@@ -43,6 +45,11 @@ def landing_height(noise: kc.Noise3):
         out = np.maximum(out, np.maximum(np.abs(Z) - hz, 0.0))
         p = np.stack([X / 0.9, np.zeros_like(X), Z / 0.9], axis=-1)
         grain = (noise.fbm(p, 3) - 0.5) * 0.02
+        # Low ledges of reef rock across the top, away from the walk (the audit, 2026-10-29: the shelf read as one
+        # smooth dark slab at night): a few centimetres, so the walk's collision box still meets the feet.
+        walk = kc.smoothstep(WALK_CLEAR_M, WALK_CLEAR_M + 1.5, np.minimum(np.abs(Z), np.maximum(X + hx, 0.0) + 9.0))
+        ledge = (noise.fbm(np.stack([X / 2.6, np.full_like(X, 9.0), Z / 2.6], axis=-1), 2) - 0.5)
+        grain = grain + np.round(ledge * 3.0) / 3.0 * LEDGE_M * walk
         lump = (noise.fbm(np.stack([X / 1.7, np.full_like(X, 4.0), Z / 1.7], axis=-1), 3) - 0.5) * 0.7
         drop = LANDING_FOOT_Y * kc.smoothstep(0.0, LANDING_SKIRT_M, out)
         return grain * (1.0 - kc.smoothstep(0.0, 0.3, out)) + drop + lump * kc.smoothstep(0.1, 1.2, out)
@@ -65,6 +72,7 @@ def build_landing(seed: int = 905) -> list[kc.MeshBuilder]:
                            salt=lambda X, Z, Y: np.clip(0.35 + Y * 0.2, 0.0, 0.6), erosion=0.75, variation=0.4,
                            ao=lambda X, Z, Y: 0.55 + 0.45 * np.clip(Y + 1.2, 0.0, 1.0))
         if not lod:
+            _dress_landing(mb, rng, noise, landing_height(noise))
             # The mooring posts either side of the gangway's landing, a rope slack between them.
             posts = [(-hx + 0.35, -GANGPLANK_W * 0.5 - 0.5), (-hx + 0.35, GANGPLANK_W * 0.5 + 0.5)]
             for x, z in posts:
@@ -76,6 +84,57 @@ def build_landing(seed: int = 905) -> list[kc.MeshBuilder]:
         del rng
         out.append(mb)
     return out
+
+
+def _dress_landing(mb: kc.MeshBuilder, rng, noise: kc.Noise3, h) -> None:
+    """Tumbled reef boulders round the shelf's rim and down its broken edge, rubble in the hollows, tide pools in the
+    top's low spots and wrack along the tide line; nothing on the walk's band."""
+    hx, hz = LANDING_HALF
+    rock = mb.material(bf.M_ISLET)
+    reef = mb.material(bf.M_REEF)
+    wet_w = kc.Weathering(moss=0.25, salt=0.35, wet=0.55, erosion=0.6)
+    for _ in range(46):  # boulders: on the rim and the skirt, never on the walk's band
+        side = int(rng.integers(0, 4))
+        t = float(rng.uniform(-1.0, 1.0))
+        out = float(rng.uniform(-0.6, 1.4))
+        x, z = ((hx + out) * (1 if side == 0 else -1), t * hz) if side < 2 else (t * hx, (hz + out) * (1 if side == 2 else -1))
+        if abs(z) < WALK_CLEAR_M + 0.6 and x < 0.0:
+            continue  # the gangway's landing
+        r = float(rng.uniform(0.25, 0.75))
+        y = float(h(np.array([x]), np.array([z]))[0])
+        kc.rounded_block(mb, (x, y + r * 0.35, z), (r * float(rng.uniform(0.8, 1.3)), r * float(rng.uniform(0.5, 0.8)),
+                                                   r * float(rng.uniform(0.8, 1.2))), rock,
+                         rot=kc.rot_y(float(rng.uniform(0, math.pi))), radius=r * 0.45, seg=2, noise=noise,
+                         disp_m=r * 0.18, disp_period_m=0.3, weather=wet_w, variation=float(rng.random()))
+    for _ in range(140):  # rubble and cobbles in the top's hollows and along the rim
+        x, z = float(rng.uniform(-hx - 0.5, hx + 0.5)), float(rng.uniform(-hz - 0.5, hz + 0.5))
+        if abs(z) < WALK_CLEAR_M:
+            continue
+        r = float(rng.uniform(0.05, 0.16))
+        y = float(h(np.array([x]), np.array([z]))[0])
+        kc.rounded_block(mb, (x, y + r * 0.3, z), (r, r * 0.6, r * float(rng.uniform(0.7, 1.2))),
+                         rock if rng.random() < 0.7 else reef, rot=kc.rot_y(float(rng.uniform(0, math.pi))),
+                         radius=r * 0.5, seg=1, noise=noise, disp_m=r * 0.2, weather=wet_w,
+                         variation=float(rng.random()))
+    for _ in range(7):  # tide pools: still water's dark sheen in the low ledges, a rim of weed
+        x, z = float(rng.uniform(-hx + 0.8, hx - 0.8)), float(rng.choice([-1.0, 1.0])) * float(rng.uniform(WALK_CLEAR_M + 1.0, hz - 0.8))
+        y = float(h(np.array([x]), np.array([z]))[0])
+        a = np.linspace(0.0, 2.0 * math.pi, 15)
+        rr = float(rng.uniform(0.35, 0.8)) * (1.0 + 0.18 * np.sin(a * 3.0 + float(rng.uniform(0, 6))))
+        ring = np.stack([x + np.cos(a) * rr, np.full_like(a, y + 0.012), z + np.sin(a) * rr * 0.7], axis=-1)
+        centre = np.array([[x, y + 0.012, z]])
+        base = mb.add_vertices(np.vstack([centre, ring]), np.tile([0, 1, 0], (16, 1)), np.zeros((16, 2)),
+                               np.tile([0.15, 0.5], (16, 1)), np.tile([0.0, 0.0, 1.0, 0.0], (16, 1)))
+        pool = mb.material(bf.M_TAR)
+        for i in range(14):
+            mb.add_tri(base, base + 2 + i, base + 1 + i, pool)
+        kc.tube(mb, ring + np.array([0.0, 0.01, 0.0]), 0.035, 4, reef, weather=wet_w)
+    for k in range(3):  # wrack: dark weed and drift along the tide line on the rim
+        zs = np.linspace(-hz + 1.0, hz - 1.0, 9)
+        x0 = hx - 0.4 + k * 0.25
+        pts = np.stack([x0 + (noise.fbm(np.stack([zs, np.full_like(zs, 3.0 + k), zs], -1), 2) - 0.5) * 0.9,
+                        np.array([float(h(np.array([x0]), np.array([z]))[0]) for z in zs]) + 0.03, zs], axis=-1)
+        kc.tube(mb, pts, 0.045, 5, mb.material(bf.M_TAR), weather=wet_w)
 
 
 def build_gangplank(seed: int = 906) -> list[kc.MeshBuilder]:

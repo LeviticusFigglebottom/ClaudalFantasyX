@@ -77,10 +77,10 @@ func test_the_scene_loads_headless_with_its_clips() -> void:
 	assert_eq(a.current_clip, &"idle", "it idles")
 	for clip in CLIPS:
 		assert_true(a.has_clip(clip), "ilun has %s" % clip)
-	assert_eq(a.clip_for(&"brine_lash", &"magical"), &"attack", "the brine lash is the wing sweep")
+	assert_eq(a.clip_for(&"brine_lash", &"magical"), &"brine_lash", "the brine lash is the wing sweep (M3-CRB-013)")
 	assert_eq(a.clip_for(&"tidal_ward", &"support"), &"cast", "the tidal ward is the shield")
 	assert_eq(a.clip_for(&"floodnet", &"magical"), &"special", "Floodnet")
-	assert_eq(a.clip_for(&"attack", &"physical"), &"attack")
+	assert_eq(a.clip_for(&"attack", &"physical"), &"attack", "his plain attack is the tail whip, its own move")
 	for clip: StringName in [&"attack", &"cast", &"special"]:
 		var t := a.contact_time(clip)
 		assert_true(t > 0.0 and t < a.clip_length(clip), "%s lands inside the clip" % clip)

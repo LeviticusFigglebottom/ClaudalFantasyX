@@ -1,9 +1,10 @@
 extends TestCase
-## M2-UI-29 (resolution and aspect audit): every screen built at 16:9, 16:10 and 21:9 (and 43:18,
-## 3440 x 1440) with the text size at 100 % and 130 %, through a real window resize (AspectHost).
+## M2-UI-29 (resolution and aspect audit): every screen built at 16:9, 16:10, 21:9 (and 43:18,
+## 3440 x 1440) and 4:3 (1440 x 1080) with the text size at 100 % and 130 %, through a real window resize (AspectHost).
 ## Per screen: no visible Control leaves the screen; no text runs out of its panel; scrims and
 ## backdrops cover the whole screen; a full-screen menu's frame stays centred; each HUD piece keeps
-## its 16:9 margin to the edge it is pinned to. A screen also follows a live window change.
+## its 16:9 margin to the edge it is pinned to. A screen also follows a live window change. At 16:9 and 100 %, no
+## visible Control draws a stylebox, font or icon from Godot's default theme (the Lead's final-quality pass).
 
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const BOX_SCENE := "res://game/ui/dialogue/dialogue_box.tscn"
@@ -45,6 +46,8 @@ func test_each_window_lays_out_in_one_of_four_viewports() -> void:
 		Vector2i(1280, 800): Vector2(1920, 1200),
 		Vector2i(2560, 1080): Vector2(2560, 1080),
 		Vector2i(3440, 1440): Vector2(2580, 1080),
+		Vector2i(1440, 1080): Vector2(1920, 1440),
+		Vector2i(1024, 768): Vector2(1920, 1440),
 	}
 	for w in AspectHost.WINDOWS:
 		AspectHost.set_window(w)
@@ -257,6 +260,9 @@ func _sweep(screen: String, build: Callable, pieces: Callable) -> void:
 				fail("%s: %s leaves the screen" % [tag, b])
 			for b in AspectHost.spilling(root):
 				fail("%s: %s" % [tag, b])
+			if w == AspectHost.ASPECTS[0] and t == AspectHost.TEXT_SCALES[0]:
+				for b in AspectHost.default_theme_uses(root):
+					fail("%s: %s draws Godot's default theme, not hymn_theme" % [tag, b])
 			var ps: Array = pieces.call(root)
 			assert_false(ps.is_empty(), "%s: nothing to check" % tag)
 			if ref.is_empty():
