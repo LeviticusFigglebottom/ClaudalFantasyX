@@ -171,7 +171,7 @@
       {"encounter": "ch06_ridge_gulls", "weight": 2},
       {"encounter": "ch06_flats_crabs", "weight": 1}
     ],
-    "min_m": 24, "max_m": 40, "when": {"set": ["ch06_arrived"], "unset": ["ch06_sheltered_liss"]}, "seed": 6
+    "min_m": 95, "max_m": 145, "when": {"set": ["ch06_arrived"], "unset": ["ch06_sheltered_liss"]}, "seed": 6
   },
   "states": [
     {"flag": "ch06_arrived", "hide": ["Barge", "Lamp"]},

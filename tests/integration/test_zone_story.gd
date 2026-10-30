@@ -157,7 +157,8 @@ func test_field_encounters_wait_for_their_flag_and_the_gap() -> void:
 	assert_eq(zone.encounters.walked(100.0), &"", "nothing before its when holds")
 	Game.set_flag(&"test_flag", true)
 	var gap := zone.encounters.next_m
-	assert_between(gap, 10.0, 20.0)
+	var floor_m := zone.encounters.min_gap_m  # the layout's 10-20 m, under the defaults' floor
+	assert_between(gap, maxf(10.0, floor_m), maxf(20.0, floor_m))
 	assert_eq(zone.encounters.walked(gap - 0.5), &"", "not before the gap")
 	var id := zone.encounters.walked(1.0)
 	assert_true(id in [&"ch02_tideline", &"sandbox_reef"], "then one from the table")
@@ -212,8 +213,44 @@ func test_after_a_battle_the_walk_back_is_safe_and_the_meter_carries_on() -> voi
 	assert_eq(enc.walked_m, 0.0, "the grace is walked before the meter runs")
 	assert_true(is_equal_approx(enc.grace_m, 0.1), "with 0.1 m of it left")
 	assert_eq(enc.walked(next_gap), &"", "then the full gap")
-	assert_ne(enc.walked(0.2), &"", "and only then the next battle")
+	assert_true(enc.grace_s > 0.0, "a timed grace too (greybox_defaults.json encounters.grace_s)")
+	assert_eq(enc.walked(0.2), &"", "which holds the battle past the gap")
+	enc.field_time(enc.grace_s - 0.1)
+	assert_eq(enc.walked(0.1), &"", "until its last second has passed")
+	enc.field_time(0.1)
+	assert_ne(enc.walked(0.1), &"", "and only then the next battle")
 	assert_eq(fired.size(), 2)
+	_done()
+
+
+func test_any_battle_owes_the_grace_and_the_fade_back_is_not_field_time() -> void:
+	# The Lead's FAST-TRACK (10-30, the human's playtest): a scripted fight, then a random one at once.
+	Game.set_flag(&"test_flag", true)
+	_done()  # a scripted battle replaces the zone ...
+	EventBus.battle_ended.emit(&"ch02_tideline", &"victory")
+	_open(ZONE_A)  # ... and the zone comes back
+	Game.set_flag(&"test_flag", true)
+	var enc := zone.encounters
+	var fired: Array[StringName] = []
+	enc.on_encounter = func(id: StringName) -> void: fired.append(id)
+	assert_eq(enc.grace_m, enc.grace_after_m, "the walk back is owed")
+	assert_true(enc.grace_s > 0.0 and is_equal_approx(enc.grace_s, enc.grace_after_s), "and the time")
+	assert_false(FieldEncounters.battle_grace_owed, "taken once")
+	enc.field_time(enc.grace_after_s * 10.0)
+	assert_eq(enc.grace_s, enc.grace_after_s, "time before Rhen's first step (the fade back) never counts")
+	assert_eq(enc.walked(enc.grace_after_m + enc.next_m + 0.1), &"", "walking alone doesn't end it")
+	enc.field_time(enc.grace_after_s)
+	assert_ne(enc.walked(0.1), &"", "time and distance both passed: the meter runs")
+	assert_eq(fired.size(), 1)
+	_done()
+
+
+func test_no_gap_is_shorter_than_the_floor() -> void:
+	Game.set_flag(&"test_flag", true)
+	var enc := zone.encounters
+	assert_true(enc.min_gap_m > 0.0, "a floor (greybox_defaults.json encounters.min_gap_m)")
+	for i in 50:
+		assert_true(enc._draw() >= enc.min_gap_m - 0.001, "every gap is at least the floor")
 	_done()
 
 

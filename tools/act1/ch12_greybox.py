@@ -165,7 +165,7 @@ def keth_pass() -> dict:
         # M4-C12-03: the pass's random fights (act2_roster.md Ch12); none in Quellan or the Cloudloom
         "encounters": {"table": [{"encounter": "ch12_pass_lynxes", "weight": 2}, {"encounter": "ch12_pass_moths", "weight": 1},
                                  {"encounter": "ch12_pass_scree", "weight": 1}],
-                       "min_m": 30, "max_m": 50, "when": {"set": ["ch12_started"]}, "seed": 12},
+                       "min_m": 95, "max_m": 145, "when": {"set": ["ch12_started"]}, "seed": 12},
     }
 
 

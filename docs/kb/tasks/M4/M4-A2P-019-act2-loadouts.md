@@ -2,8 +2,7 @@
 id: M4-A2P-019
 title: "Act II loadouts (Ch10–Ch16) and every Act II suite re-run on its own chapter's loadout"
 role: combat
-status: blocked
-blocked-by: ADR 0203
+status: todo
 owner_session: ""
 depends_on: [M4-A2P-030, M4-A2P-031]
 reviewer: progression
