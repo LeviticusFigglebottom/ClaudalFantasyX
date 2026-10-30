@@ -65,3 +65,13 @@ ids, PROVENANCE rows or shot ids (669 shots); no conflict markers.
     claude/env-art-b alone). Route to env-art-b.
   - test_status_names: "dialogue.csv DLG_NAME_KIRRU_SHELL_CARVER: 'Shell' is an old status name (ADR 0202: Tide Ward)"
     (red on claude/act2-plan alone). Route to act2-plan.
+- test_battle_act1_ability_vfx is **red on claude/act1-chapters alone** too (and wider there: every Act II Vowbound
+  skill, since battle-presentation's Act II VFX aren't on that branch). Route to battle-presentation (the effects) and
+  act1-chapters (the test's Act II scope).
+
+GATE-FAST-DONE big21 @ 9ffec236 (09:40 UTC). Every remaining red is branch content (red on the owner's branch alone) or
+already FAST-TRACKed; the two merge-fallout reds are fixed on the gate (cf238776, 9ffec236). **Merge-approved under the
+Lead's standing rule (09:01).** FAST-TRACK list: battle-presentation (the glimmer swatch; the Act II skills' effects),
+env-art-b (Hollowmere's dock table; the bridal_barge_night and ansedra_lagoon_escape arenas), m2-slice (the seabed's
+Blender job), act2-plan (the Shell-carver name; test_cutscene_sfx_files; test_hero_clips), act1-chapters (the
+skill_help guard to take; test_act1_audio_audit), env-art (test_keth), characters (13 villager rigs).
