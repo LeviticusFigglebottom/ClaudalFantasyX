@@ -477,14 +477,17 @@ def lacquer_court(g):
     mx.bus("silk", 0.0, send=0.25)
     mx.bus("water", 0.0, send=0.2)
     mx.bus("far", 0.0, send=0.5, process=lambda x: filt(x, [bq_lowpass(1500, 0.7)]))
+    mx.bus("floor", 0.0, send=0.3)
+    mx.add("floor", FA.stereo_noise(L, g, [bq_bandpass(500, 0.6), bq_lowpass(1500, 0.7)], 0.5) * 0.12, 0.0)  # the crowd
+    mx.add("floor", FA.stereo_noise(L, g, [bq_lowpass(300, 0.6), bq_highpass(50, 0.7)], 0.6) * 0.08, 0.0)    # the court
     t = 0.3
     while t < LOOPS["lacquer_court"] - 2.0:
         mx.add("crowd", FA.murmur_phrase(g, bool(g.random() < 0.5)), t, pan=float(g.uniform(-0.8, 0.8)),
-               gain=float(g.uniform(0.25, 0.55)))
-        t += float(g.uniform(0.6, 1.6))
+               gain=float(g.uniform(0.2, 0.45)))
+        t += float(g.uniform(0.3, 0.9))
     for t in FA.schedule(L, 2.8, g, 0.6):
-        mx.add("silk", reed_rustle(g, float(g.uniform(0.5, 1.0))), t, pan=float(g.uniform(-0.8, 0.8)),
-               gain=float(g.uniform(0.05, 0.12)))
+        mx.add("silk", filt(reed_rustle(g, float(g.uniform(0.5, 1.0))), [bq_lowpass(4000, 0.7)]), t,
+               pan=float(g.uniform(-0.8, 0.8)), gain=float(g.uniform(0.02, 0.05)))
     for t in FA.schedule(L, 3.0, g, 0.5):
         mx.add("water", FA.lap(g, float(g.uniform(0.4, 0.7))), t, pan=float(g.uniform(-0.5, 0.5)),
                gain=float(g.uniform(0.15, 0.3)))
