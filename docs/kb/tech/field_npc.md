@@ -256,6 +256,14 @@ a shared cached material logged "material is null" on free). `"tuning": {...}` i
   `figure` stage actor (attach child, so the layout's flags show and hide it and the cutscene's `@mark figure
   figure_gone walk` moves it). Its tuning zeroes the glance, look-around and talk radii: it never turns to the party.
 
+### Built under a scene change (M3-HER-1168)
+During a scene change the layer holds SceneRouter's reveal while it builds (ADR 0111 amendment 4).
+1. It requests every row's actor scene on worker threads (`ResourceLoader.load_threaded_request`).
+2. It adds the rows as many a frame as fit `SPREAD_BUDGET_MS`.
+3. It waits `SETTLE_FRAMES` before releasing.
+
+Haluna's held reveal went from 1.85 s to about 0.2 s, cold and headless.
+
 ### Day and night rows (the Lead, 2026-10-30: Haluna's vignettes)
 A row's `"shown": "day"` or `"night"` shows the villager only while the zone's `is_night` is false or true; with no
 `shown`, it is always there. VillagerLayer reads the zone root's `is_night` each tick (HalunaZone sets it in
