@@ -18,11 +18,7 @@ const MOVES: Array[Array] = [
 ## Snaps already handed to their owner, "<zone file>:<hero>" -> task: reported, not failed, until the fix lands.
 const KNOWN := {
 	"coilspire.tscn:rhen": "M3-HER-1129 (act1-chapters: a 2 m drop beside the PathFoot spawn, and its landing pop)",
-	"haluna_wake.tscn:rhen": "M3-HER-1154 (act1-chapters: the NemeDoor spawn stands 7.8 m above the ground)",
-	"haluna_wake.tscn:toma": "M3-HER-1154 (act1-chapters: the NemeDoor spawn stands 7.8 m above the ground)",
-	"haluna_wake.tscn:asha": "M3-HER-1154 (act1-chapters: the NemeDoor spawn stands 7.8 m above the ground)",
 	"drowned_choir.tscn:rhen": "M4-C14-02 (Act II greybox, paused by ADR 0041: a 9 m/s drop off an edge at frame 310)",
-	"lowlight.tscn:rhen": "M4-HER-1166 (act1-chapters / env-art: the gate's opening has no floor or bound past it)",
 }
 
 ## The game state before the test: the guard runs on a fresh one (no flags left by earlier tests: a zone's variants and
