@@ -18,6 +18,6 @@
   "ch14_left_standing": {"L10": 3.0},
   "ch15_unlamped": {"U01": 8.0, "U02": 3.0},
   "ch15_the_shoal": {"K11": 3.0},
-  "ch15_current_song": {"H06": 8.0},
+  "ch15_the_dock_master": {"H06": 8.0},
   "ch16_the_choir": {"C01": 6.0, "C09": 4.0, "C13": 3.0}
 }
