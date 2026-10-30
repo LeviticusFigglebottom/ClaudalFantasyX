@@ -92,3 +92,15 @@ the gate.
     removal (FAST-TRACK).
 - The two captures are paused (SIGSTOP on my two capture.sh loops, between shots) so the blocking test lanes get the
   CPUs (48 of 282 files in the first 25 min). They resume after GATE-FAST-DONE.
+
+GATE-FAST-DONE big19 @ 5993e490 (03:17 UTC). The blocking checks:
+- validate_data 0/0, taskboard --check ok, dlgc 0/0, gdlint and gdformat clean, boot smoke 0 ERROR lines.
+- Tools suite: 5 reds, none from the batch's merge: characters' test_asha, test_villagers and test_npc (routed);
+  test_palette_check (routed to env-art) and test_screenshots (160 shots awaiting their first baselines), both known.
+- **Filtered Godot tests: 282 of 436 files, 280 green**, and no script errors in any log (godot_log_check, every file).
+  - test_qa_capsules: batch content, **fixed on the gate** (85b0d58b, Corrow's figure dropped from qa_known.json;
+    3/0 after). creatures should take the same line.
+  - test_slice_shots: "slice_dock_night_yes holds a line of its scene (ch03_dock_007)". **Known from big18**, red on
+    claude/m2-slice alone, routed to m2-slice. Not blocking.
+- Not run in the fast gate (non-blocking, next): the full Godot suite (incl. test_qa_threads and the water-publisher
+  order question from big18), Blender for the jobs touched since lead/gate-big18, and the 254 shots (resuming now).
