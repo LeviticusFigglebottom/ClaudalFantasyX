@@ -301,13 +301,13 @@
     "ansedra": {
       "file": "res://assets/audio/music/act2/ansedra.ogg",
       "resume": true,
-      "_note": "Ch13, Ansedra, the holy city: gold and lacquer. Act II final (M3-AUD-843; Git LFS; the sketch assets/audio/music/ansedra.ogg stays as the fallback); no zone row until ch13/ansedra/ansedra.tscn exists"
+      "_note": "Ch13, Ansedra, the holy city: gold and lacquer. Act II final (M3-AUD-843; Git LFS; the older M3-AUD-805 render, assets/audio/music/ansedra.ogg, stays committed but nothing plays it); no zone row until ch13/ansedra/ansedra.tscn exists"
     }
 ,
     "lamp_archive": {
       "file": "res://assets/audio/music/act2/lamp_archive.ogg",
       "resume": true,
-      "_note": "Ch13, the Lamp Archive, the founding truth on paper. Act II final (M3-AUD-843; Git LFS; the sketch assets/audio/music/lamp_archive.ogg stays as the fallback); no zone row until ch13/lamp_archive/lamp_archive.tscn exists"
+      "_note": "Ch13, the Lamp Archive, the founding truth on paper. Act II final (M3-AUD-843; Git LFS; the older M3-AUD-805 render, assets/audio/music/lamp_archive.ogg, stays committed but nothing plays it); no zone row until ch13/lamp_archive/lamp_archive.tscn exists"
     }
 ,
     "peace_wedding": {
@@ -319,19 +319,19 @@
     "unlamped": {
       "file": "res://assets/audio/music/act2/unlamped.ogg",
       "resume": true,
-      "_note": "Ch15, the open sea at night aboard the bridal barge. Act II final (M3-AUD-843; Git LFS; the sketch assets/audio/music/unlamped.ogg stays as the fallback); no zone row until ch15/open_sea/open_sea.tscn exists"
+      "_note": "Ch15, the open sea at night aboard the bridal barge. Act II final (M3-AUD-843; Git LFS; the older M3-AUD-805 render, assets/audio/music/unlamped.ogg, stays committed but nothing plays it); no zone row until ch15/open_sea/open_sea.tscn exists"
     }
 ,
     "pale_rim": {
       "file": "res://assets/audio/music/act2/pale_rim.ogg",
       "resume": true,
-      "_note": "Ch16, the Pale Rim, the white shallows. Act II final (M3-AUD-843; Git LFS; the sketch assets/audio/music/pale_rim.ogg stays as the fallback); no zone row until ch16/pale_rim/pale_rim.tscn exists"
+      "_note": "Ch16, the Pale Rim, the white shallows. Act II final (M3-AUD-843; Git LFS; the older M3-AUD-805 render, assets/audio/music/pale_rim.ogg, stays committed but nothing plays it); no zone row until ch16/pale_rim/pale_rim.tscn exists"
     }
 ,
     "drowned_choir": {
       "file": "res://assets/audio/music/act2/drowned_choir.ogg",
       "resume": true,
-      "_note": "Ch16, the Drowned Choir. Act II final (M3-AUD-843; Git LFS; the sketch assets/audio/music/drowned_choir.ogg stays as the fallback); no zone row until ch16/drowned_choir/drowned_choir.tscn exists"
+      "_note": "Ch16, the Drowned Choir. Act II final (M3-AUD-843; Git LFS; the older M3-AUD-805 render, assets/audio/music/drowned_choir.ogg, stays committed but nothing plays it); no zone row until ch16/drowned_choir/drowned_choir.tscn exists"
     },
     "tidecup_after": {
       "beat": {"bpm": 58.0, "downbeat_offset_s": 0.6},
@@ -467,7 +467,13 @@
     {"scene": "res://game/levels/ch12/keth_pass/keth_pass.tscn", "music": "keth_pass", "_note": "M4-A2P-091: Ch12, the pass (bed keth_pass_wind)"},
     {"scene": "res://game/levels/ch12/quellan/quellan.tscn", "music": "quellan", "_note": "M4-A2P-091: Ch12, the Ullari town (bed quellan_town)"},
     {"scene": "res://game/levels/ch12/cloudloom/cloudloom.tscn", "music": "cloudloom", "_note": "M4-A2P-091: Ch12, the weaving-hall (bed cloudloom_hall)"},
-    {"scene": "res://game/levels/ch13/sanctum/sanctum.tscn", "music": "sanctum_of_the_level", "_note": "M4-A2P-091: Ch13, the Sanctum of the Level (bed sanctum_basin: the basin's air, just above silence)"}
+    {"scene": "res://game/levels/ch13/sanctum/sanctum.tscn", "music": "sanctum_of_the_level", "_note": "M4-A2P-091: Ch13, the Sanctum of the Level (bed sanctum_basin: the basin's air, just above silence)"},
+    {"scene": "res://game/levels/ch13/ansedra/ansedra.tscn", "music": "ansedra", "_note": "M4-A2P-091: Ch13, the still city (bed ansedra_still)"},
+    {"scene": "res://game/levels/ch13/ansedra_lacquer_court/ansedra_lacquer_court.tscn", "music": "ansedra", "_note": "M4-A2P-091: Ch14, the Lacquer Court before the ceremony; the wedding's cutscenes take it from there (bed lacquer_court)"},
+    {"scene": "res://game/levels/ch13/lamp_archive/lamp_archive.tscn", "music": "lamp_archive", "_note": "M4-A2P-091: Ch13, the Archive's reading room (bed archive_room)"},
+    {"scene": "res://game/levels/ch15/open_sea/open_sea.tscn", "music": "unlamped", "_note": "M4-A2P-091: Ch15, the unlamped barge at night (bed open_sea_night)"},
+    {"scene": "res://game/levels/ch16/pale_rim/pale_rim.tscn", "music": "pale_rim", "_note": "M4-A2P-091: Ch16, the white shallows (bed pale_rim_shallows)"},
+    {"scene": "res://game/levels/ch16/drowned_choir/drowned_choir.tscn", "music": "drowned_choir", "_note": "M4-A2P-091: Ch16, the Choir at moonrise (bed choir_bowl)"}
   ],
   "battle": {
     "default": "battle_standard_v2",
