@@ -45,10 +45,13 @@ func _run() -> void:
 	print("RUN_CYCLE clip %s length %.3f s" % [clip, length])
 	var phases := int(_opts.get("phases", 12))
 	var cams := str(_opts.get("cameras", "Profile,Front")).split(",", false)
+	# The player holds the pose the stage seeked to and ignores later seeks here (4.6.3), so it is switched off and
+	# the clip's bone tracks are sampled straight onto the skeleton.
+	player.active = false
+	var anim := player.get_animation(clip)
+	var base := player.get_node(player.root_node)
 	for i in phases:
-		player.play(clip)
-		player.seek(length * i / float(phases), true)
-		player.pause()
+		_pose(anim, base, length * i / float(phases))
 		for cam_name in cams:
 			var cam := stage.get_node_or_null(NodePath("Cameras/" + cam_name)) as Camera3D
 			if cam == null:
@@ -58,6 +61,25 @@ func _run() -> void:
 			var img := get_viewport().get_texture().get_image()
 			img.save_png(out_dir.path_join("%s_%02d.png" % [cam_name, i]))
 	get_tree().quit()
+
+
+## Every bone transform track of `anim` at `time`, set on its skeleton (paths are relative to `base`).
+static func _pose(anim: Animation, base: Node, time: float) -> void:
+	for tr in anim.get_track_count():
+		var path := anim.track_get_path(tr)
+		var skel := base.get_node_or_null(NodePath(str(path).get_slice(":", 0))) as Skeleton3D
+		if skel == null or path.get_subname_count() == 0:
+			continue
+		var bone := skel.find_bone(path.get_subname(0))
+		if bone < 0:
+			continue
+		match anim.track_get_type(tr):
+			Animation.TYPE_ROTATION_3D:
+				skel.set_bone_pose_rotation(bone, anim.rotation_track_interpolate(tr, time))
+			Animation.TYPE_POSITION_3D:
+				skel.set_bone_pose_position(bone, anim.position_track_interpolate(tr, time))
+			Animation.TYPE_SCALE_3D:
+				skel.set_bone_pose_scale(bone, anim.scale_track_interpolate(tr, time))
 
 
 func _settle() -> void:
