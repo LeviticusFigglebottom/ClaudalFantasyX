@@ -2,9 +2,8 @@
 id: M4-A2P-057
 title: "Kesh, the First Voice: the design sheet, then the model"
 role: character
-status: blocked
-blocked-by: ADR 0203
-owner_session: ""
+status: doing
+owner_session: "creatures-b"
 depends_on: []
 reviewer: rendering
 milestone: M4
@@ -19,6 +18,6 @@ The only Vowbound with nothing built. Split M3-CRE-649: write `docs/kb/art/creat
 
 ## Notes
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). Plan §2 Ch16, §4.4.
-- Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
+- Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`. Unblocked for this track by ADR 0205 §4 (Act II starts per track); claimed by creatures-b 2026-10-30.
 
 ## Review log
