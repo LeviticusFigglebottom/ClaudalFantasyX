@@ -1,0 +1,14 @@
+{
+  "doc": "Ch17 field tunables (M5-A3P-1001; act3_ch17.md §2 B05, B10). Read by Ch17Zone (game/levels/ch17/ch17_zone.gd). hold: the no-fail held input, as ch09_field.json's (CutsceneHoldGate; docs/kb/tech/cutscenes.md 'Held input'): between <<event hold_input <prompt>>> and <<event hold_input_end>> the scene's time runs only while `action` is held. prompts maps each event's prompt id to its loc key (game/data/loc/ch17.csv): the ledger's page-turns, and the first lamp's three holds (the Ch11 bench's rhythm).",
+  "hold": {
+    "action": "field_interact",
+    "prompts": {
+      "turn_page": "FIELD_PROMPT_CH17_TURN_PAGE",
+      "hold_steady": "FIELD_PROMPT_CH17_HOLD_STEADY",
+      "turn_collar": "FIELD_PROMPT_CH17_TURN_COLLAR",
+      "seat_it": "FIELD_PROMPT_CH17_SEAT_IT"
+    },
+    "layer": 33,
+    "bottom_px": 96.0
+  }
+}

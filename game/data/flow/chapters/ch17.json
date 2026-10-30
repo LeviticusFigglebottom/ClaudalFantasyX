@@ -1,0 +1,249 @@
+{
+ "doc": "M5-A3P-1001 (docs/kb/tech/chapter_flow.md; act3_ch17.md \u00a72): Ch17 'The Wright's Son' at Hollowmere, Act III's first chapter, on the Ch15 zone (ChapterRegistry gives this file the zone from chapter 16 on). B01 the sea and the ship (arrive, from the ShipDeck spawn: Ch16's swept-away must hand off here with {\"chapter\": 17} or straight to this zone), B03 the dock-master walks them to the dry-dock (a touch on the jetty), B04 the hull's three interactables (barks), B05-B06 the ledger and the rail at dusk, B07 the first berth (optional), B08 the choice at night (walking back onto the hull), then the night's rest and morning, B10 the first lamp, B11 Ysolde's table, B12 the barks, and boarding the hull ends the chapter (ch17_complete). B09 (Kesh's call bark) waits on a Vowbound-menu hook. The exit is the end card until Ch18's Kite zone exists (M5-A3P-1004): repoint it to {\"go\": {\"location\": \"ch18/kite\", ...}} then. Light by time of day: the layout's variants (tools/act1/ch15_16_greybox.py).",
+ "chapter": "ch17",
+ "zones": {
+  "ch17/hollowmere": {
+   "party": {
+    "party": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde",
+     "kerrid",
+     "liss"
+    ]
+   },
+   "arrive": [
+    {
+     "when": {
+      "unset": [
+       "ch17_started"
+      ]
+     },
+     "steps": [
+      {
+       "place": "ShipDeck"
+      },
+      {
+       "chapter": 17
+      },
+      {
+       "zone": "place_actor",
+       "args": [
+        "hull_captain",
+        "ship_captain"
+       ]
+      },
+      {
+       "play": "ch17_pulled_from_the_sea"
+      },
+      {
+       "place": "Dock"
+      },
+      {
+       "party": {
+        "party": [
+         "rhen",
+         "asha",
+         "toma"
+        ],
+        "reserve": [
+         "ysolde",
+         "kerrid",
+         "liss"
+        ]
+       }
+      },
+      {
+       "zone": "apply_variant"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch17_read_the_ledger"
+      ],
+      "unset": [
+       "ch17_first_berth",
+       "ch17_chose_the_unbinding"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Quay"
+      },
+      {
+       "zone": "place_actor",
+       "args": [
+        "aldous_varrow",
+        "first_berth"
+       ]
+      },
+      {
+       "zone": "apply_variant"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch17_started"
+      ],
+      "unset": [
+       "ch17_complete"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Dock"
+      },
+      {
+       "zone": "apply_variant"
+      }
+     ]
+    }
+   ],
+   "beats": {
+    "ch17_dock_master": {
+     "when": {
+      "unset": [
+       "ch17_saw_the_hull"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch17_dock_master_points"
+      },
+      {
+       "place": "Quay"
+      }
+     ]
+    },
+    "ch17_ledger": {
+     "when": {
+      "set": [
+       "ch17_saw_the_hull"
+      ],
+      "unset": [
+       "ch17_read_the_ledger"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch17_the_ledger"
+      },
+      {
+       "zone": "apply_variant"
+      },
+      {
+       "play": "ch17_after_the_blank_page"
+      },
+      {
+       "zone": "place_actor",
+       "args": [
+        "aldous_varrow",
+        "first_berth"
+       ]
+      },
+      {
+       "place": "Quay"
+      }
+     ]
+    },
+    "ch17_first_berth": {
+     "when": {
+      "set": [
+       "ch17_read_the_ledger"
+      ],
+      "unset": [
+       "ch17_first_berth"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch17_first_berth"
+      }
+     ]
+    },
+    "ch17_choice": {
+     "when": {
+      "set": [
+       "ch17_read_the_ledger"
+      ],
+      "unset": [
+       "ch17_chose_the_unbinding"
+      ]
+     },
+     "steps": [
+      {
+       "set": "ch17_night"
+      },
+      {
+       "zone": "apply_variant"
+      },
+      {
+       "play": "ch17_the_choice"
+      },
+      {
+       "zone": "rest"
+      },
+      {
+       "zone": "apply_variant"
+      },
+      {
+       "place": "Quay"
+      }
+     ]
+    },
+    "ch17_first_lamp": {
+     "when": {
+      "set": [
+       "ch17_chose_the_unbinding"
+      ],
+      "unset": [
+       "ch17_first_lamp_lit"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch17_the_first_lamp"
+      }
+     ]
+    },
+    "ch17_table": {
+     "when": {
+      "set": [
+       "ch17_first_lamp_lit"
+      ],
+      "unset": [
+       "ch17_verse_begun"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch17_ysoldes_table"
+      }
+     ]
+    },
+    "ch17_board": {
+     "when": {
+      "set": [
+       "ch17_verse_begun"
+      ]
+     },
+     "steps": [
+      {
+       "set": "ch17_complete"
+      },
+      {
+       "scene": "res://game/flow/end_card.tscn"
+      }
+     ]
+    }
+   }
+  }
+ }
+}

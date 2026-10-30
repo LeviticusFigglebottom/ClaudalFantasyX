@@ -3,3 +3,17 @@ FIELD_PROMPT_CH17_TURN_PAGE,Hold to turn the page
 FIELD_PROMPT_CH17_HOLD_STEADY,Hold to keep it steady
 FIELD_PROMPT_CH17_TURN_COLLAR,Hold to turn the collar
 FIELD_PROMPT_CH17_SEAT_IT,Hold to seat the lamp
+FIELD_PROMPT_CH17_LEDGER,Open the ledger
+FIELD_PROMPT_CH17_BERTH,Stand with the dock-master
+FIELD_PROMPT_CH17_LAMP,Fit the first lamp
+FIELD_PROMPT_CH17_BOARD,Board the hull
+MAP_POI_HOLL_DRYDOCK,The dry-dock
+MAP_POI_HOLL_DACE_HULL,Dace's hull
+MAP_POI_HOLL_FIRST_BERTH,The first berth
+OBJ_CH17_DRYDOCK,Walk out along the dock to the dry-dock jetty.
+OBJ_CH17_HULL,Go aboard the hull on the last berth.
+OBJ_CH17_CHOICE,Go back aboard the hull. The others are waiting on deck.
+OBJ_CH17_LAMP,Help Liss fit the hull's first lamp by the engine.
+OBJ_CH17_TABLE,Go to the dock-master's house. Ysolde has spread her work over his table.
+OBJ_CH17_BOARD,Board the hull when you are ready.
+OBJ_CH17_SIDE_BERTH,The dock-master is standing at an empty berth.

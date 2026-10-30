@@ -113,7 +113,14 @@
       {"id": "pr_wade", "line_key": "OBJ_CH16_WADE", "requires": ["ch16_started"], "until": "ch16_reached_choir", "zone": "ch16/pale_rim", "target": {"zone": "ch16/pale_rim", "poi": "choir_edge"}},
       {"id": "dc_choir", "line_key": "OBJ_CH16_CHOIR", "requires": ["ch16_reached_choir"], "until": "ch16_kesh_bound", "zone": "ch16/drowned_choir", "target": {"zone": "ch16/drowned_choir", "poi": "head"}},
       {"id": "dc_hold", "line_key": "OBJ_CH16_HOLD", "requires": ["ch16_refused_sefir"], "until": "ch16_act_two_complete", "zone": "ch16/drowned_choir"},
-      {"id": "pr_side_cairn", "line_key": "OBJ_CH16_SIDE_CAIRN", "requires": ["ch16_started"], "until": "ch16_rebuilt_cairn", "zone": "ch16/pale_rim", "side": true}
+      {"id": "pr_side_cairn", "line_key": "OBJ_CH16_SIDE_CAIRN", "requires": ["ch16_started"], "until": "ch16_rebuilt_cairn", "zone": "ch16/pale_rim", "side": true},
+      {"id": "hm_drydock", "line_key": "OBJ_CH17_DRYDOCK", "requires": ["ch17_started"], "until": "ch17_saw_the_hull", "zone": "ch17/hollowmere", "target": {"zone": "ch17/hollowmere", "poi": "drydock"}},
+      {"id": "hm_hull", "line_key": "OBJ_CH17_HULL", "requires": ["ch17_saw_the_hull"], "until": "ch17_read_the_ledger", "zone": "ch17/hollowmere", "target": {"zone": "ch17/hollowmere", "poi": "dace_hull"}},
+      {"id": "hm_choice", "line_key": "OBJ_CH17_CHOICE", "requires": ["ch17_read_the_ledger"], "until": "ch17_chose_the_unbinding", "zone": "ch17/hollowmere", "target": {"zone": "ch17/hollowmere", "poi": "dace_hull"}},
+      {"id": "hm_lamp", "line_key": "OBJ_CH17_LAMP", "requires": ["ch17_chose_the_unbinding"], "until": "ch17_first_lamp_lit", "zone": "ch17/hollowmere", "target": {"zone": "ch17/hollowmere", "poi": "dace_hull"}},
+      {"id": "hm_table", "line_key": "OBJ_CH17_TABLE", "requires": ["ch17_first_lamp_lit"], "until": "ch17_verse_begun", "zone": "ch17/hollowmere", "target": {"zone": "ch17/hollowmere", "poi": "house"}},
+      {"id": "hm_board", "line_key": "OBJ_CH17_BOARD", "requires": ["ch17_verse_begun"], "until": "ch17_complete", "zone": "ch17/hollowmere", "target": {"zone": "ch17/hollowmere", "poi": "dace_hull"}},
+      {"id": "hm_side_berth", "line_key": "OBJ_CH17_SIDE_BERTH", "requires": ["ch17_read_the_ledger"], "until": "ch17_first_berth", "zone": "ch17/hollowmere", "side": true, "target": {"zone": "ch17/hollowmere", "poi": "first_berth"}}
     ]
   }
 }

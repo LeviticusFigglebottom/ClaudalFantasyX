@@ -247,3 +247,15 @@ An Act I zone swaps its greybox look for env-art's kit with a `ZoneKitDressing` 
 - **Ch4 (M3-C04-1204):** the ferry and the Seventh Terrace (`tools/act1/ch04_ferry_dressing.py`): the ship's own frame at (0, 0, 10), the derelict at `bf_terrace.DERELICT_IN_FERRY`, the islet off the starboard gangway.
 - **Ch5 (M3-C05-1213):** Pemakar on its kit's ten tiers (`tools/act1/ch05_pemakar_dressing.py`), the kit's frame: the harbour a quay at the shore with the Ch4 ferry alongside, the harbour road up the massif to the first flight, the market and forge on tier 0 by the stair (the smithy trades places with the house there), the inn on tier 2 (moved along its arc to x −6.6), the graves on tier 4, the crown channel on tier 9. The kit's tiers are dressing, not lanes: story points stay on a tier's lane (d 1.6 behind its front) near the stair. The Lanternfall night (lamps, leaf-boats, far and sea lights; ZoneKitDressing `multimeshes`, `far_lights`) follows the `Lamps` block, which the day variant hides; the day uses the kit's dusk grade until M3-ENV-1214.
 - **Ch7 (M3-C07-1211):** the Bell's galleries on the Tamsule Bell kit (`tools/act1/ch07_tamsule_bell_dressing.py`), the kit's arena frame: the party's gallery is the west (Oruvel's), the rim trigger is on Oruvel's platform before the prow step where Tavi stands, Ione on Sorrin's prow east; Oruvel's moorings sit at azimuth 325 on the party's run of galleries (the two runs are parted by the boat lanes), a staging behind the posts and a bridge up to the walkway. Ch07Zone adds `KitCollision`. The area map (`zone_maps.json`) follows the moved POIs; it draws kit zones thinly until M3-UI-1212.
+
+## Shared zones (Act III; M5-A3P-1001)
+Act III comes back to earlier zones: Ch17 plays at Ch15's `ch17/hollowmere`, and Ch18 revisits Act I's towns. A zone
+may have a block in more than one chapter file. `ChapterRegistry.zone()` picks the block from the listed files, in story
+order: the first whose `chapter` ("ch17") is the story's current chapter or later, else the first that has the zone.
+The current chapter is `Game.state.chapter`, which `ZoneStory` passes in.
+- A zone reached on the way out of one chapter belongs to the next. The story is still chapter 16 when Ch16 hands off to
+  Hollowmere, and the Ch17 block's arrive row sets chapter 17.
+- A zone in a single file behaves as before.
+- The layout is shared. Its triggers serve every file's beats, so gate each trigger with the flags of its own chapter
+  (`requires_flag`, `blocked_by_flag`). `validate_data` checks a trigger's beat against all the files that have the zone.
+- `tests/unit/test_chapter_registry.gd` and `tests/integration/test_ch17_thread.gd` (Ch15 and Ch17 at one zone) cover this.
