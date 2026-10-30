@@ -1327,3 +1327,8 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
     - tools test_creatures OK; Godot creature 160/0.
     - For Combat: an enemies.json row and the Ch17 moorings encounter.
 - **MERGE-READY @ b82b920e4.** Next: M5-A3P-1806, the hull rasp (claimed).
+- **M5-A3P-1806, the hull rasp @ 63c6157ef:**
+  - the hullgnaw's rig, clips and breach; a darker, salt-scabbed body; eleven glowing bore-holes; salt-white keel timbers as the breakable part; 0.62× the hullgnaw;
+  - byte-identical build, PROVENANCE, portrait, shot `creature_hull_rasp` (viewed);
+  - tools test_creatures OK (floor and sink exemptions as the hullgnaw's); Godot creature 160/0.
+- **MERGE-READY @ 63c6157ef.** Next: M5-A3P-1800, the wick crawler (claimed; a new build from its sheet).

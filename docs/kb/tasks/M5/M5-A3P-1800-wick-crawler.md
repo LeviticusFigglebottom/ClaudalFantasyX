@@ -2,8 +2,8 @@
 id: M5-A3P-1800
 title: "Ch19: the wick crawler, a Lit Age lamp-tending construct on many fine legs (act3/wick_crawler.md)"
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "creatures (claude/creatures)"
 depends_on: []
 milestone: M5
 reviewer: character
