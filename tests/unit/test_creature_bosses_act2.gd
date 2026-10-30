@@ -202,6 +202,12 @@ const FLAT_ENGINE_JAMMED: Array[String] = ["paddle1", "paddle6"]
 const FLAT_ENGINE_JAM_MIN_DEG := 20.0
 const FLAT_ENGINE_WATER_TOL_M := 0.02
 
+## M4: every skill combat gives an Act II boss (enemies.json, its phases, and each charge's release) plays a clip the
+## model has, in every phase that can use it (creatures.json clip_by_skill, then the phase's `clips` map).
+const ACT2_BOSSES: Array[StringName] = [&"mangrove_drowner", &"lamp_engine", &"avalanche_ram", &"wakefin"]
+const ACT2_ENEMIES_PATH := "res://game/data/battle/enemies.json"
+const ACT2_SKILLS_PATH := "res://game/data/battle/skills.json"
+
 var made: Array[Node] = []
 var lamp_engine_made: Array[Node] = []
 
@@ -727,3 +733,51 @@ func _flat_engine_actor() -> CreatureActor:
 func _flat_engine_turn(skel: Skeleton3D, bone: String) -> float:
 	var b := skel.find_bone(bone)
 	return rad_to_deg(skel.get_bone_rest(b).basis.get_rotation_quaternion().angle_to(skel.get_bone_pose_rotation(b)))
+
+
+func test_act2_boss_skills_each_play_a_clip_the_model_has() -> void:
+	var skills := {}
+	for row: Dictionary in _act2_json(ACT2_SKILLS_PATH).get("skills", []) as Array:
+		skills[str(row.get("id", ""))] = row
+	for row: Dictionary in _act2_json(ACT2_ENEMIES_PATH).get("enemies", []) as Array:
+		var id := StringName(str(row.get("id", "")))
+		if not ACT2_BOSSES.has(id):
+			continue
+		var a := _act2_actor(id)
+		var phases: Array[StringName] = [&""]
+		var used: Array = (row.get("skills", []) as Array).duplicate()
+		for ph: Dictionary in row.get("phases", []) as Array:
+			phases.append(StringName(str(ph.get("id", ""))))
+			used.append_array(ph.get("skills", []) as Array)
+		for sid: Variant in used.duplicate():
+			var release := str(
+				((skills.get(str(sid), {}) as Dictionary).get("charge", {}) as Dictionary).get("skill", "")
+			)
+			if release != "":
+				used.append(release)
+		for sid: Variant in used:
+			var skill: Dictionary = skills.get(str(sid), {})
+			assert_false(skill.is_empty(), "%s's %s is a skill" % [id, sid])
+			var clip := a.clip_for(StringName(str(sid)), StringName(str(skill.get("kind", ""))))
+			assert_true(clip != &"", "%s's %s names a clip" % [id, sid])
+			for ph in phases:
+				if ph != &"":
+					a.enter_phase(ph, true)
+				assert_true(
+					a.has_clip(a.phase_clip(clip)), "%s's %s plays %s in %s" % [id, sid, a.phase_clip(clip), ph]
+				)
+	before_each()
+
+
+func _act2_json(path: String) -> Dictionary:
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+	return parsed as Dictionary if parsed is Dictionary else {}
+
+
+func _act2_actor(id: StringName) -> CreatureActor:
+	var row := CreatureActor.row_for(id)
+	var a := (load(str(row.get("scene", ""))) as PackedScene).instantiate() as CreatureActor
+	var tree := Engine.get_main_loop() as SceneTree
+	(tree.current_scene if tree.current_scene != null else tree.root).add_child(a)
+	made.append(a)
+	return a
