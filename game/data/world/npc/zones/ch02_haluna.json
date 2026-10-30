@@ -299,10 +299,10 @@
       "crowd": "haluna_dock_hauler",
       "stand_in": "CrowdSpots/haluna_dock_hauler",
       "at": [
-        19.5,
+        26.3,
         1.4,
-        41.0,
-        -153.4
+        38.6,
+        -46.5
       ],
       "shown": "day"
     },
