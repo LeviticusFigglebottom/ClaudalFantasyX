@@ -12,7 +12,8 @@
 * Crowd rows (M3-CRE-659, ADR 0152): a row's `crowd` names a person in game/data/world/npc/crowd.json who stands
   in this zone at this stage actor (stand_in CutsceneStage/Actors/<stage_actor>, or the stage actor itself when it is
   a scene path with a "/", attach child); their body's actor
-  scene exists; `offset` is [x, y, z] or [x, y, z, yaw_deg], inside the stand-in only.
+  scene exists; `offset` is [x, y, z] or [x, y, z, yaw_deg], inside the stand-in only. A row's `at` (the same
+  form) makes its stand-in at CrowdSpots/<name> where the zone has none (an Act II town's crowd on a greybox).
 * game/data/world/npc/crowd.json: ids unique; each person's zone is a location, their body a planned body with an
   actor scene whose age band and sex are theirs, their work a crowd work clip (or none), their tints exactly
   cloth_a, cloth_b, cloth_c and hair, each a palette.json swatch or a two-swatch mix of the cloth, earth, stone,
@@ -46,6 +47,7 @@ ATTACH = {"beside", "child"}
 CROWD_FILE = "game/data/world/npc/crowd.json"
 CROWD_ACTOR = "assets/crowd/{id}/{id}_actor.tscn"
 STAGE_ACTORS = "CutsceneStage/Actors/"
+CROWD_SPOTS = "CrowdSpots"  # VillagerLayer.CROWD_SPOTS: where an `at` row's stand-in is made
 PALETTE_FILE = "docs/kb/art/palette.json"
 TINT_SLOTS = {"cloth_a", "cloth_b", "cloth_c", "hair"}
 CLOTH_SLOTS = ("cloth_a", "cloth_b", "cloth_c")
@@ -216,6 +218,13 @@ def zone_errors(root: Path, rel: str, locations: set[str], flags: set[str],
                 errs.append(f"{where}: an offset places a villager inside its stand-in (attach child) only")
         if not str(row.get("stand_in", "")):
             errs.append(f"{where}: no stand_in")
+        if "at" in row:
+            if not _point(row["at"]):
+                errs.append(f"{where}: at is not [x, y, z] or [x, y, z, yaw_deg]")
+            parts = str(row.get("stand_in", "")).split("/")
+            if len(parts) != 2 or parts[0] != CROWD_SPOTS or not parts[1]:
+                errs.append(f"{where}: an `at` row stands at {CROWD_SPOTS}/<name> (the spot VillagerLayer makes), "
+                            f"not {row.get('stand_in')!r}")
         if "silhouette" in row and not re.fullmatch(r"#[0-9A-Fa-f]{6}", str(row["silhouette"])):
             errs.append(f"{where}: silhouette is not a #RRGGBB colour")
         if "tuning" in row and not isinstance(row["tuning"], dict):

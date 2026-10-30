@@ -305,9 +305,9 @@ func test_a_borrowed_model_placed_first_gives_way_to_the_rows_own() -> void:
 		npc.add_child(actor)
 		zone.get_node("CutsceneStage/Actors/" + id).add_child(npc)
 		placed.append(npc)
-	var person := _people()["haluna_shopkeeper"] as Dictionary
+	var person := _people()["oruvel_cook"] as Dictionary
 	var rows := [
-		{"npc_id": "shop", "crowd": "haluna_shopkeeper", "attach": "child", "stand_in": "CutsceneStage/Actors/shop"},
+		{"npc_id": "shop", "crowd": "oruvel_cook", "attach": "child", "stand_in": "CutsceneStage/Actors/shop"},
 		{"npc_id": "keep", "actor": "netmender", "attach": "child", "stand_in": "CutsceneStage/Actors/keep"},
 	]
 	var layer := _layer(zone, rows)
@@ -323,6 +323,38 @@ func test_a_borrowed_model_placed_first_gives_way_to_the_rows_own() -> void:
 	assert_true(
 		is_instance_valid(placed[1]) and layer.villager(&"keep") == placed[1], "no crowd person: adopted, not rebuilt"
 	)
+	_done()
+
+
+## An Act II town's greybox names no actors: a row's `at` makes its stand-in at CrowdSpots/<name> and the person
+## stands there (the Lead, 2026-10-30: Hollowmere's townsfolk).
+func test_an_at_row_makes_its_own_spot() -> void:
+	var zone := _holder()
+	var rows := [
+		{
+			"npc_id": "netmender",
+			"crowd": "hollowmere_netmender",
+			"attach": "child",
+			"stand_in": "CrowdSpots/hollowmere_netmender",
+			"at": [4.0, 0.5, -2.0, 90.0],
+		},
+		{
+			"npc_id": "stray",
+			"crowd": "hollowmere_fisher",
+			"attach": "child",
+			"stand_in": "Elsewhere/x",
+			"at": [0, 0, 0]
+		},
+	]
+	var layer := _layer(zone, rows)
+	layer.build()
+	var spot := zone.get_node_or_null(^"CrowdSpots/hollowmere_netmender") as Node3D
+	assert_true(spot != null, "the spot is made")
+	if spot != null:
+		assert_true(spot.position.is_equal_approx(Vector3(4.0, 0.5, -2.0)), "at its `at`")
+		assert_true(is_equal_approx(spot.rotation.y, deg_to_rad(90.0)), "facing its yaw")
+		assert_eq(spot.find_children("*", "FieldNpc", true, false).size(), 1, "the person stands in it")
+	assert_true(layer.villager(&"stray") == null, "a spot outside CrowdSpots is refused")
 	_done()
 
 

@@ -58,14 +58,21 @@ class ZoneMistakes(unittest.TestCase):
         self.assertEqual(self._errors(self._haluna()), [])
 
     def test_a_scene_path_stage_actor_is_the_stand_in_itself(self) -> None:
-        """Haluna's shop keepers stand in the town's own stand-ins (NPCs/Town/...), not a CutsceneStage actor."""
+        """A person may stand in a town's own stand-in (a scene path, such as NPCs/Town/Smith), not a stage actor."""
         self.assertEqual(vn.person_stand_in({"stage_actor": "NPCs/Town/Smith"}), "NPCs/Town/Smith")
         self.assertEqual(vn.person_stand_in({"stage_actor": "clerk"}), "CutsceneStage/Actors/clerk")
-        data = self._haluna()
-        self.assertEqual(self._errors(data), [])
-        row = next(r for r in data["villagers"] if r.get("crowd") == "haluna_smith")
-        row["stand_in"] = "CutsceneStage/Actors/NPCs/Town/Smith"
-        self.assertTrue(any("stands at stage actor" in e for e in self._errors(data)))
+
+    def test_an_at_row_stands_at_its_crowd_spot(self) -> None:
+        """A row's `at` makes its stand-in at CrowdSpots/<name> (an Act II town's greybox names no actors)."""
+        d = self._haluna()
+        row = d["villagers"][0]
+        row["at"] = [1, 2]
+        errs = " | ".join(self._errors(d))
+        self.assertIn("at is not", errs)
+        self.assertIn("stands at CrowdSpots/<name>", errs)
+        row["at"] = [1.0, 0.0, 2.0, 90.0]
+        row["stand_in"] = "CrowdSpots/vendor"
+        self.assertFalse(any("`at`" in e or "at is not" in e for e in self._errors(d)))
 
     def test_zone_must_name_the_file_and_be_a_location(self) -> None:
         d = self._haluna()
@@ -168,8 +175,9 @@ class Crowd(unittest.TestCase):
         self.assertEqual(sum(p["stage_actor"] == "wrights" for p in self.crowd["people"]),
                          self.crowd["groups"]["brine_shoals_wrights"]["people"])
         self.assertNotIn("ch04/haluna_wake", by_zone, "Haluna's own villagers keep their M2-CHR-03 bodies")
-        self.assertEqual(by_zone["ch02/haluna"], {"NPCs/Town/Shopkeeper", "NPCs/Town/Smith", "NPCs/Town/Innkeeper"})
-        self.assertEqual(len(self.crowd["people"]), 59)
+        act1 = [p for p in self.crowd["people"] if int(p["zone"].split("/")[0][2:]) < 10]
+        self.assertEqual(len(act1), 56)
+        self.assertEqual(len(by_zone["ch17/hollowmere"]), 10, "Hollowmere's Saltwright townsfolk (Ch15 B11)")
 
     def test_crowd_rows_must_match_their_person(self) -> None:
         data = copy.deepcopy(_load(CROWD_ZONE))
@@ -244,6 +252,20 @@ class Crowd(unittest.TestCase):
         for name, text in files.items():
             self.assertEqual((ROOT / "assets_src" / "crowd" / "params" / name).read_text(encoding="utf-8"), text, name)
         self.assertEqual((ROOT / vn.CROWD_FILE).read_text(encoding="utf-8"), roster)
+
+    def test_an_act_two_town_never_reshuffles_act_ones_bodies(self) -> None:
+        """Act II zones are assigned after every Act I zone: dropping them leaves each Act I body as it is."""
+        sys.path.insert(0, str(ROOT / "assets_src" / "crowd"))
+        import gen_crowd
+
+        ranges = gen_crowd.load_json(gen_crowd.RANGES)
+        whole = gen_crowd.assign(ranges, self.crowd)
+        act1 = copy.deepcopy(self.crowd)
+        act1["people"] = [p for p in act1["people"] if gen_crowd.chapter_of(p["zone"]) < gen_crowd.ACT2_CHAPTER]
+        alone = gen_crowd.assign(ranges, act1)
+        self.assertEqual({k: whole[k] for k in alone}, alone)
+        self.assertEqual(gen_crowd.chapter_of("ch17/hollowmere"), 17)
+        self.assertEqual(gen_crowd.chapter_of("_tests/crowd"), 0)
 
     def test_bodies_span_ages_builds_and_hair_and_are_new_faces(self) -> None:
         sys.path.insert(0, str(ROOT / "assets_src" / "crowd"))

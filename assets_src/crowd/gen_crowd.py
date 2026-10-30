@@ -47,7 +47,14 @@ LEATHER = "#FFFFFF"  # the villagers' untinted leather (write_materials: a white
 PERSON_KEYS = ("id", "zone", "stage_actor", "role", "island", "community", "age_band", "sex", "build", "body", "tints",
                "work", "about")
 DIGITS = 4
+ACT2_CHAPTER = 10  # Act II's first chapter (Ch10, Ossa Fen): its zones are assigned after every Act I zone
 FINE_DIGITS = 5  # metres of mouth_corner_lift and canthus_offset_m
+
+
+def chapter_of(zone: str) -> int:
+    """A zone id's chapter number (ch17/hollowmere -> 17; 0 when it names none)."""
+    head = zone.split("/")[0]
+    return int(head[2:]) if head.startswith("ch") and head[2:].isdigit() else 0
 
 
 def seed_of(*parts: object) -> int:
@@ -380,7 +387,8 @@ def feasible(ranges: dict, person: dict, bodies: dict, used_in_zone: set) -> lis
 
 
 def assign(ranges: dict, roster: dict) -> dict[str, str]:
-    """person id -> body. Zones with the most people go first; within a zone, the person with the fewest choices."""
+    """person id -> body. Zones with the most people go first (Act I's before Act II's, so a new Act II town never
+    reshuffles Act I's bodies); within a zone, the person with the fewest choices."""
     w = ranges["assign"]
     bodies = roster["bodies"]
     people = roster["people"]
@@ -389,7 +397,7 @@ def assign(ranges: dict, roster: dict) -> dict[str, str]:
         zones.setdefault(p["zone"], []).append(i)
     uses = {bid: 0 for bid in bodies}
     out: dict[str, str] = {}
-    for zone in sorted(zones, key=lambda z: (-len(zones[z]), z)):
+    for zone in sorted(zones, key=lambda z: (chapter_of(z) >= ACT2_CHAPTER, -len(zones[z]), z)):
         used: set = set()
         left = list(zones[zone])
         while left:
