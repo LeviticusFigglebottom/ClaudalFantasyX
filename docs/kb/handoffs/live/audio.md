@@ -25,7 +25,7 @@ Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 a
     - gdlint and gdformat clean (game, tests); validate_data 0; taskboard OK.
     - tools tests: audio_data, audio_loudness, dialogue_clarity, mono_check (new), tell_check (new), all OK.
     - Godot tests: audio_accessibility 3/0 (new), ui_settings 12/0, settings 49/0, audio_menu 4/0, audio_runtime 11/0, life_audio 14/0, battle_audio 22/0, battle_stings 8/0, flame_audio 3/0, prop_audio 2/0, music_release 4/0.
-    - Skipped: screenshots (the Audio page gains a row; UI's settings shots may shift by one row: **LEAD-ASK** whether to re-baseline them on merge), Blender, coverage.
+    - Skipped: screenshots (none shows the Audio page: the settings shots are the hub, Accessibility and Controls, and the Accessibility page leaves audio_menu.json's rows off, so `mono_audio` moves no baseline), Blender, coverage.
 - **BACKLOG EMPTY (after 6fcbce03d):** waiting on Ch11 and Ch13 staging, combat's Ch14–Ch16 fights, env-art-b's merge and UI's M4-A2P-1953.
 - **MERGE-READY @ 1ad5bbcfb: the Lead's 21:05 item.**
   - **The Act II boss themes as played in the intros (bdc5ef22):** done at d04d79422 (above). Each sting now lands with the title card at 0.7 s, under the boss cue's 3.5 s duck.
