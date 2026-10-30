@@ -31,6 +31,7 @@ RIGS = {
     "ch06/brine_shoals": "ch06_brine_shoals_shots", "ch07/tamsule": "ch07_tamsule_shots",
     "ch07/tamsule_bell_galleries": "ch07_bell_shots", "ch08/corrow": "ch08_corrow_shots",
     "ch08/coilspire": "ch08_coilspire_shots", "ch09/corrow_night": "ch09_corrow_night_shots",
+    "ch10/ossa_fen": "ch10_ossa_fen_shots", "ch10/reedhollow": "ch10_reedhollow_shots",  # M4-A2P-010 (ADR 0205)
 }
 RIG_DIR = "game/levels/_tests/act1_zones"
 PREVIEW = ROOT / RIG_DIR / "_preview"
