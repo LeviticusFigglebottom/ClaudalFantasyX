@@ -630,3 +630,27 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - **Checks:** dlgc 0/0 · validate_data 0/0 · taskboard clean. Godot `dialogue` 87/0, `haluna_zone` 7/0, `memories` 15/0, `cutscene_sequencer` 22/0. No screenshot shows the changed lines (`slice_beach_standing` holds line 031, which is unchanged).
 - MERGE-READY emotional-beats pass @ 5b401f65a
 - BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1010; M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Act II emotional-beats pass, Ch10–Ch13 staged and Ch14–Ch16 on paper (Lead; pillars 1 and 6)
+- **Read:** the key scenes in order.
+  - Ch10: the farewell-tide, the dawn gate.
+  - Ch11: the housing-mark, twice, Nhoa, "By you, now.".
+  - Ch12: the herd-cord, Hesk, forty-seven voices.
+  - Ch13: Ethren, the roll, the hands, the pact, the house.
+  - Ch14: the vows, the declaration, Tobin, Merel.
+  - Ch15: the confession, "Let me carry him.".
+  - Ch16: the High Warden, swept away.
+- **Lines: no change needed.**
+  - **Sincerity:** no Act II line undercuts sorrow. Every [laugh] and [smile] in the main scenes sits before a loss (Tobin's joy in Ch13), never after it. Tobin's dying "Your knots are terrible." pays off Ch13's knots: his tenderness, not a release.
+  - **Pillar 6 (no one keeps everything):** "You are very good at asking." (the Hush's cost, Ch10); "She is held. By you, now."; Ysolde's "I would very much like it to."; Liss's "I'm not going to say it's all right." to Toma.
+- **Earned beats depend on mounting.** Tobin's death needs `ch13_tobin` played; "Your breath. In Ullar." needs `ch12_breath`; Ch11's split needs `ch11_housing_mark`. All are filed in M4-A2P-1003.
+- **Tightened (my scripts' holds, to the direction notes):**
+  - V00: 5 → 9 s;
+  - Pell's kneel (N05): 4 → 7 s;
+  - N09: 6 → 8 s;
+  - Ch13's A01: 5 → 8 s;
+  - Ethren's rise (S05): 4 → 6 s.
+- **Staging filed: M4-A2P-1011 → slice-polish.** A Ch10–Ch16 checklist of the beats staging can break, each pointing at its direction note: the backs to the tide, Pell's ledge, Tobin's fall, Merel from the barge, Kerrid's eye height and K11, the dock-master unheard, Pell's turn last, Sefir's smile, the hard cuts.
+- **Checks:** dlgc 0/0 · taskboard clean · Godot `dialogue` 87/0 · tools music-sync test OK.
+- MERGE-READY Act II emotional pass @ 270c32419
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1011; M4-A2P-112 items 3, 5 and 6.
