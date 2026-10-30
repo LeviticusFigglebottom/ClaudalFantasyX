@@ -1200,6 +1200,16 @@
       ]
     },
     {
+      "id": "creature_spire_moth",
+      "owner": "character",
+      "sources": ["assets_src/creatures/spire_moth/**", "assets_src/creatures/flue_moth/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/spire_moth/*.glb", "assets/creatures/spire_moth/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/spire_moth/build_spire_moth.py", "--", "--out", "assets/creatures/spire_moth/spire_moth.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "spire_moth"]
+      ]
+    },
+    {
       "id": "creature_flat_engine",
       "owner": "character",
       "sources": ["assets_src/creatures/flat_engine/**", "assets_src/creatures/common/**"],

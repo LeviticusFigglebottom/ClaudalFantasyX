@@ -10342,6 +10342,14 @@
         960,
         720
       ]
+    },
+    {
+      "id": "creature_spire_moth",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_spire_moth.tscn",
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }

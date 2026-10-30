@@ -22,6 +22,7 @@
     "stormgull": {"scene": "res://game/creatures/stormgull/stormgull_battle.tscn", "vfx_anchors": {"core": "body", "wound": "neck"}, "contact": {"attack": 0.75}, "stand_in": {"yaw_deg": 60.0, "hover": 1.05}, "portrait": {"yaw_deg": 60.0, "pitch_deg": 20.0}},
     "wallcrab": {"scene": "res://game/creatures/wallcrab/wallcrab_battle.tscn", "vfx_anchors": {"core": "body", "wound": "body"}, "contact": {"attack": 0.5, "cast": 0.7}},
     "flue_moth": {"scene": "res://game/creatures/flue_moth/flue_moth_battle.tscn", "vfx_anchors": {"core": "thorax", "wound": "head"}, "contact": {"attack": 0.5, "cast": 0.6}, "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}},
+    "spire_moth": {"scene": "res://game/creatures/spire_moth/spire_moth_battle.tscn", "vfx_anchors": {"core": "thorax", "wound": "head"}, "contact": {"attack": 0.5, "cast": 0.6}, "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}},
     "undertows_reach": {
       "scene": "res://game/creatures/undertows_reach/undertows_reach_battle.tscn",
       "contact": {"attack": 1.2, "cast": 1.3, "attack_dark": 1.2, "cast_dark": 1.3, "attack_breach": 1.2, "cast_breach": 1.3,

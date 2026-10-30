@@ -29,7 +29,7 @@ import grounding as gr  # noqa: E402
 SEED = 1801
 PAL = {k: ck.hexrgb(v) for k, v in {
     "brass": "#B08D57", "bronze_patina": "#5F8A78", "lacquer_black": "#1D1916", "salt_glass": "#BFE6E0",
-    "glimmer_bound": "#4FB3B0", "spawn_wound": "#3FE0C8", "lit_ceramic": "#E9E4DB",
+    "glimmer_bound": "#4FB3B0", "spawn_wound": "#3FE0C8", "lit_ceramic": "#DCE3E0",
 }.items()}
 
 TOP = 5.0  # the chain's fixed ring
