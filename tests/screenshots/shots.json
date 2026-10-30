@@ -8761,6 +8761,25 @@
     {
       "id": "battle_boss_intro_wakefin",
       "scene": "res://game/battle/scene/shots/battle_boss_intro_wakefin.tscn"
+    },
+    {
+      "id": "battle_arena_pale_rim_shallows",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_pale_rim_shallows.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }
