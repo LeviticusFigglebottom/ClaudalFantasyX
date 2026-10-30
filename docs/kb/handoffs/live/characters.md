@@ -615,3 +615,8 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
   - `stillguard` (ch14: the builds are stillguard_a…f).
   - `kirru` (ch10: the builds are kirru_{adult,child,elder}).
   - `young_sefir`, `owa`, `householder`, `conclave`.
+- **ADR 0207 supplement:** the M3-CHR-1000 queue is built, apart from the final checks. The parts another track can
+  take cleanly are filed as M4-A2P-1980 (todo, for creatures-b or anyone free):
+  - a per-clip fist for a free hand (Rhen's knock);
+  - binary .res libraries for Asha and Rhen, which are at the 4 MiB text bound.
+  Act III (M5-A3P-1980…1999) comes after.
