@@ -1218,7 +1218,10 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - A7: the roof dive plays once, then a two-line after-bark.
   - A8: "a girl I'd known for a day".
   - Tests: haluna 66, ch01 20, ch01_thread 2, _thread 40, dialogue 86, fp_ 30, all 0 failed. The task file (from
-    claude/act2-plan) is in review with the notes.
+    claude/act2-plan) is not merged here: its id collides with integration's M4-A2P-115 (the Quellan eye-height
+    request). **For the Lead / act2-plan:** renumber the read-through task, then set it to review. My notes for its
+    Review log are the A1–A8 lines above. Narrative should review the four Listen follow-ups and the roof
+    after-bark (new lines).
 ### PC-QUEUE
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan
