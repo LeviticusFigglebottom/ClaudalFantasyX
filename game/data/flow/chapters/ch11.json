@@ -45,10 +45,16 @@
      },
      "steps": [
       {
-       "place": "FromLowlight"
+       "place": "Landing"
       },
       {
        "play": "ch11_held_by_you"
+      },
+      {
+       "go": {
+        "location": "ch12/keth_pass",
+        "spawn": "PassFoot"
+       }
       }
      ]
     }
@@ -61,6 +67,16 @@
         "location": "ch11/lowlight",
         "spawn": "Gate"
        }
+      }
+     ]
+    },
+    "housing_mark": {
+     "steps": [
+      {
+       "play": "ch11_housing_mark"
+      },
+      {
+       "set": "ch11_rhen_admitted"
       }
      ]
     }
