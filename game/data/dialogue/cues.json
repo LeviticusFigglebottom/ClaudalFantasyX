@@ -5,7 +5,7 @@
   "vfx_effects": ["glimmer_lift", "glimmer_held", "glimmer_bound"],
   "vfx_drift": ["down_seaward"],
   "vfx_motion": ["spiral_up"],
-  "vfx_rate": ["slow", "normal", "fast"],
+  "vfx_rate": ["slow", "normal", "fast", "hang"],
   "camera_eases": ["linear", "in_out_sine", "in_out_cubic", "out_quart"]
  },
  "reserved": {

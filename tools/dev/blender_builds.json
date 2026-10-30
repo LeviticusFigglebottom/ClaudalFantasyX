@@ -988,6 +988,57 @@
       ]
     },
     {
+      "id": "kirru_elder",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M4-A2P-053: the Kirru eldest, a Kirru variant on Pell's build (pell_variant.py, kirru/variants/kirru_elder.json): its own head and body maps, Pell's atlases shared.",
+      "sources": ["assets_src/characters/pell/**", "assets_src/characters/kirru/**", "assets_src/characters/ysolde/**", "assets_src/characters/toma/**",
+                  "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**",
+                  "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/kirru_elder/*.glb", "assets/characters/kirru_elder/textures/*.png",
+                  "assets/characters/kirru_elder/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/pell/build_pell.py", "--", "--variant", "kirru_elder",
+         "--bake-dir", "{scratch}/kirru_elder_bake"],
+        ["{python}", "assets_src/characters/pell/pell_textures.py", "--variant", "kirru_elder", "--bake-dir", "{scratch}/kirru_elder_bake"],
+        ["{python}", "assets_src/characters/pell/write_materials.py", "--variant", "kirru_elder"]
+      ]
+    },
+    {
+      "id": "kirru_adult",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M4-A2P-053: a Kirru of the ring, a Kirru variant on Pell's build (pell_variant.py, kirru/variants/kirru_adult.json): its own head and body maps, Pell's atlases shared.",
+      "sources": ["assets_src/characters/pell/**", "assets_src/characters/kirru/**", "assets_src/characters/ysolde/**", "assets_src/characters/toma/**",
+                  "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**",
+                  "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/kirru_adult/*.glb", "assets/characters/kirru_adult/textures/*.png",
+                  "assets/characters/kirru_adult/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/pell/build_pell.py", "--", "--variant", "kirru_adult",
+         "--bake-dir", "{scratch}/kirru_adult_bake"],
+        ["{python}", "assets_src/characters/pell/pell_textures.py", "--variant", "kirru_adult", "--bake-dir", "{scratch}/kirru_adult_bake"],
+        ["{python}", "assets_src/characters/pell/write_materials.py", "--variant", "kirru_adult"]
+      ]
+    },
+    {
+      "id": "kirru_child",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M4-A2P-053: a Kirru child, a Kirru variant on Pell's build (pell_variant.py, kirru/variants/kirru_child.json): its own head and body maps, Pell's atlases shared.",
+      "sources": ["assets_src/characters/pell/**", "assets_src/characters/kirru/**", "assets_src/characters/ysolde/**", "assets_src/characters/toma/**",
+                  "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**",
+                  "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/kirru_child/*.glb", "assets/characters/kirru_child/textures/*.png",
+                  "assets/characters/kirru_child/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/pell/build_pell.py", "--", "--variant", "kirru_child",
+         "--bake-dir", "{scratch}/kirru_child_bake"],
+        ["{python}", "assets_src/characters/pell/pell_textures.py", "--variant", "kirru_child", "--bake-dir", "{scratch}/kirru_child_bake"],
+        ["{python}", "assets_src/characters/pell/write_materials.py", "--variant", "kirru_child"]
+      ]
+    },
+    {
       "id": "creature_tannin_archer",
       "owner": "character",
       "sources": ["assets_src/creatures/tannin_archer/**", "assets_src/creatures/common/**"],
@@ -1329,6 +1380,20 @@
         ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "aldous", "--bake-dir", "{scratch}/aldous_bake"],
         ["{python}", "assets_src/characters/villagers/write_materials.py", "aldous"],
         ["{python}", "assets_src/characters/villagers/villager_clips.py", "aldous"]
+      ]
+    },
+    {
+      "id": "villager_ullari_woman",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M4-A2P-053: the Ullari woman at the pass-cord (Ch12) on the villager build: layered weaving, the solid shawl, her keth cord; tie_knot and touch_knot.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/ullari_woman/*.glb", "assets/characters/villagers/ullari_woman/textures/*.png", "assets/characters/villagers/ullari_woman/materials/*.tres", "assets/characters/villagers/ullari_woman/*.tscn", "assets/characters/villagers/ullari_woman/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "ullari_woman", "--bake-dir", "{scratch}/ullari_woman_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "ullari_woman", "--bake-dir", "{scratch}/ullari_woman_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "ullari_woman"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "ullari_woman"]
       ]
     },
     {

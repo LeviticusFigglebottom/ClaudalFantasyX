@@ -1,7 +1,7 @@
 // Ch4 C4-12, bark 2 of 3: the galley's hourglass. Ysolde notes the time on it (she reads everything).
-// Field bark.
+// Field bark. The hour matches Ch1: the Seventh Terrace cast off at 11:10 (M4-A2P-116 B6).
 title: ch04_bark_hourglass
 location: ch04/brightwater_ferry
 ---
-Ysolde [neutral]: The glass was turned at the morning watch and never again. Three days ago, a little after eight. #line:ch04_bark_glass_001
+Ysolde [neutral]: The glass was turned at the morning watch and never again. Three days ago, a little after eleven. #line:ch04_bark_glass_001
 ===

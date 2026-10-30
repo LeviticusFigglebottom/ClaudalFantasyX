@@ -163,7 +163,7 @@ stance through them.
 | `idle` | 4.0 s, loop | — | she stands with her left palm over her heart and the right hand low and loose, her weight a little to one side (the column leans, the spine answers), her head tilted and turned three-quarters to the camera, eyes closed. The column sways as one, the hair sheet falls and falls (its chains sway, lagging down them), the robe stirs, she breathes |
 | `idle_b` | 1.6 s | — | a breath with her eyes closed: the head bows a little and the chest rises, held, then lets go |
 | `ready` | 1.4 s | — | the panels swing out (the mouths open wider) and the hands lift |
-| `rise` | 3.0 s | — | from folded and sunk (shoulders at about 2 m, the column 0.35 m short, the robe pooled outward) the column climbs, then her body, and her head lifts last |
+| `rise` | 2.6 s (was 3.0; the battle holds a call 2.6 s) | — | from folded and sunk (shoulders at about 2 m, the column 0.35 m short, the robe pooled outward) the column climbs, then her body, and her head lifts last |
 | `dismiss` | 1.2 s | — | she pours back down into the column, ending folded (the splash and fade are presentation) |
 | `attack` | 1.2 s | 0.32 s drawn back → **0.55 s** | the fallback strike: the near hand swept out at the foes |
 | `cast` | 1.6 s | 0.45 s drawn up → **0.8 s** | the fallback cast: both hands drawn up, then opened forward |

@@ -30,9 +30,25 @@ class CommittedData(unittest.TestCase):
         self.assertEqual(vn.npc_errors(ROOT), [])
 
     def test_haluna_places_the_seven_villagers(self) -> None:
-        ids = {r["npc_id"] for r in _load(HALUNA)["villagers"]}
+        rows = _load(HALUNA)["villagers"]
+        ids = {r["npc_id"] for r in rows if "crowd" not in r}
         self.assertEqual(ids, {"child", "fisher", "neme", "netmender", "osu", "reed", "vendor",
                                "shopkeeper", "smith", "innkeeper"})
+
+    def test_haluna_vignettes_work_by_day_and_a_few_by_night(self) -> None:
+        """The Lead, 2026-10-30: Haluna lived in. Crowd people at work at the causeway head, in the lane and on the
+        dock; the children play by day; the dock's people are gone home at night and one brings a basket home."""
+        rows = [r for r in _load(HALUNA)["villagers"] if "crowd" in r]
+        people = {p["id"]: p for p in _load(vn.CROWD_FILE)["people"]}
+        self.assertEqual(len(rows), 15)
+        works = {people[r["crowd"]]["work"] for r in rows}
+        self.assertTrue({"mend", "carry", "fold", "haul", "sweep", "play_stones", "play_clap"} <= works)
+        for r in rows:
+            p = people[r["crowd"]]
+            if p["age_band"] == "child" or "dock" in r["npc_id"]:
+                self.assertEqual(r.get("shown"), "day", r["npc_id"])
+        self.assertTrue(any(r.get("shown") == "night" for r in rows))
+        self.assertTrue(any("shown" not in r for r in rows), "some work by lamplight too")
 
 
 class ZoneMistakes(unittest.TestCase):
@@ -175,8 +191,9 @@ class Crowd(unittest.TestCase):
         self.assertEqual(sum(p["stage_actor"] == "wrights" for p in self.crowd["people"]),
                          self.crowd["groups"]["brine_shoals_wrights"]["people"])
         self.assertNotIn("ch04/haluna_wake", by_zone, "Haluna's own villagers keep their M2-CHR-03 bodies")
-        act1 = [p for p in self.crowd["people"] if int(p["zone"].split("/")[0][2:]) < 10]
+        act1 = [p for p in self.crowd["people"] if int(p["zone"].split("/")[0][2:]) < 10 and p["zone"] != "ch02/haluna"]
         self.assertEqual(len(act1), 56)
+        self.assertEqual(len(by_zone["ch02/haluna"]), 15, "Haluna's vignettes (the Lead, 2026-10-30), not capsules")
         self.assertEqual(len(by_zone["ch17/hollowmere"]), 10, "Hollowmere's Saltwright townsfolk (Ch15 B11)")
 
     def test_crowd_rows_must_match_their_person(self) -> None:
@@ -259,13 +276,29 @@ class Crowd(unittest.TestCase):
         import gen_crowd
 
         ranges = gen_crowd.load_json(gen_crowd.RANGES)
+        late = set(ranges["assign"]["late_zones"])
         whole = gen_crowd.assign(ranges, self.crowd)
         act1 = copy.deepcopy(self.crowd)
-        act1["people"] = [p for p in act1["people"] if gen_crowd.chapter_of(p["zone"]) < gen_crowd.ACT2_CHAPTER]
+        act1["people"] = [p for p in act1["people"]
+                          if gen_crowd.chapter_of(p["zone"]) < gen_crowd.ACT2_CHAPTER and p["zone"] not in late]
         alone = gen_crowd.assign(ranges, act1)
         self.assertEqual({k: whole[k] for k in alone}, alone)
         self.assertEqual(gen_crowd.chapter_of("ch17/hollowmere"), 17)
         self.assertEqual(gen_crowd.chapter_of("_tests/crowd"), 0)
+
+    def test_late_zones_never_reshuffle_the_others(self) -> None:
+        """`late_zones` (Haluna's vignettes) go after every other zone: dropping them leaves every other body."""
+        sys.path.insert(0, str(ROOT / "assets_src" / "crowd"))
+        import gen_crowd
+
+        ranges = gen_crowd.load_json(gen_crowd.RANGES)
+        late = set(ranges["assign"]["late_zones"])
+        self.assertIn("ch02/haluna", late)
+        whole = gen_crowd.assign(ranges, self.crowd)
+        rest = copy.deepcopy(self.crowd)
+        rest["people"] = [p for p in rest["people"] if p["zone"] not in late]
+        alone = gen_crowd.assign(ranges, rest)
+        self.assertEqual({k: whole[k] for k in alone}, alone)
 
     def test_bodies_span_ages_builds_and_hair_and_are_new_faces(self) -> None:
         sys.path.insert(0, str(ROOT / "assets_src" / "crowd"))

@@ -1555,7 +1555,7 @@ def over_base(pose: dict) -> dict:
 IDLE_SEC = 4.0
 IDLE_B_SEC = 1.6
 READY_SEC = 1.4
-RISE_SEC = 3.0
+RISE_SEC = 2.6  # choreo.json vowbound entry.sec: the battle holds a call this long (the other six rise in 2.6 s too)
 DISMISS_SEC = 1.2
 ATTACK_SEC, ATTACK_CONTACT = 1.2, 0.55
 CAST_SEC, CAST_CONTACT = 1.6, 0.8
@@ -1749,13 +1749,13 @@ def build_rise() -> ck.Clip:
     """The column climbs out of the water and she forms from it, head last."""
     c = ck.Clip("rise", RISE_SEC)
     keyp(c, 0.0, FOLDED)
-    keyp(c, 0.35, FOLDED)
-    keyp(c, 1.4, merge(FOLDED, body_pose(spine=(22.0, 18.0, 14.0), neck=14.0, head=18.0, lift=0.0, sink=SUNK * 0.75),
+    keyp(c, 0.3, FOLDED)
+    keyp(c, 1.2, merge(FOLDED, body_pose(spine=(22.0, 18.0, 14.0), neck=14.0, head=18.0, lift=0.0, sink=SUNK * 0.75),
                        robes(out=(26.0, 14.0, 8.0))))
-    keyp(c, 2.2, merge(body_pose(spine=(6.0, 8.0, 8.0), neck=16.0, head=20.0, sink=0.05),
+    keyp(c, 1.9, merge(body_pose(spine=(6.0, 8.0, 8.0), neck=16.0, head=20.0, sink=0.05),
                        arms(upper=(-20.0, -10.0, 4.0), fore=(-30.0, 0.0, 0.0)), robes(out=(6.0, 4.0, 2.0)),
                        hair_pose(back=(-30.0, -15.0, -6.0))))
-    keyp(c, 2.65, merge(body_pose(neck=4.0, head=6.0), arms(upper=(-6.0, 0.0, 6.0), fore=(-10.0, 0.0, 0.0))))
+    keyp(c, 2.3, merge(body_pose(neck=4.0, head=6.0), arms(upper=(-6.0, 0.0, 6.0), fore=(-10.0, 0.0, 0.0))))
     keyp(c, RISE_SEC, REST)
     return c
 

@@ -20,7 +20,7 @@ location: ch04/brightwater_ferry
 @sfx lookout_call
 Ferrymaster [surprised]: Sail! Sail off the bow, and she's not answering! #line:ch04_terrace_001
 @camera F05
-@vfx glimmer_held at=derelict_rigging count=12 drift=down_seaward rate=slow
+@vfx glimmer_held at=derelict_rigging count=12 rate=hang
 @sfx derelict_wheel_turning
 @music silence fade=3.0
 @wait 2.5

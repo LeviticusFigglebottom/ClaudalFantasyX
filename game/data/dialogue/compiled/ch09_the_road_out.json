@@ -67,16 +67,15 @@
     {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 83},
     {"op": "cue", "cue": "fade", "args": ["out", 3.0], "kwargs": {}, "src": 84},
     {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 2.0}, "src": 85},
-    {"op": "set", "flag": "ch09_act_one_complete", "value": ["lit", true], "src": 86},
-    {"op": "jump", "node": "ch09_act_card", "src": 87}
+    {"op": "set", "flag": "ch09_act_one_complete", "value": ["lit", true], "src": 86}
    ]
   },
   "ch09_act_card": {
    "headers": {},
    "ops": [
-    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 94},
-    {"op": "line", "id": "ch09_act_card_001", "key": "DLG_CH09_ACT_CARD_001", "speaker": "", "emotion": "", "voice": "", "src": 95, "tags": ["card"]},
-    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 96}
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 95},
+    {"op": "line", "id": "ch09_act_card_001", "key": "DLG_CH09_ACT_CARD_001", "speaker": "", "emotion": "", "voice": "", "src": 96, "tags": ["card"]},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 97}
    ]
   }
  }
