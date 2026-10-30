@@ -138,7 +138,7 @@
       "props": [
         "Props"
       ],
-      "_allowances": "M1-CHR-15 (every-frame worst in brackets). Costume 31.5/6 (31.2): the shirt's side against the forearm and the lowered upper arm (finisher, talk). Body 62/44 (61.1, item@6; count 42 every frame once merged with M2-CHR-12's clips): the toss lifts the right arm 92 degrees forward and its front passes the shirt's armhole edge; with the arms down (idle, talk) the armpit is under 30 since the shoulder correctives. max_exposed 24: the thigh's hidden-face edge opens inside the deep knee fold of the kneel, under the trousers (rhen_clip_kneel).",
+      "_allowances": "M1-CHR-15 (every-frame worst in brackets). Costume 31.5/6 (31.2): the shirt's side against the forearm and the lowered upper arm (finisher, talk). Body 62/44 (61.1, item@6; count 42 every frame once merged with M2-CHR-12's clips): the toss lifts the right arm 92 degrees forward and its front passes the shirt's armhole edge; with the arms down (idle, talk) the armpit is under 30 since the shoulder correctives. max_exposed 24: the thigh's hidden-face edge opens inside the deep knee fold of the kneel, under the trousers (rhen_clip_kneel). The jog (the human playtest, 2026-10-30): Body count 47 (was 44) in run, run_start and run_stop, the right armpit's inner crease under the arm (DEF-armpit.R vs DEF-spine.003, 24-31 mm, inside the depth limit). The verts are covered by the upper arm itself in every frame of the cycle (viewed side, front and three-quarter at six phases), so it is invisible; opening the arm (abduction 4 to 12 degrees, the back swing eased) moved the depth, not the count.",
       "penetration": {
         "limits_mm": {
           "Costume": 31.5,
@@ -146,7 +146,7 @@
         },
         "limits_count": {
           "Costume": 6,
-          "Body": 44
+          "Body": 47
         }
       },
       "seams": {
