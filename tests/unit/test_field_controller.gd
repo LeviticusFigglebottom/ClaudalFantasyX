@@ -77,6 +77,24 @@ func test_frozen_player_ignores_the_stick() -> void:
 	zone.free()
 
 
+## The human's playtest: the hero took the stick ~0.3 s before the fade cleared. While SceneRouter's fade covers any
+## of the screen, the device stick reads nothing; once it is clear, it moves him.
+func test_the_stick_waits_for_the_fade_to_clear() -> void:
+	player.input_override = Vector2(NAN, NAN)
+	var fade := SceneRouter.get(&"_fade_rect") as ColorRect
+	var was := fade.color
+	Input.action_press(FieldInput.MOVE_FORWARD)
+	fade.color = Color(0, 0, 0, 0.2)
+	assert_false(player.screen_clear(), "a fade still on the screen")
+	assert_eq(player.current_stick(), Vector2.ZERO, "no stick under the fade")
+	fade.color = Color(0, 0, 0, 0)
+	assert_true(player.screen_clear())
+	assert_true(player.current_stick().length() > 0.5, "the stick once the screen is clear")
+	Input.action_release(FieldInput.MOVE_FORWARD)
+	fade.color = was
+	zone.free()
+
+
 func test_teleport_snap_relatches_input_to_the_visible_camera() -> void:
 	# M1-ARC-05: a snap is a cut to a camera the player has not seen yet; keeping the old latch would
 	# map the stick to the lane camera while the causeway's side-on dolly is on screen.

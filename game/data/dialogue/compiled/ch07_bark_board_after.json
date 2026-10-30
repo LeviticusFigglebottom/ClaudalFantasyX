@@ -1,0 +1,15 @@
+{
+ "format": 1,
+ "scene": "ch07_bark_board_after",
+ "source": "game/data/dialogue/ch07/ch07_bark_board_after.dlg",
+ "start": "ch07_bark_board_after",
+ "nodes": {
+  "ch07_bark_board_after": {
+   "headers": {"location": "ch07/tamsule"},
+   "ops": [
+    {"op": "line", "id": "ch07_bark_board_after_001", "key": "DLG_CH07_BARK_BOARD_AFTER_001", "speaker": "vendor", "emotion": "neutral", "voice": "", "src": 7, "name_key": "DLG_NAME_VENDOR_BOARD_CALLER"},
+    {"op": "line", "id": "ch07_bark_board_after_002", "key": "DLG_CH07_BARK_BOARD_AFTER_002", "speaker": "vendor", "emotion": "sad", "voice": "", "src": 8, "name_key": "DLG_NAME_VENDOR_BOARD_CALLER"}
+   ]
+  }
+ }
+}

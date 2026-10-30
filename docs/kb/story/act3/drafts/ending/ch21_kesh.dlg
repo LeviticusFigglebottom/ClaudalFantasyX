@@ -1,0 +1,20 @@
+// DRAFT (Act III, planning only). Ch21 H03 "Kesh" (C 1.0 → P 6.0 → C 1.5), the call. act3_ending.md §2 H03; act3_threads
+// T-01 (accepted); vowbound §7. Kesh has been in Asha's roster since Ch16. Asha calls her out of the sleeve one last time;
+// she fights at full strength because she wants them strong enough to beat him. Sefir watches.
+title: ch21_kesh
+location: ch21/heart
+---
+@letterbox on
+@camera HT08
+@anim asha raise_staff
+@vfx glimmer_bound at=asha_sleeve count=7
+@wait 2.0
+@anim kesh rise heart_water
+@music kesh_first_voice fade=1.0
+@wait 3.0
+Kesh [determined]: Make them strong, then. All of you. Hit me as hard as you can. #line:ch21_kesh_001
+@anim sefir look_at kesh
+@wait 2.0
+@letterbox off
+<<event start_battle ch21_kesh>>
+===

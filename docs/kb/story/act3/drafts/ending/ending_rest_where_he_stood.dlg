@@ -1,0 +1,11 @@
+// DRAFT (Act III, planning only). Ending R3 "Rest: where his father stood" (E, 0.5 min). act3_ending.md §2 R3. No
+// dialogue. Rhen stands where Dace stood. Kerrid comes and stands at his shoulder, NOT TOUCHING, the way his hand held
+// Rhen back in H02. The player can only turn the camera.
+title: ending_rest_where_he_stood
+location: ch18/kite
+---
+@music ending_lift_bed fade=2.0
+@mark rhen where_dace_stood walk
+@mark kerrid rhen_shoulder walk
+@wait 25.0
+===

@@ -1,9 +1,10 @@
 // Ch6 B08, talk-to bark (act1_ch06.md; W15): Asha asks Rhen about his day, and he notices she does
-// that (her tell, voice guide: when hurting, ask about the other's day). Nobody names why.
+// that (her tell, voice guide: when hurting, ask about the other's day). Nobody names why. He only notices
+// it now: she has asked once before, on an optional path (M4-A2P-116 B5), so no "always".
 title: ch06_bark_asha_day
 location: ch06/brine_shoals
 ---
 Asha [soft_smile]: How was your day, Rhen? #line:ch06_bark_asha_001
-Rhen [neutral]: ...You always ask me that. #line:ch06_bark_asha_002
-Asha [soft_smile]: Then answer it one day. #line:ch06_bark_asha_003
+Rhen [neutral]: ...You're asking about mine. #line:ch06_bark_asha_002
+Asha [soft_smile]: Someone should. #line:ch06_bark_asha_003
 ===

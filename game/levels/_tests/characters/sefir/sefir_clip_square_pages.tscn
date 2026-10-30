@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/sefir/sefir_stage.tscn" id="stage"]
+[ext_resource type="AnimationLibrary" path="res://assets/characters/sefir/anim/sefir_clips.tres" id="clips"]
+
+[node name="SefirStage" instance=ExtResource("stage")]
+clip = &"square_pages"
+clip_time = 1.0
+clip_library = ExtResource("clips")

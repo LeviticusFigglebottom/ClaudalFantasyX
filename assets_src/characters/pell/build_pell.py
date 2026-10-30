@@ -46,6 +46,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import tempfile
 import time
 from pathlib import Path
 
@@ -77,6 +78,7 @@ import pell_costume  # noqa: E402
 import pell_fur  # noqa: E402
 import pell_head  # noqa: E402
 import pell_props  # noqa: E402
+import pell_variant  # noqa: E402
 import toma_hair  # noqa: E402
 from asha_mesh import Part, grid  # noqa: E402
 
@@ -126,12 +128,16 @@ def log(msg: str) -> None:
 def parse_args() -> argparse.Namespace:
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     ap = argparse.ArgumentParser(prog="build_pell.py")
-    ap.add_argument("--out", default=str(ROOT / "assets" / "characters" / "pell" / "pell.glb"))
+    ap.add_argument("--out")
+    ap.add_argument("--variant", help="a Kirru variant (pell_variant.py, M4-A2P-053); none builds Pell")
     ap.add_argument("--report")
     ap.add_argument("--bake-dir")
     ap.add_argument("--blend")
     ap.add_argument("--dump", help="write the parts as a preview npz here (dev)")
-    return ap.parse_args(argv)
+    args = ap.parse_args(argv)
+    name = args.variant or "pell"
+    args.out = args.out or str(pell_variant.out_dir(args.variant) / f"{name}.glb")
+    return args
 
 
 def shape_grid(d: np.ndarray) -> np.ndarray:
@@ -247,8 +253,9 @@ def main() -> int:
     args = parse_args()
     t0 = time.time()
     bpy.ops.wm.read_factory_settings(use_empty=True)
-    params = bb_params.load_params(path=str(PARAMS))
-    extra = json.loads(PARAMS.read_text(encoding="utf-8"))
+    pfile = pell_variant.params_file(args.variant, Path(args.bake_dir or tempfile.mkdtemp()))
+    params = bb_params.load_params(path=str(pfile))
+    extra = json.loads(pfile.read_text(encoding="utf-8"))
     kp, cp, sp, shp = extra["_kirru"], extra["_costume"], extra["_staff"], extra["_shell"]
     res = bb_donor.generate(params, log=log, subdiv_face=True)
     lm, body = res["lm"], res["body"]
@@ -275,7 +282,7 @@ def main() -> int:
     # ---- rig on our landmarks; the donor's hand-made skin weights -------------------------------------------------
     meta = bb_rig.build_metarig(lm)
     rig = bb_rig.generate_rig(meta)
-    skel = bb_rig.build_game_skeleton(rig, "pell_skeleton")
+    skel = bb_rig.build_game_skeleton(rig, f"{args.variant or 'pell'}_skeleton")
     W, wnames, dropped = bb_rig.donor_weight_matrix(skel, res["weights"], len(V))
     W = W.astype(np.float32)
     W, wnames, arms = hb.armpit_helpers(skel, V, W, wnames)  # M1-CHR-15: the shoulder correctives, every hero

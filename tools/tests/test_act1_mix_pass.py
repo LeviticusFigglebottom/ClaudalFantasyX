@@ -26,3 +26,22 @@ class Act1MixPassTest(unittest.TestCase):
                 got = mix.cue_files(cue)
                 self.assertIsNotNone(got, cue)
                 self.assertTrue(all(p.is_file() for p in got[0]), cue)
+
+    def test_act2_pairs_its_chapters_and_the_victory_hand_over(self) -> None:
+        # M4-A2P-1950: the Act II pass as played (Ch10-Ch13 first): its bosses land in their own chapters, and every
+        # zone gets the victory sting -> field hand-over the battle return makes
+        mix.A.set_act(2)
+        try:
+            rows = mix.pairs()
+            self.assertTrue(rows)
+            self.assertTrue(all(ch.startswith("ch1") for ch, _, _, _ in rows), {ch for ch, _, _, _ in rows})
+            bosses = {(ch, k) for ch, k, _, _ in rows if k.startswith("field <-> boss")}
+            self.assertIn(("ch10", "field <-> boss (ch10_mangrove_drowner)"), bosses)
+            self.assertTrue(any(k == "victory -> field" for _, k, _, _ in rows))
+            for _, _, a, b in rows:
+                for cue in (a, b):
+                    got = mix.cue_files(cue)
+                    self.assertIsNotNone(got, cue)
+                    self.assertTrue(all(p.is_file() for p in got[0]), cue)
+        finally:
+            mix.A.set_act(1)

@@ -7,11 +7,11 @@
   "ch11_bark_lowlight_keeper": {
    "headers": {"location": "ch11/lowlight"},
    "ops": [
-    {"op": "if_not", "cond": ["flag", "ch11_nhoa_bound"], "to": 3, "src": 5},
-    {"op": "line", "id": "ch11_bark_keeper_001", "key": "DLG_CH11_BARK_KEEPER_001", "speaker": "tender", "emotion": "afraid", "voice": "", "src": 6, "name_key": "DLG_NAME_TENDER_LOWLIGHT_KEEPER", "tags": ["long"]},
-    {"op": "goto", "to": 5, "src": 5},
-    {"op": "line", "id": "ch11_bark_keeper_002", "key": "DLG_CH11_BARK_KEEPER_002", "speaker": "tender", "emotion": "exhausted", "voice": "", "src": 8, "name_key": "DLG_NAME_TENDER_LOWLIGHT_KEEPER"},
-    {"op": "goto", "to": 5, "src": 7}
+    {"op": "if_not", "cond": ["flag", "ch11_nhoa_bound"], "to": 3, "src": 6},
+    {"op": "line", "id": "ch11_bark_keeper_001", "key": "DLG_CH11_BARK_KEEPER_001", "speaker": "tender", "emotion": "afraid", "voice": "", "src": 7, "name_key": "DLG_NAME_TENDER_LOWLIGHT_KEEPER", "tags": ["long"]},
+    {"op": "goto", "to": 5, "src": 6},
+    {"op": "line", "id": "ch11_bark_keeper_002", "key": "DLG_CH11_BARK_KEEPER_002", "speaker": "tender", "emotion": "exhausted", "voice": "", "src": 9, "name_key": "DLG_NAME_TENDER_LOWLIGHT_KEEPER"},
+    {"op": "goto", "to": 5, "src": 8}
    ]
   }
  }

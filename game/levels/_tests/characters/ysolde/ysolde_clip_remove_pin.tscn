@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/ysolde/ysolde_stage.tscn" id="stage"]
+[ext_resource type="AnimationLibrary" path="res://assets/characters/ysolde/anim/ysolde_clips.tres" id="clips"]
+
+[node name="YsoldeStage" instance=ExtResource("stage")]
+clip = &"remove_pin"
+clip_time = 1.2
+clip_library = ExtResource("clips")

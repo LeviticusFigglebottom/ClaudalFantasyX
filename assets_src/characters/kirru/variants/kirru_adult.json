@@ -1,0 +1,36 @@
+{
+ "_about": "A Kirru of the ring (M4-A2P-053): Pell's build as a woman in her middle years, 2.12 m, the fur warmer and lighter. No notched ear. Keys over pell_params.json (pell_variant.py).",
+ "height_m": 2.12,
+ "femininity": 0.8,
+ "muscle": 0.45,
+ "mass": 0.12,
+ "_kirru": {
+  "ear_notch": {
+   "side": "L",
+   "depth_m": 0.0
+  },
+  "seed": 91
+ },
+ "_fur": {
+  "dark": "#3A2A1E",
+  "mid": "#7E6248",
+  "pale": "#E0D2B6",
+  "grey_guard_share": 0.04,
+  "seed": 92
+ },
+ "_proportions": {
+  "age_years": 80,
+  "grey_guard_hair_share": 0.04
+ },
+ "_crest": {
+  "count": 12,
+  "length_m": 0.19,
+  "seed": 93
+ },
+ "_shell": {
+  "seed": 94
+ },
+ "_look": {
+  "cloth_tint": "#86A6A2"
+ }
+}

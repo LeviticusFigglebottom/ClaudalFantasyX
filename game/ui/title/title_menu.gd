@@ -45,6 +45,9 @@ var _help: Label
 var _version: Label
 ## Set once a choice has started a scene change, so a second press does nothing.
 var _launched := false
+## The zone whose loads the title has started (M3-HER-1167).
+var _preloaded_zone := ""
+var _bodies_queued := false
 
 
 static func load_data() -> Dictionary:
@@ -93,6 +96,8 @@ func _ready() -> void:
 	var resident := ResidentLoads.shared()
 	if resident != null and DisplayServer.get_name() != "headless":
 		resident.warm()
+	_bodies_queued = true  # the zone's loads queue behind the bodies, which every route needs first
+	_preload_first_zone()
 	if MemoryReplay.take_gallery_request() and model.has_memories:
 		model.set_cursor(model.row_ids().find(TitleMenuModel.CHOICE_MEMORIES))
 		open_memories(MemoryReplay.last_memory)
@@ -294,6 +299,39 @@ func _render() -> void:
 		_build_page()
 	_page.set_cursor(model.row_cursor(), is_inside_tree())
 	_help.text = tr(model.help_key())
+	_preload_first_zone()
+
+
+## The scene the highlighted choice would enter first: New Game's location (locations.json "new_game"), or the
+## newest record's location for Continue; "" for the other rows (M3-HER-1167).
+func first_zone_of(choice: StringName) -> String:
+	var reg: LocationRegistry = null
+	if world_return != null and world_return.registry != null:
+		reg = world_return.registry
+	else:
+		reg = LocationRegistry.load_default()
+	var location := &""
+	if choice == TitleMenuModel.CHOICE_NEW_GAME:
+		location = reg.new_game_location
+	elif choice == TitleMenuModel.CHOICE_CONTINUE and model.has_record:
+		location = TitleSaveEntry.continue_location(save_system)
+	if location == &"":
+		return ""
+	return str(reg.resolve(location).get(LocationRegistry.KEY_SCENE, ""))
+
+
+## M3-HER-1167: while the title shows, the zone the highlighted choice enters starts loading (ResidentLoads, no
+## hold), as the hero bodies do, so its change finds most of it in and the swap waits only on the rest. The same
+## zone is asked once; moving between New Game and Continue switches it. Not in a headless run (tests).
+func _preload_first_zone() -> void:
+	var resident := ResidentLoads.shared()
+	if resident == null or DisplayServer.get_name() == "headless" or _launched or not _bodies_queued:
+		return
+	var path := first_zone_of(model.current())
+	if path == "" or path == _preloaded_zone:
+		return
+	_preloaded_zone = path
+	resident.load_scene(path)
 
 
 ## True when the page shows other rows than the model (the New Game question opened or closed)

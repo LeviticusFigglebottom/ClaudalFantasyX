@@ -10,7 +10,8 @@
                     a bench, a child hushed; no laughter, no song.
 
 Each is a layer under the zone's own bed: the zone row lists both (ambience.json). The file is at the beds' -26 LUFS
-(render_all.py's rule for every bed) and its row plays it 4 dB down (`volume_db` -4), so the layer sits 4 LU under the
+(render_all.py's rule for every bed) and its row plays it 4 dB down (`volume_db` -4; the wake's mourners 7 dB, so a
+line's blips stay clear over the wake's four beds: tools/tests/test_dialogue_clarity.py), so the layer sits under the
 zone's bed and the pair stays about 10 LU under the zone music (act1_loop_check.py). Seamless loops, plain git
 under assets/audio/ambience/ (ADR 0174). Synthesized here and in tools/audio/synth/ (SPEC §2, §9).
 

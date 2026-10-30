@@ -44,6 +44,8 @@ ACTOR = "assets/characters/villagers/{id}/{id}_actor.tscn"
 TEST_ZONE_PREFIX = "_tests/"
 ACTIVITIES = {"", "work"}
 ATTACH = {"beside", "child"}
+# a row shown only by day or only at night (VillagerLayer `shown`: the zone's is_night, Haluna's dock at night)
+SHOWN = {"day", "night"}
 CROWD_FILE = "game/data/world/npc/crowd.json"
 CROWD_ACTOR = "assets/crowd/{id}/{id}_actor.tscn"
 STAGE_ACTORS = "CutsceneStage/Actors/"
@@ -228,6 +230,8 @@ def zone_errors(root: Path, rel: str, locations: set[str], flags: set[str],
                             f"not {row.get('stand_in')!r}")
         if "silhouette" in row and not re.fullmatch(r"#[0-9A-Fa-f]{6}", str(row["silhouette"])):
             errs.append(f"{where}: silhouette is not a #RRGGBB colour")
+        if "shown" in row and row["shown"] not in SHOWN:
+            errs.append(f"{where}: shown {row['shown']!r} is not one of {sorted(SHOWN)} (none: always)")
         if "tuning" in row and not isinstance(row["tuning"], dict):
             errs.append(f"{where}: tuning is not an object")
         for key in ("shelter", "work_at"):

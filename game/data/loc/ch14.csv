@@ -11,13 +11,13 @@ OBJ_CH14_VOWS,Take your places in the gallery. The vows are at dusk.
 OBJ_CH14_STEPS,Hold the water-steps.
 OBJ_CH14_GATE,To the barge. Get through the water-gate.
 OBJ_CH14_SIDE_PIN,A hull-captain needs someone who may go up to the dais.
-TUT_CH14_HOLD_STEPS,Hold the steps until Merel cuts the barge loose.
-TUT_MALCOR_ENGINE,The flat-engine slows you with every pulse. Liss can break it.
+TUT_CH14_HOLD_STEPS,Merel cuts one line each turn; four free the barge. Kerrid's Hold the Steps takes a Stillguard's grip meant for her.
+TUT_MALCOR_ENGINE,"Each flat-engine pulse Slows the whole party for a turn. Only Liss can break it, with Strip the Drum."
 OBJ_CH14_HOLD_STEPS_FMT,Hold the steps: {count} of {quota}
 OBJ_CH14_HOLD_STEPS_DONE,The steps are held.
 HUD_LOCKED_KERRID_STEPS,Holding the steps
 TIP_DARK_SHRINE_TITLE,Dark shrines
-TIP_DARK_SHRINE_BODY,"The Order's shrines won't answer you now. The Kirru and the Saltwrights keep shrines of their own, and those still do."
+TIP_DARK_SHRINE_BODY,Order shrines have gone dark: they neither heal nor save. Kirru and Saltwright shrines still do.
 ITEM_RED_LACQUER_CHIP,Red Lacquer Chip
 ITEM_RED_LACQUER_CHIP_DESC,"A flake of the Lacquer Court's red, broken off in the fighting. Used in Customize."
 ITEM_TOBINS_CRACKED_LAMP,Tobin's Lamp

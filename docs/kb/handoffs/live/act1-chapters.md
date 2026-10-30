@@ -1005,6 +1005,124 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - The four camera fixes wait on the 14:48 LEAD-ASK for a second shot budget. Moving them unverified would be
     guessing.
 
+### The Lead's 16:08 approval (10-30): the four Ch10–13 field cameras
+All four are moved in the generators (ch10/11/12/13_greybox.py) and regenerated; nothing else in the layouts changed.
+1. **ossa_fen `Clearing`:** the camera now stands on the clearing's east side at (118, 5, 6), looking west over the
+   platform at the way in. Before, it was outside the root ring, in the canopy.
+2. **lowlight:** a new `GateStep` volume (priority 2) covers the step outside the west door. Its camera is inside the
+   atrium at (6, 3.5, 3) and looks out through the door. Before, there was no volume there, so the default orbit
+   hugged the outside of the wall.
+3. **cloudloom `Hall`:** the camera now looks up the aisle from just inside the south wall at (0, 10.5, -22.5) to the
+   dais. Before, it was at z -15, outside the hall and inside the stair's cliff.
+4. **lamp_archive `LedgerBay`:** the camera is now in the aisle inside the door at (2, 3.4, -3), looking at the ledger
+   table. Before, it was at z 1.5, in the door frame.
+- **Viewed:** 4 re-renders of the same POIs (the second budget; 11 shots of it remain). All four now read: the
+  clearing platform, Rhen at the gate with the water beyond, the keth aisle to the dais, the stacks and the ledger
+  table.
+- **Checks:**
+  - Godot: ch10 (3/0), ch11 (3/0), ch12 (4/0), ch13 (4/0), qa_field_camera (2/0), hero_field_snaps (2/0),
+    layout (18/0), zone_map (22/0).
+  - validate_data, and the generator and flow tool tests (46 OK).
+- MERGE-READY @ d19b47b9d
+- **BACKLOG EMPTY (10-30, after 16:08).** Waiting on others:
+  - env-art-b: the Drowned Choir's dressing.
+  - M3-BPR-445, M3-UI-1242 and M4-A2P-061 (the Swell effects).
+  - The PC re-check of rows 34 and 39.
+  - The inherited tool reds named at 13:48.
+
+### The Lead's 16:45 list (10-30)
+- **test_causeway_route in big25:** my fix is in big25 (7f54af722 and b368c93a5 are both ancestors). On a fresh
+  big25 worktree after `--import` it's **5/0**. The red was almost certainly the stale class cache after a merge (the
+  same thing I hit at 13:48 and 14:48), so the gate needs `--import` first.
+- **M4-A2P-114 (the 19 unraised flags): 14 wired, 5 moved to M4-A2P-118.** Now in review (narrative).
+  - **New triggers** (from the generators): reedhollow `shore`, lowlight `engine` and `sanctum`, keth_pass
+    `terrace`, cloudloom `dais`, sanctum `ledge`, lamp_archive `ledgers` and `roll`.
+  - **New beats:** the Lamp Engine and the Avalanche Ram each play their scene, then the flow's `battle` step. The
+    other beats play their scene.
+  - **New arrive rows** play the return scenes:
+    - ch11_twice (once, by the new `ch11_twice_seen`) and ch11_held_by_you.
+    - ch12_herd_cord, ch12_forty_seven_voices and ch12_down_the_other_side.
+    - ch13_archive_hands (the third visit) and ch13_the_pact.
+  - **Flags:** `ch11_engine_released` and `ch11_twice_seen` are declared in flags.tres (its own commit).
+  - **Threads:** test_ch10..13_thread play each chapter's story in order. ch12 and ch13 have a new in-order test each.
+  - **qa_known `unraised`:** down from 19 to Ch14's 5. Those now point at M4-A2P-118.
+  - **Staging:** the scenes name shots, cast, marks and VFX anchors the greybox stages lack (100 warnings). One
+    `known` row hands them to M4-A2P-075 (my staging, 070–075), and test_qa_threads is **green**.
+  - **Ch14 (rows 15–19):** filed as **M4-A2P-118** (combat, mine): `ch14_water_steps`, `ch14_malcor_venn` and Venn's
+    enemy row and sim band, then the court's beats. The five flags also need M3-UI-1242's `"chapter"`.
+- **Ch14–16 mounts and walks:**
+  - test_ch14_16_thread (5/0), lacquer, open_sea, hollowmere, pale_rim (2/0 each).
+  - The Drowned Choir still has no dressing (M4-A2P-046 is `doing`).
+- **Checks:**
+  - ch10 (3/0), ch11 (3/0), ch12 (5/0), ch13 (5/0), zone_map (22/0), test_qa_threads (1/0).
+  - validate_data, taskboard --check, chapter_flow_check, and the flow tool tests (23 OK).
+  - `layout` has one red, test_aspect_layouts (a battle read-panel label at 4:3). It's the same on a clean
+    integration worktree, so it's ui's and inherited.
+- MERGE-READY @ 74accf6fd
+- **BACKLOG (10-30, after 16:45):**
+  - **Mine, next:** M4-A2P-118 (Ch14's fights) and the Act II staging (070–075).
+  - **Waiting on others:**
+    - env-art-b: the Choir.
+    - M3-BPR-445, M3-UI-1242 and M4-A2P-061.
+    - The PC re-check of rows 34 and 39.
+
+### The Lead's 17:44 FAST-TRACK (10-30): the Act I read-through (act2-plan's M4-A2P-116, 117 @ 9be201224)
+**Id clashes, LEAD-ASK:**
+- Act2-plan's M4-A2P-116 duplicates env-art-b's M4-A2P-116 (the Lowlight arena request), which is already on
+  integration.
+- Their 117 duplicated my Ch14 task. I renumbered mine to **M4-A2P-118** (e37d74276).
+- The taskboard will flag the 116 pair when act2-plan merges, so one of the two needs a new id.
+
+**Every row, as fixed** (the row's answer, for the review log):
+- **C1:** Hobb's drowned are "Jory Wend. Mag Wend. Anni Lusk". No cast or founder surname, and both are unused
+  anywhere.
+- **C2:** the moorings tie the families to the side the player met: "Noa's uncle, and his wife", "The Ketters. All
+  of them." and "Ama's brothers". Brann, Mae and Dovic are gone.
+- **C3:** the gantry-after bark now has Oruvel's crew coming down to ready their boat, so it isn't gone while Tavi
+  still waits at the moorings. I didn't gate it on `ch07_blessed_moorings`, because that scene is optional.
+- **C4:** the hearth trigger is blocked by `ch08_entered_coilspire`, with `once` and `sets_flag` (the same
+  `ch08_fed_the_beacon` the scene always sets). The beat gates on `ch08_entered_coilspire`. `ch08_fed_the_beacon`
+  is never set early, so Ch8's storm and Ch9's ebbing read it truly.
+- **B1:** Ysolde is `as "The stranger"` on all six lines of The Ink. Kerrid is `as "???"` on his one line before he
+  says his name.
+- **B2:**
+  - A new `hang` glimmer rate (cues.json `vfx_rate`, glimmer.json `cues.rates`, appended): held motes that barely
+    move and don't sink. The Seventh Terrace sighting and the Spar-Wraith way in use it.
+  - The wraith's early `sails_luff_and_fall` is gone, so the sails fall, and the motes go seaward, only at the name
+    board's Canticle.
+- **C5:** Ione's family is Merrow ("Aldo Merrow"). **For story:** act1_ch07.md still says Ione Sabe (lines 105-115,
+  203).
+- **B3:** Pemakar's `ferryman` actor wears Imbe's body (`ferrymaster`), and ch05's arrival takes
+  `name_board_seventh_terrace` out of the bag after `ch05_ferry_comes_in`.
+- **C6:** Kerrid is out of the reserve from Ch8's cut rope to Ch9's road. Ch9's `road_out` puts him back after the
+  scene sets `ch09_kerrid_on_road`. The Ch8 and Ch9 thread asserts follow (the old Ch8 assert encoded the bug).
+- **C7:** "The Drowned Choir. Yes."
+- **C9:** the Act II card is held. The road-out no longer jumps to `ch09_act_card` (the node is kept) while Ch9 hands
+  off to the end card, so the scene ends on the vigil and then "The end of Act I". Restore the jump when Ch9 hands on
+  to Ch10.
+- **B4:** "All those years in there with a hammer." No unseen number.
+- **B5:** "...You're asking about mine." / "Someone should." No "always".
+- **B6:** "a little after eleven", which matches Ch1's 11:10.
+- **B7:** `banter_brass` is blocked by `ch06_sheltered_liss`, and Ashcrown's three stair banters by
+  `ch05_trial_begun`. The generator reads the layout back in, so the keys survive a rebuild.
+- **C8:** `hobb_overheard` and `stillguard_overheard` are `once`.
+- **C10:** a new `ch07_bark_board_after`, neutral to the result, in ch07's `ch07_tavi_withdrew` barks map.
+- **Doc:** ch04.json's doc says it hands on to Ch5 (Harbour).
+
+**M4-A2P-117 (the vendor):**
+- New `brine_shoals_vendor`, "The Ridge-Boat Vendor": items, requires `ch06_camp_made`, six staples between the Ch4
+  purser's and Ch7 trader's tiers.
+- The loc row, the shop row and the trigger repoint are each in their own small commit.
+- **Checks:**
+  - Godot: ch04 (13/0), ch05 (13/0), ch06 (5/0), ch07 (18/0), ch08 (25/0), ch09 (13/0), glimmer (36/0), shop
+    (28/0), test_qa_threads (1/0).
+  - Tools: validate_data, dlgc (`--check` clean), chapter_flow_check, and the dlgc, flow, flag-reach and placeholder
+    tool tests (159 OK).
+  - No screenshots: no shot frames the changed scenes' text.
+- **Note for the QA folder's owner:** `docs/kb/qa/characters/jog_2026-10-30/` has no `.gdignore`, so every
+  `--import` writes six `.jpg.import` files there. I deleted the ones my imports made.
+- MERGE-READY @ c17b7c953
+
 ## Exact next step
 **BACKLOG EMPTY (2026-10-30 ~02:00):** the flow and pacing pass is done (`docs/kb/qa/act1_flow_pacing_pass.md`) and the
 Act II chapter drafts are written (`docs/kb/plan/act2/chapters/`, pre-gate). Waiting on:

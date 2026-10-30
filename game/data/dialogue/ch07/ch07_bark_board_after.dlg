@@ -1,0 +1,9 @@
+// Ch7 B08 "Tamsule, afternoon": the Reefball board after Oruvel withdrew (act1_ch07.md §2 B08). The
+// board-caller no longer announces Oruvel's match (M4-A2P-116 C10). Neutral to the result, as the other
+// afternoon barks are: Oruvel's line is wiped, and nobody writes anything beside it.
+title: ch07_bark_board_after
+location: ch07/tamsule
+---
+Vendor as "Board-caller" [neutral]: Second round's chalked for after the bells. #line:ch07_bark_board_after_001
+Vendor as "Board-caller" [sad]: Oruvel's line is wiped. Withdrawn. Nobody's to write anything beside it. #line:ch07_bark_board_after_002
+===

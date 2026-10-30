@@ -589,6 +589,92 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **LEAD (19:25), IN PROGRESS: the Ch4 beauty pass (the Haluna wake, the Brightwater ferry), then the Prologue-to-Ch4
+  transitions as played.** Eye-height stills are rendering.
+- **LEAD (18:24), answered: the Ch2 Haluna and Ch3 causeway beauty pass (M4-A2P-1400, review: art). MERGE-READY @ dadb6930.**
+  - Stills at eye height along the walkthrough legs, viewed: Haluna 22, the causeway 12, the Shell Shrine 8.
+  - **Fixed:** Haluna's 49 windbreak trees rendered as black blots from every side. `kit_windbreak_leaf` now has a
+    tint over 1, half the baked AO, more transmission and a softer wrap; the trees read as leafy dark-green shade.
+  - **Viewed and left as is:**
+    - Haluna's beach, lanes and stilt pier: the sea light is strong.
+    - The causeway's stepping stones, posts and tide pools read clearly.
+    - The shrine's sunlit approach and cool interior are as designed.
+  - **Checks:**
+    - Tools: test_haluna_kit and test_haluna_dressing OK.
+    - Godot `--filter`: vegetation 17/0, haluna 65/0.
+    - validate_data and taskboard --check clean.
+  - **Baselines that move (none written):** every Haluna shot that frames a windbreak tree.
+- **LEAD (17:45), answered: the Ch1 Underway and Oruvel dressing pass. MERGE-READY @ 922cd122.**
+  - **Stills viewed before and after:**
+    - the Underway's four walkthrough dive legs, 22 points at eye height;
+    - Oruvel's decks, the scale booth, the Terrace and the east vista;
+    - the dive raft: looking down into the well and approaching it.
+  - **Underway caustics:**
+    - There were none. The water shader projects caustics onto the floor as seen from above, never from under the
+      surface.
+    - `env_weathering` gains opt-in `uw_caustics` (default 0, so every other material is unchanged). It draws the
+      `water_caustics` web on every surface under the live water height: floors on x/z, walls on their own plane (a
+      first try smeared the floor's web down the walls as streaks). It fades with depth and view distance.
+    - The Underway kit's weathered materials turn it on (`ou_materials.py`, 1.2). The underway_tower arena uses the
+      same materials, so it gets the caustics too.
+  - **Dive readability:**
+    - The dive raft's well read as flat dark water; its tether and ladder are tarred black.
+    - A rope hoop of six white floats now rides the well, and a pale shot-line drops from it, white-tagged every
+      0.6 m, to a lead sinker (`ov_heroes.py` `_dive_mark`; dive_raft 15424 tris, within its 18000 budget).
+  - **Not changed (the layout's, act1-chapters'):**
+    - The Underway's sun casts hard, crisp shadows at about 10 m depth. Softening them (shadow blur, or a lower sun
+      energy with more ambient) would help the underwater read; it's the layout's `sun` block.
+    - Caustics also show inside those shadows, since they are emission; a real-GPU look will tell whether that
+      matters.
+  - **Checks:**
+    - Tools: test_oruvel_kit, test_oruvel_moorings and the Underway kit tests OK.
+    - Godot `--filter`: underway 9/0, environment_shaders 11/0, shader_prewarm 22/0, weathering 2/0, ch01 20/0,
+      water 49/0.
+    - validate_data clean.
+  - **Baselines that will move (none written):** the Underway and underway_tower shots, and the oruvel shots that
+    frame the dive raft's well.
+- **LEAD (16:45), answered: the Prologue dead-city dressing pass. MERGE-READY @ b39caa29.**
+  - Eye-height stills along the whole cutscene path were viewed before and after: P01, the P01-to-P02 blend at 25/50/75 %,
+    P02, Rhen's crossing, the plaza in eight directions, and up at the towers.
+  - **Found and fixed (Iskarra kit, `iskarra.py` + `materials.py`):**
+    - The towers read clean. Their painted tide band, rain streaks and the new old high-water ring now show at P01's
+      distance: 1 m shaft rows, and LOD1 has 24 sides at 3 m (P01's towers are past the 70 m LOD switch).
+    - `env_weathering_body.gdshaderinc` gains opt-in `grime_from_wet` (default 0, so every other material is
+      unchanged). Iskarra's cladding uses it: wet gloss had mirrored the dusk sky and hidden the stains.
+    - The lamp globes read as white electric street lamps. They are now dim amber oil-light, so Rhen's lantern
+      stays the flame.
+    - The low plaza flags hold standing water.
+    - The dais top, the lower half of P02 where the line lands, was one blank slab. It is now paved with flags.
+  - **Not changed:**
+    - The south and south-west views are open sea, but no shot faces that way.
+    - The sky is a flat gradient; the environment is in `prologue.tscn` (m2-slice's).
+  - **Checks:**
+    - test_haluna_kit, test_iskarra, test_iskarra_spire and test_haluna_dressing: 44 OK.
+    - Godot `--filter`: prologue 8/0, iskarra 1/0, environment_shaders 11/0, shader_prewarm 22/0, weathering 2/0,
+      corrow 18/0.
+    - Untouched Iskarra pieces rebuild byte-identical.
+    - `--filter=import` has 1 failure, and it predates this change: `test_every_glb_import_runs_its_category_script`.
+      41 committed haluna `.glb.import` files have no `import_script/path` (ansedra_causeway_6m from 86e01d57,
+      court_*, archive_*, hm_dock_*, ...). This change touched no `.import` file. It's env-art-b's Ansedra batch;
+      flagged, not fixed.
+  - **Baselines that will move (none written):** iskarra_p01/i02/i03, slice_prologue_p01, slice_prologue_vigil_line,
+    battle_arena_iskarra_spire_crown, and the Ch9 Corrow shots that frame Iskarra towers.
+  - **PC-QUEUE:** a real-GPU look at P01/P02 for the tower grime and the puddle gloss.
+- **LEAD (16:26), answered: cloud-qa pass 6's Oruvel hull-vs-deck overlaps are fixed. MERGE-READY @ bc790ea8.**
+  - Each pair was viewed at eye height before and after (scale booth, keel moorings, Terrace raft, commons canoe):
+    - scale_hull x raft deck: the booth's raft is now `raft_deck_square` (new kit piece, 10 x 10 m, tucked float
+      logs, glb + import + PROVENANCE row + manifest), and the hull sits at x -7.7, 0.8 m of water off the deck edge;
+      the scaleman's place (x -7.2) is still inside the booth;
+    - keel_hull x two tucked decks: the moorings move to z -29.5, clear of the keel;
+    - terrace_hull x tucked deck: the raft shifts 0.85 m east;
+    - outriggers x small deck and two bridges: the commons canoe moves to (19.6, -16.4).
+  - **Kept, intended:** dive_raft x the two plank bridges and the broken bridge; the stilted LowHull outrigger x
+    its two bridges. The AABB mirror of cloud-qa's check now lists only those 5 pairs.
+  - **Checks:** test_oruvel_moorings, test_oruvel_kit, test_zone_dressing_ch01, test_ch01_zone_copies OK;
+    validate_data and taskboard --check clean; Godot `--filter=ch01` 20 run / 0 failed, `--filter=edge_walls`
+    2 / 0. Skipped: the full suite and the manifest (no code touched). The kit preview's back row gains the
+    square raft at x 168; any preview shot that frames it shows it new (no baseline written).
+  - M3-ENV-1323's GPU A/B still waits on the PC.
 - **LEAD (16:09), answered: the Ch10–Ch12 eye-height walk, the dock-edge check (the Sunken Vey gallery included) and
   env-art-b's kit requests are done.**
   - The branch head is f4b2b548 plus a `.uid` commit. The MERGE-READY lines below cover each part:
@@ -1107,6 +1193,8 @@ Read this section first; everything below it is history. The branch is `claude/e
     (characters/slice-polish), and `reefball_drop_proxy` / `tb_drop_proxy` are env-art-b's (M3-RND-26).
 
 ### PC-QUEUE
+- Ch1 Underway pass (922cd122): Underway caustics on a real GPU (strength 1.2, and whether caustics inside the sun's shadows read wrong), and the dive well's floats from the deck.
+- Prologue dressing pass (b39caa29): look at P01 and P02 on a real GPU for the Iskarra towers' grime streaks and tide band, the plaza puddles' gloss and the amber lamp globes.
 - **M3-ENV-1323 (2026-10-30):** A/B `battle_arena_underway_tower` with its Sun node hidden. Rectangles that
   stay are the F9 slabs against the sand (a material edge); rectangles that go are window light.
 - **Ch12 shade at spawn height (2026-10-30):** Keth Pass (PassFoot, RamArena, FromQuellan), Quellan (FromPass,
@@ -2065,3 +2153,4 @@ Done or in review: M2-ART-01/02/03 (done); M1-ENV-10, M2-ENV-06, M2-ENV-07, M2-E
 - 2026-10-24: M2-ENV-06 pass 1 (6436775). Gates: verify_blender_builds haluna_kit 31 identical; Godot environment 11, haluna 13, post_import 17; validate_data; taskboard --check; the five haluna shots captured, viewed and re-approved.
 - 2026-10-24: merged the Art sign-offs (3c3fa19, aa3b4ca, f067ba4). Gates: validate_data, taskboard --check, palette.json parses (docs only, no Godot run).
 - 2026-10-24: set up the branch and toolchain; claimed the queue's tasks.
+- 2026-10-30 (note by env-art-b, with the Lead's leave): M4-A2P-114 done in your kit, `haluna/lowlight.py` `PIER_AT`'s south-middle pier (0, 9.5) -> (0, 11.0), and `engine_hall.glb` rebuilt (f6442153). The pier stood where the battle camera rests after rest_fit (0.7, 4.0, 9.8) and filled the left of `lowlight_engine_hall`'s frame. Ch11's zone dressing places the same hall: the pier is 1.5 m nearer the south wall there too. Checks: test_lowlight, test_lowlight_housing, test_ch11_lowlight_dressing, test_haluna_kit, test_arenas; Godot ch11 and arena. Please review the task.

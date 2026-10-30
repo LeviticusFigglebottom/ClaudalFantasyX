@@ -15,7 +15,7 @@ a held low C with the gong stopped: the party are heretics now, and the scene's 
 
 G major's court, 3/4 at 88 BPM (the wedding's tempo; a bar is 2.05 s): bars 1-2 the couple's tune over E minor |
 bar 3, beat 2: the break | bars 3-9 the gong every two beats, frame-drum dums, C minor, ORDER_HUM hummed by many men
-| then the drone on C alone, about 6 s, fading. Not a loop. Vorbis q3, -16 LUFS integrated.
+| then the drone on C alone, about 6 s, settling low and held on (HOLD_S) until the scene cuts it. Not a loop. Vorbis q3, -16 LUFS integrated.
 
 Render:  python3 tools/audio/render_all.py --only peace_wedding_break
 """
@@ -64,6 +64,11 @@ LEAD_S = 0.4                      # the file starts this long before bar 1's dow
 BREAK = (3, 1.0)                  # bar 3, beat 2 (0-based beat 1): where the tune is cut off
 GONG_FROM, GONG_TO = 3, 10        # the gong's step, every two beats, from the break to bar 10
 DRONE_S = 6.5
+# The low C held on under the declarations until Asha's "No." cuts it dead (`@music silence fade=0.0`): the scene runs
+# about 12 s past the drone's 6.5 s (act1_playthrough.py --act 2), and the direction notes' holds and pauses add more,
+# so it holds HOLD_S longer, settled HOLD_DB down (under the loudness gate, so the cue's -16 LUFS doesn't move).
+HOLD_S = 18.0
+HOLD_DB = -12.0
 GAINS = {"flute": 0.0, "bars": -2.0, "pad": -2.0, "drum": -6.0, "gong": -4.0, "hum": 3.0, "drone": -6.0}
 
 
@@ -120,14 +125,18 @@ def build(mx: Mixer) -> None:
     mx.add("hum", hum_ensemble(line, voices=18, seed=SEED + 60, register="low", spread=0.7), cut + BEAT)
     # the end: a held low C, alone, fading; the scene's lines go over it
     t_drone = t_of(GONG_TO)
-    drone = pad_chord([n("C2"), n("G2"), n("C3")], DRONE_S, 0.5, seed=SEED + 70, attack=1.5, release=1.5)
+    drone = pad_chord([n("C2"), n("G2"), n("C3")], DRONE_S + HOLD_S, 0.5, seed=SEED + 70, attack=1.5, release=1.5)
+    t = np.arange(len(drone)) / SR
+    held = 10 ** (HOLD_DB / 20)                  # past the drone's own length it settles to the held level
+    env = np.where(t < DRONE_S - 2.5, 1.0, held + (1.0 - held) * np.exp(-np.maximum(t - (DRONE_S - 2.5), 0.0) / 1.2))
+    drone *= env[:, None]
     k = int(2.5 * SR)
     drone[-k:] *= np.linspace(1, 0, k)[:, None] ** 2
     mx.add("drone", drone, t_drone - 1.0)
 
 
 def render(out_path: str = OUT, verbose: bool = True, stats: dict | None = None) -> dict:
-    mx = Mixer(t_of(GONG_TO) + DRONE_S + 6.0)
+    mx = Mixer(t_of(GONG_TO) + DRONE_S + HOLD_S + 6.0)
     flute_eq = lambda x: filt(x, [bq_highpass(200, 0.7), bq_peak(1500, 1.0, 1.0), bq_lowpass(7000, 0.7)])  # noqa
     mx.bus("flute", GAINS["flute"], send=0.32, process=flute_eq)
     mx.bus("bars", GAINS["bars"], send=0.5, process=lambda x: filt(x, [bq_lowpass(6500, 0.7)]))

@@ -63,6 +63,7 @@ ATLAS = {
     "headband": (0.5, 0.76, 0.75, 0.82),
 }
 CLOTH_MATS = ("cloth_a", "cloth_b", "cloth_c", "leather", "cloth_d")  # cloth_d: M3-CHR-516 (optional)
+SLEEVE_HIDE_FROM = -0.35  # arm parameter (0 shoulder, 0.5 elbow) from which a sleeved arm's skin is hidden
 TOP_OFF = 0.0065  # m at S = 1, over the skin (the donor bust sits up to a few mm outside the field)
 SLEEVE_OFF = 0.009
 SKIRT_OFF = 0.010
@@ -744,7 +745,9 @@ def coverage(body, params: dict, V: np.ndarray, reg: np.ndarray, keep_legs: bool
                 t_up = (V - sh) @ (el - sh) / ((el - sh) @ (el - sh)) * 0.5
                 t_lo = 0.5 + (V - el) @ (wr - el) / ((wr - el) @ (wr - el)) * 0.5
                 t = np.where(t_up <= 0.5, t_up, t_lo)
-                hidden |= (reg == f"arm_{sd}") & (t > -0.10) & (t < sl - 0.05)
+                # the human's QA (2026-10-30): from SLEEVE_HIDE_FROM, not -0.10, so the shoulder cap's skin behind
+                # the joint (under the top's yoke) is gone, not kept to come through it as the arm reaches forward
+                hidden |= (reg == f"arm_{sd}") & (t > SLEEVE_HIDE_FROM) & (t < sl - 0.05)
     tr = params.get("trousers")
     if tr:
         hem = hem_z(lm, tr.get("hem", "knee"))

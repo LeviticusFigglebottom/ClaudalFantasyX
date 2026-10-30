@@ -103,7 +103,7 @@
    "headers": {},
    "ops": [
     {"op": "cue", "cue": "camera", "args": ["C10"], "kwargs": {}, "src": 122},
-    {"op": "cue", "cue": "sfx", "args": ["barge_pole"], "kwargs": {}, "src": 123},
+    {"op": "cue", "cue": "sfx", "args": ["barge_no_wake"], "kwargs": {}, "src": 123},
     {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 124},
     {"op": "cue", "cue": "camera", "args": ["C11"], "kwargs": {}, "src": 125},
     {"op": "cue", "cue": "mark", "args": ["sefir", "sefir", "walk"], "kwargs": {}, "src": 126},

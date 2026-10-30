@@ -116,3 +116,22 @@ B10–B11. **Replace** the greybox's C02 and C03: the greybox's C02 is a high wi
 | C06 | 85 mm, Toma watching her; `[-2.9, 7.4, -46.05]` → `[-1.6, 7.4, -46.8]`, 16° | toma | no line |
 | C07 | 50 mm two-shot, Asha and Ysolde at the cords; `[3.88, 7.4, -48.34]` → `[2.4, 7.4, -48.6]`, 27° | old_bundle | `prayers_001` asha in frame; `prayers_002` ysolde in frame; `prayers_003` ysolde in frame |
 | C08 | 35 mm, Ysolde walking away down the aisle, Rhen and Toma watching; `[-4.65, 7.6, -49.86]` → `[-1.4, 7.4, -40.93]`, 38° | aisle_out, rhen, toma | no line |
+
+## Audio cues by shot (for audio)
+
+Every `@music` and `@sfx` in the chapter's scenes, in script order, with the shot it lands on and what follows it
+(the next line or hold). A music change marked `fade=0.0` is a hard cut. Barks, camps and shrines play in the field and
+are left out. A shot of — means the cue plays before the node's first shot, over the fade.
+
+| Scene | Shot | Cue | Then |
+|---|---|---|---|
+| `ch12_cold_road` | K01 | `@music keth_pass fade=2.0` | hold 5.0 s |
+| `ch12_down_the_other_side` | P08 | `@music keth_pass fade=2.0` | <<if $ch12_rhen_tied_knot>> |
+| `ch12_forty_seven_voices` | Q03 | `@music silence fade=2.0` | hold 3.0 s |
+| `ch12_forty_seven_voices` | Q04 | `@music ysolde_theme fade=3.0` | `ch12_voices_001` Ysolde |
+| `ch12_forty_seven_voices` | Q06 | `@music silence fade=4.0` | @letterbox off |
+| `ch12_hesk` | K05 | `@music cloudloom fade=2.0` | hold 4.0 s |
+| `ch12_hesk` | C03 | `@music hesk_bound fade=0.0` | hold 8.0 s |
+| `ch12_hesk` | C06 | `@music cloudloom fade=2.0` | cut to C07 |
+| `ch12_the_knot` | P05 | `@music silence fade=1.0` | hold 3.0 s |
+| `ch12_weeping_wall` | P06 | `@music avalanche_ram fade=0.5` | `ch12_wall_001` Ysolde |

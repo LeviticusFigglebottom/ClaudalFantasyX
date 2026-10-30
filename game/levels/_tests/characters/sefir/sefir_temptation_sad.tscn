@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/sefir/sefir_stage.tscn" id="stage"]
+
+[node name="SefirStage" instance=ExtResource("stage")]
+emotion = "sad"
+face_distance = 0.5
+face_yaw_degrees = -15.0

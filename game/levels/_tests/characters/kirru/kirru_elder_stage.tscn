@@ -1,0 +1,163 @@
+[gd_scene load_steps=25 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/characters/asha/asha_stage.gd" id="stage"]
+[ext_resource type="PackedScene" path="res://assets/characters/kirru_elder/kirru_elder.glb" id="pell"]
+[ext_resource type="Material" path="res://assets/characters/kirru_elder/materials/skin_head.tres" id="m_skin_head"]
+[ext_resource type="Material" path="res://assets/characters/kirru_elder/materials/skin_body.tres" id="m_skin_body"]
+[ext_resource type="Material" path="res://assets/characters/kirru_elder/materials/mouth.tres" id="m_mouth"]
+[ext_resource type="Material" path="res://assets/characters/kirru_elder/materials/teeth.tres" id="m_teeth"]
+[ext_resource type="Material" path="res://assets/characters/kirru_elder/materials/tongue.tres" id="m_tongue"]
+[ext_resource type="Material" path="res://assets/characters/kirru_elder/materials/lash.tres" id="m_lash"]
+[ext_resource type="Material" path="res://assets/characters/kirru_elder/materials/eye.tres" id="m_eye"]
+[ext_resource type="Material" path="res://assets/characters/kirru_elder/materials/cornea.tres" id="m_cornea"]
+[ext_resource type="Material" path="res://assets/characters/kirru_elder/materials/eye_occlusion.tres" id="m_eye_occlusion"]
+[ext_resource type="Material" path="res://assets/characters/kirru_elder/materials/tear_line.tres" id="m_tear_line"]
+[ext_resource type="Material" path="res://assets/characters/kirru_elder/materials/fur.tres" id="m_fur"]
+[ext_resource type="Material" path="res://assets/characters/kirru_elder/materials/fur_brow.tres" id="m_fur_brow"]
+[ext_resource type="Material" path="res://assets/characters/kirru_elder/materials/whisker.tres" id="m_whisker"]
+[ext_resource type="Material" path="res://assets/characters/kirru_elder/materials/crest.tres" id="m_crest"]
+[ext_resource type="Material" path="res://assets/characters/kirru_elder/materials/cloth.tres" id="m_cloth"]
+[ext_resource type="Material" path="res://assets/characters/kirru_elder/materials/web.tres" id="m_web"]
+
+[sub_resource type="ProceduralSkyMaterial" id="Sky_mat"]
+sky_top_color = Color(0.46, 0.53, 0.63, 1)
+sky_horizon_color = Color(0.86, 0.79, 0.71, 1)
+sky_curve = 0.12
+ground_bottom_color = Color(0.36, 0.33, 0.31, 1)
+ground_horizon_color = Color(0.478, 0.431, 0.392, 1)
+ground_curve = 0.06
+sun_angle_max = 1.0
+sun_curve = 0.01
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("Sky_mat")
+
+[sub_resource type="Environment" id="Env"]
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 3
+ambient_light_energy = 0.5
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 1.0
+tonemap_white = 12.0
+ssao_enabled = true
+ssao_radius = 0.04
+ssao_intensity = 1.0
+glow_enabled = true
+glow_intensity = 0.35
+glow_bloom = 0.02
+glow_hdr_threshold = 1.2
+
+[sub_resource type="StandardMaterial3D" id="Studio_mat"]
+albedo_color = Color(0.26, 0.255, 0.25, 1)
+roughness = 0.95
+
+[sub_resource type="PlaneMesh" id="Floor_mesh"]
+material = SubResource("Studio_mat")
+size = Vector2(16, 16)
+
+[sub_resource type="CylinderMesh" id="Cyc_mesh"]
+material = SubResource("Studio_mat")
+flip_faces = true
+top_radius = 5.5
+bottom_radius = 5.5
+height = 7.0
+radial_segments = 48
+rings = 1
+cap_top = false
+cap_bottom = false
+
+[node name="KirruElderStage" type="Node3D"]
+script = ExtResource("stage")
+character_scene = ExtResource("pell")
+character_name = &"the Kirru eldest"
+materials = {
+"skin_head": ExtResource("m_skin_head"),
+"skin_body": ExtResource("m_skin_body"),
+"mouth": ExtResource("m_mouth"),
+"teeth": ExtResource("m_teeth"),
+"tongue": ExtResource("m_tongue"),
+"lash": ExtResource("m_lash"),
+"eye": ExtResource("m_eye"),
+"cornea": ExtResource("m_cornea"),
+"eye_occlusion": ExtResource("m_eye_occlusion"),
+"tear_line": ExtResource("m_tear_line"),
+"fur": ExtResource("m_fur"),
+"fur_brow": ExtResource("m_fur_brow"),
+"whisker": ExtResource("m_whisker"),
+"crest": ExtResource("m_crest"),
+"cloth": ExtResource("m_cloth"),
+"web": ExtResource("m_web")
+}
+face_poses_path = "res://game/levels/_tests/characters/pell/pell_face_poses.json"
+hide_nodes = Array[StringName]([&"NameShellCarved"])
+wind = Vector4(2.4, 0, 1.2, 0.3)
+wind_time = 1.7
+face_distance = 0.85
+face_aim_drop = -0.035
+face_yaw_degrees = 30.0
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="KeyLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.683157, 0.381423, -0.622746, -0, 0.85276, 0.522303, 0.730271, -0.356815, 0.582569, 0, 4, 0)
+light_color = Color(1, 0.722, 0.482, 1)
+light_energy = 2.4
+shadow_enabled = true
+shadow_bias = 0.02
+shadow_normal_bias = 4.5
+shadow_blur = 0.6
+directional_shadow_max_distance = 8.0
+
+[node name="RimLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.738956, -0.25716, 0.622746, 0, 0.924293, 0.381683, -0.673754, 0.282047, -0.683012, 0, 4, 0)
+light_color = Color(0.949, 0.651, 0.29, 1)
+light_energy = 1.8
+shadow_enabled = true
+shadow_bias = 0.02
+shadow_normal_bias = 4.5
+directional_shadow_max_distance = 8.0
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+mesh = SubResource("Floor_mesh")
+
+[node name="Cyclorama" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
+mesh = SubResource("Cyc_mesh")
+cast_shadow = 0
+
+[node name="Turntable" type="Node3D" parent="."]
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Front" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, 0, 0, 0.996195, 0.0871557, 0, -0.0871557, 0.996195, 0, 1.4, 4.75)
+fov = 34.0
+near = 0.05
+current = true
+
+[node name="ThreeQuarter" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.707107, 0.0616284, -0.704416, 0, 0.996195, 0.0871557, 0.707107, -0.0616284, 0.704416, -3.359, 1.4, 3.359)
+fov = 34.0
+near = 0.05
+
+[node name="Profile" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0, -0.0871557, 0.996195, 0, 0.996195, 0.0871557, -1, 0, 0, 4.75, 1.4, 0)
+fov = 34.0
+near = 0.05
+
+[node name="ThreeQuarterLeft" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.707107, -0.0616284, 0.704416, 0, 0.996195, 0.0871557, -0.707107, -0.0616284, 0.704416, 3.359, 1.4, 3.359)
+fov = 34.0
+near = 0.05
+
+[node name="Back" type="Camera3D" parent="Cameras"]
+transform = Transform3D(-1, 0, 0, 0, 0.996195, 0.0871557, 0, 0.0871557, -0.996195, 0, 1.4, -4.75)
+fov = 34.0
+near = 0.05
+
+[node name="Face" type="Camera3D" parent="Cameras"]
+fov = 24.0
+near = 0.02

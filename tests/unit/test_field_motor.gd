@@ -7,6 +7,9 @@ const UP := Vector2(0, -1)
 const RIGHT := Vector2(1, 0)
 const EPS := 0.001
 const STEPS_TO_TOP_SPEED := 120
+const LOCOMOTION := "res://game/data/characters/locomotion.json"
+## How far the field run may sit from the jog clip's speed before the feet visibly slide.
+const JOG_TOLERANCE := 0.02
 
 var m: FieldMotor
 
@@ -102,6 +105,32 @@ func test_relatch_drops_the_latch_and_reads_the_given_camera() -> void:
 	assert_eq(m.reference_yaw, PI)
 	m.step(UP, PI, DT)
 	_near(FieldMotor.world_direction(UP, m.reference_yaw), Vector3.BACK, "up maps to the visible camera")
+
+
+## The human's playtest (the run slid): the field run is the heroes' jog clip's own ground speed
+## (game/data/characters/locomotion.json run.speed_mps), so the feet plant at playback 1.0, within the Lead's
+## 2.3-3.6 m/s.
+func test_the_field_run_is_the_jog_clips_speed() -> void:
+	var loco: Variant = JSON.parse_string(FileAccess.get_file_as_string(LOCOMOTION))
+	var clip := _find_run_speed(loco)
+	var run := float(FieldInput.load_json(FieldMotor.DATA_PATH)["run_speed_mps"])
+	assert_true(clip > 0.0, "locomotion.json names the run clip's speed")
+	assert_between(
+		run, clip * (1.0 - JOG_TOLERANCE), clip * (1.0 + JOG_TOLERANCE), "run %.2f vs the jog %.3f" % [run, clip]
+	)
+	assert_between(run, 2.3, 3.6, "inside the Lead's band")
+
+
+static func _find_run_speed(v: Variant) -> float:
+	if v is Dictionary:
+		var d := v as Dictionary
+		if d.has("run") and d["run"] is Dictionary and (d["run"] as Dictionary).has("speed_mps"):
+			return float((d["run"] as Dictionary)["speed_mps"])
+		for k: Variant in d:
+			var found := _find_run_speed(d[k])
+			if found > 0.0:
+				return found
+	return 0.0
 
 
 func _near(a: Vector3, b: Vector3, msg: String) -> void:

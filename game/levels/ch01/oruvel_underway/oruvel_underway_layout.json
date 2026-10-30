@@ -77,8 +77,8 @@
     {"id": "wickfry", "at": [80, 0, 5], "size": [12, 0, 2], "payload": {"beat": "wickfry"}},
     {"id": "old_tin", "activation": "interact", "at": [71, 0, -1], "size": [3, 0, 3], "prompt_key": "FIELD_PROMPT_TAKE", "sets_flag": "ch01_found_old_tin", "once": true, "payload": {"beat": "old_tin"}},
     {"id": "bell_rest_2", "at": [80, 0, -20], "size": [12, 0, 3], "payload": {"beat": "bell_rest_2"}},
-    {"id": "low_lights", "at": [80, 0, -33], "size": [12, 0, 2], "payload": {"beat": "low_lights"}},
-    {"id": "oil_slug", "at": [87.5, 0, -30], "size": [2, 0, 20], "payload": {"beat": "oil_slug"}},
+    {"id": "low_lights", "at": [80, 0, -28], "size": [12, 0, 12], "payload": {"beat": "low_lights"}},
+    {"id": "oil_slug", "at": [87.5, 0, -30], "size": [2, 0, 20], "requires_flag": "ch01_saw_low_lights", "payload": {"beat": "oil_slug"}},
     {"id": "gauge_wheel", "activation": "interact", "at": [96, 0, -31], "size": [2, 0, 3], "prompt_key": "FIELD_PROMPT_CUT", "requires_flag": "ch01_oil_slug_won", "sets_flag": "ch01_cut_gauge_wheel", "once": true, "payload": {"beat": "gauge_wheel"}},
     {"id": "limpet", "activation": "interact", "at": [92, 0, -37], "size": [3, 0, 3], "prompt_key": "FIELD_PROMPT_LOOK", "blocked_by_flag": "ch01_limpet_won", "payload": {"beat": "limpet"}},
     {"id": "current_shaft", "activation": "interact", "at": [97, 0, -38], "size": [3, 0, 3], "prompt_key": "FIELD_PROMPT_RIDE", "requires_flag": "ch01_cut_gauge_wheel", "payload": {"beat": "ride_shaft"}}

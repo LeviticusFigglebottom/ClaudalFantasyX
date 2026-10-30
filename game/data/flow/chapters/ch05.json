@@ -15,6 +15,7 @@
           {"place": "Harbour"},
           {"chapter": 5},
           {"play": "ch05_ferry_comes_in"},
+          {"zone": "give", "args": [{"name_board_seventh_terrace": -1}, 0]},
           {"set": "ch05_arrived"}
         ]}
       ],

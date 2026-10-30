@@ -1,0 +1,17 @@
+// DRAFT (Act III, planning only). Ch18 K02 "The chart table" (E, 1.5 min). act3_ch18.md §2 K02.
+// Dace's charts (Corrow circled), Ysolde's keth notes, Liss's engine log: the world map opens (SPEC §6.6).
+// Ysolde's line pays Ch17 B11 and sends them to Reedhollow (the critical path's one road).
+title: ch18_the_chart_table
+location: ch18/kite
+---
+@camera K04
+@mark ysolde chart_table walk
+@anim ysolde lay_out keth_notes
+@wait 2.0
+Ysolde [neutral]: I have the words. Pell has the tune. We go to Reedhollow. #line:ch18_chart_001
+@anim pell look_at chart_table
+@wait 2.0
+Pell [neutral]: They will not let me in. #line:ch18_chart_002
+Asha [tender]: Then we'll ask again. #line:ch18_chart_003
+<<set $ch18_world_open = true>>
+===

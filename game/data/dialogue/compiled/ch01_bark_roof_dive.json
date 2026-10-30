@@ -11,7 +11,8 @@
     {"op": "line", "id": "ch01_bark_roof_004", "key": "DLG_CH01_BARK_ROOF_004", "speaker": "rhen", "emotion": "determined", "voice": "", "src": 7},
     {"op": "cue", "cue": "anim", "args": ["rhen", "roof_dive"], "kwargs": {}, "src": 8},
     {"op": "cue", "cue": "sfx", "args": ["splash"], "kwargs": {}, "src": 9},
-    {"op": "line", "id": "ch01_bark_roof_005", "key": "DLG_CH01_BARK_ROOF_005", "speaker": "child", "emotion": "laugh", "voice": "", "src": 10}
+    {"op": "line", "id": "ch01_bark_roof_005", "key": "DLG_CH01_BARK_ROOF_005", "speaker": "child", "emotion": "laugh", "voice": "", "src": 10},
+    {"op": "set", "flag": "ch01_roof_dived", "value": ["lit", true], "src": 11}
    ]
   }
  }
