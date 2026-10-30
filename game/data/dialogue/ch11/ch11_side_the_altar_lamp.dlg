@@ -7,7 +7,7 @@ location: ch11/lowlight
 <<if $ch11_moved_altar_lamp>>
     Tender as "Lowlight keeper" [soft_smile]: One more year, on that step. Thank you. #line:ch11_altar_001
 <<else>>
-    Tender as "Lowlight keeper" [exhausted]: The altar lamp has to go up a step before the water reaches it. There used to be four of us to lift it. #line:ch11_altar_002 #long
+    Tender as "Lowlight keeper" [exhausted]: The altar lamp has to go up a step before the water reaches it. There used to be four of us who came down to lift it. #line:ch11_altar_002 #long
     -> Toma lifts it. #line:ch11_altar_003
         Toma [neutral]: Show me where. #line:ch11_altar_004
         Tender as "Lowlight keeper" [neutral]: Gently. It has never once gone out. #line:ch11_altar_005
