@@ -8264,6 +8264,63 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "ch15_sea_deck",
+      "scene": "res://game/levels/_tests/hollowmere_kit/ch15_open_sea_shots.tscn",
+      "camera": "Cameras/Deck",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch15_sea_bier",
+      "scene": "res://game/levels/_tests/hollowmere_kit/ch15_open_sea_shots.tscn",
+      "camera": "Cameras/Bier",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch15_sea_wide",
+      "scene": "res://game/levels/_tests/hollowmere_kit/ch15_open_sea_shots.tscn",
+      "camera": "Cameras/Wide",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }
