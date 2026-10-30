@@ -1499,3 +1499,34 @@ first-playable).
     capsules go, which is right now that both have bodies.
 - Mine (M3-HER-1140/1142 task files) cleared @ 5e285a886. env-art-b and ui merge clean (union only). Everyone else
   merges clean.
+
+### 2. The Act I headless smoke on lead/gate-big18 @ d00d3284, 2026-10-30 ~00:40 (one Godot at a time)
+Boot past the title (600 frames), plus the guards and suites that play the game:
+- `qa_` (every chapter thread start to end with a save round trip at each shrine, every Act I encounter
+  entered/won/left, capsules, party spawns, field camera, flag reach);
+- `fp_` (title → New Game → Prologue → slice → Ch3);
+- `title`, `save_`, `boot_card`.
+**Results: boot clean · qa_ 12/13 · fp_ 30/0 · title 40/0 · save_ 149/0 · boot_card 27/0.**
+- **The one red, fixed here @ dc88d2aee:** `test_qa_threads` failed on 4 "CutsceneGrade: no grade 'ch03' / 'ch03_steps' /
+  'ch03_boss' / 'ch03_shrine_int' in the zones' grade tables" warnings in the first-playable thread. They're new in
+  big18 from slice-polish's M2-FP-120, which makes a grade with no row a **soft failure by design**. The colour
+  script names grades nobody has built yet; those are M3-ENV-106 (environment, todo), and test_cutscene_directives
+  lists them. The guard now knows the pattern under M3-ENV-106 and is 1/0 on big18 (with M2-HER-1128's
+  test_fp_thread). **Owner of the real work: environment, M3-ENV-106** (Ch3's four grades).
+- Every error and warning in the run, by owner:
+  - **Boot:** one `ShaderPrewarm: transition hitch over budget (301 ms, budget 50)`. On the headless dummy renderer
+    the timing is meaningless → PC-QUEUE (real GPU).
+  - **`Parameter "material" is null` (material_get_instance_shader_parameters, dummy storage):** 56 here, 132 in
+    big17's full suite. It fires whenever a node carrying instance shader parameters (the character shading) is freed
+    under the headless dummy renderer, whose material storage is a stub (even freeing a bare hero glb in
+    test_hero_field_actor does it). It's headless noise rather than a game error → PC-QUEUE: confirm a real-GPU run
+    logs none (rendering, if it does).
+  - **The save suites' ERRORs and WARNINGs** (corrupt slots, broken tables, negative counts, unknown equipment,
+    "autosave failed: Unconfigured"): every one is a test feeding bad data on purpose (test_save_recovery,
+    test_save_data_tables, test_save_item_tables). Nothing to route.
+  - **Leaks:** `test_area_title_card.gd` ×3 (ui-menus; already in M3-HER-1130's list).
+- Not covered by a headless run: what the player sees and hears. Item 4's scripted walk stills cover the hero side.
+
+### PC-QUEUE (added)
+- ShaderPrewarm's transition hitch on boot (301 ms in headless; measure on the GPU).
+- `Parameter "material" is null` on freeing a character mesh: confirm a real-GPU run logs none.
