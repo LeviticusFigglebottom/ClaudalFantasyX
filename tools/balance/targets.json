@@ -1213,7 +1213,7 @@
     },
     {
       "id": "ch10_fen_leeches",
-      "chapter": "Ch10 route: two fen leeches (role_answer report only: the role play focuses and never heals, and the leeches' poison is a healing lesson; a logged exception until their drain lands, M4-CMB-1001)",
+      "chapter": "Ch10 route: two fen leeches that drain (M4-CMB-1001: the bite heals the leech by half of what it takes). role_answer report only: the role play focuses and never heals, so a drainer outlasts it (a logged exception; the smart play kills it first)",
       "kind": "regular",
       "encounter": "ch10_fen_leeches",
       "active": [

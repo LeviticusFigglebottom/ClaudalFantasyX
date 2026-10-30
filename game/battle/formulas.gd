@@ -121,6 +121,11 @@ static func heal_amount(power: int, magic: int, level: int, variance_pct: int, b
 	return mini(cap, power * (magic + level) * variance_pct / 100)
 
 
+## M4-CMB-1001: the HP a drain skill gives back, a share of the HP its hit took. Exact in integers.
+static func drain_heal(hp_lost: int, drain_pct: int) -> int:
+	return maxi(0, hp_lost) * drain_pct / 100
+
+
 ## Percent chance for a physical action to hit.
 static func hit_chance(skill_accuracy: int, accuracy: int, evasion: int, darkness: bool) -> int:
 	var chance := float(skill_accuracy + accuracy - evasion)

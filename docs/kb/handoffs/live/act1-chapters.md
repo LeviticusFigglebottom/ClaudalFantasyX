@@ -578,6 +578,15 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - Next: the Act II triggers and beats that need no story text (story's scenes gate the rest).
 - MERGE-READY @ fb9304836
 
+- **M4-CMB-1001 drain (combat seat): done, in review.**
+  - Added `drain_pct` on skill rows (the engine, formulas.md/formulas.gd/test_formulas, test_battle_drain, and the
+    validator).
+  - The fen leech's bite drains 50%. `ch10_fen_leeches` is in band.
+  - Requested the on-stage readout from battle-presentation (M3-BPR-440).
+  - Checks: drain, formulas, battle_engine (59/0), validate, lint and format.
+  - Next: M4-A2P-020, rooted (the root crab's Root Drag refuses the swap).
+- MERGE-READY @ (this push)
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
