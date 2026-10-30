@@ -185,3 +185,4 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
   - after the merge, Godot needs `--import` to rebuild the class cache, or every test parse-fails.
 - MERGE-READY @ 469b3980c
 - BACKLOG EMPTY (story track).
+- Follow-up: Godot `cutscene_face_anim` passes 7/0 after the class-cache rebuild. Its earlier failures came from a run started before `--import`. The full `--filter=cutscene` sweep took more than 28 min and was cut off with no failures up to that point. The Lead's full run on merge covers the rest.
