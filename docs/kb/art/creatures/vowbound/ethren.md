@@ -254,3 +254,75 @@ show). **Open:** from the party side of the battle camera the veil is seen edge-
 from the front (the summon shot, cinematics). The screen's near leaf swings toward the battle camera in `ward` and
 crosses his robe for 0.3 s; it reads as the screen going up round the party, but battle-presentation may prefer to
 frame it. Hold the Hour's closing hand is small at battle distance: the foe's freeze (VFX) carries the read.
+
+## As built: the polish (M4-CRB-008, 2026-10-30, after the Lead's view)
+
+The Lead's track viewed `creature_ethren` after the final pass and he still read as primitive (ADR 0041 §3): the robe was
+three cones stacked like lampshades, the arms mannequin cylinders on ball joints, the halo a flat plate, and the wings
+doors. This pass rebuilds those surfaces. The rig (29 bones, the same indices), every clip and its name, the contacts,
+the anchors, the veil (its own mesh on its own unkeyed bone, for Act III's veil-fall) and the palette are kept. The
+cuirass, the breastplate, the collar, the head, the crown cap and the veil are as they were.
+
+**Budget:** 17,304 triangles (the Act I Vowbound bar is 18k; he was at 15,546), 29 bones, 16 clips. Per slot:
+`lacquer` 4,800, `lacquer_red` 2,992, `gold` 3,384, `silk` 3,690, `seam` 734, `halo` 480, `veil` 1,008, `ring` 216.
+
+**One slot added: `silk`** (materials.json, write_materials; PROVENANCE rows for `materials/silk.tres` and
+`materials_held/silk.tres`). The cloth needed a sheen the glossy lacquer cannot give: roughness 0.55, `rim_sheen` 0.45,
+cavity 0.45/0.8 so the folds' creases darken. Its colours are palette swatches: `lacquer_red_deep` and an oxblood black
+(`lacquer_black` 30% toward `lacquer_red_deep`, so the sheen shows). It is not emissive, so the held set copies it.
+
+- **The robe is layered cloth.** A red silk under-robe hangs from under the belt in sixteen folds (round crests, sharp
+  creases, drifting a little and varying in depth round him, 3.4 cm deep at the hem); its hem is uneven (the folds,
+  and 1.2 cm longer behind), rolled (a 4 mm lip) and banded in black silk with a thin gold edge. Over it are three
+  lacquered panels with eleven stiffer folds: two in front, parted from the belt (the opening widens from 5° to 26°
+  each side, so the red silk shows), and one behind, longer (hem 0.20 m behind, 0.28 m at the sides, 0.34 m in
+  front), which the front pair overlaps at his sides from 98° to 118°. Each panel is rimmed in gold down both edges and
+  along its hem; the rims are cut from the folded surface, so they follow the folds. The panels are lined in red silk
+  (the lining is kept only where it can be seen, at the hems). A red lacquer belt with gold edges closes the top, with
+  a knot at the left hip and two red silk tails hanging over the front panel, turning as they fall, tipped in gold.
+- **Kneeling.** The cloth is skinned by height (`body` above 1.22 m, blended to `robe_1` by 0.80 m, `robe_2` by
+  0.34 m). The hips sink furthest, so the robe settles onto itself as the bells used to telescope; nothing stretches,
+  and the hem stays above the water.
+- **A mantle over the shoulders.** Two layers of lacquered cloth (red over a longer black one), fourteen folds, gold
+  hems and gold front edges, parted at the breast (±50°, clear of the veil and showing the breastplate and its seam of
+  light). It covers the shoulders and the sleeves' tops, so no joint shows; its sides go 40% with the upper arms. The
+  pauldrons are gone.
+- **Sleeves, not cylinders.** Each sleeve is close at the shoulder (under the mantle), widens down the arm, and under
+  the forearm hangs in a deep bag (22 cm) that is sewn shut in front and rounds up to the opening round the wrist,
+  as a hanging sleeve is. Six soft folds round it. Black silk outside, red silk inside; the opening is turned back in
+  a red band and edged in gold, 3 cm past the wrist, so only the hand shows, and the bound light glows deep in the
+  cuff. Skinned positionally: the upper sleeve on the upper arm (its top 35% on the chest), the forearm and the bag
+  on the forearm, blended across the elbow.
+- **Hands, not tongs.** Each hand (1.2 times a man's, for his 3 m) is a palm lofted from inside the cuff to the
+  knuckles, four three-jointed fingers in a relaxed curl, each joint a little proud (the knuckles' read), a two-jointed
+  thumb, and a gilded nail on every finger. The left hand's index and middle ride `finger_l0` and its ring and little
+  fingers `finger_l1`, as before; the copper ring sits on the ring finger 1.7 cm past the knuckle, and `vfx_keepsake`
+  is placed there (it is computed from the finger, so the anchor and the ring agree).
+- **The halo is light.** A thin bowl (6 mm) floating clear of the head (its lip 0.12 m behind the back of the head,
+  its hollow's edge 0.23 m), open at its centre (a 0.26 m hollow, the crown shows through it). Its lit face
+  is brightest at the hollow's edge (emission 1.0) and falls off to 0.1 toward the rim, its colour going from the
+  light toward the black lacquer, so it reads as a glow, not a painted ring. Then a red lacquer rim and the gold lip;
+  the back is black lacquer.
+- **Screens, not doors.** Each wing leaf is now two half-panels hinged down its middle and set at a shallow V (the
+  middle stands 3.5 cm out), like a folding screen: one half catches the light and the other does not, so the screen
+  reads at battle distance. Each half is rimmed in gold on its outer edges (none down the hinge), 1.2 cm thick (from
+  3). The outer faces are black lacquer worn at the edges to the red ground under it (noise-broken, the lacquer's own
+  wear), with a red field set in each half; the inner faces (the ones the battle camera sees on his near side) are
+  red, with two darker red fields in each half above and below a rail, their borders sunk. The bound light runs in the
+  hinge line between the halves and between the upper and lower leaves, which are joined by two lacquer knuckles each;
+  a knuckle hangs each leaf from the yoke.
+- **Grounding.** Lowest vertex over every clip, skinned: 0.006 m (`hit_b`, the lower leaves' outer corners as he
+  tips back; the hit's leaf lift is 3° from 2° so they clear the water as before); everything else 0.017 m or
+  higher. Nothing goes under the water.
+- **Gold, measured roughly from the renders** (gold-hued pixels): 0.2% of the battle frame at rest (as before the
+  pass) and about 1% in a frontal full-figure shot at 5 m: far inside palette.json's 5%. The palette tool should
+  confirm on the next PC render.
+
+**Viewed** (a scratch clip sheet: every clip at five beats from the battle camera on the party's `vowbound_slot` in an
+Act I arena, and close-ups of the front, side, back, hands, head and halo, robe, wings, the kneel, `ward` and
+`victory`): at battle distance he is a robed, veiled figure with a lit halo and lacquer screens, and every clip reads as
+before (`stop`'s held hand, `ward`'s screen round the party's side). Up close the cloth has folds, the sleeves hang and
+are lined, the hands have fingers, knuckles and nails, the halo glows from its hollow, and the screens have hinges,
+fields and worn edges.
+
+**Portraits** `ethren` and `ethren_held` are re-baked.
