@@ -33,3 +33,10 @@ names and contact times are unchanged):
   open spiracles are gone.
 - **Idle:** the wing wave's amplitude grows out along the wing (6, 10 and 20 degrees, each bone lagging the last), so
   the tips curl behind the wave as it glides.
+
+## The Act II read fix (2026-10-30, ADR 0205)
+At battle distance the pale disc vanished on pale salt-glass and was seen edge-on from head height. The back is now
+dusky: `cumulus_shadow` mottled toward a `cumulus_shadow`/`lacquer_black` mix, with dark rosettes (6 per metre) and the
+pale `salt_glass` freckles kept, so it is still a cave ray's dappled back but reads against a pale floor. The margin's
+`sea_glow` is twice as bright (1.6), and the body's wet clearcoat is 0.25 (from 0.6), since its sheen at the grazing
+battle angle washed the back white. It hovers at 0.95 m (from 1.4), below the battle camera, so the camera sees its back.

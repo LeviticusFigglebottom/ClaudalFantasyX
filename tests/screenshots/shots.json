@@ -4139,6 +4139,102 @@
       }
     },
     {
+      "id": "wildlife_zone_ossa_fen_walk0",
+      "scene": "res://game/levels/_tests/wildlife/zone_wildlife_ossa_fen.tscn",
+      "camera": "Cameras/Walk0",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "wildlife_zone_ossa_fen_pocket",
+      "scene": "res://game/levels/_tests/wildlife/zone_wildlife_ossa_fen.tscn",
+      "camera": "Cameras/Pocket",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "wildlife_zone_ossa_fen_rail0",
+      "scene": "res://game/levels/_tests/wildlife/zone_wildlife_ossa_fen.tscn",
+      "camera": "Cameras/Rail0",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "wildlife_zone_keth_pass_foot",
+      "scene": "res://game/levels/_tests/wildlife/zone_wildlife_keth_pass.tscn",
+      "camera": "Cameras/Foot",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "wildlife_zone_keth_pass_saddle",
+      "scene": "res://game/levels/_tests/wildlife/zone_wildlife_keth_pass.tscn",
+      "camera": "Cameras/Saddle",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "wildlife_zone_pale_rim_wade",
+      "scene": "res://game/levels/_tests/wildlife/zone_wildlife_pale_rim.tscn",
+      "camera": "Cameras/Wade",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
       "id": "wildlife_zone_underway_crown",
       "scene": "res://game/levels/_tests/wildlife/zone_wildlife_oruvel_underway.tscn",
       "camera": "Cameras/Crown",
@@ -4742,7 +4838,7 @@
     },
     {
       "id": "moll_face",
-      "scene": "res://game/levels/_tests/characters/moll/moll_stage.tscn",
+      "scene": "res://game/levels/_tests/characters/moll/moll_face.tscn",
       "camera": "Cameras/Face",
       "resolution": [
         960,
@@ -4822,7 +4918,7 @@
     },
     {
       "id": "stillguard_a_face",
-      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_a_stage.tscn",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_a_face.tscn",
       "camera": "Cameras/Face",
       "resolution": [
         960,
@@ -4882,7 +4978,7 @@
     },
     {
       "id": "stillguard_b_face",
-      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_b_stage.tscn",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_b_face.tscn",
       "camera": "Cameras/Face",
       "resolution": [
         960,
@@ -4902,7 +4998,7 @@
     },
     {
       "id": "stillguard_c_face",
-      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_c_stage.tscn",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_c_face.tscn",
       "camera": "Cameras/Face",
       "resolution": [
         960,
@@ -5381,7 +5477,7 @@
             "level_path": "res://game/levels/ch01/oruvel/oruvel.tscn",
             "spawn": "ScaleHull",
             "scene_id": "ch01_bark_outer_mooring",
-            "hold_line": "ch01_bark_sadi_003",
+            "hold_cue": "camera O07",
             "flags": [
               "ch01_started"
             ]
@@ -7208,6 +7304,9 @@
             "spawn": "NetPenAfter",
             "scene_id": "ch01_hullgnaw_rises",
             "hold_line": "ch01_hullgnaw_001",
+            "show": [
+              "hullgnaw"
+            ],
             "flags": [
               "ch01_started",
               "ch01_gulls_cried"
@@ -7244,6 +7343,105 @@
             "flags": [
               "ch01_started",
               "ch01_gulls_cried"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch01_going_under_u10",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 600,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch01/oruvel/oruvel.tscn",
+            "spawn": "NetPenAfter",
+            "scene_id": "ch01_going_under",
+            "hold_cue": "vfx glimmer_held",
+            "flags": [
+              "ch01_started",
+              "ch01_gulls_cried"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch01_going_under_u11",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 600,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch01/oruvel/oruvel.tscn",
+            "spawn": "NetPenAfter",
+            "scene_id": "ch01_going_under",
+            "hold_cue": "camera U11",
+            "flags": [
+              "ch01_started",
+              "ch01_gulls_cried"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch01_current_shaft_u09",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 600,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn",
+            "spawn": "ShaftFoot",
+            "scene_id": "ch01_current_shaft",
+            "hold_cue": "camera U09",
+            "flags": [
+              "ch01_started",
+              "ch01_cut_gauge_wheel"
             ]
           }
         },
@@ -7703,7 +7901,7 @@
     {
       "id": "field_hud_over_haluna_wake",
       "scene": "res://game/levels/_tests/ui_shots/field_hud_over_haluna_wake.tscn",
-      "camera": "Backdrop/Cameras/H02",
+      "camera": "Backdrop/Cameras/Wake",
       "resolution": [
         960,
         540
@@ -7957,17 +8155,6 @@
         1080
       ],
       "settle_frames": 480,
-      "threshold_rmse": 0.004
-    },
-    {
-      "id": "slice_end_card_voice",
-      "pending_baseline": true,
-      "scene": "res://game/flow/end_card.tscn",
-      "resolution": [
-        1920,
-        1080
-      ],
-      "settle_frames": 180,
       "threshold_rmse": 0.004
     },
     {
@@ -8330,6 +8517,27 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "document_reader_three",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/document_reader/document_reader_three.tscn"
+    },
+    {
+      "id": "document_reader_one",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/document_reader/document_reader_one.tscn"
+    },
+    {
+      "id": "slice_end_card_voice",
+      "pending_baseline": true,
+      "scene": "res://game/flow/end_card.tscn",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "settle_frames": 180,
+      "threshold_rmse": 0.004
     },
     {
       "id": "ch15_hollowmere_arrival",

@@ -38,7 +38,13 @@ const FOR_HERO_KEY := "SHOP_MENU_FOR_FMT"
 const UNKNOWN_SHOP_TITLE_KEY := "SHOP_MENU_UNKNOWN_TITLE"
 ## Shop ERR_* -> the loc key that says it ({name}, {count}, {price}, {purse}, {room}, {held},
 ## {wearer} are filled in where the line uses them).
+## Act II's heresy (M4-A2P-082): an Order shop (its shops.json row has "order": true) refuses heretics. Buy and
+## Sell stay off and the line is the keeper's refusal, as a shut shop's line is.
+const ERR_HERETIC := &"shop_heretic"
+const HERETIC_FLAG := &"ch14_declared_heretics"
+const KEY_ORDER := "order"
 const REFUSAL_KEYS := {
+	ERR_HERETIC: "SHOP_ERR_HERETIC",
 	Shop.ERR_UNKNOWN_SHOP: "SHOP_ERR_UNKNOWN_SHOP",
 	Shop.ERR_CLOSED: "SHOP_ERR_CLOSED",
 	Shop.ERR_NOT_IN_STOCK: "SHOP_ERR_NOT_IN_STOCK",
@@ -99,6 +105,8 @@ func closed_reason() -> StringName:
 		return Shop.ERR_UNKNOWN_SHOP
 	if not shop.is_open(flags):
 		return Shop.ERR_CLOSED
+	if bool(shop.row.get(KEY_ORDER, false)) and flags.is_set(HERETIC_FLAG):
+		return ERR_HERETIC
 	return Shop.RESULT_OK
 
 

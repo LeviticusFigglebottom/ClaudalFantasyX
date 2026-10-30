@@ -244,6 +244,28 @@ func test_arriving_with_his_back_to_a_wall_puts_no_one_in_it() -> void:
 	_done()
 
 
+## The PC's GPU QA row 37 (the causeway's spawns): a camera right behind the arrival never gets a follower laid out
+## in its foreground; every one stands at least camera_near_m (flat) from the lens.
+func test_no_follower_is_laid_out_in_front_of_the_lens() -> void:
+	zone.call("place_at", &"Court")
+	var cam := Camera3D.new()
+	zone.add_child(cam)
+	var back := Basis(Vector3.UP, player.motor.facing_yaw) * Vector3.BACK  # his trail runs this way
+	cam.global_position = player.global_position + back * 1.5 + Vector3.UP * 1.6
+	cam.current = true
+	party.catch_up()
+	var near := float(party._cfg["camera_near_m"])
+	for f in party.followers:
+		var d := Vector2(f.global_position.x - cam.global_position.x, f.global_position.z - cam.global_position.z)
+		assert_true(d.length() >= near - 1e-3, "%s stands %.2f m from the lens" % [f.get_meta(&"hero_id"), d.length()])
+	for i in 120:  # standing there, they don't walk back into the foreground (they flank him instead)
+		_step()
+	for f in party.followers:
+		var d := Vector2(f.global_position.x - cam.global_position.x, f.global_position.z - cam.global_position.z)
+		assert_true(d.length() >= near - 0.05, "%s still %.2f m from the lens" % [f.get_meta(&"hero_id"), d.length()])
+	_done()
+
+
 ## True when a follower's body (a 0.25 m sphere at its waist) overlaps a static collider.
 func _inside_wall(at: Vector3) -> bool:
 	var q := PhysicsShapeQueryParameters3D.new()

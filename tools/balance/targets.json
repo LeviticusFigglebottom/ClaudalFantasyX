@@ -1213,7 +1213,7 @@
     },
     {
       "id": "ch10_fen_leeches",
-      "chapter": "Ch10 route: two fen leeches (role_answer report only: the role play focuses and never heals, and the leeches' poison is a healing lesson; a logged exception until their drain lands, M4-CMB-1001)",
+      "chapter": "Ch10 route: two fen leeches that drain (M4-CMB-1001: the bite heals the leech by half of what it takes). role_answer report only: the role play focuses and never heals, so a drainer outlasts it (a logged exception; the smart play kills it first)",
       "kind": "regular",
       "encounter": "ch10_fen_leeches",
       "active": [
@@ -1241,6 +1241,40 @@
       "p90_turns_max": 35,
       "loadout": "ch08_seawall",
       "swell": "good"
+    },
+    {
+      "id": "ch10_mangrove_drowner",
+      "chapter": "Ch10 boss (the Mangrove Drowner, Ossa Fen's clearing; act2_plan §2 Ch10: the Act II boss curve, smart report only with an ease floor as ch05_cinder_matron (a logged exception, balance_targets.md); the ch08_seawall loadout until M4-A2P-019's Ch10 loadout)",
+      "kind": "boss",
+      "encounter": "ch10_mangrove_drowner",
+      "active": [
+        "rhen",
+        "asha",
+        "toma"
+      ],
+      "reserve": [
+        "ysolde",
+        "kerrid"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          3
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          55,
+          80
+        ],
+        "smart": null,
+        "ward_guard": null
+      },
+      "p90_turns_max": 80,
+      "loadout": "ch08_seawall",
+      "swell": "good",
+      "mean_turns_min": {
+        "smart": 30
+      }
     },
     {
       "id": "ch11_vey_rays",

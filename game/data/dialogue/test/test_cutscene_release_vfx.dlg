@@ -1,0 +1,10 @@
+// Fixture for tests/unit/test_cutscene_sequencer.gd (M4-CIN-1303): `@vfx glimmer_lift at=<place> release=<sec>` lets
+// the held light already at that place go, rather than spawning another. Never played by game content.
+title: test_cutscene_release_vfx
+---
+@vfx glimmer_held at=spot count=8 drift=down_seaward
+@wait 0.5
+@vfx glimmer_lift at=spot release=2.0
+@wait 0.5
+Asha [neutral]: Release fixture line. #line:test_cutscene_release_vfx_001
+===

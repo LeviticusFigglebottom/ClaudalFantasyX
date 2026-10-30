@@ -2,9 +2,8 @@
 id: M4-A2P-091
 title: "cloudloom and sanctum_of_the_level loops; the Vowbound stings; music.json zone rows for Ch10+"
 role: audio
-status: blocked
-blocked-by: ADR 0203
-owner_session: ""
+status: doing
+owner_session: "claude/audio (session_01UPFyE9L9BA3QodpCNJEfAs)"
 depends_on: []
 reviewer: cinematics
 milestone: M4

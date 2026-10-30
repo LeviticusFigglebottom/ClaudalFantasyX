@@ -1,0 +1,18 @@
+{
+ "format": 1,
+ "scene": "ch15_bark_kerrid_night",
+ "source": "game/data/dialogue/ch15/ch15_bark_kerrid_night.dlg",
+ "start": "ch15_bark_kerrid_night",
+ "nodes": {
+  "ch15_bark_kerrid_night": {
+   "headers": {"location": "ch17/hollowmere"},
+   "ops": [
+    {"op": "if_not", "cond": ["flag", "ch15_kerrid_told"], "to": 3, "src": 6},
+    {"op": "line", "id": "ch15_kerrid_night_001", "key": "DLG_CH15_KERRID_NIGHT_001", "speaker": "kerrid", "emotion": "soft_smile", "voice": "", "src": 7},
+    {"op": "goto", "to": 5, "src": 6},
+    {"op": "cue", "cue": "anim", "args": ["kerrid", "nod", "rhen"], "kwargs": {}, "src": 9},
+    {"op": "goto", "to": 5, "src": 8}
+   ]
+  }
+ }
+}

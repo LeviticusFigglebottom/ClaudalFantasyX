@@ -1,0 +1,26 @@
+{
+ "format": 1,
+ "scene": "ch12_herd_cord",
+ "source": "game/data/dialogue/ch12/ch12_herd_cord.dlg",
+ "start": "ch12_herd_cord",
+ "nodes": {
+  "ch12_herd_cord": {
+   "headers": {"location": "ch12/keth_pass"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["P07"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "avalanche_ram", "count": 10, "motion": "spiral_up", "rate": "fast"}, "src": 9},
+    {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "anim", "args": ["kerrid", "kneel", "avalanche_ram"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "anim", "args": ["kerrid", "give", "pell"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "anim", "args": ["pell", "read_knots"], "kwargs": {}, "src": 14},
+    {"op": "line", "id": "ch12_cord_001", "key": "DLG_CH12_CORD_001", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 15},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 16},
+    {"op": "line", "id": "ch12_cord_002", "key": "DLG_CH12_CORD_002", "speaker": "pell", "emotion": "sad", "voice": "", "src": 17},
+    {"op": "cue", "cue": "anim", "args": ["pell", "tie_knot", "pass_cord"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 19},
+    {"op": "set", "flag": "ch12_ram_felled", "value": ["lit", true], "src": 20}
+   ]
+  }
+ }
+}

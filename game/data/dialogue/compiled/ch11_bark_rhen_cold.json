@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch11_bark_rhen_cold",
+ "source": "game/data/dialogue/ch11/ch11_bark_rhen_cold.dlg",
+ "start": "ch11_bark_rhen_cold",
+ "nodes": {
+  "ch11_bark_rhen_cold": {
+   "headers": {"location": "ch11/lowlight"},
+   "ops": [
+    {"op": "line", "id": "ch11_bark_cold_001", "key": "DLG_CH11_BARK_COLD_001", "speaker": "rhen", "emotion": "exhausted", "voice": "", "src": 6}
+   ]
+  }
+ }
+}

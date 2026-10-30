@@ -1,0 +1,10 @@
+// Ch13 B05 optional: Wenna's third mark, in the Sanctum's vestibule behind a pilgrims' kneeling rail (the
+// old-style lines, node-dots and key glyph: act1_ch08 B05). Needs the second mark (Ch11).
+title: ch13_wenna_mark
+location: ch13/sanctum
+---
+<<if $ch11_found_wenna_mark>>
+    Liss [surprised]: In the Sanctum. She came here. She knelt here and scratched her name under their noses. #line:ch13_wenna_001
+    <<set $ch13_found_wenna_mark = true>>
+<<endif>>
+===

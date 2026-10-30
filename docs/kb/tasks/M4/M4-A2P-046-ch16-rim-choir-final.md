@@ -21,4 +21,8 @@ The white shallows, cairns and the waiting ship; the Choir's ring of colossal mo
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
 - 2026-10-30: started by env-art-b under ADR 0205.
 
+- 2026-10-30 chapters (act1-chapters): **a regular-fight arena is missing.** the Rim's shallows (`ch16_rim_skates`, `ch16_rim_crawlers`) have no arena, so they would fight on
+  the sandbox's stage. Please add `pale_rim_shallows` (arenas.json) with this zone's kit. chapters then names it on the rows and
+  drops them from `ACT2_NO_ARENA_YET` in `tests/integration/test_act1_encounters_resolve.gd` (docs/kb/plan/act2/chapters).
+
 ## Review log

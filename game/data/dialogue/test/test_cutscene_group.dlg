@@ -1,0 +1,8 @@
+// Fixture for tests/unit/test_cutscene_sequencer.gd (M4-CIN-1302): `@anim <group> <clip>` plays on every actor
+// named <group>_*, each after its own delay. Never played by game content.
+title: test_cutscene_group
+---
+@anim kirru look_at spot
+@wait 2.5
+Asha [neutral]: Group fixture line. #line:test_cutscene_group_001
+===

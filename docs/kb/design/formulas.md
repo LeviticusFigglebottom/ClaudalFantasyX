@@ -97,6 +97,13 @@ heal = min(cap, power × (magic + level) × variance_pct ÷ 100)       # magic i
 ```
 Examples: power 10, magic 18, level 5: variance 100 → 230; variance 93 → 213.
 
+**Drain (M4-CMB-1001)**: a skill row with `drain_pct` heals its user by that share of the HP the hit took. HP lost
+means after the cap and the target's floor; an absorbed or missed hit drains nothing.
+```
+drained = floor(hp_lost × drain_pct ÷ 100)        # through restore_hp: a Zombie user is harmed instead
+```
+Example: a hit takes 152 HP at drain_pct 50 → 76; 7 HP at 50 → 3.
+
 **Hero level (ADR 0012).** Growth comes only from the Lattice. Every hero has the same fixed `level` (5), so in hero formulas it is a flat +5 "potency floor" on the attacking stat. The validator rejects heroes with different levels, the Lattice can't add `level`, and `BattleEngine` undoes any `party_modifier` change to it. Enemies keep `level` as a per-enemy tuning tier.
 
 ## Accuracy and criticals

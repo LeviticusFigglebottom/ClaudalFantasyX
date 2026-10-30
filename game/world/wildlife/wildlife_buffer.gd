@@ -11,6 +11,8 @@ const MODE_HEAD := 2.0
 const MODE_LEGS := 3.0
 const MODE_SWIM := 4.0
 const MODE_FLUTTER := 5.0
+## The firefly: the flutter, its mode parameter the lantern's blink (0 dark .. 1 lit).
+const MODE_GLOW := 6.0
 
 var data := PackedFloat32Array()
 var count := 0

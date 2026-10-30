@@ -1,0 +1,23 @@
+// Ch15 B15 "The ship" (C, 1 min). H16: the next dawn; a Hollowmere ship (a lashed double hull, tide-wheels,
+// two windmills) readied to carry the party south as far as the shallows allow and wait at the Rim (ADR
+// 0016: a chosen voyage after grief among allies). Liss aboard first with the cracked lamp in a padded box.
+// Kerrid last up the gangway, as on a stair. One line from the dock-master; "it" stays ambiguous.
+title: ch15_the_ship
+location: ch17/hollowmere
+---
+@letterbox on
+@camera H16
+@mark liss ship_deck walk
+@wait 2.0
+@anim aldous_varrow look_at liss
+Aldous_varrow as "Dock-master" [neutral]: Bring it back. #line:ch15_ship_001 #tn:"Deliberately ambiguous: the lamp, the ship, or herself."
+@mark toma ship_deck walk
+@mark asha ship_deck walk
+@mark rhen ship_deck walk
+@wait 2.0
+@mark kerrid ship_deck walk
+@wait 3.0
+<<set $ch15_complete = true>>
+@fade out 2.0
+@letterbox off
+===

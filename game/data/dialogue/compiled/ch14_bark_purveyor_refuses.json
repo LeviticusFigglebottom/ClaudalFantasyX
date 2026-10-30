@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch14_bark_purveyor_refuses",
+ "source": "game/data/dialogue/ch14/ch14_bark_purveyor_refuses.dlg",
+ "start": "ch14_bark_purveyor_refuses",
+ "nodes": {
+  "ch14_bark_purveyor_refuses": {
+   "headers": {"location": "ch13/ansedra"},
+   "ops": [
+    {"op": "if_not", "cond": ["flag", "ch14_declared_heretics"], "to": 3, "src": 7},
+    {"op": "line", "id": "ch14_heresy_shop_001", "key": "DLG_CH14_HERESY_SHOP_001", "speaker": "vendor", "emotion": "afraid", "voice": "", "src": 8, "name_key": "DLG_NAME_VENDOR_ORDER_PURVEYOR", "tags": ["long"]},
+    {"op": "goto", "to": 3, "src": 7}
+   ]
+  }
+ }
+}

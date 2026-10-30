@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch15_bark_wright_pump",
+ "source": "game/data/dialogue/ch15/ch15_bark_wright_pump.dlg",
+ "start": "ch15_bark_wright_pump",
+ "nodes": {
+  "ch15_bark_wright_pump": {
+   "headers": {"location": "ch17/hollowmere"},
+   "ops": [
+    {"op": "line", "id": "ch15_bark_pump_001", "key": "DLG_CH15_BARK_PUMP_001", "speaker": "wright", "emotion": "soft_smile", "voice": "", "src": 6},
+    {"op": "cue", "cue": "anim", "args": ["asha", "look_at", "pump_glow"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 8}
+   ]
+  }
+ }
+}

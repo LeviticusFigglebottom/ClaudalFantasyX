@@ -74,6 +74,11 @@ func is_record(id: StringName) -> bool:
 	return bool((entry(id).get("unlock", {}) as Dictionary).get(UNLOCK_RECORD, false))
 
 
+## The records.json id a record entry opens in the document reader (its "reader" field; &"" when it has none).
+func reader_of(id: StringName) -> StringName:
+	return StringName(str(entry(id).get("reader", "")))
+
+
 func is_unlocked(id: StringName) -> bool:
 	var e := entry(id)
 	if e.is_empty():

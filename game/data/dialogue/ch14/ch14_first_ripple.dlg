@@ -1,0 +1,65 @@
+// Ch14 B07 "The first ripple" (C → E, 2.5 min) and B08 "Merel at the gate" (C, 1.5 min). act2_ch14.md §2.
+// L01: the bridal barge slides off the bottom step; Merel in the stern with the pole; before she pushes off
+// she lays her bridal cloth over Tobin without a word. Kerrid is LAST ONTO THE DECK. L02: the hero image:
+// the barge moves on still water, a wake opens, the domes' reflections break apart: the first ripple in four
+// hundred years. L03: the player poles three strokes with her (held input). L04: every bell in Ansedra (the
+// stirring bells). L05: the city comes to its windows and watches the water move.
+// B08: L06-L09: Rhen takes the pole; Merel stays to drop the water-gate; her father's Stillguard take her,
+// still in wedding red, Tobin's blood on her sleeve. The camera holds from the barge and nobody looks away.
+// Rhen keeps poling. He has to.
+title: ch14_first_ripple
+location: ch13/ansedra_lacquer_court
+---
+@letterbox on
+@camera L01
+@music lagoon_escape fade=0.5
+@anim merel lay_cloth tobin
+@wait 2.5
+@mark kerrid barge_deck walk
+@wait 1.5
+@camera L02
+@anim merel pole_push
+@sfx pole_stroke
+@wait 6.0
+@camera L03
+<<event hold_input pole_stroke>>
+@anim merel pole_push
+@sfx pole_stroke
+@wait 2.0
+@anim merel pole_push
+@sfx pole_stroke
+@wait 2.0
+@anim merel pole_push
+@sfx pole_stroke
+@wait 2.0
+<<event hold_input_end>>
+@camera L04
+@sfx stirring_bells
+@wait 2.5
+@camera L05
+@wait 6.0
+<<jump ch14_merel_at_the_gate>>
+===
+title: ch14_merel_at_the_gate
+---
+@camera L06
+@anim rhen take_pole merel
+@wait 1.5
+@camera L07
+@mark merel gate_footing walk
+Rhen [afraid]: Merel. Get on. #line:ch14_gate_001
+Merel [determined]: If the gate stays up, they're on you before the mouth. I can drop it. You can't, from there. #line:ch14_gate_002
+Liss [grief]: Merel. #line:ch14_gate_003
+Merel [sad]: I know. I know. Go. #line:ch14_gate_004
+@camera L08
+@anim merel pull_pin
+@sfx water_gate_drop
+@wait 2.5
+@camera L09
+@anim stillguard seize merel
+@wait 6.0
+@music silence fade=2.0
+<<set $ch14_merel_taken = true>>
+@letterbox off
+<<event start_battle ch14_malcor_venn>>
+===

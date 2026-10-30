@@ -1,0 +1,8 @@
+// Ch11 B02 optional: the fig end. A strangler fig has split a gallery and holds a Lit Age lamp in its roots
+// like a nest. Pell won't go near it.
+title: ch11_fig_end
+location: ch11/sunken_vey
+---
+Pell [worried]: Held. In the roots. Like the fen. #line:ch11_fig_001
+<<set $ch11_found_fig_cache = true>>
+===

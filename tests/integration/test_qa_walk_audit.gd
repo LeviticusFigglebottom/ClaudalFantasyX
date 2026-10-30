@@ -5,8 +5,9 @@ extends TestCase
 ## Per route it prints a report: arrival, the leader's ramp to full speed and its stop, vertical jumps and airborne
 ## frames on the stairs, each hero's foot slide (travel speed past what the gait's feet cover), the followers' spacing,
 ## catch-ups and frames their torso stands inside level geometry, and frames the camera sits inside geometry or a wall
-## hides the leader. It fails on what a player would call broken: a route not walked to its end (stuck), a follower's
-## torso inside geometry or the leader hidden for longer than LIMIT_FRAMES in a row, the camera inside geometry.
+## hides the leader. It fails on what a player would call broken: a route not walked to its end (stuck); for longer
+## than LIMIT_FRAMES in a row, a follower's torso inside geometry, a follower inside the body ahead, a follower sunk
+## in the floor, the leader hidden or out of frame; the camera inside geometry at all.
 
 const ROUTES := "res://tests/integration/qa_walk_routes.json"
 const DT := 1.0 / 60.0
@@ -22,6 +23,10 @@ const TORSO_RADIUS_M := 0.15
 const TORSO_HEIGHT_M := 0.9
 const TORSO_CENTRE_M := 1.0
 const CAMERA_PROBE_M := 0.08
+const SUNK_M := 0.3
+## Bodies nearer than this (flat) stand inside each other.
+const OVERLAP_M := 0.4
+const SUNK_RAY_M := 1.6
 const STEADY_RUN_FRACTION := 0.9
 
 var _state_was: GameStateData
@@ -38,8 +43,12 @@ func test_the_party_walks_act1_stairs_and_narrow_paths() -> void:
 	for id: String in routes.keys():
 		var report := walk(routes[id] as Dictionary, data)
 		print(format(id, report))
+		var route_row := routes[id] as Dictionary
 		for problem: String in report.get("failures", []):
-			fail("%s: %s" % [id, problem])
+			if bool(route_row.get("report_only", false)):  # ADR 0205: Act II's greybox routes report until its kits land
+				print("  ACT II REPORT %s: %s" % [id, problem])
+			else:
+				fail("%s: %s" % [id, problem])
 		if _zone != null:
 			_zone.free()
 			_zone = null
@@ -50,7 +59,9 @@ func test_the_party_walks_act1_stairs_and_narrow_paths() -> void:
 func walk(route: Dictionary, data: Dictionary) -> Dictionary:
 	Game.new_game()
 	Game.state.party_ids.assign(
-		(data.get("party", []) as Array).map(func(s: Variant) -> StringName: return StringName(str(s)))
+		(route.get("party", data.get("party", [])) as Array).map(
+			func(s: Variant) -> StringName: return StringName(str(s))
+		)
 	)
 	Game.state.reserve_ids.assign(
 		(data.get("reserve", []) as Array).map(func(s: Variant) -> StringName: return StringName(str(s)))
@@ -75,6 +86,13 @@ func walk(route: Dictionary, data: Dictionary) -> Dictionary:
 	var stairs := player.get_node_or_null(NodePath(String(HeroStairs.NAME))) as HeroStairs
 	if stairs != null:  # the zone is ready now: in play its deferred build lands a frame later
 		stairs.build_from_layout()
+	if bool(route.get("unstage", false)):  # the followers walk where the zone stages its heroes standing
+		for st in HeroFieldParty.find_scripted(_zone, &"CutsceneStage"):
+			var actors := (st as Node).get_node_or_null(^"Actors")
+			for a in actors.get_children() if actors != null else []:
+				if StringName(a.name) in Game.state.party_ids:
+					(a as Node3D).visible = false
+		party.rescan()
 	for block: Variant in route.get("hide_blocks", []):  # story gates the route assumes open
 		_zone.call(&"hide_block", str(block))
 	var points := _route_points(route, _zone, player)
@@ -99,10 +117,17 @@ func walk(route: Dictionary, data: Dictionary) -> Dictionary:
 	var airborne := 0
 	var catchups := 0
 	var clip_run := {}
+	var sunk_run := {}
+	var overlap_run := {}
+	var overlap_max := {}
+	var sunk_max := {}
 	var clip_max := {}
 	var hidden_run := 0
 	var hidden_max := 0
 	var camera_inside := 0
+	var out_run := 0
+	var out_max := 0
+	var out_shots := {}
 	var gaps := {}
 	var slide := {}
 	var top_speed := {}
@@ -168,7 +193,17 @@ func walk(route: Dictionary, data: Dictionary) -> Dictionary:
 			var id_f := StringName(f.get_meta(&"hero_id", ""))
 			var g := gaps.get(id_f, [INF, 0.0]) as Array
 			gaps[id_f] = [minf(float(g[0]), gap), maxf(float(g[1]), gap)]
+			if gap < OVERLAP_M:
+				overlap_run[id_f] = int(overlap_run.get(id_f, 0)) + 1
+				overlap_max[id_f] = maxi(int(overlap_max.get(id_f, 0)), int(overlap_run[id_f]))
+			else:
+				overlap_run[id_f] = 0
 			ahead = f
+			if _sunk(space, f.global_position, player):
+				sunk_run[id_f] = int(sunk_run.get(id_f, 0)) + 1
+				sunk_max[id_f] = maxi(int(sunk_max.get(id_f, 0)), int(sunk_run[id_f]))
+			else:
+				sunk_run[id_f] = 0
 			if _torso_inside(space, f.global_position, player):
 				clip_run[id_f] = int(clip_run.get(id_f, 0)) + 1
 				clip_max[id_f] = maxi(int(clip_max.get(id_f, 0)), int(clip_run[id_f]))
@@ -181,6 +216,12 @@ func walk(route: Dictionary, data: Dictionary) -> Dictionary:
 			var hit := space.intersect_ray(_ray(cam, player.global_position + Vector3.UP * CHEST_M, player))
 			hidden_run = hidden_run + 1 if not hit.is_empty() else 0
 			hidden_max = maxi(hidden_max, hidden_run)
+			if director.camera.is_position_in_frustum(player.global_position + Vector3.UP * CHEST_M):
+				out_run = 0
+			else:
+				out_run += 1
+				out_shots[director.active_shot_id()] = true
+			out_max = maxi(out_max, out_run)
 	if leg < points.size() and (report["failures"] as Array).is_empty():
 		(report["failures"] as Array).append(
 			"did not reach the end in %d frames (waypoint %d of %d)" % [frame, leg, points.size()]
@@ -203,8 +244,22 @@ func walk(route: Dictionary, data: Dictionary) -> Dictionary:
 	report["top_speed"] = top_speed
 	report["hidden_why"] = hidden_why
 	report["clip_max"] = clip_max
+	report["sunk_max"] = sunk_max
+	report["overlap_max"] = overlap_max
 	report["hidden_max"] = hidden_max
 	report["camera_inside"] = camera_inside
+	report["out_max"] = out_max
+	report["out_shots"] = out_shots.keys()
+	for id_f: StringName in overlap_max.keys():
+		if int(overlap_max[id_f]) > LIMIT_FRAMES:
+			(report["failures"] as Array).append(
+				"%s stands inside the body ahead for %d frames in a row" % [id_f, overlap_max[id_f]]
+			)
+	for id_f: StringName in sunk_max.keys():
+		if int(sunk_max[id_f]) > LIMIT_FRAMES:
+			(report["failures"] as Array).append(
+				"%s stands sunk in the floor for %d frames in a row" % [id_f, sunk_max[id_f]]
+			)
 	for id_f: StringName in clip_max.keys():
 		if int(clip_max[id_f]) > LIMIT_FRAMES:
 			(report["failures"] as Array).append(
@@ -213,6 +268,10 @@ func walk(route: Dictionary, data: Dictionary) -> Dictionary:
 	if hidden_max > LIMIT_FRAMES:
 		(report["failures"] as Array).append(
 			"a wall hides the leader from the camera for %d frames in a row" % hidden_max
+		)
+	if out_max > LIMIT_FRAMES:
+		(report["failures"] as Array).append(
+			"the leader is out of the camera's frame for %d frames in a row (shots %s)" % [out_max, report["out_shots"]]
 		)
 	if camera_inside > 0:
 		(report["failures"] as Array).append("the camera is inside geometry for %d frames" % camera_inside)
@@ -237,15 +296,20 @@ static func format(id: String, r: Dictionary) -> String:
 	]
 	var gaps := r.get("gaps", {}) as Dictionary
 	for id_f: Variant in gaps.keys():
-		lines.append(
-			(
-				"    %s: gap %.2f-%.2f m, inside geometry max %d frames"
-				% [
-					id_f,
-					float(gaps[id_f][0]),
-					float(gaps[id_f][1]),
-					int((r.get("clip_max", {}) as Dictionary).get(id_f, 0))
-				]
+		(
+			lines
+			. append(
+				(
+					"    %s: gap %.2f-%.2f m (inside the one ahead max %d frames), inside geometry max %d frames, sunk max %d frames"
+					% [
+						id_f,
+						float(gaps[id_f][0]),
+						float(gaps[id_f][1]),
+						int((r.get("overlap_max", {}) as Dictionary).get(id_f, 0)),
+						int((r.get("clip_max", {}) as Dictionary).get(id_f, 0)),
+						int((r.get("sunk_max", {}) as Dictionary).get(id_f, 0))
+					]
+				)
 			)
 		)
 	var slide := r.get("slide", {}) as Dictionary
@@ -263,8 +327,8 @@ static func format(id: String, r: Dictionary) -> String:
 		lines.append("    %s hidden (%s)" % [h, why[h]])
 	lines.append(
 		(
-			"    camera: leader hidden max %d frames, inside geometry %d frames"
-			% [int(r.get("hidden_max", 0)), int(r.get("camera_inside", 0))]
+			"    camera: leader out of frame max %d frames, hidden max %d frames, inside geometry %d frames"
+			% [int(r.get("out_max", 0)), int(r.get("hidden_max", 0)), int(r.get("camera_inside", 0))]
 		)
 	)
 	return "\n".join(lines)
@@ -349,6 +413,12 @@ static func _route_points(route: Dictionary, zone: Node3D, player: FieldControll
 		var b := head if key == "stairs_up" else foot
 		var along := Vector3(b.x - a.x, 0.0, b.z - a.z).normalized()
 		out.append_array([a - along * 0.6, a, b, b + along * float(route.get("beyond_m", 2.0))] as Array[Vector3])
+	for id: Variant in route.get("ramps", []):  # ramps by exact id, in order
+		var row := _collision_row(zone, "ramps", str(id))
+		if row.is_empty():
+			return []
+		out.append(_v3(row["from"]))
+		out.append(_v3(row["to"]))
 	for chain: Variant in route.get("ramp_chain", []):
 		for row: Dictionary in _collision_rows(zone, "ramps"):
 			if str(row.get("id", "")).begins_with(str(chain) + "_"):
@@ -388,6 +458,19 @@ static func _torso_inside(space: PhysicsDirectSpaceState3D, feet: Vector3, playe
 	q.exclude = [player.get_rid()]
 	q.collide_with_areas = false
 	return not space.intersect_shape(q, 1).is_empty()
+
+
+## True when feet at `feet` stand more than SUNK_M below the floor right over them (a ray down from SUNK_RAY_M above,
+## the flight profile where a stair covers it): the PC's GPU QA row 50, Toma sunk to his chest at Ashcrown's crown.
+static func _sunk(space: PhysicsDirectSpaceState3D, feet: Vector3, player: FieldController) -> bool:
+	var profile := HeroStairs.height_at(player, feet)
+	if not is_nan(profile):
+		return feet.y < profile - SUNK_M
+	var q := PhysicsRayQueryParameters3D.create(feet + Vector3.UP * SUNK_RAY_M, feet + Vector3.DOWN * 0.1)
+	q.exclude = [player.get_rid()]
+	q.collide_with_areas = false
+	var hit := space.intersect_ray(q)
+	return not hit.is_empty() and feet.y < (hit["position"] as Vector3).y - SUNK_M
 
 
 static func _point_inside(space: PhysicsDirectSpaceState3D, at: Vector3, player: FieldController) -> bool:
