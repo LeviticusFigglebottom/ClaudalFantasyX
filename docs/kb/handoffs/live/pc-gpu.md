@@ -8,6 +8,20 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 > `session_01Bg3iP7cPGyjbX4CyniBahc`; the integration branch is **`claude/new-session-mj8c3c`**.
 > **This copy, on `gpu/act1-qa-3`, is the newest.**
 
+## PASS 5 @ 2026-10-30 (big20, integration @ 7dc3ab41)
+
+- **GPU-QA-DONE pass5 @ gpu/act1-qa-5.** act1_gpu_qa.md has the "Pass 5" summary and the row updates; stills are in
+  docs/kb/qa/gpu/act1/pass5/.
+  - **Fixed (12):** 23, 25, 43, 44, 45, 49, 50, 52, 53, 57, 60 and **67**.
+    - The hitch regression is gone on big20. Every walk entry is under 1 s hidden.
+    - Fresh Brine Shoals ran 5/5 with no hang, 321–336 ms hidden. Corrow 451/453 ms, Tamsule 450, Coilspire 542.
+    - claude/ui @ 329e7bce wasn't needed, so not measured.
+  - **Partly fixed (10):** 24, 37, 38, 39, 46, 47, 51, 54, 55, 58.
+  - **Still open:** 17 (my fix 12cf79cb, not merged), 21, 34, 56, 61, 62, 63, 64, 66.
+  - **Regressed:** 59 (the gull shot looks down on ring decals).
+- The worktree is C:/Users/Aaron/hymn_qa4 (branch gpu/act1-qa-5). The C:/Users/Aaron/hymn_ui worktree (329e7bce) was
+  never needed; I'll remove it.
+
 ## PASS 4 @ 2026-10-30 (big19, integration @ 2f544938)
 
 - **GPU-QA-DONE pass4 @ gpu/act1-qa-4.** act1_gpu_qa.md has the "Pass 4" summary and the row updates; stills are in
