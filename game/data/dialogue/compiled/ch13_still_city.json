@@ -10,7 +10,7 @@
     {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 12},
     {"op": "cue", "cue": "camera", "args": ["A01"], "kwargs": {}, "src": 13},
     {"op": "cue", "cue": "music", "args": ["ansedra"], "kwargs": {"fade": 2.0}, "src": 14},
-    {"op": "cue", "cue": "wait", "args": [5.0], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "wait", "args": [8.0], "kwargs": {}, "src": 15},
     {"op": "cue", "cue": "camera", "args": ["A02"], "kwargs": {}, "src": 16},
     {"op": "cue", "cue": "sfx", "args": ["barge_pole"], "kwargs": {}, "src": 17},
     {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 18},

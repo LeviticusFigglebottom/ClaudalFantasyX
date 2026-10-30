@@ -25,7 +25,7 @@
     {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 28},
     {"op": "cue", "cue": "camera", "args": ["S05"], "kwargs": {}, "src": 29},
     {"op": "cue", "cue": "vfx", "args": ["glimmer_bound"], "kwargs": {"at": "ethren", "count": 1}, "src": 30},
-    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 31},
+    {"op": "cue", "cue": "wait", "args": [6.0], "kwargs": {}, "src": 31},
     {"op": "cue", "cue": "camera", "args": ["S06"], "kwargs": {}, "src": 32},
     {"op": "cue", "cue": "mark", "args": ["ysolde", "before_ethren", "walk"], "kwargs": {}, "src": 33},
     {"op": "cue", "cue": "anim", "args": ["ysolde", "look_at", "ethren_ring"], "kwargs": {}, "src": 34},

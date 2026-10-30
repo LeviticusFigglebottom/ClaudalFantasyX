@@ -11,7 +11,7 @@ location: ch11/sunken_vey
 @camera V00
 @music sunken_vey fade=2.0
 @vfx glimmer_bound at=cornice_conduits count=12
-@wait 5.0
+@wait 9.0
 @camera V01
 Liss [smile]: Four hundred years and she's still lit. Nobody's touched her. Look at her. #line:ch11_vey_001
 Pell [neutral]: Many in there. #line:ch11_vey_002 #tn:"He means the bound dead inside the lights."

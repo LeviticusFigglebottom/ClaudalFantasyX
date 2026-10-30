@@ -12,7 +12,7 @@ location: ch13/ansedra
 @letterbox on
 @camera A01
 @music ansedra fade=2.0
-@wait 5.0
+@wait 8.0
 @camera A02
 @sfx barge_pole
 @wait 2.0
