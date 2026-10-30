@@ -421,3 +421,11 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
     9, dialogue_box 26 (all 0 failed); portraits of 20 villagers, Pell and Sefir re-rendered and viewed. Every row
     self-rendered and viewed at close-up and field distance.
 - **Next (ADR 0205):** Act II, Kerrid's reveal rig (act2_plan's longest lead for this track).
+
+## 2026-10-30, Act II: M4-A2P-054 Kerrid's reveal (ADR 0205)
+- `KerridBurnGlow` (game/characters/heroes/kerrid_burn_glow.gd, data game/data/characters/kerrid_glow.json) lights
+  the Burns shell per instance (glow 0..1, lift held->gold for H09) and lists the 14 VFX sockets for M4-A2P-049.
+  Confession close-ups `kerrid_confession_{grief,guilty,burns}` were self-rendered and viewed: the mouth reads through
+  the beard, and the burns glow at the Ch15 peak. Unit test 3/3; lint and data OK. Task -> review (cinematics).
+- MERGE-READY @ 09a7928c
+- **Next:** M4-A2P-050 (Tobin and Merel), then M4-A2P-051 (Malcor Venn, the Abiding guard).
