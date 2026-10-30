@@ -22,6 +22,13 @@ The only Vowbound with nothing built. Split M3-CRE-649: write `docs/kb/art/creat
 
 - 2026-10-30 (creatures-b): built. The art sheet, `assets_src/creatures/kesh/` (build + materials), job `creature_kesh` (byte-identical, verified twice), `assets/creatures/kesh/`, `game/creatures/kesh/kesh_battle.tscn`, the creatures.json row (`vowbound_pending` on combat's M4-A2P-024/025), shot `creature_kesh` (pending_baseline), the portrait, PROVENANCE rows, tests `test_kesh_*` in tests/unit/test_creature_vowbound_act2.gd. The clip map for combat is in both sheets. Open items: the art sheet's "As built".
 - 2026-10-30 (creatures-b, second pass on the coordinator's notes): water that flows (streaming bands, runnels, white breaking), a garment (a fitted bodice in its own satin `robe` slot with a Choir-stone cord at the neckline, and a stole), a face at the Act I bar, 46 carved mouths on stone plaques in flowing bands, and an idle with a hand at her heart. 19,366 triangles (within the ~20k allowed). Clip names, contacts, the clip map, height, grounding and framing kept. See the art sheet's "second pass".
+- 2026-10-30 (creatures-b, third pass on the Lead's notes): the head is a woman's head of water, not a helmet: long
+  hair as combed fans of locks from a parting a little to her left, a soft curved hairline, separate layered locks
+  from above the ears (two forward over her right shoulder, the rest down her back), loose locks softening the crown,
+  ears hinted, a larger lit face on a finer grid. A value structure: pale water skin, a deep sea-dark silk bodice and
+  robe, a slate stole, plaques of the Choir's warm pale stone. The plaques are thrown down the drape (39, bare and
+  crowded heights, varied sizes, some sunk and tipped into a fold's valley). 19,794 triangles (within ~20k). Clips,
+  contacts, anchors, height, grounding and framing kept. See the art sheet's "third pass".
 - Reviewer: rendering (the water read in a daylight arena and the Choir; the heart's light; the face up close).
 
 ## Review log

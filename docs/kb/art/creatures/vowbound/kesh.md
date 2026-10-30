@@ -12,14 +12,16 @@ pipeline (nhoa.md, M4-CRB-006). The design target is
 element order.
 
 **The idea:** a woman made of standing seawater, from the hips up, rising out of a column of water, dressed:
-- a fitted bodice of the robe's deeper water to her collarbones, bound at the neckline with a cord of Choir-stone
-  beads;
-- a Cantor's stole over her shoulders;
-- below the girdle, a long robe of four panels set with carved stone mouths in flowing bands, each on its own worn
-  plaque, open as the Choir's singers' are, with a little of her light inside.
+- a fitted bodice of deep sea-dark silk to her collarbones, bound at the neckline with a cord of Choir-stone beads;
+- a Cantor's stole over her shoulders, a slate between her skin and the robe;
+- below the girdle, a long robe of four panels of the same silk, set with carved stone mouths thrown down the drape,
+  each on its own worn plaque of the Choir's warm pale stone, open as the Choir's singers' are, with a little of her
+  light inside.
 
-Her head is bare. Her hair is a dark fall of water from the hairline back over the crown and down her back, breaking
-white at the ends. Her left palm rests over her heart, whose light shows under her hand. A Lamplighter's lamp-key
+At battle distance she reads as **a pale woman of water, in a dark robe set with pale stone mouths** (the third
+pass's value structure). Her head is bare. Her hair is long water, parted a little to her left and falling in locks
+down both sides of her face, two locks forward over her right shoulder and the rest down her back, breaking white at
+the ends. Her left palm rests over her heart, whose light shows under her hand. A Lamplighter's lamp-key
 hangs at her hip from a girdle of Choir stone: the keepsake, the one object on her, never lit.
 
 She reads as **patient, enormous and very tired**: a person, the oldest in the game, never a goddess or a monster.
@@ -52,13 +54,13 @@ is stillness and a cold haze (VFX). Nothing on her freezes, and there are no cry
 | Height | **4.2 m** in battle (ADR 0204 §7): the crown of her head at 4.1 m, the hips (the girdle) at 1.88 m. In the bind memory she rises colossal from the Choir's sunken bowl, matched to the ten 24 m singers: a cinematic scale of the same rig (cinematics and rendering scale the node, not the model) |
 | The one shape | **A dressed woman from the hips up on a column of water**: a long narrow bell (the robe and column) under a slim, slightly leaning torso, one hand at her heart, the other low and loose, the head tilted. At the battle camera's 13 m she reads as one tall figure: luminous water at the face, neck and arms, a dark gown below set with a pale stone pattern |
 | The column | 1.4 m across where it meets the water (y 0.004, a foam lip), narrowing to 0.74 m at the girdle, with slow running folds round it. It is her lower body: there are no legs |
-| Head | bare, 0.53 m crown to chin. A woman's face, calm and grieving: a brow ridge whose inner ends lift a little, the eyes closed under heavy lids (the lid line and crease cut in), a straight nose with a bridge, wings and tip, high cheekbones, full lips closed with the corners a little down, a rounded chin. The head's grid crowds its rows and columns onto the face for this |
-| Hair | dark water: one sheet of side-by-side strands from the hairline (framing the face over the temples and ears), back over the crown and down her back to the girdle, ragged at the ends where it breaks white, with three loose strands from behind the crown. No light in it, so her face is the brightest part of her head |
-| The bodice | fitted, of the robe's deepest water (its own satin `robe` slot, so it doesn't mirror the sky as her glassy skin does), from under the girdle to her collarbones, cut down to the armholes at the sides, softly gathered under the bust. A cord of pale Choir-stone beads binds the neckline and armholes: the line between garment and skin |
-| The stole | a Cantor's stole: two strips over her shoulders, from under the hair at her back down her front to the girdle, darker still, with pale edges and white-breaking ends, a small carved mouth on a plaque at each end |
+| Head | bare, 0.55 m crown to chin (a little larger than pass 2, so the face holds more of her). A woman's face, calm and grieving, pale and lit (the brightest thing on her head): a brow ridge whose inner ends lift a little, the eyes closed under heavy lids (the lid line and crease cut in), a straight nose with a bridge, wings and tip, high cheekbones, full lips closed with the corners a little down, a rounded chin. The ears are a soft swelling under the hair. The head's grid crowds its rows and columns onto the face for this |
+| Hair | long water, parted a little to her left (a pale parting line), with no shell and no cap's edge. Two combed fans of locks fall from the parting down both sides of her face (ridged lock by lock, grooved between, with a soft curved hairline, the hair standing off the crown and fuller down the sides). From above the ears they part into separate, layered locks: two fall forward over her right shoulder, the rest go down her back to about the girdle, tapering to white-breaking ends. Five loose locks lie over the crown and the fall, softening its shape, and two wisps come free at the temples. A teal darker than her face. No light in it, so her face is the brightest part of her head |
+| The bodice | fitted, a deep sea-dark silk (`abyss_navy` toward `indigo_dye`, its own satin `robe` slot, so it doesn't mirror the sky as her glassy skin does), from under the girdle to her collarbones, cut down to the armholes at the sides, softly gathered under the bust. A cord of pale Choir-stone beads binds the neckline and armholes: the line between garment and skin |
+| The stole | a Cantor's stole: two strips over her shoulders, from under the hair at her back down her front to the girdle, a slate silk (`storm_slate` toward `cold_blue_stone`, the third value between skin and robe) with a thin pale stone-coloured hem and white-breaking ends, and a small carved mouth on a plaque at each end |
 | Hands | the left palm flat over her heart, the fingers soft; the right low and loose, a little forward |
-| The robe | four panels of the same deep water hanging from the girdle (front, back and the two sides), flaring toward a hem 0.17–0.22 m over the water that breaks white, with slits between them where the column shows |
-| The mouths | 46 (44 on the panels in flowing vertical bands, two on the stole). Each is a worn, irregular plaque of Choir stone 0.22–0.32 m tall (larger toward the hem), tilted with the band's lean. A singer's open mouth is carved in it: some round "o", some wider "ah", the lower lip fuller, the upper with a soft dip, the corners pinched, a little crooked, the lips pale and worn, the opening dark and lit faintly from within. They follow two bands on the front and sides and three on the back, each meandering down the drape |
+| The robe | four panels of the same silk hanging from the girdle (front, back and the two sides), with soft folds of their own count and lean per panel (deeper toward the hem), flaring toward a hem 0.17–0.22 m over the water that breaks white, with slits between them where the column shows as deep water |
+| The mouths | 39 (37 on the panels, two on the stole), not in rows. Each is a worn plaque of the Choir's stone, its outline rounded and irregular (some with a broken corner), 0.16–0.36 m tall (larger toward the hem). A singer's open mouth is carved in it: some a taller "o", some a wider "ah", the lower lip fuller and standing proud, the upper with a soft dip, the corners pinched, a little crooked, the lips the palest stone, the opening dark and lit faintly from within. They are thrown down meandering streams on each panel (three on the front and back, two on each side), tilted with the stream's lean, the density swelling and thinning down the drape (some heights crowded, some bare). Most of those that land in a fold's valley sink into it, tipped, so the cloth hides one edge |
 | The girdle | a strand of 24 worn Choir-stone beads at the hips, where the column becomes her and the bodice meets the robe |
 | The lamp-key | 0.7 m including its hanger, on her left hip (the camera's side; her +x faces the party's camera from the Vowbound slot), in the robe's front-left slit: a ring and cord from the girdle, a round bow with a flame cut through it, a collar, the shaft and a stepped bit with two wards |
 | Facing | `stand_in.yaw_deg` −90, toward the foes. Her idle turns her shoulders 14° and her head 22° more (neck 7°, head 15°) toward the camera and tilts it 11°, so her face is three-quarters to it |
@@ -79,9 +81,11 @@ holds. So the water is **geometry skinned to her bones**, as Nhoa's motes are, a
   They are paler than the body and lit a little more (mask 0.16), and they break white at their tails.
 - **White breaking.** Foam shows where water thins or ends: at the fingertips, the hair's ends, the robe's hem, the
   stole's ends and the column's foot.
-- **Depth.** She is deeper toward the column's foot (`deep_teal_shadow`) and paler at the thin edges.
-- **Her own light.** She holds a faint light everywhere (mask 0.06 × 1.6; 0.1 on the face), and the heart's light
-  shows through the bodice as a soft pool under her hand (the `inner` slot, up to 0.6 × 1.6).
+- **Depth.** Her skin is pale, clear water (the rim's deep toward `salt_glass`). The column under the robe is deep
+  (`deep_teal_shadow`), so it reads as standing water in the slits, not a pale stripe. She is paler at the thin edges.
+- **Her own light.** She holds a faint light everywhere (mask 0.09 × 1.6; 0.2 on the face; the column under the robe
+  about a third of that), and the heart's light shows through the bodice as a soft pool under her hand (the `inner`
+  slot, up to 0.6 × 1.6).
 - **Clips.** Running water is shown by motion: the hair's and the robe's chains sway, lagging down them. The splash
   where the column meets the water is battle VFX.
 
@@ -89,11 +93,11 @@ holds. So the water is **geometry skinned to her bones**, as Nhoa's motes are, a
 
 | Slot | Albedo | Light |
 |---|---|---|
-| `water` (her skin: the column, arms, hands, neck, head; the runnels) | the `pale_rim` water's deep `#5E8C90` over `deep_teal_shadow` `#0E4A55` (deeper toward the foot), streaming bands and streaks toward `turquoise_shallow` `#3FD0C9`, paler at the thin edges, `foam_white` `#EEF6F4` at the foot and the fingertips | `glimmer_bound` `#4FB3B0` at 1.6, mask 0.06 (the face 0.1, the runnels 0.16) |
-| `robe` (the bodice, the stole, the four panels): satin water, matte beside her skin | the same water leaning 0.55–0.7 to `deep_teal_shadow` and 0.25–0.3 to `abyss_navy` `#061A2B`; the gathers' crests and the stole's edges paler (`#5E8C90`, `salt_glass` `#BFE6E0`); `foam_white` at the hem | `glimmer_bound` at 1.6, mask 0.04 |
-| `inner` (the heart's pool on the bodice: the triangles whose pool passes 0.3) | the bodice's water | `glimmer_bound` at 1.6, mask up to 0.6 at the heart: the "Kesh pale cyan" of `lut_ch16_choir` |
-| `hair` | `deep_teal_shadow` to `#5E8C90` strand by strand, `turquoise_shallow` down the fall, `foam_white` at the ends | none |
-| `mouths` (the plaques and their mouths, the girdle, the neckline's cord) | `cold_blue_stone` `#5E6E80` darkened toward `deep_teal_shadow`, worn toward `salt_glass` on the lips and on the cord's beads; `abyss_navy` in the opening | `glimmer_bound` at 1.0: mask 0.4 at each opening's floor, 0.24 in the throat, 0.1 on the inner lip; 0 on the stone |
+| `water` (her skin: the arms, hands, neck, face; the runnels; the column) | the `pale_rim` water's deep `#5E8C90` toward `salt_glass` `#BFE6E0` (her lightest value), streaming bands toward `salt_glass` and a little `turquoise_shallow` `#3FD0C9`, paler at the thin edges, the face palest; the column under the robe toward `deep_teal_shadow` `#0E4A55`; `foam_white` `#EEF6F4` at the foot and the fingertips | `glimmer_bound` `#4FB3B0` at 1.6, mask 0.09 (the face 0.2, the runnels 0.16, the column about 0.03) |
+| `robe` (the bodice, the stole, the four panels): satin silk, matte beside her skin, a soft sheen at the edges | the bodice and panels a deep sea-dark silk, `abyss_navy` `#061A2B` toward `indigo_dye` `#2B3A6B`, the folds' and gathers' crests toward indigo and `cold_blue_stone`; the stole a slate, `storm_slate` `#3E4A57` toward `cold_blue_stone` `#5E6E80`, with a thin pale stone hem; `foam_white` at the hem and the stole's ends | `glimmer_bound` at 1.6, mask 0.015 |
+| `inner` (the heart's pool on the bodice: the triangles whose pool passes 0.3) | the bodice's silk | `glimmer_bound` at 1.6, mask up to 0.6 at the heart: the "Kesh pale cyan" of `lut_ch16_choir` |
+| `hair` (the locks and the scalp under them; less glossy than her skin) | `deep_teal_shadow` to `#5E8C90` lock by lock, darker in the grooves, a few strands toward `salt_glass`, `turquoise_shallow` down the fall, `foam_white` at the ends | none |
+| `mouths` (the plaques and their mouths, the girdle, the neckline's cord): matte | the Choir's stone, the singers' weathered Lit Age white ceramic (pale_rim.md): `lit_ceramic` `#DCE3E0` toward `coral_stone_weathered` `#B9AE98` and `bone` `#E6DAC0`, a little `storm_slate` in the weathering; the lips palest (`lit_ceramic`); `abyss_navy` in the opening | `glimmer_bound` at 1.0: mask 0.4 at each opening's floor, 0.24 in the throat, 0.1 on the inner lip; 0 on the stone |
 | `key` | `brass` `#B08D57` going to `bronze_patina` `#5F8A78` in its hollows | **none** (energy 0): it is an object |
 
 Her light is `glimmer_bound` because she is bound, as an ally. The Choir art sheet calls her pale cyan in the bind
@@ -214,21 +218,26 @@ are already in creatures.json:
 
 ## Budget
 
-19,366 triangles, 10,700 vertices, 39 bones, 6 slots, GLB 3.2 MB (26 clips). That is over the ~18k guide by 1.4k,
-within the ~20k the second pass allowed. The extra pays for three things:
+19,794 triangles, 11,581 vertices, 39 bones, 6 slots (26 clips). That is over the ~18k guide by 1.8k, within the
+~20k the second and third passes allowed. The extra pays for what reads:
 - the garment (bodice, cord and stole, 1,840);
 - the runnels (1,060);
-- a face crowded with rows and columns (2,400).
+- the head and its face (2,992);
+- the hair as locks, not a shell (2,876).
 
-The mouths came down from 88 to 46, on plaques. The parts:
+The third pass spent 1,254 more on the hair and 592 on a finer head grid, and paid for most of it:
+- the column under the robe has fewer rows (−648; it shows only in the slits);
+- the plaques came down from 46 to 39, thrown down the drape (−770).
+
+The parts:
 
 | Part | Triangles |
 |---|---|
-| plaques and their mouths (46 at 110) | 5,060 |
-| head | 2,400 |
-| body and column, less what the bodice covers (`water`) | 2,426 |
+| plaques and their mouths (39 at 110) | 4,290 |
+| head (a 34 × 44 grid crowded onto the face) | 2,992 |
+| hair (two fans of locks, their inner faces down the fall, seven loose locks and wisps) | 2,876 |
 | robe panels (both faces) | 1,904 |
-| hair (sheet, both faces, and three strands) | 1,622 |
+| body and column, less what the bodice covers (`water`) | 1,778 |
 | runnels | 1,060 |
 | bodice (`robe` and `inner`) | 1,008 |
 | hands | 976 |
@@ -372,3 +381,86 @@ All were addressed and judged on the review shot, a battle-camera clip sheet and
     | The Seven, the tightest frame | top v 0.117 |
     | `voice_lightning` | top v 0.146 |
     | Widest | x 0.554–0.754 |
+
+## As built: the third pass (M4-A2P-057, 2026-10-30)
+
+The Lead's track viewed `creature_kesh` after pass 2 and found three things:
+- the head read as a helmet with a visor (a hard glossy cap of hair over a small face, the hairline straight across the
+  brow);
+- everything was one teal, so the garment and skin didn't separate;
+- the plaques' even rows read a little like a studded skirt.
+
+Each was reworked and judged in three places: the review shot (its bright stage light), the battle camera in a dark
+Act I arena (the scratch clip sheet, idle and the motion clips), and close-ups on the review stage's light (the head
+from five sides, the bust and the robe from three).
+
+- **The head is a woman's head of water.**
+  - **No shell.** The hair is no longer a raised cap on the skull. Two combed fans of locks fall from a parting a
+    little to her left down both sides of her face. They are ridged lock by lock and grooved between, darker in the
+    grooves, strand by strand in colour. They stand off the crown and grow fuller down the sides, so the crown's
+    shape is soft.
+  - **The hairline.** The fans' front edges curve down from the parting past the temples, a soft hairline, and the
+    pale parting line shows. The scalp under them is matte hair (the `hair` slot), its seam well inside where the
+    locks cover it.
+  - **Locks.** From above the ears the fans part into separate, layered locks, alternate ones riding higher. Two fall
+    forward over her right shoulder (her far side from the battle camera, clear of her heart arm, lying on her chest
+    on `spine_2`). The rest fall straight past her jaw and neck, framing them, then behind her shoulders and down her
+    back, tapering to white-breaking ends. Five loose locks lie over the crown and the fall, and two wisps come free
+    at the temples. The ears are a soft swelling under the hair.
+  - **The face.** It is a little larger (`HEAD_R` up about 4%, the neck a little slimmer and shorter), on a finer
+    34 × 44 grid. The sockets are softer, so the closed eyes don't read as dark glasses. It is pale and lit (mask 0.2
+    against the body's 0.09), the brightest thing on her head.
+  - **Gloss.** The `hair` slot is less glossy than her skin (roughness 0.38, clearcoat 0.2), so it never reads as a
+    lacquered helmet.
+
+  Tried and dropped along the way:
+  - narrow four-sided locks (they read as dreadlocks or thatch);
+  - broad free locks over a bare scalp (they read as shingles);
+  - one smooth fan hugging the skull (it read as a swim cap);
+  - strands combed straight across the top, or a side parting sweeping across the brow (both read as a headband).
+- **Value and hue structure** (palette swatches, the sheet's colour table):
+  - **Skin.** The skin is the lightest value on her: pale, clear water toward `salt_glass`, with the fresnel rim and
+    the depth kept. The column under the robe is deep water, so the slits don't draw pale stripes.
+  - **Robe.** The bodice and the panels are a deep sea-dark silk (`abyss_navy` toward `indigo_dye`), a different hue
+    from the teal skin and much deeper. It is satin, with a soft edge sheen (`rim_sheen` 0.5) so it holds its shape
+    against a dark sea.
+  - **Stole.** The stole is the third value, a slate silk (`storm_slate` toward `cold_blue_stone`) with a thin pale
+    hem.
+  - **Stone.** The Choir's stone (plaques, girdle, neckline cord) is the singers' weathered Lit Age white ceramic
+    (pale_rim.md says the Choir's figures are made of it), a warm pale stone, matte. The old `cold_blue_stone` read
+    as studs in the water.
+  - **Hair.** The hair is a teal between the skin and the robe, darker than the face.
+
+  At battle distance in a dark arena she reads as a pale woman of water in a dark robe set with pale stone. On the
+  review stage the same holds.
+- **The plaques break the grid.** They are thrown down meandering streams on each panel (dart-throwing with a seeded
+  rng, so the build stays byte-identical):
+  - the density swells and thins down the drape, so some heights are crowded and some bare;
+  - sizes vary 0.16–0.36 m;
+  - each tilts with its stream's lean, ±12°;
+  - the outlines are rounded and irregular, some with a broken corner;
+  - most of those that land in a fold's valley sink 1–2 cm into it, tipped 11°, so the cloth hides one edge (deeper,
+    and they read as crescent moons);
+  - the folds have their own count and lean per panel and are deeper (3.2 cm at the hem).
+
+  The lips stand prouder and are the palest stone, and the "ah" mouths are wider than tall.
+- **Kept.** These are unchanged:
+  - the clip names, contacts, wind-ups and the clip map;
+  - the anchors, the rig (39 bones) and the hand-on-heart idle;
+  - the runnels and the white breaks. The four on the bodice are shorter: water spilling over the neckline, not
+    white drips down the dark silk.
+
+  The re-measured numbers:
+  - **Height:** 4.2 m in battle; the crown is at 4.10 m at rest (the sheet's 4.1 m).
+  - **Grounding:** the lowest vertex is +0.004 m in every clip.
+  - **Framing:** every clip's highest vertex is at or below pass 2's (the new hair sits closer than the old cap's
+    top). The Seven, `voice_lightning` and `voice_holy` peak at their hands, unchanged (5.135, 4.834, 4.744 m), so
+    pass 2's top-line margins hold (The Seven at top v 0.117, inside the 0.1 line).
+  - **Determinism:** the build is byte-identical (verify_blender_builds, run twice).
+  - **Portrait:** re-baked.
+- **Honest limits.**
+  - Up close (the review stage at 2 m) the hair is stylised, sculpted water rather than strands, and the face is a
+    calm, soft creature-kit face, below the characters track's faces. The bind-memory close-up still wants a
+    sculpted head (open item above; the LEAD-ASK on an MPFB2 base for her head stands).
+  - Under the review stage's strong key, the plaques sit at the pale end of the warm stone, and the front slit
+    catches the sky.

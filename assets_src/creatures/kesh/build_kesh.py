@@ -4,10 +4,12 @@ blender --background --factory-startup --threads 4 --python \
     assets_src/creatures/kesh/build_kesh.py -- --out assets/creatures/kesh/kesh.glb
 
 A woman of standing seawater, from the hips up, rising out of a column of water 1.4 m across where it meets the sea and
-narrowing into her waist. Her head is bare; her long hair is water falling down her back, its ends breaking white. Her
-hands are open. Her robe is a long fall of four panels of darker water hanging from a girdle of Choir stone, and a
-stole over her shoulders, all of them set with small carved stone mouths, open as the Choir's singers' are, each with
-a little of her light inside. The bound heart shows through her chest as a soft light deep in the water. A
+narrowing into her waist. Her head is bare; her long hair is water, parted a little to her left and falling in locks
+down both sides of her face (two forward over her right shoulder, the rest down her back), its ends breaking white.
+Her hands are open. She wears a bodice and a long fall of four robe panels of deep sea-dark silk hanging from a girdle
+of Choir stone, and a slate stole over her shoulders, set with carved mouths on plaques of the Choir's warm pale stone,
+open as the Choir's singers' are, each with a little of her light inside. At battle distance: a pale woman of water,
+in a dark robe set with pale stone mouths. The bound heart shows through her chest as a soft light deep in the water. A
 Lamplighter's lamp-key hangs at her left hip from the girdle: the keepsake, an object, never lit.
 
 **The water is geometry skinned to her bones** (the bound-light rule: steady, nothing drifts by itself). Running water
@@ -45,6 +47,9 @@ PAL = {k: ck.hexrgb(v) for k, v in {
     "turquoise_shallow": "#3FD0C9", "deep_teal_shadow": "#0E4A55", "cold_blue_stone": "#5E6E80",
     "foam_white": "#EEF6F4", "brass": "#B08D57", "bronze_patina": "#5F8A78", "abyss_navy": "#061A2B",
     "salt_glass": "#BFE6E0",
+    # the third pass's value structure: a pale woman of water, in a dark robe set with pale stone mouths
+    "indigo_dye": "#2B3A6B", "storm_slate": "#3E4A57", "lit_ceramic": "#DCE3E0",
+    "coral_stone_weathered": "#B9AE98", "bone": "#E6DAC0",
 }.items()}
 
 # ---- the skeleton's rest joints (metres, Godot axes, facing +z; the water at y 0) ---------------
@@ -53,8 +58,8 @@ COLUMN = np.array([(0.0, 0.0, 0.0), (0.0, 0.6, 0.0), (0.0, 1.2, 0.0), (0.0, WAIS
 SPINE = np.array([(0.0, WAIST_Y, 0.0), (0.0, 2.35, 0.0), (0.0, 2.85, 0.0), (0.0, 3.3, 0.0)])
 NECK = np.array([(0.0, 3.3, 0.0), (0.0, 3.56, 0.02)])
 HEAD_TIP = np.array([0.0, 4.14, 0.0])
-HEAD_C = np.array([0.0, 3.84, 0.035])
-HEAD_R = np.array([0.205, 0.265, 0.235])
+HEAD_C = np.array([0.0, 3.8, 0.035])
+HEAD_R = np.array([0.214, 0.276, 0.244])  # a little larger than pass 2's, so the face holds more of her
 HEART = np.array([0.0, 2.8, 0.06])  # the bound heart, deep in her chest (the `vfx_core` anchor)
 HEART_R = 0.42  # how far its light shows through the water
 CLAV = np.array([(0.07, 3.27, -0.01), (0.46, 3.16, -0.03)])  # sternum end .. shoulder
@@ -67,8 +72,8 @@ BODY = [(FOOT_Y, 0.70, 0.70, 0.0), (0.05, 0.665, 0.665, 0.0), (0.15, 0.615, 0.61
         (0.6, 0.53, 0.53, 0.0), (0.9, 0.49, 0.49, 0.0), (1.2, 0.45, 0.45, 0.0), (1.5, 0.415, 0.40, 0.0),
         (1.72, 0.39, 0.33, 0.0), (1.86, 0.37, 0.29, 0.0), (2.02, 0.345, 0.255, 0.0), (2.24, 0.29, 0.215, 0.0),
         (2.44, 0.305, 0.23, 0.0), (2.64, 0.355, 0.255, 0.01), (2.84, 0.41, 0.28, 0.02), (3.02, 0.44, 0.27, 0.01),
-        (3.14, 0.49, 0.235, -0.01), (3.24, 0.45, 0.2, -0.02), (3.31, 0.28, 0.155, -0.01), (3.38, 0.155, 0.145, 0.0),
-        (3.5, 0.135, 0.135, 0.01), (3.64, 0.125, 0.125, 0.03)]
+        (3.14, 0.49, 0.235, -0.01), (3.24, 0.45, 0.2, -0.02), (3.31, 0.28, 0.155, -0.01), (3.38, 0.15, 0.14, 0.0),
+        (3.5, 0.12, 0.124, 0.01), (3.64, 0.113, 0.118, 0.03)]
 BODY_SEGS = 36
 FOLDS = 7  # the column's running folds round it
 
@@ -282,7 +287,9 @@ def heart_glow(P: np.ndarray) -> np.ndarray:
     return np.exp(-(d / HEART_R) ** 2)
 
 
-WATER_GLOW = 0.06  # the water's own faint light everywhere (the bound light held in it; the slot's energy is 1.6)
+WATER_GLOW = 0.09  # the water's own faint light everywhere (the bound light held in it; the slot's energy is 1.6)
+FACE_GLOW = 0.2  # her face holds the most of it: the brightest thing on her head
+ROBE_GLOW = 0.015  # the silk barely catches it
 HEART_PEAK = 1.0
 
 
@@ -305,16 +312,21 @@ def flow_bands(P: np.ndarray, seed: int) -> np.ndarray:
 
 
 def water_colour(P: np.ndarray, thin: np.ndarray | float = 0.0, seed: int = 1) -> np.ndarray:
-    """Standing seawater: dense deep_teal_shadow under the rim's deep water (deeper toward the column's foot), lit by
-    streaming bands and running streaks toward turquoise, paler at the thin edges, darker round the heart (so its
-    light reads as deep inside), and breaking white at the very foot. (The light rim is the shader's fresnel.)"""
+    """Standing seawater, pale and clear (the third pass: her skin is the lightest value on her, so the dark robe and
+    the pale stone read against it): the rim's deep water toward salt_glass, deeper toward the column's foot, lit by
+    streaming bands and running streaks toward salt_glass and turquoise, paler still at the thin edges, a little
+    deeper round the heart (so its light reads as inside), and breaking white at the very foot. (The light rim is the
+    shader's fresnel.)"""
     thin = np.broadcast_to(np.asarray(thin, dtype=np.float64), (len(P),))
     st = streaks(P, SEED + seed)
-    c = ck.mix(PAL["deep_teal_shadow"], PAL["rim_deep"], (0.3 + 0.25 * st)[:, None])
-    c = ck.mix(c, PAL["deep_teal_shadow"], (0.35 * ck.smoothstep(2.4, 0.2, P[:, 1]))[:, None])
-    c = ck.mix(c, PAL["turquoise_shallow"], (0.4 * flow_bands(P, SEED + seed + 50))[:, None])
-    c = ck.mix(c, PAL["turquoise_shallow"], (0.45 * thin + 0.3 * ck.smoothstep(0.6, 0.85, st))[:, None])
-    c = ck.mix(c, PAL["deep_teal_shadow"], (0.25 * heart_glow(P))[:, None])
+    c = ck.mix(PAL["rim_deep"], PAL["salt_glass"], (0.3 + 0.3 * st)[:, None])
+    # deeper below the girdle: the standing column under the robe shows in its slits as deep water, not a pale stripe
+    c = ck.mix(c, PAL["deep_teal_shadow"], (0.4 * ck.smoothstep(2.2, 1.85, P[:, 1])
+                                            + 0.4 * ck.smoothstep(1.85, 1.6, P[:, 1]))[:, None])
+    c = ck.mix(c, PAL["turquoise_shallow"], (0.18 * flow_bands(P, SEED + seed + 50))[:, None])
+    c = ck.mix(c, PAL["salt_glass"], (0.35 * flow_bands(P, SEED + seed + 60))[:, None])
+    c = ck.mix(c, PAL["foam_white"], (0.4 * thin + 0.2 * ck.smoothstep(0.65, 0.9, st))[:, None])
+    c = ck.mix(c, PAL["deep_teal_shadow"], (0.15 * heart_glow(P))[:, None])
     c = ck.mix(c, PAL["foam_white"], (0.6 * ck.smoothstep(0.1, 0.0, P[:, 1]))[:, None])
     return c
 
@@ -324,7 +336,8 @@ def water_colour(P: np.ndarray, thin: np.ndarray | float = 0.0, seed: int = 1) -
 # ---------------------------------------------------------------------------------------------
 def body_mesh() -> tuple[np.ndarray, np.ndarray]:
     ys0 = np.array([r[0] for r in BODY])
-    fine = np.concatenate([np.linspace(FOOT_Y, 1.86, 15)[:-1], np.linspace(1.86, 3.64, 22)])
+    # the column is mostly behind the robe's panels (it shows in the slits), so it has fewer rows than the torso
+    fine = np.concatenate([np.linspace(FOOT_Y, 1.86, 6)[:-1], np.linspace(1.86, 3.64, 22)])
     fine = np.unique(np.concatenate([fine, ys0]))
     a = np.arange(BODY_SEGS) * (2.0 * math.pi / BODY_SEGS)
     rows = []
@@ -368,7 +381,8 @@ def body(mesh: ck.Mesh, rig: ck.Rig) -> None:
     N = ck.weld_normals(P, ck.vertex_normals(P, T))
     col = water_colour(P, 0.0, 1)
     before = mesh.triangle_count
-    ck.finish(mesh, P[used], remap[T], "water", col[used], body_skin(rig), wet=1.0, emission=water_emission(P)[used],
+    em = water_emission(P) * (0.35 + 0.65 * ck.smoothstep(1.55, 1.95, P[:, 1]))
+    ck.finish(mesh, P[used], remap[T], "water", col[used], body_skin(rig), wet=1.0, emission=em[used],
               N=N[used])
     count("water", mesh, before)
 
@@ -399,13 +413,23 @@ HEART_POOL_R = 0.18  # the pool's radius on the bodice
 HEART_POOL_PEAK = 0.6
 
 
+def silk_colour(P: np.ndarray, crest: np.ndarray | float = 0.0, seed: int = 30) -> np.ndarray:
+    """Her garment (the bodice and the robe's panels): a deep sea-dark silk, abyss_navy toward indigo_dye, a clearly
+    different hue and a much deeper value than her pale water skin; its folds' crests catch toward indigo and slate."""
+    crest = np.broadcast_to(np.asarray(crest, dtype=np.float64), (len(P),))
+    st = streaks(P * 0.7, SEED + seed)
+    c = ck.mix(PAL["abyss_navy"], PAL["indigo_dye"], (0.3 + 0.25 * st)[:, None])
+    c = ck.mix(c, ck.mix(PAL["indigo_dye"], PAL["cold_blue_stone"], 0.35), (0.55 * crest)[:, None])
+    return c
+
+
 def gathers(a: np.ndarray, t: np.ndarray) -> np.ndarray:
     """The bodice's soft gathers under the bust (out from the body, metres): vertical folds on the front, fading up."""
     return 0.013 * np.sin(14.0 * a) * (1.0 - t) ** 1.2 * np.clip(np.cos(a), 0.0, 1.0)
 
 
 def bodice(mesh: ck.Mesh, rig: ck.Rig) -> None:
-    """A fitted bodice of the robe's deeper water from the girdle to the collarbones, softly gathered under the bust,
+    """A fitted bodice of deep sea-dark silk from the girdle to the collarbones, softly gathered under the bust,
     its top edge bound with a cord of Choir-stone beads; the heart's light shows through it."""
     segs = BODY_SEGS
     a = np.arange(segs) * (2.0 * math.pi / segs)
@@ -425,12 +449,9 @@ def bodice(mesh: ck.Mesh, rig: ck.Rig) -> None:
     N = ck.weld_normals(P, ck.vertex_normals(P, T))
     t_v = np.repeat(np.linspace(0.0, 1.0, BODICE_ROWS), segs)
     a = np.tile(a, BODICE_ROWS)
-    col = water_colour(P, 0.0, 7)
-    col = ck.mix(col, PAL["deep_teal_shadow"], (ROBE_TONE + 0.1) * np.ones((len(P), 1)))
-    col = ck.mix(col, PAL["rim_deep"], (0.45 * ck.smoothstep(0.003, 0.012, gathers(a, t_v)))[:, None])  # the gathers' crests
-    col = ck.mix(col, PAL["abyss_navy"], 0.3)  # a garment of the deepest water: darker than her skin
+    col = silk_colour(P, ck.smoothstep(0.003, 0.012, gathers(a, t_v)), 7)  # the gathers' crests catch the light
     col = ck.mix(col, PAL["abyss_navy"], (0.3 * ck.smoothstep(0.8, 1.0, t_v))[:, None])  # darkest at the cord
-    em = WATER_GLOW * 0.7 + HEART_POOL_PEAK * heart_pool(P)
+    em = ROBE_GLOW + HEART_POOL_PEAK * heart_pool(P)
     skin = body_skin(rig)
     heart = heart_pool(P[T].mean(axis=1)) > 0.3  # the heart's light through the bodice: the `inner` slot
     for slot, sel in (("robe", ~heart), ("inner", heart)):
@@ -448,10 +469,19 @@ def bodice(mesh: ck.Mesh, rig: ck.Rig) -> None:
     rad = 0.017 + 0.007 * np.abs(np.sin(ac * 27.0))
     Pc, Tc = ck.tube(loop, rad, 4, cap_start=False, cap_end=False)
     rng = np.random.default_rng(SEED + 20)
-    colc = ck.mix(PAL["cold_blue_stone"], PAL["salt_glass"], rng.uniform(0.5, 0.75, len(Pc))[:, None])
+    colc = choir_stone(rng.uniform(0.4, 0.8, len(Pc)), rng.uniform(0.0, 0.3, len(Pc)))
     before = mesh.triangle_count
-    ck.finish(mesh, Pc, Tc, "mouths", colc, skin, wet=0.5, cavity=0.25)
+    ck.finish(mesh, Pc, Tc, "mouths", colc, skin, wet=0.2, cavity=0.25)
     count("cord", mesh, before)
+
+
+def choir_stone(warm, worn) -> np.ndarray:
+    """The Choir's stone: the singers' Lit Age white ceramic, weathered (pale_rim.md), a warm pale stone: lit_ceramic
+    toward coral_stone_weathered by `warm`, worn toward bone by `worn` (arrays or scalars, 0 .. 1)."""
+    warm = np.atleast_1d(np.asarray(warm, dtype=np.float64))
+    worn = np.atleast_1d(np.asarray(worn, dtype=np.float64))
+    c = ck.mix(PAL["lit_ceramic"], PAL["coral_stone_weathered"], warm[:, None])
+    return ck.mix(c, PAL["bone"], worn[:, None])
 
 
 STOLE_X = (0.2, 0.155)  # the stole's strips: their centres' x at the collarbone and at the girdle
@@ -500,10 +530,12 @@ def stole(mesh: ck.Mesh, rig: ck.Rig, mouths: list) -> None:
         N = ck.weld_normals(P, ck.vertex_normals(P, T))
         across = np.tile(np.abs(np.linspace(-1.0, 1.0, 5)), n_rows)
         along = np.repeat(np.linspace(0.0, 1.0, n_rows), 5)
-        col = ck.mix(ck.mix(water_colour(P, 0.0, 8), PAL["deep_teal_shadow"], 0.72), PAL["abyss_navy"], 0.25)
-        col = ck.mix(col, PAL["salt_glass"], (0.6 * ck.smoothstep(0.6, 0.95, across))[:, None])  # its pale edges
+        # the third value: a slate silk between her pale skin and the dark robe, its edges a pale stone-coloured hem
+        st = streaks(P * 0.7, SEED + 31)
+        col = ck.mix(PAL["storm_slate"], PAL["cold_blue_stone"], (0.55 + 0.3 * st)[:, None])
+        col = ck.mix(col, choir_stone(0.6, 0.0)[0], (0.45 * ck.smoothstep(0.8, 1.0, across))[:, None])  # a pale hem
         col = ck.mix(col, PAL["foam_white"], (0.7 * ck.smoothstep(0.93, 1.0, along))[:, None])
-        ck.finish(mesh, P, T, "robe", col, skin, wet=1.0, emission=WATER_GLOW * 0.6, N=N)
+        ck.finish(mesh, P, T, "robe", col, skin, wet=1.0, emission=ROBE_GLOW, N=N)
         k = (n_rows - 3) * 5 + 2  # the end's mouth, just over the hem
         down = P[k + 5] - P[k - 5]
         J, W = skin(P[k][None])
@@ -520,7 +552,7 @@ def _spacing(t: np.ndarray, w: np.ndarray) -> np.ndarray:
     return c / c[-1]
 
 
-HEAD_RINGS, HEAD_SEGS = 30, 40
+HEAD_RINGS, HEAD_SEGS = 34, 44
 
 
 def head_grid() -> tuple[np.ndarray, np.ndarray]:
@@ -539,11 +571,35 @@ def _g(dx, dy, wx: float, wy: float):
     return np.exp(-(dx / wx) ** 2 - (dy / wy) ** 2)
 
 
-def head_mesh() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    """Her head: a woman's face, calm and grieving, the eyes closed under heavy lids, the inner ends of the brows a
-    little raised, the mouth's corners a little down. Features are carved into a unit sphere (x across, y up, z
-    toward the face) and scaled to HEAD_R."""
-    u, T = head_grid()
+def sph(v) -> np.ndarray:
+    """Unit vector(s) along v."""
+    v = np.asarray(v, dtype=np.float64)
+    return v / np.linalg.norm(v, axis=-1, keepdims=True)
+
+
+PARTING_X = 0.1  # the parting, a little to her left: the hair falls from it down both sides, framing her face
+
+
+def hairline_y(u: np.ndarray) -> np.ndarray:
+    """The hairline's height on the unit head (y) round it: high and rounded over the forehead, curving down at the
+    temples, in front of the ears and down behind them to the nape (a woman's soft hairline, not a straight edge)."""
+    phi = np.abs(np.arctan2(u[:, 0], u[:, 2]))
+    y = np.interp(phi, [0.0, 0.42, 0.78, 1.02, 1.22, 1.42, 1.75, math.pi], [0.5, 0.46, 0.33, 0.12, -0.12, -0.3, -0.5,
+                                                                              -0.58])
+    return y + 0.035 * ck.fbm(u * 5.0, SEED + 40, 2)
+
+
+def ear_bump(u: np.ndarray) -> np.ndarray:
+    """The ears, hinted under the hair: a soft swelling at each side (unit head, outward)."""
+    return 0.11 * np.exp(-((u[:, 1] + 0.08) / 0.2) ** 2 - ((u[:, 2] + 0.1) / 0.13) ** 2) \
+        * ck.smoothstep(0.7, 0.92, np.abs(u[:, 0]))
+
+
+def head_shape(u: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    """Her head at the unit directions u (x across, y up, z toward the face): (the points, the hair's share, the
+    cavity, the parting). A woman's face, calm and grieving, the eyes closed under heavy lids, the inner ends of the
+    brows a little raised, the mouth's corners a little down; the ears hinted; the scalp under the hair is not raised
+    (the hair is its locks), so there is no cap's edge across the brow. Scaled to HEAD_R about HEAD_C."""
     x, y, z = u[:, 0].copy(), u[:, 1].copy(), u[:, 2].copy()
     front = ck.smoothstep(0.05, 0.55, z)
     jaw = ck.smoothstep(-0.05, -0.95, y)
@@ -555,7 +611,7 @@ def head_mesh() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     cav = np.zeros_like(z)
     for sx in (0.36, -0.36):
         dx = x - sx
-        d -= 0.13 * _g(dx, y - 0.08, 0.22, 0.13)  # the socket
+        d -= 0.11 * _g(dx, y - 0.08, 0.22, 0.13)  # the socket
         d += 0.085 * _g(dx, y - 0.05, 0.15, 0.085)  # the closed lid over the eye
         lash = 0.0 - 0.05 * (dx / 0.15) ** 2  # the closed lids' line, curving down
         g = np.exp(-((y - lash) / 0.035) ** 2) * np.exp(-(dx / 0.16) ** 2)
@@ -585,63 +641,115 @@ def head_mesh() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     d += 0.06 * _g(x, y + 0.86, 0.2, 0.09)  # the chin
     z = z + front * d
     cav = cav * front
-    # the hair over the crown and the back: a little proud of the skull
-    uz = u[:, 2]
-    hairline = ck.smoothstep(0.34, 0.46, u[:, 1] + 0.45 * ck.smoothstep(0.55, 0.05, uz))  # the forehead, the temples
-    ears = ck.smoothstep(0.7, 0.86, np.abs(u[:, 0])) * ck.smoothstep(-0.45, -0.2, u[:, 1]) * ck.smoothstep(0.6, 0.3, uz)
-    hair = np.maximum(np.maximum(hairline, ears), ck.smoothstep(0.1, -0.25, uz) * ck.smoothstep(-0.7, -0.2, u[:, 1]))
-    r = 1.0 + 0.06 * hair
+    hair = ck.smoothstep(hairline_y(u) - 0.03, hairline_y(u) + 0.1, u[:, 1])
+    part = np.exp(-((u[:, 0] - PARTING_X) / 0.035) ** 2) * ck.smoothstep(0.42, 0.6, u[:, 1]) \
+        * ck.smoothstep(-0.55, -0.2, u[:, 2])
+    r = 1.0 + 0.012 * hair + ear_bump(u)
     Q = np.column_stack([x * r, y * r, z * r]) * HEAD_R + HEAD_C
+    return Q, hair, cav, part
+
+
+def head_mesh() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    u, T = head_grid()
+    Q, hair, cav, part = head_shape(u)
     T = orient(Q, T, np.tile(HEAD_C, (len(T), 1)))
-    return Q, T, hair, cav
+    return Q, T, hair, cav, part
+
+
+def on_head(u, lift) -> tuple[np.ndarray, np.ndarray]:
+    """Points on her head's surface at the unit directions u, `lift` metres off it, and the outward directions."""
+    u = sph(np.atleast_2d(u))
+    Q = head_shape(u)[0]
+    out = sph((Q - HEAD_C) / HEAD_R ** 2)  # the ellipsoid's normal, near enough
+    return Q + out * np.asarray(lift, dtype=np.float64).reshape(-1, 1), out
 
 
 def head(mesh: ck.Mesh, rig: ck.Rig) -> None:
-    P, T, hair, cav = head_mesh()
-    col = water_colour(P, 0.35, 2)  # her face: the palest, clearest water on her
-    hair_col = ck.mix(PAL["deep_teal_shadow"], PAL["rim_deep"], (0.3 + 0.35 * streaks(P * 3.0, SEED + 9))[:, None])
-    hair_col = ck.mix(hair_col, PAL["abyss_navy"], 0.15)  # the hair as dark as its fall, so it frames the face
-    col = ck.mix(col, hair_col, hair[:, None])
-    col = ck.mix(col, PAL["deep_teal_shadow"], (0.45 * cav)[:, None])
-    neck_w = ck.smoothstep(3.62, 3.5, P[:, 1])
+    """The head: the face pale, clear and lit (the brightest thing on her head); the scalp under the locks in the hair
+    slot, matte and dark, a pale parting line through it."""
+    P, T, hair, cav, part = head_mesh()
+    col = water_colour(P, 0.5, 2)  # her face: the palest, clearest water on her
+    col = ck.mix(col, PAL["salt_glass"], 0.3)
+    st = streaks(P * 4.0, SEED + 9)
+    scalp = ck.mix(PAL["deep_teal_shadow"], PAL["rim_deep"], (0.4 + 0.4 * st)[:, None])
+    col = ck.mix(col, scalp, hair[:, None])
+    col = ck.mix(col, ck.mix(PAL["rim_deep"], PAL["salt_glass"], 0.5), (0.8 * part * hair)[:, None])  # the parting
+    col = ck.mix(col, PAL["deep_teal_shadow"], (0.28 * cav)[:, None])
+    neck_w = ck.smoothstep(3.6, 3.48, P[:, 1])
     i_n, i_h = rig.index("neck"), rig.index("head")
     J = np.column_stack([np.full(len(P), i_h), np.full(len(P), i_n)])
     W = np.column_stack([1.0 - neck_w, neck_w])
-    em = WATER_GLOW * 1.6 * (1.0 - cav) * (1.0 - hair)  # the face holds her light; none in the eyes or the hair
+    em = FACE_GLOW * (1.0 - 0.7 * cav) * (1.0 - hair) * ck.smoothstep(-0.1, 0.4, (P[:, 2] - HEAD_C[2]) / HEAD_R[2])
+    em = np.maximum(em, WATER_GLOW * (1.0 - hair))
     before = mesh.triangle_count
-    ck.finish(mesh, P, T, "water", col, fixed(J, W), wet=1.0, cavity=cav, emission=em)
+    in_hair = hair[T].min(axis=1) > 0.9  # the seam well inside where the hair covers it
+    for slot, sel in (("water", ~in_hair), ("hair", in_hair)):
+        Ts = T[sel]
+        used = np.unique(Ts)
+        remap = -np.ones(len(P), dtype=np.int64)
+        remap[used] = np.arange(len(used))
+        Jh, Wh = J[used], W[used]
+        ck.finish(mesh, P[used], remap[Ts], slot, col[used], fixed(Jh, Wh), wet=1.0, cavity=cav[used],
+                  emission=em[used] if slot == "water" else 0.0)
     count("head", mesh, before)
 
 
-def hair_path(side: float, rng: np.random.Generator, out: float = 0.0, n: int = 20) -> np.ndarray:
-    """One line of the fall at `side` (-1 right .. +1 left): from the crown, over the side or the back of the head
-    (the side ones frame the face), behind the shoulders and down her back to about the girdle; `out` lifts it off
-    the sheet."""
-    bx = math.sin(math.radians(80.0 * side))
-    bz = math.cos(math.radians(80.0 * side))
-    phi = math.radians(78.0 * side)  # round the face from the forehead's middle to the ear
-    line = np.array([math.sin(phi) * 0.9, 0.5 - 0.55 * abs(side), math.cos(phi) * 0.86 - 0.5 * abs(side)])
-    start = HEAD_C + HEAD_R * line / np.linalg.norm(line) * 1.035  # the hairline, framing the face, lying flat
-    back = np.array([bx * 1.0, 0.12, -bz * 0.99 + 0.14 * abs(bx)])
-    mid_u = (line / np.linalg.norm(line) + back / np.linalg.norm(back)) * 0.5 + np.array([0.0, 0.45 * (1 - abs(side)), 0.0])
-    crown = HEAD_C + HEAD_R * mid_u / np.linalg.norm(mid_u) * (1.08 + out * 2.0)
-    over = HEAD_C + HEAD_R * back * (1.07 + out * 3.0)
-    x_end = side * 0.46 + float(rng.uniform(-0.02, 0.02))
-    y_end = float(rng.uniform(1.92, 2.2)) - 0.14 * (1.0 - abs(side))
-    nape = np.array([side * 0.27, 3.4, -0.26 - 0.05 * (1.0 - abs(side)) - out])
-    mid = np.array([side * 0.37, 2.9, -0.38 - out])
-    low = np.array([x_end * 0.96, 2.4, -0.42 - out])
-    end = np.array([x_end, y_end, -0.44 - 0.03 * abs(side) - out])
-    if out > 0.0:  # a loose strand rises from behind the crown, not from the hairline
-        return spline([crown, over, nape, mid, low, end], n)
-    return spline([start, crown, over, nape, mid, low, end], n)
+# ---- the hair: many locks of falling water ----------------------------------------------------------
+LOCK_SEGS = 6  # a lock's section: a flat oval, smooth-shaded, so it reads as a soft lock, not a blade
 
 
+def resample(path: np.ndarray, n: int, weight: np.ndarray | None = None) -> np.ndarray:
+    """n points along the polyline `path`, evenly spaced by arc length, each segment's length scaled by `weight`
+    (smaller: fewer points there)."""
+    seg = np.linalg.norm(np.diff(path, axis=0), axis=1) * (1.0 if weight is None else weight)
+    s = np.concatenate([[0.0], np.cumsum(seg)])
+    t = np.linspace(0.0, s[-1], n)
+    return np.column_stack([np.interp(t, s, path[:, k]) for k in range(3)])
 
-HAIR_COLS = 15  # across the sheet
-HAIR_ROWS = 20  # down it
-HAIR_THICK = 0.035
-N_STRANDS = 3  # loose strands over the sheet
+
+def lock_tube(path: np.ndarray, out: np.ndarray, half_w: np.ndarray, half_t: np.ndarray) -> tuple[np.ndarray,
+                                                                                                     np.ndarray]:
+    """A lock along `path`: a flattened tube whose wide axis lies along the surface under it (`out` its outward
+    directions), closed at both ends."""
+    n = len(path)
+    tan = np.gradient(path, axis=0)
+    tan /= np.linalg.norm(tan, axis=1, keepdims=True)
+    o = out - tan * (out * tan).sum(axis=1, keepdims=True)
+    o /= np.maximum(np.linalg.norm(o, axis=1, keepdims=True), 1e-9)
+    side = np.cross(tan, o)
+    a = np.arange(LOCK_SEGS) * (2.0 * math.pi / LOCK_SEGS)
+    rings = [path[k] + half_w[k] * np.outer(np.cos(a), side[k]) + half_t[k] * np.outer(np.sin(a), o[k])
+             for k in range(n)]
+    P = np.vstack(rings + [path[:1] - tan[:1] * half_w[0] * 0.3, path[-1:] + tan[-1:] * half_w[-1] * 0.6])
+    T = [ck.grid_tris(n, LOCK_SEGS, True)]
+    i0, i1 = n * LOCK_SEGS, n * LOCK_SEGS + 1
+    last = (n - 1) * LOCK_SEGS
+    T.append(np.array([(s, (s + 1) % LOCK_SEGS, i0) for s in range(LOCK_SEGS)]))
+    T.append(np.array([(last + s, i1, last + (s + 1) % LOCK_SEGS) for s in range(LOCK_SEGS)]))
+    T = np.vstack(T)
+    centre = np.vstack([np.repeat(path, LOCK_SEGS, axis=0), path[:1], path[-1:]])  # each vertex's ring centre
+    return P, orient(P, T, centre[T].mean(axis=1))
+
+
+def parting(s: float) -> np.ndarray:
+    """The parting at s (0 at the forehead's hairline .. 1 at the back of the crown), a unit direction."""
+    pts = [(PARTING_X, 0.5, 0.84), (PARTING_X, 0.86, 0.45), (PARTING_X * 0.9, 0.97, -0.05),
+           (PARTING_X * 0.8, 0.8, -0.55)]
+    return sph(spline(pts, 31)[int(round(s * 30))])
+
+
+def back_tail(side: float, y_end: float, out: float) -> list:
+    """Down her back to y_end, at `side` (-1 her right .. +1 her left) across the fall: the middle of it from the
+    nape, its sides falling straight past her jaw and her neck (framing them) and then behind her shoulders."""
+    x_end = side * 0.44
+    a = ck.smoothstep(0.35, 0.95, abs(side))  # 0: from the nape; 1: down the side of the neck
+    first = (1 - a) * np.array([side * 0.15, 3.5, -0.24]) + a * np.array([side * 0.27, 3.46, -0.02])
+    second = (1 - a) * np.array([side * 0.24, 3.28, -0.31]) + a * np.array([side * 0.31, 3.33, -0.14])
+    return [first - (0.0, 0.0, out), second - (0.0, 0.0, out), np.array([side * 0.34, 3.0, -0.36 - out]),
+            np.array([x_end * 0.97, 2.45, -0.42 - out]), np.array([x_end, y_end, -0.44 - 0.03 * abs(side) - out])]
+
+
+FRONT_TAIL = [(-0.27, 3.52, 0.0), (-0.355, 3.33, 0.06), (-0.355, 3.12, 0.215), (-0.32, 2.85, 0.245)]
 
 
 def hair_skin(rig: ck.Rig, P: np.ndarray, side: np.ndarray):
@@ -653,7 +761,7 @@ def hair_skin(rig: ck.Rig, P: np.ndarray, side: np.ndarray):
     wl = ck.smoothstep(-0.7, 0.7, side)
     J = np.column_stack([Jl[:, 0], Jr[:, 0]])
     W = np.column_stack([wl, 1.0 - wl])
-    hw = ck.smoothstep(3.36, 3.52, P[:, 1])
+    hw = ck.smoothstep(3.4, 3.58, P[:, 1])
     top = hw > 1e-3
     lead = np.where(wl >= 0.5, Jl[:, 0], Jr[:, 0])
     J[top] = np.column_stack([np.full(top.sum(), rig.index("head")), lead[top]])
@@ -661,53 +769,215 @@ def hair_skin(rig: ck.Rig, P: np.ndarray, side: np.ndarray):
     return J, W
 
 
+def front_skin(rig: ck.Rig, P: np.ndarray):
+    """The locks over her right shoulder: on the head above the jaw, lying on her chest (spine_2) below the
+    shoulder."""
+    w = ck.smoothstep(3.36, 3.62, P[:, 1])
+    J = np.column_stack([np.full(len(P), rig.index("head")), np.full(len(P), rig.index("spine_2"))])
+    return J, np.column_stack([w, 1.0 - w])
+
+
 def hair_colour(P: np.ndarray, t: np.ndarray, shade: np.ndarray) -> np.ndarray:
-    col = ck.mix(PAL["deep_teal_shadow"], PAL["rim_deep"], (0.45 + 0.4 * shade)[:, None])
-    col = ck.mix(col, PAL["turquoise_shallow"], (0.3 * t + 0.25 * ck.smoothstep(0.7, 0.95, shade))[:, None])
-    return ck.mix(col, PAL["foam_white"], ck.smoothstep(0.8, 1.0, t)[:, None])
+    """Falling water, darker than her face and her skin, lock by lock (deep_teal_shadow toward the rim's deep and
+    turquoise), running paler down the fall, breaking white at the ends: a teal, never the robe's indigo."""
+    col = ck.mix(PAL["deep_teal_shadow"], PAL["rim_deep"], (0.42 + 0.48 * shade)[:, None])
+    col = ck.mix(col, PAL["turquoise_shallow"], (0.12 * t + 0.15 * ck.smoothstep(0.6, 0.9, shade))[:, None])
+    col = ck.mix(col, PAL["salt_glass"], (0.18 * ck.smoothstep(0.75, 1.0, shade))[:, None])  # paler strands
+    return ck.mix(col, PAL["foam_white"], (0.85 * ck.smoothstep(0.82, 1.0, t))[:, None])
+
+
+def sph_at(phi: float, y: float) -> np.ndarray:
+    """The unit direction at azimuth phi (0 toward the face, + toward her left) and height y."""
+    r = math.sqrt(max(1.0 - y * y, 0.0))
+    return np.array([r * math.sin(phi), y, r * math.cos(phi)])
+
+
+# Each side of the parting is combed down as one fan of columns: its front column (c 0) runs along the hairline, its
+# back column (c 1) down the back of the head; a column's waypoints (azimuth, height) are blended between the two.
+# side: sheet sign (-1 her right, +1 her left), columns, the front and the back columns' waypoints, how many columns
+# fall forward over the shoulder (her right only), the lock widths (in columns)
+HAIR_SIDES = {
+    -1: dict(cols=23, w0=((-0.3, 0.42), (-0.72, 0.16), (-1.05, -0.18), (-1.28, -0.55)),
+             w1=((-2.6, 0.72), (-3.12, 0.34), (-3.18, -0.16), (-3.12, -0.5)), front=5,
+             groups=(3, 2, 3, 3, 3, 2, 3, 4)),
+    1: dict(cols=21, w0=((0.45, 0.42), (0.82, 0.16), (1.1, -0.18), (1.3, -0.55)),
+            w1=((2.9, 0.6), (3.02, 0.3), (3.05, -0.15), (3.0, -0.5)), front=0, groups=(3, 2, 3, 3, 2, 4, 4)),
+}
+HAIR_HEAD_ROWS = 10  # rows over the head (every column has the same, so the fan stays one combed surface there)
+HAIR_SPLIT_ROW = 5  # from this row (above the ears) the fan parts into separate locks
+HAIR_TAIL_ROWS = 9  # rows down the fall, where it parts into locks
+HAIR_RIDGE = 0.014  # a lock's crown over its edges (metres): the grooves between the locks on the head
+
+
+def hair_fan(sign: int, rng: np.random.Generator) -> dict:
+    """One side's fan: its grid (rows x cols x 3), each column's outward directions, lock group, its side across the
+    fall (-1 .. 1), whether it falls forward, and the place of each column within its lock (0 .. 1)."""
+    spec = HAIR_SIDES[sign]
+    C = spec["cols"]
+    groups = np.repeat(np.arange(len(spec["groups"])), spec["groups"])
+    pos = np.concatenate([np.linspace(0.0, 1.0, g) for g in spec["groups"]])
+    bump = np.sin(math.pi * pos)  # 0 at a lock's edges, 1 at its middle
+    n_front = spec["front"]
+    group_end = {int(g): float(rng.uniform(1.95, 2.35)) for g in np.unique(groups)}
+    grid = np.zeros((HAIR_HEAD_ROWS + HAIR_TAIL_ROWS, C, 3))
+    sides = np.zeros(C)
+    for i in range(C):
+        c = i / (C - 1)
+        root = parting(min(c, 1.0))
+        if sign > 0:
+            root = sph(root + np.array([0.035, 0.0, 0.0]))
+        cb = c ** 0.6  # the strands sweep back from the parting, never straight across the top like a band
+        way = [sph_at((1 - cb) * a[0] + cb * b[0], (1 - c) * a[1] + c * b[1]) for a, b in zip(spec["w0"], spec["w1"])]
+        dense_u = sph(spline([root] + way, 40))
+        edge = ck.smoothstep(0.0, 0.12, c)  # the front column lies on the scalp: a soft hairline, no cap's edge
+        tu = np.linspace(0.0, 1.0, len(dense_u))
+        # its volume: off the crown, and fuller down the sides where it falls past the head (not a cap on the skull)
+        lift = 0.006 + 0.026 * ck.smoothstep(0.0, 0.35, tu) + 0.03 * ck.smoothstep(0.45, 1.0, tu)
+        lift = lift * (0.3 + 0.7 * np.maximum(edge, ck.smoothstep(0.35, 0.85, tu)))
+        lift = lift + HAIR_RIDGE * bump[i] * (0.4 + 0.6 * edge) + (0.005 if sign < 0 else 0.0)
+        lift = lift + 0.014 * (int(groups[i]) % 2) * ck.smoothstep(0.4, 0.75, tu)  # the locks lie over each other
+        on, _ = on_head(dense_u, lift)
+        head_pts = resample(on, HAIR_HEAD_ROWS)
+        exit_phi = math.atan2(way[-1][0], way[-1][2])
+        side = sign * float(np.clip((math.pi - abs(exit_phi)) / (math.pi - 1.42), 0.0, 1.0))
+        sides[i] = side
+        g = int(groups[i])
+        if i < n_front:  # forward over her right shoulder, two locks
+            k = 0 if i < 3 else 1
+            off = np.array([0.03 * (pos[i] - 0.5) - 0.03 * k, 0.0, -0.03 * k])
+            end = np.array([-0.3 - 0.02 * k + off[0], 2.45 + 0.12 * k, 0.24 - 0.01 * k])
+            tail = [np.add(FRONT_TAIL[0], off * 0.5), np.add(FRONT_TAIL[1], off), np.add(FRONT_TAIL[2], off),
+                    np.add(FRONT_TAIL[3], off + (0.01 * k, 0.0, 0.0)), end]
+        else:
+            tail = back_tail(side, group_end[g], 0.012 * bump[i] + 0.008 * (g % 2))
+        pts = np.vstack([head_pts[-1:], np.asarray(tail, dtype=np.float64)])
+        tail_pts = resample(spline(pts, 60), HAIR_TAIL_ROWS + 1)[1:]
+        # the lock's columns spread across its width as it falls, so it stays a broad lock, not a string
+        horiz = sph(tail_pts * np.array([1.0, 0.0, 1.0]) + np.array([0.0, 0.0, 1e-6]))
+        across = np.cross(np.array([0.0, 1.0, 0.0]), horiz)
+        spread = HAIR_LOCK_W * (pos[i] - 0.5) * np.linspace(0.4, 1.0, HAIR_TAIL_ROWS)
+        tail_pts = tail_pts + across * (sign * spread)[:, None]
+        grid[:, i] = np.vstack([head_pts, tail_pts])
+    # each lock's columns draw together toward its end, so the lock tapers to a point
+    tt = ck.smoothstep(0.6, 1.0, np.linspace(0.0, 1.0, HAIR_TAIL_ROWS))
+    for g in np.unique(groups):
+        cols = np.nonzero(groups == g)[0]
+        centre = grid[HAIR_HEAD_ROWS:, cols].mean(axis=1, keepdims=True)
+        grid[HAIR_HEAD_ROWS:, cols] = grid[HAIR_HEAD_ROWS:, cols] + (centre - grid[HAIR_HEAD_ROWS:, cols]) \
+            * (0.8 * tt)[:, None, None]
+    front = np.arange(C) < n_front
+    return dict(grid=grid, groups=groups, sides=sides, front=front, bump=bump)
+
+
+def hair_fan_mesh(mesh: ck.Mesh, rig: ck.Rig, fan: dict, rng: np.random.Generator) -> None:
+    grid, groups = fan["grid"], fan["groups"]
+    R, C, _ = grid.shape
+    P = grid.reshape(-1, 3)
+    vid = lambda r, i: r * C + i  # noqa: E731
+    quads = []
+    for r in range(R - 1):
+        for i in range(C - 1):
+            if r >= HAIR_SPLIT_ROW and groups[i] != groups[i + 1]:
+                continue  # from above the ears the fan parts into its locks
+            if r >= HAIR_HEAD_ROWS - 1 and fan["front"][i] != fan["front"][i + 1]:
+                continue
+            quads.append((vid(r, i), vid(r + 1, i), vid(r + 1, i + 1), vid(r, i + 1), r))
+    T = np.array([t for a, b, c_, d, _ in quads for t in ((a, b, c_), (a, c_, d))], dtype=np.int64)
+    rows_t = np.array([r for *_, r in quads for _ in (0, 1)])
+    d_head = np.linalg.norm((P - HEAD_C) / HEAD_R, axis=1)
+    w_body = ck.smoothstep(1.05, 1.5, d_head)[:, None]  # outward: off the head near it, off the body's axis below
+    o = sph(sph((P - HEAD_C) / HEAD_R ** 2) * (1.0 - w_body)
+            + sph(P * np.array([1.0, 0.0, 1.0]) + np.array([0.0, 0.0, 1e-6])) * w_body)
+    T = orient(P, T, (P[T] - o[T] * 0.05).mean(axis=1))
+    N = ck.weld_normals(P, ck.vertex_normals(P, T))
+    t_row = np.repeat(np.linspace(0.0, 1.0, R), C)
+    shade = np.tile(rng.uniform(0.0, 1.0, C), R) * 0.8 + 0.2 * streaks(P * 3.0, SEED + 14)  # strand by strand
+    shade = np.clip(shade - 0.45 * (1.0 - np.tile(fan["bump"], R)), 0.0, 1.0)  # darker in the grooves
+    col = hair_colour(P, t_row, shade)
+    side_v = np.tile(fan["sides"], R)
+    J, W = hair_skin(rig, P, side_v)
+    fj, fw = front_skin(rig, P)
+    fr = np.tile(fan["front"], R)
+    J[fr], W[fr] = fj[fr], fw[fr]
+    ck.finish(mesh, P, T, "hair", col, fixed(J, W), wet=1.0, emission=0.0, N=N)
+    # the locks' inner faces down the fall (seen where they part and swing)
+    tail = rows_t >= HAIR_SPLIT_ROW
+    thick = (HAIR_THICK * (1.0 - 0.7 * ck.smoothstep(0.6, 1.0, t_row)))[:, None]
+    Pi = P - N * thick
+    ck.finish(mesh, Pi, ck.flip(T[tail]), "hair", ck.mix(col, PAL["deep_teal_shadow"], 0.4), fixed(J, W), wet=1.0,
+              emission=0.0, N=-N)
+
+
+HAIR_THICK = 0.018
+HAIR_LOCK_W = 0.075  # a lock's width down the fall
+
+
+# the loose locks over the fan: (its path over the head, lift, kind: back | front | wisp, side, end height, half width)
+LOOSE_LOCKS = (
+    dict(u=[(0.1, 0.95, 0.15), (-0.5, 0.72, -0.3), (-0.92, 0.1, -0.45), (-0.6, -0.45, -0.65)],
+         lift=[0.022, 0.04, 0.045, 0.045], kind="back", side=-0.7, end=2.15, w=0.04),
+    dict(u=[(0.09, 0.97, -0.15), (-0.2, 0.8, -0.55), (-0.5, 0.2, -0.85), (-0.35, -0.45, -0.85)],
+         lift=[0.022, 0.04, 0.042, 0.042], kind="back", side=-0.3, end=2.25, w=0.045),
+    dict(u=[(0.14, 0.95, 0.1), (0.55, 0.68, -0.4), (0.85, 0.0, -0.55), (0.55, -0.45, -0.7)],
+         lift=[0.02, 0.038, 0.045, 0.042], kind="back", side=0.6, end=2.2, w=0.04),
+    dict(u=[(-0.75, 0.45, 0.45), (-0.97, 0.0, 0.2), (-0.9, -0.5, 0.0)],
+         lift=[0.03, 0.05, 0.045], kind="front", side=-1.0, end=2.55, w=0.036),
+    dict(u=[(0.08, 0.84, -0.55), (-0.45, 0.4, -0.8), (-0.38, -0.42, -0.85)],
+         lift=[0.025, 0.045, 0.05], kind="back", side=-0.45, end=2.3, w=0.026),
+    dict(u=[(0.78, 0.4, 0.48), (0.95, -0.05, 0.3), (0.86, -0.55, 0.32)],
+         lift=[0.012, 0.03, 0.05], kind="wisp", side=1.0, end=0.0, w=0.014),
+    dict(u=[(-0.72, 0.38, 0.58), (-0.96, -0.1, 0.3), (-0.9, -0.55, 0.3)],
+         lift=[0.03, 0.05, 0.06], kind="wisp", side=-1.0, end=0.0, w=0.012),
+)
+
+
+def loose_lock(mesh: ck.Mesh, rig: ck.Rig, spec: dict) -> None:
+    """A loose lock lying over the combed hair (it softens the crown's shape and the silhouette), or a wisp come
+    free at a temple."""
+    u = sph(np.array(spec["u"], dtype=np.float64))
+    k = len(u)
+    dense_u = sph(spline(u, 8 * k))
+    on, _ = on_head(dense_u, np.interp(np.linspace(0, 1, 8 * k), np.linspace(0, 1, k), spec["lift"]))
+    if spec["kind"] == "back":
+        tail = back_tail(spec["side"], spec["end"], 0.04)
+    elif spec["kind"] == "front":
+        tail = [np.add(FRONT_TAIL[0], (0.0, 0.0, 0.03)), np.add(FRONT_TAIL[1], (0.0, 0.0, 0.03)),
+                np.add(FRONT_TAIL[2], (0.02, 0.0, 0.012)), np.add(FRONT_TAIL[3], (0.03, 0.0, 0.01)),
+                np.array([-0.27, spec["end"], 0.25])]
+    else:
+        tail = []
+    pts = np.vstack([on] + [np.asarray(q, dtype=np.float64)[None] for q in tail])
+    path = resample(spline(pts, 10 * len(pts)), 7 if spec["kind"] == "wisp" else 13)
+    d_head = np.linalg.norm((path - HEAD_C) / HEAD_R, axis=1)
+    w = ck.smoothstep(1.05, 1.5, d_head)[:, None]
+    out = sph(sph((path - HEAD_C) / HEAD_R ** 2) * (1 - w) + sph(path * np.array([1.0, 0.0, 1.0]) + 1e-6) * w)
+    t = np.linspace(0.0, 1.0, len(path))
+    half_w = spec["w"] * (0.5 + 0.5 * ck.smoothstep(0.0, 0.15, t)) * (1.0 - 0.8 * ck.smoothstep(0.55, 1.0, t))
+    P, T = lock_tube(path, out, half_w, np.maximum(half_w * 0.3, 0.003))
+    ring_t = np.r_[np.repeat(t, LOCK_SEGS), 0.0, 1.0]
+    col = hair_colour(P, ring_t if spec["kind"] != "wisp" else ring_t * 0.6, np.full(len(P), 0.7))
+    if spec["kind"] == "front":
+        skin = front_skin(rig, P)
+    elif spec["kind"] == "wisp":
+        i_h = rig.index("head")
+        skin = (np.tile((i_h, i_h), (len(P), 1)), np.tile((1.0, 0.0), (len(P), 1)))
+    else:
+        skin = hair_skin(rig, P, np.full(len(P), spec["side"]))
+    ck.finish(mesh, P, T, "hair", col, fixed(*skin), wet=1.0, emission=0.0)
 
 
 def hair(mesh: ck.Mesh, rig: ck.Rig) -> None:
+    """Her hair: combed from a parting on her left down both sides of her head as one surface of locks, ridged and
+    grooved, its front edge lying along a soft, curved hairline; below the head it parts into locks of falling
+    water, two falling forward over her right shoulder and the rest down her back to about the girdle, the ears
+    under them; their ends break white. Two loose locks lift off the fall. No light in it, so her face is the
+    brightest part of her head."""
     rng = np.random.default_rng(SEED + 5)
-    paths = []
-    for j in range(HAIR_COLS):
-        side = (j / (HAIR_COLS - 1) - 0.5) * 2.0
-        paths.append((hair_path(side, rng, n=HAIR_ROWS), side))
-    P = np.vstack([pth + np.gradient(pth, axis=0) * 0.0 for pth, _ in paths])  # col-major: col j's rows
-    side = np.repeat([sd for _, sd in paths], HAIR_ROWS)
-    t = np.tile(np.linspace(0.0, 1.0, HAIR_ROWS), HAIR_COLS)
-    grid = P.reshape(HAIR_COLS, HAIR_ROWS, 3).transpose(1, 0, 2).reshape(-1, 3)  # row-major for grid_tris
-    side_g = side.reshape(HAIR_COLS, HAIR_ROWS).T.reshape(-1)
-    t_g = t.reshape(HAIR_COLS, HAIR_ROWS).T.reshape(-1)
-    T = ck.grid_tris(HAIR_ROWS, HAIR_COLS, False)
-    inside = np.column_stack([np.zeros(len(T)), grid[T].mean(axis=1)[:, 1], np.zeros(len(T))]) + (0.0, 0.0, 0.05)
-    T = orient(grid, T, inside)
-    N = ck.weld_normals(grid, ck.vertex_normals(grid, T))
-    strand = np.tile((np.arange(HAIR_COLS) % 2) * 1.0 + rng.uniform(-0.3, 0.3, HAIR_COLS), HAIR_ROWS)
-    grid = grid + N * (0.012 * strand * ck.smoothstep(0.0, 0.12, t_g))[:, None]  # the strands, side by side
-    N = ck.weld_normals(grid, ck.vertex_normals(grid, T))
-    shade = np.repeat(rng.uniform(0.0, 1.0, HAIR_COLS)[None], HAIR_ROWS, axis=0).reshape(-1)
-    shade = np.clip(shade * 0.75 + 0.25 * streaks(grid * 2.0, SEED + 14), 0.0, 1.0)  # strand by strand
-    col = hair_colour(grid, t_g, shade)
-    J, W = hair_skin(rig, grid, side_g)
-    em = np.zeros(len(grid))  # no light in the hair: the face is the brightest of her head
     before = mesh.triangle_count
-    ck.finish(mesh, grid, T, "hair", col, fixed(J, W), wet=1.0, emission=em, N=N)
-    Pi = grid - N * HAIR_THICK  # the inner face, against her back
-    ck.finish(mesh, Pi, ck.flip(T), "hair", ck.mix(col, PAL["deep_teal_shadow"], 0.4), fixed(J, W), wet=1.0,
-              emission=em * 0.5, N=-N)
-    # a few loose strands over the sheet, so the fall has depth
-    for k in range(N_STRANDS):
-        sd = -0.8 + 1.6 * k / (N_STRANDS - 1) + float(rng.uniform(-0.08, 0.08))
-        path = hair_path(sd, rng, out=0.035, n=16)
-        n = len(path)
-        tt = np.linspace(0.0, 1.0, n)
-        Ps, Ts = ck.tube(path, 0.05 * (1.0 - 0.7 * tt ** 1.4), 6, cap_start=False, cap_end=True,
-                         up_hint=(1.0, 0.0, 0.0), squash=0.35)
-        ring_t = np.minimum(np.arange(len(Ps)) // 6, n - 1) / (n - 1)
-        Js, Ws = hair_skin(rig, Ps, np.full(len(Ps), sd))
-        ck.finish(mesh, Ps, Ts, "hair", hair_colour(Ps, ring_t, np.full(len(Ps), 0.8)), fixed(Js, Ws), wet=1.0,
-                  emission=0.0)
+    for sign in (-1, 1):
+        hair_fan_mesh(mesh, rig, hair_fan(sign, rng), rng)
+    for spec in LOOSE_LOCKS:
+        loose_lock(mesh, rig, spec)
     count("hair", mesh, before)
 
 
@@ -776,7 +1046,7 @@ RUNNEL_GLOW = 0.16  # a runnel catches more of her light than the still water un
 
 
 ARM_RUNNELS = ((0.15, 0.52, 0.0), (0.6, 0.66, 0.5), (-0.55, 0.45, -0.4))  # (bearing off the outside, end, spiral)
-CHEST_RUNNELS = ((0.035, 2.55), (-0.04, 2.38), (0.33, 2.62), (-0.32, 2.5))  # (x, the tail's height)
+CHEST_RUNNELS = ((0.035, 2.82), (-0.04, 2.72), (0.33, 2.86), (-0.32, 2.78))  # (x, the tail's height)
 
 
 def runnels(mesh: ck.Mesh, rig: ck.Rig) -> None:
@@ -861,11 +1131,8 @@ def hand(mesh: ck.Mesh, rig: ck.Rig, s: float, tag: str) -> None:
 
 
 # ---------------------------------------------------------------------------------------------
-# The robe: four panels of darker water from the girdle, the stole, the girdle of Choir stone
+# The robe: four panels of deep silk from the girdle, the stole, the girdle of Choir stone
 # ---------------------------------------------------------------------------------------------
-ROBE_TONE = 0.55  # how far the robe's water leans to deep_teal_shadow (a garment of deeper water)
-
-
 def panel_surface(tag: str) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """The panel's outer grid (rows down, cols across), its outward normals, and (row t, col s) per vertex."""
     th, w0, w1, hem, _ = PANELS[tag]
@@ -885,7 +1152,7 @@ def panel_surface(tag: str) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndar
             r = 1.0 / math.sqrt((o[0] / hx) ** 2 + (o[2] / hz) ** 2)
             r *= float(fold(a, y))
             r += PANEL_OFF + PANEL_FLARE * float(ck.smoothstep(1.0, 0.1, y))
-            r += 0.022 * math.sin(3.0 * math.pi * s + 1.3 * t) * t  # the cloth's soft folds, deeper to the hem
+            r += FOLD_DEPTH * float(fold_wave(tag, s, t)) * t  # the cloth's soft folds, deeper to the hem
             row.append((o[0] * r, y, o[2] * r))
         rows.append(row)
     P = np.array(rows).reshape(-1, 3)
@@ -897,59 +1164,104 @@ def panel_surface(tag: str) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndar
     return P, T, N, st
 
 
-def robe_colour(P: np.ndarray, edge: np.ndarray) -> np.ndarray:
-    c = water_colour(P, 0.35 * edge, 6)
-    return ck.mix(c, PAL["deep_teal_shadow"], ROBE_TONE * (1.0 - edge)[:, None])
+def fold_wave(tag: str, s, t):
+    """The robe's soft folds across a panel (-1 .. 1 at the crests), deeper toward the hem: each panel has its own
+    count and lean, so the drape isn't a pattern."""
+    k, ph = PANEL_FOLDS[tag]
+    s, t = np.asarray(s, dtype=np.float64), np.asarray(t, dtype=np.float64)
+    return np.sin(k * math.pi * s + 1.3 * t + ph + 0.5 * np.sin(2.3 * t + ph))
+
+
+PANEL_FOLDS = {"f": (3.0, 0.0), "l": (2.4, 1.1), "r": (2.6, 2.3), "b": (3.4, 0.7)}  # folds across, phase
+FOLD_DEPTH = 0.032  # at the hem
+
+
+def robe_colour(P: np.ndarray, edge: np.ndarray, crest: np.ndarray) -> np.ndarray:
+    """The panels' silk, its folds' crests catching the light, a little paler at the panel's edges."""
+    return silk_colour(P, np.maximum(crest, 0.4 * edge), 6)
 
 
 def panels(mesh: ck.Mesh, rig: ck.Rig, mouths: list) -> None:
     rng = np.random.default_rng(SEED + 7)
     for tag in PANELS:
-        th, w0, w1, hem, n_mouths = PANELS[tag]
         P, T, N, st = panel_surface(tag)
         skin = rig.chain([f"robe_{tag}{k}" for k in range(3)], robe_points(tag))
         edge = np.maximum(ck.smoothstep(0.7, 1.0, np.abs(st[:, 1])), ck.smoothstep(0.9, 1.0, st[:, 0]))
-        col = robe_colour(P, edge)
+        crest = ck.smoothstep(0.2, 1.0, fold_wave(tag, st[:, 1], st[:, 0])) * ck.smoothstep(0.0, 0.5, st[:, 0])
+        col = robe_colour(P, edge, crest)
         col = ck.mix(col, PAL["foam_white"], (0.55 * ck.smoothstep(0.9, 1.0, st[:, 0]))[:, None])  # the hem breaks white
-        em = WATER_GLOW * 0.7 * np.ones(len(P))
+        em = ROBE_GLOW * np.ones(len(P))
         before = mesh.triangle_count
         ck.finish(mesh, P, T, "robe", col, skin, wet=1.0, emission=em, N=N)
         Pi = P - N * PANEL_THICK  # the inner face (seen when the robe swings out)
-        ck.finish(mesh, Pi, ck.flip(T), "robe", ck.mix(col, PAL["deep_teal_shadow"], 0.5), skin, wet=1.0,
+        ck.finish(mesh, Pi, ck.flip(T), "robe", ck.mix(col, PAL["abyss_navy"], 0.5), skin, wet=1.0,
                   emission=em * 0.5, N=-N)
         count("robe", mesh, before)
-        # the mouths: carved plaques in flowing vertical bands down the panel, larger toward the hem
-        length = PANEL_TOP - hem
-        for b, s0 in enumerate(MOUTH_BANDS[tag]):
-            ph = float(rng.uniform(0.0, 2.0 * math.pi))
-            t = 0.05 + float(rng.uniform(0.0, 0.04))
-            while True:
-                size = PLAQUE_SIZE[0] + (PLAQUE_SIZE[1] - PLAQUE_SIZE[0]) * t + float(rng.uniform(-0.02, 0.02))
-                tc = t + 0.5 * size / length
-                if tc > 0.9:
-                    break
-                sc = s0 + 0.12 * math.sin(2.4 * math.pi * tc + ph)
-                slope = 0.12 * 2.4 * math.pi * math.cos(2.4 * math.pi * tc + ph)  # ds/dt: the band's lean
-                wm = (w0 + (w1 - w0) * tc ** 1.2) * 0.5
-                roll = math.atan2(slope * wm, length) + math.radians(float(rng.uniform(-7.0, 7.0)))
-                i_t = tc * (PANEL_ROWS - 1)
-                i_s = (sc + 1.0) * 0.5 * (PANEL_COLS - 1)
-                r0, c0 = int(i_t), int(i_s)
-                ft, fs = i_t - r0, i_s - c0
-                idx = lambda rr, cc: min(rr, PANEL_ROWS - 1) * PANEL_COLS + min(cc, PANEL_COLS - 1)  # noqa: E731
-                p = ((1 - ft) * (1 - fs) * P[idx(r0, c0)] + (1 - ft) * fs * P[idx(r0, c0 + 1)]
-                     + ft * (1 - fs) * P[idx(r0 + 1, c0)] + ft * fs * P[idx(r0 + 1, c0 + 1)])
-                nn = N[idx(int(round(i_t)), int(round(i_s)))]
-                down = P[idx(r0 + 1, c0)] - P[idx(r0, c0)]
-                J, W = skin(p[None])
-                mouths.append((p, nn, down, size, roll, J[0], W[0]))
-                t += (size + PLAQUE_GAP) / length
+        mouths.extend(place_plaques(tag, P, N, skin, rng))
 
 
-# the mouths' bands per panel (s across the panel, -1 .. 1) and the plaques' height at the girdle and at the hem
-MOUTH_BANDS = {"f": (-0.42, 0.4), "l": (-0.35, 0.38), "r": (-0.38, 0.35), "b": (-0.55, 0.0, 0.55)}
-PLAQUE_SIZE = (0.22, 0.32)
-PLAQUE_GAP = 0.035
+# the mouths' streams per panel: (s across the panel at the girdle, meander amplitude, weight); how many per panel
+# (fewer on the narrow sides, most on the broad back); the plaques' height at the girdle and at the hem
+MOUTH_STREAMS = {"f": ((-0.45, 0.16, 1.0), (0.38, 0.12, 0.8), (0.0, 0.3, 0.35)),
+                 "l": ((-0.3, 0.2, 1.0), (0.45, 0.1, 0.55)),
+                 "r": ((0.25, 0.18, 1.0), (-0.5, 0.12, 0.5)),
+                 "b": ((-0.6, 0.12, 0.9), (-0.05, 0.22, 1.0), (0.55, 0.15, 0.7))}
+MOUTH_COUNT = {"f": 10, "l": 7, "r": 6, "b": 14}
+PLAQUE_SIZE = (0.2, 0.32)
+
+
+def place_plaques(tag: str, P: np.ndarray, N: np.ndarray, skin, rng: np.random.Generator) -> list:
+    """The carved mouths on one panel, thrown down its streams (not in rows): the density swells and thins down the
+    drape (some heights crowded, some bare), sizes vary, each tilted with its stream's lean, and some sunk into a
+    fold's valley so the cloth hides part of the plaque."""
+    th, w0, w1, hem, _ = PANELS[tag]
+    length = PANEL_TOP - hem
+    streams = [(s0, amp, wgt, float(rng.uniform(0.0, 2.0 * math.pi))) for s0, amp, wgt in MOUTH_STREAMS[tag]]
+    rhythm = float(rng.uniform(0.0, 1.0))
+    placed: list = []
+    out = []
+    for _ in range(6000):
+        if len(placed) >= MOUTH_COUNT[tag]:
+            break
+        t = float(rng.uniform(0.05, 0.88))
+        s = float(rng.uniform(-0.95, 0.95))
+        best, lean = 0.0, 0.0
+        for s0, amp, wgt, ph in streams:
+            sc = s0 + amp * math.sin(2.2 * math.pi * t + ph) + 0.06 * t * math.sin(5.0 * t + ph)
+            dens = wgt * math.exp(-((s - sc) / 0.17) ** 2)
+            if dens > best:
+                best, lean = dens, amp * 2.2 * math.pi * math.cos(2.2 * math.pi * t + ph)
+        band = 0.5 + 0.5 * math.sin(2.0 * math.pi * (1.6 * t + rhythm))  # crowded heights and bare ones
+        if rng.uniform() > best * (0.08 + 0.92 * band * band) * (0.6 + 0.4 * t):
+            continue
+        size = PLAQUE_SIZE[0] + (PLAQUE_SIZE[1] - PLAQUE_SIZE[0]) * t + float(rng.uniform(-0.04, 0.04))
+        half = (w0 + (w1 - w0) * t ** 1.2) * 0.5
+        x, y = s * half, t * length
+        if any(((x - xj) / (0.37 * (size + sj))) ** 2 + ((y - yj) / (0.52 * (size + sj))) ** 2 < 1.0
+               for xj, yj, sj in placed):
+            continue
+        placed.append((x, y, size))
+        i_t = t * (PANEL_ROWS - 1)
+        i_s = (s + 1.0) * 0.5 * (PANEL_COLS - 1)
+        r0, c0 = int(i_t), min(int(i_s), PANEL_COLS - 2)
+        ft, fs = i_t - r0, i_s - c0
+        idx = lambda rr, cc: min(rr, PANEL_ROWS - 1) * PANEL_COLS + min(cc, PANEL_COLS - 1)  # noqa: E731
+        p = ((1 - ft) * (1 - fs) * P[idx(r0, c0)] + (1 - ft) * fs * P[idx(r0, c0 + 1)]
+             + ft * (1 - fs) * P[idx(r0 + 1, c0)] + ft * fs * P[idx(r0 + 1, c0 + 1)])
+        nn = N[idx(int(round(i_t)), int(round(i_s)))]
+        valley = -float(fold_wave(tag, s, t)) * t  # > 0 in a fold's valley
+        hidden = valley > 0.15 and rng.uniform() < 0.75
+        sink = float(rng.uniform(0.008, 0.016)) if hidden else 0.0
+        p = p - nn * sink
+        if hidden:  # tilted into the fold, so the cloth hides one side of it
+            across = P[idx(r0, c0 + 1)] - P[idx(r0, c0)]
+            across = across / max(float(np.linalg.norm(across)), 1e-9)
+            nn = nn * math.cos(0.2) + across * math.sin(0.2) * (1.0 if rng.uniform() < 0.5 else -1.0)
+        down = P[idx(r0 + 1, c0)] - P[idx(r0, c0)]
+        roll = math.atan2(lean * half, length) + math.radians(float(rng.uniform(-12.0, 12.0)))
+        J, W = skin(p[None])
+        out.append((p, nn, down, size, roll, J[0], W[0]))
+    return out
 
 
 def girdle(mesh: ck.Mesh, rig: ck.Rig) -> None:
@@ -958,14 +1270,14 @@ def girdle(mesh: ck.Mesh, rig: ck.Rig) -> None:
     rad = 0.026 + 0.012 * np.abs(np.sin(np.radians(a) * 12.0))  # 24 beads
     P, T = ck.tube(loop, rad, 4, cap_start=False, cap_end=False)
     rng = np.random.default_rng(SEED + 10)
-    col = ck.mix(PAL["cold_blue_stone"], PAL["salt_glass"], rng.uniform(0.1, 0.35, len(P))[:, None])
+    col = choir_stone(rng.uniform(0.5, 0.9, len(P)), rng.uniform(0.0, 0.25, len(P)))
     before = mesh.triangle_count
-    ck.finish(mesh, P, T, "mouths", col, rig.rigid("column_2"), wet=0.6, cavity=0.2)
+    ck.finish(mesh, P, T, "mouths", col, rig.rigid("column_2"), wet=0.2, cavity=0.2)
     count("girdle", mesh, before)
 
 
 MOUTH_PTS = 10  # points round each ring of a plaque and its mouth
-PLAQUE_H = 0.032  # the plaque's thickness off the robe
+PLAQUE_H = 0.026  # the plaque's thickness off the robe
 
 
 def plaque_rings(p, nn, down, size, roll, rng: np.random.Generator) -> tuple[np.ndarray, np.ndarray]:
@@ -981,33 +1293,38 @@ def plaque_rings(p, nn, down, size, roll, rng: np.random.Generator) -> tuple[np.
     m = MOUTH_PTS
     a = np.arange(m) * (2.0 * math.pi / m) + math.pi / m
     ca, sa = np.cos(a), np.sin(a)
-    sq = lambda v: np.sign(v) * np.abs(v) ** 0.6  # noqa: E731 (a squarish, worn tablet)
-    jit = 1.0 + rng.uniform(-0.09, 0.09, m)
-    ox, oy = sq(ca) * size * 0.36 * jit, sq(sa) * size * 0.5 * jit
+    sq = lambda v: np.sign(v) * np.abs(v) ** 0.82  # noqa: E731 (a rounded, worn tablet, never a cut nut)
+    r1, r2 = rng.uniform(0.0, 2.0 * math.pi, 2)
+    jit = 1.0 + 0.1 * np.sin(2.0 * a + r1) + 0.06 * np.sin(3.0 * a + r2) + rng.uniform(-0.05, 0.05, m)
+    chip = int(rng.integers(0, m))  # a broken corner on some
+    if rng.uniform() < 0.5:
+        jit[chip] *= 0.78
+    aspect = float(rng.uniform(0.35, 0.4))
+    ox, oy = sq(ca) * size * aspect * jit, sq(sa) * size * 0.5 * jit
     wide = float(rng.uniform(0.0, 1.0))  # some sing "o", some "ah"
-    w, h = size * (0.17 + 0.06 * wide), size * (0.22 - 0.04 * wide)
+    w, h = size * (0.18 + 0.07 * wide), size * (0.22 - 0.05 * wide)  # "o" taller, "ah" wider; inside the edge
     cy = -size * 0.04  # the mouth sits a little low on its plaque
     crook = float(rng.uniform(-0.12, 0.12))  # one corner a little higher
     lower = np.clip(sa, 0.0, 1.0)  # +d is down
     upper = np.clip(-sa, 0.0, 1.0)
     pinch = 1.0 - 0.4 * ca ** 4
-    crest = size * (0.035 + 0.03 * np.abs(sa) + 0.025 * lower) - size * 0.025 * upper * np.exp(-(ca / 0.3) ** 2)
+    crest = size * (0.05 + 0.035 * np.abs(sa) + 0.035 * lower) - size * 0.025 * upper * np.exp(-(ca / 0.3) ** 2)
 
     def ring(rx, ry, lift, dy=0.0):
         yy = ry + dy + crook * rx
         return p + np.outer(lift, n) + np.outer(rx, side) + np.outer(yy, d)
 
-    rings = [ring(ox, oy, np.full(m, 0.004)), ring(ox * 0.9, oy * 0.92, np.full(m, PLAQUE_H)),
-             ring(ca * w * 1.25, sa * h * 1.25, np.full(m, PLAQUE_H), cy),
+    rings = [ring(ox, oy, np.full(m, 0.004)), ring(ox * 0.88, oy * 0.9, np.full(m, PLAQUE_H * 0.85)),
+             ring(ca * w * 1.15, sa * h * 1.22, np.full(m, PLAQUE_H), cy),
              ring(ca * w, sa * h * pinch, PLAQUE_H + crest, cy),
              ring(ca * w * 0.72, sa * h * 0.66 * pinch, np.full(m, PLAQUE_H - 0.004), cy),
              ring(ca * w * 0.45, sa * h * 0.38 * pinch, np.full(m, PLAQUE_H - 0.02), cy)]
-    floor = p + n * (PLAQUE_H - 0.026) + d * cy
+    floor = p + n * (PLAQUE_H - 0.024) + d * cy
     return np.vstack(rings), floor
 
 
 def mouths_mesh(mesh: ck.Mesh, mouths: list) -> None:
-    """Each mouth: a worn plaque of Choir stone set into the robe's water, a singer's open mouth carved in it, the
+    """Each mouth: a worn plaque of Choir stone set into the robe's silk, a singer's open mouth carved in it, the
     lips pale and worn smooth, the opening dark and lit faintly from within."""
     rng = np.random.default_rng(SEED + 11)
     m = MOUTH_PTS
@@ -1020,17 +1337,19 @@ def mouths_mesh(mesh: ck.Mesh, mouths: list) -> None:
         P = np.vstack([rings, floor[None]])
         n = nn / np.linalg.norm(nn)
         T = orient(P, T0, np.tile(p - n * 0.5, (len(T0), 1)))
-        stone = ck.mix(ck.mix(PAL["cold_blue_stone"], PAL["deep_teal_shadow"], 0.35), PAL["salt_glass"],
-                       float(rng.uniform(0.05, 0.2)))
-        worn = rng.uniform(-0.06, 0.06, (m, 1))
-        col = np.vstack([ck.mix(stone, PAL["abyss_navy"], 0.25) + worn, stone + worn,
-                         ck.mix(stone, PAL["salt_glass"], 0.2) + worn, np.tile(ck.mix(stone, PAL["salt_glass"], 0.5), (m, 1)),
-                         np.tile(ck.mix(stone, PAL["abyss_navy"], 0.5), (m, 1)), np.tile(PAL["abyss_navy"], (m, 1)),
+        # the Choir's weathered white ceramic, a warm pale stone set into the dark silk: the foot a little dirtier,
+        # the face worn, the lips palest, the opening dark with her light inside
+        stone = ck.mix(choir_stone(float(rng.uniform(0.55, 0.9)), float(rng.uniform(0.0, 0.25)))[0], PAL["storm_slate"],
+                       float(rng.uniform(0.18, 0.3)))  # weathered: a mid-pale stone under a bright key, never white
+        worn = rng.uniform(-0.05, 0.05, (m, 1))
+        col = np.vstack([ck.mix(stone, PAL["storm_slate"], 0.35) + worn, stone + worn,
+                         ck.mix(stone, PAL["bone"], 0.15) + worn, np.tile(ck.mix(stone, PAL["lit_ceramic"], 0.7), (m, 1)),
+                         np.tile(ck.mix(stone, PAL["storm_slate"], 0.55), (m, 1)), np.tile(PAL["abyss_navy"], (m, 1)),
                          PAL["abyss_navy"][None]])
         col = np.clip(col, 0.0, 1.0)
         em = np.r_[np.zeros(4 * m), np.full(m, MOUTH_GLOW * 0.25), np.full(m, MOUTH_GLOW * 0.6), MOUTH_GLOW]
-        cav = np.r_[np.full(m, 0.5), np.full(m, 0.1), np.zeros(m), np.zeros(m), np.full(m, 0.5), np.full(m, 0.8), 0.9]
-        ck.finish(mesh, P, T, "mouths", col, fixed(np.tile(J, (len(P), 1)), np.tile(W, (len(P), 1))), wet=0.25,
+        cav = np.r_[np.full(m, 0.6), np.full(m, 0.15), np.zeros(m), np.zeros(m), np.full(m, 0.5), np.full(m, 0.8), 0.9]
+        ck.finish(mesh, P, T, "mouths", col, fixed(np.tile(J, (len(P), 1)), np.tile(W, (len(P), 1))), wet=0.1,
                   cavity=cav, emission=em)
     PARTS["mouth_count"] = len(mouths)
     count("mouths", mesh, before)
@@ -1267,7 +1586,7 @@ LOW_HAND = ((-6.0, 0.0, -7.0), (-18.0, 0.0, 0.0), (0.0, 8.0, 0.0))  # the right 
 def build_idle() -> ck.Clip:
     """She stands with her left palm over her heart, the right hand low and loose, her weight a little to one side
     (the column leans, the spine answers), her head tilted and turned three-quarters to the camera, eyes closed. The
-    column sways as one, the hair sheet falls and falls (its chains sway, lagging down them), she breathes. This is the
+    column sways as one, the hair falls and falls (its chains sway, lagging down them), she breathes. This is the
     base every other clip is played from."""
     c = ck.Clip("idle", IDLE_SEC, loop=True)
     c.wave("root", cycles=1)

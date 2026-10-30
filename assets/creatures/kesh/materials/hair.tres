@@ -5,14 +5,14 @@
 [resource]
 resource_name = "hair"
 shader = ExtResource("1_shader")
-shader_parameter/clearcoat_wet = 0.5
+shader_parameter/clearcoat_wet = 0.2
 shader_parameter/detail_albedo = 0.2
 shader_parameter/detail_bump = 1.2
 shader_parameter/detail_scale = 22
 shader_parameter/emission_color = Color(0.309804, 0.701961, 0.690196, 1)
 shader_parameter/emission_energy = 1.6
-shader_parameter/rim_sheen = 0.5
-shader_parameter/roughness_dry = 0.4
-shader_parameter/roughness_wet = 0.22
+shader_parameter/rim_sheen = 0.35
+shader_parameter/roughness_dry = 0.45
+shader_parameter/roughness_wet = 0.38
 shader_parameter/specular = 0.45
 shader_parameter/wet_darken = 1
