@@ -892,7 +892,7 @@ farthest any bone moves on screen from the idle's first frame, and its peak spee
 | Undertow's Reach | 1016 | **40 / v17** | 60 / v44 | 49 / v4 | 81 / v13 | breach_gather 607, phase_breach 471 |
 
 - Every hit is a fast jolt against a slow idle (5 to 70 times the idle's speed), and every tell moves well past the
-  idle, **except the Reach's ** (and , made from it). At 17 px per 0.05 s on a body that fills the
+  idle, **except the Reach's `hit`** (and `hit_dark`, made from it). At 17 px per 0.05 s on a body that fills the
   screen, it barely beat its own ready loop: the shudder ran along the view axis. (Its mirrored hit_b crossed the
   screen at 44.)
 - **MERGE-READY @ de6c131bf: the Reach's hit throws the hand up and aside off the wall-head**, with a stronger shudder up the
