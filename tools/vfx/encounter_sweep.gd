@@ -28,6 +28,7 @@ const MAX_FAST_STEPS := 4000
 const MAX_FRAMES := 60 * 240  # a fight that has not ended in 4 minutes of real pacing goes fast
 const DEAD_MIN_SEC := 0.6
 const SCREEN_MARGIN := 0.02
+const OUTRO_AT_SEC := 0.55
 ## The chapter from which each Act I Vowbound is bound (its call is shot from then on).
 const BOUND_FROM := {&"ilun": 4, &"kahre": 6, &"virel": 9}
 
@@ -192,8 +193,14 @@ func _sweep(enc: StringName, out: String) -> Dictionary:
 			await get_tree().process_frame
 			if _ctl.state == BattleController.STATE_COMMAND and engine.is_party_turn() and not choreo.playing():
 				_ctl.act(&"attack", [last.id] as Array[StringName])
-	for i in 150:  # the victory beat (BattleOutro's poses), before the result panel
+	# The victory beat: BattleOutro's poses, shot mid-way (it starts once the last action's sequence has played).
+	var outro := choreo.outro
+	var waited := 0
+	while waited < 60 * 8 and not (outro != null and outro.playing != &"" and outro.elapsed >= OUTRO_AT_SEC):
+		waited += 1
 		await get_tree().process_frame
+	if outro == null or outro.playing == &"":
+		_checks["no_outro"] = true
 	await _capture("end_" + String(engine.outcome))
 	_checks["outcome"] = String(engine.outcome)
 	_checks["actions"] = actions
