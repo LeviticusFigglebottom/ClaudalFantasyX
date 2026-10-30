@@ -20,4 +20,10 @@ Place the built kit (M3-ENV-721) in the city, the Sanctum and the Archive; Ansed
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). Plan §2 Ch13.
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
 
+- 2026-10-30 (env-art): **built**, `tools/act2/ch13_ansedra_dressing.py`. Ansedra's walks and buildings and the two
+  interiors are built from the greybox (`ansedra_zones.py`; ansedra.md's revision line is the swap map), with the
+  kit's domes and skyline round them. lut_ch13_still. env-art's previews (`game/levels/_tests/ch13_zones/`) were
+  viewed at thirty cameras. Tests: `tools/tests/test_ch13_ansedra_dressing.py`. The mount is chapters'
+  (M4-A2P-0431); the mirror water mode is rendering's (M4-A2P-047).
+
 ## Review log

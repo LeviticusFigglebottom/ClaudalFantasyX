@@ -220,7 +220,9 @@
                   "game/levels/ch12/keth_pass/keth_pass_layout.json",
                   "game/levels/ch12/quellan/quellan_layout.json",
                   "game/levels/ch12/cloudloom/cloudloom_layout.json",
-                  "game/levels/ch13/ansedra/ansedra_layout.json"],
+                  "game/levels/ch13/ansedra/ansedra_layout.json",
+                  "game/levels/ch13/sanctum/sanctum_layout.json",
+                  "game/levels/ch13/lamp_archive/lamp_archive_layout.json"],
       "outputs": ["assets/environments/kits/haluna/*.glb", "assets/environments/kits/haluna/kit_manifest.json"],
       "runs": [
         ["{blender}", "--python", "assets_src/environments/kits/haluna/build.py", "--", "--all", "--out-dir", "assets/environments/kits/haluna", "--manifest", "assets/environments/kits/haluna/kit_manifest.json"]

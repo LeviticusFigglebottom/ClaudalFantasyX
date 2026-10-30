@@ -16,6 +16,13 @@ moulding). On them, built on their greybox blocks:
                      footprint with the door on the trigger's side, the kit's lacquer drums and gilt bowl over it), the
                      polers' two barges at the moorings
   ansedra_ground     the lagoon's bed (vey_zones' bed, round this greybox's walks)
+  ansedra_sanctum    the Sanctum of the Level (ch13/sanctum): lowlight_zones' rooms on its walls in whitewash, marble and
+                     gilt (`_INTERIOR_SKIN`), the nave's pointed vault, the basin built on its blocks (marble kneeling
+                     ledges, the salt-glass floor over bound light, the still water a zone `waters` row), the apse
+  ansedra_archive    the Lamp Archive (ch13/lamp_archive): its reading room the same way, the two reading tables with
+                     the ledgers and the Cantor roll on them
+  ansedra_archive_stacks_w/_e  the ledger cases on the stack blocks (red lacquer, the ledgers' spines in rows), a side
+                     a piece
 
 Origin at the zone's origin (the greybox's frame); the walks' tops at y 0 as the greybox's.
 """
@@ -31,12 +38,14 @@ import numpy as np
 import ansedra as an
 import kit_common as kc
 import lowlight as ll
+import lowlight_zones as lz
 import vey_zones as vz
 
 ROOT = Path(__file__).resolve().parents[4]
 LAYOUT = ROOT / "game" / "levels" / "ch13" / "ansedra" / "ansedra_layout.json"
 TRI_BUDGET = {"ansedra_walks_n": (90000, 6000), "ansedra_walks_we": (90000, 6000), "ansedra_buildings": (60000, 4000),
-              "ansedra_ground": (40000, 2500)}
+              "ansedra_ground": (40000, 2500), "ansedra_sanctum": (90000, 6000), "ansedra_archive": (60000, 4000),
+              "ansedra_archive_stacks_w": (45000, 600), "ansedra_archive_stacks_e": (45000, 600)}
 
 WATER_Y = -0.3
 ORDER = ("Moorings", "Centre", "CorranIsle", "ArchiveIsle", "SanctumIsle", "CausewayN", "CausewayW", "CausewayE",
@@ -54,6 +63,18 @@ DOOR_W = 2.4
 DOOR_H = 3.0
 LAMP_TOP = 2.9
 HOUSE_DOME_S = 0.48
+
+
+# The Lit Age's rooms to the Order's: the ceramic panels whitewash, the grey stone order marble, the cornice conduit and
+# the niches' copper trim-arms gilt (the Order's lamps hold the bound light; its walls don't).
+_INTERIOR_SKIN = {ll.M_CERAMIC: M_WALL, ll.M_STONE: an.M_STONE, ll.M_CONDUIT: an.M_GILT, ll.M_COPPER: an.M_GILT}
+CH13 = ROOT / "game" / "levels" / "ch13"
+NAVE_TOP = 10.0
+NAVE_CROWN = 16.0
+ARCHIVE_TOP = 8.0
+ARCHIVE_CROWN = 11.0
+BASIN_FLOOR_Y = -0.9
+STILL_Y = -0.1  # the basin's still water (sanctum_basin: "fills it to y -0.1")
 
 
 def layout() -> dict:
@@ -293,9 +314,215 @@ def build_ground(seed: int = 1861) -> list[kc.MeshBuilder]:
     return out
 
 
+def _interior(mb: kc.MeshBuilder) -> kc.MeshBuilder:
+    mb.materials = [_INTERIOR_SKIN.get(m, m) for m in mb.materials]
+    return mb
+
+
+def _zone_blocks(zone: str) -> dict:
+    lay = json.loads((CH13 / zone / f"{zone}_layout.json").read_text(encoding="utf-8"))
+    return {b["id"]: b for b in lay["blocks"]}
+
+
+def build_sanctum(seed: int = 1864) -> list[kc.MeshBuilder]:
+    bl = _zone_blocks("sanctum")
+    bx0, bx1, _, _, bz0, bz1 = _box(bl["Basin"])
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("ansedra_sanctum", seed)
+        noise = kc.Noise3(rng)
+        sub = kc.MeshBuilder("rooms")
+        lz._room(sub, rng, noise, bl, "Vestibule", [i for i in bl if i.startswith("VestibuleWall")], 6.0, lod)
+        lz._room(sub, rng, noise, bl, "Nave", [i for i in bl if i.startswith("NaveWall")], NAVE_TOP, lod,
+                 clip_z=(_box(bl["Nave"])[4], _box(bl["VestibuleWallN0"])[4]),
+                 skip=lambda x, z: bx0 - 0.5 < x < bx1 + 0.5 and bz0 - 0.5 < z < bz1 + 0.5)
+        nx0, nx1, _, _, nz0, nz1 = _box(bl["Nave"])
+        lz._vault(sub, rng, nx0 - 0.25, nx1 + 0.25, nz0 - 0.25, nz1 + 0.25, NAVE_TOP, NAVE_CROWN, "z", lod)
+        vx0, vx1, _, _, vz0, vz1 = _box(bl["Vestibule"])
+        lz._vault(sub, rng, vx0 - 0.25, vx1 + 0.25, vz0, vz1 + 0.25, 6.0, 8.5, "x", lod, ends=False)
+        g = bl["GateStep"]
+        gx0, gx1, _, gy1, gz0, gz1 = _box(g)
+        lz._flags(sub, rng, noise, gx0, gx1, gz0, gz1, gy1, lod)
+        mb = kc.MeshBuilder("ansedra_sanctum" + ("-lod1" if lod else ""))
+        mb.merge(_interior(sub))
+        _basin(mb, rng, noise, bl, lod)
+        _apse(mb, rng, bl["Apse"], lod)
+        out.append(mb)
+    return out
+
+
+def _basin(mb, rng, noise, bl: dict, lod: bool) -> None:
+    """The basin on its blocks: marble walls down from the floor to the salt-glass floor over the bound light (the light
+    that never moves), the kneeling ledges in marble with a red-lacquer kneeling board along each."""
+    bx0, bx1, _, _, bz0, bz1 = _box(bl["Basin"])
+    marble, glass, core = mb.material(an.M_STONE), mb.material(an.M_GLASS), mb.material(an.M_CORE)
+    for (cx, cz, hx, hz) in (((bx0 + bx1) / 2, bz0 - 0.15, (bx1 - bx0) / 2 + 0.3, 0.15),
+                             ((bx0 + bx1) / 2, bz1 + 0.15, (bx1 - bx0) / 2 + 0.3, 0.15),
+                             (bx0 - 0.15, (bz0 + bz1) / 2, 0.15, (bz1 - bz0) / 2),
+                             (bx1 + 0.15, (bz0 + bz1) / 2, 0.15, (bz1 - bz0) / 2)):
+        kc.rounded_block(mb, (cx, (BASIN_FLOOR_Y - 0.2) / 2, cz), (hx, (0.0 - BASIN_FLOOR_Y + 0.2) / 2, hz), marble,
+                         radius=0.02, seg=1, weather=an.STONE_W)
+    # The marble surround on the nave's floor, under the ledges and out past the flags' cut round the basin.
+    for (cx, cz, hx, hz) in (((bx0 + bx1) / 2, bz0 - 0.85, (bx1 - bx0) / 2 + 1.3, 0.55),
+                             ((bx0 + bx1) / 2, bz1 + 0.85, (bx1 - bx0) / 2 + 1.3, 0.55),
+                             (bx0 - 0.85, (bz0 + bz1) / 2, 0.55, (bz1 - bz0) / 2 + 0.3),
+                             (bx1 + 0.85, (bz0 + bz1) / 2, 0.55, (bz1 - bz0) / 2 + 0.3)):
+        kc.rounded_block(mb, (cx, -0.05, cz), (hx, 0.05, hz), marble, radius=0.01, seg=1, weather=an.STONE_W)
+    # The bound light under the floor (an emissive bed), the salt-glass tiles over it.
+    kc.rounded_block(mb, ((bx0 + bx1) / 2, BASIN_FLOOR_Y - 0.12, (bz0 + bz1) / 2), ((bx1 - bx0) / 2, 0.02,
+                                                                                      (bz1 - bz0) / 2), core,
+                     radius=0.0, seg=1)
+    if lod:
+        kc.rounded_block(mb, ((bx0 + bx1) / 2, BASIN_FLOOR_Y - 0.04, (bz0 + bz1) / 2), ((bx1 - bx0) / 2, 0.04,
+                                                                                          (bz1 - bz0) / 2), glass,
+                         radius=0.0, seg=1)
+    else:
+        for x in np.arange(bx0, bx1 - 0.01, 1.0):
+            for z in np.arange(bz0, bz1 - 0.01, 1.0):
+                kc.rounded_block(mb, (x + 0.5, BASIN_FLOOR_Y - 0.04, z + 0.5), (0.47, 0.04, 0.47), glass, radius=0.01,
+                                 seg=1)
+    for b in bl.values():
+        if not b["id"].startswith("KneelingLedge"):
+            continue
+        x0, x1, y0, y1, z0, z1 = _box(b)
+        kc.rounded_block(mb, ((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2), ((x1 - x0) / 2, (y1 - y0) / 2,
+                                                                            (z1 - z0) / 2), marble,
+                         radius=0.04, seg=1, weather=an.STONE_W)
+        if not lod:
+            kc.rounded_block(mb, ((x0 + x1) / 2, y1 + 0.015, (z0 + z1) / 2), ((x1 - x0) / 2 - 0.05, 0.015,
+                                                                            (z1 - z0) / 2 - 0.05),
+                             mb.material(an.M_LACQUER), radius=0.01, seg=1)
+
+
+def _apse(mb, rng, a: dict, lod: bool) -> None:
+    """The apse screen at the nave's head (Ethren's place before it): three tall red-lacquer panels in marble frames,
+    gilt over them, a gilt bowl's relief over the middle one."""
+    x0, x1, y0, y1, z0, z1 = _box(a)
+    face = z1 + 0.02
+    marble, lac, gilt = mb.material(an.M_STONE), mb.material(an.M_LACQUER), mb.material(an.M_GILT)
+    kc.rounded_block(mb, ((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2), ((x1 - x0) / 2, (y1 - y0) / 2, (z1 - z0) / 2),
+                     marble, radius=0.03, seg=1, weather=an.STONE_W)
+    if lod:
+        return
+    for k, x in enumerate((-5.0, 0.0, 5.0)):
+        h = 6.5 if k == 1 else 5.2
+        kc.rounded_block(mb, (x, 0.6 + h / 2, face + 0.04), (1.5, h / 2, 0.04), lac, radius=0.01, seg=1)
+        kc.rounded_block(mb, (x, 0.6 + h + 0.12, face + 0.06), (1.7, 0.08, 0.08), gilt, radius=0.01, seg=1)
+        for sx in (-1.0, 1.0):
+            kc.rounded_block(mb, (x + sx * 1.62, 0.6 + h / 2, face + 0.07), (0.12, h / 2 + 0.1, 0.08), marble,
+                             radius=0.02, seg=1)
+    t = np.linspace(0.0, 1.0, 9)
+    bowl = np.stack([np.zeros(9), 7.6 + 1.0 * t, np.full(9, face + 0.1)], -1)
+    kc.tube(mb, bowl, 1.2 * np.sqrt(np.clip(1.0 - t ** 2, 0.0, 1.0)) + 0.01, 16, gilt)
+
+
+def build_archive(seed: int = 1865) -> list[kc.MeshBuilder]:
+    bl = _zone_blocks("lamp_archive")
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("ansedra_archive", seed)
+        noise = kc.Noise3(rng)
+        sub = kc.MeshBuilder("rooms")
+        lz._room(sub, rng, noise, bl, "ReadingRoom", [i for i in bl if i.startswith("ReadingRoomWall")], ARCHIVE_TOP,
+                 lod, niches=False)
+        rx0, rx1, _, _, rz0, rz1 = _box(bl["ReadingRoom"])
+        lz._vault(sub, rng, rx0 - 0.25, rx1 + 0.25, rz0 - 0.25, rz1 + 0.25, ARCHIVE_TOP, ARCHIVE_CROWN, "z", lod)
+        d = bl["DoorStep"]
+        dx0, dx1, _, dy1, dz0, dz1 = _box(d)
+        lz._flags(sub, rng, noise, dx0, dx1, dz0, dz1, dy1, lod)
+        mb = kc.MeshBuilder("ansedra_archive" + ("-lod1" if lod else ""))
+        mb.merge(_interior(sub))
+        _table(mb, rng, bl["LedgerTable"], "ledgers", lod)
+        _table(mb, rng, bl["RollTable"], "roll", lod)
+        out.append(mb)
+    return out
+
+
+def build_archive_stacks(side: str, seed: int) -> list[kc.MeshBuilder]:
+    """One side's ledger cases (`W` or `E`: a side a piece, each under the 5 MB file rule)."""
+    bl = _zone_blocks("lamp_archive")
+    name = f"ansedra_archive_stacks_{side.lower()}"
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for(name, seed)
+        mb = kc.MeshBuilder(name + ("-lod1" if lod else ""))
+        for b in bl.values():
+            if b["id"].startswith("Stack") and b["id"].endswith(side):
+                _ledger_case(mb, rng, b, lod)
+        out.append(mb)
+    return out
+
+
+def _ledger_case(mb, rng, b: dict, lod: bool) -> None:
+    """A lacquered ledger case on a stack block (both long faces shelved): red-lacquer carcass and shelves, the ledgers'
+    spines in rows (dark, sand and red bindings, a few lying flat), a gilt cornice."""
+    x0, x1, y0, y1, z0, z1 = _box(b)
+    cx, cz, hx, hz = (x0 + x1) / 2, (z0 + z1) / 2, (x1 - x0) / 2, (z1 - z0) / 2
+    lac, gilt = mb.material(an.M_LACQUER), mb.material(an.M_GILT)
+    kc.rounded_block(mb, (cx, (y0 + y1) / 2, cz), (hx, (y1 - y0) / 2, hz * 0.3), lac, radius=0.01, seg=1)
+    for sx in (-1.0, 1.0):
+        kc.rounded_block(mb, (cx + sx * (hx - 0.05), (y0 + y1) / 2, cz), (0.05, (y1 - y0) / 2, hz), lac, radius=0.01,
+                         seg=1)
+    kc.rounded_block(mb, (cx, y1 - 0.08, cz), (hx + 0.06, 0.08, hz + 0.06), lac, radius=0.01, seg=1)
+    if lod:
+        return
+    kc.rounded_block(mb, (cx, y1 - 0.2, cz), (hx + 0.07, 0.03, hz + 0.07), gilt, radius=0.005, seg=1)
+    bind = [mb.material(m) for m in ("kit_interior_dark", an.M_PAPER, an.M_LACQUER, an.M_BLACK)]
+    for y in np.arange(y0 + 0.35, y1 - 0.5, 0.6):
+        kc.rounded_block(mb, (cx, y - 0.02, cz), (hx - 0.1, 0.02, hz), lac, radius=0.005, seg=1)  # the shelf
+        for sz in (-1.0, 1.0):
+            x = x0 + 0.12
+            while x < x1 - 0.18:
+                w = rng.uniform(0.08, 0.16)
+                h = rng.uniform(0.32, 0.46)
+                if rng.random() < 0.06:  # a gap, or a ledger lying flat
+                    if rng.random() < 0.5:
+                        kc.rounded_block(mb, (x + 0.15, y + 0.03, cz + sz * hz * 0.62), (0.15, 0.03, 0.11),
+                                         bind[int(rng.integers(0, 4))], radius=0.005, seg=1)
+                    x += 0.32
+                    continue
+                kc.rounded_block(mb, (x + w / 2, y + h / 2, cz + sz * hz * 0.62), (w / 2 - 0.004, h / 2, 0.12),
+                                 bind[int(rng.integers(0, 4))], rot=kc.rot_z(rng.normal(0, 0.03)), radius=0.004, seg=1)
+                x += w
+
+
+def _table(mb, rng, b: dict, what: str, lod: bool) -> None:
+    """A reading table on its block: a red-lacquer top on turned marble legs, with the founders' lamp-ledgers laid side
+    by side open on it, or the Cantor roll half unrolled with its weights."""
+    x0, x1, y0, y1, z0, z1 = _box(b)
+    cx, cz, hx, hz = (x0 + x1) / 2, (z0 + z1) / 2, (x1 - x0) / 2, (z1 - z0) / 2
+    lac, marble = mb.material(an.M_LACQUER), mb.material(an.M_STONE)
+    kc.rounded_block(mb, (cx, y1 - 0.04, cz), (hx, 0.04, hz), lac, radius=0.015, seg=1)
+    for sx in (-1.0, 1.0):
+        for sz in (-1.0, 1.0):
+            kc.tube(mb, np.array([[cx + sx * (hx - 0.15), y0, cz + sz * (hz - 0.2)],
+                                  [cx + sx * (hx - 0.15), y1 - 0.08, cz + sz * (hz - 0.2)]]),
+                    np.array([0.06, 0.045]), 4 if lod else 8, marble)
+    if lod:
+        return
+    paper = mb.material(M_WALL)  # off-white leaves (kit_cloth_sand read green under the grade)
+    if what == "ledgers":
+        for k in range(3):  # three ledgers open side by side along the table
+            z = cz - hz + 0.7 + k * (2 * hz - 1.4) / 2
+            for sx in (-1.0, 1.0):
+                kc.rounded_block(mb, (cx + sx * 0.2, y1 + 0.02, z), (0.19, 0.015, 0.27), paper,
+                                 rot=kc.rot_z(sx * 0.06), radius=0.004, seg=1)
+            kc.rounded_block(mb, (cx, y1 + 0.01, z), (0.41, 0.01, 0.29), mb.material(an.M_BLACK), radius=0.004, seg=1)
+    else:
+        kc.rounded_block(mb, (cx, y1 + 0.012, cz - 0.4), (0.32, 0.006, 1.2), paper, radius=0.003, seg=1)
+        for z in (cz - 1.6, cz + 0.85):
+            kc.tube(mb, np.array([[cx - 0.36, y1 + 0.05, z], [cx + 0.36, y1 + 0.05, z]]), 0.045, 10, paper)
+            kc.tube(mb, np.array([[cx - 0.42, y1 + 0.05, z], [cx + 0.42, y1 + 0.05, z]]), 0.015, 6,
+                    mb.material(an.M_GILT))
+
+
 TARGETS = {
     "ansedra_walks_n": lambda: build_walks("ansedra_walks_n", 1862),
     "ansedra_walks_we": lambda: build_walks("ansedra_walks_we", 1863),
     "ansedra_buildings": build_buildings,
     "ansedra_ground": build_ground,
+    "ansedra_sanctum": build_sanctum,
+    "ansedra_archive": build_archive,
+    "ansedra_archive_stacks_w": lambda: build_archive_stacks("W", 1866),
+    "ansedra_archive_stacks_e": lambda: build_archive_stacks("E", 1867),
 }

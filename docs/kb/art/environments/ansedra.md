@@ -79,3 +79,23 @@ cold: wealth, not warmth.
 - 2026-10-27 (env-art, M3-ENV-721): first issue, with the Ch14 boss arena.
 - 2026-10-27 (env-art, M3-ENV-721): the zone pieces (`lacquer_hall`, `lacquer_court_ground`, `sanctum_basin`,
   `archive_stacks`) and composition notes.
+- 2026-10-30 (env-art, M4-A2P-043): the three Ch13 zones dressed (`tools/act2/ch13_ansedra_dressing.py`).
+  - **The swap.** Ansedra's greybox is the Sunken Vey's grammar: 3.6 m causeways railed at ±2 m, low-walled isles,
+    the water at −0.3. Its walks are vey_zones' builders on this greybox (`ansedra_zones.py`), re-dressed in the
+    Order's marble and gilt. On them stand:
+    - the Order lamps on the lamp blocks;
+    - Sefir's and Corran's houses on theirs;
+    - the Archive's and the Sanctum's domes, each a square base storey on the greybox footprint with its door on the
+      trigger's side, the kit's lacquer drums and gilt bowl above;
+    - the polers' barges.
+
+    Round them are fourteen bowl-domes on their islands (clear of every walk; tested) and the far skyline.
+  - **Interiors.** The Sanctum and the Archive are lowlight_zones' rooms in whitewash, marble and gilt:
+    - **Sanctum:** the basin on its blocks (marble kneeling ledges, salt-glass tiles over the bound light, the still
+      water a `waters` row) and the apse screen.
+    - **Archive:** red-lacquer ledger cases on the stack blocks, and the reading tables with the ledgers and the
+      Cantor roll.
+  - **The grade.** `lut_ch13_still` (`ansedra_zone_lut.py`, to colour script ch13) under an overcast-grey sky. The
+    lagoon is a still mirror (roughness 0, no ripple or foam) until rendering's mirror mode (M4-A2P-047) lands.
+  - **The mount** is chapters' (M4-A2P-0431).
+
