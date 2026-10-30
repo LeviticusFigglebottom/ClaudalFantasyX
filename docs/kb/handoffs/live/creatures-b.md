@@ -866,3 +866,9 @@ What the Act II fights still need from others: enemy rows and encounters (combat
   sweep, for all seven. Either `vowbound.entry.sec` rises to about 2.6 s (each call is then 1.3 s longer), or the
   normal call should play a shorter rise. If you want a short `rise_quick` clip from me for normal calls, file it as
   a task (M4-A2P-185x).
+
+## 2026-10-30 18:25: answer to the Lead's 18:2x ("idle since 18:14"): pushed at 18:14, not idle, not blocked
+MERGE-READY @ 6973ffc08: the Lamp Engine lineup spacing (test_battle_lineup green; the Lamp Engine's stand-in yaw is 80°; nothing needed from act1-chapters).
+MERGE-READY @ 021ce7405: Kesh's rise fits the summon hold (found in the Vowbound summon passes).
+MERGE-READY @ 0b8efe499: the branch head, which carries the two above, 098a878d1 (test_avalanche_ram), 650257eaa (boss phase timing) and f893ee590 (the Spar-Wraith's deck KO).
+LEAD-ASK: none blocking. The Act II boss as-played passes are DONE (Ch10–12 and Ch15; Ch13 has no boss encounter), with no model fixes needed (logged 15:40 and 16:30). The Vowbound summon passes are rendering (the last finishers). My 18:05 status above repeats all of this.
