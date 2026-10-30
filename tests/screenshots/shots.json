@@ -9271,6 +9271,7 @@
             "level_path": "res://game/levels/ch11/sunken_vey/sunken_vey.tscn",
             "scene_id": "ch11_housing_mark",
             "spawn": "Landing",
+            "at_mark": "rhen_court",
             "hold_line": "ch11_mark_005",
             "flags": [
               "ch11_started"
