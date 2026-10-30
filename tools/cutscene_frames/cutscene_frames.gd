@@ -149,7 +149,8 @@ func _watch_cut() -> void:
 
 ## "player=<pos> visible=<bool> cam=<pos>" for --log-player.
 func _positions() -> String:
-	var player := get_tree().get_first_node_in_group(&"player") as Node3D
+	var found := get_tree().root.find_children("*", "FieldController", true, false)
+	var player := found[0] as Node3D if not found.is_empty() else null
 	var cam := player.get_viewport().get_camera_3d() if player != null else null
 	return (
 		"player=%s visible=%s cam=%s"
