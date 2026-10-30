@@ -972,3 +972,21 @@ MERGE-READY @ 578a6ceb: the heresy's words per ADR 0204, and four Act II codex e
     - 329e7bce closes it: the router waits on its loads before it instantiates.
     - Please take 329e7bce, and this branch, into big21 ahead of the next PC pass. If big20's PC pass shows more
       hangs, that is the reason.
+  - **Portraits re-baked on big20's models** (cd38c0c9): 23 speakers, 115 images. Their models had all changed since
+    the last bake: Pell, Moll, Sefir and 20 villagers.
+    - Pell's fur now has texture (the PC's pass 3 note), and Sefir's veil hangs over his face. I viewed both, side by
+      side with the old bakes.
+    - **For characters:** Moll's new hair casts a hard shadow across half her face under her stage's key light. The
+      bake is faithful to the model; the fix is in her stage or hair.
+    - Every dialogue speaker without a portrait (the generic barks, and Act II's people with no model yet) shows no
+      picture. No placeholder ever shows.
+    - Shots that show these portraits (dialogue, status, the party cards) will drift on the gate.
+  - **Act II map regions:** all 15 Act II zones already had maps. Each now gets a main-path objective, 17 rows chained
+    on the declared Ch10–Ch16 flags, so the line and the gold marker point at the chapter's next place (8287ca8b).
+    - Ch13 goes to the Sanctum first, then the Archive.
+    - The lines are in Act I's register and say nothing past their beat.
+    - The Lowlight map shot now stages arrival (`ch11_reached_lowlight`). I viewed Keth Pass, Lowlight and Ansedra.
+    - test_objective_tracker 16/0 (a new walk of all 17 rows); zone_map 22/0; pseudo_loc_screens 17/0; validate_data
+      0/0.
+    - The three map shots will drift on the gate.
+MERGE-READY @ 8287ca8b: the portraits re-baked on big20's models, and the Act II objectives.
