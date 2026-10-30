@@ -261,6 +261,8 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
             rep.err(f"{w}: delay_immune must be true or false")
         if "answered_by" in e and e["answered_by"] not in char_ids:  # M4-A2P-023
             rep.err(f"{w}: answered_by '{e['answered_by']}' is not a character")
+        if "leaves_with" in e and e["leaves_with"] not in enemy_ids:  # M4-A2P-1200
+            rep.err(f"{w}: leaves_with '{e['leaves_with']}' is not an enemy")
         for ph in e.get("phases", []):
             if "when_down" in ph and ph["when_down"] not in enemy_ids:
                 rep.err(f"{w}: phase {ph.get('id')} when_down '{ph['when_down']}' is not an enemy")
