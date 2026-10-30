@@ -27,6 +27,7 @@ func test_the_wedding_court_to_the_choir() -> void:
 	assert_false(trigger_named(&"deck_liss").is_available(), "the night's talk is over")
 	go(&"dawn", "ch17/hollowmere", "Dock")
 	assert_true(bool(Game.get_flag(&"ch15_hollowmere_answered")), "B09: the current-song")
+	assert_true(bool(Game.get_flag(&"ch15_dawn")), "M4-A2P-105: the dawn variant's flag")
 	visit(HOLLOWMERE)
 	assert_true(bool(Game.get_flag(&"ch15_reached_hollowmere")))
 	assert_true(bool(Game.get_flag(&"ch15_liss_told_father")), "B10: the dock-master on arrival")

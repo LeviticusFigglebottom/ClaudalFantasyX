@@ -102,7 +102,18 @@ def open_sea() -> dict:
                   # M4-A2P-015: the party seated about the stern for the reveal (C3); Liss at the bow (C4)
                   "reveal_asha": [-1.4, 0.0, 1.0, 180.0], "reveal_toma": [-1.4, 0.0, 2.2, 180.0],
                   "reveal_liss": [-1.4, 0.0, 3.3, 180.0], "reveal_ysolde": [1.4, 0.0, 1.8, 180.0],
-                  "bow_liss": [0.0, 0.0, -4.4, 0.0]},
+                  "bow_liss": [0.0, 0.0, -4.4, 0.0],
+                  # M4-A2P-105: the shoal's held dead (ch15_the_shoal's `@vfx glimmer_held` cues; env-art-b's
+                  # EbbingMotes field): `shoal` is the field's centre on the Shoal block's top, shoal_floor the same
+                  # floor, shoal_rising half way up to the barge, kerrid_orbit about him at his seated chest,
+                  # kerrid_scar his rope-burned hands
+                  "shoal": [6.0, -2.75, -8.0, 0.0], "shoal_floor": [6.0, -2.75, -8.0, 0.0],
+                  "shoal_rising": [3.0, -1.2, -1.0, 0.0], "kerrid_orbit": [0.0, 0.9, 4.2, 0.0],
+                  "kerrid_scar": [0.0, 0.6, 4.0, 0.0]},
+        # M4-A2P-105: the dawn at the bow (the `to_hollowmere` beat sets ch15_dawn): grey-rose, no sun yet; env-art-b
+        # adds the dawn grade (environment_res: fog 0.03) and the fog bank at the bow to this row
+        "variants": [{"when": {"set": ["ch15_dawn"]}, "sun": {"energy": 0.0},
+                      "environment": {"background": "#b8a4a8", "ambient_color": "#9a8e96", "ambient_energy": 0.55}}],
         "actors": {},
         "shots": {"U01": {"pos": [1.6, 1.4, -3.0], "look_at": [0.0, 0.8, 4.2], "fov": 40},
                   # M4-A2P-015 (docs/kb/plan/act2/chapters/ch15.md §4): C1 the bier under the bridal cloth; C2a low

@@ -2,8 +2,8 @@
 id: M4-A2P-105
 title: "Ch15's open sea: the shoal's held dead (a mark and a cue) and the dawn row, for env-art-b's VFX and fog"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: "act1-chapters"
 depends_on: []
 reviewer: environment
 milestone: M4
@@ -25,5 +25,18 @@ env-art-b has dressed Ch15's open sea (the barge, the night sea, the unlamped gr
 ## Acceptance criteria
 - [ ] The `shoal` mark and the reveal's cue are in place; env-art-b is told.
 - [ ] A dawn `variants` row with its flag; env-art-b is told the flag.
+
+## Notes
+- **act1-chapters, 2026-10-30:**
+  - **1, done.** The open sea's layout has the marks the reveal's cues name. `ch15_the_shoal` already cues
+    `@vfx glimmer_held` at `shoal_floor` (48), `shoal_rising` (36), `kerrid_orbit` (18) and `kerrid_scar` (6),
+    and none of those marks existed. Now they do, plus `shoal`, the field's centre on the `Shoal` block's top
+    (6, −2.75, −8), the same point as `shoal_floor`. **env-art-b:** the attractor follows the `kerrid` actor; the
+    four cue marks are where each held field starts.
+  - **2, done.** The `to_hollowmere` beat (the bow's "Wait for the dawn", after the shoal) sets the new
+    `ch15_dawn` and re-applies the variant before the current-song. The variants row on `ch15_dawn` puts the sun
+    at 0 with a grey-rose sky and ambient. **env-art-b:** add `environment_res` (the dawn grade, fog 0.03) and the
+    bow's fog bank to that row (shown by `ch15_dawn`).
+  - Test: `test_ch14_16_thread` checks `ch15_dawn` after the bow.
 
 ## Review log

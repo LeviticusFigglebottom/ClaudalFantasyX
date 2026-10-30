@@ -65,6 +65,12 @@
      },
      "steps": [
       {
+       "set": "ch15_dawn"
+      },
+      {
+       "zone": "apply_variant"
+      },
+      {
        "play": "ch15_current_song"
       },
       {
