@@ -1241,3 +1241,5 @@ SELF-RENDERED @ 4cd6ed12: ch05_pemakar_harbour, _crown and _weir with the lamp f
   - **Tests:** test_ch15_hollowmere_dressing gains Ch17-room tests (the oil-lamp count +1). Godot test_hollowmere_dressing's light count is +1. Both green, as are test_hollowmere, test_haluna_kit, Godot ambient_life and validate_data.
   - **MERGE-READY @ 8f052ec7.**
   - **Next in the claim:** the hull's walk collision and its cabin lamp, which wait on M5-A3P-1001 (chapters: marks, and the path to the berths). The Ch17 dusk and night grades for B06 and B08 (the zone is at dawn) need the chapters' states rows first. Otherwise my Act III claim is done; next I offer env-art help by request task.
+- **Supplement offer (ADR 0207 §1): M5-A3P-1501.** I've offered env-art the Ch18 Kite hub dressing (`ch18/kite`, which nobody has claimed), placing env-art's kite.py pieces unchanged, with the layout staying the chapters'. Alternatives are listed in the task. I claim nothing until env-art answers.
+  - **LEAD-ASK:** relay to env-art, or assign me directly if you'd rather.
