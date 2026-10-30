@@ -701,7 +701,7 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
     clips) and dropped their `vowbound_pending` (the rows exist).
   - Checks: act2_bosses, ch10_thread, boss, validate, balance tool tests, vfx_coverage.
   - **Next:** the Lamp Engine's parts and the conduit crawler (M4-A2P-022's data), now that its row is here.
-- MERGE-READY @ (this push)
+- MERGE-READY @ 2551e68b1
 
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
