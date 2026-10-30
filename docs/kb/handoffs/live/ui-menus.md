@@ -1421,3 +1421,26 @@ MERGE-READY @ 3df48256a: M4-A2P-1707, the Act II Continue sweep; M4-A2P-1706 req
     M4-A2P-1708's notes): Haluna's wake after `ch04_shell_set`, Pemakar after `ch05_met_kerrid`, the bell galleries
     after `ch07_tidecup_played`, and Corrow night after `ch09_ebbing_danced`.
 MERGE-READY @ 5f317889c: M4-A2P-1708, the objective coverage guard.
+- 2026-10-31 01:40, **the Lead's 21:56 note (ADR 0207): Act III UI begins** (my range M5-A3P-1700–1799). The Ch6/Ch8
+  objective check came first (M4-A2P-1708, already MERGE-READY).
+  - **M5-A3P-1700, the closing credits roll** (act3_ending CR):
+    - CreditsRoll and CreditsRollModel, data in `game/data/ui/credits.json`.
+    - The roll is timed to `roll_sec` (credits_suite).
+    - The beach-rite vignette at 62% fades the roll and its black out and emits `vignette_started(id)` for
+      Cinematics. It plays once.
+    - Holding Confirm runs it 4x faster (keys and pad). Holding Cancel skips once `credits_seen` is set. The hint is
+      filled for the device in use.
+    - At the end `credits_seen` is set, and `next_scene` or the title opens.
+    - **Tests and checks:** test_credits_roll 4/0; shot `credits_roll` (pending_baseline), viewed; a ui_sfx.json row
+      (the end turns the page), audio audit clean; validate_data 0/0; taskboard ok.
+  - **LEAD-ASK:** who and what should the credits name? Today they hold facts only: the title, "Original score,
+    composed for this game.", the Godot engine (MIT), the fonts (OFL), and the MakeHuman / MPFB2 data (CC0). The
+    human's own credit, the tracks' roles, and any wording about how the game was made are the human's call; nothing
+    is invented. Until then a 7-minute roll is sparse.
+  - **For Cinematics:**
+    - play `beach_rite` on `vignette_started`;
+    - set `next_scene` to E7's post-credits scene;
+    - for audio: match `roll_sec` to credits_suite's length when it's rendered.
+  - **Next in Act III UI:** the Kite as the Ch18 hub (KiteMapMenu exists; Act III opens the world map, SPEC §6.6),
+    then the optional-content log.
+MERGE-READY @ 5c4c9ca6b: M5-A3P-1700, the closing credits roll.
