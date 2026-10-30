@@ -1065,6 +1065,38 @@ that test at this branch's zones.
     curved wall at arm's length, and those show the wall's tiles and texture.
   - The anvil court's battle view was fixed separately (row 63, the loggia lattice).
   - No change needed. **MERGE-READY @ 1f5de1d1** (unchanged).
+- **Act II wildlife and ambient density, Ch13–16 (10-30):**
+  - **Act II town interiors:** still none to walk (see above).
+  - **Where wildlife is placed:** creatures' wildlife files are placed in my zones only on the Pale Rim (rim rays) and
+    Hollowmere (gulls on the dock's piles, a shoal off the dock). Ansedra has none, by design (ADR 0204 §1), and
+    likewise the Court, the Sanctum, the Archive and the open sea.
+  - **The audit:** I ran creatures' `wildlife_audit.gd` against my dressed zones.
+    - The Rim: 0 problems.
+    - Hollowmere: its five gull perches stood over open water. The perches sat on the greybox's `DockPile*` tops at
+      y 2.7, which my dressing hid without replacing.
+  - **The fix:** the dressing now stands a mooring pile at every `DockPile` (18 Haluna `timber_stilt_post`s from
+    the bed at −1.6, scaled ×1.79 to the 2.7 top), outside the dock's walk. Re-audited: 0 problems. Viewed: piles
+    along the dock with the gulls on them.
+  - **For creatures:** the `off_the_dock` shoal is at y −0.9, the zone's water line itself; its doc assumes the
+    surface at −0.25. It reads as fish at the surface, so it wants about −1.25 to swim under the water. That's their
+    data, and the audit counts it as 0 problems.
+  - **Ambient density:** the eye-height walks above cover it. The lagoon cities are deliberately sparse, the Rim is
+    empty white, and Hollowmere has its life back.
+  - Checks: test_ch15_hollowmere_dressing, test_hollowmere; Godot hollowmere (2), ch14_16 (5).
+  - **MERGE-READY @ e14c3355.**
+- **FAST-TRACK test_post_import (cloud-qa's full suite, 10-30):**
+  - **The cause:** the 40 Haluna glbs I added for Act II (ansedra, archive, sanctum, court, hm, bridal and the
+    rest) had an empty `import_script/path`. Haluna's `import_settings.py` pins the glb flags but not the category
+    script, and new files never got it.
+  - **The fix:** each `.import` now names `haluna_kit_post_import.gd`, set with that file's own `patch()`; the
+    `.import` changes are the whole diff, then re-imported.
+  - **Checked:** Godot --filter=post_import has 0 failures on my files. Viewed `ch13_archive_aisle`,
+    `ch13_ansedra_mirror` and `ch15_hollowmere_dock`: unchanged. test_post_import.py and test_haluna_kit pass.
+  - **One failure left, not mine:** `assets/cutscene/ch01/oruvel_seabed.glb.import belongs to an import category`
+    (m2-slice's seabed).
+  - **Gotcha for new Haluna pieces:** a fresh glb's `.import` needs `import_script/path` set the same way.
+    `import_settings.py` (env-art's) could pin it as the other kits' `*_import_settings.py` do.
+  - **MERGE-READY @ c6dec98b.**
 ### PC-QUEUE
 - Pass 3 row 65 (@ edb18aae): re-measure the camp's smoke columns (24 steps at High) and the Tamsule drop (High has no
   god rays now) at High 1440p against the 0.3 ms target.
@@ -1109,3 +1141,4 @@ SELF-RENDERED @ 4516750e: Ashcrown's road graves before, snapped to collision, a
 SELF-RENDERED @ 34d374de: the eight Act II arenas' battle cameras and hint views at 21:9 and Lowlight at 16:9, plus the court balustrade and Lowlight conduit close views (scratch) — all viewed.
 SELF-RENDERED @ 124f3f40: Lowlight's battle camera with its position printed; Quellan and Reedhollow eye-height walks (scratch) — all viewed.
 SELF-RENDERED @ f0e1e6fd: battle_arena_lowlight_engine_hall's battle camera at 16:9 after the pier move (scratch) — viewed.
+SELF-RENDERED @ e14c3355: Hollowmere's dock with the new piles and the perched gulls (scratch) — viewed.
