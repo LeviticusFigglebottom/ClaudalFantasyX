@@ -894,3 +894,10 @@ Skipped: coverage (no game/battle or game/progression code changed) and Blender 
   - Kerrid's second codex body (CODEX_KERRID_BODY_CH15): narrative's text after the reveal script;
   - the reader's records: narrative fills `game/data/lore/records.json`, and Audio has M4-AUD-1080;
   - the reader's two shots: the Lead adds them to the manifest with baselines (LEAD-ASK above).
+- 2026-10-30 08:00, **the Lead's 04:27 answer on the reader's shots.** I added document_reader_three and document_reader_one
+  to the manifest with `"pending_baseline": true`. The gate captures them after the next fast batch, and the Lead
+  approves the baselines. Resolves the LEAD-ASK above.
+  test_screenshots now fails only on the integration branch's existing `kerrid_front`, which has no baseline.
+MERGE-READY @ HEAD of claude/ui (this commit): the document reader's shots as pending baselines.
+- **BACKLOG EMPTY:** still true. What remains waits on combat (Pell's row, the rooted status), characters (Act II NPC
+  models), narrative (records.json, Kerrid's Ch15 body) and audio (M4-AUD-1080).
