@@ -375,3 +375,16 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - **Checks:** dlgc --check 0/0 · validate_data 0/0 · taskboard clean · Godot `dialogue` 86/0.
 - MERGE-READY @ e25478fd1
 - BACKLOG EMPTY (story track).
+
+## 2026-10-30: Ch12 and Ch13 direction notes (Lead request)
+- `docs/kb/story/beats/act2_ch12_direction.md` and `act2_ch13_direction.md`, in the Ch11 format.
+- A script (kept in the scratchpad, not the repo) frames each shot on its subjects in the greybox frame, runs each scene's cues and checks every spoken line's speaker against the active shot. **Ch12:** all lines in frame, one deliberately off (Ysolde over the Ram). **Ch13:** 58 in frame, 5 deliberately off (voices over the reader, Rhen over the polers' wide).
+- Each doc lists the **greybox ids that collide with a different picture**, to replace in staging (Ch12: K01, K04, C02, C03; Ch13: A03–A06, S02), and the pacing per beat against §1. Every scene runs 2–8× short; the notes say where the holds go.
+- **Blocking bugs fixed in my scripts:**
+  - Kerrid and Tobin shared `outer_moorings`, so Kerrid now stands on the layout's `kerrid_moorings`;
+  - Merel and Tobin shared `guest_moorings`, so Merel uses `guest_moorings_b`;
+  - the house side scene now cuts between A15b (the street) and A15 (the front room), with Rhen on his own marks.
+- act2_ch13 §7's A03 said Kerrid sits; it now says he stands, per ADR 0204.
+- **Checks:** dlgc --check 0/0 · validate_data 0/0 · taskboard clean · Godot `dialogue` 86/0.
+- MERGE-READY Ch12 @ d56bcb66d · MERGE-READY Ch13 @ d56bcb66d
+- Next: the Ch14–Ch16 notes.
