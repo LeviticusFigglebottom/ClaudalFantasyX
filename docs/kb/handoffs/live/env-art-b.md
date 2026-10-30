@@ -1011,6 +1011,26 @@ that test at this branch's zones.
   - **MERGE-READY @ 34d374de** (the request; no arena of mine needed a change).
 - **BACKLOG EMPTY (10-30, after the arena pass):** what's left waits on M3-ENV-1328/1329/1330 and M4-A2P-103 to 107
   and 114.
+- **Unblocking M4-A2P-114 (10-30):**
+  - **The cause:** `lowlight_engine_hall` is env-art's (`lowlight.py`, through `arena_scenes.py`), so I traced it but
+    didn't edit it. It isn't a wall: the hall's south-middle pier at `PIER_AT[-1] = (0.0, 9.5)` (shaft ±0.62 m) stands
+    where the battle camera rests after `rest_fit`, at (0.72, 3.99, 9.76). The lens is 10 cm off the pier's face.
+  - **The exact fix, in the task:** move that pier to (0.0, 11.0), behind the camera. Then rebuild `engine_hall` and
+    the arena. Ch11's zone dressing also places `engine_hall`, and the task notes that.
+  - LEAD-ASK: I posted the fix in M4-A2P-114 rather than env-art's live log, because TRACK-RULES bar editing another
+    environment's file. Please route it to env-art, or tell me to make the kit change myself.
+- **Act II town interiors (shops, inns) at eye height (10-30):**
+  - **No interiors yet:** there's no Act II shop or inn interior scene. The shops' rows wait on M4-A2P-031, and
+    Ansedra's and Hollowmere's layouts have no shop or inn points.
+  - **The two towns that exist (env-art's):** I walked Quellan and Reedhollow at every spawn, trigger and mark,
+    looking N, E, S and W, and viewed every still. Reedhollow reads well. Quellan has three issues, filed as
+    **M4-A2P-115**:
+    - the `FromCloudloom` spawn stands in a dark enclosure;
+    - a mirror-flat slab round the gate square leaves the houses looking like they float;
+    - a pixelated rock texture west of the gate.
+  - **MERGE-READY @ 124f3f40** (requests only; nothing of mine needed a change).
+- **BACKLOG EMPTY (10-30, after the towns):** what's left waits on env-art (M3-ENV-1328/1329/1330, M4-A2P-114/115)
+  and on M4-A2P-103 to 107.
 ### PC-QUEUE
 - Pass 3 row 65 (@ edb18aae): re-measure the camp's smoke columns (24 steps at High) and the Tamsule drop (High has no
   god rays now) at High 1440p against the 0.3 ms target.
@@ -1053,3 +1073,4 @@ SELF-RENDERED @ 008c7de3: the Ch5–Ch9 eye-height walk (548 stills, scratch), B
 SELF-RENDERED @ 2d9a9c36: the Ch13-Ch16 eye-height walk (160 stills over 8 zones, scratch), the five Ch13-16 arenas' hint views, lacquer_hall and archive_case before/after (scratch) — all viewed.
 SELF-RENDERED @ 4516750e: Ashcrown's road graves before, snapped to collision, and snapped to the drawn crest; Coilspire's wall-end heads and a headland scrub clump (scratch) — all viewed.
 SELF-RENDERED @ 34d374de: the eight Act II arenas' battle cameras and hint views at 21:9 and Lowlight at 16:9, plus the court balustrade and Lowlight conduit close views (scratch) — all viewed.
+SELF-RENDERED @ 124f3f40: Lowlight's battle camera with its position printed; Quellan and Reedhollow eye-height walks (scratch) — all viewed.
