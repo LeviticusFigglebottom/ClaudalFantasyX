@@ -519,3 +519,11 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
 - **For integration-qa (the run speed):** per loop of `run`, the root travels 2.6 m (Asha and Rhen) or 2.65 m (Toma)
   in 0.733 s, two steps, 164 steps a minute, so `speed_mps` is 3.545 / 3.545 / 3.614 in
   game/data/characters/locomotion.json. The field's run_speed_mps 3.6 plays it at 1.00-1.02x.
+- **Villager limits done (ff1b0544).** villager_costume hides a sleeved arm's skin from -0.35 of the arm, which fixes
+  the shoulder poke-through. All 36 villagers were rebuilt and are identical on all 3 numpy paths; test_villagers
+  passes.
+  - **Original limits restored and passing:** ferrymaster, garo, gatekeeper, reed_d, smith.
+  - **Small raises, each with a per-mesh "covered" reason checked by a render at the worst pose:** elder (the sandal
+    sole under the foot), fenn, reed_b, reed_c, scaleman, skipper_sadi (cloth inside a resting forearm), marra (edge
+    verts under the kerchief knot), purser (the sleeve edge under the arm).
+- MERGE-READY @ ff1b0544
