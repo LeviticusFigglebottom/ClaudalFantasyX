@@ -34,7 +34,7 @@ revisits, Haluna's lifting), §5 (the heirlooms). File-to-beat map: drafts READM
   - Offered while the world is open:
     - the seven `ch18_revisit_*` scenes;
     - `ch18_backs_to_the_water` (Haluna, flagged optional);
-    - the seven heirloom nodes in `ch18_heirloom_rhen.dlg`, each at its own place. `ch18_heirloom_pell` is gated on `ch18_pell_named`.
+    - the seven heirloom scenes `ch18_heirloom_<hero>.dlg` (one file each, at its own place). `ch18_heirloom_pell` is gated on `ch18_pell_named`.
 - **Objective rows:** story writes the text once the flags and POIs exist.
 
 ## Acceptance criteria

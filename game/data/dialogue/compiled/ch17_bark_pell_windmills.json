@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch17_bark_pell_windmills",
+ "source": "game/data/dialogue/ch17/ch17_bark_pell_windmills.dlg",
+ "start": "ch17_bark_pell_windmills",
+ "nodes": {
+  "ch17_bark_pell_windmills": {
+   "headers": {"location": "ch17/hollowmere"},
+   "ops": [
+    {"op": "line", "id": "ch17_bark_005", "key": "DLG_CH17_BARK_005", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 6}
+   ]
+  }
+ }
+}

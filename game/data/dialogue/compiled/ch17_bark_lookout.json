@@ -9,36 +9,6 @@
    "ops": [
     {"op": "line", "id": "ch17_bark_001", "key": "DLG_CH17_BARK_001", "speaker": "hull_captain", "emotion": "neutral", "voice": "", "src": 7, "name_key": "DLG_NAME_HULL_CAPTAIN_LOOKOUT"}
    ]
-  },
-  "ch17_bark_tally_keeper": {
-   "headers": {},
-   "ops": [
-    {"op": "if_not", "cond": ["flag", "ch15_toma_on_the_tally"], "to": 4, "src": 11},
-    {"op": "cue", "cue": "anim", "args": ["clerk", "nod", "toma"], "kwargs": {}, "src": 12},
-    {"op": "line", "id": "ch17_bark_002", "key": "DLG_CH17_BARK_002", "speaker": "clerk", "emotion": "neutral", "voice": "", "src": 13, "name_key": "DLG_NAME_CLERK_RECORD_KEEPER"},
-    {"op": "goto", "to": 6, "src": 11},
-    {"op": "line", "id": "ch17_bark_003", "key": "DLG_CH17_BARK_003", "speaker": "clerk", "emotion": "neutral", "voice": "", "src": 15, "name_key": "DLG_NAME_CLERK_RECORD_KEEPER"},
-    {"op": "goto", "to": 6, "src": 14}
-   ]
-  },
-  "ch17_bark_chandler": {
-   "headers": {},
-   "ops": [
-    {"op": "line", "id": "ch17_bark_004", "key": "DLG_CH17_BARK_004", "speaker": "vendor", "emotion": "neutral", "voice": "", "src": 20, "name_key": "DLG_NAME_VENDOR_CHANDLER"}
-   ]
-  },
-  "ch17_bark_pell_windmills": {
-   "headers": {},
-   "ops": [
-    {"op": "line", "id": "ch17_bark_005", "key": "DLG_CH17_BARK_005", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 24}
-   ]
-  },
-  "ch17_bark_ysolde_asleep": {
-   "headers": {},
-   "ops": [
-    {"op": "cue", "cue": "anim", "args": ["ysolde", "sleep_over", "keth_cord"], "kwargs": {}, "src": 28},
-    {"op": "line", "id": "ch17_bark_006", "key": "DLG_CH17_BARK_006", "speaker": "liss", "emotion": "soft_smile", "voice": "", "src": 29}
-   ]
   }
  }
 }

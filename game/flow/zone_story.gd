@@ -65,7 +65,7 @@ func _ready() -> void:
 	_zone = get_parent()
 	var loc := StringName(str(_zone.get(&"location_id"))) if _zone != null and "location_id" in _zone else &""
 	var override := str(_zone.get(&"chapter_path")) if _zone != null and "chapter_path" in _zone else ""
-	cfg = ChapterRegistry.zone(loc, override)
+	cfg = ChapterRegistry.zone(loc, override, Game.state.chapter)
 	sequencer = CutsceneSequencer.new()
 	sequencer.name = "Sequencer"
 	add_child(sequencer)

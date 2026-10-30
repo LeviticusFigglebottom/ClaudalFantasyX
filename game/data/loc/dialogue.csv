@@ -1395,15 +1395,15 @@ DLG_CH16_SEFIR_016,I carried her up so you could do this.
 DLG_CH16_SEFIR_017,Captain.
 DLG_CH16_SEFIR_018,Then I am sorry for what comes next. I would have given you a long life.
 DLG_CH17_BLANK_001,"He was first down the stair. He'd have been first into that, too."
+DLG_CH17_BARK_004,"Oil, rope, glass. Tobin used to fetch the glass. Take what you need."
+DLG_NAME_VENDOR_CHANDLER,Chandler
 DLG_CH17_KESH_001,"You chose. A thousand years, and one of you finally chose."
 DLG_CH17_KESH_002,"I hold. Call, and I will come."
 DLG_CH17_BARK_001,Nothing on the water but us. I'll call it if that changes.
 DLG_NAME_HULL_CAPTAIN_LOOKOUT,Lookout
+DLG_CH17_BARK_005,They turn with nobody singing to them. I like that.
 DLG_CH17_BARK_002,Your name's where you asked. Under the camp. Nobody's crossed it out.
 DLG_CH17_BARK_003,"Every camp that burned, written down. Somebody has to keep the list."
-DLG_CH17_BARK_004,"Oil, rope, glass. Tobin used to fetch the glass. Take what you need."
-DLG_NAME_VENDOR_CHANDLER,Chandler
-DLG_CH17_BARK_005,They turn with nobody singing to them. I like that.
 DLG_CH17_BARK_006,Leave her. She's been at it since dawn.
 DLG_CH17_POINTS_001,He's not going to say it. Last berth.
 DLG_CH17_BERTH_001,Your father built his first boat here. Badly.
@@ -1415,12 +1415,12 @@ DLG_CH17_BERTH_006,Before the vows he told me nobody had to be chosen. He volunt
 DLG_CH17_BERTH_007,That's him. Every word of it.
 DLG_CH17_BERTH_008,Say nothing.
 DLG_CH17_BERTH_009,Your father's hull's in my last berth eleven years. I'd sooner it flew.
+DLG_CH17_HULL_005,"Corrow, circled. Three times, in three inks."
+DLG_CH17_HULL_006,That's my stair.
 DLG_CH17_HULL_001,That's not a Saltwright cut.
 DLG_CH17_HULL_002,Nobody sails a kite-cut on a hull. Nobody I know.
 DLG_CH17_HULL_003,Same make as mine.
 DLG_CH17_HULL_004,Same nick in the left one.
-DLG_CH17_HULL_005,"Corrow, circled. Three times, in three inks."
-DLG_CH17_HULL_006,That's my stair.
 DLG_CH17_PULLED_001,That's ours. That's the answer.
 DLG_CH17_PULLED_002,Said we'd wait.
 DLG_CH17_PULLED_003,Kept it dry.
@@ -1479,20 +1479,20 @@ DLG_CH18_TIDE_001,Hum it with me. Then turn your back. Then hum it again. That i
 DLG_CH18_TIDE_002,That's the Letting.
 DLG_CH18_TIDE_003,You have it. Your back was the right way.
 DLG_CH18_TIDE_004,"A trade, then. I will keep it."
-DLG_CH18_HEIR_001,Same nick in the left one.
-DLG_CH18_HEIR_002,Put an edge on them. He never did.
 DLG_CH18_HEIR_003,Your mother left this with me. She said you'd need a longer one.
 DLG_CH18_HEIR_004,She was right.
+DLG_CH18_HEIR_011,Watch's anchor. We set it every season.
+DLG_CH18_HEIR_012,Heavier than I remember.
+DLG_CH18_HEIR_009,Tobin drew this when he was twelve. It never worked.
+DLG_CH18_HEIR_010,It works now.
+DLG_CH18_HEIR_013,"Ressa's. We kept it with her name. Now you have yours, take hers."
+DLG_CH18_HEIR_014,I will carry it the right way round.
+DLG_CH18_HEIR_001,Same nick in the left one.
+DLG_CH18_HEIR_002,Put an edge on them. He never did.
 DLG_CH18_HEIR_005,Ivo's. The watch kept it. They want you to have it.
 DLG_CH18_HEIR_006,He'd have said it was too heavy for me.
 DLG_CH18_HEIR_007,Corran's recipes. He was a terrible cook.
 DLG_CH18_HEIR_008,He wrote them all down anyway. In case one came out.
-DLG_CH18_HEIR_009,Tobin drew this when he was twelve. It never worked.
-DLG_CH18_HEIR_010,It works now.
-DLG_CH18_HEIR_011,Watch's anchor. We set it every season.
-DLG_CH18_HEIR_012,Heavier than I remember.
-DLG_CH18_HEIR_013,"Ressa's. We kept it with her name. Now you have yours, take hers."
-DLG_CH18_HEIR_014,I will carry it the right way round.
 DLG_CH18_ISKARRA_001,Iskarra. Where it started. Where we go in.
 DLG_CH18_FLIGHT_001,He'd have hated the trim.
 DLG_CH18_FLIGHT_002,He'd have sung to it till it listened.

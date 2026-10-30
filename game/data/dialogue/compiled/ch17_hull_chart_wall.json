@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch17_hull_chart_wall",
+ "source": "game/data/dialogue/ch17/ch17_hull_chart_wall.dlg",
+ "start": "ch17_hull_chart_wall",
+ "nodes": {
+  "ch17_hull_chart_wall": {
+   "headers": {"location": "ch17/hollowmere"},
+   "ops": [
+    {"op": "cue", "cue": "anim", "args": ["ysolde", "look_at", "chart_wall"], "kwargs": {}, "src": 6},
+    {"op": "line", "id": "ch17_hull_005", "key": "DLG_CH17_HULL_005", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 7},
+    {"op": "line", "id": "ch17_hull_006", "key": "DLG_CH17_HULL_006", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 8}
+   ]
+  }
+ }
+}

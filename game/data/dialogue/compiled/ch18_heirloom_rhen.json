@@ -14,58 +14,6 @@
     {"op": "goto", "to": 5, "src": 10},
     {"op": "set", "flag": "ch18_heirloom_rhen", "value": ["lit", true], "src": 13}
    ]
-  },
-  "ch18_heirloom_asha": {
-   "headers": {},
-   "ops": [
-    {"op": "line", "id": "ch18_heir_003", "key": "DLG_CH18_HEIR_003", "speaker": "neme", "emotion": "tender", "voice": "", "src": 18},
-    {"op": "line", "id": "ch18_heir_004", "key": "DLG_CH18_HEIR_004", "speaker": "asha", "emotion": "grief", "voice": "", "src": 19},
-    {"op": "set", "flag": "ch18_heirloom_asha", "value": ["lit", true], "src": 20}
-   ]
-  },
-  "ch18_heirloom_toma": {
-   "headers": {},
-   "ops": [
-    {"op": "line", "id": "ch18_heir_005", "key": "DLG_CH18_HEIR_005", "speaker": "marra", "emotion": "neutral", "voice": "", "src": 25},
-    {"op": "line", "id": "ch18_heir_006", "key": "DLG_CH18_HEIR_006", "speaker": "toma", "emotion": "sad", "voice": "", "src": 26},
-    {"op": "set", "flag": "ch18_heirloom_toma", "value": ["lit", true], "src": 27}
-   ]
-  },
-  "ch18_heirloom_ysolde": {
-   "headers": {},
-   "ops": [
-    {"op": "line", "id": "ch18_heir_007", "key": "DLG_CH18_HEIR_007", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 32},
-    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 33},
-    {"op": "line", "id": "ch18_heir_008", "key": "DLG_CH18_HEIR_008", "speaker": "ysolde", "emotion": "tender", "voice": "", "src": 34},
-    {"op": "set", "flag": "ch18_heirloom_ysolde", "value": ["lit", true], "src": 35}
-   ]
-  },
-  "ch18_heirloom_liss": {
-   "headers": {},
-   "ops": [
-    {"op": "line", "id": "ch18_heir_009", "key": "DLG_CH18_HEIR_009", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 40},
-    {"op": "line", "id": "ch18_heir_010", "key": "DLG_CH18_HEIR_010", "speaker": "liss", "emotion": "soft_smile", "voice": "", "src": 41},
-    {"op": "set", "flag": "ch18_heirloom_liss", "value": ["lit", true], "src": 42}
-   ]
-  },
-  "ch18_heirloom_kerrid": {
-   "headers": {},
-   "ops": [
-    {"op": "cue", "cue": "mark", "args": ["kerrid", "stair_foot", "walk"], "kwargs": {}, "src": 47},
-    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 48},
-    {"op": "line", "id": "ch18_heir_011", "key": "DLG_CH18_HEIR_011", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 49},
-    {"op": "cue", "cue": "anim", "args": ["kerrid", "lift", "stair_anchor"], "kwargs": {}, "src": 50},
-    {"op": "line", "id": "ch18_heir_012", "key": "DLG_CH18_HEIR_012", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 51},
-    {"op": "set", "flag": "ch18_heirloom_kerrid", "value": ["lit", true], "src": 52}
-   ]
-  },
-  "ch18_heirloom_pell": {
-   "headers": {},
-   "ops": [
-    {"op": "line", "id": "ch18_heir_013", "key": "DLG_CH18_HEIR_013", "speaker": "owa", "emotion": "neutral", "voice": "", "src": 57, "name_key": "DLG_NAME_OWA_THE_ELDEST"},
-    {"op": "line", "id": "ch18_heir_014", "key": "DLG_CH18_HEIR_014", "speaker": "pell", "emotion": "tender", "voice": "", "src": 58},
-    {"op": "set", "flag": "ch18_heirloom_pell", "value": ["lit", true], "src": 59}
-   ]
   }
  }
 }
