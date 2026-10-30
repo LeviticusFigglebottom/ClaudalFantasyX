@@ -121,8 +121,8 @@ func spawn(engine: BattleEngine) -> void:
 
 ## Each opening foe's slot. The encounter sweep (10-30): on the causeway the 2.9 m Lantern Eel, first in the list, took
 ## the slot nearest the camera and hid the Gull Harrier behind it until it struck. With choreo.json
-## spacing.tall_to_back, the tallest foes (stand-in height plus hover) take the slots farthest from the camera; equal
-## heights keep the list order. Otherwise slot i, the last shared.
+## spacing.tall_to_back, the tallest foes (stand-in height plus hover) take the slots farthest from the camera; foes of
+## equal height keep their own slots. Otherwise slot i, the last shared.
 func _seat_order(foes: Array[BattleCombatant]) -> Array[int]:
 	var n := foes.size()
 	var out: Array[int] = []
@@ -147,11 +147,14 @@ func _seat_order(foes: Array[BattleCombatant]) -> Array[int]:
 	var top := func(c: BattleCombatant) -> float:
 		var spec := stand_in_spec(c.id)
 		return float(spec.get("height", 0.0)) + float(spec.get("hover", 0.0))
+	var dist := func(i: int) -> float: return _enemy_slots[out[i]].global_position.distance_to(eye)
 	order.sort_custom(
 		func(a: int, b: int) -> bool:
 			var ta: float = top.call(foes[a])
 			var tb: float = top.call(foes[b])
-			return ta > tb if not is_equal_approx(ta, tb) else a < b
+			if not is_equal_approx(ta, tb):
+				return ta > tb
+			return float(dist.call(a)) > float(dist.call(b))  # equal heights keep their own slots
 	)
 	for k in n:
 		out[order[k]] = slots[k]
