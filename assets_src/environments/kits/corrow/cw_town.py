@@ -67,7 +67,9 @@ def build_ground(name: str = "lowtown_ground", seed: int = 861) -> list[kc.MeshB
         xs = np.linspace(-HALF, HALF, n)
         i_earth = mb.material(cw.M_EARTH)
         bsc.heightfield(mb, xs, xs, lambda X, Z: ground_height(noise, X, Z), i_earth,
-                        wet=lambda X, Z, Y: np.clip((-Y - 0.012) / 0.02, 0, 1) * 0.9 + 0.1,
+                        # the hollows damp, not mirrors: at full wetness they reflected the dark sky as black holes
+                        # at grazing angles (M3-ENV-1327)
+                        wet=lambda X, Z, Y: np.clip((-Y - 0.012) / 0.02, 0, 1) * 0.5 + 0.1,
                         salt=lambda X, Z, Y: ground_salt(noise, X, Z),
                         ao=lambda X, Z, Y: ground_tracks(noise, X, Z), erosion=0.4, variation=float(rng.random()))
         # No per-triangle cobble (M3-ENV-1330: its patches broke along the grid's triangles and stopped dead at the
