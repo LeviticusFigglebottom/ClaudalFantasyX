@@ -653,7 +653,7 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - **Next:** the combat seat's engine queue is done except M4-A2P-019, which waits on the Lattice and gear (030/031).
     Then the provisional boss rows once they reach integration (the tune is ready), and the Act II flow beats once
     story's scenes land.
-- MERGE-READY @ (this push)
+- MERGE-READY @ ed80e67d5
 
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
