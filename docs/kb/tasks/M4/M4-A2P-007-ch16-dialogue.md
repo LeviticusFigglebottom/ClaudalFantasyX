@@ -2,9 +2,8 @@
 id: M4-A2P-007
 title: "Ch16 “The Edge of the World” dialogue scripts and the Act II break voice-over"
 role: narrative
-status: blocked
-blocked-by: ADR 0203
-owner_session: ""
+status: doing
+owner_session: "act2 story track (claude/act2-plan, ADR 0205)"
 depends_on: [M4-C16-01, M4-A2P-006]
 reviewer: cinematics
 milestone: M4
