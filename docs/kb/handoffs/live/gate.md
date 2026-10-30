@@ -80,3 +80,16 @@ shots? The gate session doesn't touch the integration branch; until then the hum
   hang limit, and two (slice_beach_h06_toma, slice_beach_standing) were killed as hung with no output. So the rest
   of the manifest is now split: the 196 fast shots first (published as a second partial when done), then the 26 slice
   shots with HYMN_SHOT_TIMEOUT=1800. Not a hang in the game: those scenes are just slow on lavapipe here.
+
+GATE-DONE big17 (stopped early, ADR 0205): shots @ b2739cbe (`lead/gate-big17-shots`), merge @ 1a986abf (already in
+the integration branch at 96222b30). The batch built from 8 track heads with one fallout fix (3 stale PROVENANCE
+rows). Data, taskboard, lint, format, import and boot smoke are clean. The tools suite has 4 failing units and the
+Godot suite 5 failures plus a parse error. All of them are also red on big16 except one, the missing Pell portrait
+(test_dialogue_box), which claude/characters' Pell brought in and which needs a portrait render rather than a merge
+fix. Blender rebuilt the 85 jobs touched since big14: 78 identical, and 7 DIFF that are pre-existing (brine_shoals_kit,
+six crowd bodies). The full-manifest capture was stopped on the Lead's word (ADR 0205) at 478 of 612 shots. Part 1
+(372 shots) was viewed and approved at d987cc6b. Part 2 (`part2/`: 81 non-PASS of 106) is the only part left to view.
+134 shots were never captured (`not_captured.txt`), mostly the slice cutscene shots, which take ~10 min each on
+lavapipe here. No red was caused by a merge, so the gate pushed no further fix.
+
+BACKLOG EMPTY: big17 gated
