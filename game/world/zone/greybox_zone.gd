@@ -68,7 +68,9 @@ func build() -> void:
 	_build_blocks()
 	var spawns: Dictionary = (layout.get("spawns", {}) as Dictionary).duplicate()
 	if layout.has("encounters"):
-		spawns[String(FieldEncounters.RETURN_SPAWN)] = [0, 0, 0, 0]
+		# where the last fight left Rhen (place_at); before any fight, the zone's first spawn, not the world's origin
+		# (the PC's row 38: Coilspire's Encounter, at the origin, looked at open sea far off the tower)
+		spawns[String(FieldEncounters.RETURN_SPAWN)] = spawns.values()[0] if not spawns.is_empty() else [0, 0, 0, 0]
 	_build_markers(SPAWNS, spawns)
 	_build_player()
 	_build_stage()
