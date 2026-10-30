@@ -62,6 +62,53 @@ def _roof(mb, w, d, y_eave, pitch, rng, noise, *, lod):
     return y_eave + min(w, d) * 0.5 * tan_p, (max(w, d) - min(w, d)) * 0.5
 
 
+STOCK_DYES = ("tb_cloth_red", "tb_cloth_indigo", "tb_cloth_sand", "tb_cloth_sea_blue", "tb_cloth_faded_teal")
+
+
+def _shop_stock(mb, name: str, seed: int, hw: float, hd: float) -> None:
+    """The shop's goods in the open front (M3-ENV-1327: the ground floors read as empty black voids from the lane): a
+    lacquered counter across the front, shelves on the back panel with jars, cloth bolts and baskets, and cloth lengths
+    hung from a pole. Its own rng, so the rest of the house is as it was."""
+    rng = kc.rng_for(name + "_stock", seed)
+    zc, zb = hd - 0.55, hd - 2.1  # the counter's line, the back panel's face
+    _box(mb, (0.0, DECK_Y + 0.42, zc), (hw - 0.9, 0.42, 0.22), M_TIMBER, rng)
+    _box(mb, (0.0, DECK_Y + 0.86, zc), (hw - 0.85, 0.03, 0.26), M_BLACK, rng, weather=tb.LACQUER)
+    for y in (DECK_Y + 0.95, DECK_Y + 1.6):  # two shelves on brackets
+        _box(mb, (0.0, y, zb + 0.18), (hw - 0.5, 0.025, 0.17), M_TIMBER, rng)
+        x = -hw + 0.7
+        while x < hw - 0.7:
+            kind = rng.integers(3)
+            if kind == 0:  # a lidded jar
+                r = float(rng.uniform(0.09, 0.13))
+                kc.tube(mb, np.array([[x, y + 0.025, zb + 0.18], [x, y + 0.025 + r * 2.4, zb + 0.18]]),
+                        [r, r * 0.8], 8, mb.material(M_RED), weather=tb.LACQUER, cap_end=True,
+                        variation=float(rng.random()))
+                x += r * 2 + 0.08
+            elif kind == 1:  # a bolt of cloth on its side
+                dye = STOCK_DYES[int(rng.integers(len(STOCK_DYES)))]
+                kc.tube(mb, np.array([[x, y + 0.11, zb + 0.06], [x, y + 0.11, zb + 0.32]]), 0.085, 8, mb.material(dye),
+                        weather=tb.TIMBER, cap_start=True, cap_end=True)
+                x += 0.22
+            else:  # a lidded basket
+                _box(mb, (x + 0.12, y + 0.13, zb + 0.18), (0.12, 0.11, 0.12), M_WOVEN, rng)
+                x += 0.32
+    # Goods on the counter: a tray of small jars and a folded cloth.
+    for k in range(int(rng.integers(3, 6))):
+        xk = float(rng.uniform(-hw + 1.2, hw - 1.2))
+        kc.tube(mb, np.array([[xk, DECK_Y + 0.89, zc], [xk, DECK_Y + 1.05, zc]]), 0.05, 6, mb.material(M_RED),
+                weather=tb.LACQUER, cap_end=True)
+    _box(mb, (float(rng.uniform(-hw + 1.4, hw - 1.4)), DECK_Y + 0.93, zc), (0.22, 0.04, 0.16),
+         STOCK_DYES[int(rng.integers(len(STOCK_DYES)))], rng)
+    # Cloth lengths hung from a pole under the upper floor, in the dyes.
+    pole_y = UPPER_FLOOR_Y - 0.25
+    kc.tube(mb, np.array([[-hw + 0.3, pole_y, zc - 0.5], [hw - 0.3, pole_y, zc - 0.5]]), 0.025, 5, mb.material(M_TIMBER))
+    for k in range(int(rng.integers(3, 5))):
+        xk = float(rng.uniform(-hw + 0.6, hw - 0.6))
+        drop = float(rng.uniform(0.9, 1.5))
+        _box(mb, (xk, pole_y - drop * 0.5, zc - 0.5), (0.22, drop * 0.5, 0.012),
+             STOCK_DYES[int(rng.integers(len(STOCK_DYES)))], rng)
+
+
 def build_shophouse(name: str, *, lod: bool = False) -> kc.MeshBuilder:
     w, d, pitch_lo, pitch_up, balcony, seed = SHOPHOUSES[name]
     rng = kc.rng_for(name, seed)
@@ -91,6 +138,7 @@ def build_shophouse(name: str, *, lod: bool = False) -> kc.MeshBuilder:
     village.panel(mb, (-hw + 0.15, hd - 2.2), (hw - 0.15, hd - 2.2), DECK_Y, UPPER_FLOOR_Y, "kit_interior_dark", rng,
                   thick=0.04)
     if not lod:
+        _shop_stock(mb, name, seed, hw, hd)
         for k in range(3):
             xc = -hw + w / 6 + k * w / 3
             hinge = np.array([xc, UPPER_FLOOR_Y - 0.15, hd + 0.05])

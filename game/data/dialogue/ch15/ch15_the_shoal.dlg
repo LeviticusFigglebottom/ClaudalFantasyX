@@ -47,10 +47,10 @@ title: ch15_the_confession
 @anim kerrid sit_down
 @sfx kerrid_sits
 @wait 3.0
-@mark asha kerrid_near walk
+@mark asha reveal_asha walk
 @mark rhen kerrid_opposite walk
-@mark toma kerrid_standing walk
-@mark ysolde kerrid_ysolde walk
+@mark toma reveal_toma walk
+@mark ysolde reveal_ysolde walk
 @wait 2.0
 Kerrid [neutral]: I'll tell it before you ask. You've been very patient. #line:ch15_conf_001
 @camera K06
@@ -106,6 +106,8 @@ Kerrid [neutral]: Yes. #line:ch15_conf_022
     Toma [sad]: The watch at Corrow tells it every Rising. The captain who held the stair. I served seven years on that wall and never knew his face. #line:ch15_conf_023 #long
     Kerrid [neutral]: Nobody did. That was the point of a watch. #line:ch15_conf_024
 <<endif>>
+// act2_ch15_direction.md: K18b takes in Rhen for the rest of the talk (K18 is Toma and Kerrid's two-shot).
+@camera K18b
 <<if $ch05_heard_straw_cape_tale>>
     Rhen [sad]: The big man in the straw cape. The one who pulls them out. #line:ch15_conf_025
     Kerrid [neutral]: Somebody has to. #line:ch15_conf_026
@@ -140,6 +142,8 @@ title: ch15_still_below
 @anim asha sit_beside kerrid
 @wait 6.0
 @anim liss look_at pell
+// K19b: the group round the bier for the talk (K19 is Asha sitting down beside him).
+@camera K19b
 Liss [angry]: You knew? #line:ch15_below_001
 Pell [neutral]: From the first day. It was his to say. #line:ch15_below_002
 <<set $ch15_pell_said_he_knew = true>>

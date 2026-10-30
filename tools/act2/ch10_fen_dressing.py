@@ -30,6 +30,8 @@ ROOT = Path(__file__).resolve().parents[2]
 KIT_SRC = ROOT / "assets_src" / "environments" / "kits" / "haluna"
 sys.path.insert(0, str(KIT_SRC))
 import arena_scenes as ar  # noqa: E402
+sys.path.insert(0, str(KIT_SRC.parent.parent))
+import zone_edges  # noqa: E402
 import ossa_fen as of  # noqa: E402
 import reedhollow as rh  # noqa: E402
 
@@ -315,7 +317,14 @@ def layout(zone: str) -> dict:
         "environment": f"res://game/levels/ch10/{zone}/{zone}_environment.tres",
         "time_of_day_h": 18.33,
         **body,
+        # Invisible walls along the walks' open edges over the water (the human's playtest in Oruvel, 10-30).
+        "edge_walls": edge_walls(zone),
     }
+
+
+def edge_walls(zone: str) -> list[dict]:
+    lay = _layout(zone)
+    return zone_edges.walls(lay, zone_edges.hideable_ids(lay))
 
 
 def write_water_material(out: Path) -> None:
