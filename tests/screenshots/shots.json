@@ -10318,6 +10318,14 @@
         960,
         720
       ]
+    },
+    {
+      "id": "creature_hull_rasp",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_hull_rasp.tscn",
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }

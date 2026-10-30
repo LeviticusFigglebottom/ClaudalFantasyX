@@ -154,3 +154,13 @@ This is the creatures they imply, checked against them. **Planning only:** no as
   - Clip audit: the scuttler's own profile, scaled up.
   - Portrait and review shot `creature_deep_scuttler`.
   - The enemies.json row and the Ch17 moorings encounter are Combat's and the chapter designer's.
+- **`hull_rasp`** (M5-A3P-1806, 2026-10-30), from `assets_src/creatures/hull_rasp/build_hull_rasp.py`. The hullgnaw's
+  rig, clips and breach (it bores up through the hull it was eating), imported, with a new shell:
+  - its body sunk darker and scabbed with dried salt over its back;
+  - its seams bored: eleven small round bore-holes along the gaps between the frames, round the one large seam the
+    weak point (`vfx_wound`) keeps;
+  - its frames salt-white keel timbers crusted thick, the rust bled pale (`Ribs`: the `breaking` phase throws them
+    off, the part to break first).
+  - It stands 0.62 times the hullgnaw's size, a single optional foe.
+  - The hullgnaw's audit profile, scaled. The floor and sink tests exempt it as they do the hullgnaw.
+  - Portrait and shot `creature_hull_rasp`.
