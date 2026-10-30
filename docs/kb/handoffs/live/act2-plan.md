@@ -61,3 +61,91 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
   - Names proposed (banned-terms clean): Commander Brannoc Hale, Warden Dask, the dock-master Aldous Varrow, the Kirru eldest Owa (or unnamed); "Outside the Level" as the heresy's words.
 - BACKLOG EMPTY (2026-10-30, second pass): the plan, the inventory, the tasks, the track split, the critical path and all seven Act II beat-sheet drafts are done and pushed. The rest waits on the Lead's review or the gate: no .dlg or game data before it (the Lead's instruction).
 - MERGE-READY @ a3c86c7a: M4-A2P-059 (the Ram's ice to wet wool; creatures-b; blocked by ADR 0203), the Ch12 §10.1 answer recorded, and the plan's pointer to the lane docs in docs/kb/plan/act2/<lane>/ (none on the integration branch yet). Checks: validate_data 0/0, taskboard --check clean. BACKLOG EMPTY again.
+
+### ADR 0204 applied (2026-10-30)
+- MERGE-READY @ f9f8c709 (+ the next commit for the tasks):
+  - every Act II draft now follows ADR 0204: Owa named; Tobin's light caught and the lamp cracked; the Wakefin is one animal, with `sound_dive` as evasion up and `close_circle` kept; the ledger phrase is a torn fragment; the Ram's `torn_fleece` in wet wool; snow and grit on the Ch12 regulars; `battle_heretic` from Ch14; the `hush_first_verse` and `ysolde_theme` reprises; ORDER_HUM sung once; Kesh at 4.2 m in battle; the Lamp Engine's two dormant crawlers; Nhoa copies ordinary skills only;
+  - M4-A2P-056 (no Ansedra wildlife) and M4-A2P-090 (`tobin_pyre` withdrawn).
+  - Checks: validate_data 0/0, taskboard --check clean.
+- Depth check: all seven drafts have the same 11 sections at 5,600–8,700 words. Ch11, Ch12, Ch13 and Ch16 aren't thinner than Ch10, Ch14 and Ch15, so none was expanded.
+- In progress: the consistency pass across the drafts and the six lane-doc sets on the track branches.
+
+### Consistency pass (2026-10-30)
+- MERGE-READY @ 8d430289: `docs/kb/plan/act2_consistency.md`, about 90 rows (names, flags, cast, ADR 0204, facts, drafts against each other), each with an owner.
+  - The act2-plan-owned rows (D1–D7, plus the drafts' side of A3 and P14) are fixed.
+  - `tools/banned_terms.txt` gains `Farplane` (its own commit; case-sensitive, so it doesn't hit `FarPlane` node names).
+  - Checks: validate_data 0/0, taskboard --check clean. Skipped: Godot (docs only).
+- LEAD-ASK: **Route the lane mismatches** (rows in act2_consistency.md by owner):
+  - **chapters** (act1-chapters), 23 rows:
+    - its flags are renamed copies of the drafts' §3 flags, including `act2_complete` against `ch16_act_two_complete`, `ch15_kerrid_revealed` against `ch15_kerrid_told`, and the set-piece ids;
+    - Ch14: Tobin dies after the steps (the draft has him die before them); no Toma lock and no Liss `unavailable`; Liss locked for Venn (ADR 0204 §8 says a lent skill);
+    - Kerrid is inside Reedhollow, walks the city by day, and the pact is staged with Sefir instead of at the moorings;
+    - the Ram's hazard is snow.
+  - **creatures-b**, 13 rows:
+    - the Abiding guard's sheet still allows them to be revenants (ADR 0016: no revenant fought openly before Ch19, so living);
+    - the Wakefin's `sound_dive` is untargetable (ADR 0204 §3: evasion up);
+    - `wakefin_breaching` is unmapped;
+    - Venn boards at 50% before the engine breaks;
+    - the storm is a guard phase (the draft has the `ch16_storm_wakes` set piece);
+    - the Ram's hazard is snow.
+  - **creatures**, 3 rows: `ridge_lynx` and `scree_crawler` still have frost (ADR 0204 §2); `rime_urchin`'s ice-crust base breaks Ch11's no-frost rule.
+  - **ui-menus**, 8 rows:
+    - "Heretics of the Level" should be "Outside the Level";
+    - nine codex unlock flags are never set;
+    - Kerrid's flag should be `ch15_kerrid_told`;
+    - the Ram's hazard is snow.
+  - **audio**, 11 rows:
+    - a new `ysolde_confession` cue (ADR 0204 §12 says reprise `ysolde_theme`);
+    - `kesh_bound`'s element order;
+    - `kerrid_at_sea`'s length (about 7–8 min of scene);
+    - the Ram's hazard is snow.
+  - **env-art-b**, 7 rows: Kerrid at the Sanctum vestibule (he never enters the Sanctum); shot ids reused from the drafts for other frames.
+- BACKLOG EMPTY: the Lead's item is done: ADR 0204 applied, the depth check passed, and the consistency pass is logged with owners. Lane fixes belong to their tracks.
+
+### Gate-commit prep (2026-10-30)
+- MERGE-READY @ be30b8cc:
+  - `docs/kb/plan/act2_consistency.md`: the rows grouped by owner in a routing table (chapters 27, creatures-b 17, creatures 4, ui-menus 12, audio 13, env-art-b 10; a row may list two owners). The drafts' own rows are all closed, including N7 `drowner_haul`, N8 "the Veil-First", N9/P15 `court_steps` and `peace_wedding_break`, and F10 the reads lists.
+  - `docs/kb/plan/act2_tracks.md`, updated to the Lead's answers:
+    - §3a: 11 ownership rows to append, paste-ready, with `<GATE>` as the date;
+    - §3b: the narrowing edits (act1-chapters' row, which appears **twice** in ownership.md today; the m2-slice session renamed to cinematics);
+    - §4a: the COMMON PREAMBLE's ADR 0203 rule;
+    - §4b: the Act II track-briefs table (12 tracks, eight on day 1).
+  - Checks: validate_data 0/0, taskboard --check clean. Skipped: Godot (docs only).
+- BACKLOG EMPTY: all of the Lead's items are done. The rest is the gate commit (the Lead) and the lanes' consistency rows (owners).
+
+### Story track: Act II scripts (from 2026-10-30, ADR 0205)
+- MERGE-READY @ f068e5de: **Ch10, Ch14, Ch15 and Ch11 scripts** (M4-A2P-001, 005, 006, 002, now in review; M4-C10/C11/C14/C15-01 in review):
+  - 71 `.dlg` scenes in `game/data/dialogue/ch1{0,1,4,5}/`, compiled, with `dialogue.csv`;
+  - new speakers `owa`, `kirru`, `kirru_child`, `tobin`, `merel`, `malcor_venn`, `brannoc_hale`, `hull_captain`, `aldous_varrow`, `hull_widow`: `speakers.json`, `CHAR_*` rows in `loc/ch1x.csv`, and `voices.json` rows borrowed from existing timbres (audio to tune);
+  - about 40 flags declared in `flags.tres`;
+  - `tests/unit/test_act2_dialogue.gd`: every Ch10–Ch16 scene down every option path, all flags unset and all set, checking END, no runner warnings, letterbox off, translated keys, known speakers, emotions and the light rules.
+  - Checks run: dlgc --check 0/0; validate_data 0/0; taskboard --check; gdlint and gdformat on the test; Godot `--import`; `--filter=act2_dialogue` 1 run, 0 failed.
+  - A pre-existing "Invalid UTF-8 leading byte (a7)" warning shows at Godot start. No text file under game/ or tests/ has invalid UTF-8, so it isn't from this work.
+  - Skipped: the coverage step (no battle or progression code) and screenshots (no scene changed).
+- **Requests the scripts make** (for the owners; also in each scene's header):
+  - **cinematics/UI:** the hold_input prompt rows `hold_to_watch`, `release_tide` (Ch10), `pole_stroke` (Ch14), `hold_steady`, `turn_collar`, `seat_it` (Ch11) need loc keys in each chapter's field data, as `ch09_field.json`'s `raise_staff`. The farewell-tide's "Release" variant is still a UI request.
+  - **chapters:** the flow sets `ch10_drowner_felled` and `ch14_steps_held` on those fights' ends (declared), and plays the scenes in order. The scenes hand off with `start_battle` on encounter ids `ch11_lamp_engine`, `ch14_water_steps`, `ch14_malcor_venn` and `ch15_wakefin` (ids to create, or rename here).
+  - **systems/cinematics:** `cues.json` has no grade ids for ch10–ch16 and no sideways drift for held light. The scripts use no `grade=` and give held motes no drift until those are added.
+- Next: Ch12, then Ch13, then Ch16 (M4-A2P-003, 004, 007), then M4-A2P-008 (heresy barks and the people's codex).
+- MERGE-READY @ 1f4c792d: **Ch12 and Ch13 scripts** (M4-A2P-003, 004, and M4-C12/C13-01, all in review): 33 scenes; speakers `ullari`, `ullari_woman`, `householder`; 18 flags. The Archive's record texts (the torn Binding Ledger fragment, ADR 0204 §15) are narration lines with `DLG_CH13_REC_*` keys for the document reader. Checks: dlgc --check 0/0, validate_data 0/0, Godot `--filter=act2_dialogue` PASS (all Act II scenes so far, every path). Next: Ch16 (M4-A2P-007), then M4-A2P-008.
+- MERGE-READY @ 6e4ffd4d: **Ch16 scripts** (M4-A2P-007, M4-C16-01 in review):
+  - 11 scenes: the Rim, Kesh's memory sequence (shown, never said), Sefir's temptation with ADR 0016 (c)'s fixed lines and "Captain.", the act-break VO, and the "Act III: The Unbinding" caption;
+  - speaker `kesh`; 6 flags (`ch16_guard_beaten` and `ch16_line_held` are set by the flow on those fights' ends).
+  - **All seven Act II chapters are now scripted** (about 130 scenes).
+  - Checks: dlgc --check 0/0; validate_data 0/0; Godot `--filter=act2_dialogue` PASS; `--filter=voice` 15/0.
+  - `--filter=dialogue` was 86 run, 1 failed: `test_dialogue_box::test_every_act1_speaker_with_a_model_has_a_portrait` (Pell has a model and no portrait under assets/ui/portraits). It's pre-existing, reads only `ch0*` scenes, and is an Act I row for characters or ui-menus, not from this work.
+- LEAD-ASK: the Act I red above (`test_every_act1_speaker_with_a_model_has_a_portrait`, Pell's portrait). Route it to ui-menus or characters as an Act I FAST-TRACK? Not mine to fix (`assets/ui/portraits/**` is ui-menus').
+- Next: M4-A2P-008 (heresy barks, Kerrid's post-reveal barks, the people's codex text).
+- MERGE-READY @ 2e6369bd: **M4-A2P-008** (in review):
+  - 12 Act II people in the codex; `kerrid_stair` is Kerrid's post-reveal page, in the bible's words;
+  - three heresy-state barks and two Kerrid post-reveal barks.
+  - Checks: validate_data 0/0, dlgc --check 0/0, Godot `--filter=act2_dialogue` PASS and `--filter=codex` 15/0.
+  - Note for ui-menus: `test_codex.gd` pins the world and records counts, so the Archive's records stay in `ch13_archive_*` scripts (keys `DLG_CH13_REC_*`) for the document reader to show, not codex rows. If ui-menus wants them in the codex, add them with the test update.
+- **Story track status:** all eight story tasks (M4-A2P-001…008) and the seven beat sheets (M4-C10…C16-01) are in review, waiting on cinematics (and the Lead for Ch14–Ch16, and ui-menus for 008).
+- BACKLOG EMPTY (story track): every story task is scripted and in review. When reviews come back, their notes are the next work.
+
+## 2026-10-30 — merged integration @ c38ba639
+- Lead: the Pell portrait red is fixed (big19). I merged `claude/new-session-mj8c3c`. The only conflict was in `tools/banned_terms.txt`; both sides had appended lines and I kept them all (`Farplane` plus the four `* break` terms). No Act II script uses the new terms.
+- The **LEAD-ASK on the Pell portrait is closed**. Godot `--filter=dialogue`: 86 run, 0 failed. validate_data 0/0, dlgc --check 0/0, taskboard --check clean.
+- MERGE-READY @ 1dc453a9 (merge commit; the next commit adds only this log entry).
+- BACKLOG EMPTY (story track): every Act II script is in review.

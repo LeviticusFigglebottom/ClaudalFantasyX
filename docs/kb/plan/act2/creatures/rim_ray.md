@@ -1,10 +1,10 @@
 ---
-draft: pre-gate
+draft: built
 id: rim_ray
 kind: wildlife (fish shoal)
 chapter: 16
-exists: no
-meets_bar: n/a
+exists: yes
+meets_bar: yes (greybox placement; judge again under the Rim's real water)
 ---
 # rim_ray (Ch16, the Pale Rim, the white shallows)
 
@@ -31,8 +31,11 @@ In the zone, low pale shapes and crisp shadows on white sand: their shadows carr
 The shoal-fish generator with a disc body (the gallery ray's and glass skate's disc profile, small); a `ray` kind with a flap cycle.
 
 ## State
-Does not exist.
+**Built 2026-10-30 (creatures track, ADR 0205, M4-A2P-056):**
+- assets/wildlife/rim_ray/rim_ray.glb (assets_src/wildlife/rim_ray/build_rim_ray.py): a 0.4 m rounded diamond with a whip tail, a pale sand back freckled a shade darker, a faint darker margin, small dark eyes and a bone belly. 868 triangles. Its fins carry the flap mask.
+- A `ray` kind in wildlife.json: the fish shoal (WildlifeShoal, the same keys), slow, loose and flat. WildlifeShoal takes a shader mode, so rays draw with the flap (their fins beat) instead of the swim. They cast shadows. They have their own zone rows (`rays`), a budget of 16 and a MultiMesh (draw_calls 10).
+- Placed: game/data/world/wildlife/ch16_pale_rim.json, three groups (5, 6, 5) at y 0.04 under the hand-deep water, off the wade by Cairn0, Cairn2 and Cairn4.
+- Review shot `wildlife_zone_pale_rim_wade` (self-rendered and viewed). The greybox's opaque Shallows plane would hide them, so the review stage hides it (zone_wildlife.gd `hide_nodes`). They read as low pale shapes with beating fins on the white sand.
 
 ## Work at the gate (after `act1-complete`)
-Build, a wildlife.json kind with its budget, placement in the zone file with tools/creatures/wildlife_snap.gd and
-wildlife_audit.gd on the zone's dressed kit, a review shot, PROVENANCE rows.
+Left: judge them under the Rim's real (transparent) water when env-art's water replaces the greybox plane.

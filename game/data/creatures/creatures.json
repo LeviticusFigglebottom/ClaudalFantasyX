@@ -189,7 +189,7 @@
     "gallery_ray": {
       "scene": "res://game/creatures/gallery_ray/gallery_ray_battle.tscn",
       "contact": {"attack": 0.6, "cast": 0.9},
-      "stand_in": {"yaw_deg": 60.0, "hover": 1.4},
+      "stand_in": {"yaw_deg": 60.0, "hover": 0.95},
       "portrait": {"yaw_deg": 30.0, "pitch_deg": 35.0}
     },
     "rime_urchin": {
@@ -213,7 +213,7 @@
       "scene": "res://game/creatures/cord_moth/cord_moth_battle.tscn",
       "contact": {"attack": 0.5, "cast": 0.55},
       "ko_fade_sec": 1.0,
-      "stand_in": {"yaw_deg": 60.0, "hover": 1.25},
+      "stand_in": {"yaw_deg": 60.0, "hover": 1.12},
       "portrait": {"yaw_deg": 60.0, "pitch_deg": 30.0}
     },
     "glass_skate": {
@@ -228,7 +228,7 @@
     },
     "fen_leech": {
       "scene": "res://game/creatures/fen_leech/fen_leech_battle.tscn",
-      "stand_in": {"hover": 1.38},
+      "stand_in": {"hover": 0.85},
       "contact": {"attack": 0.7},
       "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}
     },

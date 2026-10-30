@@ -1,0 +1,22 @@
+// Ch15 B01 "Unlamped" (C, 1.5 min, no dialogue). act2_ch15.md §2 B01. RULE 3: no lamp is struck at night;
+// no warm source on the barge until the Hollowmere dawn. U01: the barge small on black water; Ansedra a gold
+// smear going under the north horizon; the sea-glow the brightest thing in frame. U02: the empty lamp hook;
+// Rhen's hand on his tinder pouch, not striking. U03: the bier under Merel's bridal cloth; a few of Tobin's
+// motes still cling under its edge, held, near Liss's hand (grief anchors; nobody names it).
+title: ch15_unlamped
+location: ch15/open_sea
+---
+@letterbox on
+@fade in 2.0
+@camera U01
+@music unlamped fade=2.0
+@wait 5.0
+@camera U02
+@anim rhen touch tinder_pouch
+@wait 3.0
+@camera U03
+@vfx glimmer_held at=tobin_bier count=6 rate=slow
+@wait 4.0
+@letterbox off
+@camera release
+===

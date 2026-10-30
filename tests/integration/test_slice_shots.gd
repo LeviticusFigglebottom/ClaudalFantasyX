@@ -39,9 +39,17 @@ func test_every_slice_shot_boots_its_rig() -> void:
 			assert_true(rig.sequencer != null and rig.sequencer.is_playing(), "%s is playing its scene" % id)
 		var hold := StringName(str(props.get("hold_line", "")))
 		if hold != &"":
-			# The held line is one of the scene's (a typo would let the shot run on), and showing it stops the scene.
-			var compiled := FileAccess.get_file_as_string(COMPILED % str(props.get("scene_id", "")))
-			assert_true(compiled.contains('"id": "%s"' % hold), "%s holds a line of its scene (%s)" % [id, hold])
+			# The held line is one of the scene's (a typo would let the shot run on), and showing it stops the scene. A
+			# story_call shot names no scene (the story picks it), so its line is one of any compiled scene's.
+			var scenes: Array = [str(props.get("scene_id", ""))]
+			if scenes[0] == "":
+				var files := Array(DirAccess.get_files_at(COMPILED.get_base_dir()))
+				scenes = files.map(func(f: String) -> String: return f.get_basename())
+			var found := scenes.any(
+				func(sid: String) -> bool:
+					return FileAccess.get_file_as_string(COMPILED % sid).contains('"id": "%s"' % hold)
+			)
+			assert_true(found, "%s holds a line of its scene (%s)" % [id, hold])
 			var step := DialogueStep.new()
 			step.line_id = hold
 			rig.call(&"_on_line_shown", step)

@@ -17,6 +17,9 @@ const POI_LINE_KEY := "MAP_POI_LINE_FMT"
 const POI_HERE_KEY := "MAP_POI_HERE_FMT"
 const POI_GOAL_KEY := "MAP_POI_GOAL"
 const NO_ERRANDS_KEY := "MAP_ERRANDS_NONE"
+## An Order shrine's POI ("order": true in zone_maps.json) once the party are heretics: the hollow glyph, and its
+## name in this format in the legend and the line under the map (heresy.md section 1).
+const DARK_FMT_KEY := "MAP_POI_SHRINE_DARK_FMT"
 
 var zone_id: StringName = &""
 var maps: ZoneMaps
@@ -50,17 +53,25 @@ func _init(
 	for p: Variant in zone().get("pois", []):
 		var row := p as Dictionary
 		var w: Array = row.get("at", [0.0, 0.0])
+		var kind := StringName(str(row.get("kind", "")))
+		var dark := kind == MapGlyphs.KIND_SHRINE and bool(row.get("order", false))
+		dark = dark and bool(tracker.is_set.call(SaveShrine.HERETIC_FLAG))
 		(
 			_pois
 			. append(
 				{
 					"id": StringName(str(row.get("id", ""))),
-					"name": _tr(str(row.get("name_key", ""))),
-					"kind": StringName(str(row.get("kind", ""))),
+					"name":
+					_dark_name(_tr(str(row.get("name_key", "")))) if dark else _tr(str(row.get("name_key", ""))),
+					"kind": MapGlyphs.KIND_SHRINE_DARK if dark else kind,
 					"at": Vector2(float(w[0]), float(w[1])),
 				}
 			)
 		)
+
+
+func _dark_name(place: String) -> String:
+	return _tr(DARK_FMT_KEY).format({"place": place})
 
 
 static func load_data() -> Dictionary:

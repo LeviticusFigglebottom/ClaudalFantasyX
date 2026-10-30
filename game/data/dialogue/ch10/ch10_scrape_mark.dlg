@@ -1,0 +1,11 @@
+// Ch10 B02 optional (the side pocket): a mangrove root with three deep scratched lines at standing height,
+// the clutch's standing places (the same three lines as the clutch's stone in B09).
+title: ch10_scrape_mark
+location: ch10/ossa_fen
+---
+<<if $ch08_liss_found_marks>>
+    Liss [neutral]: Not ours. Not wright marks. Somebody counting. #line:ch10_scrape_001
+<<endif>>
+Pell [neutral]: Standing places. #line:ch10_scrape_002 #tn:"Where the Kirru stand to sing for their dead."
+<<set $ch10_found_scrape_mark = true>>
+===

@@ -164,3 +164,26 @@ live log for the creatures track.
   hall, the beam lattice over the open roof, the loom-frame), `keth_curtain` (one beam's 240 keth, two-sided so they
   cast the floor's writing), `quellan_house` and `woven_awning`. Nothing frozen.
 - 2026-10-28 (env-art, M3-ENV-734): §6, the inn, the well, the dais and the Ch12 greybox swap.
+- 2026-10-30 (env-art, M4-A2P-042): the three Ch12 zones dressed (`tools/act2/ch12_keth_dressing.py`).
+  - **Built from the greybox.** §6's modules don't fit it. The flights climb 6 m in 28, against the switchback's 1 in
+    10. The cliffs run up beside a rising road. The cords run post to post up the slope. The houses are 8 m and the
+    hall 28 × 40. So `keth_zones.py` builds each zone's ground (walks level under their stones, scree falling from
+    the drop sides, crag behind every cliff block, turf on the flats) and its stone:
+    - `keth_pass_road` and `keth_pass_arena`: road stones on every flight and landing; dry-stone parapets following the
+      slope; the low walls; the cord posts with knotted cords between them; the knot post; the saddle's road band.
+    - `quellan_town` and `quellan_houses_n/_s`: the street and square paved, the houses on the greybox's footprints,
+      the terrace's walls, the road up.
+    - `cloudloom_temple`: the approach and stair, the hall's white floor, its walls in dressed courses to 9 m, and the
+      beam lattice with a beam over every row of keth.
+  - **Kit pieces placed round them:**
+    - `lit_terrace_wall` ×2 and `seep_pool` behind the Ram's terrace;
+    - `pass_cord` and cairns at the saddle;
+    - `quellan_inn` on its block, and `quellan_well`;
+    - twelve `keth_curtain` (2,880 cords) over the hall's rows, clear of the aisle;
+    - `hesk_dais`, and `keth_far_ridges`.
+  - **Kit change.** The house, inn and the built walls take the road's granite (`M_DRYSTONE`); the volcanic crag read
+    black. Their roof turf is the new `kit_keth_turf`, because `kit_keth_grass` (the cards' flat colour) read as snow
+    on roofs and flats, which ADR 0015 forbids.
+  - **The mount** is chapters' (M4-A2P-0421). The slate's deep shade at a walker's eye goes to a real-GPU check
+    (env-art's PC-QUEUE).
+

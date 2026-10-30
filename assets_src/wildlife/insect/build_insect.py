@@ -3,13 +3,17 @@
 blender --background --factory-startup --python-exit-code 1 --threads 4 --python \
     assets_src/wildlife/insect/build_insect.py -- --out assets/wildlife/insect/insect.glb
 
-Two small, ordinary insects in one GLB, drawn many at a time through MultiMesh, each with its own material slot:
+Three small, ordinary insects in one GLB, drawn many at a time through MultiMesh, each with its own material slot:
   insect_moth       a pale dusk moth, about 3 cm across the wings: a soft, furry body, two pairs of broad wings in
                     dusty off-white and grey-brown with faint darker bands, small antennae. Slot `moth` (matte).
   insect_dragonfly  about 7 cm long: a slim, segmented abdomen in a muted blue-green running to bronze, large dark
                     eyes, four narrow clear wings, a pale glassy tint with a darker vein edge and a small dark
                     spot near each tip (there is no alpha: the wings are opaque glass). Slot `dragonfly` (glossy).
-Both are built with the wings spread flat, as in flight. TEXCOORD_1.y = the wing span (0 at the root .. ±1 at the
+  insect_firefly    (Ch10, Ossa Fen at dusk) a slim beetle about 1.4 cm long: dusky brown wing covers with a pale
+                    margin held up and out, clear hind wings beating beneath, a faded red shield with a dark spot over
+                    the head, and the lantern, the abdomen's last segments in pale yellow-green wax, which the slot
+                    `firefly` lights (its glow_* parameters) by the instance's blink. Wildlife, not glimmer.
+All are built with the wings spread flat, as in flight. TEXCOORD_1.y = the wing span (0 at the root .. ±1 at the
 tip, the sign the wing's side, + on +x), which the wildlife shader's flutter (mode 5) turns about the body's long
 axis at the wing root (materials.json `flutter_pivot`); on the dragonfly the hind pair (behind `flutter_split_z`)
 beats out of step with the fore pair. The bodies are still. Nothing spawn-touched: no wound light, no glimmer.
@@ -32,7 +36,7 @@ PAL = {k: ck.hexrgb(v) for k, v in {
     "frangipani": "#F0E8D8", "bone": "#E6DAC0", "coral_stone_weathered": "#B9AE98", "timber_weathered": "#7E6A55",
     "sand_cloth": "#C9B48E", "lacquer_black": "#1D1916", "bronze_patina": "#5F8A78", "brass": "#B08D57",
     "tortoiseshell": "#6B3A1E", "salt_glass": "#BFE6E0", "foam_white": "#EEF6F4", "overcast_slate": "#6F7E8E",
-    "faded_teal_cloth": "#5E9A96",
+    "faded_teal_cloth": "#5E9A96", "sun_gold": "#FFD27A", "palm_green": "#3E7A3A", "lacquer_red_deep": "#7A1712",
 }.items()}
 
 # --- moth -----------------------------------------------------------------------------------------------------
@@ -59,6 +63,20 @@ DF_WING_Y = 0.0035
 DF_SPLIT_Z = 0.015  # fore wings lie wholly in front of this z, hind wings wholly behind it
 DF_HEAD_Z = 0.0285
 DF_TAIL_Z = -0.038
+
+# --- firefly (Ch10, Ossa Fen at dusk; docs/kb/plan/act2/creatures/fen_firefly.md) ---------------------------------
+FF_SLOT = "firefly"
+FF_DARK = ck.mix(PAL["lacquer_black"], PAL["timber_weathered"], 0.25)
+FF_COVER = ck.mix(PAL["timber_weathered"], PAL["lacquer_black"], 0.55)  # the wing covers, dusky brown
+FF_EDGE = PAL["sand_cloth"]  # their pale outer margin
+FF_SHIELD = ck.mix(PAL["lacquer_red_deep"], PAL["sand_cloth"], 0.35)  # the pronotum, a faded red
+# the lantern's wax by day: a pale yellow-green (sun_gold toward palm_green, never a glimmer swatch); lit, the
+# material's glow_color (materials.json) is the same hue
+FF_LANTERN = ck.mix(PAL["sun_gold"], PAL["palm_green"], 0.3)
+FF_LANTERN_Z = -0.0052  # the abdomen behind this z is the lantern (the material's glow_tail_z)
+FF_TAIL_Z = -0.0092
+FF_WING_ROOT_X = 0.0008
+FF_WING_Y = 0.0016
 
 
 def _wing(mesh: ck.Mesh, slot: str, side: float, root_x: float, y0: float, span_half: float, le, te, lift: float,
@@ -174,8 +192,54 @@ def build_dragonfly() -> ck.Mesh:
     return mesh
 
 
+def _ff_elytron_colour(u: np.ndarray, v: np.ndarray) -> np.ndarray:
+    # dark wing covers with a pale sand_cloth margin down the outer edge (a firefly beetle's), darker toward the tip
+    col = ck.mix(FF_DARK, FF_COVER, (0.6 * (1.0 - ck.smoothstep(0.2, 1.0, v)))[:, None])
+    return ck.mix(col, FF_EDGE, ck.smoothstep(0.75, 0.95, u)[:, None] * 0.8)
+
+
+def _ff_hindwing_colour(_u: np.ndarray, v: np.ndarray) -> np.ndarray:
+    return ck.mix(DF_GLASS, DF_VEIN, (0.5 * ck.smoothstep(0.7, 1.0, v))[:, None])  # clear, a darker trailing edge
+
+
+def build_firefly() -> ck.Mesh:
+    mesh = ck.Mesh("insect_firefly")
+    # the body: a slim beetle, about 1.4 cm long; the abdomen's last segments (behind FF_LANTERN_Z) are the lantern,
+    # pale yellow-green wax, which the firefly material lights from the instance's blink
+    zs = [0.0050, 0.0030, 0.0005, -0.0020, -0.0045, -0.0065, -0.0080, FF_TAIL_Z]
+    path = np.array([(0.0, 0.0008, z) for z in zs])
+    rad = np.array([0.0012, 0.0016, 0.0017, 0.0017, 0.0016, 0.0015, 0.0013, 0.0008])
+    P, T = ck.tube(path, rad, 6, squash=0.7, up_hint=(0.0, 1.0, 0.0))
+    lantern = ck.smoothstep(FF_LANTERN_Z + 0.0006, FF_LANTERN_Z - 0.0006, P[:, 2])
+    col = ck.mix(FF_DARK, FF_LANTERN, lantern[:, None])
+    ck.finish(mesh, P, T, FF_SLOT, col, 0, wet=0.3 * lantern, cavity=0.1)
+    # the pronotum: a flat shield over the head, faded red with a dark central spot
+    sc = np.array([0.0, 0.0018, 0.0062])
+    P, T = ck.ellipsoid(sc, (0.0020, 0.0006, 0.0018), 4, 8)
+    spot = 1.0 - ck.smoothstep(0.0004, 0.0009, np.linalg.norm((P - sc)[:, [0, 2]], axis=1))
+    ck.finish(mesh, P, T, FF_SLOT, ck.mix(FF_SHIELD, FF_DARK, spot[:, None]), 0, cavity=0.1)
+    # the head, tucked under the shield, and two thin antennae swept forward
+    hc = np.array([0.0, 0.0008, 0.0074])
+    P, T = ck.ellipsoid(hc, (0.0009, 0.0008, 0.0008), 4, 6)
+    ck.finish(mesh, P, T, FF_SLOT, FF_DARK, 0, cavity=0.2)
+    for side in (1.0, -1.0):
+        path = ck.bezier([(side * 0.0005, 0.0012, 0.0080), (side * 0.0016, 0.0020, 0.0098),
+                          (side * 0.0028, 0.0018, 0.0112)], 3)
+        P, T = ck.tube(path, np.array([0.00022, 0.00018, 0.00014]), 3)
+        ck.finish(mesh, P, T, FF_SLOT, FF_DARK, 0, cavity=0.2)
+    # wings: the dark wing covers held up and out in flight, and the clear hind wings beating beneath them
+    for side in (1.0, -1.0):
+        _wing(mesh, FF_SLOT, side, FF_WING_ROOT_X, FF_WING_Y + 0.0003, 0.0042,
+              le=[(0.0, 0.0040), (0.5, 0.0030), (1.0, 0.0012)], te=[(0.0, -0.0040), (0.5, -0.0048), (1.0, -0.0040)],
+              lift=0.0016, nu=4, nv=3, shade=_ff_elytron_colour)
+        _wing(mesh, FF_SLOT, side, FF_WING_ROOT_X, FF_WING_Y, 0.0080,
+              le=[(0.0, 0.0030), (0.5, 0.0026), (1.0, 0.0006)], te=[(0.0, -0.0010), (0.5, -0.0034), (1.0, -0.0024)],
+              lift=0.0004, nu=5, nv=3, shade=_ff_hindwing_colour)
+    return mesh
+
+
 def build_meshes() -> list:
-    return [build_moth(), build_dragonfly()]
+    return [build_moth(), build_dragonfly(), build_firefly()]
 
 
 def main() -> None:

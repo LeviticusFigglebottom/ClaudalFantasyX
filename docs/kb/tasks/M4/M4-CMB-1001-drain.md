@@ -2,9 +2,9 @@
 id: M4-CMB-1001
 title: "Request (act1-chapters): a drain on enemy skills (heal by a share of the damage dealt), for Act II's fen leech"
 role: combat
-status: blocked
-blocked-by: ADR 0041
-owner_session: ""
+status: review
+owner_session: act1-chapters
+reviewer: progression
 depends_on: []
 milestone: M4
 request-from: cinematics

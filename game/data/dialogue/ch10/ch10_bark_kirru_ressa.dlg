@@ -1,0 +1,9 @@
+// Ch10 B07 Kirru bark 5: of Pell, asked by Rhen. "Ressa" is spoken here for the first time (Ch11 pays it:
+// Nhoa is Ressa). Nobody says she was a Cantor.
+title: ch10_bark_kirru_ressa
+location: ch10/reedhollow
+---
+Rhen [neutral]: The tall one at the gate. Pell. What did he do? #line:ch10_kirru_ressa_001
+Kirru [neutral]: Ressa's brother. She went to the sea. We sang. He watched. #line:ch10_kirru_ressa_002 #tn:"Ressa is a Kirru name. 'Watched' is the wrong thing to do: the Kirru turn their backs so the dead can lift."
+<<set $ch10_heard_ressa = true>>
+===

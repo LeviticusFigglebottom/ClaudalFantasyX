@@ -1,0 +1,23 @@
+// Ch10 B05 "What went up" (E, 1.5 min), after the Drowner falls. O06: the snagged lights hang a moment,
+// then RISE: three slow vertical spirals past the dead crown into the overcast, turning glimmer_lift gold
+// (color rule 1). The first time the player sees motes go up in the game. O07: the party watching.
+// Nobody has a word for it. The `reedhollow` cue comes in distant, from ahead.
+title: ch10_what_went_up
+location: ch10/ossa_fen
+---
+@letterbox on
+@camera O06
+@vfx glimmer_lift at=drowner_roots count=12 motion=spiral_up rate=slow
+@wait 4.0
+@camera O07
+@wait 1.5
+Rhen [surprised]: ...Huh. #line:ch10_up_001
+@wait 2.0
+Ysolde [cold]: That is not the direction. #line:ch10_up_002 #tn:"She means the direction the dead are supposed to go (down, to the sea), by her faith."
+@mark pell root_walk_exit walk
+Pell [neutral]: It is the direction. #line:ch10_up_003
+@music reedhollow fade=4.0
+@wait 1.5
+@letterbox off
+@camera release
+===

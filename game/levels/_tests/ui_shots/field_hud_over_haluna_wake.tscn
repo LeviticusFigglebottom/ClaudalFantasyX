@@ -4,6 +4,6 @@
 
 [node name="FieldHudOver" type="Node3D"]
 script = ExtResource("1_drv")
-backdrop = "res://game/levels/_tests/haluna_wake_dressing/haluna_wake_dressed.tscn"
+backdrop = "res://game/levels/_tests/act1_zones/ch04_haluna_wake_shots.tscn"
 location = &"ch04/haluna_wake"
 flags = Array[StringName]([&"ch04_started"])

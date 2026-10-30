@@ -1,0 +1,15 @@
+{
+ "format": 1,
+ "scene": "ch12_bark_asha_even_here",
+ "source": "game/data/dialogue/ch12/ch12_bark_asha_even_here.dlg",
+ "start": "ch12_bark_asha_even_here",
+ "nodes": {
+  "ch12_bark_asha_even_here": {
+   "headers": {"location": "ch12/keth_pass"},
+   "ops": [
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "asha_gaze", "count": 1, "motion": "spiral_up", "rate": "fast"}, "src": 5},
+    {"op": "line", "id": "ch12_bark_even_001", "key": "DLG_CH12_BARK_EVEN_001", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 6}
+   ]
+  }
+ }
+}

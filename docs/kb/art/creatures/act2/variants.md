@@ -7,7 +7,7 @@ parameters where the base allows them, and a creatures.json row: SPEC §5's pale
 |---|---|---|---|---|
 | `root_crab` | `reef_crab` | Ossa Fen (Ch10) | Bark-brown carapace (`timber_weathered`, `laterite`) spotted with grey lichen (`overcast_slate`), longer climbing legs; the house-coral is mangrove bark and a knot of roots | **Roots** one hero (no swap) for two turns; the defender |
 | `fen_leech` | `sail_leech` | Ossa Fen (Ch10) | Ribbon-flat and longer; back `lacquer_black` wet, underside a faint tannin-amber (`dusk_gold` darkened); no canvas | A drainer: heals by what it takes |
-| `scree_crawler` | `slag_tortoise` | the Cloudloom approach (Ch12) | Frost-split scree on the shell (`overcast_slate`, `salt_glass` rime) instead of slag; a shaggier skin | Armour break again, with a frost counter on contact |
+| `scree_crawler` | `slag_tortoise` | the Cloudloom approach (Ch12) | Split scree on the shell (`overcast_slate`, dry snow packed in the splits, grit between the stones; no frost: ADR 0015, ADR 0204 §2, M4-CRE-670) instead of slag; a shaggier skin | Armour break again, with a cold counter on contact (combat names it) |
 | `rim_crawler` | `tide_crawler` | the Pale Rim (Ch16) | Bleached chalky carapace (`mortar_white` over `lacquer_black` in the joints), wounds dimmer | The swarm, in the open: no wall to hold |
 
 Variants that rebuild a base mesh (the root crab's legs, the fen leech's length) need a parameter in the base's

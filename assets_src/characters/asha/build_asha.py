@@ -192,7 +192,7 @@ def unwrap_faces(ob: bpy.types.Object, mats: set[str], seams: set | None = None,
 
 
 HAND_FOOT_RATIO = 0.3  # the donor's hands and feet are dense (~10.7k tris); cut for the LOD0 budget
-UNDER_SKIRT_RATIO = 0.25  # M1-CHR-15: the legs and hips kept whole under the skirts, cut for the LOD0 budget
+UNDER_SKIRT_RATIO = 0.10  # M1-CHR-15: the legs and hips kept whole under the skirts, cut for the LOD0 budget (0.25 until the denser skirt of the big17 review)
 
 
 def region_of(ob: bpy.types.Object, P0: np.ndarray, reg0: np.ndarray, names: list) -> np.ndarray:

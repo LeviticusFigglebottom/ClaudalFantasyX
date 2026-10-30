@@ -253,7 +253,7 @@ def dressing() -> dict:
         "fire_light_color": preview["lamp_color"],
         "fire_lights": [{"at": [r3(l[0] + off[0]), r3(l[1] + off[1]), r3(l[2] + off[2])], "energy": l[3], "range": l[4],
                          "shadow": bool(l[5]), "attenuation": preview["lamp_attenuation"]} for l in preview["lamps"]]
-        + derelict_fill() + ferry_fill(),
+        + derelict_fill() + ferry_fill() + islet_fill(),
         "greybox": {"hide_all": True, "keep": []},
         "pieces": pieces,
     }
@@ -276,6 +276,18 @@ FERRY_FILL = {"color": "#9DB4D6", "range": 8.0, "attenuation": 1.2}
 # In the ferry's frame, with each one's energy: the waist, amidships, and the poop (where the shots stand), lower and
 # stronger there.
 FERRY_FILL_AT = ((0.0, 3.2, -8.0, 0.9), (0.0, 3.2, 0.0, 0.9), (0.0, 2.7, 8.5, 1.5))
+
+
+# The islet's landing, the ferry's foreground at the gangplank (F01): no lamp of its own and the moon behind the
+# camera's sea, so its rock read black on a real GPU (the PC's pass 3). The same cold sky fill, low over its top and
+# its ferry-side edge, in the islet's frame: x toward the islet's seaward side, z along it (the gangway at z 0).
+ISLET_FILL_AT = ((-3.5, 2.2, 0.0, 1.2), (1.0, 2.6, -5.0, 0.9), (1.0, 2.6, 5.0, 0.9))
+
+
+def islet_fill() -> list[dict]:
+    ix, iy, iz = ISLET_AT
+    return [{"at": [r3(ix + x), r3(iy + y), r3(iz + z)], "energy": e, "range": FERRY_FILL["range"], "shadow": False,
+             "attenuation": FERRY_FILL["attenuation"], "color": FERRY_FILL["color"]} for x, y, z, e in ISLET_FILL_AT]
 
 
 def ferry_fill() -> list[dict]:

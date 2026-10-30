@@ -1,0 +1,22 @@
+// Ch11 B05 "The Engine" (C, 1 min). L05: from the engine hall's stair head, the Lamp Engine standing
+// knee-deep under a grey shaft of daylight, twelve lamps lit steady teal, still trimming for a drowned
+// congregation. T02: it turns every lamp toward the party and brightens them in sequence. Two conduit
+// crawlers sit dormant on the dais edge from the start (ADR 0204 §8). Then the flow starts the fight.
+title: ch11_the_engine
+location: ch11/lowlight
+---
+@letterbox on
+@camera L05
+@music silence fade=1.0
+@sfx engine_tick
+@wait 3.0
+@camera T02
+@anim lamp_engine gather
+@music lamp_engine fade=0.5
+Pell [worried]: Twelve. And one more. In the middle. #line:ch11_engine_001
+Liss [neutral]: She's beautiful. #line:ch11_engine_002
+@wait 1.0
+Liss [determined]: Break her. #line:ch11_engine_003
+@letterbox off
+<<event start_battle ch11_lamp_engine>>
+===

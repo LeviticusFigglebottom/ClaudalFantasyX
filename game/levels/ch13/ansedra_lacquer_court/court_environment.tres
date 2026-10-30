@@ -1,0 +1,70 @@
+[gd_resource type="Environment" load_steps=5 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/environment/env_sky_low_sun.gdshader" id="1_sky"]
+[ext_resource type="Texture3D" path="res://assets/environments/arenas/ansedra_lagoon_escape/lut_ch14_wedding.png" id="2_lut"]
+
+[sub_resource type="ShaderMaterial" id="SkyMat"]
+shader = ExtResource("1_sky")
+shader_parameter/col_zenith = Color(0.1804, 0.2039, 0.2824, 1)
+shader_parameter/col_horizon_sun = Color(0.7216, 0.3529, 0.2275, 1)
+shader_parameter/col_horizon_away = Color(0.2902, 0.2275, 0.2824, 1)
+shader_parameter/col_ground = Color(0.1608, 0.1412, 0.1569, 1)
+shader_parameter/sky_energy = 1.0
+shader_parameter/horizon_curve = 0.5
+shader_parameter/azimuth_power = 1.0
+shader_parameter/col_band = Color(0.8, 0.79, 0.76, 1)
+shader_parameter/band_energy = 0.15
+shader_parameter/band_height = 0.1
+shader_parameter/mid_strength = 0.0
+shader_parameter/col_glow = Color(1, 0.6667, 0.3725, 1)
+shader_parameter/glow_energy = 0.9
+shader_parameter/glow_power = 3.0
+shader_parameter/halo_energy = 0.6
+shader_parameter/halo_power = 20.0
+shader_parameter/sun_disc_energy = 2.0
+shader_parameter/col_cloud_lit = Color(0.85, 0.45, 0.3, 1)
+shader_parameter/col_cloud_shadow = Color(0.22, 0.2, 0.26, 1)
+shader_parameter/cloud_coverage = 0.45
+shader_parameter/cloud_softness = 0.6
+shader_parameter/cloud_opacity = 0.85
+shader_parameter/cloud_height_m = 1400.0
+shader_parameter/cloud_scale_m = 5000.0
+shader_parameter/cloud_stretch = Vector2(1, 1.6)
+shader_parameter/cloud_wind_deg = 250.0
+shader_parameter/cloud_sun_energy = 0.6
+shader_parameter/cloud_ambient_energy = 1.2
+shader_parameter/cloud_horizon_fade = 0.15
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMat")
+process_mode = 2
+
+[resource]
+resource_name = "lacquer_court_ch14"
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 2
+ambient_light_color = Color(0.2902, 0.3529, 0.4706, 1)
+ambient_light_energy = 0.4
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 1.15
+tonemap_agx_white = 12.0
+ssr_enabled = true
+ssr_max_steps = 64
+ssr_fade_in = 0.15
+ssr_fade_out = 2.0
+ssao_enabled = true
+ssao_radius = 1.4
+ssao_intensity = 1.4
+glow_enabled = true
+glow_intensity = 0.5
+glow_bloom = 0.03
+glow_hdr_threshold = 1.0
+fog_enabled = true
+fog_light_color = Color(0.2902, 0.2275, 0.2275, 1)
+fog_density = 0.004
+fog_aerial_perspective = 0.5
+fog_sky_affect = 0.3
+adjustment_enabled = true
+adjustment_color_correction = ExtResource("2_lut")

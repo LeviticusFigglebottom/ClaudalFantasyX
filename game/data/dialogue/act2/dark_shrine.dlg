@@ -1,0 +1,7 @@
+// Act II (M4-A2P-082, ui-menus' heresy UI): an Order save shrine after the trap (ch14_declared_heretics). Its bound
+// light is out and it neither heals nor saves. Plain narration, one line; any zone's ZoneStory plays it from the
+// shrine's payload. Kirru and Saltwright shrines never play it.
+title: dark_shrine
+---
+The Order's light is out. It will not answer you. #line:dark_shrine_001
+===

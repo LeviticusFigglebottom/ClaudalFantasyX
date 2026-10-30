@@ -1,0 +1,32 @@
+{
+ "format": 1,
+ "scene": "ch16_ship_waits",
+ "source": "game/data/dialogue/ch16/ch16_ship_waits.dlg",
+ "start": "ch16_ship_waits",
+ "nodes": {
+  "ch16_ship_waits": {
+   "headers": {"location": "ch16/pale_rim"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "camera", "args": ["W01"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "music", "args": ["pale_rim"], "kwargs": {"fade": 2.0}, "src": 9},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 10},
+    {"op": "line", "id": "ch16_ship_001", "key": "DLG_CH16_SHIP_001", "speaker": "hull_captain", "emotion": "neutral", "voice": "", "src": 11, "name_key": "DLG_NAME_HULL_CAPTAIN_SHIP_S_CAPTAIN"},
+    {"op": "cue", "cue": "camera", "args": ["W02"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "anim", "args": ["liss", "give", "lamp_box"], "kwargs": {}, "src": 13},
+    {"op": "line", "id": "ch16_ship_002", "key": "DLG_CH16_SHIP_002", "speaker": "liss", "emotion": "tender", "voice": "", "src": 14},
+    {"op": "cue", "cue": "mark", "args": ["toma", "wade_1", "walk"], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "mark", "args": ["pell", "wade_2", "walk"], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "mark", "args": ["asha", "wade_3", "walk"], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "mark", "args": ["ysolde", "wade_4", "walk"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "mark", "args": ["liss", "wade_5", "walk"], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "wade_6", "walk"], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "mark", "args": ["kerrid", "wade_7", "walk"], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 24},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 25}
+   ]
+  }
+ }
+}

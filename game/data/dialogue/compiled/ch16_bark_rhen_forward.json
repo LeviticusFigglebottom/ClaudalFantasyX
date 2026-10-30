@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch16_bark_rhen_forward",
+ "source": "game/data/dialogue/ch16/ch16_bark_rhen_forward.dlg",
+ "start": "ch16_bark_rhen_forward",
+ "nodes": {
+  "ch16_bark_rhen_forward": {
+   "headers": {"location": "ch16/pale_rim"},
+   "ops": [
+    {"op": "line", "id": "ch16_bark_forward_001", "key": "DLG_CH16_BARK_FORWARD_001", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 5},
+    {"op": "line", "id": "ch16_bark_forward_002", "key": "DLG_CH16_BARK_FORWARD_002", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 6},
+    {"op": "line", "id": "ch16_bark_forward_003", "key": "DLG_CH16_BARK_FORWARD_003", "speaker": "rhen", "emotion": "smile", "voice": "", "src": 7}
+   ]
+  }
+ }
+}

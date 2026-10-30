@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch12_bark_weaver",
+ "source": "game/data/dialogue/ch12/ch12_bark_weaver.dlg",
+ "start": "ch12_bark_weaver",
+ "nodes": {
+  "ch12_bark_weaver": {
+   "headers": {"location": "ch12/quellan"},
+   "ops": [
+    {"op": "line", "id": "ch12_bark_weaver_001", "key": "DLG_CH12_BARK_WEAVER_001", "speaker": "ullari", "emotion": "soft_smile", "voice": "", "src": 5, "name_key": "DLG_NAME_ULLARI_WEAVER"}
+   ]
+  }
+ }
+}

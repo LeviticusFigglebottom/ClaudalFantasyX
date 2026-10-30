@@ -1,0 +1,15 @@
+{
+ "format": 1,
+ "scene": "ch14_bark_toma_commander",
+ "source": "game/data/dialogue/ch14/ch14_bark_toma_commander.dlg",
+ "start": "ch14_bark_toma_commander",
+ "nodes": {
+  "ch14_bark_toma_commander": {
+   "headers": {"location": "ch13/ansedra_lacquer_court"},
+   "ops": [
+    {"op": "cue", "cue": "anim", "args": ["toma", "look_at", "brannoc_hale"], "kwargs": {}, "src": 5},
+    {"op": "line", "id": "ch14_bark_commander_001", "key": "DLG_CH14_BARK_COMMANDER_001", "speaker": "toma", "emotion": "worried", "voice": "", "src": 6}
+   ]
+  }
+ }
+}

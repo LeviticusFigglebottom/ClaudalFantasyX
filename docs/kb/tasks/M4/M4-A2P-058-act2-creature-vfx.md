@@ -19,6 +19,7 @@ The VFX each build left out by its sheet: the Drowner's snagged motes and drag, 
 ## Notes
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). act2_plan §3: every enemy needs its battle VFX.
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
+- 2026-10-30, the creatures track: **the regulars' part is specified** in [docs/kb/art/creatures/act2/skill_vfx.md](../../art/creatures/act2/skill_vfx.md): an entry per skill (tannin_jet, root_drag, leech_bite, glide_lash, rime_spine, unravel, scree_slide, skate_sting) in the Act I generator's vocabulary, for M4-A2P-060 to generate into effects.json (rendering's file, not edited here). The bosses' effects (the Drowner, the Engine, the Ram, the Wakefin) are creatures-b's and remain open.
 
 ## Review log
 - 2026-10-30, creatures-b: claimed **the four bosses' part** (ADR 0205): the Drowner's snagged motes and drag, the

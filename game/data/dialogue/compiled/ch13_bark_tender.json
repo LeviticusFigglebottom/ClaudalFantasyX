@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch13_bark_tender",
+ "source": "game/data/dialogue/ch13/ch13_bark_tender.dlg",
+ "start": "ch13_bark_tender",
+ "nodes": {
+  "ch13_bark_tender": {
+   "headers": {"location": "ch13/ansedra"},
+   "ops": [
+    {"op": "line", "id": "ch13_bark_tender_001", "key": "DLG_CH13_BARK_TENDER_001", "speaker": "tender", "emotion": "smile", "voice": "", "src": 5}
+   ]
+  }
+ }
+}

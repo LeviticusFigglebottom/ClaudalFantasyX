@@ -139,3 +139,27 @@ The hall is built to the battle contract (battle_arenas.md):
   Then `lowlight_sanctum` (the apse round the well's mouth) and `strangler_fig` (root strands fused round a 1.2 m
   pier; the banyan's bark and leaf). The zone kit is complete.
 - 2026-10-28 (env-art, M3-ENV-735): §5, the gallery walk, the lamp bench and the Ch11 greybox swap.
+- 2026-10-30 (env-art, M4-A2P-041): the two Ch11 zones dressed (`tools/act2/ch11_lowlight_dressing.py`).
+  - **Built from the greybox.** §5's 6 m `vey_gallery_walk_6m` runs its balustrade the walk's whole length, but the
+    greybox's rails stop 3.6 m short of every junction. The nave bay and the engine hall stand piers in the walked
+    floor and close every wall, where the greybox has open floors and doorways. So both zones' walks and rooms are
+    built from the greybox in the kit's language:
+    - `vey_zones.py`: `sunken_vey_walks_w/_court/_walks_e`, the walks at their own lengths with the balustrade on the
+      rail blocks; the paved landing, court and fig end; the court's parapets; the conduit stand; Lowlight's gate
+      facade. Also `sunken_vey_ground`, the bed with the drowned street conduits still lit, in `kit_vey_silt`.
+    - `lowlight_zones.py`: `lowlight_atrium/_hall/_well`, the rooms on the greybox's walls, with a pointed arch over
+      every doorway, engaged piers, three niche tiers, the cornice conduit and pointed vaults. The atrium and the hall
+      each have a broken bay. The hall has the trimming rail and the twelve trimmed lamps. The well has its flights
+      under a sloped vault, and the drowned sanctum under a dome on pendentives with the shaft's oculus.
+  - **Kit pieces placed round them:**
+    - `vey_arcade_bay` rows round the court and receding from the landing;
+    - `ruin_column_broken` on the pillars;
+    - `strangler_fig` on piers and columns, and a hollow one at the fig end;
+    - `conduit_housing` on the stand, the mark facing `conduit_mark`;
+    - `lowlight_lamp_bench`, and `well_shaft` (scaled to the mouth);
+    - `lowlight_nave_bay(_broken)` over the gate.
+  - **The grade.** The arena's sky with its deck turned to the overcast's greys, because its warm cloud deck read as a
+    sunset over open water. The water is still: no crest foam, the detail ripple damped. In Lowlight the foam is off,
+    and the hall's flooded floor is a 3 cm film.
+  - **The mount and the open questions** (the well's mouth, wading, underwater) are chapters' (M4-A2P-0411).
+

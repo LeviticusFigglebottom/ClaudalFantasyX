@@ -1,0 +1,19 @@
+// Ch12 B01 "The Cold Road" (C, 1 min). act2_ch12.md §2 B01. K01: the road's laid-stone zigzag climbing scree
+// under grey crags; a pass-cord across the saddle hung with keth in undyed wool and red, moving in the wind
+// against an enormous sky (the red the only warm note). P01: the party small on the first switchback. The
+// few motes up here RISE FAST, straight up and gone (rule 2: up here the dead lift quickly).
+title: ch12_cold_road
+location: ch12/keth_pass
+---
+@letterbox on
+@camera K01
+@music keth_pass fade=2.0
+@wait 5.0
+@camera P01
+@vfx glimmer_lift at=pass_motes count=4 motion=spiral_up rate=fast
+@wait 2.0
+Pell [neutral]: Quick. Up here. #line:ch12_road_001 #tn:"The dead lift quickly in the mountains."
+@wait 1.5
+@letterbox off
+@camera release
+===

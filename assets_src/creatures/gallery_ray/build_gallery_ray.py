@@ -4,10 +4,10 @@ blender --background --factory-startup --threads 4 --python \
     assets_src/creatures/gallery_ray/build_gallery_ray.py -- \
     --out assets/creatures/gallery_ray/gallery_ray.glb
 
-A pale cave ray of the Vey's flooded corridors, nearly the colour of the salt-glass floors: a broad diamond 1.6 m
+A dusky cave ray of the Vey's flooded corridors, freckled with the salt-glass floors' light: a broad diamond 1.6 m
 across with a whip tail 1.1 m long. Its one exaggeration is that it glides through the air between pools, wings
-spread, like a flying fish. The back is `salt_glass` mottled toward `cumulus_shadow`, the wing margin carries a faint
-`sea_glow` (its own slot's emission: the ray's own light, not glimmer), the belly is `bone`, the eyes on top are
+spread, like a flying fish. The back is `cumulus_shadow` mottled toward `lacquer_black` and freckled with
+`salt_glass`, the wing margin carries a faint `sea_glow` (its own slot's emission: the ray's own light, not glimmer), the belly is `bone`, the eyes on top are
 `lacquer_black`, and the spiracles behind them are dark openings in raised rims.
 
 **The battle read (M3-CRE-645).** A pale flat sheet read as plain at review distance, so the disc has shape: a raised
@@ -17,8 +17,8 @@ a dark serrated barb near its root, and a darker trailing edge. The idle curls t
 along the wing. The weak point is one small closed mark (ADR 0151): the camera-side (-x) spiracle's valve is shut,
 and a small `spawn_wound` lens on it glows (the body slot's emission).
 
-**A flier.** The origin is its hover point (the disc's centre); the battle spec's `hover` (creatures.json, 1.4 m:
-head height) lifts it. The KO drops the root by that hover, so it ends lying flat on the floor (the pool).
+**A flier.** The origin is its hover point (the disc's centre); the battle spec's `hover` (creatures.json, 0.95 m:
+below the battle camera, so its back reads) lifts it. The KO drops the root by that hover, so it ends lying flat on the floor (the pool).
 
 Rig (12 bones): root, `body`, the wings `wing_l0`..`wing_l2` and `wing_r0`..`wing_r2` (from the body out to the
 tip, each hinging along the ray's length), and the tail `tail_0`..`tail_3`.
@@ -43,8 +43,10 @@ PAL = {k: ck.hexrgb(v) for k, v in {
     "salt_glass": "#BFE6E0", "cumulus_shadow": "#8FA7C4", "sea_glow": "#1C6B78", "bone": "#E6DAC0",
     "lacquer_black": "#1D1916", "spawn_wound": "#3FE0C8",
 }.items()}
+DUSK = ck.mix(PAL["cumulus_shadow"], PAL["lacquer_black"], 0.55)  # the back's darkest mottle and the rosettes
 
-HOVER = 1.4  # head height: the stand-in spec lifts the origin this far, and the KO drops it this far
+HOVER = 0.95  # below the battle camera (the Act II plan sheet: at head height it was seen edge-on, pale on pale):
+# the stand-in spec lifts the origin this far, and the KO drops it this far; its attack banks a wingtip 0.65 m down
 SPAN = 0.8  # half the span: 1.6 m across
 NOSE_Z, TIP_Z, REAR_Z = 0.5, 0.04, -0.5  # the snout, the wingtips' line, the disc's rear
 TAIL_Z = [-0.44, -0.7, -0.96, -1.24, -1.56]  # four tail bones to the whip's end
@@ -58,6 +60,9 @@ KEEL_Z = (0.34, REAR_Z + 0.03)  # the raised midline keel, front to back
 PEC_X, PEC_Z = 0.25, 0.04  # the pectoral muscle's crest either side of the body
 BARB_U = (0.2, 0.36)  # the barb's span along the tail (fraction of its length): from its root to its point
 MARGIN = 0.84  # the outer band of the disc (fraction of the half-span) that is the margin slot
+ROSETTE_SCALE = 6.0  # dusky rosettes per metre over the back
+ROSETTE_DARK = 0.7
+BACK_DUSK = 0.75  # how far the mottling darkens the back toward DUSK
 
 PARTS: dict[str, tuple[int, int]] = {}
 
@@ -175,9 +180,10 @@ def disc(mesh: ck.Mesh, rig: ck.Rig) -> None:
     top_v = np.concatenate([np.tile(top[0], RINGS), [False, True]])
     uu = np.clip(np.abs(P[:, 0]) / np.maximum(half_span(P[:, 2]), 1e-6), 0.0, 1.0)
 
-    # colour: salt-glass back mottled toward cumulus_shadow, bone belly; eyes' rims and the spiracles
+    # colour: a dusky slate back (cumulus_shadow mottled toward lacquer_black) freckled with salt-glass, bone belly; eyes'
+    # rims and the spiracles. Dusky, not pale: pale on the gallery's pale salt floor it vanished (the Act II plan sheet)
     mott = ck.smoothstep(-0.1, 0.35, ck.fbm(P * np.array([4.0, 4.0, 4.0]), SEED))
-    back = ck.mix(PAL["salt_glass"], PAL["cumulus_shadow"], (0.3 + 0.55 * mott)[:, None])
+    back = ck.mix(PAL["cumulus_shadow"], DUSK, (BACK_DUSK * mott)[:, None])
     # pale freckles over the wings (not the midline): the salt-glass floor's light on the back
     freckle = ck.smoothstep(0.2, 0.45, ck.value_noise(P * np.array([9.0, 9.0, 9.0]), SEED + 3))
     freckle = freckle * ck.smoothstep(0.12, 0.25, np.abs(P[:, 0]))
@@ -192,6 +198,10 @@ def disc(mesh: ck.Mesh, rig: ck.Rig) -> None:
     # the trailing edge and wingtips a shade darker, so the outline reads against a pale floor
     edge = ck.smoothstep(0.86, 1.0, uu) * ck.smoothstep(0.3, -0.1, P[:, 2])
     back = ck.mix(back, PAL["cumulus_shadow"] * 0.8, (0.8 * edge)[:, None])
+    # dusky rosettes over the back, so the disc reads at battle distance (pillar 4)
+    rosette = ck.smoothstep(0.62, 0.78, ck.value_noise(P * ROSETTE_SCALE, SEED + 11))
+    rosette = rosette * ck.smoothstep(0.08, 0.2, np.abs(P[:, 0])) * (1.0 - ck.smoothstep(0.8, 0.95, uu))
+    back = ck.mix(back, DUSK, (ROSETTE_DARK * rosette)[:, None])
     col = np.where(top_v[:, None], back, ck.mix(PAL["bone"], PAL["salt_glass"], 0.25))
     spir = np.zeros(len(P))
     for sx in (1.0, -1.0):
@@ -342,7 +352,7 @@ ATTACK_SEC = 1.2
 ATTACK_CONTACT = 0.6
 CAST_SEC = 1.6
 CAST_CONTACT = 0.9
-POOL_Y = -1.35  # the cast settles the disc's underside onto the pool (the floor)
+POOL_Y = -(HOVER - 0.05)  # the cast settles the disc's underside onto the pool (the floor)
 HIT_SEC = 0.5
 KO_SEC = 2.0
 KO_REST = 0.048  # the KO lifts the body by its underside's depth, so it lies on the floor

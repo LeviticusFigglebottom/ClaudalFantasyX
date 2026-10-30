@@ -1,0 +1,18 @@
+// Ch15 B03 "The fin" (C, 1 min). U05: a hiss first; the sea-glow brightens in a line off the starboard bow,
+// and the line moves. U06: the Wakefin's blade rises and circles; Kerrid has his anchor-cleaver off his
+// back. The first wake in four hundred years drew it out of the lagoon. Then the flow starts the fight.
+title: ch15_the_fin
+location: ch15/open_sea
+---
+@letterbox on
+@music silence fade=0.5
+@sfx fin_cut
+@camera U05
+@wait 2.5
+@camera U06
+@anim kerrid draw_cleaver
+Pell [afraid]: It followed the ripples. #line:ch15_fin_001
+@wait 1.0
+@letterbox off
+<<event start_battle ch15_wakefin>>
+===

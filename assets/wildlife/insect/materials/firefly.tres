@@ -1,0 +1,27 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://game/world/wildlife/wildlife.gdshader" id="1_shader"]
+
+[resource]
+resource_name = "firefly"
+shader = ExtResource("1_shader")
+shader_parameter/cavity_albedo = 0.3
+shader_parameter/cavity_ao = 0.4
+shader_parameter/clearcoat_wet = 0.2
+shader_parameter/detail_albedo = 0.08
+shader_parameter/detail_scale = 2000
+shader_parameter/flutter_angle = 0.35
+shader_parameter/flutter_bob = 0.0004
+shader_parameter/flutter_hind_lag = 0
+shader_parameter/flutter_pivot = Vector3(0.0008, 0.0016, 0)
+shader_parameter/flutter_split_z = -1
+shader_parameter/glow_angle = 0.006
+shader_parameter/glow_centre = Vector3(0, 0.0008, -0.0072)
+shader_parameter/glow_color = Color(0.772549, 0.721569, 0.403922, 1)
+shader_parameter/glow_energy = 3
+shader_parameter/glow_radius = 0.0017
+shader_parameter/glow_tail_z = -0.0052
+shader_parameter/roughness_dry = 0.7
+shader_parameter/roughness_wet = 0.3
+shader_parameter/specular = 0.35
+shader_parameter/wet_darken = 1

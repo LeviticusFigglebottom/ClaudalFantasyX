@@ -94,6 +94,21 @@ func test_a_fallen_hero_says_so() -> void:
 	assert_eq(m.hero_rows()[0]["right"], "")
 
 
+func test_kerrid_s_unrisen_line_shows_only_after_the_reveal() -> void:
+	var party: Array[StringName] = [&"rhen", &"kerrid"]
+	state.party_ids = party.duplicate()
+	var m := StatusMenuModel.new(PartySheet.new(state, party))
+	assert_eq(m.page(&"kerrid")["note"], "", "no hint before the reveal (kerrid.md section 6)")
+	state.flags[&"ch15_kerrid_revealed"] = true
+	assert_eq(m.page(&"kerrid")["note"], tr("STATUS_MENU_KERRID_UNRISEN"))
+	assert_eq(m.page(&"rhen")["note"], "", "his line only")
+	menu = StatusMenu.create(PartySheet.new(state, party))
+	_root().add_child(menu)
+	menu.show_hero(&"kerrid")
+	assert_true(menu.detail_texts().has(tr("STATUS_MENU_KERRID_UNRISEN")), "the page shows it")
+	_teardown()
+
+
 func test_keys_switch_heroes_and_cancel_closes() -> void:
 	_open(true)
 	var tree := menu.get_tree()

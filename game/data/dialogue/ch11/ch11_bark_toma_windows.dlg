@@ -1,0 +1,8 @@
+// Ch11 B02 bark: Toma at a drowned doorway. A crack in the creed, said gently.
+title: ch11_bark_toma_windows
+location: ch11/sunken_vey
+---
+Toma [neutral]: People lived here. The Order says the Lit Age were a wicked people. #line:ch11_bark_windows_001
+@wait 2.0
+Toma [sad]: They had window boxes. #line:ch11_bark_windows_002
+===

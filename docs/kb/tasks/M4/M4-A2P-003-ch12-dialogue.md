@@ -2,9 +2,8 @@
 id: M4-A2P-003
 title: "Ch12 “The Cold Road” dialogue scripts (.dlg), barks and codex text"
 role: narrative
-status: blocked
-blocked-by: ADR 0203
-owner_session: ""
+status: review
+owner_session: "act2 story track (claude/act2-plan, ADR 0205)"
 depends_on: [M4-C12-01, M4-A2P-002]
 reviewer: cinematics
 milestone: M4
@@ -21,5 +20,8 @@ Ch12's scripts from M4-C12-01: the pass-cords and Toma noticing Kerrid's breath,
 ## Notes
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). Plan §2 Ch12. ADR 0015: nothing frozen in Cloudloom.
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
+
+## Done (story track, 2026-10-30)
+- Scripts written from the beat-sheet draft, ADR 0204 applied; compiled; speakers, voices and loc rows; flags declared; `test_act2_dialogue.gd` PASS. Scripts written; reviewer: cinematics.
 
 ## Review log

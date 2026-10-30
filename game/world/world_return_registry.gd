@@ -12,6 +12,7 @@ const KEY_LOCATION := "location_id"
 const KEY_SPAWN := "spawn"
 const KEY_SCENE := "scene"
 const KEY_PLAYABLE := "playable"
+const KEY_ORDER := "order"
 ## resolve()'s "reason" when it falls back: the id is empty, not listed, or not playable.
 const REASON_EMPTY := &"empty"
 const REASON_UNKNOWN := &"unknown"
@@ -111,6 +112,11 @@ func name_key_of(id: StringName) -> String:
 
 func has_shrine(network_id: StringName) -> bool:
 	return _shrines.has(network_id)
+
+
+## True for a shrine row marked "order": true (one of the Order's; dark once the party are heretics, ShrineNetwork).
+func shrine_is_order(network_id: StringName) -> bool:
+	return bool((_shrines.get(network_id, {}) as Dictionary).get(KEY_ORDER, false))
 
 
 ## {location_id, spawn} for a shrine network id, or {} when the registry does not list it.
