@@ -543,3 +543,12 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
   disagree. I built the beat sheet's version; shall combat and act2-plan drop the sheet's version?
 - MERGE-READY @ eaad9906
 - **Next (Act II queue):** M4-A2P-052 (Liss's father and the crowds), then M4-A2P-053 (the Kirru and the Ullari).
+
+## 2026-10-30, Act II: M4-A2P-052 part 1, Aldous Varrow (the dock-master)
+- Built on the villager build: the family face, line-marks to the shoulders, a held-in grief row, and the push_raft
+  and hold_up_housing clips. 5 shots were viewed; identical on the 3 numpy paths; test_villagers passes.
+- LEAD-ASK: M4-A2P-052's three crowd costume sets (Ansedran, Saltwright, Ullari) go in the crowd generator
+  (assets_src/crowd/**, crowd.json), which ownership.md gives to creatures. Route them there, or move the claim to
+  characters?
+- MERGE-READY @ 088cf7d1
+- **Next:** M4-A2P-053 (the Kirru and the Ullari).
