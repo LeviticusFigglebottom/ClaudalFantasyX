@@ -262,6 +262,18 @@ func test_a_scripted_shot_is_never_turned_to_the_leader() -> void:
 	_free()
 
 
+## PC QA row 59 (Ch1's O10, a telephoto on a lintel-gull): a cutscene's FIXED shot keeps its composition even when the
+## leader is out of frame; only a volume's shot has the safety net above.
+func test_a_scripted_fixed_shot_keeps_its_frame_without_him() -> void:
+	var shot := _scripted_shot()
+	director.play_shot(shot, 0.0)
+	_move(shot.position - (shot.look_at - shot.position).normalized() * 4.0)  # right behind the camera
+	_settle()
+	var aim := (shot.look_at - shot.position).normalized()
+	assert_true(-director.camera.global_basis.z.dot(aim) > AIM_TOLERANCE, "still looks at its look_at")
+	_free()
+
+
 func test_pan_follow_turns_toward_the_player_within_its_limit() -> void:
 	_walk_to(Vector3(-1, 0, -5.5))
 	_settle()
