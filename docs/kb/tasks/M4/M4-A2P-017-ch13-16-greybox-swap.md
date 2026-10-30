@@ -2,8 +2,7 @@
 id: M4-A2P-017
 title: "Swap the Ch13–16 and Hollowmere greyboxes onto env-art-b's kits (the Ch10–12 swap is M3-ENV-736)"
 role: cinematics
-status: blocked
-blocked-by: ADR 0203
+status: todo
 owner_session: ""
 depends_on: [M4-C13-02, M4-C14-02]
 reviewer: environment

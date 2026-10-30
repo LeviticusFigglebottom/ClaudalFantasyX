@@ -7,6 +7,9 @@ title: ch10_dawn_gate
 location: ch10/reedhollow
 ---
 @letterbox on
+// M4-A2P-112 note 2: Pell stands where B06 left him (R10 and gate_asha are staged on that spot); he walks the
+// 1.6 m from the layout's pell_gate under the fade.
+@mark pell causeway_last_root
 @fade in 2.0
 @camera R09
 @music reedhollow fade=3.0

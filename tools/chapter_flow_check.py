@@ -21,7 +21,7 @@ TRIGGER_KEYS = {"id", "at", "size", "yaw", "activation", "prompt_key", "payload"
                 "blocked_by_flag", "sets_flag", "once"}
 ACTIVATIONS = {"touch", "interact"}
 SHOT_MODES = {"fixed", "pan_follow", "dolly"}
-ENCOUNTER_KEYS = {"table", "min_m", "max_m", "when", "seed", "grace_m", "max_step_m"}
+ENCOUNTER_KEYS = {"table", "min_m", "max_m", "when", "seed", "grace_m", "max_step_m", "grace_s", "min_gap_m"}
 
 
 class Context:

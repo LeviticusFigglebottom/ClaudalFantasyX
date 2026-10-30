@@ -154,6 +154,42 @@ func test_it_waits_for_the_fade_and_the_banner() -> void:
 	_free()
 
 
+## The PC pass 5 row 64 (creatures-b's trace): the hero-shot search cost 90-170 ms on the first uncovered frame. It
+## now runs at the first turn, behind the fade, and the reveal keeps that pose (no search on the reveal frame).
+func test_the_boss_is_framed_behind_the_fade() -> void:
+	var intro := _start(&"drownbell", 0.0)
+	ctl.pacing_scale = 1.0
+	var covered: Array[bool] = [true]
+	intro.screen_covered = func() -> bool: return covered[0]
+	intro._on_first_turn(ctl.engine.current)
+	assert_false(intro.playing(), "still covered")
+	assert_eq(intro.shot_id, BattleBossIntro.HERO_SHOT, "the boss is already framed behind the fade")
+	var framed := intro._pose.duplicate()
+	intro.cfg = intro.cfg.duplicate()
+	intro.cfg.erase("hero")  # a search on the reveal would now fall back to the fitted shot
+	covered[0] = false
+	intro.advance(0.0)
+	assert_true(intro.playing())
+	assert_eq(str(intro._pose), str(framed), "the reveal keeps the pose framed behind the fade")
+	assert_eq(intro.shot_id, BattleBossIntro.HERO_SHOT, "no search on the reveal frame")
+	intro.skip()
+	_free()
+
+
+## Row 64: an arena mesh shorter than hero.occluder_min_h_m blocks no lens (the Drownbell's saltgrass clumps), and the
+## arena's occluders are built once per battle.
+func test_short_arena_meshes_are_not_occluders() -> void:
+	var intro := _start(&"drownbell", 0.0)
+	var min_h := float((cfg["hero"] as Dictionary)["occluder_min_h_m"])
+	assert_true(min_h > 0.0)
+	intro._frame_boss()
+	assert_true(intro.arena_occluders_built)
+	assert_false(intro.arena_occluders.is_empty())
+	for o: Dictionary in intro.arena_occluders:
+		assert_true((o["box"] as AABB).size.y >= min_h, "an occluder at least %.1f m tall" % min_h)
+	_free()
+
+
 func test_confirm_skips_it() -> void:
 	var intro := _start(&"ch01_hullgnaw", 1.0)
 	intro.advance(float(cfg["camera_in_sec"]))

@@ -1,16 +1,16 @@
-// Ch14 side moment (optional, B01, before the vows). The young Lamplighter from Ch13, in his robe, about to walk. If
+// Ch14 side moment (optional, B01, before the vows). The young lamp-bearer from Ch13, in his robe, about to walk. If
 // Liss fixed his lamp (ch13_fixed_lamplighter_lamp) he is steady; if not, she sees it lean and fixes it now. Hope, an
 // afternoon's worth (the chapter's rule: it must be real so the trap costs). Sets ch14_saw_the_lamplighter.
 title: ch14_side_six_lamps
 location: ch14/lacquer_court
 ---
 <<if $ch13_fixed_lamplighter_lamp>>
-    Townsfolk as "Young Lamplighter" [smile]: Look. Straight. I'm third in. Watch for me. #line:ch14_lamps_001
+    Townsfolk as "Young lamp-bearer" [smile]: Look. Straight. I'm third in. Watch for me. #line:ch14_lamps_001
     Liss [soft_smile]: I'll be watching. #line:ch14_lamps_002
 <<else>>
-    Townsfolk as "Young Lamplighter" [worried]: It's leaning. It's leaning and we go in after the bells. #line:ch14_lamps_003
+    Townsfolk as "Young lamp-bearer" [worried]: It's leaning. It's leaning and we go in after the bells. #line:ch14_lamps_003
     Liss [neutral]: Hold still. Cracked wick-seat. There. #line:ch14_lamps_004
-    Townsfolk as "Young Lamplighter" [surprised]: Oh. Oh, thank you. #line:ch14_lamps_005
+    Townsfolk as "Young lamp-bearer" [surprised]: Oh. Oh, thank you. #line:ch14_lamps_005
 <<endif>>
 Liss [tender]: Tobin's going to cry when the lamps come in. He cries at everything. Don't tell him I said. #line:ch14_lamps_006
 <<set $ch14_saw_the_lamplighter = true>>

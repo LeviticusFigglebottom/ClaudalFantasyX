@@ -1069,3 +1069,35 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - The one roster id with no enemy row is `conduit_crawler`. Its model is built (jointed legs @ 563eda19); the row is Combat's (M4-A2P-022, the Lamp Engine's add). When that row lands I add its `model` and portrait the same hour.
   - Act II zone wildlife from the beat sheets is all done (Ch10, Ch12, Ch16 and Hollowmere; none in Ansedra or the Ch15 open sea).
 - **BACKLOG EMPTY:** no Act II enemy id lacks a model. Next: conduit_crawler's row (Combat) and any new Ch13+ ids.
+- **Your 10:27 relay: the as-played pass, batch 1 (35 encounters).**
+  - Every Act I and Act II regular rendered in its encounter's real battle, at battle distance: `arena_shot.gd` runs the real BattleController with the encounter's arena, lighting and lineup. All 35 stills viewed.
+  - **Fixed @ 3bf5cb75:**
+    - **Fen leech:** side-on in the Ossa Fen arena it still read as a plank hung over the mud. The mesh is now bowed lengthwise (ARCH 0.28 m) with a thicker body, and it reads as a humped animal.
+    - **Glass skate:** it vanished on the Rim's white sand. Clearcoat and rim sheen are cut, the rim is wider and darker, and each wing has a dark eyespot. It is still camouflaged, by design.
+    - Both portraits re-rendered; both builds verified byte-identical.
+    - SELF-RENDERED and viewed: `creature_fen_leech` and `creature_glass_skate`. **Both baselines need rewriting.**
+  - **No other creature reads blocky, untextured, mis-scaled or through the floor.**
+  - **Findings for others** (not this track's paths):
+    1. **Battle layout:** two enemies in one rank overlap heavily: ch02_tideline (eel and crab), ch05_stair_tortoises, ch10_fen_roots, ch06_flats_crabs. The bottom-left enemy also sits partly under the command menu in the underway_tower encounters. Battle presentation's slot spacing.
+    2. **Missing arenas:** Ch11 (`ch11_vey_rays`, `ch11_vey_urchins`) and Ch16 (`ch16_rim_skates`, `ch16_rim_crawlers`) encounters name no `arena` in encounters.json, so they fight on the default stage. Combat or env-art.
+    3. **Pre-existing reds on the integration branch:** `test_palette_check` fails on the committed baseline `haluna_h07_chapel_court` (order_marble ΔE 0.042 against a max of 0.03). verify_blender_builds reports `assets/cutscene/ch01/oruvel_seabed.glb` uncovered (no job).
+  - Checks: validate_data clean; taskboard OK; tools test_creatures and test_palette_rules OK; Godot creature 155/0.
+- **MERGE-READY @ 3bf5cb75** (the as-played fixes).
+- **Crowd variety, batch 1 (Haluna) @ 92f60b06 and its test commit:**
+  - Haluna's shopkeeper, smith and innkeeper wore the netmender's, fisher's and vendor's models. They are now crowd people: `haluna_shopkeeper`, `haluna_smith` and `haluna_innkeeper`, from a new `haluna` community and `smith` role in ranges.json.
+  - They stand at the town's own stand-ins. validate_npc now reads a stage actor that contains a `/` as the stand-in path itself.
+  - VillagerLayer replaces the borrowed-model villager that HalunaVillagers places first, so each shows once.
+  - Viewed in the real zone (temporary cameras). No crowd body changed and no clip library changed, so nothing needed a Blender rebuild.
+  - **LEAD-ASK:** M3-CHR-512 (characters, in review) built bespoke `shopkeeper`, `smith` and `innkeeper` villagers, and their task note says you decide which ships. To ship those instead, two edits are needed:
+    - drop the `crowd` key from the three rows in `ch02_haluna.json` (mine);
+    - delete game/data/flow/haluna_villagers.json's rows (slice-polish's), or the layer adopts its borrowed actors.
+  - Oruvel, Pemakar, Ashcrown and every other Act I zone: no body repeats within a zone and no row borrows a model (checked across all 12 zone files).
+    - Ashcrown's beat sheet names only Tender Ruwen, who has a crowd body.
+  - Checks: validate_data; gen_crowd --check; tools test_npc 28 OK; Godot crowd 12/0, villager 40/0, haluna 65/0, npc 10/0.
+- **MERGE-READY @ 7b5deabd** (the crowd commits; the log commit after it is docs only).
+- **The Act II towns' crowds are not this track's paths.** act2_tracks.md row 55 gives characters the Kirru (base, Owa, child, clutch: Reedhollow's `clutch_0..7`, `kirru_child`), the Ansedran, Hollowmere and Quellan crowd sets, and the Act II rows of crowd.json. None has landed. When they do, I wire their VillagerLayer zone rows (game/data/world/npc/zones, mine) the same hour.
+- **BACKLOG EMPTY:**
+  - The as-played pass is done.
+  - Act I crowd variety is done: no adjacent clones in any zone.
+  - The Act II town crowds are characters' sets (row 55) and have not landed.
+  - Waiting on the Haluna LEAD-ASK and on Combat's conduit_crawler row.
