@@ -1025,6 +1025,26 @@
     "beat": "dais"
    },
    "yaw": 0.0
+  },
+  {
+   "id": "npc_keeper",
+   "activation": "interact",
+   "at": [
+    5.0,
+    6.0,
+    -26.0
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "FIELD_PROMPT_LISTEN",
+   "requires_flag": "ch12_reached_cloudloom",
+   "payload": {
+    "dialogue": "ch12_bark_cloudloom_keeper"
+   },
+   "yaw": 0.0
   }
  ]
 }
