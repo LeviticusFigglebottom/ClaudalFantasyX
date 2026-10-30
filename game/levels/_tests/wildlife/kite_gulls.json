@@ -1,0 +1,9 @@
+{
+  "_doc": "M5-A3P-1808 (act3_roster.md, Ch18 K02): the Kite's gulls, Act I's gull kind riding the Kite's wake as the world opens. The flock's `follow` is the Kite (a node path from the layer), so its centre, perches and birds are in the Kite's space and ride with it: a loose ring astern and above the deck, two birds standing on the stern rail at the start. Review stage kite_gulls.tscn moves a stand-in Kite; the Kite's own scene adds this row to its WildlifeLayer when it exists (follow: its Kite node). Same keys as a zone file; not a zone.",
+  "zone": "_tests/kite_gulls",
+  "flocks": [
+    {"id": "kite_wake", "follow": "../Kite", "center": [0.0, -7.0], "radius_m": 6.0, "altitude_m": [3.2, 5.0], "count": 6,
+     "perched_at_start": 2,
+     "perches": [[-0.9, 1.15, -7.6, 180.0], [0.7, 1.15, -7.6, 160.0], [-1.6, 1.15, -6.4, 250.0], [1.6, 1.15, -6.0, 100.0]]}
+  ]
+}

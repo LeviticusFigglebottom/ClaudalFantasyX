@@ -10366,6 +10366,15 @@
         960,
         720
       ]
+    },
+    {
+      "id": "wildlife_kite_gulls",
+      "scene": "res://game/levels/_tests/wildlife/kite_gulls.tscn",
+      "settle_frames": 120,
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }
