@@ -25,7 +25,9 @@ The zones and env-art-b's own pieces were fixed in place. These are in env-art's
   - `lowtown_ground` bakes its hollows damp (wetness up to 0.6), not mirror-wet (it was up to 1.0).
   - Viewed at `foot_kerrid` looking three ways: soft damp sheens, no black holes.
   - Also done (M3-ENV-1330): the per-triangle cobble patches are gone.
-  - Still open here: Tamsule's shophouse voids, the `market_boat_a` umbrella, the kits' preview slots, the
-    headland's far facets, `camp_tent` end-on, the order chapel.
+  - **`market_boat_a`'s umbrella done:** eight timber ribs under the cloth, the cloth sagging between them and its
+    hem scalloped. Rebuilt at 3904 tris (budget 9000); viewed on the boat in Ch7.
+  - Still open here: Tamsule's shophouse voids, the kits' preview slots, the headland's far facets, `camp_tent`
+    end-on, the order chapel.
 
 ## Review log

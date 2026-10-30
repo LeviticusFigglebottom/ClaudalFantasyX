@@ -129,9 +129,9 @@
         9000,
         600
       ],
-      "bytes": 147788,
+      "bytes": 191108,
       "lods": {
-        "market_boat_a": 2688,
+        "market_boat_a": 3904,
         "market_boat_a-lod1": 172
       }
     },
