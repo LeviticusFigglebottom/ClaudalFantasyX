@@ -42,14 +42,19 @@ def bronze_material(name: str, params: dict) -> str:
     return "\n".join(lines) + "\n"
 
 
-def copy_material(src_res: str, name: str, overrides: dict) -> str:
+def copy_material(src_res: str, name: str, overrides: dict, added: dict | None = None) -> str:
     """`src_res`'s text renamed to `name`, each override replacing its `shader_parameter/<key>` line (or its bare
-    `<key>` line for a StandardMaterial's own keys); every key must already be there once."""
+    `<key>` line for a StandardMaterial's own keys); every key must already be there once. `added` shader parameters
+    are ones the source leaves at the shader's default; they are inserted after `shader = ...` and must not exist."""
     text = (ROOT / src_res.removeprefix("res://")).read_text(encoding="utf-8")
     for key, value in overrides.items():
         text, n = re.subn(r"(?m)^(shader_parameter/)?%s = .*$" % re.escape(key),
                           lambda m: "%s%s = %s" % (m.group(1) or "", key, value), text)
         assert n == 1, (src_res, key)
+    for key, value in sorted((added or {}).items()):
+        assert not re.search(r"(?m)^shader_parameter/%s = " % re.escape(key), text), (src_res, key)
+        text = re.sub(r'(?m)^(shader = ExtResource\("[^"]+"\))$', lambda m: m.group(1) + "\nshader_parameter/%s = %s"
+                      % (key, value), text, count=1)
     return re.sub(r'(?m)^resource_name = ".*"$', 'resource_name = "%s"' % name.removesuffix(".tres"), text, count=1)
 
 

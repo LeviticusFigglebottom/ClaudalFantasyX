@@ -75,7 +75,10 @@ func test_the_strand_and_the_vigil_are_kit_pieces() -> void:
 		counts[kind] = int(counts.get(kind, 0)) + 1
 		if kind == "iskarra_tower_broken":
 			squat = n as Node3D
-	assert_true(int(counts.get("shroud_a", 0)) + int(counts.get("shroud_b", 0)) > 20, "the drowned lie in their rows")
+	var bound := 0  # PC QA pass 3 row 51: the bound shrouds (b_strand.py) replace shroud_a/b on the strand
+	for kind: String in ["shroud_bound_a", "shroud_bound_b", "shroud_bound_small"]:
+		bound += int(counts.get(kind, 0))
+	assert_true(bound > 20, "the drowned lie in their rows")
 	assert_true(int(counts.get("strand_lamp", 0)) > 20, "a clay lamp under each vigil light")
 	assert_true(counts.has("iskarra_plaza"), "the vigil stands in Iskarra's plaza")
 	assert_true(squat != null, "Iskarra's broken tower")
