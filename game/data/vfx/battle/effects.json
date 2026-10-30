@@ -8180,26 +8180,26 @@
             "sea_glow",
             "lagoon_teal"
           ],
-          "amount": 56,
-          "lifetime_s": 1.6,
-          "explosiveness": 0.3,
+          "amount": 70,
+          "lifetime_s": 2.4,
+          "explosiveness": 0.15,
           "velocity_m_s": [
-            0.4,
-            0.9
+            0.3,
+            0.7
           ],
-          "spread_deg": 25,
+          "spread_deg": 20,
           "gravity": [
             0,
-            0.4,
+            0.2,
             0
           ],
           "size_m": [
-            0.15,
-            0.3
+            0.3,
+            0.55
           ],
-          "energy": 1.4,
-          "emission_radius_m": 0.9,
-          "turbulence": 0.3,
+          "energy": 2.2,
+          "emission_radius_m": 1.0,
+          "turbulence": 0.25,
           "direction": [
             0,
             1,
@@ -8213,26 +8213,26 @@
             "sea_glow",
             "abyss_navy"
           ],
-          "amount": 24,
-          "lifetime_s": 2.2,
-          "explosiveness": 0.3,
+          "amount": 30,
+          "lifetime_s": 2.8,
+          "explosiveness": 0.1,
           "velocity_m_s": [
-            0.4,
-            0.9
+            0.15,
+            0.35
           ],
-          "spread_deg": 25,
+          "spread_deg": 30,
           "gravity": [
             0,
-            0.4,
+            0.1,
             0
           ],
           "size_m": [
-            0.15,
-            0.3
+            0.5,
+            0.8
           ],
-          "energy": 1.4,
-          "emission_radius_m": 0.5,
-          "turbulence": 0.3,
+          "energy": 1.6,
+          "emission_radius_m": 0.6,
+          "turbulence": 0.2,
           "direction": [
             0,
             1,
