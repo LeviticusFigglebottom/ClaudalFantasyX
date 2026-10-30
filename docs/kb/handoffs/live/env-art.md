@@ -1086,6 +1086,8 @@ Read this section first; everything below it is history. The branch is `claude/e
     (characters/slice-polish), and `reefball_drop_proxy` / `tb_drop_proxy` are env-art-b's (M3-RND-26).
 
 ### PC-QUEUE
+- **M3-ENV-1323 (2026-10-30):** A/B `battle_arena_underway_tower` with its Sun node hidden. Rectangles that
+  stay are the F9 slabs against the sand (a material edge); rectangles that go are window light.
 - **Ch12 shade at spawn height (2026-10-30):** Keth Pass (PassFoot, RamArena, FromQuellan), Quellan (FromPass,
   FromCloudloom: a black void behind the party) and Cloudloom Approach are near-black at arrival under lavapipe.
   Check on the GPU; if they're as dark there, env-art lifts the ch12 grade's fill.
