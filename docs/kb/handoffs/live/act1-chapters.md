@@ -866,8 +866,17 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
      Ripples; the Sanctum and the Archive have Dressing. No preview is left to copy.
    - The Sanctum's light rows are M4-A2P-103 (done).
    - Checks: encounters_resolve, ch11 (3/0), ch13 (4/0) on the dressed zones, validate_data, taskboard --check,
-     gdlint/gdformat. test_qa_threads is re-running; its result follows.
+     gdlint/gdformat, and test_qa_threads (1/0 on this head; ui's Act II objective rows aren't here yet, see M3-UI-1242).
 - MERGE-READY @ c1a6c9031
+
+- **BACKLOG EMPTY (10-30, after the Lead's 12:08 list):** items 1–7 are done or filed.
+  - **Waiting on others:**
+    - Ch16's arena (env-art-b's `pale_rim_shallows` to integration; LEAD-ASK above).
+    - M3-BPR-445 (battle-presentation).
+    - M3-UI-1242 (ui-menus).
+    - Row 39's a063bbad3 and the Sanctum POI reaching integration on the next merge.
+    - The PC re-check of rows 34 and 39.
+  - Everything listed under the 10:07 BACKLOG EMPTY above still stands.
 
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
