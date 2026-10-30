@@ -589,6 +589,17 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ a319362b: env-art-b's kit requests, the next batch.**
+  - **M3-ENV-1327, partly** (798184107, 5d9d63a4, a319362b), each viewed:
+    - Corrow's puddles bake damp, not mirror-wet: no black holes at `foot_kerrid`.
+    - `market_boat_a`'s umbrella has ribs, a sagging cloth and a scalloped hem.
+    - Tamsule's shophouses are stocked (counter, shelves of jars, bolts and baskets, hung cloth).
+  - **M3-ENV-1323** (f5cd318c), the Underway arenas' rectangles: **blocked on the real GPU.**
+    - On lavapipe they follow the F9 slabs' edges against the sand.
+    - A softer sun (trial, reverted) only brightened the floor.
+    - A/B on the PC-QUEUE.
+  - **Still open in M3-ENV-1316/1327:** the kits' own flat preview slots, the Coilspire headland's far facets,
+    `camp_tent` end-on, the order chapel.
 - **MERGE-READY @ 990bdbb2: the Lead's 14:48 batch (the Ch10–Ch12 walk and dock-edge check; env-art-b's kit requests,
   first three). The integration branch (big24) is merged in.**
   - **Dock edges, Ch10–Ch11** (b01d806e):
