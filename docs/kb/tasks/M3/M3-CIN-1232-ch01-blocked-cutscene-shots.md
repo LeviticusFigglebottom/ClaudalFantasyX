@@ -2,8 +2,8 @@
 id: M3-CIN-1232
 title: "Request (slice-polish, Ch1): five Ch1 cutscene cameras frame a wall, a post or nothing (O02, O09, U03, U09, U11)"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: slice-polish (claude/m2-slice)
 depends_on: []
 milestone: M3
 request-from: cinematics
@@ -29,7 +29,12 @@ Check the player's place for O02 and O09 first.
 ## Acceptance criteria
 - [x] O02, O09, U03 show their speakers (act1-chapters, cb97a0cf; the Lead assigned act1_gpu_qa row 23's cameras to
       act1-chapters on 2026-10-29).
-- [ ] U09 and U11 (slice-polish: they may be meant as a look up the shaft and a dive into the dark; if so, close them).
+- [x] U09 and U11 (slice-polish, 2026-10-30): U09's look_at was straight above the camera (colinear with up), so the
+      camera never turned; it is now a low look up the shaft past Rhen. U10/U11 were on the waterline with no
+      underwater look: Oruvel gets an UnderwaterRig on its Water, U10 looks up from under the water with Rhen's
+      lantern (a `dive_lamp` practical, `@light DiveLamp`) and the held motes sinking from a mark in frame, and U11
+      looks down at a slant with more motes sinking into the dark. New pending stills ch01_going_under_u10/_u11 and
+      ch01_current_shaft_u09.
 
 ## Notes
 - The Ch1 storm (O11, O18) is M3-ENV-751; not part of this request.

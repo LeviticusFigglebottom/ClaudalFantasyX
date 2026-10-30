@@ -45,7 +45,7 @@
     "scuttlers": [45, 0, -12, 0],
     "bridge": [21, 0, -22, 270],
     "under_rhen": [29.5, -1.8, -11.5, 0],
-    "under_deep": [30, -4.4, -18.5, 0]
+    "under_deep": [30, -4.7, -18.4, 0]
   },
   "actors": {
     "scaleman": {"at": [-7.2, -0.4, 10.5, 270], "color": "#6e7f8c", "model": "res://assets/characters/villagers/scaleman/scaleman_actor.tscn"},
@@ -60,7 +60,8 @@
     "pen_child_2": {"at": [29, 0, -25, 0], "color": "#c4a07a", "radius": 0.18, "height": 1.0, "hidden": true, "model": "res://assets/characters/villagers/child/child_actor.tscn"},
     "pen_child_3": {"at": [31, 0, -25, 0], "color": "#b4907a", "radius": 0.18, "height": 0.9, "hidden": true, "model": "res://assets/characters/villagers/child/child_actor.tscn"},
     "hullgnaw": {"at": [31.0, -1.2, -21.8, 39], "hidden": true, "model": "res://assets/creatures/hullgnaw/hullgnaw.glb"},
-    "dive_lamp": {"at": [30.5, -3.9, -14.6, 0], "model": "res://game/levels/ch01/oruvel/dive_lamp.tscn"}
+    "dive_lamp": {"at": [30.5, -3.9, -14.6, 0], "model": "res://game/levels/ch01/oruvel/dive_lamp.tscn"},
+    "seabed": {"at": [30, -11, -25, 0], "model": "res://game/levels/ch01/oruvel/seabed.tscn"}
   },
   "shots": {
     "O01": {"pos": [0, 0.3, 26], "look_at": [0, 1.2, 0], "fov": 52},
@@ -75,7 +76,7 @@
     "O16": {"pos": [36, 3.5, -15], "look_at": [30, 0.5, -22], "fov": 50},
     "O18": {"pos": [30, 1.2, -16], "look_at": [40, 18, -90], "fov": 62},
     "U10": {"pos": [30, -3.6, -15], "look_at": [29, 0.3, -9], "fov": 60},
-    "U11": {"pos": [30, -3.4, -15.5], "look_at": [30, -9, -21], "fov": 55}
+    "U11": {"pos": [30, -3.4, -15.5], "look_at": [30, -7.5, -22.5], "fov": 55}
   },
   "triggers": [
     {"id": "npc_cook", "activation": "interact", "at": [-12, 0, -6], "size": [2, 0, 2], "prompt_key": "FIELD_PROMPT_LISTEN", "blocked_by_flag": "ch01_gulls_cried", "payload": {"dialogue": "ch01_bark_cookboat"}},

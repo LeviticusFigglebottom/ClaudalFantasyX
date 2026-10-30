@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3]
+
+[sub_resource type="StandardMaterial3D" id="Silt"]
+albedo_color = Color(0.105882, 0.164706, 0.172549, 1)
+roughness = 1.0
+
+[sub_resource type="PlaneMesh" id="Floor"]
+material = SubResource("Silt")
+size = Vector2(40, 40)
+
+[node name="SeabedBody" type="Node3D"]
+
+[node name="Seabed" type="MeshInstance3D" parent="."]
+cast_shadow = 0
+mesh = SubResource("Floor")
