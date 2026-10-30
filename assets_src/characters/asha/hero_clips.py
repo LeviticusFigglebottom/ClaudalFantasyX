@@ -166,6 +166,7 @@ class Skeleton:
         hooks_init(self, nodes, parent)  # M2-CHR-513: Rhen's reef-hooks and the grips that hold them
         grips_init(self, glb, js, nodes, parent)  # M2-CHR-515: the held prop's bone, and the fingers closed round it
         flat_init(self, nodes, parent)  # M3-CHR-506: the flat free hand, for the heroes of FLAT_HAND
+        fist_init(self, nodes, parent)  # M4-A2P-1980: the fist of a story clip's "fist" key
 
     def local_pose(self, turns: dict, hips=None, hold=None) -> dict:
         """World-axis turns (bone -> quaternion) -> local rotations, parents first. `hips` is the pose's hips offset
@@ -193,6 +194,7 @@ class Skeleton:
         prop_pose(self, g, out, hips, carry, pivot, down)
         grip_pose(self, out, hold or {})
         flat_pose(self, out, hold or {})  # M3-CHR-506: a free hand laid flat (Pell's palm on the throat)
+        fist_pose(self, out, hold or {})  # M4-A2P-1980: a free hand closed to a fist for one clip (Rhen's knock)
         return out
 
 
@@ -2322,6 +2324,18 @@ for _h, _clips in STORY.items():
     for _c, _spec in list(_clips.items()):
         if "like" in _spec:  # a shared spec, by name
             _clips[_c] = STORY_SHARED[_spec["like"]]
+# M4-A2P-1980: a story clip may close a free hand to a fist for that clip only: "fist": ["R"] (the whole clip, eased in
+# and out over FIST_WINDOW) or {"R": [a, b, c, d]} (hook_hold's window: in from a to b, out from c to d). The fist is
+# HAND_SHAPE's (FIST_CURL, solved as the flat hand is); a hand a grip holds closes from the grip. Only these clips key it.
+FIST_WINDOW = (0.0, 0.12, 0.88, 1.0)
+FIST_CLIPS: dict = {}
+for _h, _clips in STORY.items():
+    for _c, _spec in _clips.items():
+        _fist = _spec.get("fist")
+        if isinstance(_fist, dict):
+            FIST_CLIPS.setdefault(_h, {})[_c] = {s: tuple(float(v) for v in w) for s, w in _fist.items()}
+        elif _fist:
+            FIST_CLIPS.setdefault(_h, {})[_c] = {s: FIST_WINDOW for s in _fist}
 
 
 def _hero_of(persona: dict) -> str | None:
@@ -2973,6 +2987,8 @@ def hook_hold(hero: str, clip: str, u: float) -> dict:
         out[side] = smooth((u - a) / (b - a)) * (1.0 - smooth((u - c) / (d - c)))
     for side, (a, b, c, d) in FLAT_HAND.get(hero, {}).get(clip, {}).items():  # M3-CHR-506
         out.setdefault("_flat", {})[side] = smooth((u - a) / (b - a)) * (1.0 - smooth((u - c) / (d - c)))
+    for side, (a, b, c, d) in FIST_CLIPS.get(hero, {}).get(clip, {}).items():  # M4-A2P-1980
+        out.setdefault("_fist", {})[side] = smooth((u - a) / (b - a)) * (1.0 - smooth((u - c) / (d - c)))
     return out
 
 
@@ -3772,50 +3788,90 @@ def flat_init(sk: "Skeleton", nodes: list, parent: dict) -> None:
         return
     idx = {n.get("name"): i for i, n in enumerate(nodes)}
     gq, gt = _node_globals(nodes, parent)
-    x, z = np.array([1.0, 0.0, 0.0]), np.array([0.0, 0.0, 1.0])
     for side in sorted({sd for spec in FLAT_HAND[hero].values() for sd in spec}):
-        def chain(f: str) -> list:
-            return [f"DEF-{f}.0{k}.{side}" for k in (1, 2, 3)]
-
-        if not all(n in idx for f in GRIP_FINGERS + ("thumb",) for n in chain(f)):
-            continue
-        sgn = 1.0  # the fist's curl sign on this side (as GRIP solves it); -1 only if the fingers would bend back
         shape = FIST_CURL if HAND_SHAPE.get(hero, {}).get(side) == "fist" else FLAT_CURL
-        curl = [qaxis(x, sgn * a) for a in shape]
-        mid = _chain_points(chain("f_middle"), curl, nodes, parent, idx, gq, gt)
-        m0 = gt[idx[chain("f_middle")[0]]]
-        md = (mid[-1] - m0) / np.linalg.norm(mid[-1] - m0)
-        out = {}
-        rots = {"f_middle": curl}
-        for f in FLAT_FINGERS:
-            k0 = gt[idx[chain(f)[0]]]
-            best = None
-            for a in FLAT_SPREAD:
-                r = [qmul(qaxis(z, a), curl[0]), curl[1], curl[2]]
-                tip = _chain_points(chain(f), r, nodes, parent, idx, gq, gt)[-1]
-                v = tip - k0
-                e = float(np.linalg.norm(v - md * float(v @ md)))  # off the middle finger's line
-                if best is None or e < best[0] - 1e-12:
-                    best = (e, r)
-            rots[f] = best[1]
-        i1 = _chain_points(chain("f_index"), rots["f_index"], nodes, parent, idx, gq, gt)[0]
-        i0 = gt[idx[chain("f_index")[0]]]
-        at = i0 + (i1 - i0) * FLAT_THUMB_AT
+        out = _hand_rots(sk, side, shape, nodes, parent, idx, gq, gt)
+        if out is not None:
+            sk.flat[side] = out
+
+
+def _hand_rots(sk: "Skeleton", side: str, shape: tuple, nodes: list, parent: dict, idx: dict, gq, gt) -> dict | None:
+    """One free hand closed together (flat_init's solve): the finger bones' local rotations for `shape` (the curl of
+    .01/.02/.03); None if the skeleton has no such hand."""
+    x, z = np.array([1.0, 0.0, 0.0]), np.array([0.0, 0.0, 1.0])
+
+    def chain(f: str) -> list:
+        return [f"DEF-{f}.0{k}.{side}" for k in (1, 2, 3)]
+
+    if not all(n in idx for f in GRIP_FINGERS + ("thumb",) for n in chain(f)):
+        return None
+    sgn = 1.0  # the fist's curl sign on this side (as GRIP solves it); -1 only if the fingers would bend back
+    curl = [qaxis(x, sgn * a) for a in shape]
+    mid = _chain_points(chain("f_middle"), curl, nodes, parent, idx, gq, gt)
+    m0 = gt[idx[chain("f_middle")[0]]]
+    md = (mid[-1] - m0) / np.linalg.norm(mid[-1] - m0)
+    out = {}
+    rots = {"f_middle": curl}
+    for f in FLAT_FINGERS:
+        k0 = gt[idx[chain(f)[0]]]
         best = None
-        for ax in FLAT_THUMB_TURN:
-            for az in FLAT_THUMB_TURN:
-                r = [qmul(qaxis(x, ax), qaxis(z, az)), curl[1], curl[2]]
-                tip = _chain_points(chain("thumb"), r, nodes, parent, idx, gq, gt)[-1]
-                e = float(np.linalg.norm(tip - at))
-                if best is None or e < best[0] - 1e-12:
-                    best = (e, r)
-        rots["thumb"] = best[1]
-        for f, r in rots.items():
-            for name, dq in zip(chain(f), r):
-                q = qmul(np.array(nodes[idx[name]].get("rotation", [0.0, 0.0, 0.0, 1.0]), dtype=float), dq)
-                out[name] = q / np.linalg.norm(q)
-                sk.rest_q[name] = np.array(nodes[idx[name]].get("rotation", [0.0, 0.0, 0.0, 1.0]), dtype=float)
-        sk.flat[side] = out
+        for a in FLAT_SPREAD:
+            r = [qmul(qaxis(z, a), curl[0]), curl[1], curl[2]]
+            tip = _chain_points(chain(f), r, nodes, parent, idx, gq, gt)[-1]
+            v = tip - k0
+            e = float(np.linalg.norm(v - md * float(v @ md)))  # off the middle finger's line
+            if best is None or e < best[0] - 1e-12:
+                best = (e, r)
+        rots[f] = best[1]
+    i1 = _chain_points(chain("f_index"), rots["f_index"], nodes, parent, idx, gq, gt)[0]
+    i0 = gt[idx[chain("f_index")[0]]]
+    at = i0 + (i1 - i0) * FLAT_THUMB_AT
+    best = None
+    for ax in FLAT_THUMB_TURN:
+        for az in FLAT_THUMB_TURN:
+            r = [qmul(qaxis(x, ax), qaxis(z, az)), curl[1], curl[2]]
+            tip = _chain_points(chain("thumb"), r, nodes, parent, idx, gq, gt)[-1]
+            e = float(np.linalg.norm(tip - at))
+            if best is None or e < best[0] - 1e-12:
+                best = (e, r)
+    rots["thumb"] = best[1]
+    for f, r in rots.items():
+        for name, dq in zip(chain(f), r):
+            q = qmul(np.array(nodes[idx[name]].get("rotation", [0.0, 0.0, 0.0, 1.0]), dtype=float), dq)
+            out[name] = q / np.linalg.norm(q)
+            sk.rest_q[name] = np.array(nodes[idx[name]].get("rotation", [0.0, 0.0, 0.0, 1.0]), dtype=float)
+    return out
+
+
+def fist_init(sk: "Skeleton", nodes: list, parent: dict) -> None:
+    """M4-A2P-1980: the fist (FIST_CURL) for each side a story clip of this hero closes (FIST_CLIPS)."""
+    sk.fists = {}
+    hero = next((h for h in FIST_CLIPS if sk.root_name.startswith(h + "_")), None)
+    if hero is None:
+        return
+    idx = {n.get("name"): i for i, n in enumerate(nodes)}
+    gq, gt = _node_globals(nodes, parent)
+    for side in sorted({sd for spec in FIST_CLIPS[hero].values() for sd in spec}):
+        out = _hand_rots(sk, side, FIST_CURL, nodes, parent, idx, gq, gt)
+        if out is not None:
+            sk.fists[side] = out
+
+
+def fist_pose(sk: "Skeleton", out: dict, hold: dict) -> None:
+    """M4-A2P-1980: the fist's finger rotations (into out), weighted by hold["_fist"][side], over whatever the hand
+    already holds (its grip, the flat hand or rest)."""
+    for side, w in hold.get("_fist", {}).items():
+        for name, q1 in getattr(sk, "fists", {}).get(side, {}).items():
+            q0 = out.get(name, sk.rest_q[name])
+            out[name] = q0 if w <= 0.0 else (q1 if w >= 1.0 else _slerp(q0, q1, w))
+
+
+def clip_grip_bones(sk: "Skeleton", hero: str, clip: str) -> list:
+    """The finger bones a clip keys: grip_bones, and a story clip's fist side (M4-A2P-1980) in that clip only."""
+    bones = grip_bones(sk)
+    for side in sorted(FIST_CLIPS.get(hero, {}).get(clip, {})):
+        bones += [n for n in getattr(sk, "fists", {}).get(side, {}) if n not in bones]
+    return bones
 
 
 def flat_pose(sk: "Skeleton", out: dict, hold: dict) -> None:
@@ -5121,7 +5177,7 @@ def build(hero: str, names: list | None = None) -> str:
             if sk.prop:  # M2-CHR-515: the staff or spear sliding through the fist
                 keys_pr.append((t, local[POS_KEY][sk.prop["bone"]]))
                 keys_pq.append((t, local[sk.prop["bone"]]))
-            for b in grip_bones(sk):  # and the fingers closed round it
+            for b in clip_grip_bones(sk, hero, clip):  # and the fingers closed round it (or a clip's fist)
                 keys_g.setdefault(b, []).append((t, local[b]))
             for side in sk.hooks:  # M2-CHR-513
                 b = HOOK_BONE + side
@@ -5145,7 +5201,7 @@ def build(hero: str, names: list | None = None) -> str:
         if keys_pr:
             tracks.append(("position_3d", sk.prop["bone"], [(t, list(p)) for t, p in reduce_positions(keys_pr)]))
             tracks.append(("rotation_3d", sk.prop["bone"], [(t, list(q)) for t, q in reduce_keys(keys_pq)]))
-        tracks += [("rotation_3d", b, [(t, list(q)) for t, q in reduce_keys(keys_g[b])]) for b in grip_bones(sk)]
+        tracks += [("rotation_3d", b, [(t, list(q)) for t, q in reduce_keys(keys_g[b])]) for b in clip_grip_bones(sk, hero, clip)]
         for b in sorted(keys_h):
             tracks += [("position_3d", b, _flat_keys(keys_h[b][0])),
                        ("rotation_3d", b, [(t, list(q)) for t, q in reduce_keys(keys_h[b][1])])]

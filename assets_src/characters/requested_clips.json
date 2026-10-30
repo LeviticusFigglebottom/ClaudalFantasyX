@@ -1,5 +1,5 @@
 {
- "_doc": "M3-CHR-05: the story clips the chapters' dialogue calls (`@anim <hero> <clip>`) past each hero's own clips, built by assets_src/characters/asha/hero_clips.py (see its M3-CHR-05 block for the gesture vocabulary). A spec is `frames` (15 fps) and either `alias` (a clip the hero already has, `reverse` to play it backwards) or a base posture (`from`, default stand; `to` with `change` = [start, end] fractions for a change of posture) plus `keys`: [u, [gesture, ...]] eased between. `like` names a spec in `shared`. One-shots hold their last frame; most gestures settle back to the base. act1-chapters may add clips here (a request task to characters). `field` holds the field-life clips (loops unless noted): idle and talk variants, a listening nod, and look_left/right/up/down key poses (two frames, the head and neck only on the idle's first frame) for a runtime look-at blend; HeroIdleMicro (hero-integration) layers breathing and weight shifts on top.",
+ "_doc": "M3-CHR-05: the story clips the chapters' dialogue calls (`@anim <hero> <clip>`) past each hero's own clips, built by assets_src/characters/asha/hero_clips.py (see its M3-CHR-05 block for the gesture vocabulary). A spec is `frames` (15 fps) and either `alias` (a clip the hero already has, `reverse` to play it backwards) or a base posture (`from`, default stand; `to` with `change` = [start, end] fractions for a change of posture) plus `keys`: [u, [gesture, ...]] eased between. `like` names a spec in `shared`. One-shots hold their last frame; most gestures settle back to the base. act1-chapters may add clips here (a request task to characters). `field` holds the field-life clips (loops unless noted): idle and talk variants, a listening nod, and look_left/right/up/down key poses (two frames, the head and neck only on the idle's first frame) for a runtime look-at blend; HeroIdleMicro (hero-integration) layers breathing and weight shifts on top. M4-A2P-1980: `fist` closes a free hand to a fist for that clip only: `[\"R\"]` (the whole clip, eased in and out) or `{\"R\": [a, b, c, d]}` (in from a to b, out from c to d; c past 1.0 keeps it closed, as Rhen's knock does).",
  "doc": "Body clips the Act I dialogue (M3, m2-slice) stages with `@anim <hero> <clip>` that the heroes don't have yet: requested from the character track in docs/kb/tasks/M3/M3-CHR-1000-act1-body-clips.md. Until a clip is built its call is skipped at runtime (CutsceneSequencer checks has_animation). tools/tests/test_hero_clips.py allows these and still fails on any call that is neither built nor listed here (a typo). Remove a clip from here when it is built.",
  "task": "M3-CHR-1000",
  "clips": {},
@@ -6421,6 +6421,14 @@
    },
    "knock": {
     "frames": 30,
+    "fist": {
+     "R": [
+      0.1,
+      0.25,
+      2.0,
+      3.0
+     ]
+    },
     "keys": [
      [
       0.0,
