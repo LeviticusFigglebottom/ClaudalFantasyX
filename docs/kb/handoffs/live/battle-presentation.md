@@ -144,7 +144,7 @@ Session `session_015hKkhtpX67kS4yZeA8AAhv`. Integration branch `claude/undertow-
     test_battle_act2_ability_vfx. Ownership row added.
   - **M4-A2P-062, viewed:** the battle_arena_bridal_barge_night preview is dark and readable (the party lit, the sea
     at night). **But the Wakefin is a capsule there, because it has no enemy row with a `model`.**
-- **LEAD-ASK:** the four Act II creature bosses (mangrove_drowner, lamp_engine, avalanche_ram, wakefin) have
+- **LEAD-ANSWERED (03:44, take the default):** the four Act II creature bosses (mangrove_drowner, lamp_engine, avalanche_ram, wakefin) have
   creatures.json models and full battle staging (M3-BPR-408/418), but no enemies.json or encounters.json rows. So
   their intros, cameras, the darkness fight and their skills' VFX can't go live or be viewed.
   - M3-BPR-419 (the request, with the staged ids) is now `todo`.
