@@ -361,3 +361,25 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   Next: the Undertow's Reach, then the three Vowbound (Ilun's Brine Lash shares his basic attack).
 - **For battle-presentation:** every new clip changes when a blow lands. I will list each clip with its contact time
   here before MERGE-READY; the hermit's are above (attack 0.55, cast 0.75).
+- **00:40 (10-30), M3-CRB-013 progress, pushed:**
+  - **Hullgnaw (6d92b013):** it now carries its own breach (a smashed hole in the deck with dark water, prised-up
+    boards, foam; its own `breach` root bone, so it stays put), and the intro, KO and phase_break go down into it,
+    not through planks. New tools test `HullgnawBreachTest`: nothing more than 5 mm under the deck outside the hole.
+    Gnaw `attack` is a level lunge-bite (contact 0.8); new `rib_lash` (0.8), `thrash` (1.25), `coil` (gnaw_coil, no
+    contact; a buff fits ~1.0 s); its own idle_b. 17.7k triangles (body 13.5k within 16k). **Portrait re-bake queued**
+    (the breach is in its bounds).
+  - **Undertow's Reach (7c24a9d2):** `undertow_pull` (1.35; Dark and Breach variants), `close_the_hand` (the 2-turn
+    telegraph, no contact), `hand_closes` (1.15), `breach_gather` (no contact), `breach` (1.2); Crust Slam stays
+    `attack` (1.2). **Its Breach stance is 2.6 m back (was 4.5):** further out it left the battle camera's frame for
+    the whole phase. Hits jolt harder. Lane test still passes.
+  - **Ilun (3c57b8c6):** his plain attack is its own tail whip `attack` (0.5); Brine Lash keeps the wing sweep as
+    `brine_lash` (0.55); hits shove him back; the KO drops 22 cm and folds the wings high. test_creature_ilun_vowbound
+    now pins brine_lash -> brine_lash.
+  - **Virel (b9ed133b):** strike, Kite Flare and hits about twice the reach; contacts unchanged.
+  - **Kahre: passes as is** (big distinct moves, each skill its own clip, hits and KO read).
+  - **For battle-presentation (contacts to sync VFX and hit-stops):** bottle_hermit attack 0.55 (was 0.45), cast
+    0.75 (new); hullgnaw attack 0.8, rib_lash 0.8, thrash 1.25; undertows_reach undertow_pull(_dark/_breach) 1.35,
+    hand_closes 1.15, breach 1.2; ilun attack 0.5, brine_lash 0.55. choreo.json style_by_skill is untouched.
+  - **For env-art (no action needed now):** the raft arena has no hole at the Hullgnaw's mark; the model carries it.
+  - **Still running:** Drownbell; Spar-wraith + Cinder Matron (worktree agents). Re-renders of my changed creatures
+    are queued (the shared CPU is at load ~14).
