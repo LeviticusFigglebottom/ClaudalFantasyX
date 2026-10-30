@@ -36,8 +36,8 @@ const ARCHER_KO_MAX_Y := 0.25
 ## root on the floor (within this much of the hover), and in the idle its outer wing joints rise this far
 ## between strokes (over the body's bob).
 const RAY := "res://game/creatures/gallery_ray/gallery_ray_battle.tscn"
-const RAY_HOVER := 1.4
-const RAY_POOL_DROP_M := 1.2
+const RAY_HOVER := 0.95
+const RAY_POOL_DROP_M := 0.8
 const RAY_FLOOR_TOL_M := 0.05
 const RAY_STROKE_M := 0.03
 ## The rime urchin: on the hit every spine sector clenches at least this far (radians), on the cast every sector
@@ -59,8 +59,9 @@ const LYNX_APEX_SEC := 0.6
 const LYNX_LEAP_MIN_M := 0.5
 const LYNX_KO_HEAD_MAX_Y := 0.4
 const MOTH := "res://game/creatures/cord_moth/cord_moth_battle.tscn"
-## The cord moth hovers this high (its stand-in lifts it) and its KO comes down by exactly that, within the band.
-const MOTH_HOVER_M := 1.25
+## The cord moth hovers this high (its stand-in lifts it; its model is at the 1.35x battle scale) and its KO comes down
+## by exactly that, within the band.
+const MOTH_HOVER_M := 1.12
 const MOTH_BAND_M := 0.02
 const SKATE := "res://game/creatures/glass_skate/glass_skate_battle.tscn"
 ## The glass skate lies flat (every bone under FLAT_MAX_M at rest and after the KO) and erupts above ERUPT_MIN_M.
@@ -824,7 +825,7 @@ func test_the_gallery_ray_glides_settles_into_its_pool_and_falls_flat() -> void:
 		bones.append("tail_%d" % k)
 	var a := _act2_regular(RAY, [0.6, 0.9], bones)
 	var spec := CreatureActor.row_for(&"gallery_ray")["stand_in"] as Dictionary
-	assert_true(is_equal_approx(float(spec["hover"]), RAY_HOVER), "it flies at head height")
+	assert_true(is_equal_approx(float(spec["hover"]), RAY_HOVER), "it flies below the battle camera")
 	var skel := _pose(a, &"idle", 1.5)
 	var up := _bone_at(skel, "wing_l2").y
 	skel = _pose(a, &"idle", 0.0)

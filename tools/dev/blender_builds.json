@@ -688,6 +688,17 @@
       ]
     },
     {
+      "id": "creature_woolback",
+      "owner": "character",
+      "threads": 4,
+      "sources": ["assets_src/creatures/woolback/**", "assets_src/creatures/avalanche_ram/build_avalanche_ram.py", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/woolback/*.glb", "assets/creatures/woolback/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/woolback/build_woolback.py", "--", "--out", "assets/creatures/woolback/woolback.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "woolback"]
+      ]
+    },
+    {
       "id": "creature_wakefin",
       "owner": "character",
       "sources": ["assets_src/creatures/wakefin/**", "assets_src/creatures/common/**"],
@@ -705,6 +716,26 @@
       "runs": [
         ["{blender}", "--python", "assets_src/wildlife/gull/build_gull.py", "--", "--out", "assets/wildlife/gull/gull.glb"],
         ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "gull"]
+      ]
+    },
+    {
+      "id": "wildlife_rim_ray",
+      "owner": "character",
+      "sources": ["assets_src/wildlife/rim_ray/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
+      "outputs": ["assets/wildlife/rim_ray/*.glb", "assets/wildlife/rim_ray/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/wildlife/rim_ray/build_rim_ray.py", "--", "--out", "assets/wildlife/rim_ray/rim_ray.glb"],
+        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "rim_ray"]
+      ]
+    },
+    {
+      "id": "wildlife_kingfisher",
+      "owner": "character",
+      "sources": ["assets_src/wildlife/kingfisher/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
+      "outputs": ["assets/wildlife/kingfisher/*.glb", "assets/wildlife/kingfisher/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/wildlife/kingfisher/build_kingfisher.py", "--", "--out", "assets/wildlife/kingfisher/kingfisher.glb"],
+        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "kingfisher"]
       ]
     },
     {

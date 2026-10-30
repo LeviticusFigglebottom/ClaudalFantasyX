@@ -218,6 +218,10 @@ CAST_SEC = 1.4
 CAST_CONTACT = 0.8
 HIT_SEC = 0.45
 KO_SEC = 2.0
+KO_SPLAY = 50.0  # degrees the dead spines fall open
+KO_SLUMP = (0, -0.06, 0)  # the test sinks onto its ice
+KO_TIP = 8.0  # and tips (degrees about z)
+KO_LIFT = 0.32  # metres the splayed spines' tips lift, keeping the low ones off the floor
 
 
 def lean_out(k: int, a: float) -> tuple:
@@ -279,14 +283,18 @@ def build_hit() -> ck.Clip:
 
 
 def build_ko() -> ck.Clip:
-    c = ck.Clip("ko", KO_SEC)  # a last clench, then the spines droop and the test settles on its ice
+    # a last clench, then the spines fall open flat round the test like a dead urchin's and the test slumps on its ice,
+    # tipped toward the camera. Splayed, not drooped: at 22 degrees it barely differed from the idle at battle distance
+    # (the Act II plan sheet); the ball of spines becomes a flat star
+    c = ck.Clip("ko", KO_SEC)
     for t, a, loc, rz in ((0.0, 0.0, (0, 0, 0), 0.0), (0.2, -9.0, (0, 0.01, 0), 0.0),
-                          (0.9, 16.0, (0, -0.03, 0), 3.0), (1.4, 21.0, (0, -0.04, 0), 5.0),
-                          (KO_SEC, 22.0, (0, -0.04, 0), 5.0)):
+                          (0.7, KO_SPLAY * 0.55, (0, -0.03, 0), 4.0), (1.2, KO_SPLAY * 1.06, KO_SLUMP, 9.0),
+                          (1.5, KO_SPLAY, KO_SLUMP, KO_TIP), (KO_SEC, KO_SPLAY, KO_SLUMP, KO_TIP)):
         c.key("body", t, (0, 0, rz), loc)
         for k in range(SECTORS):
             droop = a * (1.0 if a < 0 else 0.85 + 0.15 * math.cos(sector_phi(k) * 3.0))
-            c.key(f"sector_{k}", t, lean_out(k, droop))
+            # the tips lift as they fall open (the roots stay on the test), so the low spines lie on the floor, not in it
+            c.key(f"sector_{k}", t, lean_out(k, droop), (0, KO_LIFT * max(a, 0.0) / KO_SPLAY, 0))
     return c
 
 

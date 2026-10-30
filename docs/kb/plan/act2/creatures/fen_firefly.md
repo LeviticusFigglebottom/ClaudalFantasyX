@@ -1,10 +1,10 @@
 ---
-draft: pre-gate
+draft: built
 id: fen_firefly
 kind: wildlife (insect swarm)
 chapter: 10
-exists: no
-meets_bar: n/a
+exists: yes
+meets_bar: yes (greybox placement; re-seat on the dressed kit)
 ---
 # fen_firefly (Ch10, Ossa Fen at dusk)
 
@@ -31,8 +31,11 @@ Not a battle actor. In the zone, a cloud of a few dozen points at walking distan
 assets_src/wildlife/insect (the moth and dragonfly): a third swarm type, `firefly`, sharing the MultiMesh path.
 
 ## State
-Does not exist (the insect generator does).
+**Built 2026-10-30 (creatures track, ADR 0205, M4-A2P-056):**
+- `insect_firefly` in assets/wildlife/insect/insect.glb: a slim 1.4 cm beetle, dusky wing covers with a pale margin held up, clear hind wings beating, a faded red shield, and the lantern (the abdomen's last segments, pale yellow-green wax).
+- The `firefly` slot (materials.json): the lantern glows `glow_color` (sun_gold 30% toward palm_green: warm yellow-green, not a glimmer swatch) at up to energy 3, per instance by its blink; lit, it swells toward 0.006 rad of the view at its distance, so it holds a few pixels as a point of light at walking distance (a bloom stand-in) and stays small up close.
+- The shader's mode 6 (wildlife.gdshader): the flutter, with the blink in the mode parameter. WildlifeSwarm's `firefly` type flies the moth's orbit, slower and lower, and flashes once every 2.5–4 s over 2 s (glow_floor 0.04 between). The layer's seventh MultiMesh (draw_calls budget 7).
+- Placed: game/data/world/wildlife/ch10_ossa_fen.json, four swarms of six (the insect budget, 24) low over the water beside Walk0, Walk2, the side pocket's end and Walk4, on the greybox layout. Review shots `wildlife_zone_ossa_fen_walk0` and `_pocket` (self-rendered and viewed: warm points among the trunks over the tannin water).
 
 ## Work at the gate (after `act1-complete`)
-Build, a wildlife.json kind with its budget, placement in the zone file with tools/creatures/wildlife_snap.gd and
-wildlife_audit.gd on the zone's dressed kit, a review shot, PROVENANCE rows.
+Left: re-seat the swarms on the dressed kit when env-art replaces the greybox blocks.
