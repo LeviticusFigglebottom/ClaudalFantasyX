@@ -620,7 +620,7 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - Venn's and the flat-engine's data wait on characters and story.
   - Checks: answered_part, parts, battle_engine, boss, set_piece, sim, cover, rooted, drain, validate, lint and format.
   - Next: M4-A2P-025, Kesh's element cycling.
-- MERGE-READY @ (this push)
+- MERGE-READY @ 33158c10b
 
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
