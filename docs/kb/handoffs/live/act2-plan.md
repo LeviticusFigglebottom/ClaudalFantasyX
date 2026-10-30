@@ -284,3 +284,25 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - **Checks:** dlgc --check 0/0 · validate_data 0/0 · taskboard clean · loc tools tests OK · Godot `act2_dialogue` 1/0, `codex` 16/0, `bestiary` 37/0.
 - MERGE-READY @ 348b65795
 - BACKLOG EMPTY (story track).
+
+## 2026-10-30: Act III planning sheets (Lead request; docs only, Act III production stays paused)
+- New folder `docs/kb/story/act3/`:
+  - `README.md`: the act in one paragraph, a pillar-6 table (what each person does not keep), and rules for every sheet.
+  - `act3_ch17.md` "Hollowmere": the ledger read on screen and never voiced, with ADR 0022's facts exact; Asha chooses the Unbinding; the Kite's first lamp is bound light, said aloud.
+  - `act3_ch18.md` "The Kite": a short critical path. Pell walks through the gate, is named again and teaches the farewell-tide wordless. Eight revisits, each showing its grief changed; Haluna lifts its own (optional, flagged); seven heirloom errands.
+  - `act3_ch19.md` "Iskarra": the Prologue vigil shot for shot, with the line verbatim. Kerrid teaches Rhen Dace's hitch (holds, then one pull and it lets go). The Lamp Spire; Hesper Oan and Ilsabet Rue fought openly as revenants; the eye opens.
+  - `act3_ch20.md` "Undertow": six memory layers and six releases in vowbound.md's order, each with its companion, then the Cage and "thank you".
+  - `act3_threads.md`: the consistency pass.
+- Each sheet uses the Act II format §0–§10, and §10 holds the open questions and defaults. Ch21 and the Ending stay in the existing `beats/act3_ending.md`.
+- **Consistency pass:**
+  - All 37 Act I/II flags the Act III sheets read are declared.
+  - Every companion's Act III arc in their character sheet is traced to a beat; three gaps were filled (Toma, Ysolde, Kerrid's teaching).
+  - Every Vowbound is traced from binding to release.
+  - 14 mismatches are logged, T-01 to T-14. Applied: T-02 (act2_ch14's Venn row corrected: no Ch19 rematch), T-09, T-12, T-14.
+- **LEAD-ASKs** (act3_threads §4):
+  - **T-01:** act3_ending H03 "raises Kesh from the stones", but Ch16 binds her to Asha. I propose Asha calls her out of the sleeve one last time and Kesh is released like the six.
+  - **T-04:** the Eighth Verse's sources disagree across vowbound.md, pell.md and ysolde.md. I propose: the melody is in the stones, read through the farewell-tide; the words are in the stones; the count is Ama's question-knot.
+  - **T-07:** the Prologue's "glimmer rises" breaks light grammar for a Ch19-dusk frame. I propose the motes drift instead.
+- **Checks:** banned-terms scan of the new docs: 0 hits. validate_data 0/0. taskboard clean. No game file touched.
+- MERGE-READY @ 49ae12a1f
+- BACKLOG EMPTY (story track).
