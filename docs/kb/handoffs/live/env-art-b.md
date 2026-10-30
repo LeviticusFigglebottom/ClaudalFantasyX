@@ -814,8 +814,28 @@ that test at this branch's zones.
   - **Gotcha for env-art and the Lead:** re-running `arena_scenes.py` on its own rewrites these two without the
     swaps. Re-run `assets_src/environments/kits/haluna/ansedra_arenas.py` after it (it's in my ownership row).
   - **MERGE-READY @ c1ed49ad.**
+- **PC QA pass 3, the rows still naming env-art-b (`gpu/act1-qa-3`), Act I first (ADR 0205):**
+  - **65 (cost, mine alone): fixed @ edb18aae.**
+    - The smoke columns now march 24 steps at High, not 32. By the PC's own figure (about 0.10 ms a column at 32),
+      that's about 0.23 ms for three and 0.31 ms for four.
+    - The Tamsule drop's profile keeps its refraction and caustic web at High, and leaves the god-ray FogVolume, the
+      bulk of its 0.36–0.43 ms, to Ultra. The Reefball ball's base rows are unchanged.
+    - Viewed beside their baselines: `ch06_brine_camp` and `tamsule_t01`/`t03` read the same. Godot sphere 5/0,
+      smoke 3/0, tamsule 7/0.
+    - **PC-QUEUE:** re-measure both at High 1440p.
+  - **34 (`ch06_ridge_skippers` on the blank stage): not the arena.** `encounters.json` names `brine_shoals_afternoon`
+    and the Shoal Skippers, and the arena is registered and loads. The fallback is the request path; the PC's own
+    note ties it to battle-presentation's double-submit (the first still shows the Inquisitor's name plate).
+  - **38 (Coilspire's camera at SpireBase, Tier2 and Tier4): the spawns are clear.** A probe of the zone's physics
+    from each spawn found 12 m clear behind its facing at head height (the probe's reach), and no facing does better.
+    The camera's pull-in isn't a collider behind the party, so it's the field camera's (hero-integration's) to trace.
+  - **MERGE-READY @ edb18aae** (row 65; rows 45–63 were fixed earlier, see above).
 
 ### PC-QUEUE
+- Pass 3 row 65 (@ edb18aae): re-measure the camp's smoke columns (24 steps at High) and the Tamsule drop (High has no
+  god rays now) at High 1440p against the 0.3 ms target.
+- Act II looks only the PC can judge (M4-A2P-043/045/047 reviews): Ansedra's still mirror (SSR to 400 m) and the
+  rings' cost; the Sanctum's upward-lit vault; Hollowmere's dawn fog density.
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
   on the PC presets (two large and three small fires in `ch06/brine_shoals` and `salvage_camp_burning`).
 - Carried: M3-RND-26's drop cost, M3-RND-21's four columns under 0.3 ms at High 1440p.
