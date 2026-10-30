@@ -49,6 +49,33 @@ func test_a_reveal_page_names_every_fact_through_loc_keys() -> void:
 	assert_eq(page["defeated"], "", "a Read in battle has no defeat count")
 
 
+## M4-A2P-083: a part broken on the weak point (BattleParts) shows on the Read until it is mended, named by its
+## charge skill as the "repaired" float names it.
+func test_a_broken_part_reads_until_it_is_mended() -> void:
+	var engine := BattleEngine.new()
+	var active: Array[StringName] = [&"rhen"]
+	engine.setup(BattleDB.load_default(), active, [] as Array[StringName], &"ch11_lamp_engine", 1)
+	engine.begin()
+	var lamps := engine.enemies[0]
+	var row: Dictionary = engine.db.enemies[BattleEngine.enemy_id(lamps)]
+	var reveal := BattleRead.reveal(lamps, row)
+	assert_true(BattleBestiary.broken_part_keys(engine, lamps.id).is_empty(), "nothing broken yet")
+	assert_eq(EnemyPage.new().from_reveal(reveal)["parts"], "", "and no line for it")
+	BattleParts.on_charge_broken(lamps, &"lamp_flare")
+	var keys := BattleBestiary.broken_part_keys(engine, lamps.id)
+	assert_eq(keys, ["SKILL_LAMP_FLARE"] as Array[String])
+	reveal["broken_parts"] = keys
+	var page := EnemyPage.new().from_reveal(reveal)
+	assert_eq(page["parts"], tr("HUD_READ_PARTS_BROKEN_FMT").format({"list": tr("SKILL_LAMP_FLARE")}))
+	var view := EnemyPageView.new()
+	view.show_page(page)
+	assert_true(view.shown_text().has(tr("HUD_READ_PARTS")), "the Read shows the row")
+	assert_true(view.shown_text().has(page["parts"]))
+	view.free()
+	lamps.broken_parts.clear()
+	assert_true(BattleBestiary.broken_part_keys(engine, lamps.id).is_empty(), "mended: gone")
+
+
 func test_delay_immunity_and_no_statuses_read_plainly() -> void:
 	var row := {"id": "warden", "name_key": "", "stats": {"hp": 10}, "delay_immune": true}
 	var c := BattleCombatant.from_dict(&"warden", BattleCombatant.TEAM_ENEMY, row)

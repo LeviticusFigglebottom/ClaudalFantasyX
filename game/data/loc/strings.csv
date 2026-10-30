@@ -1162,3 +1162,5 @@ OBJ_SEA_WATCH,The barge drifts with no lamp. Keep the watch until dawn.
 OBJ_HOLLOWMERE_HOUSE,Go with Liss to her family's hull-house.
 OBJ_RIM_SHALLOWS,Wade the white shallows to the Choir's edge.
 OBJ_CHOIR_RING,"Walk into the ring, to its head."
+HUD_READ_PARTS,Broken
+HUD_READ_PARTS_BROKEN_FMT,"{list}: silent until it is mended"
