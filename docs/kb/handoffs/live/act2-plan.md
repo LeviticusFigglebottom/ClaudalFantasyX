@@ -710,3 +710,15 @@ I merged integration (big28) first; the two conflicted compiled ch11 JSONs were 
 - **Checks:** dlgc 0/0, validate_data 0/0, taskboard clean, check_drafts 73/0. Godot `dialogue` after `--import` was 86/1; the one red is 1014 above. Tools unittest skipped (no `tools/` change).
 - MERGE-READY Act II voice pass @ cf6888744
 - BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1014; M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Ch6 and Ch8 objective text, and the Act II objective lines (Lead request)
+- **Ch6 and Ch8 (with act1-chapters):** there were no objective rows for either chapter, so the field said OBJ_NONE across the Brine Shoals, Corrow and Coilspire.
+  - I wrote 11 lines (appended): OBJ_CH06_SHOALS / CHANNEL / SIDE_TIDELINE in `ch06.csv`, and OBJ_CH08_WALL_HEAD / WALL_GATE / SIDE_STAIR / PATH / SIDE_HEARTH / FLUES / CROWN / BEACON in `ch08.csv`.
+  - **M4-A2P-1015 → act1-chapters** holds the rows, ready to paste. Each row's flags, triggers and POIs come from the flows and layouts.
+  - Four targets are left open for want of POIs (the Corrow wall-head; the Coilspire tiers and crown). The Ch8 night gets no rows, because it runs from `arrive` with no walking.
+  - `ch08_flame_at_crown` is set by the flue puzzle, so `test_qa_threads` may need a `qa_known` "unraised" reason.
+- **Act II objective lines (the field menu's objective and errand list, the only quest log the game has), Ch10–Ch16.** I made them match Act I's convention: a main line is an imperative, side errands describe, and nothing uses a contraction.
+  - **Now imperative:** OBJ_CH10_GATE "Go back out through the gate. Pell is waiting."; CH13_MOORINGS "Go out to the outer moorings. Kerrid is standing there."; CH15_FATHER "Go with Liss to the dry-dock berths. Her father keeps them."; CH15_PYRE "At dusk, go down to the pyre-raft."; CH15_SHIP "…Go aboard."; CH14_GATE "Get through the water-gate to Merel's barge."; CH13_ARCHIVE "Go to the Lamp Archive." (the two rows inside it say what to read).
+  - **Continuity:** CH13_REST now reads "The wedding is tomorrow, at dusk." It had said "at dusk", but the pact the same night says "Tobin's married tomorrow".
+  - **Contractions removed:** CH11_SIDE_BENCH, CH12_ON ("Do not look back."), CH13_SIDE_HOUSE, CH13_SIDE_FLAME, and my own CH06_SIDE_TIDELINE.
+- **Checks:** validate_data 0/0; taskboard clean; Godot `objective` 16/0 after `--import`. dlgc, tools unittest and check_drafts were not run: no .dlg, `tools/` or draft change.
