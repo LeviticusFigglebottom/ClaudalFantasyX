@@ -773,7 +773,26 @@ that test at this branch's zones.
     rig per-zone, with an attractor that follows Kerrid), and the dawn `variants` row (then I add the dawn grade and
     the bow's fog bank).
   - **MERGE-READY @ b49e37a5.**
-  - **Next:** Ch16: the Pale Rim and the Drowned Choir (M4-A2P-046).
+- **The Pale Rim (ch16; M4-A2P-046 claimed, in progress):**
+  - **New pieces** in `drowned_choir.py`: `pale_rim_strand` (the walked white sand under ankle-deep water, ±2.5 cm of
+    relief, falling away to sandbars) and `rim_marker_pole` (the Cantors' bleached poles).
+  - **`tools/act2/ch16_pale_rim_dressing.py`:** in the greybox's frame, no mark moved. It places the kit's flats out
+    to the horizon, a cairn on every cairn block (Keth's, salt-crusted by slot looks: a bleached paint and salt over
+    `keth_crag`), the poles, and the Hollowmere ship at anchor.
+  - **The water:** the validated `pale_rim` look, lying still on Ansedra's zero-amplitude set. The lagoon's 10–13 cm
+    swells bared the sand in 12 cm of water at the capture's wind time.
+  - **The grade:** white overcast with `lut_ch16_rim` (written; it was missing).
+  - **Shots (new):** `ch16_rim_ship`, `_wade`, `_cairns`, all viewed.
+  - **Checks:** Godot pale_rim 2/0, dressing 31/0, party_spawns 3/0, placeholder 8/0; tools
+    test_ch16_pale_rim_dressing (new) and test_drowned_choir; validate_data 0/0.
+  - **MERGE-READY @ ab41c94b.**
+- **The Drowned Choir waits on chapters (M4-A2P-106):** the greybox floor is flat, but the kit's amphitheatre has a
+  flooded channel and six tiers to 2.15 m, and Kesh's and Sefir's marks stand on those tiers. It needs the spec's
+  relayout (the marks to tier heights, a `collision_path` I'll write from the kit, the singers to r 44). Filed as a
+  request with the exact asks.
+- **Next:** what's open in my lane: Ch14's after-the-trap state (M4-A2P-104), Ch15's shoal and dawn (M4-A2P-105) and
+  the Choir (M4-A2P-106) all wait on chapters. Meanwhile I'll make the Ebbing rig per-zone, so the shoal is ready
+  when its mark lands.
 
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
