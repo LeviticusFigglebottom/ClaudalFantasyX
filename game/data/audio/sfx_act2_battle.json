@@ -10,6 +10,86 @@
       "voices": 2,
       "volume_db": 0.0,
       "_note": "M4-A2P-093: the cord moth's unravel, a weave pulled apart and a ward's ring dying"
+    },
+    "sting_boss_mangrove_drowner": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_mangrove_drowner.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the mangrove drowner's intro sting (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_mangrove_drowner_soft": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_mangrove_drowner_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the mangrove drowner's intro sting (reduced audio) (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_lamp_engine": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_lamp_engine.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the lamp engine's intro sting (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_lamp_engine_soft": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_lamp_engine_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the lamp engine's intro sting (reduced audio) (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_avalanche_ram": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_avalanche_ram.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the avalanche ram's intro sting (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_avalanche_ram_soft": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_avalanche_ram_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the avalanche ram's intro sting (reduced audio) (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_wakefin": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_wakefin.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the wakefin's intro sting (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_wakefin_soft": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_wakefin_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the wakefin's intro sting (reduced audio) (assets_src/sfx/act2_boss_stings.py)"
     }
   }
 }
