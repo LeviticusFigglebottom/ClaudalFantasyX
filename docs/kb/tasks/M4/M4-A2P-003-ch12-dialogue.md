@@ -2,9 +2,8 @@
 id: M4-A2P-003
 title: "Ch12 “The Cold Road” dialogue scripts (.dlg), barks and codex text"
 role: narrative
-status: blocked
-blocked-by: ADR 0203
-owner_session: ""
+status: doing
+owner_session: "act2 story track (claude/act2-plan, ADR 0205)"
 depends_on: [M4-C12-01, M4-A2P-002]
 reviewer: cinematics
 milestone: M4
