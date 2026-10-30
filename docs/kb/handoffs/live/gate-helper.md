@@ -41,3 +41,5 @@ and reports; it never edits game or test files.
   from the character source in `sad` and `tender`). Result: gate-big29-lanes-b-result.md.
 - big30 @ f2b6b633 (HEAD checked): lanes B 52 files, 20:33-20:50 UTC (17 min). **All 52 green.**
   Result: gate-big30-lanes-b-result.md.
+- big31 @ 6a695535 (HEAD checked): lanes B 21 files, 21:10-21:13 UTC (3 min). **All 21 green.**
+  Result: gate-big31-lanes-b-result.md.
