@@ -2199,3 +2199,9 @@ MERGE-READY @ (this commit).
 - **Next lever for slice-polish:** the root's own 388 ms is what HalunaZone `_ready` still does on the add frame.
   - Haluna Wake's 4.2 s hidden frame also deserves its own `--ready-profile` (`--to=res://game/levels/ch04/haluna_wake/haluna_wake.tscn`).
 MERGE-READY @ (this commit).
+- **Haluna Wake, `--ready-profile` (cold, quiet box):**
+  - The worst hidden frame is 720 ms, under 1 s. The instantiate takes 1.2 s on the thread.
+  - The readies total only 204 ms: Cast 60, Dressing/Water 39, Player 32, BoundGlimmer 19, root 11.
+  - The other ~500 ms of that frame is tree entry (render and physics instance registration for about 4,400 nodes), not `_ready`.
+  - The 4.2 s seen in return_probe came from the chain under load (Haluna, the card, then Wake), not from Wake itself. If a split is wanted there, it means fewer nodes, not lighter readies.
+MERGE-READY @ (this commit).
