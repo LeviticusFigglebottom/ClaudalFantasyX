@@ -421,3 +421,34 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
 
 - **Next (the Lead's 01:08 message, ADR 0203, docs only):** the Act II boss and Vowbound design sheets
   (docs/kb/plan/act2/bosses/, `draft: pre-gate`), with the Avalanche Ram's wool swap filed as my M4 task. In progress.
+
+## 2026-10-30 ~02:00: the Lead's 01:08 message (Act II preparation, docs only, ADR 0203)
+- Merged `origin/claude/new-session-mj8c3c` (clean).
+- **MERGE-READY @ (this commit): M3-CRB-015, the Act II boss and Vowbound design sheets**, `docs/kb/plan/act2/bosses/`
+  (all `draft: pre-gate`): README (index, the Act I move-pass rules every sheet follows, the Act II guardrails),
+  mangrove_drowner, lamp_engine (with the conduit-crawler adds), avalanche_ram, wakefin, malcor_venn (with the
+  flat-engine part), abiding_guard, nhoa, hesk, ethren, kesh (her first sheet). Each: silhouette at battle distance,
+  materials, rig and anchors, a clip per skill with telegraph and contact (ids marked proposed), phase stances,
+  arena read and seat/camera needs, balance curve, engine features, owners. People bosses' models are characters'.
+- **The Avalanche Ram's wool swap (ADR 0015)** is a was/becomes table in its sheet and filed as **M4-CRB-001**
+  (blocked by ADR 0203 until the Act I gate): ice plates, icicles, the ice beard and `salt_glass` become felted,
+  snow-caked wool with grit; slot `fleece_ice` -> `fleece_snow`. A build-script change, not a new model.
+- Checks: taskboard --check, validate_data 0/0, banned_terms grep clean, links resolve. No data, scene, asset or code.
+- LEAD-ASK: ADR 0015 covers temples and set pieces; `ridge_lynx` (frosted ear tufts) and `scree_crawler` (frost-split
+  scree, a frost counter) are Ch12 regulars. Default: file a creatures task to swap their frost for snow/grit too.
+- LEAD-ASK: people bosses' battle clips (Malcor Venn, the Abiding guard): creatures.json rows like Moll's stand-in
+  scene, or a characters table? Default: Moll's precedent (battle_sandbox stand-in scene + characters' clips).
+- LEAD-ASK: the Ram's `torn_fleece` and the Wakefin's `close_circle` are phases the plan doesn't name. Default: keep
+  them (each gives a mid-fight read); combat may cut.
+- LEAD-ASK: Wakefin (a fin fought from a boat's deck echoes the inspiring game): the draft keeps it one whole animal,
+  no deck adds, no separate fin target, an unlamped drifting barge. Confirm; and `sound_dive` = untargetable (draft)
+  or only evasion up?
+- LEAD-ASK: Kesh's battle scale 4.2 m (Kahre's summon frame), colossal only in the bind; element order = the order the
+  party met the Vowbound (draft). Confirm or set.
+- (Smaller design defaults, all in the sheets' "Open questions": Lamp Engine crawler start, Drowner snag-root effect,
+  Malcor Venn's engine break as a lent set-piece skill, the Abiding guard's identity and triggers, Nhoa's copy on
+  ordinary skills only, Hesk's Mending as its own skill, Ethren's Still Water as Stop on every foe.)
+
+- **BACKLOG EMPTY (2026-10-30 ~02:00):** M3-CRB-013 (the move pass) is in review with all nine viewed; GPU QA rows
+  12/35/36/30 answered (fixes on this branch); M3-CRB-015 sheets done; M4-CRB-001 waits on the Act I gate (ADR 0203);
+  M3-CRB-014 waits on creatures' review. Left: PC-QUEUE (real-GPU checks) and the LEAD-ASKs above (defaults chosen).
