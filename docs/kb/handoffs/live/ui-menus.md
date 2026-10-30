@@ -732,7 +732,7 @@ Baselines will move for equip_menu, equip_customize and shop_menu_buy.
      - **Fixed** (52ca86c1): the Ch8 net-mender bark shipped "Old Net-Mender [neutral]: ..." as its text. dlgc read
        the hyphenated name as narration. The speaker is now Netmender (CHAR_NETMENDER is "Old Net-Mender"), and dlgc's
        speaker-like check takes hyphenated and apostrophe-joined names (test_dlgc).
-LEAD-ASK: SPEC §6.8 names the statuses, and several are the series' own set: Shell, Protect, Reflect, Regen, Doom,
+LEAD-ANSWERED (23:52, ADR 0202, SPEC v1.6: accepted as written): SPEC §6.8 names the statuses, and several are the series' own set: Shell, Protect, Reflect, Regen, Doom,
 Zombie and the four Breaks (Armor, Mental, Power, Magic). Rename them in SPEC (like ADR 0201)? My proposal:
 - Shell → Tide Ward, Protect → Bulwark, Reflect → Mirrorwater, Regen → Mending, Doom → Last Tide, Zombie → Hollowed;
 - Armor/Mental/Power/Magic Break → Sundered, Unmoored, Weakened, Dimmed.
@@ -745,5 +745,36 @@ pseudo_loc 26/0, input_parity_glyphs 7/0, field_hud_legibility 3/0; tools test_d
 dlgc --check clean; validate_data has 0 errors; the text audit shows 0 problems.
 Not this track's: test_ch04_zones::test_the_wakes_field_camera_is_halunas (Haluna's camera volumes).
 Skipped: coverage (no game/battle core change).
-- 2026-10-30 00:30, **BACKLOG EMPTY:** the 23:10 list is done and clean. The LEAD-ASK on the SPEC status names is open,
+- 2026-10-30 00:30 (superseded by the 23:52 answer below) **BACKLOG EMPTY:** the 23:10 list is done and clean. The LEAD-ASK on the SPEC status names is open,
   with nothing renamed until you answer.
+- 2026-10-30 02:30, **the Lead's 23:52 answer: ADR 0202 applied** (dc257d86; claude/new-session-mj8c3c merged in).
+  - **Every player-facing string renamed:** Tide Ward, Bulwark, Mirrorwater, Mending, Last Tide, Hollowed, Sundered,
+    Unmoored, Weakened, Dimmed. That covers the ten STATUS_ names, three ability descriptions and the battle help and
+    float lines.
+    - No .dlg, codex text or tip named one.
+    - The internal ids are unchanged.
+    - "Shell" stays in the Shell Shrine, Shell Breaker, Shell Ram, Shell Wall and Bell-Shell, and lowercase "shell"
+      stays in prose.
+  - **banned_terms.txt** gains i:armor break, i:mental break, i:power break and i:magic break. The comments, data notes
+    and story docs that used them now say sundering blow, Sundered or Weakened. validate_data has 0 errors.
+  - **tools/tests/test_status_names.py** fails on any loc value with an old name. Capitalized Shell, Protect, Reflect
+    and Doom count, Regen and Zombie count in any case, and proper nouns are allowed. It fails on the old strings.
+  - Status descriptions use no status names, so none changed.
+SELF-RENDERED @ dc257d86: battle_statuses, battle_statuses_colorblind and status_menu.
+- The help line reads "Mirrorwater turns it onto Rhen · provoked: must strike Lantern Eel".
+- The status glyphs are drawn shapes and are unchanged; status_menu shows Poison (unchanged).
+- battle_statuses' baseline moves.
+- 2026-10-30 03:00, **my Act I menu audit at gameplay pace, controller only** (the no-idle rule):
+  - **Fixed (8cb7f517):** a held d-pad or stick did not repeat. Godot echoes held keys but not pad buttons or axes, so a
+    pad player tapped through every row of the 40-item bag or the 54-entry codex.
+    - The UiInput autoload now repeats a held pad direction after 0.4 s, every 0.08 s (ui_input.json).
+    - Each repeat is a press and release marked with device -8.
+    - Whether the direction is still held is read from the pad, so nothing sticks.
+  - **Fixed (d5b25b32):** with repeats, a held direction raced round a list. MenuPage.move no longer wraps on a held
+    key or pad (pressed but not just pressed); a fresh press still wraps.
+  - **Checked, fine:**
+    - menus take input during their open and close fades (MenuMotion never gates it);
+    - the dead-end test walks every page with the pad.
+  - Tests: test_ui_input_repeat 4/0, input_parity 65/0, menu 252/0.
+  - **Liss's battle tint:** the integration branch's test now expects big14's #7A8C5A, so my earlier #7A8F6A is
+    reverted (50678c8a). party_stand_ins is 3/0.
