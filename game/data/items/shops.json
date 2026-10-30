@@ -13,6 +13,7 @@
     {"id": "haluna_inn", "name_key": "INN_HALUNA", "desc_key": "INN_HALUNA_DESC", "location": "haluna", "requires_flag": "ch02_met_asha", "price": 30},
     {"id": "tamsule_inn", "name_key": "INN_TAMSULE", "desc_key": "INN_TAMSULE_DESC", "location": "tamsule", "requires_flag": "ch07_arrived", "price": 50},
     {"id": "quellan_inn", "name_key": "INN_QUELLAN", "desc_key": "INN_QUELLAN_DESC", "location": "quellan", "requires_flag": "ch12_reached_quellan", "price": 70},
-    {"id": "hollowmere_inn", "name_key": "INN_HOLLOWMERE", "desc_key": "INN_HOLLOWMERE_DESC", "location": "hollowmere", "requires_flag": "ch15_reached_hollowmere", "price": 40}
+    {"id": "hollowmere_inn", "name_key": "INN_HOLLOWMERE", "desc_key": "INN_HOLLOWMERE_DESC", "location": "hollowmere", "requires_flag": "ch15_reached_hollowmere", "price": 40},
+    {"id": "ansedra_guest", "name_key": "INN_ANSEDRA_GUEST", "desc_key": "INN_ANSEDRA_GUEST_DESC", "location": "ansedra", "requires_flag": "ch13_started", "price": 0, "order": true}
   ]
 }
