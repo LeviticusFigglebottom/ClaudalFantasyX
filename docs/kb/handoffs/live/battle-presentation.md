@@ -185,6 +185,14 @@ element (voice_glimmer, level_hand, still_water).
 - **Verified on origin/lead/gate-big21 with this branch merged** (scratch worktree, imported): `--filter=battle_vfx`
   10/0, and validate_data is clean.
 - Merge note: tests/screenshots/shots.json conflicts with big18+ (both sides append at the end). Keep both.
+- **A big21 red that isn't mine:** `test_battle_vowbound_model::test_a_real_vowbound_lands_each_action_on_its_clip_contact`
+  fails for every Kesh action (voice_* and the_seven: no clip of its own, no contact time). It fails the same on
+  big21 without this branch. BattleClips.action_clip reads Kesh's creatures.json row (clip_for), which maps none of
+  his skills. That row belongs to the creatures lane (Kesh's model and clips).
+  - The rest of that suite passes on big21 + this branch: `--filter=vowbound` 116 run, that 1 failed; `--filter=vfx`
+    45/0.
+- **M4-A2P-061 claimed:** the four Act II Vowbound's VFX and finishers are in gen_act2_ability_vfx.py (97e22896).
+  Each is written once its skill row lands (big21), and all 19 are checked there.
 - **Rows 57 and 61, verified on big21 + this branch (SELF-RENDERED, viewed):**
   - battle_choreo_summon: the side-on frame keeps Ilun clear of the foes and the gull clear of the eel.
   - battle_arena_seawall_stairhead_surge: the Reach is on its mark, its arm over the wall, with the party on the
