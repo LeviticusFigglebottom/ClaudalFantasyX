@@ -543,3 +543,16 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
 - LEAD-ASK: M4-A2P-058 (Act II creatures' own VFX) had no owner. Default taken: creatures-b does the four bosses'
   ambient VFX in their own scenes (game/creatures/<id>/), creatures does the regulars'; battle-skill VFX stay
   battle-presentation's. Its title's "the Ram's ... ice" is void under ADR 0015.
+- **MERGE-READY @ (this commit): M4-CRB-009, the flat-engine part** (worktree agent, viewed by it; review combat).
+  Stand-in yaw 90 -> 20 (the window faces the camera; side-on it was a dark drum), a brass lid ring, brass inside the
+  split; the broken mesh shares the whole one's shape (the break is animated: light out, chimney over 24°, halves
+  apart, paddles knocked off). Clips: idle, idle_b, intro, ready, `cast` = the flat pulse (contact 0.8), hits, `ko` =
+  the stop (it stays on the barge), `break` (crack 0.6) -> `idle_broken`, broken hits/KO; phase `broken` swaps the
+  meshes on its first frame. 7,620 triangles (≤8k); portrait re-baked. **For combat (M4-A2P-023):** flat_pulse ->
+  cast; Liss's lent break skill calls enter_phase(&"broken") (break_parts optional, never alone). Checks: Blender
+  identical; tools OK; Godot creature 145/0, boss 116/0. Pre-existing, not mine: `--filter=part`'s Liss tint test.
+- **Kesh (M4-A2P-057) merged at d5fd2097 but NOT MERGE-READY yet:** I viewed creature_kesh: she reads as a smooth
+  teal mannequin (plastic water, a torso that looks bare, a blank face, the robe's mouths like polka-dot washers, a
+  stiff idle). Sent back for a polish round (water depth and flow, a clear bodice, a face, carved stone mouths in
+  bands, a living idle). Her rig, clips, contacts and clip map stand.
+- **In progress:** Kesh polish; M4-A2P-058 the bosses' own VFX (worktree agents).
