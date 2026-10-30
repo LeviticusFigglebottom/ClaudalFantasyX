@@ -1191,3 +1191,18 @@ SELF-RENDERED @ fd5cf5a8: the 11 Ch6/Ch7/Ch9 hero shots before; ch06_brine_road 
 - **Checks:** test_ch13_archive_dressing OK (4), Godot `--filter=lamp_archive` 2 pass, validate_data OK.
 - **MERGE-READY @ d2263160.**
 SELF-RENDERED @ d2263160: the 18 Ch13–Ch16 hero shots before; the four archive shots after (two fog tries), all viewed.
+
+### Act II interiors, then Act II ambient life (Lead 20:45)
+- **Interiors:** still none to walk after big29: no Act II shop or inn scene exists (Quellan's inn is an exterior plus an `inn_door` point; the shops wait on M4-A2P-031). Nothing to pass at eye height; the Quellan issues stay in M4-A2P-115.
+- **Ambient life**, within ADR 0204 (Ansedra has no birds and no wildlife). Wildlife stays the creatures track's (M4-A2P-056: fen fireflies and kingfishers, woolbacks, rim rays, Hollowmere's gulls and shoal, all built). My lane adds the non-animal life:
+  - **ZoneKitDressing (e74bdbc0):** two opt-in rows. `pieces[].drift` makes flotsam bob, rock and wander a slow eddy. `fire_lights[].flicker` dims a flame by up to its share with three incommensurate wavers. Both are driven by the dressing's own clock (deterministic under --fixed-fps), with each piece's phase from its position. Test `tests/integration/test_zone_ambient_life.gd`: Hollowmere's flames only ever dim within their share, and the litter stays in its eddy.
+  - **Zones (1a51d418):**
+    - Hollowmere: the oil flames flicker 0.3 and the signal lamps 0.12, and four `tide_debris` rafts drift off the dock, south of the ship.
+    - Lacquer Court: the lamp-stands flicker 0.15.
+    - Open sea: four `tide_debris` ride the night swell 9–20 m round the bridal barge.
+    - No change: Ansedra stays still (ADR 0204 §1, "the room doesn't move"); the Sanctum's bound light stays steady; the Pale Rim keeps its rays and its silence; the Lamp Archive's lamps are unlit (spec).
+  - **Env-art's zones:** Ch11's two dressings get a request, M4-A2P-1501, to opt their flames into `flicker`. Ch10 and Ch12 place no fire lights.
+- **Self-rendered:** ch15_hollowmere_dock and _arrival, ch15_sea_wide and _deck, ch14_court_ceremony, plus a high view over the barge (the debris rafts on the swell), all viewed. The hero shots frame the barge and the dock, so the litter sits at their edges; that suits ambient life. The flicker moves the captured lamp energy, so shot baselines with Hollowmere or Lacquer Court lamps may need a re-baseline (the Lead's).
+- **Checks:** gdlint and gdformat OK. Godot `--filter` zone_kit_dressing 10, hollowmere 2, lacquer 2, open_sea 2, ch14 5, zone_snap 1 and ambient_life 1 all pass. Tools tests for lacquer court, hollowmere and hollowmere-kit (17) OK. validate_data and taskboard OK.
+- **MERGE-READY @ 683ce87f.**
+SELF-RENDERED @ 1a51d418: ch15_hollowmere_dock, ch15_hollowmere_arrival, ch15_sea_wide, ch15_sea_deck, ch14_court_ceremony and the open sea from above (scratch), all viewed.
