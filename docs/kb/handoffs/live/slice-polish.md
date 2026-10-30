@@ -1065,6 +1065,14 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
 - **For the Lead (integration is red in the tools suite, not mine):** `tools.tests.test_screenshots`
   `test_repo_manifest_is_valid_and_baselined` fails on `kerrid_front`. Characters added it in M3-CHR-505 (b4cc69cb,
   merged in big19) with no baseline and no `"pending_baseline": true`. ADR 0205 makes the tools suite blocking.
+- **The big18 beat pass, Ch1's last stills (viewed after this session's fixes, lavapipe), no changes needed:**
+  - ch01_kell_stall: Mother Kell in frame on her line.
+  - ch01_oruvel_storm: Rhen's view of the storm wall, his line off-screen as he watches.
+  - ch01_o10_gull: the lintel-gull insert.
+  - ch01_bell_room: over Rhen's shoulder toward the figure he speaks to.
+  - ch01_drop: Rhen on the Underway's floor in his lantern's light.
+  - With this session's rows 58 and 60 and the dive, every Ch1 and slice beat has been viewed.
+  - **Thread tests:** _thread 40, 0 failed (this branch's head).
 ### PC-QUEUE
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan
   emissive reading. Check that its glow and silhouette read on the GPU; if not, it needs a rim light or a grade.
