@@ -136,3 +136,10 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
   - `--filter=dialogue` was 86 run, 1 failed: `test_dialogue_box::test_every_act1_speaker_with_a_model_has_a_portrait` (Pell has a model and no portrait under assets/ui/portraits). It's pre-existing, reads only `ch0*` scenes, and is an Act I row for characters or ui-menus, not from this work.
 - LEAD-ASK: the Act I red above (`test_every_act1_speaker_with_a_model_has_a_portrait`, Pell's portrait). Route it to ui-menus or characters as an Act I FAST-TRACK? Not mine to fix (`assets/ui/portraits/**` is ui-menus').
 - Next: M4-A2P-008 (heresy barks, Kerrid's post-reveal barks, the people's codex text).
+- MERGE-READY @ 2e6369bd: **M4-A2P-008** (in review):
+  - 12 Act II people in the codex; `kerrid_stair` is Kerrid's post-reveal page, in the bible's words;
+  - three heresy-state barks and two Kerrid post-reveal barks.
+  - Checks: validate_data 0/0, dlgc --check 0/0, Godot `--filter=act2_dialogue` PASS and `--filter=codex` 15/0.
+  - Note for ui-menus: `test_codex.gd` pins the world and records counts, so the Archive's records stay in `ch13_archive_*` scripts (keys `DLG_CH13_REC_*`) for the document reader to show, not codex rows. If ui-menus wants them in the codex, add them with the test update.
+- **Story track status:** all eight story tasks (M4-A2P-001…008) and the seven beat sheets (M4-C10…C16-01) are in review, waiting on cinematics (and the Lead for Ch14–Ch16, and ui-menus for 008).
+- BACKLOG EMPTY (story track): every story task is scripted and in review. When reviews come back, their notes are the next work.
