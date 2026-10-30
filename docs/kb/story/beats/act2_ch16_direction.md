@@ -89,3 +89,29 @@ B10–B12. Hard cuts, no slow motion, no dialogue in the Choir. **P04 here is th
 | S03 | 24 mm, white water over the dais; `[0.75, 3.0, -16.1]` → `[0.0, 1.4, -17.4]`, 60° | dais_asha | no line |
 | S04 | black; the sea (sound only); `[0.0, 1.6, -60.0]` → `[0.0, 1.6, -70.0]`, 38° | — | no line |
 | P04 | the Iskarra vigil, deeper dusk, the burner lower; Rhen's voice-over; `[0.0, 1.6, -60.0]` → `[0.0, 1.6, -70.0]`, 38° | — | no line |
+
+## Audio cues by shot (for audio)
+
+Every `@music` and `@sfx` in the chapter's scenes, in script order, with the shot it lands on and what follows it
+(the next line or hold). A music change marked `fade=0.0` is a hard cut. Barks, camps and shrines play in the field and
+are left out. A shot of — means the cue plays before the node's first shot, over the fade.
+
+| Scene | Shot | Cue | Then |
+|---|---|---|---|
+| `ch16_ship_waits` | W01 | `@music pale_rim fade=2.0` | hold 2.0 s |
+| `ch16_swept_away` | S01 | `@music abiding_guard fade=0.0` | @sfx undertow_wall_roar |
+| `ch16_swept_away` | S01 | `@sfx undertow_wall_roar` | hold 3.0 s |
+| `ch16_swept_away` | S02 | `@sfx current_song at=storm vol=0.3` | hold 2.5 s |
+| `ch16_swept_away` | S03 | `@music silence fade=0.0` | @fade out 0.5 |
+| `ch16_swept_away` | P04 | `@music act2_break fade=2.0` | hold 3.0 s |
+| `ch16_swept_away` | P04 | `@music silence fade=2.0` | <<set $ch16_act_two_complete = true>> |
+| `ch16_the_choir` | C01 | `@music drowned_choir fade=3.0` | hold 6.0 s |
+| `ch16_the_choir` | C05 | `@sfx kesh_rise` | hold 5.0 s |
+| `ch16_the_choir` | C06 | `@music kesh_bound fade=0.0` | hold 8.0 s |
+| `ch16_kesh_memory` | — | `@music kesh_memory fade=1.0` | @fade in 1.5 white |
+| `ch16_kesh_memory` | K06 | `@music silence fade=0.0` | hold 3.0 s |
+| `ch16_kesh_memory` | K07 | `@music kesh_memory fade=1.0` | cut to K08 |
+| `ch16_shes_in_it` | — | `@music silence fade=0.0` | cut to C08 |
+| `ch16_the_high_warden` | C10 | `@sfx barge_pole` | hold 4.0 s |
+| `ch16_the_high_warden` | C11 | `@music sefir_go_home fade=3.0` | `ch16_sefir_001` Sefir |
+| `ch16_the_high_warden` | C13 | `@music silence fade=0.0` | hold 4.0 s |
