@@ -692,7 +692,7 @@ func _cue_vfx(step: DialogueStep) -> void:
 
 
 ## M2-FP-120: a grade (CutsceneGrade) on the stage's level, from a node's `grade:` header or `@camera grade=`. One
-## nobody has built yet is not a stage gap: it waits on Rendering (test_cutscene_directives' list); it warns once.
+## nobody has built yet is not a stage gap: it waits on Rendering (test_cutscene_directives' list).
 func _grade(id: Variant) -> void:
 	if str(id) != "":
 		grade.apply(_stage, StringName(str(id)))

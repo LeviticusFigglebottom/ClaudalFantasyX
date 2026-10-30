@@ -22,6 +22,8 @@ const MAX_TURNS := 60
 const NPC_IDS: Array[StringName] = [&"npc_market", &"npc_chapel", &"npc_dock"]
 const SAVE_DIR := "user://test_fp_thread_saves"
 const TITLE := "res://game/core/boot.tscn"
+## The prologue's hand-off, the thread's first travel (the M2 review switch flipped: Act I's route, Ch1's drop).
+const PROLOGUE_HAND_OFF := [&"ch01/oruvel_underway", &"Drop"]
 
 var saved_state: GameStateData
 var travels: Array[Array] = []
@@ -65,7 +67,7 @@ func test_the_first_playable_thread_end_to_end() -> void:
 	prologue.travel = _record_travel
 	prologue.play()
 	assert_true(bool(Game.get_flag(&"prologue_seen")))
-	assert_eq(travels, [[&"ch01/oruvel_underway", &"Drop"]] as Array[Array], "on to Ch1 (Act I's route)")
+	assert_eq(travels, [PROLOGUE_HAND_OFF] as Array[Array], "on to Ch1 (Act I's route)")
 	prologue.free()
 	var beach := reg.resolve(&"ch02/haluna", &"Beach")
 	assert_eq(beach.get("scene"), ZONE, "the registry enters the playable zone")
@@ -94,7 +96,7 @@ func test_the_first_playable_thread_end_to_end() -> void:
 	var lost := _lose_battle()
 	assert_eq(lost, [TITLE] as Array[String], "no save yet: Return to last save is the title")
 	assert_false(bool(Game.get_flag(&"ch02_tideline_won")), "a defeat never sets the flag")
-	assert_eq(travels, [[&"ch02/haluna", &"Beach"]] as Array[Array], "and never travels to the field")
+	assert_eq(travels, [PROLOGUE_HAND_OFF] as Array[Array], "and never travels to the field")
 
 	# Continue would find nothing; New Game's way back is the prologue, so walk in again and win.
 	assert_eq(TitleSaveEntry.continue_slot(SaveSystem), -1, "no record to continue")
