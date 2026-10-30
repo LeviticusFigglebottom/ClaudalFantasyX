@@ -1028,3 +1028,10 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - Act II: regulars done; wildlife in review.
   - Waiting on others: the skill effects (M4-A2P-060), the conduit crawler's row (M4-A2P-022), the dressed kits, the Rim's arena, and the baselines.
   - PC-QUEUE unchanged.
+- **Rime urchin: salt-glass, not ice (your 05:28 relay; ADR 0015): DONE** @ the commit below. Filed as an addendum on M4-CRE-670.
+  - The spines' rime is a pale salt crust (salt_glass toward bone; foam_white is gone).
+  - The plinth is a glossy salt-glass mound with a salt bloom on top. Slot `glass` replaces `ice`, with its PROVENANCE row moved.
+  - skill_vfx.md's `rime_spine` now uses salt-glass shards.
+  - Checks: creature 88/0, tools test_creatures OK, Blender verify identical.
+  - Viewed: creature_rime_urchin (its baseline needs re-approval). Portrait re-baked.
+  - LEAD-ASK (design's call, not ours): `rime_urchin` absorbs ice in enemies.json, and `rime_spine` has the ice element in skills.json. The name "Rime Urchin" and those ids stay unless design changes them.
