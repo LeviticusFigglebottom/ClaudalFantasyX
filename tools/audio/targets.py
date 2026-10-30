@@ -30,6 +30,12 @@ RULES = [
     ("act2/music/*.ogg", "integrated", -16.0, 0.5, -1.0, "Act II scene cues, loops and stings in plain git (ADR 0175)"),
     ("ambience/*.ogg", "integrated", -26.0, 0.5, -5.0, "ambience beds (mix.md: -26, peaks well down)"),
     ("act2/ambience/*.ogg", "integrated", -26.0, 0.5, -5.0, "Act II ambience beds (M4-A2P-093, ADR 0175)"),
+    ("act3/music/release_sting.ogg", "momentary", -18.0, 1.0, -1.0,
+     "a Vowbound let go: under the release line, never over it (M5-A3P-1950)"),
+    ("act3/music/heart_rest.ogg", "integrated", -22.0, 0.5, -5.0,
+     "R1's save point: the heart's drone alone, at a bed's stillness (M5-A3P-1951)"),
+    ("act3/music/*.ogg", "integrated", -16.0, 0.5, -1.0, "Act III scene cues, themes and stings in plain git (ADR 0208)"),
+    ("act3/ambience/*.ogg", "integrated", -26.0, 0.5, -5.0, "Act III beds (ADR 0208)"),
     # M3-AUD-859 (assets_src/sfx/act3/kite_foley.py; Git LFS): the Kite's deck beds and foley
     ("sfx/act3/kite_deck*.ogg", "integrated", -26.0, 0.5, -5.0, "the Kite's deck beds (as the ambience beds)"),
     ("sfx/act3/kite_engine_stop.ogg", "momentary", -20.0, 1.0, -1.0, "H09: the lift engines winding down"),
@@ -278,7 +284,7 @@ RULES = [
     ("sfx/choir_wind_chord.ogg", "momentary", -24.0, 1.0, -1.0, "an Act II cutscene cue (the Lead's 13:48 Ch16 item)"),
 ]
 FILE_LIMIT = 5 * 1024 * 1024        # CLAUDE.md §8: no file over 5 MB
-TOTAL_BUDGET = 105 * 1024 * 1024    # every shipped audio file (ADR 0175: Act II under assets/audio/act2/; 0174, 0171, 0170)
+TOTAL_BUDGET = 150 * 1024 * 1024    # every shipped audio file (ADR 0208: Act III under assets/audio/act3/; 0175, 0174, 0171, 0170)
 
 
 def rule_for(rel: str):

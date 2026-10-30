@@ -3,6 +3,28 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ e8755571d: Act III production starts (ADR 0207; the Lead's 21:56 item). The score, part 1, is the Unbinding themes (M5-A3P-1950, to review); part 2, the finale, is begun (M5-A3P-1951).**
+  - **Merged integration** (46d8a067 onward) into claude/audio; it was clean.
+  - **Storage, ADR 0208:** Act III's new audio is plain git under `assets/audio/act3/`, the same route as Act II's (LFS uploads are still refused from the cloud). The budget is 150 MiB; plain audio was at 100.3 MiB of 105. **LEAD-ASK:** accept ADR 0208 (repository size) on merge.
+  - **The sung Letting is derived, never retyped.** motifs.py `letting_verse()` is the first verse turned upward line by line, its close climbing to the held E6 on *tash*. `assets_src/music/act3/lamptongue.py` holds lamptongue.md's eight verses and its syllable rules. Asha's voice stays the vowel-shaped breath-flute vocalise (SPEC §16 Q4 still open); choirs use the procedural formant voices, as Act II's do.
+  - **New cues** (assets/audio/act3/music/; music.json rows):
+    - `the_letting` (H07, a 53 s loop): she sings the Eighth Verse twice; the score follows her, cool and held, then the choir and the rising glass. Its `release`, `the_letting_release` (H08), holds the E6 while the strings thin to it alone.
+    - `release_sting`: Ch20's six releases and Kesh's; the Letting's cell on metallophone and glass, with no voice and no cadence.
+    - `unbinding_swell` (H09, 109 s): the full choir and orchestra, the only time in the game, sing the Hush's first phrase in Lamptongue twice. The second time it resolves **upward**, B D E | A, to A major on *tash*.
+    - `heart_approach` (H01–H02, a loop): the Hush's first phrase backwards, as reversed piano over the heart's drone.
+    - `heart_rest` (R1): the drone alone.
+  - **Battle:** `battle.encounters` maps `ch21_sefir_letting` (H07's fight, pending combat) to `the_letting`, so the battle keeps her song.
+  - **Checks:**
+    - render_all: loudness, loop seams, and `--determinism` (all identical).
+    - mono fold: Act III has 0 failing files.
+    - validate_data 0; taskboard OK.
+    - tools tests: audio_loudness, audio_data, motifs (+1), lamptongue_sung (new), all OK.
+    - Godot tests: music_release 4/0, audio_runtime 11/0, battle_audio 22/0, music_transitions 7/0.
+    - Skipped: screenshots, Blender, coverage.
+  - **PC-QUEUE, by ear:**
+    - `unbinding_swell`'s A major resolution: the loudest moment in the game by design, momentary max -6.3.
+    - The Letting's vocalise vowels.
+- **IN PROGRESS (M5-A3P-1951):** kesh_first_voice, sefir_warden, sefir_heart; then the ending (goodbyes, lift bed, dock, credits, post-credits); then Ch17–Ch20.
 - **MERGE-READY @ 6fcbce03d: the Lead's 21:25 item, the audio accessibility pass (M4-A2P-1952, to review).**
   - **Sliders reach every sound.** Every bus sends to a slider bus (UI, World and Combat under SFX; Ambience with the effects slider). Two fixes:
     - **Strays:** a player that never names a bus would sit on Master, under no slider but the master's. `AudioDirector.route_stray` now moves it to mix.json `stray_bus` (SFX). Nothing hits this today (the dialogue blip goes to Voice, the cutscene sound fallback to SFX); it guards any track's future players.
