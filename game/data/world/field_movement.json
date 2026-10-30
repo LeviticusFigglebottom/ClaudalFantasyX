@@ -17,5 +17,15 @@
     "release_on_turn_deg": 60.0
   },
   "interact_reach_m": 1.2,
-  "floor_snap_m": 0.3
+  "floor_snap_m": 0.3,
+  "shore": {
+    "doc": "FieldShore (the human's playtest: on Oruvel's dock town you could step off a deck and walk in the sea). Over ground under a zone WaterSurface by more than wade_m, a step is refused (he stays at the edge, as at a wall) when the ground drops more than edge_drop_m from where he stood (a dock, pier or hull edge), or lies more than deep_water_m under the surface and deeper than where he stood (walking back out is always allowed). Grounded deeper than deep_water_m anyway, he is put back on his last safe spot. Standing more than underwater_m under the surface, he walks the seabed (Oruvel's underway): no shore rule. The ground is found by a ray from probe_up_m above to probe_down_m below; a spot where the ray finds no ground is not judged (a ray that starts inside a terrain collider misses it).",
+    "enabled": true,
+    "wade_m": 0.15,
+    "edge_drop_m": 0.4,
+    "deep_water_m": 0.6,
+    "underwater_m": 2.0,
+    "probe_up_m": 1.0,
+    "probe_down_m": 6.0
+  }
 }
