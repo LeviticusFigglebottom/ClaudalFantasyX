@@ -1222,6 +1222,24 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     request). **For the Lead / act2-plan:** renumber the read-through task, then set it to review. My notes for its
     Review log are the A1–A8 lines above. Narrative should review the four Listen follow-ups and the roof
     after-bark (new lines).
+- **M4-A2P-1600:** the read-through task, renumbered from M4-A2P-115 per the Lead. It is in review on this branch
+  with its notes; A1–A8 are fixed at 5a935953 (big29).
+- **The Drownbell → Haluna return (B11), measured on the real path:**
+  - **Method:** boot, then `world_return.go_to(ch02/haluna, DockNight)` with the Drownbell won, headless at
+    --fixed-fps 30. Logged every frame: SceneRouter's fade, the cutscene overlay's fade, the holders and B11's cues.
+  - **Result:** Haluna enters the tree. VillagerLayer holds the reveal 0.30 s, then the router's fade lifts over
+    0.37 s. B11's sequencer is already running under it with its overlay clear (no fade cue, so it doesn't start
+    black). After the lift, Rhen's walk to Asha plays in the field (about 6.7 s), then the first line.
+  - **So nothing in the cutscene holds black once Haluna is loaded.** The roughly 3 s of black on the GPU is the
+    router's hidden time: the battle's exit fade, the threaded load and instantiate of Haluna (its dressing and 74
+    prewarmed materials), and the 0.3 s reveal hold.
+  - **For integration-qa (the router and load):** if the hidden time is over ADR 0205's 2 s, look at the load, not at
+    B11. Two options: warm Haluna's materials during the Drownbell fight (it is the next scene, known in advance),
+    or keep Haluna resident across the battle.
+  - **Gotcha, cinematics tools:** `tools/cutscene_frames` travels without booting, so ResidentLoads hasn't warmed the
+    shared character and water shaders. Haluna's and Oruvel's threaded loads then fail ("Parse Error" on an
+    ExtResource line), and the run stays black. From boot they load. Re-render B11 frames from boot until the tool
+    boots first (my next fix).
 ### PC-QUEUE
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan
