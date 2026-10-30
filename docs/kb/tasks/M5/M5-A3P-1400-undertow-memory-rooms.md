@@ -24,7 +24,7 @@ Oruvel market (U01), the Reefball stands (U04) and the held pillar. Three rooms 
       their siblings. Each stands on `memory_island`'s flat top.
 - [x] glbs, imports, PROVENANCE rows and the kit manifest; the docs' piece table updated.
 - [x] The Undertow kit preview shows them, viewed and approved; test_undertow (or its kit tests) extended.
-- [x] No Final Fantasy terms; nothing frozen (ADR 0015); held light only (no warm practicals).
+- [x] No banned terms (tools/banned_terms.txt); nothing frozen (ADR 0015); held light only (no warm practicals).
 
 ## Notes
 The zone split with env-art-b is proposed in env-art.md (21:56 + ADR 0207). The ch20 zone's greybox and staging stay
