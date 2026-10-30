@@ -1,0 +1,20 @@
+{
+ "format": 1,
+ "scene": "ch11_find_lampmakers_plate",
+ "source": "game/data/dialogue/ch11/ch11_find_lampmakers_plate.dlg",
+ "start": "ch11_find_lampmakers_plate",
+ "nodes": {
+  "ch11_find_lampmakers_plate": {
+   "headers": {"location": "ch11/sunken_vey"},
+   "ops": [
+    {"op": "line", "id": "ch11_plate_001", "key": "DLG_CH11_PLATE_001", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 7},
+    {"op": "line", "id": "ch11_plate_002", "key": "DLG_CH11_PLATE_002", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 8},
+    {"op": "line", "id": "ch11_plate_003", "key": "DLG_CH11_PLATE_003", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 9},
+    {"op": "line", "id": "ch11_plate_004", "key": "DLG_CH11_PLATE_004", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 10},
+    {"op": "line", "id": "ch11_plate_005", "key": "DLG_CH11_PLATE_005", "speaker": "ysolde", "emotion": "worried", "voice": "", "src": 11},
+    {"op": "line", "id": "ch11_plate_006", "key": "DLG_CH11_PLATE_006", "speaker": "ysolde", "emotion": "cold", "voice": "", "src": 12},
+    {"op": "set", "flag": "ch11_read_makers_plate", "value": ["lit", true], "src": 13}
+   ]
+  }
+ }
+}

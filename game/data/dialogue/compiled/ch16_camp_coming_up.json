@@ -1,0 +1,24 @@
+{
+ "format": 1,
+ "scene": "ch16_camp_coming_up",
+ "source": "game/data/dialogue/ch16/ch16_camp_coming_up.dlg",
+ "start": "ch16_camp_coming_up",
+ "nodes": {
+  "ch16_camp_coming_up": {
+   "headers": {"location": "ch16/pale_rim"},
+   "ops": [
+    {"op": "line", "id": "ch16_camp_001", "key": "DLG_CH16_CAMP_001", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 7},
+    {"op": "line", "id": "ch16_camp_002", "key": "DLG_CH16_CAMP_002", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 8},
+    {"op": "line", "id": "ch16_camp_003", "key": "DLG_CH16_CAMP_003", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 9},
+    {"op": "line", "id": "ch16_camp_004", "key": "DLG_CH16_CAMP_004", "speaker": "rhen", "emotion": "tender", "voice": "", "src": 10, "tags": ["long"]},
+    {"op": "line", "id": "ch16_camp_005", "key": "DLG_CH16_CAMP_005", "speaker": "rhen", "emotion": "tender", "voice": "", "src": 11, "tags": ["long"]},
+    {"op": "line", "id": "ch16_camp_006", "key": "DLG_CH16_CAMP_006", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 12},
+    {"op": "line", "id": "ch16_camp_007", "key": "DLG_CH16_CAMP_007", "speaker": "rhen", "emotion": "worried", "voice": "", "src": 13},
+    {"op": "line", "id": "ch16_camp_008", "key": "DLG_CH16_CAMP_008", "speaker": "asha", "emotion": "tender", "voice": "", "src": 14},
+    {"op": "line", "id": "ch16_camp_009", "key": "DLG_CH16_CAMP_009", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 15},
+    {"op": "line", "id": "ch16_camp_010", "key": "DLG_CH16_CAMP_010", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 16},
+    {"op": "set", "flag": "ch16_camp_talk", "value": ["lit", true], "src": 17}
+   ]
+  }
+ }
+}
