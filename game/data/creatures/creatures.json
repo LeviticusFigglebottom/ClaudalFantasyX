@@ -141,7 +141,7 @@
     "gallery_ray": {
       "scene": "res://game/creatures/gallery_ray/gallery_ray_battle.tscn",
       "contact": {"attack": 0.6, "cast": 0.9},
-      "stand_in": {"yaw_deg": 60.0, "hover": 1.4},
+      "stand_in": {"yaw_deg": 60.0, "hover": 0.95},
       "portrait": {"yaw_deg": 30.0, "pitch_deg": 35.0}
     },
     "rime_urchin": {
