@@ -2,9 +2,8 @@
 id: M4-A2P-005
 title: "Ch14 “The Peace Wedding” dialogue scripts: the trap, the heresy, the escape"
 role: narrative
-status: blocked
-blocked-by: ADR 0203
-owner_session: ""
+status: doing
+owner_session: "act2 story track (claude/act2-plan, ADR 0205)"
 depends_on: [M4-C14-01, M4-A2P-004]
 reviewer: cinematics
 milestone: M4

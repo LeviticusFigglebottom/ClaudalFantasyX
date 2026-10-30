@@ -2,9 +2,8 @@
 id: M4-A2P-006
 title: "Ch15 “Unlamped” dialogue scripts: Kerrid's confession, Hollowmere, Toma's confession"
 role: narrative
-status: blocked
-blocked-by: ADR 0203
-owner_session: ""
+status: doing
+owner_session: "act2 story track (claude/act2-plan, ADR 0205)"
 depends_on: [M4-C15-01, M4-A2P-005]
 reviewer: cinematics
 milestone: M4
