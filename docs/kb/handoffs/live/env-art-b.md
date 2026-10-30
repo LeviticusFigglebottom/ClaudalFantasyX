@@ -1106,7 +1106,7 @@ that test at this branch's zones.
   - **Exits:** every exit is reachable on foot (Ansedra's `to_sanctum` and `to_archive`, the Archive's and the
     Sanctum's `to_city`, the Court's `barge`, the open sea's `dawn`, Hollowmere's `ship`), except one.
   - **The exception:** the Pale Rim's `to_choir` stands at x 230, past the greybox `Sand`'s end at x 220, so it can
-    never fire on foot. It's chapters' greybox (`RIM_LEN + 10`): request **M4-A2P-116**, to move it to about 216
+    never fire on foot. It's chapters' greybox (`RIM_LEN + 10`): request **M4-A2P-1500** (first filed as 116, which act2-plan uses), to move it to about 216
     or lengthen the sand. My dressing follows either way.
   - **Act II town interiors:** still none (see above).
   - **MERGE-READY @ 1f9d2e8c** (the request; no change of mine was needed).
