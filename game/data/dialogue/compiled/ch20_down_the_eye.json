@@ -1,0 +1,36 @@
+{
+ "format": 1,
+ "scene": "ch20_down_the_eye",
+ "source": "game/data/dialogue/ch20/ch20_down_the_eye.dlg",
+ "start": "ch20_down_the_eye",
+ "nodes": {
+  "ch20_down_the_eye": {
+   "headers": {"location": "ch20/undertow_layers"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "camera", "args": ["U01"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "music", "args": ["undertow_descent"], "kwargs": {"fade": 2.0}, "src": 11},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "well_walls", "count": 200, "drift": "down_seaward", "rate": "slow"}, "src": 12},
+    {"op": "cue", "cue": "wait", "args": [5.0], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "camera", "args": ["U02"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "mark", "args": ["liss", "engine_socket", "walk"], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "anim", "args": ["liss", "open", "lamp_box"], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "anim", "args": ["liss", "seat", "cracked_lamp"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_bound"], "kwargs": {"at": "engine_socket", "count": 1}, "src": 19},
+    {"op": "cue", "cue": "sfx", "args": ["lamp_seat"], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 21},
+    {"op": "line", "id": "ch20_eye_001", "key": "DLG_CH20_EYE_001", "speaker": "liss", "emotion": "grief", "voice": "", "src": 22},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "camera", "args": ["U03"], "kwargs": {}, "src": 24},
+    {"op": "cue", "cue": "sfx", "args": ["kite_engine_strains"], "kwargs": {}, "src": 25},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 26},
+    {"op": "cue", "cue": "sfx", "args": ["kite_touches_floor"], "kwargs": {}, "src": 27},
+    {"op": "cue", "cue": "mark", "args": ["kerrid", "first_floor", "walk"], "kwargs": {}, "src": 28},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 29},
+    {"op": "set", "flag": "ch20_started", "value": ["lit", true], "src": 30},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 31}
+   ]
+  }
+ }
+}

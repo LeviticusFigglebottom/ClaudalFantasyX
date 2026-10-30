@@ -1,0 +1,26 @@
+{
+ "format": 1,
+ "scene": "ch21_kesh",
+ "source": "game/data/dialogue/ch21/ch21_kesh.dlg",
+ "start": "ch21_kesh",
+ "nodes": {
+  "ch21_kesh": {
+   "headers": {"location": "ch21/heart"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "camera", "args": ["HT08"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "anim", "args": ["asha", "raise_staff"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_bound"], "kwargs": {"at": "asha_sleeve", "count": 7}, "src": 10},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "anim", "args": ["kesh", "rise", "heart_water"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "music", "args": ["kesh_first_voice"], "kwargs": {"fade": 1.0}, "src": 13},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 14},
+    {"op": "line", "id": "ch21_kesh_001", "key": "DLG_CH21_KESH_001", "speaker": "kesh", "emotion": "determined", "voice": "", "src": 15},
+    {"op": "cue", "cue": "anim", "args": ["sefir", "look_at", "kesh"], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 18},
+    {"op": "event", "name": "start_battle", "args": ["ch21_kesh"], "src": 19}
+   ]
+  }
+ }
+}

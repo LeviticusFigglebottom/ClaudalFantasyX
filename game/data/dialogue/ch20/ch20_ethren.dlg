@@ -1,0 +1,17 @@
+// M5-A3P-1010. Ch20 U06 layer 6, Ethren (Ysolde), the arrival. act3_ch20.md §2 U06; vowbound §6.
+// Memory: a square of Ansedra under the Level, water that has never moved, a Tender sweeping a step. The hardest
+// Vowbound fight (Slow, Stop, wards). The veil falls MID-FIGHT (Combat's trigger); the release plays after.
+title: ch20_ethren
+location: ch20/undertow_layers
+---
+@letterbox on
+@camera U23
+@music memory_ansedra fade=3.0
+@vfx glimmer_bound at=still_square count=1
+@wait 6.0
+@camera U24
+@anim ethren unfold wings
+@wait 3.0
+@letterbox off
+<<event start_battle ch20_ethren>>
+===

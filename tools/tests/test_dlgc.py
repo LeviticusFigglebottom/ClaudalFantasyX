@@ -773,7 +773,8 @@ class NearMissTests(DlgcTestBase):
         "Narator [grief] The bell.": "did you mean 'Narrator [grief]: The bell.'?",
         "Narrator [grief] The bell.": "did you mean 'Narrator [grief]: The bell.'?",
         "Rain [sad] fell.": None,
-        "Karen [sad] sang.": None,
+        # M5-A3P-1010: Kahre (Ch20) is a speaker now, one letter from Karen, so the hint is right.
+        "Karen [sad] sang.": "did you mean 'Kahre [sad]: sang.'?",
         "Keri [sad] laughed.": "did you mean 'Kerrid [sad]: laughed.'?",  # accepted in sweep F
         "Ashes [sad] drifted.": None,
         "Pella [sad] Hi.": "did you mean 'Pell [sad]: Hi.'?",

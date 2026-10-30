@@ -1,0 +1,39 @@
+{
+ "format": 1,
+ "scene": "ch17_the_first_lamp",
+ "source": "game/data/dialogue/ch17/ch17_the_first_lamp.dlg",
+ "start": "ch17_the_first_lamp",
+ "nodes": {
+  "ch17_the_first_lamp": {
+   "headers": {"location": "ch17/hollowmere"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["D16"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "music", "args": ["kite_first_lamp"], "kwargs": {"fade": 2.0}, "src": 9},
+    {"op": "cue", "cue": "mark", "args": ["liss", "engine_bench", "walk"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "engine_bench_b", "walk"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 12},
+    {"op": "event", "name": "hold_input", "args": ["hold_steady"], "src": 13},
+    {"op": "cue", "cue": "anim", "args": ["liss", "seat_burner_seat"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 15},
+    {"op": "event", "name": "hold_input_end", "args": [], "src": 16},
+    {"op": "event", "name": "hold_input", "args": ["turn_collar"], "src": 17},
+    {"op": "cue", "cue": "anim", "args": ["liss", "turn_collar"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 19},
+    {"op": "event", "name": "hold_input_end", "args": [], "src": 20},
+    {"op": "event", "name": "hold_input", "args": ["seat_it"], "src": 21},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "seat", "lamp_housing"], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 23},
+    {"op": "event", "name": "hold_input_end", "args": [], "src": 24},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_bound"], "kwargs": {"at": "kite_lamp", "count": 1}, "src": 25},
+    {"op": "cue", "cue": "sfx", "args": ["lamp_seat"], "kwargs": {}, "src": 26},
+    {"op": "cue", "cue": "camera", "args": ["D17"], "kwargs": {}, "src": 27},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 28},
+    {"op": "line", "id": "ch17_lamp_001", "key": "DLG_CH17_LAMP_001", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 29},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 30},
+    {"op": "line", "id": "ch17_lamp_002", "key": "DLG_CH17_LAMP_002", "speaker": "liss", "emotion": "sad", "voice": "", "src": 31},
+    {"op": "cue", "cue": "wait", "args": [5.0], "kwargs": {}, "src": 32},
+    {"op": "set", "flag": "ch17_first_lamp_lit", "value": ["lit", true], "src": 33}
+   ]
+  }
+ }
+}
