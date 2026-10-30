@@ -589,6 +589,25 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ 2adf2b2c: the Lead's 12:08 items (1) and (2).**
+  - **(1) H07 chapel marble: already within ΔE 0.03 on this branch.**
+    - The fix is b0eb0a49 (03:16). The committed baseline was approved at 00:46 (big17), before it, and that is
+      what fails.
+    - A fresh capture on this branch passes all four H07 palette checks: chapel sun face ΔE_ok 0.018 to
+      order_marble 0 (max 0.03), wall grain 0.0032, banyan root L 0.447.
+    - No loosening and no new change needed: re-approve `haluna_h07_chapel_court` from a big23 render.
+  - **(2) the Ch11 regular-fight arena: `sunken_vey_gallery`, built and registered** (the id chapters asked for in
+    M4-A2P-041).
+    - It's the Vey's conduit court as the fighting floor, with the zone's own dressing round it (arcades, drowned
+      columns, figs, the galleries, the conduit housing; props kept 4 m off the slots). Ch11's overcast noon over
+      the still lagoon.
+    - Viewed: urchin and party on the court, the gallery bridge and the arcades behind.
+    - Checks: `test_arenas` 21 OK, Godot `--filter=arena` 18/0, validate_data.
+    - chapters names it on `ch11_vey_rays` and `ch11_vey_urchins`.
+    - **No `battle_arena_sunken_vey_gallery` shot yet:** adding one turns `test_screenshots` red until the Lead
+      approves a first baseline. Say if you want it.
+  - **(3) the Prologue–Ch4 POI and interactable walk:** rendering (`tools/act1/poi_stills.py`, walk_render's new
+    `auto_targets`).
 - **MERGE-READY @ 59628c29e: Ch10–Ch12 walk-through stills at player height** (the Lead's next item).
   - **Method:** `tools/hero/walk_stills` arrival stills at all 17 spawns, on env-art's dressed previews, since
     none of Ch10–Ch12 is mounted yet.
