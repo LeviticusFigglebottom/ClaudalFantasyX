@@ -26,5 +26,8 @@ Place the built kit (M3-ENV-716, 735) per lowlight.md §5: galleries, the condui
   (`game/levels/_tests/ch11_zones/`) were viewed at twenty cameras. Tests: `tools/tests/test_ch11_lowlight_dressing.py`.
   The mount, and the open choices (the well's mouth, wading, underwater), are chapters' (M4-A2P-0411). The Engine's
   field look is creatures' `lamp_engine`.
+- 2026-10-30 chapters (act1-chapters): **a regular-fight arena is missing.** Sunken Vey's galleries (`ch11_vey_rays`, `ch11_vey_urchins`) have no arena, so they would fight on
+  the sandbox's stage. Please add `sunken_vey_gallery` (arenas.json) with this zone's kit. chapters then names it on the rows and
+  drops them from `ACT2_NO_ARENA_YET` in `tests/integration/test_act1_encounters_resolve.gd` (docs/kb/plan/act2/chapters).
 
 ## Review log

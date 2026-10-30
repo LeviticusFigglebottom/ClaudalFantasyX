@@ -142,9 +142,38 @@
     "tick_stop": "status_apply",
     "grip_the_stair": "skill_grip_the_stair",
     "rope_dive": "skill_rope_dive",
-    "hand_closes": "skill_hand_closes"
+    "hand_closes": "skill_hand_closes",
+    "leech_bite": "hit_none",
+    "root_drag": "hit_none",
+    "tannin_jet": "hit_water",
+    "glide_lash": "hit_none",
+    "rime_spine": "hit_ice",
+    "scree_slide": "hit_ice",
+    "unravel": "status_apply",
+    "skate_sting": "hit_none",
+    "drowner_drag": "hit_none",
+    "rising_water": "hit_water",
+    "root_stamp": "hit_none",
+    "lamp_trim": "hit_none",
+    "lamp_gather": "status_apply",
+    "lamp_flare": "hit_none",
+    "core_pulse": "hit_none",
+    "horn_toss": "hit_none",
+    "ram_charge_gather": "status_apply",
+    "ram_charge": "hit_none",
+    "ram_bellow": "hit_none",
+    "fin_cut": "hit_none",
+    "sound_dive": "status_apply",
+    "wake_breach": "hit_none",
+    "wake_wheel": "hit_none"
   },
   "skills": {
+    "unravel": "skill_unravel",
+    "fin_cut": "skill_fin_cut",
+    "sound_dive": "skill_sound_dive",
+    "wakefin_rise": "skill_wakefin_rise",
+    "wake_wash": "skill_wake_wash",
+    "bill_strike": "skill_bill_strike",
     "toll": "drownbell_toll",
     "rouse_polyp": "skill_rouse_polyp",
     "gnaw_coil": "skill_gnaw_coil",
@@ -173,7 +202,8 @@
     "flood": "floodnet"
   },
   "phases": {
-    "flood": "flood"
+    "flood": "flood",
+    "close_circle": "phase_close_circle"
   },
   "openings": {
     "ambush": "stinger_ambush",
@@ -196,6 +226,9 @@
   "vowbound_stings": {
     "ilun": "ilun_summon",
     "virel": "virel_summon",
-    "kahre": "kahre_summon"
+    "kahre": "kahre_summon",
+    "nhoa": "nhoa_summon",
+    "hesk": "hesk_summon",
+    "ethren": "ethren_summon"
   }
 }

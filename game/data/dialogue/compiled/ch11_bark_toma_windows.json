@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch11_bark_toma_windows",
+ "source": "game/data/dialogue/ch11/ch11_bark_toma_windows.dlg",
+ "start": "ch11_bark_toma_windows",
+ "nodes": {
+  "ch11_bark_toma_windows": {
+   "headers": {"location": "ch11/sunken_vey"},
+   "ops": [
+    {"op": "line", "id": "ch11_bark_windows_001", "key": "DLG_CH11_BARK_WINDOWS_001", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 5},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 6},
+    {"op": "line", "id": "ch11_bark_windows_002", "key": "DLG_CH11_BARK_WINDOWS_002", "speaker": "toma", "emotion": "sad", "voice": "", "src": 7}
+   ]
+  }
+ }
+}

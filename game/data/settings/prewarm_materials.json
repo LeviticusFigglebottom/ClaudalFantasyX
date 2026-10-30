@@ -4,6 +4,9 @@
   "measure_frames": 6,
   "hitch_budget_ms": 50.0,
   "materials_per_frame": 2,
+  "zone_loads": true,
+  "zone_loads_per_frame": 6,
+  "_note_zone_loads": "ADR 0111 amendment 4 (ui-menus, at the Lead's request after the PC's pass 3): a transition also stages the zone's runtime materials and scenes (the ones game/data/ui/scene_loads.json lists, as ResidentLoads loads them), up to zone_loads_per_frame a frame (the batch still halves on a frame over slice_budget_ms), and the swap waits while it stages (SceneRouter: a loading holder's progress). A zone's dressing, villagers and wildlife build at runtime, so the scene scan never saw them; their pipelines compiled in the zone's first frames.",
   "slice_budget_ms": 33.0,
   "viewport_width": 64,
   "viewport_height": 64,
@@ -963,6 +966,41 @@
         "res://game/levels/ch03/first_verse/first_verse.tscn"
       ],
       "note": "M2-BPR-05 the encounter stinger's tide line (built at runtime by BattleStinger, drawn in the field before the router's fade). The zones that open a battle list their scenes here."
+    },
+    {
+      "path": "res://game/creatures/ambient_vfx/materials/ambient_process.tres",
+      "draw_material": "res://game/creatures/ambient_vfx/materials/ambient_glow_draw.tres",
+      "scenes": [
+        "res://game/battle/scene/battle_sandbox.tscn",
+        "res://game/flow/field_battle.tscn"
+      ],
+      "note": "M4-A2P-058 an Act II boss's own glow motes (the Drowner's snagged motes and their lift, the Engine's KO lift, the Ram's shed motes), built at runtime by CreatureAmbientVfx. The process .tres carries the curve and ramp every effect's copy has, so it is the same pipeline."
+    },
+    {
+      "path": "res://game/creatures/ambient_vfx/materials/ambient_process.tres",
+      "draw_material": "res://game/creatures/ambient_vfx/materials/ambient_puff_draw.tres",
+      "scenes": [
+        "res://game/battle/scene/battle_sandbox.tscn",
+        "res://game/flow/field_battle.tscn"
+      ],
+      "note": "M4-A2P-058 an Act II boss's own soft puffs (the Drowner's drag, the Engine's KO dust, the Ram's breath, snow and drips)."
+    },
+    {
+      "path": "res://game/creatures/ambient_vfx/materials/ambient_process.tres",
+      "draw_material": "res://game/creatures/ambient_vfx/materials/ambient_flat_glow_draw.tres",
+      "scenes": [
+        "res://game/battle/scene/battle_sandbox.tscn",
+        "res://game/flow/field_battle.tscn"
+      ],
+      "note": "M4-A2P-058 the Wakefin's wake: flat sea-glow on the water line."
+    },
+    {
+      "path": "res://game/creatures/ambient_vfx/materials/ambient_halo.tres",
+      "scenes": [
+        "res://game/battle/scene/battle_sandbox.tscn",
+        "res://game/flow/field_battle.tscn"
+      ],
+      "note": "M4-A2P-058 the Lamp Engine's lamp and core halos and the Drowner's cradle halos (billboards built at runtime by CreatureAmbientVfx)."
     }
   ],
   "first_run_live_scenes": [

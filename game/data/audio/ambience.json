@@ -112,7 +112,21 @@
       "bus": "Ambience",
       "volume_db": 0.0,
       "_note": "M3-AUD-817: the prologue's room tone (assets_src/sfx/prologue_ambience.py)"
-    }
+    },
+    "fen_dusk": {"file": "res://assets/audio/act2/ambience/fen_dusk.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch10, Ossa Fen at dusk: insects, frogs in the roots, drips into tannin water, root creak, a far fen bird"},
+    "reedhollow_roost": {"file": "res://assets/audio/act2/ambience/reedhollow_roost.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch10, Reedhollow: reed wind through woven screens, the lagoon under the platforms, a cook-fire, the clutch's wordless hum far off"},
+    "vey_galleries": {"file": "res://assets/audio/act2/ambience/vey_galleries.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch11, Sunken Vey: drips in deep water, the conduits' steady hum, salt-glass ticking, fig roots"},
+    "lowlight_temple": {"file": "res://assets/audio/act2/ambience/lowlight_temple.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch11, Lowlight: water lapping in the half-drowned temple, a far slow throb under the floor, drips, the glass"},
+    "keth_pass_wind": {"file": "res://assets/audio/act2/ambience/keth_pass_wind.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch12, Keth Pass: gusts, the pass-cords whistling and knocking, snow hissing over slate, scree"},
+    "quellan_town": {"file": "res://assets/audio/act2/ambience/quellan_town.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch12, Quellan: banners, the town's murmur, a loom, a far goat-bell"},
+    "cloudloom_hall": {"file": "res://assets/audio/act2/ambience/cloudloom_hall.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch12, Cloudloom: looms and shuttles, the keth stirring under the open roof, women's voices low"},
+    "ansedra_still": {"file": "res://assets/audio/act2/ambience/ansedra_still.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch13, Ansedra: almost nothing; no wildlife (ADR 0204 §1); a moored hull ticking, pilgrims far off, one far bell"},
+    "lacquer_court": {"file": "res://assets/audio/act2/ambience/lacquer_court.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch14, the Lacquer Court at dusk: the gathered crowd, silk, the water-steps, a far gong"},
+    "archive_room": {"file": "res://assets/audio/act2/ambience/archive_room.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch13, the Lamp Archive: a still room, a lamp, paper shifting, a page turned"},
+    "sanctum_basin": {"file": "res://assets/audio/act2/ambience/sanctum_basin.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch13, the Sanctum: the basin's air, just above silence"},
+    "open_sea_night": {"file": "res://assets/audio/act2/ambience/open_sea_night.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch15, the unlamped barge: the sea on the hull, timbers, the bridal cloth stirring"},
+    "pale_rim_shallows": {"file": "res://assets/audio/act2/ambience/pale_rim_shallows.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch16, the Pale Rim: soft wind, a thin wash over the flats, far ripples, a cairn stone"},
+    "choir_bowl": {"file": "res://assets/audio/act2/ambience/choir_bowl.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch16, the Drowned Choir: wind moaning through the stone mouths, water in the bowl"}
   },
   "zones": {
     "res://game/levels/prologue/prologue.tscn": {"day": ["iskarra_dusk"], "_note": "M3-AUD-817: Iskarra's drowned plaza at dusk, the room tone under the prologue cutscene"},
@@ -232,7 +246,21 @@
         "coilspire_flues"
       ],
       "_note": "M3-AUD-861: Ch8, inside the spire (the storm is in the bed, through the stone)"
-    }
+    },
+    "res://game/levels/ch10/ossa_fen/ossa_fen.tscn": {"day": ["fen_dusk"], "_note": "M4-A2P-093: Ch10, the fen is always at dusk"},
+    "res://game/levels/ch10/reedhollow/reedhollow.tscn": {"day": ["reedhollow_roost"], "_note": "M4-A2P-093: Ch10, the roost-village"},
+    "res://game/levels/ch11/sunken_vey/sunken_vey.tscn": {"day": ["vey_galleries"], "_note": "M4-A2P-093"},
+    "res://game/levels/ch11/lowlight/lowlight.tscn": {"day": ["lowlight_temple"], "_note": "M4-A2P-093"},
+    "res://game/levels/ch12/keth_pass/keth_pass.tscn": {"day": ["keth_pass_wind"], "_note": "M4-A2P-093"},
+    "res://game/levels/ch12/quellan/quellan.tscn": {"day": ["quellan_town"], "_note": "M4-A2P-093"},
+    "res://game/levels/ch12/cloudloom/cloudloom.tscn": {"day": ["cloudloom_hall"], "_note": "M4-A2P-093"},
+    "res://game/levels/ch13/ansedra/ansedra.tscn": {"day": ["ansedra_still"], "_note": "M4-A2P-093"},
+    "res://game/levels/ch13/ansedra_lacquer_court/ansedra_lacquer_court.tscn": {"day": ["lacquer_court"], "_note": "M4-A2P-093"},
+    "res://game/levels/ch13/lamp_archive/lamp_archive.tscn": {"day": ["archive_room"], "_note": "M4-A2P-093"},
+    "res://game/levels/ch13/sanctum/sanctum.tscn": {"day": ["sanctum_basin"], "_note": "M4-A2P-093"},
+    "res://game/levels/ch15/open_sea/open_sea.tscn": {"day": ["open_sea_night"], "_note": "M4-A2P-093"},
+    "res://game/levels/ch16/pale_rim/pale_rim.tscn": {"day": ["pale_rim_shallows"], "_note": "M4-A2P-093"},
+    "res://game/levels/ch16/drowned_choir/drowned_choir.tscn": {"day": ["choir_bowl"], "_note": "M4-A2P-093"}
   },
   "wind": {
     "bed": "wind",

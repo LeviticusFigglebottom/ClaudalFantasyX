@@ -434,16 +434,16 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   (blocked by ADR 0203 until the Act I gate): ice plates, icicles, the ice beard and `salt_glass` become felted,
   snow-caked wool with grit; slot `fleece_ice` -> `fleece_snow`. A build-script change, not a new model.
 - Checks: taskboard --check, validate_data 0/0, banned_terms grep clean, links resolve. No data, scene, asset or code.
-- LEAD-ASK: ADR 0015 covers temples and set pieces; `ridge_lynx` (frosted ear tufts) and `scree_crawler` (frost-split
+- LEAD-ANSWERED (ADR 0204: yes, filed M4-CRE-701 for creatures): ADR 0015 covers temples and set pieces; `ridge_lynx` (frosted ear tufts) and `scree_crawler` (frost-split
   scree, a frost counter) are Ch12 regulars. Default: file a creatures task to swap their frost for snow/grit too.
-- LEAD-ASK: people bosses' battle clips (Malcor Venn, the Abiding guard): creatures.json rows like Moll's stand-in
+- LEAD-ANSWERED (ADR 0204: Moll's precedent): people bosses' battle clips (Malcor Venn, the Abiding guard): creatures.json rows like Moll's stand-in
   scene, or a characters table? Default: Moll's precedent (battle_sandbox stand-in scene + characters' clips).
-- LEAD-ASK: the Ram's `torn_fleece` and the Wakefin's `close_circle` are phases the plan doesn't name. Default: keep
+- LEAD-ANSWERED (ADR 0204: keep both): the Ram's `torn_fleece` and the Wakefin's `close_circle` are phases the plan doesn't name. Default: keep
   them (each gives a mid-fight read); combat may cut.
-- LEAD-ASK: Wakefin (a fin fought from a boat's deck echoes the inspiring game): the draft keeps it one whole animal,
+- LEAD-ANSWERED (ADR 0204: confirmed; `sound_dive` = evasion up with a clear telegraph, never untargetable): Wakefin (a fin fought from a boat's deck echoes the inspiring game): the draft keeps it one whole animal,
   no deck adds, no separate fin target, an unlamped drifting barge. Confirm; and `sound_dive` = untargetable (draft)
   or only evasion up?
-- LEAD-ASK: Kesh's battle scale 4.2 m (Kahre's summon frame), colossal only in the bind; element order = the order the
+- LEAD-ANSWERED (ADR 0204: 4.2 m; order as met): Kesh's battle scale 4.2 m (Kahre's summon frame), colossal only in the bind; element order = the order the
   party met the Vowbound (draft). Confirm or set.
 - (Smaller design defaults, all in the sheets' "Open questions": Lamp Engine crawler start, Drowner snag-root effect,
   Malcor Venn's engine break as a lent set-piece skill, the Abiding guard's identity and triggers, Nhoa's copy on
@@ -452,3 +452,167 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
 - **BACKLOG EMPTY (2026-10-30 ~02:00):** M3-CRB-013 (the move pass) is in review with all nine viewed; GPU QA rows
   12/35/36/30 answered (fixes on this branch); M3-CRB-015 sheets done; M4-CRB-001 waits on the Act I gate (ADR 0203);
   M3-CRB-014 waits on creatures' review. Left: PC-QUEUE (real-GPU checks) and the LEAD-ASKs above (defaults chosen).
+- **02:30 (10-30), ADR 0204 applied, MERGE-READY @ (this commit):** integration merged; the eleven sheets' open
+  questions marked answered; the Wakefin's `sound_dive` is evasion up with a clear telegraph (row, engine line, Q2);
+  the README's Kesh scale fixed to 4.2 m; **M4-CRE-701** filed for creatures (ridge_lynx, scree_crawler frost -> snow
+  and grit; blocked by ADR 0203). Checks: taskboard --check, validate_data. BACKLOG EMPTY stands (PC rows first when
+  gpu/act1-qa-3 lands).
+
+## 2026-10-30 ~03:00: ACT II STARTED for creatures-b (ADR 0205; the Lead's 02:26 message)
+- Merged the integration branch (ADR 0205, act2_tracks.md). Ownership row added for the Act II bosses and Vowbound.
+- **MERGE-READY @ a70e62d3: M4-A2P-059, the Avalanche Ram without ice (to review, rendering).** Wet matted wool,
+  sodden blunt dripping lock ends, a wet beard; the `ice` slot, its .tres and PROVENANCE row removed; seep partings,
+  head, herd-cord, clips and budget (15,035) unchanged. Blender verify identical; tools test_creatures OK; Godot
+  creature 88/0. SELF-RENDERED creature_avalanche_ram (viewed: no ice reads; drift vs the icy baseline is intended)
+  and the portrait (re-baked, viewed). M4-CRB-001 closed as its duplicate.
+- **In progress (worktree agents, chapter order):** M4-CRB-002 the Mangrove Drowner, M4-CRB-003 the Lamp Engine,
+  M4-CRB-004 the Wakefin: final-quality pass + a clip per skill + anchors + test_creature_bosses_act2. Next: the
+  Ram's own clips (M4-CRB-005), then the Vowbound (Nhoa, Hesk, Ethren), then Kesh (M4-A2P-057, model from scratch).
+- **For combat (skills are yours):** creatures.json `clip_by_skill` can't name a skill before skills.json has it
+  (validate_creatures.py). Each boss's design sheet will carry a ready-to-paste clip map (skill -> clip, contact).
+- **MERGE-READY @ 7efa5f56: M4-CRB-004, the Wakefin at the final bar** (worktree agent, viewed by it; review combat).
+  A `breach` root at the water carries its travel; unweighted anchors; a lit blade seam; a `BladeTip` torn off by the
+  close-circle ram. 24 clips, each from its phase idle's first frame. **Clip map for combat** (proposed skill ids):
+  `fin_cut` -> attack 0.8; `sound_dive` -> dive 1.0 (the blade's top stays in view: evasion up, ADR 0204);
+  `wakefin_rise` -> rise_strike 0.85; `wake_wash` -> wake_wash 0.75; `bill_strike` -> bill_strike_close 0.7 (phase 2);
+  phase `close_circle` -> phase_close (ram 0.85) -> idle_close, `_close` versions mapped. 11,128 triangles (≤14k).
+  New tools/tests/test_wakefin.py (every clip skinned against the barge) and test_creature_bosses_act2.gd. Checks:
+  tools 62 OK, Godot creature 95/0, boss 93/0, Blender identical, validate_data, gdlint/gdformat.
+  - **For battle-presentation (M4-A2P-062), blocking it in a real fight:** the clips are authored for the fish in the
+    water off the barge's far side toward the bow, at (-5.0, -0.6, -6.5) yaw 90. The arena's `BossAnchor`
+    (-10, -0.6, -1.5) is outside the battle camera (42° off-axis against a 33.5° half-width) and a boss today sits on
+    EnemySlots/Slot0 (on the deck). Seat it at the staging point (a `boss_seats` row works once the encounter
+    exists) and give its strikes `travel: none`. Also yours: the glowing wake, the rise's glow ring.
+  - Note for creatures (M3-CRB-014): test_creature_actor's Wakefin bone list updated.
+- **In progress:** M4-CRB-002 Drowner, M4-CRB-003 Lamp Engine, M4-CRB-005 the Ram's moves (worktree agents).
+- **MERGE-READY @ (this commit): M4-CRB-003, the Lamp Engine at the final bar** (worktree agent, viewed by it; review
+  combat). The housing reads as a ringed tower (shingled plates, lacquer lips), lamps 1.2x, thicker limbs and broad
+  shears, the core lit as a globe; stand-in yaw 90 -> 55 (side-on, the near arm hid the core); bigger hits; the closed
+  KO keeps its petals shut. 18,680 triangles (≤20k), 25 clips, anchors; portrait re-baked. **Clip map for combat:**
+  engine_trim -> attack 0.6; lamp_gather 1.2; lamp_burn 0.8; call_the_tenders -> call 0.7; twin_trim 0.85;
+  core_flare -> cast (phase 2) 1.0; each with an `_opened` version (the `opened` clips map is in creatures.json).
+  Checks: Blender identical; tools OK; Godot creature 100/0 (test_creature_bosses_act2 now holds both bosses).
+  **Open:** the ring break parts wait on combat's skills (break_parts is keyed by skill; M4-A2P-022) and on a budget
+  call (broken lamp variants cost ~1.4-4.8k triangles against 1.3k left). Pre-existing, not mine: `--filter=part`
+  fails the Liss stand-in tint test (#7A8C5A vs battle_sandbox's #7A8F6A).
+- **MERGE-READY @ (this commit): M4-CRB-002, the Mangrove Drowner at the final bar** (worktree agent, viewed by it;
+  review combat). Roots planted by IK every frame (they lifted up to 24 cm), 24 clips (intro, ready, idle_b, a clip
+  per skill, risen versions, snag_break), anchors, the two snag roots carry mote cradles with torn twins (new
+  `mote_snag` material, PROVENANCE row), barnacles fixed; 17,676 triangles (≤18k); portrait re-rendered. **Clip map
+  for combat:** drowner_haul -> attack 0.7; rising_water 1.0; drowner_snag -> snag 0.75; root_stamp ->
+  root_stamp_risen 0.8 (phase 2); drink_the_fen -> cast 1.0; each `_risen` in `uprooted` (map in creatures.json);
+  the `break_parts` block (keyed drowner_haul) is ready in the art sheet. **Boss seat** [-5.0, 0, -3.0] added to
+  battle_sandbox.json `boss_seats` (on the default slot the trunk filled a third of the frame, its top cut).
+  Checks: Blender identical; tools OK; Godot creature 106/0. Open: risen feet slide ≤6 cm in rising_water_risen.
+- **MERGE-READY @ (this commit): M4-CRB-005, the Avalanche Ram's moves** (worktree agent, viewed by it; review
+  combat). 23 clips: intro (drinks, lifts, stamps), ready, idle_b, charge_gather, the charge, the bellow (cast, 2.0 s),
+  neck_sweep, fleece_shake, hits, KO (kneels, lies down, the herd-cord last); phase `torn_fleece` (40%): `phase_tear`
+  rears and slams at 1.0 s, a felted shoulder plate tears and falls (its own `plate` bone keeps it where it fell;
+  `TornShoulder` shows the seep via the phase's `show`), `idle_torn` and `_torn` versions. Hooves solved every frame,
+  lifting only for the stamp, the paw, the scrape and the rear. `cord` bone (the herd-cord swings). 15,779 triangles
+  (≤16k). **Clip map for combat:** ram_charge -> attack 0.75 (charge_gather on the gather turn); bellow -> cast 0.9;
+  neck_sweep 0.75; fleece_shake 0.6; each `_torn` in the phase map (in creatures.json). New tools test
+  test_avalanche_ram.py (no ice material, contacts, phase). Checks: Blender identical; tools OK; Godot creature 113/0.
+- **MERGE-READY @ (this commit): M4-CRB-006, Nhoa** (worktree agent, viewed by it; review combat). Her beads read as
+  ice crystals up close (ADR 0015: ice is hers, but not crystal shards): flatter, even-lit, rough; dry matte body;
+  denser neck/head motes; the KO no longer levels her antler crowns at the foes like a lance. New `deep_well` (1.8 s)
+  and `echo` (1.4 s) clips; Farewell-Tide lifts 0.2 m (the motes go UP). Anchors. 15,672 triangles (≤16k); portraits
+  re-baked. **Clip map for combat (M4-A2P-024):** attack 0.55; silt_fall -> cast 0.8; deep_well 1.0;
+  nhoa_echo -> echo 0.65; farewell_tide -> special 1.45. New test_creature_vowbound_act2.gd. Checks: Blender
+  identical; tools OK; Godot creature 120/0, vowbound 96/0. Open: rounder beads would double the motes' triangles (a
+  budget call, or a shader soft edge).
+- **In progress:** M4-CRB-007 Hesk (worktree agent); next Ethren, then Kesh (M4-A2P-057, a model from scratch).
+- **MERGE-READY @ (this commit): M4-CRB-007, Hesk** (worktree agent, viewed by it; review combat). The cords hung as
+  a rake of rods: now each bends down and trails, uneven, with a frayed tuft; knots rounder (a raised crossing strand,
+  long knots a tapering helix, the glow following each knot's shape; the numbers they spell unchanged); the ruff two
+  tiers of cord loops; a lean folded neck and low brows. New `cleanse` (Cord-Lift, 1.6 s, contact 0.9) and `mending`
+  (1.4 s, 0.8: she lifts the keth bundle and bows over it). Anchors; no ice (ADR 0015). Budget 14k -> 18k (the Act I
+  Vowbound bar; 17,930). **Clip map for combat (M4-A2P-024):** attack 0.55; knot_light -> cast 0.8; cord_lift ->
+  cleanse 0.9; hesk_mending -> mending 0.8; pass_cord -> special 1.45. Portraits re-baked. Checks: Blender identical;
+  tools OK; Godot creature 125/0, vowbound 101/0.
+- **In progress:** M4-CRB-008 Ethren and M4-A2P-057 Kesh (a new model) (worktree agents).
+- **MERGE-READY @ (this commit): M4-CRB-008, Ethren** (worktree agent, viewed by him; review combat). He read as a
+  stack of cones under a lampshade: the seams and halo now glow bound teal (were white paint), a halo bowl with a
+  lacquer rim, a crown cap closing the veil (still unkeyed on its own bone for the Act III veil-fall), the veil drawn
+  in and pleated, the robe bells re-cut so no hem pokes through (≥1.9 cm), lacquer bands and thin gold rims, raised
+  wing insets. New `stop` (Hold the Hour, contact 0.9) and `ward` (the lacquer screen, 0.8). Anchors. 15,546
+  triangles (≤16k); portraits re-baked. **Clip map for combat (M4-A2P-024):** attack 0.55; level_hand -> cast 0.8;
+  hold_the_hour -> stop 0.9; lacquer_screen -> ward 0.8; still_water -> special 1.45. Checks: Blender identical;
+  tools OK; Godot creature 131/0, vowbound 107/0 (test_creature_vowbound_act2 holds Nhoa, Hesk, Ethren).
+- **In progress:** M4-A2P-057 Kesh (new model), M4-CRB-009 the flat-engine part (worktree agents).
+- LEAD-ASK: M4-A2P-058 (Act II creatures' own VFX) had no owner. Default taken: creatures-b does the four bosses'
+  ambient VFX in their own scenes (game/creatures/<id>/), creatures does the regulars'; battle-skill VFX stay
+  battle-presentation's. Its title's "the Ram's ... ice" is void under ADR 0015.
+- **MERGE-READY @ (this commit): M4-CRB-009, the flat-engine part** (worktree agent, viewed by it; review combat).
+  Stand-in yaw 90 -> 20 (the window faces the camera; side-on it was a dark drum), a brass lid ring, brass inside the
+  split; the broken mesh shares the whole one's shape (the break is animated: light out, chimney over 24°, halves
+  apart, paddles knocked off). Clips: idle, idle_b, intro, ready, `cast` = the flat pulse (contact 0.8), hits, `ko` =
+  the stop (it stays on the barge), `break` (crack 0.6) -> `idle_broken`, broken hits/KO; phase `broken` swaps the
+  meshes on its first frame. 7,620 triangles (≤8k); portrait re-baked. **For combat (M4-A2P-023):** flat_pulse ->
+  cast; Liss's lent break skill calls enter_phase(&"broken") (break_parts optional, never alone). Checks: Blender
+  identical; tools OK; Godot creature 145/0, boss 116/0. Pre-existing, not mine: `--filter=part`'s Liss tint test.
+- **Kesh (M4-A2P-057) merged at d5fd2097 but NOT MERGE-READY yet:** I viewed creature_kesh: she reads as a smooth
+  teal mannequin (plastic water, a torso that looks bare, a blank face, the robe's mouths like polka-dot washers, a
+  stiff idle). Sent back for a polish round (water depth and flow, a clear bodice, a face, carved stone mouths in
+  bands, a living idle). Her rig, clips, contacts and clip map stand.
+- **In progress:** Kesh polish; M4-A2P-058 the bosses' own VFX (worktree agents).
+- **Spot-check (my own view, the merged tree, creature_* review shots):** the Wakefin, Hesk and the Lamp Engine hold
+  up; Nhoa's mote figure is spindly in the studio light but reads in her battle sheet (her design); the Drowner and
+  the flat-engine read. **Ethren still reads primitive** (stacked cone robe, tube arms with ball joints, a plate
+  halo, a board-like screen): a polish round is running (cloth robe, sleeves and hands, a halo of light, articulated
+  screens). M4-CRB-008 is therefore NOT final until it lands.
+- **Kesh pass 2 merged (the cherry-pick of 8397066c):** a visible bodice and stole (satin `robe` slot), runnels and
+  white breaks, a face with lids, brow, lips, 46 carved Choir-stone mouths in bands, a hand-on-heart idle; 19,366
+  triangles. Viewed: much better, still not final (the head reads as a helmet; one teal everywhere, so garment and
+  skin don't separate; the plaques sit in a studded grid). Pass 3 is running. Note for creatures: her agent added
+  `assets/creatures/kesh/` to game/data/import/creatures.json (your file; bookkeeping only).
+- LEAD-ASK: Kesh is the only human-shaped Vowbound, and a procedural creature-kit face tops out below the characters'
+  faces. Could her head and torso start from the MPFB2 base topology (ADR 0021, the characters track's pipeline),
+  built in her own job? Default: no; I keep her on the creature kit and push it (pass 3), and flag the bind-memory
+  close-up (cinematics) as wanting a sculpted head later.
+- **MERGE-READY @ (this commit): M4-A2P-058, the four Act II bosses' own ambient VFX** (worktree agent, viewed by it;
+  review combat). One shared `CreatureAmbientVfx` (game/creatures/ambient_vfx/, reads CreatureActor, never drives it;
+  creature_actor.gd unchanged), all values in game/data/creatures/creature_vfx.json (palette swatches), fixed seeds.
+  Drowner: held motes drifting in the snag cradles, lifting on break/KO; silt drag on its hauls and stamp. Engine:
+  steady halos on the 12 lamps and the core (bound light never flickers: colour script rule 2), on KO they dim and
+  motes rise through the crack. Ram: breath every ~4 s (faster torn), snow puffs and drips on hits and the shake (no
+  ice; tested). Wakefin: sea-glow wake on the water line (it carries no light of its own). Particle counts 3-36;
+  4 prewarm entries, 5 PROVENANCE rows. Checks: Godot creature 155/0, prewarm 22/0, validate_data, gdlint. Weak: the
+  Drowner's drag (faint on the sand-bank preview) and the Ram's breath against the white wall; polish once the real
+  fights exist. Pre-existing, not mine: `--filter=vfx`'s test_cutscene_vfx_hosts (CutsceneMotes missing here).
+  **For battle-presentation:** the breach splash, the dive/rise glow ring and the lamp brightening in the gather are
+  skill VFX (yours). Ownership row added for the new paths.
+- **MERGE-READY @ (this commit): M4-CRB-008 Ethren, now final** (polish round, viewed by me on creature_ethren): a
+  layered silk under-robe in folds with a weighted hem, overlapping lacquer panels, a two-layer mantle (no joints
+  show), wide lined hanging sleeves, hands with fingers and the ring (vfx_keepsake follows it), a floating halo bowl
+  of light, folding-screen leaves; new `silk` slot (2 PROVENANCE rows). 17,304 triangles (≤18k); clips, contacts,
+  anchors and the veil bone kept; portraits re-baked. Checks: Blender identical (17); validate_data; Godot vowbound
+  116/0.
+- **GPU QA pass 4 (gpu/act1-qa-4), my rows:** 12, 35 (Moll) and 36 (the Reach) confirmed fixed on the real GPU.
+  **Row 61** (battle_arena_seawall_stairhead_surge: the Reach fills half the preview): the preview seated it on
+  Slot0, not its boss seat; **battle-presentation's 921e5fec already fixes it** (the preview uses boss_seats and the
+  rest fit, as the fight does), pending the Lead's merge. Nothing left on my side (the seat [-5.0, 0, -2.4] is in).
+  The Spar-wraith's 45° turn needs a capture in motion (PC-QUEUE).
+- **MERGE-READY @ (this commit): M4-A2P-057, Kesh** (three passes; pass 3 viewed by me on creature_kesh): a pale
+  woman of water in a deep sea-dark silk robe and bodice with a slate stole, set with 39 worn Choir-stone mouths
+  scattered along the drape; hair in parted locks (no helmet), the face the brightest thing on her head; the
+  hand-on-heart idle. 4.2 m, 26 clips (six voices, six element-shift cues, The Seven), anchors; 19,794 triangles
+  (justified in her sheet); portrait re-baked. **Clip map for combat (M4-A2P-024/025):** in her design and art
+  sheets (kesh_shift -> shift / shift_<element>; voice_water 0.9, voice_lightning 0.7, voice_fire 0.8 (+1.05, 1.3),
+  voice_ice 0.9, voice_holy 0.8, voice_glimmer 0.9; the_seven -> special 1.8). Checks: Blender identical; validate_data;
+  Godot vowbound 116/0. **Open (LEAD-ASK above):** up close her hair is sculpted and her face soft; the bind-memory
+  close-up (cinematics) wants a sculpted head.
+
+### State of creatures-b's Act II list (2026-10-30)
+All built at the final bar and MERGE-READY: the Mangrove Drowner (M4-CRB-002), the Lamp Engine (003), the Wakefin
+(004), the Avalanche Ram's wool (M4-A2P-059) and moves (005), the flat-engine part (009), Nhoa (006), Hesk (007),
+Ethren (008), Kesh (M4-A2P-057), and the four bosses' own VFX (M4-A2P-058). Every clip map waits on combat's skills
+(validate_creatures rejects clip_by_skill for skills not yet in skills.json): the maps are in each design sheet.
+What the Act II fights still need from others: enemy rows and encounters (combat), boss seats/framing per fight
+(battle-presentation: the Wakefin's staging note above), skill VFX, summons and bindings, portraits for the UI.
+
+- **BACKLOG EMPTY (2026-10-30):** every Act II boss and Vowbound in creatures-b's lane is built, viewed and
+  MERGE-READY; no open Act I row is mine (GPU QA pass 4: 12/35/36 fixed, 61 fixed by battle-presentation 921e5fec).
+  Open asks are the LEAD-ASKs above (M4-A2P-058's split; Kesh's face); defaults taken. Next when anything lands:
+  wire-up checks once combat adds the enemy rows and skills (paste the clip maps, re-render the bosses in their real
+  fights), and any new GPU QA row first.

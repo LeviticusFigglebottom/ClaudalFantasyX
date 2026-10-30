@@ -53,7 +53,7 @@
     "lip": "#6E4236"
   },
   "_hair": {
-    "brow_params": {"alpha_boost": "1.0", "strand_value_jitter": "0.4"},
+    "brow_params": {"alpha_boost": "1.0", "strand_value_jitter": "0.15"},
     "hairline_feather": 1.0,
     "kind": "short",
     "tufts": true,
@@ -68,7 +68,7 @@
       170,
       110
     ],
-    "hairline_cards": 50,
+    "hairline_cards": 0,
     "rise": 0.6,
     "colour": "#C9C3B8",
     "grey": "#E4E0D8",

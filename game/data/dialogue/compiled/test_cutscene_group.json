@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "test_cutscene_group",
+ "source": "game/data/dialogue/test/test_cutscene_group.dlg",
+ "start": "test_cutscene_group",
+ "nodes": {
+  "test_cutscene_group": {
+   "headers": {},
+   "ops": [
+    {"op": "cue", "cue": "anim", "args": ["kirru", "look_at", "spot"], "kwargs": {}, "src": 5},
+    {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 6},
+    {"op": "line", "id": "test_cutscene_group_001", "key": "DLG_TEST_CUTSCENE_GROUP_001", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 7}
+   ]
+  }
+ }
+}

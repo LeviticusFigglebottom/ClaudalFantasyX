@@ -334,13 +334,13 @@ def _doors(bl: dict, room: str, walls: list[str]) -> list[tuple[str, float, floa
 
 
 def _room(mb, rng, noise, bl: dict, room: str, walls: list[str], top: float, lod: bool, *, niches: bool = True,
-          wet: bool = False, clip_z: tuple[float, float] | None = None, skip=None) -> None:
+          wet: bool = False, clip_z: tuple[float, float] | None = None) -> None:
     """A room on its floor block: flags (over `clip_z` of it only, where it overlaps the rooms it joins), its walls
     raised to `top` over the floor, a pointed arch over every doorway the greybox leaves."""
     r = bl[room]
     x0, x1, _y0, y1, z0, z1 = _box(r)
     fz0, fz1 = clip_z if clip_z is not None else (z0, z1)
-    _flags(mb, rng, noise, x0, x1, fz0, fz1, y1, lod, wet=wet, skip=skip)
+    _flags(mb, rng, noise, x0, x1, fz0, fz1, y1, lod, wet=wet)
     for wid in walls:
         _wall(mb, rng, noise, bl[wid], y1 + top, _inward(bl[wid], r), lod, floor_y=y1, niches=niches)
     for line, at, a, b, thick in _doors(bl, room, walls):

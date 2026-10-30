@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch15_bark_outside_the_level",
+ "source": "game/data/dialogue/ch15/ch15_bark_outside_the_level.dlg",
+ "start": "ch15_bark_outside_the_level",
+ "nodes": {
+  "ch15_bark_outside_the_level": {
+   "headers": {"location": "ch17/hollowmere"},
+   "ops": [
+    {"op": "line", "id": "ch15_heresy_hollowmere_001", "key": "DLG_CH15_HERESY_HOLLOWMERE_001", "speaker": "hull_captain", "emotion": "smile", "voice": "", "src": 5, "name_key": "DLG_NAME_HULL_CAPTAIN_HOLLOWMERE_WRIGHT"}
+   ]
+  }
+ }
+}

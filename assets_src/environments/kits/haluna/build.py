@@ -46,7 +46,6 @@ import vey_zones  # noqa: E402
 import lowlight_zones  # noqa: E402
 import keth_zones  # noqa: E402
 import ansedra_zones  # noqa: E402
-import open_sea_zones  # noqa: E402
 import kit_common as kc  # noqa: E402
 import props  # noqa: E402
 import ruins  # noqa: E402
@@ -141,8 +140,6 @@ def targets() -> dict:
         out[name] = (name, keth_zones, fn)
     for name, fn in sorted(ansedra_zones.TARGETS.items()):  # M4-A2P-043 Ansedra's walks and buildings, from its greybox
         out[name] = (name, ansedra_zones, fn)
-    for name, fn in sorted(open_sea_zones.TARGETS.items()):  # M4-A2P-045 the open sea's barge, at its greybox's size
-        out[name] = (name, open_sea_zones, fn)
     return out
 
 

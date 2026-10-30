@@ -1,0 +1,189 @@
+{
+  "version": 1,
+  "doc": "Act II's battle sounds new in Act II (M4-A2P-093): skills that would otherwise be silent. Files from assets_src/sfx/act2_skill_sfx.py (plain git, ADR 0175). Same row format as sfx_battle.json.",
+  "sfx": {
+    "skill_unravel": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/skill_unravel.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the cord moth's unravel, a weave pulled apart and a ward's ring dying"
+    },
+    "sting_boss_mangrove_drowner": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_mangrove_drowner.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the mangrove drowner's intro sting (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_mangrove_drowner_soft": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_mangrove_drowner_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the mangrove drowner's intro sting (reduced audio) (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_lamp_engine": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_lamp_engine.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the lamp engine's intro sting (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_lamp_engine_soft": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_lamp_engine_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the lamp engine's intro sting (reduced audio) (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_avalanche_ram": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_avalanche_ram.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the avalanche ram's intro sting (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_avalanche_ram_soft": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_avalanche_ram_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the avalanche ram's intro sting (reduced audio) (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_wakefin": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_wakefin.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the wakefin's intro sting (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_wakefin_soft": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_wakefin_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the wakefin's intro sting (reduced audio) (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_malcor_venn": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_malcor_venn.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: Malcor Venn's intro sting (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_malcor_venn_soft": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_malcor_venn_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: Malcor Venn's intro sting (reduced audio) (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_abiding_guard": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_abiding_guard.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the Abiding guard's intro sting (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_abiding_guard_soft": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_abiding_guard_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the Abiding guard's intro sting (reduced audio) (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "skill_fin_cut": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/skill_fin_cut.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the Wakefin's fin_cut (wakefin.md §4, the sheet's proposed id): the seam's high hiss along the rail, then the sweep (contact 0.8 s)"
+    },
+    "skill_sound_dive": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/skill_sound_dive.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the Wakefin's sound_dive (wakefin.md §4, the sheet's proposed id): the blade sinking: a falling plunk, bubbles going down, a thrum still there below (it's gone deep, not gone; ADR 0204 §3)"
+    },
+    "skill_wakefin_rise": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/skill_wakefin_rise.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the Wakefin's wakefin_rise (wakefin.md §4, the sheet's proposed id): the sea-glow ring opening at 1.9 kHz, then the breach under one hero (contact 0.85 s)"
+    },
+    "skill_wake_wash": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/skill_wake_wash.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the Wakefin's wake_wash (wakefin.md §4, the sheet's proposed id): the hard turn, the tail slap (0.75 s), the wake washing over the deck"
+    },
+    "skill_bill_strike": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/skill_bill_strike.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the Wakefin's bill_strike (wakefin.md §4, the sheet's proposed id): phase 2: it rears at the bow, the stab and the knock on the planking (0.7 s)"
+    },
+    "phase_close_circle": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/phase_close_circle.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the Wakefin's close_circle phase (ADR 0204 §6): it rams the hull, the barge rocks and creaks"
+    }
+  }
+}

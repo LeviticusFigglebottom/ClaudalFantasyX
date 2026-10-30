@@ -1,0 +1,48 @@
+{
+ "format": 1,
+ "scene": "ch10_causeway",
+ "source": "game/data/dialogue/ch10/ch10_causeway.dlg",
+ "start": "ch10_causeway",
+ "nodes": {
+  "ch10_causeway": {
+   "headers": {"location": "ch10/reedhollow"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "camera", "args": ["R01"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "music", "args": ["reedhollow"], "kwargs": {"fade": 1.0}, "src": 13},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "camera", "args": ["R02"], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "mark", "args": ["owa", "causeway_gate", "walk"], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "anim", "args": ["owa", "look_at", "toma"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "anim", "args": ["owa", "look_at", "asha"], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "anim", "args": ["owa", "look_at", "rhen"], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "anim", "args": ["owa", "look_at", "kerrid"], "kwargs": {}, "src": 24},
+    {"op": "cue", "cue": "anim", "args": ["owa", "crest_lift"], "kwargs": {}, "src": 25},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 26},
+    {"op": "cue", "cue": "anim", "args": ["owa", "look_at", "asha"], "kwargs": {}, "src": 27},
+    {"op": "line", "id": "ch10_causeway_001", "key": "DLG_CH10_CAUSEWAY_001", "speaker": "owa", "emotion": "neutral", "voice": "", "src": 28, "name_key": "DLG_NAME_OWA_THE_ELDEST"},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 29},
+    {"op": "cue", "cue": "camera", "args": ["R03"], "kwargs": {}, "src": 30},
+    {"op": "cue", "cue": "anim", "args": ["owa", "look_at", "pell"], "kwargs": {}, "src": 31},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 32},
+    {"op": "line", "id": "ch10_causeway_002", "key": "DLG_CH10_CAUSEWAY_002", "speaker": "owa", "emotion": "cold", "voice": "", "src": 33, "name_key": "DLG_NAME_OWA_THE_ELDEST"},
+    {"op": "cue", "cue": "mark", "args": ["pell", "causeway_last_root", "walk"], "kwargs": {}, "src": 34},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 35},
+    {"op": "line", "id": "ch10_causeway_003", "key": "DLG_CH10_CAUSEWAY_003", "speaker": "asha", "emotion": "tender", "voice": "", "src": 36},
+    {"op": "line", "id": "ch10_causeway_004", "key": "DLG_CH10_CAUSEWAY_004", "speaker": "owa", "emotion": "neutral", "voice": "", "src": 37, "name_key": "DLG_NAME_OWA_THE_ELDEST"},
+    {"op": "cue", "cue": "mark", "args": ["owa", "ring_owa", "walk"], "kwargs": {}, "src": 38},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 39},
+    {"op": "cue", "cue": "mark", "args": ["kerrid", "causeway_last_root_b", "walk"], "kwargs": {}, "src": 40},
+    {"op": "cue", "cue": "anim", "args": ["kerrid", "look_at", "water"], "kwargs": {}, "src": 41},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 42},
+    {"op": "set", "flag": "ch10_pell_kept_out", "value": ["lit", true], "src": 43},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 44},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 45}
+   ]
+  }
+ }
+}

@@ -1,0 +1,31 @@
+{
+ "format": 1,
+ "scene": "ch13_archive_ledgers",
+ "source": "game/data/dialogue/ch13/ch13_archive_ledgers.dlg",
+ "start": "ch13_archive_ledgers",
+ "nodes": {
+  "ch13_archive_ledgers": {
+   "headers": {"location": "ch13/lamp_archive"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["R01"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "music", "args": ["lamp_archive"], "kwargs": {"fade": 2.0}, "src": 10},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "camera", "args": ["R02"], "kwargs": {}, "src": 12},
+    {"op": "line", "id": "ch13_rec_ledger_001", "key": "DLG_CH13_REC_LEDGER_001", "speaker": "", "emotion": "", "voice": "", "src": 13},
+    {"op": "line", "id": "ch13_ledgers_001", "key": "DLG_CH13_LEDGERS_001", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 14},
+    {"op": "cue", "cue": "anim", "args": ["liss", "mark_signature"], "kwargs": {}, "src": 15},
+    {"op": "line", "id": "ch13_ledgers_002", "key": "DLG_CH13_LEDGERS_002", "speaker": "liss", "emotion": "surprised", "voice": "", "src": 16},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 17},
+    {"op": "line", "id": "ch13_rec_binding_001", "key": "DLG_CH13_REC_BINDING_001", "speaker": "", "emotion": "", "voice": "", "src": 18},
+    {"op": "line", "id": "ch13_ledgers_003", "key": "DLG_CH13_LEDGERS_003", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 19},
+    {"op": "cue", "cue": "anim", "args": ["asha", "look_at", "record_page"], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 21},
+    {"op": "line", "id": "ch13_rec_edict_001", "key": "DLG_CH13_REC_EDICT_001", "speaker": "", "emotion": "", "voice": "", "src": 22},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 23},
+    {"op": "line", "id": "ch13_ledgers_004", "key": "DLG_CH13_LEDGERS_004", "speaker": "liss", "emotion": "cold", "voice": "", "src": 24},
+    {"op": "set", "flag": "ch13_read_ledgers", "value": ["lit", true], "src": 25},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 26}
+   ]
+  }
+ }
+}

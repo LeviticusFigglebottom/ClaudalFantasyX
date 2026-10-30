@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch15_deck_ysolde",
+ "source": "game/data/dialogue/ch15/ch15_deck_ysolde.dlg",
+ "start": "ch15_deck_ysolde",
+ "nodes": {
+  "ch15_deck_ysolde": {
+   "headers": {"location": "ch15/open_sea"},
+   "ops": [
+    {"op": "line", "id": "ch15_deck_ysolde_001", "key": "DLG_CH15_DECK_YSOLDE_001", "speaker": "ysolde", "emotion": "cold", "voice": "", "src": 5}
+   ]
+  }
+ }
+}

@@ -562,7 +562,288 @@ that test at this branch's zones.
 - **BACKLOG EMPTY (10-30 ~01:40):** Act I is clean in my lane, and the Act II preparation docs are written. Next:
   the PC's pass-3 rows for env-art-b when they land.
 
+- **The PC's pass 3, early findings (the Lead, 01:50), all three fixed:**
+  1. **`ch05_ashcrown_crown` / `crowd_zone_ashcrown`, the streaked bench and step faces:** the short rounded risers
+     interpolate their vertex normals toward +Y, so the triplanar base and the salt detail took the top-down
+     projection on near-vertical faces. The zone's `ashcrown_dressed_material` now uses the mesh's metre UVs (as
+     `ac_ashlar` does), and neither stone copy takes salt (none reaches a volcano's crown). The shared weathering
+     shader is untouched.
+  2. **`brine_b05_barge_channel`, the white untextured hull:** `bs_barge_white` was a flat StandardMaterial. It's now
+     painted lacquer over planking on the weathering shader: triplanar (the barge's small blocks have no plank UVs),
+     paint 0.86, a little salt and algae at the waterline, still the only clean white in the zone. **This is a change
+     to env-art's kit material table** (`assets_src/environments/kits/brine_shoals/bs_materials.py`, one entry), at the
+     Lead's routing: the source is the only place that fixes the kit preview, my Ch6 zone and the camp arenas at
+     once. The other 29 materials are byte-identical.
+  3. **`battle_arena_coilspire_headland_path`, the dark flat slab behind the fight:** the arena ground's centre stands
+     ~80 m from the fight, so its import chain (LOD1 from 70 m, measured to the bounds' centre) drew the coarse LOD1 as
+     the backdrop. A new `zl.pin_lod0()` holds it at LOD0 to 2 km in the arena (b_headland_arena.py). This was also
+     M3-ENV-1316's "headland far facets", and the reason scrub beyond 45 m floated.
+  - **Checks run:** tools test_brine_shoals_kit, test_b_arenas, test_arenas, test_ashcrown_kit; validate_data; Godot
+    ashcrown 22/0, ch05 13/0, brine 5/0, ch06 5/0, battle_arena 18/0.
+  - **Self-rendered and viewed:** `ch05_ashcrown_crown`, `crowd_zone_ashcrown`, `ch05_ashcrown_forecourt`,
+    `battle_arena_ashcrown_forecourt_day`, `brine_b05_barge_channel`, `battle_arena_coilspire_headland_path`. Clean
+    risers; a painted barge; the headland's textured, scrubby slope behind the fight. These six drift by design.
+  - **MERGE-READY @ f7d74a74.**
+
+- **The PC's pass 3, published rows (`gpu/act1-qa-3` @ f56c2e82, big18), checked against my head:**
+  - **45, 52, 53:** fixed earlier (the early findings above, @ f7d74a74).
+  - **49 (Pemakar's night harbour near-black):** the preview's night grade takes its ambient from a near-black sky, so
+    the layout's fill colour did nothing. The zone's copy now takes a colour ambient (as the day grade does), and the
+    layout's rows carry a moonlit fill (`#6c7898` 0.6) and a brighter moon key (0.45, `#5a6c94`). Both are written by
+    `ch05_pemakar_dressing.py` as one-key edits. The party now reads on the quay; the lamp pools and stars stay.
+  - **51 (Ch9 grave mounds as blurry orange rectangles):** the old shrouds' woven texture is about 3 px a tile from
+    the field camera. New `shroud_bound_a/b/small` pieces (`corrow/b_strand.py`) are tied cloth over a body, with
+    folds, a firm hem and four ties, under a damp grey canvas look. `test_ch09_corrow_walkable` now counts them.
+  - **62 (weir slabs flat grey boxes):** new `kit_weir_stone` (dressed volcanic stone, an algae band at the
+    waterline) and the water spill on the weir, in the zone and the kit preview. **This touches env-art's
+    `pemakar_layout.py`** (the weir row's `materials`, at the Lead's routing) and relaxes `test_pemakar_kit`'s slot
+    check to accept a file in the kit's materials folder.
+  - **63 (Matron intro: stretched mouldings, flat light-grey panel):** the mouldings were the dressed-stone UV fix
+    (@ f7d74a74). The panel was the arena's near plume filling the loggia, so the court drops it; the loggia shows the
+    crater rim and sky.
+  - **50 (Toma sunk at Ashcrown's Crown spawn): not reproduced on this head; hero-integration's.** With the party set
+    to Rhen, Asha and Toma and placed with `place_at` (the recipe in `test_qa_party_spawns`), `catch_up` lays them
+    straight back along −X. Asha lands at (2.05, 42, −3.2) and Toma at (0.9, 42, −3.2), both on `Tier6`'s floor at
+    y 42, which matches the visible tiles. No stair flight covers those spots (the t6 vein flights' heights sit
+    +0.3 m above the floor). The one solid nearby that could look chest-deep is `release_lever`'s collider:
+    1.39 m tall, centred at (6.0, −3.0), 2.8 m in front of the spawn. A follower placed on it would keep y 42 (the
+    hit is above `step_m`). It's worth checking in the PC's own run. Also seen: at `AfterTortoises`, Toma is held
+    1.34 m above `Causeway10` (floor −75.74, kept at the leader's −74.4).
+  - **Checks run:** tools test_corrow_kit, test_pemakar_kit, test_b_arenas, test_arenas, plus every tools test that
+    imports the changed generators (94 OK); validate_data 0/0; taskboard --check; Godot pemakar 10/0, ashcrown 22/0,
+    corrow 18/0, zone_kit 13/0; gdlint and gdformat on the changed test.
+  - **Self-rendered and viewed:** `battle_boss_intro_matron`, `battle_arena_ashcrown_anvil_court`,
+    `ch09_corrow_strand`, `ch05_pemakar_harbour`, `ch05_pemakar_weir`, `pemakar_p11_sea_cut_weir_day`,
+    `ch05_pemakar_harbour_day`, plus scratch field-height views of the harbour, the strand and the Crown spawn with
+    the party. These drift by design.
+  - **MERGE-READY @ 1a6934e3** (rows 45, 49, 51, 52, 53, 62, 63; row 50 routed to hero-integration).
+- **Act I rows closed; Act II started (ADR 0205, the Lead's 02:26 order).** Claimed M4-A2P-043 (Ansedra, the
+  Sanctum, the Lamp Archive) and M4-A2P-047 (the still mirror and the ripples) @ 1b855b13. Working from
+  `docs/kb/plan/act2/zones/ch13_ansedra.md`: the new pieces in `b_ansedra.py`, then
+  `tools/act2/ch13_ansedra_dressing.py`, the `ch13` grade and `lut_ch13_still`.
+- **LEAD-ASK (Act II order):** the 02:26 order says "Ch10 first", but `act2_tracks.md` gives Ch10–Ch12 to env-art
+  and Ch13–Ch16 to env-art-b. I'm starting my own first chapter, Ch13, and not touching Ch10's paths. Say so if
+  you want env-art-b on Ch10 instead.
+- **Ansedra (ch13) dressed, with the still mirror (M4-A2P-043 part 1 of 3; M4-A2P-047's still half):**
+  - **New pieces** in `haluna/ansedra.py` (mine under act2_tracks.md): `ansedra_causeway_6m`, `gold_lamp_post`
+    (an unlit salt-glass globe), `island_plinth_16m` and `mooring_platform` (water-steps, bollards, punt-pole
+    trestles, the lacquered mooring arch). Built, imported, with manifest and provenance rows.
+  - **`tools/act2/ch13_ansedra_dressing.py`** dresses the zone in the greybox's own frame. The walk surfaces are
+    flat at y 0 and match the kit, so the greybox keeps the collision and **no story point moved**. It places the
+    plinths, 18 causeway modules, 32 lamp-posts (one per lamp block), 15 bowl-domes plus the skyline ring, Sefir's
+    hall (×0.6) and Corran's plainer timber hall (×0.45), and the two mooring barges (`bridal_barge` ×0.55; the
+    plain `mooring_barge` alternative is the spec's open item for Narrative). The flat gilt and lacquers get zone
+    looks, and the marble is cooled to `#E8E8E2`.
+  - **The still mirror:** `overcast_lagoon` (absorption ×1.5, deep `#5E6E80`, the turquoise scatter muted) with no
+    waves, ripples, foam or sun glint, roughness 0, and SSR out to 400 m. The domes stand doubled in the lagoon.
+    **Not yet:** Ch14's ripple propagation (M4-A2P-047's second half).
+  - **The ch13 grade:** `ansedra_environment.tres` (overcast, exposure 0.75, a colour ambient so the layout's fill
+    row applies) and `lut_ch13_still.png` (written through `zone_lut`'s functions with my own grade dict;
+    env-art's table is untouched).
+  - **`ansedra.tscn`:** I added the `Water`, `Tide` and `Dressing` nodes (as in Act I; named in my ownership row).
+  - **Shots (new, no baselines):** `ch13_ansedra_arrival`, `_moorings`, `_causeway`, `_mirror`, `_sefir_house`,
+    `_corran_house` (rig `game/levels/_tests/ansedra_kit/ch13_ansedra_shots.tscn`). All self-rendered and viewed;
+    the moorings shot was re-rendered after removing the sun glint's hotspot.
+  - **Checks:** tools test_ch13_ansedra_dressing (new), test_ansedra and test_haluna_kit pass, plus every kit test
+    that reads the build. **`test_npc` fails twice on this head (crowd_girl_teen's face distance and committed
+    params). It came in with the integration merge, and nothing here touches the crowd.** Also: validate_data 0/0;
+    taskboard; Godot ansedra 4/0 (new test_ansedra_dressing: the routes walk, the kit covers the greybox, the lagoon
+    is still), ch13 4/0, act2 5/0, zone_kit 13/0, party_spawns 3/0, placeholder 8/0, dressing 18/0, water 48/0.
+  - **MERGE-READY @ 86e01d57.**
+- **The Sanctum of the Level (ch13) dressed (M4-A2P-043 part 2 of 3):**
+  - **New pieces** in `ansedra.py`: `sanctum_nave_bay`, `sanctum_nave_floor`, `sanctum_basin_nave`,
+    `sanctum_vestibule`, `sanctum_bench`, `sanctum_apse` and `cantor_stand`. The spec reused `lowlight_nave_bay`, but
+    that bay is Lowlight's flooded temple (floor 0.45 m under the datum, walls at ±9, niches, conduits), so the nave
+    is its own.
+  - **No relayout:** the spec asked to move the nave to the kit's square basin. Instead, `sanctum_basin_nave` is
+    built to the greybox's 10 × 18 m, and its rim *is* the kneeling ledges (same footprint and height). The greybox
+    keeps the collision and every story point stays.
+  - **The light:** six steady `glimmer_bound` omnis in the basin (specular 0, so no hot points on the mirror), a
+    dimmer bound core under the salt-glass, the basin's still water at y 0.3, an interior grade (exposure 1.0) and
+    `lut_ch13_sanctum`. `ZoneKitDressing`'s `fire_lights` take an optional `specular` (one line).
+  - **Requested of chapters: M4-A2P-103.** The layout's light rows are chapters' (`ch13_greybox.py`, "do not edit
+    by hand") and today they are daylight (sun 1.6). Until they're changed, a sliver of sun crosses the vault in the
+    gate and basin shots. A scratch render with the requested values (sun 0, fill `#8A96A4` 0.2) showed the nave lit
+    only from below, as the spec asks.
+  - **Shots (new):** `ch13_sanctum_gate`, `_basin`, `_vault`. All viewed (re-render after M4-A2P-103 lands).
+  - **Checks:** tools test_ch13_sanctum_dressing (new), test_ch13_ansedra_dressing, test_ansedra and test_haluna_kit
+    pass; validate_data 0/0; taskboard; gdlint and gdformat. Godot: sanctum 3/0, ansedra 4/0, ch13 4/0,
+    zone_kit 13/0, dressing 21/0, placeholder 8/0, party_spawns 3/0.
+  - **MERGE-READY @ f5675f19.**
+- **The Lamp Archive (ch13) dressed; M4-A2P-043 → review (rendering):**
+  - **New pieces** in `ansedra.py`: `archive_case` (on every greybox `Stack` block; black lacquer, red shelves, runs
+    of ledgers), `archive_hall_bay` (open clerestories, so grey daylight is the only light, and a skinned vault),
+    `archive_end_walls` (the shut door), `reading_table`, `roll_table` (the Cantor roll) and `ledger_stack`. The
+    spec's `archive_stacks` and `lowlight_nave_bay` didn't match the greybox's blocks and walls, so I built to them.
+  - **`tools/act2/ch13_archive_dressing.py`:** in the greybox's frame, no story point moved, under Ansedra's grade
+    and looks. No lamp is lit.
+  - **Fixed in passing:** `_paving` now lays a bedding slab where a floor has no block under it (the Archive bays,
+    the Sanctum's floor and vestibule showed the dark through their joints). Paper is dry indoors (`PAPER_W`).
+  - **Shots (new):** `ch13_archive_door`, `_aisle`, `_table`, `_roll`, all viewed. `ch13_sanctum_gate` was
+    re-viewed after the bedding change. Known: shaded pages read a dim warm brown under the layout's warm 0.5
+    ambient (chapters' row); the spec's day-by-day daylight variants (C6) are still to come.
+  - **Checks:** tools test_ch13_archive/sanctum/ansedra_dressing, test_ansedra; validate_data 0/0; taskboard; gdlint
+    and gdformat. Godot: lamp_archive 2/0, sanctum 3/0, ansedra 4/0, ch13 4/0.
+  - **MERGE-READY @ 9b2f4e2f.**
+- **Ch13 fix: no bier before Ch15.** `bridal_barge.py`'s canopy takes a `bier` switch, and a new target
+  `bridal_barge_wedding` drops it. Ansedra's two mooring barges use it (they showed Tobin's bier before he dies).
+  `bridal_barge` itself rebuilds byte-identical. @ 5ef3f163.
+- **The Lacquer Court at the wedding (ch14; M4-A2P-044 claimed and in progress):**
+  - **New pieces** in `ansedra.py`, all in the greybox's frame:
+    - `court_ground` (the court, the terrace that carries the halls, the lagoon edge), `court_balustrades` (on the
+      greybox's edge walls), `court_water_steps`, `court_colonnade_roofs`, `court_water_gate`.
+    - `court_column`, solid: the greybox's columns aren't, so the party could have walked through red lacquer.
+    - `court_gallery`, `wedding_dais`, `conclave_gallery`, `gilt_lamp_stand`, `stillguard_rack`.
+  - **`tools/act2/ch14_lacquer_court_dressing.py`:** no mark moves (the spec's relayout isn't needed). It places
+    three `lacquer_hall`s ×1.25, the wedding barge at the `Barge` block (deck −0.6), the pursuit barge moored off,
+    the lit city, and eight lamp-stands, each with its light. The lagoon is Ansedra's still water at −1.0. The ch14
+    grade uses `lut_ch14_wedding` at exposure 1.15: at the spec's 0.90 the court floor went black under the
+    layout's fill (chapters' row).
+  - **Caught before shipping:** my first court builder shadowed env-art's `build_court_ground` (the arena's
+    `lacquer_court_ground`); `test_ansedra` caught it. Renamed; both glbs rebuild byte-identical, nothing shipped
+    wrong.
+  - **Shots (new):** `ch14_court_entry`, `_ceremony`, `_steps`, `_gate`, all viewed.
+  - **Checks:** tools test_ch14_lacquer_court_dressing (new), test_ch13_ansedra_dressing, test_ansedra and
+    test_haluna_kit; validate_data 0/0; gdlint and gdformat. Godot: lacquer_court 2/0, ansedra 4/0, ch13 4/0,
+    zone_kit 13/0, dressing 25/0, placeholder 8/0, party_spawns 3/0.
+  - **MERGE-READY @ 9fa8dce4.**
+  - **Next, still in M4-A2P-044:** the after-the-trap `states` row (stands down, lights out); the ripples
+    (M4-A2P-047's second half); the `lacquer_court_steps` arena; the `ch14_court_after` shot.
+- **The first ripples (M4-A2P-047 → review, rendering):**
+  - **The shader:** `water_surface_body.gdshaderinc` gains up to 16 ring sources (outward wave packets on their own
+    clock, `ripple_now_s`), so a still water still carries them. With `ripple_count` 0 (the default) every other
+    water is unchanged.
+  - **`RippleField`** (`game/world/water/ripple_field.gd`, tuning in `game/data/vfx/ripple_field.json`): `strike()`
+    sends a ring, and a `wake_target` drops a ring every 1.5 m. It works on its own copy of the water's material.
+    Ansedra and the court carry a `Ripples` node (their generators write it).
+  - **Shot (new):** `ch14_ansedra_ripple` (rig `ripple_shot_rig.gd`): the rings break the Sanctum dome's
+    reflection. Viewed beside `ch13_ansedra_mirror`, which is unchanged.
+  - **Requested of chapters (M4-A2P-104):** drive the field in the escape (the barge as `wake_target`, a strike per
+    pole stroke), and add the court's `CeremonyLamps` / `CeremonyLampsFallen` blocks and the state row. Then I
+    bind the stands and lights and add fallen stands.
+  - **Checks:** Godot water 48/0, ripple 3/0 (new), environment_shaders 11/0, battle_arenas 10/0, ansedra 4/0,
+    lacquer_court 2/0, sanctum 3/0; tools test_ch13_ansedra_dressing and test_ch14_lacquer_court_dressing;
+    validate_data 0/0; taskboard; gdlint and gdformat.
+  - **MERGE-READY @ b43b1610.**
+  - **Next:** the `lacquer_court_steps` arena (the step-hold), written from my own table as Act I's Ashcrown arenas
+    were (`b_arenas.py`'s pattern).
+- **The step-hold arena `lacquer_court_steps` (M4-A2P-044):**
+  - **How it's built:** `haluna/ansedra_arenas.py` writes it through env-art's `write_arena`, from the court zone's
+    own placements, so the arena and the zone can't drift.
+  - **The frame:** the fight is on the court's paving by the water-steps. Behind the enemy line stand the lit dais,
+    the north colonnade and the Conclave's gallery (left, the enemy's side). Every lamp-stand is lit. The lighting is
+    the escape arena's ch14 dusk, and Ansedra's looks go in through `KitSlotSwaps`.
+  - **Hints:** `the_steps`, `the_gate`, `the_conclave`.
+  - **A first render had the frame wrong.** A quarter turn put the side gallery and the open sea behind the fight,
+    so it's now unturned. The barge and gate are behind the battle camera, and the hints turn to them.
+  - **Registered** in `game/data/battle/arenas.json` (`scenes`). Added to `test_battle_arenas` (10/0: the flat
+    floor and clear sightlines hold). Preview `preview_lacquer_court_steps.tscn`; shot
+    `battle_arena_lacquer_court_steps`, viewed. The Stillguard shows as a stand-in capsule: it has no model yet
+    (creatures').
+  - **MERGE-READY @ a881234d.** **Correction:** that commit lacked the arena's provenance row, so `validate_data`
+    failed on it. Fixed @ 003bb202 (that commit also carries the Hollowmere pieces' rows). Merge 003bb202 or later.
+- **Hollowmere's first visit, Ch15's dawn (M4-A2P-045 → review, rendering):**
+  - **New pieces** in `hollowmere.py`: `hm_dock_4m` with `_open_n`, `_open_s` and `_open_ns` variants (a floating
+    plank walk on log pontoons), `pyre_raft` (unlit), `hm_ship` (the twin-hulled trader), `hm_supper_table` and
+    `hm_oil_lamp`.
+  - **`tools/act2/ch15_hollowmere_dressing.py`:** in the greybox's frame, no mark moved. The lagoon is 0.9 m under the
+    walk, the lashed hulls' own deck height. Each dock module keeps a rail only where the greybox has one, so the
+    jetty mouths and the gangway stay open.
+  - **Placed:** 13 homes (on the three house platforms and in the lanes), windmills, tide-wheels, the Dace's frame at
+    the edge, and the far flotilla. Six oil lamps are warm, each light at its flame, plus the supper's lamp, and four
+    signal lamps are teal.
+  - **The look:** the dawn grade with `lut_ch15_hollowmere_dawn` (fog 0.018, not the spec's 0.03, so the dock's far
+    end still reads) and a grey-teal dawn water. `hollowmere.tscn` gets the `Water`, `Tide` and `Dressing` nodes.
+  - **Shots (new):** `ch15_hollowmere_arrival`, `_dock`, `_lanes`, `_pyre`, `_supper`, all viewed.
+  - **Checks:** tools test_ch15_hollowmere_dressing (new), test_hollowmere, test_kite, test_haluna_kit;
+    validate_data 0/0 (after the fix); taskboard; gdlint and gdformat. Godot: hollowmere 2/0 (the dock to the pyre,
+    a jetty to the father's door, lamps lit), dressing 27/0, placeholder 8/0, party_spawns 3/0.
+  - **MERGE-READY @ bb1d7aca.**
+- **Ch15's open sea at night (M4-A2P-045):**
+  - **The barge:** `bridal_barge.py`'s canopy and bier take a shift, and `bridal_barge_sea` carries them mid-deck.
+    The other two barges rebuild byte-identical.
+  - **`tools/act2/ch15_open_sea_dressing.py`:** the barge at ×0.65 fits the greybox's 4 × 10 m deck, so no mark
+    moves, and its bier lands on the greybox `Bier`. The sea is `night_sea` at the barge's waterline, sea-glow 0.12.
+  - **The grade:** a starlit night with `lut_ch15_unlamped`, at exposure 1.4 against the spec's 1.10 (at 1.10 the bier
+    and the party were black from the field camera, Act I's row 49). No light of any kind, per the rule.
+  - **Shots (new):** `ch15_sea_deck`, `_bier`, `_wide`, all viewed.
+  - **Checks:** Godot open_sea 2/0; tools test_ch15_hollowmere_dressing (open-sea cases) and test_haluna_kit;
+    validate_data 0/0; taskboard.
+  - **Requested of chapters (M4-A2P-105):** a `shoal` mark and the reveal's cue (the held dead: I'll make the Ebbing
+    rig per-zone, with an attractor that follows Kerrid), and the dawn `variants` row (then I add the dawn grade and
+    the bow's fog bank).
+  - **MERGE-READY @ b49e37a5.**
+- **The Pale Rim (ch16; M4-A2P-046 claimed, in progress):**
+  - **New pieces** in `drowned_choir.py`: `pale_rim_strand` (the walked white sand under ankle-deep water, ±2.5 cm of
+    relief, falling away to sandbars) and `rim_marker_pole` (the Cantors' bleached poles).
+  - **`tools/act2/ch16_pale_rim_dressing.py`:** in the greybox's frame, no mark moved. It places the kit's flats out
+    to the horizon, a cairn on every cairn block (Keth's, salt-crusted by slot looks: a bleached paint and salt over
+    `keth_crag`), the poles, and the Hollowmere ship at anchor.
+  - **The water:** the validated `pale_rim` look, lying still on Ansedra's zero-amplitude set. The lagoon's 10–13 cm
+    swells bared the sand in 12 cm of water at the capture's wind time.
+  - **The grade:** white overcast with `lut_ch16_rim` (written; it was missing).
+  - **Shots (new):** `ch16_rim_ship`, `_wade`, `_cairns`, all viewed.
+  - **Checks:** Godot pale_rim 2/0, dressing 31/0, party_spawns 3/0, placeholder 8/0; tools
+    test_ch16_pale_rim_dressing (new) and test_drowned_choir; validate_data 0/0.
+  - **MERGE-READY @ ab41c94b.**
+- **The Drowned Choir waits on chapters (M4-A2P-106):** the greybox floor is flat, but the kit's amphitheatre has a
+  flooded channel and six tiers to 2.15 m, and Kesh's and Sefir's marks stand on those tiers. It needs the spec's
+  relayout (the marks to tier heights, a `collision_path` I'll write from the kit, the singers to r 44). Filed as a
+  request with the exact asks.
+- **Next:** what's open in my lane: Ch14's after-the-trap state (M4-A2P-104), Ch15's shoal and dawn (M4-A2P-105) and
+  the Choir (M4-A2P-106) all wait on chapters. Meanwhile I'll make the Ebbing rig per-zone, so the shoal is ready
+  when its mark lands.
+- **Merged integration (big19) @ 8714e3bf.** `PROVENANCE.md` and `shots.json` were unions: all 31 of my shots are
+  kept, 654 ids, all unique. Re-checked on the merged tree:
+  - Godot: ansedra, sanctum, lamp_archive, lacquer_court, hollowmere, open_sea, pale_rim, ripple, battle_arenas 10,
+    water 49, zone_kit 13, dressing 31, pemakar 10, ashcrown 22, corrow 18, all 0 failed;
+  - every tools test of my generators and kits; validate_data 0/0; taskboard; lint.
+- **The Ebbing reads a zone's own data (M4-A2P-045) @ 3c2ba4cb.**
+  - `EbbingMotes.data_path` defaults to Ch9's file, and `ZoneKitDressing` passes `"ebbing": {"data": ...}` through.
+  - `game/data/vfx/ebbing_ch15_open_sea.json`: one held field at the `shoal` mark under the barge, its attractor at
+    Kerrid's hands. The open sea's dressing names it, and it plays when chapters' reveal cue names the mark
+    (M4-A2P-105).
+  - Godot ebbing 8/0 (new `test_ebbing_zone_data`), ch09 13/0, open_sea 2/0.
+  - **MERGE-READY @ 3c2ba4cb.**
+- **The Ch14–15 arenas carry the city's zone looks (arenas_ch13_16.md) @ c1ed49ad.**
+  - `ansedra_arenas.py` also writes `ansedra_lagoon_escape` and `bridal_barge_night` from env-art's tables. Without
+    the swaps they reproduce env-art's scenes byte for byte; with them, `KitSlotSwaps` puts Ansedra's gilt, lacquers
+    and marble over the barges' and domes' flat slots.
+  - Viewed beside their baselines: subtly richer lacquer and gilt, no regression. Both shots drift by design.
+  - Godot battle_arenas 10/0; the tools test re-writes all three arenas and compares.
+  - **Gotcha for env-art and the Lead:** re-running `arena_scenes.py` on its own rewrites these two without the
+    swaps. Re-run `assets_src/environments/kits/haluna/ansedra_arenas.py` after it (it's in my ownership row).
+  - **MERGE-READY @ c1ed49ad.**
+- **PC QA pass 3, the rows still naming env-art-b (`gpu/act1-qa-3`), Act I first (ADR 0205):**
+  - **65 (cost, mine alone): fixed @ edb18aae.**
+    - The smoke columns now march 24 steps at High, not 32. By the PC's own figure (about 0.10 ms a column at 32),
+      that's about 0.23 ms for three and 0.31 ms for four.
+    - The Tamsule drop's profile keeps its refraction and caustic web at High, and leaves the god-ray FogVolume, the
+      bulk of its 0.36–0.43 ms, to Ultra. The Reefball ball's base rows are unchanged.
+    - Viewed beside their baselines: `ch06_brine_camp` and `tamsule_t01`/`t03` read the same. Godot sphere 5/0,
+      smoke 3/0, tamsule 7/0.
+    - **PC-QUEUE:** re-measure both at High 1440p.
+  - **34 (`ch06_ridge_skippers` on the blank stage): not the arena.** `encounters.json` names `brine_shoals_afternoon`
+    and the Shoal Skippers, and the arena is registered and loads. The fallback is the request path; the PC's own
+    note ties it to battle-presentation's double-submit (the first still shows the Inquisitor's name plate).
+  - **38 (Coilspire's camera at SpireBase, Tier2 and Tier4): the spawns are clear.** A probe of the zone's physics
+    from each spawn found 12 m clear behind its facing at head height (the probe's reach), and no facing does better.
+    The camera's pull-in isn't a collider behind the party, so it's the field camera's (hero-integration's) to trace.
+  - **MERGE-READY @ edb18aae** (row 65; rows 45–63 were fixed earlier, see above).
+- **BACKLOG EMPTY (10-30, session handoff `docs/kb/handoffs/2026-10-30-env-art-b-1.md`):**
+  - No open Act I row is mine: 45–65 are fixed or traced. 34 is the request path, 38 the field camera, 50
+    hero-integration's spawn.
+  - Ch13 and Ch15 are dressed and with review, and the ripples are with review.
+  - The rest of Ch14–Ch16 waits on chapters: M4-A2P-103 (the Sanctum's light rows), 104 (the escape's ripples and the
+    after-the-trap blocks), 105 (Ch15's shoal mark and dawn row) and 106 (the Choir's relayout).
+  - The looks only the PC can judge are queued.
+  - The next step for each request is in the handoff.
+
 ### PC-QUEUE
+- Pass 3 row 65 (@ edb18aae): re-measure the camp's smoke columns (24 steps at High) and the Tamsule drop (High has no
+  god rays now) at High 1440p against the 0.3 ms target.
+- Act II looks only the PC can judge (M4-A2P-043/045/047 reviews): Ansedra's still mirror (SSR to 400 m) and the
+  rings' cost; the Sanctum's upward-lit vault; Hollowmere's dawn fog density.
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
   on the PC presets (two large and three small fires in `ch06/brine_shoals` and `salvage_camp_burning`).
 - Carried: M3-RND-26's drop cost, M3-RND-21's four columns under 0.3 ms at High 1440p.

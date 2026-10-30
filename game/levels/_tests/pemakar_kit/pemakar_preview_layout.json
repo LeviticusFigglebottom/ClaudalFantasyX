@@ -10096,7 +10096,11 @@
     0.4,
     28.6
    ],
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "materials": {
+    "kit_volcanic_dressed": "kit_weir_stone",
+    "kit_channel_water": "kit_water_spill"
+   }
   },
   {
    "piece": "crown_bell",

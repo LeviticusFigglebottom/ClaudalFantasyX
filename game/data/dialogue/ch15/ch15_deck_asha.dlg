@@ -1,0 +1,7 @@
+// Ch15 B02 talk: Asha against the rail, not sleeping. She starts to ask Rhen how he is and stops (her tell
+// is stopping).
+title: ch15_deck_asha
+location: ch15/open_sea
+---
+Asha [exhausted]: No. I'm not going to ask about your night. Mine's awful. Sit down. #line:ch15_deck_asha_001
+===

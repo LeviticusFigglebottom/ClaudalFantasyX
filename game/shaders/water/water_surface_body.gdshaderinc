@@ -386,6 +386,38 @@ vec3 scene_view_pos(vec2 uv, mat4 inv_proj) {
 	return v.xyz / v.w;
 }
 
+// Ring ripples (M4-A2P-047, Ch14's first ripple in four hundred years): up to WATER_RIPPLE_MAX sources set by a
+// RippleField (game/world/water/ripple_field.gd), each (x, z, start s, height m). A source sends one ring outward at
+// ripple_speed_m_s: a short wave packet ripple_width_m wide, fading over ripple_decay_s and with distance. Its own
+// clock (ripple_now_s), so a still mirror (time_scale 0) still carries them. ripple_count 0 costs nothing.
+#define WATER_RIPPLE_MAX 16
+uniform vec4 ripple_sources[WATER_RIPPLE_MAX];
+uniform int ripple_count = 0;
+uniform float ripple_now_s = 0.0;
+uniform float ripple_speed_m_s : hint_range(0.05, 10.0) = 1.4;
+uniform float ripple_wavelength_m : hint_range(0.05, 5.0) = 0.7;
+uniform float ripple_width_m : hint_range(0.05, 10.0) = 1.1;
+uniform float ripple_decay_s : hint_range(0.1, 60.0) = 6.0;
+
+// The rings' slope (d height / dx, d height / dz) at world `p`.
+vec2 ring_slope(vec2 p) {
+	vec2 s = vec2(0.0);
+	float k = 6.2831853 / ripple_wavelength_m;
+	for (int i = 0; i < min(ripple_count, WATER_RIPPLE_MAX); i++) {
+		vec4 r = ripple_sources[i];
+		float age = ripple_now_s - r.z;
+		if (r.w <= 0.0 || age < 0.0) {
+			continue;
+		}
+		vec2 d = p - r.xy;
+		float dist = length(d);
+		float x = dist - ripple_speed_m_s * age;
+		float env = exp(-x * x / (ripple_width_m * ripple_width_m)) * exp(-age / ripple_decay_s) / sqrt(1.0 + dist);
+		s += d / max(dist, HYMN_EPSILON) * (r.w * env * k * cos(k * x));
+	}
+	return s;
+}
+
 // Wind-driven ripple slope (d height / dx, d height / dz) from layered derivative noise.
 vec2 detail_slope(vec2 p, vec2 dir, float t) {
 	vec2 slope = vec2(0.0);
@@ -590,6 +622,10 @@ void fragment() {
 #endif
 		float fade = exp(-view_dist / detail_fade_m);
 		n_world = normalize(n_geo + vec3(-slope.x, 0.0, -slope.y) * detail_strength * chop * fade);
+	}
+	if (ripple_count > 0) {
+		vec2 rs = ring_slope(world.xz);
+		n_world = normalize(n_world + vec3(-rs.x, 0.0, -rs.y));
 	}
 	vec3 n_view = normalize((VIEW_MATRIX * vec4(n_world, 0.0)).xyz);
 	float ndv = clamp(dot(n_view, VIEW), 0.0, 1.0);

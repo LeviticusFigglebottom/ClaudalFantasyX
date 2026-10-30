@@ -2,9 +2,8 @@
 id: M4-A2P-083
 title: "The Act II bestiary and the set-piece HUD bits"
 role: ui
-status: blocked
-blocked-by: ADR 0203
-owner_session: ""
+status: doing
+owner_session: "claude/ui (ui-menus)"
 depends_on: []
 reviewer: combat
 milestone: M4
@@ -20,5 +19,6 @@ Bestiary pages for every Act II foe and boss once their rows carry `model` (M3-U
 ## Notes
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). Plan §4.5, §4.6.
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
+- 2026-10-30 ui-menus: rooted's HUD side is in. StatusGlyph draws `rooted` (a stake held by three roots and one curled round it; ailment polarity; viewed at 150 px and chip size), with `STATUS_ROOTED` and its description. Its engine rule, its statuses.json row and the Swap refusal's reason key are combat's (M4-A2P-020); the swap row already shows any refusal reason the engine gives. The rest (bestiary pages, the step-hold and part HUD) follows the combat rows.
 
 ## Review log

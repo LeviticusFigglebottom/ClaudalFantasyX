@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/act1_zones/act1_zone_rig.gd" id="1_rig"]
+[ext_resource type="PackedScene" path="res://game/levels/ch13/ansedra_lacquer_court/ansedra_lacquer_court.tscn" id="2_zone"]
+
+[node name="Ch14CourtShots" type="Node3D"]
+script = ExtResource("1_rig")
+zone_scene = ExtResource("2_zone")
+views = {
+"Entry": [[0.0, 2.4, -2.0], [0.0, 1.4, -21.0], 45.0],
+"Ceremony": [[11.0, 2.2, -9.0], [-2.0, 1.5, -21.0], 50.0],
+"Steps": [[0.0, 2.5, -4.0], [0.0, 0.0, 14.0], 50.0],
+"Gate": [[6.0, 0.3, 28.0], [0.0, 2.0, 12.0], 50.0]
+}

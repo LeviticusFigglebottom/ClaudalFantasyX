@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/act1_zones/act1_zone_rig.gd" id="1_rig"]
+[ext_resource type="PackedScene" path="res://game/levels/ch13/lamp_archive/lamp_archive.tscn" id="2_zone"]
+
+[node name="Ch13ArchiveShots" type="Node3D"]
+script = ExtResource("1_rig")
+zone_scene = ExtResource("2_zone")
+views = {
+"Door": [[0.0, 2.2, -4.0], [0.0, 1.0, -24.0], 50.0],
+"Aisle": [[-2.5, 1.6, -14.5], [-8.0, 2.5, -14.2], 50.0],
+"Table": [[-0.2, 2.2, -9.5], [-1.5, 0.8, -12.5], 50.0],
+"Roll": [[5.0, 2.0, -21.0], [1.5, 1.0, -24.0], 50.0]
+}

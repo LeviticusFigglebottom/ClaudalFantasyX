@@ -1,0 +1,47 @@
+{
+ "format": 1,
+ "scene": "ch12_forty_seven_voices",
+ "source": "game/data/dialogue/ch12/ch12_forty_seven_voices.dlg",
+ "start": "ch12_forty_seven_voices",
+ "nodes": {
+  "ch12_forty_seven_voices": {
+   "headers": {"location": "ch12/quellan"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "camera", "args": ["Q03"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 2.0}, "src": 11},
+    {"op": "cue", "cue": "mark", "args": ["ysolde", "inn_hearth", "walk"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "camera", "args": ["Q04"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "music", "args": ["ysolde_theme"], "kwargs": {"fade": 3.0}, "src": 15},
+    {"op": "line", "id": "ch12_voices_001", "key": "DLG_CH12_VOICES_001", "speaker": "ysolde", "emotion": "guilty", "voice": "", "src": 16},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 17},
+    {"op": "line", "id": "ch12_voices_002", "key": "DLG_CH12_VOICES_002", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 18},
+    {"op": "line", "id": "ch12_voices_003", "key": "DLG_CH12_VOICES_003", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 19, "tags": ["long"]},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 20},
+    {"op": "line", "id": "ch12_voices_004", "key": "DLG_CH12_VOICES_004", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 21},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 22},
+    {"op": "line", "id": "ch12_voices_005", "key": "DLG_CH12_VOICES_005", "speaker": "ysolde", "emotion": "cold", "voice": "", "src": 23},
+    {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 24},
+    {"op": "line", "id": "ch12_voices_006", "key": "DLG_CH12_VOICES_006", "speaker": "asha", "emotion": "afraid", "voice": "", "src": 25},
+    {"op": "line", "id": "ch12_voices_007", "key": "DLG_CH12_VOICES_007", "speaker": "ysolde", "emotion": "sad", "voice": "", "src": 26},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 27},
+    {"op": "line", "id": "ch12_voices_008", "key": "DLG_CH12_VOICES_008", "speaker": "ysolde", "emotion": "sad", "voice": "", "src": 28},
+    {"op": "line", "id": "ch12_voices_009", "key": "DLG_CH12_VOICES_009", "speaker": "asha", "emotion": "sad", "voice": "", "src": 29},
+    {"op": "line", "id": "ch12_voices_010", "key": "DLG_CH12_VOICES_010", "speaker": "ysolde", "emotion": "grief", "voice": "", "src": 30},
+    {"op": "set", "flag": "ch12_ysolde_confessed", "value": ["lit", true], "src": 31},
+    {"op": "cue", "cue": "camera", "args": ["Q05"], "kwargs": {}, "src": 32},
+    {"op": "cue", "cue": "mark", "args": ["toma", "hearth_step", "walk"], "kwargs": {}, "src": 33},
+    {"op": "cue", "cue": "anim", "args": ["toma", "sit_back_turned"], "kwargs": {}, "src": 34},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 35},
+    {"op": "line", "id": "ch12_voices_011", "key": "DLG_CH12_VOICES_011", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 36},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 37},
+    {"op": "line", "id": "ch12_voices_012", "key": "DLG_CH12_VOICES_012", "speaker": "toma", "emotion": "grief", "voice": "", "src": 38},
+    {"op": "cue", "cue": "camera", "args": ["Q06"], "kwargs": {}, "src": 39},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 40},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 4.0}, "src": 41},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 42}
+   ]
+  }
+ }
+}

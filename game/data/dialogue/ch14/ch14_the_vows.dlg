@@ -1,0 +1,114 @@
+// Ch14 B02-B05: the vows on still water, the declaration, "Stand aside, Okeru." and Tobin (C, 7.5 min).
+// act2_ch14.md §2 B02-B05. ONE scene with a node per beat: the cuts between them are hard and the court
+// never hands the camera back. ECHO RULES (§0, ADR 0016): no capture, no trial, nothing under the city;
+// NOTHING is revealed about any Warden (Venn is a man reading a decree: plain coverage, no strange light);
+// no rite on anyone; Asha is not the bride. Humour lives only before the trap.
+// B02: W03 the mirror (unbroken; nothing moves on the water), W04 Sefir officiating (no idle motion: his
+// breathing is absent), W05 the couple's own vows and the knotted cord passed hand to hand, W06 Liss.
+title: ch14_the_vows
+location: ch13/ansedra_lacquer_court
+---
+@letterbox on
+@camera W03
+@music peace_wedding fade=1.0
+@wait 5.0
+@camera W04
+Sefir [tender]: Ansedra has kept its water still for four hundred years, so that nothing we love is ever stirred away. #line:ch14_vows_001
+Sefir [soft_smile]: Today two houses who have hurt each other promise to keep each other still. There is no better vow. #line:ch14_vows_002
+@camera W05
+@wait 1.5
+Merel [tender]: I'll learn your knots. #line:ch14_vows_003
+Tobin [tender]: I'll learn your quiet. #line:ch14_vows_004
+@anim tobin give_cord merel
+@wait 2.0
+@camera W06
+@anim rhen nudge liss
+@wait 2.5
+<<set $ch14_vows_spoken = true>>
+<<jump ch14_declaration>>
+===
+// B03 "The declaration" (C, 2.5 min). W07: in the Conclave's gallery four figures stand at once and don't
+// hurry. W08: Warden Malcor Venn reads a lacquered scroll plainly, as if he takes no pleasure in it (rule 2:
+// a man reading a decree; nothing about him is strange). The ceremony's melody BREAKS on his first word
+// (`peace_wedding_break`: a held breath, not a sting). "Outside the Level" is the Order's word for heresy
+// (ADR 0204 §4). W09: Liss understands the Archive was evidence. W10: Sefir's sorrow is real; so is his calm.
+title: ch14_declaration
+---
+@camera W07
+@anim conclave stand
+@wait 2.5
+@camera W08
+@music peace_wedding_break fade=0.0
+Malcor_venn as "Warden Venn" [cold]: By the Conclave of Elders. The hull-captains of the flotilla called Hollowmere are taken for the crime of binding. #line:ch14_decl_001
+@anim stillguard close_on hull_captains
+@wait 1.5
+Malcor_venn as "Warden Venn" [cold]: The guardians of the Lady Cantor, having sheltered binders and handled the sealed ledgers, are declared Outside the Level. #line:ch14_decl_002 #tn:"'Outside the Level' is the Order's formal phrase for heresy. Keep it a fixed phrase, capitalised as a title."
+Malcor_venn as "Warden Venn" [cold]: The Lady Cantor is taken into the Order's care until her pilgrimage is complete. #line:ch14_decl_003
+@camera W09
+@anim liss look_at sefir
+Liss [angry]: You gave me the key. #line:ch14_decl_004
+@camera W10
+@anim sefir look_at asha
+Sefir [sad]: I am so sorry, Lady Cantor. This is not the day I wanted for you. It will be quieter after. I promise you that. #line:ch14_decl_005
+@wait 1.0
+Asha [determined]: No. #line:ch14_decl_006
+@music silence fade=0.0
+<<set $ch14_declared_heretics = true>>
+<<jump ch14_stand_aside>>
+===
+// B04 "Stand aside, Okeru." (C, 1 min). W11: Toma's old commander, Brannoc Hale (ADR 0204 §4), grey-bearded
+// and decent, speaks to him as to a son. Toma does not answer "Be level": the first time in the game he lets
+// the greeting go unanswered. Hold on the silence. W12: Ysolde takes the silver Level-pin out of her hair
+// (it comes partly down: a costume state from here on) and drops it on the slabs. It rings once.
+title: ch14_stand_aside
+---
+@camera W11
+@mark stillguard dais_approach walk
+@mark toma before_asha walk
+@anim toma shield_up
+@mark brannoc_hale dais_foot walk
+Brannoc_hale as "Commander Hale" [sad]: Stand aside, Okeru. You know me. Stand aside, and be level. #line:ch14_aside_001
+@wait 2.5
+Toma [determined]: I know you, sir. #line:ch14_aside_002
+@wait 1.5
+Toma [determined]: I am on my shield. #line:ch14_aside_003
+@wait 3.0
+<<set $ch14_toma_refused = true>>
+@camera W12
+@anim ysolde remove_pin
+@sfx level_pin_ring
+@wait 1.5
+Ysolde [cold]: I will not be needing that. #line:ch14_aside_004
+<<jump ch14_tobin>>
+===
+// B05 "Tobin" (C, 1 min). W13: the Stillguard force an old hull-captain to her knees; Merel runs at them in
+// her wedding red and grabs a guard's arm; a second guard swings, then turns the spear point-first. W14:
+// TOBIN STEPS BETWEEN. Fast and ugly; NO slow-motion, no last speech, NO MUSIC; the court noise goes on.
+// He sits down on the slabs, surprised, one hand on the knotted cord, and says one ordinary thing. The wound
+// is framed out. His light: a few held motes come off him and stay low round him and Liss (anchored by her;
+// they ride with his body into Ch15). W15: Liss's hands on the wound, narrating a repair (her grief tell);
+// Toma lifts her off him with one arm, still holding the shield with the other, and she fights him.
+// Then the flow starts the water-steps set piece (§5a).
+title: ch14_tobin
+---
+@camera W13
+@mark merel hull_captains run
+Merel [angry]: They're his people, they're my people now, let her go! #line:ch14_tobin_fall_001
+@anim stillguard spear_turn merel
+@camera W14
+@mark tobin tobin_falls run
+@anim tobin shield_merel
+@anim tobin sit_down
+@vfx glimmer_held at=tobin_falls count=6 rate=slow
+@wait 1.5
+Tobin [exhausted]: ...Your knots are terrible. #line:ch14_tobin_fall_002 #tn:"Said to Merel, gently, almost a joke between them: his last words."
+@wait 2.0
+@camera W15
+@mark liss tobin_falls run
+Liss [grief]: Hold it. Hold, hold, she'll hold, seat it, hold— #line:ch14_tobin_fall_003 #tn:"A wright's repair words ('seat it', 'she'll hold'), said to his wound as if it were a machine."
+@anim toma lift liss
+@wait 2.0
+<<set $ch14_tobin_killed = true>>
+@letterbox off
+<<event start_battle ch14_water_steps>>
+===

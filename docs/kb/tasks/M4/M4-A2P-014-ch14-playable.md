@@ -2,9 +2,8 @@
 id: M4-A2P-014
 title: "Ch14 playable at final quality: the wedding trap set piece, heresy, Malcor Venn on the lagoon"
 role: cinematics
-status: blocked
-blocked-by: ADR 0203
-owner_session: ""
+status: doing
+owner_session: act1-chapters
 depends_on: [M4-C14-01, M4-C14-02, M4-A2P-005, M4-A2P-023, M4-A2P-044, M4-A2P-051, M4-A2P-072]
 reviewer: combat
 milestone: M4
@@ -21,5 +20,12 @@ Wire Ch14, M4's named set piece: the ceremony, the trap, `ch14_declared_heretics
 ## Notes
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). Plan §2 Ch14 and §2a's echo rules.
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
+
+- **act1-chapters (ADR 0205), 2026-10-30, the court's cameras landed on the greybox:**
+  - Shots W02–W07 (docs/kb/plan/act2/chapters/ch14.md §4), each rendered and viewed.
+  - Marks `court_*` for the party.
+  - A `Steps` spawn: the retry point for a defeat in the hold.
+  - Volumes: Entry, Colonnade, Barge.
+  - The lagoon's L01–L04 (the dolly) wait on the night variant and the stage barge's mark chain.
 
 ## Review log

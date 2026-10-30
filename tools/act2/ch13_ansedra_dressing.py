@@ -1,20 +1,28 @@
 #!/usr/bin/env python3
-"""Ch13, Ansedra: env-art's Ansedra kit (ansedra.py, ansedra_zones.py; M3-ENV-721) on the greybox zones `ch13/ansedra`,
-`ch13/sanctum` and `ch13/lamp_archive` (M4-A2P-043; ansedra.md §3's swap map; ADR 0200).
-
-The greybox keeps the gameplay (collision, spawns, marks, triggers, the story): every causeway, rail, lamp, house and
-wall stays as it is and only its look is swapped. The walks and buildings are built from the same greybox
-(ansedra_zones.py), so their stone stands where the collision does.
-
-Writes, per zone (game/levels/ch13/<zone>/):
-  <zone>_dressing.json         ZoneKitDressing's layout
-  <zone>_environment.tres      the zone's grade: colour script ch13 (16:30 overcast, still air, lut_ch13_still)
-  <zone>_water_material.tres   the still mirror (overcast_lagoon under ch13: deep #5E6E80, roughness 0) and
-  <zone>_waves.tres            the near-still water (M4-A2P-047's mirror mode replaces both when rendering lands it)
-and env-art's preview of each zone (game/levels/_tests/ch13_zones/<zone>_dressed.tscn).
+"""Ansedra's dressing, looks, still water and grade (M4-A2P-043, M4-A2P-047; env-art-b).
 
     python3 tools/act2/ch13_ansedra_dressing.py
+
+The spec is docs/kb/plan/act2/zones/ch13_ansedra.md. Ansedra is dressed in the greybox's own frame
+(chapters' M4-C13-02 layout): its walk surfaces are flat at y 0 and already match the kit's, so the greybox keeps
+the collision (its edge walls become the invisible island edges) and no story point moves.
+
+Writes, under game/levels/ch13/ansedra/:
+  ansedra_dressing.json          ZoneKitDressing: the island plinths and the mooring platform on their blocks, the
+                                 causeways module by module, a gold lamp-post on every lamp block, the bowl-domes on
+                                 the dome blocks and on their own islands round the walk, Sefir's and Corran's
+                                 houses (lacquer halls), the mooring barges and the skyline ring.
+  ansedra_*_material.tres        the zone looks for the kit's flat slots (gilt, red and black lacquer) and the
+                                 marble cooled to the Order's white.
+  ansedra_still_water_material.tres, ansedra_still_waves.tres
+                                 the still mirror (M4-A2P-047): `overcast_lagoon` (absorption x1.5, deep #5E6E80)
+                                 with no waves, no detail ripples and no foam, near-zero roughness and a long
+                                 screen-space reflection, so the domes stand doubled in the lagoon.
+  ansedra_environment.tres, lut_ch13_still.png
+                                 the ch13 grade (16:30 overcast; colour script ch13).
+and adds the Water, Tide and Dressing nodes to ansedra.tscn (once).
 """
+
 from __future__ import annotations
 
 import json
@@ -22,247 +30,379 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-KIT_SRC = ROOT / "assets_src" / "environments" / "kits" / "haluna"
-sys.path.insert(0, str(KIT_SRC))
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-import ansedra_zones as az  # noqa: E402
-import arena_scenes as ar  # noqa: E402
-import ch10_fen_dressing as fen  # noqa: E402  (the shared helpers: _put, _look_xform)
-import ch11_lowlight_dressing as low  # noqa: E402  (the water and wave writers)
+sys.path.insert(0, str(ROOT / "tools" / "act1"))
+sys.path.insert(0, str(ROOT / "assets_src" / "environments" / "kits" / "haluna"))
 
+import ch05_09_zone_looks as zl  # noqa: E402
+import zone_lut  # noqa: E402
+
+ZONE = ROOT / "game" / "levels" / "ch13" / "ansedra"
+RES_ZONE = "res://game/levels/ch13/ansedra/"
+LAYOUT = ZONE / "ansedra_layout.json"
+SCENE = ZONE / "ansedra.tscn"
 KIT = "res://assets/environments/kits/haluna/"
-ZONES = ROOT / "game" / "levels" / "ch13"
-PREVIEW = ROOT / "game" / "levels" / "_tests" / "ch13_zones"
-LUT = "res://assets/environments/zones/ansedra/lut_ch13_still.png"
-SEED = 13
-NEVER_LOD_M = 5000.0
-DATUM_Y = az.WATER_Y
-r3 = fen.r3
-_put = fen._put
+KIT_MATERIALS = KIT + "materials/"
 
-# Colour script ch13: 16:30 overcast, perfectly still air; key #FFF9F2 1.6 from 25 deg / 230 deg (the layout's sun), fill
-# #8A96A4 0.6, sky #8A96A4 / #C8C4BA, fog #B8B8B2, exposure 0.75, saturation x0.8 (in the LUT), lut_ch13_still.
-CH13 = {
-    "sub_frame": "ch13", "lut": LUT, "exposure": 0.75, "fill": {"color": "#8A96A4", "energy": 0.6},
-    "fog": {"color": "#B8B8B2", "aerial": 0.4, "density": 0.004, "sky_affect": 0.1, "height": 0.0,
-            "height_density": 0.0},
-    "sky_shader": ar.LOW_SUN_SKY,
-    "sky": dict(ar.CORROW_SKY, col_zenith="#8A96A4", col_horizon_sun="#C8C4BA", col_horizon_away="#C8C4BA",
-                col_ground="#6A7280", sky_energy=1.0, sun_disc_energy=0.0, halo_energy=0.2, glow_energy=0.2,
-                col_band="#C8C4BA", band_energy=0.0, cloud_coverage=0.97, col_cloud_lit="#D6D4CC",
-                col_cloud_shadow="#8A909A", cloud_sun_energy=1.4, cloud_ambient_energy=1.2, col_glow="#E8E6E0"),
+# --- the walk ---------------------------------------------------------------------------------------------------
+CAUSEWAY_MODULE_M = 6.0
+# Each causeway between the island edges it joins: (axis, fixed coordinate, start, end, yaw_deg). The N and Sanctum
+# gaps are 32 m, so their five modules are scaled 32/30 (the kerbs then stand at 2.13 m, over the greybox's rails at
+# 2.0); the W and E gaps are 24 m, four modules at scale 1.
+CAUSEWAYS = {
+    "CausewayN": ("z", 0.0, 2.0, -30.0, 0.0),
+    "CausewaySanctum": ("z", 0.0, -50.0, -82.0, 0.0),
+    "CausewayW": ("x", -40.0, -10.0, -34.0, 90.0),
+    "CausewayE": ("x", -40.0, 10.0, 34.0, 90.0),
 }
-# The still mirror: the overcast lagoon's absorption under ch13's deep colour, every ripple and foam off, roughness 0.
-MIRROR = {"name": "mirror_lagoon", "shader": "res://game/shaders/water/water_ocean.gdshader",
-          "params": [("col_deep", "#5E6E80"), ("col_scatter_shallow", "#6E8A92"),
-                     ("absorption_per_m", "Vector3(2, 0.5, 0.42)"), ("absorption_scale", 1.5), ("scatter_energy", 0.04),
-                     ("caustic_strength", 0.0), ("col_foam", "#E8E4E0"), ("col_sss", "#6E8A92"), ("use_foam", "false"),
-                     ("roughness_near", 0.0), ("roughness_far", 0.0), ("detail_strength", 0.0), ("use_caustics", "false"),
-                     ("use_ssr", "true"), ("use_sss", "false")]}
-STILL_WAVES = [(20.0, 6.0, 0.0008, 0.02)]
+# The islands' plinths, scaled from the 16 m piece to their blocks.
+PLINTHS = {"Centre": 20.0, "CorranIsle": 16.0, "ArchiveIsle": 16.0, "SanctumIsle": 24.0}
+PLINTH_M = 16.0
+# The bowl-domes on the greybox's dome blocks, scaled so the dome's island (radius 6.84 m at 1) covers the block,
+# which stays the collision.
+DOME_RADIUS_M = 6.84
+DOME_BLOCKS = {"SanctumIsleDome": 0.8, "ArchiveIsleDome": 0.53}
+# The free-standing domes on their own islands, off the walk (the near skyline): x, z, scale, yaw.
+NEAR_DOMES = (
+    (-30.0, -8.0, 0.7, 15.0), (31.0, -12.0, 0.8, 40.0), (-24.0, -70.0, 0.75, 70.0), (26.0, -74.0, 0.9, 10.0),
+    (-72.0, -62.0, 1.0, 50.0), (74.0, -70.0, 0.9, 25.0), (-40.0, -118.0, 1.1, 5.0), (42.0, -124.0, 0.85, 60.0),
+    (-88.0, -18.0, 0.75, 35.0), (92.0, -28.0, 0.7, 80.0), (8.0, -150.0, 1.05, 20.0), (-64.0, 20.0, 0.8, 45.0),
+    (66.0, 16.0, 0.75, 30.0),
+)
+# Sefir's house: one lacquer hall at 0.6 on its block, open to the south (the arrival from the north causeway).
+# The hall's origin is its front centre; its depth runs to -Z (11.2 m at 1).
+HALL_DEPTH_CENTRE_M = 4.0
+SEFIR_HALL = ("SefirHouse", 0.6, 0.0)
+# Corran's old house: a plainer hall (timber columns for the lacquer), facing the west causeway's end (+X).
+CORRAN_HALL = ("CorranHouse", 0.45, 90.0)
+CORRAN_SLOTS = {"kit_lacquer_red": KIT_MATERIALS + "kit_timber.tres"}
+# The mooring barges: the bridal barge at 0.55 (its wedding dress: no bier before Ch15), poled along Z beside the moorings' water-steps (the steps reach 10.1 m
+# out, so the hulls lie at 12.6 m, clear of them).
+BARGES = (("BargeA", -12.6, 10.0, 90.0), ("BargeB", 12.6, 12.0, -90.0))
+BARGE_SCALE = 0.55
+LAGOON_CENTRE = (0.0, -45.0)
 
-# Bowl-domes on their own islands round the walks (x, z, scale): the city of the mirror (ansedra.md §0), out of reach.
-CITY_DOMES = [(-26.0, 4.0, 1.0), (26.0, -4.0, 1.15), (-30.0, -16.0, 0.9), (30.0, -22.0, 1.0), (-24.0, -64.0, 1.3),
-              (26.0, -62.0, 1.2), (-40.0, -84.0, 1.5), (40.0, -92.0, 1.4), (-58.0, -12.0, 1.6), (60.0, -20.0, 1.5),
-              (-22.0, -128.0, 1.8), (18.0, -124.0, 2.0), (-62.0, -60.0, 1.4), (62.0, -58.0, 1.3)]
+# --- the looks ----------------------------------------------------------------------------------------------------
+# kit_gold_leaf: zl.GOLD cooled ~300 K (col_bronze #C9A85A), roughness 0.25, worn only at the edges. Never warm.
+GOLD = dict(zl.GOLD, col_bronze=(0.7882, 0.6588, 0.3529), col_worn=(0.5098, 0.4118, 0.2471),
+            roughness_bronze=0.25, patina_coverage=(0.0, 0.08), wear_strength=0.35)
+LACQUER_RED = zl.lacquer((0.62, 0.14, 0.11))
+LACQUER_BLACK = zl.lacquer((0.055, 0.05, 0.05), undercoat=(0.29, 0.07, 0.06))  # oxblood under the chips
+LOOKS = {
+    "kit_gold_leaf": ("ansedra_gold_leaf_material.tres", GOLD),
+    "kit_lacquer_red": ("ansedra_lacquer_red_material.tres", LACQUER_RED),
+    "kit_lacquer_black": ("ansedra_lacquer_black_material.tres", LACQUER_BLACK),
+}
+MARBLE_NAME = "ansedra_order_marble_material.tres"
+MARBLE_OVERRIDES = {"col_paint": "Color(0.9098, 0.9098, 0.8863, 1)", "cavity_darken": "0.12"}
+
+# --- the still mirror (M4-A2P-047) ----------------------------------------------------------------------------------
+WATER_NAME = "ansedra_still_water_material.tres"
+WAVES_NAME = "ansedra_still_waves.tres"
+WATER_TEMPLATE = ROOT / "game" / "levels" / "ch05" / "pemakar" / "pemakar_sea_material.tres"
+STILL_WATER = {  # overcast_lagoon (colour script: absorption x1.5, sigma 3 / 0.75 / 0.63) with Ansedra's deep; its
+    # turquoise scatter is muted toward the deep slate (the lagoon is a grey mirror, airless)
+    "col_deep": "Color(0.3686, 0.4314, 0.502, 1)", "col_scatter_shallow": "Color(0.3412, 0.4706, 0.502, 1)",
+    "col_sss": "Color(0.4, 0.5098, 0.5373, 1)", "absorption_per_m": "Vector3(2.0, 0.5, 0.42)",
+    "absorption_scale": "1.5", "caustic_strength": "0.0", "scatter_energy": "0.08",
+}
+STILL_ADDED = {  # the mirror: nothing moves the surface, and it reflects far
+    "roughness_near": "0.0", "roughness_far": "0.02", "detail_strength": "0.0", "use_foam": "false",
+    "use_caustics": "false", "ssr_max_distance_m": "400.0", "ssr_edge_fade": "0.04", "glint_strength": "0.0",
+    "time_scale": "0.0", "refraction_strength": "0.0",
+}
+
+# --- the ch13 grade -------------------------------------------------------------------------------------------------
+LUT_NAME = "lut_ch13_still.png"
+LUT_CH13_STILL = {  # colour script ch13: overcast, S-curve 0.35, saturation x0.8, the gold kept cool
+    "saturation": 0.8, "s_curve": 0.35, "toe_hex": "#3A4654", "toe_strength": 0.3, "toe_end": 0.34,
+    "black_floor": 0.3, "highlight_hex": "#F2F2EE", "highlight_start": 0.72, "highlight_strength": 0.45,
+    "warm_deg": (-20.0, 60.0), "warm_sat": 0.9, "cool_sat": 1.0, "cool_hex": "#D8DEE6", "cool_strength": 0.2,
+}
+ENV_NAME = "ansedra_environment.tres"
+SKY = {  # #8A96A4 overhead to #C8C4BA at the horizon, a full grey overcast with a faint brighter patch at the sun
+    "col_zenith": "Color(0.5412, 0.5882, 0.6431, 1)", "col_horizon_sun": "Color(0.8392, 0.8235, 0.7843, 1)",
+    "col_horizon_away": "Color(0.7843, 0.7686, 0.7294, 1)", "col_ground": "Color(0.4392, 0.4510, 0.4627, 1)",
+    "sky_energy": "1.3", "horizon_curve": "0.5", "azimuth_power": "1.0", "col_band": "Color(0.8, 0.79, 0.76, 1)",
+    "band_energy": "0.15", "band_height": "0.1", "mid_strength": "0.0", "col_glow": "Color(0.96, 0.95, 0.92, 1)",
+    "glow_energy": "0.25", "glow_power": "2.0", "halo_energy": "0.15", "halo_power": "8.0", "sun_disc_energy": "0.0",
+    "col_cloud_lit": "Color(0.86, 0.85, 0.82, 1)", "col_cloud_shadow": "Color(0.52, 0.55, 0.59, 1)",
+    "cloud_coverage": "0.9", "cloud_softness": "0.6", "cloud_opacity": "0.85", "cloud_height_m": "1400.0",
+    "cloud_scale_m": "5000.0", "cloud_stretch": "Vector2(1, 1.6)", "cloud_wind_deg": "250.0",
+    "cloud_sun_energy": "0.6", "cloud_ambient_energy": "1.2", "cloud_horizon_fade": "0.15",
+}
+SKY_SHADER = "res://game/shaders/environment/env_sky_low_sun.gdshader"
+FOG = {"color": "Color(0.7216, 0.7216, 0.698, 1)", "density": 0.0035, "aerial": 0.6, "sky_affect": 0.35}
+EXPOSURE = 0.75
 
 
-def _layout(zone: str) -> dict:
-    return json.loads((ZONES / zone / f"{zone}_layout.json").read_text(encoding="utf-8"))
+def r3(v: float) -> float:
+    return round(float(v), 3)
 
 
-def ansedra() -> dict:
-    pieces = [_put(n, 0.0, 0.0, 0.0, 0.0, lod1_from_m=NEVER_LOD_M) for n in CITY_PIECES]
-    for k, (x, z, s) in enumerate(CITY_DOMES):
-        pieces.append(_put("bowl_dome", x, DATUM_Y, z, (k * 37.0) % 360.0, scale=s))
-    pieces.append(_put("ansedra_far_domes", 0.0, DATUM_Y, -45.0, 0.0, lod1_from_m=1200.0))
-    return {"pieces": pieces}
+def blocks() -> dict:
+    g = json.loads(LAYOUT.read_text(encoding="utf-8"))
+    return {b["id"]: b for b in g["blocks"]}
 
 
-BOUND_TEAL = ar.BOUND_TEAL
-CITY_PIECES = ("ansedra_walks_n", "ansedra_walks_we", "ansedra_buildings", "ansedra_ground")
-SANCTUM_PIECES = ("ansedra_sanctum",)
-ARCHIVE_PIECES = ("ansedra_archive", "ansedra_archive_stacks_w", "ansedra_archive_stacks_e")
+def causeway_rows() -> list[dict]:
+    rows = []
+    for bid, (axis, fixed, start, end, yaw) in CAUSEWAYS.items():
+        length = abs(end - start)
+        n = round(length / CAUSEWAY_MODULE_M)
+        scale = length / (n * CAUSEWAY_MODULE_M)
+        step = (end - start) / n
+        for k in range(n):
+            c = start + step * (k + 0.5)
+            at = [fixed, c] if axis == "z" else [c, fixed]
+            row = {"piece": "ansedra_causeway_6m", "at": [r3(at[0]), r3(at[1])], "y": 0.0, "yaw_deg": yaw}
+            if abs(scale - 1.0) > 1e-6:
+                row["scale"] = r3(scale)
+            rows.append(row)
+    return rows
 
 
-def sanctum() -> dict:
-    lay = _layout("sanctum")
-    bl = {b["id"]: b for b in lay["blocks"]}
-    b = bl["Basin"]
-    bx, bz, sx, sz = b["pos"][0], b["pos"][2], b["size"][0], b["size"][2]
-    pieces = [_put(n, 0.0, 0.0, 0.0, 0.0, lod1_from_m=NEVER_LOD_M) for n in SANCTUM_PIECES]
-    # The light from beneath that never moves: bound teal under the basin's water, steady; dim Order lamps on the nave.
-    lights = [{"at": [r3(bx + dx), az.BASIN_FLOOR_Y + 0.25, r3(bz + dz)], "energy": 1.3, "range": 7.5}
-              for dx in (-2.5, 2.5) for dz in (-6.0, 0.0, 6.0)]
-    lights += [{"at": [x, 3.2, z], "energy": 0.45, "range": 6.0} for x in (-11.2, 11.2) for z in (-40.0, -30.0, -20.0)]
-    lights.append({"at": [0.0, 3.0, -6.0], "energy": 0.5, "range": 7.0})
-    return {
-        "pieces": pieces, "fire_light_color": BOUND_TEAL, "fire_lights": lights,
-        # The basin's still water: a perfect mirror that has not stirred in four hundred years.
-        "waters": [{"name": "Basin", "pos": [bx, az.STILL_Y, bz], "size": [sx, sz],
-                    "material": "res://game/levels/ch13/sanctum/sanctum_water_material.tres",
-                    "wave_set": "res://game/levels/ch13/sanctum/sanctum_waves.tres"}],
-    }
+def lamp_rows(b: dict) -> list[dict]:
+    return [{"piece": "gold_lamp_post", "at": [r3(v["pos"][0]), r3(v["pos"][2])], "y": 0.0, "yaw_deg": 0.0}
+            for k, v in sorted(b.items()) if k.startswith("Causeway") and "Lamp" in k]
 
 
-def lamp_archive() -> dict:
-    lay = _layout("lamp_archive")
-    bl = {b["id"]: b for b in lay["blocks"]}
-    pieces = [_put(n, 0.0, 0.0, 0.0, 0.0, lod1_from_m=NEVER_LOD_M) for n in ARCHIVE_PIECES]
-    lights = []
-    for tid in ("LedgerTable", "RollTable"):  # a reading lamp's bound light over each table
-        t = bl[tid]
-        lights.append({"at": [t["pos"][0], 2.4, t["pos"][2]], "energy": 0.9, "range": 5.5, "shadow": tid == "LedgerTable"})
-    lights += [{"at": [0.0, 4.5, z], "energy": 0.4, "range": 7.0} for z in (-5.0, -15.0, -27.0)]
-    return {"pieces": pieces, "fire_light_color": BOUND_TEAL, "fire_lights": lights}
+def island_rows(b: dict) -> list[dict]:
+    rows = [{"piece": "mooring_platform", "at": [b["Moorings"]["pos"][0], b["Moorings"]["pos"][2]], "y": 0.0,
+             "yaw_deg": 0.0}]
+    for bid, size in PLINTHS.items():
+        rows.append({"piece": "island_plinth_16m", "at": [b[bid]["pos"][0], b[bid]["pos"][2]], "y": 0.0,
+                     "yaw_deg": 0.0, **({"scale": r3(size / PLINTH_M)} if size != PLINTH_M else {})})
+    return rows
 
 
-def layout(zone: str) -> dict:
-    body = {"ansedra": ansedra, "sanctum": sanctum, "lamp_archive": lamp_archive}[zone]()
+def dome_rows(b: dict) -> list[dict]:
+    rows = [{"piece": "bowl_dome", "at": [b[bid]["pos"][0], b[bid]["pos"][2]], "y": 0.0, "yaw_deg": 0.0,
+             "scale": s} for bid, s in DOME_BLOCKS.items()]
+    rows += [{"piece": "bowl_dome", "at": [x, z], "y": 0.0, "yaw_deg": yaw, "scale": s} for x, z, s, yaw in NEAR_DOMES]
+    rows.append({"piece": "ansedra_far_domes", "at": list(LAGOON_CENTRE), "y": 0.0, "yaw_deg": 0.0})
+    return rows
+
+
+def hall_row(b: dict, spec: tuple) -> dict:
+    bid, scale, yaw = spec
+    x, _, z = b[bid]["pos"]
+    back = HALL_DEPTH_CENTRE_M * scale  # the origin is the hall's front: the block's centre lies `back` behind it
+    if yaw == 0.0:
+        at = [x, z + back]
+    else:  # facing +X: its depth runs to -X
+        at = [x + back, z]
+    return {"piece": "lacquer_hall", "at": [r3(at[0]), r3(at[1])], "y": 0.0, "yaw_deg": yaw, "scale": scale}
+
+
+def dressing() -> dict:
+    b = blocks()
+    for bid in ("SefirHouse", "CorranHouse", "ArchiveIsleDome", "SanctumIsleDome", "Moorings"):
+        assert bid in b, bid
+    pieces = island_rows(b) + causeway_rows() + lamp_rows(b) + dome_rows(b)
+    pieces.append(hall_row(b, SEFIR_HALL))
+    pieces.append(dict(hall_row(b, CORRAN_HALL), material_paths=dict(CORRAN_SLOTS)))
+    for bid, x, z, yaw in BARGES:
+        pieces.append({"piece": "bridal_barge_wedding", "at": [x, z], "y": 0.0, "yaw_deg": yaw, "scale": BARGE_SCALE,
+                       "block": bid})
+    looks = {slot: RES_ZONE + name for slot, (name, _) in LOOKS.items()}
+    looks["kit_order_marble"] = RES_ZONE + MARBLE_NAME
     return {
         "schema": "ZoneKitDressing (game/levels/act1/zone_kit_dressing.gd; ADR 0200)",
-        "_about": f"Generated by tools/act2/ch13_ansedra_dressing.py from env-art's Ansedra kit on ch13/{zone}'s greybox "
-                  "(M4-A2P-043; ansedra.md §3). Do not edit by hand.",
-        "seed": SEED,
+        "_about": "Generated by tools/act2/ch13_ansedra_dressing.py from env-art's Haluna kit (ansedra.py, M3-ENV-721, "
+        "and its M4-A2P-043 pieces); do not edit by hand. The greybox's frame.",
+        "seed": 13,
         "kit_dir": KIT,
-        "materials_dir": KIT + "materials/",
-        "lod1_from_m": 70.0,
-        "lod_end_m": 1500.0,
-        "lod_margin_m": 3.0,
-        "greybox": {"hide_all": True, "keep": []},
-        "environment": f"res://game/levels/ch13/{zone}/{zone}_environment.tres",
+        "materials_dir": KIT_MATERIALS,
+        "lod1_from_m": 120.0,
+        "lod_end_m": 4000.0,
+        "lod_margin_m": 2.0,
+        "environment": RES_ZONE + ENV_NAME,
         "time_of_day_h": 16.5,
-        **body,
+        "greybox": {"hide_all": True, "keep": []},
+        "kit_material_paths": looks,
+        "pieces": pieces,
     }
 
 
-def write_water(zone: str) -> None:
-    out = ZONES / zone
-    m = MIRROR
-    lines = ['[gd_resource type="ShaderMaterial" load_steps=2 format=3]', "",
-             f'[ext_resource type="Shader" path="{m["shader"]}" id="1_ocean"]', "", "[resource]",
-             f'resource_name = "{m["name"]}"', "render_priority = 0", 'shader = ExtResource("1_ocean")']
-    for k, v in m["params"]:
-        if isinstance(v, str) and v.startswith("#"):
-            c = [int(v[i:i + 2], 16) / 255 for i in (1, 3, 5)]
-            v = f"Color({c[0]:.4f}, {c[1]:.4f}, {c[2]:.4f}, 1)"
-        lines.append(f"shader_parameter/{k} = {v}")
-    (out / f"{zone}_water_material.tres").write_text("\n".join(lines) + "\n", encoding="utf-8")
-    saved = ar.LOWLIGHT_ARENA["sea"]["waves"]
-    try:
-        ar.LOWLIGHT_ARENA["sea"]["waves"] = STILL_WAVES
-        low.write_waves(out / f"{zone}_waves.tres")
-    finally:
-        ar.LOWLIGHT_ARENA["sea"]["waves"] = saved
+def still_water() -> str:
+    text = WATER_TEMPLATE.read_text(encoding="utf-8").replace('resource_name = "pemakar_sea"',
+                                                              'resource_name = "ansedra_still_water"')
+    lines = text.rstrip("\n").split("\n")
+    for key, value in STILL_WATER.items():
+        idx = [i for i, ln in enumerate(lines) if ln.startswith(f"shader_parameter/{key} = ")]
+        assert len(idx) == 1, key
+        lines[idx[0]] = f"shader_parameter/{key} = {value}"
+    for key, value in STILL_ADDED.items():
+        assert not any(ln.startswith(f"shader_parameter/{key} = ") for ln in lines), key
+        lines.append(f"shader_parameter/{key} = {value}")
+    return "\n".join(lines) + "\n"
 
 
-CAMERAS = {
-    "ansedra": [
-        ("A01_moorings", (0.0, 2.5, 16.0), (0.0, 6.0, -94.0), 40.0),
-        ("Moorings_barges", (-4.0, 1.6, 8.0), (-11.0, 0.5, 13.0), 55.0),
-        ("CausewayN_walk", (0.0, 1.7, 1.0), (0.0, 1.5, -30.0), 55.0),
-        ("Centre_sefir", (4.0, 1.7, -36.0), (5.0, 3.5, -46.0), 55.0),
-        ("CausewayW_corran", (-14.0, 1.7, -40.0), (-44.0, 2.5, -42.0), 55.0),
-        ("Archive_dome", (28.0, 1.7, -38.0), (42.0, 6.0, -40.0), 55.0),
-        ("Sanctum_approach", (0.0, 1.7, -56.0), (0.0, 7.0, -94.0), 55.0),
-        ("Sanctum_door", (0.0, 1.7, -84.5), (0.0, 3.0, -88.6), 60.0),
-        ("Mirror_low", (6.0, 0.4, -20.0), (30.0, 4.0, -60.0), 50.0),
-        ("Over_city", (40.0, 40.0, 30.0), (0.0, 0.0, -50.0), 55.0),
-    ],
-    "sanctum": [
-        ("Gate_in", (0.0, 1.7, 0.5), (0.0, 2.5, -20.0), 60.0),
-        ("S01_basin", (0.0, 1.6, -16.0), (0.0, 0.5, -40.0), 45.0),
-        ("Basin_mirror", (-4.0, 0.9, -19.0), (2.0, -0.1, -34.0), 50.0),
-        ("Nave_up", (8.0, 1.6, -18.0), (-2.0, 12.0, -34.0), 70.0),
-        ("Ethren_place", (3.0, 1.6, -36.0), (0.0, 1.6, -46.0), 55.0),
-        ("Corran_side", (9.0, 1.6, -30.0), (6.0, 1.2, -44.0), 55.0),
-        ("Back_to_gate", (0.0, 1.7, -43.0), (0.0, 2.0, -8.0), 60.0),
-        ("Ledge_close", (-6.2, 1.2, -24.0), (-5.2, 0.2, -30.0), 50.0),
-        ("Vestibule", (-4.5, 1.7, -2.0), (3.0, 3.0, -10.0), 60.0),
-        ("Over_nave", (10.0, 8.5, -14.0), (-2.0, 0.0, -36.0), 60.0),
-    ],
-    "lamp_archive": [
-        ("R01_reading_room", (0.0, 2.2, -4.0), (0.0, 1.0, -24.0), 50.0),
-        ("Door_in", (0.0, 1.7, 0.5), (0.0, 2.0, -16.0), 60.0),
-        ("Ledgers", (-0.2, 1.6, -9.5), (-1.5, 0.9, -12.0), 50.0),
-        ("Cantor_roll", (3.5, 1.6, -21.5), (1.5, 0.9, -24.0), 50.0),
-        ("Stacks_west", (-2.5, 1.7, -8.8), (-7.0, 2.5, -8.8), 55.0),
-        ("Stacks_east", (3.0, 1.7, -14.0), (8.0, 2.0, -20.0), 55.0),
-        ("Aisle_far", (0.0, 1.7, -30.0), (0.0, 2.0, -2.0), 60.0),
-        ("Up_vault", (0.0, 1.6, -16.0), (0.0, 10.0, -20.0), 70.0),
-        ("Spines_close", (4.8, 1.6, -9.0), (7.0, 1.6, -11.0), 50.0),
-        ("Over_room", (8.5, 7.0, -2.0), (-2.0, 0.0, -20.0), 60.0),
-    ],
-}
-CLS = {"ansedra": "Ansedra", "sanctum": "Sanctum", "lamp_archive": "LampArchive"}
-ZONE_NAMES = ("ansedra", "sanctum", "lamp_archive")
+def still_waves() -> str:
+    return "\n".join([
+        '[gd_resource type="Resource" script_class="WaveSet" load_steps=3 format=3]', "",
+        '[ext_resource type="Script" path="res://game/world/water/wave_set.gd" id="1_set"]',
+        '[ext_resource type="Script" path="res://game/world/water/wave_component.gd" id="2_comp"]', "",
+        '[sub_resource type="Resource" id="Wave_0"]', 'script = ExtResource("2_comp")', "direction_deg = 0.0",
+        "wavelength_m = 40.0", "amplitude_m = 0.0", "steepness = 0.0", "phase_rad = 0.0", "",
+        "[resource]", 'script = ExtResource("1_set")', 'components = Array[ExtResource("2_comp")]([SubResource("Wave_0")])',
+        "amplitude_scale = 0.0", ""])
 
 
-def write_preview(zone: str) -> Path:
-    if zone != "ansedra":
-        return _write_interior_preview(zone)
-    lines = ["[gd_scene format=3]", "",
-             '[ext_resource type="Script" path="res://game/levels/ch13/ch13_zone.gd" id="1_zone"]',
-             '[ext_resource type="Script" path="res://game/levels/act1/zone_kit_dressing.gd" id="2_dressing"]',
-             '[ext_resource type="Script" path="res://game/levels/ch02/haluna/weathering_tide.gd" id="3_tide"]',
-             '[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="4_water"]',
-             f'[ext_resource type="Resource" path="res://game/levels/ch13/{zone}/{zone}_waves.tres" id="5_waves"]',
-             f'[ext_resource type="Material" path="res://game/levels/ch13/{zone}/{zone}_water_material.tres" id="6_mat"]',
-             '[ext_resource type="Script" path="res://game/levels/act1/zone_cast.gd" id="7_cast"]', "",
-             f'[node name="{CLS[zone]}" type="Node3D"]', 'script = ExtResource("1_zone")', f'location_id = &"ch13/{zone}"',
-             f'layout_path = "res://game/levels/ch13/{zone}/{zone}_layout.json"', "",
-             '[node name="Cast" type="Node" parent="."]', 'script = ExtResource("7_cast")', "",
-             '[node name="Water" type="Node3D" parent="."]',
-             f"transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, {DATUM_Y}, 0)", 'script = ExtResource("4_water")',
-             "publishes_water_level = true", 'wave_set = ExtResource("5_waves")', 'material = ExtResource("6_mat")', "",
-             '[node name="Tide" type="Node" parent="." node_paths=PackedStringArray("water")]',
-             'script = ExtResource("3_tide")', f"tide_line_y = {DATUM_Y}", f"water_height_y = {DATUM_Y}",
-             'water = NodePath("../Water")', "",
-             '[node name="Dressing" type="Node3D" parent="." node_paths=PackedStringArray("tide")]',
-             'script = ExtResource("2_dressing")', f'layout_path = "res://game/levels/ch13/{zone}/{zone}_dressing.json"',
-             'tide = NodePath("../Tide")', "", '[node name="Cameras" type="Node3D" parent="."]', ""]
-    for name, pos, look, fov in CAMERAS[zone]:
-        lines += [f'[node name="{name}" type="Camera3D" parent="Cameras"]', f"fov = {fov}", "near = 0.1", "far = 2500.0",
-                  f"transform = {fen._look_xform(pos, look)}", ""]
-    out = PREVIEW / f"{zone}_dressed.tscn"
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text("\n".join(lines).rstrip("\n") + "\n", encoding="utf-8")
-    return out
+def environment() -> str:
+    sky = "\n".join(f"shader_parameter/{k} = {v}" for k, v in SKY.items())
+    return f"""[gd_resource type="Environment" load_steps=5 format=3]
+
+[ext_resource type="Shader" path="{SKY_SHADER}" id="1_sky"]
+[ext_resource type="Texture3D" path="{RES_ZONE}{LUT_NAME}" id="2_lut"]
+
+[sub_resource type="ShaderMaterial" id="SkyMat"]
+shader = ExtResource("1_sky")
+{sky}
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMat")
+process_mode = 2
+
+[resource]
+resource_name = "ansedra_ch13"
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 2
+ambient_light_color = Color(0.5412, 0.5882, 0.6431, 1)
+ambient_light_energy = 0.6
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = {EXPOSURE}
+tonemap_agx_white = 12.0
+ssr_enabled = true
+ssr_max_steps = 64
+ssr_fade_in = 0.15
+ssr_fade_out = 2.0
+ssao_enabled = true
+ssao_radius = 1.4
+ssao_intensity = 1.4
+glow_enabled = true
+glow_intensity = 0.25
+glow_bloom = 0.02
+glow_hdr_threshold = 1.2
+fog_enabled = true
+fog_light_color = {FOG["color"]}
+fog_density = {FOG["density"]}
+fog_aerial_perspective = {FOG["aerial"]}
+fog_sky_affect = {FOG["sky_affect"]}
+adjustment_enabled = true
+adjustment_color_correction = ExtResource("2_lut")
+"""
 
 
-def _write_interior_preview(zone: str) -> Path:
-    """An interior zone's preview: no lagoon, so no Water or Tide (the basin's water is the dressing's `waters`)."""
-    lines = ["[gd_scene format=3]", "",
-             '[ext_resource type="Script" path="res://game/levels/ch13/ch13_zone.gd" id="1_zone"]',
-             '[ext_resource type="Script" path="res://game/levels/act1/zone_kit_dressing.gd" id="2_dressing"]',
-             '[ext_resource type="Script" path="res://game/levels/act1/zone_cast.gd" id="7_cast"]', "",
-             f'[node name="{CLS[zone]}" type="Node3D"]', 'script = ExtResource("1_zone")', f'location_id = &"ch13/{zone}"',
-             f'layout_path = "res://game/levels/ch13/{zone}/{zone}_layout.json"', "",
-             '[node name="Cast" type="Node" parent="."]', 'script = ExtResource("7_cast")', "",
-             '[node name="Dressing" type="Node3D" parent="."]', 'script = ExtResource("2_dressing")',
-             f'layout_path = "res://game/levels/ch13/{zone}/{zone}_dressing.json"', "",
-             '[node name="Cameras" type="Node3D" parent="."]', ""]
-    for name, pos, look, fov in CAMERAS[zone]:
-        lines += [f'[node name="{name}" type="Camera3D" parent="Cameras"]', f"fov = {fov}", "near = 0.1", "far = 500.0",
-                  f"transform = {fen._look_xform(pos, look)}", ""]
-    out = PREVIEW / f"{zone}_dressed.tscn"
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text("\n".join(lines).rstrip("\n") + "\n", encoding="utf-8")
-    return out
+LUT_IMPORT = """[remap]
+
+importer="3d_texture"
+type="CompressedTexture3D"
+
+[deps]
+
+source_file="{res}"
+
+[params]
+
+compress/mode=0
+compress/high_quality=false
+compress/lossy_quality=0.7
+compress/uastc_level=0
+compress/rdo_quality_loss=0.0
+compress/hdr_compression=1
+compress/channel_pack=0
+mipmaps/generate=false
+mipmaps/limit=-1
+slices/horizontal=32
+slices/vertical=1
+"""
 
 
-def main() -> int:
-    for zone in ZONE_NAMES:
-        out = ZONES / zone
-        ar.write_environment(dict(CH13), out / f"{zone}_environment.tres")
-        if zone != "lamp_archive":  # the lagoon's mirror, and the Sanctum basin's
-            write_water(zone)
-        lay = layout(zone)
-        (out / f"{zone}_dressing.json").write_text(json.dumps(lay, indent=1) + "\n", encoding="utf-8")
-        write_preview(zone)
-        print(f"DRESSING {zone}: {len(lay['pieces'])} pieces")
-    return 0
+def write_lut() -> None:
+    import numpy as np  # noqa: PLC0415
+
+    zone_lut.GRADES["ch13_still"] = dict(LUT_CH13_STILL)
+    table = zone_lut.table(False, "ch13_still")
+    zone_lut.write_png(ZONE / LUT_NAME, table)
+    imp = ZONE / (LUT_NAME + ".import")
+    if not imp.exists():  # Godot fills in the uid and the imported path; the slices are what matter
+        imp.write_text(LUT_IMPORT.format(res=RES_ZONE + LUT_NAME), encoding="utf-8")
+    del np
+
+
+SCENE_RES = (
+    '[ext_resource type="Script" path="res://game/levels/act1/zone_kit_dressing.gd" id="2_dressing"]\n'
+    '[ext_resource type="Script" path="res://game/levels/ch02/haluna/weathering_tide.gd" id="3_tide"]\n'
+    '[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="4_water"]\n'
+    f'[ext_resource type="Resource" path="{RES_ZONE}{WAVES_NAME}" id="5_waves"]\n'
+    f'[ext_resource type="Material" path="{RES_ZONE}{WATER_NAME}" id="6_sea"]\n')
+SCENE_NODES = f"""[node name="Water" type="Node3D" parent="."]
+script = ExtResource("4_water")
+publishes_water_level = true
+wave_set = ExtResource("5_waves")
+material = ExtResource("6_sea")
+
+[node name="Tide" type="Node" parent="." node_paths=PackedStringArray("water")]
+script = ExtResource("3_tide")
+water_height_y = 0.0
+water = NodePath("../Water")
+
+[node name="Dressing" type="Node3D" parent="." node_paths=PackedStringArray("tide")]
+script = ExtResource("2_dressing")
+layout_path = "{RES_ZONE}ansedra_dressing.json"
+tide = NodePath("../Tide")
+
+"""
+
+
+RIPPLES_RES = '[ext_resource type="Script" path="res://game/world/water/ripple_field.gd" id="7_ripples"]\n'
+RIPPLES_NODE = """[node name="Ripples" type="Node" parent="." node_paths=PackedStringArray("water")]
+script = ExtResource("7_ripples")
+water = NodePath("../Water")
+
+"""
+
+
+def wire_ripples() -> None:
+    """The zone's RippleField on its water (M4-A2P-047: Ch14's first ripples), once."""
+    text = SCENE.read_text(encoding="utf-8")
+    if 'id="7_ripples"' in text:
+        return
+    anchor = '[ext_resource type="Script" path="res://game/levels/act1/zone_cast.gd" id="90_cast"]\n'
+    cast = '[node name="Cast" type="Node" parent="."]'
+    assert text.count(anchor) == 1 and text.count(cast) == 1
+    SCENE.write_text(text.replace(anchor, RIPPLES_RES + anchor).replace(cast, RIPPLES_NODE + cast), encoding="utf-8")
+
+
+def wire_scene() -> None:
+    """The zone's Water, Tide and Dressing nodes (once), before its Cast."""
+    text = SCENE.read_text(encoding="utf-8")
+    if 'id="2_dressing"' in text:
+        return
+    anchor = '[ext_resource type="Script" path="res://game/levels/act1/zone_cast.gd" id="90_cast"]\n'
+    cast = '[node name="Cast" type="Node" parent="."]'
+    assert text.count(anchor) == 1 and text.count(cast) == 1
+    text = text.replace(anchor, SCENE_RES + anchor).replace(cast, SCENE_NODES + cast)
+    SCENE.write_text(text, encoding="utf-8")
+
+
+def main() -> None:
+    (ZONE / "ansedra_dressing.json").write_text(json.dumps(dressing(), indent=1) + "\n", encoding="utf-8")
+    for name, params in LOOKS.values():
+        (ZONE / name).write_text(zl.bronze_material(name.removesuffix(".tres"), params), encoding="utf-8")
+    (ZONE / MARBLE_NAME).write_text(zl.copy_material(KIT_MATERIALS + "kit_order_marble.tres",
+                                                     MARBLE_NAME.removesuffix(".tres"), MARBLE_OVERRIDES),
+                                    encoding="utf-8")
+    (ZONE / WATER_NAME).write_text(still_water(), encoding="utf-8")
+    (ZONE / WAVES_NAME).write_text(still_waves(), encoding="utf-8")
+    write_lut()
+    (ZONE / ENV_NAME).write_text(environment(), encoding="utf-8")
+    wire_scene()
+    wire_ripples()
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

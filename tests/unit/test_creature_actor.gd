@@ -36,8 +36,8 @@ const ARCHER_KO_MAX_Y := 0.25
 ## root on the floor (within this much of the hover), and in the idle its outer wing joints rise this far
 ## between strokes (over the body's bob).
 const RAY := "res://game/creatures/gallery_ray/gallery_ray_battle.tscn"
-const RAY_HOVER := 1.4
-const RAY_POOL_DROP_M := 1.2
+const RAY_HOVER := 0.95
+const RAY_POOL_DROP_M := 0.8
 const RAY_FLOOR_TOL_M := 0.05
 const RAY_STROKE_M := 0.03
 ## The rime urchin: on the hit every spine sector clenches at least this far (radians), on the cast every sector
@@ -59,8 +59,9 @@ const LYNX_APEX_SEC := 0.6
 const LYNX_LEAP_MIN_M := 0.5
 const LYNX_KO_HEAD_MAX_Y := 0.4
 const MOTH := "res://game/creatures/cord_moth/cord_moth_battle.tscn"
-## The cord moth hovers this high (its stand-in lifts it) and its KO comes down by exactly that, within the band.
-const MOTH_HOVER_M := 1.25
+## The cord moth hovers this high (its stand-in lifts it; its model is at the 1.35x battle scale) and its KO comes down
+## by exactly that, within the band.
+const MOTH_HOVER_M := 1.12
 const MOTH_BAND_M := 0.02
 const SKATE := "res://game/creatures/glass_skate/glass_skate_battle.tscn"
 ## The glass skate lies flat (every bone under FLAT_MAX_M at rest and after the KO) and erupts above ERUPT_MIN_M.
@@ -69,7 +70,8 @@ const SKATE_ERUPT_SEC := 0.36
 const SKATE_ERUPT_MIN_M := 0.4
 ## M3-CRE-637, the flat-engine (Ch14 boss part): its stilling lifts every paddle at least FLAT_LIFT_MIN_DEG at
 ## FLAT_LIFT_SEC and presses them flat (under FLAT_PRESSED_MAX_DEG) at its contact; a hit kicks one paddle up at
-## least FLAT_KICK_MIN_DEG at its 0.1 s peak; the KO tips each drum half apart by FLAT_SPLIT_DEG (min, max).
+## least FLAT_KICK_MIN_DEG at its 0.1 s peak; its break (M4-CRB-009: the `broken` phase's clip, no longer the KO)
+## tips each drum half apart by FLAT_SPLIT_DEG (min, max).
 const FLAT := "res://game/creatures/flat_engine/flat_engine_battle.tscn"
 const FLAT_CONTACT_SEC := 0.8
 const FLAT_LIFT_SEC := 0.6
@@ -77,7 +79,7 @@ const FLAT_LIFT_MIN_DEG := 8.0
 const FLAT_PRESSED_MAX_DEG := 1.0
 const FLAT_HIT_PEAK_SEC := 0.1
 const FLAT_KICK_MIN_DEG := 15.0
-const FLAT_SPLIT_DEG := [5.0, 9.0]
+const FLAT_SPLIT_DEG := [12.0, 16.0]
 ## The Act II variants (M3-CRE-628) and their bases: the same rig and clips.
 const VARIANTS := {
 	"root_crab": "reef_crab",
@@ -416,7 +418,7 @@ func test_the_lamp_engine_opens_its_rings_and_strikes_open() -> void:
 func test_the_avalanche_ram_charges_bellows_and_lies_down() -> void:
 	var r := _actor(RAM)
 	assert_eq(r.current_clip, &"idle")
-	assert_false(r.enter_phase(&"uprooted"), "a boss without phases: its sheet asks for none")
+	assert_false(r.enter_phase(&"uprooted"), "not one of its phases (its own is torn_fleece)")
 	assert_true(r.play_action(&"", &"physical"))
 	assert_eq(r.current_clip, &"attack", "the charge")
 	assert_true(is_equal_approx(r.contact_time(&"attack"), 0.75), "the charge lands at 0.75 s")
@@ -430,9 +432,15 @@ func test_the_avalanche_ram_charges_bellows_and_lies_down() -> void:
 		bones.append_array(["lock%d_a" % k, "lock%d_b" % k])
 	for leg in ["fl", "fr", "bl", "br"]:
 		bones.append_array(["%s_upper" % leg, "%s_lower" % leg, "%s_foot" % leg])
+	# M4-CRB-005: the herd-cord's swing, the shoulder plate that tears, and the boss anchors
+	bones.append_array(["cord", "plate", "vfx_wound", "vfx_core", "vfx_phase"])
 	for b in bones:
 		assert_true(skel.find_bone(b) >= 0, "the rig has %s" % b)
-	assert_eq(skel.get_bone_count(), bones.size(), "spine 5, neck 5, head, jaw, four legs of 3, six lock chains of 2")
+	assert_eq(
+		skel.get_bone_count(),
+		bones.size(),
+		"spine 5, neck 5, head, jaw, four legs of 3, six lock chains of 2, the cord, the plate and three anchors"
+	)
 	var player := r.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
 	for clip: StringName in [&"idle", &"attack", &"cast", &"hit", &"hit_b"]:
 		player.play(clip)
@@ -454,7 +462,7 @@ func test_the_avalanche_ram_charges_bellows_and_lies_down() -> void:
 func test_the_wakefin_circles_cuts_dives_and_floats_belly_up() -> void:
 	var w := _actor(WAKEFIN)
 	assert_eq(w.current_clip, &"idle")
-	assert_false(w.enter_phase(&"uprooted"), "a boss without phases: its sheet asks for none")
+	assert_false(w.enter_phase(&"uprooted"), "not one of its phases (its own is close_circle)")
 	assert_true(w.play_action(&"", &"physical"))
 	assert_eq(w.current_clip, &"attack", "the cut")
 	assert_true(is_equal_approx(w.contact_time(&"attack"), 0.8), "the blade sweeps the deck at 0.8 s")
@@ -463,11 +471,17 @@ func test_the_wakefin_circles_cuts_dives_and_floats_belly_up() -> void:
 	var skel := w.find_children("*", "Skeleton3D", true, false)[0] as Skeleton3D
 	var bones: Array[String] = ["root", "head", "bill", "fin_0", "fin_1", "fin_2", "pec_l", "pec_r"]
 	bones.append_array(["tail_upper", "tail_lower"])
+	# M4-CRB-004: the breach root (its travel), the blade's torn tip, and the three VFX anchors
+	bones.append_array(["breach", "blade_tip", "vfx_wound", "vfx_core", "vfx_phase"])
 	for k in 10:
 		bones.append("spine_%d" % k)
 	for b in bones:
 		assert_true(skel.find_bone(b) >= 0, "the rig has %s" % b)
-	assert_eq(skel.get_bone_count(), bones.size(), "spine 10, the bill, a blade of 3, pectorals, tail lobes")
+	assert_eq(
+		skel.get_bone_count(),
+		bones.size(),
+		"breach, spine 10, the bill, a blade of 3 and its tip, pectorals, tail lobes, three anchors"
+	)
 	var player := w.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
 	var fin := skel.find_bone("fin_2")
 	player.play(&"idle")
@@ -824,7 +838,7 @@ func test_the_gallery_ray_glides_settles_into_its_pool_and_falls_flat() -> void:
 		bones.append("tail_%d" % k)
 	var a := _act2_regular(RAY, [0.6, 0.9], bones)
 	var spec := CreatureActor.row_for(&"gallery_ray")["stand_in"] as Dictionary
-	assert_true(is_equal_approx(float(spec["hover"]), RAY_HOVER), "it flies at head height")
+	assert_true(is_equal_approx(float(spec["hover"]), RAY_HOVER), "it flies below the battle camera")
 	var skel := _pose(a, &"idle", 1.5)
 	var up := _bone_at(skel, "wing_l2").y
 	skel = _pose(a, &"idle", 0.0)
@@ -836,7 +850,7 @@ func test_the_gallery_ray_glides_settles_into_its_pool_and_falls_flat() -> void:
 	before_each()
 
 
-func test_the_rime_urchin_clenches_aims_its_spines_and_settles_on_its_ice() -> void:
+func test_the_rime_urchin_clenches_aims_its_spines_and_settles_on_its_mound() -> void:
 	var bones: Array[String] = ["root", "body"]
 	for k in 8:
 		bones.append("sector_%d" % k)
@@ -882,10 +896,11 @@ func test_the_conduit_crawler_scrubs_jabs_and_folds_its_legs() -> void:
 	before_each()
 
 
-func test_the_flat_engine_presses_the_water_flat_and_splits_on_its_ko() -> void:
+func test_the_flat_engine_presses_the_water_flat_and_splits_on_its_break() -> void:
 	var bones: Array[String] = ["root", "drum", "half_a", "half_b", "chimney"]
 	for k in 8:
 		bones.append("paddle%d" % k)
+	bones.append_array(["vfx_wound", "vfx_core", "vfx_phase"])
 	var e := _act2_regular(FLAT, [FLAT_CONTACT_SEC, FLAT_CONTACT_SEC], bones)
 	var whole := e.find_child("Engine", true, false) as Node3D
 	var broken := e.find_child("EngineBroken", true, false) as Node3D
@@ -900,11 +915,11 @@ func test_the_flat_engine_presses_the_water_flat_and_splits_on_its_ko() -> void:
 		assert_true(_turn_deg(skel, "paddle%d" % k) < FLAT_PRESSED_MAX_DEG, "and presses paddle %d flat" % k)
 	skel = _pose(e, &"hit", FLAT_HIT_PEAK_SEC)
 	assert_true(_turn_deg(skel, "paddle3") > FLAT_KICK_MIN_DEG, "a hit kicks one paddle up at its peak")
-	skel = _pose(e, &"ko", INF)
+	skel = _pose(e, &"break", INF)
 	for h in ["half_a", "half_b"]:
-		assert_between(_turn_deg(skel, h), FLAT_SPLIT_DEG[0], FLAT_SPLIT_DEG[1], "the KO splits the drum: %s" % h)
+		assert_between(_turn_deg(skel, h), FLAT_SPLIT_DEG[0], FLAT_SPLIT_DEG[1], "the break splits the drum: %s" % h)
 	for b in bones:
-		assert_true(_bone_at(skel, b).y > -RAM_FOOT_TOL_M, "%s stays on the water in the KO" % b)
+		assert_true(_bone_at(skel, b).y > -RAM_FOOT_TOL_M, "%s stays on the water in the break" % b)
 	before_each()
 
 

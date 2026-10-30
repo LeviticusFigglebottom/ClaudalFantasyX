@@ -220,11 +220,7 @@
                   "game/levels/ch12/keth_pass/keth_pass_layout.json",
                   "game/levels/ch12/quellan/quellan_layout.json",
                   "game/levels/ch12/cloudloom/cloudloom_layout.json",
-                  "game/levels/ch13/ansedra/ansedra_layout.json",
-                  "game/levels/ch13/sanctum/sanctum_layout.json",
-                  "game/levels/ch13/lamp_archive/lamp_archive_layout.json",
-                  "game/levels/ch13/ansedra_lacquer_court/ansedra_lacquer_court_layout.json",
-                  "game/levels/ch15/open_sea/open_sea_layout.json"],
+                  "game/levels/ch13/ansedra/ansedra_layout.json"],
       "outputs": ["assets/environments/kits/haluna/*.glb", "assets/environments/kits/haluna/kit_manifest.json"],
       "runs": [
         ["{blender}", "--python", "assets_src/environments/kits/haluna/build.py", "--", "--all", "--out-dir", "assets/environments/kits/haluna", "--manifest", "assets/environments/kits/haluna/kit_manifest.json"]
@@ -693,6 +689,17 @@
       ]
     },
     {
+      "id": "creature_woolback",
+      "owner": "character",
+      "threads": 4,
+      "sources": ["assets_src/creatures/woolback/**", "assets_src/creatures/avalanche_ram/build_avalanche_ram.py", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/woolback/*.glb", "assets/creatures/woolback/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/woolback/build_woolback.py", "--", "--out", "assets/creatures/woolback/woolback.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "woolback"]
+      ]
+    },
+    {
       "id": "creature_wakefin",
       "owner": "character",
       "sources": ["assets_src/creatures/wakefin/**", "assets_src/creatures/common/**"],
@@ -710,6 +717,26 @@
       "runs": [
         ["{blender}", "--python", "assets_src/wildlife/gull/build_gull.py", "--", "--out", "assets/wildlife/gull/gull.glb"],
         ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "gull"]
+      ]
+    },
+    {
+      "id": "wildlife_rim_ray",
+      "owner": "character",
+      "sources": ["assets_src/wildlife/rim_ray/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
+      "outputs": ["assets/wildlife/rim_ray/*.glb", "assets/wildlife/rim_ray/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/wildlife/rim_ray/build_rim_ray.py", "--", "--out", "assets/wildlife/rim_ray/rim_ray.glb"],
+        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "rim_ray"]
+      ]
+    },
+    {
+      "id": "wildlife_kingfisher",
+      "owner": "character",
+      "sources": ["assets_src/wildlife/kingfisher/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
+      "outputs": ["assets/wildlife/kingfisher/*.glb", "assets/wildlife/kingfisher/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/wildlife/kingfisher/build_kingfisher.py", "--", "--out", "assets/wildlife/kingfisher/kingfisher.glb"],
+        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "kingfisher"]
       ]
     },
     {
@@ -1416,6 +1443,16 @@
       "runs": [
         ["{blender}", "--python", "assets_src/creatures/ethren/build_ethren.py", "--", "--out", "assets/creatures/ethren/ethren.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "ethren"]
+      ]
+    },
+    {
+      "id": "creature_kesh",
+      "owner": "character",
+      "sources": ["assets_src/creatures/kesh/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/kesh/*.glb", "assets/creatures/kesh/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/kesh/build_kesh.py", "--", "--out", "assets/creatures/kesh/kesh.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "kesh"]
       ]
     },
     {

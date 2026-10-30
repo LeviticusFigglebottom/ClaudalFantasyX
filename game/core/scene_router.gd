@@ -31,7 +31,8 @@ extends Node
 ##      in a few per frame (M1-RND-15) and holds the swap (hold_swap) while it is staging, up
 ##      to PREWARM_WAIT_MAX_FRAMES, so pipelines compile in small slices under the opaque fade.
 ##   3. The PackedScene is instantiated on a WorkerThreadPool thread (the node is not in the tree
-##      yet, which Godot 4 allows), never on the main thread.
+##      yet, which Godot 4 allows), never on the main thread, and only once the swap's holders are done
+##      (row 67: its load() calls must not wait on a threaded load of the same file in flight).
 ##   4. The old scene is unloaded one frame before the new one is added, so freeing it and
 ##      entering the new scene's _ready never share a frame.
 ## Each swap records its phase costs and frame times in last_swap_stats, emits swap_measured, and
@@ -280,7 +281,9 @@ static func swap_progress(holders: Array[Object]) -> int:
 	var total := -1
 	for h in holders:
 		if h != null and h.has_method(&"swap_wait_progress"):
-			total = maxi(total, 0) + int(h.call(&"swap_wait_progress"))
+			var p := int(h.call(&"swap_wait_progress"))
+			if p >= 0:  # -1: not loading now (ShaderPrewarm outside a zone feed)
+				total = maxi(total, 0) + p
 	return total
 
 
@@ -338,10 +341,9 @@ func _swap(
 	stats["prewarm_ms"] = _ms_since(t)
 	if split_swap:
 		await get_tree().process_frame
-	var node := await _instantiate(packed, stats)
-	if node == null:
-		push_error("SceneRouter: failed to instantiate %s" % scene_path)
-		return
+	# PC pass 4 row 67 (big19: one fresh Brine Shoals entry never finished): the holders (ResidentLoads' threaded
+	# loads, the prewarm) are waited on before the zone is instantiated, so the zone's own load() calls on the worker
+	# thread find every resource already in, and never wait on a threaded load of the same file in flight.
 	var waited := 0
 	var wait_start := _now_usec()
 	var last_move := wait_start
@@ -358,6 +360,10 @@ func _swap(
 		await get_tree().process_frame
 		waited += 1
 	stats["prewarm_wait_frames"] = waited
+	var node := await _instantiate(packed, stats)
+	if node == null:
+		push_error("SceneRouter: failed to instantiate %s" % scene_path)
+		return
 	if split_swap:
 		if get_tree().current_scene != null:
 			t = _now_usec()

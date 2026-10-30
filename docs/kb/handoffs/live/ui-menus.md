@@ -806,3 +806,160 @@ Skipped: coverage. game/battle got comment edits only (the renamed Breaks), no c
   - dark shrines visible on travel and the map, greyed;
   - the heretic subtitle on the field menu, never red.
 - 2026-10-30 04:30, **BACKLOG EMPTY:** the 01:08 item is done. Act II work waits on the `act1-complete` tag (ADR 0203).
+- 2026-10-30 06:10, **the Lead's ADR 0205 items: row 43, then Act II from the ui specs.**
+  - **Row 43** (602dcb31): field_hud_over_haluna_wake frames the real Ch4 wake through act1-chapters' shot rig, not
+    the dropped wake preview. Viewed.
+  - **Hitches:** amendment 4 to ADR 0111 (5c662779: the zone feed into the prewarm, Ch5/Pemakar/Ch6/Ch8/Ch9/Corrow
+    night) landed before ADR 0205 dropped the profiling. It is harmless and tested (test_prewarm_zone_feed); nothing
+    more is planned there.
+  - **Ch10 first (critical path):**
+    - the codex's three Ch10 entries: farewell-tide, name-shells, the Eldest (5b0b50ad);
+    - the rooted glyph and its words (9b598345; rooted sheet viewed);
+    - the seven-heroes field tip on Ch10's first field (84cc875b).
+  - **Heresy** (`ch14_declared_heretics`, declared):
+    - Order shrines go dark: prompt, one-line bark, no rest, the light out (d47f352c);
+    - Order shops refuse with a line (90b410fd);
+    - the field menu's "Heretics of the Level" subtitle and the save slot's "· Heretics" tag (3aebef84);
+    - dark shrines stay on the shrine road, greyed "Dark: the Order's shrine", and refuse the trip (f7fd954c);
+    - the map's hollow flame and "{place} · Dark" (d184f37f).
+    Zone authors mark the Order's shrines: `order = true` on the SaveShrine, `"order": true` on locations.json shrine
+    rows and on zone_maps.json shrine POIs.
+  - **Kerrid** (c656a68c): `guilty` is baked (viewed, PROVENANCE row). The Status page shows "Unrisen: held since the
+    stair at Corrow" under his name once `ch15_kerrid_revealed` is set (declared; the reveal's script sets it). Viewed.
+  - **Merge:** big19 is in (39f98a64). zone_cast.gd conflicted between my off-tree prebuild and creatures' `cast_still`.
+    I kept both: `cast_still` now shapes the body in _ready, after the idle starts. test_zone_cast is 5/0, and its old
+    fisher-idle failure is gone too.
+  - **Self-renders, viewed, none committed** (temporary scenes only):
+    - the heretic field menu;
+    - Kerrid's Status page (the note first ran past its width; fit_label now gets the explicit width);
+    - the shrine road with a dark row;
+    - Haluna's map with its shrine marked for the render.
+  - **Waits on other tracks:**
+    - the seven-hero formation check and Pell's Listen (combat's Pell row and kit);
+    - the rooted swap-refusal reason (combat M4-A2P-020);
+    - Act II NPC portraits (models);
+    - Kerrid's second codex body (narrative's text after the reveal script).
+  - **Next:** the document reader (M4-A2P-080, Ch13), all ui-menus.
+MERGE-READY @ 39f98a64: row 43; Act II Ch10 codex, the rooted glyph and the seven tip; the heresy UI (shrines, shops,
+title and slot tag, shrine road, map); Kerrid's guilty portrait and Unrisen line; big19 merged.
+Checks:
+- codex 15/0, tutorial_tips 5/0, save_shrine 13/0, shrine_network 7/0, shrine_travel 9/0, shop_menu 13/0;
+- save_slot 4/0, field_menu 36/0, status_menu 7/0, hero_portraits 10/0, zone_map 22/0, zone_cast 5/0;
+- prewarm_zone_feed and pseudo_loc are green;
+- validate_data 0/0, taskboard --check clean, lint and format clean.
+Skipped:
+- coverage (no game/battle or game/progression code changed);
+- Blender (no Blender source touched);
+- the full manifest (no committed shot changed).
+- 2026-10-30 07:20, **the document reader (M4-A2P-080, Ch13), all ui-menus.**
+  - **Commits:** b842d60e (the reader) and 2cb811fd (the codex hook).
+  - **What it does:** DocumentReader lays a record's one to three panes side by side in the codex's frame. Each pane
+    holds one mark. A "hand" is found when every one of its lines is marked; its lines then turn gold and a gold rule
+    draws on across the gaps (at once under Reduced motion). The last hand sets the record's `flag`, and the line
+    under the panes counts the hands left.
+  - **Input:** keys, pad and mouse (hover, click to mark, the wheel, right-click Cancel).
+  - **The codex:** a record entry with `"reader": "<records.json id>"` opens in the reader, single pane, and gets the
+    input back when the reader closes.
+  - **Data:** `game/data/lore/records.json` ships empty. Narrative writes the Archive's ledgers, the Cantor roll,
+    Corran's line, Wenna's marks and Ama's keth (RECORD_<ID>_<NN> keys and the hands). The Ch13 scene calls
+    `DocumentReader.open_in(host, DocumentReaderModel.new(DocumentReaderModel.row_of(&"<id>")))`.
+  - **Shots:** the scenes document_reader_three and document_reader_one (a fixture record under
+    `game/levels/_tests/document_reader/`) are viewed. They are **not in the manifest**, because test_screenshots
+    wants a baseline for every row. **LEAD-ASK:** please add both rows with their baselines.
+  - **Sounds:** a DocumentReader hook in ui_sfx.json on existing rows (the act1 audio audit asks every input-taking UI
+    class for one). Request M4-AUD-1080 asks Audio for the found hand's own row.
+  - **Next:** the Act II items still waiting on other tracks (the seven-hero formation check, Pell's Listen, the rooted
+    refusal reason, Act II NPC portraits, Kerrid's second codex body).
+MERGE-READY @ 0bc20a3b: the document reader (M4-A2P-080) and its codex hook, with the reader's sound hook.
+Checks:
+- document_reader 7/0, codex 16/0, pseudo_loc_screens 17/0 (both reader scenes at 100% and 130%, no warnings),
+  screen_audio 11/0;
+- act1_audio_audit OK, audio data_check OK;
+- validate_data 0/0, taskboard --check clean, lint and format clean.
+The tools suite (-j 4) has 5 failures that the integration branch carries too; this branch doesn't touch their paths:
+- test_screenshots: `kerrid_front` has no baseline;
+- test_asha: the LOD0 and part budgets;
+- test_npc: crowd_elder_woman_a is too near reed_c, and the committed output is stale;
+- test_palette_check: the chapel-court marble;
+- test_villagers: Kell's sheet.
+They are for characters, env-art and the Lead.
+Skipped: coverage (no game/battle or game/progression code changed) and Blender (no Blender source touched).
+- 2026-10-30 07:50, **BACKLOG EMPTY.** The Lead's ADR 0205 list is done for everything ui-menus can build today. That
+  covers row 43, Ch10's codex entries, the rooted glyph and the seven tip, all of the heresy UI, Kerrid's guilty
+  portrait and Unrisen line, and the document reader with its codex hook. I merged the Lead's 8de373e5 (shot
+  approvals only). What remains waits on other tracks:
+  - the seven-hero formation check and Pell's Listen: Pell has no row in characters.json yet (combat);
+  - the rooted swap-refusal reason: the engine has no rooted status yet (combat, M4-A2P-020);
+  - portraits for Act II's NPCs: no models yet (characters, M4-A2P-081);
+  - Kerrid's second codex body (CODEX_KERRID_BODY_CH15): narrative's text after the reveal script;
+  - the reader's records: narrative fills `game/data/lore/records.json`, and Audio has M4-AUD-1080;
+  - the reader's two shots: the Lead adds them to the manifest with baselines (LEAD-ASK above).
+- 2026-10-30 08:00, **the Lead's 04:27 answer on the reader's shots.** I added document_reader_three and document_reader_one
+  to the manifest with `"pending_baseline": true`. The gate captures them after the next fast batch, and the Lead
+  approves the baselines. Resolves the LEAD-ASK above.
+  test_screenshots now fails only on the integration branch's existing `kerrid_front`, which has no baseline.
+MERGE-READY @ HEAD of claude/ui (this commit): the document reader's shots as pending baselines.
+- **BACKLOG EMPTY:** still true. What remains waits on combat (Pell's row, the rooted status), characters (Act II NPC
+  models), narrative (records.json, Kerrid's Ch15 body) and audio (M4-AUD-1080).
+- 2026-10-30 09:40, **the Lead's FAST-TRACK: act1_gpu_qa row 67** (big19's heavy entries over 2 s, and one Brine Shoals
+  hang). Commit 329e7bce; ADR 0111 amendment 5 has the detail.
+  - **The hang:** one fresh run printed nothing for 600 s, so the main thread froze. If the router had only been
+    waiting, the probe's 2400-frame cap would have printed stats long before that.
+    - The router started instantiating the zone on a worker thread while ResidentLoads' threaded loads were still in
+      flight. GreyboxZone builds during instantiate, so the zone's own `load()` calls ran beside those loads, as did
+      the main thread's (ZoneCast and VillagerLayer in _ready). That is the engine's deadlock-prone path.
+    - **Fix:** the router now waits on its swap holders first, then instantiates.
+    - Headless: no hang in 7 Brine Shoals runs or the full 49-target sweep (every target covered and printed stats).
+      Instantiate fell to 21–56 ms per zone, because everything is cached.
+  - **The cost, per zone:** big19's cast models were never listed in scene_loads.json. VillagerLayer adopts or
+    replaces each cast body before the tool looks, so all of them loaded cold on the instantiate thread.
+    - Brine Shoals: 12 unlisted (Moll, the clerk, three Stillguard, a child, two wright children, four reeds), plus
+      big19's five slot materials.
+    - Corrow: 11 unlisted (Ivo, Hobb, two Stillguard, the gatekeeper, four children, Marra, the officer), plus six slot
+      materials and +173 dressing rows.
+    - Tamsule (Ch7): 7 unlisted villagers, plus the gold leaf.
+    - Coilspire (Ch8): the new copper and iron slots, and a reshuffled dressing.
+    - **Fix:** the tool lists each `cast` row's model, and the registry is regenerated (Brine Shoals +158 paths,
+      Corrow +164). `max_in_flight` goes from 2 to 4, so the loads keep the PC's cores busy now that the instantiate
+      no longer overlaps them.
+  - **Nothing filed to asset owners yet.** The excess is loading order and listing, not proven asset weight. If the
+    PC's re-measure is still over 2 s after big20, I'll split it by zone and file the heavy ones (env-art-b for the
+    Corrow and Brine Shoals dressing, characters for the villager count).
+  - **Headless numbers:** this 4-core box's entries are 2.3–7 s whatever the order. The time is disk and CPU
+    decoding, which the PC does several times faster, so they don't predict the 2 s bar. Only the PC can confirm.
+  - **Checks:** scene_router 17/0, resident_loads 8/0, prewarm 26/0, shader_prewarm 22/0, creature_ 88/0,
+    dialogue_box 26/0; act1_swap_sweep tests OK; validate_data 0/0; lint and format clean. The full sweep found all 49
+    targets covered.
+
+### PC-QUEUE (row 67, after big20)
+- Re-run pass 4's hitch probes on big20, which carries amendment 4 and amendment 5:
+  - Brine Shoals: the walk, and **fresh ×5** (the hang showed in 1 of 2);
+  - Corrow, fresh;
+  - Ch7 and Ch8, in the walk.
+- Report the hidden ms per entry, and any run that prints nothing.
+- If an entry is still over 2 s, include the probe's stats line: instantiate_ms, prewarm_wait_frames and the holders
+  warning.
+MERGE-READY @ 329e7bce (FAST-TRACK row 67): the router instantiates only after its loads are in; scene_loads lists
+every cast model; max_in_flight 4.
+- 2026-10-30 10:30, **the Lead's 05:52 Act II lane.** I merged the integration branch (1e63e5ba, baseline approvals).
+  - **Heresy words** (e9de89f6): ADR 0204 approved "Outside the Level". The field-menu subtitle, a heretic save's slot
+    ("Chapter 14 · Outside the Level", rendered and viewed: it fits) and the Order shop's refusal now use it, along with
+    heresy.md. The save fixtures can now carry `flags`.
+  - **Codex, M4-A2P-008** (dbc4fa8a): `keth`, `conclave` (only the public "Conclave of Elders", nothing about its truth
+    and no "revenant"), `malcor_venn` (a man, nothing stranger) and `heresy` ("Outside the Level"). These are every plan
+    entry whose unlock flag is declared today. The rest land as the Ch11–Ch16 beats declare their flags.
+    test_codex 16/0, pseudo_loc_screens 17/0; validate_data clean, banned terms included.
+  - **No Vowbound category yet:** Act I's three have no entries of their own, and what the party knows of each one's
+    human life at its binding is Narrative's call (vowbound.md holds the whole truth). I won't write these until a beat
+    says what's known.
+  - **Portraits:** none of Act II's new speakers has a model on any branch (Tobin, Merel, Malcor Venn, the Kirru, the
+    Ullari, Liss's father), so none was baked and none was stubbed.
+  - **Bestiary:** Ch10's three rows in enemies.json have no `model`, so the bestiary has no picture, and the fight
+    probably draws a capsule. Noted on Combat's request M3-UI-208 (578a6ceb).
+MERGE-READY @ 578a6ceb: the heresy's words per ADR 0204, and four Act II codex entries.
+- **BACKLOG EMPTY:** the rest of Act II waits on other tracks:
+  - Ch11–Ch16 flags and beats (more codex entries);
+  - speaker models (portraits);
+  - Combat: Pell's row, the rooted status, the enemy model links;
+  - Narrative: records.json and the Vowbound text.
+  - Row 67's PC verification (gpu/row67-verify) would jump ahead of everything.

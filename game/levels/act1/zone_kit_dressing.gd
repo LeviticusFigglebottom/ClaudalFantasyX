@@ -28,9 +28,9 @@ extends HalunaDresser
 ##                  under each row's own "material_paths" (Corrow's weathered lacquer, copper and iron, M3-ENV-1326).
 ##   greybox      {"hide_all": bool, "keep": [ids]}: hides the greybox meshes (collision stays), except
 ##                  the kept ones (story pieces no kit has yet).
-##   fire_lights  [{"at": [x, y, z], "energy", "range", "block"?, "shadow"?, "attenuation"?, "color"?}] omnis
-##                  in "fire_light_color" or their own "color" (shadowless unless "shadow"); a "block" light
-##                  follows its block.
+##   fire_lights  [{"at": [x, y, z], "energy", "range", "block"?, "shadow"?, "attenuation"?, "color"?, "specular"?}]
+##                  omnis in "fire_light_color" or their own "color" (shadowless unless "shadow"; "specular" 0 for a
+##                  light under a mirror, which would show as a hot point); a "block" light follows its block.
 ##   multimeshes  [{"name", "piece", "transforms": [[x, y, z, yaw_rad]], "block"?}]: many copies of one kit
 ##                  piece's LOD0 (with its slot materials) as one shadowless MultiMesh (Pemakar's leaf-boats).
 ##   far_lights   [{"name", "points": [[x, y, z]], "size_m": [near, far], "color", "energy", "block"?}]: lights
@@ -51,7 +51,8 @@ extends HalunaDresser
 ##                  volumetric columns (SmokeColumn, game/data/vfx/smoke_column.json "columns", M3-RND-21), framed
 ##                  as the kit's smoke_plume pieces (yawed so +X is downwind, uniform scale); a "block" one follows
 ##                  its block.
-##   ebbing       {}: Ch9's Ebbing motes (EbbingMotes, game/data/vfx/ebbing.json, M3-C09-03): the held fields
+##   ebbing       {"data"?}: the Ebbing's motes (EbbingMotes; Ch9's game/data/vfx/ebbing.json, M3-C09-03, or the
+##                  zone's own "data" file, as Ch15's held dead): the held fields
 ##                  the chapter's `@vfx glimmer_held` cues play, on the zone's stage.
 ##   environment  a res:// Environment: the zone's WorldEnvironment takes a copy (sky, grade, fog).
 ##   time_of_day_h  the hymn_time_of_day the sky reads.
@@ -437,6 +438,7 @@ func _place_fire_lights() -> void:
 		light.omni_range = float(row.get("range", 5.0))
 		light.shadow_enabled = bool(row.get("shadow", false))
 		light.omni_attenuation = float(row.get("attenuation", light.omni_attenuation))
+		light.light_specular = float(row.get("specular", light.light_specular))
 		light.light_volumetric_fog_energy = 0.0  # the fog-lamp rule (test_fog_lamps)
 		light.position = Vector3(float(at[0]), float(at[1]), float(at[2]))
 		root.add_child(light)
@@ -596,6 +598,7 @@ func _place_ebbing() -> void:
 	var ebb := EbbingMotes.new()
 	ebb.name = "Ebbing"
 	ebb.zone = zone
+	ebb.data_path = str((layout[KEY_EBBING] as Dictionary).get("data", EbbingMotes.DATA_PATH))
 	add_child(ebb)
 
 

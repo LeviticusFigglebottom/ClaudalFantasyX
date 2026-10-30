@@ -1,0 +1,10 @@
+// Ch15: a child after the pyre-raft (Tobin). The question nobody on the raft can answer.
+title: ch15_bark_raft_child
+location: ch15/hollowmere
+---
+<<if $ch15_pyre_raft>>
+    Child [sad]: We watched the fire go out on the water. Mam says the man on it was brave. Was he? #line:ch15_bark_rchild_001
+<<else>>
+    Child [laugh]: You can walk the whole city without touching water. I've done it. Twice. #line:ch15_bark_rchild_002
+<<endif>>
+===

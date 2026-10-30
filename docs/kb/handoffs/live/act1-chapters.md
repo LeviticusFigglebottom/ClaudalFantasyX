@@ -430,6 +430,279 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   montage cut; each act break needs its own end-card next stop. No game data touched. QA pass 3 (gpu/act1-qa-3) has no
   new rows yet; M3-CIN-1233 not MERGE-READY yet.
 
+- **MERGE-READY @ fc564326: QA pass 3 row 23, ch01_bell_room** (Lead 10-30 01:50). U03 stood behind Rhen; it now
+  faces him from 3.6 m (shot_check-solved) with the lantern on his shoulder, the listener of his monologue ("to the
+  room, to the lantern, to nobody"). The hinge, 10 m off, carries his look off-frame. SELF-RENDERED: ch01_bell_room
+  (no baseline: Rhen front-on, the lantern in frame) and the scene's still. `--filter=ch01` 21/0.
+  - **For env-art (the Prologue–Ch4 zones):** the bell room's orange haze washes the frame and Rhen's face (the
+    lantern's volume or the room's fog). Please bring it down; the shot is ready for it.
+
+- **GPU QA pass 3 (gpu/act1-qa-3, on big18), my rows:**
+  - **34 FIXED-PENDING-GPU:** ae27be2f (the encounter guard; data was right) is in lead/gate-big19.
+  - **39 FIXED-PENDING-GPU:** de745039 (Ch9's road: Asha and Toma follow) is in lead/gate-big19. The gate camera is the
+    10-28 volume (also in big19).
+  - **23:** fc5643264 (ch01_bell_room U03 faces Rhen) is MERGE-READY, after big19. The haze asked of env-art.
+  - **48:** the end card before Ch4 (F8 start) is M3-CIN-1233, slice-polish's. I review when they log MERGE-READY.
+  - **49 MERGE-READY @ c9da92f3:** Pemakar's Harbour volume now looks seaward from the landward side (the old
+    view looked into the quay's lamps, which bloomed over a silhouetted party), and Weir has its own volume across its
+    lit quay (viewed: poi_views harbour and weir). **For env-art-b:** the harbour quay at the stair foot (x 0, z 22–26)
+    has no fire light within 16 m (only the weir's lamp at 15.4, 23.5), so the party there stays dark until the night
+    fill lands. Checks: test_act1_poi_views, test_zone_map_pois OK; validate_data clean.
+
+- **MERGE-READY @ 3079abdcc (Lead 10-30 02:26, ADR 0205):**
+  - **M3-CIN-1233 reviewed on lead/gate-big19: approved (done).** thread 40/0, act1_route 3/0, end_card 5/0; the
+    Ch1 Drop and Ch4 NemeDoor arrivals viewed in stills. The stills harness drives M2-FP-121's time cards now
+    (0e6fae230).
+  - **Ch9's act card** is UI's ActCard on black (`#card`, ef0ca2337); test_ch09_thread accepts both (13/0 on big19,
+    12/0 here).
+  - **GPU QA row 49 (camera side): HELD.** c9da92f3f is reverted (2602bda20). The field camera never leaves a volume
+    for the hub orbit, so the landward harbour shot stayed at InnGate and FromAshcrown and test_qa_field_camera went
+    red. Request **M3-CIN-1251** (the director's owner, game/world/**) has the proposed patch and the Harbour and Weir
+    positions to re-apply after it.
+    - **LEAD-ASK:** M3-CIN-1251 needs an owner. game/world/** is the systems seat; you routed architect/tech to
+      integration-qa. It affects play: walking out of any camera volume leaves the camera parked there.
+  - **test_zone_cast** (red after the integration merge): the crowd layer's routines start in step (Tamsule's
+    fisher and boatman both `haul` at 0.0). The test now accepts a routine clip but keeps the out-of-step check.
+    Request **M3-CIN-1250** (creatures).
+  - **Act II (ADR 0205), M4-A2P-010 claimed:**
+    - Ch10's and Ch12's random fights name their arenas, and the encounter guard covers Act II (0388fcfd0). Vey and
+      the Rim still need arenas (noted on M4-A2P-041 and M4-A2P-046).
+    - Ch10's placement and cameras (25cf13c5f): every shot and volume shot_check-solved and viewed through the new
+      ch10 rigs. The Kirru and Pell at Reedhollow are staged hidden until their bodies exist.
+    - Next: Ch10's triggers and beats once story's scenes land (M4-A2P-001); the Drowner's enemy row and its sim
+      band.
+  - Checks:
+    - `--filter=` ch10 3/0, camera 62/0 (after the revert), qa_field_camera 2/0, ch09 12/0, act1_encounters_resolve
+      2/0, ch01 20/0;
+    - validate_data, dlgc --check, taskboard --check, gdlint, gdformat clean;
+    - test_chapter_flow, test_act1_flow_audit, test_act1_poi_views, test_zone_map_pois OK.
+  - Still red here: test_zone_cast's out-of-step check (M3-CIN-1250, creatures).
+
+- **MERGE-READY @ 40a8962cb: Ch10's Mangrove Drowner (M4-A2P-010, ADR 0205)**
+  - **Data (9686fff6f):**
+    - the enemy row on creatures' model and its `uprooted` phase: rooted (defence 120, Toma's Shell Breaker
+      answers), uprooted at 55%;
+    - five skills; `ch10_mangrove_drowner` on `ossa_fen_roots`; loc rows in ch10.csv.
+  - **Sim** (1,000 seeds, ch08_seawall until the Ch10 loadout): naive 2.5%, role_answer 71.9%, smart 100% (report
+    only with a 30-turn floor, as the Matron; logged in balance_targets.md; the 70–90% band needs M3-C05-06's
+    escalation mechanic), p90 46.
+  - **Flow (40a8962cb):** a clearing trigger runs the battle; the way on to Reedhollow requires
+    `ch10_drowner_defeated` (declared).
+  - **Checks:**
+    - `--filter=` ch10 3/0, act1_encounters_resolve 2/0, creature_actor 30/0, boss 84/0;
+    - `sim.py --suite ch10_mangrove_drowner --check` OK;
+    - validate_data, taskboard --check, gdlint, gdformat clean;
+    - flow_audit, chapter_flow, zone_map_pois OK.
+  - Skipped: coverage (data only, no game/battle code).
+  - **LEAD-ASK (combat review):** the smart-band exception. Same cause as the Matron; M3-C05-06 is the fix.
+
+- **MERGE-READY @ 95a75dcf0: Ch11's shots, marks and field cameras (M4-A2P-011, claimed; 4e8ed0f8f).**
+  - Sunken Vey: V02–V04 and the gallery and court volumes.
+  - Lowlight: L02–L07, `pell_kneel`, and the atrium, hall, flight and sanctum volumes.
+  - All shot_check-solved and viewed through the new ch11 rigs. The sanctum frames wait on Nhoa's and Pell's bodies
+    to be judged.
+  - Checks: `--filter=ch11` 3/0; validate_data clean; poi_views and zone_map_pois tests OK.
+  - Next:
+    - the Lamp Engine (enemy row, the conduit crawler adds, the repair effect M4-A2P-022) when combat's part-repair
+      lands;
+    - Vey's arena (M4-A2P-041);
+    - then Ch12's placement and cameras.
+
+- **MERGE-READY @ 555d62f76: Ch12's shots and field cameras (M4-A2P-012, claimed).**
+  - Keth Pass: K02, K04, K05 (K01 is C1's breath); a climbing volume up each switchback flight; the shelf and saddle
+    volumes.
+  - Quellan: Q02 and two street volumes.
+  - Cloudloom: C02, C03; the stair and hall volumes.
+  - All shot_check-clear and viewed. Checks: `--filter=ch12` and the tools tests OK.
+  - Next:
+    - the Avalanche Ram's enemy row and sim band (its snow hazard is `field_rules` data);
+    - Ch13's cameras (no fights).
+
+- **LEAD-ANSWERED (10-30 03:44):**
+  - M3-CIN-1251 is integration-qa's. They land it and tell me; I then re-apply row 49 (the Harbour and Weir
+    positions are in the task).
+  - Row 24 (the wake's spawn cameras) goes to integration-qa too, with my camera_volumes as the coordination point.
+  - M3-CIN-1250 stays with creatures.
+  - I hold the chapters combat seat.
+  - **For battle-presentation (the provisional Act II boss rows):** the Mangrove Drowner already has its tuned row,
+    skills, encounter `ch10_mangrove_drowner` and sim suite (9686fff6f, in band). Please don't add a second one:
+    stage on that row. I review and tune the Lamp Engine, Ram and Wakefin rows with the sim when yours land.
+
+- **Ch13 cameras (M4-A2P-013, claimed):**
+  - Added A02–A06, S02, R02 and R03, all viewed. Marks for Sefir and Ysolde. Kerrid at the moorings on
+    `ch13_guest_of_sefir`. Pan-follow volumes in all three zones.
+  - **Fixed my own Ch12 red:** `test_qa_field_camera` failed on cloudloom:Hall (the camera sat beside the spawn) and
+    keth_pass:Encounter (the origin return spawn sat outside every volume). I re-aimed the Hall and added Foot volumes.
+    The test is green, and so are ch12, ch13 and layout.
+  - Next: Ch14's cameras (W02–W07; the lagoon L01–L04 waits on the night variant).
+- MERGE-READY @ 882564c90
+
+- **Ch14 court cameras (M4-A2P-014, claimed):**
+  - Added W02–W07 (viewed), `court_*` marks, the `Steps` spawn, and the Entry, Colonnade and Barge volumes.
+  - field_camera, ch14 and layout are green.
+  - Next: Ch15's open_sea and Hollowmere cameras (U02–U07, H02–H04).
+- MERGE-READY @ 98088f53e
+
+- **Ch15 cameras (M4-A2P-015, claimed):**
+  - Added U02–U07 and H02–H04 (viewed) and the `Reveal` spawn (Rhen clear of U04).
+  - Marks for the reveal, the bow, the confession and the supper. Deck, Dock and jetty volumes.
+  - field_camera, ch14_16 and layout are green.
+  - Next: M3-BPR-419 (battle-presentation's request on the Act II boss ids), then Ch16's cameras.
+- MERGE-READY @ 65ea329f0
+
+- **LEAD-ASK (merge note: the Drowner is on both act1-chapters and battle-presentation 1dbfed6d5):**
+  - In enemies.json, skills.json and encounters.json, take **act1-chapters'** `mangrove_drowner`, `rising_water`,
+    `drowner_drag`, `root_stamp` and `ch10_mangrove_drowner` rows. They are sim-tuned and in band (naive 2.5%,
+    role 71.9%), with role_answer toma.
+  - I've renamed my `root_lash`/`root_stomp` to battle-presentation's `drowner_drag`/`root_stamp`, so their VFX map
+    keys stay valid. `tide_gather`/`drowning_grasp` have no VFX row yet (for battle-presentation).
+  - In loc, drop the duplicate keys from **ch10.csv** and keep strings.csv's text: `ENEMY_MANGROVE_DROWNER`,
+    `LORE_MANGROVE_DROWNER`, `PHASE_MANGROVE_DROWNER_UPROOTED`, `SKILL_RISING_WATER`. validate_data errors on
+    cross-file duplicates.
+  - After the merge I'll tune the Lamp Engine, the Ram and the Wakefin with the sim, and add their suites.
+- MERGE-READY @ fd5b4414e
+
+- **Combat seat: the provisional Act II bosses are tuned (1,000 seeds, in a scratch worktree of
+  battle-presentation 1dbfed6d5):**
+  - The values are in balance_targets.md ("Act II creature bosses"), with a reply on M3-BPR-419.
+  - I apply them, and add the suites, once their rows are on the integration branch.
+  - The Lamp Engine's role band stays report only until Liss's part repair (M4-A2P-022) exists.
+  - Next: Ch16's cameras.
+- MERGE-READY @ c41414a99
+
+- **Ch16 cameras (M4-A2P-016, claimed):**
+  - Added P02–P04 and D02–D07 (viewed), the `ChoirEdge` spawn, the `ring_*` marks, and the Rim, Wade, Approach and
+    Bowl volumes.
+  - field_camera, ch14_16 and layout are green.
+  - Every Act II chapter (Ch10–Ch16) now has its scene shots and field cameras on the greybox.
+  - Next: the Act II triggers and beats that need no story text (story's scenes gate the rest).
+- MERGE-READY @ fb9304836
+
+- **M4-CMB-1001 drain (combat seat): done, in review.**
+  - Added `drain_pct` on skill rows (the engine, formulas.md/formulas.gd/test_formulas, test_battle_drain, and the
+    validator).
+  - The fen leech's bite drains 50%. `ch10_fen_leeches` is in band.
+  - Requested the on-stage readout from battle-presentation (M3-BPR-440).
+  - Checks: drain, formulas, battle_engine (59/0), validate, lint and format.
+  - Next: M4-A2P-020, rooted (the root crab's Root Drag refuses the swap).
+- MERGE-READY @ 1993229a2
+
+- **M4-A2P-020 rooted (combat seat): done, in review.**
+  - It's a skill effect (`root_turns`), not a new status, so SPEC §6.8 is untouched. Root Drag holds its target for
+    2 turns, and the swap line says why. `ch10_fen_roots` is in band.
+  - Requested the HUD marker from UI (M3-UI-1240).
+  - Checks: rooted, battle_engine, hud, set_piece, validate, lint and format. `test_scene_router_swap` needs `godot`
+    on PATH here: environmental, not this diff.
+  - Next: M4-A2P-021, glide and ambush.
+- MERGE-READY @ ebdac75c9
+
+- **M4-A2P-021 glide and ambush (combat seat): done, in review.**
+  - Added BattleCover. It never hides the last strikable foe.
+  - The ray glides and the skate ambushes; both suites are in band.
+  - Requested the readout from UI (M3-UI-1241).
+  - Checks: cover, battle_engine, set_piece, boss, validate, lint and format.
+  - Next: M4-A2P-022, part repair (the Lamp Engine's answer). It unblocks the Lamp Engine's role band.
+- MERGE-READY @ 42e34dcbe
+
+- **M4-A2P-022 part repair (combat seat): the engine is in.**
+  - BattleParts: lasting broken parts, `restores_part`, and the AI keys `ally_part_broken`, `ally_struck` and
+    `broken_ally`. Tests and validator added.
+  - The data (the Lamp Engine's rings, the conduit crawler) waits on battle-presentation's `lamp_engine` row reaching
+    integration.
+  - Requested the stage relight from battle-presentation (M3-BPR-441).
+  - Checks: battle_parts, battle_engine, boss, set_piece, sim, validate, lint and format.
+  - Next: M4-A2P-023, part-break targeting (the flat-engine).
+- MERGE-READY @ c9dd9bb63
+
+- **M4-A2P-023 part-break targeting (combat seat): the engine is in.**
+  - `answered_by` (a foe only one hero may act on; group skills pass over it) and the phase key `when_down`. Tests and
+    validator added.
+  - Venn's and the flat-engine's data wait on characters and story.
+  - Checks: answered_part, parts, battle_engine, boss, set_piece, sim, cover, rooted, drain, validate, lint and format.
+  - Next: M4-A2P-025, Kesh's element cycling.
+- MERGE-READY @ 33158c10b
+
+- **M4-A2P-025 Kesh's element cycling (combat seat): done, in review.**
+  - BattleCycle: the `cycle` row key. Only this turn's voice is usable, the AI skips the others, and the timeline
+    gives each coming turn its voice as intent; the menu says why.
+  - Kesh's PROVISIONAL Vowbound row: six voices plus The Seven, `ch16_kesh_bound` declared, names in ch16.csv.
+  - Requested the staging and the timeline mark from battle-presentation (M3-BPR-442).
+  - **Fixed my own red:** tools test_battle_vfx_coverage was red on `tide_gather` (the Drowner, pushed earlier). It
+    and `voice_glimmer` are now explained in its INTENDED map, pointing at the requests.
+  - Checks: battle_cycle, battle_engine, timeline, vowbound, swell, boss, set_piece, sim, hud, parts, cover; tools
+    vfx_coverage, vowbound, swell, set_piece, boss, banned, balance_sim, flow; validate, lint and format.
+  - The full tools suite overran its 20-minute timeout on this container, so I ran the battle and flow modules
+    instead.
+  - Next: M4-A2P-019, the Act II loadouts (re-run every Act II suite on its chapter's loadout).
+- MERGE-READY @ fe3686aea
+
+- **M4-A2P-024 Nhoa, Hesk and Ethren (combat seat): done, in review.**
+  - PROVISIONAL Vowbound rows and skills, and BattleEcho (Nhoa copies the last enemy action).
+  - Bound and first-call flags; clip maps.
+  - **Fixed my own red:** Kesh's row (pushed in the M4-A2P-025 batch) would have turned test_vowbound_sfx and the
+    summon first-call test red. Both are covered now, see below.
+  - **Cross-lane edits, each in its own commit, mirroring existing patterns** (LEAD-ASK: flag if an owner objects):
+    - creatures.json: dropped the three `vowbound_pending` keys (validate_data demands it once a row exists) and
+      added `clip_by_skill`. Fixture fix in tools/tests/test_creatures.py.
+    - choreo.json `first_call_flags` for the four.
+    - tools/tests/test_vowbound_sfx.py skips rows with `sfx_pending` (the audio task) and checks the key names one.
+    - tools/battle_vfx_coverage.py INTENDED: entries for `cord_lift` and `nhoa_echo`.
+  - **Requests:** M4-AUD-1010 (voices; drops sfx_pending) and M3-BPR-443 (effects).
+  - **Checks:** battle_echo, vowbound, summon, creature, battle_engine; tools vowbound, creatures, vfx_coverage,
+    flags; validate, lint and format.
+  - **Next:** the combat seat's engine queue is done except M4-A2P-019, which waits on the Lattice and gear (030/031).
+    Then the provisional boss rows once they reach integration (the tune is ready), and the Act II flow beats once
+    story's scenes land.
+- MERGE-READY @ ed80e67d5
+
+- **LEAD-ANSWERED (10-30 04:06, urgent): Act I rows 34 and 39.** Both earlier fixes (ae27be2f9, de7450392) are in
+  big19.
+  - **Row 34 was not fixed by them.** My test checked the request path, not the double submit that M3-BPR-427
+    diagnosed: the QA walk's `BattleRequest.start` from outside brine_shoals while its FieldEncounters can still fire.
+    The second submit replaced the pending request, so the second scene change opened the sandbox fight.
+    - **Fixed now:** submit drops a second request while one is opening, and FieldEncounters holds off while a battle
+      opens.
+    - Tests: double_submit 3/0, zone_story 16/0, qa_encounters 1/0, fp_field_battle, battle_stinger,
+      act1_encounters_resolve, ch06_thread and fp_thread all green.
+    - **PC-QUEUE:** re-check row 34 on this commit.
+  - **Row 39:** reproduced on this head with test_ch09_thread (7/0). It plays Ch9 from the Strand through the ebbing
+    to RoadGate at dawn, and checks Asha's and Toma's followers walk the road.
+    - **The walk sees "alone" for two reasons, neither a lost party:**
+      - **The night Strand is staged.** Asha's body is the Caller at the raft landing, gilded for the rite
+        (ch09_the_ebbing walks her onto the raft). Toma's body carries his talk prompt (the Shield-Mate side scene).
+        So their followers stand down by design (act1_ch09 B01–B02).
+      - **The walk reaches RoadGate wrongly.** It visits RoadGate under the F8 ch09 start's flags, the night state.
+        Dawn needs `ch09_ebbing_danced` and `ch09_pell_joined` (set by the ebbing scene). Only then does RoadGate's
+        arrival row hide the stage bodies and the followers walk.
+    - **PC-QUEUE re-check recipe:** play the ebbing (touch the raft landing), or set those two flags and enter
+      `ch09/corrow_night` at RoadGate.
+    - LEAD-ASK: if the human wants companions following on the night Strand too, that's a story staging change to the
+      beat sheet. Say so and I'll restage it.
+- **LEAD-ANSWERED (10-30 05:28): one Drowner row.** Understood: the Combat side's row is the record, and I own the
+  numbers.
+  - When big20 lands I'll merge it, take battle-presentation's `mangrove_drowner`, drop my second definition (my
+    `tide_gather`/`drowning_grasp` rows and my enemy and encounter row), and re-tune the record's stats.
+  - Same for the Lamp Engine, the Ram and the Wakefin: stats only, from my balance_targets tune.
+  - Lore wording, for story if they want it (LORE_MANGROVE_DROWNER, mine): "Something came up the estuary as a slick
+    of black water and stayed in the cage of an old mangrove's roots. The roots grew around it and through it. The
+    fen's dead are snagged in it, and they cannot rise."
+- MERGE-READY @ c33c39015 (row 34 fix; FAST-TRACK for big20)
+
+- **One definition per Act II boss; the combat seat's numbers are applied (merged lead/gate-big20, which is
+  fast-gated).**
+  - **The Drowner:** the Combat side's record row stands. My second definition, its two skills and its loc rows are
+    dropped.
+    - Re-tuned that row's stats (HP 2200, str 11, mag 8, def 200, uprooted def 160).
+    - 1,000 seeds: naive 1.1, role (Ysolde) 62.1, smart 100 over 20+ turns.
+  - **The Lamp Engine, the Ram and the Wakefin:** my pre-tuned stats are applied and the suites added, all in band.
+    The Lamp Engine's role band stays report only until its parts data is in.
+  - Kept my engine keys on the record regulars (the ray's `glide`, the skate's `ambush`).
+  - Took creatures-b's documented Nhoa and Hesk clip maps (their own `deep_well`, `echo`, `cleanse` and `mending`
+    clips) and dropped their `vowbound_pending` (the rows exist).
+  - Checks: act2_bosses, ch10_thread, boss, validate, balance tool tests, vfx_coverage.
+  - **Next:** the Lamp Engine's parts and the conduit crawler (M4-A2P-022's data), now that its row is here.
+- MERGE-READY @ 2551e68b1
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.

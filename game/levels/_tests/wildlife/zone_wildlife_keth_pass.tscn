@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/wildlife/zone_wildlife.gd" id="stage"]
+
+[node name="ZoneWildlife" type="Node3D"]
+script = ExtResource("stage")
+zone_scene = "res://game/levels/ch12/keth_pass/keth_pass.tscn"
+zone_id = &"ch12/keth_pass"
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Foot" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.720833, -0.099832, 0.685881, 0, 0.989573, 0.144035, -0.693109, -0.103825, 0.713317, 2.4, 1.5, 2.6)
+fov = 45.0
+
+[node name="Saddle" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.755689, 0.0914801, -0.64851, 0, 0.990197, 0.139679, 0.654931, -0.105554, 0.748281, 90.5, 19.8, -37.5)
+fov = 45.0

@@ -110,40 +110,75 @@
     },
     "mangrove_drowner": {
       "scene": "res://game/creatures/mangrove_drowner/mangrove_drowner_battle.tscn",
-      "contact": {"attack": 0.7, "cast": 1.0, "attack_risen": 0.7, "cast_risen": 1.0},
-      "loop": ["idle", "idle_risen"],
+      "contact": {"attack": 0.7, "cast": 1.0, "rising_water": 1.0, "snag": 0.75, "attack_risen": 0.7, "cast_risen": 1.0,
+                  "rising_water_risen": 1.0, "snag_risen": 0.75, "root_stamp_risen": 0.8},
+      "loop": ["idle", "idle_risen", "ready", "ready_risen"],
       "ko_fade_sec": 1.2,
       "stand_in": {"yaw_deg": 90.0},
+      "vfx_anchors": {"core": "vfx_core", "wound": "vfx_wound"},
       "phases": {
         "uprooted": {"clip": "phase_change", "idle": "idle_risen", "hide_after": ["Stump"], "sec": 0,
-                     "clips": {"attack": "attack_risen", "cast": "cast_risen", "hit": "hit_risen"}}
+                     "clips": {"attack": "attack_risen", "cast": "cast_risen", "hit": "hit_risen", "hit_b": "hit_b_risen",
+                               "ready": "ready_risen", "ko": "ko_risen", "snag": "snag_risen",
+                               "rising_water": "rising_water_risen", "snag_break": "snag_break_risen"}}
       },
       "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}
     },
     "lamp_engine": {
       "scene": "res://game/creatures/lamp_engine/lamp_engine_battle.tscn",
-      "contact": {"attack": 0.6, "cast": 1.0, "attack_opened": 0.6, "cast_opened": 1.0},
-      "loop": ["idle", "idle_opened"],
+      "vfx_anchors": {"core": "vfx_core", "wound": "vfx_wound"},
+      "contact": {"attack": 0.6, "cast": 1.0, "lamp_gather": 1.2, "lamp_burn": 0.8, "call": 0.7, "twin_trim": 0.85,
+                  "phase_change": 1.1, "attack_opened": 0.6, "cast_opened": 1.0, "lamp_gather_opened": 1.2,
+                  "lamp_burn_opened": 0.8, "call_opened": 0.7, "twin_trim_opened": 0.85},
+      "loop": ["idle", "idle_opened", "ready", "ready_opened"],
       "ko_fade_sec": 1.2,
-      "stand_in": {"yaw_deg": 90.0},
+      "stand_in": {"yaw_deg": 55.0},
       "phases": {
         "opened": {"clip": "phase_change", "idle": "idle_opened", "sec": 0,
-                   "clips": {"attack": "attack_opened", "cast": "cast_opened", "hit": "hit_opened"}}
+                   "clips": {"attack": "attack_opened", "cast": "cast_opened", "hit": "hit_opened",
+                             "hit_b": "hit_b_opened", "ready": "ready_opened", "ko": "ko_opened",
+                             "lamp_gather": "lamp_gather_opened", "lamp_burn": "lamp_burn_opened",
+                             "call": "call_opened", "twin_trim": "twin_trim_opened"}}
       },
       "portrait": {"clip": "idle", "clip_time": 0.0}
     },
     "avalanche_ram": {
       "scene": "res://game/creatures/avalanche_ram/avalanche_ram_battle.tscn",
-      "contact": {"attack": 0.75, "cast": 0.9},
+      "vfx_anchors": {"core": "vfx_core", "wound": "vfx_wound"},
+      "contact": {"attack": 0.75, "cast": 0.9, "neck_sweep": 0.75, "fleece_shake": 0.6, "phase_tear": 1.0,
+                  "attack_torn": 0.75, "cast_torn": 0.9, "neck_sweep_torn": 0.75, "fleece_shake_torn": 0.6},
+      "loop": ["idle", "ready", "idle_torn", "ready_torn"],
       "ko_fade_sec": 1.2,
       "stand_in": {"yaw_deg": 60.0},
+      "phases": {
+        "torn_fleece": {
+          "clip": "phase_tear",
+          "idle": "idle_torn",
+          "show": ["TornShoulder"],
+          "hide_after": ["ShoulderPlate"],
+          "sec": 0,
+          "clips": {"attack": "attack_torn", "cast": "cast_torn", "charge_gather": "charge_gather_torn",
+                    "neck_sweep": "neck_sweep_torn", "fleece_shake": "fleece_shake_torn", "hit": "hit_torn",
+                    "hit_b": "hit_b_torn", "ready": "ready_torn", "ko": "ko_torn"}
+        }
+      },
       "portrait": {"yaw_deg": 40.0, "pitch_deg": 10.0}
     },
     "wakefin": {
       "scene": "res://game/creatures/wakefin/wakefin_battle.tscn",
-      "contact": {"attack": 0.8, "cast": 1.5},
+      "vfx_anchors": {"core": "vfx_core", "wound": "vfx_wound"},
+      "contact": {"attack": 0.8, "cast": 1.5, "dive": 1.0, "rise_strike": 0.85, "wake_wash": 0.75, "phase_close": 0.85,
+                  "attack_close": 0.8, "cast_close": 1.5, "dive_close": 1.0, "rise_strike_close": 0.85,
+                  "wake_wash_close": 0.75, "bill_strike_close": 0.7},
+      "loop": ["idle", "ready", "idle_close", "ready_close"],
       "ko_fade_sec": 1.2,
-      "stand_in": {"yaw_deg": 60.0},
+      "stand_in": {"yaw_deg": 90.0},
+      "phases": {
+        "close_circle": {"clip": "phase_close", "idle": "idle_close", "hide_after": ["BladeTip"], "sec": 0,
+                         "clips": {"attack": "attack_close", "cast": "cast_close", "dive": "dive_close",
+                                   "rise_strike": "rise_strike_close", "wake_wash": "wake_wash_close",
+                                   "hit": "hit_close", "hit_b": "hit_b_close", "ready": "ready_close", "ko": "ko_close"}}
+      },
       "portrait": {"yaw_deg": 60.0, "pitch_deg": 10.0, "rim_energy": 2.8, "kick_energy": 1.8}
     },
     "tannin_archer": {
@@ -154,7 +189,7 @@
     "gallery_ray": {
       "scene": "res://game/creatures/gallery_ray/gallery_ray_battle.tscn",
       "contact": {"attack": 0.6, "cast": 0.9},
-      "stand_in": {"yaw_deg": 60.0, "hover": 1.4},
+      "stand_in": {"yaw_deg": 60.0, "hover": 0.95},
       "portrait": {"yaw_deg": 30.0, "pitch_deg": 35.0}
     },
     "rime_urchin": {
@@ -178,7 +213,7 @@
       "scene": "res://game/creatures/cord_moth/cord_moth_battle.tscn",
       "contact": {"attack": 0.5, "cast": 0.55},
       "ko_fade_sec": 1.0,
-      "stand_in": {"yaw_deg": 60.0, "hover": 1.25},
+      "stand_in": {"yaw_deg": 60.0, "hover": 1.12},
       "portrait": {"yaw_deg": 60.0, "pitch_deg": 30.0}
     },
     "glass_skate": {
@@ -193,7 +228,7 @@
     },
     "fen_leech": {
       "scene": "res://game/creatures/fen_leech/fen_leech_battle.tscn",
-      "stand_in": {"hover": 1.38},
+      "stand_in": {"hover": 0.85},
       "contact": {"attack": 0.7},
       "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}
     },
@@ -208,9 +243,15 @@
     },
     "flat_engine": {
       "scene": "res://game/creatures/flat_engine/flat_engine_battle.tscn",
-      "contact": {"attack": 0.8, "cast": 0.8},
+      "vfx_anchors": {"core": "vfx_core", "wound": "vfx_wound"},
+      "contact": {"attack": 0.8, "cast": 0.8, "break": 0.6},
+      "loop": ["idle", "ready", "idle_broken"],
       "ko_fade_sec": 1.2,
-      "stand_in": {"yaw_deg": 90.0},
+      "stand_in": {"yaw_deg": 20.0},
+      "phases": {
+        "broken": {"clip": "break", "idle": "idle_broken", "hide": ["Engine"], "show": ["EngineBroken"], "sec": 0,
+                   "clips": {"hit": "hit_broken", "hit_b": "hit_b_broken", "ready": "idle_broken", "ko": "ko_broken"}}
+      },
       "portrait": {"yaw_deg": 30.0, "pitch_deg": 24.0}
     },
     "ilun": {
@@ -239,23 +280,33 @@
     "nhoa": {
       "scene": "res://game/creatures/nhoa/nhoa_battle.tscn",
       "vowbound": true,
-      "vowbound_pending": "M3-CRE-642 asks Combat for the vowbound.json row (docs/kb/art/creatures/vowbound/nhoa.md, open questions)",
-      "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45},
+      "contact": {"attack": 0.55, "cast": 0.8, "deep_well": 1.0, "echo": 0.65, "special": 1.45},
+      "clip_by_skill": {"silt_fall": "cast", "deep_well": "deep_well", "nhoa_echo": "echo", "farewell_tide": "special"},
       "stand_in": {"yaw_deg": -90.0, "height": 3.2, "radius": 0.5}
     },
     "hesk": {
       "scene": "res://game/creatures/hesk/hesk_battle.tscn",
       "vowbound": true,
-      "vowbound_pending": "M3-CRE-643",
-      "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45},
+      "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45, "cleanse": 0.9, "mending": 0.8},
+      "clip_by_skill": {"knot_light": "cast", "cord_lift": "cleanse", "hesk_mending": "mending", "pass_cord": "special"},
       "stand_in": {"yaw_deg": -90.0, "height": 2.4, "radius": 0.6}
     },
     "ethren": {
       "scene": "res://game/creatures/ethren/ethren_battle.tscn",
       "vowbound": true,
-      "vowbound_pending": "M3-CRE-644",
-      "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45},
+      "contact": {"attack": 0.55, "cast": 0.8, "stop": 0.9, "ward": 0.8, "special": 1.45},
+      "clip_by_skill": {"level_hand": "cast", "hold_the_hour": "cast", "lacquer_screen": "cast", "still_water": "special"},
       "stand_in": {"yaw_deg": -90.0, "height": 2.5, "radius": 0.6}
+    },
+    "kesh": {
+      "scene": "res://game/creatures/kesh/kesh_battle.tscn",
+      "vowbound": true,
+      "clip_by_skill": {"voice_water": "voice_water", "voice_lightning": "voice_lightning", "voice_fire": "voice_fire",
+                        "voice_ice": "voice_ice", "voice_holy": "voice_holy", "voice_glimmer": "voice_glimmer",
+                        "the_seven": "special"},
+      "contact": {"attack": 0.55, "cast": 0.8, "special": 1.8, "voice_water": 0.9, "voice_lightning": 0.7, "voice_fire": 0.8,
+                  "voice_ice": 0.9, "voice_holy": 0.8, "voice_glimmer": 0.9},
+      "stand_in": {"yaw_deg": -90.0, "height": 4.2, "radius": 0.8}
     },
     "ilun_held": {
       "scene": "res://game/creatures/ilun/ilun_held_battle.tscn",
@@ -290,14 +341,14 @@
     "nhoa_held": {
       "scene": "res://game/creatures/nhoa/nhoa_held_battle.tscn",
       "ko": "release",
-      "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45},
+      "contact": {"attack": 0.55, "cast": 0.8, "deep_well": 1.0, "echo": 0.65, "special": 1.45},
       "phases": {"release": {"clip": "release", "hold": true}},
       "stand_in": {"yaw_deg": 90.0, "height": 3.2, "radius": 0.5}
     },
     "ethren_held": {
       "scene": "res://game/creatures/ethren/ethren_held_battle.tscn",
       "ko": "release",
-      "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45},
+      "contact": {"attack": 0.55, "cast": 0.8, "stop": 0.9, "ward": 0.8, "special": 1.45},
       "phases": {"release": {"clip": "release", "hold": true}},
       "stand_in": {"yaw_deg": 90.0, "height": 2.5, "radius": 0.6}
     }

@@ -2,9 +2,8 @@
 id: M4-A2P-011
 title: "Ch11 playable at final quality: the Lamp Engine with its crawlers, Nhoa's binding"
 role: cinematics
-status: blocked
-blocked-by: ADR 0203
-owner_session: ""
+status: doing
+owner_session: "act1-chapters → chapters (claude/act1-chapters; ADR 0205)"
 depends_on: [M4-C11-01, M4-C11-02, M4-C11-03, M4-A2P-002, M4-A2P-022, M4-A2P-024, M4-A2P-041]
 reviewer: combat
 milestone: M4

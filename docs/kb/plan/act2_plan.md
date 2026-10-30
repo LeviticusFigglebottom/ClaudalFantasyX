@@ -109,7 +109,7 @@ Each chapter lists zones and kit needs; cast and NPCs; enemies, bosses and Vowbo
   - **Arena:** `keth_seep_terrace`. Snow and wind are weather only (ADR 0015: no ice in any temple from Ch12 to Ch15).
 - **Cast and NPCs:** Quellan townsfolk (Ullari: a new villager costume set on the crowd generator), the **Ullari woman** at the pass-cord (side scene), an innkeeper, a keth-reader.
 - **Enemies:** `ridge_lynx`, `cord_moth`, `scree_crawler` (variant of the slag tortoise): data exists; models don't.
-- **Boss:** the **Avalanche Ram**: its charge brings the snow down, a field hazard round by round. `field_rules` (set_piece_battles §4) already carries per-turn statuses, so the hazard is data plus a falling-snow field VFX. Music stems exist.
+- **Boss:** the **Avalanche Ram**: its charge brings **stone and scree** down off the wall's coping (never snow or ice: ADR 0015, ADR 0204 §2; keth_pass.md §2), a field hazard round by round, plus the `torn_fleece` phase (ADR 0204 §6). `field_rules` (set_piece_battles §4) already carries per-turn statuses, so the hazard is data plus a falling-snow field VFX. Music stems exist.
 - **Vowbound:** **Hesk** (Holy). Bind cinematic in the weaving-hall (noon light writing the keth shadows on white stone), summon cinematics, kit (Holy, cleanse, Mending), Swell *Pass-Cord*. The art sheet exists; the rest is a gap.
 - **Cutscenes:**
   - C1: the pass-cords; Toma notices **Kerrid's breath doesn't fog** (the cold-breath VFX on the six living, none on Kerrid: a rendering and character request);
@@ -159,7 +159,7 @@ Each chapter lists zones and kit needs; cast and NPCs; enemies, bosses and Vowbo
   - **Rendering:** a **ripple propagation** on the still mirror (the water shader's still mode plus a ripple ring source per pole stroke and wake). This is the chapter's hero visual.
 - **Cast:**
   - Sefir officiates; the Conclave; Stillguard; Saltwright leaders (Hollowmere's hull-captains, seized);
-  - **Tobin** (killed shielding Merel); **Merel** (cuts her bridal barge loose, poles the party out, stays to drop the water-gate, and is taken in wedding red with Tobin's blood on her sleeve); **her father** (a Warden's Stillguard take her; the plan reads "her father" as one of the Conclave, Narrative to name which);
+  - **Tobin** (killed shielding Merel); **Merel** (cuts her bridal barge loose, poles the party out, stays to drop the water-gate, and is taken in wedding red with Tobin's blood on her sleeve); **her father, Warden Dask** (a living Warden, **not** of the Conclave; ADR 0204 §4);
   - **Warden Malcor Venn** (the boss: a person, so the characters track).
 - **Boss:** **Malcor Venn** on the Conclave's pursuit barge, two phases.
   - Phase 1: the barge's bound **flat-engine** pulls the water flat and slows the timeline. Liss breaks it (a breakable part: act2/flat_engine.md).
@@ -220,7 +220,7 @@ Each chapter lists zones and kit needs; cast and NPCs; enemies, bosses and Vowbo
   - `ch16/drowned_choir`: the ring of colossal mouths at moonrise in the Choir's sunken bowl.
   - **Kit:** `drowned_choir.py` (art sheet [pale_rim.md](../art/environments/pale_rim.md), M3-ENV-722); this is a **hero zone** (SPEC §7.4: bespoke hero meshes for the Choir).
   - **Water:** `pale_rim` (validated; the game's lowest contrast). **Arena:** `drowned_choir_ring`.
-- **Cast:** party (Kerrid walks last, as on a stair); **Sefir** in person; **Sefir's Abiding guard** (people: Stillguard elite or the Conclave's revenant guard, so characters); **Kesh** (a colossal woman of standing seawater).
+- **Cast:** party (Kerrid walks last, as on a stair); **Sefir** in person; **Sefir's Abiding guard** (people: the High Warden's sworn Stillguard elite, **living**, because ADR 0016 allows no revenant to be fought openly before Ch19; a battle_sandbox stand-in plus characters' clips, ADR 0204 §5); **Kesh** (a colossal woman of standing seawater).
 - **Enemies:** `glass_skate`, `rim_crawler` (variant of the tide crawler): data exists; models don't.
 - **Boss:** **Sefir's Abiding guard** (two stems: the storm waking early is stem 2), then the storm wakes as Imra's heart falters, Kerrid holds the line, and the party is swept away. The second half is the Undertow render (§8.2 item 9), at the Choir.
   - **Design default:** the storm's waking is a `scripted_escape` set piece (Kerrid `locked_active`, "Holding the line"), as Ch8's Reach.

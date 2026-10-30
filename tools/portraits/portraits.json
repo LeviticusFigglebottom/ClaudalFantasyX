@@ -67,7 +67,7 @@
       "materials": "res://assets/characters/kerrid/materials/",
       "face_poses": "res://game/levels/_tests/characters/kerrid/kerrid_face_poses.json",
       "out_dir": "res://assets/ui/portraits/heroes",
-      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "emotions": ["neutral", "smile", "determined", "worried", "grief", "guilty"],
       "camera": {}
     },
     {
@@ -600,6 +600,11 @@
     {
       "id": "ethren",
       "scene": "res://game/creatures/ethren/ethren_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "kesh",
+      "scene": "res://game/creatures/kesh/kesh_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures"
     },
     {

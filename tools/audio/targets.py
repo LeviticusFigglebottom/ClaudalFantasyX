@@ -22,7 +22,12 @@ RULES = [
     ("music/act2/wakefin_p*.ogg", "stem", -16.0, 0.5, -1.0, "the Wakefin's two stems, stacked at -16 (Git LFS, M3-AUD-844/845)"),
     ("music/act3/hesper_and_ilsabet_s*.ogg", "stem", -16.0, 0.5, -1.0, "the revenant pair's two stems, stacked at -16 (Git LFS, M3-AUD-858)"),
     ("music/*.ogg", "integrated", -16.0, 0.5, -1.0, "music beds, themes and cutscene cues"),
+    ("act2/music/malcor_venn_p*.ogg", "stem", -16.0, 0.5, -1.0, "Malcor Venn's two stems, stacked at -16 (ADR 0175)"),
+    ("act2/music/abiding_guard_p*.ogg", "stem", -16.0, 0.5, -1.0, "the Abiding guard's two stems, stacked at -16 (ADR 0175)"),
+    ("act2/music/court_steps_p*.ogg", "stem", -16.0, 0.5, -1.0, "Ch14's step-hold, two stems stacked at -16 (ADR 0175)"),
+    ("act2/music/*.ogg", "integrated", -16.0, 0.5, -1.0, "Act II scene cues, loops and stings in plain git (ADR 0175)"),
     ("ambience/*.ogg", "integrated", -26.0, 0.5, -5.0, "ambience beds (mix.md: -26, peaks well down)"),
+    ("act2/ambience/*.ogg", "integrated", -26.0, 0.5, -5.0, "Act II ambience beds (M4-A2P-093, ADR 0175)"),
     # M3-AUD-859 (assets_src/sfx/act3/kite_foley.py; Git LFS): the Kite's deck beds and foley
     ("sfx/act3/kite_deck*.ogg", "integrated", -26.0, 0.5, -5.0, "the Kite's deck beds (as the ambience beds)"),
     ("sfx/act3/kite_engine_stop.ogg", "momentary", -20.0, 1.0, -1.0, "H09: the lift engines winding down"),
@@ -87,10 +92,21 @@ RULES = [
                 "step", "drift")],  # M3-AUD-857: Kahre's knuckle-walk, Virel's cloth
     ("sfx/creatures/*_idle_*.ogg", "momentary", -20.0, 1.0, -1.0, "a creature's idle voice (under the battle)"),
     ("sfx/creatures/*.ogg", "momentary", -18.0, 1.0, -1.0, "creature voices: attack, hurt, death"),
+    # M4-AUD-1001 (assets_src/sfx/act2_variant_creature_sfx.py): Act II's variant foes, their own sets (ADR 0175)
+    *[(f"act2/sfx/creatures/*_{w}_*.ogg", "momentary", -21.0, 1.0, -1.0, f"Act II creature movement ({w})")
+      for w in ("skitter", "flap", "plod")],
+    ("act2/sfx/creatures/*_idle_*.ogg", "momentary", -20.0, 1.0, -1.0, "an Act II creature's idle voice"),
+    ("act2/sfx/creatures/*.ogg", "momentary", -18.0, 1.0, -1.0, "Act II creature voices: attack, hurt, death"),
+    ("act2/sfx/battle/sting_boss*_soft.ogg", "momentary", -17.0, 1.0, -1.0, "Act II reduced-audio boss stings"),
+    ("act2/sfx/battle/sting_boss*.ogg", "momentary", -16.0, 1.0, -1.0, "Act II boss intro stings (M4-A2P-092)"),
+    ("act2/sfx/battle/*.ogg", "momentary", -19.0, 2.5, -1.0, "Act II combat SFX (M4-A2P-093)"),
     # M3-AUD-802 (assets_src/sfx/hero_foley.py): the field heroes' steps (played at walk_db), scuffs and foley layers
     ("sfx/foley/step_*.ogg", "momentary", -18.5, 1.0, -1.0, "hero footsteps by surface and gait (-18, transients limited)"),
     ("sfx/foley/stop_*.ogg", "momentary", -20.0, 1.0, -1.0, "the halt scuff, after the last step"),
     ("sfx/foley/turn_*.ogg", "momentary", -21.0, 1.0, -1.0, "the turn scuff, under the steps"),
+    ("act2/sfx/foley/step_*.ogg", "momentary", -18.5, 1.0, -1.0, "Act II footsteps: root, snow, slate (M4-A2P-093)"),
+    ("act2/sfx/foley/stop_*.ogg", "momentary", -20.0, 1.0, -1.0, "Act II halt scuffs"),
+    ("act2/sfx/foley/turn_*.ogg", "momentary", -21.0, 1.0, -1.0, "Act II turn scuffs"),
     ("sfx/foley/cloth_*.ogg", "momentary", -24.0, 1.0, -3.0, "cloth swish, layered on every step"),
     ("sfx/foley/gear_*.ogg", "momentary", -24.0, 1.0, -3.0, "carried gear (lantern, shells, leather), every other step"),
     ("sfx/foley/*.ogg", "momentary", -22.0, 2.0, -1.0, "other movement foley"),
@@ -222,7 +238,7 @@ RULES = [
     ("sfx/harbour_lap.ogg", "momentary", -25.0, 1.0, -1.0, "an Act I cutscene cue"),
 ]
 FILE_LIMIT = 5 * 1024 * 1024        # CLAUDE.md §8: no file over 5 MB
-TOTAL_BUDGET = 73 * 1024 * 1024     # every shipped audio file (ADR 0174: small Act I SFX while LFS is blocked; 0171, 0170)
+TOTAL_BUDGET = 105 * 1024 * 1024    # every shipped audio file (ADR 0175: Act II under assets/audio/act2/; 0174, 0171, 0170)
 
 
 def rule_for(rel: str):

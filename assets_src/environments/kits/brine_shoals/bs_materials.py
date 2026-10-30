@@ -110,6 +110,15 @@ MATERIALS: dict[str, dict] = {
     "bs_lit_ceramic": weather(HTEX + "coral_concrete_albedo.png", HTEX + "coral_concrete_normal.png", (1.0, 1.0),
                               base_triplanar=True, col_tint=hexc("#A9ABA3"), normal_strength=1.0, roughness_base=0.7,
                               cavity_darken=0.45, use_barnacles=False, algae_coverage="Vector2(0.2, 0.5)"),
+    # Sefir's barge: order_marble white lacquer over planking, the only clean white in the zone. Painted timber, not a
+    # flat white (the PC's pass 3 on the GPU: a flat white read as unfinished): the lacquer covers the boards nearly
+    # whole, the grain showing through faintly, a little salt at the waterline and in the seams, kept glossy.
+    # Triplanar: the barge's small blocks (the seats, the bench) carry no planking UVs, and a mesh-UV grain streaked
+    # down their faces.
+    "bs_barge_white": weather(*TIMBER, base_triplanar=True, col_paint=hexc("#E4DED3"), paint_cover=0.86,
+                              normal_strength=0.6, roughness_base=0.3, specular_base=0.5, cavity_darken=0.35,
+                              variation_value=0.1, variation_warmth=0.02, use_barnacles=False,
+                              algae_coverage="Vector2(0.1, 0.35)", salt_coverage="Vector2(0.05, 0.25)"),
 }
 # Sail-cloth: sun-bleached sand_cloth, the Saltwright faded teal patch, and the canvas browned by smoke.
 for _name, _hex in (("bs_canvas", "#BBA987"), ("bs_canvas_teal", "#5E9A96"), ("bs_canvas_scorched", "#5A4B3C")):
@@ -134,9 +143,6 @@ STANDARD: dict[str, dict] = {
     # Liss's crate: bound light, steady (colour script ch06: glimmer_bound, emission 1.2; no motes).
     "bs_glimmer_leak": {"albedo_color": hexc("#4FB3B0"), "emission_enabled": "true", "emission": hexc("#4FB3B0"),
                         "emission_energy_multiplier": 1.2, "roughness": 0.4},
-    # Sefir's barge: order_marble white lacquer, the only clean white in the zone.
-    "bs_barge_white": {"albedo_color": hexc("#E4DED3"), "roughness": 0.3, "clearcoat_enabled": "true",
-                       "clearcoat": 0.5},
     "bs_lacquer_red": {"albedo_color": hexc("#B3261E"), "roughness": 0.22, "clearcoat_enabled": "true",
                        "clearcoat": 0.6},
     "bs_gold": {"albedo_color": hexc("#D4A437"), "roughness": 0.28, "metallic": 1.0},  # gold_leaf

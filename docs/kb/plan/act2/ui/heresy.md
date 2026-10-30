@@ -39,8 +39,8 @@ draft: pre-gate
 
 - **Today:** the Status page header names the hero. There is no party title yet.
 - **Act II:** the field menu's root header ("Along the Way") gains a subtitle line once `ch14_declared_heretics` is set:
-  "Heretics of the Level". This is the act's only standing reminder; it is quiet, never red.
-- **Save slots:** a heretic save's slot line carries the same word after the chapter ("Chapter 14 · Heretics"), so a
+  "Outside the Level" (ADR 0204: the heresy's words). This is the act's only standing reminder; it is quiet, never red.
+- **Save slots:** a heretic save's slot line carries the same word after the chapter ("Chapter 14 · Outside the Level"), so a
   player choosing a slot knows which side of the trap it is.
 - **Loc keys (2):** `FIELD_MENU_SUBTITLE_HERETIC`, `SAVE_SLOT_HERETIC_TAG`.
 
