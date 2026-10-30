@@ -20,6 +20,12 @@
   - Rows 24 and 66 have no env side: hero-integration fixed both after the pass.
   - `test_arenas` leaves env-art-b's two Ansedra arenas to `ansedra_arenas.py`'s own test.
 - **Ch10–Ch12 walk-through stills:** Ossa Fen's camera lines are now clear of trees.
+- **The `sunken_vey_gallery` arena** (Ch11's regular fights), registered.
+- **The playtest FAST-TRACK:**
+  - Oruvel's boats are clear of the docks (`test_oruvel_moorings`).
+  - Edge walls along Oruvel's walkways (`zone_edges.py`, ZoneKitDressing `edge_walls`).
+- **The Prologue–Ch4 POI and interactable walk:** the Underway's tin and limpet, the ferry's deck shrine, the wake's
+  fisher inland.
 
 ## In progress
 - M4-A2P-040/041/042 stay `doing` until each mount lands and env-art views the mounted zone (walk renders).
@@ -27,7 +33,8 @@
 ## Exact next step
 1. Watch for chapters' mounts. Once one lands, walk-render that zone (`game/levels/_tests/walkthrough/walk_render.tscn`
    with the zone's own scene), fix what reads wrong, and set the task to `review` (reviewer: rendering).
-2. When chapters mount Ch10–Ch12, re-take the spawn stills on the real scenes (walk_stills `--scene=<zone>.tscn`).
+2. Edge walls for other water zones if the Lead wants them: `zone_edges.walls()` works on any greybox layout.
+3. When chapters mount Ch10–Ch12, re-take the spawn stills on the real scenes (walk_stills `--scene=<zone>.tscn`).
    Ch12's shade waits on the PC (PC-QUEUE).
 3. (Done: Ch10's Kirru roost weave was re-rendered close up and reads fine. No other env-art item is open.)
 
