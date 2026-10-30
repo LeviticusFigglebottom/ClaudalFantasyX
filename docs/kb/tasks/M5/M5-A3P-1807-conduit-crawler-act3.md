@@ -2,8 +2,8 @@
 id: M5-A3P-1807
 title: "Ch19: the conduit crawler's Act III use on the Lamp Spire (the built model, a creatures.json level/palette row)"
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "creatures (claude/creatures)"
 depends_on: []
 milestone: M5
 reviewer: character

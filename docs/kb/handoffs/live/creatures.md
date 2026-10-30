@@ -1356,3 +1356,8 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - 5.8k triangles, 54 bones; byte-identical, PROVENANCE, portrait, shot `creature_held_shoal` (viewed).
   - Tech/Combat: an idle that follows its untargetable phase.
 - **MERGE-READY @ c0611d659.** Next: M5-A3P-1804, the drowned lantern (claimed).
+- **M5-A3P-1804 the drowned lantern** (Ch20), at review:
+  - a drowned street-lamp globe become a jelly, its held light in the bell; the crazed seam is the weak point;
+  - the rise rule at 0 mm in every clip (the heart rides the root, not the glass); the KO sinks the globe, not the root;
+  - 3.5k triangles, 25 bones; byte-identical, PROVENANCE, portrait, shot `creature_drowned_lantern` (viewed).
+- **MERGE-READY @ 647105978.** Next: M5-A3P-1807, the conduit crawler's Act III row (claimed).
