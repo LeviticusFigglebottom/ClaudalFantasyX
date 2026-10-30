@@ -485,3 +485,13 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
     exists) and give its strikes `travel: none`. Also yours: the glowing wake, the rise's glow ring.
   - Note for creatures (M3-CRB-014): test_creature_actor's Wakefin bone list updated.
 - **In progress:** M4-CRB-002 Drowner, M4-CRB-003 Lamp Engine, M4-CRB-005 the Ram's moves (worktree agents).
+- **MERGE-READY @ (this commit): M4-CRB-003, the Lamp Engine at the final bar** (worktree agent, viewed by it; review
+  combat). The housing reads as a ringed tower (shingled plates, lacquer lips), lamps 1.2x, thicker limbs and broad
+  shears, the core lit as a globe; stand-in yaw 90 -> 55 (side-on, the near arm hid the core); bigger hits; the closed
+  KO keeps its petals shut. 18,680 triangles (≤20k), 25 clips, anchors; portrait re-baked. **Clip map for combat:**
+  engine_trim -> attack 0.6; lamp_gather 1.2; lamp_burn 0.8; call_the_tenders -> call 0.7; twin_trim 0.85;
+  core_flare -> cast (phase 2) 1.0; each with an `_opened` version (the `opened` clips map is in creatures.json).
+  Checks: Blender identical; tools OK; Godot creature 100/0 (test_creature_bosses_act2 now holds both bosses).
+  **Open:** the ring break parts wait on combat's skills (break_parts is keyed by skill; M4-A2P-022) and on a budget
+  call (broken lamp variants cost ~1.4-4.8k triangles against 1.3k left). Pre-existing, not mine: `--filter=part`
+  fails the Liss stand-in tint test (#7A8C5A vs battle_sandbox's #7A8F6A).
