@@ -61,3 +61,11 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
   - Names proposed (banned-terms clean): Commander Brannoc Hale, Warden Dask, the dock-master Aldous Varrow, the Kirru eldest Owa (or unnamed); "Outside the Level" as the heresy's words.
 - BACKLOG EMPTY (2026-10-30, second pass): the plan, the inventory, the tasks, the track split, the critical path and all seven Act II beat-sheet drafts are done and pushed. The rest waits on the Lead's review or the gate: no .dlg or game data before it (the Lead's instruction).
 - MERGE-READY @ a3c86c7a: M4-A2P-059 (the Ram's ice to wet wool; creatures-b; blocked by ADR 0203), the Ch12 §10.1 answer recorded, and the plan's pointer to the lane docs in docs/kb/plan/act2/<lane>/ (none on the integration branch yet). Checks: validate_data 0/0, taskboard --check clean. BACKLOG EMPTY again.
+
+### ADR 0204 applied (2026-10-30)
+- MERGE-READY @ f9f8c709 (+ the next commit for the tasks):
+  - every Act II draft now follows ADR 0204: Owa named; Tobin's light caught and the lamp cracked; the Wakefin is one animal, with `sound_dive` as evasion up and `close_circle` kept; the ledger phrase is a torn fragment; the Ram's `torn_fleece` in wet wool; snow and grit on the Ch12 regulars; `battle_heretic` from Ch14; the `hush_first_verse` and `ysolde_theme` reprises; ORDER_HUM sung once; Kesh at 4.2 m in battle; the Lamp Engine's two dormant crawlers; Nhoa copies ordinary skills only;
+  - M4-A2P-056 (no Ansedra wildlife) and M4-A2P-090 (`tobin_pyre` withdrawn).
+  - Checks: validate_data 0/0, taskboard --check clean.
+- Depth check: all seven drafts have the same 11 sections at 5,600–8,700 words. Ch11, Ch12, Ch13 and Ch16 aren't thinner than Ch10, Ch14 and Ch15, so none was expanded.
+- In progress: the consistency pass across the drafts and the six lane-doc sets on the track branches.
