@@ -60,7 +60,7 @@ in the mud under the water.
   hull's own frame (x along it, bow +X, y over the water; the zone places it at DACE_AT (78, -24) yaw 30 deg, y -0.9):
   - the hatch: (-3.0, 3.8, 0);
   - the cabin floor: y 1.85, from x -5.1 to -2.0;
-  - the reading seat (the stool by the desk): (-2.8, 1.85, -0.7);
+  - the reading seat (the stool by the desk, at -0.68): (-2.8, 1.85, -0.23);
   - the engine bed: x -1.6 to 0.4, centre y 2.5;
   - the deck: y 3.8, from x -6.0 to -2.0.
   The walk collision (deck, hatch ramp, cabin floor) comes with the berths' dressing.
