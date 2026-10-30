@@ -33,7 +33,8 @@ Check the player's place for O02 and O09 first.
       camera never turned; it is now a low look up the shaft past Rhen. U10/U11 were on the waterline with no
       underwater look: Oruvel gets an UnderwaterRig on its Water, U10 looks up from under the water with Rhen's
       lantern (a `dive_lamp` practical, `@light DiveLamp`) and the held motes sinking from a mark in frame, and U11
-      looks down at a slant with more motes sinking into the dark. New pending stills ch01_going_under_u10/_u11 and
+      looks down at a slant with more motes sinking into the dark (over a dark seabed plane, so the underwater post
+      doesn't wipe the motes). U09 now sits inside the shaft, looking up the tube. All three viewed. New pending stills ch01_going_under_u10/_u11 and
       ch01_current_shaft_u09.
 
 ## Notes

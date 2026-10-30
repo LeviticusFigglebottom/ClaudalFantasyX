@@ -998,7 +998,42 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     a spawn, plus an arrival that places elsewhere.
   - **For act1-chapters:** your Ch4–Ch9 arrival scenes have staged on the travel spawn until now. Re-view any arrival
     still that looked off.
+- **QA pass 3 (origin/gpu/act1-qa-3): rows 58 and 60 and the Ch1 dive, MERGE-READY @ e3ad5bbec** (for big19).
+  - **Id note:** the Lead's "M3-CIN-1234, the Ch1 dive's encounter gaps" collides with my M3-CIN-1234 (the arrival
+    place steps, above). I read it as M3-CIN-1232's open item (U09 and U11, the dive's blank shots) and closed that.
+    Rows 58 and 60 are M3-CIN-1235 and M3-CIN-1236 (task files in docs/kb/tasks/M3/).
+  - **Row 58, M3-CIN-1235 (viewed, lavapipe):**
+    - ch01_hullgnaw_rises: Oruvel had no Hullgnaw. A hidden layout actor with the creature's model is shown by the
+      chapter beat's `show_block` and rises (`@anim hullgnaw intro`) through the net-pen deck at the centre of O16, in
+      front of Rhen. It reads as a dark mass with its cyan glow (the storm light; see PC-QUEUE).
+    - ch01_net_pen: P01, over Rhen's shoulder onto the pen; the children are in frame on the Child's line.
+    - O07 (ch01_bark_outer_mooring): square on the Seventh Terrace's name-board, which fills the frame. The 1.5 s
+      insert now ends before Sadi's answer, and the shot holds the insert (`hold_cue: camera O07`).
+  - **Row 60, M3-CIN-1236 (viewed):** S07 sat between Rhen and Toma, 1.6 m behind them. It is pulled back to a clear
+    over-the-shoulder on Asha, and a new reverse, S07R, plays Rhen's and Toma's answers on their faces.
+    slice_verse_hall shows Rhen speaking in frame, Toma beside him, Asha's shoulder at the edge.
+  - **The dive, M3-CIN-1232 (viewed):**
+    - Oruvel gets an UnderwaterRig on its Water.
+    - U10 looks up from under the water at the hulls, with Rhen's lantern (the `dive_lamp` practical, `@light
+      DiveLamp`) and held motes sinking from a mark in frame. `at=rhen` had resolved to the player, up on the pen.
+    - U11 looks down at a slant, with held motes sinking into the dark.
+    - U09 had a look_at straight above the camera (colinear with up), so it never turned and showed the seabed. It
+      now sits inside the current shaft above Rhen, looking up the tube to its lit mouth.
+    - New pending stills: ch01_going_under_u10, ch01_going_under_u11, ch01_current_shaft_u09.
+  - **For rendering (UnderwaterRig):** over open water the post takes the 400 m path, and its multiply pass zeroes
+    every transparent in front of it, GlimmerField motes included. U11 was a flat colour until I put a dark seabed
+    plane (`seabed` stage actor) under the pen. Zones with no floor under the camera will hit this again.
+  - **Checks:** ch01 20, underway 9, oruvel 17, underwater 9, first_verse 3, slice_primitives 1, cutscene 98,
+    qa_threads 1, fp_thread 2, slice_shots 1, all 0 failed. validate_data 0/0, dlgc --check, taskboard --check,
+    gdlint and gdformat clean. Above water the rig and seabed change nothing (ch01_hullgnaw_rises: a mean 0.005 per
+    channel). ch01_oruvel_dressed differs from its 10-28 baseline by content drift (the scale-man's stall moved).
+  - **Also fixed:** test_slice_shots failed on slice_dock_night_yes since f7a5f332. A story_call shot names no
+    scene_id, so its held line is now looked up in every compiled scene.
+  - **Skipped:** coverage and Blender (nothing they cover).
 ### PC-QUEUE
+- Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan
+  emissive reading. Check that its glow and silhouette read on the GPU; if not, it needs a rim light or a grade.
+- The Ch1 dive (ch01_going_under_u10/_u11, ch01_current_shaft_u09): the underwater look and motes on the GPU.
 - New Game → the beach: 15 s of black before the fade on lavapipe (the load and prewarm at a fixed 30 fps). Measure it on
   the GPU against ADR 0042's ≤ 1 s hidden-frames target.
 - Re-check PC GPU QA rows 18 (C07 harrier) and 32 (beach standing lines) on the GPU: both are fixed here (rendered on
