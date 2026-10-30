@@ -584,6 +584,11 @@
       "out_dir": "res://assets/ui/portraits/creatures"
     },
     {
+      "id": "wick_crawler",
+      "scene": "res://game/creatures/wick_crawler/wick_crawler_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
       "id": "ridge_lynx",
       "scene": "res://game/creatures/ridge_lynx/ridge_lynx_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures"
