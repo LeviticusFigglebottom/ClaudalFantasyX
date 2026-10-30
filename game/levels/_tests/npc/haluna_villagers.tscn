@@ -28,7 +28,7 @@ transform = Transform3D(0.773957, -0.0968662, 0.625785, 0, 0.988231, 0.15297, -0
 fov = 45.0
 
 [node name="LaneGames" type="Camera3D" parent="Cameras"]
-transform = Transform3D(-0.6, -0.334324, 0.726792, 0, 0.90849, 0.417906, -0.8, 0.250743, -0.545094, -75, 7, -15.5)
+transform = Transform3D(-0.732793, -0.34413, 0.587017, 0, 0.862687, 0.505737, -0.680451, 0.370601, -0.632172, -76, 8, -14.5)
 fov = 45.0
 
 [node name="LaneMender" type="Camera3D" parent="Cameras"]
