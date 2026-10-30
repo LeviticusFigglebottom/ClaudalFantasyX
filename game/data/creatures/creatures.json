@@ -243,9 +243,15 @@
     },
     "flat_engine": {
       "scene": "res://game/creatures/flat_engine/flat_engine_battle.tscn",
-      "contact": {"attack": 0.8, "cast": 0.8},
+      "vfx_anchors": {"core": "vfx_core", "wound": "vfx_wound"},
+      "contact": {"attack": 0.8, "cast": 0.8, "break": 0.6},
+      "loop": ["idle", "ready", "idle_broken"],
       "ko_fade_sec": 1.2,
-      "stand_in": {"yaw_deg": 90.0},
+      "stand_in": {"yaw_deg": 20.0},
+      "phases": {
+        "broken": {"clip": "break", "idle": "idle_broken", "hide": ["Engine"], "show": ["EngineBroken"], "sec": 0,
+                   "clips": {"hit": "hit_broken", "hit_b": "hit_b_broken", "ready": "idle_broken", "ko": "ko_broken"}}
+      },
       "portrait": {"yaw_deg": 30.0, "pitch_deg": 24.0}
     },
     "ilun": {
