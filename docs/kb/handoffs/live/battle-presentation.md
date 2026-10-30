@@ -183,7 +183,7 @@ ch01_wickfry, ch01_oil_slug, ch01_shaft_limpet and ch01_scuttlers.
 | Row 61 (the Reach's rest frame) | **MERGE-READY**, viewed | ef997f3d |
 | Row 64 (the camera search behind the fade) | **MERGE-READY**: reveal frame 1.2–2.6 ms headless | 7c3307df (+ 65e776af, the particle variants) |
 | Act II foe-skill effects | **MERGE-READY**: the Act II regulars and bosses (65ea933e, 8d0fe783..f2bbb673); act1-chapters' 3 new conduit-crawler skills and the Vowbound's 19 are written as their rows land | 6f3608a7, 97e22896 |
-| Rank overlap and the command-menu safe area | **MERGE-READY @ aa227a57** once the full `--filter=battle` re-run is clean (running) | c552664f, 3d65ec00, aa227a57 |
+| Rank overlap and the command-menu safe area | **MERGE-READY @ aa227a57**: full `--filter=battle` 826/0 | c552664f, 3d65ec00, aa227a57 |
 
 - **Act II effects:** act1-chapters' and gate-big22's skills.json hold 3 Act II foe skills with no effect (brush_jab,
   crawler_mend, crawler_tend). Those are in FOES_PENDING. On gate-big22's data, gen_act2_ability_vfx writes them
