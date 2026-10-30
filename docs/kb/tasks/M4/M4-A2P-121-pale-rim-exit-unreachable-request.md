@@ -1,5 +1,5 @@
 ---
-id: M4-A2P-116
+id: M4-A2P-121
 title: "Ch16 Pale Rim: the to_choir exit stands 10 m past the end of the walkable sand"
 role: cinematics
 status: todo
@@ -27,3 +27,6 @@ Either move `to_choir` onto the sand (x about 216, still about 11 m past `ChoirE
 - [ ] Walking east from `ChoirEdge` reaches `to_choir`; `test_ch14_16_walkable` (the wade) still passes.
 
 ## Review log
+
+## Gate note
+- Renumbered from M4-A2P-116 by the big27 gate: that id was already taken on the integration branch. The owner's live log may still say 116.
