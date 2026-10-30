@@ -2,8 +2,8 @@
 id: M4-A2P-0411
 title: "Mount env-art's Ch11 dressing in ch11/sunken_vey and ch11/lowlight (request to chapters)"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: act1-chapters
 depends_on: [M4-A2P-041]
 milestone: M4
 request-from: environment
@@ -44,5 +44,19 @@ Ambient: the layouts' `environment` row (0.7, #7FA3A8) already matches the grade
 
 Rendering's, not this ask: the cold haze off the well, the silt-light sifting down it, and the core's release lift
 (beat sheet T03, N02).
+
+- **act1-chapters, 2026-10-30, mounted:**
+  - **The scenes:** sunken_vey.tscn and lowlight.tscn carry the previews' Water (the Vey at −0.3; Lowlight at
+    −2.05 on the Waterline-sized PlaneMesh), Tide and Dressing.
+  - **The Lamp Engine in the field:** a stage actor `lamp_engine` (`creature:lamp_engine`) at the block, facing the
+    door.
+  - **The well's mouth:** a 10-sided collision ring, r 3.1 about (64, −8, 4), hidden under the dressing with the
+    greybox. `pell_kneel` moves off the mouth to (67.2, −8, 5.6) beside Nhoa, and L06 follows it.
+    test_ch11_walkable's shaft route goes round the ring.
+  - **Viewed:** L02, L04, L06, V02 and V03, rendered and viewed.
+  - **Tests:** ch11 (and walkable), hero_field_snaps, field_camera, zone_cast.
+  - **Not done, open for the beat sheet (M4-C11-01) and rendering:**
+    - Wading the nave: the hall floor stays at y 0 under its film.
+    - The underwater rig below −2.05.
 
 ## Review log

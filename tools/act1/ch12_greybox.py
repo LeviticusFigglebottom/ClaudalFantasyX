@@ -140,7 +140,7 @@ def keth_pass() -> dict:
         "block_color": COL_PATH,
         "blocks": blocks,
         "ramps": ramps,
-        "spawns": {"PassFoot": [0.0, 0.0, 3.0, 0.0], "RamArena": [40.0, 12.0, -40.0, 270.0],
+        "spawns": {"PassFoot": [-1.0, 0.0, 1.0, 0.0], "RamArena": [40.0, 12.0, -40.0, 270.0],
                    "FromQuellan": [102.0, 18.0, -40.0, 90.0]},
         "marks": {"knot_post": [-1.6, 6.0, -43.6, 90.0], "cold_ledge": [95.0, 18.0, -47.0, 0.0]},
         "actors": {},
@@ -148,7 +148,7 @@ def keth_pass() -> dict:
                   # M4-A2P-012 (docs/kb/plan/act2/chapters/ch12.md): K01 is C1's breath at the cold ledge; the cords
                   # on the first flight, the Ram's shelf under the seeping wall, the knotted post (C5)
                   "K02": {"pos": [2.5, 4.5, -8.0], "look_at": [0.0, 3.0, -22.0], "fov": 50},
-                  "K04": {"pos": [36.0, 14.5, -36.0], "look_at": [48.0, 14.0, -49.0], "fov": 50},
+                  "K04": {"pos": [44.0, 15.5, -33.0], "look_at": [48.0, 13.5, -46.0], "fov": 50},  # M4-A2P-0421: re-aimed on the dressing
                   "K05": {"pos": [-0.5, 7.6, -42.0], "look_at": [-3.0, 7.4, -44.5], "fov": 35}},
         "camera_volumes": climb_volumes("Flight", [((0.0, 0.0, -6.0), (0.0, 6.0, -34.0)),
                                                     ((6.0, 6.0, -40.0), (34.0, 12.0, -40.0)),
@@ -219,7 +219,7 @@ def quellan() -> dict:
         "actors": {},
         "shots": {"Q01": {"pos": [-2.0, 3.0, 2.0], "look_at": [40.0, 2.0, -2.0], "fov": 50},
                   # M4-A2P-012: C4 at night, Ysolde and Asha at the well
-                  "Q02": {"pos": [47.0, 1.7, 7.0], "look_at": [52.4, 1.3, 10.0], "fov": 40}},
+                  "Q02": {"pos": [50.0, 1.7, 6.0], "look_at": [53.5, 1.2, 10.0], "fov": 40}},  # M4-A2P-0421: out of House2S
         "camera_volumes": [
             {"id": "StreetWest", "mode": "pan_follow", "at": [15.0, 1.5, 0.0], "size": [30.0, 4.0, 8.0],
              "pos": [-5.0, 5.0, 6.0], "look_at": [15.0, 0.5, 0.0], "fov": 50, "priority": 1},

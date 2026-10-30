@@ -752,6 +752,88 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - Next: the Ch11 mount (0411).
 - MERGE-READY @ e64595ada
 
+- **M4-A2P-0411 Ch11 mount: done, in review.**
+  - The Vey and Lowlight carry env-art's Water, Tide and Dressing. The Lamp Engine's model stands in its hall.
+  - The well's mouth is ringed off, so Pell kneels beside it, not over it.
+  - Five shots viewed. Checks: ch11, walkable, snaps, field_camera, zone_cast.
+  - Next: the Ch12 mount (0421).
+- MERGE-READY @ bbcea317b
+
+- **M4-A2P-0421 Ch12 mount: done, in review.**
+  - Keth Pass, Quellan and the Cloudloom carry env-art's Dressing.
+  - PassFoot moved off the trough (the snaps test caught it). Q02 and K04 re-aimed on the dressing.
+  - Five shots viewed. Checks: ch12, snaps, field_camera, walkable.
+  - The Lead's 09:00 list is done: FAST-TRACKs 1–6 and the Ch10, Ch11 and Ch12 mounts.
+- MERGE-READY @ f07c42fdd
+
+- **LEAD-ANSWERED (10-30 10:07, PC pass 5):**
+  - **Row 34:** pass 5 ran "@ 7dc3ab41", which does **not** contain my double-submit fix c33c39015 (it is on
+    integration now, 15d80358 and later). So pass 5 hasn't seen the fix.
+    - **Traced the walk's mechanism:**
+      1. The `ch06` chapter row dwells, then the `spawns` row stands Rhen on every Brine Shoals spawn.
+      2. The raid trigger near LastRidge fires Ch6's own story fight (`ch06_inquisitor`; that's the name plate in
+         pass 3's still).
+      3. The walk's battle row then calls `BattleRequest.start(ch06_ridge_skippers)` while that fight is opening.
+    - **Before the fix:** the second submit stole the request, so the battle fell to the sandbox stage.
+    - **With the fix:** the second submit is dropped, and the story's Inquisitor fight plays in its own arena. In
+      real play this race can't happen, since a zone never submits twice.
+    - **PC-QUEUE:** to see `ch06_ridge_skippers` itself, start it before the `spawns` row, or wait for
+      `zone.story.is_free()` and `not BattleRequest.opening()` (tools/gpu_bench/slice_sweep.gd, the PC's lane).
+  - **Row 39, done (my LEAD-ASK is answered):** Asha and Toma now follow Rhen on the night Strand.
+    - Their stage bodies are hidden by default and shown only when a scene needs them: the ebbing beat shows both,
+      and the new `toma_talk` beat shows Toma for his talk by the fire and hides him again after.
+    - RoadGate was already right.
+    - test_ch09_thread checks both followers on the Strand. ch09 is 13/0, plus snaps and field_camera.
+  - **Row 58** (Ch1, with slice-polish):
+    - **Framing:** the Hullgnaw and the Child are in frame now (my M3-CIN-1235/1236 framing).
+    - **Darkness:** that's the Ch1 storm-night grade, which is lighting for env-art and rendering. LEAD-ASK: route
+      it there.
+    - **o07:** the name board doesn't read at that distance and Sadi isn't in it. Ch1 staging is slice-polish's
+      (the Lead, 10-29). I'll take it if the Lead hands it back.
+  - **Next:** "Ch10 shots after these". Ch10's shots are on the dressing now (M4-A2P-0401 viewed F01–F03).
+    Re-checking the rest against the dressing next.
+- MERGE-READY @ a063bbad3 (rows 39 fixed, 34 traced)
+
+- **Act I clean-up of my open M3 rows:**
+  - **M3-HER-1159:** the four spawns are off the KNOWN list. The ferry's two and Corrow's Bastion already passed.
+    Coilspire's Encounter fallback now uses a layout-defined spawn (GreyboxZone keeps one if the layout gives it).
+  - **M3-HER-1154:** already fixed in big14, so it's set to review.
+  - **M3-HER-1164:** row 39, set to review.
+  - **M3-BPR-427:** its status now actually reads review.
+  - Checks: field_camera, ch08, snaps, zone_story.
+  - The Ch10 dressing check is also done: F04 and R03–R06 viewed. R03's roost backdrop is the child's own home, and
+    R06's sky is the scripted tilt up with the motes.
+- MERGE-READY @ 1529927af
+
+- **M3-UI-204, done and in review:**
+  - Save shrines that save and travel at Brine Shoals, Tamsule and Corrow.
+  - Tamsule's trader, inn and outfitter.
+  - Coilspire's niche gives Sailmaker's Needle.
+  - Also fixed two map POIs whose spawns I'd moved (PassFoot, the Sanctum's Gate). test_zone_map_pois is green.
+  - Checks: shrine, ch06, ch07, ch08, coilspire, zone_map_pois, chapter_flow, validate.
+- MERGE-READY @ f111ce028
+
+- **env-art-b's requests:**
+  - **M4-A2P-103:** the Sanctum is lit only from below (sun 0, fill 0.2). Done, in review.
+  - **M4-A2P-104:** the court's after-the-trap lamp sets are swapped by `ch14_declared_heretics`. Done. Its ripple
+    half waits on the Ch14 escape scene.
+  - **For env-art-b:** re-render `ch13_sanctum_*`, and bind the gilt lamp stands to the two anchors.
+  - Checks: ch13, ch14, layout, field_camera, validate.
+- MERGE-READY @ 57dec16dc
+
+- **BACKLOG EMPTY (10-30, after the Lead's 09:00 and 10:07 lists):**
+  - **Done:** FAST-TRACKs 1–6; the Ch10, Ch11 and Ch12 mounts; rows 39 (fixed) and 34 (fixed; traced for the PC);
+    M3-HER-1154, 1159, 1164; M3-UI-204; M4-A2P-103; M4-A2P-104 (part 2).
+  - **PC-QUEUE:** re-check rows 34 and 39 on this head (the recipe for 34 is above).
+  - **Waiting on others:**
+    - Row 49 (M3-CIN-1251, integration-qa).
+    - Row 58's darkness (env-art and rendering) and its o07 (slice-polish).
+    - The Act II beats (story's scenes).
+    - M4-A2P-019 (Lattice and gear).
+    - M4-A2P-104's ripples (the Ch14 escape scene).
+  - **Not mine (Ch1–Ch3, slice-polish's):** the other `todo` rows addressed to cinematics: M3-HER-1119, 1155, 1156,
+    1160; M3-CHR-543; M3-CIN-1231, 1234; M3-C09-201.
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
