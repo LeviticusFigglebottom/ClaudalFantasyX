@@ -81,7 +81,7 @@ characters track.
 - **Owners:** combat (row, skills, ward names); creatures-b (anchors, `stop`, `ward`); battle-presentation (the freeze
   read); rendering (the mirror); audio (stings).
 
-## Open questions
+## Open questions (answered: ADR 0204, 2026-10-30; the drafts stand unless marked)
 
 1. Still Water: Stop on every foe, or a big delay for everyone but the party? Draft: Stop on every foe for one turn,
    so the timeline shows it plainly.

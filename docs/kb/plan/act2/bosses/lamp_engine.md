@@ -107,7 +107,7 @@ nothing goes below −0.6. Crawler: body, six legs of 2, two arms of 2, plus `vf
 - **Owners:** creatures-b (clips, anchors, ring parts, the crawler's mend walk); combat (both rows, AI, repair, suite);
   battle-presentation (the mend shot, the core release); rendering (the warm lift); audio (the knock, the mend).
 
-## Open questions
+## Open questions (answered: ADR 0204, 2026-10-30; the drafts stand unless marked)
 
 1. How many crawlers: two at the start, or none until `call_the_tenders`? Draft: two at the start, dormant (they
    ignore the party until the engine is struck), plus one call per phase to replace a lost one.

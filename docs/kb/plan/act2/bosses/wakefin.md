@@ -56,7 +56,7 @@ breach arcs over the rail, and the sweep stays above the deck by at least 0.3 m.
 | idle | `idle`, `idle_b` | — (4.0 s / 1.6 s) | it circles; `idle_b` the blade dips and rises | — | the wake |
 | ready | `ready` *(proposed)* | — (1.6 s) | the blade slows and turns its flat to the party | — | — |
 | `fin_cut` *(proposed)* | `attack` (built) | 0.0–0.8 s: the seam brightens along its path and the water hisses → 0.8 s (1.6 s) | it breaches along the rail; the blade sweeps across the deck | the front line (all foes in slots 0–1) | sound first, then glow; `boss_sweep` |
-| `sound_dive` *(proposed, charge)* | `dive` *(proposed; the built `cast` retimed)* | — (1.4 s, holds) | the blade sinks and the water goes dark | untargetable until it surfaces (glide/ambush, M4-A2P-021); the timeline shows its return | choreo blade-under gather; camera pressure |
+| `sound_dive` *(proposed, charge)* | `dive` *(proposed; the built `cast` retimed)* | — (1.4 s, holds) | the blade sinks and the water goes dark | **evasion up while dived, with a clear telegraph** (ADR 0204: not untargetable); the timeline shows its return | choreo blade-under gather; camera pressure |
 | `wakefin_rise` *(proposed)* | `rise_strike` *(proposed)* | 0.0–0.7 s: a ring of sea-glow opens under one hero's side of the barge → 0.85 s (1.8 s) | it breaches straight up under the rail, bill first | one foe (the ring's hero) | the ring is the telegraph; `target` shot |
 | `wake_wash` *(proposed)* | `wake_wash` *(proposed)* | 0.0–0.6 s: it turns hard away, tail lobes high → 0.75 s (1.6 s) | a tail slap sends its wake over the deck | all foes: delay | water over the deck, never over the bier |
 | `bill_strike` *(proposed, phase 2)* | `bill_strike_close` *(proposed)* | 0.0–0.55 s: it rears at the bow, bill raised → 0.7 s (1.4 s) | a stab over the bow | one foe | `boss_blow` |
@@ -85,17 +85,18 @@ breach arcs over the rail, and the sweep stays above the deck by at least 0.3 m.
 ## Balance, engine, owners
 
 - **Curve:** Act II boss. **Role answer:** Liss or Rhen ready a strike for the surface turn; Asha heals the wash.
-- **Engine:** untargetable while dived (glide and ambush, M4-A2P-021); darkness-lit telegraphs (presentation gap,
+- **Engine:** an evasion-up status while dived (existing status data; ADR 0204, not untargetable); darkness-lit telegraphs (presentation gap,
   M4-A2P-062).
 - **Owners:** creatures-b (the breach bone, new clips, anchors); combat (row, skills, AI, suite); battle-presentation
   (glow and sound telegraphs, the barge rock); rendering (the seam brightening, the glow ring); audio (stems exist;
   the hiss and the wake).
 
-## Open questions
+## Open questions (answered: ADR 0204, 2026-10-30; the drafts stand unless marked)
 
 1. **Echo check, to confirm.** A fight against a great fin from a boat's deck is a beat in the inspiring game (an
    early fight on a ship against the fin of something colossal). Ours differs in form and stage: it is one whole
    animal (a sailfish, its body shown on every breach), not a part of a giant; there are **no adds landing on the deck**;
    the fin is never a separate target; and the barge is unlamped and drifting at night. The draft keeps it so. The Lead
    should confirm, and nothing should ever add deck adds or a "fin" part to this fight.
-2. Should `sound_dive` use the full untargetable rule, or only an evasion boost while dived?
+2. ~~Should `sound_dive` use the full untargetable rule, or only an evasion boost while dived?~~ **Answered (ADR 0204):
+   evasion up while dived, with a clear telegraph; never untargetable.**

@@ -107,7 +107,7 @@ where the fleece tears). **Prop:** `cord` bone on `neck_1` so the herd-cord swin
 - **Owners:** creatures-b (wool swap M4-CRB-001, new clips, anchors); combat (row, skills, field, suite);
   battle-presentation (snow field VFX staging); rendering (snow particles and breath); audio (stems exist; bellow).
 
-## Open questions
+## Open questions (answered: ADR 0204, 2026-10-30; the drafts stand unless marked)
 
 1. Is the `torn_fleece` phase wanted, or should the Ram stay single-phase with the field as its only escalation?
 2. Echo check: a giant mountain beast on a pass is generic. The fight's beats (someone's animal, the herd-cord, the

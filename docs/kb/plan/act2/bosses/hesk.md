@@ -78,7 +78,7 @@ None as an ally. Every clip from `idle`'s first frame. The held form (`release`)
 - **Owners:** combat (row, skills); creatures-b (anchors, `cleanse`, `mending`); battle-presentation (summons, the knot
   line); audio (stings).
 
-## Open questions
+## Open questions (answered: ADR 0204, 2026-10-30; the drafts stand unless marked)
 
 1. Is `hesk_mending` a separate skill, or does `cord_lift` carry the Regen too? Draft: separate, so each gets its own
    clip and the player sees two different gestures.

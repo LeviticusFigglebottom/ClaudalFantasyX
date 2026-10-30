@@ -85,7 +85,7 @@ from `idle`'s first frame. The Act III held form (`release`) is built and is Act
 - **Owners:** combat (row, skills, copy); creatures-b (anchors, `deep_well`, `echo`); battle-presentation (summons,
   column); rendering (the column's one exception to the bound-light rule); audio (stings).
 
-## Open questions
+## Open questions (answered: ADR 0204, 2026-10-30; the drafts stand unless marked)
 
 1. Copy limits: does `nhoa_echo` copy a boss's charge skill, or only ordinary skills? Draft: ordinary skills only.
 2. Echo check: Ice in fourth place is the residual overlap ADR 0015 accepted. Her setting is unfrozen and her beat is

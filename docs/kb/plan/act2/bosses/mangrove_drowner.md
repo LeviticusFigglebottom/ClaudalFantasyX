@@ -99,7 +99,7 @@ every frame; only `root_stamp_risen` lifts and plants a pair.
   (mote lift and water field VFX staging); rendering (`glimmer_lift` look); audio (stems exist; SFX for snag and
   stamp); ui (bestiary, the part's broken state).
 
-## Open questions
+## Open questions (answered: ADR 0204, 2026-10-30; the drafts stand unless marked)
 
 1. Does breaking a snag root lower the haul's power or remove the Rooted effect? Draft: it weakens the haul (as the art
    sheet says), and Rooted stays the snag's.
