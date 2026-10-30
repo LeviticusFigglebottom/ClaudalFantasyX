@@ -562,6 +562,14 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - After the merge I'll tune the Lamp Engine, the Ram and the Wakefin with the sim, and add their suites.
 - MERGE-READY @ fd5b4414e
 
+- **Combat seat: the provisional Act II bosses are tuned (1,000 seeds, in a scratch worktree of
+  battle-presentation 1dbfed6d5):**
+  - The values are in balance_targets.md ("Act II creature bosses"), with a reply on M3-BPR-419.
+  - I apply them, and add the suites, once their rows are on the integration branch.
+  - The Lamp Engine's role band stays report only until Liss's part repair (M4-A2P-022) exists.
+  - Next: Ch16's cameras.
+- MERGE-READY @ (this push)
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.

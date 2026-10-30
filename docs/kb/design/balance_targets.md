@@ -266,3 +266,26 @@ Root Stomp and a two-turn charged Drowning Grasp.
 - **The Act II curve's 70–90%** needs the same escalation mechanic the Matron's note asks for (M3-C05-06).
 - **The tuning that mattered:** the fight's length. At 4,800 HP, `role_answer` (which never heals) lost by attrition at
   every damage level. At 3,600 HP behind defence 120, Shell Breaker's answer carries it.
+
+### Act II creature bosses: the combat seat's tune for battle-presentation's PROVISIONAL rows (1dbfed6d5)
+
+- **Status:** battle-presentation wrote the rows so the staging (M3-BPR-419) could go live. These values were tuned in a
+  scratch worktree of their branch (1,000 seeds). The chapters seat applies them, and adds the three suites, once the
+  rows reach the integration branch.
+- **Common to all three:**
+  - Loadout `ch08_seawall` until M4-A2P-019.
+  - Swell `good`.
+  - Smart is report only (≥ 30 mean turns), on the Drowner's grounds: smart won 100% at every tune.
+
+| Boss (suite) | Party (reserve) | Stats changed from the provisional row | `naive` | `role_answer` | `smart` (turns) |
+|---|---|---|---|---|---|
+| Lamp Engine (`ch11_lamp_engine`) | Rhen, Asha, Liss (Toma, Ysolde) | HP 5600 → 4000, strength 28 → 22, magic 26 → 20, defence 110 → 140, magic defence 40 → 60; `opened` defence 30 → 80, magic defence 20 → 40 | 2.7 | **report only** (9.7) | 100 (68) |
+| Avalanche Ram (`ch12_avalanche_ram`) | Rhen, Asha, Kerrid (Toma, Ysolde) | HP 6200 → 4000, strength 36 → 22, defence 44 → 120; `torn_fleece` defence 22 → 40 | 2.2 | 61.3 | 100 (43) |
+| Wakefin (`ch15_wakefin`) | Rhen, Asha, Toma (Ysolde, Kerrid) | HP 7000 → 5000, strength 38 → 30, magic 18 → 16, agility 22 → 16, evasion 8 → 4, defence 36 → 120 | 0.0 | 70.3 | 100 (43) |
+
+- **Why the defence wall:** the sim's `role_answer` opens with a Break skill the foe lacks: Kerrid's Fluke Cleave on
+  the Ram, Toma's Shell Breaker on the Wakefin. At the rows' low defence, nothing separated a naive player from the
+  answer. As provisional, every policy lost by attrition (role 0–5%).
+- **The Lamp Engine's answer is Liss's part repair (M4-A2P-022), which is not data yet.**
+  - Liss has no Break skill, so `role_answer` can't beat naive, and her row stays report only until the mechanic lands.
+  - Re-tune it then.
