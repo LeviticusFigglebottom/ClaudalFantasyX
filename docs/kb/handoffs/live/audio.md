@@ -3,6 +3,27 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ HEAD (see the commit after this line): Act II audio, all of the cue sheet that needs no beat sheet or encounter.**
+  - **Every Act II zone plays:** `music.json` zone rows for all 14 levels, and 14 beds of their own (plain git under `assets/audio/act2/`, ADR 0175). The Act II audit is at **0 in every section** (`act1_audio_audit.py --act 2`); Act I is still 0.
+  - **Loops:** `cloudloom` (the weaving-hall) and `sanctum_of_the_level` (one chord that never changes, flat by design).
+  - **Battle:** `battle_heretic` (ADR 0204 §9; v2 darkened, measured against it). The people bosses `malcor_venn` and `abiding_guard`, two stems each. The seven Vowbound stings (nhoa, hesk and ethren bound and summoned; kesh bound).
+  - **Scene cues:** farewell_tide, peace_wedding_break, lagoon_escape, kerrid_at_sea, hollowmere_answers (Liss sings, ADR 0204 §10), sefir_go_home (the Order's one sung lullaby), act2_break.
+  - **SFX:** the root, snow and slate footsteps; the four variant creatures' own voices (M4-AUD-1001; scree_crawler with snow and grit, ADR 0204 §2); unravel's sound.
+  - **Review fixes, each found by viewing spectrograms or level over time before commit:**
+    - lacquer_court had no floor;
+    - kesh_bound clipped when decoded;
+    - sefir_go_home's piano sat 35 dB under the choir;
+    - kerrid_at_sea's string filled the voice band;
+    - the bosses' rolls cut their seams;
+    - abiding_guard's guard stem sat at −36 LUFS.
+  - **Checks:** validate_data 0 errors; taskboard --check; test_audio_loudness, test_audio_data and test_act1_audio_audit OK (the 105 MiB budget included); Godot `--filter=audio` 175/0, `footstep` 23/0, `music` 10/0; every render byte-identical twice. **Skipped:** screenshots (no scene touched), Blender.
+  - **For combat:** `scree_slide` still has `"element": "ice"`, against ADR 0204 §2 (no frost from Ch12 to Ch15).
+  - **Waiting on others:**
+    - the `@music` lines need Story's Act II `.dlg`;
+    - the boss encounter and phase rows, `court_steps` and the six boss-intro stings need combat's encounter ids;
+    - the remaining §4 SFX families need their features: ripples and bells, drain and rooted, repair, part breaks, darkness telegraphs, heresy and reader UI.
+  - **PC-QUEUE (real speakers):** the 14 beds against their zone music; sefir_go_home's sung lullaby; kerrid_at_sea under a voice; the bosses' stem changes.
+
 - **MERGE-READY @ f86639b3: Act II, Ch10 and the two set pieces.**
   - **Ch10 zones play:** `music.json` zone rows for Ossa Fen and Reedhollow (the existing finals). Their own beds: `fen_dusk` (insects, frogs, drips in tannin water, root creak, a far fen bird) and `reedhollow_roost` (reed wind, the lagoon, a cook-fire, the clutch's wordless hum in the Kirru mode).
   - **The footstep surfaces root, snow and slate** (ADR 0204 §11), 48 files, and footsteps.json rows naming the ground of all 14 Act II levels. The Act II audit's Footsteps section is at 0.
