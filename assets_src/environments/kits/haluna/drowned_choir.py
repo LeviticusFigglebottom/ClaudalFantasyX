@@ -12,6 +12,13 @@ Built in the Haluna kit (its import kind and materials), as the other Act II zon
                       down to the sand. Origin at the dais's centre.
   pale_rim_flats      the white sand shallows from r 25 to the horizon (600 m), just under the water, sandbars
                       breaking toward the surface; origin the Choir's centre.
+
+The Pale Rim's wade (M4-A2P-046, env-art-b; docs/kb/plan/act2/zones/ch16_pale_rim.md):
+  pale_rim_strand     the walked strip of the white shallows along X (STRAND_LEN x 60 m): white sand at y 0 (a few
+                      centimetres of relief) under ankle-deep water, falling away under the sea past +-30 m and at its
+                      ends into low sandbars. Origin at its centre.
+  rim_marker_pole     a Cantors' marker pole: a bleached driftwood pole (3.2 m) with a salt-white ceramic ring near the
+                      top and a frayed cloth strip, the only verticals besides the cairns. Origin at its foot.
 """
 
 from __future__ import annotations
@@ -27,7 +34,8 @@ M_PAVING = "kit_iskarra_paving"
 M_DARK = "kit_interior_dark"
 M_SAND = "kit_rim_sand"
 
-TRI_BUDGET = {"choir_singer": (5000, 300), "choir_amphitheatre": (18000, 1400), "pale_rim_flats": (6000, 800)}
+TRI_BUDGET = {"choir_singer": (5000, 300), "choir_amphitheatre": (18000, 1400), "pale_rim_flats": (6000, 800),
+              "pale_rim_strand": (10000, 1000), "rim_marker_pole": (500, 60)}
 
 SINGER_H = 24.0
 HEAD_TILT_DEG = 25.0
@@ -207,4 +215,55 @@ def build_flats(seed: int = 2203) -> list[kc.MeshBuilder]:
     return out
 
 
-TARGETS = {"choir_singer": build_singer, "choir_amphitheatre": build_amphitheatre, "pale_rim_flats": build_flats}
+STRAND_LEN = 400.0
+STRAND_WALK_HALF = 30.0
+STRAND_FALL_TO = 70.0
+M_DRIFT = "kit_driftwood"
+M_CLOTH = "kit_cloth_sand"
+
+
+def build_strand(seed: int = 2204) -> list[kc.MeshBuilder]:
+    out = []
+    hl = STRAND_LEN * 0.5
+    for lod in (False, True):
+        rng = kc.rng_for("pale_rim_strand", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("pale_rim_strand" + ("-lod1" if lod else ""))
+        xs = np.linspace(-hl, hl, 41 if lod else 121)
+        zs = np.concatenate([np.linspace(-STRAND_FALL_TO, -STRAND_WALK_HALF, 4 if lod else 9)[:-1],
+                             np.linspace(-STRAND_WALK_HALF, STRAND_WALK_HALF, 7 if lod else 25),
+                             np.linspace(STRAND_WALK_HALF, STRAND_FALL_TO, 4 if lod else 9)[1:]])
+        X, Z = np.meshgrid(xs, zs, indexing="ij")
+        n = noise.fbm(np.stack([X / 9.0, np.zeros_like(X), Z / 9.0], -1), 3) - 0.5
+        edge = np.maximum(kc.smoothstep(STRAND_WALK_HALF, STRAND_FALL_TO, np.abs(Z)),
+                          kc.smoothstep(hl - 60.0, hl, np.abs(X)))
+        bars = np.clip((noise.fbm(np.stack([X / 40.0, np.ones_like(X), Z / 40.0], -1), 3) - 0.55) * 2.5, 0.0, 1.0)
+        Y = n * 0.06 * (1.0 - edge) + edge * (SAND_Y - 0.3 + bars * 0.45)
+        kc.quad_strip(mb, np.stack([X, Y, Z], -1), mb.material(M_SAND), uv=np.stack([X, Z], -1) / 4.0,
+                      col=(0, 0, 0, 0.5), uv2=(0.9, 0.5))
+        out.append(mb)
+    return out
+
+
+def build_marker_pole(seed: int = 2205) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("rim_marker_pole", seed)
+        mb = kc.MeshBuilder("rim_marker_pole" + ("-lod1" if lod else ""))
+        lean = 0.12 * float(rng.random())
+        top = np.array([lean, 3.2, 0.05])
+        kc.tube(mb, np.array([[0.0, -0.4, 0.0], top * 0.5, top]), np.array([0.07, 0.06, 0.045]), 5 if lod else 8,
+                mb.material(M_DRIFT), cap_end=True,
+                weather=kc.Weathering(moss=0.0, salt=0.9, wet=0.1, erosion=0.6, noise_scale_m=0.3))
+        ring = top * 0.86
+        kc.tube(mb, np.array([ring - [0.0, 0.05, 0.0], ring + [0.0, 0.05, 0.0]]), 0.11, 6 if lod else 12,
+                mb.material(M_CERAMIC), cap_end=True, cap_start=True)
+        if not lod:  # a frayed cloth strip hanging still from under the ring
+            kc.rounded_block(mb, ring + np.array([0.07, -0.45, 0.0]), (0.04, 0.38, 0.004), mb.material(M_CLOTH),
+                             radius=0.002, seg=1, weather=kc.Weathering(moss=0.0, salt=0.6, wet=0.0, erosion=0.5))
+        out.append(mb)
+    return out
+
+
+TARGETS = {"choir_singer": build_singer, "choir_amphitheatre": build_amphitheatre, "pale_rim_flats": build_flats,
+           "pale_rim_strand": build_strand, "rim_marker_pole": build_marker_pole}

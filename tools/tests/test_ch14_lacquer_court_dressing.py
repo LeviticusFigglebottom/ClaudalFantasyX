@@ -89,9 +89,11 @@ class StepHoldArenaTests(unittest.TestCase):
         arenas.loader.exec_module(mod)
         with tempfile.TemporaryDirectory() as tmp:
             mod.main(Path(tmp))
-            written = (Path(tmp) / "lacquer_court_steps" / "lacquer_court_steps.tscn").read_text(encoding="utf-8")
-        committed = ROOT / "assets/environments/arenas/lacquer_court_steps/lacquer_court_steps.tscn"
-        self.assertEqual(written, committed.read_text(encoding="utf-8"), "re-run ansedra_arenas.py")
+            for aid in mod.ARENAS:
+                written = (Path(tmp) / aid / f"{aid}.tscn").read_text(encoding="utf-8")
+                committed = ROOT / f"assets/environments/arenas/{aid}/{aid}.tscn"
+                self.assertEqual(written, committed.read_text(encoding="utf-8"), f"{aid}: re-run ansedra_arenas.py")
+                self.assertIn("KitSlotSwaps", written, f"{aid}: the zone looks over the flat slots")
         a = mod.steps()
         pieces = {p["glb"].rsplit("/", 1)[1] for p in a["pieces"]}
         self.assertIn("wedding_dais.glb", pieces)
