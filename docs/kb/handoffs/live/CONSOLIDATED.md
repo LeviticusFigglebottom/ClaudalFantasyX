@@ -1,5 +1,14 @@
 # CONSOLIDATED HANDOFF: the new Lead starts here
 
+## STATE 2026-10-30 02:20 UTC
+- **PC GPU QA pass 3 is done** (`gpu/act1-qa-3` @ f56c2e82, on big18): 14 rows fixed, 10 still open, 21 new (43–63). Every row is routed to its owner.
+  - Hitches still over 1 s: Ch5, Pemakar, Ch6, Ch8, Ch9 and Corrow at night (1.3–1.8 s). ui-menus has them.
+  - Next: the PC's items 2–5, then pass 4 (open rows and hitches only) after big19 merges.
+- **big17:** 187 of its shots are approved on the integration branch (d987cc6b), and the rest are capturing.
+  - drownbell_flood (battle-presentation) and battle_arena_terrace (env-art-b, since fixed) were rejected.
+- **big18's shots are skipped.** The big18 gate session built **big19** (`lead/gate-big19` @ d4101e05) and runs its non-render checks now, then one shot pass after `BASELINES big17 APPROVED`.
+- **ADR 0204:** the Act II design defaults. The Act II prep docs per lane are drafted on the track branches (docs/kb/plan/act2/<lane>/).
+
 ## STATE 2026-10-30 00:25 UTC
 - **The PC is back** (`session_01UPFyEABtMznCLCcXCPdmda`, desktop-jj0o43o) and briefed: Act I real-GPU QA pass 3 on lead/gate-big18 → `gpu/act1-qa-3`, every track's PC-QUEUE item, the Act I perf budget, its own RND work, and the Blender verifies. Cloud gate sessions keep running the batches.
 - **ADR 0203:** Act II starts the moment Act I passes the completion gate. That means the audit at zero, the continuous playthrough, a green batch with main fast-forwarded, no open Act I real-GPU rows, and hitches in budget. Evidence goes in `docs/kb/qa/act1_complete.md`, plus the tag `act1-complete`.
