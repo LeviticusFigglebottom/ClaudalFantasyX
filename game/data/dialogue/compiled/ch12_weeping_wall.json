@@ -1,0 +1,22 @@
+{
+ "format": 1,
+ "scene": "ch12_weeping_wall",
+ "source": "game/data/dialogue/ch12/ch12_weeping_wall.dlg",
+ "start": "ch12_weeping_wall",
+ "nodes": {
+  "ch12_weeping_wall": {
+   "headers": {"location": "ch12/keth_pass"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "camera", "args": ["K03"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "wait", "args": [5.0], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "camera", "args": ["P06"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "anim", "args": ["avalanche_ram", "lift_head"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "music", "args": ["avalanche_ram"], "kwargs": {"fade": 0.5}, "src": 14},
+    {"op": "line", "id": "ch12_wall_001", "key": "DLG_CH12_WALL_001", "speaker": "ysolde", "emotion": "cold", "voice": "", "src": 15},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 16},
+    {"op": "event", "name": "start_battle", "args": ["ch12_avalanche_ram"], "src": 17}
+   ]
+  }
+ }
+}

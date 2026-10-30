@@ -120,6 +120,11 @@ group_uniforms wet;
 uniform float wet_darken : hint_range(0.0, 1.0) = 0.55; // albedo x 0.55 when soaked
 uniform float wet_roughness : hint_range(0.0, 1.0) = 0.12;
 uniform float wet_flatten : hint_range(0.0, 1.0) = 0.6; // puddle normal flatten
+// The Prologue dressing pass (env-art): 1 reads painted VC.B above the live water as dry grime (rain streaks, an old
+// tide mark), darkening toward col_grime without the wet gloss, which mirrored the bright dusk sky and hid the stains
+// on Iskarra's towers. 0 (the default) leaves every other material as it was.
+uniform float grime_from_wet : hint_range(0.0, 1.0) = 0.0;
+uniform vec4 col_grime : source_color = vec4(0.369, 0.353, 0.298, 1.0); // #5E5A4C
 group_uniforms;
 
 group_uniforms debug;
@@ -302,7 +307,9 @@ void fragment() {
 	// ---- 7. Wetness (VC.B, or under the live water height + capillary band) --------------------
 	float wobble = (det.r - 0.5) * capillary_band_m * 0.6;
 	float tide_wet = 1.0 - smoothstep(water_height_y, water_height_y + capillary_band_m + wobble, wp.y);
-	float wet = clamp(max(vc.b, tide_wet), 0.0, 1.0);
+	float grime = vc.b * grime_from_wet * (1.0 - tide_wet);
+	albedo *= mix(vec3(1.0), col_grime.rgb, grime);
+	float wet = clamp(max(vc.b * (1.0 - grime_from_wet), tide_wet), 0.0, 1.0);
 	// Porous stone darkens most where it is rough and open (cavities soak first).
 	albedo *= mix(1.0, wet_darken * (1.0 - 0.25 * cavity), wet * (1.0 - salt * 0.5));
 	rough = mix(rough, wet_roughness, wet * (1.0 - cavity * 0.5));

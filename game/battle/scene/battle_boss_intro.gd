@@ -47,6 +47,11 @@ var shot_id := ""
 var elapsed := 0.0
 ## Plays even at instant pacing, with skip animations or on a retry (its freeze-frame capture).
 var force_play := false
+## Keys over boss_intro.hero for the next _frame_boss (BattleBossCamera's moments set and clear it).
+var hero_override: Dictionary = {}
+## The arena's occluders, built once per battle (BattleBossHeroShot._occluders): the arena does not move.
+var arena_occluders: Array[Dictionary] = []
+var arena_occluders_built := false
 ## False holds its clock (captures); advance() still moves it.
 var live := true
 ## Whether the screen is still covered by a transition: () -> bool. Unset = SceneRouter.is_busy(). Tests set it.
@@ -58,6 +63,8 @@ var _choreo: BattleChoreo
 var _ctl: BattleController
 var _engine: BattleEngine
 var _pose: Dictionary = {}
+## True once _on_first_turn has framed the boss behind the fade (the reveal keeps that pose).
+var _framed := false
 var _menu_held := false
 var _layer: CanvasLayer
 var _card: Control
@@ -137,6 +144,10 @@ func _on_first_turn(_actor: BattleCombatant) -> void:
 	_state = WAITING
 	_wait_sec = 0.0
 	_hold_menu()
+	# The PC pass 5 row 64: the hero-shot search took 90-170 ms on the first uncovered frame. Framed here, while the
+	# fade still covers the screen, and kept for the reveal.
+	_frame_boss()
+	_framed = true
 	advance(0.0)
 
 
@@ -198,7 +209,9 @@ func _begin() -> void:
 	_state = PLAYING
 	elapsed = 0.0
 	_hold_menu()
-	_frame_boss()
+	if not _framed:
+		_frame_boss()
+	_framed = false
 	_play_intro_clip()
 	_build_card()
 	var bus := get_node_or_null(^"/root/EventBus")

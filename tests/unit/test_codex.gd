@@ -48,7 +48,11 @@ func test_entries_unlock_by_flag_by_record_or_always_and_locked_ones_are_not_lis
 	assert_eq(_ids(m.entries_in(&"world")), [&"glimmer"] as Array[StringName], "only the always entry at first")
 	assert_true(m.entries_in(&"records").is_empty())
 	assert_eq(m.categories()[0]["found"], 1)
-	assert_eq(m.categories()[0]["total"], 12, "locked entries still count (Act I's ten, M3-UI-207's Kirru and Ullari)")
+	assert_eq(
+		m.categories()[0]["total"],
+		19,
+		"locked entries still count (Act I's ten, the Kirru and Ullari, and the Act II world pages)"
+	)
 	flags[&"ch02_met_asha"] = true
 	assert_eq(
 		_ids(m.entries_in(&"world")),
@@ -143,7 +147,7 @@ func test_the_menu_lists_categories_with_counts_and_new_and_shows_a_category_lin
 	var menu := _menu()
 	var cats := menu.categories_page()
 	assert_eq(cats.row_count(), 4)
-	assert_eq(cats.rows[0]["right"], tr("CODEX_ROW_COUNT_FMT").format({"found": 4, "total": 12}))
+	assert_eq(cats.rows[0]["right"], tr("CODEX_ROW_COUNT_FMT").format({"found": 4, "total": 19}))
 	assert_eq(cats.rows[0]["mp"], tr("CODEX_NEW_TAG"), "unread entries: New, in words")
 	assert_eq(cats.rows[3]["mp"], "", "nothing found: nothing new")
 	assert_eq(menu.column, CodexMenu.Column.CATEGORIES)
@@ -201,6 +205,33 @@ func test_a_record_reads_in_its_own_voice() -> void:
 	assert_eq(menu.current_id, &"basin_steps")
 	assert_eq(menu._body.theme_type_variation, &"FlavorLabel", "a record is quoted")
 	assert_eq(menu._sub.text, tr("CODEX_RECORD_TAG"))
+	_free_made()  # the runner has no after_each: no menu may outlive its test
+
+
+func test_a_record_with_a_reader_row_opens_in_the_document_reader() -> void:
+	var was := DocumentReaderModel.records_path
+	DocumentReaderModel.records_path = "res://game/levels/_tests/document_reader/reader_fixture.json"
+	var doc := CodexModel.load_data().duplicate(true)
+	for e: Dictionary in doc["entries"]:
+		if e["id"] == "basin_steps":
+			e["reader"] = "fixture_one"
+	flags[&"codex_basin_steps_found"] = true
+	var menu := _menu(_model(doc))
+	menu.select_category(3)
+	menu.select_entry(0)
+	assert_eq(menu.current_id, &"basin_steps")
+	menu.handle_input(_ev(&"ui_accept"))
+	var reader := menu.reader()
+	assert_true(reader != null and reader.is_open(), "Confirm opens the record in the reader")
+	if reader != null:
+		assert_eq(reader.model.pane_count(), 1, "alone, one pane")
+		assert_false(menu.handle_input(_ev(&"ui_down")), "the reader has the input, not the codex")
+		reader.close()
+		reader.motion().finish()
+	assert_false(menu.reader_open())
+	assert_true(menu.handle_input(_ev(&"ui_up")), "the codex has it back")
+	assert_true(menu.is_open() and _tree().paused, "still open, still paused")
+	DocumentReaderModel.records_path = was
 	_free_made()  # the runner has no after_each: no menu may outlive its test
 
 

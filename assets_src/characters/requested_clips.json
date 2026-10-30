@@ -2,7 +2,16 @@
  "_doc": "M3-CHR-05: the story clips the chapters' dialogue calls (`@anim <hero> <clip>`) past each hero's own clips, built by assets_src/characters/asha/hero_clips.py (see its M3-CHR-05 block for the gesture vocabulary). A spec is `frames` (15 fps) and either `alias` (a clip the hero already has, `reverse` to play it backwards) or a base posture (`from`, default stand; `to` with `change` = [start, end] fractions for a change of posture) plus `keys`: [u, [gesture, ...]] eased between. `like` names a spec in `shared`. One-shots hold their last frame; most gestures settle back to the base. act1-chapters may add clips here (a request task to characters). `field` holds the field-life clips (loops unless noted): idle and talk variants, a listening nod, and look_left/right/up/down key poses (two frames, the head and neck only on the idle's first frame) for a runtime look-at blend; HeroIdleMicro (hero-integration) layers breathing and weight shifts on top.",
  "doc": "Body clips the Act I dialogue (M3, m2-slice) stages with `@anim <hero> <clip>` that the heroes don't have yet: requested from the character track in docs/kb/tasks/M3/M3-CHR-1000-act1-body-clips.md. Until a clip is built its call is skipped at runtime (CutsceneSequencer checks has_animation). tools/tests/test_hero_clips.py allows these and still fails on any call that is neither built nor listed here (a typo). Remove a clip from here when it is built.",
  "task": "M3-CHR-1000",
- "clips": {},
+ "clips": {
+  "asha": ["kneel", "sleep_sitting", "stand_up", "take_hand", "touch", "touch_hair_stop", "turn_back", "wake"],
+  "rhen": ["fit_oil_burner", "give", "grab_hand", "kneel_beside", "knock", "nudge", "sit_beside", "step_back", "take_pole", "tie_knot", "touch", "turn_back", "wake"],
+  "toma": ["bow", "lift", "nod", "sit_back_turned", "turn_back"],
+  "ysolde": ["close_eyes", "hands_on_lectern", "laugh", "let_cords_fall", "read_by_touch", "remove_pin", "withdraw_hand"],
+  "sefir": ["close_ledger", "hold_out_key", "raise_hand", "smile", "square_pages"],
+  "liss": ["give", "hold_out_hand", "lay_page", "light", "look_away", "mark_signature", "palm_on_water", "pick_up", "seat_burner_seat", "shove_lantern", "sing", "sit_beside", "step_back", "take", "take_key", "take_palm", "turn_collar", "wash_hand", "whisper", "wipe"],
+  "kerrid": ["draw_cleaver", "give", "hold_line", "kneel", "nod", "raise_hand", "set_down", "sit_down", "turn_palms"],
+  "pell": ["crest_up", "kneel", "read_knots", "stop", "tie_knot", "turn_back"]
+ },
  "key_tolerance_m": 0.0005,
  "shared": {
   "sit_down": {

@@ -18,6 +18,10 @@ extends Node
 ## --encounter=<id> routes to a field battle instead of --to: it queues a BattleRequest for that encounter (as a
 ## field trigger does, without its stinger) and changes to the field battle scene, so the battle's arena and
 ## enemies load behind the fade as in play.
+## --return=<zone> (with --encounter) measures the way back from a won random fight (the human's playtest: seconds
+## of black after every battle): it enters the zone, routes to the field battle, then routes back to the zone's
+## "Encounter" spawn, and prints that return's stats ("resident": the field kept through the fight, SceneRouter).
+## --no-resident turns the resident field off, to measure the full reload for comparison.
 
 const BUDGETS_PATH := "res://game/data/debug/perf_budgets.json"
 const SECTION := "scene_swap"
@@ -29,6 +33,14 @@ const ARG_FRAME_USEC := "--frame-usec="
 const ARG_RESIDENT_LOADS := "--resident-loads"
 const ARG_WARM_RESIDENT := "--warm-resident"
 const ARG_ENCOUNTER := "--encounter="
+## --warm-scene (M3-HER-1167) also starts the destination zone's loads before the change and lets them finish, as the
+## title does for the zone its highlighted choice enters while it shows.
+const ARG_WARM_SCENE := "--warm-scene"
+## --round-trip=<encounter>: after the change to --to, a field battle for <encounter> and the change back to --to;
+## the stats printed are the return's (the playtest's black screen after a won fight, 2026-10-30).
+const ARG_ROUND_TRIP := "--round-trip="
+const ARG_RETURN := "--return="
+const ARG_NO_RESIDENT := "--no-resident"
 const EXIT_OK := 0
 const EXIT_FAILED := 1
 
@@ -58,6 +70,9 @@ func _run() -> void:
 	var launch := false
 	var frame_usec := 0
 	var warm_resident := false
+	var warm_scene := false
+	var round_trip := &""
+	var back_to := ""
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with(ARG_TO):
 			to = arg.trim_prefix(ARG_TO)
@@ -71,8 +86,16 @@ func _run() -> void:
 			ResidentLoads.run_headless = true
 		elif arg == ARG_WARM_RESIDENT:
 			warm_resident = true
+		elif arg == ARG_WARM_SCENE:
+			warm_scene = true
 		elif arg.begins_with(ARG_ENCOUNTER):
 			to = _queue_battle(StringName(arg.trim_prefix(ARG_ENCOUNTER)))
+		elif arg.begins_with(ARG_ROUND_TRIP):
+			round_trip = StringName(arg.trim_prefix(ARG_ROUND_TRIP))
+		elif arg.begins_with(ARG_RETURN):
+			back_to = arg.trim_prefix(ARG_RETURN)
+		elif arg == ARG_NO_RESIDENT:
+			SceneRouter.keep_field_resident = false
 	if frame_usec > 0:
 		SceneRouter.set_measure_clock(frame_clock(frame_usec))
 	if launch and not cfg.is_empty():
@@ -96,17 +119,58 @@ func _run() -> void:
 		while not resident.is_ready() and warm_frames > 0:
 			warm_frames -= 1
 			await get_tree().process_frame
+	if warm_scene and resident != null:
+		resident.load_scene(to)
+		var scene_frames := int(cfg.get("timeout_frames", 0))
+		while not resident.is_ready() and scene_frames > 0:
+			scene_frames -= 1
+			await get_tree().process_frame
+	if round_trip != &"":
+		await _change_and_wait(to, cfg)
+		await _change_and_wait(_queue_battle(round_trip), cfg)
+		BattleRequest.clear()
+	if back_to != "":  # into the zone, then the fight; the change measured below is the way back
+		var pending := BattleRequest.pending()
+		SceneRouter.change_scene(back_to)
+		await _until_idle(int(cfg.get("timeout_frames", 0)))
+		BattleRequest._pending = pending  # the zone's arrival may clear it; the fight is still the one queued
+		SceneRouter.change_scene(to)
+		await _until_idle(int(cfg.get("timeout_frames", 0)))
+		to = back_to
 	SceneRouter.last_swap_stats = {}
-	SceneRouter.change_scene(to)
+	SceneRouter.change_scene(to, FieldEncounters.RETURN_SPAWN if back_to != "" else &"")
 	var frames_left := int(cfg.get("timeout_frames", 0))
 	# M1-ARC-16: the visible window (the fade lifting plus VISIBLE_MEASURE_FRAMES) ends after is_busy() does.
 	while (SceneRouter.is_busy() or SceneRouter.is_measuring()) and frames_left > 0:
 		frames_left -= 1
 		await get_tree().process_frame
 	var stats := SceneRouter.last_swap_stats
+	if frames_left <= 0:  # out of frames: say what the change was still waiting on (PC pass 4 row 67)
+		var holders := [SceneRouter.swap_holders(), SceneRouter.reveal_holders()]
+		push_warning(
+			(
+				"SceneSwapProbe: timed out busy=%s measuring=%s swap holders %s reveal holders %s"
+				% ([SceneRouter.is_busy(), SceneRouter.is_measuring()] + holders)
+			)
+		)
 	stats["legacy"] = legacy
 	print("%s %s" % [OUTPUT_TAG, JSON.stringify(stats)])
 	get_tree().quit(EXIT_OK if stats.has("max_frame_ms") else EXIT_FAILED)
+
+
+## Changes to `path` and waits until the change and its visible window are over (or the frame budget runs out).
+func _change_and_wait(path: String, cfg: Dictionary) -> void:
+	SceneRouter.change_scene(path)
+	var frames_left := int(cfg.get("timeout_frames", 0))
+	while (SceneRouter.is_busy() or SceneRouter.is_measuring()) and frames_left > 0:
+		frames_left -= 1
+		await get_tree().process_frame
+
+
+func _until_idle(frames: int) -> void:
+	while (SceneRouter.is_busy() or SceneRouter.is_measuring()) and frames > 0:
+		frames -= 1
+		await get_tree().process_frame
 
 
 ## Queues a field battle for `encounter` (BattleRequest.submit with the change recorded, not made) and returns the

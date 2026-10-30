@@ -1,0 +1,58 @@
+// Ch12 B09 "Cloudloom" (P → C, 3 min), B10 "Hesk" (C, 3.5 min) and B11 "Prayers." (C, 1 min).
+// act2_ch12.md §2 B09-B11. RULE 1: Cloudloom is stone, cord and sky; NOTHING FROZEN. K05: the open-roofed
+// weaving-hall, thousands of keth stirring in the thin wind, a white floor. K06: NOON: the cords' shadows on
+// the floor like writing; the whole floor is a page. C02: Hesk, a great condor whose feathers are knotted
+// cords lit from inside, a keth bundle in one talon (bound light, still). C03: the binding: the fifth verse
+// comes down from the open sky (`hesk_bound`, a plain reader's voice; no words written here, Audio's
+// Lamptongue); the shadows on the floor move as if the writing were rewritten; the sleeve reaches S5.
+// C04: Hesk's head turns to one dark old bundle above the dais (a turn only). C05: Ysolde reads it by touch;
+// HER FACE DOESN'T CHANGE: that is the tell. C06: Toma watching her. B11: she lies, kindly and plausibly,
+// and walks away down the aisle first, faster than she climbed it.
+title: ch12_hesk
+location: ch12/cloudloom
+---
+@letterbox on
+@camera K05
+@music cloudloom fade=2.0
+@wait 4.0
+@camera C01
+@mark asha hesk_dais walk
+@wait 3.0
+@camera K06
+@wait 5.0
+@camera C02
+@vfx glimmer_bound at=hesk count=1
+@wait 3.0
+@camera C03
+@anim asha raise_staff
+@music hesk_bound fade=0.0
+@wait 8.0
+@vfx glimmer_bound at=asha count=5
+@wait 2.0
+<<set $ch12_hesk_bound = true>>
+@camera C04
+@anim hesk turn_head old_bundle
+@wait 3.0
+@camera C05
+@mark ysolde old_bundle walk
+@anim ysolde read_by_touch
+@wait 5.0
+@camera C06
+@anim toma look_at ysolde
+@wait 3.0
+@music cloudloom fade=2.0
+@camera C07
+@mark asha old_bundle walk
+Asha [neutral]: What do they say? #line:ch12_prayers_001
+Ysolde [neutral]: Prayers. A pilgrim's devotions. The Cantor who stayed here was Ullari: they tie everything. #line:ch12_prayers_002
+@anim ysolde let_cords_fall
+Ysolde [neutral]: It is very old wool. #line:ch12_prayers_003
+@camera C08
+@mark ysolde aisle_out walk
+@anim rhen look_at ysolde
+@anim toma look_at ysolde
+@wait 3.0
+<<set $ch12_ysolde_lied = true>>
+@letterbox off
+@camera release
+===

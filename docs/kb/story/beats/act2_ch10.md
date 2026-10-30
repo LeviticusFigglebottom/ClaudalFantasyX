@@ -54,12 +54,12 @@ Shot ids: F01–F04 are ossa_fen.md's composed shots; the rest are proposed in �
 | B01 | **Pell stops at the edge** | `ch10/ossa_fen` FenEdge | 16:40 | C | 1.5 | O01, O02 | `silence` → `ossa_fen` | Act II's first image: one of them standing back while the others walk on. | `ch10_started` (exists) |
 | B02 | **The root-walks** | `ch10/ossa_fen` | 16:45 | P | 9.0 | F01, O03, O04 | `ossa_fen` | The fen as Kirru country: lashed roots, egrets, tea-dark water; random fights; the side pocket. | `ch10_found_scrape_mark` (optional) |
 | B03 | **The dead channel** | `ch10/ossa_fen` DrownerArena approach | 17:30 | C | 1.0 | F03, O05 | `ossa_fen` → `silence` | Nothing green. Lights caught in the roots, held, unmoving. | — |
-| B04 | **Boss: the Mangrove Drowner** | `ossa_fen_roots` (arena) | 17:35 | P | 7.0 | battle | `mangrove_drowner` (p1 → p2 `uprooted`) | The act's first boss; breaking a root frees a light, and it goes *up*. | `ch10_drowner_felled` |
+| B04 | **Boss: the Mangrove Drowner** | `ossa_fen_roots` (arena) | 17:35 | P | 7.0 | battle | `mangrove_drowner` (p1 → p2 `uprooted`) | The act's first boss; breaking a root frees a light, and it goes *up*. | `ch10_drowner_defeated` |
 | B05 | **What went up** | DrownerArena | 17:50 | E | 1.5 | O06, O07 | `silence` → `reedhollow` (distant) | The party saw something they've never seen. Nobody has a word for it yet. | — |
 | B06 | **The causeway** | `ch10/reedhollow` Gate | 18:00 | C | 2.5 | R01, R02, R03 | `reedhollow` | Welcome with a door shut: the humans are let in, Pell is not. | `ch10_reached_reedhollow` (exists), `ch10_pell_kept_out` |
 | B07 | **Reedhollow at evening** | `ch10/reedhollow` | 18:05 | P | 5.0 | F04, R04, R05 | `reedhollow` | A people who keep nothing of their dead. The name-shell cords; a gap where one hung. | — |
 | B08 | *Side scene: "Why do they swim?"* (optional) | the ring, a platform | any, before B09 | E | 3.0 | R06 | `reedhollow` (stripped) | A child's question, and Asha with no Order answer to give. | `ch10_child_asked`, `ch10_asha_answered_child` (choice) |
-| B09 | **The farewell-tide** | `ch10/reedhollow` Shore, the clutch's stone | 18:20 | C → E (held input) | 3.0 | F02, T01–T06 | `farewell_tide` | **The answer the game is built around.** The motes lift straight up into the stars. | `ch10_tide_witnessed` |
+| B09 | **The farewell-tide** | `ch10/reedhollow` Shore, the clutch's stone | 18:20 | C → E (held input) | 3.0 | F02, T01–T06 | `farewell_tide` | **The answer the game is built around.** The motes lift straight up into the stars. | `ch10_farewell_tide_seen` |
 | B10 | **Outside the causeway** | `ch10/reedhollow` Gate (outside) | 18:35 | C | 1.5 | R07, R08 | `farewell_tide` (tail) → `silence` | Pell and Kerrid, the two outsiders, outside together; the first held glow. | — |
 | B11 | **"Why would they want to go down?"** | the Gate at dawn | 05:40 | E | 2.0 | R09, R10 | `reedhollow` (dawn, sparse) | Asha asks the question she has carried from Corrow, and Pell answers it plainly. | `ch10_asha_asked_pell`, `ch10_complete` |
 
@@ -124,7 +124,7 @@ See §5.
 
 ### B06. The causeway (C, 2.5 min)
 - **R01:** Reedhollow at the fen's heart. A ring of reed platforms round a dark lagoon, woven roost-shells on poles, and the shore with the clutch's stone (greybox; ossa_fen.md §4). The Kirru are already watching from the platforms: very tall, very still, crests half-lifted. They knew the party was coming, and they heard the Drowner fall.
-- **R02:** at the causeway gate, **the eldest who still swims**: an old Kirru woman, grey at the muzzle, crest white. (Name: **Owa-of-the-Clutch**, or the eldest only; Narrative's call. Checked against `tools/banned_terms.txt`.) She looks at the humans one by one, long and plain.
+- **R02:** at the causeway gate, **the eldest who still swims**: an old Kirru woman, grey at the muzzle, crest white. Her name is **Owa** (approved by ADR 0204 §4; banned-terms clean). The party learns it from the clutch, never from her. She looks at the humans one by one, long and plain.
   - At **Kerrid** her crest lifts a little, the way Pell's did on the Corrow road (act1_ch09 B09; Kirru can smell anchored motes: pell.md). She says nothing to him or of him. **Rule 4:** the beat is a look, never a line.
   - The eldest: *"You cut the roots. The three are lifted. Come in."*
   - **R03:** then she looks past them at Pell, at the blank shell on his throat.
@@ -158,7 +158,7 @@ See §5.
 - **T03 (E, hold):** **the cloud breaks.** A gap opens straight overhead (color script `ch10`: "cloud breaks for the farewell-tide") and the first stars show in it. The motes rise toward the gap in slow vertical spirals and turn from held cyan to `glimmer_lift` gold as they climb (color rule 1's hue lerp, once each). The hero frame is **F02**: the clutch's backs to the camera, the cords of name-shells, the motes going straight up into the stars.
 - **T04 (E, the prompt changes to "Release"):** the song reaches its top note and holds it. **The clutch turns its back to the water**, all at once, every Kirru, so the dead are not anchored by being watched (bible §8). On release the song ends. The motes go up into the gap and are gone.
 - **T05 (C):** Asha. **She has not turned around.** She is facing the water with her hands open, and her face is the whole beat: she led thousands down four nights ago and called it right. Ysolde gently turns her by the shoulder, a technical instruction as always: *"Turn around. They asked us not to stay watching."* Asha turns. Rhen is already turned (he copies the Kirru: he always does what the room does). Toma turns last, slowly, a temple warrior turning his back on the dead for the first time in his life.
-- **T06 (C):** the cloud closes. The shore is dark. Asha, very quietly (reads `ch09_ebbing_danced`; the one line act1_ch09 §3 promises): *"Mine went down."* Sets `ch10_tide_witnessed`.
+- **T06 (C):** the cloud closes. The shore is dark. Asha, very quietly (reads `ch09_ebbing_danced`; the one line act1_ch09 §3 promises): *"Mine went down."* Sets `ch10_farewell_tide_seen`.
 - ~25 words. **Rule 1:** nothing in T02–T04 drifts sideways or down, and no mote goes toward the singers, the party or Kerrid (who isn't here: B10).
 
 ### B10. Outside the causeway (C, 1.5 min)
@@ -190,12 +190,12 @@ Declared in `game/data/flags.tres` when the gate passes (M4-A2P-010 adds them). 
 |---|---|---|---|
 | `ch10_started` | B01 (exists) | flow | — |
 | `ch10_found_scrape_mark` | B02 side pocket (optional) | Ch12 | At Cloudloom Liss compares Ama's keth to "the Kirru's standing marks": counting things the Order never read |
-| `ch10_drowner_felled` | B04 | flow, Ch11 | The Lamp Engine's release (Ch11) is "the second time"; Ysolde: "That is twice." |
+| `ch10_drowner_defeated` | B04 | flow, Ch11 | The Lamp Engine's release (Ch11) is "the second time"; Ysolde: "That is twice." |
 | `ch10_reached_reedhollow` | B06 (exists) | flow | — |
 | `ch10_pell_kept_out` | B06 | flow (`party` steps), Ch18 | Pell's return to Reedhollow in Act III walks back through the same gate |
 | `ch10_child_asked` | B08 side scene | Ch18 | The child is older at the Act III revisit and asks Asha a second question |
 | `ch10_asha_answered_child` | B08 choice | Ch16 | At the Choir, Asha's refusal includes the child's question in her own words |
-| `ch10_tide_witnessed` | B09 (critical) | Ch11, Ch16, Ch18 | Nhoa's Swell (*Farewell-Tide*) is named for what Asha saw; Act III's farewell-tide lesson |
+| `ch10_farewell_tide_seen` | B09 (critical) | Ch11, Ch16, Ch18 | Nhoa's Swell (*Farewell-Tide*) is named for what Asha saw; Act III's farewell-tide lesson |
 | `ch10_asha_asked_pell` | B11 (critical) | Ch16 | The doubt becomes a refusal |
 | `ch10_complete` | B11 (end) | flow (Ch11 gate) | — |
 
@@ -231,7 +231,7 @@ Declared in `game/data/flags.tres` when the gate passes (M4-A2P-010 adds them). 
 
 **Phases (two):**
 1. **Rooted (100–50%).** It is a tree first, and its roots are the fight.
-   - **The drag:** a telegraphed charge (`root_drag`-class, one turn's warning on the timeline). The water rises along the roots and pulls the party's footing: the field rule gives **Slow** to the front hero for a turn, so the timeline visibly stretches.
+   - **The drag:** a telegraphed charge (its own skill, `drowner_haul` in the bosses lane; `root_drag` is the root crab's; one turn's warning on the timeline). The water rises along the roots and pulls the party's footing: the field rule gives **Slow** to the front hero for a turn, so the timeline visibly stretches.
    - **The snagged roots:** two **break parts**, the two root clusters with the most snagged lights (the sheet's proposal; M3-CRE-621's notes). Breaking one frees its lights: a short in-battle beat where three or four motes rise straight up past the dead crown (VFX, M4-A2P-058). This is **the first upward lift in the game**. Breaking both roots shortens phase 1.
    - **Weakness:** fire (dead wood), so Ysolde is the role answer. Kerrid's armour break works on the roots.
 2. **Uprooted (below 50%).** It tears the trunk up and stands on three root-clusters. It reaches for the drag every other turn, and its crushing roots strike the back line. It is faster and less armoured, so Rhen's turn manipulation is the answer.
@@ -381,6 +381,6 @@ The farewell-tide's choreography and the hold-then-release pacing are yours.
 
 ## 10. Open questions for review
 
-1. **The eldest's name:** "Owa" is a proposal (checked against the banned-terms list). Narrative may leave her unnamed ("the eldest"), which suits the Kirru's sparing speech.
+1. ~~The eldest's name~~: **resolved by ADR 0204 §4: Owa.**
 2. **Kerrid in Reedhollow:** the plan default keeps him outside with Pell (B06, B10). If the flow needs him walkable in the ring, he must still be absent from B09's frames.
 3. **"Ressa" spoken in B07:** this sheet names her once, as Pell's sister, so Ch11's binding lands as a recognition. If Narrative wants Ch11's reveal colder, cut the name from the bark and let Pell name her first in Ch11.

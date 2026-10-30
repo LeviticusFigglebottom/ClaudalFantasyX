@@ -285,6 +285,24 @@ def swapped(p: dict) -> dict:
     return p
 
 
+# The weir's stone (the PC's pass 3, row 62: its slabs read as flat grey boxes): the kit's dry dressed stone is pale
+# and salt-white everywhere, but the sea runs over this one. Darker, wet-dark below the crest, weed in a band at the
+# waterline and the salt only above it. The kit preview's weir row takes the same material (pemakar_layout.py).
+WEIR_STONE = "kit_weir_stone"  # in the kit's materials folder, so the kit preview (which names slots) can take it
+# The PC's pass 5 (row 62 still flat grey): each block takes its own value (variation 0.4), the relief and the cavities
+# are stronger, and the salt crust and the algae band are wider, so the courses read as separate wet stones.
+WEIR_STONE_OVERRIDES = {"col_tint": "Color(0.9, 0.88, 0.86, 1)", "use_algae": "true", "salt_coverage": "Vector2(0.2, 0.6)",
+                        "normal_strength": "1.7", "cavity_darken": "0.6", "variation_value": "0.4",
+                        "variation_warmth": "0.06", "detail_scale_m": "0.3", "salt_band_m": "Vector2(0.4, 10000)"}
+# Soaked stone keeps its relief and most of its value (the shader's defaults, 0.6 flatten and x0.55, made the whole
+# wet weir one smooth dark face).
+WEIR_STONE_ADDED = {"algae_band_m": "Vector2(-0.9, 0.35)", "algae_coverage": "Vector2(0.5, 0.95)",
+                    "wet_darken": "0.75", "wet_flatten": "0.15", "wet_roughness": "0.3",
+                    "col_algae": "Color(0.239, 0.29, 0.161, 1)"}
+# ... and the water arriving over the crest runs (the kit's flowing spill water), not the channels' still near-mirror,
+# which read as a flat pale panel on the crest under a grey sky
+WEIR_SLOTS = {"kit_volcanic_dressed": KIT + "materials/" + WEIR_STONE + ".tres",
+              "kit_channel_water": KIT + "materials/kit_water_spill.tres"}
 # The kit's flat StandardMaterial metals and lacquers (M3-ENV-1326): the shrine-boxes, gates, bell frame and forge read
 # as plastic at player height. Zone looks by slot on every Pemakar piece (`kit_material_paths`), and on the Pemakar
 # pieces Ashcrown borrows (ch05_ashcrown_dressing.py reads PEMAKAR_SLOTS).
@@ -308,7 +326,8 @@ def dressing() -> dict:
         row = {k: v for k, v in p.items() if k != "at"}
         row.update(at=[r3(p["at"][0]), r3(p["at"][2])], y=r3(p["at"][1]))
         if p["piece"] == "sea_cut_weir":
-            row.update(at=[r3(WEIR_AT[0]), r3(WEIR_AT[2])], y=r3(WEIR_AT[1]))
+            row.update(at=[r3(WEIR_AT[0]), r3(WEIR_AT[2])], y=r3(WEIR_AT[1]), material_paths=dict(WEIR_SLOTS))
+            row.pop("materials", None)  # the preview's override is a path (its own dresser); the zone's is material_paths
         if p["piece"] in STORY_PIECES:
             row["block"] = STORY_PIECES[p["piece"]]
         if p["piece"] == "ash_plume":
@@ -357,6 +376,8 @@ def dressing() -> dict:
         "far_lights": far,
         "kit_material_paths": dict(PEMAKAR_SLOTS),
         "pieces": pieces,
+        # the beaches either side of the harbour shelve into the sea (tools/act1/shore_walls.gd)
+        "edge_walls": zl.shore_walls(ZONE / "pemakar_shore_walls.json"),
     }
 
 
@@ -368,11 +389,36 @@ def write_plume_night() -> None:
     (ZONE / f"{PLUME_NIGHT}.tres").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+# The night fill (PC QA pass 3 row 49: the harbour read near-black from the field camera, the party lost). The
+# preview's night grade takes its ambient from a near-black sky, so the layout's fill colour did nothing; the zone's
+# copy takes a colour ambient (as the day grade does) and the layout's `environment` row carries a moonlit fill.
+NIGHT_SUN = {"pitch_deg": -55.0, "yaw_deg": -20.0, "energy": 0.45, "color": "#5a6c94"}
+NIGHT_FILL = {"ambient_color": "#6c7898", "ambient_energy": 0.8}  # pass 4: the harbour's foreground still near-black at 0.6
+
+
 def copy_grades() -> None:
     for name in ("pemakar_night_environment.tres", "pemakar_dusk_environment.tres", "pemakar_day_environment.tres",
                  "pemakar_sea_material.tres"):
         text = (PREVIEW / name).read_text(encoding="utf-8").replace(RES_PREVIEW, RES_ZONE)
+        if name == "pemakar_night_environment.tres":
+            assert text.count("ambient_light_source = 3") == 1
+            text = text.replace("ambient_light_source = 3", "ambient_light_source = 2")
         (ZONE / name).write_text(text, encoding="utf-8")
+
+
+def night_fill() -> None:
+    """The night `sun` and `environment` rows (one-key text edits: the layout is hand-formatted and act1-chapters
+    edits it too)."""
+    text = LAYOUT.read_text(encoding="utf-8")
+    g = json.loads(text)
+    for key, want in (("sun", NIGHT_SUN), ("environment", dict(g["environment"], **NIGHT_FILL))):
+        have = g[key]
+        if have == want:
+            continue
+        old = json.dumps(have)
+        assert text.count(old) == 1, old
+        text = text.replace(old, json.dumps(want))
+    LAYOUT.write_text(text, encoding="utf-8")
 
 
 # --- the one-time move of the story points ----------------------------------------------------------------------
@@ -471,7 +517,7 @@ def relayout() -> None:
         "the kit's frame, tools/act1/ch05_pemakar_dressing.py: the harbour a quay at the shore, the market and the "
         "forge on tier 0, the inn on tier 2, the graves on tier 4, the crown channel on tier 9). It was a greybox, "
         "flat for the controller (no step-up)")
-    g["sun"] = {"pitch_deg": -55.0, "yaw_deg": -20.0, "energy": 0.25, "color": "#3a4a6a"}
+    g["sun"] = dict(NIGHT_SUN)
     blocks = []
     for b in g["blocks"]:
         if b["id"] in DROPPED:
@@ -555,10 +601,14 @@ def main() -> None:
         relayout()
     if "--weir-relayout" in sys.argv:
         weir_relayout()
+    night_fill()
     (ZONE / "pemakar_collision.json").write_text(json.dumps(collision(), indent=1) + "\n", encoding="utf-8")
     (ZONE / "pemakar_dressing.json").write_text(json.dumps(dressing(), indent=1) + "\n", encoding="utf-8")
     for name, params in KIT_LOOKS.values():
         (ZONE / name).write_text(zl.bronze_material(name, params), encoding="utf-8")
+    (ROOT / "assets/environments/kits/pemakar/materials" / (WEIR_STONE + ".tres")).write_text(
+        zl.copy_material(KIT + "materials/kit_volcanic_dressed.tres", WEIR_STONE, WEIR_STONE_OVERRIDES, WEIR_STONE_ADDED),
+        encoding="utf-8")
 
 
 if __name__ == "__main__":

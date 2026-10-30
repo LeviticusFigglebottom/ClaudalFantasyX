@@ -28,6 +28,8 @@ var _name: Label
 var _initial: Label
 var _face: Texture2D
 var _face_down := false
+## Where the HP and MP numbers' slot ends (the gauges' top).
+var _numbers_bottom := 0.0
 var _hp_label: Label
 var _mp_label: Label
 var _hp: HudGauge
@@ -76,6 +78,7 @@ func setup(metrics: Dictionary, c: BattleCombatant, label: String, portrait_tint
 	_mp_label = _label(&"HudNumber", Rect2(mp_x, strip, mp_w, num_h))
 	_hp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_mp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_numbers_bottom = bar_y
 	_hp = HudGauge.new(&"hp")
 	_hp.low_fraction = HudLayout.num(_m, "low_hp_fraction")
 	_hp.hatch_px = HudLayout.num(_m, "hatch_px")
@@ -107,6 +110,10 @@ func refresh(animate: bool, drain_sec: float = 0.0) -> void:
 	_mp.set_value(combatant.mp, combatant.max_mp, sec)
 	_hp_label.text = "%d/%d" % [combatant.hp, combatant.max_hp]
 	_mp_label.text = "%d" % combatant.mp
+	# The Act I UI pass (2026-10-30): at a larger text size a number outgrew its slot downward onto its gauge; its
+	# bottom stays on the gauge's top (it grows up into the status strip). At 100 % it keeps its place.
+	for l: Label in [_hp_label, _mp_label] if UiSettings.shared().text_scale() > 1.0 else []:
+		l.position.y = minf(l.position.y, _numbers_bottom - maxf(l.size.y, l.get_combined_minimum_size().y))
 	_refresh_swell(sec)
 	var low := _hp.is_low() or combatant.hp <= 0
 	_sync_face()

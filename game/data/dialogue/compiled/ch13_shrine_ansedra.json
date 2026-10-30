@@ -1,0 +1,18 @@
+{
+ "format": 1,
+ "scene": "ch13_shrine_ansedra",
+ "source": "game/data/dialogue/ch13/ch13_shrine_ansedra.dlg",
+ "start": "ch13_shrine_ansedra",
+ "nodes": {
+  "ch13_shrine_ansedra": {
+   "headers": {"location": "ch13/ansedra"},
+   "ops": [
+    {"op": "if_not", "cond": ["flag", "ch14_declared_heretics"], "to": 3, "src": 5},
+    {"op": "line", "id": "ch13_shrine_001", "key": "DLG_CH13_SHRINE_001", "speaker": "", "emotion": "", "voice": "", "src": 6},
+    {"op": "goto", "to": 5, "src": 5},
+    {"op": "line", "id": "ch13_shrine_002", "key": "DLG_CH13_SHRINE_002", "speaker": "", "emotion": "", "voice": "", "src": 8, "tags": ["long"]},
+    {"op": "goto", "to": 5, "src": 7}
+   ]
+  }
+ }
+}

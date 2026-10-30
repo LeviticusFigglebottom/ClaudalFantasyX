@@ -1,0 +1,18 @@
+// Ch12 B05 "The weeping wall" (C, 1 min). K03: a Lit Age retaining wall far older than the pass, drowned
+// glimmer seeping out of its joints in thin sheets of cold held light (never frozen: rule 1). P06: the
+// Avalanche Ram drinking at the pale pool: still a woolback, three metres at the head, its wool wet and
+// matted (ADR 0204 §2: no ice), seep-light showing through the partings; a frayed red herd-cord on its neck.
+title: ch12_weeping_wall
+location: ch12/keth_pass
+---
+@letterbox on
+@camera K03
+// M4-CIN-1304: K03 holds 5 s on the seep before the Ram lifts its head.
+@wait 5.0
+@camera P06
+@anim avalanche_ram lift_head
+@music avalanche_ram fade=0.5
+Ysolde [cold]: It drank the wrong water. #line:ch12_wall_001
+@letterbox off
+<<event start_battle ch12_avalanche_ram>>
+===

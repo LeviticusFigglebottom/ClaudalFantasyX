@@ -46,6 +46,8 @@ const WORK_SUFFIX := "Work"
 const GREYBOX_MODEL := "Model"
 ## ZoneCast's villager model on an Act I stage actor (M3-CIN-1217; game/levels/act1/zone_cast.gd).
 const ZONE_CAST := "Cast"
+## Where a row's `at` spot is made when the zone has no stand-in for it (a crowd on a greybox that names no actors).
+const CROWD_SPOTS := "CrowdSpots"
 
 ## crowd.json, read once (crowd_data) and its people by id.
 static var _crowd: Dictionary = {}
@@ -76,7 +78,12 @@ func _ready() -> void:
 		# At once, also when added in the zone's own _ready: a zone loaded as the game loads it shows no capsule even
 		# before its first frame (big14 gate). Haluna's shop rows sit inside their bodies under `node_name`
 		# "Villager", where HalunaVillagers.populate (run after) looks, so it skips them instead of doubling them.
-		build()
+		# During a scene change the fade covers the screen until the reveal, which the spread build holds until the
+		# last villager is in, so no capsule is ever seen either way (ADR 0111 amendment 4).
+		if _router_changing():
+			_build_spread()
+		else:
+			build()
 	set_process(auto_build)
 
 
@@ -106,16 +113,57 @@ func build() -> int:
 	if _built:
 		return villagers.size()
 	_built = true
+	var rows := _begin_build()
+	var by_id: Dictionary = {}
+	for row: Variant in rows:
+		_add_row(row, by_id)
+	_finish_build(rows, by_id)
+	return villagers.size()
+
+
+## ADR 0111 amendment 4 (the PC's pass 3: Pemakar's entry stayed over 1 s hidden): adopting a villager moves its
+## whole model out of the tree and back under a FieldNpc (100-240 ms headless each), so built during a scene change
+## the layer adds one villager a frame and holds the router's reveal until the last is in. The fade stays opaque.
+func _build_spread() -> void:
+	if _built:
+		return
+	_built = true
+	var router := get_tree().root.get_node_or_null(^"SceneRouter")
+	router.call(&"hold_reveal", self)
+	var rows := _begin_build()
+	var by_id: Dictionary = {}
+	for i in rows.size():
+		_add_row(rows[i], by_id)
+		if i < rows.size() - 1:
+			await get_tree().process_frame
+			if not is_inside_tree():
+				router.call(&"release_reveal", self)
+				return
+	_finish_build(rows, by_id)
+	router.call(&"release_reveal", self)
+
+
+## True while SceneRouter (when there is one) is changing scene: its fade covers the screen.
+func _router_changing() -> bool:
+	var router := get_tree().root.get_node_or_null(^"SceneRouter") if is_inside_tree() else null
+	return router != null and bool(router.call(&"is_busy"))
+
+
+func _begin_build() -> Array:
 	data = load_data(data_path if data_path != "" else path_for(zone_id))
 	_storm_flag = StringName(str(data.get("storm_flag", "")))
-	var by_id: Dictionary = {}
-	var rows: Array = data.get("villagers", [])
-	for row: Variant in rows:
-		if row is Dictionary:
-			var npc := _make(row as Dictionary)
-			if npc != null:
-				villagers.append(npc)
-				by_id[npc.npc_id] = npc
+	return data.get("villagers", [])
+
+
+func _add_row(row: Variant, by_id: Dictionary) -> void:
+	if row is Dictionary:
+		var npc := _make(row as Dictionary)
+		if npc != null:
+			villagers.append(npc)
+			by_id[npc.npc_id] = npc
+
+
+func _finish_build(rows: Array, by_id: Dictionary) -> void:
 	for row: Variant in rows:
 		if not row is Dictionary or not by_id.has(StringName(str(row.get("npc_id", "")))):
 			continue
@@ -123,7 +171,6 @@ func build() -> int:
 		if by_id.has(mate):
 			(by_id[StringName(str(row["npc_id"]))] as FieldNpc).partner = by_id[mate] as FieldNpc
 	_check_storm()
-	return villagers.size()
 
 
 ## Adds a layer for `zone_id` under `zone` (after the zone has placed any villagers of its own) and builds it; a zone
@@ -137,6 +184,27 @@ static func wire(zone: Node3D, zone_id: StringName) -> VillagerLayer:
 	layer.zone_id = zone_id
 	zone.add_child(layer)
 	return layer
+
+
+## A row's `at` ([x, y, z] or [x, y, z, yaw_deg] in the zone's space): the empty stand-in at `path`
+## (CrowdSpots/<name>) made for it, for a zone whose greybox names no actor there (the Act II towns' crowds).
+func _spot(root: Node, path: String, at: Variant) -> Node3D:
+	var parts := path.split("/")
+	if parts.size() != 2 or parts[0] != CROWD_SPOTS or _vec3(at) == Vector3.INF:
+		push_warning(
+			"VillagerLayer %s: an `at` row's stand-in must be %s/<name>, not %s" % [zone_id, CROWD_SPOTS, path]
+		)
+		return null
+	var holder := root.get_node_or_null(CROWD_SPOTS) as Node3D
+	if holder == null:
+		holder = Node3D.new()
+		holder.name = CROWD_SPOTS
+		root.add_child(holder)
+	var spot := Node3D.new()
+	spot.name = parts[1]
+	spot.transform = offset_transform(at)
+	holder.add_child(spot)
+	return spot
 
 
 ## The FieldNpc a zone already put on `stand_in` (itself, or a child), or null.
@@ -153,12 +221,21 @@ func _make(row: Dictionary) -> FieldNpc:
 	var root := _root()
 	var id := StringName(str(row.get("npc_id", "")))
 	var stand_in := root.get_node_or_null(NodePath(str(row.get("stand_in", "")))) as Node3D
+	if stand_in == null and row.has("at"):
+		stand_in = _spot(root, str(row.get("stand_in", "")), row["at"])
 	var crowd_id := StringName(str(row.get("crowd", "")))
 	var person := crowd_person(crowd_id) if crowd_id != &"" else {}
 	if crowd_id != &"" and person.is_empty():
 		push_warning("VillagerLayer %s: %s names no crowd person %s" % [zone_id, id, crowd_id])
 		return null
-	var adopted := placed_on(stand_in) if stand_in != null and person.is_empty() else null
+	var placed := placed_on(stand_in) if stand_in != null else null
+	if placed != null and placed != stand_in and not person.is_empty() and not placed in villagers:
+		# a crowd person replaces a villager the zone placed earlier in another's model (HalunaVillagers' shop bodies,
+		# which populate before the layer builds), so one body shows; a group's other people are the layer's own
+		stand_in.remove_child(placed)
+		placed.free()
+		placed = null
+	var adopted := placed if person.is_empty() else null
 	var model := stand_in.get_node_or_null(NodePath(GREYBOX_MODEL)) as Node3D if stand_in != null else null
 	var cast := stand_in.get_node_or_null(NodePath(ZONE_CAST)) as Node3D if stand_in != null else null
 	if cast != null and not person.is_empty():

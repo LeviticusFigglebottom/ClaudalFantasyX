@@ -4,6 +4,30 @@
 
 The gap (the human's playtest note): battles had no action animation. This track adds a listen-only presentation layer: choreography, a clip contract, a camera director, the specials, the intro and outro. Docs: `docs/kb/tech/battle_presentation.md`.
 
+## 2026-10-30 ~17:30: the Lead's 17:04 (big25 merged in at 9795b3f3)
+**MERGE-READY @ 064c9e46.** The conduit crawler's 3 and the four Vowbound's 19 battle effects are generated, now that
+their rows are on integration (06a51e5c). Checks on the merged tree: `--filter=vfx` 46/0, `--filter=vowbound` 117/0,
+`--filter=act2` 78/0, validate_data clean, both generators' `--check` clean.
+- **test_battle_act1_ability_vfx (red on integration since the Vowbound rows landed):** it needs every Swell technique
+  to have its own effect, and the_seven, farewell_tide, pass_cord and still_water had none. Fixed by 06a51e5c.
+  `--filter=act1_ability_vfx` 5/0 at 19f9abe6.
+- Also in this range: a called Vowbound kept clear of the timeline (55e54edd, the sweep's ch04_derelict_leeches;
+  screen_spread 3/0).
+- Next: the Ch10–Ch13 boss intros. On integration that is the Drowner, the Lamp Engine (now with two conduit
+  crawlers) and the Avalanche Ram; Ch13 has none. Re-rendering them and the Lamp Engine's moves.
+
+## CURRENT STATUS (2026-10-30 15:00; newest entry first under "NEW ACCOUNT" below, at the 14:50 heading)
+**MERGE-READY @ a5aa7e63** (the branch head). Every item from the Lead's 14:09, 14:48 and 15:00 messages is done and pushed:
+| Item | Commit | Check |
+|---|---|---|
+| Rank overlap and the command-menu safe area (creatures' audit) | aa227a57 (c552664f, 3d65ec00) | `--filter=battle` 826/0; six fights viewed |
+| Row 64: the camera search before the fade | 7c3307df (+ 65e776af) | reveal frame 1.2–2.6 ms headless; boss 88/0 |
+| Row 61: the Surge framing | ef997f3d | SELF-RENDERED and viewed; camera 65/0, boss 86/0, arena 18/0 |
+| The glimmer swatch / hit | 4c4a3dd3 | `--filter=battle_vfx` 10/0 on big21 + this branch |
+| Act II foe-skill effects | 65ea933e, 8d0fe783..f2bbb673, 6f3608a7 | every Act II encounter's skills have effects. The 3 newest (conduit crawler) and the Vowbound's 19 are written as their rows land. I found 3 such skills, not 6. |
+- After big22/23 lands: run `python3 tools/vfx/gen_act2_ability_vfx.py` once (I will, on my next integration merge).
+- In flight: the Act I encounter sweep (batch 5 running), then Ch6 and Ch8.
+
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_015hKkhtpX67kS4yZeA8AAhv`. Integration branch `claude/undertow-lead-handoff-ze8rrn` merged in
 (c6a960ab).
@@ -104,6 +128,245 @@ Session `session_015hKkhtpX67kS4yZeA8AAhv`. Integration branch `claude/undertow-
     Kahre, the shop tier).
   - The integration branch's coverage reds.
 
+**MERGE-READY @ afe59523** (+ this log commit): the Act II creature bosses' PROVISIONAL rows and staging, and two Act I
+sweep fixes.
+- **LEAD-ANSWERED (03:44): the Act II boss rows, PROVISIONAL (1dbfed6d).**
+  - enemies.json:
+    - mangrove_drowner: Ch10, L9, 5200 HP; phase uprooted at 50%;
+    - lamp_engine: Ch11, L10, 5600 HP; opened at 50%;
+    - avalanche_ram: Ch12, L11, 6200 HP; torn_fleece at 40%;
+    - wakefin: Ch15, L13, 7000 HP; close_circle at 40%.
+  - Each row has its creatures.json model and phases, lore, and `"provisional": true`. 15 skills come from
+    creatures-b's sheets, and none of them use ice (ADR 0204).
+  - encounters.json: ch10_mangrove_drowner, ch11_lamp_engine, ch12_avalanche_ram and ch15_wakefin, on M3-BPR-419's
+    arenas. **Not yet placed in zones** (that is chapters' job).
+  - **For act1-chapters (the chapters' combat seat):** tune these with the sim against the Act II boss band
+    (balance_targets.md: naive ≤ 3%, role_answer 55–80%, smart 70–90%). No suite exists for them yet.
+  - Request **M3-BPR-428**: an evasion-up status for Sound Dive (ADR 0204 #3), and the Ram's snow field.
+  - Their skills' effects are in gen_act2_ability_vfx.py (23 Act II skills), and test_battle_act2_ability_vfx
+    covers phase skills.
+- **On stage (26db1af3, afe59523):**
+  - The Wakefin's seat is in the water past the barge's back rail (boss_seats; its blade had stood out of the deck
+    planks), and its blows stay in place (style_by_actor).
+  - The Drowner has a seat and a fitted rest frame. Its root cage had filled the frame and its top was cut off.
+  - The whole-party sweeps (ram_bellow, wake_breach, wake_wheel) play in place.
+  - SELF-RENDERED and viewed the four bosses' arena previews:
+    - the Wakefin's black fin cuts the dark water beyond the rail;
+    - the whole Drowner stands beside a readable party;
+    - the Lamp Engine and the Ram read whole (no change).
+- **For the Lead at merge:** on big18, creatures-b moved the Reach's seat to [-5.0, 0, -2.4] (a654ccc5, GPU QA rows 35
+  and 36), and this branch's boss_seats line adds the Wakefin and the Drowner. Keep their Reach value plus this
+  branch's two new rows (the scratch merge does exactly that).
+- **Act I sweep fix (21ef24f9 + 26db1af3):** the tallest foes are seated farthest from the camera (spacing.tall_to_back).
+  - On the causeway the Lantern Eel had hidden the Gull Harrier at rest, and in the harrier fight the gull hid the
+    crab. Foes of equal height keep their own slots.
+  - Test test_battle_seat_order fails without it.
+  - **Multi-foe battle shots move (their seating): the gate views them.**
+- **Checks run:**
+  - Godot `--filter=battle` **819 run, 0 failed** (fresh user dir, on 26db1af3);
+  - on afe59523 (data only): `--filter=` boss_camera 8/0, act2_bosses 5/0, arena 18/0, seat_order 2/0;
+  - earlier: ability_vfx 6/0, act2 6/0, encounter 1/0, boss 85/0, set_piece_shots 4/0, party_kits 4/0;
+  - validate_data 0/0, taskboard --check, gdlint, gdformat, and gen_act1/2 --check.
+- **Skipped:** the full manifest (ADR 0205; the gate views the moved battle shots and the four boss arena previews),
+  Blender (none touched), coverage (no game/battle core .gd change).
+
+**The Act I encounter sweep, batch 2** (on big18 + this branch at e9d38ec4): ch03_causeway_shore, ch03_causeway_harrier,
+ch01_wickfry, ch01_oil_slug, ch01_shaft_limpet and ch01_scuttlers.
+- Every automatic check is clean: the arena is right, every landed hit and status has its effect, and no framing
+  issue.
+- Contact sheets viewed:
+  - The causeway's eel-over-gull was fixed by the seat order.
+  - The Underway fights read in their dark arena.
+  - wickfry and oil_slug end in one action, so they have few stills.
+- ch01_hullgnaw hit the batch cap after its opening (viewed: it reads), so it leads batch 3.
+- Batch 3 is running: hullgnaw, the two Underway fights, and Ch4's leeches, Hermit and Spar-Wraith.
+
+**MERGE-READY @ ac34fe8b** (+ this log commit; integration merged in at 1060a593):
+- The items:
+  - drownbell_flood (9524f9f0);
+  - GPU QA rows 57 and 61 (921e5fec);
+  - the encounter sweep's fixes: the bystander-hidden contact (75b2ebea, ab7c9925), the smaller hit cores and the
+    floats in the safe frame (339ddd43);
+  - M4-A2P-060 part 1, the Act II regulars' VFX (65ea933e).
+- **Checks run:**
+  - Godot `--filter=battle` **817 run, 0 failed** (fresh user dir);
+  - `--filter=` camera 60/0, summon 23/0, vowbound 89/0, arena 18/0, boss 84/0, ability_vfx 6/0;
+  - validate_data 0/0, taskboard --check, gdlint, gdformat, and `gen_act1/2_ability_vfx --check`.
+- **Shots self-rendered and viewed:** drownbell_flood, battle_boss_intro_drownbell, battle_choreo_summon,
+  battle_arena_seawall_stairhead_surge, battle_arena_bridal_barge_night.
+- **Shots the gate should view** (the hit cores, the floats and the summon shot can move them): those five, plus any
+  battle_choreo_* or battle_boss_* frame that freezes a contact.
+- **Skipped:** the full manifest (ADR 0205), Blender (none touched), coverage (no game/battle core .gd change).
+- An earlier run showed 4 reds (battle_result_motion, battle_stings). They came from merging the integration branch
+  while the run was going: each file passes 5/0 on the merged tree, and the clean run above is 817/0.
+
+### 2026-10-30 14:50: for the Lead's 14:48. Every item is pushed, MERGE-READY, branch head @ 7973fb7a
+- **All five items are MERGE-READY** (the table below, committed at e32568c2 and 7973fb7a). The overlap and
+  command-menu fix landed at aa227a57: full `--filter=battle` 826/0.
+- **The split with creatures-b** (proposed; creatures-b, please confirm in your log):
+  - **battle-presentation:** the effects data. The three conduit-crawler skills and the four Vowbound's 19 are
+    written in tools/vfx/gen_act2_ability_vfx.py. I run the generator on the first integration merge that carries
+    their skill rows (big22/23).
+  - **creatures-b:** once those rows are in, view each Vowbound's and the crawler's effects on its own model (the
+    anchors and sizes fit the bodies you built). File any misfit to me as a task. I fix the data the same day.
+- **In flight:** sweep batch 5 (the last four Ch4–5 encounters, the Hermit re-run, the stair re-check with the
+  spread), then Ch6 and Ch8.
+
+### 2026-10-30 ~14:10: status for the Lead's 14:09 (for big24)
+| Item | State | Commits |
+|---|---|---|
+| Glimmer element hit | **MERGE-READY**, verified on big21 | 4c4a3dd3 |
+| Row 61 (the Reach's rest frame) | **MERGE-READY**, viewed | ef997f3d |
+| Row 64 (the camera search behind the fade) | **MERGE-READY**: reveal frame 1.2–2.6 ms headless | 7c3307df (+ 65e776af, the particle variants) |
+| Act II foe-skill effects | **MERGE-READY**: the Act II regulars and bosses (65ea933e, 8d0fe783..f2bbb673); act1-chapters' 3 new conduit-crawler skills and the Vowbound's 19 are written as their rows land | 6f3608a7, 97e22896 |
+| Rank overlap and the command-menu safe area | **MERGE-READY @ aa227a57**: full `--filter=battle` 826/0 | c552664f, 3d65ec00, aa227a57 |
+
+- **Act II effects:** act1-chapters' and gate-big22's skills.json hold 3 Act II foe skills with no effect (brush_jab,
+  crawler_mend, crawler_tend). Those are in FOES_PENDING. On gate-big22's data, gen_act2_ability_vfx writes them
+  with the Vowbound's 19, and `--check` is clean. **After big22/big23 merge, run `python3 tools/vfx/gen_act2_ability_vfx.py`
+  (or I will on my next integration merge).**
+  - I found 3 such skills, not 6. The only other candidates (drowning_grasp, tide_gather) are on older branches.
+- **Rank overlap (BattleScreenSpread):**
+  - At spawn, on the fight's rest frame, foes whose boxes share more than 20% of the smaller step apart. The left
+    foe steps away from the party, and the right foe steps back. A foe on the command menu steps back or right.
+  - No step lands a foe in another's footprint, on the menu or in a melee lane. A lone foe keeps its seat.
+  - Viewed: tideline, the stair's tortoises, the flats' crabs, both underway fights and the fen's root crabs.
+  - Allowance: the causeway's and the flats' Crabs are boxed in by the Eel and the Gull. Their leg tips may reach
+    56 px over the menu's top edge (`spacing.screen.menu_edge_px`), but never their bodies.
+  - Baseline drift: the opening line-up moves in any multi-foe fight, so the gate re-renders the battle shots.
+
+### 2026-10-30 ~11:xx: the Lead's 10:47 item (row 64 is the camera search, after creatures-b's trace)
+**MERGE-READY @ 7c3307df** (+ this log commit). Rows 61 (ef997f3d) and the glimmer hit (4c4a3dd3) were done before.
+- **Row 64's cause** (creatures-b's trace of pc-gpu's big21 capture): BattleBossHeroShot.search ran on the first
+  uncovered frame. There were no pipeline compiles. 65e776af (the particle variants) stays as a harmless guard.
+- **The fix:**
+  - BattleBossIntro frames its boss at the first turn, while the fade covers the screen, and keeps that pose for
+    the reveal.
+  - The arena's occluders are built once per battle.
+  - Meshes shorter than `boss_intro.hero.occluder_min_h_m` (0.5) are no longer occluders. The Drownbell drops from
+    935 occluders to 217 (its saltgrass).
+- **Verified headless** (shared CPU, so the absolute numbers run high):
+  - The reveal frame is 1.2–2.6 ms in the Drownbell, Hermit, Inquisitor (Moll), Matron and Hullgnaw fights.
+  - The search, 27–343 ms, now runs behind the fade, inside ADR 0029's 1 s limit for hidden frames.
+  - Every fight's chosen pose is unchanged with the filter, so no baseline moves.
+  - Tests test_the_boss_is_framed_behind_the_fade and test_short_arena_meshes_are_not_occluders. boss 88/0,
+    camera 65/0.
+- **Still open, mid-fight:** the phase and fall camera moments run the same search after an action, uncovered: about
+  100 ms on the Drownbell headless. The filter and the cache help. If PC-QUEUE shows them over 50 ms, the next step
+  is to search once at the action's start, in the time the action plays.
+- **PC-QUEUE:** re-measure row 64 (the 60 frames after the fade) at tideline, the causeway, the Drownbell, the Hermit
+  and Moll.
+
+### 2026-10-30 ~10:xx: the Lead's 10:07 item (PC pass 5 rows 61 and 64)
+**MERGE-READY @ ef997f3d** (+ this log commit). The glimmer swatch is in 4c4a3dd3 (below).
+- **Row 64 (65e776af): a 73-119 ms frame in the 60 after the fade, in five fights.**
+  - Cause: a ParticleProcessMaterial compiles one shader per feature set. Every battle effect sets a color ramp, and
+    most motes add turbulence. prewarm_materials.json warmed only the bare base spark material, so the first effect
+    after the fade compiled its variant.
+  - Fix: the registry now stages the ramped variant and the ramped turbulent one for the battle scenes
+    (battle_spark_process_ramp{,_turb}.tres).
+  - Test test_battle_vfx_prewarm: every effect layer, as BattleVfx builds it (reduced motion too), matches a warmed
+    variant. It fails without the two rows. `--filter=prewarm` 23/0.
+  - **PC-QUEUE:** re-measure the 60 frames after the fade at tideline, causeway, the Drownbell, the Hermit and Moll.
+    This is the likely cause, but only the GPU can confirm it. If a frame stays over the bar, the next suspect is
+    the runtime actor scenes (boss rigs), which the scene harvest can't see.
+- **Row 61 (ef997f3d):** the Reach's rest frame (rest_by_enemy) is now 6 m back and 1.6 m up at 56° (was 4, 2, 48).
+  - SELF-RENDERED battle_arena_seawall_stairhead_surge, three tries, viewed. Its hand grips the wall beside the
+    party, the arm takes about a fifth of the frame, and the party and the sea read.
+  - Tests: camera 65/0, boss 86/0, arena 18/0.
+
+### 2026-10-30 ~09:xx: the Lead's 09:00 item (the glimmer element's hit)
+**MERGE-READY @ 4c4a3dd3** (+ this log commit): `hit_glimmer` and `map.elements.glimmer` for act1-chapters' glimmer
+element (voice_glimmer, level_hand, still_water).
+- The effect: a soft pale-gold core, then motes rising off the target. It is released glimmer (color_script rule 1:
+  glimmer_lift brightening to glimmer_lift_hi, rising, never the held cyan).
+- Its sound stands in on hit_holy (battle_sfx.json vfx row) until audio writes its own.
+- **Verified on origin/lead/gate-big21 with this branch merged** (scratch worktree, imported): `--filter=battle_vfx`
+  10/0, and validate_data is clean.
+- Merge note: tests/screenshots/shots.json conflicts with big18+ (both sides append at the end). Keep both.
+- **A big21 red that isn't mine:** `test_battle_vowbound_model::test_a_real_vowbound_lands_each_action_on_its_clip_contact`
+  fails for every Kesh action (voice_* and the_seven: no clip of its own, no contact time). It fails the same on
+  big21 without this branch. BattleClips.action_clip reads Kesh's creatures.json row (clip_for), which maps none of
+  his skills. That row belongs to the creatures lane (Kesh's model and clips).
+  - The rest of that suite passes on big21 + this branch: `--filter=vowbound` 116 run, that 1 failed; `--filter=vfx`
+    45/0.
+- **M4-A2P-061 claimed:** the four Act II Vowbound's VFX and finishers are in gen_act2_ability_vfx.py (97e22896).
+  Each is written once its skill row lands (big21), and all 19 are checked there.
+- **Rows 57 and 61, verified on big21 + this branch (SELF-RENDERED, viewed):**
+  - battle_choreo_summon: the side-on frame keeps Ilun clear of the foes and the gull clear of the eel.
+  - battle_arena_seawall_stairhead_surge: the Reach is on its mark, its arm over the wall, with the party on the
+    wall-walk beside it.
+- Also MERGE-READY in this range: the Act II boss intros (c3e45bb0), the Act II boss moves fixed and viewed
+  (8d0fe783..f2bbb673; M4-A2P-062 Sound Dive verified in live play: sea-glow at the fin's crest beside the Breach
+  telegraph), and the Hullgnaw fall frame (8b0e12c2, viewed in a re-run of the sweep).
+
+### 2026-10-30 ~03:xx: GPU QA pass 3 rows 57 and 61 (fixed, 921e5fec), and Act II begins (ADR 0205)
+- **Row 57 (battle_choreo_summon), fixed.** Nobody overlapped on the floor. The summon shot sat 4.2 m behind Ilun
+  on the battle axis, so Ilun covered the foes and the gull read through the eel.
+  - It now looks in from the side (back 1.2, side 6.2, up 1.3, fov 54). Ilun is clear of the foes, and the gull is
+    clear of the eel.
+  - SELF-RENDERED and viewed.
+- **Row 61 (battle_arena_seawall_stairhead_surge), fixed.** The preview put the Reach on Slot0 under the authored
+  camera, which is not what its fight shows.
+  - The preview now seats it on its boss_seats mark and takes the fight's rest_by_enemy fit
+    (BattleCameraDirector.rest_fit, now static and shared). The Reach's arm and head read over the wall, with the
+    party beside them.
+  - **env-art please note:** game/levels/_tests/battle_arenas/battle_arena_preview.gd gets one call, and
+    BattleArenaLayout gains `enemy_slots`.
+- Tests `--filter=` camera 60/0, summon 23/0, vowbound 89/0, arena 18/0, boss 84/0.
+- **No open Act I row is left for this track,** so Act II starts (ADR 0205).
+  - Claimed M4-A2P-060 (Act II battle VFX) and M4-A2P-062 (the Wakefin in the dark).
+  - **M4-A2P-060, part 1 (65ea933e):** tools/vfx/gen_act2_ability_vfx.py gives the eight Act II regulars' skills
+    their own effects (Ch10 to Ch16), with ADR 0204's no-ice rule for Ch12 to Ch15. Test
+    test_battle_act2_ability_vfx. Ownership row added.
+  - **M4-A2P-062, viewed:** the battle_arena_bridal_barge_night preview is dark and readable (the party lit, the sea
+    at night). **But the Wakefin is a capsule there, because it has no enemy row with a `model`.**
+- **LEAD-ANSWERED (03:44, take the default):** the four Act II creature bosses (mangrove_drowner, lamp_engine, avalanche_ram, wakefin) have
+  creatures.json models and full battle staging (M3-BPR-408/418), but no enemies.json or encounters.json rows. So
+  their intros, cameras, the darkness fight and their skills' VFX can't go live or be viewed.
+  - M3-BPR-419 (the request, with the staged ids) is now `todo`.
+  - Who writes those rows: the chapters' combat seat?
+  - Default if no answer: battle-presentation writes PROVISIONAL rows (model, arena, phases from creatures.json, and
+    stats copied from the Act II boss curve with a `_note`) so the presentation can be built and viewed. The combat
+    seat then owns the numbers.
+- **Act II boss intros (c3e45bb0), SELF-RENDERED and viewed:** battle_boss_intro_drowner, _lamp_engine, _ram and
+  _wakefin, on the PROVISIONAL encounters.
+  - The Drowner, the Lamp Engine and the Ram take their hero shots under their cards.
+  - The Wakefin's did not: no low lens was clear of the barge, and the fitted fallback framed its mostly-submerged
+    bounds from 17 m behind the hull, so it was not in shot. Its row now takes `camera.shots.boss_over_rail` (hero
+    and fit off): the fin above the card, with the rail leading to it.
+  - New baselines for the gate: those four shots (never written by this track).
+- **Act II boss moves, viewed** on tools/vfx/boss_camera_sheet (now covering the four Act II creature bosses):
+  - **The Wakefin in the dark (M4-A2P-062):**
+    - Each hit's white core was a flash in the night. effects.json `dark_arenas` now scales every layer's energy in
+      bridal_barge_night by 0.35, except the sea-glow's (BattleVfx.dark_scale). 8d0fe783.
+    - Sound Dive's ring played on the fin's near face against the hull, hidden by the barge. It now centres on the
+      fin, and sea-glow motes climb the fin over the rail. A tried over-rail cut framed mostly deck and was
+      withdrawn. 8d0fe783, 5d16499d.
+  - **The Avalanche Ram:** Toma's shield stood across the Ram and its head left the frame in its charge_side shot.
+    1.0 m up and 7.2 m out keep both. Viewed. 5dc0eb00.
+  - **The Lamp Engine:** its canopy left the top of the rest frame (rest_by_enemy lamp_engine). Viewed. fdc92fbe.
+  - **The Mangrove Drowner:** Root Stamp throws splinters and fen mud. The teal over it was Rising Water's,
+    left on the sheet, which now waits out each move. 3ae3896c, 5d16499d.
+- **Act I sweep, Hullgnaw (batch 3):**
+  - Checks clean: the arena, impacts, framing, and no dead time.
+  - But the victory frame put the fall moment behind the raft's rail and a post. With Rhen alone, the intro's hero
+    shot is a low 30° lens from across the raft. The fall now searches its own higher lenses (moments.fall.hero).
+    8b0e12c2, test test_the_fall_looks_down_from_above_the_intros_lens.
+- **Not mine, for the Lead:** test_cutscene_vfx_hosts fails to parse on this branch with or without my changes. It
+  uses `CutsceneMotes`, which 93c1aa2d removed.
+- **The Act I encounter sweep (the Lead's 23:10)**, so far:
+  - Done: ch02_tideline clean (arena, impacts, framing). The Drownbell's 8 stills were viewed and are clean after
+    the hit-core and float fixes.
+  - The tool runs about 50 min per boss fight on lavapipe, so the caps dropped to 10 actions and 2 min.
+  - The remaining 31 run in background batches between Act II items, and findings go here.
+- **The wedding-trap step-hold (ADR 0204 / act2_plan Ch14):** needs the court-steps encounter (combat) and the
+  `ansedra_lacquer_court` arena, which has no arena scene in arenas.json yet (env-art).
+  - Presentation is ready by role: the ward entry ("Merel's knife") uses BattleEntryCamera and the StairHead_ward
+    mark, as the Fisher Stair does.
+  - The arena needs `StairHead_ward` and `CameraHints/the_stair_head` marks. A request follows when the encounter
+    is drafted.
+
 ### 2026-10-30 ~01:xx: the big17 gate's drownbell_flood regression (the Lead's 00:47), fixed @ 9524f9f0
 - **Cause, mine:** M3-BPR-426's phase moment.
   - The fixture forces the Flood (BossMechanics.check_phases). That now eases the camera onto the bell, and the
@@ -141,8 +404,18 @@ Session `session_015hKkhtpX67kS4yZeA8AAhv`. Integration branch `claude/undertow-
     hides it too, it comes home for the contact. Test: test_a_bystander_across_the_sight_line_keeps_the_default.
   - Re-rendered: the crab shows at every contact.
 - **Next:** view each encounter's contact sheet, fix, file and log. BACKLOG EMPTY only when every encounter is clean.
+- **Batch 3 (10-30), on big21 + this branch:**
+  - Clean (checks clean, stills viewed): ch01_underway_shoals, ch01_underway_limpet, ch04_sail_leeches.
+  - ch01_hullgnaw: checks clean, but the fall moment's frame was behind the rail. Fixed in 8b0e12c2 and viewed.
+  - **ch04_bottle_hermit: a sweep artifact, fixed in the tool.** The red "119" at the screen's corner was Ysolde's.
+    After Ilun's return, the sweep's sim policy swapped her in through BattleEngine.swap, which seats no one on the
+    stage. In play the game swaps through swap_members, which does. She fought, was hit by Glass Flare and fell with
+    no body on the stage. The sweep now syncs the stage after a policy swap. Re-run queued with batch 5.
+  - ch04_spar_wraith: clean (checks clean, stills viewed). At rest the Wraith is small and dark against the night
+    sky; that is the arena's light.
 
 ### PC-QUEUE
+- Row 64 re-measure (7c3307df, the search behind the fade): the 60 frames after the fade at tideline, causeway, the Drownbell, the Hermit and Moll; and the Drownbell's phase and fall moments.
 - GPU QA row 36 (the Reach): re-check in live play on the RX 9070 XT (M3-BPR-425's rest frame).
 - GPU QA row 34: re-check once M3-BPR-427 lands (and hold the zone's random encounters in the walk).
 

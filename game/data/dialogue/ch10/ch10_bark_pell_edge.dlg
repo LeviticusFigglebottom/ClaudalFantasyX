@@ -1,0 +1,10 @@
+// Ch10 B02: Pell at the fen edge, before and after the Drowner. He walks the roots, never the water.
+title: ch10_bark_pell_edge
+location: ch10/ossa_fen
+---
+<<if $ch10_drowner_defeated>>
+    Pell [neutral]: The roots are quiet. They will grow back over the cut. That is right. #line:ch10_bark_pedge_001
+<<else>>
+    Pell [worried]: Something drags in the roots. Walk where the bark is pale. It does not like the pale. #line:ch10_bark_pedge_002
+<<endif>>
+===

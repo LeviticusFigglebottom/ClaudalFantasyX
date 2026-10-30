@@ -1,0 +1,17 @@
+{
+ "format": 1,
+ "scene": "ch13_wenna_mark",
+ "source": "game/data/dialogue/ch13/ch13_wenna_mark.dlg",
+ "start": "ch13_wenna_mark",
+ "nodes": {
+  "ch13_wenna_mark": {
+   "headers": {"location": "ch13/sanctum"},
+   "ops": [
+    {"op": "if_not", "cond": ["flag", "ch11_found_wenna_mark"], "to": 4, "src": 6},
+    {"op": "line", "id": "ch13_wenna_001", "key": "DLG_CH13_WENNA_001", "speaker": "liss", "emotion": "surprised", "voice": "", "src": 7},
+    {"op": "set", "flag": "ch13_found_wenna_mark", "value": ["lit", true], "src": 8},
+    {"op": "goto", "to": 4, "src": 6}
+   ]
+  }
+ }
+}

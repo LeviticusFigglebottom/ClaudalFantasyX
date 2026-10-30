@@ -5,7 +5,9 @@ extends RefCounted
 ## as the tide line rises, "battle_bark" [encounter, line_key, speaker_key] for the lead-in line, and "boss_intro"
 ## [encounter_id, title_key] as a boss's title card shows. The director hands every dialogue_event to on_event;
 ## game/data/audio/battle_stings.json `events` names the row each plays:
-## - `sfx`: the row; `by_arg`: {first argument (the encounter): row} overrides it (the Drownbell's own sting).
+## - `sfx`: the row; `by_arg`: {argument: row} overrides it, tried in argument order: the encounter first (the
+##   Drownbell's own sting), then later ones, so a boss intro staged before its encounter exists (choreo.json
+##   boss_intro.by_enemy, Act II) is keyed by its title key.
 ## - `duck` / `duck_sec`: a mix.json duck held that long under the sting (the boss card dips the battle music).
 ## - `reduced`: with reduced audio on, a row is swapped for its version without sub-bass.
 ## An event with no row is ignored. Listen-only: nothing here writes game state.
@@ -35,8 +37,11 @@ func on_event(event: StringName, args: Array) -> StringName:
 	if row.is_empty():
 		return &""
 	var id := StringName(str(row.get("sfx", "")))
-	if not args.is_empty():
-		id = StringName(str((row.get("by_arg", {}) as Dictionary).get(str(args[0]), id)))
+	var by_arg := row.get("by_arg", {}) as Dictionary
+	for arg: Variant in args:  # the encounter first; then a later argument (a boss intro's title key, M4-A2P-092)
+		if by_arg.has(str(arg)):
+			id = StringName(str(by_arg[str(arg)]))
+			break
 	if id == &"":
 		return &""
 	if reduced.is_valid() and bool(reduced.call()):

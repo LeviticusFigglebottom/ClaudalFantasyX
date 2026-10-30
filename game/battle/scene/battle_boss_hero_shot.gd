@@ -41,7 +41,7 @@ static var _tri_cache: Dictionary = {}
 ## The hero pose {pos, look, fov} for `intro`'s boss, whose bounds (camera parent space) are `bounds`, standing on
 ## `slot`. {} when no candidate holds (the intro then falls back to the fitted shot).
 static func search(intro: BattleBossIntro, bounds: AABB, slot: Vector3) -> Dictionary:
-	var hc := intro.cfg.get("hero", {}) as Dictionary
+	var hc := hero_cfg(intro)
 	var director := intro._choreo.camera
 	if hc.is_empty() or director == null or bounds.size == Vector3.ZERO:
 		return {}
@@ -71,6 +71,12 @@ static func search(intro: BattleBossIntro, bounds: AABB, slot: Vector3) -> Dicti
 	return without_party
 
 
+## boss_intro.hero, with the intro's hero_override on top (a camera moment's own lenses: the fall's look down).
+static func hero_cfg(intro: BattleBossIntro) -> Dictionary:
+	var hc := intro.cfg.get("hero", {}) as Dictionary
+	return hc if intro.hero_override.is_empty() else hc.merged(intro.hero_override, true)
+
+
 ## `yaw` degrees, signed to turn from the boss-to-party direction toward the viewer's side.
 static func _toward_viewer(director: BattleCameraDirector, yaw: float) -> float:
 	var to_party := -director.axis()
@@ -81,7 +87,7 @@ static func _toward_viewer(director: BattleCameraDirector, yaw: float) -> float:
 
 static func _holds(intro: BattleBossIntro, pose: Dictionary, bounds: AABB, occluders: Array[Dictionary]) -> bool:
 	var director := intro._choreo.camera
-	var hc := intro.cfg.get("hero", {}) as Dictionary
+	var hc := hero_cfg(intro)
 	var pos: Vector3 = pose["pos"]
 	var xform := Transform3D(Basis.looking_at((pose["look"] as Vector3) - pos, Vector3.UP), pos)
 	var safe := director.data.get("safe_frame", {}) as Dictionary
@@ -172,8 +178,7 @@ static func _party_small(intro: BattleBossIntro, pose: Dictionary) -> bool:
 	var aspect := director._aspect()
 	var safe := director.data.get("safe_frame", {}) as Dictionary
 	var fit_max := float((intro.cfg.get("fit", {}) as Dictionary).get("party_max_h", 1.0))
-	var hero_cfg := intro.cfg.get("hero", {}) as Dictionary
-	var max_h := float(hero_cfg.get("party_max_h", fit_max))
+	var max_h := float(hero_cfg(intro).get("party_max_h", fit_max))
 	for c in intro._engine.party_active:
 		var f := intro._ctl.stage.stand_in(c.id)
 		if f == null or not f.is_visible_in_tree():
@@ -231,38 +236,51 @@ static func _party_in_frame(intro: BattleBossIntro, pose: Dictionary) -> bool:
 
 
 ## What could stand between the lens and the boss, as {box, xform, mesh} in the camera's parent space: every visible
-## mesh (and each multimesh instance) under the battle's Arena node, and each party member's meshes (Toma's shield
-## counts). Bounds lying wholly below the boss's feet are left out.
+## mesh (and each multimesh instance) under the battle's Arena node at least hero.occluder_min_h_m tall (the
+## Drownbell's 879 saltgrass clumps can block no lens, and walking them cost the PC pass 5 row 64 its 160 ms), and each
+## party member's meshes (Toma's shield counts). The arena's are built once per battle (it does not move). Bounds
+## lying wholly below the boss's feet are left out.
 static func _occluders(intro: BattleBossIntro, boss: AABB) -> Array[Dictionary]:
-	var out: Array[Dictionary] = []
 	var inv := intro._choreo.camera._parent_inverse()
-	var feet := boss.position.y + 0.05
-	var roots: Array[Node] = []
+	var min_h := float(hero_cfg(intro).get("occluder_min_h_m", 0.0))
+	if not intro.arena_occluders_built:
+		intro.arena_occluders = []
+		var arena := intro._ctl.get_node_or_null(NodePath(String(BattleArena.ARENA_NODE)))
+		if arena != null:
+			_gather(arena, inv, min_h, intro.arena_occluders)
+		intro.arena_occluders_built = true
+	var all: Array[Dictionary] = []
 	for c in intro._engine.party_active:
 		var hero := intro._ctl.stage.stand_in(c.id)
 		if hero != null and hero.is_visible_in_tree():
-			roots.append(hero)
-	var arena := intro._ctl.get_node_or_null(NodePath(String(BattleArena.ARENA_NODE)))
-	if arena != null:
-		roots.append(arena)
-	for root in roots:
-		for n in root.find_children("*", "GeometryInstance3D", true, false):
-			var gi := n as GeometryInstance3D
-			if not gi.is_visible_in_tree():
-				continue
-			var mmi := gi as MultiMeshInstance3D
-			var mi := gi as MeshInstance3D
-			if mmi != null and mmi.multimesh != null and mmi.multimesh.mesh != null:
-				var count := mmi.multimesh.visible_instance_count
-				for i in count if count >= 0 else mmi.multimesh.instance_count:
-					var x := inv * mmi.global_transform * mmi.multimesh.get_instance_transform(i)
-					_add(out, x, mmi.multimesh.mesh, feet)
-			elif mi != null and mi.mesh != null:
-				_add(out, inv * mi.global_transform, mi.mesh, feet)
+			_gather(hero, inv, 0.0, all)
+	all.append_array(intro.arena_occluders)
+	var feet := boss.position.y + 0.05
+	var out: Array[Dictionary] = []
+	for o in all:
+		if (o["box"] as AABB).end.y > feet:
+			out.append(o)
 	return out
 
 
-static func _add(out: Array[Dictionary], xform: Transform3D, mesh: Mesh, feet: float) -> void:
+static func _gather(root: Node, inv: Transform3D, min_h: float, out: Array[Dictionary]) -> void:
+	for n in root.find_children("*", "GeometryInstance3D", true, false):
+		var gi := n as GeometryInstance3D
+		if not gi.is_visible_in_tree():
+			continue
+		var mmi := gi as MultiMeshInstance3D
+		var mi := gi as MeshInstance3D
+		if mmi != null and mmi.multimesh != null and mmi.multimesh.mesh != null:
+			var count := mmi.multimesh.visible_instance_count
+			for i in count if count >= 0 else mmi.multimesh.instance_count:
+				_add(
+					out, inv * mmi.global_transform * mmi.multimesh.get_instance_transform(i), mmi.multimesh.mesh, min_h
+				)
+		elif mi != null and mi.mesh != null:
+			_add(out, inv * mi.global_transform, mi.mesh, min_h)
+
+
+static func _add(out: Array[Dictionary], xform: Transform3D, mesh: Mesh, min_h: float) -> void:
 	var box := xform * mesh.get_aabb()
-	if box.end.y > feet:
+	if box.size.y >= min_h:
 		out.append({"box": box, "xform": xform, "mesh": mesh})

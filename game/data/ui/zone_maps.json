@@ -364,7 +364,7 @@
         "shape_hints": {"floors": ["Landing1", "RamArena", "Saddle", "ExitStep"], "structures": ["Landing1Wall*", "RamArenaWall*", "SaddleWall*", "TerraceWall", "SaddleCliff"], "skip": ["Snowfield", "ExitBound", "KnotPost"]},
         "bounds": [-10.0, -54.0, 122.0, 64.0],
         "pois": [
-          {"id": "pass_foot", "name_key": "MAP_POI_KETH_FOOT", "kind": "path", "at": [0.0, 3.0], "source": "spawn:PassFoot"},
+          {"id": "pass_foot", "name_key": "MAP_POI_KETH_FOOT", "kind": "path", "at": [-1.0, 1.0], "source": "spawn:PassFoot"},
           {"id": "knot_post", "name_key": "MAP_POI_KETH_KNOT_POST", "kind": "path", "at": [-1.6, -43.6], "source": "mark:knot_post"},
           {"id": "terrace", "name_key": "MAP_POI_KETH_TERRACE", "kind": "path", "at": [40.0, -40.0], "source": "spawn:RamArena"},
           {"id": "saddle", "name_key": "MAP_POI_KETH_SADDLE", "kind": "path", "at": [95.0, -47.0], "source": "mark:cold_ledge"},
@@ -425,7 +425,7 @@
         "shape_hints": {"water": ["Basin"], "skip": ["BasinBed", "GateStepBound"]},
         "bounds": [-16.0, -52.0, 32.0, 58.0],
         "pois": [
-          {"id": "gate", "name_key": "MAP_POI_SANC_GATE", "kind": "door", "at": [0.0, -2.0], "source": "spawn:Gate"},
+          {"id": "gate", "name_key": "MAP_POI_SANC_GATE", "kind": "door", "at": [0.0, -5.0], "source": "spawn:Gate"},
           {"id": "ledge", "name_key": "MAP_POI_SANC_LEDGE", "kind": "talk", "at": [0.0, -19.4], "source": "mark:pilgrims"},
           {"id": "head", "name_key": "MAP_POI_SANC_HEAD", "kind": "path", "at": [0.0, -42.0], "source": "mark:ethren"}
         ]

@@ -229,6 +229,42 @@
    "shadow": false,
    "attenuation": 1.2,
    "color": "#9DB4D6"
+  },
+  {
+   "at": [
+    8.5,
+    2.2,
+    7.9
+   ],
+   "energy": 1.2,
+   "range": 8.0,
+   "shadow": false,
+   "attenuation": 1.2,
+   "color": "#9DB4D6"
+  },
+  {
+   "at": [
+    13.0,
+    2.6,
+    2.9
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "shadow": false,
+   "attenuation": 1.2,
+   "color": "#9DB4D6"
+  },
+  {
+   "at": [
+    13.0,
+    2.6,
+    12.9
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "shadow": false,
+   "attenuation": 1.2,
+   "color": "#9DB4D6"
   }
  ],
  "greybox": {
@@ -716,6 +752,16 @@
    "y": 0.0,
    "yaw_deg": 0.0,
    "block": "Gangplank"
+  },
+  {
+   "piece": "deck_shrine",
+   "at": [
+    0.0,
+    12.081
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.0,
+   "block": "OrderShrine"
   },
   {
    "piece": "stern_gate",

@@ -103,6 +103,9 @@ var clock := 0.0
 var current_clip: StringName = &""
 ## Where in the idle loop this villager starts (seconds).
 var idle_offset_sec := 0.0
+## Its own idle and work playback rate (npc.json `idle_playback` [lo, hi], drawn from its id): two villagers of one
+## body breathe and shift at different paces, not only out of phase.
+var idle_rate := 1.0
 ## The filtered ground speed this frame (m/s).
 var ground_speed := 0.0
 ## The head (null on a rig without a skeleton).
@@ -224,6 +227,19 @@ func _sub(section: String, key: String) -> float:
 
 
 ## A deterministic value in [section.key[0], section.key[1]] (or the number itself) for the `index`th draw.
+func _exit_tree() -> void:
+	if silhouette.a > 0.0:
+		NpcSilhouette.clear(actor)  # no silhouette override outlives the meshes it was set on (the PC's pass 3)
+
+
+## A top-level tuning value: a number, or [lo, hi] drawn from the villager's id (1.0 when unset).
+func _share_value(key: String) -> float:
+	var v: Variant = tuning.get(key, 1.0)
+	if v is Array and (v as Array).size() == 2:
+		return lerpf(float(v[0]), float(v[1]), HeroIdleMicro.share(npc_id, key))
+	return float(v)
+
+
 func _share_range(section: String, key: String, index: int) -> float:
 	var v: Variant = _section(section).get(key, 0.0)
 	if v is Array and (v as Array).size() == 2:
@@ -262,6 +278,7 @@ func _attach_actor() -> void:
 	if anim != null and anim.has_animation(_clip(CLIP_IDLE)):
 		var length := anim.get_animation(_clip(CLIP_IDLE)).length
 		idle_offset_sec = HeroIdleMicro.share(npc_id, SALT_IDLE) * length
+	idle_rate = _share_value("idle_playback")
 
 
 func _read_route() -> void:
@@ -487,6 +504,8 @@ func _update_clip(force: bool = false) -> void:
 		anim.speed_scale = clampf(rate, _num("walk_playback_min"), _num("walk_playback_max"))
 	elif _storm_on:
 		anim.speed_scale = _sub("storm", "idle_playback")
+	elif kind == CLIP_IDLE or kind == CLIP_WORK:
+		anim.speed_scale = idle_rate
 	else:
 		anim.speed_scale = 1.0
 	var clip := _clip(kind)
@@ -508,7 +527,7 @@ func _update_clip(force: bool = false) -> void:
 func idle_phase() -> float:
 	if anim == null or not anim.has_animation(_clip(CLIP_IDLE)):
 		return 0.0
-	return fposmod(idle_offset_sec + clock, anim.get_animation(_clip(CLIP_IDLE)).length)
+	return fposmod(idle_offset_sec + clock * idle_rate, anim.get_animation(_clip(CLIP_IDLE)).length)
 
 
 ## Where in a resting loop (a work or storm clip) it is now: a share of the loop of its own, plus the clock, so two
@@ -517,7 +536,7 @@ func loop_phase(clip: StringName) -> float:
 	if anim == null or not anim.has_animation(clip):
 		return 0.0
 	var length := anim.get_animation(clip).length
-	return fposmod(HeroIdleMicro.share(npc_id, String(clip)) * length + clock, length)
+	return fposmod(HeroIdleMicro.share(npc_id, String(clip)) * length + clock * idle_rate, length)
 
 
 ## True when the data names a clip for `kind` and the actor has it (work and storm clips are optional).

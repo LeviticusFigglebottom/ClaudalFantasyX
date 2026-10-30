@@ -18,7 +18,7 @@ A skate buried in the white sand of the shallows, its back the colour of the wat
 `back`, `belly`, `eye`.
 
 ## Rig
-14 bones; 3638 triangles in `assets/creatures/glass_skate/glass_skate.glb` (job `creature_glass_skate` in tools/dev/blender_builds.json).
+14 bones; 3862 triangles in `assets/creatures/glass_skate/glass_skate.glb` (job `creature_glass_skate` in tools/dev/blender_builds.json).
 
 ## Clips
 `idle`, `attack`, `cast`, `hit`, `ko`, `hit_b`, `idle_b` (the clip contract: idle, attack, cast, hit with its peak near 0.1 s, ko, plus the kit's hit_b and idle_b).
@@ -28,6 +28,8 @@ Clip audit (tools/creatures/clip_audit.gd, 2026-10-30): worst slip 62.9 cm (cast
 Buried and white-on-white **on purpose** (untargetable until it acts). Once it has acted it must read: its risen pose shows a darker belly and the eyes. Risk: medium (the arena's white water).
 Encounters in data: `ch16_rim_skates` (no Act II arena is named yet: judge it in the arena the encounter gets).
 
+**Arena check 2026-10-30 (drowned_choir_ring preview at night, the nearest built Ch16 arena):** the risen pale disc reads on the dark ring floor. Judge it again on the Rim's white water when that arena exists.
+
 ## Reuse of existing generators
 Its own disc build (see gallery_ray).
 
@@ -35,4 +37,5 @@ Its own disc build (see gallery_ray).
 Meets the bar. Its `cast` slides 63 cm: that is the burial wriggle into the sand (it moves itself), not a planted foot.
 
 ## Work at the gate (after `act1-complete`)
-Enemy `model` key; `skate_sting` effect; check the risen read in the Rim arena.
+~~Enemy `model` key~~ (done 2026-10-30); `skate_sting` effect; check the risen read in the Rim arena.
+As-played pass DONE 2026-10-30 (ch16_rim_skates, battle distance; Ch16 names no arena yet, so the default stage): the clear back and thin rim melted into the white sand. The back's clearcoat and rim sheen are cut back (they washed it white in sun), the sand_wet rim is wider and darker, and each wing carries a dark eyespot (its own small part). Viewed: two pale skates with dark spots and edges against the sand, still camouflaged.

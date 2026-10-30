@@ -1577,3 +1577,439 @@ now does both as the game does.
   - **Criterion 2 FAILs until M3-CIN-1233's continuous-path test exists** (act1-chapters' finding: the Prologue skips
     Ch1, and the slice's end card returns to the title).
   - test_act1_gate_check 3/0. Run it from a batch worktree root: `python3 tools/dev/lead/act1_gate_check.py`.
+
+MERGE-READY @ e83e411ed (+ this log): the walk audit and its fixes (d1a2a3674), the ADR 0203 tools (150670d1a), and
+the **Act II inventory** (report-only, lead/gate-big18, full scan): **34 items, all high**:
+- 13 greybox zones, Ch10-Ch16: ossa_fen, reedhollow, lowlight, sunken_vey, cloudloom, keth_pass, quellan, ansedra,
+  ansedra_lacquer_court, lamp_archive, sanctum, open_sea, drowned_choir, pale_rim;
+- 10 Act II foes still primitive stand-ins (fen_leech, root_crab, tannin_archer, gallery_ray, rime_urchin, cord_moth,
+  ridge_lynx, scree_crawler, glass_skate, rim_crawler);
+- 10 Act II encounters with no arena of their own.
+Owners follow the Act I split until act2_tracks.md's ownership lands: env-art-b 14, act1-chapters 10, creatures 10.
+- Checks: `--filter=qa_` 14/0 on this branch (the walk audit included), hero_ 114/0, tools tests (placeholder_audit
+  14/0, act1_gate_check 3/0, taskboard, merge_union, trial_merge) green, gdlint/gdformat clean, validate_data 0/0.
+- Running: act1_gate_check.py on lead/gate-big18 (the Lead's first reading of criteria 1-2).
+
+### act1_gate_check.py on lead/gate-big18 @ d00d3284 (the first reading of ADR 0203 criteria 1-2), 2026-10-30
+- **1. Audit: FAIL.** 2 items, both low: env-art-b's `tb_drop_proxy.tres` and `reefball_drop_proxy.glb` (names only;
+  M3-HER-1141).
+- **2. Playthrough: FAIL**, for two reasons:
+  - the continuous title → Ch9 → title test doesn't exist yet (M3-CIN-1233, slice-polish / act1-chapters);
+  - qa_threads fails on 5 `CutsceneGrade: no grade …` warnings (ch02 in the Ch1 thread, plus ch03, ch03_steps,
+    ch03_boss and ch03_shrine_int in the slice). That's **already fixed on this branch @ dc88d2aee** (the known
+    pattern, M3-ENV-106), so it clears when this head is folded in.
+  - The rest pass with zero SCRIPT ERRORs: qa_encounters 1/0, fp_ 30/0, save_ 149/0.
+- So with this branch folded in, the remaining Act I gate work for criteria 1-2 is:
+  - env-art-b renames or replaces the two drop proxies;
+  - M3-CIN-1233 lands its flow fix and the continuous test.
+
+### 4, continued: stills from the scripted walks, and a camera fix (2026-10-30 ~03:00), @ b07d5bf35
+- **New tool: `tools/hero/walk_stills.tscn`.** It renders any route of qa_walk_routes.json with the audit's own
+  walker: `godot-render --path . --resolution 960x540 res://tools/hero/walk_stills.tscn -- --route=<id> --every=<n>
+  --out=<dir>`. It simulates between stills, so a 2,000-frame climb renders in minutes. Viewed:
+  - **Haluna's lane:** on the beach and down the lane, the camera rides behind and above, all three in frame,
+    nothing clipping. At the stop by Neme's table, Toma's shield fills the left third of the frame: that's
+    **M3-HER-1160** (m2-slice's B02 close volume covers the Village arrival), already routed.
+  - **Ashcrown's flying stair:** Rhen climbs with his feet on the steps, framed from above, and stands on tier 6 at
+    the top. He's alone, because the followers are staged (M3-HER-1164).
+  - **Coilspire's spiral: FOUND and FIXED.** Under Tier1 and Tier2 (PAN_FOLLOW shots looking down the well), Rhen
+    climbed out of the frame: **215 frames (3.6 s) out of frame**. PAN_FOLLOW's pan is capped (`max_pan_deg`) and
+    nothing kept the player in frame. My audit had only checked whether a wall hid him, not whether he was in the
+    frustum.
+    - **FieldCameraDirector.keep_in_frame:** after the capped pan, if the leader is outside `keep_in_frame_share`
+      (0.5) of the frame's half angles, the aim turns just enough to hold him. The limits are vertical from the fov
+      and horizontal from `keep_in_frame_aspect` (16:9), so a composition with him on a third stays as authored.
+    - Coilspire now loses him for **0 frames**, and the re-rendered stills show him whole, head included, mid-climb.
+    - **The audit now fails on the leader out of frame for more than 30 frames in a row.**
+  - Screenshots it could move, self-rendered: field_court_pan (PAN_FOLLOW) PASS 0.00025, field_lane_fixed PASS,
+    field_causeway_dolly PASS. save_shrine_field FAILs at rmse 0.10456 **identically with keep_in_frame switched
+    off**, so it was already drifting: a gate item, not this change.
+- Checks:
+  - camera 63/0 (test_camera_director: the new keep_in_frame unit test plus the pan test's rule);
+  - qa_field_camera 2/0, qa_walk_audit 1/0 (every route 0 frames out of frame);
+  - gdlint/gdformat clean, validate_data 0/0.
+MERGE-READY @ b07d5bf35 (+ this log).
+
+### The PC's GPU QA pass 3 rows for me (21, 37, 38, 50), 2026-10-30 ~05:00
+Checked on lead/gate-big18 plus this branch, with **spawn stills** (`walk_stills.tscn -- --scene=… --spawn=…`, the
+party arriving and standing 60 frames, and `--unstage` to show the followers where a zone stages them), the walk
+audit, and probes.
+- **Row 37, the causeway (FIXED):**
+  - Encounter and AfterHarrier: the close camera behind the arrival had Toma 1.5 m from the lens filling a third
+    of the frame. Now **followers never stand within `camera_near_m` (3 m) of the lens.** At a spawn they're laid
+    out clear of it, and while standing they **flank** the leader instead of walking back into the foreground
+    (`off_lens`).
+  - BeforeHarrier: the FIXED shot C07 faced away and showed no one. Now a **FIXED shot that would lose the leader
+    entirely turns to hold him** (`keep_in_frame_fixed_share` 0.95; a locked frame with him anywhere in it is never
+    moved).
+  - Stills after: Encounter shows Rhen centred and Asha well off to the side; BeforeHarrier shows Rhen in frame.
+  - Tests: test_hero_followers' new no-follower-in-the-lens test (laid out and after 120 frames), and
+    test_camera_director's FIXED safety-net test.
+- **Row 38, Coilspire (FIXED on the camera side; the spawn is env-art-b's):**
+  - SpireBase and Tier2 read fine (keep_in_frame from earlier).
+  - **Tier4: the spawn stands inside the spiral's step mass.** Rays from his chest hit `coilspire_tiers` within
+    0.02-0.13 m in every direction, and 0.51 m straight up, so no camera can see him clearly. Evidence is on
+    **M3-HER-1157 (environment):** move the spawn.
+  - The camera no longer makes it worse. Deep occlusion (clear stretch < `min_view_m` 1.8) now **cranes**: straight
+    up to a clear height, clear of solids (`crane_clear_m`), looking down. Under a ceiling it tries **a ring of side
+    spots** (`crane_ring_m` 2.5/1.9, `crane_ring_up_m` 0.6, 12 turns). When nothing clears, it pulls in as before
+    while `min_distance_m` is free, and **keeps the shot's own pose when not even that is** (Tier4).
+  - The Tier4 still now shows him down the shaft framed by the valve wheels: the head-cam is gone.
+  - Encounter: Rhen is in frame (keep_in_frame), but the GallerySouth shot looks out over empty sea. The shot's
+    direction is **M3-HER-1159 (act1-chapters)**.
+- **Row 50, Toma sunk at Ashcrown's crown: NOT REPRODUCED.** At the Crown spawn (with `--unstage`, all three
+  showing) everyone stands on the 42 m floor (still and probe). Climbing the flying stair both ways with the
+  followers visible, the walk audit's new **sunk** check (feet > 0.3 m under the floor or the stair profile) gives
+  0 frames. The likely cause was the pre-fix stair handling. If the PC sees it again, the exact story state would
+  help.
+- **Row 21: re-checked by stills** of the start after the beach and the Village spawn: Rhen and the party in frame.
+  The PC couldn't reach it in pass 3 (New Game runs into the beach cutscene), so a hand playthrough confirms it.
+- The walk audit now walks the Ashcrown and Coilspire routes **with the followers visible** (`unstage`) and fails
+  on a follower **sunk** in the floor or **inside the body ahead** (OVERLAP_M 0.4) for more than 30 frames. All
+  routes pass. On the way down the flying stair, Toma closes to 0.13 m of Asha for 9 frames at the start (well
+  under the limit).
+- **ADR 0205:** `act1_gate_check.py` now names ADR 0205 §3 as its criteria (2 s hitches). Its two checks are unchanged.
+- **Row 44 / the PC-QUEUE `material is null`:** creatures' storm figure (row 44), so not mine. Done on my side.
+- Checks: camera 64/0, camera_director 49/0, hero_ 115/0, qa_field_camera 2/0, qa_party 3/0, qa_walk_audit 1/0,
+  gdlint/gdformat clean, validate_data 0/0.
+MERGE-READY @ (this commit).
+
+### Act II starts here (ADR 0205: no open Act I row of mine), 2026-10-30 ~05:30
+- **The walk audit covers Act II**, report-only (`report_only` routes print `ACT II REPORT` lines, while Act I routes
+  still fail). Party Rhen, Ysolde and Kerrid (per-route `party`); ramps by exact id.
+  - **Keth Pass** (Ch12, three 4 m flights PassFoot → FromQuellan): walks clean, smooth (max dy 0.030/frame), no
+    follower clipping or sinking. The camera is inside geometry for 2 frames.
+  - **Lowlight** (Ch11, two 3 m flights down to the Sanctum): walks clean. A collider hides the leader from the
+    camera for 39 frames on the descent, and the camera is inside geometry for 1 frame.
+  - **Cloudloom** (Ch12, the hall stair): clean, nothing reported.
+  - **Kerrid's feet slide 25-26% at the run** (run clip 1.8 m/s needs 2.0x, cap 1.8x), and Ysolde's 14% while
+    catching up. **M3-HER-1165 (character)**, a faster authored run, is the fix. Act II leans on Kerrid, so it
+    matters more now.
+  - The zones are still greybox. The camera items are re-checked against the kits when env-art-b builds them (the
+    routes stay in the audit). The audit judges "hidden" by physics rays and the director by drawn meshes, so
+    Lowlight's 39 frames may be an invisible collider.
+- Act II party bodies: Ysolde, Kerrid, Liss, Pell and Sefir all have field rows and models (spawn guards
+  qa_party_spawns and qa_field_camera already scan every field zone, Act II's too, green).
+- Next (Act II, my lane):
+  1. the followers-hidden-by-standing-actors rule (M3-HER-1164) as Act II zones get staged;
+  2. walk-audit routes for each Act II kit as it lands;
+  3. the Act II inventory refresh per batch (`placeholder_audit.py --act 2 --write`).
+MERGE-READY @ (this commit).
+
+### Lead's Act I fast-track (10-30 03:44): M3-CIN-1251 and the spawn-camera rows 24, 25/47
+- **M3-CIN-1251 (review: cinematics / act1-chapters) @ 1da21c732:** the field camera now leaves a volume for the hub
+  shot. Outside every volume with a volume still active, `update()` blends to `initial_shot` (its own blend_sec or
+  hard_cut, else default_blend_sec) and `snap()` cuts to it. A zone with no hub shot keeps the last volume's shot,
+  as before. New test `test_leaving_every_volume_returns_to_the_hub_shot`. `qa_field_camera` is 2/0 **with
+  act1-chapters' held c9da92f3f (the Harbour and Weir volumes) applied on top**.
+  - **For act1-chapters:** re-apply GPU QA row 49's camera side (c9da92f3f) once this lands.
+- **Rows 24 and 25/47, the spawn cameras (game/world/**, mine):** reproduced in stills. There were three causes:
+  - **DockShore (the Ch4 wake):** the wake reuses Ch2 Haluna's volumes, and the spawn stands 1.0 m from Ch2's
+    pan-follow shot H04. **Fix:** with nothing between them, a free-play camera nearer his chest than
+    `occlusion.standoff_m` (2.6) backs off along its own line to 2.6 m. There's no jump, because at 2.6 m it is the
+    shot's own place. If that line is blocked, it goes to the ring direction with the most room. Now 2.6 m: a full
+    shot of Rhen on the jetty.
+  - **FerryAft:** the spawn is inside the deckhouse (3.5 × 3.8 m, roof 2.1 m). The pull-in took the camera 9.45 m in,
+    to 1.1 m from him, because the crane can't clear under the roof. **Fix:** when the crane fails, `widest_view()`
+    tries the ring at crane_ring_up_m and then at chest height, and takes the direction with the most room. Now
+    2.6 m: Rhen full-length in the cabin.
+  - **FeastEdge, InkLamp and WallDawn:** the greybox hub orbit looked down at 33° from 8.9 m. **Fix:**
+    `orbit.max_pitch_deg` 24 (`clamp_pitch`: swung down round the aim point, same distance and heading). This
+    affects **every greybox zone's hub orbit**, so the Lead's full manifest may show drift on free-play field
+    shots. Authored framings are untouched; scripted shots never get occlusion.
+  - The party at the feast is still small at 8.9 m: the orbit's distance is the greybox default. A tighter
+    feast shot is a camera volume, **act1-chapters'** (the wake's camera_volumes).
+- **The guard:** `test_qa_field_camera` now also fails on a camera **in his face** (under 1.5 m from his chest) and
+  on a director-computed pitch (orbit or follow) **steeper than 55°**. Authored looks down a stairwell, like
+  Coilspire's Tier1 at −74°, belong to their authors. Against the old director it fails at exactly FerryAft (1.09 m)
+  and DockShore (1.00 m). New unit tests: `test_clamp_pitch_swings_a_steep_orbit_down` and
+  `test_a_shot_in_his_face_backs_off_to_the_standoff`.
+- `tools/hero/walk_stills.gd` prints the pose with each still: the shot, its volume and mode, the authored position,
+  the pull, the camera, the pitch, and the distance to the chest.
+- Row 47's black landing pier at night is lighting: env-art's, not the camera.
+- **A follower fix, found on the merged tree:** `test_no_follower_is_laid_out_in_front_of_the_lens` went red after
+  integration's merge. My party code hadn't changed, and I didn't find which merged change exposed it. With the camera
+  1.5 m behind Rhen, both flank spots were still inside `camera_near_m`, so `off_lens` gave up and Asha walked back to
+  0.31 m from the lens. It now also tries the spot beyond him, away from the lens, and otherwise takes the unblocked
+  spot farthest from it. hero_followers 14/0.
+- Checks on the final tree:
+  - Godot suites: camera 69/0 (qa_field_camera included), hero_ 115/0, qa_party 3/0, qa_walk_audit 1/0, fp_ 30/0,
+    zone_cast 5/0.
+  - Static checks: gdlint and gdformat clean, validate_data 0/0, taskboard OK.
+  - Screenshots: none self-rendered. Most of the Ch4 wake and ferry shots use fixed preview cameras, which this
+    change doesn't touch. **The hub-orbit clamp can drift any shot taken through the field camera's orbit in free
+    play**, so that needs the Lead's full manifest.
+MERGE-READY @ (this commit).
+- **Trial merge @ integration 8de373e5 (all 11 heads):** my only conflict is
+  `docs/kb/tasks/M3/M3-CIN-1251-camera-returns-to-the-orbit.md` (both act1-chapters and I added it). Mine is their copy
+  (fetched 10-30) plus my status and review entry: **take hero-integration's side**. If act1-chapters has added to
+  it since, also keep their newer lines. The other conflicts are other tracks' shared data files (enemies,
+  encounters, skills, battle_sandbox, battle_sfx, ownership), the same as in the trial-merge report.
+
+### Lead 10-30 04:06: row 66 (Ch4 opening → field) and the rows "still open on big19"
+- **Row 66 FIXED (game/world/**, mine):** reproduced headless in real time (the wake's C4-01 with auto-advancing
+  lines, fixed 60 fps).
+  - **Cause:** the release blends from the cutscene's H12 shot, 120 m off. On the first blended frame a windbreak tree
+    on that 120 m line pulled the camera in by about 87 m. The pull was stored as metres in from the shot's place and
+    eased out at release_mps 4 m/s. Once the blend shortened the line to 9.8 m, a pull longer than the whole line put
+    the camera **on Rhen's chest, inside Neme's house wall, for about 19 s** (the PC's ch04_03/05).
+  - **Fix:** occlusion now keeps the pulled-in camera at a **distance from his chest** (`_kept_m`; INF when not
+    pulled), not a pull from the shot's place, so a shortening line can never leave the camera on him. After it, the
+    camera is never nearer than 5.9 m and is on NemeDoor's shot 2.3 s after the release.
+  - **Test:** `test_a_pull_on_a_long_line_never_leaves_the_camera_on_him` fails on the old director (0.00 m) and
+    passes now.
+- **Rows 24 (DockShore), 37, 38 and 50 "still open on big19":** none of my fixes were in the PC's pass-4 tree
+  (integration @ 2f544938). 692b55156, cb04c330f, 2e5292613, 1da21c732 and 0ffe9260d are all after it, so they come
+  in with this branch's merge:
+  - **37 (Toma's shield filling one side):** fixed by camera_near_m, 692b55156, plus today's off_lens fix in 0ffe9260d.
+  - **38 (Tier4 camera in Rhen's head):** fixed on the camera side by cb04c330f, today's widest_view and this fix. The
+    spawn standing inside the steps is still M3-HER-1157 (env-art-b). The Encounter shot looking at open sea is
+    M3-HER-1159 (act1-chapters).
+  - **50 (Toma sunk at the Crown):** I couldn't reproduce it (walk audit sunk check, stills). The pass-4 tree also
+    lacked the stair fixes. If it shows on a tree with them, the save or story state would help.
+  - **24 (DockShore):** fixed by 0ffe9260d.
+- Checks: camera 70/0 (qa_field_camera included), hero_ 115/0, qa_walk_audit 1/0, qa_party 3/0, ch04 13/0; gdlint and
+  gdformat clean. No shots rendered: the change only moves a pulled-in camera, which no fixed-camera shot uses.
+MERGE-READY @ (this commit).
+
+### Lead FAST-TRACK 10-30 09:00 (big20 @ 7dc3ab41)
+- **test_no_follower_is_laid_out_in_front_of_the_lens:** big20 took my branch @ 202668789, before the fix.
+  - The fix was already in 0ffe9260d: off_lens tries beyond him, else the unblocked spot farthest from the lens.
+  - On big20's merged tree it showed two more cases, both fixed now (layout, not threshold):
+    - **Ch13's Sanctum Gate (big20's new field camera near the spawn):** catch_up laid the followers out about 5 m
+      back, behind the lens, while follow_point pulled them beside or beyond Rhen. They were more than catch_up_m
+      apart, so catch_up re-ran every few frames, and each re-run was a visible 0.77–7 m teleport
+      (test_hero_field_snaps: asha 1 snap, toma 3). `_formation_spot` now lays a near-lens follower on the same
+      off-lens spot follow_point chases.
+    - **The lens test's camera 1.5 m behind him:** the spot beyond him was still 2.65 m from the lens. It now goes far
+      enough past him to clear camera_near_m (LENS_CLEAR_M 0.05 past it).
+- **New red from big20, not mine: Lowlight (Ch11)** `rhen never snaps (241 snaps)`. The atrium's west gate opening
+  (x 0, z −2.5..2.5) has no floor or bound past it. The Gate spawn faces through it, so Rhen walks off the level and
+  falls without end. It walked clean before big20's dressing (M4-A2P-041, 79fc304f0).
+  **Filed M4-HER-1166 (environment: act1-chapters' layout, env-art's dressing)**; KNOWN in test_hero_field_snaps
+  until it lands.
+- **M3-CIN-1251 @ 1da21c732 and row 66 @ e7af4147d are both done** (the earlier entries above), and both are after
+  big20.
+- **Row 50: CLOSED, not reproduced.** At the Crown spawn with all three visible, everyone stands on the 42 m floor
+  (still and probe). Up and down the flying stair (qa_walk_audit's ashcrown routes, followers unstaged), the sunk
+  check (feet more than 0.3 m under the floor or the stair profile) finds 0 frames. The PC's pass-4 tree lacked my
+  stair and follower fixes (692b55156 onward). If it shows on a tree with them, the PC reopens it with the save.
+- Checks on big20 + this branch: hero_ 116/0, camera 70/0, qa_party 3/0, qa_walk_audit 1/0; gdlint and gdformat
+  clean, validate_data 0/0, taskboard OK. ACT II REPORT: Keth Pass's camera is inside geometry for 30 frames (2
+  before big20's Ch12 cameras). It's report-only and is re-checked against the kit.
+MERGE-READY @ (this commit).
+- Next: the Act I encounter-entry smoke and the headless playthrough on 7dc3ab41, in a clean worktree. Results follow.
+
+### Act I gate criterion 2 on big20 (7dc3ab41), clean worktree, 10-30 ~11:00
+- **PASS.** Each suite ran alone with its own XDG_DATA_HOME, all with **0 SCRIPT ERRORs**:
+  - qa_threads 1/0: every chapter thread start to end, save and load at every shrine;
+  - **qa_encounters 1/0 (the encounter-entry smoke):** every Act I encounter entered, won and left;
+  - fp_ 30/0: title → New Game → Prologue → the slice → Ch3;
+  - save_ 153/0;
+  - **act1_route 3/0:** M3-CIN-1233's continuous path, New Game → Ch1 → the slice → Ch4 → Ch9's end card → the title.
+- **act1_gate_check.py fix:** it looked only for `test_*continuous*.gd`, so it reported M3-CIN-1233's test as missing.
+  It now runs `tests/integration/test_act1_route.gd` too (CONTINUOUS_TESTS), with a unit test.
+- **Row 38's Encounter ("looks at open sea, no Rhen"): FIXED, and it was the spawn, not the camera.** A zone's
+  "Encounter" spawn is where the last random fight left Rhen. Before any fight, its marker sat at the world origin
+  (0, 0, 0), so the PC's spawn walk put Coilspire's party at the origin, far off the tower at x ≈ 308, looking at sea.
+  Real play always has a return point. The marker now starts on the zone's first spawn (greybox_zone.gd). The stale
+  `coilspire.tscn:Encounter` KNOWN entry in test_qa_field_camera is gone.
+  - Checks: camera 70/0 (qa_field_camera with no Encounter row), encounter 3/0, hero_field_snaps 2/0, qa_party 3/0.
+- **Pass-5 rows after this branch merges:**
+  - 24 DockShore and 47 FerryAft: fixed by 0ffe9260d (standoff, widest_view).
+  - 66: fixed by e7af4147d (the pull kept as a distance).
+  - 38 Encounter: fixed by this commit.
+  - 37 AfterHarrier (Toma's shield at frame right): next, stills on this tree.
+  - 21: next, the beach-cutscene hand-off in real time (likely the same pull bug as 66).
+MERGE-READY @ (this commit).
+- **Row 37 at AfterHarrier (Toma's shield at frame right): fixed.** C07 is a fixed camera at eye height (1.2 m), 6 m
+  behind Rhen. Toma was laid out just outside camera_near_m (3.0), so at that height he filled the right third.
+  `followers.camera_near_m` is now **4.0**: the still shows all three at a reading scale, with Rhen clear at centre.
+  - 4.5 was tried first. It also read well, but at Ch13's Sanctum Gate the followers then started following 33–39
+    frames after Rhen, against qa_party's 30-frame limit.
+  - Checks: hero_ 116/0, hero_followers 14/0, qa_party 3/0, qa_walk_audit 1/0, qa_field_camera 2/0 (4.5 results,
+    with qa_party and hero_followers re-run at 4.0); validate_data 0/0.
+MERGE-READY @ (this commit).
+- **Row 21 (Haluna's field start after the beach): reproduced headless, and clean on this tree.** The PC's walk can't
+  reach it, so I played it as New Game does: `prologue_seen`, Haluna loaded, HalunaStory.begin(), Cutscene A in real
+  time with auto-advancing lines at fixed 60 fps, then the camera sampled every 0.25 s for 12 s after the release.
+  - The release (t = 95.5 s) blends from H01 to `beach_shallows` (1.2 s blend, settled after about 1.5 s).
+  - Rhen is **in frame on every sample** from the first frame after the release, and nothing blocks the view.
+  - The camera settles at 7.5 m from his chest and stays there; it isn't left at H01.
+  - This tree has row 66's pull fix (e7af4147d), the likely cause of the pass-3 "camera over the shallows, Rhen off
+    screen".
+  - **For the PC:** confirm by hand on the merge of this branch. Close it if it's clean.
+- Open on my side after this branch merges: nothing on act1_gpu_qa.md. Rows 21, 24, 37, 38, 47 and 66 are fixed or
+  verified here; row 50 is closed, not reproduced. Still waiting on other tracks: M3-HER-1157 (env-art-b, Tier4's spawn
+  inside the steps), M3-HER-1159 (act1-chapters, shots facing away), M4-HER-1166 (Lowlight's open gate).
+MERGE-READY @ (this commit).
+- **Inventories on big20 + this branch:**
+  - **Act I:** 2 items, both low and both env-art-b's (the tamsule_bell drop proxies, as before).
+  - **Act II:** `act2_inventory.md` refreshed: 38 items (15 high, 23 medium), up from 34 as big20 brought Act II
+    zones in. Audio has 19, env-art-b 11 and battle-presentation 4. It is report-only (ADR 0205).
+- **Trial merge @ integration 857c73ad; integration merged into this branch.** act1-chapters fixed M3-HER-1159 the
+  same day: a layout can name its own "Encounter" fallback. Their change touched my lines in greybox_zone.gd and
+  test_qa_field_camera.gd, so I reworked mine to merge clean with every head:
+  - my first-spawn fallback is now in `place_at()`, used only when no fight was recorded and the layout names no
+    Encounter spawn of its own;
+  - the build lines and the KNOWN block are back to the base text (their merge drops the KNOWN rows).
+  - Re-tested after an import: qa_field_camera 2/0, encounter 3/0, hero_field_snaps 2/0, qa_party 3/0.
+MERGE-READY @ (this commit).
+
+### Lead FAST-TRACK 10-30 12:13: the human's playtest (top priority)
+1. **The black screen after a won battle: root cause measured, fix in this branch.**
+   - The way back from a fight was a full zone entry: load, instantiate on a thread and add to the tree, all behind
+     the fade. Haluna headless: **entry 6,527 ms**, of which instantiate 1,532 ms and the add-to-tree frame
+     2,678 ms. That is the human's multi-second black.
+   - **Fix (SceneRouter, mine):** the field stays resident through a random fight.
+     - A change from a field zone into `field_battle.tscn` for a random encounter (`BattleRequest.pending()`: no
+       victory flag, no return scene of its own) detaches the zone instead of freeing it. Its zone shader globals
+       are snapshotted at the same time (`ShaderGlobals.zone_snapshot`).
+     - The change back to that zone re-attaches the same instance, with no load, no instantiate and no `_ready`.
+       The globals are restored after the swap's reset, and the party is placed on the spawn as before.
+     - Any other change, or a loaded game (`EventBus.game_loaded`), frees the kept zone.
+     - Scripted fights still reload their zone, because their story plays on the zone's arrival.
+     - `stats.resident` and `instantiate_ms` 0 mark a resident return.
+   - **Test:** `tests/integration/test_battle_return.gd`. It enters the causeway in the child-process probe
+     (`scene_swap_probe --encounter=ch03_causeway_shore --return=<zone>`; `--no-resident` measures the old reload),
+     fights, comes back, and fails unless the return is resident and its hidden time is ≤ 1 s.
+2. **The docks: `FieldShore` (game/world, mine), a generic guard in FieldController.** Oruvel's decks sit at y 0
+   over a solid "Sea" block at −1, under water at about −0.8, so stepping off a hull dropped him onto a walkable sea
+   floor. A step is now refused, and he stays at the edge as at a wall, in two cases:
+   - the ground drops more than 0.4 m into water deeper than 0.15 m (a dock, pier or hull edge);
+   - he would wade deeper than 0.6 m, and deeper than where he stands. Walking back out is always allowed.
+   - **Safety catch:** grounded deeper than 0.6 m anyway, he goes back to his last safe spot.
+   - **Seabed walks** (more than 2 m under, Oruvel's underway) have no shore rule.
+   - Tuning: `field_movement.json` "shore".
+   - **Test:** `tests/integration/test_qa_dock_edges.gd` runs Rhen flat out in 16 directions for 6 s from every spawn
+     of every Act I zone with water (19 zones), failing on a drop into water or a deep stand.
+3. **The jog speed: LEAD-ASK.** There's no new jog clip from characters on any branch yet (M3-HER-1165 is still
+   todo). Today's run clips measure 1.80–3.13 m/s against the field's 3.6 m/s run. Matching them without the clip
+   would mean slowing the field run to about 2.3 m/s, a game-feel call, not mine. **When characters push the clip,
+   I set run_speed_mps (or the gait rows) to its measured speed the same hour.** Which should it be: wait for the
+   clip, or lower the run now?
+- **Measured (causeway, `ch03_causeway_shore`, real time, headless):**
+  - **resident return:** entry 389 ms (mostly the fade), worst hidden frame 31 ms, instantiate 0;
+  - **the old full reload** (`--no-resident`): entry 1,737 ms, worst hidden frame 1,264 ms.
+  - Heavier zones (Haluna: 6.5 s cold) gain more.
+- **FieldShore details:** a spot where the ground ray finds nothing isn't judged (a ray starting inside Haluna's
+  terrain collider missed it, which stalled the lane walk), and the ray starts 1 m up. With the guard off,
+  qa_dock_edges fails in Coilspire, Ansedra, the lacquer court and others, so it catches real edges.
+- **Checks:** battle_return 1/0, scene_router 17/0, flow_routing 4/0, shader_globals 3/0, qa_dock_edges 1/0
+  (19 zones), qa_walk_audit 1/0, field_controller 5/0, hero_field 30/0, qa_party 3/0, fp_ 30/0, qa_encounters 1/0,
+  save_ 153/0; gdlint and gdformat clean over game and tests; validate_data 0/0.
+MERGE-READY @ (this commit).
+- **MERGE-READY @ 99989c2bc** (for big24): the battle-return resident field (1,737 → 389 ms black on the causeway)
+  and the FieldShore water guard, with their tests.
+- **Jog speed (the Lead, 10-30 14:28): no pre-slowing.**
+  - When characters push the jog clip, I set the field run speed **in data** from the clip's own travel (root travel
+    per loop, else stride × cadence, as HeroClipGait measures it), within 2.3–3.6 m/s, so the feet plant.
+  - Then max_playback_scale comes back down and test_qa_walk_audit's foot-slide check confirms it.
+- **Next:** re-measure Haluna's cold entry and the battle return (`scene_swap_probe --encounter --return`) once big24
+  merges; the Act II items as before.
+
+### The field-camera rows verified on big23 (8fe3644b, a clean worktree), the Lead 10-30 15:08
+- `qa_field_camera` 2/0, `qa_party` 3/0, `camera_director` 56/0. qa_field_camera's spawn sweep now fails on a camera
+  in his face (under 1.5 m) or a director pitch steeper than 55°, so every spawn below is under it.
+  - **24 (DockShore) and 47 (FerryAft):** clean in the sweep (the standoff and widest_view in 0ffe9260d).
+  - **38 (Coilspire Encounter):** clean, with no KNOWN line. The Lead's big23 resolution of the Encounter fallback
+    (a layout's own, else the first spawn, at build) supersedes my place_at version (7e0f44802); I take integration's
+    side on my next merge. Tier4 is still KNOWN: its spawn stands inside the steps (M3-HER-1157, env-art-b).
+  - **37 (AfterHarrier):** the still on big23 shows Rhen clear at centre, with Asha and Toma at a reading scale
+    (camera_near_m 4.0).
+  - **66 (Ch4 opening):** real time with auto-advancing lines. In the 12 s after the release, the camera is never
+    nearer than 5.1 m and settles on NemeDoor at 9.8 m. Only 6 of 111 samples had Rhen out of frame or walled off,
+    all during the 1.2 s cross-town blend; there's no 10 s spell inside a wall.
+  - **21 (Haluna beach start):** real time. 0 of 121 samples with Rhen out of frame or walled off; it settles on
+    beach_shallows at 7.5 m.
+- **For the PC:** all six rows are fixed on big23 in the headless checks; please confirm them by hand on the next
+  pass.
+- **Next:** big24 (with characters' jog, b344b974, and my 99989c2bc), then the run speed from the jog's measured
+  travel and Haluna's cold entry.
+
+### Lead FAST-TRACK 10-30 15:49: big24's red test_qa_field_camera (lowlight.tscn:Sanctum), fixed
+- **Reproduced on big24 (efe7fb10, merged here):** with the committed FieldShore, `lowlight.tscn:Sanctum (shot Hall):
+  the leader is out of frame`. It passes with the fix.
+- **Cause:** a safety-catch bug in my guard. Lowlight's hall water plane (x 32–72, y −2.05) does cover the Sanctum
+  spawn (60, −8, 4), 6 m under it, the drowned sanctum. The refusals skip anyone more than underwater_m under (a
+  seabed walk), but the catch in `settle()` didn't. It put Rhen back on his last safe spot, the previous spawn's
+  (Gate or EngineHall), across the zone, so the camera at Sanctum lost him.
+- **Fix:**
+  - `settle()` does nothing more than underwater_m under a surface (the same rule as the refusals);
+  - a last safe spot more than `teleport_m` (2.0, field_movement.json "shore") away is forgotten, because a spawn or
+    a teleport put him here and the old spot is elsewhere.
+  - New `tests/unit/test_field_shore.gd`: the catch near the safe spot, a teleport forgets it, and no catch under a
+    surface.
+- **Checks:** test_qa_field_camera 2/0 (red before the fix), field_shore 3/0, qa_dock_edges 1/0 (23 zones).
+MERGE-READY @ (this commit).
+- **Run speed from characters' jog (the Lead, 10-30):** after big24, the heroes' run clip is characters' jog (a 2.6 m
+  stride at 164 steps a minute, `locomotion.json` run.speed_mps 3.545).
+  - **The field run stays 3.6 m/s,** 1.6% over the clip, so the body plays the jog at 1.02x and the feet plant.
+  - **3.55 was tried:** test_qa_walk_audit's Coilspire spiral then put Toma in the steps for 50 frames, a follower
+    path that sensitive to a 1.5% speed change, so the walk-audit routes are for another day.
+  - The data's doc says this, and **test_field_motor `test_the_field_run_is_the_jog_clips_speed`** pins the run
+    within 2% of the clip and inside 2.3–3.6.
+  - max_playback_scale stays 1.8 until Kerrid, Ysolde and Liss get the jog too (Kerrid's old run still needs 2.0x).
+  - Checks: field_motor 10/0, hero_field_actor 15/0 (the clip speeds match the measured foot plant), qa_walk_audit
+    1/0, validate_data 0/0.
+MERGE-READY @ (this commit).
+- **Next:** Haluna's cold entry and the battle return, re-measured on big24.
+- **Re-measured on big24 (+ this branch), headless, real time** (`scene_swap_probe`):
+  - **Haluna battle return, resident:** entry 461 ms, worst hidden frame 89 ms. **The same return reloading
+    (`--no-resident`):** 4,997 ms, with a 2,997 ms hidden frame. The playtest's black is gone at Haluna too.
+  - **Causeway battle return, resident:** 399 ms, worst hidden frame 33 ms.
+  - **Haluna cold entry from boot, with ResidentLoads on (`--to=haluna --resident-loads`):** entry 15,478 ms,
+    instantiate 899 ms, worst hidden frame 1,885 ms. Over ADR 0029's 3 s entry and 1 s hidden-frame budgets.
+    - This is the first entry from the title, while the hero bodies and the zone load cold. It isn't the
+      after-battle case, but it's the next loading item.
+    - **LEAD-ASK:** whose is it, the loading or resident-loads owner or mine (SceneRouter)? A first look would be
+      what the 15 s waits on: the resident-load swap hold versus the zone's own load.
+
+### Haluna's cold entry, profiled (the Lead 10-30 16:26: mine, ui-menus for ResidentLoads)
+- `scene_swap_probe --to=haluna`, headless (lavapipe, so judged by the split):
+
+  | Run | entry | swap held | instantiate | worst hidden frame |
+  |---|---|---|---|---|
+  | `--resident-loads`, cold with no warm (probe-only start; the 15–24 s figure) | 24.2 s | 560 frames | 0.9 s | 853 ms |
+  | `--resident-loads --warm-resident` (**the game's New Game**: the title warms the bodies) | **5.3 s** | 477 frames | 0.9 s | **699 ms** |
+  | ResidentLoads off | 6.6 s | 13 frames | 0.9 s | 3,467 ms |
+
+- **The hidden-frame target (≤ 1 s behind the New Game card) is met on the game's path:** 699 ms, even on lavapipe.
+  ResidentLoads moved the bodies' 3.5 s off the hidden frame as intended.
+- **The 15–24 s was the unwarmed probe,** a start the game never makes.
+- **What's left is the 5.3 s total,** almost all the swap held on Haluna's own `scene_loads` list: 424 resources,
+  57 MB, 4 in flight, requested only when the change starts. SceneRouter waits on nothing else.
+- **Filed M3-HER-1167 (ui-menus):** start the New Game zone's loads with `ResidentLoads.load_scene()` while the
+  title shows, as `warm()` does for the bodies, so the hold finds them in.
+
+### big25 (4b198810), merged here; the Lead 10-30 17:04
+- **The test_qa_field_camera red in big24 and big25 (lowlight.tscn:Sanctum) is fixed by 314559cfc,** which big25
+  doesn't carry (it took this branch before it). On big25 + this branch (1204cbffd, a fresh import):
+  test_qa_field_camera 2/0 and field_shore 3/0. **big26 needs 314559cfc, together with b335f0325.**
+- **The field-camera rows on big25 + this branch:**
+  - qa_field_camera 2/0 (spawn sweep with in-face and steep checks) covers 24 (DockShore), 47 (FerryAft) and 38
+    (Coilspire's Encounter). The only KNOWN entries are Tier4 (M3-HER-1157, env-art-b's spawn) and B02 (M3-HER-1160,
+    m2-slice).
+  - qa_party 3/0, camera_director 56/0.
+  - **37 (AfterHarrier):** the still on this tree shows Rhen clear at centre, Asha and Toma at a reading scale.
+  - **66 (Ch4 opening), real time:** never nearer than 5.1 m in the 12 s after the release; 6 of 111 samples during
+    the 1.2 s cross-town blend; settles on NemeDoor at 9.8 m.
+  - **21 (Haluna beach start), real time:** 0 of 121 samples out of frame; settles on beach_shallows at 7.5 m.
+MERGE-READY @ (this commit) (it includes 314559cfc and b335f0325).
+
+### URGENT, found while extending the resident return (the Lead 10-30 17:24): a resident zone came back deaf
+- **The bug, live in big24 and big25 for random fights:** a re-attached zone doesn't re-run `_ready`, and many nodes
+  let go of things in `_exit_tree` that they only take in `_ready`.
+  - Every ZoneStory and HalunaStory dropped its `field_interacted` and `field_trigger_entered` connections.
+  - Ashcrown and Coilspire dropped one more `field_interacted` connection each.
+  - Haluna's and the wake's shrines unregistered from the ShrineNetwork.
+  - **So after a random fight, that zone's story triggers and talk interactions stopped answering.**
+- **Fix (SceneRouter, generic; no other track's file touched):**
+  - `zone_links(zone)` records, at detach, every EventBus connection whose target is inside the zone, and its
+    registered shrines.
+  - `restore_links()` puts back whatever is missing on the first frame after the re-attach, before the spawn and
+    `scene_changed`.
+- **Guard:** new `tests/integration/test_resident_reattach.gd` detaches and re-attaches every field zone the way the
+  router does, then compares EventBus connections per signal, registered shrines and root children. Before the fix
+  it failed in every zone; now it passes. battle_return 1/0 and scene_router 17/0.
+MERGE-READY @ (this commit). **Take it into the next batch:** big24 and big25 carry the bug.

@@ -1,0 +1,23 @@
+// DRAFT (Act III, planning only). Ch17 B04 "Dace's hull" (P, 3 min): the hull's three interactables, one node each.
+// act3_ch17.md §2 B04. An unfinished lashed-hull airship: ribs, a Lit Age brass keel, sails cut like a flare-kite.
+// Liss's line plants Virel's shape (paid only in Ch20): plant it, don't explain it.
+title: ch17_hull_sails
+location: ch17/hollowmere
+---
+@anim liss look_at hull_sails
+Liss [surprised]: That's not a Saltwright cut. #line:ch17_hull_001
+Liss [neutral]: Nobody sails a kite-cut on a hull. Nobody I know. #line:ch17_hull_002
+===
+title: ch17_hull_tool_rack
+---
+@anim rhen pick_up diving_hooks
+Rhen [neutral]: Same make as mine. #line:ch17_hull_003
+@wait 1.5
+Rhen [neutral]: Same nick in the left one. #line:ch17_hull_004
+===
+title: ch17_hull_chart_wall
+---
+@anim ysolde look_at chart_wall
+Ysolde [neutral]: Corrow, circled. Three times, in three inks. #line:ch17_hull_005
+Kerrid [neutral]: That's my stair. #line:ch17_hull_006
+===

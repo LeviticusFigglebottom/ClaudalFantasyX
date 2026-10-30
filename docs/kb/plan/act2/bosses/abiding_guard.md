@@ -100,7 +100,7 @@ phase 2 water rises to the ankles as VFX (never pushes a foot under).
 - **Owners:** characters (models, rigs, clips); combat (rows, AI, suites); battle-presentation (the hand-over);
   rendering (the storm render); audio (M4-A2P-092); narrative (who they are, and whether Sefir speaks during it).
 
-## Open questions
+## Open questions (answered: ADR 0204, 2026-10-30; the drafts stand unless marked)
 
 1. Stillguard elite or the Conclave's revenant guard? The sheet shows neither (no tell either way), so the art and the
    fight work for both. Narrative decides the bestiary text.

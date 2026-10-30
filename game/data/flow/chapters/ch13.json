@@ -33,6 +33,24 @@
        "set": "ch13_started"
       }
      ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch13_archive_read"
+      ],
+      "unset": [
+       "ch13_pact_of_silence"
+      ]
+     },
+     "steps": [
+      {
+       "place": "FromArchive"
+      },
+      {
+       "play": "ch13_the_pact"
+      }
+     ]
     }
    ],
    "beats": {
@@ -116,6 +134,21 @@
        }
       }
      ]
+    },
+    "ledge": {
+     "when": {
+      "set": [
+       "ch13_entered_sanctum"
+      ],
+      "unset": [
+       "ch13_ethren_bound"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch13_ethren"
+      }
+     ]
     }
    }
   },
@@ -147,6 +180,24 @@
        "set": "ch13_entered_archive"
       }
      ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch13_read_cantor_roll"
+      ],
+      "unset": [
+       "ch13_archive_read"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Door"
+      },
+      {
+       "play": "ch13_archive_hands"
+      }
+     ]
     }
    ],
    "beats": {
@@ -157,6 +208,36 @@
         "location": "ch13/ansedra",
         "spawn": "FromArchive"
        }
+      }
+     ]
+    },
+    "ledgers": {
+     "when": {
+      "set": [
+       "ch13_entered_archive"
+      ],
+      "unset": [
+       "ch13_read_ledgers"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch13_archive_ledgers"
+      }
+     ]
+    },
+    "roll": {
+     "when": {
+      "set": [
+       "ch13_read_ledgers"
+      ],
+      "unset": [
+       "ch13_read_cantor_roll"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch13_archive_roll"
       }
      ]
     }

@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch13_bark_pilgrim_child",
+ "source": "game/data/dialogue/ch13/ch13_bark_pilgrim_child.dlg",
+ "start": "ch13_bark_pilgrim_child",
+ "nodes": {
+  "ch13_bark_pilgrim_child": {
+   "headers": {"location": "ch13/sanctum_of_the_level"},
+   "ops": [
+    {"op": "line", "id": "ch13_bark_pchild_001", "key": "DLG_CH13_BARK_PCHILD_001", "speaker": "child", "emotion": "neutral", "voice": "", "src": 5}
+   ]
+  }
+ }
+}

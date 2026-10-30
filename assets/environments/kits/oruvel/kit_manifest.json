@@ -136,12 +136,12 @@
     },
     "lintel_gull_open": {
       "budget": [
-        2800,
+        3600,
         420
       ],
-      "bytes": 110212,
+      "bytes": 438424,
       "lods": {
-        "lintel_gull_open": 772,
+        "lintel_gull_open": 2960,
         "lintel_gull_open-lod1": 338
       }
     },
@@ -275,6 +275,17 @@
       "lods": {
         "raft_deck_small_tucked": 11204,
         "raft_deck_small_tucked-lod1": 524
+      }
+    },
+    "raft_deck_square": {
+      "budget": [
+        20000,
+        1000
+      ],
+      "bytes": 759408,
+      "lods": {
+        "raft_deck_square": 17468,
+        "raft_deck_square-lod1": 604
       }
     },
     "raft_deck_tucked": {

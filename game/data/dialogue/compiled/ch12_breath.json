@@ -1,0 +1,40 @@
+{
+ "format": 1,
+ "scene": "ch12_breath",
+ "source": "game/data/dialogue/ch12/ch12_breath.dlg",
+ "start": "ch12_breath",
+ "nodes": {
+  "ch12_breath": {
+   "headers": {"location": "ch12/keth_pass"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "camera", "args": ["K04"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "camera", "args": ["P03"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "anim", "args": ["toma", "look_at", "kerrid"], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "flight_3_up", "walk"], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "mark", "args": ["asha", "flight_3_up", "walk"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "mark", "args": ["ysolde", "flight_3_up", "walk"], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "mark", "args": ["liss", "flight_3_up", "walk"], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "mark", "args": ["pell", "flight_3_up", "walk"], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "camera", "args": ["P04"], "kwargs": {}, "src": 23},
+    {"op": "if_not", "cond": ["flag", "ch08_fishwife_called"], "to": 17, "src": 24},
+    {"op": "line", "id": "ch12_breath_001", "key": "DLG_CH12_BREATH_001", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 25},
+    {"op": "goto", "to": 19, "src": 24},
+    {"op": "line", "id": "ch12_breath_002", "key": "DLG_CH12_BREATH_002", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 27},
+    {"op": "goto", "to": 19, "src": 26},
+    {"op": "cue", "cue": "anim", "args": ["kerrid", "look_at", "toma"], "kwargs": {}, "src": 29},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 30},
+    {"op": "cue", "cue": "mark", "args": ["kerrid", "flight_3_up", "walk"], "kwargs": {}, "src": 31},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 32},
+    {"op": "cue", "cue": "mark", "args": ["toma", "flight_3_up", "walk"], "kwargs": {}, "src": 33},
+    {"op": "set", "flag": "ch12_toma_saw_breath", "value": ["lit", true], "src": 34},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 35},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 36}
+   ]
+  }
+ }
+}

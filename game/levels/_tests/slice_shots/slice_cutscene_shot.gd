@@ -28,6 +28,11 @@ extends Node3D
 ## M2-FP-120: "<cue> <first arg>" (e.g. "vfx glimmer_bound"): once that cue has run, the scene's clock stops, so a
 ## beat with no line (S08's held form) holds whatever the frame count. Empty = run on.
 @export var hold_cue: String = ""
+## Stage actors to show before the scene, as a chapter beat's `show_block` steps do (Ch1's Hullgnaw).
+@export var show: Array = []
+## M4-CIN-1304: a stage mark (a cinematics staging mark included) the player starts on, where the scene's trigger
+## would have them stand and no spawn is near (Ch11's admission at the conduit). Empty = the spawn's place.
+@export var at_mark: StringName = &""
 
 var level: Node3D
 var sequencer: CutsceneSequencer
@@ -69,6 +74,10 @@ func start() -> void:
 	if scene_id == &"":
 		return
 	var stage := level.get(&"stage") as CutsceneStage
+	for id: Variant in show:
+		var shown := stage.actor(StringName(str(id))) if stage != null else null
+		if shown != null:
+			shown.visible = true
 	sequencer = CutsceneSequencer.new()
 	sequencer.name = "ShotSequencer"
 	sequencer.auto_advance = true
@@ -77,6 +86,13 @@ func start() -> void:
 	# Under the level, as a zone's own sequencer is: HeroFieldParty finds it there and hides the followers while
 	# a held scene plays (B02 showed Asha at Neme's table, who is "at the market").
 	level.add_child(sequencer)
+	if at_mark != &"" and stage != null:
+		# Before the scene, so a walk the scene starts sets off from the mark (staging marks included).
+		CutsceneStaging.apply(stage)
+		var start := stage.mark(at_mark)
+		var who := stage.player() if start != null else null
+		if who != null:
+			who.global_position = start.global_position
 	sequencer.play(scene_id, stage)
 
 

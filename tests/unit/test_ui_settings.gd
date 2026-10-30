@@ -136,7 +136,7 @@ func test_colorblind_palette_swaps_danger_and_enemy_fill() -> void:
 	var t := s.theme_for(base)
 	assert_ne(t, base)
 	assert_eq(
-		t.get_color(&"danger", &"Hymn").to_html(false).to_upper(), "D15E1F", "art/ui.md §9 as amended by M2-UI-11"
+		t.get_color(&"danger", &"Hymn").to_html(false).to_upper(), "C76E10", "art/ui.md §9 as amended by M2-UI-11"
 	)
 	assert_eq(
 		t.get_color(&"enemy_chip", &"Hymn").to_html(false).to_upper(), "2A2414", "art/ui.md §9 as amended by M2-UI-11"
@@ -170,7 +170,7 @@ func test_hud_follows_the_settings_live() -> void:
 	assert_eq(ctl.hud.result.motion_scale, 0.5)
 	s.set_value(UiSettings.PALETTE, &"colorblind")
 	assert_ne(ctl.hud.theme, base, "palette swap re-themes the HUD")
-	assert_eq(ctl.hud.get_theme_color(&"danger", &"Hymn").to_html(false).to_upper(), "D15E1F")
+	assert_eq(ctl.hud.get_theme_color(&"danger", &"Hymn").to_html(false).to_upper(), "C76E10")
 	s.reset()
 	assert_eq(ctl.hud.theme, base, "back to the defaults: the saved theme again")
 	assert_false(ctl.hud.timeline.reduced_motion)
@@ -233,3 +233,27 @@ func _start(ctl: BattleController) -> void:
 func _free(ctl: BattleController) -> void:
 	ctl.get_parent().remove_child(ctl)
 	ctl.free()
+
+
+## The Lead's battle-return check (2026-10-30): a field zone kept resident through a random fight leaves the tree and
+## comes back without _ready. Its prompts keep following: a change made while it was away (the battle pause's text
+## size) shows on its return, and later changes still reach it.
+func test_a_control_out_of_the_tree_catches_up_and_keeps_following() -> void:
+	var s := UiSettings.new()
+	var c := Control.new()
+	var tree := Engine.get_main_loop() as SceneTree
+	var host: Node = tree.current_scene if tree.current_scene != null else tree.root
+	host.add_child(c)
+	assert_true(c.is_inside_tree())
+	s.follow(c)
+	var at_100 := c.theme
+	host.remove_child(c)
+	s.set_value(UiSettings.TEXT_SCALE, 1.3)
+	assert_eq(c.theme, at_100, "out of the tree it does not listen")
+	host.add_child(c)
+	var at_130 := c.theme
+	assert_ne(at_130, at_100, "back in the tree it takes the size set while it was away")
+	s.set_value(UiSettings.TEXT_SCALE, 1.15)
+	assert_ne(c.theme, at_130, "and follows the next change")
+	host.remove_child(c)
+	c.free()

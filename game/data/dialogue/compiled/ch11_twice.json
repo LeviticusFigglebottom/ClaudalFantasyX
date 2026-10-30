@@ -1,0 +1,27 @@
+{
+ "format": 1,
+ "scene": "ch11_twice",
+ "source": "game/data/dialogue/ch11/ch11_twice.dlg",
+ "start": "ch11_twice",
+ "nodes": {
+  "ch11_twice": {
+   "headers": {"location": "ch11/lowlight"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "mark", "args": ["liss", "liss_engine_frame"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "camera", "args": ["T03"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "engine_core", "count": 16, "motion": "spiral_up", "rate": "slow"}, "src": 12},
+    {"op": "cue", "cue": "wait", "args": [8.0], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "camera", "args": ["T04"], "kwargs": {}, "src": 14},
+    {"op": "if_not", "cond": ["flag", "ch10_drowner_defeated"], "to": 9, "src": 15},
+    {"op": "line", "id": "ch11_twice_001", "key": "DLG_CH11_TWICE_001", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 16},
+    {"op": "goto", "to": 9, "src": 15},
+    {"op": "line", "id": "ch11_twice_002", "key": "DLG_CH11_TWICE_002", "speaker": "asha", "emotion": "sad", "voice": "", "src": 18},
+    {"op": "cue", "cue": "anim", "args": ["liss", "look_at", "lamp_engine"], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 22}
+   ]
+  }
+ }
+}

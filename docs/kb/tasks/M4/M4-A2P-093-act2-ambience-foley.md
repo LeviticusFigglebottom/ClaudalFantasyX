@@ -2,9 +2,8 @@
 id: M4-A2P-093
 title: "Act II ambiences and foley"
 role: audio
-status: blocked
-blocked-by: ADR 0203
-owner_session: ""
+status: doing
+owner_session: "claude/audio (session_01UPFyE9L9BA3QodpCNJEfAs)"
 depends_on: []
 reviewer: cinematics
 milestone: M4
@@ -20,5 +19,7 @@ Ambience beds for the fen, Reedhollow, the high pass and Quellan, the still city
 ## Notes
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). Plan §2.
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
+
+- 2026-10-30 (audio): done: 14 beds (every Act II zone), the root, snow and slate footsteps, unravel's sound. Still to do: the rest of the cue sheet's §4 families (ripples and bells foley, drain and rooted, repair, part breaks, darkness telegraphs, heresy and reader UI) as their features land.
 
 ## Review log

@@ -105,6 +105,32 @@ func test_shrine_without_its_menu_still_restores_the_party() -> void:
 	_done()
 
 
+## Act II's heresy (M4-A2P-082): an Order shrine works until the party are heretics, then goes dark: its light out, its
+## prompt and its use only the dark-shrine bark, no rest. A shrine that isn't the Order's never goes dark.
+func test_an_order_shrine_goes_dark_for_heretics() -> void:
+	shrine.opens_menu = false
+	shrine.order = true
+	assert_false(shrine.is_dark(), "before the trap the Order's shrine still answers")
+	Game.set_flag(SaveShrine.HERETIC_FLAG, true)
+	assert_true(shrine.is_dark())
+	assert_eq(shrine.prompt_key, SaveShrine.DARK_PROMPT_KEY, "the prompt says it is dark")
+	assert_eq(shrine.payload.get("dialogue", ""), SaveShrine.DARK_SCENE, "using it plays the bark")
+	assert_false((shrine.get_node(^"Visual/Core") as Node3D).visible, "its bound light is out")
+	assert_true(shrine.try_interact())
+	assert_true(heals.is_empty(), "a dark shrine heals nothing")
+	assert_true(uses.is_empty(), "and records nothing")
+	assert_ne(tr(SaveShrine.DARK_PROMPT_KEY), SaveShrine.DARK_PROMPT_KEY, "the dark prompt is localized")
+	assert_true(FileAccess.file_exists("res://game/data/dialogue/compiled/%s.json" % SaveShrine.DARK_SCENE))
+	shrine.order = false
+	Game.set_flag(SaveShrine.HERETIC_FLAG, false)
+	Game.set_flag(SaveShrine.HERETIC_FLAG, true)
+	assert_false(shrine.is_dark(), "a Kirru or Saltwright shrine keeps working")
+	assert_eq(shrine.prompt_key, SaveShrine.DEFAULT_PROMPT_KEY)
+	assert_true((shrine.get_node(^"Visual/Core") as Node3D).visible)
+	Game.set_flag(SaveShrine.HERETIC_FLAG, false)
+	_done()
+
+
 func test_instance_flag_is_set_too() -> void:
 	shrine.sets_flag = &"test_flag"
 	Game.set_flag(&"test_flag", false)

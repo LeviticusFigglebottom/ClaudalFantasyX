@@ -120,16 +120,96 @@
     "light_from_lantern": "cs_lantern_catch",
     "set_on_water": "cs_leaf_water",
     "take_hand": "",
-    "half_laugh": ""
+    "half_laugh": "",
+    "bend_to": "cs_cloth_turn",
+    "bow": "cs_cloth_turn",
+    "catch_light": "",
+    "close_eyes": "",
+    "close_ledger": "cs_book_shut",
+    "close_on": "cs_spear",
+    "crest_lift": "cs_cloth_turn",
+    "draw_cleaver": "cs_unsling",
+    "embrace": "cs_cloth_grab",
+    "face_smooths": "",
+    "fit_oil_burner": "cs_tin",
+    "gather": "abl_lamp_gather",
+    "give": "cs_cloth_turn",
+    "give_cord": "cs_untie",
+    "hands_on_lectern": "cs_timber",
+    "hold_out_hand": "cs_cloth_turn",
+    "hold_out_key": "cs_key",
+    "knock": "cs_timber",
+    "lay_cloth": "cs_cloth_grab",
+    "lay_page": "cs_paper",
+    "let_cords_fall": "cs_untie",
+    "lift": "cs_cloth_grab",
+    "lift_head": "cs_cloth_turn",
+    "mark_signature": "cs_scratch",
+    "nudge": "cs_cloth_grab",
+    "offer_palm": "cs_cloth_turn",
+    "paint_gilt_line": "cs_brush",
+    "palm_on_water": "cs_leaf_water",
+    "pick_up": "cs_tin",
+    "raise_hand": "cs_cloth_turn",
+    "raise_staff": "cs_spear",
+    "read_by_touch": "cs_untie",
+    "read_knots": "cs_untie",
+    "seat_burner_seat": "cs_tin",
+    "seize": "cs_cloth_grab",
+    "set_bowl": "cs_crockery",
+    "set_down": "cs_crockery",
+    "shield_merel": "cs_cloth_grab",
+    "shove_lantern": "cs_lantern_catch",
+    "sing": "",
+    "sleep_sitting": "cs_cloth_sit",
+    "smile": "",
+    "spear_turn": "cs_spear",
+    "square_pages": "cs_paper",
+    "step_back": "cs_cloth_turn",
+    "stir": "cre_mangrove_drowner_idle",
+    "take_key": "cs_key",
+    "take_palm": "cs_cloth_grab",
+    "take_pole": "cs_timber",
+    "tie_knot": "cs_untie",
+    "touch": "cs_untie",
+    "touch_hair_stop": "",
+    "turn_back": "cs_cloth_turn",
+    "turn_collar": "cs_tin",
+    "turn_head": "cs_cloth_turn",
+    "turn_palms": "cs_cloth_turn",
+    "wake": "cs_cloth_rise",
+    "wash_hand": "cs_leaf_water",
+    "whisper": "",
+    "wipe": "cs_cloth_grab",
+    "withdraw_hand": "cs_cloth_turn"
   },
   "light": {
-    "*Lantern*": {"on": "cs_lantern_catch", "off": "cs_lantern_snuff"},
-    "*Lamp*": {"on": "cs_lantern_catch", "off": "cs_lantern_snuff"}
+    "*Lantern*": {
+      "on": "cs_lantern_catch",
+      "off": "cs_lantern_snuff"
+    },
+    "*Lamp*": {
+      "on": "cs_lantern_catch",
+      "off": "cs_lantern_snuff"
+    }
   },
   "vfx": {
     "glimmer_lift": "cs_glimmer_lift",
     "glimmer_held": "cs_glimmer_held",
     "glimmer_bound": "cs_glimmer_bound"
   },
-  "lamps": {"_note": "M3-AUD-847: a stage's lit lamps (Light3D nodes whose names match, globs) crackle at the lamp at a random gap of every_sec while visible and lit: Rhen's lantern at the Iskarra vigil", "match": ["LanternLight", "*Wick*", "*Candle*", "*OilLamp*"], "row": "cs_lamp_crackle", "every_sec": [0.6, 2.2]}
+  "lamps": {
+    "_note": "M3-AUD-847: a stage's lit lamps (Light3D nodes whose names match, globs) crackle at the lamp at a random gap of every_sec while visible and lit: Rhen's lantern at the Iskarra vigil",
+    "match": [
+      "LanternLight",
+      "*Wick*",
+      "*Candle*",
+      "*OilLamp*"
+    ],
+    "row": "cs_lamp_crackle",
+    "every_sec": [
+      0.6,
+      2.2
+    ]
+  }
 }

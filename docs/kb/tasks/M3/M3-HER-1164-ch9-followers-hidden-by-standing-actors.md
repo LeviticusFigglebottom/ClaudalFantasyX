@@ -2,8 +2,8 @@
 id: M3-HER-1164
 title: "Ch9: Rhen walks the strand alone because Asha's and Toma's stage actors stand visible all chapter (GPU QA row 39)"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: act1-chapters
 depends_on: []
 milestone: M3
 request-from: qa
@@ -52,5 +52,12 @@ Asha and Toma stand at their marks and Rhen walks alone.
     until a scene cues it. But it would also hide stage actors that carry talk prompts (Toma's Shield-Mate), so
     it's a staging call (act1-chapters) and is put to the Lead (LEAD-ASK in hero-integration.md), not done
     unilaterally.
+
+- **act1-chapters, 2026-10-30: fixed (the Lead's ruling on row 39).**
+  - On the night strand Asha's and Toma's stage bodies stay hidden, so their followers walk with Rhen.
+  - The ebbing beat shows both bodies, and the new `toma_talk` beat shows Toma for his talk by the fire, then hides
+    him again.
+  - At dawn, RoadGate's arrival hands the road to the followers.
+  - test_ch09_thread checks the Strand and the road.
 
 ## Review log

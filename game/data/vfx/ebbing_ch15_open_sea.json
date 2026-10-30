@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "doc": "M4-A2P-045 (env-art-b): Ch15's held dead (ch15_open_sea.md, the reveal C3), on the Ebbing's rig (EbbingMotes, game/vfx/ebbing/ebbing_motes.gd) with this zone's own data: one held field under the barge at the `shoal` mark (requested of chapters, M4-A2P-105), every mote HELD (nothing rises, no gold), drifting toward Kerrid.",
+  "sea_direction": [0.0, 0.0, -1.0],
+  "_sea_note": "The barge drifts bow-first (-Z, toward the dawn fog).",
+  "water_height_m": -0.39,
+  "_water_note": "The open sea's Tide water_height_y (the barge's waterline at its zone scale): held motes sink through it.",
+  "staff": {
+    "_note": "The one attractor follows Kerrid (the rig's `staff` row names its actor): at his hands, low and weak, so the dead drift slowly up toward him from below and never quite reach.",
+    "actor": "kerrid",
+    "head_offset_m": [0.0, 0.9, 0.25],
+    "strength": 0.12,
+    "radius_m": 2.2,
+    "swirl": 0.3,
+    "half_height_m": 0.5
+  },
+  "mourners": {"actors": []},
+  "fields": {
+    "shoal": {
+      "shape": "box",
+      "extents_m": [12.0, 1.0, 8.0],
+      "amount": 1.4,
+      "height_bias": 1.0,
+      "staff": true
+    }
+  },
+  "end_fade_s": 14.0
+}

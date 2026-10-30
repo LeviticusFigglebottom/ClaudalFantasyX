@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch15_bark_raft_cook",
+ "source": "game/data/dialogue/ch15/ch15_bark_raft_cook.dlg",
+ "start": "ch15_bark_raft_cook",
+ "nodes": {
+  "ch15_bark_raft_cook": {
+   "headers": {"location": "ch15/hollowmere"},
+   "ops": [
+    {"op": "line", "id": "ch15_bark_rcook_001", "key": "DLG_CH15_BARK_RCOOK_001", "speaker": "cook", "emotion": "smile", "voice": "", "src": 5, "name_key": "DLG_NAME_COOK_RAFT_COOK"}
+   ]
+  }
+ }
+}

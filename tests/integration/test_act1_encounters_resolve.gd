@@ -7,6 +7,10 @@ extends TestCase
 const FIELD_SCENE := "res://game/flow/field_battle.tscn"
 const ENCOUNTERS_PATH := "res://game/data/battle/encounters.json"
 const ACT1_ID := "^ch0[1-9]_"
+## Act II (ADR 0205): its rows too, but four wait on their arenas (env-art-b; act2/chapters ch11.md, ch16.md).
+const ACT2_ID := "^ch1[0-6]_"
+## Every Act II encounter names its arena now (the Ch16 randoms' pale_rim_shallows landed 10-30).
+const ACT2_NO_ARENA_YET: Array[String] = []
 const LOCATION := &"ch06/brine_shoals"
 const SPAWN := &"Entry"
 
@@ -31,8 +35,8 @@ func _done() -> void:
 	Game.state = _saved_state
 
 
-func _act1_rows() -> Array[Dictionary]:
-	var re := RegEx.create_from_string(ACT1_ID)
+func _act1_rows(pattern: String = ACT1_ID) -> Array[Dictionary]:
+	var re := RegEx.create_from_string(pattern)
 	var out: Array[Dictionary] = []
 	var parsed: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(ENCOUNTERS_PATH))
 	for row: Dictionary in parsed["encounters"]:
@@ -71,6 +75,24 @@ func test_every_act1_encounter_fights_in_its_arena_against_its_own_enemies() -> 
 		_setup()
 		_start(id)
 		assert_eq(ctl.engine.encounter_id, id, "%s: the field battle plays the requested fight, not the sandbox's" % id)
+		assert_eq(str(ctl.get_meta(BattleArena.META_ARENA, "")), arena, "%s: on its own arena" % id)
+		var want: Array[String] = []
+		for e: Variant in row.get("enemies", []):
+			want.append(str(e))
+		want.sort()
+		assert_eq(_base_ids(ctl.engine.enemies), want, "%s: against its row's enemies only" % id)
+		_done()
+
+
+func test_every_act2_encounter_with_an_arena_fights_in_it_against_its_own_enemies() -> void:
+	var rows := _act1_rows(ACT2_ID).filter(func(r: Dictionary) -> bool: return not ACT2_NO_ARENA_YET.has(str(r["id"])))
+	assert_true(rows.size() >= 6, "Act II's rows are read (%d)" % rows.size())
+	for row: Dictionary in rows:
+		var id := StringName(str(row["id"]))
+		var arena := BattleArena.scene_of(str(row.get("arena", "")))
+		assert_ne(arena, "", "%s names an arena (or joins ACT2_NO_ARENA_YET with its request)" % id)
+		_setup()
+		_start(id)
 		assert_eq(str(ctl.get_meta(BattleArena.META_ARENA, "")), arena, "%s: on its own arena" % id)
 		var want: Array[String] = []
 		for e: Variant in row.get("enemies", []):

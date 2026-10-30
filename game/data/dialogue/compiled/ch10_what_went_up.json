@@ -1,0 +1,28 @@
+{
+ "format": 1,
+ "scene": "ch10_what_went_up",
+ "source": "game/data/dialogue/ch10/ch10_what_went_up.dlg",
+ "start": "ch10_what_went_up",
+ "nodes": {
+  "ch10_what_went_up": {
+   "headers": {"location": "ch10/ossa_fen"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "camera", "args": ["O06"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "drowner_roots", "count": 12, "motion": "spiral_up", "rate": "slow"}, "src": 10},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "camera", "args": ["O07"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 13},
+    {"op": "line", "id": "ch10_up_001", "key": "DLG_CH10_UP_001", "speaker": "rhen", "emotion": "surprised", "voice": "", "src": 14},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 15},
+    {"op": "line", "id": "ch10_up_002", "key": "DLG_CH10_UP_002", "speaker": "ysolde", "emotion": "cold", "voice": "", "src": 16},
+    {"op": "line", "id": "ch10_up_003", "key": "DLG_CH10_UP_003", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 18},
+    {"op": "cue", "cue": "mark", "args": ["pell", "root_walk_exit", "walk"], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "music", "args": ["reedhollow"], "kwargs": {"fade": 4.0}, "src": 20},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 23}
+   ]
+  }
+ }
+}

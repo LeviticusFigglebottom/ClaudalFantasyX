@@ -1,0 +1,16 @@
+// Ch13 lore find (optional, the Archive's pilgrims' register, a stand by the door). Asha finds her line's name: an
+// earlier Velamir Cantor of Haluna (bible: the line has given four), the hand too faded for a first name. Imra's line is not
+// shown (her page is not the one open); she walked on to the Choir (Ch15 K, Ch16). No number, no name past what the page shows. Sets
+// ch13_found_velamir_register.
+title: ch13_find_velamir_register
+location: ch13/lamp_archive
+---
+Asha [surprised]: Rhen. Look. "Velamir, of Haluna." #line:ch13_reg_001
+Rhen [neutral]: Your family? #line:ch13_reg_002
+Asha [neutral]: One of them. The ink's gone on the first name. She came all this way and wrote her name in a book by a door. #line:ch13_reg_003 #long
+Asha [soft_smile]: Her letters lean the same way mine do. #line:ch13_reg_004
+Asha [sad]: Mother would have stood right here. #line:ch13_reg_005
+Rhen [tender]: You did. #line:ch13_reg_006
+Asha [neutral]: I'll write mine under hers. #line:ch13_reg_007
+<<set $ch13_found_velamir_register = true>>
+===

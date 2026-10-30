@@ -21,6 +21,7 @@
       "coilspire_tier_landing": "res://assets/environments/arenas/coilspire_tier_landing/coilspire_tier_landing.tscn",
       "keth_seep_terrace": "res://assets/environments/arenas/keth_seep_terrace/keth_seep_terrace.tscn",
       "lowlight_engine_hall": "res://assets/environments/arenas/lowlight_engine_hall/lowlight_engine_hall.tscn",
+      "sunken_vey_gallery": "res://assets/environments/arenas/sunken_vey_gallery/sunken_vey_gallery.tscn",
       "ossa_fen_roots": "res://assets/environments/arenas/ossa_fen_roots/ossa_fen_roots.tscn",
       "bridal_barge_night": "res://assets/environments/arenas/bridal_barge_night/bridal_barge_night.tscn",
       "ansedra_lagoon_escape": "res://assets/environments/arenas/ansedra_lagoon_escape/ansedra_lagoon_escape.tscn",
@@ -28,7 +29,9 @@
       "iskarra_spire_crown": "res://assets/environments/arenas/iskarra_spire_crown/iskarra_spire_crown.tscn",
       "undertow_cage": "res://assets/environments/arenas/undertow_cage/undertow_cage.tscn",
       "undertow_heart": "res://assets/environments/arenas/undertow_heart/undertow_heart.tscn",
-      "undertow_heart_letting": "res://assets/environments/arenas/undertow_heart_letting/undertow_heart_letting.tscn"
+      "undertow_heart_letting": "res://assets/environments/arenas/undertow_heart_letting/undertow_heart_letting.tscn",
+      "lacquer_court_steps": "res://assets/environments/arenas/lacquer_court_steps/lacquer_court_steps.tscn",
+      "pale_rim_shallows": "res://assets/environments/arenas/pale_rim_shallows/pale_rim_shallows.tscn"
     },
     "staging": {
       "doc": "M3-BPR-01: per-arena choreography (BattleChoreo): travel_scale scales every run, step, walk-in and exit (with reduced motion's on top); tempo scales the battle speed (under 1 = slower). Arenas with no row stage as the sandbox.",

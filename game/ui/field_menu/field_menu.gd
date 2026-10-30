@@ -503,6 +503,45 @@ func _render() -> void:
 		Level.QUIT:
 			_desc.text = model.quit_desc(id)
 			_help.text = tr("FIELD_MENU_HELP_QUIT")
+	_stack_info()
+
+
+## Stacks the Last saved block and the objective down the right column from their data rects, a line each at the
+## data's line height grown with the text size setting (the Act I UI pass of 2026-10-30: at 130% the hint sat on
+## the date and the objective ran into the help; at 100% nothing moves). The objective takes the room left above
+## the help line; when its wrapped lines need more, the save hint (a standing reminder) steps aside for it, and then
+## the objective's font shrinks into what is left.
+func _stack_info() -> void:
+	_objective.remove_theme_font_size_override(&"font_size")
+	if _save_hint.visible and not _stack_fits(true):
+		_save_hint.visible = false
+	if not _stack_fits(_save_hint.visible):  # still too long: the objective shrinks (to 80% at most) into the room
+		HudLayout.fit_lines(_objective, _help.position.y - _objective.position.y)
+
+
+## Places the blocks (with or without the save hint). True when the objective's lines fit above the help line.
+func _stack_fits(with_hint: bool) -> bool:
+	var sm: Dictionary = _d.get("last_save", {})
+	var om: Dictionary = _d.get("objective", {})
+	var grow := UiSettings.shared().text_scale()
+	var y := HudLayout.rect_of(sm).position.y
+	for l: Label in [_save_head, _save_line, _save_hint]:
+		if l == _save_hint and not with_hint:
+			continue
+		var h := HudLayout.num(sm, "line_height") * grow
+		l.position.y = y
+		l.size.y = h
+		y += h
+	var orr := HudLayout.rect_of(om)
+	var top := maxf(orr.position.y, y if _save_line.visible else orr.position.y)
+	var head_h := HudLayout.num(om, "label_height") * grow
+	_objective_head.position.y = top
+	_objective_head.size.y = head_h
+	_objective.position.y = top + head_h
+	var room := maxf(_help.position.y - _objective.position.y, 0.0)
+	_objective.size.y = room
+	# a Label grows past `room` to its own minimum height (its wrapped lines with their spacing and margins)
+	return not _objective.visible or _objective.get_combined_minimum_size().y <= room + 0.5
 
 
 ## The right page is as tall as its rows; the line sits under it (at its top on the root).
@@ -555,6 +594,11 @@ func _build() -> void:
 	title.size.y = HudLayout.num(pm, "title_height")
 	title.text = tr("FIELD_MENU_TITLE")
 	_title_rule(Rect2(title.position, Vector2(pr.size.x * 0.5, title.size.y)))
+	if _heretics():  # Act II (M4-A2P-082): the act's one quiet reminder, never red
+		var sub := _label(&"HelpDimLabel", Rect2(title.position, title.size))
+		sub.text = tr("FIELD_MENU_SUBTITLE_HERETIC")
+		sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		sub.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	var help_h := HudLayout.num(pm, "help_height")
 	var help_at := Vector2(pr.position.x + pad, pr.end.y - pad - help_h)
 	_help = HudLayout.wrap_upward(_label(&"HelpDimLabel", Rect2(help_at, Vector2(pr.size.x - pad * 2.0, help_h))))
@@ -648,6 +692,11 @@ func _on_clicked(index: int, page_level: Level) -> void:
 		return
 	(_root if level == Level.ROOT else _detail).set_cursor(index, false)
 	accept()
+
+
+## True once the party are heretics (Act II, ch14_declared_heretics): the title row carries the subtitle.
+func _heretics() -> bool:
+	return model != null and model.state != null and bool(model.state.flags.get("ch14_declared_heretics", false))
 
 
 func _label(variation: StringName, r: Rect2) -> Label:

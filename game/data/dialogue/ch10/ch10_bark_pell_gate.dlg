@@ -1,0 +1,9 @@
+// Ch10 C2: Pell outside Reedhollow's gate, his only line until the tide. Literal, not bitter.
+title: ch10_bark_pell_gate
+location: ch10/reedhollow
+---
+Pell [neutral]: I wait here. I am good at waiting. Go in. Eat what they give you. It is rude not to. #line:ch10_bark_pgate_001
+<<if $ch10_heard_ressa>>
+    Pell [sad]: If they say her name, do not say it back to me. Not yet. #line:ch10_bark_pgate_002
+<<endif>>
+===

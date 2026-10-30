@@ -28,7 +28,7 @@ TRI_BUDGET = {
     "cabin_keelroof": (10000, 600),
     "cabin_patched": (10000, 500),
     "stall_awning": (5000, 300),
-    "lintel_gull_open": (2800, 420),
+    "lintel_gull_open": (3600, 420),  # the O10 hero close-up carving (village.lintel_gull fine)
 }
 
 KEELROOF = (8.0, 4.8, 1.1, 2.32, 0.28)  # roof hull length, beam, depth, eave height, sheer
@@ -251,7 +251,8 @@ def build_lintel_gull_open(seed: int = 34) -> list[kc.MeshBuilder]:
     out = []
     s = GULL_LEN / 0.72
     for lod in (False, True):
-        mb = oc.village.lintel_gull("lintel_gull_open" + (oc.LOD if lod else ""), "crying", GULL_LEN, seed, lod=lod)
+        mb = oc.village.lintel_gull("lintel_gull_open" + (oc.LOD if lod else ""), "crying", GULL_LEN, seed, lod=lod,
+                                    fine=True)
         mb.name = "lintel_gull_open" + (oc.LOD if lod else "")
         _turn_lofts_outward(mb)
         carved, dark = mb.material(oc.M_CARVED), mb.material(oc.M_DARK)

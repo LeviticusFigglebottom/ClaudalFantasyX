@@ -5,7 +5,8 @@ extends RefCounted
 ## turned with the shoal's heading, plus a slow wobble) and follows it with a lag, so the school stretches and
 ## wheels. A player wading close startles it into a dart away. The swim itself is the shader's (mode 4), driven
 ## by each fish's phase. Headless and deterministic. Tuning is the `fish` kind of wildlife.json; placement is a
-## zone file's `shoals` row.
+## zone file's `shoals` row. The rim rays (Ch16, M4-A2P-056) are a shoal too, of the `ray` kind (a `rays` row), drawn
+## with the shader's flap (mode 1: their fins beat) instead of the swim.
 
 const MIN_SPEED_MPS := 1e-3
 const TARGET_TRIES := 6
@@ -41,6 +42,7 @@ var _rng := RandomNumberGenerator.new()
 var _target := Vector3.ZERO
 var _cruise := 0.0
 var _startle := 0.0
+var _mode := WildlifeBuffer.MODE_SWIM
 
 
 ## True while the shoal darts away from a wader (the startle timer runs; read by audio's LifeAudio, M3-AUD-815).
@@ -48,8 +50,17 @@ func startled() -> bool:
 	return _startle > 0.0
 
 
-func _init(row: Dictionary, kind: Dictionary, seed_value: int, count: int, ground_fn: Callable) -> void:
+## `mode` is the shader's motion for every fish: WildlifeBuffer.MODE_SWIM (fish) or MODE_FLAP (rays).
+func _init(
+	row: Dictionary,
+	kind: Dictionary,
+	seed_value: int,
+	count: int,
+	ground_fn: Callable,
+	mode: float = WildlifeBuffer.MODE_SWIM
+) -> void:
 	_kind = kind
+	_mode = mode
 	_rng.seed = seed_value
 	ground = ground_fn
 	id = str(row.get("id", ""))
@@ -75,8 +86,9 @@ func _init(row: Dictionary, kind: Dictionary, seed_value: int, count: int, groun
 		f.wobble_hz = _r("wobble_hz")
 		f.scale = scale * _r("scale")
 		fish.append(f)
-	var reach := radius + spread.length() + _f("wobble_m")
-	var ext := Vector3(reach, spread.y + _f("wobble_m"), reach)
+	var wide := spread * maxf(_scatter(), 1.0)  # a scattered school still fits its bounds
+	var reach := radius + wide.length() + _f("wobble_m")
+	var ext := Vector3(reach, wide.y + _f("wobble_m"), reach)
 	bounds = AABB(center - ext, ext * 2.0)
 
 
@@ -90,6 +102,11 @@ func _r(key: String) -> float:
 
 func count() -> int:
 	return fish.size()
+
+
+## How far a startle throws the school apart: its spread is scaled by up to this, easing back as the startle fades.
+func _scatter() -> float:
+	return float(_kind.get("scatter_spread", 1.0))
 
 
 ## How far the centre may wander from `center` (the school's spread stays inside the radius).
@@ -136,10 +153,11 @@ func step(delta: float, player: Vector3, has_player: bool) -> void:
 	var hz_per := _f("swim_hz_per_mps")
 	var inv_dt := 1.0 / maxf(delta, MIN_SPEED_MPS)
 	var turned := Basis(Vector3.UP, heading)
+	var apart := 1.0 + (_scatter() - 1.0) * (_startle / _f("startle_s") if _startle > 0.0 else 0.0)
 	for f in fish:
 		f.wobble_phase = fposmod(f.wobble_phase + TAU * f.wobble_hz * delta, TAU)
 		var w := Vector3(sin(f.wobble_phase), wob_y * sin(f.wobble_phase * 2.0), cos(f.wobble_phase)) * wob
-		var goal := lead + turned * (f.offset + w)
+		var goal := lead + turned * (f.offset * apart + w)
 		var before := f.pos
 		f.pos = f.pos.lerp(goal, follow)
 		var vx := f.pos.x - before.x
@@ -160,4 +178,4 @@ func write(buf: WildlifeBuffer, base: int) -> void:
 	for i in fish.size():
 		var f := fish[i]
 		var a := amp * (1.0 + clampf(f.speed / dart, 0.0, 1.0))
-		buf.put(base + i, transform_of(f), f.phase, a, WildlifeBuffer.MODE_SWIM, 0.0)
+		buf.put(base + i, transform_of(f), f.phase, a, _mode, 0.0)

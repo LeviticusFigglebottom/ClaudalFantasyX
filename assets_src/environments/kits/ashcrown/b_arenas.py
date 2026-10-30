@@ -110,6 +110,7 @@ def forecourt() -> dict:
 
 
 INTERIOR_FIRE = "#FFB16E"
+LOGGIA_SCREEN_IN_M = 0.25  # the lattice stands this far out from the nave into the loggia
 
 
 def court() -> dict:
@@ -118,8 +119,12 @@ def court() -> dict:
               for p in ("anvil_altar", "ashcrown_tiers", "crest_ground", "plume_vent")]
     pieces.append({"glb": KIT + "matron_alcove.glb", "at": _at((-ac.HALL_HALF_W + 1.45, ac.FLOOR_Y, -10.4), o),
                    "yaw": 90.0, "structure": True})
-    pieces.append({"glb": "res://assets/environments/kits/pemakar/ash_plume_near.glb", "at": _at((0.0, -56.717, -78.0), o),
+    # The Tenders' wind lattice across the loggia (the PC's pass 5, row 63: the open loggia still read as a flat bright
+    # panel behind the Matron's shoulder); just inside the opening, between its reveals.
+    pieces.append({"glb": KIT + "loggia_screen.glb", "at": _at((0.0, ac.FLOOR_Y, ac.HALL_LOGGIA_Z - LOGGIA_SCREEN_IN_M), o),
                    "yaw": 0.0, "structure": True})
+    # No plume here (the PC's pass 3, row 63): seen through the loggia door behind the Matron it filled the opening as
+    # a flat grey panel. From inside the hall the loggia shows the crater rim and the sky.
     lamps = [{"at": _at(lp["at"], o), "color": lp["color"], "energy": lp["energy"], "range": lp["range"], "own": True,
               "shadow": k == 0} for k, lp in enumerate(_preview()["lights"])]
     # the forge trough's spill over the fight floor, so the battle camera's near half is not a black pool

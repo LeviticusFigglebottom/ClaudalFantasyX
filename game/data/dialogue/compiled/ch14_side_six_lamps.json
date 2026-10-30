@@ -1,0 +1,23 @@
+{
+ "format": 1,
+ "scene": "ch14_side_six_lamps",
+ "source": "game/data/dialogue/ch14/ch14_side_six_lamps.dlg",
+ "start": "ch14_side_six_lamps",
+ "nodes": {
+  "ch14_side_six_lamps": {
+   "headers": {"location": "ch14/lacquer_court"},
+   "ops": [
+    {"op": "if_not", "cond": ["flag", "ch13_fixed_lamplighter_lamp"], "to": 4, "src": 7},
+    {"op": "line", "id": "ch14_lamps_001", "key": "DLG_CH14_LAMPS_001", "speaker": "townsfolk", "emotion": "smile", "voice": "", "src": 8, "name_key": "DLG_NAME_TOWNSFOLK_YOUNG_LAMP_BEARER"},
+    {"op": "line", "id": "ch14_lamps_002", "key": "DLG_CH14_LAMPS_002", "speaker": "liss", "emotion": "soft_smile", "voice": "", "src": 9},
+    {"op": "goto", "to": 8, "src": 7},
+    {"op": "line", "id": "ch14_lamps_003", "key": "DLG_CH14_LAMPS_003", "speaker": "townsfolk", "emotion": "worried", "voice": "", "src": 11, "name_key": "DLG_NAME_TOWNSFOLK_YOUNG_LAMP_BEARER"},
+    {"op": "line", "id": "ch14_lamps_004", "key": "DLG_CH14_LAMPS_004", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 12},
+    {"op": "line", "id": "ch14_lamps_005", "key": "DLG_CH14_LAMPS_005", "speaker": "townsfolk", "emotion": "surprised", "voice": "", "src": 13, "name_key": "DLG_NAME_TOWNSFOLK_YOUNG_LAMP_BEARER"},
+    {"op": "goto", "to": 8, "src": 10},
+    {"op": "line", "id": "ch14_lamps_006", "key": "DLG_CH14_LAMPS_006", "speaker": "liss", "emotion": "tender", "voice": "", "src": 15},
+    {"op": "set", "flag": "ch14_saw_the_lamplighter", "value": ["lit", true], "src": 16}
+   ]
+  }
+ }
+}

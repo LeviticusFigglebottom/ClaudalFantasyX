@@ -161,7 +161,7 @@
         4800,
         320
       ],
-      "bytes": 127924,
+      "bytes": 112288,
       "lods": {
         "lowtown_ground": 3200,
         "lowtown_ground-lod1": 288
@@ -341,6 +341,39 @@
       "lods": {
         "shroud_b": 704,
         "shroud_b-lod1": 48
+      }
+    },
+    "shroud_bound_a": {
+      "budget": [
+        4000,
+        300
+      ],
+      "bytes": 69132,
+      "lods": {
+        "shroud_bound_a": 1920,
+        "shroud_bound_a-lod1": 48
+      }
+    },
+    "shroud_bound_b": {
+      "budget": [
+        4000,
+        300
+      ],
+      "bytes": 69136,
+      "lods": {
+        "shroud_bound_b": 1920,
+        "shroud_bound_b-lod1": 48
+      }
+    },
+    "shroud_bound_small": {
+      "budget": [
+        4000,
+        300
+      ],
+      "bytes": 69236,
+      "lods": {
+        "shroud_bound_small": 1920,
+        "shroud_bound_small-lod1": 48
       }
     },
     "shroud_small": {

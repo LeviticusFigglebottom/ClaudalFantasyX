@@ -29,6 +29,8 @@
     },
     {
       "npc_id": "corrow_fisher_a",
+      "offset": [0.75, 0.0, 0.11],
+      "_offset_note": "Off a drop or a doorway (the crowd placement audit, tools/creatures/crowd_spot_audit.gd, 2026-10-30).",
       "crowd": "corrow_fisher_a",
       "stand_in": "CutsceneStage/Actors/fisher_a",
       "attach": "child"
@@ -42,6 +44,8 @@
     },
     {
       "npc_id": "corrow_townsfolk_a",
+      "offset": [0.1, 0.0, 0.22],
+      "_offset_note": "Off a drop (the crowd placement audit, tools/creatures/crowd_spot_audit.gd, 2026-10-30).",
       "crowd": "corrow_townsfolk_a",
       "stand_in": "CutsceneStage/Actors/townsfolk_a",
       "attach": "child",
@@ -49,6 +53,8 @@
     },
     {
       "npc_id": "corrow_townsfolk_b",
+      "offset": [0.1, 0.0, 0.22],
+      "_offset_note": "Off a drop (the crowd placement audit, tools/creatures/crowd_spot_audit.gd, 2026-10-30).",
       "crowd": "corrow_townsfolk_b",
       "stand_in": "CutsceneStage/Actors/townsfolk_b",
       "attach": "child",

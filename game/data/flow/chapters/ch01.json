@@ -101,6 +101,7 @@
         ]},
         "hullgnaw": {"when": {"set": ["ch01_children_safe"], "unset": ["ch01_hullgnaw_defeated"]}, "steps": [
           {"zone": "rest", "args": ["ch01_before_hullgnaw"]},
+          {"zone": "show_block", "args": ["hullgnaw"]},
           {"play": "ch01_hullgnaw_rises"},
           {"battle": "ch01_hullgnaw", "party": ["rhen"], "reserve": [], "return_spawn": "NetPenAfter",
            "victory_flag": "ch01_hullgnaw_defeated"}

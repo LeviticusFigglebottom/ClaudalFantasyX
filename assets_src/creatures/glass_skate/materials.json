@@ -1,17 +1,17 @@
 {
-  "_doc": "Glass skate (act2/glass_skate.md): back (the nearly clear back: glossy and clear-coated, wet but barely darkened, a salt_glass rim sheen; its sand_wet margin rim, the thornback rows, the eye turrets and the spiracles by vertex colour; the tail-root split's spawn_wound on its emission mask), belly (bone) and eye. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "_doc": "Glass skate (act2/glass_skate.md): back (the nearly clear back: glossy and clear-coated (cut back in the as-played pass, 2026-10-30: in the Rim's sun the full clearcoat and rim sheen washed the back, its rim and eyespots to white), wet but barely darkened, a salt_glass rim sheen; its sand_wet margin rim, the thornback rows, the eye turrets and the spiracles by vertex colour; the tail-root split's spawn_wound on its emission mask), belly (bone) and eye. write_materials.py on game/shaders/creature/creature.gdshader.",
   "slots": {
     "back": {
-      "roughness_dry": 0.3,
-      "roughness_wet": 0.08,
-      "specular": 0.75,
+      "roughness_dry": 0.35,
+      "roughness_wet": 0.16,
+      "specular": 0.55,
       "wet_darken": 0.95,
-      "clearcoat_wet": 1.0,
+      "clearcoat_wet": 0.45,
       "detail_scale": 22.0,
       "detail_albedo": 0.06,
       "detail_bump": 0.2,
       "cavity_albedo": 0.3,
-      "rim_sheen": 0.55,
+      "rim_sheen": 0.3,
       "emission_color": "#3FE0C8",
       "emission_energy": 1.6,
       "emission_pulse_hz": 0.3,

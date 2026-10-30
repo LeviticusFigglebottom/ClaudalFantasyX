@@ -76,7 +76,7 @@ to 1913 ms: the rest is the dressing's own CPU build.
   meshes, materials, environments).
 - **At a change.** ResidentLoads loads the target zone's list on worker threads behind the same hold. It keeps the
   list until the next change, then drops it; the heroes stay resident.
-- **Concurrency.** Loads run at most `max_in_flight` (2) at a time. Hundreds of threaded loads at once crashed Godot
+- **Concurrency.** Loads run at most `max_in_flight` (2; 4 since amendment 5) at a time. Hundreds of threaded loads at once crashed Godot
   4.6.3 in this class's test (signal 11), as ADR 0029 saw on Haluna.
 - **Staleness.** `test_resident_loads` fails when an Act I zone has no list or a listed path is gone. Rerun the tool
   after a zone's cast or dressing changes.
@@ -119,3 +119,53 @@ swap wait while holders make progress, as the reveal hold already does (M2-ARC-0
   - `tools/loading/act1_swap_sweep.py`: the probe once per Act I zone, the title and the battle sandbox, with
     ResidentLoads on (`--resident-loads`); exits 1 on an uncovered change. Its frame times are the cloud box's.
 - **The 1 s target itself** is measured only on the PC (PC-QUEUE in the ui-menus live log).
+
+## Amendment 4 (2026-10-30, the PC's pass 3: Ch5 to Ch9 entries still over 1 s hidden)
+- **The pattern:**
+  - The zones still over budget on the RX 9070 XT (Pemakar, Brine Shoals, Corrow, Corrow at night) carry 295–357 unique
+    materials once built. The ones under carry 155–257. Pemakar also has 390 omni lights and 857 meshes.
+  - Headless they were mostly under budget, so the excess is GPU work on first draw: pipelines and uniform sets for
+    materials that the zone builds at runtime, which ShaderPrewarm's scene scan never sees.
+- **Fixes:**
+  - **ShaderPrewarm stages the zone's runtime loads** (PrewarmZoneFeed; registry `zone_loads`, `zone_loads_per_frame`
+    6). As ResidentLoads loads each listed Material or PackedScene, the prewarm stages it: a scene by its SceneState, a
+    material on the quad. It reports the staging as loading progress (`swap_wait_progress`), so the router waits on it
+    as on a load. Outside a feed it reports -1, and swap_progress counts only holders at 0 or more (amendment 2 stands).
+  - **scene_loads.json regenerated:** it was stale against the NPC work merged since, which added up to 91 paths a zone.
+    That alone took Brine Shoals' worst hidden frame from 1535 ms to 341 ms and Corrow's from 1278 ms to 480 ms (headless).
+  - **ZoneCast instances its villager models in GreyboxZone.build()** (on the router's worker thread), not in the swap
+    frame. Their idles still start in _ready, and hero casts still attach in the tree.
+  - **VillagerLayer, built during a scene change,** adopts one villager a frame and holds the router's reveal until the
+    last is in. Adopting moves a whole model out of the tree and back (100–240 ms headless each). The fade stays
+    opaque, so no capsule shows.
+- **Headless, Pemakar:** 1643 ms → 739 ms. **The PC re-measures after big19** (PC-QUEUE).
+
+## Amendment 5 (2026-10-30, the PC's pass 4, row 67: big19's heavy entries over ADR 0205's 2 s, and one hang)
+- **What big19 measured:** big19 has none of amendment 4; that lands with big20 from claude/ui. On the PC:
+  - Ch6 Brine Shoals: 2557 ms hidden (big18: 1653), and 2857 ms fresh;
+  - Corrow: 3769 ms fresh (big18: 2151);
+  - Ch7: 1567 ms; Ch8: 1915 ms;
+  - one fresh Brine Shoals run printed nothing for 600 s.
+- **The hang:** that silence means the main thread froze. The probe's own frame cap (2400 frames) would have printed
+  stats long before 600 s if the router had only been waiting.
+  - The router started the zone's instantiate on a worker thread while ResidentLoads' threaded loads were still in
+    flight. GreyboxZone builds during that instantiate (NOTIFICATION_SCENE_INSTANTIATED), so the zone's own `load()`
+    calls ran beside threaded loads, and the main thread's own loads did too (ZoneCast and VillagerLayer in _ready).
+  - A synchronous load of a file a threaded load already holds waits on that load. That is the engine's deadlock-prone
+    path, and it fits one hang in two fresh runs.
+  - **Fix:** SceneRouter waits on its swap holders (ResidentLoads, the prewarm) *before* it instantiates the zone. The
+    instantiate then finds every listed resource in the cache. Headless it fell from 2.8–5.0 s to 21–56 ms per zone.
+- **The cost:** big19's casts were never listed. tools/loading/scene_loads.gd collects what the built tree holds, and
+  VillagerLayer adopts or replaces each cast body before the tool looks, so every cast model loaded cold on the
+  instantiate thread. The unlisted casts:
+  - Brine Shoals: Moll, the clerk, three Stillguard, a child, two wright children, four reeds;
+  - Corrow: Ivo, Hobb, two Stillguard, the gatekeeper, four children, Marra, the officer;
+  - Tamsule: seven villagers.
+  - **Fix:** the tool now also lists each `cast` row's model (`_collect_casts`), and the registry is regenerated
+    (Brine Shoals +158 paths, Corrow +164).
+- **Concurrency:** `max_in_flight` goes from 2 to 4. The loads no longer share the work with the instantiate thread,
+  and the PC has the cores. Headless (4 cores) Brine Shoals' entry was 7.2 s at 2 and 6.5 s at 4.
+- **Headless numbers are no guide to the 2 s bar.** This box's entries are 2.3–7 s whatever the order: the time is
+  disk and CPU decoding, which the PC does several times faster. The PC re-measures (PC-QUEUE).
+- **Diagnostics:** when scene_swap_probe runs out of frames, it now warns with the router's busy and measuring state
+  and its swap and reveal holders.

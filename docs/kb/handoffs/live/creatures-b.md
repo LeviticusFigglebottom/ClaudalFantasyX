@@ -434,16 +434,16 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   (blocked by ADR 0203 until the Act I gate): ice plates, icicles, the ice beard and `salt_glass` become felted,
   snow-caked wool with grit; slot `fleece_ice` -> `fleece_snow`. A build-script change, not a new model.
 - Checks: taskboard --check, validate_data 0/0, banned_terms grep clean, links resolve. No data, scene, asset or code.
-- LEAD-ASK: ADR 0015 covers temples and set pieces; `ridge_lynx` (frosted ear tufts) and `scree_crawler` (frost-split
+- LEAD-ANSWERED (ADR 0204: yes, filed M4-CRE-701 for creatures): ADR 0015 covers temples and set pieces; `ridge_lynx` (frosted ear tufts) and `scree_crawler` (frost-split
   scree, a frost counter) are Ch12 regulars. Default: file a creatures task to swap their frost for snow/grit too.
-- LEAD-ASK: people bosses' battle clips (Malcor Venn, the Abiding guard): creatures.json rows like Moll's stand-in
+- LEAD-ANSWERED (ADR 0204: Moll's precedent): people bosses' battle clips (Malcor Venn, the Abiding guard): creatures.json rows like Moll's stand-in
   scene, or a characters table? Default: Moll's precedent (battle_sandbox stand-in scene + characters' clips).
-- LEAD-ASK: the Ram's `torn_fleece` and the Wakefin's `close_circle` are phases the plan doesn't name. Default: keep
+- LEAD-ANSWERED (ADR 0204: keep both): the Ram's `torn_fleece` and the Wakefin's `close_circle` are phases the plan doesn't name. Default: keep
   them (each gives a mid-fight read); combat may cut.
-- LEAD-ASK: Wakefin (a fin fought from a boat's deck echoes the inspiring game): the draft keeps it one whole animal,
+- LEAD-ANSWERED (ADR 0204: confirmed; `sound_dive` = evasion up with a clear telegraph, never untargetable): Wakefin (a fin fought from a boat's deck echoes the inspiring game): the draft keeps it one whole animal,
   no deck adds, no separate fin target, an unlamped drifting barge. Confirm; and `sound_dive` = untargetable (draft)
   or only evasion up?
-- LEAD-ASK: Kesh's battle scale 4.2 m (Kahre's summon frame), colossal only in the bind; element order = the order the
+- LEAD-ANSWERED (ADR 0204: 4.2 m; order as met): Kesh's battle scale 4.2 m (Kahre's summon frame), colossal only in the bind; element order = the order the
   party met the Vowbound (draft). Confirm or set.
 - (Smaller design defaults, all in the sheets' "Open questions": Lamp Engine crawler start, Drowner snag-root effect,
   Malcor Venn's engine break as a lent set-piece skill, the Abiding guard's identity and triggers, Nhoa's copy on
@@ -452,3 +452,395 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
 - **BACKLOG EMPTY (2026-10-30 ~02:00):** M3-CRB-013 (the move pass) is in review with all nine viewed; GPU QA rows
   12/35/36/30 answered (fixes on this branch); M3-CRB-015 sheets done; M4-CRB-001 waits on the Act I gate (ADR 0203);
   M3-CRB-014 waits on creatures' review. Left: PC-QUEUE (real-GPU checks) and the LEAD-ASKs above (defaults chosen).
+- **02:30 (10-30), ADR 0204 applied, MERGE-READY @ (this commit):** integration merged; the eleven sheets' open
+  questions marked answered; the Wakefin's `sound_dive` is evasion up with a clear telegraph (row, engine line, Q2);
+  the README's Kesh scale fixed to 4.2 m; **M4-CRE-701** filed for creatures (ridge_lynx, scree_crawler frost -> snow
+  and grit; blocked by ADR 0203). Checks: taskboard --check, validate_data. BACKLOG EMPTY stands (PC rows first when
+  gpu/act1-qa-3 lands).
+
+## 2026-10-30 ~03:00: ACT II STARTED for creatures-b (ADR 0205; the Lead's 02:26 message)
+- Merged the integration branch (ADR 0205, act2_tracks.md). Ownership row added for the Act II bosses and Vowbound.
+- **MERGE-READY @ a70e62d3: M4-A2P-059, the Avalanche Ram without ice (to review, rendering).** Wet matted wool,
+  sodden blunt dripping lock ends, a wet beard; the `ice` slot, its .tres and PROVENANCE row removed; seep partings,
+  head, herd-cord, clips and budget (15,035) unchanged. Blender verify identical; tools test_creatures OK; Godot
+  creature 88/0. SELF-RENDERED creature_avalanche_ram (viewed: no ice reads; drift vs the icy baseline is intended)
+  and the portrait (re-baked, viewed). M4-CRB-001 closed as its duplicate.
+- **In progress (worktree agents, chapter order):** M4-CRB-002 the Mangrove Drowner, M4-CRB-003 the Lamp Engine,
+  M4-CRB-004 the Wakefin: final-quality pass + a clip per skill + anchors + test_creature_bosses_act2. Next: the
+  Ram's own clips (M4-CRB-005), then the Vowbound (Nhoa, Hesk, Ethren), then Kesh (M4-A2P-057, model from scratch).
+- **For combat (skills are yours):** creatures.json `clip_by_skill` can't name a skill before skills.json has it
+  (validate_creatures.py). Each boss's design sheet will carry a ready-to-paste clip map (skill -> clip, contact).
+- **MERGE-READY @ 7efa5f56: M4-CRB-004, the Wakefin at the final bar** (worktree agent, viewed by it; review combat).
+  A `breach` root at the water carries its travel; unweighted anchors; a lit blade seam; a `BladeTip` torn off by the
+  close-circle ram. 24 clips, each from its phase idle's first frame. **Clip map for combat** (proposed skill ids):
+  `fin_cut` -> attack 0.8; `sound_dive` -> dive 1.0 (the blade's top stays in view: evasion up, ADR 0204);
+  `wakefin_rise` -> rise_strike 0.85; `wake_wash` -> wake_wash 0.75; `bill_strike` -> bill_strike_close 0.7 (phase 2);
+  phase `close_circle` -> phase_close (ram 0.85) -> idle_close, `_close` versions mapped. 11,128 triangles (≤14k).
+  New tools/tests/test_wakefin.py (every clip skinned against the barge) and test_creature_bosses_act2.gd. Checks:
+  tools 62 OK, Godot creature 95/0, boss 93/0, Blender identical, validate_data, gdlint/gdformat.
+  - **For battle-presentation (M4-A2P-062), blocking it in a real fight:** the clips are authored for the fish in the
+    water off the barge's far side toward the bow, at (-5.0, -0.6, -6.5) yaw 90. The arena's `BossAnchor`
+    (-10, -0.6, -1.5) is outside the battle camera (42° off-axis against a 33.5° half-width) and a boss today sits on
+    EnemySlots/Slot0 (on the deck). Seat it at the staging point (a `boss_seats` row works once the encounter
+    exists) and give its strikes `travel: none`. Also yours: the glowing wake, the rise's glow ring.
+  - Note for creatures (M3-CRB-014): test_creature_actor's Wakefin bone list updated.
+- **In progress:** M4-CRB-002 Drowner, M4-CRB-003 Lamp Engine, M4-CRB-005 the Ram's moves (worktree agents).
+- **MERGE-READY @ (this commit): M4-CRB-003, the Lamp Engine at the final bar** (worktree agent, viewed by it; review
+  combat). The housing reads as a ringed tower (shingled plates, lacquer lips), lamps 1.2x, thicker limbs and broad
+  shears, the core lit as a globe; stand-in yaw 90 -> 55 (side-on, the near arm hid the core); bigger hits; the closed
+  KO keeps its petals shut. 18,680 triangles (≤20k), 25 clips, anchors; portrait re-baked. **Clip map for combat:**
+  engine_trim -> attack 0.6; lamp_gather 1.2; lamp_burn 0.8; call_the_tenders -> call 0.7; twin_trim 0.85;
+  core_flare -> cast (phase 2) 1.0; each with an `_opened` version (the `opened` clips map is in creatures.json).
+  Checks: Blender identical; tools OK; Godot creature 100/0 (test_creature_bosses_act2 now holds both bosses).
+  **Open:** the ring break parts wait on combat's skills (break_parts is keyed by skill; M4-A2P-022) and on a budget
+  call (broken lamp variants cost ~1.4-4.8k triangles against 1.3k left). Pre-existing, not mine: `--filter=part`
+  fails the Liss stand-in tint test (#7A8C5A vs battle_sandbox's #7A8F6A).
+- **MERGE-READY @ (this commit): M4-CRB-002, the Mangrove Drowner at the final bar** (worktree agent, viewed by it;
+  review combat). Roots planted by IK every frame (they lifted up to 24 cm), 24 clips (intro, ready, idle_b, a clip
+  per skill, risen versions, snag_break), anchors, the two snag roots carry mote cradles with torn twins (new
+  `mote_snag` material, PROVENANCE row), barnacles fixed; 17,676 triangles (≤18k); portrait re-rendered. **Clip map
+  for combat:** drowner_haul -> attack 0.7; rising_water 1.0; drowner_snag -> snag 0.75; root_stamp ->
+  root_stamp_risen 0.8 (phase 2); drink_the_fen -> cast 1.0; each `_risen` in `uprooted` (map in creatures.json);
+  the `break_parts` block (keyed drowner_haul) is ready in the art sheet. **Boss seat** [-5.0, 0, -3.0] added to
+  battle_sandbox.json `boss_seats` (on the default slot the trunk filled a third of the frame, its top cut).
+  Checks: Blender identical; tools OK; Godot creature 106/0. Open: risen feet slide ≤6 cm in rising_water_risen.
+- **MERGE-READY @ (this commit): M4-CRB-005, the Avalanche Ram's moves** (worktree agent, viewed by it; review
+  combat). 23 clips: intro (drinks, lifts, stamps), ready, idle_b, charge_gather, the charge, the bellow (cast, 2.0 s),
+  neck_sweep, fleece_shake, hits, KO (kneels, lies down, the herd-cord last); phase `torn_fleece` (40%): `phase_tear`
+  rears and slams at 1.0 s, a felted shoulder plate tears and falls (its own `plate` bone keeps it where it fell;
+  `TornShoulder` shows the seep via the phase's `show`), `idle_torn` and `_torn` versions. Hooves solved every frame,
+  lifting only for the stamp, the paw, the scrape and the rear. `cord` bone (the herd-cord swings). 15,779 triangles
+  (≤16k). **Clip map for combat:** ram_charge -> attack 0.75 (charge_gather on the gather turn); bellow -> cast 0.9;
+  neck_sweep 0.75; fleece_shake 0.6; each `_torn` in the phase map (in creatures.json). New tools test
+  test_avalanche_ram.py (no ice material, contacts, phase). Checks: Blender identical; tools OK; Godot creature 113/0.
+- **MERGE-READY @ (this commit): M4-CRB-006, Nhoa** (worktree agent, viewed by it; review combat). Her beads read as
+  ice crystals up close (ADR 0015: ice is hers, but not crystal shards): flatter, even-lit, rough; dry matte body;
+  denser neck/head motes; the KO no longer levels her antler crowns at the foes like a lance. New `deep_well` (1.8 s)
+  and `echo` (1.4 s) clips; Farewell-Tide lifts 0.2 m (the motes go UP). Anchors. 15,672 triangles (≤16k); portraits
+  re-baked. **Clip map for combat (M4-A2P-024):** attack 0.55; silt_fall -> cast 0.8; deep_well 1.0;
+  nhoa_echo -> echo 0.65; farewell_tide -> special 1.45. New test_creature_vowbound_act2.gd. Checks: Blender
+  identical; tools OK; Godot creature 120/0, vowbound 96/0. Open: rounder beads would double the motes' triangles (a
+  budget call, or a shader soft edge).
+- **In progress:** M4-CRB-007 Hesk (worktree agent); next Ethren, then Kesh (M4-A2P-057, a model from scratch).
+- **MERGE-READY @ (this commit): M4-CRB-007, Hesk** (worktree agent, viewed by it; review combat). The cords hung as
+  a rake of rods: now each bends down and trails, uneven, with a frayed tuft; knots rounder (a raised crossing strand,
+  long knots a tapering helix, the glow following each knot's shape; the numbers they spell unchanged); the ruff two
+  tiers of cord loops; a lean folded neck and low brows. New `cleanse` (Cord-Lift, 1.6 s, contact 0.9) and `mending`
+  (1.4 s, 0.8: she lifts the keth bundle and bows over it). Anchors; no ice (ADR 0015). Budget 14k -> 18k (the Act I
+  Vowbound bar; 17,930). **Clip map for combat (M4-A2P-024):** attack 0.55; knot_light -> cast 0.8; cord_lift ->
+  cleanse 0.9; hesk_mending -> mending 0.8; pass_cord -> special 1.45. Portraits re-baked. Checks: Blender identical;
+  tools OK; Godot creature 125/0, vowbound 101/0.
+- **In progress:** M4-CRB-008 Ethren and M4-A2P-057 Kesh (a new model) (worktree agents).
+- **MERGE-READY @ (this commit): M4-CRB-008, Ethren** (worktree agent, viewed by him; review combat). He read as a
+  stack of cones under a lampshade: the seams and halo now glow bound teal (were white paint), a halo bowl with a
+  lacquer rim, a crown cap closing the veil (still unkeyed on its own bone for the Act III veil-fall), the veil drawn
+  in and pleated, the robe bells re-cut so no hem pokes through (≥1.9 cm), lacquer bands and thin gold rims, raised
+  wing insets. New `stop` (Hold the Hour, contact 0.9) and `ward` (the lacquer screen, 0.8). Anchors. 15,546
+  triangles (≤16k); portraits re-baked. **Clip map for combat (M4-A2P-024):** attack 0.55; level_hand -> cast 0.8;
+  hold_the_hour -> stop 0.9; lacquer_screen -> ward 0.8; still_water -> special 1.45. Checks: Blender identical;
+  tools OK; Godot creature 131/0, vowbound 107/0 (test_creature_vowbound_act2 holds Nhoa, Hesk, Ethren).
+- **In progress:** M4-A2P-057 Kesh (new model), M4-CRB-009 the flat-engine part (worktree agents).
+- LEAD-ASK: M4-A2P-058 (Act II creatures' own VFX) had no owner. Default taken: creatures-b does the four bosses'
+  ambient VFX in their own scenes (game/creatures/<id>/), creatures does the regulars'; battle-skill VFX stay
+  battle-presentation's. Its title's "the Ram's ... ice" is void under ADR 0015.
+- **MERGE-READY @ (this commit): M4-CRB-009, the flat-engine part** (worktree agent, viewed by it; review combat).
+  Stand-in yaw 90 -> 20 (the window faces the camera; side-on it was a dark drum), a brass lid ring, brass inside the
+  split; the broken mesh shares the whole one's shape (the break is animated: light out, chimney over 24°, halves
+  apart, paddles knocked off). Clips: idle, idle_b, intro, ready, `cast` = the flat pulse (contact 0.8), hits, `ko` =
+  the stop (it stays on the barge), `break` (crack 0.6) -> `idle_broken`, broken hits/KO; phase `broken` swaps the
+  meshes on its first frame. 7,620 triangles (≤8k); portrait re-baked. **For combat (M4-A2P-023):** flat_pulse ->
+  cast; Liss's lent break skill calls enter_phase(&"broken") (break_parts optional, never alone). Checks: Blender
+  identical; tools OK; Godot creature 145/0, boss 116/0. Pre-existing, not mine: `--filter=part`'s Liss tint test.
+- **Kesh (M4-A2P-057) merged at d5fd2097 but NOT MERGE-READY yet:** I viewed creature_kesh: she reads as a smooth
+  teal mannequin (plastic water, a torso that looks bare, a blank face, the robe's mouths like polka-dot washers, a
+  stiff idle). Sent back for a polish round (water depth and flow, a clear bodice, a face, carved stone mouths in
+  bands, a living idle). Her rig, clips, contacts and clip map stand.
+- **In progress:** Kesh polish; M4-A2P-058 the bosses' own VFX (worktree agents).
+- **Spot-check (my own view, the merged tree, creature_* review shots):** the Wakefin, Hesk and the Lamp Engine hold
+  up; Nhoa's mote figure is spindly in the studio light but reads in her battle sheet (her design); the Drowner and
+  the flat-engine read. **Ethren still reads primitive** (stacked cone robe, tube arms with ball joints, a plate
+  halo, a board-like screen): a polish round is running (cloth robe, sleeves and hands, a halo of light, articulated
+  screens). M4-CRB-008 is therefore NOT final until it lands.
+- **Kesh pass 2 merged (the cherry-pick of 8397066c):** a visible bodice and stole (satin `robe` slot), runnels and
+  white breaks, a face with lids, brow, lips, 46 carved Choir-stone mouths in bands, a hand-on-heart idle; 19,366
+  triangles. Viewed: much better, still not final (the head reads as a helmet; one teal everywhere, so garment and
+  skin don't separate; the plaques sit in a studded grid). Pass 3 is running. Note for creatures: her agent added
+  `assets/creatures/kesh/` to game/data/import/creatures.json (your file; bookkeeping only).
+- LEAD-ASK: Kesh is the only human-shaped Vowbound, and a procedural creature-kit face tops out below the characters'
+  faces. Could her head and torso start from the MPFB2 base topology (ADR 0021, the characters track's pipeline),
+  built in her own job? Default: no; I keep her on the creature kit and push it (pass 3), and flag the bind-memory
+  close-up (cinematics) as wanting a sculpted head later.
+- **MERGE-READY @ (this commit): M4-A2P-058, the four Act II bosses' own ambient VFX** (worktree agent, viewed by it;
+  review combat). One shared `CreatureAmbientVfx` (game/creatures/ambient_vfx/, reads CreatureActor, never drives it;
+  creature_actor.gd unchanged), all values in game/data/creatures/creature_vfx.json (palette swatches), fixed seeds.
+  Drowner: held motes drifting in the snag cradles, lifting on break/KO; silt drag on its hauls and stamp. Engine:
+  steady halos on the 12 lamps and the core (bound light never flickers: colour script rule 2), on KO they dim and
+  motes rise through the crack. Ram: breath every ~4 s (faster torn), snow puffs and drips on hits and the shake (no
+  ice; tested). Wakefin: sea-glow wake on the water line (it carries no light of its own). Particle counts 3-36;
+  4 prewarm entries, 5 PROVENANCE rows. Checks: Godot creature 155/0, prewarm 22/0, validate_data, gdlint. Weak: the
+  Drowner's drag (faint on the sand-bank preview) and the Ram's breath against the white wall; polish once the real
+  fights exist. Pre-existing, not mine: `--filter=vfx`'s test_cutscene_vfx_hosts (CutsceneMotes missing here).
+  **For battle-presentation:** the breach splash, the dive/rise glow ring and the lamp brightening in the gather are
+  skill VFX (yours). Ownership row added for the new paths.
+- **MERGE-READY @ (this commit): M4-CRB-008 Ethren, now final** (polish round, viewed by me on creature_ethren): a
+  layered silk under-robe in folds with a weighted hem, overlapping lacquer panels, a two-layer mantle (no joints
+  show), wide lined hanging sleeves, hands with fingers and the ring (vfx_keepsake follows it), a floating halo bowl
+  of light, folding-screen leaves; new `silk` slot (2 PROVENANCE rows). 17,304 triangles (≤18k); clips, contacts,
+  anchors and the veil bone kept; portraits re-baked. Checks: Blender identical (17); validate_data; Godot vowbound
+  116/0.
+- **GPU QA pass 4 (gpu/act1-qa-4), my rows:** 12, 35 (Moll) and 36 (the Reach) confirmed fixed on the real GPU.
+  **Row 61** (battle_arena_seawall_stairhead_surge: the Reach fills half the preview): the preview seated it on
+  Slot0, not its boss seat; **battle-presentation's 921e5fec already fixes it** (the preview uses boss_seats and the
+  rest fit, as the fight does), pending the Lead's merge. Nothing left on my side (the seat [-5.0, 0, -2.4] is in).
+  The Spar-wraith's 45° turn needs a capture in motion (PC-QUEUE).
+- **MERGE-READY @ (this commit): M4-A2P-057, Kesh** (three passes; pass 3 viewed by me on creature_kesh): a pale
+  woman of water in a deep sea-dark silk robe and bodice with a slate stole, set with 39 worn Choir-stone mouths
+  scattered along the drape; hair in parted locks (no helmet), the face the brightest thing on her head; the
+  hand-on-heart idle. 4.2 m, 26 clips (six voices, six element-shift cues, The Seven), anchors; 19,794 triangles
+  (justified in her sheet); portrait re-baked. **Clip map for combat (M4-A2P-024/025):** in her design and art
+  sheets (kesh_shift -> shift / shift_<element>; voice_water 0.9, voice_lightning 0.7, voice_fire 0.8 (+1.05, 1.3),
+  voice_ice 0.9, voice_holy 0.8, voice_glimmer 0.9; the_seven -> special 1.8). Checks: Blender identical; validate_data;
+  Godot vowbound 116/0. **Open (LEAD-ASK above):** up close her hair is sculpted and her face soft; the bind-memory
+  close-up (cinematics) wants a sculpted head.
+
+### State of creatures-b's Act II list (2026-10-30)
+All built at the final bar and MERGE-READY: the Mangrove Drowner (M4-CRB-002), the Lamp Engine (003), the Wakefin
+(004), the Avalanche Ram's wool (M4-A2P-059) and moves (005), the flat-engine part (009), Nhoa (006), Hesk (007),
+Ethren (008), Kesh (M4-A2P-057), and the four bosses' own VFX (M4-A2P-058). Every clip map waits on combat's skills
+(validate_creatures rejects clip_by_skill for skills not yet in skills.json): the maps are in each design sheet.
+What the Act II fights still need from others: enemy rows and encounters (combat), boss seats/framing per fight
+(battle-presentation: the Wakefin's staging note above), skill VFX, summons and bindings, portraits for the UI.
+
+- **BACKLOG EMPTY (2026-10-30):** every Act II boss and Vowbound in creatures-b's lane is built, viewed and
+  MERGE-READY; no open Act I row is mine (GPU QA pass 4: 12/35/36 fixed, 61 fixed by battle-presentation 921e5fec).
+  Open asks are the LEAD-ASKs above (M4-A2P-058's split; Kesh's face); defaults taken. Next when anything lands:
+  wire-up checks once combat adds the enemy rows and skills (paste the clip maps, re-render the bosses in their real
+  fights), and any new GPU QA row first.
+
+## 2026-10-30 ~09:30: the Lead's 09:00 message (the bosses on combat's ids)
+- Merged the integration branch (it adds combat's PROVISIONAL rows, skills and encounters for the four creature
+  bosses). Row 44 and M3-CIN-1250 are not creatures-b's (hero-integration's; creatures' crowd layer).
+- **MERGE-READY @ 9781d0fe2: the four Act II bosses wired to combat's skill ids** (creatures.json `clip_by_skill`,
+  each charge's release included): Drowner drowner_drag -> attack, rising_water, root_stamp -> root_stamp_risen;
+  Lamp Engine lamp_trim -> attack, lamp_gather, lamp_flare (release) -> lamp_burn, core_pulse -> cast; Ram horn_toss ->
+  neck_sweep, ram_charge_gather -> charge_gather, ram_charge (release) -> attack, ram_bellow -> cast; Wakefin fin_cut
+  -> attack, sound_dive -> dive, wake_breach (release) -> rise_strike, wake_wheel -> wake_wash. Phase maps translate
+  them in uprooted/opened/torn_fleece/close_circle. New test: every skill and charge release of each boss, in every
+  phase, plays a clip the model has (live: a wrong map fails it). Godot creature 156/0, boss 118/0, validate_data.
+- **SELF-RENDERED (scratch, default camera, each boss's real encounter: ch10_mangrove_drowner, ch11_lamp_engine,
+  ch12_avalanche_ram, ch15_wakefin), viewed:** the Engine and the Ram read big and clear; the Drowner whole on its
+  seat with its snag motes lit, but its arena is full of mangroves like it (it blends a little: a seat further
+  forward or a brighter grade around it is battle-presentation's/env-art-b's call); the Wakefin a dark fin in the
+  water beyond the rail, its sea-glow faint at this distance (the darkness fight, M4-A2P-062).
+- **For combat:** "Horn Toss" names a horn the Ram doesn't have (a camelid head, M3-CRE-635); suggest "Head Toss" or
+  "Neck Sweep" (loc is yours). No `break_parts`: none of the four rows defines a break yet (the Drowner's snag block
+  is ready in its art sheet, keyed by whichever charge it should silence).
+- **BACKLOG EMPTY (09:40):** every Act II boss and Vowbound in my lane is built, wired to combat's ids where they
+  exist (the Vowbound's rows are M4-A2P-024's; the flat-engine's M4-A2P-023's) and viewed. Next: the Vowbound maps
+  when their rows land; any new GPU QA row first.
+
+## 2026-10-30 ~10:20: the Lead's 09:58 re-send (crossed my 09:40 MERGE-READY)
+- The re-sent queue is already done: the four Act II bosses' models, rigs, clip sets and own VFX are built and viewed,
+  and wired to combat's ids in **MERGE-READY @ 9781d0fe2** above (not yet in big21, which merged creatures-b @
+  10490ad9). Drowner (Ch10), Lamp Engine (Ch11), Ram (Ch12), Wakefin (Ch15), in chapter order.
+- Kesh: the creature-kit face with the stylized mask/veil reading stays (no lane crossed, no ADR).
+- Merged the integration branch @ 6a8349e7 (ownership.md: theirs; PROVENANCE union, no stale ice.tres row).
+- **MERGE-READY @ 618d916b3:** M4-A2P-024's Vowbound wiring mapped Ethren's hold_the_hour and lacquer_screen to
+  `cast`, so his built `stop` and `ward` clips never played; now per his sheet (`stop`, `ward`). New test: every
+  Act II Vowbound skill and swell plays a clip the model has, and each built signature clip is reached (live: the old
+  map fails it). Nhoa, Hesk and Kesh's maps already matched their sheets. Godot creature 157/0, validate_data
+  (the one warning, rime_urchin's ice.tres, is not mine).
+- **BACKLOG EMPTY (10:20):** all four bosses and four Vowbound built, wired and checked; the flat-engine waits on its
+  M4-A2P-023 row and Liss's break; no GPU QA row open on my side.
+
+## 2026-10-30 ~10:40: the Lead's 10:08 message ("no BACKLOG EMPTY while an Act II boss lacks its model")
+- Every Act II boss in combat's encounters.json (ch10_mangrove_drowner, ch11_lamp_engine, ch12_avalanche_ram,
+  ch15_wakefin) draws its own creatures-b model: enemies.json `model` and creatures.json `scene` both exist, rigged,
+  with full clip sets, their own VFX and combat's skill ids (9781d0fe2, test_act2_boss_skills_each_play_a_clip_the_model_has).
+- The other two Act II bosses are people, so their models are **characters'** (act2_tracks.md, M4-A2P-051): Malcor Venn
+  is built on claude/characters @ 3f0f5d67 (with `game/characters/foes/venn_battle.tscn`), not yet merged; the
+  Abiding guard is in progress there. My part (ADR 0204 §5, act2_tracks row 57) is their battle_sandbox stand-ins.
+- **MERGE-READY @ ec78978ba:** stand_ins.`malcor_venn` -> venn_battle.tscn (Moll's spec: capsule fallback 1.86 m, yaw 90).
+  Test: it names the actor, and once the actor is on the branch FighterStandIn seats a real body (checked with
+  characters' Venn files brought in temporarily: 32/0; without them 32/0). qa_capsules, stand_in 3/0 each; boss_seat
+  3/0 (its one leftover node predates this). Merge after claude/characters, or it falls back to the capsule until then.
+- **Waits:** the Abiding guard's stand-ins (`abiding_first`, `abiding_guard`) when characters names their battle
+  actors; the enemy rows (`malcor_venn`, the Abiding ids) are chapters'/combat's.
+- **BACKLOG EMPTY (10:40):** no Act II boss in my lane lacks its model; the two people bosses' models are characters'
+  (Venn built, the guard in progress), and their stand-ins follow when the actors land.
+
+## 2026-10-30 ~11:10: the Lead's 10:27 message (Act II quality check, then help row 64)
+- **Act II:** every Act II boss and Vowbound in my lane is at real-model quality (the four bosses and four Vowbound
+  built, reviewed, wired; see above). No stand-in mesh ships: Venn's `stand_ins` entry only points at characters'
+  real `venn_battle.tscn` (ec78978b) and falls back to the capsule only until claude/characters merges.
+- **Row 64 (for battle-presentation, who owns the intro, BattleBossIntro and BattleBossHeroShot): the boss rigs are not
+  the cause, so there is nothing of mine to prewarm.** pc-gpu's big21 trace (gpu/act1-qa-5, act1_gpu_qa.md row 64)
+  found zero pipeline compiles on the spiking frame; the time is `_frame_boss()` -> `BattleBossHeroShot.search` on the
+  first uncovered frame. battle-presentation's 65e776af (warm the particle variants) addresses the earlier guess;
+  the trace says the frame stays.
+  My headless timing of the search in each fight (scratch harness, shared CPU, so absolute ms differ from the PC's;
+  "cold" = an empty `_tri_cache`):
+
+  | Fight | Occluders | Triangle meshes built | Search cold / warm | Biggest occluder sets |
+  |---|---|---|---|---|
+  | Drownbell | 943 | 223 ms | 167 / 158 ms | saltgrass_clumps x700 + x179 (multimesh instances) |
+  | Hermit | 69 | 12 | 121 / 113 | lamp flames, posts, masts |
+  | Inquisitor (Moll) | 66 | 21 | 93 / 99 | camp fires, the party |
+  | Matron | 39 | 2 | 40 / 32 | the party |
+  | Hullgnaw | 99 | 28 | 13 / 12 | |
+  | Spar-Wraith | 69 | 7 | 1 / 1 | |
+  | the Reach | 319 | 20 | 4 / 3 | watcher heads x104 |
+
+  The boss bodies are small (2–12 visual nodes each) and enter only as `bounds`. Two causes:
+  1. **The Drownbell:** 879 of its 943 occluders are saltgrass clumps, ankle-high grass that can never block a lens.
+     Each sight line walks all of them, and the first search builds about 220 ms of triangle meshes.
+     *Suggestion:* `_occluders` skips multimesh instances (or any box) shorter than about 0.5 m, or below the lens
+     and the boss's waist.
+  2. **The Hermit and Moll:** few occluders, but many candidate poses fail before one holds.
+     *Suggestion:* run `_frame_boss()` while the fade still covers the screen (at `_on_first_turn` when
+     `_covered()` is true, keeping `_pose` for the reveal) and warm `_tri_cache` there too. This is pc-gpu's
+     proposed fix, and it covers every fight.
+  Both changes are in battle-presentation's files (game/battle/scene/**), so I made neither. The scratch harness is
+  `game/_scratch_crb/r64/time_hero.{gd,tscn}` (git-excluded; copy on request).
+- **BACKLOG EMPTY (11:10):** the Act II bosses and Vowbound are all at real-model quality. Row 64's cause and its two
+  fixes are measured and handed to battle-presentation, with nothing on my rigs to prewarm. Venn's stand-in waits on
+  claude/characters' merge; the Abiding guard's waits on its actor.
+
+## 2026-10-30 ~13:15: big22 red and the Act I as-played pass
+- **MERGE-READY @ 098a878d1: big22's red test_avalanche_ram fixed.** The test still asserted the Ram had no
+  `clip_by_skill` (from before combat's skills existed); it now checks each mapped skill is in skills.json and each
+  mapped clip is in the GLB (live: a missing clip fails it). tools.tests.test_avalanche_ram + test_wakefin 7/0.
+- **As-played pass, in progress.** The Act I boss fights are played on the real stage with the encounter sweep (a
+  scratch copy that also stills each clip of the boss and Vowbound mid-way, and steps the boss's HP down so every phase
+  is crossed in play).
+  - Reviewed: the Drownbell (flood, KO), Hullgnaw, the Hermit and Ilun, the Reach, and the Inquisitor with Virel. My
+    models show no clipping, pops or missing hit reactions. Ilun, Kahre and Virel each rise, act, are hit and leave
+    cleanly.
+  - **Found and fixed (650257eaa, MERGE-READY once its battle run is green, below):** no boss phase clip was ever seen.
+    `phase_changed` comes from `_end_turn`, right after `action_resolved` starts the blow; BattleActorMotion entered
+    the phase at once and the blow's hit reaction then replaced the phase clip (Hullgnaw's phase_break, the
+    Drownbell's phase_change; Hullgnaw's ribs vanished mid-flinch on the hide_after timer). It now waits for the
+    blow's sequence via `BattleChoreo.after_sequence`, as the phase camera moment does. Review request for creatures,
+    who own the file: M3-CRB-016.
+  - **For battle-presentation (camera, not models):** (1) in undertows_reach, a Vowbound called during the Climb's
+    entry cut rises off screen (the camera is on CameraHints/along_the_walk while Kahre's rise plays); (2) the
+    Spar-Wraith reads as a small dark shape in the rigging at the fight's rest frame (the M3-CRB-011 note).
+- **MERGE-READY @ 650257eaa: a boss phase change waits for the blow that turned it** (M3-CRB-016, review request
+  for creatures). Godot battle 856 run: 3 reds, none from this change (the Act I/II ability-VFX rows wait on
+  battle-presentation's M4-A2P-061; the lineup red is below); creature 159/0, boss 121/0, phase 2/0. Tools suite: the
+  reds are all other tracks' (blender coverage of oruvel_seabed.glb, the ossa_fen wildlife shot, loc "Shell-carver",
+  zone map pois, cutscene sfx todo, a palette baseline, villager clips, audio loudness); test_avalanche_ram passes.
+- **big22 red test_battle_lineup (ch11_lamp_engine), not fixable in my lane without a regression; for
+  battle-presentation and chapters.** The Lamp Engine opens 2.49 and 2.55 m from the two conduit crawlers M4-A2P-022
+  added (needs 2.74: its footprint 2.10 + 0.52 + 0.12). Its footprint is its own mesh (3.6 x 2.35 m) at the stand-in
+  yaw 55°, not its VFX (particles add nothing). Side-on (0° or 90°) it is 1.51 and would pass, but the intro renders at
+  10° and the earlier 90° pass both put the near arm across the body and the core, the reason for 55° (lamp_engine.md
+  As built). Options: (a) battle-presentation lets `boss_seats` seat a boss with adds (the Engine 1–1.5 m back), or
+  (b) chapters spreads ch11's crawler slots, or (c) a larger lineup cap for this fight.
+- **For battle-presentation/env-art: ch11_lamp_engine's default camera is broken on big22.** The left half of the
+  frame is a dark wall and neither the Engine nor the crawlers are in view, only the party (my 09:30 render of the same
+  fixture showed the Engine whole). The boss-intro hero shot is fine.
+- **For battle-presentation: the phase camera moment is cut short by the boss's next turn at real pacing.** A frame
+  trace of ch01_hullgnaw (pacing 1.0, an attack that crosses 50%): the blow plays (hit, f=38); with 650257ea the phase
+  then starts (f=66: `phase_break`, `moments_played` [phase], `moment_left` 2.10, `busy_sec` 2.10); at f=112 (0.77 s)
+  the boss's next turn starts anyway (`coil`), `moment_left` drops to 0 and the 1.9 s phase_break is cut at 40%. The
+  Matron's 2.2 s `phase_change` is cut the same way (no still reaches its middle). test_battle_boss_camera_moments
+  checks `busy_sec() > 1.0` but not that the controller waits for it before the next turn. Scratch trace:
+  game/_scratch_crb/r_hg/trace.gd (git-excluded; copy on request).
+
+## 2026-10-30 ~14:15: the Lead's 14:09 (test_avalanche_ram still red in big23)
+- **Not blocked: big23 merged claude/creatures-b @ a65cf87f, which predates the fix.** The fix is 098a878d1 (pushed
+  12:40, logged MERGE-READY 13:15). **MERGE-READY @ c8de3434f** (big23 merged in, no conflicts): carries 098a878d1 (the Ram
+  test) and 650257eaa (phase after the blow, M3-CRB-016). test_avalanche_ram OK on this head; validate_data 0/0;
+  Godot creature_bosses green.
+- **MERGE-READY @ f893ee590: the Spar-Wraith's deck KO no longer rises.** As played (ch04_spar_wraith, hauled_down then the
+  KO), the victory still showed it apparently back up by its web: `ko_deck` pitched the face 40° down into the planks,
+  more than grounding's 30° head turn takes back, so grounding lifted the whole body 0.5 m as it died (body0 -1.19 ->
+  -0.68 between 0.4 s and 1.05 s). The head now turns aside onto the planks (4° pitch, 18° turn); body0 ends at -1.115,
+  inside the deck idle's own breathing range. New tools/tests/test_spar_wraith.py (fails on the old GLB). Blender
+  creature_spar_wraith 6 identical; tools test_spar_wraith, test_creatures, test_blender_builds 52/0; Godot creature
+  159/0; validate_data 0/0; clip sheet viewed (idle_deck, ko_deck).
+- **The as-played pass, all fights reviewed** (intro, mid-fight, each phase, defeat): Hullgnaw, the Drownbell, the
+  Hermit, the Spar-Wraith, the Matron, the Inquisitor, the Reach (the Surge), and Ilun, Kahre and Virel called into
+  them. Fixed in my lane: the phase timing (650257ea) and the Wraith's deck KO (above). Open in other lanes: the phase
+  moment cut by the next turn, Kahre rising during the Climb's cut, the Wraith's rest framing, ch11's camera and line-up.
+
+## 2026-10-30 ~15:00: the Lead's 14:48 (Act II as-played passes; help battle-presentation with the foe effects)
+- **The effects split: confirmed** (battle-presentation's a5aa7e63 proposal). battle-presentation owns the effect
+  data (the conduit crawler's brush_jab, crawler_mend and crawler_tend, and the four Act II Vowbound's 19, written in
+  tools/vfx/gen_act2_ability_vfx.py on their branch, generated at the first integration merge that carries their skill
+  rows). Once that merge lands, creatures-b views each Vowbound's and the crawler's effects on its own model
+  (anchors, sizes on the bodies) in the as-played sweep, and files any misfit as a battle-presentation task. They are
+  not behind: the two act2/act1 ability-VFX reds on the integration branch are only waiting on that merge.
+- **Act II as-played passes, running:** ch10_mangrove_drowner (Ethren called), ch11_lamp_engine (Hesk), and
+  ch12_avalanche_ram (Nhoa), on the real stage with the sweep (intro, mid-fight, each phase, defeat). Ch13 has no
+  boss encounter yet.
+- **Ch11 Lamp Engine, as played** (Hesk called): intro, both hits, **the phase change now seen** (`phase_change` caught
+  mid-way, then `hit_opened` and `ko_opened`), the victory; Hesk rises and falls cleanly. Nothing to fix on the
+  models. **The default camera's dark slab (for env-art / battle-presentation), traced:** the BattleCamera at
+  (0.72, 3.99, 9.76) sits inside the bounds of `Arena/Ground/engine_hall` (the ray's first hit at 0 m), and the Engine
+  is 7–8 m behind it: a wall of the hall stands between the battle camera and the fight in every wide frame (the
+  opening, mid-fight, the KO). The close shots (intro, hits, phase) are clear.
+- **Ch10 Mangrove Drowner, as played** (Ethren called): intro, hits, the uprooted stance (rising_water, hit and
+  root_stamp in their `_risen` versions), its KO and the victory; Ethren rises, strikes, guards (`defend`), is hit and
+  falls cleanly. **For battle-presentation:** (1) the intro's hero shot looks from behind the party; the Drowner
+  stands far back, washed out and partly behind the title card, so the intro doesn't show the boss (it reads at the
+  opening's default camera: the dark root mass and its teal snag lights). (2) A called Vowbound on the vowbound slot
+  stands right before the default camera: Ethren (2.5 m) fills a third of the frame and hides the Drowner during his
+  own turns (Kesh at 4.2 m will be worse); the slot or the camera, not the models.
+- **Ch12 Avalanche Ram, as played** (Nhoa called): intro, charge_gather, neck_sweep, the torn_fleece stance (its
+  `_torn` charge, hit, sweep and KO) and the victory all read; Nhoa rises, attacks, is hit and falls cleanly.
+- **The phase clips themselves** (the Drowner's uproot, the Ram's tear) aren't caught mid-way: the next-turn cut
+  above (the Engine's `phase_change` was, on its slower turn order). Nothing in the Act II models needs fixing.
+- **BACKLOG EMPTY (15:40):** the Act I and the mounted Act II boss fights are played and fixed where they were mine
+  (650257ea, f893ee59); the open items are other tracks' (the phase-moment cut, the intro framings, ch11's camera
+  behind engine_hall, ch11's line-up, the Vowbound slot before the camera, Kahre's rise during the Climb's cut).
+  Next when they land: battle-presentation's Act II effects (view them on my bodies, the agreed split), the Abiding
+  guard's actor (its stand-in), the flat-engine's row and Liss's break.
+
+## 2026-10-30 ~16:30: the Lead's 16:09 (Act II as-played on Ch10–13; it crossed my 15:40 report)
+- Ch10–12 were played and logged above (15:40); **Ch13 still has no boss encounter on big24** (encounters.json: ch15
+  and ch16 are the next). Merged big24 (no conflicts, validate_data 0/0).
+- **Ch15 Wakefin, as played** (Kesh called, her first real fight): the intro (its fin cutting the dark), the hits,
+  `fin_cut`, the close_circle stance (`hit_close`, `ko_close`) and the victory all play; Kesh attacks and falls
+  cleanly. Checked headless: in close_circle it stays on its seat (-2.6, -0.6, -5.0), more than 5 m off the party, its
+  head in the default camera's view. **For battle-presentation (M4-A2P-062, the dark fight):** in the close_circle
+  frames (the hit and the KO) its body is lost in the dark water at the default camera (the sea-glow too faint there),
+  and Kesh at 4.2 m on the vowbound slot runs out of the top of the frame. Nothing in my models needs fixing.
+- **BACKLOG EMPTY (16:30):** every mounted Act I and Act II boss fight is played; fixes in my lane are merged-ready
+  (650257ea, f893ee59); the rest is logged for its owners. Next when they land: battle-presentation's Act II effects
+  (big25: view them on my bodies), the Abiding guard's actor, the flat-engine's row, Ch13+ boss encounters.
+
+## 2026-10-30 ~16:40: the Lead's 16:27 (status; the Act II Vowbound summon passes)
+- **Status: the Act II boss passes are done and pushed. MERGE-READY @ 51a8e99a1** (big24 merged in; carries 098a878d1,
+  650257eaa, f893ee590 and the logs). Nothing else of mine is unpushed.
+- **The Vowbound summon passes, running:** every Act II and Act I Vowbound called into the mounted Act II fights, each
+  skill used once and then the Swell technique, with a still of each clip mid-way: ch10_mangrove_drowner (Ilun, Nhoa),
+  ch11_lamp_engine (Kahre, Hesk), ch12_avalanche_ram (Virel, Ethren, Kesh). **With battle-presentation:** this run
+  checks the bodies and clips; their effects land with big25, and I re-run the same passes on it to view each effect
+  on its body (the agreed split) and file any misfit to them.
+
+## 2026-10-30 17:10: STATUS for the Lead's 17:04 (not idle)
+- **Act II boss as-played passes: DONE** (Ch10 Drowner, Ch11 Lamp Engine, Ch12 Ram, and Ch15 Wakefin; Ch13 has no
+  boss encounter on big25 either). Stills of intro, each phase and the defeat viewed; findings above (15:40, 16:30).
+  Nothing in my models needed a fix; the fixes from the Act I passes are in.
+- **MERGE-READY @ fc7106b6c** (big25 merged in, no conflicts, validate_data 0/0).
+- **Vowbound summon passes: RUNNING since 16:45** (two render jobs; all seven Vowbound, each skill and the Swell,
+  in Ch10–12). Results land here as each finishes.
+- **FAST-TRACK fixed, MERGE-READY @ 6973ffc08: test_battle_lineup (ch11_lamp_engine).** Fixed in my data, so nothing is
+  needed from act1-chapters: the encounter's slots stay as they are. The Lamp Engine's stand-in yaw is now 80°
+  (it was 55°). Its footprint at 55° was 2.10 m because the 3.6 x 2.35 m body stood diagonally. At 80° it is 1.75 m,
+  and the crawlers clear it: needed 1.75 + 0.52 + 0.12 = 2.39 m, against 2.49 and 2.55. The 90° problem was the near
+  arm crossing the core; rendered in the intro hero shot at 80°, both the closed and opened stances keep both arms
+  raised either side and the core whole. lamp_engine.md "As built" is updated. Checks: Godot battle_lineup 5/0
+  (red before), creature 159/0, boss green, boss_seat and stand_in 3/0, validate_data 0/0.
+- **Vowbound summon passes so far** (each skill once, then the Swell, in the mounted Act II fights):
+  - **Ethren** (ch12 Ram): Level Hand (`cast`, the wings open), Hold the Hour (`stop`: the 618d916b map fix seen in
+    play), Lacquer Screen (`ward`, the wings swing forward), the Still Water finisher (`special`), hit and KO all read.
+  - **Virel** (ch12): Kite Flare (`cast`), the Flare Line finisher, attack and hit all read.
+  - **Ilun** and **Nhoa** (ch10 Drowner): every skill read (Ilun's Brine Lash, Tidal Ward and Floodnet; Nhoa's Silt
+    Fall, `deep_well` and `echo`). Their finishers are being re-run: the sweep first unleashed through the party's
+    Swell system, which a Vowbound doesn't use. It now acts with the finisher, as the menu does.
+  - **For battle-presentation:** on Ilun's dismissal, the Drowner's fall camera ends inside its roots, which fill the
+    frame.
+  - Running: Kesh (ch12), Hesk and Kahre (ch11, more turns), and the two finishers.

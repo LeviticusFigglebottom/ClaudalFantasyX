@@ -13,6 +13,7 @@ Not a tool to run by itself; the zone generators import it.
 """
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 
@@ -42,14 +43,19 @@ def bronze_material(name: str, params: dict) -> str:
     return "\n".join(lines) + "\n"
 
 
-def copy_material(src_res: str, name: str, overrides: dict) -> str:
+def copy_material(src_res: str, name: str, overrides: dict, added: dict | None = None) -> str:
     """`src_res`'s text renamed to `name`, each override replacing its `shader_parameter/<key>` line (or its bare
-    `<key>` line for a StandardMaterial's own keys); every key must already be there once."""
+    `<key>` line for a StandardMaterial's own keys); every key must already be there once. `added` shader parameters
+    are ones the source leaves at the shader's default; they are inserted after `shader = ...` and must not exist."""
     text = (ROOT / src_res.removeprefix("res://")).read_text(encoding="utf-8")
     for key, value in overrides.items():
         text, n = re.subn(r"(?m)^(shader_parameter/)?%s = .*$" % re.escape(key),
                           lambda m: "%s%s = %s" % (m.group(1) or "", key, value), text)
         assert n == 1, (src_res, key)
+    for key, value in sorted((added or {}).items()):
+        assert not re.search(r"(?m)^shader_parameter/%s = " % re.escape(key), text), (src_res, key)
+        text = re.sub(r'(?m)^(shader = ExtResource\("[^"]+"\))$', lambda m: m.group(1) + "\nshader_parameter/%s = %s"
+                      % (key, value), text, count=1)
     return re.sub(r'(?m)^resource_name = ".*"$', 'resource_name = "%s"' % name.removesuffix(".tres"), text, count=1)
 
 
@@ -125,3 +131,19 @@ def lacquer(color: tuple, *, undercoat: tuple = (0.0784, 0.0667, 0.0627)) -> dic
     pale = tuple(round(min(1.0, c * 0.75 + 0.04), 4) for c in color)
     return dict(LACQUER, col_bronze=color, col_worn=undercoat, col_patina=aged, col_patina_pale=pale,
                 patina_coverage=(0.05, 0.3))
+
+
+def pin_lod0(text: str, node_path: str, mesh: str, *, until_m: float = 2000.0) -> str:
+    """A written arena scene's text with the kit instance at `node_path` held at its LOD0 out to `until_m`. A kit's
+    import chain switches to LOD1 at its `end_m`, measured to the mesh's bounds centre. A big ground placed with its
+    centre far from the fight then draws its coarse LOD1 right behind the party (the PC's pass 3:
+    `coilspire_headland_path`'s backdrop read as a flat dark slab). Children are the glb's `<mesh>`, `<mesh>-lod1`."""
+    return text.rstrip("\n") + (
+        f'\n\n[node name="{mesh}" parent="{node_path}" index="0"]\nvisibility_range_end = {until_m}\n'
+        f'\n[node name="{mesh}-lod1" parent="{node_path}" index="1"]\nvisibility_range_begin = {until_m}\n')
+
+
+def shore_walls(path: Path) -> list:
+    """The zone's shore walls (tools/act1/shore_walls.gd's output, ZoneKitDressing "edge_walls" rows), or [] before
+    the tool has run. The human's playtest (2026-10-30): the hero could walk off the beaches into the sea."""
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else []

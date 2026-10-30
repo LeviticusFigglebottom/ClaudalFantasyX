@@ -806,3 +806,500 @@ Skipped: coverage. game/battle got comment edits only (the renamed Breaks), no c
   - dark shrines visible on travel and the map, greyed;
   - the heretic subtitle on the field menu, never red.
 - 2026-10-30 04:30, **BACKLOG EMPTY:** the 01:08 item is done. Act II work waits on the `act1-complete` tag (ADR 0203).
+- 2026-10-30 06:10, **the Lead's ADR 0205 items: row 43, then Act II from the ui specs.**
+  - **Row 43** (602dcb31): field_hud_over_haluna_wake frames the real Ch4 wake through act1-chapters' shot rig, not
+    the dropped wake preview. Viewed.
+  - **Hitches:** amendment 4 to ADR 0111 (5c662779: the zone feed into the prewarm, Ch5/Pemakar/Ch6/Ch8/Ch9/Corrow
+    night) landed before ADR 0205 dropped the profiling. It is harmless and tested (test_prewarm_zone_feed); nothing
+    more is planned there.
+  - **Ch10 first (critical path):**
+    - the codex's three Ch10 entries: farewell-tide, name-shells, the Eldest (5b0b50ad);
+    - the rooted glyph and its words (9b598345; rooted sheet viewed);
+    - the seven-heroes field tip on Ch10's first field (84cc875b).
+  - **Heresy** (`ch14_declared_heretics`, declared):
+    - Order shrines go dark: prompt, one-line bark, no rest, the light out (d47f352c);
+    - Order shops refuse with a line (90b410fd);
+    - the field menu's "Heretics of the Level" subtitle and the save slot's "· Heretics" tag (3aebef84);
+    - dark shrines stay on the shrine road, greyed "Dark: the Order's shrine", and refuse the trip (f7fd954c);
+    - the map's hollow flame and "{place} · Dark" (d184f37f).
+    Zone authors mark the Order's shrines: `order = true` on the SaveShrine, `"order": true` on locations.json shrine
+    rows and on zone_maps.json shrine POIs.
+  - **Kerrid** (c656a68c): `guilty` is baked (viewed, PROVENANCE row). The Status page shows "Unrisen: held since the
+    stair at Corrow" under his name once `ch15_kerrid_revealed` is set (declared; the reveal's script sets it). Viewed.
+  - **Merge:** big19 is in (39f98a64). zone_cast.gd conflicted between my off-tree prebuild and creatures' `cast_still`.
+    I kept both: `cast_still` now shapes the body in _ready, after the idle starts. test_zone_cast is 5/0, and its old
+    fisher-idle failure is gone too.
+  - **Self-renders, viewed, none committed** (temporary scenes only):
+    - the heretic field menu;
+    - Kerrid's Status page (the note first ran past its width; fit_label now gets the explicit width);
+    - the shrine road with a dark row;
+    - Haluna's map with its shrine marked for the render.
+  - **Waits on other tracks:**
+    - the seven-hero formation check and Pell's Listen (combat's Pell row and kit);
+    - the rooted swap-refusal reason (combat M4-A2P-020);
+    - Act II NPC portraits (models);
+    - Kerrid's second codex body (narrative's text after the reveal script).
+  - **Next:** the document reader (M4-A2P-080, Ch13), all ui-menus.
+MERGE-READY @ 39f98a64: row 43; Act II Ch10 codex, the rooted glyph and the seven tip; the heresy UI (shrines, shops,
+title and slot tag, shrine road, map); Kerrid's guilty portrait and Unrisen line; big19 merged.
+Checks:
+- codex 15/0, tutorial_tips 5/0, save_shrine 13/0, shrine_network 7/0, shrine_travel 9/0, shop_menu 13/0;
+- save_slot 4/0, field_menu 36/0, status_menu 7/0, hero_portraits 10/0, zone_map 22/0, zone_cast 5/0;
+- prewarm_zone_feed and pseudo_loc are green;
+- validate_data 0/0, taskboard --check clean, lint and format clean.
+Skipped:
+- coverage (no game/battle or game/progression code changed);
+- Blender (no Blender source touched);
+- the full manifest (no committed shot changed).
+- 2026-10-30 07:20, **the document reader (M4-A2P-080, Ch13), all ui-menus.**
+  - **Commits:** b842d60e (the reader) and 2cb811fd (the codex hook).
+  - **What it does:** DocumentReader lays a record's one to three panes side by side in the codex's frame. Each pane
+    holds one mark. A "hand" is found when every one of its lines is marked; its lines then turn gold and a gold rule
+    draws on across the gaps (at once under Reduced motion). The last hand sets the record's `flag`, and the line
+    under the panes counts the hands left.
+  - **Input:** keys, pad and mouse (hover, click to mark, the wheel, right-click Cancel).
+  - **The codex:** a record entry with `"reader": "<records.json id>"` opens in the reader, single pane, and gets the
+    input back when the reader closes.
+  - **Data:** `game/data/lore/records.json` ships empty. Narrative writes the Archive's ledgers, the Cantor roll,
+    Corran's line, Wenna's marks and Ama's keth (RECORD_<ID>_<NN> keys and the hands). The Ch13 scene calls
+    `DocumentReader.open_in(host, DocumentReaderModel.new(DocumentReaderModel.row_of(&"<id>")))`.
+  - **Shots:** the scenes document_reader_three and document_reader_one (a fixture record under
+    `game/levels/_tests/document_reader/`) are viewed. They are **not in the manifest**, because test_screenshots
+    wants a baseline for every row. **LEAD-ASK:** please add both rows with their baselines.
+  - **Sounds:** a DocumentReader hook in ui_sfx.json on existing rows (the act1 audio audit asks every input-taking UI
+    class for one). Request M4-AUD-1080 asks Audio for the found hand's own row.
+  - **Next:** the Act II items still waiting on other tracks (the seven-hero formation check, Pell's Listen, the rooted
+    refusal reason, Act II NPC portraits, Kerrid's second codex body).
+MERGE-READY @ 0bc20a3b: the document reader (M4-A2P-080) and its codex hook, with the reader's sound hook.
+Checks:
+- document_reader 7/0, codex 16/0, pseudo_loc_screens 17/0 (both reader scenes at 100% and 130%, no warnings),
+  screen_audio 11/0;
+- act1_audio_audit OK, audio data_check OK;
+- validate_data 0/0, taskboard --check clean, lint and format clean.
+The tools suite (-j 4) has 5 failures that the integration branch carries too; this branch doesn't touch their paths:
+- test_screenshots: `kerrid_front` has no baseline;
+- test_asha: the LOD0 and part budgets;
+- test_npc: crowd_elder_woman_a is too near reed_c, and the committed output is stale;
+- test_palette_check: the chapel-court marble;
+- test_villagers: Kell's sheet.
+They are for characters, env-art and the Lead.
+Skipped: coverage (no game/battle or game/progression code changed) and Blender (no Blender source touched).
+- 2026-10-30 07:50, **BACKLOG EMPTY.** The Lead's ADR 0205 list is done for everything ui-menus can build today. That
+  covers row 43, Ch10's codex entries, the rooted glyph and the seven tip, all of the heresy UI, Kerrid's guilty
+  portrait and Unrisen line, and the document reader with its codex hook. I merged the Lead's 8de373e5 (shot
+  approvals only). What remains waits on other tracks:
+  - the seven-hero formation check and Pell's Listen: Pell has no row in characters.json yet (combat);
+  - the rooted swap-refusal reason: the engine has no rooted status yet (combat, M4-A2P-020);
+  - portraits for Act II's NPCs: no models yet (characters, M4-A2P-081);
+  - Kerrid's second codex body (CODEX_KERRID_BODY_CH15): narrative's text after the reveal script;
+  - the reader's records: narrative fills `game/data/lore/records.json`, and Audio has M4-AUD-1080;
+  - the reader's two shots: the Lead adds them to the manifest with baselines (LEAD-ASK above).
+- 2026-10-30 08:00, **the Lead's 04:27 answer on the reader's shots.** I added document_reader_three and document_reader_one
+  to the manifest with `"pending_baseline": true`. The gate captures them after the next fast batch, and the Lead
+  approves the baselines. Resolves the LEAD-ASK above.
+  test_screenshots now fails only on the integration branch's existing `kerrid_front`, which has no baseline.
+MERGE-READY @ HEAD of claude/ui (this commit): the document reader's shots as pending baselines.
+- **BACKLOG EMPTY:** still true. What remains waits on combat (Pell's row, the rooted status), characters (Act II NPC
+  models), narrative (records.json, Kerrid's Ch15 body) and audio (M4-AUD-1080).
+- 2026-10-30 09:40, **the Lead's FAST-TRACK: act1_gpu_qa row 67** (big19's heavy entries over 2 s, and one Brine Shoals
+  hang). Commit 329e7bce; ADR 0111 amendment 5 has the detail.
+  - **The hang:** one fresh run printed nothing for 600 s, so the main thread froze. If the router had only been
+    waiting, the probe's 2400-frame cap would have printed stats long before that.
+    - The router started instantiating the zone on a worker thread while ResidentLoads' threaded loads were still in
+      flight. GreyboxZone builds during instantiate, so the zone's own `load()` calls ran beside those loads, as did
+      the main thread's (ZoneCast and VillagerLayer in _ready). That is the engine's deadlock-prone path.
+    - **Fix:** the router now waits on its swap holders first, then instantiates.
+    - Headless: no hang in 7 Brine Shoals runs or the full 49-target sweep (every target covered and printed stats).
+      Instantiate fell to 21–56 ms per zone, because everything is cached.
+  - **The cost, per zone:** big19's cast models were never listed in scene_loads.json. VillagerLayer adopts or
+    replaces each cast body before the tool looks, so all of them loaded cold on the instantiate thread.
+    - Brine Shoals: 12 unlisted (Moll, the clerk, three Stillguard, a child, two wright children, four reeds), plus
+      big19's five slot materials.
+    - Corrow: 11 unlisted (Ivo, Hobb, two Stillguard, the gatekeeper, four children, Marra, the officer), plus six slot
+      materials and +173 dressing rows.
+    - Tamsule (Ch7): 7 unlisted villagers, plus the gold leaf.
+    - Coilspire (Ch8): the new copper and iron slots, and a reshuffled dressing.
+    - **Fix:** the tool lists each `cast` row's model, and the registry is regenerated (Brine Shoals +158 paths,
+      Corrow +164). `max_in_flight` goes from 2 to 4, so the loads keep the PC's cores busy now that the instantiate
+      no longer overlaps them.
+  - **Nothing filed to asset owners yet.** The excess is loading order and listing, not proven asset weight. If the
+    PC's re-measure is still over 2 s after big20, I'll split it by zone and file the heavy ones (env-art-b for the
+    Corrow and Brine Shoals dressing, characters for the villager count).
+  - **Headless numbers:** this 4-core box's entries are 2.3–7 s whatever the order. The time is disk and CPU
+    decoding, which the PC does several times faster, so they don't predict the 2 s bar. Only the PC can confirm.
+  - **Checks:** scene_router 17/0, resident_loads 8/0, prewarm 26/0, shader_prewarm 22/0, creature_ 88/0,
+    dialogue_box 26/0; act1_swap_sweep tests OK; validate_data 0/0; lint and format clean. The full sweep found all 49
+    targets covered.
+
+### PC-QUEUE (row 67, after big20)
+- Re-run pass 4's hitch probes on big20, which carries amendment 4 and amendment 5:
+  - Brine Shoals: the walk, and **fresh ×5** (the hang showed in 1 of 2);
+  - Corrow, fresh;
+  - Ch7 and Ch8, in the walk.
+- Report the hidden ms per entry, and any run that prints nothing.
+- If an entry is still over 2 s, include the probe's stats line: instantiate_ms, prewarm_wait_frames and the holders
+  warning.
+MERGE-READY @ 329e7bce (FAST-TRACK row 67): the router instantiates only after its loads are in; scene_loads lists
+every cast model; max_in_flight 4.
+- 2026-10-30 10:30, **the Lead's 05:52 Act II lane.** I merged the integration branch (1e63e5ba, baseline approvals).
+  - **Heresy words** (e9de89f6): ADR 0204 approved "Outside the Level". The field-menu subtitle, a heretic save's slot
+    ("Chapter 14 · Outside the Level", rendered and viewed: it fits) and the Order shop's refusal now use it, along with
+    heresy.md. The save fixtures can now carry `flags`.
+  - **Codex, M4-A2P-008** (dbc4fa8a): `keth`, `conclave` (only the public "Conclave of Elders", nothing about its truth
+    and no "revenant"), `malcor_venn` (a man, nothing stranger) and `heresy` ("Outside the Level"). These are every plan
+    entry whose unlock flag is declared today. The rest land as the Ch11–Ch16 beats declare their flags.
+    test_codex 16/0, pseudo_loc_screens 17/0; validate_data clean, banned terms included.
+  - **No Vowbound category yet:** Act I's three have no entries of their own, and what the party knows of each one's
+    human life at its binding is Narrative's call (vowbound.md holds the whole truth). I won't write these until a beat
+    says what's known.
+  - **Portraits:** none of Act II's new speakers has a model on any branch (Tobin, Merel, Malcor Venn, the Kirru, the
+    Ullari, Liss's father), so none was baked and none was stubbed.
+  - **Bestiary:** Ch10's three rows in enemies.json have no `model`, so the bestiary has no picture, and the fight
+    probably draws a capsule. Noted on Combat's request M3-UI-208 (578a6ceb).
+MERGE-READY @ 578a6ceb: the heresy's words per ADR 0204, and four Act II codex entries.
+- **BACKLOG EMPTY:** the rest of Act II waits on other tracks:
+  - Ch11–Ch16 flags and beats (more codex entries);
+  - speaker models (portraits);
+  - Combat: Pell's row, the rooted status, the enemy model links;
+  - Narrative: records.json and the Vowbound text.
+  - Row 67's PC verification (gpu/row67-verify) would jump ahead of everything.
+- 2026-10-30 11:20, **the Lead's 09:01 items.** I merged big20 (7dc3ab41) as 0a85bf07.
+  - In the codex merge, Narrative's Act II people set wins: its `malcor_venn` and `conclave` replace mine. My `keth` and
+    `heresy` stay under World (test_codex 16/0).
+  - **LEAD-ASK, row 67: big20 has amendment 4 (5c662779) but not the row 67 fix (329e7bce), and they belong together.**
+    - Amendment 4 moves ZoneCast's model instancing into GreyboxZone.build. That runs on the router's instantiate
+      thread while ResidentLoads' threaded loads are in flight, so big20 widens the window in which the hang showed.
+    - 329e7bce closes it: the router waits on its loads before it instantiates.
+    - Please take 329e7bce, and this branch, into big21 ahead of the next PC pass. If big20's PC pass shows more
+      hangs, that is the reason.
+  - **Portraits re-baked on big20's models** (cd38c0c9): 23 speakers, 115 images. Their models had all changed since
+    the last bake: Pell, Moll, Sefir and 20 villagers.
+    - Pell's fur now has texture (the PC's pass 3 note), and Sefir's veil hangs over his face. I viewed both, side by
+      side with the old bakes.
+    - **For characters:** Moll's new hair casts a hard shadow across half her face under her stage's key light. The
+      bake is faithful to the model; the fix is in her stage or hair.
+    - Every dialogue speaker without a portrait (the generic barks, and Act II's people with no model yet) shows no
+      picture. No placeholder ever shows.
+    - Shots that show these portraits (dialogue, status, the party cards) will drift on the gate.
+  - **Act II map regions:** all 15 Act II zones already had maps. Each now gets a main-path objective, 17 rows chained
+    on the declared Ch10–Ch16 flags, so the line and the gold marker point at the chapter's next place (8287ca8b).
+    - Ch13 goes to the Sanctum first, then the Archive.
+    - The lines are in Act I's register and say nothing past their beat.
+    - The Lowlight map shot now stages arrival (`ch11_reached_lowlight`). I viewed Keth Pass, Lowlight and Ansedra.
+    - test_objective_tracker 16/0 (a new walk of all 17 rows); zone_map 22/0; pseudo_loc_screens 17/0; validate_data
+      0/0.
+    - The three map shots will drift on the gate.
+MERGE-READY @ 8287ca8b: the portraits re-baked on big20's models, and the Act II objectives.
+- 2026-10-30 12:30, **Malcor Venn's portrait** waits on its merge. His model and stage are on claude/characters
+  (3f0f5d679, M4-A2P-051), not on the integration branch. When they land, I add `malcor_venn` to portraits.json from
+  his stage (`venn_stage.tscn`), bake his five faces, view them and add their PROVENANCE rows. No other Act II speaker
+  has a model on any branch.
+- **BACKLOG EMPTY** after the 09:01 items:
+  - **Done:** big20 merged; portraits re-baked; Act II maps point along the main path; the heresy's words and four
+    codex entries; row 67's fix waiting for a batch.
+  - **Waits on others:**
+    - Malcor Venn's model (its merge);
+    - the other Act II speakers' models;
+    - Ch11–Ch16 beat flags (more codex);
+    - Combat: Pell's row, the rooted status, the enemy model links;
+    - Narrative: records.json and the Vowbound text;
+    - the PC's row 67 verification.
+- 2026-10-30 13:40, **the Lead's 09:58 note:** big21 (0347aa74) carries row 67's fix, and the PC is measuring it.
+  - **Merged big21** (59202bae1). Its own resolution wins for the codex, flags and Sefir's portraits (the characters
+    track's GPU-QA re-render). strings.csv keeps my Act II objective lines; its four Act II LORE rows now live in
+    ch10/ch15.csv. I redid the merge once, after a stash dropped its MERGE_HEAD, so the commit is a true merge.
+  - **The Status page's Bound section** (5e1e8d38a): a caller (Asha) lists the Vowbound bound so far, in bind order, or "None
+    yet". It sits under Lattice in the right column, because the left one has no room once seven heroes are listed
+    (screens.md updated). I viewed it with all six of Act II. test_status_menu 8/0, aspect 18/0,
+    pseudo_loc_screens 17/0.
+  - **Act II inns** (92151e255): `ansedra_guest` (shops.json, `order: true`, price 0, from `ch13_started`).
+    - The rest reads "No charge" and "A night here costs nothing."; an empty purse still rests.
+    - Any inn marked `order` refuses those outside the Level ("The door stays shut. The Order keeps no guests
+      outside the Level."). Saltwright inns still take them.
+    - I viewed it through the inn shot (temporarily pointed at the guest house). test_inn_menu and test_inn 11/0,
+      shop 28/0.
+    - **For the Ch13 zone's owner:** place a trigger at Sefir's house (the `sefir` POI) with
+      `{"inn": "ansedra_guest"}`, as Quellan's inn does.
+  - **Portraits:** Malcor Venn and the three Abiding guards aren't in big21 yet; I'll bake them as soon as they land.
+MERGE-READY @ 92151e255: big21 merged; the Bound section; Act II inns.
+- 2026-10-30 14:20, **Act II battle floats** (a4336326a), on Combat's new hit keys:
+  - a drain (`drained`, the fen leech, M4-CMB-1001) puts its heal number over the user, with "Drained";
+  - a crawler's repair (`part_restored`, M4-A2P-022) floats "{part} mended" over the boss, the part named by its charge
+    skill.
+  Combat already built the rooted swap reason ("held by the roots") and the element cycle's timeline, so hud.md's
+  rooted and cycle items are done on their side.
+  test_battle_controller 33/0 (a new drain and repair test), battle_choreo 28/0, battle_reduced 5/0, pseudo_loc 26/0.
+  No committed shot shows them.
+MERGE-READY @ a4336326a: Act II battle floats.
+- 2026-10-30 14:40, **PC pass 5: row 67 FIXED.** Every entry is under 1 s hidden, and Brine Shoals ran 5/5 fresh with no
+  hang. No pass 5 row is routed to ui-menus. I merged the integration branch's 15d80358c (the Lead's log).
+- **BACKLOG EMPTY** for what ui-menus can build without other tracks:
+  - **Portraits:** Malcor Venn's model is still only on claude/characters, and the Abiding guards are on no branch.
+  - **hud.md:**
+    - buff strip, darkness and tide pulse: no engine support yet (Combat);
+    - Pell's Listen and his absence: Pell's battle row;
+    - a Read-panel ability list (drain and repair tags) would be a new feature, which I'm leaving until Combat's kit
+      rows settle.
+  - **Codex:** Narrative now writes the Act II entries (its people and world sets landed in big20 and big21).
+  - **The reader's records:** Narrative.
+- 2026-10-30 16:30, **the Lead's 10:47 item: the as-played Act I UI pass** (0347aa74 plus this branch).
+  - **How:**
+    - Twenty UI shots at 2560×1440 with the largest text (130%, from a pre-seeded settings.cfg; the manifest swapped
+      temporarily and restored). All viewed:
+      - battle: HUD, swap, Read, victory;
+      - field: menu, codex, prompt, tip, dialogue;
+      - title, settings, save, shop, bestiary, equip, items, status, formation, Lattice, Reefball.
+    - test_pseudo_loc_screens (it fit-probes every screen at 100% and 130%), plus a new English mode
+      (`HYMN_PSEUDO_OFF=1`).
+    - The input-parity suite (focus order on keys, pad and mouse).
+    - A new contrast test.
+  - **Found and fixed:**
+    - **Field menu at 130%:** the cards' names sat on their HP rows, the save hint sat on the date, and the objective
+      ran into the help line.
+      - The card rows and the Last saved and Objective blocks now grow with the text size; at 100% nothing moves.
+      - The portrait gives up what the card text needs.
+      - When the objective's lines need the room, the save hint steps aside, and then the objective shrinks to 80%
+        at most.
+    - **Shop at 130%:** a two-line refusal ran into the help line. The line about the row and the status now share
+      the column above the help.
+    - **Status table:** at 130% the stat names and heads now fit their columns ("Magic Defense", "Lattice").
+    - **Contrast** (tools/tests/test_ui_contrast.py, WCAG 2): every text colour is at least 4.5:1 on the page panels
+      in both palettes, and at least 3:1 (bold large text) on the raised cursor row.
+      - The colorblind `danger` (#D15E1F) was 4.25 on the deep panel. It is now #C76E10: 4.52:1, and still
+        distinct (0.171 Oklab worst-case under deuteranopia and protanopia; test_colorblind_palette).
+      - docs/kb/tech/ui.md and test_ui_settings are updated.
+  - **Checked and clean:**
+    - **Pillar 4:** the timeline always shows who acts now and next. Every command row shows its cost (MP, rank,
+      escape odds, "No time"). Every leaf command previews where the actor lands ("acts again in 5 turns").
+    - **English at 130%:** no text is cut anywhere. Only Reefball's panels grow taller than their boxes, without
+      overlapping.
+    - **Focus order:** input_parity 65/0.
+    - **Pseudo-loc:** it still cuts some text with an ellipsis (mostly Reefball's Read and Drop columns). These are
+      localisation-length warnings with nothing cut in English, so I left them.
+  - **Tests:** field_menu 29/0 (a new 130% overlap test), party_card 3/0, shop 28/0, inn 11/0, status_menu 8/0,
+    pseudo_loc_screens 17/0, aspect 18/0, colorblind 2/0, ui_settings 11/0, input_parity 65/0; tools: ui_contrast OK;
+    validate_data 0/0; lint and format clean.
+  - **Drift:** the 100% field-menu shots move by about 1 px in the cards' text (and their baseline already predated
+    Toma's portrait), and battle_statuses_colorblind changes with the new orange.
+MERGE-READY @ 4edf33c21: the as-played Act I UI pass.
+- 2026-10-30 17:40, **the Lead's 11:47 note.** I merged the integration branch (ADR 0206: British spelling).
+  - **ADR 0206:** my new strings are British. The one older American string I own (`STATUS_MENU_ARMOR`, "Armor") is in
+    act2-plan's FAST-TRACK, so I left it to avoid a clash.
+  - **Focus order:** done in the 10:47 pass (input_parity 65/0, keys, pad and mouse).
+  - **Battle at every text size** (8132685db):
+    - **Method:** the HUD, swap and Read shots rendered at 115% and 130%, through the fixtures' `ui_settings` (data
+      restored afterwards). All viewed.
+    - **"Acting now" at 130%:** the head chip read "Acting …", and names like "Gull Harrier" lost their ends. Both now
+      fit their width (down to 80%) before an ellipsis cuts them.
+    - **Party rows at 130%:** the HP and MP numbers sat on their gauges. Above 100% a number's bottom now stays on its
+      gauge's top. At 100% nothing moves; I checked against the baseline, and the party panel is pixel-identical.
+    - **Costs:** every command's cost shows at both sizes (MP, rank, escape odds, "No time"), and so does the help
+      line's outcome ("Rhen acts again in 5 turns").
+    - **The Read panel at 130%** grows over the party panel's lower edge. It is modal, its own text is whole, and the
+      battle waits while it is open, so I left it.
+    - **Tests:** battle_controller 33/0, timeline 30/0, pseudo_loc_screens 17/0.
+MERGE-READY @ 8132685db: the battle text-size fixes.
+- 2026-10-30 13:10, **the Lead's 12:48 note: the black screen after a won battle.**
+  - **Cause (ResidentLoads, fixed in 8df5fe2b4):** entering the field battle let the zone's own resident loads go.
+    On Return they were read again from disk, and the prewarm feed staged about 950 materials a second time.
+    - **Measured** with the probe's new `--round-trip=<encounter>` option, returning to Brine Shoals after
+      `ch06_flats_crabs` (headless): **4875 ms** zone entry with 614 prewarm frames before the fix, **667 ms** with
+      2 frames after.
+    - **Fix:** a change into the battle scene now keeps the zone's loads, so the return loads nothing and prewarms
+      nothing again.
+    - **Test:** `test_a_field_battle_keeps_the_zone_s_loads_for_the_return` (resident_loads 9/0).
+  - **Each segment after the fix:**
+    - **Victory panel:** it opens 0.6 s after the last blow, with the battle still on screen. Nothing is black.
+    - **Confirm on Return:** `FieldBattle.return_to_field` calls `FlowRouting.go_to` the same frame, with no wait.
+    - **Fade-out:** `SceneRouter.FADE_SEC` 0.35 s.
+    - **Black:** the entry from the cache (about 0.67 s headless), plus `MEASURE_FRAMES` 4 frames. The loading cover
+      holds nothing on this path.
+    - **Fade-in:** 0.35 s.
+    - **Input:** live as the fade lifts. Field input doesn't gate on `SceneRouter.is_busy()`.
+  - **To integration-qa (owner of the SceneRouter return):** my side has no fixed wait left. The black is now the
+    cached entry alone, under 1 s. The fades are the router's 0.35 s each way. If the PC's entry still runs over 1 s,
+    the next cut is in the router or the zone's `_ready`, not in ResidentLoads or the results panel.
+  - **PC-QUEUE:** re-measure the return on the GPU, either with
+    `scene_swap_probe.tscn -- --resident-loads --warm-resident --to=<brine shoals> --round-trip=ch06_flats_crabs`
+    or by hand: win a fight and time from Return until you can walk.
+  - **Tests:** resident_loads 9/0, scene_router 17/0, prewarm 27/0, act1_swap_sweep (tools) OK; lint and format clean.
+  - **test_qa_threads and act1-chapters (ca5ce4037):** the guard failed 6 ways on my Act II objective rows.
+    - **Cause:** a chapter's last row ran `until` the next chapter's start flag, which that chapter's thread never
+      raises.
+    - **Fix:** `reed_clutch`, `low_sanctum`, `cloudloom_dais`, `archive_ledgers` and `court_barge` now have
+      `until: null`, holding until the zone changes, as Act I's `t_harbour` does.
+    - **Still unraised:** Lacquer Court's `court_dais` and `court_barge` (filed under `ch13/`) wait on
+      `ch14_started` and `ch14_declared_heretics`. Ch14 has no thread yet, so both are listed in `qa_known.json`
+      "unraised" and point at M4-A2P-014.
+    - **To act1-chapters:** when the ch14 thread raises those two flags, drop both rows from `qa_known.json`.
+    - **Result:** qa_threads 1/0; objective 16/0, field_menu 37/0, zone_map 22/0; validate_data 0/0.
+MERGE-READY @ ca5ce4037: the battle-return black screen (ResidentLoads keeps the zone through a field battle) and the Act II objective flags for test_qa_threads.
+  - **To integration-qa:** the measurement method and the remaining end-to-end check are in request task **M4-UI-212** (role qa), per the Lead's 13:48 note.
+- 2026-10-30 14:30, **the Lead's 13:48 note.**
+  - **Request task to integration-qa:** M4-UI-212 (role qa) holds the measurement method and the end-to-end check.
+  - **Next item, the Act II queue (M4-A2P-083):** a foe's broken parts now show on the battle's Read panel ("Broken ·
+    Lamplight: silent until it is mended") until a tender mends them.
+    - **Test:** test_read_panel 13/0, plus bestiary 37/0, battle_parts 4/0 and pseudo_loc 26/0.
+    - **Render:** viewed with the line injected. The battle_read_panel shot itself is unchanged (no part there).
+    - **Next:** the answered-by cursor line once Venn's row has `answered_key`; the Lacquer Court rows once ch14's
+      flags exist (M4-A2P-014).
+MERGE-READY @ eb1d12998: broken parts on the Read (M4-A2P-083).
+BACKLOG EMPTY: everything left in this track's queue waits on another track.
+- **M4-A2P-081 NPC portraits** (Malcor Venn, the Abiding guard): wait on their models (characters track).
+- **M4-A2P-082 seven-hero formation check:** waits on Pell's battle row (combat).
+- **M4-A2P-083:**
+  - The answered-by cursor line waits on Venn's row carrying `answered_key` (M4-A2P-023, combat).
+  - The darkness telegraphs are battle-presentation's, already in (M4-A2P-062, in review), and the timeline shows them.
+  - The Act II bestiary pages fill as the foe rows land.
+- **Lacquer Court objective rows:** wait on ch14's thread raising its flags (M4-A2P-014, act1-chapters); then drop the two
+  `qa_known.json` "unraised" rows.
+- **Battle return end to end:** M4-UI-212 (integration-qa, plus a PC measurement).
+- 2026-10-30 16:10, **the Lead's 14:28 note: a controller-only pass over Act I's menus** (merged big23 at 63175d0b3).
+  - **Merge:** act1-chapters' Act II objective rows replace my interim ones. Theirs cover every zone beat by beat, so
+    I dropped my 17 `OBJ_*` strings and pointed the Act II objective test at their rows.
+  - **The walk:** `tests/unit/test_input_parity_pad_walk.gd` (3/0) drives the pad alone over:
+    - every field menu page, with a played save: Down, Confirm three deep (equip a piece, use a tonic, the Lattice, the
+      map, Settings), then Cancel out;
+    - every battle command (Attack, Skills, Items, Swell, Swap, Escape), into its page and target, then back;
+    - the battle pause, including Settings and one of its pages;
+    - the save list (with the overwrite question) and the title's load list.
+  - **After every press it fails on:**
+    - an unfilled `{action}`;
+    - a key's name where the pad has its own button;
+    - focus on a Control that isn't on screen;
+    - a menu page with nothing saying how to go back.
+  - **Found and fixed:**
+    1. **Settings never said how to move or go back** (hub and pages, from the field, the title and the pause). A
+       controls line now sits under the help. The Controls page hides it while listening, and the hub's line hides
+       under an open page.
+    2. **The save and load lists ignored the pad.** They take their input before the UiInput autoload, so a pad press
+       left the prompts on the keys and a held D-pad never repeated there. They now let UiInput notice each event
+       first (`UiInput.notice`).
+    3. **The save and load lists never said how to go back.** A controls line now sits at the right of the help row:
+       "Confirm: record · Cancel: close" (load: "continue"), and the question's "Up and Down: choose · Cancel: keep it".
+  - **Not changed, by design:** the battle command menu's help line is the action's cost and turn, and Cancel at its
+    root opens the pause (which says how to go back). The walk exempts only those stops.
+  - **Focus:** no Control kept the focus while hidden. Dead ends: none (with test_input_parity_dead_ends).
+  - **Renders viewed:** settings_hub, settings_accessibility (130%), settings_controls, save_menu, save_menu_overwrite.
+    All five change baselines (the new lines). The Lead re-approves; I wrote no baselines.
+  - **Tests:** pad_walk 3/0, settings 48/0, controls 12/0, graphics_menu 9/0, accessibility 9/0, save 201/0,
+    title_menu 16/0, input_parity_title 2/0, pseudo_loc 26/0, aspect 18/0, objective 16/0, field_menu 37/0,
+    zone_map 22/0, ui_input 4/0; validate_data 0/0; lint and format clean.
+  - **For act1-chapters (seen on big23 itself):** test_qa_threads fails 15 ways on their new Act II objective rows.
+    The ch10–13 threads don't yet raise the beats those rows wait on (`ch10_farewell_tide_seen`, `ch11_nhoa_bound`,
+    `ch12_ram_felled`, `ch13_read_ledgers`, each chapter's `_complete`, and the Lacquer Court's ch14 beats). My
+    merge took their `objectives.json` and threads unchanged. I only renamed the rows in my two qa_known notes.
+MERGE-READY @ 0fda0d8b5: the controller-only pass (Settings and save/load controls lines, the save list's pad notice, the pad walk test).
+- 2026-10-30 17:00, **the Lead's 16:09 note: as-played check of the new battle return** (merged big24 efe7fb10 at ce9c0d6d0).
+  - **Merge:** `objectives.json`, `test_objective_tracker` and `qa_known` take the integration side (act2-plan's
+    M4-A2P-109). The `OBJ_*` strings it keeps are restored, and `strings.csv` is the integration file plus my
+    seven controls lines.
+  - **Found and fixed (8d42e9508):** a resident field stopped following the text size and palette.
+    - **Cause:** big24 keeps the field zone through a random fight. It leaves the tree and comes back without
+      `_ready`, and `UiSettings.follow` stopped for good on `tree_exited`.
+    - **Effect:** after the first random battle, nothing in that zone took a text-size or palette change again: the
+      interact prompt, tip card, area title card, codex notice, objective HUD, hold prompt and dialogue box. That
+      included a change made in the battle pause.
+    - **Fix:** `follow()` now stops while out of the tree and catches up when back.
+    - **Test:** test_ui_settings::test_a_control_out_of_the_tree_catches_up_and_keeps_following fails on the old code
+      and passes now.
+  - **Victory and rewards:** battle_victory rendered at 100% and at 130% (the fixture's `ui_settings`, restored
+    afterwards), both viewed. The rows, XP, "+3 movement" (this game's level-up: Lattice movement), lume and drops
+    fit, and so do the choices. Nothing is cut.
+  - **Pad:** the result choices are covered by test_input_parity_battle (result panel, each device). The A press that
+    picks Return can't fire an interaction on arrival: the field acts on the press event, which the battle consumed.
+  - **Return:** test_battle_return 1/0 (the resident re-attach, under the fade).
+  - **Tests:** ui_settings 12/0, settings 49/0, field_menu 37/0, objective_hud 7/0, interact 13/0, battle_return 1/0,
+    pad_walk 3/0; validate_data 0/0; lint and format clean.
+MERGE-READY @ 8d42e9508: a resident field keeps following the text size and palette; battle-return as-played check.
+- 2026-10-30 17:50, **Act II menus for the content that has landed (big24).**
+  - **Malcor Venn's portrait** (4eabd31f3): baked neutral, cold and determined from his model (M4-A2P-051). The
+    dialogue box shows it for speaker `malcor_venn` (alias), so his Ch14 decree reads with his face.
+  - **Merel, Tobin and Ansedra's clerk** (8b07bcd50): 16 faces, in the emotions their Act II lines use. A new test,
+    test_every_act2_speaker_with_a_model_has_a_portrait, guards the next Act II model to land.
+  - **Viewed:** every bake. Two notes for characters:
+    - Venn's face uses Asha's pose weights, so his three expressions look nearly alike at 256 px. A Venn face-pose
+      table would give the decree its chill.
+    - Tobin's `laugh` reads as a lopsided grimace with the tongue showing.
+  - **Still waiting:**
+    - the Abiding guard's portrait (no model yet);
+    - Venn's bestiary page and the answered-by cursor line (no Venn enemy row, no `answered_key` yet);
+    - the seven-hero formation check (Pell's battle row).
+  - **Tests:** hero_portraits 10/0, dialogue_box 27/0; validate_data 0/0 (PROVENANCE rows); lint and format clean.
+MERGE-READY @ 8b07bcd50: Act II faces (Venn, Merel, Tobin, the clerk) in the dialogue box.
+BACKLOG EMPTY: every remaining item waits on another track (the Abiding guard's model; Venn's enemy row with `answered_key`; Pell's battle row; ch14's thread for the Lacquer Court objectives).
+- 2026-10-30 18:20, **the Lead's 16:45 note: big25's red test_aspect_layouts** (merged big25 at b67876dbf;
+  `objectives.json`, `qa_known.json`, the objective test and `strings.csv` take act2-plan's integration side).
+  - **Cause:** the failing label was the Read's "Weak to Fire" float (DamageLayer), not the panel. At 4:3 the Lantern
+    Eel stands at the screen's left edge, so the centred float started at x -41 (-63 at 130%).
+  - **Fix (430bd0471):** every damage number and float word is clamped inside the screen by `edge_px` (12;
+    `battle_hud.json` `damage` and `float_text`).
+  - **Tests:** aspect 18/0 (failed before), read_panel 13/0, battle_controller 33/0, accessibility_battle_speed 6/0;
+    validate_data 0/0; lint and format clean.
+  - **Render:** battle_read_panel with and without the fix is pixel-identical at 16:9. Its drift from the baseline
+    (rmse 0.074) was already there without my change, so it's another track's (the staging).
+  - **Battle return at 130% and on a pad:** done at 17:00 (80d453279). The victory and rewards renders at 100% and
+    130% were viewed, the pad covers the result choices, and the fix for the resident field following the text size
+    is in.
+MERGE-READY @ 430bd0471: battle floats stay on screen (big25's 4:3 Read red).
+- 2026-10-30 19:05, **M3-HER-1167 (integration-qa's request, the Lead's top priority): the first zone loads while the
+  title shows** (082ab9166).
+  - **What:** the title calls `ResidentLoads.load_scene` (no hold) for the zone its highlighted choice enters.
+    - **New Game:** `locations.json` `new_game`, which on the Act I route is the prologue (157 loads), not
+      Haluna.
+    - **Continue:** the newest record's location, read with `slot_info` without loading it.
+    - The loads queue behind the hero bodies. Moving between New Game and Continue switches the zone.
+    - When the change starts, the same request loads nothing twice and keeps the queued prewarm, so the pipelines
+      still compile under the cover.
+  - **Measured** (headless lavapipe; `scene_swap_probe --resident-loads --warm-resident`, plus the new
+    `--warm-scene` for the early start):
+
+    | Zone | Start | Entry | Swap held | Worst hidden frame |
+    |---|---|---|---|---|
+    | Haluna | at the change | 4.9 s | 414 frames | 708 ms |
+    | Haluna | early | 3.1–3.3 s | 158 frames | 796–928 ms |
+    | Prologue | at the change | 1.78 s | 71 frames | 374 ms |
+    | Prologue | early | 1.00 s | 72 frames | 120 ms |
+
+  - **Haluna's remaining hold** is the prewarm staging its ~280 materials under the cover, plus 0.83–0.95 s to
+    instantiate. That is pipeline compile, which loads can't absorb. Pre-compiling on the title would hitch the
+    title, so I left it.
+  - **To integration-qa:** please re-measure on the PC with `--warm-scene`, and log the split (acceptance item 2).
+    Not done here: the prologue starting Ch1's loads (`oruvel_underway`, 102) while it plays. That's the prologue
+    scene's (cinematics') to call, `ResidentLoads.shared().load_scene(next)`. I'd take it if handed over.
+  - **Tests:** resident_loads 10/0 (new: the early start keeps the prewarm), title_menu 17/0 (new: each choice's
+    first zone), input_parity_title 2/0, scene_router 17/0, pad_walk 3/0; lint and format clean.
+MERGE-READY @ 082ab9166: M3-HER-1167, the title starts the first zone's loads.
+- 2026-10-30 19:40, **the Lead's 17:24 note: the victory panel's stay prewarms the return** (95f51b987).
+  - **What:** when the result panel opens on a win or an escape, `FieldBattle._prepare_return()` calls
+    `ResidentLoads.prepare_return(request, SceneRouter.resident_path())`.
+    - The return's scene starts loading with no hold: its `return_scene`, or else `return_location`'s scene.
+    - Nothing loads when that scene is the field kept resident through the fight, or when nothing resolves.
+    - When Return is pressed, the change asks for the same scene: nothing loads twice, and the queued prewarm stays.
+  - **How much it saves:** whatever the panel's stay covers. Haluna fully loaded early took the entry from 4.9 to
+    3.1 s headless (M3-HER-1167's numbers). A one-second stay covers part of that.
+  - **Tests:** resident_loads 11/0 (new: test_the_victory_panel_starts_the_return_s_loads), field_battle 12/0,
+    battle_return 1/0, input_parity_battle 8/0; lint and format clean.
+  - **To integration-qa** (extending the resident return to scripted fights): my hook is one call in
+    `FieldBattle._show_result` (`game/flow`, the slice's; one guarded line plus `_prepare_return`). If your change
+    keeps a scripted fight's origin zone resident, `prepare_return` already skips it when `resident_path()` matches
+    the return. Please merge around it rather than over it.
+  - **Spotted, not mine:** nothing emits `EventBus.battle_ended`. FieldEncounters listens for it to grant the
+    post-battle grace, so that grace never arms through the bus.
+  - **The 4:3 Read panel:** already pushed (430bd0471, MERGE-READY at 18:20).
+MERGE-READY @ 95f51b987: the victory panel starts loading the return's destination.
+- 2026-10-30 19:55, **the Lead's 17:44 note: test_aspect_layouts still red in big26.** big26 (e605c9f4c) doesn't
+  contain the fix. 430bd0471 ("keep battle floats on screen", MERGE-READY at 18:20) is on `claude/ui` but was never
+  merged into the integration branch.
+  - **Checked:** big26 merged into `claude/ui` (d311c5e38). On that head: aspect 18/0, read_panel 13/0,
+    resident_loads 11/0, title_menu 17/0; validate_data 0/0.
+  - **What fixes the red:** merging `claude/ui` at or after 430bd0471. The commits are 430bd0471 (the clamp in
+    `damage_number.gd` plus `edge_px` in `battle_hud.json`) and its log.
+MERGE-READY @ d311c5e38: claude/ui with big26 merged; carries the 4:3 Read fix (430bd0471), the title preload (082ab9166) and the victory-panel preload (95f51b987).
+BACKLOG EMPTY (big26 checked at 20:00): every remaining item waits on another track.
+- **Venn's bestiary page and the answered-by cursor line:** no Venn enemy row, no `answered_key` (combat).
+- **The seven-hero formation check:** Pell has no battle row (combat).
+- **The Abiding guard's portrait:** no model (characters).
+- **Already covered:** every Act II speaker with a model has a face, and every foe with a model has its bestiary
+  portrait.
+- **To merge:** claude/ui at 43fa81abe for big26's aspect red.

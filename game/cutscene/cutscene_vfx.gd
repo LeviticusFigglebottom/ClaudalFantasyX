@@ -45,6 +45,15 @@ static func spawn(
 	return field
 
 
+## M4-CIN-1303 (act2_ch10.md B05 and T03: the held lights let go and rise): releases every held (or bound) field
+## already at `host` over `sec`, held cyan to lift gold, spreading out from `host`. False when there was none.
+static func release(host: Node3D, sec: float) -> bool:
+	var any := false
+	for f in host.find_children("*", "GlimmerField", true, false):
+		any = (f as GlimmerField).release(sec, host) or any
+	return any
+
+
 ## A motion step (the sequencer's clock, t 0..1) that frees `field` when it completes: end_after_sec.
 static func ender(field: GlimmerField) -> Callable:
 	return func(t: float) -> void:

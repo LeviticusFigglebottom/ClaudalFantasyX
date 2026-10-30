@@ -1,0 +1,22 @@
+// Ch12 side errand (optional; requires ch12_reached_quellan). The herder's boy (ch12_bark_quellan_boy) is too young
+// to walk the Cold Road, and his grandmother's knot is not tied yet. He asks the party to tie it on the pass-cords for
+// him. Rhen, who tied his own on the way up if ch12_rhen_tied_knot, ties it. Sets ch12_tied_for_the_boy.
+title: ch12_side_the_boys_knot
+location: ch12/quellan
+---
+<<if $ch12_tied_for_the_boy>>
+    Ullari as "Ullari boy" [soft_smile]: You tied it? Good. Now she can stop waiting for me. #line:ch12_boy_001
+<<else>>
+    Ullari as "Ullari boy" [sad]: My gran's knot isn't on the pass. I'm not old enough to walk the road. Would you tie it? You're going that way. #line:ch12_boy_002 #long
+    -> Show me how. #line:ch12_boy_003
+        Ullari as "Ullari boy" [neutral]: Over, under, through, and pull. Then walk on. Don't look back at it. That's the important part. #line:ch12_boy_004 #long
+        <<if $ch12_rhen_tied_knot>>
+            Rhen [neutral]: I know that part. #line:ch12_boy_005
+        <<else>>
+            Rhen [neutral]: Over, under, through. I won't look back. #line:ch12_boy_006
+        <<endif>>
+        <<set $ch12_tied_for_the_boy = true>>
+    -> Not this time. #line:ch12_boy_007
+        Ullari as "Ullari boy" [neutral]: That's all right. Someone else will be going up. #line:ch12_boy_008
+<<endif>>
+===

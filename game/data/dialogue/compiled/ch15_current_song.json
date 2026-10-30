@@ -1,0 +1,29 @@
+{
+ "format": 1,
+ "scene": "ch15_current_song",
+ "source": "game/data/dialogue/ch15/ch15_current_song.dlg",
+ "start": "ch15_current_song",
+ "nodes": {
+  "ch15_current_song": {
+   "headers": {"location": "ch15/open_sea"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "fade", "args": ["in", 3.0], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "camera", "args": ["H01"], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "mark", "args": ["liss", "bow_liss", "walk"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "camera", "args": ["H02"], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "music", "args": ["hollowmere_answers"], "kwargs": {"fade": 0.0}, "src": 21},
+    {"op": "cue", "cue": "anim", "args": ["liss", "sing"], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "look_at", "liss"], "kwargs": {}, "src": 24},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 25},
+    {"op": "cue", "cue": "camera", "args": ["H03"], "kwargs": {}, "src": 26},
+    {"op": "cue", "cue": "wait", "args": [8.0], "kwargs": {}, "src": 27},
+    {"op": "set", "flag": "ch15_hollowmere_answered", "value": ["lit", true], "src": 28},
+    {"op": "cue", "cue": "fade", "args": ["out", 1.5], "kwargs": {}, "src": 29},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 30}
+   ]
+  }
+ }
+}

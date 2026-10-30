@@ -36,6 +36,23 @@
     }
    ],
    "beats": {
+    "drowner": {
+     "when": {
+      "set": [
+       "ch10_started"
+      ],
+      "unset": [
+       "ch10_drowner_defeated"
+      ]
+     },
+     "steps": [
+      {
+       "battle": "ch10_mangrove_drowner",
+       "return_spawn": "DrownerArena",
+       "victory_flag": "ch10_drowner_defeated"
+      }
+     ]
+    },
     "to_reedhollow": {
      "steps": [
       {
@@ -86,6 +103,30 @@
         "location": "ch10/ossa_fen",
         "spawn": "FromReedhollow"
        }
+      }
+     ]
+    },
+    "shore": {
+     "when": {
+      "set": [
+       "ch10_reached_reedhollow"
+      ],
+      "unset": [
+       "ch10_complete"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Shore"
+      },
+      {
+       "play": "ch10_farewell_tide"
+      },
+      {
+       "place": "Gate"
+      },
+      {
+       "play": "ch10_dawn_gate"
       }
      ]
     }

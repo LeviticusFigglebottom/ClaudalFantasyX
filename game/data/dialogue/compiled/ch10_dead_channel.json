@@ -1,0 +1,29 @@
+{
+ "format": 1,
+ "scene": "ch10_dead_channel",
+ "source": "game/data/dialogue/ch10/ch10_dead_channel.dlg",
+ "start": "ch10_dead_channel",
+ "nodes": {
+  "ch10_dead_channel": {
+   "headers": {"location": "ch10/ossa_fen"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "sfx", "args": ["egret_lift"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "camera", "args": ["F03"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 2.0}, "src": 11},
+    {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "camera", "args": ["O05"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "drowner_roots", "count": 12, "rate": "slow"}, "src": 14},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "sfx", "args": ["pell_storm_note"], "kwargs": {"at": "pell", "vol": 0.4}, "src": 16},
+    {"op": "line", "id": "ch10_channel_001", "key": "DLG_CH10_CHANNEL_001", "speaker": "pell", "emotion": "sad", "voice": "", "src": 17},
+    {"op": "line", "id": "ch10_channel_002", "key": "DLG_CH10_CHANNEL_002", "speaker": "asha", "emotion": "worried", "voice": "", "src": 18},
+    {"op": "line", "id": "ch10_channel_003", "key": "DLG_CH10_CHANNEL_003", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 19},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "anim", "args": ["mangrove_drowner", "stir"], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 23}
+   ]
+  }
+ }
+}

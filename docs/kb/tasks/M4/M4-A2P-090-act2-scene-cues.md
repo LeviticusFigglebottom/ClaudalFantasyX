@@ -19,7 +19,9 @@ The scene cues act2_finals.md lists as not written, timed to the beat sheets and
 
 ## Notes
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). Plan §2. LFS uploads are blocked (TRACK-RULES 2026-10-30): files under 5 MB go as plain blobs outside the LFS paths, or wait in PC-QUEUE.
-- 2026-10-30: the pre-gate beat-sheet drafts add two proposed cues: `tobin_pyre` (act2_ch15 §6, ~60 s, the wedding's vow phrase on a fiddle) and `kesh_memory` (act2_ch16 §6, ~3 min, the memory sequence). Time every cue to the drafts' beats.
+- 2026-10-30: the pre-gate beat-sheet drafts add one proposed cue, `kesh_memory` (act2_ch16 §6, ~3 min, the memory sequence). Time every cue to the drafts' beats. ADR 0204 §12: the pyre-raft reprises `hush_first_verse` (`tobin_pyre` is withdrawn); §9: `battle_heretic` from Ch14 (audio lane); §10: the Order sings ORDER_HUM once in `sefir_go_home`.
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
+
+- 2026-10-30 (audio): rendered and wired: farewell_tide, peace_wedding_break, lagoon_escape, kerrid_at_sea, hollowmere_answers, sefir_go_home, act2_break (assets/audio/act2/music/, ADR 0175). The pyre-raft reprises hush_first_verse (ADR 0204 §12), so the drafts' `tobin_pyre` is not made; `kesh_memory` is a row on drowned_choir under the muffle (the cue sheet). Still to do: retime each cue to the beat sheets once they are final, and the `@music` lines in the Act II .dlg (Story's).
 
 ## Review log

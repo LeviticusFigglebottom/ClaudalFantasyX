@@ -1,0 +1,24 @@
+{
+ "format": 1,
+ "scene": "ch15_the_fin",
+ "source": "game/data/dialogue/ch15/ch15_the_fin.dlg",
+ "start": "ch15_the_fin",
+ "nodes": {
+  "ch15_the_fin": {
+   "headers": {"location": "ch15/open_sea"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 0.5}, "src": 8},
+    {"op": "cue", "cue": "sfx", "args": ["fin_cut"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "camera", "args": ["U05"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "camera", "args": ["U06"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "anim", "args": ["kerrid", "draw_cleaver"], "kwargs": {}, "src": 13},
+    {"op": "line", "id": "ch15_fin_001", "key": "DLG_CH15_FIN_001", "speaker": "pell", "emotion": "afraid", "voice": "", "src": 14},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 16},
+    {"op": "event", "name": "start_battle", "args": ["ch15_wakefin"], "src": 17}
+   ]
+  }
+ }
+}

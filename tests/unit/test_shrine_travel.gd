@@ -33,6 +33,7 @@ func before_each() -> void:
 				[
 					{"id": "isle_shrine", "location_id": "isle", "spawn": "Shrine"},
 					{"id": "haluna_shrine", "location_id": "haluna", "spawn": "Shrine"},
+					{"id": "temple_shrine", "location_id": "haluna", "spawn": "Shrine", "order": true},
 				],
 			}
 		)
@@ -82,6 +83,23 @@ func test_a_refused_trip_says_so_and_keeps_the_list() -> void:
 	assert_true(menu.is_open(), "still open")
 	assert_eq(menu.level, ShrineTravelMenu.Level.LIST)
 	assert_eq(menu.desc_text(), tr("SHRINE_TRAVEL_REFUSED_FMT").format({"place": tr("LOCATION_CH05_PEMAKAR")}))
+	_done(menu)
+
+
+func test_a_dark_order_shrine_stays_on_the_list_greyed_with_the_reason() -> void:
+	var here := _shrine(&"isle_shrine")
+	Game.state.attuned_shrines = [&"isle_shrine", &"temple_shrine", &"haluna_shrine"] as Array[StringName]
+	assert_false(ShrineNetwork.is_dark(&"temple_shrine"), "before the heresy the Order's shrine answers")
+	Game.state.flags[String(SaveShrine.HERETIC_FLAG)] = true
+	var menu := here.open_travel()
+	var dark: Dictionary = menu.rows_page().rows[0]
+	assert_false(bool(dark["enabled"]), "greyed")
+	assert_eq(str(dark["right"]), tr("SHRINE_TRAVEL_DARK"), "saying why")
+	assert_eq(
+		StringName(str(menu.rows_page().current_row()["id"])), &"haluna_shrine", "the cursor starts on a way open"
+	)
+	assert_false(menu.go(&"temple_shrine"), "and a trip there is refused")
+	assert_true(trips.is_empty())
 	_done(menu)
 
 

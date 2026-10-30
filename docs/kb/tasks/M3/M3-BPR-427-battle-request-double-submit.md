@@ -2,8 +2,8 @@
 id: M3-BPR-427
 title: "Request (slice-polish): a second BattleRequest.submit while one is opening drops the first fight to the sandbox (GPU QA row 34)"
 role: cinematics
-status: todo
-owner_session:
+status: review
+owner_session: act1-chapters
 depends_on: []
 milestone: M3
 request-from: combat
@@ -39,5 +39,18 @@ fits a second scene change onto the bare stage.
 ## Acceptance criteria
 - [ ] Two overlapping submits open one FieldBattle on the first request; no sandbox fight.
 - [ ] GPU QA row 34 re-checked on the PC (PC-QUEUE).
+
+## Fix (act1-chapters, 2026-10-30, after the Lead's urgent row 34 note: big19 still showed the test stage)
+- **`BattleRequest.submit`** drops a second request while a live one is opening, from its stinger until FieldBattle
+  takes it, with a `push_warning` naming both. The tests' `change_scene` recorder path is never held.
+- **`BattleRequest.opening()`** reports that window. `take()` and `clear()` end it.
+- **`FieldEncounters.walked`** never rolls while `opening()`. The QA walk's `BattleRequest.start` from outside
+  brine_shoals can no longer be overtaken by a random fight. The meter keeps its count and fires on the next step.
+- **Tests:**
+  - tests/unit/test_battle_request_double_submit.gd (3): two overlapping submits open one battle, on the first.
+  - test_zone_story: no roll while opening.
+  - Also green: qa_encounters (the encounter-entry smoke), fp_field_battle, battle_stinger, act1_encounters_resolve,
+    ch06_thread and fp_thread.
+- **Re-check:** GPU QA row 34 on the PC (PC-QUEUE).
 
 ## Review log

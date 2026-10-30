@@ -1,0 +1,48 @@
+// Ch10 B11 "Why would they want to go down?" (E, 2 min). act2_ch10.md §2 B11. R09: dawn at the causeway
+// gate, grey. Pell and Kerrid are where they were (Kerrid doesn't sleep; Pell, the Kirru way, stood). Asha
+// goes straight to Pell and doesn't ask about his night (her tell is starting to stop). Pell answers a
+// scene later, and this is the scene later: Ch9's "Which way should they point?" too. R10: Rhen and the
+// blank shell, the question Ch9 left open. "My neck is very tired" is held back for Act III.
+title: ch10_dawn_gate
+location: ch10/reedhollow
+---
+@letterbox on
+// M4-A2P-112 note 2: Pell stands where B06 left him (R10 and gate_asha are staged on that spot); he walks the
+// 1.6 m from the layout's pell_gate under the fade.
+@mark pell causeway_last_root
+@fade in 2.0
+@camera R09
+@music reedhollow fade=3.0
+@mark asha gate_asha walk
+@wait 2.0
+Asha [worried]: Pell. Why would the dead want to go down? #line:ch10_dawn_001
+@wait 2.0
+Pell [neutral]: They do not want to. You-people ask them. #line:ch10_dawn_002
+Asha [sad]: ...And they come. #line:ch10_dawn_003
+Pell [neutral]: You are very good at asking. #line:ch10_dawn_004 #tn:"Not a compliment and not an insult: a plain fact, gently said."
+<<set $ch10_asha_asked_pell = true>>
+@wait 1.5
+@camera R10
+@anim rhen look_at pell_shell
+<<if $ch10_heard_ressa>>
+    Rhen [neutral]: Your shell. They scraped it because of her. Ressa. #line:ch10_dawn_005
+<<else>>
+    Rhen [neutral]: Your shell. Why's it blank? #line:ch10_dawn_006
+<<endif>>
+@wait 1.5
+Pell [neutral]: I did not turn around. #line:ch10_dawn_007
+@wait 2.5
+Pell [sad]: She went into the sea. I watched her go. Seventy years. #line:ch10_dawn_008
+@wait 1.0
+@mark pell root_walk_out walk
+@mark toma line_2 walk
+@mark asha line_3 walk
+@mark ysolde line_4 walk
+@mark liss line_5 walk
+@mark rhen line_6 walk
+@mark kerrid line_7 walk
+@wait 3.0
+<<set $ch10_complete = true>>
+@letterbox off
+@camera release
+===

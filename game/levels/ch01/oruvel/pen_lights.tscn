@@ -1,0 +1,19 @@
+[gd_scene format=3]
+
+[node name="PenLights" type="Node3D"]
+
+[node name="PenKey" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 2.2, 3.0)
+visible = false
+light_color = Color(1, 0.75, 0.5, 1)
+light_energy = 4.0
+omni_range = 9.0
+omni_attenuation = 1.2
+
+[node name="PenRim" type="SpotLight3D" parent="."]
+transform = Transform3D(-1, 0, -0, 0, 0.8064, 0.5914, 0, 0.5914, -0.8064, 0, 3.2, -3)
+visible = false
+light_color = Color(0.7, 0.8, 0.88, 1)
+light_energy = 9.0
+spot_range = 8.0
+spot_angle = 35.0

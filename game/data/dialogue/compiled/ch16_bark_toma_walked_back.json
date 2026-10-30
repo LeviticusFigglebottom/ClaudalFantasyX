@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch16_bark_toma_walked_back",
+ "source": "game/data/dialogue/ch16/ch16_bark_toma_walked_back.dlg",
+ "start": "ch16_bark_toma_walked_back",
+ "nodes": {
+  "ch16_bark_toma_walked_back": {
+   "headers": {"location": "ch16/pale_rim"},
+   "ops": [
+    {"op": "line", "id": "ch16_bark_walked_001", "key": "DLG_CH16_BARK_WALKED_001", "speaker": "toma", "emotion": "sad", "voice": "", "src": 5}
+   ]
+  }
+ }
+}

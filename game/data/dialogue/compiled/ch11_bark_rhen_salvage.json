@@ -1,0 +1,15 @@
+{
+ "format": 1,
+ "scene": "ch11_bark_rhen_salvage",
+ "source": "game/data/dialogue/ch11/ch11_bark_rhen_salvage.dlg",
+ "start": "ch11_bark_rhen_salvage",
+ "nodes": {
+  "ch11_bark_rhen_salvage": {
+   "headers": {"location": "ch11/sunken_vey"},
+   "ops": [
+    {"op": "line", "id": "ch11_bark_salvage_001", "key": "DLG_CH11_BARK_SALVAGE_001", "speaker": "rhen", "emotion": "smile", "voice": "", "src": 5},
+    {"op": "line", "id": "ch11_bark_salvage_002", "key": "DLG_CH11_BARK_SALVAGE_002", "speaker": "liss", "emotion": "cold", "voice": "", "src": 6}
+   ]
+  }
+ }
+}

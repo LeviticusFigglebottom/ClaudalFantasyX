@@ -1,0 +1,64 @@
+{
+ "format": 1,
+ "scene": "ch10_farewell_tide",
+ "source": "game/data/dialogue/ch10/ch10_farewell_tide.dlg",
+ "start": "ch10_farewell_tide",
+ "nodes": {
+  "ch10_farewell_tide": {
+   "headers": {"location": "ch10/reedhollow"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "camera", "args": ["T01"], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 2.0}, "src": 20},
+    {"op": "cue", "cue": "mark", "args": ["asha", "shore_front", "walk"], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "camera", "args": ["T02"], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "music", "args": ["farewell_tide"], "kwargs": {"fade": 0.5}, "src": 24},
+    {"op": "event", "name": "hold_input", "args": ["hold_to_watch"], "src": 25},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "lagoon_motes", "count": 24, "motion": "spiral_up", "rate": "slow"}, "src": 26},
+    {"op": "cue", "cue": "wait", "args": [6.0], "kwargs": {}, "src": 27},
+    {"op": "cue", "cue": "camera", "args": ["T03"], "kwargs": {"blend": 3.0, "ease": "in_out_sine"}, "src": 28},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "lagoon_motes", "count": 48, "motion": "spiral_up", "rate": "slow"}, "src": 29},
+    {"op": "cue", "cue": "wait", "args": [6.0], "kwargs": {}, "src": 30},
+    {"op": "cue", "cue": "camera", "args": ["F02"], "kwargs": {}, "src": 31},
+    {"op": "cue", "cue": "wait", "args": [6.0], "kwargs": {}, "src": 32},
+    {"op": "event", "name": "hold_input_end", "args": [], "src": 33},
+    {"op": "cue", "cue": "camera", "args": ["T04"], "kwargs": {}, "src": 34},
+    {"op": "cue", "cue": "anim", "args": ["clutch", "turn_back"], "kwargs": {}, "src": 35},
+    {"op": "event", "name": "release_input", "args": ["release_tide"], "src": 36},
+    {"op": "cue", "cue": "music", "args": ["farewell_tide_release"], "kwargs": {"fade": 0.5}, "src": 37},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 38},
+    {"op": "cue", "cue": "camera", "args": ["T05"], "kwargs": {}, "src": 39},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 40},
+    {"op": "line", "id": "ch10_tide_001", "key": "DLG_CH10_TIDE_001", "speaker": "ysolde", "emotion": "tender", "voice": "", "src": 41},
+    {"op": "cue", "cue": "anim", "args": ["asha", "turn_back"], "kwargs": {}, "src": 42},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "turn_back"], "kwargs": {}, "src": 43},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 44},
+    {"op": "cue", "cue": "anim", "args": ["toma", "turn_back"], "kwargs": {}, "src": 45},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 46},
+    {"op": "cue", "cue": "camera", "args": ["T06"], "kwargs": {}, "src": 47},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 48},
+    {"op": "if_not", "cond": ["flag", "ch09_ebbing_danced"], "to": 34, "src": 49},
+    {"op": "line", "id": "ch10_tide_002", "key": "DLG_CH10_TIDE_002", "speaker": "asha", "emotion": "grief", "voice": "", "src": 50},
+    {"op": "goto", "to": 34, "src": 49},
+    {"op": "set", "flag": "ch10_farewell_tide_seen", "value": ["lit", true], "src": 52},
+    {"op": "jump", "node": "ch10_outside_causeway", "src": 53}
+   ]
+  },
+  "ch10_outside_causeway": {
+   "headers": {},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["R07"], "kwargs": {}, "src": 62},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 63},
+    {"op": "cue", "cue": "camera", "args": ["R08"], "kwargs": {}, "src": 64},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "kerrid_scar", "count": 1, "rate": "slow"}, "src": 65},
+    {"op": "cue", "cue": "wait", "args": [1.8], "kwargs": {}, "src": 66},
+    {"op": "cue", "cue": "camera", "args": ["R07"], "kwargs": {}, "src": 67},
+    {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 68},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 3.0}, "src": 69},
+    {"op": "cue", "cue": "fade", "args": ["out", 2.0], "kwargs": {}, "src": 70},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 71}
+   ]
+  }
+ }
+}

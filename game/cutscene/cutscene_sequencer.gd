@@ -236,6 +236,7 @@ func play(scene_id: StringName, stage: CutsceneStage) -> bool:
 	if not runner.load_scene(scene_id) or not runner.start():
 		push_error("CutsceneSequencer: cannot start scene '%s'" % scene_id)
 		return false
+	CutsceneStaging.apply(stage)  # M4-CIN-1304: cinematics' own shots and marks for the zone
 	_begin(scene_id, stage)
 	var step := runner.next()
 	while not step.is_end() and not _aborted:
@@ -483,6 +484,8 @@ func _cue_camera(step: DialogueStep) -> void:
 		if blend > 0.0:
 			overlay.box.visible = false
 		_key_for(_stage.shot_node(id))
+		var who := str(step.kwargs.get("track", ""))  # M4-CIN-1302: one continuous move with an actor
+		shot = CutsceneTrack.attach(self, shot, _actor(StringName(who)) if who != "" else null, _director)
 		_director.play_shot(shot, blend, ease)
 		_grade(step.kwargs.get("grade", ""))
 	await _land()
@@ -591,6 +594,8 @@ func _cue_mark(step: DialogueStep) -> void:
 
 
 func _cue_anim(step: DialogueStep) -> void:
+	if CutsceneGroup.play(step, _stage, config, _start_motion, _cue_anim):  # M4-CIN-1302: a group, member by member
+		return
 	var actor := _actor(StringName(str(step.args[0])))
 	if actor == null:
 		return
@@ -680,6 +685,10 @@ func _cue_vfx(step: DialogueStep) -> void:
 		_warn("cannot place @vfx %s at '%s'" % [effect, at_id])
 		return
 	var host: Node3D = at if at != null else _stage
+	if host != null and step.kwargs.has("release"):  # M4-CIN-1303: the light already there lets go and rises
+		if not CutsceneVfx.release(host, float(step.kwargs["release"])):
+			_warn("@vfx release=: nothing held at '%s'" % at_id)
+		return
 	if host == null or CutsceneVfxHosts.offer(get_tree(), effect, at_id, step.kwargs):  # M3-ARC-1326: a stage host
 		return
 	var vfx_name := "Vfx_%s_%d" % [effect, _vfx_count]

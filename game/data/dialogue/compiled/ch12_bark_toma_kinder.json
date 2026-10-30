@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch12_bark_toma_kinder",
+ "source": "game/data/dialogue/ch12/ch12_bark_toma_kinder.dlg",
+ "start": "ch12_bark_toma_kinder",
+ "nodes": {
+  "ch12_bark_toma_kinder": {
+   "headers": {"location": "ch12/quellan"},
+   "ops": [
+    {"op": "line", "id": "ch12_bark_kinder_001", "key": "DLG_CH12_BARK_KINDER_001", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 5},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 6},
+    {"op": "line", "id": "ch12_bark_kinder_002", "key": "DLG_CH12_BARK_KINDER_002", "speaker": "toma", "emotion": "sad", "voice": "", "src": 7}
+   ]
+  }
+ }
+}

@@ -26,6 +26,8 @@ var data: Dictionary = {}
 ## When set (not NAN), used instead of the device stick. Vector2(NAN, NAN) = read devices.
 var input_override := Vector2(NAN, NAN)
 var walk_override := false
+## Walkable ground at the water's edge: no step off a dock into the sea (FieldShore, field_movement.json "shore").
+var shore: FieldShore
 
 var _gravity := 0.0
 var _max_fall := 0.0
@@ -42,6 +44,7 @@ func _ready() -> void:
 	_max_fall = float(data.get("max_fall_speed_mps", 0.0))
 	_reach = float(data.get("interact_reach_m", 0.0))
 	floor_snap_length = float(data.get("floor_snap_m", floor_snap_length))
+	shore = FieldShore.new(data)
 	motor.facing_yaw = rotation.y
 	director = get_node_or_null(director_path) as FieldCameraDirector
 	if director != null:
@@ -84,11 +87,19 @@ func step(delta: float) -> void:
 		velocity.y = 0.0
 	else:
 		velocity.y = maxf(velocity.y - _gravity * delta, -_max_fall)
+	var from := global_position
+	var was_grounded := _grounded
 	if Engine.is_in_physics_frame():
 		move_and_slide()
 		_grounded = is_on_floor()
 	else:
 		_slide(velocity * delta)
+	if shore.enabled() and shore.refuses(self, from, global_position):
+		global_position = from  # the water's edge holds him as a wall would
+		velocity = Vector3.ZERO
+		_grounded = was_grounded
+	elif shore.enabled():
+		shore.settle(self, _grounded)
 	rotation.y = motor.facing_yaw
 	_check_touch()
 

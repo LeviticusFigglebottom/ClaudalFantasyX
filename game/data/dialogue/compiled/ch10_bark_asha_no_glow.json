@@ -1,0 +1,15 @@
+{
+ "format": 1,
+ "scene": "ch10_bark_asha_no_glow",
+ "source": "game/data/dialogue/ch10/ch10_bark_asha_no_glow.dlg",
+ "start": "ch10_bark_asha_no_glow",
+ "nodes": {
+  "ch10_bark_asha_no_glow": {
+   "headers": {"location": "ch10/ossa_fen"},
+   "ops": [
+    {"op": "cue", "cue": "anim", "args": ["asha", "look_at", "water"], "kwargs": {}, "src": 6},
+    {"op": "line", "id": "ch10_bark_glow_001", "key": "DLG_CH10_BARK_GLOW_001", "speaker": "asha", "emotion": "worried", "voice": "", "src": 7}
+   ]
+  }
+ }
+}

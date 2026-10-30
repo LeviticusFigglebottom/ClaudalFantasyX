@@ -1,0 +1,58 @@
+// Ch11 B09 "Nhoa" (C, 4 min). act2_ch11.md §2 B09. N02: from the dry ledge (design default (a): walked, the
+// sanctum seen underwater), Nhoa standing in the water as if in air: a Kirru-like figure of held motes like
+// silt, antlers of mangrove root, bound light, perfectly still. NOTHING FROZEN (rule 1). N03: Pell stops at
+// the back of the line; his crest goes all the way up; he hums the storm's note softly and stops himself.
+// N04: the carved name-shell at her throat (the player's only cue); Pell's own is blank. N05: Pell speaks
+// his four sentences, kneels in the water at the ledge's edge, and from here SAYS NOTHING (rule 4).
+// N07: the binding: Asha sings the verses she has; the fourth verse comes up out of the water to her
+// (`nhoa_bound`: a Kirru voice, very old and very young; no words are written here, Audio's Lamptongue);
+// the silt-light rises into her verse-sleeve, now S4. N08: Nhoa's head turns, once, toward Pell (a turn
+// only; bound light can't change its expression). N09: Pell still kneeling; Kerrid stays on the ledge
+// behind him without a word until he stands.
+title: ch11_nhoa
+location: ch11/lowlight
+---
+@letterbox on
+// M4-CIN-1304 (cinematics): staged from act2_ch11_direction.md (shots and marks in game/data/cutscene/ch11/).
+@mark pell pell_back walk
+@mark asha asha_ledge walk
+@camera N02
+@music lowlight fade=2.0
+@vfx glimmer_bound at=nhoa count=1
+@wait 4.0
+@camera N03
+@anim pell stop
+@anim pell crest_up
+@sfx pell_storm_note at=pell vol=0.3
+@wait 2.5
+@camera N04
+@wait 2.5
+@camera N05
+@mark pell pell_kneel walk
+@wait 1.5
+Pell [grief]: She is here. She is not lifted. Do not speak yet. Please. #line:ch11_nhoa_001 #tn:"'Lifted': the Kirru word for the dead who have gone up. Pell speaks of his sister."
+@anim pell kneel
+@wait 7.0
+@camera N06
+@anim asha look_at pell
+@wait 2.0
+@anim asha look_at nhoa
+@wait 2.0
+@camera N07
+@anim asha raise_staff
+@music nhoa_bound fade=0.0
+@wait 8.0
+@vfx glimmer_bound at=asha count=4
+@wait 3.0
+@camera N08
+@anim nhoa turn_head pell
+@wait 3.0
+@camera N09
+@mark kerrid ledge_behind_pell walk
+@wait 8.0
+<<set $ch11_nhoa_bound = true>>
+<<set $ch11_pell_knelt = true>>
+@music lowlight fade=2.0
+@letterbox off
+@camera release
+===

@@ -8,14 +8,19 @@
    "headers": {"location": "ch01/oruvel"},
    "ops": [
     {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 8},
-    {"op": "cue", "cue": "camera", "args": ["O16"], "kwargs": {}, "src": 9},
-    {"op": "cue", "cue": "sfx", "args": ["hullgnaw_ribs_creak"], "kwargs": {}, "src": 10},
-    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "net_pen", "count": 8, "drift": "down_seaward"}, "src": 11},
-    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 12},
-    {"op": "line", "id": "ch01_hullgnaw_001", "key": "DLG_CH01_HULLGNAW_001", "speaker": "rhen", "emotion": "afraid", "voice": "", "src": 13},
-    {"op": "cue", "cue": "music", "args": ["hullgnaw"], "kwargs": {"fade": 0.5}, "src": 14},
-    {"op": "line", "id": "ch01_hullgnaw_002", "key": "DLG_CH01_HULLGNAW_002", "speaker": "rhen", "emotion": "determined", "voice": "", "src": 15},
-    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 16}
+    {"op": "cue", "cue": "light", "args": ["HullgnawKey", "on", 1.5], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "light", "args": ["HullgnawRim", "on", 1.5], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "camera", "args": ["O16"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "anim", "args": ["hullgnaw", "intro"], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "sfx", "args": ["hullgnaw_ribs_creak"], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "net_pen", "count": 8, "drift": "down_seaward"}, "src": 18},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 19},
+    {"op": "line", "id": "ch01_hullgnaw_001", "key": "DLG_CH01_HULLGNAW_001", "speaker": "rhen", "emotion": "afraid", "voice": "", "src": 20},
+    {"op": "cue", "cue": "music", "args": ["hullgnaw"], "kwargs": {"fade": 0.5}, "src": 21},
+    {"op": "line", "id": "ch01_hullgnaw_002", "key": "DLG_CH01_HULLGNAW_002", "speaker": "rhen", "emotion": "determined", "voice": "", "src": 22},
+    {"op": "cue", "cue": "light", "args": ["HullgnawKey", "off", 0.5], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "light", "args": ["HullgnawRim", "off", 0.5], "kwargs": {}, "src": 24},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 25}
    ]
   }
  }

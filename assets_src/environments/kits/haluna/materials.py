@@ -515,6 +515,42 @@ MATERIALS["kit_iskarra_cladding"]["params"]["col_tint"] = hexc("#F4E7C9")
 MATERIALS["kit_iskarra_glaze"]["params"]["col_tint"] = hexc("#1F7FC2")
 MATERIALS["kit_iskarra_paving"]["params"]["col_tint"] = hexc("#EFDDB4")
 
+# ---- M4-A2P-040 (appended by env-art): the Ch10 zones' level land (fen_zones.py) --------------------------------------
+# The fen's mud, dried on the bank and the shore (15 cm over the water: the tide wetness soaked them black at dusk): paler,
+# no tide band, a breakup of green-grey algae in the low spots and pale salt where it dried.
+MATERIALS["kit_fen_bank"] = _ext_stone(_BS + "mud_albedo.png", _BS + "mud_normal.png", (2.5, 2.5), base_triplanar=True,
+                                       col_tint=hexc("#B4A68C"), normal_strength=0.7, roughness_base=0.82,
+                                       specular_base=0.3, cavity_darken=0.45, ao_strength=0.7, variation_value=0.14,
+                                       use_barnacles=False, use_salt=True, salt_coverage="Vector2(0.04, 0.16)",
+                                       algae_coverage="Vector2(0.15, 0.45)", col_algae=hexc("#5A5E44"), use_moss=False,
+                                       capillary_band_m=0.0)
+
+# ---- M4-A2P-041 (appended by env-art): the Sunken Vey's lagoon bed (vey_zones.py) -------------------------------------
+# The drowned town's floor under the turquoise lagoon: the Haluna sand gone to a pale grey-green silt, an algae film in the
+# hollows (the overcast_lagoon water's absorption takes it to teal at 2-3 m).
+MATERIALS["kit_vey_silt"] = stone("sand_albedo.png", "sand_normal.png", (2.5, 2.5), base_triplanar=True,
+                                  col_tint=hexc("#B9C2B4"), normal_strength=0.5, roughness_base=0.85, cavity_darken=0.25,
+                                  variation_value=0.1, use_moss=False, use_barnacles=False, use_salt=False,
+                                  algae_coverage="Vector2(0.3, 0.7)")
+
+# ---- M4-A2P-042 (appended by env-art): the Ch12 zones' ground (keth_zones.py) ---------------------------------------
+# The highland's thin turf on the level ground between the crags (kit_keth_grass is the cards' flat colour, and laid on
+# the ground it read as snow, which ADR 0015 forbids): the Pemakar ash soil gone to a pale olive-grey sward, lichen.
+MATERIALS["kit_keth_turf"] = _ext_stone(_PEM + "ash_soil_albedo.png", _PEM + "ash_soil_normal.png", (2.2, 2.2),
+                                        base_triplanar=True, col_tint=hexc("#A9B08E"), normal_strength=0.6,
+                                        roughness_base=0.95, cavity_darken=0.3, variation_value=0.16,
+                                        col_lichen=hexc("#8E9A6E"), **_DRY)
+
+# ---- The Prologue dressing pass (appended by env-art; the Lead, 10-30: beautiful and doomed at dusk) ----------------
+# The lit lamp globes read as white electric street lamps across P01 (albedo near white, emission 2.5 into the bloom).
+# Oil behind old salt-glass: amber and dim, so the four lamps glow as embers and Rhen's lantern stays the frame's flame.
+STANDARD["kit_lamp_glass_lit"] = {"albedo_color": hexc("#C98A4E"), "roughness": 0.35, "emission_enabled": "true",
+                                  "emission": hexc("#FF9447"), "emission_energy_multiplier": 1.2}
+# The towers' painted wet (the tide band, the old high-water ring, the rain streaks under each ledge) reads as dry grime
+# (env_weathering grime_from_wet): wet gloss mirrored the dusk sky and the stains vanished at P01's distance.
+MATERIALS["kit_iskarra_cladding"]["params"]["grime_from_wet"] = 1.0
+MATERIALS["kit_iskarra_cladding"]["params"]["col_grime"] = hexc("#5E5A4C")
+
 
 if __name__ == "__main__":
     sys.exit(main())

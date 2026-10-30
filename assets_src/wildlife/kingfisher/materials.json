@@ -1,0 +1,23 @@
+{
+  "_doc": "Fen kingfisher surface (Ch10, M4-A2P-056; docs/kb/art/wildlife.md). One slot for both meshes, like the gull's; write_materials.py writes assets/wildlife/kingfisher/materials/plumage.tres on game/world/wildlife/wildlife.gdshader. wing_pivot is build_kingfisher.py's shoulder (SHOULDER_X, SHOULDER_Y); head_pivot is its perched neck (printed by the build). A faster, shallower stroke than the gull's (a whirring wing), a slight rim sheen so the blue-green flash catches the fen's low light.",
+  "slots": {
+    "plumage": {
+      "roughness_dry": 0.8,
+      "roughness_wet": 0.45,
+      "specular": 0.4,
+      "wet_darken": 0.85,
+      "clearcoat_wet": 0.15,
+      "detail_scale": 260.0,
+      "detail_albedo": 0.05,
+      "cavity_albedo": 0.35,
+      "cavity_ao": 0.5,
+      "rim_sheen": 0.15,
+      "wing_pivot": [0.016, 0.01, 0.0],
+      "flap_angle": 0.7,
+      "flap_lag": 0.5,
+      "flap_bob": 0.006,
+      "head_pivot": [0.0, 0.0616, 0.028],
+      "nod_angle": 0.35
+    }
+  }
+}

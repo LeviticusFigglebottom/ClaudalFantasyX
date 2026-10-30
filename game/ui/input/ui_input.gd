@@ -58,13 +58,21 @@ static func load_data() -> Dictionary:
 
 
 func _input(event: InputEvent) -> void:
+	notice(event)
+	if is_cancel_button(event):
+		get_viewport().set_input_as_handled()
+		send_cancel_edge(get_viewport(), event.is_pressed())
+
+
+## The last device and the pad's held direction, from `event`. A screen that takes an event in its own _input runs
+## before this autoload (a node later in the tree gets _input first), so it calls this first (the Lead's controller
+## pass, 2026-10-30: in the save list the prompts stayed on the keys and a held d-pad never repeated). Noticing an
+## event twice is harmless.
+func notice(event: InputEvent) -> void:
 	var was := InputNames.using_pad
 	InputNames.note(event, float(_d.get("pad_deadzone", 0.5)))
 	if InputNames.using_pad != was:
 		device_changed.emit(InputNames.using_pad)
-	if is_cancel_button(event):
-		get_viewport().set_input_as_handled()
-		send_cancel_edge(get_viewport(), event.is_pressed())
 	note_pad_hold(event)
 
 

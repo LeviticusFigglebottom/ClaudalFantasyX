@@ -59,11 +59,15 @@ var life: LifeAudio
 var impact: ImpactAudio
 ## Cutscene foley on each sequencer's cues (M3-AUD-817; cutscene_audio.gd).
 var cutscene: CutsceneAudio
+## Field objects' own sounds when used (M3-AUD-864; interact_audio.gd).
+var interact: InteractAudio
 var stings := StingAudio.new()
 var music: MusicDeck
 var sfx: SfxBank
 ## Ambience bed id -> FadeVoice.
 var beds: Dictionary = {}
+## The listener whose battle arena's beds play now (set_arena_ambience), or null.
+var arena_owner: Object = null
 ## The zone row applied last ({} for none) and its scene.
 var zone: Dictionary = {}
 var zone_path: String = ""
@@ -84,6 +88,12 @@ var _seen_box_open := false
 var _seen_battle := false
 ## A cue waiting for its files to load on a worker thread: {cue, sec, files} ({} when none).
 var _pending: Dictionary = {}
+## M3-AUD-864 (the as-played pass): the zone returns on release. Every CutsceneSequencer seen, and how long the
+## field has been silent with no scene or battle playing.
+var _sequencers: Array[Node] = []
+var _quiet_sec := 0.0
+## True from a battle until the field's music is back: the return after a battle is quicker and fades longer.
+var _after_battle := false
 
 
 func _ready() -> void:
@@ -143,6 +153,11 @@ func setup(mix_table: Dictionary, music_table: Dictionary, sfx_table: Dictionary
 		impact.name = "ImpactAudio"
 		impact.bind_director(self)
 		add_child(impact)
+	if interact == null:
+		interact = InteractAudio.new(AudioData.table(AudioData.INTERACT_SFX))
+		interact.name = "InteractAudio"
+		interact.bind_director(self)
+		add_child(interact)
 	if cutscene == null:
 		cutscene = CutsceneAudio.new()
 		cutscene.name = "CutsceneAudio"
@@ -187,6 +202,7 @@ func _process(delta: float) -> void:
 func advance(delta: float) -> void:
 	_poll_hooks()
 	music.advance(delta)
+	_step_zone_return(delta)
 	for bed: FadeVoice in beds.values():
 		bed.step(delta, music.floor_db)
 	_step_ducks(delta)
@@ -274,6 +290,41 @@ func _poll_pending() -> void:
 	flush_pending()
 
 
+## M3-AUD-864 (the as-played pass): the zone returns on release. A scene that ends on `@music silence` or on a
+## one-shot cue, or a battle that ends in the zone it started in (battle_out stops the music), would leave the field
+## silent until the next scene swap. Once no cutscene plays, no battle is in the tree, no cue is loading and the deck
+## has been silent for mix.json music.zone_return_sec, the zone's own cue comes back (resuming where it left off).
+## A swap or a battle that follows at once starts its own cue first, so this never double-starts one. After a battle
+## (the human's playtest: the return to a resident field is under 1 s) the zone comes back after music.battle_return_sec
+## and fades in over battle_return_fade_sec, under the victory sting's tail: no silence, and the sting is never clipped.
+func _step_zone_return(delta: float) -> void:
+	_battles = _alive(_battles)
+	if not _battles.is_empty():
+		_after_battle = true
+		_quiet_sec = 0.0
+		return
+	var cfg := music_cfg()
+	var sec := float(cfg.get("battle_return_sec" if _after_battle else "zone_return_sec", 0.0))
+	if not zone.has("music") or not _pending.is_empty() or not music.is_silent() or music.is_held():
+		_quiet_sec = 0.0
+		if not music.is_silent():
+			_after_battle = false  # a swap or a scene took the music itself
+		return
+	if sec <= 0.0 and not _after_battle:
+		return
+	_sequencers = _alive(_sequencers)
+	for seq: Node in _sequencers:
+		if (seq as CutsceneSequencer).is_playing():
+			_quiet_sec = 0.0
+			return
+	_quiet_sec += delta
+	if _quiet_sec >= sec:
+		_quiet_sec = 0.0
+		var fade := float(cfg.get("battle_return_fade_sec", -1.0)) if _after_battle else -1.0
+		_after_battle = false
+		play_music(StringName(str(zone["music"])), fade)
+
+
 ## Applies the zone row for `scene_path` (SceneRouter.scene_swapping calls this under the fade).
 func apply_zone(scene_path: String) -> void:
 	zone_path = scene_path
@@ -323,6 +374,25 @@ func set_ambience(ids: Array[StringName], sec: float = -1.0) -> void:
 		if not (bed.player as AudioStreamPlayer).playing:
 			(bed.player as AudioStreamPlayer).play()
 		bed.fade_to(1.0, fade)
+
+
+## A battle arena's beds take over from the field's (ambience.json `arenas`, the Lead's 10-30 13:08 item) for
+## `owner` (its BattleAudio), fading over ambience.json arena_fade_sec.
+func set_arena_ambience(owner: Object, ids: Array[StringName]) -> void:
+	arena_owner = owner
+	set_ambience(ids, float(ambience_data.get("arena_fade_sec", -1.0)))
+
+
+## `owner`'s battle has left: the zone's own beds come back (none when the zone has none). A later battle that
+## already took the beds over (a retry builds its listener before the old one leaves) keeps them.
+func release_arena_ambience(owner: Object) -> void:
+	if arena_owner != owner:
+		return
+	arena_owner = null
+	var ids: Array[StringName] = []
+	for a: Variant in zone.get("ambience", []):
+		ids.append(StringName(str(a)))
+	set_ambience(ids, float(ambience_data.get("arena_fade_sec", -1.0)))
 
 
 # --------------------------------------------------------------------------- sfx
@@ -445,6 +515,7 @@ func _on_node_added(node: Node) -> void:
 	if node is CutsceneSequencer:
 		# its players are routed as they enter (below); its lines tell the box's VoiceAudio who speaks
 		var seq := node as CutsceneSequencer
+		_sequencers.append(seq)
 		if not seq.line_shown.is_connected(_on_line_shown):
 			seq.line_shown.connect(_on_line_shown.bind(seq))
 		if cutscene != null:
@@ -467,6 +538,8 @@ func _on_node_added(node: Node) -> void:
 		_later(attach_shrine, node)
 	elif node is Ch05AshcrownZone:
 		_later(attach_ashcrown, node)
+	elif node is Ch08CoilspireZone:
+		_later(attach_coilspire, node)
 	elif node is FieldController:
 		_later(attach_footsteps, node)
 	elif reefball != null and reefball.wants(node):
@@ -477,6 +550,10 @@ func _on_node_added(node: Node) -> void:
 		_later(impact.watch, node)
 	elif ChoreoAudio.wants(node):  # M3-AUD-13: the battle choreography's layers (choreo_sfx.json hooks)
 		_later(ChoreoAudio.attach_to.bind(self), node)
+	elif node is Interactable:  # its own sound (InteractAudio) and the menu's soft touch (UiAudio)
+		_later(interact.watch, node)
+		if ui != null and ui.wants(node):
+			_later(ui.watch, node)
 	elif ui != null and ui.wants(node):
 		_later(ui.watch, node)
 
@@ -581,6 +658,19 @@ func attach_ashcrown(zone: Node) -> void:
 		return
 	var l := AshcrownAudio.new(AudioData.table(AudioData.ASHCROWN_SFX))
 	l.name = "AshcrownAudio"
+	l.bind_director(self)
+	add_child(l)
+	l.attach(zone as Node3D)
+	listeners[zone] = l
+
+
+## M3-AUD-864: Ch8's Coilspire flue-key trial (the keys turning, the coughs, each tier lit, the niche, the seized
+## key), heard by the same listener as the Ashcrown trial from coilspire_sfx.json.
+func attach_coilspire(zone: Node) -> void:
+	if not is_instance_valid(zone) or not zone.is_inside_tree() or listeners.has(zone):
+		return
+	var l := AshcrownAudio.new(AudioData.table(AudioData.COILSPIRE_SFX))
+	l.name = "CoilspireAudio"
 	l.bind_director(self)
 	add_child(l)
 	l.attach(zone as Node3D)

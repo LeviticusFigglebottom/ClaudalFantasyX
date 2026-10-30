@@ -8,3 +8,4 @@ SHRINE_TRAVEL_CONFIRM_FMT,Travel to {place}? You'll wake at its shrine.
 SHRINE_TRAVEL_REFUSED_FMT,"The way to {place} is closed for now."
 SHRINE_TRAVEL_HELP,Up and Down: choose · Confirm: travel · Cancel: stay
 SHRINE_TRAVEL_HELP_CONFIRM,Up and Down: choose · Confirm: choose · Cancel: back
+SHRINE_TRAVEL_DARK,Dark: the Order's shrine

@@ -19,6 +19,8 @@
       "talk": "talk",
       "walk": "walk"
     },
+    "idle_playback": [0.88, 1.12],
+    "idle_playback_doc": "Each villager idles (and works) at its own rate in this range, drawn from its id (FieldNpc.idle_rate): out of pace as well as out of phase (the Lead's crowd behaviour pass, 2026-10-30).",
     "idle_blend_sec": 0.45,
     "talk_blend_sec": 0.35,
     "walk_blend_sec": 0.4,

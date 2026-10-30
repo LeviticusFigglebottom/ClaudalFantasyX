@@ -389,6 +389,223 @@
       "voices": 1,
       "volume_db": 0.0,
       "_note": "M3-AUD-857: Virel's layer (vowbound_sfx.py)"
+    },
+    "nhoa_rise": {
+      "files": [
+        "res://assets/audio/sfx/choreo/nhoa_rise.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Nhoa's layer (vowbound_sfx.py)"
+    },
+    "nhoa_call": {
+      "files": [
+        "res://assets/audio/sfx/choreo/nhoa_call.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Nhoa's layer (vowbound_sfx.py)"
+    },
+    "nhoa_sink": {
+      "files": [
+        "res://assets/audio/sfx/choreo/nhoa_sink.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Nhoa's layer (vowbound_sfx.py)"
+    },
+    "hesk_rise": {
+      "files": [
+        "res://assets/audio/sfx/choreo/hesk_rise.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Hesk's layer (vowbound_sfx.py)"
+    },
+    "hesk_call": {
+      "files": [
+        "res://assets/audio/sfx/choreo/hesk_call.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Hesk's layer (vowbound_sfx.py)"
+    },
+    "hesk_sink": {
+      "files": [
+        "res://assets/audio/sfx/choreo/hesk_sink.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Hesk's layer (vowbound_sfx.py)"
+    },
+    "ethren_rise": {
+      "files": [
+        "res://assets/audio/sfx/choreo/ethren_rise.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Ethren's layer (vowbound_sfx.py)"
+    },
+    "ethren_call": {
+      "files": [
+        "res://assets/audio/sfx/choreo/ethren_call.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Ethren's layer (vowbound_sfx.py)"
+    },
+    "ethren_sink": {
+      "files": [
+        "res://assets/audio/sfx/choreo/ethren_sink.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Ethren's layer (vowbound_sfx.py)"
+    },
+    "kesh_stand": {
+      "files": [
+        "res://assets/audio/sfx/choreo/kesh_stand.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Kesh's layer (vowbound_sfx.py)"
+    },
+    "kesh_call": {
+      "files": [
+        "res://assets/audio/sfx/choreo/kesh_call.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Kesh's layer (vowbound_sfx.py)"
+    },
+    "kesh_sink": {
+      "files": [
+        "res://assets/audio/sfx/choreo/kesh_sink.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Kesh's layer (vowbound_sfx.py)"
+    },
+    "struck_shell": {
+      "files": [
+        "res://assets/audio/sfx/choreo/struck_shell_1.ogg",
+        "res://assets/audio/sfx/choreo/struck_shell_2.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.05,
+      "voices": 3,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-864: a landed blow on shell (assets_src/sfx/act1_struck_sfx.py)"
+    },
+    "struck_soft": {
+      "files": [
+        "res://assets/audio/sfx/choreo/struck_soft_1.ogg",
+        "res://assets/audio/sfx/choreo/struck_soft_2.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.05,
+      "voices": 3,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-864: a landed blow on soft (assets_src/sfx/act1_struck_sfx.py)"
+    },
+    "struck_feather": {
+      "files": [
+        "res://assets/audio/sfx/choreo/struck_feather_1.ogg",
+        "res://assets/audio/sfx/choreo/struck_feather_2.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.05,
+      "voices": 3,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-864: a landed blow on feather (assets_src/sfx/act1_struck_sfx.py)"
+    },
+    "struck_wood": {
+      "files": [
+        "res://assets/audio/sfx/choreo/struck_wood_1.ogg",
+        "res://assets/audio/sfx/choreo/struck_wood_2.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.05,
+      "voices": 3,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-864: a landed blow on wood (assets_src/sfx/act1_struck_sfx.py)"
+    },
+    "struck_stone": {
+      "files": [
+        "res://assets/audio/sfx/choreo/struck_stone_1.ogg",
+        "res://assets/audio/sfx/choreo/struck_stone_2.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.05,
+      "voices": 3,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-864: a landed blow on stone (assets_src/sfx/act1_struck_sfx.py)"
+    },
+    "struck_metal": {
+      "files": [
+        "res://assets/audio/sfx/choreo/struck_metal_1.ogg",
+        "res://assets/audio/sfx/choreo/struck_metal_2.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.05,
+      "voices": 3,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-864: a landed blow on metal (assets_src/sfx/act1_struck_sfx.py)"
+    },
+    "struck_spawn": {
+      "files": [
+        "res://assets/audio/sfx/choreo/struck_spawn_1.ogg",
+        "res://assets/audio/sfx/choreo/struck_spawn_2.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.05,
+      "voices": 3,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-864: a landed blow on spawn (assets_src/sfx/act1_struck_sfx.py)"
+    },
+    "guard_shell": {
+      "files": [
+        "res://assets/audio/sfx/choreo/guard_shell.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.03,
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-864: a shell fighter bracing (assets_src/sfx/act1_struck_sfx.py)"
+    },
+    "guard_stone": {
+      "files": [
+        "res://assets/audio/sfx/choreo/guard_stone.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.03,
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-864: a stone fighter bracing (assets_src/sfx/act1_struck_sfx.py)"
+    },
+    "accent_launcher": {
+      "files": [
+        "res://assets/audio/sfx/choreo/accent_launcher_1.ogg",
+        "res://assets/audio/sfx/choreo/accent_launcher_2.ogg",
+        "res://assets/audio/sfx/choreo/accent_launcher_3.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.06,
+      "voices": 3,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-864: Liss's launcher, the bolt's thunk and the reel (assets_src/sfx/act1_struck_sfx.py)"
     }
   }
 }

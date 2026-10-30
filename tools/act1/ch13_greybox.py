@@ -26,7 +26,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from ch10_greybox import WALK_W, box, walk, water  # noqa: E402
+from ch10_greybox import WALK_W, box, follow_volumes, walk, water  # noqa: E402
 from ch11_greybox import floor, walls  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -42,6 +42,10 @@ GLOW_STILL = "#f0e8c8"  # the light under the basin that never moves (glimmer_bo
 SUN = {"pitch_deg": -25.0, "yaw_deg": 130.0, "energy": 1.6, "color": "#fff9f2"}
 ENV = {"background": "#c8c4ba", "ambient_color": "#8a96a4", "ambient_energy": 0.6}
 INTERIOR_ENV = {"background": "#2a2620", "ambient_color": "#8a8478", "ambient_energy": 0.5}
+# M4-A2P-103 (env-art-b, ch13_sanctum_dressing.py REQUESTED_SUN_ENERGY / REQUESTED_FILL): the Sanctum's only light is
+# the bound light under the basin, so no sun through the vault's seams and a dim cool fill
+SANCTUM_SUN = dict(SUN, energy=0.0)
+SANCTUM_ENV = {"background": "#2a2620", "ambient_color": "#8a96a4", "ambient_energy": 0.2}
 
 
 def causeway(cid: str, a: tuple[float, float], b: tuple[float, float]) -> list[dict]:
@@ -94,9 +98,35 @@ def ansedra() -> dict:
         "spawns": {"Moorings": [0.0, 0.0, 12.0, 0.0], "FromSanctum": [0.0, 0.0, -78.0, 180.0],
                    "FromArchive": [38.0, 0.0, -40.0, 90.0]},
         "marks": {"kerrid_moorings": [-6.0, 0.0, 14.0, 90.0], "sefir_door": [5.0, 0.0, -42.4, 180.0],
-                  "corran_house": [-44.0, 0.0, -40.8, 180.0]},
-        "actors": {},
-        "shots": {"A01": {"pos": [0.0, 2.5, 16.0], "look_at": [0.0, 6.0, -94.0], "fov": 40}},
+                  "corran_house": [-44.0, 0.0, -40.8, 180.0],
+                  # M4-A2P-013: Sefir at the head of his table (C2); Sefir across from Liss on the Archive causeway (C7)
+                  "house_sefir": [5.0, 0.0, -41.6, 180.0], "pact_sefir": [36.5, 0.0, -40.0, 270.0]},
+        # M4-A2P-013: Kerrid sits out the nights at the moorings among the barge-polers once the party are Sefir's
+        # guests (ADR 0022 (c)): the stage actor hides his follower, so he never walks the inner causeways
+        "actors": {"kerrid": {"at": [-6.0, 0.0, 14.0, 90.0], "color": "#8a7a5a", "radius": 0.38, "height": 1.95,
+                              "hidden": True}},
+        "states": [{"flag": "ch13_guest_of_sefir", "show": ["kerrid"]}],
+        "shots": {"A01": {"pos": [0.0, 2.5, 16.0], "look_at": [0.0, 6.0, -94.0], "fov": 40},
+                  # M4-A2P-013 (docs/kb/plan/act2/chapters/ch13.md §4): C1 the domes doubled in the still lagoon
+                  # (static; the mirror is the subject); C2 Sefir's table, Sefir at the head; C5 a causeway, the
+                  # wedding announced; C7 Sefir and Liss close, the dead-still lagoon behind; C8 Corran's doorway
+                  "A02": {"pos": [6.5, 1.6, 3.5], "look_at": [20.0, 3.0, -60.0], "fov": 45},
+                  "A03": {"pos": [1.2, 1.6, -36.8], "look_at": [5.0, 1.5, -41.6], "fov": 45},
+                  "A04": {"pos": [1.63, 2.15, -81.81], "look_at": [0.0, 1.5, -74.0], "fov": 50},
+                  "A05": {"pos": [36.5, 1.57, -36.0], "look_at": [36.5, 1.5, -40.0], "fov": 40},
+                  "A06": {"pos": [-41.18, 1.71, -36.21], "look_at": [-44.0, 1.5, -41.5], "fov": 45}},
+        # M4-A2P-013: a pan-follow per causeway (the domes block the hub orbit), the moorings and the central island
+        "camera_volumes": [
+            {"id": "Moorings", "mode": "pan_follow", "at": [0.0, 1.5, 10.0], "size": [16.0, 4.0, 16.0],
+             "pos": [0.0, 6.0, 22.0], "look_at": [0.0, 0.5, 8.0], "fov": 50, "priority": 1},
+            {"id": "Centre", "mode": "pan_follow", "at": [0.0, 1.5, -40.0], "size": [20.0, 4.0, 20.0],
+             "pos": [0.0, 7.0, -27.0], "look_at": [0.0, 0.5, -42.0], "fov": 50, "priority": 1},
+            {"id": "ArchiveIsle", "mode": "pan_follow", "at": [42.0, 1.5, -40.0], "size": [16.0, 4.0, 16.0],
+             "pos": [30.0, 5.0, -34.0], "look_at": [42.0, 0.5, -40.0], "fov": 50, "priority": 1}]
+        + follow_volumes("CausewayN", [(0.0, 2.0), (0.0, -30.0)])
+        + follow_volumes("CausewayW", [(-10.0, -40.0), (-34.0, -40.0)])
+        + follow_volumes("CausewayE", [(10.0, -40.0), (34.0, -40.0)])
+        + follow_volumes("CausewaySanctum", [(0.0, -50.0), (0.0, -82.0)]),
         "triggers": [{"id": "to_sanctum", "activation": "touch", "at": [0.0, 0.0, -84.0], "size": [4.0, 0, 1.5],
                       "payload": {"beat": "to_sanctum"}, "yaw": 0.0},
                      {"id": "to_archive", "activation": "touch", "at": [46.0, 0.0, -40.0], "size": [2.0, 0, 4.0],
@@ -124,16 +154,29 @@ def sanctum() -> dict:
         "four hundred years, lit from beneath by a light that never moves (Basin; a kneeling ledge rings it: nobody "
         "walks on it), Ethren's place at its head (ethren) and Corran's (corran). Kerrid never comes in. Back to the "
         "city at to_city. The story waits on the beat sheet (M4-C13-01).",
-        "sun": SUN,
-        "environment": INTERIOR_ENV,
+        "sun": SANCTUM_SUN,
+        "environment": SANCTUM_ENV,
         "block_color": COL_STONE,
         "blocks": blocks,
-        "spawns": {"Gate": [0.0, 0.0, -2.0, 0.0]},
-        "marks": {"ethren": [0.0, 0.0, -42.0, 0.0], "corran": [7.5, 0.0, -42.0, 300.0], "pilgrims": [0.0, 0.0, -19.4, 0.0]},
+        "spawns": {"Gate": [0.0, 0.0, -5.0, 0.0]},  # in from the door: the followers trail inside the vestibule
+        "marks": {"ethren": [0.0, 0.0, -42.0, 0.0], "corran": [7.5, 0.0, -42.0, 300.0], "pilgrims": [0.0, 0.0, -19.4, 0.0],
+                  "basin_ysolde": [7.5, 0.0, -39.6, 0.0]},  # M4-A2P-013: C4, Ysolde before Corran
         "actors": {},
-        "shots": {"S01": {"pos": [0.0, 1.6, -16.0], "look_at": [0.0, 0.5, -40.0], "fov": 45}},
+        "shots": {"S01": {"pos": [0.0, 1.6, -16.0], "look_at": [0.0, 0.5, -40.0], "fov": 45},
+                  # M4-A2P-013: C4 Ysolde before Corran at the basin's head, a Cantor beside her
+                  "S02": {"pos": [-3.0, 1.8, -35.0], "look_at": [7.5, 1.0, -41.0], "fov": 45}},
+        # M4-A2P-013: the gate and the basin's edge
+        "camera_volumes": [
+            {"id": "Gate", "mode": "pan_follow", "at": [0.0, 1.5, -5.0], "size": [12.0, 4.0, 12.0],
+             "pos": [0.0, 3.5, 0.0], "look_at": [0.0, 1.0, -10.0], "fov": 50, "priority": 1},
+            {"id": "BasinEdge", "mode": "pan_follow", "at": [0.0, 1.5, -30.0], "size": [24.0, 4.0, 36.0],
+             "pos": [0.0, 5.5, -13.0], "look_at": [0.0, 0.5, -32.0], "fov": 55, "priority": 1}],
         "triggers": [{"id": "to_city", "activation": "touch", "at": [0.0, 0.0, 0.5], "size": [4.0, 0, 1.0],
-                      "payload": {"beat": "to_city"}, "yaw": 0.0}],
+                      "payload": {"beat": "to_city"}, "yaw": 0.0},
+                     # M4-A2P-114: the basin's edge among the pilgrims, where Ethren is bound (B05-B06)
+                     {"id": "ledge", "activation": "touch", "at": [0.0, 0.0, -19.4], "size": [4.0, 0, 1.5],
+                      "requires_flag": "ch13_entered_sanctum", "blocked_by_flag": "ch13_ethren_bound",
+                      "payload": {"beat": "ledge"}, "yaw": 0.0}],
     }
 
 
@@ -163,9 +206,27 @@ def lamp_archive() -> dict:
         "spawns": {"Door": [0.0, 0.0, -2.0, 0.0]},
         "marks": {"ledgers": [-3.2, 0.0, -12.0, 270.0], "cantor_roll": [3.2, 0.0, -24.0, 90.0]},
         "actors": {},
-        "shots": {"R01": {"pos": [0.0, 2.2, -4.0], "look_at": [0.0, 1.0, -24.0], "fov": 50}},
+        "shots": {"R01": {"pos": [0.0, 2.2, -4.0], "look_at": [0.0, 1.0, -24.0], "fov": 50},
+                  # M4-A2P-013: C6b the kept/spent column (insert; then Liss's face); C6c the pages side by side
+                  "R02": {"pos": [-2.91, 2.02, -12.0], "look_at": [-1.5, 0.9, -12.0], "fov": 35},
+                  "R03": {"pos": [1.5, 3.45, -23.51], "look_at": [1.5, 0.9, -24.0], "fov": 40}},
+        # M4-A2P-013: the two reading bays between the stacks
+        "camera_volumes": [
+            {"id": "LedgerBay", "mode": "pan_follow", "at": [0.0, 1.5, -10.0], "size": [10.0, 4.0, 16.0],
+             # in the aisle inside the door, over the ledger table (the POI stills, 10-30: at z 1.5 it stood outside the
+             # south wall, in the door frame)
+             "pos": [2.0, 3.4, -3.0], "look_at": [-1.5, 0.8, -11.0], "fov": 50, "priority": 1},
+            {"id": "RollBay", "mode": "pan_follow", "at": [0.0, 1.5, -24.0], "size": [10.0, 4.0, 12.0],
+             "pos": [0.0, 3.5, -15.0], "look_at": [1.0, 0.8, -24.0], "fov": 50, "priority": 1}],
         "triggers": [{"id": "to_city", "activation": "touch", "at": [0.0, 0.0, 0.5], "size": [4.0, 0, 1.0],
-                      "payload": {"beat": "to_city"}, "yaw": 0.0}],
+                      "payload": {"beat": "to_city"}, "yaw": 0.0},
+                     # M4-A2P-114: the ledger table (B07, the first day) and the Cantor roll's table (B08, the second)
+                     {"id": "ledgers", "activation": "touch", "at": [-3.2, 0.0, -12.0], "size": [1.5, 0, 3.0],
+                      "requires_flag": "ch13_entered_archive", "blocked_by_flag": "ch13_read_ledgers",
+                      "payload": {"beat": "ledgers"}, "yaw": 0.0},
+                     {"id": "roll", "activation": "touch", "at": [3.2, 0.0, -24.0], "size": [1.5, 0, 3.0],
+                      "requires_flag": "ch13_read_ledgers", "blocked_by_flag": "ch13_read_cantor_roll",
+                      "payload": {"beat": "roll"}, "yaw": 0.0}],
     }
 
 

@@ -153,7 +153,20 @@ func _build_page() -> void:
 func _list_rows() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for nid in destinations:
-		out.append({"id": nid, "label": place_name(nid), "enabled": true})
+		# A dark Order shrine stays on the list, greyed, saying why (heresy.md section 1).
+		var dark := ShrineNetwork.is_dark(nid)
+		(
+			out
+			. append(
+				{
+					"id": nid,
+					"label": place_name(nid),
+					"right": tr("SHRINE_TRAVEL_DARK") if dark else "",
+					"right_role": &"text_dim",
+					"enabled": not dark,
+				}
+			)
+		)
 	out.append({"id": ROW_STAY, "label": tr("SHRINE_TRAVEL_STAY"), "enabled": true})
 	return out
 

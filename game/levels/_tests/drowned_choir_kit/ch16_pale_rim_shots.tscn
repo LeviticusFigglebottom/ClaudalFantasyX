@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/act1_zones/act1_zone_rig.gd" id="1_rig"]
+[ext_resource type="PackedScene" path="res://game/levels/ch16/pale_rim/pale_rim.tscn" id="2_zone"]
+
+[node name="Ch16PaleRimShots" type="Node3D"]
+script = ExtResource("1_rig")
+zone_scene = ExtResource("2_zone")
+views = {
+"Ship": [[-22.0, 1.8, 3.0], [120.0, 1.0, 0.0], 40.0],
+"Wade": [[60.0, 1.6, 6.0], [68.0, 0.8, 4.0], 50.0],
+"Cairns": [[40.0, 6.0, 25.0], [140.0, 0.0, 0.0], 45.0]
+}

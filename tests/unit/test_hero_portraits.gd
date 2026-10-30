@@ -41,7 +41,13 @@ const HEROES: Array[StringName] = [
 	&"netmender",
 	&"fisher",
 	&"vendor",
-	&"child"
+	&"child",
+	# Act II (M4-A2P-081): Warden Malcor Venn, who reads the Ch14 decree and fights on the lagoon.
+	&"venn",
+	# Act II townsfolk who speak (M4-A2P-081): the Lacquer Court's bride and groom, and Ansedra's clerk.
+	&"merel",
+	&"tobin",
+	&"clerk"
 ]
 ## The six party heroes (the pages below stand them up).
 const PARTY: Array[StringName] = [&"rhen", &"asha", &"toma", &"ysolde", &"liss", &"kerrid"]
@@ -56,6 +62,16 @@ func before_each() -> void:
 	state = GameStateData.new()
 	state.party_ids = PARTY.duplicate()
 	page = null
+
+
+func test_kerrid_has_the_guilty_face_for_his_reveal() -> void:
+	# docs/kb/plan/act2/ui/kerrid.md section 2: the reveal's rows are grief and guilty; a missing one falls to neutral.
+	for h: Dictionary in _json(MANIFEST).get("heroes", []):
+		if str(h["id"]) == "kerrid":
+			assert_true((h["emotions"] as Array).has("guilty"))
+			assert_true(FileAccess.file_exists(HeroPortraits.path_for(&"kerrid", &"guilty")))
+			return
+	assert_true(false, "Kerrid is in the manifest")
 
 
 func test_every_manifest_portrait_exists_with_a_provenance_row() -> void:

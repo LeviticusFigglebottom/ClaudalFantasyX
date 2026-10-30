@@ -1,0 +1,180 @@
+// Ch16 B03 "The ring of mouths" (C, 1.5 min), B04 "Kesh" (C, 2 min), B05 "What the Hush does" (C, 3 min, the
+// memory sequence) and B06 "She's in it." (C, 1 min). act2_ch16.md §2.
+// RULE 1: the Choir truth is ONLY what the Hush does: the singer becomes the storm's next heart, shown from
+// inside by the first Cantor; and the man who bound her. RULE 5: the present's light is HELD; the memory's
+// one rising thread (K05) is caught. RULE 7: no Dace on screen. ADR 0204 §7: Kesh is colossal only in the bind.
+// C01: the Choir at moonrise: ten colossal robed singers in the sea, heads tilted up, mouths open.
+// C04: the guardians stay at the channel's edge, Kerrid last behind them. C05: Kesh rises from the bowl, a
+// colossal woman of standing seawater, a Lamplighter's lamp-key at her belt. C06: the SEVENTH VERSE comes out
+// of the STONES, all ten mouths at once (`kesh_bound`); the sleeve reaches S7: the Hush complete. C07: Kesh
+// bends down to Asha; the world goes white.
+title: ch16_the_choir
+location: ch16/drowned_choir
+---
+@letterbox on
+@camera C01
+@music drowned_choir fade=3.0
+@wait 6.0
+@camera C02
+@mark asha channel_edge walk
+@vfx glimmer_held at=channel_motes count=24 rate=slow
+@wait 4.0
+@camera C03
+Asha [afraid]: This is it. #line:ch16_choir_001
+@wait 3.0
+@camera C04
+@mark asha dais_asha walk
+@wait 3.0
+@camera C05
+@anim asha raise_staff
+@vfx glimmer_bound at=kesh count=1
+@sfx kesh_rise
+@wait 5.0
+@camera C06
+@music kesh_bound fade=0.0
+@wait 8.0
+@vfx glimmer_bound at=asha_sleeve count=7
+@wait 2.0
+<<set $ch16_kesh_bound = true>>
+@camera C07
+@anim kesh bend_to asha
+@wait 2.0
+@fade out 1.5 white
+<<jump ch16_kesh_memory>>
+===
+// B05: the memory sequence, from inside, a thousand years ago (a new look: desaturated to white, soft edges,
+// underwater sound, NO UI). Kesh's voice only. K02: the six Lamplighters (bible §2: Kesh is one of the six):
+// Kesh in the middle, young, unafraid, and the other five in a ring; among them, at her shoulder, a tall man
+// with silver hair, young and mortal: nobody names him. K04: inside the storm: millions of held motes closing
+// round her, her own light becoming the thing that holds it together: SHE IS ITS HEART. K05: forty years in
+// seconds; a second Cantor sings; Kesh's light is pushed out and starts to LIFT. K06: and a hand closes on it:
+// Sefir, weeping, presses it into the dais's stones. K07: a thread of her light runs into his hands and his
+// grey face goes smooth and young. SHOWN, NEVER SAID (rule 4). K08: white.
+title: ch16_kesh_memory
+---
+@music kesh_memory fade=1.0
+@fade in 1.5 white
+@camera K01
+@wait 3.0
+@camera K02
+@wait 4.0
+@camera K03
+@wait 3.0
+@camera K04
+@vfx glimmer_held at=storm_heart count=64 rate=slow
+@wait 3.0
+Kesh [neutral]: It doesn't sleep. It holds on. To us. #line:ch16_memory_001 #tn:"Kesh, the first Cantor, speaking from inside the storm: the Undertow 'holds on' to its heart."
+@wait 3.0
+@camera K05
+@vfx glimmer_lift at=kesh_light count=6 motion=spiral_up rate=slow
+@wait 2.0
+@camera K06
+@music silence fade=0.0
+@anim young_sefir catch_light
+@wait 3.0
+Kesh [grief]: He couldn't let me go. #line:ch16_memory_002
+@camera K07
+@anim young_sefir face_smooths
+@wait 3.0
+@music kesh_memory fade=1.0
+@camera K08
+Kesh [grief]: Every one of them since. Every one. #line:ch16_memory_003 #tn:"Every Cantor since her has been made the storm's heart in turn."
+@wait 2.0
+@fade out 1.5 white
+<<set $ch16_learned_the_hush = true>>
+<<jump ch16_shes_in_it>>
+===
+// B06: back on the dais at moonrise; Asha on her knees; the others run across the channel, Toma first. She
+// learns her mother is the storm's heart RIGHT NOW. Rhen kneels in the water beside her and doesn't joke.
+// Kerrid looks south, out to sea, the way he did on the Corrow road: "Somebody's still below" means something
+// now that he didn't know.
+title: ch16_shes_in_it
+---
+@fade in 1.5 white
+@music silence fade=0.0
+@camera C08
+@anim asha kneel
+@mark toma dais_toma run
+@mark rhen dais_rhen run
+@mark ysolde dais_ysolde walk
+@mark liss dais_liss walk
+@mark pell dais_pell walk
+@mark kerrid dais_kerrid walk
+@wait 3.0
+@camera C09
+Asha [grief]: She's in it. My mother. She's holding it. Right now. #line:ch16_inside_001
+@wait 2.5
+Asha [afraid]: And it's me next. #line:ch16_inside_002
+@anim rhen kneel_beside asha
+@anim kerrid look_at sea_south
+@wait 4.0
+<<jump ch16_the_high_warden>>
+===
+// B07 "The High Warden" (C, 4 min). act2_ch16.md §2 B07. ADR 0016 (c): his temptation is to GO HOME; he never
+// asks to be sung in; "I will see to the storm myself" hides that he means to take the heart. C10: his white
+// barge comes with no wake; eight veiled guards (living: rule 4) stay at it. He crosses alone. His one long
+// speech is earned (voice guide), broken every 2-3 lines. `sefir_go_home`: the Order SINGS ORDER_HUM once here,
+// as his lullaby (ADR 0204 §10); it stops dead on "Then who does it take?". C13: he smiles and doesn't answer;
+// hold on the smile. C16: Kerrid's line is SAID, NEVER DRAWN: no hand near his weapon; he doesn't lead the
+// refusal (ADR 0022 (h)). "Captain." stays (ADR 0204 §14).
+title: ch16_the_high_warden
+---
+@camera C10
+@sfx barge_no_wake
+@wait 4.0
+@camera C11
+@mark sefir sefir walk
+@music sefir_go_home fade=3.0
+Sefir [sad]: You have seen it, then. I am sorry. There is no kind way to learn it, and I have tried to find one for a very long time. #line:ch16_sefir_001 #long
+Sefir [tender]: The storm is the dead, Lady Cantor. All of them who were never let go. It wants to come apart and drown everything. #line:ch16_sefir_002 #long
+Sefir [tender]: Somebody has to hold it together. A Cantor does. That is all the Hush has ever been. #line:ch16_sefir_003
+Toma [angry]: You told us it was mercy. #line:ch16_sefir_004
+Sefir [neutral]: It is. It is the most merciful thing anyone has ever built. Thirteen years of life for hundreds of thousands, for one. #line:ch16_sefir_005 #long
+@camera C12
+Sefir [tender]: Leave the Eighth Verse in the stones, Asha. Go home to Haluna. Live. #line:ch16_sefir_006
+Sefir [tender]: No Cantor will ever be named again. Your mother sleeps, and is never spent. I will see to the storm myself. #line:ch16_sefir_007 #long
+@wait 3.0
+@camera C13
+Ysolde [cold]: Then who does it take? #line:ch16_sefir_008
+@music silence fade=0.0
+@anim sefir smile
+@wait 4.0
+@camera C14
+Asha [determined]: No. #line:ch16_sefir_009
+@wait 2.0
+Asha [determined]: No, High Warden. I won't. #line:ch16_sefir_010
+<<if $ch10_asha_answered_child>>
+    Asha [determined]: A child at Reedhollow asked me why we make our dead swim. I'm going to find out how to stop. #line:ch16_sefir_011
+<<endif>>
+@camera C15
+<<if $ch13_read_cantor_roll>>
+    Ysolde [cold]: Forty-seven voices. Seven houses. Do the sum, High Warden. I already have. #line:ch16_sefir_012
+    Ysolde [angry]: Kept, Sanctum. To be spent at the next Calm. In your hand. #line:ch16_sefir_013
+<<endif>>
+<<if $ch12_ysolde_lied>>
+    Ysolde [cold]: I lied once this year, for your sake. I am done. #line:ch16_sefir_014
+<<endif>>
+// C12 again: his answer to Ysolde is on his face (act2_ch16_direction.md).
+@camera C12
+Sefir [tender]: You loved him. So did I, in my way. He is kept. #line:ch16_sefir_015
+@camera C16
+@anim kerrid look_at sefir
+@wait 2.0
+Kerrid [cold]: I carried her up so you could do this. #line:ch16_sefir_016 #tn:"'Her': Asha's mother, whom he got up the Fisher Stair. Said quietly, with no threat of violence."
+@anim sefir look_at kerrid
+@wait 3.0
+Sefir [neutral]: Captain. #line:ch16_sefir_017 #tn:"Sefir acknowledges what Kerrid is, using a rank Kerrid never held in the Order (he was a fishers' watch captain). Kerrid does not answer."
+@wait 2.0
+@camera C17
+@anim sefir look_at asha
+Sefir [sad]: Then I am sorry for what comes next. I would have given you a long life. #line:ch16_sefir_018
+@anim sefir raise_hand
+@mark sefir sefir_barge walk
+@wait 2.0
+@camera C18
+@anim asha stand_up
+@wait 1.5
+<<set $ch16_refused_sefir = true>>
+@letterbox off
+<<event start_battle ch16_abiding_guard>>
+===

@@ -4296,7 +4296,7 @@
    "_audit29": "the chapel court's west sightline"
   },
   {
-   "plant": "palm_coconut_b",
+   "plant": "frangipani_b",
    "at": [
     -168.6,
     8.53
@@ -4326,7 +4326,7 @@
    "_audit29": "the chapel court's west sightline"
   },
   {
-   "plant": "palm_coconut_c",
+   "plant": "frangipani_b",
    "at": [
     -162.23,
     26.29
@@ -4336,7 +4336,7 @@
    "_audit29": "the chapel court's west sightline"
   },
   {
-   "plant": "palm_coconut_c",
+   "plant": "frangipani_a",
    "at": [
     -156.26,
     47.55
@@ -4346,7 +4346,7 @@
    "_audit29": "the chapel court's west sightline"
   },
   {
-   "plant": "palm_coconut_b",
+   "plant": "frangipani_a",
    "at": [
     -151.22,
     39.14
@@ -4366,7 +4366,7 @@
    "_audit29": "the chapel court's west sightline"
   },
   {
-   "plant": "palm_coconut_c",
+   "plant": "frangipani_a",
    "at": [
     -185.65,
     5.17
@@ -5806,8 +5806,8 @@
     {
      "piece": "feast_mat",
      "at": [
-      7.3,
-      -108.5
+      5.3,
+      -108.6
      ],
      "yaw_deg": 15
     },

@@ -37,11 +37,16 @@ var _data: Dictionary = {}
 var _scene_loads: Dictionary = {}
 ## The paths the zone being entered wants (they go to `scene`, not `resident`).
 var _scene_wanted: Dictionary = {}
+## ADR 0111 amendment 4: the zone's runtime materials and scenes as their loads finish, for ShaderPrewarm to stage
+## under the cover (take_prewarm). A zone's dressing builds at runtime, so the prewarm's own scene scan never sees it.
+var _prewarm_queue: Array[Resource] = []
 ## The paths requested from the loader and not in yet (at most max_in_flight).
 var _in_flight: PackedStringArray = []
 var _done_count := 0
 ## The resident paths warm() asked for (a path both lists name stays resident).
 var _resident_wanted: Dictionary = {}
+## The scene load_scene() last loaded for (M3-HER-1167: the title starts the first zone's loads early).
+var _scene_path := ""
 
 
 ## Adds a ResidentLoads under `router` and connects it to the router's change_started. Idempotent.
@@ -116,14 +121,19 @@ func warm() -> void:
 
 
 ## Starts loading the resources `scene_path` holds once in the tree (scene_loads.json), on worker threads, and
-## drops the last zone's. No hold.
+## drops the last zone's. No hold. The title calls it early for the zone its highlighted choice enters (M3-HER-1167).
 func load_scene(scene_path: String) -> void:
 	_ensure_data()
 	var wanted := {}
 	var request := BattleRequest.pending()
-	if request != null and scene_path == BattleRequest.scene_path():
+	var to_battle := request != null and scene_path == BattleRequest.scene_path()
+	if to_battle:
 		for p in battle_paths(request.encounter):
 			wanted[p] = true
+		# The human playtest (2026-10-30): after a won fight the field took seconds of black to come back, because
+		# the zone's loads were let go here and read again from disk on the return. A field battle keeps them.
+		for path: String in scene.keys():
+			wanted[path] = true
 	for p: Variant in _scene_loads.get(scene_path, []):
 		var path := str(p)
 		if ResourceLoader.exists(path):
@@ -132,11 +142,41 @@ func load_scene(scene_path: String) -> void:
 		if not wanted.has(path):
 			scene.erase(path)
 	_scene_wanted = wanted
+	# The same zone asked again (the title started its loads; now its change starts): what is in and still waits
+	# for the prewarm stays queued, so its pipelines still compile under the cover.
+	if scene_path != _scene_path:
+		_prewarm_queue.clear()
+	_scene_path = scene_path
 	for path: String in wanted:
 		if resident.has(path) or scene.has(path) or pending.has(path):
 			continue
 		pending.append(path)
 	_pump()
+
+
+## The scene a won (or escaped) field battle returns to: its own return_scene, else return_location's scene; "" when
+## none resolves. `registry` defaults to LocationRegistry.load_default().
+static func return_scene_of(request: BattleRequest, registry: LocationRegistry = null) -> String:
+	if request == null:
+		return ""
+	if request.return_scene != "":
+		return request.return_scene
+	if request.return_location == &"":
+		return ""
+	var reg := registry if registry != null else LocationRegistry.load_default()
+	return str(reg.resolve(request.return_location).get(LocationRegistry.KEY_SCENE, ""))
+
+
+## The Lead's battle-return work (2026-10-30): while the victory panel stays up (a second or more), the scene the
+## return goes to starts loading, so a scripted fight that ends somewhere new (the Drownbell to Haluna) finds most of
+## it in. Nothing when the return is the field kept resident through the fight (SceneRouter.resident_path()), or
+## when it resolves to nothing. Returns the scene asked for ("" when none).
+func prepare_return(request: BattleRequest, resident_path: String = "", registry: LocationRegistry = null) -> String:
+	var to := return_scene_of(request, registry)
+	if to == "" or to == resident_path:
+		return ""
+	load_scene(to)
+	return to
 
 
 ## A field battle's runtime loads for `encounter`: its arena scene (encounters.json `arena`) and each enemy's actor
@@ -170,6 +210,19 @@ func swap_wait_progress() -> int:
 	return total
 
 
+## Up to `n` of the zone's loaded materials and scenes not yet handed to the prewarm (ADR 0111 amendment 4).
+func take_prewarm(n: int) -> Array[Resource]:
+	var out: Array[Resource] = []
+	while not _prewarm_queue.is_empty() and out.size() < n:
+		out.append(_prewarm_queue.pop_front())
+	return out
+
+
+## True while a zone load is still coming in or a loaded one waits for the prewarm.
+func prewarm_pending() -> bool:
+	return not _prewarm_queue.is_empty() or not pending.is_empty()
+
+
 ## True when every resident path is in.
 func is_ready() -> bool:
 	return pending.is_empty()
@@ -192,6 +245,8 @@ func poll() -> void:
 			var res := ResourceLoader.load_threaded_get(path)
 			if _scene_wanted.has(path) and not _resident_wanted.has(path):
 				scene[path] = res
+				if res is Material or res is PackedScene:
+					_prewarm_queue.append(res)
 			else:
 				resident[path] = res
 			_done_with(path)

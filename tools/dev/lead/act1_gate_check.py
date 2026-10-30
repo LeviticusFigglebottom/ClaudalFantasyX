@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Lead tool: ADR 0203's Act I completion gate, criteria 1 and 2, on the checkout it runs in. Prints PASS or FAIL per
-criterion with the evidence; exit 0 only when both pass. Run it from the batch's worktree root after an import:
+"""Lead tool: the Act I completion criteria (ADR 0205 §3, which replaces ADR 0203's list), the two a checkout can show,
+on the checkout it runs in. Prints PASS or FAIL per criterion with the evidence; exit 0 only when both pass. Run it
+from the batch's worktree root after an import:
 
   python3 tools/dev/lead/act1_gate_check.py               # both criteria (Godot from PATH or the fetch cache)
   python3 tools/dev/lead/act1_gate_check.py --only 1      # the audit alone
@@ -13,9 +14,9 @@ criterion with the evidence; exit 0 only when both pass. Run it from the batch's
    - qa_encounters: every Act I encounter entered, won, and left back to its zone;
    - fp_: title → New Game → Prologue → the slice → Ch3;
    - save_: save and load;
-   - the continuous path, title → Ch9 → title, as one run (M3-CIN-1233's integration test, found by name:
-     CONTINUOUS_GLOB). Until that test exists, criterion 2 FAILs and says so: the chapters played one by one can't
-     show that the hand-offs between them hold.
+   - the continuous path, title → Ch9 → title, as one run (M3-CIN-1233's integration test, CONTINUOUS_TESTS:
+     tests/integration/test_act1_route.gd, plus any test_*continuous*.gd). Without one, criterion 2 FAILs and says
+     so: the chapters played one by one can't show that the hand-offs between them hold.
 Each suite runs alone (one Godot at a time), with its own XDG_DATA_HOME, and its log is kept under --logs.
 """
 from __future__ import annotations
@@ -39,6 +40,8 @@ SUITES = [
     ("save_", "save and load"),
 ]
 CONTINUOUS_GLOB = "tests/integration/test_*continuous*.gd"
+# M3-CIN-1233's test of the one path (New Game → Ch1 → the slice → Ch4 → Ch9's end card → the title).
+CONTINUOUS_TESTS = ["tests/integration/test_act1_route.gd"]
 SUITE_TIMEOUT_S = 3600
 TESTS_RE = re.compile(r"^Tests: (\d+) run, (\d+) failed", re.M)
 FAILURE_RE = re.compile(r"^(FAILURE .*)$", re.M)
@@ -83,14 +86,14 @@ def criterion_playthrough(godot: str | None, logs: Path) -> tuple[bool, list[str
     evidence: list[str] = []
     passed = True
     suites = list(SUITES)
-    continuous = sorted(ROOT.glob(CONTINUOUS_GLOB))
+    continuous = sorted({ROOT / t for t in CONTINUOUS_TESTS if (ROOT / t).exists()} | set(ROOT.glob(CONTINUOUS_GLOB)))
     for p in continuous:
         suites.append((p.stem.removeprefix("test_"), "the continuous path (%s)" % p.name))
     if not continuous:
         passed = False
         evidence.append(
-            "MISSING the continuous title → Ch9 → title test (%s; M3-CIN-1233): the hand-offs between chapters are "
-            "unchecked" % CONTINUOUS_GLOB
+            "MISSING the continuous title → Ch9 → title test (%s or %s; M3-CIN-1233): the hand-offs between chapters "
+            "are unchecked" % (", ".join(CONTINUOUS_TESTS), CONTINUOUS_GLOB)
         )
     logs.mkdir(parents=True, exist_ok=True)
     for name, what in suites:
@@ -134,8 +137,12 @@ def main(argv: list[str] | None = None) -> int:
         print("%s  2. Playthrough: Act I played headless, zero SCRIPT ERRORs" % ("PASS" if ok else "FAIL"))
         print("\n".join("      " + ln for ln in lines))
         results.append(ok)
-    print("ADR 0203 criteria %s: %s" % ("1-2" if args.only is None else args.only, "PASS" if all(results) else "FAIL"))
-    print("(3-5 are the batch gate, the PC's GPU QA and the hitch budget: the Lead's and the PC's records.)")
+    which = "1-2" if args.only is None else args.only
+    print("ADR 0205 §3 criteria %s: %s" % (which, "PASS" if all(results) else "FAIL"))
+    print(
+        "(The other three are records, not checks: the last fast gate green; the PC's newest pass with no open Act I "
+        "row a track can fix; hitches <= 2 s hidden and <= 50 ms visible per scene change.)"
+    )
     return 0 if all(results) else 1
 
 

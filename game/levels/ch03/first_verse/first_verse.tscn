@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3]
+[gd_scene load_steps=43 format=3]
 
 [ext_resource type="Script" path="res://game/levels/ch03/first_verse/first_verse_scene.gd" id="1_root"]
 [ext_resource type="Script" path="res://game/world/field_camera_director.gd" id="2_dir"]
@@ -106,9 +106,16 @@ height = 0.18
 [sub_resource type="Resource" id="ShotS07"]
 script = ExtResource("5_shot")
 id = &"S07"
-position = Vector3(-16.0, 1.2, 0.0)
-look_at = Vector3(0.0, 1.05, 0.0)
-fov_deg = 46.4
+position = Vector3(-18.4, 1.75, -0.35)
+look_at = Vector3(-8.0, 1.15, 0.0)
+fov_deg = 42.0
+
+[sub_resource type="Resource" id="ShotS07Reverse"]
+script = ExtResource("5_shot")
+id = &"S07_reverse"
+position = Vector3(-10.6, 1.6, -1.6)
+look_at = Vector3(-14.4, 1.3, 0.05)
+fov_deg = 36.0
 
 [sub_resource type="Resource" id="ShotS08"]
 script = ExtResource("5_shot")
@@ -137,6 +144,13 @@ id = &"S10"
 position = Vector3(-14.03, 0.83, -0.88)
 look_at = Vector3(-16.49, 0.68, -0.75)
 fov_deg = 20.9
+
+[sub_resource type="Resource" id="ShotC08Toma"]
+script = ExtResource("5_shot")
+id = &"C08_toma"
+position = Vector3(-22.6, -0.4, -12.5)
+look_at = Vector3(-21.0, -0.25, -10.0)
+fov_deg = 34.0
 
 [sub_resource type="Resource" id="ShotC08"]
 script = ExtResource("5_shot")
@@ -307,6 +321,10 @@ clip_marks = {
 script = ExtResource("4_shotnode")
 shot = SubResource("ShotS07")
 
+[node name="S07_reverse" type="Node" parent="CutsceneStage/Shots"]
+script = ExtResource("4_shotnode")
+shot = SubResource("ShotS07Reverse")
+
 [node name="S08" type="Node" parent="CutsceneStage/Shots"]
 script = ExtResource("4_shotnode")
 shot = SubResource("ShotS08")
@@ -322,6 +340,10 @@ shot = SubResource("ShotS09")
 [node name="S10" type="Node" parent="CutsceneStage/Shots"]
 script = ExtResource("4_shotnode")
 shot = SubResource("ShotS10")
+
+[node name="C08_toma" type="Node" parent="CutsceneStage/Shots"]
+script = ExtResource("4_shotnode")
+shot = SubResource("ShotC08Toma")
 
 [node name="C08" type="Node" parent="CutsceneStage/Shots"]
 script = ExtResource("4_shotnode")

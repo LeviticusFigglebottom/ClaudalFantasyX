@@ -1,0 +1,7 @@
+// Ch14 B01 bark: Toma at the colonnade sees a Stillguard officer and stops. He doesn't go over.
+title: ch14_bark_toma_commander
+location: ch13/ansedra_lacquer_court
+---
+@anim toma look_at brannoc_hale
+Toma [worried]: That is my old commander. #line:ch14_bark_commander_001
+===

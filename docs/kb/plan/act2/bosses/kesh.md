@@ -108,10 +108,40 @@ timeline. That keeps it to six clips, not thirty-six. In Act III's fight the six
   and rendering (the memory sequence); characters (living Kesh and young Sefir); battle-presentation (summon, Act III);
   audio (`kesh_bound`).
 
-## Open questions
+## Open questions (answered: ADR 0204, 2026-10-30; the drafts stand unless marked)
 
 1. Battle scale: 4.2 m (this draft) or larger with a summon-shot exception? Larger means a new shot for her alone.
 2. Is the element order the acquisition order (this draft), or something the bind's memory fixes?
 3. Echo check: a boss or ally that cycles its element is a known idea. Ours never hides the change and never shifts
    when struck. Each shift is her own turn and shows on the timeline a turn ahead. Her finisher is named for the verses,
    not for any series' ultimate.
+
+## Built (M4-A2P-057, 2026-10-30)
+
+The model, rig and clips are built: the art sheet is `docs/kb/art/creatures/vowbound/kesh.md` (its "As built"
+section has the numbers). For combat, the clip map. Paste it into `kesh` in creatures.json once these ids are in
+skills.json; validate_creatures rejects unknown skill ids before that:
+
+```json
+"clip_by_skill": {
+  "kesh_shift": "shift",
+  "voice_water": "voice_water", "voice_lightning": "voice_lightning", "voice_fire": "voice_fire",
+  "voice_ice": "voice_ice", "voice_holy": "voice_holy", "voice_glimmer": "voice_glimmer",
+  "the_seven": "special"
+}
+```
+
+Each element also has its own shift beat, `shift_<element>` (`shift_water` ... `shift_glimmer`), for presentation to
+play for the element the timeline shows next. The contacts are already in creatures.json:
+
+| Clip | Contact (s) |
+|---|---|
+| `voice_water` | 0.9 |
+| `voice_lightning` | 0.7 |
+| `voice_fire` | 0.8 (then 1.05 and 1.3) |
+| `voice_ice` | 0.9 |
+| `voice_holy` | 0.8 |
+| `voice_glimmer` | 0.9 |
+| `special` | 1.8 |
+| `attack` | 0.55 |
+| `cast` | 0.8 |

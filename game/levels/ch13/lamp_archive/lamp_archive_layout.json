@@ -330,8 +330,88 @@
     -24.0
    ],
    "fov": 50
+  },
+  "R02": {
+   "pos": [
+    -2.91,
+    2.02,
+    -12.0
+   ],
+   "look_at": [
+    -1.5,
+    0.9,
+    -12.0
+   ],
+   "fov": 35
+  },
+  "R03": {
+   "pos": [
+    1.5,
+    3.45,
+    -23.51
+   ],
+   "look_at": [
+    1.5,
+    0.9,
+    -24.0
+   ],
+   "fov": 40
   }
  },
+ "camera_volumes": [
+  {
+   "id": "LedgerBay",
+   "mode": "pan_follow",
+   "at": [
+    0.0,
+    1.5,
+    -10.0
+   ],
+   "size": [
+    10.0,
+    4.0,
+    16.0
+   ],
+   "pos": [
+    2.0,
+    3.4,
+    -3.0
+   ],
+   "look_at": [
+    -1.5,
+    0.8,
+    -11.0
+   ],
+   "fov": 50,
+   "priority": 1
+  },
+  {
+   "id": "RollBay",
+   "mode": "pan_follow",
+   "at": [
+    0.0,
+    1.5,
+    -24.0
+   ],
+   "size": [
+    10.0,
+    4.0,
+    12.0
+   ],
+   "pos": [
+    0.0,
+    3.5,
+    -15.0
+   ],
+   "look_at": [
+    1.0,
+    0.8,
+    -24.0
+   ],
+   "fov": 50,
+   "priority": 1
+  }
+ ],
  "triggers": [
   {
    "id": "to_city",
@@ -348,6 +428,46 @@
    ],
    "payload": {
     "beat": "to_city"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "ledgers",
+   "activation": "touch",
+   "at": [
+    -3.2,
+    0.0,
+    -12.0
+   ],
+   "size": [
+    1.5,
+    0,
+    3.0
+   ],
+   "requires_flag": "ch13_entered_archive",
+   "blocked_by_flag": "ch13_read_ledgers",
+   "payload": {
+    "beat": "ledgers"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "roll",
+   "activation": "touch",
+   "at": [
+    3.2,
+    0.0,
+    -24.0
+   ],
+   "size": [
+    1.5,
+    0,
+    3.0
+   ],
+   "requires_flag": "ch13_read_ledgers",
+   "blocked_by_flag": "ch13_read_cantor_roll",
+   "payload": {
+    "beat": "roll"
    },
    "yaw": 0.0
   }

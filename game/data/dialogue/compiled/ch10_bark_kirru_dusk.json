@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch10_bark_kirru_dusk",
+ "source": "game/data/dialogue/ch10/ch10_bark_kirru_dusk.dlg",
+ "start": "ch10_bark_kirru_dusk",
+ "nodes": {
+  "ch10_bark_kirru_dusk": {
+   "headers": {"location": "ch10/reedhollow"},
+   "ops": [
+    {"op": "line", "id": "ch10_kirru_dusk_001", "key": "DLG_CH10_KIRRU_DUSK_001", "speaker": "kirru", "emotion": "neutral", "voice": "", "src": 5}
+   ]
+  }
+ }
+}

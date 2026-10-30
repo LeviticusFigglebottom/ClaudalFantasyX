@@ -9,6 +9,8 @@ const ASHCROWN := "res://game/levels/ch05/ashcrown/ashcrown.tscn"
 const BRINE_SHOALS := "res://game/levels/ch06/brine_shoals/brine_shoals.tscn"
 const CORROW := "res://game/levels/ch08/corrow/corrow.tscn"
 const TEST_DATA := "user://crowd_layer_test.json"
+const KIRRU := "res://assets_src/crowd/kirru/kirru_bodies.json"
+const REEDHOLLOW := "res://game/data/world/npc/zones/ch10_reedhollow.json"
 const DT := 1.0 / 60.0
 const BASE_CLIPS: Array[StringName] = [&"idle", &"talk", &"walk"]
 ## M3-CRE-662: the shared clip libraries. Standing clips sampled at these times keep each body's toes on its own floor.
@@ -213,6 +215,62 @@ func test_every_crowd_body_loads_with_its_clips() -> void:
 	_done()
 
 
+## The crowd behaviour pass (the Lead, 2026-10-30): each villager idles at its own rate (npc.json `idle_playback`,
+## drawn from its id), so two of one body are out of pace as well as out of phase; a row's `idle_playback` narrows it.
+func test_villagers_idle_at_their_own_pace() -> void:
+	var range: Array = VillagerLayer.load_data("res://game/data/world/npc/npc.json")["defaults"]["idle_playback"]
+	var rates: Array[float] = []
+	for id: String in ["oruvel_cook", "pemakar_folder", "tamsule_vendor", "corrow_townsfolk_a"]:
+		var npc := FieldNpc.new()
+		npc.name = id
+		npc.npc_id = StringName(id)
+		npc.auto_process = false
+		npc.actor_scene = load(VillagerLayer.CROWD_ACTOR_PATH % ["crowd_woman_medium", "crowd_woman_medium"])
+		_holder().add_child(npc)
+		assert_between(npc.idle_rate, float(range[0]), float(range[1]), "%s: its pace in range" % id)
+		assert_true(is_equal_approx(npc.anim.speed_scale, npc.idle_rate), "%s: its idle plays at its pace" % id)
+		rates.append(npc.idle_rate)
+	assert_true(rates.max() - rates.min() > 0.02, "four villagers, four paces")
+	var still := FieldNpc.new()
+	still.npc_id = &"clutch_0"
+	still.auto_process = false
+	still.tuning_over = {"idle_playback": [0.92, 1.02]}
+	still.actor_scene = load(VillagerLayer.CROWD_ACTOR_PATH % ["kirru_man", "kirru_man"])
+	_holder().add_child(still)
+	assert_between(still.idle_rate, 0.92, 1.02, "a Kirru row's narrower pace")
+	_done()
+
+
+## The Kirru crowd bodies (assets_src/crowd/kirru; the Lead, 2026-10-30): each loads with the kirru library's clips
+## (Pell's idle, talk and walk), its hips track fitted to its own height, and Reedhollow's rows resolve to them.
+func test_every_kirru_body_loads_with_pells_clips() -> void:
+	var bodies := VillagerLayer.load_data(KIRRU).get("bodies", {}) as Dictionary
+	assert_eq(bodies.size(), 4, "four Kirru builds")
+	var scales: Array[float] = []
+	for body: String in bodies:
+		var scene := load(VillagerLayer.CROWD_ACTOR_PATH % [body, body]) as PackedScene
+		assert_true(scene != null, "%s: actor scene loads" % body)
+		if scene == null:
+			continue
+		var actor := scene.instantiate() as Node3D
+		_holder().add_child(actor)
+		var anim := HeroMotion.player_of(actor)
+		assert_true(anim != null, "%s: an AnimationPlayer from the import rule" % body)
+		if anim == null:
+			continue
+		for clip: StringName in BASE_CLIPS:
+			assert_true(anim.has_animation(clip), "%s: clip %s" % [body, clip])
+		var skel := actor.find_children("*", "Skeleton3D", true, false)
+		assert_false(skel.is_empty(), "%s: a skeleton" % body)
+		if not skel.is_empty():
+			scales.append((skel[0] as Skeleton3D).motion_scale)
+	assert_true(scales.min() < scales.max(), "the youngster's hips track is scaled below the adults'")
+	var rows := VillagerLayer.load_data(REEDHOLLOW).get("villagers", []) as Array
+	for row: Dictionary in rows:
+		assert_true(bodies.has(str(row["body"])), "%s wears a Kirru body" % row["npc_id"])
+	_done()
+
+
 ## M3-CRE-662: each body wears its group's one library (the same resource for every member), its armature carries
 ## the library's root name, its hips track is scaled to its own height, and its standing clips keep its toes where
 ## its own rest pose has them (a child on the adult library's hips would float or sink by tens of cm).
@@ -249,8 +307,8 @@ func test_every_crowd_body_shares_its_groups_clips_at_its_own_height() -> void:
 					var what := "%s: %s at %.1f s, %s off the floor" % [body, clip, t, toe]
 					assert_between(dy, -FLOOR_TOLERANCE_M, FLOOR_TOLERANCE_M, what)
 	var distinct := {}
-	for lib_name: Variant in libraries.values():
-		distinct[lib_name] = true
+	for body: String in data["bodies"] as Dictionary:  # the villager bodies' groups (the Kirru's library: its own test)
+		distinct[libraries.get(body, "")] = true
 	assert_eq(first_of.size(), distinct.size(), "every group's library in use")
 	_done()
 
@@ -290,6 +348,74 @@ func test_a_crowd_person_replaces_the_zone_cast_villager() -> void:
 	_done()
 
 
+## M2-CHR-100: a villager the zone placed first in another's model (HalunaVillagers' shop bodies) gives way to the
+## row's crowd person, so one body shows; a row with no crowd person adopts what the zone placed, as before.
+func test_a_borrowed_model_placed_first_gives_way_to_the_rows_own() -> void:
+	var zone := _greybox_zone(["shop", "keep"])
+	var placed: Array[FieldNpc] = []
+	for id: String in ["shop", "keep"]:
+		var npc := FieldNpc.new()
+		npc.name = &"Villager"
+		npc.npc_id = StringName(id)
+		var path := "res://assets/characters/villagers/netmender/netmender_actor.tscn"
+		var actor := (load(path) as PackedScene).instantiate() as Node3D
+		actor.name = String(npc.actor_path)
+		npc.add_child(actor)
+		zone.get_node("CutsceneStage/Actors/" + id).add_child(npc)
+		placed.append(npc)
+	var person := _people()["oruvel_cook"] as Dictionary
+	var rows := [
+		{"npc_id": "shop", "crowd": "oruvel_cook", "attach": "child", "stand_in": "CutsceneStage/Actors/shop"},
+		{"npc_id": "keep", "actor": "netmender", "attach": "child", "stand_in": "CutsceneStage/Actors/keep"},
+	]
+	var layer := _layer(zone, rows)
+	layer.build()
+	var shop := zone.get_node("CutsceneStage/Actors/shop")
+	assert_false(is_instance_valid(placed[0]), "the borrowed model is gone")
+	assert_eq(shop.find_children("*", "FieldNpc", true, false).size(), 1, "one villager in the shop body")
+	var body := str(person["body"])
+	var shop_npc := layer.villager(&"shop")
+	assert_true(shop_npc != null, "the shop row's villager")
+	if shop_npc != null:
+		assert_eq(shop_npc.actor_scene.resource_path, VillagerLayer.CROWD_ACTOR_PATH % [body, body], "its own body")
+	assert_true(
+		is_instance_valid(placed[1]) and layer.villager(&"keep") == placed[1], "no crowd person: adopted, not rebuilt"
+	)
+	_done()
+
+
+## An Act II town's greybox names no actors: a row's `at` makes its stand-in at CrowdSpots/<name> and the person
+## stands there (the Lead, 2026-10-30: Hollowmere's townsfolk).
+func test_an_at_row_makes_its_own_spot() -> void:
+	var zone := _holder()
+	var rows := [
+		{
+			"npc_id": "netmender",
+			"crowd": "hollowmere_netmender",
+			"attach": "child",
+			"stand_in": "CrowdSpots/hollowmere_netmender",
+			"at": [4.0, 0.5, -2.0, 90.0],
+		},
+		{
+			"npc_id": "stray",
+			"crowd": "hollowmere_fisher",
+			"attach": "child",
+			"stand_in": "Elsewhere/x",
+			"at": [0, 0, 0]
+		},
+	]
+	var layer := _layer(zone, rows)
+	layer.build()
+	var spot := zone.get_node_or_null(^"CrowdSpots/hollowmere_netmender") as Node3D
+	assert_true(spot != null, "the spot is made")
+	if spot != null:
+		assert_true(spot.position.is_equal_approx(Vector3(4.0, 0.5, -2.0)), "at its `at`")
+		assert_true(is_equal_approx(spot.rotation.y, deg_to_rad(90.0)), "facing its yaw")
+		assert_eq(spot.find_children("*", "FieldNpc", true, false).size(), 1, "the person stands in it")
+	assert_true(layer.villager(&"stray") == null, "a spot outside CrowdSpots is refused")
+	_done()
+
+
 ## M3-HER-1142: a `body` row wears a crowd body with no crowd person, and `silhouette` draws it as one glowing shape
 ## that casts no shadow; its `tuning` keeps it from glancing at the party.
 func test_a_silhouette_row_wears_a_bare_crowd_body_as_one_glowing_shape() -> void:
@@ -317,13 +443,60 @@ func test_a_silhouette_row_wears_a_bare_crowd_body_as_one_glowing_shape() -> voi
 	assert_false((zone.get_node(^"CutsceneStage/Actors/figure/StandIn") as Node3D).visible, "the capsule is hidden")
 	var meshes := npc.actor.find_children("*", "MeshInstance3D", true, false)
 	assert_true(meshes.size() > 0, "the body has meshes")
-	var want := NpcSilhouette.material_for(Color.html("#5fd6e0"))
+	var glow := Color.html("#5fd6e0")
+	var detailed := 0
 	for node: Node in meshes:
 		var mi := node as MeshInstance3D
-		assert_eq(mi.material_override, want, "%s wears the silhouette" % mi.name)
 		assert_eq(mi.cast_shadow, GeometryInstance3D.SHADOW_CASTING_SETTING_OFF, "%s casts no shadow" % mi.name)
+		for i in mi.mesh.get_surface_count():
+			var mat := mi.get_surface_override_material(i) as ShaderMaterial
+			assert_true(mat != null and mat.shader == NpcSilhouette.SHADER, "%s/%d wears the silhouette" % [mi.name, i])
+			if mat == null:
+				continue
+			assert_true((mat.get_shader_parameter(&"glow") as Color).is_equal_approx(glow), "in its colour")
+			if mat.get_shader_parameter(&"tex_albedo") is Texture2D:
+				detailed += 1
+	assert_true(detailed > 0, "its surfaces keep their own maps under the glow (cloth, seams: the PC's pass 3)")
 	assert_eq(float((npc.tuning["glance"] as Dictionary)["radius_m"]), 0.0, "the row's tuning is merged")
 	_done()
+
+
+## The PC's pass 3: freeing the storm figure logged "material is null" (a cached material outlived it). Its silhouette
+## materials now belong to its meshes alone: once the figure is freed, nothing holds them.
+func test_a_freed_silhouette_leaves_no_material_behind() -> void:
+	var zone := _greybox_zone(["figure"])
+	var layer := _layer(
+		zone,
+		[
+			{
+				"npc_id": "storm_figure_free",
+				"body": "crowd_man_lean_a",
+				"silhouette": "#5fd6e0",
+				"stand_in": "CutsceneStage/Actors/figure",
+				"attach": "child"
+			}
+		]
+	)
+	layer.build()
+	var refs := _override_refs(layer.villager(&"storm_figure_free").actor)
+	assert_true(refs.size() > 0, "the figure wore silhouette materials")
+	_done()  # frees the zone, the figure and its meshes
+	var alive := 0
+	for r in refs:
+		if r.get_ref() != null:
+			alive += 1
+	assert_eq(alive, 0, "no silhouette material outlives the figure")
+
+
+## Weak references to every surface override under `actor`, gathered in a function of their own: GDScript keeps an
+## expression's last value in a stack slot until its function returns, which would hold one material alive.
+func _override_refs(actor: Node) -> Array[WeakRef]:
+	var refs: Array[WeakRef] = []
+	for node: Node in actor.find_children("*", "MeshInstance3D", true, false):
+		var mi := node as MeshInstance3D
+		for i in mi.mesh.get_surface_count():
+			refs.append(weakref(mi.get_surface_override_material(i)))
+	return refs
 
 
 ## M3-HER-1142: the real Corrow zone's storm figure is a body, not a capsule, once its layer is built.

@@ -6,12 +6,21 @@ title: ch01_hullgnaw_rises
 location: ch01/oruvel
 ---
 @letterbox on
+// PC GPU QA pass 5, row 58: the Hullgnaw read as a dark mass in the storm light. A cool key from O16's side and a
+// cyan rim from seaward (the stage's hullgnaw_lights) come up with it.
+@light HullgnawKey on 1.5
+@light HullgnawRim on 1.5
 @camera O16
+// M3-CIN-1235 (PC GPU QA row 58): the thing Rhen names rises in O16, up through the net-pen deck in front of Rhen (the chapter beat shows the
+// layout's hidden `hullgnaw` actor, the creature's own model; its intro clip is the rise). O16 had framed empty water.
+@anim hullgnaw intro
 @sfx hullgnaw_ribs_creak
 @vfx glimmer_held at=net_pen count=8 drift=down_seaward
 @wait 1.5
 Rhen [afraid]: That's a ship. That's a whole ship, and it's wearing it. #line:ch01_hullgnaw_001
 @music hullgnaw fade=0.5
 Rhen [determined]: I'm not scared. I'm busy. #line:ch01_hullgnaw_002
+@light HullgnawKey off 0.5
+@light HullgnawRim off 0.5
 @letterbox off
 ===

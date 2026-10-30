@@ -108,14 +108,75 @@ func spawn(engine: BattleEngine) -> void:
 	for i in engine.party_active.size():
 		_place(engine.party_active[i].id, _party_slots[i])
 	_enemy_slot_of.clear()
+	var seats := _seat_order(engine.enemies)
 	for i in engine.enemies.size():
-		_seat_enemy(engine.enemies[i].id, mini(i, _enemy_slots.size() - 1))
+		_seat_enemy(engine.enemies[i].id, seats[i])
 	_seat_lone_boss(engine)
 	if is_inside_tree():  # M3-BPR-403: the opening line-up keeps the real models' footprints apart
 		var data := BattleChoreo.load_data()
 		var axis := camera.global_basis.x if camera != null else Vector3.RIGHT  # sideways on screen
 		BattleLineup.apply(_side(engine.party_active), data, axis)
 		BattleLineup.apply(_side(engine.enemies), data, axis)
+		_spread_on_screen(engine, data)
+
+
+## Creatures' audit (10-30): the opening foes kept apart on the fight's rest frame and clear of the command menu
+## (BattleScreenSpread, choreo.json spacing.screen).
+func _spread_on_screen(engine: BattleEngine, data: Dictionary) -> void:
+	if camera == null:
+		return
+	var xf := camera.transform
+	var fov := camera.fov
+	if camera.has_meta(BattleCameraDirector.META_DEFAULT):  # a retry: the authored frame, not the last fight's
+		xf = camera.get_meta(BattleCameraDirector.META_DEFAULT) as Transform3D
+		fov = float(camera.get_meta(BattleCameraDirector.META_FOV))
+	var ids: Array[StringName] = []
+	for e in engine.enemies:
+		ids.append(StringName(String(e.id).get_slice("#", 0)))
+	var fit := BattleCameraDirector.rest_fit(data.get("camera", {}) as Dictionary, xf, fov, ids)
+	BattleScreenSpread.apply(_side(engine.enemies), camera, fit[0] as Transform3D, float(fit[1]), data)
+
+
+## Each opening foe's slot. The encounter sweep (10-30): on the causeway the 2.9 m Lantern Eel, first in the list, took
+## the slot nearest the camera and hid the Gull Harrier behind it until it struck. With choreo.json
+## spacing.tall_to_back, the tallest foes (stand-in height plus hover) take the slots farthest from the camera; foes of
+## equal height keep their own slots. Otherwise slot i, the last shared.
+func _seat_order(foes: Array[BattleCombatant]) -> Array[int]:
+	var n := foes.size()
+	var out: Array[int] = []
+	for i in n:
+		out.append(mini(i, _enemy_slots.size() - 1))
+	var sp := BattleChoreo.load_data().get("spacing", {}) as Dictionary
+	if not bool(sp.get("tall_to_back", false)) or camera == null or n < 2 or n > _enemy_slots.size():
+		return out
+	var slots: Array[int] = []
+	for i in n:
+		slots.append(i)
+	var eye := camera.global_position
+	slots.sort_custom(
+		func(a: int, b: int) -> bool:
+			var da := _enemy_slots[a].global_position.distance_to(eye)
+			var db := _enemy_slots[b].global_position.distance_to(eye)
+			return da > db if not is_equal_approx(da, db) else a < b
+	)
+	var order: Array[int] = []
+	for i in n:
+		order.append(i)
+	var top := func(c: BattleCombatant) -> float:
+		var spec := stand_in_spec(c.id)
+		return float(spec.get("height", 0.0)) + float(spec.get("hover", 0.0))
+	var dist := func(i: int) -> float: return _enemy_slots[out[i]].global_position.distance_to(eye)
+	order.sort_custom(
+		func(a: int, b: int) -> bool:
+			var ta: float = top.call(foes[a])
+			var tb: float = top.call(foes[b])
+			if not is_equal_approx(ta, tb):
+				return ta > tb
+			return float(dist.call(a)) > float(dist.call(b))  # equal heights keep their own slots
+	)
+	for k in n:
+		out[order[k]] = slots[k]
+	return out
 
 
 func _side(cs: Array[BattleCombatant]) -> Array:
@@ -189,8 +250,22 @@ func sync_party(engine: BattleEngine) -> void:
 		if not _fighters.has(cid):
 			var slot := clampi(int(config().get("vowbound_slot", i)), 0, _party_slots.size() - 1) if out else i
 			_place(cid, _party_slots[slot])
+			if out and engine.vowbound.summon != null and engine.vowbound.summon.id == cid:
+				_clear_of_hud(cid)
 			if choreo != null:
 				choreo.enter(cid)
+
+
+## A called Vowbound (a wide body on the middle party slot) kept clear of the timeline and the party panel on the rest
+## frame (BattleScreenSpread.clear_of_hud).
+func _clear_of_hud(cid: StringName) -> void:
+	var dir := choreo.camera if choreo != null else null
+	var xf := dir.default_transform if dir != null else (camera.transform if camera != null else Transform3D.IDENTITY)
+	var fov := dir.rest_fov() if dir != null else (camera.fov if camera != null else 50.0)
+	var rects: Array = [
+		HudLayout.rect_of(HudLayout.section(&"timeline")), HudLayout.rect_of(HudLayout.section(&"party"))
+	]
+	BattleScreenSpread.clear_of_hud(stand_in(cid), camera, xf, fov, rects, BattleChoreo.load_data())
 
 
 func refresh_ko(engine: BattleEngine) -> void:

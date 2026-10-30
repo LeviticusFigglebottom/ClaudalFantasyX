@@ -7,8 +7,8 @@ const ZONE := "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn
 const RAY_UP_M := 2.0
 const RAY_DOWN_M := 4.0
 const STAND_TOLERANCE_M := 0.25
-const MIN_FIGHTS := 2
-const MAX_FIGHTS := 3
+const MIN_FIGHTS := 1
+const MAX_FIGHTS := 2
 const TRIGGER_ORDER: Array[StringName] = [&"banter_posts", &"harrier", &"banter_ring", &"to_shrine"]
 
 var zone: GreyboxZone
@@ -75,17 +75,20 @@ func test_the_triggers_run_in_beat_order_along_the_path() -> void:
 	_done()
 
 
-## M2-FP-114 (encounter pacing): the walk from the harrier to the islet steps meets two or three random fights:
-## never the six to eight the greybox's fixed 25-45 m gaps would give on the final 301 m route.
-func test_the_route_after_the_harrier_meets_two_or_three_fights() -> void:
+## M2-FP-114 (encounter pacing): the walk from the harrier to the islet steps meets a fight or two, never the six to
+## eight the greybox's fixed 25-45 m gaps would give on the final 301 m route. The Lead's FAST-TRACK (10-30, the human's
+## playtest): each fight owes the post-battle grace (the Harrier's too) and then a 95-145 m gap, so the 206 m walk meets
+## one at the run (two only with more than a straight line's walking).
+func test_the_route_after_the_harrier_meets_one_or_two_fights() -> void:
 	_load()
 	var harrier := (zone.get_node(^"Triggers/harrier") as Node3D).global_position
 	var steps := (zone.get_node(^"Triggers/to_shrine") as Node3D).global_position
 	var enc: Dictionary = zone.layout.get("encounters", {})
 	var head := (zone.get_node(^"Spawns/FromHaluna") as Node3D).global_position
 	var walk := head.distance_to(steps) - head.distance_to(harrier)
-	var fewest := floori(walk / float(enc.get("max_m", 1.0)))
-	var most := floori(walk / float(enc.get("min_m", 1.0)))
+	var grace := zone.encounters.grace_after_m
+	var fewest := floori(walk / (maxf(float(enc.get("max_m", 1.0)), zone.encounters.min_gap_m) + grace))
+	var most := floori(walk / (maxf(float(enc.get("min_m", 1.0)), zone.encounters.min_gap_m) + grace))
 	assert_true(fewest >= MIN_FIGHTS, "at least %d fights (%.0f m walk)" % [MIN_FIGHTS, walk])
 	assert_true(most <= MAX_FIGHTS, "at most %d fights (%.0f m walk)" % [MAX_FIGHTS, walk])
 	_done()
