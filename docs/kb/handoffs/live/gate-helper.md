@@ -23,3 +23,7 @@ and reports; it never edits game or test files.
 - big25 @ 829b09a6: lanes B 16 files, 16:13-16:28 UTC (15 min, import included). 15 green, 1 red:
   test_causeway_route (1 failed, the same as big24's: fewer than 2 fights on the 206 m walk after the harrier).
   Result: gate-big25-lanes-b-result.md.
+- **CORRECTION 17:05 UTC: big25's result above is INVALID.** My checkout of 829b09a6 failed (the import's
+  .uid and .import files blocked it) and the script went on at big24's 797b02cc. big26's run hit the same fault and was not
+  pushed. Fixed (the run now resets my own scratch worktree, aborts on a failed checkout and checks HEAD); rerunning
+  big26 @ e8ae9b74 now, then big25 @ 829b09a6.

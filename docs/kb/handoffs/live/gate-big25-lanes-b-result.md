@@ -1,5 +1,7 @@
 # gate-big25 lanes B result
 
+**INVALID (17:05 UTC): this ran at 797b02cc (big24), not 829b09a6. A rerun at the right sha replaces it.**
+
 sha 829b09a65f51cf3d7d6f9c3cc9e7509097612140
 
 res://tests/integration/test_causeway_route.gd 5 run, 1 failed
