@@ -8131,6 +8131,25 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "ch14_ansedra_ripple",
+      "scene": "res://game/levels/_tests/ansedra_kit/ch14_ripple_shots.tscn",
+      "camera": "Cameras/Ripple",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }
