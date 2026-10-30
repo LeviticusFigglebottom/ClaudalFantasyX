@@ -128,3 +128,11 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
   - **systems/cinematics:** `cues.json` has no grade ids for ch10–ch16 and no sideways drift for held light. The scripts use no `grade=` and give held motes no drift until those are added.
 - Next: Ch12, then Ch13, then Ch16 (M4-A2P-003, 004, 007), then M4-A2P-008 (heresy barks and the people's codex).
 - MERGE-READY @ 1f4c792d: **Ch12 and Ch13 scripts** (M4-A2P-003, 004, and M4-C12/C13-01, all in review): 33 scenes; speakers `ullari`, `ullari_woman`, `householder`; 18 flags. The Archive's record texts (the torn Binding Ledger fragment, ADR 0204 §15) are narration lines with `DLG_CH13_REC_*` keys for the document reader. Checks: dlgc --check 0/0, validate_data 0/0, Godot `--filter=act2_dialogue` PASS (all Act II scenes so far, every path). Next: Ch16 (M4-A2P-007), then M4-A2P-008.
+- MERGE-READY @ 6e4ffd4d: **Ch16 scripts** (M4-A2P-007, M4-C16-01 in review):
+  - 11 scenes: the Rim, Kesh's memory sequence (shown, never said), Sefir's temptation with ADR 0016 (c)'s fixed lines and "Captain.", the act-break VO, and the "Act III: The Unbinding" caption;
+  - speaker `kesh`; 6 flags (`ch16_guard_beaten` and `ch16_line_held` are set by the flow on those fights' ends).
+  - **All seven Act II chapters are now scripted** (about 130 scenes).
+  - Checks: dlgc --check 0/0; validate_data 0/0; Godot `--filter=act2_dialogue` PASS; `--filter=voice` 15/0.
+  - `--filter=dialogue` was 86 run, 1 failed: `test_dialogue_box::test_every_act1_speaker_with_a_model_has_a_portrait` (Pell has a model and no portrait under assets/ui/portraits). It's pre-existing, reads only `ch0*` scenes, and is an Act I row for characters or ui-menus, not from this work.
+- LEAD-ASK: the Act I red above (`test_every_act1_speaker_with_a_model_has_a_portrait`, Pell's portrait). Route it to ui-menus or characters as an Act I FAST-TRACK? Not mine to fix (`assets/ui/portraits/**` is ui-menus').
+- Next: M4-A2P-008 (heresy barks, Kerrid's post-reveal barks, the people's codex text).
