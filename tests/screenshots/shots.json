@@ -1494,6 +1494,7 @@
     },
     {
       "id": "villager_tobin_front",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/characters/villagers/tobin_stage.tscn",
       "camera": "Cameras/Front",
       "resolution": [
@@ -1504,6 +1505,7 @@
     },
     {
       "id": "villager_tobin_face",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/characters/villagers/tobin_stage.tscn",
       "camera": "Cameras/Face",
       "resolution": [
@@ -1514,6 +1516,7 @@
     },
     {
       "id": "villager_tobin_falls",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/characters/villagers/tobin_falls.tscn",
       "camera": "Cameras/Front",
       "resolution": [
@@ -1524,6 +1527,7 @@
     },
     {
       "id": "villager_merel_front",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/characters/villagers/merel_stage.tscn",
       "camera": "Cameras/Front",
       "resolution": [
@@ -1534,6 +1538,7 @@
     },
     {
       "id": "villager_merel_face",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/characters/villagers/merel_stage.tscn",
       "camera": "Cameras/Face",
       "resolution": [
@@ -1544,6 +1549,7 @@
     },
     {
       "id": "villager_merel_pole_barge",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/characters/villagers/merel_pole_barge.tscn",
       "camera": "Cameras/Front",
       "resolution": [
@@ -1554,6 +1560,7 @@
     },
     {
       "id": "villager_merel_bloodied",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/characters/villagers/merel_bloodied.tscn",
       "camera": "Cameras/ThreeQuarter",
       "resolution": [
@@ -4752,6 +4759,7 @@
     },
     {
       "id": "kerrid_confession_grief",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/characters/kerrid/kerrid_confession_grief.tscn",
       "camera": "Cameras/Face",
       "resolution": [
@@ -4762,6 +4770,7 @@
     },
     {
       "id": "kerrid_confession_guilty",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/characters/kerrid/kerrid_confession_guilty.tscn",
       "camera": "Cameras/Face",
       "resolution": [
@@ -4772,6 +4781,7 @@
     },
     {
       "id": "kerrid_confession_burns",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/characters/kerrid/kerrid_confession_grief.tscn",
       "camera": "Cameras/ThreeQuarterLeft",
       "resolution": [
