@@ -585,6 +585,42 @@ that test at this branch's zones.
     risers; a painted barge; the headland's textured, scrubby slope behind the fight. These six drift by design.
   - **MERGE-READY @ f7d74a74.**
 
+- **The PC's pass 3, published rows (`gpu/act1-qa-3` @ f56c2e82, big18), checked against my head:**
+  - **45, 52, 53:** fixed earlier (the early findings above, @ f7d74a74).
+  - **49 (Pemakar's night harbour near-black):** the preview's night grade takes its ambient from a near-black sky, so
+    the layout's fill colour did nothing. The zone's copy now takes a colour ambient (as the day grade does), and the
+    layout's rows carry a moonlit fill (`#6c7898` 0.6) and a brighter moon key (0.45, `#5a6c94`). Both are written by
+    `ch05_pemakar_dressing.py` as one-key edits. The party now reads on the quay; the lamp pools and stars stay.
+  - **51 (Ch9 grave mounds as blurry orange rectangles):** the old shrouds' woven texture is about 3 px a tile from
+    the field camera. New `shroud_bound_a/b/small` pieces (`corrow/b_strand.py`) are tied cloth over a body, with
+    folds, a firm hem and four ties, under a damp grey canvas look. `test_ch09_corrow_walkable` now counts them.
+  - **62 (weir slabs flat grey boxes):** new `kit_weir_stone` (dressed volcanic stone, an algae band at the
+    waterline) and the water spill on the weir, in the zone and the kit preview. **This touches env-art's
+    `pemakar_layout.py`** (the weir row's `materials`, at the Lead's routing) and relaxes `test_pemakar_kit`'s slot
+    check to accept a file in the kit's materials folder.
+  - **63 (Matron intro: stretched mouldings, flat light-grey panel):** the mouldings were the dressed-stone UV fix
+    (@ f7d74a74). The panel was the arena's near plume filling the loggia, so the court drops it; the loggia shows the
+    crater rim and sky.
+  - **50 (Toma sunk at Ashcrown's Crown spawn): not reproduced on this head; hero-integration's.** With the party set
+    to Rhen, Asha and Toma and placed with `place_at` (the recipe in `test_qa_party_spawns`), `catch_up` lays them
+    straight back along −X. Asha lands at (2.05, 42, −3.2) and Toma at (0.9, 42, −3.2), both on `Tier6`'s floor at
+    y 42, which matches the visible tiles. No stair flight covers those spots (the t6 vein flights' heights sit
+    +0.3 m above the floor). The one solid nearby that could look chest-deep is `release_lever`'s collider:
+    1.39 m tall, centred at (6.0, −3.0), 2.8 m in front of the spawn. A follower placed on it would keep y 42 (the
+    hit is above `step_m`). It's worth checking in the PC's own run. Also seen: at `AfterTortoises`, Toma is held
+    1.34 m above `Causeway10` (floor −75.74, kept at the leader's −74.4).
+  - **Checks run:** tools test_corrow_kit, test_pemakar_kit, test_b_arenas, test_arenas, plus every tools test that
+    imports the changed generators (94 OK); validate_data 0/0; taskboard --check; Godot pemakar 10/0, ashcrown 22/0,
+    corrow 18/0, zone_kit 13/0; gdlint and gdformat on the changed test.
+  - **Self-rendered and viewed:** `battle_boss_intro_matron`, `battle_arena_ashcrown_anvil_court`,
+    `ch09_corrow_strand`, `ch05_pemakar_harbour`, `ch05_pemakar_weir`, `pemakar_p11_sea_cut_weir_day`,
+    `ch05_pemakar_harbour_day`, plus scratch field-height views of the harbour, the strand and the Crown spawn with
+    the party. These drift by design.
+  - **MERGE-READY @ 1a6934e3** (rows 45, 49, 51, 52, 53, 62, 63; row 50 routed to hero-integration).
+- **BACKLOG EMPTY (10-30):** every pass-3 row for env-art-b is fixed or routed (row 50 doesn't reproduce here and
+  belongs to hero-integration's party spawn). The Act II preparation docs are written, and ADR 0203 holds Act II
+  builds until act1-complete.
+
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
   on the PC presets (two large and three small fires in `ch06/brine_shoals` and `salvage_camp_burning`).
