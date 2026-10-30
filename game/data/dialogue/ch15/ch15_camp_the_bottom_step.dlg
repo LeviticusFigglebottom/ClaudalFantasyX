@@ -3,7 +3,7 @@
 // wants to be relieved. The cost of ending a cycle, for him, is himself (pillar 6), and he wants it. Kerrid's
 // post-reveal voice: short, plain, no rank. Nothing of how the dead lift (Act III). Sets ch15_camp_talk.
 title: ch15_camp_the_bottom_step
-location: ch15/hollowmere
+location: ch17/hollowmere
 ---
 Toma [neutral]: Fourteen years on that stair. #line:ch15_camp_001
 Kerrid [neutral]: And since. #line:ch15_camp_002
@@ -14,7 +14,7 @@ Kerrid [neutral]: I expect so. #line:ch15_camp_006
 Toma [neutral]: Do you want to? #line:ch15_camp_007
 Kerrid [neutral]: I want to be relieved. That's what a watch is for. Somebody comes and takes the step. You go down and sleep. #line:ch15_camp_008 #long
 Toma [sad]: Who takes the step? #line:ch15_camp_009
-Kerrid [neutral]: Nobody, if she does it right. #line:ch15_camp_010
+Kerrid [neutral]: I don't know. Somebody always has. #line:ch15_camp_010
 Toma [neutral]: Then I will stand it with you. Until then. #line:ch15_camp_011
 Kerrid [neutral]: Bottom step's mine. You take the one above. #line:ch15_camp_012
 <<set $ch15_camp_talk = true>>

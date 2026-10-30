@@ -5,7 +5,7 @@
  "start": "ch15_camp_the_bottom_step",
  "nodes": {
   "ch15_camp_the_bottom_step": {
-   "headers": {"location": "ch15/hollowmere"},
+   "headers": {"location": "ch17/hollowmere"},
    "ops": [
     {"op": "line", "id": "ch15_camp_001", "key": "DLG_CH15_CAMP_001", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 8},
     {"op": "line", "id": "ch15_camp_002", "key": "DLG_CH15_CAMP_002", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 9},

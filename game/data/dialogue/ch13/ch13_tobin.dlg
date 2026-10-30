@@ -25,7 +25,7 @@ Liss [smile]: Good. Accurate. #line:ch13_tobin_005
 @anim tobin look_at rhen
 Tobin [smile]: You're the diver. She mentioned you. She said, 'Don't trust the diver.' So I like you already. #line:ch13_tobin_006
 -> Why marry into the Order? #line:ch13_tobin_007
-    Tobin [tender]: Somebody had to go first. I volunteered. Nobody had to be chosen. #line:ch13_tobin_008
+    Tobin [tender]: Peace has to start with somebody's wedding. Might as well be a good one. #line:ch13_tobin_008
 -> Good luck. #line:ch13_tobin_009
     Tobin [laugh]: I'll need it. Her knots are terrible. #line:ch13_tobin_010 #tn:"A private joke between him and Merel; it returns as his last words in Ch14."
 <<set $ch13_met_tobin = true>>

@@ -1,6 +1,10 @@
 // Ch15: a raft cook. Outside the Level means nothing to her pot.
 title: ch15_bark_raft_cook
-location: ch15/hollowmere
+location: ch17/hollowmere
 ---
-Cook as "Raft cook" [smile]: Eat. Outside the Level or in it, nobody leaves my hull hungry. #line:ch15_bark_rcook_001
+<<if $ch15_toma_carried_tobin>>
+    Cook as "Raft cook" [smile]: Eat. Outside the Level or in it, nobody leaves my hull hungry. #line:ch15_bark_rcook_001
+<<else>>
+    Cook as "Raft cook" [neutral]: Eat. Nobody leaves my hull hungry. #line:ch15_bark_rcook_002
+<<endif>>
 ===
