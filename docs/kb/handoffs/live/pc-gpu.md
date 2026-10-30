@@ -12,7 +12,18 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 
 - **LFS: this PC reaches lfs.github.com** (HTTP 302 from Git Bash). `git lfs pull` fetched all 197 LFS objects
   into the big18 worktree. The PC can push LFS objects on request.
-- **Item 1, Act I real-GPU QA pass 3: IN PROGRESS** on `gpu/act1-qa-3`. That's origin/lead/gate-big18 @ 37a90b4c,
+- **GPU-QA-DONE pass3 @ gpu/act1-qa-3.** Rows and the pass-3 summary are in `docs/kb/qa/act1_gpu_qa.md`; contact
+  sheets are in `docs/kb/qa/gpu/act1/pass3/`.
+  - Pass A: 618 of 619 shots. field_hud_over_haluna_wake hangs on a missing scene (row 43).
+  - Pass B: the walk, 141 segments.
+  - Open rows: 14 fixed (4, 6, 12, 15, 18, 19, 26, 27, 28, 32, 33, 35, 36, 40). Still open: 17, 21, 23, 24, 25, 31, 34,
+    37, 38, 39.
+  - New rows 43–63, with owners.
+  - Every track's PC-QUEUE answer is in the summary. One example: hero-integration's `material is null` comes from
+    the Corrow storm figure (row 44, creatures).
+  - Pass B's budget (the walk with stills): hidden-frame entries are mostly < 1 s now. Still OVER: Ch5 1707,
+    Pemakar 1625, Ch6 1640, Ch8 1804, Ch9 1529 and Corrow-night 1279 ms. The clean, still-free numbers are item 3.
+- **Item 1 (the plan as started), Act I real-GPU QA pass 3:** on `gpu/act1-qa-3`. That's origin/lead/gate-big18 @ 37a90b4c,
   plus integration cf03aa8d (4 commits ahead), plus gpu/act1-qa-2, which held act1_gpu_qa.md and had never been merged.
   The worktree is C:/Users/Aaron/hymn_qa3.
   - The walk gains the three Act I zones it lacked: ch04/haluna_wake, ch05/pemakar and ch09/corrow_night.
