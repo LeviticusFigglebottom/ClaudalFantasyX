@@ -929,3 +929,16 @@ MERGE-READY @ (this push): the Act I final-quality audit (planted feet, KOs, the
 BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are written (docs only until `act1-complete`). The rest waits on others: M3-CRE-664 (environment), M3-CRE-665 (combat), the PC's QA pass, the Lead's baselines.
 
 - 10-30 01:30, the Lead (ADR 0204): M4-A2P-056 edited (no Ansedra wildlife). **M4-CRE-670** filed (blocked by ADR 0203): the ridge lynx and scree crawler swap frost for snow and grit. The plan sheets are updated. BACKLOG EMPTY stands.
+
+### The PC's pass 3 (big18), the Lead's 01:50 relay
+- **GPU QA row 40, the Oil Slug in battle: CLOSED** (readable on the RX 9070 XT, per the PC's pass 3).
+- **The Corrow storm figure logged 4× `Parameter "material" is null` on free: FIXED.**
+  - NpcSilhouette's static per-colour material cache outlived the figure. Now each surface gets its own material, owned by its mesh alone, and FieldNpc clears the overrides in `_exit_tree`.
+  - New test `test_a_freed_silhouette_leaves_no_material_behind`: after the figure is freed, no silhouette material is alive. It gathers its weak references in a helper, because GDScript keeps an expression's last value in a stack slot until the function returns.
+  - It doesn't reproduce on lavapipe, so the PC's next pass confirms it on hardware (PC-QUEUE).
+- **npc_corrow_storm_figure_near, "a smooth featureless glowing mannequin": FIXED.**
+  - Under the glow, each surface keeps its own albedo brightness (cloth folds, seams, the belt), its occlusion and its normal map (the rim breaks along folds), plus brine tide lines and drip streaks (deterministic, no TIME).
+  - SELF-RENDERED and viewed: npc_corrow_storm_figure_near (folds, hem, belt, seams, tide lines, drips); npc_corrow_storm_figure (still one clean cyan figure from the wall).
+- Checks: crowd 11/0 (×2), villager 39/0, npc 10/0; lint and format clean.
+- MERGE-READY @ (this push).
+- **PC-QUEUE:** confirm no "material is null" after the Corrow shots on hardware; the storm figure's detail with bloom.
