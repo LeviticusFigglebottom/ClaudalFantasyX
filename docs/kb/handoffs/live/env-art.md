@@ -589,6 +589,20 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ 59628c29e: Ch10–Ch12 walk-through stills at player height** (the Lead's next item).
+  - **Method:** `tools/hero/walk_stills` arrival stills at all 17 spawns, on env-art's dressed previews, since
+    none of Ch10–Ch12 is mounted yet.
+  - **Ossa Fen, fixed:** at DrownerArena the field camera looked through a mangrove's limbs. The generator now keeps
+    living trees 4.5 m off each spawn's measured camera line (`CAMERA_LINES`), which removed four trees, and a test
+    checks it. Re-viewed: DrownerArena and FromReedhollow are clear.
+  - **These read:** Reedhollow Gate; Lowlight Gate, EngineHall and Sanctum; Sunken Vey Landing and FromLowlight;
+    Cloudloom Hall.
+  - **Reedhollow Shore:** the camera settles 2 m behind Rhen beside a hull arch. That's the field camera's cabin
+    rule, not the dressing: FYI hero-integration.
+  - **Ch12, PC-QUEUE (again):** Keth Pass, Quellan and Cloudloom's Approach are near-black in shade under lavapipe
+    although the layouts are morning and noon (sun 2.0, ambient 0.8). Quellan FromCloudloom shows the party against
+    a black void. Judge on the real GPU before any grade change; the stills are in env-art's scratchpad and can be
+    re-made with walk_stills `--scene=res://game/levels/_tests/ch12_zones/<zone>_dressed.tscn --spawn=<id>`.
 - **MERGE-READY @ 8e4ab352: PC pass 5's rows 59, 24 and 66, and a tools-suite red.**
   - **The Lead's correction is taken.** Ch13–Ch16 are env-art-b's. env-art's parallel Ch13–Ch15 dressings were
     already withdrawn in the big22 merge (7fad181e) and are not filed as requests: env-art-b's mounted versions
@@ -947,6 +961,9 @@ Read this section first; everything below it is history. The branch is `claude/e
     (characters/slice-polish), and `reefball_drop_proxy` / `tb_drop_proxy` are env-art-b's (M3-RND-26).
 
 ### PC-QUEUE
+- **Ch12 shade at spawn height (2026-10-30):** Keth Pass (PassFoot, RamArena, FromQuellan), Quellan (FromPass,
+  FromCloudloom: a black void behind the party) and Cloudloom Approach are near-black at arrival under lavapipe.
+  Check on the GPU; if they're as dark there, env-art lifts the ch12 grade's fill.
 - **Ch14's court at dusk (the layout's 4° sun, 0.5 navy ambient): the court's centre reads near-black on lavapipe.** The
   lanterns light the colonnade only. Judge it on the real GPU. The remedy is chapters' ambient (M4-A2P-0441).
 - **Ch12's shade at a walker's eye (Keth Pass, Quellan): the dark slate and crag go near-black on lavapipe in every
