@@ -778,3 +778,13 @@ SELF-RENDERED @ dc257d86: battle_statuses, battle_statuses_colorblind and status
   - Tests: test_ui_input_repeat 4/0, input_parity 65/0, menu 252/0.
   - **Liss's battle tint:** the integration branch's test now expects big14's #7A8C5A, so my earlier #7A8F6A is
     reverted (50678c8a). party_stand_ins is 3/0.
+MERGE-READY @ 638fb3cb5 (for big19): ADR 0202's status names, held pad directions repeating, and lists that stop at
+their end while held; Liss's tint back to big14's row.
+Checks:
+- battle_ 757/0, menu 252/0, input_parity 65/0, status 55/0, pseudo_loc 26/0, ui_input 4/0, party_stand_ins 3/0;
+- tools test_status_names OK (it fails on the old strings);
+- validate_data has 0 errors; lint is clean.
+Skipped: coverage. game/battle got comment edits only (the renamed Breaks), no code change.
+- 2026-10-30 03:30, **BACKLOG EMPTY:** the 23:52 list and my controller-only menu pass are done. Real-hardware
+  pace (pad feel, menu sound latency) is a PC-QUEUE item: a pad walk of every Act I menu on the PC, holding the
+  d-pad and stick in the bag, the codex and the Lattice.
