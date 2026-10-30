@@ -348,10 +348,12 @@ element (voice_glimmer, level_hand, still_water).
 - **Batch 3 (10-30), on big21 + this branch:**
   - Clean (checks clean, stills viewed): ch01_underway_shoals, ch01_underway_limpet, ch04_sail_leeches.
   - ch01_hullgnaw: checks clean, but the fall moment's frame was behind the rail. Fixed in 8b0e12c2 and viewed.
-  - **ch04_bottle_hermit, open:** at Glass Flare's contact (a single-target fire hit), a red "119" stands at the
-    screen's left edge, away from any hero, and the party crowds the right edge under the timeline. The checks did
-    not flag either. Next: re-run with each float's target and screen position logged.
-  - ch04_spar_wraith: running.
+  - **ch04_bottle_hermit: a sweep artifact, fixed in the tool.** The red "119" at the screen's corner was Ysolde's.
+    After Ilun's return, the sweep's sim policy swapped her in through BattleEngine.swap, which seats no one on the
+    stage. In play the game swaps through swap_members, which does. She fought, was hit by Glass Flare and fell with
+    no body on the stage. The sweep now syncs the stage after a policy swap. Re-run queued with batch 5.
+  - ch04_spar_wraith: clean (checks clean, stills viewed). At rest the Wraith is small and dark against the night
+    sky; that is the arena's light.
 
 ### PC-QUEUE
 - Row 64 re-measure (7c3307df, the search behind the fade): the 60 frames after the fade at tideline, causeway, the Drownbell, the Hermit and Moll; and the Drownbell's phase and fall moments.
