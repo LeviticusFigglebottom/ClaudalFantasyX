@@ -1530,3 +1530,50 @@ Boot past the title (600 frames), plus the guards and suites that play the game:
 ### PC-QUEUE (added)
 - ShaderPrewarm's transition hitch on boot (301 ms in headless; measure on the GPU).
 - `Parameter "material" is null` on freeing a character mesh: confirm a real-GPU run logs none.
+
+### 4. Hero, follower and camera audit (2026-10-30 ~01:00), @ d1a2a3674
+New guard **tests/integration/test_qa_walk_audit.gd** (routes in `qa_walk_routes.json`). It walks the real party
+with the real FieldController, a stick toward each waypoint through the live camera, with HeroStairs, HeroFieldParty
+and every body stepped as in play. Routes:
+- Haluna's lane (narrow, props);
+- Ashcrown's 48° flying stair, up and down;
+- Coilspire's spiral (1 m ramps, the gates open).
+It fails on stuck, follower-in-geometry, camera-in-geometry, or leader-hidden runs over 30 frames. It reports
+run-up, stop, vertical jumps, airborne frames, foot slide per hero, follower gaps and catch-ups. Two harness
+mistakes cost me a false "stuck at the stair head": HeroStairs not stepped, and its deferred flight build. The guard
+now does both as the game does.
+- **Fixed, sticky:** a full-stick run on a steep flight was capped at the walk's 1 m/s along the slope, so the
+  flying stair took **64 s**. `stairs.json` gains `slope_run_speed_mps` 1.9 (a stair run; walk stays 1.0) and the
+  climb now takes **~35 s**. Followers are capped at the run speed so they keep pace. test_hero_stairs has a new case,
+  a run climbs faster than a walk; 8/0.
+- **Fixed, floaty:** running feet slid 16-28%. The field run is 3.6 m/s, the run clips measure 1.8-2.35, and the gait
+  sped the run up at most 1.5x. Followers also sprinted to 5.4 m/s to close gaps. Now `gait.max_playback_scale` 1.8
+  and `followers.max_speed_mps` 4.4: **0% foot slide for every hero on every route**, no catch-up teleports, max gap
+  3.1 m. The real fix is a faster authored run, **M3-HER-1165 (character)**: Kerrid still needs 2.0x, and a leg cycle
+  at 1.8x may read as scurrying.
+- **Clean:** no follower clips into geometry, the camera is never inside geometry or hiding the leader, the stairs are
+  smooth (max 0.044 m a frame), a run takes 0.38 s to reach and stops in 0.5 m.
+- **Found, not mine to fix: followers hidden by standing stage actors in 12 Act I zones** (M3-HER-1164 widened; probe
+  above): Haluna, the ferry, the wake, Ashcrown, Pemakar, Brine Shoals, Tamsule, the Bell galleries, Coilspire,
+  Corrow, Corrow night.
+- LEAD-ASK: Should the follower win in free play everywhere? The stage actor would hide until a scene cues it.
+  That's a one-place change in HeroFieldParty, but it also hides talk-prompt actors such as Toma's Shield-Mate on
+  Ch9's strand. My default: no rule change; act1-chapters stages each zone (M3-HER-1164).
+- Stills: the rig (tools/hero/walk_stills.tscn) is written but not yet rendered or viewed, so it's not committed.
+- Checks: hero_ 114/0, hero_stairs 8/0, hero_followers 13/0, ch05_ashcrown_walkable 5/0, qa_walk_audit 1/0.
+  The full `qa_` was cut off by a timeout; it's re-running.
+
+### The Lead's 00:20 items (ADR 0203), @ 150670d1a
+- **placeholder_audit `--act 2`:** Ch10-Ch16 into docs/kb/qa/act2_inventory.md, **report-only** (`--check` never
+  fails for Act II), with the title and lead-in saying so. Act I stays the default. Rows with no chapter (shared asset
+  names) stay on Act I's list. scan.gd now loads every chapter's scene steps, and Python keeps the act.
+  test_placeholder_audit 14/0, including 3 new scope tests.
+  - The static half on this branch already lists 20 Act II items (act1-chapters 10, creatures 10).
+  - The full inventory (runtime scan) is next, on big18.
+- **tools/dev/lead/act1_gate_check.py:** ADR 0203 criteria 1-2, PASS/FAIL each, exit 0 only when both pass.
+  1. The Act I audit with the runtime scan has zero items (`--static-only` never PASSes).
+  2. qa_threads, qa_encounters, fp_ and save_ pass with zero SCRIPT ERRORs, plus the continuous title → Ch9 → title
+     test found by name (`tests/integration/test_*continuous*.gd`).
+  - **Criterion 2 FAILs until M3-CIN-1233's continuous-path test exists** (act1-chapters' finding: the Prologue skips
+    Ch1, and the slice's end card returns to the title).
+  - test_act1_gate_check 3/0. Run it from a batch worktree root: `python3 tools/dev/lead/act1_gate_check.py`.
