@@ -18,6 +18,8 @@ DLG_CH01_BARK_PEN_002,We're winning the Tidecup this year. Tavi says.
 DLG_CH01_BARK_PEN_003,Tavi says that every year. Keep your elbows in.
 DLG_CH01_BARK_ROOF_001,Rhen! Off the cabin roof! Ma says you used to.
 DLG_CH01_BARK_ROOF_002,I was young and foolish then. Now I'm just foolish.
+DLG_CH01_BARK_ROOF_006,Do it again!
+DLG_CH01_BARK_ROOF_007,Once. You get once.
 DLG_CH01_BARK_ROOF_003,Scared!
 DLG_CH01_BARK_ROOF_004,Fine. Fine. Watch how it's done.
 DLG_CH01_BARK_ROOF_005,He did it!
@@ -98,18 +100,29 @@ DLG_CH02_BARK_CAUSEWAY_UNSAVED_002,"It only takes a moment. Sit at the little sh
 DLG_CH02_BARK_CHAPEL_001,The Lady Cantor's shell is cut. They'll set it at the wake.
 DLG_CH02_BARK_CHAPEL_002,I'm sorry. Was she very old?
 DLG_CH02_BARK_CHAPEL_003,"Mind the steps, please. I've only just swept them."
+DLG_CH02_BARK_CHAPEL_LISTEN_001,The steps are swept. The shell's cut. There's nothing left to do but wait.
+DLG_CH02_BARK_CHAPEL_LISTEN_002,Wait for what?
+DLG_CH02_BARK_CHAPEL_LISTEN_003,The tide. It always comes.
 DLG_CH02_BARK_DOCK_001,Her mother went from this dock too. Same age near enough.
 DLG_CH02_BARK_DOCK_002,Then she'll have fair weather. Her mother did.
 DLG_CH02_BARK_DOCK_003,Went where?
 DLG_CH02_BARK_DOCK_004,"Out. Pass me that float, would you?"
+DLG_CH02_BARK_DOCK_LISTEN_001,Float's mended. Thank you for holding it.
+DLG_CH02_BARK_DOCK_LISTEN_002,Weather'll hold. You can feel it in the rope.
 DLG_CH02_BARK_LANE_001,"One for the shell and two for the ash,"
 DLG_CH02_BARK_LANE_002,three for the bell and four for the hush...
 DLG_CH02_BARK_LANE_003,What comes after four?
 DLG_CH02_BARK_LANE_004,You start again. Everybody knows that.
+DLG_CH02_BARK_LANE_LISTEN_001,Do you know the shell song?
+DLG_CH02_BARK_LANE_LISTEN_002,Only up to four.
+DLG_CH02_BARK_LANE_LISTEN_003,That's all of it. Then you start again.
 DLG_CH02_BARK_MARKET_001,"Two days. Two days, and she's still helping me wrap fish."
 DLG_CH02_BARK_MARKET_002,Salt and stone. Her knots are neater than mine ever were.
 DLG_CH02_BARK_MARKET_003,Who's leaving? You've wrapped enough for a whole crew.
 DLG_CH02_BARK_MARKET_004,"Hold this end, would you? The leaf tears if you pull it."
+DLG_CH02_BARK_MARKET_LISTEN_001,Take a fig. There's more than anyone can carry.
+DLG_CH02_BARK_MARKET_LISTEN_002,For the crew who's leaving?
+DLG_CH02_BARK_MARKET_LISTEN_003,For whoever's hungry. Go on.
 DLG_CH02_BEACH_001,The sea gave me back at dawn. Somebody was humming.
 DLG_CH02_BEACH_016,A star-path. The one they teach children for finding the way home.
 DLG_CH02_BEACH_002,"There you are. No, don't sit up yet. You've swallowed half the bay."
@@ -146,12 +159,12 @@ DLG_CH02_BEACH_014,"Come up to the village. Bring your father's light. You'll ea
 DLG_CH02_BEACH_015,"Come up to the village. You'll eat first, and then we'll tell you what we know."
 DLG_CH02_BEACH_035,She smiled first. Every time. It took me a long while to understand why.
 DLG_CH02_LOOK_LINTEL_GULL_001,"Every roof's got one, and every one faces the sea. Nobody carves a gull to watch the land."
+DLG_CH02_LOW_TIDE_001,The tide-readers set the day. The causeway opens this far twice a month.
+DLG_CH02_LOW_TIDE_002,"Come and see it, Rhen. It's the most beautiful thing we have."
 DLG_CH02_LOW_TIDE_005,"Once we cross, we won't be back before dark. Is there anyone you want to see first?"
 DLG_CH02_LOW_TIDE_006,Go now.
 DLG_CH02_LOW_TIDE_007,Not yet.
 DLG_CH02_LOW_TIDE_008,Then go and see them. The tide will hold a while yet.
-DLG_CH02_LOW_TIDE_001,The tide-readers set the day. The causeway opens this far twice a month.
-DLG_CH02_LOW_TIDE_002,"Come and see it, Rhen. It's the most beautiful thing we have."
 DLG_CH02_LOW_TIDE_003,"He is not sworn to anything, Asha."
 DLG_CH02_LOW_TIDE_004,"I know. I'm already walking, Toma."
 DLG_CH02_NEMES_TABLE_001,"Up, then. Sit. Not that stool, it bites."
@@ -194,8 +207,8 @@ DLG_CH03_BARK_MARKET_NIGHT_002,I'll carry it for both of us.
 DLG_CH03_DOCK_001,"Asha. On the shrine steps, Toma said..."
 DLG_CH03_DOCK_002,"How was your day, Rhen? Truly."
 DLG_CH03_DOCK_003,"...Long. Good, mostly."
-DLG_CH03_DOCK_004,You leave the day after tomorrow.
-DLG_CH03_DOCK_005,At first tide. The causeway won't wait for me.
+DLG_CH03_DOCK_012,"You're leaving, aren't you? The bag at Neme's."
+DLG_CH03_DOCK_005,The day after tomorrow. At first tide. The causeway won't wait for me.
 DLG_CH03_DOCK_006,"Then let me come. As your guardian. I can dive, and I can carry, and I don't scare."
 DLG_CH03_DOCK_007,Yes.
 DLG_CH03_DOCK_008,"Asha. A guardian is not chosen on a dock, at night—"

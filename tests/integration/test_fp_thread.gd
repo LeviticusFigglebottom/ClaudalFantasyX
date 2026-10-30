@@ -80,13 +80,9 @@ func test_the_first_playable_thread_end_to_end() -> void:
 	assert_true(zone.player.accepts_input, "Rhen is free to walk")
 	assert_false(story.busy)
 
-	# Three villagers, each a bark scene.
+	# M4-A2P-115 A4: at dawn the town's talk (B03) waits for Neme's table.
 	for id in NPC_IDS:
-		var npc := _interactable(zone, id)
-		var before := lines
-		assert_true(npc.try_interact(), "%s answers" % id)
-		assert_true(lines > before, "%s spoke" % id)
-		assert_false(story.busy, "%s's bark finished" % id)
+		assert_false(_interactable(zone, id).is_available(), "%s waits for Neme's table" % id)
 
 	# Walking up the beach toward the village crosses the story's real tideline trigger.
 	_walk_into_battle(zone)
@@ -115,6 +111,13 @@ func test_the_first_playable_thread_end_to_end() -> void:
 	story.begin()
 	assert_true(bool(Game.get_flag(&"ch02_ate_at_nemes")), "B02, Neme's table, played on the return")
 	assert_false(story.busy, "and finished")
+	# Three villagers, each a bark scene, once Rhen has eaten at Neme's (B03).
+	for id in NPC_IDS:
+		var npc := _interactable(zone, id)
+		var before := lines
+		assert_true(npc.try_interact(), "%s answers" % id)
+		assert_true(lines > before, "%s spoke" % id)
+		assert_false(story.busy, "%s's bark finished" % id)
 	_walk(zone, Vector3(1, 0, 0), 2.0, func() -> bool: return false)
 	assert_eq(battle_opens, 2, "a won battle never starts again")
 	var causeway := _interactable(zone, &"causeway_head")

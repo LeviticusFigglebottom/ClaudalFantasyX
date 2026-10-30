@@ -1208,6 +1208,20 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - The 4 pending stills frame their places on the dressed zones (raycast: the floors match the greybox). They show
     no people yet: Ch11 and Ch12's actors (Ram, Hesk and Nhoa included) are added to M4-CIN-1305 for the chapters
     track.
+- **FAST-TRACK M4-A2P-115 (story's Act I read-through, A1–A8), MERGE-READY @ 5a935953** (review: narrative):
+  - A1: Rhen asks Asha when she leaves (the bag at Neme's) before he offers to be her guardian.
+  - A2: Ch1's low lights can't be skipped; a test checks the trigger covers the gauge room's mouth.
+  - A3: Asha's invitation comes before "Go now / Not yet".
+  - A4: nothing of B03 plays at dawn before Neme's table.
+  - A5: each villager's Listen has its own short follow-up (four new barks).
+  - A6: fragments never replay after a reload.
+  - A7: the roof dive plays once, then a two-line after-bark.
+  - A8: "a girl I'd known for a day".
+  - Tests: haluna 66, ch01 20, ch01_thread 2, _thread 40, dialogue 86, fp_ 30, all 0 failed. The task file (from
+    claude/act2-plan) is not merged here: its id collides with integration's M4-A2P-115 (the Quellan eye-height
+    request). **For the Lead / act2-plan:** renumber the read-through task, then set it to review. My notes for its
+    Review log are the A1–A8 lines above. Narrative should review the four Listen follow-ups and the roof
+    after-bark (new lines).
 ### PC-QUEUE
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan

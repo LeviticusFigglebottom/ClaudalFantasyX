@@ -1,0 +1,9 @@
+// Ch2 B03 (M4-A2P-115 A5): the Listen follow-up. The fragment itself is overheard once in passing (ch02_bark_lane);
+// talking to them afterwards is a short exchange of its own, not the fragment again. Still nobody says "Cantor".
+title: ch02_bark_lane_listen
+location: ch02/haluna
+---
+Child [smile]: Do you know the shell song? #line:ch02_bark_lane_listen_001
+Rhen [smile]: Only up to four. #line:ch02_bark_lane_listen_002
+Child [neutral]: That's all of it. Then you start again. #line:ch02_bark_lane_listen_003
+===

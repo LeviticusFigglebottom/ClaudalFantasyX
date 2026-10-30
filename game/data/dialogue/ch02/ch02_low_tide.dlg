@@ -6,14 +6,16 @@
 title: ch02_low_tide
 location: ch02/haluna
 ---
+// M4-A2P-115 A3 (story's read-through): the tide and Asha's invitation come before the choice, so Rhen answers an
+// invitation rather than agreeing before he has one; a "Not yet" that comes back hears them again, as a reminder.
+Toma [neutral]: The tide-readers set the day. The causeway opens this far twice a month. #line:ch02_low_tide_001
+Asha [smile]: Come and see it, Rhen. It's the most beautiful thing we have. #line:ch02_low_tide_002
 Asha [soft_smile]: Once we cross, we won't be back before dark. Is there anyone you want to see first? #line:ch02_low_tide_005
 -> Go now. #line:ch02_low_tide_006
 -> Not yet. #line:ch02_low_tide_007
     Asha [smile]: Then go and see them. The tide will hold a while yet. #line:ch02_low_tide_008
     <<event departure_declined>>
     <<stop>>
-Toma [neutral]: The tide-readers set the day. The causeway opens this far twice a month. #line:ch02_low_tide_001
-Asha [smile]: Come and see it, Rhen. It's the most beautiful thing we have. #line:ch02_low_tide_002
 Toma [worried]: He is not sworn to anything, Asha. #line:ch02_low_tide_003
 Asha [soft_smile]: I know. I'm already walking, Toma. #line:ch02_low_tide_004
 // M2-AUD-12: the causeway's cue rises as they set off; Audio's deck carries it into ch03/saltgrass_causeway.
