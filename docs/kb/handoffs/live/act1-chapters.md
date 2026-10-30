@@ -985,6 +985,26 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - The PC re-check of rows 34 and 39.
   - The 7 inherited tool reds, with the owners named at 13:48.
 
+### The Lead's 15:08 relay (10-30): M4-CRE-702, the conduit crawler's enemy row
+- **Already landed:** `conduit_crawler` has been in game/data/battle/enemies.json since fc316eda4 (M4-A2P-022, today),
+  and it's on integration.
+  - It has `name_key` ENEMY_CONDUIT_CRAWLER, `lore_key` LORE_CONDUIT_CRAWLER and `model`
+    `res://game/creatures/conduit_crawler/conduit_crawler_battle.tscn`, the task's three keys.
+  - Stats per lamp_engine.md §4: L10, HP 200, str 9, def 20, mdef 20, agi 12.
+  - Skills: brush_jab, crawler_mend (`restores_part`), crawler_tend. ch11_lamp_engine fields two of them.
+  - **For creatures:** M4-CRE-702 can go to review. The file is only on claude/creatures, so I didn't add a copy here,
+    which would be an add/add conflict.
+- **Acceptance:**
+  - validate_data is clean.
+  - `--filter=battle` has one red, `test_battle_act1_ability_vfx::test_every_act_one_skill_has_its_own_effect`. It
+    wants effects for the four Vowbound Swells (farewell_tide, pass_cord, still_water, the_seven), because it counts
+    every `swell` skill whatever its act.
+  - It's the same on integration (no `effects` on those rows there either), so it isn't from this branch.
+    Battle-presentation is generating them under M4-A2P-061 (`doing`).
+- **The Ch10–13 walks:** done at 14:48 (all green; 15 stills viewed).
+  - The four camera fixes wait on the 14:48 LEAD-ASK for a second shot budget. Moving them unverified would be
+    guessing.
+
 ## Exact next step
 **BACKLOG EMPTY (2026-10-30 ~02:00):** the flow and pacing pass is done (`docs/kb/qa/act1_flow_pacing_pass.md`) and the
 Act II chapter drafts are written (`docs/kb/plan/act2/chapters/`, pre-gate). Waiting on:
