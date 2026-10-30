@@ -426,3 +426,6 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
   - dlgc 0/0, validate_data 0/0, taskboard clean;
   - tools: test_qa_flag_reach OK, test_zone_map_pois OK;
   - Godot: `dialogue` 86/0.
+  - Godot `qa_threads` 1/0 (no "never raises").
+- MERGE-READY big23 FAST-TRACK @ 31c4ff8d2
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114 (flows play the scenes, restore the rows), M4-A2P-112 items 3, 5 and 6.
