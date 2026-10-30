@@ -70,7 +70,9 @@ DAIS = (-4.6, 6.2, -3.4, 4.8)  # x0, x1, z0, z1 of the battle floor's top: the s
 #                               enemy side's steps go down into the water where the Engine stands (ENGINE_AT)
 DAIS_STEPS = ((0.9, -0.4), (0.45, -0.2))  # (how far each step runs out from the dais, its top)
 ENGINE_AT = (-6.4, FLOOR_Y, -2.6)  # the boss anchor: on the flooded floor past the steps, knee-deep
-PIER_AT = ((-8.5, -8.5), (0.0, -9.0), (8.5, -8.5), (-9.0, 0.0), (9.0, 0.0), (-8.5, 8.5), (8.5, 8.5), (0.0, 9.5))
+PIER_AT = ((-8.5, -8.5), (0.0, -9.0), (8.5, -8.5), (-9.0, 0.0), (9.0, 0.0), (-8.5, 8.5), (8.5, 8.5), (0.0, 11.0))
+# The south-middle pier stands behind the battle camera's rest (0.7, 4.0, 9.8): at z 9.5 its face filled the left of
+# the frame (M4-A2P-114, done by env-art-b with the Lead's leave)
 FALLEN_BAY = (-6.0, 0.0, -10.5, -4.5)  # x0, x1, z0, z1 of the vault opening (behind the foes)
 RAIL_Y = 3.5
 CONDUIT_Y = 8.4
