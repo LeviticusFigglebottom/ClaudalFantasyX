@@ -338,3 +338,17 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - **Checks:** dlgc --check 0/0 · validate_data 0/0 · taskboard clean · Godot `act2_dialogue` 1/0 and `dialogue` 86/0.
 - MERGE-READY @ 4185052e2
 - BACKLOG EMPTY (story track).
+
+## 2026-10-30: big22 merged; two tools reds fixed (Lead FAST-TRACK)
+- Merged integration (big22) @ 3ef552f87. The fixes are in the merge commit:
+  - **test_cutscene_sfx_files:** big22 delivered all 11 pending SFX and `kesh_memory`, so `SFX_TODO` and `MUSIC_TODO` are now empty, as the test demands. `kesh_memory`'s stand-in row came with the merge. M4-A2P-107's audio rows are ticked; characters' clips remain.
+  - **test_status_names:** the Kirru speaker label "Shell-carver" collided with ADR 0202's retired status name Shell. It's now **"Name-carver"** (she carves the name-shells), and act3_ch18 is updated to match.
+- **Conflicts:**
+  - `ch11.csv`: both appends kept.
+  - `objectives.json`: integration's zone-level main rows (8287ca8b3) are pinned by `test_act_two_zones_point_along_the_main_path`, and my beat-level main rows clash with them in either order. **I dropped my 30 main rows and their `OBJ_CH1N_*` text and kept my 13 side errands.** M4-A2P-109 and act2_text_ids.md are updated.
+- **LEAD-ASK:** later, when the chapter flows set the story flags, should the beat-level main lines replace the zone-level ones? They're in git history at 1a3aa7b9a. Owner of the test: whoever wrote 8287ca8b3.
+- **Checks:**
+  - tools: test_cutscene_sfx_files and test_status_names (8 tests) OK; loc_csv_shape, loc_key_names, loc_literals and loc_readiness OK; the hero-clip subset (7 tests) OK.
+  - validate_data 0/0 · taskboard clean · dlgc 0/0.
+  - Godot: `objective` 16/0, `zone_map` 22/0, `pseudo_loc` 26/0, `act2_dialogue` 1/0, `codex` 16/0.
+- MERGE-READY @ 3ef552f87
