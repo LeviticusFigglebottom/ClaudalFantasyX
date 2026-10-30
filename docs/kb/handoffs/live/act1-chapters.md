@@ -478,6 +478,24 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
     - test_chapter_flow, test_act1_flow_audit, test_act1_poi_views, test_zone_map_pois OK.
   - Still red here: test_zone_cast's out-of-step check (M3-CIN-1250, creatures).
 
+- **MERGE-READY @ 40a8962cb: Ch10's Mangrove Drowner (M4-A2P-010, ADR 0205)**
+  - **Data (9686fff6f):**
+    - the enemy row on creatures' model and its `uprooted` phase: rooted (defence 120, Toma's Shell Breaker
+      answers), uprooted at 55%;
+    - five skills; `ch10_mangrove_drowner` on `ossa_fen_roots`; loc rows in ch10.csv.
+  - **Sim** (1,000 seeds, ch08_seawall until the Ch10 loadout): naive 2.5%, role_answer 71.9%, smart 100% (report
+    only with a 30-turn floor, as the Matron; logged in balance_targets.md; the 70–90% band needs M3-C05-06's
+    escalation mechanic), p90 46.
+  - **Flow (40a8962cb):** a clearing trigger runs the battle; the way on to Reedhollow requires
+    `ch10_drowner_defeated` (declared).
+  - **Checks:**
+    - `--filter=` ch10 3/0, act1_encounters_resolve 2/0, creature_actor 30/0, boss 84/0;
+    - `sim.py --suite ch10_mangrove_drowner --check` OK;
+    - validate_data, taskboard --check, gdlint, gdformat clean;
+    - flow_audit, chapter_flow, zone_map_pois OK.
+  - Skipped: coverage (data only, no game/battle code).
+  - **LEAD-ASK (combat review):** the smart-band exception. Same cause as the Matron; M3-C05-06 is the fix.
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
