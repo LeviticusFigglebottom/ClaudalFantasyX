@@ -764,3 +764,14 @@ What the Act II fights still need from others: enemy rows and encounters (combat
   Hermit, the Spar-Wraith, the Matron, the Inquisitor, the Reach (the Surge), and Ilun, Kahre and Virel called into
   them. Fixed in my lane: the phase timing (650257ea) and the Wraith's deck KO (above). Open in other lanes: the phase
   moment cut by the next turn, Kahre rising during the Climb's cut, the Wraith's rest framing, ch11's camera and line-up.
+
+## 2026-10-30 ~15:00: the Lead's 14:48 (Act II as-played passes; help battle-presentation with the foe effects)
+- **The effects split: confirmed** (battle-presentation's a5aa7e63 proposal). battle-presentation owns the effect
+  data (the conduit crawler's brush_jab, crawler_mend and crawler_tend, and the four Act II Vowbound's 19, written in
+  tools/vfx/gen_act2_ability_vfx.py on their branch, generated at the first integration merge that carries their skill
+  rows). Once that merge lands, creatures-b views each Vowbound's and the crawler's effects on its own model
+  (anchors, sizes on the bodies) in the as-played sweep, and files any misfit as a battle-presentation task. They are
+  not behind: the two act2/act1 ability-VFX reds on the integration branch are only waiting on that merge.
+- **Act II as-played passes, running:** ch10_mangrove_drowner (Ethren called), ch11_lamp_engine (Hesk), and
+  ch12_avalanche_ram (Nhoa), on the real stage with the sweep (intro, mid-fight, each phase, defeat). Ch13 has no
+  boss encounter yet.
