@@ -411,3 +411,18 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - **Checks:** dlgc --check 0/0 · validate_data 0/0 · taskboard clean · tools dialogue, cutscene and loc tests 183 OK · Godot (after the merge and an `--import`): `dialogue` 86/0, `cutscene_directives` 2/0, `cutscene_music_resolves` 3/0, `cutscene_vfx_hosts` 4/0, `cutscene_mark_via` 4/0, `cutscene_staging` 2/0. Skipped: the QA motion audit (report-only, Act I) and the render tests (no scene, shader or asset touched).
 - MERGE-READY Ch14 @ 603fb1f36 · MERGE-READY Ch15 @ 603fb1f36 · MERGE-READY Ch16 @ 603fb1f36
 - BACKLOG EMPTY (story track).
+
+## 2026-10-30: Lead FAST-TRACK (big23 reds on this branch)
+1. **test_qa_threads** (19 waits in Ch10–13: the guard counts a row against the thread of its zone's chapter):
+   - The greybox Ch10–Ch14 flows play **no** Act II scene, so no thread raises a story flag. That includes `ch10_farewell_tide_seen` (set by `ch10_farewell_tide`) and the `chNN_complete`s.
+   - A `<<set>>` in my scripts can't make the threads raise them, so I used the Lead's second option.
+   - The Ch10–13 main rows now wait only on what the threads raise: `chNN_started`, the reached/entered flags and the Drowner's victory. Each zone's last row has no `until`.
+   - The Lacquer Court's `lc_vows` has no `requires` or `until` (the court is only visited in Ch14, and Ch13's thread is the one that checks it).
+   - **10 rows were cut:** r_gate, l_out, k_to_quellan, q_inn, q_on, la_roll, a_moorings, a_rest, lc_steps, lc_gate. They're in git at 089c254d4, and their loc keys stay.
+   - **Request M4-A2P-114 (cinematics, act1-chapters' flows):** play each scene from the flow, then restore the rows. It has a flag → scene → row table. The Avalanche Ram needs a `victory_flag` (`ch12_ram_felled`).
+2. **test_qa_flag_reach:** `ch14_steps_held` had no setter. `ch14_first_ripple` now sets it as it opens (the scene after the set piece; Ch15's shoal reads it), and its flags.tres row says so. The test passes.
+3. **test_cutscene_sfx_files and test_status_names:** already green on this branch since the earlier fixes (8 OK). Integration still shows them red until this branch is merged.
+- **Checks:**
+  - dlgc 0/0, validate_data 0/0, taskboard clean;
+  - tools: test_qa_flag_reach OK, test_zone_map_pois OK;
+  - Godot: `dialogue` 86/0.
