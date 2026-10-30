@@ -59,6 +59,8 @@ var life: LifeAudio
 var impact: ImpactAudio
 ## Cutscene foley on each sequencer's cues (M3-AUD-817; cutscene_audio.gd).
 var cutscene: CutsceneAudio
+## Field objects' own sounds when used (M3-AUD-864; interact_audio.gd).
+var interact: InteractAudio
 var stings := StingAudio.new()
 var music: MusicDeck
 var sfx: SfxBank
@@ -147,6 +149,11 @@ func setup(mix_table: Dictionary, music_table: Dictionary, sfx_table: Dictionary
 		impact.name = "ImpactAudio"
 		impact.bind_director(self)
 		add_child(impact)
+	if interact == null:
+		interact = InteractAudio.new(AudioData.table(AudioData.INTERACT_SFX))
+		interact.name = "InteractAudio"
+		interact.bind_director(self)
+		add_child(interact)
 	if cutscene == null:
 		cutscene = CutsceneAudio.new()
 		cutscene.name = "CutsceneAudio"
@@ -498,6 +505,8 @@ func _on_node_added(node: Node) -> void:
 		_later(attach_shrine, node)
 	elif node is Ch05AshcrownZone:
 		_later(attach_ashcrown, node)
+	elif node is Ch08CoilspireZone:
+		_later(attach_coilspire, node)
 	elif node is FieldController:
 		_later(attach_footsteps, node)
 	elif reefball != null and reefball.wants(node):
@@ -508,6 +517,10 @@ func _on_node_added(node: Node) -> void:
 		_later(impact.watch, node)
 	elif ChoreoAudio.wants(node):  # M3-AUD-13: the battle choreography's layers (choreo_sfx.json hooks)
 		_later(ChoreoAudio.attach_to.bind(self), node)
+	elif node is Interactable:  # its own sound (InteractAudio) and the menu's soft touch (UiAudio)
+		_later(interact.watch, node)
+		if ui != null and ui.wants(node):
+			_later(ui.watch, node)
 	elif ui != null and ui.wants(node):
 		_later(ui.watch, node)
 
@@ -612,6 +625,19 @@ func attach_ashcrown(zone: Node) -> void:
 		return
 	var l := AshcrownAudio.new(AudioData.table(AudioData.ASHCROWN_SFX))
 	l.name = "AshcrownAudio"
+	l.bind_director(self)
+	add_child(l)
+	l.attach(zone as Node3D)
+	listeners[zone] = l
+
+
+## M3-AUD-864: Ch8's Coilspire flue-key trial (the keys turning, the coughs, each tier lit, the niche, the seized
+## key), heard by the same listener as the Ashcrown trial from coilspire_sfx.json.
+func attach_coilspire(zone: Node) -> void:
+	if not is_instance_valid(zone) or not zone.is_inside_tree() or listeners.has(zone):
+		return
+	var l := AshcrownAudio.new(AudioData.table(AudioData.COILSPIRE_SFX))
+	l.name = "CoilspireAudio"
 	l.bind_director(self)
 	add_child(l)
 	l.attach(zone as Node3D)

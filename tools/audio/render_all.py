@@ -62,7 +62,8 @@ AMBIENCE_BUDGET = int(2.5 * 1024 * 1024)  # the M2-AUD-05 field beds together
 # Per-job budgets for later "ambience_loop" jobs (each job's beds together; the M2-AUD-05 job keeps AMBIENCE_BUDGET).
 AMBIENCE_JOB_BUDGETS = {"assets_src/sfx/causeway_ambience.py": int(1.2 * 1024 * 1024),
                         "assets_src/sfx/act1_ambience.py": int(3.0 * 1024 * 1024),  # M2-AUD-13: two q1 beds; M3-AUD-16: six
-                        "assets_src/sfx/prologue_ambience.py": int(0.6 * 1024 * 1024)}  # M3-AUD-817: one q1 bed
+                        "assets_src/sfx/prologue_ambience.py": int(0.6 * 1024 * 1024),  # M3-AUD-817: one q1 bed
+                        "assets_src/sfx/act1_walla_ambience.py": int(1.2 * 1024 * 1024)}  # M3-AUD-864: two q1 layers
 AMBIENCE_LUFS, AMBIENCE_MAX_TP = -26.0, -5.0  # mix.md §2: ambience loops at -26 LUFS, rendered at <= -6 dBFS
 
 
@@ -240,6 +241,11 @@ JOBS = [
     ("assets_src/sfx/act2_cutscene_sfx.py", "assets/audio/sfx",
      _source_files("assets_src/sfx/act2_cutscene_sfx.py"), "sfx"),
     ("assets_src/sfx/act2_ui_sfx.py", "assets/audio/sfx", _source_files("assets_src/sfx/act2_ui_sfx.py"), "sfx"),
+    ("assets_src/sfx/act1_foley_detail_sfx.py", "assets/audio/sfx", _source_files("assets_src/sfx/act1_foley_detail_sfx.py"),
+     "sfx"),
+    ("assets_src/sfx/act1_struck_sfx.py", "assets/audio/sfx/choreo", _source_files("assets_src/sfx/act1_struck_sfx.py"), "sfx"),
+    ("assets_src/sfx/act1_walla_ambience.py", "assets/audio/ambience",
+     [f"{b}{ext}" for b in ("corrow_town", "haluna_mourners") for ext in (".ogg", ".loop.json")], "ambience_loop"),
     # M4-A2P-090 (ADR 0175): Act II scene cues, plain git under assets/audio/act2/music/
     ("assets_src/music/act2/farewell_tide.py", "assets/audio/act2/music",
      ["farewell_tide.ogg", "farewell_tide.loop.json", "farewell_tide_release.ogg"], "music_loop"),  # M4-CIN-1301
