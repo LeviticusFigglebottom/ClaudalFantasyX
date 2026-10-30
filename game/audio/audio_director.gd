@@ -66,6 +66,8 @@ var music: MusicDeck
 var sfx: SfxBank
 ## Ambience bed id -> FadeVoice.
 var beds: Dictionary = {}
+## The listener whose battle arena's beds play now (set_arena_ambience), or null.
+var arena_owner: Object = null
 ## The zone row applied last ({} for none) and its scene.
 var zone: Dictionary = {}
 var zone_path: String = ""
@@ -372,6 +374,25 @@ func set_ambience(ids: Array[StringName], sec: float = -1.0) -> void:
 		if not (bed.player as AudioStreamPlayer).playing:
 			(bed.player as AudioStreamPlayer).play()
 		bed.fade_to(1.0, fade)
+
+
+## A battle arena's beds take over from the field's (ambience.json `arenas`, the Lead's 10-30 13:08 item) for
+## `owner` (its BattleAudio), fading over ambience.json arena_fade_sec.
+func set_arena_ambience(owner: Object, ids: Array[StringName]) -> void:
+	arena_owner = owner
+	set_ambience(ids, float(ambience_data.get("arena_fade_sec", -1.0)))
+
+
+## `owner`'s battle has left: the zone's own beds come back (none when the zone has none). A later battle that
+## already took the beds over (a retry builds its listener before the old one leaves) keeps them.
+func release_arena_ambience(owner: Object) -> void:
+	if arena_owner != owner:
+		return
+	arena_owner = null
+	var ids: Array[StringName] = []
+	for a: Variant in zone.get("ambience", []):
+		ids.append(StringName(str(a)))
+	set_ambience(ids, float(ambience_data.get("arena_fade_sec", -1.0)))
 
 
 # --------------------------------------------------------------------------- sfx

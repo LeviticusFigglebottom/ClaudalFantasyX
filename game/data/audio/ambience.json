@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "doc": "Field ambience beds (M2-AUD-05; docs/kb/tech/audio_runtime.md). ambience: bed id -> file, volume_db (0: the beds ship at -26 LUFS), bus. The director merges these beds into music.json's ambience table (music.json's rows win on a clash). zones: scene -> the beds that play there by day; once night_flag is set, the night list instead; wind: true adds the wind bed. A zone's beds here apply when music.json's row for the scene names none (no ambience key, or an empty list), so music.json can still override a scene. wind: the wind bed's level follows the zone's wind speed (WeatherClock.zone_wind, game/data/world/zone_weather.json): min_db at or below min_m_s, max_db at or above max_m_s, linear in between. tools/validate_data.py checks every file, bed, scene and flag.",
+  "doc": "Field ambience beds (M2-AUD-05; docs/kb/tech/audio_runtime.md). ambience: bed id -> file, volume_db (0: the beds ship at -26 LUFS), bus. The director merges these beds into music.json's ambience table (music.json's rows win on a clash). zones: scene -> the beds that play there by day; once night_flag is set, the night list instead; wind: true adds the wind bed. A zone's beds here apply when music.json's row for the scene names none (no ambience key, or an empty list), so music.json can still override a scene. wind: the wind bed's level follows the zone's wind speed (WeatherClock.zone_wind, game/data/world/zone_weather.json): min_db at or below min_m_s, max_db at or above max_m_s, linear in between. tools/validate_data.py checks every file, bed, scene and flag. arenas (the Lead's 10-30 13:08 item): a battle arena id (game/data/battle/arenas.json) -> the beds BattleAudio plays in its battle in place of the field's, fading over arena_fade_sec; the field's come back when the battle leaves (AudioDirector.release_arena_ambience). An arena with no row keeps the field's beds under the battle. Act II's arenas first; an arena that is the same place as a zone bed uses that bed.",
   "ambience": {
     "haluna_day": {
       "file": "res://assets/audio/ambience/haluna_day.ogg",
@@ -128,7 +128,12 @@
     "sanctum_basin": {"file": "res://assets/audio/act2/ambience/sanctum_basin.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch13, the Sanctum: the basin's air, just above silence"},
     "open_sea_night": {"file": "res://assets/audio/act2/ambience/open_sea_night.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch15, the unlamped barge: the sea on the hull, timbers, the bridal cloth stirring"},
     "pale_rim_shallows": {"file": "res://assets/audio/act2/ambience/pale_rim_shallows.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch16, the Pale Rim: soft wind, a thin wash over the flats, far ripples, a cairn stone"},
-    "choir_bowl": {"file": "res://assets/audio/act2/ambience/choir_bowl.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch16, the Drowned Choir: wind moaning through the stone mouths, water in the bowl"}
+    "choir_bowl": {"file": "res://assets/audio/act2/ambience/choir_bowl.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch16, the Drowned Choir: wind moaning through the stone mouths, water in the bowl"},
+    "arena_fen_roots": {"file": "res://assets/audio/act2/ambience/arena_fen_roots.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): battle arena, Ch10 the dead mangrove (the Mangrove Drowner): still fen air, mud and silt bubbles, dead roots creaking"},
+    "arena_engine_hall": {"file": "res://assets/audio/act2/ambience/arena_engine_hall.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): battle arena, Ch11 the flooded engine hall (the Lamp Engine): the engine's throb near, the conduits' hum, water at the dais"},
+    "arena_seep_terrace": {"file": "res://assets/audio/act2/ambience/arena_seep_terrace.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): battle arena, Ch12 Keth Pass seep terrace (the Avalanche Ram): rock seeping, trickles over the kerb, wind, a loosed stone"},
+    "arena_lagoon_dusk": {"file": "res://assets/audio/act2/ambience/arena_lagoon_dusk.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): battle arena, Ch14 Ansedra's lagoon at the wedding's dusk (Malcor Venn): rippled water, the barge, a far bell, far raised voices"},
+    "arena_court_steps": {"file": "res://assets/audio/act2/ambience/arena_court_steps.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): battle arena, Ch14 the Lacquer Court's water-steps: the crowd drawn back and far, silk, water on the steps, a far gong"}
   },
   "zones": {
     "res://game/levels/prologue/prologue.tscn": {"day": ["iskarra_dusk"], "_note": "M3-AUD-817: Iskarra's drowned plaza at dusk, the room tone under the prologue cutscene"},
@@ -265,6 +270,16 @@
     "res://game/levels/ch15/open_sea/open_sea.tscn": {"day": ["open_sea_night"], "_note": "M4-A2P-093"},
     "res://game/levels/ch16/pale_rim/pale_rim.tscn": {"day": ["pale_rim_shallows"], "_note": "M4-A2P-093"},
     "res://game/levels/ch16/drowned_choir/drowned_choir.tscn": {"day": ["choir_bowl"], "_note": "M4-A2P-093"}
+  },
+  "arena_fade_sec": 1.0,
+  "arenas": {
+    "ossa_fen_roots": ["arena_fen_roots"],
+    "lowlight_engine_hall": ["arena_engine_hall"],
+    "keth_seep_terrace": ["arena_seep_terrace"],
+    "lacquer_court_steps": ["arena_court_steps"],
+    "ansedra_lagoon_escape": ["arena_lagoon_dusk"],
+    "bridal_barge_night": ["open_sea_night"],
+    "drowned_choir_ring": ["choir_bowl"]
   },
   "wind": {
     "bed": "wind",

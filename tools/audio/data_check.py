@@ -231,6 +231,15 @@ def hook_errors(name: str, doc: object, ids: set[str], vfx_effects: set[str]) ->
     return errs
 
 
+def _arena_ids() -> set[str] | None:
+    """The battle arena ids (game/data/battle/arenas.json scenes), or None when the file can't be read."""
+    try:
+        with open(Path(__file__).resolve().parents[2] / "game/data/battle/arenas.json", encoding="utf-8") as f:
+            return set(json.load(f)["arenas"]["scenes"])
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+
+
 def ambience_errors(doc: object, exists, flags: set[str], buses: set[str], music_beds: set[str]) -> list[str]:
     """ambience.json (M2-AUD-05): its beds, the zones' bed lists, night flags, and the wind mapping."""
     if not isinstance(doc, dict):
@@ -253,6 +262,19 @@ def ambience_errors(doc: object, exists, flags: set[str], buses: set[str], music
             errs.append(f"{AMBIENCE} wind: min_m_s, max_m_s, min_db and max_db must be numbers")
         elif wind["min_m_s"] >= wind["max_m_s"]:
             errs.append(f"{AMBIENCE} wind: min_m_s must be below max_m_s")
+    arenas = _arena_ids()
+    for arena, ids in (doc.get("arenas") or {}).items():
+        w = f"{AMBIENCE} arenas.{arena}"
+        if arenas is not None and arena not in arenas:
+            errs.append(f"{w}: not an arenas.json arena")
+        if not isinstance(ids, list) or not ids:
+            errs.append(f"{w}: must be a non-empty list of beds")
+            continue
+        for b in ids:
+            if b not in beds:
+                errs.append(f"{w}: unknown bed {b}")
+    if "arena_fade_sec" in doc and not (_num(doc["arena_fade_sec"]) and doc["arena_fade_sec"] >= 0):
+        errs.append(f"{AMBIENCE} arena_fade_sec: must be a number at or above 0")
     for scene, row in (doc.get("zones") or {}).items():
         w = f"{AMBIENCE} zones.{scene}"
         if not scene.startswith("res://") or not scene.endswith(".tscn"):
