@@ -2,8 +2,8 @@
 id: M4-A2P-114
 title: "Request: play the Act II scenes from the Ch10–Ch16 flows (the setters for the beat-level objective rows)"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: "act1-chapters (claude/act1-chapters)"
 depends_on: []
 reviewer: narrative
 milestone: M4
@@ -68,7 +68,27 @@ row's `"chapter"` or Ch13's thread plays into Ch14.
 
 ## Acceptance criteria
 - [x] The beat-level rows are back in `objectives.json` (story, 2026-10-30).
-- [ ] Each Ch10–Ch14 flow plays its scenes and battles in §1's order.
-- [ ] `qa_known.json` `"unraised"` is empty again, and test_qa_threads stays green.
+- [x] Each Ch10–Ch13 flow plays its scenes and battles in §1's order (Ch14: M4-A2P-117).
+- [ ] `qa_known.json` `"unraised"` is empty again, and test_qa_threads stays green. (Down from 19 to Ch14's 5, which wait on M4-A2P-117; green.)
+
+## Notes (act1-chapters, 2026-10-30)
+- **Wired (§1 rows 1–14):** the triggers come from the generators: reedhollow `shore`, lowlight `engine` and
+  `sanctum`, keth_pass `terrace`, cloudloom `dais`, sanctum `ledge`, lamp_archive `ledgers` and `roll`.
+  - The return scenes are `arrive` rows:
+    - Lowlight after the engine fight (`ch11_twice`, held to once by the new `ch11_twice_seen`).
+    - Vey from Lowlight (`ch11_held_by_you`).
+    - Keth Pass after the Ram (`ch12_herd_cord`) and from Quellan (`ch12_down_the_other_side`).
+    - Quellan from Cloudloom (`ch12_forty_seven_voices`).
+    - The Archive's third visit (`ch13_archive_hands`).
+    - Ansedra from the Archive (`ch13_the_pact`).
+  - Battles use one route each: `play` the scene, then the flow's `battle` step (a scene's `start_battle` is only
+    reported).
+  - `ch11_engine_released` is declared in flags.tres.
+- **Threads:** test_ch10..13_thread play the story in order. The 14 rows are gone from `unraised`, and
+  test_qa_threads is green.
+- **Staging:** the scenes name shots, cast, marks and VFX anchors these greybox stages don't have yet (100 warnings).
+  They're handed to M4-A2P-075 (staging 070–075, mine) through one qa_known `known` row.
+- **Ch14 (rows 15–19):** `ch14_water_steps`, `ch14_malcor_venn` and Venn's enemy row aren't built yet, so these are
+  M4-A2P-117.
 
 ## Review log
