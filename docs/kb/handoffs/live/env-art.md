@@ -589,6 +589,8 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **LEAD (19:25), IN PROGRESS: the Ch4 beauty pass (the Haluna wake, the Brightwater ferry), then the Prologue-to-Ch4
+  transitions as played.** Eye-height stills are rendering.
 - **LEAD (18:24), answered: the Ch2 Haluna and Ch3 causeway beauty pass (M4-A2P-1400, review: art). MERGE-READY @ dadb6930.**
   - Stills at eye height along the walkthrough legs, viewed: Haluna 22, the causeway 12, the Shell Shrine 8.
   - **Fixed:** Haluna's 49 windbreak trees rendered as black blots from every side. `kit_windbreak_leaf` now has a
