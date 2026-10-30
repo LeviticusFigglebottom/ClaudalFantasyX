@@ -24,11 +24,11 @@ transform = Transform3D(-0.180652, 0.0787153, -0.980392, 0, 0.996792, 0.080032, 
 fov = 40.0
 
 [node name="CausewayHead" type="Camera3D" parent="Cameras"]
-transform = Transform3D(0.707107, -0.0915311, 0.701158, 0, 0.991587, 0.129444, -0.707107, -0.0915311, 0.701158, 7, 3.4, -95)
+transform = Transform3D(0.773957, -0.0968662, 0.625785, 0, 0.988231, 0.15297, -0.633238, -0.118392, 0.764849, 10.5, 3, -97)
 fov = 45.0
 
 [node name="LaneGames" type="Camera3D" parent="Cameras"]
-transform = Transform3D(-0.0197981, -0.069114, 0.997412, 0, 0.997608, 0.0691276, -0.999804, 0.00136859, -0.0197507, -74.9, 3.1, -10.4)
+transform = Transform3D(-0.6, -0.334324, 0.726792, 0, 0.90849, 0.417906, -0.8, 0.250743, -0.545094, -75, 7, -15.5)
 fov = 45.0
 
 [node name="LaneMender" type="Camera3D" parent="Cameras"]

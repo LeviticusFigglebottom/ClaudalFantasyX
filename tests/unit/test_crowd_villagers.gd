@@ -613,3 +613,33 @@ func test_haluna_vignettes_come_alive_in_the_real_zone() -> void:
 		)
 		assert_between(gap, 0.5, 0.7, "the clapping pair stand a hand-meet apart")
 	_done()
+
+
+## The slice towns lived in (the Lead, 2026-10-30): Oruvel's deck and Pemakar's quay at Lanternfall, at work.
+func test_oruvel_and_pemakar_vignettes_come_alive_in_their_zones() -> void:
+	var people := _people()
+	for z: Array in [
+		["res://game/levels/ch01/oruvel/oruvel.tscn", &"ch01/oruvel", "oruvel_deck_", 6],
+		["res://game/levels/ch05/pemakar/pemakar.tscn", &"ch05/pemakar", "pemakar_quay_", 5]
+	]:
+		var zone := (load(str(z[0])) as PackedScene).instantiate() as Node3D
+		_holder().add_child(zone)
+		var layer := VillagerLayer.wire(zone, z[1] as StringName)
+		layer.build()
+		for i in 30:
+			layer.tick(DT)
+		var found := 0
+		for id: String in people:
+			if not id.begins_with(str(z[2])):
+				continue
+			found += 1
+			var npc := layer.villager(StringName(id))
+			assert_true(npc != null, "%s stands in %s" % [id, z[1]])
+			if npc == null:
+				continue
+			var work := StringName(str((people[id] as Dictionary)["work"]))
+			assert_true(npc.anim != null and npc.anim.has_animation(work), "%s carries %s" % [id, work])
+			if npc.route_points.is_empty():
+				assert_eq(npc.current_clip, work, "%s plays %s" % [id, work])
+		assert_eq(found, int(z[3]), "%s's vignette people" % z[1])
+	_done()
