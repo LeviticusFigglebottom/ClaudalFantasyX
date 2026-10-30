@@ -1695,3 +1695,48 @@ MERGE-READY @ (this commit).
   2. walk-audit routes for each Act II kit as it lands;
   3. the Act II inventory refresh per batch (`placeholder_audit.py --act 2 --write`).
 MERGE-READY @ (this commit).
+
+### Lead's Act I fast-track (10-30 03:44): M3-CIN-1251 and the spawn-camera rows 24, 25/47
+- **M3-CIN-1251 (review: cinematics / act1-chapters) @ 1da21c732:** the field camera now leaves a volume for the hub
+  shot. Outside every volume with a volume still active, `update()` blends to `initial_shot` (its own blend_sec or
+  hard_cut, else default_blend_sec) and `snap()` cuts to it. A zone with no hub shot keeps the last volume's shot,
+  as before. New test `test_leaving_every_volume_returns_to_the_hub_shot`. `qa_field_camera` is 2/0 **with
+  act1-chapters' held c9da92f3f (the Harbour and Weir volumes) applied on top**.
+  - **For act1-chapters:** re-apply GPU QA row 49's camera side (c9da92f3f) once this lands.
+- **Rows 24 and 25/47, the spawn cameras (game/world/**, mine):** reproduced in stills. There were three causes:
+  - **DockShore (the Ch4 wake):** the wake reuses Ch2 Haluna's volumes, and the spawn stands 1.0 m from Ch2's
+    pan-follow shot H04. **Fix:** with nothing between them, a free-play camera nearer his chest than
+    `occlusion.standoff_m` (2.6) backs off along its own line to 2.6 m. There's no jump, because at 2.6 m it is the
+    shot's own place. If that line is blocked, it goes to the ring direction with the most room. Now 2.6 m: a full
+    shot of Rhen on the jetty.
+  - **FerryAft:** the spawn is inside the deckhouse (3.5 × 3.8 m, roof 2.1 m). The pull-in took the camera 9.45 m in,
+    to 1.1 m from him, because the crane can't clear under the roof. **Fix:** when the crane fails, `widest_view()`
+    tries the ring at crane_ring_up_m and then at chest height, and takes the direction with the most room. Now
+    2.6 m: Rhen full-length in the cabin.
+  - **FeastEdge, InkLamp and WallDawn:** the greybox hub orbit looked down at 33° from 8.9 m. **Fix:**
+    `orbit.max_pitch_deg` 24 (`clamp_pitch`: swung down round the aim point, same distance and heading). This
+    affects **every greybox zone's hub orbit**, so the Lead's full manifest may show drift on free-play field
+    shots. Authored framings are untouched; scripted shots never get occlusion.
+  - The party at the feast is still small at 8.9 m: the orbit's distance is the greybox default. A tighter
+    feast shot is a camera volume, **act1-chapters'** (the wake's camera_volumes).
+- **The guard:** `test_qa_field_camera` now also fails on a camera **in his face** (under 1.5 m from his chest) and
+  on a director-computed pitch (orbit or follow) **steeper than 55°**. Authored looks down a stairwell, like
+  Coilspire's Tier1 at −74°, belong to their authors. Against the old director it fails at exactly FerryAft (1.09 m)
+  and DockShore (1.00 m). New unit tests: `test_clamp_pitch_swings_a_steep_orbit_down` and
+  `test_a_shot_in_his_face_backs_off_to_the_standoff`.
+- `tools/hero/walk_stills.gd` prints the pose with each still: the shot, its volume and mode, the authored position,
+  the pull, the camera, the pitch, and the distance to the chest.
+- Row 47's black landing pier at night is lighting: env-art's, not the camera.
+- **A follower fix, found on the merged tree:** `test_no_follower_is_laid_out_in_front_of_the_lens` went red after
+  integration's merge. My party code hadn't changed, and I didn't find which merged change exposed it. With the camera
+  1.5 m behind Rhen, both flank spots were still inside `camera_near_m`, so `off_lens` gave up and Asha walked back to
+  0.31 m from the lens. It now also tries the spot beyond him, away from the lens, and otherwise takes the unblocked
+  spot farthest from it. hero_followers 14/0.
+- Checks on the final tree:
+  - Godot suites: camera 69/0 (qa_field_camera included), hero_ 115/0, qa_party 3/0, qa_walk_audit 1/0, fp_ 30/0,
+    zone_cast 5/0.
+  - Static checks: gdlint and gdformat clean, validate_data 0/0, taskboard OK.
+  - Screenshots: none self-rendered. Most of the Ch4 wake and ferry shots use fixed preview cameras, which this
+    change doesn't touch. **The hub-orbit clamp can drift any shot taken through the field camera's orbit in free
+    play**, so that needs the Lead's full manifest.
+MERGE-READY @ (this commit).

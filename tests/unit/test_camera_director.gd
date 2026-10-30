@@ -142,6 +142,45 @@ func test_leaving_every_volume_returns_to_the_hub_shot() -> void:
 	_free()
 
 
+## The PC's row 24: the hub orbit never looks down more steeply than orbit.max_pitch_deg; it swings down round the aim
+## point at the same distance and heading. A shallower one is left as it is.
+func test_clamp_pitch_swings_a_steep_orbit_down() -> void:
+	var aim := Vector3(1, 1.2, 2)
+	var steep := aim + Vector3(0, 4.8, 7.5)
+	var out := FieldCameraDirector.clamp_pitch(steep, aim, deg_to_rad(24.0))
+	var v := out - aim
+	assert_between(rad_to_deg(atan2(v.y, Vector2(v.x, v.z).length())), 23.9, 24.1, "clamped to 24 deg")
+	assert_between(v.length(), (steep - aim).length() - 0.001, (steep - aim).length() + 0.001, "same distance")
+	assert_between(atan2(v.x, v.z), -0.001, 0.001, "same heading")
+	var shallow := aim + Vector3(0, 2.0, 7.5)
+	assert_eq(FieldCameraDirector.clamp_pitch(shallow, aim, deg_to_rad(24.0)), shallow, "a shallow orbit is kept")
+	_free()
+
+
+## The PC's rows 24 and 25/47: a free-play shot whose own place is in the leader's face (a spawn on a pan-follow
+## camera's spot) backs off along its line to occlusion.standoff_m; no blocker, so no pull-in either.
+func test_a_shot_in_his_face_backs_off_to_the_standoff() -> void:
+	var cfg := director.data.get("occlusion", {}) as Dictionary
+	var standoff := float(cfg.get("standoff_m", 0.0))
+	assert_true(standoff > float(cfg.get("min_view_m", 0.0)), "the standoff is past min_view_m")
+	player.global_position = Vector3(15, 0, -5)  # outside every volume
+	var near := CameraShot.new()
+	near.id = &"in_his_face"
+	near.mode = CameraShot.Mode.PAN_FOLLOW
+	near.position = Vector3(15, 1.6, -4.0)
+	near.look_at = Vector3(15, 1.2, -5)
+	director.initial_shot = near
+	director.snap()
+	_settle()
+	var chest := player.global_position + Vector3.UP * float(cfg.get("chest_m", 0.0))
+	var d := director.camera.global_position.distance_to(chest)
+	assert_between(d, standoff - 0.01, standoff + 0.01, "backed off to the standoff (%.2f m)" % d)
+	var back := (director.camera.global_position - chest).normalized()
+	var own := (near.position - chest).normalized()
+	assert_true(back.dot(own) > 0.999, "along the shot's own line")
+	_free()
+
+
 func test_fixed_shot_holds_its_authored_frame() -> void:
 	_settle()
 	var shot := (zone.get_node("CameraVolumes/LaneVolume") as CameraVolume).shot

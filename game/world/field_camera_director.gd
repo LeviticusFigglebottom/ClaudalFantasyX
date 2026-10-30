@@ -412,18 +412,24 @@ func clear_view(pose: CameraPose, delta: float) -> CameraPose:
 		return pose
 	var want := 0.0
 	var hit := view_blocker(chest, pose.origin)
+	if hit.is_empty() and length < float(cfg.get("standoff_m", 0.0)):
+		# the shot itself sits in his face (a spawn on a pan-follow camera's spot: Ch4 wake's DockShore, the PC's row
+		# 24): backed off along its own line to standoff_m (no jump: at standoff_m it's the shot's own place), or where
+		# the most room is round him when that line is blocked
+		_pull_m = 0.0
+		var off := _backed_off(pose, chest, line / length * float(cfg.get("standoff_m", 0.0)), cfg)
+		return off if off != null else pose
 	if not hit.is_empty():
 		var free := chest.distance_to(hit["position"] as Vector3) - float(cfg.get("margin_m", 0.0))
 		if free < float(cfg.get("min_view_m", 0.0)):  # pulled in this far it'd sit in his face: crane up instead
 			var craned := crane(pose, chest, cfg)
-			if craned != null:
+			if craned == null:  # under a ceiling with walls round (a cabin: the ferry's FerryAft, rows 25/47)
+				craned = widest_view(pose, chest, cfg, free)
+			# not even min_distance_m clear (his chest boxed in: Coilspire's Tier4 spawn stands inside the spiral's
+			# steps): the shot's own pose, not a camera pushed into his face
+			if craned != null or free < float(cfg.get("min_distance_m", 0.0)):
 				_pull_m = 0.0
-				return craned
-			if free < float(cfg.get("min_distance_m", 0.0)):
-				# not even min_distance_m is clear (his chest is boxed in: Coilspire's Tier4 spawn stands inside the
-				# spiral's steps): the shot's own pose, not a camera pushed into his face
-				_pull_m = 0.0
-				return pose
+				return craned if craned != null else pose
 		want = clampf(length - maxf(free, float(cfg.get("min_distance_m", 0.0))), 0.0, length)
 	if want >= _pull_m:
 		_pull_m = want
@@ -470,6 +476,68 @@ func crane(pose: CameraPose, chest: Vector3, cfg: Dictionary) -> CameraPose:
 			if view_blocker(chest, at).is_empty() and not _inside_solid(space, probe, at):
 				return CameraPose.looking(at, chest, pose.fov_deg, pose.dof)
 	return null
+
+
+## `from`, swung down round `aim` (same distance, same heading) so it looks down on it at most `max_pitch` radians;
+## max_pitch <= 0 leaves it as it is. The hub orbit's (orbit.max_pitch_deg: Ch4's wake looked straight down on a party
+## made tiny, the PC's row 24).
+static func clamp_pitch(from: Vector3, aim: Vector3, max_pitch: float) -> Vector3:
+	var v := from - aim
+	var flat := Vector2(v.x, v.z)
+	if max_pitch <= 0.0 or flat.length() < 1e-4 or atan2(v.y, flat.length()) <= max_pitch:
+		return from
+	var r := v.length()
+	var h := flat.normalized() * r * cos(max_pitch)
+	return aim + Vector3(h.x, r * sin(max_pitch), h.y)
+
+
+## `pose` moved to `chest` + `back`, looking where it looked, when that line is clear and the spot isn't in a solid;
+## else widest_view(); null when neither clears.
+func _backed_off(pose: CameraPose, chest: Vector3, back: Vector3, cfg: Dictionary) -> CameraPose:
+	var at := chest + back
+	var probe := SphereShape3D.new()
+	probe.radius = float(cfg.get("crane_clear_m", 0.0))
+	var space := get_world_3d().direct_space_state if is_inside_tree() else null
+	if view_blocker(chest, at).is_empty() and not _inside_solid(space, probe, at):
+		var out := pose.copy()
+		out.origin = at
+		return out
+	return widest_view(pose, chest, cfg)
+
+
+## A pose standoff_m from the leader's `chest`, looking at him: crane_ring_up_m over it, then (under a low roof) level
+## with it, in the first of crane_ring_turns directions round him, from the shot's own side, whose line is clear that
+## far; when none is (a cabin), the one with the most clear room, margin_m short of its wall, if that beats `beat_m`.
+## Null when no direction does better.
+func widest_view(pose: CameraPose, chest: Vector3, cfg: Dictionary, beat_m := 0.0) -> CameraPose:
+	var reach := float(cfg.get("standoff_m", 0.0))
+	if reach <= 0.0:
+		return null
+	var space := get_world_3d().direct_space_state if is_inside_tree() else null
+	var probe := SphereShape3D.new()
+	probe.radius = float(cfg.get("crane_clear_m", 0.0))
+	var margin := float(cfg.get("margin_m", 0.0))
+	var away := Vector3(pose.origin.x - chest.x, 0.0, pose.origin.z - chest.z)
+	var start := atan2(away.x, away.z) if away.length_squared() > 1e-6 else 0.0
+	var turns := maxi(int(cfg.get("crane_ring_turns", 0)), 1)
+	var best_at := Vector3.ZERO
+	var best_m := beat_m
+	for lift: float in [float(cfg.get("crane_ring_up_m", 0.0)), 0.0]:
+		for k in turns:
+			var n := (k + 1) / 2 * (1 if k % 2 == 1 else -1)  # 0, +1, -1, +2 ... round from the shot's side
+			var angle := start + TAU * n / turns
+			var dir := (Vector3(sin(angle), 0.0, cos(angle)) * reach + Vector3.UP * lift).normalized()
+			var hit := view_blocker(chest, chest + dir * reach)
+			var room := reach if hit.is_empty() else chest.distance_to(hit["position"] as Vector3) - margin
+			if room <= best_m or _inside_solid(space, probe, chest + dir * room):
+				continue
+			if room >= reach:
+				return CameraPose.looking(chest + dir * room, chest, pose.fov_deg, pose.dof)
+			best_m = room
+			best_at = chest + dir * room
+	if best_m <= beat_m:
+		return null
+	return CameraPose.looking(best_at, chest, pose.fov_deg, pose.dof)
 
 
 ## True when a sphere `probe` at `at` overlaps a solid body (a crane height inside a step or a floor).
@@ -582,7 +650,8 @@ func evaluate(shot: CameraShot, delta: float) -> CameraPose:
 			var height := shot.orbit_height if shot.orbit_height > 0.0 else _orbit_value("height_m")
 			var offset := Basis(Vector3.UP, orbit_yaw) * Vector3(0.0, height, dist)
 			var centre := subject.global_position if subject != null else _to_world(shot.look_at)
-			return CameraPose.looking(centre + offset, aim_target, fov, shot.dof_dict(), shot.roll_deg)
+			var from := clamp_pitch(centre + offset, aim_target, deg_to_rad(_orbit_value("max_pitch_deg")))
+			return CameraPose.looking(from, aim_target, fov, shot.dof_dict(), shot.roll_deg)
 		CameraShot.Mode.FOLLOW:
 			var heading := _to_world(shot.look_at) - _to_world(shot.position)
 			heading = Vector3(heading.x, 0.0, heading.z).normalized()
