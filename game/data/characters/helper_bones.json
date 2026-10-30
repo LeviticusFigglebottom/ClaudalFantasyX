@@ -15,7 +15,7 @@
     "levels": ["", ".001", ".002"],
     "cloth_mesh": "Costume",
     "cloth_min_weight": 0.3,
-    "clear_m": 0.065,
+    "clear_m": 0.075,
     "slack_m": 0.004,
     "max_swing_deg": 95.0,
     "lag_deg_per_45": 40.0,

@@ -57,6 +57,7 @@
   "_hair": {
     "kind": "cropped",
     "tufts": true,
+    "grey_strands": true,
     "hairline": "male",
     "seed": 27,
     "length_m": [
