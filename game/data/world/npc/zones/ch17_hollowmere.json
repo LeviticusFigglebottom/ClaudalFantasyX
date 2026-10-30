@@ -9,70 +9,70 @@
       "crowd": "hollowmere_netmender",
       "attach": "child",
       "stand_in": "CrowdSpots/hollowmere_netmender",
-      "at": [10.0, 0.0, -17.5, 0.0]
+      "at": [10.0, 0.0, -17.5, 180.0]
     },
     {
       "npc_id": "hollowmere_platform_child",
       "crowd": "hollowmere_platform_child",
       "attach": "child",
       "stand_in": "CrowdSpots/hollowmere_platform_child",
-      "at": [14.5, 0.0, -17.0, 300.0]
+      "at": [14.5, 0.0, -17.0, 120.0]
     },
     {
       "npc_id": "hollowmere_wright",
       "crowd": "hollowmere_wright",
       "attach": "child",
       "stand_in": "CrowdSpots/hollowmere_wright",
-      "at": [24.5, 0.0, -21.0, 60.0]
+      "at": [24.5, 0.0, -21.0, 240.0]
     },
     {
       "npc_id": "hollowmere_netmender_2",
       "crowd": "hollowmere_netmender_2",
       "attach": "child",
       "stand_in": "CrowdSpots/hollowmere_netmender_2",
-      "at": [42.0, 0.0, -18.0, 20.0]
+      "at": [42.0, 0.0, -18.0, 200.0]
     },
     {
       "npc_id": "hollowmere_elder",
       "crowd": "hollowmere_elder",
       "attach": "child",
       "stand_in": "CrowdSpots/hollowmere_elder",
-      "at": [46.5, 0.0, -17.0, 340.0]
+      "at": [46.5, 0.0, -17.0, 160.0]
     },
     {
       "npc_id": "hollowmere_carrier",
       "crowd": "hollowmere_carrier",
       "attach": "child",
       "stand_in": "CrowdSpots/hollowmere_carrier",
-      "at": [8.0, 0.0, -1.35, 10.0]
+      "at": [8.0, 0.0, -1.35, 190.0]
     },
     {
       "npc_id": "hollowmere_fisher",
       "crowd": "hollowmere_fisher",
       "attach": "child",
       "stand_in": "CrowdSpots/hollowmere_fisher",
-      "at": [20.0, 0.0, 1.35, 190.0]
+      "at": [20.0, 0.0, 1.35, 10.0]
     },
     {
       "npc_id": "hollowmere_dock_child",
       "crowd": "hollowmere_dock_child",
       "attach": "child",
       "stand_in": "CrowdSpots/hollowmere_dock_child",
-      "at": [15.5, 0.0, 1.35, 170.0]
+      "at": [15.5, 0.0, 1.35, 350.0]
     },
     {
       "npc_id": "hollowmere_wright_2",
       "crowd": "hollowmere_wright_2",
       "attach": "child",
       "stand_in": "CrowdSpots/hollowmere_wright_2",
-      "at": [33.5, 0.0, -1.35, 350.0]
+      "at": [33.5, 0.0, -1.35, 170.0]
     },
     {
       "npc_id": "hollowmere_sweeper",
       "crowd": "hollowmere_sweeper",
       "attach": "child",
       "stand_in": "CrowdSpots/hollowmere_sweeper",
-      "at": [49.0, 0.0, 1.35, 180.0]
+      "at": [49.0, 0.0, 1.35, 0.0]
     }
   ]
 }

@@ -9,70 +9,70 @@
       "crowd": "ansedra_poler",
       "attach": "child",
       "stand_in": "CrowdSpots/ansedra_poler",
-      "at": [-7.0, 0.0, 17.2, 120.0]
+      "at": [-7.0, 0.0, 17.2, 300.0]
     },
     {
       "npc_id": "ansedra_poler_2",
       "crowd": "ansedra_poler_2",
       "attach": "child",
       "stand_in": "CrowdSpots/ansedra_poler_2",
-      "at": [6.6, 0.0, 15.0, 250.0]
+      "at": [6.6, 0.0, 15.0, 70.0]
     },
     {
       "npc_id": "ansedra_poler_3",
       "crowd": "ansedra_poler_3",
       "attach": "child",
       "stand_in": "CrowdSpots/ansedra_poler_3",
-      "at": [7.0, 0.0, 5.5, 270.0]
+      "at": [7.0, 0.0, 5.5, 90.0]
     },
     {
       "npc_id": "ansedra_tender",
       "crowd": "ansedra_tender",
       "attach": "child",
       "stand_in": "CrowdSpots/ansedra_tender",
-      "at": [-6.0, 0.0, -34.0, 45.0]
+      "at": [-6.0, 0.0, -34.0, 225.0]
     },
     {
       "npc_id": "ansedra_tender_2",
       "crowd": "ansedra_tender_2",
       "attach": "child",
       "stand_in": "CrowdSpots/ansedra_tender_2",
-      "at": [3.0, 0.0, -51.0, 0.0]
+      "at": [3.0, 0.0, -51.0, 180.0]
     },
     {
       "npc_id": "ansedra_pilgrim",
       "crowd": "ansedra_pilgrim",
       "attach": "child",
       "stand_in": "CrowdSpots/ansedra_pilgrim",
-      "at": [1.35, 0.0, -20.0, 270.0]
+      "at": [1.35, 0.0, -20.0, 90.0]
     },
     {
       "npc_id": "ansedra_pilgrim_child",
       "crowd": "ansedra_pilgrim_child",
       "attach": "child",
       "stand_in": "CrowdSpots/ansedra_pilgrim_child",
-      "at": [1.35, 0.0, -19.2, 270.0]
+      "at": [1.35, 0.0, -19.2, 90.0]
     },
     {
       "npc_id": "ansedra_pilgrim_2",
       "crowd": "ansedra_pilgrim_2",
       "attach": "child",
       "stand_in": "CrowdSpots/ansedra_pilgrim_2",
-      "at": [7.0, 0.0, -33.0, 200.0]
+      "at": [7.0, 0.0, -33.0, 20.0]
     },
     {
       "npc_id": "ansedra_pilgrim_3",
       "crowd": "ansedra_pilgrim_3",
       "attach": "child",
       "stand_in": "CrowdSpots/ansedra_pilgrim_3",
-      "at": [-20.0, 0.0, -38.65, 180.0]
+      "at": [-20.0, 0.0, -38.65, 0.0]
     },
     {
       "npc_id": "ansedra_pilgrim_4",
       "crowd": "ansedra_pilgrim_4",
       "attach": "child",
       "stand_in": "CrowdSpots/ansedra_pilgrim_4",
-      "at": [20.0, 0.0, -41.35, 0.0]
+      "at": [20.0, 0.0, -41.35, 180.0]
     }
   ]
 }
