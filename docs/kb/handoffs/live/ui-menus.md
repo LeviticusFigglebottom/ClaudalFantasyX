@@ -806,3 +806,48 @@ Skipped: coverage. game/battle got comment edits only (the renamed Breaks), no c
   - dark shrines visible on travel and the map, greyed;
   - the heretic subtitle on the field menu, never red.
 - 2026-10-30 04:30, **BACKLOG EMPTY:** the 01:08 item is done. Act II work waits on the `act1-complete` tag (ADR 0203).
+- 2026-10-30 06:10, **the Lead's ADR 0205 items: row 43, then Act II from the ui specs.**
+  - **Row 43** (602dcb31): field_hud_over_haluna_wake frames the real Ch4 wake through act1-chapters' shot rig, not
+    the dropped wake preview. Viewed.
+  - **Hitches:** amendment 4 to ADR 0111 (5c662779: the zone feed into the prewarm, Ch5/Pemakar/Ch6/Ch8/Ch9/Corrow
+    night) landed before ADR 0205 dropped the profiling. It is harmless and tested (test_prewarm_zone_feed); nothing
+    more is planned there.
+  - **Ch10 first (critical path):**
+    - the codex's three Ch10 entries: farewell-tide, name-shells, the Eldest (5b0b50ad);
+    - the rooted glyph and its words (9b598345; rooted sheet viewed);
+    - the seven-heroes field tip on Ch10's first field (84cc875b).
+  - **Heresy** (`ch14_declared_heretics`, declared):
+    - Order shrines go dark: prompt, one-line bark, no rest, the light out (d47f352c);
+    - Order shops refuse with a line (90b410fd);
+    - the field menu's "Heretics of the Level" subtitle and the save slot's "· Heretics" tag (3aebef84);
+    - dark shrines stay on the shrine road, greyed "Dark: the Order's shrine", and refuse the trip (f7fd954c);
+    - the map's hollow flame and "{place} · Dark" (d184f37f).
+    Zone authors mark the Order's shrines: `order = true` on the SaveShrine, `"order": true` on locations.json shrine
+    rows and on zone_maps.json shrine POIs.
+  - **Kerrid** (c656a68c): `guilty` is baked (viewed, PROVENANCE row). The Status page shows "Unrisen: held since the
+    stair at Corrow" under his name once `ch15_kerrid_revealed` is set (declared; the reveal's script sets it). Viewed.
+  - **Merge:** big19 is in (39f98a64). zone_cast.gd conflicted between my off-tree prebuild and creatures' `cast_still`.
+    I kept both: `cast_still` now shapes the body in _ready, after the idle starts. test_zone_cast is 5/0, and its old
+    fisher-idle failure is gone too.
+  - **Self-renders, viewed, none committed** (temporary scenes only):
+    - the heretic field menu;
+    - Kerrid's Status page (the note first ran past its width; fit_label now gets the explicit width);
+    - the shrine road with a dark row;
+    - Haluna's map with its shrine marked for the render.
+  - **Waits on other tracks:**
+    - the seven-hero formation check and Pell's Listen (combat's Pell row and kit);
+    - the rooted swap-refusal reason (combat M4-A2P-020);
+    - Act II NPC portraits (models);
+    - Kerrid's second codex body (narrative's text after the reveal script).
+  - **Next:** the document reader (M4-A2P-080, Ch13), all ui-menus.
+MERGE-READY @ 39f98a64: row 43; Act II Ch10 codex, the rooted glyph and the seven tip; the heresy UI (shrines, shops,
+title and slot tag, shrine road, map); Kerrid's guilty portrait and Unrisen line; big19 merged.
+Checks:
+- codex 15/0, tutorial_tips 5/0, save_shrine 13/0, shrine_network 7/0, shrine_travel 9/0, shop_menu 13/0;
+- save_slot 4/0, field_menu 36/0, status_menu 7/0, hero_portraits 10/0, zone_map 22/0, zone_cast 5/0;
+- prewarm_zone_feed and pseudo_loc are green;
+- validate_data 0/0, taskboard --check clean, lint and format clean.
+Skipped:
+- coverage (no game/battle or game/progression code changed);
+- Blender (no Blender source touched);
+- the full manifest (no committed shot changed).
