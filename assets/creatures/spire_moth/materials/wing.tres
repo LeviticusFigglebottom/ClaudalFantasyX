@@ -1,0 +1,15 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/creature/creature.gdshader" id="1_shader"]
+
+[resource]
+resource_name = "wing"
+shader = ExtResource("1_shader")
+shader_parameter/detail_albedo = 0.08
+shader_parameter/detail_bump = 0.1
+shader_parameter/detail_scale = 90
+shader_parameter/emission_energy = 0
+shader_parameter/rim_sheen = 0.9
+shader_parameter/roughness_dry = 0.18
+shader_parameter/roughness_wet = 0.1
+shader_parameter/specular = 0.75

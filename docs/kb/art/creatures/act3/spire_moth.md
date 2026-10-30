@@ -89,3 +89,13 @@ Grounded, as the base: six planted feet through `common/grounding.py`, and the K
   Is it the same family in Combat's tables, or new?
 - **Should the base flue moth get its ADR 0151 mark too?** It has none. That is a change to a shipped creature, so the
   proposal is a separate polish task, not this variant.
+
+## As built (M5-A3P-1802, 2026-10-30)
+`assets_src/creatures/spire_moth/build_spire_moth.py` imports the flue moth's build unchanged and swaps its colouring:
+- **Fur:** pale, with no embers.
+- **Wings:** salt-glass, glossy, with a strong rim sheen. Nothing glows.
+- **Kept from the base:** the rig, mesh, clips and grounding. `creature_flue_moth` verifies identical.
+- **Weak point:** the flue moth has gained its own ADR 0151 mark since this sheet (the seam seared across its brow,
+  M3-CRE-650), so the spire moth inherits it rather than adding a thorax crack.
+- **Size:** 3,240 triangles, 23 bones.
+- Portrait, and review shot `creature_spire_moth`.

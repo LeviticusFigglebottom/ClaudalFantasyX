@@ -391,6 +391,13 @@
       "out_dir": "res://assets/ui/portraits/creatures"
     },
     {
+      "id": "spire_moth",
+      "light_scale": {"key": 3.0, "rim": 3.0, "fill": 3.0},
+      "stage_environment": {"background_color": [0.35, 0.55, 0.65, 0.0]},
+      "scene": "res://game/creatures/spire_moth/spire_moth_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
       "id": "glassfry",
       "scene": "res://game/creatures/glassfry/glassfry_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures"
@@ -586,6 +593,21 @@
     {
       "id": "wick_crawler",
       "scene": "res://game/creatures/wick_crawler/wick_crawler_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "chain_lamp",
+      "scene": "res://game/creatures/chain_lamp/chain_lamp_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "held_shoal",
+      "scene": "res://game/creatures/held_shoal/held_shoal_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "drowned_lantern",
+      "scene": "res://game/creatures/drowned_lantern/drowned_lantern_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures"
     },
     {

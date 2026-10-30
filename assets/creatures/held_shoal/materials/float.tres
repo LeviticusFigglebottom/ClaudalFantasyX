@@ -1,0 +1,15 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/creature/creature.gdshader" id="1_shader"]
+
+[resource]
+resource_name = "float"
+shader = ExtResource("1_shader")
+shader_parameter/clearcoat_wet = 0.8
+shader_parameter/detail_albedo = 0.04
+shader_parameter/detail_bump = 0.06
+shader_parameter/emission_energy = 0
+shader_parameter/roughness_dry = 0.12
+shader_parameter/roughness_wet = 0.06
+shader_parameter/specular = 0.7
+shader_parameter/wet_darken = 0.2

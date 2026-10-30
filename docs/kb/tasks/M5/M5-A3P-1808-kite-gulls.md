@@ -2,8 +2,8 @@
 id: M5-A3P-1808
 title: "Ch18: gulls riding the Kite's wake (Act I's gull kind, a flock with a moving, parent-relative centre)"
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "creatures (claude/creatures)"
 depends_on: []
 milestone: M5
 reviewer: character
