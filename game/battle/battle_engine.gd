@@ -755,6 +755,7 @@ func tempo_rank(c: BattleCombatant, ahead: int) -> Dictionary:
 ## Petrified combatants count as KO here: is_alive() is false for stone.
 ## An objective encounter ends only on its objective (BattleSetPiece), or in defeat.
 func _check_outcome() -> bool:
+	BattleParts.withdraw_orphans(self)
 	var goal := BattleSetPiece.objective_outcome(self)
 	if goal != &"":
 		BattleSetPiece.withdraw_standing(self)

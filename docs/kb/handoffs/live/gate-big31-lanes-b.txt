@@ -1,0 +1,22 @@
+# sha 6a695535707510fbf500b996306231a266f06f76
+res://tests/integration/test_act1_route.gd
+res://tests/integration/test_causeway_route.gd
+res://tests/integration/test_ch01_stage_models.gd
+res://tests/integration/test_ch01_underway_kit.gd
+res://tests/integration/test_ch06_thread.gd
+res://tests/unit/test_ch08_coilspire_camera.gd
+res://tests/integration/test_ch08_corrow_walkable.gd
+res://tests/integration/test_ch09_ebbing_cues.gd
+res://tests/unit/test_creature_vfx_anchors.gd
+res://tests/integration/test_cutscene_directives.gd
+res://tests/unit/test_cutscene_music_resolves.gd
+res://tests/unit/test_cutscene_vfx_hosts.gd
+res://tests/unit/test_ebbing_zone_data.gd
+res://tests/unit/test_input_parity_dialogue.gd
+res://tests/unit/test_music_transitions.gd
+res://tests/unit/test_pseudo_locale.gd
+res://tests/integration/test_shore_walls.gd
+res://tests/integration/test_zone_ambient_life.gd
+res://tests/integration/test_zone_edge_walls.gd
+res://tests/unit/test_zone_kit_waters.gd
+res://tests/integration/test_zone_snap.gd

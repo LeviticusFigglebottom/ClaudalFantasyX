@@ -1277,3 +1277,28 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
     - These are new, with no baselines. The existing `npc_haluna_dock` (re-rendered and viewed), `npc_haluna_lane`, `npc_haluna_market`, `slice_haluna_villagers_village`, `crowd_zone_oruvel` and `crowd_zone_pemakar` gain people and need new baselines (shots session).
 - **MERGE-READY @ 30e39d407.**
 - **BACKLOG EMPTY:** M4-CRE-702 is in review (character); Act III stays planning-only; the brow.tres drift FAST-TRACK is characters'.
+- **Your 20:26 relay: test_villager_routines fixed @ 533d27512.**
+  - **Cause:** `test_a_greybox_actor_model_is_adopted_into_a_villager` builds ch01/oruvel's real rows on a bare zone and expected only Kell to resolve. Oruvel's `at`-row vignettes make their own spots, so 7 built.
+  - **Fix:** the test now counts the `at` rows (1 + 6).
+  - **Checks** (Godot):
+    - test_villager_routines 19/0, villager 46/0, npc 10/0, crowd 18/0;
+    - oruvel 17/0, pemakar 10/0, haluna 65/0, ch01 20/0, ch05 13/0.
+  - My miss: I ran the villager filter before the Oruvel rows went in. From now on I re-run it after any zone data change.
+- **MERGE-READY @ 533d27512.** Next: the Act II town vignettes (Hollowmere, Ansedra, Quellan, Reedhollow).
+- **Your 20:45 FAST-TRACK: M3-HER-1168 @ 445d5888e** (branch merged with lead/gate-big30 first, @ 0019a65b8; shots.json conflict resolved by taking big30's and appending my 7 new shots).
+  - **Cause, timed per row on Haluna:** a row's cost was mostly loading its actor scene (100–250 ms the first time). A row whose scene is loaded costs ~20 ms. Haluna now has 25 rows with the vignettes.
+  - **Fix** (`VillagerLayer._build_spread`):
+    1. Under the fade, every row's actor scene is requested on worker threads (`load_threaded_request`, sub-threads).
+    2. Once loaded, the rows go in as many a frame as fit 30 ms.
+    3. The reveal waits 2 frames for the first ticks.
+  - **scene_swap_probe → Haluna (headless):**
+    - cold: reveal held 1854 ms → 179–201 ms; hidden frames after the zone's own are 28, 4 and 2 ms;
+    - resident loads, warm: 1348 ms → 16–25 ms;
+    - worst visible frame 27 ms.
+    - The zone's own entry frame (2.5–3.0 s cold) is unchanged; it is not the layer's.
+  - return_probe (the Drownbell case) isn't committed on any branch, so integration-qa re-measures it. The task is at `review` with that box open.
+  - **Tests** (Godot): villager 47/0, crowd 20/0 (new actor-path test), npc 10/0, haluna 66/0, scene_router 17/0, swap 17/0, resident_loads 11/0, zone_cast 5/0.
+- **MERGE-READY @ 445d5888e.** It also carries the Act II vignettes:
+  - Quellan, Hollowmere and Ansedra (`late_prefixes`), plus Reedhollow's Kirru: fishers wading, a pair talking, a youngster watching, on the clips the Kirru have;
+  - shots `crowd_vignette_{quellan,hollowmere,ansedra,reedhollow}_*`;
+  - viewed: Quellan square and well, Hollowmere dock, Ansedra moorings. The Hollowmere platform cameras are re-aimed, and they and Reedhollow are still to view (next).

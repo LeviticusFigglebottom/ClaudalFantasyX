@@ -2,7 +2,7 @@
 
 [resource]
 resource_name = "kit_fen_reed"
-albedo_color = Color(0.549, 0.5412, 0.3686, 1)
+albedo_color = Color(0.5569, 0.5176, 0.4, 1)
 backlight = Color(0.35, 0.33, 0.2, 1)
 backlight_enabled = true
 cull_mode = 2

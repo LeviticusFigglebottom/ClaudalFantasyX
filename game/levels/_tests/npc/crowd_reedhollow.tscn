@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/npc/haluna_villagers.gd" id="stage"]
+
+[node name="CrowdReedhollow" type="Node3D"]
+script = ExtResource("stage")
+zone_scene = "res://game/levels/ch10/reedhollow/reedhollow.tscn"
+zone_id = &"ch10/reedhollow"
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Lagoon" type="Camera3D" parent="Cameras"]
+transform = Transform3D(-0.729537, -0.152024, 0.666831, 0, 0.974984, 0.222277, -0.683941, 0.162159, -0.711287, 60, 4.5, -15)
+fov = 55.0

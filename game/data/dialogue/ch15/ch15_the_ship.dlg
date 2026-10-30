@@ -14,6 +14,8 @@ Aldous_varrow as "Dock-master" [neutral]: Bring it back. #line:ch15_ship_001 #tn
 @mark toma ship_deck_2 walk
 @mark asha ship_deck_3 walk
 @mark rhen ship_deck_4 walk
+@mark ysolde ship_deck_6 walk
+@mark pell ship_deck_7 walk
 @wait 2.0
 @mark kerrid ship_deck_5 walk
 @wait 3.0

@@ -28,7 +28,7 @@ Ysolde [neutral]: The Saints are at peace. I visit my husband every year. He has
 @wait 3.0
 @camera S05
 @vfx glimmer_bound at=ethren count=1
-@wait 4.0
+@wait 6.0
 @camera S06
 @mark ysolde before_ethren walk
 @anim ysolde look_at ethren_ring

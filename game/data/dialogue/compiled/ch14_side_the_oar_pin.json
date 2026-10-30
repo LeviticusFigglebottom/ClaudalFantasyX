@@ -5,7 +5,7 @@
  "start": "ch14_side_the_oar_pin",
  "nodes": {
   "ch14_side_the_oar_pin": {
-   "headers": {"location": "ch14/lacquer_court"},
+   "headers": {"location": "ch13/ansedra_lacquer_court"},
    "ops": [
     {"op": "if_not", "cond": ["flag", "ch14_carried_the_gift"], "to": 3, "src": 7},
     {"op": "line", "id": "ch14_pin_001", "key": "DLG_CH14_PIN_001", "speaker": "hull_captain", "emotion": "soft_smile", "voice": "", "src": 8, "name_key": "DLG_NAME_HULL_CAPTAIN_HULL_CAPTAIN"},

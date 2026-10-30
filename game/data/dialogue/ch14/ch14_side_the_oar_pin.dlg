@@ -2,7 +2,7 @@
 // an Order man, to carry the flotilla's gift (a carved oar-pin) to the vow table. He does. It is still on the table
 // when the trap springs; nobody comments then. Sets ch14_carried_the_gift.
 title: ch14_side_the_oar_pin
-location: ch14/lacquer_court
+location: ch13/ansedra_lacquer_court
 ---
 <<if $ch14_carried_the_gift>>
     Hull_captain as "Hull-captain" [soft_smile]: It's on the table. I saw. Thank you. #line:ch14_pin_001

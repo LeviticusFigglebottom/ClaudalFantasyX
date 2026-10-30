@@ -1172,3 +1172,37 @@ SELF-RENDERED @ f0e1e6fd: battle_arena_lowlight_engine_hall's battle camera at 1
 SELF-RENDERED @ e14c3355: Hollowmere's dock with the new piles and the perched gulls (scratch) — viewed.
 SELF-RENDERED @ d364a561: ch05_pemakar_harbour, _crown, _harbour_day, _weir, ch05_ashcrown_causeway, _forecourt, _tiers, _crown, _court, ch08_coilspire_hall, _gate, _storm (before), and Ashcrown's tiers, forecourt, court and crown after, all viewed.
 STATUS 18:46 (answer to the Lead's 18:45 ask): the Ch5 Pemakar/Ashcrown and Ch8 Coilspire beauty pass is done and pushed — MERGE-READY @ d364a561 (entry above). Waiting for the next order.
+
+### Beauty pass, Ch6 Brine Shoals, Ch7 Tamsule, Ch9 Corrow (Lead 19:25)
+- Rendered all 11 hero shots as played (ch06_brine_road/_camp, ch07_bell_galleries/_moorings, ch07_tamsule_mouth/_market/_gantry, ch09_corrow_strand/_road/_landing/_rocks) and viewed them.
+- **Tamsule (Ch7):** no change. Turquoise sea under the stilt town, the bell's glass dome, pennants and market awnings; the sea light is the zone's strength.
+- **Brine Shoals (Ch6), fixed (2a124c75):** the far flats ended in a flat brown band under a pale sky. That was the preview's volumetric fog (0.02 over 80 m, sky untouched), not geometry (an id pick found no mesh there). `ch06_brine_shoals_dressing.py` now sets `ZONE_FOG` on the copied environment: volumetric fog 0.007, and a depth fog at 0.008 that takes the sky's colour (aerial perspective 0.9), lies low over the flats (height fog) and scatters the sun. The shoals now fade into a cool, wet distance under the warm sky; the camp's fires and smoke keep their read.
+- **Corrow (Ch9), fixed (fd5cf5a8):** in the Rocks view the big strand boulder read as coarse pixel noise. Its `cw_headland` slot tiles the coral stone every 18 m (cliff scale). `ch09_corrow_night.py` gives `strand_rocks` a zone copy `corrow_strand_rocks_material.tres` (tile 3 m, detail 0.8 m, normal 0.8); the cliffs keep the kit's. It now reads as moonlit slate stone. The strand, the vigil lamps and the moon-sheen sea were already strong; no other change.
+- **Checks:** test_brine_shoals_kit (31) OK, test_ch08_flow + test_placeholder_audit OK, Godot `--filter=ch09` 13 pass, validate_data and taskboard OK. Skipped Godot ch06: an environment-only change can't break its thread test.
+- Note for env-art: Ch8's day Corrow may show the same 18 m headland tile on `strand_rocks` close up; not in a hero shot.
+- **MERGE-READY @ fd5cf5a8.**
+SELF-RENDERED @ fd5cf5a8: the 11 Ch6/Ch7/Ch9 hero shots before; ch06_brine_road and _camp after (three fog tries); ch09_corrow_rocks and _strand after; id picks of the Brine horizon and the Corrow boulder (scratch), all viewed.
+
+### Act II beauty pass, Ch13–Ch16 (Lead 20:26)
+- Merged integration (big29) into env-art-b first (944f7d2c). Rendered the 18 hero shots as played (ch13_sanctum_gate/_basin/_vault, ch13_archive_door/_aisle/_table/_roll, ch14_court_entry/_ceremony/_steps/_gate, ch14_ansedra_ripple, ch15_sea_deck/_bier/_wide, ch16_rim_ship/_wade/_cairns) and viewed them.
+- **No change:** the Sanctum (the teal vault round the glowing basin, cold and still), the Lacquer Court (red lacquer against the burning sunset over the lagoon: the most beautiful-and-doomed frames in Act II), Ansedra's ripple (gold domes doubled in the mirror water), the open sea at night (moonlit swell round the bier boat; dark, as written) and the Pale Rim (the white-out where sea and sky meet, the cairns and markers fading into it; intended).
+- **Lamp Archive, fixed (d2263160):** under Ansedra's open-air grade the reading room was one flat grey wash with none of the spec's "long shafts" of clerestory light. `ch13_archive_dressing.py` now writes `lamp_archive_environment.tres`, a copy of Ansedra's grade with ambient 0.28 (from 0.6), exposure 0.85 (the spec's) and a dusty volumetric fog (0.045, forward-scattering 0.55). The light now hangs in the aisle as diagonal shafts from the windows; still no lamp lit (the spec).
+- **Left as is (noted):** `ch13_archive_roll` has no shaft on the Cantor roll (the spec's frame): at 16:30 the sun through the clerestories doesn't reach the lectern. A day-variant sun azimuth (the spec's C6 rows) would place it; not in this pass. `ch13_archive_aisle` frames the bare end wall between the cases.
+- **Checks:** test_ch13_archive_dressing OK (4), Godot `--filter=lamp_archive` 2 pass, validate_data OK.
+- **MERGE-READY @ d2263160.**
+SELF-RENDERED @ d2263160: the 18 Ch13–Ch16 hero shots before; the four archive shots after (two fog tries), all viewed.
+
+### Act II interiors, then Act II ambient life (Lead 20:45)
+- **Interiors:** still none to walk after big29: no Act II shop or inn scene exists (Quellan's inn is an exterior plus an `inn_door` point; the shops wait on M4-A2P-031). Nothing to pass at eye height; the Quellan issues stay in M4-A2P-115.
+- **Ambient life**, within ADR 0204 (Ansedra has no birds and no wildlife). Wildlife stays the creatures track's (M4-A2P-056: fen fireflies and kingfishers, woolbacks, rim rays, Hollowmere's gulls and shoal, all built). My lane adds the non-animal life:
+  - **ZoneKitDressing (e74bdbc0):** two opt-in rows. `pieces[].drift` makes flotsam bob, rock and wander a slow eddy. `fire_lights[].flicker` dims a flame by up to its share with three incommensurate wavers. Both are driven by the dressing's own clock (deterministic under --fixed-fps), with each piece's phase from its position. Test `tests/integration/test_zone_ambient_life.gd`: Hollowmere's flames only ever dim within their share, and the litter stays in its eddy.
+  - **Zones (1a51d418):**
+    - Hollowmere: the oil flames flicker 0.3 and the signal lamps 0.12, and four `tide_debris` rafts drift off the dock, south of the ship.
+    - Lacquer Court: the lamp-stands flicker 0.15.
+    - Open sea: four `tide_debris` ride the night swell 9–20 m round the bridal barge.
+    - No change: Ansedra stays still (ADR 0204 §1, "the room doesn't move"); the Sanctum's bound light stays steady; the Pale Rim keeps its rays and its silence; the Lamp Archive's lamps are unlit (spec).
+  - **Env-art's zones:** Ch11's two dressings get a request, M4-A2P-1501, to opt their flames into `flicker`. Ch10 and Ch12 place no fire lights.
+- **Self-rendered:** ch15_hollowmere_dock and _arrival, ch15_sea_wide and _deck, ch14_court_ceremony, plus a high view over the barge (the debris rafts on the swell), all viewed. The hero shots frame the barge and the dock, so the litter sits at their edges; that suits ambient life. The flicker moves the captured lamp energy, so shot baselines with Hollowmere or Lacquer Court lamps may need a re-baseline (the Lead's).
+- **Checks:** gdlint and gdformat OK. Godot `--filter` zone_kit_dressing 10, hollowmere 2, lacquer 2, open_sea 2, ch14 5, zone_snap 1 and ambient_life 1 all pass. Tools tests for lacquer court, hollowmere and hollowmere-kit (17) OK. validate_data and taskboard OK.
+- **MERGE-READY @ 683ce87f.**
+SELF-RENDERED @ 1a51d418: ch15_hollowmere_dock, ch15_hollowmere_arrival, ch15_sea_wide, ch15_sea_deck, ch14_court_ceremony and the open sea from above (scratch), all viewed.
