@@ -22,17 +22,15 @@ their rows are on integration (06a51e5c). Checks on the merged tree: `--filter=v
 - Next: the Ch10–Ch13 boss intros. On integration that is the Drowner, the Lamp Engine (now with two conduit
   crawlers) and the Avalanche Ram; Ch13 has none. Re-rendering them and the Lamp Engine's moves.
 
-## CURRENT STATUS (2026-10-30 15:00; newest entry first under "NEW ACCOUNT" below, at the 14:50 heading)
-**MERGE-READY @ a5aa7e63** (the branch head). Every item from the Lead's 14:09, 14:48 and 15:00 messages is done and pushed:
-| Item | Commit | Check |
-|---|---|---|
-| Rank overlap and the command-menu safe area (creatures' audit) | aa227a57 (c552664f, 3d65ec00) | `--filter=battle` 826/0; six fights viewed |
-| Row 64: the camera search before the fade | 7c3307df (+ 65e776af) | reveal frame 1.2–2.6 ms headless; boss 88/0 |
-| Row 61: the Surge framing | ef997f3d | SELF-RENDERED and viewed; camera 65/0, boss 86/0, arena 18/0 |
-| The glimmer swatch / hit | 4c4a3dd3 | `--filter=battle_vfx` 10/0 on big21 + this branch |
-| Act II foe-skill effects | 65ea933e, 8d0fe783..f2bbb673, 6f3608a7 | every Act II encounter's skills have effects. The 3 newest (conduit crawler) and the Vowbound's 19 are written as their rows land. I found 3 such skills, not 6. |
-- After big22/23 lands: run `python3 tools/vfx/gen_act2_ability_vfx.py` once (I will, on my next integration merge).
-- In flight: the Act I encounter sweep (batch 5 running), then Ch6 and Ch8.
+## CURRENT STATUS (2026-10-30 18:10). Branch head is MERGE-READY. Act II task ids: M4-A2P-1900..1949 (the Lead, 18:04)
+| Item (the Lead's 17:04 and 18:04) | State | Commit | Check |
+|---|---|---|---|
+| The conduit crawler's 3 skill effects | **MERGE-READY** | 06a51e5c | big25 merged in (9795b3f3); vfx 46/0, act2 78/0 |
+| The four Vowbound's 19 effects (15 skills, 4 finishers) | **MERGE-READY** | 06a51e5c | vowbound 117/0 |
+| test_battle_act1_ability_vfx (red on integration: the Vowbound finishers had no effects) | **green**, 5/0 | 06a51e5c | |
+| Act II boss intros, Ch10–Ch13 (Drowner, Lamp Engine with its crawlers, Avalanche Ram; Ch13 has no boss yet) | **MERGE-READY**, all viewed | bdc5ef22 (the Ram: hero shot off) | boss_intro 24/0 |
+| Earlier: rank overlap and the menu safe area, rows 61 and 64, the glimmer hit, a Vowbound clear of the timeline | in big25 | aa227a57, ef997f3d, 7c3307df, 4c4a3dd3, 55e54edd | battle 826/0 |
+- In flight: the Act I encounter sweep (Derelict Leeches and Glass, Ch6 ridge), then Ch6 and Ch8.
 
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_015hKkhtpX67kS4yZeA8AAhv`. Integration branch `claude/undertow-lead-handoff-ze8rrn` merged in
