@@ -191,6 +191,8 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
                 rep.err(f"{w}: '{key}' must be a non-negative int")
         if "drain_pct" in s and (not isinstance(s["drain_pct"], int) or not 1 <= s["drain_pct"] <= 100):
             rep.err(f"{w}: 'drain_pct' must be an int in 1..100 (M4-CMB-1001)")
+        if "root_turns" in s and (not isinstance(s["root_turns"], int) or s["root_turns"] < 1):
+            rep.err(f"{w}: 'root_turns' must be a positive int (M4-A2P-020)")
         if not isinstance(s.get("magic", False), bool):
             rep.err(f"{w}: 'magic' must be a bool")
         if "name_key" not in s:
