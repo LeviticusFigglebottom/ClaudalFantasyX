@@ -104,6 +104,25 @@ Session `session_015hKkhtpX67kS4yZeA8AAhv`. Integration branch `claude/undertow-
     Kahre, the shop tier).
   - The integration branch's coverage reds.
 
+**MERGE-READY @ ac34fe8b** (+ this log commit; integration merged in at 1060a593):
+- The items:
+  - drownbell_flood (9524f9f0);
+  - GPU QA rows 57 and 61 (921e5fec);
+  - the encounter sweep's fixes: the bystander-hidden contact (75b2ebea, ab7c9925), the smaller hit cores and the
+    floats in the safe frame (339ddd43);
+  - M4-A2P-060 part 1, the Act II regulars' VFX (65ea933e).
+- **Checks run:**
+  - Godot `--filter=battle` **817 run, 0 failed** (fresh user dir);
+  - `--filter=` camera 60/0, summon 23/0, vowbound 89/0, arena 18/0, boss 84/0, ability_vfx 6/0;
+  - validate_data 0/0, taskboard --check, gdlint, gdformat, and `gen_act1/2_ability_vfx --check`.
+- **Shots self-rendered and viewed:** drownbell_flood, battle_boss_intro_drownbell, battle_choreo_summon,
+  battle_arena_seawall_stairhead_surge, battle_arena_bridal_barge_night.
+- **Shots the gate should view** (the hit cores, the floats and the summon shot can move them): those five, plus any
+  battle_choreo_* or battle_boss_* frame that freezes a contact.
+- **Skipped:** the full manifest (ADR 0205), Blender (none touched), coverage (no game/battle core .gd change).
+- An earlier run showed 4 reds (battle_result_motion, battle_stings). They came from merging the integration branch
+  while the run was going: each file passes 5/0 on the merged tree, and the clean run above is 817/0.
+
 ### 2026-10-30 ~03:xx: GPU QA pass 3 rows 57 and 61 (fixed, 921e5fec), and Act II begins (ADR 0205)
 - **Row 57 (battle_choreo_summon), fixed.** Nobody overlapped on the floor. The summon shot sat 4.2 m behind Ilun
   on the battle axis, so Ilun covered the foes and the gull read through the eel.
