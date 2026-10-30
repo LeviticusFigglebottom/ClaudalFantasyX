@@ -13,7 +13,8 @@ extends Node
 ## (place_at) at that game time, to view a long route section by section. It quits after --max-sec.
 ## M2-FP-119: --cut-frames=N also writes the N frames that follow any camera jump of more than
 ## CUT_JUMP_M (a cut), every frame, as <out>/cut_<milliseconds>.png, so what a cut shows can be seen
-## frame by frame. --no-taa turns the viewport's TAA off (to tell temporal history from staging).
+## frame by frame. --no-taa turns the viewport's TAA off (to tell temporal history from staging). --log-player adds a
+## line per written frame with the player's and the camera's positions (where the staging really put them).
 ## Nothing is saved (autosaves held).
 
 const DEFAULT_EVERY_SEC := 1.0
@@ -43,6 +44,7 @@ var _tour: Array = []
 var _cut_frames := 0
 var _cut_left := 0
 var _no_taa := false
+var _log_player := false
 var _last_cam := Vector3.INF
 
 
@@ -70,6 +72,8 @@ func _ready() -> void:
 				_cut_frames = int(value)
 			"no-taa":
 				_no_taa = true
+			"log-player":
+				_log_player = true
 			"tour":
 				for stop: String in value.split(",", false):
 					var pair := stop.split(":")
@@ -117,6 +121,8 @@ func _process(delta: float) -> void:
 		_next_frame += _every
 		var img := get_viewport().get_texture().get_image()
 		img.save_png("%s/f_%04d.png" % [_out, int(round(_elapsed * FRAME_NAME_SCALE))])
+		if _log_player:
+			_lines.append("%06.1f POS %s" % [_elapsed, _positions()])
 	if _elapsed >= _max_sec:
 		var f := FileAccess.open("%s/lines.txt" % _out, FileAccess.WRITE)
 		if f != null:
@@ -139,6 +145,21 @@ func _watch_cut() -> void:
 		_cut_left -= 1
 		var img := get_viewport().get_texture().get_image()
 		img.save_png("%s/cut_%06d.png" % [_out, int(round(_elapsed * CUT_NAME_SCALE))])
+
+
+## "player=<pos> visible=<bool> cam=<pos>" for --log-player.
+func _positions() -> String:
+	var scene := get_tree().current_scene
+	var player := scene.get_node_or_null(^"Player") as Node3D if scene != null else null
+	var cam := get_viewport().get_camera_3d()
+	return (
+		"player=%s visible=%s cam=%s"
+		% [
+			player.global_position if player != null else null,
+			player.is_visible_in_tree() if player != null else null,
+			cam.global_position if cam != null else null,
+		]
+	)
 
 
 func _watch_line() -> void:
