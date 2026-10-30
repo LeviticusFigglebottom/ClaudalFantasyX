@@ -1,0 +1,24 @@
+{
+ "format": 1,
+ "scene": "ch13_side_the_leaning_flame",
+ "source": "game/data/dialogue/ch13/ch13_side_the_leaning_flame.dlg",
+ "start": "ch13_side_the_leaning_flame",
+ "nodes": {
+  "ch13_side_the_leaning_flame": {
+   "headers": {"location": "ch13/ansedra"},
+   "ops": [
+    {"op": "if_not", "cond": ["flag", "ch13_fixed_lamplighter_lamp"], "to": 3, "src": 7},
+    {"op": "line", "id": "ch13_flame_001", "key": "DLG_CH13_FLAME_001", "speaker": "townsfolk", "emotion": "smile", "voice": "", "src": 8, "name_key": "DLG_NAME_TOWNSFOLK_YOUNG_LAMPLIGHTER"},
+    {"op": "goto", "to": 11, "src": 7},
+    {"op": "line", "id": "ch13_flame_002", "key": "DLG_CH13_FLAME_002", "speaker": "townsfolk", "emotion": "worried", "voice": "", "src": 10, "name_key": "DLG_NAME_TOWNSFOLK_YOUNG_LAMPLIGHTER", "tags": ["long"]},
+    {"op": "line", "id": "ch13_flame_003", "key": "DLG_CH13_FLAME_003", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 11},
+    {"op": "line", "id": "ch13_flame_004", "key": "DLG_CH13_FLAME_004", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 12},
+    {"op": "line", "id": "ch13_flame_005", "key": "DLG_CH13_FLAME_005", "speaker": "townsfolk", "emotion": "surprised", "voice": "", "src": 13, "name_key": "DLG_NAME_TOWNSFOLK_YOUNG_LAMPLIGHTER"},
+    {"op": "line", "id": "ch13_flame_006", "key": "DLG_CH13_FLAME_006", "speaker": "liss", "emotion": "soft_smile", "voice": "", "src": 14},
+    {"op": "line", "id": "ch13_flame_007", "key": "DLG_CH13_FLAME_007", "speaker": "townsfolk", "emotion": "smile", "voice": "", "src": 15, "name_key": "DLG_NAME_TOWNSFOLK_YOUNG_LAMPLIGHTER"},
+    {"op": "set", "flag": "ch13_fixed_lamplighter_lamp", "value": ["lit", true], "src": 16},
+    {"op": "goto", "to": 11, "src": 9}
+   ]
+  }
+ }
+}

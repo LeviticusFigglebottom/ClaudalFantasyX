@@ -12,7 +12,7 @@
     {"op": "cue", "cue": "music", "args": ["ansedra"], "kwargs": {"fade": 2.0}, "src": 14},
     {"op": "cue", "cue": "wait", "args": [5.0], "kwargs": {}, "src": 15},
     {"op": "cue", "cue": "camera", "args": ["A02"], "kwargs": {}, "src": 16},
-    {"op": "cue", "cue": "sfx", "args": ["pole_no_wake"], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "sfx", "args": ["barge_pole"], "kwargs": {}, "src": 17},
     {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 18},
     {"op": "line", "id": "ch13_city_001", "key": "DLG_CH13_CITY_001", "speaker": "rhen", "emotion": "worried", "voice": "", "src": 19},
     {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 20},

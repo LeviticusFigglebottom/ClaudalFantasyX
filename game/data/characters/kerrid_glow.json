@@ -1,0 +1,11 @@
+{
+  "_doc": "M4-A2P-054 (kerrid.md §3, §9): Kerrid's rope-burn light, driven at runtime by KerridBurnGlow (game/characters/heroes/kerrid_burn_glow.gd). `glow` 0..1 maps to the Burns shell's emission energy x energy_per_unit (write_materials.py's burn_glow_energy_per_unit); the colour lerps from held to lift by `lift` (0..1: color_script rule 1's 1.5 s hue lerp at H09). The story's values: 0 in Ch5-Ch9, from_ch10 in dim scenes, up to ch15_peak as the motes leave his hands.",
+  "energy_per_unit": 0.8,
+  "held": "#7FC6D9",
+  "lift": "#FFE9B8",
+  "from_ch10": 0.15,
+  "ch15_peak": 0.6,
+  "lift_seconds": 1.5,
+  "shell": "Burns",
+  "socket_prefix": "VFX-"
+}

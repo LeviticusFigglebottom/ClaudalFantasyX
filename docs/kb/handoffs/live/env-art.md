@@ -589,6 +589,60 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ 7fad181e: the FAST-TRACK `test_keth` fix and the big22 integration merge; env-art's Ch13–Ch15
+  dressings are WITHDRAWN.**
+  - **test_keth:** the inn's door test looked for crag walls. The inn's walls have been dry stone since Ch12
+    (M4-A2P-042), so the test now checks `M_DRYSTONE` (c010ee90). Still red on the integration branch until this
+    merges.
+  - **Ch13–Ch15:** the integration branch already carries Ch13–Ch15 dressed and mounted by an earlier run
+    under this session's own id (`01UPFyEA3FwDAoAKTpVGbGsy`; e.g. 9fa8dce4, b49e37a5; M4-A2P-043/044/045, with
+    shot rigs and tests). env-art's parallel
+    versions wrote the same files, so the merge takes the integration's side throughout.
+    - Every Ch13–Ch15 file of env-art's is removed or restored to the integration's: the glbs, generators, tests,
+      previews, and mount requests 0431, 0441 and 0451.
+    - The tree equals the integration branch except `tools/tests/test_keth.py` and these logs.
+    - env-art's versions stay in history at 39968c35 if anything there is wanted.
+  - **The MERGE-READY lines below for 14ff2eb7 (043), 562c7f57 (044) and 39968c35 (045) are void.**
+  - **LEAD-ASK:** "continue Ch13–Ch15" looks done on the integration branch. env-art is taking row 59
+    (`ch01_o10_gull`) and rows 24/66 now. Name anything Act II wants beyond those.
+- **MERGE-READY @ 39968c35: M4-A2P-045, Ch15's open sea dressed** (the Lead's (b), the last of Ch13–Ch15). The
+  change is additive; chapters mount it (M4-A2P-0451, filed).
+  - **The barge:** `open_sea_barge`, bridal_barge.py's builders at the greybox deck's size (`build_fitted`). The
+    arena's `bridal_barge.glb` is byte-identical.
+  - **Grade and water:** the Wakefin arena's unlamped grade, and the night sea with the sea-glow at the barge's
+    waterline (−0.6).
+  - **Viewed** at ten cameras.
+  - **Checks:** the kit's full build gives 230 glbs, all byte-identical; tests ch15 and haluna_kit (25 OK), Godot
+    post_import 21/0, validate_data, taskboard and gdlint.
+  - **Open, filed in M4-A2P-0451:**
+    - Hollowmere's first visit has no greybox zone; chapters are asked for one, and the kit (M3-ENV-723) is ready.
+    - The shoal's held dead and the dawn fog are rendering's.
+- **MERGE-READY @ 562c7f57: M4-A2P-044, Ch14 (the Lacquer Court) dressed.** The change is additive; chapters mount it
+  (M4-A2P-0441).
+  - **Built from the greybox:** the court, red-lacquer colonnades with a wedding lantern on every column, the dais,
+    the Conclave's gallery, the water-steps, the water-gate.
+  - **Placed round it:** six halls, the bridal barge, and the city at its windows (`bowl_dome_lit`, a new kit
+    variant; the plain `bowl_dome` is unchanged).
+  - **Gates:**
+    - Viewed at 10 cameras.
+    - Python suites OK: test_ch14 (4), ch13, haluna_kit.
+    - Godot `ch14` 5/5; validate_data and taskboard clean.
+    - The full build reproduces all 229 glbs.
+  - **For chapters:** the lagoon's level (the greybox's water is over the barge's deck), and the dusk fill.
+- **MERGE-READY @ 14ff2eb7: M4-A2P-043, Ch13 (Ansedra, the Sanctum, the Lamp Archive) dressed** (the Lead's (b)). The
+  change is additive; chapters mount it (M4-A2P-0431, filed). The details are in ansedra.md's revision line.
+  - **Ansedra:** vey_zones' walk builders reused on Ansedra's greybox, in marble and gilt (a small refactor: an
+    `order` parameter, and the Vey's glbs are byte-identical). Order lamps, Sefir's and Corran's houses, the Archive
+    and Sanctum domes on base storeys with their doors, lofted barges, fourteen island domes and the far skyline, the
+    still mirror.
+  - **Interiors:** the Sanctum (the basin over the bound light, the apse) and the Archive (lacquered ledger cases,
+    the reading tables).
+  - **New grade:** `lut_ch13_still`.
+  - **Gates:**
+    - Viewed at 30 cameras.
+    - Python suites OK: test_ch13 (4), ch10–12, haluna_kit.
+    - Godot `ch13` 4/4; gdlint, validate_data and taskboard clean.
+    - The full haluna_kit build reproduces all 227 glbs.
 - **VERIFIED on lead/gate-big20 (4e3c74c9), with self-rendered stills on lavapipe: the Lead's Act I rows.**
   - **Closed (env-art's part):**
     - **Row 25:** `brightwater_landing_f01`'s lower half reads (the islet's moon fill, 2e2233c3). f06 is fine.
@@ -864,6 +918,8 @@ Read this section first; everything below it is history. The branch is `claude/e
     (characters/slice-polish), and `reefball_drop_proxy` / `tb_drop_proxy` are env-art-b's (M3-RND-26).
 
 ### PC-QUEUE
+- **Ch14's court at dusk (the layout's 4° sun, 0.5 navy ambient): the court's centre reads near-black on lavapipe.** The
+  lanterns light the colonnade only. Judge it on the real GPU. The remedy is chapters' ambient (M4-A2P-0441).
 - **Ch12's shade at a walker's eye (Keth Pass, Quellan): the dark slate and crag go near-black on lavapipe in every
   shadow.** The cause is the colour script's 0.8 colour fill at exposure 0.65, with no bounce light on the software
   renderer. A sky-source ambient barely moved it. On the real GPU (SDFGI/SSIL), judge whether the shade reads. If it

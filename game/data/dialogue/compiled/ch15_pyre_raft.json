@@ -13,7 +13,7 @@
     {"op": "cue", "cue": "wait", "args": [5.0], "kwargs": {}, "src": 15},
     {"op": "cue", "cue": "camera", "args": ["H13"], "kwargs": {}, "src": 16},
     {"op": "cue", "cue": "anim", "args": ["aldous_varrow", "push_off", "pyre_raft"], "kwargs": {}, "src": 17},
-    {"op": "cue", "cue": "sfx", "args": ["pyre_crackle"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "sfx", "args": ["hearth_crackle"], "kwargs": {}, "src": 18},
     {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 19},
     {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "pyre_raft", "count": 6, "rate": "slow"}, "src": 20},
     {"op": "cue", "cue": "anim", "args": ["aldous_varrow", "raise", "lamp_housing"], "kwargs": {}, "src": 21},

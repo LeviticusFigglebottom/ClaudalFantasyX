@@ -12,11 +12,11 @@ location: ch16/drowned_choir
 @letterbox on
 @camera S01
 @music abiding_guard fade=0.0
-@sfx storm_wall
+@sfx undertow_wall_roar
 @wait 3.0
 @camera S02
 @anim kerrid hold_line
-@sfx current_song_hum at=storm vol=0.3
+@sfx current_song at=storm vol=0.3
 @anim rhen grab_hand asha
 @wait 2.5
 @camera S03

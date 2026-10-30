@@ -7,8 +7,9 @@
 // song begins, wordless and rising (`farewell_tide`, which carries the Letting's first cell). T03: THE
 // CLOUD BREAKS straight overhead; the first stars; F02 is the hero frame. T04: at the top note the clutch
 // TURNS ITS BACK to the water, all at once; on the release the song ends and the motes are gone.
-// The plan asks for the prompt to change to "Release" at the peak, so the player ends the rite by letting
-// go (act2_ch10.md §9 UI 1). Until UI has that variant the second hold below stands in for it.
+// The prompt changes to "Release" at the peak, and the player ends the rite by letting go (act2_ch10.md §9 UI 1):
+// M4-CIN-1304 stages it with the release gate (release_input, M4-CIN-1302). The clutch turns at the top note; the
+// rite holds there for as long as the player holds, and the song ends on the release.
 // T05: Asha has NOT turned around; Ysolde turns her by the shoulder (her warmth as an instruction).
 // Rhen is already turned (he copies the room); Toma turns last, slowly.
 title: ch10_farewell_tide
@@ -30,11 +31,10 @@ location: ch10/reedhollow
 @camera F02
 @wait 6.0
 <<event hold_input_end>>
-<<event hold_input release_tide>>
 @camera T04
 @anim clutch turn_back
-@wait 3.0
-<<event hold_input_end>>
+<<event release_input release_tide>>
+@wait 1.5
 @camera T05
 @wait 2.0
 Ysolde [tender]: Turn around. They asked us not to stay watching. #line:ch10_tide_001
@@ -48,7 +48,7 @@ Ysolde [tender]: Turn around. They asked us not to stay watching. #line:ch10_tid
 <<if $ch09_ebbing_danced>>
     Asha [grief]: Mine went down. #line:ch10_tide_002 #tn:"Her Ebbing at Corrow led the dead down into the sea; these went up."
 <<endif>>
-<<set $ch10_tide_witnessed = true>>
+<<set $ch10_farewell_tide_seen = true>>
 <<jump ch10_outside_causeway>>
 ===
 // B10 "Outside the causeway" (C, 1.5 min, no dialogue). R07: outside the gate, PELL stands with his back

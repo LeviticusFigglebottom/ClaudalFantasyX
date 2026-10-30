@@ -19,6 +19,16 @@ render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_burley, specular_sc
 #define UNDERTOW_FOAM_OFFSET vec3(-11.3, 4.9, 2.6)
 // Foam ring sharpness exponent (narrow bright crests between wide gaps).
 #define UNDERTOW_RING_POWER 6.0
+// Anti-aliasing of the spiral patterns (row 17, the eye's rings): toward the axis the log-spiral winds
+// without limit, so a pattern whose noise coordinate changes by more than this per pixel fades to its mean.
+#define UNDERTOW_SEA_AA_START 0.35
+#define UNDERTOW_SEA_AA_END 1.2
+// Mean of the throat streak mask (smoothstep(0.45, 0.9) of value noise): what an unresolvable streak averages to.
+#define UNDERTOW_THROAT_STREAK_MEAN 0.2
+// Throat streaks: cycles around the axis, and the sink scale (fraction of the throat radius per noise cell).
+// Long along the sink and narrow around: streaks running down into the throat, never rings from above.
+#define UNDERTOW_THROAT_STREAK_AROUND 14.0
+#define UNDERTOW_THROAT_STREAK_SINK 2.0
 
 group_uniforms sea_shape;
 uniform float funnel_depth_m : hint_range(0.0, 2000.0) = 260.0;
@@ -101,26 +111,35 @@ void vertex() {
 
 // Foam: streaks stretched along the inflow spiral. Coordinates are steady in spiral space (angle
 // around the spiral, radius drifting inward at inflow_m_s), so the pattern never winds up.
-float sea_foam(vec3 p) {
+float sea_foam(vec3 p, out vec3 q) {
 	float r = max(length(p.xz), throat_radius_m * UNDERTOW_AXIS_GUARD);
 	float c = atan(p.z, p.x) + foam_pitch * log(r / eye_radius_m) - rotation_rad_s * storm_time_s;
 	// A fixed circle in noise space: streaks are foam_scale_m wide at the lip and converge inward.
 	float around = lip_radius_m / foam_scale_m;
 	float a = (r + inflow_m_s * storm_time_s) / (foam_scale_m * foam_streak);
-	vec3 q = vec3(cos(c) * around, a, sin(c) * around);
+	q = vec3(cos(c) * around, a, sin(c) * around);
 	return hymn_fbm3(q + UNDERTOW_FOAM_OFFSET, foam_octaves, 2.0, 0.5);
 }
 
 void fragment() {
 	vec3 p = v_local;
 	float r = length(p.xz);
+	// The normal per pixel, as the vertex stage derives it: interpolated across the funnel's coarse rings it
+	// lit each ring as a facet, concentric specular bands in the eye (row 17).
+	float e = UNDERTOW_SEA_NORMAL_STEP_M + r * 0.004;
+	float h0 = sea_height(p.xz);
+	vec3 n_local = normalize(vec3(h0 - sea_height(p.xz + vec2(e, 0.0)), e, h0 - sea_height(p.xz + vec2(0.0, e))));
+	NORMAL = normalize((VIEW_MATRIX * MODEL_MATRIX * vec4(n_local, 0.0)).xyz);
 	// Rim: dissolve into the zone ocean with a stable dither (opaque pass, no sorting problems).
 	float keep = 1.0 - smoothstep(fade_start_m, sea_radius_m, r);
 	if (hymn_hash12(floor(FRAGCOORD.xy)) > keep) {
 		discard;
 	}
 	float under_storm = 1.0 - smoothstep(lip_radius_m, foam_ring_radius_m * 1.6, r);
-	float f = sea_foam(p);
+	vec3 foam_q;
+	float f = sea_foam(p, foam_q);
+	// Where the spiral winds faster than a pixel can show (near the axis), the streaks average out.
+	f = mix(f, 0.5, smoothstep(UNDERTOW_SEA_AA_START, UNDERTOW_SEA_AA_END, length(fwidth(foam_q))));
 	// Foam rings: surge crests circling the funnel, drawn inward over time.
 	float ring_phase = (r + inflow_m_s * storm_time_s) / foam_ring_spacing_m;
 	float rings = pow(0.5 + 0.5 * cos(HYMN_TAU * ring_phase), UNDERTOW_RING_POWER);
@@ -136,14 +155,17 @@ void fragment() {
 	METALLIC = 0.0;
 	// Held light sinking into the throat: cyan streaks spiralling down (never rising).
 	float throat = 1.0 - smoothstep(throat_radius_m * 0.3, funnel_radius_m * 0.75, r);
-	float c = atan(p.z, p.x) + foam_pitch * log(max(r, 1.0) / eye_radius_m);
-	float sink = (r + glow_drift_m) / (throat_radius_m * 0.5);
-	float streak = hymn_value_noise3(vec3(cos(c) * 6.0, sink, sin(c) * 6.0));
+	// The spiral stops winding inside half the throat: from above, a spiral wound to the axis reads as rings (row 17).
+	float c = atan(p.z, p.x) + foam_pitch * log(max(r, throat_radius_m * 0.5) / eye_radius_m);
+	float sink = (r + glow_drift_m) / (throat_radius_m * UNDERTOW_THROAT_STREAK_SINK);
+	vec3 streak_q = vec3(cos(c) * UNDERTOW_THROAT_STREAK_AROUND, sink, sin(c) * UNDERTOW_THROAT_STREAK_AROUND);
+	float streak = hymn_value_noise3(streak_q);
+	float streak_aa = smoothstep(UNDERTOW_SEA_AA_START, UNDERTOW_SEA_AA_END, length(fwidth(streak_q)));
 	float pocket;
 	float lip;
 	float halo;
 	float seam = undertow_wound(vec3(p.x, max(p.y, 0.0), p.z), pocket, lip, halo);
-	vec3 glow = col_held * throat_glow_energy * wound_intensity * throat * smoothstep(0.45, 0.9, streak);
+	vec3 glow = col_held * throat_glow_energy * wound_intensity * throat * mix(smoothstep(0.45, 0.9, streak), UNDERTOW_THROAT_STREAK_MEAN, streak_aa);
 	glow += col_wound * seam * throat;
 	// The storm's lightning lights the sea under it; foam catches it most.
 	vec3 flash = undertow_lightning(vec3(p.x, 0.0, p.z)) * (0.04 + 0.5 * foam);

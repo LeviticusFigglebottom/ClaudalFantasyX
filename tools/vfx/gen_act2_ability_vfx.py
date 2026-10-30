@@ -72,7 +72,7 @@ SKILLS = {
     # at its head, rising: from the fight's frame the barge's rail hides the whole waterline beside the hull, so a ring
     # on the water (tried at the near face, then at the fin's feet, 10-30) was never seen; the fin dives as it sounds
     # large, slow and long-lived: at 12 m in the dark, the stock rise motes read as one dot (10-30)
-    "sound_dive": fx("head", [A1.layer("sea_glow", "lagoon_teal", 70, 2.4, 0.15, (0.3, 0.7), 20, (0, 0.2, 0), (0.3, 0.55),
+    "sound_dive": fx("crest", [A1.layer("sea_glow", "lagoon_teal", 70, 2.4, 0.15, (0.3, 0.7), 20, (0, 0.2, 0), (0.3, 0.55),
                                        radius=1.0, turb=0.25, energy=2.2),
                               A1.layer("sea_glow", "abyss_navy", 30, 2.8, 0.1, (0.15, 0.35), 30, (0, 0.1, 0), (0.5, 0.8),
                                        radius=0.6, turb=0.2, energy=1.6)],
@@ -81,6 +81,54 @@ SKILLS = {
                       "It breaches alongside and the fin sweeps the deck: black water lit from below."),
     "wake_wheel": fx("ground", spray("deep_teal_shadow", "sea_glow", 44),
                      "The circle closes: the wake rocks the barge under each of the party."),
+}
+
+# M4-A2P-061: the four Act II Vowbound (bound light, color_script rule 2: glimmer_bound, steady, never shed) and
+# their Swell finishers. Their skill rows land with act1-chapters' vowbound.json (big21); until a skill exists in
+# skills.json its row here is skipped, so this table can wait for them.
+LAYER = A1.layer
+VOWBOUND = {
+    # Nhoa, the Rootlight (Ice). Her cold is the deep's, not a frozen surface (nhoa.md): deep teal and navy, no
+    # crystals (ADR 0204 keeps ice out of Ch12-15).
+    "silt_fall": fx("chest", sink("glimmer_bound", "deep_teal_shadow", 40, 0.45) + burst("deep_teal_shadow", "abyss_navy", 30, -1.0),
+                    "Nhoa's Silt Fall: her motes sift down over the target like silt in deep water, and the deep's cold breaks on it."),
+    "deep_well": fx("ground", ring("deep_teal_shadow", "abyss_navy", 44, 1.4) + sink("glimmer_bound", "deep_teal_shadow", 30, 0.6),
+                    "Nhoa's Deep Well: the deep's cold wells up under each foe, a dark ring with her motes settling into it."),
+    "nhoa_echo": fx("chest", burst("glimmer_bound", "abyss_navy", 40, -1.0),
+                    "Nhoa's Echo: the last foe's blow, given back in her bound light."),
+    "farewell_tide": fx("ground", spray("deep_teal_shadow", "abyss_navy", 60) + A1.rise("glimmer_lift", "glimmer_lift_hi", 40, 1.6, 0.6),
+                        "Farewell-Tide (Nhoa's Swell): the deep's cold tide breaks over every foe, and motes rise off it: the only finisher whose light goes up (act2_plan 4.4; rule 1's released glimmer)."),
+    # Hesk (Holy, cleanse, Regen): glimmer_bound held in gauze-white cords (hesk.md: one bound light colour).
+    "knot_light": fx("chest", burst("glimmer_bound", "gauze_white", 44, -1.5) + slash("gauze_white", "glimmer_bound", 16),
+                     "Hesk's Knot-Light: a lit knot opens on the target, the cord-ends snapping out white."),
+    "cord_lift": fx("ground", ring("gauze_white", "glimmer_bound", 36, 0.9),
+                    "Hesk's Cord-Lift: a ring of white cord rises around each ally and lifts their afflictions (a cleanse)."),
+    "hesk_mending": fx("chest", sink("glimmer_bound", "gauze_white", 30, 0.5),
+                       "Hesk's Mending: her light settles onto each ally, steady (Regen)."),
+    "pass_cord": fx("chest", slash("glimmer_bound", "gauze_white", 70, 1.0) + burst("gauze_white", "glimmer_bound", 30, -1.0),
+                    "Pass-Cord (Hesk's Swell): a line of shining knots runs across the field, a knot catching on each foe."),
+    # Ethren (Glimmer, Slow and Stop, wards): stillness. The bound light shows at lacquer seams (ethren.md); his effects
+    # barely move.
+    "level_hand": fx("chest", [LAYER("glimmer_bound", "lacquer_black", 36, 0.9, 0.9, (0.05, 0.2), 180, (0, 0, 0), (0.14, 0.28), radius=0.35, energy=1.4)],
+                     "Ethren's Level Hand: the air around the target goes level and still, held in bound light."),
+    "hold_the_hour": fx("ground", ring("glimmer_bound", "lacquer_black", 40, 1.2) + sink("lacquer_red_deep", "lacquer_black", 20, 0.4),
+                        "Ethren's Hold the Hour: a still ring closes on the target's footing (Stop)."),
+    "lacquer_screen": fx("ground", ring("lacquer_red_deep", "glimmer_bound", 36, 1.0),
+                         "Ethren's Lacquer Screen: a lacquered screen stands around each ally, bound light at its seams (a ward)."),
+    "still_water": fx("ground", [LAYER("glimmer_bound", "abyss_navy", 60, 1.6, 0.95, (0.02, 0.08), 5, (0, 0, 0), (0.2, 0.36), radius=2.0, energy=1.4)]
+                      + sink("glimmer_bound", "lacquer_black", 24, 0.6),
+                      "Still Water (Ethren's Swell): the field goes flat and still under every foe, a wide ring that does not move."),
+    # Kesh, the Seven (element cycling): each voice its element's colours, carried on bound light.
+    "voice_water": fx("chest", spray("turquoise_shallow", "glimmer_bound", 50), "Kesh's water voice: sea water over each foe."),
+    "voice_lightning": fx("chest", slash("starlight", "glimmer_bound", 40), "Kesh's lightning voice: a white seam across the target."),
+    "voice_fire": fx("chest", burst("ember_orange", "glimmer_bound", 44, -2.0), "Kesh's fire voice: embers breaking on the target."),
+    "voice_ice": fx("chest", shards("salt_glass", "moon_blue", 22), "Kesh's ice voice: rime over each foe."),
+    "voice_holy": fx("chest", sink("glimmer_bound", "gauze_white", 30, 0.5), "Kesh's holy voice: light settling onto each ally."),
+    "voice_glimmer": fx("chest", A1.rise("glimmer_lift", "glimmer_lift_hi", 36, 1.1, 0.4),
+                        "Kesh's glimmer voice: released glimmer rising off each foe (rule 1)."),
+    "the_seven": fx("chest", burst("turquoise_shallow", "glimmer_bound", 20, -1.5) + burst("ember_orange", "glimmer_bound", 20, -1.5)
+                    + slash("starlight", "glimmer_bound", 20) + burst("glimmer_lift", "glimmer_lift_hi", 20, -0.5),
+                    "The Seven (Kesh's Swell): every voice at once over every foe, water, fire, lightning and glimmer together."),
 }
 
 
@@ -92,7 +140,9 @@ def main() -> int:
     if missing:
         print("unknown ids:", missing)
         return 1
-    for sid, eff in SKILLS.items():
+    rows = dict(SKILLS)
+    rows.update({sid: eff for sid, eff in VOWBOUND.items() if sid in sk})  # each as its skill row lands
+    for sid, eff in rows.items():
         mapped = data["map"]["skills"].get(sid)
         if mapped not in (None, sid, sid + "_hit") and data["effects"].get(mapped, {}).get("note") != eff["note"]:
             continue  # someone else's mapping wins (this tool's own ids are rewritten)
@@ -103,6 +153,10 @@ def main() -> int:
             eid = sid if own is None or own.get("note") == eff["note"] else sid + "_hit"
         data["effects"][eid] = eff
         data["map"]["skills"][sid] = eid
+    data["anchor_heights"]["crest"] = 1.0  # a body's top, on its middle (anchor_centred): not on its near face
+    data["anchor_centred"] = sorted(set(data.get("anchor_centred", ["feet"])) | {"feet", "crest"})
+    data["anchor_centred_doc"] = ("Anchor heights placed on the body's middle, not its near face (BattleVfx.anchor). crest: the "
+                                  "Wakefin's near face is 1.9 m out, against the barge's hull; its Sound Dive rises at its crest.")
     out = json.dumps(data, indent=2) + "\n"
     sfx_text = A1.SFX.read_text()
     sfx = json.loads(sfx_text)
@@ -112,7 +166,7 @@ def main() -> int:
         return 0 if out == text and sfx_out == sfx_text else 1
     A1.EFFECTS.write_text(out)
     A1.SFX.write_text(sfx_out)
-    print("effects.json: %d Act II skills" % len(SKILLS))
+    print("effects.json: %d Act II skills, %d of %d Vowbound" % (len(SKILLS), len(rows) - len(SKILLS), len(VOWBOUND)))
     return 0
 
 
