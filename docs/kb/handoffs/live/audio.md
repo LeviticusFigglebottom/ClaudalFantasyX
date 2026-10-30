@@ -10,7 +10,6 @@ Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 a
   - **ashcrown_audio.gd:53 `unbind(0)`:** the trial's `ran` has three arguments and went through `unbind(argc - 3)`, which is 0 and an ERROR. Now three arguments connect plainly, and only a signal with more drops its extras.
   - **Test:** `tests/unit/test_audio_reconnect.gd` (2) fails on any engine error (QaLogger), not only script errors. It reproduces both on the old code (the exact messages) and passes on the fix.
   - **Checks:** gdlint and gdformat clean; Godot audio_reconnect 2/0, ui_ 58/0, ashcrown 22/0, audio_runtime 11/0, battle_audio 22/0. ui_'s "2 left nodes in the tree" happens without this change too.
-  - **Not pushed yet:** the ending's cues (goodbye_imra, ending_lift_bed, goodbye_kerrid, ending_dock, goodbye_dace, credits_suite) are rendered locally; they land in the next push.
 - **MERGE-READY @ e8755571d: Act III production starts (ADR 0207; the Lead's 21:56 item). The score, part 1, is the Unbinding themes (M5-A3P-1950, to review); part 2, the finale, is begun (M5-A3P-1951).**
   - **Merged integration** (46d8a067 onward) into claude/audio; it was clean.
   - **Storage, ADR 0208:** Act III's new audio is plain git under `assets/audio/act3/`, the same route as Act II's (LFS uploads are still refused from the cloud). The budget is 150 MiB; plain audio was at 100.3 MiB of 105. **LEAD-ASK:** accept ADR 0208 (repository size) on merge.
@@ -41,7 +40,20 @@ Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 a
     - H04's fight has no id in the drafts yet: it needs a row to `sefir_warden`.
     - A BattleCycle `cycle_changed` signal would let Kesh's verses follow her element.
   - **Checks:** render_all loudness, seams and determinism (all identical; kesh's seam re-placed half a beat in); true peaks under -1; mono fold 0 failing; validate_data 0; audio_loudness and audio_data OK; Godot battle_audio 22/0, music_transitions 7/0.
-- **IN PROGRESS (M5-A3P-1952): the ending:** goodbye_imra (one piano note after her hum) with its `velamir_lullaby_hum` sfx, ending_lift_bed, goodbye_dace, goodbye_kerrid, ending_dock, credits_suite, post_credits_lamp; then Ch17–Ch20.
+- **MERGE-READY @ 39e91137c: the Act III score, part 3, the ending (M5-A3P-1952, to review).**
+  - **The cues:**
+    - `goodbye_imra`: one piano A after she is gone.
+    - `ending_lift_bed`: the drone and a glass shimmer.
+    - `goodbye_dace`: the current-song on harp with four bars of the lullaby inside it; same notes, D dorian and A minor.
+    - `goodbye_kerrid`: his stair slowing to a stop.
+    - `ending_dock`: solo piano, the Hush resolving to A.
+    - `credits_suite`: the shipped themes in pilgrimage order, ending on the lullaby on piano.
+    - `post_credits_lamp`: the star-path on a low metallophone.
+  - **Checks:** render_all loudness and determinism (all identical); the lift bed's seam; mono fold 0 failing; validate_data 0; audio_loudness and audio_data OK; Godot audio_runtime 11/0.
+  - **PC-QUEUE:**
+    - The credits suite's hush-to-piano join (it thins 7.5 dB in mono there).
+    - goodbye_dace's harp by ear.
+  - **Not done yet:** the 17 Act III cutscene `@sfx` (velamir_lullaby_hum, match_struck, hull_meets_water and the others); then the Ch17–Ch20 cues.
 - **MERGE-READY @ 6fcbce03d: the Lead's 21:25 item, the audio accessibility pass (M4-A2P-1952, to review).**
   - **Sliders reach every sound.** Every bus sends to a slider bus (UI, World and Combat under SFX; Ambience with the effects slider). Two fixes:
     - **Strays:** a player that never names a bus would sit on Master, under no slider but the master's. `AudioDirector.route_stray` now moves it to mix.json `stray_bus` (SFX). Nothing hits this today (the dialogue blip goes to Voice, the cutscene sound fallback to SFX); it guards any track's future players.
