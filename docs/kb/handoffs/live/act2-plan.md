@@ -590,3 +590,4 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
   - `ch01_zones` is 6/6 red, **and red the same on the unchanged tree**: an integration script error in its setup (`test_ch01_zones.gd:128` `auto_update` on Nil), not this change.
 - MERGE-READY tutorial pass @ 16b18b2c1
 - BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1006; M4-A2P-112 items 3, 5 and 6.
+- **Correction (ch01_zones):** not a real red. After a fresh `--import`, `test_ch01_zones` passes 6/0. My run, and its "red on the unchanged tree" check, both used an import cache made stale by the integration merge: `raft_deck_square.glb` changed in bc790ea89, its import failed, so `scene_router.gd` didn't compile and `zone.director` was null at `_open`. **Nothing to file**, so no task for act1-chapters. Lesson for me: re-import after every merge before trusting a Godot red.
