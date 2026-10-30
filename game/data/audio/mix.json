@@ -70,6 +70,13 @@
         "Music": -9.0,
         "Ambience": -5.0
       }
+    },
+    "encounter": {
+      "sec": 0.2,
+      "buses": {
+        "Music": -3.0
+      },
+      "_note": "M3-AUD-864: the field music dips under the tide-line stinger as the field dims (battle_stings.json battle_stinger), released before the router's black"
     }
   },
   "music": {
