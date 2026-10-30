@@ -1373,3 +1373,18 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - the row `kite_wake` on review stage `kite_gulls.json` (the Kite has no zone yet: its scene adds the row with
     `follow` set to its Kite node, moving before the layer); new shot `wildlife_kite_gulls` (viewed).
 - **MERGE-READY @ e3ba147b7.**
+- **M5-A3P-1810 VillagerLayer flag rows**, at review (Tech):
+  - a row's `flag` / `not_flag` shows it while / until a flag is set (checked each tick, combined with `shown`);
+    validator checks the flags are declared, and a `flag` row is a variant of its crowd person's own row;
+  - Godot villager 49/0, crowd 21/0; tools test_npc OK. For the Ch18 revisits.
+- Filed, **blocked**:
+  - M5-A3P-1809, the Ch20 held shapes: no Ch20 zones or location ids yet;
+  - M5-A3P-1811, the Ch18 crowd variants (Haluna backs-to-the-water, the Kirru farewell-tide again): the Act III
+    flags aren't declared yet.
+- **MERGE-READY @ 888e2b159.**
+- **BACKLOG EMPTY:** every Act III regular and wildlife task in my list (M5-A3P-1800 to 1808) is at review, and
+  1810 is too.
+  - 1809 and 1811 wait on Act III zones and flags; 1849 waits on Combat.
+  - The Act III bosses wait on the open LEAD-ASK.
+  - No Act I/II FAST-TRACK is open for me.
+  - **LEAD-ASK:** give me the bosses, or a busier track to supplement.
