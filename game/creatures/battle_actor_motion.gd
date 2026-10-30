@@ -5,7 +5,8 @@ extends RefCounted
 ## (the Drownbell's rim) breaking on `charge_broken` and mending on `charge_started`. The action and hit clips are
 ## BattleChoreo's (M2-BPR-01, through BattleClips: the actor's clip at its strike beat, the target's react at
 ## contact); they left this class at the big7 merge, as battle-presentation and creatures agreed. KO and Petrify
-## reach the actors through BattleStage.refresh_ko as before. Listens only: it never writes combat state.
+## reach the actors through BattleStage.refresh_ko as before. Listens only: it never writes combat state. A phase
+## change waits for the action that turned it to finish playing.
 
 var _stage: BattleStage
 var _engine: BattleEngine
@@ -37,9 +38,21 @@ func detach() -> void:
 	_engine = null
 
 
+## The engine ends the turn that crossed the phase after the action resolved: the phase change waits for that action's
+## sequence (the blow's hit reaction had cut the phase clip), so it plays under the camera's phase hold (M3-BPR-426).
 func _on_phase_changed(enemy: BattleCombatant, phase_id: StringName) -> void:
 	var f := _fighter(enemy)
-	if f != null:
+	if f == null:
+		return
+	if _stage.choreo != null:
+		_stage.choreo.after_sequence(func() -> void: _enter_phase(enemy, phase_id))
+	else:
+		f.enter_phase(phase_id)
+
+
+func _enter_phase(enemy: BattleCombatant, phase_id: StringName) -> void:
+	var f := _fighter(enemy)
+	if f != null and enemy.is_alive():
 		f.enter_phase(phase_id)
 
 

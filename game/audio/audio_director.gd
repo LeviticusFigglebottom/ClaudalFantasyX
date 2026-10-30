@@ -66,6 +66,8 @@ var music: MusicDeck
 var sfx: SfxBank
 ## Ambience bed id -> FadeVoice.
 var beds: Dictionary = {}
+## The listener whose battle arena's beds play now (set_arena_ambience), or null.
+var arena_owner: Object = null
 ## The zone row applied last ({} for none) and its scene.
 var zone: Dictionary = {}
 var zone_path: String = ""
@@ -90,6 +92,8 @@ var _pending: Dictionary = {}
 ## field has been silent with no scene or battle playing.
 var _sequencers: Array[Node] = []
 var _quiet_sec := 0.0
+## True from a battle until the field's music is back: the return after a battle is quicker and fades longer.
+var _after_battle := false
 
 
 func _ready() -> void:
@@ -290,25 +294,35 @@ func _poll_pending() -> void:
 ## one-shot cue, or a battle that ends in the zone it started in (battle_out stops the music), would leave the field
 ## silent until the next scene swap. Once no cutscene plays, no battle is in the tree, no cue is loading and the deck
 ## has been silent for mix.json music.zone_return_sec, the zone's own cue comes back (resuming where it left off).
-## A swap or a battle that follows at once starts its own cue first, so this never double-starts one.
+## A swap or a battle that follows at once starts its own cue first, so this never double-starts one. After a battle
+## (the human's playtest: the return to a resident field is under 1 s) the zone comes back after music.battle_return_sec
+## and fades in over battle_return_fade_sec, under the victory sting's tail: no silence, and the sting is never clipped.
 func _step_zone_return(delta: float) -> void:
-	var sec := float(music_cfg().get("zone_return_sec", 0.0))
-	if sec <= 0.0 or not zone.has("music") or not _pending.is_empty() or not music.is_silent() or music.is_held():
+	_battles = _alive(_battles)
+	if not _battles.is_empty():
+		_after_battle = true
 		_quiet_sec = 0.0
 		return
+	var cfg := music_cfg()
+	var sec := float(cfg.get("battle_return_sec" if _after_battle else "zone_return_sec", 0.0))
+	if not zone.has("music") or not _pending.is_empty() or not music.is_silent() or music.is_held():
+		_quiet_sec = 0.0
+		if not music.is_silent():
+			_after_battle = false  # a swap or a scene took the music itself
+		return
+	if sec <= 0.0 and not _after_battle:
+		return
 	_sequencers = _alive(_sequencers)
-	_battles = _alive(_battles)
 	for seq: Node in _sequencers:
 		if (seq as CutsceneSequencer).is_playing():
 			_quiet_sec = 0.0
 			return
-	if not _battles.is_empty():
-		_quiet_sec = 0.0
-		return
 	_quiet_sec += delta
 	if _quiet_sec >= sec:
 		_quiet_sec = 0.0
-		play_music(StringName(str(zone["music"])))
+		var fade := float(cfg.get("battle_return_fade_sec", -1.0)) if _after_battle else -1.0
+		_after_battle = false
+		play_music(StringName(str(zone["music"])), fade)
 
 
 ## Applies the zone row for `scene_path` (SceneRouter.scene_swapping calls this under the fade).
@@ -360,6 +374,25 @@ func set_ambience(ids: Array[StringName], sec: float = -1.0) -> void:
 		if not (bed.player as AudioStreamPlayer).playing:
 			(bed.player as AudioStreamPlayer).play()
 		bed.fade_to(1.0, fade)
+
+
+## A battle arena's beds take over from the field's (ambience.json `arenas`, the Lead's 10-30 13:08 item) for
+## `owner` (its BattleAudio), fading over ambience.json arena_fade_sec.
+func set_arena_ambience(owner: Object, ids: Array[StringName]) -> void:
+	arena_owner = owner
+	set_ambience(ids, float(ambience_data.get("arena_fade_sec", -1.0)))
+
+
+## `owner`'s battle has left: the zone's own beds come back (none when the zone has none). A later battle that
+## already took the beds over (a retry builds its listener before the old one leaves) keeps them.
+func release_arena_ambience(owner: Object) -> void:
+	if arena_owner != owner:
+		return
+	arena_owner = null
+	var ids: Array[StringName] = []
+	for a: Variant in zone.get("ambience", []):
+		ids.append(StringName(str(a)))
+	set_ambience(ids, float(ambience_data.get("arena_fade_sec", -1.0)))
 
 
 # --------------------------------------------------------------------------- sfx

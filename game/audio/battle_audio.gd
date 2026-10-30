@@ -6,6 +6,9 @@ extends Node
 ##
 ## - **Music:** the encounter's cue (music.json battle) cuts in at the start; an engine phase_changed id named in
 ##   battle.phases brings stems in or out (the Drownbell's Flood); the battle's end fades it out.
+## - **Ambience:** the encounter's arena (encounters.json `arena`) plays its own beds (ambience.json `arenas`) in
+##   place of the field's (or the encounter's own, ambience.json `encounters`); the field's come back when this
+##   listener leaves.
 ## - **SFX:** game/data/audio/battle_sfx.json maps each BattleVfx effect id (as the view plays it) and each
 ##   engine moment that has no particle (the toll's ring, the Flood, Floodnet, the Vowbound's call and dismiss,
 ##   the opening stingers) to an sfx.json row on the Combat bus. Sections other than `vfx` are fallbacks: one is
@@ -51,10 +54,24 @@ func attach(dir: AudioDirector, controller: BattleController, eng: BattleEngine,
 	var cue := AudioData.battle_cue(dir.music_data, eng.encounter_id)
 	if cue != &"":
 		dir.play_music_async(cue, float(dir.music_cfg().get("battle_in_sec", 0.0)))
+	_apply_arena_ambience()
 	eng.phase_changed.connect(_on_phase_changed)
 	eng.battle_finished.connect(_on_battle_finished)
 	_connect_sfx()
 	_attach_creatures(controller)
+
+
+## The encounter's or its arena's beds (ambience.json `encounters`, `arenas`) in place of the field's; an arena with
+## none keeps the field's.
+func _apply_arena_ambience() -> void:
+	if engine.db == null:
+		return
+	var enc: Dictionary = engine.db.encounters.get(
+		engine.encounter_id, engine.db.encounters.get(String(engine.encounter_id), {})
+	)
+	var ids := AudioData.battle_beds(director.ambience_data, String(engine.encounter_id), str(enc.get("arena", "")))
+	if not ids.is_empty():
+		director.set_arena_ambience(self, ids)
 
 
 ## M3-AUD-14: the creatures' voices and movement (creature_audio.gd, creature_voices.json).
@@ -113,6 +130,8 @@ func _exit_tree() -> void:
 	if _settings != null and _settings.changed.is_connected(_on_setting_changed):
 		_settings.changed.disconnect(_on_setting_changed)
 	_set_factor(1.0)
+	if director != null and is_instance_valid(director):
+		director.release_arena_ambience(self)
 
 
 func _connect_sfx() -> void:

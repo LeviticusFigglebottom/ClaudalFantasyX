@@ -188,6 +188,28 @@
       "voices": 1,
       "unit_size_m": 20.0,
       "_note": "M4-A2P-093: ch15_the_fin: the Wakefin's first pass in the dark (act2_skill_sfx.py's fin_cut, at the cutscene's level)"
+    },
+    "shoal_hum": {
+      "files": [
+        "res://assets/audio/sfx/shoal_hum.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 16.0,
+      "_note": "the Lead's 10-30 13:48 item (act2_ch15.md §6): Ch15 B06, the held dead's faint hum as they rise off the shoal; a sideways glass shimmer"
+    },
+    "choir_wind_chord": {
+      "files": [
+        "res://assets/audio/sfx/choir_wind_chord.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 30.0,
+      "_note": "the Lead's 10-30 13:48 item (act2_ch16.md §6): the wind finding the Choir's stone mouths: an open-vowel chord swelling and dying, no melody"
     }
   }
 }

@@ -928,6 +928,72 @@ that test at this branch's zones.
     zone and layout).
 - **BACKLOG EMPTY (10-30, after the Ch5–Ch9 walk):** what's left from the walk is with env-art (M3-ENV-1328/1329/1330).
   Ch13–Ch16's walk waits on the mount, and the rest of Ch14–Ch16 on M4-A2P-103 to 107.
+- **Eye-height walk, Ch13–Ch16, standalone (10-30, the Lead's order not to wait on mounts):** each zone scene was
+  instanced alone at every spawn, trigger and mark (160 stills over 8 zones), plus the five Ch13–16 arenas from
+  their hint cameras. All viewed.
+  - **Fixed:**
+    - **`lacquer_hall`** (Sefir's and Corran's houses, the court): one plain back-wall slab and the roof's bare
+      underside read as flat navy in shade. The back wall is now five red panels in gilt rails on a black ground,
+      with a beamed timber ceiling.
+    - **Ansedra's red lacquer** is now satin over an oxblood undercoat; glossy over near-black, its shaded faces
+      mirrored the grey sky.
+    - **`archive_case`**'s plain black ends read as navy slabs down the Archive's aisles. They now carry a red inset
+      in a gilt frame and a gilt label plate.
+  - **Seen, fine:** the Lacquer Court at dusk, the Sanctum, the open sea, Hollowmere's dock, the Pale Rim, and all
+    five arenas (the bridal barge's dark is by design).
+  - **Mount points for act1-chapters** (story points stay theirs):
+    - **Ch13 `corran_house`** (−44, −40.8) stands *inside* Corran's hall. The hall is built at 0.45, so its
+      interior is about 1.9 m high, and at eye height the camera is under its shaded roof. Stand the mark at the
+      hall's front, +X (about −41, −40.8).
+    - **Ch16 Drowned Choir:** still greybox until M4-A2P-106 (the relayout to the kit's amphitheatre).
+    - **Ch16 rim encounters:** need `"arena": "pale_rim_shallows"` (M4-A2P-107).
+    - **The Ch13–16 zones' scenes** each instance cleanly alone, with their spawns
+      (Ansedra 3, the Court 3, Archive 1, Sanctum 1, the open sea 2, the Rim 2, Choir 1, Hollowmere 1). Routing
+      them in is chapters' mount; nothing on the dressing side blocks it.
+  - Process note: an earlier Bash step waited on a permission prompt; this pass ran as plain single steps (no kills,
+    writes only in the worktree and scratchpad).
+  - Checks: tools test_ansedra, test_ch13_*_dressing, test_ch14_lacquer_court_dressing, test_haluna_kit and
+    test_b_arenas (49) pass; Godot --filter=ch13 (4), ch14_16 (5), ansedra (4) and archive (2) pass.
+  - **MERGE-READY @ 2d9a9c36.**
+- **BACKLOG EMPTY (10-30, after the Ch13–16 walk):** the walk's findings are fixed or logged as mount points above,
+  and the kit requests are with env-art (M3-ENV-1328/1329/1330). The rest waits on M4-A2P-103 to 107.
+- **Walking into the water (the human's Oruvel playtest; on big23 8fe3644b merged, d4e21dde):** my zones' shores
+  are kit terrain, not greybox walk blocks, so env-art's `zone_edges.py` (28b005ad) can't see them.
+  `tools/act1/shore_walls.gd` (new) flood-fills the walkable ground from the spawns the way the controller walks
+  (steps ≤ 0.35 m, blocked by anything at chest height), walls every edge onto water deeper than 10 cm, merges the
+  runs and writes `<zone>_shore_walls.json`. The generator reads it into `edge_walls` (`zl.shore_walls`).
+  - **Probed** (reachable cells whose ground lies more than 0.3 m under the water):
+    - Pemakar: 463, on the beaches either side of the harbour (the quay itself was closed).
+    - None in Brine Shoals, Ch8 Corrow, Ch9's strand and pier, Ansedra, the Lacquer Court (its water-steps end on
+      the barge deck above the water), Hollowmere's dock or the open sea's deck. The Pale Rim's wade is in water by
+      design.
+  - **Pemakar:** 687 shore walls. Re-probed: 0 deep cells reachable. `tests/integration/test_shore_walls.gd` (new):
+    one invisible body per row, and a body can't cross a sampled wall. Godot --filter=pemakar (10) and
+    shore_walls (2) pass; test_pemakar_kit, validate_data and taskboard pass.
+  - **MERGE-READY @ 02640c97.**
+  - The Ch5–Ch6 eye-height walk and rows 62/63 were already done and pushed (above: 008c7de3, e72c9631).
+- **BACKLOG EMPTY (10-30, after the shore walls):** what's left waits on env-art's kits (M3-ENV-1328/1329/1330) and
+  on M4-A2P-103 to 107.
+- **Ashcrown and Coilspire: floating props and stretching (10-30, the Lead's order):** a scratch probe measured every
+  dressing piece under 8 m against the ground beneath it, then each flagged one was viewed.
+  - **Ashcrown:**
+    - **The problem:** 26 road graves (curbs and steles by the causeway's mid landings) floated 0.5–2.3 m over
+      the slope. They were set on the analytic massif, and the crest's built mesh lies under it out there.
+    - **The fix:** ZoneKitDressing gets an optional per-piece `"snap"`. After placing, a piece drops onto the
+      ground under its origin, plus the offset. A terrain that collides as its LOD1 trimesh gets a temporary LOD0
+      body for the snap, so props sit on the ground that draws, and walk collision is unchanged.
+    - **Applied to:** the road graves (sunk 0.2 m) and the flank rock patches (−0.3).
+    - Re-probed: 0 floating. Viewed: the curbs sit into the slope.
+    - New test: `tests/integration/test_zone_snap.gd`.
+  - **Coilspire:** nothing floats. The flagged wall lamps, flue keys, the niche and the beacon are wall-mounted, and
+    the Watcher heads stand on the parapet, which has no collision under them. The scrub's 0.1–0.7 m was against
+    the coarse collision; in view they stand on their stems.
+  - **Texture stretching:** none seen in either zone's eye-height stills (the earlier walk plus these views).
+  - Checks: Godot --filter=ashcrown (22), dressing (31), zone_kit (13), edge_walls, shore_walls and zone_snap pass;
+    test_ashcrown_kit passes.
+  - **MERGE-READY @ 4516750e.**
+- **BACKLOG EMPTY (10-30, after the float pass):** the Ch13–16 water and dock edges were done in the shore-wall
+  pass above, and rows 62/63 were already pushed. What's left waits on M3-ENV-1328/1329/1330 and M4-A2P-103 to 107.
 ### PC-QUEUE
 - Pass 3 row 65 (@ edb18aae): re-measure the camp's smoke columns (24 steps at High) and the Tamsule drop (High has no
   god rays now) at High 1440p against the 0.3 ms target.
@@ -967,3 +1033,5 @@ SELF-RENDERED @ c6abd321: zz_pem_harbour, zz_pem_road, zz_pem_weir, zz_cor_stran
 SELF-RENDERED @ 7999fb30: ch15_hollowmere_supper, ch15_hollowmere_dock, viewed (the supper table by the south rail).
 SELF-RENDERED @ e1903b9e: battle_boss_intro_matron, battle_arena_ashcrown_anvil_court (the loggia lattice), pemakar_p11_sea_cut_weir_day (before, after and a tint test), ch09_corrow_strand plus the strand spawn view (scratch, each shroud step plus a red paint test), battle_arena_pale_rim_shallows (new), all viewed.
 SELF-RENDERED @ 008c7de3: the Ch5–Ch9 eye-height walk (548 stills, scratch), Brine Shoals' variation, LOD and wet tests, Tamsule's cloth and Corrow's wall-slit and pool before/after views (scratch), ch07_tamsule_market, ch08_corrow_flood, ch08_corrow_arrival — all viewed.
+SELF-RENDERED @ 2d9a9c36: the Ch13-Ch16 eye-height walk (160 stills over 8 zones, scratch), the five Ch13-16 arenas' hint views, lacquer_hall and archive_case before/after (scratch) — all viewed.
+SELF-RENDERED @ 4516750e: Ashcrown's road graves before, snapped to collision, and snapped to the drawn crest; Coilspire's wall-end heads and a headland scrub clump (scratch) — all viewed.

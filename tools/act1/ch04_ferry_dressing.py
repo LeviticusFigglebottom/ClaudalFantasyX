@@ -317,6 +317,11 @@ def landing() -> list[dict]:
             "block": "IsletRock"},
            {"piece": "gangplank", "at": [r3(ISLET_AT[0] - ISLET_HALF[0]), r3(gz)], "y": 0.0, "yaw_deg": 0.0,
             "block": "Gangplank"}]
+    # The crossing's rest (C4-10): the Order shrine on the mainmast's forward face, on its greybox block (the walk
+    # pass, 10-30: the interact point had no prop). Its origin is on the deck; its back against the mast.
+    sh = blocks["OrderShrine"]
+    out.append({"piece": "deck_shrine", "at": [r3(sh["pos"][0]), r3(sh["pos"][2] - 0.04)], "y": 0.0, "yaw_deg": 0.0,
+                "block": "OrderShrine"})
     for piece, bid in (("stern_gate", "SternGate"), ("terrace_name_board_wrapped", "NameBoardWrapped")):
         b = blocks[bid]
         out.append({"piece": piece, "at": [r3(b["pos"][0]), r3(b["pos"][2])], "y": r3(b["pos"][1] - b["size"][1] / 2),

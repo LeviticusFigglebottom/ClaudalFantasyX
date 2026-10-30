@@ -1,0 +1,68 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/npc/kirru_lineup.gd" id="stage"]
+
+[sub_resource type="ProceduralSkyMaterial" id="Sky_mat"]
+sky_top_color = Color(0.18, 0.5, 0.84, 1)
+sky_horizon_color = Color(0.66, 0.86, 0.95, 1)
+sky_curve = 0.12
+ground_bottom_color = Color(0.36, 0.33, 0.31, 1)
+ground_horizon_color = Color(0.62, 0.58, 0.5, 1)
+ground_curve = 0.06
+sun_angle_max = 1.0
+sun_curve = 0.01
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("Sky_mat")
+
+[sub_resource type="Environment" id="Env"]
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 3
+ambient_light_energy = 0.6
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 1.0
+tonemap_white = 12.0
+ssao_enabled = true
+ssao_radius = 0.04
+ssao_intensity = 1.0
+
+[sub_resource type="StandardMaterial3D" id="Ground_mat"]
+albedo_color = Color(0.73, 0.68, 0.6, 1)
+roughness = 0.95
+
+[sub_resource type="PlaneMesh" id="Ground_mesh"]
+material = SubResource("Ground_mat")
+size = Vector2(60, 60)
+
+[node name="KirruLineup" type="Node3D"]
+script = ExtResource("stage")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.683157, 0.381423, -0.622746, 0, 0.85276, 0.522303, 0.730271, -0.356815, 0.582569, 0, 4, 0)
+light_color = Color(1, 0.957, 0.878, 1)
+light_energy = 2.4
+shadow_enabled = true
+shadow_bias = 0.02
+shadow_normal_bias = 4.5
+directional_shadow_max_distance = 40.0
+
+[node name="Ground" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, -6)
+mesh = SubResource("Ground_mesh")
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Front" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, 0, 0, 0.99863, 0.052336, 0, -0.052336, 0.99863, 0.0, 1.25, 9.5)
+fov = 34.0
+near = 0.05
+
+[node name="Faces" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, 0, 0, 0.999391, 0.034899, 0, -0.034899, 0.999391, -0.6, 2.0, 4.2)
+fov = 34.0
+near = 0.05

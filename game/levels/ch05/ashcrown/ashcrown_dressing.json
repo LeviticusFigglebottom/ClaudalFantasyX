@@ -2186,6 +2186,7 @@
    ],
    "y": -66.603,
    "yaw_deg": 90.0,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2205,6 +2206,7 @@
    "y": -66.603,
    "yaw_deg": 90.0,
    "collide": true,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2223,6 +2225,7 @@
    ],
    "y": -66.713,
    "yaw_deg": 90.0,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2242,6 +2245,7 @@
    "y": -66.713,
    "yaw_deg": 90.0,
    "collide": true,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2260,6 +2264,7 @@
    ],
    "y": -66.598,
    "yaw_deg": 270.0,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2279,6 +2284,7 @@
    "y": -66.598,
    "yaw_deg": 270.0,
    "collide": true,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2297,6 +2303,7 @@
    ],
    "y": -66.667,
    "yaw_deg": 270.0,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2316,6 +2323,7 @@
    "y": -66.667,
    "yaw_deg": 270.0,
    "collide": true,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2334,6 +2342,7 @@
    ],
    "y": -61.79,
    "yaw_deg": 90.0,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2353,6 +2362,7 @@
    "y": -61.79,
    "yaw_deg": 90.0,
    "collide": true,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2371,6 +2381,7 @@
    ],
    "y": -61.935,
    "yaw_deg": 90.0,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2390,6 +2401,7 @@
    "y": -61.935,
    "yaw_deg": 90.0,
    "collide": true,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2408,6 +2420,7 @@
    ],
    "y": -61.821,
    "yaw_deg": 270.0,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2427,6 +2440,7 @@
    "y": -61.821,
    "yaw_deg": 270.0,
    "collide": true,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2445,6 +2459,7 @@
    ],
    "y": -61.949,
    "yaw_deg": 270.0,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2464,6 +2479,7 @@
    "y": -61.949,
    "yaw_deg": 270.0,
    "collide": true,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2482,6 +2498,7 @@
    ],
    "y": -57.11,
    "yaw_deg": 90.0,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2501,6 +2518,7 @@
    "y": -57.11,
    "yaw_deg": 90.0,
    "collide": true,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2519,6 +2537,7 @@
    ],
    "y": -59.274,
    "yaw_deg": 90.0,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2538,6 +2557,7 @@
    "y": -59.274,
    "yaw_deg": 90.0,
    "collide": true,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2556,6 +2576,7 @@
    ],
    "y": -57.193,
    "yaw_deg": 270.0,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2575,6 +2596,7 @@
    "y": -57.193,
    "yaw_deg": 270.0,
    "collide": true,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2593,6 +2615,7 @@
    ],
    "y": -58.908,
    "yaw_deg": 270.0,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2612,6 +2635,7 @@
    "y": -58.908,
    "yaw_deg": 270.0,
    "collide": true,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2630,6 +2654,7 @@
    ],
    "y": -53.056,
    "yaw_deg": 90.0,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2649,6 +2674,7 @@
    "y": -53.056,
    "yaw_deg": 90.0,
    "collide": true,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2667,6 +2693,7 @@
    ],
    "y": -55.397,
    "yaw_deg": 90.0,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2686,6 +2713,7 @@
    "y": -55.397,
    "yaw_deg": 90.0,
    "collide": true,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2704,6 +2732,7 @@
    ],
    "y": -53.829,
    "yaw_deg": 270.0,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2723,6 +2752,7 @@
    "y": -53.829,
    "yaw_deg": 270.0,
    "collide": true,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2741,6 +2771,7 @@
    ],
    "y": -55.594,
    "yaw_deg": 270.0,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2760,6 +2791,7 @@
    "y": -55.594,
    "yaw_deg": 270.0,
    "collide": true,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2778,6 +2810,7 @@
    ],
    "y": -48.969,
    "yaw_deg": 90.0,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2797,6 +2830,7 @@
    "y": -48.969,
    "yaw_deg": 90.0,
    "collide": true,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2815,6 +2849,7 @@
    ],
    "y": -50.63,
    "yaw_deg": 90.0,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2834,6 +2869,7 @@
    "y": -50.63,
    "yaw_deg": 90.0,
    "collide": true,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2852,6 +2888,7 @@
    ],
    "y": -50.338,
    "yaw_deg": 270.0,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2871,6 +2908,7 @@
    "y": -50.338,
    "yaw_deg": 270.0,
    "collide": true,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2889,6 +2927,7 @@
    ],
    "y": -50.547,
    "yaw_deg": 270.0,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2908,6 +2947,7 @@
    "y": -50.547,
    "yaw_deg": 270.0,
    "collide": true,
+   "snap": -0.2,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2926,6 +2966,7 @@
    ],
    "y": -71.706,
    "yaw_deg": 339.282,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2944,6 +2985,7 @@
    ],
    "y": -76.584,
    "yaw_deg": 279.345,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2962,6 +3004,7 @@
    ],
    "y": -52.625,
    "yaw_deg": 40.754,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2980,6 +3023,7 @@
    ],
    "y": -61.769,
    "yaw_deg": 36.711,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -2998,6 +3042,7 @@
    ],
    "y": -50.609,
    "yaw_deg": 65.547,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3016,6 +3061,7 @@
    ],
    "y": -80.764,
    "yaw_deg": 286.973,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3034,6 +3080,7 @@
    ],
    "y": -46.658,
    "yaw_deg": 0.639,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3052,6 +3099,7 @@
    ],
    "y": -81.417,
    "yaw_deg": 345.646,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3070,6 +3118,7 @@
    ],
    "y": -46.22,
    "yaw_deg": 346.132,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3088,6 +3137,7 @@
    ],
    "y": -65.295,
    "yaw_deg": 348.68,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3106,6 +3156,7 @@
    ],
    "y": -51.724,
    "yaw_deg": 130.028,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3124,6 +3175,7 @@
    ],
    "y": -46.281,
    "yaw_deg": 119.468,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3142,6 +3194,7 @@
    ],
    "y": -77.464,
    "yaw_deg": 254.763,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3160,6 +3213,7 @@
    ],
    "y": -43.41,
    "yaw_deg": 173.068,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3178,6 +3232,7 @@
    ],
    "y": -57.174,
    "yaw_deg": 63.403,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3196,6 +3251,7 @@
    ],
    "y": -53.278,
    "yaw_deg": 128.752,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3214,6 +3270,7 @@
    ],
    "y": -62.154,
    "yaw_deg": 208.267,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3232,6 +3289,7 @@
    ],
    "y": -40.694,
    "yaw_deg": 224.537,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3250,6 +3308,7 @@
    ],
    "y": -86.217,
    "yaw_deg": 334.676,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3268,6 +3327,7 @@
    ],
    "y": -90.415,
    "yaw_deg": 321.376,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3286,6 +3346,7 @@
    ],
    "y": -51.123,
    "yaw_deg": 269.423,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3304,6 +3365,7 @@
    ],
    "y": -71.781,
    "yaw_deg": 340.488,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3322,6 +3384,7 @@
    ],
    "y": -43.992,
    "yaw_deg": 130.545,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3340,6 +3403,7 @@
    ],
    "y": -49.863,
    "yaw_deg": 196.252,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3358,6 +3422,7 @@
    ],
    "y": -57.575,
    "yaw_deg": 287.559,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3376,6 +3441,7 @@
    ],
    "y": -71.623,
    "yaw_deg": 58.151,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3394,6 +3460,7 @@
    ],
    "y": -38.706,
    "yaw_deg": 266.601,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3412,6 +3479,7 @@
    ],
    "y": -59.955,
    "yaw_deg": 151.833,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3430,6 +3498,7 @@
    ],
    "y": -43.427,
    "yaw_deg": 120.307,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3448,6 +3517,7 @@
    ],
    "y": -50.382,
    "yaw_deg": 283.683,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3466,6 +3536,7 @@
    ],
    "y": -46.592,
    "yaw_deg": 21.157,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3484,6 +3555,7 @@
    ],
    "y": -60.202,
    "yaw_deg": 359.748,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3502,6 +3574,7 @@
    ],
    "y": -85.676,
    "yaw_deg": 247.982,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
@@ -3520,6 +3593,7 @@
    ],
    "y": -58.349,
    "yaw_deg": 145.364,
+   "snap": -0.3,
    "material_paths": {
     "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
     "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
