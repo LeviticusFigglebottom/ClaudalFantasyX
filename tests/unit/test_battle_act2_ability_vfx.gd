@@ -63,6 +63,7 @@ func test_the_wakefin_fight_is_lit_by_the_sea_glow() -> void:
 	var at := vfx.anchor(fin, str((effects["sound_dive"] as Dictionary)["at"]))
 	var home := ctl.stage.stand_in(fin).global_position
 	assert_true(at.y >= home.y + 1.0, "the glow rises off the water at the fin's crest, over the barge's rail")
+	assert_true(Vector2(at.x - home.x, at.z - home.z).length() < 0.1, "on the fin, not its near face against the hull")
 	ctl.get_parent().remove_child(ctl)
 	ctl.free()
 	var lit := (load("res://game/battle/scene/battle_sandbox.tscn") as PackedScene).instantiate() as BattleController

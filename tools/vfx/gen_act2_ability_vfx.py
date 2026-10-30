@@ -72,7 +72,7 @@ SKILLS = {
     # at its head, rising: from the fight's frame the barge's rail hides the whole waterline beside the hull, so a ring
     # on the water (tried at the near face, then at the fin's feet, 10-30) was never seen; the fin dives as it sounds
     # large, slow and long-lived: at 12 m in the dark, the stock rise motes read as one dot (10-30)
-    "sound_dive": fx("head", [A1.layer("sea_glow", "lagoon_teal", 70, 2.4, 0.15, (0.3, 0.7), 20, (0, 0.2, 0), (0.3, 0.55),
+    "sound_dive": fx("crest", [A1.layer("sea_glow", "lagoon_teal", 70, 2.4, 0.15, (0.3, 0.7), 20, (0, 0.2, 0), (0.3, 0.55),
                                        radius=1.0, turb=0.25, energy=2.2),
                               A1.layer("sea_glow", "abyss_navy", 30, 2.8, 0.1, (0.15, 0.35), 30, (0, 0.1, 0), (0.5, 0.8),
                                        radius=0.6, turb=0.2, energy=1.6)],
@@ -103,6 +103,10 @@ def main() -> int:
             eid = sid if own is None or own.get("note") == eff["note"] else sid + "_hit"
         data["effects"][eid] = eff
         data["map"]["skills"][sid] = eid
+    data["anchor_heights"]["crest"] = 1.0  # a body's top, on its middle (anchor_centred): not on its near face
+    data["anchor_centred"] = sorted(set(data.get("anchor_centred", ["feet"])) | {"feet", "crest"})
+    data["anchor_centred_doc"] = ("Anchor heights placed on the body's middle, not its near face (BattleVfx.anchor). crest: the "
+                                  "Wakefin's near face is 1.9 m out, against the barge's hull; its Sound Dive rises at its crest.")
     out = json.dumps(data, indent=2) + "\n"
     sfx_text = A1.SFX.read_text()
     sfx = json.loads(sfx_text)
