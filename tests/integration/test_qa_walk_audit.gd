@@ -103,6 +103,9 @@ func walk(route: Dictionary, data: Dictionary) -> Dictionary:
 	var hidden_run := 0
 	var hidden_max := 0
 	var camera_inside := 0
+	var out_run := 0
+	var out_max := 0
+	var out_shots := {}
 	var gaps := {}
 	var slide := {}
 	var top_speed := {}
@@ -181,6 +184,12 @@ func walk(route: Dictionary, data: Dictionary) -> Dictionary:
 			var hit := space.intersect_ray(_ray(cam, player.global_position + Vector3.UP * CHEST_M, player))
 			hidden_run = hidden_run + 1 if not hit.is_empty() else 0
 			hidden_max = maxi(hidden_max, hidden_run)
+			if director.camera.is_position_in_frustum(player.global_position + Vector3.UP * CHEST_M):
+				out_run = 0
+			else:
+				out_run += 1
+				out_shots[director.active_shot_id()] = true
+			out_max = maxi(out_max, out_run)
 	if leg < points.size() and (report["failures"] as Array).is_empty():
 		(report["failures"] as Array).append(
 			"did not reach the end in %d frames (waypoint %d of %d)" % [frame, leg, points.size()]
@@ -205,6 +214,8 @@ func walk(route: Dictionary, data: Dictionary) -> Dictionary:
 	report["clip_max"] = clip_max
 	report["hidden_max"] = hidden_max
 	report["camera_inside"] = camera_inside
+	report["out_max"] = out_max
+	report["out_shots"] = out_shots.keys()
 	for id_f: StringName in clip_max.keys():
 		if int(clip_max[id_f]) > LIMIT_FRAMES:
 			(report["failures"] as Array).append(
@@ -213,6 +224,10 @@ func walk(route: Dictionary, data: Dictionary) -> Dictionary:
 	if hidden_max > LIMIT_FRAMES:
 		(report["failures"] as Array).append(
 			"a wall hides the leader from the camera for %d frames in a row" % hidden_max
+		)
+	if out_max > LIMIT_FRAMES:
+		(report["failures"] as Array).append(
+			"the leader is out of the camera's frame for %d frames in a row (shots %s)" % [out_max, report["out_shots"]]
 		)
 	if camera_inside > 0:
 		(report["failures"] as Array).append("the camera is inside geometry for %d frames" % camera_inside)
@@ -263,8 +278,8 @@ static func format(id: String, r: Dictionary) -> String:
 		lines.append("    %s hidden (%s)" % [h, why[h]])
 	lines.append(
 		(
-			"    camera: leader hidden max %d frames, inside geometry %d frames"
-			% [int(r.get("hidden_max", 0)), int(r.get("camera_inside", 0))]
+			"    camera: leader out of frame max %d frames, hidden max %d frames, inside geometry %d frames"
+			% [int(r.get("out_max", 0)), int(r.get("hidden_max", 0)), int(r.get("camera_inside", 0))]
 		)
 	)
 	return "\n".join(lines)

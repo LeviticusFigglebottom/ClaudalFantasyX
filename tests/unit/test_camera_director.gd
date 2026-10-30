@@ -145,8 +145,34 @@ func test_pan_follow_turns_toward_the_player_within_its_limit() -> void:
 	_move(Vector3(8, 0, 1))
 	_settle()
 	fwd = -cam.global_basis.z
-	assert_true(rad_to_deg(fwd.angle_to(authored)) <= shot.max_pan_deg + 0.5, "never past max_pan_deg")
+	assert_true(
+		(
+			rad_to_deg(fwd.angle_to(authored)) <= shot.max_pan_deg + 0.5
+			or cam.is_position_in_frustum(player.global_position + shot.target_offset)
+		),
+		"never past max_pan_deg, unless that would lose him (then just enough to hold him in frame)"
+	)
 	_free()
+
+
+## The Lead's 10-29 walk audit (Coilspire's spiral): keep_in_frame leaves an aim alone while the subject is inside
+## share x the frame's half angles (vertical from the fov, horizontal from the aspect), and otherwise turns it exactly
+## to that edge, toward him.
+func test_keep_in_frame_turns_the_aim_only_as_far_as_it_must() -> void:
+	var from := Vector3.ZERO
+	var aim := Vector3(0, 0, -10)
+	var inside := Vector3(0, 1, -10)  # ~5.7 degrees off
+	assert_eq(FieldCameraDirector.keep_in_frame(from, aim, inside, 40.0, 0.7, 16.0 / 9.0), aim, "inside: untouched")
+	# on a third across a 16:9 frame (11 degrees right; the horizontal limit is ~16.6 there): an authored composition
+	var third := Vector3(10.0 * tan(deg_to_rad(11.0)), 0, -10)
+	assert_eq(FieldCameraDirector.keep_in_frame(from, aim, third, 37.8, 0.5, 16.0 / 9.0), aim, "a third stays")
+	var above := Vector3(0, 10, -10)  # 45 degrees off; the vertical limit is 40 * 0.5 * 0.7 = 14 degrees
+	var kept := FieldCameraDirector.keep_in_frame(from, aim, above, 40.0, 0.7, 16.0 / 9.0)
+	var off := rad_to_deg((kept - from).angle_to(above - from))
+	assert_between(off, 13.9, 14.1, "turned until he is at the edge of the kept share (%.2f)" % off)
+	assert_true((kept - from).y > 0.0, "toward him")
+	assert_between((kept - from).length(), 9.99, 10.01, "the aim keeps its distance")
+	_free()  # before_each's zone
 
 
 func test_dolly_rides_the_rail_with_the_players_progress() -> void:

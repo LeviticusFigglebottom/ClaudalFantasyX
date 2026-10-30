@@ -12,6 +12,9 @@
   },
   "default_fov_deg": 37.8,
   "pan_follow_smoothing_per_sec": 4.0,
+  "keep_in_frame_share": 0.5,
+  "keep_in_frame_aspect": 1.7778,
+  "keep_in_frame_doc": "PAN_FOLLOW keeps the leader within keep_in_frame_share of the frame's half angles of its aim, vertically (the shot's fov) and horizontally (from keep_in_frame_aspect, the 1920 x 1080 reference): when a shot's capped pan (max_pan_deg) would lose him, the aim turns just enough to hold him; a composition with him on a third stays as authored (FieldCameraDirector.keep_in_frame; the Lead's 10-29 walk audit).",
   "dolly_follow_smoothing_per_sec": 3.0,
   "orbit": {
     "doc": "Only when the director's hub_orbit_enabled flag is set (SPEC §6.6: no free orbit except optional hub zones).",

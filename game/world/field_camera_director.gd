@@ -493,6 +493,14 @@ func evaluate(shot: CameraShot, delta: float) -> CameraPose:
 		CameraShot.Mode.PAN_FOLLOW:
 			var from := _to_world(shot.position)
 			var desired := pan_aim(from, _to_world(shot.look_at), aim_target, shot.follow_weight, shot.max_pan_deg)
+			desired = keep_in_frame(
+				from,
+				desired,
+				aim_target,
+				fov,
+				float(data.get("keep_in_frame_share", 1.0)),
+				float(data.get("keep_in_frame_aspect", 1.0))
+			)
 			var rate := _rate(shot.follow_smoothing, "pan_follow_smoothing_per_sec")
 			var aim := _smoothed(shot, "aim", desired, rate, delta) as Vector3
 			return CameraPose.looking(from, aim, fov, shot.dof_dict(), shot.roll_deg)
@@ -573,6 +581,34 @@ static func pan_aim(from: Vector3, authored: Vector3, player: Vector3, weight: f
 		return desired
 	var limited := base_dir.slerp(want_dir, max_rad / angle)
 	return from + limited.normalized() * want_dir.length()
+
+
+## The aim from `from` turned toward `subject` just enough that the subject sits within `share` of the frame's half
+## angles of it, vertically (fov_deg, the vertical field of view) and horizontally (from `aspect`, width over height):
+## a PAN_FOLLOW's capped pan never lets the leader leave the frame (the Lead's 10-29 walk audit: Coilspire's Tier1 and
+## Tier2 lost Rhen for 3.6 s up the spiral), while a composition that keeps him inside (on a third) is left as authored.
+static func keep_in_frame(
+	from: Vector3, aim: Vector3, subject: Vector3, fov_deg: float, share: float, aspect: float = 1.0
+) -> Vector3:
+	var aim_dir := aim - from
+	var to_subject := subject - from
+	if aim_dir.length_squared() < 1e-8 or to_subject.length_squared() < 1e-8 or absf(aim_dir.normalized().y) > 0.999:
+		return aim
+	var basis := Basis.looking_at(aim_dir, Vector3.UP)
+	var local := basis.inverse() * to_subject
+	if local.z >= 0.0:
+		return subject  # behind the camera: aim straight at him
+	var half_v := deg_to_rad(fov_deg * 0.5)
+	var limit_v := half_v * share
+	var limit_h := atan(tan(half_v) * aspect) * share
+	var yaw := atan2(local.x, -local.z)
+	var pitch := atan2(local.y, -local.z)
+	var turn_yaw := yaw - clampf(yaw, -limit_h, limit_h)
+	var turn_pitch := pitch - clampf(pitch, -limit_v, limit_v)
+	if turn_yaw == 0.0 and turn_pitch == 0.0:
+		return aim
+	var dir := Vector3.FORWARD.rotated(Vector3.RIGHT, turn_pitch).rotated(Vector3.UP, -turn_yaw)
+	return from + (basis * dir).normalized() * aim_dir.length()
 
 
 ## The target's projected progress along the shot's track (0..1), mapped to dolly progress.
