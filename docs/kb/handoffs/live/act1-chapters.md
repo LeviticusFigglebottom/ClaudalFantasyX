@@ -1208,6 +1208,37 @@ All four are moved in the generators (ch10/11/12/13_greybox.py) and regenerated;
     - Drowner 1 / 62 / 100 (23); Lamp Engine 0 / 63 / 100 (33); Ram 2 / 61 / 100 (43).
 - MERGE-READY @ 6047d9d26
 
+### The Lead's 21:46 FAST-TRACK (10-30): Act I objectives (cloud-qa)
+- **Ch6 Brine Shoals** (objectives.json, after Ashcrown's rows):
+  - `s_ridge`: to the last wreck-ridge until the Inquisitor yields.
+  - `s_dawn`: once the camp is made, the shoal channel until `ch06_done`.
+  - Side row `s_side_lamp`: the tideline until the burned lamp is seen.
+  - The raid, the barge and the camp between them chain automatically, so they need no rows.
+- **Ch8 Corrow:**
+  - `k_ivo`: the watch captain, at a new `ivo` POI on his trigger.
+  - `k_headland`: the wall-gate until the beacon is opened.
+  - Side row `k_side_stair`: the fisher stair.
+  - The stair holds, the Reach and the cut rope chain automatically on arrival.
+- **Ch8 Coilspire:**
+  - `q_door`: the spire door.
+  - `q_crown`: the flue trial to a new `crown` POI.
+  - `q_beacon`: the great key, at a new `great_key` POI.
+- **Ashcrown's stair:** the field cue lifts a target to the player's own height, so a single crown target 117 m up
+  pointed through the stair. Now it's staged:
+  - `a_stair` points at the grave tier, `a_upper` at the copper tier, then `a_crown` at the crown.
+  - The two banter triggers set `ch05_passed_grave_tier` and `ch05_passed_copper_tier`, and the crown beat sets both.
+  - The trial rows are listed first, so a save already in the trial never falls back to the stair.
+  - test_objective_tracker's spot checks follow.
+- Shared appends, each in its own commit: flags.tres (the two tier flags), strings.csv (13 lines; `MAP_POI_Q_CROWN`
+  already existed), zone_maps.json (three POIs).
+- **ui-menus:** nothing needed on the HUD side.
+- **Checks:**
+  - zone_map (22/0), objective (16/0; the suite reports 7 orphan nodes left in the tree, its own cleanup, not
+    checked against the old head), ch05 (13/0), ch06 (5/0), ch08 (25/0), test_qa_threads (1/0, every new row's flags
+    raised by its thread).
+  - validate_data and chapter_flow_check.
+- MERGE-READY @ 7a37c3d53
+
 ## Exact next step
 **BACKLOG EMPTY (2026-10-30 ~02:00):** the flow and pacing pass is done (`docs/kb/qa/act1_flow_pacing_pass.md`) and the
 Act II chapter drafts are written (`docs/kb/plan/act2/chapters/`, pre-gate). Waiting on:
