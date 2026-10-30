@@ -1592,6 +1592,17 @@
       "settle_frames": 30
     },
     {
+      "id": "props_act2_hand",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/props/act2_props_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 10
+    },
+    {
       "id": "villager_tobin_front",
       "pending_baseline": true,
       "scene": "res://game/levels/_tests/characters/villagers/tobin_stage.tscn",

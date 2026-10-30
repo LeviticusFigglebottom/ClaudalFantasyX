@@ -190,6 +190,17 @@
       ]
     },
     {
+      "id": "props_act2_hand",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M4-A2P-050/052: the Act II hand props (Aldous's dock-hook and salt-glass housing, the wedding cord) on wick.py's mesh helpers, with their StandardMaterial3D slots.",
+      "sources": ["assets_src/characters/props/act2_hand_props.py", "assets_src/characters/props/wick.py"],
+      "outputs": ["assets/characters/props/act2/*.glb", "assets/characters/props/act2/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/props/act2_hand_props.py"]
+      ]
+    },
+    {
       "id": "shader_test",
       "owner": "rendering",
       "sources": ["assets_src/characters/shader_test/build_shader_test_meshes.py", "assets_src/characters/shader_test/layout.py"],
