@@ -589,6 +589,10 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **CONFIRMED 21:06: the last Oruvel outrigger fix (M3-ENV-1391) is pushed.** It is 0de280e2 on origin/claude/env-art,
+  MERGE-READY.
+- **LEAD (21:05), IN PROGRESS: the Act II Ch10–Ch12 beauty pass at eye height (the fen, Lowlight, the Sunken Vey).**
+  Stills are rendering.
 - **STATUS 20:46 (answers the Lead's 20:45 check-in): everything is pushed; the head is the log commit after 937389e9.**
   - Oruvel's last outrigger (M3-ENV-1391): MERGE-READY @ 0de280e2 (pushed 19:58).
   - The Ch4 beauty pass and the Prologue-to-Ch4 arrivals (M4-A2P-1401): MERGE-READY @ 937389e9 (pushed 19:58).
