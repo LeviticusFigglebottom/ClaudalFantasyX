@@ -8,6 +8,9 @@ The gap (the human's playtest note): battles had no action animation. This track
 **MERGE-READY @ 064c9e46.** The conduit crawler's 3 and the four Vowbound's 19 battle effects are generated, now that
 their rows are on integration (06a51e5c). Checks on the merged tree: `--filter=vfx` 46/0, `--filter=vowbound` 117/0,
 `--filter=act2` 78/0, validate_data clean, both generators' `--check` clean.
+- **test_battle_act1_ability_vfx (red on integration since the Vowbound rows landed):** it needs every Swell technique
+  to have its own effect, and the_seven, farewell_tide, pass_cord and still_water had none. Fixed by 06a51e5c.
+  `--filter=act1_ability_vfx` 5/0 at 19f9abe6.
 - Also in this range: a called Vowbound kept clear of the timeline (55e54edd, the sweep's ch04_derelict_leeches;
   screen_spread 3/0).
 - Next: the Ch10–Ch13 boss intros. On integration that is the Drowner, the Lamp Engine (now with two conduit
