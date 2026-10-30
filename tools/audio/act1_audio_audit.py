@@ -13,10 +13,17 @@ sound a player can meet from the title through Ch9, from the data the runtime re
               so what BattleAudio hears; a skill that does none of those is silent
   cutscenes   every Act I .dlg `@music` / `@sfx` id: a music.json cue, a real file, or a sequencer music_stand_ins
               row (temp), or nothing (silent)
+  actions     every Act I .dlg `@anim` clip: a cutscene_foley.json row (or '' for a silent gesture), or an `@sfx`
+              beside it; doors opened in cutscenes are heard here or through `@sfx`
+  battle      every battle-wide sound: element hits, heal, status landing and ticks, KO, openings, outcomes, Rim
+              break, each Act I Vowbound's call sting, the items, the Swell finishers and choreo styles
+  footsteps   every Act I level names its ground; every surface has walk, run, stop and turn rows
   ui          ui_sfx.json hooks still `pending` (their target class has not landed, so they are silent)
+  ui core     the cursor, confirm, cancel and error rows, and every hook's signal rows, on disk
   notes       audio data rows whose own note says stand-in, temp, placeholder, sketch or "no scene yet"
 
-Run: python3 tools/audio/act1_audio_audit.py [--md]   (exit 0; it is a report, not a gate)"""
+Run: python3 tools/audio/act1_audio_audit.py [--md]   (exit 1 while any item is open:
+tools/tests/test_act1_audio_audit.py gates on it, M3-AUD-864)"""
 from __future__ import annotations
 
 import argparse
@@ -347,10 +354,147 @@ def audit_notes() -> list[str]:
     return out
 
 
+def _sfx_rows() -> dict:
+    rows = {}
+    for p in [AUDIO / "sfx.json"] + sorted(AUDIO.glob("sfx_*.json")):
+        for k, v in _json(p).get("sfx", {}).items():
+            rows.setdefault(k, v)  # AudioData.sfx_rows: the first file's row wins
+    return rows
+
+
+def _row_problem(rows: dict, rid: str) -> str:
+    """'' when sfx row `rid` exists and every file it names is on disk, else what is wrong with it."""
+    row = rows.get(rid)
+    if row is None:
+        return f"`{rid}` is no sfx row"
+    files = row.get("files") or ([row["file"]] if row.get("file") else [])
+    if not files:
+        return f"`{rid}` names no file"
+    gone = [f for f in files if not _res(f).is_file()]
+    return f"`{rid}` is missing {gone[0]}" if gone else ""
+
+
+def audit_cutscene_actions() -> list[str]:
+    """Every Act I `@anim` clip is heard or silent on purpose: cutscene_foley.json `anim` maps it (exactly, else
+    by glob) to a row, or to '' for a gesture that makes no sound; or an `@sfx` within two lines plays for it."""
+    import fnmatch
+    anim = _json(AUDIO / "cutscene_foley.json")["anim"]
+    rows = _sfx_rows()
+    out, seen = [], set()
+    for p in _dlg_files():
+        rel = p.relative_to(ROOT).as_posix()
+        lines = p.read_text(encoding="utf-8").splitlines()
+        for i, line in enumerate(lines):
+            m = re.match(r"\s*@anim\s+\S+\s+(\S+)", line)
+            if not m or m.group(1) in seen:
+                continue
+            clip = m.group(1)
+            key = clip if clip in anim else next((k for k in anim if "*" in k and fnmatch.fnmatch(clip, k)), None)
+            if key is None:
+                if any(lines[j].lstrip().startswith("@sfx") for j in range(max(0, i - 2), min(len(lines), i + 3))):
+                    continue
+                seen.add(clip)
+                out.append(f"{rel}:{i + 1} @anim clip `{clip}`: no foley row and no @sfx beside it (silent)")
+                continue
+            seen.add(clip)
+            if anim[key] and _row_problem(rows, anim[key]):
+                out.append(f"{rel}:{i + 1} @anim clip `{clip}`: {_row_problem(rows, anim[key])}")
+    return out
+
+
+def audit_battle_events() -> list[str]:
+    """What every battle plays whatever the skill: each element hit, the heal, a status landing, each status tick,
+    a KO, the openings, the outcomes, a Rim break, a Vowbound's call, dismissal and fall, the items, and each
+    Swell style's contact. Each must reach an sfx row whose files are on disk."""
+    vmap = _json(DATA / "vfx" / "battle" / "effects.json")["map"]
+    bsfx = _json(AUDIO / "battle_sfx.json")
+    choreo = _json(AUDIO / "choreo_sfx.json")
+    rows = _sfx_rows()
+    out = []
+    for sec in ("elements", "events", "ticks", "items", "swell_by_hero", "ko_overrides"):
+        for k, effect in vmap.get(sec, {}).items():
+            rid = bsfx["vfx"].get(effect)
+            if rid is None:
+                out.append(f"battle {sec} `{k}` (effect `{effect}`): no battle_sfx vfx row (silent)")
+            elif rid and _row_problem(rows, rid):
+                out.append(f"battle {sec} `{k}`: {_row_problem(rows, rid)}")
+    for sec in ("events", "outcomes", "openings"):
+        for k, rid in bsfx.get(sec, {}).items():
+            if rid and _row_problem(rows, rid):
+                out.append(f"battle_sfx {sec} `{k}`: {_row_problem(rows, rid)}")
+    stings = bsfx.get("vowbound_stings", {})
+    for v in _json(DATA / "battle" / "vowbound.json")["vowbound"]:
+        flag = str(v.get("bound_flag", ""))
+        if not re.match(r"ch0[1-9]_", flag):
+            continue  # bound after Act I (paused, ADR 0041)
+        if v["id"] not in stings:
+            out.append(f"Vowbound `{v['id']}` (bound by {flag}): no call sting in battle_sfx vowbound_stings")
+        elif _row_problem(rows, stings[v["id"]]):
+            out.append(f"Vowbound `{v['id']}`: {_row_problem(rows, stings[v['id']])}")
+    accents = choreo.get("accents", {})
+    for style, row in choreo.get("styles", {}).items():
+        for part in ("strike", "contact"):
+            rid = row.get(part)
+            if rid == "@weapon":  # the actor's weapon accent (ChoreoAudio WEAPON), checked below
+                continue
+            if rid and _row_problem(rows, rid):
+                out.append(f"choreo style `{style}` {part}: {_row_problem(rows, rid)}")
+        for by in ("strike_by_weapon", "contact_by_weapon"):
+            for w, rid in (row.get(by) or {}).items():
+                if rid and _row_problem(rows, rid):
+                    out.append(f"choreo style `{style}` {by} `{w}`: {_row_problem(rows, rid)}")
+    for kind in set(choreo.get("weapons", {}).values()) | {choreo.get("weapon_default", "")}:
+        rid = accents.get(kind)
+        if rid is None:
+            out.append(f"weapon kind `{kind}`: no accent row in choreo_sfx.json (its blows land silent)")
+        elif rid and _row_problem(rows, rid):
+            out.append(f"weapon kind `{kind}` accent: {_row_problem(rows, rid)}")
+    return out
+
+
+def audit_footsteps() -> list[str]:
+    """Every Act I level a hero walks names its ground (footsteps.json `scenes`) rather than falling to the default,
+    and every surface has its walk, run, stop and turn rows with files on disk."""
+    fs = _json(AUDIO / "footsteps.json")
+    rows = _sfx_rows()
+    out = []
+    for name, srf in fs["surfaces"].items():
+        for gait in ("walk", "run", "stop", "turn"):
+            rid = srf.get(gait)
+            if not rid:
+                out.append(f"footstep surface `{name}`: no `{gait}` row")
+            elif _row_problem(rows, rid):
+                out.append(f"footstep surface `{name}` {gait}: {_row_problem(rows, rid)}")
+    for s in act1_scenes():
+        sid = fs["scenes"].get(s)
+        if sid is None:
+            out.append(f"{s.removeprefix('res://')}: no footsteps.json scene row (falls to `{fs['default']}`)")
+        elif sid not in fs["surfaces"]:
+            out.append(f"{s.removeprefix('res://')}: footstep surface `{sid}` does not exist")
+    for rule in fs.get("mesh_surfaces", {}).get("rules", []):
+        if rule.get("surface") not in fs["surfaces"]:
+            out.append(f"footsteps mesh rule {rule.get('match')}: surface `{rule.get('surface')}` does not exist")
+    return out
+
+
+def audit_ui_core() -> list[str]:
+    """The sounds every menu leans on: the cursor, confirm, cancel and error rows, and each hook's rows on disk."""
+    rows = _sfx_rows()
+    out = [f"core ui sound: {_row_problem(rows, r)}" for r in ("ui_cursor", "ui_confirm", "ui_cancel", "ui_error")
+           if _row_problem(rows, r)]
+    for hook in _json(AUDIO / "ui_sfx.json").get("hooks") or []:
+        for sig, rid in (hook.get("signals") or {}).items():
+            if isinstance(rid, str) and rid and _row_problem(rows, rid):
+                out.append(f"ui hook `{hook.get('class')}`.{sig}: {_row_problem(rows, rid)}")
+    return out
+
+
 SECTIONS = [("Zones", audit_zones), ("Enemies", audit_enemies), ("Battles", audit_battles), ("Intros", audit_intros),
             ("Abilities", audit_abilities),
             ("Skills", audit_skills),
-            ("Cutscenes", audit_cutscenes), ("UI", audit_ui), ("Notes that say temp", audit_notes)]
+            ("Cutscenes", audit_cutscenes), ("Cutscene actions", audit_cutscene_actions),
+            ("Battle events", audit_battle_events), ("Footsteps", audit_footsteps), ("UI", audit_ui),
+            ("UI core", audit_ui_core), ("Notes that say temp", audit_notes)]
 
 
 def main() -> int:
@@ -370,7 +514,7 @@ def main() -> int:
     for it in held:
         print(f"- {it}: {BY_DESIGN[it]}" if args.md else f"  {it}: {BY_DESIGN[it]}")
     print(f"\n{total} item(s)")
-    return 0
+    return 1 if total else 0
 
 
 if __name__ == "__main__":
