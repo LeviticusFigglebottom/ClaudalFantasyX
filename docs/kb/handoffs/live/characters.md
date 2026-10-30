@@ -391,3 +391,33 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
   (lavapipe has no real sheen/SSS balance); pell_front, pell_face, pell_storm_ch8.
 - **WIP on the branch head (2026-10-30):** the Lead's big17-review items (Asha's skirt as soft cloth in big poses, the
   villagers' face variety) are rebuilding. **Merge only up to MERGE-READY @ 440c1f9e** until a new MERGE-READY line.
+
+- MERGE-READY @ e151c0f0: **the PC's GPU QA pass 3 rows 31, 46, 54, 55 and 56, Pell's look, and the big17 review items**
+  (Asha's skirt as soft cloth, villager face variety). Replaces the WIP note above.
+  - **Rows 31 and 56, Asha's skirt:** the knee and shin bend bands widen (0.06/0.08 -> 0.16/0.18 m) and the outer
+    skirt is denser (64 x 20), so the 16 panel chains bend the cloth instead of creasing it; the underskirt takes the
+    outer skirt's weights (no white wedges), its hem is just above the ankle (her feet show in the run), and it has a
+    lawn texture (folds, two pintucks, a drawn-thread band); clear_m 0.085 -> 0.075 (the striding leg shapes the
+    front). The kneels are the two-knee kneel (M3-CHR-102). LOD0 64,962 (budget 65,000; the hidden legs under the
+    skirt decimate harder). Also fixes a host-determinism edge (a skirt ring column exactly on a sector edge).
+  - **Row 46, Moll's face:** the hard edge was his shield's and iron's cast shadow under the stage's low key; the face
+    shots (moll_face, stillguard_a/b/c_face) use face-only stage variants without the props, from the lit side.
+  - **Row 54, Sefir:** gown folds (14 periods, second harmonic, 16 mm at the hem, 18 columns per panel); a fuller,
+    less transparent hair cap (scalp cards 300 -> 420, alpha 1.5); the side strands closer in (lateral 0.12, body
+    pull 0.4, cohesion 0.45/0.8); mantle gold 14% -> 13% to hold the 5% waist-up budget. LOD0 61,210 (62,000).
+  - **Row 55, villager hair and brows:** Toma's short-hair tufts for the child, Reed, the netmender, the smith (and
+    the earlier ten); grey as strands on the netmender; Fenn's crop painted (his cards' tips read as flakes); Sabe
+    without the white hairline row; every villager's brows softer (alpha 0.95) and tinted 30% toward the skin (the
+    near-black cards read as scribbles); lashes unchanged.
+  - **Pell (PC pass 3):** fur value patches and stronger clumps, the face desaturated, muscle 0.3 -> 0.6 and mass
+    0.15 with outline fur down the forearms. His arms are still lean: there is no arm-girth slider, and inflating the
+    arm skin would push it through the forearm wraps.
+  - **Face variety (big17 review):** the 34 villagers' face sliders spread per name and each adult a distinct leading
+    ancestry (MPFB2 macro targets); Kell keeps Tavi's nose.
+  - Checks: every changed Blender job (asha, sefir, pell, 34 villagers) identical natively, X86_V4-off and
+    X86_V3+V4-off; rig probes asha, pell OK (limits pinned with reasons); unit tests test_asha, test_pell, test_sefir,
+    test_villagers, test_hero_clips, test_hero_locomotion, test_hero_battle_clips, test_blender_builds OK; Godot
+    hero_stage 11, post_import 21, pell 3, cutscene_pose 5, zone_cast 5, villager 38, field_npc 10, hero_portraits
+    9, dialogue_box 26 (all 0 failed); portraits of 20 villagers, Pell and Sefir re-rendered and viewed. Every row
+    self-rendered and viewed at close-up and field distance.
+- **Next (ADR 0205):** Act II, Kerrid's reveal rig (act2_plan's longest lead for this track).

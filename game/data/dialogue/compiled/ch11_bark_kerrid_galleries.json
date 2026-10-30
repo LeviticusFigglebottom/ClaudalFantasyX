@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch11_bark_kerrid_galleries",
+ "source": "game/data/dialogue/ch11/ch11_bark_kerrid_galleries.dlg",
+ "start": "ch11_bark_kerrid_galleries",
+ "nodes": {
+  "ch11_bark_kerrid_galleries": {
+   "headers": {"location": "ch11/sunken_vey"},
+   "ops": [
+    {"op": "line", "id": "ch11_bark_kgal_001", "key": "DLG_CH11_BARK_KGAL_001", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 5}
+   ]
+  }
+ }
+}

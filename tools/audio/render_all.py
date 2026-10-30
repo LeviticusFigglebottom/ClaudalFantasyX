@@ -233,6 +233,8 @@ JOBS = [
      _source_files("assets_src/sfx/act2_variant_creature_sfx.py"), "sfx"),
     ("assets_src/sfx/act2_skill_sfx.py", "assets/audio/act2/sfx/battle", _source_files("assets_src/sfx/act2_skill_sfx.py"),
      "sfx"),
+    ("assets_src/sfx/act2_boss_stings.py", "assets/audio/act2/sfx/battle",
+     _source_files("assets_src/sfx/act2_boss_stings.py"), "sfx"),
     # M4-A2P-090 (ADR 0175): Act II scene cues, plain git under assets/audio/act2/music/
     ("assets_src/music/act2/farewell_tide.py", "assets/audio/act2/music", ["farewell_tide.ogg"], "music"),
     ("assets_src/music/act2/peace_wedding_break.py", "assets/audio/act2/music", ["peace_wedding_break.ogg"], "music"),
@@ -246,6 +248,8 @@ JOBS = [
      [f"malcor_venn_p{i}{ext}" for i in (1, 2) for ext in (".ogg", ".loop.json")], "music_loop"),
     ("assets_src/music/act2/abiding_guard.py", "assets/audio/act2/music",
      [f"abiding_guard_p{i}{ext}" for i in (1, 2) for ext in (".ogg", ".loop.json")], "music_loop"),
+    ("assets_src/music/act2/court_steps.py", "assets/audio/act2/music",
+     [f"court_steps_p{i}{ext}" for i in (1, 2) for ext in (".ogg", ".loop.json")], "music_loop"),
     # M4-A2P-091: Act II zone loops new in plain git (ADR 0175)
     ("assets_src/music/act2/cloudloom.py", "assets/audio/act2/music", ["cloudloom.ogg", "cloudloom.loop.json"],
      "music_loop"),

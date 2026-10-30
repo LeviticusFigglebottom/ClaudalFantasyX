@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch12_bark_traveller",
+ "source": "game/data/dialogue/ch12/ch12_bark_traveller.dlg",
+ "start": "ch12_bark_traveller",
+ "nodes": {
+  "ch12_bark_traveller": {
+   "headers": {"location": "ch12/keth_pass"},
+   "ops": [
+    {"op": "line", "id": "ch12_bark_trav_001", "key": "DLG_CH12_BARK_TRAV_001", "speaker": "ullari", "emotion": "sad", "voice": "", "src": 5, "name_key": "DLG_NAME_ULLARI_TRAVELLER"}
+   ]
+  }
+ }
+}

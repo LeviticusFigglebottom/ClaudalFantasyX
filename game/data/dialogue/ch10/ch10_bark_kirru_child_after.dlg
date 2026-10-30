@@ -1,0 +1,10 @@
+// Ch10: the child from C5, after the tide. Children count; the clutch does not.
+title: ch10_bark_kirru_child_after
+location: ch10/reedhollow
+---
+<<if $ch10_tide_witnessed>>
+    Kirru_child as "Kirru child" [neutral]: They went up. All three. I counted. My mother says you do not count. I counted anyway. #line:ch10_bark_kchild_001
+<<else>>
+    Kirru_child as "Kirru child" [neutral]: Tonight is the tide. You will see. You will have to turn around, though. #line:ch10_bark_kchild_002
+<<endif>>
+===

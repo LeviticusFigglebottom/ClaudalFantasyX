@@ -149,3 +149,17 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - The **LEAD-ASK on the Pell portrait is closed**. Godot `--filter=dialogue`: 86 run, 0 failed. validate_data 0/0, dlgc --check 0/0, taskboard --check clean.
 - MERGE-READY @ 1dc453a9 (merge commit; the next commit adds only this log entry).
 - BACKLOG EMPTY (story track): every Act II script is in review.
+
+## 2026-10-30: M4-A2P-009, Act II NPC barks and lore (Lead request)
+- Checks: dlgc --check 0/0 · validate_data 0/0 (banned terms included) · taskboard --check clean · Godot `--filter=dialogue` 86/0, `codex` 15/0, `bestiary` 37/0 · gdlint and gdformat clean on `test_codex.gd`.
+- MERGE-READY Ch10 @ bd779aed: barks for Pell at the edge and the gate, Owa, the shell-carver, the fisher, the Kirru child; Drowner lore; codex entries `farewell_tide` and `name_shells`.
+- MERGE-READY Ch11 @ bd779aed: barks for the Lowlight keeper, Pell at the conduits, Kerrid in the galleries; Conduit Crawler and Lamp Engine lore.
+- MERGE-READY Ch12 @ bd779aed: barks for the keth-reader, the boy, the well at night, the Cloudloom keeper, a traveller; Avalanche Ram lore.
+- MERGE-READY Ch13 @ bd779aed: barks for the pole-barge man (with a heresy variant), the archivist, a child at the ledge, the seamstress (with a heresy variant), the kneeling woman.
+- MERGE-READY Ch14 @ bd779aed: barks for a guest, a Lamplighter, a Stillguard; Warden Venn lore; codex entry `outside_the_level`.
+- MERGE-READY Ch15 @ bd779aed: barks for a current-singer, the raft cook, the lookout, a child after the pyre-raft; Wakefin lore.
+- MERGE-READY Ch16 @ bd779aed: barks for a cairn-wader and a wader turning back; Abiding Guard lore; codex entry `the_hush`.
+- **For Combat (creatures-b):** when you add the enemies.json rows, point them at `name_key` `ENEMY_<ID>` and `lore_key` `LORE_<ID>`. The keys are already in the chapter csv files.
+- **For ui-menus:** `test_codex.gd`'s World total goes from 12 to 16 (two pinned numbers).
+- **For chapters and towns:** these barks still need NPC actors and interactables placed in the field.
+- BACKLOG EMPTY (story track).

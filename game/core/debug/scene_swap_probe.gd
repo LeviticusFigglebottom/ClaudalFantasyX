@@ -104,6 +104,14 @@ func _run() -> void:
 		frames_left -= 1
 		await get_tree().process_frame
 	var stats := SceneRouter.last_swap_stats
+	if frames_left <= 0:  # out of frames: say what the change was still waiting on (PC pass 4 row 67)
+		var holders := [SceneRouter.swap_holders(), SceneRouter.reveal_holders()]
+		push_warning(
+			(
+				"SceneSwapProbe: timed out busy=%s measuring=%s swap holders %s reveal holders %s"
+				% ([SceneRouter.is_busy(), SceneRouter.is_measuring()] + holders)
+			)
+		)
 	stats["legacy"] = legacy
 	print("%s %s" % [OUTPUT_TAG, JSON.stringify(stats)])
 	get_tree().quit(EXIT_OK if stats.has("max_frame_ms") else EXIT_FAILED)

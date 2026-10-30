@@ -1,0 +1,10 @@
+// Ch13: a pole-barge man. No oars in Ansedra. Heresy state: afraid, not cruel (the purveyor's precedent).
+title: ch13_bark_bargeman
+location: ch13/ansedra
+---
+<<if $ch14_declared_heretics>>
+    Boatman as "Pole-barge man" [afraid]: I can't carry you. Please. Walk the causeway. #line:ch13_bark_barge_001
+<<else>>
+    Boatman as "Pole-barge man" [neutral]: No oars here. An oar leaves a wake. Twenty years I've poled, and I still miss the sound of rowing. #line:ch13_bark_barge_002 #long
+<<endif>>
+===

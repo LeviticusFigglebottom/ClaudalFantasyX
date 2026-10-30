@@ -1695,3 +1695,79 @@ MERGE-READY @ (this commit).
   2. walk-audit routes for each Act II kit as it lands;
   3. the Act II inventory refresh per batch (`placeholder_audit.py --act 2 --write`).
 MERGE-READY @ (this commit).
+
+### Lead's Act I fast-track (10-30 03:44): M3-CIN-1251 and the spawn-camera rows 24, 25/47
+- **M3-CIN-1251 (review: cinematics / act1-chapters) @ 1da21c732:** the field camera now leaves a volume for the hub
+  shot. Outside every volume with a volume still active, `update()` blends to `initial_shot` (its own blend_sec or
+  hard_cut, else default_blend_sec) and `snap()` cuts to it. A zone with no hub shot keeps the last volume's shot,
+  as before. New test `test_leaving_every_volume_returns_to_the_hub_shot`. `qa_field_camera` is 2/0 **with
+  act1-chapters' held c9da92f3f (the Harbour and Weir volumes) applied on top**.
+  - **For act1-chapters:** re-apply GPU QA row 49's camera side (c9da92f3f) once this lands.
+- **Rows 24 and 25/47, the spawn cameras (game/world/**, mine):** reproduced in stills. There were three causes:
+  - **DockShore (the Ch4 wake):** the wake reuses Ch2 Haluna's volumes, and the spawn stands 1.0 m from Ch2's
+    pan-follow shot H04. **Fix:** with nothing between them, a free-play camera nearer his chest than
+    `occlusion.standoff_m` (2.6) backs off along its own line to 2.6 m. There's no jump, because at 2.6 m it is the
+    shot's own place. If that line is blocked, it goes to the ring direction with the most room. Now 2.6 m: a full
+    shot of Rhen on the jetty.
+  - **FerryAft:** the spawn is inside the deckhouse (3.5 × 3.8 m, roof 2.1 m). The pull-in took the camera 9.45 m in,
+    to 1.1 m from him, because the crane can't clear under the roof. **Fix:** when the crane fails, `widest_view()`
+    tries the ring at crane_ring_up_m and then at chest height, and takes the direction with the most room. Now
+    2.6 m: Rhen full-length in the cabin.
+  - **FeastEdge, InkLamp and WallDawn:** the greybox hub orbit looked down at 33° from 8.9 m. **Fix:**
+    `orbit.max_pitch_deg` 24 (`clamp_pitch`: swung down round the aim point, same distance and heading). This
+    affects **every greybox zone's hub orbit**, so the Lead's full manifest may show drift on free-play field
+    shots. Authored framings are untouched; scripted shots never get occlusion.
+  - The party at the feast is still small at 8.9 m: the orbit's distance is the greybox default. A tighter
+    feast shot is a camera volume, **act1-chapters'** (the wake's camera_volumes).
+- **The guard:** `test_qa_field_camera` now also fails on a camera **in his face** (under 1.5 m from his chest) and
+  on a director-computed pitch (orbit or follow) **steeper than 55°**. Authored looks down a stairwell, like
+  Coilspire's Tier1 at −74°, belong to their authors. Against the old director it fails at exactly FerryAft (1.09 m)
+  and DockShore (1.00 m). New unit tests: `test_clamp_pitch_swings_a_steep_orbit_down` and
+  `test_a_shot_in_his_face_backs_off_to_the_standoff`.
+- `tools/hero/walk_stills.gd` prints the pose with each still: the shot, its volume and mode, the authored position,
+  the pull, the camera, the pitch, and the distance to the chest.
+- Row 47's black landing pier at night is lighting: env-art's, not the camera.
+- **A follower fix, found on the merged tree:** `test_no_follower_is_laid_out_in_front_of_the_lens` went red after
+  integration's merge. My party code hadn't changed, and I didn't find which merged change exposed it. With the camera
+  1.5 m behind Rhen, both flank spots were still inside `camera_near_m`, so `off_lens` gave up and Asha walked back to
+  0.31 m from the lens. It now also tries the spot beyond him, away from the lens, and otherwise takes the unblocked
+  spot farthest from it. hero_followers 14/0.
+- Checks on the final tree:
+  - Godot suites: camera 69/0 (qa_field_camera included), hero_ 115/0, qa_party 3/0, qa_walk_audit 1/0, fp_ 30/0,
+    zone_cast 5/0.
+  - Static checks: gdlint and gdformat clean, validate_data 0/0, taskboard OK.
+  - Screenshots: none self-rendered. Most of the Ch4 wake and ferry shots use fixed preview cameras, which this
+    change doesn't touch. **The hub-orbit clamp can drift any shot taken through the field camera's orbit in free
+    play**, so that needs the Lead's full manifest.
+MERGE-READY @ (this commit).
+- **Trial merge @ integration 8de373e5 (all 11 heads):** my only conflict is
+  `docs/kb/tasks/M3/M3-CIN-1251-camera-returns-to-the-orbit.md` (both act1-chapters and I added it). Mine is their copy
+  (fetched 10-30) plus my status and review entry: **take hero-integration's side**. If act1-chapters has added to
+  it since, also keep their newer lines. The other conflicts are other tracks' shared data files (enemies,
+  encounters, skills, battle_sandbox, battle_sfx, ownership), the same as in the trial-merge report.
+
+### Lead 10-30 04:06: row 66 (Ch4 opening → field) and the rows "still open on big19"
+- **Row 66 FIXED (game/world/**, mine):** reproduced headless in real time (the wake's C4-01 with auto-advancing
+  lines, fixed 60 fps).
+  - **Cause:** the release blends from the cutscene's H12 shot, 120 m off. On the first blended frame a windbreak tree
+    on that 120 m line pulled the camera in by about 87 m. The pull was stored as metres in from the shot's place and
+    eased out at release_mps 4 m/s. Once the blend shortened the line to 9.8 m, a pull longer than the whole line put
+    the camera **on Rhen's chest, inside Neme's house wall, for about 19 s** (the PC's ch04_03/05).
+  - **Fix:** occlusion now keeps the pulled-in camera at a **distance from his chest** (`_kept_m`; INF when not
+    pulled), not a pull from the shot's place, so a shortening line can never leave the camera on him. After it, the
+    camera is never nearer than 5.9 m and is on NemeDoor's shot 2.3 s after the release.
+  - **Test:** `test_a_pull_on_a_long_line_never_leaves_the_camera_on_him` fails on the old director (0.00 m) and
+    passes now.
+- **Rows 24 (DockShore), 37, 38 and 50 "still open on big19":** none of my fixes were in the PC's pass-4 tree
+  (integration @ 2f544938). 692b55156, cb04c330f, 2e5292613, 1da21c732 and 0ffe9260d are all after it, so they come
+  in with this branch's merge:
+  - **37 (Toma's shield filling one side):** fixed by camera_near_m, 692b55156, plus today's off_lens fix in 0ffe9260d.
+  - **38 (Tier4 camera in Rhen's head):** fixed on the camera side by cb04c330f, today's widest_view and this fix. The
+    spawn standing inside the steps is still M3-HER-1157 (env-art-b). The Encounter shot looking at open sea is
+    M3-HER-1159 (act1-chapters).
+  - **50 (Toma sunk at the Crown):** I couldn't reproduce it (walk audit sunk check, stills). The pass-4 tree also
+    lacked the stair fixes. If it shows on a tree with them, the save or story state would help.
+  - **24 (DockShore):** fixed by 0ffe9260d.
+- Checks: camera 70/0 (qa_field_camera included), hero_ 115/0, qa_walk_audit 1/0, qa_party 3/0, ch04 13/0; gdlint and
+  gdformat clean. No shots rendered: the change only moves a pulled-in camera, which no fixed-camera shot uses.
+MERGE-READY @ (this commit).

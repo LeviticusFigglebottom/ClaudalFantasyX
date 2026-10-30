@@ -267,11 +267,30 @@ Root Stomp and a two-turn charged Drowning Grasp.
 - **The tuning that mattered:** the fight's length. At 4,800 HP, `role_answer` (which never heals) lost by attrition at
   every damage level. At 3,600 HP behind defence 120, Shell Breaker's answer carries it.
 
+### Ch10: the Mangrove Drowner on its record row (big20; the Lead 10-30 05:28: one definition, the chapters seat owns the numbers)
+- **Superseded above:** my own row's tune (role answer Toma, Root Lash, Drowning Grasp). There's one row now:
+  battle-presentation's.
+  - Role answer: Ysolde (fire on a fire-weak boss).
+  - Skills: Root Haul (`drowner_drag`), Rising Water, Root Stamp.
+  - Phase `uprooted` at 50%.
+- **Stats changed:**
+  - HP 5200 → 2200, strength 30 → 11, magic 20 → 8, defence 60 → 200.
+  - `uprooted` defence 36 → 160.
+- **Why:**
+  - Ysolde's Ember costs 4 MP, and the role play never uses items, so her fire must finish it inside her MP.
+  - The physical wall (defence 200, then 160) keeps a naive basic-attack party out.
+- **The ease floor** drops to 20 turns: the record row is the shorter fight.
+- **Results** (1,000 seeds, `ch08_seawall`):
+  - naive 1.1, role_answer 62.1, smart 100 (about 24 turns, report only).
+  - **naive_swell 100** (report only): a player who fills the Swell overpowers it. Watch this once the Ch10 loadout
+    lands.
+
 ### Act II creature bosses: the combat seat's tune for battle-presentation's PROVISIONAL rows (1dbfed6d5)
 
-- **Status:** battle-presentation wrote the rows so the staging (M3-BPR-419) could go live. These values were tuned in a
-  scratch worktree of their branch (1,000 seeds). The chapters seat applies them, and adds the three suites, once the
-  rows reach the integration branch.
+- **Status: applied** on the record rows (big20), with suites `ch11_lamp_engine`, `ch12_avalanche_ram` and
+  `ch15_wakefin` added. The same 1,000-seed numbers as below.
+- **History:** battle-presentation wrote the rows so the staging (M3-BPR-419) could go live. I tuned them first in a
+  scratch worktree of their branch.
 - **Common to all three:**
   - Loadout `ch08_seawall` until M4-A2P-019.
   - Swell `good`.
