@@ -1062,6 +1062,9 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - **For env-art (haluna.md §5, the art doc):** S07's row still says "Rhen and Toma are soft shoulders at the
     left and right frame edges (they speak from there)". That framing was row 60. Please update the row to the
     pulled-back over-the-shoulder plus S07_reverse.
+- **For the Lead (integration is red in the tools suite, not mine):** `tools.tests.test_screenshots`
+  `test_repo_manifest_is_valid_and_baselined` fails on `kerrid_front`. Characters added it in M3-CHR-505 (b4cc69cb,
+  merged in big19) with no baseline and no `"pending_baseline": true`. ADR 0205 makes the tools suite blocking.
 ### PC-QUEUE
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan
   emissive reading. Check that its glow and silhouette read on the GPU; if not, it needs a rim light or a grade.
