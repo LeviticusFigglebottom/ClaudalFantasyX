@@ -1,0 +1,38 @@
+{
+ "format": 1,
+ "scene": "ch21_bark_sefir",
+ "source": "game/data/dialogue/ch21/ch21_bark_sefir.dlg",
+ "start": "ch21_bark_sefir",
+ "nodes": {
+  "ch21_bark_sefir": {
+   "headers": {"location": "ch21/heart"},
+   "ops": [
+    {"op": "line", "id": "ch21_sefir_001", "key": "DLG_CH21_SEFIR_001", "speaker": "sefir", "emotion": "tender", "voice": "", "src": 9}
+   ]
+  },
+  "ch21_bark_sefir_settle": {
+   "headers": {},
+   "ops": [
+    {"op": "line", "id": "ch21_sefir_002", "key": "DLG_CH21_SEFIR_002", "speaker": "sefir", "emotion": "neutral", "voice": "", "src": 14}
+   ]
+  },
+  "ch21_bark_sefir_asha": {
+   "headers": {},
+   "ops": [
+    {"op": "line", "id": "ch21_sefir_003", "key": "DLG_CH21_SEFIR_003", "speaker": "sefir", "emotion": "tender", "voice": "", "src": 19}
+   ]
+  },
+  "ch21_bark_sefir_heart": {
+   "headers": {},
+   "ops": [
+    {"op": "line", "id": "ch21_sefir_004", "key": "DLG_CH21_SEFIR_004", "speaker": "sefir", "emotion": "determined", "voice": "", "src": 24}
+   ]
+  },
+  "ch21_bark_sefir_heart_low": {
+   "headers": {},
+   "ops": [
+    {"op": "line", "id": "ch21_sefir_005", "key": "DLG_CH21_SEFIR_005", "speaker": "sefir", "emotion": "grief", "voice": "", "src": 29}
+   ]
+  }
+ }
+}

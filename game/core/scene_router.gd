@@ -70,6 +70,10 @@ extends Node
 signal prewarm_requested(scene_path: String)
 ## ADR 0111: emitted when change_scene() starts (before the fade): ResidentLoads starts its threaded loads here.
 signal change_started(scene_path: String)
+## Emitted under the opaque fade with the new scene's root once it is instantiated (on the worker thread, when
+## instantiate_on_thread), before it enters the tree: a profiler can watch its nodes' ready (SceneSwapProbe
+## --ready-profile; slice-polish's Haluna add-to-tree frame).
+signal scene_instantiated(node: Node)
 ## Emitted under the opaque fade, just before the new scene enters the tree (zone globals reset here).
 signal scene_swapping(scene_path: String)
 ## Emitted after each successful swap with the same dictionary stored in last_swap_stats.
@@ -523,6 +527,7 @@ func _swap(
 	if node == null:
 		push_error("SceneRouter: failed to instantiate %s" % scene_path)
 		return
+	scene_instantiated.emit(node)
 	if split_swap:
 		if get_tree().current_scene != null:
 			t = _now_usec()

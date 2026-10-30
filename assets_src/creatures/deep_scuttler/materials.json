@@ -1,0 +1,19 @@
+{
+  "_doc": "Deep scuttler (M5-A3P-1805, Ch17): the scuttler's spawn carapace, darker and more wounded: its wide-open seams and the raw wounds through its plates glow brighter and pulse faster than the Act I scuttler's (the Calm failing), its barbs drier at their bone tips. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "slots": {
+    "carapace": {
+      "roughness_dry": 0.35,
+      "roughness_wet": 0.1,
+      "specular": 0.6,
+      "clearcoat_wet": 0.95,
+      "detail_scale": 20.0,
+      "detail_albedo": 0.12,
+      "detail_bump": 0.4,
+      "cavity_albedo": 0.4,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 2.6,
+      "emission_pulse_hz": 0.45,
+      "emission_pulse_depth": 0.5
+    }
+  }
+}

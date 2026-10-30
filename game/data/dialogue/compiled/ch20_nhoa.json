@@ -1,0 +1,27 @@
+{
+ "format": 1,
+ "scene": "ch20_nhoa",
+ "source": "game/data/dialogue/ch20/ch20_nhoa.dlg",
+ "start": "ch20_nhoa",
+ "nodes": {
+  "ch20_nhoa": {
+   "headers": {"location": "ch20/undertow_layers"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "camera", "args": ["U19"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "music", "args": ["memory_lowlight"], "kwargs": {"fade": 3.0}, "src": 10},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "gallery_silt", "count": 60, "rate": "slow"}, "src": 11},
+    {"op": "cue", "cue": "wait", "args": [5.0], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "camera", "args": ["U20"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "anim", "args": ["nhoa", "turn_to", "pell"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 15},
+    {"op": "if_not", "cond": ["flag", "ch15_pell_said_he_knew"], "to": 12, "src": 16},
+    {"op": "line", "id": "ch20_nhoa_001", "key": "DLG_CH20_NHOA_001", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 17},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 18},
+    {"op": "goto", "to": 12, "src": 16},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 20},
+    {"op": "event", "name": "start_battle", "args": ["ch20_nhoa"], "src": 21}
+   ]
+  }
+ }
+}

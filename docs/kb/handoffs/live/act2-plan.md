@@ -710,3 +710,57 @@ I merged integration (big28) first; the two conflicted compiled ch11 JSONs were 
 - **Checks:** dlgc 0/0, validate_data 0/0, taskboard clean, check_drafts 73/0. Godot `dialogue` after `--import` was 86/1; the one red is 1014 above. Tools unittest skipped (no `tools/` change).
 - MERGE-READY Act II voice pass @ cf6888744
 - BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1014; M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Ch6 and Ch8 objective text, and the Act II objective lines (Lead request)
+- **Ch6 and Ch8 (with act1-chapters):** there were no objective rows for either chapter, so the field said OBJ_NONE across the Brine Shoals, Corrow and Coilspire.
+  - I wrote 11 lines (appended): OBJ_CH06_SHOALS / CHANNEL / SIDE_TIDELINE in `ch06.csv`, and OBJ_CH08_WALL_HEAD / WALL_GATE / SIDE_STAIR / PATH / SIDE_HEARTH / FLUES / CROWN / BEACON in `ch08.csv`.
+  - **M4-A2P-1015 → act1-chapters** holds the rows, ready to paste. Each row's flags, triggers and POIs come from the flows and layouts.
+  - Four targets are left open for want of POIs (the Corrow wall-head; the Coilspire tiers and crown). The Ch8 night gets no rows, because it runs from `arrive` with no walking.
+  - `ch08_flame_at_crown` is set by the flue puzzle, so `test_qa_threads` may need a `qa_known` "unraised" reason.
+- **Act II objective lines (the field menu's objective and errand list, the only quest log the game has), Ch10–Ch16.** I made them match Act I's convention: a main line is an imperative, side errands describe, and nothing uses a contraction.
+  - **Now imperative:** OBJ_CH10_GATE "Go back out through the gate. Pell is waiting."; CH13_MOORINGS "Go out to the outer moorings. Kerrid is standing there."; CH15_FATHER "Go with Liss to the dry-dock berths. Her father keeps them."; CH15_PYRE "At dusk, go down to the pyre-raft."; CH15_SHIP "…Go aboard."; CH14_GATE "Get through the water-gate to Merel's barge."; CH13_ARCHIVE "Go to the Lamp Archive." (the two rows inside it say what to read).
+  - **Continuity:** CH13_REST now reads "The wedding is tomorrow, at dusk." It had said "at dusk", but the pact the same night says "Tobin's married tomorrow".
+  - **Contractions removed:** CH11_SIDE_BENCH, CH12_ON ("Do not look back."), CH13_SIDE_HOUSE, CH13_SIDE_FLAME, and my own CH06_SIDE_TIDELINE.
+- **Checks:** validate_data 0/0; taskboard clean; Godot `objective` 16/0 after `--import`. dlgc, tools unittest and check_drafts were not run: no .dlg, `tools/` or draft change.
+- MERGE-READY Ch6/Ch8 objective text + Act II objective lines @ 6141bf440
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1015; M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Act III production, Ch17–Ch20 (ADR 0207; ids M5-A3P-1000+)
+- **Correction to MERGE-READY @ 6141bf440:** OBJ_CH13_REST had an unquoted comma ("tomorrow, at dusk"), which split the loc row; `test_loc_csv_shape` caught it. It is quoted now.
+- **No Act I/II FAST-TRACK is open in my lane**, so I went straight to Act III. Each chapter's drafts were moved with `git mv` into `game/data/dialogue/chNN/`, so no line id exists twice. Their headers are no longer marked as drafts, and their flags are declared in `flags.tres`.
+  - **M5-A3P-1000 Ch17:** 11 scenes, 8 flags. Prompts in `loc/ch17.csv` (new, registered in `project.godot`).
+  - **M5-A3P-1003 Ch18:** 16 scenes, 15 flags (each heirloom flag names its object). Prompts in `loc/ch18.csv`.
+  - **M5-A3P-1006 Ch19:** 7 scenes, 7 flags. New speakers `hesper_oan` and `ilsabet_rue`; names and six prompts in `loc/ch19.csv`.
+  - **M5-A3P-1010 Ch20:** 18 scenes, 9 flags. Ten new speakers (the six Vowbound, the four founders); names in `loc/ch20.csv`.
+  - **Speakers:** every new speaker has a placeholder portrait, as the Act II bosses do, and a voice row appended to `game/data/audio/voices.json` (audio's file; `validate_data` requires a row per speaker).
+- **Tests:**
+  - `tests/unit/test_act3_dialogue.gd`: every Act III scene, every path, under Act II's bar.
+  - `tools/act3_rules.py`: the Act III rules, moved out of `check_drafts.py`, which now imports them.
+  - `tools/tests/test_act3_rules.py`: the production scripts, plus a planted bad scene that trips every rule.
+  - **`test_dlgc` near-miss probe:** "Karen [sad] sang." now expects "did you mean Kahre" (Kahre is a speaker now).
+- **Requests filed:**
+  - **Cinematics, staging and flow:** M5-A3P-1001 (Ch17), 1004 (Ch18), 1007 (Ch19), 1011 (Ch20).
+  - **Audio, cues and sounds:** M5-A3P-1002, 1005, 1008, 1012. Each lists exactly what's new against `music.json` and `assets/audio/sfx/`.
+  - **Combat:** M5-A3P-1009 (Ch19's Wardens' encounter, plus one general mid-battle line hook for every Act III fight) and 1013 (Ch20's seven fights and the release flags).
+- **LEAD-ASK (word budget, drafts README decision 9):** the drafts are spare, against their sheets' §8 budgets. Ch17 has about 460 spoken words (budget ~1,200; SPEC band 880–1,300), and Ch18 about 610 (~2,400). Grow the non-hinge parts (barks, interactables, revisits, heirlooms) to the band, or revise the §8 budgets? I'm proceeding as written and will grow them if told to.
+- **Checks:**
+  - dlgc 0/0, validate_data 0/0, taskboard clean, check_drafts (21 files left) 0/0.
+  - Godot `act3` 1/0 and `objective` 16/0. `dialogue` 87/1: the one red is the Ullari woman's portrait (M4-A2P-1014, not mine).
+  - Tools tests touching my areas pass: act3_rules, dlgc, loc_*, banned_scan, qa_flag_reach, taskboard, vowbound_flag, audio_data and others.
+  - The full tools suite was stopped part-way. Its reds were `test_rig_integrity` (gate-big31's known characters red), plus `test_audio_loudness` and `test_dialogue_clarity` beds. Those two fail because the audio files in this container are LFS pointers; none of the three is in my diff.
+- MERGE-READY Act III Ch17–Ch20 (M5-A3P-1000/1003/1006/1010) + OBJ_CH13_REST fix @ df6f46e17
+
+## 2026-10-30: Act III production, Ch21 and the Ending (M5-A3P-1014)
+- 10 `ch21_*` scenes are now in `game/data/dialogue/ch21/`, and 11 `ending_*` in `game/data/dialogue/ending/`. Flag `ch21_unbound`. New speakers `imra` and `dace`, with placeholder portraits and voice rows. `loc/ch21.csv` (new, registered) holds their names and FIELD_PROMPT_ENDING_TAKE_THE_STRAIN.
+- **Every Act III draft is now in the game.** `docs/kb/story/act3/drafts/` keeps only the README (as the record) and `check_drafts.py`, which now has nothing left to check. `tools/tests/test_act3_rules.py` holds the production scripts to the rules.
+- **Requests filed:**
+  - **M5-A3P-1015 → cinematics:** the `ch21/heart` zone (HT01–HT22), the Ending's E01–E13 on the Kite, the dock and Oruvel, and the flow H01 → E7, with the credits before `ending_first_lamp`.
+  - **M5-A3P-1016 → audio:** 15 music cues (the Letting is the one sung verse 8) and 6 sounds.
+  - **M5-A3P-1017 → combat:** Kesh; Sefir's Warden, heart and Letting phases; his fight lines (hook: M5-A3P-1009).
+- **Checks:**
+  - dlgc 0/0 (407 scenes), validate_data 0/0, taskboard clean.
+  - Tools: act3_rules, dlgc, loc_csv_shape, loc_key_names, qa_flag_reach, taskboard, audio_data all OK.
+  - Godot: `act3` 1/0; `dialogue` 87/1, the one red being M4-A2P-1014's portrait.
+- **Next for this track:** Act III objective text once 1001/1004/1007/1011/1015 land flags and POIs, the word-budget growth if the Lead says so (LEAD-ASK above), and any FAST-TRACK first.
+- MERGE-READY Act III Ch21 + Ending (M5-A3P-1014) @ ac9bc6521
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1015; M4-A2P-112 items 3, 5 and 6; M5-A3P-1001/1002/1004/1005/1007/1008/1009/1011/1012/1013/1015/1016/1017.

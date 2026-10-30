@@ -260,7 +260,8 @@
           {"id": "low_town", "name_key": "MAP_POI_K_LOW_TOWN", "kind": "talk", "at": [-34.634, -20.946], "source": "trigger:bark_netmender"},
           {"id": "shrine", "name_key": "MAP_POI_K_SHRINE", "kind": "shrine", "at": [-66.479, -2.01], "source": "trigger:shrine"},
           {"id": "chandler", "name_key": "MAP_POI_K_CHANDLER", "kind": "shop", "at": [-78.3, 1.664], "source": "trigger:chandler"},
-          {"id": "wall_gate", "name_key": "MAP_POI_K_WALL_GATE", "kind": "door", "at": [30.945, 1.6], "source": "spawn:WallGate"}
+          {"id": "wall_gate", "name_key": "MAP_POI_K_WALL_GATE", "kind": "door", "at": [30.945, 1.6], "source": "spawn:WallGate"},
+          {"id": "ivo", "name_key": "MAP_POI_K_IVO", "kind": "talk", "at": [14.894, 2.372], "source": "trigger:ivo"}
         ]
       },
       {
@@ -275,7 +276,9 @@
           {"id": "path_foot", "name_key": "MAP_POI_Q_PATH_FOOT", "kind": "path", "at": [233.853, 108.306], "source": "spawn:PathFoot"},
           {"id": "path_mid", "name_key": "MAP_POI_Q_PATH_MID", "kind": "path", "at": [284.8, 111.3], "source": "trigger:path_fight"},
           {"id": "keepers_hut", "name_key": "MAP_POI_Q_KEEPERS_HUT", "kind": "home", "at": [310.8, 152.1], "source": "trigger:hearth"},
-          {"id": "spire_door", "name_key": "MAP_POI_Q_SPIRE_DOOR", "kind": "door", "at": [302.9, 153.1], "source": "trigger:door"}
+          {"id": "spire_door", "name_key": "MAP_POI_Q_SPIRE_DOOR", "kind": "door", "at": [302.9, 153.1], "source": "trigger:door"},
+          {"id": "crown", "name_key": "MAP_POI_Q_CROWN", "kind": "path", "at": [308.465, 159.112], "source": "trigger:crown"},
+          {"id": "great_key", "name_key": "MAP_POI_Q_GREAT_KEY", "kind": "door", "at": [307.892, 161.556], "source": "trigger:great_key"}
         ]
       },
       {

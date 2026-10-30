@@ -86,8 +86,8 @@
   "triggers": [
     {"id": "banter_tenders_gate", "blocked_by_flag": "ch05_trial_begun", "at": [0.0, -81.44, 144.76], "size": [4.0, 0.0, 1.5], "once": true, "payload": {"dialogue": "ch05_banter_tenders_gate", "overheard": true}, "yaw": 0.0},
     {"id": "tortoises", "at": [0.0, -74.4, 137.5], "size": [4.0, 0.0, 1.2], "blocked_by_flag": "ch05_tortoises_won", "payload": {"beat": "tortoises"}, "yaw": 0.0},
-    {"id": "banter_grave_tier", "blocked_by_flag": "ch05_trial_begun", "at": [0.0, -46.24, 100.86], "size": [4.0, 0.0, 1.2], "once": true, "payload": {"dialogue": "ch05_banter_grave_tier", "overheard": true}, "yaw": 0.0},
-    {"id": "banter_copper_tier", "blocked_by_flag": "ch05_trial_begun", "at": [0.0, -4.0, 30.0], "size": [20.0, 0.0, 1.5], "once": true, "payload": {"dialogue": "ch05_banter_copper_tier", "overheard": true}, "yaw": 0.0},
+    {"id": "banter_grave_tier", "sets_flag": "ch05_passed_grave_tier", "blocked_by_flag": "ch05_trial_begun", "at": [0.0, -46.24, 100.86], "size": [4.0, 0.0, 1.2], "once": true, "payload": {"dialogue": "ch05_banter_grave_tier", "overheard": true}, "yaw": 0.0},
+    {"id": "banter_copper_tier", "sets_flag": "ch05_passed_copper_tier", "blocked_by_flag": "ch05_trial_begun", "at": [0.0, -4.0, 30.0], "size": [20.0, 0.0, 1.5], "once": true, "payload": {"dialogue": "ch05_banter_copper_tier", "overheard": true}, "yaw": 0.0},
     {"id": "crown", "at": [0.0, 42.0, -2.4], "size": [5.0, 0.0, 1.4], "blocked_by_flag": "ch05_trial_begun", "payload": {"beat": "crown"}, "yaw": 0.0},
     {"id": "rod_t1", "activation": "interact", "at": [6.0, 42.0, -10.8], "size": [2.0, 0.0, 2.0], "prompt_key": "FIELD_PROMPT_CATCH", "requires_flag": "ch05_trial_begun", "blocked_by_flag": "ch05_strike_landed", "payload": {"trial": "catch", "id": "t1"}, "yaw": 0.0},
     {"id": "gate_g1", "activation": "interact", "at": [6.85, 42.0, -5.4], "size": [2.0, 0.0, 2.0], "prompt_key": "FIELD_PROMPT_TURN", "requires_flag": "ch05_trial_begun", "blocked_by_flag": "ch05_strike_landed", "payload": {"trial": "turn", "id": "g1"}, "yaw": 0.0},

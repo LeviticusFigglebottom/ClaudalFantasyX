@@ -1,0 +1,43 @@
+{
+ "format": 1,
+ "scene": "ch18_backs_to_the_water",
+ "source": "game/data/dialogue/ch18/ch18_backs_to_the_water.dlg",
+ "start": "ch18_backs_to_the_water",
+ "nodes": {
+  "ch18_backs_to_the_water": {
+   "headers": {"location": "ch02/haluna"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "camera", "args": ["K15"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "music", "args": ["haluna_lifting"], "kwargs": {"fade": 3.0}, "src": 12},
+    {"op": "cue", "cue": "mark", "args": ["toma", "shore_line", "walk"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "mark", "args": ["asha", "village_back", "walk"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 15},
+    {"op": "line", "id": "ch18_haluna_001", "key": "DLG_CH18_HALUNA_001", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 16},
+    {"op": "cue", "cue": "mark", "args": ["crowd", "shore_line_crowd", "walk"], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 18},
+    {"op": "line", "id": "ch18_haluna_002", "key": "DLG_CH18_HALUNA_002", "speaker": "neme", "emotion": "worried", "voice": "", "src": 19},
+    {"op": "line", "id": "ch18_haluna_003", "key": "DLG_CH18_HALUNA_003", "speaker": "toma", "emotion": "determined", "voice": "", "src": 20},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 21},
+    {"op": "line", "id": "ch18_haluna_004", "key": "DLG_CH18_HALUNA_004", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 22},
+    {"op": "cue", "cue": "anim", "args": ["crowd", "turn_back", "sea"], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "anim", "args": ["toma", "turn_back", "sea"], "kwargs": {}, "src": 24},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 25},
+    {"op": "cue", "cue": "sfx", "args": ["names_murmured"], "kwargs": {"vol": 0.5}, "src": 26},
+    {"op": "cue", "cue": "wait", "args": [5.0], "kwargs": {}, "src": 27},
+    {"op": "cue", "cue": "camera", "args": ["K16"], "kwargs": {}, "src": 28},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "wake_wall", "count": 5, "motion": "spiral_up", "rate": "slow"}, "src": 29},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "wake_wall", "count": 40, "drift": "down_seaward", "rate": "slow"}, "src": 30},
+    {"op": "cue", "cue": "wait", "args": [6.0], "kwargs": {}, "src": 31},
+    {"op": "line", "id": "ch18_haluna_005", "key": "DLG_CH18_HALUNA_005", "speaker": "neme", "emotion": "grief", "voice": "", "src": 32},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 33},
+    {"op": "line", "id": "ch18_haluna_006", "key": "DLG_CH18_HALUNA_006", "speaker": "toma", "emotion": "tender", "voice": "", "src": 34},
+    {"op": "cue", "cue": "camera", "args": ["K17"], "kwargs": {}, "src": 35},
+    {"op": "cue", "cue": "anim", "args": ["asha", "look_at", "sea"], "kwargs": {}, "src": 36},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 37},
+    {"op": "set", "flag": "ch18_haluna_lifted", "value": ["lit", true], "src": 38},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 39}
+   ]
+  }
+ }
+}

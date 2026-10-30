@@ -1,0 +1,23 @@
+{
+ "format": 1,
+ "scene": "ch18_the_chart_table",
+ "source": "game/data/dialogue/ch18/ch18_the_chart_table.dlg",
+ "start": "ch18_the_chart_table",
+ "nodes": {
+  "ch18_the_chart_table": {
+   "headers": {"location": "ch18/kite"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["K04"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "mark", "args": ["ysolde", "chart_table", "walk"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "anim", "args": ["ysolde", "lay_out", "keth_notes"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 10},
+    {"op": "line", "id": "ch18_chart_001", "key": "DLG_CH18_CHART_001", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 11},
+    {"op": "cue", "cue": "anim", "args": ["pell", "look_at", "chart_table"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 13},
+    {"op": "line", "id": "ch18_chart_002", "key": "DLG_CH18_CHART_002", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 14},
+    {"op": "line", "id": "ch18_chart_003", "key": "DLG_CH18_CHART_003", "speaker": "asha", "emotion": "tender", "voice": "", "src": 15},
+    {"op": "set", "flag": "ch18_world_open", "value": ["lit", true], "src": 16}
+   ]
+  }
+ }
+}

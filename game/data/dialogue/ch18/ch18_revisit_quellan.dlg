@@ -1,0 +1,11 @@
+// M5-A3P-1003. Ch18 §4 Quellan (offered). Dorro's daughter has tied a new cord; the pass-cords seen
+// from the air; one bark.
+title: ch18_revisit_quellan
+location: ch12/quellan
+---
+<<if $ch12_returned_herd_cord>>
+    Ullari_woman as "Dorro's daughter" [soft_smile]: A new cord. Father's knot, my hands. #line:ch18_quellan_001
+<<else>>
+    Ullari_woman as "Dorro's daughter" [neutral]: The cords hold. They always held. #line:ch18_quellan_002
+<<endif>>
+===

@@ -51,6 +51,20 @@
   {"id": "ullari", "name_key": "CHAR_ULLARI", "blip_pitch": 0.94, "portrait_id": "portrait_villager_placeholder"},
   {"id": "ullari_woman", "name_key": "CHAR_ULLARI_WOMAN", "blip_pitch": 1.0, "portrait_id": "portrait_villager_placeholder"},
   {"id": "householder", "name_key": "CHAR_HOUSEHOLDER", "blip_pitch": 1.1, "portrait_id": "portrait_villager_placeholder"},
-  {"id": "kesh", "name_key": "CHAR_KESH", "blip_pitch": 0.9, "portrait_id": "portrait_villager_placeholder"}
+  {"id": "kesh", "name_key": "CHAR_KESH", "blip_pitch": 0.9, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "hesper_oan", "name_key": "CHAR_HESPER_OAN", "blip_pitch": 0.82, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "ilsabet_rue", "name_key": "CHAR_ILSABET_RUE", "blip_pitch": 1.04, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "ilun", "name_key": "CHAR_ILUN", "blip_pitch": 1.12, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "kahre", "name_key": "CHAR_KAHRE", "blip_pitch": 0.8, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "virel", "name_key": "CHAR_VIREL", "blip_pitch": 1.05, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "hesk", "name_key": "CHAR_HESK", "blip_pitch": 0.95, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "nhoa", "name_key": "CHAR_NHOA", "blip_pitch": 0.88, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "ethren", "name_key": "CHAR_ETHREN", "blip_pitch": 0.92, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "orin_tesk", "name_key": "CHAR_ORIN_TESK", "blip_pitch": 0.84, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "halde_moor", "name_key": "CHAR_HALDE_MOOR", "blip_pitch": 0.9, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "isse_varan", "name_key": "CHAR_ISSE_VARAN", "blip_pitch": 1.06, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "cael_imbrey", "name_key": "CHAR_CAEL_IMBREY", "blip_pitch": 0.98, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "imra", "name_key": "CHAR_IMRA", "blip_pitch": 1.0, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "dace", "name_key": "CHAR_DACE", "blip_pitch": 0.86, "portrait_id": "portrait_villager_placeholder"}
  ]
 }

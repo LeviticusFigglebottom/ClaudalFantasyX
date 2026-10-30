@@ -9059,6 +9059,11 @@
       }
     },
     {
+      "id": "credits_roll",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/credits/credits_roll.tscn"
+    },
+    {
       "id": "document_reader_three",
       "pending_baseline": true,
       "scene": "res://game/levels/_tests/document_reader/document_reader_three.tscn"
@@ -10310,6 +10315,30 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "creature_deep_scuttler",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_deep_scuttler.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_hull_rasp",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_hull_rasp.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_wick_crawler",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_wick_crawler.tscn",
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }

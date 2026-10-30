@@ -1,0 +1,58 @@
+{
+ "format": 1,
+ "scene": "ch21_seven_bands",
+ "source": "game/data/dialogue/ch21/ch21_seven_bands.dlg",
+ "start": "ch21_seven_bands",
+ "nodes": {
+  "ch21_seven_bands": {
+   "headers": {"location": "ch21/heart"},
+   "ops": [
+    {"op": "cue", "cue": "music", "args": ["heart_rest"], "kwargs": {"fade": 2.0}, "src": 7},
+    {"op": "cue", "cue": "anim", "args": ["asha", "look_at", "sleeve"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "wait", "args": [10.0], "kwargs": {}, "src": 9}
+   ]
+  },
+  "ch21_bands_rhen": {
+   "headers": {},
+   "ops": [
+    {"op": "line", "id": "ch21_bands_001", "key": "DLG_CH21_BANDS_001", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 13}
+   ]
+  },
+  "ch21_bands_asha": {
+   "headers": {},
+   "ops": [
+    {"op": "line", "id": "ch21_bands_002", "key": "DLG_CH21_BANDS_002", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 17}
+   ]
+  },
+  "ch21_bands_toma": {
+   "headers": {},
+   "ops": [
+    {"op": "line", "id": "ch21_bands_003", "key": "DLG_CH21_BANDS_003", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 21}
+   ]
+  },
+  "ch21_bands_ysolde": {
+   "headers": {},
+   "ops": [
+    {"op": "line", "id": "ch21_bands_004", "key": "DLG_CH21_BANDS_004", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 25}
+   ]
+  },
+  "ch21_bands_liss": {
+   "headers": {},
+   "ops": [
+    {"op": "line", "id": "ch21_bands_005", "key": "DLG_CH21_BANDS_005", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 29}
+   ]
+  },
+  "ch21_bands_pell": {
+   "headers": {},
+   "ops": [
+    {"op": "line", "id": "ch21_bands_006", "key": "DLG_CH21_BANDS_006", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 33}
+   ]
+  },
+  "ch21_bands_kerrid": {
+   "headers": {},
+   "ops": [
+    {"op": "line", "id": "ch21_bands_007", "key": "DLG_CH21_BANDS_007", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 37}
+   ]
+  }
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "format": 1,
+ "scene": "ending_beach_rite",
+ "source": "game/data/dialogue/ending/ending_beach_rite.dlg",
+ "start": "ending_beach_rite",
+ "nodes": {
+  "ending_beach_rite": {
+   "headers": {"location": "ch02/haluna"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["E12"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "music", "args": ["credits_suite"], "kwargs": {"fade": 2.0}, "src": 10},
+    {"op": "if_not", "cond": ["not", ["flag", "ch18_haluna_lifted"]], "to": 5, "src": 11},
+    {"op": "line", "id": "ending_beach_001", "key": "DLG_ENDING_BEACH_001", "speaker": "toma", "emotion": "tender", "voice": "", "src": 12},
+    {"op": "goto", "to": 5, "src": 11},
+    {"op": "cue", "cue": "anim", "args": ["crowd", "turn_back", "sea"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "beach_sea", "count": 4, "motion": "spiral_up", "rate": "slow"}, "src": 15},
+    {"op": "cue", "cue": "wait", "args": [14.0], "kwargs": {}, "src": 16}
+   ]
+  }
+ }
+}

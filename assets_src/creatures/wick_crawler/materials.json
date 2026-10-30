@@ -1,0 +1,16 @@
+{
+  "_doc": "The wick crawler's surfaces (docs/kb/art/creatures/act3/wick_crawler.md). body: the brass segments, rims, pole, shears, snuffer, hinge pins and reservoir, going bronze_patina in the joints and underside (vertex colour), no light; leg: the fourteen lacquer_black legs and rope hooks; glass: the taper's salt-glass thimble, glossy, its emission mask the bound light's glow through it; taper: the bound light itself, glimmer_bound, steady (a construct never flickers like a flame: creatures README rule 3); seam: the hairline spawn_wound ring round the oil reservoir's filler cap, the weak point (ADR 0151), closed, a slow weak-point pulse. Colours are palette.json swatches; write_materials.py on game/shaders/creature/creature.gdshader.",
+  "slots": {
+    "body": {"metallic": 0.6, "roughness_dry": 0.38, "roughness_wet": 0.25, "specular": 0.6, "wet_darken": 0.5,
+             "clearcoat_wet": 0.3, "detail_scale": 34.0, "detail_albedo": 0.12, "detail_bump": 0.3, "cavity_albedo": 0.5,
+             "emission_energy": 0.0},
+    "leg": {"metallic": 0.3, "roughness_dry": 0.45, "roughness_wet": 0.3, "specular": 0.5, "detail_albedo": 0.06,
+            "detail_bump": 0.15, "emission_energy": 0.0},
+    "glass": {"roughness_dry": 0.1, "roughness_wet": 0.05, "specular": 0.7, "wet_darken": 0.2, "clearcoat_wet": 0.8,
+              "detail_albedo": 0.03, "detail_bump": 0.05, "emission_color": "#4FB3B0", "emission_energy": 0.8},
+    "taper": {"roughness_dry": 0.4, "specular": 0.3, "detail_albedo": 0.0, "detail_bump": 0.0,
+              "emission_color": "#4FB3B0", "emission_energy": 1.2},
+    "seam": {"roughness_dry": 0.3, "specular": 0.6, "detail_albedo": 0.0, "detail_bump": 0.0,
+             "emission_color": "#3FE0C8", "emission_energy": 2.2, "emission_pulse_hz": 0.3, "emission_pulse_depth": 0.35}
+  }
+}

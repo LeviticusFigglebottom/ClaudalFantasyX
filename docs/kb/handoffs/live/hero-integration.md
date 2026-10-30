@@ -2151,3 +2151,17 @@ MERGE-READY @ (this commit).
     The TRACE lines show the gap between the last `scene=FieldBattle` line and the first `scene=Haluna` line (that
     frame), then any `reveal=[…]` hold.
   - Headless (lavapipe) inflates both; judge by the split and against the same probe before your change.
+
+### 2026-10-30: Haluna's add-to-tree frame, split by node (offered to slice-polish, ADR 0207)
+- New: `SceneRouter.scene_instantiated(node)` is emitted after the (threaded) instantiate, before the add. `SceneSwapProbe --ready-profile` stamps every node's `ready` and prints the slowest gaps as `READY_PROFILE` lines. Run it with `godot --headless --path . res://game/core/debug/scene_swap_probe.tscn -- --to=res://game/levels/ch02/haluna/haluna.tscn --resident-loads --ready-profile`.
+- Real router path (worker instantiate, then `prebuild()`, then add; headless, this box): **max hidden frame 718 ms** (under the 1 s bar); instantiate 811 ms on the thread; reveal wait 1.29 s.
+  - Readies total **603 ms** over 4,320 nodes.
+  - Root `.` (HalunaZone `_ready`, its own share) 311 ms.
+  - `CutsceneStage/Actors/asha` 168 ms. That's the cast actor building its model or materials in `_ready`; toma's is 0.3 ms, so asha's is the outlier.
+  - `HalunaMood/WorldEnvironment` 48 ms.
+  - Player 21 ms; SaveShrine BoundGlimmer 16 ms; WildlifeLayer 10 ms; Story 10 ms. Everything else is under 4 ms.
+  - About 115 ms of the frame is `_enter_tree` and notifications outside the readies.
+- For slice-polish:
+  - The biggest levers are what HalunaZone `_ready` still does after `prebuild`, and asha's actor in CutsceneStage (move its build into `prebuild` or defer it until the scene is revealed).
+  - I don't edit `haluna_zone.gd`. When their fix lands, I'll re-measure the Drownbell return with `return_probe -- --cases=drownbell --trace`.
+MERGE-READY @ (this commit).

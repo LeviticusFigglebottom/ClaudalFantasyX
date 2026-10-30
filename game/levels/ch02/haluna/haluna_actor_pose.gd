@@ -25,6 +25,18 @@ var _requested: PackedStringArray = []
 
 
 func _ready() -> void:
+	# The human's black-screen report (Lead FAST-TRACK, ADR 0029): the pose's per-bone solve (~0.2 s headless for Asha)
+	# was paid in the frame that adds Haluna. During a router swap the screen stays black for frames after, so the pose
+	# waits for this node's first process frame; tests and captures, with no swap, pose at once.
+	if is_inside_tree() and SceneRouter.is_busy():
+		set_process(true)
+		return
+	set_process(false)
+	apply()
+
+
+func _process(_delta: float) -> void:
+	set_process(false)
 	apply()
 
 

@@ -1,0 +1,36 @@
+{
+ "format": 1,
+ "scene": "ending_kerrid",
+ "source": "game/data/dialogue/ending/ending_kerrid.dlg",
+ "start": "ending_kerrid",
+ "nodes": {
+  "ending_kerrid": {
+   "headers": {"location": "ch18/kite"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "camera", "args": ["E07"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "music", "args": ["goodbye_kerrid"], "kwargs": {"fade": 2.0}, "src": 15},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "kerrid_hands", "count": 20, "motion": "spiral_up", "rate": "slow"}, "src": 16},
+    {"op": "cue", "cue": "mark", "args": ["kerrid", "kite_rail", "walk"], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "anim", "args": ["kerrid", "look_at", "sea"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 19},
+    {"op": "line", "id": "ending_kerrid_001", "key": "DLG_ENDING_KERRID_001", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 20},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 21},
+    {"op": "if_not", "cond": ["flag", "ch19_learned_the_hitch"], "to": 14, "src": 22},
+    {"op": "cue", "cue": "camera", "args": ["E08"], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "anim", "args": ["kerrid", "look_at", "rhen_hitch"], "kwargs": {}, "src": 24},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 25},
+    {"op": "goto", "to": 14, "src": 22},
+    {"op": "cue", "cue": "camera", "args": ["E07"], "kwargs": {}, "src": 27},
+    {"op": "cue", "cue": "anim", "args": ["kerrid", "fix_collar", "rhen"], "kwargs": {}, "src": 28},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 29},
+    {"op": "line", "id": "ending_kerrid_002", "key": "DLG_ENDING_KERRID_002", "speaker": "kerrid", "emotion": "soft_smile", "voice": "", "src": 30},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 31},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "kerrid", "count": 60, "motion": "spiral_up", "rate": "slow"}, "src": 32},
+    {"op": "cue", "cue": "anim", "args": ["kerrid", "shadow_on", "rhen"], "kwargs": {}, "src": 33},
+    {"op": "cue", "cue": "wait", "args": [8.0], "kwargs": {}, "src": 34},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 35}
+   ]
+  }
+ }
+}

@@ -159,7 +159,10 @@ func test_ch4_to_ch9_spot_checks() -> void:
 			&"p_harbour_road",
 			&"harbour"
 		],
-		[[&"ch05_arrived", &"ch05_met_kerrid"], ASHCROWN, &"a_crown", &"crown"],
+		# the Lead (10-30): the pilgrim stair is staged, a target per level (its foot is 117 m under the crown)
+		[[&"ch05_arrived", &"ch05_met_kerrid"], ASHCROWN, &"a_stair", &"grave_tier"],
+		[[&"ch05_passed_grave_tier"], ASHCROWN, &"a_upper", &"copper_tier"],
+		[[&"ch05_passed_grave_tier", &"ch05_passed_copper_tier"], ASHCROWN, &"a_crown", &"crown"],
 		[[&"ch05_trial_begun"], ASHCROWN, &"a_trial", &"tier_1"],
 		[[&"ch05_trial_begun", &"ch05_strike_landed"], ASHCROWN, &"a_anvil_court", &"anvil_court"],
 		[[&"ch07_arrived"], TAMSULE, &"t_market_boats", &"market_boats"],

@@ -1774,6 +1774,29 @@ def all_open(k: float) -> dict:
     return robes(out=(9.0 * k, 15.0 * k, 13.0 * k))
 
 
+RELEASE_SEC = 3.5  # M5-A3P-1850: the held form's release (Ch21 H03), its KO, as the Ch20 six
+RELEASE_LIFT = 2.2  # she rises out of the top of the frame (act3_ending H03: "her light rises out of the top of frame")
+
+
+def build_release() -> ck.Clip:
+    """M5-A3P-1850, the held form's KO (act3_ending H03: "She lifts and doesn't look at him"). The arms open low
+    and wide, palms out, letting go; every mouth of the robe opens; the face lifts and turns away (her left, from
+    Sefir), eyes to the sky; and the column carries her up, slowly, then gone up out of the frame."""
+    c = ck.Clip("release", RELEASE_SEC)
+    keyp(c, 0.0, REST)
+    for t, k, rise in ((0.8, 0.45, 0.15), (1.6, 0.85, 0.55), (2.4, 1.0, 1.25), (RELEASE_SEC, 1.0, RELEASE_LIFT)):
+        # the face lifts and turns from her resting gaze (idle's own head turn) the other way: keyed over the base
+        lifted = body_pose(neck=-8.0 * k, head=-16.0 * k, turn=-40.0 * k)
+        face = {bone: lifted[bone] for bone in ("neck", "head")}
+        keyp(c, t, merge(body_pose(spine=(-3.0 * k, -4.0 * k, -5.0 * k), lift=rise),
+                         arms(clav=(0.0, 0.0, 4.0 * k), upper=(-14.0 * k, 0.0, 38.0 * k),
+                              fore=(-12.0 * k, 0.0, 0.0), hand=(0.0, 28.0 * k, 0.0)),
+                         all_open(0.7 * k),
+                         hair_pose(back=(14.0 * k, 10.0 * k, 6.0 * k), out=(6.0 * k, 5.0 * k, 4.0 * k)),
+                         over_base(face)))
+    return c
+
+
 def build_special() -> ck.Clip:
     """The Seven: she rises on the column, every mouth open, arms wide (the wind-up is the rise); at the contact her
     arms sweep forward and up, all six at once, then the seventh note held; she settles."""
@@ -1996,7 +2019,7 @@ def build_clips() -> list[ck.Clip]:
     BASE.update(idle_first(idle))
     clips = [idle, build_idle_b(), build_ready(), build_rise(), build_dismiss(), build_attack(), build_cast(),
              build_hit(), build_hit("hit_b", -1.0, ck.HIT_B["amp"]), build_defend(), build_ko(), build_victory(),
-             build_special(), build_shift()]
+             build_special(), build_shift(), build_release()]
     clips += [build_shift(e) for e in ELEMENTS]
     clips += [build_voice_water(), build_voice_lightning(), build_voice_fire(), build_voice_ice(),
               build_voice_holy(), build_voice_glimmer()]

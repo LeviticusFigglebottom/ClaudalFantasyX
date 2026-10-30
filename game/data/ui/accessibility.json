@@ -57,7 +57,9 @@
        "label_key": "SET_VOLUME_VOICE", "help_key": "SET_VOLUME_VOICE_HELP"},
       {"id": "screen_shake", "type": "enum", "default": 1.0, "options": [1.0, 0.5, 0.0],
        "option_keys": ["SET_SCREEN_SHAKE_FULL", "SET_SCREEN_SHAKE_HALF", "SET_SCREEN_SHAKE_OFF"],
-       "label_key": "SET_SCREEN_SHAKE", "help_key": "SET_SCREEN_SHAKE_HELP"}
+       "label_key": "SET_SCREEN_SHAKE", "help_key": "SET_SCREEN_SHAKE_HELP"},
+      {"id": "mono_audio", "type": "bool", "default": false, "label_key": "SET_MONO_AUDIO",
+       "help_key": "SET_MONO_AUDIO_HELP"}
     ],
     "battle_speed": {
       "doc": "M2-UI-23: battle_speed options are presentation speed multipliers (the same id and values as M2-BPR-03's BattleChoreo speed). Every battle presentation duration is divided by the speed (UiSettings.battle_time_scale): the controller's pacing waits, damage numbers and float words, the camera shake and the hit recoil. Never the engine, never a Swell input window (those stay real time).",
