@@ -34,3 +34,12 @@ ITEM_RIM_SALT,Rim Salt
 ITEM_RIM_SALT_DESC,"White salt scraped from the cairns on the Pale Rim, fine as flour. Used in Customize."
 EQUIP_KERRID_RIM_WRAPS,Salt-White Wraps
 EQUIP_KERRID_RIM_WRAPS_DESC,Arm wraps bleached white by days of wading. He keeps retying them.
+ENEMY_ABIDING_FIRST,The First of the Abiding
+PHASE_ABIDING_GUARD_FIRST,The Guard Holds
+PHASE_ABIDING_STORM_WAKES,The Storm Wakes
+ENC_CH16_ABIDING_GUARD,The Abiding Guard
+SKILL_HOOK_SWEEP,Hook Sweep
+SKILL_HOOK_DRAW,Hook Draw
+SKILL_HOOK_THRUST,Hook Thrust
+SKILL_CLOSE_RANKS,Close Ranks
+SKILL_STORM_BEARING,Storm Bearing
