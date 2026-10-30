@@ -559,6 +559,17 @@ MATERIALS["kit_iskarra_cladding"]["params"]["col_grime"] = hexc("#5E5A4C")
 MATERIALS["kit_windbreak_leaf"]["params"].update({"col_tint": "Color(1.75, 1.8, 1.6, 1)", "ao_in_albedo": 0.25,
                                                   "ao_strength": 0.6, "translucency": 0.7, "diffuse_wrap": 0.5})
 
+# ---- M4-A2P-1402 (appended by env-art): the Act II beauty pass (the Lead, 10-30) ------------------------------------------
+# Ossa Fen's mud read as black tarmac with white sky glare at eye height (the fen edge, Pell's mark):
+# the shader's default wet layer (roughness 0.12, normals 60 % flattened) mirrors. Wet mud glistens, it does not mirror.
+MATERIALS["kit_fen_mud"]["params"].update({"wet_roughness": 0.4, "wet_flatten": 0.2})
+# The level bank (kit_fen_bank) carries the land's painted damp (fen_zones LAND_WET) under the same mirror defaults: the
+# fen edge's whole floor glared. Damp earth, matte.
+MATERIALS["kit_fen_bank"]["params"].update({"wet_roughness": 0.6, "wet_flatten": 0.1})
+# The reed platforms read plastic green under the fen grade (lut_ch10_fen takes the greens further): cut reed, dried
+# toward straw-grey.
+STANDARD["kit_fen_reed"]["albedo_color"] = hexc("#8E8466")
+
 
 if __name__ == "__main__":
     sys.exit(main())
