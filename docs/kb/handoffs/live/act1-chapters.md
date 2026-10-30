@@ -906,7 +906,39 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
     tool tests that read these files.
 - MERGE-READY @ 8b76cb3d0
 
-### PC-QUEUE
+### The Lead's 13:48 list (10-30)
+- **Encounter pacing, the full tools suite:** I ran `run_tool_tests.py -j 4` with no tight timeout. It took 1739 s and
+  failed 8 units.
+  - One was mine: `test_causeway_gameplay`, because the causeway layout is generated. Its generator
+    `tools/causeway/build_causeway_gameplay.py` now keeps the 95–145 m band, and the test is green.
+  - The other 7 are red on a clean integration worktree too (origin/claude/new-session-mj8c3c @ this merge), so they
+    aren't from this branch. For their owners:
+    - `test_status_names`: dialogue.csv `DLG_NAME_KIRRU_SHELL_CARVER` says "Shell" (ADR 0202).
+    - `test_villagers`: ch13_ethren.dlg calls `paint_gilt_line`; the clip is `paint_gilt`.
+    - `test_avalanche_ram`: its "no clip_by_skill yet" line is stale since creatures' 9781d0fe2 (creatures).
+    - `test_palette_check`: haluna_h07's order_marble ΔE 0.042.
+    - `test_cutscene_sfx_files`: the Act II cue todo lists.
+    - `test_blender_builds` and `test_screenshots`: coverage and baselines.
+- **Rows 34 and 39:**
+  - Row 34's fix c33c39015 is on integration.
+  - Row 39's a063bbad3 is pushed on this branch but not on integration yet; it rides this MERGE-READY.
+  - The PC re-check of both is still queued (below).
+- **Ch14–16 mounts:** env-art-b mounted them in the zone scenes itself (M4-A2P-044/045/046): Water, Tide and Dressing
+  on the Lacquer Court (plus Ripples), the Open Sea, Hollowmere and the Pale Rim. There's no `_dressed` preview left to
+  copy.
+  - The Drowned Choir has no dressing yet: 046 is still `doing` at env-art-b. I mount it the same way once its preview
+    lands.
+  - `pale_rim_shallows` is still not in arenas.json, so Ch16's randoms keep waiting (LEAD-ASK above).
+  - **Checked after merging integration:** lacquer, open_sea, hollowmere, pale_rim (2/0 each), ch14 thread (5/0),
+    hero_field_snaps (2/0), zone_story (18/0), validate_data, taskboard --check.
+  - The first run was red until a `--import`: the merge brought a new class_name, and the cache was stale.
+- MERGE-READY @ b368c93a5
+- **BACKLOG EMPTY (10-30, after the 13:48 list).** Waiting on others:
+  - env-art-b: the Choir's dressing and `pale_rim_shallows`.
+  - M3-BPR-445 and M3-UI-1242.
+  - The PC re-check of rows 34 and 39.
+  - The 7 inherited tool reds, with the owners named above.
+
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
 - Row 39: on the real GPU, walk Ch9's road from RoadGate to the milestone (Asha and Toma follow) and look at the
