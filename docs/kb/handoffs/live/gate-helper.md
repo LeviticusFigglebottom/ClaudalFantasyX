@@ -36,3 +36,6 @@ and reports; it never edits game or test files.
   Result: gate-big27-lanes-b-result.md.
 - big28 @ e4a5e089 (HEAD checked): lanes B 50 files, 18:51-19:12 UTC (21 min). **All 50 green.**
   Result: gate-big28-lanes-b-result.md.
+- big29 @ 43af4e0c (HEAD checked): lanes B 22 files, 19:30-19:32 UTC (2 min). 21 green, 1 red:
+  test_cutscene_face_per_actor (1 failed: Sefir's shipped face poses, game/data/cutscene/sefir_face_poses.json, drifted
+  from the character source in `sad` and `tender`). Result: gate-big29-lanes-b-result.md.
