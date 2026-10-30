@@ -3,6 +3,27 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ 3d9476ea: the Lead's 19:25 item, the music of Act I's emotional beats as played** (cbc63b39 WIP, 3d9476ea).
+  - **Scenes checked:** each key scene's cues traced against the scene's timeline (`act1_playthrough.py`'s pacing, including the player-paced hold gates): the Prologue, the Ch1 storm (the rising, going under, the Hullgnaw), the Drownbell, the Ch4 wake, Corrow (the storm against the wind, the Reach, Virel's binding, the Ebbing) and the Act I end (the road out, the vigil, the act card, the end card).
+  - **Fine as they were:** the rising's loop gains its stem on cue; going_under fades 3 s before its own end; Hullgnaw, the Reach and the wake are loops; the storm against the wind is silent on purpose. The Drownbell is battle-driven (its stems on the Flood).
+  - **Fixed:**
+    - **The Ebbing (Ch9, "the most beautiful sequence in Act I") never peaked or resolved.** Its dance is player-paced (three hold gates), but the 114 s cue ran on fixed time, and at the scene's floor the letting-down silenced it ~44 s in, at bar 16. Its climax (bars 21–28) and its ending (35–40) were never heard.
+      - Reordered to the scene: the gathering is the intro; MEL_A with the dance full and the glass doubling lands on the long line (N11, the hero frame, ~12 s in); then MEL_B, MEL_A, the thinning and its own ending for a player who lingers.
+      - **New cue-level `release`** (music.json, AudioDirector.play_music): whenever a scene silences the Ebbing, `the_ebbing_release` plays instead of a fade. It is the last chord, the motes falling away twice and the Cantor's E held, unresolved, 9.5 s, sized to the next scene's `corrow_night`. No script change.
+      - The markers (M3-C09-06) moved with the form; test_music_markers OK.
+    - **The Act I end's vigil played the wrong cue.** The beat sheet says "hush_first_verse (piano coda, as the slice's end card)", but the script started the 80 s sung verse at its drone intro and faded it ~15 s in.
+      - The script now says `@music hush_coda` (a one-word id fix to ch09_the_road_out, beat sheet's intent; dlgc recompiled one scene).
+      - `hush_coda` is `resume` and `free`, so the end card's zone row picks the coda up where the vigil left it: one piece across the act break, never heard twice from the top.
+    - **Virel's binding (Ch8, Corrow) ran out ~4 s before its scene ended**, then 3 s more until the zone returned. The flues' F# and C# now hold on, 12 dB down, for 10 s (17.9 s, -15.98 LUFS, unchanged). Act I's as-played check no longer flags it.
+  - **Not changed (not key beats; noted):** Ch7's empty moorings (`oruvel_theme`, 17 s before the end) and Tavi (`tavi_kell`, 5 s) end before their scenes, then the zone returns. Say if they should hold too.
+  - **Checks:**
+    - Renders `--determinism` identical (the Ebbing, its release, virel_bound).
+    - validate_data 0; the Act I audit 0; mix pass 98 hand-overs, 0 over 3 LU; test_audio_loudness, test_audio_data and test_music_markers OK.
+    - Godot: music_release 4/0 (new), music_transitions 7/0, zone_return 9/0, audio_runtime 11/0, virel 6/0.
+    - **Skipped:** screenshots, Blender, coverage.
+  - **PC-QUEUE:** the Ebbing danced fast and slow (the peak on N11, the release at the letting-down); the vigil into the end card.
+- **Ch11–Ch13 as staged:** unchanged since faaa30a0 (Ch13 not staged yet).
+- **BACKLOG EMPTY (after 3d9476ea).**
 - **Re the Lead's 18:45 message:** the slice-path polish (18:24) was already done, MERGE-READY @ b97ac894 (below). **Kite work is parked:** the one KiteMapMenu hook from that pass stays (data only, nothing more planned).
 - **MERGE-READY @ faaa30a0: the Ch11–Ch13 cutscene cues as slice-polish stages them** (the 18:45 item).
   - **Staged so far** (integration + claude/m2-slice @ b710cfa9): Ch11's sunken_vey and lowlight, Ch12's cloudloom, keth_pass and quellan. Ch13 isn't staged yet.
