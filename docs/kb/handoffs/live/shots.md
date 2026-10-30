@@ -14,3 +14,8 @@ Contact sheets: BASE | OUT, 8 rows per sheet, for every non-PASS shot.
 - Seen: `Merge lead/gate-big24` at efe7fb10 (big23 included). big24 capture follows big22 on `lead/shots-big24`: shots whose scene's res:// closure touches a file changed in 19e7f01c..efe7fb10 (path refs, audio/docs excluded; about 400, driven by re-exported asha/fen_leech GLBs and kit changes), plus manifest-new/edited shots, plus every NO-BASELINE shot.
 - 19:15 UTC: 598/687. Restarted the remainder with 2 workers and HYMN_SHOT_TIMEOUT=1500. Every pass-1 timeout re-captured cleanly (npc_haluna_* 770–800 s, slice_beach_* 815–1075 s, slice_dock_night_yes 1075 s, ch01_* 590–725 s): slow scenes, not hangs. **Suggest the 600 s per-shot guard is too low for these on lavapipe**; the gate should set HYMN_SHOT_TIMEOUT≥1500 for full-manifest runs.
 - Seen: `Merge lead/gate-big26` at e605c9f4. The next capture is `lead/shots-big26`, covering 19e7f01c..e605c9f4 (big23–26): 435 path-affected shots plus every NO-BASELINE shot.
+- 21:25 UTC: big22 complete. `docs/kb/qa/gate-runs/big22/`: `out/` (687 PNGs), `compare.txt`, `sheets/` (44 sheets, 352 non-PASS rows), `README.md` (method, pass-1 timeouts, re-capture times).
+  - Drift is content-driven: villager face/hair/brow restyles, Asha re-export and clips, the Haluna kit, battle UI panels, the Pell/Sefir lineups and more. Every unchanged shot matched at RMSE 0.00000.
+  - NO-BASELINE: 184, of which 41 are flagged `pending_baseline` in shots.json; the other 143 have no baseline and no pending flag.
+
+SHOTS-DONE big22 @ 19e7f01c: 687 shots: 335 pass, 168 drift, 184 no-baseline, 0 failed-to-capture (13 + 7 pass-1 timeouts at 600 s, all re-captured at HYMN_SHOT_TIMEOUT=1500). Output on lead/shots-big22.
