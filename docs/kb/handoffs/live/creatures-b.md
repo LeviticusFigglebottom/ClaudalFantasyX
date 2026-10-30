@@ -919,3 +919,7 @@ farthest any bone moves on screen from the idle's first frame, and its peak spee
 - **BACKLOG EMPTY (19:40):** the Act I and Act II boss passes, the Act I feel pass (de6c131b) and the Vowbound summon
   passes are done, with every fix in my lane MERGE-READY. Next when they land: battle-presentation's Act II effects
   (view them on the bodies), the Abiding guard's actor, the flat-engine's row, and the Ch13+ boss encounters.
+
+## 2026-10-30 20:30: answer to the Lead's 20:26 (the Act I boss feel pass is DONE, logged at 19:10)
+MERGE-READY @ de6c131bf: the Act I boss feel pass. All six bosses measured at battle distance (the table at 19:10). The one weak tell, the Reach's hit, is fixed and tested; the stagger and phase tells all read.
+MERGE-READY @ 589c27676: the branch head (everything above).
