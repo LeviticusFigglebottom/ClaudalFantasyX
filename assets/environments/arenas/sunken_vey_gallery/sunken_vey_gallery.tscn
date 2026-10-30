@@ -1,0 +1,435 @@
+[gd_scene load_steps=26 format=3]
+
+[ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
+[ext_resource type="Shader" path="res://game/shaders/environment/env_sky_low_sun.gdshader" id="2_r"]
+[ext_resource type="Texture3D" path="res://assets/environments/arenas/lowlight_engine_hall/lut_ch11_vey.png" id="3_r"]
+[ext_resource type="Script" path="res://game/world/arenas/arena_sea.gd" id="4_r"]
+[ext_resource type="Script" path="res://game/world/water/wave_component.gd" id="5_r"]
+[ext_resource type="Script" path="res://game/world/water/wave_set.gd" id="6_r"]
+[ext_resource type="Shader" path="res://game/shaders/water/water_ocean.gdshader" id="7_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/sunken_vey_court.glb" id="8_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/sunken_vey_walks_w.glb" id="9_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/sunken_vey_walks_e.glb" id="10_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/sunken_vey_ground.glb" id="11_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/ruin_column_broken.glb" id="12_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/conduit_housing.glb" id="13_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/vey_arcade_bay.glb" id="14_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/ruin_wall_sunk.glb" id="15_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/strangler_fig.glb" id="16_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/lowlight_nave_bay_broken.glb" id="17_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/lowlight_nave_bay.glb" id="18_r"]
+
+[sub_resource type="ShaderMaterial" id="SkyMat"]
+shader = ExtResource("2_r")
+shader_parameter/azimuth_power = 2.0
+shader_parameter/band_energy = 0.5
+shader_parameter/band_height = 0.04
+shader_parameter/cloud_ambient_energy = 1.35
+shader_parameter/cloud_coverage = 0.95
+shader_parameter/cloud_height_m = 1800.0
+shader_parameter/cloud_horizon_fade = 0.08
+shader_parameter/cloud_opacity = 0.96
+shader_parameter/cloud_scale_m = 5000.0
+shader_parameter/cloud_softness = 0.22
+shader_parameter/cloud_stretch = Vector2(1, 2.5)
+shader_parameter/cloud_sun_energy = 2.6
+shader_parameter/cloud_wind_deg = 135.0
+shader_parameter/col_band = Color(1, 0.8235, 0.6588, 1)
+shader_parameter/col_cloud_lit = Color(0.9098, 0.7216, 0.5647, 1)
+shader_parameter/col_cloud_shadow = Color(0.2039, 0.251, 0.298, 1)
+shader_parameter/col_glow = Color(1, 0.8941, 0.8078, 1)
+shader_parameter/col_ground = Color(0.1647, 0.2118, 0.251, 1)
+shader_parameter/col_horizon_away = Color(0.6588, 0.7059, 0.7216, 1)
+shader_parameter/col_horizon_sun = Color(0.6588, 0.7059, 0.7216, 1)
+shader_parameter/col_zenith = Color(0.4784, 0.5333, 0.5882, 1)
+shader_parameter/glow_energy = 0.0
+shader_parameter/glow_power = 6.0
+shader_parameter/halo_energy = 0.0
+shader_parameter/halo_power = 200.0
+shader_parameter/horizon_curve = 0.25
+shader_parameter/mid_strength = 0.0
+shader_parameter/sky_energy = 0.9
+shader_parameter/sun_disc_energy = 0.0
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMat")
+process_mode = 2
+
+[sub_resource type="Environment" id="Env"]
+resource_name = "sunken_vey_gallery_ch11"
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 2
+ambient_light_color = Color(0.498, 0.6392, 0.6588, 1)
+ambient_light_energy = 0.7
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 0.75
+tonemap_agx_white = 12.0
+ssao_enabled = true
+ssao_radius = 1.2
+ssao_intensity = 1.2
+glow_enabled = true
+glow_intensity = 0.35
+glow_bloom = 0.03
+glow_hdr_threshold = 1.2
+fog_enabled = true
+fog_mode = 0
+fog_light_color = Color(0.5412, 0.6039, 0.5961, 1)
+fog_aerial_perspective = 0.4
+fog_density = 0.004
+fog_sky_affect = 0.1
+fog_height = 0.0
+fog_height_density = 0.0
+adjustment_enabled = true
+adjustment_color_correction = ExtResource("3_r")
+
+[sub_resource type="Resource" id="SeaWave0"]
+script = ExtResource("5_r")
+direction_deg = 20.0
+wavelength_m = 3.0
+amplitude_m = 0.004
+steepness = 0.05
+
+[sub_resource type="Resource" id="SeaWave1"]
+script = ExtResource("5_r")
+direction_deg = 140.0
+wavelength_m = 1.7
+amplitude_m = 0.002
+steepness = 0.05
+
+[sub_resource type="Resource" id="SeaWaves"]
+script = ExtResource("6_r")
+components = Array[ExtResource("5_r")]([SubResource("SeaWave0"), SubResource("SeaWave1")])
+amplitude_scale = 1.0
+
+[sub_resource type="ShaderMaterial" id="SeaMat"]
+resource_name = "arena_overcast_lagoon"
+render_priority = 0
+shader = ExtResource("7_r")
+shader_parameter/col_deep = Color(0.0549, 0.2902, 0.3333, 1)
+shader_parameter/col_scatter_shallow = Color(0.1216, 0.6392, 0.651, 1)
+shader_parameter/absorption_per_m = Vector3(2, 0.5, 0.42)
+shader_parameter/absorption_scale = 1.5
+shader_parameter/scatter_energy = 0.1
+shader_parameter/caustic_strength = 0.0
+shader_parameter/col_foam = Color(0.9333, 0.9647, 0.9569, 1)
+shader_parameter/col_sss = Color(0.2471, 0.8157, 0.7882, 1)
+shader_parameter/foam_crest_threshold = 0.9
+shader_parameter/roughness_far = 0.04
+shader_parameter/use_caustics = false
+shader_parameter/use_ssr = true
+shader_parameter/use_sss = false
+
+[node name="SunkenVeyGallery" type="Node3D"]
+script = ExtResource("1_r")
+arena_id = &"sunken_vey_gallery"
+sub_frame = &"ch11"
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.939693, 0.309976, -0.144544, -0, 0.422618, 0.906308, 0.34202, -0.851651, 0.397131, 0, 30, 0)
+light_color = Color(0.9529, 0.949, 1, 1)
+light_energy = 1.4
+shadow_enabled = true
+shadow_bias = 0.03
+shadow_normal_bias = 1.0
+shadow_blur = 1.0
+directional_shadow_mode = 2
+directional_shadow_split_1 = 0.06
+directional_shadow_split_2 = 0.18
+directional_shadow_split_3 = 0.45
+directional_shadow_max_distance = 120.0
+
+[node name="Sea" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0)
+script = ExtResource("4_r")
+wave_set = SubResource("SeaWaves")
+material = SubResource("SeaMat")
+sea_glow_energy = 0.0
+tide_line_y = -0.3
+
+[node name="Ground" parent="." instance=ExtResource("8_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.0, 0.0, 22.0)
+
+[node name="Dressing" type="Node3D" parent="."]
+
+[node name="sunken_vey_walks_w_1" parent="Dressing" instance=ExtResource("9_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -38, 0, 22)
+
+[node name="sunken_vey_walks_e_1" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -38, 0, 22)
+
+[node name="sunken_vey_ground_1" parent="Dressing" instance=ExtResource("11_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -38, 0, 22)
+
+[node name="ruin_column_broken_1" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(-0.955572, 0, 0.294758, 0, 1, 0, -0.294758, 0, -0.955572, -34.5, -0.7, 26.2)
+
+[node name="ruin_column_broken_2" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(-0.930302, 0, -0.366794, 0, 1, 0, 0.366794, 0, -0.930302, -27.5, -0.7, 27)
+
+[node name="ruin_column_broken_3" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(0.888745, 0, -0.458401, 0, 1, 0, 0.458401, 0, 0.888745, -20.5, -0.7, 26.2)
+
+[node name="ruin_column_broken_4" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(-0.9768, 0, 0.214156, 0, 1, 0, -0.214156, 0, -0.9768, -34.5, -0.7, 17.8)
+
+[node name="ruin_column_broken_5" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(-0.998786, 0, -0.0492507, 0, 1, 0, 0.0492507, 0, -0.998786, -27.5, -0.7, 17)
+
+[node name="ruin_column_broken_6" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(-0.853014, 0, -0.521888, 0, 1, 0, 0.521888, 0, -0.853014, -20.5, -0.7, 17.8)
+
+[node name="ruin_column_broken_7" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(0.399101, 0, 0.916907, 0, 1, 0, -0.916907, 0, 0.399101, -10.699, -0.7, 23.338)
+
+[node name="ruin_column_broken_8" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(-0.997202, 0, -0.0747525, 0, 1, 0, 0.0747525, 0, -0.997202, -4.567, -0.7, 19.868)
+
+[node name="ruin_column_broken_9" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(-0.685081, 0, -0.728467, 0, 1, 0, 0.728467, 0, -0.685081, -15.64, -0.7, 16.545)
+
+[node name="ruin_column_broken_10" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(0.266767, 0, -0.963761, 0, 1, 0, 0.963761, 0, 0.266767, -10.449, -0.7, 11.781)
+
+[node name="ruin_column_broken_11" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(0.830168, 0, 0.557513, 0, 1, 0, -0.557513, 0, 0.830168, -0.8, -0.7, 10.5)
+
+[node name="ruin_column_broken_12" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(-0.329262, 0, 0.944239, 0, 1, 0, -0.944239, 0, -0.329262, -9.2, -0.7, 10.5)
+
+[node name="ruin_column_broken_13" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(0.842067, 0, 0.539373, 0, 1, 0, -0.539373, 0, 0.842067, 4.2, -0.7, -11.5)
+
+[node name="ruin_column_broken_14" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(0.366046, 0, -0.930597, 0, 1, 0, 0.930597, 0, 0.366046, 5, -0.7, -18.5)
+
+[node name="ruin_column_broken_15" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(-0.34795, 0, -0.937513, 0, 1, 0, 0.937513, 0, -0.34795, 4.2, -0.7, -25.5)
+
+[node name="ruin_column_broken_16" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(0.965577, 0, 0.260117, 0, 1, 0, -0.260117, 0, 0.965577, -4.2, -0.7, -11.5)
+
+[node name="ruin_column_broken_17" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(0.993748, 0, -0.111642, 0, 1, 0, 0.111642, 0, 0.993748, -5, -0.7, -18.5)
+
+[node name="ruin_column_broken_18" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(0.975584, 0, -0.219625, 0, 1, 0, 0.219625, 0, 0.975584, -4.2, -0.7, -25.5)
+
+[node name="ruin_column_broken_19" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(-0.567671, 0, -0.823255, 0, 1, 0, 0.823255, 0, -0.567671, 10.377, -0.7, 4.923)
+
+[node name="ruin_column_broken_20" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(-0.747763, 0, -0.663965, 0, 1, 0, 0.663965, 0, -0.747763, 16.974, -0.7, 7.397)
+
+[node name="ruin_column_broken_21" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(0.549052, 0, 0.835788, 0, 1, 0, -0.835788, 0, 0.549052, 23.959, -0.7, 8.319)
+
+[node name="ruin_column_broken_22" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(0.995562, 0, 0.0941083, 0, 1, 0, -0.0941083, 0, 0.995562, 30.556, -0.7, 10.793)
+
+[node name="ruin_column_broken_23" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(-0.984143, 0, -0.177377, 0, 1, 0, 0.177377, 0, -0.984143, 12.414, -0.7, -3.226)
+
+[node name="ruin_column_broken_24" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(0.930814, 0, 0.365494, 0, 1, 0, -0.365494, 0, 0.930814, 19.399, -0.7, -2.304)
+
+[node name="ruin_column_broken_25" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(0.366907, 0, 0.930258, 0, 1, 0, -0.930258, 0, 0.366907, 25.996, -0.7, 0.17)
+
+[node name="ruin_column_broken_26" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(0.0506104, 0, 0.998718, 0, 1, 0, -0.998718, 0, 0.0506104, 32.981, -0.7, 1.091)
+
+[node name="ruin_column_broken_27" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(0.982189, 0, 0.187896, 0, 1, 0, -0.187896, 0, 0.982189, 35.5, -0.7, 10.2)
+
+[node name="ruin_column_broken_28" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(-0.974433, 0, 0.224679, 0, 1, 0, -0.224679, 0, -0.974433, 42.5, -0.7, 11)
+
+[node name="ruin_column_broken_29" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(-0.930998, 0, 0.365023, 0, 1, 0, -0.365023, 0, -0.930998, 49.5, -0.7, 10.2)
+
+[node name="ruin_column_broken_30" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(0.548643, 0, -0.836056, 0, 1, 0, 0.836056, 0, 0.548643, 35.5, -0.7, 1.8)
+
+[node name="ruin_column_broken_31" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(-0.992789, 0, -0.119877, 0, 1, 0, 0.119877, 0, -0.992789, 42.5, -0.7, 1)
+
+[node name="ruin_column_broken_32" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(-0.636011, 0, -0.77168, 0, 1, 0, 0.77168, 0, -0.636011, 49.5, -0.7, 1.8)
+
+[node name="conduit_housing_1" parent="Dressing" instance=ExtResource("13_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -4, 1.35, -7)
+
+[node name="vey_arcade_bay_1" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -38, -0.3, 31.5)
+
+[node name="vey_arcade_bay_2" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -32, -0.3, 31.5)
+
+[node name="vey_arcade_bay_3" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -26, -0.3, 31.5)
+
+[node name="vey_arcade_bay_4" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -20, -0.3, 31.5)
+
+[node name="vey_arcade_bay_5" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -14, -0.3, 31.5)
+
+[node name="vey_arcade_bay_6" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -8, -0.3, 31.5)
+
+[node name="vey_arcade_bay_7" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -2, -0.3, 31.5)
+
+[node name="vey_arcade_bay_8" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 4, -0.3, 31.5)
+
+[node name="vey_arcade_bay_9" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -35, -0.3, 11.5)
+
+[node name="vey_arcade_bay_10" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -29, -0.3, 11.5)
+
+[node name="vey_arcade_bay_11" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -23, -0.3, 11.5)
+
+[node name="vey_arcade_bay_12" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -10.6, -0.3, -4.5)
+
+[node name="vey_arcade_bay_13" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -10.6, -0.3, 1.5)
+
+[node name="vey_arcade_bay_14" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -10, -0.3, -10.6)
+
+[node name="vey_arcade_bay_15" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 10.2, -0.3, -10.6)
+
+[node name="vey_arcade_bay_16" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 4.2, -0.3, 10.6)
+
+[node name="vey_arcade_bay_17" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 16, -0.3, -10)
+
+[node name="vey_arcade_bay_18" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 22, -0.3, -10)
+
+[node name="vey_arcade_bay_19" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 28, -0.3, -10)
+
+[node name="vey_arcade_bay_20" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 34, -0.3, -10)
+
+[node name="vey_arcade_bay_21" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 25, -0.3, 17)
+
+[node name="vey_arcade_bay_22" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 31, -0.3, 17)
+
+[node name="vey_arcade_bay_23" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 37, -0.3, 17)
+
+[node name="vey_arcade_bay_24" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 43, -0.3, 17)
+
+[node name="vey_arcade_bay_25" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 49, -0.3, 17)
+
+[node name="vey_arcade_bay_26" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 40, -0.3, -5.5)
+
+[node name="vey_arcade_bay_27" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 46, -0.3, -5.5)
+
+[node name="vey_arcade_bay_28" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 52, -0.3, -5.5)
+
+[node name="vey_arcade_bay_29" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -11, -0.3, -20)
+
+[node name="vey_arcade_bay_30" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, 11, -0.3, -22)
+
+[node name="vey_arcade_bay_31" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, -0.3, -37.2)
+
+[node name="ruin_wall_sunk_1" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, -1.6, -36.4)
+
+[node name="strangler_fig_1" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(1.21249, 0, 0.0350117, 0, 1.213, 0, -0.0350117, 0, 1.21249, -23.55, -0.3, 31.5)
+
+[node name="strangler_fig_2" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-1.06913, 0, 0.709255, 0, 1.283, 0, -0.709255, 0, -1.06913, -5.55, -0.3, 31.5)
+
+[node name="strangler_fig_3" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.326719, 0, -1.20344, 0, 1.247, 0, 1.20344, 0, -0.326719, -31.45, -0.3, 11.5)
+
+[node name="strangler_fig_4" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-1.20006, 0, -0.0973554, 0, 1.204, 0, 0.0973554, 0, -1.20006, -10.6, -0.3, -2.05)
+
+[node name="strangler_fig_5" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-1.07552, 0, 0.77729, 0, 1.327, 0, -0.77729, 0, -1.07552, 7.75, -0.3, -10.6)
+
+[node name="strangler_fig_6" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(1.0985, 0, 0.490416, 0, 1.203, 0, -0.490416, 0, 1.0985, 30.45, -0.3, -10)
+
+[node name="strangler_fig_7" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(0.304374, 0, 1.30395, 0, 1.339, 0, -1.30395, 0, 0.304374, 34.55, -0.3, 17)
+
+[node name="strangler_fig_8" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-1.32312, 0, 0.252518, 0, 1.347, 0, -0.252518, 0, -1.32312, -11, -0.3, -17.55)
+
+[node name="strangler_fig_9" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-1.12524, 0, 0.620527, 0, 1.285, 0, -0.620527, 0, -1.12524, 2.45, -0.3, -37.2)
+
+[node name="strangler_fig_10" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(1.04225, 0, 0.486011, 0, 1.15, 0, -0.486011, 0, 1.04225, 0, -0.3, -35.4)
+
+[node name="strangler_fig_11" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.995858, 0, 0.835624, 0, 1.3, 0, -0.835624, 0, -0.995858, -2.45, -0.3, -37.2)
+
+[node name="strangler_fig_12" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(0.248066, 0, 0.739502, 0, 0.78, 0, -0.739502, 0, 0.248066, -20.5, -0.7, 26.2)
+
+[node name="strangler_fig_13" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.354513, 0, -0.694781, 0, 0.78, 0, 0.694781, 0, -0.354513, -10.449, -0.7, 11.781)
+
+[node name="strangler_fig_14" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.405004, 0, 0.666612, 0, 0.78, 0, -0.666612, 0, -0.405004, 4.2, -0.7, -25.5)
+
+[node name="strangler_fig_15" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.292635, 0, 0.723025, 0, 0.78, 0, -0.723025, 0, -0.292635, 25.996, -0.7, 0.17)
+
+[node name="strangler_fig_16" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(0.776469, 0, 0.0741363, 0, 0.78, 0, -0.0741363, 0, 0.776469, 42.5, -0.7, 11)
+
+[node name="lowlight_nave_bay_broken_1" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, 63, 0.15, 6)
+
+[node name="lowlight_nave_bay_1" parent="Dressing" instance=ExtResource("18_r")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, 71, 0.15, 6)
+
+[node name="CameraHints" type="Node3D" parent="."]
+
+[node name="wide_high" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.995893, 0.0339417, -0.0839326, -0, 0.927066, 0.374899, 0.0905357, -0.373359, 0.923258, -1.5, 7.5, 13.5)
+
+[node name="party_side" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.575779, -0.0656933, 0.814962, 0, 0.996767, 0.0803484, -0.817606, -0.0462629, 0.573917, 5.6, 1.7, 4.5)
+
+[node name="foe_side" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.490844, 0.0745636, -0.868051, -0, 0.996331, 0.0855825, 0.871248, -0.0420076, 0.489043, -5.6, 1.7, 4)
+
+[node name="the_galleries" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.938343, 0.0017073, 0.345701, 0, 0.999988, -0.00493859, -0.345705, 0.00463409, 0.938332, 3, 1.4, 5)
+
+[node name="the_lagoon" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(-0.939793, 0.03629, -0.339811, 0, 0.994346, 0.106191, 0.341743, 0.0997975, -0.93448, -2, 2.2, -2)
+
+[node name="BossAnchor" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.0, 0.0, -2.5)

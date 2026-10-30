@@ -541,6 +541,31 @@ func test_a_reflected_spell_floats_reflected_over_the_reflector() -> void:
 	_free()
 
 
+func test_a_drain_heals_its_user_and_a_mended_part_is_named() -> void:
+	# Act II hud.md sections 2 and 3: the fen leech's drain (M4-CMB-1001) and a conduit crawler's repair (M4-A2P-022).
+	ctl.run_script(BattleController.SCRIPT_STATUSES)
+	ctl.show_damage_numbers = true
+	ctl.hud.recent_numbers.clear()
+	var r := ActionResult.new()
+	r.actor_id = &"lantern_eel#2"
+	r.skill_id = &"ember"
+	r.hits = (
+		[
+			{"target_id": &"rhen", "hit": true, "amount": 12, "crit": false, "drained": 6},
+			{"target_id": &"lantern_eel#2", "hit": true, "amount": 0, "crit": false, "part_restored": &"toll_gather"},
+		]
+		as Array[Dictionary]
+	)
+	ctl.floats.show_hits(r, false)
+	var nums := ctl.hud.recent_numbers
+	assert_true(nums.any(func(n: Dictionary) -> bool: return n["kind"] == DamageNumber.KIND_HEAL and n["text"] == "6"))
+	assert_true(nums.any(func(n: Dictionary) -> bool: return n["text"] == tr("HUD_FLOAT_DRAINED")))
+	var part := tr(str(ctl.engine.db.skill(&"toll_gather").get("name_key", "")))
+	var mended := tr("HUD_FLOAT_REPAIRED_FMT").format({"part": part})
+	assert_true(nums.any(func(n: Dictionary) -> bool: return n["text"] == mended), "the mended part is named")
+	_free()
+
+
 func test_a_heal_on_a_zombie_is_flagged_before_and_after() -> void:
 	_start_fixture(&"player_preview", {"rhen": {"statuses": [{"id": "zombie", "duration": -1}]}})
 	ctl.show_damage_numbers = true

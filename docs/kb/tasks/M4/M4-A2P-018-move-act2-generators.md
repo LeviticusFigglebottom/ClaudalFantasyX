@@ -2,8 +2,7 @@
 id: M4-A2P-018
 title: "Move the Act II greybox and flow generators from tools/act1/ to tools/act2/"
 role: cinematics
-status: blocked
-blocked-by: ADR 0203
+status: todo
 owner_session: ""
 depends_on: [M4-C14-02]
 reviewer: qa

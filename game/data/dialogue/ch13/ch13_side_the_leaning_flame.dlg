@@ -1,18 +1,18 @@
-// Ch13 side errand (optional; requires ch13_wedding_announced). One of the six Lamplighters for the wedding
+// Ch13 side errand (optional; requires ch13_wedding_announced). One of the six lamp-bearers for the wedding
 // (ch14_bark_lamplighter) can't keep his flame from leaning. Liss fixes the wick-seat in a breath; he is overjoyed. In
 // Ch14 he carries it in (the bark reads this flag). Sets ch13_fixed_lamplighter_lamp.
 title: ch13_side_the_leaning_flame
 location: ch13/ansedra
 ---
 <<if $ch13_fixed_lamplighter_lamp>>
-    Townsfolk as "Young Lamplighter" [smile]: Straight as a mast. I've walked it twenty times. Thank you. #line:ch13_flame_001
+    Townsfolk as "Young lamp-bearer" [smile]: Straight as a mast. I've walked it twenty times. Thank you. #line:ch13_flame_001
 <<else>>
-    Townsfolk as "Young Lamplighter" [worried]: It leans. Every time I walk, it leans. Six of us carry them in, and mine's the one that leans. #line:ch13_flame_002 #long
+    Townsfolk as "Young lamp-bearer" [worried]: It leans. Every time I walk, it leans. Six of us carry them in, and mine's the one that leans. #line:ch13_flame_002 #long
     Liss [neutral]: Give it here. #line:ch13_flame_003
     Liss [neutral]: Wick-seat's cracked. You're not walking crooked. The lamp is. There. #line:ch13_flame_004
-    Townsfolk as "Young Lamplighter" [surprised]: It's straight. It's straight! #line:ch13_flame_005
+    Townsfolk as "Young lamp-bearer" [surprised]: It's straight. It's straight! #line:ch13_flame_005
     Liss [soft_smile]: Don't tell anyone a Saltwright did it. #line:ch13_flame_006
-    Townsfolk as "Young Lamplighter" [smile]: I'll tell everyone. #line:ch13_flame_007
+    Townsfolk as "Young lamp-bearer" [smile]: I'll tell everyone. #line:ch13_flame_007
     <<set $ch13_fixed_lamplighter_lamp = true>>
 <<endif>>
 ===

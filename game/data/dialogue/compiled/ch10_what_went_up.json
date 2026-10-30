@@ -16,12 +16,12 @@
     {"op": "line", "id": "ch10_up_001", "key": "DLG_CH10_UP_001", "speaker": "rhen", "emotion": "surprised", "voice": "", "src": 14},
     {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 15},
     {"op": "line", "id": "ch10_up_002", "key": "DLG_CH10_UP_002", "speaker": "ysolde", "emotion": "cold", "voice": "", "src": 16},
-    {"op": "cue", "cue": "mark", "args": ["pell", "root_walk_exit", "walk"], "kwargs": {}, "src": 17},
     {"op": "line", "id": "ch10_up_003", "key": "DLG_CH10_UP_003", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 18},
-    {"op": "cue", "cue": "music", "args": ["reedhollow"], "kwargs": {"fade": 4.0}, "src": 19},
-    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 20},
-    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 21},
-    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 22}
+    {"op": "cue", "cue": "mark", "args": ["pell", "root_walk_exit", "walk"], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "music", "args": ["reedhollow"], "kwargs": {"fade": 4.0}, "src": 20},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 23}
    ]
   }
  }

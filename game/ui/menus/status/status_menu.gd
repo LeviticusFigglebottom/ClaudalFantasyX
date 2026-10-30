@@ -230,6 +230,7 @@ func _row_cells(at: Vector2, widths: Array, h: float, texts: Array, roles: Array
 		var l := _add_label(variation, Rect2(x, at.y, w, h), str(texts[i]))
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT if i == 0 else HORIZONTAL_ALIGNMENT_RIGHT
 		l.add_theme_color_override(&"font_color", _c(StringName(str(roles[i]))))
+		HudLayout.fit_label(l, w)  # the Act I UI pass: at 130 % "Lattice" ran into "Base"
 		x += w
 
 

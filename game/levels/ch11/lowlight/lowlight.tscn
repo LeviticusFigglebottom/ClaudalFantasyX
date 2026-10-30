@@ -1,7 +1,18 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://game/levels/ch11/ch11_zone.gd" id="1_zone"]
-[ext_resource type="Script" path="res://game/levels/act1/zone_cast.gd" id="90_cast"]
+[ext_resource type="Script" path="res://game/levels/act1/zone_kit_dressing.gd" id="2_dressing"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/weathering_tide.gd" id="3_tide"]
+[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="4_water"]
+[ext_resource type="Resource" path="res://game/levels/ch11/lowlight/lowlight_waves.tres" id="5_waves"]
+[ext_resource type="Material" path="res://game/levels/ch11/lowlight/lowlight_water_material.tres" id="6_mat"]
+[ext_resource type="Script" path="res://game/levels/act1/zone_cast.gd" id="7_cast"]
+
+[sub_resource type="PlaneMesh" id="WaterPlane"]
+size = Vector2(40.0, 20.0)
+subdivide_width = 80
+subdivide_depth = 40
+center_offset = Vector3(52.0, 0, 4.0)
 
 [node name="Lowlight" type="Node3D"]
 script = ExtResource("1_zone")
@@ -9,4 +20,23 @@ location_id = &"ch11/lowlight"
 layout_path = "res://game/levels/ch11/lowlight/lowlight_layout.json"
 
 [node name="Cast" type="Node" parent="."]
-script = ExtResource("90_cast")
+script = ExtResource("7_cast")
+
+[node name="Water" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.05, 0)
+script = ExtResource("4_water")
+publishes_water_level = true
+wave_set = ExtResource("5_waves")
+material = ExtResource("6_mat")
+surface_mesh = SubResource("WaterPlane")
+
+[node name="Tide" type="Node" parent="." node_paths=PackedStringArray("water")]
+script = ExtResource("3_tide")
+tide_line_y = -2.05
+water_height_y = -2.05
+water = NodePath("../Water")
+
+[node name="Dressing" type="Node3D" parent="." node_paths=PackedStringArray("tide")]
+script = ExtResource("2_dressing")
+layout_path = "res://game/levels/ch11/lowlight/lowlight_dressing.json"
+tide = NodePath("../Tide")

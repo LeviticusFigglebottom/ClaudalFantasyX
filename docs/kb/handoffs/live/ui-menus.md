@@ -1022,3 +1022,80 @@ MERGE-READY @ 8287ca8b: the portraits re-baked on big20's models, and the Act II
       `{"inn": "ansedra_guest"}`, as Quellan's inn does.
   - **Portraits:** Malcor Venn and the three Abiding guards aren't in big21 yet; I'll bake them as soon as they land.
 MERGE-READY @ 92151e255: big21 merged; the Bound section; Act II inns.
+- 2026-10-30 14:20, **Act II battle floats** (a4336326a), on Combat's new hit keys:
+  - a drain (`drained`, the fen leech, M4-CMB-1001) puts its heal number over the user, with "Drained";
+  - a crawler's repair (`part_restored`, M4-A2P-022) floats "{part} mended" over the boss, the part named by its charge
+    skill.
+  Combat already built the rooted swap reason ("held by the roots") and the element cycle's timeline, so hud.md's
+  rooted and cycle items are done on their side.
+  test_battle_controller 33/0 (a new drain and repair test), battle_choreo 28/0, battle_reduced 5/0, pseudo_loc 26/0.
+  No committed shot shows them.
+MERGE-READY @ a4336326a: Act II battle floats.
+- 2026-10-30 14:40, **PC pass 5: row 67 FIXED.** Every entry is under 1 s hidden, and Brine Shoals ran 5/5 fresh with no
+  hang. No pass 5 row is routed to ui-menus. I merged the integration branch's 15d80358c (the Lead's log).
+- **BACKLOG EMPTY** for what ui-menus can build without other tracks:
+  - **Portraits:** Malcor Venn's model is still only on claude/characters, and the Abiding guards are on no branch.
+  - **hud.md:**
+    - buff strip, darkness and tide pulse: no engine support yet (Combat);
+    - Pell's Listen and his absence: Pell's battle row;
+    - a Read-panel ability list (drain and repair tags) would be a new feature, which I'm leaving until Combat's kit
+      rows settle.
+  - **Codex:** Narrative now writes the Act II entries (its people and world sets landed in big20 and big21).
+  - **The reader's records:** Narrative.
+- 2026-10-30 16:30, **the Lead's 10:47 item: the as-played Act I UI pass** (0347aa74 plus this branch).
+  - **How:**
+    - Twenty UI shots at 2560×1440 with the largest text (130%, from a pre-seeded settings.cfg; the manifest swapped
+      temporarily and restored). All viewed:
+      - battle: HUD, swap, Read, victory;
+      - field: menu, codex, prompt, tip, dialogue;
+      - title, settings, save, shop, bestiary, equip, items, status, formation, Lattice, Reefball.
+    - test_pseudo_loc_screens (it fit-probes every screen at 100% and 130%), plus a new English mode
+      (`HYMN_PSEUDO_OFF=1`).
+    - The input-parity suite (focus order on keys, pad and mouse).
+    - A new contrast test.
+  - **Found and fixed:**
+    - **Field menu at 130%:** the cards' names sat on their HP rows, the save hint sat on the date, and the objective
+      ran into the help line.
+      - The card rows and the Last saved and Objective blocks now grow with the text size; at 100% nothing moves.
+      - The portrait gives up what the card text needs.
+      - When the objective's lines need the room, the save hint steps aside, and then the objective shrinks to 80%
+        at most.
+    - **Shop at 130%:** a two-line refusal ran into the help line. The line about the row and the status now share
+      the column above the help.
+    - **Status table:** at 130% the stat names and heads now fit their columns ("Magic Defense", "Lattice").
+    - **Contrast** (tools/tests/test_ui_contrast.py, WCAG 2): every text colour is at least 4.5:1 on the page panels
+      in both palettes, and at least 3:1 (bold large text) on the raised cursor row.
+      - The colorblind `danger` (#D15E1F) was 4.25 on the deep panel. It is now #C76E10: 4.52:1, and still
+        distinct (0.171 Oklab worst-case under deuteranopia and protanopia; test_colorblind_palette).
+      - docs/kb/tech/ui.md and test_ui_settings are updated.
+  - **Checked and clean:**
+    - **Pillar 4:** the timeline always shows who acts now and next. Every command row shows its cost (MP, rank,
+      escape odds, "No time"). Every leaf command previews where the actor lands ("acts again in 5 turns").
+    - **English at 130%:** no text is cut anywhere. Only Reefball's panels grow taller than their boxes, without
+      overlapping.
+    - **Focus order:** input_parity 65/0.
+    - **Pseudo-loc:** it still cuts some text with an ellipsis (mostly Reefball's Read and Drop columns). These are
+      localisation-length warnings with nothing cut in English, so I left them.
+  - **Tests:** field_menu 29/0 (a new 130% overlap test), party_card 3/0, shop 28/0, inn 11/0, status_menu 8/0,
+    pseudo_loc_screens 17/0, aspect 18/0, colorblind 2/0, ui_settings 11/0, input_parity 65/0; tools: ui_contrast OK;
+    validate_data 0/0; lint and format clean.
+  - **Drift:** the 100% field-menu shots move by about 1 px in the cards' text (and their baseline already predated
+    Toma's portrait), and battle_statuses_colorblind changes with the new orange.
+MERGE-READY @ 4edf33c21: the as-played Act I UI pass.
+- 2026-10-30 17:40, **the Lead's 11:47 note.** I merged the integration branch (ADR 0206: British spelling).
+  - **ADR 0206:** my new strings are British. The one older American string I own (`STATUS_MENU_ARMOR`, "Armor") is in
+    act2-plan's FAST-TRACK, so I left it to avoid a clash.
+  - **Focus order:** done in the 10:47 pass (input_parity 65/0, keys, pad and mouse).
+  - **Battle at every text size** (8132685db):
+    - **Method:** the HUD, swap and Read shots rendered at 115% and 130%, through the fixtures' `ui_settings` (data
+      restored afterwards). All viewed.
+    - **"Acting now" at 130%:** the head chip read "Acting …", and names like "Gull Harrier" lost their ends. Both now
+      fit their width (down to 80%) before an ellipsis cuts them.
+    - **Party rows at 130%:** the HP and MP numbers sat on their gauges. Above 100% a number's bottom now stays on its
+      gauge's top. At 100% nothing moves; I checked against the baseline, and the party panel is pixel-identical.
+    - **Costs:** every command's cost shows at both sizes (MP, rank, escape odds, "No time"), and so does the help
+      line's outcome ("Rhen acts again in 5 turns").
+    - **The Read panel at 130%** grows over the party panel's lower edge. It is modal, its own text is whole, and the
+      battle waits while it is open, so I left it.
+    - **Tests:** battle_controller 33/0, timeline 30/0, pseudo_loc_screens 17/0.
+MERGE-READY @ 8132685db: the battle text-size fixes.

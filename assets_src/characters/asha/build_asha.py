@@ -192,6 +192,7 @@ def unwrap_faces(ob: bpy.types.Object, mats: set[str], seams: set | None = None,
 
 
 HAND_FOOT_RATIO = 0.3  # the donor's hands and feet are dense (~10.7k tris); cut for the LOD0 budget
+UNDER_LEG_SHARE = 0.6  # GPU QA row 56 (pass 5): the underskirt hem's share of the legs' own weights
 UNDER_SKIRT_RATIO = 0.10  # M1-CHR-15: the legs and hips kept whole under the skirts, cut for the LOD0 budget (0.25 until the denser skirt of the big17 review)
 
 
@@ -771,7 +772,15 @@ def main() -> int:
         if inner.any():
             outer = np.array(is_outer, bool)
             idx = nearest_index(Pc[inner], Pc[outer])
-            Wc[inner] = Wc[np.nonzero(outer)[0][idx]]
+            W_out = Wc[np.nonzero(outer)[0][idx]]
+            # GPU QA row 56 (pass 5): copied whole, the underskirt was one stiff tube round both legs in the run;
+            # below the knee it leans toward the leg-following weights (UNDER_LEG_SHARE at the hem), so its hem
+            # tracks each leg's stride under the outer skirt without the old wedge
+            pos = np.searchsorted(np.nonzero(hang)[0], np.nonzero(inner)[0])
+            z_knee = float(bone_head(skel, "DEF-shin.L")[2])
+            z_in = Pc[inner, 2]
+            a = UNDER_LEG_SHARE * np.clip((z_knee - z_in) / max(z_knee - float(z_in.min()), 1e-6), 0.0, 1.0)
+            Wc[inner] = (1.0 - a[:, None]) * W_out + a[:, None] * W_legs[pos]
         ob = part_object(opaque)
         apply_weights(ob, Wc, wnames, skel)
         garment_objs.append(ob)

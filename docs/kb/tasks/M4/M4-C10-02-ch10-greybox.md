@@ -2,8 +2,7 @@
 id: M4-C10-02
 title: Ch10 "Fen of the Kirru" greybox, the first of Act II (ch10/ossa_fen, ch10/reedhollow) before the beat sheet
 role: cinematics
-status: blocked
-blocked-by: ADR 0041
+status: todo
 owner_session: act1-chapters (claude/act1-chapters)
 depends_on: []
 reviewer: environment
