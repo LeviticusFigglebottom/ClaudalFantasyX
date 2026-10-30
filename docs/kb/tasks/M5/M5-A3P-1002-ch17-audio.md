@@ -17,7 +17,7 @@ drafts README "Music cues the drafts name".
   - `the_choice`: it never resolves;
   - `kite_first_lamp`.
   - `dace_ledger` already exists. It stops on the blank page, and the stop is the cue.
-- **Sound:** `sea_flat_lap` (B01: a flat sea gone wrong). `current_song` and `lamp_seat` exist.
+- **Sound:** `sea_flat_lap` (B01: a flat sea gone wrong). `current_song` and `lamp_seat` exist (assets/audio/sfx).
 
 ## Acceptance criteria
 - [ ] The three music cues and the sound are in `game/data/audio`, with PROVENANCE rows.

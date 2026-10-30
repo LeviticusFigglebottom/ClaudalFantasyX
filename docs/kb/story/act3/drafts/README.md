@@ -10,7 +10,7 @@ call on length: drafts stay lean; the expansion to the §8 budgets happens when 
 production stays paused (ADR 0203/0205). Nothing under `game/` reads them: dlgc compiles only
 `game/data/dialogue/`, and no flag, loc row, shot, mark or music cue they name has been added to the game.
 
-**In production (ADR 0207):** Ch17 moved into the game on 2026-10-30 (M5-A3P-1000): `game/data/dialogue/ch17/`, its flags in `flags.tres`. The Act III rules now live in `tools/act3_rules.py`, shared by this checker and `tools/tests/test_act3_rules.py` (which holds the production scripts to them). The `ch17/` rows below are kept as the record; the files are no longer here.
+**In production (ADR 0207):** Ch17 (M5-A3P-1000) and Ch18 (M5-A3P-1003) moved into the game on 2026-10-30: `game/data/dialogue/ch17/` and `ch18/`, their flags in `flags.tres`. The Act III rules now live in `tools/act3_rules.py`, shared by this checker and `tools/tests/test_act3_rules.py` (which holds the production scripts to them). The `ch17/` and `ch18/` rows below are kept as the record; the files are no longer here.
 
 They use the Act II format: a header comment with the beat, the sheet section and the rules; one scene per file, whose
 first node title is the file name; line ids `chNN_<scene>_NNN`; British spelling with Oxford -ize (ADR 0206).

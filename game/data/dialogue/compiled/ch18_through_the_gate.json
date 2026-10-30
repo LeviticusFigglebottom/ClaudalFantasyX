@@ -1,0 +1,50 @@
+{
+ "format": 1,
+ "scene": "ch18_through_the_gate",
+ "source": "game/data/dialogue/ch18/ch18_through_the_gate.dlg",
+ "start": "ch18_through_the_gate",
+ "nodes": {
+  "ch18_through_the_gate": {
+   "headers": {"location": "ch10/reedhollow"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "camera", "args": ["K05"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "music", "args": ["reedhollow_return"], "kwargs": {"fade": 2.0}, "src": 12},
+    {"op": "cue", "cue": "mark", "args": ["pell", "pell_gate", "walk"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "mark", "args": ["pell", "clutch", "walk"], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "anim", "args": ["kirru", "turn_to", "pell"], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "camera", "args": ["K06"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "mark", "args": ["owa", "clutch_stone", "walk"], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 20},
+    {"op": "if_not", "cond": ["flag", "ch10_pell_kept_out"], "to": 14, "src": 21},
+    {"op": "line", "id": "ch18_gate_001", "key": "DLG_CH18_GATE_001", "speaker": "owa", "emotion": "neutral", "voice": "", "src": 22, "name_key": "DLG_NAME_OWA_THE_ELDEST"},
+    {"op": "goto", "to": 14, "src": 21},
+    {"op": "line", "id": "ch18_gate_002", "key": "DLG_CH18_GATE_002", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 24},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 25},
+    {"op": "line", "id": "ch18_gate_003", "key": "DLG_CH18_GATE_003", "speaker": "owa", "emotion": "neutral", "voice": "", "src": 26, "name_key": "DLG_NAME_OWA_THE_ELDEST"},
+    {"op": "if_not", "cond": ["flag", "ch11_pell_knelt"], "to": 21, "src": 27},
+    {"op": "line", "id": "ch18_gate_004", "key": "DLG_CH18_GATE_004", "speaker": "owa", "emotion": "sad", "voice": "", "src": 28, "name_key": "DLG_NAME_OWA_THE_ELDEST"},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 29},
+    {"op": "goto", "to": 21, "src": 27},
+    {"op": "cue", "cue": "camera", "args": ["K07"], "kwargs": {}, "src": 31},
+    {"op": "cue", "cue": "mark", "args": ["kirru", "clutch_stone_b", "walk"], "kwargs": {}, "src": 32},
+    {"op": "line", "id": "ch18_gate_005", "key": "DLG_CH18_GATE_005", "speaker": "kirru", "emotion": "neutral", "voice": "", "src": 33, "name_key": "DLG_NAME_KIRRU_NAME_CARVER"},
+    {"op": "cue", "cue": "anim", "args": ["kirru", "carve", "name_shell"], "kwargs": {}, "src": 34},
+    {"op": "cue", "cue": "wait", "args": [5.0], "kwargs": {}, "src": 35},
+    {"op": "cue", "cue": "camera", "args": ["K08"], "kwargs": {}, "src": 36},
+    {"op": "cue", "cue": "anim", "args": ["pell", "take", "name_shell"], "kwargs": {}, "src": 37},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 38},
+    {"op": "cue", "cue": "anim", "args": ["pell", "throw", "old_shell"], "kwargs": {}, "src": 39},
+    {"op": "cue", "cue": "anim", "args": ["pell", "turn_back", "lagoon"], "kwargs": {}, "src": 40},
+    {"op": "cue", "cue": "sfx", "args": ["shell_into_water"], "kwargs": {}, "src": 41},
+    {"op": "cue", "cue": "wait", "args": [5.0], "kwargs": {}, "src": 42},
+    {"op": "line", "id": "ch18_gate_006", "key": "DLG_CH18_GATE_006", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 43},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 44},
+    {"op": "set", "flag": "ch18_pell_named", "value": ["lit", true], "src": 45},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 46}
+   ]
+  }
+ }
+}

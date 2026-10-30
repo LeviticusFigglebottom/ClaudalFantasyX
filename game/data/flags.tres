@@ -357,5 +357,20 @@ flags = {
 "ch17_chose_the_unbinding": "Ch17 B08 (ch17_the_choice): the party chose the Unbinding; read by every Act III chapter.",
 "ch17_first_lamp_lit": "Ch17 B10 (ch17_the_first_lamp): the hull's first lamp was lit.",
 "ch17_verse_begun": "Ch17 B11 (ch17_ysoldes_table): Ysolde and Asha began piecing the Eighth Verse's words together.",
-"ch17_complete": "Ch17 B12: set by the flow when the player boards the hull; the flow hands off to Ch18."
+"ch17_complete": "Ch17 B12: set by the flow when the player boards the hull; the flow hands off to Ch18.",
+"ch18_started": "Ch18 K01 (M5-A3P-1003, ch18_maiden_flight): the Kite's maiden flight; Ch18 begins.",
+"ch18_world_open": "Ch18 K02 (ch18_the_chart_table): the chart table; the world opens to the Kite (flow and map).",
+"ch18_pell_named": "Ch18 K03-K04 (ch18_through_the_gate): Reedhollow carved Pell's name on a new shell.",
+"ch18_learned_farewell_tide": "Ch18 K05 (ch18_farewell_tide_taught): Pell taught Asha the farewell-tide.",
+"ch18_child_answered": "Ch18 K06 side (ch18_child_older): Asha answered the Reedhollow child who asked why we make our dead swim.",
+"ch18_night_aboard": "Ch18 K07 (ch18_night_aboard): the night aboard the Kite.",
+"ch18_haluna_lifted": "Ch18 optional (ch18_backs_to_the_water): Haluna lifted its own dead the Kirru way; Toma led it.",
+"ch18_heirloom_rhen": "Ch18 heirloom (ch18_heirloom_rhen, node ch18_heirloom_rhen): Dace's diving hooks, re-edged, at the hull's tool rack.",
+"ch18_heirloom_asha": "Ch18 heirloom (ch18_heirloom_rhen, node ch18_heirloom_asha): Imra's lantern-staff, at the Velamir house in Haluna.",
+"ch18_heirloom_toma": "Ch18 heirloom (ch18_heirloom_rhen, node ch18_heirloom_toma): Ivo's boarding spear, from the armoury Corrow's watch reopened.",
+"ch18_heirloom_ysolde": "Ch18 heirloom (ch18_heirloom_rhen, node ch18_heirloom_ysolde): Corran's recipe book, bound as her folding book, by courier from Ansedra.",
+"ch18_heirloom_liss": "Ch18 heirloom (ch18_heirloom_rhen, node ch18_heirloom_liss): a launcher built from Tobin's tide-wheel drawings, at Hollowmere.",
+"ch18_heirloom_kerrid": "Ch18 heirloom (ch18_heirloom_rhen, node ch18_heirloom_kerrid): the stair-watch's anchor, at the Corrow stair foot.",
+"ch18_heirloom_pell": "Ch18 heirloom (ch18_heirloom_rhen, node ch18_heirloom_pell): Ressa's reed-spear, given by Owa at Reedhollow.",
+"ch18_complete": "Ch18 K08 (ch18_iskarra): Kerrid's finger on the city; the flow hands off to Ch19."
 }
