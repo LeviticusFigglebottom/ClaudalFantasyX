@@ -594,7 +594,7 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - Checks: rooted, battle_engine, hud, set_piece, validate, lint and format. `test_scene_router_swap` needs `godot`
     on PATH here: environmental, not this diff.
   - Next: M4-A2P-021, glide and ambush.
-- MERGE-READY @ (this push)
+- MERGE-READY @ ebdac75c9
 
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
