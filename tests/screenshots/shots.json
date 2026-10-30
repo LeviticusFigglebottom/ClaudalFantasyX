@@ -8055,6 +8055,82 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "ch14_court_entry",
+      "scene": "res://game/levels/_tests/ansedra_kit/ch14_court_shots.tscn",
+      "camera": "Cameras/Entry",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch14_court_ceremony",
+      "scene": "res://game/levels/_tests/ansedra_kit/ch14_court_shots.tscn",
+      "camera": "Cameras/Ceremony",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch14_court_steps",
+      "scene": "res://game/levels/_tests/ansedra_kit/ch14_court_shots.tscn",
+      "camera": "Cameras/Steps",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch14_court_gate",
+      "scene": "res://game/levels/_tests/ansedra_kit/ch14_court_shots.tscn",
+      "camera": "Cameras/Gate",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }
