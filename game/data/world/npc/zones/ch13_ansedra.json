@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "doc": "Ansedra's crowd (act2_ch13 A02, the zone note and barks 1-2; the Lead, 2026-10-30: Act II crowds from the bodies that exist). Barge-polers in plain grey at the outer moorings (the stand-in `ansedra` community), Tenders in Order robes, pilgrims from the islands standing at the causeways' edges, a child who doesn't play. Clear of the walkways and the story marks (kerrid_moorings, sefir_door, house_sefir, corran_house, pact_sefir). No birds, no dogs, no games (rule 4). Each row's `at` makes its stand-in at CrowdSpots/<id> (VillagerLayer). Stillguard at the bridges and the named people are the characters track's.",
+  "doc": "Ansedra's crowd (act2_ch13 A02, the zone note and barks 1-2; the Lead, 2026-10-30: Act II crowds from the bodies that exist). Barge-polers in plain grey at the outer moorings (the stand-in `ansedra` community), Tenders in Order robes, pilgrims from the islands standing at the causeways' edges, a child who doesn't play. Clear of the walkways and the story marks (kerrid_moorings, sefir_door, house_sefir, corran_house, pact_sefir). No birds, no dogs, no games (rule 4). Each row's `at` makes its stand-in at CrowdSpots/<id> (VillagerLayer). Stillguard at the bridges and the named people are the characters track's. The vignettes on the outer moorings (the Lead, 2026-10-30: the Act II towns lived in; ground probed 2026-10-30), clear of the causeway's mouth: the polers' families: a girl and her brother at a clapping game, a girl at stones, a woman with a basket come down to the barges, a woman folding the barge's grey awning at the rail, a poler mending a net, an old poler sweeping the top edge.",
   "zone": "ch13/ansedra",
   "storm_flag": "",
   "villagers": [
@@ -73,6 +73,60 @@
       "attach": "child",
       "stand_in": "CrowdSpots/ansedra_pilgrim_4",
       "at": [20.0, 0.0, -41.35, 180.0]
+    },
+    {
+      "npc_id": "ansedra_moorings_clap_girl",
+      "crowd": "ansedra_moorings_clap_girl",
+      "stand_in": "CrowdSpots/ansedra_moorings_clap_girl",
+      "at": [-5.0, 0.0, 7.0, -180.0]
+    },
+    {
+      "npc_id": "ansedra_moorings_clap_boy",
+      "crowd": "ansedra_moorings_clap_boy",
+      "stand_in": "CrowdSpots/ansedra_moorings_clap_boy",
+      "at": [-5.0, 0.0, 7.6, -0.0]
+    },
+    {
+      "npc_id": "ansedra_moorings_stones",
+      "crowd": "ansedra_moorings_stones",
+      "stand_in": "CrowdSpots/ansedra_moorings_stones",
+      "at": [-6.0, 0.0, 13.0, -90.0]
+    },
+    {
+      "npc_id": "ansedra_moorings_carrier",
+      "crowd": "ansedra_moorings_carrier",
+      "stand_in": "CrowdSpots/ansedra_moorings_carrier",
+      "at": [4.6, 0.0, 8.6, -37.7]
+    },
+    {
+      "npc_id": "ansedra_moorings_folder",
+      "crowd": "ansedra_moorings_folder",
+      "stand_in": "CrowdSpots/ansedra_moorings_folder",
+      "at": [-6.6, 0.0, 4.6, -0.0]
+    },
+    {
+      "npc_id": "ansedra_moorings_mender",
+      "crowd": "ansedra_moorings_mender",
+      "stand_in": "CrowdSpots/ansedra_moorings_mender",
+      "at": [6.0, 0.0, 12.0, -90.0]
+    },
+    {
+      "npc_id": "ansedra_moorings_sweeper",
+      "crowd": "ansedra_moorings_sweeper",
+      "stand_in": "CrowdSpots/ansedra_moorings_sweeper",
+      "at": [3.0, 0.0, 16.5, -180.0],
+      "route": [
+        {
+          "at": [3.0, 0.0, 16.5],
+          "pause_sec": 7.0,
+          "activity": "work"
+        },
+        {
+          "at": [5.5, 0.0, 16.5],
+          "pause_sec": 6.0,
+          "activity": "work"
+        }
+      ]
     }
   ]
 }

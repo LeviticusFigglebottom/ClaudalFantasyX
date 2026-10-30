@@ -615,12 +615,16 @@ func test_haluna_vignettes_come_alive_in_the_real_zone() -> void:
 	_done()
 
 
-## The slice towns lived in (the Lead, 2026-10-30): Oruvel's deck and Pemakar's quay at Lanternfall, at work.
-func test_oruvel_and_pemakar_vignettes_come_alive_in_their_zones() -> void:
+## The towns lived in (the Lead, 2026-10-30): Oruvel's deck, Pemakar's quay at Lanternfall, Quellan's square,
+## Hollowmere's dawn and Ansedra's moorings, at work.
+func test_town_vignettes_come_alive_in_their_zones() -> void:
 	var people := _people()
 	for z: Array in [
 		["res://game/levels/ch01/oruvel/oruvel.tscn", &"ch01/oruvel", "oruvel_deck_", 6],
-		["res://game/levels/ch05/pemakar/pemakar.tscn", &"ch05/pemakar", "pemakar_quay_", 5]
+		["res://game/levels/ch05/pemakar/pemakar.tscn", &"ch05/pemakar", "pemakar_quay_", 5],
+		["res://game/levels/ch12/quellan/quellan.tscn", &"ch12/quellan", "quellan_town_", 8],
+		["res://game/levels/ch17/hollowmere/hollowmere.tscn", &"ch17/hollowmere", "hollowmere_dawn_", 4],
+		["res://game/levels/ch13/ansedra/ansedra.tscn", &"ch13/ansedra", "ansedra_moorings_", 7]
 	]:
 		var zone := (load(str(z[0])) as PackedScene).instantiate() as Node3D
 		_holder().add_child(zone)
