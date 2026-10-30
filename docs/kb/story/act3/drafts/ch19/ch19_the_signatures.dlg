@@ -1,0 +1,25 @@
+// DRAFT (Act III, planning only). Ch19 I07 "The signatures" (C, 1.5 min). act3_ch19.md §2 I07. The crown's antechamber:
+// a lectern with a duty roll. Ysolde turns it: the same two hands, signing every watch, for four hundred years.
+// RULE 3: how the party knows the Abiding is the hands Ysolde saw in the Archive's ledgers (Ch13).
+title: ch19_the_signatures
+location: ch19/iskarra_spire
+---
+@letterbox on
+@camera I05
+@music silence fade=1.0
+@mark ysolde duty_lectern walk
+@anim ysolde turn_page duty_roll
+@wait 3.0
+@camera I06
+Duty roll, the anchor-engine, Iskarra: Watch kept. H. Oan. Entered, I. Rue. #line:ch19_roll_001 #narration #tn:"One line of a duty roll, repeated for four hundred years. Shown in the document reader."
+@wait 3.0
+<<if $ch13_read_ledgers>>
+    Ysolde [cold]: I've seen these hands. In the Archive. On every page. #line:ch19_sig_001
+<<else>>
+    Ysolde [cold]: The same two hands. Every watch. Four hundred years of them. #line:ch19_sig_002
+<<endif>>
+@wait 2.0
+Kerrid [neutral]: Somebody's still on watch, then. #line:ch19_sig_003
+@letterbox off
+<<event start_battle ch19_abiding_wardens>>
+===

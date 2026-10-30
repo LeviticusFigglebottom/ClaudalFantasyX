@@ -25,6 +25,8 @@ const LABEL_KEYS := {
 	ROW_ACCESSIBILITY: "SET_MENU_ACCESSIBILITY",
 	ROW_CONTROLS: "SET_MENU_CONTROLS",
 }
+## The hub's controls line (Up and Down, Confirm, Cancel).
+const CONTROLS_KEY := "SET_MENU_CONTROLS_HUB"
 const HELP_KEYS := {
 	ROW_GRAPHICS: "SET_MENU_HELP_GRAPHICS",
 	ROW_AUDIO: "SET_MENU_HELP_AUDIO",
@@ -46,6 +48,7 @@ var graphics_viewport: Viewport
 
 var _list: MenuPage
 var _help: Label
+var _controls: Label
 var _backdrop: ColorRect
 var _caustics: CausticBackdrop
 var _data: Dictionary = {}
@@ -102,6 +105,8 @@ func _ready() -> void:
 	_help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_help.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	add_child(_help)
+	_controls = SettingsPage.controls_line(_data)
+	add_child(_controls)
 	UiFrame.centre(self)  # M2-UI-29
 	_open = true
 	_render()
@@ -201,6 +206,10 @@ func help_text() -> String:
 	return _help.text
 
 
+func controls_text() -> String:
+	return _controls.text
+
+
 func row_labels() -> PackedStringArray:
 	var out: PackedStringArray = []
 	for r in _list.rows:
@@ -227,11 +236,12 @@ func _rows() -> Array[Dictionary]:
 
 func _render() -> void:
 	_help.text = tr(str(HELP_KEYS.get(current(), "")))
+	SettingsPage.show_controls(_controls, CONTROLS_KEY if _list.visible else "", _data)  # hidden under an open page
 
 
 ## The hub's own page, help and backdrop hide under an open page (its backdrop would double up).
 func _set_hub_visible(on: bool) -> void:
-	for c: CanvasItem in [_list, _help, _backdrop, _caustics]:
+	for c: CanvasItem in [_list, _help, _controls, _backdrop, _caustics]:
 		c.visible = on
 
 

@@ -43,6 +43,7 @@ BUDGET_KEY = {"port_deck_8m": "port_deck", "port_deck_8m_rail": "port_deck", "ma
 
 WATER_Y = -port.DECK_Y  # the river under the decks
 BED_Y = WATER_Y + port.RIVERBED_Y
+UMBRELLA_RIBS = 8  # market_boat_a's sun umbrella
 
 
 def _pile(mb, x, z, top, rng, noise, *, lod: bool, collar: bool = True) -> None:
@@ -283,10 +284,21 @@ def build_boat_a(seed: int = 764) -> list[kc.MeshBuilder]:
         # The sun umbrella: a pole stepped aft, a shallow canopy in a dye with a gilded tip.
         dye = DYES[int(rng.integers(len(DYES)))]
         kc.tube(mb, np.array([[-2.7, 0.2, 0.0], [-2.7, 2.6, 0.0]]), 0.03, 6, mb.material(M_TIMBER), weather=tb.TIMBER)
-        ang = np.linspace(0.0, 2 * math.pi, 17)
-        rr = np.linspace(0.0, 1.3, 4)
+        # Eight ribs: the cloth sags between them and its hem scallops (M3-ENV-1316: a flat 16-gon disc read bare).
+        ribs = UMBRELLA_RIBS
+        ang = np.linspace(0.0, 2 * math.pi, ribs * (2 if lod else 6) + 1)
+        rr = np.linspace(0.0, 1.3, 4 if lod else 7)
         A, R = np.meshgrid(ang, rr)
-        grid = np.stack([-2.7 + R * np.cos(A), 2.6 - 0.35 * (R / 1.3) ** 1.5, R * np.sin(A)], -1)
+        between = np.abs(np.sin(ribs * A / 2.0))  # 0 on a rib, 1 midway
+        R = R * (1.0 - 0.06 * between * (R / 1.3) ** 2)
+        Y = 2.6 - 0.35 * (R / 1.3) ** 1.5 - 0.07 * between * (R / 1.3)
+        grid = np.stack([-2.7 + R * np.cos(A), Y, R * np.sin(A)], -1)
+        if not lod:
+            for k in range(ribs):
+                a = 2 * math.pi * k / ribs
+                t = np.linspace(0.0, 1.0, 5)
+                rib = np.stack([-2.7 + 1.3 * t * math.cos(a), 2.6 - 0.35 * t ** 1.5 - 0.025, 1.3 * t * math.sin(a)], -1)
+                kc.tube(mb, rib, 0.012, 4, mb.material(M_TIMBER), weather=tb.TIMBER)
         for flip in (False, True):
             kc.quad_strip(mb, grid + [0.0, 0.01 if not flip else -0.01, 0.0], mb.material(dye),
                           uv=np.stack([A * 0.5, R], -1), col=np.array([0.0, 0.2, 0.0, 0.3]), uv2=np.array([1.0, 0.5]),

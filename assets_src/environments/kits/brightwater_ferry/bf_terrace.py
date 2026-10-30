@@ -116,6 +116,7 @@ HOLD_W = kc.Weathering(moss=0.0, salt=0.15, wet=0.1, erosion=0.3)
 
 # Slots (bf_materials.py writes them; brightwater_ferry.md §7.3).
 M_LACQUER = "bf_lacquer_black"
+M_LACQUER_SATIN = "bf_lacquer_black_satin"  # the galley's board walls (indoors)
 M_LACQUER_RED = "bf_lacquer_red_deep"  # the counter and the galley dado; the strakes and glyphs are bf_lacquer_red
 M_COPPER = "bf_copper_sheathing"
 M_COPPER_BRIGHT = "bf_copper_bright"
@@ -629,7 +630,7 @@ def _board_wall(mb: kc.MeshBuilder, rng, axis: str, fixed: float, a0: float, a1:
     """A wall of vertical lacquered boards (a red dado below) along `axis` ('x' or 'z') at `fixed`, from a0 to a1,
     with rectangular `holes` (a0, a1, y0, y1) left open. Thick enough to read from both sides."""
     t = 0.05
-    i_blk, i_red = mb.material(M_LACQUER), mb.material(M_LACQUER_RED)
+    i_blk, i_red = mb.material(M_LACQUER_SATIN), mb.material(M_LACQUER_RED)
     step = 0.9 if lod else 0.16
     n = max(1, int(math.ceil((a1 - a0) / step)))
     dado = 0.7

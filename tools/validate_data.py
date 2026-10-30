@@ -261,6 +261,8 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
             rep.err(f"{w}: delay_immune must be true or false")
         if "answered_by" in e and e["answered_by"] not in char_ids:  # M4-A2P-023
             rep.err(f"{w}: answered_by '{e['answered_by']}' is not a character")
+        if "leaves_with" in e and e["leaves_with"] not in enemy_ids:  # M4-A2P-1200
+            rep.err(f"{w}: leaves_with '{e['leaves_with']}' is not an enemy")
         for ph in e.get("phases", []):
             if "when_down" in ph and ph["when_down"] not in enemy_ids:
                 rep.err(f"{w}: phase {ph.get('id')} when_down '{ph['when_down']}' is not an enemy")
@@ -2574,7 +2576,9 @@ def tutorial_tip_errors(doc: object, declared: set[str]) -> tuple[list[str], lis
         elif flag in seen_flags:
             errs.append(f"{w}: seen flag '{flag}' is used by another tip")
         seen_flags.add(flag)
-        for f in [flag, *t.get("requires", []), *([t["when"]] if t.get("when") else [])]:
+        when = t.get("when") or []
+        whens = when if isinstance(when, list) else [when]  # a list: any of them raises it (first-hour pass)
+        for f in [flag, *t.get("requires", []), *t.get("requires_any", []), *whens]:
             if f and f not in declared:
                 errs.append(f"{w}: flag '{f}' is not declared in game/data/flags.tres")
         for k in ("title_key", "body_key"):

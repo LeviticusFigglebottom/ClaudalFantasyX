@@ -1160,6 +1160,86 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     coverage is clean, `--check` is byte-identical, test_blender_builds OK. Not run under Blender here (none in
     this container).
   - Noted: the three Haluna shopkeeper rows in haluna_villagers.json go (characters' M3-CHR-512); I won't restore them.
+- **PC GPU QA pass 5, row 58, MERGE-READY @ 95fa3be28** (row 60 is fixed per the PC):
+  - **Hullgnaw:** a cool key from O16's side and a cyan rim from seaward (`hullgnaw_lights`, switched on for the
+    scene). On lavapipe the ribs and head now read against the storm water.
+  - **The Child:** Rhen's lantern side keys the children warm and a cool rim parts them from the net
+    (`pen_lights`). P01 tightens to 28° on them.
+  - **O07 / Sadi:**
+    - Pass 5's "two boats, no Sadi" was the big20 camera regression I fixed earlier; O07 is the name-board insert
+      again.
+    - The beat sheet makes O07 the one insert, with no one in it, so Sadi gets her own single, O07_sadi, for her
+      lines (her ship behind her). New pending still `ch01_sadi_mooring`.
+  - Viewed: all four stills. The GPU should confirm the Hullgnaw's light (PC-QUEUE).
+- **Ch10 staging against env-art's dressing (mounted in big22):**
+  - Re-rendered the five Ch10 stills on the dressed sets.
+  - O02 sees Pell at the bank's lip on his real body.
+  - R03 looks down an open causeway to Owa's mark.
+  - F02 now aims lower, at the clutch's backs and the name-shell cords, not the canopy.
+  - T04 moves south, clear of the shore's roost-shell.
+  - R07 looks over the reed bed that would have hidden the pair below the waist.
+  - Re-rendering F02, T04 and R07. On lavapipe the dressed zones take 9–24 min a shot (`HYMN_SHOT_TIMEOUT=1700`).
+  - **For env-art:** the farewell-tide's T03 looks straight up for the cloud gap, but the lagoon's canopy covers
+    most of the sky over the shore (F02 showed it). The beat needs open sky over the lagoon (act2_ch10.md T03).
+  - The people still wait on M4-CIN-1305 (the chapters track): the actors aren't in the layouts yet.
+- **Ch10 staging on the dressing, viewed, MERGE-READY @ 26b2014b5:**
+  - F02: the clutch's backs and the cords, the lagoon beyond.
+  - T04: the clutch's whole row from behind and above, a roost-shell framing the left edge.
+  - R07: the reed bed blocks every side view of the causeway's end, so the two-shot looks along the causeway from
+    the east, Kerrid facing the camera (and the gold behind it), Pell's back to it. R08's insert stays.
+  - The people still wait on M4-CIN-1305.
+- **Act II Ch11 staged from act2_ch11_direction.md, MERGE-READY @ 200a084d9:**
+  - `game/data/cutscene/ch11/{sunken_vey,lowlight}.json` (V00/V10/T00 = lowlight.md's L01/L03/L05; the binding's
+    N-shots).
+  - Cue edits: the blocking marks, the holds the notes ask for, and Rhen's "Dace Sallow. My father." on his own
+    single (V05_rhen), with alternating singles after it.
+  - The shot rig gains `at_mark`, so a trigger-placed scene (the conduit court) is staged where play stands Rhen.
+  - Viewed (5 pending stills):
+    - V00, the Vey from the water;
+    - the admission on Rhen's single, his lantern beside him;
+    - the engine hall;
+    - the well, where Pell is still missing;
+    - the bench.
+- **Act II Ch12 staged from act2_ch12_direction.md, MERGE-READY @ 200a084d9:**
+  - `game/data/cutscene/ch12/{keth_pass,quellan,cloudloom}.json`. K01/K04 and C02/C03 replace the greybox's ids of
+    another meaning.
+  - Marks the notes name but don't place are set from the shots that frame them.
+  - Quellan's inn had no light: `inn_fire` is a cinematics prop (CutsceneStaging now takes `props`).
+  - The 4 pending stills frame their places on the dressed zones (raycast: the floors match the greybox). They show
+    no people yet: Ch11 and Ch12's actors (Ram, Hesk and Nhoa included) are added to M4-CIN-1305 for the chapters
+    track.
+- **FAST-TRACK M4-A2P-115 (story's Act I read-through, A1–A8), MERGE-READY @ 5a935953** (review: narrative):
+  - A1: Rhen asks Asha when she leaves (the bag at Neme's) before he offers to be her guardian.
+  - A2: Ch1's low lights can't be skipped; a test checks the trigger covers the gauge room's mouth.
+  - A3: Asha's invitation comes before "Go now / Not yet".
+  - A4: nothing of B03 plays at dawn before Neme's table.
+  - A5: each villager's Listen has its own short follow-up (four new barks).
+  - A6: fragments never replay after a reload.
+  - A7: the roof dive plays once, then a two-line after-bark.
+  - A8: "a girl I'd known for a day".
+  - Tests: haluna 66, ch01 20, ch01_thread 2, _thread 40, dialogue 86, fp_ 30, all 0 failed. The task file (from
+    claude/act2-plan) is not merged here: its id collides with integration's M4-A2P-115 (the Quellan eye-height
+    request). **For the Lead / act2-plan:** renumber the read-through task, then set it to review. My notes for its
+    Review log are the A1–A8 lines above. Narrative should review the four Listen follow-ups and the roof
+    after-bark (new lines).
+- **M4-A2P-1600:** the read-through task, renumbered from M4-A2P-115 per the Lead. It is in review on this branch
+  with its notes; A1–A8 are fixed at 5a935953 (big29).
+- **The Drownbell → Haluna return (B11), measured on the real path:**
+  - **Method:** boot, then `world_return.go_to(ch02/haluna, DockNight)` with the Drownbell won, headless at
+    --fixed-fps 30. Logged every frame: SceneRouter's fade, the cutscene overlay's fade, the holders and B11's cues.
+  - **Result:** Haluna enters the tree. VillagerLayer holds the reveal 0.30 s, then the router's fade lifts over
+    0.37 s. B11's sequencer is already running under it with its overlay clear (no fade cue, so it doesn't start
+    black). After the lift, Rhen's walk to Asha plays in the field (about 6.7 s), then the first line.
+  - **So nothing in the cutscene holds black once Haluna is loaded.** The roughly 3 s of black on the GPU is the
+    router's hidden time: the battle's exit fade, the threaded load and instantiate of Haluna (its dressing and 74
+    prewarmed materials), and the 0.3 s reveal hold.
+  - **For integration-qa (the router and load):** if the hidden time is over ADR 0205's 2 s, look at the load, not at
+    B11. Two options: warm Haluna's materials during the Drownbell fight (it is the next scene, known in advance),
+    or keep Haluna resident across the battle.
+  - **Gotcha, cinematics tools:** `tools/cutscene_frames` travels without booting, so ResidentLoads hasn't warmed the
+    shared character and water shaders. Haluna's and Oruvel's threaded loads then fail ("Parse Error" on an
+    ExtResource line), and the run stays black. From boot they load. Re-render B11 frames from boot until the tool
+    boots first (my next fix).
 ### PC-QUEUE
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan

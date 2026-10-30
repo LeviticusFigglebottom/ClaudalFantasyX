@@ -1,0 +1,30 @@
+// DRAFT (Act III, planning only). Ch21 H04 and H06 fight lines: Sefir (sefir_aurane.md battle notes; act3_ending.md §2).
+// H04, phase 1, the Warden: he buffs, delays and "settles" the timeline; he talks during the fight, WARMLY AND
+// REASONABLY, and never moves his feet. H06, phase 2, the Undertow-heart: he draws on the glimmer near the party (no
+// Vowbound is left to summon). NO MID-BATTLE LINE HOOK yet: Combat plays each node at its trigger.
+title: ch21_bark_sefir
+location: ch21/heart
+---
+// H04, the opening.
+Sefir [tender]: Sit down, all of you. Nobody has to be brave down here. #line:ch21_sefir_001
+===
+title: ch21_bark_sefir_settle
+---
+// H04, when he settles the timeline (turn order frozen).
+Sefir [neutral]: There. Nothing moves until I say. Isn't that a kindness? #line:ch21_sefir_002
+===
+title: ch21_bark_sefir_asha
+---
+// H04, at 50%: to Asha.
+Sefir [tender]: You would be the last, Lady Cantor. Nobody would ever be named again. #line:ch21_sefir_003
+===
+title: ch21_bark_sefir_heart
+---
+// H06, the opening: the storm's own note under him.
+Sefir [determined]: Give it to me. I will hold it. I will hold all of it. #line:ch21_sefir_004
+===
+title: ch21_bark_sefir_heart_low
+---
+// H06, at 25%.
+Sefir [grief]: I have held her for a thousand years. I can hold the rest. #line:ch21_sefir_005
+===

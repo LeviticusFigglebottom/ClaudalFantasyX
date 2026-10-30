@@ -1,0 +1,7 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[resource]
+resource_name = "wedding_cord"
+albedo_color = Color(0.702, 0.149, 0.118, 1)
+metallic = 0.0
+roughness = 0.8

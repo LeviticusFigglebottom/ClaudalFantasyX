@@ -1195,9 +1195,9 @@ def build_clips() -> list[ck.Clip]:
         cast.key(arm[-2], t, (-4.0 * s, 0, 0))
     hit = ck.Clip("hit", 0.8)  # a shudder runs up the limb
     for t, s in ((0.0, 0.0), (0.12, 1.0), (0.3, -0.6), (0.5, 0.3), (0.8, 0.0)):  # M3-CRE-617: thrown back harder
-        hit.key("hand", t, (18.0 * s, 0, 6.0 * s), (0.0, 0.25 * s, -0.3 * s))
-        hit.key(arm[-2], t, (-4.0 * s, 0, -5.0 * s))
-        hit.key(arm[-3], t, (-2.0 * s, 0, -2.5 * s))
+        hit.key("hand", t, (22.0 * s, 0, 14.0 * s), (0.15 * s, 0.6 * s, -0.3 * s))
+        hit.key(arm[-2], t, (-6.0 * s, 0, -9.0 * s))
+        hit.key(arm[-3], t, (-3.0 * s, 0, -5.0 * s))
     ko = ck.Clip("ko", 2.6)  # it lets go and is drawn back up into the storm
     for t, s in ((0.0, 0.0), (0.8, 0.4), (1.8, 1.0), (2.6, 1.0)):
         ko.key("root", t, (-12.0 * s, 0, 0), (0, 3.0 * s, -5.0 * s))

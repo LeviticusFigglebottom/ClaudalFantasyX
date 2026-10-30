@@ -7,10 +7,13 @@ extends RefCounted
 ## id the layout has stays the layout's (chapters' field shots and marks are never overridden), unless the file's
 ## "replace" list names it: a cutscene shot id the layout also uses for another frame, which the scripts mean as
 ## cinematics' (Ch10's R03 and R06: the chapter's plan named its shots before the scripts were written).
+## "props": {id: {"at": [x, y, z, yaw], "scene": res path}} instances a cinematics practical on the stage once (Ch12's
+## inn fire: the room had no light), under Props; a `@light` cue finds its lights by name.
 
 const DIR := "res://game/data/cutscene/%s.json"
 ## On a shot this file made (a replaced id is replaced once).
 const META_STAGED := &"cutscene_staged"
+const PROPS := "Props"
 
 
 ## Adds the zone's staging to `stage` (once; later calls find every id there already). Returns the ids added.
@@ -38,6 +41,19 @@ static func apply(stage: CutsceneStage) -> Array[StringName]:
 			sn.shot = _shot(id, row)
 			shots.add_child(sn)
 			added.append(StringName(id))
+	var props := _folder(stage, NodePath(PROPS), true) if (data as Dictionary).has("props") else null
+	for id: String in (data as Dictionary).get("props", {}).keys():
+		var row: Dictionary = data["props"][id]
+		var packed := load(str(row.get("scene", ""))) as PackedScene
+		if props.has_node(NodePath(id)) or packed == null:
+			continue
+		var prop := packed.instantiate() as Node3D
+		prop.name = id
+		var at: Array = row.get("at", [])
+		prop.position = _vec3(at)
+		prop.rotation_degrees.y = float(at[3]) if at.size() > 3 else 0.0
+		props.add_child(prop)
+		added.append(StringName(id))
 	var marks := _folder(stage, CutsceneStage.MARKS, true)
 	for id: String in (data as Dictionary).get("marks", {}).keys():
 		if stage.mark(StringName(id)) == null:

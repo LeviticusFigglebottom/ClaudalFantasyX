@@ -20,6 +20,7 @@ const CUTSCENE_FOLEY := "cutscene_foley"
 const ASHCROWN_SFX := "ashcrown_sfx"
 const COILSPIRE_SFX := "coilspire_sfx"
 const INTERACT_SFX := "interact_sfx"
+const PROP_SFX := "prop_sfx"
 ## The reserved music id meaning "fade the bed out" (the .dlg format's `@music silence`).
 const SILENCE := &"silence"
 

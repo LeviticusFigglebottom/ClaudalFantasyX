@@ -1,0 +1,43 @@
+{
+ "_about": "The Kirru eldest (M4-A2P-053; act2_ch10.md: the eldest of the ring): Pell's build older and slighter, the fur grizzled (grey guard hairs a third of the coat), the neck's S deeper, the crest paler and thinner. No notched ear (Pell's own). Keys over pell_params.json (pell_variant.py).",
+ "height_m": 2.24,
+ "muscle": 0.4,
+ "mass": 0.08,
+ "_kirru": {
+  "ear_notch": {
+   "side": "L",
+   "depth_m": 0.0
+  },
+  "neck_s_deg": [
+   26.0,
+   -18.0
+  ],
+  "seed": 71
+ },
+ "_fur": {
+  "dark": "#4A4440",
+  "mid": "#8A8079",
+  "pale": "#E8E4DC",
+  "grey_guard_share": 0.34,
+  "seed": 72
+ },
+ "_proportions": {
+  "age_years": 190,
+  "grey_guard_hair_share": 0.34,
+  "idle_sway": 0.1,
+  "breath": 0.7
+ },
+ "_crest": {
+  "count": 11,
+  "length_m": 0.2,
+  "colour": "#D2D0CA",
+  "tips": "#7A7670",
+  "seed": 73
+ },
+ "_shell": {
+  "seed": 74
+ },
+ "_look": {
+  "cloth_tint": "#A39D92"
+ }
+}

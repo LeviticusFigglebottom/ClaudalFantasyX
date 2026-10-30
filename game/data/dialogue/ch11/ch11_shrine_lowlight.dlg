@@ -5,6 +5,6 @@ location: ch11/lowlight
 <<if $ch14_declared_heretics>>
     The Level-stone is cold. The lamp beside it still burns, but the shrine doesn't know you any more. #line:ch11_shrine_001 #narration
 <<else>>
-    A Level-stone on the highest dry step, and beside it a lamp the keepers say has never once gone out. The water is two steps down. #line:ch11_shrine_002 #narration #long
+    A Level-stone on the highest dry step, and beside it a lamp the tenders who come down say has never once gone out. The water is two steps down. #line:ch11_shrine_002 #narration #long
 <<endif>>
 ===

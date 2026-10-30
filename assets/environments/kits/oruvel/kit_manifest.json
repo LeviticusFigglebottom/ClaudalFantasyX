@@ -51,9 +51,9 @@
         18000,
         900
       ],
-      "bytes": 656916,
+      "bytes": 704992,
       "lods": {
-        "dive_raft": 14404,
+        "dive_raft": 15424,
         "dive_raft-lod1": 364
       }
     },
@@ -275,6 +275,17 @@
       "lods": {
         "raft_deck_small_tucked": 11204,
         "raft_deck_small_tucked-lod1": 524
+      }
+    },
+    "raft_deck_square": {
+      "budget": [
+        20000,
+        1000
+      ],
+      "bytes": 759408,
+      "lods": {
+        "raft_deck_square": 17468,
+        "raft_deck_square-lod1": 604
       }
     },
     "raft_deck_tucked": {

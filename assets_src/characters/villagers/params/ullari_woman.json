@@ -1,0 +1,127 @@
+{
+ "_about": "The Ullari woman at the pass-cord (act2_ch12.md side scene: 'an Ullari woman in layered weaving, middle-aged, plain, ties a knot onto the pass-cord... I carry the knot. He doesn't have to.'), about 50, of Quellan's highland Ullari (keth_pass.md; the knotted-cord records, glossary keth). Layered weaving: a long-sleeved oatmeal wool top, an ankle skirt in dark brown wool, a woven madder-red shawl over both (a solid shawl), an indigo striped sash, and a knotted cord on the left wrist (her keth). Black hair in a low knot with grey. Clips: tie_knot, touch_knot. M4-A2P-053. Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules, not by bb_params.",
+ "name": "ullari_woman",
+ "height_m": 1.56,
+ "heads_tall": 7.1,
+ "shoulder_width_heads": 1.58,
+ "chest_width_heads": 1.22,
+ "chest_depth_heads": 0.88,
+ "waist_width_heads": 1.12,
+ "hip_width_heads": 1.46,
+ "crotch_height_heads": 3.5,
+ "arm_span_ratio": 1.0,
+ "hand_length_heads": 0.78,
+ "foot_length_ratio": 0.145,
+ "neck_length_heads": 0.44,
+ "neck_width_ratio": 0.48,
+ "head_width_ratio": 0.67,
+ "femininity": 0.92,
+ "muscle": 0.5,
+ "mass": 0.22,
+ "breast": 0.35,
+ "eye_scale": 1.16,
+ "ipd_m": 0.061,
+ "arm_abduction_deg": 47.0,
+ "skin_hex": "#A8735A",
+ "eye_tilt_deg": 4.0,
+ "jaw_width": 1.02,
+ "cheekbone_height": 0.004,
+ "cheekbone_width": 1.12,
+ "chin_size": 0.92,
+ "nose_bridge_width": 1.0,
+ "nose_tip_projection": 0.96,
+ "lip_fullness": 0.8,
+ "lip_close": 0.6,
+ "lip_seal": 0.96,
+ "lip_lower_fullness": 1.05,
+ "mouth_corner_lift": 0.0008,
+ "brow_ridge": 0.96,
+ "donor_mix_african": 0.15,
+ "donor_mix_asian": 0.6,
+ "donor_mix_caucasian": 0.25,
+ "_skin": {
+  "hex": "#A8735A",
+  "age": 0.6,
+  "freckles": 0,
+  "reach_bands": {
+   "L": 0,
+   "R": 0
+  },
+  "seed": 531,
+  "lip": "#8A564A"
+ },
+ "_hair": {
+  "kind": "bun",
+  "seed": 532,
+  "scalp_cards": [
+   150,
+   115,
+   80
+  ],
+  "hairline_cards": 60,
+  "bun_r_m": 0.034,
+  "bun_ribbons": 26,
+  "grey_share": 0.3,
+  "grey_strands": true,
+  "colour": "#141417",
+  "grey": "#8C867D",
+  "underpaint": "#18181B"
+ },
+ "_eyes": {
+  "iris": "#24170E"
+ },
+ "_costume": {
+  "top": {
+   "mat": "cloth_a",
+   "hem": "hip",
+   "sleeve": 0.96,
+   "neck_v_m": 0.03
+  },
+  "skirt": {
+   "mat": "cloth_b",
+   "hem": "ankle",
+   "folds": 10,
+   "fold_amp": 0.007,
+   "flare": 0.13,
+   "seed": 533,
+   "keep_above_knee_m": 1.0
+  },
+  "sash": {
+   "mat": "cloth_c",
+   "width_m": 0.06,
+   "turns": 2,
+   "tails_m": 0.2
+  },
+  "shawl": {
+   "mat": "cloth_d",
+   "solid": true,
+   "open_deg": 24.0,
+   "off_m": 0.014,
+   "drop_k": 1.35
+  },
+  "wrist_cord": {
+   "mat": "cloth_c",
+   "side": "L",
+   "cord_mm": 4.0,
+   "knot_m": 0.012
+  },
+  "sandals": "leather"
+ },
+ "_tints": {
+  "cloth_a": "#CDBFA4",
+  "cloth_b": "#4E3A2C",
+  "cloth_c": "#2B3A6B",
+  "leather": "#FFFFFF",
+  "cloth_d": "#8E3B2E"
+ },
+ "_build": {
+  "shapes": "all",
+  "host_snaps": true,
+  "garment_fit": true
+ },
+ "_persona": {
+  "sway": 0.5,
+  "lean": 1.0,
+  "arms_down": 41.0
+ }
+}

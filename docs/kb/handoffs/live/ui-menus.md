@@ -1154,3 +1154,248 @@ BACKLOG EMPTY: everything left in this track's queue waits on another track.
 - **Lacquer Court objective rows:** wait on ch14's thread raising its flags (M4-A2P-014, act1-chapters); then drop the two
   `qa_known.json` "unraised" rows.
 - **Battle return end to end:** M4-UI-212 (integration-qa, plus a PC measurement).
+- 2026-10-30 16:10, **the Lead's 14:28 note: a controller-only pass over Act I's menus** (merged big23 at 63175d0b3).
+  - **Merge:** act1-chapters' Act II objective rows replace my interim ones. Theirs cover every zone beat by beat, so
+    I dropped my 17 `OBJ_*` strings and pointed the Act II objective test at their rows.
+  - **The walk:** `tests/unit/test_input_parity_pad_walk.gd` (3/0) drives the pad alone over:
+    - every field menu page, with a played save: Down, Confirm three deep (equip a piece, use a tonic, the Lattice, the
+      map, Settings), then Cancel out;
+    - every battle command (Attack, Skills, Items, Swell, Swap, Escape), into its page and target, then back;
+    - the battle pause, including Settings and one of its pages;
+    - the save list (with the overwrite question) and the title's load list.
+  - **After every press it fails on:**
+    - an unfilled `{action}`;
+    - a key's name where the pad has its own button;
+    - focus on a Control that isn't on screen;
+    - a menu page with nothing saying how to go back.
+  - **Found and fixed:**
+    1. **Settings never said how to move or go back** (hub and pages, from the field, the title and the pause). A
+       controls line now sits under the help. The Controls page hides it while listening, and the hub's line hides
+       under an open page.
+    2. **The save and load lists ignored the pad.** They take their input before the UiInput autoload, so a pad press
+       left the prompts on the keys and a held D-pad never repeated there. They now let UiInput notice each event
+       first (`UiInput.notice`).
+    3. **The save and load lists never said how to go back.** A controls line now sits at the right of the help row:
+       "Confirm: record · Cancel: close" (load: "continue"), and the question's "Up and Down: choose · Cancel: keep it".
+  - **Not changed, by design:** the battle command menu's help line is the action's cost and turn, and Cancel at its
+    root opens the pause (which says how to go back). The walk exempts only those stops.
+  - **Focus:** no Control kept the focus while hidden. Dead ends: none (with test_input_parity_dead_ends).
+  - **Renders viewed:** settings_hub, settings_accessibility (130%), settings_controls, save_menu, save_menu_overwrite.
+    All five change baselines (the new lines). The Lead re-approves; I wrote no baselines.
+  - **Tests:** pad_walk 3/0, settings 48/0, controls 12/0, graphics_menu 9/0, accessibility 9/0, save 201/0,
+    title_menu 16/0, input_parity_title 2/0, pseudo_loc 26/0, aspect 18/0, objective 16/0, field_menu 37/0,
+    zone_map 22/0, ui_input 4/0; validate_data 0/0; lint and format clean.
+  - **For act1-chapters (seen on big23 itself):** test_qa_threads fails 15 ways on their new Act II objective rows.
+    The ch10–13 threads don't yet raise the beats those rows wait on (`ch10_farewell_tide_seen`, `ch11_nhoa_bound`,
+    `ch12_ram_felled`, `ch13_read_ledgers`, each chapter's `_complete`, and the Lacquer Court's ch14 beats). My
+    merge took their `objectives.json` and threads unchanged. I only renamed the rows in my two qa_known notes.
+MERGE-READY @ 0fda0d8b5: the controller-only pass (Settings and save/load controls lines, the save list's pad notice, the pad walk test).
+- 2026-10-30 17:00, **the Lead's 16:09 note: as-played check of the new battle return** (merged big24 efe7fb10 at ce9c0d6d0).
+  - **Merge:** `objectives.json`, `test_objective_tracker` and `qa_known` take the integration side (act2-plan's
+    M4-A2P-109). The `OBJ_*` strings it keeps are restored, and `strings.csv` is the integration file plus my
+    seven controls lines.
+  - **Found and fixed (8d42e9508):** a resident field stopped following the text size and palette.
+    - **Cause:** big24 keeps the field zone through a random fight. It leaves the tree and comes back without
+      `_ready`, and `UiSettings.follow` stopped for good on `tree_exited`.
+    - **Effect:** after the first random battle, nothing in that zone took a text-size or palette change again: the
+      interact prompt, tip card, area title card, codex notice, objective HUD, hold prompt and dialogue box. That
+      included a change made in the battle pause.
+    - **Fix:** `follow()` now stops while out of the tree and catches up when back.
+    - **Test:** test_ui_settings::test_a_control_out_of_the_tree_catches_up_and_keeps_following fails on the old code
+      and passes now.
+  - **Victory and rewards:** battle_victory rendered at 100% and at 130% (the fixture's `ui_settings`, restored
+    afterwards), both viewed. The rows, XP, "+3 movement" (this game's level-up: Lattice movement), lume and drops
+    fit, and so do the choices. Nothing is cut.
+  - **Pad:** the result choices are covered by test_input_parity_battle (result panel, each device). The A press that
+    picks Return can't fire an interaction on arrival: the field acts on the press event, which the battle consumed.
+  - **Return:** test_battle_return 1/0 (the resident re-attach, under the fade).
+  - **Tests:** ui_settings 12/0, settings 49/0, field_menu 37/0, objective_hud 7/0, interact 13/0, battle_return 1/0,
+    pad_walk 3/0; validate_data 0/0; lint and format clean.
+MERGE-READY @ 8d42e9508: a resident field keeps following the text size and palette; battle-return as-played check.
+- 2026-10-30 17:50, **Act II menus for the content that has landed (big24).**
+  - **Malcor Venn's portrait** (4eabd31f3): baked neutral, cold and determined from his model (M4-A2P-051). The
+    dialogue box shows it for speaker `malcor_venn` (alias), so his Ch14 decree reads with his face.
+  - **Merel, Tobin and Ansedra's clerk** (8b07bcd50): 16 faces, in the emotions their Act II lines use. A new test,
+    test_every_act2_speaker_with_a_model_has_a_portrait, guards the next Act II model to land.
+  - **Viewed:** every bake. Two notes for characters:
+    - Venn's face uses Asha's pose weights, so his three expressions look nearly alike at 256 px. A Venn face-pose
+      table would give the decree its chill.
+    - Tobin's `laugh` reads as a lopsided grimace with the tongue showing.
+  - **Still waiting:**
+    - the Abiding guard's portrait (no model yet);
+    - Venn's bestiary page and the answered-by cursor line (no Venn enemy row, no `answered_key` yet);
+    - the seven-hero formation check (Pell's battle row).
+  - **Tests:** hero_portraits 10/0, dialogue_box 27/0; validate_data 0/0 (PROVENANCE rows); lint and format clean.
+MERGE-READY @ 8b07bcd50: Act II faces (Venn, Merel, Tobin, the clerk) in the dialogue box.
+BACKLOG EMPTY: every remaining item waits on another track (the Abiding guard's model; Venn's enemy row with `answered_key`; Pell's battle row; ch14's thread for the Lacquer Court objectives).
+- 2026-10-30 18:20, **the Lead's 16:45 note: big25's red test_aspect_layouts** (merged big25 at b67876dbf;
+  `objectives.json`, `qa_known.json`, the objective test and `strings.csv` take act2-plan's integration side).
+  - **Cause:** the failing label was the Read's "Weak to Fire" float (DamageLayer), not the panel. At 4:3 the Lantern
+    Eel stands at the screen's left edge, so the centred float started at x -41 (-63 at 130%).
+  - **Fix (430bd0471):** every damage number and float word is clamped inside the screen by `edge_px` (12;
+    `battle_hud.json` `damage` and `float_text`).
+  - **Tests:** aspect 18/0 (failed before), read_panel 13/0, battle_controller 33/0, accessibility_battle_speed 6/0;
+    validate_data 0/0; lint and format clean.
+  - **Render:** battle_read_panel with and without the fix is pixel-identical at 16:9. Its drift from the baseline
+    (rmse 0.074) was already there without my change, so it's another track's (the staging).
+  - **Battle return at 130% and on a pad:** done at 17:00 (80d453279). The victory and rewards renders at 100% and
+    130% were viewed, the pad covers the result choices, and the fix for the resident field following the text size
+    is in.
+MERGE-READY @ 430bd0471: battle floats stay on screen (big25's 4:3 Read red).
+- 2026-10-30 19:05, **M3-HER-1167 (integration-qa's request, the Lead's top priority): the first zone loads while the
+  title shows** (082ab9166).
+  - **What:** the title calls `ResidentLoads.load_scene` (no hold) for the zone its highlighted choice enters.
+    - **New Game:** `locations.json` `new_game`, which on the Act I route is the prologue (157 loads), not
+      Haluna.
+    - **Continue:** the newest record's location, read with `slot_info` without loading it.
+    - The loads queue behind the hero bodies. Moving between New Game and Continue switches the zone.
+    - When the change starts, the same request loads nothing twice and keeps the queued prewarm, so the pipelines
+      still compile under the cover.
+  - **Measured** (headless lavapipe; `scene_swap_probe --resident-loads --warm-resident`, plus the new
+    `--warm-scene` for the early start):
+
+    | Zone | Start | Entry | Swap held | Worst hidden frame |
+    |---|---|---|---|---|
+    | Haluna | at the change | 4.9 s | 414 frames | 708 ms |
+    | Haluna | early | 3.1–3.3 s | 158 frames | 796–928 ms |
+    | Prologue | at the change | 1.78 s | 71 frames | 374 ms |
+    | Prologue | early | 1.00 s | 72 frames | 120 ms |
+
+  - **Haluna's remaining hold** is the prewarm staging its ~280 materials under the cover, plus 0.83–0.95 s to
+    instantiate. That is pipeline compile, which loads can't absorb. Pre-compiling on the title would hitch the
+    title, so I left it.
+  - **To integration-qa:** please re-measure on the PC with `--warm-scene`, and log the split (acceptance item 2).
+    Not done here: the prologue starting Ch1's loads (`oruvel_underway`, 102) while it plays. That's the prologue
+    scene's (cinematics') to call, `ResidentLoads.shared().load_scene(next)`. I'd take it if handed over.
+  - **Tests:** resident_loads 10/0 (new: the early start keeps the prewarm), title_menu 17/0 (new: each choice's
+    first zone), input_parity_title 2/0, scene_router 17/0, pad_walk 3/0; lint and format clean.
+MERGE-READY @ 082ab9166: M3-HER-1167, the title starts the first zone's loads.
+- 2026-10-30 19:40, **the Lead's 17:24 note: the victory panel's stay prewarms the return** (95f51b987).
+  - **What:** when the result panel opens on a win or an escape, `FieldBattle._prepare_return()` calls
+    `ResidentLoads.prepare_return(request, SceneRouter.resident_path())`.
+    - The return's scene starts loading with no hold: its `return_scene`, or else `return_location`'s scene.
+    - Nothing loads when that scene is the field kept resident through the fight, or when nothing resolves.
+    - When Return is pressed, the change asks for the same scene: nothing loads twice, and the queued prewarm stays.
+  - **How much it saves:** whatever the panel's stay covers. Haluna fully loaded early took the entry from 4.9 to
+    3.1 s headless (M3-HER-1167's numbers). A one-second stay covers part of that.
+  - **Tests:** resident_loads 11/0 (new: test_the_victory_panel_starts_the_return_s_loads), field_battle 12/0,
+    battle_return 1/0, input_parity_battle 8/0; lint and format clean.
+  - **To integration-qa** (extending the resident return to scripted fights): my hook is one call in
+    `FieldBattle._show_result` (`game/flow`, the slice's; one guarded line plus `_prepare_return`). If your change
+    keeps a scripted fight's origin zone resident, `prepare_return` already skips it when `resident_path()` matches
+    the return. Please merge around it rather than over it.
+  - **Spotted, not mine:** nothing emits `EventBus.battle_ended`. FieldEncounters listens for it to grant the
+    post-battle grace, so that grace never arms through the bus.
+  - **The 4:3 Read panel:** already pushed (430bd0471, MERGE-READY at 18:20).
+MERGE-READY @ 95f51b987: the victory panel starts loading the return's destination.
+- 2026-10-30 19:55, **the Lead's 17:44 note: test_aspect_layouts still red in big26.** big26 (e605c9f4c) doesn't
+  contain the fix. 430bd0471 ("keep battle floats on screen", MERGE-READY at 18:20) is on `claude/ui` but was never
+  merged into the integration branch.
+  - **Checked:** big26 merged into `claude/ui` (d311c5e38). On that head: aspect 18/0, read_panel 13/0,
+    resident_loads 11/0, title_menu 17/0; validate_data 0/0.
+  - **What fixes the red:** merging `claude/ui` at or after 430bd0471. The commits are 430bd0471 (the clamp in
+    `damage_number.gd` plus `edge_px` in `battle_hud.json`) and its log.
+MERGE-READY @ d311c5e38: claude/ui with big26 merged; carries the 4:3 Read fix (430bd0471), the title preload (082ab9166) and the victory-panel preload (95f51b987).
+BACKLOG EMPTY (big26 checked at 20:00): every remaining item waits on another track.
+- **Venn's bestiary page and the answered-by cursor line:** no Venn enemy row, no `answered_key` (combat).
+- **The seven-hero formation check:** Pell has no battle row (combat).
+- **The Abiding guard's portrait:** no model (characters).
+- **Already covered:** every Act II speaker with a model has a face, and every foe with a model has its bestiary
+  portrait.
+- **To merge:** claude/ui at 43fa81abe for big26's aspect red.
+- 2026-10-30 20:50, **the Lead's 18:04 note: the Act II UI as played on Ch10–Ch13** (M4-A2P-1700, my range 1700–1799).
+  - **The walk:** `tests/unit/test_act2_ui_as_played.gd` (5/0) runs at 100% and 130%.
+    - **Zone titles:** every Ch10–Ch13 location's area title card.
+    - **Objective lines:** every Ch10–Ch13 line, main and side. A main line shows in its zone; on demand it's the
+      Where-to-next card.
+    - **Shops and inns:** Quellan's and Ansedra's, walked with the pad (Buy, every stock row, a purchase, Rest,
+      Leave), open and closed.
+    - **Vowbound calls:** Asha's battle menu with the six Vowbound bound by Ch13, each Call row reached by the pad.
+    - **It fails on:** a Control off screen, text out of its panel, and text cut short (wrapped or one-line).
+  - **Found and fixed (fca18c182):**
+    1. **An inn's refusal was cut to one line.** "The door is barred. No rooms for…" at 130%: the status kept its
+       built height. It now gets the column down to the help line.
+    2. **Quellan's and Ansedra's Rest lines were cut at 130%.** They needed 365 px of a 326 px column. The inn panel
+       is now 618 tall (was 558) and its line's cap is 400.
+  - **Renders viewed:** inn_menu at 100% and at 130% (Quellan). The inn_menu baseline changes with the taller panel.
+  - **Clean:** the area titles, every objective line, the shops' stock, and the six Call rows (all on screen; the
+    root grows to 12 rows and still fits).
+  - **Tests:** act2_ui_as_played 5/0, inn 11/0, shop 28/0, town 6/0, aspect 18/0, pseudo_loc 26/0,
+    input_parity_shop 3/0; validate_data 0/0; taskboard ok.
+MERGE-READY @ fca18c182: M4-A2P-1700, the Act II UI as played (inn refusals and Rest lines whole at 130%).
+- 2026-10-30 21:40, **the Lead's 18:24 note: the Act I first hour from a fresh profile** (M4-A2P-1701, 07386b3d0).
+  - **First battle (Ch1's wickfry):** TUT_CH01_COMMANDS is on the help line, in gold, when the first command menu
+    opens. It shows once per fight, and the first cursor move gives the line back to the help. OK as is.
+  - **Found and fixed:**
+    1. **The menu tip never showed.** Its flag (`ch01_wickfry_won`, and the slice's `ch02_tideline_won` before
+       it) is set in the battle scene, where no field tip card listens, and the zone reloads after a scripted fight.
+       Flag tips are now caught up when the field next takes input (still once per save).
+    2. **The Where-to-next and menu tips waited for Ch2's slice flags.** New Game plays the prologue and then Ch1,
+       so a chapter went untaught. Both now come in Ch1 (`ch01_started`, `ch01_wickfry_won`) and still on the
+       slice route. `tutorial_tips.json` `when` may list flags, and `requires_any` is new; `validate_data` and
+       its test know both.
+    3. **Tips couldn't be skipped.** Pressing an action a tip names now fades it out, so the menu tip no longer
+       comes back after the menu closes.
+  - **Unchanged and fine:** the save tip (the first shrine in reach), the menu-save and Swell tips in turn, and the
+    objective line on each zone's first input.
+  - **Render viewed:** the menu tip at 130%.
+  - **Tests:** tutorial_tips 8/0 (three new), input_parity_glyphs 7/0, objective_hud 7/0, field_controller 5/0;
+    tools test_tutorial_tips OK; validate_data 0/0; taskboard ok.
+MERGE-READY @ 07386b3d0: M4-A2P-1701, the first-hour tips (once, in Ch1, skippable).
+- 2026-10-30 22:30, **the Lead's 18:45 note: the Act II first-time hints** (M4-A2P-1702, a3065f588).
+  - **Added** (act2-plan's `ui/tutorials.md` text, already on the integration branch):
+    - Seven heroes on `ch10_started` (a flag tip, so it survives the fade-in);
+    - Records on `ch13_archive_read`;
+    - Dark shrines at the first shrine in reach after `ch14_declared_heretics`, never before.
+    - Each shows once (`tut_records_seen` and `tut_dark_shrine_seen` are declared) and fades when its action is
+      pressed.
+  - **Ch10's Where-to-next:** the objective line slides in when `ch10_started` makes the Ch10 row live (the line
+    shows on change), so the fade-in timing doesn't lose it.
+  - **To act2-plan (narrative), M4-A2P-1004:**
+    - **F1:** done in 07386b3d0.
+    - **F5:** the objective tip now comes at the bell room (`ch01_saw_bell_room`, or `ch02_met_asha` on the slice
+      route).
+    - **F8:** layout shrines are tagged `shrine`.
+    - **Optional wording, taken:** "objective", "Items, Equip … the Map".
+    - Please move 1004 to done on your branch; it isn't on the integration branch yet.
+  - **Waiting on others:**
+    - The Swell-mode tip: no `<mode>_unlocked` flags yet (Progression).
+    - The new statuses' lessons are combat's battle prompts (`TUT_CH10_ROOTED` and the rest), not in
+      `encounters.json` yet. The help line shows each once per fight when they land.
+    - Act II Vowbound: untaught by plan.
+  - **Tests:** tutorial_tips 9/0, input_parity_glyphs 7/0, save_shrine 13/0; tools test_tutorial_tips OK;
+    validate_data 0/0; taskboard ok.
+MERGE-READY @ a3065f588: M4-A2P-1702, the Act II first-time tips and M4-A2P-1004's fixes.
+- 2026-10-30 23:20, **the Lead's 19:25 note.**
+  - **Requests filed:**
+    - M4-A2P-1703 (combat): wire the Act II battle prompts (`TUT_CH10_ROOTED` and the rest) into
+      `encounters.json`.
+    - M4-A2P-1704 (progression): the Swell-mode unlock flags, for the "A New Swell" tip.
+  - **Save and load pass (M4-A2P-1705, ace2d088c):**
+    - **The sweep:** `tests/integration/test_continue_every_act1_zone.gd` covers every enterable Act I location
+      (17, the prologue to Ch9). It writes a chapter autosave, then Continues as the title does. Chapter, location,
+      party and reserve, flags, bag, money and play time come back, and the party enters that location's scene at a
+      named spawn.
+    - **Found and fixed (ADR 0121):** Continue from a chapter autosave went to the last shrine, a chapter back, while
+      the slot named the new zone. 16 of 17 locations were wrong on the old code. The autosave now records its
+      location as the respawn, on a copy (`SaveSystem.autosave_state`); Game.state keeps its shrine.
+    - **Already covered and green:** the shrine round trip in every zone (test_qa_save_shrines); the autosave during
+      a cutscene waits and saves its end (test_autosave_deferred); the pause menu's Settings and resume
+      (pad walk, input_parity_battle).
+    - **Tests:** autosave 23/0 (new: test_a_chapter_autosave_continues_in_the_chapter_s_zone), continue_every 1/0,
+      save_system 11/0, world_return 17/0, title_menu 17/0, save_new_run 4/0; validate_data 0/0; taskboard ok.
+MERGE-READY @ ace2d088c: M4-A2P-1705 (ADR 0121), plus requests M4-A2P-1703 and M4-A2P-1704.
+- 2026-10-30 23:45, **the Lead's 20:26 note.**
+  - **Save and load pass:** pushed. MERGE-READY @ ace2d088c (M4-A2P-1705, ADR 0121); origin/claude/ui is at b084899d9.
+    - Every Act I zone: a chapter autosave, then Continue from the title, restores the party, flags, zone and spawn.
+    - Mid-cutscene: the autosave waits for the cutscene's end and saves that (test_autosave_deferred, green).
+    - Fixed: Continue from a chapter autosave went to the last shrine, a chapter back.
+  - **The Drownbell re-measure waits.** integration-qa's trace (hero-integration 3b8d02d70, on big28) already splits
+    the return:
+    - 0.4–1.9 s: Haluna loading (the victory-panel preload, 95f51b987, is in effect there);
+    - 1.9–5.0 s: the reveal held by VillagerLayer's per-frame builds, the fix filed as M3-HER-1168 (creatures),
+      not landed.
+    - Until it lands, a re-measure only measures that hold again.
+    - **Next step:** when M3-HER-1168 is on the integration branch, run the return probe
+      (`scene_swap_probe --resident-loads --warm-resident --encounter=<drownbell> --return=<haluna>`) with and
+      without `FieldBattle._prepare_return`, and log the split here.

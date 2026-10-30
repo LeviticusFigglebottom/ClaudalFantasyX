@@ -27,7 +27,7 @@ OBJ_CH11_DOWN,Go down through the engine hall to the sanctum.
 OBJ_CH11_OUT,"Climb back up to the light. The road goes on, into the Heights."
 OBJ_CH11_SIDE_ALTAR,The keeper's altar lamp has to go up a step.
 OBJ_CH11_SIDE_BENCH,"There's a broken lamp on the bench, and Liss beside it."
-TUT_LAMP_ENGINE_CRAWLERS,The crawlers mend what you break. Stop them first.
+TUT_LAMP_ENGINE_CRAWLERS,"When the lamps start turning, two quick physical blows put them out. The crawlers relight them: bring the crawlers down first."
 ITEM_CONDUIT_GLASS,Conduit Glass
 ITEM_CONDUIT_GLASS_DESC,A shard of Lit Age salt-glass from a dry conduit. Empty and clear. Used in Customize.
 EQUIP_ASHA_CONDUIT_STAFF,Conduit Lantern-Staff

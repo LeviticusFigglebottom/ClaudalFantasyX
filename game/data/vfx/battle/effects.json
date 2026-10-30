@@ -8393,6 +8393,1238 @@
         }
       ],
       "note": "The circle closes: the wake rocks the barge under each of the party."
+    },
+    "silt_fall": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#4FB3B0",
+          "color_end": "#0E4A55",
+          "swatches": [
+            "glimmer_bound",
+            "deep_teal_shadow"
+          ],
+          "amount": 40,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.45,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        },
+        {
+          "color": "#0E4A55",
+          "color_end": "#061A2B",
+          "swatches": [
+            "deep_teal_shadow",
+            "abyss_navy"
+          ],
+          "amount": 40,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Nhoa's Silt Fall: her motes sift down over the target like silt in deep water, and the deep's cold breaks on it."
+    },
+    "deep_well": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "ground",
+      "layers": [
+        {
+          "color": "#0E4A55",
+          "color_end": "#061A2B",
+          "swatches": [
+            "deep_teal_shadow",
+            "abyss_navy"
+          ],
+          "amount": 44,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.85,
+          "velocity_m_s": [
+            0.05,
+            0.15
+          ],
+          "spread_deg": 5,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 1.4,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#4FB3B0",
+          "color_end": "#0E4A55",
+          "swatches": [
+            "glimmer_bound",
+            "deep_teal_shadow"
+          ],
+          "amount": 30,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.6,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "Nhoa's Deep Well: the deep's cold wells up under each foe, a dark ring with her motes settling into it."
+    },
+    "nhoa_echo": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#4FB3B0",
+          "color_end": "#061A2B",
+          "swatches": [
+            "glimmer_bound",
+            "abyss_navy"
+          ],
+          "amount": 50,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Nhoa's Echo: the last foe's blow, given back in her bound light."
+    },
+    "farewell_tide": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "ground",
+      "layers": [
+        {
+          "color": "#0E4A55",
+          "color_end": "#061A2B",
+          "swatches": [
+            "deep_teal_shadow",
+            "abyss_navy"
+          ],
+          "amount": 70,
+          "lifetime_s": 0.7,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            1.5,
+            3.0
+          ],
+          "spread_deg": 50,
+          "gravity": [
+            0,
+            -6.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#FFE9B8",
+          "color_end": "#F4F8FF",
+          "swatches": [
+            "glimmer_lift",
+            "glimmer_lift_hi"
+          ],
+          "amount": 40,
+          "lifetime_s": 1.6,
+          "explosiveness": 0.3,
+          "velocity_m_s": [
+            0.4,
+            0.9
+          ],
+          "spread_deg": 25,
+          "gravity": [
+            0,
+            0.4,
+            0
+          ],
+          "size_m": [
+            0.15,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.6,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Farewell-Tide (Nhoa's Swell): the deep's cold tide breaks over every foe, and motes rise off it: the only finisher whose light goes up (act2_plan 4.4; rule 1's released glimmer)."
+    },
+    "knot_light": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#4FB3B0",
+          "color_end": "#EBE7DF",
+          "swatches": [
+            "glimmer_bound",
+            "gauze_white"
+          ],
+          "amount": 54,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -1.5,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#EBE7DF",
+          "color_end": "#4FB3B0",
+          "swatches": [
+            "gauze_white",
+            "glimmer_bound"
+          ],
+          "amount": 26,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "Hesk's Knot-Light: a lit knot opens on the target, the cord-ends snapping out white."
+    },
+    "cord_lift": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "ground",
+      "layers": [
+        {
+          "color": "#EBE7DF",
+          "color_end": "#4FB3B0",
+          "swatches": [
+            "gauze_white",
+            "glimmer_bound"
+          ],
+          "amount": 36,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.85,
+          "velocity_m_s": [
+            0.05,
+            0.15
+          ],
+          "spread_deg": 5,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.9,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Hesk's Cord-Lift: a ring of white cord rises around each ally and lifts their afflictions (a cleanse)."
+    },
+    "hesk_mending": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#4FB3B0",
+          "color_end": "#EBE7DF",
+          "swatches": [
+            "glimmer_bound",
+            "gauze_white"
+          ],
+          "amount": 30,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.5,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "Hesk's Mending: her light settles onto each ally, steady (Regen)."
+    },
+    "pass_cord": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#4FB3B0",
+          "color_end": "#EBE7DF",
+          "swatches": [
+            "glimmer_bound",
+            "gauze_white"
+          ],
+          "amount": 80,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        },
+        {
+          "color": "#EBE7DF",
+          "color_end": "#4FB3B0",
+          "swatches": [
+            "gauze_white",
+            "glimmer_bound"
+          ],
+          "amount": 40,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Pass-Cord (Hesk's Swell): a line of shining knots runs across the field, a knot catching on each foe."
+    },
+    "level_hand": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#4FB3B0",
+          "color_end": "#1D1916",
+          "swatches": [
+            "glimmer_bound",
+            "lacquer_black"
+          ],
+          "amount": 36,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            0.05,
+            0.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            0,
+            0
+          ],
+          "size_m": [
+            0.14,
+            0.28
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Ethren's Level Hand: the air around the target goes level and still, held in bound light."
+    },
+    "hold_the_hour": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "ground",
+      "layers": [
+        {
+          "color": "#4FB3B0",
+          "color_end": "#1D1916",
+          "swatches": [
+            "glimmer_bound",
+            "lacquer_black"
+          ],
+          "amount": 40,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.85,
+          "velocity_m_s": [
+            0.05,
+            0.15
+          ],
+          "spread_deg": 5,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 1.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#7A1712",
+          "color_end": "#1D1916",
+          "swatches": [
+            "lacquer_red_deep",
+            "lacquer_black"
+          ],
+          "amount": 20,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.4,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "Ethren's Hold the Hour: a still ring closes on the target's footing (Stop)."
+    },
+    "lacquer_screen": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "ground",
+      "layers": [
+        {
+          "color": "#7A1712",
+          "color_end": "#4FB3B0",
+          "swatches": [
+            "lacquer_red_deep",
+            "glimmer_bound"
+          ],
+          "amount": 36,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.85,
+          "velocity_m_s": [
+            0.05,
+            0.15
+          ],
+          "spread_deg": 5,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 1.0,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Ethren's Lacquer Screen: a lacquered screen stands around each ally, bound light at its seams (a ward)."
+    },
+    "still_water": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "ground",
+      "layers": [
+        {
+          "color": "#4FB3B0",
+          "color_end": "#061A2B",
+          "swatches": [
+            "glimmer_bound",
+            "abyss_navy"
+          ],
+          "amount": 60,
+          "lifetime_s": 1.6,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            0.02,
+            0.08
+          ],
+          "spread_deg": 5,
+          "gravity": [
+            0,
+            0,
+            0
+          ],
+          "size_m": [
+            0.2,
+            0.36
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 2.0,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#4FB3B0",
+          "color_end": "#1D1916",
+          "swatches": [
+            "glimmer_bound",
+            "lacquer_black"
+          ],
+          "amount": 24,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.6,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "Still Water (Ethren's Swell): the field goes flat and still under every foe, a wide ring that does not move."
+    },
+    "voice_water": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3FD0C9",
+          "color_end": "#4FB3B0",
+          "swatches": [
+            "turquoise_shallow",
+            "glimmer_bound"
+          ],
+          "amount": 60,
+          "lifetime_s": 0.7,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            1.5,
+            3.0
+          ],
+          "spread_deg": 50,
+          "gravity": [
+            0,
+            -6.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Kesh's water voice: sea water over each foe."
+    },
+    "voice_lightning": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#DCE6FF",
+          "color_end": "#4FB3B0",
+          "swatches": [
+            "starlight",
+            "glimmer_bound"
+          ],
+          "amount": 50,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "Kesh's lightning voice: a white seam across the target."
+    },
+    "voice_fire": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#E0702E",
+          "color_end": "#4FB3B0",
+          "swatches": [
+            "ember_orange",
+            "glimmer_bound"
+          ],
+          "amount": 54,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Kesh's fire voice: embers breaking on the target."
+    },
+    "voice_ice": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#BFE6E0",
+          "color_end": "#9DB4D9",
+          "swatches": [
+            "salt_glass",
+            "moon_blue"
+          ],
+          "amount": 28,
+          "lifetime_s": 0.8,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.2,
+            2.4
+          ],
+          "spread_deg": 60,
+          "gravity": [
+            0,
+            -6.5,
+            0
+          ],
+          "size_m": [
+            0.18,
+            0.36
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Kesh's ice voice: rime over each foe."
+    },
+    "voice_holy": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#4FB3B0",
+          "color_end": "#EBE7DF",
+          "swatches": [
+            "glimmer_bound",
+            "gauze_white"
+          ],
+          "amount": 30,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.5,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "Kesh's holy voice: light settling onto each ally."
+    },
+    "voice_glimmer": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#FFE9B8",
+          "color_end": "#F4F8FF",
+          "swatches": [
+            "glimmer_lift",
+            "glimmer_lift_hi"
+          ],
+          "amount": 36,
+          "lifetime_s": 1.1,
+          "explosiveness": 0.3,
+          "velocity_m_s": [
+            0.4,
+            0.9
+          ],
+          "spread_deg": 25,
+          "gravity": [
+            0,
+            0.4,
+            0
+          ],
+          "size_m": [
+            0.15,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.4,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Kesh's glimmer voice: released glimmer rising off each foe (rule 1)."
+    },
+    "the_seven": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3FD0C9",
+          "color_end": "#4FB3B0",
+          "swatches": [
+            "turquoise_shallow",
+            "glimmer_bound"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -1.5,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#E0702E",
+          "color_end": "#4FB3B0",
+          "swatches": [
+            "ember_orange",
+            "glimmer_bound"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -1.5,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#DCE6FF",
+          "color_end": "#4FB3B0",
+          "swatches": [
+            "starlight",
+            "glimmer_bound"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        },
+        {
+          "color": "#FFE9B8",
+          "color_end": "#F4F8FF",
+          "swatches": [
+            "glimmer_lift",
+            "glimmer_lift_hi"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -0.5,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Seven (Kesh's Swell): every voice at once over every foe, water, fire, lightning and glimmer together."
+    },
+    "brush_jab": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#B08D57",
+          "color_end": "#5F8A78",
+          "swatches": [
+            "brass",
+            "bronze_patina"
+          ],
+          "amount": 44,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "The conduit crawler's brush arm jabs: brass grit and old patina."
+    },
+    "crawler_mend": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#4FB3B0",
+          "color_end": "#B08D57",
+          "swatches": [
+            "glimmer_bound",
+            "brass"
+          ],
+          "amount": 36,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.0,
+          "velocity_m_s": [
+            0.1,
+            0.3
+          ],
+          "spread_deg": 40,
+          "gravity": [
+            0,
+            1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.26
+          ],
+          "energy": 1.3,
+          "emission_radius_m": 1.0,
+          "turbulence": 0.4,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The crawler relights a broken part of the engine: bound light drawn back into it, steady (no drift, no flicker)."
+    },
+    "crawler_tend": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "ground",
+      "layers": [
+        {
+          "color": "#B08D57",
+          "color_end": "#4FB3B0",
+          "swatches": [
+            "brass",
+            "glimmer_bound"
+          ],
+          "amount": 20,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.85,
+          "velocity_m_s": [
+            0.05,
+            0.15
+          ],
+          "spread_deg": 5,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.6,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The crawler tends the engine: a small brass ring at its feet; it pays the party no mind."
     }
   },
   "map": {
@@ -8523,7 +9755,29 @@
       "fin_cut": "fin_cut",
       "sound_dive": "sound_dive",
       "wake_breach": "wake_breach",
-      "wake_wheel": "wake_wheel"
+      "wake_wheel": "wake_wheel",
+      "silt_fall": "silt_fall",
+      "deep_well": "deep_well",
+      "nhoa_echo": "nhoa_echo",
+      "farewell_tide": "farewell_tide",
+      "knot_light": "knot_light",
+      "cord_lift": "cord_lift",
+      "hesk_mending": "hesk_mending",
+      "pass_cord": "pass_cord",
+      "level_hand": "level_hand",
+      "hold_the_hour": "hold_the_hour",
+      "lacquer_screen": "lacquer_screen",
+      "still_water": "still_water",
+      "voice_water": "voice_water",
+      "voice_lightning": "voice_lightning",
+      "voice_fire": "voice_fire",
+      "voice_ice": "voice_ice",
+      "voice_holy": "voice_holy",
+      "voice_glimmer": "voice_glimmer",
+      "the_seven": "the_seven",
+      "brush_jab": "brush_jab",
+      "crawler_mend": "crawler_mend",
+      "crawler_tend": "crawler_tend"
     },
     "items": {
       "bitterleaf": "bitterleaf",

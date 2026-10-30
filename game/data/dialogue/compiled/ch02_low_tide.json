@@ -7,18 +7,18 @@
   "ch02_low_tide": {
    "headers": {"location": "ch02/haluna"},
    "ops": [
-    {"op": "line", "id": "ch02_low_tide_005", "key": "DLG_CH02_LOW_TIDE_005", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 9},
-    {"op": "options", "choices": [{"id": "ch02_low_tide_006", "key": "DLG_CH02_LOW_TIDE_006", "to": 2, "src": 10}, {"id": "ch02_low_tide_007", "key": "DLG_CH02_LOW_TIDE_007", "to": 3, "src": 11}], "src": 10, "next": 7},
-    {"op": "goto", "to": 7, "src": 10},
-    {"op": "line", "id": "ch02_low_tide_008", "key": "DLG_CH02_LOW_TIDE_008", "speaker": "asha", "emotion": "smile", "voice": "", "src": 12},
-    {"op": "event", "name": "departure_declined", "args": [], "src": 13},
-    {"op": "stop", "src": 14},
-    {"op": "goto", "to": 7, "src": 11},
-    {"op": "line", "id": "ch02_low_tide_001", "key": "DLG_CH02_LOW_TIDE_001", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 15},
-    {"op": "line", "id": "ch02_low_tide_002", "key": "DLG_CH02_LOW_TIDE_002", "speaker": "asha", "emotion": "smile", "voice": "", "src": 16},
-    {"op": "line", "id": "ch02_low_tide_003", "key": "DLG_CH02_LOW_TIDE_003", "speaker": "toma", "emotion": "worried", "voice": "", "src": 17},
-    {"op": "line", "id": "ch02_low_tide_004", "key": "DLG_CH02_LOW_TIDE_004", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 18},
-    {"op": "cue", "cue": "music", "args": ["saltgrass_causeway"], "kwargs": {"fade": 4.0}, "src": 20}
+    {"op": "line", "id": "ch02_low_tide_001", "key": "DLG_CH02_LOW_TIDE_001", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 11},
+    {"op": "line", "id": "ch02_low_tide_002", "key": "DLG_CH02_LOW_TIDE_002", "speaker": "asha", "emotion": "smile", "voice": "", "src": 12},
+    {"op": "line", "id": "ch02_low_tide_005", "key": "DLG_CH02_LOW_TIDE_005", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 13},
+    {"op": "options", "choices": [{"id": "ch02_low_tide_006", "key": "DLG_CH02_LOW_TIDE_006", "to": 4, "src": 14}, {"id": "ch02_low_tide_007", "key": "DLG_CH02_LOW_TIDE_007", "to": 5, "src": 15}], "src": 14, "next": 9},
+    {"op": "goto", "to": 9, "src": 14},
+    {"op": "line", "id": "ch02_low_tide_008", "key": "DLG_CH02_LOW_TIDE_008", "speaker": "asha", "emotion": "smile", "voice": "", "src": 16},
+    {"op": "event", "name": "departure_declined", "args": [], "src": 17},
+    {"op": "stop", "src": 18},
+    {"op": "goto", "to": 9, "src": 15},
+    {"op": "line", "id": "ch02_low_tide_003", "key": "DLG_CH02_LOW_TIDE_003", "speaker": "toma", "emotion": "worried", "voice": "", "src": 19},
+    {"op": "line", "id": "ch02_low_tide_004", "key": "DLG_CH02_LOW_TIDE_004", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 20},
+    {"op": "cue", "cue": "music", "args": ["saltgrass_causeway"], "kwargs": {"fade": 4.0}, "src": 22}
    ]
   }
  }

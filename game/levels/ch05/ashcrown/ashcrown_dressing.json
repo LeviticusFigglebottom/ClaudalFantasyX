@@ -421,10 +421,6 @@
    "y": -56.717,
    "yaw_deg": 0.0,
    "lod1_from_m": 900.0,
-   "materials": {
-    "kit_plume": "ac_plume_day"
-   },
-   "materials_dir": "res://assets/environments/kits/ashcrown/materials/",
    "scale": 0.75,
    "scale_y": 1.0,
    "material_paths": {
@@ -433,7 +429,8 @@
     "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
     "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
     "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
-    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+    "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres",
+    "kit_plume": "res://game/levels/ch05/ashcrown/ashcrown_plume_day_material.tres"
    }
   },
   {

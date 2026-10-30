@@ -61,7 +61,9 @@ CHANDLERY_BEACON_Z = -1.8  # its beacon lantern's post, off the keel-roof's fore
 CHANDLERY_BEACON_UP_M = 0.12 + 1.2 + 0.3  # the post's foot over the roof, its height, the lantern's middle
 GULL_PERCH_M = 0.08  # a gull's feet over the ridge line
 LOW_HULL_LOAD_Y = -0.05  # the salvage on the run's planks over LowHull (the bridge sags 0.15 m mid-span)
-LOW_HULL_KEEL_Y = 0.24  # hull_outrigger's keel is 0.31 m under its origin; the run's bridge sags 0.07 m where it lies
+LOW_HULL_AFLOAT_Y = -0.5  # as the moored canoes ride
+LOW_HULL_OFF_RUN_M = -4.25  # its booms' AABB 0.1 m off the run's bridges (z -18), afloat
+LOW_HULL_YAW_DEG = 180.0
 # Canoes moored in open water beside the decks, clear of every plank (x, z, yaw): the town's boats, now that the
 # mooring rafts are tucked.
 MOORED = ((9.6, 10.0, 0.0), (-20.0, -21.5, 180.0), (30.0, 2.6, 90.0))
@@ -77,6 +79,13 @@ def raft_over(block: dict, *, cx: float | None = None, cz: float | None = None, 
     """A raft deck, scaled so its deck covers (size_x + dx) by (size_z + dz), sunk so its deck is at y 0. Tucked: every
     mooring raft abuts a bridge or a deck, and an open raft's bows rise through them (the human's playtest, 10-30)."""
     sx, sz = block["size"][0] + dx, block["size"][2] + dz
+    if abs(sx - sz) < 0.5:  # a square mooring: the square raft, so the deck doesn't overreach the block's sides
+        s = max(sx / ohl.SQUARE_RAFT_M, 1.0)
+        d = pl.put("raft_deck_square", block["pos"][0] if cx is None else cx, -ohl.RAFT_DECK_Y * s,
+                   block["pos"][2] if cz is None else cz, 0.0)
+        if s > 1.0:
+            d["scale"] = round(s, 3)
+        return d
     s = max(sx / RAFT_DECK[0], sz / RAFT_DECK[1], 1.0)
     x = block["pos"][0] if cx is None else cx
     z = block["pos"][2] if cz is None else cz
@@ -108,7 +117,9 @@ def pieces() -> list[dict]:
     # The scale-hull (the spawn; the diver surfaces at its south edge), its bridge, and the scale booth's hull moored
     # alongside it to the west, its counter facing the deck.
     out.append(raft_over(b["ScaleHull"]))
-    out.append(pl.put("scale_hull", -7.4, WATER_Y, 10.5, 0.0))
+    # Alongside the square raft (its deck edge x -5, its float log and fenders to x -5.72), clear of them, the counter
+    # facing the deck across 0.8 m of water, the scaleman's place (x -7.2) inside.
+    out.append(pl.put("scale_hull", -7.7, WATER_Y, 10.5, 0.0))
     out.append(span((0.0, 0.0), (0.0, 5.0)))
     # The commons (36 x 24): raft decks lashed edge to edge, four across and three deep, a row of small rafts on its
     # north edge; the cabin with the child on its roof, the cook's boat, the menders' nets.
@@ -131,12 +142,12 @@ def pieces() -> list[dict]:
     out.append(decor("net_frame", 15.4, 0.0, -7.0, 0.0))
     out.append(decor("salvage_heap", 16.0, 0.0, -18.5, 30.0))
     out.append(decor("salvage_heap", -16.5, 0.0, -13.0, 200.0))
-    out.append(pl.put("hull_outrigger", 19.6, WATER_Y + 0.3, -17.0, 0.0))
+    out.append(pl.put("hull_outrigger", 19.6, WATER_Y + 0.3, -16.4, 0.0))  # its bow clear of the small north deck
     out += [pl.put("hull_outrigger", x, WATER_Y + 0.3, z, yaw) for x, z, yaw in MOORED]
     # The outer mooring and the *Seventh Terrace* west of it: her name-board where the greybox's NameBoard is (O07).
     out.append(span((-18.0, -12.0), (-21.0, -12.0)))
     om = b["OuterMooring"]
-    out.append(raft_over(om, cx=om["pos"][0] + 0.5))
+    out.append(raft_over(om, cx=om["pos"][0] + 0.85))  # clear of the Terrace's side (it lay 0.25 m into her)
     nb = b["NameBoard"]
     tz = nb["pos"][2] - 10.035  # the Terrace's centre: her transom 10 m aft of it, the board 0.035 m off the transom
     ty = nb["pos"][1] - 0.95  # her main deck: the board's centre is 0.95 m over it
@@ -152,8 +163,9 @@ def pieces() -> list[dict]:
     out.append(pl.put("keel_hull", 0.0, -oh.KEEL_DECK_Y, kz, 90.0))
     gx, gz = pl.local(0.0, kz, 90.0, 0.0, 6.7)
     out.append(pl.gull(gx, oh.KEEL_HULL_RIDGE - oh.KEEL_DECK_Y, gz, 1.35))
-    for x in (-4.5, 4.5):  # tucked: an open raft's bows rose through the commons' north decks and the bridge
-        out.append(pl.put("raft_deck_tucked", x, WATER_Y + 0.006, -30.0, 0.0))
+    for x in (-4.5, 4.5):  # tucked: an open raft's bows rose through the commons' north decks and the bridge; 0.5 m
+        # south of the keel-hull's side (their north edges lay 0.4 m into it, cloud-qa pass 6)
+        out.append(pl.put("raft_deck_tucked", x, WATER_Y + 0.006, -29.5, 0.0))
     # Kell's mooring (east): the chandlery's hull with its counter where the greybox's stall is (Kell, O09), the
     # mooring's raft south of it, the bridges.
     out.append(span((18.0, -6.0), (25.0, -6.0)))
@@ -180,8 +192,10 @@ def pieces() -> list[dict]:
     out.append(span((46.0, -17.0), (40.0, -17.0)))
     out.append(span((40.0, -17.0), (34.0, -17.0)))
     lh = b["LowHull"]
-    # Thrown up across the run's planks (C1-12), its keel on them, not through them (the human's playtest, 10-30).
-    out.append(pl.put("hull_outrigger", lh["pos"][0] - 1.0, LOW_HULL_KEEL_Y, lh["pos"][2], 0.0, block="LowHull"))
+    # Swamped alongside the run where C1-12 threw it (cloud-qa pass 6, the Lead 10-30: lying along the planks, its
+    # booms ran through the bridges' rails); its salvage on the planks below is what blocks the way.
+    out.append(pl.put("hull_outrigger", lh["pos"][0] - 1.0, LOW_HULL_AFLOAT_Y, lh["pos"][2] + LOW_HULL_OFF_RUN_M,
+                      LOW_HULL_YAW_DEG, block="LowHull"))
     # Its load (C1-13 cuts it loose across the run's planks): salvage piled over the block, so it reads as cargo
     # blocking the way, not a canoe; it drifts clear with the block.
     out.append(pl.put("salvage_heap", lh["pos"][0], LOW_HULL_LOAD_Y, lh["pos"][2], 90.0, scale=LOW_HULL_LOAD_SCALE,

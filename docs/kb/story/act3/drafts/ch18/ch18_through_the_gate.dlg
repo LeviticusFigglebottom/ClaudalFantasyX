@@ -1,0 +1,47 @@
+// DRAFT (Act III, planning only). Ch18 K03 "Reedhollow: through the gate" (C, 2 min) and K04 "The new shell" (C,
+// 3 min). act3_ch18.md §2 K03-K04; pell.md. The same gate as Ch10 (ch10_pell_kept_out): Pell walks in FIRST this
+// time. The clutch doesn't stop him; they turn to see who it is. Owa meets him at the clutch's stone. The name-carver
+// (Ch10's, the one who scraped his shell blank) carves the new one. The scraped shell goes into the lagoon and PELL DOES
+// NOT WATCH IT SINK: he turns his back, the first time. Costume state change: the new shell (pell.md).
+// RULE 5: held light; nothing rises here (the farewell-tide is K05, and taught, not performed).
+title: ch18_through_the_gate
+location: ch10/reedhollow
+---
+@letterbox on
+@camera K05
+@music reedhollow_return fade=2.0
+@mark pell pell_gate walk
+@wait 3.0
+@mark pell clutch walk
+@anim kirru turn_to pell
+@wait 4.0
+@camera K06
+@mark owa clutch_stone walk
+@wait 2.0
+<<if $ch10_pell_kept_out>>
+    Owa as "The eldest" [neutral]: You came in by yourself. Last time you waited to be told. #line:ch18_gate_001
+<<endif>>
+Pell [neutral]: Next time, I will turn around. #line:ch18_gate_002
+@wait 3.0
+Owa as "The eldest" [neutral]: Then you may have your name back. #line:ch18_gate_003
+<<if $ch11_pell_knelt>>
+    Owa as "The eldest" [sad]: We heard where you knelt. Under the old city. Before her. #line:ch18_gate_004
+    @wait 2.0
+<<endif>>
+@camera K07
+@mark kirru clutch_stone_b walk
+Kirru as "Name-carver" [neutral]: I scraped this one. My hands remember. Let them carve it. #line:ch18_gate_005
+@anim kirru carve name_shell
+@wait 5.0
+@camera K08
+@anim pell take name_shell
+@wait 2.0
+@anim pell throw old_shell
+@anim pell turn_back lagoon
+@sfx shell_into_water
+@wait 5.0
+Pell [neutral]: Pell. #line:ch18_gate_006 #tn:"He says his own name once, as it is given back. Plain, not triumphant."
+@wait 3.0
+<<set $ch18_pell_named = true>>
+@letterbox off
+===

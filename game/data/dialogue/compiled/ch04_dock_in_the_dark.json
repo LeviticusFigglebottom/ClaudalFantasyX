@@ -49,7 +49,7 @@
     {"op": "line", "id": "ch04_dock_015", "key": "DLG_CH04_DOCK_015", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 60},
     {"op": "line", "id": "ch04_dock_016", "key": "DLG_CH04_DOCK_016", "speaker": "rhen", "emotion": "worried", "voice": "", "src": 61},
     {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 62},
-    {"op": "line", "id": "ch04_dock_017", "key": "DLG_CH04_DOCK_017", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 63},
+    {"op": "line", "id": "ch04_dock_017", "key": "DLG_CH04_DOCK_017", "speaker": "asha", "emotion": "tender", "voice": "", "src": 63},
     {"op": "cue", "cue": "anim", "args": ["toma", "sit_post"], "kwargs": {}, "src": 64},
     {"op": "line", "id": "ch04_dock_018", "key": "DLG_CH04_DOCK_018", "speaker": "asha", "emotion": "tender", "voice": "", "src": 65},
     {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 66},

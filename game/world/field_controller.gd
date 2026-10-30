@@ -65,7 +65,7 @@ func _physics_process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if accepts_input and event.is_action_pressed(FieldInput.INTERACT):
+	if accepts_input and screen_clear() and event.is_action_pressed(FieldInput.INTERACT):
 		if interact() != null:
 			get_viewport().set_input_as_handled()
 	elif accepts_input and event.is_action_pressed(FieldMenu.OPEN_ACTION):  # M2-UI-04: the field menu
@@ -128,7 +128,15 @@ func _slide(motion: Vector3) -> void:
 func current_stick() -> Vector2:
 	if not is_nan(input_override.x):
 		return input_override
-	return FieldInput.move_vector() if accepts_input else Vector2.ZERO
+	return FieldInput.move_vector() if accepts_input and screen_clear() else Vector2.ZERO
+
+
+## False while SceneRouter's fade still covers the screen (a scene change, the way back from a fight): the player
+## gets the stick and the interact button when he can see (the human's playtest: the hero moved ~0.3 s before the
+## fade cleared). Tests and cutscenes (input_override, interact()) are not gated.
+func screen_clear() -> bool:
+	var router := get_node_or_null(^"/root/SceneRouter")
+	return router == null or not router.has_method(&"fade_alpha") or float(router.call(&"fade_alpha")) <= 0.0
 
 
 ## The available interact-mode Interactable nearest the player within reach, or null.
