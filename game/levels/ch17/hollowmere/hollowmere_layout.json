@@ -1322,6 +1322,26 @@
    "yaw": 0.0
   },
   {
+   "id": "shop",
+   "activation": "interact",
+   "at": [
+    12.0,
+    0.0,
+    1.4
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "SHOP_PROMPT",
+   "requires_flag": "ch15_reached_hollowmere",
+   "payload": {
+    "shop": "hollowmere_chandler"
+   },
+   "yaw": 0.0
+  },
+  {
    "id": "supper",
    "activation": "interact",
    "at": [

@@ -772,6 +772,26 @@
    "yaw": 0.0
   },
   {
+   "id": "shop",
+   "activation": "interact",
+   "at": [
+    30.0,
+    0.0,
+    3.2
+   ],
+   "size": [
+    1.6,
+    0,
+    1.6
+   ],
+   "prompt_key": "SHOP_PROMPT",
+   "requires_flag": "ch12_reached_quellan",
+   "payload": {
+    "shop": "quellan_trader"
+   },
+   "yaw": 0.0
+  },
+  {
    "id": "camp",
    "activation": "interact",
    "at": [

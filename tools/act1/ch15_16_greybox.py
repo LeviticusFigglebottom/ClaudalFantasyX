@@ -204,6 +204,9 @@ def hollowmere() -> dict:
                      {"id": "shrine", "activation": "interact", "at": [3.0, 0.0, 1.4], "size": [1.6, 0, 1.6],
                       "prompt_key": "FIELD_PROMPT_REST", "requires_flag": "ch15_reached_hollowmere",
                       "payload": {"beat": "shrine", "save_shrine": "hollowmere_shrine"}, "yaw": 0.0},
+                     # the chandler on the dock (shops.json hollowmere_chandler)
+                     {"id": "shop", "activation": "interact", "at": [12.0, 0.0, 1.4], "size": [1.6, 0, 1.6], "prompt_key": "SHOP_PROMPT",
+                      "requires_flag": "ch15_reached_hollowmere", "payload": {"shop": "hollowmere_chandler"}, "yaw": 0.0},
                      listen("supper", "ch15_two_daces", (40.0, 0.0, -1.2), "ch15_pyre_raft", "ch15_supper_with_father",
                             "FIELD_PROMPT_REST"),
                      listen("side_current_phrase", "ch15_side_the_current_phrase", (8.0, 0.0, -1.4),

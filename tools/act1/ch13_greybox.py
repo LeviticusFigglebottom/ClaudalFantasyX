@@ -169,6 +169,9 @@ def ansedra() -> dict:
                      {"id": "shrine", "activation": "interact", "at": [4.0, 0.0, 15.0], "size": [1.6, 0, 1.6],
                       "prompt_key": "FIELD_PROMPT_REST", "requires_flag": "ch13_started",
                       "payload": {"beat": "shrine", "save_shrine": "ansedra_shrine"}, "yaw": 0.0},
+                     # the purveyor on the central island (shops.json ansedra_purveyor)
+                     {"id": "shop", "activation": "interact", "at": [-6.0, 0.0, -44.0], "size": [1.6, 0, 1.6], "prompt_key": "SHOP_PROMPT",
+                      "requires_flag": "ch13_started", "payload": {"shop": "ansedra_purveyor"}, "yaw": 0.0},
                      listen("npc_seamstress", "ch13_bark_seamstress", (-6.0, 0.0, -35.0), "ch13_wedding_announced"),
                      listen("side_the_leaning_flame", "ch13_side_the_leaning_flame", (6.0, 0.0, -34.0),
                             "ch13_wedding_announced"),

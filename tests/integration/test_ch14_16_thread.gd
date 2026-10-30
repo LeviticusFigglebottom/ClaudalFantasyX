@@ -33,6 +33,7 @@ func test_the_wedding_court_to_the_choir() -> void:
 	assert_true(bool(Game.get_flag(&"ch15_liss_told_father")), "B10: the dock-master on arrival")
 	assert_false(trigger_named(&"ship").is_available(), "the ship waits on the pyre-raft")
 	assert_true(trigger_named(&"shrine").try_interact(), "Hollowmere's shrine")
+	assert_true(trigger_named(&"shop").is_available(), "the chandler")
 	assert_true(trigger_named(&"jetty").on_touched())
 	assert_true(bool(Game.get_flag(&"ch15_toma_carried_tobin")), "B12: Let me carry him")
 	assert_true(bool(Game.get_flag(&"ch15_pyre_raft")), "B13: the pyre-raft")

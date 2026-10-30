@@ -288,6 +288,9 @@ def quellan() -> dict:
                      {"id": "shrine", "activation": "interact", "at": [56.0, 0.0, 10.0], "size": [1.6, 0, 1.6],
                       "prompt_key": "FIELD_PROMPT_REST", "requires_flag": "ch12_reached_quellan",
                       "payload": {"beat": "shrine", "save_shrine": "quellan_shrine"}, "yaw": 0.0},
+                     # the trader on the street (shops.json quellan_trader)
+                     {"id": "shop", "activation": "interact", "at": [30.0, 0.0, 3.2], "size": [1.6, 0, 1.6], "prompt_key": "SHOP_PROMPT",
+                      "requires_flag": "ch12_reached_quellan", "payload": {"shop": "quellan_trader"}, "yaw": 0.0},
                      listen("camp", "ch12_camp_the_end_of_the_road", (29.0, 0.0, -3.0), "ch12_ysolde_confessed",
                             "ch12_camp_talk", "FIELD_PROMPT_REST")],
     }
