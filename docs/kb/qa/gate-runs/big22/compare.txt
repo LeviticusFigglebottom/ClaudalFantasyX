@@ -1,4 +1,4 @@
-# big22: 590 shots: 335 PASS, 167 DRIFT (0 size mismatch), 88 NO-BASELINE, 0 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
+# big22: 595 shots: 335 PASS, 168 DRIFT (0 size mismatch), 92 NO-BASELINE, 0 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
 PASS boot_title rmse 0.00000 (limit 0.00400)
 NO-BASELINE slice_end_card (pending_baseline)
 PASS lighting_probe rmse 0.00000 (limit 0.00800)
@@ -487,6 +487,7 @@ DRIFT creature_fen_leech rmse 0.04150 (limit 0.00800)
 DRIFT creature_scree_crawler rmse 0.05364 (limit 0.00800)
 DRIFT creature_rim_crawler rmse 0.00899 (limit 0.00800)
 DRIFT creature_flat_engine rmse 0.01872 (limit 0.00800)
+DRIFT slice_dock_night_yes rmse 0.03367 (limit 0.00800)
 DRIFT ch01_oruvel_dressed rmse 0.16814 (limit 0.00800)
 DRIFT ch01_underway_crown rmse 0.07824 (limit 0.00800)
 DRIFT ch01_underway_gallery rmse 0.07341 (limit 0.00800)
@@ -589,3 +590,7 @@ NO-BASELINE menu_glyphs
 NO-BASELINE field_menu_map_keth_pass
 NO-BASELINE field_menu_map_lowlight
 NO-BASELINE field_menu_map_ansedra
+NO-BASELINE slice_neme_table (pending_baseline)
+NO-BASELINE ch01_oruvel_storm (pending_baseline)
+NO-BASELINE ch01_drop (pending_baseline)
+NO-BASELINE ch01_bell_room (pending_baseline)
