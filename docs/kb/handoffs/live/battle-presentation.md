@@ -323,6 +323,13 @@ element (voice_glimmer, level_hand, still_water).
     hides it too, it comes home for the contact. Test: test_a_bystander_across_the_sight_line_keeps_the_default.
   - Re-rendered: the crab shows at every contact.
 - **Next:** view each encounter's contact sheet, fix, file and log. BACKLOG EMPTY only when every encounter is clean.
+- **Batch 3 (10-30), on big21 + this branch:**
+  - Clean (checks clean, stills viewed): ch01_underway_shoals, ch01_underway_limpet, ch04_sail_leeches.
+  - ch01_hullgnaw: checks clean, but the fall moment's frame was behind the rail. Fixed in 8b0e12c2 and viewed.
+  - **ch04_bottle_hermit, open:** at Glass Flare's contact (a single-target fire hit), a red "119" stands at the
+    screen's left edge, away from any hero, and the party crowds the right edge under the timeline. The checks did
+    not flag either. Next: re-run with each float's target and screen position logged.
+  - ch04_spar_wraith: running.
 
 ### PC-QUEUE
 - Row 64 re-measure (65e776af): the 60 frames after the fade at tideline, causeway, the Drownbell, the Hermit and Moll.
