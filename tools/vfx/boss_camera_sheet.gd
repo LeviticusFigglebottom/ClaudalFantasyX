@@ -1,8 +1,8 @@
 extends Node
 ## M3-BPR-420 (ADR 0041): renders each Act I boss's big moves (camera.enemy_by_skill) in its own fight and arena, so
 ## the shots are viewed: the move is built as the engine reports it (ActionResult) and played by the real choreography,
-## frozen at the lead shot (`lead` of the way to contact, default 0.7) and at the contact. Saves
-## <out>/<encounter>_<skill>_{lead,contact}.png. Run it like a capture:
+## frozen at the lead shot (`lead` of the way to contact, default 0.7), at the contact and AFTER_SEC after it. Saves
+## <out>/<encounter>_<skill>_{lead,contact,after}.png. Run it like a capture:
 ##   godot-render --path . --audio-driver Dummy --fixed-fps 60 --disable-vsync --rendering-driver vulkan \
 ##     res://tools/vfx/boss_camera_sheet.tscn -- --out=<abs dir> [--lead=0.7] [--only=<encounter>]
 ##     [--moment=phase|fall]   (M3-BPR-426: each fight's camera moment instead, mid-hold)
@@ -12,6 +12,7 @@ const SCENE := "res://game/battle/scene/battle_sandbox.tscn"
 const PARTY: Array[StringName] = [&"rhen", &"asha", &"toma"]
 const SETTLE_FRAMES := 30
 const SETTLE_SEC := 2.0
+const AFTER_SEC := 0.8
 const FIGHTS := {
 	&"ch01_hullgnaw": [&"hullgnaw", [&"gnaw", &"thrash"]],
 	&"ch04_spar_wraith": [&"spar_wraith", [&"haul", &"sea_lash", &"shroud_sweep"]],
@@ -92,10 +93,12 @@ func _run() -> void:
 				var next := StringName(str(charge.get("skill", "")))
 				ctl.engine.charge_started.emit(boss, next, maxi(int(charge.get("turns", 1)), 1))
 			var c := float(choreo.current().get("contact", 0.5))
-			for moment: String in ["lead", "contact"]:
+			for moment: String in ["lead", "contact", "after"]:
 				choreo.seek(c * float(_opts.get("lead", 0.7)) if moment == "lead" else c)
 				for i in 3:
 					await get_tree().process_frame
+				if moment == "after":  # the effect grown (it spawns at contact): AFTER_SEC of it, the camera held
+					await get_tree().create_timer(AFTER_SEC).timeout
 				await RenderingServer.frame_post_draw
 				var img := get_viewport().get_texture().get_image()
 				img.convert(Image.FORMAT_RGB8)
