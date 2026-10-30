@@ -10,7 +10,11 @@ Each cue's level is its integrated loudness as the deck plays it (its file, or t
 the row's `volume_db`. A step over STEP_LU between two cues that hand over is reported; the deck crossfades on the beat
 (M3-AUD-864), so a step is heard as one cue being louder than the other, not as a click. Report only.
 
-Run:  python3 tools/audio/act1_mix_pass.py [--md docs/kb/audio/act1_mix_pass.md]
+Act II (M4-A2P-1950, the Lead's 10-30 18:04 item): `--act 2` audits Ch10-Ch16's scenes and bosses, and `--chapters
+ch10,ch11` keeps the chapters named. Every act also gets the victory hand-over: the victory sting (sfx/battle/
+victory.ogg, at its momentary max: a sting's own rule) -> each zone loop the field resumes under it (AudioDirector's battle return).
+
+Run:  python3 tools/audio/act1_mix_pass.py [--md docs/kb/audio/act1_mix_pass.md] [--act 2 --chapters ch10,ch11]
 """
 from __future__ import annotations
 
@@ -27,12 +31,13 @@ sys.path.insert(0, str(ROOT / "tools" / "audio"))
 import numpy as np  # noqa: E402
 
 import act1_audio_audit as A  # noqa: E402
-from synth.loudness import integrated_lufs  # noqa: E402
+from synth.loudness import integrated_lufs, momentary_max_lufs  # noqa: E402
 from synth.mixer import read_audio  # noqa: E402
 
 AUDIO = ROOT / "game" / "data" / "audio"
 STEP_LU = 3.0          # a step past this between two cues that hand over is reported
 SILENT = {"silence", "stop", "none"}
+VICTORY = "sfx:victory"   # the victory sting (a SfxBank row, not a cue): level() reads its file
 
 
 def _json(p: Path):
@@ -45,6 +50,8 @@ def _res(r: str) -> Path:
 
 def cue_files(cid: str) -> tuple[list[Path], float] | None:
     """The files the deck plays for a cue at its start, and the row's volume_db."""
+    if cid == VICTORY:
+        return [ROOT / "assets/audio/sfx/battle/victory.ogg"], 0.0
     cues = _json(AUDIO / "music.json")["cues"]
     row = cues.get(cid)
     if row is None:
@@ -62,6 +69,8 @@ def cue_files(cid: str) -> tuple[list[Path], float] | None:
 
 @lru_cache(maxsize=None)
 def level(cid: str) -> float | None:
+    if cid == VICTORY:  # a sting is held to its momentary max (targets.py), not to the integral of its decay
+        return momentary_max_lufs(read_audio(str(ROOT / "assets/audio/sfx/battle/victory.ogg"), channels=2))
     got = cue_files(cid)
     if not got or not all(p.is_file() for p in got[0]):
         return None
@@ -77,8 +86,15 @@ def zone_cues() -> dict[str, str]:
 
 
 def chapter_of(path: str) -> str:
-    m = re.search(r"/(prologue|ch0[1-9])/", path)
+    m = re.search(r"/(prologue|ch[01][0-9])/", path)
     return m.group(1) if m else "?"
+
+
+def enc_chapter(enc: str) -> str:
+    """The chapter an encounter id belongs to (the Prologue's Drownbell and Ch8's Reach are named, not numbered)."""
+    named = {"drownbell": "prologue", "undertows_reach": "ch08"}
+    m = re.match(r"(ch[01][0-9])_", enc)
+    return named.get(enc, m.group(1) if m else "?")
 
 
 def pairs() -> list[tuple[str, str, str, str]]:
@@ -104,10 +120,12 @@ def pairs() -> list[tuple[str, str, str, str]]:
     for enc, cue in battle.get("encounters", {}).items():
         if A._later(enc):
             continue
-        ch = {"drownbell": "prologue", "undertows_reach": "ch08"}.get(enc, "ch0" + enc[3] if enc[:3] == "ch0" else "?")
+        ch = enc_chapter(enc)
         for s, c in sorted(zones.items()):
             if chapter_of(s) == ch:
                 out.append((ch, f"field <-> boss ({enc})", c, cue))
+    for s, c in sorted(zones.items()):
+        out.append((chapter_of(s), "victory -> field", VICTORY, c))
     seen, uniq = set(), []
     for row in out:
         key = (row[1].split(" (")[0], row[2], row[3])
@@ -120,10 +138,15 @@ def pairs() -> list[tuple[str, str, str, str]]:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--md", help="write the report as Markdown to this path")
+    ap.add_argument("--act", type=int, default=1)
+    ap.add_argument("--chapters", default="", help="comma-separated chapters to keep (ch10,ch11)")
     args = ap.parse_args()
-    A.set_act(1)
+    A.set_act(args.act)
+    keep = {c.strip() for c in args.chapters.split(",") if c.strip()}
     rows = []
     for ch, kind, a, b in pairs():
+        if keep and ch not in keep:
+            continue
         la, lb = level(a), level(b)
         d = None if la is None or lb is None else lb - la
         rows.append((ch, kind, a, la, b, lb, d))
