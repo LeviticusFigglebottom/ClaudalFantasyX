@@ -1206,3 +1206,14 @@ SELF-RENDERED @ d2263160: the 18 Ch13–Ch16 hero shots before; the four archive
 - **Checks:** gdlint and gdformat OK. Godot `--filter` zone_kit_dressing 10, hollowmere 2, lacquer 2, open_sea 2, ch14 5, zone_snap 1 and ambient_life 1 all pass. Tools tests for lacquer court, hollowmere and hollowmere-kit (17) OK. validate_data and taskboard OK.
 - **MERGE-READY @ 683ce87f.**
 SELF-RENDERED @ 1a51d418: ch15_hollowmere_dock, ch15_hollowmere_arrival, ch15_sea_wide, ch15_sea_deck, ch14_court_ceremony and the open sea from above (scratch), all viewed.
+
+### Perf check: Pemakar, Brine Shoals, Corrow, Ch13–Ch16 (Lead 21:25)
+- **Report:** `docs/kb/qa/gpu/2026-10-30-env-art-b-zone-counts.md`. It covers 16 hero shots on lavapipe through the shot rigs, with draws (and shadow draws), objects, primitives, meshes, multimeshes, lights and the most repeated meshes per shot, plus a node-by-node timing of each zone's entry.
+- **Draws are low everywhere.** Godot batches the kit's shared meshes: Pemakar has 2,526 objects in view but only 311 draws. The worst frame is Corrow's strand at about 1,600 draws counting shadows. No zone is over the proposed budget, so no props were converted to MultiMeshes. Pemakar's graves and terraces would only cut node count, and they carry collision.
+- **Triangles:** Pemakar is the heavy one at 1.8–1.9 M in view; it's the row for the PC's `gpu_bench` at the minimum tier. Everything else is under 0.9 M.
+- **Lights:** Pemakar's 393 lamp omnis now fade out from 70 m over 20 m. ZoneKitDressing's new `fire_light_fade` (96c82b27, tested) does this, and Pemakar uses it (4cd6ed12). ch05_pemakar_harbour, _crown and _weir look the same by eye; the far glow is already the far_lights quads.
+- **Entry time:** 11–24 s on this box for Pemakar, Brine Shoals and Corrow, but the dressing is about 2 s of it at Pemakar and 0.55 s at Corrow. Most of the rest is the cutscene heroes' bodies and AnimationTrees (1.6–2.7 s each), which ADR 0111's resident loads take out of the swap frame in the game (the probe bypasses SceneRouter). The first UI label adds another 1.2–1.9 s.
+- **LEAD-ASK:** no per-zone draw or instance budget is written in docs/kb/tech or ADR 0111. Proposed in the report: ≤ 800 visible draws (≤ 2,000 with shadows), ≤ 3,000 objects, ≤ 2 M triangles, ≤ 400 omnis, and the dressing ≤ 0.5 s on a desktop CPU. Adopt it, or name the tech doc that should hold it.
+- **Checks:** gdlint and gdformat OK. Godot `--filter` ambient_life 2, zone_kit_dressing 10 and pemakar 10 pass. test_pemakar_kit and validate_data OK.
+- **MERGE-READY @ b0bfb31e.**
+SELF-RENDERED @ 4cd6ed12: ch05_pemakar_harbour, _crown and _weir with the lamp fade, compared against the beauty-pass renders, all viewed.
