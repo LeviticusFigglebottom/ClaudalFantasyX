@@ -13,6 +13,7 @@ extends Node
 ##   starts the style's whoosh so its crest (`peaks`) lands on the contact; ko plays the collapse.
 ## - **Contact** (signal `contact(result)`, also emitted at once when actions land instantly): the weapon's accent.
 ##   BattleVfx plays the element hit on the same contact (BattleAudio), so this is the softer layer on top of it,
+##   and (M3-AUD-864) the struck target's material under it, or a guarding fighter's own brace (struck_row);
 ##   never the hit itself.
 ## - **Moves without a signal**: a fighter walking on or off its mark and the Vowbound's rise, sink and fall are read
 ##   from entering() / leaving() once a frame, as each one starts (its clock reaching 0).
@@ -29,6 +30,7 @@ const TABLE := "choreo_sfx"
 const WEAPON := "@weapon"
 const REDUCED_AUDIO := &"reduced_audio"
 const SKIP_CONTACT := "contact"
+const STYLE_GUARD := "guard"
 const SKIP_STEPS := "steps"
 const ROLE_BEAT := "beat"
 const ROLE_CONTACT := "contact"
@@ -218,9 +220,11 @@ func _on_beat(kind: StringName, actor_id: StringName) -> void:
 func _on_contact(result: ActionResult) -> void:
 	if result == null or not result.ok or _skips(SKIP_CONTACT):
 		return
-	var id := contact_row(_style_of(result), result)
+	var style := _style_of(result)
+	var id := contact_row(style, result)
 	if id != &"":
 		_play(id)
+	_play(struck_row(style, result))
 
 
 ## The style an action plays: the node's own style_id_for (it works when actions land instantly too), else the plan.
@@ -263,6 +267,28 @@ func contact_row(style_id: String, result: ActionResult) -> StringName:
 	if row == "" or (needs and not landed(result)):
 		return &""
 	return StringName(row)
+
+
+## M3-AUD-864: what a weapon blow landed on (choreo_sfx.json `materials`: a fighter's base id -> its material;
+## `struck`: material -> its row), a layer under the weapon's accent; a guarding fighter's own brace (`guards`).
+## &"" when the style isn't a weapon blow or a guard, nothing landed, or the fighter has no material.
+func struck_row(style_id: String, result: ActionResult) -> StringName:
+	var srow := style_row(style_id)
+	var mats := data.get("materials", {}) as Dictionary
+	if style_id == STYLE_GUARD:
+		var mine := str(mats.get(String(result.actor_id).get_slice("#", 0), ""))
+		return StringName(str((data.get("guards", {}) as Dictionary).get(mine, "")))
+	var own := (data.get("skills", {}) as Dictionary).has(String(result.skill_id))
+	if str(srow.get("contact", "")) != WEAPON or own:
+		return &""
+	for h: Dictionary in result.hits:
+		var tid := StringName(str(h.get("target_id", "")))
+		if tid == result.actor_id or not bool(h.get("hit", true)) or int(h.get("amount", 0)) <= 0:
+			continue
+		var mat := str(mats.get(String(tid).get_slice("#", 0), ""))
+		if mat != "":
+			return StringName(str((data.get("struck", {}) as Dictionary).get(mat, "")))
+	return &""
 
 
 ## True when one of `result`'s hits landed for damage on someone other than the actor.

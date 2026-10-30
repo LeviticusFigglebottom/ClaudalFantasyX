@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "doc": "Field objects' own sounds when used (M3-AUD-864; interact_sfx.json maps the objects; InteractAudio plays them at the object). Files from assets_src/sfx/act1_foley_detail_sfx.py (plain git, ADR 0174). Same row format as sfx.json; AudioData.sfx_rows merges this file in.",
+  "sfx": {
+    "obj_rope_cut": {
+      "files": [
+        "res://assets/audio/sfx/interact/obj_rope_cut.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.03,
+      "cooldown_ms": 300,
+      "voices": 2,
+      "unit_size_m": 10.0,
+      "_note": "M3-AUD-864: a lashing cut: the knife's strokes through wet rope, the rope parting, the slack falling"
+    },
+    "obj_tether_drop": {
+      "files": [
+        "res://assets/audio/sfx/interact/obj_tether_drop.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.03,
+      "cooldown_ms": 300,
+      "voices": 2,
+      "unit_size_m": 10.0,
+      "_note": "M3-AUD-864: a tether let run: rope paying out fast through the hands, the drop's thump at the bottom"
+    },
+    "obj_hinge_pry": {
+      "files": [
+        "res://assets/audio/sfx/interact/obj_hinge_pry.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.03,
+      "cooldown_ms": 300,
+      "voices": 2,
+      "unit_size_m": 10.0,
+      "_note": "M3-AUD-864: a brass hinge prised free: a metal groan, the pin popping, the brass in the hand"
+    },
+    "obj_tin_open": {
+      "files": [
+        "res://assets/audio/sfx/interact/obj_tin_open.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.03,
+      "cooldown_ms": 300,
+      "voices": 2,
+      "unit_size_m": 10.0,
+      "_note": "M3-AUD-864: an old tin: the rusted lid levered off, its contents rattling"
+    },
+    "obj_take_small": {
+      "files": [
+        "res://assets/audio/sfx/interact/obj_take_small.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.03,
+      "cooldown_ms": 300,
+      "voices": 2,
+      "unit_size_m": 10.0,
+      "_note": "M3-AUD-864: a small thing taken up (a charm): a light knock and a cloth fold"
+    },
+    "obj_door_locked": {
+      "files": [
+        "res://assets/audio/sfx/interact/obj_door_locked.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.03,
+      "cooldown_ms": 300,
+      "voices": 2,
+      "unit_size_m": 10.0,
+      "_note": "M3-AUD-864: a shut door tried: the latch rattled, the wood holding"
+    }
+  }
+}
