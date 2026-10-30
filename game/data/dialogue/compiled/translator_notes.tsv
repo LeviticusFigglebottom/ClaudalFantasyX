@@ -57,4 +57,10 @@ DLG_CH15_CONF_011	ch15_the_shoal		The first time Kerrid uses Rhen's name in the 
 DLG_CH15_CONF_018	ch15_the_shoal		'Stilled': the Order's rite on the dead who stay (the Stilling). It is mentioned, never shown.	I'd stood on the wall twice while they Stilled one of us. I was gone before light.
 DLG_CH15_CONF_020	ch15_the_shoal		'This' is the tortoiseshell comb in her hair. 'A lantern like that': Rhen's lantern's twin.	A man with a lantern like that brought me this. I was seven.
 DLG_CH15_CONF_031	ch15_the_shoal		Dry, not a joke: he had just drowned.	I don't know. I was in no state to ask.
+DLG_CH16_SHIP_002	ch16_ship_waits		'It' is the cracked lamp holding Tobin's light.	Keep it dry.
+DLG_CH16_ACT_CARD_001	ch16_swept_away		The act card between Act II and Act III. Title case, as a chapter heading.	Act III: The Unbinding
+DLG_CH16_MEMORY_001	ch16_the_choir		Kesh, the first Cantor, speaking from inside the storm: the Undertow 'holds on' to its heart.	It doesn't sleep. It holds on. To us.
+DLG_CH16_MEMORY_003	ch16_the_choir		Every Cantor since her has been made the storm's heart in turn.	Every one of them since. Every one.
+DLG_CH16_SEFIR_016	ch16_the_choir		'Her': Asha's mother, whom he got up the Fisher Stair. Said quietly, with no threat of violence.	I carried her up so you could do this.
+DLG_CH16_SEFIR_017	ch16_the_choir		Sefir acknowledges what Kerrid is, using a rank Kerrid never held in the Order (he was a fishers' watch captain). Kerrid does not answer.	Captain.
 DLG_TEST_DLG_020	test_dialogue_fixture	yes	Invented language: keep as written.	Ennu re.

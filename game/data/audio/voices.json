@@ -374,6 +374,7 @@
     "hull_widow": {"blips": ["voice_bright"], "pitch": 1.0, "rate_ms": 55, "jitter": 0.06, "volume_db": 0.0},
     "ullari": {"blips": ["voice_low"], "pitch": 0.94, "rate_ms": 70, "jitter": 0.04, "volume_db": 0.0},
     "ullari_woman": {"blips": ["voice_bright"], "pitch": 1.0, "rate_ms": 55, "jitter": 0.06, "volume_db": 0.0},
-    "householder": {"blips": ["voice_bright"], "pitch": 1.1, "rate_ms": 55, "jitter": 0.06, "volume_db": 0.0}
+    "householder": {"blips": ["voice_bright"], "pitch": 1.1, "rate_ms": 55, "jitter": 0.06, "volume_db": 0.0},
+    "kesh": {"blips": ["voice_bright"], "pitch": 0.9, "rate_ms": 55, "jitter": 0.06, "volume_db": 0.0}
   }
 }
