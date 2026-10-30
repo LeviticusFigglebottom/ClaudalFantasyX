@@ -624,6 +624,34 @@ that test at this branch's zones.
 - **LEAD-ASK (Act II order):** the 02:26 order says "Ch10 first", but `act2_tracks.md` gives Ch10–Ch12 to env-art
   and Ch13–Ch16 to env-art-b. I'm starting my own first chapter, Ch13, and not touching Ch10's paths. Say so if
   you want env-art-b on Ch10 instead.
+- **Ansedra (ch13) dressed, with the still mirror (M4-A2P-043 part 1 of 3; M4-A2P-047's still half):**
+  - **New pieces** in `haluna/ansedra.py` (mine under act2_tracks.md): `ansedra_causeway_6m`, `gold_lamp_post`
+    (an unlit salt-glass globe), `island_plinth_16m` and `mooring_platform` (water-steps, bollards, punt-pole
+    trestles, the lacquered mooring arch). Built, imported, with manifest and provenance rows.
+  - **`tools/act2/ch13_ansedra_dressing.py`** dresses the zone in the greybox's own frame. The walk surfaces are
+    flat at y 0 and match the kit, so the greybox keeps the collision and **no story point moved**. It places the
+    plinths, 18 causeway modules, 32 lamp-posts (one per lamp block), 15 bowl-domes plus the skyline ring, Sefir's
+    hall (×0.6) and Corran's plainer timber hall (×0.45), and the two mooring barges (`bridal_barge` ×0.55; the
+    plain `mooring_barge` alternative is the spec's open item for Narrative). The flat gilt and lacquers get zone
+    looks, and the marble is cooled to `#E8E8E2`.
+  - **The still mirror:** `overcast_lagoon` (absorption ×1.5, deep `#5E6E80`, the turquoise scatter muted) with no
+    waves, ripples, foam or sun glint, roughness 0, and SSR out to 400 m. The domes stand doubled in the lagoon.
+    **Not yet:** Ch14's ripple propagation (M4-A2P-047's second half).
+  - **The ch13 grade:** `ansedra_environment.tres` (overcast, exposure 0.75, a colour ambient so the layout's fill
+    row applies) and `lut_ch13_still.png` (written through `zone_lut`'s functions with my own grade dict;
+    env-art's table is untouched).
+  - **`ansedra.tscn`:** I added the `Water`, `Tide` and `Dressing` nodes (as in Act I; named in my ownership row).
+  - **Shots (new, no baselines):** `ch13_ansedra_arrival`, `_moorings`, `_causeway`, `_mirror`, `_sefir_house`,
+    `_corran_house` (rig `game/levels/_tests/ansedra_kit/ch13_ansedra_shots.tscn`). All self-rendered and viewed;
+    the moorings shot was re-rendered after removing the sun glint's hotspot.
+  - **Checks:** tools test_ch13_ansedra_dressing (new), test_ansedra and test_haluna_kit pass, plus every kit test
+    that reads the build. **`test_npc` fails twice on this head (crowd_girl_teen's face distance and committed
+    params). It came in with the integration merge, and nothing here touches the crowd.** Also: validate_data 0/0;
+    taskboard; Godot ansedra 4/0 (new test_ansedra_dressing: the routes walk, the kit covers the greybox, the lagoon
+    is still), ch13 4/0, act2 5/0, zone_kit 13/0, party_spawns 3/0, placeholder 8/0, dressing 18/0, water 48/0.
+  - **MERGE-READY @ 86e01d57.**
+  - **Next:** the Sanctum (`ch13/sanctum`, `ch13_sanctum.md`), then the Lamp Archive, then Ch14's Lacquer Court and
+    the ripples.
 
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
