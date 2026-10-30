@@ -352,3 +352,26 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
   - validate_data 0/0 · taskboard clean · dlgc 0/0.
   - Godot: `objective` 16/0, `zone_map` 22/0, `pseudo_loc` 26/0, `act2_dialogue` 1/0, `codex` 16/0.
 - MERGE-READY @ 3ef552f87
+
+## 2026-10-30: dropped objective rows checked; Ch10 staging re-checked; Ch11 direction notes
+- **The 30 dropped main objective rows. Were they duplicates of the existing rows? Partly, not wholly.** I compared each against integration's 17 zone-level rows (8287ca8b3):
+  - **16 had a direct counterpart** (same zone and target): the fen to Reedhollow, the galleries to Lowlight, Lowlight's sanctum, the pass to Quellan, Quellan to Cloudloom, Cloudloom's dais, the Sanctum, the Archive, the ledgers, the court dais, the barge, the sea watch, Hollowmere, the Rim, and the Choir. That content isn't lost; it's said in their words.
+  - **14 were beat-level steps with no counterpart in the shipped rows**:
+    - Ch10: the Drowner's clearing, the shore at dusk, Pell at the gate;
+    - Ch11: back up and out of Lowlight;
+    - Ch12: the snow wall on the terrace, the Quellan inn night, the descent;
+    - Ch13: the ledge, the Cantor roll, Kerrid at the moorings, the High Warden's house;
+    - Ch14: hold the water-steps, the water-gate;
+    - Ch15: the dock-master, the pyre-raft, the ship south;
+    - Ch16: hold the line.
+
+    Those are **out of the game data, but not lost**: the rows and their text are in git (1a3aa7b9a). The LEAD-ASK above stands: when the flows set the story flags, restore them as finer steps under the zone rows.
+- **Ch10 staging re-check** (m2-slice @ a9e826427), recorded in M4-A2P-112's status section:
+  - resolved: 1 (the flag);
+  - fixed in my scripts, reaching their branch with the next merge of this branch: 2 (dawn gate) and 4 (Pell's exit);
+  - still open: 3 (R02 singles for Owa), 5 (Ysolde's mark; waits on M4-CIN-1305) and 6 (pacing). Their new stills are greybox, before the actors.
+- **Ch11 direction notes:** `docs/kb/story/beats/act2_ch11_direction.md`, per scene. Each has the blocking (proposed marks with coordinates in the greybox frame), every shot (lens, position and target), and for **every spoken line who is in frame**, each checked with the frustum test, plus the pauses against §1's minutes.
+  - **A collision caught and fixed in the scripts:** the greybox layout's own L01–L07 aren't lowlight.md's composed shots (the layout's L05 is a sanctum view), so `@camera L05` would have staged the engine scene in the wrong room with no error. The scripts now use V00, V10 and T00 for the art doc's L01, L03 and L05, and Pell kneels on the layout's `pell_kneel`.
+- **Checks:** dlgc --check 0/0 · validate_data 0/0 · taskboard clean · Godot `dialogue` 86/0.
+- MERGE-READY @ e25478fd1
+- BACKLOG EMPTY (story track).
