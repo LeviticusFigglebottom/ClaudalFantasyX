@@ -10,7 +10,7 @@
   - the art sheets: [color_script.md](../art/color_script.md) `ch10`–`ch16`, `docs/kb/art/environments/{ossa_fen,lowlight,keth_pass,ansedra,open_sea_ch15,hollowmere,pale_rim}.md`, [act2_roster.md](../art/creatures/act2_roster.md) and `act2/*.md`, `vowbound/{nhoa,hesk,ethren}.md`;
   - [act2_finals.md](../audio/act2_finals.md) (the Act II score);
   - [balance_targets.md](../design/balance_targets.md) and [set_piece_battles.md](../design/set_piece_battles.md).
-- **Companion files:** [act2_tracks.md](act2_tracks.md) (the proposed track split and ownership globs); the M4 task files `docs/kb/tasks/M4/M4-A2P-*.md` (one per gap, filed by this plan).
+- **Companion files:** [act2_tracks.md](act2_tracks.md) (the proposed track split and ownership globs); [act2_inventory.md](act2_inventory.md) (the branch-by-branch evidence for §3); the M4 task files `docs/kb/tasks/M4/M4-A2P-*.md` (one per gap, filed by this plan).
 
 ## 0. The bar
 
@@ -256,9 +256,58 @@ Act II is where the inspiring game's shape is closest (a wedding that is a trap,
 
 ## 3. What already exists (the inventory)
 
-See §3 of this file once filled: **[act2 inventory](#3a-inventory-of-existing-act-ii-work)** below.
+The detailed, branch-by-branch evidence is [act2_inventory.md](act2_inventory.md) (every `origin/claude/*` branch, 2026-10-30). The summary:
 
-<!-- INVENTORY -->
+**Where it is.** Almost everything is already **on the integration branch**. Twelve current branches carry byte-identical copies of the 80 task files blocked by ADR 0041. Three Act II commits are still on track branches only and must merge before anything is rebuilt:
+
+| Commit | What | On |
+|---|---|---|
+| `e1db6170` | M3-CRE-663: `kirru_roost` rebuilds byte for byte on every SIMD path (`ossa_fen.py`) | characters, creatures-b, env-art, m2-slice |
+| `2224e784`, `c3f61ea6` (+2) | The primitive pass's rebuilt `rim_crawler` | characters, creatures, creatures-b, m2-slice |
+| `6b399185` | `grounding.pinned`: changes `rim_crawler.glb` and `root_crab.glb` | creatures |
+
+The first PC renders of the Act II shots with no baseline (Nhoa, Hesk, Ethren, the kit rows, Hollowmere, the Kite, the Act II maps) are in `docs/kb/qa/gate-runs/big14/out/` on act1-chapters, creatures and battle-presentation only. Integration pruned them, so view them there before re-rendering.
+
+**Against ADR 0041 §3's final bar** (yes / partial / no):
+
+| Area | What exists | Final? | What is missing |
+|---|---|---|---|
+| **Zones** (15) | Greybox for all of Ch10–Ch16 and Hollowmere (`tools/act1/ch1x_greybox.py`, Ch10–Ch17 zone scripts, flow json, 15 locations, 15 flags, loc, thread and walkable tests) | **no** | Every zone is greybox blocks with no kit placed; no story, NPCs, triggers, shops or shrines; Ch9 doesn't hand off to Ch10 yet |
+| **Env kits and arenas** | `ossa_fen.py`/`reedhollow.py`, `lowlight.py`, `keth.py` (with Quellan and Cloudloom pieces), `ansedra.py` (court, basin, stacks, pursuit barge), `bridal_barge.py`, `drowned_choir.py`, `hollowmere.py` (+grades), `kite.py`; grades `lut_ch10_fen` … `lut_ch16_choir`; six arenas (five with baselines; `drowned_choir_ring` has none); swap maps in ossa_fen.md §4, lowlight.md §5, keth_pass.md §6 | **partial** | Not placed in the zones; PC render approval; no mangrove vegetation system beyond the kit trees; no still-mirror or ripple look; Ch13–16 swap maps |
+| **Boss creatures** (4 + part) | Mangrove Drowner, Lamp Engine, Avalanche Ram, Wakefin, flat-engine: mesh, rig, clips, scene, portrait, sounds, baselines | **partial** | **No `enemies.json` row and no encounter for any boss**; break parts unwired; VFX (snagged motes, lamps, snow, wake) not built |
+| **Regular creatures** (11) | All built (M3-CRE-627/628/645), with sounds and baselines; ten have enemy rows and encounters (M4-C10-03, M4-C11-03) | **partial** | **The enemy rows have no `model` key**, so they fight as capsules; `conduit_crawler` has no row; no skill VFX; suites run on the Ch8 loadout |
+| **People bosses** | Arenas only | **no** | Malcor Venn and the Abiding guard: no sheet, model, music or encounter |
+| **Vowbound** | Nhoa, Hesk, Ethren modelled (13 clips each, `vowbound_pending`, summon-path tests, held forms) | **partial** | `vowbound.json` rows, skills, Swells, summon and bind VFX, first-call flags, baselines |
+| **Kesh** | Story only (vowbound.md §7) | **no** | Sheet (M3-CRE-649 wrote nothing), model, everything |
+| **Music** | 12 zone finals and 4 boss stem pairs rendered (LFS) with cue rows; Act II creature SFX for all 15 creatures | **partial** | `music.json` has **no zone rows for Ch10+** and no boss encounter or phase rows; 14 cues not written (scene cues, stings, cloudloom, sanctum, Malcor Venn, the Abiding guard, act2_break) |
+| **Battle presentation** | `choreo.json` intros and phase moments for the four creature bosses (M3-BPR-408/418), `test_battle_act2_bosses.gd` | **partial** | Waits on the enemy rows; no shots; no Act II skill VFX; no Vowbound summons |
+| **Menus** | Act II area maps (15 zones), Act II codex places and peoples, the act card for Act III, shop and inn data (Quellan, Ansedra, Hollowmere), the Kite map (Act III) | **partial** | Baselines; maps follow greybox layouts; no story codex; no triggers; no document reader; no portraits for new NPCs |
+| **Characters** | Kerrid (M3-CHR-505 in review), Pell (battle kit todo, M3-C09-07), Sefir (Act I model) | **partial / no** | Tobin, Merel, Malcor Venn, Liss's father, the Kirru, the Ullari: nothing on any branch; Kerrid's reveal VFX and facial pass |
+| **Story** | act_outline Ch10–16, the ADRs, character sheets, colour script, env, creature and audio sheets | **no** | **No beat sheet and no `.dlg` for Ch10–16 on any branch** (M4-C10-01 … M4-C16-01 unstarted) |
+| **Balance** | 10 regular suites, `--check` clean, on `ch08_seawall` | **partial** | No Act II loadout; no boss suites; no set-piece suites |
+| **Audit tool** | `placeholder_audit.py` stops at `LAST_CHAPTER = 9` | **no** | `--act 2` (ADR 0203 names integration-qa) |
+
+**The ADR 0041 tasks at the gate.** ADR 0203 says the ADR-0041-blocked tasks move to `todo` when the gate passes, but only the **Act II** ones should. Act III stays paused. The Lead flips these at the gate:
+- **Act II → `todo` (58):**
+  - audio M3-AUD-831, 839–845, 849;
+  - battle presentation M3-BPR-408, 418, 419;
+  - creatures M3-CRE-620, 621, 623, 624, 626, 627, 628, 635, 637, 642, 643, 644, 645;
+  - environment M3-ENV-716–718, 720–722, 732–736;
+  - UI M3-UI-206, 207, 208, 209, 210;
+  - 15 of the 16 M4 tasks (all but M4-AUD-1001);
+  - M3-CRE-649 (only its Kesh sheet: split it, §6);
+  - M3-ENV-723 (Hollowmere: its Ch15 first visit is Act II).
+- **Close, don't flip (3):**
+  - M3-AUD-804/805 (the sketches, superseded by the finals);
+  - M4-AUD-1001 (satisfied: creature_voices.json has non-silent rows for all three Ch10 foes; verify and close).
+- **Stay blocked, Act III (18, plus M3-CRE-649's revisit half):**
+  - audio M3-AUD-836, 851, 852, 853, 856, 858, 859;
+  - creatures M3-CRE-646, 647, 648, and M3-CRE-649's three revisit sheets;
+  - environment M3-ENV-725–731;
+  - UI M3-UI-205 (the Kite map).
+- **Not an act's work (1):** M3-AUD-837 (ADR 0172's render prototype) is tooling. It waits for the PC, not for an act.
+
+**Never rebuild:** the kits, arenas, grades, creature models, Vowbound models, music finals, creature SFX, boss staging, maps and codex rows above. Act II tasks place, wire, finish and approve them. A task that thinks something must be rebuilt states why against the final bar first.
 
 ## 4. Cross-chapter systems and menus new in Act II
 
@@ -311,8 +360,130 @@ See §3 of this file once filled: **[act2 inventory](#3a-inventory-of-existing-a
 
 ## 5. The critical path and the risks
 
-<!-- CRITICAL -->
+### 5.1 What must land first (in order)
+1. **Day 0 (the gate's first batch, by the Lead):**
+   - flip the 58 Act II tasks to `todo` and close the 3 listed in §3;
+   - merge the three unmerged Act II commits (`e1db6170`, the `rim_crawler` rebuild, `6b399185`);
+   - apply act2_tracks.md.
+2. **Story is the long pole.** No beat sheet and no `.dlg` exists for any Act II chapter, and every cutscene, scene cue, NPC, codex page and boss placement hangs off them. The seven sheets are chained (M4-C11-01 depends on M4-C10-01, and so on).
+   - Start the story track on day 1 with Ch10.
+   - **Write Ch14 and Ch15 early, out of order:** they carry M4's named set piece and the reveal, and the characters track needs their cast lists before anything else.
+3. **Cheap wins that make existing work count:**
+   - `model` keys on the ten regular enemy rows: they fight as capsules today;
+   - the four creature bosses' enemy rows and encounters with M3-BPR-419's staged ids, so the existing models, staging and music go live;
+   - music.json zone rows for the twelve existing finals (M4-A2P-091);
+   - the three Vowbound rows (M4-A2P-024);
+   - `placeholder_audit.py --act 2` (M4-A2P-100; allowed now as tools work, ADR 0203).
+4. **The zone kits are placed before encounters are called done.** The kits and arenas exist; placing them (M4-A2P-040…046, M3-ENV-736, M4-A2P-017) is the largest volume of work in the act. It runs in parallel from day 1 on env-art (Ch10–12) and env-art-b (Ch13–16).
+5. **Engine features before boss suites:** rooted, glide and ambush, repair, part-break targeting, element cycling (M4-A2P-020…025), plus drain (M4-CMB-1001). Pell's battle kit (M3-C09-07) comes before any Ch10 balance number.
+6. **The longest art lead times:**
+   - the **people of Ch13–14** (Tobin, Merel, Malcor Venn; M4-A2P-050/051), because the characters track also carries Act I FAST-TRACKs;
+   - **Kesh** (sheet, then model; M4-A2P-057);
+   - **the still mirror and ripples** (M4-A2P-047), which gates Ch13–14's look.
+   Start all three on day 1.
+7. **Kerrid's reveal rig** is VFX plus a facial pass, not a new skeleton (M4-A2P-049, 054, 073). It needs M3-CHR-505 (his model, in review) merged.
+8. **Last:** the Act II playthrough (M4-A2P-101) and the gate file (M4-A2P-102).
+
+### 5.2 The chain, as a picture
+```
+beat sheet ─► .dlg ─► cutscene staging ─► scene cues ─┐
+kit placement (env) ─► greybox retired ───────────────┼─► chapter playable ─► audit zero ─► playthrough ─► Act II gate
+enemy rows + engine features ─► boss suites ──────────┤
+models (people, Kesh) ─► portraits, VFX, summons ─────┘
+```
+
+### 5.3 Risks and unknowns
+| # | Risk | Impact | Mitigation |
+|---|---|---|---|
+| R1 | **Story throughput:** seven chained beat sheets plus ~10–14k words of script, with no narrative track in Act I | Everything downstream idles | A dedicated story track (act2_tracks.md); Ch14/15 early; sheets drafted from act_outline's already-detailed beats |
+| R2 | **LFS uploads are blocked** (TRACK-RULES 2026-10-30), and `assets/audio/music/act2/**` is an LFS path | 14 new Act II cues can't be pushed as specified | Files under 5 MB go as plain blobs in a non-LFS path, or wait in PC-QUEUE; the real fix is the human allowing `lfs.github.com` in the network policy (LEAD-ASK) |
+| R3 | **No PC renders** (the PC is offline), and many Act II kits and creatures have only unapproved big14 PC renders | Approvals pile up at the gate | Self-render ≤ 15 shots per item and VIEW them; view the existing big14 PNGs on act1-chapters, creatures or battle-presentation before re-rendering |
+| R4 | **IP echo:** a wedding trap, outlaws, a companion revealed dead | Guardrail §2 | Plan §2a's rules; the Lead reviews Ch14–16's sheets and staging (SPEC §12.3) |
+| R5 | **Hero zones' cost:** Ansedra's still mirror and the Choir's colossal mouths | Perf and the hitch budget (ADR 0203 condition 5) | Perf checks in M4-A2P-047 and M4-A2P-084; real-GPU numbers queue for the PC |
+| R6 | **People bosses:** human battle actors at boss quality (Malcor Venn, the Abiding guard) | Ch14 and Ch16 slip | Start M4-A2P-051 on day 1; Act I's Stillguard boss is the precedent |
+| R7 | **Act I regressions** from shared files (encounters.json, skills.json, music.json, effects.json, strings) | Breaks ADR 0203's protection | Append-only rows, `merge_union.py`, and Act I tests in every batch |
+| R8 | **Scope:** 15 zones, 6 bosses, 4 Vowbound, ~30 cutscenes at the Act I bar | M4 runs long | SPEC §10.2's cut list (act_outline "Cut Notes": Keth Pass folds into Quellan first). Cutting is the human's call (LEAD-ASK) |
+| R9 | **Open design defaults** (§2): the sanctum walked, the wedding step-hold, the shrines going dark, the flat-engine as a part, the lynx without rows | Rework if overruled | Each one is a LEAD-ASK, defaulted so work proceeds |
+
+### 5.4 SPEC §16 and other human items
+- **No SPEC §16 question is newly due for Act II.** Q1, Q2, Q3, Q5, Q6 and Q7 are answered or defaulted (ADR 0021, 0042). Q4 (voice) is defaulted to none, and Kerrid's long confession is written for text, not voice.
+- **Two items only the human can decide:**
+  - (a) allowing `lfs.github.com` in the environment's network policy (R2);
+  - (b) whether to apply SPEC §10.2's cut list to Act II (R8).
+  Both are LEAD-ASKs, so the Lead can carry them to the human.
 
 ## 6. Task index
 
-<!-- TASKS -->
+All `status: blocked`, `blocked-by: ADR 0203`; the Lead flips them to `todo` at the gate along with §3's 58. Ids `M4-A2P-001`…`199` are this plan's block.
+
+| Id | Role | Reviewer | Title |
+|---|---|---|---|
+| [M4-A2P-001](../tasks/M4/M4-A2P-001-ch10-dialogue.md) | narrative | cinematics | Ch10 “Fen of the Kirru” dialogue scripts (.dlg), barks and codex text |
+| [M4-A2P-002](../tasks/M4/M4-A2P-002-ch11-dialogue.md) | narrative | cinematics | Ch11 “Lowlight” dialogue scripts (.dlg), barks and codex text |
+| [M4-A2P-003](../tasks/M4/M4-A2P-003-ch12-dialogue.md) | narrative | cinematics | Ch12 “The Cold Road” dialogue scripts (.dlg), barks and codex text |
+| [M4-A2P-004](../tasks/M4/M4-A2P-004-ch13-dialogue.md) | narrative | cinematics | Ch13 “Gold and Lacquer” dialogue scripts and the Lamp Archive's record texts |
+| [M4-A2P-005](../tasks/M4/M4-A2P-005-ch14-dialogue.md) | narrative | cinematics | Ch14 “The Peace Wedding” dialogue scripts: the trap, the heresy, the escape |
+| [M4-A2P-006](../tasks/M4/M4-A2P-006-ch15-dialogue.md) | narrative | cinematics | Ch15 “Unlamped” dialogue scripts: Kerrid's confession, Hollowmere, Toma's confession |
+| [M4-A2P-007](../tasks/M4/M4-A2P-007-ch16-dialogue.md) | narrative | cinematics | Ch16 “The Edge of the World” dialogue scripts and the Act II break voice-over |
+| [M4-A2P-008](../tasks/M4/M4-A2P-008-heresy-barks-and-people-codex.md) | narrative | ui | Act II state lines: heresy barks, Kerrid's revealed barks, and the people's codex pages |
+| [M4-A2P-010](../tasks/M4/M4-A2P-010-ch10-playable.md) | cinematics | combat | Ch10 playable at final quality: story wired, Pell out of Reedhollow, the Drowner's encounter |
+| [M4-A2P-011](../tasks/M4/M4-A2P-011-ch11-playable.md) | cinematics | combat | Ch11 playable at final quality: the Lamp Engine with its crawlers, Nhoa's binding |
+| [M4-A2P-012](../tasks/M4/M4-A2P-012-ch12-playable.md) | cinematics | combat | Ch12 playable at final quality: the Avalanche Ram's snow field, Hesk's binding |
+| [M4-A2P-013](../tasks/M4/M4-A2P-013-ch13-playable.md) | cinematics | ui | Ch13 playable at final quality: Ansedra, the Sanctum, Ethren, the Lamp Archive |
+| [M4-A2P-014](../tasks/M4/M4-A2P-014-ch14-playable.md) | cinematics | combat | Ch14 playable at final quality: the wedding trap set piece, heresy, Malcor Venn on the lagoon |
+| [M4-A2P-015](../tasks/M4/M4-A2P-015-ch15-playable.md) | cinematics | combat | Ch15 playable at final quality: the Wakefin in the dark, Kerrid's reveal, Hollowmere's first visit |
+| [M4-A2P-016](../tasks/M4/M4-A2P-016-ch16-playable.md) | cinematics | combat | Ch16 playable at final quality: the Pale Rim, Kesh, Sefir, the Abiding guard and the storm's waking |
+| [M4-A2P-017](../tasks/M4/M4-A2P-017-ch13-16-greybox-swap.md) | cinematics | environment | Swap the Ch13–16 and Hollowmere greyboxes onto env-art-b's kits (the Ch10–12 swap is M3-ENV-736) |
+| [M4-A2P-018](../tasks/M4/M4-A2P-018-move-act2-generators.md) | cinematics | qa | Move the Act II greybox and flow generators from tools/act1/ to tools/act2/ |
+| [M4-A2P-019](../tasks/M4/M4-A2P-019-act2-loadouts.md) | combat | progression | Act II loadouts (Ch10–Ch16) and every Act II suite re-run on its own chapter's loadout |
+| [M4-A2P-020](../tasks/M4/M4-A2P-020-rooted-status.md) | combat | progression | Rooted: a status that refuses the swap (the root crab's Root Drag) |
+| [M4-A2P-021](../tasks/M4/M4-A2P-021-glide-and-ambush.md) | combat | progression | Glide and ambush: untargetable on alternate turns, and until it has acted once |
+| [M4-A2P-022](../tasks/M4/M4-A2P-022-part-repair.md) | combat | character | Repairing adds: the conduit crawler restores the Lamp Engine's broken parts |
+| [M4-A2P-023](../tasks/M4/M4-A2P-023-part-break-targeting.md) | combat | character | A part only one hero breaks: Liss and the flat-engine |
+| [M4-A2P-024](../tasks/M4/M4-A2P-024-vowbound-rows-nhoa-hesk-ethren.md) | combat | progression | Nhoa, Hesk and Ethren in vowbound.json: stats, skills, Swells, bind flags |
+| [M4-A2P-025](../tasks/M4/M4-A2P-025-kesh-element-cycling.md) | combat | progression | Kesh: the element-cycling Vowbound, with each shift telegraphed on the timeline |
+| [M4-A2P-030](../tasks/M4/M4-A2P-030-act2-lattice-section.md) | progression | combat | The Act II section of the Lattice (Ch10–Ch16) |
+| [M4-A2P-031](../tasks/M4/M4-A2P-031-act2-shops-gear-heresy.md) | progression | combat | Act II shop tiers, gear, drops and prices, and the heresy shop rules |
+| [M4-A2P-032](../tasks/M4/M4-A2P-032-act2-swell-modes.md) | progression | combat | One or two Swell modes unlocked by play in Act II |
+| [M4-A2P-040](../tasks/M4/M4-A2P-040-ch10-zones-final.md) | environment | rendering | Ossa Fen and Reedhollow dressed, lit and walkable at final quality, with a mangrove vegetation system |
+| [M4-A2P-041](../tasks/M4/M4-A2P-041-ch11-zones-final.md) | environment | rendering | The Sunken Vey and Lowlight dressed, lit and walkable at final quality |
+| [M4-A2P-042](../tasks/M4/M4-A2P-042-ch12-zones-final.md) | environment | rendering | Keth Pass, Quellan and Cloudloom dressed, lit and walkable at final quality |
+| [M4-A2P-043](../tasks/M4/M4-A2P-043-ch13-zones-final.md) | environment | rendering | Ansedra, the Sanctum and the Lamp Archive dressed, lit and walkable at final quality (the hero zone) |
+| [M4-A2P-044](../tasks/M4/M4-A2P-044-ch14-court-lagoon-final.md) | environment | rendering | The Lacquer Court and the lagoon at night at final quality, with the watching city |
+| [M4-A2P-045](../tasks/M4/M4-A2P-045-ch15-sea-hollowmere-final.md) | environment | rendering | The open sea at night and Hollowmere's first visit at final quality |
+| [M4-A2P-046](../tasks/M4/M4-A2P-046-ch16-rim-choir-final.md) | environment | rendering | The Pale Rim and the Drowned Choir at final quality (a hero zone) |
+| [M4-A2P-047](../tasks/M4/M4-A2P-047-still-mirror-and-ripples.md) | rendering | environment | The still mirror and the first ripples: Ansedra's water look |
+| [M4-A2P-048](../tasks/M4/M4-A2P-048-storm-wakes-at-the-choir.md) | rendering | environment | The storm waking early at the Drowned Choir (the Undertow render on stage) |
+| [M4-A2P-049](../tasks/M4/M4-A2P-049-act2-glimmer-events.md) | rendering | character | Act II's glimmer events: the farewell-tide lift, Kerrid's rope-burns, the held shoal, cold breath |
+| [M4-A2P-050](../tasks/M4/M4-A2P-050-tobin-and-merel.md) | character | rendering | Tobin Varrow and Merel Dask: models, rigs, faces and wedding costumes |
+| [M4-A2P-051](../tasks/M4/M4-A2P-051-malcor-venn-and-abiding-guard.md) | character | combat | Malcor Venn and Sefir's Abiding guard: field and battle actors |
+| [M4-A2P-052](../tasks/M4/M4-A2P-052-liss-father-and-crowds.md) | character | rendering | Liss's father, and the Ansedran, Hollowmere and Quellan crowd costume sets |
+| [M4-A2P-053](../tasks/M4/M4-A2P-053-kirru-and-ullari.md) | character | rendering | The Kirru people (base, eldest, child, clutch) and the Ullari woman |
+| [M4-A2P-054](../tasks/M4/M4-A2P-054-kerrid-reveal-performance.md) | character | cinematics | Kerrid's reveal: the rope-burn emission mask and the long-speech facial pass |
+| [M4-A2P-055](../tasks/M4/M4-A2P-055-sefir-in-person.md) | character | rendering | Sefir Aurane at final quality for Act II's close scenes |
+| [M4-A2P-056](../tasks/M4/M4-A2P-056-act2-wildlife.md) | character | environment | Act II wildlife for the new zones |
+| [M4-A2P-057](../tasks/M4/M4-A2P-057-kesh-sheet-and-model.md) | character | rendering | Kesh, the First Voice: the design sheet, then the model |
+| [M4-A2P-058](../tasks/M4/M4-A2P-058-act2-creature-vfx.md) | character | combat | Act II creatures' own VFX: snagged motes, lamps, snow, wake and the regulars' skills |
+| [M4-A2P-060](../tasks/M4/M4-A2P-060-act2-battle-vfx.md) | combat | rendering | Act II battle VFX in effects.json: every new skill, boss and set piece |
+| [M4-A2P-061](../tasks/M4/M4-A2P-061-vowbound-summons.md) | combat | rendering | Nhoa, Hesk, Ethren and Kesh: summon cinematics (full and short) and Swell finishers |
+| [M4-A2P-062](../tasks/M4/M4-A2P-062-darkness-fight.md) | combat | rendering | The Wakefin in the dark: a battle lit only by the sea-glow, telegraphs by sound and glow |
+| [M4-A2P-070](../tasks/M4/M4-A2P-070-farewell-tide.md) | cinematics | narrative | Stage the farewell-tide (Ch10): the clutch sings, turns its back, the motes lift |
+| [M4-A2P-071](../tasks/M4/M4-A2P-071-vowbound-bindings.md) | cinematics | narrative | Stage the four bindings: Nhoa, Hesk, Ethren and Kesh |
+| [M4-A2P-072](../tasks/M4/M4-A2P-072-wedding-and-escape.md) | cinematics | narrative | Stage the wedding trap and the escape across the water (Ch14) |
+| [M4-A2P-073](../tasks/M4/M4-A2P-073-kerrid-reveal.md) | cinematics | narrative | Stage Kerrid's reveal at sea (Ch15) |
+| [M4-A2P-074](../tasks/M4/M4-A2P-074-choir-and-act-break.md) | cinematics | narrative | Stage the Drowned Choir: Sefir's temptation, the refusal, the storm, the act break |
+| [M4-A2P-075](../tasks/M4/M4-A2P-075-act2-other-scenes.md) | cinematics | narrative | Stage Act II's other scenes and side scenes (Ch11–Ch15) |
+| [M4-A2P-080](../tasks/M4/M4-A2P-080-document-reader.md) | ui | narrative | The document reader: the Lamp Archive's records side by side, and found records in the codex |
+| [M4-A2P-081](../tasks/M4/M4-A2P-081-act2-portraits.md) | ui | character | Portraits for Act II's new people, bosses and Vowbound |
+| [M4-A2P-082](../tasks/M4/M4-A2P-082-heresy-and-seven-in-menus.md) | ui | progression | The heresy in the menus, and the formation and summon menus at seven |
+| [M4-A2P-083](../tasks/M4/M4-A2P-083-act2-bestiary-and-hud.md) | ui | combat | The Act II bestiary and the set-piece HUD bits |
+| [M4-A2P-084](../tasks/M4/M4-A2P-084-act2-loading.md) | ui | qa | Act II scene changes within the hitch budget |
+| [M4-A2P-090](../tasks/M4/M4-A2P-090-act2-scene-cues.md) | audio | cinematics | Act II scene cues: farewell_tide, lagoon_escape, the wedding's break, kerrid_at_sea, hollowmere_answers, sefir_go_home, act2_break |
+| [M4-A2P-091](../tasks/M4/M4-A2P-091-act2-zone-loops-and-stings.md) | audio | cinematics | cloudloom and sanctum_of_the_level loops; the Vowbound stings; music.json zone rows for Ch10+ |
+| [M4-A2P-092](../tasks/M4/M4-A2P-092-people-boss-stems.md) | audio | combat | Boss stems for Malcor Venn and the Abiding guard, and the battle phase rows for all six bosses |
+| [M4-A2P-093](../tasks/M4/M4-A2P-093-act2-ambience-foley.md) | audio | cinematics | Act II ambiences and foley |
+| [M4-A2P-100](../tasks/M4/M4-A2P-100-placeholder-audit-act2.md) | qa | lead | placeholder_audit.py --act 2 (report only), and the Act II inventory file |
+| [M4-A2P-101](../tasks/M4/M4-A2P-101-act2-playthrough.md) | qa | lead | The Act II headless playthrough: Ch9's end → Ch16's act break, with save and load at every shrine |
+| [M4-A2P-102](../tasks/M4/M4-A2P-102-act2-gate-file.md) | qa | lead | The Act II completion gate: docs/kb/qa/act2_complete.md (the same five conditions) |
+
+**Existing tasks this plan relies on, not re-filed:** the beat sheets M4-C10-01 … M4-C16-01; the greybox M4-C10-02 … M4-C14-02 and the regulars M4-C10-03, M4-C11-03; drain M4-CMB-1001; the creature builds M3-CRE-620 … 645; the env kits M3-ENV-716 … 736; the boss staging M3-BPR-408, 418, 419; the menus M3-UI-206 … 210; the audio finals M3-AUD-831 … 849; Pell's kit M3-C09-07; Kerrid's model M3-CHR-505; the lantern housing-mark M3-ENV-719; the Choir body pop M3-HER-1230.
