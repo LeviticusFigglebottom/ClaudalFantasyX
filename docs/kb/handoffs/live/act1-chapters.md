@@ -550,6 +550,18 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - Next: M3-BPR-419 (battle-presentation's request on the Act II boss ids), then Ch16's cameras.
 - MERGE-READY @ 65ea329f0
 
+- **LEAD-ASK (merge note: the Drowner is on both act1-chapters and battle-presentation 1dbfed6d5):**
+  - In enemies.json, skills.json and encounters.json, take **act1-chapters'** `mangrove_drowner`, `rising_water`,
+    `drowner_drag`, `root_stamp` and `ch10_mangrove_drowner` rows. They are sim-tuned and in band (naive 2.5%,
+    role 71.9%), with role_answer toma.
+  - I've renamed my `root_lash`/`root_stomp` to battle-presentation's `drowner_drag`/`root_stamp`, so their VFX map
+    keys stay valid. `tide_gather`/`drowning_grasp` have no VFX row yet (for battle-presentation).
+  - In loc, drop the duplicate keys from **ch10.csv** and keep strings.csv's text: `ENEMY_MANGROVE_DROWNER`,
+    `LORE_MANGROVE_DROWNER`, `PHASE_MANGROVE_DROWNER_UPROOTED`, `SKILL_RISING_WATER`. validate_data errors on
+    cross-file duplicates.
+  - After the merge I'll tune the Lamp Engine, the Ram and the Wakefin with the sim, and add their suites.
+- MERGE-READY @ (this push)
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
