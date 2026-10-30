@@ -878,6 +878,60 @@
       ]
     },
     {
+      "id": "abiding_halberd",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M4-A2P-051: Sefir's Abiding guard (Ch16), the Veiled halberdier: the halberd, no shield; the gold-lacquer dyes (sg_textures.dyed_cloth) and the veil (sg_helm.veil) on the Stillguard kit.",
+      "sources": ["assets_src/characters/stillguard/**", "assets_src/characters/moll/**", "assets_src/characters/villagers/**",
+                  "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**",
+                  "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/abiding_halberd/*.glb", "assets/characters/abiding_halberd/textures/*.png",
+                  "assets/characters/abiding_halberd/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/stillguard/build_stillguard.py", "--", "--variant", "abiding_halberd",
+         "--bake-dir", "{scratch}/abiding_halberd_bake"],
+        ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--variant", "abiding_halberd", "--bake-dir",
+         "{scratch}/abiding_halberd_bake"],
+        ["{python}", "assets_src/characters/stillguard/write_materials.py", "--variant", "abiding_halberd"]
+      ]
+    },
+    {
+      "id": "abiding_bulwark",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M4-A2P-051: Sefir's Abiding guard (Ch16), the Veiled Bulwark caster: Moll's brine-iron and shield; the gold-lacquer dyes (sg_textures.dyed_cloth) and the veil (sg_helm.veil) on the Stillguard kit.",
+      "sources": ["assets_src/characters/stillguard/**", "assets_src/characters/moll/**", "assets_src/characters/villagers/**",
+                  "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**",
+                  "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/abiding_bulwark/*.glb", "assets/characters/abiding_bulwark/textures/*.png",
+                  "assets/characters/abiding_bulwark/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/stillguard/build_stillguard.py", "--", "--variant", "abiding_bulwark",
+         "--bake-dir", "{scratch}/abiding_bulwark_bake"],
+        ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--variant", "abiding_bulwark", "--bake-dir",
+         "{scratch}/abiding_bulwark_bake"],
+        ["{python}", "assets_src/characters/stillguard/write_materials.py", "--variant", "abiding_bulwark"]
+      ]
+    },
+    {
+      "id": "abiding_captain",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M4-A2P-051: Sefir's Abiding guard (Ch16), the Captain of the Veil: the halberd, the sash and a red veil; the gold-lacquer dyes (sg_textures.dyed_cloth) and the veil (sg_helm.veil) on the Stillguard kit.",
+      "sources": ["assets_src/characters/stillguard/**", "assets_src/characters/moll/**", "assets_src/characters/villagers/**",
+                  "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**",
+                  "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/abiding_captain/*.glb", "assets/characters/abiding_captain/textures/*.png",
+                  "assets/characters/abiding_captain/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/stillguard/build_stillguard.py", "--", "--variant", "abiding_captain",
+         "--bake-dir", "{scratch}/abiding_captain_bake"],
+        ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--variant", "abiding_captain", "--bake-dir",
+         "{scratch}/abiding_captain_bake"],
+        ["{python}", "assets_src/characters/stillguard/write_materials.py", "--variant", "abiding_captain"]
+      ]
+    },
+    {
       "id": "pell",
       "threads": 4,
       "owner": "character",

@@ -5098,6 +5098,72 @@
       "settle_frames": 30
     },
     {
+      "id": "abiding_halberd_front",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/abiding_halberd_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "abiding_halberd_face",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/abiding_halberd_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "abiding_halberd_clip_attack",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/abiding_halberd_clip_attack.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "abiding_bulwark_front",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/abiding_bulwark_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "abiding_captain_front",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/abiding_captain_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "abiding_captain_three_quarter",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/abiding_captain_stage.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "ivo_front",
       "scene": "res://game/levels/_tests/characters/stillguard/ivo_stage.tscn",
       "camera": "Cameras/Front",
