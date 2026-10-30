@@ -794,6 +794,17 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
     Re-checking the rest against the dressing next.
 - MERGE-READY @ a063bbad3 (rows 39 fixed, 34 traced)
 
+- **Act I clean-up of my open M3 rows:**
+  - **M3-HER-1159:** the four spawns are off the KNOWN list. The ferry's two and Corrow's Bastion already passed.
+    Coilspire's Encounter fallback now uses a layout-defined spawn (GreyboxZone keeps one if the layout gives it).
+  - **M3-HER-1154:** already fixed in big14, so it's set to review.
+  - **M3-HER-1164:** row 39, set to review.
+  - **M3-BPR-427:** its status now actually reads review.
+  - Checks: field_camera, ch08, snaps, zone_story.
+  - The Ch10 dressing check is also done: F04 and R03–R06 viewed. R03's roost backdrop is the child's own home, and
+    R06's sky is the scripted tilt up with the motes.
+- MERGE-READY @ (this push)
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.

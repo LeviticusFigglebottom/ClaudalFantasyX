@@ -67,8 +67,8 @@ func build() -> void:
 	_build_lighting()
 	_build_blocks()
 	var spawns: Dictionary = (layout.get("spawns", {}) as Dictionary).duplicate()
-	if layout.has("encounters"):
-		spawns[String(FieldEncounters.RETURN_SPAWN)] = [0, 0, 0, 0]
+	if layout.has("encounters") and not spawns.has(String(FieldEncounters.RETURN_SPAWN)):
+		spawns[String(FieldEncounters.RETURN_SPAWN)] = [0, 0, 0, 0]  # a layout may name its own fallback (M3-HER-1159)
 	_build_markers(SPAWNS, spawns)
 	_build_player()
 	_build_stage()
