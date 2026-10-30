@@ -655,6 +655,39 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
     story's scenes land.
 - MERGE-READY @ ed80e67d5
 
+- **LEAD-ANSWERED (10-30 04:06, urgent): Act I rows 34 and 39.** Both earlier fixes (ae27be2f9, de7450392) are in
+  big19.
+  - **Row 34 was not fixed by them.** My test checked the request path, not the double submit that M3-BPR-427
+    diagnosed: the QA walk's `BattleRequest.start` from outside brine_shoals while its FieldEncounters can still fire.
+    The second submit replaced the pending request, so the second scene change opened the sandbox fight.
+    - **Fixed now:** submit drops a second request while one is opening, and FieldEncounters holds off while a battle
+      opens.
+    - Tests: double_submit 3/0, zone_story 16/0, qa_encounters 1/0, fp_field_battle, battle_stinger,
+      act1_encounters_resolve, ch06_thread and fp_thread all green.
+    - **PC-QUEUE:** re-check row 34 on this commit.
+  - **Row 39:** reproduced on this head with test_ch09_thread (7/0). It plays Ch9 from the Strand through the ebbing
+    to RoadGate at dawn, and checks Asha's and Toma's followers walk the road.
+    - **The walk sees "alone" for two reasons, neither a lost party:**
+      - **The night Strand is staged.** Asha's body is the Caller at the raft landing, gilded for the rite
+        (ch09_the_ebbing walks her onto the raft). Toma's body carries his talk prompt (the Shield-Mate side scene).
+        So their followers stand down by design (act1_ch09 B01–B02).
+      - **The walk reaches RoadGate wrongly.** It visits RoadGate under the F8 ch09 start's flags, the night state.
+        Dawn needs `ch09_ebbing_danced` and `ch09_pell_joined` (set by the ebbing scene). Only then does RoadGate's
+        arrival row hide the stage bodies and the followers walk.
+    - **PC-QUEUE re-check recipe:** play the ebbing (touch the raft landing), or set those two flags and enter
+      `ch09/corrow_night` at RoadGate.
+    - LEAD-ASK: if the human wants companions following on the night Strand too, that's a story staging change to the
+      beat sheet. Say so and I'll restage it.
+- **LEAD-ANSWERED (10-30 05:28): one Drowner row.** Understood: the Combat side's row is the record, and I own the
+  numbers.
+  - When big20 lands I'll merge it, take battle-presentation's `mangrove_drowner`, drop my second definition (my
+    `tide_gather`/`drowning_grasp` rows and my enemy and encounter row), and re-tune the record's stats.
+  - Same for the Lamp Engine, the Ram and the Wakefin: stats only, from my balance_targets tune.
+  - Lore wording, for story if they want it (LORE_MANGROVE_DROWNER, mine): "Something came up the estuary as a slick
+    of black water and stayed in the cage of an old mangrove's roots. The roots grew around it and through it. The
+    fen's dead are snagged in it, and they cannot rise."
+- MERGE-READY @ (this push)
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
