@@ -106,5 +106,7 @@
     "lean": 0.39,
     "arms_down": 39.4
   },
-  "_work": []
+  "_work": [
+    "play_stones"
+  ]
 }
