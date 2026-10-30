@@ -1135,3 +1135,12 @@ MERGE-READY @ 8132685db: the battle text-size fixes.
     - **Result:** qa_threads 1/0; objective 16/0, field_menu 37/0, zone_map 22/0; validate_data 0/0.
 MERGE-READY @ ca5ce4037: the battle-return black screen (ResidentLoads keeps the zone through a field battle) and the Act II objective flags for test_qa_threads.
   - **To integration-qa:** the measurement method and the remaining end-to-end check are in request task **M4-UI-212** (role qa), per the Lead's 13:48 note.
+- 2026-10-30 14:30, **the Lead's 13:48 note.**
+  - **Request task to integration-qa:** M4-UI-212 (role qa) holds the measurement method and the end-to-end check.
+  - **Next item, the Act II queue (M4-A2P-083):** a foe's broken parts now show on the battle's Read panel ("Broken ·
+    Lamplight: silent until it is mended") until a tender mends them.
+    - **Test:** test_read_panel 13/0, plus bestiary 37/0, battle_parts 4/0 and pseudo_loc 26/0.
+    - **Render:** viewed with the line injected. The battle_read_panel shot itself is unchanged (no part there).
+    - **Next:** the answered-by cursor line once Venn's row has `answered_key`; the Lacquer Court rows once ch14's
+      flags exist (M4-A2P-014).
+MERGE-READY @ eb1d12998: broken parts on the Read (M4-A2P-083).
