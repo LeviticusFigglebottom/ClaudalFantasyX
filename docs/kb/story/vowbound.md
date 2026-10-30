@@ -37,7 +37,7 @@ Seven bound spirits of past Cantors. The Order calls them "the Saints who stayed
 
 ## 4. Hesk, the Cord-Keeper *(Holy)*
 - **Temple:** Cloudloom, the Ullar Heights.
-- **Who she was:** **Ama Quillo**, the 47th Cantor, sang about 175 years ago. She was a thirty-four-year-old Ullari keth-reader and a devout believer who, on pilgrimage, started *counting*: Cantors, Saints, temples. She recorded the arithmetic in keth and hung them among the thousands of cords in Cloudloom's open hall, where nobody thought to read them. *Forty-seven voices. Seven houses. Where did the rest go?* She sang anyway, believing faith could hold a question.
+- **Who she was:** **Ama Quillo**, the 47th Cantor, sang about 175 years ago. She was a thirty-four-year-old Ullari keth-reader and a devout believer who, on pilgrimage, started *counting*: Cantors, Saints, temples. She recorded the arithmetic in keth and hung them among the thousands of cords in Cloudloom's open hall, where nobody thought to read them. *Forty-seven voices. Seven houses. Where did the rest go?* She sang anyway, believing faith could hold a question. Her lone question-knot at the end of the count is the Eighth Verse's place: the count of the verses is eight, not seven (act3_threads T-04).
 - **Form:** a great condor whose wing feathers are knotted cords, patterned like Ullari weaving and lit from inside with the clean white light of the high passes. **A keth bundle** is clutched in one talon (the keepsake).
 - **Battle identity:** Holy damage, cleansing (she lifts statuses off the party, the way the high passes lift the dead), and Regen. Her light is the truth held up to be read. **Swell:** *Pass-Cord*, a line of shining knots across the field.
 - **The final fight:** Toma's fight. Ama was what Toma tried to be, faithful enough to ask. She asks whether anyone read her cords. Toma says he did, and that they broke his faith, and thanks her for it. *It lands as: a believer honouring the believer who told the truth.*
@@ -58,10 +58,11 @@ Seven bound spirits of past Cantors. The Order calls them "the Saints who stayed
 
 ## 7. Kesh, the First Voice *(all six elements in turn)*
 - **Resting place:** the Drowned Choir, bound in the stones by Sefir himself.
-- **Who she was:** **Kesh Aurane**, the 1st Cantor and a Lamplighter. Sefir's wife. She sang herself in a thousand years ago and was displaced forty years later. She has been awake in stone ever since, unable to lift, while her husband became what he became. She hid the melody of the Eighth Verse in the Choir stones.
+- **Who she was:** **Kesh Aurane**, the 1st Cantor and a Lamplighter. Sefir's wife. She sang herself in a thousand years ago and was displaced forty years later. She has been awake in stone ever since, unable to lift, while her husband became what he became. She hid the Eighth Verse in the Choir stones: its Lamptongue words cut plain, and its melody in fragments that can only be read through the Kirru farewell-tide (act3_threads T-04, the Lead 2026-10-30).
 - **Form:** a colossal woman of standing seawater, rising from the Choir's sunken bowl. Her robe is a hundred open choir-mouths. **A Lamplighter's lamp-key** hangs at her belt (the keepsake).
 - **Battle identity:** she cycles through all six elements by phase (a Combat note: telegraph each shift on the timeline). **Swell:** *The Seven*, all seven verses at once.
 - **Acquisition:** binding her at the Choir is what shows Asha, through Kesh's memory, the truth of the Hush: the singer becomes the storm's next heart. The founding itself is already known from the Lamp Archive (Ch13, [ADR 0016](../decisions/0016-act-two-restaging.md)).
+- **Release:** in the heart (Ch21 H03) Asha calls her out of the sleeve one last time; she is released like the six before her (act3_threads T-01).
 - **The final fight:** fought just before Sefir, with Sefir watching. She fights at full strength because she *wants* the party strong enough to beat him. When she lifts, she doesn't look at him. *It lands as: a thousand-year-old woman choosing release over the man who wouldn't let her go, which is the thesis of the game, shown to its antagonist.*
 
 ---

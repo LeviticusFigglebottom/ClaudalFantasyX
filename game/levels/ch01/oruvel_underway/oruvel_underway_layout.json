@@ -99,5 +99,5 @@
     ]
   },
   "swaps": [{"flag": "ch01_cut_gauge_wheel", "from": "GaugeWheel", "to": "GaugeWheelCut"}],
-  "encounters": {"table": [{"encounter": "ch01_underway_shoals", "weight": 3}, {"encounter": "ch01_underway_limpet", "weight": 1}], "min_m": 18, "max_m": 34}
+  "encounters": {"table": [{"encounter": "ch01_underway_shoals", "weight": 3}, {"encounter": "ch01_underway_limpet", "weight": 1}], "min_m": 95, "max_m": 145}
 }

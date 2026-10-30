@@ -1,0 +1,215 @@
+{
+  "version": 1,
+  "doc": "Act II cutscene sounds (M4-A2P-093): every @sfx the Act II scripts name (game/data/dialogue/ch10-ch16), positional on World. The files come from assets_src/sfx/act2_cutscene_sfx.py (assets/audio/sfx/, plain git, where the sequencer's sfx_dir finds them, as Act I's). Same row format as sfx.json; AudioData.sfx_rows merges this file in.",
+  "sfx": {
+    "egret_lift": {
+      "files": [
+        "res://assets/audio/sfx/egret_lift.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 10.0,
+      "_note": "M4-A2P-093: ch10_dead_channel: a fen egret lifts off the dead channel: wingbeats, drips falling, a croak"
+    },
+    "lamp_seat": {
+      "files": [
+        "res://assets/audio/sfx/lamp_seat.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 10.0,
+      "_note": "M4-A2P-093: ch11_lamp_bench: Liss seats the burner and lights the housing: a twist, the click home, the flame catching, the glass warming to a ring"
+    },
+    "engine_tick": {
+      "files": [
+        "res://assets/audio/sfx/engine_tick.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 10.0,
+      "_note": "M4-A2P-093: ch11_the_engine: the Lamp Engine in the silence before it wakes: a slow ratchet and its hum"
+    },
+    "pole_no_wake": {
+      "files": [
+        "res://assets/audio/sfx/pole_no_wake.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 10.0,
+      "_note": "M4-A2P-093: ch13_still_city: a pole stroke on Ansedra's held water that makes no wake: the wood's knock, and none of the water's answer (a short, dead dip; no drips, no lapping)"
+    },
+    "pole_stroke": {
+      "files": [
+        "res://assets/audio/sfx/pole_stroke.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 10.0,
+      "_note": "M4-A2P-093: ch14_first_ripple: Merel's stroke, the first ripple in four hundred years: the plunge, the swirl, and the ring spreading out as lapping that widens"
+    },
+    "stirring_bells": {
+      "files": [
+        "res://assets/audio/sfx/stirring_bells.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 24.0,
+      "_note": "M4-A2P-093: ch14_first_ripple: the city's bells waking one by one across the water (they sit in space as SFX; lagoon_escape carries the music), shutters opening along the canal"
+    },
+    "water_gate_drop": {
+      "files": [
+        "res://assets/audio/sfx/water_gate_drop.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 24.0,
+      "_note": "M4-A2P-093: ch14_first_ripple: Merel pulls the pin: iron gives, the chain runs, the gate falls into water"
+    },
+    "level_pin_ring": {
+      "files": [
+        "res://assets/audio/sfx/level_pin_ring.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 10.0,
+      "_note": "M4-A2P-093: ch14_the_vows: Ysolde takes the level pin out: one fine, bright ring that will not stop"
+    },
+    "pyre_crackle": {
+      "files": [
+        "res://assets/audio/sfx/pyre_crackle.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 10.0,
+      "_note": "M4-A2P-093: ch15_pyre_raft: the raft pushed off: its fire crackling over water, the raft's wood grating"
+    },
+    "lamp_housing_close": {
+      "files": [
+        "res://assets/audio/sfx/lamp_housing_close.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 10.0,
+      "_note": "M4-A2P-093: ch15_pyre_raft: the housing shut on the motes: the brass hinge, the latch, the bound hum"
+    },
+    "lamp_crack": {
+      "files": [
+        "res://assets/audio/sfx/lamp_crack.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 10.0,
+      "_note": "M4-A2P-093: ch15_pyre_raft: the lamp's glass cracks and one mote is let out: the crack, its ring, a breath"
+    },
+    "kerrid_sits": {
+      "files": [
+        "res://assets/audio/sfx/kerrid_sits.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 10.0,
+      "_note": "M4-A2P-093: ch15_the_shoal: Kerrid sits down on the deck, heavily: cloth, the planking taking him, a breath"
+    },
+    "storm_wall": {
+      "files": [
+        "res://assets/audio/sfx/storm_wall.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 24.0,
+      "_note": "M4-A2P-093: ch16_swept_away: the sea standing up: a roar growing into a wall (the Undertow's family, larger)"
+    },
+    "current_song_hum": {
+      "files": [
+        "res://assets/audio/sfx/current_song_hum.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 10.0,
+      "_note": "M4-A2P-093: ch16_swept_away: Liss humming the current-song under the storm (CURRENT_SONG, motifs.py), one voice, the first phrase; the script plays it at vol=0.3"
+    },
+    "kesh_rise": {
+      "files": [
+        "res://assets/audio/sfx/kesh_rise.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 24.0,
+      "_note": "M4-A2P-093: ch16_the_choir: Kesh rising in the memory: the stones' low groan lifting, and six colours chained (fire, water, lightning, glimmer, holy and a cold glass), as kesh_bound's"
+    },
+    "barge_no_wake": {
+      "files": [
+        "res://assets/audio/sfx/barge_no_wake.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 10.0,
+      "_note": "M4-A2P-093: ch16_the_choir: the High Warden's barge gliding on flattened water: a low hull creak, a pressure hum, no water at all"
+    },
+    "fin_cut": {
+      "files": [
+        "res://assets/audio/sfx/fin_cut.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 20.0,
+      "_note": "M4-A2P-093: ch15_the_fin: the Wakefin's first pass in the dark (act2_skill_sfx.py's fin_cut, at the cutscene's level)"
+    },
+    "shoal_hum": {
+      "files": [
+        "res://assets/audio/sfx/shoal_hum.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 16.0,
+      "_note": "the Lead's 10-30 13:48 item (act2_ch15.md §6): Ch15 B06, the held dead's faint hum as they rise off the shoal; a sideways glass shimmer"
+    },
+    "choir_wind_chord": {
+      "files": [
+        "res://assets/audio/sfx/choir_wind_chord.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 150,
+      "voices": 1,
+      "unit_size_m": 30.0,
+      "_note": "the Lead's 10-30 13:48 item (act2_ch16.md §6): the wind finding the Choir's stone mouths: an open-vowel chord swelling and dying, no melody"
+    }
+  }
+}

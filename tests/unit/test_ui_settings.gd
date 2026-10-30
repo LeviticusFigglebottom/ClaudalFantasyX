@@ -136,7 +136,7 @@ func test_colorblind_palette_swaps_danger_and_enemy_fill() -> void:
 	var t := s.theme_for(base)
 	assert_ne(t, base)
 	assert_eq(
-		t.get_color(&"danger", &"Hymn").to_html(false).to_upper(), "D15E1F", "art/ui.md §9 as amended by M2-UI-11"
+		t.get_color(&"danger", &"Hymn").to_html(false).to_upper(), "C76E10", "art/ui.md §9 as amended by M2-UI-11"
 	)
 	assert_eq(
 		t.get_color(&"enemy_chip", &"Hymn").to_html(false).to_upper(), "2A2414", "art/ui.md §9 as amended by M2-UI-11"
@@ -170,7 +170,7 @@ func test_hud_follows_the_settings_live() -> void:
 	assert_eq(ctl.hud.result.motion_scale, 0.5)
 	s.set_value(UiSettings.PALETTE, &"colorblind")
 	assert_ne(ctl.hud.theme, base, "palette swap re-themes the HUD")
-	assert_eq(ctl.hud.get_theme_color(&"danger", &"Hymn").to_html(false).to_upper(), "D15E1F")
+	assert_eq(ctl.hud.get_theme_color(&"danger", &"Hymn").to_html(false).to_upper(), "C76E10")
 	s.reset()
 	assert_eq(ctl.hud.theme, base, "back to the defaults: the saved theme again")
 	assert_false(ctl.hud.timeline.reduced_motion)

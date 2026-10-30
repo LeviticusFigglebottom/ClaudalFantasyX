@@ -104,7 +104,7 @@ The captures used to play the live sandbox, so any change to `enemies.json` move
 |---|---|---|
 | `reduced_motion` | `false`, `true` | Timeline chips snap to their slot with a 120 ms cross-fade (no slide, no stagger, no turn-start pulse); the command cursor jumps and sub-menus fade in place; the lamp motes stop breathing and the markers stop bobbing; translations (result panel rise, damage number rise) are halved; the camera never shakes. |
 | `text_scale` | `1.0`, `1.15`, `1.3` | Every font size in the theme (variations and the default) is multiplied and rounded. Layout rects stay put, so long labels ellipsize. |
-| `palette` | `standard`, `colorblind` | Overrides theme roles: `danger` → `#D15E1F` (M2-UI-11; it was art/ui.md §9's `#F08A24`), `enemy_chip` → `#2A2414`. Shapes already carry every distinction (chip edges, portraits, glyph silhouettes and backings, hatching). |
+| `palette` | `standard`, `colorblind` | Overrides theme roles: `danger` → `#C76E10` (M2-UI-11 chose `#D15E1F`; the Act I UI pass of 2026-10-30 moved it to reach 4.5:1 on the deep panel too, tools/tests/test_ui_contrast.py; it was art/ui.md §9's `#F08A24`), `enemy_chip` → `#2A2414`. Shapes already carry every distinction (chip edges, portraits, glyph silhouettes and backings, hatching). |
 | `timing_assist` | `off`, `wide`, `auto` | Timed Swell inputs (M2-UI-01). `wide` scales the perfect and good windows by 1.5 (kept inside the beat); `auto` makes a miss count as Good. Applied to the input row (`timing_input(row)`), never in the engine; the ring panel shows a short tag while it is on. Numbers: formulas.md § Swell, Timing assist. |
 
 API (what a menu or a view calls):

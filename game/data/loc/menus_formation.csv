@@ -25,7 +25,7 @@ FORMATION_MENU_DONE_TO_RESERVE_FMT,{name} stepped back to the reserve. The next 
 FORMATION_MENU_WARN_FALLEN_ONE_FMT,"{name} has fallen. In the active line they start the fight unable to act, until someone revives them."
 FORMATION_MENU_WARN_FALLEN_MANY_FMT,"{names} have fallen. In the active line they start the fight unable to act, until someone revives them."
 FORMATION_MENU_ERR_NOT_GATHERED,"Nobody has joined the party yet, so there is no formation to change."
-FORMATION_MENU_ERR_OPEN_PLACE,An open place. Pick a hero first, then choose this place for them.
+FORMATION_MENU_ERR_OPEN_PLACE,"An open place. Pick a hero first, then choose this place for them."
 FORMATION_MENU_ERR_TOO_FEW_FMT,"The active line needs at least {min} in it, so {name} stays."
 FORMATION_MENU_ERR_NONE_STANDING,Nobody left in the active line could fight: the battle would be lost before it began. Keep someone standing there.
 FORMATION_MENU_NAMES_JOIN,", "

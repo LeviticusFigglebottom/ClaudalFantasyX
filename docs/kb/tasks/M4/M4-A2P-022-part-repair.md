@@ -2,7 +2,7 @@
 id: M4-A2P-022
 title: "Repairing adds: the conduit crawler restores the Lamp Engine's broken parts"
 role: combat
-status: doing
+status: review
 owner_session: act1-chapters
 depends_on: [M4-A2P-024]
 reviewer: character
@@ -37,5 +37,19 @@ request-from: lead
       with the boss tune.
     - Then re-run `ch11_lamp_engine` with a real role band.
   - **The stage relight and the mend shot:** M3-BPR-441.
+
+- **act1-chapters, 2026-10-30, the data is in on the record `lamp_engine` row (big20):**
+  - **The engine:** a weak point (2 quick hits while it gathers, `PART_LAMP_ENGINE_LAMPS`). `parts: ["lamp_flare"]`:
+    breaking the gather darkens its lamps and silences Lamp Gather until a crawler mends them.
+  - **The crawlers:** `conduit_crawler` (creatures-b's model). Brush Jab, Mend (`restores_part`), Tend. Its AI mends
+    first, jabs only once the engine is struck, and tends otherwise. Role answer Ysolde.
+  - **The encounter:** `ch11_lamp_engine` is the engine plus two crawlers.
+  - **The sim:** `ch11_lamp_engine` now has a real role band.
+    - 1,000 seeds: naive 0.2, role 63.2 (Ysolde clears the tenders, then Liss works the engine), smart 100 over 30+
+      turns.
+    - A one-seed trace showed Liss's quick hits break the lamps mid-gather and a crawler walk over and relight them.
+  - **Numbers are low for Ch11** (engine strength 5, HP 2000) because the suites still run on `ch08_seawall`, whose
+    casters have 280–340 HP. Re-tune on M4-A2P-019's Ch11 loadout.
+  - The stage relight is M3-BPR-441. The ring meshes per part are creatures-b's: `break_parts` keyed `lamp_flare`.
 
 ## Review log

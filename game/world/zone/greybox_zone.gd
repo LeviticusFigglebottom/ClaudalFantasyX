@@ -67,7 +67,8 @@ func build() -> void:
 	_build_lighting()
 	_build_blocks()
 	var spawns: Dictionary = (layout.get("spawns", {}) as Dictionary).duplicate()
-	if layout.has("encounters"):
+	if layout.has("encounters") and not spawns.has(String(FieldEncounters.RETURN_SPAWN)):
+		# where the last fight left Rhen (place_at); a layout may name its own fallback (M3-HER-1159)
 		spawns[String(FieldEncounters.RETURN_SPAWN)] = [0, 0, 0, 0]
 	_build_markers(SPAWNS, spawns)
 	_build_player()

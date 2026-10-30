@@ -1,0 +1,90 @@
+{
+ "_about": "Tobin Varrow's emotion tags -> face blendshape weights (M4-A2P-050). A pair is [L, R]; a scalar sets both sides of a paired shape. He can't stop grinning (act2_ch14.md B01): his rest face carries a little smile and the smile is wide and a touch lopsided; `surprised` is B05's, small and quiet (he sits down, surprised). Shapes: the shared API (asha.md \u00a76.2). Tags: game/data/dialogue/emotions.json.",
+ "blend_in_s": 0.22,
+ "emotions": {
+  "neutral": {
+   "mouth_smile": 0.1,
+   "cheek_raise": 0.06
+  },
+  "soft_smile": {
+   "cheek_raise": 0.3,
+   "lid_squint": 0.18,
+   "mouth_smile": 0.32
+  },
+  "smile": {
+   "cheek_raise": 0.7,
+   "lid_squint": 0.4,
+   "mouth_smile": [
+    0.82,
+    0.7
+   ]
+  },
+  "laugh": {
+   "cheek_raise": 0.85,
+   "lid_squint": 0.6,
+   "mouth_smile": 0.88,
+   "jaw_open": 0.45
+  },
+  "worried": {
+   "brow_inner_up": 0.55,
+   "brow_down": 0.25
+  },
+  "sad": {
+   "brow_inner_up": 0.6,
+   "lid_close": 0.15,
+   "mouth_frown": 0.2,
+   "mouth_press": 0.15
+  },
+  "grief": {
+   "brow_inner_up": 1.0,
+   "brow_down": 0.4,
+   "lid_squint": 0.4,
+   "mouth_frown": 0.5,
+   "jaw_clench": 0.3
+  },
+  "angry": {
+   "brow_down": 0.85,
+   "lid_squint": 0.25,
+   "nose_sneer": 0.18,
+   "jaw_clench": 0.5
+  },
+  "cold": {
+   "brow_down": 0.35,
+   "lid_close": 0.15,
+   "mouth_press": 0.45
+  },
+  "surprised": {
+   "brow_outer_up": 0.35,
+   "brow_inner_up": 0.3,
+   "lid_wide": 0.15,
+   "jaw_open": 0.12
+  },
+  "afraid": {
+   "brow_inner_up": 0.8,
+   "lid_wide": 0.45,
+   "mouth_stretch": 0.2,
+   "jaw_open": 0.08
+  },
+  "determined": {
+   "brow_down": 0.45,
+   "jaw_clench": 0.4,
+   "mouth_press": 0.35
+  },
+  "tender": {
+   "brow_inner_up": 0.3,
+   "cheek_raise": 0.2,
+   "lid_close": 0.2,
+   "mouth_smile": 0.12
+  },
+  "guilty": {
+   "brow_inner_up": 0.55,
+   "lid_close": 0.35,
+   "mouth_press": 0.4
+  },
+  "exhausted": {
+   "lid_close": 0.4,
+   "brow_inner_up": 0.2,
+   "jaw_open": 0.08
+  }
+ }
+}

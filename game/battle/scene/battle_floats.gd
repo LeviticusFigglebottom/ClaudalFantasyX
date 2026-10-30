@@ -63,6 +63,7 @@ func show_hits(result: ActionResult, flinch: bool) -> void:
 		var at := ctl.head_pos(tid, &"damage")
 		var ally := target.team == BattleCombatant.TEAM_PARTY
 		_set_piece_words(hit, at)
+		_act2_words(result, hit, at)
 		if hit.has("reflected_from"):
 			var from := StringName(str(hit["reflected_from"]))
 			ctl.hud.pop_info(tr("HUD_FLOAT_REFLECTED"), ctl.head_pos(from, &"damage"), &"focus_gold")
@@ -87,6 +88,20 @@ func _set_piece_words(hit: Dictionary, at: Vector2) -> void:
 		ctl.hud.pop_info(tr("HUD_FLOAT_COUNTER"), ctl.head_pos(by, &"damage"), &"focus_gold")
 	if bool(hit.get("withdrawn", false)):
 		ctl.hud.pop_info(tr("HUD_FLOAT_WITHDRAWN"), at, &"text_dim")
+
+
+## Act II's hit words (docs/kb/plan/act2/ui/hud.md sections 2 and 3): a drain's heal over its user (the fen
+## leech, M4-CMB-1001), and a mended part over the boss a conduit crawler repaired (M4-A2P-022), named by its charge.
+func _act2_words(result: ActionResult, hit: Dictionary, at: Vector2) -> void:
+	var drained := int(hit.get("drained", 0))
+	var user := ctl.engine.find(result.actor_id)
+	if drained > 0 and user != null:
+		var from := ctl.head_pos(result.actor_id, &"damage")
+		ctl.hud.pop_number(str(drained), from, DamageNumber.KIND_HEAL, user.team == BattleCombatant.TEAM_PARTY, false)
+		ctl.hud.pop_info(tr("HUD_FLOAT_DRAINED"), from, &"danger")
+	if hit.has("part_restored"):
+		var part := str(ctl.engine.db.skill(StringName(str(hit["part_restored"]))).get("name_key", ""))
+		ctl.hud.pop_info(tr("HUD_FLOAT_REPAIRED_FMT").format({"part": tr(part)}), at, &"danger")
 
 
 ## End-of-turn HP changes the ActionResult cannot carry (Poison, Regen, Regen turned to harm by

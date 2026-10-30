@@ -42,18 +42,37 @@ class ZoneMistakes(unittest.TestCase):
             path.write_text(json.dumps(data), encoding="utf-8")
             # Actor scenes and locations resolve against the real repository.
             rel = path.relative_to(Path(tmp))
-            orig = vn.ACTOR
+            orig, orig_crowd = vn.ACTOR, vn.CROWD_ACTOR
             try:
                 vn.ACTOR = str(ROOT / orig)
-                return vn.zone_errors(Path(tmp), str(rel), vn._location_ids(ROOT), vn._declared_flags(ROOT))
+                vn.CROWD_ACTOR = str(ROOT / orig_crowd)  # the shop keepers are crowd people (haluna_*)
+                return vn.zone_errors(Path(tmp), str(rel), vn._location_ids(ROOT), vn._declared_flags(ROOT),
+                                      vn.crowd_people(ROOT))
             finally:
-                vn.ACTOR = orig
+                vn.ACTOR, vn.CROWD_ACTOR = orig, orig_crowd
 
     def _haluna(self) -> dict:
         return copy.deepcopy(_load(HALUNA))
 
     def test_the_unchanged_file_passes(self) -> None:
         self.assertEqual(self._errors(self._haluna()), [])
+
+    def test_a_scene_path_stage_actor_is_the_stand_in_itself(self) -> None:
+        """A person may stand in a town's own stand-in (a scene path, such as NPCs/Town/Smith), not a stage actor."""
+        self.assertEqual(vn.person_stand_in({"stage_actor": "NPCs/Town/Smith"}), "NPCs/Town/Smith")
+        self.assertEqual(vn.person_stand_in({"stage_actor": "clerk"}), "CutsceneStage/Actors/clerk")
+
+    def test_an_at_row_stands_at_its_crowd_spot(self) -> None:
+        """A row's `at` makes its stand-in at CrowdSpots/<name> (an Act II town's greybox names no actors)."""
+        d = self._haluna()
+        row = d["villagers"][0]
+        row["at"] = [1, 2]
+        errs = " | ".join(self._errors(d))
+        self.assertIn("at is not", errs)
+        self.assertIn("stands at CrowdSpots/<name>", errs)
+        row["at"] = [1.0, 0.0, 2.0, 90.0]
+        row["stand_in"] = "CrowdSpots/vendor"
+        self.assertFalse(any("`at`" in e or "at is not" in e for e in self._errors(d)))
 
     def test_zone_must_name_the_file_and_be_a_location(self) -> None:
         d = self._haluna()
@@ -156,7 +175,9 @@ class Crowd(unittest.TestCase):
         self.assertEqual(sum(p["stage_actor"] == "wrights" for p in self.crowd["people"]),
                          self.crowd["groups"]["brine_shoals_wrights"]["people"])
         self.assertNotIn("ch04/haluna_wake", by_zone, "Haluna's own villagers keep their M2-CHR-03 bodies")
-        self.assertEqual(len(self.crowd["people"]), 56)
+        act1 = [p for p in self.crowd["people"] if int(p["zone"].split("/")[0][2:]) < 10]
+        self.assertEqual(len(act1), 56)
+        self.assertEqual(len(by_zone["ch17/hollowmere"]), 10, "Hollowmere's Saltwright townsfolk (Ch15 B11)")
 
     def test_crowd_rows_must_match_their_person(self) -> None:
         data = copy.deepcopy(_load(CROWD_ZONE))
@@ -231,6 +252,20 @@ class Crowd(unittest.TestCase):
         for name, text in files.items():
             self.assertEqual((ROOT / "assets_src" / "crowd" / "params" / name).read_text(encoding="utf-8"), text, name)
         self.assertEqual((ROOT / vn.CROWD_FILE).read_text(encoding="utf-8"), roster)
+
+    def test_an_act_two_town_never_reshuffles_act_ones_bodies(self) -> None:
+        """Act II zones are assigned after every Act I zone: dropping them leaves each Act I body as it is."""
+        sys.path.insert(0, str(ROOT / "assets_src" / "crowd"))
+        import gen_crowd
+
+        ranges = gen_crowd.load_json(gen_crowd.RANGES)
+        whole = gen_crowd.assign(ranges, self.crowd)
+        act1 = copy.deepcopy(self.crowd)
+        act1["people"] = [p for p in act1["people"] if gen_crowd.chapter_of(p["zone"]) < gen_crowd.ACT2_CHAPTER]
+        alone = gen_crowd.assign(ranges, act1)
+        self.assertEqual({k: whole[k] for k in alone}, alone)
+        self.assertEqual(gen_crowd.chapter_of("ch17/hollowmere"), 17)
+        self.assertEqual(gen_crowd.chapter_of("_tests/crowd"), 0)
 
     def test_bodies_span_ages_builds_and_hair_and_are_new_faces(self) -> None:
         sys.path.insert(0, str(ROOT / "assets_src" / "crowd"))
@@ -372,6 +407,55 @@ class SharedClips(unittest.TestCase):
         for needle in ("crowd_man_heavy is in no clip library", "crowd_boy_small is in clip libraries",
                        "is not one of its bodies", "has no assets/crowd/clips", "differs from"):
             self.assertIn(needle, errs)
+
+
+class Kirru(unittest.TestCase):
+    """The Kirru crowd bodies (assets_src/crowd/kirru): Pell's params with each body's overrides, costume scaled to
+    its height, the clip library up to date with Pell's clips, every body imported and in Reedhollow."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        sys.path.insert(0, str(ROOT / "assets_src" / "crowd" / "kirru"))
+        import kirru_clips
+        import kirru_params
+
+        cls.kp, cls.kc = kirru_params, kirru_clips
+
+    def test_params_are_pells_with_the_bodys_overrides(self) -> None:
+        pell = json.loads(self.kp.PELL_PARAMS.read_text(encoding="utf-8"))
+        for body, spec in self.kp.bodies()["bodies"].items():
+            p = self.kp.params(body)
+            self.assertEqual(p["height_m"], spec["overrides"]["height_m"], body)
+            self.assertEqual(p["heads_tall"], spec["overrides"].get("heads_tall", pell["heads_tall"]), body)
+            self.assertEqual(set(p), set(pell), f"{body}: no key Pell's build doesn't read")
+            k = p["height_m"] / pell["height_m"]
+            self.assertAlmostEqual(p["_costume"]["mantle_cap_m"], pell["_costume"]["mantle_cap_m"] * k, 5, body)
+            self.assertAlmostEqual(p["_shell"]["shell_m"], pell["_shell"]["shell_m"] * k, 5, body)
+        heights = sorted(self.kp.params(b)["height_m"] for b in self.kp.bodies()["bodies"])
+        self.assertLess(heights[0], 1.8, "a youngster")
+        self.assertTrue(all(2.1 <= h <= 2.4 for h in heights[1:]), "adults in the bible's 2.1-2.4 m")
+
+    def test_the_clip_library_is_pells_and_up_to_date(self) -> None:
+        text = self.kc.build(self.kc.SOURCE.read_text(encoding="utf-8"))
+        self.assertEqual(self.kc.OUT.read_text(encoding="utf-8"), text, "run assets_src/crowd/kirru/kirru_clips.py")
+        self.assertNotIn("pell_skeleton", text)
+        for clip in ("idle", "talk", "walk"):
+            self.assertIn(f'&"{clip}": SubResource', text)
+
+    def test_every_body_is_imported_and_reedhollow_wears_them_all(self) -> None:
+        rules = _load("game/data/import/crowd.json")
+        rows = _load(f"{vn.ZONES_DIR}/ch10_reedhollow.json")["villagers"]
+        worn = {r["body"] for r in rows}
+        for body in self.kp.bodies()["bodies"]:
+            self.assertIn(f"res://assets/crowd/{body}/", rules["assets"])
+            self.assertEqual(rules["animations"]["libraries"][body], "kirru")
+            self.assertTrue((ROOT / vn.CROWD_ACTOR.format(id=body)).exists(), body)
+            self.assertIn(body, worn)
+        clutch = [r["body"] for r in rows if r["npc_id"].startswith("clutch_")]
+        for i in range(len(clutch) - 1):
+            self.assertNotEqual(clutch[i], clutch[i + 1], "neighbours in the clutch differ")
+        for i in range(len(clutch) - 2):
+            self.assertNotEqual(clutch[i], clutch[i + 2], "neighbours in each line differ")
 
 
 class SkinClearance(unittest.TestCase):

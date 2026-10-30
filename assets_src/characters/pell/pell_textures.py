@@ -86,14 +86,15 @@ STRIPE_TOP_W = 0.07  # replaced by `stripe_width_m` (pell_params)
 STRIPE_EDGE = (0.5, 0.006)  # the stripe edge's tufts: +/- a quarter of its half-width, at this scale (m)
 CLUMP_M = (0.0025, 0.008)  # m: the body fur's clumps across and along the flow (short, dense: look-dev review)
 STRAND_STRETCH = 4.0  # the strand streaks: this much longer along the flow than across (short fur, not grain)
-FUR_STREAK = 0.08  # the albedo's strand streaks (+/- half this): fine and soft (the review: 0.32 read as wood grain)
-FUR_CLUMP = 0.06  # and its clumps (the face; the body's is FUR_CLUMP_BODY)
-FUR_CLUMP_BODY = 0.22  # the body read smooth between the outline cards at full figure (0.14 still did, GPU pass 3)
-FUR_PATCH = (0.2, 0.12)  # GPU pass 3: broad value breakup over the fur (+/- half, at this scale in m x S)
-FACE_DESAT = 0.3  # GPU pass 3: the face read as uniform plastic orange under the warm key
+FUR_STREAK = 0.08  # the face's; the albedo's strand streaks (+/- half this): fine and soft (the review: 0.32 read as wood grain)
+FUR_CLUMP = 0.10  # GPU pass 5: the face read as plastic at 0.06 (0.14 swirled like wood grain); and its clumps (the face; the body's is FUR_CLUMP_BODY)
+FUR_STREAK_BODY = 0.16  # GPU pass 5: the body's streaks (0.08 read as smooth flat brown on the GPU)
+FUR_CLUMP_BODY = 0.34  # GPU pass 5: 0.22 still smooth; the body read smooth between the outline cards at full figure (0.14 still did, GPU pass 3)
+FUR_PATCH = (0.28, 0.1)  # GPU pass 5: wider value patches; GPU pass 3: broad value breakup over the fur (+/- half, at this scale in m x S)
+FACE_DESAT = 0.45  # GPU pass 5: still orange at 0.3; GPU pass 3: the face read as uniform plastic orange under the warm key
 FEATHER_BARBS = 2.0  # the crest feathers' barbs per texel row: a full vane that reads at dialogue range
 LIP_DARK = 0.55  # how far the lips take the nose pad's dark: an otter's lip line
-FUR_RELIEF = (0.00025, 0.0006)  # m: the face's strand relief, the body's clump relief
+FUR_RELIEF = (0.0004, 0.0011)  # GPU pass 5: more relief for a broken sheen; m: the face's strand relief, the body's clump relief
 FUR_SIZE = (1024, 512)  # pell_fur.png: pell_fur.FUR_COLS columns, V root (row 0) -> tip
 FEATHER_SIZE = 1024
 CLOTH_SIZE = 2048
@@ -266,7 +267,8 @@ def fur_maps(key: str, npz: dict, size: int, lm, face, fp: dict) -> None:
     streak = at.aniso_noise(P, D, float(fp["strand_m"]) * 2.0 * S, STRAND_STRETCH, 405)
     clump = at.aniso_noise(P, D, CLUMP_M[1] * S, STRAND_STRETCH * 0.5, 409)  # the wet fur's partings, down the flow
     fur_clump = FUR_CLUMP if key == "head" else FUR_CLUMP_BODY
-    tone = 1.0 + FUR_STREAK * (streak - 0.5) + fur_clump * (clump - 0.5) + 0.06 * (at.fbm3(P, 0.02 * S, 406,
+    fur_streak = FUR_STREAK if key == "head" else FUR_STREAK_BODY
+    tone = 1.0 + fur_streak * (streak - 0.5) + fur_clump * (clump - 0.5) + 0.06 * (at.fbm3(P, 0.02 * S, 406,
                                                                                           octaves=3) - 0.5)
     col = col * tone[:, None]
     # GPU pass 3: broad lighter and darker patches, so the fur's value varies across a limb or the face

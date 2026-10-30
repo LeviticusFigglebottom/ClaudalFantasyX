@@ -1,0 +1,10 @@
+// Order shrine (save point) by Quellan's well, its Level-stone hung with Ullari keth. Dark to a heretic party.
+title: ch12_shrine_quellan
+location: ch12/quellan
+---
+<<if $ch14_declared_heretics>>
+    The Order's stone won't answer. The cords the Ullari hung on it are still there, knotted for the dead, and nobody has taken them down. #line:ch12_shrine_001 #narration #long
+<<else>>
+    A Level-stone by the well, hung all over with Ullari cords. Somebody has knotted a name onto the Order's stone, and somebody else has left it there. #line:ch12_shrine_002 #narration #long
+<<endif>>
+===

@@ -754,6 +754,16 @@
    "block": "Gangplank"
   },
   {
+   "piece": "deck_shrine",
+   "at": [
+    0.0,
+    12.081
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.0,
+   "block": "OrderShrine"
+  },
+  {
    "piece": "stern_gate",
    "at": [
     3.45,

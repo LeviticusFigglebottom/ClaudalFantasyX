@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "doc": "What Ch8's Coilspire flue-key trial sounds like (M3-AUD-864, the Act I foley detail pass; game/audio/ashcrown_audio.gd, attached by AudioDirector.attach_coilspire; act1_ch08.md, the Coilspire). The listener hears the Ch08CoilspireZone's CoilspireTrial and never touches the rules. events: a trial signal -> its sfx row. by_arg: a signal whose row depends on an argument: index, and rows by that argument's value (lower case). at: where an event sounds, a node under the zone (%s is the signal's first argument: the key), else at the zone's camera; height_m lifts it off the floor.",
+  "events": {
+    "coughed": "flue_cough",
+    "lit": "flue_lit",
+    "niche_opened": "flue_niche_open",
+    "seized": "flue_key_seized"
+  },
+  "by_arg": {
+    "turned": {
+      "index": 1,
+      "rows": {
+        "true": "flue_key_open",
+        "false": "flue_key_shut"
+      }
+    }
+  },
+  "at": {
+    "turned": "Greybox/Key_%s",
+    "seized": "Greybox/Key_%s",
+    "niche_opened": "Greybox/NicheSeal"
+  },
+  "height_m": 1.2
+}

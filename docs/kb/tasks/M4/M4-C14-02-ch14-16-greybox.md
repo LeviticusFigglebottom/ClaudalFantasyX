@@ -2,8 +2,7 @@
 id: M4-C14-02
 title: Ch14-16 greybox, the end of Act II (the Lacquer Court, the open sea, Hollowmere's first visit, the Pale Rim, the Drowned Choir) before the beat sheets
 role: cinematics
-status: blocked
-blocked-by: ADR 0041
+status: todo
 owner_session: act1-chapters (claude/act1-chapters)
 depends_on: [M4-C13-02]
 reviewer: environment

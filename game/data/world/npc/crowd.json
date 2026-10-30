@@ -1513,6 +1513,706 @@
         "hair": "#211A16"
       },
       "work": "vigil"
+    },
+    {
+      "id": "hollowmere_netmender",
+      "zone": "ch17/hollowmere",
+      "stage_actor": "CrowdSpots/hollowmere_netmender",
+      "role": "netmender",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "elder",
+      "sex": "female",
+      "build": "heavy",
+      "body": "crowd_elder_woman_b",
+      "tints": {
+        "cloth_a": "#B2A996",
+        "cloth_b": "#53637C",
+        "cloth_c": "#9CCAC5",
+        "hair": "#4E4843"
+      },
+      "work": "mend",
+      "about": "Mends a net on the first hull-house platform."
+    },
+    {
+      "id": "hollowmere_platform_child",
+      "zone": "ch17/hollowmere",
+      "stage_actor": "CrowdSpots/hollowmere_platform_child",
+      "role": "child",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "child",
+      "sex": "female",
+      "build": "tall",
+      "body": "crowd_girl_tall",
+      "tints": {
+        "cloth_a": "#91928D",
+        "cloth_b": "#54647C",
+        "cloth_c": "#9B9990",
+        "hair": "#281C15"
+      },
+      "work": "",
+      "about": "Watches the dock from the first platform."
+    },
+    {
+      "id": "hollowmere_wright",
+      "zone": "ch17/hollowmere",
+      "stage_actor": "CrowdSpots/hollowmere_wright",
+      "role": "wright",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "medium",
+      "body": "crowd_man_medium_b",
+      "tints": {
+        "cloth_a": "#96968F",
+        "cloth_b": "#5B6B7F",
+        "cloth_c": "#80B4B0",
+        "hair": "#3E2617"
+      },
+      "work": "kneel_mourn",
+      "about": "A wright at the second hull-house, beside the dock-master's."
+    },
+    {
+      "id": "hollowmere_netmender_2",
+      "zone": "ch17/hollowmere",
+      "stage_actor": "CrowdSpots/hollowmere_netmender_2",
+      "role": "netmender",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "heavy",
+      "body": "crowd_man_heavy_b",
+      "tints": {
+        "cloth_a": "#A39E92",
+        "cloth_b": "#5C6C7F",
+        "cloth_c": "#A3D0CB",
+        "hair": "#251B15"
+      },
+      "work": "mend",
+      "about": "Mends lines on the third platform."
+    },
+    {
+      "id": "hollowmere_elder",
+      "zone": "ch17/hollowmere",
+      "stage_actor": "CrowdSpots/hollowmere_elder",
+      "role": "mourner",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "elder",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_elder_man_a",
+      "tints": {
+        "cloth_a": "#DCD1BC",
+        "cloth_b": "#606E7D",
+        "cloth_c": "#E4DCCE",
+        "hair": "#A09B95"
+      },
+      "work": "kneel_mourn",
+      "about": "An old Saltwright on the third platform, branded at the wrist."
+    },
+    {
+      "id": "hollowmere_carrier",
+      "zone": "ch17/hollowmere",
+      "stage_actor": "CrowdSpots/hollowmere_carrier",
+      "role": "townsfolk",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "body": "crowd_woman_medium_b",
+      "tints": {
+        "cloth_a": "#8C8E8C",
+        "cloth_b": "#69806D",
+        "cloth_c": "#7CB2AD",
+        "hair": "#221B16"
+      },
+      "work": "carry",
+      "about": "On the dock by the landing, watching who comes ashore."
+    },
+    {
+      "id": "hollowmere_fisher",
+      "zone": "ch17/hollowmere",
+      "stage_actor": "CrowdSpots/hollowmere_fisher",
+      "role": "fisher",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_man_lean_a",
+      "tints": {
+        "cloth_a": "#9C9A90",
+        "cloth_b": "#51617B",
+        "cloth_c": "#A1CFC9",
+        "hair": "#241B15"
+      },
+      "work": "haul",
+      "about": "Hauls a line on the dock's south edge."
+    },
+    {
+      "id": "hollowmere_dock_child",
+      "zone": "ch17/hollowmere",
+      "stage_actor": "CrowdSpots/hollowmere_dock_child",
+      "role": "child",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "child",
+      "sex": "male",
+      "build": "small",
+      "body": "crowd_boy_small",
+      "tints": {
+        "cloth_a": "#B4AB97",
+        "cloth_b": "#69806D",
+        "cloth_c": "#7DB2AE",
+        "hair": "#231B16"
+      },
+      "work": "",
+      "about": "A boy on the dock's edge."
+    },
+    {
+      "id": "hollowmere_wright_2",
+      "zone": "ch17/hollowmere",
+      "stage_actor": "CrowdSpots/hollowmere_wright_2",
+      "role": "wright",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "lean",
+      "body": "crowd_woman_lean_b",
+      "tints": {
+        "cloth_a": "#9E9B91",
+        "cloth_b": "#4F5F7A",
+        "cloth_c": "#85B9B4",
+        "hair": "#412817"
+      },
+      "work": "kneel_mourn",
+      "about": "A wright on the dock past the second jetty."
+    },
+    {
+      "id": "hollowmere_sweeper",
+      "zone": "ch17/hollowmere",
+      "stage_actor": "CrowdSpots/hollowmere_sweeper",
+      "role": "sweeper",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "body": "crowd_woman_medium",
+      "tints": {
+        "cloth_a": "#90918D",
+        "cloth_b": "#51617B",
+        "cloth_c": "#A8D4CE",
+        "hair": "#211A16"
+      },
+      "work": "sweep",
+      "about": "Sweeps salt off the dock beyond the supper."
+    },
+    {
+      "id": "ansedra_poler",
+      "zone": "ch13/ansedra",
+      "stage_actor": "CrowdSpots/ansedra_poler",
+      "role": "poler",
+      "island": "ansedra",
+      "community": "ansedra",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_man_lean_b",
+      "tints": {
+        "cloth_a": "#A6ACB0",
+        "cloth_b": "#566473",
+        "cloth_c": "#BFBFBC",
+        "hair": "#251B15"
+      },
+      "work": "haul",
+      "about": "A barge-poler at the outer moorings, near where Kerrid stands (A02-A03)."
+    },
+    {
+      "id": "ansedra_poler_2",
+      "zone": "ch13/ansedra",
+      "stage_actor": "CrowdSpots/ansedra_poler_2",
+      "role": "poler",
+      "island": "ansedra",
+      "community": "ansedra",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "heavy",
+      "body": "crowd_man_heavy",
+      "tints": {
+        "cloth_a": "#B9BCBE",
+        "cloth_b": "#49535E",
+        "cloth_c": "#BDBEBB",
+        "hair": "#251B15"
+      },
+      "work": "haul",
+      "about": "A poler by the second barge."
+    },
+    {
+      "id": "ansedra_poler_3",
+      "zone": "ch13/ansedra",
+      "stage_actor": "CrowdSpots/ansedra_poler_3",
+      "role": "poler",
+      "island": "ansedra",
+      "community": "ansedra",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "medium",
+      "body": "crowd_man_medium_b",
+      "tints": {
+        "cloth_a": "#A4AAAF",
+        "cloth_b": "#5A6A7E",
+        "cloth_c": "#454E58",
+        "hair": "#422818"
+      },
+      "work": "haul",
+      "about": "A poler at the moorings' east edge."
+    },
+    {
+      "id": "ansedra_tender",
+      "zone": "ch13/ansedra",
+      "stage_actor": "CrowdSpots/ansedra_tender",
+      "role": "tender",
+      "island": "order",
+      "community": "order",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "body": "crowd_order_woman",
+      "tints": {
+        "cloth_a": "#EAE5D9",
+        "cloth_b": "#8B281E",
+        "cloth_c": "#D0A954",
+        "hair": "#211A16"
+      },
+      "work": "vigil",
+      "about": "A Tender on the central island, rapt at the still water (ch13 bark 1)."
+    },
+    {
+      "id": "ansedra_tender_2",
+      "zone": "ch13/ansedra",
+      "stage_actor": "CrowdSpots/ansedra_tender_2",
+      "role": "tender",
+      "island": "order",
+      "community": "order",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_order_man",
+      "tints": {
+        "cloth_a": "#E6E1D6",
+        "cloth_b": "#7E1B15",
+        "cloth_c": "#33436E",
+        "hair": "#221B16"
+      },
+      "work": "vigil",
+      "about": "A Tender at the foot of the Sanctum causeway."
+    },
+    {
+      "id": "ansedra_pilgrim",
+      "zone": "ch13/ansedra",
+      "stage_actor": "CrowdSpots/ansedra_pilgrim",
+      "role": "passenger",
+      "island": "low_reaches",
+      "community": "brightwater",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "body": "crowd_woman_medium",
+      "tints": {
+        "cloth_a": "#303E6C",
+        "cloth_b": "#313E6C",
+        "cloth_c": "#6794B6",
+        "hair": "#221B16"
+      },
+      "work": "",
+      "about": "A pilgrim at the causeway's edge, hushing her child (ch13 bark 2)."
+    },
+    {
+      "id": "ansedra_pilgrim_child",
+      "zone": "ch13/ansedra",
+      "stage_actor": "CrowdSpots/ansedra_pilgrim_child",
+      "role": "child",
+      "island": "low_reaches",
+      "community": "brightwater",
+      "age_band": "child",
+      "sex": "male",
+      "build": "tall",
+      "body": "crowd_boy_tall",
+      "tints": {
+        "cloth_a": "#DACDB6",
+        "cloth_b": "#34416D",
+        "cloth_c": "#A3402E",
+        "hair": "#231B16"
+      },
+      "work": "",
+      "about": "Her child, who doesn't play."
+    },
+    {
+      "id": "ansedra_pilgrim_2",
+      "zone": "ch13/ansedra",
+      "stage_actor": "CrowdSpots/ansedra_pilgrim_2",
+      "role": "passenger",
+      "island": "pemakar_terraces",
+      "community": "pemakar",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "medium",
+      "body": "crowd_man_medium_a",
+      "tints": {
+        "cloth_a": "#DED4C1",
+        "cloth_b": "#31673A",
+        "cloth_c": "#841A14",
+        "hair": "#201A16"
+      },
+      "work": "",
+      "about": "A Pemakar pilgrim on the central island."
+    },
+    {
+      "id": "ansedra_pilgrim_3",
+      "zone": "ch13/ansedra",
+      "stage_actor": "CrowdSpots/ansedra_pilgrim_3",
+      "role": "passenger",
+      "island": "corrow_coast",
+      "community": "corrow",
+      "age_band": "elder",
+      "sex": "female",
+      "build": "heavy",
+      "body": "crowd_elder_woman_b",
+      "tints": {
+        "cloth_a": "#C5C6C5",
+        "cloth_b": "#58687D",
+        "cloth_c": "#6A7E6B",
+        "hair": "#5B5650"
+      },
+      "work": "",
+      "about": "An old Corrow pilgrim on the west causeway."
+    },
+    {
+      "id": "ansedra_pilgrim_4",
+      "zone": "ch13/ansedra",
+      "stage_actor": "CrowdSpots/ansedra_pilgrim_4",
+      "role": "passenger",
+      "island": "tamsule",
+      "community": "tamsule",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "lean",
+      "body": "crowd_woman_lean_b",
+      "tints": {
+        "cloth_a": "#E5DFD2",
+        "cloth_b": "#A84E35",
+        "cloth_c": "#4E83AE",
+        "hair": "#452918"
+      },
+      "work": "",
+      "about": "A Tamsule pilgrim on the east causeway."
+    },
+    {
+      "id": "sanctum_pilgrim",
+      "zone": "ch13/sanctum",
+      "stage_actor": "CrowdSpots/sanctum_pilgrim",
+      "role": "mourner",
+      "island": "corrow_coast",
+      "community": "corrow",
+      "age_band": "elder",
+      "sex": "female",
+      "build": "heavy",
+      "body": "crowd_elder_woman_b",
+      "tints": {
+        "cloth_a": "#D8CBB2",
+        "cloth_b": "#35456F",
+        "cloth_c": "#262D4B",
+        "hair": "#47413D"
+      },
+      "work": "kneel_mourn",
+      "about": "Kneels on the south ledge outside the basin's rim, humming (S01)."
+    },
+    {
+      "id": "sanctum_pilgrim_2",
+      "zone": "ch13/sanctum",
+      "stage_actor": "CrowdSpots/sanctum_pilgrim_2",
+      "role": "mourner",
+      "island": "low_reaches",
+      "community": "brightwater",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "heavy",
+      "body": "crowd_man_heavy_b",
+      "tints": {
+        "cloth_a": "#DED4C0",
+        "cloth_b": "#394871",
+        "cloth_c": "#283256",
+        "hair": "#201A16"
+      },
+      "work": "kneel_mourn",
+      "about": "Kneels on the south ledge."
+    },
+    {
+      "id": "sanctum_pilgrim_3",
+      "zone": "ch13/sanctum",
+      "stage_actor": "CrowdSpots/sanctum_pilgrim_3",
+      "role": "mourner",
+      "island": "pemakar_terraces",
+      "community": "pemakar",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "heavy",
+      "body": "crowd_woman_heavy",
+      "tints": {
+        "cloth_a": "#E0D6C5",
+        "cloth_b": "#303F6D",
+        "cloth_c": "#DACEB7",
+        "hair": "#261C15"
+      },
+      "work": "kneel_mourn",
+      "about": "Kneels on the west ledge."
+    },
+    {
+      "id": "sanctum_pilgrim_4",
+      "zone": "ch13/sanctum",
+      "stage_actor": "CrowdSpots/sanctum_pilgrim_4",
+      "role": "mourner",
+      "island": "tamsule",
+      "community": "tamsule",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_man_lean_b",
+      "tints": {
+        "cloth_a": "#E1D8C6",
+        "cloth_b": "#676D73",
+        "cloth_c": "#273052",
+        "hair": "#261C15"
+      },
+      "work": "kneel_mourn",
+      "about": "Kneels on the west ledge."
+    },
+    {
+      "id": "sanctum_pilgrim_5",
+      "zone": "ch13/sanctum",
+      "stage_actor": "CrowdSpots/sanctum_pilgrim_5",
+      "role": "mourner",
+      "island": "low_reaches",
+      "community": "oruvel",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "body": "crowd_woman_medium",
+      "tints": {
+        "cloth_a": "#E4DDCF",
+        "cloth_b": "#364570",
+        "cloth_c": "#28335A",
+        "hair": "#281C15"
+      },
+      "work": "kneel_mourn",
+      "about": "Kneels on the east ledge."
+    },
+    {
+      "id": "sanctum_pilgrim_child",
+      "zone": "ch13/sanctum",
+      "stage_actor": "CrowdSpots/sanctum_pilgrim_child",
+      "role": "child",
+      "island": "pemakar_terraces",
+      "community": "pemakar",
+      "age_band": "child",
+      "sex": "female",
+      "build": "small",
+      "body": "crowd_girl_small",
+      "tints": {
+        "cloth_a": "#E3DBCC",
+        "cloth_b": "#444E71",
+        "cloth_c": "#7E1813",
+        "hair": "#201A16"
+      },
+      "work": "",
+      "about": "Beside her mother at the west ledge, very still."
+    },
+    {
+      "id": "quellan_weaver",
+      "zone": "ch12/quellan",
+      "stage_actor": "CrowdSpots/quellan_weaver",
+      "role": "folder",
+      "island": "ullar",
+      "community": "quellan",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "body": "crowd_woman_medium_b",
+      "tints": {
+        "cloth_a": "#DFD0B3",
+        "cloth_b": "#34436F",
+        "cloth_c": "#465177",
+        "hair": "#271C15"
+      },
+      "work": "fold",
+      "about": "A weaver at her door on the street (the weaver's bark: tide patterns nobody here has seen)."
+    },
+    {
+      "id": "quellan_weaver_2",
+      "zone": "ch12/quellan",
+      "stage_actor": "CrowdSpots/quellan_weaver_2",
+      "role": "folder",
+      "island": "ullar",
+      "community": "quellan",
+      "age_band": "elder",
+      "sex": "female",
+      "build": "lean",
+      "body": "crowd_elder_woman_a",
+      "tints": {
+        "cloth_a": "#E5D8BE",
+        "cloth_b": "#394971",
+        "cloth_c": "#7A1A14",
+        "hair": "#8F8A84"
+      },
+      "work": "fold",
+      "about": "An old weaver folding cloth at her door."
+    },
+    {
+      "id": "quellan_herder",
+      "zone": "ch12/quellan",
+      "stage_actor": "CrowdSpots/quellan_herder",
+      "role": "townsfolk",
+      "island": "ullar",
+      "community": "quellan",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "heavy",
+      "body": "crowd_man_heavy",
+      "tints": {
+        "cloth_a": "#E6DAC0",
+        "cloth_b": "#435275",
+        "cloth_c": "#AF3929",
+        "hair": "#201A16"
+      },
+      "work": "carry",
+      "about": "A herder carrying fleece down the street."
+    },
+    {
+      "id": "quellan_carrier",
+      "zone": "ch12/quellan",
+      "stage_actor": "CrowdSpots/quellan_carrier",
+      "role": "townsfolk",
+      "island": "ullar",
+      "community": "quellan",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "lean",
+      "body": "crowd_woman_heavy",
+      "tints": {
+        "cloth_a": "#E3D6BA",
+        "cloth_b": "#2F3E6D",
+        "cloth_c": "#525B7D",
+        "hair": "#271C15"
+      },
+      "work": "carry",
+      "about": "Carries water from the well."
+    },
+    {
+      "id": "quellan_sweeper",
+      "zone": "ch12/quellan",
+      "stage_actor": "CrowdSpots/quellan_sweeper",
+      "role": "sweeper",
+      "island": "ullar",
+      "community": "quellan",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_man_lean_a",
+      "tints": {
+        "cloth_a": "#3B4A71",
+        "cloth_b": "#33426E",
+        "cloth_c": "#3D4973",
+        "hair": "#221B16"
+      },
+      "work": "sweep",
+      "about": "Sweeps the frost off his step."
+    },
+    {
+      "id": "quellan_cord_mender",
+      "zone": "ch12/quellan",
+      "stage_actor": "CrowdSpots/quellan_cord_mender",
+      "role": "netmender",
+      "island": "ullar",
+      "community": "quellan",
+      "age_band": "elder",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_elder_man_a",
+      "tints": {
+        "cloth_a": "#2E3D6C",
+        "cloth_b": "#31406D",
+        "cloth_c": "#B22B21",
+        "hair": "#948F89"
+      },
+      "work": "mend",
+      "about": "An old man mending a pass-cord by the well."
+    },
+    {
+      "id": "quellan_mender",
+      "zone": "ch12/quellan",
+      "stage_actor": "CrowdSpots/quellan_mender",
+      "role": "netmender",
+      "island": "ullar",
+      "community": "quellan",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "medium",
+      "body": "crowd_man_medium_a",
+      "tints": {
+        "cloth_a": "#2C3B6B",
+        "cloth_b": "#364670",
+        "cloth_c": "#5B6381",
+        "hair": "#201A16"
+      },
+      "work": "mend",
+      "about": "Mends a woven awning's cord."
+    },
+    {
+      "id": "quellan_child",
+      "zone": "ch12/quellan",
+      "stage_actor": "CrowdSpots/quellan_child",
+      "role": "child",
+      "island": "ullar",
+      "community": "quellan",
+      "age_band": "child",
+      "sex": "female",
+      "build": "teen",
+      "body": "crowd_girl_teen",
+      "tints": {
+        "cloth_a": "#E0D2B6",
+        "cloth_b": "#425275",
+        "cloth_c": "#565F7F",
+        "hair": "#251B15"
+      },
+      "work": "",
+      "about": "A girl at the well."
+    },
+    {
+      "id": "quellan_child_2",
+      "zone": "ch12/quellan",
+      "stage_actor": "CrowdSpots/quellan_child_2",
+      "role": "child",
+      "island": "ullar",
+      "community": "quellan",
+      "age_band": "child",
+      "sex": "male",
+      "build": "small",
+      "body": "crowd_boy_small",
+      "tints": {
+        "cloth_a": "#E3D6BA",
+        "cloth_b": "#34436F",
+        "cloth_c": "#2E3C6C",
+        "hair": "#211A16"
+      },
+      "work": "",
+      "about": "Her small brother."
     }
   ]
 }

@@ -124,9 +124,14 @@ func load_scene(scene_path: String) -> void:
 	_ensure_data()
 	var wanted := {}
 	var request := BattleRequest.pending()
-	if request != null and scene_path == BattleRequest.scene_path():
+	var to_battle := request != null and scene_path == BattleRequest.scene_path()
+	if to_battle:
 		for p in battle_paths(request.encounter):
 			wanted[p] = true
+		# The human playtest (2026-10-30): after a won fight the field took seconds of black to come back, because
+		# the zone's loads were let go here and read again from disk on the return. A field battle keeps them.
+		for path: String in scene.keys():
+			wanted[path] = true
 	for p: Variant in _scene_loads.get(scene_path, []):
 		var path := str(p)
 		if ResourceLoader.exists(path):

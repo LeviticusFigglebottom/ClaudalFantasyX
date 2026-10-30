@@ -703,7 +703,242 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - **Next:** the Lamp Engine's parts and the conduit crawler (M4-A2P-022's data), now that its row is here.
 - MERGE-READY @ 2551e68b1
 
-### PC-QUEUE
+- **M4-A2P-022 data (combat seat): the Lamp Engine's lamps are a breakable part, and two conduit crawlers tend
+  them.**
+  - The crawler row and its three skills are added; the encounter is the engine plus two crawlers.
+  - `ch11_lamp_engine` has a real role band now. All four Act II boss suites are `--check` clean at 1,000 seeds.
+  - Checks: act2_bosses, battle_parts, boss, arena, encounters_resolve, validate, vfx_coverage, balance_sim,
+    creatures, banned.
+  - Next: the rest of my queue waits on other lanes (see the BACKLOG line).
+- MERGE-READY @ fc316eda4
+
+- **BACKLOG EMPTY (10-30):** every remaining item waits on another lane.
+  - Row 49 waits on M3-CIN-1251 (integration-qa; still todo on big20).
+  - Rows 34 and 39 wait on the PC's re-check, plus the row 39 LEAD-ASK above.
+  - The Act II beats and triggers wait on story's scenes reaching integration (they're on act2-plan).
+  - M4-A2P-019 waits on the Lattice and gear (030/031, blocked).
+  - Venn's and the flat-engine's data wait on characters and story.
+  - The VFX, voices and staging requests are with battle-presentation, audio and UI (M3-BPR-440–443, M3-UI-1240/1241,
+    M4-AUD-1010).
+  - Handoff: docs/kb/handoffs/2026-10-30-cinematics-act1-chapters-1.md.
+
+- **LEAD FAST-TRACKs (10-30 09:00), on 7dc3ab41 merged in:**
+  1. **lowlight: Rhen falling (241 snaps). Fixed.** The stick walk went off the side of the Gate step, which had a far
+     bound but open sides. ch11_greybox now bounds both sides. snaps is green.
+  2. **sanctum: Asha and Toma snapping. Fixed.** The followers' trail started in the door frame by the benches. The
+     Gate spawn moves 3 m in, to z −5.
+  3. **Tool reds.**
+     - test_battle_vfx_coverage is green: it was my INTENDED entries.
+     - test_act1_audio_audit was red on integration too:
+       - `dive_lamp.tscn` is a stage-actor model, now BY_DESIGN.
+       - The audit's Battles, Abilities and Skills sections counted Act II rows in the Act I gate. Its act scope now
+         covers later-act boss encounters, charged skills (they inherit their gather's users) and later-act
+         Vowbound.
+       - Act II's own scope test still passes. That's audio's file: a scoped fix in one commit; flag it if they object.
+  4. **The skill_help null guard:** taken identically from big21 9ffec236.
+  5. **The glimmer VFX swatch:** requested as M3-BPR-444 (`hit_glimmer` plus `map.elements.glimmer`).
+  6. **Rows 34 and 39 on 7dc3ab41:**
+     - **Row 39:** its fix is in, and test_ch09_thread is 7/0.
+     - **Row 34:** the double-submit fix (c33c39015) is **not** in 7dc3ab41, so it rides the next batch. With it,
+       qa_encounters is 1/0 and double_submit 3/0.
+  - Checks: snaps, field_camera, ch09_thread, qa_encounters, double_submit, pseudo_loc_screens, lattice_menu,
+    battle_cycle, ch11, ch13, layout; tools audio_audit, vfx_coverage; validate, lint and format.
+  - **Next:** the Ch10, Ch11 and Ch12 kit mounts (M4-A2P-0401, 0411, 0421).
+- MERGE-READY @ e9fb14438 (FAST-TRACKs 1-6)
+
+- **M4-A2P-0401 Ch10 mount: done, in review.**
+  - Ossa Fen and Reedhollow carry env-art's Water, Tide and Dressing; ambient 0.85; Pell's model in.
+  - Five shots viewed. Checks: ch10, snaps, field_camera, layout, walkable.
+  - Next: the Ch11 mount (0411).
+- MERGE-READY @ e64595ada
+
+- **M4-A2P-0411 Ch11 mount: done, in review.**
+  - The Vey and Lowlight carry env-art's Water, Tide and Dressing. The Lamp Engine's model stands in its hall.
+  - The well's mouth is ringed off, so Pell kneels beside it, not over it.
+  - Five shots viewed. Checks: ch11, walkable, snaps, field_camera, zone_cast.
+  - Next: the Ch12 mount (0421).
+- MERGE-READY @ bbcea317b
+
+- **M4-A2P-0421 Ch12 mount: done, in review.**
+  - Keth Pass, Quellan and the Cloudloom carry env-art's Dressing.
+  - PassFoot moved off the trough (the snaps test caught it). Q02 and K04 re-aimed on the dressing.
+  - Five shots viewed. Checks: ch12, snaps, field_camera, walkable.
+  - The Lead's 09:00 list is done: FAST-TRACKs 1–6 and the Ch10, Ch11 and Ch12 mounts.
+- MERGE-READY @ f07c42fdd
+
+- **LEAD-ANSWERED (10-30 10:07, PC pass 5):**
+  - **Row 34:** pass 5 ran "@ 7dc3ab41", which does **not** contain my double-submit fix c33c39015 (it is on
+    integration now, 15d80358 and later). So pass 5 hasn't seen the fix.
+    - **Traced the walk's mechanism:**
+      1. The `ch06` chapter row dwells, then the `spawns` row stands Rhen on every Brine Shoals spawn.
+      2. The raid trigger near LastRidge fires Ch6's own story fight (`ch06_inquisitor`; that's the name plate in
+         pass 3's still).
+      3. The walk's battle row then calls `BattleRequest.start(ch06_ridge_skippers)` while that fight is opening.
+    - **Before the fix:** the second submit stole the request, so the battle fell to the sandbox stage.
+    - **With the fix:** the second submit is dropped, and the story's Inquisitor fight plays in its own arena. In
+      real play this race can't happen, since a zone never submits twice.
+    - **PC-QUEUE:** to see `ch06_ridge_skippers` itself, start it before the `spawns` row, or wait for
+      `zone.story.is_free()` and `not BattleRequest.opening()` (tools/gpu_bench/slice_sweep.gd, the PC's lane).
+  - **Row 39, done (my LEAD-ASK is answered):** Asha and Toma now follow Rhen on the night Strand.
+    - Their stage bodies are hidden by default and shown only when a scene needs them: the ebbing beat shows both,
+      and the new `toma_talk` beat shows Toma for his talk by the fire and hides him again after.
+    - RoadGate was already right.
+    - test_ch09_thread checks both followers on the Strand. ch09 is 13/0, plus snaps and field_camera.
+  - **Row 58** (Ch1, with slice-polish):
+    - **Framing:** the Hullgnaw and the Child are in frame now (my M3-CIN-1235/1236 framing).
+    - **Darkness:** that's the Ch1 storm-night grade, which is lighting for env-art and rendering. LEAD-ASK: route
+      it there.
+    - **o07:** the name board doesn't read at that distance and Sadi isn't in it. Ch1 staging is slice-polish's
+      (the Lead, 10-29). I'll take it if the Lead hands it back.
+  - **Next:** "Ch10 shots after these". Ch10's shots are on the dressing now (M4-A2P-0401 viewed F01–F03).
+    Re-checking the rest against the dressing next.
+- MERGE-READY @ a063bbad3 (rows 39 fixed, 34 traced)
+
+- **Act I clean-up of my open M3 rows:**
+  - **M3-HER-1159:** the four spawns are off the KNOWN list. The ferry's two and Corrow's Bastion already passed.
+    Coilspire's Encounter fallback now uses a layout-defined spawn (GreyboxZone keeps one if the layout gives it).
+  - **M3-HER-1154:** already fixed in big14, so it's set to review.
+  - **M3-HER-1164:** row 39, set to review.
+  - **M3-BPR-427:** its status now actually reads review.
+  - Checks: field_camera, ch08, snaps, zone_story.
+  - The Ch10 dressing check is also done: F04 and R03–R06 viewed. R03's roost backdrop is the child's own home, and
+    R06's sky is the scripted tilt up with the motes.
+- MERGE-READY @ 1529927af
+
+- **M3-UI-204, done and in review:**
+  - Save shrines that save and travel at Brine Shoals, Tamsule and Corrow.
+  - Tamsule's trader, inn and outfitter.
+  - Coilspire's niche gives Sailmaker's Needle.
+  - Also fixed two map POIs whose spawns I'd moved (PassFoot, the Sanctum's Gate). test_zone_map_pois is green.
+  - Checks: shrine, ch06, ch07, ch08, coilspire, zone_map_pois, chapter_flow, validate.
+- MERGE-READY @ f111ce028
+
+- **env-art-b's requests:**
+  - **M4-A2P-103:** the Sanctum is lit only from below (sun 0, fill 0.2). Done, in review.
+  - **M4-A2P-104:** the court's after-the-trap lamp sets are swapped by `ch14_declared_heretics`. Done. Its ripple
+    half waits on the Ch14 escape scene.
+  - **For env-art-b:** re-render `ch13_sanctum_*`, and bind the gilt lamp stands to the two anchors.
+  - Checks: ch13, ch14, layout, field_camera, validate.
+- MERGE-READY @ 57dec16dc
+
+- **BACKLOG EMPTY (10-30, after the Lead's 09:00 and 10:07 lists):**
+  - **Done:** FAST-TRACKs 1–6; the Ch10, Ch11 and Ch12 mounts; rows 39 (fixed) and 34 (fixed; traced for the PC);
+    M3-HER-1154, 1159, 1164; M3-UI-204; M4-A2P-103; M4-A2P-104 (part 2).
+  - **PC-QUEUE:** re-check rows 34 and 39 on this head (the recipe for 34 is above).
+  - **Waiting on others:**
+    - Row 49 (M3-CIN-1251, integration-qa).
+    - Row 58's darkness (env-art and rendering) and its o07 (slice-polish).
+    - The Act II beats (story's scenes).
+    - M4-A2P-019 (Lattice and gear).
+    - M4-A2P-104's ripples (the Ch14 escape scene).
+  - **Not mine (Ch1–Ch3, slice-polish's):** the other `todo` rows addressed to cinematics: M3-HER-1119, 1155, 1156,
+    1160; M3-CHR-543; M3-CIN-1231, 1234; M3-C09-201.
+
+### The Lead's 12:08 list (10-30)
+1. **Arenas:** the Ch11 randoms (ch11_vey_rays, ch11_vey_urchins) fight in `lowlight_engine_hall`, the same arena as the
+   Lamp Engine (Ch10's and Ch12's randoms share their boss arenas the same way).
+   - Ch16 (ch16_rim_skates, ch16_rim_crawlers) waits for env-art-b's `pale_rim_shallows`. It exists only on
+     claude/env-art-b, and the validator rejects an unknown arena id. Both are in test_act1_encounters_resolve's
+     `ACT2_NO_ARENA_YET` until it lands.
+   - **LEAD-ASK:** merge env-art-b's arena, then I set the two rows in one line each.
+2. **Foe skills with no effects:** on this head (after merging integration) only the conduit crawler's three remain:
+   `brush_jab`, `crawler_mend` and `crawler_tend`. Filed to battle-presentation as **M3-BPR-445** (the relight itself
+   is M3-BPR-441).
+3. **The Sanctum gate marker:** fixed on this branch in 57dec16dc's batch (the POI is at [0,-5] on the Gate spawn).
+   Integration still has [0,-2], so big22 predates the merge.
+4. **test_qa_threads with ui:** six Act II objectives end on the *next* chapter's `_started` flag, which no thread of
+   their own raises. Filed to ui-menus as **M3-UI-1242**: end them on each chapter's own `chNN_complete`. Each closing
+   scene sets that flag, which is Act I's `ch05_done` pattern.
+   - The task also flags two zone-prefix strays: court_dais and court_barge sit in a `ch13/` zone, and
+     hollowmere_house in a `ch17/` zone.
+   - That run also found a red of mine: the Lamp Engine's field cast in Lowlight kept its battle-only
+     `CreatureAmbientVfx`, which warned with no CreatureActor parent. `zone_cast.gd` now drops that node from
+     `creature:` casts.
+5. **Rows 34 and 39:**
+   - Row 34's fix c33c39015 is on integration.
+   - Row 39's a063bbad3 is pushed here and waits on the next merge.
+   - The PC re-check recipes are below.
+6. **The blocked-by rows:** 17 cinematics and combat rows are now `todo` under ADR 0205, including M4-C10..C14 and
+   M4-A2P-017/018/019/061/070-075. Other roles' rows are left to them.
+7. **Ch11–Ch13 mounts:**
+   - Ch11 (M4-A2P-0411) and Ch12 (0421) are mine and done.
+   - Ch13 is already mounted in the zone scenes by env-art-b (M4-A2P-043): Ansedra has Water, Tide, Dressing and
+     Ripples; the Sanctum and the Archive have Dressing. No preview is left to copy.
+   - The Sanctum's light rows are M4-A2P-103 (done).
+   - Checks: encounters_resolve, ch11 (3/0), ch13 (4/0) on the dressed zones, validate_data, taskboard --check,
+     gdlint/gdformat, and test_qa_threads (1/0 on this head; ui's Act II objective rows aren't here yet, see M3-UI-1242).
+- MERGE-READY @ c1a6c9031
+
+- **BACKLOG EMPTY (10-30, after the Lead's 12:08 list):** items 1–7 are done or filed.
+  - **Waiting on others:**
+    - Ch16's arena (env-art-b's `pale_rim_shallows` to integration; LEAD-ASK above).
+    - M3-BPR-445 (battle-presentation).
+    - M3-UI-1242 (ui-menus).
+    - Row 39's a063bbad3 and the Sanctum POI reaching integration on the next merge.
+    - The PC re-check of rows 34 and 39.
+  - Everything listed under the 10:07 BACKLOG EMPTY above still stands.
+
+### FAST-TRACK: encounter pacing (the Lead, 10-30 12:13; the human's playtest)
+1. **Grace after every battle** (`game/world/zone/field_encounters.gd`):
+   - A battle owes the grace whether it is scripted (Haluna's tideline, a gate fight) or random. EventBus.battle_ended
+     marks it, and the next meter set up takes it.
+   - The grace is now walked *and* timed: `grace_m` 15 m (was 12) and `grace_s` 12 s.
+   - Every gap is at least `min_gap_m` 95 m. All three values are in `greybox_defaults.json` `encounters`, and a
+     layout may override them.
+2. **Rates:** every zone with random fights now draws a 95–145 m gap:
+   - Act I: Oruvel Underway (was 18–34), the Saltgrass causeway (67.6–95.1), the Brightwater derelict (22–40),
+     Ashcrown (30–50), Brine Shoals (24–40), Coilspire (26–42).
+   - Act II: Ch10, Ch11, Ch12 and Ch16 (30–50), with their generators kept in step.
+   - Haluna's beach has no random table. Its one fight is the tideline gate strip, which the any-battle grace now
+     separates from the causeway's first random fight.
+3. **The black screen:** field time runs only after Rhen's first step since the zone came back, and only while the
+   story is free. So the fade back from a battle, however long, is never counted. The test
+   `test_any_battle_owes_the_grace_and_the_fade_back_is_not_field_time` checks it.
+- **Headless check:** `tools/act1/encounter_pacing.py` (+ `tools/tests/test_encounter_pacing.py`).
+  - Every zone's breather between ordinary fights is now **30.6–44.4 s** at the 3.6 m/s run. Before, Oruvel's was
+    about 8–13 s and the derelict's about 9–15 s.
+  - The meter is distance plus field time, so the bounds are exact for a straight run (not a sampled walk). Walking,
+    Light Step and Ch1's lantern only lengthen them.
+- **Checks:**
+  - Godot: zone_story (18/0, two new tests), light_step, fp_thread, ch01, ch04, ch05, ch06, ch08, ch10, ch11, ch12
+    and encounter all green.
+  - Tools: validate_data, chapter_flow_check (now allows `grace_s` and `min_gap_m`), gdlint, gdformat, and the 549
+    tool tests that read these files.
+- MERGE-READY @ 8b76cb3d0
+
+### The Lead's 13:48 list (10-30)
+- **Encounter pacing, the full tools suite:** I ran `run_tool_tests.py -j 4` with no tight timeout. It took 1739 s and
+  failed 8 units.
+  - One was mine: `test_causeway_gameplay`, because the causeway layout is generated. Its generator
+    `tools/causeway/build_causeway_gameplay.py` now keeps the 95–145 m band, and the test is green.
+  - The other 7 are red on a clean integration worktree too (origin/claude/new-session-mj8c3c @ this merge), so they
+    aren't from this branch. For their owners:
+    - `test_status_names`: dialogue.csv `DLG_NAME_KIRRU_SHELL_CARVER` says "Shell" (ADR 0202).
+    - `test_villagers`: ch13_ethren.dlg calls `paint_gilt_line`; the clip is `paint_gilt`.
+    - `test_avalanche_ram`: its "no clip_by_skill yet" line is stale since creatures' 9781d0fe2 (creatures).
+    - `test_palette_check`: haluna_h07's order_marble ΔE 0.042.
+    - `test_cutscene_sfx_files`: the Act II cue todo lists.
+    - `test_blender_builds` and `test_screenshots`: coverage and baselines.
+- **Rows 34 and 39:**
+  - Row 34's fix c33c39015 is on integration.
+  - Row 39's a063bbad3 is pushed on this branch but not on integration yet; it rides this MERGE-READY.
+  - The PC re-check of both is still queued (below).
+- **Ch14–16 mounts:** env-art-b mounted them in the zone scenes itself (M4-A2P-044/045/046): Water, Tide and Dressing
+  on the Lacquer Court (plus Ripples), the Open Sea, Hollowmere and the Pale Rim. There's no `_dressed` preview left to
+  copy.
+  - The Drowned Choir has no dressing yet: 046 is still `doing` at env-art-b. I mount it the same way once its preview
+    lands.
+  - `pale_rim_shallows` is still not in arenas.json, so Ch16's randoms keep waiting (LEAD-ASK above).
+  - **Checked after merging integration:** lacquer, open_sea, hollowmere, pale_rim (2/0 each), ch14 thread (5/0),
+    hero_field_snaps (2/0), zone_story (18/0), validate_data, taskboard --check.
+  - The first run was red until a `--import`: the merge brought a new class_name, and the cache was stale.
+- MERGE-READY @ b368c93a5
+- **BACKLOG EMPTY (10-30, after the 13:48 list).** Waiting on others:
+  - env-art-b: the Choir's dressing and `pale_rim_shallows`.
+  - M3-BPR-445 and M3-UI-1242.
+  - The PC re-check of rows 34 and 39.
+  - The 7 inherited tool reds, with the owners named above.
+
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
 - Row 39: on the real GPU, walk Ch9's road from RoadGate to the milestone (Asha and Toma follow) and look at the

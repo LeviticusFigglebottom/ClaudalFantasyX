@@ -14,12 +14,12 @@ location: ch13/ansedra
 @music ansedra fade=2.0
 @wait 5.0
 @camera A02
-@sfx pole_no_wake
+@sfx barge_pole
 @wait 2.0
 Rhen [worried]: They're not making ripples. How are they not making ripples? #line:ch13_city_001
 @wait 1.5
 @camera A03
-@mark kerrid outer_moorings walk
+@mark kerrid kerrid_moorings walk
 @anim asha look_at kerrid
 @anim kerrid raise_hand
 @wait 3.0

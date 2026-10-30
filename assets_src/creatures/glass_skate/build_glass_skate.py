@@ -38,7 +38,14 @@ BACK = ck.mix(PAL["foam_white"] * 0.9, PAL["cumulus_lit"] * 0.88, 0.4)  # both h
 GLASS = PAL["salt_glass"] * 0.92
 BLACK = PAL["lacquer_black"]
 BELLY = PAL["bone"] * 0.95
-RIM = PAL["sand_wet"]  # the margin's darker pigment
+RIM = ck.mix(PAL["sand_wet"], PAL["lacquer_black"], 0.3)  # the margin's darker pigment
+# The as-played pass (ch16_rim_skates on the white sand, 2026-10-30): at battle distance the clear back and its thin
+# sand_wet rim melted into the sand, two pale ghosts. The rim is now wider and a shade darker, and each wing carries an
+# eyespot (an ocellus, as many skates have; its own small parts, like the spiracles: the coarse back would smear it):
+# a dark spot paling to sand_wet at its edge, so the disc's shape and its two wings
+# hold against the sand while the back stays clear.
+RIM_FROM = 0.72  # where the rim band begins (share of the radius; was 0.8)
+OCELLUS = (0.36, 0.0, 0.07)  # its |x| and z on the disc and its radius (m)
 THORN = ck.mix(PAL["sand_wet"], PAL["lacquer_black"], 0.35)  # a thorn's base; its tip goes to lacquer_black
 
 HALF_W = 0.7  # the disc is 1.4 m across
@@ -139,7 +146,7 @@ def disc(mesh: ck.Mesh, rig: ck.Rig) -> None:
     col = ck.mix(col, GLASS, (0.75 * ck.smoothstep(0.55, 0.98, r))[:, None])  # glassy toward the thin margins
     col = ck.mix(col, GLASS * 0.9, (0.35 * mottle)[:, None])  # a faint ripple-light mottle, like sand under water
     # the rim: a band of darker pigment round the margin, broken a little by the mottle, darkest at the edge
-    rim = ck.smoothstep(0.8, 0.95, r) * (0.75 + 0.25 * (1.0 - mottle))
+    rim = ck.smoothstep(RIM_FROM, 0.95, r) * (0.75 + 0.25 * (1.0 - mottle))
     col = ck.mix(col, RIM, (0.85 * rim)[:, None])
     # (the two dark spiracles behind the eyes are their own small parts, in eyes(): painted on this coarse a back
     # they smeared grey)
@@ -197,6 +204,13 @@ def eyes(mesh: ck.Mesh, rig: ck.Rig) -> None:
         sp[1] = back_y(sp[0], sp[2]) - 0.001
         Ps, Ts = ck.ellipsoid(sp, (0.017, 0.006, 0.022), 4, 8)
         ck.finish(mesh, Ps, Ts, "back", ck.mix(RIM, BLACK, 0.8), disc_skin(rig), wet=1.0, cavity=0.6)
+        # the ocellus on the wing: a dark spot laid on the back, paling to sand_wet at its edge
+        ox, oz, orad = OCELLUS
+        oc = np.array([s * ox, back_y(s * ox, oz) + 0.002, oz])
+        Pc, Tc = ck.ellipsoid(oc, (orad, 0.005, orad * 1.1), 4, 14)
+        edge = ck.smoothstep(0.5, 1.0, np.hypot(Pc[:, 0] - oc[0], Pc[:, 2] - oc[2]) / orad)
+        ck.finish(mesh, Pc, Tc, "back", ck.mix(ck.mix(PAL["sand_wet"], BLACK, 0.55), PAL["sand_wet"], edge[:, None]),
+                  disc_skin(rig), wet=0.9, cavity=0.1)
 
 
 def back_y(x: float, z: float) -> float:

@@ -12,6 +12,9 @@
   weathered ones a second costume and shield albedo and ORM (assets/characters/stillguard/textures/stillguard_worn_*),
   the same charts with moll_textures.weather at WORN: chipped lacquer, grime, rougher (normals and masks stay Moll's).
 
+* M4-A2P-051: a named build with `_variant.palette` (Malcor Venn) gets its own costume albedo in those dyes
+  (dyed_cloth).
+
 `asha_textures.PRE_ROUND = PRE_ROUND_DECIMALS` (M1-CHR-15): host-independent PNGs.
 """
 from __future__ import annotations
@@ -46,6 +49,19 @@ def skin(v: str, bake_dir: Path) -> None:
             hair_mod=hair, params=extra)
 
 
+def dyed_cloth(v: str) -> None:
+    """M4-A2P-051: a named build with its own dyes (`_variant.palette`: Malcor Venn's black lacquer and red sash) gets
+    its own costume albedo, Moll's charts in those dyes (moll_textures.cloth_atlas `palette`); the other maps stay
+    Moll's (the dyes change only the albedo)."""
+    extra = variant_params(v)
+    pal = extra["_variant"].get("palette")
+    if not pal:
+        return
+    name = sg_name(v)
+    mt.cloth_atlas(extra, out=ROOT / "assets" / "characters" / name / "textures", prefix=name, maps=("albedo",),
+                   palette=pal)
+
+
 def shared() -> None:
     extra = variant_params("a")
     mt.cloth_atlas(extra, out=SHARED_OUT, prefix=SHARED_PREFIX, worn=WORN, maps=WORN_MAPS)
@@ -63,6 +79,7 @@ def main() -> int:
         shared()
     if args.variant:
         skin(args.variant, Path(args.bake_dir))
+        dyed_cloth(args.variant)
     return 0
 
 

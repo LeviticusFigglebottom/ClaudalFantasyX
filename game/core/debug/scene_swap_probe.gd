@@ -33,6 +33,9 @@ const ARG_FRAME_USEC := "--frame-usec="
 const ARG_RESIDENT_LOADS := "--resident-loads"
 const ARG_WARM_RESIDENT := "--warm-resident"
 const ARG_ENCOUNTER := "--encounter="
+## --round-trip=<encounter>: after the change to --to, a field battle for <encounter> and the change back to --to;
+## the stats printed are the return's (the playtest's black screen after a won fight, 2026-10-30).
+const ARG_ROUND_TRIP := "--round-trip="
 const ARG_RETURN := "--return="
 const ARG_NO_RESIDENT := "--no-resident"
 const EXIT_OK := 0
@@ -64,6 +67,7 @@ func _run() -> void:
 	var launch := false
 	var frame_usec := 0
 	var warm_resident := false
+	var round_trip := &""
 	var back_to := ""
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with(ARG_TO):
@@ -80,6 +84,8 @@ func _run() -> void:
 			warm_resident = true
 		elif arg.begins_with(ARG_ENCOUNTER):
 			to = _queue_battle(StringName(arg.trim_prefix(ARG_ENCOUNTER)))
+		elif arg.begins_with(ARG_ROUND_TRIP):
+			round_trip = StringName(arg.trim_prefix(ARG_ROUND_TRIP))
 		elif arg.begins_with(ARG_RETURN):
 			back_to = arg.trim_prefix(ARG_RETURN)
 		elif arg == ARG_NO_RESIDENT:
@@ -107,6 +113,10 @@ func _run() -> void:
 		while not resident.is_ready() and warm_frames > 0:
 			warm_frames -= 1
 			await get_tree().process_frame
+	if round_trip != &"":
+		await _change_and_wait(to, cfg)
+		await _change_and_wait(_queue_battle(round_trip), cfg)
+		BattleRequest.clear()
 	if back_to != "":  # into the zone, then the fight; the change measured below is the way back
 		var pending := BattleRequest.pending()
 		SceneRouter.change_scene(back_to)
@@ -134,6 +144,15 @@ func _run() -> void:
 	stats["legacy"] = legacy
 	print("%s %s" % [OUTPUT_TAG, JSON.stringify(stats)])
 	get_tree().quit(EXIT_OK if stats.has("max_frame_ms") else EXIT_FAILED)
+
+
+## Changes to `path` and waits until the change and its visible window are over (or the frame budget runs out).
+func _change_and_wait(path: String, cfg: Dictionary) -> void:
+	SceneRouter.change_scene(path)
+	var frames_left := int(cfg.get("timeout_frames", 0))
+	while (SceneRouter.is_busy() or SceneRouter.is_measuring()) and frames_left > 0:
+		frames_left -= 1
+		await get_tree().process_frame
 
 
 func _until_idle(frames: int) -> void:

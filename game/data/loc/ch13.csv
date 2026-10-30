@@ -8,3 +8,13 @@ SKILL_HOLD_THE_HOUR,Hold the Hour
 SKILL_LACQUER_SCREEN,Lacquer Screen
 SKILL_STILL_WATER,Still Water
 CHAR_HOUSEHOLDER,Householder
+OBJ_CH13_SIDE_HOUSE,Ysolde has a house she hasn't been back to.
+OBJ_CH13_SIDE_FLAME,One of the lamp-bearers can't keep his flame straight.
+TIP_RECORDS_TITLE,Records
+TIP_RECORDS_BODY,"Records you find are kept in the codex, under Records. Open one to read it again."
+ITEM_TORN_LEDGER_LINE,Torn Ledger Line
+ITEM_TORN_LEDGER_LINE_DESC,"A strip from a founder's lamp-ledger, torn across. Only a few words are left on it, and none of them finish."
+EQUIP_YSOLDE_ARCHIVE_COPYBOOK,Archive Copybook
+EQUIP_YSOLDE_ARCHIVE_COPYBOOK_DESC,"A reader's copybook from the Lamp Archive, folded in the Ansedra manner. She has written in the margins."
+INN_ANSEDRA,The Pilgrims' Hostel
+INN_ANSEDRA_DESC,"White rooms off a still courtyard. The basin in the middle doesn't move, and nobody speaks above a murmur. The sheets are very clean."

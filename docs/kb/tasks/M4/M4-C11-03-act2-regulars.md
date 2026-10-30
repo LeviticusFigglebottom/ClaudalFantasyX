@@ -2,8 +2,7 @@
 id: M4-C11-03
 title: Ch11, Ch12 and Ch16's field fights on creatures' Act II roster, with sim bands
 role: cinematics
-status: blocked
-blocked-by: ADR 0041
+status: todo
 owner_session: act1-chapters (claude/act1-chapters)
 depends_on: [M4-C11-02, M4-C12-02, M4-C14-02, M3-CRE-620]
 reviewer: combat

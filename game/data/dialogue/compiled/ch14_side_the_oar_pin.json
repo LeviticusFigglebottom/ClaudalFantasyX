@@ -1,0 +1,22 @@
+{
+ "format": 1,
+ "scene": "ch14_side_the_oar_pin",
+ "source": "game/data/dialogue/ch14/ch14_side_the_oar_pin.dlg",
+ "start": "ch14_side_the_oar_pin",
+ "nodes": {
+  "ch14_side_the_oar_pin": {
+   "headers": {"location": "ch14/lacquer_court"},
+   "ops": [
+    {"op": "if_not", "cond": ["flag", "ch14_carried_the_gift"], "to": 3, "src": 7},
+    {"op": "line", "id": "ch14_pin_001", "key": "DLG_CH14_PIN_001", "speaker": "hull_captain", "emotion": "soft_smile", "voice": "", "src": 8, "name_key": "DLG_NAME_HULL_CAPTAIN_HULL_CAPTAIN"},
+    {"op": "goto", "to": 9, "src": 7},
+    {"op": "line", "id": "ch14_pin_002", "key": "DLG_CH14_PIN_002", "speaker": "hull_captain", "emotion": "neutral", "voice": "", "src": 10, "name_key": "DLG_NAME_HULL_CAPTAIN_HULL_CAPTAIN", "tags": ["long"]},
+    {"op": "line", "id": "ch14_pin_003", "key": "DLG_CH14_PIN_003", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 11},
+    {"op": "line", "id": "ch14_pin_004", "key": "DLG_CH14_PIN_004", "speaker": "hull_captain", "emotion": "neutral", "voice": "", "src": 12, "name_key": "DLG_NAME_HULL_CAPTAIN_HULL_CAPTAIN"},
+    {"op": "line", "id": "ch14_pin_005", "key": "DLG_CH14_PIN_005", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 13},
+    {"op": "set", "flag": "ch14_carried_the_gift", "value": ["lit", true], "src": 14},
+    {"op": "goto", "to": 9, "src": 9}
+   ]
+  }
+ }
+}

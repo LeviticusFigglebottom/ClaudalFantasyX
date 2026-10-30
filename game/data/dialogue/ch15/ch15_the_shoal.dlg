@@ -125,7 +125,7 @@ Kerrid [sad]: I don't know. I was in no state to ask. #line:ch15_conf_031 #tn:"D
 @anim kerrid look_at sea_south
 @wait 2.0
 Kerrid [neutral]: She walked on to the Choir. A captain doesn't come off the wall while there's anyone below. #line:ch15_conf_032
-<<set $ch15_kerrid_told = true>>
+<<set $ch15_kerrid_revealed = true>>
 <<jump ch15_still_below>>
 ===
 // B08 "Still below" (E, 1.5 min). K19: nobody moves to do anything to him. Asha sits down beside him, not as
