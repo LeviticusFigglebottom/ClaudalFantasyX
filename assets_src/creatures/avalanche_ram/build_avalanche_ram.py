@@ -6,8 +6,9 @@ blender --background --factory-startup --threads 4 --python \
 
 An Ullari woolback that drank where the seep runs and grew: a long-necked, deep-chested pack animal 4 m long with
 its head at 3 m. Its undyed fleece (`sand_cloth`, gone grey to `overcast_slate` in the shadows) has matted into
-plates of ice and wool and hangs in six heavy frozen chains of locks to the knees, a few uneven `salt_glass`
-icicles hanging past their tips, frost under the jaw and ice along the belly. Where the fleece parts the seep's cold
+heavy wet plates and hangs in six sodden chains of locks to the knees, a few uneven wet lock ends dripping past their
+tips, a wet beard under the jaw and wet locks along the belly (M4-A2P-059, ADR 0015: nothing on it is ice or frost;
+the wet is the seep's and the pass's weather). Where the fleece parts the seep's cold
 `spawn_wound` light shows through (the weak points). The head is a camelid's (M3-CRE-635): long and narrow, a soft
 rounded muzzle in the coat's colour, `laterite` darkened only at the nose and the lips, eyes at the sides under a
 soft brow, long upright ears and a woolly cap; the legs are darkened `laterite` too. A faded `lacquer_red`
@@ -36,11 +37,12 @@ import creature_kit as ck  # noqa: E402
 
 SEED = 6212
 PAL = {k: ck.hexrgb(v) for k, v in {
-    "sand_cloth": "#C9B48E", "overcast_slate": "#6F7E8E", "salt_glass": "#BFE6E0", "laterite": "#A8573A",
+    "sand_cloth": "#C9B48E", "overcast_slate": "#6F7E8E", "laterite": "#A8573A",
     "spawn_wound": "#3FE0C8", "glimmer_held": "#7FC6D9", "lacquer_red": "#B3261E", "lacquer_black": "#1D1916",
 }.items()}
 HIDE = PAL["laterite"] * 0.52  # the muzzle and legs: laterite, darkened
 CORD = ck.mix(PAL["lacquer_red"], PAL["sand_cloth"], 0.35)  # the herd-cord's red, faded
+WET_WOOL = ck.mix(PAL["sand_cloth"], PAL["overcast_slate"], 0.6) * 0.42  # wool soaked dark (M4-A2P-059, not ice)
 # Coordinates this close to 0 are the midline's, snapped to 0 (and -0.0 to 0.0): numpy's SIMD path leaves them at
 # +-1e-17 on one host and 0 on another, which moved the head's midline bits between hosts (big14 gate).
 MIDLINE_EPS = 1e-9
@@ -78,12 +80,12 @@ EYE_U, EYE_A = 0.3, 64.0  # the eyes: set at the sides (degrees round from the t
 EAR_U = 0.1
 JAW_PATH = ((0.0, 2.74, 1.6), (0.0, 2.7, 1.8), (0.0, 2.64, 1.93), (0.0, 2.625, 1.98))
 JAW_R = (0.064, 0.058, 0.048, 0.036)
-# Icicles (M3-CRE-635: few and uneven, never a row of even spikes): a few per lock chain at strands' tips, two
-# clumps under the belly ((barrel u, angle off the bottom, count)) and two under the jaw's beard
-LOCK_ICE = (1, 3)
-LOCK_ICE_LEN = (0.14, 0.32)
-LOCK_ICE_PAST = (0.05, 0.11)  # how far past its strand's tip
-BELLY_ICE = ((0.4, 0.2, 2), (0.6, -0.25, 3))
+# Dripping lock ends (M4-A2P-059; were icicles, M3-CRE-635: few and uneven, never a row of even spikes): a few per
+# lock chain at strands' tips, two clumps under the belly ((barrel u, angle off the bottom, count)) and one at the jaw
+LOCK_DRIP = (1, 3)
+LOCK_DRIP_LEN = (0.1, 0.2)
+LOCK_DRIP_PAST = (0.04, 0.08)  # how far past its strand's tip
+BELLY_DRIP = ((0.4, 0.2, 2), (0.6, -0.25, 3))
 # Legs: (attach, knee, fetlock, toe) per side; the hind leg's stifle forward and hock back
 FRONT = ((0.34, 1.14, 0.6), (0.36, 0.72, 0.64), (0.36, 0.22, 0.6), (0.36, 0.0, 0.7))
 HIND = ((0.36, 1.18, -1.12), (0.38, 0.86, -0.92), (0.38, 0.5, -1.36), (0.38, 0.0, -1.22))
@@ -131,16 +133,16 @@ def outward(P: np.ndarray, T: np.ndarray, centre_of) -> np.ndarray:
 
 def fleece_colour(P: np.ndarray, down: np.ndarray, seed: int) -> tuple:
     """Undyed wool gone grey: sand_cloth where the light falls, overcast_slate in the shadows and the lock furrows,
-    and plates of salt_glass ice matted into the lower coat. `down` is 0 on top .. 1 underneath.
-    Returns (colour, wet, cavity)."""
+    and heavy wet mats in the lower coat (M4-A2P-059: wool soaked dark and glossy, no ice). `down` is 0 on top ..
+    1 underneath. Returns (colour, wet, cavity)."""
     n = ck.fbm(P * 2.2, seed)
     fine = ck.fbm(P * 7.0, seed + 1)
     shade = np.clip(0.18 + 0.55 * down + 0.3 * n + 0.15 * fine, 0.0, 0.85)
     col = ck.mix(PAL["sand_cloth"], PAL["overcast_slate"], shade[:, None])
-    ice = ck.smoothstep(0.08, 0.3, ck.fbm(P * 1.3, seed + 2)) * ck.smoothstep(0.35, 0.75, down)
-    col = ck.mix(col, PAL["salt_glass"] * 0.94, (0.8 * ice)[:, None])
-    wet = 0.5 * ice
-    cavity = np.clip(0.25 + 0.35 * down - 0.4 * fine, 0.0, 0.8) * (1.0 - ice)
+    mat = ck.smoothstep(0.08, 0.3, ck.fbm(P * 1.3, seed + 2)) * ck.smoothstep(0.35, 0.75, down)
+    col = ck.mix(col, WET_WOOL, (0.8 * mat)[:, None])
+    wet = 0.85 * mat
+    cavity = np.clip(0.25 + 0.35 * down - 0.4 * fine, 0.0, 0.8) * (1.0 - 0.5 * mat)
     return col, wet, cavity
 
 
@@ -166,15 +168,17 @@ def _nearest(path: np.ndarray, c: np.ndarray) -> np.ndarray:
     return path[np.argmin(d, axis=1)]
 
 
-def icicle(mesh: ck.Mesh, top: np.ndarray, length: float, radius: float, bones, segs: int = 5,
-           lean: tuple = (0.0, 0.0), waist: float = 0.55) -> None:
-    """An icicle hanging from `top`: `lean` (x, z degrees) tips it off the vertical, `waist` its girth halfway."""
-    prof = [(0.0, 0.03), (radius, 0.0), (radius * waist, -length * 0.45), (0.0, -length)]
+def drip_tip(mesh: ck.Mesh, top: np.ndarray, length: float, radius: float, bones, segs: int = 5,
+             lean: tuple = (0.0, 0.0), waist: float = 0.55) -> None:
+    """A sodden lock end hanging from `top` (M4-A2P-059, was an icicle): wool clumped by the wet into a blunt,
+    rounded tip that hangs heavy and drips. `lean` (x, z degrees) tips it off the vertical, `waist` its girth halfway."""
+    prof = [(0.0, 0.03), (radius, 0.0), (radius * max(waist, 0.6), -length * 0.5), (radius * 0.45, -length * 0.88),
+            (0.0, -length)]
     P, T = ck.lathe(prof, segs)
     P = ck.transform(P, ck.euler(lean[0], 0.0, lean[1])) + top
     tip = ck.smoothstep(0.0, -length, P[:, 1] - top[1])
-    col = ck.mix(PAL["salt_glass"] * 0.9, PAL["salt_glass"], tip[:, None])
-    finish(mesh, P, T, "ice", col, bones, wet=0.8, cavity=0.05)
+    col = ck.mix(WET_WOOL * 1.1, WET_WOOL * 0.8, tip[:, None])
+    finish(mesh, P, T, "fleece", col, bones, wet=0.75 + 0.25 * tip, cavity=0.1)
 
 
 # ---------------------------------------------------------------------------------------------
@@ -294,16 +298,16 @@ def partings(mesh: ck.Mesh, rig: ck.Rig, paths: list[np.ndarray]) -> None:
         finish(mesh, S, T, "fleece", col, spine_skin(rig), cavity=0.0, emission=glow, N=N)
 
 
-def belly_ice(mesh: ck.Mesh, rig: ck.Rig, paths: list[np.ndarray]) -> None:
-    """A few icicles in two uneven clumps under the belly (M3-CRE-635: not a row: a row of even spikes reads as
-    teeth)."""
+def belly_drips(mesh: ck.Mesh, rig: ck.Rig, paths: list[np.ndarray]) -> None:
+    """A few sodden lock ends in two uneven clumps under the belly (M3-CRE-635: not a row: a row of even spikes reads
+    as teeth)."""
     rng = np.random.default_rng(SEED + 30)
-    for u_c, th_c, n in BELLY_ICE:
+    for u_c, th_c, n in BELLY_DRIP:
         for _ in range(n):
             u = u_c + rng.uniform(-0.05, 0.05)
             th = math.pi + th_c + rng.uniform(-0.18, 0.18)
             P, _, _, _ = barrel_surface(np.array([u]), np.array([th]), paths)
-            icicle(mesh, P[0] + np.array([0.0, 0.03, 0.0]), rng.uniform(0.05, 0.16), rng.uniform(0.022, 0.04),
+            drip_tip(mesh, P[0] + np.array([0.0, 0.03, 0.0]), rng.uniform(0.05, 0.14), rng.uniform(0.022, 0.04),
                    spine_skin(rig), lean=(rng.uniform(-9.0, 9.0), rng.uniform(-9.0, 9.0)), waist=rng.uniform(0.4, 0.7))
 
 
@@ -485,24 +489,24 @@ def head(mesh: ck.Mesh, rig: ck.Rig) -> None:
     rad = (Pj - centre)[:, 1] / np.maximum(np.linalg.norm(Pj - centre, axis=1), 1e-9)
     along = np.concatenate([np.repeat(np.linspace(0.0, 1.0, 7), 12), [0.0, 1.0]])
     col, _, cav = fleece_colour(Pj, 0.3 + 0.4 * ck.smoothstep(0.2, -0.8, rad), SEED + 64)
-    frost = ck.smoothstep(-0.3, -0.8, rad) * ck.smoothstep(0.85, 0.4, along)  # the ice beard: frost under the jaw
-    col = ck.mix(col, PAL["salt_glass"] * 0.92, (0.6 * frost)[:, None])
+    soak = ck.smoothstep(-0.3, -0.8, rad) * ck.smoothstep(0.85, 0.4, along)  # the wet beard under the jaw
+    col = ck.mix(col, WET_WOOL, (0.6 * soak)[:, None])
     lip = ck.smoothstep(0.7, 0.95, along) * ck.smoothstep(-0.2, 0.5, rad)
     col = ck.mix(col, HIDE, (0.6 * lip)[:, None])
-    finish(mesh, Pj, Tj, "fleece", col, j, wet=0.6 * frost, cavity=ck.mix(0.6 * cav, 0.2, lip))
-    # and two short frozen locks at the jaw's back, under the cheek, one icicle (never a row of them)
+    finish(mesh, Pj, Tj, "fleece", col, j, wet=0.8 * soak, cavity=ck.mix(0.6 * cav, 0.2, lip))
+    # and two short wet locks at the jaw's back, under the cheek, one dripping end (never a row of them)
     rng = np.random.default_rng(SEED + 65)
     for k, (x, z, length) in enumerate(((0.025, 1.61, 0.15), (-0.035, 1.66, 0.1))):
         root = np.array([x, np.interp(z, [p[2] for p in JAW_PATH], [p[1] for p in JAW_PATH]) - 0.03, z])
         tip = root + np.array([rng.uniform(-0.03, 0.03), -length, rng.uniform(-0.04, 0.0)])
         short_lock(mesh, root, tip, j, SEED + 66 + k, r=(0.04, 0.016))
         if k == 0:
-            icicle(mesh, tip + np.array([0.0, 0.01, 0.0]), rng.uniform(0.06, 0.1), rng.uniform(0.016, 0.024), j,
+            drip_tip(mesh, tip + np.array([0.0, 0.01, 0.0]), rng.uniform(0.05, 0.08), rng.uniform(0.016, 0.024), j,
                    lean=(rng.uniform(-10.0, 10.0), rng.uniform(-10.0, 10.0)), waist=rng.uniform(0.45, 0.65))
 
 
 # ---------------------------------------------------------------------------------------------
-# Locks: six chains of heavy frozen locks hanging to the knees, plus the throat's mane
+# Locks: six chains of heavy sodden locks hanging to the knees, plus the throat's mane
 # ---------------------------------------------------------------------------------------------
 def lock_frame(k: int) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """A chain's bone points (head of a, a's tail, b's tail)."""
@@ -514,7 +518,7 @@ def lock_frame(k: int) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
 
 def locks(mesh: ck.Mesh, rig: ck.Rig, paths: list[np.ndarray]) -> None:
     rng = np.random.default_rng(SEED + 70)
-    ice_rng = np.random.default_rng(SEED + 75)
+    drip_rng = np.random.default_rng(SEED + 75)
     for k, (s, u_c, parent) in enumerate(LOCKS):
         a, m, b = lock_frame(k)
         skin = rig.chain([parent, f"lock{k}_a", f"lock{k}_b"], [a + np.array([-s * 0.25, 0.4, 0.0]), a, m, b])
@@ -528,35 +532,35 @@ def locks(mesh: ck.Mesh, rig: ck.Rig, paths: list[np.ndarray]) -> None:
                             root[2] + rng.uniform(-0.05, 0.05)])
             mid = 0.5 * (root + tip) + np.array([s * rng.uniform(0.04, 0.09), 0.0, 0.0])
             path = ck.bezier([root, root + n * 0.1 + np.array([0.0, -0.08, 0.0]), mid, tip], 7)
-            P, T = ck.tube(path, np.linspace(rng.uniform(0.07, 0.09), 0.04, 7), 5, cap_start=False, squash=0.55)
+            P, T = ck.tube(path, np.linspace(rng.uniform(0.07, 0.09), 0.058, 7), 5, cap_start=False, squash=0.55)
             down = ck.smoothstep(root[1], tip[1], P[:, 1])
             col, wet, cav = fleece_colour(P, 0.45 + 0.4 * down, SEED + 71 + k)
-            frost = ck.smoothstep(0.65, 1.0, down)  # frosted, not ice: the icicles are the few below
-            col = ck.mix(col, PAL["salt_glass"] * 0.92, (0.45 * frost)[:, None])
-            finish(mesh, P, T, "fleece", col, skin, wet=np.maximum(wet, 0.6 * frost), cavity=cav * (1.0 - frost))
+            soak = ck.smoothstep(0.5, 1.0, down)  # the ends hang wettest: the dripping ends are the few below
+            col = ck.mix(col, WET_WOOL, (0.75 * soak)[:, None])
+            finish(mesh, P, T, "fleece", col, skin, wet=np.maximum(wet, 0.8 * soak), cavity=cav * (1.0 - 0.5 * soak))
             tips.append(path)
-        # a few icicles per chain on strands picked at random, of uneven lengths (M3-CRE-635): each sheathes the
-        # strand's frozen end and hangs on past its tip, no further than the old tip icicles did (the KO lays the
-        # locks' ends on the ground)
-        for i in ice_rng.choice(STRANDS, int(ice_rng.integers(LOCK_ICE[0], LOCK_ICE[1] + 1)), replace=False):
-            length, past = ice_rng.uniform(*LOCK_ICE_LEN), ice_rng.uniform(*LOCK_ICE_PAST)
+        # a few dripping ends per chain on strands picked at random, of uneven lengths (M3-CRE-635): each clumps the
+        # strand's sodden end and hangs on past its tip, no further than the old ends did (the KO lays the locks'
+        # ends on the ground)
+        for i in drip_rng.choice(STRANDS, int(drip_rng.integers(LOCK_DRIP[0], LOCK_DRIP[1] + 1)), replace=False):
+            length, past = drip_rng.uniform(*LOCK_DRIP_LEN), drip_rng.uniform(*LOCK_DRIP_PAST)
             path = tips[i]
             y = path[-1, 1] + length - past
             top = np.array([np.interp(y, path[::-1, 1], path[::-1, 0]), y, np.interp(y, path[::-1, 1], path[::-1, 2])])
-            icicle(mesh, top, length, ice_rng.uniform(0.026, 0.036), skin,
-                   lean=(ice_rng.uniform(-6.0, 6.0), ice_rng.uniform(-6.0, 6.0)), waist=ice_rng.uniform(0.45, 0.7))
+            drip_tip(mesh, top, length, drip_rng.uniform(0.03, 0.04), skin,
+                     lean=(drip_rng.uniform(-6.0, 6.0), drip_rng.uniform(-6.0, 6.0)), waist=drip_rng.uniform(0.45, 0.7))
 
 
 def short_lock(mesh: ck.Mesh, root: np.ndarray, tip: np.ndarray, skin, seed: int, r: tuple = (0.07, 0.025)) -> None:
-    """A short frozen lock hanging from root to tip, `r` its radius at the root and the tip, frost at its end."""
+    """A short sodden lock hanging from root to tip, `r` its radius at the root and the tip, wettest at its end."""
     length = float(np.linalg.norm(tip - root))
     path = ck.bezier([root, root + np.array([0.0, -0.4 * length, 0.05]), tip], 6)
     P, T = ck.tube(path, np.linspace(r[0], r[1], 6), 5, cap_start=False, squash=0.55)
     down = ck.smoothstep(root[1], tip[1], P[:, 1])
     col, wet, cav = fleece_colour(P, 0.5 + 0.4 * down, seed)
-    frost = ck.smoothstep(0.6, 1.0, down)
-    col = ck.mix(col, PAL["salt_glass"] * 0.92, (0.6 * frost)[:, None])
-    finish(mesh, P, T, "fleece", col, skin, wet=np.maximum(wet, 0.5 * frost), cavity=cav)
+    soak = ck.smoothstep(0.6, 1.0, down)
+    col = ck.mix(col, WET_WOOL, (0.6 * soak)[:, None])
+    finish(mesh, P, T, "fleece", col, skin, wet=np.maximum(wet, 0.8 * soak), cavity=cav)
 
 
 def mane(mesh: ck.Mesh, rig: ck.Rig, paths: list[np.ndarray]) -> None:
@@ -960,7 +964,7 @@ def build() -> tuple[ck.Rig, ck.Mesh, list[ck.Clip]]:
     paths = parting_paths()
     barrel(mesh, rig, paths)
     partings(mesh, rig, paths)
-    belly_ice(mesh, rig, paths)
+    belly_drips(mesh, rig, paths)
     neck(mesh, rig)
     herd_cord(mesh, rig)
     head(mesh, rig)
