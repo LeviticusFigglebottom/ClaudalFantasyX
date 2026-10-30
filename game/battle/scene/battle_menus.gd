@@ -521,7 +521,7 @@ func skill_help(engine: BattleEngine, skill_id: StringName, next_in: int) -> Str
 	var sk := engine.db.skill(skill_id)
 	if BossMechanics.forbidden_now(engine, engine.current, sk):
 		return fail_text(BossMechanics.FAIL_FORBIDDEN, engine.current)  # the greyed row says why
-	if not BattleCycle.allows(engine.current, skill_id):
+	if engine.current != null and not BattleCycle.allows(engine.current, skill_id):  # out of battle: no actor yet
 		return fail_text(BattleCycle.FAIL_OUT_OF_CYCLE, engine.current)  # M4-A2P-025: not this turn's element
 	var parts: PackedStringArray = []
 	parts.append("%s, %s" % [_kind_text(str(sk.get("kind", ""))), _target_text(str(sk.get("target", "single_foe")))])
