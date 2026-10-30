@@ -727,6 +727,21 @@ that test at this branch's zones.
   - **MERGE-READY @ b43b1610.**
   - **Next:** the `lacquer_court_steps` arena (the step-hold), written from my own table as Act I's Ashcrown arenas
     were (`b_arenas.py`'s pattern).
+- **The step-hold arena `lacquer_court_steps` (M4-A2P-044):**
+  - **How it's built:** `haluna/ansedra_arenas.py` writes it through env-art's `write_arena`, from the court zone's
+    own placements, so the arena and the zone can't drift.
+  - **The frame:** the fight is on the court's paving by the water-steps. Behind the enemy line stand the lit dais,
+    the north colonnade and the Conclave's gallery (left, the enemy's side). Every lamp-stand is lit. The lighting is
+    the escape arena's ch14 dusk, and Ansedra's looks go in through `KitSlotSwaps`.
+  - **Hints:** `the_steps`, `the_gate`, `the_conclave`.
+  - **A first render had the frame wrong.** A quarter turn put the side gallery and the open sea behind the fight,
+    so it's now unturned. The barge and gate are behind the battle camera, and the hints turn to them.
+  - **Registered** in `game/data/battle/arenas.json` (`scenes`). Added to `test_battle_arenas` (10/0: the flat
+    floor and clear sightlines hold). Preview `preview_lacquer_court_steps.tscn`; shot
+    `battle_arena_lacquer_court_steps`, viewed. The Stillguard shows as a stand-in capsule: it has no model yet
+    (creatures').
+  - **MERGE-READY @ a881234d.**
+  - **Next:** Ch15: Hollowmere's first visit (`ch15_hollowmere.md`, M4-A2P-045).
 
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
