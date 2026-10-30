@@ -142,7 +142,15 @@
     "tick_stop": "status_apply",
     "grip_the_stair": "status_apply",
     "rope_dive": "status_apply",
-    "hand_closes": "status_apply"
+    "hand_closes": "status_apply",
+    "leech_bite": "hit_none",
+    "root_drag": "hit_none",
+    "tannin_jet": "hit_water",
+    "glide_lash": "hit_none",
+    "rime_spine": "hit_ice",
+    "scree_slide": "hit_ice",
+    "unravel": "status_apply",
+    "skate_sting": "hit_none"
   },
   "skills": {
     "toll": "drownbell_toll",
