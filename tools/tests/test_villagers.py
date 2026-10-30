@@ -332,7 +332,8 @@ class TestClips(unittest.TestCase):
         import villager_clips
 
         want = {"tavi": ["hand_on_shoulder", "hear_news", "name_rite"],
-                "kell": ["press_wick", "trim_wick", "haggle_laugh"],
+                # M3-HER-1133: Kell's Ch1 calls after her M3-CHR-03 three
+                "kell": ["press_wick", "trim_wick", "haggle_laugh", "trim_wicks", "take_scissors", "light_beacon"],
                 # M3-CHR-509..517: the trades' gestures and the Ch6 scripts' calls (villager_story_clips.json)
                 "shopkeeper": ["offer_goods"], "smith": ["hammer_strike"], "innkeeper": ["welcome_bow"],
                 "clerk": ["heat_iron", "iron_into_water", "hand_over"],
@@ -351,14 +352,16 @@ class TestClips(unittest.TestCase):
                 "tobin": ["hold_hands", "tobin_falls", "give_cord", "lift", "shield_merel", "sit_down"],
                 "merel": ["hold_hands", "pole_barge", "pull_pin", "pole_push", "bow", "offer_palm", "lay_cloth"],
                 "aldous": ["push_raft", "hold_up_housing", "nod"],  # M4-A2P-052: H13, H14
-                "ullari_woman": ["tie_knot", "touch_knot", "nod"]}  # M4-A2P-053: the pass-cord
+                "ullari_woman": ["tie_knot", "touch_knot", "nod"],  # M4-A2P-053: the pass-cord
+                # M3-HER-1133: the Ch4 scripts' calls for Neme and Osu
+                "neme": ["clear_plates", "carry_food", "watch", "laugh_breaks"], "osu": ["set_shell"]}
         for npc in NPCS:
             with self.subTest(npc=npc):
                 text = villager_clips.out_path(npc).read_text(encoding="utf-8")
                 self.assertEqual(villager_clips.clips_for(npc), ["idle", "talk", "walk"] + want.get(npc, []))
                 self.assertEqual(text.count('[sub_resource type="Animation"'), 3 + len(want.get(npc, [])))
         self.assertIn("trim_wick", villager_clips.EXTRA_LOOPS)
-        for loop in ("pole_barge", "heat_iron", "hammer_strike", "kneel_wait", "arm_held_out"):
+        for loop in ("pole_barge", "heat_iron", "hammer_strike", "kneel_wait", "arm_held_out", "clear_plates", "carry_food"):
             self.assertIn(loop, villager_clips.EXTRA_LOOPS)
 
     def test_every_script_call_has_its_clip(self):
