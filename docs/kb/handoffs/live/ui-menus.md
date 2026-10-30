@@ -1323,3 +1323,22 @@ BACKLOG EMPTY (big26 checked at 20:00): every remaining item waits on another tr
   - **Tests:** act2_ui_as_played 5/0, inn 11/0, shop 28/0, town 6/0, aspect 18/0, pseudo_loc 26/0,
     input_parity_shop 3/0; validate_data 0/0; taskboard ok.
 MERGE-READY @ fca18c182: M4-A2P-1700, the Act II UI as played (inn refusals and Rest lines whole at 130%).
+- 2026-10-30 21:40, **the Lead's 18:24 note: the Act I first hour from a fresh profile** (M4-A2P-1701, 07386b3d0).
+  - **First battle (Ch1's wickfry):** TUT_CH01_COMMANDS is on the help line, in gold, when the first command menu
+    opens. It shows once per fight, and the first cursor move gives the line back to the help. OK as is.
+  - **Found and fixed:**
+    1. **The menu tip never showed.** Its flag (\`ch01_wickfry_won\`, and the slice's \`ch02_tideline_won\` before
+       it) is set in the battle scene, where no field tip card listens, and the zone reloads after a scripted fight.
+       Flag tips are now caught up when the field next takes input (still once per save).
+    2. **The Where-to-next and menu tips waited for Ch2's slice flags.** New Game plays the prologue and then Ch1,
+       so a chapter went untaught. Both now come in Ch1 (\`ch01_started\`, \`ch01_wickfry_won\`) and still on the
+       slice route. \`tutorial_tips.json\` \`when\` may list flags, and \`requires_any\` is new; \`validate_data\` and
+       its test know both.
+    3. **Tips couldn't be skipped.** Pressing an action a tip names now fades it out, so the menu tip no longer
+       comes back after the menu closes.
+  - **Unchanged and fine:** the save tip (the first shrine in reach), the menu-save and Swell tips in turn, and the
+    objective line on each zone's first input.
+  - **Render viewed:** the menu tip at 130%.
+  - **Tests:** tutorial_tips 8/0 (three new), input_parity_glyphs 7/0, objective_hud 7/0, field_controller 5/0;
+    tools test_tutorial_tips OK; validate_data 0/0; taskboard ok.
+MERGE-READY @ 07386b3d0: M4-A2P-1701, the first-hour tips (once, in Ch1, skippable).
