@@ -531,6 +531,48 @@ func test_fen_kingfishers_fly_low_and_sit_on_the_rails() -> void:
 	layer.free()
 
 
+## fen_kingfisher.md: "it perches long, and plunges". A kingfisher on a row with `water_y` leaves its perch now and then
+## in a dive: down to the water ahead (never under it), a moment there, and back to the same perch, which no other bird
+## takes meanwhile; a gull (no dive_chance) never dives.
+func test_a_kingfisher_plunges_to_the_water_and_back_to_its_perch() -> void:
+	var kind: Dictionary = _kinds["kinds"]["kingfisher"]
+	var row := {
+		"id": "k",
+		"center": [0.0, 0.0],
+		"radius_m": 6.0,
+		"altitude_m": [0.6, 1.6],
+		"count": 1,
+		"perched_at_start": 1,
+		"perches": [[2.0, 0.5, 0.0, 90.0]],
+		"water_y": -0.25
+	}
+	var flock := WildlifeGullFlock.new(row, kind, 4242, 1)
+	var bird := flock.gulls[0]
+	var dives := 0
+	var returns := 0
+	var lowest := INF
+	var last := bird.state
+	for f in 60 * 300:
+		flock.step(DT)
+		lowest = minf(lowest, bird.pos.y)
+		if bird.state == WildlifeGullFlock.State.DIVE and last != WildlifeGullFlock.State.DIVE:
+			dives += 1
+			assert_eq(bird.perch, 0, "it keeps its perch while it dives")
+		if last == WildlifeGullFlock.State.APPROACH and bird.state == WildlifeGullFlock.State.PERCHED:
+			assert_true(bird.pos.is_equal_approx(Vector3(2.0, 0.5, 0.0)), "back on its own perch")
+			returns += 1
+		last = bird.state
+	assert_true(dives >= 2, "it plunges, more than once in five minutes (%d)" % dives)
+	assert_true(returns >= dives - 1, "and comes back up each time")
+	assert_true(absf(lowest - (-0.25)) < 0.05, "down to the water, not under it (%.3f)" % lowest)
+	var gull_row := row.duplicate(true)
+	var gulls := WildlifeGullFlock.new(gull_row, _kinds["kinds"]["gull"], 4242, 1)
+	for f in 60 * 300:
+		gulls.step(DT)
+		assert_ne(gulls.gulls[0].state, WildlifeGullFlock.State.DIVE, "a gull never dives")
+	assert_true(flock.bounds.position.y <= -0.25, "the culling box reaches the water")
+
+
 func test_woolbacks_graze_look_and_amble_within_their_area() -> void:
 	var kind: Dictionary = _kinds["kinds"]["woolback"]
 	var row := {"id": "h", "center": [2.0, -3.0], "radius_m": 3.0, "count": 3, "y": 0.5}

@@ -40,7 +40,8 @@ KIND_KEYS = {
     "insect": {"moth", "dragonfly", "firefly"},  # tables: INSECT_KEYS
 }
 # the kingfisher (Ch10, M4-A2P-056) is the gull's flock with its own tuning, meshes and rows
-KIND_KEYS["kingfisher"] = KIND_KEYS["gull"]
+KIND_KEYS["kingfisher"] = KIND_KEYS["gull"] | {"dive_chance", "dive_reach_m", "dive_s", "dive_speed_mps", "dive_hold_s",
+                                               "dive_return_s"}  # its plunge (fen_kingfisher.md)
 # the woolback (Ch12, M4-A2P-056): skinned actors in herds (WildlifeHerd), its scene an actor .tscn, no meshes table
 KIND_KEYS["woolback"] = {"scale", "walk_speed_mps", "turn_rate", "graze_s", "look_chance", "look_s", "look_radius_m",
                          "look_rate", "wander_m", "spacing_m", "arrive_m", "height_m", "bounds_pad_m"}
@@ -72,7 +73,8 @@ BUDGET_KEYS = {"gulls", "kingfishers", "woolbacks", "crabs", "fish", "rays", "in
 # zone row tables -> (budget key, required keys, optional keys)
 ROWS = {
     "flocks": ("gulls", {"id", "center", "radius_m", "altitude_m", "count", "perches"}, {"perched_at_start"}),
-    "kingfishers": ("kingfishers", {"id", "center", "radius_m", "altitude_m", "count", "perches"}, {"perched_at_start"}),
+    "kingfishers": ("kingfishers", {"id", "center", "radius_m", "altitude_m", "count", "perches"},
+                    {"perched_at_start", "water_y"}),
     "beaches": ("crabs", {"id", "center", "half_extents", "count"}, {"yaw_deg", "y"}),
     "shoals": ("fish", {"id", "center", "radius_m", "count"}, {"scale", "spread_m"}),
     "swarms": ("insects", {"id", "type", "center", "radius_m", "count"}, {"perches"}),
@@ -267,6 +269,12 @@ def _row_errors(table: str, row: dict, w: str) -> list[str]:
         start = row.get("perched_at_start", 0)
         if not isinstance(start, int) or start < 0 or start > len(perches):
             errs.append(f"{w}.perched_at_start: an integer, at most the number of perches")
+        if "water_y" in row:  # a kingfisher's plunge goes down to it
+            wy = row["water_y"]
+            if not isinstance(wy, (int, float)) or isinstance(wy, bool):
+                errs.append(f"{w}.water_y: must be a number")
+            elif any(_vec(p, 4) and p[1] <= wy for p in perches):
+                errs.append(f"{w}.water_y: must be below every perch")
     elif table == "swarms":
         if row["type"] not in SWARM_TYPES:
             errs.append(f"{w}.type: must be one of {sorted(SWARM_TYPES)}")
