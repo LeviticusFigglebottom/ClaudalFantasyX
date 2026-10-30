@@ -51,7 +51,7 @@ func _run() -> void:
 	_opts = _args()
 	var out := str(_opts.get("out", ""))
 	DirAccess.make_dir_recursive_absolute(out)
-	get_window().size = Vector2i(1280, 720)
+	get_window().size = Vector2i(int(_opts.get("w", 960)), int(_opts.get("h", 540)))  # the battle shots' size; --w --h
 	var only := str(_opts.get("only", "")).split(",", false)
 	var summary: Array = []
 	for enc: StringName in act_one_encounters():
