@@ -1388,3 +1388,14 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - The Act III bosses wait on the open LEAD-ASK.
   - No Act I/II FAST-TRACK is open for me.
   - **LEAD-ASK:** give me the bosses, or a busier track to supplement.
+- Lead 23:26 (the backlog's empty: continue the Act III bestiary, or supplement characters' story clips):
+  - **M5-A3P-1812, the Cage's sheet amended** (roster order of work 1), at review. The bays become seats, each founder
+    seated and chained at the wrists and ankles, reconciled with act3_ch20.md §5 and U08:
+    - the breakable part is each seat's chains, with a weak point on the hasp beside the hip, never the person;
+    - the broken bars fall and stay lit, and nothing rises (rule 2);
+    - freed founders say "thank you", stand free and stay shown, then fall in U08;
+    - 58 bones; the VFX anchors find the hasps by bone.
+  - **M3-CIN-1250** (crowd routines in step) was already fixed by 42438cd55: `--filter=zone_cast` 5/0. To review.
+  - The Cage's *build* and the other Act III bosses still wait on the boss LEAD-ASK. Creatures-b built the Act I/II
+    bosses, so I'm not starting them uninvited.
+- **MERGE-READY @ d6fe335c7.** Next: the characters' Act I people story clips (M3-HER-1133) if no one holds them; checking.
