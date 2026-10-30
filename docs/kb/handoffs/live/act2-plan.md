@@ -748,3 +748,4 @@ I merged integration (big28) first; the two conflicted compiled ch11 JSONs were 
   - Godot `act3` 1/0 and `objective` 16/0. `dialogue` 87/1: the one red is the Ullari woman's portrait (M4-A2P-1014, not mine).
   - Tools tests touching my areas pass: act3_rules, dlgc, loc_*, banned_scan, qa_flag_reach, taskboard, vowbound_flag, audio_data and others.
   - The full tools suite was stopped part-way. Its reds were `test_rig_integrity` (gate-big31's known characters red), plus `test_audio_loudness` and `test_dialogue_clarity` beds. Those two fail because the audio files in this container are LFS pointers; none of the three is in my diff.
+- MERGE-READY Act III Ch17–Ch20 (M5-A3P-1000/1003/1006/1010) + OBJ_CH13_REST fix @ df6f46e17
