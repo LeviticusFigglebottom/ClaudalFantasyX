@@ -9,7 +9,7 @@
   the file (ch02/haluna -> ch02_haluna.json) and is a locations.json location; flocks (and kingfisher flocks, Ch10),
   beaches and shoals are
   well formed (unique ids, positive counts, perches inside the flock's radius, perched_at_start no more than the
-  perches), swarms too (type moth, dragonfly or firefly, perches only on a dragonfly patrol and inside its radius), and the
+  perches), herds (Ch12's woolbacks: [x, z] centre, radius, optional y), swarms too (type moth, dragonfly or firefly, perches only on a dragonfly patrol and inside its radius), and the
   zone's totals stay within the budgets.
 """
 
@@ -41,6 +41,10 @@ KIND_KEYS = {
 }
 # the kingfisher (Ch10, M4-A2P-056) is the gull's flock with its own tuning, meshes and rows
 KIND_KEYS["kingfisher"] = KIND_KEYS["gull"]
+# the woolback (Ch12, M4-A2P-056): skinned actors in herds (WildlifeHerd), its scene an actor .tscn, no meshes table
+KIND_KEYS["woolback"] = {"scale", "walk_speed_mps", "turn_rate", "graze_s", "look_chance", "look_s", "look_radius_m",
+                         "look_rate", "wander_m", "spacing_m", "arrive_m", "height_m", "bounds_pad_m"}
+SKINNED_KINDS = {"woolback"}
 # The insect kind's tables (WildlifeSwarm): every key, and the ones drawn once per insect from a [lo, hi] range
 # (the rest are read as plain numbers).
 INSECT_KEYS = {
@@ -62,7 +66,7 @@ SWARM_TYPES = set(INSECT_KEYS)
 KIND_MESHES = {"gull": {"flying", "perched"}, "crab": {"body"}, "fish": {"body"}, "insect": {"moth", "dragonfly", "firefly"},
                "kingfisher": {"flying", "perched"}}
 KIND_COMMON = {"scene", "meshes", "material", "cast_shadow"}
-BUDGET_KEYS = {"gulls", "kingfishers", "crabs", "fish", "insects", "draw_calls", "ms_per_frame"}
+BUDGET_KEYS = {"gulls", "kingfishers", "woolbacks", "crabs", "fish", "insects", "draw_calls", "ms_per_frame"}
 # zone row tables -> (budget key, required keys, optional keys)
 ROWS = {
     "flocks": ("gulls", {"id", "center", "radius_m", "altitude_m", "count", "perches"}, {"perched_at_start"}),
@@ -70,8 +74,9 @@ ROWS = {
     "beaches": ("crabs", {"id", "center", "half_extents", "count"}, {"yaw_deg", "y"}),
     "shoals": ("fish", {"id", "center", "radius_m", "count"}, {"scale", "spread_m"}),
     "swarms": ("insects", {"id", "type", "center", "radius_m", "count"}, {"perches"}),
+    "herds": ("woolbacks", {"id", "center", "radius_m", "count"}, {"y"}),
 }
-ZONE_KEYS = {"zone", "ground", "flocks", "kingfishers", "beaches", "shoals", "swarms"}
+ZONE_KEYS = {"zone", "ground", "flocks", "kingfishers", "beaches", "shoals", "swarms", "herds"}
 
 
 def _num(v: object) -> bool:
@@ -104,10 +109,11 @@ def kinds_errors(doc: object, exists: Callable[[str], bool]) -> list[str]:
         if not isinstance(k, dict):
             errs.append(f"{w}: must be an object")
             continue
-        missing = (keys | KIND_COMMON) - set(k)
+        common = {"scene"} if kid in SKINNED_KINDS else KIND_COMMON
+        missing = (keys | common) - set(k)
         if missing:
             errs.append(f"{w}: missing {sorted(missing)}")
-        unknown = set(k) - keys - KIND_COMMON - {"_doc"}
+        unknown = set(k) - keys - common - {"_doc"}
         if unknown:
             errs.append(f"{w}: unknown keys {sorted(unknown)}")
         if kid == "insect":
@@ -120,6 +126,10 @@ def kinds_errors(doc: object, exists: Callable[[str], bool]) -> list[str]:
                     errs.append(f"{w}.{key}: must be a number or a [lo, hi] range")
         if not _res_exists(k.get("scene", ""), exists):
             errs.append(f"{w}.scene: {k.get('scene')!r} does not exist")
+        if kid in SKINNED_KINDS:
+            if not str(k.get("scene", "")).endswith(".tscn"):
+                errs.append(f"{w}.scene: must be the actor scene (.tscn)")
+            continue
         material = k.get("material", "")
         if isinstance(material, dict):  # one per mesh (the insects)
             if set(material) != KIND_MESHES[kid]:
@@ -273,6 +283,13 @@ def _row_errors(table: str, row: dict, w: str) -> list[str]:
                 errs.append(f"{w}.perches[{k}]: must be [x, y, z, yaw_deg]")
             elif ((p[0] - cx) ** 2 + (p[2] - cz) ** 2) ** 0.5 > r:
                 errs.append(f"{w}.perches[{k}]: outside the swarm's radius_m")
+    elif table == "herds":
+        if not _vec(row["center"], 2):
+            errs.append(f"{w}.center: must be [x, z]")
+        if not _num(row["radius_m"]) or row["radius_m"] <= 0:
+            errs.append(f"{w}.radius_m: must be positive")
+        if "y" in row and not _num(row["y"]):
+            errs.append(f"{w}.y: must be a number")
     elif table == "beaches":
         if not _vec(row["center"], 2):
             errs.append(f"{w}.center: must be [x, z]")

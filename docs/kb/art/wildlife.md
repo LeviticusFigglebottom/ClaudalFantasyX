@@ -251,3 +251,20 @@ the Kirru.
   (`draw_calls` 9 is the most a layer can now have).
 - **Placed:** ch10_ossa_fen.json, three pairs perching on the root-walk rails (the perch points follow each rail's
   yawed line, facing the water). Review shot `wildlife_zone_ossa_fen_rail0`.
+
+## Act II: woolback herds (Ch12 Keth Pass, M4-A2P-056, 2026-10-30)
+The first skinned wildlife. A herd is two or three animals close to the path, so each woolback is its own actor
+(game/creatures/woolback/woolback_actor.tscn: the model at 0.3) with an AnimationPlayer, not a MultiMesh instance.
+- **Model:** assets_src/creatures/woolback/build_woolback.py, the Avalanche Ram's build without the seep and the
+  ice (it imports the ram's module), so the boss and the herd read as the same animal at a third the size.
+- **Clips:** `idle` grazing, `look`, `walk`. The walk's hooves are solved per frame so a planted hoof slides back
+  at the clip's own speed: the herd moves the actor at exactly that (`walk_speed_mps`), so the hooves stay put.
+- **Motion:** WildlifeHerd (headless, seeded): graze for `graze_s`, then look round (`look_chance`, for `look_s`,
+  the look clip's length) or amble `wander_m` to a spot `spacing_m` from the others, turning at `turn_rate` and
+  slowing while it turns; a player within `look_radius_m` makes a grazing animal look up. WildlifeLayer puts the
+  actors where the herd says, plays the clip it names (the first from a phase of its own) and hides them past the
+  cull distance.
+- **Zone rows:** `herds` ([x, z] centre, radius, count, optional y), with the `woolbacks` budget (6). They are not
+  MultiMeshes, so they don't count toward `draw_calls`.
+- **Placed:** ch12_keth_pass.json (the pass foot and the saddle). Review shots `wildlife_zone_keth_pass_foot` and
+  `wildlife_zone_keth_pass_saddle`.

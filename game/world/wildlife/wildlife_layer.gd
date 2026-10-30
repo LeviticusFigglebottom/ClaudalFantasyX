@@ -24,6 +24,9 @@ const MOTHS := &"moth"
 const DRAGONFLIES := &"dragonfly"
 const FIREFLIES := &"firefly"
 const PLAYER_GROUP := &"player"
+const HERDS := &"Herds"
+## The starting phase step (seconds) between a herd's animals' first clips.
+const HERD_PHASE_S := 1.7
 const USEC_PER_MS := 1000.0
 const VIS_HIDDEN := 0
 const VIS_PAUSED := 1
@@ -52,6 +55,10 @@ var kingfishers: Array[WildlifeGullFlock] = []
 var beaches: Array[WildlifeCrabBeach] = []
 var shoals: Array[WildlifeShoal] = []
 var swarms: Array[WildlifeSwarm] = []
+## Woolback herds (Ch12, M4-A2P-056): skinned actors, one node per animal (herd_actors[h][i]) and its player.
+var herds: Array[WildlifeHerd] = []
+var herd_actors: Array[Array] = []
+var herd_players: Array[Array] = []
 ## Per MultiMesh: the instance buffer (WildlifeBuffer) and the node drawing it.
 var buffers: Dictionary = {}
 var multimeshes: Dictionary = {}
@@ -144,6 +151,7 @@ func build() -> void:
 		_make_multimesh(MOTHS, k["insect"], "moth", _union(swarms_of(WildlifeSwarm.TYPE_MOTH)))
 		_make_multimesh(DRAGONFLIES, k["insect"], "dragonfly", _union(swarms_of(WildlifeSwarm.TYPE_DRAGONFLY)))
 		_make_multimesh(FIREFLIES, k["insect"], "firefly", _union(swarms_of(WildlifeSwarm.TYPE_FIREFLY)))
+	_build_herds(k)
 	_write_all()
 
 
@@ -295,8 +303,80 @@ func step(delta: float, player: Vector3, has_player: bool, camera: Camera3D = nu
 			dirty[key] = true
 		insect_base[key] += s.count()
 		g += 1
+	for h in herds.size():
+		var herd := herds[h]
+		var vis := _visibility(herd.bounds, camera)
+		if vis == VIS_ACTIVE:
+			herd.step(delta, player, has_player)
+		if _changed(g, vis):
+			_place_herd(h, vis)
+		g += 1
 	_upload(dirty)
 	last_step_ms = float(Time.get_ticks_usec() - t0) / USEC_PER_MS
+
+
+## Woolback herds: the rows, and an actor per animal (the kind's scene) under a Herds node, its loops set.
+func _build_herds(k: Dictionary) -> void:
+	if not k.has("woolback"):
+		return
+	var kind: Dictionary = k["woolback"]
+	var left := int(budgets.get("woolbacks", 0))
+	for row: Dictionary in zone.get("herds", []):
+		var n := _take(row, left, "woolbacks")
+		left -= n
+		herds.append(WildlifeHerd.new(row, kind, _group_seed("woolback", row), n, ground))
+	if herds.is_empty():
+		return
+	var packed := load(str(kind["scene"])) as PackedScene
+	if packed == null:
+		push_error("WildlifeLayer: cannot load %s" % kind["scene"])
+		return
+	var root := Node3D.new()
+	root.name = HERDS
+	add_child(root)
+	for h in herds.size():
+		var actors: Array[Node3D] = []
+		var players: Array[AnimationPlayer] = []
+		for i in herds[h].count():
+			var actor := packed.instantiate() as Node3D
+			actor.name = "%s_%d" % [herds[h].id, i]
+			root.add_child(actor)
+			var ap := actor.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
+			for clip: StringName in [WildlifeHerd.CLIP_GRAZE, WildlifeHerd.CLIP_WALK]:
+				if ap.has_animation(clip):
+					ap.get_animation(clip).loop_mode = Animation.LOOP_LINEAR
+			actors.append(actor)
+			players.append(ap)
+		herd_actors.append(actors)
+		herd_players.append(players)
+
+
+func woolback_count() -> int:
+	var n := 0
+	for h in herds:
+		n += h.count()
+	return n
+
+
+## Puts herd h's actors where it says (hidden past the cull distance) and starts the clips it changed; a clip that
+## starts with the layer begins at a phase of its own, so two animals never graze in step.
+func _place_herd(h: int, vis: int) -> void:
+	if h >= herd_actors.size():
+		return
+	var herd := herds[h]
+	for i in herd.count():
+		var a := herd.animals[i]
+		var actor := herd_actors[h][i] as Node3D
+		actor.visible = vis != VIS_HIDDEN
+		actor.transform = herd.transform_of(a)
+		if a.clip_changed:
+			var ap := herd_players[h][i] as AnimationPlayer
+			if ap.has_animation(a.clip):
+				var first := ap.current_animation == ""
+				ap.play(a.clip)
+				if first:
+					ap.seek(fmod(float(i) * HERD_PHASE_S + float(h), ap.current_animation_length), true)
+			a.clip_changed = false
 
 
 ## Steps flocks (gulls or kingfishers) into their flying and perched MultiMeshes, groups numbered from g; returns

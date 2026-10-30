@@ -4198,6 +4198,38 @@
       }
     },
     {
+      "id": "wildlife_zone_keth_pass_foot",
+      "scene": "res://game/levels/_tests/wildlife/zone_wildlife_keth_pass.tscn",
+      "camera": "Cameras/Foot",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "wildlife_zone_keth_pass_saddle",
+      "scene": "res://game/levels/_tests/wildlife/zone_wildlife_keth_pass.tscn",
+      "camera": "Cameras/Saddle",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
       "id": "wildlife_zone_underway_crown",
       "scene": "res://game/levels/_tests/wildlife/zone_wildlife_oruvel_underway.tscn",
       "camera": "Cameras/Crown",

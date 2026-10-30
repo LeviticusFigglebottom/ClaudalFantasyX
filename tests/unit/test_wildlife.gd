@@ -527,3 +527,61 @@ func test_fen_kingfishers_fly_low_and_sit_on_the_rails() -> void:
 	assert_true(perched_seen, "they sit on the rails")
 	assert_true(top < 2.5, "never higher than a person (%.2f m)" % top)
 	layer.free()
+
+
+func test_woolbacks_graze_look_and_amble_within_their_area() -> void:
+	var kind: Dictionary = _kinds["kinds"]["woolback"]
+	var row := {"id": "h", "center": [2.0, -3.0], "radius_m": 3.0, "count": 3, "y": 0.5}
+	var a := WildlifeHerd.new(row, kind, 1212, 3, Callable())
+	var b := WildlifeHerd.new(row, kind, 1212, 3, Callable())
+	var seen := {}
+	var fastest := 0.0
+	for f in 60 * 240:
+		var before: Array[Vector2] = []
+		for w in a.animals:
+			before.append(w.pos)
+		a.step(DT, Vector3(50.0, 0.0, 50.0), true)
+		b.step(DT, Vector3.ZERO, false)
+		for i in a.count():
+			var w := a.animals[i]
+			seen[w.state] = true
+			fastest = maxf(fastest, before[i].distance_to(w.pos) / DT / w.scale)
+			assert_true(w.pos.distance_to(a.center) <= a.radius + EPS, "a woolback stays in its area")
+			assert_eq(w.y, 0.5, "on the row's ground")
+	for i in a.count():
+		assert_eq(a.animals[i].pos, b.animals[i].pos, "deterministic, and a player 50 m off changes nothing")
+	assert_eq(seen.size(), 3, "it grazes, looks round and ambles")
+	assert_true(
+		fastest <= float(kind["walk_speed_mps"]) + EPS, "never faster than the walk clip's hooves (%.3f)" % fastest
+	)
+
+
+func test_a_close_player_makes_a_grazing_woolback_look_up() -> void:
+	var kind: Dictionary = _kinds["kinds"]["woolback"]
+	var row := {"id": "h", "center": [0.0, 0.0], "radius_m": 2.0, "count": 1}
+	var h := WildlifeHerd.new(row, kind, 77, 1, Callable())
+	var w := h.animals[0]
+	w.timer = 1e6  # it would graze on
+	var looked := false
+	for f in 60 * 20:
+		h.step(DT, Vector3(w.pos.x + 1.0, 0.0, w.pos.y), true)
+		looked = looked or w.state == WildlifeHerd.State.LOOK
+	assert_true(looked, "it looks up at the player")
+
+
+func test_keth_pass_woolbacks_are_skinned_actors_playing_their_clips() -> void:
+	var layer := _layer("", &"ch12/keth_pass")
+	assert_eq(layer.woolback_count(), 5, "a pair at the foot, three on the saddle")
+	var root := layer.get_node(NodePath(WildlifeLayer.HERDS))
+	assert_eq(root.get_child_count(), 5, "one actor each")
+	assert_eq(layer.draw_calls(), 0, "no MultiMesh")
+	for f in 10:
+		layer.step(DT, Vector3.ZERO, false)
+	for h in layer.herds.size():
+		for i in layer.herds[h].count():
+			var actor := layer.herd_actors[h][i] as Node3D
+			var ap := layer.herd_players[h][i] as AnimationPlayer
+			assert_true(ap.is_playing(), "%s plays a clip" % actor.name)
+			assert_eq(str(ap.current_animation), str(layer.herds[h].animals[i].clip), "the one its herd names")
+			assert_true(actor.position.is_equal_approx(layer.herds[h].transform_of(layer.herds[h].animals[i]).origin))
+	layer.free()

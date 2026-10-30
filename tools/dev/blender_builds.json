@@ -681,6 +681,17 @@
       ]
     },
     {
+      "id": "creature_woolback",
+      "owner": "character",
+      "threads": 4,
+      "sources": ["assets_src/creatures/woolback/**", "assets_src/creatures/avalanche_ram/build_avalanche_ram.py", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/woolback/*.glb", "assets/creatures/woolback/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/woolback/build_woolback.py", "--", "--out", "assets/creatures/woolback/woolback.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "woolback"]
+      ]
+    },
+    {
       "id": "creature_wakefin",
       "owner": "character",
       "sources": ["assets_src/creatures/wakefin/**", "assets_src/creatures/common/**"],

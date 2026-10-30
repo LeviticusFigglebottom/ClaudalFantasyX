@@ -74,6 +74,23 @@
       "takeoff_lead_deg": 40.0,
       "takeoff_speed_fraction": 0.6
     },
+    "woolback": {
+      "_doc": "Ch12, M4-A2P-056 (docs/kb/plan/act2/creatures/woolback.md): grazing herds of skinned actors (WildlifeHerd; scene is the actor, which draws the model at 0.3, build_woolback.py WOOLBACK_SCALE). Each grazes graze_s, then looks round (look_chance, for look_s: the look clip's length) or ambles wander_m to a new spot at walk_speed_mps (the walk clip's own: WALK_SPEED x the scale, so the planted hooves stay put), turning at turn_rate, keeping spacing_m from the others; a player within look_radius_m makes a grazing one look up (look_rate a second). height_m and bounds_pad_m size the herd's culling box.",
+      "scene": "res://game/creatures/woolback/woolback_actor.tscn",
+      "scale": [0.94, 1.06],
+      "walk_speed_mps": 0.208,
+      "turn_rate": 1.6,
+      "graze_s": [7.0, 16.0],
+      "look_chance": 0.35,
+      "look_s": 3.2,
+      "look_radius_m": 3.5,
+      "look_rate": 0.5,
+      "wander_m": [1.2, 3.5],
+      "spacing_m": 1.3,
+      "arrive_m": 0.05,
+      "height_m": 1.2,
+      "bounds_pad_m": 0.8
+    },
     "crab": {
       "scene": "res://assets/wildlife/shore_crab/shore_crab.glb",
       "meshes": {"body": "shore_crab"},
@@ -189,9 +206,10 @@
     }
   },
   "budgets": {
-    "_doc": "Per layer (one zone). The layer clamps counts to these and warns; the validator fails a zone file over them. draw_calls: the layer's MultiMeshes (gulls flying and perched, kingfishers flying and perched, crabs, fish, moths, dragonflies, fireflies), before shadow passes. kingfishers: Ch10's fen birds (their own rows, the gull's flock). insects: moths, dragonflies and fireflies together (M3-CRE-616). ms_per_frame: the CPU budget WildlifeLayer._process is measured against (docs/kb/art/wildlife.md).",
+    "_doc": "Per layer (one zone). The layer clamps counts to these and warns; the validator fails a zone file over them. draw_calls: the layer's MultiMeshes (gulls flying and perched, kingfishers flying and perched, crabs, fish, moths, dragonflies, fireflies), before shadow passes. kingfishers: Ch10's fen birds (their own rows, the gull's flock). woolbacks: Ch12's herd animals, skinned actors (not MultiMeshes, not in draw_calls), a few per zone. insects: moths, dragonflies and fireflies together (M3-CRE-616). ms_per_frame: the CPU budget WildlifeLayer._process is measured against (docs/kb/art/wildlife.md).",
     "gulls": 12,
     "kingfishers": 6,
+    "woolbacks": 6,
     "crabs": 24,
     "fish": 80,
     "insects": 24,

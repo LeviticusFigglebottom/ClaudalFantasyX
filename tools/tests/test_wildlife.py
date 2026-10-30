@@ -195,6 +195,20 @@ class InsectValidatorTest(unittest.TestCase):
         fen = _load(f"{vw.WILDLIFE_DIR}/ch10_ossa_fen.json")
         self.assertEqual(sum(k["count"] for k in fen["kingfishers"]), self.budgets["kingfishers"])
 
+    def test_herd_rows_and_the_woolback_kind(self) -> None:
+        z = copy.deepcopy(self.zone)
+        z["herds"] = [{"id": "h", "center": [0.0, 0.0, 0.0], "radius_m": 0.0, "count": 2, "y": "low"}]
+        errs = self.zone_errs(z)
+        for want in ("herds[0].center", "herds[0].radius_m", "herds[0].y"):
+            self.assertTrue(any(want in e for e in errs), (want, errs))
+        z["herds"] = [{"id": "h", "center": [0.0, 0.0], "radius_m": 2.0, "count": self.budgets["woolbacks"] + 1}]
+        self.assertTrue(any("herds" in e and "over the budget" in e for e in self.zone_errs(z)))
+        k = copy.deepcopy(self.kinds)
+        k["kinds"]["woolback"]["scene"] = "res://assets/creatures/woolback/woolback.glb"
+        self.assertTrue(any("woolback.scene: must be the actor scene" in e for e in vw.kinds_errors(k, self.exists)))
+        keth = _load(f"{vw.WILDLIFE_DIR}/ch12_keth_pass.json")
+        self.assertEqual([(h["id"], h["count"]) for h in keth["herds"]], [("pass_foot", 2), ("saddle", 3)])
+
     def test_zone_swarms_as_placed(self) -> None:
         haluna = _load(f"{vw.WILDLIFE_DIR}/ch02_haluna.json")
         self.assertEqual([(s["type"], s["count"]) for s in haluna["swarms"]], [("dragonfly", 4)])
@@ -259,6 +273,8 @@ class PipelineTest(unittest.TestCase):
             for mat in js["materials"]:
                 self.assertTrue((ROOT / "assets/wildlife" / animal / "materials" / f"{mat['name']}.tres").is_file())
         for kind in self.kinds.values():
+            if "meshes" not in kind:  # a skinned kind (the woolback): an actor scene, not a MultiMesh glb
+                continue
             animal = Path(kind["scene"]).stem
             for mesh in kind["meshes"].values():
                 self.assertIn(mesh, names[animal], (animal, mesh))
