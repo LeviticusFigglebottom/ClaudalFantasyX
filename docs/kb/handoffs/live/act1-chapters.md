@@ -1034,7 +1034,7 @@ All four are moved in the generators (ch10/11/12/13_greybox.py) and regenerated;
 - **test_causeway_route in big25:** my fix is in big25 (7f54af722 and b368c93a5 are both ancestors). On a fresh
   big25 worktree after `--import` it's **5/0**. The red was almost certainly the stale class cache after a merge (the
   same thing I hit at 13:48 and 14:48), so the gate needs `--import` first.
-- **M4-A2P-114 (the 19 unraised flags): 14 wired, 5 moved to M4-A2P-117.** Now in review (narrative).
+- **M4-A2P-114 (the 19 unraised flags): 14 wired, 5 moved to M4-A2P-118.** Now in review (narrative).
   - **New triggers** (from the generators): reedhollow `shore`, lowlight `engine` and `sanctum`, keth_pass
     `terrace`, cloudloom `dais`, sanctum `ledge`, lamp_archive `ledgers` and `roll`.
   - **New beats:** the Lamp Engine and the Avalanche Ram each play their scene, then the flow's `battle` step. The
@@ -1045,10 +1045,10 @@ All four are moved in the generators (ch10/11/12/13_greybox.py) and regenerated;
     - ch13_archive_hands (the third visit) and ch13_the_pact.
   - **Flags:** `ch11_engine_released` and `ch11_twice_seen` are declared in flags.tres (its own commit).
   - **Threads:** test_ch10..13_thread play each chapter's story in order. ch12 and ch13 have a new in-order test each.
-  - **qa_known `unraised`:** down from 19 to Ch14's 5. Those now point at M4-A2P-117.
+  - **qa_known `unraised`:** down from 19 to Ch14's 5. Those now point at M4-A2P-118.
   - **Staging:** the scenes name shots, cast, marks and VFX anchors the greybox stages lack (100 warnings). One
     `known` row hands them to M4-A2P-075 (my staging, 070–075), and test_qa_threads is **green**.
-  - **Ch14 (rows 15–19):** filed as **M4-A2P-117** (combat, mine): `ch14_water_steps`, `ch14_malcor_venn` and Venn's
+  - **Ch14 (rows 15–19):** filed as **M4-A2P-118** (combat, mine): `ch14_water_steps`, `ch14_malcor_venn` and Venn's
     enemy row and sim band, then the court's beats. The five flags also need M3-UI-1242's `"chapter"`.
 - **Ch14–16 mounts and walks:**
   - test_ch14_16_thread (5/0), lacquer, open_sea, hollowmere, pale_rim (2/0 each).
@@ -1060,7 +1060,7 @@ All four are moved in the generators (ch10/11/12/13_greybox.py) and regenerated;
     integration worktree, so it's ui's and inherited.
 - MERGE-READY @ 74accf6fd
 - **BACKLOG (10-30, after 16:45):**
-  - **Mine, next:** M4-A2P-117 (Ch14's fights) and the Act II staging (070–075).
+  - **Mine, next:** M4-A2P-118 (Ch14's fights) and the Act II staging (070–075).
   - **Waiting on others:**
     - env-art-b: the Choir.
     - M3-BPR-445, M3-UI-1242 and M4-A2P-061.
