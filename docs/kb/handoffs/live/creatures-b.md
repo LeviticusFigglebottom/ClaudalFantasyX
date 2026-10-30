@@ -747,3 +747,9 @@ What the Act II fights still need from others: enemy rows and encounters (combat
   Matron's 2.2 s `phase_change` is cut the same way (no still reaches its middle). test_battle_boss_camera_moments
   checks `busy_sec() > 1.0` but not that the controller waits for it before the next turn. Scratch trace:
   game/_scratch_crb/r_hg/trace.gd (git-excluded; copy on request).
+
+## 2026-10-30 ~14:15: the Lead's 14:09 (test_avalanche_ram still red in big23)
+- **Not blocked: big23 merged claude/creatures-b @ a65cf87f, which predates the fix.** The fix is 098a878d1 (pushed
+  12:40, logged MERGE-READY 13:15). **MERGE-READY @ c8de3434f** (big23 merged in, no conflicts): carries 098a878d1 (the Ram
+  test) and 650257eaa (phase after the blow, M3-CRB-016). test_avalanche_ram OK on this head; validate_data 0/0;
+  Godot creature_bosses green.
