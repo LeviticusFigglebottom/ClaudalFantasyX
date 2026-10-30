@@ -844,3 +844,12 @@ What the Act II fights still need from others: enemy rows and encounters (combat
   - **For battle-presentation:** on Ilun's dismissal, the Drowner's fall camera ends inside its roots, which fill the
     frame.
   - Running: Kesh (ch12), Hesk and Kahre (ch11, more turns), and the two finishers.
+
+## 2026-10-30 18:05: STATUS for the Lead's 18:04. Not blocked; both items are pushed.
+- **The Lamp Engine lineup red: FIXED, MERGE-READY @ 6973ffc08** (stand-in yaw 80°; battle_lineup 5/0). It's in my
+  data, so nothing is needed from act1-chapters. Not on the integration branch yet.
+- **The Act II boss as-played passes: DONE** (Ch10 Drowner, Ch11 Lamp Engine, Ch12 Ram, and Ch15 Wakefin; Ch13 has no
+  boss encounter). Logged at 15:40 and 16:30; no model fixes were needed.
+- **Branch head: MERGE-READY @ 98b31c5fb.** It carries every fix: 098a878d1, 650257eaa, f893ee590 and 6973ffc08.
+- **In progress:** the Vowbound summon passes (the results above; Kesh, Hesk, Kahre and two finishers rendering).
+- **Id range noted:** new Act II tasks from creatures-b use M4-A2P-1850 to 1899.
