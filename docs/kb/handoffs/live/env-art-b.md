@@ -617,9 +617,13 @@ that test at this branch's zones.
     `ch05_pemakar_harbour_day`, plus scratch field-height views of the harbour, the strand and the Crown spawn with
     the party. These drift by design.
   - **MERGE-READY @ 1a6934e3** (rows 45, 49, 51, 52, 53, 62, 63; row 50 routed to hero-integration).
-- **BACKLOG EMPTY (10-30):** every pass-3 row for env-art-b is fixed or routed (row 50 doesn't reproduce here and
-  belongs to hero-integration's party spawn). The Act II preparation docs are written, and ADR 0203 holds Act II
-  builds until act1-complete.
+- **Act I rows closed; Act II started (ADR 0205, the Lead's 02:26 order).** Claimed M4-A2P-043 (Ansedra, the
+  Sanctum, the Lamp Archive) and M4-A2P-047 (the still mirror and the ripples) @ 1b855b13. Working from
+  `docs/kb/plan/act2/zones/ch13_ansedra.md`: the new pieces in `b_ansedra.py`, then
+  `tools/act2/ch13_ansedra_dressing.py`, the `ch13` grade and `lut_ch13_still`.
+- **LEAD-ASK (Act II order):** the 02:26 order says "Ch10 first", but `act2_tracks.md` gives Ch10–Ch12 to env-art
+  and Ch13–Ch16 to env-art-b. I'm starting my own first chapter, Ch13, and not touching Ch10's paths. Say so if
+  you want env-art-b on Ch10 instead.
 
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
