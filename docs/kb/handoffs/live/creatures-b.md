@@ -582,3 +582,14 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   fights exist. Pre-existing, not mine: `--filter=vfx`'s test_cutscene_vfx_hosts (CutsceneMotes missing here).
   **For battle-presentation:** the breach splash, the dive/rise glow ring and the lamp brightening in the gather are
   skill VFX (yours). Ownership row added for the new paths.
+- **MERGE-READY @ (this commit): M4-CRB-008 Ethren, now final** (polish round, viewed by me on creature_ethren): a
+  layered silk under-robe in folds with a weighted hem, overlapping lacquer panels, a two-layer mantle (no joints
+  show), wide lined hanging sleeves, hands with fingers and the ring (vfx_keepsake follows it), a floating halo bowl
+  of light, folding-screen leaves; new `silk` slot (2 PROVENANCE rows). 17,304 triangles (≤18k); clips, contacts,
+  anchors and the veil bone kept; portraits re-baked. Checks: Blender identical (17); validate_data; Godot vowbound
+  116/0.
+- **GPU QA pass 4 (gpu/act1-qa-4), my rows:** 12, 35 (Moll) and 36 (the Reach) confirmed fixed on the real GPU.
+  **Row 61** (battle_arena_seawall_stairhead_surge: the Reach fills half the preview): the preview seated it on
+  Slot0, not its boss seat; **battle-presentation's 921e5fec already fixes it** (the preview uses boss_seats and the
+  rest fit, as the fight does), pending the Lead's merge. Nothing left on my side (the seat [-5.0, 0, -2.4] is in).
+  The Spar-wraith's 45° turn needs a capture in motion (PC-QUEUE).
