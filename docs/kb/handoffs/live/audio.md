@@ -3,6 +3,16 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ 84ef34df: M4-A2P-1951, the Act II mix pass as played, Ch14–Ch16** (the second half of the 18:04 item).
+  - **Loudness:** 22 hand-overs, 0 over 3 LU (62 across Ch10–Ch16; report `docs/kb/audio/act2_mix_pass.md`). Silences: none. Doubled starts: none.
+  - **Found and fixed, the cutscene → battle seam:** three fights would have played the generic `battle_standard_v2` instead of their delivered two-stem cues.
+    - The fights: `ch14_malcor_venn` (`malcor_venn`), `ch14_water_steps` (`court_steps`), `ch16_abiding_guard` (`abiding_guard`). The scripts already start them, but combat hasn't written their encounters.
+    - music.json `battle.encounters` now names them, and `battle.pending_encounters` lets `data_check` accept them until encounters.json has them. It then asks for each to come off the list.
+    - Each fight scores itself the moment it exists, and its arena bed follows (e.g. `ansedra_lagoon_escape` → `arena_lagoon_dusk`). The phase → stem rows are still to come with the fights' phase ids (the cue rows' notes say which).
+    - The Wakefin's seam carries its own cue.
+  - **LEAD-ASK:** the chapter plan (ch14.md §3) calls the steps set piece `ch14_hold_the_steps`, but `ch14_the_vows` starts `ch14_water_steps`. Both ids name `court_steps` for now; combat or act2-plan should settle one.
+  - **Checks:** validate_data 0; test_audio_data OK; the Act I and Act II audits 0; Godot battle_audio 22/0, audio_runtime 11/0, music_transitions 7/0. **Skipped:** screenshots, Blender, coverage.
+- **BACKLOG EMPTY (after 84ef34df):** waiting on combat's people-boss and set-piece encounters (then their phase rows), slice-polish's staging, and the listening verdict.
 - **MERGE-READY @ a326ef8a: M4-A2P-1950 (the Lead's 18:04 item; audio's Act II ids are M4-A2P-1950–1979), the Act II mix pass as played, Ch10–Ch13.** The cue tables need no renders (17:44 entry below).
   - **Loudness steps** (`tools/audio/act1_mix_pass.py --act 2 --chapters ch10,ch11,ch12,ch13`, report `docs/kb/audio/act2_mix_pass.md`): 40 hand-overs, **0 over 3 LU**.
     - Cutscene cue → cue and → field: all within 0.2 LU, except a boss cue handing back to its zone (+1.9 to +2.1).
