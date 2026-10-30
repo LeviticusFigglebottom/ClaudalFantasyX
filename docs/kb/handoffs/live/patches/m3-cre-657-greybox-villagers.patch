@@ -1,0 +1,26 @@
+--- a/game/world/zone/greybox_zone.gd
++++ b/game/world/zone/greybox_zone.gd
+@@ -85,6 +85,7 @@
+ 
+ 
+ func _ready() -> void:
++	_build_villagers()
+ 	if encounters != null:
+ 		encounters.setup(self, layout.get("encounters", {}), defaults.get("encounters", {}))
+ 
+@@ -255,6 +256,15 @@
+ 	add_child(w)
+ 
+ 
++## ADR 0152 (M3-CRE-657): the villagers and the crowd for any location with a villager zone file
++## (game/data/world/npc/zones/). Added in _ready, after every child's (ZoneCast's casts included): the layer then
++## replaces ZoneCast's stand-in villagers with the zone's crowd people and adopts the named ones' models.
++func _build_villagers() -> void:
++	if location_id == &"" or not FileAccess.file_exists(VillagerLayer.path_for(location_id)):
++		return
++	VillagerLayer.wire(self, location_id)
++
++
+ func _build_player() -> void:
+ 	var d: Dictionary = _merged("player")
+ 	player = FieldController.new()

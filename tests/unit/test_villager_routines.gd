@@ -314,7 +314,8 @@ func test_halunas_rows_resolve_in_the_zone() -> void:
 	assert_eq(layer.build(), rows.size(), "every Haluna row finds its stand-in and its body")
 	for row: Dictionary in rows:
 		var stand_in := zone.get_node(NodePath(str(row["stand_in"])))
-		assert_false((stand_in.get_node("StandIn") as Node3D).visible, "%s's capsule is hidden" % row["npc_id"])
+		var capsule := stand_in.get_node_or_null("StandIn") as Node3D  # Haluna's are gone from the scene (M3-ENV-748)
+		assert_true(capsule == null or not capsule.visible, "%s's capsule is hidden" % row["npc_id"])
 		if row.has("talk"):
 			assert_true(zone.get_node_or_null(NodePath(str(row["talk"]))) is Interactable, "talk spot exists")
 	assert_eq(layer.villager(&"fisher").partner, layer.villager(&"netmender"), "the dock pair chats")
@@ -334,22 +335,17 @@ func test_wake_villagers_ride_inside_their_cutscene_actors() -> void:
 	assert_eq(osu.get_parent(), actor, "inside the cutscene actor")
 	assert_false((actor.get_node("StandIn") as Node3D).visible, "its capsule is hidden")
 	assert_eq(osu.route.size(), 0, "no route inside an actor")
+	var staged := actor.global_rotation.y
 	for i in roundi(4.0 / DT):
 		layer.tick(DT)
-	assert_true(osu.chatting(), "Osu and the vendor stand 4 m apart: within chat range")
-	var to_vendor := layer.villager(&"vendor").global_position - osu.global_position
-	_near(
-		absf(angle_difference(osu.global_rotation.y, HeroLocomotion.yaw_of(to_vendor))),
-		0.0,
-		0.05,
-		"she turns to the vendor, though each rides in its own actor"
-	)
+	assert_false(osu.chatting(), "no chat at the wake: cinematics stages them facing the wall (M3-CIN-1220)")
+	_near(absf(angle_difference(osu.global_rotation.y, staged)), 0.0, 0.05, "she keeps the facing her actor gives her")
 	actor.position += Vector3(2.0, 0.0, 0.0)  # a cutscene moves the actor
 	layer.tick(DT)
 	_near(osu.global_position.distance_to(actor.global_position), 0.0, 0.001, "the villager goes with it")
 	actor.visible = false  # a zone state hides the actor
 	assert_false(osu.is_visible_in_tree(), "and its villager")
-	assert_eq(osu.partner, layer.villager(&"vendor"), "Osu and the vendor talk at the feast tables")
+	assert_true(osu.partner == null, "no chat partner at the wake")
 	_done()
 
 
@@ -424,12 +420,16 @@ func test_a_row_can_wear_another_villagers_model() -> void:
 	_done()
 
 
-## M3-CRE-100: Haluna adds its layer in its own _ready, then HalunaVillagers places the shop bodies' villagers;
-## the layer builds after that and adopts them, so each villager shows once (not one from each system).
+## M3-CRE-100: Haluna adds its layer in its own _ready, then HalunaVillagers places the shop bodies' villagers. The
+## layer builds at once (no capsule before the first frame, big14 gate) and puts the shop rows inside their bodies as
+## `Villager`, so populate skips them: each villager shows once (not one from each system).
 func test_a_layer_added_in_the_zones_ready_adopts_what_the_zone_places_after() -> void:
 	var zone := (load(HALUNA) as PackedScene).instantiate() as Node3D
-	_holder().add_child(zone)  # not prebuilt: the zone adds its VillagerLayer in its _ready
-	await (Engine.get_main_loop() as SceneTree).process_frame
+	_holder().add_child(zone)  # not prebuilt: the zone adds its VillagerLayer in its _ready, then places the shop bodies
+	var layer := zone.get_node(^"VillagerLayer") as VillagerLayer
+	assert_false(layer.villagers.is_empty(), "added in the zone's _ready, the layer builds at once")
+	for n in zone.get_node(^"NPCs").find_children("StandIn", "GeometryInstance3D", true, false):
+		assert_false((n as GeometryInstance3D).is_visible_in_tree(), "%s shows no capsule" % n.get_parent().name)
 	var ids: Array[StringName] = []
 	for n: Node in zone.find_children("*", "FieldNpc", true, false):
 		var id := (n as FieldNpc).npc_id
@@ -437,7 +437,6 @@ func test_a_layer_added_in_the_zones_ready_adopts_what_the_zone_places_after() -
 		ids.append(id)
 	for id: StringName in [&"shopkeeper", &"smith", &"innkeeper", &"vendor"]:
 		assert_true(id in ids, "%s is in the village" % id)
-	var layer := zone.get_node(^"VillagerLayer") as VillagerLayer
 	assert_true(layer.villager(&"shopkeeper") != null, "the layer owns the shop rows too (adopted)")
 	_done()
 
@@ -485,8 +484,35 @@ func test_oruvels_kell_comes_alive_in_the_real_zone() -> void:
 	var zone := (load(ORUVEL) as PackedScene).instantiate() as Node3D
 	_holder().add_child(zone)
 	var layer := VillagerLayer.wire(zone, &"ch01/oruvel")
-	await (Engine.get_main_loop() as SceneTree).process_frame
+	layer.build()  # the deferred build, made now: the runner steps no frames
 	var kell := layer.villager(&"kell")
 	assert_true(kell != null, "Kell is a villager")
 	assert_true(kell != null and kell.actor != null and kell.actor.name == FieldNpc.ACTOR_NAME, "wearing her model")
+	_done()
+
+
+## ZoneCast (M3-CIN-1217) puts a villager's model on an Act I stage actor as `Cast`: a named villager's row adopts that
+## model as it does a greybox `Model`, so one body shows and it lives.
+func test_a_zone_cast_model_is_adopted_into_a_villager() -> void:
+	var zone := _holder()
+	var stage := Node3D.new()
+	stage.name = &"CutsceneStage"
+	zone.add_child(stage)
+	var actors := Node3D.new()
+	actors.name = &"Actors"
+	stage.add_child(actors)
+	var kell := Node3D.new()
+	kell.name = &"kell"
+	actors.add_child(kell)
+	var model := (load(KELL) as PackedScene).instantiate() as Node3D
+	model.name = &"Cast"
+	kell.add_child(model)
+	var layer := VillagerLayer.new()
+	layer.zone_id = &"ch01/oruvel"
+	layer.auto_build = false
+	zone.add_child(layer)
+	layer.build()
+	var npc := layer.villager(&"kell")
+	assert_true(npc != null and npc.actor == model, "the cast model itself, not a second body")
+	assert_eq(kell.find_children("*", "AnimationPlayer", true, false).size(), 1, "one body on the actor")
 	_done()

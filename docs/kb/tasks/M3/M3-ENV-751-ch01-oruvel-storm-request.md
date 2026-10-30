@@ -2,8 +2,8 @@
 id: M3-ENV-751
 title: "Ch1 Oruvel's storm at final quality: the storm frame, the UndertowStorm for StormWall, the storm set (request to slice-polish)"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: "slice-polish (session_01F3vrUPLtDQMGSRrMHJtpz1)"
 depends_on: [M3-ENV-740]
 milestone: M3
 request-from: environment
@@ -37,3 +37,4 @@ everything below and is the reference (shots `zone_oruvel_storm_o12/o16`).
 - [ ] Re-render the zone in the storm and view it.
 
 ## Review log
+- 2026-10-28 slice-polish: done. The storm frame swap, the UndertowStorm on StormWall's bearing and the 40 km far plane were in from M3-C01-100. StormWall's block now stays up in the storm with only its mesh hidden, so your storm set (in your dressing, mounted by M3-ENV-740) follows it. Self-rendered ch01_oruvel_storm: the sky stays day-blue (asked in M3-ENV-104).

@@ -94,6 +94,150 @@
    ],
    "energy": 6.0,
    "range": 60.0
+  },
+  {
+   "at": [
+    310.914,
+    41.485,
+    160.053
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    306.967,
+    41.485,
+    161.11
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    305.909,
+    41.485,
+    157.163
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    309.857,
+    41.485,
+    156.105
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    308.95,
+    50.485,
+    160.619
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    306.401,
+    50.485,
+    159.147
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    307.873,
+    50.485,
+    156.597
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    310.423,
+    50.485,
+    158.069
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    309.594,
+    59.485,
+    159.291
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    307.729,
+    59.485,
+    159.79
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    307.229,
+    59.485,
+    157.925
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    309.094,
+    59.485,
+    157.425
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    308.608,
+    68.485,
+    159.341
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    307.678,
+    68.485,
+    158.804
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    308.215,
+    68.485,
+    157.874
+   ],
+   "energy": 1.3,
+   "range": 7.5
+  },
+  {
+   "at": [
+    309.145,
+    68.485,
+    158.411
+   ],
+   "energy": 1.3,
+   "range": 7.5
   }
  ],
  "pieces": [
@@ -155,7 +299,10 @@
      ],
      "yaw": 16.156
     }
-   ]
+   ],
+   "material_paths": {
+    "cs_laterite_inner": "res://game/levels/ch08/coilspire/coilspire_inner_material.tres"
+   }
   },
   {
    "piece": "coilspire_flues",
@@ -204,7 +351,10 @@
      ],
      "yaw": 16.156
     }
-   ]
+   ],
+   "material_paths": {
+    "cs_laterite_inner": "res://game/levels/ch08/coilspire/coilspire_inner_material.tres"
+   }
   },
   {
    "piece": "keepers_hut",
@@ -1328,6 +1478,18 @@
    "y": 58.535,
    "yaw_deg": 49.0,
    "block": "WrightMark"
+  },
+  {
+   "piece": "virel",
+   "kit_dir": "res://assets/creatures/virel/",
+   "materials_dir": "res://assets/creatures/virel/materials/",
+   "block": "Virel",
+   "yaw_deg": 0.0,
+   "at": [
+    308.745,
+    159.418
+   ],
+   "y": 74.285
   },
   {
    "piece": "corrow_far",

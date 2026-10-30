@@ -3468,6 +3468,26 @@
  },
  "triggers": [
   {
+   "id": "causeway_notice",
+   "at": [
+    10.912,
+    0.132,
+    -5.029
+   ],
+   "size": [
+    8.0,
+    0,
+    1.5
+   ],
+   "yaw": -65.7,
+   "activation": "interact",
+   "prompt_key": "FIELD_PROMPT_DEFAULT",
+   "once": true,
+   "payload": {
+    "record": "causeway_notice"
+   }
+  },
+  {
    "id": "banter_posts",
    "at": [
     28.594,

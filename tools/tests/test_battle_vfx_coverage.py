@@ -37,5 +37,10 @@ class CoverageTests(unittest.TestCase):
                 self.assertTrue(answer, f"{table}.{sid} ({c[table][sid]}) plays nothing on stage either")
 
 
+
+    def test_every_gap_is_explained(self) -> None:  # M3-BPR-411: closed; what is left is kept on purpose
+        c = cov.coverage()
+        self.assertEqual(c["unexplained"], [], c["unexplained"])
+
 if __name__ == "__main__":
     unittest.main()

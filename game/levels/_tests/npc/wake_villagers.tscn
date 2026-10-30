@@ -10,5 +10,5 @@ zone_id = &"ch04/haluna_wake"
 [node name="Cameras" type="Node3D" parent="."]
 
 [node name="Feast" type="Camera3D" parent="Cameras"]
-transform = Transform3D(-0.897921, -0.0538394, 0.436852, 0, 0.992491, 0.122319, -0.440157, 0.109832, -0.891178, -0.5, 1.8, -36.6)
+transform = Transform3D(0.993307, 0.0125978, -0.114812, -0, 0.994034, 0.109071, 0.115501, -0.108341, 0.987381, 4, 1.95, -97)
 fov = 40.0

@@ -1,0 +1,14 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/character/character_mouth.gdshader" id="sh"]
+[ext_resource type="Texture2D" path="res://assets/characters/villagers/ione/textures/ione_head_orm.png" id="t0"]
+
+[resource]
+resource_name = "mouth"
+render_priority = 0
+shader = ExtResource("sh")
+shader_parameter/tex_orm = ExtResource("t0")
+shader_parameter/ao_light_affect = 0.5
+shader_parameter/col_albedo = Color(0.28, 0.1, 0.09, 1)
+shader_parameter/roughness = 0.5
+shader_parameter/roughness_from_orm = 0.0

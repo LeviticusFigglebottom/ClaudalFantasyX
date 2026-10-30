@@ -48,11 +48,15 @@ func test_entries_unlock_by_flag_by_record_or_always_and_locked_ones_are_not_lis
 	assert_eq(_ids(m.entries_in(&"world")), [&"glimmer"] as Array[StringName], "only the always entry at first")
 	assert_true(m.entries_in(&"records").is_empty())
 	assert_eq(m.categories()[0]["found"], 1)
-	assert_eq(m.categories()[0]["total"], 9, "locked entries still count (Act I's seven, M3-UI-207's Kirru and Ullari)")
+	assert_eq(m.categories()[0]["total"], 12, "locked entries still count (Act I's ten, M3-UI-207's Kirru and Ullari)")
 	flags[&"ch02_met_asha"] = true
-	assert_eq(_ids(m.entries_in(&"world")), [&"glimmer", &"undertow", &"order"] as Array[StringName], "data order")
+	assert_eq(
+		_ids(m.entries_in(&"world")),
+		[&"glimmer", &"undertow", &"order", &"the_calm"] as Array[StringName],
+		"data order"
+	)
 	assert_eq(_ids(m.entries_in(&"people")), [&"asha", &"toma"] as Array[StringName])
-	assert_eq(m.summary(), tr("CODEX_TOTAL_FMT").format({"found": 6, "total": m.entry_rows.size()}))
+	assert_eq(m.summary(), tr("CODEX_TOTAL_FMT").format({"found": 7, "total": m.entry_rows.size()}))
 	assert_false(m.is_unlocked(&"causeway_notice"), "a record waits to be found")
 	assert_false(m.is_unlocked(&"no_such_entry"))
 
@@ -139,13 +143,13 @@ func test_the_menu_lists_categories_with_counts_and_new_and_shows_a_category_lin
 	var menu := _menu()
 	var cats := menu.categories_page()
 	assert_eq(cats.row_count(), 4)
-	assert_eq(cats.rows[0]["right"], tr("CODEX_ROW_COUNT_FMT").format({"found": 3, "total": 9}))
+	assert_eq(cats.rows[0]["right"], tr("CODEX_ROW_COUNT_FMT").format({"found": 4, "total": 12}))
 	assert_eq(cats.rows[0]["mp"], tr("CODEX_NEW_TAG"), "unread entries: New, in words")
 	assert_eq(cats.rows[3]["mp"], "", "nothing found: nothing new")
 	assert_eq(menu.column, CodexMenu.Column.CATEGORIES)
 	assert_eq(menu.title_text(), tr("CODEX_CAT_WORLD"))
 	assert_eq(menu.body_text(), tr("CODEX_CAT_WORLD_DESC"))
-	assert_eq(menu.entries_page().row_count(), 3, "World's unlocked entries, listed under it")
+	assert_eq(menu.entries_page().row_count(), 4, "World's unlocked entries, listed under it")
 	assert_eq(menu.entries_page().rows[1]["right"], tr("CODEX_NEW_TAG"))
 	assert_eq(flags.get(&"codex_glimmer_read", false), false, "showing a category reads nothing")
 	assert_eq(menu.summary_text(), menu.model.summary())
@@ -168,8 +172,11 @@ func test_opening_an_entry_shows_it_and_clears_its_new_marker() -> void:
 	assert_eq(menu.categories_page().rows[0]["mp"], tr("CODEX_NEW_TAG"), "the Order is still new")
 	menu.handle_input(_ev(&"ui_down"))
 	assert_eq(menu.current_id, &"order")
+	assert_eq(menu.categories_page().rows[0]["mp"], tr("CODEX_NEW_TAG"), "the Calm is still new")
+	menu.handle_input(_ev(&"ui_down"))
+	assert_eq(menu.current_id, &"the_calm")
 	assert_eq(menu.categories_page().rows[0]["mp"], "", "the category has nothing new left")
-	assert_eq(menu.entries_page().cursor, 2, "the cursor stays where it was")
+	assert_eq(menu.entries_page().cursor, 3, "the cursor stays where it was")
 	menu.handle_input(_ev(&"ui_cancel"))
 	assert_eq(menu.column, CodexMenu.Column.CATEGORIES, "Cancel comes back a column")
 	menu.handle_input(_ev(&"ui_down"))
@@ -416,3 +423,34 @@ func _ev(action: StringName) -> InputEventAction:
 	ev.action = action
 	ev.pressed = true
 	return ev
+
+
+## M3-NAR-01: both Act I records stand in the field. The Tide-Readers' Notice is an interact trigger on the
+## causeway's first marker post, before the first banter post. The Words at the Basin Steps are on the shrine's
+## first step inside the entrance. Each is a once-only "Examine" whose payload names the record.
+func test_the_two_act1_records_are_placed_in_the_field() -> void:
+	var causeway := (
+		JSON.parse_string(
+			FileAccess.get_file_as_string("res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway_layout.json")
+		)
+		as Dictionary
+	)
+	var ids: Array = (causeway["triggers"] as Array).map(func(t: Dictionary) -> String: return str(t["id"]))
+	var notice := (causeway["triggers"] as Array)[ids.find("causeway_notice")] as Dictionary
+	assert_eq(str(notice.get("activation", "")), "interact", "examined, not walked into")
+	assert_eq(notice.get("payload", {}), {"record": "causeway_notice"})
+	assert_true(ids.find("causeway_notice") < ids.find("banter_posts"), "read before the first banter post")
+	var shrine := (
+		JSON.parse_string(FileAccess.get_file_as_string("res://game/data/trials/shell_shrine.json")) as Dictionary
+	)
+	var layout := (shrine["shell_shrine"] as Dictionary)["layout"] as Dictionary
+	assert_true(layout.has("basin_steps"), "the shrine's step for the record")
+	assert_true(float(layout["basin_steps"][0]) > float(layout["spawn"][0]), "a step in from the entrance")
+	assert_true(float(layout["basin_steps"][0]) < float(layout["source"][0]), "before the basins")
+	var spot := CodexRecordSpot.make("basin_steps", Vector3(1, 0, 2), 0.9)
+	assert_eq(spot.payload, {"record": "basin_steps"})
+	assert_eq(spot.activation, Interactable.Activation.INTERACT)
+	assert_eq(spot.prompt_key, "FIELD_PROMPT_DEFAULT", "Examine, not Read (a battle command)")
+	assert_true(spot.once)
+	assert_eq(spot.position, Vector3(1, 0, 2))
+	spot.free()

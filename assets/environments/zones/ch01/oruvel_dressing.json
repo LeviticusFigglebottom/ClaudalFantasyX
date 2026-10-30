@@ -318,10 +318,10 @@
   {
    "piece": "terrace_hull",
    "at": [
-    -36.0,
+    -37.1,
     -15.835
    ],
-   "y": 0.25,
+   "y": 0.7,
    "yaw_deg": 0.0,
    "kit_dir": "res://assets/environments/kits/brightwater_ferry/",
    "block": "SeventhTerrace"
@@ -329,10 +329,10 @@
   {
    "piece": "terrace_galley",
    "at": [
-    -36.0,
+    -37.1,
     -15.835
    ],
-   "y": 0.25,
+   "y": 0.7,
    "yaw_deg": 0.0,
    "kit_dir": "res://assets/environments/kits/brightwater_ferry/",
    "block": "SeventhTerrace"
@@ -340,10 +340,10 @@
   {
    "piece": "terrace_hold",
    "at": [
-    -36.0,
+    -37.1,
     -15.835
    ],
-   "y": 0.25,
+   "y": 0.7,
    "yaw_deg": 0.0,
    "kit_dir": "res://assets/environments/kits/brightwater_ferry/",
    "block": "SeventhTerrace"
@@ -351,10 +351,10 @@
   {
    "piece": "terrace_rig",
    "at": [
-    -36.0,
+    -37.1,
     -15.835
    ],
-   "y": 0.25,
+   "y": 0.7,
    "yaw_deg": 0.0,
    "kit_dir": "res://assets/environments/kits/brightwater_ferry/",
    "block": "SeventhTerrace"
@@ -362,10 +362,10 @@
   {
    "piece": "terrace_sails_furled",
    "at": [
-    -36.0,
+    -37.1,
     -15.835
    ],
-   "y": 0.25,
+   "y": 0.7,
    "yaw_deg": 0.0,
    "kit_dir": "res://assets/environments/kits/brightwater_ferry/",
    "block": "SeventhTerrace"
@@ -373,10 +373,10 @@
   {
    "piece": "terrace_wheel",
    "at": [
-    -36.0,
+    -37.1,
     -8.835
    ],
-   "y": 2.27,
+   "y": 2.72,
    "yaw_deg": 0.0,
    "kit_dir": "res://assets/environments/kits/brightwater_ferry/",
    "block": "SeventhTerrace"
@@ -384,10 +384,10 @@
   {
    "piece": "terrace_name_board",
    "at": [
-    -36.0,
+    -37.1,
     -5.8
    ],
-   "y": 1.2,
+   "y": 1.65,
    "yaw_deg": 0.0,
    "kit_dir": "res://assets/environments/kits/brightwater_ferry/",
    "block": "NameBoard"

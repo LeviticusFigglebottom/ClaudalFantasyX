@@ -221,3 +221,17 @@ GLB 1.61 MB. Lowest vertex per clip (numpy poser): idle 0.18 m, ready 0.26, atta
 another track's); he reads spectral through value, the bright net and the glowing margins. No portrait yet
 (assets/ui/portraits/creatures/ilun.png, the portrait manifest's; test_creature_portraits fails on it and the other
 missing Vowbound portraits, before and after this pass).
+
+## Polish 2 (2026-10-28)
+
+The near wing read pale and washed at the battle camera's grazing angle (battle_vowbound_out,
+battle_choreo_vowbound_rise). A diagnostic render showed the pale sheet was mostly the net: toward the tip the net's
+chord closes up, its 4.2 cm cords crowded into a solid pale band, and the membrane between them was pale too. Now:
+- **The membrane deepens toward the trailing edge** on both wings, back and belly (`reef_blue` into
+  `deep_teal_shadow` on the back, `sea_glow` with `reef_blue` underneath, up to 70%), and the pale trailing margin is
+  pulled in to a thin rim (8 cm); its inner light dips a little there.
+- **The cords thin with the net's chord** (full width where the chord is 0.8 m or more, down to 35% where it closes up
+  toward the tip), so the dark membrane shows between them out to the tip. Their colour and light (`glimmer_bound`
+  masks 0.72 / 0.85 / 1.0) are unchanged, so the net stays the brightest thing on him; he still reads spectral and
+  luminous. The far wing gets the same treatment (in the rise its net reads as clear dark diamonds).
+Triangles (15,561), bones, clips, contacts and anchors unchanged; materials.json unchanged.

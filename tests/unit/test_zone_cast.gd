@@ -53,9 +53,10 @@ func test_a_cast_actor_shows_its_model_and_idles_out_of_step() -> void:
 	var fisher := zone.stage.actor(&"fisher")
 	var boatman := zone.stage.actor(&"boatman")
 	assert_false((fisher.get_node(^"StandIn") as Node3D).visible, "the capsule is hidden")
-	assert_true(fisher.get_node_or_null(^"Cast") != null, "the model is on the actor")
-	var a := HeroMotion.player_of(fisher.get_node(^"Cast"))
-	var b := HeroMotion.player_of(boatman.get_node(^"Cast"))
+	# The body is the Cast, or a crowd person that replaced it once the zone has a villager file (M3-CRE-657):
+	# either way the actor's AnimationPlayer is the one the cutscenes' @anim lines play.
+	var a := HeroMotion.player_of(fisher)
+	var b := HeroMotion.player_of(boatman)
 	assert_true(a != null and a.is_playing() and a.current_animation == "idle", "the fisher idles")
 	assert_true(b != null and b.is_playing(), "the boatman idles")
 	assert_true(absf(a.current_animation_position - b.current_animation_position) > 0.05, "out of step")

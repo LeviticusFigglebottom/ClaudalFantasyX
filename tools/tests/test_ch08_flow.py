@@ -36,6 +36,14 @@ def _block_ids(layout: dict) -> set:
     return ids
 
 
+def _with_collision(layout: dict) -> dict:
+    """The layout with its kit collision file's blocks and ramps joined (KitCollision.merge, ADR 0200)."""
+    if "collision_path" not in layout:
+        return layout
+    extra = _json(ROOT / layout["collision_path"].removeprefix("res://"))
+    return dict(layout, blocks=layout["blocks"] + extra.get("blocks", []) + extra.get("ramps", []))
+
+
 def _steps(zone: dict):
     for row in zone.get("arrive", []):
         yield from row.get("steps", [])

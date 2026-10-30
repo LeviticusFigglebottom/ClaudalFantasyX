@@ -17,7 +17,8 @@ const VERSE_INPUTS: Array[StringName] = [
 	&"ch02_rhen_named_lantern", &"ch02_rhen_stayed_with_dead", &"ch02_heard_pila", &"ch03_found_net_float"
 ]
 ## Shot ids from docs/kb/art/environments/haluna.md §5 (H Haluna, C causeway, S shrine).
-const SHOT_ID_PATTERN := "^[HCS](0[1-9]|10)$"
+## A haluna.md id, or a stage variant of one (H05_up: H05 at standing height).
+const SHOT_ID_PATTERN := "^[HCS](0[1-9]|10)(_[a-z]+)?$"
 ## M1-NAR-05 (decisions_log N-13): Rhen's recognition on S10 holds at least this long in @wait time.
 const S10_HOLD_SEC := 6.0
 
@@ -187,7 +188,8 @@ func _check_beach_run(run: Dictionary) -> void:
 	assert_eq(lines[0], &"ch02_beach_001", "opens on the dawn narration")
 	assert_eq(lines[-1], &"ch02_beach_035", "closes on the narration")
 	var closing := "ch02_beach_014" if named else "ch02_beach_015"
-	assert_eq(_shot_of(run, closing).get("shot"), "H05", "Asha's closing line stays on H05 %s" % [c])
+	# H05_up is H05's setup at standing height (they are up by then; PC GPU QA row 32).
+	assert_eq(_shot_of(run, closing).get("shot"), "H05_up", "Asha's closing line stays on H05 (standing) %s" % [c])
 	assert_eq(_shot_of(run, "ch02_beach_035").get("shot"), "H01", "the walk-up narration is on H01 %s" % [c])
 
 

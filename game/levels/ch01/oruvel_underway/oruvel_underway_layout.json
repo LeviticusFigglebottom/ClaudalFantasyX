@@ -2,6 +2,7 @@
   "doc": "M3-C01-02 greybox: ch01/oruvel_underway, the drowned Lit Age tower under Oruvel (act1_ch01.md C1-02 to C1-07). Three floors laid side by side at y 0, joined by tether points (story beats that place Rhen on the next floor): the crown (x -8..8), the first bell-room (x 34..46) and the galleries (x 74..86) with the gauge room and the current shaft off them (x 86..100). Bell-rooms are rest points (a full heal, no save). lantern: what the open shutter finds (Ch01UnderwayZone). encounters: the random table (act1_ch01.md §9: shoals, or a limpet with a shoal), for the shared field encounters (M2-FP-25) to read; until then only the scripted fights play. fog: the murk. The underwater look is a stand-in (dark sun, ambient and fog) until env-art's drowned-tower kit and an UnderwaterRig replace the blocks.",
   "block_color": "#4f6a6c",
   "sun": {"pitch_deg": -42.0, "yaw_deg": 105.0, "energy": 3.0, "color": "#ffefe1"},
+  "environment_res": "res://game/levels/ch01/oruvel_underway/oruvel_underway_ch01_environment.tres",
   "environment": {"background": "#06222c", "ambient_color": "#2f6470", "ambient_energy": 0.35},
   "fog": {"color": "#0b3a44", "density": 0.035},
   "camera": {"orbit_distance": 6.5, "orbit_height": 4.5},
@@ -59,7 +60,7 @@
   },
   "shots": {
     "U01": {"pos": [0, 0.4, 18], "look_at": [0, 5, 4], "fov": 60},
-    "U03": {"pos": [43.17, 2.37, 14.0], "look_at": [40.0, 1.3, 11.0], "fov": 50},
+    "U03": {"pos": [38.6, 1.8, 13.2], "look_at": [43.0, 1.5, 6.0], "fov": 50},
     "U06": {"pos": [83, 1.6, -33], "look_at": [80, -0.5, -38], "fov": 30},
     "U07": {"pos": [93, 1.6, -27], "look_at": [97, 1.2, -31], "fov": 40},
     "U08": {"pos": [97, 7, -34], "look_at": [97, 0, -38], "fov": 45},
