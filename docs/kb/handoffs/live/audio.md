@@ -3,6 +3,20 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ 1ad5bbcfb: the Lead's 21:05 item.**
+  - **The Act II boss themes as played in the intros (bdc5ef22):** done at d04d79422 (above). Each sting now lands with the title card at 0.7 s, under the boss cue's 3.5 s duck.
+  - **Victory stings:** each Act II boss win returns to the field (the chapter flows: `victory_flag`, then the zone), not into a scene of grief, the same as Act I. So the one modest victory figure (pentatonic, open fifths) stays, with no triumphant boss fanfare. act1_mix_pass `--act 2`: 62 handovers, none with a step over 3 LU. Victory → field is level in every Act II zone (-16.0 against -16.0 to -16.1, at most 0.1 LU).
+  - **Zone ambience against env-art-b's ambient life** (env-art-b @ 9a85e089, not on integration yet):
+    - **What it added:** flames that flicker (the Lacquer Court's eight lanterns at 0.15; Hollowmere's seven warm lamps at 0.3 and four bound-teal conduit lights at 0.12), and tide debris that drifts at Hollowmere, the open sea and round the bridal barge. No birds; the gulls are already in hollowmere_flotilla.
+    - **The flames now sound:** a new close loop, `lamp_flame` (20 s, act2_ambience.py: an oil wick's soft breath wavering at ZoneKitDressing's own flicker rates of 1.7 and 4.3 Hz, and a rare small gutter). It plays under each warm `fire_lights` row with a `flicker` of at least 0.1, through PropAudio and the new `flames` row in prop_sfx.json. The loop is heard within about 9 m and never across the zone, and each flame starts at its own point in the loop, so a row of lanterns doesn't breathe in step. The teal lights flicker but aren't flames, so they stay silent.
+    - **How it hooks in:** it reads only ZoneKitDressing's public `layout`, the `FireLights` children in row order, and the `dressed` signal. It waits for `dressed` if the lights aren't placed yet, and it changes nothing until env-art-b merges.
+    - **The drifting debris needs no new sound:** it rides the swell, and the beds already carry water on hulls and pilings (hollowmere_flotilla, open_sea_night, open_sea_fog).
+  - **Checks:**
+    - Run: render_all `--only act2_ambience` (only `lamp_flame` new, every other bed byte-identical; loudness re-checked); test_audio_loudness OK; validate_data 0; data_check OK; gdlint and gdformat clean.
+    - Godot tests: flame_audio 3/0 (new), prop_audio 2/0, battle_stings 8/0, audio_runtime 11/0, ambience 5/0, footsteps 8/0.
+    - Skipped: screenshots, Blender, coverage.
+  - **PC-QUEUE:** walking past the Lacquer Court's lanterns once env-art-b merges.
+- **BACKLOG EMPTY (after 1ad5bbcfb):** waiting on Ch11 and Ch13 staging, combat's Ch14–Ch16 fights, and env-art-b's merge (the flames go live then).
 - **MERGE-READY @ d04d79422 (unchanged): the Lead's 20:45 item. Ch11 and Ch14–Ch16 were already rendered from the direction notes, so there was nothing to add.**
   - **Ch11 (`docs/kb/story/beats/act2_ch11_direction.md`):** the table is camera and blocking. Its only sound calls are already met:
     - the `nhoa_bound` sting on N07 (rendered);
