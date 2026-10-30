@@ -589,6 +589,35 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ 8e4ab352: PC pass 5's rows 59, 24 and 66, and a tools-suite red.**
+  - **The Lead's correction is taken.** Ch13–Ch16 are env-art-b's. env-art's parallel Ch13–Ch15 dressings were
+    already withdrawn in the big22 merge (7fad181e) and are not filed as requests: env-art-b's mounted versions
+    stand.
+  - **Row 59 (`ch01_o10_gull`), fixed** and viewed (O10 now frames the carved gull against the sky).
+    - **Cause:** the field camera's keep-in-frame safety net for FIXED shots (692b5515, `game/world/**`, Systems')
+      also turned *cutscene* shots toward the leader. O10's 85 mm telephoto doesn't frame Rhen, so it swung down
+      onto his deck.
+    - **Fix:** a scripted (cutscene) shot keeps its composition; the net stays for volume shots (26661c7a, the
+      Lead's assignment). Test `test_a_scripted_fixed_shot_keeps_its_frame_without_him`; camera tests 72/0.
+      **FYI hero-integration / Systems:** it's a one-line guard in `evaluate()`.
+  - **Row 59, the "ring decals"** were the weathering shader's barnacle and weed bands. Their soft tops reach
+    +0.2 m over the tide line, so Oruvel's decks (at the tide line) were crusted.
+    - **Fix:** `ov_timber` and `ov_timber_new` end both bands below the walked top (9866ea4a). Hull timber keeps
+      them; `ov_hull_tar` is unchanged.
+    - **Viewed** on ten Oruvel shots: decks clean, nothing else moved. The Oruvel shots will drift slightly on the
+      decks.
+  - **Row 24 (DockShore): no env side.** It's fixed on the current tree by hero-integration's 0ffe9260 (after pass
+    5's 7dc3ab41): a still at DockShore shows the camera in front of Rhen on the jetty, clear.
+  - **Row 66 (Ch4 start): no env side.** Hero-integration's e7af4147 (also after 7dc3ab41) fixed the pull, which a
+    windbreak tree on a 120 m release line started. The settled NemeDoor camera is clear of every mesh.
+  - **Tools suite on big22:**
+    - **`test_arenas`:** it regenerated `ansedra_lagoon_escape` and `bridal_barge_night` without
+      env-art-b's zone looks (c1ed49ad6), so it now leaves them to `ansedra_arenas.py`'s own test (8e4ab352).
+    - **`test_palette_check` H07:** the committed baseline (big17, 00:46) predates the chapel fix b0eb0a49 (03:16).
+      It needs the Lead's re-approval of `haluna_h07_chapel_court`; env-art writes no baselines.
+    - **Other reds aren't env-art's:** rig integrity, villagers/hero clips, audio, status names, the
+      `oruvel_seabed.glb` build job (M3-CIN-1232) and the wildlife baseline.
+  - **Next:** Ch10–Ch12 walk-through stills at player height (rendering now).
 - **MERGE-READY @ 7fad181e: the FAST-TRACK `test_keth` fix and the big22 integration merge; env-art's Ch13–Ch15
   dressings are WITHDRAWN.**
   - **test_keth:** the inn's door test looked for crag walls. The inn's walls have been dry stone since Ch12
