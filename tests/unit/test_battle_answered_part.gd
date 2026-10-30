@@ -44,6 +44,16 @@ func test_breaking_the_part_brings_the_phase_whatever_the_hp() -> void:
 	assert_true(BattleParts.is_down(engine, &"flat_engine"))
 
 
+func test_the_part_leaves_with_its_owner() -> void:
+	# M4-A2P-1200: Venn yields with the engine still running; the engine withdraws and the fight is won.
+	var venn := engine.enemies[0]
+	var part := engine.enemies[1]
+	venn.hp = 0
+	engine._check_outcome()
+	assert_true(part.withdrawn, "the engine goes with him")
+	assert_eq(engine.outcome, BattleEngine.OUTCOME_VICTORY, "no stall on a part only Liss may strike")
+
+
 func _until(c: BattleCombatant) -> void:
 	var guard := 0
 	while engine.current != c and engine.outcome == &"" and guard < 50:
@@ -96,7 +106,14 @@ static func _db() -> BattleDB:
 						"ai": basic,
 						"phases": [{"id": "boarded", "at_hp_pct": 50, "when_down": "flat_engine"}],
 					},
-					{"id": "flat_engine", "stats": foe, "skills": ["strike"], "ai": basic, "answered_by": "liss"},
+					{
+						"id": "flat_engine",
+						"stats": foe,
+						"skills": ["strike"],
+						"ai": basic,
+						"answered_by": "liss",
+						"leaves_with": "venn",
+					},
 				],
 				"encounters": [{"id": "barge", "enemies": ["venn", "flat_engine"]}],
 			}
