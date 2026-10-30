@@ -1296,3 +1296,10 @@ MERGE-READY @ 95f51b987: the victory panel starts loading the return's destinati
   - **What fixes the red:** merging `claude/ui` at or after 430bd0471. The commits are 430bd0471 (the clamp in
     `damage_number.gd` plus `edge_px` in `battle_hud.json`) and its log.
 MERGE-READY @ d311c5e38: claude/ui with big26 merged; carries the 4:3 Read fix (430bd0471), the title preload (082ab9166) and the victory-panel preload (95f51b987).
+BACKLOG EMPTY (big26 checked at 20:00): every remaining item waits on another track.
+- **Venn's bestiary page and the answered-by cursor line:** no Venn enemy row, no `answered_key` (combat).
+- **The seven-hero formation check:** Pell has no battle row (combat).
+- **The Abiding guard's portrait:** no model (characters).
+- **Already covered:** every Act II speaker with a model has a face, and every foe with a model has its bestiary
+  portrait.
+- **To merge:** claude/ui at 43fa81abe for big26's aspect red.
