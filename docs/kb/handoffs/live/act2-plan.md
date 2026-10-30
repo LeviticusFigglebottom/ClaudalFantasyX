@@ -186,3 +186,4 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - MERGE-READY @ 469b3980c
 - BACKLOG EMPTY (story track).
 - Follow-up: Godot `cutscene_face_anim` passes 7/0 after the class-cache rebuild. Its earlier failures came from a run started before `--import`. The full `--filter=cutscene` sweep took more than 28 min and was cut off with no failures up to that point. The Lead's full run on merge covers the rest.
+- Task renumbered: M4-A2P-105 → **M4-A2P-107**, because integration took 105 for a Ch15 task. `abiding_guard` landed (big21), so it's off `MUSIC_TODO` and has a stand-in row.

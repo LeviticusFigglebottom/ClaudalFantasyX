@@ -1,5 +1,5 @@
 ---
-id: M4-A2P-105
+id: M4-A2P-107
 title: "The Act II scripts' pending cues: 11 cutscene SFX, two music cues, and the hero clips they call"
 role: audio
 status: todo
@@ -23,7 +23,7 @@ The Act II scripts (M4-A2P-001..009) name cues and clips that nobody has made ye
   - `fin_cut` (Ch15, the fin; battle_sfx.json maps it to `hit_none`, but the cutscene needs a file)
   - `kerrid_sits` (Ch15, the shoal)
   - `kesh_rise` (Ch16, the choir)
-- **Audio, `@music`** (`MUSIC_TODO`):
+- **Audio, `@music`** (`MUSIC_TODO`; `abiding_guard` landed in big21 and now plays through a stand-in row):
   - `abiding_guard` (M4-A2P-092)
   - `kesh_memory` (act2_cue_sheet.md proposes `drowned_choir`; if that's the answer, add a `music_stand_ins` row and take it off the list)
 - **Characters, `@anim`** (`assets_src/characters/requested_clips.json` `clips`, the M3-CHR-1000 pending list): 73 clips across Asha, Rhen, Toma, Ysolde, Sefir, Liss, Kerrid and Pell. The file lists each one. Build them through hero_clips.py's story specs, then drop each built clip from the list (`TestRequestedClips` enforces that).

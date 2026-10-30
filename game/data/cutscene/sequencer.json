@@ -78,7 +78,8 @@
     "nhoa_bound": "../act2/music/stings/nhoa_bound",
     "hesk_bound": "../act2/music/stings/hesk_bound",
     "ethren_bound": "../act2/music/stings/ethren_bound",
-    "kesh_bound": "../act2/music/stings/kesh_bound"
+    "kesh_bound": "../act2/music/stings/kesh_bound",
+    "abiding_guard": "../act2/music/abiding_guard_p1"
   },
   "choices": {
     "right_px": 200,
