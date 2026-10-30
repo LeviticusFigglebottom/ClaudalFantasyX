@@ -652,3 +652,19 @@ What the Act II fights still need from others: enemy rows and encounters (combat
   (the one warning, rime_urchin's ice.tres, is not mine).
 - **BACKLOG EMPTY (10:20):** all four bosses and four Vowbound built, wired and checked; the flat-engine waits on its
   M4-A2P-023 row and Liss's break; no GPU QA row open on my side.
+
+## 2026-10-30 ~10:40: the Lead's 10:08 message ("no BACKLOG EMPTY while an Act II boss lacks its model")
+- Every Act II boss in combat's encounters.json (ch10_mangrove_drowner, ch11_lamp_engine, ch12_avalanche_ram,
+  ch15_wakefin) draws its own creatures-b model: enemies.json `model` and creatures.json `scene` both exist, rigged,
+  with full clip sets, their own VFX and combat's skill ids (9781d0fe2, test_act2_boss_skills_each_play_a_clip_the_model_has).
+- The other two Act II bosses are people, so their models are **characters'** (act2_tracks.md, M4-A2P-051): Malcor Venn
+  is built on claude/characters @ 3f0f5d67 (with `game/characters/foes/venn_battle.tscn`), not yet merged; the
+  Abiding guard is in progress there. My part (ADR 0204 §5, act2_tracks row 57) is their battle_sandbox stand-ins.
+- **MERGE-READY @ ec78978ba:** stand_ins.`malcor_venn` -> venn_battle.tscn (Moll's spec: capsule fallback 1.86 m, yaw 90).
+  Test: it names the actor, and once the actor is on the branch FighterStandIn seats a real body (checked with
+  characters' Venn files brought in temporarily: 32/0; without them 32/0). qa_capsules, stand_in 3/0 each; boss_seat
+  3/0 (its one leftover node predates this). Merge after claude/characters, or it falls back to the capsule until then.
+- **Waits:** the Abiding guard's stand-ins (`abiding_first`, `abiding_guard`) when characters names their battle
+  actors; the enemy rows (`malcor_venn`, the Abiding ids) are chapters'/combat's.
+- **BACKLOG EMPTY (10:40):** no Act II boss in my lane lacks its model; the two people bosses' models are characters'
+  (Venn built, the guard in progress), and their stand-ins follow when the actors land.
