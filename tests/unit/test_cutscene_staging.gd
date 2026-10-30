@@ -22,6 +22,12 @@ func test_staging_adds_what_the_layout_lacks_and_keeps_what_it_has() -> void:
 	layout_shot.shot.id = &"kept"
 	layout_shot.shot.position = Vector3(1, 1, 1)
 	shots.add_child(layout_shot)
+	var swapped := CutsceneShotNode.new()
+	swapped.name = "swapped"
+	swapped.shot = CameraShot.new()
+	swapped.shot.id = &"swapped"
+	swapped.shot.position = Vector3(2, 2, 2)
+	shots.add_child(swapped)
 	var marks := Node3D.new()
 	marks.name = "Marks"
 	stage.add_child(marks)
@@ -30,7 +36,8 @@ func test_staging_adds_what_the_layout_lacks_and_keeps_what_it_has() -> void:
 	gate.position = Vector3(3, 0, 3)
 	marks.add_child(gate)
 	var added := CutsceneStaging.apply(stage)
-	assert_eq(added, [&"T01", &"shore_front"] as Array[StringName], "only the missing ids")
+	assert_eq(added, [&"swapped", &"T01", &"shore_front"] as Array[StringName], "the missing ids and the replaced")
+	assert_eq(stage.shot(&"swapped").position, Vector3(5, 5, 5), "a replace-listed id is cinematics'")
 	var t01 := stage.shot(&"T01")
 	assert_true(t01 != null and t01.id == &"T01")
 	assert_eq(t01.position, Vector3(0, 2, 6))

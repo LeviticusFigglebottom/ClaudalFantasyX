@@ -4,9 +4,13 @@ extends RefCounted
 ## shots and marks that are cinematics', not the chapter's field layout. `game/data/cutscene/<location id>.json`
 ## (e.g. ch10/reedhollow.json) holds {"shots": {id: {pos, look_at, fov}}, "marks": {id: [x, y, z, yaw]}} in the
 ## zone's frame, the layout's own format. Before a scene plays, every id the stage doesn't already have is added; an
-## id the layout has stays the layout's (chapters' field shots and marks are never overridden).
+## id the layout has stays the layout's (chapters' field shots and marks are never overridden), unless the file's
+## "replace" list names it: a cutscene shot id the layout also uses for another frame, which the scripts mean as
+## cinematics' (Ch10's R03 and R06: the chapter's plan named its shots before the scripts were written).
 
 const DIR := "res://game/data/cutscene/%s.json"
+## On a shot this file made (a replaced id is replaced once).
+const META_STAGED := &"cutscene_staged"
 
 
 ## Adds the zone's staging to `stage` (once; later calls find every id there already). Returns the ids added.
@@ -20,18 +24,18 @@ static func apply(stage: CutsceneStage) -> Array[StringName]:
 	if typeof(data) != TYPE_DICTIONARY:
 		push_warning("CutsceneStaging: %s is not a JSON object" % (DIR % loc))
 		return added
+	var replace: Array = (data as Dictionary).get("replace", [])
 	var shots := _folder(stage, CutsceneStage.SHOTS, false)
 	for id: String in (data as Dictionary).get("shots", {}).keys():
-		if stage.shot_node(StringName(id)) == null:
-			var row: Dictionary = data["shots"][id]
-			var shot := CameraShot.new()
-			shot.id = StringName(id)
-			shot.position = _vec3(row.get("pos", []))
-			shot.look_at = _vec3(row.get("look_at", []))
-			shot.fov_deg = float(row.get("fov", CameraShot.USE_DEFAULT))
-			var sn := CutsceneShotNode.new()
+		var row: Dictionary = data["shots"][id]
+		var sn := stage.shot_node(StringName(id))
+		if sn != null and id in replace and sn.shot != null and not sn.shot.has_meta(META_STAGED):
+			sn.shot = _shot(id, row)
+			added.append(StringName(id))
+		elif sn == null:
+			sn = CutsceneShotNode.new()
 			sn.name = id
-			sn.shot = shot
+			sn.shot = _shot(id, row)
 			shots.add_child(sn)
 			added.append(StringName(id))
 	var marks := _folder(stage, CutsceneStage.MARKS, true)
@@ -45,6 +49,16 @@ static func apply(stage: CutsceneStage) -> Array[StringName]:
 			marks.add_child(m)
 			added.append(StringName(id))
 	return added
+
+
+static func _shot(id: String, row: Dictionary) -> CameraShot:
+	var shot := CameraShot.new()
+	shot.id = StringName(id)
+	shot.position = _vec3(row.get("pos", []))
+	shot.look_at = _vec3(row.get("look_at", []))
+	shot.fov_deg = float(row.get("fov", CameraShot.USE_DEFAULT))
+	shot.set_meta(META_STAGED, true)
+	return shot
 
 
 static func _folder(stage: CutsceneStage, path: NodePath, spatial: bool) -> Node:

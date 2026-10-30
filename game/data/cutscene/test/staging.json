@@ -1,6 +1,8 @@
 {
   "_doc": "Fixture for tests/unit/test_cutscene_staging.gd (M4-CIN-1304). Never used by game content.",
+  "replace": ["swapped"],
   "shots": {
+    "swapped": {"pos": [5, 5, 5], "look_at": [0, 0, 0], "fov": 30},
     "T01": {"pos": [0, 2, 6], "look_at": [0, 1, 0], "fov": 40},
     "kept": {"pos": [9, 9, 9], "look_at": [0, 0, 0], "fov": 70}
   },
