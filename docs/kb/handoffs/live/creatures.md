@@ -1250,3 +1250,30 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
     - causeway and lane_games: re-aimed (the first frames were behind the tide wall and inside a wall), re-rendering now.
     - The existing `npc_haluna_dock`, `npc_haluna_lane` and `npc_haluna_market`, and `slice_haluna_villagers_village`, will gain people. They need new baselines (shots session).
 - **MERGE-READY @ ba2445136.** Next: the same vignettes for Oruvel (Ch1) and the Pemakar harbour (your 18:45 relay).
+- **Your 18:45 relay: Oruvel and the Pemakar quay lived in @ 4e09b97b7, plus Haluna fixes, HEAD 30e39d407.**
+  - **Oruvel's commons deck:** six people at the deck's edges, so the paths stay clear:
+    - a girl at stones by the north rail, and a man mending a diver's net bag;
+    - a man sweeping along the west rail, and a woman with her basket by the cookboat;
+    - along the south edge, a man laying fish to dry and a man hauling a line in.
+  - **The Pemakar quay at Lanternfall:** five people on the quay's two ends (the middle is the story's staging):
+    - an old man mending;
+    - two Low Reaches traders off the Brightwater crossing, one hauling his skiff in and one with a basket of salt fish;
+    - a woman come down with a basket of lanterns;
+    - an old woman folding leaf-boats.
+  - **Fewer children than Haluna.** No body repeats within a zone, and each community accepts only some bodies:
+    - Oruvel had one child body left, so its child plays stones alone;
+    - Pemakar had no child body and no Pemakar-accepted man left, hence the ferry traders.
+    - **LEAD-ASK (optional):** more children in these towns needs more planned child bodies (a characters-track body plan). Say if you want me to request it.
+  - **The late tier now goes by id prefix too** (`late_prefixes`: `oruvel_deck_`, `pemakar_quay_`). Late people are assigned after everyone else and never wear a body their zone already shows, so nothing already placed moved (tools test).
+  - **Haluna fixes after viewing the renders:**
+    - the stones pair moved out of the dune grass onto open sand;
+    - the hauler moved to the water's edge;
+    - the clapping pair moved into the open yard, clear of the tide wall;
+    - the dock hauler was over the water past the deck's visible edge; he is now on the planks.
+  - **Checks:** tools test_npc 35 OK; validate_data/npc; gen_crowd --check; Godot crowd 18/0. The libraries are unchanged by the towns (the play clips were already in).
+  - **Shots, all viewed and good:**
+    - `npc_haluna_vignette_causeway`, `_lane_games`, `_lane_mender`, `_dock`, `_night_market`, `_night_lane`;
+    - `crowd_vignette_oruvel_north`, `_oruvel_south`, `_pemakar_west`, `_pemakar_east`.
+    - These are new, with no baselines. The existing `npc_haluna_dock` (re-rendered and viewed), `npc_haluna_lane`, `npc_haluna_market`, `slice_haluna_villagers_village`, `crowd_zone_oruvel` and `crowd_zone_pemakar` gain people and need new baselines (shots session).
+- **MERGE-READY @ 30e39d407.**
+- **BACKLOG EMPTY:** M4-CRE-702 is in review (character); Act III stays planning-only; the brow.tres drift FAST-TRACK is characters'.
