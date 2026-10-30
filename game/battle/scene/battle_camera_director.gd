@@ -76,6 +76,9 @@ func attach(controller: BattleController, choreo: BattleChoreo) -> void:
 	default_fov = float(camera.get_meta(META_FOV))
 	_fit_rest_to_the_fight()
 	rest()
+	if controller.engine != null:  # creatures-b's as-played notes (10-30): a tall Vowbound gets its own rest frame
+		controller.engine.vowbound.called.connect(func(_v: BattleCombatant) -> void: _refit_for_vowbound())
+		controller.engine.vowbound.departed.connect(func(_v: BattleCombatant, _f: bool) -> void: _refit_for_vowbound())
 	choreo.posed.connect(_on_posed)
 	choreo.sequence_finished.connect(func(_actor: StringName) -> void: rest())
 
@@ -92,6 +95,27 @@ func _fit_rest_to_the_fight() -> void:
 	var fit := rest_fit(data, default_transform, default_fov, ids)
 	default_transform = fit[0]
 	default_fov = float(fit[1])
+
+
+## creatures-b's as-played notes (10-30): a called Vowbound stands on the middle party slot, right before the camera,
+## and the tall ones run out of its top (Kesh, 4.2 m, and further still as she rises in The Seven; Ethren, 2.5 m,
+## filled a third of the frame). While one is out, camera.rest_by_vowbound (by its id: back_m, up_m, fov, as
+## rest_by_enemy) moves the fight's rest frame on from its enemy fit; when it leaves, the fight's own frame is back.
+func _refit_for_vowbound() -> void:
+	if camera == null or _ctl == null or _ctl.engine == null:
+		return
+	default_transform = camera.get_meta(META_DEFAULT) as Transform3D
+	default_fov = float(camera.get_meta(META_FOV))
+	_fit_rest_to_the_fight()
+	var s := _ctl.engine.vowbound.summon
+	if s != null:
+		var vb := {"rest_by_enemy": data.get("rest_by_vowbound", {}), "default_look_m": data.get("default_look_m", 1.0)}
+		var ids: Array[StringName] = [StringName(String(s.id).get_slice("#", 0))]
+		var fit := rest_fit(vb, default_transform, default_fov, ids)
+		default_transform = fit[0]
+		default_fov = float(fit[1])
+	if _plan.is_empty() and _moment.is_empty():
+		rest()
 
 
 ## The rest frame (camera `xf`, `fov`) fitted to a fight against `enemy_ids` (base ids) by camera.rest_by_enemy (`cam`:
