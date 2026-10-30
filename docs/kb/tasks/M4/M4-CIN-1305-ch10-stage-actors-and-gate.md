@@ -1,7 +1,7 @@
 ---
 id: M4-CIN-1305
-title: "Request (cinematics → chapters): Ch10's stage actors, the hold gate and its two prompts, for the staged scenes"
-role: chapters
+title: "Request (cinematics track → the chapters track): Ch10's stage actors, the hold gate and its two prompts, for the staged scenes"
+role: cinematics
 status: todo
 owner_session: ""
 depends_on: [M4-A2P-010]
