@@ -4,6 +4,18 @@
 
 The gap (the human's playtest note): battles had no action animation. This track adds a listen-only presentation layer: choreography, a clip contract, a camera director, the specials, the intro and outro. Docs: `docs/kb/tech/battle_presentation.md`.
 
+## CURRENT STATUS (2026-10-30 15:00; newest entry first under "NEW ACCOUNT" below, at the 14:50 heading)
+**MERGE-READY @ a5aa7e63** (the branch head). Every item from the Lead's 14:09, 14:48 and 15:00 messages is done and pushed:
+| Item | Commit | Check |
+|---|---|---|
+| Rank overlap and the command-menu safe area (creatures' audit) | aa227a57 (c552664f, 3d65ec00) | `--filter=battle` 826/0; six fights viewed |
+| Row 64: the camera search before the fade | 7c3307df (+ 65e776af) | reveal frame 1.2–2.6 ms headless; boss 88/0 |
+| Row 61: the Surge framing | ef997f3d | SELF-RENDERED and viewed; camera 65/0, boss 86/0, arena 18/0 |
+| The glimmer swatch / hit | 4c4a3dd3 | `--filter=battle_vfx` 10/0 on big21 + this branch |
+| Act II foe-skill effects | 65ea933e, 8d0fe783..f2bbb673, 6f3608a7 | every Act II encounter's skills have effects. The 3 newest (conduit crawler) and the Vowbound's 19 are written as their rows land. I found 3 such skills, not 6. |
+- After big22/23 lands: run `python3 tools/vfx/gen_act2_ability_vfx.py` once (I will, on my next integration merge).
+- In flight: the Act I encounter sweep (batch 5 running), then Ch6 and Ch8.
+
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_015hKkhtpX67kS4yZeA8AAhv`. Integration branch `claude/undertow-lead-handoff-ze8rrn` merged in
 (c6a960ab).
