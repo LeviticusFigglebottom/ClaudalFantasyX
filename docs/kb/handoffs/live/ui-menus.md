@@ -1144,3 +1144,13 @@ MERGE-READY @ ca5ce4037: the battle-return black screen (ResidentLoads keeps the
     - **Next:** the answered-by cursor line once Venn's row has `answered_key`; the Lacquer Court rows once ch14's
       flags exist (M4-A2P-014).
 MERGE-READY @ eb1d12998: broken parts on the Read (M4-A2P-083).
+BACKLOG EMPTY: everything left in this track's queue waits on another track.
+- **M4-A2P-081 NPC portraits** (Malcor Venn, the Abiding guard): wait on their models (characters track).
+- **M4-A2P-082 seven-hero formation check:** waits on Pell's battle row (combat).
+- **M4-A2P-083:**
+  - The answered-by cursor line waits on Venn's row carrying `answered_key` (M4-A2P-023, combat).
+  - The darkness telegraphs are battle-presentation's, already in (M4-A2P-062, in review), and the timeline shows them.
+  - The Act II bestiary pages fill as the foe rows land.
+- **Lacquer Court objective rows:** wait on ch14's thread raising its flags (M4-A2P-014, act1-chapters); then drop the two
+  `qa_known.json` "unraised" rows.
+- **Battle return end to end:** M4-UI-212 (integration-qa, plus a PC measurement).
