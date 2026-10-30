@@ -169,6 +169,8 @@
   },
   "skills": {
     "unravel": "skill_unravel",
+    "nhoa_echo": "skill_nhoa_echo",
+    "cord_lift": "skill_cord_lift",
     "tide_gather": "abl_tide_gather",
     "fin_cut": "skill_fin_cut",
     "sound_dive": "skill_sound_dive",
@@ -230,6 +232,7 @@
     "kahre": "kahre_summon",
     "nhoa": "nhoa_summon",
     "hesk": "hesk_summon",
-    "ethren": "ethren_summon"
+    "ethren": "ethren_summon",
+    "kesh": "kesh_summon"
   }
 }

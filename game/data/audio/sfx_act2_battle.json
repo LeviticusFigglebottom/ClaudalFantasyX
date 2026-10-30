@@ -355,6 +355,24 @@
       "voices": 2,
       "volume_db": 0.0,
       "_note": "M4-A2P-093: the risen Drowner draws its roots in (a charge): slow creaks, the water drawn off, a low moan (assets_src/sfx/act2_ability_sfx.py)"
+    },
+    "skill_nhoa_echo": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/skill_nhoa_echo.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Nhoa's echo: a salt-glass sweep drawn in and given back brighter, a beat later (assets_src/sfx/act2_skill_sfx.py)"
+    },
+    "skill_cord_lift": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/skill_cord_lift.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Hesk's cord lift: pale threads drawn up, the knots' light loosing, a soft bell (assets_src/sfx/act2_skill_sfx.py)"
     }
   }
 }
