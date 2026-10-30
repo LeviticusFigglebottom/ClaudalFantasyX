@@ -37,7 +37,7 @@ base.HALF_L = 0.95  # and long (0.5)
 base.THICK = 0.035  # flat (0.07)
 base.KO_DROP = 0.85  # its fall from its 0.85 m hover: hung low, under the battle camera, so its face reads, not its
 # edge (the Act I audit found the sail leech at eye height a row of glowing dashes; its attack dips 0.70 m)
-base.DOME = 0.025
+base.DOME = 0.05  # a raised back (was 0.025): edge-on from a low battle camera the flat ribbon read as a branch
 base.FRILL = 0.006  # no canvas: only a slight ripple at the edge (0.022)
 base.FRILL_WAVES = 22.0
 base.SLIT_Z = (0.55, 0.22)  # the four slits spread down the longer back
@@ -46,11 +46,13 @@ base.TAIL_Z0, base.TAIL_STEP = -0.75, 0.25
 base.TAIL_PATH = ((0, 0.2, -0.75), (0, 0.19, -1.0), (0.04, 0.15, -1.25), (0.0, 0.13, -1.5))
 base.TAIL_R = (0.05, 0.012)
 base.TAIL_CHAIN = ((0, 0.2, -0.75), (0, 0.2, -1.0), (0, 0.2, -1.25), (0, 0.2, -1.5))
-# M3-CRE-654 gave the sail leech a leech's own body and suckers: here the body stays ribbon-flat (half the sail
-# leech's) so the eyes sit on it, and the narrow sails hang only a little.
+# M3-CRE-654 gave the sail leech a leech's own body and suckers: here the body is lower than the sail leech's so the
+# eyes sit on it.
 base.BODY_W = 0.09
-base.BODY_H = (0.035, 0.025)
-base.DROOP = 0.035
+base.BODY_H = (0.06, 0.035)
+# its edges drape down like a ray's (the sail leech hangs its sails 0.11): edge-on it is an arch with height, not a
+# line (the Ossa Fen arena check, 2026-10-30)
+base.DROOP = 0.1
 base.PAL = dict(base.PAL)
 base.PAL.update({
     "abyss_navy": ck.mix(SW["lacquer_black"], SW["tortoiseshell"], 0.18),  # the back: lacquer black, a hint of brown
