@@ -225,7 +225,8 @@
                             "in_sec": 0.45, "hold_sec": 1.0, "out_sec": 0.45}},
       "rest_by_enemy": {"doc": "M3-BPR-425 (the PC's GPU QA row 36: the Reach's arm filled most of the frame and passed over the party all fight): a foe too big for the authored frame moves its fight's rest frame back_m along the view and up_m higher, still on the authored look point, at fov. The Reach: 40% of the screen and the party outside the safe frame at the authored rest; with creatures-b's boss_seats (M3-CRB-011: the Reach, the Matron and the Spar-Wraith sit on their own marks) these rows finish the frame: the Reach 4 m back and 2 m up (its hand grips the wall beside the party, the party and the sea read), the Spar-Wraith 3 m back and 1.5 m up (its masts were out of the top of the frame). The Matron's seat needs no row. Each viewed in its own arena.",
                         "undertows_reach": {"back_m": 4.0, "up_m": 2.0, "fov": 48.0},
-                        "spar_wraith": {"back_m": 3.0, "up_m": 1.5, "fov": 50.0}},
+                        "spar_wraith": {"back_m": 3.0, "up_m": 1.5, "fov": 50.0},
+                        "mangrove_drowner": {"back_m": 1.8, "up_m": 1.1, "fov": 50.0}},
       "enemy_by_actor": {"doc": "M3-BPR-408: a foe whose actions get their own framing, by its enemy id (otherwise enemy). The Avalanche Ram's charge rides low and side-on.",
                          "avalanche_ram": {"lead": "charge_side", "contact": ""}},
       "by_style": {
