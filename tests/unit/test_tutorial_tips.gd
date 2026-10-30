@@ -91,6 +91,62 @@ func test_the_card_shows_one_tip_reads_then_the_next() -> void:
 	_done()
 
 
+## The Lead's first-hour pass (2026-10-30): New Game plays Act I (the prologue, then Ch1), so the Where-to-next tip
+## comes with Ch1's first objective and the menu tip after Ch1's first won fight (the wickfry), not a chapter later
+## on the slice's flags. Each still comes once.
+func test_the_act1_route_teaches_the_objective_and_the_menu_in_ch1() -> void:
+	var t := _tips()
+	flags[&"ch01_started"] = true
+	t.raise_field_ready()
+	assert_eq(_ids(t), [&"objective"], "Ch1's first objective brings the Where-to-next tip")
+	t.raise_flag(&"ch01_wickfry_won", true)
+	assert_eq(_ids(t), [&"objective", &"field_menu"], "the first won fight brings the menu tip")
+	t.take()
+	t.take()
+	t.raise_flag(&"ch02_tideline_won", true)
+	flags[&"ch02_met_asha"] = true
+	t.raise_field_ready()
+	assert_eq(_ids(t), [&"menu_save"], "the slice's flags in Ch2 raise neither again; the save tip follows")
+	_done()
+
+
+## The first fight's victory flag is set in the battle scene, where no field tip card listens; the zone then
+## reloads. The field's first input catches the menu tip up, once.
+func test_a_flag_set_while_no_field_listened_is_caught_up_on_the_field() -> void:
+	var t := _tips()
+	flags[&"ch01_wickfry_won"] = true
+	t.raise_field_ready()
+	assert_true(_ids(t).has(&"field_menu"), "the menu tip comes when the field takes input after the fight")
+	t.take()
+	t.raise_field_ready()
+	assert_false(_ids(t).has(&"field_menu"), "and only once")
+	_done()
+
+
+## A tip fades out when the player presses what it teaches: the menu tip does not wait out a visit to the menu and
+## then ask again for what was just done.
+func test_pressing_what_a_tip_teaches_dismisses_it() -> void:
+	flags[&"ch01_wickfry_won"] = true
+	var card := _card()
+	card.tips.raise_flag(&"ch01_wickfry_won", true)
+	card.advance(0.0)
+	assert_eq(card.title_text(), tr("TIP_FIELD_MENU_TITLE"))
+	assert_true(TutorialTips.actions_named(card.current).has(&"ui_cancel"), "the menu tip names Cancel")
+	var other := InputEventAction.new()
+	other.action = &"ui_down"
+	other.pressed = true
+	card._input(other)
+	assert_eq(card.phase, TipCard.Phase.IN, "another key leaves it")
+	var ev := InputEventAction.new()
+	ev.action = &"ui_cancel"
+	ev.pressed = true
+	card._input(ev)
+	assert_eq(card.phase, TipCard.Phase.OUT, "Cancel (the menu) fades it out")
+	card.advance(float(TutorialTips.load_data()["fade_sec"]) + 0.01)
+	assert_false(card.is_showing())
+	_done()
+
+
 func test_input_names_fill_bindings() -> void:
 	FieldInput.ensure_actions()
 	var key := InputNames.first_name(FieldInput.INTERACT, false)
