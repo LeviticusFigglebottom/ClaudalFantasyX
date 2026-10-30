@@ -106,8 +106,11 @@ APRON_NIGHT = {"cw_rubble": "res://assets/environments/kits/corrow/materials/cw_
 # tan canvas took the vigil lamps as flat orange and its fine weave mipmapped away. The dead lie under grey, damp
 # sailcloth: darker and cooler, a coarser weave that holds at field distance, the creases darkened over the bodies.
 SHROUD_NAME = "corrow_shroud_canvas_material.tres"
-SHROUD_OVERRIDES = {"col_paint": "Color(0.66, 0.65, 0.61, 1)", "paint_cover": "0.45", "tile_m": "Vector2(0.2, 0.2)",
-                    "normal_strength": "1.7", "variation_value": "0.18", "salt_coverage": "Vector2(0.05, 0.3)"}
+# The PC's pass 5 (row 51): the sand ground through the canvas read as soft orange under the lamps; the cloth is
+# cooler and covers more of the base now, and the woven normal is soft and coarser: at 0.2 m and 1.7 its weave shaded
+# the cloth into dark stripes that read as spiky ridges from the field camera.
+SHROUD_OVERRIDES = {"col_paint": "Color(0.6, 0.62, 0.63, 1)", "paint_cover": "0.8", "tile_m": "Vector2(0.45, 0.45)",
+                    "normal_strength": "0.45", "variation_value": "0.18", "salt_coverage": "Vector2(0.05, 0.3)"}
 SHROUD_ADDED = {"cavity_darken": "0.55"}
 SHROUD_PIECES = ("shroud_bound_a", "shroud_bound_b", "shroud_bound_small")  # b_strand.py's crisper shrouds
 SHROUD_SLOTS = {"cw_sail": "res://game/levels/ch09/corrow_night/" + SHROUD_NAME}
