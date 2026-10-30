@@ -23,6 +23,7 @@ RULES = [
     ("music/act3/hesper_and_ilsabet_s*.ogg", "stem", -16.0, 0.5, -1.0, "the revenant pair's two stems, stacked at -16 (Git LFS, M3-AUD-858)"),
     ("music/*.ogg", "integrated", -16.0, 0.5, -1.0, "music beds, themes and cutscene cues"),
     ("ambience/*.ogg", "integrated", -26.0, 0.5, -5.0, "ambience beds (mix.md: -26, peaks well down)"),
+    ("act2/ambience/*.ogg", "integrated", -26.0, 0.5, -5.0, "Act II ambience beds (M4-A2P-093, ADR 0175)"),
     # M3-AUD-859 (assets_src/sfx/act3/kite_foley.py; Git LFS): the Kite's deck beds and foley
     ("sfx/act3/kite_deck*.ogg", "integrated", -26.0, 0.5, -5.0, "the Kite's deck beds (as the ambience beds)"),
     ("sfx/act3/kite_engine_stop.ogg", "momentary", -20.0, 1.0, -1.0, "H09: the lift engines winding down"),

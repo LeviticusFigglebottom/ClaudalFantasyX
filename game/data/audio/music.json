@@ -263,12 +263,12 @@
     "ossa_fen": {
       "file": "res://assets/audio/music/act2/ossa_fen.ogg",
       "resume": true,
-      "_note": "Ch10, Ossa Fen, the mangrove channels: Act II final (M3-AUD-840; Git LFS; the sketch assets/audio/music/ossa_fen.ogg stays as the fallback); no zone row until ch10/ossa_fen exists"
+      "_note": "Ch10, Ossa Fen, the mangrove channels: Act II final (M3-AUD-840; Git LFS; the older M3-AUD-804 render, assets/audio/music/ossa_fen.ogg, stays committed but nothing plays it); zone row by M4-A2P-091"
     },
     "reedhollow": {
       "file": "res://assets/audio/music/act2/reedhollow.ogg",
       "resume": true,
-      "_note": "Ch10, Reedhollow, the Kirru roost-village: Act II final (M3-AUD-840; Git LFS; the sketch assets/audio/music/reedhollow.ogg stays as the fallback); no zone row until ch10/reedhollow exists"
+      "_note": "Ch10, Reedhollow, the Kirru roost-village: Act II final (M3-AUD-840; Git LFS; the older M3-AUD-804 render, assets/audio/music/reedhollow.ogg, stays committed but nothing plays it); zone row by M4-A2P-091"
     },
     "sunken_vey": {
       "file": "res://assets/audio/music/act2/sunken_vey.ogg",
@@ -452,7 +452,9 @@
     {"scene": "res://game/levels/ch07/tidecup_match/tidecup_match.tscn", "music": "tidecup_match", "_note": "M3-AUD-861: Ch7, the story Reefball match (TidecupMatch); the crowd beds come from ReefballAudio"},
     {"scene": "res://game/levels/ch08/corrow/corrow.tscn", "music": "corrow_seawall", "_note": "M3-AUD-861: Ch8, Corrow Bastion before the storm (the scene has landed)"},
     {"scene": "res://game/levels/ch08/coilspire/coilspire.tscn", "music": "coilspire", "_note": "M3-AUD-861: Ch8, the Coilspire temple's flues (the scene has landed)"},
-    {"scene": "res://game/levels/prologue/prologue.tscn", "music": "prologue_dusk", "_note": "M3-AUD-862: the prologue, the first music after the title; the scene's fade-out and the router's fade take it away"}
+    {"scene": "res://game/levels/prologue/prologue.tscn", "music": "prologue_dusk", "_note": "M3-AUD-862: the prologue, the first music after the title; the scene's fade-out and the router's fade take it away"},
+    {"scene": "res://game/levels/ch10/ossa_fen/ossa_fen.tscn", "music": "ossa_fen", "_note": "M4-A2P-091: Ch10, the mangrove channels at dusk (bed fen_dusk, ambience.json)"},
+    {"scene": "res://game/levels/ch10/reedhollow/reedhollow.tscn", "music": "reedhollow", "_note": "M4-A2P-091: Ch10, the Kirru roost-village (bed reedhollow_roost; the farewell-tide cue takes the bed in C3)"}
   ],
   "battle": {
     "default": "battle_standard_v2",

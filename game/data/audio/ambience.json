@@ -112,7 +112,9 @@
       "bus": "Ambience",
       "volume_db": 0.0,
       "_note": "M3-AUD-817: the prologue's room tone (assets_src/sfx/prologue_ambience.py)"
-    }
+    },
+    "fen_dusk": {"file": "res://assets/audio/act2/ambience/fen_dusk.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch10, Ossa Fen at dusk: insects, frogs in the roots, drips into tannin water, root creak, a far fen bird"},
+    "reedhollow_roost": {"file": "res://assets/audio/act2/ambience/reedhollow_roost.ogg", "bus": "Ambience", "volume_db": 0.0, "_note": "M4-A2P-093 (assets_src/sfx/act2_ambience.py; plain git, ADR 0175): Ch10, Reedhollow: reed wind through woven screens, the lagoon under the platforms, a cook-fire, the clutch's wordless hum far off"}
   },
   "zones": {
     "res://game/levels/prologue/prologue.tscn": {"day": ["iskarra_dusk"], "_note": "M3-AUD-817: Iskarra's drowned plaza at dusk, the room tone under the prologue cutscene"},
@@ -232,7 +234,9 @@
         "coilspire_flues"
       ],
       "_note": "M3-AUD-861: Ch8, inside the spire (the storm is in the bed, through the stone)"
-    }
+    },
+    "res://game/levels/ch10/ossa_fen/ossa_fen.tscn": {"day": ["fen_dusk"], "_note": "M4-A2P-093: Ch10, the fen is always at dusk"},
+    "res://game/levels/ch10/reedhollow/reedhollow.tscn": {"day": ["reedhollow_roost"], "_note": "M4-A2P-093: Ch10, the roost-village"}
   },
   "wind": {
     "bed": "wind",

@@ -224,6 +224,9 @@ JOBS = [
      _source_files("assets_src/sfx/act1_cutscene_foley.py"), "sfx"),
     ("assets_src/sfx/act1_swell_finisher_sfx.py", "assets/audio/sfx/battle",
      _source_files("assets_src/sfx/act1_swell_finisher_sfx.py"), "sfx"),
+    # M4-A2P-093 (ADR 0175): Act II's ambience beds, plain git under assets/audio/act2/
+    ("assets_src/sfx/act2_ambience.py", "assets/audio/act2/ambience", _source_files("assets_src/sfx/act2_ambience.py"),
+     "sfx_set"),
     ("assets_src/music/prologue_dusk.py", "assets/lfs/audio/music", ["prologue_dusk.ogg", "prologue_dusk.loop.json"], "music_loop"),
     # M3-AUD-832: the UI track's new screens (menu motion, the title's reveal, save slots, shrine travel, Reefball HUD)
     ("assets_src/sfx/screen_sfx.py", "assets/audio/sfx", _source_files("assets_src/sfx/screen_sfx.py"), "sfx"),
