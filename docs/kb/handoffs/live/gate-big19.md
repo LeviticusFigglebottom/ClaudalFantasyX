@@ -113,3 +113,13 @@ GATE-FAST-DONE big19 @ 5993e490 (03:17 UTC). The blocking checks:
 - Blender since lead/gate-big18 (122 jobs) is running; the full suite follows the shots. Then the rolling cadence:
   big20 about 90 min after the merge, or sooner once 3 or more tracks post new MERGE-READY lines, with one log per
   batch (`gate-big20.md`).
+- 05:10 shots PARTIAL 193 of 254 published (a8ecacde): 62 PASS, 73 drift, 61 new or pending. The capture is paused
+  (my two loops, between shots) while big20's blocking checks run; it resumes after GATE-FAST-DONE big20.
+- **Blender, non-blocking (big19 @ 5993e490, the 122 jobs touched since lead/gate-big18, 6473 s): 82 ok, 40 FAIL.**
+  brine_shoals_kit (red since big17) now passes. **FAST-TRACK list:**
+  - **characters:** all 34 villager jobs fail with 9–10 DIFFs each. Every output differs (the glb and lod1 glTF
+    structure, clips .tres, body and head textures), so a shared villager source changed without the villagers being
+    rebuilt. villager_neme fails the same way on `claude/characters` @ 36b06105 alone. They need a rebuild and commit
+    on characters.
+  - **creatures:** crowd_man_heavy, crowd_man_lean_a, crowd_man_medium_a, crowd_man_medium_b, crowd_order_man (their
+    head albedo) and crowd_woman_lean_a (5 DIFFs). Same as big18, not rebuilt yet.
