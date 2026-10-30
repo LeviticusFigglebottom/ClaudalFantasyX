@@ -236,6 +236,23 @@ RULES = [
     ("sfx/raft_pole.ogg", "momentary", -22.0, 1.0, -1.0, "an Act I cutscene cue"),
     ("sfx/staff_bell_shells.ogg", "momentary", -21.0, 1.0, -1.0, "an Act I cutscene cue"),
     ("sfx/harbour_lap.ogg", "momentary", -25.0, 1.0, -1.0, "an Act I cutscene cue"),
+    ("sfx/egret_lift.ogg", "momentary", -24.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/lamp_seat.ogg", "momentary", -26.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/engine_tick.ogg", "momentary", -25.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/pole_no_wake.ogg", "momentary", -30.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/pole_stroke.ogg", "momentary", -24.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/stirring_bells.ogg", "momentary", -21.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/water_gate_drop.ogg", "momentary", -19.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/level_pin_ring.ogg", "momentary", -28.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/pyre_crackle.ogg", "momentary", -23.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/lamp_housing_close.ogg", "momentary", -25.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/lamp_crack.ogg", "momentary", -26.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/kerrid_sits.ogg", "momentary", -26.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/storm_wall.ogg", "momentary", -19.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/current_song_hum.ogg", "momentary", -24.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/kesh_rise.ogg", "momentary", -21.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/barge_no_wake.ogg", "momentary", -27.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/fin_cut.ogg", "momentary", -22.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
 ]
 FILE_LIMIT = 5 * 1024 * 1024        # CLAUDE.md §8: no file over 5 MB
 TOTAL_BUDGET = 105 * 1024 * 1024    # every shipped audio file (ADR 0175: Act II under assets/audio/act2/; 0174, 0171, 0170)
