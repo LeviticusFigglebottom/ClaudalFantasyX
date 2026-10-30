@@ -1405,3 +1405,17 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
     revise or replace any of it, with the authorship credit as they proposed.
   - Ownership: creatures-b may claim `docs/kb/art/creatures/act3/the_cage.md` in ownership.md.
   - My boss LEAD-ASK is withdrawn. The Act III bosses are creatures-b's (M5-A3P-1851 to 1853), as the Act I/II split.
+- **M3-HER-1133, Act I people's story clips** (supplementing characters, ADR 0207), doing:
+  - built now: Kell's `trim_wicks`, `take_scissors` and `light_beacon`; Neme's `clear_plates`, `carry_food`,
+    `watch` and `laugh_breaks`; Osu's `set_shell`. Each is a spec in villager_story_clips.json (appended), and only
+    those three libraries were regenerated.
+  - 8 review shots `villager_{kell,neme,osu}_*` (pending_baseline), viewed. Godot villager 49/0.
+  - test_villagers: the expected lists are updated. The two reds that are left (tender and tobin rebuild byte for
+    byte) fail without my change too: characters' WIP.
+  - Left for characters: Liss's `haul_rope` and Pell's `storm_call` (requested_clips.json is under their active
+    M3-CHR-1000 edits, so I didn't touch it).
+  - Left for cinematics: boat_seller, ferryman, inquisitor and passenger_child have no rig (routing).
+- **MERGE-READY @ 84e2853db.**
+- **BACKLOG EMPTY:** my Act III list is done. The Cage and the bosses are creatures-b's (handed over), and 1809 and
+  1811 are blocked on Act III zones and flags. M3-HER-1133's remaining clips are characters' (heroes) or
+  cinematics' (routing). Ready for the next assignment.
