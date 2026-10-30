@@ -2,8 +2,7 @@
 id: M4-A2P-070
 title: "Stage the farewell-tide (Ch10): the clutch sings, turns its back, the motes lift"
 role: cinematics
-status: blocked
-blocked-by: ADR 0203
+status: todo
 owner_session: ""
 depends_on: [M4-A2P-001, M4-A2P-049, M4-A2P-053]
 reviewer: narrative

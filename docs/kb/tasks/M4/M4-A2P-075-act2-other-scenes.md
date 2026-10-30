@@ -2,8 +2,7 @@
 id: M4-A2P-075
 title: "Stage Act II's other scenes and side scenes (Ch11–Ch15)"
 role: cinematics
-status: blocked
-blocked-by: ADR 0203
+status: todo
 owner_session: ""
 depends_on: [M4-A2P-002, M4-A2P-003, M4-A2P-004, M4-A2P-006]
 reviewer: narrative

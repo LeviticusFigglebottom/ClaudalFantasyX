@@ -2,8 +2,7 @@
 id: M4-A2P-061
 title: "Nhoa, Hesk, Ethren and Kesh: summon cinematics (full and short) and Swell finishers"
 role: combat
-status: blocked
-blocked-by: ADR 0203
+status: todo
 owner_session: ""
 depends_on: [M4-A2P-024]
 reviewer: rendering
