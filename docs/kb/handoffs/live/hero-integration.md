@@ -1771,3 +1771,31 @@ MERGE-READY @ (this commit).
 - Checks: camera 70/0 (qa_field_camera included), hero_ 115/0, qa_walk_audit 1/0, qa_party 3/0, ch04 13/0; gdlint and
   gdformat clean. No shots rendered: the change only moves a pulled-in camera, which no fixed-camera shot uses.
 MERGE-READY @ (this commit).
+
+### Lead FAST-TRACK 10-30 09:00 (big20 @ 7dc3ab41)
+- **test_no_follower_is_laid_out_in_front_of_the_lens:** big20 took my branch @ 202668789, before the fix.
+  - The fix was already in 0ffe9260d: off_lens tries beyond him, else the unblocked spot farthest from the lens.
+  - On big20's merged tree it showed two more cases, both fixed now (layout, not threshold):
+    - **Ch13's Sanctum Gate (big20's new field camera near the spawn):** catch_up laid the followers out about 5 m
+      back, behind the lens, while follow_point pulled them beside or beyond Rhen. They were more than catch_up_m
+      apart, so catch_up re-ran every few frames, and each re-run was a visible 0.77–7 m teleport
+      (test_hero_field_snaps: asha 1 snap, toma 3). `_formation_spot` now lays a near-lens follower on the same
+      off-lens spot follow_point chases.
+    - **The lens test's camera 1.5 m behind him:** the spot beyond him was still 2.65 m from the lens. It now goes far
+      enough past him to clear camera_near_m (LENS_CLEAR_M 0.05 past it).
+- **New red from big20, not mine: Lowlight (Ch11)** `rhen never snaps (241 snaps)`. The atrium's west gate opening
+  (x 0, z −2.5..2.5) has no floor or bound past it. The Gate spawn faces through it, so Rhen walks off the level and
+  falls without end. It walked clean before big20's dressing (M4-A2P-041, 79fc304f0).
+  **Filed M4-HER-1166 (environment: act1-chapters' layout, env-art's dressing)**; KNOWN in test_hero_field_snaps
+  until it lands.
+- **M3-CIN-1251 @ 1da21c732 and row 66 @ e7af4147d are both done** (the earlier entries above), and both are after
+  big20.
+- **Row 50: CLOSED, not reproduced.** At the Crown spawn with all three visible, everyone stands on the 42 m floor
+  (still and probe). Up and down the flying stair (qa_walk_audit's ashcrown routes, followers unstaged), the sunk
+  check (feet more than 0.3 m under the floor or the stair profile) finds 0 frames. The PC's pass-4 tree lacked my
+  stair and follower fixes (692b55156 onward). If it shows on a tree with them, the PC reopens it with the save.
+- Checks on big20 + this branch: hero_ 116/0, camera 70/0, qa_party 3/0, qa_walk_audit 1/0; gdlint and gdformat
+  clean, validate_data 0/0, taskboard OK. ACT II REPORT: Keth Pass's camera is inside geometry for 30 frames (2
+  before big20's Ch12 cameras). It's report-only and is re-checked against the kit.
+MERGE-READY @ (this commit).
+- Next: the Act I encounter-entry smoke and the headless playthrough on 7dc3ab41, in a clean worktree. Results follow.
