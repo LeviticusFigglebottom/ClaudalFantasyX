@@ -184,6 +184,37 @@ func test_ch4_to_ch9_spot_checks() -> void:
 		assert_eq(_poi(c[1]), c[3], "%s with %s: the target" % [c[1], c[0]])
 
 
+## Act II (ui-menus, the Lead's 09:01 list): every Act II zone's map points somewhere on its chapter's main path, and
+## Ansedra's line moves on from the Sanctum to the Archive (Ch13 visits the Sanctum first).
+func test_act_two_zones_point_along_the_main_path() -> void:
+	var checks := [
+		[[&"ch10_started"], &"ch10/ossa_fen", &"fen_road", &"to_reedhollow"],
+		[[&"ch10_reached_reedhollow"], &"ch10/reedhollow", &"reed_clutch", &"clutch"],
+		[[&"ch11_started"], &"ch11/sunken_vey", &"vey_galleries", &"to_lowlight"],
+		[[&"ch11_reached_lowlight"], &"ch11/lowlight", &"low_sanctum", &"sanctum"],
+		[[&"ch12_started"], &"ch12/keth_pass", &"keth_road", &"to_quellan"],
+		[[&"ch12_reached_quellan"], &"ch12/quellan", &"quellan_road_up", &"road_up"],
+		[[&"ch12_reached_cloudloom"], &"ch12/cloudloom", &"cloudloom_dais", &"dais"],
+		[[&"ch13_started"], &"ch13/ansedra", &"ansedra_sanctum", &"sanctum"],
+		[[&"ch13_started", &"ch13_entered_sanctum"], &"ch13/ansedra", &"ansedra_archive", &"archive"],
+		[[&"ch13_entered_sanctum"], &"ch13/sanctum", &"sanctum_basin", &"head"],
+		[[&"ch13_entered_archive"], &"ch13/lamp_archive", &"archive_ledgers", &"ledgers"],
+		[[&"ch14_started"], &"ch13/ansedra_lacquer_court", &"court_dais", &"dais"],
+		[[&"ch14_started", &"ch14_declared_heretics"], &"ch13/ansedra_lacquer_court", &"court_barge", &"barge"],
+		[[&"ch15_started"], &"ch15/open_sea", &"sea_watch", &"bow"],
+		[[&"ch15_reached_hollowmere"], &"ch17/hollowmere", &"hollowmere_house", &"house"],
+		[[&"ch16_started"], &"ch16/pale_rim", &"rim_shallows", &"choir_edge"],
+		[[&"ch16_reached_choir"], &"ch16/drowned_choir", &"choir_ring", &"head"],
+		[[&"ch13_started", &"ch13_entered_sanctum", &"ch13_entered_archive"], &"ch13/ansedra", &"", &""],
+	]
+	for c: Array in checks:
+		flags = {}
+		for f: StringName in c[0]:
+			flags[f] = true
+		assert_eq(_id(c[1]), c[2], "%s with %s" % [c[1], c[0]])
+		assert_eq(_poi(c[1]), c[3], "%s with %s: the target" % [c[1], c[0]])
+
+
 func test_act_one_errands_come_and_go() -> void:
 	flags = {&"ch04_started": true, &"ch04_feast_neme": true, &"ch04_shell_set": true, &"ch04_dock_comforted": true}
 	assert_eq(StringName(str(t.side(WAKE)[0]["id"])), &"w_side_ink", "the lamp at the wall, after the dock")

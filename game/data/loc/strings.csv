@@ -1153,3 +1153,20 @@ LORE_MANGROVE_DROWNER,"Undertow-spawn grown through a mangrove's prop-roots. Its
 LORE_LAMP_ENGINE,"A Lit Age machine still running in Lowlight's engine hall: salt-glass lamps on a brass frame around one cracked core, every lamp full of the bound dead."
 LORE_AVALANCHE_RAM,"A woolback grown monstrous on the drowned glimmer seeping from a terrace wall. Its fleece hangs wet and matted, and the seep's cold light shows through the parting."
 LORE_WAKEFIN,"Undertow-spawn that followed the first wake out of Ansedra's lagoon. In the dark it is mostly a tall black fin and the sea-glow running along its flanks."
+OBJ_FEN_ROAD,Follow the root-walks through the fen to Reedhollow.
+OBJ_REED_CLUTCH,Walk the reed causeway in to the clutch's stone.
+OBJ_VEY_GALLERIES,Cross the drowned galleries to Lowlight.
+OBJ_LOW_SANCTUM,Find the way down to the drowned sanctum.
+OBJ_KETH_ROAD,Climb the Cold Road over the pass to Quellan.
+OBJ_QUELLAN_ROAD_UP,"Rest in Quellan, then take the road up to Cloudloom."
+OBJ_CLOUDLOOM_DAIS,Go up through the weaving-hall to the dais.
+OBJ_ANSEDRA_SANCTUM,The Sanctum of the Level stands across the still water.
+OBJ_ANSEDRA_ARCHIVE,"Go to the Lamp Archive, where the founders' ledgers are kept."
+OBJ_SANCTUM_BASIN,Walk the nave to the head of the basin.
+OBJ_ARCHIVE_LEDGERS,Read the founders' ledgers at the table.
+OBJ_COURT_DAIS,Take your places by the wedding dais.
+OBJ_COURT_BARGE,Get to the bridal barge.
+OBJ_SEA_WATCH,The barge drifts with no lamp. Keep the watch until dawn.
+OBJ_HOLLOWMERE_HOUSE,Go with Liss to her family's hull-house.
+OBJ_RIM_SHALLOWS,Wade the white shallows to the Choir's edge.
+OBJ_CHOIR_RING,"Walk into the ring, to its head."
