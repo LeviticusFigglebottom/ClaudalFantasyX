@@ -4340,6 +4340,10 @@
    "block": "Lamps"
   }
  ],
+ "fire_light_fade": [
+  70.0,
+  20.0
+ ],
  "multimeshes": [
   {
    "name": "LeafBoats",
