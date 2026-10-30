@@ -788,8 +788,12 @@ DLG_TEST_CUTSCENE_001,First fixture line.
 DLG_TEST_CUTSCENE_002,Fixture option A.
 DLG_TEST_CUTSCENE_003,Fixture option B.
 DLG_TEST_CUTSCENE_004,Fixture closing narration.
+DLG_TEST_CUTSCENE_GROUP_001,Group fixture line.
 DLG_TEST_CUTSCENE_POSE_001,Pose fixture line.
 DLG_TEST_CUTSCENE_POSE_002,Pose fixture closing line.
+DLG_TEST_CUTSCENE_RELEASE_VFX_001,Release fixture line.
+DLG_TEST_CUTSCENE_TRACK_001,Track fixture line.
+DLG_TEST_CUTSCENE_TRACK_002,Track fixture closing line.
 DLG_TEST_DLG_001,Test narration.
 DLG_TEST_DLG_002,Test line with an emotion.
 DLG_TEST_DLG_003,Flag was on.

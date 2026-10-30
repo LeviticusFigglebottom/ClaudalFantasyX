@@ -5477,7 +5477,7 @@
             "level_path": "res://game/levels/ch01/oruvel/oruvel.tscn",
             "spawn": "ScaleHull",
             "scene_id": "ch01_bark_outer_mooring",
-            "hold_line": "ch01_bark_sadi_003",
+            "hold_cue": "camera O07",
             "flags": [
               "ch01_started"
             ]
@@ -7304,6 +7304,9 @@
             "spawn": "NetPenAfter",
             "scene_id": "ch01_hullgnaw_rises",
             "hold_line": "ch01_hullgnaw_001",
+            "show": [
+              "hullgnaw"
+            ],
             "flags": [
               "ch01_started",
               "ch01_gulls_cried"
@@ -7340,6 +7343,105 @@
             "flags": [
               "ch01_started",
               "ch01_gulls_cried"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch01_going_under_u10",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 600,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch01/oruvel/oruvel.tscn",
+            "spawn": "NetPenAfter",
+            "scene_id": "ch01_going_under",
+            "hold_cue": "vfx glimmer_held",
+            "flags": [
+              "ch01_started",
+              "ch01_gulls_cried"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch01_going_under_u11",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 600,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch01/oruvel/oruvel.tscn",
+            "spawn": "NetPenAfter",
+            "scene_id": "ch01_going_under",
+            "hold_cue": "camera U11",
+            "flags": [
+              "ch01_started",
+              "ch01_gulls_cried"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch01_current_shaft_u09",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 600,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn",
+            "spawn": "ShaftFoot",
+            "scene_id": "ch01_current_shaft",
+            "hold_cue": "camera U09",
+            "flags": [
+              "ch01_started",
+              "ch01_cut_gauge_wheel"
             ]
           }
         },

@@ -7,6 +7,10 @@ extends Node
 ## only on frames the action is held, so waits, walks and fades go on while it is held and stand still
 ## when it is let go. There is no timer, no score and nothing to fail: letting go only pauses, nothing
 ## resets, and the only way out of a gate is the scene reaching hold_input_end (or ending).
+## M4-CIN-1302 (act2_ch10.md B09, the farewell-tide): <<event release_input <prompt>>> opens the other kind of
+## gate, the one that ends by letting go. The scene's time stands still while the action is held, and the scene goes
+## on the first frame it isn't (opened straight after a hold gate, the player is holding when it opens). No timer,
+## no fail: holding longer only holds the moment.
 ## The prompt (a loc key from the host's data) shows for the whole gate, in UI's HoldPrompt widget
 ## (M3-C09-05: the held action's key or pad button and the verb; holding lights the key, letting go
 ## lets it breathe; no meter, no count). Data, from the host:
@@ -20,6 +24,7 @@ signal gate_closed
 
 const EVENT_BEGIN := &"hold_input"
 const EVENT_END := &"hold_input_end"
+const EVENT_RELEASE := &"release_input"
 const KEY_ACTION := "action"
 const KEY_PROMPTS := "prompts"
 const KEY_LAYER := "layer"
@@ -32,6 +37,8 @@ var action: StringName = &""
 var prompts: Dictionary = {}
 ## True while a gate is open.
 var gating := false
+## True while the open gate is a release gate (release_input).
+var releasing := false
 ## The open gate's prompt id.
 var prompt_id: StringName = &""
 ## Seconds held in the open gate (tests and the UI read it; it never resets mid-gate).
@@ -65,6 +72,10 @@ func _process(delta: float) -> void:
 func tick(delta: float, held: bool) -> bool:
 	if gating:
 		prompt.set_held(held)
+	if gating and releasing:
+		if not held:
+			_close()
+		return false
 	if not gating or not held or sequencer == null:
 		return false
 	held_sec += delta
@@ -77,16 +88,19 @@ func _on_event(event_name: StringName, args: Array) -> void:
 		_open(StringName(str(args[0])) if not args.is_empty() else &"")
 	elif event_name == EVENT_END:
 		_close()
+	elif event_name == EVENT_RELEASE:
+		_open(StringName(str(args[0])) if not args.is_empty() else &"", true)
 
 
 func _on_finished(_scene_id: StringName) -> void:
 	_close()
 
 
-func _open(id: StringName) -> void:
+func _open(id: StringName, release := false) -> void:
 	if gating:
 		return
 	gating = true
+	releasing = release
 	gates += 1
 	prompt_id = id
 	held_sec = 0.0
@@ -101,6 +115,7 @@ func _close() -> void:
 	if not gating:
 		return
 	gating = false
+	releasing = false
 	prompt_id = &""
 	if is_instance_valid(sequencer):
 		sequencer.set_process(_seq_processed)
