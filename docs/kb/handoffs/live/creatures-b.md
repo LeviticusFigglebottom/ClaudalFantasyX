@@ -819,3 +819,11 @@ What the Act II fights still need from others: enemy rows and encounters (combat
   ch11_lamp_engine (Kahre, Hesk), ch12_avalanche_ram (Virel, Ethren, Kesh). **With battle-presentation:** this run
   checks the bodies and clips; their effects land with big25, and I re-run the same passes on it to view each effect
   on its body (the agreed split) and file any misfit to them.
+
+## 2026-10-30 17:10: STATUS for the Lead's 17:04 (not idle)
+- **Act II boss as-played passes: DONE** (Ch10 Drowner, Ch11 Lamp Engine, Ch12 Ram, and Ch15 Wakefin; Ch13 has no
+  boss encounter on big25 either). Stills of intro, each phase and the defeat viewed; findings above (15:40, 16:30).
+  Nothing in my models needed a fix; the fixes from the Act I passes are in.
+- **MERGE-READY @ fc7106b6c** (big25 merged in, no conflicts, validate_data 0/0).
+- **Vowbound summon passes: RUNNING since 16:45** (two render jobs; all seven Vowbound, each skill and the Swell,
+  in Ch10–12). Results land here as each finishes.
