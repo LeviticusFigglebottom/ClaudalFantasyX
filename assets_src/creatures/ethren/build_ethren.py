@@ -21,10 +21,12 @@ behind him like a closed screen and open only in `ready`, `cast`, `special` and 
 feet, not modelled under the robe) 0.2 m up, the robe's hem 0.1 m. The stand-in needs no `hover`. Every clip stays
 above the water.
 
-Rig (27 bones): `root`, `body` (the hips), `spine_0..2`, `neck`, `head`, `veil`, `halo`, `robe_1`, `robe_2` (the
+Rig (27 figure bones): `root`, `body` (the hips), `spine_0..2`, `neck`, `head`, `veil`, `halo`, `robe_1`, `robe_2` (the
 lower two bells), `arm_l0`, `arm_l1`, `hand_l`, `finger_l0` (index and middle), `finger_l1` (ring and little, the
 ring's), `arm_r0`, `arm_r1`, `hand_r`, and `wing_{li,lo,ri,ro}_{0,1}` (+x is `l`; `i` the inner pair, `o` the outer;
-`_0` the upper leaf, `_1` the lower).
+`_0` the upper leaf, `_1` the lower). M4-CRB-008 adds two unweighted VFX anchors last (29 bones): `vfx_core` (the
+breastplate) and `vfx_keepsake` (the ring), and the clips `stop` (Hold the Hour) and `ward` (the lacquer screen);
+every clip is played from idle's first frame.
 
 `python3 build_ethren.py --report` prints the triangle count, per-slot counts and per-clip lows (numpy, no export).
 """
@@ -45,10 +47,24 @@ import grounding  # noqa: E402
 SEED = 6440
 PAL = {k: ck.hexrgb(v) for k, v in {
     "lacquer_black": "#1D1916", "lacquer_red_deep": "#7A1712", "gold_leaf": "#D4A437", "gauze_white": "#EBE7DF",
-    "laterite": "#A8573A", "tortoiseshell": "#6B3A1E",
+    "laterite": "#A8573A", "tortoiseshell": "#6B3A1E", "glimmer_bound": "#4FB3B0",
 }.items()}
 RING_COL = ck.mix(PAL["laterite"], PAL["tortoiseshell"], 0.35)  # copper: no copper swatch, the nearest unlit warm metal
-SEAM_COL = PAL["gauze_white"]
+SEAM_COL = PAL["glimmer_bound"]  # M4-CRB-008: the light's own colour under its emission (gauze_white read white)
+# M4-CRB-008, the battle-camera audit: from the party side he read as a stack of plain cones under a white lampshade
+# and a blank white plate. These carry the shrine-figure's craft without a new slot.
+VEIL_COLS = 25  # stations across the veil (from 17), for its pleats
+VEIL_PLEATS = 6.0  # soft folds across its width
+VEIL_PLEAT_M = (0.002, 0.009)  # their depth at the crown band and at the hem
+VEIL_SHADE = (0.16, 0.55)  # how far the thin gauze darkens toward the lacquer head behind it (everywhere; over the
+# face at most)
+HALO_GLOW = (0.45, 1.0)  # the halo's inner face lit dimmer at its centre than at its lip (the light is inside)
+HALO_INNER_R = 0.27  # a red lacquer rim inside the bowl
+BELL_BAND = 0.08  # a band of the other lacquer at each bell's lowest visible edge (its hem, or where the bell
+# below covers it)
+BELL_RIBS = 6  # gold panel rims down each bell
+RIB_W = 0.008
+WING_PANEL = (0.16, 0.84, 0.16)  # the raised red inset on each leaf's outer face (across from, across to, end margin)
 
 # ---- the figure (metres, Godot axes, facing +z) -----------------------------------------------
 SOLE = 0.2  # the hover: the feet's line under the robe
@@ -59,6 +75,8 @@ NECK_TOP = 2.24
 HEAD_C = np.array([0.0, 2.33, 0.01])
 HEAD_R = (0.105, 0.135, 0.12)
 HEAD_TOP = 2.47
+CROWN_C = np.array([0.0, 2.425, 0.012])  # the crown cap over the veil's top edge (M4-CRB-008)
+CROWN_R = (0.118, 0.06, 0.132)
 HALO_C = np.array([0.0, 2.55, -0.20])  # the bowl's rim plane centre
 HALO_R = 0.45  # 0.9 m across: its top is 3.0 m
 HALO_DEPTH = 0.10
@@ -72,11 +90,14 @@ CUIRASS = [(1.30, 0.19, 0.15, 0.0), (1.42, 0.205, 0.16, 0.0), (1.55, 0.225, 0.17
            (2.115, 0.12, 0.095, -0.01), (2.125, 0.09, 0.08, -0.01)]
 DEPTH_RATIO = 0.82  # a bell's depth to its width
 # the robe's three nested bells: (top y, bottom y, top half-width, flare per metre, forward shift at the hem)
-BELLS = [(1.38, 0.86, 0.215, 0.26, 0.02), (0.98, 0.48, 0.345, 0.26, 0.05), (0.60, HEM, 0.47, 0.22, 0.08)]
+BELLS = [(1.38, 0.86, 0.215, 0.26, 0.01), (0.98, 0.48, 0.36, 0.26, 0.02), (0.60, HEM, 0.50, 0.18, 0.08)]
+# (M4-CRB-008: each bell's top now sits 2 cm or more outside the hem of the bell above it, which it covers; before,
+# the middle bell's hem stood through the bottom bell's front and the top bell's through the middle's)
 SHOULDER_L = np.array([0.30, 2.02, -0.02])
 ELBOW_L = np.array([0.335, 1.645, 0.0])
 WRIST_L = np.array([0.255, 1.60, 0.33])
 HAND_LEN = 0.21
+RING_X = 0.009  # the ring finger's offset across the gauntlet (toward the little finger)
 # the wings: per leaf pair, its hinge (x, z) at the pivot, the leaf's angle off the back plane, width
 PIVOT_Y = 2.08
 LEAF_TOP = 2.16
@@ -86,6 +107,8 @@ LEAF_W = 0.30
 LEAF_TH = 0.03
 LEAN_DEG = 6.0  # the folded leaves lean back so they clear the robe's flare
 WINGS = {"i": (0.05, -0.27, 35.0), "o": (0.11, -0.33, 30.0)}  # inner pair, outer pair (behind it)
+# M4-CRB-008: the VFX anchors (unweighted): `vfx_core` at the breastplate's split, where the light inside shows most
+VFX_CORE = np.array([0.0, 1.76, 0.20])
 
 PARTS: dict[str, int] = {}
 
@@ -271,7 +294,17 @@ def build_rig() -> ck.Rig:
         joint = top + down * LEAF_LEN
         rig.add(f"wing_{tag}_0", pivot, joint, "spine_2")
         rig.add(f"wing_{tag}_1", joint + down * LEAF_GAP, joint + down * (LEAF_GAP + LEAF_LEN), f"wing_{tag}_0")
+    # M4-CRB-008: the VFX anchors, unweighted (no vertex is skinned to them; added last, so every other bone keeps its
+    # index): `vfx_core` at the breastplate on spine_2, `vfx_keepsake` at the copper ring on finger_l1
+    rig.add("vfx_core", VFX_CORE, VFX_CORE + (0.0, 0.2, 0.0), "spine_2")
+    rc = ring_centre()
+    rig.add("vfx_keepsake", rc, rc + (0.0, 0.0, 0.05), "finger_l1")
     return rig
+
+
+def ring_centre() -> np.ndarray:
+    """Where the ring sits: on the left ring finger, past the knuckle (the gauntlet's own numbers)."""
+    return np.array([WRIST_L[0] + RING_X, WRIST_L[1] - 0.006 - 0.0015, WRIST_L[2] + 0.1 + 0.026])
 
 
 def torso_skin(rig: ck.Rig):
@@ -330,7 +363,8 @@ def cuirass(mesh: ck.Mesh, rig: ck.Rig) -> None:
     seam_ring(mesh, CUIRASS, 1.385, 1.415, 0.004, torso_skin(rig))
 
 
-def seam_strip(mesh: ck.Mesh, rig: ck.Rig, pts, normal, width, bones, name) -> None:
+def seam_strip(mesh: ck.Mesh, rig: ck.Rig, pts, normal, width, bones, name, slot: str = "seam", col=None,
+               em: float = 1.0) -> None:
     pts = np.asarray(pts)
     tan = unit(np.gradient(pts, axis=0))
     n = np.broadcast_to(unit(normal), pts.shape)
@@ -338,7 +372,7 @@ def seam_strip(mesh: ck.Mesh, rig: ck.Rig, pts, normal, width, bones, name) -> N
     P = np.vstack([pts - side * width / 2, pts + side * width / 2])
     k = len(pts)
     T = [(i, k + i, i + 1) for i in range(k - 1)] + [(i + 1, k + i, k + i + 1) for i in range(k - 1)]
-    put(mesh, name, P, T, "seam", SEAM_COL, bones, want=np.vstack([n, n]), emission=1.0)
+    put(mesh, name, P, T, slot, SEAM_COL if col is None else col, bones, want=np.vstack([n, n]), emission=em)
 
 
 def seam_ring(mesh: ck.Mesh, table, y0: float, y1: float, off: float, bones, segs: int = 36) -> None:
@@ -364,15 +398,30 @@ def robe(mesh: ck.Mesh, rig: ck.Rig) -> None:
     for k in range(3):
         top, bot = BELLS[k][0], BELLS[k][1]
         table = bell_table(k)
-        ys = np.concatenate([[bot, bot + GOLD_BAND], np.linspace(bot + 0.06, top, 5)])
+        band_lo = BELLS[k + 1][0] if k < 2 else bot + GOLD_BAND  # the lowest visible edge
+        band_hi = band_lo + BELL_BAND
+        rows = [bot, bot + GOLD_BAND] + ([band_lo] if k < 2 else [])
+        ys = np.concatenate([rows, np.linspace(band_hi, top, 7 - len(rows))])
         G, N = loft_grid(table, phis, ys)
-        # the outer face, its gold hem band, the inner face
+        # the outer face, its gold hem band, a band of the other lacquer above it (M4-CRB-008), the inner face
         out_P = (G + N * TH * 0.5).reshape(-1, 3)
         in_P = (G - N * TH * 0.5).reshape(-1, 3)
         T = ck.grid_tris(len(ys), segs, True)
         hem = np.arange(len(T)) < 2 * segs
-        Ps, Ts, Ws = subset(out_P, T[~hem], (N.reshape(-1, 3),))
+        b0 = (len(rows) - 1) * 2 * segs  # the band's row of cells (from band_lo to band_hi)
+        band = (np.arange(len(T)) >= b0) & (np.arange(len(T)) < b0 + 2 * segs)
+        Ps, Ts, Ws = subset(out_P, T[~hem & ~band], (N.reshape(-1, 3),))
         put(mesh, f"robe_{k}", Ps, Ts, slots[k], cols[k], bones[k], want=Ws)
+        other = (k == 0)
+        Ps, Ts, Ws = subset(out_P, T[band], (N.reshape(-1, 3),))
+        put(mesh, f"robe_{k}", Ps, Ts, "lacquer" if other else "lacquer_red",
+            PAL["lacquer_black"] if other else PAL["lacquer_red_deep"], bones[k], want=Ws)
+        # gold panel rims down the bell, from the band to its top, so it reads as joined lacquer panels
+        for r in range(BELL_RIBS):
+            ph = (r + 0.5) * 2.0 * math.pi / BELL_RIBS
+            pts = [ell(table, ph, y, TH * 0.5 + 0.0015)[0] for y in np.linspace(band_hi, top - 0.01, 4)]
+            seam_strip(mesh, rig, pts, ell(table, ph, top, 0.0)[1], RIB_W, bones[k], "gold", slot="gold",
+                       col=PAL["gold_leaf"], em=0.0)
         Ps, Ts, Ws = subset(out_P, T[hem], (N.reshape(-1, 3),))
         put(mesh, "gold", Ps, Ts, "gold", PAL["gold_leaf"], bones[k], want=Ws)
         put(mesh, f"robe_{k}", in_P, T, "lacquer", PAL["lacquer_black"], bones[k], want=-N.reshape(-1, 3))
@@ -458,7 +507,7 @@ def gauntlet(mesh: ck.Mesh, rig: ck.Rig, side: float, tag: str, w: np.ndarray) -
     knuckle_y = w[1] - 0.006
     zk = w[2] + 0.1
     # fingers from the thumb's side (toward the midline) out: index, middle, ring, little
-    xs = [-0.027, -0.009, 0.009, 0.026]
+    xs = [-0.027, -0.009, RING_X, 0.026]
     lens = [0.105, 0.115, 0.108, 0.088]
     for f in range(4):
         x = w[0] + side * xs[f]
@@ -500,9 +549,13 @@ def collar_and_head(mesh: ck.Mesh, rig: ck.Rig) -> None:
     # the crown band the veil hangs from
     P, T = ring_at(np.array([0.0, 2.40, 0.012]), (0, 1, 0.08), 0.1, 0.011, 24, 6)
     put(mesh, "head", P, T, "lacquer_red", PAL["lacquer_red_deep"], rig.rigid("head"))
+    # M4-CRB-008: a red lacquer crown capping the head over the veil's top edge; up close the bare crown of the head
+    # stood out of the veil's open top, and the veil read as a lampshade set on a ball
+    Pc, Tc = ck.ellipsoid(CROWN_C, CROWN_R, 6, 16)
+    put(mesh, "head", Pc, Tc, "lacquer_red", PAL["lacquer_red_deep"], rig.rigid("head"))
 
 
-VEIL = [(1.92, 0.235, 0.30, 0.03), (2.05, 0.205, 0.255, 0.025), (2.17, 0.165, 0.205, 0.02),
+VEIL = [(1.92, 0.25, 0.275, 0.03), (2.05, 0.215, 0.24, 0.025), (2.17, 0.165, 0.205, 0.02),
         (2.30, 0.132, 0.16, 0.016), (2.36, 0.122, 0.142, 0.013), (2.41, 0.108, 0.122, 0.012)]
 
 
@@ -516,18 +569,26 @@ def veil(rig: ck.Rig) -> ck.Mesh:
     border at its hem."""
     m = ck.Mesh("ethren_veil")
     ys = bands(1.92, 2.41, 10, GOLD_BAND)
-    u = np.linspace(-1.0, 1.0, 17)
+    u = np.linspace(-1.0, 1.0, VEIL_COLS)
     G = np.zeros((len(ys), len(u), 3))
     N = np.zeros_like(G)
+    shade = np.zeros((len(ys), len(u)))
     for i, y in enumerate(ys):
         sp = veil_spread(y)
+        hang = (2.41 - y) / (2.41 - 1.92)  # 0 at the crown band, 1 at the hem
+        depth = VEIL_PLEAT_M[0] + (VEIL_PLEAT_M[1] - VEIL_PLEAT_M[0]) * hang
         for j, uv in enumerate(u):
-            G[i, j], N[i, j] = ell(VEIL, uv * sp, y)
+            # M4-CRB-008: soft pleats (the gauze hangs, it is not a turned shade), and the face behind it shows dark
+            # through the thin gauze over the head, fading out below the chin and toward the sides
+            G[i, j], N[i, j] = ell(VEIL, uv * sp, y, depth * math.cos(uv * math.pi * VEIL_PLEATS))
+            shade[i, j] = math.exp(-(uv / 0.42) ** 2) * ck.smoothstep(2.02, 2.2, y) * ck.smoothstep(2.42, 2.36, y)
     parts = slab(G, N, 0.006, gold="b")
+    dark = VEIL_SHADE[0] + (VEIL_SHADE[1] - VEIL_SHADE[0]) * shade.reshape(-1)
+    cols = np.array([ck.mix(PAL["gauze_white"], PAL["lacquer_black"], k) for k in dark])
     vb = rig.rigid("veil")
     P, T, W = parts["face"]
-    Ps, Ts, Ws = subset(P, T, (W,))
-    put(m, "veil", Ps, Ts, "veil", PAL["gauze_white"], vb, want=Ws, emission=1.0)
+    Ps, Ts, Ws, Cs = subset(P, T, (W, cols))
+    put(m, "veil", Ps, Ts, "veil", Cs, vb, want=Ws, emission=1.0)
     P, T, W = parts["back"]
     Ps, Ts, Ws = subset(P, T, (W,))
     put(m, "veil", Ps, Ts, "veil", PAL["gauze_white"], vb, want=Ws, emission=1.0)
@@ -553,10 +614,16 @@ def halo(mesh: ck.Mesh, rig: ck.Rig) -> None:
     G = np.array(pts)
     N = np.array(nrm)
     T = ck.grid_tris(rings, segs, True)
-    put(mesh, "halo", G + N * 0.002, T, "halo", SEAM_COL, hb, want=N, emission=1.0)
+    # M4-CRB-008: lit dimmer at the centre than at the lip, so it reads as a bowl of light, not a flat white plate
+    glow = HALO_GLOW[0] + (HALO_GLOW[1] - HALO_GLOW[0]) * np.repeat(rho / HALO_R, segs) ** 1.5
+    put(mesh, "halo", G + N * 0.002, T, "halo", SEAM_COL, hb, want=N, emission=glow)
     put(mesh, "halo", G - N * HALO_TH, T, "lacquer", PAL["lacquer_black"], hb, want=-N)
     P, T = ring_at(HALO_C, (0, 0, 1), HALO_R, 0.013, 48, 6)
     put(mesh, "gold", P, T, "gold", PAL["gold_leaf"], hb)
+    # and a red lacquer rim set inside the bowl, the light showing either side of it
+    z = HALO_C[2] - HALO_DEPTH * (1.0 - (HALO_INNER_R / HALO_R) ** 2) + 0.006
+    P, T = ring_at(np.array([HALO_C[0], HALO_C[1], z]), (0, 0, 1), HALO_INNER_R, 0.009, 44, 3)
+    put(mesh, "halo", P, T, "lacquer_red", PAL["lacquer_red_deep"], hb)
 
 
 def leaf_outline(lower: bool) -> tuple[np.ndarray, np.ndarray]:
@@ -598,14 +665,21 @@ def wings(mesh: ck.Mesh, rig: ck.Rig) -> None:
             # the outer face black with a red field inset; the inner face red
             pivot, top, down, across, normal = leaf_frame(tag)
 
-            def field(Ps, top=top, down=down, across=across, lower=lower):
-                rel = Ps - top
-                u = (rel @ across) / LEAF_W
-                v = (rel @ down) - ((LEAF_LEN + LEAF_GAP) if lower else 0.0)
-                inset = (u > 0.16) & (u < 0.84) & (v > 0.16) & (v < LEAF_LEN - 0.16)
-                return np.where(inset[:, None], PAL["lacquer_red_deep"], PAL["lacquer_black"])
-
-            put_slab(mesh, "wings", parts, "lacquer", field, PAL["lacquer_red_deep"], bone, back_slot="lacquer_red")
+            put_slab(mesh, "wings", parts, "lacquer", PAL["lacquer_black"], PAL["lacquer_red_deep"], bone,
+                     back_slot="lacquer_red")
+            # M4-CRB-008: the red inset is a raised panel on the outer face, hard-edged (as vertex colour across the
+            # leaf's coarse grid it blurred, so each wing read as one plain red plank)
+            u0, u1, m = WING_PANEL
+            start = top + down * ((LEAF_LEN + LEAF_GAP) if lower else 0.0) + normal * (LEAF_TH * 0.5 + 0.003)
+            width = LEAF_W * (0.93 if lower else 1.0)
+            Gp = np.array([[start + down * v + across * (u * width) for u in np.linspace(u0, u1, 3)]
+                           for v in np.linspace(m, LEAF_LEN - m, 4)])
+            put(mesh, "wings", Gp.reshape(-1, 3), ck.grid_tris(4, 3, False), "lacquer_red", PAL["lacquer_red_deep"],
+                bone, want=normal)
+            # and a black one on the red inner face, the face the battle camera sees on his near side
+            Gi = Gp - normal * (LEAF_TH + 0.006)
+            put(mesh, "wings", Gi.reshape(-1, 3), ck.grid_tris(4, 3, False), "lacquer", PAL["lacquer_black"],
+                bone, want=-normal)
         # the hinge between the leaves: a bar of light; the pivot's boss
         pivot, top, down, across, normal = leaf_frame(tag)
         joint = top + down * (LEAF_LEN + LEAF_GAP * 0.5)
@@ -885,10 +959,71 @@ def build_release() -> ck.Clip:
     return still(c)
 
 
+# M4-CRB-008 (the Act II move pass, docs/kb/plan/act2/bosses/ethren.md §4): one clip per skill on the design sheet.
+STOP_SEC, STOP_CONTACT = 1.6, 0.9
+STOP_HELD = (0.45, 0.7)  # Hold the Hour: the hand is out and perfectly still through this
+STOP_OUT = dict(upper=(-45.0, 0.0, -4.0), fore=(20.0, 0.0, 0.0), hand=(-60.0, 0.0, 0.0))  # the ringed hand held out,
+# palm toward the foe, fingers up, at the height of his breast
+STOP_CURL = 82.0  # the fingers close at the contact (degrees at each finger group)
+WARD_SEC, WARD_CONTACT = 1.6, 0.8
+
+
+def build_stop() -> ck.Clip:
+    """Hold the Hour (Stop on one foe): his left hand, the ringed one, comes up and out, palm toward the foe, and is
+    held there perfectly still; nothing else of him moves. At the contact the hand closes, slowly, as if on the
+    hour itself (the foe's idle freezes there, presentation); held shut, then it lowers back to the level rest."""
+    c = ck.Clip("stop", STOP_SEC)
+    out = {k: np.asarray(v) for k, v in STOP_OUT.items()}
+    shut = dict(upper=out["upper"] + (-2.0, 0.0, 0.0), fore=out["fore"], hand=out["hand"] + (6.0, 0.0, 0.0))
+    for t, pose, curl in ((0.0, None, 0.0), (STOP_HELD[0], out, 0.0), (STOP_HELD[1], out, 0.0),
+                          (STOP_CONTACT, shut, 1.0), (1.25, shut, 1.0), (STOP_SEC, None, 0.0)):
+        if pose is None:
+            arm_pose(c, t, "l")
+        else:
+            arm_pose(c, t, "l", pose["upper"], pose["fore"], pose["hand"])
+        c.key("finger_l0", t, (STOP_CURL * curl, 0.0, 0.0))
+        c.key("finger_l1", t, (STOP_CURL * 1.08 * curl, 0.0, 0.0))
+    return still(c)
+
+
+def build_ward() -> ck.Clip:
+    """The lacquer screen (the mass ward on every ally): his hands draw in to his breast and the closed wings part;
+    then the four leaves swing out and forward round the party's side like a folding screen set down around them,
+    and at the contact his arms open wide, palms out, holding it there (a pale gold-edged pane at each ally, VFX);
+    held, then the wings fold back behind him."""
+    c = ck.Clip("ward", WARD_SEC)
+    # (spread, turn, lift, fold) per pair (inner, outer); + lift swings a leaf's free end forward, so the screen
+    # curves round in front of the party's side rather than fanning flat behind him as `victory` does
+    rest = ((0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0))
+    gather = ((8.0, 12.0), (-6.0, -8.0), (3.0, 4.0), (0.0, 0.0))
+    swung = ((26.0, 40.0), (24.0, 16.0), (24.0, 30.0), (-8.0, -8.0))
+    set_down = ((30.0, 46.0), (30.0, 20.0), (30.0, 36.0), (-10.0, -10.0))
+    settle = ((29.0, 45.0), (29.0, 19.0), (29.0, 35.0), (-10.0, -10.0))
+    for t, (sp, tn, lf, fd), ar, open_ in ((0.0, rest, 0.0, 0.0), (0.3, gather, 1.0, 0.0), (0.6, swung, 0.6, 0.6),
+                                           (WARD_CONTACT, set_down, 0.0, 1.0), (1.15, settle, 0.0, 1.0),
+                                           (WARD_SEC, rest, 0.0, 0.0)):
+        wing_pose(c, t, spread=sp, turn=tn, lift=lf, fold=fd)
+        both_arms(c, t, upper=(-24.0 * ar - 26.0 * open_, 0.0, -8.0 * ar + 36.0 * open_),
+                  fore=(-36.0 * ar - 6.0 * open_, -28.0 * ar + 30.0 * open_, 0.0),
+                  hand=(10.0 * ar - 30.0 * open_, 0.0, 0.0))
+        torso(c, t, bow=2.0 * ar - 2.0 * open_, head=2.0 * ar - 1.0 * open_)
+    return still(c)
+
+
+def idle_first(idle: ck.Clip) -> dict:
+    """Idle's first frame as a pose ({bone: (rot, loc)}): every other clip is authored from rest and played from it
+    (ck.in_pose), so each one starts (and the one-shots that come back end) exactly where the idle starts."""
+    return {b: tuple(np.asarray(v, float) for v in idle.sample(b, 0.0)) for b in idle.keys}
+
+
 def build_clips() -> list[ck.Clip]:
-    return [build_idle(), build_ready(), build_attack(), build_cast(), build_hit(),
-            build_hit("hit_b", -1.0, ck.HIT_B["amp"]), build_defend(), build_ko(), build_victory(), build_rise(),
-            build_dismiss(), build_special(), build_idle_b(), build_release()]
+    """Every clip played from idle's first frame (M4-CRB-008, as Nhoa's M4-CRB-006)."""
+    idle = build_idle()
+    start = idle_first(idle)
+    authored = [build_ready(), build_attack(), build_cast(), build_hit(), build_hit("hit_b", -1.0, ck.HIT_B["amp"]),
+                build_defend(), build_ko(), build_victory(), build_rise(), build_dismiss(), build_special(),
+                build_idle_b(), build_release(), build_stop(), build_ward()]
+    return [idle] + [ck.in_pose(c, c.name, start) for c in authored]
 
 
 # ---------------------------------------------------------------------------------------------

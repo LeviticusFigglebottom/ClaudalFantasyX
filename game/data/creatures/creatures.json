@@ -288,8 +288,8 @@
     "ethren": {
       "scene": "res://game/creatures/ethren/ethren_battle.tscn",
       "vowbound": true,
-      "vowbound_pending": "M3-CRE-644",
-      "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45},
+      "vowbound_pending": "M4-A2P-024 (combat) adds the vowbound.json row and skills; the clip map is ready in docs/kb/art/creatures/vowbound/ethren.md (As built, M4-CRB-008)",
+      "contact": {"attack": 0.55, "cast": 0.8, "stop": 0.9, "ward": 0.8, "special": 1.45},
       "stand_in": {"yaw_deg": -90.0, "height": 2.5, "radius": 0.6}
     },
     "ilun_held": {
@@ -332,7 +332,7 @@
     "ethren_held": {
       "scene": "res://game/creatures/ethren/ethren_held_battle.tscn",
       "ko": "release",
-      "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45},
+      "contact": {"attack": 0.55, "cast": 0.8, "stop": 0.9, "ward": 0.8, "special": 1.45},
       "phases": {"release": {"clip": "release", "hold": true}},
       "stand_in": {"yaw_deg": 90.0, "height": 2.5, "radius": 0.6}
     }
