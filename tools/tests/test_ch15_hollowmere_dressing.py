@@ -76,5 +76,39 @@ class HollowmereTests(unittest.TestCase):
         self.assertEqual((GEN.ZONE / GEN.WATER_NAME).read_text(encoding="utf-8"), GEN.water())
 
 
+def _open_sea():
+    path = ROOT / "tools/act2/ch15_open_sea_dressing.py"
+    spec = importlib.util.spec_from_file_location("ch15_open_sea_dressing", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+SEA = _open_sea()
+
+
+class OpenSeaTests(unittest.TestCase):
+    def test_the_bier_lands_on_the_greybox_bier_and_the_barge_spans_the_deck(self) -> None:
+        import bridal_barge as bb  # noqa: PLC0415
+
+        b = SEA.blocks()
+        row = SEA.dressing()["pieces"][0]
+        self.assertEqual(row["piece"], "bridal_barge_sea")
+        oz, s = row["at"][1], row["scale"]
+        self.assertAlmostEqual(oz + (bb.BIER_AT[0] + bb.SEA_CANOPY_SHIFT) * s, b["Bier"]["pos"][2], delta=0.01)
+        lo, hi = bb.build_barge(name="probe", canopy_shift=bb.SEA_CANOPY_SHIFT)[0].bounds()
+        deck = b["Deck"]
+        self.assertLessEqual(oz + lo[0] * s, deck["pos"][2] - deck["size"][2] * 0.5 + 0.05, "the bow covers the deck")
+        self.assertGreaterEqual(oz + hi[0] * s, deck["pos"][2] + deck["size"][2] * 0.5 - 0.05, "so does the stern")
+        self.assertAlmostEqual(SEA.WATER_Y, bb.WATERLINE_Y * s, delta=0.001, msg="the sea at its waterline")
+
+    def test_the_files_are_the_generators_and_nothing_is_lit(self) -> None:
+        d = SEA.dressing()
+        self.assertEqual(json.loads((SEA.ZONE / "open_sea_dressing.json").read_text(encoding="utf-8")), d)
+        self.assertEqual((SEA.ZONE / SEA.ENV_NAME).read_text(encoding="utf-8"), SEA.environment())
+        self.assertEqual((SEA.ZONE / SEA.WATER_NAME).read_text(encoding="utf-8"), SEA.water())
+        self.assertNotIn("fire_lights", d, "no warm source anywhere")
+
+
 if __name__ == "__main__":
     unittest.main()

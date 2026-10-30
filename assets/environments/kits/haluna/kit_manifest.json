@@ -222,6 +222,17 @@
         "bridal_barge-lod1": 648
       }
     },
+    "bridal_barge_sea": {
+      "budget": [
+        16000,
+        1200
+      ],
+      "bytes": 217436,
+      "lods": {
+        "bridal_barge_sea": 3754,
+        "bridal_barge_sea-lod1": 648
+      }
+    },
     "bridal_barge_wedding": {
       "budget": [
         16000,
