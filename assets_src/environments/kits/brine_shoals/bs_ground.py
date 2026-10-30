@@ -185,8 +185,8 @@ def build_channel(name: str, seed: int, amp: float) -> list[kc.MeshBuilder]:
         mb = kc.MeshBuilder(name + (bc.LOD if lod else ""))
         n = 49 if not lod else 15
 
-        def wet(X, Z, Y):
-            return 1.0 - kc.smoothstep(-0.25, 0.14, Y) * 0.75
+        def wet(X, Z, Y):  # the banks as damp as the flat round them (_mud_channels' 0.75 floor): no seam (M3-ENV-1329)
+            return np.maximum(1.0 - kc.smoothstep(-0.25, 0.14, Y) * 0.75, 0.75)
 
         bc.heightfield(mb, np.linspace(-HALF, HALF, n), np.linspace(-HALF, HALF, n),
                        lambda X, Z: channel_height(noise, X, Z, amp), mb.material(bc.M_MUD),
