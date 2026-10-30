@@ -274,6 +274,9 @@
     "peace_wedding_break": {"file": "res://assets/audio/act2/music/peace_wedding_break.ogg", "beat": {"bpm": 88.0, "downbeat_offset_s": 0.4}, "_note": "M4-A2P-090: Ch14 C2, the trap sprung: the couple's tune cut off on the Stillguard's gong, the Order's hum close, a held low C (assets_src/music/act2/peace_wedding_break.py; plain git, ADR 0175)"},
     "lagoon_escape": {"file": "res://assets/audio/act2/music/lagoon_escape.ogg", "beat": {"bpm": 72.0, "downbeat_offset_s": 0.25}, "_note": "M4-A2P-090: Ch14 C4-C6, the cut barge: the pole's strokes, the city's bells, the couple's tune reborn, Merel at the gate in C minor (assets_src/music/act2/lagoon_escape.py; plain git, ADR 0175)"},
     "kerrid_at_sea": {"file": "res://assets/audio/act2/music/kerrid_at_sea.ogg", "beat": "free", "_note": "M4-A2P-090: Ch15 C3, the reveal: a bed for Kerrid's telling, his tread slowing until it stops, the held motes sideways (assets_src/music/act2/kerrid_at_sea.py; plain git, ADR 0175)"},
+    "cloudloom": {"file": "res://assets/audio/act2/music/cloudloom.ogg", "resume": true, "_note": "M4-A2P-091: Ch12, Cloudloom's open-roofed weaving-hall: the loom figure, the light, the weavers' line; A minor 72 BPM, 120 s loop (plain git, ADR 0175)"},
+    "sanctum_of_the_level": {"file": "res://assets/audio/act2/music/sanctum_of_the_level.ogg", "resume": true, "_note": "M4-A2P-091: Ch13, the Sanctum: one C major chord that never changes, a bell every four bars, the Order's hum far off; flat by design (plain git, ADR 0175)"},
+    "battle_heretic": {"file": "res://assets/audio/act2/music/battle_heretic.ogg", "_note": "M4-A2P-091 (ADR 0204 §9): the regular battle theme from Ch14 on, the party heretics: battle_standard_v2 darkened (the lead an octave down, the metal down, the bronze up, ORDER_HUM hummed under the riff); same intro and loop, so the two swap. Ch14+ encounter rows name it as combat adds them (plain git, ADR 0175)"},
     "sunken_vey": {
       "file": "res://assets/audio/music/act2/sunken_vey.ogg",
       "resume": true,
@@ -462,7 +465,9 @@
     {"scene": "res://game/levels/ch11/sunken_vey/sunken_vey.tscn", "music": "sunken_vey", "_note": "M4-A2P-091: Ch11, the drowned galleries (bed vey_galleries)"},
     {"scene": "res://game/levels/ch11/lowlight/lowlight.tscn", "music": "lowlight", "_note": "M4-A2P-091: Ch11, the half-drowned temple (bed lowlight_temple)"},
     {"scene": "res://game/levels/ch12/keth_pass/keth_pass.tscn", "music": "keth_pass", "_note": "M4-A2P-091: Ch12, the pass (bed keth_pass_wind)"},
-    {"scene": "res://game/levels/ch12/quellan/quellan.tscn", "music": "quellan", "_note": "M4-A2P-091: Ch12, the Ullari town (bed quellan_town)"}
+    {"scene": "res://game/levels/ch12/quellan/quellan.tscn", "music": "quellan", "_note": "M4-A2P-091: Ch12, the Ullari town (bed quellan_town)"},
+    {"scene": "res://game/levels/ch12/cloudloom/cloudloom.tscn", "music": "cloudloom", "_note": "M4-A2P-091: Ch12, the weaving-hall (bed cloudloom_hall)"},
+    {"scene": "res://game/levels/ch13/sanctum/sanctum.tscn", "music": "sanctum_of_the_level", "_note": "M4-A2P-091: Ch13, the Sanctum of the Level (bed sanctum_basin: the basin's air, just above silence)"}
   ],
   "battle": {
     "default": "battle_standard_v2",
