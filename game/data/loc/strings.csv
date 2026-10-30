@@ -229,8 +229,8 @@ ITEM_LIT_AGE_BRASS,Lit Age Brass
 ITEM_LIT_AGE_BRASS_DESC,"Pre-Edict brass, cut out of a drowned tower. Dealers pay well and ask nothing."
 ITEM_SALT_GLASS_SHARD,Salt-Glass Shard
 ITEM_SALT_GLASS_SHARD_DESC,A shard of Lit Age salt-glass. Something inside it is very still. Used in Customize.
-ITEM_FACET_POWER_DESC,"A dull red crystal. Activates HP, Strength and Defense nodes on the Lattice."
-ITEM_FACET_MIND_DESC,"A pale blue crystal. Activates MP, Magic and Magic Defense nodes on the Lattice."
+ITEM_FACET_POWER_DESC,"A dull red crystal. Activates HP, Strength and Defence nodes on the Lattice."
+ITEM_FACET_MIND_DESC,"A pale blue crystal. Activates MP, Magic and Magic Defence nodes on the Lattice."
 ITEM_FACET_SPEED_DESC,"A clear green crystal. Activates Agility, Accuracy and Evasion nodes on the Lattice."
 ITEM_FACET_FORTUNE_DESC,A gold-flecked crystal. Activates Luck nodes on the Lattice.
 ITEM_FACET_ABILITY_DESC,A crystal with a light inside it. Activates ability nodes on the Lattice.
@@ -273,9 +273,9 @@ ABILITY_KEEN_SIGHT_DESC,Accuracy +5.
 ABILITY_DEEP_LUNGS,Deep Lungs
 ABILITY_DEEP_LUNGS_DESC,Max HP +60.
 ABILITY_HARD_CARAPACE,Hard Carapace
-ABILITY_HARD_CARAPACE_DESC,Defense +3.
+ABILITY_HARD_CARAPACE_DESC,Defence +3.
 ABILITY_STILL_HEART,Still Heart
-ABILITY_STILL_HEART_DESC,Magic Defense +3.
+ABILITY_STILL_HEART_DESC,Magic Defence +3.
 ABILITY_LIGHT_FEET,Light Feet
 ABILITY_LIGHT_FEET_DESC,Agility +2.
 ABILITY_EMBER_GUARD,Ember Guard
@@ -391,10 +391,10 @@ SET_TEXT_SCALE_HELP,Scales menu and battle text.
 SET_TEXT_SCALE_100,100%
 SET_TEXT_SCALE_115,115%
 SET_TEXT_SCALE_130,130%
-SET_PALETTE,Color palette
-SET_PALETTE_HELP,Swaps red warnings and enemy fills for colors that stay distinct with red-green color blindness.
+SET_PALETTE,Colour palette
+SET_PALETTE_HELP,Swaps red warnings and enemy fills for colours that stay distinct with red-green colour blindness.
 SET_PALETTE_STANDARD,Standard
-SET_PALETTE_COLORBLIND,Colorblind-friendly
+SET_PALETTE_COLORBLIND,Colour-blind-friendly
 TITLE_CONTINUE,Continue
 TITLE_NEW_GAME,New Game
 TITLE_LOAD,Load
@@ -485,8 +485,8 @@ HUD_READ_NO_WEAKNESS,No weakness found
 AUTOSAVE_SKIPPED_TOAST,"The autosave still holds a journey further along, so it was kept. Rest at a shrine to record this one."
 STAT_STRENGTH,Strength
 STAT_MAGIC,Magic
-STAT_DEFENSE,Defense
-STAT_MAGIC_DEFENSE,Magic Defense
+STAT_DEFENSE,Defence
+STAT_MAGIC_DEFENSE,Magic Defence
 STAT_AGILITY,Agility
 STAT_ACCURACY,Accuracy
 STAT_EVASION,Evasion
@@ -547,7 +547,7 @@ HUD_BOSS_FIELD_FMT,{field}: {count} bound to it
 PHASE_DROWNBELL_TOLL,The Toll
 FIELD_DROWNBELL_FLOOD,The flood
 TITLE_SETTINGS,Settings
-TITLE_HELP_SETTINGS,"Graphics, and accessibility: text size, motion, colors and timing."
+TITLE_HELP_SETTINGS,"Graphics, and accessibility: text size, motion, colours and timing."
 GFX_MENU_TITLE,Graphics
 GFX_MENU_PRESET,Preset
 GFX_MENU_HELP_PRESET,Left and right choose a preset. It sets every row below.
@@ -635,12 +635,12 @@ HUD_SWELL_BRACE_HOLDING,Holding
 HUD_SWELL_BRACE_NOT_HOLDING,Not holding
 HUD_SWELL_MODE_UNLOCKED_FMT,{mode} unlocked
 FIELD_MENU_SETTINGS,Settings
-FIELD_MENU_SETTINGS_DESC,"Graphics, and accessibility: text size, motion, colors and timing."
+FIELD_MENU_SETTINGS_DESC,"Graphics, and accessibility: text size, motion, colours and timing."
 SET_MENU_TITLE,Settings
 SET_MENU_GRAPHICS,Graphics
 SET_MENU_ACCESSIBILITY,Accessibility
 SET_MENU_HELP_GRAPHICS,"Graphics quality, from a whole preset down to each setting."
-SET_MENU_HELP_ACCESSIBILITY,"Text size, reduced motion, a colorblind-friendly palette and timing assist. Changes show at once."
+SET_MENU_HELP_ACCESSIBILITY,"Text size, reduced motion, a colour-blind-friendly palette and timing assist. Changes show at once."
 GFX_VALUE_PERCENT_FMT,{n}%
 GFX_VALUE_TIMES_FMT,×{n}
 CHAR_OSU,Grandmother Osu

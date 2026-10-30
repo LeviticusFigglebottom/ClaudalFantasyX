@@ -5,7 +5,7 @@ FIELD_MENU_LATTICE,Lattice
 FIELD_MENU_STATUS,Status
 FIELD_MENU_QUIT,Quit to Title
 FIELD_MENU_ITEMS_DESC,"Use, sort and read about what the party carries."
-FIELD_MENU_EQUIP_DESC,"Weapons, armor and their ability slots, and Customize."
+FIELD_MENU_EQUIP_DESC,"Weapons, armour and their ability slots, and Customize."
 FIELD_MENU_LATTICE_DESC,Walk the Lattice and wake its nodes with Facets.
 FIELD_MENU_STATUS_DESC,"Each hero's HP, MP, stats, gear and growth."
 FIELD_MENU_QUIT_DESC,Return to the title screen.
@@ -55,8 +55,8 @@ STATUS_SHELL_DESC,Takes half damage from magic.
 STATUS_PROTECT_DESC,Takes half damage from physical attacks.
 STATUS_REFLECT_DESC,Magic aimed at them alone turns back on the other side.
 STATUS_REGEN_DESC,Recovers a little health at the end of each of their turns.
-STATUS_ARMOR_BREAK_DESC,Their defense is gone.
-STATUS_MENTAL_BREAK_DESC,Their magic defense is gone.
+STATUS_ARMOR_BREAK_DESC,Their defence is gone.
+STATUS_MENTAL_BREAK_DESC,Their magic defence is gone.
 STATUS_POWER_BREAK_DESC,Their strength is halved.
 STATUS_MAGIC_BREAK_DESC,Their magic is halved.
 STATUS_PROVOKE_DESC,Attacks aimed at a single foe must aim at the one who provoked them.
