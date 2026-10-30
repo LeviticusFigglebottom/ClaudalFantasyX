@@ -1,5 +1,5 @@
 {
-  "_doc": "Corrow by day, before the storm, in the kit's frame (ADR 0200): gulls work the seawall and stand on the Watchers' heads on its sea parapet (top y 15.4; none on the Breach's stretch, x -36 to -24, so none is left on air when the wall falls); shore crabs on the mole pier (top 1.2; the wall's apron is too narrow and sea-washed for them, the sea at 0.5). The storm states (ch08_beacon_opened onward) keep them: gulls over a seawall in a rising storm are true to the coast. Re-seated on the dressed kit (the Act I audit, 2026-10-29: tools/creatures/wildlife_snap.gd and wildlife_audit.gd, which ray against the zone's visible meshes).",
+  "_doc": "Corrow by day, before the storm, in the kit's frame (ADR 0200): gulls work the seawall and stand on the Watchers' heads on its sea parapet (top y 15.4; none on the Breach's stretch, x -36 to -24, so none is left on air when the wall falls); shore crabs on the mole pier (top 1.2; the wall's apron is too narrow and sea-washed for them, the sea at 0.5). The storm states (ch08_beacon_opened onward) keep them: gulls over a seawall in a rising storm are true to the coast. Re-seated on the dressed kit (the Act I audit, 2026-10-29: tools/creatures/wildlife_snap.gd and wildlife_audit.gd, which ray against the zone's visible meshes). Fish: shoals in the sea off the mole and under the wall (the sea at 0.5, deep from z 17).",
   "zone": "ch08/corrow",
   "ground": {
     "physics": true
@@ -68,5 +68,26 @@
       "count": 9
     }
   ],
-  "shoals": []
+  "shoals": [
+    {
+      "id": "mole",
+      "center": [
+        8.0,
+        -0.1,
+        31.0
+      ],
+      "radius_m": 3.5,
+      "count": 8
+    },
+    {
+      "id": "wall_sea",
+      "center": [
+        -10.0,
+        -0.1,
+        24.0
+      ],
+      "radius_m": 4.0,
+      "count": 6
+    }
+  ]
 }

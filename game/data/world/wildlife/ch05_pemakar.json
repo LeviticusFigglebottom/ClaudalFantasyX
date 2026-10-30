@@ -1,5 +1,5 @@
 {
-  "_doc": "Pemakar at Lanternfall night: crabs on the harbour quay's west end (top y 1.2, z 24.5 to 26) at the water's edge, away from the lamps and the moored ferry. Gulls roost at night (the day variant has none yet). The sea is a greybox slab, so no fish. Placed on the greybox layout (M3-CRE-615); move the coordinates when env-art's kit replaces the blocks (same keys as ch02_haluna.json). Insects (M3-CRE-616): two moth swarms at the lamp posts (z -36 and -24, y 2.2) and a dragonfly patrol over the paddies (for the day variant, B11; a night zone that does not want them can drop the row). Re-seated on the dressed kit (the Act I audit, 2026-10-29: tools/creatures/wildlife_snap.gd and wildlife_audit.gd, which ray against the zone's visible meshes).",
+  "_doc": "Pemakar at Lanternfall night: crabs on the harbour quay's west end (top y 1.2, z 24.5 to 26) at the water's edge, away from the lamps and the moored ferry. Gulls roost at night (the day variant has none yet). Placed on the greybox layout (M3-CRE-615); move the coordinates when env-art's kit replaces the blocks (same keys as ch02_haluna.json). Insects (M3-CRE-616): two moth swarms at the lamp posts (z -36 and -24, y 2.2) and a dragonfly patrol over the paddies (for the day variant, B11; a night zone that does not want them can drop the row). Re-seated on the dressed kit (the Act I audit, 2026-10-29: tools/creatures/wildlife_snap.gd and wildlife_audit.gd, which ray against the zone's visible meshes). Fish: shoals in the harbour beyond the quay (the water at 0, deep from z 30).",
   "zone": "ch05/pemakar",
   "ground": {
     "physics": true
@@ -21,7 +21,28 @@
       "count": 5
     }
   ],
-  "shoals": [],
+  "shoals": [
+    {
+      "id": "harbour",
+      "center": [
+        -6.0,
+        -0.6,
+        36.0
+      ],
+      "radius_m": 4.0,
+      "count": 8
+    },
+    {
+      "id": "harbour_east",
+      "center": [
+        12.0,
+        -0.6,
+        40.0
+      ],
+      "radius_m": 3.5,
+      "count": 6
+    }
+  ],
   "swarms": [
     {
       "id": "lamp_south",
