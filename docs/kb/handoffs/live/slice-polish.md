@@ -1333,6 +1333,21 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
       flagged).
   - **Next:** Act III cinematics (ADR 0207, M5-A3P-1600..1699), and the PC-QUEUE. M4-A2P-070 still waits on the
     people.
+- **@vfx/@sfx places (M4-A2P-075), MERGE-READY @ this commit's parent:** `at=` takes a mark or an actor, and 11 of the
+  Ch13–Ch16 places were neither (so their light and sound never played). All are now staged, and a check over every
+  Ch13–Ch16 script finds no unplaced `at=`.
+- **M5-A3P-1600, the memory look (`@memory`), MERGE-READY @ this commit** (review: art):
+  - A screen layer under the letterbox, fade and box. It drains the colour, washes toward the look's colour, and
+    softens and pales the edges. CutsceneMemory and its shader; the looks are data (sequencer.json `memory`: `white`
+    and `held`); the scene's end clears it. It costs the sequencer two lines (998/1000).
+  - Used in ch16_kesh_memory: on under the white fade-in, off under the white fade-out.
+  - Viewed on lavapipe (K04 with and without the layer): the shader compiles and the look reads.
+  - Tests:
+    - test_cutscene_sequencer 24/0 (two new);
+    - cutscene_directives 2/0, act2_dialogue, dialogue_vs, cutscene_staging;
+    - tools test_dlgc and the corpus suites 141 OK; check_drafts clean.
+  - **For env-art (LEAD-ASK):** Kesh's memory has no set; K01–K08 frame the open dark past the Choir's floor. The
+    Lamplighters and young Sefir are on M4-CIN-1305.
 ### PC-QUEUE
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan

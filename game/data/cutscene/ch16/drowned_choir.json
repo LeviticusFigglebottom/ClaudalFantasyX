@@ -1,5 +1,5 @@
 {
- "_doc": "M4-A2P-075 (Ch16, cinematics'): the Drowned Choir's cutscene shots and marks, staged from docs/kb/story/beats/act2_ch16_direction.md (the greybox's D01-D07 aren't cued, so nothing is replaced). The dais_* marks face Sefir's mark, Kerrid behind; channel_edge and sefir_barge per the notes. The memory (K01-K08), S04 and the Iskarra vigil (P04, its own id in this zone; pale_rim's P04 is another) play under white or black and keep the notes' frames. C02 tracks Asha (track=asha in the script: she walks toward it); C07 looks at Asha kneeling; the 85 mm singles look at the eye line; C16 sits back so Kerrid's head is in frame; S02 holds Kerrid at the left third.",
+ "_doc": "M4-A2P-075 (Ch16, cinematics'): the Drowned Choir's cutscene shots and marks, staged from docs/kb/story/beats/act2_ch16_direction.md (the greybox's D01-D07 aren't cued, so nothing is replaced). The dais_* marks face Sefir's mark, Kerrid behind; channel_edge and sefir_barge per the notes. The memory (K01-K08), S04 and the Iskarra vigil (P04, its own id in this zone; pale_rim's P04 is another) play under white or black and keep the notes' frames. C02 tracks Asha (track=asha in the script: she walks toward it); C07 looks at Asha kneeling; the 85 mm singles look at the eye line; C16 sits back so Kerrid's head is in frame; S02 holds Kerrid at the left third. storm_heart and kesh_light (the memory's @vfx at=) sit 5-6 m in front of the memory's frames, so the held motes close round the frame and her light lifts in it. channel_motes (C02's held light in the channel), asha_sleeve (C06's insert, at Asha's arm on the dais) and storm (S02's hum, out at the storm wall) place the scenes' @vfx and @sfx at=.",
  "shots": {
   "C01": {
    "pos": [
@@ -464,6 +464,36 @@
    -0.6,
    0.0,
    -4.4,
+   0.0
+  ],
+  "storm_heart": [
+   0.0,
+   1.2,
+   -66.0,
+   0.0
+  ],
+  "kesh_light": [
+   0.0,
+   0.9,
+   -65.0,
+   0.0
+  ],
+  "channel_motes": [
+   0.0,
+   0.3,
+   -10.0,
+   0.0
+  ],
+  "asha_sleeve": [
+   0.25,
+   1.1,
+   -17.3,
+   0.0
+  ],
+  "storm": [
+   0.0,
+   6.0,
+   -40.0,
    0.0
   ]
  }

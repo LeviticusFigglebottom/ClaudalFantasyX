@@ -65,6 +65,8 @@ chapter's (layout actors, the zone's host wiring).
       the seven (`toma`, `pell`, `asha`, `ysolde`, `liss`, `rhen`, `kerrid`) on the ship's deck, wading out to
       `wade_1`…`wade_7`; **drowned_choir** the seven on the `ring_*` marks (plus `ring_pell`), `kesh` in the bowl
       (creatures-b's Saint; she rises in C05), `sefir` at `sefir_barge` with his white barge, and the singers.
+      Kesh's memory (K01–K08): the six Lamplighters with Kesh, and `young_sefir` (`catch_light`, `face_smooths`),
+      in front of the memory's frames (about (0, 0, −66)).
 
 ## Notes
 - Cinematics' staging review (M4-C10-01) and M4-A2P-070. The stills wait on these actors.

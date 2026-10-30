@@ -451,6 +451,8 @@ func _cue(step: DialogueStep) -> void:
 			_cue_vfx(step)
 		&"light":
 			_cue_light(step)
+		&"memory":  # M5-A3P-1600
+			CutsceneMemory.cue(overlay, step, config, _start_motion, finished)
 		_:
 			_warn("unknown cue @%s" % step.cue)
 

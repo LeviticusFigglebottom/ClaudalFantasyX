@@ -53,6 +53,7 @@ Asha [afraid]: This is it. #line:ch16_choir_001
 title: ch16_kesh_memory
 ---
 @music kesh_memory fade=1.0
+@memory on look=white
 @fade in 1.5 white
 @camera K01
 @wait 3.0
@@ -81,6 +82,7 @@ Kesh [grief]: He couldn't let me go. #line:ch16_memory_002
 Kesh [grief]: Every one of them since. Every one. #line:ch16_memory_003 #tn:"Every Cantor since her has been made the storm's heart in turn."
 @wait 2.0
 @fade out 1.5 white
+@memory off
 <<set $ch16_learned_the_hush = true>>
 <<jump ch16_shes_in_it>>
 ===
