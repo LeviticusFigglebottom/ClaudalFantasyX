@@ -1,0 +1,21 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/water/water_ocean.gdshader" id="1_ocean"]
+
+[resource]
+resource_name = "tannin_fen"
+render_priority = 0
+shader = ExtResource("1_ocean")
+shader_parameter/col_deep = Color(0.2275, 0.1647, 0.0941, 1)
+shader_parameter/col_scatter_shallow = Color(0.2902, 0.2275, 0.1333, 1)
+shader_parameter/absorption_per_m = Vector3(0.6, 1.4, 4)
+shader_parameter/absorption_scale = 1.0
+shader_parameter/scatter_energy = 0.08
+shader_parameter/caustic_strength = 0.0
+shader_parameter/col_foam = Color(0.7843, 0.7686, 0.7059, 1)
+shader_parameter/col_sss = Color(0.4157, 0.2902, 0.1490, 1)
+shader_parameter/foam_crest_threshold = 0.9
+shader_parameter/roughness_far = 0.06
+shader_parameter/use_caustics = false
+shader_parameter/use_ssr = true
+shader_parameter/use_sss = false

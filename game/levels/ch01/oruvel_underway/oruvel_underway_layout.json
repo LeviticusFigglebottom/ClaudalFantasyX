@@ -85,10 +85,10 @@
   ],
   "lantern": {"reveals": ["old_tin"], "curtains": ["CoralCurtain"]},
   "underwater": {
-    "_about": "M3-C01-101 (oruvel_underway.md \u00a70; the kit preview's numbers): each room lit as at its real depth in the tower: the crown F14 (6.4 m), the bell-room F13 (9.6 m), the galleries F9 (22.4 m). lighting: [ambient energy, the rig's in-scatter scale].",
+    "_about": "M3-C01-101 (oruvel_underway.md \u00a70; the kit preview's numbers): each room lit as at its real depth in the tower: the crown F14 (6.4 m), the bell-room F13 (9.6 m), the galleries F9 (22.4 m). lighting: [ambient energy, the rig's in-scatter scale, the lantern halo's scale (optional)].",
     "fill": "#8FC3E0",
     "glimmer": [0.2122, 0.5647, 0.6939, 1.5],
-    "lighting": {"open": [0.65, 1.0], "interior": [0.22, 0.33], "deep": [0.14, 0.2]},
+    "lighting": {"open": [0.65, 1.0], "interior": [0.22, 0.33, 0.2], "deep": [0.14, 0.2, 0.2]},
     "rooms": [
       {"id": "crown", "rect": [-9, -4, 9, 20], "lighting": "open", "depth_m": 6.4},
       {"id": "bell_room", "rect": [34, 2, 46, 14], "lighting": "interior", "depth_m": 9.6},
