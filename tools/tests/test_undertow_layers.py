@@ -3,6 +3,8 @@
 * Every piece is inside its budget.
 * The island's floor is flat at y 0 (+-0.05) within 1 m of every battle slot; the held pillars stand behind the enemy
   line, clear of the slots; the arena lights them cyan.
+* M5-A3P-1400: act3_ch20's six layers each have their remembered room in the kit, and the arena hangs every room; the
+  rooms' only light is held glimmer (no flame, no warm practical: the warm light is the Letting's).
 """
 
 from __future__ import annotations
@@ -51,6 +53,22 @@ class UndertowLayersTests(unittest.TestCase):
         a = ar.ARENAS["undertow_cage"]
         self.assertEqual(a["lamp_spec"]["color"], "#7FC6D9")
         self.assertEqual(len(a["lamps"]), len(ar.HELD_PILLARS))
+
+    def test_every_layer_has_its_room(self) -> None:
+        rooms = {"memory_market", "memory_terrace", "memory_kitchen", "memory_stands", "memory_gallery",
+                 "memory_square"}  # U01..U06
+        self.assertLessEqual(rooms, set(ul.TARGETS))
+        hung = {Path(p["glb"]).stem for p in ar.ARENAS["undertow_cage"]["pieces"]}
+        self.assertLessEqual(rooms, hung)
+
+    def test_the_rooms_hold_only_held_light(self) -> None:
+        for name in ("memory_terrace", "memory_gallery", "memory_square"):
+            with self.subTest(piece=name):
+                mb = ul.TARGETS[name]()[0]
+                used = {mb.materials[m] for m in set(mb.tri_mat)}
+                self.assertFalse({m for m in used if "flame" in m or "lamp_glass_lit" in m}, used)
+        self.assertIn(ul.M_HELD, {ul.TARGETS["memory_terrace"]()[0].materials[m]
+                                  for m in set(ul.TARGETS["memory_terrace"]()[0].tri_mat)})
 
 
 if __name__ == "__main__":
