@@ -32,7 +32,8 @@
         "ch15_wakefin": "sting_boss_wakefin"
       },
       "duck": "boss_intro",
-      "duck_sec": 3.5
+      "duck_sec": 3.5,
+      "delay_sec": 0.7
     }
   },
   "reduced": {
