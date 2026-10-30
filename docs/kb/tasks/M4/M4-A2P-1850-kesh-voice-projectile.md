@@ -1,7 +1,7 @@
 ---
 id: M4-A2P-1850
 title: "Request (creatures-b): Kesh's voices fly one shared pale orb that casts a shadow; let each voice's element read in flight"
-role: battle-presentation
+role: combat
 status: todo
 owner_session: ""
 reviewer: character
