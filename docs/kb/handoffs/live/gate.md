@@ -76,3 +76,7 @@ shots? The gate session doesn't touch the integration branch; until then the hum
 - Coverage (report only): `--filter=battle`, 811 tests: game/battle 96.57%, game/progression 51.78% (only the
   battle-named tests ran, so it can't be held to the 99.93 / 96.52 baseline). `--filter=progression` matched no test
   file (my filter choice), so it reported nothing.
+- 01:42 UTC: the 26 `slice_cutscene_shot` captures take ~9.5 min each on 4 CPUs, right at capture.sh's 600 s per-shot
+  hang limit, and two (slice_beach_h06_toma, slice_beach_standing) were killed as hung with no output. So the rest
+  of the manifest is now split: the 196 fast shots first (published as a second partial when done), then the 26 slice
+  shots with HYMN_SHOT_TIMEOUT=1800. Not a hang in the game: those scenes are just slow on lavapipe here.
