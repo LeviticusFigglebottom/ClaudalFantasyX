@@ -36,7 +36,12 @@ func test_staging_adds_what_the_layout_lacks_and_keeps_what_it_has() -> void:
 	gate.position = Vector3(3, 0, 3)
 	marks.add_child(gate)
 	var added := CutsceneStaging.apply(stage)
-	assert_eq(added, [&"swapped", &"T01", &"shore_front"] as Array[StringName], "the missing ids and the replaced")
+	assert_eq(
+		added,
+		[&"swapped", &"T01", &"lamp", &"shore_front"] as Array[StringName],
+		"the missing ids, the replaced, and the prop"
+	)
+	assert_true(stage.get_node_or_null(^"Props/lamp/InnFireLight") is Light3D, "a prop is instanced with its lights")
 	assert_eq(stage.shot(&"swapped").position, Vector3(5, 5, 5), "a replace-listed id is cinematics'")
 	var t01 := stage.shot(&"T01")
 	assert_true(t01 != null and t01.id == &"T01")
