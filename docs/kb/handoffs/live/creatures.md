@@ -1142,3 +1142,9 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
     - The `oruvel_seabed.glb` "uncovered" line is the pre-existing one, already routed to slice-polish.
 - **MERGE-READY @ 1e31f521** (the Kirru crowd and Reedhollow).
 - **BACKLOG EMPTY:** every Act II town has its crowd, Reedhollow included. Still waiting on Combat's conduit_crawler row.
+- **Your 14:08 FAST-TRACK (big23 test_resident_loads) @ 9b29d8b3:**
+  - The three crowd rows were already dropped @ 708e5719, and the shop villagers already wear their bespoke models.
+  - The red was the resident list: `game/data/ui/scene_loads.json` still held the borrowed actors. Regenerated with tools/loading/scene_loads.gd, so haluna.tscn now lists shopkeeper_actor, smith_actor and innkeeper_actor.
+  - The rerun also refreshed stale lists in Oruvel, Pemakar, Coilspire, Corrow and Corrow night (generated output; nothing hand-edited).
+  - Checks: Godot resident_loads 8/0, haluna 65/0.
+- **MERGE-READY @ 9b29d8b3.** The Kirru crowd is done (see above, MERGE-READY @ the 13:08 entry).
