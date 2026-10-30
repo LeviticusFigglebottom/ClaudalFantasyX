@@ -124,13 +124,16 @@ func test_the_prologue_script_runs_to_the_end() -> void:
 	var lines: Array[DialogueStep] = []
 	var cues: Array[StringName] = []
 	var cameras: Array = []
+	var cards: Array = []
 	var ended := false
 	for _i in MAX_STEPS:
 		var step := runner.next()
 		if step.is_end():
 			ended = true
 			break
-		if step.is_line():
+		if step.is_line() and step.tags.has(CutsceneCard.TAG):
+			cards.append(step)  # the title card (the human's playtest, 2026-10-30): not narration
+		elif step.is_line():
 			lines.append(step)
 		elif step.is_cue():
 			cues.append(step.cue)
@@ -138,6 +141,7 @@ func test_the_prologue_script_runs_to_the_end() -> void:
 				cameras.append(step.args[0])
 	assert_true(ended, "reaches END")
 	assert_eq(lines.size(), 1, "one narrated line, no more story than SPEC §3.5")
+	assert_eq(cards.size(), 1, "the 'Prologue' title card opens it, so it reads as the prologue")
 	if lines.size() == 1:
 		assert_eq(lines[0].text_key, LINE_KEY)
 		assert_eq(lines[0].narrator, &"rhen", "Rhen's voice-over")

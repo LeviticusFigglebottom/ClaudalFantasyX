@@ -8,6 +8,10 @@
                grown in the hold. Its frames are the kind Hullgnaw wears
   hull_keels   Oruvel from below: three lashed hulls' bottoms (11, 8 and 7 m) with weed beards, crossbeams and a
                mooring line; origin at the waterline. A stand-in until the raft-town kit ships its hulls
+  old_tin      the old tin behind the coral curtain (C1-04's find): a Lit Age iron box, 0.46 m, rusted and crusted, its
+               lid knocked askew, a brass clasp and a diver's cord through the handle; origin on the floor under it
+  shaft_limpet the gauge room's limpet (C1-06's look, the shaft's fight): a 0.6 m ribbed shell clamped to the wall, three
+               young ones beside it; origin on the wall's face, the shells toward +Z
 """
 
 from __future__ import annotations
@@ -25,6 +29,8 @@ TRI_BUDGET = {
     "tether_line": (1500, 60),
     "wreck_ribs": (12000, 900),
     "hull_keels": (6000, 400),
+    "old_tin": (1500, 120),
+    "shaft_limpet": (3000, 200),
 }
 
 CORD_SPAN = 2.4
@@ -262,9 +268,83 @@ def build_hull_keels(seed: int = 904) -> list[kc.MeshBuilder]:
     return out
 
 
+def build_old_tin(seed: int = 905) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("old_tin", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("old_tin" + ("-lod1" if lod else ""))
+        iron, brass, cord = mb.material(oc.M_IRON), mb.material(oc.M_BRASS), mb.material(oc.M_CORD_OLD)
+        tin, crust = mb.material(oc.M_PATINA), mb.material(oc.M_CALCITE)
+        seg = 1 if lod else 2
+        kc.rounded_block(mb, (0.0, 0.15, 0.0), (0.23, 0.15, 0.15), tin, radius=0.025, seg=seg,
+                         noise=None if lod else noise, disp_m=0.008, weather=oc.DROWNED, variation=0.7)
+        # The lid, knocked askew: a little proud of the box, turned and tipped up at one corner.
+        rot = kc.rot_y(math.radians(9.0)) @ kc.rot_z(math.radians(5.0))
+        kc.rounded_block(mb, (0.02, 0.315, 0.01), (0.24, 0.018, 0.16), iron, rot=rot, radius=0.012, seg=seg,
+                         weather=oc.DROWNED, variation=0.4)
+        if not lod:
+            # Calcite crust where it lay: a pale band round the foot and a scab on the lid.
+            kc.rounded_block(mb, (0.0, 0.03, 0.0), (0.24, 0.03, 0.16), crust, radius=0.02, seg=1, noise=noise,
+                             disp_m=0.01, weather=oc.REEF, variation=0.6)
+            kc.rounded_block(mb, (-0.09, 0.335, -0.04), (0.08, 0.012, 0.06), crust, rot=rot, radius=0.01, seg=1,
+                             noise=noise, disp_m=0.006, weather=oc.REEF, variation=0.3)
+            kc.rounded_block(mb, (0.0, 0.22, 0.152), (0.035, 0.05, 0.008), brass, radius=0.006, seg=1,
+                             weather=oc.CAST, variation=0.5)
+            # The handle at the end, and a diver's cord through it, its tail on the floor.
+            kc.tube(mb, np.array([[0.231, 0.2, -0.05], [0.27, 0.22, -0.03], [0.27, 0.22, 0.03], [0.231, 0.2, 0.05]]),
+                    0.008, 5, iron, weather=oc.DROWNED)
+            kc.tube(mb, np.array([[0.27, 0.22, 0.0], [0.33, 0.12, 0.04], [0.36, 0.01, 0.12], [0.5, 0.01, 0.2],
+                                  [0.62, 0.01, 0.16]]), 0.009, 5, cord, weather=oc.CAST, variation=0.3)
+        out.append(mb)
+    return out
+
+
+LIMPET_RIBS = 13
+
+
+def _limpet(mb, at, radius: float, height: float, rng, lod: bool) -> None:
+    """One limpet on a wall facing +Z: a ribbed cone from its scalloped foot on the wall to its worn apex, off-centre;
+    ochre shell, the apex worn to bone."""
+    ochre, bone = mb.material(oc.M_CORAL_OCHRE), mb.material(oc.M_CORAL_BONE)
+    nr, na = (4, 10) if lod else (7, LIMPET_RIBS * 3)
+    tip = np.array([rng.uniform(-0.15, 0.15) * radius, rng.uniform(0.0, 0.2) * radius, height])
+    th = np.linspace(0.0, 2.0 * math.pi, na + 1)
+    rib = 0.0 if lod else np.abs(np.sin(LIMPET_RIBS * th / 2.0)) ** 0.6
+    phase = rng.uniform(0.0, 2.0 * math.pi)
+    grid = np.zeros((nr + 1, na + 1, 3))
+    for i, t in enumerate(np.linspace(0.0, 0.86, nr + 1)):
+        r = radius * (1.0 - t) ** 0.8 * (1.0 + 0.1 * rib * (1.0 - t) + 0.03 * np.sin(3 * th + phase))
+        c = np.asarray(at, float) + tip * t
+        grid[i, :, 0] = c[0] + r * np.cos(th)
+        grid[i, :, 1] = c[1] + r * np.sin(th)
+        grid[i, :, 2] = c[2]
+    uv = np.stack(np.meshgrid(th / (2.0 * math.pi), np.linspace(0.0, 1.0, nr + 1)), axis=-1)
+    kc.quad_strip(mb, grid, ochre, uv=uv, col=(0.0, 0.0, 1.0, 0.6), uv2=(0.5, 0.5))
+    # The worn apex, a bone cap over the last ring.
+    apex = np.asarray(at, float) + tip * 0.86
+    kc.tube(mb, np.array([apex - tip * 0.02, apex + tip * 0.14]), [radius * 0.16, radius * 0.02], 6 if lod else 10, bone,
+            weather=oc.REEF, cap_end=True)
+
+
+def build_shaft_limpet(seed: int = 906) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("shaft_limpet", seed)
+        mb = kc.MeshBuilder("shaft_limpet" + ("-lod1" if lod else ""))
+        _limpet(mb, (0.0, 0.0, 0.0), 0.3, 0.3, rng, lod)
+        if not lod:
+            for at, r in (((0.55, 0.18, 0.0), 0.09), ((-0.48, -0.12, 0.0), 0.07), ((0.32, -0.38, 0.0), 0.06)):
+                _limpet(mb, at, r, r * 0.9, rng, lod)
+        out.append(mb)
+    return out
+
+
 TARGETS = {
     "divers_cord": build_divers_cord,
     "tether_line": build_tether_line,
     "wreck_ribs": build_wreck_ribs,
     "hull_keels": build_hull_keels,
+    "old_tin": build_old_tin,
+    "shaft_limpet": build_shaft_limpet,
 }

@@ -14,9 +14,9 @@ from the batch's worktree root after an import:
    - qa_encounters: every Act I encounter entered, won, and left back to its zone;
    - fp_: title → New Game → Prologue → the slice → Ch3;
    - save_: save and load;
-   - the continuous path, title → Ch9 → title, as one run (M3-CIN-1233's integration test, found by name:
-     CONTINUOUS_GLOB). Until that test exists, criterion 2 FAILs and says so: the chapters played one by one can't
-     show that the hand-offs between them hold.
+   - the continuous path, title → Ch9 → title, as one run (M3-CIN-1233's integration test, CONTINUOUS_TESTS:
+     tests/integration/test_act1_route.gd, plus any test_*continuous*.gd). Without one, criterion 2 FAILs and says
+     so: the chapters played one by one can't show that the hand-offs between them hold.
 Each suite runs alone (one Godot at a time), with its own XDG_DATA_HOME, and its log is kept under --logs.
 """
 from __future__ import annotations
@@ -40,6 +40,8 @@ SUITES = [
     ("save_", "save and load"),
 ]
 CONTINUOUS_GLOB = "tests/integration/test_*continuous*.gd"
+# M3-CIN-1233's test of the one path (New Game → Ch1 → the slice → Ch4 → Ch9's end card → the title).
+CONTINUOUS_TESTS = ["tests/integration/test_act1_route.gd"]
 SUITE_TIMEOUT_S = 3600
 TESTS_RE = re.compile(r"^Tests: (\d+) run, (\d+) failed", re.M)
 FAILURE_RE = re.compile(r"^(FAILURE .*)$", re.M)
@@ -84,14 +86,14 @@ def criterion_playthrough(godot: str | None, logs: Path) -> tuple[bool, list[str
     evidence: list[str] = []
     passed = True
     suites = list(SUITES)
-    continuous = sorted(ROOT.glob(CONTINUOUS_GLOB))
+    continuous = sorted({ROOT / t for t in CONTINUOUS_TESTS if (ROOT / t).exists()} | set(ROOT.glob(CONTINUOUS_GLOB)))
     for p in continuous:
         suites.append((p.stem.removeprefix("test_"), "the continuous path (%s)" % p.name))
     if not continuous:
         passed = False
         evidence.append(
-            "MISSING the continuous title → Ch9 → title test (%s; M3-CIN-1233): the hand-offs between chapters are "
-            "unchecked" % CONTINUOUS_GLOB
+            "MISSING the continuous title → Ch9 → title test (%s or %s; M3-CIN-1233): the hand-offs between chapters "
+            "are unchecked" % (", ".join(CONTINUOUS_TESTS), CONTINUOUS_GLOB)
         )
     logs.mkdir(parents=True, exist_ok=True)
     for name, what in suites:

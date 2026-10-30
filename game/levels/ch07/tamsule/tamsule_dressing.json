@@ -14,7 +14,12 @@
   "keep": []
  },
  "kit_material_paths": {
-  "tb_gold_leaf": "res://game/levels/ch07/tamsule/tamsule_gold_leaf_material.tres"
+  "tb_gold_leaf": "res://game/levels/ch07/tamsule/tamsule_gold_leaf_material.tres",
+  "tb_cloth_faded_teal": "res://game/levels/ch07/tamsule/tamsule_cloth_faded_teal_material.tres",
+  "tb_cloth_indigo": "res://game/levels/ch07/tamsule/tamsule_cloth_indigo_material.tres",
+  "tb_cloth_red": "res://game/levels/ch07/tamsule/tamsule_cloth_red_material.tres",
+  "tb_cloth_sand": "res://game/levels/ch07/tamsule/tamsule_cloth_sand_material.tres",
+  "tb_cloth_sea_blue": "res://game/levels/ch07/tamsule/tamsule_cloth_sea_blue_material.tres"
  },
  "pieces": [
   {

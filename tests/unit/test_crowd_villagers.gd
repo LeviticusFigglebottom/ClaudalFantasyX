@@ -290,6 +290,42 @@ func test_a_crowd_person_replaces_the_zone_cast_villager() -> void:
 	_done()
 
 
+## M2-CHR-100: a villager the zone placed first in another's model (HalunaVillagers' shop bodies) gives way to the
+## row's crowd person, so one body shows; a row with no crowd person adopts what the zone placed, as before.
+func test_a_borrowed_model_placed_first_gives_way_to_the_rows_own() -> void:
+	var zone := _greybox_zone(["shop", "keep"])
+	var placed: Array[FieldNpc] = []
+	for id: String in ["shop", "keep"]:
+		var npc := FieldNpc.new()
+		npc.name = &"Villager"
+		npc.npc_id = StringName(id)
+		var path := "res://assets/characters/villagers/netmender/netmender_actor.tscn"
+		var actor := (load(path) as PackedScene).instantiate() as Node3D
+		actor.name = String(npc.actor_path)
+		npc.add_child(actor)
+		zone.get_node("CutsceneStage/Actors/" + id).add_child(npc)
+		placed.append(npc)
+	var person := _people()["haluna_shopkeeper"] as Dictionary
+	var rows := [
+		{"npc_id": "shop", "crowd": "haluna_shopkeeper", "attach": "child", "stand_in": "CutsceneStage/Actors/shop"},
+		{"npc_id": "keep", "actor": "netmender", "attach": "child", "stand_in": "CutsceneStage/Actors/keep"},
+	]
+	var layer := _layer(zone, rows)
+	layer.build()
+	var shop := zone.get_node("CutsceneStage/Actors/shop")
+	assert_false(is_instance_valid(placed[0]), "the borrowed model is gone")
+	assert_eq(shop.find_children("*", "FieldNpc", true, false).size(), 1, "one villager in the shop body")
+	var body := str(person["body"])
+	var shop_npc := layer.villager(&"shop")
+	assert_true(shop_npc != null, "the shop row's villager")
+	if shop_npc != null:
+		assert_eq(shop_npc.actor_scene.resource_path, VillagerLayer.CROWD_ACTOR_PATH % [body, body], "its own body")
+	assert_true(
+		is_instance_valid(placed[1]) and layer.villager(&"keep") == placed[1], "no crowd person: adopted, not rebuilt"
+	)
+	_done()
+
+
 ## M3-HER-1142: a `body` row wears a crowd body with no crowd person, and `silhouette` draws it as one glowing shape
 ## that casts no shadow; its `tuning` keeps it from glancing at the party.
 func test_a_silhouette_row_wears_a_bare_crowd_body_as_one_glowing_shape() -> void:

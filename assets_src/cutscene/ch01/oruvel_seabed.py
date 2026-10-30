@@ -8,6 +8,10 @@ fixed seed (no asset pack, no scan). It sits about 10 m under the surface, where
 colour; what matters is its depth and its broken silhouette.
 
     python3 assets_src/cutscene/ch01/oruvel_seabed.py [--out assets/cutscene/ch01/oruvel_seabed.glb] [--check]
+    blender --background --factory-startup --python assets_src/cutscene/ch01/oruvel_seabed.py -- [same args]
+
+The second form is tools/dev/blender_builds.json's job (its runs start with Blender; Blender's Python has numpy).
+The output is the same either way: nothing here uses Blender's API.
 
 --check rebuilds in memory and fails when the committed file differs.
 """
@@ -149,7 +153,8 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--out", type=Path, default=OUT)
     ap.add_argument("--check", action="store_true")
-    a = ap.parse_args()
+    argv = sys.argv[sys.argv.index("--") + 1 :] if "--" in sys.argv else sys.argv[1:]
+    a = ap.parse_args(argv)
     data = glb(*build())
     if a.check:
         ok = a.out.exists() and a.out.read_bytes() == data

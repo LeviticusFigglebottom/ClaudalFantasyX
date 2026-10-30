@@ -168,9 +168,11 @@
     {"op": "cue", "cue": "camera", "args": ["C08"], "kwargs": {"blend": 0.0, "grade": "ch03_boss"}, "src": 196},
     {"op": "cue", "cue": "sfx", "args": ["drownbell_toll"], "kwargs": {"at": "drownbell"}, "src": 197},
     {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "drownbell", "drift": "down_seaward"}, "src": 198},
-    {"op": "line", "id": "ch03_verse_060", "key": "DLG_CH03_VERSE_060", "speaker": "toma", "emotion": "determined", "voice": "", "src": 199},
-    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 200},
-    {"op": "event", "name": "start_battle", "args": ["drownbell"], "src": 201}
+    {"op": "cue", "cue": "wait", "args": [1.2], "kwargs": {}, "src": 201},
+    {"op": "cue", "cue": "camera", "args": ["C08_toma"], "kwargs": {}, "src": 202},
+    {"op": "line", "id": "ch03_verse_060", "key": "DLG_CH03_VERSE_060", "speaker": "toma", "emotion": "determined", "voice": "", "src": 203},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 204},
+    {"op": "event", "name": "start_battle", "args": ["drownbell"], "src": 205}
    ]
   }
  }
