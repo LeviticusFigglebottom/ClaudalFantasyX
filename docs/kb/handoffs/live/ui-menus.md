@@ -901,3 +901,65 @@ Skipped: coverage (no game/battle or game/progression code changed) and Blender 
 MERGE-READY @ HEAD of claude/ui (this commit): the document reader's shots as pending baselines.
 - **BACKLOG EMPTY:** still true. What remains waits on combat (Pell's row, the rooted status), characters (Act II NPC
   models), narrative (records.json, Kerrid's Ch15 body) and audio (M4-AUD-1080).
+- 2026-10-30 09:40, **the Lead's FAST-TRACK: act1_gpu_qa row 67** (big19's heavy entries over 2 s, and one Brine Shoals
+  hang). Commit 329e7bce; ADR 0111 amendment 5 has the detail.
+  - **The hang:** one fresh run printed nothing for 600 s, so the main thread froze. If the router had only been
+    waiting, the probe's 2400-frame cap would have printed stats long before that.
+    - The router started instantiating the zone on a worker thread while ResidentLoads' threaded loads were still in
+      flight. GreyboxZone builds during instantiate, so the zone's own `load()` calls ran beside those loads, as did
+      the main thread's (ZoneCast and VillagerLayer in _ready). That is the engine's deadlock-prone path.
+    - **Fix:** the router now waits on its swap holders first, then instantiates.
+    - Headless: no hang in 7 Brine Shoals runs or the full 49-target sweep (every target covered and printed stats).
+      Instantiate fell to 21–56 ms per zone, because everything is cached.
+  - **The cost, per zone:** big19's cast models were never listed in scene_loads.json. VillagerLayer adopts or
+    replaces each cast body before the tool looks, so all of them loaded cold on the instantiate thread.
+    - Brine Shoals: 12 unlisted (Moll, the clerk, three Stillguard, a child, two wright children, four reeds), plus
+      big19's five slot materials.
+    - Corrow: 11 unlisted (Ivo, Hobb, two Stillguard, the gatekeeper, four children, Marra, the officer), plus six slot
+      materials and +173 dressing rows.
+    - Tamsule (Ch7): 7 unlisted villagers, plus the gold leaf.
+    - Coilspire (Ch8): the new copper and iron slots, and a reshuffled dressing.
+    - **Fix:** the tool lists each `cast` row's model, and the registry is regenerated (Brine Shoals +158 paths,
+      Corrow +164). `max_in_flight` goes from 2 to 4, so the loads keep the PC's cores busy now that the instantiate
+      no longer overlaps them.
+  - **Nothing filed to asset owners yet.** The excess is loading order and listing, not proven asset weight. If the
+    PC's re-measure is still over 2 s after big20, I'll split it by zone and file the heavy ones (env-art-b for the
+    Corrow and Brine Shoals dressing, characters for the villager count).
+  - **Headless numbers:** this 4-core box's entries are 2.3–7 s whatever the order. The time is disk and CPU
+    decoding, which the PC does several times faster, so they don't predict the 2 s bar. Only the PC can confirm.
+  - **Checks:** scene_router 17/0, resident_loads 8/0, prewarm 26/0, shader_prewarm 22/0, creature_ 88/0,
+    dialogue_box 26/0; act1_swap_sweep tests OK; validate_data 0/0; lint and format clean. The full sweep found all 49
+    targets covered.
+
+### PC-QUEUE (row 67, after big20)
+- Re-run pass 4's hitch probes on big20, which carries amendment 4 and amendment 5:
+  - Brine Shoals: the walk, and **fresh ×5** (the hang showed in 1 of 2);
+  - Corrow, fresh;
+  - Ch7 and Ch8, in the walk.
+- Report the hidden ms per entry, and any run that prints nothing.
+- If an entry is still over 2 s, include the probe's stats line: instantiate_ms, prewarm_wait_frames and the holders
+  warning.
+MERGE-READY @ 329e7bce (FAST-TRACK row 67): the router instantiates only after its loads are in; scene_loads lists
+every cast model; max_in_flight 4.
+- 2026-10-30 10:30, **the Lead's 05:52 Act II lane.** I merged the integration branch (1e63e5ba, baseline approvals).
+  - **Heresy words** (e9de89f6): ADR 0204 approved "Outside the Level". The field-menu subtitle, a heretic save's slot
+    ("Chapter 14 · Outside the Level", rendered and viewed: it fits) and the Order shop's refusal now use it, along with
+    heresy.md. The save fixtures can now carry `flags`.
+  - **Codex, M4-A2P-008** (dbc4fa8a): `keth`, `conclave` (only the public "Conclave of Elders", nothing about its truth
+    and no "revenant"), `malcor_venn` (a man, nothing stranger) and `heresy` ("Outside the Level"). These are every plan
+    entry whose unlock flag is declared today. The rest land as the Ch11–Ch16 beats declare their flags.
+    test_codex 16/0, pseudo_loc_screens 17/0; validate_data clean, banned terms included.
+  - **No Vowbound category yet:** Act I's three have no entries of their own, and what the party knows of each one's
+    human life at its binding is Narrative's call (vowbound.md holds the whole truth). I won't write these until a beat
+    says what's known.
+  - **Portraits:** none of Act II's new speakers has a model on any branch (Tobin, Merel, Malcor Venn, the Kirru, the
+    Ullari, Liss's father), so none was baked and none was stubbed.
+  - **Bestiary:** Ch10's three rows in enemies.json have no `model`, so the bestiary has no picture, and the fight
+    probably draws a capsule. Noted on Combat's request M3-UI-208 (578a6ceb).
+MERGE-READY @ 578a6ceb: the heresy's words per ADR 0204, and four Act II codex entries.
+- **BACKLOG EMPTY:** the rest of Act II waits on other tracks:
+  - Ch11–Ch16 flags and beats (more codex entries);
+  - speaker models (portraits);
+  - Combat: Pell's row, the rooted status, the enemy model links;
+  - Narrative: records.json and the Vowbound text.
+  - Row 67's PC verification (gpu/row67-verify) would jump ahead of everything.

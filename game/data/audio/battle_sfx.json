@@ -169,6 +169,11 @@
   },
   "skills": {
     "unravel": "skill_unravel",
+    "fin_cut": "skill_fin_cut",
+    "sound_dive": "skill_sound_dive",
+    "wakefin_rise": "skill_wakefin_rise",
+    "wake_wash": "skill_wake_wash",
+    "bill_strike": "skill_bill_strike",
     "toll": "drownbell_toll",
     "rouse_polyp": "skill_rouse_polyp",
     "gnaw_coil": "skill_gnaw_coil",
@@ -197,7 +202,8 @@
     "flood": "floodnet"
   },
   "phases": {
-    "flood": "flood"
+    "flood": "flood",
+    "close_circle": "phase_close_circle"
   },
   "openings": {
     "ambush": "stinger_ambush",

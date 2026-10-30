@@ -22,6 +22,10 @@ const KEY_SEED := "seed"
 
 ## The one request waiting for a FieldBattle (null when none).
 static var _pending: BattleRequest
+## M3-BPR-427 (GPU QA row 34): true from a live submit's stinger until FieldBattle takes the request. A second submit in
+## that window is dropped: it would replace the pending request, the first change would open on it, and the second
+## change would find none and play the sandbox fight (Ch6's ridge skippers on the test stage).
+static var _opening := false
 ## How start() changes scene: (scene_path: String). Unset = SceneRouter.change_scene. Tests set a
 ## recorder and reset it to Callable() afterwards.
 static var change_scene: Callable = Callable()
@@ -96,6 +100,9 @@ static func start(
 ## Records `r` as the pending request and opens the field battle scene: the encounter stinger plays
 ## first (BattleStinger, in the field), then the router fades and builds the battle as before.
 static func submit(r: BattleRequest) -> void:
+	if _opening and _pending != null:
+		push_warning("BattleRequest: %s dropped, %s is still opening (M3-BPR-427)" % [r.encounter, _pending.encounter])
+		return
 	_pending = r
 	var path := scene_path()
 	if change_scene.is_valid():
@@ -105,6 +112,7 @@ static func submit(r: BattleRequest) -> void:
 	if tree == null or tree.root.get_node_or_null(^"SceneRouter") == null:
 		push_error("BattleRequest: no SceneRouter to open %s" % path)
 		return
+	_opening = true
 	await _stinger(r.encounter)
 	FlowRouting.change_scene(path)  # waits for an idle router, so the request is always opened
 
@@ -131,8 +139,15 @@ static func pending() -> BattleRequest:
 static func take() -> BattleRequest:
 	var r := _pending
 	_pending = null
+	_opening = false
 	return r
 
 
 static func clear() -> void:
 	_pending = null
+	_opening = false
+
+
+## True while a live submit is opening its battle (M3-BPR-427): field encounters hold off.
+static func opening() -> bool:
+	return _opening and _pending != null

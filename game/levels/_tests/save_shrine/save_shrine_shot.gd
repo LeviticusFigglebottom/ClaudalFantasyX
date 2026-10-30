@@ -77,6 +77,8 @@ static func write_fixtures(fx: Dictionary) -> void:
 		st.chapter = int(s.get("chapter", 0))
 		st.location_id = StringName(str(s.get("location_id", "")))
 		st.play_time_sec = float(s.get("play_time_sec", 0.0))
+		for f: Variant in s.get("flags", []):  # story flags a slot's line reads (Act II: the heresy's tag)
+			st.flags[str(f)] = true
 		var at := int(s.get("saved_at", 0))
 		SaveSystem.clock = func() -> int: return at
 		SaveSystem.save_to_slot(slot, st, StringName(str(s.get("reason", ""))))

@@ -21,4 +21,6 @@ Two stems each (Venn: the still water slows, then he boards; the guard: stem 2 i
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). Plan §2 Ch14, Ch16.
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
 
+- 2026-10-30 (audio): malcor_venn and abiding_guard rendered (2 stems each, 80 s, assets/audio/act2/music/); their cue rows name the intended phase rows. Still to do: the encounter and phase rows once combat adds the fights, `court_steps`, and the six boss-intro stings (keyed by encounter id).
+
 ## Review log

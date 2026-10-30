@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch12_bark_cloudloom_keeper",
+ "source": "game/data/dialogue/ch12/ch12_bark_cloudloom_keeper.dlg",
+ "start": "ch12_bark_cloudloom_keeper",
+ "nodes": {
+  "ch12_bark_cloudloom_keeper": {
+   "headers": {"location": "ch12/cloudloom"},
+   "ops": [
+    {"op": "line", "id": "ch12_bark_ckeeper_001", "key": "DLG_CH12_BARK_CKEEPER_001", "speaker": "tender", "emotion": "neutral", "voice": "", "src": 5, "name_key": "DLG_NAME_TENDER_CLOUDLOOM_KEEPER"}
+   ]
+  }
+ }
+}

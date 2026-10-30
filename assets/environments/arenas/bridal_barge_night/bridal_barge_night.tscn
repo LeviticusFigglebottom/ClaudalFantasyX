@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
 [ext_resource type="Shader" path="res://game/shaders/environment/env_sky_night.gdshader" id="2_r"]
@@ -7,6 +7,7 @@
 [ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="5_r"]
 [ext_resource type="Shader" path="res://game/shaders/water/water_ocean.gdshader" id="6_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/bridal_barge.glb" id="7_r"]
+[ext_resource type="Script" path="res://game/levels/act1/kit_slot_swaps.gd" id="slot_swaps"]
 
 [sub_resource type="ShaderMaterial" id="SkyMat"]
 shader = ExtResource("2_r")
@@ -113,3 +114,7 @@ transform = Transform3D(0.316228, -0.111717, 0.942082, 0, 0.993042, 0.11776, -0.
 
 [node name="BossAnchor" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.0, -0.6, -1.5)
+
+[node name="KitSlotSwaps" type="Node" parent="."]
+script = ExtResource("slot_swaps")
+paths = {"kit_gold_leaf": "res://game/levels/ch13/ansedra/ansedra_gold_leaf_material.tres", "kit_lacquer_black": "res://game/levels/ch13/ansedra/ansedra_lacquer_black_material.tres", "kit_lacquer_red": "res://game/levels/ch13/ansedra/ansedra_lacquer_red_material.tres", "kit_order_marble": "res://game/levels/ch13/ansedra/ansedra_order_marble_material.tres"}

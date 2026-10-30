@@ -119,22 +119,29 @@ class ValidatorTest(unittest.TestCase):
         nhoa = self.creatures["creatures"]["nhoa"]
         self.assertTrue(nhoa["vowbound"])
         self.assertEqual(errs(self.creatures), [])
+        # M4-A2P-024 landed her row: the pending path is tested on a table without it
+        before = copy.deepcopy(vb)
+        before["vowbound"] = [r for r in before["vowbound"] if r["id"] != "nhoa"]
         cr = copy.deepcopy(self.creatures)
+        cr["creatures"]["nhoa"]["vowbound_pending"] = "M3-CRE-642"
+        self.assertEqual(errs(cr, before), [])
         del cr["creatures"]["nhoa"]["vowbound_pending"]
-        self.assertTrue(any("no game/data/battle/vowbound.json row 'nhoa'" in x for x in errs(cr)))
+        self.assertTrue(any("no game/data/battle/vowbound.json row 'nhoa'" in x for x in errs(cr, before)))
         cr = copy.deepcopy(self.creatures)
         cr["creatures"]["ilun"]["vowbound_pending"] = "M0-X-01"
         self.assertTrue(any("ilun.vowbound_pending: game/data/battle/vowbound.json has the row 'ilun' now" in x
                             for x in errs(cr)))
         cr = copy.deepcopy(self.creatures)
         cr["creatures"]["nhoa"]["vowbound_pending"] = " "
-        self.assertTrue(any("nhoa.vowbound_pending: must name the task" in x for x in errs(cr)))
+        self.assertTrue(any("nhoa.vowbound_pending: must name the task" in x for x in errs(cr, before)))
         cr = copy.deepcopy(self.creatures)
+        cr["creatures"]["nhoa"]["vowbound_pending"] = "M3-CRE-642"
         cr["creatures"]["nhoa"]["vowbound"] = False
-        self.assertTrue(any("nhoa.vowbound_pending: only on a row with vowbound true" in x for x in errs(cr)))
+        self.assertTrue(any("nhoa.vowbound_pending: only on a row with vowbound true" in x for x in errs(cr, before)))
         cr = copy.deepcopy(self.creatures)
+        cr["creatures"]["nhoa"]["vowbound_pending"] = "M3-CRE-642"
         del cr["creatures"]["nhoa"]["vowbound"]
-        self.assertTrue(any("nhoa.vowbound_pending: only on a row with vowbound true" in x for x in errs(cr)))
+        self.assertTrue(any("nhoa.vowbound_pending: only on a row with vowbound true" in x for x in errs(cr, before)))
 
     def test_a_stand_in_may_give_its_height_and_radius(self) -> None:
         """M3-CRE-640: Kahre has no battle_sandbox.json row, so his creatures.json stand_in gives the height the VFX

@@ -219,7 +219,8 @@
                   "game/levels/ch11/lowlight/lowlight_layout.json",
                   "game/levels/ch12/keth_pass/keth_pass_layout.json",
                   "game/levels/ch12/quellan/quellan_layout.json",
-                  "game/levels/ch12/cloudloom/cloudloom_layout.json"],
+                  "game/levels/ch12/cloudloom/cloudloom_layout.json",
+                  "game/levels/ch13/ansedra/ansedra_layout.json"],
       "outputs": ["assets/environments/kits/haluna/*.glb", "assets/environments/kits/haluna/kit_manifest.json"],
       "runs": [
         ["{blender}", "--python", "assets_src/environments/kits/haluna/build.py", "--", "--all", "--out-dir", "assets/environments/kits/haluna", "--manifest", "assets/environments/kits/haluna/kit_manifest.json"]
@@ -1442,6 +1443,16 @@
       "runs": [
         ["{blender}", "--python", "assets_src/creatures/ethren/build_ethren.py", "--", "--out", "assets/creatures/ethren/ethren.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "ethren"]
+      ]
+    },
+    {
+      "id": "creature_kesh",
+      "owner": "character",
+      "sources": ["assets_src/creatures/kesh/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/kesh/*.glb", "assets/creatures/kesh/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/kesh/build_kesh.py", "--", "--out", "assets/creatures/kesh/kesh.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "kesh"]
       ]
     },
     {
