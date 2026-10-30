@@ -16,7 +16,7 @@
     {"op": "line", "id": "ch13_tobin_002", "key": "DLG_CH13_TOBIN_002", "speaker": "liss", "emotion": "laugh", "voice": "", "src": 15},
     {"op": "line", "id": "ch13_tobin_003", "key": "DLG_CH13_TOBIN_003", "speaker": "tobin", "emotion": "smile", "voice": "", "src": 16},
     {"op": "cue", "cue": "camera", "args": ["A08"], "kwargs": {}, "src": 17},
-    {"op": "cue", "cue": "mark", "args": ["merel", "guest_moorings", "walk"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "mark", "args": ["merel", "guest_moorings_b", "walk"], "kwargs": {}, "src": 18},
     {"op": "cue", "cue": "anim", "args": ["merel", "bow", "asha"], "kwargs": {}, "src": 19},
     {"op": "cue", "cue": "anim", "args": ["merel", "offer_palm", "liss"], "kwargs": {}, "src": 20},
     {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 21},
