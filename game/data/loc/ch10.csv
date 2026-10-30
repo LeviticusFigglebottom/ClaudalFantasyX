@@ -16,4 +16,22 @@ CHAR_OWA,Owa
 CHAR_KIRRU,Kirru
 CHAR_KIRRU_CHILD,Kirru child
 ENEMY_MANGROVE_DROWNER,Mangrove Drowner
-LORE_MANGROVE_DROWNER,"From the bank it is a dead tree standing in the channel. Its roots reach down into the black water and keep what they catch, and some of what they keep is light. Three of Reedhollow's clutch went into the water near it at the full moon."
+LORE_MANGROVE_DROWNER,"From the bank it is a dead tree standing in the channel. Its roots reach down into the black water and keep what they catch, and some of what they keep is light. Three of Reedhollow's clutch went into the water near it at the full moon before last."
+OBJ_CH10_DROWNER,Find what is drowning the fen.
+OBJ_CH10_TO_REEDHOLLOW,Follow the root-walks to Reedhollow.
+OBJ_CH10_SHORE,"At dusk, go down to the shore. Stand at the back."
+OBJ_CH10_GATE,Pell is waiting outside the gate.
+OBJ_CH10_SIDE_NETS,A widow's net is still in the dead channel.
+TUT_CH10_ROOTED,Roots hold whoever they catch. A rooted hero can't be swapped out until they break free.
+TUT_CH10_DRAIN,The leeches heal on what they take. Strike them before they feed.
+TUT_CH10_LISTEN,"Listen, and Pell learns what he hears. It costs him this turn."
+TUT_DROWNER_ROOTS,Each root holding it shows on the timeline. Break them and it comes loose.
+FORMATION_AWAY_PELL_FEN,Waits at the fen's edge
+ITEM_TANNIN_BARK,Tannin Bark
+ITEM_TANNIN_BARK_DESC,Mangrove bark that stains everything it touches the colour of strong tea. Used in Customize.
+ITEM_REED_SALVE,Reed Salve
+ITEM_REED_SALVE_DESC,"A Kirru salve of pounded reed-root, cool on the skin. Kirru children are made to carry it, and do."
+EQUIP_RHEN_FENROOT_HOOKS,Fen-Root Hooks
+EQUIP_RHEN_FENROOT_HOOKS_DESC,"Mangrove hardwood shafts with salvage points, bound Kirru-fashion in reed cord. They don't slip when wet."
+INN_REEDHOLLOW,Reedhollow Guest Lodge
+INN_REEDHOLLOW_DESC,"A reed lodge raised on roots over the lagoon, kept for guests. The walls breathe. All night the clutch whistles softly from lodge to lodge."

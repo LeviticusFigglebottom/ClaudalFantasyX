@@ -1,0 +1,10 @@
+// Order shrine (save point) on Ansedra's moorings: a basin of perfectly still water. Dark to a heretic party.
+title: ch13_shrine_ansedra
+location: ch13/ansedra
+---
+<<if $ch14_declared_heretics>>
+    The basin is still, as it always is. It shows your faces. It doesn't show you anything else. #line:ch13_shrine_001 #narration
+<<else>>
+    A small basin of still water on a white plinth. It holds the sky without a ripple. Pilgrims touch the rim and don't touch the water. #line:ch13_shrine_002 #narration #long
+<<endif>>
+===

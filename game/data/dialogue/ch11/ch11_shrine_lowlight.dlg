@@ -1,0 +1,10 @@
+// Order shrine (save point) on Lowlight's top step: a Level-stone and a lamp that has never gone out. Dark to a heretic party (ch14_declared_heretics; shrine travel shows SHRINE_TRAVEL_DARK).
+title: ch11_shrine_lowlight
+location: ch11/lowlight
+---
+<<if $ch14_declared_heretics>>
+    The Level-stone is cold. The lamp beside it still burns, but the shrine doesn't know you any more. #line:ch11_shrine_001 #narration
+<<else>>
+    A Level-stone on the highest dry step, and beside it a lamp the keepers say has never once gone out. The water is two steps down. #line:ch11_shrine_002 #narration #long
+<<endif>>
+===
