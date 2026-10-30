@@ -589,6 +589,22 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ 7fad181e: the FAST-TRACK `test_keth` fix and the big22 integration merge; env-art's Ch13–Ch15
+  dressings are WITHDRAWN.**
+  - **test_keth:** the inn's door test looked for crag walls. The inn's walls have been dry stone since Ch12
+    (M4-A2P-042), so the test now checks `M_DRYSTONE` (c010ee90). Still red on the integration branch until this
+    merges.
+  - **Ch13–Ch15:** the integration branch already carries Ch13–Ch15 dressed and mounted by an earlier run
+    under this session's own id (`01UPFyEA3FwDAoAKTpVGbGsy`; e.g. 9fa8dce4, b49e37a5; M4-A2P-043/044/045, with
+    shot rigs and tests). env-art's parallel
+    versions wrote the same files, so the merge takes the integration's side throughout.
+    - Every Ch13–Ch15 file of env-art's is removed or restored to the integration's: the glbs, generators, tests,
+      previews, and mount requests 0431, 0441 and 0451.
+    - The tree equals the integration branch except `tools/tests/test_keth.py` and these logs.
+    - env-art's versions stay in history at 39968c35 if anything there is wanted.
+  - **The MERGE-READY lines below for 14ff2eb7 (043), 562c7f57 (044) and 39968c35 (045) are void.**
+  - **LEAD-ASK:** "continue Ch13–Ch15" looks done on the integration branch. env-art is taking row 59
+    (`ch01_o10_gull`) and rows 24/66 now. Name anything Act II wants beyond those.
 - **MERGE-READY @ 39968c35: M4-A2P-045, Ch15's open sea dressed** (the Lead's (b), the last of Ch13–Ch15). The
   change is additive; chapters mount it (M4-A2P-0451, filed).
   - **The barge:** `open_sea_barge`, bridal_barge.py's builders at the greybox deck's size (`build_fitted`). The

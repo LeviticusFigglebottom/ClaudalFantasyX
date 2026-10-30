@@ -11,19 +11,18 @@
   - Ch11, M4-A2P-041 (272fce82, 79fc304f): `ch11_lowlight_dressing.py`, `vey_zones.py`, `lowlight_zones.py`.
   - Ch12, M4-A2P-042 (cd7fbf94): `ch12_keth_dressing.py`, `keth_zones.py`, plus `kit_keth_turf`. The kit's house
     and inn changed to granite walls and turf roofs.
-- **Ch13–Ch15 dressed (the Lead's (b), ADR 0204, no ice):**
-  - Ch13, M4-A2P-043 (14ff2eb7): `ch13_ansedra_dressing.py`, `ansedra_zones.py`, `lut_ch13_still`.
-  - Ch14, M4-A2P-044 (562c7f57): `ch14_court_dressing.py`, `bowl_dome_lit`.
-  - Ch15, M4-A2P-045 (39968c35): `ch15_open_sea_dressing.py`, `open_sea_zones.py` (the barge fitted to the deck).
-- **Mount requests filed to chapters:** M4-A2P-0401, 0411, 0421, 0431, 0441 and 0451.
+- **Ch13–Ch15:** env-art dressed them in parallel (14ff2eb7, 562c7f57, 39968c35). It **withdrew** them in the big22
+  merge because the integration branch already carries them, mounted, from an earlier run under this session id.
+- **FAST-TRACK:** `test_keth` follows the inn's dry-stone walls (c010ee90).
+- **Mount requests filed to chapters:** M4-A2P-0401, 0411 and 0421.
 
 ## In progress
-- M4-A2P-040 to 045 stay `doing` until each mount lands and env-art views the mounted zone (walk renders).
+- M4-A2P-040/041/042 stay `doing` until each mount lands and env-art views the mounted zone (walk renders).
 
 ## Exact next step
 1. Watch for chapters' mounts. Once one lands, walk-render that zone (`game/levels/_tests/walkthrough/walk_render.tscn`
    with the zone's own scene), fix what reads wrong, and set the task to `review` (reviewer: rendering).
-2. Hollowmere's Ch15 first visit: when chapters add its greybox zone (M4-A2P-0451), dress it from the M3-ENV-723 kit.
+2. The Lead's PC pass 5: row 59 (`ch01_o10_gull` framing, the roof's ring decals); rows 24/66 with integration-qa.
 3. (Done: Ch10's Kirru roost weave was re-rendered close up and reads fine. No other env-art item is open.)
 
 ## Known issues
