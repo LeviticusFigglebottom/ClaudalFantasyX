@@ -870,3 +870,17 @@ Skipped:
     class for one). Request M4-AUD-1080 asks Audio for the found hand's own row.
   - **Next:** the Act II items still waiting on other tracks (the seven-hero formation check, Pell's Listen, the rooted
     refusal reason, Act II NPC portraits, Kerrid's second codex body).
+MERGE-READY @ 0bc20a3b: the document reader (M4-A2P-080) and its codex hook, with the reader's sound hook.
+Checks:
+- document_reader 7/0, codex 16/0, pseudo_loc_screens 17/0 (both reader scenes at 100% and 130%, no warnings),
+  screen_audio 11/0;
+- act1_audio_audit OK, audio data_check OK;
+- validate_data 0/0, taskboard --check clean, lint and format clean.
+The tools suite (-j 4) has 5 failures that the integration branch carries too; this branch doesn't touch their paths:
+- test_screenshots: `kerrid_front` has no baseline;
+- test_asha: the LOD0 and part budgets;
+- test_npc: crowd_elder_woman_a is too near reed_c, and the committed output is stale;
+- test_palette_check: the chapel-court marble;
+- test_villagers: Kell's sheet.
+They are for characters, env-art and the Lead.
+Skipped: coverage (no game/battle or game/progression code changed) and Blender (no Blender source touched).
