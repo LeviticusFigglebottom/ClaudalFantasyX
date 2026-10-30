@@ -1288,3 +1288,11 @@ MERGE-READY @ 082ab9166: M3-HER-1167, the title starts the first zone's loads.
     post-battle grace, so that grace never arms through the bus.
   - **The 4:3 Read panel:** already pushed (430bd0471, MERGE-READY at 18:20).
 MERGE-READY @ 95f51b987: the victory panel starts loading the return's destination.
+- 2026-10-30 19:55, **the Lead's 17:44 note: test_aspect_layouts still red in big26.** big26 (e605c9f4c) doesn't
+  contain the fix. 430bd0471 ("keep battle floats on screen", MERGE-READY at 18:20) is on `claude/ui` but was never
+  merged into the integration branch.
+  - **Checked:** big26 merged into `claude/ui` (d311c5e38). On that head: aspect 18/0, read_panel 13/0,
+    resident_loads 11/0, title_menu 17/0; validate_data 0/0.
+  - **What fixes the red:** merging `claude/ui` at or after 430bd0471. The commits are 430bd0471 (the clamp in
+    `damage_number.gd` plus `edge_px` in `battle_hud.json`) and its log.
+MERGE-READY @ d311c5e38: claude/ui with big26 merged; carries the 4:3 Read fix (430bd0471), the title preload (082ab9166) and the victory-panel preload (95f51b987).
