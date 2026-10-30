@@ -472,15 +472,54 @@ that test at this branch's zones.
   no failures, not scoped to these changes); coverage (no battle/progression code).
 - **MERGE-READY @ 98d582ef.**
 
-- **The Lead's 23:10 ask: a final-quality audit of Ch5–Ch9 as played. IN PROGRESS.** On `lead/gate-big18` @ d00d3284
+- **The Lead's 23:10 ask: the final-quality audit of Ch5–Ch9 as played. DONE.** Run on `lead/gate-big18` @ d00d3284
   with this head merged on top (a trial worktree, not pushed).
-  - Each zone at eye height: every spawn, trigger (doors, transitions, interactables) and mark (the NPC and story
-    spots), deduped at 5 m, looking N, E, S and W.
-  - The variants sampled: Pemakar's day, the dusk camp, Corrow's storm and its fall, Coilspire after the binding,
-    Ch9's dawn.
-  - Every Ch5–Ch9 arena I own, from the battle camera and each CameraHint.
-  - **The Reefball venue:** the match itself is UI's 2D HUD (`game/ui/reefball/`, no 3D). Its in-world venue is the
-    Tamsule Bell galleries (the catch-pool, the held drop), audited as a zone.
+  - **Coverage:**
+    - all eight zones at eye height: every spawn, trigger (doors, transitions, interactables) and mark (NPC and story
+      spots), each looking four ways; about 700 stills, all viewed;
+    - six story variants: Pemakar's day, the dusk camp, Corrow's storm and the wall's fall, Coilspire after the
+      binding, Ch9's dawn;
+    - a denser Pemakar pass;
+    - all ten Ch5–Ch9 arenas from the battle camera and every CameraHint (56 stills).
+  - **The Reefball venue:** the match itself is UI's 2D HUD. Its venue is the Tamsule Bell galleries (the catch-pool,
+    the held drop), walked as a zone: clean.
+  - **Fixed in my lane:**
+    - Ashcrown: Kahre's door leaves (red lacquer with grey hollows) read as camouflage. All lacquers now use the
+      shared same-hue lacquer look (`zl.lacquer`).
+    - Pemakar: the quay where the party lands was pitch black. Three kit lamp pillars with lights now stand along its
+      back edge, clear of the story marks.
+    - Brine Shoals: the Level-stone shrine still read as a white cube. It is now weathered, salt-stained stone
+      (`brine_shoals_level_stone_material.tres`; Ch8's borrowed shrine uses the same).
+    - Brine Shoals: the camp fires still read as smooth cones at arm's length. The tongues now break into licks,
+      with thinner tips and a softer heart.
+    - Corrow (Ch8 and Ch9): the seawall's segment joints showed the sky as a jagged white line on the inland face
+      (seen from the Fisher Stair's foot). The segments now overlap 1 percent.
+    - Coilspire: the tiers' wall-wash lights had no source. A new kit piece, `wall_lamp` (`b_spire_trial.py`: an iron
+      plate, an arm and a copper dish with its flame), now stands at each light: 9 lamps placed clear of every flight's
+      treads and the trial's blocks. Coilspire kit rebuilt `--all` in Blender: older pieces byte-identical.
+  - **Filed as requests:** M3-ENV-1327 to env-art:
+    - Tamsule's shophouse ground floors are open, unlit voids from the lane;
+    - Corrow's `lowtown_ground` puddles read as black holes at grazing angles;
+    - carried items: M3-ENV-1316's umbrella and kit slots, and M3-ENV-102's chapel box.
+  - **Not mine, seen:**
+    - Pell (Ch9 rocks) and Inquisitor Moll (the camp fight) are still capsules (characters, creatures-b);
+    - Coilspire's Virel shows once before the binding and none after.
+  - **Clean on the walk:** Tamsule, the galleries, Coilspire's interior (after the lamps), Ch9's strand and its dawn,
+    the storm variants, and every arena from every angle.
+  - **Sampling artifacts, not defects:**
+    - views where the ground ray landed on a roof (Pemakar's forge lane, re-shot from the trigger's height: lit);
+    - views starting inside an actor.
+  - **Checks run:**
+    - Godot `--filter=` pemakar 10/0, ch05 13/0, ashcrown 22/0, brine 5/0, ch06 5/0, ch08 25/0, ch09 13/0, flame 2/0,
+      battle_arena 18/0, coilspire 11/0, zone_kit 13/0;
+    - tools test_b_arenas, test_arenas, test_corrow_kit, test_coilspire_kit (+ the new lamp's glow allowance),
+      test_ashcrown_kit;
+    - validate_data 0/0, taskboard --check, gdlint.
+  - **Checks skipped:** coverage (no battle/progression code).
+  - **MERGE-READY @ 10eaddfc.**
+- **BACKLOG EMPTY (10-30, the audit is clean in my lane):** every Ch5–Ch9 zone, variant and arena I own is walked and
+  viewed, and what it found in my lane is fixed. The rest is filed (M3-ENV-1327, env-art) or belongs to other tracks
+  (the capsules).
 
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
@@ -489,6 +528,7 @@ that test at this branch's zones.
 
 ### Render requests
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
+SELF-RENDERED @ 10eaddfc (audit on big18 + this head): about 700 zone stills across the eight Ch5–Ch9 zones and six variants, 56 arena stills, and before/after views of every fix (Kahre's door, Pemakar's quay, the shrine, the fires, the seawall joint, Coilspire's lamps). All viewed.
 SELF-RENDERED @ 98d582ef (on a trial merge with act1-chapters @ 72254f9f): Coilspire's crown chamber from F07 and F06, before and after `ch08_virel_bound`. Viewed: one Virel before the binding, none after.
 SELF-RENDERED @ cff5dfd3: ch05_pemakar_harbour, _harbour_day, _weir, _crown, ch05_ashcrown_causeway, _crown, ch06_brine_camp, battle_arena_ash_terrace_lanternfall, _camp, _shoals; ch07_tamsule_market, ch07_bell_galleries (gilt); a Ch9 low-town view (scratch, the flood debris). Viewed: no regressions; aged lacquer and worn gilt read.
 SELF-RENDERED @ 2b882105: battle_arena_coilspire_tier_landing, _coilspire_headland_path, _ash_terrace_lanternfall. Viewed: the tier landing's pipes are verdigris over copper; the other two unchanged.
