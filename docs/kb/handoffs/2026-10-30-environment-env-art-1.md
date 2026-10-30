@@ -12,7 +12,7 @@
   - Ch12, M4-A2P-042 (cd7fbf94): `ch12_keth_dressing.py`, `keth_zones.py`, plus `kit_keth_turf`. The kit's house
     and inn changed to granite walls and turf roofs.
 - **Ch13–Ch15:** env-art dressed them in parallel (14ff2eb7, 562c7f57, 39968c35). It **withdrew** them in the big22
-  merge because the integration branch already carries them, mounted, from session 01UPFyEA3.
+  merge because the integration branch already carries them, mounted, from an earlier run under this session id.
 - **FAST-TRACK:** `test_keth` follows the inn's dry-stone walls (c010ee90).
 - **Mount requests filed to chapters:** M4-A2P-0401, 0411 and 0421.
 

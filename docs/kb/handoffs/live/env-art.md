@@ -589,13 +589,14 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
-- **MERGE-READY @ <MERGE>: the FAST-TRACK `test_keth` fix and the big22 integration merge; env-art's Ch13–Ch15
+- **MERGE-READY @ 7fad181e: the FAST-TRACK `test_keth` fix and the big22 integration merge; env-art's Ch13–Ch15
   dressings are WITHDRAWN.**
   - **test_keth:** the inn's door test looked for crag walls. The inn's walls have been dry stone since Ch12
     (M4-A2P-042), so the test now checks `M_DRYSTONE` (c010ee90). Still red on the integration branch until this
     merges.
-  - **Ch13–Ch15:** the integration branch already carries Ch13–Ch15 dressed and mounted by session
-    `01UPFyEA3FwDAoAKTpVGbGsy` (M4-A2P-043/044/045, with its own shot rigs and tests). env-art's parallel
+  - **Ch13–Ch15:** the integration branch already carries Ch13–Ch15 dressed and mounted by an earlier run
+    under this session's own id (`01UPFyEA3FwDAoAKTpVGbGsy`; e.g. 9fa8dce4, b49e37a5; M4-A2P-043/044/045, with
+    shot rigs and tests). env-art's parallel
     versions wrote the same files, so the merge takes the integration's side throughout.
     - Every Ch13–Ch15 file of env-art's is removed or restored to the integration's: the glbs, generators, tests,
       previews, and mount requests 0431, 0441 and 0451.
