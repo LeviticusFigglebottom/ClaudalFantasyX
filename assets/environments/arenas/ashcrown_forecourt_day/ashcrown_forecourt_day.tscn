@@ -225,7 +225,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -13.55, -70.4, 107.5)
 transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -10.45, -70.4, 107.5)
 
 [node name="ash_plume_near_1" parent="Dressing" instance=ExtResource("16_r")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -12, -52.717, -108)
+transform = Transform3D(0.75, 0, 0, 0, 1, 0, 0, 0, 0.75, -12, -52.717, -108)
 
 [node name="CameraHints" type="Node3D" parent="."]
 
@@ -243,9 +243,11 @@ transform = Transform3D(0.937222, 0.185406, 0.295364, 0, 0.846961, -0.531655, -0
 
 [node name="ash_plume_near" parent="Dressing/ash_plume_near_1" index="0"]
 surface_material_override/0 = ExtResource("plume_day")
+visibility_range_end = 900.0
 
 [node name="ash_plume_near-lod1" parent="Dressing/ash_plume_near_1" index="1"]
 surface_material_override/0 = ExtResource("plume_day")
+visibility_range_begin = 900.0
 
 [node name="KitSlotSwaps" type="Node" parent="."]
 script = ExtResource("slot_swaps")

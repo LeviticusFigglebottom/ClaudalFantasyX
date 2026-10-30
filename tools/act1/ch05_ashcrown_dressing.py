@@ -484,19 +484,11 @@ ZONE_METALS = {
         "metallic_bronze": 1.0, "roughness_bronze": 0.3, "roughness_worn": 0.45, "patina_coverage": (0.0, 0.3),
         "patina_roughness": 0.9, "streak_strength": 0.2, "wear_strength": 0.6, "detail_scale_m": 0.5,
         "normal_strength": 0.3, "normal_tile_m": 1.6}),
-    # red lacquer over a black undercoat: chipped to black at the edges, ash in the hollows (not metal)
-    "ac_lacquer_red": ("ashcrown_lacquer_red_material.tres", {
-        "col_bronze": (0.6, 0.1294, 0.1020), "col_worn": (0.0784, 0.0667, 0.0627),
-        "col_patina": (0.4196, 0.3961, 0.3725), "col_patina_pale": (0.5490, 0.5333, 0.5098),
-        "metallic_bronze": 0.0, "roughness_bronze": 0.32, "roughness_worn": 0.6, "patina_coverage": (0.0, 0.35),
-        "patina_roughness": 0.95, "streak_strength": 0.35, "wear_strength": 0.5, "detail_scale_m": 0.6,
-        "normal_strength": 0.25, "normal_tile_m": 1.6, "variation_value": 0.12}),
-    "ac_lacquer_black": ("ashcrown_lacquer_black_material.tres", {
-        "col_bronze": (0.0627, 0.0588, 0.0588), "col_worn": (0.3216, 0.1176, 0.0863),
-        "col_patina": (0.4196, 0.3961, 0.3725), "col_patina_pale": (0.5490, 0.5333, 0.5098),
-        "metallic_bronze": 0.0, "roughness_bronze": 0.3, "roughness_worn": 0.55, "patina_coverage": (0.05, 0.45),
-        "patina_roughness": 0.95, "streak_strength": 0.4, "wear_strength": 0.4, "detail_scale_m": 0.6,
-        "normal_strength": 0.25, "normal_tile_m": 1.6, "variation_value": 0.1}),
+    # the lacquers: the hollows dull to an aged lacquer of the same hue and the edges chip to the undercoat (the shared
+    # look, ch05_09_zone_looks.lacquer(): a grey dust in the hollows read as camouflage on Kahre's door leaves)
+    "ac_lacquer_red": ("ashcrown_lacquer_red_material.tres", zl.lacquer((0.6, 0.1294, 0.1020))),
+    "ac_lacquer_black": ("ashcrown_lacquer_black_material.tres",
+                         zl.lacquer((0.0627, 0.0588, 0.0588), undercoat=(0.3216, 0.1176, 0.0863))),
 }
 # The trial's per-tier vein slots (ac_common: the kit gives each tier its own so a strike could light one; the zone
 # lights a strike with ZoneKitDressing.glow's overlay instead) and the anvil hall's floor vein: the same flat verdigris.

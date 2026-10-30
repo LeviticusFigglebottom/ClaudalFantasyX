@@ -192,6 +192,7 @@ func test_the_quick_reject_keeps_the_clip_exact() -> void:
 		+ _area(ZoneKitDressing._clip_faces(faces, to_parent, boxes, true))
 	)
 	assert_true(absf(parts - whole) < 1e-3, "outside and inside still add up to the mesh")
+	_close()  # before_each's zone (this test never uses it), as the other tests close theirs
 
 
 ## The clip as it was before the quick reject: every polygon cut by every box.
