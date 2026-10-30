@@ -60,7 +60,7 @@ Asha [soft_smile]: I know. I said yes before Toma could stop me. #line:ch04_dock
 Asha [neutral]: I can hear them. It's like someone humming in the next room. All the time. #line:ch04_dock_015
 Rhen [worried]: Is Oruvel in there? #line:ch04_dock_016
 @wait 1.5
-Asha [soft_smile]: Eat your cake, Rhen. #line:ch04_dock_017
+Asha [tender]: Eat your cake, Rhen. #line:ch04_dock_017
 @anim toma sit_post
 Asha [tender]: He'll sit there all night. He did it the night I was named. #line:ch04_dock_018
 @wait 2.0
