@@ -23,8 +23,38 @@ contended 4-vCPU box: compare them with each other and across merges, not with t
 
 ## PASS 6 @ 2026-10-30 (big22, integration @ 19e7f01c)
 
-(in progress: the row walk on lavapipe, row 64 and the suite reds are still running; the playtest checks are done on
-19e7f01c and re-run on big23.)
+QA-DONE pass6 @ 19e7f01c (big22), with the playtest checks (a), (b) and (d) re-run on big23 @ 8fe3644b.
+The row notes ("pass 6 (cloud, lavapipe, 19e7f01c)") and the new rows 74–78 are in `docs/kb/qa/act1_gpu_qa.md` on this
+branch. That file isn't on the integration branch yet; this copy is the PC's gpu/act1-qa-5 copy plus pass 6.
+
+### Rows by verdict and owner (lavapipe judges framing, geometry, cameras, presence and motion only)
+- **Fixed on lavapipe (6), GPU to confirm:**
+  - 34 (act1-chapters, env-art-b): ridge skippers on the shoals' beach vs Shoal Skippers;
+  - 38 (hero-integration, env-art-b): the Coilspire spawns frame Rhen. The "Encounter looks at open sea" is a walk
+    artefact: that spawn is the world origin until a random fight records a return point (greybox_zone.gd:106);
+  - 46 (characters): no shadow line down Moll's face;
+  - 47 (env-art): FerryAft frames the hero whole in the cabin;
+  - 51 (env-art-b): the field camera shows the graves as sand mounds;
+  - 59 (env-art): the o10 gull is in frame on its post.
+- **Partly fixed (8):**
+  - 17 (rendering): the dense rings are gone; a few thin arcs remain;
+  - 24 (env-art): DockShore is no longer inside Rhen, but a half-faded hero stands at the lens; DockEnd has no hero;
+  - 37 (hero-integration): Toma's shield still fills the right third at AfterHarrier;
+  - 54 (characters): Sefir's gown is pleated; her hair is still a cap with floating strands;
+  - 55 (characters): Sabe's and Fenn's white hair is still a flecked cap;
+  - 58 (slice-polish, act1-chapters): o07 is reframed and net_pen reads; the Hullgnaw is a small dark shape;
+  - 61 (battle-presentation, creatures-b): the Surge is smaller now, but its head is cropped at the top edge;
+  - 66 (hero-integration, env-art): no frame inside a wall; about 5 stills low against a wall and post, then under an
+    eave.
+- **Still open (6):**
+  - 21 (hero-integration): not reachable here (see the row);
+  - 39 (act1-chapters): Rhen is alone in Ch9;
+  - 56 (characters): Asha's run skirt is unchanged since big19;
+  - 62 (env-art-b): the weir (the material is a GPU check);
+  - 63 (env-art-b): the flat panel behind the Matron;
+  - 64 (battle-presentation): one 78–234 ms CPU frame at each boss fight's reveal, still there on big23.
+- **New playtest rows:** 74 integration-qa (open), 75 env-art (partly), 76 env-art and integration-qa (fixed on big23),
+  77 characters (open), 78 act1-chapters (fixed on big23).
 
 ### HUMAN PLAYTEST checks (2026-10-30), headless
 
@@ -91,3 +121,55 @@ reaches 3.59–3.66 m/s on open ground).
 - Oruvel, Haluna, the Shell Shrine, the wake, Pemakar, Tamsule and Corrow have no random encounters, only scripted fights.
 - With the longer gaps, the main routes (straight-line spawn-to-spawn: 13–197 m) now hold 0–1 random fights each. The
   Coilspire path (102 m) and the derelict (13 m) hold none.
+
+### Full Godot suite on 19e7f01c (non-blocking), with godot_failures
+`godot --headless --path . res://tests/run_tests.tscn`, one pass on 19e7f01c. The box's memory cgroup OOM-killed it at about
+3430 tests, in test_qa_threads' Act II report. The 12 files it hadn't reached were run one by one with `--filter`, all green
+except test_battle_lineup. This container first had LFS pointers for the 193 .ogg files: `git lfs pull` works here, the
+host is reachable. So the audio reds were re-run on big23 with LFS content.
+
+godot_failures (8 files red on 19e7f01c):
+| Test | Red on 19e7f01c | big23 | Class | Owner |
+|---|---|---|---|---|
+| test_battle_act1_ability_vfx::test_every_act_one_skill_has_its_own_effect (swell the_seven, farewell_tide…) | yes | red | known since big21 | battle-presentation, act1-chapters |
+| test_battle_act2_ability_vfx::test_every_act_two_foe_skill_has_its_own_effect (conduit_crawler brush_jab, crawler_mend…) | yes | red | known (big22 branch content) | act1-chapters, battle-presentation |
+| test_qa_threads::test_every_thread_plays_through_clean | yes | not re-run | known (big22: the Act II objectives vs the Ch10–13 threads) | ui, act1-chapters |
+| test_battle_audio::test_a_fire_hit_plays_the_fire_sound | yes | **green with LFS** | environment: LFS pointers | — |
+| test_battle_stings::test_every_row_resolves_and_imports | yes | **green with LFS** | environment: LFS pointers | — |
+| test_music_transitions::test_every_act1_cue_has_a_beat_grid_or_is_free | yes | **green with LFS** | environment: LFS pointers | — |
+| test_post_import::test_every_glb_import_runs_its_category_script | yes | red | **new** | env-art-b: 40 `assets/environments/kits/haluna/*.glb.import` files (the Act II kit pieces from M4-A2P-043 9b2f4e2f and later: archive_*, sanctum_*, court_*, hm_*, bridal_barge_*…) have an empty `import_script/path` (they want haluna_kit_post_import.gd). slice-polish / env-art: `assets/cutscene/ch01/oruvel_seabed.glb` belongs to no import category. |
+| test_battle_lineup::test_no_encounter_opens_with_overlapping_fighters | yes | red | **new** | creatures-b, act1-chapters: ch11_lamp_engine opens with lamp_engine_1 2.49 and 2.55 m from conduit_crawler_2 and _3; it needs 2.74 m |
+
+### LEAD-ASKs
+- LEAD-ASK: act1_gpu_qa.md isn't on the integration branch, only on gpu/act1-qa-5 and now qa/cloud-pass6, which carries
+  the pass-6 notes and rows 74–78. Merge it from here when the PC is back? Its copy has nothing newer.
+- LEAD-ASK: route the two new suite reds (test_post_import → env-art-b and slice-polish; test_battle_lineup →
+  creatures-b and act1-chapters) and the five playtest rows (74–78) to their owners.
+- LEAD-ASK: the encounter breather on big23 runs 31–52 s; about a third of the draws are over 45 s. Is 45 s a hard cap?
+
+### PC-QUEUE (real-GPU only)
+- The GPU look of the rows lavapipe calls fixed (34, 38, 46, 47, 51, 59), and the material and light rows (17's arcs, 62,
+  63, 71).
+- Row 64 re-timed on big23 at High: whether visible frame 1's spike shows under the lifting fade.
+- Row 21 by hand.
+
+### Gotchas (this box)
+- 4 vCPU, a 15 GB memory cgroup: the suite grows to about 5 GB, a lavapipe slice_sweep walk to 5–7 GB, and an import is
+  about 1 GB. Run one heavy job at a time, or the OOM killer takes them.
+- slice_sweep's dwell needs at least 60 frames, and at lavapipe's ~2 s per frame that's 2 minutes a spawn. A row
+  `still_every` at or under a frame's time never ends the dwell, because a still's frame isn't counted. Use spawn_stills.
+- slice_sweep hangs headless: its dwell awaits frame_post_draw.
+- In 4.6.3 an AnimationPlayer paused after a seek ignores later seeks (run_cycle_probe samples the tracks itself).
+
+### Exact next step
+After the next "Merge lead/gate-bigN" on claude/new-session-mj8c3c, run these in a worktree of it, with the probes copied
+in and `git lfs pull` plus an import first:
+- (a) `return_probe.tscn`;
+- (b) `dock_probe.tscn -- --out=<dir>`, then `dock_overlaps.py <dir>/meshes.json`;
+- (d) `encounter_gap_probe.tscn`.
+
+Then report the deltas against the big23 numbers above.
+
+Files touched: `tools/gpu_bench/{return_probe,dock_probe,run_cycle_probe,encounter_gap_probe,spawn_stills,fight_entry_probe}.gd/.tscn`,
+`tools/gpu_bench/dock_overlaps.py` and `act1_walk_pass6.json`/`act1_walk_row21.json`. Brought from gpu/act1-qa-5:
+`docs/kb/qa/act1_gpu_qa.md` and the `tools/gpu_bench` walk tools. Also `docs/kb/qa/cloud/pass6/*.jpg` and this log.

@@ -13,6 +13,8 @@ extends Node
 
 const CHAPTER_SELECT := "res://game/data/debug/chapter_select.json"
 const LOAD_TIMEOUT_MS := 600000
+const STORY_TIMEOUT_MS := 900000
+const TAP_EVERY_MS := 1500
 
 var _opts: Dictionary = {}
 
@@ -47,6 +49,7 @@ func _run() -> void:
 	var router := get_tree().root.get_node(^"SceneRouter")
 	FlowRouting.go_to(location, &"")
 	await _until_idle(router)
+	await _story_free(router)
 	var tag := String(location).replace("/", "_")
 	var spawns := str(_opts.get("spawns", "-")).split(",", false)
 	if spawns.size() == 1 and spawns[0] == "*":
@@ -78,6 +81,33 @@ func _run() -> void:
 			await _frames(frames)
 			_save(out_dir.path_join("battle_%s_%d.png" % [battle, n]))
 	get_tree().quit()
+
+
+## Taps ui_accept (as a player reads through) until the zone's story is free and the router idle, so the spawns are
+## placed in the playable field and not under an arrival cutscene. Gives up after STORY_TIMEOUT_MS.
+func _story_free(router: Node) -> void:
+	var t := Time.get_ticks_msec()
+	var next_tap := 0
+	while Time.get_ticks_msec() - t < STORY_TIMEOUT_MS:
+		var story: Variant = get_tree().current_scene.get(&"story") if get_tree().current_scene != null else null
+		var busy := bool(router.call(&"is_busy")) or (story is ZoneStory and not (story as ZoneStory).is_free())
+		# A cutscene outside the zone story (Haluna's beach) shows as the player not taking input.
+		var players := get_tree().current_scene.find_children("*", "FieldController", true, false)
+		if not players.is_empty() and not (players[0] as FieldController).accepts_input:
+			busy = true
+		if not busy:
+			return
+		if Time.get_ticks_msec() >= next_tap:
+			var ev := InputEventAction.new()
+			ev.action = &"ui_accept"
+			ev.pressed = true
+			Input.parse_input_event(ev)
+			var up := InputEventAction.new()
+			up.action = &"ui_accept"
+			Input.parse_input_event(up)
+			next_tap = Time.get_ticks_msec() + TAP_EVERY_MS
+		await get_tree().process_frame
+	print("SPAWN_STILLS story still busy after %d s" % (STORY_TIMEOUT_MS / 1000))
 
 
 func _until_idle(router: Node) -> void:
