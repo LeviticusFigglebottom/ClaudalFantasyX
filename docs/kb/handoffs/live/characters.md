@@ -563,3 +563,16 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
 - MERGE-READY @ 39b1ed81
 - **Next:** M4-A2P-055 (Sefir in person), M4-A2P-057 (Kesh), and the prop request (the dock-hook, the salt-glass
   housing, the wedding cord).
+
+## 2026-10-30, Act II: M4-A2P-055 Sefir in person
+- The temptation's tender and sad now read at 85 mm (raised in the data, the sheet and the test). The memory's
+  grief-grey is a material variant (skin_head_grief, via CostumeVariant). The officiant is the Act I model.
+- **Checks:** close-ups viewed; sefir identical on 3 paths; test_sefir, Godot hero_stage 11.
+- LEAD-ASK (crowd sets, M4-A2P-052): act2_tracks gives characters the Act II crowd sets, but the Act II layouts
+  (ch12/quellan, ch13/ansedra, ch17/hollowmere) have no actors yet, and gen_crowd.py reads one ranges.json (the
+  creatures track's). Proposal: once env-art places the crowd stage actors, I add the ansedra and quellan
+  communities (Saltwright exists) in assets_src/crowd/{ansedra,quellan}_ranges.json, with a three-line loader in
+  gen_crowd.py. creatures to OK the loader?
+- MERGE-READY @ dd590bd7
+- **Next:** the hand-prop request (Aldous's dock-hook and salt-glass housing, the wedding cord) to cinematics. Then
+  the Act II queue is done for characters, apart from the crowd sets (blocked as above) and Owa (Act III).
