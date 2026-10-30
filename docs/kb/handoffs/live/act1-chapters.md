@@ -449,6 +449,35 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
     has no fire light within 16 m (only the weir's lamp at 15.4, 23.5), so the party there stays dark until the night
     fill lands. Checks: test_act1_poi_views, test_zone_map_pois OK; validate_data clean.
 
+- **MERGE-READY @ 3079abdcc (Lead 10-30 02:26, ADR 0205):**
+  - **M3-CIN-1233 reviewed on lead/gate-big19: approved (done).** thread 40/0, act1_route 3/0, end_card 5/0; the
+    Ch1 Drop and Ch4 NemeDoor arrivals viewed in stills. The stills harness drives M2-FP-121's time cards now
+    (0e6fae230).
+  - **Ch9's act card** is UI's ActCard on black (`#card`, ef0ca2337); test_ch09_thread accepts both (13/0 on big19,
+    12/0 here).
+  - **GPU QA row 49 (camera side): HELD.** c9da92f3f is reverted (2602bda20). The field camera never leaves a volume
+    for the hub orbit, so the landward harbour shot stayed at InnGate and FromAshcrown and test_qa_field_camera went
+    red. Request **M3-CIN-1251** (the director's owner, game/world/**) has the proposed patch and the Harbour and Weir
+    positions to re-apply after it.
+    - **LEAD-ASK:** M3-CIN-1251 needs an owner. game/world/** is the systems seat; you routed architect/tech to
+      integration-qa. It affects play: walking out of any camera volume leaves the camera parked there.
+  - **test_zone_cast** (red after the integration merge): the crowd layer's routines start in step (Tamsule's
+    fisher and boatman both `haul` at 0.0). The test now accepts a routine clip but keeps the out-of-step check.
+    Request **M3-CIN-1250** (creatures).
+  - **Act II (ADR 0205), M4-A2P-010 claimed:**
+    - Ch10's and Ch12's random fights name their arenas, and the encounter guard covers Act II (0388fcfd0). Vey and
+      the Rim still need arenas (noted on M4-A2P-041 and M4-A2P-046).
+    - Ch10's placement and cameras (25cf13c5f): every shot and volume shot_check-solved and viewed through the new
+      ch10 rigs. The Kirru and Pell at Reedhollow are staged hidden until their bodies exist.
+    - Next: Ch10's triggers and beats once story's scenes land (M4-A2P-001); the Drowner's enemy row and its sim
+      band.
+  - Checks:
+    - `--filter=` ch10 3/0, camera 62/0 (after the revert), qa_field_camera 2/0, ch09 12/0, act1_encounters_resolve
+      2/0, ch01 20/0;
+    - validate_data, dlgc --check, taskboard --check, gdlint, gdformat clean;
+    - test_chapter_flow, test_act1_flow_audit, test_act1_poi_views, test_zone_map_pois OK.
+  - Still red here: test_zone_cast's out-of-step check (M3-CIN-1250, creatures).
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
