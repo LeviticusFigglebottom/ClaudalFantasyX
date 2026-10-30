@@ -724,3 +724,27 @@ I merged integration (big28) first; the two conflicted compiled ch11 JSONs were 
 - **Checks:** validate_data 0/0; taskboard clean; Godot `objective` 16/0 after `--import`. dlgc, tools unittest and check_drafts were not run: no .dlg, `tools/` or draft change.
 - MERGE-READY Ch6/Ch8 objective text + Act II objective lines @ 6141bf440
 - BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1015; M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Act III production, Ch17–Ch20 (ADR 0207; ids M5-A3P-1000+)
+- **Correction to MERGE-READY @ 6141bf440:** OBJ_CH13_REST had an unquoted comma ("tomorrow, at dusk"), which split the loc row; `test_loc_csv_shape` caught it. It is quoted now.
+- **No Act I/II FAST-TRACK is open in my lane**, so I went straight to Act III. Each chapter's drafts were moved with `git mv` into `game/data/dialogue/chNN/`, so no line id exists twice. Their headers are no longer marked as drafts, and their flags are declared in `flags.tres`.
+  - **M5-A3P-1000 Ch17:** 11 scenes, 8 flags. Prompts in `loc/ch17.csv` (new, registered in `project.godot`).
+  - **M5-A3P-1003 Ch18:** 16 scenes, 15 flags (each heirloom flag names its object). Prompts in `loc/ch18.csv`.
+  - **M5-A3P-1006 Ch19:** 7 scenes, 7 flags. New speakers `hesper_oan` and `ilsabet_rue`; names and six prompts in `loc/ch19.csv`.
+  - **M5-A3P-1010 Ch20:** 18 scenes, 9 flags. Ten new speakers (the six Vowbound, the four founders); names in `loc/ch20.csv`.
+  - **Speakers:** every new speaker has a placeholder portrait, as the Act II bosses do, and a voice row appended to `game/data/audio/voices.json` (audio's file; `validate_data` requires a row per speaker).
+- **Tests:**
+  - `tests/unit/test_act3_dialogue.gd`: every Act III scene, every path, under Act II's bar.
+  - `tools/act3_rules.py`: the Act III rules, moved out of `check_drafts.py`, which now imports them.
+  - `tools/tests/test_act3_rules.py`: the production scripts, plus a planted bad scene that trips every rule.
+  - **`test_dlgc` near-miss probe:** "Karen [sad] sang." now expects "did you mean Kahre" (Kahre is a speaker now).
+- **Requests filed:**
+  - **Cinematics, staging and flow:** M5-A3P-1001 (Ch17), 1004 (Ch18), 1007 (Ch19), 1011 (Ch20).
+  - **Audio, cues and sounds:** M5-A3P-1002, 1005, 1008, 1012. Each lists exactly what's new against `music.json` and `assets/audio/sfx/`.
+  - **Combat:** M5-A3P-1009 (Ch19's Wardens' encounter, plus one general mid-battle line hook for every Act III fight) and 1013 (Ch20's seven fights and the release flags).
+- **LEAD-ASK (word budget, drafts README decision 9):** the drafts are spare, against their sheets' §8 budgets. Ch17 has about 460 spoken words (budget ~1,200; SPEC band 880–1,300), and Ch18 about 610 (~2,400). Grow the non-hinge parts (barks, interactables, revisits, heirlooms) to the band, or revise the §8 budgets? I'm proceeding as written and will grow them if told to.
+- **Checks:**
+  - dlgc 0/0, validate_data 0/0, taskboard clean, check_drafts (21 files left) 0/0.
+  - Godot `act3` 1/0 and `objective` 16/0. `dialogue` 87/1: the one red is the Ullari woman's portrait (M4-A2P-1014, not mine).
+  - Tools tests touching my areas pass: act3_rules, dlgc, loc_*, banned_scan, qa_flag_reach, taskboard, vowbound_flag, audio_data and others.
+  - The full tools suite was stopped part-way. Its reds were `test_rig_integrity` (gate-big31's known characters red), plus `test_audio_loudness` and `test_dialogue_clarity` beds. Those two fail because the audio files in this container are LFS pointers; none of the three is in my diff.
