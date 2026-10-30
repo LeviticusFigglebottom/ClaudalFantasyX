@@ -31,4 +31,7 @@ The real clips are below; the dive raft's bridges and gull post are intended.
 ## Notes
 Owner: env-art (the Prologue to Ch4 zones, ADR 0041). See act1_gpu_qa.md row 75 on `qa/cloud-pass6`.
 
+QA re-check on big27 (9572c4129, dock_overlaps.py): the scale, keel and terrace hulls and the first outrigger are
+clear. Only the second outrigger under the two plank bridges is left.
+
 ## Review log

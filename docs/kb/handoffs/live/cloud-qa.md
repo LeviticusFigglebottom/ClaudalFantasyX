@@ -122,6 +122,16 @@ reaches 3.59–3.66 m/s on open ground).
 - With the longer gaps, the main routes (straight-line spawn-to-spawn: 13–197 m) now hold 0–1 random fights each. The
   Coilspire path (102 m) and the derelict (13 m) hold none.
 
+## RE-RUN after "Merge lead/gate-big27" (integration @ 9572c4129): playtest (a) and (b)
+Same probes and box. The deltas against big25:
+- **(a) Scripted-fight returns: still FAIL, unchanged.** Black from Return: tideline 5507 → 5098 ms, Oruvel scuttlers
+  2808 → 2893, the Drownbell 4031 → 4079 ms until the field scene is in (then B11 and the chapter card, by design).
+  Random-fight returns still pass: causeway 63 → 75 ms, ferry 60 → 62, Ch6 69 → 93; fade clear by 753–780 ms. Row 74
+  stays partly fixed (integration-qa: the resident return for scripted fights).
+- **(b) Oruvel boats: 10 → 5 AABB pairs.** The scale, keel and terrace hulls and the first outrigger are clear now.
+  Left: the second outrigger under the two plank bridges (0.61 and 2.76 m wide, unchanged; a real clip, M3-ENV-1391's
+  fourth box) and the dive raft's three (intended). Edges: 0 of 260 off the deck (still a pass).
+
 ## THE LEAD'S ASK (17:24): playthrough smoke, the rows on the newest merge, re-runs per merge
 **Newest merge:** big25 @ 4b198810. No later "Merge lead/gate-bigN" yet; (a) and (b) on big25 are in the section below.
 
