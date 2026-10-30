@@ -2,9 +2,8 @@
 id: M4-A2P-043
 title: "Ansedra, the Sanctum and the Lamp Archive dressed, lit and walkable at final quality (the hero zone)"
 role: environment
-status: blocked
-blocked-by: ADR 0203
-owner_session: ""
+status: doing
+owner_session: "env-art (claude/env-art, 2026-10-30)"
 depends_on: [M4-A2P-047]
 reviewer: rendering
 milestone: M4
