@@ -322,9 +322,6 @@ def build_crown_fallen(seed: int = 721) -> list[kc.MeshBuilder]:
 
 
 
-JOINT_AO = 0.3  # a paving slab's sides, down in the joint
-
-
 def _flat_top(mb: kc.MeshBuilder, v0: int) -> None:
     """A slab's top shades flat (M3-ENV-724 render: a one-segment block's corner normals tilt up to 23 deg outward, so
     each 1.5 m slab read as a pillow): its upward vertex normals are set straight up."""
@@ -332,12 +329,6 @@ def _flat_top(mb: kc.MeshBuilder, v0: int) -> None:
     up = n[:, 1] > 0.85
     n[up] = (0.0, 1.0, 0.0)
     mb.nrm[v0:] = n.tolist()
-    # Its sides stand in the joints (the walk-through audit, 2026-10-29: under the low dusk sun they caught the light and
-    # the paving's flecks made each joint a fringe of bright ticks), so they take the joint's occlusion (UV2.x).
-    uv2 = np.asarray(mb.uv2[v0:])
-    side = ~up  # a one-segment block: its side vertices sit on the rounded corners, their normals diagonal
-    uv2[side, 0] = np.minimum(uv2[side, 0], JOINT_AO)
-    mb.uv2[v0:] = uv2.tolist()
 
 def _paving(mb: kc.MeshBuilder, x0: float, x1: float, z0: float, z1: float, y: float, rng, noise, lod: bool,
             keep=None, slab: float = 1.5) -> None:

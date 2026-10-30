@@ -3,6 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
+uid="uid://dfvgd3lrewqho"
+path="res://.godot/imported/gull_post.glb-d5a753c07b06080a4e4bf024daaca63f.scn"
+
+[deps]
+
+source_file="res://assets/environments/kits/oruvel/gull_post.glb"
+dest_files=["res://.godot/imported/gull_post.glb-d5a753c07b06080a4e4bf024daaca63f.scn"]
 
 [params]
 
