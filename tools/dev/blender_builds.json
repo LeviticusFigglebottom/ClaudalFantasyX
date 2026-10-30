@@ -1279,6 +1279,20 @@
       ]
     },
     {
+      "id": "villager_aldous",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M4-A2P-052: Aldous Varrow, Hollowmere's dock-master (Ch15), on the villager build: Liss's family face, his line-marks to the shoulders; push_raft and hold_up_housing.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/aldous/*.glb", "assets/characters/villagers/aldous/textures/*.png", "assets/characters/villagers/aldous/materials/*.tres", "assets/characters/villagers/aldous/*.tscn", "assets/characters/villagers/aldous/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "aldous", "--bake-dir", "{scratch}/aldous_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "aldous", "--bake-dir", "{scratch}/aldous_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "aldous"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "aldous"]
+      ]
+    },
+    {
       "id": "villager_merel",
       "threads": 4,
       "owner": "character",

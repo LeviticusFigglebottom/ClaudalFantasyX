@@ -36,7 +36,8 @@
              "res://assets/characters/villagers/ione/", "res://assets/characters/villagers/poolkeeper/",
              "res://assets/characters/villagers/fenn/", "res://assets/characters/villagers/gatekeeper/",
              "res://assets/characters/villagers/hobb/", "res://assets/characters/villagers/marra/",
-             "res://assets/characters/villagers/tobin/", "res://assets/characters/villagers/merel/"],
+             "res://assets/characters/villagers/tobin/", "res://assets/characters/villagers/merel/",
+             "res://assets/characters/villagers/aldous/"],
   "adoption_pending": {},
   "generate_lods": true,
   "materials": {

@@ -1493,6 +1493,61 @@
       "settle_frames": 30
     },
     {
+      "id": "villager_aldous_front",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/aldous_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_aldous_face",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/aldous_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_aldous_face_grief",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/aldous_face_grief.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_aldous_push_raft",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/aldous_push_raft.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_aldous_hold_up_housing",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/aldous_hold_up_housing.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "villager_tobin_front",
       "pending_baseline": true,
       "scene": "res://game/levels/_tests/characters/villagers/tobin_stage.tscn",
