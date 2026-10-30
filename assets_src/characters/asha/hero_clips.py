@@ -5061,6 +5061,19 @@ GRIP_ALWAYS.add("pell")
 FLAT_HAND["pell"] = {"storm_call": {"R": (-1.0, 0.0, 2.0, 3.0)}, "cast": {"R": (0.1, 0.28, 0.62, 0.75)}}
 IDLE_GROUNDED.add("pell")
 
+# M4-A2P-053: the Kirru people on Pell's build (assets_src/characters/pell/pell_variant.py, kirru/variants/): his
+# idiom (the neck's S, the staff in the left hand, one movement then stillness) and his own clips, never a fight (no
+# battle contract: the Kirru are a people, never monsters). `back_to_sea` is the farewell-tide's turning away (the
+# back to the party, the head bowed). Each its own persona (their skeletons differ by height); the elder stiller.
+KIRRU_CLIPS = ["idle", "walk", "talk", "go_still", "listen_tilt", "back_to_sea"]
+for _h, _sw in (("kirru_elder", 0.1), ("kirru_adult", 0.15), ("kirru_child", 0.35)):
+    PERSONA[_h] = dict(PERSONA["pell"], sway=_sw)
+    CLIPS[_h] = list(KIRRU_CLIPS)
+    HERO_LENGTHS[_h] = {c: HERO_LENGTHS["pell"][c] for c in KIRRU_CLIPS if c in HERO_LENGTHS["pell"]}
+    GRIP[_h] = dict(GRIP["pell"])
+    GRIP_ALWAYS.add(_h)
+    IDLE_GROUNDED.add(_h)
+
 
 # M3-CHR-05: the story clips go after each hero's own (every hero's block above has set its list by now)
 for _h, _clips in STORY.items():
