@@ -152,7 +152,7 @@
     {"id": "shrine", "activation": "interact", "at": [27, 0, -43.5], "size": [1.6, 0, 1.2], "prompt_key": "FIELD_PROMPT_REST",
      "requires_flag": "ch06_camp_made", "payload": {"beat": "shrine", "save_shrine": "brine_shoals_camp"}},
     {"id": "vendor", "activation": "interact", "at": [28, 0, -37], "size": [1.6, 0, 3], "prompt_key": "SHOP_PROMPT",
-     "requires_flag": "ch06_camp_made", "payload": {"shop": "brightwater_purser"}},
+     "requires_flag": "ch06_camp_made", "payload": {"shop": "brine_shoals_vendor"}},
     {"id": "bark_ysolde_reading", "activation": "interact", "at": [20.5, 0, -39], "size": [1.4, 0, 1.4],
      "prompt_key": "FIELD_PROMPT_LISTEN", "requires_flag": "ch06_camp_made", "payload": {"dialogue": "ch06_bark_ysolde_reading"}},
     {"id": "bark_toma_papers", "activation": "interact", "at": [23.5, 0, -41.5], "size": [1.4, 0, 1.4],
