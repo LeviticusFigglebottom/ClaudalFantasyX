@@ -1053,6 +1053,18 @@ that test at this branch's zones.
     second guard.
   - **The Act II town interiors:** still none exist. Both towns that do exist are walked above (M4-A2P-115).
   - **MERGE-READY @ 1f5de1d1** (the merge; nothing else changed).
+- **Act I interior lighting, Ch5–Ch9, as played on lavapipe (10-30):**
+  - **What was measured:** the eye-height stills of the zones' interiors, which are Ashcrown's anvil hall and
+    Kahre's chamber (Ch5) and Coilspire's tower tiers (Ch8). Ch6, Ch7 and Ch9 are open-air, and Pemakar has no inn
+    interior to walk.
+  - **Crushed blacks:** none. 0 % of pixels fall under 3 %; the grades' black floor holds the darkest 5 % at
+    0.08–0.13.
+  - **Brightness between chapters:** consistent. Mean luminance is 0.15–0.26 in Ashcrown and 0.14–0.28 in
+    Coilspire.
+  - **Flat ambient:** none that reads flat. The lowest spread (std 0.03) is Coilspire's tier-2 views facing the
+    curved wall at arm's length, and those show the wall's tiles and texture.
+  - The anvil court's battle view was fixed separately (row 63, the loggia lattice).
+  - No change needed. **MERGE-READY @ 1f5de1d1** (unchanged).
 ### PC-QUEUE
 - Pass 3 row 65 (@ edb18aae): re-measure the camp's smoke columns (24 steps at High) and the Tamsule drop (High has no
   god rays now) at High 1440p against the 0.3 ms target.
