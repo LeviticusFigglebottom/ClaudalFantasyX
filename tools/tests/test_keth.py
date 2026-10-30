@@ -31,8 +31,8 @@ class KethTests(unittest.TestCase):
     def test_the_inn_door_is_open_and_the_banner_clears_it(self) -> None:
         mb = keth.TARGETS["quellan_inn"]()[0]
         p = np.asarray(mb.pos)
-        crag = mb.materials.index(keth.M_CRAG)
-        t = np.asarray(mb.tris)[np.asarray(mb.tri_mat) == crag]
+        wall = mb.materials.index(keth.M_DRYSTONE)  # the inn's walls are dry stone (M4-A2P-042)
+        t = np.asarray(mb.tris)[np.asarray(mb.tri_mat) == wall]
         c = p[t].mean(axis=1)
         in_door = (np.abs(c[:, 0]) < 0.5) & (c[:, 1] < 2.2) & (c[:, 1] > 0.2) & (np.abs(c[:, 2]) < 0.3)
         self.assertFalse(bool(in_door.any()))

@@ -49,3 +49,17 @@ The colour script `ch15` (01:00):
 ## Revisions
 
 - 2026-10-27 (env-art, M3-ENV-720): first issue, with the arena.
+- 2026-10-30 (env-art, M4-A2P-045): the open sea dressed (`tools/act2/ch15_open_sea_dressing.py`).
+  - **The barge.** The arena's 16 × 7.5 m barge doesn't fit the greybox's 4 × 10 m deck: scaled to the deck's length,
+    its bier misses the Bier block by 2.4 m. So `open_sea_barge` is bridal_barge.py's builders at the greybox's size
+    (`build_fitted`; the arena's barge is byte-identical). Its deck is the Deck block, its rail on the Rail blocks,
+    and the canopy and Tobin's bier on the Bier block.
+  - **The grade.** The Wakefin arena's unlamped grade and its night sea with the sea-glow. Nothing on the barge gives
+    light.
+  - **Open:**
+    - the shoal's held dead under the water (rendering's held light);
+    - the dawn fog at the bow (rendering);
+    - Hollowmere's first visit, which has no greybox zone yet (chapters).
+
+    All in M4-A2P-0451.
+

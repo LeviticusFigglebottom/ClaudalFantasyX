@@ -1,0 +1,97 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/levels/ch13/ch13_zone.gd" id="1_zone"]
+[ext_resource type="Script" path="res://game/levels/act1/zone_kit_dressing.gd" id="2_dressing"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/weathering_tide.gd" id="3_tide"]
+[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="4_water"]
+[ext_resource type="Resource" path="res://game/levels/ch13/ansedra_lacquer_court/ansedra_lacquer_court_waves.tres" id="5_waves"]
+[ext_resource type="Material" path="res://game/levels/ch13/ansedra_lacquer_court/ansedra_lacquer_court_water_material.tres" id="6_mat"]
+[ext_resource type="Script" path="res://game/levels/act1/zone_cast.gd" id="7_cast"]
+
+[node name="AnsedraLacquerCourt" type="Node3D"]
+script = ExtResource("1_zone")
+location_id = &"ch13/ansedra_lacquer_court"
+layout_path = "res://game/levels/ch13/ansedra_lacquer_court/ansedra_lacquer_court_layout.json"
+
+[node name="Cast" type="Node" parent="."]
+script = ExtResource("7_cast")
+
+[node name="Water" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.95, 0)
+script = ExtResource("4_water")
+publishes_water_level = true
+wave_set = ExtResource("5_waves")
+material = ExtResource("6_mat")
+
+[node name="Tide" type="Node" parent="." node_paths=PackedStringArray("water")]
+script = ExtResource("3_tide")
+tide_line_y = -0.95
+water_height_y = -0.95
+water = NodePath("../Water")
+
+[node name="Dressing" type="Node3D" parent="." node_paths=PackedStringArray("tide")]
+script = ExtResource("2_dressing")
+layout_path = "res://game/levels/ch13/ansedra_lacquer_court/ansedra_lacquer_court_dressing.json"
+tide = NodePath("../Tide")
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="W01_court" type="Camera3D" parent="Cameras"]
+fov = 45.0
+near = 0.1
+far = 2500.0
+transform = Transform3D(1.00000, 0.00000, -0.00000, -0.00000, 0.99862, 0.05256, 0.00000, -0.05256, 0.99862, 0.0, 2.4, -2.0)
+
+[node name="Entry_east" type="Camera3D" parent="Cameras"]
+fov = 55.0
+near = 0.1
+far = 2500.0
+transform = Transform3D(0.49847, 0.03004, 0.86639, 0.00000, 0.99940, -0.03466, -0.86691, 0.01727, 0.49817, 16.0, 1.7, -2.5)
+
+[node name="Dais_vows" type="Camera3D" parent="Cameras"]
+fov = 50.0
+near = 0.1
+far = 2500.0
+transform = Transform3D(1.00000, 0.00000, -0.00000, -0.00000, 0.99811, 0.06142, 0.00000, -0.06142, 0.99811, 0.0, 1.6, -15.0)
+
+[node name="Conclave_gallery" type="Camera3D" parent="Cameras"]
+fov = 55.0
+near = 0.1
+far = 2500.0
+transform = Transform3D(0.68394, 0.04648, 0.72806, 0.00000, 0.99797, -0.06370, -0.72954, 0.04357, 0.68255, -4.0, 1.7, -14.0)
+
+[node name="Colonnade_west" type="Camera3D" parent="Cameras"]
+fov = 60.0
+near = 0.1
+far = 2500.0
+transform = Transform3D(0.94868, 0.04552, 0.31293, 0.00000, 0.98958, -0.14395, -0.31623, 0.13656, 0.93880, -9.0, 1.7, -3.0)
+
+[node name="Water_steps" type="Camera3D" parent="Cameras"]
+fov = 55.0
+near = 0.1
+far = 2500.0
+transform = Transform3D(-1.00000, 0.00000, -0.00000, 0.00000, 0.98894, 0.14834, 0.00000, 0.14834, -0.98894, 0.0, 1.7, -4.0)
+
+[node name="Barge_from_steps" type="Camera3D" parent="Cameras"]
+fov = 55.0
+near = 0.1
+far = 2500.0
+transform = Transform3D(-0.99388, -0.01609, 0.10925, 0.00000, 0.98933, 0.14567, -0.11043, 0.14478, -0.98328, 1.5, 1.6, 0.5)
+
+[node name="Gate_from_barge" type="Camera3D" parent="Cameras"]
+fov = 60.0
+near = 0.1
+far = 2500.0
+transform = Transform3D(-1.00000, 0.00000, -0.00000, 0.00000, 0.98058, -0.19612, 0.00000, -0.19612, -0.98058, 0.0, 0.8, 7.0)
+
+[node name="Lagoon_city" type="Camera3D" parent="Cameras"]
+fov = 50.0
+near = 0.1
+far = 2500.0
+transform = Transform3D(-1.00000, 0.00000, -0.00000, 0.00000, 0.99788, -0.06508, 0.00000, -0.06508, -0.99788, 0.0, 1.0, 14.0)
+
+[node name="Over_court" type="Camera3D" parent="Cameras"]
+fov = 55.0
+near = 0.1
+far = 2500.0
+transform = Transform3D(0.70711, -0.35410, 0.61206, 0.00000, 0.86558, 0.50077, -0.70711, -0.35410, 0.61206, 22.0, 18.0, 10.0)
