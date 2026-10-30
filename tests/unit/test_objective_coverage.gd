@@ -11,11 +11,8 @@ const CHAPTERS: Array[String] = [
 	"prologue", "ch01", "ch02", "ch03", "ch04", "ch05", "ch06", "ch07", "ch08", "ch09", "ch10", "ch11", "ch12", "ch13"
 ]
 ## Zones whose rows are on their way: zone id -> the task.
-const KNOWN_EMPTY := {
-	"ch06/brine_shoals": "act1-chapters, adding Ch6's rows (the Lead 10-30 21:46)",
-	"ch08/corrow": "act1-chapters, adding Ch8's rows (the Lead 10-30 21:46)",
-	"ch08/coilspire": "act1-chapters, adding Ch8's rows (the Lead 10-30 21:46)",
-}
+## (Ch6's Brine Shoals and Ch8's Corrow and Coilspire were here until act1-chapters' rows landed, 2026-10-30.)
+const KNOWN_EMPTY := {}
 
 
 func test_every_mapped_zone_has_a_main_objective() -> void:
