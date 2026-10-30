@@ -2116,3 +2116,28 @@ MERGE-READY @ (this commit).
   - **21:** 0 of 121 samples out of frame.
   - **All six hold on big29.** They need the PC's hand pass to close.
 MERGE-READY @ (this commit).
+
+### The Drownbell → Haluna return re-measured with M3-HER-1168 (integration 7c4c6de18 + claude/creatures e0b9afb5, a trial tree); the Lead 10-30 21:25
+- `return_probe -- --trace` (headless). The trace is from the victory panel's Return:
+
+  | from Return | before M3-HER-1168 (big28) | now |
+  |---|---|---|
+  | fade down | 0–0.4 s | 0–0.4 s |
+  | Haluna loading and instantiating | 0.4–1.9 s | 0.4–2.8 s (one hidden frame 1.36 → 2.84 s, **~1.5 s**) |
+  | VillagerLayer's held reveal | **1.9–5.0 s (3.1 s)** | **2.8–3.1 s (0.26 s)** |
+  | fade lifting | 5.0–5.3 s | 3.1–3.4 s |
+  | **covered (field clear)** | **5.3 s** | **3.4 s** |
+
+- **M3-HER-1168 does what it says:** the villager hold is 0.26 s. The probe's `black_ms` (9.3 s) still counts B11's
+  chapter card and the Ch4 wake after Haluna; that is story black.
+- **Still over the ~2 s target:** 3.4 s to a clear field. The rest is Haluna's own entry, about 2.4 s headless,
+  including a ~1.5 s hidden frame (Haluna entering the tree), which is over ADR 0029's 1 s hidden-frame budget by
+  itself.
+  **LEAD-ASK:** is Haluna's add-to-tree frame worth a request? It's Haluna's own setup (`haluna_zone.gd`, m2-slice /
+  slice-polish's), and every fresh Haluna entry pays it. Or do we take the 3.4 s headless as is, given the PC is
+  several times faster?
+- The other cases on this tree: tideline 168 ms black, causeway 51, oruvel_scuttlers 78, ch04_ferry 100, ch06 79.
+  Their ready times as before.
+- **The probe is committed** for reuse: `tools/gpu_bench/return_probe.gd` / `.tscn` (cloud-qa's, from
+  qa/cloud-pass6), with a `--trace` option that prints the fade, the current scene and the router's reveal holders
+  every 100 ms.
