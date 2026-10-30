@@ -3,10 +3,15 @@ extends Node
 ## The music bed (M2-AUD-02; docs/kb/tech/audio_runtime.md): two players that crossfade, stems that fade in and
 ## out inside one synchronized stream (the Drownbell's phase 2), a resume point per cue, and a hold that silences
 ## the bed while something else (a cutscene) owns the music. Time passes only through advance(delta).
+## Changes land on the beat (M3-AUD-864): a new cue or a stop with a fade waits for the next beat of the cue sounding
+## (grid_of: the row's `beat`, else its file's .loop.json), so the old cue fades from a beat and the new one enters on it; a resumed cue picks
+## up on a beat of its own. A beat longer than beat_max_wait_sec is halved until it fits, so no change waits longer.
 
 signal cue_started(cue: StringName)
 
 const SLOTS := 2
+## A wait shorter than this is no wait (the change lands now).
+const BEAT_EPS := 0.02
 
 ## The cue playing (or fading in) now; &"" for none.
 var current: StringName = &""
@@ -16,6 +21,12 @@ var floor_db := -60.0
 var hold := 1.0
 ## Where each resumable cue stopped (seconds).
 var positions: Dictionary = {}
+## mix.json music.beat_sync_max_wait_sec; 0 changes at once (no beat sync).
+var beat_max_wait_sec := 0.0
+## (slot's player) -> its playback position in seconds; tests replace it. Default: the player's own position.
+var position_source := Callable()
+## Where the last cue started (seconds into it).
+var started_from := 0.0
 var _slots: Array[FadeVoice] = []
 var _rows: Dictionary = {}
 var _hold_target := 1.0
@@ -23,6 +34,10 @@ var _hold_rate := 0.0
 ## Per-stem fades of the current cue: [gain, target, rate].
 var _stems: Array = []
 var _bus: StringName = &"Music"
+## A change waiting for its beat: {cue (&"" for a stop), stream, sec, left}; {} when none.
+var _queued: Dictionary = {}
+## Each cue's beat grid (grid_of), cached.
+var _grids: Dictionary = {}
 
 
 func _init(bus: StringName = &"Music") -> void:
@@ -37,12 +52,37 @@ func _init(bus: StringName = &"Music") -> void:
 
 ## Plays cue `cue_id` (row from music.json) with a crossfade of `sec`. The same cue playing already is left be.
 ## Returns false when the row names no stream that loads.
+## A fade of 0 or less changes at once; any other waits for the beat (wait_for_beat), while `current` already names
+## the new cue.
 func play(cue_id: StringName, row: Dictionary, sec: float) -> bool:
-	if cue_id == current and _active() != null:
+	if cue_id == current and (_active() != null or _queued.get("cue", &"") == cue_id):
+		return true
+	if not _queued.is_empty() and _sounding() != null and _sounding().id == cue_id:
+		_queued = {}  # back to the cue still sounding before the change landed: it simply carries on
+		current = cue_id
 		return true
 	var stream := build_stream(row)
 	if stream == null:
 		return false
+	_rows[cue_id] = row
+	current = cue_id
+	_stems = []
+	if stream is AudioStreamSynchronized:
+		var on: Array = row.get("start_stems", [0])
+		for i in (stream as AudioStreamSynchronized).stream_count:
+			var g := 1.0 if on.has(i) else 0.0
+			_stems.append([g, g, 0.0])
+	var wait := wait_for_beat(sec)
+	if wait > 0.0:
+		_queued = {"cue": cue_id, "stream": stream, "sec": sec, "left": wait}
+		return true
+	_queued = {}
+	_start(cue_id, stream, sec)
+	return true
+
+
+func _start(cue_id: StringName, stream: AudioStream, sec: float) -> void:
+	var row := _rows.get(cue_id, {}) as Dictionary
 	_fade_out_all(sec)
 	var slot := _free_slot()
 	var p := slot.player as AudioStreamPlayer
@@ -51,27 +91,80 @@ func play(cue_id: StringName, row: Dictionary, sec: float) -> bool:
 	slot.base_db = float(row.get("volume_db", 0.0))
 	slot.gain = 0.0 if sec > 0.0 else 1.0
 	slot.fade_to(1.0, sec)
-	_rows[cue_id] = row
-	_stems = []
-	if stream is AudioStreamSynchronized:
-		var on: Array = row.get("start_stems", [0])
-		for i in (stream as AudioStreamSynchronized).stream_count:
-			var g := 1.0 if on.has(i) else 0.0
-			_stems.append([g, g, 0.0])
 	var from := float(positions.get(cue_id, 0.0)) if bool(row.get("resume", false)) else 0.0
 	positions.erase(cue_id)
+	var grid := beat_grid(cue_id)
+	if from > 0.0 and not grid.is_empty():  # pick up on a beat of its own
+		var off := float(grid["offset"])
+		from = maxf(0.0, off + floorf((from - off) / float(grid["beat"])) * float(grid["beat"]))
+	started_from = from
 	p.play(from)
-	current = cue_id
 	_apply_stems()
 	slot.step(0.0, floor_db, hold)
 	cue_started.emit(cue_id)
-	return true
+
+
+## Seconds until the next beat of the cue sounding now, the beat halved until it is at most beat_max_wait_sec.
+## 0 (change now) for an immediate change (sec <= 0), with beat sync off, while the bed is held silent, or when
+## nothing sounds or the sounding cue has no beat grid.
+func wait_for_beat(sec: float) -> float:
+	if sec <= 0.0 or beat_max_wait_sec <= 0.0 or hold <= BEAT_EPS:
+		return 0.0
+	var s := _sounding()
+	if s == null:
+		return 0.0
+	var grid := beat_grid(s.id)
+	if grid.is_empty():
+		return 0.0
+	var beat := float(grid["beat"])
+	while beat > beat_max_wait_sec:
+		beat *= 0.5
+	var p := s.player as AudioStreamPlayer
+	var pos := float(position_source.call(p)) if position_source.is_valid() else p.get_playback_position()
+	var wait := beat - fposmod(pos - float(grid["offset"]), beat)
+	return 0.0 if wait < BEAT_EPS or wait > beat - BEAT_EPS else wait
+
+
+## The beat grid of cue `cue_id` (a row this deck has played), cached: grid_of its row.
+func beat_grid(cue_id: StringName) -> Dictionary:
+	if not _grids.has(cue_id):
+		_grids[cue_id] = grid_of(_rows.get(cue_id, {}) as Dictionary)
+	return _grids[cue_id]
+
+
+## A cue row's beat grid, {beat, offset} seconds: from the row's `beat` ({bpm, downbeat_offset_s}; "free" for an
+## unmetered piece, which has none), else its first file's .loop.json; {} when neither gives a tempo.
+static func grid_of(row: Dictionary) -> Dictionary:
+	var meta: Variant = row.get("beat", null)
+	var files := AudioData.cue_files(row)
+	if meta == null and not files.is_empty():
+		var path := files[0].get_basename() + ".loop.json"
+		if FileAccess.file_exists(path):
+			meta = JSON.parse_string(FileAccess.get_file_as_string(path))
+	if meta is Dictionary and float((meta as Dictionary).get("bpm", 0.0)) > 0.0:
+		var m := meta as Dictionary
+		return {"beat": 60.0 / float(m["bpm"]), "offset": float(m.get("downbeat_offset_s", 0.0))}
+	return {}
+
+
+## A change waiting for its beat: the cue (&"" for a stop), else &"" when none waits.
+func queued_cue() -> StringName:
+	return StringName(_queued.get("cue", &""))
+
+
+func has_queued() -> bool:
+	return not _queued.is_empty()
 
 
 ## Fades the bed out over `sec`.
 func stop(sec: float) -> void:
-	_fade_out_all(sec)
 	current = &""
+	var wait := wait_for_beat(sec)
+	if wait > 0.0:
+		_queued = {"cue": &"", "stream": null, "sec": sec, "left": wait}
+		return
+	_queued = {}
+	_fade_out_all(sec)
 
 
 ## Brings stem `index` of the current cue in (on) or out over `sec`.
@@ -115,6 +208,15 @@ func player() -> AudioStreamPlayer:
 
 
 func advance(delta: float) -> void:
+	if not _queued.is_empty():
+		_queued["left"] = float(_queued["left"]) - delta
+		if float(_queued["left"]) <= 0.0:
+			var q := _queued
+			_queued = {}
+			if StringName(q["cue"]) == &"":
+				_fade_out_all(float(q["sec"]))
+			else:
+				_start(StringName(q["cue"]), q["stream"] as AudioStream, float(q["sec"]))
 	if hold != _hold_target:
 		hold = _hold_target if _hold_rate <= 0.0 else move_toward(hold, _hold_target, _hold_rate * delta)
 	for s: Array in _stems:
@@ -149,6 +251,16 @@ static func _load(path: String) -> AudioStream:
 	if path == "" or not ResourceLoader.exists(path):
 		return null
 	return load(path) as AudioStream
+
+
+## The slot heard now: the one fading toward the loudest level (the cue a queued change is leaving).
+func _sounding() -> FadeVoice:
+	var best: FadeVoice = null
+	for slot in _slots:
+		if slot.id != &"" and slot.target > 0.0 and (slot.player as AudioStreamPlayer).playing:
+			if best == null or slot.gain > best.gain:
+				best = slot
+	return best
 
 
 func _active() -> FadeVoice:
