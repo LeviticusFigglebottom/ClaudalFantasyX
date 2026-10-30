@@ -177,8 +177,12 @@ func _oruvel() -> void:
 	assert_true(&"ch01_bark_roof_005" in lines, "then does it")
 
 	assert_false(_trigger(&"dive_mooring").is_available(), "the dive waits for Kell's stall")
+	# cloud-qa (the Lead, 10-30): o_kell points at Kell herself, so talking to her plays the same beat as her stall
+	assert_true(_trigger(&"kell_talk").is_available(), "Kell answers when spoken to")
+	assert_eq(_trigger(&"kell_talk").payload, _trigger(&"kell_stall").payload)
 	assert_true(_trigger(&"kell_stall").on_touched())
 	assert_true(bool(Game.get_flag(&"ch01_has_kell_wick")), "C1-10, every path")
+	assert_false(_trigger(&"kell_talk").is_available(), "and once")
 	assert_eq(_count(&"kell_wick"), 1, "the key item")
 	assert_true(bool(Game.get_flag(&"ch01_kell_side_scene")), "'Stay a minute.' (the first option)")
 	assert_true(&"ch01_kell_012" in lines, "the line Rhen repeats on Ch2's beach")
