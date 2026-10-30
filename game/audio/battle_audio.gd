@@ -64,8 +64,10 @@ func attach(dir: AudioDirector, controller: BattleController, eng: BattleEngine,
 func _apply_arena_ambience() -> void:
 	if engine.db == null:
 		return
-	var enc := engine.db.encounters.get(engine.encounter_id, engine.db.encounters.get(String(engine.encounter_id), {}))
-	var ids := AudioData.arena_beds(director.ambience_data, str((enc as Dictionary).get("arena", "")))
+	var enc: Dictionary = engine.db.encounters.get(
+		engine.encounter_id, engine.db.encounters.get(String(engine.encounter_id), {})
+	)
+	var ids := AudioData.arena_beds(director.ambience_data, str(enc.get("arena", "")))
 	if not ids.is_empty():
 		director.set_arena_ambience(self, ids)
 
