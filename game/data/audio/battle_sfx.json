@@ -132,17 +132,17 @@
     "boss_reach_breach": "status_apply",
     "flood_surge": "abl_flood_surge",
     "undertow_surge": "abl_undertow_surge",
-    "swell_weighted_swing": "hit_none",
-    "swell_reel_stop": "status_apply",
+    "swell_weighted_swing": "abl_swell_weighted_swing",
+    "swell_reel_stop": "abl_swell_reel_stop",
     "tick_poison": "status_apply",
     "tick_regen": "heal",
     "tick_doom": "status_apply",
     "tick_doom_fall": "ko_release",
     "tick_sleep": "status_apply",
     "tick_stop": "status_apply",
-    "grip_the_stair": "status_apply",
-    "rope_dive": "status_apply",
-    "hand_closes": "status_apply"
+    "grip_the_stair": "skill_grip_the_stair",
+    "rope_dive": "skill_rope_dive",
+    "hand_closes": "skill_hand_closes"
   },
   "skills": {
     "toll": "drownbell_toll",

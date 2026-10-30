@@ -10,6 +10,9 @@ extends Control
 signal row_hovered(index: int)
 signal row_clicked(index: int)
 
+## Tests: when set, held_repeat(delta) asks this (delta) -> bool instead of the Input state.
+static var held_probe: Callable = Callable()
+
 var page_id: StringName = &""
 ## Reduced motion (UiSettings): the cursor jumps instead of sliding and the mote does not breathe.
 var reduced_motion := false
@@ -146,10 +149,25 @@ func move(delta: int) -> bool:
 			break
 	if i == start or not bool(rows[i].get("enabled", true)):
 		return false
+	if held_repeat(delta) and (i < start if delta > 0 else i > start):
+		return false  # a held key or pad stops at the end; a fresh press wraps
 	cursor = i
 	_scroll_to_cursor()
 	_place_cursor(true)
 	return true
+
+
+## True when the direction of `delta` is held but was not pressed this frame: a key's echo or a pad's repeat
+## (UiInput), as opposed to a fresh press. A list wraps only on a fresh press, so holding a direction stops at
+## the end instead of racing round (the Lead's Act I menu pass, controller only).
+static func held_repeat(delta: int) -> bool:
+	if held_probe.is_valid():
+		return bool(held_probe.call(delta))
+	var actions: Array = [&"ui_down", &"ui_right"] if delta > 0 else [&"ui_up", &"ui_left"]
+	for a: StringName in actions:
+		if InputMap.has_action(a) and Input.is_action_pressed(a) and not Input.is_action_just_pressed(a):
+			return true
+	return false
 
 
 func set_cursor(index: int, animate: bool = true) -> void:

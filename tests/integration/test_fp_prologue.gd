@@ -6,10 +6,10 @@ extends TestCase
 const PROLOGUE_SCENE := "res://game/levels/prologue/prologue.tscn"
 const SCENE_ID := &"prologue_dead_city"
 const LINE_KEY := &"DLG_PROLOGUE_DEAD_CITY_001"
-## The M2 review build's route (first_playable.json prologue.next_location; Act I's Ch1 comes after
-## the human signs off M2, M3-C01-02).
-const NEXT_LOCATION := &"ch02/haluna"
-const NEXT_SPAWN := &"Beach"
+## Act I's route (first_playable.json prologue.next_location): the M2 review switch flipped on 2026-10-29 under
+## ADR 0042 (M3-CIN-1233), so the prologue hands off to Ch1 (M3-C01-02), not the slice's beach.
+const NEXT_LOCATION := &"ch01/oruvel_underway"
+const NEXT_SPAWN := &"Drop"
 ## Far more steps than the script has; a run that needs more is looping.
 const MAX_STEPS := 100
 ## M2-FP-28: the colour the dusk frame must carry (colour script prologue_iskarra_dusk).
@@ -100,7 +100,7 @@ func test_the_scene_is_staged_for_the_cutscene() -> void:
 	_done()
 
 
-func test_play_sets_prologue_seen_and_hands_off_to_haluna() -> void:
+func test_play_sets_prologue_seen_and_hands_off_to_ch01() -> void:
 	_make_scene()
 	var seq := CutsceneSequencer.new()
 	seq.instant = true
@@ -110,7 +110,7 @@ func test_play_sets_prologue_seen_and_hands_off_to_haluna() -> void:
 	scene.play()
 	assert_true(bool(Game.get_flag(&"prologue_seen")), "prologue_seen is set")
 	assert_true(scene.finished, "an instant cutscene ends at once")
-	assert_eq(travels, [[NEXT_LOCATION, NEXT_SPAWN]] as Array[Array], "on to Haluna at Beach (the M2 slice route)")
+	assert_eq(travels, [[NEXT_LOCATION, NEXT_SPAWN]] as Array[Array], "on to Ch1's Underway at Drop (Act I)")
 	assert_false(scene.hand_off(), "the hand-off happens once")
 	assert_eq(travels.size(), 1)
 	_done()

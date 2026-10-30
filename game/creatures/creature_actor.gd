@@ -213,8 +213,9 @@ func is_ko() -> bool:
 	return _ko
 
 
-## KO: plays the KO clip, holds its last pose, then fades every surface to `alpha` (battle_sandbox.json
-## ko_alpha). A revive brings it back to idle. Repeated calls with the same state do nothing.
+## KO: plays the KO clip (the phase's, when its `clips` map names one), holds its last pose, then fades every
+## surface to `alpha` (battle_sandbox.json ko_alpha). A revive brings it back to idle. Repeated calls with the same
+## state do nothing.
 func set_ko(on: bool, alpha: float) -> void:
 	if on == _ko:
 		return
@@ -222,7 +223,8 @@ func set_ko(on: bool, alpha: float) -> void:
 	if _fade != null and _fade.is_valid():
 		_fade.kill()
 	if on:
-		var clip := StringName(str(_row.get("ko", "ko")))
+		# M3-CRB-013: a phase's `clips` map may name its own KO (the Spar-wraith falls from the deck, not the web)
+		var clip := phase_clip(StringName(str(_row.get("ko", "ko"))))
 		var wait := 0.0
 		if has_clip(clip) and not _frozen and clip == _hold_clip and current_clip == clip:
 			# the KO is the clip a `hold` phase already played (a Vowbound's release): it isn't played twice

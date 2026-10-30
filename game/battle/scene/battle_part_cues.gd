@@ -3,7 +3,7 @@ extends RefCounted
 ## Model parts that come and go with battle events, not with a phase (M3-C05-07): the Cinder Matron's Crust breaks
 ## off when she enters the Pour (creatures.json `phases`, CreatureActor), but the fight puts it back without a phase
 ## change, through her `recrust` skill or a water or ice hit that quenches her (BossMechanics: the hit records
-## "reacted": true), and Kerrid's Armor Break takes it off again. battle_sandbox.json "part_cues", per creatures.json
+## "reacted": true), and Kerrid's sundering blow takes it off again. battle_sandbox.json "part_cues", per creatures.json
 ## row id: `parts` (model node names), `show_on_skills` (a skill that lands on the creature), `show_on_reaction` (a
 ## hit on it that "reacted") and `hide_on_statuses` (a status a hit added to it).
 ## - On the action's contact beat (BattleChoreo.contact), so the crust closes or cracks as the blow lands; with the

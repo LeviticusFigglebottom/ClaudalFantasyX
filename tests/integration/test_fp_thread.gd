@@ -1,8 +1,8 @@
 extends TestCase
 ## M2-FP-04, hardened in M2-FP-09: the whole first-playable thread, headless, with instant cutscenes
 ## and every scene change recorded instead of made (FlowRouting.record, BattleRequest.change_scene,
-## the battle's travel hooks): New Game → prologue (which hands off to Haluna in the M2 review build;
-## Act I's Ch1 route is tests/integration/test_ch01_thread.gd) → Haluna (Cutscene A) → three villagers → walk up
+## the battle's travel hooks): New Game → prologue (which hands off to Ch1 since the M2 review switch flipped;
+## Ch1 to the beach is tests/integration/test_ch01_thread.gd) → Haluna (Cutscene A) → three villagers → walk up
 ## the beach into the story's real tideline trigger → lose, Fight again, lose, Return to last save
 ## (none yet: the title) → walk in again and win → back at BattleReturn (not re-triggered) → save at
 ## the shrine, load it back → the causeway head → the Saltgrass Causeway (M2-FP-25: Ch3 starts, the
@@ -22,6 +22,8 @@ const MAX_TURNS := 60
 const NPC_IDS: Array[StringName] = [&"npc_market", &"npc_chapel", &"npc_dock"]
 const SAVE_DIR := "user://test_fp_thread_saves"
 const TITLE := "res://game/core/boot.tscn"
+## The prologue's hand-off, the thread's first travel (the M2 review switch flipped: Act I's route, Ch1's drop).
+const PROLOGUE_HAND_OFF := [&"ch01/oruvel_underway", &"Drop"]
 
 var saved_state: GameStateData
 var travels: Array[Array] = []
@@ -54,7 +56,8 @@ func _done() -> void:
 
 
 func test_the_first_playable_thread_end_to_end() -> void:
-	# New Game lands on the prologue, which hands off to the beach (the M2 review switch).
+	# New Game lands on the prologue, which hands off to Ch1 (the M2 review switch flipped on 2026-10-29, ADR 0042;
+	# test_ch01_thread plays Ch1 through to the beach). The slice thread picks up at Ch1's hand-off, Haluna's Beach.
 	var reg := LocationRegistry.load_default()
 	assert_eq(reg.new_game_location, &"prologue")
 	var prologue := (load(PROLOGUE) as PackedScene).instantiate() as PrologueScene
@@ -64,7 +67,7 @@ func test_the_first_playable_thread_end_to_end() -> void:
 	prologue.travel = _record_travel
 	prologue.play()
 	assert_true(bool(Game.get_flag(&"prologue_seen")))
-	assert_eq(travels, [[&"ch02/haluna", &"Beach"]] as Array[Array], "on to Haluna (the M2 slice route)")
+	assert_eq(travels, [PROLOGUE_HAND_OFF] as Array[Array], "on to Ch1 (Act I's route)")
 	prologue.free()
 	var beach := reg.resolve(&"ch02/haluna", &"Beach")
 	assert_eq(beach.get("scene"), ZONE, "the registry enters the playable zone")
@@ -93,7 +96,7 @@ func test_the_first_playable_thread_end_to_end() -> void:
 	var lost := _lose_battle()
 	assert_eq(lost, [TITLE] as Array[String], "no save yet: Return to last save is the title")
 	assert_false(bool(Game.get_flag(&"ch02_tideline_won")), "a defeat never sets the flag")
-	assert_eq(travels, [[&"ch02/haluna", &"Beach"]] as Array[Array], "and never travels to the field")
+	assert_eq(travels, [PROLOGUE_HAND_OFF] as Array[Array], "and never travels to the field")
 
 	# Continue would find nothing; New Game's way back is the prologue, so walk in again and win.
 	assert_eq(TitleSaveEntry.continue_slot(SaveSystem), -1, "no record to continue")
@@ -107,6 +110,11 @@ func test_the_first_playable_thread_end_to_end() -> void:
 	# Back in the zone: the cast is gone, the battle does not fire again, the causeway waits for a save.
 	zone = _load_zone()
 	zone.place_at(&"BattleReturn", zone.spawn_yaw_deg(&"BattleReturn"))
+	# Arriving after the win, as the game does: the story begins, and B02 (Neme's table) plays (M2-HER-1128).
+	story = zone.get_node("Story") as HalunaStory
+	story.begin()
+	assert_true(bool(Game.get_flag(&"ch02_ate_at_nemes")), "B02, Neme's table, played on the return")
+	assert_false(story.busy, "and finished")
 	_walk(zone, Vector3(1, 0, 0), 2.0, func() -> bool: return false)
 	assert_eq(battle_opens, 2, "a won battle never starts again")
 	var causeway := _interactable(zone, &"causeway_head")
@@ -200,14 +208,14 @@ func test_the_first_playable_thread_end_to_end() -> void:
 	assert_eq(opened, [] as Array[String], "no scene opens: the party travels")
 	assert_eq(travels.back(), [&"ch02/haluna", &"DockNight"], "after the Drownbell, Haluna's dock at night (M2-FP-15)")
 
-	# B11: the dock at night, then the end card.
+	# B11: the dock at night, then Ch4's chapter card (M3-CIN-1233: no demo end card mid-Act I).
 	zone = _load_zone()
 	zone.place_at(&"DockNight", zone.spawn_yaw_deg(&"DockNight"))
 	var night_story := zone.get_node("Story") as HalunaStory
 	night_story.begin()
 	assert_true(zone.is_night, "Haluna at night")
 	assert_true(bool(Game.get_flag(&"ch03_rhen_sworn_guardian")), "Rhen is sworn")
-	assert_eq(routed.back(), [EndCard.SCENE], "then the end card")
+	assert_eq(routed.back(), [ChapterCard.SCENE], "then Ch4's chapter card")
 	_free(zone)
 	_done()
 

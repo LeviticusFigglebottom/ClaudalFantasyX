@@ -2,7 +2,7 @@
 id: M3-C05-06
 title: Ch5 combat follow-ups (Kerrid's real kit, Kahre, the Matron's smart band, the Quench Charm)
 role: combat
-status: doing
+status: review
 owner_session: claude/battle-presentation (session_01UPFyEA8QkJULH74MGgnMvJ; the Lead, 10-29: the Swell techniques)
 depends_on: [M3-C05-02]
 milestone: M3
@@ -40,5 +40,6 @@ M3-C05-02 made Ch5 playable with provisional combat data. Each item below is mar
     Matron fight with `tools/vfx/swell_finisher_sheet.gd`.
   - **Still open in item 1 (not this pass):** his Lattice start node, his starting gear, and Fluke Cleave against
     Shell Breaker. Items 2–7 are untouched.
+  - **To review (combat):** the Swell part only. The other items stay open on this task for a combat pass.
 
 ## Review log

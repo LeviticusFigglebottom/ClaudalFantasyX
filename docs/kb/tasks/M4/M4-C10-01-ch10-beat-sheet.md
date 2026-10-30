@@ -32,4 +32,7 @@ at Ossa Fen's edge at dusk).
       is listed with enough detail to file as a task.
 - [ ] `python3 tools/validate_data.py` and the banned-terms grep are clean.
 
+## Notes
+- 2026-10-30 (act2-plan track, the Lead's assignment): **draft: pre-gate** written at `docs/kb/story/beats/act2_ch10.md`. It is not reviewed; the task stays `blocked` until the gate, then the story track takes it to review.
+
 ## Review log

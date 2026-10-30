@@ -145,7 +145,9 @@ class KitGeometryTests(unittest.TestCase):
             for mb in built(name):
                 glowing = emissive & set(mb.materials)
                 if glowing:
-                    self.assertIn(name, {"beacon_basket", "tier_brazier", "keepers_hut", "coilspire_tiers"}, name)
+                    # wall_lamp: the keepers' lamps on the well's wall burn (env-art-b, the 10-29 audit)
+                    self.assertIn(name, {"beacon_basket", "tier_brazier", "keepers_hut", "coilspire_tiers",
+                                         "wall_lamp"}, name)
 
 
 class PlanTests(unittest.TestCase):

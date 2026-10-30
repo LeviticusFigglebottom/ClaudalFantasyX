@@ -40,4 +40,17 @@ Asha and Toma stand at their marks and Rhen walks alone.
   field half is likely the same cause on the wake's stage (an `Actors/toma` standing visible). The battle half was
   seen on big15, before M3-HER-1149's reserve and party fixes. Re-check both on big17 when picking this up.
 
+- **2026-10-30, wider than Ch9 (integration-qa's walk audit on lead/gate-big18):** a probe of every Act I field zone
+  at its default state (party Rhen, Asha and Toma) finds the stage showing Asha and Toma, so **both followers are
+  hidden**, in 12 zones: haluna, brightwater_ferry, haluna_wake, ashcrown, pemakar, brine_shoals, tamsule,
+  tamsule_bell_galleries, coilspire, corrow, corrow_night (and Ch9's dawn road). In oruvel, oruvel_underway,
+  saltgrass_causeway and shell_shrine they follow. It depends on story state: Haluna's walk guard sees them follow
+  once Cutscene A has played, so the default state isn't the whole story. But the PC's real play confirmed it in
+  Ch9 and Ch4 (row 39), and the walk audit's routes up Ashcrown's flying stair and Coilspire's spiral had Rhen
+  alone.
+  - A rule change in my area could fix it everywhere: in free play the follower wins and the stage actor hides
+    until a scene cues it. But it would also hide stage actors that carry talk prompts (Toma's Shield-Mate), so
+    it's a staging call (act1-chapters) and is put to the Lead (LEAD-ASK in hero-integration.md), not done
+    unilaterally.
+
 ## Review log

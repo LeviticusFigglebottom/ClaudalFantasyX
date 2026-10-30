@@ -57,7 +57,8 @@ func apply(stage: Node, id: StringName) -> bool:
 	var row: Dictionary = table().get(id, {})
 	if row.is_empty() and not _missed.has(id):
 		_missed[id] = true
-		push_warning("CutsceneGrade: no grade '%s' in the zones' grade tables (M3-ENV-106)" % id)
+		# Not a warning: test_cutscene_directives' known list tracks the grades Rendering hasn't built (M3-ENV-106).
+		print_verbose("CutsceneGrade: no grade '%s' in the zones' grade tables yet" % id)
 	var env := load(str(row.get(KEY_ENVIRONMENT, ""))) as Environment if row.has(KEY_ENVIRONMENT) else null
 	if env == null or not _find(stage):
 		return false

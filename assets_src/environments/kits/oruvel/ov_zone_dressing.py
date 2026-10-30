@@ -31,6 +31,7 @@ import ov_common as oc  # noqa: E402
 import ov_heroes as oh  # noqa: E402
 import ov_hulls as ohl  # noqa: E402
 import ov_preview_layout as pl  # noqa: E402  (put, local, bridge, gull; read-only)
+import ov_props as opr  # noqa: E402  (GULL_POST_H)
 
 GREYBOX = ROOT / "game" / "levels" / "ch01" / "oruvel" / "oruvel_layout.json"
 OUT = ROOT / "assets" / "environments" / "zones" / "ch01" / "oruvel_dressing.json"
@@ -162,7 +163,10 @@ def pieces() -> list[dict]:
     s = round(dm["size"][0] / 6.0, 3)
     out.append(pl.put("dive_raft", dm["pos"][0], -oh.DIVE_DECK_Y * s, dm["pos"][2], 0.0, scale=s))
     dg = b["DiveGull"]
-    out.append(pl.gull(dg["pos"][0], dg["pos"][1] - 0.5, dg["pos"][2]))
+    dgull = pl.gull(dg["pos"][0], dg["pos"][1] - 0.5, dg["pos"][2])
+    out.append(dgull)
+    # Its perch: DiveGull is a marker in the air over the deck, so a pole lashed to the deck carries the gull.
+    out.append(pl.put("gull_post", dgull["at"][0], dgull["y"] - opr.GULL_POST_H, dgull["at"][1], dgull["yaw_deg"]))
     out.append(span((45.0, -10.0), (45.0, -16.0)))
     out.append(span((46.0, -17.0), (40.0, -17.0)))
     out.append(span((40.0, -17.0), (34.0, -17.0)))

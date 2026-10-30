@@ -2,7 +2,7 @@
 id: M3-HER-1149
 title: "ADR 0041 (Act I at final quality): the party's capsules in the field, on cutscene stages and in battle (integration-qa's share)"
 role: qa
-status: doing
+status: review
 owner_session: "integration-qa (hero-integration track, session_01PzF7Jc4XVQdTWcaYUyCjPB)"
 reviewer: lead
 depends_on: []
@@ -28,9 +28,9 @@ real hero. Kerrid and Liss also need battle actors.
 - [x] Pell's field row (walk 1.27, run 3.13 m/s, measured by HeroClipGait on characters' pell_lod1 in the big17
       trial tree; 2026-10-29). Ch9's `pell` and `vigil_pell` (the `vigil_` prefix) take his body once
       claude/characters merges. No battle wrapper: Ch9 says he has no battle row in Act I (M3-C09-07 is his kit).
-- [ ] The audit lists no integration-qa rows. On the big17 trial tree plus Pell's row it lists 0 (5 items, none
-      ours; 2026-10-29). Left to do once big17 is on integration: drop Pell's stale KNOWN rows from
-      tests/integration/qa_known.json (corrow, corrow_night ×2, ossa_fen) and re-run the audit there.
+- [x] The audit lists no integration-qa rows: 0 on integration 502f6999 (big17) + this branch, 2026-10-29 ~22:30
+      (5 items in all: creatures 1, env-art 2, env-art-b 2). Pell's stale KNOWN rows are gone with the rest
+      (test_qa_capsules is now a ratchet).
 
 ## Notes
 - Ch9's vigils are staged as kneeling figures (1.2 m capsules). With a body they stand at idle unless the scene plays

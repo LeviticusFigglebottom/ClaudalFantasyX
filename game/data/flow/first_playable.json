@@ -14,22 +14,30 @@
     },
     "prologue": {
       "scene_id": "prologue_dead_city",
-      "_next_note": "The M2 review switch (Lead, 2026-10-24): the slice route, ch02/haluna at Beach, until the human signs off the M2 review; then Act I, ch01/oruvel_underway at Drop (M3-C01-02), together with end_card.next_location. The debug chapter select (F8) reaches Ch1 meanwhile.",
-      "next_location": "ch02/haluna",
-      "next_spawn": "Beach"
+      "_next_note": "The M2 review switch (Lead, 2026-10-24), flipped on 2026-10-29 under ADR 0042 (the M2 review is approved; M3-CIN-1233): New Game plays Act I as one path, the prologue into Ch1, ch01/oruvel_underway at Drop (M3-C01-02), together with end_card.next_location. Before the flip it was the slice route, ch02/haluna at Beach.",
+      "next_location": "ch01/oruvel_underway",
+      "next_spawn": "Drop"
     },
     "end_card": {
       "return_scene": "res://game/core/boot.tscn",
-      "voice_key": "FLOW_END_CARD_VOICE",
+      "voice_key": "",
       "voice_sec": 7.0,
       "voice_fade_sec": 1.0,
       "fade_in_sec": 1.2,
       "credits": ["CREDITS_GAME", "CREDITS_SLICE", "CREDITS_MUSIC", "CREDITS_ENGINE", "CREDITS_FONTS", "CREDITS_THANKS"],
       "credit_line_sec": 1.1,
       "min_hold_sec": 16.0,
-      "_next_note": "M3-C04-04: next_location / next_spawn (a locations.json id and spawn) send accept on into the story instead of back to the title. Empty for the M2 review build; the Lead sets ch04/haluna_wake / NemeDoor once the human signs off the M2 review.",
+      "_next_note": "M3-C04-04: next_location / next_spawn (a locations.json id and spawn) send accept on into the story instead of back to the title. Since the M2 review switch flipped (2026-10-29, ADR 0042; M3-CIN-1233, the Lead) this card is the end of Act I only: Ch9's last scene shows it, its credits roll, and accept returns to the title, so both stay empty. The slice's dock at night goes on into Ch4 through chapter_card instead (no demo card mid-game). voice_key is empty: B12's voice-over moved to chapter_card, into Ch4.",
       "next_location": "",
       "next_spawn": ""
+    },
+    "chapter_card": {
+      "_doc": "M3-CIN-1233: the chapter title card between the slice and Ch4 (game/flow/chapter_card.gd): UI's ActCard on black: voice_key first as a caption alone (B12's voice-over, which closed the slice, now leads into Ch4), then the two-line title (label_key over the rule, title_key), then on to next_location / next_spawn. haluna.night_end_scene opens it after B11.",
+      "voice_key": "FLOW_END_CARD_VOICE",
+      "label_key": "CHAPTER_CARD_CH04_LABEL",
+      "title_key": "CHAPTER_CARD_CH04_TITLE",
+      "next_location": "ch04/haluna_wake",
+      "next_spawn": "NemeDoor"
     },
     "haluna": {
       "location_id": "ch02/haluna",
@@ -55,7 +63,7 @@
       "sworn_flag": "ch03_rhen_sworn_guardian",
       "night_scene_id": "ch03_dock_at_night",
       "night_spawn": "DockNight",
-      "night_end_scene": "res://game/flow/end_card.tscn",
+      "night_end_scene": "res://game/flow/chapter_card.tscn",
       "night_cast": {
         "asha": [
           20.6,

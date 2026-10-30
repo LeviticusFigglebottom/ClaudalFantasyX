@@ -4284,6 +4284,96 @@
    "yaw_deg": 158.8,
    "scale": 1.07,
    "_m721": true
+  },
+  {
+   "plant": "frangipani_b",
+   "at": [
+    -182.36,
+    43.5
+   ],
+   "yaw_deg": -55.4,
+   "scale": 1.05,
+   "_audit29": "the chapel court's west sightline"
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -168.6,
+    8.53
+   ],
+   "yaw_deg": -154.7,
+   "scale": 1.11,
+   "_audit29": "the chapel court's west sightline"
+  },
+  {
+   "plant": "frangipani_b",
+   "at": [
+    -162.81,
+    7.18
+   ],
+   "yaw_deg": -34.7,
+   "scale": 0.93,
+   "_audit29": "the chapel court's west sightline"
+  },
+  {
+   "plant": "frangipani_a",
+   "at": [
+    -161.51,
+    19.46
+   ],
+   "yaw_deg": -177.4,
+   "scale": 1.18,
+   "_audit29": "the chapel court's west sightline"
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -162.23,
+    26.29
+   ],
+   "yaw_deg": -123.7,
+   "scale": 1.11,
+   "_audit29": "the chapel court's west sightline"
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -156.26,
+    47.55
+   ],
+   "yaw_deg": -167.0,
+   "scale": 0.94,
+   "_audit29": "the chapel court's west sightline"
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -151.22,
+    39.14
+   ],
+   "yaw_deg": -113.7,
+   "scale": 1.14,
+   "_audit29": "the chapel court's west sightline"
+  },
+  {
+   "plant": "frangipani_b",
+   "at": [
+    -174.6,
+    22.8
+   ],
+   "yaw_deg": 24.6,
+   "scale": 1.02,
+   "_audit29": "the chapel court's west sightline"
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -185.65,
+    5.17
+   ],
+   "yaw_deg": -115.3,
+   "scale": 1.19,
+   "_audit29": "the chapel court's west sightline"
   }
  ],
  "plant_kinds": {
@@ -4341,12 +4431,12 @@
    "mesh_node": "saltgrass_a",
    "material": "res://assets/environments/vegetation/materials/saltgrass.tres",
    "rect": [
-    -40.0,
+    -90.0,
     -170.0,
-    80.0,
+    130.0,
     340.0
    ],
-   "count": 2600,
+   "count": 4225,
    "seed": 5,
    "inland_m": [
     9.0,
@@ -4366,12 +4456,12 @@
    "mesh_node": "saltgrass_b",
    "material": "res://assets/environments/vegetation/materials/saltgrass.tres",
    "rect": [
-    -150.0,
+    -260.0,
     -125.0,
-    120.0,
+    230.0,
     250.0
    ],
-   "count": 3000,
+   "count": 5750,
    "seed": 9,
    "inland_m": [
     31.0,
@@ -4392,12 +4482,12 @@
    "mesh_node": "frond_dry",
    "material": "res://assets/environments/kits/haluna/materials/kit_dry_frond.tres",
    "rect": [
-    -150.0,
+    -260.0,
     -125.0,
-    150.0,
+    260.0,
     250.0
    ],
-   "count": 320,
+   "count": 555,
    "seed": 71,
    "inland_m": [
     8.0,
@@ -4419,12 +4509,12 @@
    "mesh_node": "coconut_husk",
    "material": "res://assets/environments/kits/haluna/materials/kit_lashing.tres",
    "rect": [
-    -150.0,
+    -260.0,
     -125.0,
-    150.0,
+    260.0,
     250.0
    ],
-   "count": 220,
+   "count": 381,
    "seed": 72,
    "inland_m": [
     8.0,
@@ -4446,12 +4536,12 @@
    "mesh_node": "shell_scatter",
    "material": "res://assets/environments/kits/haluna/materials/kit_nacre.tres",
    "rect": [
-    -40.0,
+    -90.0,
     -150.0,
-    80.0,
+    130.0,
     300.0
    ],
-   "count": 420,
+   "count": 682,
    "seed": 73,
    "inland_m": [
     1.0,
@@ -4473,12 +4563,12 @@
    "mesh_node": "pebble_cluster",
    "material": "res://assets/environments/kits/haluna/materials/kit_coral_stone.tres",
    "rect": [
-    -150.0,
+    -260.0,
     -125.0,
-    150.0,
+    260.0,
     250.0
    ],
-   "count": 260,
+   "count": 451,
    "seed": 74,
    "inland_m": [
     20.0,

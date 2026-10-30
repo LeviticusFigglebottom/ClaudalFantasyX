@@ -21,17 +21,6 @@
       "threshold_rmse": 0.004
     },
     {
-      "id": "slice_end_card_voice",
-      "pending_baseline": true,
-      "scene": "res://game/flow/end_card.tscn",
-      "resolution": [
-        1920,
-        1080
-      ],
-      "settle_frames": 180,
-      "threshold_rmse": 0.004
-    },
-    {
       "id": "slice_end_card",
       "pending_baseline": true,
       "scene": "res://game/flow/end_card.tscn",
@@ -7947,6 +7936,28 @@
         },
         "time_scale": 4.0
       }
+    },
+    {
+      "id": "flow_chapter_card_ch04_voice",
+      "pending_baseline": true,
+      "scene": "res://game/flow/chapter_card.tscn",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "settle_frames": 150,
+      "threshold_rmse": 0.004
+    },
+    {
+      "id": "flow_chapter_card_ch04",
+      "pending_baseline": true,
+      "scene": "res://game/flow/chapter_card.tscn",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "settle_frames": 480,
+      "threshold_rmse": 0.004
     }
   ]
 }
