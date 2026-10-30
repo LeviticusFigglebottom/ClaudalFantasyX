@@ -130,6 +130,60 @@
       "voices": 1,
       "volume_db": 0.0,
       "_note": "M4-A2P-092: the Abiding guard's intro sting (reduced audio) (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "skill_fin_cut": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/skill_fin_cut.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the Wakefin's fin_cut (wakefin.md §4, the sheet's proposed id): the seam's high hiss along the rail, then the sweep (contact 0.8 s)"
+    },
+    "skill_sound_dive": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/skill_sound_dive.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the Wakefin's sound_dive (wakefin.md §4, the sheet's proposed id): the blade sinking: a falling plunk, bubbles going down, a thrum still there below (it's gone deep, not gone; ADR 0204 §3)"
+    },
+    "skill_wakefin_rise": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/skill_wakefin_rise.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the Wakefin's wakefin_rise (wakefin.md §4, the sheet's proposed id): the sea-glow ring opening at 1.9 kHz, then the breach under one hero (contact 0.85 s)"
+    },
+    "skill_wake_wash": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/skill_wake_wash.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the Wakefin's wake_wash (wakefin.md §4, the sheet's proposed id): the hard turn, the tail slap (0.75 s), the wake washing over the deck"
+    },
+    "skill_bill_strike": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/skill_bill_strike.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the Wakefin's bill_strike (wakefin.md §4, the sheet's proposed id): phase 2: it rears at the bow, the stab and the knock on the planking (0.7 s)"
+    },
+    "phase_close_circle": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/phase_close_circle.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the Wakefin's close_circle phase (ADR 0204 §6): it rams the hull, the barge rocks and creaks"
     }
   }
 }
