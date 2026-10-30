@@ -63,6 +63,8 @@ extends HalunaDresser
 ##   pieces[].drift  {"bob_m"?, "period_s"?, "tilt_deg"?, "wander_m"?, "wander_s"?}: a piece afloat (flotsam on a
 ##                  sea) rides a slow swell: it bobs `bob_m` over `period_s`, rocks `tilt_deg`, and wanders round its
 ##                  placed point in a `wander_m` eddy every `wander_s` (each piece's phase from its position).
+##   fire_light_fade  [begin_m, length_m]: every fire light fades out with distance from the camera (a town of lamps
+##                  whose far ones are "far_lights" quads: the omnis beyond leave the clustered light list).
 ##   fire_lights[].flicker  0..1: the share of the light's energy a flame's flicker takes away at its deepest.
 ##   environment  a res:// Environment: the zone's WorldEnvironment takes a copy (sky, grade, fog).
 ##   time_of_day_h  the hymn_time_of_day the sky reads.
@@ -108,6 +110,7 @@ const DRIFT_TURN_RATE := 0.25
 ## A position hash to a phase (s): x and z weights, and the wrap.
 const PHASE_HASH := Vector3(12.9898, 78.233, 997.0)
 const KEY_FLICKER := "flicker"
+const KEY_FIRE_FADE := "fire_light_fade"
 ## A flame's flicker: two incommensurate wavers (Hz) and a quick gutter, mixed so it never repeats in a shot.
 const FLICKER_HZ := Vector3(1.7, 4.3, 9.1)
 const FLICKER_MIX := Vector3(0.5, 0.3, 0.2)
@@ -562,6 +565,7 @@ func _place_fire_lights() -> void:
 	root.name = FIRE_LIGHTS
 	add_child(root)
 	var color := Color.html(str(layout.get("fire_light_color", "#E0702E")))
+	var fade: Array = layout.get(KEY_FIRE_FADE, [])
 	for r: Variant in rows:
 		var row: Dictionary = r
 		var at: Array = row.get("at", [0.0, 0.0, 0.0])
@@ -573,6 +577,10 @@ func _place_fire_lights() -> void:
 		light.omni_attenuation = float(row.get("attenuation", light.omni_attenuation))
 		light.light_specular = float(row.get("specular", light.light_specular))
 		light.light_volumetric_fog_energy = 0.0  # the fog-lamp rule (test_fog_lamps)
+		if fade.size() == 2:
+			light.distance_fade_enabled = true
+			light.distance_fade_begin = float(fade[0])
+			light.distance_fade_length = float(fade[1])
 		light.position = Vector3(float(at[0]), float(at[1]), float(at[2]))
 		root.add_child(light)
 		if row.has(KEY_FLICKER):
