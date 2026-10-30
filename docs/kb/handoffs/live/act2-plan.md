@@ -252,3 +252,13 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - **Checks:** validate_data 0/0 · dlgc --check 0/0 · loc tools tests plus the new one OK · Godot `formation` 18/0, `items_menu` 13/0, `reefball` 80/0, `end_card` 5/0, `pseudo_loc` 26/0.
 - MERGE-READY @ 090457c88
 - BACKLOG EMPTY (story track). The British-spelling LEAD-ASK above is still open.
+
+## 2026-10-30: British spelling (Lead decision)
+- 18 player-facing strings, keys unchanged:
+  - Armour, armoured;
+  - Defence and Magic Defence (the stat names, the Break status descriptions, the Lattice facets and the abilities);
+  - Colour palette, colours, colour blindness, Colour-blind-friendly.
+- Files: `ch05.csv` (`TUT_CH05_ARMOR_BREAK`), `menus.csv`, `menus_equip.csv`, `menus_items.csv`, `strings.csv`. No American forms are left in any loc csv.
+- The rule is now in the glossary (an appended "Spelling" section) and in the voice guide's global rules: British with Oxford -ize (Customize stays), and keys and ids keep their spelling.
+- **Checks:** validate_data 0/0 · loc tools tests OK · Godot `settings` 48/0, `equip` 66/0, `status_menu` 7/0, `lattice` 67/0, `pseudo_loc` 26/0.
+- MERGE-READY @ 73c2cb482
