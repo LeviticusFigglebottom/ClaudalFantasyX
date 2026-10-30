@@ -1444,3 +1444,21 @@ MERGE-READY @ 5f317889c: M4-A2P-1708, the objective coverage guard.
   - **Next in Act III UI:** the Kite as the Ch18 hub (KiteMapMenu exists; Act III opens the world map, SPEC §6.6),
     then the optional-content log.
 MERGE-READY @ 5c4c9ca6b: M5-A3P-1700, the closing credits roll.
+
+- **2026-10-30, after the Lead's 23:26 note:**
+  - **M5-A3P-1700 follow-up (c2b8608b5):**
+    - The credits are a scene of their own (`credits_roll.tscn`, `CreditsRoll.SCENE`), for E6 to change to.
+    - Vignettes are named by `scene`. One that isn't built yet is passed over, so the roll never holds on black.
+    - Request M5-A3P-1701 to cinematics: E6 → credits, the beach-rite scene, and `next_scene` for E7.
+    - The credits stay facts-only, per the Lead, while the content question is with the human.
+  - **M5-A3P-1702, the Kite's Act III revisits (9a4d0b55f):**
+    - Oruvel joins the chart (from ch01_started).
+    - Ansedra is listed from Ch13 but greyed "Closed to heretics" once `ch14_declared_heretics` is set. These are the
+      new `refused_flag` and `refused_key` fields; `fly()` refuses it.
+    - **Tests and checks:** test_kite_map 13/0; `kite_map` rendered with Act III flags into scratch and viewed, with
+      no baseline written; validate_data 0/0; taskboard ok; lint ok.
+    - The audio audit's UI section is 0. It still exits 1 on three support skills from the integration branch
+      (`cut_the_line`, `court_reinforce`, `court_wait`), which is not this track's.
+  - **Next:** the optional-content log (Act III's revisits and errands, act3_ch18). Then the ending flow, once
+    slice-polish's E7 lands.
+MERGE-READY @ 9a4d0b55f: M5-A3P-1702, the Kite's Act III revisits (with c2b8608b5, the credits scene).
