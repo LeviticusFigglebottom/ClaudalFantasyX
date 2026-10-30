@@ -65,3 +65,11 @@ ENEMY_FLUE_MOTH,Flue Moth
 LORE_FLUE_MOTH,"Not spawn. A soot-moth as wide as a door, drawn up Coilspire's flues by the keeping flame. It drinks fire and sheds soot, and the Tenders sweep its dust off the braziers every morning."
 ENC_CH08_HEADLAND,The Headland Path
 ENC_CH08_COILSPIRE,Coilspire
+OBJ_CH08_WALL_HEAD,"Go up the mole steps onto the seawall, among the Watchers."
+OBJ_CH08_WALL_GATE,"The trial is at Coilspire, out on the headland. Go through the wall-gate."
+OBJ_CH08_SIDE_STAIR,The Fisher Stair runs down from the wall into the low town.
+OBJ_CH08_PATH,Follow the headland path up to the spire door.
+OBJ_CH08_SIDE_HEARTH,A keeper tends a low fire in the hut at the spire's foot.
+OBJ_CH08_FLUES,"Turn the flue-keys. Let the flame climb the spire, tier by tier."
+OBJ_CH08_CROWN,The flame has reached the crown. Climb up to it.
+OBJ_CH08_BEACON,Turn the great key and light the beacon. The coast has to know.

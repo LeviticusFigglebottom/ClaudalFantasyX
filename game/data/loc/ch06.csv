@@ -40,3 +40,6 @@ CHAR_WRIGHT,Wright
 LOCATION_CH06_BRINE_SHOALS,The Brine Shoals
 SKILL_MUD_FLICK,Mud Flick
 SHOP_BRINE_SHOALS_VENDOR,The Ridge-Boat Vendor
+OBJ_CH06_SHOALS,"Cross the Brine Shoals, wreck to wreck, toward the channel."
+OBJ_CH06_CHANNEL,"Rest by the fire if you need to. At first light, wade out down the channel."
+OBJ_CH06_SIDE_TIDELINE,Liss isn't at the fire. She's down on the tideline.
