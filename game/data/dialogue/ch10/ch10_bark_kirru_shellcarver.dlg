@@ -1,9 +1,9 @@
-// Ch10: a shell-carver. The name goes inside the shell (N-27: a name, not a keepsake).
+// Ch10: a name-carver (she carves the name-shells; "Shell-carver" is out: ADR 0202 retired Shell as a status name). The name goes inside the shell (N-27: a name, not a keepsake).
 title: ch10_bark_kirru_shellcarver
 location: ch10/reedhollow
 ---
-Kirru as "Shell-carver" [neutral]: The name goes on the inside. Against the throat. You hear it with your skin. #line:ch10_bark_carver_001
+Kirru as "Name-carver" [neutral]: The name goes on the inside. Against the throat. You hear it with your skin. #line:ch10_bark_carver_001
 <<if $ch10_heard_ressa>>
-    Kirru as "Shell-carver" [sad]: I scraped one blank, the spring before last. I was asked to. My hands remember it. #line:ch10_bark_carver_002
+    Kirru as "Name-carver" [sad]: I scraped one blank, the spring before last. I was asked to. My hands remember it. #line:ch10_bark_carver_002
 <<endif>>
 ===

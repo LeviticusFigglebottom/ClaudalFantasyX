@@ -1,0 +1,28 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/character/character_hair.gdshader" id="sh"]
+[ext_resource type="Texture2D" path="res://assets/crowd/kirru_elder_woman/textures/kirru_elder_woman_fur.png" id="t0"]
+
+[resource]
+resource_name = "fur_brow"
+render_priority = 0
+shader = ExtResource("sh")
+shader_parameter/tex_hair = ExtResource("t0")
+shader_parameter/alpha_boost = 1.2
+shader_parameter/col_root = Color(0.353, 0.267, 0.204, 1.0)
+shader_parameter/col_spec_primary = Color(0.784, 0.722, 0.643, 1.0)
+shader_parameter/col_tip = Color(0.549, 0.486, 0.408, 1.0)
+shader_parameter/col_transmission = Color(0.231, 0.169, 0.133, 1.0)
+shader_parameter/depth_occlusion = 0.85
+shader_parameter/diffuse_wrap = 0.3
+shader_parameter/flow_strength = 0.0
+shader_parameter/indirect_specular = 0.04
+shader_parameter/kajiya_diffuse_mix = 0.15
+shader_parameter/root_occlusion = 0.85
+shader_parameter/spec_primary_exponent = 60.0
+shader_parameter/spec_primary_intensity = 0.1
+shader_parameter/spec_secondary_intensity = 0.0
+shader_parameter/strand_value_jitter = 0.12
+shader_parameter/tip_start = 0.4
+shader_parameter/transmission_strength = 0.1
+shader_parameter/wind_response = 0.0

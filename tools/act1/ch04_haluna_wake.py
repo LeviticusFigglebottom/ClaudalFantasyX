@@ -102,7 +102,8 @@ ACTORS = {  # id: ((x, z, yaw), extra); the feast's villagers face the wall's ga
     "neme": ((-59.6, -3.3, 0.0), {"cast": "neme", "color": "#8f6f5f"}),
     "osu": ((6.0, -103.3, 51.0), {"cast": "osu", "color": "#9a8a7a"}),
     "vendor": ((3.4, -104.6, 47.0), {"cast": "vendor", "color": "#7a8a5a"}),
-    "fisher": ((8.3, -107.6, 62.0), {"cast": "fisher", "color": "#5a7a8a"}),
+    # 2 m inland of the night's swash (the walk pass, 10-30: his mat and his feet were in the waves at x 7.3).
+    "fisher": ((6.3, -107.7, 62.0), {"cast": "fisher", "color": "#5a7a8a"}),
     "child": ((-70.0, -9.5, 90.0), {"cast": "child", "color": "#d4b07a", "radius": 0.2, "height": 1.1}),
     "netmender": ((-5.2, 56.4, 0.0), {"cast": "netmender", "color": "#8a9a7a"}),  # on the sand by the dock's foot
     "reed": ((-116.3, 33.6, 270.0), {"cast": "reed", "color": "#b8b2a8"}),
@@ -130,7 +131,7 @@ TRIGGERS = [  # (id, (x, z), size, yaw, rest)
     ("table_osu", (6.0, -104.5), [2.4, 0, 2.4], 0.0,
      {"activation": "interact", "prompt_key": "FIELD_PROMPT_LISTEN", "blocked_by_flag": "ch04_shell_set",
       "payload": {"dialogue": "ch04_wake_osu"}}),
-    ("table_fisher", (7.3, -108.5), [2.4, 0, 2.4], 0.0,
+    ("table_fisher", (5.3, -108.6), [2.4, 0, 2.4], 0.0,
      {"activation": "interact", "prompt_key": "FIELD_PROMPT_LISTEN", "blocked_by_flag": "ch04_shell_set",
       "payload": {"dialogue": "ch04_wake_fisher"}}),
     ("table_neme", (5.0, -112.5), [2.4, 0, 2.4], 0.0,

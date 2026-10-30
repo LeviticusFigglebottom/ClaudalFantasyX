@@ -376,6 +376,8 @@ def dressing() -> dict:
         "far_lights": far,
         "kit_material_paths": dict(PEMAKAR_SLOTS),
         "pieces": pieces,
+        # the beaches either side of the harbour shelve into the sea (tools/act1/shore_walls.gd)
+        "edge_walls": zl.shore_walls(ZONE / "pemakar_shore_walls.json"),
     }
 
 

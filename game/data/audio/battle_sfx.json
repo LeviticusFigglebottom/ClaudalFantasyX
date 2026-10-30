@@ -170,6 +170,8 @@
   },
   "skills": {
     "unravel": "skill_unravel",
+    "crawler_mend": "skill_crawler_mend",
+    "crawler_tend": "skill_crawler_tend",
     "nhoa_echo": "skill_nhoa_echo",
     "cord_lift": "skill_cord_lift",
     "tide_gather": "abl_tide_gather",

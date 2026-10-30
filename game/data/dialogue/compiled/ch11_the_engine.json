@@ -8,19 +8,19 @@
    "headers": {"location": "ch11/lowlight"},
    "ops": [
     {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 8},
-    {"op": "cue", "cue": "camera", "args": ["L05"], "kwargs": {}, "src": 9},
-    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 1.0}, "src": 10},
-    {"op": "cue", "cue": "sfx", "args": ["engine_tick"], "kwargs": {}, "src": 11},
-    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 12},
-    {"op": "cue", "cue": "camera", "args": ["T02"], "kwargs": {}, "src": 13},
-    {"op": "cue", "cue": "anim", "args": ["lamp_engine", "gather"], "kwargs": {}, "src": 14},
-    {"op": "cue", "cue": "music", "args": ["lamp_engine"], "kwargs": {"fade": 0.5}, "src": 15},
-    {"op": "line", "id": "ch11_engine_001", "key": "DLG_CH11_ENGINE_001", "speaker": "pell", "emotion": "worried", "voice": "", "src": 16},
-    {"op": "line", "id": "ch11_engine_002", "key": "DLG_CH11_ENGINE_002", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 17},
-    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 18},
-    {"op": "line", "id": "ch11_engine_003", "key": "DLG_CH11_ENGINE_003", "speaker": "liss", "emotion": "determined", "voice": "", "src": 19},
-    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 20},
-    {"op": "event", "name": "start_battle", "args": ["ch11_lamp_engine"], "src": 21}
+    {"op": "cue", "cue": "camera", "args": ["T00"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 1.0}, "src": 11},
+    {"op": "cue", "cue": "sfx", "args": ["engine_tick"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "camera", "args": ["T02"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "anim", "args": ["lamp_engine", "gather"], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "music", "args": ["lamp_engine"], "kwargs": {"fade": 0.5}, "src": 16},
+    {"op": "line", "id": "ch11_engine_001", "key": "DLG_CH11_ENGINE_001", "speaker": "pell", "emotion": "worried", "voice": "", "src": 17},
+    {"op": "line", "id": "ch11_engine_002", "key": "DLG_CH11_ENGINE_002", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 18},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 19},
+    {"op": "line", "id": "ch11_engine_003", "key": "DLG_CH11_ENGINE_003", "speaker": "liss", "emotion": "determined", "voice": "", "src": 20},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 21},
+    {"op": "event", "name": "start_battle", "args": ["ch11_lamp_engine"], "src": 22}
    ]
   }
  }

@@ -19,7 +19,7 @@ location: ch13/ansedra
 Rhen [worried]: They're not making ripples. How are they not making ripples? #line:ch13_city_001
 @wait 1.5
 @camera A03
-@mark kerrid outer_moorings walk
+@mark kerrid kerrid_moorings walk
 @anim asha look_at kerrid
 @anim kerrid raise_hand
 @wait 3.0

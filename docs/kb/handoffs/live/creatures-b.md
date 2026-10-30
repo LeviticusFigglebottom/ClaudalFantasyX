@@ -705,3 +705,45 @@ What the Act II fights still need from others: enemy rows and encounters (combat
 - **BACKLOG EMPTY (11:10):** the Act II bosses and Vowbound are all at real-model quality. Row 64's cause and its two
   fixes are measured and handed to battle-presentation, with nothing on my rigs to prewarm. Venn's stand-in waits on
   claude/characters' merge; the Abiding guard's waits on its actor.
+
+## 2026-10-30 ~13:15: big22 red and the Act I as-played pass
+- **MERGE-READY @ 098a878d1: big22's red test_avalanche_ram fixed.** The test still asserted the Ram had no
+  `clip_by_skill` (from before combat's skills existed); it now checks each mapped skill is in skills.json and each
+  mapped clip is in the GLB (live: a missing clip fails it). tools.tests.test_avalanche_ram + test_wakefin 7/0.
+- **As-played pass, in progress.** The Act I boss fights are played on the real stage with the encounter sweep (a
+  scratch copy that also stills each clip of the boss and Vowbound mid-way, and steps the boss's HP down so every phase
+  is crossed in play).
+  - Reviewed: the Drownbell (flood, KO), Hullgnaw, the Hermit and Ilun, the Reach, and the Inquisitor with Virel. My
+    models show no clipping, pops or missing hit reactions. Ilun, Kahre and Virel each rise, act, are hit and leave
+    cleanly.
+  - **Found and fixed (650257eaa, MERGE-READY once its battle run is green, below):** no boss phase clip was ever seen.
+    `phase_changed` comes from `_end_turn`, right after `action_resolved` starts the blow; BattleActorMotion entered
+    the phase at once and the blow's hit reaction then replaced the phase clip (Hullgnaw's phase_break, the
+    Drownbell's phase_change; Hullgnaw's ribs vanished mid-flinch on the hide_after timer). It now waits for the
+    blow's sequence via `BattleChoreo.after_sequence`, as the phase camera moment does. Review request for creatures,
+    who own the file: M3-CRB-016.
+  - **For battle-presentation (camera, not models):** (1) in undertows_reach, a Vowbound called during the Climb's
+    entry cut rises off screen (the camera is on CameraHints/along_the_walk while Kahre's rise plays); (2) the
+    Spar-Wraith reads as a small dark shape in the rigging at the fight's rest frame (the M3-CRB-011 note).
+- **MERGE-READY @ 650257eaa: a boss phase change waits for the blow that turned it** (M3-CRB-016, review request
+  for creatures). Godot battle 856 run: 3 reds, none from this change (the Act I/II ability-VFX rows wait on
+  battle-presentation's M4-A2P-061; the lineup red is below); creature 159/0, boss 121/0, phase 2/0. Tools suite: the
+  reds are all other tracks' (blender coverage of oruvel_seabed.glb, the ossa_fen wildlife shot, loc "Shell-carver",
+  zone map pois, cutscene sfx todo, a palette baseline, villager clips, audio loudness); test_avalanche_ram passes.
+- **big22 red test_battle_lineup (ch11_lamp_engine), not fixable in my lane without a regression; for
+  battle-presentation and chapters.** The Lamp Engine opens 2.49 and 2.55 m from the two conduit crawlers M4-A2P-022
+  added (needs 2.74: its footprint 2.10 + 0.52 + 0.12). Its footprint is its own mesh (3.6 x 2.35 m) at the stand-in
+  yaw 55°, not its VFX (particles add nothing). Side-on (0° or 90°) it is 1.51 and would pass, but the intro renders at
+  10° and the earlier 90° pass both put the near arm across the body and the core, the reason for 55° (lamp_engine.md
+  As built). Options: (a) battle-presentation lets `boss_seats` seat a boss with adds (the Engine 1–1.5 m back), or
+  (b) chapters spreads ch11's crawler slots, or (c) a larger lineup cap for this fight.
+- **For battle-presentation/env-art: ch11_lamp_engine's default camera is broken on big22.** The left half of the
+  frame is a dark wall and neither the Engine nor the crawlers are in view, only the party (my 09:30 render of the same
+  fixture showed the Engine whole). The boss-intro hero shot is fine.
+- **For battle-presentation: the phase camera moment is cut short by the boss's next turn at real pacing.** A frame
+  trace of ch01_hullgnaw (pacing 1.0, an attack that crosses 50%): the blow plays (hit, f=38); with 650257ea the phase
+  then starts (f=66: `phase_break`, `moments_played` [phase], `moment_left` 2.10, `busy_sec` 2.10); at f=112 (0.77 s)
+  the boss's next turn starts anyway (`coil`), `moment_left` drops to 0 and the 1.9 s phase_break is cut at 40%. The
+  Matron's 2.2 s `phase_change` is cut the same way (no still reaches its middle). test_battle_boss_camera_moments
+  checks `busy_sec() > 1.0` but not that the controller waits for it before the next turn. Scratch trace:
+  game/_scratch_crb/r_hg/trace.gd (git-excluded; copy on request).

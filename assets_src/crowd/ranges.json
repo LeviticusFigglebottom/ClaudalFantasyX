@@ -92,17 +92,30 @@
         "c": [["brass", "bronze_patina", 0.0, 0.6], ["salt_glass", "faded_teal_cloth", 0.2, 0.7], ["roof_clay", "timber_weathered", 0.2, 0.6]]
       }
     },
-    "haluna": {
-      "island": "haluna",
-      "about": "Haluna, Asha's fishing village on its crescent beach (bible section 5): the lane's shop, forge and inn keepers, who wore the netmender's, fisher's and vendor's models until now (M2-CHR-100). Sun-bleached cotton, shell dye and net-twine browns. No reach-bands.",
-      "accepts": ["brightwater", "oruvel", "sorrin", "tamsule", "pemakar", "corrow", "saltwright"],
-      "skin": ["#B9876A", "#8A5A3E"],
+    "ansedra": {
+      "island": "ansedra",
+      "about": "Ansedra's own working people, the barge-polers at the outer moorings (act2_ch13 A02: plain grey; bible section 5.8). A stand-in community from the bodies that exist (the Lead, 2026-10-30) until the characters track's Ansedran costume set (act2_tracks.md row 55) replaces it.",
+      "accepts": ["corrow", "pemakar", "tamsule", "brightwater", "oruvel", "saltwright"],
+      "skin": ["#B08062", "#7E5236"],
       "reach_bands": {"adult": [0, 0], "elder": [0, 0]},
-      "hair": [["hair_black", "hair_dark_brown", 0.0, 0.6]],
+      "hair": [["hair_black", "hair_dark_brown", 0.0, 0.5]],
       "cloth": {
-        "a": [["gauze_white", "sand_cloth", 0.1, 0.9], ["bone", "thatch", 0.0, 0.5]],
-        "b": [["faded_teal_cloth", "sand_cloth", 0.0, 0.4], ["timber_weathered", "sand_cloth", 0.1, 0.5], ["indigo_dye", "gauze_white", 0.1, 0.4]],
-        "c": [["roof_clay", "sand_cloth", 0.0, 0.4], ["tortoiseshell", "sand_cloth", 0.2, 0.6], ["sea_blue_cloth", "gauze_white", 0.0, 0.3]]
+        "a": [["cold_blue_stone", "gauze_white", 0.3, 0.7], ["coral_stone_weathered", "cold_blue_stone", 0.2, 0.6]],
+        "b": [["cold_blue_stone", "lacquer_black", 0.1, 0.4], ["cold_blue_stone", "indigo_dye", 0.0, 0.3]],
+        "c": [["lacquer_black", "cold_blue_stone", 0.3, 0.7], ["order_marble", "cold_blue_stone", 0.2, 0.6]]
+      }
+    },
+    "quellan": {
+      "island": "ullar",
+      "about": "Quellan's Ullari townsfolk, the highland town of stone and woven awnings (act2_ch12 B08; bible section 5.7): undyed wool, keth-cord red, indigo, Toma's people (skin round skin_toma). A stand-in community from the bodies that exist (the Lead, 2026-10-30) until the characters track's Ullari costume set (act2_tracks.md row 55) replaces it.",
+      "accepts": ["corrow", "pemakar", "tamsule", "brightwater", "oruvel", "saltwright"],
+      "skin": ["#A06A4C", "#76482F"],
+      "reach_bands": {"adult": [0, 0], "elder": [0, 0]},
+      "hair": [["hair_black", "hair_dark_brown", 0.0, 0.4]],
+      "cloth": {
+        "a": [["bone", "sand_cloth", 0.0, 0.6], ["sand_cloth", "timber_weathered", 0.2, 0.6]],
+        "b": [["indigo_dye", "cold_blue_stone", 0.0, 0.5], ["laterite", "timber_weathered", 0.2, 0.6], ["timber_weathered", "sand_cloth", 0.0, 0.4]],
+        "c": [["lacquer_red", "laterite", 0.0, 0.6], ["lacquer_red_deep", "timber_weathered", 0.0, 0.4], ["indigo_dye", "bone", 0.0, 0.3]]
       }
     },
     "order": {
@@ -144,7 +157,7 @@
     "cook": {"kits": ["worker_f", "market_f"], "work": "fold"},
     "ferryman_mate": {"kits": ["worker_m", "fisher_m"], "work": "haul"},
     "brand_girl": {"kits": ["child_f", "wright"], "work": ""},
-    "smith": {"kits": ["worker_m", "trader_m"], "work": "mend"}
+    "poler": {"kits": ["worker_m", "fisher_m", "trader_m"], "work": "haul"}
   },
   "side_cloth": {
     "_about": "Reefball sides' colours for the divers (act1_ch07 section 8: Oruvel's side is oil-black and brass; Sorrin's is its own sea-blue and clay), by community.",

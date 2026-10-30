@@ -373,6 +373,24 @@
       "voices": 2,
       "volume_db": 0.0,
       "_note": "M4-AUD-1010: Hesk's cord lift: pale threads drawn up, the knots' light loosing, a soft bell (assets_src/sfx/act2_skill_sfx.py)"
+    },
+    "skill_crawler_mend": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/skill_crawler_mend.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "Ch11, the conduit crawler relights a broken part of the Lamp Engine: leg-ticks, a spark catching, the bound light humming back up (assets_src/sfx/act2_skill_sfx.py)"
+    },
+    "skill_crawler_tend": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/skill_crawler_tend.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "Ch11, the conduit crawler tends the engine: unhurried leg-ticks, soft taps on the casing, a small hum (assets_src/sfx/act2_skill_sfx.py)"
     }
   }
 }
