@@ -1597,6 +1597,17 @@
         "pale_rim_flats-lod1": 448
       }
     },
+    "pale_rim_strand": {
+      "budget": [
+        10000,
+        1000
+      ],
+      "bytes": 329648,
+      "lods": {
+        "pale_rim_strand": 9600,
+        "pale_rim_strand-lod1": 960
+      }
+    },
     "pass_cord": {
       "budget": [
         7000,
@@ -1749,6 +1760,17 @@
       "lods": {
         "reed_platform_6m": 2190,
         "reed_platform_6m-lod1": 120
+      }
+    },
+    "rim_marker_pole": {
+      "budget": [
+        500,
+        60
+      ],
+      "bytes": 14888,
+      "lods": {
+        "rim_marker_pole": 100,
+        "rim_marker_pole-lod1": 49
       }
     },
     "roll_table": {
