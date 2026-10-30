@@ -8150,6 +8150,25 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "battle_arena_lacquer_court_steps",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_lacquer_court_steps.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }
