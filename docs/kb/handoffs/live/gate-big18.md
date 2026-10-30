@@ -107,3 +107,12 @@ m2-slice's Ch1 framing is right; the Lead judges the shots at review.)
 branch (ADRs 0202–0204, the Act II plan, the 187 approved big17 baselines) + the current track heads. It is built,
 checked and captured instead; see `gate-big19.md`. big18's Blender run and the water probe finish and are logged
 here for the comparison; there is no GATE-DONE for big18.
+- **Blender done (big18 @ 4ee3a7b8, 78 jobs since big17, 5736 s): 71 ok, 7 FAIL.**
+  - brine_shoals_kit (3 DIFF, as above): pre-existing on big17. Route to env-art (the tent) and env-art-b (the fire
+    materials).
+  - **NEW, branch content (creatures):** crowd_man_heavy, crowd_man_lean_a, crowd_man_medium_a, crowd_man_medium_b and
+    crowd_order_man (1 DIFF each: `<id>_head_albedo.png`), and crowd_woman_lean_a (5 DIFF: the glb's Head
+    TEXCOORD_0 plus its 4 head textures). The rebuilt head textures don't match the committed ones. Red on
+    `claude/creatures` @ 93829b74 alone too (re-verified there), so they need a rebuild and commit on creatures.
+- The water-warning probe (`--filter=test_qa_`) never ran (a wait loop matched its own command line). It is re-checked
+  on big19's suite instead.
