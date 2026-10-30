@@ -1847,3 +1847,11 @@ MERGE-READY @ (this commit).
   - **Act I:** 2 items, both low and both env-art-b's (the tamsule_bell drop proxies, as before).
   - **Act II:** `act2_inventory.md` refreshed: 38 items (15 high, 23 medium), up from 34 as big20 brought Act II
     zones in. Audio has 19, env-art-b 11 and battle-presentation 4. It is report-only (ADR 0205).
+- **Trial merge @ integration 857c73ad; integration merged into this branch.** act1-chapters fixed M3-HER-1159 the
+  same day: a layout can name its own "Encounter" fallback. Their change touched my lines in greybox_zone.gd and
+  test_qa_field_camera.gd, so I reworked mine to merge clean with every head:
+  - my first-spawn fallback is now in `place_at()`, used only when no fight was recorded and the layout names no
+    Encounter spawn of its own;
+  - the build lines and the KNOWN block are back to the base text (their merge drops the KNOWN rows).
+  - Re-tested after an import: qa_field_camera 2/0, encounter 3/0, hero_field_snaps 2/0, qa_party 3/0.
+MERGE-READY @ (this commit).
