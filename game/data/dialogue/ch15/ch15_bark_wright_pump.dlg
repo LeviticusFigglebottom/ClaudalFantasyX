@@ -1,0 +1,9 @@
+// Ch15 B11 bark: a wright at a bilge pump whose salt-glass glows (bound light, put to work: "the dead want to
+// be useful", bible §7). Asha, passing, looks at the pump's glow a long time. Nobody judges it here.
+title: ch15_bark_wright_pump
+location: ch17/hollowmere
+---
+Wright [soft_smile]: She's a grandmother of mine. Pumps the bilge every night. Best worker on the hull. #line:ch15_bark_pump_001 #tn:"The pump is powered by the bound light of the speaker's dead grandmother; said with pride and affection."
+@anim asha look_at pump_glow
+@wait 3.0
+===

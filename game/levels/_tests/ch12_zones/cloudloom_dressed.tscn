@@ -1,0 +1,79 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/levels/ch12/ch12_zone.gd" id="1_zone"]
+[ext_resource type="Script" path="res://game/levels/act1/zone_kit_dressing.gd" id="2_dressing"]
+[ext_resource type="Script" path="res://game/levels/act1/zone_cast.gd" id="7_cast"]
+
+[node name="Cloudloom" type="Node3D"]
+script = ExtResource("1_zone")
+location_id = &"ch12/cloudloom"
+layout_path = "res://game/levels/ch12/cloudloom/cloudloom_layout.json"
+
+[node name="Cast" type="Node" parent="."]
+script = ExtResource("7_cast")
+
+[node name="Dressing" type="Node3D" parent="."]
+script = ExtResource("2_dressing")
+layout_path = "res://game/levels/ch12/cloudloom/cloudloom_dressing.json"
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Approach_up" type="Camera3D" parent="Cameras"]
+fov = 55.0
+near = 0.1
+far = 2500.0
+transform = Transform3D(1.00000, 0.00000, -0.00000, -0.00000, 0.98986, -0.14202, 0.00000, 0.14202, 0.98986, 0.0, 1.7, 3.0)
+
+[node name="Stair_top" type="Camera3D" parent="Cameras"]
+fov = 60.0
+near = 0.1
+far = 2500.0
+transform = Transform3D(1.00000, 0.00000, -0.00000, -0.00000, 0.99431, -0.10653, 0.00000, 0.10653, 0.99431, 0.0, 6.5, -16.0)
+
+[node name="C01_hall" type="Camera3D" parent="Cameras"]
+fov = 50.0
+near = 0.1
+far = 2500.0
+transform = Transform3D(1.00000, 0.00000, -0.00000, -0.00000, 1.00000, -0.00000, 0.00000, 0.00000, 1.00000, 0.0, 8.0, -23.0)
+
+[node name="Aisle" type="Camera3D" parent="Cameras"]
+fov = 60.0
+near = 0.1
+far = 2500.0
+transform = Transform3D(1.00000, 0.00000, -0.00000, -0.00000, 0.99996, 0.00870, 0.00000, -0.00870, 0.99996, 0.0, 7.6, -32.0)
+
+[node name="Under_keth" type="Camera3D" parent="Cameras"]
+fov = 60.0
+near = 0.1
+far = 2500.0
+transform = Transform3D(1.00000, 0.00000, -0.00000, -0.00000, 0.74329, -0.66896, 0.00000, 0.66896, 0.74329, -9.0, 7.4, -42.0)
+
+[node name="Floor_writing" type="Camera3D" parent="Cameras"]
+fov = 60.0
+near = 0.1
+far = 2500.0
+transform = Transform3D(0.98058, 0.06366, -0.18550, -0.00000, 0.94585, 0.32462, 0.19612, -0.31831, 0.92748, 6.0, 9.5, -36.0)
+
+[node name="Hesk_dais" type="Camera3D" parent="Cameras"]
+fov = 50.0
+near = 0.1
+far = 2500.0
+transform = Transform3D(1.00000, 0.00000, -0.00000, -0.00000, 0.99436, 0.10606, 0.00000, -0.10606, 0.99436, 0.0, 7.6, -50.0)
+
+[node name="Up_through_roof" type="Camera3D" parent="Cameras"]
+fov = 70.0
+near = 0.1
+far = 2500.0
+transform = Transform3D(0.89443, -0.42069, -0.15172, -0.00000, 0.33927, -0.94069, 0.44721, 0.84138, 0.30345, 2.0, 7.6, -40.0)
+
+[node name="Out_the_door" type="Camera3D" parent="Cameras"]
+fov = 55.0
+near = 0.1
+far = 2500.0
+transform = Transform3D(-1.00000, 0.00000, -0.00000, 0.00000, 0.99529, 0.09691, 0.00000, 0.09691, -0.99529, 0.0, 7.7, -48.0)
+
+[node name="Over_summit" type="Camera3D" parent="Cameras"]
+fov = 55.0
+near = 0.1
+far = 2500.0
+transform = Transform3D(0.85749, 0.19583, -0.47577, -0.00000, 0.92473, 0.38062, 0.51450, -0.32638, 0.79295, -30.0, 30.0, 10.0)

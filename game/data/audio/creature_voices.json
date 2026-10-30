@@ -408,32 +408,8 @@
         "move": "cre_conduit_crawler_tick"
       }
     },
-    "root_crab": {
-      "family": "crab",
-      "variant_of": "reef_crab",
-      "pitch": 0.85,
-      "_note": "Ch10 variant: a bark-and-root reef crab, a little heavier (M3-AUD-849; its parent's set at another pitch, as its model reuses the parent's rig)",
-      "events": {
-        "idle": "cre_reef_crab_idle",
-        "attack": "cre_reef_crab_attack",
-        "hurt": "cre_reef_crab_hurt",
-        "death": "cre_reef_crab_death",
-        "move": "cre_reef_crab_skitter"
-      }
-    },
-    "fen_leech": {
-      "family": "leech",
-      "variant_of": "sail_leech",
-      "pitch": 0.9,
-      "_note": "Ch10 variant: a longer, ribbon-flat sail leech (M3-AUD-849; its parent's set at another pitch, as its model reuses the parent's rig)",
-      "events": {
-        "idle": "cre_sail_leech_idle",
-        "attack": "cre_sail_leech_attack",
-        "hurt": "cre_sail_leech_hurt",
-        "death": "cre_sail_leech_death",
-        "move": "cre_sail_leech_flap"
-      }
-    },
+    "root_crab": {"family": "crab", "_note": "Ch10 variant: a bark-and-root reef crab; its own set (M4-AUD-1001): the crab's shell lower, wet bark and tannin drips", "events": {"idle": "cre_root_crab_idle", "attack": "cre_root_crab_attack", "hurt": "cre_root_crab_hurt", "death": "cre_root_crab_death", "move": "cre_root_crab_skitter"}},
+    "fen_leech": {"family": "leech", "_note": "Ch10 variant: a ribbon-flat sail leech; its own set (M4-AUD-1001): the leech's flap slower, through brown fen water", "events": {"idle": "cre_fen_leech_idle", "attack": "cre_fen_leech_attack", "hurt": "cre_fen_leech_hurt", "death": "cre_fen_leech_death", "move": "cre_fen_leech_flap"}},
     "ridge_lynx": {
       "family": "lynx",
       "_note": "Ch12 regular: a high-pass lynx's growl, hiss and yowl, snowshoe paws; assets_src/sfx/act2_creature_sfx.py (M3-AUD-849)",
@@ -456,19 +432,7 @@
         "move": "cre_cord_moth_flutter"
       }
     },
-    "scree_crawler": {
-      "family": "tortoise",
-      "variant_of": "slag_tortoise",
-      "pitch": 1.08,
-      "_note": "Ch12 variant: a frost-split scree shell (M3-AUD-849; its parent's set at another pitch, as its model reuses the parent's rig)",
-      "events": {
-        "idle": "cre_slag_tortoise_idle",
-        "attack": "cre_slag_tortoise_attack",
-        "hurt": "cre_slag_tortoise_hurt",
-        "death": "cre_slag_tortoise_death",
-        "move": "cre_slag_tortoise_plod"
-      }
-    },
+    "scree_crawler": {"family": "tortoise", "_note": "Ch12 variant: a scree shell; its own set (M4-AUD-1001): the tortoise's plod with snow and grit (ADR 0204 \u00a72: no frost)", "events": {"idle": "cre_scree_crawler_idle", "attack": "cre_scree_crawler_attack", "hurt": "cre_scree_crawler_hurt", "death": "cre_scree_crawler_death", "move": "cre_scree_crawler_plod"}},
     "glass_skate": {
       "family": "skate",
       "_note": "Ch16 regular: buried in white sand under shallow water; it erupts and slaps; assets_src/sfx/act2_creature_sfx.py (M3-AUD-849)",
@@ -480,19 +444,7 @@
         "move": "cre_glass_skate_glide"
       }
     },
-    "rim_crawler": {
-      "family": "crab",
-      "variant_of": "tide_crawler",
-      "pitch": 1.06,
-      "_note": "Ch16 variant: a bleached, chalky tide crawler (M3-AUD-849; its parent's set at another pitch, as its model reuses the parent's rig)",
-      "events": {
-        "idle": "cre_tide_crawler_idle",
-        "attack": "cre_tide_crawler_attack",
-        "hurt": "cre_tide_crawler_hurt",
-        "death": "cre_tide_crawler_death",
-        "move": "cre_tide_crawler_skitter"
-      }
-    },
+    "rim_crawler": {"family": "crab", "_note": "Ch16 variant: a bleached, chalky tide crawler; its own set (M4-AUD-1001): drier, chalk ticks and dust", "events": {"idle": "cre_rim_crawler_idle", "attack": "cre_rim_crawler_attack", "hurt": "cre_rim_crawler_hurt", "death": "cre_rim_crawler_death", "move": "cre_rim_crawler_skitter"}},
     "ilun": {
       "family": "vowbound",
       "_note": "M3-AUD-846: Ilun the Net-Warden (Asha's Vowbound): heard by his combatant id and, once M3-CRE-638's model lands, its clips; assets_src/sfx/vowbound_sfx.py",

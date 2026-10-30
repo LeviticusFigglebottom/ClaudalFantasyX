@@ -7074,6 +7074,1213 @@
         }
       ],
       "note": "The storm's hand closes on the stair head: the dark comes down whole, wound-light crushed out."
+    },
+    "leech_bite": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#1E4A3A",
+          "color_end": "#3E7A3A",
+          "swatches": [
+            "foliage_shadow",
+            "palm_green"
+          ],
+          "amount": 40,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -1.5,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#3E7A3A",
+          "color_end": "#1E4A3A",
+          "swatches": [
+            "palm_green",
+            "foliage_shadow"
+          ],
+          "amount": 18,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.3,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "The fen leech bites: a dark wet spatter, then the sickness settling in (poison)."
+    },
+    "root_drag": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "ground",
+      "layers": [
+        {
+          "color": "#7E6A55",
+          "color_end": "#A8573A",
+          "swatches": [
+            "timber_weathered",
+            "laterite"
+          ],
+          "amount": 54,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.4,
+            3.0
+          ],
+          "spread_deg": 70,
+          "gravity": [
+            0,
+            -7.0,
+            0
+          ],
+          "size_m": [
+            0.14,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#B59D74",
+          "color_end": "#1E4A3A",
+          "swatches": [
+            "sand_wet",
+            "foliage_shadow"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            0.8,
+            1.6
+          ],
+          "spread_deg": 85,
+          "gravity": [
+            0,
+            -0.6,
+            0
+          ],
+          "size_m": [
+            0.22,
+            0.46
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.3,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The root crab drags at the footing: splinters and wet fen mud thrown out low."
+    },
+    "tannin_jet": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#7E6A55",
+          "color_end": "#B59D74",
+          "swatches": [
+            "timber_weathered",
+            "sand_wet"
+          ],
+          "amount": 60,
+          "lifetime_s": 0.7,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            1.5,
+            3.0
+          ],
+          "spread_deg": 50,
+          "gravity": [
+            0,
+            -6.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The tannin archer's jet: brown fen water, tea-dark, breaking over the target."
+    },
+    "glide_lash": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#1FA3A6",
+          "color_end": "#EEF6F4",
+          "swatches": [
+            "lagoon_teal",
+            "foam_white"
+          ],
+          "amount": 50,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            -1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "The gallery ray's lash: a flat sweep of sea water off its wing edge."
+    },
+    "rime_spine": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#BFE6E0",
+          "color_end": "#9DB4D9",
+          "swatches": [
+            "salt_glass",
+            "moon_blue"
+          ],
+          "amount": 28,
+          "lifetime_s": 0.8,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.2,
+            2.4
+          ],
+          "spread_deg": 60,
+          "gravity": [
+            0,
+            -6.5,
+            0
+          ],
+          "size_m": [
+            0.18,
+            0.36
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#9DB4D9",
+          "color_end": "#5E6E80",
+          "swatches": [
+            "moon_blue",
+            "cold_blue_stone"
+          ],
+          "amount": 14,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.3,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "The rime urchin's spine: rime shards, then the cold slowing the target (Slow)."
+    },
+    "scree_slide": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "ground",
+      "layers": [
+        {
+          "color": "#5E6E80",
+          "color_end": "#E6E1D6",
+          "swatches": [
+            "cold_blue_stone",
+            "mortar_white"
+          ],
+          "amount": 60,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.4,
+            3.0
+          ],
+          "spread_deg": 70,
+          "gravity": [
+            0,
+            -7.0,
+            0
+          ],
+          "size_m": [
+            0.14,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#EFDDB4",
+          "color_end": "#6F7E8E",
+          "swatches": [
+            "sand_dry",
+            "overcast_slate"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            0.8,
+            1.6
+          ],
+          "spread_deg": 85,
+          "gravity": [
+            0,
+            -0.6,
+            0
+          ],
+          "size_m": [
+            0.22,
+            0.46
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.3,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The scree crawler's slide: grit and wet snow tumbling at the target's feet (no ice: ADR 0204)."
+    },
+    "unravel": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#C9B48E",
+          "color_end": "#5E9A96",
+          "swatches": [
+            "sand_cloth",
+            "faded_teal_cloth"
+          ],
+          "amount": 30,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.45,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        },
+        {
+          "color": "#E6DAC0",
+          "color_end": "#C9B48E",
+          "swatches": [
+            "bone",
+            "sand_cloth"
+          ],
+          "amount": 26,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "The cord moth unravels a woven blessing: loose thread-ends pulled off and falling (a cleanse of buffs)."
+    },
+    "skate_sting": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#BFE6E0",
+          "color_end": "#3E7A3A",
+          "swatches": [
+            "salt_glass",
+            "palm_green"
+          ],
+          "amount": 40,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        },
+        {
+          "color": "#3E7A3A",
+          "color_end": "#1E4A3A",
+          "swatches": [
+            "palm_green",
+            "foliage_shadow"
+          ],
+          "amount": 14,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.25,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "The glass skate's sting: a needle of pale glass, then the poison settling."
+    },
+    "drowner_drag": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "ground",
+      "layers": [
+        {
+          "color": "#0E4A55",
+          "color_end": "#EEF6F4",
+          "swatches": [
+            "deep_teal_shadow",
+            "foam_white"
+          ],
+          "amount": 60,
+          "lifetime_s": 0.7,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            1.5,
+            3.0
+          ],
+          "spread_deg": 50,
+          "gravity": [
+            0,
+            -6.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Mangrove Drowner hauls the footing: fen water dragged back along the roots."
+    },
+    "rising_water": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "ground",
+      "layers": [
+        {
+          "color": "#1FA3A6",
+          "color_end": "#0E4A55",
+          "swatches": [
+            "lagoon_teal",
+            "deep_teal_shadow"
+          ],
+          "amount": 70,
+          "lifetime_s": 0.7,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            1.5,
+            3.0
+          ],
+          "spread_deg": 50,
+          "gravity": [
+            0,
+            -6.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Drowner's rising water climbs around each of the party (water, never glimmer)."
+    },
+    "root_stamp": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "ground",
+      "layers": [
+        {
+          "color": "#7E6A55",
+          "color_end": "#1E4A3A",
+          "swatches": [
+            "timber_weathered",
+            "foliage_shadow"
+          ],
+          "amount": 66,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.4,
+            3.0
+          ],
+          "spread_deg": 70,
+          "gravity": [
+            0,
+            -7.0,
+            0
+          ],
+          "size_m": [
+            0.14,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#B59D74",
+          "color_end": "#0E4A55",
+          "swatches": [
+            "sand_wet",
+            "deep_teal_shadow"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            0.8,
+            1.6
+          ],
+          "spread_deg": 85,
+          "gravity": [
+            0,
+            -0.6,
+            0
+          ],
+          "size_m": [
+            0.22,
+            0.46
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.3,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Risen on its root-feet, the Drowner stamps: splinters and fen mud."
+    },
+    "lamp_trim": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#B08D57",
+          "color_end": "#BFE6E0",
+          "swatches": [
+            "brass",
+            "salt_glass"
+          ],
+          "amount": 46,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "The Lamp Engine's scissor arm snips: brass sparks."
+    },
+    "lamp_gather": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#4FB3B0",
+          "color_end": "#BFE6E0",
+          "swatches": [
+            "glimmer_bound",
+            "salt_glass"
+          ],
+          "amount": 44,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.0,
+          "velocity_m_s": [
+            0.1,
+            0.3
+          ],
+          "spread_deg": 40,
+          "gravity": [
+            0,
+            1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.26
+          ],
+          "energy": 1.3,
+          "emission_radius_m": 1.0,
+          "turbulence": 0.4,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Lamp Engine gathers: every lamp turns to the party and brightens (bound light, steady)."
+    },
+    "lamp_flare": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#4FB3B0",
+          "color_end": "#BFE6E0",
+          "swatches": [
+            "glimmer_bound",
+            "salt_glass"
+          ],
+          "amount": 54,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The lamps loose together: bound light in the eyes (capped by particles, not a screen flash)."
+    },
+    "core_pulse": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#4FB3B0",
+          "color_end": "#1FA3A6",
+          "swatches": [
+            "glimmer_bound",
+            "lagoon_teal"
+          ],
+          "amount": 60,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -1.5,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The bared core pulses: a ring of steady bound light breaking over each of the party."
+    },
+    "horn_toss": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#C9B48E",
+          "color_end": "#6F7E8E",
+          "swatches": [
+            "sand_cloth",
+            "overcast_slate"
+          ],
+          "amount": 46,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "The Avalanche Ram tosses its head: wet wool and grit."
+    },
+    "ram_charge_gather": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "ground",
+      "layers": [
+        {
+          "color": "#E6E1D6",
+          "color_end": "#EFDDB4",
+          "swatches": [
+            "mortar_white",
+            "sand_dry"
+          ],
+          "amount": 40,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.85,
+          "velocity_m_s": [
+            0.05,
+            0.15
+          ],
+          "spread_deg": 5,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 1.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Ram paws the terrace, head low: snow kicked up around its feet (no ice, ADR 0204)."
+    },
+    "ram_charge": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "ground",
+      "layers": [
+        {
+          "color": "#C9B48E",
+          "color_end": "#6F7E8E",
+          "swatches": [
+            "sand_cloth",
+            "overcast_slate"
+          ],
+          "amount": 70,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.4,
+            3.0
+          ],
+          "spread_deg": 70,
+          "gravity": [
+            0,
+            -7.0,
+            0
+          ],
+          "size_m": [
+            0.14,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#E6E1D6",
+          "color_end": "#EFDDB4",
+          "swatches": [
+            "mortar_white",
+            "sand_dry"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            0.8,
+            1.6
+          ],
+          "spread_deg": 85,
+          "gravity": [
+            0,
+            -0.6,
+            0
+          ],
+          "size_m": [
+            0.22,
+            0.46
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.3,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Ram drives through: snow and grit thrown out low."
+    },
+    "ram_bellow": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "head",
+      "layers": [
+        {
+          "color": "#E6E1D6",
+          "color_end": "#6F7E8E",
+          "swatches": [
+            "mortar_white",
+            "overcast_slate"
+          ],
+          "amount": 40,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.5,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "The bellow brings the snow down off the wall onto the party (wet snow, never ice)."
+    },
+    "fin_cut": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#1C6B78",
+          "color_end": "#061A2B",
+          "swatches": [
+            "sea_glow",
+            "abyss_navy"
+          ],
+          "amount": 50,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "The Wakefin's blade cuts across the rail: a seam of sea-glow."
+    },
+    "sound_dive": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "ground",
+      "layers": [
+        {
+          "color": "#1C6B78",
+          "color_end": "#061A2B",
+          "swatches": [
+            "sea_glow",
+            "abyss_navy"
+          ],
+          "amount": 48,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.85,
+          "velocity_m_s": [
+            0.05,
+            0.15
+          ],
+          "spread_deg": 5,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 1.6,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Wakefin sounds: the water darkens, then a ring of sea-glow marks where it will rise (a glow, not a light)."
+    },
+    "wake_breach": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#1C6B78",
+          "color_end": "#0E4A55",
+          "swatches": [
+            "sea_glow",
+            "deep_teal_shadow"
+          ],
+          "amount": 70,
+          "lifetime_s": 0.7,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            1.5,
+            3.0
+          ],
+          "spread_deg": 50,
+          "gravity": [
+            0,
+            -6.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "It breaches alongside and the fin sweeps the deck: black water lit from below."
+    },
+    "wake_wheel": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "ground",
+      "layers": [
+        {
+          "color": "#0E4A55",
+          "color_end": "#1C6B78",
+          "swatches": [
+            "deep_teal_shadow",
+            "sea_glow"
+          ],
+          "amount": 54,
+          "lifetime_s": 0.7,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            1.5,
+            3.0
+          ],
+          "spread_deg": 50,
+          "gravity": [
+            0,
+            -6.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The circle closes: the wake rocks the barge under each of the party."
     }
   },
   "map": {
@@ -7180,7 +8387,30 @@
       "rope_dive": "rope_dive",
       "hand_closes": "hand_closes",
       "long_hold": "swell_weighted_swing",
-      "three_reel_charge": "swell_reel_stop"
+      "three_reel_charge": "swell_reel_stop",
+      "leech_bite": "leech_bite",
+      "root_drag": "root_drag",
+      "tannin_jet": "tannin_jet",
+      "glide_lash": "glide_lash",
+      "rime_spine": "rime_spine",
+      "scree_slide": "scree_slide",
+      "unravel": "unravel",
+      "skate_sting": "skate_sting",
+      "drowner_drag": "drowner_drag",
+      "rising_water": "rising_water",
+      "root_stamp": "root_stamp",
+      "lamp_trim": "lamp_trim",
+      "lamp_gather": "lamp_gather",
+      "lamp_flare": "lamp_flare",
+      "core_pulse": "core_pulse",
+      "horn_toss": "horn_toss",
+      "ram_charge_gather": "ram_charge_gather",
+      "ram_charge": "ram_charge",
+      "ram_bellow": "ram_bellow",
+      "fin_cut": "fin_cut",
+      "sound_dive": "sound_dive",
+      "wake_breach": "wake_breach",
+      "wake_wheel": "wake_wheel"
     },
     "items": {
       "bitterleaf": "bitterleaf",

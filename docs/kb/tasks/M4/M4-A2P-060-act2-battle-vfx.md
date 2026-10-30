@@ -2,9 +2,8 @@
 id: M4-A2P-060
 title: "Act II battle VFX in effects.json: every new skill, boss and set piece"
 role: combat
-status: blocked
-blocked-by: ADR 0203
-owner_session: ""
+status: doing
+owner_session: claude/battle-presentation (session_01UPFyEA8QkJULH74MGgnMvJ; ADR 0205: Act II starts for battle-presentation)
 depends_on: [M4-A2P-058]
 reviewer: rendering
 milestone: M4

@@ -33,6 +33,7 @@ const DRAWN: Array[StringName] = [
 	&"power_break",
 	&"magic_break",
 	&"provoke",
+	&"rooted",
 ]
 
 var status: StringName = &""
@@ -160,6 +161,13 @@ func _ailment_glyph(p: Callable, col: Color, w: float, s: float) -> void:
 			draw_arc(p.call(22, 28), 6 * s, 0.0, PI, 10, col, w)
 			_poly(PackedVector2Array([p.call(16, 28), p.call(16, 22), p.call(20, 25)]), col, w)
 			draw_arc(p.call(28, 9), 2 * s, 0.0, TAU, 8, col, w)
+		&"rooted":
+			# Act II (M4-A2P-020/083): a stake held by roots, three spreading from its foot and one curled round it.
+			draw_line(p.call(24, 10), p.call(24, 27), col, w)
+			_poly(PackedVector2Array([p.call(24, 27), p.call(19, 30), p.call(15, 31), p.call(11, 36)]), col, w)
+			_poly(PackedVector2Array([p.call(24, 27), p.call(29, 30), p.call(33, 31), p.call(37, 36)]), col, w)
+			_poly(PackedVector2Array([p.call(24, 27), p.call(23, 32), p.call(25, 38)]), col, w)
+			draw_arc(p.call(24, 19), 6 * s, PI * 0.1, PI * 0.9, 10, col, w)
 		_:
 			_poly(PackedVector2Array([p.call(24, 12), p.call(36, 24), p.call(24, 36), p.call(12, 24)]), col, w, true)
 

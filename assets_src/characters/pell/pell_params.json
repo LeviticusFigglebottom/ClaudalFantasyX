@@ -16,8 +16,8 @@
   "neck_width_ratio": 0.55,
   "head_width_ratio": 0.52,
   "femininity": 0.0,
-  "muscle": 0.3,
-  "mass": 0.05,
+  "muscle": 0.6,
+  "mass": 0.15,
   "breast": 0.0,
   "eye_scale": 0.85,
   "ipd_m": 0.07,
@@ -277,7 +277,7 @@
       0.011
     ],
     "fringe_lift_m": 0.0008,
-    "fringe_forearm_to": 0.45,
+    "fringe_forearm_to": 0.9,
     "mantle_clear_x_m": 0.05,
     "seed": 53
   },

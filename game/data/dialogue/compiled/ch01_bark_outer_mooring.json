@@ -9,10 +9,10 @@
    "ops": [
     {"op": "line", "id": "ch01_bark_sadi_001", "key": "DLG_CH01_BARK_SADI_001", "speaker": "skipper_sadi", "emotion": "smile", "voice": "", "src": 8},
     {"op": "line", "id": "ch01_bark_sadi_002", "key": "DLG_CH01_BARK_SADI_002", "speaker": "rhen", "emotion": "smile", "voice": "", "src": 9},
-    {"op": "cue", "cue": "camera", "args": ["O07"], "kwargs": {}, "src": 10},
-    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 11},
-    {"op": "line", "id": "ch01_bark_sadi_003", "key": "DLG_CH01_BARK_SADI_003", "speaker": "skipper_sadi", "emotion": "laugh", "voice": "", "src": 12},
-    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 13}
+    {"op": "cue", "cue": "camera", "args": ["O07"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 14},
+    {"op": "line", "id": "ch01_bark_sadi_003", "key": "DLG_CH01_BARK_SADI_003", "speaker": "skipper_sadi", "emotion": "laugh", "voice": "", "src": 15}
    ]
   }
  }

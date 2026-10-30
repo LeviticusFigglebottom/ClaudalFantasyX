@@ -1565,3 +1565,9 @@ transform = Transform3D(0.965716, 0.0352537, 0.257196, 0, 0.990736, -0.1358, -0.
 [node name="KitSlotSwaps" type="Node" parent="."]
 script = ExtResource("slot_swaps")
 paths = {"cs_copper": "res://game/levels/ch08/coilspire/coilspire_copper_material.tres", "cs_copper_worn": "res://game/levels/ch08/coilspire/coilspire_copper_worn_material.tres", "cs_iron": "res://game/levels/ch08/coilspire/coilspire_iron_material.tres"}
+
+[node name="arena_headland_ground" parent="Ground" index="0"]
+visibility_range_end = 2000.0
+
+[node name="arena_headland_ground-lod1" parent="Ground" index="1"]
+visibility_range_begin = 2000.0

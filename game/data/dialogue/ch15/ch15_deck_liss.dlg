@@ -1,0 +1,20 @@
+// Ch15 B02 talk: Liss beside the bier, narrating the barge's construction to herself (her grief tell). If
+// Rhen and Liss repaired the lamp together at Lowlight (ch11_lamp_repaired), she lets him sit with her and
+// says only "Don't say anything kind" (a rhyme with Rhen's own Act I line); otherwise she sends him off.
+// Sitting with her is the only free action in B02 that changes anything (B14 reads it).
+title: ch15_deck_liss
+location: ch15/open_sea
+---
+Liss [grief]: Lacquer over cedar. Pegged, not nailed. Ansedrans peg everything. Tobin said they'd peg the sea down if they could. #line:ch15_deck_liss_001
+<<if $ch11_lamp_repaired>>
+    -> Sit with her. #line:ch15_deck_liss_002
+        @anim rhen sit_beside liss
+        Liss [grief]: Don't. Don't say anything kind. #line:ch15_deck_liss_003
+        @wait 4.0
+        <<set $ch15_sat_with_liss = true>>
+    -> Leave her be. #line:ch15_deck_liss_004
+        @anim rhen step_back
+<<else>>
+    Liss [cold]: Go and sit somewhere else, Sallow. #line:ch15_deck_liss_005
+<<endif>>
+===

@@ -54,3 +54,26 @@ static func live_draws(g: GeometryInstance3D) -> Array:
 ## It's already loaded: a worker that loads could stall a quit (M2-RND-910).
 static func instance_live(packed: PackedScene, box: Array) -> void:
 	box[0] = packed.instantiate()
+
+
+## The stage draw of one harvested pair: a MeshInstance3D, or a MultiMeshInstance3D with the source's
+## vertex format (colours, custom data) when it came from one.
+static func draw_for(mat: Material, mesh: Mesh, src: MultiMesh, config: Dictionary) -> GeometryInstance3D:
+	var node: GeometryInstance3D
+	if src != null:
+		var mm := MultiMesh.new()
+		mm.transform_format = src.transform_format
+		mm.use_colors = src.use_colors
+		mm.use_custom_data = src.use_custom_data
+		mm.mesh = mesh
+		mm.instance_count = int(config.get("multimesh_instances", 1))
+		var mmi := MultiMeshInstance3D.new()
+		mmi.multimesh = mm
+		node = mmi
+	else:
+		var mi := MeshInstance3D.new()
+		mi.mesh = mesh
+		node = mi
+	node.material_override = mat
+	node.position = Vector3.FORWARD * float(config.get("quad_distance", 0.0))
+	return node

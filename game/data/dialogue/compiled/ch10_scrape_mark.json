@@ -1,0 +1,18 @@
+{
+ "format": 1,
+ "scene": "ch10_scrape_mark",
+ "source": "game/data/dialogue/ch10/ch10_scrape_mark.dlg",
+ "start": "ch10_scrape_mark",
+ "nodes": {
+  "ch10_scrape_mark": {
+   "headers": {"location": "ch10/ossa_fen"},
+   "ops": [
+    {"op": "if_not", "cond": ["flag", "ch08_liss_found_marks"], "to": 3, "src": 6},
+    {"op": "line", "id": "ch10_scrape_001", "key": "DLG_CH10_SCRAPE_001", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 7},
+    {"op": "goto", "to": 3, "src": 6},
+    {"op": "line", "id": "ch10_scrape_002", "key": "DLG_CH10_SCRAPE_002", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 9},
+    {"op": "set", "flag": "ch10_found_scrape_mark", "value": ["lit", true], "src": 10}
+   ]
+  }
+ }
+}

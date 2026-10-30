@@ -42658,6 +42658,10 @@
     27.6
    ],
    "y": 0.7,
+   "material_paths": {
+    "kit_volcanic_dressed": "res://assets/environments/kits/pemakar/materials/kit_weir_stone.tres",
+    "kit_channel_water": "res://assets/environments/kits/pemakar/materials/kit_water_spill.tres"
+   },
    "block": "SeaCutWeir"
   },
   {

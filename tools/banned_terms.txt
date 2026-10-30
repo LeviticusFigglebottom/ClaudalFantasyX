@@ -80,6 +80,7 @@ i:nap shot
 i:wither shot
 Aurochs
 i:blue mage
+Farplane
 i:armor break
 i:mental break
 i:power break

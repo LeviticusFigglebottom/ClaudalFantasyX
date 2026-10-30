@@ -1,0 +1,10 @@
+// Ch12 B08 Quellan bark: a herder, if the party carries word of the Ram. The herd-cord's three names.
+title: ch12_bark_herder
+location: ch12/quellan
+---
+<<if $ch12_ram_felled>>
+    Ullari as "Herder" [sad]: The big one? That was Dorro's. Dorro's gone. Last winter. #line:ch12_bark_herder_001
+<<else>>
+    Ullari as "Herder" [neutral]: Mind the terrace road. Something drinks at the wall up there. #line:ch12_bark_herder_002
+<<endif>>
+===

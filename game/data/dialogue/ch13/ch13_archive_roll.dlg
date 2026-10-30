@@ -1,0 +1,29 @@
+// Ch13 B08 "Day two: the roll" (P → C, 4 min). act2_ch13.md §2 B08. R03: the Cantor roll, sixty-one names,
+// and a column the public copies leave out: kept or spent. Seven are kept. R04: Corran's line, and the margin
+// in a hand Ysolde has seen on every Warden's seal all her life. R05: Ysolde does the maths ON CORRAN HERE
+// (ADR 0016 (b)), quietly and exactly. R06: hands flat on the lectern; Liss stands shoulder to shoulder with
+// her and says nothing. RULE 1: nobody says "revenant".
+title: ch13_archive_roll
+location: ch13/lamp_archive
+---
+@camera R03
+@music lamp_archive fade=1.0
+Cantor roll. Sixtieth: Corran Ysel. Tender, Ansedra. Kept, Sanctum. #line:ch13_rec_roll_001 #narration #tn:"An entry in the Order's private Cantor roll. 'Kept' and 'Spent' are the hidden column's two values."
+@camera R04
+In the margin, small: to be spent at the next Calm. #line:ch13_rec_roll_002 #narration #tn:"A marginal note in a different, official hand: Ysolde recognises it from the Wardens' seals."
+@camera R05
+@music silence fade=2.0
+Ysolde [cold]: Kept, Sanctum. To be spent at the next Calm. #line:ch13_roll_001
+@wait 2.0
+Ysolde [cold]: The next Calm is hers. #line:ch13_roll_002
+@anim ysolde look_at asha
+Ysolde [grief]: When you sing, Lady Cantor, they spend him. #line:ch13_roll_003
+Asha [grief]: ...I have him. He's with me now. #line:ch13_roll_004
+Ysolde [tender]: Then I would ask you to keep him a little longer. #line:ch13_roll_005
+@camera R06
+@anim ysolde hands_on_lectern
+@mark liss beside_ysolde walk
+@wait 5.0
+<<set $ch13_read_cantor_roll = true>>
+@camera release
+===

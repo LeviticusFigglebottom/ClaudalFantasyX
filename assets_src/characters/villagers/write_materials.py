@@ -56,12 +56,23 @@ def colour(hex_: str) -> str:
     return f"Color({r:.3f}, {g:.3f}, {b:.3f}, 1)"
 
 
+BROW_SKIN_MIX = 0.3
+
+
+def _mix_hex(a: str, b: str, t: float) -> str:
+    ca = [int(a.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4)]
+    cb = [int(b.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4)]
+    return "#" + "".join(f"{round(x + (y - x) * t):02X}" for x, y in zip(ca, cb))
+
+
 def tables(npc: str, extra: dict) -> tuple[dict, dict, dict]:
     T = f"villagers/{npc}/textures/{npc}_"
     hp = extra["_hair"]
     hair = colour(hp.get("colour", "#201A16"))
     grey = colour(hp.get("grey", "#8C867D"))
-    brow = colour(hp.get("brow", hp.get("colour", "#201A16")))
+    # GPU QA row 55: near-black brow cards on lighter skin read as scribbles; the brow takes BROW_SKIN_MIX of the skin
+    lash = colour(hp.get("brow", hp.get("colour", "#201A16")))
+    brow = colour(_mix_hex(hp.get("brow", hp.get("colour", "#201A16")), extra["_skin"]["hex"], BROW_SKIN_MIX))
     spec = colour(hp.get("spec", "#D8CCC0"))
     still = {"wind_response": "0.0"}
     iris = colour(extra.get("_eyes", {}).get("iris", "#2A1A10"))
@@ -98,9 +109,11 @@ def tables(npc: str, extra: dict) -> tuple[dict, dict, dict]:
         "tear_line": ("character_tear_line", 3, {}, {}),
         "lash": ("character_hair", 0, {"flow_strength": "0.0", "spec_primary_intensity": "0.06",
                                        "spec_secondary_intensity": "0.0", "transmission_strength": "0.1",
-                                       "indirect_specular": "0.03", "col_root": brow, "col_tip": brow, **still},
+                                       "indirect_specular": "0.03", "col_root": lash, "col_tip": lash, **still},
                  {"tex_hair": A + "asha_facehair.png"}),
-        "brow": ("character_hair", 0, {"flow_strength": "0.0", "spec_primary_intensity": "0.08", "alpha_boost": "1.6",
+        # GPU QA row 55: at 1.6 the brow cards' few dark hairs read as scribbles; softer, the painted brow shows through
+        "brow": ("character_hair", 0, {"flow_strength": "0.0", "spec_primary_intensity": "0.08", "alpha_boost": "0.95",
+                                       "strand_value_jitter": "0.08",
                                        "spec_secondary_intensity": "0.05", "transmission_strength": "0.2",
                                        "root_occlusion": "0.2", "indirect_specular": "0.05",
                                        "col_root": brow, "col_tip": brow, **still,

@@ -96,7 +96,7 @@ emotion = "neutral"
 clip = &"idle"
 clip_library = ExtResource("clips")
 face_distance = 0.62
-face_yaw_degrees = -30.0
+face_yaw_degrees = 25.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Env")

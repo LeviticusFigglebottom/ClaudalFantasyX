@@ -1,0 +1,8 @@
+// M4-A2P-008 heresy state: an Order save shrine gone dark (plan §4.2 default, Lead-accepted in ADR 0204's
+// design defaults). A caption, shown when the party tries it. Saltwright and Kirru save points keep working.
+title: ch14_bark_dark_shrine
+---
+<<if $ch14_declared_heretics>>
+    The shrine's bowl is dry. Someone has turned its lamp to face the wall. #line:ch14_heresy_shrine_001 #tn:"A caption at an Order save shrine that now refuses the party."
+<<endif>>
+===

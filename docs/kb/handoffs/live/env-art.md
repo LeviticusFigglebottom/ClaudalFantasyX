@@ -589,6 +589,116 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ cd7fbf94: M4-A2P-042, Ch12 (Keth Pass, Quellan, Cloudloom) dressed.** The change is additive: no
+  played scene changes until chapters mount it (M4-A2P-0421, filed). The details are in keth_pass.md's revision line.
+  - **Built from the greybox** (§6's modules don't fit it), in `keth_zones.py`:
+    - each zone's ground: walks level, crag behind every cliff, scree off every drop, turf on the flats;
+    - the flights' road stones and slope-following parapets, the cords between their posts, the knot post;
+    - Quellan's houses on their footprints and its paved street and square;
+    - Cloudloom's white hall in dressed courses, with a beam over each row of keth.
+  - **Kit placed round them:** the Lit Age wall and seep pool, the inn, the well, twelve keth curtains (2,880 cords),
+    Hesk's dais, cairns and the far ridges.
+  - **A kit change:** `quellan_house` and `quellan_inn` walls are the road's granite and their roofs `kit_keth_turf`
+    (the card grass read as snow). Two kit-row shots change, `kitrow_keth_cloudloom_house` and
+    `kitrow_quellan_inn_well_dais`; both were re-rendered and viewed, and neither has a baseline.
+  - **Gates:**
+    - Viewed at 30 cameras.
+    - Python suites OK: test_ch12 (5), ch11, ch10, haluna_kit, haluna_dressing (48 in all).
+    - Godot `ch12` 4/4 and `post_import` 21/21.
+    - validate_data, taskboard and gdlint clean.
+    - The full haluna_kit build reproduces all 219 glbs (the manifest is updated).
+- **Ch10's Kirru roost weave** (re-rendered close up at Lodge_close, Ring_lodges, F02 and Causeway_mid): it reads
+  as woven hoops, not busy, and no tree stands on a walk. No change.
+- **Act II share done to the dressing:** Ch10 (M4-A2P-040), Ch11 (041) and Ch12 (042) are built and merge-ready.
+  Each waits on its mount request to chapters (0401, 0411, 0421); the tasks stay `doing` until a mount lands and
+  env-art views the mounted zone.
+- **MERGE-READY @ 79fc304f: M4-A2P-041, Ch11 (the Sunken Vey and Lowlight) dressed.** The change is additive: new pieces,
+  dressing JSONs, grades and previews. No played scene changes until chapters mount it (M4-A2P-0411, filed). The
+  details are in lowlight.md's revision line.
+  - **Built from the greybox** (§5's 6 m walk and nave bay don't fit it):
+    - `vey_zones.py`: walks at their own lengths, the balustrade on the rail blocks, the paved courts, parapets,
+      conduit stand, gate facade, and the lagoon bed with its lit street conduits.
+    - `lowlight_zones.py`: rooms on the greybox's walls, an arch at every doorway, pointed vaults with broken bays,
+      the hall's rail and twelve lamps, the flights under sloped vaults, and the domed drowned sanctum.
+  - **Kit placed round them:** arcades, columns, figs, the housing with the mark, the bench, the well-shaft, and the
+    nave over the gate.
+  - **The grade:** the arena's sky with an overcast deck (its warm deck read as a sunset over open water), and still
+    water (no crest foam, the detail ripple damped).
+  - **Gates:**
+    - Viewed at 20 cameras (`_tests/ch11_zones/*_dressed.tscn`).
+    - Python suites OK: test_ch11 (7), test_ch10, test_haluna_kit, test_haluna_dressing.
+    - Godot `post_import` 21/21 and `ch11` 3/3.
+    - validate_data, taskboard and gdlint clean.
+    - The full haluna_kit build reproduces all 210 glbs byte for byte (the manifest is updated).
+    - No screenshot is affected (new shots none; HYMN_SHOTS empty).
+  - **For chapters (M4-A2P-0411):**
+    - the mount;
+    - the Engine's field look (creatures' `lamp_engine`);
+    - the well's mouth, open in the sanctum floor: a collision ring, or the beat sheet's ledge;
+    - wading (L02's "knee-deep" needs the floor lowered);
+    - the underwater rig below −2.05.
+- **LEAD-ANSWER (big19 review, `oruvel_o17_pen_split` grey sky): yes, intended; keep it.** O17 runs `phase: ch01_storm`, and
+  M3-ENV-104 (e2358df5) gave both storm environments (`oruvel_storm_environment.tres` and the zone's
+  `oruvel_ch01_storm_environment.tres`) a storm-slate sky with no sun disc. Before that, the storm frame wore a clear blue
+  sky. Nothing leaks into Ch1's calm phases: `oruvel_ch01_environment.tres` is unchanged.
+- **MERGE-READY @ b0eb0a49: the Lead's big19 `test_palette_check` red (haluna_h07_chapel_court).** The chapel's sun face read
+  #B0B2B2 (ΔE 0.042 to order_marble 0, max 0.03): M3-ENV-102's lime-wash damp (wet 0.25 + bias 0.15) darkened it. The damp
+  is dialled back (wet 0.08, bias 0.03, moss 0.06; the salt streaks kept): #B8BABA, ΔE 0.018. The marble is right, so the
+  asset moved, not the target. Re-rendering H07 also showed the zenith check failing (median green): one of my audit
+  palms west of the chapel (f44e218d) stood in its sky sample, so the five audit palms there are frangipani now.
+  **`palette_check.py check --shots haluna_h07_chapel_court`: 4 ok, 0 failed.** Viewed. Also: `test_haluna_kit`,
+  `test_haluna_dressing`, `test_shrine_gi_bake` OK; haluna_kit rebuilt (only `order_chapel.glb`). H07 drifts (re-approve).
+- **2026-10-30, M4-A2P-040 (Ch10) in progress, pushed @ 3abc9d20; not merge-ready (the mount is chapters', M4-A2P-0401).**
+  - Built: a four-variant **mangrove system** (`ossa_fen.build_tree` parametrised: `mangrove_tall`/`_low`/`_young`
+    beside the kit tree); each zone's **ground** from its greybox (`fen_zones.py`: level land, channels, root-mat humps,
+    litter and roots in the new `kit_fen_bank`); `tools/act2/ch10_fen_dressing.py` writes both zones' dressing (walks
+    tiled, platforms and roosts, the clutch's stone and cords, ~150 trees and ~30 reed beds per zone off the walks, the
+    far tree-line), grade (`lut_ch10_fen`) and tannin water, plus previews with ten composed cameras each.
+  - **Viewed (20 cameras):** reads as the fen at dusk. Open: the flat land is dark because `Ch05Zone.apply_variant()`
+    re-applies the layout's ambient 0.5 after the dressing (the ask to set 0.85 is in M4-A2P-0401); Pell's capsule.
+  - **Checks:** `test_ch10_fen_dressing` (5, new), `test_haluna_kit`, `test_ossa_fen`, `test_reedhollow`,
+    `test_blender_builds` OK; validate_data; taskboard; haluna_kit rebuilt (the new pieces and the manifest only).
+  - **Next:** Reedhollow's lodge weave reads busy close up (a look pass); the egrets and fireflies (creatures'
+    wildlife); then Ch11 (M4-A2P-041).
+- **2026-10-30, ACT II STARTED (ADR 0205: no open Act I row in env-art's lane).** Scope (act2_tracks.md): Ch10–Ch12, in
+  chapter order. **Doing: M4-A2P-040**, Ossa Fen and Reedhollow at final quality with a mangrove vegetation system: a
+  zone-dressing generator per zone (`tools/act2/ch10_*_dressing.py`, ZoneKitDressing, as Act I's Ch4–9) from the built
+  kit (M3-ENV-718/733), then the mount, grade, shots and walk checks.
+- **MERGE-READY @ 6afe97f1: the Lead's pass-3 rows (`act1_gpu_qa.md` on `gpu/act1-qa-3`), each self-rendered and viewed.**
+  - **Row 59 (`ch01_o10_gull`, a crude faceted bird on a plain box): env-art's, fixed.** It is the Oruvel kit's
+    `lintel_gull_open` (`village.lintel_gull`, not creatures'). A `fine` carving for the O10 close-up: 16-sided lofts on
+    17 rings (was 9 x 9) under finer adze facets, three feather grooves raised along each wing, oiled eyes, a moulded
+    perch with carved feet; it stands on the new `gull_post` (5331498f), not the greybox block. Budget 3600 (2960 tris).
+    Haluna's lintel gulls keep the plain carving (haluna_kit rebuilt byte-identical). Viewed: O10 reads as carved wood.
+  - **Rows 25 / 47, f01 and the landing pier (pure black):** fixed by `islet_fill()` in 2e2233c3 (after pass 3's
+    84422d11); the islet's new rock dressing (312270ef) gives it relief. Viewed: f01's lower half and the Landing spawn's
+    views read. **FerryAft (the camera in the cabin, against Rhen):** the field camera at a spawn, not geometry:
+    hero-integration's (field camera) with act1-chapters (the spawn). **LEAD-ASK:** route it.
+  - **Row 24 (the wake walk: DockShore's camera inside Rhen; FeastEdge, InkLamp, WallDawn looking straight down):** field
+    camera behaviour at spawns too (the wake's `camera_volumes` are act1-chapters'). No wall or piece is in the lens.
+    **LEAD-ASK:** route to hero-integration / act1-chapters.
+  - **Row 43 (`field_hud_over_haluna_wake`):** fixed in f06c190d (the real wake rig; ui-menus re-baselines).
+  - **The bell-room haze:** fixed in 2e2233c3.
+  - **Checks:** `test_oruvel_kit`, `test_haluna_kit`, `test_zone_dressing_ch01` OK; validate_data; Blender haluna_kit
+    (identical) and oruvel_kit (only `lintel_gull_open` and the manifest changed). Drift: `ch01_o10_gull`, the Oruvel
+    shots that see a ridge gull.
+- **MERGE-READY @ 2e2233c3 (+ f06c190d): the Lead's three real-GPU pass-3 items on big18; integration ccf44ba4+ merged in.**
+  1. **`brightwater_landing_f01`, the lower half black:** the islet landing in the foreground had no light (no lamp, the
+     moon behind the sea). `islet_fill()` in `tools/act1/ch04_ferry_dressing.py`: the cold sky fill (#9DB4D6, shadowless,
+     as the derelict's) low over its top and its ferry-side edge. Viewed: the rock, the cobbles and the boulders read.
+  2. **`ch01_bell_room`, the orange haze:** the UnderwaterRig's lantern halo (a screen-space in-scatter, 4 m) wraps the
+     camera in a walled room. Tested by cutting it (0.1 -> 0.02): the wash went. Fixed per room, not in the shared
+     `underwater.json` (the dives keep their halo): a `lighting` row may carry a third value, the halo's scale, which
+     `UnderwayZone.apply_lighting` applies; `interior` and `deep` rooms take 0.2. Viewed: walls, door, Rhen and the
+     lantern read. **For slice-polish:** this edits your `underway_zone.gd` and the layout's `lighting` rows (the Lead's
+     direction); act1-chapters' camera re-aim is separate.
+  3. **`field_hud_over_haluna_wake`, the capture hang:** its backdrop was my retired `haluna_wake_dressing` preview. It
+     now stands on act1-chapters' `ch04_haluna_wake_shots` rig (the real `haluna_wake.tscn`), camera `Backdrop/Cameras/Lane`
+     (the tidewall lane, as the old H02). Viewed: all four overlays over the lit lane. **For ui-menus:** one line in your
+     `field_hud_over_haluna_wake.tscn` and the shot's camera in shots.json; it needs a new baseline.
+  - **Merge:** integration's PROVENANCE union restored the two retired tree rows; dropped again (validate_data 0/0).
+  - **Checks:** Godot `--filter=underway` 9/0, `ch01` 20/0, `ch04` 13/0; `test_zone_dressing_ch01`, `test_underway_walk`,
+    `test_ch04_validate` OK; gdlint/gdformat; validate_data.
 - **BACKLOG EMPTY (2026-10-30, after the Prologue–Ch4 audit):** the audit's findings in env-art's lane are fixed and
   viewed (MERGE-READY @ 312270ef, below); the rest are filed to their owners (M3-ENV-754, M3-ENV-755, slice-polish) or
   need the real GPU (PC-QUEUE: the night lagoon's glow, the plaza's joint ticks). The env-art todo list's other rows are
@@ -736,6 +846,11 @@ Read this section first; everything below it is history. The branch is `claude/e
     (characters/slice-polish), and `reefball_drop_proxy` / `tb_drop_proxy` are env-art-b's (M3-RND-26).
 
 ### PC-QUEUE
+- **Ch12's shade at a walker's eye (Keth Pass, Quellan): the dark slate and crag go near-black on lavapipe in every
+  shadow.** The cause is the colour script's 0.8 colour fill at exposure 0.65, with no bounce light on the software
+  renderer. A sky-source ambient barely moved it. On the real GPU (SDFGI/SSIL), judge whether the shade reads. If it
+  doesn't, the fix is chapters' layouts' `environment.ambient_energy` (0.8 → ~1.2, as Ch10's 0.85 ask) or a lighter
+  `kit_keth_crag` tint.
 - **The night lagoon (Haluna, the Ch4 wake): reads too bright on lavapipe.** The shallows glow luminous cyan from the
   dock end, with the moonlit white sand lifting it. Proposal: `HalunaMood.night_sea_glow` 0.12 -> **0.07** (colour
   script rule 3 allows it; `haluna_mood.gd`), judged on the real GPU before changing it.

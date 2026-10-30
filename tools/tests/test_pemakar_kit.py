@@ -182,7 +182,10 @@ class LayoutTests(unittest.TestCase):
         self.assertEqual(self.layout["boats"]["piece"], "leaf_boat_lit")
         for spec in self.layout["pieces"]:
             for slot in spec.get("materials", {}).values():
-                self.assertIn(slot, SLOTS)
+                # a kit slot, or another material in the kit's folder (env-art-b's kit_weir_stone, written by
+                # tools/act1/ch05_pemakar_dressing.py for the weir)
+                in_folder = (ROOT / "assets/environments/kits/pemakar/materials" / f"{slot}.tres").exists()
+                self.assertTrue(slot in SLOTS or in_folder, slot)
 
     def test_every_tier_channel_spills_and_the_flow_alternates(self) -> None:
         channels = sorted(self.layout["channels"], key=lambda c: -c["tier"])

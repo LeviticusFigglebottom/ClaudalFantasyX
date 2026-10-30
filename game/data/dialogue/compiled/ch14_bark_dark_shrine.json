@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch14_bark_dark_shrine",
+ "source": "game/data/dialogue/ch14/ch14_bark_dark_shrine.dlg",
+ "start": "ch14_bark_dark_shrine",
+ "nodes": {
+  "ch14_bark_dark_shrine": {
+   "headers": {},
+   "ops": [
+    {"op": "if_not", "cond": ["flag", "ch14_declared_heretics"], "to": 3, "src": 5},
+    {"op": "line", "id": "ch14_heresy_shrine_001", "key": "DLG_CH14_HERESY_SHRINE_001", "speaker": "", "emotion": "", "voice": "", "src": 6},
+    {"op": "goto", "to": 3, "src": 5}
+   ]
+  }
+ }
+}

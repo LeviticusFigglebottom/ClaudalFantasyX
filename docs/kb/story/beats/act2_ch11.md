@@ -18,7 +18,7 @@ Greybox: M4-C11-02:
 - `ch11/sunken_vey`: the landing, gallery roofs, the conduit court with `conduit_mark`, the side gallery to `fig_end`, `to_lowlight`;
 - `ch11/lowlight`: the atrium's `lamp_bench`, EngineHall, the well-shaft's two flights, the sanctum `nhoa`, `to_vey`.
 
-Fights: M4-C11-03 (`gallery_ray`, `rime_urchin`).
+Fights: M4-C11-03 (`gallery_ray`, `rime_urchin`). ADR 0204 (the Lead's answers, 2026-10-30) applies; §8 is used in §5.
 
 Scripts: none yet (M4-A2P-002). Sample lines set the voice only.
 
@@ -230,7 +230,7 @@ Declared in `game/data/flags.tres` when the gate passes (M4-A2P-011 adds them). 
 1. **The lamps (100–50%).** Three gimballed rings, four lamps each.
    - **The gathering:** a telegraphed charge (one or two turns: every lamp swings to face the target and brightens in sequence). It lands a heavy Glimmer blow and pushes the target back on the timeline.
    - **The rings are break parts** (lamp_engine.md's proposal; M3-CRE-623's notes: a charge skill per ring, and `Ring0..2`/`Broken` meshes). Each broken ring darkens its lamps (a mote or two rises from each: B07's foreshadow begins in the fight) and **shortens the gathering's charge-up**: fewer lamps, less light.
-   - **The conduit crawlers** (`conduit_crawler`, the design default from the roster: a repairing add, M4-A2P-022): two salt-glass shells on brass feet come out of the trimming rail when a ring breaks, and **repair it** in two turns unless they're stopped. They ignore the party until the Engine is struck. They're fragile and evasive, so Rhen's speed and Ysolde's magic are the answer.
+   - **The conduit crawlers** (`conduit_crawler`, a repairing add, M4-A2P-022; **ADR 0204 §8: two at the start, dormant**): two salt-glass shells on brass feet sit on the dais edge in front of the Engine's knees from the first turn, lit and still. When a ring breaks they wake, walk to the Engine's leg (`crawler_mend`), and **repair it** in two turns unless they're stopped. They ignore the party until the Engine is struck. They're fragile and evasive, so Rhen's speed and Ysolde's magic are the answer.
    - **Liss's answer:** her steal unseats a lamp from a ring (a smaller break), and her gadget can jam a crawler's repair (a Delay).
 2. **The core (`opened`, below 50%).** The rings fold back like petals, and the cracked salt-glass core shows. The trimming arms strike faster, and the core is the weak point: **Kerrid's armour break** opens it, and heavy blows end it.
 
@@ -357,7 +357,7 @@ New shot ids for `ch11/sunken_vey` and `ch11/lowlight` (to add to lowlight.md be
 2. The lamp-bench held inputs (B10): the same widget family.
 
 ### Combat (M4-A2P-011, M4-A2P-022, M4-A2P-024)
-§5: the Engine's ring break parts and charge skills, the gathering's telegraph, the conduit crawler as a repairing add (`restores_part`), the `opened` core. Nhoa's `vowbound.json` row (`bound_flag: ch11_nhoa_bound`).
+§5: the Engine's ring break parts and charge skills, the gathering's telegraph, the conduit crawler as a repairing add (`restores_part`), the `opened` core. Nhoa's `vowbound.json` row (`bound_flag: ch11_nhoa_bound`); her echo copies **ordinary skills only**, never a boss's charge (ADR 0204 §8).
 
 ### Systems / Chapters (M4-A2P-011)
 1. **Speakers:** none new beyond Nhoa's sung verse (a `nhoa` sung line, no portrait).

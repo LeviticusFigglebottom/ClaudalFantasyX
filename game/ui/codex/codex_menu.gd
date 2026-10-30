@@ -59,6 +59,7 @@ var _entries: Array[Dictionary] = []
 var _owns_pause := false
 var _is_closed := false
 var _motion: MenuMotion
+var _reader: DocumentReader
 
 
 ## Instances the menu on its own CanvasLayer under `host` and opens it; the layer frees itself
@@ -159,7 +160,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 ## Applies one input event. Returns true when the menu used it. Tests call this directly.
 func handle_input(event: InputEvent) -> bool:
-	if not is_open():
+	if not is_open() or reader_open():
 		return false
 	if event.is_action_pressed(&"ui_up", true):
 		_move(-1)
@@ -181,11 +182,26 @@ func handle_input(event: InputEvent) -> bool:
 	return true
 
 
+## True while a record is open in the document reader over the codex (it has the input).
+func reader_open() -> bool:
+	return _reader != null and is_instance_valid(_reader) and _reader.is_open()
+
+
+## The document reader open over the codex (null when none).
+func reader() -> DocumentReader:
+	return _reader if reader_open() else null
+
+
 ## One column in: from the categories into the chosen category's entries (nothing when it has none
-## found), or from an entry into its text when the text is longer than its page.
+## found), from a record with a "reader" row into the document reader (M4-A2P-080), or from an entry into its text
+## when the text is longer than its page.
 func enter() -> void:
 	if column == Column.ENTRIES:
-		if max_scroll() > 0.0:
+		var rid := model.reader_of(current_id)
+		var row := DocumentReaderModel.row_of(rid) if rid != &"" else {}
+		if not row.is_empty():
+			_reader = DocumentReader.open_in(self, DocumentReaderModel.new(row))
+		elif max_scroll() > 0.0:
 			column = Column.TEXT
 			_list.set_dimmed(true)
 		return

@@ -22,10 +22,17 @@ grade: ch03_shrine_int
 @music shell_shrine_interior fade=2.0
 @anim asha walk_to_chamber
 Asha [soft_smile]: Don't look so worried, both of you. It's only my first one. #line:ch03_verse_001
+// M3-CIN-1236 (PC GPU QA row 60): S07 sat between Rhen's shoulder and Toma's shield; it is pulled back to a clear
+// over-the-shoulder on Asha, and the two who stay answer her on S07_reverse, the reverse from inside the hall.
+@camera S07_reverse
 Rhen [worried]: Shout if it bites. #line:ch03_verse_002
+@camera S07
 Asha [laugh]: He's been in there a hundred and forty years. I think he'll be polite. #line:ch03_verse_003
+@camera S07_reverse
 Toma [neutral]: We will be here, Lady Cantor. #line:ch03_verse_004
+@camera S07
 Asha [smile]: Toma. #line:ch03_verse_005
+@camera S07_reverse
 Toma [tender]: ...Asha. #line:ch03_verse_006
 @mark asha chamber_pool walk
 // M2-FP-119: she is seen going in, a few steps into the hall, before the black (the fade had cut her at her first step).

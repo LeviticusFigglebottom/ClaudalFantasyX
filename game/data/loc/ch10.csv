@@ -11,14 +11,7 @@ SKILL_TANNIN_JET,Tannin Jet
 SKILL_ROOT_DRAG,Root Drag
 SKILL_LEECH_BITE,Leech Bite
 ENC_CH10_FEN,Ossa Fen
-ENEMY_MANGROVE_DROWNER,The Mangrove Drowner
-LORE_MANGROVE_DROWNER,"Something came up the estuary as a slick of black water and stayed in the cage of an old mangrove's roots. The roots grew around it and through it. The fen's dead are snagged in it, and they cannot rise."
-PHASE_MANGROVE_DROWNER_ROOTED,Rooted
-PHASE_MANGROVE_DROWNER_UPROOTED,Uprooted
-SKILL_ROOT_LASH,Root Lash
-SKILL_RISING_WATER,Rising Water
-SKILL_ROOT_STOMP,Root Stomp
-SKILL_TIDE_GATHER,Tide Gather
-SKILL_DROWNING_GRASP,Drowning Grasp
-ENC_CH10_DROWNER,The Drowner's Clearing
 HUD_SWAP_ROOTED,held by the roots
+CHAR_OWA,Owa
+CHAR_KIRRU,Kirru
+CHAR_KIRRU_CHILD,Kirru child

@@ -1,0 +1,15 @@
+{
+ "format": 1,
+ "scene": "ch13_bark_stillguard",
+ "source": "game/data/dialogue/ch13/ch13_bark_stillguard.dlg",
+ "start": "ch13_bark_stillguard",
+ "nodes": {
+  "ch13_bark_stillguard": {
+   "headers": {"location": "ch13/ansedra"},
+   "ops": [
+    {"op": "line", "id": "ch13_bark_guard_001", "key": "DLG_CH13_BARK_GUARD_001", "speaker": "stillguard", "emotion": "surprised", "voice": "", "src": 5},
+    {"op": "line", "id": "ch13_bark_guard_002", "key": "DLG_CH13_BARK_GUARD_002", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 6}
+   ]
+  }
+ }
+}
