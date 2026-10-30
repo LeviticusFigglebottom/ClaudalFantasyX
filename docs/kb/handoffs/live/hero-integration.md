@@ -1942,3 +1942,15 @@ MERGE-READY @ (this commit).
     surface.
 - **Checks:** test_qa_field_camera 2/0 (red before the fix), field_shore 3/0, qa_dock_edges 1/0 (23 zones).
 MERGE-READY @ (this commit).
+- **Run speed from characters' jog (the Lead, 10-30):** after big24, the heroes' run clip is characters' jog (a 2.6 m
+  stride at 164 steps a minute, `locomotion.json` run.speed_mps 3.545).
+  - **The field run stays 3.6 m/s,** 1.6% over the clip, so the body plays the jog at 1.02x and the feet plant.
+  - **3.55 was tried:** test_qa_walk_audit's Coilspire spiral then put Toma in the steps for 50 frames, a follower
+    path that sensitive to a 1.5% speed change, so the walk-audit routes are for another day.
+  - The data's doc says this, and **test_field_motor `test_the_field_run_is_the_jog_clips_speed`** pins the run
+    within 2% of the clip and inside 2.3–3.6.
+  - max_playback_scale stays 1.8 until Kerrid, Ysolde and Liss get the jog too (Kerrid's old run still needs 2.0x).
+  - Checks: field_motor 10/0, hero_field_actor 15/0 (the clip speeds match the measured foot plant), qa_walk_audit
+    1/0, validate_data 0/0.
+MERGE-READY @ (this commit).
+- **Next:** Haluna's cold entry and the battle return, re-measured on big24.
