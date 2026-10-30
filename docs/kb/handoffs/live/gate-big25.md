@@ -42,3 +42,20 @@ GATE-BUILT @ ca5d12c6
   (db67f48b) and env-art are all in. Newer heads merged during the gate: audio @ c7f22ea1 (an integration merge; only
   the comment-only test_cutscene_sfx_files.py conflict again, owner's wording; tools test OK), env-art @ 526f1a8a (log),
   act2-plan @ 85e9e554 (M4-A2P-114 setters, docs). None touches game/, assets/ or tests/, so the running lanes stand.
+
+## Fast-gate results
+- Import check clean · boot 0 ERROR lines · log check 0.
+- Lane A (mine, 17 files, @ 829b09a6 content): 16 green.
+  - **test_aspect_layouts** 18/1: `battle read_panel at (1920, 1440)` (4:3), text 100% and 130%: a Label at x −41 / −63
+    leaves the screen. Red on big24's tree too (= integration efe7fb10), so it predates this batch; big25 changes
+    nothing in the Read panel. Routed: **ui** (owner of game/ui/battle/read_panel.gd; big24 brought eb1d1299, a foe's
+    broken parts on the Read), with battle-presentation's aa227a57 (rank overlap and safe area) as a co-suspect.
+- Lane B (GATE-HELPER, 16 files @ 829b09a6, arrived 16:30): 15 green.
+  - **test_causeway_route** 5/1 ("at least 2 fights (206 m walk)"), as in big24. Routed: **act1-chapters**.
+- Not in this batch's selection, and still open from big24: test_qa_field_camera (FieldShore.settle vs Lowlight's
+  Sanctum). Routed: integration-qa FAST-TRACK.
+- Tools suite (-j 2): 207 units, only the known reds (test_palette_check, test_screenshots, test_villagers).
+
+GATE-FAST-DONE @ cc62ef20 (merge-approved under the standing rule: no batch-caused red). Routed: ui
+(test_aspect_layouts, the 4:3 Read panel); act1-chapters (test_causeway_route); integration-qa FAST-TRACK (test_qa_field_camera,
+from big24); known: test_palette_check, test_screenshots, test_villagers.
