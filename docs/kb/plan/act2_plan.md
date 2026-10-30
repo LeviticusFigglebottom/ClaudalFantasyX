@@ -10,6 +10,7 @@
   - the art sheets: [color_script.md](../art/color_script.md) `ch10`–`ch16`, `docs/kb/art/environments/{ossa_fen,lowlight,keth_pass,ansedra,open_sea_ch15,hollowmere,pale_rim}.md`, [act2_roster.md](../art/creatures/act2_roster.md) and `act2/*.md`, `vowbound/{nhoa,hesk,ethren}.md`;
   - [act2_finals.md](../audio/act2_finals.md) (the Act II score);
   - [balance_targets.md](../design/balance_targets.md) and [set_piece_battles.md](../design/set_piece_battles.md).
+- **Lane docs:** each track drafts its own Act II lane plan under [`docs/kb/plan/act2/<lane>/`](act2/) (ui-menus, audio, creatures, act1-chapters so far, 2026-10-30). Where a lane doc and this plan differ, the lane doc is the detail and this plan is the index.
 - **Companion files:** [act2_tracks.md](act2_tracks.md) (the proposed track split and ownership globs); [act2_inventory.md](act2_inventory.md) (the branch-by-branch evidence for §3); the M4 task files `docs/kb/tasks/M4/M4-A2P-*.md` (one per gap, filed by this plan).
 
 ## 0. The bar
@@ -44,6 +45,8 @@ ADR 0041 §3's "final" bar is Act II's bar from day one (ADR 0203: "Act I's bar 
 - **Ch16:** the Choir binds Kesh; the act ends with the party swept away.
 
 ## 2. Chapter by chapter
+
+**Beat-sheet drafts (pre-gate, 2026-10-30)** now exist for every chapter: [Ch10](../story/beats/act2_ch10.md), [Ch11](../story/beats/act2_ch11.md), [Ch12](../story/beats/act2_ch12.md), [Ch13](../story/beats/act2_ch13.md), [Ch14](../story/beats/act2_ch14.md), [Ch15](../story/beats/act2_ch15.md) and [Ch16](../story/beats/act2_ch16.md). Where a draft and this section differ, the draft is newer. The main differences: the Ram's hazard is stone and scree, not snow (ADR 0015); the Abiding guard are living; and Kesh is bound in Ch16 but callable only from Ch17.
 
 Each chapter lists zones and kit needs; cast and NPCs; enemies, bosses and Vowbound; set pieces; cutscenes; music and ambience; new menus and systems; balance targets. "Exists" means on a branch today (§3, the inventory); "gap" means a task in §6.
 
@@ -464,6 +467,7 @@ All `status: blocked`, `blocked-by: ADR 0203`; the Lead flips them to `todo` at 
 | [M4-A2P-056](../tasks/M4/M4-A2P-056-act2-wildlife.md) | character | environment | Act II wildlife for the new zones |
 | [M4-A2P-057](../tasks/M4/M4-A2P-057-kesh-sheet-and-model.md) | character | rendering | Kesh, the First Voice: the design sheet, then the model |
 | [M4-A2P-058](../tasks/M4/M4-A2P-058-act2-creature-vfx.md) | character | combat | Act II creatures' own VFX: snagged motes, lamps, snow, wake and the regulars' skills |
+| [M4-A2P-059](../tasks/M4/M4-A2P-059-avalanche-ram-no-ice.md) | character | rendering | The Avalanche Ram without ice: wet, matted, seep-lit wool (ADR 0015; Lead 2026-10-30) |
 | [M4-A2P-060](../tasks/M4/M4-A2P-060-act2-battle-vfx.md) | combat | rendering | Act II battle VFX in effects.json: every new skill, boss and set piece |
 | [M4-A2P-061](../tasks/M4/M4-A2P-061-vowbound-summons.md) | combat | rendering | Nhoa, Hesk, Ethren and Kesh: summon cinematics (full and short) and Swell finishers |
 | [M4-A2P-062](../tasks/M4/M4-A2P-062-darkness-fight.md) | combat | rendering | The Wakefin in the dark: a battle lit only by the sea-glow, telegraphs by sound and glow |
