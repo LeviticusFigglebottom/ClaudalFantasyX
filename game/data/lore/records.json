@@ -1,0 +1,4 @@
+{
+  "doc": "The document reader's records (M4-A2P-080; docs/kb/plan/act2/ui/screens.md section 1; DocumentReaderModel). Each record: its id, title_key (the reader's title: READER_TITLE_FMT), panes (two or three side by side in a scene, one for a found record the codex opens): each a title_key and its lines, one loc key per line (RECORD_<ID>_<NN>, Narrative's words: a ledger entry, a roll's name, a sentence). hands: the groups of lines in the same hand, each an id and its lines as [pane, line] pairs, at most one per pane; the player marks one line per pane and a hand is found when all its lines are marked. flag: set when the last hand is found (declared in flags.tres; the scene goes on). Narrative fills the Archive's ledgers, the Cantor roll and Corran's line (Ch13) and the found records (Wenna's marks, Ama's keth) at the gate.",
+  "records": []
+}

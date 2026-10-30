@@ -70,6 +70,13 @@ FIN_OUTLINE = [(FIN_FRONT_Z, None), (1.08, 0.55), (0.86, 1.15), (0.55, 1.68), (0
 FIN_TIP_U = 0.3  # the ray that reaches the tip leaves the back 30% of the way along the root
 FIN_J = np.array([(0.0, 0.0, 0.32), (0.0, 0.78, 0.12), (0.0, 1.5, -0.04), (0.0, 2.22, -0.12)])  # the height chain
 FIN_RAYS, FIN_ROWS = 46, 12
+# M4-CRB-004: the tear line across the blade's top (the close circle's torn tip): a triangle whose centre lies above
+# TEAR_Y (plus a ragged wobble along z) belongs to the `BladeTip` mesh; TIP_J is the blade_tip bone (head, tail).
+TEAR_Y = 1.74
+TIP_J = ((0.0, TEAR_Y, -0.07), (0.0, 2.22, -0.12))
+# The sea-glow on the blade where it cuts the water: the first rows of the blade, in the seam slot (the glow it
+# stirs, wet on its base; the seam's own light, not glimmer)
+FIN_GLOW_ROWS = 2
 SEAM_K = (1, 2)  # the seam band: between these section rows on the right flank (mirrored on the left)
 SEAM_Z = (-2.38, 1.36)
 # Wounds along the spine: (z, side, half-length), high on the flank either side of the ridge. M3-CRE-635: longer and
@@ -110,7 +117,11 @@ def mark(name: str, mesh: ck.Mesh, start: int) -> None:
 # ---------------------------------------------------------------------------------------------
 def build_rig() -> ck.Rig:
     rig = ck.Rig()
-    rig.add("root", (0, AXIS_Y, ROOT_Z), (0, AXIS_Y + 0.3, ROOT_Z))
+    # M4-CRB-004: the fish's travel across the water (the intro's long pass, the strikes' reach toward the barge, the
+    # close circle, the KO's drift) runs on `breach`, a root at the surface under the body's centre; the body's rise,
+    # dive and roll run on `root` under it, so the mesh never moves the spine to travel.
+    rig.add("breach", (0, 0.0, ROOT_Z), (0, 0.3, ROOT_Z))
+    rig.add("root", (0, AXIS_Y, ROOT_Z), (0, AXIS_Y + 0.3, ROOT_Z), "breach")
     rig.add("head", (0, AXIS_Y, SPINE_Z[0]), (0, AXIS_Y, 1.95), "root")
     rig.add("bill", (0, AXIS_Y + 0.02, 1.95), (0, AXIS_Y + 0.04, BILL_TIP_Z), "head")
     parent = "root"
@@ -128,7 +139,26 @@ def build_rig() -> ck.Rig:
     root = np.array([0.0, AXIS_Y, -2.5])
     rig.add("tail_upper", root, (0.0, AXIS_Y + 0.9, LOBE_TIP_Z), "spine_9")
     rig.add("tail_lower", root, (0.0, AXIS_Y - 0.85, LOBE_TIP_Z + 0.02), "spine_9")
+    # M4-CRB-004: the blade's tip above the tear line rides its own bone (it follows fin_2 until `phase_close` tears it
+    # off on the hull and flings it into the sea; the `BladeTip` mesh is then hidden)
+    rig.add("blade_tip", TIP_J[0], TIP_J[1], "fin_2")
+    # VFX anchors (unweighted): the third spine wound, the centre of mass, the blade's base
+    pw, nw = wound_anchor()
+    rig.add("vfx_wound", pw, pw + nw * 0.2, "spine_2")
+    rig.add("vfx_core", (0.0, AXIS_Y, ROOT_Z), (0.0, AXIS_Y + 0.25, ROOT_Z), "spine_3")
+    rig.add("vfx_phase", pts[0], pts[0] + np.array([0.0, 0.25, 0.0]), "fin_0")
     return rig
+
+
+def wound_anchor() -> tuple[np.ndarray, np.ndarray]:
+    """The third spine wound's centre on the body's surface (its row beside the ridge) and its outward normal."""
+    z0, side, _half = WOUNDS[2]
+    du, _dv, w = (float(v) for v in section(z0))
+    a = WOUND_K * 2.0 * math.pi / SEGS
+    ca, sa = math.cos(a), math.sin(a)
+    p = np.array([side * w * ca ** 0.85, AXIS_Y + du * sa, z0])
+    n = np.array([side * ca / max(w, 1e-6), sa / max(du, 1e-6), 0.0])
+    return p, n / np.linalg.norm(n)
 
 
 def body_skin(rig: ck.Rig):
@@ -323,8 +353,24 @@ def fin_skin(rig: ck.Rig):
     return f
 
 
-def blade(mesh: ck.Mesh, rig: ck.Rig) -> None:
-    """The dorsal blade: rays fanned from its root along the back to its outline, two faces a little apart."""
+def subset(T: np.ndarray, mask: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """The vertices the masked triangles use, and those triangles re-indexed onto them."""
+    Ts = T[mask]
+    used = np.unique(Ts)
+    remap = np.full(int(T.max()) + 1, -1, dtype=np.int64)
+    remap[used] = np.arange(len(used))
+    return used, remap[Ts]
+
+
+def tear_y(z) -> np.ndarray:
+    """The torn tip's line: TEAR_Y with a ragged wobble along the blade."""
+    return TEAR_Y + 0.05 * np.sin(np.asarray(z) * 29.0) + 0.035 * np.sin(np.asarray(z) * 61.0 + 1.3)
+
+
+def blade(mesh: ck.Mesh, rig: ck.Rig, tip: ck.Mesh | None = None) -> None:
+    """The dorsal blade: rays fanned from its root along the back to its outline, two faces a little apart.
+    M4-CRB-004: its first row is wet with the sea-glow it stirs (seam slot), and its top above the tear line is the
+    `tip` mesh on the blade_tip bone (the close circle tears it off)."""
     ol = outline()
     seg = np.linalg.norm(np.diff(ol, axis=0), axis=1)
     s = np.concatenate([[0.0], np.cumsum(seg)]) / seg.sum()
@@ -352,12 +398,31 @@ def blade(mesh: ck.Mesh, rig: ck.Rig) -> None:
     edge_band = ck.smoothstep(0.9, 1.0, vv)
     col = ck.mix(col, NAVY, (0.4 * edge_band)[:, None])
     T = ck.grid_tris(FIN_RAYS, FIN_ROWS, False)
+    row = np.tile(np.arange(FIN_ROWS), FIN_RAYS)
+    glow = ck.smoothstep(float(v[FIN_GLOW_ROWS - 1]), 0.0, vv)  # 1 at the waterline, 0 a row up
+    glow_col = ck.mix(PAL["deep_teal_shadow"] * 0.6 + NAVY * 0.4, PAL["sea_glow"], (0.75 * glow)[:, None])
+    cav = 0.35 * ray + 0.2 * (1.0 - vv) ** 3
+    skin = fin_skin(rig)
     for side in (1.0, -1.0):
         P = np.column_stack([side * th * 0.5, yy, zz])
         Ts = orient(P, T, lambda c, sd=side: np.tile([sd, 0.0, 0.0], (len(c), 1)))
-        start = mesh.count
-        ck.finish(mesh, P, Ts, "fin", col, fin_skin(rig), wet=0.85, cavity=0.35 * ray + 0.2 * (1.0 - vv) ** 3)
-        mark("fin", mesh, start)
+        cen = P[Ts].mean(axis=1)
+        is_tip = (cen[:, 1] > tear_y(cen[:, 2])) if tip is not None else np.zeros(len(Ts), dtype=bool)
+        is_glow = (row[Ts].max(axis=1) <= FIN_GLOW_ROWS - 1) & ~is_tip
+        for part, m, mask, slot, c, e, bones in (
+            ("fin", mesh, ~is_tip & ~is_glow, "fin", col, 0.0, skin),
+            ("fin_glow", mesh, is_glow, "seam", glow_col, 0.6 * glow, skin),
+            ("fin_tip", tip, is_tip, "fin", col, 0.0, None),
+        ):
+            if m is None or not mask.any():
+                continue
+            used, Tm = subset(Ts, mask)
+            ee = np.broadcast_to(np.asarray(e, dtype=np.float64), (len(P),))[used]
+            start = m.count
+            ck.finish(m, P[used], Tm, slot, c[used], bones if bones is not None else rig.rigid("blade_tip"),
+                      wet=0.85, cavity=cav[used], emission=ee)
+            if m is mesh:
+                mark("fin", m, start)
 
 
 def lobe(mesh: ck.Mesh, rig: ck.Rig, upper: bool) -> None:
@@ -422,18 +487,20 @@ def small_fins(mesh: ck.Mesh, rig: ck.Rig) -> None:
             mark("small_fin", mesh, start)
 
 
-def build_mesh(rig: ck.Rig) -> ck.Mesh:
+def build_mesh(rig: ck.Rig) -> tuple[ck.Mesh, ck.Mesh]:
+    """The fish and, as its own node, the blade's torn-off tip (`BladeTip`, hidden after `phase_close`)."""
     PARTS.clear()
     mesh = ck.Mesh("wakefin")
+    tip = ck.Mesh("BladeTip")
     body(mesh, rig)
     bill(mesh, rig)
     eyes(mesh, rig)
-    blade(mesh, rig)
+    blade(mesh, rig, tip)
     lobe(mesh, rig, True)
     lobe(mesh, rig, False)
     pectorals(mesh, rig)
     small_fins(mesh, rig)
-    return mesh
+    return mesh, tip
 
 
 # ---------------------------------------------------------------------------------------------
@@ -453,6 +520,7 @@ KO_RISE = 0.4
 KO_DRIFT = -0.9
 KO_FIN = (-84.0, -4.0, 10.0)
 KO_LOBES = (-82.0, -40.0)
+KO_AWAY = 1.0  # M4-CRB-004: it drifts this far out from the barge (+x) as it dies
 
 
 def sway(clip: ck.Clip, bone: str, fn) -> None:
@@ -494,33 +562,6 @@ def key_spine(c: ck.Clip, t: float, bend: float = 0.0, yaw: float = 0.0) -> None
     f = f / f.sum()
     for i, b in enumerate(SPINE):
         c.key(b, t, (-bend * f[i], yaw * f[i], 0.0))
-
-
-def build_attack() -> ck.Clip:
-    """The cut: it sinks and coils (0.35 s), drives up out of the water nose-high (0.6 s), and at contact (0.8 s) the
-    whole fish is out alongside, rolled over so the blade sweeps flat across the deck, the bill slashing; it falls
-    back on its side and settles."""
-    c = ck.Clip("attack", ATTACK_SEC)
-    for t, y, rx, rz, bend, yaw, fin, bill, head in (
-        (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, (0, 0, 0), 0.0, 0.0),
-        (0.35, -0.22, 6.0, -8.0, 0.0, -40.0, (0, -6, -10), 0.0, 4.0),
-        (0.6, 0.8, -14.0, 18.0, -12.0, 15.0, (-4, 6, 8), -6.0, -6.0),
-        (ATTACK_CONTACT, 1.15, -4.0, 62.0, 8.0, 30.0, (14, 16, 18), 10.0, -16.0),
-        (1.0, 0.7, 6.0, 52.0, 12.0, 0.0, (8, 6, -4), 4.0, 6.0),
-        (1.3, -0.12, 4.0, 14.0, 0.0, -10.0, (-2, -3, -4), 0.0, 0.0),
-        (ATTACK_SEC, 0.0, 0.0, 0.0, 0.0, 0.0, (0, 0, 0), 0.0, 0.0),
-    ):
-        c.key("root", t, (rx, 0.0, rz), (0.0, y, 0.0))
-        key_spine(c, t, bend, yaw)
-        for b, a in zip(FIN, fin):
-            c.key(b, t, (0.0, 0.0, a))
-        c.key("bill", t, (0.0, bill, 0.0))
-        c.key("head", t, (0.0, head, 0.0))
-        c.key("pec_l", t, (-0.3 * abs(rz), 0.0, 0.25 * rz))
-        c.key("pec_r", t, (-0.3 * abs(rz), 0.0, -0.25 * rz))
-        c.key("tail_upper", t, (0.0, -0.8 * yaw, 0.0))
-        c.key("tail_lower", t, (0.0, -0.8 * yaw, 0.0))
-    return c
 
 
 def build_cast() -> ck.Clip:
@@ -570,6 +611,7 @@ def build_ko() -> ck.Clip:
     for t, s, rise, drift in ((0.0, 0.0, 0.0, 0.0), (0.25, -0.06, -0.05, 0.0), (0.7, 0.12, 0.0, -0.1),
                               (1.6, 0.7, 0.28, -0.45), (2.4, 0.97, KO_RISE, -0.75), (KO_SEC, 1.0, KO_RISE, KO_DRIFT)):
         c.key("root", t, (2.0 * s, -6.0 * s, KO_ROLL * s), (0.0, rise, drift))
+        c.key("breach", t, ZERO3, (KO_AWAY * s, 0.0, 0.0))  # M4-CRB-004: the drift away from the barge
     for t, s in ((0.0, 0.0), (0.25, -0.12), (0.6, 0.35), (1.5, 0.92), (KO_SEC, 1.0)):
         for b, a in zip(FIN, KO_FIN):
             c.key(b, t, (0.0, 0.0, a * s))
@@ -583,8 +625,266 @@ def build_ko() -> ck.Clip:
     return c
 
 
+# M4-CRB-004 (the Act II move pass, ADR 0041 §3, docs/kb/plan/act2/bosses/wakefin.md §4): every clip is authored as
+# offsets from the rest pose by `beats` and played from its phase's idle first frame (ck.in_pose), so each one starts
+# and ends exactly where its idle starts. In the build's frame the bill is +z (toward the party, along the hull) and
+# the barge lies off its -x flank, the flank the battle camera sees (STAGE_POS and STAGE_YAW below).
+#
+# A beat is (t, {channel: value}); a channel left out of a beat is 0 (rest). The channels:
+#   bx, bz   the breach bone's travel across the water (m; -x toward the barge, +z along it)
+#   y        the body's rise (+) or dive (-) on root (m)
+#   rx ry rz root's pitch (- nose up), turn (- bill toward the barge) and roll (+ blade over toward the barge), deg
+#   bend     the spine's arch (+ arches the back, nose and tail down); yaw its curl (+ tail toward the barge), deg
+#   fin      the blade's lean (fin_0..2 about z, + toward the barge); fold its rake (fin_0..2 about x, - back), deg
+#   head     (pitch, turn) of the head; bill its turn; pec the pectorals' sweep; tail the lobes' turn, lobe their spread
+ZERO3 = (0.0, 0.0, 0.0)
+
+
+def beats(name: str, length: float, rows, loop: bool = False) -> ck.Clip:
+    """A clip keyed from beats (see above); every channel is keyed at every beat, so each eases from beat to beat."""
+    c = ck.Clip(name, length, loop=loop)
+    for t, v in rows:
+        def g(k, d=0.0, v=v):
+            return v.get(k, d)
+
+        c.key("breach", t, ZERO3, (g("bx"), 0.0, g("bz")))
+        c.key("root", t, (g("rx"), g("ry"), g("rz")), (0.0, g("y"), 0.0))
+        key_spine(c, t, g("bend"), g("yaw"))
+        for b, lean, fold in zip(FIN, g("fin", ZERO3), g("fold", ZERO3)):
+            c.key(b, t, (fold, 0.0, lean))
+        hp, hy = g("head", (0.0, 0.0))
+        c.key("head", t, (hp, hy, 0.0))
+        c.key("bill", t, (0.0, g("bill"), 0.0))
+        c.key("pec_l", t, (g("pec"), 0.0, 0.0))
+        c.key("pec_r", t, (g("pec"), 0.0, 0.0))
+        c.key("tail_upper", t, (-g("lobe"), g("tail"), 0.0))
+        c.key("tail_lower", t, (g("lobe"), g("tail"), 0.0))
+    return c
+
+
+# Where the build expects to be staged (docs/kb/art/creatures/act2/wakefin.md, "Staging"): in the water off the
+# barge's far beam toward the bow, broadside to the battle camera and inside its frame (bridal_barge_night, whose sea
+# is at y -0.6). tools/tests/test_wakefin.py skins every clip here and holds it off the hull.
+STAGE_POS = (-5.0, -0.6, -6.5)
+STAGE_YAW = 90.0
+# The close circle (phase `close_circle`): half the stand-off from the barge, a little higher, the blade raised.
+CLOSE = {"bx": -1.2, "y": 0.05, "fold": (2.0, 3.0, 2.0)}
+INTRO_SEC = 3.0
+READY_SEC = 1.6
+IDLE_B_SEC = 1.6
+DIVE_SEC, DIVE_CONTACT = 2.6, 1.0
+RISE_SEC, RISE_CONTACT = 1.8, 0.85
+WASH_SEC, WASH_CONTACT = 1.6, 0.75
+STAB_SEC, STAB_CONTACT = 1.4, 0.7
+PHASE_SEC, PHASE_CONTACT = 2.0, 0.85
+
+
+def build_intro() -> ck.Clip:
+    """The blade rises out of flat water far off down its line, turns away on the circle, then comes in on one long
+    pass, banking, and settles into the circle (3.0 s; the boss intro camera holds 2.4 s)."""
+    return beats("intro", INTRO_SEC, (
+        (0.0, {"bz": -4.2, "bx": 0.6, "y": -2.5, "rx": -6.0, "ry": 28.0, "fold": (-30.0, -34.0, -30.0), "pec": 20.0}),
+        (0.7, {"bz": -3.6, "bx": 0.55, "y": -1.3, "rx": -10.0, "ry": 30.0, "fold": (-12.0, -16.0, -12.0), "pec": 10.0,
+               "yaw": 10.0}),
+        (1.4, {"bz": -2.6, "bx": 0.3, "y": -0.3, "rx": -3.0, "ry": 26.0, "rz": -8.0, "yaw": 22.0, "fin": (-4, -3, -4),
+               "tail": -8.0}),
+        (2.1, {"bz": -1.1, "bx": -0.1, "y": -0.04, "ry": -16.0, "rz": 12.0, "yaw": -22.0, "fin": (6, 5, 6),
+               "tail": 12.0}),
+        (2.6, {"bz": -0.15, "y": 0.02, "ry": -4.0, "rz": 3.0, "yaw": -5.0, "fin": (1, 1, 1)}),
+        (INTRO_SEC, {}),
+    ))
+
+
+def build_idle_b() -> ck.Clip:
+    """The fidget: the blade dips and folds back as it rolls under a swell, then rises and flares."""
+    return beats("idle_b", IDLE_B_SEC, (
+        (0.0, {}),
+        (0.55, {"y": -0.32, "rx": 3.0, "rz": -4.0, "fold": (-6.0, -12.0, -10.0)}),
+        (1.05, {"y": 0.08, "rx": -2.0, "rz": 2.0, "fold": (4.0, 6.0, 6.0)}),
+        (IDLE_B_SEC, {}),
+    ))
+
+
+def build_ready() -> ck.Clip:
+    """Between its turns: it slows, rides higher and turns its blade's flat to the party, standing it tall, while a
+    slow swell rocks it (a loop)."""
+    c = ck.Clip("ready", READY_SEC, loop=True)
+    w = 2.0 * math.pi / READY_SEC
+    sway(c, "breach", lambda t: (ZERO3, ZERO3))
+    sway(c, "root", lambda t: ((-2.0 + 1.0 * math.sin(w * t), 10.0, 2.5 * math.sin(w * t + 0.6)),
+                               (0.0, 0.1 + 0.03 * math.sin(w * t), 0.0)))
+    for i, b in enumerate(SPINE):
+        sway(c, b, lambda t, k=i: ((0.0, 1.2 * math.sin(w * t - 0.5 * k), 0.0), ZERO3))
+    for i, b in enumerate(FIN):
+        sway(c, b, lambda t, k=i: ((4.0 + 1.5 * math.sin(w * t - 0.6 * k), 0.0, -2.0 * math.sin(w * t + 0.4 * k)),
+                                   ZERO3))
+    sway(c, "head", lambda t: ((-3.0, -4.0, 0.0), ZERO3))
+    sway(c, "bill", lambda t: (ZERO3, ZERO3))
+    for b in ("pec_l", "pec_r"):
+        sway(c, b, lambda t: ((-12.0 + 3.0 * math.sin(w * t), 0.0, 0.0), ZERO3))
+    for b in ("tail_upper", "tail_lower"):
+        sway(c, b, lambda t: ((0.0, 3.0 * math.sin(w * t - 1.0), 0.0), ZERO3))
+    return c
+
+
+def build_attack() -> ck.Clip:
+    """Fin Cut (`attack`, contact 0.8 s): the blade folds back low and the body coils away with its tail cocked
+    (0-0.55 s, the wind-up; the seam brightens along its path), then it drives up out of the water alongside, rolling
+    over so the blade sweeps flat across toward the deck at contact, the bill slashing; it falls back on its side and
+    settles."""
+    return beats("attack", ATTACK_SEC, (
+        (0.0, {}),
+        (0.3, {"bx": 0.2, "y": -0.3, "rx": 6.0, "rz": -8.0, "yaw": -30.0, "fold": (-6.0, -10.0, -8.0), "tail": 20.0,
+               "head": (4.0, 0.0)}),
+        (0.55, {"bx": 0.3, "y": -0.45, "rx": 9.0, "rz": -12.0, "yaw": -38.0, "fin": (0, -4, -6),
+                "fold": (-8.0, -14.0, -12.0), "tail": 26.0, "pec": 15.0, "head": (5.0, 0.0)}),
+        (0.68, {"bx": -0.1, "y": 1.1, "rx": -22.0, "rz": 26.0, "bend": -12.0, "yaw": 12.0, "fin": (-4, 6, 8),
+                "bill": -6.0, "head": (-6.0, 0.0), "tail": -10.0, "pec": -15.0}),
+        (ATTACK_CONTACT, {"bx": -0.5, "y": 2.15, "rx": -6.0, "rz": 44.0, "bend": 8.0, "yaw": 28.0,
+                          "fin": (14, 16, 18), "bill": 10.0, "head": (-16.0, 0.0), "tail": -22.0, "pec": -20.0}),
+        (1.0, {"bx": -0.45, "y": 1.45, "rx": 4.0, "rz": 52.0, "bend": 12.0, "yaw": 4.0, "fin": (8, 6, -4),
+               "bill": 4.0, "tail": -4.0, "pec": -10.0}),
+        (1.25, {"bx": -0.25, "y": -0.25, "rx": 3.0, "rz": 28.0, "yaw": -10.0, "fin": (-2, -3, -4), "tail": 8.0}),
+        (1.45, {"bx": -0.05, "y": -0.05, "rz": 4.0, "yaw": -2.0}),
+        (ATTACK_SEC, {}),
+    ))
+
+
+def build_dive() -> ck.Clip:
+    """Sound Dive (`dive`, the charge; contact 1.0 s, when it is under): it lifts its head and stands the blade tall
+    (0-0.5 s, the telegraph), then noses down and sinks until only the blade's top cuts the water, and holds there
+    gliding (the blade stays in view: it is evasive, never gone), then rises back into the circle."""
+    under = {"y": -1.2, "fold": (-4.0, -6.0, -6.0), "pec": 20.0}
+    return beats("dive", DIVE_SEC, (
+        (0.0, {}),
+        (0.25, {"y": 0.12, "rx": -8.0, "fold": (5.0, 6.0, 6.0), "pec": -10.0, "head": (-4.0, 0.0)}),
+        (0.5, {"y": 0.16, "rx": -10.0, "fold": (6.0, 8.0, 8.0), "pec": -12.0, "head": (-5.0, 0.0)}),
+        (0.85, {"y": -1.0, "rx": 12.0, "bend": 8.0, "fold": (-6.0, -10.0, -10.0), "pec": 25.0}),
+        (DIVE_CONTACT, dict(under, rx=4.0)),
+        (1.6, dict(under, y=-1.25, ry=-4.0, yaw=6.0)),
+        (2.0, dict(under, ry=2.0, yaw=-4.0)),
+        (2.35, {"y": -0.3, "rx": -4.0, "fold": (2.0, 2.0, 2.0)}),
+        (DIVE_SEC, {}),
+    ))
+
+
+def build_rise_strike() -> ck.Clip:
+    """Wakefin Rise (`rise_strike`, contact 0.85 s): the blade folds and sinks to its top, sliding in toward the barge's
+    side where the ring of sea-glow opens (0-0.7 s), then the whole fish bursts straight up out of the ring, bill
+    first, and topples back away from the barge into the sea."""
+    return beats("rise_strike", RISE_SEC, (
+        (0.0, {}),
+        (0.25, {"bx": -0.2, "y": -0.4, "rx": 8.0, "fold": (-4.0, -8.0, -6.0), "pec": 15.0}),
+        (0.6, {"bx": -0.6, "y": -1.05, "rx": 10.0, "fold": (-6.0, -10.0, -8.0), "pec": 25.0}),
+        (0.7, {"bx": -0.75, "y": -1.2, "rx": -24.0, "bend": -6.0, "fold": (-4.0, -8.0, -6.0)}),
+        (RISE_CONTACT, {"bx": -0.85, "y": 1.9, "rx": -76.0, "bend": -6.0, "fold": (6.0, 8.0, 6.0), "head": (-10.0, 0.0),
+                        "pec": -25.0, "tail": 10.0}),
+        (1.05, {"bx": -0.8, "y": 1.7, "rx": -68.0, "rz": -20.0, "fold": (2.0, 2.0, 0.0), "pec": -15.0,
+                "tail": -10.0}),
+        (1.4, {"bx": -0.5, "y": -0.6, "rx": -18.0, "rz": -55.0, "fin": (-10, -8, -6), "tail": 6.0}),
+        (1.6, {"bx": -0.15, "y": -0.15, "rx": -4.0, "rz": -10.0}),
+        (RISE_SEC, {}),
+    ))
+
+
+def build_wake_wash() -> ck.Clip:
+    """Wake Wash (`wake_wash`, contact 0.75 s): it turns hard away from the barge with its tail lobes high out of the
+    water and cocked (0-0.6 s), then whips the tail across and slaps it down, throwing its wake at the deck."""
+    return beats("wake_wash", WASH_SEC, (
+        (0.0, {}),
+        (0.3, {"y": 0.15, "ry": 30.0, "rz": -12.0, "bend": -16.0, "yaw": -20.0, "tail": -12.0, "lobe": 10.0}),
+        (0.6, {"y": 0.3, "ry": 40.0, "rz": -10.0, "bend": -26.0, "yaw": -32.0, "tail": -18.0, "lobe": 16.0,
+               "fin": (-4, -4, -4)}),
+        (WASH_CONTACT, {"y": 0.0, "ry": 28.0, "rz": 8.0, "bend": 14.0, "yaw": 44.0, "tail": 30.0, "lobe": 4.0,
+                        "fin": (4, 4, 6)}),
+        (0.95, {"ry": 20.0, "rz": 4.0, "bend": 4.0, "yaw": 20.0, "tail": 10.0}),
+        (1.3, {"ry": 6.0, "yaw": -4.0, "tail": -4.0}),
+        (WASH_SEC, {}),
+    ))
+
+
+def build_bill_strike() -> ck.Clip:
+    """Bill Strike (`bill_strike_close`, the close circle's bow stab, contact 0.7 s): it rears up beside the bow, bill
+    raised high and turned in (0-0.55 s), then stabs it down and in over the rail, and drops back."""
+    return beats("bill_strike_close", STAB_SEC, (
+        (0.0, {}),
+        (0.3, {"y": 0.7, "rx": -24.0, "ry": -12.0, "bend": -6.0, "head": (-10.0, 0.0), "pec": -15.0}),
+        (0.55, {"bx": 0.15, "y": 1.3, "rx": -40.0, "ry": -16.0, "bend": -10.0, "head": (-16.0, 0.0), "pec": -20.0,
+                "fold": (4.0, 6.0, 6.0)}),
+        (STAB_CONTACT, {"bx": -0.2, "bz": 0.5, "y": 1.85, "rx": 10.0, "ry": -22.0, "head": (6.0, 0.0), "bill": -4.0,
+                        "pec": 10.0}),
+        (0.9, {"bx": -0.15, "bz": 0.4, "y": 1.2, "rx": 8.0, "ry": -16.0, "rz": -8.0}),
+        (1.15, {"bx": -0.05, "bz": 0.1, "y": 0.1, "rx": 1.0, "ry": -4.0}),
+        (STAB_SEC, {}),
+    ))
+
+
+def build_hit_b() -> ck.Clip:
+    """The other hit: the blade snaps back and the body rolls toward the barge and is shoved under, peaking at 0.1 s
+    (authored, not the mirrored hit)."""
+    rows = []
+    for t, k in ((0.0, 0.0), (0.1, 1.0), (0.25, -0.35), (0.38, 0.1), (HIT_SEC, 0.0)):
+        rows.append((t, {"y": -0.12 * k, "rx": 4.0 * k, "rz": 12.0 * k, "yaw": -14.0 * k,
+                         "fold": (-8.0 * k, -12.0 * k, -14.0 * k), "fin": (-6.0 * k, -4.0 * k, -6.0 * k),
+                         "head": (5.0 * k, 6.0 * k), "pec": 18.0 * k}))
+    return beats("hit_b", HIT_SEC, rows)
+
+
+def build_phase_close(end: dict) -> ck.Clip:
+    """Close circle (`phase_close`, contact 0.85 s, the ram): it turns in and surges at the barge, rolls its blade
+    away and slams its flank into the hull (the barge's rock is staging's), the blade's tip tearing off on the rail
+    and flung out into the sea; it rebounds and settles into the tight circle. `end` is the close idle's first frame
+    as offsets from the wide idle's, keyed last."""
+    c = beats("phase_close", PHASE_SEC, (
+        (0.0, {}),
+        (0.35, {"bx": -0.3, "y": -0.1, "ry": -24.0, "rz": -10.0, "yaw": -12.0, "tail": 14.0}),
+        (0.7, {"bx": -2.3, "y": 0.1, "ry": -6.0, "rz": -18.0, "yaw": 10.0, "fin": (-6, -6, -8), "tail": -10.0}),
+        (PHASE_CONTACT, {"bx": -2.55, "y": 0.18, "ry": 4.0, "rz": -24.0, "yaw": 18.0, "fin": (-10, -14, -18),
+                         "head": (0.0, 10.0), "tail": -16.0}),
+        (1.1, {"bx": -1.9, "y": -0.1, "ry": 6.0, "rz": 6.0, "yaw": -8.0, "fin": (4, 6, 8), "tail": 8.0}),
+        (1.5, {"bx": -1.3, "ry": 2.0, "rz": -2.0}),
+    ))
+    # the torn tip rides the blade to the ram, then is flung up and out over the far water and falls in
+    for t, r, l in ((0.0, ZERO3, ZERO3), (PHASE_CONTACT, ZERO3, ZERO3), (1.0, (0, 0, -60), (0.5, 0.5, 0.0)),
+                    (1.3, (0, 0, -150), (1.3, -0.6, 0.0)), (1.55, (0, 0, -200), (1.6, -2.6, 0.0)),
+                    (PHASE_SEC, (0, 0, -220), (1.7, -3.4, 0.0))):
+        c.key("blade_tip", t, r, l)
+    for b, (r, l) in end.items():
+        c.key(b, PHASE_SEC, tuple(r), tuple(l))
+    return c
+
+
+def first_frame(clip: ck.Clip) -> dict:
+    return {b: tuple(np.asarray(v, float) for v in clip.sample(b, 0.0)) for b in clip.keys}
+
+
 def build_clips() -> list[ck.Clip]:
-    return [build_idle(), build_attack(), build_cast(), build_hit(), build_ko()]
+    idle = build_idle()
+    idle0 = first_frame(idle)
+    close_pose = first_frame(beats("_close", 1.0, ((0.0, CLOSE),)))
+    # the tight circle: the wide idle a little stronger (it banks harder), half the stand-off from the barge
+    idle_close = ck.in_pose(ck.varied(idle, "idle_close", amp=1.3), "idle_close", close_pose)
+    close0 = first_frame(idle_close)
+    zero = (np.zeros(3), np.zeros(3))
+    end = {b: tuple(np.asarray(close0[b][k]) - np.asarray(idle0.get(b, zero)[k]) for k in (0, 1)) for b in close0}
+    ready = build_ready()
+    strikes = [build_attack(), build_cast(), build_dive(), build_rise_strike(), build_wake_wash(), build_hit(),
+               build_hit_b(), build_ko()]
+    out = [idle, ck.in_pose(build_idle_b(), "idle_b", idle0), ready, ck.in_pose(build_intro(), "intro", idle0)]
+    out += [ck.in_pose(c, c.name, idle0) for c in strikes]
+    out += [ck.in_pose(build_phase_close(end), "phase_close", idle0), idle_close,
+            ck.in_pose(ready, "ready_close", close_pose)]
+    out += [ck.in_pose(c, f"{c.name}_close", close0) for c in strikes]
+    out += [ck.in_pose(build_bill_strike(), "bill_strike_close", close0)]
+    return out
+
+
+# creatures.json's `phases.close_circle.clips` and `contact` (tools/tests/test_wakefin.py)
+CLOSE_CLIPS = {"attack": "attack_close", "cast": "cast_close", "dive": "dive_close", "rise_strike": "rise_strike_close",
+               "wake_wash": "wake_wash_close", "hit": "hit_close", "hit_b": "hit_b_close", "ready": "ready_close",
+               "ko": "ko_close"}
+CONTACT = {"attack": ATTACK_CONTACT, "cast": CAST_RISE, "dive": DIVE_CONTACT, "rise_strike": RISE_CONTACT,
+           "wake_wash": WASH_CONTACT, "bill_strike_close": STAB_CONTACT, "phase_close": PHASE_CONTACT}
 
 
 # ---------------------------------------------------------------------------------------------
@@ -616,34 +916,97 @@ def skin(rig: ck.Rig, arrays: dict, pose: dict) -> np.ndarray:
     return out
 
 
-def report(rig: ck.Rig, mesh: ck.Mesh, clips: list[ck.Clip]) -> None:
-    arrays = mesh.arrays()
+def barge_grid(cell: float = 0.1) -> tuple[np.ndarray, np.ndarray, float]:
+    """The bridal barge (M3-ENV-720) as a height field over cells `cell` m wide in x, z (arena space): (its highest
+    point per cell, -inf off the barge; the grid's (x, z) origin; cell). For the staging check: a body over the barge
+    stays BARGE_CLEAR m above it, so nothing passes through the hull, the rail or the deck."""
+    root = Path(__file__).resolve().parents[2] / "environments" / "kits" / "haluna"
+    sys.path.insert(0, str(root))
+    import bridal_barge as bb  # noqa: PLC0415
+
+    pts = []
+    for mb in bb.build_barge():
+        P = np.asarray(mb.pos)
+        T = np.asarray(mb.tris)
+        # each triangle sampled on a 6 x 6 barycentric lattice, so long planks fill every cell they cross
+        u, v = np.meshgrid(np.linspace(0.0, 1.0, 6), np.linspace(0.0, 1.0, 6))
+        keep = (u + v) <= 1.0
+        u, v = u[keep], v[keep]
+        A, B, C = P[T[:, 0]], P[T[:, 1]], P[T[:, 2]]
+        pts.append((A[:, None] * (1 - u - v)[None, :, None] + B[:, None] * u[None, :, None]
+                    + C[:, None] * v[None, :, None]).reshape(-1, 3))
+    S = np.vstack(pts)
+    origin = S[:, [0, 2]].min(axis=0) - cell
+    ij = np.floor((S[:, [0, 2]] - origin) / cell).astype(int)
+    grid = np.full(tuple(ij.max(axis=0) + 2), -np.inf)
+    np.maximum.at(grid, (ij[:, 0], ij[:, 1]), S[:, 1])
+    return grid, origin, cell
+
+
+BARGE_CLEAR = 0.3  # m: the design sheet's "the sweep stays above the deck by at least 0.3 m", over the rail too
+
+
+def staged(P: np.ndarray) -> np.ndarray:
+    """Build-space points placed at the staging (STAGE_POS, turned STAGE_YAW about y as FighterStandIn turns it)."""
+    a = math.radians(STAGE_YAW)
+    R = np.array([[math.cos(a), 0.0, math.sin(a)], [0.0, 1.0, 0.0], [-math.sin(a), 0.0, math.cos(a)]])
+    return P @ R.T + np.asarray(STAGE_POS)
+
+
+def barge_overlap(P: np.ndarray, barge: tuple) -> float:
+    """How far (m) the deepest staged point lies inside the barge's clearance (-inf: never over the barge)."""
+    grid, origin, cell = barge
+    W = staged(P)
+    ij = np.floor((W[:, [0, 2]] - origin) / cell).astype(int)
+    ok = (ij[:, 0] >= 0) & (ij[:, 1] >= 0) & (ij[:, 0] < grid.shape[0]) & (ij[:, 1] < grid.shape[1])
+    top = np.full(len(W), -np.inf)
+    top[ok] = grid[ij[ok, 0], ij[ok, 1]]
+    over = np.isfinite(top)
+    return float((top[over] + BARGE_CLEAR - W[over, 1]).max()) if over.any() else -np.inf
+
+
+def merged(*meshes: ck.Mesh) -> dict:
+    out = meshes[0].arrays()
+    for m in meshes[1:]:
+        a = m.arrays()
+        for k in ("pos", "joints", "weights"):
+            out[k] = np.concatenate([out[k], a[k]])
+    return out
+
+
+def report(rig: ck.Rig, meshes: tuple[ck.Mesh, ck.Mesh], clips: list[ck.Clip]) -> None:
+    """Per clip: its bounds, the blade's top, its peak, how far its first and last frames are from its phase's idle
+    first frame, and how close it comes to the barge at the staging (negative: clear by that much)."""
+    mesh, tip = meshes
+    arrays = merged(mesh, tip)
     rest = arrays["pos"]
     f0, f1 = PARTS["fin"]
-    fin = np.arange(f0, f1)
-    base = fin[(rest[fin, 1] - back_y(rest[fin, 2])) < -0.015]
-    front = base[rest[base, 2] > 0.0]
-    print(f"triangles: {mesh.triangle_count}; vertices {mesh.count}; bones {len(rig.bones)}")
+    fin = np.concatenate([np.arange(f0, f1), np.arange(mesh.count, mesh.count + tip.count)])
+    print(f"triangles: {mesh.triangle_count + tip.triangle_count} (tip {tip.triangle_count}); "
+          f"vertices {mesh.count + tip.count}; bones {len(rig.bones)}")
     print(f"rest bounds: min {np.round(rest.min(axis=0), 3)}, max {np.round(rest.max(axis=0), 3)}; "
-          f"blade top {rest[fin, 1].max():.3f}; its root's front half y {rest[front, 1].min():+.3f}..{rest[front, 1].max():+.3f}")
+          f"blade top {rest[fin, 1].max():.3f}")
+    barge = barge_grid()
+    by = {c.name: c for c in clips}
     for c in ck.with_variety(clips):
         frames = max(int(round(c.length * ck.FPS)), 1)
-        lo, hi, disp, top, root_lo, root_hi = np.inf, -np.inf, [], [], np.inf, -np.inf
+        lo, hi, disp, top, near = np.inf, -np.inf, [], [], -np.inf
         for f in range(frames + 1):
             t = min(f / ck.FPS, c.length)
             P = skin(rig, arrays, fk(rig, c, t))
             lo, hi = min(lo, float(P[:, 1].min())), max(hi, float(P[:, 1].max()))
             top.append(float(P[fin, 1].max()))
-            root_lo, root_hi = min(root_lo, float(P[front, 1].min())), max(root_hi, float(P[front, 1].max()))
             disp.append(float(np.linalg.norm(P - rest, axis=1).mean()))
-        P = skin(rig, arrays, fk(rig, c, c.length))
+            near = max(near, barge_overlap(P, barge))
+        idle = by["idle_close"] if c.name.endswith("_close") else by["idle"]
+        ends = [max(float(np.abs(np.asarray(c.sample(b, t)[k]) - np.asarray(idle.sample(b, 0.0)[k])).max())
+                    for b in idle.keys for k in (0, 1)) for t in (0.0, c.length)]
         peak = int(np.argmax(disp)) / ck.FPS
-        print(f"{c.name:7s} {c.length:.2f}s: y {lo:+.3f}..{hi:.3f}; blade top {min(top):.2f}..{max(top):.2f} "
-              f"(at {int(np.argmin(top)) / ck.FPS:.2f}s lowest); blade root front {root_lo:+.3f}..{root_hi:+.3f}; "
-              f"end y {P[:, 1].min():+.3f}..{P[:, 1].max():.3f}; peak {peak:.2f}s")
+        print(f"{c.name:18s} {c.length:.2f}s: y {lo:+.2f}..{hi:.2f}; blade top {min(top):.2f}..{max(top):.2f}; "
+              f"peak {peak:.2f}s; off its idle's first frame {ends[0]:.3f}/{ends[1]:.3f}; barge {near:+.2f} m")
 
 
-def build() -> tuple[ck.Rig, ck.Mesh, list[ck.Clip]]:
+def build() -> tuple[ck.Rig, tuple[ck.Mesh, ck.Mesh], list[ck.Clip]]:
     rig = build_rig()
     return rig, build_mesh(rig), build_clips()
 
@@ -654,11 +1017,11 @@ def main() -> None:
     ap.add_argument("--out")
     ap.add_argument("--report", action="store_true", help="print the triangle count and the clip checks; no export")
     args = ap.parse_args(argv)
-    rig, mesh, clips = build()
+    rig, (mesh, tip), clips = build()
     if args.report or not args.out:
-        report(rig, mesh, clips)
+        report(rig, (mesh, tip), clips)
         return
-    info = ck.export_creature(mesh, rig, clips, args.out, extras={"hymn_creature": "wakefin"})
+    info = ck.export_creature(mesh, rig, clips, args.out, extra_meshes=[tip], extras={"hymn_creature": "wakefin"})
     print(f"wakefin: {info}")
 
 

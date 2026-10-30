@@ -14,12 +14,13 @@
  },
  "cues": {
   "camera": {
-   "doc": "Cut (no blend=, or blend=0) or blend to an authored shot. ease= names a field_camera.json ease for this blend (sets.camera_eases mirrors them). grade= also blends the color grade to that color-script frame. 'release' is reserved (see reserved.camera).",
+   "doc": "Cut (no blend=, or blend=0) or blend to an authored shot. ease= names a field_camera.json ease for this blend (sets.camera_eases mirrors them). grade= also blends the color grade to that color-script frame. track=<actor> keeps the shot's offset to that actor as it moves: one continuous move (M4-CIN-1302). 'release' is reserved (see reserved.camera).",
    "args": [{"name": "shot", "type": "id"}],
    "kwargs": {
     "blend": {"type": "number", "min": 0},
     "ease": {"type": "enum", "set": "camera_eases"},
-    "grade": {"type": "enum", "set": "grades"}
+    "grade": {"type": "enum", "set": "grades"},
+    "track": {"type": "id"}
    }
   },
   "anim": {
@@ -70,7 +71,7 @@
    "kwargs": {}
   },
   "vfx": {
-   "doc": "Trigger a VFX. Glimmer light rules: glimmer_lift rises (motion=spiral_up), glimmer_held sinks (drift=down_seaward), glimmer_bound is still. The cue goes first to the stage's VFX hosts (CutsceneVfxHosts, M3-ARC-1326), then to the motes placeholder. follow=<actor> or <actor>_staff: one attractor on that body; anchors=<actor group>: grief anchors that let go as the follow-host passes (hosts read them; the placeholder ignores them).",
+   "doc": "Trigger a VFX. Glimmer light rules: glimmer_lift rises (motion=spiral_up), glimmer_held sinks (drift=down_seaward), glimmer_bound is still. The cue goes first to the stage's VFX hosts (CutsceneVfxHosts, M3-ARC-1326), then to the motes placeholder. follow=<actor> or <actor>_staff: one attractor on that body; anchors=<actor group>: grief anchors that let go as the follow-host passes (hosts read them; the placeholder ignores them). release=<sec> spawns nothing: the held (or bound) light already at at= lets go over that many seconds, cyan to lift gold, rising (M4-CIN-1303).",
    "args": [{"name": "effect", "type": "enum", "set": "vfx_effects"}],
    "kwargs": {
     "at": {"type": "id"},
@@ -80,7 +81,8 @@
     "rate": {"type": "enum", "set": "vfx_rate"},
     "form": {"type": "id"},
     "follow": {"type": "id"},
-    "anchors": {"type": "id"}
+    "anchors": {"type": "id"},
+    "release": {"type": "number", "min": 0}
    }
   },
   "wait": {

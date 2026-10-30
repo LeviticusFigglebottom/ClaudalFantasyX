@@ -1,0 +1,34 @@
+// Ch12 B04 side scene (optional): "The Knot" (E, 3 min, ~90 words). act2_ch12.md §4. An Ullari woman ties a
+// knot on the pass-cord, touches it once and walks on without looking back. She isn't wise; she's tired and
+// practical. No music. Then Rhen at the cord: he may tie a clumsy knot for his father, whom he believes dead;
+// it is never named on screen.
+title: ch12_the_knot
+location: ch12/keth_pass
+---
+@camera P05
+@music silence fade=1.0
+@anim ullari_woman tie_knot
+@wait 3.0
+@mark ullari_woman road_down walk
+@wait 1.5
+@mark rhen road_down_catch walk
+Rhen [neutral]: How do you do that? Just walk. #line:ch12_knot_001
+@anim ullari_woman look_at rhen
+@wait 2.0
+Ullari_woman as "Ullari woman" [neutral]: My son. Last spring. On this road. #line:ch12_knot_002
+Rhen [sad]: And you just walk on? #line:ch12_knot_003
+Ullari_woman as "Ullari woman" [neutral]: I carry the knot. He doesn't have to. #line:ch12_knot_004
+@mark ullari_woman road_away walk
+<<set $ch12_heard_the_knot = true>>
+@wait 2.0
+@mark rhen knot_post walk
+-> Tie a knot. #line:ch12_knot_005
+    @anim rhen tie_knot
+    @wait 3.0
+    @mark rhen road_on walk
+    <<set $ch12_rhen_tied_knot = true>>
+-> Walk on. #line:ch12_knot_006
+    @anim rhen look_at pass_cord
+    @wait 3.0
+    @mark rhen road_on walk
+===

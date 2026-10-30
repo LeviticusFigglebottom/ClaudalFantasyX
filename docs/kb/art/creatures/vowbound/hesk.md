@@ -139,3 +139,63 @@ The foe form for the Ch20 release fight (act3_roster.md, "The Vowbound as foes")
 - **`release`** (3.4 s, its KO as a foe; the only clip added, every other clip samples identically): she opens to the full span, cords spread to be read, head raised, held (1.0–1.8 s); one slow down-stroke and she lifts 1.5 m up and 0.5 m back, gliding on open wings, the keth bundle still held. Her planted talon comes off the water only here (her test skips it for this clip).
   Lowest vertex over every frame +0.005 m. GLB 1.58 → 1.69 MB.
 - Scene `game/creatures/hesk/hesk_held_battle.tscn` (the same GLB; `CreatureActor.material_dir` puts on `assets/creatures/hesk/materials_held/`, written by write_materials.py from the `held` block in materials.json: 3 emissive slots glimmer_bound to glimmer_held `#7FC6D9` at the same energy, steady; the rest as they are). creatures.json row `hesk_held`: no `vowbound` key, `ko` = `release`, `phases.release` = {clip `release`, `hold` true}, `stand_in.yaw_deg` 90 (facing the party), height 2.4 and radius 0.6 kept. Review shot `creature_hesk_held` (not rendered yet). No enemies.json row (Combat's, with the chapter designer). The turn to `glimmer_lift` and the rising motes are presentation (battle VFX), not the model.
+
+## Final quality (M4-CRB-007, 2026-10-30)
+
+ADR 0041 §3 and ADR 0205: Hesk at the Act I Vowbound bar (Ilun, Kahre, Virel), from her design sheet
+([plan/act2/bosses/hesk.md](../../../plan/act2/bosses/hesk.md)). Audited from the party side of the default battle camera
+(a scratch fixture seats her on battle_sandbox.json's `vowbound_slot` in `ch05_cinder_matron`, every clip frozen at
+five beats) and up close (two close-up cameras), then re-rendered and viewed after each change.
+
+**What the audit found, and the fixes.** The budget goes from 14k to **≤ 18k**, the Act I Vowbound final bar (Ilun
+15.6k, Kahre 18.0k, Virel 17.8k); the extra went where the camera sees her.
+- **The cords read as a rake of straight rods** at battle distance (the fan swings rigidly on its two chain bones).
+  Each cord now leaves the hand along its fan line and **bends toward straight down as it hangs** (and a little back,
+  trailing; build `CORD_HANG` 0.45), with a small wander of its own and ±5 % length; it ends in a whipping and a
+  flared, sand-tinted **unlaid tuft**, so it reads as soft rope. Rest span 2.45 → 2.23 m.
+- **The knots were hexagonal blobs** up close (3 × 6 ellipsoids) and the long knots a 5-sided zigzag sleeve. A single
+  knot is now a 5 × 8 lump with its **crossing strand** standing proud across it (a tilted band); a long knot's wraps
+  run round the cord as a **helix** (3 rings a turn, 6 round) tapering into the cord at both ends; a figure-eight is
+  two crossed lumps. **The light follows the form:** the mask runs from 0.4 where a knot tucks into the cord to 1.0 on
+  its proudest part (the crossing strand, each wrap's crest), so a lit knot keeps its shape instead of a flat glow.
+  The keth (47, 7 and the ledger) are unchanged.
+- **The ruff's loose ends read as fingers** round the neck. The fringe is now **loops of soft cord** in two tiers
+  (12 and 10), each leaving the roll and coming back to it, the lower tier longer: a lace of knotted cord.
+- **The neck was a smooth cone** (0.185 m at the base). It is lean above the ruff now (0.143 → 0.043 m), the bare skin
+  **folded in five rings** with darker hollows; a low **brow** over each eye gives the bare skull a steady, reading look.
+- **Triangles: 17,930** (≤ 18k): knots 8,056, cords 3,000 (ring spacing 0.05 → 0.06 m), ruff 1,792, feet 936, wing
+  plumage 800, body 792, bundle 710, head 580, neck 528, legs 512, eyes 160, tail 64. 10,082 vertices. Rest bounds
+  x ±1.14, y 0.005 to 2.34, z −0.68 to 0.67 m.
+
+**Rig: 27 bones**, the 25 plus two unweighted anchors: **`vfx_core`** on `body` (the breast, 0.0, 1.32, 0.30) and
+**`vfx_keepsake`** on `bundle_1` (the keth bundle's middle, 0.21, 0.22, 0.25: it swings, and rises in the Mending).
+
+**Clips (16).** The Vowbound contract (`idle`, `idle_b`, `ready`, `rise`, `dismiss`, `attack`, `cast`, `hit`, `hit_b`,
+`defend`, `ko`, `victory`, `special`), `release` (the held form), and two new ones, one per skill on the sheet:
+- **`cleanse`** (Cord-Lift, 1.6 s, contact **0.9 s**): she bows and brings both wings low and forward, the hands
+  reaching round in front of her (the gather, 0.0–0.7 s: hands 0.87 m forward and 1.2 m lower than at rest, the cords
+  brushing the water), then lifts them up and open with her head raised (the cords rise 1.44 m by the contact),
+  trailing under the hands: the high passes lifting the dead. Span 3.83 m at most, no wider than `cast`. A new wing
+  pose `scoop`.
+- **`mending`** (her Mending, ADR 0204, 1.4 s, contact **0.8 s**): she swings the held talon up (the bundle rises
+  0.22 m and comes 0.2 m forward, still hanging) and bows her head 0.6 m over it, the wings curled forward round it
+  (0.0–0.6 s); at the contact a little deeper, as if reading one knot. Quiet where Cord-Lift is wide. `pose(raise_=)`.
+- **Every one-shot is played from `idle`'s first frame** (`ck.in_pose`, as the Act I bosses' move pass did): it starts
+  there, and `rise` ends there. Before, they started from rest, a few degrees off the idle's first frame.
+- Contacts (creatures.json `contact`): `attack` 0.55, `cast` 0.8, `cleanse` 0.9, `mending` 0.8, `special` 1.45 s; every
+  striking clip winds up ≥ 0.55 s before its contact. Lowest vertex over every frame of every clip ≥ 0.000 m (the
+  cords and the bundle kept off the water by `grounding.grounded`).
+
+**The clip map, ready to paste** into creatures.json `hesk` when M4-A2P-024 adds her skills to skills.json (the
+validator rejects `clip_by_skill` keys for skills that do not exist yet):
+`"clip_by_skill": {"knot_light": "cast", "cord_lift": "cleanse", "hesk_mending": "mending", "pass_cord": "special"}`.
+
+**Viewed.** Every clip at five beats from the battle camera (before and after), the two close-ups, the review shots
+`creature_hesk` and `creature_hesk_held` (front: the soft hanging cords, the lace ruff, the folded neck read), and the
+re-baked portraits `hesk.png` and `hesk_held.png` (assets/ui/portraits/creatures/). She stays inside her side of the
+frame in every clip from the party camera. Nothing frozen on her or in her clips (ADR 0015): the white is cord, the light
+`glimmer_bound`.
+
+**Test:** tests/unit/test_creature_vowbound_act2.gd (`test_hesk_...`): the clip set, a wind-up ≥ 0.45 s before every
+contact, the unweighted anchors, every one-shot from idle's first frame, Cord-Lift's gather and lift, and the
+Mending's raised bundle and bow.

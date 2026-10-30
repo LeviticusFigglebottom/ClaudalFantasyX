@@ -1,0 +1,40 @@
+{
+ "format": 1,
+ "scene": "ch12_the_knot",
+ "source": "game/data/dialogue/ch12/ch12_the_knot.dlg",
+ "start": "ch12_the_knot",
+ "nodes": {
+  "ch12_the_knot": {
+   "headers": {"location": "ch12/keth_pass"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["P05"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 1.0}, "src": 9},
+    {"op": "cue", "cue": "anim", "args": ["ullari_woman", "tie_knot"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "mark", "args": ["ullari_woman", "road_down", "walk"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "road_down_catch", "walk"], "kwargs": {}, "src": 14},
+    {"op": "line", "id": "ch12_knot_001", "key": "DLG_CH12_KNOT_001", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 15},
+    {"op": "cue", "cue": "anim", "args": ["ullari_woman", "look_at", "rhen"], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 17},
+    {"op": "line", "id": "ch12_knot_002", "key": "DLG_CH12_KNOT_002", "speaker": "ullari_woman", "emotion": "neutral", "voice": "", "src": 18, "name_key": "DLG_NAME_ULLARI_WOMAN_ULLARI_WOMAN"},
+    {"op": "line", "id": "ch12_knot_003", "key": "DLG_CH12_KNOT_003", "speaker": "rhen", "emotion": "sad", "voice": "", "src": 19},
+    {"op": "line", "id": "ch12_knot_004", "key": "DLG_CH12_KNOT_004", "speaker": "ullari_woman", "emotion": "neutral", "voice": "", "src": 20, "name_key": "DLG_NAME_ULLARI_WOMAN_ULLARI_WOMAN"},
+    {"op": "cue", "cue": "mark", "args": ["ullari_woman", "road_away", "walk"], "kwargs": {}, "src": 21},
+    {"op": "set", "flag": "ch12_heard_the_knot", "value": ["lit", true], "src": 22},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "knot_post", "walk"], "kwargs": {}, "src": 24},
+    {"op": "options", "choices": [{"id": "ch12_knot_005", "key": "DLG_CH12_KNOT_005", "to": 18, "src": 25}, {"id": "ch12_knot_006", "key": "DLG_CH12_KNOT_006", "to": 23, "src": 30}], "src": 25, "next": 27},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "tie_knot"], "kwargs": {}, "src": 26},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 27},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "road_on", "walk"], "kwargs": {}, "src": 28},
+    {"op": "set", "flag": "ch12_rhen_tied_knot", "value": ["lit", true], "src": 29},
+    {"op": "goto", "to": 27, "src": 25},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "look_at", "pass_cord"], "kwargs": {}, "src": 31},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 32},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "road_on", "walk"], "kwargs": {}, "src": 33},
+    {"op": "goto", "to": 27, "src": 30}
+   ]
+  }
+ }
+}

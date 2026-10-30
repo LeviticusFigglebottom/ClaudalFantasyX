@@ -1,0 +1,26 @@
+{
+ "format": 1,
+ "scene": "ch15_deck_liss",
+ "source": "game/data/dialogue/ch15/ch15_deck_liss.dlg",
+ "start": "ch15_deck_liss",
+ "nodes": {
+  "ch15_deck_liss": {
+   "headers": {"location": "ch15/open_sea"},
+   "ops": [
+    {"op": "line", "id": "ch15_deck_liss_001", "key": "DLG_CH15_DECK_LISS_001", "speaker": "liss", "emotion": "grief", "voice": "", "src": 8},
+    {"op": "if_not", "cond": ["flag", "ch11_lamp_repaired"], "to": 11, "src": 9},
+    {"op": "options", "choices": [{"id": "ch15_deck_liss_002", "key": "DLG_CH15_DECK_LISS_002", "to": 3, "src": 10}, {"id": "ch15_deck_liss_004", "key": "DLG_CH15_DECK_LISS_004", "to": 8, "src": 15}], "src": 10, "next": 10},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "sit_beside", "liss"], "kwargs": {}, "src": 11},
+    {"op": "line", "id": "ch15_deck_liss_003", "key": "DLG_CH15_DECK_LISS_003", "speaker": "liss", "emotion": "grief", "voice": "", "src": 12},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 13},
+    {"op": "set", "flag": "ch15_sat_with_liss", "value": ["lit", true], "src": 14},
+    {"op": "goto", "to": 10, "src": 10},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "step_back"], "kwargs": {}, "src": 16},
+    {"op": "goto", "to": 10, "src": 15},
+    {"op": "goto", "to": 13, "src": 9},
+    {"op": "line", "id": "ch15_deck_liss_005", "key": "DLG_CH15_DECK_LISS_005", "speaker": "liss", "emotion": "cold", "voice": "", "src": 18},
+    {"op": "goto", "to": 13, "src": 17}
+   ]
+  }
+ }
+}

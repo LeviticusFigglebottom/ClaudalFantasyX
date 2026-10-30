@@ -1,0 +1,9 @@
+{
+  "_doc": "The Pale Rim's white shallows (Ch16, M4-A2P-056; docs/kb/plan/act2/creatures/rim_ray.md): small pale rays in loose groups gliding over the white sand a hand of water deep (the sand's top y 0, the surface y 0.1: they swim at y 0.04, flat), beside the wade's cairns so the party passes them: by Cairn0, Cairn2 and Cairn4, each group off the line on the side away from its cairn. A wader within startle_radius_m sends a group gliding off. Placed on the greybox layout (pale_rim_layout.json).",
+  "zone": "ch16/pale_rim",
+  "rays": [
+    {"id": "cairn0", "center": [14.0, 0.04, -5.0], "radius_m": 4.0, "count": 5},
+    {"id": "cairn2", "center": [70.0, 0.04, -5.5], "radius_m": 4.5, "count": 6},
+    {"id": "cairn4", "center": [120.0, 0.04, -5.0], "radius_m": 4.0, "count": 5}
+  ]
+}

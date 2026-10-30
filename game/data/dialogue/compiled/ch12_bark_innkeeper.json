@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch12_bark_innkeeper",
+ "source": "game/data/dialogue/ch12/ch12_bark_innkeeper.dlg",
+ "start": "ch12_bark_innkeeper",
+ "nodes": {
+  "ch12_bark_innkeeper": {
+   "headers": {"location": "ch12/quellan"},
+   "ops": [
+    {"op": "line", "id": "ch12_bark_inn_001", "key": "DLG_CH12_BARK_INN_001", "speaker": "ullari", "emotion": "neutral", "voice": "", "src": 5, "name_key": "DLG_NAME_ULLARI_INNKEEPER"}
+   ]
+  }
+ }
+}

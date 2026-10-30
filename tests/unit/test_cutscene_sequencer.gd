@@ -8,6 +8,9 @@ const ZONE := "res://game/levels/_tests/field/field_test.tscn"
 const FIXTURE := &"test_cutscene_fixture"
 const BEACH := &"ch02_girl_on_the_beach"
 const ARRIVE := &"test_cutscene_arrive"
+const TRACK := &"test_cutscene_track"
+const GROUP := &"test_cutscene_group"
+const RELEASE_VFX := &"test_cutscene_release_vfx"
 const CARD := &"test_cutscene_card"
 const DT := 1.0 / 30.0
 const MAX_FRAMES := 3000
@@ -329,6 +332,81 @@ func test_wait_arrive_holds_until_the_walk_lands() -> void:
 	seq.overlay.box.skip_reveal()
 	seq.overlay.box.advance_requested.emit()
 	assert_eq(lines_seen, 2, "with no walk under way, arrive= does not wait at all")
+	_drive()
+	_free()
+
+
+func test_a_tracked_shot_moves_with_its_actor() -> void:
+	# M4-CIN-1302 (act2_ch10.md O02, "the camera does not stop with Pell"): one continuous move, not a fixed frame.
+	asha.global_position = SPOT + Vector3(-3.0, 0.0, 0.0)
+	_start(TRACK)
+	var track := seq.get_node_or_null(CutsceneTrack.NODE_NAME) as CutsceneTrack
+	assert_true(track != null, "track= starts a tracker")
+	track.update()
+	_frame()
+	var cam0 := director.camera.global_position
+	var her0 := asha.global_position
+	var frames := 0
+	while lines_seen == 0 and frames < MAX_FRAMES:
+		track.update()
+		_frame()
+		frames += 1
+	var moved := asha.global_position - her0
+	assert_true(moved.length() > 2.5, "she walked to her mark (%.2f m)" % moved.length())
+	var cam_moved := director.camera.global_position - cam0
+	assert_true(cam_moved.distance_to(moved) < 0.05, "the camera moved as she did: %s against %s" % [cam_moved, moved])
+	assert_eq(director.active_shot.id, &"wide", "on the shot's own id")
+	lines_pending = 0
+	seq.overlay.box.skip_reveal()
+	seq.overlay.box.advance_requested.emit()
+	director.update(DT)
+	assert_false(track.update(), "the next @camera ends the track")
+	assert_true(track.is_queued_for_deletion())
+	assert_eq(stage.shot(&"wide").position, Vector3(0, 6, 14), "the authored shot is untouched")
+	_drive()
+	_free()
+
+
+func test_a_group_anim_plays_on_every_member_each_in_its_own_time() -> void:
+	# M4-CIN-1302 (act2_ch10.md T04): thirty Kirru turn their backs at once, as many people, not one copy.
+	var members: Array[Node3D] = []
+	for i in 3:
+		var k := Node3D.new()
+		k.name = "kirru_%d" % i
+		stage.get_node(^"Actors").add_child(k)
+		k.global_position = SPOT + Vector3(1.5 * i - 1.5, 0.0, 4.0)
+		k.look_at(k.global_position + Vector3(0, 0, 1))  # facing away from the spot
+		members.append(k)
+	var delays := members.map(func(k: Node3D) -> float: return CutsceneGroup.delay(seq.config, StringName(k.name)))
+	assert_true(delays.max() - delays.min() > 2 * DT, "their delays are frames apart: %s" % [delays])
+	assert_true(delays.max() <= float(seq.config.get("group_spread_sec", 0.0)), "within the spread")
+	_start(GROUP)
+	var started: Dictionary = {}
+	var frames := 0
+	while lines_seen == 0 and frames < MAX_FRAMES:
+		_frame()
+		frames += 1
+		for k: Node3D in members:
+			if not started.has(k.name) and seq.has_motion(StringName("turn:%s" % k.name)):
+				started[k.name] = frames
+	for k: Node3D in members:
+		var to_spot := (SPOT - k.global_position).normalized()
+		assert_true((-k.global_basis.z).dot(to_spot) > 0.99, "%s turned to the spot" % k.name)
+	assert_eq(started.size(), 3, "each member turned on its own: %s" % [started])
+	assert_true(started.values().max() > started.values().min(), "not all on the same frame")
+	_drive()
+	_free()
+
+
+func test_a_release_lets_the_held_light_already_there_go() -> void:
+	# M4-CIN-1303 (act2_ch10.md B05, T03): the snagged lights hang, then rise and turn gold; nothing new appears.
+	_start(RELEASE_VFX)
+	_drive_until(func() -> bool: return lines_seen > 0)
+	var spot := stage.mark(&"spot")
+	var fields := spot.find_children("*", "GlimmerField", true, false)
+	assert_eq(fields.size(), 1, "release= spawned no second field")
+	var field := fields[0] as GlimmerField
+	assert_true(field.is_releasing() or field.get_mode() == GlimmerState.Mode.RELEASED, "the held field is letting go")
 	_drive()
 	_free()
 

@@ -1,0 +1,18 @@
+{
+  "_doc": "Ossa Fen at the overcast dusk (Ch10, M4-A2P-056; docs/kb/plan/act2/creatures/fen_firefly.md and fen_kingfisher.md): kingfishers darting low over the channels and sitting on the root-walk rails (their tops, y 0.5, facing the water: the perch points are along each rail's yawed line), a pair each by Walk0, Walk2 and Walk3; and fireflies low among the mangrove roots beside the Kirru's root-walks, over the tannin water (its surface y -0.25), off the walks so the party walks past them: by Walk0's left rail, Walk2's right, round the side pocket's end and by Walk4's left rail. Wildlife, not glimmer (ossa_fen.md: the fen's lights are animals, not the dead). Placed on the greybox layout (ossa_fen_layout.json); re-seat them with tools/creatures/wildlife_snap.gd and wildlife_audit.gd when the dressed kit replaces the blocks.",
+  "zone": "ch10/ossa_fen",
+  "kingfishers": [
+    {"id": "walk0_channel", "center": [10.5, 7.3], "radius_m": 6.5, "altitude_m": [0.6, 1.6], "count": 2,
+     "perched_at_start": 1, "perches": [[6.7, 0.5, 3.44, -11.8], [15.51, 0.5, 5.27, -11.8]]},
+    {"id": "walk2_channel", "center": [51.7, -12.5], "radius_m": 6.5, "altitude_m": [0.6, 1.6], "count": 2,
+     "perched_at_start": 1, "perches": [[47.31, 0.5, -10.02, 172.2], [55.23, 0.5, -8.94, 172.2]]},
+    {"id": "walk3_channel", "center": [75.3, -3.5], "radius_m": 6.5, "altitude_m": [0.6, 1.6], "count": 2,
+     "perched_at_start": 1, "perches": [[69.86, 0.5, -3.37, 147.5], [77.45, 0.5, 1.46, 147.5]]}
+  ],
+  "swarms": [
+    {"id": "walk0_roots", "type": "firefly", "center": [9.0, 0.55, 6.0], "radius_m": 2.5, "count": 6},
+    {"id": "walk2_roots", "type": "firefly", "center": [48.0, 0.55, -11.8], "radius_m": 2.5, "count": 6},
+    {"id": "pocket_end", "type": "firefly", "center": [63.5, 0.6, -21.0], "radius_m": 3.0, "count": 6},
+    {"id": "walk4_roots", "type": "firefly", "center": [96.5, 0.55, 8.0], "radius_m": 2.5, "count": 6}
+  ]
+}

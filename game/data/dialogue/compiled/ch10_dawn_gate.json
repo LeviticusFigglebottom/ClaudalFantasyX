@@ -1,0 +1,49 @@
+{
+ "format": 1,
+ "scene": "ch10_dawn_gate",
+ "source": "game/data/dialogue/ch10/ch10_dawn_gate.dlg",
+ "start": "ch10_dawn_gate",
+ "nodes": {
+  "ch10_dawn_gate": {
+   "headers": {"location": "ch10/reedhollow"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "fade", "args": ["in", 2.0], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "camera", "args": ["R09"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "music", "args": ["reedhollow"], "kwargs": {"fade": 3.0}, "src": 12},
+    {"op": "cue", "cue": "mark", "args": ["asha", "gate_asha", "walk"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 14},
+    {"op": "line", "id": "ch10_dawn_001", "key": "DLG_CH10_DAWN_001", "speaker": "asha", "emotion": "worried", "voice": "", "src": 15},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 16},
+    {"op": "line", "id": "ch10_dawn_002", "key": "DLG_CH10_DAWN_002", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 17},
+    {"op": "line", "id": "ch10_dawn_003", "key": "DLG_CH10_DAWN_003", "speaker": "asha", "emotion": "sad", "voice": "", "src": 18},
+    {"op": "line", "id": "ch10_dawn_004", "key": "DLG_CH10_DAWN_004", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 19},
+    {"op": "set", "flag": "ch10_asha_asked_pell", "value": ["lit", true], "src": 20},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "camera", "args": ["R10"], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "look_at", "pell_shell"], "kwargs": {}, "src": 23},
+    {"op": "if_not", "cond": ["flag", "ch10_heard_ressa"], "to": 18, "src": 24},
+    {"op": "line", "id": "ch10_dawn_005", "key": "DLG_CH10_DAWN_005", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 25},
+    {"op": "goto", "to": 20, "src": 24},
+    {"op": "line", "id": "ch10_dawn_006", "key": "DLG_CH10_DAWN_006", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 27},
+    {"op": "goto", "to": 20, "src": 26},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 29},
+    {"op": "line", "id": "ch10_dawn_007", "key": "DLG_CH10_DAWN_007", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 30},
+    {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 31},
+    {"op": "line", "id": "ch10_dawn_008", "key": "DLG_CH10_DAWN_008", "speaker": "pell", "emotion": "sad", "voice": "", "src": 32},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 33},
+    {"op": "cue", "cue": "mark", "args": ["pell", "root_walk_out", "walk"], "kwargs": {}, "src": 34},
+    {"op": "cue", "cue": "mark", "args": ["toma", "line_2", "walk"], "kwargs": {}, "src": 35},
+    {"op": "cue", "cue": "mark", "args": ["asha", "line_3", "walk"], "kwargs": {}, "src": 36},
+    {"op": "cue", "cue": "mark", "args": ["ysolde", "line_4", "walk"], "kwargs": {}, "src": 37},
+    {"op": "cue", "cue": "mark", "args": ["liss", "line_5", "walk"], "kwargs": {}, "src": 38},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "line_6", "walk"], "kwargs": {}, "src": 39},
+    {"op": "cue", "cue": "mark", "args": ["kerrid", "line_7", "walk"], "kwargs": {}, "src": 40},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 41},
+    {"op": "set", "flag": "ch10_complete", "value": ["lit", true], "src": 42},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 43},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 44}
+   ]
+  }
+ }
+}

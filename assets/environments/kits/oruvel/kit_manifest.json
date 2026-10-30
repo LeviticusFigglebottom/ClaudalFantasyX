@@ -136,12 +136,12 @@
     },
     "lintel_gull_open": {
       "budget": [
-        2800,
+        3600,
         420
       ],
-      "bytes": 110212,
+      "bytes": 438424,
       "lods": {
-        "lintel_gull_open": 772,
+        "lintel_gull_open": 2960,
         "lintel_gull_open-lod1": 338
       }
     },

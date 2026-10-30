@@ -164,6 +164,9 @@ func _play(zone: Node3D, seq: CutsceneSequencer, scene_id: StringName, out: Stri
 		if director != null:
 			director.update(DT)
 		seq.advance(DT)
+		for card in seq.find_children("*", "", true, false):  # M2-FP-121's time cards step in _process: drive them
+			if card.has_method(&"advance") and card.has_method(&"show_caption"):
+				card.call(&"advance", DT)
 		frame[0] += 1
 		if timing_only and frame[0] * DT > float(script_end[0]) + 3.0 and frame[0] % 300 == 0:
 			var live: Array[String] = []

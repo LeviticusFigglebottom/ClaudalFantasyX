@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "dark_shrine",
+ "source": "game/data/dialogue/act2/dark_shrine.dlg",
+ "start": "dark_shrine",
+ "nodes": {
+  "dark_shrine": {
+   "headers": {},
+   "ops": [
+    {"op": "line", "id": "dark_shrine_001", "key": "DLG_DARK_SHRINE_001", "speaker": "", "emotion": "", "voice": "", "src": 6}
+   ]
+  }
+ }
+}

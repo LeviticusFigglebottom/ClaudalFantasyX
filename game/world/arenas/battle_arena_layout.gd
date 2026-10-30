@@ -10,8 +10,9 @@ const ENEMY_SLOTS := "Stage/EnemySlots"
 const CAMERA := "Stage/BattleCamera"
 
 
-## {"party": Array[Transform3D], "enemy": Array[Transform3D], "camera": Transform3D, "fov": float}, in the
-## battle root's space (parent transforms composed). Empty on a missing scene.
+## {"party": Array[Transform3D], "enemy": Array[Transform3D], "enemy_slots": Transform3D (the EnemySlots node, for
+## boss_seats), "camera": Transform3D, "fov": float}, in the battle root's space (parent transforms composed). Empty
+## on a missing scene.
 static func read(path: String = SANDBOX_PATH) -> Dictionary:
 	var scene := load(path) as PackedScene
 	if scene == null:
@@ -37,7 +38,13 @@ static func read(path: String = SANDBOX_PATH) -> Dictionary:
 			party.append(_global(local, p))
 		elif p.get_base_dir() == ENEMY_SLOTS:
 			enemy.append(_global(local, p))
-	return {"party": party, "enemy": enemy, "camera": _global(local, CAMERA), "fov": fov}
+	return {
+		"party": party,
+		"enemy": enemy,
+		"enemy_slots": _global(local, ENEMY_SLOTS),
+		"camera": _global(local, CAMERA),
+		"fov": fov,
+	}
 
 
 ## Every slot's (x, z) on the floor, party first.

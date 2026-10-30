@@ -84,22 +84,30 @@ func attach(controller: BattleController, choreo: BattleChoreo) -> void:
 ## moves this fight's rest frame back_m along the view and up_m higher, still looking at the authored look point, at
 ## its own fov. The authored frame stays the camera's meta, so the next fight starts from it.
 func _fit_rest_to_the_fight() -> void:
-	var rows := data.get("rest_by_enemy", {}) as Dictionary
-	if _ctl.engine == null or rows.is_empty():
+	if _ctl.engine == null:
 		return
+	var ids: Array[StringName] = []
 	for e in _ctl.engine.enemies:
-		var row := rows.get(String(e.id).get_slice("#", 0), {}) as Dictionary
+		ids.append(StringName(String(e.id).get_slice("#", 0)))
+	var fit := rest_fit(data, default_transform, default_fov, ids)
+	default_transform = fit[0]
+	default_fov = float(fit[1])
+
+
+## The rest frame (camera `xf`, `fov`) fitted to a fight against `enemy_ids` (base ids) by camera.rest_by_enemy (`cam`:
+## choreo.json camera): the first foe with a row moves it. [Transform3D, fov]; unchanged when none has a row. Static so
+## the arena previews frame a boss as its fight does (the PC's GPU QA row 61: the Surge preview's Reach filled half
+## the frame on the authored camera).
+static func rest_fit(cam: Dictionary, xf: Transform3D, fov: float, enemy_ids: Array[StringName]) -> Array:
+	var rows := cam.get("rest_by_enemy", {}) as Dictionary
+	for eid in enemy_ids:
+		var row := rows.get(String(eid), {}) as Dictionary
 		if row.is_empty():
 			continue
-		var look := _default_pose()["look"] as Vector3
-		var pos := (
-			default_transform.origin
-			+ default_transform.basis.z * float(row.get("back_m", 0.0))
-			+ Vector3.UP * float(row.get("up_m", 0.0))
-		)
-		default_transform = Transform3D(Basis.looking_at(look - pos, Vector3.UP), pos)
-		default_fov = float(row.get("fov", default_fov))
-		return
+		var look := xf.origin - xf.basis.z.normalized() * float(cam.get("default_look_m", 1.0))
+		var pos := xf.origin + xf.basis.z * float(row.get("back_m", 0.0)) + Vector3.UP * float(row.get("up_m", 0.0))
+		return [Transform3D(Basis.looking_at(look - pos, Vector3.UP), pos), float(row.get("fov", fov))]
+	return [xf, fov]
 
 
 ## M3-BPR-426: a camera moment outside a sequence (a boss's phase change, its fall): `pose` ({pos, look, fov}, the

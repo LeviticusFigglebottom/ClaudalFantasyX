@@ -46,14 +46,18 @@ TIERS = ((-64.0, -22.0), (-22.0, 22.0), (22.0, 64.0))  # latitude bands (degrees
 TIER_AZ = (0.0, 45.0, 45.0)  # the azimuth of each tier's first petal (+Z is 0): the upper rings are staggered from the
 # bottom one, and the top ring's lamps sit clear of the shoulders (at 90 and 270 degrees) when the arms swing
 PETAL_GAP = 1.2  # degrees left open between two petals
+# M4-CRB-003: each ring's plates flare out toward their lower edge (radially, by up to this share), so the three rings
+# overlap like shingles and the housing reads as three stacked bands at battle distance, not one smooth egg
+FLARE = 0.1
 FOLD = (22.0, 68.0, 50.0)  # how far each tier's petals fold back in the `opened` phase (degrees)
 # how far each lamp turns back in its gimbal as its petal folds: the bottom ring's stay level, the others tip out a
 # little (30 and 20 degrees), which keeps the glass clear of the folded hoop above the pivot
 LEVEL = (22.0, 38.0, 30.0)
-HOOP_OUT = 0.045  # a hoop stands this far off the shell
-LAMP_OUT = 0.2  # a lamp's gimbal pivot stands this far out from its hoop
+HOOP_OUT = 0.065  # a hoop stands this far off the shell (clear of the plates' flare)
+LAMP_OUT = 0.21  # a lamp's gimbal pivot stands this far out from its hoop
 LAMP_DY = (-0.06, 0.0, 0.0)  # and this far below it (the bottom ring's lamps hang clear of the middle ring's edge)
-HUB_OFF = 0.14  # a gimbal hub's offset either side of its lamp
+LAMP_SCALE = 1.2  # M4-CRB-003: the lamps' size over their profiles below (the twelve lights are the read at 12 m)
+HUB_OFF = 0.16  # a gimbal hub's offset either side of its lamp
 CORE_R = 0.4
 COLUMN = (1.3, 3.13, 0.055)  # the central column: bottom, top, radius
 # The hood: (radius, y) outside from the crown down to the lip, then the underside back in
@@ -70,7 +74,9 @@ LEG = ((0.58, 1.04), (1.0, 1.12), (1.32, 0.05))
 # Arms: (x, y, z) of the shoulder, elbow, wrist and scissor tip of the left arm (+x); the right mirrors it
 ARM = ((1.04, 2.86, 0.0), (1.52, 3.2, 0.18), (1.74, 2.32, 0.62), (1.62, 1.84, 1.06))
 SCISSOR_PIVOT = 0.1  # the blades' pivot, this far from the wrist along the head
+BLADE_LEN = 0.78  # M4-CRB-003: the shears' blades, pivot to tip (they read as shears, not needles, at 12 m)
 KO_DROP = 0.55  # the KO kneel: the body settles this far, its knees in the water
+DORMANT_DROP = 0.22  # the intro's dormant crouch: the body this far down on bent knees before it wakes
 
 
 # ---------------------------------------------------------------------------------------------
@@ -82,6 +88,15 @@ def shell_pt(phi, th, s: float = 1.0) -> np.ndarray:
                                 np.radians(np.asarray(th, dtype=np.float64)))
     return np.stack([s * SHELL_A * np.cos(ph) * np.sin(t), CY + s * SHELL_B * np.sin(ph),
                      s * SHELL_A * np.cos(ph) * np.cos(t)], axis=-1)
+
+
+def flared(P: np.ndarray, u) -> np.ndarray:
+    """Points of a ring's plate pushed out radially by its flare: `u` 0 at the plate's lower edge, 1 at its upper."""
+    s = 1.0 + FLARE * (1.0 - np.asarray(u, dtype=np.float64)) ** 2
+    out = np.array(P, dtype=np.float64)
+    out[..., 0] *= s
+    out[..., 2] *= s
+    return out
 
 
 def az_dirs(th: float) -> tuple[np.ndarray, np.ndarray]:
@@ -223,6 +238,15 @@ def build_rig() -> ck.Rig:
         rig.add(f"arm_{s}_c", a[2], a[3], f"arm_{s}_b")
         d, _, pv = scissor_frame(side)
         rig.add(f"blade_{s}", pv, a[3], f"arm_{s}_c")
+    # VFX anchors (M4-CRB-003; unweighted, no vertex is skinned to them): the near gimbal hub of the middle ring (the
+    # weak point, on its petal so it folds back with it), the core globe's centre, and the core's crack facing the
+    # party (+z), where the opened burst comes from
+    _, tan = az_dirs(petal_az(1, 0))
+    w = pivot(1, 0) - HUB_OFF * tan
+    rig.add("vfx_wound", w, w + 0.15 * az_dirs(petal_az(1, 0))[0], "petal1_0")
+    rig.add("vfx_core", (0, CY, 0), (0, CY, 0.2), "core")
+    c = np.array([0.0, CY + 0.12, CORE_R * 0.98])
+    rig.add("vfx_phase", c, c + np.array([0.0, 0.0, 0.2]), "core")
     return rig
 
 
@@ -275,8 +299,9 @@ def petal(mesh: ck.Mesh, rig: ck.Rig, t: int, k: int) -> None:
     phis = np.linspace(hi, lo, rows)
     ths = np.linspace(th - half, th + half, cols)
     s_in = 1.0 - SHELL_T / SHELL_A
-    Po = shell_pt(phis[:, None], ths[None, :]).reshape(-1, 3)
-    Pi = shell_pt(phis[:, None], ths[None, :], s_in).reshape(-1, 3)
+    up = ((phis - lo) / (hi - lo))[:, None]  # 0 at the plate's lower edge, 1 at its upper
+    Po = flared(shell_pt(phis[:, None], ths[None, :]), up).reshape(-1, 3)
+    Pi = flared(shell_pt(phis[:, None], ths[None, :], s_in), up).reshape(-1, 3)
     G = ck.grid_tris(rows, cols, False)
     centre = np.array([0.0, CY, 0.0])
     bone = rig.rigid(f"petal{t}_{k}")
@@ -286,8 +311,10 @@ def petal(mesh: ck.Mesh, rig: ck.Rig, t: int, k: int) -> None:
     edge = np.minimum(np.minimum(u, 1.0 - u), np.minimum(v, 1.0 - v))
     col, wet, cav = brass(Po, SEED + 10 + 4 * t + k)
     rib = np.exp(-((v - 0.5) / 0.035) ** 2)  # a lacquered rib down the petal's middle
-    col = ck.mix(col, PAL["lacquer_black"] * 1.1, (0.8 * rib)[:, None])
-    ck.finish(mesh, Po, To, "frame", col, bone, wet=wet, cavity=cav + 0.45 * ck.smoothstep(0.12, 0.0, edge) + 0.3 * rib)
+    lip = ck.smoothstep(0.78, 0.92, u)  # M4-CRB-003: the flared lower lip lacquered black, a dark line under each ring
+    col = ck.mix(col, PAL["lacquer_black"] * 1.1, np.clip(0.8 * rib + 0.9 * lip, 0.0, 0.9)[:, None])
+    ck.finish(mesh, Po, To, "frame", col, bone, wet=np.maximum(wet, 0.3 * lip),
+              cavity=cav + 0.45 * ck.smoothstep(0.12, 0.0, edge) + 0.3 * rib)
     Ti = orient(Pi, G, centre - Pi[G].mean(axis=1))
     soot = ck.mix(PAL["brass"] * 0.5, PAL["lacquer_black"], 0.45 + 0.2 * ck.fbm(Pi * 4.0, SEED + 30)[:, None])
     ck.finish(mesh, Pi, Ti, "frame", np.clip(soot, 0.114, 1.0), bone, cavity=0.5)
@@ -335,8 +362,8 @@ def lamp(mesh: ck.Mesh, rig: ck.Rig, t: int, k: int) -> None:
     pv = pivot(t, k)
     bone = rig.rigid(f"lamp{t}_{k}")
 
-    def place(P):
-        return ck.transform(P, R, pv)
+    def place(P, s: float = LAMP_SCALE):
+        return ck.transform(P, R, pv, s)
 
     P, T = ck.lathe(LAMP_CUP, 12)
     frame(mesh, place(P), T, bone, SEED + 41, polish=0.6)
@@ -347,8 +374,8 @@ def lamp(mesh: ck.Mesh, rig: ck.Rig, t: int, k: int) -> None:
     col, wet = lacquer(Pw, SEED + 43)
     ck.finish(mesh, Pw, T, "frame", col, bone, wet=wet, cavity=0.2)
     for sgn in (-1.0, 1.0):  # the pins out to the hubs
-        P, T = ck.tube(np.array([(sgn * 0.09, 0, 0), (sgn * (HUB_OFF - 0.02), 0, 0)]), 0.014, 6)
-        Pw = place(P)
+        P, T = ck.tube(np.array([(sgn * 0.1, 0, 0), (sgn * (HUB_OFF - 0.02), 0, 0)]), 0.016, 6)
+        Pw = place(P, 1.0)
         col, wet = lacquer(Pw, SEED + 44)
         ck.finish(mesh, Pw, T, "frame", col, bone, wet=wet)
     P, T = ck.lathe(LAMP_GLASS, 12)
@@ -371,14 +398,21 @@ def legs(mesh: ck.Mesh, rig: ck.Rig) -> None:
         j = leg_points(i)
         names = [f"leg{i}_a", f"leg{i}_b"]
         skin = rig.chain(names, j)
-        joint(mesh, j[0], 0.085, rig.rigid(names[0]), SEED + 50 + i)
-        joint(mesh, j[1], 0.075, skin, SEED + 54 + i)
+        joint(mesh, j[0], 0.1, rig.rigid(names[0]), SEED + 50 + i)
+        joint(mesh, j[1], 0.095, skin, SEED + 54 + i)
         path = ck.bezier([j[0], 0.5 * (j[0] + j[1]) + UP * 0.03, j[1]], 6)
-        P, T = ck.tube(path, np.linspace(0.065, 0.055, 6), 8, cap_start=False, cap_end=False)
+        P, T = ck.tube(path, np.linspace(0.085, 0.07, 6), 8, cap_start=False, cap_end=False)
         frame(mesh, P, T, skin, SEED + 58 + i)
         path = ck.bezier([j[1], j[1] + 0.45 * (j[2] - j[1]) + 0.04 * az_dirs(LEG_AZ[i])[0], j[2] + UP * 0.1], 9)
-        P, T = ck.tube(path, np.linspace(0.055, 0.04, 9), 8, cap_start=False, cap_end=False)
+        P, T = ck.tube(path, np.array([0.072, 0.07, 0.066, 0.062, 0.058, 0.055, 0.052, 0.05, 0.048]), 8,
+                       cap_start=False, cap_end=False)
         frame(mesh, P, T, skin, SEED + 62 + i)
+        # M4-CRB-003: a lacquered greave collar a third of the way down the shank (the leg reads jointed, not a pole)
+        g = path[3]
+        dg = path[4] - path[2]
+        P, T = ck.tube(np.array([g - 0.04 * dg / np.linalg.norm(dg), g + 0.04 * dg / np.linalg.norm(dg)]), 0.082, 8)
+        col, wet = lacquer(P, SEED + 74 + i)
+        ck.finish(mesh, P, T, "frame", col, skin, wet=wet, cavity=0.2)
         fb = rig.rigid(f"leg{i}_c")
         foot = j[2] - UP * j[2][1]  # on the ground
         P, T = ck.lathe([(0.0, 0.16), (0.045, 0.15), (0.06, 0.1), (0.1, 0.045), (0.11, 0.015), (0.1, 0.0),
@@ -398,27 +432,29 @@ def arms(mesh: ck.Mesh, rig: ck.Rig) -> None:
         a = arm_points(side)
         ua, fa, hb, bb = (rig.rigid(f"arm_{s}_a"), rig.rigid(f"arm_{s}_b"), rig.rigid(f"arm_{s}_c"),
                           rig.rigid(f"blade_{s}"))
-        joint(mesh, a[0], 0.085, ua, SEED + 80)
-        rod(mesh, a[0], a[1], 0.05, ua, SEED + 81, cap=False)
-        joint(mesh, a[1], 0.068, fa, SEED + 82)
+        joint(mesh, a[0], 0.11, ua, SEED + 80)
+        P, T = ck.tube(np.linspace(a[0], a[1], 4), np.array([0.075, 0.07, 0.064, 0.058]), 8, cap_start=False,
+                       cap_end=False)
+        frame(mesh, P, T, ua, SEED + 81)
+        joint(mesh, a[1], 0.085, fa, SEED + 82)
         mid = a[1] + 0.55 * (a[2] - a[1])
-        rod(mesh, a[1], mid, 0.045, fa, SEED + 83, cap=False)
-        rod(mesh, mid - 0.04 * (a[2] - a[1]), a[2], 0.034, fa, SEED + 84, cap=False)
-        P, T = ck.tube(np.linspace(mid - 0.03 * (a[2] - a[1]), mid + 0.02 * (a[2] - a[1]), 2), 0.052, 8)
+        rod(mesh, a[1], mid, 0.06, fa, SEED + 83, cap=False)
+        rod(mesh, mid - 0.04 * (a[2] - a[1]), a[2], 0.045, fa, SEED + 84, cap=False)
+        P, T = ck.tube(np.linspace(mid - 0.03 * (a[2] - a[1]), mid + 0.02 * (a[2] - a[1]), 2), 0.072, 8)
         col, wet = lacquer(P, SEED + 85)
         ck.finish(mesh, P, T, "frame", col, fa, wet=wet)
-        joint(mesh, a[2], 0.055, hb, SEED + 86)
+        joint(mesh, a[2], 0.07, hb, SEED + 86)
         d, n, pv = scissor_frame(side)
         side_dir = np.cross(n, d)
         for sgn, bone in ((1.0, hb), (-1.0, bb)):  # two blades crossing at the pivot, a little open at rest
             ax = d * math.cos(math.radians(6.0)) + sgn * side_dir * math.sin(math.radians(6.0))
             tail = pv - 0.14 * ax
-            tip = pv + 0.55 * ax
-            path = ck.bezier([tail, pv, pv + 0.3 * ax - sgn * 0.03 * side_dir, tip], 7)
-            P, T = ck.tube(path, np.array([0.03, 0.04, 0.045, 0.04, 0.03, 0.018, 0.006]), 6, squash=0.3,
+            tip = pv + BLADE_LEN * ax
+            path = ck.bezier([tail, pv, pv + 0.45 * ax - sgn * 0.045 * side_dir, tip], 7)
+            P, T = ck.tube(path, np.array([0.04, 0.058, 0.068, 0.062, 0.048, 0.028, 0.008]), 6, squash=0.3,
                            up_hint=tuple(side_dir))
             frame(mesh, P, T, bone, SEED + 87, polish=1.0)
-        joint(mesh, pv, 0.03, hb, SEED + 88, rings=4, segs=8)
+        joint(mesh, pv, 0.045, hb, SEED + 88, rings=4, segs=8)
 
 
 def core(mesh: ck.Mesh, rig: ck.Rig) -> None:
@@ -427,8 +463,13 @@ def core(mesh: ck.Mesh, rig: ck.Rig) -> None:
     crack = ck.smoothstep(0.045, 0.0, np.abs(ck.fbm(P * 3.2, SEED + 90))) * ck.smoothstep(-0.2, 0.1, ck.fbm(P * 1.3, SEED + 91))
     col = ck.mix(PAL["salt_glass"], PAL["glimmer_bound"], 0.45)
     col = ck.mix(np.tile(col, (len(P), 1)), np.tile(PAL["lacquer_black"] * 1.2, (len(P), 1)), (0.85 * crack)[:, None])
-    ck.finish(mesh, P, T, "core", col, rig.rigid("core"), wet=0.6, cavity=0.4 * crack,
-              emission=0.95 * (1.0 - 0.8 * crack))
+    # M4-CRB-003: the light is brightest where the globe faces the party (+z) and falls toward its rim, so the bared core
+    # reads as a lit glass globe from the battle camera, not a flat disc
+    face = np.clip((P[:, 2]) / CORE_R, 0.0, 1.0)
+    glow = 0.5 + 0.5 * face ** 0.7
+    col = ck.mix(col * 0.8, col, glow[:, None])
+    ck.finish(mesh, P, T, "core", col, rig.rigid("core"), wet=0.6, cavity=0.4 * crack + 0.2 * (1.0 - glow),
+              emission=0.95 * glow * (1.0 - 0.8 * crack))
 
 
 def build_mesh(rig: ck.Rig) -> ck.Mesh:
@@ -601,6 +642,8 @@ REST_SOL = (0.0, 0.0, 0.0, 0.0)
 
 
 def build_clips() -> list[ck.Clip]:
+    """M4-CRB-003: the move pass (docs/kb/plan/act2/bosses/lamp_engine.md, the move list). Every one-shot is authored
+    from rest and played from its phase's idle first frame (`in_pose`), so it starts and ends exactly there."""
     pose = opened_pose()
 
     # idle: the rings turn slowly against each other, the lamps sway in their gimbals, the shears tick
@@ -670,11 +713,12 @@ def build_clips() -> list[ck.Clip]:
         c = ck.Clip(name, 0.7)
         for t, s_ in ((0.0, 0.0), (0.1, 1.0), (0.22, -0.45), (0.36, 0.2), (0.5, -0.07), (0.7, 0.0)):
             m = s_ * amp
-            c.key("body", t, (-4.0 * m, 0.0, 1.5 * m * sgn), (0.0, -0.02 * m, 0.0))
-            for t_, d in ((0, 9.0), (1, -11.0), (2, 8.0)):
+            # M4-CRB-003: big enough to read at 12 m (the frame rocks back about its hips, the arms fly up)
+            c.key("body", t, (-7.0 * m, 0.0, 3.0 * m * sgn), (0.0, -0.02 * m, 0.0))
+            for t_, d in ((0, 13.0), (1, -16.0), (2, 12.0)):
                 c.key(f"ring{t_}", t, (0.0, d * m * sgn, 0.0))
             for sd, sg in SIDES:
-                c.key(f"arm_{sd}_a", t, (-7.0 * m, 0.0, sg * 4.0 * m))
+                c.key(f"arm_{sd}_a", t, (-12.0 * m, 0.0, sg * 6.0 * m))
             for t_ in range(3):
                 for k in range(4):
                     if (t_, k) != loose:
@@ -686,31 +730,29 @@ def build_clips() -> list[ck.Clip]:
     hit = hit_clip("hit", 1.0, (1, 3), 1.0)
     hit_b = hit_clip("hit_b", -1.0, (0, 1), 1.25)
 
-    # ko (from the opened pose, where a KO lands by design): the core goes dark (VFX: the dead it held rise as
-    # glimmer_lift), the rings sag open, the lamps hang, the arms drop and the frame settles on its knees
+    # ko: the core goes dark (VFX: the dead it held rise as glimmer_lift at vfx_core), the rings sag, the lamps hang, the
+    # arms drop into the water and the frame settles on its knees. Authored from rest: `ko_opened` plays it from the open
+    # idle (where a KO lands by design), `ko` from the closed one
     ko = ck.Clip("ko", 3.0)
+    ko_shut = ck.Clip("ko", 3.0)  # closed, the petals stay shut (sagging them open shows the core through the gaps)
     for t, drop, rx in ((0.0, 0.0, 0.0), (0.3, -0.02, -3.0), (0.9, 0.08, 0.0), (1.8, 0.42, 2.0), (2.4, KO_DROP, 3.0),
                         (2.7, KO_DROP - 0.02, 2.5), (3.0, KO_DROP, 3.0)):
         ko.key("body", t, (rx, 0.0, 0.0), (0.0, -drop, 0.0))
-    for f in range(31):  # the legs follow the body's drop every 0.1 s, so the feet stay on the bottom between keys
-        t = 0.1 * f
-        drop = -float(ko.sample("body", t)[1][1])
-        for i in range(4):
-            a_, b_, _ = solve_leg(i, drop) if abs(drop) > 1e-9 else (0.0, 0.0, None)
-            leg_key(ko, i, t, a_, b_, drop)
+    legs_follow(ko)
     for t_ in range(3):
         sag = 0.5 if t_ == 0 else 1.0  # the bottom ring has least room to sag (the bowl is under it)
         for k in range(4):
             for t, extra, swing in ((0.0, 0.0, 0.0), (0.8, 4.0, 8.0), (1.6, 8.0, -6.0), (2.4, 12.0, 3.0),
                                     (3.0, 12.0, 3.0)):
-                petal_fold(ko, t_, k, t, FOLD[t_] + extra * sag)
-                lamp_swing(ko, t_, k, t, -LEVEL[t_] + swing * (-1) ** k)  # tipping out as the petals sag
+                petal_fold(ko, t_, k, t, extra * sag)
+                lamp_swing(ko, t_, k, t, swing * (-1) ** k)  # tipping out as the petals sag
+                lamp_swing(ko_shut, t_, k, t, swing * (-1) ** k)
         ko.key(f"ring{t_}", 0.0)
         ko.key(f"ring{t_}", 1.2, (0.0, (-1) ** t_ * 5.0, 0.0))
         ko.key(f"ring{t_}", 3.0, (0.0, (-1) ** t_ * 5.0, 0.0))
-    ko.key("core", 0.0, (0.0, 0.0, 0.0), (0.0, 0.05, 0.0))
-    ko.key("core", 1.5, (0.0, 10.0, 0.0), (0.0, 0.0, 0.0))
-    ko.key("core", 3.0, (0.0, 12.0, 0.0), (0.0, -0.03, 0.0))
+    ko.key("core", 0.0)
+    ko.key("core", 1.5, (0.0, 10.0, 0.0), (0.0, -0.03, 0.0))
+    ko.key("core", 3.0, (0.0, 12.0, 0.0), (0.0, -0.05, 0.0))
     for sd, sg in SIDES:
         a = arm_points(sg)
         limp = solve_arm(sg, np.array([sg * 1.55, 0.2 + KO_DROP, 1.25]), (25.0, 0.0, 0.0, 40.0))  # in the water
@@ -718,8 +760,13 @@ def build_clips() -> list[ck.Clip]:
         for t, sol, bl in ((0.0, REST_SOL, 0.0), (0.6, sag, 10.0), (2.0, limp, 22.0), (3.0, limp, 22.0)):
             arm_key(ko, sd, sg, t, sol, blade=bl)
 
-    # phase_change (`opened`, 2.0 s): the rings jolt and stop; the middle ring folds back first, then the top and
-    # the bottom, each lamp swinging back a beat behind in its gimbal; the core lifts in its collars; the arms spread
+    for bone, ks in ko.keys.items():
+        if not bone.startswith("petal") and not bone.startswith("lamp"):
+            ko_shut.keys[bone] = list(ks)
+
+    # phase_change (`opened`, 2.0 s, the burst at 1.1 s from vfx_phase): the rings jolt and stop; the middle ring folds
+    # back first, then the top and the bottom, each lamp swinging back a beat behind in its gimbal; the core lifts in its
+    # collars; the arms spread. Keyed absolutely, then pinned to the closed idle's first frame and the open idle's.
     phase = ck.Clip("phase_change", 2.0)
     for t_, (t0, t1) in ((1, (0.25, 1.05)), (2, (0.55, 1.35)), (0, (0.75, 1.5))):
         for t, d in ((0.0, 0.0), (0.12, 6.0), (0.24, -4.0), (0.36, 0.0), (2.0, 0.0)):
@@ -758,20 +805,208 @@ def build_clips() -> list[ck.Clip]:
     for sd, sg in SIDES:
         opened.wave(f"arm_{sd}_a", amp_rot=(2.5, 0.0, sg * 2.0), cycles=1, phase=0.0 if sg > 0 else math.pi)
     opened = in_pose(opened, "idle_opened", pose)
-    return [idle, attack, cast, hit, hit_b, ko_from(ko, pose), phase, opened,
-            in_pose(attack, "attack_opened", pose), in_pose(cast, "cast_opened", pose),
-            in_pose(hit, "hit_opened", pose)]
+
+    # Each phase's idle first frame: every clip of the phase starts and ends there
+    idle0 = {b: tuple(np.asarray(v, float) for v in idle.sample(b, 0.0)) for b in idle.keys}
+    open0 = {b: tuple(np.asarray(v, float) for v in opened.sample(b, 0.0)) for b in opened.keys}
+
+    def closed(c: ck.Clip, name: str | None = None) -> ck.Clip:
+        return in_pose(c, name or c.name, idle0)
+
+    def open_(c: ck.Clip, name: str | None = None) -> ck.Clip:
+        return in_pose(c, name or f"{c.name}_opened", open0)
+
+    # intro (2.8 s, under the boss_tall hold): dormant, slumped low on bent knees, its arms folded down and its lamps
+    # hanging; the rings wake bottom to top (each jolts, then turns home) and their lamps swing up level as they wake
+    # (the lighting itself is VFX: emission is static); the frame rises, the arms lift high with the shears open, and it
+    # settles into idle
+    intro = ck.Clip("intro", 2.8)
+    for t, drop, rx in ((0.0, DORMANT_DROP, 5.0), (0.5, DORMANT_DROP, 5.0), (1.0, DORMANT_DROP * 0.85, 3.5),
+                        (1.75, 0.03, -3.0), (2.2, 0.0, -1.5), (2.8, 0.0, 0.0)):
+        intro.key("body", t, (rx, 0.0, 0.0), (0.0, -drop, 0.0))
+    legs_follow(intro)
+    for t_ in range(3):
+        w = 0.45 + 0.35 * t_  # bottom to top
+        off = (-1) ** t_ * 28.0
+        for t, d in ((0.0, off), (w, off), (w + 0.1, off + (-1) ** t_ * 5.0), (w + 0.25, off), (2.45, 0.0), (2.8, 0.0)):
+            intro.key(f"ring{t_}", t, (0.0, d, 0.0))
+        for k in range(4):
+            wk = w + 0.05 * k
+            for t, deg in ((0.0, 14.0), (wk, 14.0), (wk + 0.22, -7.0), (wk + 0.45, 2.0), (wk + 0.6, 0.0), (2.8, 0.0)):
+                lamp_swing(intro, t_, k, t, deg)
+    for sd, sg in SIDES:
+        a = arm_points(sg)
+        fold = solve_arm(sg, np.array([sg * 1.25, 1.25, 0.8]), (20.0, 0.0, 0.0, 30.0))
+        high = solve_arm(sg, a[3] + np.array([sg * 0.4, 0.9, -0.2]), (-20.0, 0.0, sg * 10.0, -40.0))
+        for t, sol, bl in ((0.0, fold, 0.0), (0.9, fold, 0.0), (2.0, high, 36.0), (2.2, high, 30.0),
+                           (2.8, REST_SOL, 0.0)):
+            arm_key(intro, sd, sg, t, sol, blade=bl)
+    intro.key("core", 0.0, (0.0, -20.0, 0.0))
+    intro.key("core", 1.6, (0.0, -6.0, 0.0))
+    intro.key("core", 2.8)
+
+    # idle_b (1.4 s, the fidget): the near arm lifts and trims the air twice; the middle ring turns a little
+    idle_b = ck.Clip("idle_b", 1.4)
+    lift = solve_arm(-1, arm_points(-1)[3] + np.array([-0.15, 0.45, 0.15]), (-10.0, 0.0, 0.0, -20.0))
+    for t, sol, bl in ((0.0, REST_SOL, 0.0), (0.35, lift, 28.0), (0.5, lift, -2.0), (0.65, lift, 26.0),
+                       (0.8, lift, -2.0), (1.4, REST_SOL, 0.0)):
+        arm_key(idle_b, "r", -1, t, sol, blade=bl)
+    idle_b.key("ring1", 0.0)
+    idle_b.key("ring1", 0.7, (0.0, -8.0, 0.0))
+    idle_b.key("ring1", 1.4)
+    idle_b.key("body", 0.0)
+    idle_b.key("body", 0.5, (0.0, -3.0, 0.0))
+    idle_b.key("body", 1.4)
+
+    # ready (1.6 s loop, the guard stance): it leans in, the near ring turns its lamps toward the party and every lamp
+    # tips at them, the shears raised and a little open
+    ready = ck.Clip("ready", 1.6, loop=True)
+    ready.wave("body", amp_rot=(0.8, 0.0, 0.0), amp_loc=(0.0, 0.008, 0.0), cycles=1, base_rot=(3.0, 0.0, 0.0))
+    for t_ in range(3):
+        ready.key(f"ring{t_}", 0.0, (0.0, -10.0 if t_ == 1 else 0.0, 0.0))
+        ready.key(f"ring{t_}", 1.6, (0.0, -10.0 if t_ == 1 else 0.0, 0.0))
+        for k in range(4):
+            for t, deg in ((0.0, 14.0), (0.8, 18.0), (1.6, 14.0)):
+                face = face_target(t_, k, deg)
+                lamp_swing(ready, t_, k, t, face[0], face[1])
+    for sd, sg in SIDES:
+        guard = solve_arm(sg, arm_points(sg)[3] + np.array([sg * 0.1, 0.35, 0.2]), (-10.0, 0.0, 0.0, -15.0))
+        for t, bl in ((0.0, 18.0), (0.8, 24.0), (1.6, 18.0)):
+            arm_key(ready, sd, sg, t, guard, blade=bl)
+
+    # lamp_gather (1.8 s, the charge; the mark at 1.2 s): ring by ring, bottom to top, every lamp swings to the marked
+    # hero (an overshoot, then still); the rings lock, the arms rise wide with the shears open and the frame leans back:
+    # a held breath (the brightening is a VFX glow card on each lamp)
+    gather = ck.Clip("lamp_gather", 1.8)
+    for t_ in range(3):
+        w = 0.1 + 0.22 * t_
+        for k in range(4):
+            face = face_target(t_, k, 34.0)
+            over = face_target(t_, k, 40.0)
+            wk = w + 0.04 * k
+            lamp_swing(gather, t_, k, 0.0, 0.0)
+            lamp_swing(gather, t_, k, wk, 0.0)
+            lamp_swing(gather, t_, k, wk + 0.28, over[0], over[1])
+            lamp_swing(gather, t_, k, wk + 0.45, face[0], face[1])
+            lamp_swing(gather, t_, k, 1.45, face[0], face[1])
+            lamp_swing(gather, t_, k, 1.8, 0.0)
+        for t, d in ((0.0, 0.0), (w, 0.0), (w + 0.3, (-1) ** t_ * 6.0), (1.45, (-1) ** t_ * 6.0), (1.8, 0.0)):
+            gather.key(f"ring{t_}", t, (0.0, d, 0.0))
+    for sd, sg in SIDES:
+        up = solve_arm(sg, arm_points(sg)[3] + np.array([sg * 0.45, 1.0, -0.3]), (-20.0, 0.0, sg * 10.0, -40.0))
+        for t, sol, bl in ((0.0, REST_SOL, 0.0), (0.9, up, 36.0), (1.45, up, 36.0), (1.8, REST_SOL, 0.0)):
+            arm_key(gather, sd, sg, t, sol, blade=bl)
+    for t, rx in ((0.0, 0.0), (0.9, -4.0), (1.2, -5.0), (1.45, -5.0), (1.8, 0.0)):
+        gather.key("body", t, (rx, 0.0, 0.0))
+
+    # lamp_burn (1.6 s, contact 0.8): the lamps swing onto the marked hero and the rings lock still (0.0-0.35), the frame
+    # draws back with the arms pulled wide (the wind-up, held to 0.7); then the lamps fire together, the frame pitching
+    # in as they snap fully on, and hold the steady beam (no flicker) to 1.1
+    burn = ck.Clip("lamp_burn", 1.6)
+    for t_ in range(3):
+        for k in range(4):
+            face = face_target(t_, k, 30.0)
+            full = face_target(t_, k, 38.0)
+            for t, (deg, ex) in ((0.0, (0.0, (0.0, 0.0, 0.0))), (0.35, face), (0.7, face), (0.8, full), (1.1, full),
+                                 (1.6, (0.0, (0.0, 0.0, 0.0)))):
+                lamp_swing(burn, t_, k, t, deg, ex)
+        for t, d in ((0.0, 0.0), (0.3, (-1) ** t_ * 3.0), (1.1, (-1) ** t_ * 3.0), (1.6, 0.0)):
+            burn.key(f"ring{t_}", t, (0.0, d, 0.0))
+    for t, rx in ((0.0, 0.0), (0.35, -5.0), (0.7, -6.0), (0.8, 4.0), (0.9, 2.5), (1.1, 2.0), (1.6, 0.0)):
+        burn.key("body", t, (rx, 0.0, 0.0))
+    for sd, sg in SIDES:
+        a = arm_points(sg)
+        back = solve_arm(sg, a[3] + np.array([sg * 0.35, 0.3, -0.45]), (-15.0, 0.0, sg * 10.0, -20.0))
+        fling = solve_arm(sg, a[3] + np.array([sg * 0.2, 0.15, 0.15]), back)
+        for t, sol, bl in ((0.0, REST_SOL, 0.0), (0.4, back, 0.0), (0.7, back, 0.0), (0.85, fling, 30.0),
+                           (1.1, fling, 30.0), (1.6, REST_SOL, 0.0)):
+            arm_key(burn, sd, sg, t, sol, blade=bl)
+
+    # call (call_the_tenders, 1.4 s, contact 0.7): the near arm swings up high and back with its shears shut, then
+    # knocks the flat of the shears against the bowl of its own frame: a ringing knock that wakes the crawlers. The
+    # frame and the rings jolt with it; the far arm braces out.
+    call = ck.Clip("call", 1.4)
+    a = arm_points(-1)
+    wind = solve_arm(-1, a[3] + np.array([0.0, 1.1, -0.45]), (-30.0, 0.0, 0.0, -40.0))
+    wind2 = solve_arm(-1, a[3] + np.array([0.05, 1.2, -0.55]), wind)
+    knock = solve_arm(-1, np.array([-0.98, 1.3, 0.4]), (20.0, 0.0, 0.0, 30.0))
+    rebound = solve_arm(-1, np.array([-1.08, 1.42, 0.48]), knock)
+    for t, sol, bl in ((0.0, REST_SOL, 0.0), (0.45, wind, -3.0), (0.58, wind2, -3.0), (0.7, knock, -3.0),
+                       (0.82, rebound, 0.0), (1.4, REST_SOL, 0.0)):
+        arm_key(call, "r", -1, t, sol, blade=bl)
+    brace = solve_arm(1, arm_points(1)[3] + np.array([0.3, 0.2, -0.1]), (-10.0, 0.0, 10.0, -10.0))
+    for t, sol in ((0.0, REST_SOL), (0.5, brace), (1.0, brace), (1.4, REST_SOL)):
+        arm_key(call, "l", 1, t, sol)
+    for t, m in ((0.0, 0.0), (0.45, -0.3), (0.7, 1.0), (0.82, -0.5), (0.95, 0.25), (1.1, -0.1), (1.4, 0.0)):
+        call.key("body", t, (-2.0 * m, 0.0, -3.0 * m))
+        for t_, d in ((0, 5.0), (1, -6.0), (2, 4.0)):
+            call.key(f"ring{t_}", t, (0.0, d * max(m, -0.5), 0.0))
+
+    # twin_trim (phase 2, 1.7 s, contact 0.85): both arms cross high over the hood with the shears wide open (the
+    # wind-up, 0.0-0.7), then both snip down and out, each at its own foe
+    twin = ck.Clip("twin_trim", 1.7)
+    for sd, sg in SIDES:
+        high = solve_arm(sg, np.array([-sg * 0.15, 3.55, 0.7 + 0.15 * sg]), (-30.0, 0.0, sg * 15.0, -40.0))
+        high2 = solve_arm(sg, np.array([-sg * 0.2, 3.62, 0.62 + 0.15 * sg]), high)
+        cut = solve_arm(sg, np.array([sg * 1.15, 1.45, 1.6]), (40.0, 0.0, 0.0, 30.0))
+        follow = solve_arm(sg, np.array([sg * 1.25, 1.32, 1.45]), cut)
+        for t, sol, bl in ((0.0, REST_SOL, 0.0), (0.55, high, 40.0), (0.7, high2, 44.0), (0.85, cut, -4.0),
+                           (1.05, follow, 0.0), (1.7, REST_SOL, 0.0)):
+            arm_key(twin, sd, sg, t, sol, blade=bl)
+    for t, rx in ((0.0, 0.0), (0.6, -4.0), (0.72, -4.5), (0.85, 6.0), (1.05, 4.5), (1.7, 0.0)):
+        twin.key("body", t, (rx, 0.0, 0.0))
+    for t_ in range(3):
+        for t, d in ((0.0, 0.0), (0.7, 0.0), (0.85, (-1) ** t_ * 7.0), (1.0, -(-1) ** t_ * 3.0), (1.7, 0.0)):
+            twin.key(f"ring{t_}", t, (0.0, d, 0.0))
+
+    # core_flare (phase 2, the open `cast_opened`, 2.0 s, contact 1.0): the petals spread wider and the frame leans
+    # back with its arms flung wide (the wind-up, 0.0-0.9), then the core leans out in its collars and flares, the frame
+    # pitching in after it; a pale shock across the dais is the VFX
+    flare = ck.Clip("cast", 2.0)
+    for t_, extra in ((0, 6.0), (1, 8.0), (2, 10.0)):
+        for k in range(4):
+            for t, deg in ((0.0, 0.0), (0.9, extra), (1.0, extra * 1.2), (1.4, extra), (2.0, 0.0)):
+                petal_fold(flare, t_, k, t, deg)
+        for t, d in ((0.0, 0.0), (0.9, 0.0), (1.0, (-1) ** t_ * 6.0), (1.15, -(-1) ** t_ * 3.0), (1.4, 0.0), (2.0, 0.0)):
+            flare.key(f"ring{t_}", t, (0.0, d, 0.0))
+    for t, loc in ((0.0, 0.0), (0.9, 0.04), (1.0, 0.1), (1.4, 0.1), (2.0, 0.0)):
+        flare.key("core", t, (0.0, 0.0, 0.0), (0.0, 0.4 * loc, loc))
+    for t, rx in ((0.0, 0.0), (0.8, -5.0), (0.9, -5.5), (1.0, 5.0), (1.4, 3.0), (2.0, 0.0)):
+        flare.key("body", t, (rx, 0.0, 0.0))
+    for sd, sg in SIDES:
+        spread = solve_arm(sg, arm_points(sg)[3] + np.array([sg * 0.55, 0.5, -0.45]), (-15.0, 0.0, sg * 15.0, -30.0))
+        for t, sol, bl in ((0.0, REST_SOL, 0.0), (0.8, spread, 34.0), (1.4, spread, 34.0), (2.0, REST_SOL, 0.0)):
+            arm_key(flare, sd, sg, t, sol, blade=bl)
+
+    phase = pin_ends(phase, idle0, open0)
+    return [idle, opened, closed(intro), closed(idle_b), closed(ready), open_(ready),
+            closed(attack), open_(attack), closed(cast), open_(flare),
+            closed(gather), open_(gather), closed(burn), open_(burn), closed(call), open_(call),
+            closed(twin), open_(twin), closed(hit), closed(hit_b), open_(hit), open_(hit_b),
+            closed(ko_shut), open_(ko), phase]
 
 
-def ko_from(ko: ck.Clip, pose: dict) -> ck.Clip:
-    """The KO keys its petals and lamps absolutely (it starts open); the core's lift is in its own keys."""
-    out = ck.Clip("ko", ko.length)
-    out.keys = ko.keys
-    for b, (pr, pl) in pose.items():
-        if b not in out.keys:
-            out.key(b, 0.0, tuple(pr), tuple(pl))
-            out.key(b, ko.length, tuple(pr), tuple(pl))
-    return out
+def legs_follow(clip: ck.Clip, step: float = 0.1) -> None:
+    """Keys the legs every `step` s to the body's drop (its y offset), so the feet stay planted on the bottom while the
+    hips go down and up between the body's keys."""
+    n = int(round(clip.length / step))
+    for f in range(n + 1):
+        t = min(step * f, clip.length)
+        drop = -float(clip.sample("body", t)[1][1])
+        for i in range(4):
+            a_, b_, _ = solve_leg(i, drop) if abs(drop) > 1e-9 else (0.0, 0.0, None)
+            leg_key(clip, i, t, a_, b_, drop)
+
+
+def pin_ends(clip: ck.Clip, start: dict, end: dict) -> ck.Clip:
+    """`clip` with every bone's first key set to `start`'s pose and its last to `end`'s (a phase change from one
+    phase's idle first frame to the next one's); its inner keys are kept."""
+    zero = (np.zeros(3), np.zeros(3))
+    for b in sorted(set(clip.keys) | set(start) | set(end)):
+        clip.keys[b] = [k for k in clip.keys.get(b, []) if 1e-6 < k[0] < clip.length - 1e-6]
+        for t, (r, l) in ((0.0, start.get(b, zero)), (clip.length, end.get(b, zero))):
+            clip.key(b, t, tuple(r), tuple(l))
+    return clip
 
 
 # ---------------------------------------------------------------------------------------------
@@ -811,7 +1046,7 @@ def report(rig: ck.Rig, mesh: ck.Mesh, clips: list[ck.Clip]) -> None:
 
 # Kept off the floor (M3-CRE-632, common/grounding.py): as the KO settles the frame on its knees with a 3° pitch, a
 # foot that the pitch would press into the bottom (by up to 6.5 mm) lifts the least it takes.
-GROUNDED_LIMBS = [(f"leg{i}_c", gr.LIFT, 1.0, 0.05, ("ko",)) for i in range(4)]
+GROUNDED_LIMBS = [(f"leg{i}_c", gr.LIFT, 1.0, 0.05, ("ko", "ko_opened", "intro")) for i in range(4)]
 
 
 def main() -> None:

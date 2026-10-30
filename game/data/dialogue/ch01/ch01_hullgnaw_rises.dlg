@@ -7,6 +7,9 @@ location: ch01/oruvel
 ---
 @letterbox on
 @camera O16
+// M3-CIN-1235 (PC GPU QA row 58): the thing Rhen names rises in O16, up through the net-pen deck in front of Rhen (the chapter beat shows the
+// layout's hidden `hullgnaw` actor, the creature's own model; its intro clip is the rise). O16 had framed empty water.
+@anim hullgnaw intro
 @sfx hullgnaw_ribs_creak
 @vfx glimmer_held at=net_pen count=8 drift=down_seaward
 @wait 1.5

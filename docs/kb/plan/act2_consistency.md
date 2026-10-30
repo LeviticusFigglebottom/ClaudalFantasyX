@@ -1,0 +1,190 @@
+# Act II consistency review: lane docs against the beat-sheet drafts and ADR 0204 (2026-10-30, read-only)
+
+**Canon used:**
+- the working-tree drafts `docs/kb/story/beats/act2_ch10.md` … `act2_ch16.md`. Note: ADR 0204 is still being applied to them, so ADR 0204 wins where it speaks;
+- ADR 0204, 0015, 0016, 0020 and 0022;
+- `act_outline.md`, `vowbound.md`, `bible.md` and the character sheets;
+- `act2_plan.md`;
+- `docs/kb/audio/act2_finals.md`.
+
+**Lane docs:** every path is under `docs/kb/plan/act2/`:
+- `chapters/*` (origin/claude/act1-chapters);
+- `audio/act2_cue_sheet.md` (origin/claude/audio);
+- `creatures/*` (origin/claude/creatures);
+- `bosses/*` (origin/claude/creatures-b);
+- `zones/*` (origin/claude/env-art-b);
+- `ui/*` (origin/claude/ui).
+
+**Banned terms:** a whole-word scan using `tools/banned_terms.txt`'s own rules (case-sensitive unless the line starts with `i:`) found **0 hits** in all six lanes, the seven drafts, act2_plan and ADR 0204. Every approved and coined name passes: Owa, Brannoc Hale, Warden Dask, Aldous Varrow, Malcor Venn, the Wakefin, the Abiding guard, "Captain of the Veil", "the Veiled", `abiding_first`, `court_steps`, `kesh_memory`, `battle_heretic`, Ressa, Dorro and Marra. Near-miss notes are in table 1.
+
+Owners:
+- **chapters** is the act1-chapters track.
+- **ui-menus** owns `ui/*`.
+- **act2-plan drafts** means the seven beat sheets, plus act2_plan.md where it is stale.
+
+---
+
+## 1. Names
+
+| # | Where | Mismatch | Which side looks right, and why | Owner |
+|---|---|---|---|---|
+| N1 | `ui/heresy.md` §3 (l.42): the party title is "Heretics of the Level" (`FIELD_MENU_SUBTITLE_HERETIC`) | ADR 0204 §4 fixes the heresy's words as **"Outside the Level"**. The Ch14 draft (B03, §3 `ch14_declared_heretics`) has the title read "Outside the Level". | ADR 0204 and the draft. | ui-menus |
+| N2 | `ui/portraits.md`: `Liss's father (<name>)`, `CHAR_<LISS_FATHER>`. `ui/codex_bestiary.md`: `liss_father` → `CODEX_<NAME>_*` | ADR 0204 §4 names him **Aldous Varrow**. The Ch15 draft's speaker id is `dock_master` (§9). | ADR 0204 for the name, the draft for the speaker id. | ui-menus |
+| N3 | `ui/portraits.md`, `ui/codex_bestiary.md`: `kirru_eldest`, unnamed | ADR 0204 §4 names her **Owa**. The Ch10 draft still says "Owa-of-the-Clutch, or the eldest only; Narrative's call" (B06 R02, §10 Q1), which is stale. | ADR 0204: "Owa". The draft should drop the open question and the "-of-the-Clutch" form. | ui-menus; act2-plan drafts |
+| N4 | `ui/portraits.md` and the speaker list | No portrait or speaker row for **Commander Brannoc Hale** (`commander_hale`, who speaks in Ch14 B04) or for `warden_dask`. The Ch14 draft's §9 lists both speakers. | The draft and ADR 0204 §4. Hale has lines, so he needs a portrait (or a neutral one). | ui-menus |
+| N5 | `bosses/abiding_guard.md` §1, §4 compared with the Ch16 draft §5a | The lane has three hooded **lamp-hook** bearers, `abiding_first` (the leader) and `abiding_guard` ×2, in white lacquer. The draft has **"the Veiled"** (two Bulwark casters and two halberdiers) plus the **"Captain of the Veil"** (a duellist), eight guards in **veiled gold lacquer** at the barge, and the speaker `abiding_captain`. | The draft is newer and is the brief, so the lane should re-cast. Either way, pick one roster and one set of ids. | creatures-b |
+| N6 | `bosses/malcor_venn.md` §1–§4 compared with the Ch14 draft B03/§5b | The lane has an **old** man with a 2.6 m brass **Warden's rod** (`rod_sweep`, `level_guard`). The draft has a man "in **late middle age** with a soldier's bearing" and a **heavy halberd**. | The draft, which is the story's source for the character. Combat and characters need one weapon. | creatures-b |
+| N7 | `ui/hud.md` §1 and `creatures/root_crab.md` call the crab's skill **Root Drag** (`root_drag`). The Ch10 draft §5 calls the Drowner's drag "`root_drag`-class". | The same id is used for two different skills. The bosses lane gives the Drowner's drag its own id, `drowner_haul`. | Keep `root_drag` for the crab and correct the Ch10 draft's wording. | act2-plan drafts |
+| N8 | Ch16 draft §5a "Captain of the Veil" next to Ch16 C16, Sefir's one word **"Captain."** to Kerrid (ADR 0204 §14) | Not a lane conflict. A boss called "the Captain" in the same scene dilutes the only rank word Sefir gives Kerrid. | Rename the guard leader (for example "the Veil-First"). | act2-plan drafts |
+| N9 | Act2 cue ids across lanes | `peace_wedding_break`, `court_steps`, `ysolde_confession`, `lagoon_escape_coda`, `peace_wedding_preview` (audio lane) and `kesh_memory` (draft and audio) aren't in `act2_finals.md`. The Ch14 draft calls the trap cue "`peace_wedding` **break**" with no id. | The finals list should gain the ids that survive (see F-table). `ysolde_confession` should not exist (see A-table). | audio; act2-plan drafts |
+| N10 | Near-miss (no hit) | `StormFarPlane` (zones `ch16_drowned_choir.md`, `arenas_ch13_16.md`) is an existing render class whose name contains "FarPlane". It doesn't match whole-word, but the inspiring series' afterlife term **isn't on the banned list**. | Add `i:farplane` to `tools/banned_terms.txt`. A whole-word match leaves `StormFarPlane` alone. | (any role) |
+
+## 2. Flags
+
+The drafts' §3 tables are the canon below. Most lane flags are renamed copies of draft flags, so every lane needs one rename pass at the gate.
+
+| # | Where | Mismatch | Which side looks right, and why | Owner |
+|---|---|---|---|---|
+| F1 | `chapters/ch10.md` §1, §2 | It uses `ch10_drowner_defeated`, `ch10_side_pocket_found`, `ch10_asked_kirru_child` and `ch10_farewell_tide_seen`. The draft has `ch10_drowner_felled`, `ch10_found_scrape_mark`, `ch10_child_asked` and `ch10_tide_witnessed`. The lane adds `ch10_pell_stopped` (listed under Sets, but no `set` step) and `ch10_root_lift_seen`. It lacks `ch10_pell_kept_out`, `ch10_asha_answered_child`, `ch10_asha_asked_pell` and `ch10_complete`. | The draft: Ch11, Ch12 and Ch16 read its names (Ch11 reads `ch10_drowner_felled` and `ch10_tide_witnessed`; Ch16 reads `ch10_asha_answered_child`). | chapters |
+| F2 | `chapters/ch11.md` | It uses `ch11_rhen_named_dace`, `ch11_wenna_mark_read` and `ch11_lamp_mended`, and adds `ch11_engine_core_seen`. The draft has `ch11_rhen_admitted`, `ch11_found_wenna_mark` and `ch11_lamp_repaired`. The lane lacks `ch11_pell_knelt`, `ch11_found_fig_cache` and `ch11_complete`. | The draft: Ch12 reads `ch11_lamp_repaired`, and Ch13 reads `ch11_found_wenna_mark`. | chapters |
+| F3 | `chapters/ch12.md` | It uses `ch12_breath_seen`, `ch12_knot_tied` and `ch12_ram_defeated`. The draft has `ch12_toma_saw_breath`, `ch12_heard_the_knot` + `ch12_rhen_tied_knot`, and `ch12_ram_felled`. The lane lacks `ch12_complete`. | The draft: Ch15 K18 reads `ch12_toma_saw_breath`. | chapters |
+| F4 | `chapters/ch13.md` | It uses `ch13_guest_of_sefir`, `ch13_entered_sanctum`, `ch13_saw_corrans_house`, `ch13_archive_day_1/2` and `ch13_entered_archive`. The draft has `ch13_corran_house`, `ch13_read_ledgers` and `ch13_read_cantor_roll`. The lane lacks `ch13_met_tobin`, `ch13_sat_at_moorings`, `ch13_found_wenna_mark` and `ch13_complete`. **Internal bug:** lamp_archive `arrive[0]` is guarded by `unset ch13_archive_day_1`, but its steps set `ch13_entered_archive`. So `ch13_archive_day_1` is never set, and beat `ledgers` (which requires it) can never run. | The draft: Ch16 reads `ch13_read_cantor_roll`. Fix the guard. | chapters |
+| F5 | `chapters/ch14.md` | It uses `ch14_barge_cut` and `ch14_warden_beaten`, and the encounter id `ch14_hold_the_steps`. The draft has `ch14_venn_beaten` and the set piece `ch14_water_steps`. The lane lacks `ch14_vows_spoken`, `ch14_toma_refused`, `ch14_tobin_killed`, `ch14_engine_broken`, `ch14_spoke_with_tobin` and `ch14_complete`. | The draft: Ch15 reads `ch14_toma_refused` and `ch14_vows_spoken`. | chapters |
+| F6 | `chapters/ch15.md` and `ui/kerrid.md` §1 | Both use **`ch15_kerrid_revealed`**, and the lane also uses `ch15_sat_with_tobin`, `ch15_wakefin_defeated`, `ch15_pyre_lit`, `ch15_supper_with_dace_memories` and `ch15_toma_faith_broken`. The draft has **`ch15_kerrid_told`**, `ch15_sat_with_liss`, `ch15_wakefin_felled`, `ch15_pyre_raft` and `ch15_supper_with_father`. The lane lacks `ch15_pell_said_he_knew`, `ch15_toma_carried_tobin` and `ch15_complete`. | The draft: Ch16 reads `ch15_kerrid_told` and `ch15_pyre_raft`. Kerrid's codex and status line key on this flag, so it matters most. | chapters; ui-menus |
+| F7 | `chapters/ch16.md` | It uses `ch16_waded`, `ch16_knows_the_hush`, `ch16_swept_away`, **`act2_complete`** and the encounter `ch16_holding_the_line`. The draft has `ch16_reached_choir_edge`, `ch16_learned_the_hush`, **`ch16_act_two_complete`** and the set piece `ch16_storm_wakes`. | The draft. The Act III gate reads the act-complete flag, so it needs exactly one name. | chapters |
+| F8 | `ui/codex_bestiary.md`: unlock flags that nothing sets | It uses `ch10_farewell_tide_seen`, `ch13_met_merel`, `ch13_bound_ethren`, `ch14_tobin_died`, `ch16_choir_memory_seen`, `ch16_sefir_tempts`, `ch12_ama_keth_read`, `ch15_reached_hollowmere` and `ch11_liss_found_marks`. The drafts set `ch10_tide_witnessed`, `ch13_met_tobin`, `ch13_ethren_bound`, `ch14_tobin_killed`, `ch16_learned_the_hush`, `ch16_refused_sefir` and `ch12_ysolde_confessed`. The Wenna thread is `ch08_liss_found_marks`/`ch11_found_wenna_mark`. | The drafts. As written, these codex entries are **read but never set**, so they would never unlock. | ui-menus |
+| F9 | `ui/tutorials.md`: the "Seven heroes" tip raised by `ch10_party_of_seven` | No draft or chapter flow sets it. | Use `ch10_started` (or the Ch10 `party` step), or ask chapters to set the flag. | ui-menus |
+| F10 | Drafts against each other: read lists | Ch11 says `ch11_lamp_repaired` and `ch11_rhen_admitted` are read in Ch15, and Ch13 says `ch13_sat_at_moorings` is read in Ch15. **Ch15 §3's "reads" list has none of the three**, and its B02/B14 use `ch15_sat_with_liss` instead. Ch13 says `ch13_met_tobin` is read by Ch14, but Ch14's reads list omits it. | Fix the reading chapter's list (or drop the payoff in the setter). | act2-plan drafts |
+
+## 3. Cast present per chapter
+
+| # | Where | Mismatch | Which side looks right, and why | Owner |
+|---|---|---|---|---|
+| C1 | `chapters/ch10.md` §1 (Reedhollow `arrive[0]`) | Only Pell is taken out of the party at Reedhollow. The draft (B06, B10, §9 Systems 2) keeps **Kerrid outside too**, and he must be absent from B09's frames. The lane also brings Pell back in during the tide beat. The draft has Pell back at the gate at dawn (B11). | The draft (its rule 4 and the Kerrid–Pell two-shot R07). | chapters |
+| C2 | `ui/hud.md` §11: Pell greyed as **"Waits at the fen's edge"** (`FORMATION_AWAY_PELL_FEN`) | The draft's UI request is "**Outside the causeway**" for Pell, and for Kerrid by default. He waits at Reedhollow's gate, not at the fen's edge. | The draft. Add Kerrid's line too. | ui-menus |
+| C3 | `chapters/ch13.md` §1 | Kerrid is taken out only for the Sanctum, comes back (`party (Kerrid back)`) and walks the city by day, at the moorings "while `ch13_guest_of_sefir`". The draft (A03, rule 3, §9 Systems 2) has him **step off at the outer moorings in B01 and stay out of the party until Ch14 B01**. | The draft, kerrid.md and act_outline: he never takes the hospitality. | chapters |
+| C4 | `zones/ch13_sanctum.md` (`sanctum_vestibule`: "Kerrid stops here") | Kerrid never comes to the Sanctum at all: he is at the outer moorings (draft rule 3, B05). | The draft. Remove the Kerrid mark from the vestibule. | env-art-b |
+| C5 | `chapters/ch14.md` §3 (`ch14_hold_the_steps`) and `ui/hud.md` §8 | Only Kerrid is `locked_active`, and there are no loc keys for the others. The draft §5a has `locked_active: kerrid, toma`, `unavailable: liss` ("With Tobin"), `attack_override kerrid → hold_the_steps` and the ward `merels_knife` (quota 4). The lane's ward ("Merel's knife") matches. | The draft. Add Toma's lock and Liss's `unavailable_key`. | chapters; ui-menus |
+| C6 | `chapters/ch14.md` §1 order: ceremony → trap → **steps battle → Tobin falls** | In the draft Tobin dies **before** the steps (B05 → B06), which is why Liss is "With Tobin" during the hold. | The draft (and act_outline's order: trap, Tobin, escape). | chapters |
+| C7 | `chapters/ch14.md` §3 and `bosses/malcor_venn.md` §6 Rules: "Liss `locked_active` in phase 1" | ADR 0204 §8 makes the engine break a **lent set-piece skill** (the draft's `strip_the_drum`), and the draft's lesson is "swap Liss in". | ADR 0204 and the draft. Drop `locked_active`. | chapters; creatures-b |
+| C8 | `bosses/malcor_venn.md` §1 and §4 | Venn fights alone in phase 1. The draft §5b has **two Stillguard archers** on his rail in phase 1. | The draft (the design brief). | creatures-b |
+| C9 | `bosses/abiding_guard.md` §5 (the guards **kneel and stay in frame** to the end; hand-over at 25% or turn 10) | Draft §5b: any guard still standing **withdraws** when the storm wakes, and B08 ends when the guard is beaten (`ch16_guard_beaten`). | The draft. | creatures-b |
+| C10 | `chapters/ch13.md` §1: the wedding is announced *after* Ethren (C5), on a causeway | Draft B02: Sefir announces it at his house on day 1, and B03 has a separate **Tobin and Merel meeting** (`ch13_met_tobin`), which no lane carries. | The draft. Ch14 needs the player to have met them. | chapters |
+| C11 | `chapters/ch13.md` `arrive[2]` and `zones` (Archive): the pact played with **Sefir placed** (`place_actor sefir`; shot A05 "Sefir and Liss, close") | Draft B10: the pact is at the **outer moorings at night** with Kerrid, and Tobin refuses there. B11: Sefir alone in the empty Archive closes the book, and no line tells. | The draft (rule 6 and the staging-only knowledge). | chapters |
+| C12 | `zones/ch13_ansedra.md` (no practical lights; the causeway globes unlit) | The draft needs the outer moorings' **oil lamps on poles** (A02, B04, B10: "the only warm light"), Kerrid's mooring stone, and the guest moorings with **Hollowmere's lashed barge** (A07). | The draft. Add the pieces. | env-art-b |
+| C13 | `zones/ch13_lamp_archive.md` (variants day 1 morning, day 2 noon, day 3 late afternoon; "No lamp lit") | Draft: day 2 at 14:00, day 3 at 11:00, day 4 at 15:00, and **B11 at 23:00 with one lamp lit**, which Sefir puts out. A night variant with a practical lamp is missing. | The draft. | env-art-b |
+| C14 | `zones/ch15_hollowmere.md` (only a Ch15 dawn grade; the dace hull "seen") | The draft also plays the Ch15 **dusk pyre-raft (18:00)** and the **night supper**, has Dace's hull **under a tarp with a rope across the berth**, uses a Saltwright lamp-post save slate, and needs the dock-master's **salt-glass lamp-housing** (ADR 0204 §13). | The draft. Add the variants and props. | env-art-b |
+| C15 | `bosses/kesh.md` Balance: "bound after the guard fight" | Draft: Kesh is bound in B04, **before** Sefir arrives and before the guard fight (B08). | The draft and act_outline. | creatures-b |
+
+## 4. ADR 0204 compliance
+
+| # | Where | Mismatch | Which side looks right, and why | Owner |
+|---|---|---|---|---|
+| A1 | `bosses/wakefin.md` §4 `sound_dive` ("untargetable until it surfaces"), §Engine, Q2 | ADR 0204 §3 says `sound_dive` gives **evasion up with a clear telegraph, not untargetable**. The Ch15 draft §5 follows the ADR. (The lane is right on one whole animal, no deck adds and no fin target.) | ADR 0204. | creatures-b |
+| A2 | `creatures/ridge_lynx.md` ("frosted ear tufts"); `creatures/scree_crawler.md` ("frost-split scree slabs", `crust` = frost scree) | ADR 0204 §2: no ice from Ch12 to Ch15, which includes these two. They swap frost for **snow and grit**, and neither sheet's "Work at the gate" lists the swap. `bosses/README.md` Q1 still asks the question. | ADR 0204. | creatures; creatures-b (README) |
+| A3 | `audio/act2_cue_sheet.md` §3 Ch12 C4 (`ysolde_confession`, a new ~70 s cue) and §6 (mapped to M4-A2P-090) | ADR 0204 §12: Ysolde's confession **reprises `ysolde_theme`**. The **Ch12 draft B12/§6 is also off-ADR**: it plays `silence → quellan`, with no reprise. | ADR 0204. Use a cue row that starts `ysolde_theme` (no new file), and update the draft's B12 music. | audio; act2-plan drafts |
+| A4 | `audio/act2_cue_sheet.md` §2 (`battle_heretic` "gap (proposed)" plus a LEAD-ASK) and §5 Q1–Q4 | All four LEAD-ASKs are answered by ADR 0204 §9–§12: `battle_heretic` from Ch14, both songs sung, the footstep surfaces and the reprises. The sheet still asks them. The pyre-raft proposal (`hush_first_verse`) matches. | ADR 0204. Close the asks. | audio |
+| A5 | `audio/act2_cue_sheet.md` `kesh_bound` ("fire, ice, lightning, water, holy, glimmer") and the "Element cycling" SFX family ("the same six as kesh_bound") | ADR 0204 §7: the element order follows the order the party met them: **Water, Lightning, Fire, Ice, Holy, Glimmer** (vowbound.md; `bosses/kesh.md` §4 has it right). The draft's `kesh_bound` brief is also different: "the seventh verse sung by **the stones**, ten mouths, ends on *mir*". | ADR 0204 for the order; the draft for the brief. | audio |
+| A6 | `bosses/README.md` Q3: "proposes **4.6 m** in battle" | ADR 0204 §7 says **4.2 m** (Kahre's frame). `bosses/kesh.md` §1 and the Ch16 draft C05 already say 4.2 m, so the README contradicts its own sheet. | ADR 0204. | creatures-b |
+| A7 | `bosses/malcor_venn.md` and `bosses/abiding_guard.md` ("model and rig: the characters track's"; README Q2 still open), and `chapters/ch16.md` ("Act I's Stillguard boss the precedent") | ADR 0204 §5: people bosses follow **Moll's precedent**, a `battle_sandbox` stand-in scene plus the characters' clips. | ADR 0204. | creatures-b; chapters |
+| A8 | `bosses/abiding_guard.md` l.15 and Q1 ("Stillguard elite **or the Conclave's revenant guard**: narrative's call") | ADR 0016 says no revenant is fought openly before Ch19. The Ch16 draft's rule 4 makes the guard **living** sworn men and women. act2_plan §2 Ch16 (cast) still offers "revenant guard". | ADR 0016 and the draft. Close the option in the lane and the plan. | creatures-b; act2-plan drafts (plan) |
+| A9 | `creatures/fen_kingfisher.md`, `creatures/README.md` (Ansedra has no wildlife) | **Compliant** with ADR 0204 §1. No lane puts wildlife in Ansedra. | — | — |
+| A10 | `ui/*`, `chapters/*`, `zones/*`, `bosses/*` | None of them uses the approved names (Owa, Brannoc Hale, Warden Dask, Aldous Varrow). See N2–N4. | ADR 0204 §4. | ui-menus; chapters |
+| A11 | Ch12 draft §5 and B06 ("**no phases**… one phase, two moods"); `act2_finals.md` ("no phases") | ADR 0204 §6 **keeps the Ram's `torn_fleece` phase** (`bosses/avalanche_ram.md` §5). The draft and the finals row predate it. The bosses sheet still asks (Q1). | ADR 0204: add `torn_fleece` to the draft's §5 and decide which threshold brings stem 2. | act2-plan drafts; creatures-b |
+| A12 | Ch15 draft (ADR 0204 §13, Tobin's light) | The drafts comply: the lamp is cracked and carried to the ship in Ch16. No lane has the prop or the beat yet (C14). The ledger phrase (§15) appears only in the Ch13 draft, torn. Sefir's "Captain." (§14) is only in the Ch16 draft. | — | env-art-b (prop) |
+
+## 5. Facts: phases, arenas, zones, timings, verses, cues, echo rules
+
+| # | Where | Mismatch | Which side looks right, and why | Owner |
+|---|---|---|---|---|
+| P1 | `bosses/wakefin.md` §4–§5 (two phases: circling, then `close_circle` at 50%; KO `ko_close`) | The Ch15 draft §5 has **three** phases: circling, `close_circle` (50–25%) and **`wakefin_breaching`** (<25%, the staged id from M3-BPR-419, when the spine wounds show). The lane never maps `wakefin_breaching`. | The draft, because `wakefin_breaching` is an existing staged id. Add it as phase 3, or have Combat cut `close_circle` (ADR 0204 §6 allows that). | creatures-b |
+| P2 | Ram hazard: `chapters/ch12.md` §3 ("brings the snow down… falling-snow VFX"), `bosses/avalanche_ram.md` (`snowfall` field, snow off the wall), `ui/tutorials.md` `TUT_RAM_FIELD` ("more snow down"), `audio` (Ram intro "first snow slides", the "Snow and avalanche" family) | Ch12 draft rule 1 and §5: the hazard is **stone and scree** off the broken coping (`scree_fall`, keth_pass.md §2), cleared by Ysolde's fire (`clears_field`). act2_plan §2's intro notes the change. | The draft. Snow is allowed as weather, but the fight's field is scree. | chapters; creatures-b; ui-menus; audio |
+| P3 | `bosses/malcor_venn.md` §5 (phase `boarded` at 50% HP **or** the break; the engine keeps pulsing after a 50% board) | Ch14 draft §5b: phase 1 is 100–60% and **ends only when the engine breaks**, "whatever Venn's HP". The draft's stem 2 enters on the boarding, which the audio lane ties to the part-break. | The draft. It makes Liss's break the only route (the lesson). | creatures-b |
+| P4 | `bosses/abiding_guard.md` §5 (phase `storm_wakes` inside the guard fight at turn 6 or 50%) | The draft splits it into B08 (the guard fight, `abiding_guard` stem 1, a "Choir shudders" field cue) and **B09, a separate set piece `ch16_storm_wakes`** (`the_line` ward, quota 3; `storm_wall` tide entry; Kerrid `locked_active`), which brings stem 2. | The draft. One id for the set piece (see F7). | creatures-b; chapters |
+| P5 | `chapters/ch10.md`, `ch11.md`, `ch12.md` §3: the Drowner, the Engine and the Ram are all `scripted: true` | The drafts (Ch10 §5, Ch11 §5, Ch12 §5): **not `scripted`; Escape allowed**. Only Venn, the Wakefin, the Abiding guard and the two set pieces are scripted. | The drafts. | chapters |
+| P6 | `chapters/ch16.md` §3 (`ch16_holding_the_line`: "the element-cycling telegraph shown on the timeline"); `ui/hud.md` §6 and `ui/tutorials.md` `TUT_CH16_CYCLE` ("Ch16 Abiding guard / Kesh") | Nothing cycles elements in Ch16. Kesh is bound but **not callable or fought in Act II** (draft rule 6; `screens.md` §3 says so itself), and the storm has `the_wall_comes`. Element cycling first appears in Act III. | The draft. Move the cycle HUD and tip to Act III. | chapters; ui-menus |
+| P7 | New arena ids: `zones/arenas_ch13_16.md` **`lacquer_court_steps`** compared with `chapters/ch14.md` **`ansedra_lacquer_court_steps`** | Two names for the same new arena. The Ch14 draft names none. | Pick one. env-art-b writes it, so its id should win. | chapters; env-art-b |
+| P8 | Arenas the chapters lane asks for but env-art-b doesn't list: `sunken_vey_gallery` (Ch11 randoms), `pale_rim_shallows` (Ch16 randoms). The creatures sheets say "no Act II arena is named yet". The chapters lane also seats every Ch10/Ch12 random fight in the **boss arenas** `ossa_fen_roots` and `keth_seep_terrace`. | An unowned gap: either env-art-b adds two random-fight arenas, or the chapters lane reuses the boss arenas for Ch11 and Ch16 too. | Decide in one place (env-art-b's arena table). | env-art-b; chapters |
+| P9 | `zones/ch16_drowned_choir.md` (**fifteen** singers, from the greybox) | Ch16 draft C01/§5a and `art/environments/pale_rim.md` §"The ring": **ten** singers at r 44. `kesh_bound`'s "ten mouths" depends on that count. | The art sheet and the draft. | env-art-b |
+| P10 | Zone and shot ids: every lane re-uses the drafts' shot letters for different frames. Examples: Ch10 `F02` (the lane: Pell at the edge; the draft and ossa_fen.md: the farewell-tide hero frame); Ch11 `L01`–`L05` (lowlight.md's composed shots, re-assigned by the lane); Ch12 `K03`–`K05`; Ch13 `A01` (three different frames across the chapters lane, the zones lane and the draft); Ch15 `U01`–`U07`, `H01`–`H04`; Ch16 `P04` (the lane's montage, but the draft's Iskarra act-break frame). | The shots will collide when the layouts are written. | The drafts' §7 ids (they extend the art sheets' composed shots). The lanes re-number, and env-art-b's long ids (`ch13_ansedra_*`) are fine as environment review shots. | chapters; env-art-b |
+| P11 | Chapter end flow: `chapters/ch10.md` (the tide → `go ch11` on black, so no dawn B11), `ch11.md` (descent → `go ch12`, so no B11 "Held. By you now."; lamp repair available *before* the descent), `ch12.md` (confession → `go ch13`, so no B07 herd-cord or B13 north descent; random fights "a cut, not a walk"), `ch13.md` (no B03, B10 or B11 as written), `ch15.md` (`ship` straight after the pyre, so no B14 night supper or B15 dawn) | Each lane ends its chapter 1–2 beats early, before the drafts' closing beats. | The drafts. | chapters |
+| P12 | Ch11 lane: Wenna's mark in the **Sunken Vey fig gallery** | Draft: the fig end holds the **loot cache** (`ch11_found_fig_cache`), and Wenna's second mark is in **Lowlight**, behind a fallen trim-arm (B04). The lane also omits Ch13's third mark (the Sanctum vestibule; `zones/ch13_sanctum.md` lacks it too). | The draft. | chapters; env-art-b |
+| P13 | Ch12 confession: `chapters/ch12.md` (the inn yard **by the well**, `InnYard`, moonlit) | Draft B12: **inside the inn by the fire** (`inn_door`), with Toma on the hearth step. The audio lane agrees ("a confession by a fire"). | The draft. | chapters |
+| P14 | Cue `kerrid_at_sea` (~2.5 min: the finals, the audio lane and the draft's own §6) | The draft runs it from K04 through B06–B08: about **1.0 + 5.0 + 1.5 min ≈ 7 min**. | The scene is right, so the cue must grow (or loop a bed section). Fix the length in the draft, the finals and the audio lane together. | act2-plan drafts; audio |
+| P15 | Cue `lagoon_escape` (~2 min, through-composed) | The Ch14 draft puts "part 1" under the **6-minute water-steps set piece** (B06), then B07 and B08. A through-composed cue can't underscore a battle of open length. The audio lane's separate looping **`court_steps`** set-piece cue handles it. | The audio lane. Update the draft's §6 and §5a Music. | act2-plan drafts |
+| P16 | Trap cue `peace_wedding_break` (audio: "ORDER_HUM entering **loud and close**", gong and drums, ~25 s) | Ch14 draft §6: "stops mid-phrase on Venn's first word… a held low string at the **edge of hearing**… must sound like a held breath, **not a sting**". | Reconcile the briefs. The draft is the scene's owner. | audio |
+| P17 | `kesh_memory`: audio ~90 s (muffled `drowned_choir` plus MEL_A); the draft is ~3 min (B05 3.0 min), with the Letting's first cell cut off at K05 and silence at K06 | Length and brief differ. The cue isn't in the finals. | The draft for the length. Add it to `act2_finals.md`. | audio |
+| P18 | `sefir_go_home` (audio: breaks to silence **on Asha's refusal**) | Draft §6: it stops dead on **Ysolde's "Then who does it take?"** and resumes for his last line. | The draft. | audio |
+| P19 | Ch15 Hollowmere music (audio: `hollowmere_answers` "carrying into the zone loop"; `hollowmere` zone row for the first visit, with C5 played over a thinned `hollowmere`) | Ch15 draft §6: **ambience only, no zone loop**. The `hollowmere` cue is Ch17's, and the first visit is grief. | The draft. | audio |
+| P20 | Ch15 supper (audio: `dace_ledger`'s zither, Act III's, "if Narrative wants Dace heard") | Draft B14: `silence` (lamp-hiss). The ledger and why Dace left are Ch17's (rule). | The draft. | audio |
+| P21 | Ch12 breath clue (audio C1: "KERRID_STAIR's two notes, once… on Toma's look") | Ch12 draft rule 3, B03 and §7: **"no music sting… nothing in the score marks it"**. | The draft. | audio |
+| P22 | Ch13 audio: C7 (the pact) over `lamp_archive` → silence on Sefir's look; C5 `peace_wedding_preview` after the Sanctum; C8 Corran's house over `ysolde_theme` | Draft: the pact over `ansedra` (night) at the moorings; the first statement of `peace_wedding` at B03 (meeting Tobin); B12 `silence → ansedra (far)`. These follow the chapters lane's staging, not the draft's. | The draft. | audio |
+| P23 | Verse sleeve: only `chapters/ch11.md` names a stage ("band 4") | The drafts: S4 Nhoa (Ch11 B09), S5 Hesk (Ch12 B10), S6 Ethren (Ch13 B06), S7 Kesh (Ch16 B04). The verses are 4th–7th, which matches vowbound.md's acquisition order. The chapter lanes for Ch12, Ch13 and Ch16 don't drive the sleeve. | The drafts. Add the sleeve step to each binding beat. | chapters |
+| P24 | Echo rules (ADR 0016) | **Compliant:** no lane routes under the city; Venn reveals nothing; no rite on Kerrid; the zones lane's "five Conclave revenants" is docs-only text, never on screen. **The one risk** is A8 (a revenant guard in Ch16). | — | creatures-b |
+| P25 | `zones/ch16_pale_rim.md` and `creatures/rim_ray.md` ("their **shadows** carry them") | The Rim is "no shadows to speak of" (the zones lane's own lighting, colour script `ch16`, draft B02). A wildlife read that relies on shadows fails there. | Keep the art direction (no shadows) and read the rays by margin value instead. | creatures |
+| P26 | `creatures/fen_kingfisher.md` ("**Never a heron, an egret**… those shapes are the Kirru") | The Ch10 draft needs fen **egrets** (B02 barks, B03 `egret_lift`, and env-art's "the rest of the fen has egrets") and mudskippers. bible §5 and ossa_fen.md F01 name "white egrets". act2_roster's rule only forbids heron or egret **foes**. | The draft and the bible. Add egret and mudskipper wildlife. | creatures |
+| P27 | `creatures/rime_urchin.md` ("pale **ice-crust** base", `ice` slot, KO "the ice cracks") | Ch11 draft rule 1: "No ice, frost… in the zone, **the fights** or Nhoa; the rime is the deep's cold on a spine, never frost on the world". This is outside ADR 0204's Ch12–15 range, but it is the draft's rule. | The draft (stricter). Swap the ice crust for a stone or silt base. | creatures |
+
+## 6. Drafts against each other (and against the bible)
+
+| # | Where | Mismatch | Which side looks right, and why | Owner |
+|---|---|---|---|---|
+| D1 | Ch13 A03 ("Kerrid… **sits** down on a mooring post's stone"), B04 (Rhen sits with him), B10 ("he was sitting"), compared with Ch15 B07 ("**the first time anyone in the party has seen him sit**", kerrid.md's clue "he never sits") | The Ch15 reveal's key staging contradicts Ch13. | Ch15 (the clue list). In Ch13 he should **stand** at the moorings, with "sits out the nights" read as an idiom. | act2-plan drafts |
+| D2 | Ch13 B02 ("**In four days**" the wedding) and Ch14 (the wedding the day after day 4) compared with Ch13 B10 (day 4, 22:00: "married **the day after tomorrow**", "**Two days**") | Off by one day. | B02 and the 3-day Archive: say "tomorrow" in B10. | act2-plan drafts |
+| D3 | Ch15 B11 bark: "She saw the farewell-tide **four days ago**" | Ch10 → Ch15 covers the Vey, a 3-day pass, 4 days in Ansedra and a night at sea: about 10+ days. | Say "not long ago", or count the days. | act2-plan drafts |
+| D4 | Ch16 B05 K02 ("**six Lamplighters** in a ring… and **Kesh in the middle**… Sefir among the six") | bible §1: **six Lamplighters in all**, counting Kesh and Sefir (Kesh, four as the Cage, and Sefir outside on watch). The draft shows seven. | The bible: five round Kesh, with Sefir at her shoulder and **not** in the Cage ring. | act2-plan drafts |
+| D5 | act2_plan §2 Ch14 ("her father… one of the Conclave") compared with the Ch14 draft L09 (Warden Dask, "a living Warden and **no Conclave member**") | The plan is stale. | The draft (and liss_varrow.md: "the living daughter of a Warden"). | act2-plan drafts (plan) |
+| D6 | act2_plan §2 Ch12 (the Ram brings "the snow down") and §2 Ch16 (the "revenant guard" option) | The plan is stale against the drafts and ADRs (see P2 and A8). The plan's own intro says drafts win, but lanes cite §2. | Update the plan's §2 lines. | act2-plan drafts (plan) |
+| D7 | Ch10 §10 Q1 and Ch12 B06/§5 | ADR 0204 isn't applied there yet (Owa is still open; the Ram is still "no phases"). See N3 and A11. | ADR 0204. | act2-plan drafts |
+
+---
+
+## Top 10 (most important first)
+
+1. **A8: The Abiding guard as possible revenants** (`bosses/abiding_guard.md` Q1, plan §2 Ch16). It breaks ADR 0016's "no revenant fought openly before Ch19". Close it to "living".
+2. **A1: The Wakefin's `sound_dive` is "untargetable"** (`bosses/wakefin.md`). ADR 0204 §3 calls for evasion up with a telegraph.
+3. **P2 and A2: Ice and snow at Ch12.** The lynx and scree crawler keep frost. The Ram's field is snow in four lanes (chapters, creatures-b, ui, audio), but the draft has stone and scree.
+4. **F6 and F8: Unlock flags that never fire.** These include `ch15_kerrid_revealed` against `ch15_kerrid_told` (Kerrid's codex and status line) and nine UI codex flags that nothing sets.
+5. **F1–F7: A systematic flag rename across `chapters/*`.** It includes the act-end flag (`act2_complete` against `ch16_act_two_complete`) and the encounter ids (`ch14_hold_the_steps`, `ch16_holding_the_line`). One pass against the drafts' §3 fixes it.
+6. **C5–C7: The Ch14 set piece's party rules.** Toma's lock and Liss as `unavailable` are missing, and Tobin dies after the steps in the lane. Liss is `locked_active` for Venn, against ADR 0204 §8's lent skill.
+7. **C1–C4 and C11: Kerrid's whereabouts.** He is in the walking party in Reedhollow, in the city by day, and at the Sanctum's vestibule. The pact is staged with Sefir instead of at the moorings.
+8. **A3 and A5: Audio against ADR 0204.** There is a new `ysolde_confession` cue (the draft is also off-ADR), and `kesh_bound`'s element order is wrong.
+9. **P1, P3 and P4: Boss phase structure.** `wakefin_breaching` is unmapped, Venn boards at 50% before the engine breaks, and the storm is a phase rather than the `ch16_storm_wakes` set piece. Also N5 and N6, the guard roster and Venn's weapon.
+10. **D1: Kerrid sits in Ch13, but Ch15's reveal turns on "the first time anyone has seen him sit".** This contradiction between drafts undercuts the act's emotional peak. Close behind are N1 ("Heretics of the Level" against "Outside the Level") and P14 (`kerrid_at_sea` at 2.5 min under about 7 min of scene).
+
+**Checks skipped:** this was a docs-only, read-only review, so none of the repo's gates were run. Nothing in the repo was changed.
+
+
+## Rows by owner (for routing)
+
+Each lane picks up its rows when it returns to Act II docs (the Lead, 2026-10-30). A row listed under two owners needs both. Row ids refer to the tables above.
+
+| Owner | Rows | Count |
+|---|---|---|
+| chapters (act1-chapters) | F1, F2, F3, F4, F5, F6, F7, C1, C3, C5, C6, C7, C10, C11, A7, A10, P2, P4, P5, P6, P7, P8, P10, P11, P12, P13, P23 | 27 |
+| creatures-b | N5, N6, C7, C8, C9, C15, A1, A2, A6, A7, A8, A11, P1, P2, P3, P4, P24 | 17 |
+| creatures | A2, P25, P26, P27 | 4 |
+| ui-menus | N1, N2, N3, N4, F6, F8, F9, C2, C5, A10, P2, P6 | 12 |
+| audio | N9, A3, A4, A5, P2, P14, P16, P17, P18, P19, P20, P21, P22 | 13 |
+| env-art-b | C4, C12, C13, C14, A12, P7, P8, P9, P10, P12 | 10 |
+| act2-plan drafts | N3, N7, N8, N9, F10, A3, A8, A11, P14, P15, D1, D2, D3, D4, D5, D6, D7 (the act2-plan side of all of them was handled on 2026-10-30: see the status section below; none left open on the drafts' side; N9's id list also needs the audio lane) | 17 |
+| (any / none) | N10, A9 | 2 |
+
+---
+
+## Status of the act2-plan-owned rows (2026-10-30, after this review)
+Fixed in the drafts and the plan on `claude/act2-plan`:
+- **D1:** Kerrid stands at the moorings in Ch13 (A03, A05, A11, B04); Ch15's K05 stays the first time he sits.
+- **D2:** "tomorrow" / "One day" in Ch13's B10.
+- **D3:** Ch15's "four days ago" becomes "not so long ago".
+- **D4:** six Lamplighters in all; five round Kesh in Ch16's K02.
+- **D5 and D6:** the plan's §2 lines (Warden Dask, the Ram's stone and scree and `torn_fleece`, the living Abiding guard).
+- **D7 and the other ADR 0204 rows:** applied (commit f9f8c709 and after).
+- **A3, the drafts' side:** Ch12's B12 now reprises `ysolde_theme`.
+- **P14:** Ch15's §6 says `kerrid_at_sea` must cover about 7–8 min (a loop with a tail, or through-composed).
+- **N7:** the Drowner's drag is its own skill (`drowner_haul`); `root_drag` stays the crab's.
+- **N8:** the guard leader is renamed the Veil-First, so "Captain." stays Kerrid's alone.
+- **N9 (the drafts' side) and P15:** Ch14 names `peace_wedding_break` and puts the audio lane's looping `court_steps` under the water-steps; `lagoon_escape` starts on B07.
+- **F10:** the reads lists in Ch14 (adds `ch13_met_tobin`) and Ch15 (adds `ch11_lamp_repaired`, `ch11_rhen_admitted`, `ch13_sat_at_moorings`, with the lines they drive) are completed.
+
+Every other row belongs to the lane named in its Owner column and is logged for that lane in `docs/kb/handoffs/live/act2-plan.md` (LEAD-ASK, for the Lead to route).

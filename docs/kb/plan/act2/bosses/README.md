@@ -61,7 +61,9 @@ marked *(proposed)*. Combat owns every id that reaches `skills.json`, `enemies.j
 Boss curve for every sheet: naive ≤ 3%, role_answer 55–80%, smart 70–90%, p90 ≤ 80 actions. The two set pieces (the
 Ch14 step-hold and the Ch16 storm) are on the set-piece curve, where `scripted_escape` counts as a win.
 
-## Open questions across the sheets (for the Lead)
+## Open questions across the sheets (answered: ADR 0204, 2026-10-30)
+
+All answered as drafted, except that the Wakefin's `sound_dive` raises evasion with a clear telegraph (it is never untargetable). The Ch12 regulars' frost is a creatures task (M4-CRE-701). People bosses follow Moll's precedent. Kesh fights at 4.2 m.
 
 Each sheet lists its own questions. The ones that cross sheets:
 1. **The Ch12 regulars.** `ridge_lynx` ("ear tufts frosted") and `scree_crawler` ("frost-split scree, a frost counter")
@@ -71,4 +73,4 @@ Each sheet lists its own questions. The ones that cross sheets:
    battle clip set at boss quality (Act I's Stillguard Inquisitor is the only precedent). Do those clips live in
    creatures.json like a creature, or in a characters table?
 3. **Kesh's battle scale.** She is colossal in the bind memory, but she has to fit the Vowbound slot in battle. This
-   draft proposes 4.6 m in battle and a cinematic-only colossal scale (kesh.md).
+   draft proposes 4.2 m in battle and a cinematic-only colossal scale (kesh.md).

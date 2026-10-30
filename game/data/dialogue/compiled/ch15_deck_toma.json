@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch15_deck_toma",
+ "source": "game/data/dialogue/ch15/ch15_deck_toma.dlg",
+ "start": "ch15_deck_toma",
+ "nodes": {
+  "ch15_deck_toma": {
+   "headers": {"location": "ch15/open_sea"},
+   "ops": [
+    {"op": "line", "id": "ch15_deck_toma_001", "key": "DLG_CH15_DECK_TOMA_001", "speaker": "toma", "emotion": "sad", "voice": "", "src": 5},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 6},
+    {"op": "line", "id": "ch15_deck_toma_002", "key": "DLG_CH15_DECK_TOMA_002", "speaker": "toma", "emotion": "grief", "voice": "", "src": 7}
+   ]
+  }
+ }
+}

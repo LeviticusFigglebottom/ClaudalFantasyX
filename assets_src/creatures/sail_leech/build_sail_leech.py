@@ -38,7 +38,8 @@ FRILL = 0.022  # the edge frill's ripple (the sail-like canvas edge)
 # height it was seen edge-on, a row of glowing dashes on the night deck)
 KO_DROP = 0.97
 CANVAS_FROM = 0.74  # where the pale canvas edge begins (share of the radius)
-CANVAS = ck.hexrgb("#B9B1A0")  # old salt-bleached sailcloth
+# old salt-bleached sailcloth: sand_cloth weathered toward coral_stone_weathered
+CANVAS = ck.mix(ck.hexrgb("#C9B48E"), ck.hexrgb("#B9AE98"), 0.7)
 FRILL_WAVES = 14.0
 SLIT_Z = (0.18, 0.11)  # the first wound slit's z and the step back to the next (four slits)
 EYE = (0.09, 0.29, 0.38)  # x, y and z of the eyes

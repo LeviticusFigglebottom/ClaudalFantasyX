@@ -1,0 +1,27 @@
+// Ch12 B13 "Down the other side" (E, 1 min, no dialogue). Day 3, the north descent under the last pass-cord.
+// Ullari-fashion, NOBODY LOOKS BACK; the camera is a forward-only rail. If Rhen tied a knot, his hand goes up
+// to the cord as he passes under it and he doesn't look. Toma glances back once at the line, at Kerrid
+// (last), then faces forward.
+title: ch12_down_the_other_side
+location: ch12/keth_pass
+---
+@camera P08
+@music keth_pass fade=2.0
+@mark toma descent_1 walk
+@mark pell descent_2 walk
+@mark asha descent_3 walk
+@mark ysolde descent_4 walk
+@mark liss descent_5 walk
+@mark rhen descent_6 walk
+@mark kerrid descent_7 walk
+<<if $ch12_rhen_tied_knot>>
+    @anim rhen touch pass_cord
+<<endif>>
+@wait 3.0
+@anim toma look_at kerrid
+@wait 1.0
+@anim toma look_at road_ahead
+@wait 3.0
+<<set $ch12_complete = true>>
+@camera release
+===

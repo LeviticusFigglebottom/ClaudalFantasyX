@@ -1,0 +1,11 @@
+// Fixture for tests/unit/test_cutscene_sequencer.gd (M4-CIN-1302): `@camera <shot> track=<actor>` keeps the shot's
+// offset to a walking actor. Never played by game content.
+title: test_cutscene_track
+---
+@camera wide track=asha
+@mark asha spot walk
+@wait arrive=asha
+Asha [neutral]: Track fixture line. #line:test_cutscene_track_001
+@camera close
+Asha [neutral]: Track fixture closing line. #line:test_cutscene_track_002
+===

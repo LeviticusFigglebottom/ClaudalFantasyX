@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch10_bark_kirru_book",
+ "source": "game/data/dialogue/ch10/ch10_bark_kirru_book.dlg",
+ "start": "ch10_bark_kirru_book",
+ "nodes": {
+  "ch10_bark_kirru_book": {
+   "headers": {"location": "ch10/reedhollow"},
+   "ops": [
+    {"op": "line", "id": "ch10_kirru_book_001", "key": "DLG_CH10_KIRRU_BOOK_001", "speaker": "kirru", "emotion": "neutral", "voice": "", "src": 5, "name_key": "DLG_NAME_KIRRU_OLD_KIRRU"}
+   ]
+  }
+ }
+}

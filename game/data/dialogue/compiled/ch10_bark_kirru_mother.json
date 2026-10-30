@@ -1,0 +1,18 @@
+{
+ "format": 1,
+ "scene": "ch10_bark_kirru_mother",
+ "source": "game/data/dialogue/ch10/ch10_bark_kirru_mother.dlg",
+ "start": "ch10_bark_kirru_mother",
+ "nodes": {
+  "ch10_bark_kirru_mother": {
+   "headers": {"location": "ch10/reedhollow"},
+   "ops": [
+    {"op": "line", "id": "ch10_kirru_mother_001", "key": "DLG_CH10_KIRRU_MOTHER_001", "speaker": "kirru", "emotion": "soft_smile", "voice": "", "src": 6, "name_key": "DLG_NAME_KIRRU_KIRRU_MOTHER"},
+    {"op": "if_not", "cond": ["flag", "ch09_toma_knelt_with_ivo"], "to": 5, "src": 7},
+    {"op": "cue", "cue": "anim", "args": ["toma", "look_at", "kirru"], "kwargs": {}, "src": 8},
+    {"op": "line", "id": "ch10_kirru_mother_002", "key": "DLG_CH10_KIRRU_MOTHER_002", "speaker": "toma", "emotion": "sad", "voice": "", "src": 9},
+    {"op": "goto", "to": 5, "src": 7}
+   ]
+  }
+ }
+}

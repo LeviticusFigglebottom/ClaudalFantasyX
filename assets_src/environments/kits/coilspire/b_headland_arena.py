@@ -91,7 +91,9 @@ def main(out_dir: Path | None = None) -> int:
     table = AS.HEADLAND
     extra = scrub(AS, table)
     path = AS.write_arena({**table, "pieces": list(table["pieces"]) + extra})
-    path.write_text(zl.add_kit_slot_swaps(path.read_text(encoding="utf-8"), paths), encoding="utf-8")
+    text = zl.add_kit_slot_swaps(path.read_text(encoding="utf-8"), paths)
+    # The ground's centre stands ~80 m from the fight, so its import chain drew the coarse LOD1 as the backdrop
+    path.write_text(zl.pin_lod0(text, "Ground", "arena_headland_ground"), encoding="utf-8")
     print(f"ARENA {path.name} (+{len(extra)} scrub clumps)")
     # The tier landing (env-art's TIER_HALL table, unchanged): only the zone's slot looks (its pipes read pale mint)
     path = AS.write_arena(AS.TIER_HALL)

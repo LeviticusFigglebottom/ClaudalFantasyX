@@ -2,9 +2,8 @@
 id: M4-A2P-093
 title: "Act II ambiences and foley"
 role: audio
-status: blocked
-blocked-by: ADR 0203
-owner_session: ""
+status: doing
+owner_session: "claude/audio (session_01UPFyE9L9BA3QodpCNJEfAs)"
 depends_on: []
 reviewer: cinematics
 milestone: M4

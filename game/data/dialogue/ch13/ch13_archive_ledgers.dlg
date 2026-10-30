@@ -1,0 +1,27 @@
+// Ch13 B07 "The Archive, day one: the ledgers" (P, the document reader, 5 min). act2_ch13.md §2 B07.
+// RULE 1: nobody says "revenant"; the truth is paperwork. The three RECORD TEXTS below are captions the
+// document reader (M4-A2P-080) shows as pages; Ysolde's readings follow each. ADR 0204 §15: the Binding
+// Ledger survives only as a TORN fragment, not a statement. Until the reader exists, the scene plays them
+// in order as captions.
+title: ch13_archive_ledgers
+location: ch13/lamp_archive
+---
+@camera R01
+@music lamp_archive fade=2.0
+@wait 3.0
+@camera R02
+Lamp-ledger, first year of the Rising, Iskarra: Twelve bound into the tide-engine at the north lamp-tower. Seated by my hand and the hands below. #line:ch13_rec_ledger_001 #narration #tn:"A Lit Age engineer's ledger entry, in a dry record-keeping register. Shown as a page in the document reader."
+Ysolde [neutral]: 'Seated.' A binding word. They bound the drowned into the lamps, and signed for it. #line:ch13_ledgers_001
+@anim liss mark_signature
+Liss [surprised]: That's a wright mark. On a founder. #line:ch13_ledgers_002
+@wait 2.0
+…the Cage made… …the heart sung in… …kept by one… #line:ch13_rec_binding_001 #narration #tn:"A TORN page: only these fragments survive. Keep the ellipses and the gaps; do not complete the sentence."
+Ysolde [neutral]: The rest of the page is gone. I will not guess at what it said. #line:ch13_ledgers_003
+@anim asha look_at record_page
+@wait 2.0
+Margin of the Edict ledger, in a clear hand: Forbid the binding, that the binding be kept. #line:ch13_rec_edict_001 #narration #tn:"A note in the margin of a later ledger: the reason for the Salt Edicts, written by their author."
+@wait 2.0
+Liss [cold]: So only they bind. #line:ch13_ledgers_004
+<<set $ch13_read_ledgers = true>>
+@camera release
+===
