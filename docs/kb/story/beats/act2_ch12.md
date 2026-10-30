@@ -177,7 +177,7 @@ See §5.
   - Asha: *"...Where did the rest go?"*
   - Ysolde: *"She tied that too. A question-knot. Hanging at the end of the count, by itself."* (Beat.) *"She sang anyway. She believed faith could hold a question."* (vowbound.md §4.)
   - Asha, very quietly: *"Could it?"*
-  - Ysolde: *"I have visited my husband every year for twenty-four years, Lady Cantor. I would very much like it to."* (She doesn't do the maths on Corran here; that's the Archive's, Ch13: ADR 0016.)
+  - Ysolde: *"I have visited my husband every year for eleven years, Lady Cantor. I would very much like it to."* (She doesn't do the maths on Corran here; that's the Archive's, Ch13: ADR 0016.)
 - **Q05:** Toma is on the stair. He has heard. He comes down and sits on the hearth step with his back to them both, not intruding, a guard's place. Without turning:
   - Toma: *"Seven houses."* (A long pause before the hard truth.) *"I stood guard at four of them."*
 - **Q06:** the fire. Nobody says anything else. Sets `ch12_ysolde_confessed`.

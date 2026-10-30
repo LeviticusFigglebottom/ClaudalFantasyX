@@ -687,3 +687,24 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - **Checks:** dlgc 0/0 · validate_data 0/0 · taskboard clean · tools dlgc, sfx and flag-reach tests OK · check_drafts 73/0 · Godot `dialogue` 87/0. It was 1 red until a fresh `--import` rebuilt the translations for the two new supper lines.
 - MERGE-READY Ch14–16 read-through @ e8825bce8
 - BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1013; M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Act II character-voice pass (Lead request)
+I merged integration (big28) first; the two conflicted compiled ch11 JSONs were rebuilt by dlgc. I read each hero's Act II lines in play order (Ch10–Ch16) against voice_guide.md, the character sheets and their Act I lines.
+- **Arcs move.**
+  - **Rhen:** he admits the name (Ch11), keeps the wick unlit, and carries the half-story into the Choir.
+  - **Asha:** "I didn't finish the sentence" (Ch10); the comfort tell turns over at `ch15_deck_asha` ("I'm not going to ask about your night"); her refusal at the Choir is unsmiling.
+  - **Toma:** "And still" in Ch13, no "Be level" from Ch14, and no scripture after Ch15.
+  - **Ysolde:** she lies, confesses, reads the roll and denounces Sefir. Her contractions now start with the private Ch13 camp, about Corran.
+  - **Kerrid:** terse before the reveal, plain and dry after it.
+  - **Pell:** the arc lives in staging after Ch11 (he has no lines in Ch13–14; he turns his back at the Ch15 pyre). "My neck is very tired" stays held for Act III, per act2_ch10.
+  - **Liss:** narrates repairs in grief, and "Sallow" replaces "diver" after Ch11.
+- **Fixes (script text and beat sheets, my lane):**
+  - **Ysolde, timeline:** she has visited Ethren for *eleven* years, because he was placed in the Sanctum when Imra sang (vowbound.md). The "twenty-four years" of visits was wrong in `ch12_voices_010`, act2_ch12 and act2_ch13 S06. Twenty-four stays for the grief (the Ch13 camp, act3_ch20).
+  - **Ysolde, contractions:** none before the thaw. "It does not say" (`ch11_plate_004`) and "The cords do not say that" (`ch12_camp_006`).
+  - **Toma:** "I stood a watch on the seawall at Haluna once. One night." contradicted his seven years on the Corrow wall. It is now "My first night on the Corrow wall, I counted the hours." (`ch15_camp_003`), and Kerrid's "Everybody counts the first night" still lands.
+  - **Rhen, place:** "came home from the Low Reaches" made no sense, because Oruvel *is* in the Low Reaches. It is now "came home off the wrecks" (`ch15_daces_008`, act2_ch15 §4).
+  - **Rhen, joke:** he jokes harder when scared, and Act II had almost no fear-jokes. He now adds "I make ripples in a bath." at the still city (`ch13_city_001`, act2_ch13 A02). It also sets up Liss's "you're making ripples" at Tobin's.
+  - **Kerrid, before the reveal:** "Built to last. The stone did." (`ch11_bark_kgal_001`; it was two clauses of wit, the post-reveal voice too early).
+  - **Kerrid, diction:** "The wall's the Order's. The stair's ours." So at the fallen cairn he says "I know. I've set steps.", and Pell answers "This is not a step. It is a voice." (`ch16_cairn_004/005`).
+- **Request filed:** **M4-A2P-1014 → ui (M4-A2P-081):** `test_every_act2_speaker_with_a_model_has_a_portrait` is red because `ullari_woman` got a stage in M4-A2P-053 but has no portrait. This is not a story change.
+- **Checks:** dlgc 0/0, validate_data 0/0, taskboard clean, check_drafts 73/0. Godot `dialogue` after `--import` was 86/1; the one red is 1014 above. Tools unittest skipped (no `tools/` change).
