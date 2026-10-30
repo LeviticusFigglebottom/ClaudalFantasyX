@@ -122,6 +122,44 @@ reaches 3.59–3.66 m/s on open ground).
 - With the longer gaps, the main routes (straight-line spawn-to-spawn: 13–197 m) now hold 0–1 random fights each. The
   Coilspire path (102 m) and the derelict (13 m) hold none.
 
+## THE LEAD'S ASK (17:24): playthrough smoke, the rows on the newest merge, re-runs per merge
+**Newest merge:** big25 @ 4b198810. No later "Merge lead/gate-bigN" yet; (a) and (b) on big25 are in the section below.
+
+**(3) Fresh-profile Act I playthrough smoke, headless, on big25: PASS (New Game → Ch2 Haluna in 417 s, 25 flags).**
+`tools/gpu_bench/playthrough_probe.tscn`, with an empty XDG_DATA_HOME:
+- It presses the title's New Game and taps ui_accept whenever the field isn't taking input.
+- In the field it hops the hero toward the objective line's own target (ObjectiveHud.target_position) and interacts.
+- It wins fights live (foes held at 1 HP) and presses Return.
+- The route it played: the Prologue (8.9–41.9 s) → the Underway: bell room, wickfry and Oil Slug fights, the gauge wheel →
+  Oruvel: the sale at the scale hull, Kell's wick, the gulls, the scuttlers fight, the lashings, the children safe, the
+  Hullgnaw → "going under" → Ch2 Haluna: the beach, Asha met, the objective tutorial.
+- **No soft-lock, no stuck dialogue, no missing transition; 0 SCRIPT ERROR and 0 ERROR lines.** The only warnings are
+  load-budget warnings (this box is slow).
+- **Probe limits worth knowing:**
+  - Hops move in straight lines. Where big25's FieldShore stops them at a dock edge, the probe jumps beside the target
+    (PLAY_TELEPORT). That's a probe limit, not a game soft-lock.
+  - Two beats sit on touch triggers on the way, not at the objective's target. Kell's wick fires on her bridge at (23, −6),
+    not at Kell at (29, −7); the scuttlers fire on their own trigger. The probe finds them by stepping onto the triggers near
+    the target (PLAY_SWEEP).
+- **Minor fragility (low priority; owner act1-chapters, with tech for greybox_zone.gd):** the touch-trigger boxes start
+  exactly at deck height (y 0 to 3 m). A hero who lands on a deck from above (a teleport, a fall) rests at y −0.0004, and
+  `contains_point` is false, so Kell's beat didn't fire until the probe dropped him in from 0.3 m. Walking in from the
+  commons (around the net frame) he stands at +0.0009 and it fires: checked by stick in a headless test. Suggest starting
+  each touch box a few cm below its `at` height.
+- **Minor note (act1-chapters):** the o_kell objective points at Kell herself, but interacting with her does nothing.
+  The beat is the touch on her bridge, so a player who comes at her another way gets no response from her.
+- The 19e7f01c attempts that "soft-locked" at Oruvel were the probe's hops, not the game.
+
+**(2) Pass-6 rows on big25 (lavapipe, the 15 row shots against 19e7f01c):**
+- **63, the Matron: fixed on lavapipe.** The flat bright panel behind her is now a lattice window
+  (`big25_rows63_58_62_vs_19e7.jpg`).
+- **58, hullgnaw_rises: better.** The Hullgnaw rises lit and larger out of the water beside the pen. net_pen is reframed
+  closer, with the children larger. Still partly: o07 has no Sadi.
+- **56, Asha's run:** the pose changed a little (a foot shows), but the skirt is still a cone. Still open.
+- **54, Sefir's face:** the floating strands are thinner, but it's still a cap. Partly.
+- Unchanged since 19e7f01c: 17, 46, 55 (Sabe and Fenn), 59, 61, 62 and 51's shot.
+- The walk rows (24, 37, 39) on big25 are rendering now; see below when done.
+
 ## THE LEAD'S ASKS (14:09–16:26), answered on big25 @ 4b198810 (it contains big23 8fe3644b and big24 efe7fb10)
 Pass or fail per check, each against the playtest fix:
 - **(a) Battle return: PASS for random fights, FAIL for scripted fights.** The causeway, ferry and Ch6 returns (random)

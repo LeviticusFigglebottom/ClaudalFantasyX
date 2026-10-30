@@ -1,0 +1,303 @@
+class_name PlaythroughProbe
+extends Node
+## A fresh-profile Act I smoke playthrough, headless (cloud QA, the Lead's ask 2026-10-30): New Game through Ch1 to the
+## Haluna arrival, logging any soft-lock, stuck dialogue or missing transition.
+##   XDG_DATA_HOME=<empty dir> godot --headless --path . --audio-driver Dummy \
+##     res://tools/gpu_bench/playthrough_probe.tscn -- [--until=ch02/haluna --secs=3600]
+## It plays as a guided player: the title's New Game; ui_accept tapped every TAP_S whenever the field isn't taking
+## input (dialogue, cutscenes, cards); in the field, the hero hops HOP_M a physics frame toward the objective line's
+## target (ObjectiveHud.target_position: the game's own "where next") and, near it, interacts. Fights are won live
+## (foes held at 1 HP, Attack each party turn, Return on the result). Not a navigation test: hops pass through walls.
+## Lines: PLAY_SCENE (each scene change), PLAY_FLAG (each flag raised), PLAY_STUCK_DIALOGUE (the field not taking input
+## for STUCK_S with no flag or scene change), PLAY_SOFTLOCK (no flag or scene change for SOFTLOCK_S while the field
+## takes input), PLAY_TELEPORT (hops held back by the zone's guards: the hero jumps beside the target),
+## PLAY_SWEEP (at the target with no progress: it steps onto each trigger near it),
+## PLAY_NO_TARGET (the field takes input but the objective names no target), PLAY_ARRIVED / PLAY_TIMEOUT.
+
+const BOOT := "res://game/core/boot.tscn"
+const TAP_S := 1.5
+const HOP_M := 0.25
+const NEAR_M := 1.0
+const INTERACT_S := 1.0
+const STUCK_S := 90.0
+const SOFTLOCK_S := 180.0
+const RESULT_READ_S := 1.0
+const SETTLE_INPUT_S := 1.0
+const STALL_S := 4.0
+const STALL_GAIN_M := 0.5
+const SWEEP_AFTER_S := 15.0
+const SWEEP_DWELL_S := 2.0
+const SWEEP_RADIUS_M := 20.0
+## A teleport settles the hero's origin a hair under the deck (y -0.0004), under a touch box that starts exactly at
+## deck height, so the sweep lands him this far above the trigger's floor and lets him drop into it.
+const SWEEP_LIFT_M := 0.3
+
+var _opts: Dictionary = {}
+var _t0 := 0
+var _last_progress := 0.0
+var _flags: Array[String] = []
+
+
+func _ready() -> void:
+	if get_parent() != get_tree().root or get_tree().current_scene == self:
+		var driver := (get_script() as GDScript).new() as Node
+		driver.name = "PlaythroughProbeDriver"
+		get_tree().root.add_child.call_deferred(driver)
+		return
+	_run.call_deferred()
+
+
+func _run() -> void:
+	for a in OS.get_cmdline_user_args():
+		var kv := a.trim_prefix("--").split("=", true, 1)
+		_opts[kv[0]] = kv[1] if kv.size() > 1 else "true"
+	var until := str(_opts.get("until", "ch02/haluna"))
+	var secs := float(_opts.get("secs", 3600))
+	_t0 = Time.get_ticks_msec()
+	EventBus.flag_changed.connect(_on_flag)
+	get_tree().change_scene_to_file(BOOT)
+	var menu: TitleMenu = null
+	while menu == null and _now() < 300.0:
+		await get_tree().process_frame
+		var found := get_tree().root.find_children("*", "TitleMenu", true, false)
+		if not found.is_empty():
+			menu = found[0] as TitleMenu
+	await get_tree().create_timer(2.0).timeout
+	print("PLAY_NEWGAME %s" % error_string(menu.start_new_game() if menu != null else ERR_UNAVAILABLE))
+	var router := get_tree().root.get_node(^"SceneRouter")
+	var last_scene := ""
+	var next_tap := 0.0
+	var next_interact := 0.0
+	var busy_since := -1.0
+	var stuck_logged := false
+	var softlock_logged := false
+	var no_target_logged := ""
+	var result_at := -1.0
+	var best_dist := INF
+	var best_at := 0.0
+	var last_target := Vector3.INF
+	var sweep: Array = []
+	var hold_until := 0.0
+	var hold_logged := true
+	var sweep_last: Node3D = null
+	_last_progress = _now()
+	while _now() < secs:
+		await get_tree().physics_frame
+		var t := _now()
+		var cur := get_tree().current_scene
+		var path := cur.scene_file_path if cur != null else "-"
+		if path != last_scene:
+			last_scene = path
+			_progress("PLAY_SCENE %.1f %s" % [t, path])
+			stuck_logged = false
+			softlock_logged = false
+		if cur is FieldBattle:
+			result_at = await _battle_step(cur as FieldBattle, result_at, t)
+			continue
+		result_at = -1.0
+		var p := _player(cur)
+		var live := (
+			p != null
+			and p.accepts_input
+			and not bool(router.call(&"is_busy"))
+			and not get_tree().paused
+			and not _story_busy(cur)
+		)
+		if not live:
+			if busy_since < 0.0:
+				busy_since = t
+			if t >= next_tap:
+				_tap(&"ui_accept")
+				next_tap = t + TAP_S
+			if not stuck_logged and t - _last_progress > STUCK_S and p != null:
+				stuck_logged = true
+				print(
+					(
+						"PLAY_STUCK_DIALOGUE %.1f %s: %.0f s with the field not taking input and no progress"
+						% [t, path, t - _last_progress]
+					)
+				)
+			continue
+		if busy_since >= 0.0 and t - busy_since < SETTLE_INPUT_S:
+			continue
+		busy_since = -1.0
+		if path.contains(until):
+			print("PLAY_ARRIVED %.1f %s (flags raised: %d)" % [t, path, _flags.size()])
+			get_tree().quit()
+			return
+		if t < hold_until:
+			if not hold_logged:
+				hold_logged = true
+				var it := sweep_last as Interactable
+				print(
+					(
+						"PLAY_SWEEP_HOLD %.1f at %s inside %s available %s"
+						% [
+							t,
+							p.global_position,
+							it.contains_point(p.global_position) if it else "?",
+							it.call(&"is_available") if it and it.has_method(&"is_available") else "?"
+						]
+					)
+				)
+			continue  # standing on a swept trigger
+		var target := _target()
+		if target != last_target:
+			last_target = target
+			sweep.clear()
+			best_dist = INF
+			best_at = t
+		if target == Vector3.INF:
+			if no_target_logged != path:
+				no_target_logged = path
+				print("PLAY_NO_TARGET %.1f %s: the field takes input and the objective names no target" % [t, path])
+			if t >= next_tap:
+				_tap(&"ui_accept")
+				next_tap = t + TAP_S * 2.0
+		else:
+			var to := Vector3(target.x - p.global_position.x, 0, target.z - p.global_position.z)
+			if to.length() > NEAR_M:
+				# Hops cross water or walls in a straight line; when the zone's guards (FieldShore, edge walls) hold
+				# the hero back for STALL_S, jump beside the target instead (a probe limit, not a game soft-lock).
+				if to.length() < best_dist - STALL_GAIN_M:
+					best_dist = to.length()
+					best_at = t
+				elif t - best_at > STALL_S:
+					print(
+						(
+							"PLAY_TELEPORT %.1f %s: hops held back at %s, jumped to %s"
+							% [t, path, p.global_position, target]
+						)
+					)
+					p.velocity = Vector3.ZERO
+					p.global_position = Vector3(target.x, target.y + 0.1, target.z) - to.normalized() * (NEAR_M * 0.5)
+					best_dist = INF
+					best_at = t
+					continue
+				p.velocity = Vector3.ZERO
+				p.global_position += to.normalized() * minf(HOP_M, to.length())
+			elif t >= next_interact:
+				p.interact()
+				_tap(&"ui_accept")
+				next_interact = t + INTERACT_S
+				# At the target and nothing happens: the beat may sit on a touch trigger on the way (Kell's is on her
+				# bridge, not at her). Step onto each trigger near the target in turn, nearest first.
+				if t - _last_progress > SWEEP_AFTER_S:
+					if sweep.is_empty():
+						sweep = _triggers_near(cur, target)
+						print(
+							(
+								"PLAY_SWEEP %.1f %s: at the target with no progress; %d triggers near it"
+								% [t, path, sweep.size()]
+							)
+						)
+					if not sweep.is_empty():
+						var a := sweep.pop_front() as Node3D
+						sweep_last = a
+						hold_logged = false
+						p.velocity = Vector3.ZERO
+						p.global_position = a.global_position + Vector3(0, SWEEP_LIFT_M, 0)
+						next_interact = t + SWEEP_DWELL_S
+						hold_until = t + SWEEP_DWELL_S
+						print("PLAY_SWEEP_STEP %.1f %s" % [t, a.name])
+		if not softlock_logged and t - _last_progress > SOFTLOCK_S:
+			softlock_logged = true
+			print(
+				(
+					'PLAY_SOFTLOCK %.1f %s: %.0f s with no flag or scene change; at %s, target %s, objective "%s"'
+					% [t, path, t - _last_progress, p.global_position, target, _objective_text()]
+				)
+			)
+	print("PLAY_TIMEOUT %.1f %s (flags raised: %d)" % [_now(), last_scene, _flags.size()])
+	get_tree().quit(1)
+
+
+## One frame of a live fight: foes held at 1 HP, Attack on the first foe each party turn, Return on the result.
+func _battle_step(ctl: FieldBattle, result_at: float, t: float) -> float:
+	if ctl.engine == null:
+		return result_at
+	for foe in ctl.engine.enemies:
+		foe.hp = mini(foe.hp, 1)
+	if ctl.state == BattleController.STATE_COMMAND and ctl.engine.is_party_turn():
+		var foes := ctl.engine.living_foes_of(ctl.engine.current)
+		if not foes.is_empty():
+			ctl.act(&"attack", [foes[0].id])
+		return result_at
+	if ctl.state == BattleController.STATE_RESULT:
+		if result_at < 0.0:
+			return t
+		if t - result_at > RESULT_READ_S:
+			ctl.hud.result.accept()
+			return t + 1000.0
+		return result_at
+	if int(t / TAP_S) != int((t - 0.02) / TAP_S) and ctl.state not in [BattleController.STATE_TARGET]:
+		_tap(&"ui_accept")
+	return result_at
+
+
+func _on_flag(flag: StringName, value: Variant) -> void:
+	if value and not _flags.has(String(flag)):
+		_flags.append(String(flag))
+		_progress("PLAY_FLAG %.1f %s" % [_now(), flag])
+
+
+func _progress(line: String) -> void:
+	_last_progress = _now()
+	print(line)
+
+
+func _story_busy(cur: Node) -> bool:
+	var story: Variant = cur.get(&"story") if cur != null else null
+	return story is ZoneStory and not (story as ZoneStory).is_free()
+
+
+func _target() -> Vector3:
+	var huds := get_tree().root.find_children("*", "ObjectiveHud", true, false)
+	for h in huds:
+		var pos := (h as ObjectiveHud).target_position()
+		if pos != Vector3.INF:
+			return pos
+	return Vector3.INF
+
+
+## The zone's trigger areas (GreyboxZone's Triggers) within SWEEP_RADIUS_M of `at`, nearest first.
+func _triggers_near(cur: Node, at: Vector3) -> Array:
+	var out: Array = []
+	var root := cur.get_node_or_null(^"Triggers")
+	if root == null:
+		return out
+	for c in root.get_children():
+		if c is Node3D and (c as Node3D).global_position.distance_to(at) <= SWEEP_RADIUS_M:
+			out.append(c)
+	out.sort_custom(
+		func(a: Node3D, b: Node3D) -> bool: return a.global_position.distance_to(at) < b.global_position.distance_to(at)
+	)
+	return out
+
+
+func _objective_text() -> String:
+	var huds := get_tree().root.find_children("*", "ObjectiveHud", true, false)
+	return (huds[0] as ObjectiveHud).line_text() if not huds.is_empty() else ""
+
+
+func _player(cur: Node) -> FieldController:
+	if cur == null:
+		return null
+	if cur.get(&"player") is FieldController:
+		return cur.get(&"player") as FieldController
+	var found := cur.find_children("*", "FieldController", true, false)
+	return found[0] as FieldController if not found.is_empty() else null
+
+
+func _tap(action: StringName) -> void:
+	var ev := InputEventAction.new()
+	ev.action = action
+	ev.pressed = true
+	Input.parse_input_event(ev)
+	var up := InputEventAction.new()
+	up.action = action
+	Input.parse_input_event(up)
+
+
+func _now() -> float:
+	return float(Time.get_ticks_msec() - _t0) / 1000.0
