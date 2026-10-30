@@ -39,13 +39,13 @@ import grounding as gr  # noqa: E402
 SEED = 8213
 PAL = {k: ck.hexrgb(v) for k, v in {
     "overcast_slate": "#6F7E8E", "cumulus_shadow": "#8FA7C4", "lacquer_black": "#1D1916", "dusk_gold": "#F2A64A",
-    "snow": "#E8E6DF", "spawn_wound": "#3FE0C8", "storm_slate": "#3E4A57",
+    "gauze_white": "#EBE7DF", "spawn_wound": "#3FE0C8", "storm_slate": "#3E4A57",
 }.items()}
 COAT = PAL["overcast_slate"]
 BELLY = ck.mix(PAL["cumulus_shadow"], PAL["overcast_slate"], 0.25)
 BLACK = PAL["lacquer_black"]
 # Dry snow caught in the coat (no frost or rime: ADR 0015 and ADR 0204 §2 keep ice out of Ch12; M4-CRE-670)
-SNOW = PAL["snow"]
+SNOW = PAL["gauze_white"]  # snow: the albedo ceiling (palette.json), the brightest a surface may be
 GRIT = ck.mix(PAL["storm_slate"], PAL["lacquer_black"], 0.7)  # scree grit packed in the paws
 SNOW_TOP = (0.03, 0.09)  # the band over the body's midline (m above it) where snow settles on the back
 PAD = ck.mix(PAL["storm_slate"], PAL["lacquer_black"], 0.5)

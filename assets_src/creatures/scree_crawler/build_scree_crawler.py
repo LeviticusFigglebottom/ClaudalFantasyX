@@ -28,7 +28,7 @@ import creature_kit as ck  # noqa: E402
 
 SEED = 8287
 SW = {k: ck.hexrgb(v) for k, v in {
-    "overcast_slate": "#6F7E8E", "storm_slate": "#3E4A57", "snow": "#E8E6DF", "timber_weathered": "#7E6A55",
+    "overcast_slate": "#6F7E8E", "storm_slate": "#3E4A57", "gauze_white": "#EBE7DF", "timber_weathered": "#7E6A55",
     "sand_dry": "#EFDDB4", "lacquer_black": "#1D1916",
 }.items()}
 
@@ -42,8 +42,8 @@ base.PAL.update({
     # the crust's colour is mix(volcanic_stone * 0.8, lacquer_black, 0.6..0.9): here both are slate scree
     "volcanic_stone": SW["overcast_slate"] / 0.8,
     "lacquer_black": ck.mix(SW["overcast_slate"], SW["storm_slate"], 0.45),
-    "bronze_patina": ck.mix(SW["snow"], SW["overcast_slate"], 0.15),  # dry snow packed in the splits (the base's copper)
-    "sand_dry": ck.mix(SW["snow"], SW["sand_dry"], 0.3),  # snow dusted on the crown; the skin's pale folds
+    "bronze_patina": ck.mix(SW["gauze_white"], SW["overcast_slate"], 0.15),  # dry snow packed in the splits (the base's copper)
+    "sand_dry": ck.mix(SW["gauze_white"], SW["sand_dry"], 0.3),  # snow dusted on the crown; the skin's pale folds
     "laterite": ck.mix(SW["timber_weathered"], SW["overcast_slate"], 0.35),  # a cold grey-brown skin
 })
 

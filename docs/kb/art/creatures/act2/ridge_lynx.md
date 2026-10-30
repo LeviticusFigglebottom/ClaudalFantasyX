@@ -10,7 +10,7 @@ is only an animal in a hard winter. The one exaggeration: **the pounce** (it cle
 ruff. It crouches low before the leap, and that crouch is the telegraph.
 
 **Palette:** coat `overcast_slate` going `cumulus_shadow` on the belly, faint `lacquer_black` spots; ear tufts and
-tail tip `lacquer_black`; eyes `dusk_gold`; dry snow on the ruff tips and settled along the back, scree grit in the paws (snow `#E8E6DF`, no frost or rime: ADR 0015, ADR 0204 §2, M4-CRE-670); weak point (an old wound on the
+tail tip `lacquer_black`; eyes `dusk_gold`; dry snow on the ruff tips and settled along the back, scree grit in the paws (snow in `gauze_white`, the albedo ceiling; no frost or rime: ADR 0015, ADR 0204 §2, M4-CRE-670); weak point (an old wound on the
 flank where a herder's sling caught it) `spawn_wound`, small.
 
 **Clips:** `idle` (tail flick, ears turn, a breath that steams); `attack` (the crouch, then the leap over the

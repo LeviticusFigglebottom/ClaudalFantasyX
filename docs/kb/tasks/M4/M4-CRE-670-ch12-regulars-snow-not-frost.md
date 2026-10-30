@@ -30,7 +30,7 @@ Plan sheets: docs/kb/plan/act2/creatures/ridge_lynx.md and scree_crawler.md (bot
       so it is rebuilt once.
 
 ## Done (creatures, 2026-10-30)
-- **ridge_lynx:** the `salt_glass` frost on the ruff, jaw, muzzle and whiskers is now dry snow (#E8E6DF, matte), with
+- **ridge_lynx:** the `salt_glass` frost on the ruff, jaw, muzzle and whiskers is now dry snow (#E8E6DF, matte; changed 2026-10-30 to the `gauze_white` swatch, #EBE7DF, so the colour is on the palette), with
   snow settled in the coat's clumps along the back and scree grit speckled in the paws. In the same rebuild its paws
   are held planted (`grounding.pinned`, with the new opt-in hip `roll` for a leg the body twists sideways over, and a
   small pull toward the authored pose so a leg the clip returns to rest ends at rest). Slides: hit 21.8 → 5.0 cm,
