@@ -67,3 +67,15 @@ LEAD-ASK: test_screenshots and test_palette_check come from the big17 approvals 
 is approved, but m2-slice's M3-CIN-1233 marks it pending (new content), so either the approval goes or the pending key
 does. The approved `haluna_h07_chapel_court` fails its palette check (ΔE 0.042 > 0.03). I'm not changing either on
 the gate.
+
+### FAST GATE (ADR 0205; the Lead, 02:26 UTC): big19 @ 65fff30b (= eb3db1a8 + 4fa31522 + the integration branch @ 1296e499, docs only)
+- The full suite in progress was stopped (my PIDs only); it runs again, non-blocking, after GATE-FAST-DONE.
+- Blocking so far: validate_data 0/0, taskboard ok, gdlint and gdformat clean, the tools suite (5 reds, above, none
+  merge fallout), **boot smoke 0 ERROR lines**.
+- **Filtered Godot tests:** 282 of 436 test files, meaning every changed test file plus every test that names a changed
+  game/ or assets/ file by its res:// path or class_name (diff against `claude/new-session-mj8c3c`). They run one file
+  per process in 3 parallel lanes.
+- **Shots: 254.** 41 named in the tracks' SELF-RENDERED / MERGE-READY / RENDER-REQUEST lines since big17, plus 237
+  whose scene or the scenes, resources and data it loads changed (code excluded; the tests cover it). Asha's glb alone
+  reaches 45 shots; the Corrow and Brine Shoals slot materials and Ch1's dressing most of the rest. Two parallel
+  lavapipe captures, each with its own XDG_DATA_HOME.
