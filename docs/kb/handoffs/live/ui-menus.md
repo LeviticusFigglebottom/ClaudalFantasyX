@@ -1042,3 +1042,43 @@ MERGE-READY @ a4336326a: Act II battle floats.
       rows settle.
   - **Codex:** Narrative now writes the Act II entries (its people and world sets landed in big20 and big21).
   - **The reader's records:** Narrative.
+- 2026-10-30 16:30, **the Lead's 10:47 item: the as-played Act I UI pass** (0347aa74 plus this branch).
+  - **How:**
+    - Twenty UI shots at 2560×1440 with the largest text (130%, from a pre-seeded settings.cfg; the manifest swapped
+      temporarily and restored). All viewed:
+      - battle: HUD, swap, Read, victory;
+      - field: menu, codex, prompt, tip, dialogue;
+      - title, settings, save, shop, bestiary, equip, items, status, formation, Lattice, Reefball.
+    - test_pseudo_loc_screens (it fit-probes every screen at 100% and 130%), plus a new English mode
+      (`HYMN_PSEUDO_OFF=1`).
+    - The input-parity suite (focus order on keys, pad and mouse).
+    - A new contrast test.
+  - **Found and fixed:**
+    - **Field menu at 130%:** the cards' names sat on their HP rows, the save hint sat on the date, and the objective
+      ran into the help line.
+      - The card rows and the Last saved and Objective blocks now grow with the text size; at 100% nothing moves.
+      - The portrait gives up what the card text needs.
+      - When the objective's lines need the room, the save hint steps aside, and then the objective shrinks to 80%
+        at most.
+    - **Shop at 130%:** a two-line refusal ran into the help line. The line about the row and the status now share
+      the column above the help.
+    - **Status table:** at 130% the stat names and heads now fit their columns ("Magic Defense", "Lattice").
+    - **Contrast** (tools/tests/test_ui_contrast.py, WCAG 2): every text colour is at least 4.5:1 on the page panels
+      in both palettes, and at least 3:1 (bold large text) on the raised cursor row.
+      - The colorblind `danger` (#D15E1F) was 4.25 on the deep panel. It is now #C76E10: 4.52:1, and still
+        distinct (0.171 Oklab worst-case under deuteranopia and protanopia; test_colorblind_palette).
+      - docs/kb/tech/ui.md and test_ui_settings are updated.
+  - **Checked and clean:**
+    - **Pillar 4:** the timeline always shows who acts now and next. Every command row shows its cost (MP, rank,
+      escape odds, "No time"). Every leaf command previews where the actor lands ("acts again in 5 turns").
+    - **English at 130%:** no text is cut anywhere. Only Reefball's panels grow taller than their boxes, without
+      overlapping.
+    - **Focus order:** input_parity 65/0.
+    - **Pseudo-loc:** it still cuts some text with an ellipsis (mostly Reefball's Read and Drop columns). These are
+      localisation-length warnings with nothing cut in English, so I left them.
+  - **Tests:** field_menu 29/0 (a new 130% overlap test), party_card 3/0, shop 28/0, inn 11/0, status_menu 8/0,
+    pseudo_loc_screens 17/0, aspect 18/0, colorblind 2/0, ui_settings 11/0, input_parity 65/0; tools: ui_contrast OK;
+    validate_data 0/0; lint and format clean.
+  - **Drift:** the 100% field-menu shots move by about 1 px in the cards' text (and their baseline already predated
+    Toma's portrait), and battle_statuses_colorblind changes with the new orange.
+MERGE-READY @ 4edf33c21: the as-played Act I UI pass.
