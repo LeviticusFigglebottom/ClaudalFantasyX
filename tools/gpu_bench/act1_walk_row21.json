@@ -1,0 +1,15 @@
+{
+ "version": 1,
+ "doc": "Cloud QA pass 6, row 21: New Game through the Prologue and the beach cutscene into Haluna's field start (the PC's walk never reached it: its New Game dwell is 60 s). ui_accept tapped through every line; a still every 10 s.",
+ "segments": [
+  {
+   "id": "newgame_long",
+   "kind": "newgame",
+   "arg": "prologue",
+   "spawn": "Start",
+   "dwell": 420,
+   "press": "ui_accept",
+   "still_every": 10
+  }
+ ]
+}

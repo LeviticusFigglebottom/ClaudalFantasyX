@@ -1,0 +1,103 @@
+{
+ "version": 1,
+ "doc": "Cloud QA pass 6 (lavapipe, headless stand-in for the PC): the segments behind the walk-only open rows of act1_gpu_qa.md (24 haluna_wake DockShore, 34 ridge skippers' arena, 37 causeway AfterHarrier, 38 coilspire Encounter, 39 Ch9 followers, 47 FerryAft, 51 corrow_night graves, 66 Ch4's start camera with a still every second). Generated from act1_walk_rows.json; no launch or title (lavapipe's boot warm-up is minutes long).",
+ "segments": [
+  {
+   "id": "ch03",
+   "kind": "chapter",
+   "arg": "ch03",
+   "dwell": 45,
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch03_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "ch04",
+   "kind": "chapter",
+   "arg": "ch04",
+   "dwell": 30,
+   "press": "ui_accept",
+   "still_every": 1.0
+  },
+  {
+   "id": "ch04_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "haluna_wake",
+   "kind": "location",
+   "arg": "ch04/haluna_wake",
+   "dwell": 30,
+   "press": "ui_accept"
+  },
+  {
+   "id": "haluna_wake_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "brightwater_ferry",
+   "kind": "location",
+   "arg": "ch04/brightwater_ferry",
+   "dwell": 30,
+   "press": "ui_accept"
+  },
+  {
+   "id": "brightwater_ferry_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "ch06",
+   "kind": "chapter",
+   "arg": "ch06",
+   "dwell": 45,
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch06_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "ch06_b_ch06_ridge_skippers",
+   "kind": "battle",
+   "arg": "ch06_ridge_skippers",
+   "dwell": 16,
+   "return": "ch06/brine_shoals",
+   "press": "ui_accept"
+  },
+  {
+   "id": "coilspire",
+   "kind": "location",
+   "arg": "ch08/coilspire",
+   "dwell": 30,
+   "press": "ui_accept"
+  },
+  {
+   "id": "coilspire_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "ch09",
+   "kind": "chapter",
+   "arg": "ch09",
+   "dwell": 45,
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch09_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "corrow_night",
+   "kind": "location",
+   "arg": "ch09/corrow_night",
+   "dwell": 30,
+   "press": "ui_accept"
+  },
+  {
+   "id": "corrow_night_spawns",
+   "kind": "spawns"
+  }
+ ]
+}
