@@ -85,6 +85,8 @@ def mix_errors(mix: object) -> tuple[list[str], set[str]]:
     for k, v in (mix.get("volume_settings") or {}).items():
         if not isinstance(v, list) or not v or any(b not in buses for b in v):
             errs.append(f"{MIX} volume_settings.{k}: a non-empty list of buses ({v})")
+    if "stray_bus" in mix and mix["stray_bus"] not in buses:
+        errs.append(f"{MIX} stray_bus: not a bus ({mix['stray_bus']})")
     return errs, buses
 
 
@@ -593,6 +595,9 @@ def audio_errors(files: dict[str, object], exists: Callable[[str], bool], flags:
     for k in ((files.get(MIX) or {}).get("volume_settings") or {}):
         if ACCESSIBILITY in files and k not in acc_ids:
             errs.append(f"{MIX} volume_settings.{k}: not a setting in {ACCESSIBILITY}")
+    mono_id = ((files.get(MIX) or {}).get("mono") or {}).get("setting")
+    if mono_id and ACCESSIBILITY in files and mono_id not in acc_ids:
+        errs.append(f"{MIX} mono.setting: not a setting in {ACCESSIBILITY} ({mono_id})")
     enc_doc = files.get(ENCOUNTERS) or {}
     encounters = {e.get("id") for e in enc_doc.get("encounters", []) if isinstance(e, dict)}
     amb = files.get(AMBIENCE) or {}

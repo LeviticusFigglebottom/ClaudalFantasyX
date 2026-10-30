@@ -27,6 +27,11 @@
       "send": "SFX"
     },
     {
+      "name": "Walla",
+      "send": "World",
+      "_note": "the Lead's 10-30 21:25 accessibility item: voice-like world sound (villagers talking among themselves, sfx_life.json) follows the voice slider (volume_settings) and still ducks under a line and takes the zone's reverb through World"
+    },
+    {
       "name": "Voice",
       "send": "Master"
     }
@@ -88,6 +93,12 @@
     "beat_sync_max_wait_sec": 0.6,
     "min_fade_sec": 0.2, "zone_return_sec": 3.0, "battle_return_sec": 0.3, "battle_return_fade_sec": 2.0
   },
+  "stray_bus": "SFX",
+  "_stray_note": "the Lead's 10-30 21:25 accessibility item: a player left on Master gets this bus (AudioDirector.route_stray), so the sliders reach every sound",
+  "mono": {
+    "setting": "mono_audio",
+    "_note": "the Lead's 10-30 21:25 accessibility item: with the UiSettings bool on, Master folds to mono (an AudioEffectStereoEnhance with pan_pullout 0, ahead of the limiter): one speaker, one ear or a mono device hears every part. tools/audio/mono_check.py holds every rendered file to the fold."
+  },
   "volume_settings": {
     "master_volume": [
       "Master"
@@ -100,7 +111,8 @@
       "Ambience"
     ],
     "voice_volume": [
-      "Voice"
+      "Voice",
+      "Walla"
     ]
   },
   "reverb": {
