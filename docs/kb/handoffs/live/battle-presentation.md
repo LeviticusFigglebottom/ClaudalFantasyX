@@ -176,6 +176,24 @@ ch01_wickfry, ch01_oil_slug, ch01_shaft_limpet and ch01_scuttlers.
 - An earlier run showed 4 reds (battle_result_motion, battle_stings). They came from merging the integration branch
   while the run was going: each file passes 5/0 on the merged tree, and the clean run above is 817/0.
 
+### 2026-10-30 ~10:xx: the Lead's 10:07 item (PC pass 5 rows 61 and 64)
+**MERGE-READY @ ef997f3d** (+ this log commit). The glimmer swatch is in 4c4a3dd3 (below).
+- **Row 64 (65e776af): a 73-119 ms frame in the 60 after the fade, in five fights.**
+  - Cause: a ParticleProcessMaterial compiles one shader per feature set. Every battle effect sets a color ramp, and
+    most motes add turbulence. prewarm_materials.json warmed only the bare base spark material, so the first effect
+    after the fade compiled its variant.
+  - Fix: the registry now stages the ramped variant and the ramped turbulent one for the battle scenes
+    (battle_spark_process_ramp{,_turb}.tres).
+  - Test test_battle_vfx_prewarm: every effect layer, as BattleVfx builds it (reduced motion too), matches a warmed
+    variant. It fails without the two rows. `--filter=prewarm` 23/0.
+  - **PC-QUEUE:** re-measure the 60 frames after the fade at tideline, causeway, the Drownbell, the Hermit and Moll.
+    This is the likely cause, but only the GPU can confirm it. If a frame stays over the bar, the next suspect is
+    the runtime actor scenes (boss rigs), which the scene harvest can't see.
+- **Row 61 (ef997f3d):** the Reach's rest frame (rest_by_enemy) is now 6 m back and 1.6 m up at 56° (was 4, 2, 48).
+  - SELF-RENDERED battle_arena_seawall_stairhead_surge, three tries, viewed. Its hand grips the wall beside the
+    party, the arm takes about a fifth of the frame, and the party and the sea read.
+  - Tests: camera 65/0, boss 86/0, arena 18/0.
+
 ### 2026-10-30 ~09:xx: the Lead's 09:00 item (the glimmer element's hit)
 **MERGE-READY @ 4c4a3dd3** (+ this log commit): `hit_glimmer` and `map.elements.glimmer` for act1-chapters' glimmer
 element (voice_glimmer, level_hand, still_water).
@@ -305,8 +323,16 @@ element (voice_glimmer, level_hand, still_water).
     hides it too, it comes home for the contact. Test: test_a_bystander_across_the_sight_line_keeps_the_default.
   - Re-rendered: the crab shows at every contact.
 - **Next:** view each encounter's contact sheet, fix, file and log. BACKLOG EMPTY only when every encounter is clean.
+- **Batch 3 (10-30), on big21 + this branch:**
+  - Clean (checks clean, stills viewed): ch01_underway_shoals, ch01_underway_limpet, ch04_sail_leeches.
+  - ch01_hullgnaw: checks clean, but the fall moment's frame was behind the rail. Fixed in 8b0e12c2 and viewed.
+  - **ch04_bottle_hermit, open:** at Glass Flare's contact (a single-target fire hit), a red "119" stands at the
+    screen's left edge, away from any hero, and the party crowds the right edge under the timeline. The checks did
+    not flag either. Next: re-run with each float's target and screen position logged.
+  - ch04_spar_wraith: running.
 
 ### PC-QUEUE
+- Row 64 re-measure (65e776af): the 60 frames after the fade at tideline, causeway, the Drownbell, the Hermit and Moll.
 - GPU QA row 36 (the Reach): re-check in live play on the RX 9070 XT (M3-BPR-425's rest frame).
 - GPU QA row 34: re-check once M3-BPR-427 lands (and hold the zone's random encounters in the walk).
 
