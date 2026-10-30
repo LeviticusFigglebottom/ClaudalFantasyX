@@ -1,0 +1,5 @@
+# big19 capture: Godot processes that exited non-zero (no PNG for the hung/aborted ones)
+capture a: capture process(es) exited non-zero: battle_statuses (exit 1) slice_beach_h05_asha (exit 124 (hung: killed after 900 s)) slice_beach_standing (exit 124 (hung: killed after 900 s))
+capture b: capture process(es) exited non-zero: villager_hobb_face (exit 1) battle_boss_intro_reach (exit 134) slice_beach_h06_toma (exit 124 (hung: killed after 900 s)) slice_dock_night_yes (exit 124 (hung: killed after 900 s)) slice_neme_table (exit 124 (hung: killed after 900 s))
+
+Not captured (7): battle_boss_intro_reach slice_beach_h05_asha slice_beach_h06_toma slice_beach_standing slice_dock_night_yes slice_neme_table villager_hobb_face

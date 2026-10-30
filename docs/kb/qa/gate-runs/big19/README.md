@@ -11,3 +11,9 @@ process per shot, two parallel captures. The list is `shots.txt`. Non-blocking: 
 - The gate never writes or approves baselines.
 
 So far: compared 247; FAIL 176 (73 drift, 115 new/pending); PASS 71
+
+FINAL: both captures done (18382 s and 19608 s of wall time, paused while big20's and big21's blocking tests ran).
+7 shots have no capture: their Godot process hung past 900 s or aborted. See `godot_failures.txt`:
+slice_beach_h05_asha, slice_beach_h06_toma, slice_beach_standing, slice_dock_night_yes and slice_neme_table hung;
+battle_boss_intro_reach aborted (exit 134); villager_hobb_face exited 1. The slice shots' hangs match m2-slice's
+`hold_line` red (test_slice_shots).
