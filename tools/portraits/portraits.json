@@ -601,6 +601,11 @@
       "out_dir": "res://assets/ui/portraits/creatures"
     },
     {
+      "id": "held_shoal",
+      "scene": "res://game/creatures/held_shoal/held_shoal_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
       "id": "ridge_lynx",
       "scene": "res://game/creatures/ridge_lynx/ridge_lynx_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures"

@@ -1210,6 +1210,16 @@
       ]
     },
     {
+      "id": "creature_held_shoal",
+      "owner": "character",
+      "sources": ["assets_src/creatures/held_shoal/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/held_shoal/*.glb", "assets/creatures/held_shoal/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/held_shoal/build_held_shoal.py", "--", "--out", "assets/creatures/held_shoal/held_shoal.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "held_shoal"]
+      ]
+    },
+    {
       "id": "creature_flat_engine",
       "owner": "character",
       "sources": ["assets_src/creatures/flat_engine/**", "assets_src/creatures/common/**"],

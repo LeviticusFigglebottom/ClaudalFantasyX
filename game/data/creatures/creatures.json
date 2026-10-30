@@ -225,6 +225,14 @@
       "ko_fade_sec": 1.0,
       "portrait": {"pitch_deg": 10.0}
     },
+    "held_shoal": {
+      "scene": "res://game/creatures/held_shoal/held_shoal_battle.tscn",
+      "vfx_anchors": {"core": "float", "wound": "seam"},
+      "contact": {"attack": 0.55, "cast": 0.9},
+      "loop": ["idle", "idle_turned"],
+      "ko_fade_sec": 1.2,
+      "portrait": {"pitch_deg": 22.0}
+    },
     "ridge_lynx": {
       "scene": "res://game/creatures/ridge_lynx/ridge_lynx_battle.tscn",
       "contact": {"attack": 0.7, "cast": 0.75},
