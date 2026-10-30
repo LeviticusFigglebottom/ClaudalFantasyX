@@ -301,8 +301,8 @@ def convex_radii(r: np.ndarray, D: np.ndarray) -> np.ndarray:
     return out
 
 
-SKIRT_OUTER_GRID = (72, 26)  # columns round, rows down (was 56 x 22)
-SKIRT_INNER_GRID = (56, 16)  # (was 48 x 12)
+SKIRT_OUTER_GRID = (64, 20)  # columns round, rows down (was 56 x 22; the LOD0 budget, asha.md §8.1, holds it here)
+SKIRT_INNER_GRID = (48, 12)  # (it follows the outer skirt's weights now, so its own density matters less)
 
 
 def skirt(fields: Fields, name: str, rect, z_top: float, hem_fn, off: float, n_th: int, n_rows: int, folds: int,
