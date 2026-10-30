@@ -1926,3 +1926,19 @@ MERGE-READY @ (this commit).
   pass.
 - **Next:** big24 (with characters' jog, b344b974, and my 99989c2bc), then the run speed from the jog's measured
   travel and Haluna's cold entry.
+
+### Lead FAST-TRACK 10-30 15:49: big24's red test_qa_field_camera (lowlight.tscn:Sanctum), fixed
+- **Reproduced on big24 (efe7fb10, merged here):** with the committed FieldShore, `lowlight.tscn:Sanctum (shot Hall):
+  the leader is out of frame`. It passes with the fix.
+- **Cause:** a safety-catch bug in my guard. Lowlight's hall water plane (x 32–72, y −2.05) does cover the Sanctum
+  spawn (60, −8, 4), 6 m under it, the drowned sanctum. The refusals skip anyone more than underwater_m under (a
+  seabed walk), but the catch in `settle()` didn't. It put Rhen back on his last safe spot, the previous spawn's
+  (Gate or EngineHall), across the zone, so the camera at Sanctum lost him.
+- **Fix:**
+  - `settle()` does nothing more than underwater_m under a surface (the same rule as the refusals);
+  - a last safe spot more than `teleport_m` (2.0, field_movement.json "shore") away is forgotten, because a spawn or
+    a teleport put him here and the old spot is elsewhere.
+  - New `tests/unit/test_field_shore.gd`: the catch near the safe spot, a teleport forgets it, and no catch under a
+    surface.
+- **Checks:** test_qa_field_camera 2/0 (red before the fix), field_shore 3/0, qa_dock_edges 1/0 (23 zones).
+MERGE-READY @ (this commit).
