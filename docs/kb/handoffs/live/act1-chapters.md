@@ -548,7 +548,7 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - Marks for the reveal, the bow, the confession and the supper. Deck, Dock and jetty volumes.
   - field_camera, ch14_16 and layout are green.
   - Next: M3-BPR-419 (battle-presentation's request on the Act II boss ids), then Ch16's cameras.
-- MERGE-READY @ (this push)
+- MERGE-READY @ 65ea329f0
 
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
