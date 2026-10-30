@@ -351,5 +351,6 @@ flags = {
 "ch02_overheard_lane": "Ch2 B03 (M4-A2P-115 A6): the lane fragment of 'Cantor' was overheard once; it doesn't play again after a reload.",
 "ch14_venn_beaten": "Ch14 B09: the party fought Warden Malcor Venn on the lagoon until he yielded (ch14_malcor_venn's victory_flag; act2_ch14.md flag table, M4-A2P-1200).",
 "ch05_passed_grave_tier": "Ch5 B07: the party has climbed Ashcrown's pilgrim stair past the grave tier (its banter trigger; the crown sets it too). Stages the stair's objective (the Lead, 10-30).",
-"ch05_passed_copper_tier": "Ch5 B07: the party has climbed past the copper tier, the last before the crown (its banter trigger; the crown sets it too). Stages the stair's objective."
+"ch05_passed_copper_tier": "Ch5 B07: the party has climbed past the copper tier, the last before the crown (its banter trigger; the crown sets it too). Stages the stair's objective.",
+"ch10_what_went_up_seen": "Ch10 B05: ch10_what_went_up (the Drowner's release) has played after its fight, once (M4-A2P-1003 D11)."
 }
