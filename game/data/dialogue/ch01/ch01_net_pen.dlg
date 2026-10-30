@@ -5,10 +5,16 @@ location: ch01/oruvel
 ---
 // M3-CIN-1235 (PC GPU QA row 58): the field camera had the pen and the child far off-frame; P01 is over Rhen's
 // shoulder onto the pen, so the child who calls is in the shot and runs out of it across to the bridge.
+// PC GPU QA pass 5, row 58: the children read dark in the storm. Rhen's lantern side keys them (warm, PenKey) and a
+// cool rim from the net wall separates them from it (pen_lights).
+@light PenKey on
+@light PenRim on
 @camera P01
 Child [afraid]: Rhen! The net's going! #line:ch01_net_pen_001
 Rhen [determined]: I know. Hands on the plank. Don't look at the water, look at me. #line:ch01_net_pen_002
 @mark pen_child bridge run
 Rhen [determined]: Keel-hull. Go, and don't stop for anything. I'm right behind you. #line:ch01_net_pen_003
+@light PenKey off 0.5
+@light PenRim off 0.5
 @camera release
 ===

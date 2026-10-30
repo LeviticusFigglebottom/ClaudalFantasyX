@@ -289,7 +289,7 @@ flags = {
 "ch14_vows_spoken": "Ch14 B02: Tobin and Merel spoke their vows in the Lacquer Court (act2_ch14.md; read in Ch15).",
 "ch14_toma_refused": "Ch14 B04: Toma refused his old commander's order to stand aside and left his 'Be level' unanswered (act2_ch14.md; read in Ch15, Ch20).",
 "ch14_tobin_killed": "Ch14 B05: Tobin was killed shielding Merel (act2_ch14.md; read in Ch15, Ch17).",
-"ch14_steps_held": "Ch14 B06: the party held the court's water-steps while Merel cut the bridal barge loose (set by the flow on the set piece's scripted escape; act2_ch14.md; read in Ch15).",
+"ch14_steps_held": "Ch14 B06: the party held the court's water-steps while Merel cut the bridal barge loose (set by the flow on the set piece's scripted escape, and again as ch14_first_ripple opens; act2_ch14.md; read in Ch15).",
 "ch14_merel_taken": "Ch14 B08: Merel dropped the water-gate behind the barge and was taken by her father's Stillguard (act2_ch14.md; read in Ch18).",
 "ch14_complete": "Ch14 B10 (end): the bridal barge drifts out of the lagoon mouth; the flow hands off to Ch15 (act2_ch14.md).",
 "ch15_sat_with_liss": "Ch15 B02 (optional): Rhen sat with Liss at Tobin's bier on the barge (act2_ch15.md; read in B14).",

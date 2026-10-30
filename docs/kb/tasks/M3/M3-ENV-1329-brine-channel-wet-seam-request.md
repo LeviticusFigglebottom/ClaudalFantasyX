@@ -2,8 +2,8 @@
 id: M3-ENV-1329
 title: "Brine Shoals: hard wet/dry seams where the channel tiles meet the mudflat tiles"
 role: environment
-status: todo
-owner_session: ""
+status: review
+owner_session: "env-art (claude/env-art, 2026-10-30)"
 depends_on: []
 reviewer: environment
 milestone: M3
@@ -36,5 +36,14 @@ Then rebuild `channel_straight_a/b`. The kit manifest's bytes change; the tris d
 - [ ] No straight wet/dry line at the channel column's edges in env-art-b's walk stills (the `CampWaterline` and
       `Channel` spawns).
 - [ ] env-art-b re-renders `ch06_brine_camp` and `ch06_brine_road` and the walk.
+
+- 2026-10-30 (env-art): **done as proposed.** `build_channel`'s banks are floored at the flat's 0.75 wetness.
+  - `channel_straight_a/b` rebuilt: tris unchanged, the manifest unchanged.
+  - The full Brine Shoals rebuild also caught a stale `camp_tent_burned.glb`: M3-ENV-1316's tent change (02d8d671)
+    was never rebuilt into it. It is rebuilt here, and the other 43 are byte-identical.
+  - **Viewed** at CampWaterline (north, south) and Channel (east). The wet/dry split is gone. A faint tone change in
+    the sand's ripple texture is still visible across the column's edge looking south. env-art-b, judge it in your
+    re-render, and reopen with a still if it still reads.
+  - Reviewer: environment (env-art-b).
 
 ## Review log

@@ -1154,3 +1154,39 @@ BACKLOG EMPTY: everything left in this track's queue waits on another track.
 - **Lacquer Court objective rows:** wait on ch14's thread raising its flags (M4-A2P-014, act1-chapters); then drop the two
   `qa_known.json` "unraised" rows.
 - **Battle return end to end:** M4-UI-212 (integration-qa, plus a PC measurement).
+- 2026-10-30 16:10, **the Lead's 14:28 note: a controller-only pass over Act I's menus** (merged big23 at 63175d0b3).
+  - **Merge:** act1-chapters' Act II objective rows replace my interim ones. Theirs cover every zone beat by beat, so
+    I dropped my 17 `OBJ_*` strings and pointed the Act II objective test at their rows.
+  - **The walk:** `tests/unit/test_input_parity_pad_walk.gd` (3/0) drives the pad alone over:
+    - every field menu page, with a played save: Down, Confirm three deep (equip a piece, use a tonic, the Lattice, the
+      map, Settings), then Cancel out;
+    - every battle command (Attack, Skills, Items, Swell, Swap, Escape), into its page and target, then back;
+    - the battle pause, including Settings and one of its pages;
+    - the save list (with the overwrite question) and the title's load list.
+  - **After every press it fails on:**
+    - an unfilled `{action}`;
+    - a key's name where the pad has its own button;
+    - focus on a Control that isn't on screen;
+    - a menu page with nothing saying how to go back.
+  - **Found and fixed:**
+    1. **Settings never said how to move or go back** (hub and pages, from the field, the title and the pause). A
+       controls line now sits under the help. The Controls page hides it while listening, and the hub's line hides
+       under an open page.
+    2. **The save and load lists ignored the pad.** They take their input before the UiInput autoload, so a pad press
+       left the prompts on the keys and a held D-pad never repeated there. They now let UiInput notice each event
+       first (`UiInput.notice`).
+    3. **The save and load lists never said how to go back.** A controls line now sits at the right of the help row:
+       "Confirm: record · Cancel: close" (load: "continue"), and the question's "Up and Down: choose · Cancel: keep it".
+  - **Not changed, by design:** the battle command menu's help line is the action's cost and turn, and Cancel at its
+    root opens the pause (which says how to go back). The walk exempts only those stops.
+  - **Focus:** no Control kept the focus while hidden. Dead ends: none (with test_input_parity_dead_ends).
+  - **Renders viewed:** settings_hub, settings_accessibility (130%), settings_controls, save_menu, save_menu_overwrite.
+    All five change baselines (the new lines). The Lead re-approves; I wrote no baselines.
+  - **Tests:** pad_walk 3/0, settings 48/0, controls 12/0, graphics_menu 9/0, accessibility 9/0, save 201/0,
+    title_menu 16/0, input_parity_title 2/0, pseudo_loc 26/0, aspect 18/0, objective 16/0, field_menu 37/0,
+    zone_map 22/0, ui_input 4/0; validate_data 0/0; lint and format clean.
+  - **For act1-chapters (seen on big23 itself):** test_qa_threads fails 15 ways on their new Act II objective rows.
+    The ch10–13 threads don't yet raise the beats those rows wait on (`ch10_farewell_tide_seen`, `ch11_nhoa_bound`,
+    `ch12_ram_felled`, `ch13_read_ledgers`, each chapter's `_complete`, and the Lacquer Court's ch14 beats). My
+    merge took their `objectives.json` and threads unchanged. I only renamed the rows in my two qa_known notes.
+MERGE-READY @ 0fda0d8b5: the controller-only pass (Settings and save/load controls lines, the save list's pad notice, the pad walk test).

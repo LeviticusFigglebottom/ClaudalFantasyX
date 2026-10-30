@@ -32,7 +32,8 @@ note can't be at a fixed time in one file:
 *  7-10  the motes lift: the whistle sings the Letting's cell; high metallophone motes rise one by one
 * 11-14  the breath flute takes the cell up a step (onto D#5) while the clutch climbs again, to F#
 * loop   held: the clutch on F# and D#, the drone, the harp's root, the motes lifting; waiting for the release
-* release the top note (G#, the flute's D#6) held open; the backs turned: only clicks and the harp's root A; silence
+* release the top note (G#, the flute's D#6) held open; the backs turned: only clicks and the harp's root A, four
+          times, softer each bar, under B10 (Pell and Kerrid outside the gate) until its `@music silence fade=3.0`
 
 `farewell_tide` loops (its .loop.json and `music.json` beat grid: 60 BPM); the release is a one-shot. Vorbis q3. The
 gathering is -16 LUFS integrated; the release is set by its top note, 1 LU over the gathering loop (targets.py holds
@@ -84,7 +85,7 @@ BAR = 5 * BEAT
 INTRO_BARS = 14
 LOOP_BARS = 4
 LOOP_S = LOOP_BARS * BAR
-RELEASE_S = 18.0
+RELEASE_S = 26.0
 TOP_HOLD_S = 4.5             # the top note held while the clutch turns (T04, about 4 s)
 LEAD_S = BEAT / 4            # the loop starts a sixteenth before its downbeat, so no attack sits on the seam
 TOP_OVER_LU = 1.0            # the release's top note (its first TOP_HOLD_S) sits this far over the gathering loop
@@ -206,8 +207,10 @@ def build_release(mx: Mixer) -> None:
         mx.add("motes", metallophone_note(n(m), 0.3, seed=SEED + 5030 + i, decay=3.0, hardness=0.3, pair=False),
                0.6 + 1.1 * i, pan=-0.5 + 0.5 * i)
     # the backs turned: only clicks and the harp's root A
-    for k2, at in enumerate((TOP_HOLD_S + 0.5, TOP_HOLD_S + 0.5 + BAR)):
-        mx.add("harp", V.root_harp(n("A2"), 0.5 - 0.1 * k2, SEED + 5040 + k2, body), at)
+    # (the Lead's 10-30 14:28 gap check: two more roots, softer, so the backs-turned carries through B10's shot of
+    # Pell and Kerrid back to back, which ends on its own `@music silence fade=3.0`; nothing in the score marks it)
+    for k2, at in enumerate(TOP_HOLD_S + 0.5 + BAR * b for b in range(4)):
+        mx.add("harp", V.root_harp(n("A2"), (0.5, 0.4, 0.3, 0.22)[k2], SEED + 5040 + k2, body), at)
         for s in sorted(int(v) for v in g.choice([1, 3, 5, 7, 9], size=4, replace=False)):
             f = float(g.choice([1900.0, 2600.0]))
             mx.add("clicks", V.tongue_click(g, float(g.uniform(0.5, 0.9)), f), at + s / 2 * BEAT + float(g.normal(0, 0.01)),

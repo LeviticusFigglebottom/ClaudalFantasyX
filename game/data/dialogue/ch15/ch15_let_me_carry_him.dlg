@@ -11,7 +11,7 @@ location: ch17/hollowmere
 @letterbox on
 @camera H09
 @anim liss wash_hand tobin
-@mark toma jetty_near walk
+@mark toma confess_toma walk
 @wait 3.0
 Toma [sad]: Liss. There is something I have to say to you, and then I will go. #line:ch15_carry_001
 @wait 2.0
@@ -39,10 +39,10 @@ Toma [grief]: Let me carry him. Please. I don't ask you to forgive me. Let me ca
 @wait 2.0
 @camera H11
 @anim toma lift tobin
-@mark toma jetty_end walk
-@mark liss jetty_end walk
+@mark toma jetty_end_toma walk
+@mark liss jetty_end_liss walk
 <<if $ch09_rhen_answered_toma>>
-    @mark rhen jetty_end walk
+    @mark rhen jetty_end_rhen walk
 <<endif>>
 @wait 5.0
 <<set $ch15_toma_carried_tobin = true>>
