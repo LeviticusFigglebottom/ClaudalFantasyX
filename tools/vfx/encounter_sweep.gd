@@ -162,8 +162,7 @@ func _sweep(enc: StringName, out: String) -> Dictionary:
 			var now := engine.now
 			_party_turn(policy)
 			if engine.outcome == &"" and engine.current == who and engine.now == now and engine.is_party_turn():
-				policy.take_turn(engine)  # the sweep's pick was refused: the turn must still end
-				_ctl.after_action(who.id)
+				_policy_turn(policy, who.id)  # the sweep's pick was refused: the turn must still end
 		elif animating or _ctl.state == BattleController.STATE_SWELL_INPUT:
 			dead = 0.0
 		else:
@@ -179,9 +178,7 @@ func _sweep(enc: StringName, out: String) -> Dictionary:
 			if living.size() == 1 and engine.ward() == null:  # the last foe falls on the real stage
 				last = living[0]
 				break
-			var actor := engine.current.id
-			policy.take_turn(engine)
-			_ctl.after_action(actor)
+			_policy_turn(policy, engine.current.id)
 		if choreo.playing():
 			choreo.finish()
 		var intro2 := BattleBossIntro.of(_ctl.stage)
@@ -262,8 +259,20 @@ func _party_turn(policy: SimPolicy) -> void:
 			if res3 != null and res3.ok:
 				_mark("attack")
 				return
-	policy.take_turn(engine)
-	_ctl.after_action(actor.id)
+	_policy_turn(policy, actor.id)
+
+
+## The policy's turn, then the stage follows any swap it made: the sim policies swap through the engine
+## (BattleEngine.swap), where the game swaps through BattleController.swap_members, which seats the newcomer. The
+## Hermit's sweep had Ysolde fighting, struck and felled with no body on the stage (her float at the screen's corner).
+func _policy_turn(policy: SimPolicy, actor_id: StringName) -> void:
+	var before := BattleIds.of(_ctl.engine.party_active)
+	policy.take_turn(_ctl.engine)
+	if BattleIds.of(_ctl.engine.party_active) != before:
+		_ctl.stage.sync_party(_ctl.engine)
+		_ctl.stage.refresh_ko(_ctl.engine)
+		_ctl._rebuild_party_panel()
+	_ctl.after_action(actor_id)
 
 
 ## The type the next party contact is shot as.

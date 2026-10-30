@@ -94,6 +94,11 @@ func _attach(id: StringName, villager: String) -> Node3D:
 		model.rotation.y = PI  # a creature's model faces +Z; an actor faces its -Z
 		# the battle root (CreatureActor) answers the battle's play_clip; a cutscene drives the AnimationPlayer
 		model.set_script(null)
+		# its own ambient VFX reads the CreatureActor, so it stays in the battle scene (the Lamp Engine in Lowlight)
+		for child in model.get_children():
+			if child is CreatureAmbientVfx:
+				model.remove_child(child)
+				child.free()
 	actor.add_child(model)
 	var stand_in := actor.get_node_or_null(NodePath(String(STAND_IN))) as Node3D
 	if stand_in != null:

@@ -2,8 +2,7 @@
 id: M4-C10-03
 title: Ch10's field fights on creatures' Act II roster (tannin archer, root crab, fen leech), with sim bands
 role: cinematics
-status: blocked
-blocked-by: ADR 0041
+status: todo
 owner_session: act1-chapters (claude/act1-chapters)
 depends_on: [M4-C10-02, M3-CRE-620]
 reviewer: combat

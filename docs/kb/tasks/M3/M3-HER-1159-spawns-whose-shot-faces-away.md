@@ -2,8 +2,8 @@
 id: M3-HER-1159
 title: "Four Act I spawns land in a field camera volume whose shot faces away from them (Brightwater DerelictDeck and Stern, Coilspire Encounter, Corrow Bastion)"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: act1-chapters
 reviewer: qa
 depends_on: []
 milestone: M3
@@ -29,5 +29,12 @@ shot's heading).
 ## Acceptance criteria
 - [ ] test_qa_field_camera passes with this task's KNOWN rows removed (`brightwater_ferry.tscn:DerelictDeck`,
       `:Stern`, `coilspire.tscn:Encounter`, `corrow.tscn:Bastion`).
+
+- **act1-chapters, 2026-10-30:**
+  - Brightwater DerelictDeck and Stern, and Corrow's Bastion, already pass on this head (earlier volume work).
+  - **Coilspire's Encounter fallback** was the origin, empty space far from the path. GreyboxZone now keeps a layout's
+    own `Encounter` spawn, and only defaults to the origin without one. Coilspire names PathFoot.
+  - All four are off test_qa_field_camera's KNOWN list, which is green. ch08, hero_field_snaps and zone_story are
+    green too.
 
 ## Review log

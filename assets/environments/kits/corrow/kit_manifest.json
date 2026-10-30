@@ -348,9 +348,9 @@
         4000,
         300
       ],
-      "bytes": 43788,
+      "bytes": 69132,
       "lods": {
-        "shroud_bound_a": 1104,
+        "shroud_bound_a": 1920,
         "shroud_bound_a-lod1": 48
       }
     },
@@ -359,9 +359,9 @@
         4000,
         300
       ],
-      "bytes": 43788,
+      "bytes": 69136,
       "lods": {
-        "shroud_bound_b": 1104,
+        "shroud_bound_b": 1920,
         "shroud_bound_b-lod1": 48
       }
     },
@@ -370,9 +370,9 @@
         4000,
         300
       ],
-      "bytes": 43884,
+      "bytes": 69236,
       "lods": {
-        "shroud_bound_small": 1104,
+        "shroud_bound_small": 1920,
         "shroud_bound_small-lod1": 48
       }
     },

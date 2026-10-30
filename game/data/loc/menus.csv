@@ -82,3 +82,5 @@ INN_ANSEDRA_GUEST_DESC,"You are his guests. A room has been made ready for each 
 INN_MENU_FREE,No charge
 INN_MENU_PREVIEW_FREE,A night here costs nothing.
 INN_ERR_HERETIC,The door stays shut. The Order keeps no guests outside the Level.
+HUD_FLOAT_DRAINED,Drained
+HUD_FLOAT_REPAIRED_FMT,{part} mended

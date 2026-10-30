@@ -123,6 +123,17 @@
         "forecourt-lod1": 8
       }
     },
+    "loggia_screen": {
+      "budget": [
+        6000,
+        400
+      ],
+      "bytes": 79388,
+      "lods": {
+        "loggia_screen": 608,
+        "loggia_screen-lod1": 124
+      }
+    },
     "matron_alcove": {
       "budget": [
         5000,

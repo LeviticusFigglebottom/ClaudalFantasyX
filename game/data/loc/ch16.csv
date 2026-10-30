@@ -19,6 +19,9 @@ HUD_FAIL_OUT_OF_CYCLE,Not this turn's voice: she holds another element now.
 CHAR_KESH,Kesh
 ENEMY_ABIDING_GUARD,The Abiding Guard
 LORE_ABIDING_GUARD,"Three tall hooded figures carrying Lamplighters' hooks, the lamp cages empty. They stand on the Choir's dais as if they have always stood there. They fight in silence, and they never look up."
+OBJ_CH16_WADE,Wade south. Follow the cairns.
+OBJ_CH16_CHOIR,Go in among the singers.
+OBJ_CH16_HOLD,Hold the line.
 OBJ_CH16_SIDE_CAIRN,A cairn has fallen into the water.
 TUT_CH16_CYCLE,It changes its element on a rhythm. The timeline shows the next one.
 TUT_CH16_HOLD_LINE,Kerrid holds the line. Keep him standing.

@@ -668,3 +668,40 @@ What the Act II fights still need from others: enemy rows and encounters (combat
   actors; the enemy rows (`malcor_venn`, the Abiding ids) are chapters'/combat's.
 - **BACKLOG EMPTY (10:40):** no Act II boss in my lane lacks its model; the two people bosses' models are characters'
   (Venn built, the guard in progress), and their stand-ins follow when the actors land.
+
+## 2026-10-30 ~11:10: the Lead's 10:27 message (Act II quality check, then help row 64)
+- **Act II:** every Act II boss and Vowbound in my lane is at real-model quality (the four bosses and four Vowbound
+  built, reviewed, wired; see above). No stand-in mesh ships: Venn's `stand_ins` entry only points at characters'
+  real `venn_battle.tscn` (ec78978b) and falls back to the capsule only until claude/characters merges.
+- **Row 64 (for battle-presentation, who owns the intro, BattleBossIntro and BattleBossHeroShot): the boss rigs are not
+  the cause, so there is nothing of mine to prewarm.** pc-gpu's big21 trace (gpu/act1-qa-5, act1_gpu_qa.md row 64)
+  found zero pipeline compiles on the spiking frame; the time is `_frame_boss()` -> `BattleBossHeroShot.search` on the
+  first uncovered frame. battle-presentation's 65e776af (warm the particle variants) addresses the earlier guess;
+  the trace says the frame stays.
+  My headless timing of the search in each fight (scratch harness, shared CPU, so absolute ms differ from the PC's;
+  "cold" = an empty `_tri_cache`):
+
+  | Fight | Occluders | Triangle meshes built | Search cold / warm | Biggest occluder sets |
+  |---|---|---|---|---|
+  | Drownbell | 943 | 223 ms | 167 / 158 ms | saltgrass_clumps x700 + x179 (multimesh instances) |
+  | Hermit | 69 | 12 | 121 / 113 | lamp flames, posts, masts |
+  | Inquisitor (Moll) | 66 | 21 | 93 / 99 | camp fires, the party |
+  | Matron | 39 | 2 | 40 / 32 | the party |
+  | Hullgnaw | 99 | 28 | 13 / 12 | |
+  | Spar-Wraith | 69 | 7 | 1 / 1 | |
+  | the Reach | 319 | 20 | 4 / 3 | watcher heads x104 |
+
+  The boss bodies are small (2–12 visual nodes each) and enter only as `bounds`. Two causes:
+  1. **The Drownbell:** 879 of its 943 occluders are saltgrass clumps, ankle-high grass that can never block a lens.
+     Each sight line walks all of them, and the first search builds about 220 ms of triangle meshes.
+     *Suggestion:* `_occluders` skips multimesh instances (or any box) shorter than about 0.5 m, or below the lens
+     and the boss's waist.
+  2. **The Hermit and Moll:** few occluders, but many candidate poses fail before one holds.
+     *Suggestion:* run `_frame_boss()` while the fade still covers the screen (at `_on_first_turn` when
+     `_covered()` is true, keeping `_pose` for the reveal) and warm `_tri_cache` there too. This is pc-gpu's
+     proposed fix, and it covers every fight.
+  Both changes are in battle-presentation's files (game/battle/scene/**), so I made neither. The scratch harness is
+  `game/_scratch_crb/r64/time_hero.{gd,tscn}` (git-excluded; copy on request).
+- **BACKLOG EMPTY (11:10):** the Act II bosses and Vowbound are all at real-model quality. Row 64's cause and its two
+  fixes are measured and handed to battle-presentation, with nothing on my rigs to prewarm. Venn's stand-in waits on
+  claude/characters' merge; the Abiding guard's waits on its actor.

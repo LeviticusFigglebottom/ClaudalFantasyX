@@ -21,6 +21,7 @@ WRAPPERS = {
     "coilspire/b_headland_arena.py": ("coilspire_headland_path", "coilspire_tier_landing"),
     "ashcrown/b_arenas.py": ("ashcrown_forecourt_day", "ashcrown_anvil_court"),
     "haluna/ansedra_arenas.py": ("lacquer_court_steps", "ansedra_lagoon_escape", "bridal_barge_night"),
+    "haluna/rim_arenas.py": ("pale_rim_shallows",),
 }
 WRAPPED = {aid for ids in WRAPPERS.values() for aid in ids}
 

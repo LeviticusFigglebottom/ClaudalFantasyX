@@ -2,8 +2,7 @@
 id: M4-A2P-072
 title: "Stage the wedding trap and the escape across the water (Ch14)"
 role: cinematics
-status: blocked
-blocked-by: ADR 0203
+status: todo
 owner_session: ""
 depends_on: [M4-A2P-005, M4-A2P-047, M4-A2P-050]
 reviewer: narrative

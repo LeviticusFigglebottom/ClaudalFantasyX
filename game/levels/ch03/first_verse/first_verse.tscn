@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=3]
+[gd_scene load_steps=43 format=3]
 
 [ext_resource type="Script" path="res://game/levels/ch03/first_verse/first_verse_scene.gd" id="1_root"]
 [ext_resource type="Script" path="res://game/world/field_camera_director.gd" id="2_dir"]
@@ -144,6 +144,13 @@ id = &"S10"
 position = Vector3(-14.03, 0.83, -0.88)
 look_at = Vector3(-16.49, 0.68, -0.75)
 fov_deg = 20.9
+
+[sub_resource type="Resource" id="ShotC08Toma"]
+script = ExtResource("5_shot")
+id = &"C08_toma"
+position = Vector3(-22.6, -0.4, -12.5)
+look_at = Vector3(-21.0, -0.25, -10.0)
+fov_deg = 34.0
 
 [sub_resource type="Resource" id="ShotC08"]
 script = ExtResource("5_shot")
@@ -333,6 +340,10 @@ shot = SubResource("ShotS09")
 [node name="S10" type="Node" parent="CutsceneStage/Shots"]
 script = ExtResource("4_shotnode")
 shot = SubResource("ShotS10")
+
+[node name="C08_toma" type="Node" parent="CutsceneStage/Shots"]
+script = ExtResource("4_shotnode")
+shot = SubResource("ShotC08Toma")
 
 [node name="C08" type="Node" parent="CutsceneStage/Shots"]
 script = ExtResource("4_shotnode")

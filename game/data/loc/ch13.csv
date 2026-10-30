@@ -8,6 +8,13 @@ SKILL_HOLD_THE_HOUR,Hold the Hour
 SKILL_LACQUER_SCREEN,Lacquer Screen
 SKILL_STILL_WATER,Still Water
 CHAR_HOUSEHOLDER,Householder
+OBJ_CH13_SANCTUM,Go to the Sanctum of the Level.
+OBJ_CH13_LEDGE,Go to the ledge above the still basin.
+OBJ_CH13_ARCHIVE,Read in the Lamp Archive.
+OBJ_CH13_LEDGERS,Read the founders' lamp-ledgers.
+OBJ_CH13_ROLL,Read the roll of the Cantors.
+OBJ_CH13_MOORINGS,Kerrid is standing at the outer moorings.
+OBJ_CH13_REST,Rest at the High Warden's house. The wedding is at dusk.
 OBJ_CH13_SIDE_HOUSE,Ysolde has a house she hasn't been back to.
 OBJ_CH13_SIDE_FLAME,One of the lamp-bearers can't keep his flame straight.
 TIP_RECORDS_TITLE,Records
