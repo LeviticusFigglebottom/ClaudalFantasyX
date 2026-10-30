@@ -12,6 +12,7 @@ extends Node
 ## for STUCK_S with no flag or scene change), PLAY_SOFTLOCK (no flag or scene change for SOFTLOCK_S while the field
 ## takes input), PLAY_TELEPORT (hops held back by the zone's guards: the hero jumps beside the target),
 ## PLAY_SWEEP (at the target with no progress: it steps onto each trigger near it),
+## PLAY_SKIP (a soft-lock on a puzzle: the objective's until flag raised so the smoke goes on; the step is unplayed),
 ## PLAY_FELL (the hero fell out of the world after a hop: put back on the ground; no fall recovery in the game),
 ## PLAY_NO_TARGET (the field takes input but the objective names no target), PLAY_ARRIVED / PLAY_TIMEOUT.
 
@@ -213,18 +214,26 @@ func _run() -> void:
 						sweep_last = a
 						hold_logged = false
 						p.velocity = Vector3.ZERO
-						p.global_position = a.global_position + Vector3(0, SWEEP_LIFT_M, 0)
+						p.global_position = _on_ground(p, a.global_position)
+						p.interact.call_deferred()
 						next_interact = t + SWEEP_DWELL_S
 						hold_until = t + SWEEP_DWELL_S
 						print("PLAY_SWEEP_STEP %.1f %s" % [t, a.name])
 		if not softlock_logged and t - _last_progress > SOFTLOCK_S:
 			softlock_logged = true
+			# A puzzle the guided hops can't solve (the Shell Shrine's basins): raise the objective's own `until` flag so
+			# the smoke goes on, and say so (PLAY_SKIP: that step was not played).
+			var skip := _skip_objective()
 			print(
 				(
 					'PLAY_SOFTLOCK %.1f %s: %.0f s with no flag or scene change; at %s, target %s, objective "%s"'
 					% [t, path, t - _last_progress, p.global_position, target, _objective_text()]
 				)
 			)
+			if skip != "":
+				print("PLAY_SKIP %.1f %s: raised the objective's until flag %s" % [t, path, skip])
+				Game.set_flag(StringName(skip))
+				softlock_logged = false
 	print("PLAY_TIMEOUT %.1f %s (flags raised: %d)" % [_now(), last_scene, _flags.size()])
 	get_tree().quit(1)
 
@@ -277,15 +286,19 @@ func _target() -> Vector3:
 	return Vector3.INF
 
 
-## The zone's trigger areas (GreyboxZone's Triggers) within SWEEP_RADIUS_M of `at`, nearest first.
-func _triggers_near(cur: Node, at: Vector3) -> Array:
+## The available Interactables (the zone's touch triggers, NPCs, shrines: Interactable.GROUP) within SWEEP_RADIUS_M of
+## `at`, nearest first.
+func _triggers_near(_cur: Node, at: Vector3) -> Array:
 	var out: Array = []
-	var root := cur.get_node_or_null(^"Triggers")
-	if root == null:
-		return out
-	for c in root.get_children():
-		if c is Node3D and (c as Node3D).global_position.distance_to(at) <= SWEEP_RADIUS_M:
-			out.append(c)
+	for n in get_tree().get_nodes_in_group(Interactable.GROUP):
+		var it := n as Interactable
+		if (
+			it != null
+			and it.is_inside_tree()
+			and it.is_available()
+			and it.global_position.distance_to(at) <= SWEEP_RADIUS_M
+		):
+			out.append(it)
 	out.sort_custom(
 		func(a: Node3D, b: Node3D) -> bool: return a.global_position.distance_to(at) < b.global_position.distance_to(at)
 	)
@@ -298,6 +311,15 @@ func _on_ground(p: FieldController, at: Vector3) -> Vector3:
 	q.exclude = [p.get_rid()]
 	var hit := p.get_world_3d().direct_space_state.intersect_ray(q)
 	return ((hit["position"] as Vector3) if not hit.is_empty() else at) + Vector3.UP * SWEEP_LIFT_M
+
+
+## The current objective's `until` flag in the field's zone ("" when none).
+func _skip_objective() -> String:
+	for h in get_tree().root.find_children("*", "ObjectiveHud", true, false):
+		var hud := h as ObjectiveHud
+		if hud.tracker != null:
+			return str(hud.tracker.current(hud.zone).get("until", ""))
+	return ""
 
 
 func _objective_text() -> String:
