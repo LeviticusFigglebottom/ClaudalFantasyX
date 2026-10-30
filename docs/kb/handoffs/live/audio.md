@@ -3,6 +3,8 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **Godot on 792ccc26 (all green):** vowbound 116/0 (one node left in the tree, as on fda21daa before this set: a test's leak, not audio's), choreo_audio 17/0, creature_audio 8/0, field_audio 22/0, document_reader 7/0, battle_audio 22/0.
+- **BACKLOG EMPTY (2026-10-30, after 792ccc26):** the Lead's lists are done; the Act I and Act II audits are 0; 1010 and 1080 are in review. What's left waits on input: the people bosses' encounters (Combat), the remaining §4 families as their features land, and the listening verdict.
 - **MERGE-READY @ 792ccc26: the Lead's 09:58 list on 0347aa74, plus two audio requests found on the board.** Merged 0347aa74 first.
   - **Already done, checked again:** env-art and env-art-b build exactly the 14 Act II levels, and every one has its zone music and its own bed. Battle themes for Ch13–16 are `battle_heretic` (regulars from Ch14) and the six boss stem sets. Every Act II boss sting exists, keyed by encounter id.
   - **Act I gate, red after the merge and fixed:** Nhoa's `nhoa_echo` and Hesk's `cord_lift` (new Vowbound skills, no enemy rows) were silent. Both are voiced now (`act2_skill_sfx.py`). Kesh is callable from Ch16, so she has her call sting, `kesh_summon` (`vowbound_stings.py`; Act III's H03 reuses it).
