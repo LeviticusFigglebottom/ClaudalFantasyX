@@ -8,8 +8,9 @@ extends RefCounted
 ## The hit dictionary for `sk` from `actor` landing on `target` (after Reflect):
 ## {target_id, hit, crit, amount (HP lost; < 0 heals), statuses_added, element}, plus "read" for
 ## Read, "delay_ticks" when it pushes the target back, "drained" (the HP its user won back, M4-CMB-1001)
-## for a drain, and "absorbed" (the HP the target's absorb affinity drank, before the max-HP cap:
-## ADR 0027 A1, the Vowbound gauge) when it absorbs.
+## for a drain, "rooted" (own turns it can't be swapped out, M4-A2P-020) for a root, and "absorbed"
+## (the HP the target's absorb affinity drank, before the max-HP cap: ADR 0027 A1, the Vowbound
+## gauge) when it absorbs.
 static func resolve(
 	engine: BattleEngine, actor: BattleCombatant, target: BattleCombatant, sk: Dictionary
 ) -> Dictionary:
@@ -76,6 +77,10 @@ static func resolve(
 	var delay_ranks := int(sk.get("delay_ranks", 0))
 	if delay_ranks > 0 and target.is_alive():
 		hit["delay_ticks"] = engine.push_delay(target, delay_ranks)
+	var root_turns := int(sk.get("root_turns", 0))
+	if root_turns > 0 and target.is_alive():  # M4-A2P-020: held by the roots, no swap (a longer hold wins)
+		target.rooted_turns = maxi(target.rooted_turns, root_turns)
+		hit["rooted"] = target.rooted_turns
 	return hit
 
 

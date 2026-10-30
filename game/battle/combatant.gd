@@ -53,6 +53,9 @@ var provoker_id: StringName = &""
 var low_hp_owned: Array[StringName] = []
 ## Delays received since this combatant's last own turn (diminishing returns; formulas.md).
 var delays_taken := 0
+## M4-A2P-020: own turns left held by the roots (a skill's root_turns): while > 0 a hero on the field can't be swapped
+## out (BattleEngine.FAIL_ROOTED). Counts down at the end of each own turn, like a timed status.
+var rooted_turns := 0
 ## Data flag (enemies.json "delay_immune", e.g. bosses): delay effects add no ticks.
 var delay_immune := false
 ## Swell gauge, 0..Formulas.SWELL_MAX (SPEC §6.2). BattleSwell fills and empties it.
@@ -371,6 +374,7 @@ func tick_statuses() -> bool:
 			statuses.erase(s)
 		else:
 			statuses[s] = left
+	rooted_turns = maxi(rooted_turns - 1, 0)
 	if not has_status(&"provoke"):
 		provoker_id = &""
 	if doomed and hp > 0:

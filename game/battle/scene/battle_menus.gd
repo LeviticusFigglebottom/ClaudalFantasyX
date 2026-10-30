@@ -559,9 +559,12 @@ func swap_out_help(incoming: BattleCombatant, engine: BattleEngine = null, out_i
 
 ## Why `out_id` cannot leave the field this turn (a set piece's lock: "Holding the stair"), or "" (M3-UI-100).
 func swap_lock_text(engine: BattleEngine, out_id: StringName) -> String:
-	if engine.swap_refusal(out_id) != BattleSetPiece.FAIL_LOCKED:
+	var why := engine.swap_refusal(out_id)
+	if why != BattleSetPiece.FAIL_LOCKED and why != BattleEngine.FAIL_ROOTED:
 		return ""
 	var reason := tr(engine.locked_key) if engine.locked_key != "" else tr("HUD_FAIL_GENERIC")
+	if why == BattleEngine.FAIL_ROOTED:  # M4-A2P-020: a root crab's Root Drag holds them
+		reason = tr("HUD_SWAP_ROOTED")
 	return tr("HUD_HELP_SWAP_LOCKED_FMT").format({"name": display_name(engine.find(out_id)), "reason": reason})
 
 

@@ -587,6 +587,15 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - Next: M4-A2P-020, rooted (the root crab's Root Drag refuses the swap).
 - MERGE-READY @ 1993229a2
 
+- **M4-A2P-020 rooted (combat seat): done, in review.**
+  - It's a skill effect (`root_turns`), not a new status, so SPEC §6.8 is untouched. Root Drag holds its target for
+    2 turns, and the swap line says why. `ch10_fen_roots` is in band.
+  - Requested the HUD marker from UI (M3-UI-1240).
+  - Checks: rooted, battle_engine, hud, set_piece, validate, lint and format. `test_scene_router_swap` needs `godot`
+    on PATH here: environmental, not this diff.
+  - Next: M4-A2P-021, glide and ambush.
+- MERGE-READY @ (this push)
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.

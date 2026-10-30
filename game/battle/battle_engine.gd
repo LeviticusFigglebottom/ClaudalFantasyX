@@ -34,6 +34,8 @@ const OUTCOME_ESCAPED := &"escaped"
 ## the Escape command, and it counts as surviving the fight (BattleSetPiece; set_piece_battles.md).
 const OUTCOME_SCRIPTED_ESCAPE := &"scripted_escape"
 const MAX_ACTIVE := 3
+## swap_refusal: a hero held by the roots (rooted_turns > 0, M4-A2P-020).
+const FAIL_ROOTED := &"rooted"
 ## Consecutive turns lost to Stop/Sleep with nobody able to act before the battle is ruled a
 ## stalemate (only reachable with "until cured" durations on everyone; ends as defeat).
 const MAX_CONSECUTIVE_LOST_TURNS := 1000
@@ -621,9 +623,16 @@ func ward() -> BattleCombatant:
 
 
 ## Why the current turn's swap would refuse to take `out_id` off the field for a reason the menu
-## names: BattleSetPiece.FAIL_LOCKED (Toma holds the stair; locked_key says it), else &"".
+## names: BattleSetPiece.FAIL_LOCKED (Toma holds the stair; locked_key says it), FAIL_ROOTED (a
+## root crab's Root Drag holds it: rooted_turns, M4-A2P-020), else &"".
 func swap_refusal(out_id: StringName) -> StringName:
-	return BattleSetPiece.swap_refusal(self, out_id)
+	var locked := BattleSetPiece.swap_refusal(self, out_id)
+	if locked != &"":
+		return locked
+	var c := find(out_id)
+	if c != null and c.is_alive() and c.rooted_turns > 0 and party_active.has(c):
+		return FAIL_ROOTED
+	return &""
 
 
 # --- internals ---------------------------------------------------------------------------
