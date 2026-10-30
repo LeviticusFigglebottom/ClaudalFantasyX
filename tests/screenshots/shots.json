@@ -4742,7 +4742,7 @@
     },
     {
       "id": "moll_face",
-      "scene": "res://game/levels/_tests/characters/moll/moll_stage.tscn",
+      "scene": "res://game/levels/_tests/characters/moll/moll_face.tscn",
       "camera": "Cameras/Face",
       "resolution": [
         960,
@@ -4822,7 +4822,7 @@
     },
     {
       "id": "stillguard_a_face",
-      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_a_stage.tscn",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_a_face.tscn",
       "camera": "Cameras/Face",
       "resolution": [
         960,
@@ -4882,7 +4882,7 @@
     },
     {
       "id": "stillguard_b_face",
-      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_b_stage.tscn",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_b_face.tscn",
       "camera": "Cameras/Face",
       "resolution": [
         960,
@@ -4902,7 +4902,7 @@
     },
     {
       "id": "stillguard_c_face",
-      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_c_stage.tscn",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_c_face.tscn",
       "camera": "Cameras/Face",
       "resolution": [
         960,

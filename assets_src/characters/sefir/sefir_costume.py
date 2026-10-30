@@ -78,9 +78,10 @@ GUSSET_OVERLAP = 0.03  # m (x S) below the armhole's bottom: it laps under the u
 GUSSET_ROWS = 5
 GUSSET_COLS = 9
 SKIRT_FLARE = 0.12  # each row at least this x the drop wider than the one above (it bridges the legs)
-SKIRT_FOLDS = 7  # fold periods round the whole skirt (heavy satin: few, shallow)
-SKIRT_FOLD_AMP = 0.004  # x S at the hem
-PANEL_COLS = 14
+SKIRT_FOLDS = 14  # fold periods round the whole skirt (GPU QA row 54: 7 at 4 mm read as a rigid cylinder)
+SKIRT_FOLD_AMP = 0.016  # x S at the hem (was 0.004)
+SKIRT_FOLD_2ND = (2.3, 0.45)  # a second, irregular fold harmonic: its frequency and share of the amplitude
+PANEL_COLS = 18  # (was 14) to resolve the folds
 PANEL_ROWS = 22
 LAP_DEG = 5.0  # below a split, the upper panel's edge laps this far past the seam ...
 LAP_LIFT = 0.006  # m (x S) ... and stands this far off the panel it covers ...
@@ -213,7 +214,9 @@ def robe_panels(fields: Fields, params: dict, z_top: float, seed: int) -> dict[s
             if prev_r is not None:
                 r = np.maximum(r, prev_r + SKIRT_FLARE * (zs[j - 1] - z))
             prev_r = r
-            rr = r + SKIRT_FOLD_AMP * S * t ** 1.3 * np.sin(SKIRT_FOLDS * th + phase)
+            rr = r + SKIRT_FOLD_AMP * S * t ** 1.1 * (np.sin(SKIRT_FOLDS * th + phase)
+                                                     + SKIRT_FOLD_2ND[1] * np.sin(SKIRT_FOLD_2ND[0] * SKIRT_FOLDS * th
+                                                                                   + 1.7 * phase))
             ramp = np.zeros(PANEL_COLS)
             if lap0 > 0.0:
                 ramp = np.maximum(ramp, smooth01(1.0 - np.arange(PANEL_COLS) / LAP_EDGE_COLS) * lap0 / LAP_DEG)
