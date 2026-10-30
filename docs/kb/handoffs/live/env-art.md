@@ -589,6 +589,10 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **BACKLOG EMPTY (2026-10-30, after the Prologue–Ch4 audit):** the audit's findings in env-art's lane are fixed and
+  viewed (MERGE-READY @ 312270ef, below); the rest are filed to their owners (M3-ENV-754, M3-ENV-755, slice-polish) or
+  need the real GPU (PC-QUEUE: the night lagoon's glow, the plaza's joint ticks). The env-art todo list's other rows are
+  Ch5–Ch9 (env-art-b's) or wait on other tracks. Lead: send more and I'll take it.
 - **MERGE-READY @ 312270ef (+ this log): the Lead's final-quality audit of Prologue–Ch4 as played, on
   `lead/gate-big18` @ d00d3284.** 330 player-eye stills in nine zones, all viewed: four-way vistas at every spawn, every
   NPC from the front, every interactable, door and zone transition from its approach (points from each zone's layout
