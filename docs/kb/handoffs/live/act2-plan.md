@@ -187,3 +187,22 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - BACKLOG EMPTY (story track).
 - Follow-up: Godot `cutscene_face_anim` passes 7/0 after the class-cache rebuild. Its earlier failures came from a run started before `--import`. The full `--filter=cutscene` sweep took more than 28 min and was cut off with no failures up to that point. The Lead's full run on merge covers the rest.
 - Task renumbered: M4-A2P-105 → **M4-A2P-107**, because integration took 105 for a Ch15 task. `abiding_guard` landed (big21), so it's off `MUSIC_TODO` and has a stand-in row.
+
+## 2026-10-30: M4-A2P-108, Act II side content and camp conversations (Lead request)
+- Merged integration first (big21). Fallout:
+  - codex: theirs taken, then `kerrid_stair` and `farewell_tide` re-pointed at the lane flags. My `outside_the_level` was dropped in favour of ui-menus' fuller `heresy` page, so World is now 18 and `test_codex.gd` is pinned to 18.
+  - The four boss loc rows are restored in ch10, ch11, ch12 and ch15.csv. big21 deferred to them, but I'd dropped them after big20.
+  - `abiding_guard` is off `MUSIC_TODO` with a stand-in row.
+  - The request task is renumbered to M4-A2P-107.
+- **Checks:** dlgc --check 0/0 · validate_data 0/0 · taskboard clean · test_cutscene_sfx_files OK · Godot `act2_dialogue` 1/0 (every path of the 21 new scenes, all flags unset and all set) · `dialogue` 86/0 · after the merge, `codex` 16/0, `status_menu` 7/0, `bestiary` 37/0. No `@anim` was added, so the hero-clips test can't change.
+- MERGE-READY Ch10 @ f2d13a64c: `ch10_side_the_three_nets`, `ch10_find_guardian_strap`, camp `ch10_camp_what_you_carry` (Rhen and Pell).
+- MERGE-READY Ch11 @ f2d13a64c: `ch11_side_the_altar_lamp`, `ch11_find_lampmakers_plate`, camp `ch11_camp_she_sounded_glad` (Asha and Pell).
+- MERGE-READY Ch12 @ f2d13a64c: `ch12_side_the_boys_knot`, `ch12_side_dorros_cord`, camp `ch12_camp_the_end_of_the_road` (Toma and Ysolde).
+- MERGE-READY Ch13 @ f2d13a64c: `ch13_side_the_leaning_flame`, `ch13_find_velamir_register`, camp `ch13_camp_twenty_four_years` (Ysolde and Asha).
+- MERGE-READY Ch14 @ f2d13a64c: `ch14_side_the_oar_pin`, `ch14_side_six_lamps`, camp `ch14_camp_the_whole_of_him` (Liss and Rhen).
+- MERGE-READY Ch15 @ f2d13a64c: `ch15_side_the_current_phrase`, `ch15_side_the_tally_hull`, camp `ch15_camp_the_bottom_step` (Toma and Kerrid).
+- MERGE-READY Ch16 @ f2d13a64c: `ch16_side_the_fallen_cairn`, `ch16_find_the_counting_stone`, camp `ch16_camp_coming_up` (Asha and Rhen).
+- **Requests (see M4-A2P-108):**
+  - chapters and towns: place the interactables, NPC actors and camp rest points;
+  - ui-menus: add the errands' `side` rows in objectives.json, with `OBJ_SIDE_*` keys.
+- BACKLOG EMPTY (story track).
