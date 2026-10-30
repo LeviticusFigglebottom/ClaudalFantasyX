@@ -1,9 +1,9 @@
 {
   "asha_battle_attack": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "asha_battle_idle": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
@@ -60,10 +60,10 @@
     "rendering_method": "forward_plus"
   },
   "asha_clip_turn": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "asha_clip_walk": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
@@ -72,10 +72,10 @@
     "rendering_method": "forward_plus"
   },
   "asha_clip_walk_cycle": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "asha_extreme_pose": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
@@ -360,10 +360,10 @@
     "rendering_method": "forward_plus"
   },
   "battle_arena_tideline": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "battle_arena_tideline_dawn": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
@@ -396,22 +396,22 @@
     "rendering_method": "forward_plus"
   },
   "battle_boss_intro_hermit": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "battle_boss_intro_hullgnaw": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "battle_boss_intro_inquisitor": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "battle_boss_intro_matron": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
@@ -426,10 +426,10 @@
     "rendering_method": "forward_plus"
   },
   "battle_boss_intro_wraith": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "battle_ch08_stair_hold": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
@@ -438,16 +438,16 @@
     "rendering_method": "forward_plus"
   },
   "battle_choreo_cast": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "battle_choreo_hit": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "battle_choreo_ko": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
@@ -456,10 +456,10 @@
     "rendering_method": "forward_plus"
   },
   "battle_choreo_lamp_dive": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "battle_choreo_melee": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
@@ -480,10 +480,10 @@
     "rendering_method": "forward_plus"
   },
   "battle_choreo_support": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "battle_choreo_swap": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
@@ -546,22 +546,22 @@
     "rendering_method": "forward_plus"
   },
   "battle_hud_16x10": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "battle_hud_21x9": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "battle_hud_preview": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "battle_opening_banner": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
@@ -570,28 +570,28 @@
     "rendering_method": "forward_plus"
   },
   "battle_read_panel": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "battle_statuses": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "battle_statuses_colorblind": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "battle_swap_menu": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "battle_swell_brace": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
@@ -606,34 +606,34 @@
     "rendering_method": "forward_plus"
   },
   "battle_swell_glyph": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "battle_swell_modes": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "battle_swell_ring": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "battle_victory": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "battle_vowbound_call": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "battle_vowbound_out": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
@@ -672,6 +672,18 @@
     "rendering_method": "forward_plus"
   },
   "brine_b05_barge_channel": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "causeway_c02_profile_against_the_lagoon": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "causeway_c08_drownbell_disc_approach": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
     "rendering_driver": "vulkan",
@@ -732,10 +744,10 @@
     "rendering_method": "forward_plus"
   },
   "ch06_brine_camp": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "ch06_brine_road": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
@@ -768,16 +780,16 @@
     "rendering_method": "forward_plus"
   },
   "ch08_corrow_arrival": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "ch08_corrow_stair": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "ch09_corrow_road": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
@@ -1176,22 +1188,22 @@
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
   },
   "drownbell_flood": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "equip_customize": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "equip_menu": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "field_area_title": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
@@ -1218,10 +1230,10 @@
     "rendering_method": "forward_plus"
   },
   "field_hero_party": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "field_hero_rhen_walk": {
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
@@ -1296,10 +1308,10 @@
     "rendering_method": "forward_plus"
   },
   "field_tip_card": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "formation_menu": {
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
@@ -1368,10 +1380,10 @@
     "rendering_method": "forward_plus"
   },
   "hero_cutscene_turn_strip": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "inn_menu": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
@@ -1392,6 +1404,24 @@
     "rendering_method": "forward_plus"
   },
   "iskarra_p01_plaza_dusk": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "items_menu": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "items_menu_key": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "items_menu_use": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
     "rendering_driver": "vulkan",
@@ -1728,10 +1758,10 @@
     "rendering_method": "forward_plus"
   },
   "save_shrine_field": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "sefir_back": {
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
@@ -1764,10 +1794,10 @@
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
   },
   "sefir_silhouette_lineup": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "sefir_three_quarter": {
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
@@ -1865,6 +1895,12 @@
     "rendering_driver": "vulkan",
     "rendering_method": "forward_plus"
   },
+  "slice_end_card_voice": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
   "slice_haluna_villagers_village": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
@@ -1890,12 +1926,24 @@
     "rendering_method": "forward_plus"
   },
   "status_menu": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "swatch_card": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "tamsule_t01_bell_from_the_mouth": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "tamsule_t03_oruvel_moorings": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
     "rendering_driver": "vulkan",
@@ -1926,10 +1974,10 @@
     "rendering_method": "forward_plus"
   },
   "toma_battle_attack": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "toma_battle_idle": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
@@ -1962,10 +2010,10 @@
     "rendering_method": "forward_plus"
   },
   "toma_clip_turn": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "toma_clip_walk": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
@@ -1974,10 +2022,10 @@
     "rendering_method": "forward_plus"
   },
   "toma_clip_walk_cycle": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "toma_face_neutral": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
@@ -2099,6 +2147,60 @@
     "rendering_driver": "vulkan",
     "rendering_method": "forward_plus"
   },
+  "villager_clerk_clip_heat_iron": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_clerk_face": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_clerk_front": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_elder_face": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_elder_front": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_fenn_face": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_fenn_front": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_ferrymaster_face": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_ferrymaster_front": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
   "villager_fisher_face": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
@@ -2111,6 +2213,66 @@
     "rendering_driver": "vulkan",
     "rendering_method": "forward_plus"
   },
+  "villager_garo_face": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_garo_front": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_gatekeeper_face": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_gatekeeper_front": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_hobb_face": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_hobb_front": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_innkeeper_face": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_innkeeper_front": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_ione_face": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_ione_front": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
   "villager_kell_clip_press_wick": {
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
     "rendering_method": "forward_plus",
@@ -2118,10 +2280,10 @@
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
   },
   "villager_kell_face": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "villager_kell_front": {
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
@@ -2146,6 +2308,18 @@
     "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+  },
+  "villager_marra_face": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_marra_front": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
   },
   "villager_neme_back": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
@@ -2201,6 +2375,36 @@
     "rendering_driver": "vulkan",
     "rendering_method": "forward_plus"
   },
+  "villager_poolkeeper_face": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_poolkeeper_front": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_purser_face": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_purser_front": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_reed_a_clip_pole_barge": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
   "villager_reed_face": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
@@ -2213,6 +2417,66 @@
     "rendering_driver": "vulkan",
     "rendering_method": "forward_plus"
   },
+  "villager_reeds_lineup": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_sabe_face": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_sabe_front": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_scaleman_face": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_scaleman_front": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_shopkeeper_front": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_skipper_sadi_face": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_skipper_sadi_front": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_smith_face": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_smith_front": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
   "villager_tavi_clip_name_rite": {
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
     "rendering_method": "forward_plus",
@@ -2220,10 +2484,10 @@
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
   },
   "villager_tavi_face": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "villager_tavi_front": {
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
@@ -2236,6 +2500,18 @@
     "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+  },
+  "villager_tender_face": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_tender_front": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
   },
   "villager_vendor_back": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
@@ -2250,6 +2526,36 @@
     "rendering_method": "forward_plus"
   },
   "villager_vendor_front": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_wright_child_a_clip_crawl_out": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_wright_child_a_front": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_wright_child_b_front": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_wright_girl_clip_arm_held_out": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "villager_wright_girl_front": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
     "rendering_driver": "vulkan",
@@ -2352,10 +2658,10 @@
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
   },
   "ysolde_silhouette_lineup": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "rendering_method": "forward_plus"
   },
   "ysolde_three_quarter": {
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",

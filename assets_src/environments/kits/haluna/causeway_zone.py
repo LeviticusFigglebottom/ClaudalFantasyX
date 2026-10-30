@@ -286,11 +286,15 @@ def build_layout(seed: int = SEED) -> dict:
     dd = np.hypot(cand[:, 0] - field.disc[0], cand[:, 1] - field.disc[1])
     ok = (hc > SALTGRASS_ABOVE_M) & (dc > BED_HALF_W_M - 0.5) & (patch > 0.3) & (dd > DISC_R_M + 1.0)
     pts = cand[ok][:12000]
+    # Clumps grow with the patch: thin and small at a patch's edge, full in its heart (the audit, 2026-10-29: one even
+    # size read as a tiled field from the bed).
+    grow = np.clip((patch[ok][:12000] - 0.3) / 0.35, 0.0, 1.0)
     grass = {"a": [], "b": []}
-    for (gx, gz), gh in zip(pts, field.height(pts[:, 0], pts[:, 1])):
+    for (gx, gz), gh, g in zip(pts, field.height(pts[:, 0], pts[:, 1]), grow):
         key = "a" if srng.random() < 0.6 else "b"
+        size = float(srng.uniform(0.75, 1.3)) * (0.55 + 0.6 * float(g))
         grass[key].append([round(float(gx), 2), round(float(gh), 3), round(float(gz), 2),
-                           round(float(srng.uniform(0, 360)), 1), round(float(srng.uniform(0.75, 1.3)), 2)])
+                           round(float(srng.uniform(0, 360)), 1), round(size, 2)])
     veg = "res://assets/environments/vegetation/"
     instances = [{"name": f"Saltgrass_{k.upper()}", "glb": veg + "saltgrass_clumps.glb", "mesh_node": f"saltgrass_{k}",
                   "material": veg + "materials/saltgrass.tres", "visibility_end_m": 220.0, "xforms": v}

@@ -87,13 +87,27 @@ func set_help(text: String, role: StringName = &"") -> void:
 	_help_panel.visible = text != ""
 	# Wrap onto a second line only when one line cannot hold the text, then let the panel fit it
 	# (a Control grows to its minimum size but never shrinks back by itself).
+	_help_label.remove_theme_font_size_override(&"font_size")
 	var wraps := _help_width(text) > _help_room()
 	_help_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART if wraps else TextServer.AUTOWRAP_OFF
+	if wraps:
+		_fit_help_lines()
 	_help_panel.size = Vector2(_help_panel.size.x, 0.0)
 	if text != "" and (help_history.is_empty() or help_history[-1] != text):
 		help_history.append(text)
 		if help_history.size() > CtbTimeline.PREVIEW_LENGTH:
 			help_history.remove_at(0)
+
+
+## A help text past its max_lines_visible at a large text size (130 %) shrinks its font a little (to
+## HudLayout.FIT_MIN_FONT_SCALE) rather than lose its end (the Lead's final-quality pass: a Vowbound's call line).
+func _fit_help_lines() -> void:
+	var fs := _help_label.get_theme_font_size(&"font_size")
+	var floor_fs := ceili(fs * HudLayout.FIT_MIN_FONT_SCALE)
+	var size := fs
+	while size > floor_fs and _help_label.get_line_count() > _help_label.max_lines_visible:
+		size -= 1
+		_help_label.add_theme_font_size_override(&"font_size", size)
 
 
 ## True when the current help needs its second line (tests).

@@ -170,6 +170,16 @@ and, for a dragonfly patrol only, optional `perches` `[x, y, z, yaw_deg]` inside
 checks the file: the zone id names it and is a location, perches sit inside their flock, the counts stay within
 the budgets.
 
+### Ground and placement (the Act I final-quality audit, 2026-10-29)
+- **`"ground"`:** `{"node", "method"}` (a terrain's height function, as Haluna's) or `{"physics": true}`: crabs ray down
+  to the zone's collision under them (cached on a 25 cm grid; the flat `y` until the collision is in the physics
+  space). Kit zones whose ground is uneven use `physics`.
+- **Placement tools:** `godot --headless --path . -s tools/creatures/wildlife_audit.gd [-- zone ...]` gives every
+  visible mesh a collider and checks every perch (on a surface, not under a roof or on air), crab area (on dry ground)
+  and shoal (under water); `tools/creatures/wildlife_snap.gd -- --out=DIR zone ...` re-seats them on the dressed kit and
+  `python3 tools/creatures/wildlife_apply.py DIR` merges the result into the committed files. Run both after a zone's
+  kit or layout moves.
+
 ## Review
 
 - `game/levels/_tests/wildlife/wildlife_stage.tscn` (data `wildlife_stage.json`): sand, a water plane over a

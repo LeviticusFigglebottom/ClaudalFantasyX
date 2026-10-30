@@ -59,7 +59,8 @@ not a hermit crab in a shell (the body is not a crab). The bell's decoration is 
 - **Idle:** the bell rocks very slightly (±1.5°) as if a swell moves it, and every loop the legs shift under the rim:
   it is standing, not placed. The rope swings.
 - **The rim and the toll** (BattleBossVfx owns the light): `toll_gather`'s rim glow is an OmniLight at the rim anchor,
-  so the model's rim must be where the anchor is. The `cast` clip carries the gather.
+  so the model's rim must be where the anchor is. The `toll_gather` clip carries the gather (M3-CRB-013; it was
+  `cast`).
 
 ## Clips
 
@@ -169,3 +170,41 @@ rope's end and, for `ko` and `intro`, the root).
 | `RimBroken` | 1.5k |
 
 22 bones; the GLB is 2.6 MB.
+
+## Move pass (M3-CRB-013)
+
+Every move was checked from the battle camera on `causeway_disc_sunset` (five beats per clip) and sampled per baked
+frame for foot slide, depth under the floor and per-frame jumps. The clip table above is superseded by this one.
+
+**Planted feet.** The legs hang off the bell, so every rock of the bell used to drag the hooked feet across the
+ground (up to 23 cm in the slam, 32 cm in the intro). The build now re-solves both bones of every leg at every baked
+frame (`plant_feet`: two-bone IK that keeps each leg in its upright plane, knee up) so each foot stays on its grip
+while the bell rocks over it. A foot leaves the ground only where a clip steps or stamps it. The KO lets go over its
+first second. After planting, `grounding.py` lifts the bell the least it takes wherever the rim would pass the
+floor, so the slam and the knocks land the rim on the floor. Then it plants again and clears any foot that still dips.
+Measured slide while grounded: 0 in every clip, apart from the gather's deliberate outward steps and the KO.
+
+**Every skill has its own clip** (creatures.json `clip_by_skill`, `contact`). Hits land on contact frames: the
+slam, the drop and the knocks accelerate into contact instead of easing into it.
+
+| Clip | Skill / use | Read | Length, contact |
+|---|---|---|---|
+| `idle` (loop) | phase 1 | The swell rock; legs 1 and 4 lift and re-grip | 3.2 s |
+| `ready` (loop) | approach beat | Lifted 10 cm, leaning 6° at its foe, weight shifting, the rim shivering | 2.0 s |
+| `intro` | boss intro | Starts sunk and tilted with its feet tucked under the rim. The feet reach out to their grips one by one, it heaves up past full height, draws back and swings to toll once (ring at about 2.02 s) | 2.8 s |
+| `attack` | `hood_slam` | Dips, rears up on its hind legs with the crown thrown back (0.14–0.62 s, front feet stretched to the ground), hangs, then drops gathering speed and slams the front rim to the floor; the bell jolts, the rim rings, it settles | 1.6 s, 0.8 s |
+| `toll` | `toll` | A dip toward its foe, then it rocks far back (crown about 0.7 m back), hangs and swings the whole bell through. The rim rings at contact, it rocks to rest, and the bronze trembles on to the end | 2.4 s, 1.0 s (unchanged) |
+| `toll_gather` | `toll_gather` | Settles 8 cm low, steps every leg 7 cm out (bracing wide), tips 9° back while the tremble rises from 2 to 7 Hz, holds, steps back in | 2.6 s, 1.6 s (the charge locks) |
+| `hit`, `hit_b` | hits | A shove back (9°, peak 0.13 s), the rim jolting, the front feet shuffling (lift and re-grip), a rock forward and settle; `hit_b` is the kit's mirror at 1.35× | 0.6 s |
+| `phase_change` | flood | The jolt, a rising shudder while the legs scrabble for grip, then the legs give and it lurches forward and sinks 17 cm, rocking into the flood stance (ends on `idle_flood`'s first frame) | 2.4 s |
+| `idle_flood` (loop) | flood | **The flood stance:** 12 cm lower on bent legs, slumped 4° at its foe, a slow heavy wallow (±2.6°) and a bob | 3.6 s |
+| `flood_surge` | `flood_surge` | Heaves 22 cm up out of the crouch with the front legs high, hangs, then drops and stamps so the water bursts from under the rim | 2.0 s, 1.0 s |
+| `undertow_surge` | `undertow_surge` | A heavy 14° twist away on planted legs, then it hauls round the other way and leans back, dragging: the pull | 2.4 s, 1.3 s |
+| `rouse_polyp` | `rouse_polyp` | Tips its mouth toward the ground and knocks the front rim on it three times (0.92, 1.2, 1.5 s), each knock ringing | 2.2 s, 1.2 s |
+| `attack_flood`, `hit_flood`, `ready_flood` | flood | The same moves from the flood stance (phase `clips` map), so nothing pops back to the phase-1 stance | as above, slam 0.8 s |
+| `ko` | KO (phase 2) | From the flood stance it tips seaward about its lip onto its side, mouth toward the camera, and its legs let go | 2.6 s |
+| `cast`, `idle_b` | fallback, fidget | The old generic swing, kept for any unmapped skill; `idle_b` echoes it | 1.8 s, 1.0 s |
+
+The flood's `flood_surge`, `undertow_surge` and `rouse_polyp` are played only in the flood phase (enemies.json), so
+they start and end on the flood stance. The stage's own sink and tilt (creatures.json `offset_m`, `tilt_deg`) are
+unchanged and add to the stance.

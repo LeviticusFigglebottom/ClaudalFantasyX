@@ -4305,6 +4305,39 @@
     28.1
    ],
    "block": "Lamps"
+  },
+  {
+   "color": "#FFA757",
+   "energy": 1.6,
+   "range": 7.0,
+   "at": [
+    -12.5,
+    2.55,
+    23.177272727272733
+   ],
+   "block": "Lamps"
+  },
+  {
+   "color": "#FFA757",
+   "energy": 1.6,
+   "range": 7.0,
+   "at": [
+    -6.0,
+    2.55,
+    23.177272727272733
+   ],
+   "block": "Lamps"
+  },
+  {
+   "color": "#FFA757",
+   "energy": 1.6,
+   "range": 7.0,
+   "at": [
+    10.5,
+    2.55,
+    23.177272727272733
+   ],
+   "block": "Lamps"
   }
  ],
  "multimeshes": [
@@ -32110,6 +32143,14 @@
    "block": "Lamps"
   }
  ],
+ "kit_material_paths": {
+  "kit_lacquer_red": "res://game/levels/ch05/pemakar/pemakar_lacquer_red_material.tres",
+  "kit_lacquer_black": "res://game/levels/ch05/pemakar/pemakar_lacquer_black_material.tres",
+  "kit_copper_vein": "res://game/levels/ch05/pemakar/pemakar_copper_vein_material.tres",
+  "kit_copper_raw": "res://game/levels/ch05/pemakar/pemakar_copper_raw_material.tres",
+  "kit_gold_leaf": "res://game/levels/ch05/pemakar/pemakar_gold_leaf_material.tres",
+  "kit_iron": "res://game/levels/ch05/pemakar/pemakar_iron_material.tres"
+ },
  "pieces": [
   {
    "piece": "terrace_wall_4m",
@@ -43552,6 +43593,39 @@
    "at": [
     15.4,
     23.527
+   ],
+   "y": 1.2,
+   "yaw_deg": 0.0,
+   "block": "Lamps",
+   "collide": true
+  },
+  {
+   "piece": "lamp_pillar",
+   "at": [
+    -12.5,
+    23.177
+   ],
+   "y": 1.2,
+   "yaw_deg": 0.0,
+   "block": "Lamps",
+   "collide": true
+  },
+  {
+   "piece": "lamp_pillar",
+   "at": [
+    -6.0,
+    23.177
+   ],
+   "y": 1.2,
+   "yaw_deg": 0.0,
+   "block": "Lamps",
+   "collide": true
+  },
+  {
+   "piece": "lamp_pillar",
+   "at": [
+    10.5,
+    23.177
    ],
    "y": 1.2,
    "yaw_deg": 0.0,

@@ -322,10 +322,15 @@ def build_clips() -> list[ck.Clip]:
     return [idle, attack, cast, hit, ko]
 
 
+# The planted feet held where they touch down (common/grounding.py pinned(); the Act I audit's foot sliding).
+PINNED_LEGS = [(f"leg_{leg}_a", f"leg_{leg}_b", 2, 1.0 if leg[0] == "l" else -1.0) for leg in LEG_TAGS]
+
+
 def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
     """The clips kept off the floor (M3-CRE-631, common/grounding.py): a planted foot stays on the ground while the
     body bobs or leans over it (each walking leg turns up about its hip), and the claws ride up over the floor."""
-    return gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS)
+    pinned = gr.pinned(rig, mesh, gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS), PINNED_LEGS)
+    return gr.reground(rig, mesh, pinned, GROUNDED_LIMBS)  # a held foot's toes back above the floor
 
 
 def main() -> None:

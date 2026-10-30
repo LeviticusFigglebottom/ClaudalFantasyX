@@ -267,7 +267,7 @@ func speed_mult() -> float:
 	return m
 
 
-## Strength after Power Break, then Berserk (Berserk multiplies the broken value).
+## Strength after Weakened, then Berserk (Berserk multiplies the broken value).
 func effective_strength() -> int:
 	var s := Formulas.broken_stat(strength, has_status(&"power_break"))
 	return Formulas.berserk_strength(s) if has_status(&"berserk") else s

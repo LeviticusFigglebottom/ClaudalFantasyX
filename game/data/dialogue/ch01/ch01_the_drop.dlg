@@ -2,7 +2,8 @@
 // Prologue's vigil cuts to black; a plain card; the tether runs through its block; fade up on U01,
 // Rhen on his tether in the crown of a drowned Lit Age tower, the hulls of Oruvel a dark lattice on
 // the bright surface above. Calm and competent, and alone. Letterboxed, then the field.
-// The card is a caption over black (no chapter name: that is the pause menu's). The chapter flow
+// The card is a caption over black (no chapter name: that is the pause menu's): #card shows it as UI's ActCard
+// caption (M2-FP-121), and the scene starts black under it. The chapter flow
 // sets ch01_started here, and Game.set_chapter(1) (ADR 0018's chapter autosave) with the shared
 // {"chapter": 1} step once it lands (M2-FP-25).
 // Music: silence, then oruvel_underway. Light: the oil lamp on his shoulder (N-02); no glimmer.
@@ -11,7 +12,7 @@ location: ch01/oruvel_underway
 ---
 @letterbox on
 @music silence
-One month earlier. #line:ch01_drop_001 #tn:"Title card, centred on black. The Prologue is set a month after this chapter."
+One month earlier. #line:ch01_drop_001 #card #tn:"Title card, centred on black. The Prologue is set a month after this chapter."
 @sfx tether_run
 @wait 1.0
 @camera U01

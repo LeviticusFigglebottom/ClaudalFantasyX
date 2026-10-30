@@ -1,0 +1,8 @@
+// Fixture for tests/unit/test_cutscene_sequencer.gd (M2-FP-121): a #card line is UI's ActCard caption on black.
+// Never played by game content.
+title: test_cutscene_card
+---
+Card fixture. #line:test_cutscene_card_001 #card
+@fade in 1.0
+Asha [neutral]: After the card. #line:test_cutscene_card_002
+===

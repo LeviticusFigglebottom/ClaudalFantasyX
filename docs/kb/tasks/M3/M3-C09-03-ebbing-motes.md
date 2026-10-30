@@ -2,10 +2,11 @@
 id: M3-C09-03
 title: "The Ebbing's motes: held fields, the staff and mourner attractors, the hero frame (Ch9)"
 role: rendering
-status: doing
+status: review
 owner_session: "env-art-b (session_01F3vrUNt6trAMrjeYavaDNC, claude/env-art-b; the Lead, 2026-10-28 14:47)"
 depends_on: [M3-C09-02]
 milestone: M3
+reviewer: art
 request-from: cinematics
 ---
 ## Goal
@@ -49,5 +50,10 @@ The Ebbing is built on `GlimmerField` (tech/glimmer.md). Everything here stays i
     `.dlg` cues still draw the placeholder, so the last criterion waits on it.
   - **Cost per tier:** for the PC's QA pass.
   - **Item 7:** cut for now.
+
+- **env-art-b, 2026-10-29:** M3-ARC-1326's hook reached integration with big17. On the merged tree,
+  `tests/integration/test_ch09_ebbing_cues.gd` sends every compiled Ch9 `@vfx glimmer_held` cue through
+  `CutsceneSequencer._cue_vfx` on `ch09/corrow_night`: the Ebbing takes all of them and no placeholder spawns
+  (`--filter=ebbing` 6/0). To review.
 
 ## Review log

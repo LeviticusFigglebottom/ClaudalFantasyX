@@ -891,6 +891,33 @@
    "yaw_deg": 0.0
   },
   {
+   "piece": "raft_deck_tucked",
+   "at": [
+    138.0,
+    -6.0
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "raft_deck_small_tucked",
+   "at": [
+    148.0,
+    -6.0
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "gull_post",
+   "at": [
+    158.0,
+    -6.0
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.0
+  },
+  {
    "piece": "keel_hull",
    "at": [
     92.0,

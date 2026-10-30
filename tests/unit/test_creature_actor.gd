@@ -5,6 +5,7 @@ extends TestCase
 ## action and hit clips from its choreography (BattleChoreo through BattleClips; phases and parts: BattleActorMotion).
 
 const CRAB := "res://game/creatures/reef_crab/reef_crab_battle.tscn"
+const SLUG := "res://game/creatures/oil_slug/oil_slug_battle.tscn"
 const BELL := "res://game/creatures/drownbell/drownbell_battle.tscn"
 const GNAW := "res://game/creatures/hullgnaw/hullgnaw_battle.tscn"
 const MATRON := "res://game/creatures/cinder_matron/cinder_matron_battle.tscn"
@@ -303,10 +304,14 @@ func test_the_flood_phase_sinks_the_bell_and_idles_on_its_flood_clip() -> void:
 	var player := a.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
 	player.advance(player.get_animation(&"phase_change").length + 0.05)
 	assert_eq(a.current_clip, &"idle_flood")
-	assert_true(a.play_action(&"toll", &"physical"), "toll swings (clip_by_skill)")
-	assert_eq(a.current_clip, &"cast")
-	player.advance(player.get_animation(&"cast").length + 0.05)
+	assert_true(a.play_action(&"flood_surge", &"magical"), "Floodtide has its own clip (clip_by_skill)")
+	assert_eq(a.current_clip, &"flood_surge")
+	player.advance(player.get_animation(&"flood_surge").length + 0.05)
 	assert_eq(a.current_clip, &"idle_flood", "the flood idle after an action")
+	# M3-CRB-013: the slam plays from the flood stance (the phase's clips map)
+	assert_true(a.play_action(&"hood_slam", &"physical"))
+	assert_eq(a.current_clip, &"attack_flood")
+	assert_eq(a.contact_time(&"attack"), 0.8, "the flood slam lands when the slam does")
 	assert_false(a.enter_phase(&"flood"), "already flooded")
 	var b := _actor(BELL)
 	b.enter_phase(&"flood")
@@ -338,11 +343,14 @@ func test_phase_nodes_hide_at_once_or_after_the_clip() -> void:
 	var sheath := w.find_child("Sheath", true, false) as Node3D
 	assert_true(shroud.visible and not sheath.visible, "shrouded in the rigging; the sheath starts hidden")
 	assert_true(w.enter_phase(&"hauled_down"))
-	assert_false(shroud.visible, "the shroud burns away at once")
+	assert_true(shroud.visible, "M3-CRB-013: the shroud is seen hauled down with it in the drop")
 	assert_false(sheath.visible, "the sea comes up its lines after the drop")
 	w.settle()
+	assert_false(shroud.visible, "hide_after: the shroud is gone once the drop has played")
 	assert_true(sheath.visible, "show_after: sheathed once the drop has played")
 	assert_eq(w.phase_clip(&"attack"), &"attack_deck", "it strikes from the deck")
+	w.set_ko(true, 0.5)
+	assert_eq(w.current_clip, &"ko_deck", "M3-CRB-013: the phase's clips map sends the KO too: it falls from the deck")
 	before_each()
 
 
@@ -904,3 +912,22 @@ func test_the_flat_engine_presses_the_water_flat_and_splits_on_its_ko() -> void:
 func _turn_deg(skel: Skeleton3D, bone: String) -> float:
 	var b := skel.find_bone(bone)
 	return rad_to_deg(skel.get_bone_rest(b).basis.get_rotation_quaternion().angle_to(skel.get_bone_pose_rotation(b)))
+
+
+## GPU QA row 40: the Oil Slug carries its eaten lamplight (an omni light); a KO fades it with the surfaces, and a
+## revive lights it again.
+func test_a_creatures_own_light_fades_with_its_ko() -> void:
+	var a := _actor(SLUG)
+	var lights := a.find_children("*", "Light3D", true, false)
+	assert_eq(lights.size(), 1, "the slug's LampGlow")
+	if lights.is_empty():
+		before_each()
+		return
+	var glow := lights[0] as Light3D
+	var full := glow.light_energy
+	assert_true(full > 0.0, "lit while it stands")
+	a.call(&"_set_transparency", 0.75)
+	assert_true(is_equal_approx(glow.light_energy, full * 0.25), "fades with the surfaces")
+	a.call(&"_set_transparency", 0.0)
+	assert_true(is_equal_approx(glow.light_energy, full), "back at full")
+	before_each()

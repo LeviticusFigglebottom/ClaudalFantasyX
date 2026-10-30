@@ -34,6 +34,8 @@ const FALLEN_KEY := "STATUS_MENU_FALLEN"
 const SWELL_FMT_KEY := "STATUS_MENU_SWELL_FMT"
 const NO_SWELL_KEY := "STATUS_MENU_NO_SWELL"
 const NONE_KEY := "STATUS_MENU_NONE"
+## A status's description key is its name_key with this suffix (menus.csv).
+const DESC_SUFFIX := "_DESC"
 const EMPTY_SLOT_KEY := "STATUS_MENU_EMPTY_SLOT"
 const NO_ABILITIES_KEY := "STATUS_MENU_NO_ABILITIES"
 const MOVEMENT_KEY := "STATUS_MENU_MOVEMENT_FMT"
@@ -103,6 +105,7 @@ func page(cid: StringName) -> Dictionary:
 		"swell": swell_of(cid),
 		"lattice": lattice_of(cid),
 		"statuses": status_names(c),
+		"status_descs": status_descs(c),
 	}
 
 
@@ -215,6 +218,17 @@ func lattice_of(cid: StringName) -> Dictionary:
 			_tr(SKILLS_KEY).format({"skills": skill_text}),
 		],
 	}
+
+
+## What each carried status does, one line each (the status's name_key + DESC_SUFFIX; the Lead's Act I pass: a
+## status the party carries out of a fight was named but never explained). [] when none is carried.
+func status_descs(c: BattleCombatant) -> Array[String]:
+	var out: Array[String] = []
+	for sid: Variant in c.statuses:
+		var key := str((sheet.battle_db.statuses.get(StringName(str(sid)), {}) as Dictionary).get("name_key", ""))
+		if key != "" and _tr(key + DESC_SUFFIX) != key + DESC_SUFFIX:
+			out.append("%s: %s" % [_tr(key), _tr(key + DESC_SUFFIX)])
+	return out
 
 
 ## Carried status names (the saved ones a fight will start with); [None] when there are none.

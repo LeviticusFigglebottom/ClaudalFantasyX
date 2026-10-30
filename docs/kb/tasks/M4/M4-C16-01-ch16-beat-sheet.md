@@ -18,4 +18,7 @@ The greybox (M4-C16-02) has the places: `choir_edge`, `kesh`, `sefir`, `kerrid_l
 - [ ] `docs/kb/story/beats/act2_ch16.md`, every outline beat placed, timed and tagged C/E/P; flags `ch16_*` with
       setter and reader; requests to other roles listed; validate_data and the banned-terms grep clean.
 
+## Notes
+- 2026-10-30 (act2-plan track, the Lead's assignment): **draft: pre-gate** written at `docs/kb/story/beats/act2_ch16.md`. Not reviewed; stays `blocked` until the gate.
+
 ## Review log

@@ -726,14 +726,14 @@ def build_clips() -> list[ck.Clip]:
     ready = ck.Clip("ready", 1.6, loop=True)
     ready.wave("body", amp_rot=(1.0, 2.0, 0.0), amp_loc=(0.0, 0.006, 0.0), base_rot=(-5.0, 0.0, 0.0),
                base_loc=(0.0, 0.03, 0.05), cycles=1)
-    ready.wave("claw_arm", amp_rot=(-3.0, 0.0, 0.0), base_rot=(-22.0, 0.0, 0.0), cycles=1, phase=0.5)
+    ready.wave("claw_arm", amp_rot=(-4.0, 0.0, 0.0), base_rot=(-48.0, 0.0, 0.0), cycles=1, phase=0.5)
     ready.wave("claw_finger", amp_rot=(-6.0, 0.0, 0.0), base_rot=(-16.0, 0.0, 0.0), cycles=2)
     ready.wave("claw_small_arm", amp_rot=(-4.0, 0.0, 0.0), base_rot=(-12.0, 0.0, 0.0), cycles=2)
     ready.wave("eye_l", amp_rot=(0.0, 8.0, 0.0), base_rot=(-8.0, 0.0, 0.0), cycles=1)
     ready.wave("eye_r", amp_rot=(0.0, -8.0, 0.0), base_rot=(-8.0, 0.0, 0.0), cycles=1)
     ready.wave("antenna_l", amp_rot=(6.0, 0.0, 0.0), base_rot=(20.0, -10.0, 0.0), cycles=2)
     ready.wave("antenna_r", amp_rot=(6.0, 0.0, 0.0), base_rot=(20.0, 10.0, 0.0), cycles=2, phase=1.2)
-    ready.wave("glass", amp_rot=(0.0, 0.0, 0.8), base_rot=(-2.0, 0.0, 0.0), cycles=1)
+    ready.wave("glass", amp_rot=(0.0, 0.0, 1.2), base_rot=(-5.0, 0.0, 0.0), base_loc=(0.0, 0.02, 0.0), cycles=1)
 
     # intro (2.6 s): shut in the glass, it hauls itself up out of the mouth, rears and raises the big claw while the
     # glass flares (rocks up on its bulb), then settles into the idle
@@ -769,27 +769,37 @@ def build_clips() -> list[ck.Clip]:
     intro.key("claw_finger", 1.45, (-10.0, 0.0, 0.0))  # it snaps the claw at the top of the rear
     intro.keys["claw_finger"].sort(key=lambda k: k[0])
 
-    attack = ck.Clip("attack", 1.0)
-    for t, arm, fin, fwd, bd in ((0.0, 0, 0, 0, 0), (0.3, -40, -40, -0.03, -6), (0.45, 18, 6, 0.14, 6),
-                                  (0.65, 10, 0, 0.09, 3), (1.0, 0, 0, 0, 0)):
+    # Glass Jab (M3-CRB-013, read at battle distance): the whole glass rears back on its bulb with the claw cocked
+    # high (0.0-0.45 s, the telegraph), then tips forward as the claw drives out; contact 0.55 s, then it settles
+    attack = ck.Clip("attack", 1.2)
+    for t, arm, fin, fwd, bd, gl in ((0.0, 0, 0, 0, 0, 0), (0.25, -50, -45, -0.05, -8, -6), (0.45, -62, -50, -0.08, -10, -10),
+                                      (0.55, 22, 8, 0.22, 8, 7), (0.7, 14, 0, 0.17, 5, 4), (1.2, 0, 0, 0, 0, 0)):
         attack.key("claw_arm", t, (arm, 0, 0))
         attack.key("claw_finger", t, (fin, 0, 0))
         attack.key("root", t, (0, 0, 0), (0, 0, fwd))
         attack.key("body", t, (bd, 0, 0), (0, 0, fwd * 0.4))
-    cast = ck.Clip("cast", 1.3)  # it pulls into the glass, which flares
-    for t, s in ((0.0, 0.0), (0.35, 1.0), (0.95, 1.0), (1.3, 0.0)):
-        cast.key("body", t, (6.0 * s, 0, 0), (0, 0, -0.12 * s))
-        cast.key("glass", t, (-6.0 * s, 0, 0), (0, 0.03 * s, 0))
-        cast.key("claw_arm", t, (20.0 * s, 0, 0))
+        attack.key("glass", t, (gl, 0, 0), (0, 0.04 * max(-gl, 0.0) / 10.0, 0))
+    # Glass Flare: it pulls into the glass, which rocks up on its bulb and swings its mouth onto the target (the
+    # telegraph, 0.0-0.6 s); the flare bursts at 0.75 s with a jolt back, then it creeps out again
+    cast = ck.Clip("cast", 1.6)
+    for t, s, aim, jolt in ((0.0, 0.0, 0.0, 0.0), (0.35, 1.0, 0.4, 0.0), (0.65, 1.0, 1.0, 0.0), (0.75, 1.0, 1.0, 1.0),
+                            (1.0, 1.0, 0.6, 0.3), (1.6, 0.0, 0.0, 0.0)):
+        cast.key("body", t, (6.0 * s, 0, 0), (0, 0, -0.14 * s))
+        cast.key("glass", t, (-12.0 * aim + 6.0 * jolt, 0, 3.0 * jolt), (0, 0.05 * aim, -0.06 * jolt))
+        cast.key("root", t, (0, 0, 0), (0, 0, -0.08 * jolt))
+        cast.key("claw_arm", t, (24.0 * s, 0, 0))
         cast.key("eye_l", t, (40.0 * s, 0, 0))
         cast.key("eye_r", t, (40.0 * s, 0, 0))
-    hit = ck.Clip("hit", 0.45)
-    for t, s in ((0.0, 0.0), (0.1, 1.0), (0.45, 0.0)):
-        hit.key("body", t, (5.0 * s, 0, 0), (0, 0, -0.09 * s))
-        hit.key("glass", t, (0, 0, 4.0 * s))
-        hit.key("claw_arm", t, (14.0 * s, 0, 0))
-        hit.key("eye_l", t, (30.0 * s, 0, 0))
-        hit.key("eye_r", t, (30.0 * s, 0, 0))
+        cast.key("antenna_l", t, (40.0 * s, 0, 0))
+        cast.key("antenna_r", t, (40.0 * s, 0, 0))
+    hit = ck.Clip("hit", 0.5)  # the blow rocks the glass and shoves it back; the crab ducks in
+    for t, s in ((0.0, 0.0), (0.1, 1.0), (0.22, 0.7), (0.5, 0.0)):
+        hit.key("root", t, (0, 0, 0), (0, 0, -0.12 * s))
+        hit.key("body", t, (7.0 * s, 0, 0), (0, 0, -0.1 * s))
+        hit.key("glass", t, (-6.0 * s, 0, 7.0 * s), (0, 0.03 * s, 0))
+        hit.key("claw_arm", t, (18.0 * s, 0, 0))
+        hit.key("eye_l", t, (35.0 * s, 0, 0))
+        hit.key("eye_r", t, (35.0 * s, 0, 0))
     ko = ck.Clip("ko", 1.6)  # it slumps half out of the mouth, legs curled, the claw on the floor
     for t, s in ((0.0, 0.0), (0.7, 0.7), (1.6, 1.0)):
         ko.key("body", t, (18.0 * s, 0, 0), (0, -0.06 * s, 0.06 * s))
@@ -809,11 +819,16 @@ def build_clips() -> list[ck.Clip]:
 # the intro the whole model lifts the least it takes to stay on the floor.
 GROUNDED_LIMBS = ([(f"leg_{tag}{i}_a", 2, 1.0 if tag == "l" else -1.0, 60.0) for tag in "lr" for i in range(2)]
                   + [("claw_arm", 0, -1.0, 45.0), ("claw_small_arm", 0, -1.0, 45.0),
-                     ("root", gr.LIFT, 1.0, 0.15, ("ko", "intro", "cast"))])
+                     ("root", gr.LIFT, 1.0, 0.15, ("ko", "intro", "cast", "attack", "hit"))])
+
+
+# The planted feet held where they touch down (common/grounding.py pinned(); the Act I audit's foot sliding).
+PINNED_LEGS = [(f"leg_{tag}{i}_a", f"leg_{tag}{i}_b", 2, 1.0 if tag == "l" else -1.0) for tag in "lr" for i in range(2)]
 
 
 def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
-    return gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS)
+    pinned = gr.pinned(rig, mesh, gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS), PINNED_LEGS)
+    return gr.reground(rig, mesh, pinned, GROUNDED_LIMBS)  # a held foot's toes back above the floor
 
 
 def build_mesh(rig: ck.Rig) -> ck.Mesh:

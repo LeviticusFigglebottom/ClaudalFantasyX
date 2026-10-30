@@ -7,7 +7,7 @@ extends RefCounted
 ## player's window change does; restore() puts the runner's size back.
 
 ## The audited window sizes: 16:9 (1920x1080, 1280x720, 3840x2160), 16:10 (1920x1200, the
-## 1280x800 handheld) and 21:9 (2560x1080, 3440x1440).
+## 1280x800 handheld), 21:9 (2560x1080, 3440x1440) and 4:3 (1440x1080, 1024x768; the Lead, 2026-10-29).
 const WINDOWS: Array[Vector2i] = [
 	Vector2i(1920, 1080),
 	Vector2i(1280, 720),
@@ -16,13 +16,16 @@ const WINDOWS: Array[Vector2i] = [
 	Vector2i(1280, 800),
 	Vector2i(2560, 1080),
 	Vector2i(3440, 1440),
+	Vector2i(1440, 1080),
+	Vector2i(1024, 768),
 ]
-## One window per distinct logical viewport (16:9, 16:10, 21:9, 43:18): the cheap sweep.
+## One window per distinct logical viewport (16:9, 16:10, 21:9, 43:18, 4:3): the cheap sweep.
 const ASPECTS: Array[Vector2i] = [
 	Vector2i(1920, 1080),
 	Vector2i(1280, 800),
 	Vector2i(2560, 1080),
 	Vector2i(3440, 1440),
+	Vector2i(1440, 1080),
 ]
 ## Text scales the UiSettings "text_scale" option offers at its ends (100% and 130%).
 const TEXT_SCALES: Array[float] = [1.0, 1.3]
@@ -83,6 +86,31 @@ static func visible_controls(n: Node, out: Array[Control] = []) -> Array[Control
 
 ## The visible Controls under `n` that leave the viewport (labels for messages; [] when none).
 ## A Control clipped by an ancestor (clip_contents, a ScrollContainer) is judged by its clip.
+## The Lead's final-quality pass (2026-10-29): every visible Control's stylebox, font and icon that falls through to
+## Godot's built-in default theme, so draws Godot's own widget look. A StyleBoxEmpty or a missing item draws nothing
+## and is not counted, nor is the focus style of a Control that never takes focus. "<path> (<class>) <kind> <name>"
+## per hit.
+static func default_theme_uses(n: Node) -> PackedStringArray:
+	var bad := PackedStringArray()
+	var engine := ThemeDB.get_default_theme()
+	for c in visible_controls(n):
+		var cls := c.get_class()
+		for name in engine.get_stylebox_list(cls):
+			var sb := c.get_theme_stylebox(name)
+			if name == "focus" and c.focus_mode == Control.FOCUS_NONE:
+				continue  # never focused, so never drawn
+			if sb != null and not sb is StyleBoxEmpty and sb == engine.get_stylebox(name, cls):
+				bad.append("%s (%s) stylebox %s" % [c.get_path(), cls, name])
+		for name in engine.get_font_list(cls):
+			if c.get_theme_font(name) == engine.get_font(name, cls) and c.get_theme_font(name) == ThemeDB.fallback_font:
+				bad.append("%s (%s) font %s" % [c.get_path(), cls, name])
+		for name in engine.get_icon_list(cls):
+			var ic := c.get_theme_icon(name)
+			if ic != null and ic == engine.get_icon(name, cls):
+				bad.append("%s (%s) icon %s" % [c.get_path(), cls, name])
+	return bad
+
+
 static func outside(n: Node) -> PackedStringArray:
 	var bad := PackedStringArray()
 	var v := view().grow(EPS)

@@ -217,6 +217,7 @@ def legs(mesh: ck.Mesh, rig: ck.Rig) -> None:
 
 KO_DROP = 0.05  # the KO: how far the body sinks onto its belly (m)
 KO_SPLAY = 25.0  # the KO: the legs splay out (degrees at the hip, the left side's sign)
+KO_ROLL = 65.0  # the KO: it rolls onto its side, stunned (the audit: a belly-flop read as its idle at battle distance)
 
 
 def build_clips() -> list[ck.Clip]:
@@ -247,7 +248,7 @@ def build_clips() -> list[ck.Clip]:
     # floor) and the legs splay out flat (keyed -25, they drove the feet 0.18 m down through it)
     ko = ck.Clip("ko", 1.4)
     for t, s in ((0.0, 0.0), (0.4, 0.6), (0.9, 1.0), (1.4, 1.0)):
-        ko.key("root", t, (0, 0, 0), (0, -KO_DROP * s, 0))
+        ko.key("root", t, (0, 0, KO_ROLL * s), (0, -KO_DROP * s, 0))
         ko.key("head", t, (14.0 * s, 0, 0))
         for b in tl[2:]:
             ko.key(b, t, (16.0 * s, 0, 0))
@@ -264,8 +265,13 @@ def build_clips() -> list[ck.Clip]:
 GROUNDED_LIMBS = [(f"leg_{fb}{tag}_a", 2, 1.0 if tag == "l" else -1.0, 45.0) for tag in "lr" for fb in "fb"] + [("tail2", 0, -1.0, 30.0), ("root", gr.LIFT, 1.0, 0.1)]
 
 
+# The planted feet held where they touch down (common/grounding.py pinned(); the Act I audit's foot sliding).
+PINNED_LEGS = [(f"leg_{fb}{tag}_a", f"leg_{fb}{tag}_b", 2, 1.0 if tag == "l" else -1.0) for tag in "lr" for fb in "fb"]
+
+
 def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
-    return gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS)
+    pinned = gr.pinned(rig, mesh, gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS), PINNED_LEGS)
+    return gr.reground(rig, mesh, pinned, GROUNDED_LIMBS)  # a held foot's toes back above the floor
 
 
 def build_mesh() -> tuple[ck.Rig, ck.Mesh]:

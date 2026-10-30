@@ -284,6 +284,10 @@ The first press in a beat is the one that counts, and a press before the beat op
 | good | released ≤ 0.15 s from the counter | +15% |
 | miss | a blow unbraced, or a release further off (or none) | 0 |
 
+*Kerrid: the weighted swing* (`weighted_swing`, a `brace` row, M3-C05-06). One long charge: hold Confirm as the cleaver coils (one blow, graded at 1.1 s after a 0.6 s lead-in) and let go on the count at 2.4 s (at most 3.15 s in all). It is the brace's rules with one blow, so letting go early loses the coil. Grades: braced +30%, perfect +60%, good +15%, so +45% at good and +90% perfect.
+
+*Liss: the reel-stop* (`reel_stop`, a `timing_ring` row, M3-C06-05). Stop three parts reels, one per beat. After a 0.6 s lead-in the beats come every 0.7 s, peaking at 0.65 of each beat (at most 2.7 s in all). The ring's windows and grades apply: perfect +30%, good +15% per reel.
+
 *Ysolde: the glyph trace* (`glyph`, `SwellGlyph`). After a 0.6 s lead-in, trace five strokes in order (down, right, up, right, down) with the directions within 3.0 s. No beat: a stroke counts when it is made. A clean trace finished within 2.0 s of the lead-in earns *swift*.
 
 | Grade | When | Bonus |
@@ -299,8 +303,10 @@ The first press in a beat is the one that counts, and a press before the beat op
 | Asha | **Shallows Verse** | heal, power 4, every other active ally (`all_other_allies`: never Asha herself), magic (Silence blocks it) | power 5 | power 7 |
 | Toma | **Return Tide** | physical, power 14, one foe, accuracy 100 | power 20 | power 26 |
 | Ysolde | **Written Light** | magical, power 10, every foe, no element, magic | power 14 | power 19 |
+| Kerrid | **The Long Hold** | physical, power 14, one foe, accuracy 100 (M3-C05-06) | power 20 | power 26 |
+| Liss | **Three-Reel Charge** | physical, power 9, every foe, accuracy 100, pushes each foe 1 rank down the timeline, not magic (M3-C06-05) | power 13 | power 17 |
 
-(`swell_power`: 4 × 145 / 100 = 5.8 → 5; 14 × 190 / 100 = 26.6 → 26.) `test_formulas.gd` pins every row of this table against `skills.json`.
+(`swell_power`: 4 × 145 / 100 = 5.8 → 5; 14 × 190 / 100 = 26.6 → 26; 9 × 145 / 100 = 13.05 → 13.) `test_formulas.gd` pins every row of this table against `skills.json`.
 
 **The Verse is a song for the others (M2-CMB-02).** Shallows Verse reaches every living active ally but the singer (target `all_other_allies`). Ballast fills when its owner is nearly down, so a Verse that healed Asha too was a second life for her whenever her gauge filled. Per ally the numbers are unchanged: 92 missed, 115 at good and 161 perfect, against a Chorus Mend's 138 (which still heals Asha). With nobody else standing the Verse has no target: it is refused at no cost, and the Swell page greys it out.
 

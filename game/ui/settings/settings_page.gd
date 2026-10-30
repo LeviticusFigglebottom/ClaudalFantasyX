@@ -157,6 +157,7 @@ func _render() -> void:
 	_page.replace_rows(_rows())
 	_page.set_cursor(page_model.cursor, is_inside_tree())
 	_help.text = tr(page_model.help_key())
+	HudLayout.fit_lines(_help)  # a long row's help at 130 % shrinks a little before it ellipsizes
 
 
 func _paint_backdrop() -> void:

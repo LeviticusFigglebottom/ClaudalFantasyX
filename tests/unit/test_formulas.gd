@@ -157,6 +157,8 @@ func test_technique_powers_at_good_and_perfect() -> void:
 		&"shallows_verse": [4, 5, 7],
 		&"return_tide": [14, 20, 26],
 		&"written_light": [10, 14, 19],
+		&"long_hold": [14, 20, 26],
+		&"three_reel_charge": [9, 13, 17],
 	}
 	for tid: StringName in table:
 		var want: Array = table[tid]

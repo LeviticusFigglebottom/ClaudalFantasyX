@@ -24,6 +24,8 @@ extends HalunaDresser
 ##                    (Corrow's trader is the ferry kit's hull); each kit keeps its own material cache.
 ##                  "material_paths": {slot: "res://...tres"}  one slot's material swapped for a zone's own, the
 ##                    piece's other slots kept from its kit (Coilspire's inner laterite without its green joints).
+##   kit_material_paths  {slot: "res://...tres"}: the same swap on every piece from the zone's own kit (no "kit_dir"),
+##                  under each row's own "material_paths" (Corrow's weathered lacquer, copper and iron, M3-ENV-1326).
 ##   greybox      {"hide_all": bool, "keep": [ids]}: hides the greybox meshes (collision stays), except
 ##                  the kept ones (story pieces no kit has yet).
 ##   fire_lights  [{"at": [x, y, z], "energy", "range", "block"?, "shadow"?, "attenuation"?, "color"?}] omnis
@@ -79,6 +81,7 @@ const KEY_DROPS := "drops"
 const KEY_SMOKES := "smokes"
 const KEY_EBBING := "ebbing"
 const KEY_MATERIAL_PATHS := "material_paths"
+const KEY_KIT_MATERIAL_PATHS := "kit_material_paths"
 const DEFAULT_WAVES := "res://game/world/water/lagoon_waves.tres"
 ## The waters' plane cells (m): fine enough for the wave field's short waves to read on a still lake.
 const WATER_CELL_M := 2.0
@@ -110,10 +113,13 @@ func dress() -> void:
 		return
 	zone = get_parent() as GreyboxZone
 	_rng.seed = int(layout.get("seed", 1))
+	var kit_paths: Dictionary = layout.get(KEY_KIT_MATERIAL_PATHS, {})
 	for spec: Dictionary in layout.get("pieces", []):
 		var piece := _place_from_kit(spec)
 		if piece == null:
 			continue
+		if not kit_paths.is_empty() and not spec.has(KEY_KIT_DIR):
+			swap_slots(piece, kit_paths)
 		if spec.has(KEY_MATERIAL_PATHS):
 			swap_slots(piece, spec[KEY_MATERIAL_PATHS])
 		if spec.has(KEY_SCALE_Y):
