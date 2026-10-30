@@ -66,6 +66,7 @@
     {"id": "ch12_pass_moths", "name_key": "ENC_CH12_PASS", "scripted": false, "opening": "roll", "arena": "keth_seep_terrace", "enemies": ["cord_moth", "cord_moth"], "_note": "M4-C12-03 (act2_roster.md): random."},
     {"id": "ch12_pass_scree", "name_key": "ENC_CH12_PASS", "scripted": false, "opening": "roll", "arena": "keth_seep_terrace", "enemies": ["scree_crawler", "scree_crawler"], "_note": "M4-C12-03 (act2_roster.md): random."},
     {"id": "ch16_rim_skates", "name_key": "ENC_CH16_RIM", "scripted": false, "opening": "ambush", "enemies": ["glass_skate", "glass_skate"], "_note": "M4-C16-03 (act2_roster.md): random."},
-    {"id": "ch16_rim_crawlers", "name_key": "ENC_CH16_RIM", "scripted": false, "opening": "roll", "enemies": ["rim_crawler", "rim_crawler", "rim_crawler"], "_note": "M4-C16-03 (act2_roster.md): random."}
+    {"id": "ch16_rim_crawlers", "name_key": "ENC_CH16_RIM", "scripted": false, "opening": "roll", "enemies": ["rim_crawler", "rim_crawler", "rim_crawler"], "_note": "M4-C16-03 (act2_roster.md): random."},
+    {"id": "ch10_mangrove_drowner", "name_key": "ENC_CH10_DROWNER", "scripted": true, "opening": "normal", "arena": "ossa_fen_roots", "enemies": ["mangrove_drowner"], "_note": "M4-A2P-010 (act2_roster.md Ch10; docs/kb/plan/act2/chapters/ch10.md): the Mangrove Drowner: the clearing's boss (beat drowner)."}
   ]
 }

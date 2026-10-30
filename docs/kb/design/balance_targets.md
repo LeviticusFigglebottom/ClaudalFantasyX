@@ -246,3 +246,23 @@ Measured at 1000 seeds (balance_report.md, 2026-10-24 M3-CMB-01):
 | Wave 2 | 53.2 | 54.1 | 87.8 | 100.0 | 44.9 |
 | Wave 3 | 33.2 | 37.3 | 93.0 | 100.0 | 8.4 |
 | The Reach | 0.3 | 12.8 | 80.7 | 86.2 | 0.3 |
+
+### Ch10: the Mangrove Drowner (M4-A2P-010, chapters' combat seat)
+
+The suite runs on the `ch08_seawall` loadout until M4-A2P-019's Ch10 loadout lands; re-run it then. Active Rhen, Asha and
+Toma; Ysolde and Kerrid in reserve. Swell is `good`. Toma's Shell Breaker is the role answer (phase 1 is armoured roots,
+defence 120). The Drowner is level 9, 3,600 HP, strength 14. Phase 2 (`uprooted`) comes at 55%: defence 30, agility 16,
+Root Stomp and a two-turn charged Drowning Grasp.
+
+| Suite | Kind | `naive` | `role_answer` | `smart` | p90 turns |
+|---|---|---|---|---|---|
+| `ch10_mangrove_drowner` | Ch10–Ch16 boss | ≤ 3% (2.5) | 55–80% (71.9) | **report only**, ≥ 30 mean turns (100%, 34.4 turns, 0.75 KOs) | ≤ 80 (46) |
+
+- **`smart` is report only, as for `ch05_cinder_matron`.** With healing, two reserves and items, `smart` won every
+  seed of every tuning tried (1,000 seeds):
+  - lowering steady damage (strength 22 → 11) didn't move it;
+  - nor did raising the charged burst (Drowning Grasp power 20 → 40).
+  - It still costs a careful player about one KO a fight.
+- **The Act II curve's 70–90%** needs the same escalation mechanic the Matron's note asks for (M3-C05-06).
+- **The tuning that mattered:** the fight's length. At 4,800 HP, `role_answer` (which never heals) lost by attrition at
+  every damage level. At 3,600 HP behind defence 120, Shell Breaker's answer carries it.

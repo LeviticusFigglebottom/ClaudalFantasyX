@@ -1243,6 +1243,40 @@
       "swell": "good"
     },
     {
+      "id": "ch10_mangrove_drowner",
+      "chapter": "Ch10 boss (the Mangrove Drowner, Ossa Fen's clearing; act2_plan §2 Ch10: the Act II boss curve, smart report only with an ease floor as ch05_cinder_matron (a logged exception, balance_targets.md); the ch08_seawall loadout until M4-A2P-019's Ch10 loadout)",
+      "kind": "boss",
+      "encounter": "ch10_mangrove_drowner",
+      "active": [
+        "rhen",
+        "asha",
+        "toma"
+      ],
+      "reserve": [
+        "ysolde",
+        "kerrid"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          3
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          55,
+          80
+        ],
+        "smart": null,
+        "ward_guard": null
+      },
+      "p90_turns_max": 80,
+      "loadout": "ch08_seawall",
+      "swell": "good",
+      "mean_turns_min": {
+        "smart": 30
+      }
+    },
+    {
       "id": "ch11_vey_rays",
       "chapter": "Ch11 route (Sunken Vey's galleries): two gallery rays (role_answer report only: Rhen's answer, a logged exception as for ch06_ridge_gulls and ch08_headland_gulls)",
       "kind": "regular",
