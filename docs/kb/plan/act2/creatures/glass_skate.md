@@ -28,6 +28,8 @@ Clip audit (tools/creatures/clip_audit.gd, 2026-10-30): worst slip 62.9 cm (cast
 Buried and white-on-white **on purpose** (untargetable until it acts). Once it has acted it must read: its risen pose shows a darker belly and the eyes. Risk: medium (the arena's white water).
 Encounters in data: `ch16_rim_skates` (no Act II arena is named yet: judge it in the arena the encounter gets).
 
+**Arena check 2026-10-30 (drowned_choir_ring preview at night, the nearest built Ch16 arena):** the risen pale disc reads on the dark ring floor. Judge it again on the Rim's white water when that arena exists.
+
 ## Reuse of existing generators
 Its own disc build (see gallery_ray).
 

@@ -28,6 +28,8 @@ Clip audit (tools/creatures/clip_audit.gd, 2026-10-30): worst slip 14.9 cm (ko),
 A big rounded shell; blue-grey scree on pale mountain stone may melt in value: its orange-brown skin carries it. Risk: medium.
 Encounters in data: `ch12_pass_scree` (no Act II arena is named yet: judge it in the arena the encounter gets).
 
+**Arena check 2026-10-30 (keth_seep_terrace preview):** the slate scree shell with snow in the splits reads on the dark terrace flags.
+
 ## Reuse of existing generators
 build_slag_tortoise (rig, clips, the flip-over KO).
 

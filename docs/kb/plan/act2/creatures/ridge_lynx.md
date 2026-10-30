@@ -28,6 +28,8 @@ Clip audit (tools/creatures/clip_audit.gd, 2026-10-30): worst slip 29.3 cm (hit_
 Slate-grey on the pass's pale stone and snow: reads by value. Risk: low.
 Encounters in data: `ch12_pass_lynxes` (no Act II arena is named yet: judge it in the arena the encounter gets).
 
+**Arena check 2026-10-30 (keth_seep_terrace preview):** the slate coat with its snow-dusted back reads on the dark terrace flags.
+
 ## Reuse of existing generators
 Its own quadruped build; the raid hound's rig is its nearest sibling.
 

@@ -29,6 +29,8 @@ Clip audit (tools/creatures/clip_audit.gd, 2026-10-30): worst slip 15.4 cm (hit_
 **Done 2026-10-30 (creatures track, ADR 0205):** the back is now dusky (`cumulus_shadow` mottled toward `lacquer_black`, with dark rosettes and pale `salt_glass` freckles), the margin's `sea_glow` doubled (energy 1.6), the body's wet clearcoat cut to 0.25 (at the battle camera's grazing angle its sheen washed the back white), and the hover dropped from 1.4 to 0.95 m (the attack's bank dips 0.65 m; the cast's pool and the KO follow `HOVER`). Self-rendered in `ch11_vey_rays`: slate-blue discs with a teal rim on pale sand.
 Encounters in data: `ch11_vey_rays`, `ch11_vey_urchins` (no Act II arena is named yet: judge it in the arena the encounter gets).
 
+**Arena check 2026-10-30 (lowlight_engine_hall preview, the nearest built Ch11 arena):** the dusky disc with its teal margin reads against the teal pool. In a three-enemy layout, slot 0 can sit in front of an urchin in slot 1 (an encounter-layout matter, not the model's).
+
 ## Reuse of existing generators
 Its own build (a disc rig of wing chains and a tail). The glass skate's disc build is its sibling; share a disc module if both get reworked.
 

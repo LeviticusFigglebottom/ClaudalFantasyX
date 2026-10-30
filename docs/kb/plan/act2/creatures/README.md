@@ -14,15 +14,15 @@ branch: tools/creatures/clip_audit.gd (slip, pops, dips) and clip_sheet.tscn (po
 | Id | Ch | Kind | Meets the bar | What is left at the gate |
 |---|---|---|---|---|
 | [tannin_archer](tannin_archer.md) | 10 | fen beast | yes | `tannin_jet` effect |
-| [root_crab](root_crab.md) | 10 | variant (reef crab) | yes | value check in the fen's own arena; `root_drag` effect |
-| [fen_leech](fen_leech.md) | 10 | variant (sail leech) | close | done: hangs at 0.85 m. Left: a check in the dusk fen arena; `leech_bite` effect |
+| [root_crab](root_crab.md) | 10 | variant (reef crab) | yes | done: checked in ossa_fen_roots (reads). Left: `root_drag` effect |
+| [fen_leech](fen_leech.md) | 10 | variant (sail leech) | yes | done: hangs at 0.85 m with draped edges (it read as a branch in ossa_fen_roots before). Left: `leech_bite` effect |
 | [gallery_ray](gallery_ray.md) | 11 | reef beast | yes | done: dusky back, margin glow, hover 0.95 m. Left: `glide_lash` effect |
 | [rime_urchin](rime_urchin.md) | 11 | reef beast | yes | done: the KO splays its spines. Left: `rime_spine` effect |
 | [conduit_crawler](conduit_crawler.md) | 11 | construct | close | done: jointed legs. Left: **no enemy row** (a boss add, M4-A2P-022); its repair effect |
 | [ridge_lynx](ridge_lynx.md) | 12 | beast | yes | done: paws pinned, snow and grit, shaped legs. Left: `pounce` effect |
-| [cord_moth](cord_moth.md) | 12 | beast | yes | done: battle scale 1.35×. Left: `unravel` effect |
+| [cord_moth](cord_moth.md) | 12 | beast | yes | done: battle scale 1.35×, dusky wing margins, hover 1.12 m (it read as a sliver in keth_seep_terrace before). Left: `unravel` effect |
 | [scree_crawler](scree_crawler.md) | 12 | variant (slag tortoise) | yes | done: snow and grit. 17.5k tris, the same as the slag tortoise since M3-CRE-660 (see its sheet). Left: `scree_slide` effect |
-| [glass_skate](glass_skate.md) | 16 | reef beast | yes | the risen read in the Rim's own arena; `skate_sting` effect |
+| [glass_skate](glass_skate.md) | 16 | reef beast | yes | checked in drowned_choir_ring (reads). Left: the Rim's own arena when it exists; `skate_sting` effect |
 | [rim_crawler](rim_crawler.md) | 16 | variant (tide crawler) | yes | done: slate flanks and seams, brighter wounds. Left: re-judge in the Rim's grade |
 
 **All ten with enemy rows** now have the enemies.json `model` key (2026-10-30), so they fight as their models, not

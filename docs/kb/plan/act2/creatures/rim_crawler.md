@@ -29,6 +29,8 @@ Chalk-white on white shallows: **risk: high** for value. The tide crawler's dark
 **Done 2026-10-30 (creatures track, ADR 0205):** the flanks go a wet `storm_slate` toward the underside, the plate seams are slate, the chalk is weathered with `overcast_slate` mottling, and the wounds glow at energy 1.7 (from 1.0). Self-rendered in `ch16_rim_crawlers` on pale sand: slate flanks, black joints and cyan glows read; judge it again in the Rim's own grade.
 Encounters in data: `ch16_rim_crawlers` (no Act II arena is named yet: judge it in the arena the encounter gets).
 
+**Arena check 2026-10-30 (drowned_choir_ring preview at night):** the slate flanks and cyan wounds read on the dark floor.
+
 ## Reuse of existing generators
 build_tide_crawler (its 2026-10-29 primitive pass: carapace plates and seams, jointed legs, the planted-foot pin), so it inherited all of it.
 

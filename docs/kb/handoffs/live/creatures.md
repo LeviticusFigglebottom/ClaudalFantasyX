@@ -980,3 +980,15 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
 - **MERGE-READY @ fe0da8c2** (includes everything since 2ea2d324).
 - **Act II regulars: enemies.json `model` keys** @ 52ad6adb, for the ten built Act II foes. They had battle scenes but no `model`, so CreatureModels left them as capsules in battle. The additive field is ours (ownership.md). Checks: creature 87/0, portrait 21/0, battle_ko_once, part_cues, vfx_anchors; validate_data.
 - LEAD-ASK: the slag tortoise (and the scree crawler, the same mesh) is 17,502 triangles since M3-CRE-660's primitive pass on your list (the crust lathe went from 24×64 to 44×112), but its sheet's budget says ≤ 8k. Either approve about 18k for this pair (a few on screen at once), or I cut the crust back to about 32×80 (about 10k) and re-render. I've noted it on both sheets.
+- **Act II arena checks** (temporary previews of the built arenas with the regulars; viewed, not committed):
+  - ossa_fen_roots: root crab, tannin archer, fen leech.
+  - lowlight_engine_hall: gallery rays, rime urchin.
+  - keth_seep_terrace: ridge lynx, cord moth, scree crawler.
+  - drowned_choir_ring: glass skate, rim crawler.
+  - Two fixes came out of them:
+    - **cord moth** @ 3cbc4a17: it read as a pale sliver against Keth's white walls. It now has dusky wing margins and a hover of 1.12 m (model 0.83); test_creature_actor's MOTH_HOVER_M is 1.12.
+    - **fen leech** @ cd21ece0: it read edge-on, like a branch, from the fen's low camera. It now has a raised back and edges draped 0.1 m like a ray's.
+  - The rest read as they are (sheet notes).
+  - Palette: M4-CRE-670's snow #E8E6DF is now `gauze_white` (lynx, scree crawler @ a0430bc7), and the sail leech's canvas #B9B1A0 is now a sand_cloth/coral_stone_weathered mix @ 9224953c. Portraits re-baked; the changes are 2 levels.
+- **M4-A2P-058, the regulars' part:** specified in docs/kb/art/creatures/act2/skill_vfx.md, eight entries in the Act I generator's vocabulary, for M4-A2P-060 (combat) to generate into effects.json (rendering's file, not edited here).
+- **MERGE-READY @ cd21ece0** (includes everything above).

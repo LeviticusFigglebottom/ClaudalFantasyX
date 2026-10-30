@@ -28,6 +28,8 @@ Clip audit (tools/creatures/clip_audit.gd, 2026-10-30): worst slip 14.6 cm (ko),
 Bark-brown on the fen's dark root-walk planks: a value risk at dusk, the reef crab's pale shell top is what carries it. Check in its arena; a lighter lichen on the shell top is the fix if it melts.
 Encounters in data: `ch10_fen_roots` (no Act II arena is named yet: judge it in the arena the encounter gets).
 
+**Arena check 2026-10-30 (ossa_fen_roots preview):** bark-brown on the fen's dark mud, it reads by its silhouette (the legs and claws against the sand ripples) and its cyan eyes. No change needed.
+
 ## Reuse of existing generators
 build_reef_crab (rig, clips, the planted-foot pin since 2026-10-29, `grounding.pinned`); only proportions and tint are its own.
 
