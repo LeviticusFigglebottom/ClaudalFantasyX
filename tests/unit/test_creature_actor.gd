@@ -59,8 +59,9 @@ const LYNX_APEX_SEC := 0.6
 const LYNX_LEAP_MIN_M := 0.5
 const LYNX_KO_HEAD_MAX_Y := 0.4
 const MOTH := "res://game/creatures/cord_moth/cord_moth_battle.tscn"
-## The cord moth hovers this high (its stand-in lifts it) and its KO comes down by exactly that, within the band.
-const MOTH_HOVER_M := 1.25
+## The cord moth hovers this high (its stand-in lifts it; its model is at the 1.35x battle scale) and its KO comes down
+## by exactly that, within the band.
+const MOTH_HOVER_M := 1.35
 const MOTH_BAND_M := 0.02
 const SKATE := "res://game/creatures/glass_skate/glass_skate_battle.tscn"
 ## The glass skate lies flat (every bone under FLAT_MAX_M at rest and after the KO) and erupts above ERUPT_MIN_M.

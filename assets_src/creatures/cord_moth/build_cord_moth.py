@@ -12,7 +12,9 @@ across the wing with its knots in counted groups (a single knot, a long knot, cl
 drawn from a seeded sequence, not copied from any real script. Its weak point is a small spawn_wound crack on the
 thorax.
 
-Its origin is the hover point (the stand-in's `hover` lifts it), so its KO drifts down by exactly that height.
+Its origin is the hover point (the stand-in's `hover` lifts it), so its KO drifts down by exactly that height. In battle
+the model is scaled 1.35x (cord_moth_battle.tscn), like the ashwing, whose flat wings read as slivers at normal size
+(the Act II plan sheet): its KO falls HOVER in model space, 1.35 m in battle, the stand-in's `hover`.
 
 Run without Blender (`python3 build_cord_moth.py --report`) for the triangle count and each clip's numbers.
 """
@@ -39,7 +41,7 @@ WING_ROOT = PAL["sand_cloth"]
 DYES = (ck.mix(PAL["lacquer_red"], PAL["sand_cloth"], 0.3), ck.mix(PAL["sea_blue_cloth"], PAL["sand_cloth"], 0.25))
 BLACK = PAL["lacquer_black"]
 
-HOVER = 1.25  # the stand-in lifts the origin to chest height; the KO comes down by this
+HOVER = 1.0  # the KO comes down by this (model space); at the battle scale of 1.35 it is the stand-in's 1.35 m hover
 THORAX = np.array([0.0, 0.056, 0.03])
 THORAX_R = (0.05, 0.048, 0.07)
 HEAD = np.array([0.0, 0.061, 0.125])
