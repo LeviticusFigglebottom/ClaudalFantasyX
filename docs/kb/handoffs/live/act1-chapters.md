@@ -508,6 +508,16 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
     - Vey's arena (M4-A2P-041);
     - then Ch12's placement and cameras.
 
+- **MERGE-READY @ 555d62f76: Ch12's shots and field cameras (M4-A2P-012, claimed).**
+  - Keth Pass: K02, K04, K05 (K01 is C1's breath); a climbing volume up each switchback flight; the shelf and saddle
+    volumes.
+  - Quellan: Q02 and two street volumes.
+  - Cloudloom: C02, C03; the stair and hall volumes.
+  - All shot_check-clear and viewed. Checks: `--filter=ch12` and the tools tests OK.
+  - Next:
+    - the Avalanche Ram's enemy row and sim band (its snow hazard is `field_rules` data);
+    - Ch13's cameras (no fights).
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
