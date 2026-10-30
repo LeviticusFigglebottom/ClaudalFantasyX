@@ -552,3 +552,14 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
   characters?
 - MERGE-READY @ 088cf7d1
 - **Next:** M4-A2P-053 (the Kirru and the Ullari).
+
+## 2026-10-30, Act II: M4-A2P-053 the Kirru and the Ullari woman
+- **The Kirru:** variants on Pell's build (pell_variant.py, `--variant`; Pell is unchanged byte for byte). The elder,
+  the adult and the child each have their own coat, size, crest and cloth dye, and Pell's clips with `back_to_sea`
+  as the turning away. No battle contract.
+- **The Ullari woman:** on the villager build (layered weaving, a keth cord, tie_knot).
+- **Checks:** all shots viewed; probes OK; identical on 3 paths; the tests pass. The task is in review (combat).
+- **Known limit:** the Kirru faces are Pell's head re-coloured at a close-up.
+- MERGE-READY @ 39b1ed81
+- **Next:** M4-A2P-055 (Sefir in person), M4-A2P-057 (Kesh), and the prop request (the dock-hook, the salt-glass
+  housing, the wedding cord).

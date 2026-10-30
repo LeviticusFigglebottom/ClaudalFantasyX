@@ -62,6 +62,7 @@ from asha_textures import blur, height_to_normal, hexc, periodic_noise, smoothst
 
 OUT = ROOT / "assets" / "characters" / "pell" / "textures"
 PARAMS = HERE / "pell_params.json"
+PREFIX = "pell"  # M4-A2P-053: a Kirru variant's own skin maps (pell_variant.py)
 HEAD = (2048, 2048)
 BODY = (2048, 2048)  # pell.md §8.2: the body 2K x 4
 ROUGH = (0.5, 0.95)  # the skin materials' roughness_min / roughness_max (write_materials.py): ORM G is remapped
@@ -323,14 +324,14 @@ def fur_maps(key: str, npz: dict, size: int, lm, face, fp: dict) -> None:
     if key == "head":
         at.teeth_patch(albi, ormi, size)
         # the teeth's ORM G is the teeth material's own (not remapped)
-    at.write(f"pell_{key}_albedo.png", albi)
-    at.write(f"pell_{key}_normal.png", nrm)
-    at.write(f"pell_{key}_orm.png", np.clip(ormi, 0.0, 1.0))
+    at.write(f"{PREFIX}_{key}_albedo.png", albi)
+    at.write(f"{PREFIX}_{key}_normal.png", nrm)
+    at.write(f"{PREFIX}_{key}_orm.png", np.clip(ormi, 0.0, 1.0))
     maski = maski.copy()
     step = 4  # 64 levels of cavity and micro-roughness (asha_textures.skin_maps' quantisation, the 5 MB cap)
     maski[..., 1] = (np.floor(np.clip(maski[..., 1], 0, 1) * 255.0 / step) * step + step // 2) / 255.0
     maski[..., 2] = (np.floor(np.clip(maski[..., 2], 0, 1) * 255.0 / (2 * step)) * 2 * step + step) / 255.0
-    at.write(f"pell_{key}_skinmask.png", maski)
+    at.write(f"{PREFIX}_{key}_skinmask.png", maski)
     if key == "head":
         at.texel_report(r, npz)
         at.texel_report(r, npz, face_only=True)
@@ -622,8 +623,17 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--bake-dir")
     ap.add_argument("--only", default="skin,cloth,fur,feather")
+    ap.add_argument("--variant", help="a Kirru variant (pell_variant.py): its own skin maps only, Pell's atlases shared")
     args = ap.parse_args()
     only = set(args.only.split(","))
+    global PARAMS, PREFIX, OUT
+    if args.variant:
+        import pell_variant
+
+        PARAMS = pell_variant.params_file(args.variant, Path(args.bake_dir))
+        PREFIX = args.variant
+        OUT = pell_variant.out_dir(args.variant) / "textures"
+        only &= {"skin"}
     extra = json.loads(PARAMS.read_text(encoding="utf-8"))
     if "skin" in only:
         skin(Path(args.bake_dir), extra)

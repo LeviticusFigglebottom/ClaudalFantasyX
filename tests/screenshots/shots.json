@@ -1548,6 +1548,50 @@
       "settle_frames": 30
     },
     {
+      "id": "villager_ullari_woman_front",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/ullari_woman_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_ullari_woman_face",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/ullari_woman_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_ullari_woman_face_sad",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/ullari_woman_face_sad.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_ullari_woman_tie_knot",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/ullari_woman_tie_knot.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "villager_tobin_front",
       "pending_baseline": true,
       "scene": "res://game/levels/_tests/characters/villagers/tobin_stage.tscn",
@@ -8269,6 +8313,105 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "kirru_elder_front",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kirru/kirru_elder_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kirru_elder_face",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kirru/kirru_elder_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kirru_elder_back_to_sea",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kirru/kirru_elder_back_to_sea.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kirru_adult_front",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kirru/kirru_adult_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kirru_adult_face",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kirru/kirru_adult_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kirru_adult_back_to_sea",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kirru/kirru_adult_back_to_sea.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kirru_child_front",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kirru/kirru_child_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kirru_child_face",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kirru/kirru_child_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kirru_child_back_to_sea",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kirru/kirru_child_back_to_sea.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
     },
     {
       "id": "pell_front",
