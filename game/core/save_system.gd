@@ -702,11 +702,26 @@ static func _migrate_v5_to_v6(d: Dictionary) -> Dictionary:
 func autosave(reason: StringName = REASON_CHAPTER) -> Error:
 	var err: Error = ERR_UNAVAILABLE
 	if autosave_enabled:
-		err = save_to_slot(AUTOSAVE_SLOT, Game.state, reason)
+		err = save_to_slot(AUTOSAVE_SLOT, autosave_state(Game.state, reason), reason)
 		if err != OK:
 			push_warning("SaveSystem: autosave (%s) failed: %s" % [reason, error_string(err)])
 	EventBus.autosave_finished.emit(reason, err)
 	return err
+
+
+## The state a chapter autosave records (ADR 0121): Continue from it starts in the zone the chapter began in, where the
+## slot says it is, not at the last shrine, which is in the chapter before (the Lead's save pass, 2026-10-30: a Ch4
+## autosave read "Haluna's wake" and continued at the Shell Shrine). The respawn becomes that zone at its own spawn, on
+## a copy: Game.state keeps its shrine. Other reasons (a shrine's own save) are written as they are.
+static func autosave_state(state: GameStateData, reason: StringName) -> GameStateData:
+	if reason != REASON_CHAPTER or state == null or state.location_id == &"":
+		return state
+	if state.respawn_location_id == state.location_id:
+		return state
+	var copy := GameStateData.from_dict(state.to_dict())
+	copy.respawn_location_id = state.location_id
+	copy.respawn_spawn = &""
+	return copy
 
 
 func _on_chapter_changed(chapter: int, previous: int) -> void:
