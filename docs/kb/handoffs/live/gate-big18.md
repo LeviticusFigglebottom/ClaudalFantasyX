@@ -90,3 +90,20 @@ m2-slice's Ch1 framing is right; the Lead judges the shots at review.)
 - Coverage, report-only: `--filter=battle` aborted with no numbers (the Liss tint red fails under instrumentation
   too). `--filter=progression` matches no test file (0 run), so it aborted; re-running as `--filter=lattice`
   (game/progression's lattice tests), and battle in a scratch copy with only the Liss assertion changed.
+- test_qa_threads, traced further:
+  - Alone on big18 it has no water warnings but fails on 5 "CutsceneGrade: no grade 'ch02' / 'ch03' / 'ch03_steps' /
+    'ch03_shrine_int' / 'ch03_boss' in the zones' grade tables (M3-ENV-106)". **Red on `claude/m2-slice` @ 8aa6f6a6
+    alone too** (f8f4d802's grades), so branch content: route to m2-slice. In the full suite those warnings don't fire
+    (an earlier test loads the grade tables), which is why the full run shows the water warnings instead.
+  - The water warnings ("another WaterSurface already publishes hymn_water_level") come from test order. The battle
+    tests emit the same 5 on big17 and big18, and the ch01 thread alone is clean on big17, ui and big18. So a
+    publisher left by an earlier test reaches the threads. Still being narrowed (`--filter=test_qa_`).
+- Blender (78 jobs since big17): 46 identical so far. brine_shoals_kit FAIL, 3 DIFF, **also red on big17**:
+  `camp_tent_burned.glb` (env-art's 02d8d671, M3-ENV-1316, changed the tent's sag without rebuilding the burned
+  tent; route to env-art), plus `bs_fire_core.tres` and `bs_fire_outer.tres` "committed but not produced by the build"
+  (red on `claude/env-art-b` alone too; route to env-art-b).
+
+**PLAN CHANGE (Lead, 2026-10-30 01:29 UTC):** big18's screenshots are skipped. big19 = big18 + the integration
+branch (ADRs 0202–0204, the Act II plan, the 187 approved big17 baselines) + the current track heads. It is built,
+checked and captured instead; see `gate-big19.md`. big18's Blender run and the water probe finish and are logged
+here for the comparison; there is no GATE-DONE for big18.
