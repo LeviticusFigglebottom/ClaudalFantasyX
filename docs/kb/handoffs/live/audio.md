@@ -3,6 +3,14 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ d04d79422 (unchanged): the Lead's 20:45 item. Ch11 and Ch14–Ch16 were already rendered from the direction notes, so there was nothing to add.**
+  - **Ch11 (`docs/kb/story/beats/act2_ch11_direction.md`):** the table is camera and blocking. Its only sound calls are already met:
+    - the `nhoa_bound` sting on N07 (rendered);
+    - "2 s of silence on V06" and "let the music cut to silence on the walk away (it does)";
+    - its held shots (V00 8 s, V07 3 s, V09 4 s, T00 3 s, T03 5 s, N02–N09). Each has a row in `act2_direction_holds.json` (task 22), and act1_playthrough `--holds` finds no cue ending inside any of them.
+  - **Ch12–Ch16:** a scan of every `@music`/`@sfx`/`@ambience` name in the six direction notes finds every one rendered and in a table: Ch12 6, Ch13 7, Ch14 9, Ch15 10, Ch16 12; missing 0. Ch14–Ch16's holds (three, three and one) pass too. `test_direction_holds` passes.
+  - **When Ch11's staging lands:** I'll rerun act1_playthrough `--act 2 --holds` against it. A staged hold longer than the note's floor is the only thing that can need a cue retimed.
+  - **Checks:** test_direction_holds OK and act1_playthrough `--act 2` (13 items, all known notes). Nothing changed but this log.
 - **MERGE-READY @ d04d79422 (unchanged): the Lead's 20:26 item. There's nothing new to render or score yet.**
   - **Ch11's scoring as slice-polish stages it:** m2-slice @ e262e104 stages the same Ch11 and Ch12 scenes as before (lowlight, sunken_vey; cloudloom, keth_pass, quellan, inn_fire), and their cues were checked as played at faaa30a0. Every Ch11–Ch13 script difference between m2-slice and audio is audio's own newer side, already on integration @ 46d8a067: m2-slice predates the restored `@sfx pole_no_wake` in ch13_still_city and the `ch13/sanctum` location. I'll rescore Ch11 when slice-polish pushes a new stage.
   - **Ch12–Ch13 from act2-plan's cue tables:** every cue is rendered and every ref resolves. act1_playthrough `--act 2 --holds` reports no missing cue in Ch11–Ch13, only the four known notes: the Vowbound `fade=0.0` lines play as 0.2 s fades, and ansedra is named twice. Ch13 has no staging on any branch.
