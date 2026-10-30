@@ -9215,6 +9215,166 @@
         },
         "time_scale": 4.0
       }
+    },
+    {
+      "id": "ch11_vey_v00",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 600,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch11/sunken_vey/sunken_vey.tscn",
+            "scene_id": "ch11_drowned_galleries",
+            "spawn": "Landing",
+            "hold_cue": "camera V00",
+            "flags": [
+              "ch11_started"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch11_mark_admission",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 600,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch11/sunken_vey/sunken_vey.tscn",
+            "scene_id": "ch11_housing_mark",
+            "spawn": "Landing",
+            "hold_line": "ch11_mark_005",
+            "flags": [
+              "ch11_started"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch11_engine_t02",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 600,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch11/lowlight/lowlight.tscn",
+            "scene_id": "ch11_the_engine",
+            "spawn": "EngineHall",
+            "hold_line": "ch11_engine_001",
+            "flags": [
+              "ch11_started"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch11_nhoa_n05",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 600,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch11/lowlight/lowlight.tscn",
+            "scene_id": "ch11_nhoa",
+            "spawn": "Sanctum",
+            "hold_line": "ch11_nhoa_001",
+            "flags": [
+              "ch11_started"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch11_bench_t05",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 600,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch11/lowlight/lowlight.tscn",
+            "scene_id": "ch11_lamp_bench",
+            "spawn": "Gate",
+            "hold_line": "ch11_bench_001",
+            "flags": [
+              "ch11_started"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
     }
   ]
 }
