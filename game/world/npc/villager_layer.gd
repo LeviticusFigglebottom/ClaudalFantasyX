@@ -34,6 +34,11 @@ extends Node3D
 ## Day and night (the Lead, 2026-10-30: Haluna's vignettes): a row's `shown` (`day` or `night`; none: always) shows
 ## the villager only while the zone's `is_night` (HalunaZone.set_night: the dock at night) is false or true. Hidden, it
 ## is stopped and not ticked, as HalunaZone's night_hide stops its own villagers.
+##
+## Flags (M5-A3P-1810, the Act III revisits): a row's `flag` shows the villager only while that flag is set, and its
+## `not_flag` only until that flag is set (Game.get_flag, checked each tick), so a zone can swap a crowd person's
+## row for a changed one (Haluna's backs-to-the-water, Reedhollow's farewell-tide again). Together with `shown`, a
+## villager shows only when both allow it.
 
 const DATA_DIR := "res://game/data/world/npc/zones/"
 const ACTOR_PATH := "res://assets/characters/villagers/%s/%s_actor.tscn"
@@ -85,6 +90,9 @@ var _storm_flag: StringName = &""
 var _built := false
 ## FieldNpc -> its row's `shown` (only rows that set one)
 var _shown: Dictionary = {}
+## FieldNpc -> [its row's `flag`, its `not_flag`] (only rows that set one), and the flags' last values
+var _gates: Dictionary = {}
+var _gate_values: Dictionary = {}
 
 
 func _ready() -> void:
@@ -225,6 +233,10 @@ func _add_row(row: Variant, by_id: Dictionary) -> void:
 			var shown := str((row as Dictionary).get("shown", ""))
 			if shown == SHOWN_DAY or shown == SHOWN_NIGHT:
 				_shown[npc] = shown
+			var flag := StringName(str((row as Dictionary).get("flag", "")))
+			var not_flag := StringName(str((row as Dictionary).get("not_flag", "")))
+			if flag != &"" or not_flag != &"":
+				_gates[npc] = [flag, not_flag]
 
 
 func _finish_build(rows: Array, by_id: Dictionary) -> void:
@@ -523,14 +535,39 @@ func set_night(on: bool) -> void:
 
 
 func _apply_shown() -> void:
-	for key: Variant in _shown.keys():
+	_gate_values = _read_gates()
+	for key: Variant in _shown.keys() + _gates.keys():
 		if not is_instance_valid(key):
 			_shown.erase(key)
+			_gates.erase(key)
 			continue
 		var npc := key as FieldNpc
-		var on := (str(_shown[key]) == SHOWN_NIGHT) == night
+		var on := true
+		if _shown.has(key):
+			on = (str(_shown[key]) == SHOWN_NIGHT) == night
+		if _gates.has(key):
+			var gate: Array = _gates[key]
+			on = (
+				on and (gate[0] == &"" or bool(_gate_values[gate[0]])) and (gate[1] == &"" or not _gate_values[gate[1]])
+			)
 		npc.visible = on
 		npc.process_mode = Node.PROCESS_MODE_INHERIT if on else Node.PROCESS_MODE_DISABLED
+
+
+## The gated rows' flags and their values now.
+func _read_gates() -> Dictionary:
+	var out := {}
+	for key: Variant in _gates:
+		for f: StringName in _gates[key]:
+			if f != &"" and not out.has(f):
+				out[f] = bool(Game.get_flag(f))
+	return out
+
+
+## A flag a gated row names was set or cleared: the rows appear or go.
+func _check_gates() -> void:
+	if not _gates.is_empty() and _read_gates() != _gate_values:
+		_apply_shown()
 
 
 func _check_night() -> void:
@@ -542,6 +579,7 @@ func _check_night() -> void:
 ## One frame: the villagers (when the owner drives them), the storm flag, the night and the riders.
 func tick(delta: float) -> void:
 	_check_night()
+	_check_gates()
 	if not auto_build:
 		for n in live_villagers():
 			if n.visible:
