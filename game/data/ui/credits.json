@@ -1,6 +1,6 @@
 {
   "credits": {
-    "doc": "M5-A3P-1700 (act3_ending CR, 7 min; ADR 0207): the closing credits roll. `sections` are shown top to bottom, each a title_key and lines (loc keys), with section_gap px between sections and line_gap px between lines (1920 x 1080 reference). The roll lasts `roll_sec` (the credits_suite cue's length, less the vignettes' hold), from lead_in_sec of black, then holds end_hold_sec on its last line. `vignettes` pause the roll at a fraction of it (`at`) for hold_sec: the roll fades out over fade_sec, the vignette's id is emitted (CreditsRoll.vignette_started; Cinematics plays it in-engine), then the roll fades back in. Holding ui_accept runs the roll fast_factor times faster (never through a vignette). Once the credits have been seen in full (flag credits_seen), holding ui_cancel for skip_hold_sec ends them. When they end, `next_scene` opens (the post-credits scene; empty: the title).",
+    "doc": "M5-A3P-1700 (act3_ending CR, 7 min; ADR 0207): the closing credits roll. `sections` are shown top to bottom, each a title_key and lines (loc keys), with section_gap px between sections and line_gap px between lines (1920 x 1080 reference). The roll lasts `roll_sec` (the credits_suite cue's length, less the vignettes' hold), from lead_in_sec of black, then holds end_hold_sec on its last line. `vignettes` pause the roll at a fraction of it (`at`) for hold_sec: the roll fades out over fade_sec, the vignette's `scene` (Cinematics' in-engine scene) is instanced behind it and its id emitted (CreditsRoll.vignette_started), then the roll fades back in and the scene is freed. A vignette whose `scene` is empty or missing is passed over (no stop on black). Holding ui_accept runs the roll fast_factor times faster (never through a vignette). Once the credits have been seen in full (flag credits_seen), holding ui_cancel for skip_hold_sec ends them. When they end, `next_scene` opens (the post-credits scene; empty: the title).",
     "column": {"rect": [360, 0, 1200, 1080], "title_height": 64, "line_height": 44, "section_gap": 96, "line_gap": 6},
     "hint": {"rect": [360, 1016, 1200, 40]},
     "roll_sec": 400.0,
@@ -10,7 +10,7 @@
     "fast_factor": 4.0,
     "skip_hold_sec": 1.5,
     "vignettes": [
-      {"id": "beach_rite", "at": 0.62, "hold_sec": 20.0}
+      {"id": "beach_rite", "at": 0.62, "hold_sec": 20.0, "scene": ""}
     ],
     "next_scene": "",
     "sections": [

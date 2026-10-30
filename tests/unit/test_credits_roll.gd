@@ -3,6 +3,8 @@ extends TestCase
 ## a vignette (once), runs faster while Confirm is held, can be skipped only once seen in full, and ends by setting
 ## credits_seen and opening the next scene. Driven by advance() with the inputs given, and once by a held pad button.
 
+const VIGNETTE_FIXTURE := "res://tests/fixtures/credits/vignette_fixture.tscn"
+
 var scenes: Array[String] = []
 var flags: Array[StringName] = []
 var made: Array[Node] = []
@@ -25,7 +27,7 @@ func after_each() -> void:
 
 
 func test_the_roll_runs_its_data_s_time_with_the_vignette_once() -> void:
-	var m := CreditsRollModel.new()
+	var m := CreditsRollModel.new(_with_vignette_scene())
 	var d := m.data
 	assert_true(m.rows().size() >= 6, "titles and lines")
 	assert_eq(m.alpha(), 0.0, "black first")
@@ -77,12 +79,17 @@ func test_confirm_runs_it_faster_and_cancel_skips_only_once_seen() -> void:
 
 
 func test_the_view_climbs_fades_for_the_vignette_and_ends_into_the_next_scene() -> void:
-	var roll := _roll(false)
+	var roll := _roll(false, _with_vignette_scene())
 	assert_true(roll.shown_text().has(tr("CREDITS_GAME")))
 	assert_true(roll.shown_text().has(tr("CREDITS_ENGINE")))
 	assert_false(roll.hint_text().contains("{"), "the hint names its bindings")
 	assert_false(roll.hint_text().contains(tr("CREDITS_ROLL_SKIP").get_slice("}", 1)), "no skip offered the first time")
 	var started: Array[StringName] = []
+	var hosted: Array[bool] = []
+	roll.vignette_started.connect(
+		func(_id: StringName) -> void:
+			hosted.append(roll.vignette_node() != null and roll.vignette_node().get_index() == 0)
+	)
 	roll.vignette_started.connect(func(id: StringName) -> void: started.append(id))
 	roll.advance(float(roll.model.data["lead_in_sec"]) + 0.01)
 	var y0 := roll.scroll_y()
@@ -93,6 +100,8 @@ func test_the_view_climbs_fades_for_the_vignette_and_ends_into_the_next_scene() 
 		guard += 1
 		roll.advance(0.5)
 	assert_eq(started.size(), 1, "the vignette's id once")
+	assert_eq(hosted, [true] as Array[bool], "its scene plays behind the roll's black")
+	assert_eq(roll.vignette_node(), null, "and is let go after")
 	assert_eq(flags, [CreditsRollModel.SEEN_FLAG] as Array[StringName], "credits_seen is set")
 	assert_eq(scenes, [CreditsRoll.TITLE_SCENE] as Array[String], "no next_scene: the title")
 	after_each()
@@ -116,9 +125,36 @@ func test_a_held_pad_button_runs_it_faster() -> void:
 	after_each()
 
 
-func _roll(seen: bool) -> CreditsRoll:
+## Ending Cinematics' vignette has no scene until it is built: the roll passes over it, never stopping on black.
+func test_a_vignette_with_no_scene_yet_is_passed_over() -> void:
+	var m := CreditsRollModel.new()
+	assert_true(m.vignettes().is_empty(), "the beach rite has no scene yet")
+	m.advance(float(m.data["lead_in_sec"]) + 0.01)
+	var guard := 0
+	while not m.is_done() and guard < 100000:
+		guard += 1
+		assert_eq(m.advance(0.5), &"", "no stop")
+	assert_true(m.is_done())
+
+
+func test_the_ending_can_open_the_credits_as_a_scene() -> void:
+	var packed := load(CreditsRoll.SCENE) as PackedScene
+	assert_true(packed != null, "credits_roll.tscn loads")
+	var roll := packed.instantiate() as CreditsRoll
+	assert_true(roll != null, "and is the roll")
+	roll.free()
+
+
+func _with_vignette_scene() -> Dictionary:
+	var d := CreditsRollModel.load_data().duplicate(true)
+	for v: Variant in d["vignettes"]:
+		(v as Dictionary)["scene"] = VIGNETTE_FIXTURE
+	return d
+
+
+func _roll(seen: bool, config: Dictionary = {}) -> CreditsRoll:
 	var roll := CreditsRoll.new()
-	roll.model = CreditsRollModel.new({}, seen)
+	roll.model = CreditsRollModel.new(config, seen)
 	roll.change_scene = func(p: String) -> void: scenes.append(p)
 	roll.set_flag = func(f: StringName) -> void: flags.append(f)
 	roll.set_process(false)
