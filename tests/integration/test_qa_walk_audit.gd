@@ -43,8 +43,12 @@ func test_the_party_walks_act1_stairs_and_narrow_paths() -> void:
 	for id: String in routes.keys():
 		var report := walk(routes[id] as Dictionary, data)
 		print(format(id, report))
+		var route_row := routes[id] as Dictionary
 		for problem: String in report.get("failures", []):
-			fail("%s: %s" % [id, problem])
+			if bool(route_row.get("report_only", false)):  # ADR 0205: Act II's greybox routes report until its kits land
+				print("  ACT II REPORT %s: %s" % [id, problem])
+			else:
+				fail("%s: %s" % [id, problem])
 		if _zone != null:
 			_zone.free()
 			_zone = null
@@ -55,7 +59,9 @@ func test_the_party_walks_act1_stairs_and_narrow_paths() -> void:
 func walk(route: Dictionary, data: Dictionary) -> Dictionary:
 	Game.new_game()
 	Game.state.party_ids.assign(
-		(data.get("party", []) as Array).map(func(s: Variant) -> StringName: return StringName(str(s)))
+		(route.get("party", data.get("party", [])) as Array).map(
+			func(s: Variant) -> StringName: return StringName(str(s))
+		)
 	)
 	Game.state.reserve_ids.assign(
 		(data.get("reserve", []) as Array).map(func(s: Variant) -> StringName: return StringName(str(s)))
@@ -407,6 +413,12 @@ static func _route_points(route: Dictionary, zone: Node3D, player: FieldControll
 		var b := head if key == "stairs_up" else foot
 		var along := Vector3(b.x - a.x, 0.0, b.z - a.z).normalized()
 		out.append_array([a - along * 0.6, a, b, b + along * float(route.get("beyond_m", 2.0))] as Array[Vector3])
+	for id: Variant in route.get("ramps", []):  # ramps by exact id, in order
+		var row := _collision_row(zone, "ramps", str(id))
+		if row.is_empty():
+			return []
+		out.append(_v3(row["from"]))
+		out.append(_v3(row["to"]))
 	for chain: Variant in route.get("ramp_chain", []):
 		for row: Dictionary in _collision_rows(zone, "ramps"):
 			if str(row.get("id", "")).begins_with(str(chain) + "_"):

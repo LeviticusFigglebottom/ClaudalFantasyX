@@ -1673,3 +1673,25 @@ audit, and probes.
 - Checks: camera 64/0, camera_director 49/0, hero_ 115/0, qa_field_camera 2/0, qa_party 3/0, qa_walk_audit 1/0,
   gdlint/gdformat clean, validate_data 0/0.
 MERGE-READY @ (this commit).
+
+### Act II starts here (ADR 0205: no open Act I row of mine), 2026-10-30 ~05:30
+- **The walk audit covers Act II**, report-only (`report_only` routes print `ACT II REPORT` lines, while Act I routes
+  still fail). Party Rhen, Ysolde and Kerrid (per-route `party`); ramps by exact id.
+  - **Keth Pass** (Ch12, three 4 m flights PassFoot → FromQuellan): walks clean, smooth (max dy 0.030/frame), no
+    follower clipping or sinking. The camera is inside geometry for 2 frames.
+  - **Lowlight** (Ch11, two 3 m flights down to the Sanctum): walks clean. A collider hides the leader from the
+    camera for 39 frames on the descent, and the camera is inside geometry for 1 frame.
+  - **Cloudloom** (Ch12, the hall stair): clean, nothing reported.
+  - **Kerrid's feet slide 25-26% at the run** (run clip 1.8 m/s needs 2.0x, cap 1.8x), and Ysolde's 14% while
+    catching up. **M3-HER-1165 (character)**, a faster authored run, is the fix. Act II leans on Kerrid, so it
+    matters more now.
+  - The zones are still greybox. The camera items are re-checked against the kits when env-art-b builds them (the
+    routes stay in the audit). The audit judges "hidden" by physics rays and the director by drawn meshes, so
+    Lowlight's 39 frames may be an invisible collider.
+- Act II party bodies: Ysolde, Kerrid, Liss, Pell and Sefir all have field rows and models (spawn guards
+  qa_party_spawns and qa_field_camera already scan every field zone, Act II's too, green).
+- Next (Act II, my lane):
+  1. the followers-hidden-by-standing-actors rule (M3-HER-1164) as Act II zones get staged;
+  2. walk-audit routes for each Act II kit as it lands;
+  3. the Act II inventory refresh per batch (`placeholder_audit.py --act 2 --write`).
+MERGE-READY @ (this commit).
