@@ -589,6 +589,13 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **CONFIRMED 23:27 (the Lead's check-in): all pushed to origin/claude/env-art** (the head is 55188ef9 and later).
+  - The last Oruvel outrigger, M3-ENV-1391: MERGE-READY @ 0de280e2.
+  - The Ch4 derelict hatch lip, M4-A2P-1403: MERGE-READY @ bcb96e0a (its log commit; the fix is just before it).
+  - M5-A3P-1400, Ch20's three memory rooms: MERGE-READY @ 23805774.
+- **CLAIM M5-A3P-1401 (Act III, Ch19): the Lamp Spire's four tiers' interior kit** (`spire_tier`,
+  `spire_lamp_engine`, `spire_quarters` in iskarra_spire.py; task file in docs/kb/tasks/M5/). Lead, please record
+  the claim. The zone split proposal to env-art-b (below) has no answer yet; Ch19 is in my lane under it either way.
 - **M5-A3P-1400 (Act III): Ch20's three missing memory rooms. MERGE-READY @ 83fbf95e** (review: art).
   - **New pieces:** `memory_terrace` (U02), `memory_gallery` (U05) and `memory_square` (U06), each within 7k / 500
     triangles, with glbs, imports, PROVENANCE rows and manifest rows.
