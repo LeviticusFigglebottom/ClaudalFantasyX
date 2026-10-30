@@ -650,8 +650,27 @@ that test at this branch's zones.
     taskboard; Godot ansedra 4/0 (new test_ansedra_dressing: the routes walk, the kit covers the greybox, the lagoon
     is still), ch13 4/0, act2 5/0, zone_kit 13/0, party_spawns 3/0, placeholder 8/0, dressing 18/0, water 48/0.
   - **MERGE-READY @ 86e01d57.**
-  - **Next:** the Sanctum (`ch13/sanctum`, `ch13_sanctum.md`), then the Lamp Archive, then Ch14's Lacquer Court and
-    the ripples.
+- **The Sanctum of the Level (ch13) dressed (M4-A2P-043 part 2 of 3):**
+  - **New pieces** in `ansedra.py`: `sanctum_nave_bay`, `sanctum_nave_floor`, `sanctum_basin_nave`,
+    `sanctum_vestibule`, `sanctum_bench`, `sanctum_apse` and `cantor_stand`. The spec reused `lowlight_nave_bay`, but
+    that bay is Lowlight's flooded temple (floor 0.45 m under the datum, walls at ±9, niches, conduits), so the nave
+    is its own.
+  - **No relayout:** the spec asked to move the nave to the kit's square basin. Instead, `sanctum_basin_nave` is
+    built to the greybox's 10 × 18 m, and its rim *is* the kneeling ledges (same footprint and height). The greybox
+    keeps the collision and every story point stays.
+  - **The light:** six steady `glimmer_bound` omnis in the basin (specular 0, so no hot points on the mirror), a
+    dimmer bound core under the salt-glass, the basin's still water at y 0.3, an interior grade (exposure 1.0) and
+    `lut_ch13_sanctum`. `ZoneKitDressing`'s `fire_lights` take an optional `specular` (one line).
+  - **Requested of chapters: M4-A2P-103.** The layout's light rows are chapters' (`ch13_greybox.py`, "do not edit
+    by hand") and today they are daylight (sun 1.6). Until they're changed, a sliver of sun crosses the vault in the
+    gate and basin shots. A scratch render with the requested values (sun 0, fill `#8A96A4` 0.2) showed the nave lit
+    only from below, as the spec asks.
+  - **Shots (new):** `ch13_sanctum_gate`, `_basin`, `_vault`. All viewed (re-render after M4-A2P-103 lands).
+  - **Checks:** tools test_ch13_sanctum_dressing (new), test_ch13_ansedra_dressing, test_ansedra and test_haluna_kit
+    pass; validate_data 0/0; taskboard; gdlint and gdformat. Godot: sanctum 3/0, ansedra 4/0, ch13 4/0,
+    zone_kit 13/0, dressing 21/0, placeholder 8/0, party_spawns 3/0.
+  - **MERGE-READY @ f5675f19.**
+  - **Next:** the Lamp Archive (`ch13_lamp_archive.md`), then Ch14's Lacquer Court and the ripples.
 
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
