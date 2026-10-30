@@ -1,0 +1,12 @@
+{
+  "_doc": "Hollowmere, the Saltwright flotilla, at dawn in the fog (its first visit, Ch15; Act III's zone): gulls work the raft-city and stand on the dock's piles (tops y 2.7), and a shoal of small fish turns in the open water south of the dock, east of the moored ship (the surface y -0.25, the bed y -1.6). After Ansedra's birdless stillness (bible §5.8, ADR 0204 §1) the flotilla is where life comes back: hull-houses, windmills, tide-wheels, gulls (hollowmere.md: warmth returns). Act I's own gull and fish kinds; placed on the greybox layout (hollowmere_layout.json), to re-seat on the dressed kit with tools/creatures/wildlife_snap.gd and wildlife_audit.gd.",
+  "zone": "ch17/hollowmere",
+  "flocks": [
+    {"id": "dock", "center": [30.0, -2.0], "radius_m": 30.0, "altitude_m": [8.0, 15.0], "count": 6, "perched_at_start": 3,
+     "perches": [[10.5, 2.7, 5.0, 0.0], [24.5, 2.7, 5.0, 0.0], [38.5, 2.7, 5.0, 0.0], [17.5, 2.7, -4.2, 180.0],
+                 [45.5, 2.7, -4.2, 180.0]]}
+  ],
+  "shoals": [
+    {"id": "off_the_dock", "center": [48.0, -0.9, 9.0], "radius_m": 5.0, "count": 14}
+  ]
+}

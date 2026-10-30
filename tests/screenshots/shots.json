@@ -4312,6 +4312,22 @@
       }
     },
     {
+      "id": "wildlife_zone_hollowmere_dock",
+      "scene": "res://game/levels/_tests/wildlife/zone_wildlife_hollowmere.tscn",
+      "camera": "Cameras/Dock",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
       "id": "wildlife_zone_underway_crown",
       "scene": "res://game/levels/_tests/wildlife/zone_wildlife_oruvel_underway.tscn",
       "camera": "Cameras/Crown",
