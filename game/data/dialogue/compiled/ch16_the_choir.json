@@ -11,7 +11,7 @@
     {"op": "cue", "cue": "camera", "args": ["C01"], "kwargs": {}, "src": 15},
     {"op": "cue", "cue": "music", "args": ["drowned_choir"], "kwargs": {"fade": 3.0}, "src": 16},
     {"op": "cue", "cue": "wait", "args": [6.0], "kwargs": {}, "src": 17},
-    {"op": "cue", "cue": "camera", "args": ["C02"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "camera", "args": ["C02"], "kwargs": {"track": "asha"}, "src": 18},
     {"op": "cue", "cue": "mark", "args": ["asha", "channel_edge", "walk"], "kwargs": {}, "src": 19},
     {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "channel_motes", "count": 24, "rate": "slow"}, "src": 20},
     {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 21},

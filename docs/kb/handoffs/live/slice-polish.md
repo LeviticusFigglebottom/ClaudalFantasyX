@@ -1295,6 +1295,44 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     has Sefir, Ysolde, Liss, Tobin, Merel, Ethren or the householder.
   - Tests: cutscene_staging 2/0, act2_dialogue 1/0, dialogue_vs 3/0; validate_data and taskboard clean. No stills yet:
     the sets have no people.
+- **Ch14–Ch16 staging (M4-A2P-075), MERGE-READY @ this commit** (Ch14 59cfb82ae, Ch15 8b60911ca, Ch16 here):
+  - Staging files:
+    - `game/data/cutscene/ch13/ansedra_lacquer_court.json` (Ch14: the notes said ch14/, but staging files go by the
+      zone's location id);
+    - `ch15/open_sea.json` and `ch17/hollowmere.json` (Ch15);
+    - `ch16/{pale_rim,drowned_choir}.json` (Ch16).
+  - The replace lists follow the notes.
+  - Every frame was checked with a projector against the greybox. The moves where the notes missed their subject:
+    - Ch14:
+      - W03 is from over the water steps (the notes' camera stood on the court looking out);
+      - W04 looks up to Sefir on the 0.8 m dais;
+      - W07 and W08 frame the Conclave gallery (x −12, 2 m up);
+      - W11 is over Toma's shoulder;
+      - W14/W15 hold Tobin sitting;
+      - L01, L03, L09 and L12 hold the bier, the stern and Merel.
+    - Ch15:
+      - Kerrid's confession singles look at his seated eye line;
+      - Rhen's `kerrid_opposite` is at his right, out of every Kerrid single;
+      - K03, H05, H13 and H14 reframed;
+      - H16 is from the dock (the notes' camera was behind the ship's hull).
+    - Ch16:
+      - the Pale Rim has its own ship now (deck 3 m), and both of the notes' W01 and W02 were inside it;
+      - C07 holds Asha kneeling; C16 and S02 keep Kerrid in frame.
+    - Every chapter: the 85 mm singles look at the eye line, not 1.4 m.
+  - Scripts (cues only):
+    - ch14_the_vows: Liss runs to her own `liss_tobin` (she shared Tobin's mark);
+    - ch15: `H11 track=toma`; Liss gets `fathers_door_liss` (she shared her father's mark);
+    - ch16: `C02 track=asha`.
+  - In-engine across the eight Ch13–Ch16 zones: every shot and mark the scripts call resolves after staging, except
+    Ch13's R10 (M4-A2P-077).
+  - Tests: act2_dialogue 1/0, dialogue_vs 3/0, cutscene_staging 2/0; dlgc, validate_data and taskboard clean.
+  - **Still blocked:**
+    - People: none of these zones has its scripted cast. Ch14–Ch16 are added to M4-CIN-1305; until then, stills
+      show empty sets.
+    - **Chapters:** ch15.json's flow plays none of Ch15's scenes (`ch15_the_dock_master` included, which story
+      flagged).
+  - **Next:** Act III cinematics (ADR 0207, M5-A3P-1600..1699), and the PC-QUEUE. M4-A2P-070 still waits on the
+    people.
 ### PC-QUEUE
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan
