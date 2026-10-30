@@ -68,8 +68,8 @@ row's `"chapter"` or Ch13's thread plays into Ch14.
 
 ## Acceptance criteria
 - [x] The beat-level rows are back in `objectives.json` (story, 2026-10-30).
-- [x] Each Ch10–Ch13 flow plays its scenes and battles in §1's order (Ch14: M4-A2P-118).
-- [ ] `qa_known.json` `"unraised"` is empty again, and test_qa_threads stays green. (Down from 19 to Ch14's 5, which wait on M4-A2P-118; green.)
+- [x] Each Ch10–Ch13 flow plays its scenes and battles in §1's order (Ch14: M4-A2P-1200).
+- [ ] `qa_known.json` `"unraised"` is empty again, and test_qa_threads stays green. (Down from 19 to Ch14's 5, which wait on M4-A2P-1200; green.)
 
 ## Notes (act1-chapters, 2026-10-30)
 - **Wired (§1 rows 1–14):** the triggers come from the generators: reedhollow `shore`, lowlight `engine` and
@@ -89,6 +89,6 @@ row's `"chapter"` or Ch13's thread plays into Ch14.
 - **Staging:** the scenes name shots, cast, marks and VFX anchors these greybox stages don't have yet (100 warnings).
   They're handed to M4-A2P-075 (staging 070–075, mine) through one qa_known `known` row.
 - **Ch14 (rows 15–19):** `ch14_water_steps`, `ch14_malcor_venn` and Venn's enemy row aren't built yet, so these are
-  M4-A2P-118.
+  M4-A2P-1200.
 
 ## Review log
