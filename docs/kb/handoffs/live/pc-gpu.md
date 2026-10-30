@@ -4,11 +4,22 @@ Seeded by the Lead on 2026-10-23. **This environment owns this file** (CLAUDE.md
 branch after every finished item, and it replaces `docs/kb/qa/gpu/2026-10-23-pc-queue-progress.md` as the canonical
 record. The newest copy is on the most recently pushed `gpu/*` branch.
 
-> **Current session:** `session_01F3vrUMSWVyLnG3asrc8viy` (Remote Control on this PC, from 2026-10-27; it replaces
-> `session_01DKdurcvrzq9PEvuSu5L2nA`, which died when the PC was switched off mid-gate). The Lead is
-> cloud session `session_018aiGwGLGkxsnMnu8VfCu1m`. The integration branch is now
-> **`claude/undertow-lead-handoff-ze8rrn`** (-423ixt is frozen).
-> **This copy, on `gpu/render-creatures-fce2e82`, is the newest.**
+> **Current session (from 2026-10-29 ~20:20 EDT):** a new Remote Control session on this PC. The Lead is
+> `session_01Bg3iP7cPGyjbX4CyniBahc`; the integration branch is **`claude/new-session-mj8c3c`**.
+> **This copy, on `gpu/act1-qa-3`, is the newest.**
+
+## BACK ONLINE @ 2026-10-29 ~20:20 EDT: the Lead's pass-3 queue
+
+- **LFS: this PC reaches lfs.github.com** (HTTP 302 from Git Bash). `git lfs pull` fetched all 197 LFS objects
+  into the big18 worktree. The PC can push LFS objects on request.
+- **Item 1, Act I real-GPU QA pass 3: IN PROGRESS** on `gpu/act1-qa-3`. That's origin/lead/gate-big18 @ 37a90b4c,
+  plus integration cf03aa8d (4 commits ahead), plus gpu/act1-qa-2, which held act1_gpu_qa.md and had never been merged.
+  The worktree is C:/Users/Aaron/hymn_qa3.
+  - The walk gains the three Act I zones it lacked: ch04/haluna_wake, ch05/pemakar and ch09/corrow_night.
+  - Pass A (619 shots, High ×2.667, `--setup`), then pass B (the walk), then the swap sweep (`act1_swap_sweep.py`
+    run windowed on the GPU), then re-checks of the rows.
+- Items 2–5 follow, in the Lead's order.
+- **Audio's PC-QUEUE (listening on real speakers) needs the human: skipped.**
 
 ## RESUMED @ 2026-10-27 ~23:30 EDT (the Lead: ADR 0041, Act I final quality first)
 

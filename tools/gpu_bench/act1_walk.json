@@ -156,6 +156,17 @@
    "kind": "spawns"
   },
   {
+   "id": "haluna_wake",
+   "kind": "location",
+   "arg": "ch04/haluna_wake",
+   "dwell": 30,
+   "press": "ui_accept"
+  },
+  {
+   "id": "haluna_wake_spawns",
+   "kind": "spawns"
+  },
+  {
    "id": "brightwater_ferry",
    "kind": "location",
    "arg": "ch04/brightwater_ferry",
@@ -227,6 +238,17 @@
    "dwell": 16,
    "return": "ch05/ashcrown",
    "press": "ui_accept"
+  },
+  {
+   "id": "pemakar",
+   "kind": "location",
+   "arg": "ch05/pemakar",
+   "dwell": 30,
+   "press": "ui_accept"
+  },
+  {
+   "id": "pemakar_spawns",
+   "kind": "spawns"
   },
   {
    "id": "ch06",
@@ -339,6 +361,17 @@
   },
   {
    "id": "ch09_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "corrow_night",
+   "kind": "location",
+   "arg": "ch09/corrow_night",
+   "dwell": 30,
+   "press": "ui_accept"
+  },
+  {
+   "id": "corrow_night_spawns",
    "kind": "spawns"
   }
  ]
