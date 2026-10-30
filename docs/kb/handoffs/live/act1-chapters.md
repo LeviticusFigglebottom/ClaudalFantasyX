@@ -636,6 +636,25 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - Next: M4-A2P-019, the Act II loadouts (re-run every Act II suite on its chapter's loadout).
 - MERGE-READY @ fe3686aea
 
+- **M4-A2P-024 Nhoa, Hesk and Ethren (combat seat): done, in review.**
+  - PROVISIONAL Vowbound rows and skills, and BattleEcho (Nhoa copies the last enemy action).
+  - Bound and first-call flags; clip maps.
+  - **Fixed my own red:** Kesh's row (pushed in the M4-A2P-025 batch) would have turned test_vowbound_sfx and the
+    summon first-call test red. Both are covered now, see below.
+  - **Cross-lane edits, each in its own commit, mirroring existing patterns** (LEAD-ASK: flag if an owner objects):
+    - creatures.json: dropped the three `vowbound_pending` keys (validate_data demands it once a row exists) and
+      added `clip_by_skill`. Fixture fix in tools/tests/test_creatures.py.
+    - choreo.json `first_call_flags` for the four.
+    - tools/tests/test_vowbound_sfx.py skips rows with `sfx_pending` (the audio task) and checks the key names one.
+    - tools/battle_vfx_coverage.py INTENDED: entries for `cord_lift` and `nhoa_echo`.
+  - **Requests:** M4-AUD-1010 (voices; drops sfx_pending) and M3-BPR-443 (effects).
+  - **Checks:** battle_echo, vowbound, summon, creature, battle_engine; tools vowbound, creatures, vfx_coverage,
+    flags; validate, lint and format.
+  - **Next:** the combat seat's engine queue is done except M4-A2P-019, which waits on the Lattice and gear (030/031).
+    Then the provisional boss rows once they reach integration (the tune is ready), and the Act II flow beats once
+    story's scenes land.
+- MERGE-READY @ (this push)
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.

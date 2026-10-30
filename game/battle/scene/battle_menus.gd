@@ -586,6 +586,8 @@ func fail_text(reason: StringName, actor: BattleCombatant, provoker: BattleComba
 			text = tr("HUD_FAIL_PROVOKED_FMT")
 		BattleCycle.FAIL_OUT_OF_CYCLE:
 			text = tr("HUD_FAIL_OUT_OF_CYCLE")
+		BattleEcho.FAIL_NOTHING:
+			text = tr("HUD_FAIL_NOTHING_TO_ECHO")
 		&"auto_turn":
 			text = tr("HUD_FAIL_AUTO_TURN_FMT")
 		&"not_your_turn":

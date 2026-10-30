@@ -81,6 +81,8 @@ var objective: Dictionary = {}
 var objective_count := 0
 var locked_active: Array[StringName] = []
 var locked_key := ""
+## M4-A2P-024 (BattleEcho): the last skill an enemy-side combatant used, for an echo skill to copy. &"" = none yet.
+var last_foe_skill: StringName = &""
 var unavailable: Array[StringName] = []
 var unavailable_key := ""
 
@@ -357,7 +359,13 @@ func _perform(actor: BattleCombatant, skill_id: StringName, targets: Array[Battl
 	var cost := int(sk.get("mp_cost", 0))
 	if actor.mp < cost:
 		return ActionResult.failed(actor.id, skill_id, &"no_mp")
-	return _checked(actor, skill_id, sk, targets)
+	if bool(sk.get("echo", false)):  # M4-A2P-024: Nhoa copies the last enemy action
+		sk = BattleEcho.row(self, sk)
+		if sk.is_empty():
+			return ActionResult.failed(actor.id, skill_id, BattleEcho.FAIL_NOTHING)
+	var result := _checked(actor, skill_id, sk, targets)
+	BattleEcho.record(self, actor, skill_id, result.ok)
+	return result
 
 
 ## A row the current party member need not have learned or pay MP for: a Swell technique,
