@@ -901,6 +901,33 @@ that test at this branch's zones.
   - **MERGE-READY @ e1903b9e** (rows 51, 62, 63 @ e72c9631; the arena on top).
 - **BACKLOG EMPTY (10-30, after pass 5):** my pass-5 rows are fixed, or handed off with a request (62's kit
   geometry: M3-ENV-1328). Row 34 is the request path's. The rest of Ch14–Ch16 waits on M4-A2P-103 to 107.
+- **Player-height walk, Ch5–Ch9 (10-30, on big21 0347aa74+ merged into this branch):** 548 eye-height stills
+  (every spawn, trigger and story mark, looking N, E, S and W) over the eight zones, all viewed on contact sheets.
+  - **Fixed here:**
+    - **Corrow (Ch8 and Ch9):** the Bastion's two end walls left a 0.5 m slit of sky between their 12 m
+      segments (the end is 24.5 m). They now slide together to meet.
+    - **The low town's black pools:** this was `corrow_far` showing through the town cells' hollows (they dip
+      3.75 cm; the far ground lay 3 cm under the town). It's lowered 3 cm, and the pools now read as wet hollows.
+    - **Tamsule's market cloths** (awnings, boat canopies, sun umbrellas) read as flat colour: the kit's cloths are
+      92 % flat paint. The zone copies (`tamsule_cloth_*_material.tres`) show the weave through a sun-faded dye.
+  - **Kit code, so requested from env-art:**
+    - **M3-ENV-1329:** Brine Shoals' hard wet/dry lines where the channel tiles meet the mudflat tiles. A test
+      showed it's the baked wetness, not variation or LOD. The task has a one-line patch.
+    - **M3-ENV-1330:** Corrow's low town ground has per-triangle cobble patches with hard edges, which stop at the
+      tile edges.
+  - **Seen and left:**
+    - **Ashcrown:** the plume is a lumpy grey mass seen close from the crown terraces.
+    - **Coilspire:** north from the headland is the storm-graded flat of Corrow's far ground.
+    - **Ch9's strand:** the shoreline is ruler-straight where the still water meets the beach's planar slope.
+    - **Not walk views:** the marks out at sea, in the drop and inside actors (Kahre's heart).
+  - Checks: test_corrow_kit, test_tamsule_bell_kit, test_ch08_flow, validate_data, taskboard; Godot
+    --filter=corrow (18), tamsule (7), ch07 (18), ch08 (25) and ch09 (13) pass. Viewed `ch07_tamsule_market`,
+    `ch08_corrow_flood` and `ch08_corrow_arrival`.
+  - **MERGE-READY @ 008c7de3.**
+  - Next: the same walk for Ch13–Ch16 once act1-chapters mounts them (the zones are dressed; the walk rig takes any
+    zone and layout).
+- **BACKLOG EMPTY (10-30, after the Ch5–Ch9 walk):** what's left from the walk is with env-art (M3-ENV-1328/1329/1330).
+  Ch13–Ch16's walk waits on the mount, and the rest of Ch14–Ch16 on M4-A2P-103 to 107.
 ### PC-QUEUE
 - Pass 3 row 65 (@ edb18aae): re-measure the camp's smoke columns (24 steps at High) and the Tamsule drop (High has no
   god rays now) at High 1440p against the 0.3 ms target.
@@ -939,3 +966,4 @@ SELF-RENDERED @ 3be35a85: ch06_brine_camp, _road, ch08_coilspire_hall, _gate, ch
 SELF-RENDERED @ c6abd321: zz_pem_harbour, zz_pem_road, zz_pem_weir, zz_cor_strand (scratch spawn views), ch05_ashcrown_crown, crowd_zone_ashcrown, ch05_pemakar_harbour, ch09_corrow_strand, brine_b05_barge_channel, battle_arena_coilspire_headland_path, pemakar_p11_sea_cut_weir_day, battle_boss_intro_matron (GPU pass 4 rows on big20), all viewed; the strand re-rendered after each shroud change.
 SELF-RENDERED @ 7999fb30: ch15_hollowmere_supper, ch15_hollowmere_dock, viewed (the supper table by the south rail).
 SELF-RENDERED @ e1903b9e: battle_boss_intro_matron, battle_arena_ashcrown_anvil_court (the loggia lattice), pemakar_p11_sea_cut_weir_day (before, after and a tint test), ch09_corrow_strand plus the strand spawn view (scratch, each shroud step plus a red paint test), battle_arena_pale_rim_shallows (new), all viewed.
+SELF-RENDERED @ 008c7de3: the Ch5–Ch9 eye-height walk (548 stills, scratch), Brine Shoals' variation, LOD and wet tests, Tamsule's cloth and Corrow's wall-slit and pool before/after views (scratch), ch07_tamsule_market, ch08_corrow_flood, ch08_corrow_arrival — all viewed.
