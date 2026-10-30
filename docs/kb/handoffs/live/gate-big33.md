@@ -36,3 +36,27 @@ GATE-BUILT @ c2f4ec9f
 ## Fast gate
 - Selected: 55 test files (plus test_qa_capsules for the routed red).
 - Lane A (mine): 28; lane B (GATE-HELPER): 27, in `gate-big33-lanes-b.txt` @ 1067c447.
+
+## Fast-gate results
+- Import check clean · boot 0 ERROR lines · log check 0.
+- Lane A (mine, 28 files): 27 green. test_qa_capsules 3/1, routed since big30 (act1-chapters' foes have no bodies).
+- Lane B (GATE-HELPER, 27 files @ 1067c447, arrived 22:49): 26 green.
+  - **test_debug_overlay** 14/1: `res://game/core/scene_router.gd names SceneSwapProbe` (release strips game/core/debug/). It is
+    integration-qa's 7fbb97a9 (M3-HER-1168 --ready-profile), a doc comment at scene_router.gd:74; the same line is on
+    claude/hero-integration, and the test is a static scan. Routed: **integration-qa / hero-integration** (reword the
+    comment without the class name).
+- Tools suite (-j 2, 215 units):
+  - New from **Act III**: act2-plan's 9adf414c (M5-A3P-1000) puts the Ch17–Ch21 scripts in the game, and they call what
+    doesn't exist yet:
+    - test_cutscene_sfx_files: music cues (credits_suite, dace_ledger, ending_dock and others) and Ch17 SFX files;
+    - test_villagers: `ch17_bark_lookout.dlg: clerk nod` has no clip;
+    - test_hero_clips: scripts call hero clips (Sefir, Toma and others) that don't exist.
+    The same holds on claude/act2-plan alone. Routed: **act2-plan** (put the gaps on the tests' TODO/known lists or file
+    the requests with audio, characters and creatures; the scripts may land before their assets).
+  - Unchanged, still routed: test_rig_integrity (characters); test_act1_audio_audit and test_battle_vfx_coverage
+    (act1-chapters). Known: test_palette_check, test_screenshots.
+
+GATE-FAST-DONE @ 8d752059 (merge-approved: no batch-caused red). Routed: act2-plan (Act III scripts' missing
+cues and clips: test_cutscene_sfx_files, test_villagers, test_hero_clips); integration-qa (test_debug_overlay); act1-chapters
+(test_qa_capsules, test_act1_audio_audit, test_battle_vfx_coverage); characters (test_rig_integrity). Known: test_palette_check,
+test_screenshots.
