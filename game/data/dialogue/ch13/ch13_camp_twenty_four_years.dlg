@@ -1,0 +1,19 @@
+// Ch13 camp (optional, Sefir's guest house on the night after the Sanctum; requires ch13_ethren_bound). Ysolde and
+// Asha. Ysolde has visited Corran every year for twenty-four years; Asha has just bound him. The difference between
+// wanting someone back and wanting them let go is the whole of pillar 6, said by the person who has paid it longest.
+// Nothing about the veil-fall (Act III). Sets ch13_camp_talk.
+title: ch13_camp_twenty_four_years
+location: ch13/ansedra
+---
+Asha [guilty]: Ysolde. Today. I didn't know he was your husband until you said his name. #line:ch13_camp_001
+Ysolde [neutral]: I know. I didn't tell you. That was mine to carry, not yours. #line:ch13_camp_002
+Ysolde [neutral]: Every year on our day I came to the ledge and told him the news. Who married. Who died. That the bread was worse without him. #line:ch13_camp_003 #long
+Ysolde [soft_smile]: He was a terrible cook. He'd have been delighted. #line:ch13_camp_004
+Asha [sad]: Did he hear you? #line:ch13_camp_005
+Ysolde [neutral]: I don't know. I told him anyway. #line:ch13_camp_006
+Asha [worried]: If there were a way to break it. To end all this. Would you want him back? #line:ch13_camp_007
+Ysolde [neutral]: No. #line:ch13_camp_008
+Ysolde [neutral]: I would want him let go. That isn't the same thing. #line:ch13_camp_009
+Ysolde [tender]: I have had twenty-four years to learn the difference. You'll have to learn it faster. I'm sorry for that. #line:ch13_camp_010 #long
+<<set $ch13_camp_talk = true>>
+===

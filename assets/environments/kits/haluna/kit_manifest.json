@@ -13,6 +13,50 @@
         "anchor_engine-lod1": 564
       }
     },
+    "ansedra_archive": {
+      "budget": [
+        60000,
+        4000
+      ],
+      "bytes": 1408428,
+      "lods": {
+        "ansedra_archive": 17120,
+        "ansedra_archive-lod1": 904
+      }
+    },
+    "ansedra_archive_stacks_e": {
+      "budget": [
+        45000,
+        600
+      ],
+      "bytes": 4026176,
+      "lods": {
+        "ansedra_archive_stacks_e": 39156,
+        "ansedra_archive_stacks_e-lod1": 240
+      }
+    },
+    "ansedra_archive_stacks_w": {
+      "budget": [
+        45000,
+        600
+      ],
+      "bytes": 3953964,
+      "lods": {
+        "ansedra_archive_stacks_w": 38448,
+        "ansedra_archive_stacks_w-lod1": 240
+      }
+    },
+    "ansedra_buildings": {
+      "budget": [
+        60000,
+        4000
+      ],
+      "bytes": 387156,
+      "lods": {
+        "ansedra_buildings": 5336,
+        "ansedra_buildings-lod1": 984
+      }
+    },
     "ansedra_causeway_6m": {
       "budget": [
         3000,
@@ -22,6 +66,17 @@
       "lods": {
         "ansedra_causeway_6m": 340,
         "ansedra_causeway_6m-lod1": 72
+      }
+    },
+    "ansedra_court": {
+      "budget": [
+        90000,
+        6000
+      ],
+      "bytes": 1093472,
+      "lods": {
+        "ansedra_court": 12504,
+        "ansedra_court-lod1": 1192
       }
     },
     "ansedra_far_domes": {
@@ -44,6 +99,50 @@
       "lods": {
         "ansedra_far_domes_lit": 6840,
         "ansedra_far_domes_lit-lod1": 2720
+      }
+    },
+    "ansedra_ground": {
+      "budget": [
+        40000,
+        2500
+      ],
+      "bytes": 523464,
+      "lods": {
+        "ansedra_ground": 16000,
+        "ansedra_ground-lod1": 1000
+      }
+    },
+    "ansedra_sanctum": {
+      "budget": [
+        90000,
+        6000
+      ],
+      "bytes": 3152400,
+      "lods": {
+        "ansedra_sanctum": 40584,
+        "ansedra_sanctum-lod1": 1552
+      }
+    },
+    "ansedra_walks_n": {
+      "budget": [
+        90000,
+        6000
+      ],
+      "bytes": 2661664,
+      "lods": {
+        "ansedra_walks_n": 32276,
+        "ansedra_walks_n-lod1": 1064
+      }
+    },
+    "ansedra_walks_we": {
+      "budget": [
+        90000,
+        6000
+      ],
+      "bytes": 1493320,
+      "lods": {
+        "ansedra_walks_we": 18876,
+        "ansedra_walks_we-lod1": 672
       }
     },
     "archive_case": {
@@ -198,6 +297,17 @@
       "lods": {
         "bowl_dome": 3242,
         "bowl_dome-lod1": 150
+      }
+    },
+    "bowl_dome_lit": {
+      "budget": [
+        6000,
+        400
+      ],
+      "bytes": 239056,
+      "lods": {
+        "bowl_dome_lit": 3278,
+        "bowl_dome_lit-lod1": 186
       }
     },
     "bridal_barge": {
@@ -1683,6 +1793,17 @@
       "lods": {
         "oil_lamp_post": 353,
         "oil_lamp_post-lod1": 27
+      }
+    },
+    "open_sea_barge": {
+      "budget": [
+        16000,
+        1200
+      ],
+      "bytes": 214876,
+      "lods": {
+        "open_sea_barge": 3728,
+        "open_sea_barge-lod1": 648
       }
     },
     "order_chapel": {

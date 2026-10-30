@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/stillguard/venn_stage.tscn" id="stage"]
+
+[node name="VennStage" instance=ExtResource("stage")]
+clip = &"defend"
+clip_time = 0.34

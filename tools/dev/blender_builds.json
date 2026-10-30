@@ -899,6 +899,24 @@
       ]
     },
     {
+      "id": "venn",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M4-A2P-051: Warden Malcor Venn (Ch14), a named Stillguard-kit build: the halberd (sg_halberd) on the spear's bone, no shield, Moll's sash, his own dyed cloth albedo (sg_textures.dyed_cloth); his clips are hero_clips' (the Moll block).",
+      "sources": ["assets_src/characters/stillguard/**", "assets_src/characters/moll/**", "assets_src/characters/villagers/**",
+                  "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**",
+                  "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/venn/*.glb", "assets/characters/venn/textures/*.png",
+                  "assets/characters/venn/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/stillguard/build_stillguard.py", "--", "--variant", "venn",
+         "--bake-dir", "{scratch}/venn_bake"],
+        ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--variant", "venn", "--bake-dir",
+         "{scratch}/venn_bake"],
+        ["{python}", "assets_src/characters/stillguard/write_materials.py", "--variant", "venn"]
+      ]
+    },
+    {
       "id": "pell",
       "threads": 4,
       "owner": "character",
@@ -1229,6 +1247,35 @@
         ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "skipper_sadi", "--bake-dir", "{scratch}/skipper_sadi_bake"],
         ["{python}", "assets_src/characters/villagers/write_materials.py", "skipper_sadi"],
         ["{python}", "assets_src/characters/villagers/villager_clips.py", "skipper_sadi"]
+      ]
+    },
+    {
+      "id": "villager_tobin",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M4-A2P-050: Tobin Varrow (Ch13-14) on the villager build: Liss's family face, the Saltwright wedding coat and the Warden's red sash, his line-marks; hold_hands and tobin_falls.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/tobin/*.glb", "assets/characters/villagers/tobin/textures/*.png", "assets/characters/villagers/tobin/materials/*.tres", "assets/characters/villagers/tobin/*.tscn", "assets/characters/villagers/tobin/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "tobin", "--bake-dir", "{scratch}/tobin_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "tobin", "--bake-dir", "{scratch}/tobin_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "tobin"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "tobin"]
+      ]
+    },
+    {
+      "id": "villager_merel",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M4-A2P-050: Merel Dask (Ch13-14) on the villager build: wedding red, the bridal cloth (a solid shawl), the bloodied-sleeve variant (`_blood`: textures/merel_blood_albedo.png, materials/cloth_a_blood.tres; it reads the shared cloth atlas, so the job builds that first, as build.sh does); hold_hands and pole_barge.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/merel/*.glb", "assets/characters/villagers/merel/textures/*.png", "assets/characters/villagers/merel/materials/*.tres", "assets/characters/villagers/merel/*.tscn", "assets/characters/villagers/merel/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "merel", "--bake-dir", "{scratch}/merel_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--cloth"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "merel", "--bake-dir", "{scratch}/merel_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "merel"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "merel"]
       ]
     },
     {
@@ -1696,6 +1743,15 @@
       "runs": [
         ["{blender}", "--python", "assets_src/crowd/build_crowd.py", "--", "--body", "crowd_woman_medium_b", "--bake-dir", "{scratch}/crowd_woman_medium_b_bake"],
         ["{python}", "assets_src/crowd/build_crowd.py", "--body", "crowd_woman_medium_b", "--bake-dir", "{scratch}/crowd_woman_medium_b_bake"]
+      ]
+    },
+    {
+      "id": "oruvel_seabed",
+      "owner": "cinematics",
+      "sources": ["assets_src/cutscene/ch01/oruvel_seabed.py"],
+      "outputs": ["assets/cutscene/ch01/oruvel_seabed.glb"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/cutscene/ch01/oruvel_seabed.py", "--"]
       ]
     }
   ]

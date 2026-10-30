@@ -1089,7 +1089,57 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - **Checks:** slice_primitives 1, ch01 20, oruvel 17, all 0 failed; validate_data clean.
   - **Viewed (lavapipe):** ch01_going_under_u11 shows the rippled floor and rocks, the pen's drowned frame and
     pilings in silhouette, and the motes sinking over them. ch01_going_under_u10 is unchanged.
+- **FAST-TRACK, found re-rendering row 58 on 7dc3ab41: every cutscene insert turned to Rhen. Fixed, MERGE-READY @ eef941bcf.**
+  - 692b5515 (hero-integration, GPU QA rows 37/38, in big20) gave FIXED shots a safety net (`keep_in_frame_fixed_share`)
+    that turns a locked frame toward the leader when he would be out of it.
+  - It also caught scripted cutscene shots. O07's name-board insert turned across the town to Rhen, and so would any
+    insert or reverse without him in it.
+  - The net now skips the scripted shot (`shot != _scripted_shot` in FieldCameraDirector.evaluate). It is a
+    one-line change in `game/world/` (Systems and hero-integration's), so **hero-integration, please review.**
+  - test_camera_director gains a test that fails without the fix; 51 run, 0 failed.
+  - Stills re-rendering now; the audit results follow.
+- **Rows 58 (O07) and 60 and M3-CIN-1234, re-verified on 7dc3ab41 plus the camera fix above, MERGE-READY @ 61babc97c:**
+  - ch01_o07_name_board: the Seventh Terrace's name-board fills the frame (on 7dc3ab41 alone it turned to Rhen
+    across the town; fixed above).
+  - slice_verse_hall: Rhen speaks in frame on S07_reverse, with Toma beside him.
+  - ch01_scale_hull (M3-CIN-1234): Rhen at the counter in the over-the-shoulder, the Scale-Man in his booth.
+- **The slice beat audit, end to end on 7dc3ab41 (Prologue → the dock at night, every slice still self-rendered and
+  viewed), MERGE-READY @ 8b8863327:**
+  - **Read as staged:** prologue P01 and the vigil line; the beach H05 (both faces; row 31's skirt balloon is gone
+    here) and H06; the standing three-shot (all three heads); Neme's table; the village and the causeway field
+    views; the verse steps, threshold, hall, S08 and S10; the dock at night; the Ch4 chapter card; the end card.
+  - **Fixed:** C08. "On my shield. Everyone, on my shield, now." played over the Drownbell with Toma off-frame and cut
+    straight to battle. The rise now gets 1.2 s, then C08_toma frames Toma low and close where his walk to the water
+    ends, shield up, the others pressing in behind.
+  - **Kept as authored:** H06's "One." is Toma off-frame, his spear tip entering frame right (haluna.md §5 H06).
+  - **Notes for other tracks:**
+    - S10: Rhen's eyes read red-rimmed in the sunset (characters' eye material).
+    - The field views carry UI's "Where to next" toast.
+    - The harrier view shows no harrier on lavapipe (GPU pass 3 had one; PC-QUEUE).
+    - Beach shots need `HYMN_SHOT_TIMEOUT=1500` on lavapipe: H06 takes 586 s and the standing shot 625 s.
+  - **Checks:** cutscene 106, dialogue_vs 3, first_verse 3, all 0 failed.
+  - hero_field fails on two Act II zones (lowlight: rhen 241 snaps; sanctum: asha 1, toma 3). That is the field walk,
+    which my change doesn't touch. For hero-integration.
+- **Act II, Ch10 staging (M4-CIN-1304, M4-A2P-070 doing), MERGE-READY @ 8b8863327:**
+  - Cinematics' staging files `game/data/cutscene/ch10/{ossa_fen,reedhollow}.json` supply every shot and mark the
+    scripts call that the layouts lack.
+  - CutsceneStaging adds them before a scene plays. Its `replace` list takes the layout's R03 and R06, which framed
+    other moments than the scripts' R03 and R06.
+  - ch10_fen_edge's O02 uses `track=toma`; the farewell-tide uses the release gate.
+  - **Request M4-CIN-1305 (the chapters track):** the party and Owa as stage actors, the Drowner's cast, and the hold
+    gate with its two prompts. Stills follow once the actors stand there.
+- **Ch10 staging stills (greybox, before the actors), MERGE-READY @ 4ad355b8e:**
+  - Five pending shots: ch10_edge_o02, ch10_causeway_r03, ch10_tide_f02, ch10_tide_t04 and ch10_outside_r07.
+  - Viewed: each camera frames its set (O02 back at the bank's lip with Pell, R03 down the causeway to Owa's mark,
+    F02 the clutch's backs with the lagoon beyond, T04 behind and above the clutch, R07 the two-shot's place).
+  - R07 and R08 moved to the north side: the west bound wall filled half the south view.
+  - The people wait on M4-CIN-1305; the stills get re-shot when the actors stand there.
+  - **Next:** when the chapters track lands M4-CIN-1305, re-render the five, then stage ch10_why_swim, dead_channel,
+    what_went_up and dawn_gate in stills.
+- For the Lead: `tools.tests.test_screenshots` now fails on `wildlife_zone_ossa_fen_walk0` (not mine; no baseline
+  and no pending flag).
 ### PC-QUEUE
+- slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan
   emissive reading. Check that its glow and silhouette read on the GPU; if not, it needs a rim light or a grade.
 - The Ch1 dive (ch01_going_under_u10/_u11, ch01_current_shaft_u09): the underwater look and motes on the GPU.

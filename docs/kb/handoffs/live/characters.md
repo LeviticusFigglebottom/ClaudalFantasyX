@@ -421,3 +421,50 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
     9, dialogue_box 26 (all 0 failed); portraits of 20 villagers, Pell and Sefir re-rendered and viewed. Every row
     self-rendered and viewed at close-up and field distance.
 - **Next (ADR 0205):** Act II, Kerrid's reveal rig (act2_plan's longest lead for this track).
+
+## 2026-10-30, Act II: M4-A2P-054 Kerrid's reveal (ADR 0205)
+- `KerridBurnGlow` (game/characters/heroes/kerrid_burn_glow.gd, data game/data/characters/kerrid_glow.json) lights
+  the Burns shell per instance (glow 0..1, lift held->gold for H09) and lists the 14 VFX sockets for M4-A2P-049.
+  Confession close-ups `kerrid_confession_{grief,guilty,burns}` were self-rendered and viewed: the mouth reads through
+  the beard, and the burns glow at the Ch15 peak. Unit test 3/3; lint and data OK. Task -> review (cinematics).
+- MERGE-READY @ 09a7928c
+- **Next:** M4-A2P-050 (Tobin and Merel), then M4-A2P-051 (Malcor Venn, the Abiding guard).
+
+## 2026-10-30, Act II: M4-A2P-050 Tobin and Merel
+- Both are on the villager build with 40 face shapes, face rows, stages and shots. All 7 shots were viewed.
+  - **Tobin:** Liss's family face, the Saltwright coat with the Warden's red sash, line-marks; LOD0 27.5k.
+  - **Merel:** wedding red, the bridal cloth as a new `solid` shawl, LOD0 35.6k/36k.
+  - **The bloodied sleeve:** `_blood` -> villager_textures.blood_atlas -> `cloth_a_blood.tres`. It is swapped in at
+    runtime by `CostumeVariant` (game/characters/costume_variant.gd).
+  - **Clips:** hold_hands, pole_barge, and the new tobin_falls.
+- **Checks:** villager_tobin, villager_merel, villager_marra and villager_skipper_sadi are identical on all 3 numpy
+  paths. test_villagers 45 OK, test_costume_variant 2/2, validate_data OK. The task is in review (rendering).
+- **Known limit:** the faces are at the villager level, like Skipper Sadi's. A hero-path upgrade is possible if the GPU
+  review holds Ch14's close-ups to the hero bar. Portraits are M4-A2P-081 (ui).
+- LEAD-ASK: the new shots (kerrid_confession_*, villager_tobin_*, villager_merel_*) are marked pending_baseline.
+  test_screenshots still fails on integration for the older unbaselined kerrid_/ivo_/pell_... shots, which carry no
+  pending key; that predates these.
+- MERGE-READY @ 83b8326c
+- **Next:** M4-A2P-051 (Malcor Venn on Moll's kit with a halberd and Moll's battle set; then the Abiding guard).
+
+## 2026-10-30, Act II: M4-A2P-051 part 1, Warden Malcor Venn
+- **Build:** a named build on the Stillguard and Moll kit (`stillguard_variants.json` `named.venn`).
+  - **Costume:** a Warden's dyes, black lacquer with gold piping, an order_marble tunic and a lacquer_red sash. They
+    come from the opt-in `palette` in moll_textures.cloth_atlas and `sg_textures.dyed_cloth`.
+  - **Head:** a grey crop.
+  - **Weapon:** a heavy **halberd** (`sg_halberd.py`, on the spear's bone) and **no shield** (build_moll `no_shield`).
+- **Clips:** Moll's battle contract and yield (B09's "driven back") plus a two-handed parry for `defend`
+  (`venn_parry`).
+- **Actors:** a battle actor (`game/characters/foes/venn_battle.tscn`), a field actor wrapper
+  (`assets/characters/villagers/venn/venn_actor.tscn`), stages and 7 viewed shots (pending_baseline).
+- **Checks:**
+  - The rig probe passes; limits are pinned with reasons, as Moll's.
+  - test_stillguard, test_hero_clips and test_blender_builds pass (63 tests).
+  - Godot post_import 21, hero_stage 11, battle_actor 5.
+  - venn, moll, the stillguard squad, ivo and the officer are identical on all 3 numpy paths, so the opt-in switches
+    leave the existing builds unchanged.
+- **Known limits:**
+  - His face and crop are at Ivo's level.
+  - In the parry the left hand stops at the chest, short of the haft.
+- MERGE-READY @ 3f0f5d67
+- **Next:** the Abiding guard (veiled gold lacquer: halberdier, Bulwark caster, the Captain of the Veil), in progress.

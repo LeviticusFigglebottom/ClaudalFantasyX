@@ -188,3 +188,17 @@ Fixed in the drafts and the plan on `claude/act2-plan`:
 - **F10:** the reads lists in Ch14 (adds `ch13_met_tobin`) and Ch15 (adds `ch11_lamp_repaired`, `ch11_rhen_admitted`, `ch13_sat_at_moorings`, with the lines they drive) are completed.
 
 Every other row belongs to the lane named in its Owner column and is logged for that lane in `docs/kb/handoffs/live/act2-plan.md` (LEAD-ASK, for the Lead to route).
+
+## Second pass (2026-10-30, story track, after big20 @ 7dc3ab41)
+Integration now has code behind some lane flags, so where code already reads or sets a lane name, the scripts take the lane name and the draft name is retired:
+- **F1, partly:**
+  - `ch10_drowner_felled` → **`ch10_drowner_defeated`**: the Ch10 flow sets it, and `test_ch10_thread.gd` and the layout read it.
+  - `ch10_tide_witnessed` → **`ch10_farewell_tide_seen`**: ui-menus' codex entry unlocks on it, and the farewell-tide script now sets it.
+  - The rest of F1 still stands: `ch10_side_pocket_found` → `ch10_found_scrape_mark`, `ch10_asked_kirru_child` → `ch10_child_asked`. No code reads those yet.
+- **F6, partly:** `ch15_kerrid_told` → **`ch15_kerrid_revealed`**. The status menu (`status_menu_model.gd`) reads it, and the shoal script sets it. Kerrid's barks and his `kerrid_stair` codex page now read it. The rest of F6 still stands.
+- **F8, partly:** `farewell_tide` and `name_shells` are ui-menus' entries (big20), and mine were dropped as duplicates. `farewell_tide` unlocks now that the script sets its flag.
+- **New, ui-menus:**
+  - `kirru_eldest` (people, big20) and the story track's `owa` are the same person. ADR 0204 names her Owa, so one of the two should go. ui-menus' call.
+  - The four bosses big20 put in `strings.csv` (`mangrove_drowner`, `lamp_engine`, `avalanche_ram`, `wakefin`) keep Combat's lore; the story track's duplicates were dropped. My three for `conduit_crawler`, `malcor_venn` and `abiding_guard` stay in ch11, ch14 and ch16.csv.
+- **New, chapters:** `M4-A2P-015-ch15-playable.md` still says `ch15_kerrid_told`. It should say `ch15_kerrid_revealed` (chapters' task file, so I haven't edited it).
+- Every other row stands as routed above. On the act2-plan side, nothing is left open.

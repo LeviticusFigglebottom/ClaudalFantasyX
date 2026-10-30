@@ -23,4 +23,6 @@ Ambient wildlife (never foes): fen birds and fireflies (Ch10), highland goats or
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
 - 2026-10-30, the creatures track (ADR 0205: Act II starts per track; the claim is the Lead's to record on the integration branch): **the fen fireflies are built and placed** (ch10_ossa_fen.json; plan sheet fen_firefly.md, State). **The fen kingfishers are built and placed** (plan sheet fen_kingfisher.md, State). **The woolback herds are built and placed** (plan sheet woolback.md, State). **The rim rays are built and placed** (rim_ray.md, State). All four are built and placed on the greybox; what's left is to re-seat them on the dressed kits (and to move the woolbacks to the Keth troughs) when env-art's kits replace the blocks.
 
+- 2026-10-30 (the Lead, 09:58: build Ch13+ ambient life from the beat sheets): Ch13–14 Ansedra has none (bible §5.8, ADR 0204 §1), and the Ch15 open sea has only the Wakefin and the sea-glow (the sheets). Hollowmere (`ch17/hollowmere`, first visited in Ch15) gets Act I's gulls on the dock piles and a fish shoal, as the flotilla where life comes back after Ansedra (game/data/world/wildlife/ch17_hollowmere.json; shot `wildlife_zone_hollowmere_dock`, viewed). The Ch16 rays are above. Kesh, Ch16's Vowbound, belongs to creatures-b (ownership.md).
+
 ## Review log

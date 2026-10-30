@@ -203,7 +203,14 @@ func _make(row: Dictionary) -> FieldNpc:
 	if crowd_id != &"" and person.is_empty():
 		push_warning("VillagerLayer %s: %s names no crowd person %s" % [zone_id, id, crowd_id])
 		return null
-	var adopted := placed_on(stand_in) if stand_in != null and person.is_empty() else null
+	var placed := placed_on(stand_in) if stand_in != null else null
+	if placed != null and placed != stand_in and not person.is_empty() and not placed in villagers:
+		# a crowd person replaces a villager the zone placed earlier in another's model (HalunaVillagers' shop bodies,
+		# which populate before the layer builds), so one body shows; a group's other people are the layer's own
+		stand_in.remove_child(placed)
+		placed.free()
+		placed = null
+	var adopted := placed if person.is_empty() else null
 	var model := stand_in.get_node_or_null(NodePath(GREYBOX_MODEL)) as Node3D if stand_in != null else null
 	var cast := stand_in.get_node_or_null(NodePath(ZONE_CAST)) as Node3D if stand_in != null else null
 	if cast != null and not person.is_empty():

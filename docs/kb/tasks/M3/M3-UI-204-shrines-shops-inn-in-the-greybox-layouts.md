@@ -2,8 +2,8 @@
 id: M3-UI-204
 title: "Greybox layouts: save shrines that save and travel, and Tamsule's trader, inn and shrine"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: act1-chapters
 reviewer: ui
 depends_on: [M3-C07-05]
 milestone: M3
@@ -35,5 +35,19 @@ These are layout edits in zones you own, so this is a request.
 - The hook ignores an id that has no `shrines` row (it logs a warning), so payload and row can land in either order.
 - Travel goes through the location registry. A destination is offered once it is attuned, in attunement order, with "Stay here" last (ShrineTravelMenu).
 - Tests: `tests/unit/test_shrine_services.gd`, `tests/unit/test_shrine_travel.gd`.
+
+- **act1-chapters, 2026-10-30, done:**
+  - **Brine Shoals:** the `shrine` trigger carries `"save_shrine": "brine_shoals_camp"` beside its beat.
+  - **Tamsule:**
+    - A `Shrine` spawn at (12, 0, 5), and the shrine trigger at (12, 0, 3) with `tamsule_shrine`.
+    - The trader at (−10, 0, 6) on the market's west edge, and the Reefball outfitter at (4, 0, 4).
+    - The inn at (−24, 0, 6) on the stilt lane, by the elder.
+    - The `tamsule_shrine` locations row.
+  - **Corrow:** a `Shrine` spawn on the wall-head by the shrine (the shrine moved to the Bastion with env-art-b's
+    relayout). `"save_shrine": "corrow_shrine"` on its payload, and the locations row.
+  - **Brightwater:** its shrine stays heal-only.
+  - **Coilspire:** `_on_niche` gives `sailmakers_needle`.
+  - **Tests:** shrine (55), ch06, ch07, ch08, coilspire; tools zone_map_pois and chapter_flow; validate.
+  - **For ui-menus:** Tamsule's map POIs (shrine, shop, inn) can follow at the points above.
 
 ## Review log

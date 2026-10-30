@@ -1,0 +1,29 @@
+{
+ "format": 1,
+ "scene": "ch12_side_the_boys_knot",
+ "source": "game/data/dialogue/ch12/ch12_side_the_boys_knot.dlg",
+ "start": "ch12_side_the_boys_knot",
+ "nodes": {
+  "ch12_side_the_boys_knot": {
+   "headers": {"location": "ch12/quellan"},
+   "ops": [
+    {"op": "if_not", "cond": ["flag", "ch12_tied_for_the_boy"], "to": 3, "src": 7},
+    {"op": "line", "id": "ch12_boy_001", "key": "DLG_CH12_BOY_001", "speaker": "ullari", "emotion": "soft_smile", "voice": "", "src": 8, "name_key": "DLG_NAME_ULLARI_ULLARI_BOY"},
+    {"op": "goto", "to": 16, "src": 7},
+    {"op": "line", "id": "ch12_boy_002", "key": "DLG_CH12_BOY_002", "speaker": "ullari", "emotion": "sad", "voice": "", "src": 10, "name_key": "DLG_NAME_ULLARI_ULLARI_BOY", "tags": ["long"]},
+    {"op": "options", "choices": [{"id": "ch12_boy_003", "key": "DLG_CH12_BOY_003", "to": 5, "src": 11}, {"id": "ch12_boy_007", "key": "DLG_CH12_BOY_007", "to": 13, "src": 19}], "src": 11, "next": 15},
+    {"op": "line", "id": "ch12_boy_004", "key": "DLG_CH12_BOY_004", "speaker": "ullari", "emotion": "neutral", "voice": "", "src": 12, "name_key": "DLG_NAME_ULLARI_ULLARI_BOY", "tags": ["long"]},
+    {"op": "if_not", "cond": ["flag", "ch12_rhen_tied_knot"], "to": 9, "src": 13},
+    {"op": "line", "id": "ch12_boy_005", "key": "DLG_CH12_BOY_005", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 14},
+    {"op": "goto", "to": 11, "src": 13},
+    {"op": "line", "id": "ch12_boy_006", "key": "DLG_CH12_BOY_006", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 16},
+    {"op": "goto", "to": 11, "src": 15},
+    {"op": "set", "flag": "ch12_tied_for_the_boy", "value": ["lit", true], "src": 18},
+    {"op": "goto", "to": 15, "src": 11},
+    {"op": "line", "id": "ch12_boy_008", "key": "DLG_CH12_BOY_008", "speaker": "ullari", "emotion": "neutral", "voice": "", "src": 20, "name_key": "DLG_NAME_ULLARI_ULLARI_BOY"},
+    {"op": "goto", "to": 15, "src": 19},
+    {"op": "goto", "to": 16, "src": 9}
+   ]
+  }
+ }
+}

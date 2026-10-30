@@ -10,7 +10,7 @@ location: ch11/lowlight
 @vfx glimmer_lift at=engine_core count=16 motion=spiral_up rate=slow
 @wait 5.0
 @camera T04
-<<if $ch10_drowner_felled>>
+<<if $ch10_drowner_defeated>>
     Ysolde [neutral]: That is twice. #line:ch11_twice_001
 <<endif>>
 Asha [sad]: They were waiting. Inside it. All this time. #line:ch11_twice_002

@@ -137,6 +137,11 @@ def tables(npc: str, extra: dict) -> tuple[dict, dict, dict]:
     for name, hex_ in extra["_tints"].items():
         shader[name] = ("character_cloth", 0, {"detail_tiling": "150.0", "col_albedo": colour(hex_),
                                                **tuned.get(name, {})}, cloth_tex)
+    blood = extra.get("_blood")
+    if blood:  # M4-A2P-050 (optional): `<mat>_blood`, the stained albedo (villager_textures.blood_atlas); no glTF slot
+        mat = blood["mat"]  # takes this name, so the import never wears it: CostumeVariant swaps it in at runtime
+        sh, prio, params, tex = shader[mat]
+        shader[f"{mat}_blood"] = (sh, prio, params, {**tex, "tex_albedo": T + "blood_albedo.png"})
     return shader, {}, {}
 
 
