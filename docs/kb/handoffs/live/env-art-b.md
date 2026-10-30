@@ -562,6 +562,29 @@ that test at this branch's zones.
 - **BACKLOG EMPTY (10-30 ~01:40):** Act I is clean in my lane, and the Act II preparation docs are written. Next:
   the PC's pass-3 rows for env-art-b when they land.
 
+- **The PC's pass 3, early findings (the Lead, 01:50), all three fixed:**
+  1. **`ch05_ashcrown_crown` / `crowd_zone_ashcrown`, the streaked bench and step faces:** the short rounded risers
+     interpolate their vertex normals toward +Y, so the triplanar base and the salt detail took the top-down
+     projection on near-vertical faces. The zone's `ashcrown_dressed_material` now uses the mesh's metre UVs (as
+     `ac_ashlar` does), and neither stone copy takes salt (none reaches a volcano's crown). The shared weathering
+     shader is untouched.
+  2. **`brine_b05_barge_channel`, the white untextured hull:** `bs_barge_white` was a flat StandardMaterial. It's now
+     painted lacquer over planking on the weathering shader: triplanar (the barge's small blocks have no plank UVs),
+     paint 0.86, a little salt and algae at the waterline, still the only clean white in the zone. **This is a change
+     to env-art's kit material table** (`assets_src/environments/kits/brine_shoals/bs_materials.py`, one entry), at the
+     Lead's routing: the source is the only place that fixes the kit preview, my Ch6 zone and the camp arenas at
+     once. The other 29 materials are byte-identical.
+  3. **`battle_arena_coilspire_headland_path`, the dark flat slab behind the fight:** the arena ground's centre stands
+     ~80 m from the fight, so its import chain (LOD1 from 70 m, measured to the bounds' centre) drew the coarse LOD1 as
+     the backdrop. A new `zl.pin_lod0()` holds it at LOD0 to 2 km in the arena (b_headland_arena.py). This was also
+     M3-ENV-1316's "headland far facets", and the reason scrub beyond 45 m floated.
+  - **Checks run:** tools test_brine_shoals_kit, test_b_arenas, test_arenas, test_ashcrown_kit; validate_data; Godot
+    ashcrown 22/0, ch05 13/0, brine 5/0, ch06 5/0, battle_arena 18/0.
+  - **Self-rendered and viewed:** `ch05_ashcrown_crown`, `crowd_zone_ashcrown`, `ch05_ashcrown_forecourt`,
+    `battle_arena_ashcrown_forecourt_day`, `brine_b05_barge_channel`, `battle_arena_coilspire_headland_path`. Clean
+    risers; a painted barge; the headland's textured, scrubby slope behind the fight. These six drift by design.
+  - **MERGE-READY @ f7d74a74.**
+
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
   on the PC presets (two large and three small fires in `ch06/brine_shoals` and `salvage_camp_burning`).
