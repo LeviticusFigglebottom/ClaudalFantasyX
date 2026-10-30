@@ -1484,3 +1484,14 @@ MERGE-READY @ 52cd5a5bb: M5-A3P-1703, the Kite's log.
   - **Tests and checks:** vowbound 119/0 and status 57/0. Freeing the sandbox fixes the bound_ids test's leftover
     node, which was there before. validate_data 0/0; taskboard ok; lint ok.
 MERGE-READY @ 80f0fdcc3: M5-A3P-1705, the Vowbound menus lose a name on release.
+
+- **M5-A3P-1706, the ledger page for Ch17 B05 (dd8d136e1):**
+  - LedgerReader writes Dace's entries (`ch17_ledger_page_*`) on a page under "Dace Sallow's ledger". They
+    still caption below.
+  - Each held `turn_page` gate turns the page when it ends. Past the last entry the turns land on blank pages.
+  - It takes no input and fades out when the scene ends. Sound: page_turned → ui_page.
+  - **Request M5-A3P-1707 (cinematics):** call `LedgerReader.mount(host, sequencer)` before `ch17_the_ledger`
+    plays.
+  - **Tests and checks:** test_ledger_reader 3/0; shot `ledger_reader` (pending_baseline), rendered and viewed;
+    validate_data 0/0; taskboard ok; lint ok; audio audit UI 0.
+MERGE-READY @ dd8d136e1: M5-A3P-1706, the ledger page.
