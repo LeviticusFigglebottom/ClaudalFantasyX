@@ -101,3 +101,14 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
     - the Ram's hazard is snow.
   - **env-art-b**, 7 rows: Kerrid at the Sanctum vestibule (he never enters the Sanctum); shot ids reused from the drafts for other frames.
 - BACKLOG EMPTY: the Lead's item is done: ADR 0204 applied, the depth check passed, and the consistency pass is logged with owners. Lane fixes belong to their tracks.
+
+### Gate-commit prep (2026-10-30)
+- MERGE-READY @ be30b8cc:
+  - `docs/kb/plan/act2_consistency.md`: the rows grouped by owner in a routing table (chapters 27, creatures-b 17, creatures 4, ui-menus 12, audio 13, env-art-b 10; a row may list two owners). The drafts' own rows are all closed, including N7 `drowner_haul`, N8 "the Veil-First", N9/P15 `court_steps` and `peace_wedding_break`, and F10 the reads lists.
+  - `docs/kb/plan/act2_tracks.md`, updated to the Lead's answers:
+    - §3a: 11 ownership rows to append, paste-ready, with `<GATE>` as the date;
+    - §3b: the narrowing edits (act1-chapters' row, which appears **twice** in ownership.md today; the m2-slice session renamed to cinematics);
+    - §4a: the COMMON PREAMBLE's ADR 0203 rule;
+    - §4b: the Act II track-briefs table (12 tracks, eight on day 1).
+  - Checks: validate_data 0/0, taskboard --check clean. Skipped: Godot (docs only).
+- BACKLOG EMPTY: all of the Lead's items are done. The rest is the gate commit (the Lead) and the lanes' consistency rows (owners).
