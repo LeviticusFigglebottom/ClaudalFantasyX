@@ -1228,3 +1228,17 @@ MERGE-READY @ 8d42e9508: a resident field keeps following the text size and pale
   - **Tests:** hero_portraits 10/0, dialogue_box 27/0; validate_data 0/0 (PROVENANCE rows); lint and format clean.
 MERGE-READY @ 8b07bcd50: Act II faces (Venn, Merel, Tobin, the clerk) in the dialogue box.
 BACKLOG EMPTY: every remaining item waits on another track (the Abiding guard's model; Venn's enemy row with `answered_key`; Pell's battle row; ch14's thread for the Lacquer Court objectives).
+- 2026-10-30 18:20, **the Lead's 16:45 note: big25's red test_aspect_layouts** (merged big25 at b67876dbf;
+  `objectives.json`, `qa_known.json`, the objective test and `strings.csv` take act2-plan's integration side).
+  - **Cause:** the failing label was the Read's "Weak to Fire" float (DamageLayer), not the panel. At 4:3 the Lantern
+    Eel stands at the screen's left edge, so the centred float started at x -41 (-63 at 130%).
+  - **Fix (430bd0471):** every damage number and float word is clamped inside the screen by `edge_px` (12;
+    `battle_hud.json` `damage` and `float_text`).
+  - **Tests:** aspect 18/0 (failed before), read_panel 13/0, battle_controller 33/0, accessibility_battle_speed 6/0;
+    validate_data 0/0; lint and format clean.
+  - **Render:** battle_read_panel with and without the fix is pixel-identical at 16:9. Its drift from the baseline
+    (rmse 0.074) was already there without my change, so it's another track's (the staging).
+  - **Battle return at 130% and on a pad:** done at 17:00 (80d453279). The victory and rewards renders at 100% and
+    130% were viewed, the pad covers the result choices, and the fix for the resident field following the text size
+    is in.
+MERGE-READY @ 430bd0471: battle floats stay on screen (big25's 4:3 Read red).
