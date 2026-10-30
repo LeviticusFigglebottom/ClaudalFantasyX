@@ -24,14 +24,18 @@
     "flue_moth": {"scene": "res://game/creatures/flue_moth/flue_moth_battle.tscn", "vfx_anchors": {"core": "thorax", "wound": "head"}, "contact": {"attack": 0.5, "cast": 0.6}, "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}},
     "undertows_reach": {
       "scene": "res://game/creatures/undertows_reach/undertows_reach_battle.tscn",
-      "contact": {"attack": 1.2, "cast": 1.3, "attack_dark": 1.2, "cast_dark": 1.3, "attack_breach": 1.2, "cast_breach": 1.3},
+      "contact": {"attack": 1.2, "cast": 1.3, "attack_dark": 1.2, "cast_dark": 1.3, "attack_breach": 1.2, "cast_breach": 1.3,
+                  "undertow_pull": 1.35, "undertow_pull_dark": 1.35, "undertow_pull_breach": 1.35, "hand_closes": 1.15,
+                  "breach": 1.2},
+      "clip_by_skill": {"crust_slam": "attack", "undertow_pull": "undertow_pull", "close_the_hand": "close_the_hand",
+                        "hand_closes": "hand_closes", "breach_gather": "breach_gather", "breach": "breach"},
       "loop": ["idle", "idle_dark", "idle_breach"],
       "ko_fade_sec": 1.5,
       "phases": {
         "dark": {"clip": "phase_dark", "idle": "idle_dark", "sec": 0,
-                 "clips": {"attack": "attack_dark", "cast": "cast_dark", "hit": "hit_dark"}},
+                 "clips": {"attack": "attack_dark", "cast": "cast_dark", "hit": "hit_dark", "undertow_pull": "undertow_pull_dark"}},
         "breach": {"clip": "phase_breach", "idle": "idle_breach", "sec": 0,
-                   "clips": {"attack": "attack_breach", "cast": "cast_breach"}}
+                   "clips": {"attack": "attack_breach", "cast": "cast_breach", "undertow_pull": "undertow_pull_breach"}}
       },
       "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}
     },
@@ -44,36 +48,44 @@
     "tide_crawler": {"scene": "res://game/creatures/tide_crawler/tide_crawler_battle.tscn", "vfx_anchors": {"core": "body", "wound": "body"}, "contact": {"attack": 0.55}, "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}},
     "raid_hound": {"scene": "res://game/creatures/raid_hound/raid_hound_battle.tscn", "vfx_anchors": {"core": "chest", "wound": "chest"}, "contact": {"attack": 0.5}},
     "shoal_skipper": {"scene": "res://game/creatures/shoal_skipper/shoal_skipper_battle.tscn", "vfx_anchors": {"core": "spine1", "wound": "spine1"}, "contact": {"attack": 0.5}},
-    "cinder_matron": {"scene": "res://game/creatures/cinder_matron/cinder_matron_battle.tscn", "clip_by_skill": {"slag_pour": "attack", "bank_the_fire": "cast", "recrust_gather": "cast", "recrust": "cast"}, "contact": {"attack": 0.85}, "loop": ["idle", "ready"], "phases": {"pour": {"clip": "phase_change", "idle": "idle", "hide": ["Crust"], "sec": 0.0}}},
+    "cinder_matron": {"scene": "res://game/creatures/cinder_matron/cinder_matron_battle.tscn", "clip_by_skill": {"ladle_swing": "attack", "slag_pour": "slag_pour", "bank_the_fire": "bank_the_fire", "recrust_gather": "recrust_gather", "recrust": "recrust"}, "contact": {"attack": 0.85, "slag_pour": 1.15, "bank_the_fire": 1.0, "recrust_gather": 1.1, "recrust": 0.8, "phase_change": 0.85}, "loop": ["idle", "ready"], "phases": {"pour": {"clip": "phase_change", "idle": "idle", "hide": ["Crust"], "sec": 0.0}}},
     "slag_tortoise": {"scene": "res://game/creatures/slag_tortoise/slag_tortoise_battle.tscn", "vfx_anchors": {"core": "shell", "wound": "shell"}, "contact": {"attack": 0.55}},
     "ashwing": {"scene": "res://game/creatures/ashwing/ashwing_battle.tscn", "vfx_anchors": {"core": "thorax", "wound": "fore_l"}, "stand_in": {"hover": 1.86}, "contact": {"attack": 0.6}, "hit_snap": {"preroll_sec": 0.1}},
     "scuttler": {"scene": "res://game/creatures/scuttler/scuttler_battle.tscn", "vfx_anchors": {"core": "back", "wound": "front"}, "contact": {"attack": 0.45}, "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}},
     "spar_wraith": {
       "scene": "res://game/creatures/spar_wraith/spar_wraith_battle.tscn", "stand_in": {"yaw_deg": 45.0},
-      "contact": {"attack": 0.8, "attack_deck": 0.8},
+      "clip_by_skill": {"spar_stab": "attack", "shroud_sweep": "shroud_sweep", "lines_taut": "lines_taut_deck",
+                        "haul": "haul_deck", "sea_lash": "sea_lash_deck"},
+      "contact": {"attack": 0.8, "attack_deck": 0.8, "shroud_sweep": 1.0, "lines_taut_deck": 0.8, "haul_deck": 1.1,
+                  "sea_lash_deck": 1.0, "phase_drop": 0.82},
       "loop": ["idle", "ready", "idle_deck"],
       "phases": {
-        "hauled_down": {"clip": "phase_drop", "idle": "idle_deck", "hide": ["Shroud"], "show_after": ["Sheath"], "sec": 0,
-                        "clips": {"attack": "attack_deck", "cast": "cast_deck", "hit": "hit_deck"}}
+        "hauled_down": {"clip": "phase_drop", "idle": "idle_deck", "hide_after": ["Shroud"], "show_after": ["Sheath"], "sec": 0,
+                        "clips": {"attack": "attack_deck", "cast": "cast_deck", "hit": "hit_deck", "ko": "ko_deck"}}
       }
     },
     "sail_leech": {"scene": "res://game/creatures/sail_leech/sail_leech_battle.tscn", "vfx_anchors": {"core": "body", "wound": "body"}, "stand_in": {"hover": 1.26}, "contact": {"attack": 0.7}},
-    "bottle_hermit": {"scene": "res://game/creatures/bottle_hermit/bottle_hermit_battle.tscn", "contact": {"attack": 0.45}, "loop": ["idle", "ready"], "stand_in": {"yaw_deg": 90.0, "height": 1.2, "radius": 0.75}},
+    "bottle_hermit": {"scene": "res://game/creatures/bottle_hermit/bottle_hermit_battle.tscn", "contact": {"attack": 0.55, "cast": 0.75}, "loop": ["idle", "ready"], "stand_in": {"yaw_deg": 90.0, "height": 1.2, "radius": 0.75}},
     "glassfry": {"scene": "res://game/creatures/glassfry/glassfry_battle.tscn", "vfx_anchors": {"core": "cloud", "wound": "fry30"}, "contact": {"attack": 0.55}},
     "oil_slug": {"scene": "res://game/creatures/oil_slug/oil_slug_battle.tscn", "vfx_anchors": {"core": "spine1", "wound": "spine1"}, "contact": {"attack": 0.55, "cast": 0.6}, "stand_in": {"yaw_deg": 60.0}, "portrait": {"rim_energy": 2.8, "kick_energy": 1.8, "margin": 1.2}},
     "tower_limpet": {"scene": "res://game/creatures/tower_limpet/tower_limpet_battle.tscn", "vfx_anchors": {"core": "shell", "wound": "shell"}, "contact": {"attack": 0.55}},
     "drownbell": {
-      "scene": "res://game/creatures/drownbell/drownbell_battle.tscn", "contact": {"attack": 0.8, "cast": 1.0},
-      "loop": ["idle", "idle_flood"],
-      "clip_by_skill": {"toll": "cast"},
+      "scene": "res://game/creatures/drownbell/drownbell_battle.tscn",
+      "contact": {"attack": 0.8, "attack_flood": 0.8, "cast": 1.0, "toll": 1.0, "toll_gather": 1.6, "flood_surge": 1.0,
+                  "undertow_surge": 1.3, "rouse_polyp": 1.2},
+      "loop": ["idle", "idle_flood", "ready", "ready_flood"],
+      "clip_by_skill": {"toll": "toll", "toll_gather": "toll_gather", "flood_surge": "flood_surge",
+                        "undertow_surge": "undertow_surge", "rouse_polyp": "rouse_polyp"},
       "ko_fade_sec": 1.2,
       "phases": {
-        "flood": {"clip": "phase_change", "idle": "idle_flood", "offset_m": [0.0, -0.35, 0.0], "tilt_deg": [0.0, 0.0, -6.0], "sec": 2.4}
+        "flood": {"clip": "phase_change", "idle": "idle_flood", "offset_m": [0.0, -0.35, 0.0], "tilt_deg": [0.0, 0.0, -6.0], "sec": 2.4,
+                  "clips": {"attack": "attack_flood", "hit": "hit_flood", "ready": "ready_flood"}}
       },
       "break_parts": {"toll": {"whole": ["Rim"], "broken": ["RimBroken"]}}
     },
     "hullgnaw": {
-      "scene": "res://game/creatures/hullgnaw/hullgnaw_battle.tscn", "contact": {"attack": 0.8},
+      "scene": "res://game/creatures/hullgnaw/hullgnaw_battle.tscn", "contact": {"attack": 0.8, "rib_lash": 0.8, "thrash": 1.25},
+      "clip_by_skill": {"gnaw": "attack", "rib_lash": "rib_lash", "thrash": "thrash", "gnaw_coil": "coil"},
       "ko_fade_sec": 0.8,
       "phases": {"breaking": {"clip": "phase_break", "hide_after": ["Ribs"], "sec": 0}},
       "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}
@@ -204,8 +216,8 @@
     "ilun": {
       "scene": "res://game/creatures/ilun/ilun_battle.tscn",
       "vowbound": true,
-      "clip_by_skill": {"brine_lash": "attack", "tidal_ward": "cast", "floodnet": "special"},
-      "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45},
+      "clip_by_skill": {"brine_lash": "brine_lash", "tidal_ward": "cast", "floodnet": "special"},
+      "contact": {"attack": 0.5, "brine_lash": 0.55, "cast": 0.8, "special": 1.45},
       "stand_in": {"yaw_deg": -90.0},
       "portrait": {"yaw_deg": 45, "pitch_deg": 32, "margin": 0.95}
     },

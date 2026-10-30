@@ -113,6 +113,7 @@ func test_every_act1_vowbound_skill_and_finisher_has_its_clip() -> void:
 			var kind := StringName(str((skills.get(str(sid), {}) as Dictionary).get("kind", "")))
 			var clip := a.clip_for(StringName(str(sid)), kind)
 			assert_true(a.has_clip(clip), "%s's %s plays a clip it has (%s)" % [id, sid, clip])
+	before_each()
 
 
 func _json(path: String) -> Dictionary:
