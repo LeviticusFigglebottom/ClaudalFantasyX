@@ -518,6 +518,16 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
     - the Avalanche Ram's enemy row and sim band (its snow hazard is `field_rules` data);
     - Ch13's cameras (no fights).
 
+- **LEAD-ANSWERED (10-30 03:44):**
+  - M3-CIN-1251 is integration-qa's. They land it and tell me; I then re-apply row 49 (the Harbour and Weir
+    positions are in the task).
+  - Row 24 (the wake's spawn cameras) goes to integration-qa too, with my camera_volumes as the coordination point.
+  - M3-CIN-1250 stays with creatures.
+  - I hold the chapters combat seat.
+  - **For battle-presentation (the provisional Act II boss rows):** the Mangrove Drowner already has its tuned row,
+    skills, encounter `ch10_mangrove_drowner` and sim suite (9686fff6f, in band). Please don't add a second one:
+    stage on that row. I review and tune the Lamp Engine, Ram and Wakefin rows with the sim when yours land.
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
