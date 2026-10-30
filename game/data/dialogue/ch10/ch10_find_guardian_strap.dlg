@@ -1,0 +1,15 @@
+// Ch10 lore find (optional): a Stillguard shield-strap grown into a mangrove root, the Order's stitch still in it.
+// Some Cantor's guardian walked this fen before Toma. Toma does not say what he thinks it means. Sets
+// ch10_found_guardian_strap.
+title: ch10_find_guardian_strap
+location: ch10/ossa_fen
+---
+Toma [neutral]: A shield-strap. Stillguard stitch. Look, the double run along the edge. #line:ch10_strap_001
+Liss [neutral]: The root's grown right through it. That's not last year. #line:ch10_strap_002
+Toma [neutral]: No. Somebody walked a Cantor through here before me. #line:ch10_strap_003
+<<if $ch10_heard_ressa>>
+    Pell [neutral]: Many walked through. Some walked back. #line:ch10_strap_004
+<<endif>>
+Toma [neutral]: I will leave it. It is where he put it down. #line:ch10_strap_005
+<<set $ch10_found_guardian_strap = true>>
+===

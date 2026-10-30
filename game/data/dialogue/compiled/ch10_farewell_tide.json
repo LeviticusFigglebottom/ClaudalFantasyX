@@ -40,7 +40,7 @@
     {"op": "if_not", "cond": ["flag", "ch09_ebbing_danced"], "to": 33, "src": 48},
     {"op": "line", "id": "ch10_tide_002", "key": "DLG_CH10_TIDE_002", "speaker": "asha", "emotion": "grief", "voice": "", "src": 49},
     {"op": "goto", "to": 33, "src": 48},
-    {"op": "set", "flag": "ch10_tide_witnessed", "value": ["lit", true], "src": 51},
+    {"op": "set", "flag": "ch10_farewell_tide_seen", "value": ["lit", true], "src": 51},
     {"op": "jump", "node": "ch10_outside_causeway", "src": 52}
    ]
   },
