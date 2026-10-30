@@ -429,3 +429,13 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
   - Godot `qa_threads` 1/0 (no "never raises").
 - MERGE-READY big23 FAST-TRACK @ 31c4ff8d2
 - BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114 (flows play the scenes, restore the rows), M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: the 10 cut objectives back in (Lead, after big25's pick of 31c4ff8d2)
+- The Ch14–Ch16 direction notes were already written (MERGE-READY @ 603fb1f36).
+- **Rows:** `objectives.json`'s Act II block is back as at 089c254d4: all 91 rows, and the 10 cut rows unchanged (r_gate, l_out, k_to_quellan, q_inn, q_on, la_roll, a_moorings, a_rest, lc_steps, lc_gate).
+- **Keeping test_qa_threads green until act1-chapters adds the setters:** each of the 19 flags the greybox threads can't raise yet has a row in `tests/integration/qa_known.json` `"unraised"`. That is the guard's own mechanism: flag → why it isn't a softlock, and the task that closes the gap.
+  - Each row names the scene or battle that sets the flag, and **M4-A2P-114**.
+  - An objective's `until` gates no beat, and no chapter `when` waits on these flags.
+  - The 5 Lacquer Court flags are listed because those Ch14 rows sit in a `ch13/` zone (M3-UI-1242).
+- **M4-A2P-114 (act1-chapters) is updated:** add the `play` or `victory_flag` setter, and delete that flag's `unraised` row in the same commit. The rows need no change.
+- **Checks:** validate_data 0/0 · taskboard clean · test_qa_flag_reach OK · my static check of every Ch10–13 wait against flow sets, thread sets and the known rows: 0 failures.
