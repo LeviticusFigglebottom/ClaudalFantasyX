@@ -762,3 +762,5 @@ I merged integration (big28) first; the two conflicted compiled ch11 JSONs were 
   - Tools: act3_rules, dlgc, loc_csv_shape, loc_key_names, qa_flag_reach, taskboard, audio_data all OK.
   - Godot: `act3` 1/0; `dialogue` 87/1, the one red being M4-A2P-1014's portrait.
 - **Next for this track:** Act III objective text once 1001/1004/1007/1011/1015 land flags and POIs, the word-budget growth if the Lead says so (LEAD-ASK above), and any FAST-TRACK first.
+- MERGE-READY Act III Ch21 + Ending (M5-A3P-1014) @ ac9bc6521
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1015; M4-A2P-112 items 3, 5 and 6; M5-A3P-1001/1002/1004/1005/1007/1008/1009/1011/1012/1013/1015/1016/1017.
