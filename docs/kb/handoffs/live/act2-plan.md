@@ -537,3 +537,30 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - **Checks:** validate_data 0/0 · dlgc --check 0/0.
 - MERGE-READY Lamptongue pass @ 9a036d6e1
 - BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114–117, M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Act II as-played read-through, Ch10–Ch13 (Lead)
+- **Task ids:** from the 18:05 TRACK-RULES, mine are **M4-A2P-1000–1199**. big27 renumbered my earlier 115/116/117 to **118/119/120**.
+- **Read base:** `lead/gate-big27` @ ce18caafa, where act1-chapters mounted M4-A2P-114's setters. The flows now play 16 Act II scenes (Ch10 2, Ch11 4, Ch12 5, Ch13 5).
+- **No leaks:**
+  - no secret said early (Kerrid, the Hush, Dace/Imra, Sefir, "revenant");
+  - Kerrid never sits and never enters the Sanctum;
+  - no ice;
+  - every beat gated except one replay (E6, `ch12_herd_cord`).
+- **The real problems are mounting gaps** (29 findings):
+  - **no chapter hands off to the next** (Ch10 → 14 can't be played through);
+  - the Archive and pact can run before Ethren is bound;
+  - the played scenes lean on unplayed setup: B06 causeway, B03 breath, Ch13 still city and Tobin, Ch11 housing-mark.
+- **Story fixes (mine, done):**
+  - Ressa is named at dawn (Pell);
+  - the shell-carver's "seventy years";
+  - the tide's dead are "the season's", not "the three";
+  - the Lowlight keeper is now a visiting tender (the temple's congregation drowned);
+  - repeated lines cut from the Ch10, Ch11 and Ch13 camps; "Kell's. She raised me.";
+  - Wenna's "mark", not "her name";
+  - Ama Quillo tied to Hesk;
+  - two bark locations fixed;
+  - the Ch18 draft callback updated to match.
+- **M4-A2P-1000 → act1-chapters:** 17 flow and layout rows with fixes. It also corrects two rows of my own M4-A2P-114 table (the pact at the moorings; the roll as day two).
+- **Checks:** dlgc 0/0 (328 scenes) · validate_data 0/0 · taskboard clean · tools dialogue tests OK · check_drafts 73/0 · Godot `dialogue` 86/0 after an import.
+- MERGE-READY Act II read-through @ 98e94c41c
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 118–120, 1000; M4-A2P-112 items 3, 5 and 6.
