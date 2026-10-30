@@ -311,7 +311,7 @@
    }
   }
  },
- "_named_about": "M3-CHR-540: `named` holds the named Stillguards, each built like a variant (build_stillguard.py --variant <id>) but output under its own id (assets/characters/<id>/, the dialogue's speaker id) and never one of the six squad variants. A named entry carries the same keys as a variant plus `_seed` (its skin and hair noise seed, where a variant uses ord(<letter>)) and in `_variant` `spear` (false: no spear, the right hand free) and `broken_tooth` (the chip off the upper central incisor, its depth as a share of the crown's height).",
+ "_named_about": "M3-CHR-540: `named` holds the named Stillguards, each built like a variant (build_stillguard.py --variant <id>) but output under its own id (assets/characters/<id>/, the dialogue's speaker id) and never one of the six squad variants. A named entry carries the same keys as a variant plus `_seed` (its skin and hair noise seed, where a variant uses ord(<letter>)) and in `_variant` `spear` (false: no spear, the right hand free) and `broken_tooth` (the chip off the upper central incisor, its depth as a share of the crown's height). M4-A2P-051: `_variant` may also take `halberd` (true: sg_halberd's halberd on the spear's bone), `shield` (false: no shield) and `palette` (the costume's dyes, sg_textures.dyed_cloth), and the entry its own `_costume` keys over the squad's.",
  "named": {
   "ivo": {
    "_doc": "Ivo Brannick (act1_ch08.md B02 and Character Art 2; act1_ch09.md B02): a Stillguard of the Corrow garrison, about 33, Toma's shield-mate for seven years; broad, warm, a broad grin, a broken front tooth. No helm (in Ch9 his is the only uncovered face), the crop visible; the weathered kit (seven years on the wall), the shield on the left arm, no spear.",
@@ -402,6 +402,66 @@
    "_skin": {
     "age": 0.55,
     "stubble": 0.6
+   }
+  },
+  "venn": {
+   "_doc": "Warden Malcor Venn of the Abiding Conclave (act2_ch14.md W08, B09, L10; M4-A2P-051): a broad, hard, sober man in late middle age with a soldier's bearing and a magistrate's voice. Rule 2: a living-seeming man, nothing strange about him (no tell, no glow). Moll's kit as a Warden wears it: the lames in black lacquer piped in gold, the tunic in order_marble, the Inquisitor's sash in lacquer_red, the trousers lacquer-black (`_variant.palette`, sg_textures.dyed_cloth); no helm, the grey crop and a short grey beard-shadow; a heavy halberd two-handed (sg_halberd) and no shield. About 56.",
+   "height_m": 1.86,
+   "heads_tall": 7.5,
+   "shoulder_width_heads": 1.9,
+   "chest_width_heads": 1.48,
+   "chest_depth_heads": 1.04,
+   "waist_width_heads": 1.28,
+   "head_width_ratio": 0.64,
+   "neck_width_ratio": 0.62,
+   "muscle": 0.66,
+   "mass": 0.26,
+   "skin_hex": "#B08468",
+   "jaw_width": 1.12,
+   "chin_size": 1.1,
+   "cheekbone_width": 1.05,
+   "cheekbone_height": 0.002,
+   "nose_bridge_width": 1.04,
+   "nose_tip_projection": 1.04,
+   "brow_ridge": 1.24,
+   "lip_fullness": 0.64,
+   "lip_lower_fullness": 0.62,
+   "mouth_corner_lift": -0.0008,
+   "eye_tilt_deg": -1.0,
+   "donor_mix_african": 0.15,
+   "donor_mix_asian": 0.25,
+   "donor_mix_caucasian": 0.6,
+   "_seed": 551,
+   "_variant": {
+    "hair": "crop",
+    "helm": false,
+    "weathered": false,
+    "spear": false,
+    "halberd": true,
+    "shield": false,
+    "palette": {
+     "lacquer": "#2A2420",
+     "lacquer_deep": "#141110",
+     "bone": "#E4DED3",
+     "linen": "#B3261E",
+     "indigo": "#2A2622"
+    }
+   },
+   "_hair": {
+    "colour": "#A29E97",
+    "underpaint": "#827E78",
+    "length_m": [
+     0.015,
+     0.025
+    ]
+   },
+   "_skin": {
+    "age": 0.85,
+    "stubble": 0.85
+   },
+   "_costume": {
+    "sash": true,
+    "halberd_length_m": 2.25
    }
   }
  }

@@ -5021,6 +5021,83 @@
       "settle_frames": 30
     },
     {
+      "id": "venn_front",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "venn_three_quarter",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_stage.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "venn_face",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_face.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "venn_face_cold",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_face_cold.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "venn_clip_attack",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_clip_attack.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "venn_clip_defend",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_clip_defend.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "venn_clip_yield",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_clip_yield.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "ivo_front",
       "scene": "res://game/levels/_tests/characters/stillguard/ivo_stage.tscn",
       "camera": "Cameras/Front",
