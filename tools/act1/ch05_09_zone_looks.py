@@ -13,6 +13,7 @@ Not a tool to run by itself; the zone generators import it.
 """
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 
@@ -140,3 +141,9 @@ def pin_lod0(text: str, node_path: str, mesh: str, *, until_m: float = 2000.0) -
     return text.rstrip("\n") + (
         f'\n\n[node name="{mesh}" parent="{node_path}" index="0"]\nvisibility_range_end = {until_m}\n'
         f'\n[node name="{mesh}-lod1" parent="{node_path}" index="1"]\nvisibility_range_begin = {until_m}\n')
+
+
+def shore_walls(path: Path) -> list:
+    """The zone's shore walls (tools/act1/shore_walls.gd's output, ZoneKitDressing "edge_walls" rows), or [] before
+    the tool has run. The human's playtest (2026-10-30): the hero could walk off the beaches into the sea."""
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else []

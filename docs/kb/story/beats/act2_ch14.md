@@ -193,7 +193,7 @@ Declared in `game/data/flags.tres` when the gate passes (M4-A2P-014 adds them). 
 | `ch14_steps_held` | B06 | Ch15, Ch21 | **Ch15:** Kerrid's confession: "I held a stair again. At a wedding." (one line, if Narrative keeps it); **Ch21:** the stair motif |
 | `ch14_merel_taken` | B08 (critical) | Ch15, Ch18, the Ending | **Ch18:** an optional revisit of Ansedra learns what became of her (Narrative's call: she lives, held in her father's house) |
 | `ch14_engine_broken` | B09 phase 1 | Ch17 | Liss asks the Kite's engines not to forgive her for breaking that one. Narrative, keep or cut |
-| `ch14_venn_beaten` | B09 | Ch19 | Venn is fought again, openly a revenant, in Act III (ADR 0016: revenants are first fought openly in Ch19) |
+| `ch14_venn_beaten` | B09 | — | ~~Venn fought again in Ch19~~ **Corrected (act3_ch19 §10 Q1):** Venn isn't one of the Abiding and isn't refought. The revenants first fought openly in Ch19 are Hesper Oan and Ilsabet Rue (ADR 0016) |
 | `ch14_complete` | B10 (end) | flow (Ch15 gate) | — |
 
 **Act II flags this chapter reads:** `ch13_ethren_bound`, `ch13_met_tobin`, `ch13_archive_read`, `ch13_pact_of_silence` (all declared in act2_ch13.md §3).

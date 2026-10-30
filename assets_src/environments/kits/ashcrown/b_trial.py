@@ -20,6 +20,10 @@ for. Pure numpy. Origins at the foot's centre on the floor unless stated; the fr
                  bronze anvil-boss on each leaf.
   stair_chain    the Tenders' chain across a vein stair's head until the strike reaches the tier: two bronze posts
                  1.0 m apart (X) and a sagging chain with a lacquered tablet.
+  loggia_screen  the Tenders' wind lattice across the crater loggia (12 x 8 m, the opening's LOGGIA_HALF_W and TOP_Y;
+                 origin at its foot's centre, the lattice in the XY plane): black-lacquer posts and rails, a fine
+                 lattice between them and a red head-rail. The anvil-court arena hangs it so the loggia behind the
+                 Matron reads as a screened opening, not a flat field of sky (the PC's pass 5, row 63).
 """
 
 from __future__ import annotations
@@ -35,6 +39,7 @@ TRI_BUDGET = {
     "catch_rod": (2500, 200), "strike_bowl": (4000, 300), "vein_gate": (2500, 200), "release_lever": (1500, 150),
     "floor_plate": (1200, 60), "ash_drift": (2000, 200), "quench_seal": (4000, 200), "quench_trough": (2500, 200),
     "matron_alcove": (5000, 300), "chamber_door": (4000, 300), "stair_chain": (1500, 150),
+    "loggia_screen": (6000, 400),
 }
 
 
@@ -294,6 +299,37 @@ def build_chamber_door(seed: int = 1210) -> list:
     return out
 
 
+SCREEN_POST_PITCH_M = 2.0
+SCREEN_LATTICE_M = 0.3  # the lattice's square
+SCREEN_SLAT_M = 0.035  # a lattice slat's half-width
+SCREEN_DEPTH_M = 0.06
+
+
+def build_loggia_screen(seed: int = 1212) -> list:
+    out = []
+    hw, top = ac.LOGGIA_HALF_W, ac.LOGGIA_TOP_Y - ac.FLOOR_Y
+    for lod in (False, True):
+        rng = kc.rng_for("loggia_screen", seed)
+        mb = _mb("loggia_screen", lod)
+        blk, red = mb.material(ac.M_LACQUER_BLACK), mb.material(ac.M_LACQUER_RED)
+        for x in np.arange(-hw, hw + 0.01, SCREEN_POST_PITCH_M):  # the posts
+            kc.rounded_block(mb, (x, top * 0.5, 0.0), (0.08, top * 0.5, 0.1), blk, radius=0.02, seg=1,
+                             weather=ac.LACQUER_W, variation=float(rng.random()))
+        for y, h, m in ((0.15, 0.15, blk), (top - 0.15, 0.15, red), (1.0, 0.05, blk)):  # sill, head, waist rails
+            kc.rounded_block(mb, (0.0, y, 0.0), (hw, h, 0.09), m, radius=0.02, seg=1, weather=ac.LACQUER_W)
+        if lod:  # the lattice reads as a dark half-veil at range
+            ac.plain_box(mb, (-hw, 1.05, -0.01), (hw, top - 0.3, 0.01), blk, faces="+z-z")
+        else:
+            d = SCREEN_DEPTH_M * 0.5
+            for x in np.arange(-hw + SCREEN_LATTICE_M, hw - 0.01, SCREEN_LATTICE_M):
+                ac.plain_box(mb, (x - SCREEN_SLAT_M, 1.05, -d), (x + SCREEN_SLAT_M, top - 0.3, d), blk,
+                             faces="+x-x+z-z")
+            for y in np.arange(1.05 + SCREEN_LATTICE_M, top - 0.3, SCREEN_LATTICE_M):
+                ac.plain_box(mb, (-hw, y - SCREEN_SLAT_M, -d), (hw, y + SCREEN_SLAT_M, d), blk, faces="+y-y+z-z")
+        out.append(mb)
+    return out
+
+
 def build_stair_chain(seed: int = 1211) -> list:
     out = []
     for lod in (False, True):
@@ -318,4 +354,5 @@ TARGETS = {
     "release_lever": build_release_lever, "floor_plate": build_floor_plate, "ash_drift": build_ash_drift,
     "quench_seal": build_quench_seal, "quench_trough": build_quench_trough, "matron_alcove": build_matron_alcove,
     "chamber_door": build_chamber_door, "stair_chain": build_stair_chain,
+    "loggia_screen": build_loggia_screen,
 }

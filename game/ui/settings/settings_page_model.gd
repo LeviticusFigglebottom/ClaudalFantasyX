@@ -7,6 +7,9 @@ extends RefCounted
 
 signal changed
 
+## The controls line of a page of values (Up and Down, Left and Right, Cancel).
+const CONTROLS_KEY := "SET_MENU_CONTROLS_PAGE"
+
 var cursor := 0
 
 
@@ -39,6 +42,11 @@ func cycle(_delta: int) -> bool:
 ## Override: the help line's loc key for the current row.
 func help_key() -> String:
 	return ""
+
+
+## The controls line under the help: how to move, change a value and go back ("" hides it).
+func controls_key() -> String:
+	return CONTROLS_KEY
 
 
 ## The layout (game/data/ui/graphics_menu.json: page metrics, help rect, backdrop); every settings

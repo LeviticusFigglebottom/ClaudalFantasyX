@@ -23,6 +23,11 @@
 | act2-plan | `session_01UPFyE8YdUYQ5LuuhgfZtqS` | claude/act2-plan (docs only: the Act II plan, the tasks blocked by ADR 0203, the track split) |
 | gate big18 | `session_01UPFyEAXofxWazWNnRTzFGJ` | lead/gate-big18 (log `gate-big18.md`) |
 
+- 10-30 13:30: **PC OFF for a while (the human).** Its queue moved to three new cloud sessions:
+  - **shots** (session_01UPFyE9cvyQkTt3JUMukyig, lead/shots-bigN, log shots.md): post-merge lavapipe captures. big22's full manifest first, including big21's 173 missing shots.
+  - **cloud-qa** (session_01UPFyE9YjTAw8X8J3Kax1iU, qa/cloud-pass6, log cloud-qa.md): pass 6 on lavapipe, the human-playtest measurements (battle return, Oruvel boats and edges, the run, encounter spacing), and the full non-blocking suite.
+  - **gate-helper** (session_01UPFyE8yvVQq7sK9XruLDxk, lead/gate-helper, log gate-helper.md): runs half of each fast gate's filtered test files (gate-bigN-lanes-b.txt → gate-bigN-lanes-b-result.md).
+  - The gate now runs only the fast gate. Pending PC items: the row 17 fix is merged; pass 6 on real GPU waits for the PC's return.
 - 10-30 12:20: **HUMAN PLAYTEST FAST-TRACKs** (ADR 0042 §1), top priority in big23:
   1. Default run looks jagged; arms flail up instead of a brisk jog → characters (rebuild jog clips: Rhen, Asha, Toma) + integration-qa (speed match).
   2. New Game "starts underwater" → slice-polish: check that prologue_dead_city plays before ch01/oruvel_underway@Drop from a fresh profile. Ch1 underwater is intended; Haluna is Ch2.

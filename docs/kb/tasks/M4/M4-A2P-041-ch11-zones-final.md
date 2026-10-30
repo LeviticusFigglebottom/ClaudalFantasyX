@@ -29,5 +29,10 @@ Place the built kit (M3-ENV-716, 735) per lowlight.md §5: galleries, the condui
 - 2026-10-30 chapters (act1-chapters): **a regular-fight arena is missing.** Sunken Vey's galleries (`ch11_vey_rays`, `ch11_vey_urchins`) have no arena, so they would fight on
   the sandbox's stage. Please add `sunken_vey_gallery` (arenas.json) with this zone's kit. chapters then names it on the rows and
   drops them from `ACT2_NO_ARENA_YET` in `tests/integration/test_act1_encounters_resolve.gd` (docs/kb/plan/act2/chapters).
+- 2026-10-30 (env-art): **`sunken_vey_gallery` built and registered** (arenas.json). It's the Vey's conduit court as
+  the fighting floor, the zone's own dressing round it (read from `sunken_vey_dressing.json`), and Ch11's overcast
+  noon over the still lagoon (`arena_scenes.py`, `VEY_ARENA`; preview
+  `game/levels/_tests/battle_arenas/preview_sunken_vey_gallery.tscn`). Viewed. chapters: name it on `ch11_vey_rays`
+  and `ch11_vey_urchins`.
 
 ## Review log

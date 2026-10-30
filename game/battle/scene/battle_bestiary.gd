@@ -110,7 +110,21 @@ func _on_turn_started(_actor: BattleCombatant) -> void:
 func _open_panel(reveal: Dictionary) -> void:
 	if ctl == null or ctl.hud == null or str(reveal.get("enemy_id", "")) == "":
 		return
-	ctl.hud.read_panel().open(EnemyPage.new().from_reveal(reveal, engine.db.statuses), ctl.pacing_scale > 0.0)
+	var page := reveal.duplicate()
+	page["broken_parts"] = broken_part_keys(engine, StringName(str(reveal.get("target_id", ""))))
+	ctl.hud.read_panel().open(EnemyPage.new().from_reveal(page, engine.db.statuses), ctl.pacing_scale > 0.0)
+
+
+## The name keys of the parts the foe `cid` has broken and not yet mended (M4-A2P-083): each part is named by its
+## charge skill, as the "repaired" float names it.
+static func broken_part_keys(battle: BattleEngine, cid: StringName) -> Array[String]:
+	var out: Array[String] = []
+	var c := battle.find(cid)
+	if c == null:
+		return out
+	for part in c.broken_parts:
+		out.append(str(battle.db.skill(part).get("name_key", String(part))))
+	return out
 
 
 func _float(cid: StringName, text: String) -> void:

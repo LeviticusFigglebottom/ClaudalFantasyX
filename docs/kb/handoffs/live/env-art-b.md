@@ -872,6 +872,165 @@ that test at this branch's zones.
   - **MERGE-READY @ 7999fb30.**
 - **BACKLOG EMPTY (10-30, after big21):** Ch16's Pale Rim is dressed (@ ab41c94b, in big21). What's left of Ch14–16
   waits on M4-A2P-103 to 106, and the looks are queued for the PC.
+- **GPU pass 5 (gpu/act1-qa-5, run on big20; checked on this head with big21 merged):**
+  - **Row 63** (a flat bright panel behind the Matron): it was the open crater loggia. A new kit piece,
+    `loggia_screen` (`ashcrown/b_trial.py`), is the Tenders' black-lacquer wind lattice, and the anvil-court arena
+    hangs it across the loggia (`b_arenas.py`). In `battle_boss_intro_matron` the opening now reads as a lattice
+    window with the crater light through it. The moulding streaks don't show on lavapipe.
+  - **Row 62** (the weir slabs flat grey): `kit_weir_stone` was in place but the shader's wet pass flattened and
+    darkened the whole weir. Wet stone now keeps its relief (`wet_flatten` 0.15, `wet_darken` 0.75), and the weir
+    gets per-block value 0.4, stronger relief, and wider salt and algae bands. The courses' pill shape (0.07 m radius on
+    a 0.13 m half-height) and the flat water sheet over the crest are env-art's kit code: request **M3-ENV-1328**.
+  - **Row 51** (the graves soft orange rectangles under the field camera): a red test showed the shrouds were
+    full rectangular sheets. The superellipse had only lowered the corners. The shroud grid now maps onto its
+    rounded outline, the cloth drapes the body more widely (10 passes), the grid is finer (1920 tris), and the
+    canvas is cooler with a soft, coarser weave (at 1.7 its normal had shaded stripes that read as spikes). From the
+    strand spawn they read as soft rounded bound mounds with rope ties.
+  - **Row 34, the arena side:** `ch06_ridge_skippers` resolves to `brine_shoals_afternoon` and its own enemies on
+    this head (test_act1_encounters_resolve passes). The arena scene and data are fine, so the GPU's sandbox fight is
+    the request path's (act1-chapters).
+  - Checks: test_corrow_kit, test_pemakar_kit, test_ashcrown_kit (the new piece's import settings), test_arenas,
+    test_b_arenas, validate_data, taskboard; Godot --filter=corrow (18), ashcrown (22), arena (18) and
+    encounters_resolve pass.
+- **Ch16 Pale Rim: the `pale_rim_shallows` arena** (ch16.md names it for `ch16_rim_skates` and `ch16_rim_crawlers`;
+  the gap was mine): `haluna/rim_arenas.py` writes it from the zone's dressing, sky, fog, water and `lut_ch16_rim`.
+  The battle camera looks down the wade, with the cairn line into the white behind the enemy line. The id is in
+  `arenas.json` `scenes`, with a preview, the shot `battle_arena_pale_rim_shallows` (viewed: white overcast, still
+  water, cairns and poles into the fog) and a PROVENANCE row. Naming it on the two encounter rows is combat's:
+  request **M4-A2P-107**. The Choir still waits on M4-A2P-106.
+  - **MERGE-READY @ e1903b9e** (rows 51, 62, 63 @ e72c9631; the arena on top).
+- **BACKLOG EMPTY (10-30, after pass 5):** my pass-5 rows are fixed, or handed off with a request (62's kit
+  geometry: M3-ENV-1328). Row 34 is the request path's. The rest of Ch14–Ch16 waits on M4-A2P-103 to 107.
+- **Player-height walk, Ch5–Ch9 (10-30, on big21 0347aa74+ merged into this branch):** 548 eye-height stills
+  (every spawn, trigger and story mark, looking N, E, S and W) over the eight zones, all viewed on contact sheets.
+  - **Fixed here:**
+    - **Corrow (Ch8 and Ch9):** the Bastion's two end walls left a 0.5 m slit of sky between their 12 m
+      segments (the end is 24.5 m). They now slide together to meet.
+    - **The low town's black pools:** this was `corrow_far` showing through the town cells' hollows (they dip
+      3.75 cm; the far ground lay 3 cm under the town). It's lowered 3 cm, and the pools now read as wet hollows.
+    - **Tamsule's market cloths** (awnings, boat canopies, sun umbrellas) read as flat colour: the kit's cloths are
+      92 % flat paint. The zone copies (`tamsule_cloth_*_material.tres`) show the weave through a sun-faded dye.
+  - **Kit code, so requested from env-art:**
+    - **M3-ENV-1329:** Brine Shoals' hard wet/dry lines where the channel tiles meet the mudflat tiles. A test
+      showed it's the baked wetness, not variation or LOD. The task has a one-line patch.
+    - **M3-ENV-1330:** Corrow's low town ground has per-triangle cobble patches with hard edges, which stop at the
+      tile edges.
+  - **Seen and left:**
+    - **Ashcrown:** the plume is a lumpy grey mass seen close from the crown terraces.
+    - **Coilspire:** north from the headland is the storm-graded flat of Corrow's far ground.
+    - **Ch9's strand:** the shoreline is ruler-straight where the still water meets the beach's planar slope.
+    - **Not walk views:** the marks out at sea, in the drop and inside actors (Kahre's heart).
+  - Checks: test_corrow_kit, test_tamsule_bell_kit, test_ch08_flow, validate_data, taskboard; Godot
+    --filter=corrow (18), tamsule (7), ch07 (18), ch08 (25) and ch09 (13) pass. Viewed `ch07_tamsule_market`,
+    `ch08_corrow_flood` and `ch08_corrow_arrival`.
+  - **MERGE-READY @ 008c7de3.**
+  - Next: the same walk for Ch13–Ch16 once act1-chapters mounts them (the zones are dressed; the walk rig takes any
+    zone and layout).
+- **BACKLOG EMPTY (10-30, after the Ch5–Ch9 walk):** what's left from the walk is with env-art (M3-ENV-1328/1329/1330).
+  Ch13–Ch16's walk waits on the mount, and the rest of Ch14–Ch16 on M4-A2P-103 to 107.
+- **Eye-height walk, Ch13–Ch16, standalone (10-30, the Lead's order not to wait on mounts):** each zone scene was
+  instanced alone at every spawn, trigger and mark (160 stills over 8 zones), plus the five Ch13–16 arenas from
+  their hint cameras. All viewed.
+  - **Fixed:**
+    - **`lacquer_hall`** (Sefir's and Corran's houses, the court): one plain back-wall slab and the roof's bare
+      underside read as flat navy in shade. The back wall is now five red panels in gilt rails on a black ground,
+      with a beamed timber ceiling.
+    - **Ansedra's red lacquer** is now satin over an oxblood undercoat; glossy over near-black, its shaded faces
+      mirrored the grey sky.
+    - **`archive_case`**'s plain black ends read as navy slabs down the Archive's aisles. They now carry a red inset
+      in a gilt frame and a gilt label plate.
+  - **Seen, fine:** the Lacquer Court at dusk, the Sanctum, the open sea, Hollowmere's dock, the Pale Rim, and all
+    five arenas (the bridal barge's dark is by design).
+  - **Mount points for act1-chapters** (story points stay theirs):
+    - **Ch13 `corran_house`** (−44, −40.8) stands *inside* Corran's hall. The hall is built at 0.45, so its
+      interior is about 1.9 m high, and at eye height the camera is under its shaded roof. Stand the mark at the
+      hall's front, +X (about −41, −40.8).
+    - **Ch16 Drowned Choir:** still greybox until M4-A2P-106 (the relayout to the kit's amphitheatre).
+    - **Ch16 rim encounters:** need `"arena": "pale_rim_shallows"` (M4-A2P-107).
+    - **The Ch13–16 zones' scenes** each instance cleanly alone, with their spawns
+      (Ansedra 3, the Court 3, Archive 1, Sanctum 1, the open sea 2, the Rim 2, Choir 1, Hollowmere 1). Routing
+      them in is chapters' mount; nothing on the dressing side blocks it.
+  - Process note: an earlier Bash step waited on a permission prompt; this pass ran as plain single steps (no kills,
+    writes only in the worktree and scratchpad).
+  - Checks: tools test_ansedra, test_ch13_*_dressing, test_ch14_lacquer_court_dressing, test_haluna_kit and
+    test_b_arenas (49) pass; Godot --filter=ch13 (4), ch14_16 (5), ansedra (4) and archive (2) pass.
+  - **MERGE-READY @ 2d9a9c36.**
+- **BACKLOG EMPTY (10-30, after the Ch13–16 walk):** the walk's findings are fixed or logged as mount points above,
+  and the kit requests are with env-art (M3-ENV-1328/1329/1330). The rest waits on M4-A2P-103 to 107.
+- **Walking into the water (the human's Oruvel playtest; on big23 8fe3644b merged, d4e21dde):** my zones' shores
+  are kit terrain, not greybox walk blocks, so env-art's `zone_edges.py` (28b005ad) can't see them.
+  `tools/act1/shore_walls.gd` (new) flood-fills the walkable ground from the spawns the way the controller walks
+  (steps ≤ 0.35 m, blocked by anything at chest height), walls every edge onto water deeper than 10 cm, merges the
+  runs and writes `<zone>_shore_walls.json`. The generator reads it into `edge_walls` (`zl.shore_walls`).
+  - **Probed** (reachable cells whose ground lies more than 0.3 m under the water):
+    - Pemakar: 463, on the beaches either side of the harbour (the quay itself was closed).
+    - None in Brine Shoals, Ch8 Corrow, Ch9's strand and pier, Ansedra, the Lacquer Court (its water-steps end on
+      the barge deck above the water), Hollowmere's dock or the open sea's deck. The Pale Rim's wade is in water by
+      design.
+  - **Pemakar:** 687 shore walls. Re-probed: 0 deep cells reachable. `tests/integration/test_shore_walls.gd` (new):
+    one invisible body per row, and a body can't cross a sampled wall. Godot --filter=pemakar (10) and
+    shore_walls (2) pass; test_pemakar_kit, validate_data and taskboard pass.
+  - **MERGE-READY @ 02640c97.**
+  - The Ch5–Ch6 eye-height walk and rows 62/63 were already done and pushed (above: 008c7de3, e72c9631).
+- **BACKLOG EMPTY (10-30, after the shore walls):** what's left waits on env-art's kits (M3-ENV-1328/1329/1330) and
+  on M4-A2P-103 to 107.
+- **Ashcrown and Coilspire: floating props and stretching (10-30, the Lead's order):** a scratch probe measured every
+  dressing piece under 8 m against the ground beneath it, then each flagged one was viewed.
+  - **Ashcrown:**
+    - **The problem:** 26 road graves (curbs and steles by the causeway's mid landings) floated 0.5–2.3 m over
+      the slope. They were set on the analytic massif, and the crest's built mesh lies under it out there.
+    - **The fix:** ZoneKitDressing gets an optional per-piece `"snap"`. After placing, a piece drops onto the
+      ground under its origin, plus the offset. A terrain that collides as its LOD1 trimesh gets a temporary LOD0
+      body for the snap, so props sit on the ground that draws, and walk collision is unchanged.
+    - **Applied to:** the road graves (sunk 0.2 m) and the flank rock patches (−0.3).
+    - Re-probed: 0 floating. Viewed: the curbs sit into the slope.
+    - New test: `tests/integration/test_zone_snap.gd`.
+  - **Coilspire:** nothing floats. The flagged wall lamps, flue keys, the niche and the beacon are wall-mounted, and
+    the Watcher heads stand on the parapet, which has no collision under them. The scrub's 0.1–0.7 m was against
+    the coarse collision; in view they stand on their stems.
+  - **Texture stretching:** none seen in either zone's eye-height stills (the earlier walk plus these views).
+  - Checks: Godot --filter=ashcrown (22), dressing (31), zone_kit (13), edge_walls, shore_walls and zone_snap pass;
+    test_ashcrown_kit passes.
+  - **MERGE-READY @ 4516750e.**
+- **BACKLOG EMPTY (10-30, after the float pass):** the Ch13–16 water and dock edges were done in the shore-wall
+  pass above, and rows 62/63 were already pushed. What's left waits on M3-ENV-1328/1329/1330 and M4-A2P-103 to 107.
+- **Act II arenas at battle-camera angles (10-30):**
+  - **Covered:** every Act II encounter's arena (`ossa_fen_roots`, `lowlight_engine_hall`, `keth_seep_terrace`,
+    `bridal_barge_night`; `pale_rim_shallows` once M4-A2P-107 lands), plus my `lacquer_court_steps`,
+    `ansedra_lagoon_escape` and `drowned_choir_ring`.
+  - **Method:** each arena's battle camera and hint views rendered at 16:9 and 21:9. A scratch probe also
+    measured every dressing piece against a temporary LOD0 collider of everything else, since arenas carry no
+    collision.
+  - **Floating:** nothing. What the probe flagged was standing in the sea (barges, domes, the water-steps and gate,
+    the Rim's marker pole), resting on another piece's columns (the court's colonnade roofs) or mounted on a wall
+    (Lowlight's conduit rail). The Choir singers' 7–9 cm is in the water.
+  - **Gaps at the camera's edge and floor density:** my five arenas are clean at 21:9, and their floors (court
+    paving, barge deck, ring tiles, the Rim's water) read at battle scale. Ossa Fen and Keth Seep are clean too.
+  - **One blocker, env-art's:** in `lowlight_engine_hall`, the hall's own wall fills the left 45 % of the battle
+    camera at 16:9 (an id pick says `Ground/engine_hall`). Request **M4-A2P-114**.
+  - **MERGE-READY @ 34d374de** (the request; no arena of mine needed a change).
+- **BACKLOG EMPTY (10-30, after the arena pass):** what's left waits on M3-ENV-1328/1329/1330 and M4-A2P-103 to 107
+  and 114.
+- **Unblocking M4-A2P-114 (10-30):**
+  - **The cause:** `lowlight_engine_hall` is env-art's (`lowlight.py`, through `arena_scenes.py`), so I traced it but
+    didn't edit it. It isn't a wall: the hall's south-middle pier at `PIER_AT[-1] = (0.0, 9.5)` (shaft ±0.62 m) stands
+    where the battle camera rests after `rest_fit`, at (0.72, 3.99, 9.76). The lens is 10 cm off the pier's face.
+  - **The exact fix, in the task:** move that pier to (0.0, 11.0), behind the camera. Then rebuild `engine_hall` and
+    the arena. Ch11's zone dressing also places `engine_hall`, and the task notes that.
+  - LEAD-ASK: I posted the fix in M4-A2P-114 rather than env-art's live log, because TRACK-RULES bar editing another
+    environment's file. Please route it to env-art, or tell me to make the kit change myself.
+- **Act II town interiors (shops, inns) at eye height (10-30):**
+  - **No interiors yet:** there's no Act II shop or inn interior scene. The shops' rows wait on M4-A2P-031, and
+    Ansedra's and Hollowmere's layouts have no shop or inn points.
+  - **The two towns that exist (env-art's):** I walked Quellan and Reedhollow at every spawn, trigger and mark,
+    looking N, E, S and W, and viewed every still. Reedhollow reads well. Quellan has three issues, filed as
+    **M4-A2P-115**:
+    - the `FromCloudloom` spawn stands in a dark enclosure;
+    - a mirror-flat slab round the gate square leaves the houses looking like they float;
+    - a pixelated rock texture west of the gate.
+  - **MERGE-READY @ 124f3f40** (requests only; nothing of mine needed a change).
+- **BACKLOG EMPTY (10-30, after the towns):** what's left waits on env-art (M3-ENV-1328/1329/1330, M4-A2P-114/115)
+  and on M4-A2P-103 to 107.
 ### PC-QUEUE
 - Pass 3 row 65 (@ edb18aae): re-measure the camp's smoke columns (24 steps at High) and the Tamsule drop (High has no
   god rays now) at High 1440p against the 0.3 ms target.
@@ -909,3 +1068,9 @@ SELF-RENDERED @ 8c535d1e: ch07_bell_galleries, ch07_bell_moorings (the weeping c
 SELF-RENDERED @ 3be35a85: ch06_brine_camp, _road, ch08_coilspire_hall, _gate, ch08_corrow_arrival, ch09_corrow_strand, _rocks, battle_arena_underway, _underway_tower, _terrace, _ash_terrace_lanternfall, ch05_ashcrown_tiers (the GPU QA rows on this head), all viewed; hall, gate, rocks and Lanternfall re-rendered after the fixes.
 SELF-RENDERED @ c6abd321: zz_pem_harbour, zz_pem_road, zz_pem_weir, zz_cor_strand (scratch spawn views), ch05_ashcrown_crown, crowd_zone_ashcrown, ch05_pemakar_harbour, ch09_corrow_strand, brine_b05_barge_channel, battle_arena_coilspire_headland_path, pemakar_p11_sea_cut_weir_day, battle_boss_intro_matron (GPU pass 4 rows on big20), all viewed; the strand re-rendered after each shroud change.
 SELF-RENDERED @ 7999fb30: ch15_hollowmere_supper, ch15_hollowmere_dock, viewed (the supper table by the south rail).
+SELF-RENDERED @ e1903b9e: battle_boss_intro_matron, battle_arena_ashcrown_anvil_court (the loggia lattice), pemakar_p11_sea_cut_weir_day (before, after and a tint test), ch09_corrow_strand plus the strand spawn view (scratch, each shroud step plus a red paint test), battle_arena_pale_rim_shallows (new), all viewed.
+SELF-RENDERED @ 008c7de3: the Ch5–Ch9 eye-height walk (548 stills, scratch), Brine Shoals' variation, LOD and wet tests, Tamsule's cloth and Corrow's wall-slit and pool before/after views (scratch), ch07_tamsule_market, ch08_corrow_flood, ch08_corrow_arrival — all viewed.
+SELF-RENDERED @ 2d9a9c36: the Ch13-Ch16 eye-height walk (160 stills over 8 zones, scratch), the five Ch13-16 arenas' hint views, lacquer_hall and archive_case before/after (scratch) — all viewed.
+SELF-RENDERED @ 4516750e: Ashcrown's road graves before, snapped to collision, and snapped to the drawn crest; Coilspire's wall-end heads and a headland scrub clump (scratch) — all viewed.
+SELF-RENDERED @ 34d374de: the eight Act II arenas' battle cameras and hint views at 21:9 and Lowlight at 16:9, plus the court balustrade and Lowlight conduit close views (scratch) — all viewed.
+SELF-RENDERED @ 124f3f40: Lowlight's battle camera with its position printed; Quellan and Reedhollow eye-height walks (scratch) — all viewed.

@@ -63,7 +63,17 @@
     "gull_harrier": "claw",
     "lantern_eel": "teeth",
     "drownbell": "bell_hood",
-    "spawn_polyp": "none"
+    "spawn_polyp": "none",
+    "liss": "launcher",
+    "hullgnaw": "teeth",
+    "sail_leech": "teeth",
+    "shoal_skipper": "teeth",
+    "wickfry": "teeth",
+    "raid_hound": "teeth",
+    "oil_slug": "none",
+    "wall_polyp": "none",
+    "tide_crawler": "none",
+    "undertows_reach": "none"
   },
   "weapon_default": "claw",
   "accents": {
@@ -75,8 +85,21 @@
     "claw": "accent_claw",
     "teeth": "accent_teeth",
     "bell_hood": "accent_bell_hood",
+    "launcher": "accent_launcher",
     "none": ""
   },
+  "_materials_note": "M3-AUD-864 (the Act I foley detail pass): materials: a fighter's base id -> what it is made of; struck: material -> the layer a landed weapon blow adds under the accent; guards: material -> a guarding (brace) fighter's own row (ChoreoAudio.struck_row; assets_src/sfx/act1_struck_sfx.py). A fighter with no material adds nothing.",
+  "materials": {
+    "reef_crab": "shell", "wallcrab": "shell", "wreck_crab": "shell", "bottle_hermit": "shell", "scuttler": "shell", "tower_limpet": "shell",
+    "lantern_eel": "soft", "hullgnaw": "soft", "oil_slug": "soft", "sail_leech": "soft", "shoal_skipper": "soft", "wickfry": "soft", "spawn_polyp": "soft", "wall_polyp": "soft", "raid_hound": "soft",
+    "gull_harrier": "feather", "stormgull": "feather", "ashwing": "feather", "flue_moth": "feather",
+    "spar_wraith": "wood",
+    "slag_tortoise": "stone", "cinder_matron": "stone",
+    "drownbell": "metal", "stillguard_inquisitor": "metal", "vein_sparker": "metal",
+    "tide_crawler": "spawn", "squall_wing": "spawn", "undertows_reach": "spawn"
+  },
+  "struck": {"shell": "struck_shell", "soft": "struck_soft", "feather": "struck_feather", "wood": "struck_wood", "stone": "struck_stone", "metal": "struck_metal", "spawn": "struck_spawn"},
+  "guards": {"shell": "guard_shell", "stone": "guard_stone"},
   "no_steps": ["gull_harrier", "lantern_eel", "drownbell", "spawn_polyp", "ilun", "virel", "nhoa", "hesk", "ethren", "kesh"],
   "ko": "ko_collapse",
   "enter": {"sfx": "choreo_step", "steps": 2},

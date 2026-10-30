@@ -7,7 +7,7 @@
   "ch14_bark_lamplighter": {
    "headers": {"location": "ch14/lacquer_court"},
    "ops": [
-    {"op": "line", "id": "ch14_bark_lamp_001", "key": "DLG_CH14_BARK_LAMP_001", "speaker": "townsfolk", "emotion": "neutral", "voice": "", "src": 5, "name_key": "DLG_NAME_TOWNSFOLK_LAMPLIGHTER"}
+    {"op": "line", "id": "ch14_bark_lamp_001", "key": "DLG_CH14_BARK_LAMP_001", "speaker": "townsfolk", "emotion": "neutral", "voice": "", "src": 5, "name_key": "DLG_NAME_TOWNSFOLK_LAMP_BEARER"}
    ]
   }
  }

@@ -42,6 +42,10 @@ GLOW_STILL = "#f0e8c8"  # the light under the basin that never moves (glimmer_bo
 SUN = {"pitch_deg": -25.0, "yaw_deg": 130.0, "energy": 1.6, "color": "#fff9f2"}
 ENV = {"background": "#c8c4ba", "ambient_color": "#8a96a4", "ambient_energy": 0.6}
 INTERIOR_ENV = {"background": "#2a2620", "ambient_color": "#8a8478", "ambient_energy": 0.5}
+# M4-A2P-103 (env-art-b, ch13_sanctum_dressing.py REQUESTED_SUN_ENERGY / REQUESTED_FILL): the Sanctum's only light is
+# the bound light under the basin, so no sun through the vault's seams and a dim cool fill
+SANCTUM_SUN = dict(SUN, energy=0.0)
+SANCTUM_ENV = {"background": "#2a2620", "ambient_color": "#8a96a4", "ambient_energy": 0.2}
 
 
 def causeway(cid: str, a: tuple[float, float], b: tuple[float, float]) -> list[dict]:
@@ -150,8 +154,8 @@ def sanctum() -> dict:
         "four hundred years, lit from beneath by a light that never moves (Basin; a kneeling ledge rings it: nobody "
         "walks on it), Ethren's place at its head (ethren) and Corran's (corran). Kerrid never comes in. Back to the "
         "city at to_city. The story waits on the beat sheet (M4-C13-01).",
-        "sun": SUN,
-        "environment": INTERIOR_ENV,
+        "sun": SANCTUM_SUN,
+        "environment": SANCTUM_ENV,
         "block_color": COL_STONE,
         "blocks": blocks,
         "spawns": {"Gate": [0.0, 0.0, -5.0, 0.0]},  # in from the door: the followers trail inside the vestibule

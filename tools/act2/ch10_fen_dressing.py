@@ -30,6 +30,8 @@ ROOT = Path(__file__).resolve().parents[2]
 KIT_SRC = ROOT / "assets_src" / "environments" / "kits" / "haluna"
 sys.path.insert(0, str(KIT_SRC))
 import arena_scenes as ar  # noqa: E402
+sys.path.insert(0, str(KIT_SRC.parent.parent))
+import zone_edges  # noqa: E402
 import ossa_fen as of  # noqa: E402
 import reedhollow as rh  # noqa: E402
 
@@ -43,6 +45,12 @@ TREE_CLEAR_M = 3.4  # a mangrove's foot this far off a walk's centre line at lea
 TREE_MIN_GAP_M = 1.2  # never closer than this to a walk's edge (the root cage's reach past its foot is ~3 m)
 TREE_WALK_GAP_M = 5.0  # the channels' own trees: this far from any walk, platform or land
 REED_GAP_M = 3.0
+# Where the field camera settles at Ossa Fen's spawns, (camera xz, leader xz), measured headless (walk_stills' arrival):
+# no living tree within CAMERA_LINE_GAP_M of the line, so no trunk or limb stands in the lens (DrownerArena's did).
+# Re-measure if the field camera's spawn rules change.
+CAMERA_LINES = {"FenEdge": ((-8.0, 8.13), (-8.0, 0.0)), "FromReedhollow": ((116.0, 0.0), (134.0, 0.0)),
+                "DrownerArena": ((101.05, -7.97), (104.0, 0.0))}
+CAMERA_LINE_GAP_M = 4.5
 VARIANTS = (("mangrove_tree", 0.30), ("mangrove_tall", 0.20), ("mangrove_low", 0.30), ("mangrove_young", 0.20))
 SEED = 10
 ZONE_FILL = 0.85
@@ -116,6 +124,12 @@ def _seg_dist(p, a, b) -> float:
 
 def clear_of(p, segs, gap: float) -> bool:
     return all(_seg_dist(p, a, b) - hw > gap for a, b, hw in segs)
+
+
+def off_camera_lines(piece: dict) -> bool:
+    """A tree clear of every spawn's camera line (CAMERA_LINES)."""
+    p = (piece["at"][0], piece["at"][1])
+    return all(_seg_dist(p, a, b) > CAMERA_LINE_GAP_M for a, b in CAMERA_LINES.values())
 
 
 def _variant(rng: random.Random) -> str:
@@ -247,7 +261,7 @@ def ossa_fen() -> dict:
         x, z = 145.0 + rng.uniform(0.0, 6.0), -8.0 + k * 4.0 + rng.uniform(-1, 1)
         trees.append(_put(_variant(rng), x, 0.0, z, rng.uniform(0, 360), scale=r3(rng.uniform(0.9, 1.2))))
     trees += channel_trees(lay, rng, (-6.0, 150.0, -42.0, 37.0), 70, segs, lands)
-    pieces += trees
+    pieces += [t for t in trees if off_camera_lines(t)]
     pieces += reeds(rng, (-6.0, 150.0, -40.0, 35.0), 34, segs, lands, trees)
     pieces.append(_put("fen_far_mangroves", 64.0, WATER_Y, -2.0, 0.0, scale=1.35, lod1_from_m=900.0))
     return {"pieces": pieces}
@@ -303,7 +317,14 @@ def layout(zone: str) -> dict:
         "environment": f"res://game/levels/ch10/{zone}/{zone}_environment.tres",
         "time_of_day_h": 18.33,
         **body,
+        # Invisible walls along the walks' open edges over the water (the human's playtest in Oruvel, 10-30).
+        "edge_walls": edge_walls(zone),
     }
+
+
+def edge_walls(zone: str) -> list[dict]:
+    lay = _layout(zone)
+    return zone_edges.walls(lay, zone_edges.hideable_ids(lay))
 
 
 def write_water_material(out: Path) -> None:

@@ -12,8 +12,8 @@ dest_files=["res://.godot/imported/farewell_tide.ogg-6d133a9d909bd8392413ecaabb9
 
 [params]
 
-loop=false
-loop_offset=0
-bpm=0
+loop=true
+loop_offset=70.25
+bpm=60.0
 beat_count=0
-bar_beats=4
+bar_beats=5

@@ -23,7 +23,7 @@ location: ch16/drowned_choir
 Asha [afraid]: This is it. #line:ch16_choir_001
 @wait 3.0
 @camera C04
-@mark asha kesh walk
+@mark asha dais_asha walk
 @wait 3.0
 @camera C05
 @anim asha raise_staff
@@ -94,8 +94,12 @@ title: ch16_shes_in_it
 @music silence fade=0.0
 @camera C08
 @anim asha kneel
-@mark toma kesh run
-@mark rhen kesh run
+@mark toma dais_toma run
+@mark rhen dais_rhen run
+@mark ysolde dais_ysolde walk
+@mark liss dais_liss walk
+@mark pell dais_pell walk
+@mark kerrid dais_kerrid walk
 @wait 3.0
 @camera C09
 Asha [grief]: She's in it. My mother. She's holding it. Right now. #line:ch16_inside_001
@@ -150,6 +154,8 @@ Asha [determined]: No, High Warden. I won't. #line:ch16_sefir_010
 <<if $ch12_ysolde_lied>>
     Ysolde [cold]: I lied once this year, for your sake. I am done. #line:ch16_sefir_014
 <<endif>>
+// C12 again: his answer to Ysolde is on his face (act2_ch16_direction.md).
+@camera C12
 Sefir [tender]: You loved him. So did I, in my way. He is kept. #line:ch16_sefir_015
 @camera C16
 @anim kerrid look_at sefir

@@ -138,7 +138,7 @@
       "props": [
         "Props"
       ],
-      "_allowances": "M1-CHR-15 (every-frame worst in brackets). Costume 31.5/6 (31.2): the shirt's side against the forearm and the lowered upper arm (finisher, talk). Body 62/44 (61.1, item@6; count 42 every frame once merged with M2-CHR-12's clips): the toss lifts the right arm 92 degrees forward and its front passes the shirt's armhole edge; with the arms down (idle, talk) the armpit is under 30 since the shoulder correctives. max_exposed 24: the thigh's hidden-face edge opens inside the deep knee fold of the kneel, under the trousers (rhen_clip_kneel).",
+      "_allowances": "M1-CHR-15 (every-frame worst in brackets). Costume 31.5/6 (31.2): the shirt's side against the forearm and the lowered upper arm (finisher, talk). Body 62/44 (61.1, item@6; count 42 every frame once merged with M2-CHR-12's clips): the toss lifts the right arm 92 degrees forward and its front passes the shirt's armhole edge; with the arms down (idle, talk) the armpit is under 30 since the shoulder correctives. max_exposed 24: the thigh's hidden-face edge opens inside the deep knee fold of the kneel, under the trousers (rhen_clip_kneel). The jog (the human playtest, 2026-10-30): Body count 47 (was 44) in run, run_start and run_stop, the right armpit's inner crease under the arm (DEF-armpit.R vs DEF-spine.003, 24-31 mm, inside the depth limit). The verts are covered by the upper arm itself in every frame of the cycle (viewed side, front and three-quarter at six phases), so it is invisible; opening the arm (abduction 4 to 12 degrees, the back swing eased) moved the depth, not the count.",
       "penetration": {
         "limits_mm": {
           "Costume": 31.5,
@@ -146,7 +146,7 @@
         },
         "limits_count": {
           "Costume": 6,
-          "Body": 44
+          "Body": 47
         }
       },
       "seams": {
@@ -411,16 +411,16 @@
         "max_exposed": 23
       },
       "_stage_poses": "The crest's two keys (crest_raise, crest_flat) are morph targets, which rig_probe does not apply; tools/tests/test_pell.py checks the Crest clear of the head in both keys (its crest_raise stage pose) instead.",
-      "_allowances": "M3-CHR-506 after the look-dev review (cloud probe at the default stride; every-key worst in brackets). The defaults hold in the idle, walk, talk and the story stand clips except where noted. Costume 45/6 (41.8, the ko/revive squat: the mantle's front fall folds into the belly as he sinks onto his heels and bows his neck to the floor; 36-37 in finisher and cast, 25-28 in attack, item, storm_call: the mantle's arm band against the raised right arm). Body 103/113 (102.8, ko/revive: both forearms on the knees take the right upper arm's front up through the mantle's shoulder cap; 77-78 in cast and storm_call, the right palm on the throat, the elbow kept 22 cm under the shoulder, seen in pell_clip_storm_call and pell_storm_ch8 as the cap's underside at the armpit; 42-46 in item and defend). Wraps 19/6 (18.7, ko/revive: the forearm wrap on the knee; 13.3 in storm_call, the wrap's top turn in the full elbow fold). NameShell 45/6 (42.6, ko/revive: the throat cord with the neck bowed 125 degrees; 16-27 in defend, finisher, storm_call, cast as the trapezius and the thick neck rise under it), NameShellBlank/Carved 20/6 (19.6, ko/revive; 18.9 in storm_call: the palm lies over the shell on the throat, as the sheet stages it; 6-8 in defend, run, attack). Crest 5/4 (4.5, ko/revive: the bowed head lays the crest's tips on the left thigh). max_exposed 23 (15 seen; ko/revive up to 44 mm: the cut edge under the mantle's front fall shows at the belly in the deep squat; 12 verts up to 13 mm in run, attack, defend, read, hit at the right breast under the mantle's front edge). Lower them when the mantle gets a squat-aware fold. GPU pass 3 look (muscle 0.6): the crest's count at the ko squat 4 -> 5 (4.3 mm, within the depth limit), the head bowed to the thigh.",
+      "_allowances": "M3-CHR-506 after the look-dev review (cloud probe at the default stride; every-key worst in brackets). The defaults hold in the idle, walk, talk and the story stand clips except where noted. Costume 45/6 (41.8, the ko/revive squat: the mantle's front fall folds into the belly as he sinks onto his heels and bows his neck to the floor; 36-37 in finisher and cast, 25-28 in attack, item, storm_call: the mantle's arm band against the raised right arm). Body 103/113 (102.8, ko/revive: both forearms on the knees take the right upper arm's front up through the mantle's shoulder cap; 77-78 in cast and storm_call, the right palm on the throat, the elbow kept 22 cm under the shoulder, seen in pell_clip_storm_call and pell_storm_ch8 as the cap's underside at the armpit; 42-46 in item and defend). Wraps 19/6 (18.7, ko/revive: the forearm wrap on the knee; 13.3 in storm_call, the wrap's top turn in the full elbow fold). NameShell 45/6 (42.6, ko/revive: the throat cord with the neck bowed 125 degrees; 16-27 in defend, finisher, storm_call, cast as the trapezius and the thick neck rise under it), NameShellBlank/Carved 20/6 (19.6, ko/revive; 18.9 in storm_call: the palm lies over the shell on the throat, as the sheet stages it; 6-8 in defend, run, attack). Crest 5/4 (4.5, ko/revive: the bowed head lays the crest's tips on the left thigh). max_exposed 23 (15 seen; ko/revive up to 44 mm: the cut edge under the mantle's front fall shows at the belly in the deep squat; 12 verts up to 13 mm in run, attack, defend, read, hit at the right breast under the mantle's front edge). Lower them when the mantle gets a squat-aware fold. GPU pass 3 look (muscle 0.6): the crest's count at the ko squat 4 -> 5 (4.3 mm, within the depth limit), the head bowed to the thigh. GPU pass 5 (mass 0.15 -> 0.25 for the arms): Wraps 20 (19.6, revive) and Body 104 (103.7, ko), the same mechanisms.",
       "penetration": {
         "limits_mm": {
           "Costume": 45.0,
-          "Wraps": 19.0,
+          "Wraps": 20.0,
           "Crest": 5.0,
           "NameShell": 45.0,
           "NameShellBlank": 20.0,
           "NameShellCarved": 20.0,
-          "Body": 103.0
+          "Body": 104.0
         },
         "limits_count": {
           "Costume": 6,

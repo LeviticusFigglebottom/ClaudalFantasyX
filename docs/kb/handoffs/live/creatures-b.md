@@ -668,3 +668,132 @@ What the Act II fights still need from others: enemy rows and encounters (combat
   actors; the enemy rows (`malcor_venn`, the Abiding ids) are chapters'/combat's.
 - **BACKLOG EMPTY (10:40):** no Act II boss in my lane lacks its model; the two people bosses' models are characters'
   (Venn built, the guard in progress), and their stand-ins follow when the actors land.
+
+## 2026-10-30 ~11:10: the Lead's 10:27 message (Act II quality check, then help row 64)
+- **Act II:** every Act II boss and Vowbound in my lane is at real-model quality (the four bosses and four Vowbound
+  built, reviewed, wired; see above). No stand-in mesh ships: Venn's `stand_ins` entry only points at characters'
+  real `venn_battle.tscn` (ec78978b) and falls back to the capsule only until claude/characters merges.
+- **Row 64 (for battle-presentation, who owns the intro, BattleBossIntro and BattleBossHeroShot): the boss rigs are not
+  the cause, so there is nothing of mine to prewarm.** pc-gpu's big21 trace (gpu/act1-qa-5, act1_gpu_qa.md row 64)
+  found zero pipeline compiles on the spiking frame; the time is `_frame_boss()` -> `BattleBossHeroShot.search` on the
+  first uncovered frame. battle-presentation's 65e776af (warm the particle variants) addresses the earlier guess;
+  the trace says the frame stays.
+  My headless timing of the search in each fight (scratch harness, shared CPU, so absolute ms differ from the PC's;
+  "cold" = an empty `_tri_cache`):
+
+  | Fight | Occluders | Triangle meshes built | Search cold / warm | Biggest occluder sets |
+  |---|---|---|---|---|
+  | Drownbell | 943 | 223 ms | 167 / 158 ms | saltgrass_clumps x700 + x179 (multimesh instances) |
+  | Hermit | 69 | 12 | 121 / 113 | lamp flames, posts, masts |
+  | Inquisitor (Moll) | 66 | 21 | 93 / 99 | camp fires, the party |
+  | Matron | 39 | 2 | 40 / 32 | the party |
+  | Hullgnaw | 99 | 28 | 13 / 12 | |
+  | Spar-Wraith | 69 | 7 | 1 / 1 | |
+  | the Reach | 319 | 20 | 4 / 3 | watcher heads x104 |
+
+  The boss bodies are small (2–12 visual nodes each) and enter only as `bounds`. Two causes:
+  1. **The Drownbell:** 879 of its 943 occluders are saltgrass clumps, ankle-high grass that can never block a lens.
+     Each sight line walks all of them, and the first search builds about 220 ms of triangle meshes.
+     *Suggestion:* `_occluders` skips multimesh instances (or any box) shorter than about 0.5 m, or below the lens
+     and the boss's waist.
+  2. **The Hermit and Moll:** few occluders, but many candidate poses fail before one holds.
+     *Suggestion:* run `_frame_boss()` while the fade still covers the screen (at `_on_first_turn` when
+     `_covered()` is true, keeping `_pose` for the reveal) and warm `_tri_cache` there too. This is pc-gpu's
+     proposed fix, and it covers every fight.
+  Both changes are in battle-presentation's files (game/battle/scene/**), so I made neither. The scratch harness is
+  `game/_scratch_crb/r64/time_hero.{gd,tscn}` (git-excluded; copy on request).
+- **BACKLOG EMPTY (11:10):** the Act II bosses and Vowbound are all at real-model quality. Row 64's cause and its two
+  fixes are measured and handed to battle-presentation, with nothing on my rigs to prewarm. Venn's stand-in waits on
+  claude/characters' merge; the Abiding guard's waits on its actor.
+
+## 2026-10-30 ~13:15: big22 red and the Act I as-played pass
+- **MERGE-READY @ 098a878d1: big22's red test_avalanche_ram fixed.** The test still asserted the Ram had no
+  `clip_by_skill` (from before combat's skills existed); it now checks each mapped skill is in skills.json and each
+  mapped clip is in the GLB (live: a missing clip fails it). tools.tests.test_avalanche_ram + test_wakefin 7/0.
+- **As-played pass, in progress.** The Act I boss fights are played on the real stage with the encounter sweep (a
+  scratch copy that also stills each clip of the boss and Vowbound mid-way, and steps the boss's HP down so every phase
+  is crossed in play).
+  - Reviewed: the Drownbell (flood, KO), Hullgnaw, the Hermit and Ilun, the Reach, and the Inquisitor with Virel. My
+    models show no clipping, pops or missing hit reactions. Ilun, Kahre and Virel each rise, act, are hit and leave
+    cleanly.
+  - **Found and fixed (650257eaa, MERGE-READY once its battle run is green, below):** no boss phase clip was ever seen.
+    `phase_changed` comes from `_end_turn`, right after `action_resolved` starts the blow; BattleActorMotion entered
+    the phase at once and the blow's hit reaction then replaced the phase clip (Hullgnaw's phase_break, the
+    Drownbell's phase_change; Hullgnaw's ribs vanished mid-flinch on the hide_after timer). It now waits for the
+    blow's sequence via `BattleChoreo.after_sequence`, as the phase camera moment does. Review request for creatures,
+    who own the file: M3-CRB-016.
+  - **For battle-presentation (camera, not models):** (1) in undertows_reach, a Vowbound called during the Climb's
+    entry cut rises off screen (the camera is on CameraHints/along_the_walk while Kahre's rise plays); (2) the
+    Spar-Wraith reads as a small dark shape in the rigging at the fight's rest frame (the M3-CRB-011 note).
+- **MERGE-READY @ 650257eaa: a boss phase change waits for the blow that turned it** (M3-CRB-016, review request
+  for creatures). Godot battle 856 run: 3 reds, none from this change (the Act I/II ability-VFX rows wait on
+  battle-presentation's M4-A2P-061; the lineup red is below); creature 159/0, boss 121/0, phase 2/0. Tools suite: the
+  reds are all other tracks' (blender coverage of oruvel_seabed.glb, the ossa_fen wildlife shot, loc "Shell-carver",
+  zone map pois, cutscene sfx todo, a palette baseline, villager clips, audio loudness); test_avalanche_ram passes.
+- **big22 red test_battle_lineup (ch11_lamp_engine), not fixable in my lane without a regression; for
+  battle-presentation and chapters.** The Lamp Engine opens 2.49 and 2.55 m from the two conduit crawlers M4-A2P-022
+  added (needs 2.74: its footprint 2.10 + 0.52 + 0.12). Its footprint is its own mesh (3.6 x 2.35 m) at the stand-in
+  yaw 55°, not its VFX (particles add nothing). Side-on (0° or 90°) it is 1.51 and would pass, but the intro renders at
+  10° and the earlier 90° pass both put the near arm across the body and the core, the reason for 55° (lamp_engine.md
+  As built). Options: (a) battle-presentation lets `boss_seats` seat a boss with adds (the Engine 1–1.5 m back), or
+  (b) chapters spreads ch11's crawler slots, or (c) a larger lineup cap for this fight.
+- **For battle-presentation/env-art: ch11_lamp_engine's default camera is broken on big22.** The left half of the
+  frame is a dark wall and neither the Engine nor the crawlers are in view, only the party (my 09:30 render of the same
+  fixture showed the Engine whole). The boss-intro hero shot is fine.
+- **For battle-presentation: the phase camera moment is cut short by the boss's next turn at real pacing.** A frame
+  trace of ch01_hullgnaw (pacing 1.0, an attack that crosses 50%): the blow plays (hit, f=38); with 650257ea the phase
+  then starts (f=66: `phase_break`, `moments_played` [phase], `moment_left` 2.10, `busy_sec` 2.10); at f=112 (0.77 s)
+  the boss's next turn starts anyway (`coil`), `moment_left` drops to 0 and the 1.9 s phase_break is cut at 40%. The
+  Matron's 2.2 s `phase_change` is cut the same way (no still reaches its middle). test_battle_boss_camera_moments
+  checks `busy_sec() > 1.0` but not that the controller waits for it before the next turn. Scratch trace:
+  game/_scratch_crb/r_hg/trace.gd (git-excluded; copy on request).
+
+## 2026-10-30 ~14:15: the Lead's 14:09 (test_avalanche_ram still red in big23)
+- **Not blocked: big23 merged claude/creatures-b @ a65cf87f, which predates the fix.** The fix is 098a878d1 (pushed
+  12:40, logged MERGE-READY 13:15). **MERGE-READY @ c8de3434f** (big23 merged in, no conflicts): carries 098a878d1 (the Ram
+  test) and 650257eaa (phase after the blow, M3-CRB-016). test_avalanche_ram OK on this head; validate_data 0/0;
+  Godot creature_bosses green.
+- **MERGE-READY @ f893ee590: the Spar-Wraith's deck KO no longer rises.** As played (ch04_spar_wraith, hauled_down then the
+  KO), the victory still showed it apparently back up by its web: `ko_deck` pitched the face 40° down into the planks,
+  more than grounding's 30° head turn takes back, so grounding lifted the whole body 0.5 m as it died (body0 -1.19 ->
+  -0.68 between 0.4 s and 1.05 s). The head now turns aside onto the planks (4° pitch, 18° turn); body0 ends at -1.115,
+  inside the deck idle's own breathing range. New tools/tests/test_spar_wraith.py (fails on the old GLB). Blender
+  creature_spar_wraith 6 identical; tools test_spar_wraith, test_creatures, test_blender_builds 52/0; Godot creature
+  159/0; validate_data 0/0; clip sheet viewed (idle_deck, ko_deck).
+- **The as-played pass, all fights reviewed** (intro, mid-fight, each phase, defeat): Hullgnaw, the Drownbell, the
+  Hermit, the Spar-Wraith, the Matron, the Inquisitor, the Reach (the Surge), and Ilun, Kahre and Virel called into
+  them. Fixed in my lane: the phase timing (650257ea) and the Wraith's deck KO (above). Open in other lanes: the phase
+  moment cut by the next turn, Kahre rising during the Climb's cut, the Wraith's rest framing, ch11's camera and line-up.
+
+## 2026-10-30 ~15:00: the Lead's 14:48 (Act II as-played passes; help battle-presentation with the foe effects)
+- **The effects split: confirmed** (battle-presentation's a5aa7e63 proposal). battle-presentation owns the effect
+  data (the conduit crawler's brush_jab, crawler_mend and crawler_tend, and the four Act II Vowbound's 19, written in
+  tools/vfx/gen_act2_ability_vfx.py on their branch, generated at the first integration merge that carries their skill
+  rows). Once that merge lands, creatures-b views each Vowbound's and the crawler's effects on its own model
+  (anchors, sizes on the bodies) in the as-played sweep, and files any misfit as a battle-presentation task. They are
+  not behind: the two act2/act1 ability-VFX reds on the integration branch are only waiting on that merge.
+- **Act II as-played passes, running:** ch10_mangrove_drowner (Ethren called), ch11_lamp_engine (Hesk), and
+  ch12_avalanche_ram (Nhoa), on the real stage with the sweep (intro, mid-fight, each phase, defeat). Ch13 has no
+  boss encounter yet.
+- **Ch11 Lamp Engine, as played** (Hesk called): intro, both hits, **the phase change now seen** (`phase_change` caught
+  mid-way, then `hit_opened` and `ko_opened`), the victory; Hesk rises and falls cleanly. Nothing to fix on the
+  models. **The default camera's dark slab (for env-art / battle-presentation), traced:** the BattleCamera at
+  (0.72, 3.99, 9.76) sits inside the bounds of `Arena/Ground/engine_hall` (the ray's first hit at 0 m), and the Engine
+  is 7–8 m behind it: a wall of the hall stands between the battle camera and the fight in every wide frame (the
+  opening, mid-fight, the KO). The close shots (intro, hits, phase) are clear.
+- **Ch10 Mangrove Drowner, as played** (Ethren called): intro, hits, the uprooted stance (rising_water, hit and
+  root_stamp in their `_risen` versions), its KO and the victory; Ethren rises, strikes, guards (`defend`), is hit and
+  falls cleanly. **For battle-presentation:** (1) the intro's hero shot looks from behind the party; the Drowner
+  stands far back, washed out and partly behind the title card, so the intro doesn't show the boss (it reads at the
+  opening's default camera: the dark root mass and its teal snag lights). (2) A called Vowbound on the vowbound slot
+  stands right before the default camera: Ethren (2.5 m) fills a third of the frame and hides the Drowner during his
+  own turns (Kesh at 4.2 m will be worse); the slot or the camera, not the models.
+- **Ch12 Avalanche Ram, as played** (Nhoa called): intro, charge_gather, neck_sweep, the torn_fleece stance (its
+  `_torn` charge, hit, sweep and KO) and the victory all read; Nhoa rises, attacks, is hit and falls cleanly.
+- **The phase clips themselves** (the Drowner's uproot, the Ram's tear) aren't caught mid-way: the next-turn cut
+  above (the Engine's `phase_change` was, on its slower turn order). Nothing in the Act II models needs fixing.
+- **BACKLOG EMPTY (15:40):** the Act I and the mounted Act II boss fights are played and fixed where they were mine
+  (650257ea, f893ee59); the open items are other tracks' (the phase-moment cut, the intro framings, ch11's camera
+  behind engine_hall, ch11's line-up, the Vowbound slot before the camera, Kahre's rise during the Climb's cut).
+  Next when they land: battle-presentation's Act II effects (view them on my bodies, the agreed split), the Abiding
+  guard's actor (its stand-in), the flat-engine's row and Liss's break.

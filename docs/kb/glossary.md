@@ -287,3 +287,6 @@ Hullgnaw, Drownbell (slice), Spar-Wraith, Cinder Matron, the Undertow's Reach, M
   promise, a duty, a watch not yet over; bible §2). Supersedes the table row's "around an unkept promise".
 - **Mother Kell**, **stair-law**, **Stair's clear** (rows above): the later rows hold: Kell is Oruvel's chandler, never a
   diver; the stair-law and the all-clear are the stair-watch's, never the Stillguard's (decisions_log N-25, N-27).
+
+### Spelling (Lead, 2026-10-30)
+Player-facing text uses British spelling with Oxford -ize: colour, armour, defence, grey, harbour, honour, traveller, but Customize. Code ids and loc keys keep their spelling (`STAT_DEFENSE`, `EQUIP_MENU_SLOT_ARMOR`).

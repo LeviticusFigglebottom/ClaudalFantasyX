@@ -4,9 +4,11 @@ extends RefCounted
 ## radius and height, flapping in bursts between glides, now and then gliding in to a free perch, standing there
 ## a while turning their heads, and taking off back into the circle. Headless and deterministic: the motion
 ## depends only on the seed and the frame deltas. Tuning is the `gull` kind of wildlife.json; placement is a
-## zone file's `flocks` row.
+## zone file's `flocks` row. A kind with `dive_chance` (the kingfisher, Ch10: fen_kingfisher.md "it perches long, and
+## plunges") on a row with a `water_y` sometimes leaves its perch in a plunge: wings folded, down to the water
+## dive_reach_m ahead of the perch, a moment there, and back up to the same perch, which it keeps meanwhile.
 
-enum State { SOAR, APPROACH, PERCHED, TAKEOFF }
+enum State { SOAR, APPROACH, PERCHED, TAKEOFF, DIVE, SURFACE }
 
 ## Guards against a zero orbit or segment (numeric floors, not tuning).
 const MIN_ORBIT_M := 0.01
@@ -50,6 +52,8 @@ var id := ""
 var center := Vector3.ZERO
 var radius := 1.0
 var altitude := Vector2.ONE
+## The water's surface under the perches (a row's `water_y`), or NAN: no water to dive to.
+var water_y := NAN
 ## Perches: (x, y, z, yaw radians).
 var perches: Array[Vector4] = []
 var gulls: Array[Gull] = []
@@ -75,6 +79,7 @@ func _init(row: Dictionary, kind: Dictionary, seed_value: int, count: int) -> vo
 	center = Vector3(c.x, 0.0, c.y)
 	radius = float(row.get("radius_m", 1.0))
 	altitude = WildlifeConfig.vec2(row.get("altitude_m", [1.0, 1.0]))
+	water_y = float(row["water_y"]) if row.has("water_y") else NAN
 	for p: Variant in row.get("perches", []):
 		var a: Array = p
 		perches.append(Vector4(float(a[0]), float(a[1]), float(a[2]), deg_to_rad(float(a[3]))))
@@ -101,6 +106,8 @@ func _init(row: Dictionary, kind: Dictionary, seed_value: int, count: int) -> vo
 	var lo := altitude.x - _undulate
 	for p in perches:
 		lo = minf(lo, p.y)
+	if not is_nan(water_y):
+		lo = minf(lo, water_y)
 	var hi := altitude.y + _undulate
 	bounds = AABB(Vector3(center.x - radius, lo, center.z - radius), Vector3(radius * 2.0, hi - lo, radius * 2.0))
 
@@ -155,6 +162,10 @@ func step(delta: float) -> void:
 				_step_perched(g, delta)
 			State.TAKEOFF:
 				_step_segment(g, delta, false)
+			State.DIVE:
+				_step_dive(g, delta)
+			State.SURFACE:
+				_step_surface(g, delta)
 
 
 func _soar_pose(g: Gull) -> void:
@@ -270,6 +281,9 @@ func _step_perched(g: Gull, delta: float) -> void:
 	g.nod_phase = fposmod(g.nod_phase + TAU * _f("nod_hz") * delta, TAU)
 	if g.timer > 0.0:
 		return
+	if not is_nan(water_y) and _rng.randf() < float(_kind.get("dive_chance", 0.0)):
+		_begin_dive(g)
+		return
 	# take off along the perch's facing and climb back into the circle a little ahead of the perch
 	var p := perches[g.perch]
 	_occupied[g.perch] = false
@@ -286,6 +300,41 @@ func _step_perched(g: Gull, delta: float) -> void:
 	var dur := maxf(_r("takeoff_s"), from.distance_to(to) / g.speed)
 	_begin_segment(g, to, dir * g.speed * _f("takeoff_speed_fraction") + climb / dur, circle_vel, dur)
 	g.state = State.TAKEOFF
+
+
+## The plunge: off the perch with a hop, wings folded, steeply down to the water dive_reach_m ahead of it.
+func _begin_dive(g: Gull) -> void:
+	var p := perches[g.perch]
+	var dir := Vector3(sin(p.w), 0.0, cos(p.w))
+	var target := Vector3(p.x, water_y, p.z) + dir * _r("dive_reach_m")
+	var v1 := (dir * 0.3 + Vector3.DOWN).normalized() * _f("dive_speed_mps")
+	_begin_segment(g, target, dir * _f("landing_speed_mps") + Vector3.UP, v1, _r("dive_s"))
+	g.state = State.DIVE
+
+
+func _step_dive(g: Gull, delta: float) -> void:
+	g.seg_t = minf(g.seg_t + delta / g.seg_dur, 1.0)
+	_hermite(g, g.seg_t)
+	_flap(g, delta, 0.0)  # folded
+	if g.seg_t < 1.0:
+		return
+	g.state = State.SURFACE
+	g.timer = _r("dive_hold_s")
+	g.vel = Vector3(g.vel.x, 0.0, g.vel.z).normalized() * 0.1  # it keeps facing on along its plunge
+	g.acc = Vector3.ZERO
+
+
+## At the water a moment, then beating hard straight back up to its perch (the landing segment).
+func _step_surface(g: Gull, delta: float) -> void:
+	g.timer -= delta
+	_flap(g, delta, 1.0)
+	if g.timer > 0.0:
+		return
+	var p := perches[g.perch]
+	var land_dir := Vector3(sin(p.w), 0.0, cos(p.w))
+	var up := Vector3.UP * _f("dive_speed_mps") * 0.5
+	_begin_segment(g, Vector3(p.x, p.y, p.z), up, land_dir * _f("landing_speed_mps"), _r("dive_return_s"))
+	g.state = State.APPROACH
 
 
 ## The bird's transform: in flight it faces along its velocity, pitched within pitch_max and banked into its

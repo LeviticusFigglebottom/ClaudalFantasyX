@@ -1022,3 +1022,171 @@ MERGE-READY @ 8287ca8b: the portraits re-baked on big20's models, and the Act II
       `{"inn": "ansedra_guest"}`, as Quellan's inn does.
   - **Portraits:** Malcor Venn and the three Abiding guards aren't in big21 yet; I'll bake them as soon as they land.
 MERGE-READY @ 92151e255: big21 merged; the Bound section; Act II inns.
+- 2026-10-30 14:20, **Act II battle floats** (a4336326a), on Combat's new hit keys:
+  - a drain (`drained`, the fen leech, M4-CMB-1001) puts its heal number over the user, with "Drained";
+  - a crawler's repair (`part_restored`, M4-A2P-022) floats "{part} mended" over the boss, the part named by its charge
+    skill.
+  Combat already built the rooted swap reason ("held by the roots") and the element cycle's timeline, so hud.md's
+  rooted and cycle items are done on their side.
+  test_battle_controller 33/0 (a new drain and repair test), battle_choreo 28/0, battle_reduced 5/0, pseudo_loc 26/0.
+  No committed shot shows them.
+MERGE-READY @ a4336326a: Act II battle floats.
+- 2026-10-30 14:40, **PC pass 5: row 67 FIXED.** Every entry is under 1 s hidden, and Brine Shoals ran 5/5 fresh with no
+  hang. No pass 5 row is routed to ui-menus. I merged the integration branch's 15d80358c (the Lead's log).
+- **BACKLOG EMPTY** for what ui-menus can build without other tracks:
+  - **Portraits:** Malcor Venn's model is still only on claude/characters, and the Abiding guards are on no branch.
+  - **hud.md:**
+    - buff strip, darkness and tide pulse: no engine support yet (Combat);
+    - Pell's Listen and his absence: Pell's battle row;
+    - a Read-panel ability list (drain and repair tags) would be a new feature, which I'm leaving until Combat's kit
+      rows settle.
+  - **Codex:** Narrative now writes the Act II entries (its people and world sets landed in big20 and big21).
+  - **The reader's records:** Narrative.
+- 2026-10-30 16:30, **the Lead's 10:47 item: the as-played Act I UI pass** (0347aa74 plus this branch).
+  - **How:**
+    - Twenty UI shots at 2560×1440 with the largest text (130%, from a pre-seeded settings.cfg; the manifest swapped
+      temporarily and restored). All viewed:
+      - battle: HUD, swap, Read, victory;
+      - field: menu, codex, prompt, tip, dialogue;
+      - title, settings, save, shop, bestiary, equip, items, status, formation, Lattice, Reefball.
+    - test_pseudo_loc_screens (it fit-probes every screen at 100% and 130%), plus a new English mode
+      (`HYMN_PSEUDO_OFF=1`).
+    - The input-parity suite (focus order on keys, pad and mouse).
+    - A new contrast test.
+  - **Found and fixed:**
+    - **Field menu at 130%:** the cards' names sat on their HP rows, the save hint sat on the date, and the objective
+      ran into the help line.
+      - The card rows and the Last saved and Objective blocks now grow with the text size; at 100% nothing moves.
+      - The portrait gives up what the card text needs.
+      - When the objective's lines need the room, the save hint steps aside, and then the objective shrinks to 80%
+        at most.
+    - **Shop at 130%:** a two-line refusal ran into the help line. The line about the row and the status now share
+      the column above the help.
+    - **Status table:** at 130% the stat names and heads now fit their columns ("Magic Defense", "Lattice").
+    - **Contrast** (tools/tests/test_ui_contrast.py, WCAG 2): every text colour is at least 4.5:1 on the page panels
+      in both palettes, and at least 3:1 (bold large text) on the raised cursor row.
+      - The colorblind `danger` (#D15E1F) was 4.25 on the deep panel. It is now #C76E10: 4.52:1, and still
+        distinct (0.171 Oklab worst-case under deuteranopia and protanopia; test_colorblind_palette).
+      - docs/kb/tech/ui.md and test_ui_settings are updated.
+  - **Checked and clean:**
+    - **Pillar 4:** the timeline always shows who acts now and next. Every command row shows its cost (MP, rank,
+      escape odds, "No time"). Every leaf command previews where the actor lands ("acts again in 5 turns").
+    - **English at 130%:** no text is cut anywhere. Only Reefball's panels grow taller than their boxes, without
+      overlapping.
+    - **Focus order:** input_parity 65/0.
+    - **Pseudo-loc:** it still cuts some text with an ellipsis (mostly Reefball's Read and Drop columns). These are
+      localisation-length warnings with nothing cut in English, so I left them.
+  - **Tests:** field_menu 29/0 (a new 130% overlap test), party_card 3/0, shop 28/0, inn 11/0, status_menu 8/0,
+    pseudo_loc_screens 17/0, aspect 18/0, colorblind 2/0, ui_settings 11/0, input_parity 65/0; tools: ui_contrast OK;
+    validate_data 0/0; lint and format clean.
+  - **Drift:** the 100% field-menu shots move by about 1 px in the cards' text (and their baseline already predated
+    Toma's portrait), and battle_statuses_colorblind changes with the new orange.
+MERGE-READY @ 4edf33c21: the as-played Act I UI pass.
+- 2026-10-30 17:40, **the Lead's 11:47 note.** I merged the integration branch (ADR 0206: British spelling).
+  - **ADR 0206:** my new strings are British. The one older American string I own (`STATUS_MENU_ARMOR`, "Armor") is in
+    act2-plan's FAST-TRACK, so I left it to avoid a clash.
+  - **Focus order:** done in the 10:47 pass (input_parity 65/0, keys, pad and mouse).
+  - **Battle at every text size** (8132685db):
+    - **Method:** the HUD, swap and Read shots rendered at 115% and 130%, through the fixtures' `ui_settings` (data
+      restored afterwards). All viewed.
+    - **"Acting now" at 130%:** the head chip read "Acting …", and names like "Gull Harrier" lost their ends. Both now
+      fit their width (down to 80%) before an ellipsis cuts them.
+    - **Party rows at 130%:** the HP and MP numbers sat on their gauges. Above 100% a number's bottom now stays on its
+      gauge's top. At 100% nothing moves; I checked against the baseline, and the party panel is pixel-identical.
+    - **Costs:** every command's cost shows at both sizes (MP, rank, escape odds, "No time"), and so does the help
+      line's outcome ("Rhen acts again in 5 turns").
+    - **The Read panel at 130%** grows over the party panel's lower edge. It is modal, its own text is whole, and the
+      battle waits while it is open, so I left it.
+    - **Tests:** battle_controller 33/0, timeline 30/0, pseudo_loc_screens 17/0.
+MERGE-READY @ 8132685db: the battle text-size fixes.
+- 2026-10-30 13:10, **the Lead's 12:48 note: the black screen after a won battle.**
+  - **Cause (ResidentLoads, fixed in 8df5fe2b4):** entering the field battle let the zone's own resident loads go.
+    On Return they were read again from disk, and the prewarm feed staged about 950 materials a second time.
+    - **Measured** with the probe's new `--round-trip=<encounter>` option, returning to Brine Shoals after
+      `ch06_flats_crabs` (headless): **4875 ms** zone entry with 614 prewarm frames before the fix, **667 ms** with
+      2 frames after.
+    - **Fix:** a change into the battle scene now keeps the zone's loads, so the return loads nothing and prewarms
+      nothing again.
+    - **Test:** `test_a_field_battle_keeps_the_zone_s_loads_for_the_return` (resident_loads 9/0).
+  - **Each segment after the fix:**
+    - **Victory panel:** it opens 0.6 s after the last blow, with the battle still on screen. Nothing is black.
+    - **Confirm on Return:** `FieldBattle.return_to_field` calls `FlowRouting.go_to` the same frame, with no wait.
+    - **Fade-out:** `SceneRouter.FADE_SEC` 0.35 s.
+    - **Black:** the entry from the cache (about 0.67 s headless), plus `MEASURE_FRAMES` 4 frames. The loading cover
+      holds nothing on this path.
+    - **Fade-in:** 0.35 s.
+    - **Input:** live as the fade lifts. Field input doesn't gate on `SceneRouter.is_busy()`.
+  - **To integration-qa (owner of the SceneRouter return):** my side has no fixed wait left. The black is now the
+    cached entry alone, under 1 s. The fades are the router's 0.35 s each way. If the PC's entry still runs over 1 s,
+    the next cut is in the router or the zone's `_ready`, not in ResidentLoads or the results panel.
+  - **PC-QUEUE:** re-measure the return on the GPU, either with
+    `scene_swap_probe.tscn -- --resident-loads --warm-resident --to=<brine shoals> --round-trip=ch06_flats_crabs`
+    or by hand: win a fight and time from Return until you can walk.
+  - **Tests:** resident_loads 9/0, scene_router 17/0, prewarm 27/0, act1_swap_sweep (tools) OK; lint and format clean.
+  - **test_qa_threads and act1-chapters (ca5ce4037):** the guard failed 6 ways on my Act II objective rows.
+    - **Cause:** a chapter's last row ran `until` the next chapter's start flag, which that chapter's thread never
+      raises.
+    - **Fix:** `reed_clutch`, `low_sanctum`, `cloudloom_dais`, `archive_ledgers` and `court_barge` now have
+      `until: null`, holding until the zone changes, as Act I's `t_harbour` does.
+    - **Still unraised:** Lacquer Court's `court_dais` and `court_barge` (filed under `ch13/`) wait on
+      `ch14_started` and `ch14_declared_heretics`. Ch14 has no thread yet, so both are listed in `qa_known.json`
+      "unraised" and point at M4-A2P-014.
+    - **To act1-chapters:** when the ch14 thread raises those two flags, drop both rows from `qa_known.json`.
+    - **Result:** qa_threads 1/0; objective 16/0, field_menu 37/0, zone_map 22/0; validate_data 0/0.
+MERGE-READY @ ca5ce4037: the battle-return black screen (ResidentLoads keeps the zone through a field battle) and the Act II objective flags for test_qa_threads.
+  - **To integration-qa:** the measurement method and the remaining end-to-end check are in request task **M4-UI-212** (role qa), per the Lead's 13:48 note.
+- 2026-10-30 14:30, **the Lead's 13:48 note.**
+  - **Request task to integration-qa:** M4-UI-212 (role qa) holds the measurement method and the end-to-end check.
+  - **Next item, the Act II queue (M4-A2P-083):** a foe's broken parts now show on the battle's Read panel ("Broken ·
+    Lamplight: silent until it is mended") until a tender mends them.
+    - **Test:** test_read_panel 13/0, plus bestiary 37/0, battle_parts 4/0 and pseudo_loc 26/0.
+    - **Render:** viewed with the line injected. The battle_read_panel shot itself is unchanged (no part there).
+    - **Next:** the answered-by cursor line once Venn's row has `answered_key`; the Lacquer Court rows once ch14's
+      flags exist (M4-A2P-014).
+MERGE-READY @ eb1d12998: broken parts on the Read (M4-A2P-083).
+BACKLOG EMPTY: everything left in this track's queue waits on another track.
+- **M4-A2P-081 NPC portraits** (Malcor Venn, the Abiding guard): wait on their models (characters track).
+- **M4-A2P-082 seven-hero formation check:** waits on Pell's battle row (combat).
+- **M4-A2P-083:**
+  - The answered-by cursor line waits on Venn's row carrying `answered_key` (M4-A2P-023, combat).
+  - The darkness telegraphs are battle-presentation's, already in (M4-A2P-062, in review), and the timeline shows them.
+  - The Act II bestiary pages fill as the foe rows land.
+- **Lacquer Court objective rows:** wait on ch14's thread raising its flags (M4-A2P-014, act1-chapters); then drop the two
+  `qa_known.json` "unraised" rows.
+- **Battle return end to end:** M4-UI-212 (integration-qa, plus a PC measurement).
+- 2026-10-30 16:10, **the Lead's 14:28 note: a controller-only pass over Act I's menus** (merged big23 at 63175d0b3).
+  - **Merge:** act1-chapters' Act II objective rows replace my interim ones. Theirs cover every zone beat by beat, so
+    I dropped my 17 `OBJ_*` strings and pointed the Act II objective test at their rows.
+  - **The walk:** `tests/unit/test_input_parity_pad_walk.gd` (3/0) drives the pad alone over:
+    - every field menu page, with a played save: Down, Confirm three deep (equip a piece, use a tonic, the Lattice, the
+      map, Settings), then Cancel out;
+    - every battle command (Attack, Skills, Items, Swell, Swap, Escape), into its page and target, then back;
+    - the battle pause, including Settings and one of its pages;
+    - the save list (with the overwrite question) and the title's load list.
+  - **After every press it fails on:**
+    - an unfilled `{action}`;
+    - a key's name where the pad has its own button;
+    - focus on a Control that isn't on screen;
+    - a menu page with nothing saying how to go back.
+  - **Found and fixed:**
+    1. **Settings never said how to move or go back** (hub and pages, from the field, the title and the pause). A
+       controls line now sits under the help. The Controls page hides it while listening, and the hub's line hides
+       under an open page.
+    2. **The save and load lists ignored the pad.** They take their input before the UiInput autoload, so a pad press
+       left the prompts on the keys and a held D-pad never repeated there. They now let UiInput notice each event
+       first (`UiInput.notice`).
+    3. **The save and load lists never said how to go back.** A controls line now sits at the right of the help row:
+       "Confirm: record · Cancel: close" (load: "continue"), and the question's "Up and Down: choose · Cancel: keep it".
+  - **Not changed, by design:** the battle command menu's help line is the action's cost and turn, and Cancel at its
+    root opens the pause (which says how to go back). The walk exempts only those stops.
+  - **Focus:** no Control kept the focus while hidden. Dead ends: none (with test_input_parity_dead_ends).
+  - **Renders viewed:** settings_hub, settings_accessibility (130%), settings_controls, save_menu, save_menu_overwrite.
+    All five change baselines (the new lines). The Lead re-approves; I wrote no baselines.
+  - **Tests:** pad_walk 3/0, settings 48/0, controls 12/0, graphics_menu 9/0, accessibility 9/0, save 201/0,
+    title_menu 16/0, input_parity_title 2/0, pseudo_loc 26/0, aspect 18/0, objective 16/0, field_menu 37/0,
+    zone_map 22/0, ui_input 4/0; validate_data 0/0; lint and format clean.
+  - **For act1-chapters (seen on big23 itself):** test_qa_threads fails 15 ways on their new Act II objective rows.
+    The ch10–13 threads don't yet raise the beats those rows wait on (`ch10_farewell_tide_seen`, `ch11_nhoa_bound`,
+    `ch12_ram_felled`, `ch13_read_ledgers`, each chapter's `_complete`, and the Lacquer Court's ch14 beats). My
+    merge took their `objectives.json` and threads unchanged. I only renamed the rows in my two qa_known notes.
+MERGE-READY @ 0fda0d8b5: the controller-only pass (Settings and save/load controls lines, the save list's pad notice, the pad walk test).

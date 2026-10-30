@@ -1,8 +1,9 @@
 extends TestCase
 ## M3-AUD-18: stings on the battle presentation's announcements. StingAudio plays battle_stings.json's row for an
 ## EventBus.dialogue_event (the encounter's own row first), swaps in the version without sub-bass under reduced
-## audio, holds the boss intro's music duck for its time and lets it go, ignores events with no row; every row
-## resolves and imports; and the director listens to EventBus and drives its ducks.
+## audio, holds the boss intro's music duck for its time and lets it go, dips the field under the tide line until the
+## router's black, ignores events with no row; every row resolves and imports; and the director listens to EventBus
+## and drives its ducks.
 
 var played: Array[StringName] = []
 var duck_calls: Array = []
@@ -96,8 +97,22 @@ func test_the_boss_intro_holds_its_duck_then_lets_go() -> void:
 	s.advance(sec)
 	assert_eq(duck_calls, [[&"boss_intro", true], [&"boss_intro", false]], "and let go after duck_sec")
 	assert_true(s.held.is_empty(), "nothing left held")
+	_done()
+
+
+func test_the_tide_line_dips_the_field_and_lets_go_before_the_black() -> void:
+	var s := _listener()
+	var row := (s.data["events"] as Dictionary)["battle_stinger"] as Dictionary
+	var sec := float(row["duck_sec"])
 	s.on_event(&"battle_stinger", ["x"])
-	assert_eq(duck_calls.size(), 2, "the tide line ducks nothing")
+	assert_eq(duck_calls, [[&"encounter", true]], "the field music dips as the field dims")
+	s.advance(sec + 0.01)
+	assert_eq(duck_calls, [[&"encounter", true], [&"encounter", false]], "and lets go after duck_sec")
+	var c := BattleStinger.load_config()
+	var ramp := float(((AudioData.table(AudioData.MIX)["ducks"] as Dictionary)["encounter"] as Dictionary)["sec"])
+	var black := BattleStinger.duration(c, false) + float(preload("res://game/core/scene_router.gd").FADE_SEC)
+	assert_true(sec <= BattleStinger.duration(c, false) + 0.001, "held no longer than the rise and hold")
+	assert_true(sec + ramp < black, "back at level before the router's black, so the battle cue never enters ducked")
 	_done()
 
 

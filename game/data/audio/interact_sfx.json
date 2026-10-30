@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "doc": "A field object's own sound when it is used (M3-AUD-864, the Act I foley detail pass; game/audio/interact_audio.gd, InteractAudio, built by the Audio autoload). by_id: \"<location_id>:<interactable id>\" (the layout's trigger id) or a bare id -> an sfx row, played at the object height_m over its floor, over ui_sfx.json's soft ui_interact touch. Objects whose use opens a cutscene (its @sfx and foley), a battle, a shop, a shrine or a trial (AshcrownAudio, the Coilspire's coilspire_sfx.json) have no row here.",
+  "by_id": {
+    "ch01/oruvel:lashing_a": "obj_rope_cut",
+    "ch01/oruvel:lashing_b": "obj_rope_cut",
+    "ch01/oruvel_underway:tether_crown": "obj_tether_drop",
+    "ch01/oruvel_underway:tether_bell": "obj_tether_drop",
+    "ch01/oruvel_underway:hinge": "obj_hinge_pry",
+    "ch01/oruvel_underway:old_tin": "obj_tin_open",
+    "ch05/ashcrown:quench_charm": "obj_take_small",
+    "ch04/haluna_wake:inn_door": "obj_door_locked"
+  },
+  "height_m": 0.9
+}

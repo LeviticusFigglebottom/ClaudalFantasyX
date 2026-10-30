@@ -117,6 +117,24 @@ func spawn(engine: BattleEngine) -> void:
 		var axis := camera.global_basis.x if camera != null else Vector3.RIGHT  # sideways on screen
 		BattleLineup.apply(_side(engine.party_active), data, axis)
 		BattleLineup.apply(_side(engine.enemies), data, axis)
+		_spread_on_screen(engine, data)
+
+
+## Creatures' audit (10-30): the opening foes kept apart on the fight's rest frame and clear of the command menu
+## (BattleScreenSpread, choreo.json spacing.screen).
+func _spread_on_screen(engine: BattleEngine, data: Dictionary) -> void:
+	if camera == null:
+		return
+	var xf := camera.transform
+	var fov := camera.fov
+	if camera.has_meta(BattleCameraDirector.META_DEFAULT):  # a retry: the authored frame, not the last fight's
+		xf = camera.get_meta(BattleCameraDirector.META_DEFAULT) as Transform3D
+		fov = float(camera.get_meta(BattleCameraDirector.META_FOV))
+	var ids: Array[StringName] = []
+	for e in engine.enemies:
+		ids.append(StringName(String(e.id).get_slice("#", 0)))
+	var fit := BattleCameraDirector.rest_fit(data.get("camera", {}) as Dictionary, xf, fov, ids)
+	BattleScreenSpread.apply(_side(engine.enemies), camera, fit[0] as Transform3D, float(fit[1]), data)
 
 
 ## Each opening foe's slot. The encounter sweep (10-30): on the causeway the 2.9 m Lantern Eel, first in the list, took
