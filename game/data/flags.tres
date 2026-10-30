@@ -349,5 +349,13 @@ flags = {
 "ch02_overheard_chapel": "Ch2 B03 (M4-A2P-115 A6): the chapel fragment of 'Cantor' was overheard once; it doesn't play again after a reload.",
 "ch02_overheard_dock": "Ch2 B03 (M4-A2P-115 A6): the dock fragment of 'Cantor' was overheard once; it doesn't play again after a reload.",
 "ch02_overheard_lane": "Ch2 B03 (M4-A2P-115 A6): the lane fragment of 'Cantor' was overheard once; it doesn't play again after a reload.",
-"ch14_venn_beaten": "Ch14 B09: the party fought Warden Malcor Venn on the lagoon until he yielded (ch14_malcor_venn's victory_flag; act2_ch14.md flag table, M4-A2P-1200)."
+"ch14_venn_beaten": "Ch14 B09: the party fought Warden Malcor Venn on the lagoon until he yielded (ch14_malcor_venn's victory_flag; act2_ch14.md flag table, M4-A2P-1200).",
+"ch17_started": "Ch17 B01 (M5-A3P-1000, ch17_pulled_from_the_sea): the party is pulled from the sea at Hollowmere; Act III begins.",
+"ch17_saw_the_hull": "Ch17 B03 (ch17_dock_master_points): the dock-master pointed Rhen to the unfinished hull in the dry-dock.",
+"ch17_read_the_ledger": "Ch17 B05 (ch17_the_ledger): Rhen read Dace's logs in the hull, to the blank page.",
+"ch17_first_berth": "Ch17 B07 side (ch17_first_berth): the dock-master broke his silence for Rhen at the berth where Dace built his first boat here.",
+"ch17_chose_the_unbinding": "Ch17 B08 (ch17_the_choice): the party chose the Unbinding; read by every Act III chapter.",
+"ch17_first_lamp_lit": "Ch17 B10 (ch17_the_first_lamp): the hull's first lamp was lit.",
+"ch17_verse_begun": "Ch17 B11 (ch17_ysoldes_table): Ysolde and Asha began piecing the Eighth Verse's words together.",
+"ch17_complete": "Ch17 B12: set by the flow when the player boards the hull; the flow hands off to Ch18."
 }

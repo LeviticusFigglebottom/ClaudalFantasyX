@@ -1,4 +1,4 @@
-// DRAFT (Act III, planning only). Ch17 B09 "Kesh, once more" (optional bark, E, 0.5 min). act3_ch17.md §2 B09;
+// M5-A3P-1000. Ch17 B09 "Kesh, once more" (optional bark, E, 0.5 min). act3_ch17.md §2 B09;
 // act3_threads T-13. Kesh's call bark from the Vowbound menu changes once Asha chooses (one line); no other Vowbound
 // bark changes until its release. There is no call-bark hook yet: Combat/UI would play this scene from the menu.
 title: ch17_bark_kesh_chosen

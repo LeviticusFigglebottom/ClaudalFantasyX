@@ -65,5 +65,10 @@ DLG_CH16_MEMORY_001	ch16_the_choir		Kesh, the first Cantor, speaking from inside
 DLG_CH16_MEMORY_003	ch16_the_choir		Every Cantor since her has been made the storm's heart in turn.	Every one of them since. Every one.
 DLG_CH16_SEFIR_016	ch16_the_choir		'Her': Asha's mother, whom he got up the Fisher Stair. Said quietly, with no threat of violence.	I carried her up so you could do this.
 DLG_CH16_SEFIR_017	ch16_the_choir		Sefir acknowledges what Kerrid is, using a rank Kerrid never held in the Order (he was a fishers' watch captain). Kerrid does not answer.	Captain.
+DLG_CH17_PULLED_003	ch17_pulled_from_the_sea		He gives back the cracked lamp holding Tobin's light. Liss said 'Keep it dry.' when she left it with him (Ch16).	Kept it dry.
+DLG_CH17_LEDGER_PAGE_001	ch17_the_ledger		Dace Sallow's ledger, eleven years ago, in a plain working hand. Shown as a page in the document reader; never read aloud.	Corrow. The stair. A Cantor came down it for me. I learned her name halfway up: Imra.
+DLG_CH17_LEDGER_PAGE_016	ch17_the_ledger		The one message that reached Rhen as a boy, left at Kell's stall (rhen_sallow.md). Dace's own judgement on it.	Sent Rhen word through the traders' post. Helping a friend on a long trip. All I could put my name to.
+DLG_CH17_LEDGER_PAGE_009	ch17_the_ledger		'Kell. Of course.': relief and recognition, not surprise. Kell is the Oruvel stallholder who raised Rhen.	A season after Corrow. A Hollowmere trader says the chandler has the boy. Kell. Of course.
+DLG_CH17_LEDGER_PAGE_015	ch17_the_ledger		The LAST entry. It breaks off mid-sentence, with no full stop: keep it unfinished in translation.	Rhen. If I bring him here he's a wright's son for life. Oruvel thinks he's a diver's boy. Let him be one. After the storm
 DLG_PROLOGUE_DEAD_CITY_000	prologue_dead_city		Title card, centred on black, before the first frame of the game.	Prologue
 DLG_TEST_DLG_020	test_dialogue_fixture	yes	Invented language: keep as written.	Ennu re.
