@@ -989,3 +989,10 @@ Vowbound), ids M5-A3P-1850 to 1899. Order: the never-cut items first (act3_roste
   creatures say otherwise in their log; I'll note it there with a request task.
 
 MERGE-READY @ 1efbbe0cd: M5-A3P-1850 (Kesh held form and release).
+- **M5-A3P-1852 tide_matron: the design sheet** (docs/kb/art/creatures/act3/tide_matron.md). She is the Cinder
+  Matron's sister kiln, drowned with a shore-forge: her sister's rig and silhouette, a reef grown where the slag was,
+  the firebox shut and dark, and the heart bound behind polished salt-glass. The fight proposal, for Combat: the reef
+  regrows on its own, so breaking it is never the answer, and a party that lets her bank wins at once (Ch5's lesson,
+  mastered). The ending is always the bank, never a break. Next: Combat's answer, then the build (a `tide` flag in her
+  sister's build script, a second GLB).
+- **Waiting:** M5-A3P-1854 (creatures: the Cage's sheet), the two LEAD-ASKs above.
