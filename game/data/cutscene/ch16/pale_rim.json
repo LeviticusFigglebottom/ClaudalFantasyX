@@ -1,0 +1,75 @@
+{
+ "_doc": "M4-A2P-075 (Ch16, cinematics'): the Pale Rim's cutscene shots and marks for ch16_ship_waits, from act2_ch16_direction.md. The layout has its ship now (the Ship block, deck 3 m at x -30; the notes assumed none), so W01 is from the shore, the captain small at the rail, and W02 from the shallows up at Liss at the rail with the party wading past, Kerrid last. wade_1..wade_7 run east from the ship's side 1.8 m apart, Kerrid's wade_7 nearest it.",
+ "shots": {
+  "W01": {
+   "pos": [
+    -17.0,
+    1.6,
+    6.5
+   ],
+   "look_at": [
+    -30.0,
+    3.6,
+    0.0
+   ],
+   "fov": 60
+  },
+  "W02": {
+   "pos": [
+    -19.0,
+    1.6,
+    5.0
+   ],
+   "look_at": [
+    -25.5,
+    2.2,
+    -0.3
+   ],
+   "fov": 45
+  }
+ },
+ "marks": {
+  "wade_1": [
+   -14.4,
+   0.0,
+   0.6,
+   270.0
+  ],
+  "wade_2": [
+   -16.2,
+   0.0,
+   -0.6,
+   270.0
+  ],
+  "wade_3": [
+   -18.0,
+   0.0,
+   0.6,
+   270.0
+  ],
+  "wade_4": [
+   -19.8,
+   0.0,
+   -0.6,
+   270.0
+  ],
+  "wade_5": [
+   -21.6,
+   0.0,
+   0.6,
+   270.0
+  ],
+  "wade_6": [
+   -23.4,
+   0.0,
+   -0.6,
+   270.0
+  ],
+  "wade_7": [
+   -25.2,
+   0.0,
+   0.6,
+   270.0
+  ]
+ }
+}

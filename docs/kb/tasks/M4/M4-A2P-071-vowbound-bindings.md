@@ -2,8 +2,8 @@
 id: M4-A2P-071
 title: "Stage the four bindings: Nhoa, Hesk, Ethren and Kesh"
 role: cinematics
-status: todo
-owner_session: ""
+status: doing
+owner_session: "claude/m2-slice (cinematics)"
 depends_on: [M4-A2P-002, M4-A2P-003, M4-A2P-004, M4-A2P-007]
 reviewer: narrative
 milestone: M4
@@ -19,5 +19,9 @@ Each binding scene: Nhoa in the drowned sanctum (Pell kneeling), Hesk in the wea
 ## Notes
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). Plan §4.4.
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
+
+- 2026-10-30 (cinematics): the four bindings' shots and marks are staged with their chapters (M4-A2P-075): Nhoa
+  (ch11/lowlight.json), Hesk (ch12/cloudloom.json), Ethren (ch13/sanctum.json, S03–S09) and Kesh (ch16/drowned_choir.json,
+  C05–C07). Stills wait on the bodies (M4-CIN-1305: the Saints from creatures-b).
 
 ## Review log
