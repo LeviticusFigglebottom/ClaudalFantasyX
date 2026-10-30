@@ -43,9 +43,12 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 - **Item 5 (Blender verifies): skipped**, per the Lead (ADR 0205: non-blocking).
 - **Item 4 (my RND work):** every RND branch named (M2-RND-01/02/03/04, M1-RND-22) is already merged and `done`.
   Taking the rendering request tasks instead:
-  - `gpu/m3-her-1152-1124-freed-casts` @ b0f19abc fixes M3-HER-1152 (the RevenantTells cast) and M3-HER-1124 (the
-    UnderwaterRig deferred root). Tests are running.
-  - Still for rendering: M3-RND-28 (the Ch8 storm figure's capsule over the water) and M3-HER-1161 (EbbingMotes, fixed by
+  - **MERGE-READY `gpu/m3-her-1152-1124-freed-casts` @ ef078a10**, which fixes M3-HER-1152 (the RevenantTells cast)
+    and M3-HER-1124 (the UnderwaterRig deferred root). Both tasks are in review (qa).
+    - Checks: `--filter=_thread` 40/0 with no deferred-call error; revenant 8/0; underwater 8/0; lint and format clean.
+    - test_freed_cast_lint's one remaining hit is env-art-b's ebbing_motes (fixed on their branch).
+  - M3-RND-28 (the Ch8 storm figure) should be met by creatures' storm figure (M3-HER-1142, MERGE-READY on
+    claude/creatures); I'll check it in pass 4. Still for rendering: M3-RND-28 (the Ch8 storm figure's capsule over the water) and M3-HER-1161 (EbbingMotes, fixed by
     env-art-b on their branch).
 - **Item 1 (the plan as started), Act I real-GPU QA pass 3:** on `gpu/act1-qa-3`. That's origin/lead/gate-big18 @ 37a90b4c,
   plus integration cf03aa8d (4 commits ahead), plus gpu/act1-qa-2, which held act1_gpu_qa.md and had never been merged.
