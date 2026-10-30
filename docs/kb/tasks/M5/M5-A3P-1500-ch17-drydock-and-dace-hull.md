@@ -38,7 +38,7 @@ outer corner), placed in a row of four along the dry-dock walk, with Dace's at t
 in the mud under the water.
 
 ## Acceptance criteria
-- [ ] `dace_hull_frame` is revised in `hollowmere.py`: a decked stern with a hatch and a cabin below (bunk, desk and
+- [x] `dace_hull_frame` is revised in `hollowmere.py`: a decked stern with a hatch and a cabin below (bunk, desk and
       ledger, chart wall, tool rack), an empty engine bed, a brass keel shoe, and the mast with a half-rigged kite
       wing. It stays within budget and is rebuilt with its manifest row.
 - [ ] `hm_drydock_berth` (new) is built and placed four times, the first one with Tobin's post.
@@ -51,5 +51,18 @@ in the mud under the water.
 ## Requests out
 - **act1-chapters / Act III chapters:** the Ch17 marks: the cabin's reading seat, the hatch, the engine bed and the
   first berth's post. The layout is theirs; env-art-b will post the coordinates here when the piece is built.
+
+## Notes
+- 2026-10-30, env-art-b (7fd8e3e5): the hull is revised and rebuilt at 4,648 / 850 triangles (budget raised to 24k / 1.6k).
+  Viewed in the zone at eye height from outside, the cabin (desk and open ledger, chart wall with Corrow's red ring,
+  tool rack, bunk, daylight through the bulkhead doorway), the engine bay (the empty bed's chocks and bronze ring) and
+  the deck (bare ribs forward to the mast, the half-rigged wing overhead). Marks for the Act III chapters, in the
+  hull's own frame (x along it, bow +X, y over the water; the zone places it at DACE_AT (78, -24) yaw 30 deg, y -0.9):
+  - the hatch: (-3.0, 3.8, 0);
+  - the cabin floor: y 1.85, from x -5.1 to -2.0;
+  - the reading seat (the stool by the desk): (-2.8, 1.85, -0.7);
+  - the engine bed: x -1.6 to 0.4, centre y 2.5;
+  - the deck: y 3.8, from x -6.0 to -2.0.
+  The walk collision (deck, hatch ramp, cabin floor) comes with the berths' dressing.
 
 ## Review log
