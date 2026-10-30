@@ -857,6 +857,21 @@ that test at this branch's zones.
   are dressed as far as the chapters allow. The rest waits on M4-A2P-103 to 106 (the mount points are in the handoff),
   and the looks are queued for the PC.
 
+- **big21 FAST-TRACKs (10-30, on big21 6a8349e7 merged into this branch):**
+  - Rows 45, 52, 53, 62 and 63, and the brine_b05 barge texture, were already verified fine on big20 in self-rendered
+    stills (see pass 4 above). big21 doesn't touch them.
+  - test_arenas (`bridal_barge_night`, `ansedra_lagoon_escape` not reproducible): `haluna/ansedra_arenas.py` writes
+    them with the zone looks, as ownership.md says. They're now in `test_b_arenas.py`'s WRAPPERS with
+    `lacquer_court_steps`, so test_arenas skips them and test_b_arenas reproduces them. Both suites pass (22).
+  - test_ch14_16_walkable::test_hollowmeres_dock: the supper table stood on the line from the `supper` mark to the
+    pyre-raft. It's now by the father's place against the south rail (42.0, 0.95). My own dock test now walks the
+    north half through the supper mark. Godot --filter=ch14_16 (5) and hollowmere (2) pass. Viewed
+    ch15_hollowmere_supper and _dock: the table stands by the rail, and the lane is clear.
+  - Merge of big21: PROVENANCE.md, shots.json and ownership.md were taken as integration's (my side had only rows
+    integration removed on purpose).
+  - **MERGE-READY @ 7999fb30.**
+- **BACKLOG EMPTY (10-30, after big21):** Ch16's Pale Rim is dressed (@ ab41c94b, in big21). What's left of Ch14–16
+  waits on M4-A2P-103 to 106, and the looks are queued for the PC.
 ### PC-QUEUE
 - Pass 3 row 65 (@ edb18aae): re-measure the camp's smoke columns (24 steps at High) and the Tamsule drop (High has no
   god rays now) at High 1440p against the 0.3 ms target.
@@ -893,3 +908,4 @@ SELF-RENDERED @ 22b289bf: Virel in the Coilspire crown chamber (three scratch vi
 SELF-RENDERED @ 8c535d1e: ch07_bell_galleries, ch07_bell_moorings (the weeping column reads), ch07_tamsule_gantry, ch07_tamsule_mouth (the column sits behind the gantry leg head-on), all viewed.
 SELF-RENDERED @ 3be35a85: ch06_brine_camp, _road, ch08_coilspire_hall, _gate, ch08_corrow_arrival, ch09_corrow_strand, _rocks, battle_arena_underway, _underway_tower, _terrace, _ash_terrace_lanternfall, ch05_ashcrown_tiers (the GPU QA rows on this head), all viewed; hall, gate, rocks and Lanternfall re-rendered after the fixes.
 SELF-RENDERED @ c6abd321: zz_pem_harbour, zz_pem_road, zz_pem_weir, zz_cor_strand (scratch spawn views), ch05_ashcrown_crown, crowd_zone_ashcrown, ch05_pemakar_harbour, ch09_corrow_strand, brine_b05_barge_channel, battle_arena_coilspire_headland_path, pemakar_p11_sea_cut_weir_day, battle_boss_intro_matron (GPU pass 4 rows on big20), all viewed; the strand re-rendered after each shroud change.
+SELF-RENDERED @ 7999fb30: ch15_hollowmere_supper, ch15_hollowmere_dock, viewed (the supper table by the south rail).
