@@ -1,13 +1,13 @@
 ---
 id: M3-CRE-664
 title: "Saltgrass Causeway's crabs follow the ground (the generated wildlife file takes ground: physics)"
-role: env
+role: environment
 status: todo
 owner_session: ""
 reviewer: character
 depends_on: []
 milestone: M3
-request-from: character
+request-from: creatures
 ---
 ## Goal
 The Act I final-quality audit (creatures, 2026-10-29; `tools/creatures/wildlife_audit.gd`) found the causeway's two
