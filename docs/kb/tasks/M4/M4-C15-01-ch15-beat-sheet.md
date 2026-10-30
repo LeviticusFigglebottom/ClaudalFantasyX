@@ -18,4 +18,7 @@ The greybox (M4-C15-02) has the places: `tobin_bier`, `kerrid_sits`, `bow`, the 
 - [ ] `docs/kb/story/beats/act2_ch15.md`, every outline beat placed, timed and tagged C/E/P; flags `ch15_*` with
       setter and reader; requests to other roles listed; validate_data and the banned-terms grep clean.
 
+## Notes
+- 2026-10-30 (act2-plan track, the Lead's assignment): **draft: pre-gate** written at `docs/kb/story/beats/act2_ch15.md`. It is not reviewed; the task stays `blocked` until the gate, then the story track takes it to review.
+
 ## Review log
