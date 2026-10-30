@@ -1174,3 +1174,20 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
     - Checks: validate_data; tools test_wildlife 20 OK; Godot wildlife 23/0.
 - **MERGE-READY @ 3a287760.**
 - **BACKLOG EMPTY:** Act II wildlife behaviours are done; the conduit crawler waits only on M4-CRE-702's row.
+- **Your 16:08 relay:**
+  1. **conduit_crawler wired, M4-CRE-702 → review** @ 35bb8972e.
+     - The row (fc316eda4) is on the integration branch, merged here @ efe7fb10d.
+     - creatures.json `clip_by_skill`: `brush_jab` plays attack, `crawler_mend` cast, `crawler_tend` idle_b (it tends and pays the party no mind). Godot creature 159/0.
+     - **Finding for battle-presentation and env-art:** as played, `ch11_lamp_engine` on `lowlight_engine_hall` has a black slab of the arena covering the enemy half of the frame. The engine and both crawlers barely read; only one crawler's dome shows at the edge. The camera or the arena wall needs checking.
+  2. **Act III bestiary (planning, docs only) @ d7509e52b:** docs/kb/art/creatures/act3_roster.md, "Reconciled with the Act III beat sheets".
+     - **Changes and additions:**
+       - Ch17's optional mooring foes: `deep_scuttler` moved up from Ch18, `hull_rasp` new (a hullgnaw variant).
+       - Ch18: no foes inside the changed towns (its rule 3); the Kite's gulls as wildlife.
+       - Ch19: the conduit crawler reused in the Lamp Spire.
+       - Ch20: **held-shape crowds** per memory layer (crowd silhouettes in glimmer_held; the Reefball layer needs 30+).
+       - The Cage sheet amended to four chained **seats** round the well, one combatant with four parts.
+     - Also: a revised order of work, and two questions for the chapter designer.
+  3. **Act II wildlife idle behaviours** @ 517c22705: each woolback grazes at its own pace (`graze_pace`), on top of the kingfisher plunge-dive (earlier today).
+     - With that, every Act II animal does what its sheet describes. Checks: tools test_wildlife OK; Godot wildlife 24/0.
+- **MERGE-READY @ 517c22705.**
+- **BACKLOG EMPTY:** M4-CRE-702 is in review (character); Act III stays planning-only until its gate.
