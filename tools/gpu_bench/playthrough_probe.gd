@@ -22,6 +22,7 @@ const HOP_M := 0.25
 const NEAR_M := 1.0
 const INTERACT_S := 1.0
 const STUCK_S := 90.0
+const CANCEL_AFTER_S := 30.0
 const SOFTLOCK_S := 180.0
 const RESULT_READ_S := 1.0
 const SETTLE_INPUT_S := 1.0
@@ -118,7 +119,9 @@ func _run() -> void:
 			if busy_since < 0.0:
 				busy_since = t
 			if t >= next_tap:
-				_tap(&"ui_accept")
+				# Past CANCEL_AFTER_S with no progress, every other tap is ui_cancel: a menu the hero opened closes.
+				var cancel := t - _last_progress > CANCEL_AFTER_S and int(t / TAP_S) % 2 == 1
+				_tap(&"ui_cancel" if cancel else &"ui_accept")
 				next_tap = t + TAP_S
 			if not stuck_logged and t - _last_progress > STUCK_S and p != null:
 				stuck_logged = true
@@ -292,8 +295,11 @@ func _triggers_near(_cur: Node, at: Vector3) -> Array:
 	var out: Array = []
 	for n in get_tree().get_nodes_in_group(Interactable.GROUP):
 		var it := n as Interactable
+		# Shops and inns open a menu the probe can't use (and never move the story).
+		var services := it != null and (it.payload.has("shop") or it.payload.has("inn"))
 		if (
 			it != null
+			and not services
 			and it.is_inside_tree()
 			and it.is_available()
 			and it.global_position.distance_to(at) <= SWEEP_RADIUS_M

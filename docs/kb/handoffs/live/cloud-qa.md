@@ -142,7 +142,20 @@ Same probes and box. Milliseconds from Return, big27 → big28:
 - **(b) Oruvel: edges PASS** (0 of 260 off the deck). **Boats: FAIL (partly):** still 5 pairs, unchanged from big27.
   The second outrigger lies under the two plank bridges (0.61 and 2.76 m), a real clip, M3-ENV-1391's last box; the
   dive raft's three are intended.
-- The fresh-profile playthrough past Haluna to the Act I end card is running on c646c3a8 (results below when done).
+- **New ERROR on big28 (not on big25), owner audio with integration-qa:** after each resident return, Godot prints
+  `ERROR: Signal 'used' is already connected to given callable 'Node(UiAudio)::request'`, from `UiAudio.watch`
+  (game/audio/ui_audio.gd:90, via audio_director.gd:569). That's 97 lines in one Act I run, first after the first
+  Underway fight's return. The re-attached zone's Interactables are watched again: the "already watched" guard misses
+  them, so `watch` connects a second time. No crash and no doubled sound (the second connect fails), but it's an engine
+  ERROR on every return, and qa_threads-style guards count those. Make `watch` skip a node it's already connected to
+  (`is_connected`), or forget/re-watch on detach.
+- **The fresh-profile playthrough to the Act I end card on c646c3a8** (in progress; restarted after probe fixes):
+  - So far it has played clean through Ch1, Ch2 (with the save shrine), Ch3 and the Drownbell, and on to Ch4's ferry
+    after the leeches.
+  - The Shell Shrine's basin puzzle can't be solved by guided hops. The probe raised its objective's flag
+    (`ch03_shrine_door_open`, PLAY_SKIP): that step was not played.
+  - A "stuck dialogue" on the ferry was the probe's doing: it interacted with the purser and opened his shop menu. The
+    probe now skips shops and inns, and taps ui_cancel when stuck.
 
 ## RE-RUN after "Merge lead/gate-big27" (integration @ 9572c4129): playtest (a) and (b)
 Same probes and box. The deltas against big25:
