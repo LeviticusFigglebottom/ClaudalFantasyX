@@ -8,6 +8,7 @@ Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 a
   - **The Avalanche Ram's own voice lost its ice** (ADR 0204 §2): wet, matted wool shedding water. Only the ram's 7 files changed.
   - **Checks:** test_battle_stings 6/0; Godot `--filter=audio` 175/0; loudness and data OK; validate_data 0 errors; renders byte-identical twice.
   - LEAD-ASK: Ch11's `rime_urchin` is designed with "ice-crusted spines on an ice plinth" (its sound rattles like icicles), but act2_plan notes ADR 0015's "nothing frozen" for Lowlight. Keep, or re-material it (salt-glass spines)? Default: keep until creatures answer. If it changes, its sound follows.
+- **BACKLOG EMPTY (2026-10-30, after 114d5cf1):** every Act II audio item that needs no other track's input is done. act1_gpu_qa has no audio rows and no listening verdict has come in. What's left is below, each waiting on its input.
 - **BACKLOG (Act II), what's left and why it waits:**
   - the `@music` and `@sfx` lines in the Act II scripts: Story's `.dlg` don't exist yet;
   - the boss encounter and phase rows: combat's encounters aren't written;
