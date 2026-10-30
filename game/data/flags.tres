@@ -352,5 +352,7 @@ flags = {
 "ch14_venn_beaten": "Ch14 B09: the party fought Warden Malcor Venn on the lagoon until he yielded (ch14_malcor_venn's victory_flag; act2_ch14.md flag table, M4-A2P-1200).",
 "ch05_passed_grave_tier": "Ch5 B07: the party has climbed Ashcrown's pilgrim stair past the grave tier (its banter trigger; the crown sets it too). Stages the stair's objective (the Lead, 10-30).",
 "ch05_passed_copper_tier": "Ch5 B07: the party has climbed past the copper tier, the last before the crown (its banter trigger; the crown sets it too). Stages the stair's objective.",
-"ch10_what_went_up_seen": "Ch10 B05: ch10_what_went_up (the Drowner's release) has played after its fight, once (M4-A2P-1003 D11)."
+"ch10_what_went_up_seen": "Ch10 B05: ch10_what_went_up (the Drowner's release) has played after its fight, once (M4-A2P-1003 D11).",
+"ch12_herd_cord_seen": "Ch12 B07: ch12_herd_cord (Pell ties the Ram's cord on the pass) has played after the fight, once (M4-A2P-1003 E6).",
+"ch13_guest_of_sefir": "Ch13 B02: after the still city and Tobin, the party are Sefir's guests; Kerrid sits out the nights at the moorings (ADR 0022 (c); the Ansedra layout's state row; M4-A2P-1003 E3)."
 }
