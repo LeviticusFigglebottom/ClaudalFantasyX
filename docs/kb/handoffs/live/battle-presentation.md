@@ -176,6 +176,19 @@ ch01_wickfry, ch01_oil_slug, ch01_shaft_limpet and ch01_scuttlers.
 - An earlier run showed 4 reds (battle_result_motion, battle_stings). They came from merging the integration branch
   while the run was going: each file passes 5/0 on the merged tree, and the clean run above is 817/0.
 
+### 2026-10-30 ~09:xx: the Lead's 09:00 item (the glimmer element's hit)
+**MERGE-READY @ 4c4a3dd3** (+ this log commit): `hit_glimmer` and `map.elements.glimmer` for act1-chapters' glimmer
+element (voice_glimmer, level_hand, still_water).
+- The effect: a soft pale-gold core, then motes rising off the target. It is released glimmer (color_script rule 1:
+  glimmer_lift brightening to glimmer_lift_hi, rising, never the held cyan).
+- Its sound stands in on hit_holy (battle_sfx.json vfx row) until audio writes its own.
+- **Verified on origin/lead/gate-big21 with this branch merged** (scratch worktree, imported): `--filter=battle_vfx`
+  10/0, and validate_data is clean.
+- Merge note: tests/screenshots/shots.json conflicts with big18+ (both sides append at the end). Keep both.
+- Also MERGE-READY in this range: the Act II boss intros (c3e45bb0), the Act II boss moves fixed and viewed
+  (8d0fe783..f2bbb673; M4-A2P-062 Sound Dive verified in live play: sea-glow at the fin's crest beside the Breach
+  telegraph), and the Hullgnaw fall frame (8b0e12c2, viewed in a re-run of the sweep).
+
 ### 2026-10-30 ~03:xx: GPU QA pass 3 rows 57 and 61 (fixed, 921e5fec), and Act II begins (ADR 0205)
 - **Row 57 (battle_choreo_summon), fixed.** Nobody overlapped on the floor. The summon shot sat 4.2 m behind Ilun
   on the battle axis, so Ilun covered the foes and the gull read through the eel.
