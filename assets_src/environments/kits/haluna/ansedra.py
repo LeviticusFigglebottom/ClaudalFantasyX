@@ -7,6 +7,7 @@ Built in the Haluna kit (its import kind and materials), as keth.py, lowlight.py
                       top 0.6 m over the water at y 0), three tiered red-lacquer drums with gilt bands, the inverted
                       gilded bowl, a thin gilt spire with rings; 20 m to the spire's tip at scale 1. Origin at the
                       plinth's centre on the water.
+  bowl_dome_lit       the same at the wedding's night (ch14): its drums' windows lit.
   ansedra_far_domes   the skyline round the lagoon: forty bowl-domes and their islands at 300-700 m, low-poly, on the
                       water (y 0); origin the lagoon's centre.
   ansedra_far_domes_lit  the same skyline at the wedding's dusk (ch14): every drum's windows lit (the city has come out
@@ -52,7 +53,7 @@ M_PAPER = "kit_cloth_sand"
 TRI_BUDGET = {"bowl_dome": (6000, 400), "ansedra_far_domes": (8000, 3000), "pursuit_barge": (10000, 700),
               "lacquer_hall": (8000, 500), "lacquer_court_ground": (12000, 800), "sanctum_basin": (8000, 500),
               "archive_stacks": (9000, 500)}
-BUDGET_KEY = {"ansedra_far_domes_lit": "ansedra_far_domes"}
+BUDGET_KEY = {"ansedra_far_domes_lit": "ansedra_far_domes", "bowl_dome_lit": "bowl_dome"}
 
 PLINTH_TOP = 0.6
 DRUMS = ((4.6, 2.6), (3.8, 2.4), (3.1, 2.2))  # (radius, height) of the three tiers, bottom up
@@ -114,12 +115,15 @@ def _dome(mb, x, z, scale, lod, rng, *, sides, windows: bool, island: bool = Tru
     mb.pos = p.tolist()
 
 
-def build_bowl_dome(seed: int = 2101) -> list[kc.MeshBuilder]:
+def build_bowl_dome(seed: int = 2101, *, lit: bool = False) -> list[kc.MeshBuilder]:
+    """`lit`: the wedding's night (ch14), the drums' windows lit: the city has come to its windows to watch the water
+    move (M4-A2P-044)."""
     out = []
+    name = "bowl_dome_lit" if lit else "bowl_dome"
     for lod in (False, True):
         rng = kc.rng_for("bowl_dome", seed)
-        mb = kc.MeshBuilder("bowl_dome" + ("-lod1" if lod else ""))
-        _dome(mb, 0.0, 0.0, 1.0, lod, rng, sides=8 if lod else 24, windows=False)
+        mb = kc.MeshBuilder(name + ("-lod1" if lod else ""))
+        _dome(mb, 0.0, 0.0, 1.0, lod, rng, sides=8 if lod else 24, windows=lit)
         if not lod:
             _dome_detail(mb, rng)
         out.append(mb)
@@ -425,6 +429,7 @@ def build_archive_stacks(seed: int = 2107) -> list[kc.MeshBuilder]:
 
 TARGETS = {
     "bowl_dome": build_bowl_dome,
+    "bowl_dome_lit": lambda: build_bowl_dome(lit=True),
     "ansedra_far_domes": build_far_domes,
     "ansedra_far_domes_lit": lambda: build_far_domes(lit=True),
     "pursuit_barge": build_pursuit_barge,

@@ -98,4 +98,16 @@ cold: wealth, not warmth.
   - **The grade.** `lut_ch13_still` (`ansedra_zone_lut.py`, to colour script ch13) under an overcast-grey sky. The
     lagoon is a still mirror (roughness 0, no ripple or foam) until rendering's mirror mode (M4-A2P-047) lands.
   - **The mount** is chapters' (M4-A2P-0431).
+- 2026-10-30 (env-art, M4-A2P-044): the Lacquer Court dressed for Ch14 (`tools/act2/ch14_court_dressing.py`).
+  - **Built from the greybox** (the kit's court is 40 × 28 m, the greybox's 30 × 24), as `ansedra_court`:
+    - white slabs with the gilt Level line up the middle;
+    - red-lacquer columns with gilt capitals under tiled colonnade roofs, and a wedding lantern hung on the court side
+      of each (the zone lights them warm);
+    - the gallery stands, the dais, the Conclave's black-lacquer gallery;
+    - the water-steps between marble cheeks, the water-gate with the drop-gate held up, the balustraded walls.
+  - **Placed round it:** six `lacquer_hall`s on three sides, the bridal barge scaled onto the greybox's barge block,
+    and the city at its windows across the lagoon (`bowl_dome_lit`, new: the kit dome with its drums' windows lit,
+    and the lit far skyline).
+  - **Grade and water:** the arena's ch14 dusk grade. The lagoon is set at −0.95, under the barge's deck (the
+    greybox's water block is at −0.3, over it). Chapters' call (M4-A2P-0441).
 

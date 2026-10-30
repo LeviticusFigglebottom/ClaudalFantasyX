@@ -57,6 +57,17 @@
         "ansedra_buildings-lod1": 984
       }
     },
+    "ansedra_court": {
+      "budget": [
+        90000,
+        6000
+      ],
+      "bytes": 1093472,
+      "lods": {
+        "ansedra_court": 12504,
+        "ansedra_court-lod1": 1192
+      }
+    },
     "ansedra_far_domes": {
       "budget": [
         8000,
@@ -242,6 +253,17 @@
       "lods": {
         "bowl_dome": 3242,
         "bowl_dome-lod1": 150
+      }
+    },
+    "bowl_dome_lit": {
+      "budget": [
+        6000,
+        400
+      ],
+      "bytes": 239056,
+      "lods": {
+        "bowl_dome_lit": 3278,
+        "bowl_dome_lit-lod1": 186
       }
     },
     "bridal_barge": {
