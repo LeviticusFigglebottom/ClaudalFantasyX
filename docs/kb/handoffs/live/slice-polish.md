@@ -964,6 +964,10 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     - flow_chapter_card_ch04: "Chapter 4" / "The Pilgrim's Wake";
     - slice_end_card: "The end of Act One" with the roll and "Confirm to return to the title".
     - slice_end_card_voice is dropped: the card has no voice-over now.
+    - **New Game → Prologue → Ch1, played as one run** (tools/cutscene_frames from the prologue at Start, 110 s):
+      Iskarra at dusk with the vigil line; a fade to black; "One month earlier." centred as UI's card on black
+      (48–50 s, M2-FP-121 in play); black; the fade up on U01 (54 s); the voice-over; the field with "The Underway"
+      and the movement tip. The hand-off reads as one path.
   - **Checks:** act1_route 3, end_card 5, haluna_night 9, fp_ 30, act_card 7, zone_story 15, _thread 40 (on the
     re-run: fp_thread 2 and qa_threads 1), cutscene_grade 3, all 0 failed. validate_data 0/0, dlgc, gdlint and gdformat
     clean. No duplicate loc keys.
