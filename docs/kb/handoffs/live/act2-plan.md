@@ -708,3 +708,5 @@ I merged integration (big28) first; the two conflicted compiled ch11 JSONs were 
   - **Kerrid, diction:** "The wall's the Order's. The stair's ours." So at the fallen cairn he says "I know. I've set steps.", and Pell answers "This is not a step. It is a voice." (`ch16_cairn_004/005`).
 - **Request filed:** **M4-A2P-1014 → ui (M4-A2P-081):** `test_every_act2_speaker_with_a_model_has_a_portrait` is red because `ullari_woman` got a stage in M4-A2P-053 but has no portrait. This is not a story change.
 - **Checks:** dlgc 0/0, validate_data 0/0, taskboard clean, check_drafts 73/0. Godot `dialogue` after `--import` was 86/1; the one red is 1014 above. Tools unittest skipped (no `tools/` change).
+- MERGE-READY Act II voice pass @ cf6888744
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1014; M4-A2P-112 items 3, 5 and 6.
