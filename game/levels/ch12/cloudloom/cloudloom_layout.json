@@ -1005,6 +1005,26 @@
     "beat": "to_quellan"
    },
    "yaw": 0.0
+  },
+  {
+   "id": "dais",
+   "activation": "touch",
+   "at": [
+    0.0,
+    6.0,
+    -50.0
+   ],
+   "size": [
+    4.0,
+    0,
+    1.5
+   ],
+   "requires_flag": "ch12_reached_cloudloom",
+   "blocked_by_flag": "ch12_hesk_bound",
+   "payload": {
+    "beat": "dais"
+   },
+   "yaw": 0.0
   }
  ]
 }

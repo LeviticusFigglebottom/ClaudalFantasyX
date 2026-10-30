@@ -250,7 +250,11 @@ def reedhollow() -> dict:
             {"id": "Shore", "mode": "pan_follow", "at": [r3(shore[0]), 1.5, r3(shore[1])], "size": [8.0, 4.0, 12.0],
              "pos": [56.17, 3.94, -4.9], "look_at": [r3(shore[0] + 0.5), 0.8, 0.0], "fov": 50, "priority": 2}],
         "triggers": [{"id": "to_fen", "activation": "touch", "at": [-1.0, 0.0, 0.0], "size": [1.5, 0, WALK_W],
-                      "payload": {"beat": "to_fen"}, "yaw": 0.0}],
+                      "payload": {"beat": "to_fen"}, "yaw": 0.0},
+                     # M4-A2P-114: the shore, where the farewell-tide is watched (B09), then the dawn gate (B11)
+                     {"id": "shore", "activation": "touch", "at": [61.8, 0.0, 0.0], "size": [2.0, 0, 3.0],
+                      "requires_flag": "ch10_reached_reedhollow", "blocked_by_flag": "ch10_complete",
+                      "payload": {"beat": "shore"}, "yaw": 0.0}],
     }
 
 
