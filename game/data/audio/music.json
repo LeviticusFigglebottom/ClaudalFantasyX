@@ -277,22 +277,22 @@
     "sunken_vey": {
       "file": "res://assets/audio/music/act2/sunken_vey.ogg",
       "resume": true,
-      "_note": "Ch11, Sunken Vey, the drowned galleries: Act II final (M3-AUD-841; Git LFS; the sketch assets/audio/music/sunken_vey.ogg stays as the fallback); no zone row until ch11/sunken_vey exists"
+      "_note": "Ch11, Sunken Vey, the drowned galleries: Act II final (M3-AUD-841; Git LFS; the older M3-AUD-804 render, assets/audio/music/sunken_vey.ogg, stays committed but nothing plays it); no zone row until ch11/sunken_vey exists"
     },
     "lowlight": {
       "file": "res://assets/audio/music/act2/lowlight.ogg",
       "resume": true,
-      "_note": "Ch11, the Lowlight temple and the Lamp Engine's pulse: Act II final (M3-AUD-841; Git LFS; the sketch assets/audio/music/lowlight.ogg stays as the fallback); no zone row until ch11/lowlight exists"
+      "_note": "Ch11, the Lowlight temple and the Lamp Engine's pulse: Act II final (M3-AUD-841; Git LFS; the older M3-AUD-804 render, assets/audio/music/lowlight.ogg, stays committed but nothing plays it); no zone row until ch11/lowlight exists"
     },
     "keth_pass": {
       "file": "res://assets/audio/music/act2/keth_pass.ogg",
       "resume": true,
-      "_note": "Ch12, Keth Pass, the mountain route: Act II final (M3-AUD-842; Git LFS; the sketch assets/audio/music/keth_pass.ogg stays as the fallback); no zone row until ch12/keth_pass exists"
+      "_note": "Ch12, Keth Pass, the mountain route: Act II final (M3-AUD-842; Git LFS; the older M3-AUD-804 render, assets/audio/music/keth_pass.ogg, stays committed but nothing plays it); no zone row until ch12/keth_pass exists"
     },
     "quellan": {
       "file": "res://assets/audio/music/act2/quellan.ogg",
       "resume": true,
-      "_note": "Ch12, Quellan, the highland town: Act II final (M3-AUD-842; Git LFS; the sketch assets/audio/music/quellan.ogg stays as the fallback); no zone row until ch12/quellan exists"
+      "_note": "Ch12, Quellan, the highland town: Act II final (M3-AUD-842; Git LFS; the older M3-AUD-804 render, assets/audio/music/quellan.ogg, stays committed but nothing plays it); no zone row until ch12/quellan exists"
     }
 ,
     "ansedra": {
@@ -458,7 +458,11 @@
     {"scene": "res://game/levels/ch08/coilspire/coilspire.tscn", "music": "coilspire", "_note": "M3-AUD-861: Ch8, the Coilspire temple's flues (the scene has landed)"},
     {"scene": "res://game/levels/prologue/prologue.tscn", "music": "prologue_dusk", "_note": "M3-AUD-862: the prologue, the first music after the title; the scene's fade-out and the router's fade take it away"},
     {"scene": "res://game/levels/ch10/ossa_fen/ossa_fen.tscn", "music": "ossa_fen", "_note": "M4-A2P-091: Ch10, the mangrove channels at dusk (bed fen_dusk, ambience.json)"},
-    {"scene": "res://game/levels/ch10/reedhollow/reedhollow.tscn", "music": "reedhollow", "_note": "M4-A2P-091: Ch10, the Kirru roost-village (bed reedhollow_roost; the farewell-tide cue takes the bed in C3)"}
+    {"scene": "res://game/levels/ch10/reedhollow/reedhollow.tscn", "music": "reedhollow", "_note": "M4-A2P-091: Ch10, the Kirru roost-village (bed reedhollow_roost; the farewell-tide cue takes the bed in C3)"},
+    {"scene": "res://game/levels/ch11/sunken_vey/sunken_vey.tscn", "music": "sunken_vey", "_note": "M4-A2P-091: Ch11, the drowned galleries (bed vey_galleries)"},
+    {"scene": "res://game/levels/ch11/lowlight/lowlight.tscn", "music": "lowlight", "_note": "M4-A2P-091: Ch11, the half-drowned temple (bed lowlight_temple)"},
+    {"scene": "res://game/levels/ch12/keth_pass/keth_pass.tscn", "music": "keth_pass", "_note": "M4-A2P-091: Ch12, the pass (bed keth_pass_wind)"},
+    {"scene": "res://game/levels/ch12/quellan/quellan.tscn", "music": "quellan", "_note": "M4-A2P-091: Ch12, the Ullari town (bed quellan_town)"}
   ],
   "battle": {
     "default": "battle_standard_v2",

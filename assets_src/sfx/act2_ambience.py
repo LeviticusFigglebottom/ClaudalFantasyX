@@ -12,6 +12,19 @@ index, so appending keeps every earlier bed byte-identical.
                        Reed wind through the screens, the lagoon under the platforms, lodges creaking, a cook-fire, and
                        the clutch's wordless hum far across the water (a line in the Kirru mode on A, A B C# D# F#
                        with no E, written for this bed: the Kirru sing without words; they are a people, act2_roster).
+    vey_galleries      Ch11, Sunken Vey (art/environments/lowlight.md): drowned Lit Age galleries, salt-glass floors, the
+                       conduits' bound light still lit. Drips into deep still water in a big stone hollow, the conduits'
+                       steady low hum (it does not pulse), salt-glass ticking as it settles, and fig roots creaking.
+    lowlight_temple    Ch11, Lowlight: the temple half under water. Water lapping on the atrium steps and the hall's
+                       hollow, a slow far throb in the conduits under the floor (the Lamp Engine's, felt not heard),
+                       drips, and the glass answering now and then.
+    keth_pass_wind     Ch12, Keth Pass (art/environments/keth_pass.md): three switchbacks up a cliff in the cold. High
+                       wind in gusts, the pass-cords whistling and knocking on their posts, fine snow hissing over the
+                       slate, and scree trickling off the drop side. (ADR 0015: snow is weather; nothing freezes.)
+    quellan_town       Ch12, Quellan, the Ullari highland town: a lighter wind, red banners flapping, the town's murmur,
+                       a loom clacking in a house, a goat-bell far up the slope, and a door now and then.
+    cloudloom_hall     Ch12, Cloudloom, the open-roofed weaving-hall: looms and shuttles working, thousands of keth
+                       cords stirring in the wind through the open roof, and a few women's voices low between them.
 
 assets/audio/act2/ambience/<bed>.ogg + .loop.json (stereo, Vorbis q1 like the Act I beds; the rule
 `act2/ambience/*.ogg`: -26 LUFS integrated +- 0.5, true peak under -5 dBTP). Synthesized here and in tools/audio/synth/
@@ -48,7 +61,8 @@ SEED = 20261900
 TARGET_LUFS = -26.0
 CEILING_DB = -6.0
 QUALITY = 1.0
-LOOPS = {"fen_dusk": 48.0, "reedhollow_roost": 46.0}
+LOOPS = {"fen_dusk": 48.0, "reedhollow_roost": 46.0, "vey_galleries": 50.0, "lowlight_temple": 48.0,
+         "keth_pass_wind": 44.0, "quellan_town": 46.0, "cloudloom_hall": 44.0}
 # The Kirru mode on A (reedhollow.py): A B C# D# F#, G# only as the top of a rise; never E.
 KIRRU = {"A3": 57, "B3": 59, "C#4": 61, "D#4": 63, "F#4": 66, "F#3": 54, "G#4": 68}
 
@@ -212,7 +226,194 @@ def reedhollow_roost(g):
     return mx, _room(SEED % 9973 + 2, 1.4, 1.8, highcut=6000.0)
 
 
-BEDS = {"fen_dusk": fen_dusk, "reedhollow_roost": reedhollow_roost}
+def conduit_hum(L: int, g, f0: float) -> np.ndarray:
+    """A Lit Age conduit's bound light: a steady low harmonic hum with two near partials beating slowly (stereo,
+    snapped to the loop). It does not pulse (bible: bound glimmer is steady)."""
+    t = np.arange(L) / SR
+    y = np.zeros((L, 2))
+    for k, a in ((1, 1.0), (2, 0.5), (3, 0.22), (5, 0.08)):
+        for ch, det in ((0, 1.0), (1, 1.0015)):
+            f = FA.snap(f0 * k * det, L)
+            y[:, ch] += a * np.sin(2 * np.pi * f * t + float(g.uniform(0, 6.28)))
+    return y / np.abs(y).max()
+
+
+def glass_tick(g) -> np.ndarray:
+    """Salt-glass settling: a small, bright, brittle tick with a short ring."""
+    f = float(g.uniform(2800, 4600))
+    return FA.modal([f, f * 1.47, f * 2.3], [0.04, 0.025, 0.012], [1.0, 0.5, 0.2], 0.2, g, click=0.3)
+
+
+def throb(L: int, g, hz: float, f0: float) -> np.ndarray:
+    """A far, slow pulse under the floor: a low tone swelling at `hz` (snapped to the loop). Stereo."""
+    t = np.arange(L) / SR
+    env = np.sin(np.pi * FA.snap(hz, L) * t) ** 6
+    y = np.sin(2 * np.pi * FA.snap(f0, L) * t) * env
+    return np.stack([y, y], axis=1)
+
+
+def cord_whistle(g, sec: float) -> np.ndarray:
+    """A pass-cord singing in a gust: a thin, fluttering whistle rising and falling with the wind."""
+    n = int(sec * SR)
+    t = np.arange(n) / SR
+    f0 = float(g.uniform(900, 1700))
+    f = f0 * (1.0 + 0.08 * np.sin(np.pi * t / sec)) * (1.0 + 0.01 * np.sin(2 * np.pi * float(g.uniform(5, 9)) * t))
+    y = np.sin(2 * np.pi * np.cumsum(f) / SR) * (0.6 + 0.4 * np.sin(2 * np.pi * float(g.uniform(11, 17)) * t) ** 2)
+    return y * np.sin(np.pi * t / sec) ** 2
+
+
+def cord_knock(g) -> np.ndarray:
+    """A cord's knot knocking on its wooden post."""
+    b = float(g.uniform(380, 520))
+    return FA.modal([b, b * 2.6, b * 5.1], [0.03, 0.015, 0.008], [1.0, 0.4, 0.15], 0.15, g, click=0.4)
+
+
+def flap(g) -> np.ndarray:
+    """A woollen banner snapping in the wind: a few quick cloth slaps and a flutter."""
+    out = np.zeros(int(0.8 * SR))
+    for k in range(int(g.integers(2, 5))):
+        m = int(0.05 * SR)
+        x = filt(g.standard_normal(m), [bq_bandpass(float(g.uniform(500, 900)), 0.9)]) * np.exp(-np.arange(m) / (0.012 * SR))
+        s = int((k * float(g.uniform(0.09, 0.16))) * SR)
+        out[s: s + m] += x * float(g.uniform(0.5, 1.0))
+    return out
+
+
+def loom(g, sec: float, rate: float) -> np.ndarray:
+    """A loom at work: the beater's wooden clack on each pick, the shuttle's swish between, at `rate` picks a second."""
+    out = np.zeros(int(sec * SR))
+    t = 0.0
+    while t < sec - 0.4:
+        b = float(g.uniform(260, 340))
+        clack = FA.modal([b, b * 2.3, b * 4.4], [0.03, 0.018, 0.01], [1.0, 0.5, 0.2], 0.12, g, click=0.6)
+        s = int(t * SR)
+        out[s: s + len(clack)] += clack[: len(out) - s]
+        m = int(0.18 * SR)
+        sw = filt(g.standard_normal(m), [bq_bandpass(float(g.uniform(1500, 2500)), 0.8)]) * np.sin(np.pi * np.arange(m) / m)
+        s2 = int((t + 0.35 / rate) * SR)
+        out[s2: s2 + m] += 0.25 * sw[: max(0, len(out) - s2)]
+        t += float(g.uniform(0.9, 1.1)) / rate
+    return out
+
+
+def goat_bell(g) -> np.ndarray:
+    """A goat's iron bell far up the slope: two or three dull clanks."""
+    out = np.zeros(int(1.2 * SR))
+    b = float(g.uniform(700, 900))
+    for k in range(int(g.integers(2, 4))):
+        x = FA.modal([b, b * 1.6, b * 2.8], [0.25, 0.15, 0.06], [1.0, 0.5, 0.25], 0.5, g, click=0.2)
+        s = int(k * float(g.uniform(0.25, 0.4)) * SR)
+        out[s: s + len(x)] += x[: len(out) - s]
+    return out
+
+
+def vey_galleries(g):
+    mx, L = _mixer("vey_galleries")
+    mx.bus("hum", 0.0, send=0.3)
+    mx.bus("water", 0.0, send=0.5)
+    mx.bus("glass", 0.0, send=0.6, process=lambda x: filt(x, [bq_lowpass(7000, 0.7)]))
+    mx.bus("roots", 0.0, send=0.5)
+    mx.add("hum", conduit_hum(L, g, 98.0) * 0.08, 0.0)
+    mx.add("water", FA.stereo_noise(L, g, [bq_lowpass(260, 0.6), bq_highpass(40, 0.7)], 0.7) * 0.1, 0.0)
+    for t in FA.schedule(L, 1.3, g, 0.7):
+        mx.add("water", drip(float(g.uniform(0.2, 0.6)), float(g.uniform(1.8, 3.6)), seed=int(g.integers(1 << 30))), t,
+               pan=float(g.uniform(-0.9, 0.9)), gain=float(g.uniform(0.2, 0.5)))
+    for t in FA.schedule(L, 3.3, g, 0.6):
+        mx.add("glass", glass_tick(g), t, pan=float(g.uniform(-0.9, 0.9)), gain=float(g.uniform(0.08, 0.2)))
+    for t in FA.schedule(L, 9.0, g, 0.5):
+        mx.add("roots", creak(g, float(g.uniform(0.8, 1.5)), 30, 140), t, pan=float(g.uniform(-0.7, 0.7)), gain=0.25)
+    return mx, _room(SEED % 9973 + 3, 3.2, 2.4, highcut=5000.0)
+
+
+def lowlight_temple(g):
+    mx, L = _mixer("lowlight_temple")
+    mx.bus("water", 0.0, send=0.45)
+    mx.bus("throb", 0.0, send=0.3, process=lambda x: filt(x, [bq_lowpass(300, 0.7)]))
+    mx.bus("hum", 0.0, send=0.35)
+    mx.bus("glass", 0.0, send=0.6, process=lambda x: filt(x, [bq_lowpass(6500, 0.7)]))
+    mx.add("water", FA.stereo_noise(L, g, [bq_lowpass(400, 0.6), bq_highpass(50, 0.7)], 0.6) * 0.12, 0.0)
+    for t in FA.schedule(L, 1.8, g, 0.5):
+        mx.add("water", FA.lap(g, float(g.uniform(0.6, 1.1))), t, pan=float(g.uniform(-0.6, 0.6)),
+               gain=float(g.uniform(0.3, 0.7)))
+    for t in FA.schedule(L, 2.4, g, 0.7):
+        mx.add("water", drip(float(g.uniform(0.2, 0.5)), float(g.uniform(2.0, 3.4)), seed=int(g.integers(1 << 30))), t,
+               pan=float(g.uniform(-0.9, 0.9)), gain=float(g.uniform(0.15, 0.4)))
+    mx.add("throb", throb(L, g, 0.4, 46.0) * 0.1, 0.0)        # felt more than heard
+    mx.add("hum", conduit_hum(L, g, 130.0) * 0.04, 0.0)
+    for t in FA.schedule(L, 6.0, g, 0.6):
+        mx.add("glass", glass_tick(g), t, pan=float(g.uniform(-0.8, 0.8)), gain=float(g.uniform(0.06, 0.15)))
+    return mx, _room(SEED % 9973 + 4, 3.6, 2.6, highcut=4800.0)
+
+
+def keth_pass_wind(g):
+    mx, L = _mixer("keth_pass_wind")
+    mx.bus("wind", 0.0, send=0.1)
+    mx.bus("cords", 0.0, send=0.25, process=lambda x: filt(x, [bq_lowpass(3500, 0.7)]))
+    mx.bus("snow", 0.0, send=0.1)
+    mx.bus("scree", 0.0, send=0.3)
+    gust = 0.5 + 0.5 * FA.plfo(L, 0.08, g)
+    mx.add("wind", FA.stereo_noise(L, g, [bq_lowpass(1400, 0.6), bq_highpass(120, 0.7)], 0.4)
+           * (0.3 + 0.7 * gust ** 1.6)[:, None] * 0.2, 0.0)
+    mx.add("snow", FA.stereo_noise(L, g, [bq_bandpass(4500, 0.8), bq_highpass(2500, 0.7)], 0.3)
+           * (0.2 + 0.8 * gust ** 2)[:, None] * 0.04, 0.0)
+    for t in FA.schedule(L, 2.6, g, 0.6):
+        mx.add("cords", cord_whistle(g, float(g.uniform(1.0, 2.4))), t, pan=float(g.uniform(-0.9, 0.9)),
+               gain=float(g.uniform(0.05, 0.14)))
+    for t in FA.schedule(L, 3.0, g, 0.6):
+        mx.add("cords", cord_knock(g), t, pan=float(g.uniform(-0.8, 0.8)), gain=float(g.uniform(0.15, 0.35)))
+    for t in FA.schedule(L, 11.0, g, 0.5):                                 # scree off the drop side
+        mx.add("scree", FA.burst(g, 1.2, [bq_bandpass(1800, 0.7)], 0.05, 0.4) * 0.5, t,
+               pan=float(g.uniform(0.3, 0.9)), gain=float(g.uniform(0.15, 0.3)))
+    return mx, _room(SEED % 9973 + 5, 0.9, 1.6, highcut=6000.0)
+
+
+def quellan_town(g):
+    mx, L = _mixer("quellan_town")
+    mx.bus("wind", 0.0, send=0.1)
+    mx.bus("town", 0.0, send=0.35, process=lambda x: filt(x, [bq_lowpass(2800, 0.7)]))
+    mx.bus("work", 0.0, send=0.35)
+    mx.bus("far", 0.0, send=0.5, process=lambda x: filt(x, [bq_lowpass(2500, 0.7)]))
+    gust = 0.5 + 0.5 * FA.plfo(L, 0.06, g)
+    mx.add("wind", FA.stereo_noise(L, g, [bq_lowpass(1000, 0.6), bq_highpass(100, 0.7)], 0.4)
+           * (0.35 + 0.65 * gust ** 1.5)[:, None] * 0.12, 0.0)
+    for t in FA.schedule(L, 3.5, g, 0.6):
+        mx.add("work", flap(g), t, pan=float(g.uniform(-0.8, 0.8)), gain=float(g.uniform(0.15, 0.35)))
+    t = 0.5
+    while t < LOOPS["quellan_town"] - 2.0:
+        mx.add("town", FA.murmur_phrase(g, bool(g.random() < 0.5)), t, pan=float(g.uniform(-0.7, 0.7)),
+               gain=float(g.uniform(0.25, 0.6)))
+        t += float(g.uniform(1.2, 3.5))
+    mx.add("work", loom(g, 18.0, 1.1), 6.0, pan=0.55, gain=0.18)
+    for t in FA.schedule(L, 13.0, g, 0.4):
+        mx.add("far", goat_bell(g), t, pan=float(g.uniform(-0.8, 0.8)), gain=float(g.uniform(0.08, 0.16)))
+    return mx, _room(SEED % 9973 + 6, 0.8, 1.4)
+
+
+def cloudloom_hall(g):
+    mx, L = _mixer("cloudloom_hall")
+    mx.bus("looms", 0.0, send=0.4)
+    mx.bus("cords", 0.0, send=0.3, process=lambda x: filt(x, [bq_lowpass(4000, 0.7)]))
+    mx.bus("voices", 0.0, send=0.5, process=lambda x: filt(x, [bq_lowpass(2600, 0.7)]))
+    mx.bus("air", 0.0, send=0.1)
+    gust = 0.5 + 0.5 * FA.plfo(L, 0.07, g)
+    mx.add("air", FA.stereo_noise(L, g, [bq_lowpass(1200, 0.6), bq_highpass(150, 0.7)], 0.4)
+           * (0.4 + 0.6 * gust)[:, None] * 0.08, 0.0)
+    for k in range(4):                                                     # four looms across the hall
+        mx.add("looms", loom(g, LOOPS["cloudloom_hall"] - 2.0, float(g.uniform(0.8, 1.3))), float(g.uniform(0.0, 1.5)),
+               pan=-0.75 + 0.5 * k, gain=float(g.uniform(0.12, 0.22)))
+    for t in FA.schedule(L, 0.5, g, 0.8):                                  # the keth stirring in the wind
+        mx.add("cords", reed_rustle(g, float(g.uniform(0.6, 1.4))), t, pan=float(g.uniform(-0.9, 0.9)),
+               gain=float(g.uniform(0.04, 0.1)) * float(0.5 + 0.5 * gust[min(L - 1, int(t * SR))]))
+    t = 3.0
+    while t < LOOPS["cloudloom_hall"] - 3.0:
+        mx.add("voices", FA.murmur_phrase(g, True), t, pan=float(g.uniform(-0.6, 0.6)), gain=float(g.uniform(0.2, 0.4)))
+        t += float(g.uniform(3.0, 7.0))
+    return mx, _room(SEED % 9973 + 7, 1.8, 2.2, highcut=5500.0)
+
+
+BEDS = {"fen_dusk": fen_dusk, "reedhollow_roost": reedhollow_roost, "vey_galleries": vey_galleries,
+        "lowlight_temple": lowlight_temple, "keth_pass_wind": keth_pass_wind, "quellan_town": quellan_town,
+        "cloudloom_hall": cloudloom_hall}
 FILES = [f"{b}{ext}" for b in BEDS for ext in (".ogg", ".loop.json")]
 
 
