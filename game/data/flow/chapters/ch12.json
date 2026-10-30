@@ -33,6 +33,42 @@
        "set": "ch12_started"
       }
      ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch12_ram_felled"
+      ],
+      "unset": [
+       "ch12_reached_quellan"
+      ]
+     },
+     "steps": [
+      {
+       "place": "RamArena"
+      },
+      {
+       "play": "ch12_herd_cord"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch12_ysolde_confessed"
+      ],
+      "unset": [
+       "ch12_complete"
+      ]
+     },
+     "steps": [
+      {
+       "place": "FromQuellan"
+      },
+      {
+       "play": "ch12_down_the_other_side"
+      }
+     ]
     }
    ],
    "beats": {
@@ -43,6 +79,26 @@
         "location": "ch12/quellan",
         "spawn": "FromPass"
        }
+      }
+     ]
+    },
+    "terrace": {
+     "when": {
+      "set": [
+       "ch12_started"
+      ],
+      "unset": [
+       "ch12_ram_felled"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch12_weeping_wall"
+      },
+      {
+       "battle": "ch12_avalanche_ram",
+       "return_spawn": "RamArena",
+       "victory_flag": "ch12_ram_felled"
       }
      ]
     }
@@ -74,6 +130,24 @@
       },
       {
        "set": "ch12_reached_quellan"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch12_hesk_bound"
+      ],
+      "unset": [
+       "ch12_ysolde_confessed"
+      ]
+     },
+     "steps": [
+      {
+       "place": "FromCloudloom"
+      },
+      {
+       "play": "ch12_forty_seven_voices"
       }
      ]
     }
@@ -139,6 +213,21 @@
         "location": "ch12/quellan",
         "spawn": "FromCloudloom"
        }
+      }
+     ]
+    },
+    "dais": {
+     "when": {
+      "set": [
+       "ch12_reached_cloudloom"
+      ],
+      "unset": [
+       "ch12_hesk_bound"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch12_hesk"
       }
      ]
     }

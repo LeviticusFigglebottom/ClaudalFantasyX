@@ -105,6 +105,30 @@
        }
       }
      ]
+    },
+    "shore": {
+     "when": {
+      "set": [
+       "ch10_reached_reedhollow"
+      ],
+      "unset": [
+       "ch10_complete"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Shore"
+      },
+      {
+       "play": "ch10_farewell_tide"
+      },
+      {
+       "place": "Gate"
+      },
+      {
+       "play": "ch10_dawn_gate"
+      }
+     ]
     }
    }
   }

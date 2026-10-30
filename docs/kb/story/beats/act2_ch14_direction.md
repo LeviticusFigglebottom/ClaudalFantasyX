@@ -74,3 +74,26 @@ B10, no dialogue.
 | L10 | 50 mm at the barge's height, Venn standing on his dead barge in the ripples; **plain**; `[-1.5, 0.6, 22.0]` → `[-3.0, 0.8, 22.0]`, 27° | venn_barge | no line |
 | L11 | 24 mm, out through the lagoon mouth's moles; the lit city behind, the dark sea ahead (from astern, then ahead); `[0.0, 1.9, 8.5]` → `[0.0, 0.8, 10.0]`, 60° | barge_deck | no line |
 | L12 | 50 mm, the cloth with Liss's hand on it, Kerrid at the stern, then fade; `[2.1, 0.8, 8.3]` → `[0.0, 0.8, 8.3]`, 27° | bier, stern | no line |
+
+## Audio cues by shot (for audio)
+
+Every `@music` and `@sfx` in the chapter's scenes, in script order, with the shot it lands on and what follows it
+(the next line or hold). A music change marked `fade=0.0` is a hard cut. Barks, camps and shrines play in the field and
+are left out. A shot of — means the cue plays before the node's first shot, over the fade.
+
+| Scene | Shot | Cue | Then |
+|---|---|---|---|
+| `ch14_first_ripple` | L01 | `@music lagoon_escape fade=0.5` | hold 2.5 s |
+| `ch14_first_ripple` | L02 | `@sfx barge_pole` | hold 6.0 s |
+| `ch14_first_ripple` | L03 | `@sfx barge_pole` | hold 2.0 s |
+| `ch14_first_ripple` | L03 | `@sfx barge_pole` | hold 2.0 s |
+| `ch14_first_ripple` | L03 | `@sfx barge_pole` | hold 2.0 s |
+| `ch14_first_ripple` | L04 | `@sfx stirring_bells` | hold 2.5 s |
+| `ch14_merel_at_the_gate` | L08 | `@sfx water_gate_drop` | hold 2.5 s |
+| `ch14_merel_at_the_gate` | L09 | `@music silence fade=2.0` | <<set $ch14_merel_taken = true>> |
+| `ch14_left_standing` | L11 | `@sfx stirring_bells vol=0.4` | hold 5.0 s |
+| `ch14_left_standing` | L12 | `@music unlamped fade=4.0` | hold 5.0 s |
+| `ch14_the_vows` | W03 | `@music peace_wedding fade=1.0` | hold 5.0 s |
+| `ch14_declaration` | W08 | `@music peace_wedding_break fade=0.0` | `ch14_decl_001` Malcor_venn as "Warden Venn" |
+| `ch14_declaration` | W10 | `@music silence fade=0.0` | <<set $ch14_declared_heretics = true>> |
+| `ch14_stand_aside` | W12 | `@sfx level_pin_ring` | hold 1.5 s |

@@ -1005,6 +1005,67 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - The four camera fixes wait on the 14:48 LEAD-ASK for a second shot budget. Moving them unverified would be
     guessing.
 
+### The Lead's 16:08 approval (10-30): the four Ch10–13 field cameras
+All four are moved in the generators (ch10/11/12/13_greybox.py) and regenerated; nothing else in the layouts changed.
+1. **ossa_fen `Clearing`:** the camera now stands on the clearing's east side at (118, 5, 6), looking west over the
+   platform at the way in. Before, it was outside the root ring, in the canopy.
+2. **lowlight:** a new `GateStep` volume (priority 2) covers the step outside the west door. Its camera is inside the
+   atrium at (6, 3.5, 3) and looks out through the door. Before, there was no volume there, so the default orbit
+   hugged the outside of the wall.
+3. **cloudloom `Hall`:** the camera now looks up the aisle from just inside the south wall at (0, 10.5, -22.5) to the
+   dais. Before, it was at z -15, outside the hall and inside the stair's cliff.
+4. **lamp_archive `LedgerBay`:** the camera is now in the aisle inside the door at (2, 3.4, -3), looking at the ledger
+   table. Before, it was at z 1.5, in the door frame.
+- **Viewed:** 4 re-renders of the same POIs (the second budget; 11 shots of it remain). All four now read: the
+  clearing platform, Rhen at the gate with the water beyond, the keth aisle to the dais, the stacks and the ledger
+  table.
+- **Checks:**
+  - Godot: ch10 (3/0), ch11 (3/0), ch12 (4/0), ch13 (4/0), qa_field_camera (2/0), hero_field_snaps (2/0),
+    layout (18/0), zone_map (22/0).
+  - validate_data, and the generator and flow tool tests (46 OK).
+- MERGE-READY @ d19b47b9d
+- **BACKLOG EMPTY (10-30, after 16:08).** Waiting on others:
+  - env-art-b: the Drowned Choir's dressing.
+  - M3-BPR-445, M3-UI-1242 and M4-A2P-061 (the Swell effects).
+  - The PC re-check of rows 34 and 39.
+  - The inherited tool reds named at 13:48.
+
+### The Lead's 16:45 list (10-30)
+- **test_causeway_route in big25:** my fix is in big25 (7f54af722 and b368c93a5 are both ancestors). On a fresh
+  big25 worktree after `--import` it's **5/0**. The red was almost certainly the stale class cache after a merge (the
+  same thing I hit at 13:48 and 14:48), so the gate needs `--import` first.
+- **M4-A2P-114 (the 19 unraised flags): 14 wired, 5 moved to M4-A2P-117.** Now in review (narrative).
+  - **New triggers** (from the generators): reedhollow `shore`, lowlight `engine` and `sanctum`, keth_pass
+    `terrace`, cloudloom `dais`, sanctum `ledge`, lamp_archive `ledgers` and `roll`.
+  - **New beats:** the Lamp Engine and the Avalanche Ram each play their scene, then the flow's `battle` step. The
+    other beats play their scene.
+  - **New arrive rows** play the return scenes:
+    - ch11_twice (once, by the new `ch11_twice_seen`) and ch11_held_by_you.
+    - ch12_herd_cord, ch12_forty_seven_voices and ch12_down_the_other_side.
+    - ch13_archive_hands (the third visit) and ch13_the_pact.
+  - **Flags:** `ch11_engine_released` and `ch11_twice_seen` are declared in flags.tres (its own commit).
+  - **Threads:** test_ch10..13_thread play each chapter's story in order. ch12 and ch13 have a new in-order test each.
+  - **qa_known `unraised`:** down from 19 to Ch14's 5. Those now point at M4-A2P-117.
+  - **Staging:** the scenes name shots, cast, marks and VFX anchors the greybox stages lack (100 warnings). One
+    `known` row hands them to M4-A2P-075 (my staging, 070–075), and test_qa_threads is **green**.
+  - **Ch14 (rows 15–19):** filed as **M4-A2P-117** (combat, mine): `ch14_water_steps`, `ch14_malcor_venn` and Venn's
+    enemy row and sim band, then the court's beats. The five flags also need M3-UI-1242's `"chapter"`.
+- **Ch14–16 mounts and walks:**
+  - test_ch14_16_thread (5/0), lacquer, open_sea, hollowmere, pale_rim (2/0 each).
+  - The Drowned Choir still has no dressing (M4-A2P-046 is `doing`).
+- **Checks:**
+  - ch10 (3/0), ch11 (3/0), ch12 (5/0), ch13 (5/0), zone_map (22/0), test_qa_threads (1/0).
+  - validate_data, taskboard --check, chapter_flow_check, and the flow tool tests (23 OK).
+  - `layout` has one red, test_aspect_layouts (a battle read-panel label at 4:3). It's the same on a clean
+    integration worktree, so it's ui's and inherited.
+- MERGE-READY @ 74accf6fd
+- **BACKLOG (10-30, after 16:45):**
+  - **Mine, next:** M4-A2P-117 (Ch14's fights) and the Act II staging (070–075).
+  - **Waiting on others:**
+    - env-art-b: the Choir.
+    - M3-BPR-445, M3-UI-1242 and M4-A2P-061.
+    - The PC re-check of rows 34 and 39.
+
 ## Exact next step
 **BACKLOG EMPTY (2026-10-30 ~02:00):** the flow and pacing pass is done (`docs/kb/qa/act1_flow_pacing_pass.md`) and the
 Act II chapter drafts are written (`docs/kb/plan/act2/chapters/`, pre-gate). Waiting on:

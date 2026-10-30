@@ -918,6 +918,15 @@
    "yaw_deg": 0.0
   },
   {
+   "piece": "raft_deck_square",
+   "at": [
+    168.0,
+    -6.0
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.0
+  },
+  {
    "piece": "keel_hull",
    "at": [
     92.0,

@@ -188,12 +188,78 @@ func test_a_physics_ground_resolves_and_falls_back_to_the_flat_y() -> void:
 	layer.free()
 
 
+func test_the_party_flushes_perched_gulls_one_after_another() -> void:
+	var kind: Dictionary = _kinds["kinds"]["gull"]
+	var calm := WildlifeGullFlock.new(_flock_row(2), kind, 99, 5)
+	var flushed := WildlifeGullFlock.new(_flock_row(2), kind, 99, 5)
+	var near := flushed.gulls[0]
+	var far := flushed.gulls[1]
+	var flushed_perch := near.perch  # the bird takes another perch later
+	var at := flushed.perches[flushed_perch]
+	var player := Vector3(at.x + 2.0, 0.0, at.z)
+	assert_true(
+		(
+			Vector2(at.x, at.z).distance_to(Vector2(flushed.perches[far.perch].x, flushed.perches[far.perch].z))
+			> float(kind["flush_radius_m"]) + 2.0
+		),
+		"the fixture's other perch is out of reach"
+	)
+	var lifted_at := -1.0
+	for f in 90:
+		calm.step(DT, player, false)
+		flushed.step(DT, player, true)
+		if lifted_at < 0.0 and near.state != WildlifeGullFlock.State.PERCHED:
+			lifted_at = f * DT
+	var delay: Array = kind["flush_delay_s"]
+	assert_between(lifted_at, 0.0, float(delay[1]) + DT, "the party lifts the near gull within its flush delay")
+	assert_eq(far.state, WildlifeGullFlock.State.PERCHED, "a gull on a far perch stays put")
+	assert_eq(calm.perched_count(), 2, "with nobody there, both keep their perches")
+	for f in 60 * 120:
+		flushed.step(DT, player, true)
+		for g in flushed.gulls:
+			if g.state == WildlifeGullFlock.State.PERCHED:
+				assert_ne(g.perch, flushed_perch, "nothing lands on the perch the party stands by")
+
+
+func test_a_startle_throws_the_school_apart() -> void:
+	var kind: Dictionary = _kinds["kinds"]["fish"]
+	var row := {"id": "t", "center": [3.0, -0.3, 2.0], "radius_m": 6.0, "count": 14, "scale": 1.0}
+	var calm := WildlifeShoal.new(row, kind, 31, 14, Callable())
+	var startled := WildlifeShoal.new(row, kind, 31, 14, Callable())
+	for f in 60 * 4:
+		calm.step(DT, Vector3(80.0, 0.0, 80.0), true)
+		startled.step(DT, Vector3(80.0, 0.0, 80.0), true)
+	var at := startled.lead
+	for f in 30:
+		calm.step(DT, Vector3(80.0, 0.0, 80.0), true)
+		startled.step(DT, at, f == 0)
+	assert_true(startled.startled(), "the party startled one school")
+	assert_true(_school_spread(startled) > 1.3 * _school_spread(calm), "the startled school spreads wider")
+	for f in 60 * 12:
+		calm.step(DT, Vector3(80.0, 0.0, 80.0), true)
+		startled.step(DT, Vector3(80.0, 0.0, 80.0), true)
+	assert_false(startled.startled(), "the startle passes")
+	assert_true(_school_spread(startled) < 1.3 * _school_spread(calm), "and the school closes up again")
+
+
+## The fish's mean distance from their own centroid (across the water).
+func _school_spread(shoal: WildlifeShoal) -> float:
+	var c := Vector3.ZERO
+	for fish in shoal.fish:
+		c += fish.pos
+	c /= float(shoal.count())
+	var d := 0.0
+	for fish in shoal.fish:
+		d += Vector2(fish.pos.x - c.x, fish.pos.z - c.z).length()
+	return d / float(shoal.count())
+
+
 func test_fish_count_and_bounds() -> void:
 	var kind: Dictionary = _kinds["kinds"]["fish"]
 	var row := {"id": "t", "center": [3.0, -0.3, 2.0], "radius_m": 3.0, "count": 14, "scale": 1.0}
 	var shoal := WildlifeShoal.new(row, kind, 31, 14, Callable())
 	assert_eq(shoal.count(), 14, "fish count")
-	var spread := WildlifeConfig.vec3(kind["spread_m"])
+	var spread := WildlifeConfig.vec3(kind["spread_m"]) * float(kind["scatter_spread"])  # a startle throws it apart
 	var reach := shoal.radius + spread.length() + float(kind["wobble_m"]) + EPS
 	var startled := false
 	for f in 60 * 120:
@@ -571,6 +637,25 @@ func test_a_kingfisher_plunges_to_the_water_and_back_to_its_perch() -> void:
 		gulls.step(DT)
 		assert_ne(gulls.gulls[0].state, WildlifeGullFlock.State.DIVE, "a gull never dives")
 	assert_true(flock.bounds.position.y <= -0.25, "the culling box reaches the water")
+
+
+## The idle pass (2026-10-30): each woolback grazes at its own pace (graze_pace), the graze clip's playback; the walk
+## and the look play at 1.0 (the walk's hooves are planted for walk_speed_mps).
+func test_woolbacks_graze_at_their_own_pace() -> void:
+	var kind: Dictionary = _kinds["kinds"]["woolback"]
+	var range: Array = kind["graze_pace"]
+	var herd := WildlifeHerd.new(
+		{"id": "h", "center": [0.0, 0.0], "radius_m": 4.0, "count": 4}, kind, 77, 4, Callable()
+	)
+	var paces: Array[float] = []
+	for a in herd.animals:
+		assert_between(a.pace, float(range[0]), float(range[1]), "its pace in range")
+		paces.append(a.pace)
+		a.clip = WildlifeHerd.CLIP_GRAZE
+		assert_true(is_equal_approx(herd.playback_of(a), a.pace), "grazing plays at its pace")
+		a.clip = WildlifeHerd.CLIP_WALK
+		assert_eq(herd.playback_of(a), 1.0, "the walk keeps its planted hooves")
+	assert_true(paces.max() - paces.min() > 0.02, "four woolbacks, four paces")
 
 
 func test_woolbacks_graze_look_and_amble_within_their_area() -> void:

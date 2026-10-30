@@ -454,3 +454,86 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - **Checks** (docs only): validate_data 0/0 · taskboard clean. No Godot run: nothing it tests changed.
 - MERGE-READY setters request @ bb7817771
 - BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114 (act1-chapters), M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Ch12–Ch16 direction notes, complete (Lead)
+- All five were already written: Ch12 and Ch13 are on integration; **Ch14, Ch15 and Ch16 are on this branch only** (since 603fb1f36), so this merge brings them.
+- **For audio:** each of the five now ends with **"Audio cues by shot"**: every `@music` and `@sfx` in the chapter's scenes, in script order, with the shot it lands on and the line or hold that follows (Ch12 10, Ch13 14, Ch14 14, Ch15 15, Ch16 17). Hard cuts are the `fade=0.0` rows.
+- **Checks** (docs only): validate_data 0/0 · taskboard clean.
+- MERGE-READY Ch12–Ch16 direction notes @ f5f0be211
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114 (act1-chapters), M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Act III script pass, Ch17–Ch18 drafts (Lead; planning only)
+- `docs/kb/story/act3/drafts/`: **27 draft `.dlg` files** (Ch17: 11, every beat B01–B12; Ch18: 16, K01–K08 plus the 8 revisits and 7 heirlooms). Format as in Act II. **Nothing under `game/` reads them**: no flag, loc row, shot, mark or music cue was added.
+- **Checks:** `check_drafts.py` (new, in the drafts folder) compiles the drafts with dlgc on a temporary copy of `game/data` (speakers, emotions, cues, events, ids unique game-wide). It then checks the Act II runtime rules statically (the letterbox closes; light rules) and the Act III rules (nothing rises but the Haluna lifting, no line in Dace's voice, no "revenant", no Eighth Verse sung, every flag declared or listed). **27 files, 0/0.** A planted bad file trips all five rules.
+- Other checks: validate_data 0/0 (its banned-term scan covers `docs/kb/story/` .dlg and .py) · dlgc --check 0/0 (the game unchanged) · taskboard clean.
+- **For review** (drafts/README "Decisions"):
+  - Ch17 shots renamed to D01–D18 (H-ids are taken in `ch17/hollowmere`).
+  - Ch15's "twenty years" kept over the sheet's "thirty".
+  - The ledger dated by rhen_sallow.md: eight years old; "a Hollowmere trader"; "helping a friend on a long trip".
+  - Ama's 47 knots: the question-knot is the eighth place.
+  - The tally keeper is Ch15's record-keeper.
+  - B09 has no call-bark hook.
+  - `ch17_complete` is set by the flow.
+- **LEAD-ASK:** the drafts run under the sheets' §8 word budgets. Ch17 is about 460 spoken against an 880–1,300 band; Ch18's critical path about 265 against about 650. The hinge scenes are spare on purpose. Grow the field barks, revisits and heirlooms to the band, or revise §8?
+- MERGE-READY Act III drafts Ch17–Ch18 @ 9c44186b7
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114 (act1-chapters), M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Act III drafts, Ch19–Ch20 and the Ending (Lead; planning only)
+- The Lead's answer to the word-budget LEAD-ASK: drafts stay lean, and expansion comes when Act III production opens. **Closed.**
+- `docs/kb/story/act3/drafts/` now holds **73 draft files** (46 new: Ch19 7, Ch20 18, Ch21 and the Ending 21). Every beat on the three sheets is drafted. Nothing under `game/` reads them.
+- **check_drafts.py:** 73 files, 0/0.
+  - It now adds draft speakers from the README table to its temporary copy only.
+  - New light rules: rising only in a lifting, a release, the Letting's sleeve, Sefir's lift, and from H09 on; nothing held or bound after H09. A planted bad file trips the H09 rule.
+- Other checks: validate_data 0/0 · dlgc --check 0/0 (the game unchanged) · taskboard clean.
+- **For review** (drafts/README, decisions 10–16):
+  - shot ids: I, U, HT and E;
+  - the vigil line has its own id, verbatim;
+  - Lamptongue placeholders (Audio owns the lyrics; H07's sung text isn't written);
+  - fight lines as bark nodes: **Combat needs a mid-battle line hook**, plus new encounter ids;
+  - Dace speaks only in E2;
+  - T-08 and T-09 as optional inserts;
+  - a new flag, `ch21_unbound`.
+- MERGE-READY Act III drafts Ch19–Ending @ 3a7f19d73
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114 (act1-chapters), M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Act I as-played read-through, New Game → Ch9 (Lead)
+- **Read:** integration @ 4b1988109, the scenes in play order:
+  - Title → the Prologue → Ch1 (the Underway, then Oruvel) → the slice (Ch2 Haluna, Ch3 the causeway, the shrine, the Drownbell, the dock at night);
+  - the chapter card → Ch4–Ch9 → the Act I end card.
+  - `tools/act1/flow_audit.py` is clean (no never-set or late flags), so this was a content read.
+- **Overall:** every flow plays in its beat sheet's §1 order; every one-shot story beat has its gate; no Act II or III secret is stated.
+- **26 findings**, filed with file:line evidence and a one-line fix each:
+  - **M4-A2P-115 → slice-polish** (Prologue–Ch3), 8 rows. The worst:
+    - **A1:** "You leave the day after tomorrow." No line on any path ever tells Rhen.
+    - **A2:** the Ch1 low lights (the first held light, "never cut") can be skipped.
+    - **A3:** Rhen agrees to go before he's invited.
+    - **A4:** B03 content is reachable at dawn.
+  - **M4-A2P-116 → act1-chapters** (Ch4–Ch9), 17 rows. The worst:
+    - **C1:** Hobb reads "Jory Sallow. Mag Sallow." among Corrow's drowned. That is Rhen's surname at Corrow (Dace's withheld secret), and the line also uses a founder's surname, Tesk.
+    - **C2:** a teammates' roster mismatch.
+    - **C3, C4:** two beats out of order.
+    - **B1:** Ysolde's and Kerrid's nameplates show before they introduce themselves.
+    - **B2:** the derelict's payoff is spent early.
+  - **M4-A2P-117 → Progression:** the Brine Shoals vendor uses the Ch4 ferry's shop.
+- Every dialogue finding was re-read line by line. The layout-based ones (A2, A4–A6) are traced from trigger coordinates and flags: the tasks say to check the walk in-engine.
+- **Checks** (docs only): taskboard clean · validate_data 0/0.
+- MERGE-READY Act I read-through @ 9be201224
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114–117, M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Lamptongue (Lead; Audio's lamptongue.md)
+- **Source:** `docs/kb/audio/lamptongue.md` is on `origin/claude/audio` only (688bd032d), not yet on integration. I read it there.
+- **§3 into the drafts:**
+  - `ch19_words_001` is verse 8 whole, spoken;
+  - `ch19_words_002` is its first line and last word;
+  - `ch20_fight_006` is kept as written;
+  - **H07 now sings verse 8 whole**, in a new node `ch21_the_letting_verse` (4 sung lines);
+  - every line is tagged `#lamptongue #notr` (`#sung` where sung), per §4.
+- **check_drafts.py** now holds every `#lamptongue` line to §1's 17 roots, and verse 8 to H07; a planted bad line trips both. 73 files, 0/0.
+- **Act I/II verses in play match §2:**
+  - verse 1 (`ch03_verse_042`–`045`) and verse 2 (`ch05_kahre_014`–`017`) match word for word, punctuation included, in the scripts and dialogue.csv;
+  - Ch4's "Vey enu" is the deliberate mispronunciation that Ysolde corrects;
+  - verses 3–7 have no sung text in play (the bound stings are instrumental, as §2 says);
+  - no Lamptongue elsewhere in loc or codex. **No request needed.**
+- **Checks:** validate_data 0/0 · dlgc --check 0/0.
+- MERGE-READY Lamptongue pass @ 9a036d6e1
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114–117, M4-A2P-112 items 3, 5 and 6.

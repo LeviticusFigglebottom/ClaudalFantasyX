@@ -1,0 +1,27 @@
+// DRAFT (Act III, planning only). Ch17 B11 "Ysolde's table" (C, 1.5 min, ~60 words). act3_ch17.md §2 B11;
+// act3_threads T-04: Ama's keth give the COUNT (her lone question-knot is the eighth place); the Choir stones hold the
+// melody in fragments and the Lamptongue WORDS; the tune is Pell's to teach (Ch18 K05). README rule 3: nobody sings.
+title: ch17_ysoldes_table
+location: ch17/hollowmere
+---
+@letterbox on
+@camera D18
+@mark ysolde fathers_table walk
+@anim ysolde lay_out keth_cord
+@wait 2.0
+@anim ysolde lay_out stone_rubbings
+@wait 2.0
+@anim ysolde lay_out blank_page
+@wait 2.0
+Ysolde [neutral]: Ama's count. Seven houses, and a question-knot hanging at the end. The question is the eighth place. #line:ch17_table_001
+Ysolde [neutral]: The words are cut in the Choir stones. Lamptongue. I can read Lamptongue. #line:ch17_table_002
+@anim ysolde touch blank_page
+@wait 2.0
+Ysolde [neutral]: Words I can do. The tune isn't mine to learn. #line:ch17_table_003
+<<if $ch12_ysolde_confessed>>
+    Ysolde [soft_smile]: I counted wrong once, on purpose. Not this time. #line:ch17_table_004
+<<endif>>
+@wait 2.0
+<<set $ch17_verse_begun = true>>
+@letterbox off
+===

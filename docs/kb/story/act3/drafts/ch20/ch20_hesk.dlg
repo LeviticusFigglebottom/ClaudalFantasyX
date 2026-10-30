@@ -1,0 +1,17 @@
+// DRAFT (Act III, planning only). Ch20 U04 layer 4, Hesk (Toma), the arrival. act3_ch20.md §2 U04; vowbound §4.
+// Memory: a Tidecup gallery mid-roar, every held face turned to a float that never surfaces. Hesk: Ama Quillo, the 47th
+// Cantor, an Ullari keth-reader, faithful enough to ask.
+title: ch20_hesk
+location: ch20/undertow_layers
+---
+@letterbox on
+@camera U16
+@music memory_tidecup fade=3.0
+@vfx glimmer_held at=gallery_faces count=120 rate=slow
+@wait 5.0
+@camera U17
+@anim hesk unfold cords
+@wait 3.0
+@letterbox off
+<<event start_battle ch20_hesk>>
+===

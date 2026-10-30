@@ -797,3 +797,50 @@ What the Act II fights still need from others: enemy rows and encounters (combat
   behind engine_hall, ch11's line-up, the Vowbound slot before the camera, Kahre's rise during the Climb's cut).
   Next when they land: battle-presentation's Act II effects (view them on my bodies, the agreed split), the Abiding
   guard's actor (its stand-in), the flat-engine's row and Liss's break.
+
+## 2026-10-30 ~16:30: the Lead's 16:09 (Act II as-played on Ch10–13; it crossed my 15:40 report)
+- Ch10–12 were played and logged above (15:40); **Ch13 still has no boss encounter on big24** (encounters.json: ch15
+  and ch16 are the next). Merged big24 (no conflicts, validate_data 0/0).
+- **Ch15 Wakefin, as played** (Kesh called, her first real fight): the intro (its fin cutting the dark), the hits,
+  `fin_cut`, the close_circle stance (`hit_close`, `ko_close`) and the victory all play; Kesh attacks and falls
+  cleanly. Checked headless: in close_circle it stays on its seat (-2.6, -0.6, -5.0), more than 5 m off the party, its
+  head in the default camera's view. **For battle-presentation (M4-A2P-062, the dark fight):** in the close_circle
+  frames (the hit and the KO) its body is lost in the dark water at the default camera (the sea-glow too faint there),
+  and Kesh at 4.2 m on the vowbound slot runs out of the top of the frame. Nothing in my models needs fixing.
+- **BACKLOG EMPTY (16:30):** every mounted Act I and Act II boss fight is played; fixes in my lane are merged-ready
+  (650257ea, f893ee59); the rest is logged for its owners. Next when they land: battle-presentation's Act II effects
+  (big25: view them on my bodies), the Abiding guard's actor, the flat-engine's row, Ch13+ boss encounters.
+
+## 2026-10-30 ~16:40: the Lead's 16:27 (status; the Act II Vowbound summon passes)
+- **Status: the Act II boss passes are done and pushed. MERGE-READY @ 51a8e99a1** (big24 merged in; carries 098a878d1,
+  650257eaa, f893ee590 and the logs). Nothing else of mine is unpushed.
+- **The Vowbound summon passes, running:** every Act II and Act I Vowbound called into the mounted Act II fights, each
+  skill used once and then the Swell technique, with a still of each clip mid-way: ch10_mangrove_drowner (Ilun, Nhoa),
+  ch11_lamp_engine (Kahre, Hesk), ch12_avalanche_ram (Virel, Ethren, Kesh). **With battle-presentation:** this run
+  checks the bodies and clips; their effects land with big25, and I re-run the same passes on it to view each effect
+  on its body (the agreed split) and file any misfit to them.
+
+## 2026-10-30 17:10: STATUS for the Lead's 17:04 (not idle)
+- **Act II boss as-played passes: DONE** (Ch10 Drowner, Ch11 Lamp Engine, Ch12 Ram, and Ch15 Wakefin; Ch13 has no
+  boss encounter on big25 either). Stills of intro, each phase and the defeat viewed; findings above (15:40, 16:30).
+  Nothing in my models needed a fix; the fixes from the Act I passes are in.
+- **MERGE-READY @ fc7106b6c** (big25 merged in, no conflicts, validate_data 0/0).
+- **Vowbound summon passes: RUNNING since 16:45** (two render jobs; all seven Vowbound, each skill and the Swell,
+  in Ch10–12). Results land here as each finishes.
+- **FAST-TRACK fixed, MERGE-READY @ 6973ffc08: test_battle_lineup (ch11_lamp_engine).** Fixed in my data, so nothing is
+  needed from act1-chapters: the encounter's slots stay as they are. The Lamp Engine's stand-in yaw is now 80°
+  (it was 55°). Its footprint at 55° was 2.10 m because the 3.6 x 2.35 m body stood diagonally. At 80° it is 1.75 m,
+  and the crawlers clear it: needed 1.75 + 0.52 + 0.12 = 2.39 m, against 2.49 and 2.55. The 90° problem was the near
+  arm crossing the core; rendered in the intro hero shot at 80°, both the closed and opened stances keep both arms
+  raised either side and the core whole. lamp_engine.md "As built" is updated. Checks: Godot battle_lineup 5/0
+  (red before), creature 159/0, boss green, boss_seat and stand_in 3/0, validate_data 0/0.
+- **Vowbound summon passes so far** (each skill once, then the Swell, in the mounted Act II fights):
+  - **Ethren** (ch12 Ram): Level Hand (`cast`, the wings open), Hold the Hour (`stop`: the 618d916b map fix seen in
+    play), Lacquer Screen (`ward`, the wings swing forward), the Still Water finisher (`special`), hit and KO all read.
+  - **Virel** (ch12): Kite Flare (`cast`), the Flare Line finisher, attack and hit all read.
+  - **Ilun** and **Nhoa** (ch10 Drowner): every skill read (Ilun's Brine Lash, Tidal Ward and Floodnet; Nhoa's Silt
+    Fall, `deep_well` and `echo`). Their finishers are being re-run: the sweep first unleashed through the party's
+    Swell system, which a Vowbound doesn't use. It now acts with the finisher, as the menu does.
+  - **For battle-presentation:** on Ilun's dismissal, the Drowner's fall camera ends inside its roots, which fill the
+    frame.
+  - Running: Kesh (ch12), Hesk and Kahre (ch11, more turns), and the two finishers.

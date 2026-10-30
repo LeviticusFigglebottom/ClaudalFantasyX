@@ -7,7 +7,8 @@ location: ch12/keth_pass
 ---
 @letterbox on
 @camera K03
-@wait 3.0
+// M4-CIN-1304: K03 holds 5 s on the seep before the Ram lifts its head.
+@wait 5.0
 @camera P06
 @anim avalanche_ram lift_head
 @music avalanche_ram fade=0.5

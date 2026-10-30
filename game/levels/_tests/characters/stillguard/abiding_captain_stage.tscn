@@ -1,0 +1,165 @@
+[gd_scene load_steps=22 format=3]
+[ext_resource type="Script" path="res://game/levels/_tests/characters/asha/asha_stage.gd" id="stage"]
+[ext_resource type="PackedScene" path="res://assets/characters/abiding_captain/abiding_captain.glb" id="char"]
+[ext_resource type="AnimationLibrary" path="res://assets/characters/abiding_captain/anim/abiding_captain_clips.tres" id="clips"]
+[ext_resource type="Material" path="res://assets/characters/abiding_captain/materials/bronze.tres" id="m_bronze"]
+[ext_resource type="Material" path="res://assets/characters/abiding_captain/materials/brow.tres" id="m_brow"]
+[ext_resource type="Material" path="res://assets/characters/abiding_captain/materials/cloth.tres" id="m_cloth"]
+[ext_resource type="Material" path="res://assets/characters/abiding_captain/materials/cornea.tres" id="m_cornea"]
+[ext_resource type="Material" path="res://assets/characters/abiding_captain/materials/eye.tres" id="m_eye"]
+[ext_resource type="Material" path="res://assets/characters/abiding_captain/materials/eye_occlusion.tres" id="m_eye_occlusion"]
+[ext_resource type="Material" path="res://assets/characters/abiding_captain/materials/hair.tres" id="m_hair"]
+[ext_resource type="Material" path="res://assets/characters/abiding_captain/materials/hair_grey.tres" id="m_hair_grey"]
+[ext_resource type="Material" path="res://assets/characters/abiding_captain/materials/lash.tres" id="m_lash"]
+[ext_resource type="Material" path="res://assets/characters/abiding_captain/materials/mouth.tres" id="m_mouth"]
+[ext_resource type="Material" path="res://assets/characters/abiding_captain/materials/skin_body.tres" id="m_skin_body"]
+[ext_resource type="Material" path="res://assets/characters/abiding_captain/materials/skin_head.tres" id="m_skin_head"]
+[ext_resource type="Material" path="res://assets/characters/abiding_captain/materials/skin_head_dialogue.tres" id="m_skin_head_dialogue"]
+[ext_resource type="Material" path="res://assets/characters/abiding_captain/materials/spear.tres" id="m_spear"]
+[ext_resource type="Material" path="res://assets/characters/abiding_captain/materials/steel.tres" id="m_steel"]
+[ext_resource type="Material" path="res://assets/characters/abiding_captain/materials/tear_line.tres" id="m_tear_line"]
+[ext_resource type="Material" path="res://assets/characters/abiding_captain/materials/teeth.tres" id="m_teeth"]
+[ext_resource type="Material" path="res://assets/characters/abiding_captain/materials/tongue.tres" id="m_tongue"]
+
+[sub_resource type="ProceduralSkyMaterial" id="Sky_mat"]
+sky_top_color = Color(0.46, 0.53, 0.63, 1)
+sky_horizon_color = Color(0.86, 0.79, 0.71, 1)
+sky_curve = 0.12
+ground_bottom_color = Color(0.36, 0.33, 0.31, 1)
+ground_horizon_color = Color(0.478, 0.431, 0.392, 1)
+ground_curve = 0.06
+sun_angle_max = 1.0
+sun_curve = 0.01
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("Sky_mat")
+
+[sub_resource type="Environment" id="Env"]
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 3
+ambient_light_energy = 0.5
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 1.0
+tonemap_white = 12.0
+ssao_enabled = true
+ssao_radius = 0.04
+ssao_intensity = 1.0
+glow_enabled = true
+glow_intensity = 0.35
+glow_bloom = 0.02
+glow_hdr_threshold = 1.2
+
+[sub_resource type="StandardMaterial3D" id="Studio_mat"]
+albedo_color = Color(0.26, 0.255, 0.25, 1)
+roughness = 0.95
+
+[sub_resource type="PlaneMesh" id="Floor_mesh"]
+material = SubResource("Studio_mat")
+size = Vector2(16, 16)
+
+[sub_resource type="CylinderMesh" id="Cyc_mesh"]
+material = SubResource("Studio_mat")
+flip_faces = true
+top_radius = 5.5
+bottom_radius = 5.5
+height = 7.0
+radial_segments = 48
+rings = 1
+cap_top = false
+cap_bottom = false
+
+[node name="AbidingCaptainStage" type="Node3D"]
+script = ExtResource("stage")
+character_scene = ExtResource("char")
+character_name = &"Captain of the Veil"
+materials = {
+"bronze": ExtResource("m_bronze"),
+"brow": ExtResource("m_brow"),
+"cloth": ExtResource("m_cloth"),
+"cornea": ExtResource("m_cornea"),
+"eye": ExtResource("m_eye"),
+"eye_occlusion": ExtResource("m_eye_occlusion"),
+"hair": ExtResource("m_hair"),
+"hair_grey": ExtResource("m_hair_grey"),
+"lash": ExtResource("m_lash"),
+"mouth": ExtResource("m_mouth"),
+"skin_body": ExtResource("m_skin_body"),
+"skin_head": ExtResource("m_skin_head"),
+"skin_head_dialogue": ExtResource("m_skin_head_dialogue"),
+"spear": ExtResource("m_spear"),
+"steel": ExtResource("m_steel"),
+"tear_line": ExtResource("m_tear_line"),
+"teeth": ExtResource("m_teeth"),
+"tongue": ExtResource("m_tongue")
+}
+emotion = "neutral"
+clip = &"idle"
+clip_library = ExtResource("clips")
+face_distance = 0.62
+face_yaw_degrees = 25.0
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="KeyLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.683157, 0.381423, -0.622746, -0, 0.85276, 0.522303, 0.730271, -0.356815, 0.582569, 0, 4, 0)
+light_color = Color(1, 0.722, 0.482, 1)
+light_energy = 2.4
+shadow_enabled = true
+shadow_bias = 0.02
+shadow_normal_bias = 4.5
+shadow_blur = 0.6
+directional_shadow_max_distance = 8.0
+
+[node name="RimLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.738956, -0.25716, 0.622746, 0, 0.924293, 0.381683, -0.673754, 0.282047, -0.683012, 0, 4, 0)
+light_color = Color(0.949, 0.651, 0.29, 1)
+light_energy = 1.8
+shadow_enabled = true
+shadow_bias = 0.02
+shadow_normal_bias = 4.5
+directional_shadow_max_distance = 8.0
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+mesh = SubResource("Floor_mesh")
+
+[node name="Cyclorama" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
+mesh = SubResource("Cyc_mesh")
+cast_shadow = 0
+
+[node name="Turntable" type="Node3D" parent="."]
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Front" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, 0, 0, 0.996195, 0.0871557, 0, -0.0871557, 0.996195, 0, 1.2, 3.75)
+fov = 34.0
+near = 0.05
+current = true
+
+[node name="ThreeQuarter" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.707107, 0.0616284, -0.704416, 0, 0.996195, 0.0871557, 0.707107, -0.0616284, 0.704416, -2.652, 1.2, 2.652)
+fov = 34.0
+near = 0.05
+
+[node name="Profile" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0, -0.0871557, 0.996195, 0, 0.996195, 0.0871557, -1, 0, 0, 3.75, 1.2, 0)
+fov = 34.0
+near = 0.05
+
+[node name="ThreeQuarterLeft" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.707107, -0.0616284, 0.704416, 0, 0.996195, 0.0871557, -0.707107, -0.0616284, 0.704416, 2.652, 1.2, 2.652)
+fov = 34.0
+near = 0.05
+
+[node name="Back" type="Camera3D" parent="Cameras"]
+transform = Transform3D(-1, 0, 0, 0, 0.996195, 0.0871557, 0, 0.0871557, -0.996195, 0, 1.2, -3.75)
+fov = 34.0
+near = 0.05
+
+[node name="Face" type="Camera3D" parent="Cameras"]
+fov = 24.0
+near = 0.02

@@ -1031,6 +1031,85 @@ that test at this branch's zones.
   - **MERGE-READY @ 124f3f40** (requests only; nothing of mine needed a change).
 - **BACKLOG EMPTY (10-30, after the towns):** what's left waits on env-art (M3-ENV-1328/1329/1330, M4-A2P-114/115)
   and on M4-A2P-103 to 107.
+- **M4-A2P-114 done in env-art's kit (the Lead's leave, 10-30; the LEAD-ASK above is answered):**
+  - **The change:** `lowlight.py`'s south-middle pier moves (0, 9.5) → (0, 11.0), and `engine_hall.glb` is rebuilt.
+    It's its own commit, **f6442153**, and the manifest row is unchanged because the bytes matched.
+  - **Re-rendered:** the battle camera at 16:9 now shows the dais, the party and the Lamp Engine in full; the pier
+    had hidden the Engine too.
+  - **Where it's noted:** a note in env-art.md, and the task is at review for env-art.
+  - **Checks:** test_lowlight, test_lowlight_housing, test_ch11_lowlight_dressing, test_haluna_kit and
+    test_arenas pass; Godot ch11 (3) and arena (18) pass.
+  - **The Act II town interiors:** still none to walk. The eye-height pass over the two existing towns is above
+    (M4-A2P-115).
+  - **MERGE-READY @ f0e1e6fd.**
+- **Dock edges with the field controller (10-30, after merging the integration head 1f5de1d1):**
+  - **The probe:** hero-integration's `test_qa_dock_edges` runs Rhen flat out in 16 directions from every spawn,
+    through the real FieldController and its FieldShore.
+  - **Act I:** it passes on all 23 Act I zones with water, my Ch5–9 among them.
+  - **Act II:** the same walk on my Ch13–17 zones (not routed yet, so run from a scratch copy) covers the six with
+    water: Ansedra, the Lacquer Court, the open sea, the Pale Rim, the Choir and Hollowmere. None steps off an edge
+    or stands deep. The Rim's wade stays inside FieldShore's wading depth.
+  - **The result:** no walls needed. FieldShore holds every edge, and the Pemakar shore walls (02640c97) stay as a
+    second guard.
+  - **The Act II town interiors:** still none exist. Both towns that do exist are walked above (M4-A2P-115).
+  - **MERGE-READY @ 1f5de1d1** (the merge; nothing else changed).
+- **Act I interior lighting, Ch5–Ch9, as played on lavapipe (10-30):**
+  - **What was measured:** the eye-height stills of the zones' interiors, which are Ashcrown's anvil hall and
+    Kahre's chamber (Ch5) and Coilspire's tower tiers (Ch8). Ch6, Ch7 and Ch9 are open-air, and Pemakar has no inn
+    interior to walk.
+  - **Crushed blacks:** none. 0 % of pixels fall under 3 %; the grades' black floor holds the darkest 5 % at
+    0.08–0.13.
+  - **Brightness between chapters:** consistent. Mean luminance is 0.15–0.26 in Ashcrown and 0.14–0.28 in
+    Coilspire.
+  - **Flat ambient:** none that reads flat. The lowest spread (std 0.03) is Coilspire's tier-2 views facing the
+    curved wall at arm's length, and those show the wall's tiles and texture.
+  - The anvil court's battle view was fixed separately (row 63, the loggia lattice).
+  - No change needed. **MERGE-READY @ 1f5de1d1** (unchanged).
+- **Act II wildlife and ambient density, Ch13–16 (10-30):**
+  - **Act II town interiors:** still none to walk (see above).
+  - **Where wildlife is placed:** creatures' wildlife files are placed in my zones only on the Pale Rim (rim rays) and
+    Hollowmere (gulls on the dock's piles, a shoal off the dock). Ansedra has none, by design (ADR 0204 §1), and
+    likewise the Court, the Sanctum, the Archive and the open sea.
+  - **The audit:** I ran creatures' `wildlife_audit.gd` against my dressed zones.
+    - The Rim: 0 problems.
+    - Hollowmere: its five gull perches stood over open water. The perches sat on the greybox's `DockPile*` tops at
+      y 2.7, which my dressing hid without replacing.
+  - **The fix:** the dressing now stands a mooring pile at every `DockPile` (18 Haluna `timber_stilt_post`s from
+    the bed at −1.6, scaled ×1.79 to the 2.7 top), outside the dock's walk. Re-audited: 0 problems. Viewed: piles
+    along the dock with the gulls on them.
+  - **For creatures:** the `off_the_dock` shoal is at y −0.9, the zone's water line itself; its doc assumes the
+    surface at −0.25. It reads as fish at the surface, so it wants about −1.25 to swim under the water. That's their
+    data, and the audit counts it as 0 problems.
+  - **Ambient density:** the eye-height walks above cover it. The lagoon cities are deliberately sparse, the Rim is
+    empty white, and Hollowmere has its life back.
+  - Checks: test_ch15_hollowmere_dressing, test_hollowmere; Godot hollowmere (2), ch14_16 (5).
+  - **MERGE-READY @ e14c3355.**
+- **FAST-TRACK test_post_import (cloud-qa's full suite, 10-30):**
+  - **The cause:** the 40 Haluna glbs I added for Act II (ansedra, archive, sanctum, court, hm, bridal and the
+    rest) had an empty `import_script/path`. Haluna's `import_settings.py` pins the glb flags but not the category
+    script, and new files never got it.
+  - **The fix:** each `.import` now names `haluna_kit_post_import.gd`, set with that file's own `patch()`; the
+    `.import` changes are the whole diff, then re-imported.
+  - **Checked:** Godot --filter=post_import has 0 failures on my files. Viewed `ch13_archive_aisle`,
+    `ch13_ansedra_mirror` and `ch15_hollowmere_dock`: unchanged. test_post_import.py and test_haluna_kit pass.
+  - **One failure left, not mine:** `assets/cutscene/ch01/oruvel_seabed.glb.import belongs to an import category`
+    (m2-slice's seabed).
+  - **Gotcha for new Haluna pieces:** a fresh glb's `.import` needs `import_script/path` set the same way.
+    `import_settings.py` (env-art's) could pin it as the other kits' `*_import_settings.py` do.
+  - **MERGE-READY @ c6dec98b.**
+- **Act II zone-to-zone transitions, Ch13–17 (10-30):**
+  - **Method:** each zone instanced alone. Each spawn was placed through the zone's own `place_at` with its field
+    camera live. Each exit was checked by flooding the walkable ground from the spawns.
+  - **Spawns:** all 13 (Ansedra 3, the Court 3, Archive 1, Sanctum 1, the open sea 2, the Rim 2 + Encounter,
+    Choir 1, Hollowmere 1) are clean: none overlaps a wall, all have ground, none faces a wall within 2 m, and the
+    field camera neither travels more than 1.5 m settling nor loses its line to the hero.
+  - **Exits:** every exit is reachable on foot (Ansedra's `to_sanctum` and `to_archive`, the Archive's and the
+    Sanctum's `to_city`, the Court's `barge`, the open sea's `dawn`, Hollowmere's `ship`), except one.
+  - **The exception:** the Pale Rim's `to_choir` stands at x 230, past the greybox `Sand`'s end at x 220, so it can
+    never fire on foot. It's chapters' greybox (`RIM_LEN + 10`): request **M4-A2P-116**, to move it to about 216
+    or lengthen the sand. My dressing follows either way.
+  - **Act II town interiors:** still none (see above).
+  - **MERGE-READY @ 1f9d2e8c** (the request; no change of mine was needed).
 ### PC-QUEUE
 - Pass 3 row 65 (@ edb18aae): re-measure the camp's smoke columns (24 steps at High) and the Tamsule drop (High has no
   god rays now) at High 1440p against the 0.3 ms target.
@@ -1074,3 +1153,5 @@ SELF-RENDERED @ 2d9a9c36: the Ch13-Ch16 eye-height walk (160 stills over 8 zones
 SELF-RENDERED @ 4516750e: Ashcrown's road graves before, snapped to collision, and snapped to the drawn crest; Coilspire's wall-end heads and a headland scrub clump (scratch) — all viewed.
 SELF-RENDERED @ 34d374de: the eight Act II arenas' battle cameras and hint views at 21:9 and Lowlight at 16:9, plus the court balustrade and Lowlight conduit close views (scratch) — all viewed.
 SELF-RENDERED @ 124f3f40: Lowlight's battle camera with its position printed; Quellan and Reedhollow eye-height walks (scratch) — all viewed.
+SELF-RENDERED @ f0e1e6fd: battle_arena_lowlight_engine_hall's battle camera at 16:9 after the pier move (scratch) — viewed.
+SELF-RENDERED @ e14c3355: Hollowmere's dock with the new piles and the perched gulls (scratch) — viewed.

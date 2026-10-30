@@ -519,3 +519,36 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
 - **For integration-qa (the run speed):** per loop of `run`, the root travels 2.6 m (Asha and Rhen) or 2.65 m (Toma)
   in 0.733 s, two steps, 164 steps a minute, so `speed_mps` is 3.545 / 3.545 / 3.614 in
   game/data/characters/locomotion.json. The field's run_speed_mps 3.6 plays it at 1.00-1.02x.
+- **Villager limits done (ff1b0544).** villager_costume hides a sleeved arm's skin from -0.35 of the arm, which fixes
+  the shoulder poke-through. All 36 villagers were rebuilt and are identical on all 3 numpy paths; test_villagers
+  passes.
+  - **Original limits restored and passing:** ferrymaster, garo, gatekeeper, reed_d, smith.
+  - **Small raises, each with a per-mesh "covered" reason checked by a render at the worst pose:** elder (the sandal
+    sole under the foot), fenn, reed_b, reed_c, scaleman, skipper_sadi (cloth inside a resting forearm), marra (edge
+    verts under the kerchief knot), purser (the sleeve edge under the arm).
+- MERGE-READY @ ff1b0544
+
+## 2026-10-30, Act II: M4-A2P-051 done (Venn and Sefir's Abiding guard)
+- **Venn** is merge-ready since 3f0f5d67. **The Abiding guard** (veiled gold lacquer, living sworn guards per Ch16
+  5a):
+  - **abiding_halberd:** Venn's halberd and keys.
+  - **abiding_bulwark:** Moll's brine-iron and shield.
+  - **abiding_captain:** a red veil and sash.
+- **Build:** the veil is the opt-in sg_helm.veil. Each guard has a battle actor, stages and viewed shots.
+- **Checks:** the rig probes pass, with limits pinned only where Moll's own mechanisms show, each with its reason. Moll,
+  the squad, Ivo, the officer, Venn and the guards are identical on all 3 numpy paths. test_stillguard 46 and
+  test_hero_clips 19 pass; Godot battle_actor 5, post_import 21.
+- **Known limits:** the veil reads stiff at a close-up; Venn's parry hand stops short of the haft.
+- LEAD-ASK: abiding_guard.md (the pale lamp-hook bearers) and the newer Ch16 beat sheet (veiled gold lacquer)
+  disagree. I built the beat sheet's version; shall combat and act2-plan drop the sheet's version?
+- MERGE-READY @ eaad9906
+- **Next (Act II queue):** M4-A2P-052 (Liss's father and the crowds), then M4-A2P-053 (the Kirru and the Ullari).
+
+## 2026-10-30, Act II: M4-A2P-052 part 1, Aldous Varrow (the dock-master)
+- Built on the villager build: the family face, line-marks to the shoulders, a held-in grief row, and the push_raft
+  and hold_up_housing clips. 5 shots were viewed; identical on the 3 numpy paths; test_villagers passes.
+- LEAD-ASK: M4-A2P-052's three crowd costume sets (Ansedran, Saltwright, Ullari) go in the crowd generator
+  (assets_src/crowd/**, crowd.json), which ownership.md gives to creatures. Route them there, or move the claim to
+  characters?
+- MERGE-READY @ 088cf7d1
+- **Next:** M4-A2P-053 (the Kirru and the Ullari).

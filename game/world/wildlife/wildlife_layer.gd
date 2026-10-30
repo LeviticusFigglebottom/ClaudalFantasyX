@@ -290,8 +290,8 @@ func step(delta: float, player: Vector3, has_player: bool, camera: Camera3D = nu
 	}
 	var insect_base := {MOTHS: 0, DRAGONFLIES: 0, FIREFLIES: 0}
 	var dirty := {}
-	var g := _step_flocks(flocks, GULLS_FLYING, GULLS_PERCHED, 0, delta, camera, dirty)
-	g = _step_flocks(kingfishers, KINGFISHERS_FLYING, KINGFISHERS_PERCHED, g, delta, camera, dirty)
+	var g := _step_flocks(flocks, GULLS_FLYING, GULLS_PERCHED, 0, delta, camera, dirty, player, has_player)
+	g = _step_flocks(kingfishers, KINGFISHERS_FLYING, KINGFISHERS_PERCHED, g, delta, camera, dirty, player, has_player)
 	var base := 0
 	for b in beaches:
 		var vis := _visibility(b.bounds, camera)
@@ -404,6 +404,7 @@ func _place_herd(h: int, vis: int) -> void:
 			if ap.has_animation(a.clip):
 				var first := ap.current_animation == ""
 				ap.play(a.clip)
+				ap.speed_scale = herd.playback_of(a)
 				if first:
 					ap.seek(fmod(float(i) * HERD_PHASE_S + float(h), ap.current_animation_length), true)
 			a.clip_changed = false
@@ -418,7 +419,9 @@ func _step_flocks(
 	g: int,
 	delta: float,
 	camera: Camera3D,
-	dirty: Dictionary
+	dirty: Dictionary,
+	player: Vector3,
+	has_player: bool
 ) -> int:
 	var flying: WildlifeBuffer = buffers.get(fly_key)
 	var perched: WildlifeBuffer = buffers.get(perch_key)
@@ -426,7 +429,7 @@ func _step_flocks(
 	for f in list:
 		var vis := _visibility(f.bounds, camera)
 		if vis == VIS_ACTIVE:
-			f.step(delta)
+			f.step(delta, player, has_player)
 		if _changed(g, vis):
 			if vis == VIS_HIDDEN:
 				for i in f.count():

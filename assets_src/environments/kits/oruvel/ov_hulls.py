@@ -34,12 +34,14 @@ TRI_BUDGET = {
     "raft_deck_small": (12000, 600),
     "raft_deck_tucked": (18000, 900),
     "raft_deck_small_tucked": (12000, 600),
+    "raft_deck_square": (20000, 1000),
     "plank_bridge": (5000, 200),
     "net_pen": (16000, 800),
     "hull_lashed": (4500, 300),
 }
 
 RAFT_DECK_Y = 0.80
+SQUARE_RAFT_M = 10.0
 RAFT_SMALL_Y = 0.70
 TUCK_INSET_M = 0.2  # a tucked raft's hulls end this far inside its deck's ends
 TUCK_SHEER_M = 0.12
@@ -239,6 +241,20 @@ def build_raft_deck(seed: int = 703, piece: str = "raft_deck", tucked: bool = Fa
     return out
 
 
+# A square raft (10 x 10 m, tucked) for a square mooring: the 9 x 7 m raft scaled to cover one overreached its block by
+# 2.4 m on each long side, over the hull moored alongside (the scale booth's; cloud-qa pass 6).
+def build_raft_deck_square(seed: int = 706) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("raft_deck_square", seed)
+        noise = kc.Noise3(rng)
+        hulls = [(-3.4, 11.0, 2.3, 1.15, oc.M_PAINT), (0.0, 11.4, 2.4, 1.2, oc.M_PAINT_RED),
+                 (3.4, 10.6, 2.2, 1.1, oc.M_PAINT_WHITE)]
+        out.append(raft("raft_deck_square" + (oc.LOD if lod else ""), SQUARE_RAFT_M, SQUARE_RAFT_M, RAFT_DECK_Y, hulls,
+                        rng, noise, lod=lod, tucked=True))
+    return out
+
+
 # The commons' rafts, lashed edge to edge (ov_zone_dressing): the same decks with their hulls tucked under them.
 def build_raft_deck_tucked() -> list[kc.MeshBuilder]:
     return build_raft_deck(piece="raft_deck_tucked", tucked=True)
@@ -376,6 +392,7 @@ TARGETS = {
     "raft_deck": build_raft_deck,
     "raft_deck_small": build_raft_deck_small,
     "raft_deck_tucked": build_raft_deck_tucked,
+    "raft_deck_square": build_raft_deck_square,
     "raft_deck_small_tucked": build_raft_deck_small_tucked,
     "plank_bridge": build_plank_bridge,
     "net_pen": build_net_pen,

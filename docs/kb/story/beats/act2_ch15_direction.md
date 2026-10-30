@@ -149,3 +149,27 @@ B15. Each boards to their own `ship_deck_n` (they had shared one). **Kerrid last
 | Shot | Frame (cam → look, fov) | Subjects | Lines and who is in frame |
 |---|---|---|---|
 | H16 | 35 mm, the ship readied, Kerrid last up the gangway (the dock-master's line on the quay in frame); `[11.76, 1.8, 12.65]` → `[16.0, 1.4, 10.2]`, 38° | dockmaster_quay, ship_gangway, ship_deck_1 | `ship_001` aldous_varrow in frame |
+
+## Audio cues by shot (for audio)
+
+Every `@music` and `@sfx` in the chapter's scenes, in script order, with the shot it lands on and what follows it
+(the next line or hold). A music change marked `fade=0.0` is a hard cut. Barks, camps and shrines play in the field and
+are left out. A shot of — means the cue plays before the node's first shot, over the fade.
+
+| Scene | Shot | Cue | Then |
+|---|---|---|---|
+| `ch15_current_song` | H02 | `@music hollowmere_answers fade=0.0` | hold 3.0 s |
+| `ch15_pyre_raft` | H12 | `@music hush_first_verse fade=3.0` | hold 5.0 s |
+| `ch15_pyre_raft` | H13 | `@sfx hearth_crackle` | hold 4.0 s |
+| `ch15_pyre_raft` | H13 | `@sfx lamp_housing_close` | hold 2.0 s |
+| `ch15_pyre_raft` | H13 | `@sfx lamp_crack` | hold 3.0 s |
+| `ch15_pyre_raft` | H14 | `@music silence fade=4.0` | <<set $ch15_pyre_raft = true>> |
+| `ch15_the_dock_master` | H06 | `@music silence fade=3.0` | <<set $ch15_liss_told_father = true>> |
+| `ch15_the_fin` | — | `@music silence fade=0.5` | @sfx fin_cut |
+| `ch15_the_fin` | — | `@sfx fin_cut` | cut to U05 |
+| `ch15_the_shoal` | U07 | `@music unlamped fade=1.0` | hold 4.0 s |
+| `ch15_the_shoal` | K01 | `@music silence fade=3.0` | hold 3.0 s |
+| `ch15_the_shoal` | K04 | `@music kerrid_at_sea fade=4.0` | hold 3.0 s |
+| `ch15_the_confession` | K05 | `@sfx kerrid_sits` | hold 3.0 s |
+| `ch15_still_below` | K20 | `@music silence fade=6.0` | hold 6.0 s |
+| `ch15_unlamped` | U01 | `@music unlamped fade=2.0` | hold 5.0 s |
