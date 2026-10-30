@@ -388,3 +388,24 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - **Checks:** dlgc --check 0/0 · validate_data 0/0 · taskboard clean · Godot `dialogue` 86/0.
 - MERGE-READY Ch12 @ d56bcb66d · MERGE-READY Ch13 @ d56bcb66d
 - Next: the Ch14–Ch16 notes.
+
+## 2026-10-30: Ch14, Ch15 and Ch16 direction notes (Lead request)
+- `docs/kb/story/beats/act2_ch14_direction.md`, `act2_ch15_direction.md` and `act2_ch16_direction.md`, in the Ch12 and Ch13 format. Each has the greybox ids to replace, the script fixes, pacing per beat against §1, and per scene every shot (lens, cam → look, fov) with who is in frame on every spoken line.
+  - **Ch14:** 25 lines in frame. Replace the greybox's W03–W07 (the Lacquer Court, in ch13's level folder).
+  - **Ch15:** 72 lines in frame, 1 deliberately off (Pell over the fin). Replace U01–U07 (open_sea) and H01–H04 (hollowmere).
+  - **Ch16:** 25 lines in frame, 4 deliberately off (Kesh's voice in the memory, and Ysolde over Sefir's smile). No greybox collision. The vigil's P04 shares its name with pale_rim's P04 (legal, because ids are per zone; the doc suggests `P04_vigil`).
+- **Script fixes (story's own files):**
+  - **Ch14:** Merel goes to the layout's `merel_gate`.
+  - **Ch15:**
+    - `ch15_current_song` played sea and Hollowmere in one scene, so B10 is now its own scene, **`ch15_the_dock_master`** (`ch17/hollowmere`). It still sets `ch15_liss_told_father`.
+    - The party uses the layout's `reveal_*`, `bow_liss`, `confess_toma` and `supper` marks.
+    - Each actor gets their own jetty-end and ship-deck marks.
+    - K18b and K19b are added, so Rhen and the group are in frame for their lines.
+  - **Ch16:**
+    - Asha, Toma and Rhen walked onto `kesh` (the Saint's own mark), and four of the party never reached the dais. All seven now walk to new `dais_*` marks, with Kerrid behind.
+    - Sefir's `015` cuts back to C12.
+- **For Chapters (one line):** no flow plays `ch15_current_song` yet. When the Ch15 flow is wired, play `ch15_the_dock_master` on arrival at Hollowmere.
+- **Merged integration:**
+  - The Lead restored my beat-level objective rows (fbecf6051), so **the objectives LEAD-ASK above is answered**.
+  - I took integration's `objectives.json` and the `ch10`–`ch16` loc files with their `OBJ_CH1x_*` rows.
+- **Checks:** dlgc --check 0/0 · validate_data 0/0 · taskboard clean · tools dialogue, cutscene and loc tests 183 OK · Godot `dialogue` 86/0.
