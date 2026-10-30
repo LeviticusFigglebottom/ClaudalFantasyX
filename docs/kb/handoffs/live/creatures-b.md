@@ -844,3 +844,36 @@ What the Act II fights still need from others: enemy rows and encounters (combat
   - **For battle-presentation:** on Ilun's dismissal, the Drowner's fall camera ends inside its roots, which fill the
     frame.
   - Running: Kesh (ch12), Hesk and Kahre (ch11, more turns), and the two finishers.
+
+## 2026-10-30 18:05: STATUS for the Lead's 18:04. Not blocked; both items are pushed.
+- **The Lamp Engine lineup red: FIXED, MERGE-READY @ 6973ffc08** (stand-in yaw 80°; battle_lineup 5/0). It's in my
+  data, so nothing is needed from act1-chapters. Not on the integration branch yet.
+- **The Act II boss as-played passes: DONE** (Ch10 Drowner, Ch11 Lamp Engine, Ch12 Ram, and Ch15 Wakefin; Ch13 has no
+  boss encounter). Logged at 15:40 and 16:30; no model fixes were needed.
+- **Branch head: MERGE-READY @ 98b31c5fb.** It carries every fix: 098a878d1, 650257eaa, f893ee590 and 6973ffc08.
+- **In progress:** the Vowbound summon passes (the results above; Kesh, Hesk, Kahre and two finishers rendering).
+- **Id range noted:** new Act II tasks from creatures-b use M4-A2P-1850 to 1899.
+- **Kesh** (ch12, her full kit): all six voices read distinct (Ice holds perfectly still, Fire thrusts, Holy lifts,
+  Glimmer opens the palms), plus attack, hit and KO; The Seven is re-running (out of turns). **MERGE-READY @
+  021ce7405: Kesh rises in 2.6 s, like the other six.** Her `rise` was 3.0 s, longer than the summon cinematic's
+  entry hold (choreo.json summon_cinematic.entry.sec 2.6, the hold the other six's 2.6 s rises were built to), so
+  her first action cut its settle. The keys are scaled in proportion. New test in test_creature_vowbound_act2: every
+  Vowbound's rise fits that hold (fails at 3.0 s). Blender creature_kesh 7 identical; Godot vowbound 118/0 (the 1
+  leftover node predates this), creature 160/0; validate_data 0/0.
+- **For battle-presentation: the normal (not first) call cuts every Vowbound's rise in half.** choreo.json
+  vowbound.entry is delay 0.95 s + sec 1.3 s, so the first command comes about 2.25 s after the call, with the 2.6 s
+  rise only half played (it starts as the body appears, at the delay). Acting at once cuts the rise mid-climb in the
+  sweep, for all seven. Either `vowbound.entry.sec` rises to about 2.6 s (each call is then 1.3 s longer), or the
+  normal call should play a shorter rise. If you want a short `rise_quick` clip from me for normal calls, file it as
+  a task (M4-A2P-185x).
+
+## 2026-10-30 18:25: answer to the Lead's 18:2x ("idle since 18:14"): pushed at 18:14, not idle, not blocked
+MERGE-READY @ 6973ffc08: the Lamp Engine lineup spacing (test_battle_lineup green; the Lamp Engine's stand-in yaw is 80°; nothing needed from act1-chapters).
+MERGE-READY @ 021ce7405: Kesh's rise fits the summon hold (found in the Vowbound summon passes).
+MERGE-READY @ 0b8efe499: the branch head, which carries the two above, 098a878d1 (test_avalanche_ram), 650257eaa (boss phase timing) and f893ee590 (the Spar-Wraith's deck KO).
+LEAD-ASK: none blocking. The Act II boss as-played passes are DONE (Ch10–12 and Ch15; Ch13 has no boss encounter), with no model fixes needed (logged 15:40 and 16:30). The Vowbound summon passes are rendering (the last finishers). My 18:05 status above repeats all of this.
+- **Kesh, re-run on 021ce740:** her whole kit plays now, The Seven included. The 2.6 s rise is seen mid-way (she
+  forms bowed from the column). **For battle-presentation:** at the default camera her head is already at the top of
+  the frame, and in The Seven she rises further on the column, so her head and raised arms leave the frame. The
+  vowbound slot's framing needs her 4.2 m (ADR 0204 §7) plus the Seven's lift; this is the strongest case of the
+  slot-before-the-camera note above.
