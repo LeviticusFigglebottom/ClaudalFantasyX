@@ -1,5 +1,5 @@
 {
-  "_doc": "Tamsule at the Tidecup: gulls over the floating market and the river mouth, standing on the stilt house roof (4.0) and the market stalls (1.2). The river is a solid greybox floor, so no fish yet. Placed on the greybox layout (M3-CRE-615); move the coordinates when env-art's kit replaces the blocks (same keys as ch02_haluna.json).",
+  "_doc": "Tamsule at the Tidecup: gulls over the floating market and the river mouth, standing on the stilt house roofs (6.7) and the market stall roofs (2.5 to 3.3). The river is a solid greybox floor, so no fish yet. Placed on the greybox layout (M3-CRE-615); move the coordinates when env-art's kit replaces the blocks (same keys as ch02_haluna.json). Re-seated on the dressed kit (the Act I audit, 2026-10-29: tools/creatures/wildlife_snap.gd and wildlife_audit.gd, which ray against the zone's visible meshes).",
   "zone": "ch07/tamsule",
   "flocks": [
     {
@@ -18,25 +18,25 @@
       "perches": [
         [
           -23.0,
-          4.0,
+          6.7,
           8.0,
           0.0
         ],
         [
           -17.0,
-          4.0,
+          6.7,
           8.0,
           180.0
         ],
         [
           -6.0,
-          1.2,
+          2.49,
           6.0,
           90.0
         ],
         [
           6.0,
-          1.2,
+          3.31,
           2.0,
           -90.0
         ]

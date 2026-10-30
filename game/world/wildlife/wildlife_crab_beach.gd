@@ -99,7 +99,9 @@ func count() -> int:
 
 func height(p: Vector2) -> float:
 	if ground.is_valid():
-		return float(ground.call(p.x, p.y))
+		var h := float(ground.call(p.x, p.y))
+		if not is_nan(h):  # a physics ground answers NAN until the zone's collision is ready
+			return h
 	return base_y
 
 

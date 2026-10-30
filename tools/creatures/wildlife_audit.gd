@@ -47,6 +47,17 @@ func _run() -> void:
 func _audit_zone(zone: String, path: String, data: Dictionary) -> void:
 	var node := (load(path) as PackedScene).instantiate() as Node3D
 	root.add_child(node)
+	await process_frame
+	# the kit's props carry no collision of their own: give every visible mesh a trimesh collider, as
+	# wildlife_snap.gd does, so a gull on a roof or a post is judged against what the player sees
+	for mi: MeshInstance3D in node.find_children("*", "MeshInstance3D", true, false):
+		if mi.mesh == null or not mi.is_visible_in_tree() or mi.skin != null or _in_water(mi):
+			continue
+		var body := StaticBody3D.new()
+		var shape := CollisionShape3D.new()
+		shape.shape = mi.mesh.create_trimesh_shape()
+		body.add_child(shape)
+		mi.add_child(body)
 	for i in SETTLE_FRAMES:
 		await physics_frame
 	var space := node.get_world_3d().direct_space_state
@@ -74,6 +85,7 @@ func _audit_zone(zone: String, path: String, data: Dictionary) -> void:
 			elif absf(h - at.y) > PERCH_TOL_M:
 				bad += 1
 				print("  perch %s %s: the surface is at %.2f (%+.2f)" % [flock["id"], _fmt(at), h, at.y - h])
+	var follows := not (data.get("ground", {}) as Dictionary).is_empty()  # crabs follow the ground: no flat y to judge
 	for beach: Dictionary in data.get("beaches", []):
 		var c := _v2(beach.get("center", [0, 0]))
 		var half := _v2(beach.get("half_extents", [1, 1]))
@@ -91,7 +103,7 @@ func _audit_zone(zone: String, path: String, data: Dictionary) -> void:
 			worst = maxf(worst, absf(h - y))
 			for wl in waters:
 				wet = wet or h < wl
-		if worst > BEACH_TOL_M or miss > 0 or wet:
+		if (worst > BEACH_TOL_M and not follows) or miss > 0 or wet:
 			bad += 1
 			print(
 				(
@@ -109,6 +121,15 @@ func _audit_zone(zone: String, path: String, data: Dictionary) -> void:
 	print("  %d placement problem(s)" % bad)
 	node.get_parent().remove_child(node)
 	node.free()
+
+
+func _in_water(n: Node) -> bool:
+	var p := n
+	while p != null:
+		if p is WaterSurface:
+			return true
+		p = p.get_parent()
+	return false
 
 
 ## The highest surface under `from` (a ray straight down), or INF.
