@@ -8,11 +8,13 @@ extends SceneTree
 ##   under  how far the lowest contact vertex dips under the floor (cm);
 ## and per actor the reactions it lacks (hit, ko; a villager's idle, talk, walk).
 ## godot --headless --path . -s tools/creatures/clip_audit.gd [-- --json OUT] [-- id ...]
-## (no ids: the roster below). Flags (`!`) mark values past the thresholds; the clip names stay the data's.
+## (no ids: the roster below; an id may also name any creatures.json row,
+## as Act II's foes). Flags (`!`) mark values past the thresholds; the clip names stay the data's.
 
 const ENCOUNTERS := "res://game/data/battle/encounters.json"
 const ENEMIES := "res://game/data/battle/enemies.json"
 const CROWD := "res://game/data/world/npc/crowd.json"
+const CREATURES := "res://game/data/creatures/creatures.json"
 const CROWD_ACTOR := "res://assets/crowd/%s/%s_actor.tscn"
 const ACT1 := "^ch0[1-9]_"
 ## The bosses are creatures-b's (M3-HER-1143); the rest of Act I's foes are this audit's.
@@ -53,14 +55,23 @@ func _run() -> void:
 	ids.sort()
 	for id: String in ids:
 		if not roster.has(id):
-			print("%s: not in the roster" % id)
-			continue
+			# any creatures.json row by id (Act II's foes, a variant): its battle scene
+			var row: Dictionary = (_creatures().get("creatures", {}) as Dictionary).get(id, {})
+			if row.is_empty():
+				print("%s: not in the roster or creatures.json" % id)
+				continue
+			roster[id] = {"scene": str(row.get("scene", "")), "kind": "foe"}
 		_audit(id, str(roster[id]["scene"]), str(roster[id]["kind"]))
 	if json_out != "":
 		var f := FileAccess.open(json_out, FileAccess.WRITE)
 		f.store_string(JSON.stringify(rows, "  "))
 		f.close()
 	quit()
+
+
+func _creatures() -> Dictionary:
+	var d: Variant = JSON.parse_string(FileAccess.get_file_as_string(CREATURES))
+	return d if d is Dictionary else {}
 
 
 ## id -> {scene, kind}: Act I's regular foes (encounters ch01..ch09, their enemies.json `model`) and the crowd bodies.
