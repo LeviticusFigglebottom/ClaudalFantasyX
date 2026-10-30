@@ -1,4 +1,4 @@
-# big22: 439 shots: 288 PASS, 112 DRIFT (0 size mismatch), 28 NO-BASELINE, 11 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
+# big22: 507 shots: 307 PASS, 144 DRIFT (0 size mismatch), 44 NO-BASELINE, 12 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
 PASS boot_title rmse 0.00000 (limit 0.00400)
 NO-BASELINE slice_end_card (pending_baseline)
 PASS lighting_probe rmse 0.00000 (limit 0.00800)
@@ -409,32 +409,100 @@ PASS slice_causeway_head rmse 0.00126 (limit 0.00800)
 DRIFT slice_causeway_harrier_view rmse 0.18130 (limit 0.00800)
 FAILED-TO-CAPTURE slice_verse_steps [capture rc=124 nopng 601s]
 FAILED-TO-CAPTURE slice_verse_threshold [capture rc=124 nopng 600s]
+FAILED-TO-CAPTURE slice_verse_recognition [capture rc=124 nopng 600s]
 FAILED-TO-CAPTURE slice_verse_c08 [capture rc=124 nopng 600s]
 DRIFT iskarra_p01_plaza_dusk rmse 0.16533 (limit 0.00800)
+DRIFT iskarra_i02_gate_from_the_plaza rmse 0.12358 (limit 0.00800)
 DRIFT iskarra_i03_broken_tower rmse 0.15821 (limit 0.00800)
 NO-BASELINE kerrid_front
+NO-BASELINE kerrid_back
 NO-BASELINE kerrid_three_quarter
 NO-BASELINE kerrid_face
+NO-BASELINE kerrid_confession_grief (pending_baseline)
 NO-BASELINE kerrid_confession_guilty (pending_baseline)
 NO-BASELINE kerrid_confession_burns (pending_baseline)
+NO-BASELINE kerrid_face_stylized
 DRIFT kerrid_silhouette_lineup rmse 0.01714 (limit 0.00800)
 NO-BASELINE kerrid_clip_collar_haul
+PASS moll_front rmse 0.00000 (limit 0.00800)
 PASS moll_three_quarter rmse 0.00000 (limit 0.00800)
 PASS moll_profile rmse 0.00000 (limit 0.00800)
+DRIFT moll_face rmse 0.16329 (limit 0.00800)
 DRIFT moll_face_yield rmse 0.16316 (limit 0.00800)
 PASS moll_clip_yield rmse 0.00000 (limit 0.00800)
+PASS moll_silhouette_vs_toma rmse 0.00000 (limit 0.00800)
 NO-BASELINE kerrid_battle_idle
 NO-BASELINE kerrid_battle_attack
+PASS stillguard_a_front rmse 0.00000 (limit 0.00800)
 PASS stillguard_a_three_quarter rmse 0.00000 (limit 0.00800)
 DRIFT stillguard_a_face rmse 0.16301 (limit 0.00800)
+PASS stillguard_b_front rmse 0.00000 (limit 0.00800)
 PASS stillguard_b_clip_level_spear rmse 0.00000 (limit 0.00800)
 PASS stillguard_d_three_quarter rmse 0.00000 (limit 0.00800)
+PASS stillguard_d_clip_shield_up rmse 0.00000 (limit 0.00800)
+NO-BASELINE stillguard_lineup
 DRIFT stillguard_b_face rmse 0.14176 (limit 0.00800)
+PASS stillguard_c_front rmse 0.00000 (limit 0.00800)
+DRIFT stillguard_c_face rmse 0.17567 (limit 0.00800)
 NO-BASELINE venn_front (pending_baseline)
+NO-BASELINE venn_three_quarter (pending_baseline)
+NO-BASELINE venn_face (pending_baseline)
 NO-BASELINE venn_face_cold (pending_baseline)
+NO-BASELINE venn_clip_attack (pending_baseline)
+NO-BASELINE venn_clip_defend (pending_baseline)
 NO-BASELINE venn_clip_yield (pending_baseline)
+NO-BASELINE ivo_front
+NO-BASELINE ivo_three_quarter
 NO-BASELINE ivo_face
+NO-BASELINE ivo_face_laugh
+NO-BASELINE ivo_clip_hug_lift
 NO-BASELINE ivo_clip_kneel_palms_flat
+NO-BASELINE ivo_clip_talk
+PASS stillguard_a_clip_walk_torch rmse 0.00000 (limit 0.00800)
 PASS stillguard_c_clip_hold_arm rmse 0.00000 (limit 0.00800)
+PASS stillguard_a_clip_kneel_palms_flat rmse 0.00000 (limit 0.00800)
+PASS officer_front rmse 0.00000 (limit 0.00800)
 DRIFT officer_face rmse 0.14820 (limit 0.00800)
+PASS officer_clip_hatchet_blow rmse 0.00000 (limit 0.00800)
+PASS ch05_pemakar_harbour rmse 0.00666 (limit 0.00800)
 DRIFT ch05_pemakar_crown rmse 0.01003 (limit 0.00800)
+DRIFT battle_heroes_idle rmse 0.05911 (limit 0.00800)
+DRIFT battle_heroes_attack rmse 0.13305 (limit 0.00800)
+DRIFT battle_heroes_hit rmse 0.06757 (limit 0.00800)
+DRIFT battle_heroes_ko rmse 0.06421 (limit 0.00800)
+DRIFT battle_heroes_victory rmse 0.05939 (limit 0.00800)
+DRIFT battle_heroes_cast rmse 0.08389 (limit 0.00800)
+DRIFT battle_heroes_finisher rmse 0.14836 (limit 0.00800)
+DRIFT reefball_outfitter rmse 0.07651 (limit 0.00800)
+DRIFT creature_wakefin_body rmse 0.03119 (limit 0.00800)
+PASS creature_tannin_archer rmse 0.00000 (limit 0.00800)
+DRIFT creature_gallery_ray rmse 0.02329 (limit 0.00800)
+DRIFT creature_rime_urchin rmse 0.01443 (limit 0.00800)
+DRIFT creature_conduit_crawler rmse 0.02601 (limit 0.00800)
+DRIFT creature_ridge_lynx rmse 0.04700 (limit 0.00800)
+DRIFT creature_cord_moth rmse 0.07276 (limit 0.00800)
+DRIFT creature_glass_skate rmse 0.02825 (limit 0.00800)
+PASS creature_root_crab rmse 0.00000 (limit 0.00800)
+DRIFT creature_fen_leech rmse 0.04150 (limit 0.00800)
+DRIFT creature_scree_crawler rmse 0.05364 (limit 0.00800)
+DRIFT creature_rim_crawler rmse 0.00899 (limit 0.00800)
+DRIFT creature_flat_engine rmse 0.01872 (limit 0.00800)
+DRIFT ch01_oruvel_dressed rmse 0.16814 (limit 0.00800)
+DRIFT ch01_underway_crown rmse 0.07824 (limit 0.00800)
+DRIFT slice_verse_hall rmse 0.19509 (limit 0.00800)
+DRIFT ch01_o07_name_board rmse 0.23475 (limit 0.00800)
+PASS battle_arena_seawall_stairhead_storm rmse 0.00221 (limit 0.00800)
+PASS battle_arena_seawall_stairhead_hoist rmse 0.00178 (limit 0.00800)
+DRIFT battle_arena_coilspire_headland_path rmse 0.02268 (limit 0.00800)
+PASS battle_arena_coilspire_tier_landing rmse 0.00518 (limit 0.00800)
+DRIFT pemakar_p11_sea_cut_weir_day rmse 0.03020 (limit 0.00800)
+PASS tamsule_tp01_port_and_bell rmse 0.00159 (limit 0.00800)
+PASS tamsule_tp05_gantry_foot rmse 0.00000 (limit 0.00800)
+DRIFT battle_arena_keth_seep_terrace rmse 0.17415 (limit 0.00800)
+DRIFT battle_arena_ossa_fen_roots rmse 0.07914 (limit 0.00800)
+DRIFT battle_arena_bridal_barge_night rmse 0.00983 (limit 0.00800)
+DRIFT revenant_tells_reflection_off rmse 0.01439 (limit 0.00800)
+NO-BASELINE battle_arena_drowned_choir_ring
+NO-BASELINE battle_arena_undertow_heart
+NO-BASELINE hollowmere_m02_raft_city_dusk
+PASS kitrow_ansedra_basin_stacks rmse 0.00215 (limit 0.00800)
