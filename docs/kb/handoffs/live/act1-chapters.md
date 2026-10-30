@@ -703,6 +703,49 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - **Next:** the Lamp Engine's parts and the conduit crawler (M4-A2P-022's data), now that its row is here.
 - MERGE-READY @ 2551e68b1
 
+- **M4-A2P-022 data (combat seat): the Lamp Engine's lamps are a breakable part, and two conduit crawlers tend
+  them.**
+  - The crawler row and its three skills are added; the encounter is the engine plus two crawlers.
+  - `ch11_lamp_engine` has a real role band now. All four Act II boss suites are `--check` clean at 1,000 seeds.
+  - Checks: act2_bosses, battle_parts, boss, arena, encounters_resolve, validate, vfx_coverage, balance_sim,
+    creatures, banned.
+  - Next: the rest of my queue waits on other lanes (see the BACKLOG line).
+- MERGE-READY @ fc316eda4
+
+- **BACKLOG EMPTY (10-30):** every remaining item waits on another lane.
+  - Row 49 waits on M3-CIN-1251 (integration-qa; still todo on big20).
+  - Rows 34 and 39 wait on the PC's re-check, plus the row 39 LEAD-ASK above.
+  - The Act II beats and triggers wait on story's scenes reaching integration (they're on act2-plan).
+  - M4-A2P-019 waits on the Lattice and gear (030/031, blocked).
+  - Venn's and the flat-engine's data wait on characters and story.
+  - The VFX, voices and staging requests are with battle-presentation, audio and UI (M3-BPR-440–443, M3-UI-1240/1241,
+    M4-AUD-1010).
+  - Handoff: docs/kb/handoffs/2026-10-30-cinematics-act1-chapters-1.md.
+
+- **LEAD FAST-TRACKs (10-30 09:00), on 7dc3ab41 merged in:**
+  1. **lowlight: Rhen falling (241 snaps). Fixed.** The stick walk went off the side of the Gate step, which had a far
+     bound but open sides. ch11_greybox now bounds both sides. snaps is green.
+  2. **sanctum: Asha and Toma snapping. Fixed.** The followers' trail started in the door frame by the benches. The
+     Gate spawn moves 3 m in, to z −5.
+  3. **Tool reds.**
+     - test_battle_vfx_coverage is green: it was my INTENDED entries.
+     - test_act1_audio_audit was red on integration too:
+       - `dive_lamp.tscn` is a stage-actor model, now BY_DESIGN.
+       - The audit's Battles, Abilities and Skills sections counted Act II rows in the Act I gate. Its act scope now
+         covers later-act boss encounters, charged skills (they inherit their gather's users) and later-act
+         Vowbound.
+       - Act II's own scope test still passes. That's audio's file: a scoped fix in one commit; flag it if they object.
+  4. **The skill_help null guard:** taken identically from big21 9ffec236.
+  5. **The glimmer VFX swatch:** requested as M3-BPR-444 (`hit_glimmer` plus `map.elements.glimmer`).
+  6. **Rows 34 and 39 on 7dc3ab41:**
+     - **Row 39:** its fix is in, and test_ch09_thread is 7/0.
+     - **Row 34:** the double-submit fix (c33c39015) is **not** in 7dc3ab41, so it rides the next batch. With it,
+       qa_encounters is 1/0 and double_submit 3/0.
+  - Checks: snaps, field_camera, ch09_thread, qa_encounters, double_submit, pseudo_loc_screens, lattice_menu,
+    battle_cycle, ch11, ch13, layout; tools audio_audit, vfx_coverage; validate, lint and format.
+  - **Next:** the Ch10, Ch11 and Ch12 kit mounts (M4-A2P-0401, 0411, 0421).
+- MERGE-READY @ e9fb14438 (FAST-TRACKs 1-6)
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.

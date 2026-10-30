@@ -154,6 +154,34 @@
    "color": "#5e6a6a"
   },
   {
+   "id": "GateStepBoundN",
+   "pos": [
+    -1.75,
+    1.0,
+    -2.75
+   ],
+   "size": [
+    3.5,
+    2.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "GateStepBoundS",
+   "pos": [
+    -1.75,
+    1.0,
+    2.75
+   ],
+   "size": [
+    3.5,
+    2.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
    "id": "LampBench",
    "pos": [
     4.0,
