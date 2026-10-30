@@ -1002,3 +1002,23 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - Act II wildlife: done and in review. Re-seating waits on env-art's dressed kits.
   - Waiting on the Lead: the tortoise budget LEAD-ASK, M4-A2P-056's status on the integration branch, and the baselines.
   - PC-QUEUE unchanged.
+
+### The Lead's 02:48, 03:44 and 04:06 relays (read 04:20)
+- **big19 test_npc red: FIXED** @ ed6871d5 (after merging the integration branch @ ba0d04a3).
+  - characters' new Haluna faces put crowd_elder_woman_a 0.243 from reed_c (minimum 0.28).
+  - gen_crowd regenerated deterministically; five bodies' faces change in the cascade: crowd_man_lean_a, crowd_man_medium_a, crowd_man_heavy, crowd_elder_man_b, crowd_elder_woman_a. All clear every Haluna face.
+  - Rebuilt and verified byte-identical.
+  - Checks: tools test_npc OK; Godot crowd 11/0, npc 10/0, villager 39/0.
+  - SELF-RENDERED and viewed: crowd_lineup_a, b and c. Their baselines need re-approval, as does any shot with those five bodies.
+  - characters doesn't need to change anything.
+- **M3-CIN-1250, Tamsule's fisher and boatman hauling in step: already fixed on the integration branch** by 42438cd5 (big17: FieldNpc.loop_phase starts work and storm loops at the villager's own share).
+  - Measured in the live zone at load: the two hauls at 3.06 s and 1.88 s. No ZoneCast or cutscene line plays `haul` in Tamsule.
+  - If the PC still sees them in step, it's on an older build. Send me the shot id and I'll look again.
+- **The slag tortoise and scree crawler LOD1: DONE** @ 664e7c86.
+  - `<name>-lod1` (7,674 triangles: a 24×64 crust, 6 clinkers, a 9×12 head, lighter scutes) sits in the same GLB and rig. LOD0 stays at 17,502.
+  - creatures.json's import `lods` table (suffix `-lod`, end_m [16, 4000], margin 1) chains it with visibility ranges via AssetImportRules: LOD0 inside 16 m, LOD1 beyond. Other creatures are unaffected.
+  - Checks: Godot creature 88/0, portrait 21/0, post_import 21/0; tools test_creatures and test_post_import OK; Blender verify identical.
+  - Viewed: creature_slag_tortoise and creature_scree_crawler (LOD0), and a 22 m zoom (LOD1).
+  - Both sheets now note ~18k LOD0 / 8k LOD1.
+- M4-A2P-056: the task file already says `review` (owner claude/creatures). It rides the next fast batch.
+- **MERGE-READY @ 664e7c86.**
