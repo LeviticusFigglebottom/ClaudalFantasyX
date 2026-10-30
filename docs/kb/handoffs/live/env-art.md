@@ -589,6 +589,18 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ 562c7f57: M4-A2P-044, Ch14 (the Lacquer Court) dressed.** The change is additive; chapters mount it
+  (M4-A2P-0441).
+  - **Built from the greybox:** the court, red-lacquer colonnades with a wedding lantern on every column, the dais,
+    the Conclave's gallery, the water-steps, the water-gate.
+  - **Placed round it:** six halls, the bridal barge, and the city at its windows (`bowl_dome_lit`, a new kit
+    variant; the plain `bowl_dome` is unchanged).
+  - **Gates:**
+    - Viewed at 10 cameras.
+    - Python suites OK: test_ch14 (4), ch13, haluna_kit.
+    - Godot `ch14` 5/5; validate_data and taskboard clean.
+    - The full build reproduces all 229 glbs.
+  - **For chapters:** the lagoon's level (the greybox's water is over the barge's deck), and the dusk fill.
 - **MERGE-READY @ 14ff2eb7: M4-A2P-043, Ch13 (Ansedra, the Sanctum, the Lamp Archive) dressed** (the Lead's (b)). The
   change is additive; chapters mount it (M4-A2P-0431, filed). The details are in ansedra.md's revision line.
   - **Ansedra:** vey_zones' walk builders reused on Ansedra's greybox, in marble and gilt (a small refactor: an
@@ -878,6 +890,8 @@ Read this section first; everything below it is history. The branch is `claude/e
     (characters/slice-polish), and `reefball_drop_proxy` / `tb_drop_proxy` are env-art-b's (M3-RND-26).
 
 ### PC-QUEUE
+- **Ch14's court at dusk (the layout's 4° sun, 0.5 navy ambient): the court's centre reads near-black on lavapipe.** The
+  lanterns light the colonnade only. Judge it on the real GPU. The remedy is chapters' ambient (M4-A2P-0441).
 - **Ch12's shade at a walker's eye (Keth Pass, Quellan): the dark slate and crag go near-black on lavapipe in every
   shadow.** The cause is the colour script's 0.8 colour fill at exposure 0.65, with no bounce light on the software
   renderer. A sky-source ambient barely moved it. On the real GPU (SDFGI/SSIL), judge whether the shade reads. If it
