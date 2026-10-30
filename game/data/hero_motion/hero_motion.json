@@ -12,7 +12,7 @@
     "doc": "Locomotion blend (BlendSpace1D on ground speed): idle at 0, walk at walk_clip_mps, run at run_clip_mps, the speeds at which each in-place clip's feet plant without sliding (Rhen's, measured; the field heroes override them per hero in field.heroes). Above run the clip speeds up to max_playback_scale. speed_smoothing_sec filters the speed the blend sees, so a start or stop rolls through the gait instead of popping.",
     "walk_clip_mps": 1.09,
     "run_clip_mps": 2.35,
-    "max_playback_scale": 1.5,
+    "max_playback_scale": 1.8,
     "speed_smoothing_sec": 0.12,
     "teleport_m": 2.5
   },
@@ -148,7 +148,7 @@
       "spacing_m": 1.15,
       "trail_sample_m": 0.2,
       "trail_max_points": 80,
-      "max_speed_mps": 5.4,
+      "max_speed_mps": 4.4,
       "follow_gain": 3.0,
       "accel_mps2": 9.0,
       "decel_mps2": 12.0,

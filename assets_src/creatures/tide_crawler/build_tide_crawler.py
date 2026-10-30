@@ -33,13 +33,16 @@ PAL = {k: ck.hexrgb(v) for k, v in {
 BODY = np.array([0.0, 0.42, 0.0])
 NLEG = 6
 # The KO (M3-CRE-631): the body's drop (metres) and roll, and each leg's hip and knee turn at the end (degrees, the
-# left side's sign): the knees sink and the shins splay out flat.
-KO_DROP, KO_ROLL = 0.22, 4.0
-KO_LEG = (-10.0, 30.0)
+# left side's sign): the body drops to its belly and the legs draw up and curl in, a dead spider's curl (the Act I
+# audit: the old sink-and-splay read as a crouch at battle distance).
+KO_DROP, KO_ROLL = 0.26, 4.0
+KO_LEG = (65.0, -60.0)  # the audit: a dead spider's curl (the legs drawn up and in), not a crouch
 # The limbs kept on the floor: (bone, rest axis, the side's sign, the most it may turn). A leg turns up about z at
 # its hip, a striking leg up about x.
 GROUNDED_LIMBS = [(f"leg_{t}{i}_a", 2, 1.0 if t == "l" else -1.0, 75.0) for t in "lr" for i in range(NLEG)] + [
     (f"strike_{t}", 0, -1.0, 60.0) for t in "lr"]
+# The planted legs held where they touch down (common/grounding.py pinned(); the audit's foot sliding).
+PINNED_LEGS = [(f"leg_{t}{i}_a", f"leg_{t}{i}_b", 2, 1.0 if t == "l" else -1.0) for t in "lr" for i in range(NLEG)]
 
 
 def leg_pts(side: float, i: int) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -254,7 +257,8 @@ def build_mesh(rig: ck.Rig, name: str = "tide_crawler") -> ck.Mesh:
 def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
     """The clips kept off the floor (M3-CRE-631, common/grounding.py): a planted foot stays on the ground while the
     body rears, heaves or skitters over it (each leg turns up about its hip), and the striking legs ride over it."""
-    return gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS)
+    pinned = gr.pinned(rig, mesh, gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS), PINNED_LEGS)
+    return gr.reground(rig, mesh, pinned, GROUNDED_LIMBS)  # a held foot's toes back above the floor
 
 
 def main() -> None:

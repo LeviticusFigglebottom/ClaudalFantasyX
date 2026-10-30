@@ -49,7 +49,7 @@ For eleven years he has walked the coasts. Wherever the sea takes someone (a swa
 - **IP note:** no hat, no coat worn off one arm, no eyewear, no gourd, **no mask or high collar over the face, and no eye effect** ([ADR 0020](../../decisions/0020-kerrid-restaging.md)). He carries no Order insignia and no title ([ADR 0022](../../decisions/0022-dace-imra-strangers-sweep-f.md)). Keep him clear of existing archetypes in this genre.
 
 ## Battle Tie-in
-Kerrid breaks things: Armor Break, Power Break, and heavy high-rank blows that cost a lot of time but end fights. As one of the dead, he can later learn a skill that ignores the Zombie status and one that **trades his own HP for allies' Regen** ("Spend the Light"). **Suggested Swell input:** a *weighted swing*, a single long charge you release at the right moment, more power the longer you dare.
+Kerrid breaks things: Sundered, Weakened, and heavy high-rank blows that cost a lot of time but end fights. As one of the dead, he can later learn a skill that ignores the Zombie status and one that **trades his own HP for allies' Regen** ("Spend the Light"). **Suggested Swell input:** a *weighted swing*, a single long charge you release at the right moment, more power the longer you dare.
 
 ## Relationships
 - **Asha:** the daughter of the woman who went down his stair for a stranger, and whom he got up it so that the Order could spend her.

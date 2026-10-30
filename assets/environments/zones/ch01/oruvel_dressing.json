@@ -515,6 +515,15 @@
    "yaw_deg": -76.41
   },
   {
+   "piece": "gull_post",
+   "at": [
+    47,
+    -9
+   ],
+   "y": 0.0,
+   "yaw_deg": -76.41
+  },
+  {
    "piece": "plank_bridge",
    "at": [
     45.0,

@@ -5,7 +5,8 @@ extends Node
 ## its marked profile instead of its collision: added to the FieldController by HeroFieldActor.attach, this node runs
 ## after the controller's own step each physics frame. When the player is over a flight (or within enter_m of an end,
 ## heading in), it takes the controller's walking intent (FieldMotor's velocity, before any collision) along the
-## flight, slows it to slope_speed_mps along the slope, keeps the player side_margin_m inside the edges, and puts
+## flight, slows it to slope_speed_mps along the slope (slope_run_speed_mps while running: a stair run), keeps the
+## player side_margin_m inside the edges, and puts
 ## the controller on the profile: step by step, eased, with no gravity and no sliding (still is still). Past either end
 ## by enter_m, the player is let go onto the landing and the controller walks on as before.
 ## Followers and NPCs read the same profile through height_at(). The zone's flights come from HeroStairFlight nodes
@@ -16,6 +17,8 @@ const DATA_PATH := "res://game/data/hero_motion/stairs.json"
 const LAYOUT_KEY := "stairs"
 ## Below this a length counts as zero.
 const EPS := 1e-4
+## The motor's intent counts as a run above walk speed by this (m/s).
+const RUN_EPS := 0.05
 
 ## stairs.json, read once.
 static var _data: Dictionary = {}
@@ -109,19 +112,22 @@ static func near_flight(context: Node, point: Vector3) -> bool:
 	return flight_at(context.get_tree(), point, float(load_data().get("enter_m", 0.0))) != null
 
 
-## The fastest a body may move across the ground at `point` (world): a flight's slope speed times its slope's
-## cosine when one covers it (followers and NPCs climb at the player's pace), else INF.
+## The fastest a body may move across the ground at `point` (world): a flight's running slope speed times its
+## slope's cosine when one covers it (a ceiling: followers and NPCs climb at the player's pace, run or walk), else INF.
 static func speed_cap_at(context: Node, point: Vector3) -> float:
 	if context == null or not context.is_inside_tree():
 		return INF
 	var f := flight_at(context.get_tree(), point)
-	return INF if f == null else horizontal_cap(f)
+	return INF if f == null else horizontal_cap(f, true)
 
 
-## A flight's slope speed across the ground (m/s).
-static func horizontal_cap(f: HeroStairFlight) -> float:
+## A flight's slope speed across the ground (m/s): slope_run_speed_mps when `running` (the walk's otherwise).
+static func horizontal_cap(f: HeroStairFlight, running: bool = false) -> float:
 	var slope := Vector2(f.run_m, f.rise_m).length()
-	return float(f.tuning.get("slope_speed_mps", 0.0)) * (f.run_m / slope if slope > EPS else 1.0)
+	var along := float(f.tuning.get("slope_speed_mps", 0.0))
+	if running:
+		along = float(f.tuning.get("slope_run_speed_mps", along))
+	return along * (f.run_m / slope if slope > EPS else 1.0)
 
 
 ## One physics frame, after the controller's own step. Returns true while the player is on a flight.
@@ -133,7 +139,8 @@ func advance(delta: float) -> bool:
 	if flight == null and not _enter(enter, intent):
 		return false
 	var fwd := flight.forward()
-	var cap := horizontal_cap(flight)
+	var running := Vector2(intent.x, intent.z).length() > controller.motor.walk_speed + RUN_EPS
+	var cap := horizontal_cap(flight, running)
 	var v := Vector2(intent.dot(fwd), intent.dot(flight.side()))
 	if v.length() > cap:
 		v = v.normalized() * cap

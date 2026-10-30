@@ -54,6 +54,9 @@ godot --headless --path . --import
 godot --headless --path . res://tests/run_tests.tscn       # add -- --filter=battle to narrow
 ```
 
+### Fast batches (human directive, 2026-10-30; ADR 0205)
+A batch gate blocks only on data, taskboard, lint/format, the tools suite, the Godot tests for the touched areas, the boot smoke and the shots the batch can affect. The full suite, Blender and the full manifest run non-blocking after the merge; their reds become FAST-TRACKs. The hitch bar is ≤ 2 s hidden. Act II starts per track once it has no open Act I row.
+
 ### Gate scope: run what your change can break (human directive, 2026-10-23)
 
 Long checks that block work should run only when they can catch something. They are not a ritual.

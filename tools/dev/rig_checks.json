@@ -112,7 +112,7 @@
         ],
         "max_exposed": 2
       },
-      "_allowances": "M1-CHR-15 (every-frame worst in brackets). Costume 34/6 (32.8): the sandal soles sit inside the feet at rest; the skirts are clean in every frame (skirt panels: 43.8 -> 32.8; the old worst was the skirt in the calf-thigh fold of the deep kneel). VerseSleeve 36/6 (35.5, walk): the sleeve's inner elbow against the waist as the arm hangs (her staff arm now hangs 6 degrees wider, and the hanging bag rides the shoulder corrective). Body 47/24 (46.7): the extreme_pose stage pose, the right arm raised 80 degrees forward (the front of the shoulder passes the vest's armhole edge, as in M1-CHR-14); in the clips the armpit is 37.7 at worst (attack), down from 46 in walk and laugh before the shoulder correctives. max_exposed 2: two halter-edge vertices at the right shoulder, under 2 mm. ADR 0140 (16 skirt panels, the even ones derived): Body count 24 -> 25: float_boat's crouch counts one more Body vertex through the Costume than before (25, at 41 mm, under the 47 mm limit; the worst is still extreme_pose's armpit), from the narrower panels; viewed in a float_boat render, nothing shows through.",
+      "_allowances": "M1-CHR-15 (every-frame worst in brackets). Costume 34/6 (32.8): the sandal soles sit inside the feet at rest; the skirts are clean in every frame (skirt panels: 43.8 -> 32.8; the old worst was the skirt in the calf-thigh fold of the deep kneel). VerseSleeve 36/6 (35.5, walk): the sleeve's inner elbow against the waist as the arm hangs (her staff arm now hangs 6 degrees wider, and the hanging bag rides the shoulder corrective). Body 47/24 (46.7): the extreme_pose stage pose, the right arm raised 80 degrees forward (the front of the shoulder passes the vest's armhole edge, as in M1-CHR-14); in the clips the armpit is 37.7 at worst (attack), down from 46 in walk and laugh before the shoulder correctives. max_exposed 2: two halter-edge vertices at the right shoulder, under 2 mm. ADR 0140 (16 skirt panels, the even ones derived): Body count 24 -> 25: float_boat's crouch counts one more Body vertex through the Costume than before (25, at 41 mm, under the 47 mm limit; the worst is still extreme_pose's armpit), from the narrower panels; viewed in a float_boat render, nothing shows through. big17 review (the skirt as soft cloth, wider bend bands): Body count 25 -> 26 at extreme_pose, the stress stage's raised thigh (one more vertex under the vest's armhole edge, 46.7 mm, inside the limit).",
       "penetration": {
         "limits_mm": {
           "Costume": 34.0,
@@ -122,7 +122,7 @@
         "limits_count": {
           "Costume": 6,
           "VerseSleeve": 6,
-          "Body": 25
+          "Body": 26
         }
       },
       "_prop_grip": "M2-CHR-515/520: Asha sets the staff down on the floor beside her where she kneels, sits or crouches (hero_clips.prop_down), so it no longer crosses her pooled skirt there. Still allowed: pole_in and pole_out, which pole the raft with the staff in both hands (the shaft passes the skirt's front; re-authoring the arms is a follow-up), and attack (one line through her own sleeve at the strike's wind-up).",
@@ -696,6 +696,43 @@
           "Costume": 16.0,
           "Sleeves": 7.0,
           "Body": 19.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Sleeves": 6,
+          "Body": 37
+        }
+      }
+    },
+    "officer": {
+      "garments": [
+        "Costume",
+        "Sleeves"
+      ],
+      "props": [
+        "Shield"
+      ],
+      "seams": {
+        "groups": [
+          [
+            "Body",
+            "Head:skin_head"
+          ],
+          [
+            "Costume"
+          ],
+          [
+            "Sleeves"
+          ]
+        ],
+        "max_exposed": 4
+      },
+      "_allowances": "M3-CHR-593 (probe at the default stride): the squad's kit on a leaner, taller build. Sleeves 7.5 and Body 40 mm at walk@9: as the squad's (M3-CHR-508), the dropped armhole edge takes the swinging upper arm in under it at the side, inside the jack (the sleeve stays over it; no skin shows). hatchet_blow's raise is held to 122 degrees, where the underarm cut stays covered (at 150 it opened 20 mm).",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 16.0,
+          "Sleeves": 7.5,
+          "Body": 40.0
         },
         "limits_count": {
           "Costume": 6,

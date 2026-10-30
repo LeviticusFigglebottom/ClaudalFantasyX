@@ -13,6 +13,9 @@ stated, the block's local axes (its thin side along X unless stated).
   wright_mark  the Saltwright mark scratched by the seized flue (tier 3): a patch of re-dressed stone 0.5 m square, a
                finger thin (Z), with the mark cut into both faces: a circle crossed by a wavy line and three ticks.
                Origin at its centre.
+  wall_lamp    the keepers' lamp on the well's wall (the 10-29 audit: the tiers' wall-wash lights had no source): an
+               iron back plate pinned to the stone, a forged arm reaching 0.32 m out and down to a copper oil dish with
+               its ember flame. Origin on the wall's face at the plate's centre; +Z out of the wall.
 """
 
 from __future__ import annotations
@@ -25,12 +28,13 @@ import cs_common as cs
 from cs_common import kc
 
 TRI_BUDGET = {"flue_gate": (6000, 400), "niche_seal": (3000, 200), "lamp_niche": (1600, 120),
-              "wright_mark": (1200, 60)}
+              "wright_mark": (1200, 60), "wall_lamp": (1500, 120)}
 
 GATE_W, GATE_H, GATE_T = 1.6, 2.8, 0.3
 SEAL_D, SEAL_H, SEAL_W = 0.6, 1.0, 1.0
 NICHE_D, NICHE_H, NICHE_W = 0.2, 0.8, 0.8
 MARK_S, MARK_T = 0.5, 0.02
+LAMP_REACH, LAMP_DROP = 0.32, 0.1  # the dish's centre: out from the wall, below the plate's centre
 M_CLOTH = "cs_timber"  # oilcloth reads as dark waxed timber at this size; no new slot
 
 
@@ -169,9 +173,39 @@ def build_wright_mark(seed: int = 1104) -> list:
     return out
 
 
+def build_wall_lamp(seed: int = 1105) -> list:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("wall_lamp", seed)
+        mb = kc.MeshBuilder("wall_lamp" + (cs.LOD if lod else ""))
+        iron, copper, ember = mb.material(cs.M_IRON), mb.material(cs.M_COPPER), mb.material(cs.M_EMBER)
+        sides = 5 if lod else 10
+        # The back plate, pinned at top and bottom.
+        kc.rounded_block(mb, (0.0, 0.0, 0.012), (0.045, 0.12, 0.012), iron, radius=0.006, seg=1,
+                         variation=float(rng.random()))
+        if not lod:
+            for y in (-0.09, 0.09):
+                kc.tube(mb, np.array([[0.0, y, 0.02], [0.0, y, 0.035]]), 0.012, 6, iron, cap_end=True)
+        # The arm: out from the plate's top, curving down to the dish's rim.
+        t = np.linspace(0.0, 1.0, 4 if lod else 8)
+        arm = np.stack([np.zeros_like(t), 0.06 - (0.06 + LAMP_DROP - 0.02) * t ** 2, 0.024 + (LAMP_REACH - 0.024) * t],
+                       -1)
+        kc.tube(mb, arm, 0.011, 4 if lod else 6, iron)
+        # The dish (a shallow copper bowl on a short foot) and its flame.
+        cy = -LAMP_DROP
+        dish = np.array([[0.0, cy - 0.05, LAMP_REACH], [0.0, cy - 0.04, LAMP_REACH], [0.0, cy - 0.01, LAMP_REACH],
+                         [0.0, cy, LAMP_REACH]])
+        kc.tube(mb, dish, [0.025, 0.06, 0.09, 0.095], sides, copper, cap_start=True, variation=float(rng.random()))
+        flame = np.array([[0.0, cy - 0.005, LAMP_REACH], [0.0, cy + 0.03, LAMP_REACH], [0.0, cy + 0.075, LAMP_REACH]])
+        kc.tube(mb, flame, [0.022, 0.018, 0.002], 4 if lod else 8, ember, cap_start=True, cap_end=True)
+        out.append(mb)
+    return out
+
+
 TARGETS = {
     "flue_gate": build_flue_gate,
     "niche_seal": build_niche_seal,
     "lamp_niche": build_lamp_niche,
     "wright_mark": build_wright_mark,
+    "wall_lamp": build_wall_lamp,
 }

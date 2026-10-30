@@ -255,9 +255,25 @@ class HairStyle:
             edge = (roots[:, 2] - zc) / lm.h < self.hairline_v(lm, roots) + th.EDGE_BAND
             paths = self._trace_clamped(scalp, lm, roots, rng.uniform(lo, hi, n) * s, lift * s, seg,
                                         rng.uniform(0.4, 1.0, n) * rise * rise_k * s, G)
-            th._emit(part, scalp, paths, rng.uniform(wlo, whi, n) * s * (1.0 - 0.1 * li), th._columns(rng, n, edge,
-                                                                                                    li == 2),
-                     rng, 0.25, self._mats(rng, n))
+            widths = rng.uniform(wlo, whi, n) * s * (1.0 - 0.1 * li)
+            cols = th._columns(rng, n, edge, li == 2)
+            mats = self._mats(rng, n)
+            widths, cols = self._grey_tufts(widths, cols, mats)
+            th._emit(part, scalp, paths, widths, cols, rng, 0.25, mats)
+
+    def _grey_tufts(self, widths: np.ndarray, cols: np.ndarray, mats: list) -> tuple:
+        """`grey_strands` on the tufts (M3-CHR-592): a grey card takes the short-hair atlas's sparse column (a few loose
+        strands) at `grey_width_k` of the width, so the grey reads as single strands through the dark crop ("all":
+        every card, thin white hair over the scalp). Draws nothing from the rng; without the key a no-op."""
+        import toma_hair as th
+
+        mode = self.p.get("grey_strands", False)
+        if not mode:
+            return widths, cols
+        g = np.ones(len(mats), dtype=bool) if mode == "all" else np.array(mats) == "hair_grey"
+        k = float(self.p.get("grey_width_k", GREY_WIDTH_K))
+        sparse = np.array([th.SH_SPARSE[i % len(th.SH_SPARSE)] for i in range(len(mats))])
+        return np.where(g, widths * k, widths), np.where(g, sparse, cols)
 
     def build(self, lm, scalp) -> Part:
         part = Part("HairHead")

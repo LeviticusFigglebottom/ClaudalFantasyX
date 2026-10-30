@@ -272,12 +272,19 @@ def town_pieces() -> list[dict]:
     return out
 
 
+# The segments' displaced ends open the joints a few cm on the inland face, so the sky showed through as a jagged
+# white line (the 10-29 audit, from the Fisher Stair's foot). Each segment is 1% longer along the arc (about 6 cm of
+# overlap at each end), its height kept (scale_y) so the Watchers' heads still sit on it.
+WALL_JOINT_SCALE = 1.01
+
+
 def wall_pieces() -> list[dict]:
     out = []
     for k in cwl.SEGMENTS:
         s = 6.0 + 12.0 * k
         breach = k in BREACH_KS
-        out.append(cwl.put_arc("seawall_curve", s, **({"block": "WallSection"} if breach else {})))
+        out.append(cwl.put_arc("seawall_curve", s, scale=WALL_JOINT_SCALE, scale_y=1.0,
+                               **({"block": "WallSection"} if breach else {})))
         out.append(cwl.put_arc("wall_apron", s))
         for dh in (-4.5, -1.5, 1.5, 4.5):
             sh = s + dh
@@ -342,7 +349,7 @@ TRADER_DRAFT_M = 0.9  # the trader's keel below the tide
 # Borrowed pieces' flat slots (M3-ENV-1326): the Brine Shoals Level-stone read as a white box; the Order's shrine stone
 # as Haluna's shrines (and Ch6's) wear it.
 OTHER_KIT_SLOTS = {
-    "level_stone_shrine": {"bs_level_stone": "res://assets/environments/kits/haluna/materials/kit_shrine_stone.tres"}}
+    "level_stone_shrine": {"bs_level_stone": "res://game/levels/ch06/brine_shoals/brine_shoals_level_stone_material.tres"}}
 
 
 def story_pieces() -> list[dict]:

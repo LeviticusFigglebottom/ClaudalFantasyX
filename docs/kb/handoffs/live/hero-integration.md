@@ -1400,3 +1400,180 @@ hero-integration 78e9df9c. shots.json resolves everywhere. pc-gpu.md: take integ
   `oruvel_underway_layout.json` (act1-chapters vs everyone, generated: act1-chapters re-runs its generator).
 - As at 20:00: M3-ENV-750 (take env-art's), ownership.md (by hand), the characters `cast` edits in 9 layouts,
   ch08_coilspire_dressing.py and M3-ENV-744 (act1-chapters).
+
+### Full Godot suite on lead/gate-big17 (be74f9a0 = 1a986abf + docs), in my container, 2026-10-29 ~21:15
+**3241 run, 5 failed (6 FAILURE lines), 59 tests leave nodes.** By owner:
+- **test_cutscene_vfx_hosts.gd failed to load (mine, M3-ARC-1326). FIXED @ 791495cfa.** 93c1aa2df replaced the
+  `CutsceneMotes` placeholder with CutsceneVfx's GlimmerField, so the test now counts the sequencer's own
+  `Vfx_*` field. 4/0.
+- **test_ch04_zones::test_the_wakes_field_camera_is_halunas** (act1-chapters): expects 8 Haluna volumes, there are 10
+  (M2-FP-109). Already requested on M3-C04-1226.
+- **test_dialogue_box::test_every_act1_speaker_with_a_model_has_a_portrait** (ui): Pell has a model on big17 and no
+  portrait. `pell_*.png` is on claude/ui's newer head, so folding ui's head in fixes it.
+- **test_iskarra_city::test_the_city_instances_its_pieces_with_kit_materials** (env-art): "VigilLights has meshes".
+  env-art's own M3-ENV-724 added a `VigilLights` group that holds only lights. The test should skip a light-only
+  group.
+- **test_zone_cast::test_a_cast_actor_shows_its_model_and_idles_out_of_step** (creatures): "the fisher idles" and
+  "out of step". The same file clashes creatures vs env-art-b in the 21:00 trial, so check it after that merge.
+- **Leaks (M3-HER-1130's list refreshed):** ui-menus 48 (act_card, objective_hud, shrine_travel and
+  shrine_services, interact and hold prompts, dialogue_assist, area_title_card and more), battle-presentation 9
+  (fighter_actor, battle_controller, battle_boss_vfx), creatures-b 1, env-art 1. Down from the 10-28 list; creatures'
+  and act1-chapters' are gone.
+- Not run here: coverage, screenshots (the gate session has them).
+
+MERGE-READY @ 37adb2fb3 (+ this log):
+- **M3-CRB-012 → review (creatures-b's request):** the audit finds a Vowbound's body in its creatures.json row
+  (`vowbound: true` + `scene`), the game's own rule. New test; test_placeholder_audit OK.
+- **M2-HER-1128 → review (slice-polish reviews):** test_fp_thread arrives after the tideline win as the game does
+  (`story.begin()`), so B02 plays and `ch02_ate_at_nemes` is set before the shrine save. qa_known `unraised` is empty
+  now. fp_thread 2/0, qa_threads 1/0.
+- **M3-ARC-1326's test fix** (791495cfa) and the M3-HER-1130 leak list are above.
+
+### PC-QUEUE
+- **M1-QA-09** (qa, todo): the next Asha real-GPU re-check (grief) with the QA-08 rigour fixes. It needs the PC's GPU
+  and waits on M1-RND-24 and M1-CHR-12. Not runnable in a cloud container.
+
+### big17 is on integration (96222b301, 22:00); merged here @ 198230aed
+- pc-gpu.md: took integration's. Tools suites green (trial_merge, merge_union, taskboard, placeholder_audit,
+  post_import, freed_cast_lint, dlgc). validate_data 0/0. taskboard --check shows only M3-CRE-627's duplicate
+  (act1-chapters' rename pending).
+
+### TRIAL MERGE, 2026-10-29 ~22:10 @ integration 502f6999 (big17 in; no prefold)
+env-art d63eeea3, env-art-b 0e9db81d, creatures 93829b74, creatures-b 4d0150e3, characters a5b60821, ui a8df61a8,
+battle-presentation 8da23b91, act1-chapters 72254f9f, m2-slice 7e0bba54, audio 1cb9654d, hero-integration 294d98de.
+The same clashes as at 21:00, with the same resolvers, now against integration itself:
+- M3-ENV-750 task file (env-art: take env-art's);
+- ownership.md (env-art-b: by hand);
+- test_zone_cast.gd (creatures vs env-art-b);
+- characters' `cast` edits in oruvel, ashcrown and coilspire layouts, plus test_fp_prologue.gd;
+- act1-chapters' generated layouts, ch08_coilspire_dressing.py and M3-ENV-744;
+- **test_hero_field_actor.gd: take hero-integration's** (characters' assumes Sefir has no field row).
+- shots.json resolves everywhere (merge_union's virtual-base path).
+
+MERGE-READY @ (this commit), after big17 landed:
+- **test_qa_capsules is a ratchet now:** in each zone it scans, a KNOWN capsule row whose actor has its body fails
+  ("drop it from qa_known.json"), so a stale row can't hide a capsule that comes back. **115 stale rows dropped.**
+  big17 gave almost every villager, NPC and vigil a body. Only `corrow.tscn: figure` (creatures, the stranger on
+  the wall) stays known. `--filter=qa_` 13/0.
+- **Act I inventory on integration 502f6999 (big17) + this branch: 5 items**, all low except one: creatures 1 high
+  (Ch8's figure), env-art 2 low and env-art-b 2 low (placeholder-named kit files). **integration-qa 0, characters
+  0:** Pell's capsules and the Prologue's vigil are gone.
+- **M3-HER-1149 → review (reviewer: lead):** every box ticked.
+- Hero motion, followers and the camera on integration (big17) + this branch: `--filter=hero_` 113/0,
+  `--filter=camera` 62/0. Pell's model is in, so the alias test now runs its with-model branch.
+
+### TRIAL MERGE, 2026-10-29 ~23:00 @ integration 502f6999
+env-art d63eeea3, env-art-b cc7ab368, creatures 93829b74, creatures-b 4d0150e3, characters fe626d0e, ui a8df61a8,
+battle-presentation cdfe126a, act1-chapters 175d2b5e, m2-slice 7e0bba54, audio 1cb9654d, hero-integration e287b61a
+- **NEW: Pell's portraits, ui vs characters (binary).** Both baked `assets/ui/portraits/heroes/pell_*.png` (5 + .import):
+  ui at 17:37 (fa8ab4424, "framed closer for the Kirru head"), characters at 22:15 (e374376be, for big17's
+  test_dialogue_box red). Also `tools/portraits/portraits.json` and `tests/unit/test_hero_portraits.gd` (ui vs
+  creatures vs characters). **Take ui's:** `assets/ui/portraits/**` and `tools/portraits/**` are ui's (ownership.md).
+  Characters' bake duplicates work ui already did.
+- **Mine, cleared @ 70793031a:** env-art-b fast-tracked the same test_cutscene_vfx_hosts fix, so I took theirs (4/0).
+  test_hero_field_actor.gd vs characters is unchanged: take hero-integration's.
+- Unchanged:
+  - M3-ENV-750 (take env-art's);
+  - test_zone_cast.gd (creatures vs the merged tree);
+  - act1-chapters' generated layouts, coilspire dressing.py and M3-ENV-744, with characters' `cast` edits
+    (oruvel, ashcrown, coilspire).
+- env-art-b's ownership.md clash is gone.
+
+## The Lead's 23:10 list (big18)
+### 1. Act I inventory on lead/gate-big18 @ d00d3284 (full: import + runtime scan): **2 items, both low**
+- env-art-b (M3-HER-1141): `tamsule_bell/materials/tb_drop_proxy.tres` and `tamsule_bell/reefball_drop_proxy.glb`,
+  both named as placeholders (names only, nothing on screen). Those are the only rows left in all of Act I.
+- creatures' figure and env-art's banyan/windbreak files have cleared. **M3-HER-1140 (env-art) and M3-HER-1142
+  (creatures) → done** (qa review). M3-HER-1144 (characters) has a note: nothing left. Inventory @ f9e9540c8.
+
+### 3. TRIAL MERGE onto lead/gate-big18 (what big19 hits), 2026-10-29 ~23:50
+Heads: env-art d63eeea3, env-art-b d5660abb, creatures 93829b74, creatures-b 4d0150e3, characters fe626d0e,
+ui dae73fd8, battle-presentation cdfe126a, act1-chapters 175d2b5e, m2-slice 9d9e9653, audio 1cb9654d,
+hero-integration f9e9540c. The other claude/* branches are retired (ze8rrn, 423ixt, menus, gate-runner-a/b,
+first-playable).
+- **Only characters (fe626d0e) clashes, 13 files.** Resolver: the Lead, taking big18's side for all of them.
+  - Pell's 5 portraits (+ .import), `tools/portraits/portraits.json`, `tests/unit/test_hero_portraits.gd`: big18
+    already has ui's bake. ui owns `assets/ui/portraits/**` and `tools/portraits/**`; characters' 22:15 re-bake
+    duplicates it.
+  - `tests/integration/test_fp_prologue.gd`: big18's (creatures') version asserts that Pell's and Liss's vigil
+    capsules go, which is right now that both have bodies.
+- Mine (M3-HER-1140/1142 task files) cleared @ 5e285a886. env-art-b and ui merge clean (union only). Everyone else
+  merges clean.
+
+### 2. The Act I headless smoke on lead/gate-big18 @ d00d3284, 2026-10-30 ~00:40 (one Godot at a time)
+Boot past the title (600 frames), plus the guards and suites that play the game:
+- `qa_` (every chapter thread start to end with a save round trip at each shrine, every Act I encounter
+  entered/won/left, capsules, party spawns, field camera, flag reach);
+- `fp_` (title → New Game → Prologue → slice → Ch3);
+- `title`, `save_`, `boot_card`.
+**Results: boot clean · qa_ 12/13 · fp_ 30/0 · title 40/0 · save_ 149/0 · boot_card 27/0.**
+- **The one red, fixed here @ dc88d2aee:** `test_qa_threads` failed on 4 "CutsceneGrade: no grade 'ch03' / 'ch03_steps' /
+  'ch03_boss' / 'ch03_shrine_int' in the zones' grade tables" warnings in the first-playable thread. They're new in
+  big18 from slice-polish's M2-FP-120, which makes a grade with no row a **soft failure by design**. The colour
+  script names grades nobody has built yet; those are M3-ENV-106 (environment, todo), and test_cutscene_directives
+  lists them. The guard now knows the pattern under M3-ENV-106 and is 1/0 on big18 (with M2-HER-1128's
+  test_fp_thread). **Owner of the real work: environment, M3-ENV-106** (Ch3's four grades).
+- Every error and warning in the run, by owner:
+  - **Boot:** one `ShaderPrewarm: transition hitch over budget (301 ms, budget 50)`. On the headless dummy renderer
+    the timing is meaningless → PC-QUEUE (real GPU).
+  - **`Parameter "material" is null` (material_get_instance_shader_parameters, dummy storage):** 56 here, 132 in
+    big17's full suite. It fires whenever a node carrying instance shader parameters (the character shading) is freed
+    under the headless dummy renderer, whose material storage is a stub (even freeing a bare hero glb in
+    test_hero_field_actor does it). It's headless noise rather than a game error → PC-QUEUE: confirm a real-GPU run
+    logs none (rendering, if it does).
+  - **The save suites' ERRORs and WARNINGs** (corrupt slots, broken tables, negative counts, unknown equipment,
+    "autosave failed: Unconfigured"): every one is a test feeding bad data on purpose (test_save_recovery,
+    test_save_data_tables, test_save_item_tables). Nothing to route.
+  - **Leaks:** `test_area_title_card.gd` ×3 (ui-menus; already in M3-HER-1130's list).
+- Not covered by a headless run: what the player sees and hears. Item 4's scripted walk stills cover the hero side.
+
+### PC-QUEUE (added)
+- ShaderPrewarm's transition hitch on boot (301 ms in headless; measure on the GPU).
+- `Parameter "material" is null` on freeing a character mesh: confirm a real-GPU run logs none.
+
+### 4. Hero, follower and camera audit (2026-10-30 ~01:00), @ d1a2a3674
+New guard **tests/integration/test_qa_walk_audit.gd** (routes in `qa_walk_routes.json`). It walks the real party
+with the real FieldController, a stick toward each waypoint through the live camera, with HeroStairs, HeroFieldParty
+and every body stepped as in play. Routes:
+- Haluna's lane (narrow, props);
+- Ashcrown's 48° flying stair, up and down;
+- Coilspire's spiral (1 m ramps, the gates open).
+It fails on stuck, follower-in-geometry, camera-in-geometry, or leader-hidden runs over 30 frames. It reports
+run-up, stop, vertical jumps, airborne frames, foot slide per hero, follower gaps and catch-ups. Two harness
+mistakes cost me a false "stuck at the stair head": HeroStairs not stepped, and its deferred flight build. The guard
+now does both as the game does.
+- **Fixed, sticky:** a full-stick run on a steep flight was capped at the walk's 1 m/s along the slope, so the
+  flying stair took **64 s**. `stairs.json` gains `slope_run_speed_mps` 1.9 (a stair run; walk stays 1.0) and the
+  climb now takes **~35 s**. Followers are capped at the run speed so they keep pace. test_hero_stairs has a new case,
+  a run climbs faster than a walk; 8/0.
+- **Fixed, floaty:** running feet slid 16-28%. The field run is 3.6 m/s, the run clips measure 1.8-2.35, and the gait
+  sped the run up at most 1.5x. Followers also sprinted to 5.4 m/s to close gaps. Now `gait.max_playback_scale` 1.8
+  and `followers.max_speed_mps` 4.4: **0% foot slide for every hero on every route**, no catch-up teleports, max gap
+  3.1 m. The real fix is a faster authored run, **M3-HER-1165 (character)**: Kerrid still needs 2.0x, and a leg cycle
+  at 1.8x may read as scurrying.
+- **Clean:** no follower clips into geometry, the camera is never inside geometry or hiding the leader, the stairs are
+  smooth (max 0.044 m a frame), a run takes 0.38 s to reach and stops in 0.5 m.
+- **Found, not mine to fix: followers hidden by standing stage actors in 12 Act I zones** (M3-HER-1164 widened; probe
+  above): Haluna, the ferry, the wake, Ashcrown, Pemakar, Brine Shoals, Tamsule, the Bell galleries, Coilspire,
+  Corrow, Corrow night.
+- LEAD-ASK: Should the follower win in free play everywhere? The stage actor would hide until a scene cues it.
+  That's a one-place change in HeroFieldParty, but it also hides talk-prompt actors such as Toma's Shield-Mate on
+  Ch9's strand. My default: no rule change; act1-chapters stages each zone (M3-HER-1164).
+- Stills: the rig (tools/hero/walk_stills.tscn) is written but not yet rendered or viewed, so it's not committed.
+- Checks: hero_ 114/0, hero_stairs 8/0, hero_followers 13/0, ch05_ashcrown_walkable 5/0, qa_walk_audit 1/0.
+  The full `qa_` was cut off by a timeout; it's re-running.
+
+### The Lead's 00:20 items (ADR 0203), @ 150670d1a
+- **placeholder_audit `--act 2`:** Ch10-Ch16 into docs/kb/qa/act2_inventory.md, **report-only** (`--check` never
+  fails for Act II), with the title and lead-in saying so. Act I stays the default. Rows with no chapter (shared asset
+  names) stay on Act I's list. scan.gd now loads every chapter's scene steps, and Python keeps the act.
+  test_placeholder_audit 14/0, including 3 new scope tests.
+  - The static half on this branch already lists 20 Act II items (act1-chapters 10, creatures 10).
+  - The full inventory (runtime scan) is next, on big18.
+- **tools/dev/lead/act1_gate_check.py:** ADR 0203 criteria 1-2, PASS/FAIL each, exit 0 only when both pass.
+  1. The Act I audit with the runtime scan has zero items (`--static-only` never PASSes).
+  2. qa_threads, qa_encounters, fp_ and save_ pass with zero SCRIPT ERRORs, plus the continuous title → Ch9 → title
+     test found by name (`tests/integration/test_*continuous*.gd`).
+  - **Criterion 2 FAILs until M3-CIN-1233's continuous-path test exists** (act1-chapters' finding: the Prologue skips
+    Ch1, and the slice's end card returns to the title).
+  - test_act1_gate_check 3/0. Run it from a batch worktree root: `python3 tools/dev/lead/act1_gate_check.py`.

@@ -97,3 +97,33 @@ func test_a_colossus_fight_rests_farther_back() -> void:
 		ctl.free()
 	assert_true(float(frames[&"undertows_reach"]) > 2.0, "the Reach's fight rests farther back")
 	assert_eq(float(frames[&"ch05_cinder_matron"]), 0.0, "a fight with no row keeps the authored rest")
+
+
+## The big17 gate's dry drownbell_flood: the Flood's phase moment framed the bell from its waterline, the risen water
+## edge-on and invisible. A camera moment's lens stays camera.water_clear_m above the flood's target height.
+func test_the_floods_phase_moment_stays_above_the_water() -> void:
+	var ctl := (load("res://game/battle/scene/battle_sandbox.tscn") as PackedScene).instantiate() as BattleController
+	ctl.auto_start = false
+	ctl.persist_progress = false
+	var tree := Engine.get_main_loop() as SceneTree
+	(tree.current_scene if tree.current_scene != null else tree.root).add_child(ctl)
+	ctl.pacing_scale = 1.0
+	ctl.set_meta(BattleBossIntro.META_PLAYED, "drownbell")
+	ctl.start_battle([&"rhen", &"asha", &"toma"] as Array[StringName], [], &"drownbell", 20261023)
+	ctl.stage.choreo.force_play = true
+	ctl.stage.choreo.reduced_motion = false
+	ctl.stage.choreo.skip = false
+	var bell := ctl.engine.enemies[0]
+	bell.hp = bell.max_hp * 40 / 100
+	BossMechanics.check_phases(ctl.engine)
+	var dir := ctl.stage.choreo.camera
+	var boss := (ctl.stage.get_node(^"BattleVfx") as BattleVfx).boss
+	assert_true(dir.moment_left() > 0.0, "the Flood plays its phase moment")
+	var lens: Vector3 = (dir._above_water(dir._moment["pose"] as Dictionary))["pos"]
+	var water := (dir._parent_inverse() * Vector3(0.0, boss.flood_target_m, 0.0)).y
+	var clear := float(BattleChoreo.load_data()["camera"]["water_clear_m"])
+	assert_true(lens.y >= water + clear - 0.001, "the lens %.2f m clears the flood's %.2f m" % [lens.y, water])
+	dir.advance_moment(float(dir._moment["in"]) + 0.1)
+	assert_true(ctl.stage.camera.position.y >= water + clear - 0.001, "and the camera does, held on the bell")
+	ctl.get_parent().remove_child(ctl)
+	ctl.free()

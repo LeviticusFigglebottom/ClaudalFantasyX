@@ -110,6 +110,11 @@ func test_the_first_playable_thread_end_to_end() -> void:
 	# Back in the zone: the cast is gone, the battle does not fire again, the causeway waits for a save.
 	zone = _load_zone()
 	zone.place_at(&"BattleReturn", zone.spawn_yaw_deg(&"BattleReturn"))
+	# Arriving after the win, as the game does: the story begins, and B02 (Neme's table) plays (M2-HER-1128).
+	story = zone.get_node("Story") as HalunaStory
+	story.begin()
+	assert_true(bool(Game.get_flag(&"ch02_ate_at_nemes")), "B02, Neme's table, played on the return")
+	assert_false(story.busy, "and finished")
 	_walk(zone, Vector3(1, 0, 0), 2.0, func() -> bool: return false)
 	assert_eq(battle_opens, 2, "a won battle never starts again")
 	var causeway := _interactable(zone, &"causeway_head")

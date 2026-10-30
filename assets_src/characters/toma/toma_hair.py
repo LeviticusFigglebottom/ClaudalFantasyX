@@ -72,10 +72,11 @@ def hairline_v(lm, P: np.ndarray) -> np.ndarray:
     return np.interp(a, xs, vs) + wander
 
 
-def in_hair(lm, P: np.ndarray, margin_h: float = 0.0) -> np.ndarray:
+def in_hair(lm, P: np.ndarray, margin_h: float = 0.0, hairline=None) -> np.ndarray:
+    """`hairline`: another hairline function of (lm, P) (moll_hair's broken front, M3-CHR-592); default Toma's."""
     zc = lm.P("chin")[2]
     v = (P[:, 2] - zc) / lm.h
-    return v > hairline_v(lm, P) + margin_h
+    return v > (hairline or hairline_v)(lm, P) + margin_h
 
 
 def _gather(lm) -> np.ndarray:
@@ -230,7 +231,7 @@ def _emit(part: Part, surface, paths: np.ndarray, widths, cols, rng, taper: floa
         _tuft(part, pts, nrm, float(widths[c]), int(cols[c]), taper, "hair" if mats is None else mats[c])
 
 
-def _roots_inside(scalp, lm, rng, n: int, margin: float) -> np.ndarray:
+def _roots_inside(scalp, lm, rng, n: int, margin: float, hairline=None) -> np.ndarray:
     yc = lm.P("head_c")[1]
     zc = lm.P("chin")[2]
     hc = np.array([0.0, yc, zc + 0.55 * lm.h])
@@ -238,7 +239,7 @@ def _roots_inside(scalp, lm, rng, n: int, margin: float) -> np.ndarray:
     d_in[:, 2] = np.abs(d_in[:, 2]) * 1.2 + 0.05
     d_in /= np.linalg.norm(d_in, axis=1, keepdims=True)
     p_in = scalp.project(hc + d_in * ROOT_CAST_H * lm.h)
-    return p_in[in_hair(lm, p_in, margin)][:n]
+    return p_in[in_hair(lm, p_in, margin, hairline)][:n]
 
 
 def _hairline_roots(scalp, lm, phi: np.ndarray, inside_h: np.ndarray) -> np.ndarray:
@@ -262,8 +263,9 @@ def _columns(rng, n: int, edge: np.ndarray, outer: bool) -> np.ndarray:
     return np.where(edge, rng.choice(SH_EDGE, n), cols)
 
 
-def scalp_cards(lm, params: dict, rng: np.random.Generator, scalp) -> Part:
+def scalp_cards(lm, params: dict, rng: np.random.Generator, scalp, hairline=None) -> Part:
     part = Part("HairScalp")
+    hl = hairline or hairline_v
     G = _gather(lm)
     lo, hi = params["length_m"]
     wlo, whi = params["card_width_m"]
@@ -278,10 +280,10 @@ def scalp_cards(lm, params: dict, rng: np.random.Generator, scalp) -> Part:
               (0.0022, params["scalp_cards"][1], 0.0013, 0.008),
               (0.0036, params["scalp_cards"][2], 0.0018, 0.014)]
     for li, (lift, count, rise, margin) in enumerate(layers):
-        roots = _roots_inside(scalp, lm, rng, int(count), margin)
+        roots = _roots_inside(scalp, lm, rng, int(count), margin, hl)
         n = len(roots)
         zc = lm.P("chin")[2]
-        edge = (roots[:, 2] - zc) / lm.h < hairline_v(lm, roots) + EDGE_BAND
+        edge = (roots[:, 2] - zc) / lm.h < hl(lm, roots) + EDGE_BAND
         paths = _trace(scalp, flow, roots, rng.uniform(lo, hi, n), lift, 1, rng.uniform(0.4, 1.0, n) * rise)
         _emit(part, scalp, paths, rng.uniform(wlo, whi, n) * (1.0 - 0.1 * li), _columns(rng, n, edge, li == 2), rng,
               0.25)
@@ -365,10 +367,10 @@ def surface_normals(V: np.ndarray, F: list, surface) -> np.ndarray:
     return N * s[:, None]
 
 
-def build_hair(lm, body, params: dict, scalp=None) -> dict[str, Part]:
-    """`scalp`: MeshScalp on the shipped head (build_toma); the anatomy field when omitted."""
+def build_hair(lm, body, params: dict, scalp=None, hairline=None) -> dict[str, Part]:
+    """`scalp`: MeshScalp on the shipped head (build_toma); the anatomy field when omitted. `hairline`: as in_hair's."""
     scalp = scalp or Scalp(body)
-    out = {"HairScalp": scalp_cards(lm, params, np.random.default_rng([int(params["seed"]), 0]), scalp)}
+    out = {"HairScalp": scalp_cards(lm, params, np.random.default_rng([int(params["seed"]), 0]), scalp, hairline)}
     for p in out.values():
         p.C = [STILL] * len(p.V)
     return out

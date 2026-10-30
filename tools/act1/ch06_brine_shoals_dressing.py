@@ -34,7 +34,12 @@ CHANNEL_FROM_Z = -24.0  # the channel's silted head; cells run north of it
 
 # The Level-stone's kit slot is a flat pale StandardMaterial that read as white plastic on the flats (M3-ENV-1326); it
 # takes the Order's shrine stone, as Haluna's shrines wear it.
-LEVEL_STONE = {"bs_level_stone": "res://assets/environments/kits/haluna/materials/kit_shrine_stone.tres"}
+LEVEL_STONE_NAME = "brine_shoals_level_stone_material.tres"
+LEVEL_STONE = {"bs_level_stone": RES_ZONE + LEVEL_STONE_NAME}
+# ... in the shrine stone toned down for the flats (the 10-29 audit: in Haluna's bright shrine stone it still read as a
+# white cube at the shrine): weathered grey and salt-stained (Ch8's borrowed shrine takes the same file).
+LEVEL_STONE_SRC = "res://assets/environments/kits/haluna/materials/kit_shrine_stone.tres"
+LEVEL_STONE_OVERRIDES = {"col_tint": "Color(0.64, 0.66, 0.64, 1)", "use_salt": "true", "variation_value": "0.2"}
 
 
 # The kit's flat StandardMaterial metals and lacquer (M3-ENV-1326): the camp's brass, gold and iron and the barge's
@@ -268,6 +273,8 @@ def main() -> None:
     (ZONE / "brine_shoals_dressing.json").write_text(json.dumps(layout(), indent=1) + "\n", encoding="utf-8")
     import ch05_09_zone_looks as zl  # noqa: PLC0415
 
+    (ZONE / LEVEL_STONE_NAME).write_text(zl.copy_material(LEVEL_STONE_SRC, LEVEL_STONE_NAME, LEVEL_STONE_OVERRIDES),
+                                         encoding="utf-8")
     looks = kit_looks()
     for slot, (name, _) in KIT_LOOKS.items():
         (ZONE / name).write_text(zl.bronze_material(name, looks[slot]), encoding="utf-8")

@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "doc": "Music cues and where they play (M2-AUD-02; docs/kb/tech/audio_runtime.md). cues: id -> file (one stream) or stems (synchronized layers of equal length; start_stems are audible at the start, the rest start silent), volume_db (0: assets ship at -16 LUFS), resume (a cue that comes back, after a battle say, carries on from where it stopped). Looping comes from each file's import settings (render_all.py writes them from the .loop.json sidecars). zones: scene -> the zone's music and ambience beds, switched under the router's fade (SceneRouter.scene_swapping). A missing `music` key leaves the music as it is; \"silence\" fades it out. variants: the first whose `flag` is set replaces the row's keys. battle: the cue per encounter (else default), and phases: an engine phase_changed id -> the stems to bring in or take out over sec. Cue ids are the .dlg @music ids (vertical_slice.md §6). tools/validate_data.py checks every file, scene and flag.",
+  "doc": "Music cues and where they play (M2-AUD-02; docs/kb/tech/audio_runtime.md). cues: id -> file (one stream) or stems (synchronized layers of equal length; start_stems are audible at the start, the rest start silent), volume_db (0: assets ship at -16 LUFS), resume (a cue that comes back, after a battle say, carries on from where it stopped). Looping comes from each file's import settings (render_all.py writes them from the .loop.json sidecars). zones: scene -> the zone's music and ambience beds, switched under the router's fade (SceneRouter.scene_swapping). A missing `music` key leaves the music as it is; \"silence\" fades it out. variants: the first whose `flag` is set replaces the row's keys. battle: the cue per encounter (else default), and phases: an engine phase_changed id -> the stems to bring in or take out over sec. Cue ids are the .dlg @music ids (vertical_slice.md §6). tools/validate_data.py checks every file, scene and flag. A cue's `beat` (M3-AUD-864) is its beat grid for MusicDeck's on-the-beat changes, {bpm, downbeat_offset_s} from its source, when its file has no .loop.json; \"free\" marks an unmetered piece (sung, rubato or a drone), which a change leaves at once.",
   "cues": {
     "oruvel_raft": {"file": "res://assets/audio/music/oruvel.ogg", "resume": true, "_note": "M3-AUD-823: the scripts' id for `oruvel`: Ch1's raft-town bed (C1-02 onward). Same file, so the cue is composed once."},
-    "oruvel_underway": {"file": "res://assets/audio/music/lamp_diver.ogg", "resume": true, "_note": "M3-AUD-823: the scripts' id for `lamp_diver`: Ch1's drowned-tower dive (C1-05, C1-06). Same file, so the cue is composed once."},
+    "oruvel_underway": {"beat": "free", "file": "res://assets/audio/music/lamp_diver.ogg", "resume": true, "_note": "M3-AUD-823: the scripts' id for `lamp_diver`: Ch1's drowned-tower dive (C1-05, C1-06). Same file, so the cue is composed once."},
     "haluna_wake": {"file": "res://assets/audio/music/pilgrims_wake.ogg", "resume": true, "_note": "M3-AUD-823: the scripts' id for `pilgrims_wake`: Ch4's feast at the wall, Asha's living funeral (C4-03, C4-04). Same file, so the cue is composed once."},
     "brightwater_crossing": {"file": "res://assets/audio/music/brightwater_ferry.ogg", "resume": true, "_note": "M3-AUD-823: the scripts' id for `brightwater_ferry`: Ch4's dawn ferry across the strait. Same file, so the cue is composed once."},
     "pemakar_terraces": {"file": "res://assets/audio/music/terraces_of_ash.ogg", "resume": true, "_note": "M3-AUD-823: the scripts' id for `terraces_of_ash`: Ch5's Pemakar terraces. Same file, so the cue is composed once."},
@@ -17,6 +17,7 @@
       "_note": "the M1-AUD-02 prototype (v1), kept for A/B; battles play v2"
     },
     "shell_shrine_interior": {
+      "beat": "free",
       "file": "res://assets/audio/music/shell_shrine_interior.ogg"
     },
     "hush_theme": {
@@ -47,6 +48,7 @@
       ]
     },
     "hush_first_verse": {
+      "beat": "free",
       "file": "res://assets/audio/music/hush_first_verse.ogg",
       "_note": "Cutscene B (B09); the sequencer plays it by name (@music hush_first_verse)"
     },
@@ -55,6 +57,7 @@
       "_note": "the slice end card (B12), piano alone"
     },
     "haluna_dawn": {
+      "beat": {"bpm": 50.0, "downbeat_offset_s": 0.5},
       "file": "res://assets/audio/music/haluna_dawn.ogg",
       "_note": "Cutscene A (B01); the sequencer plays it by name"
     },
@@ -64,6 +67,7 @@
       "_note": "B06; m2-slice adds the zone row when ch03/saltgrass_causeway exists"
     },
     "lamp_diver": {
+      "beat": "free",
       "file": "res://assets/audio/music/lamp_diver.ogg",
       "resume": true,
       "_note": "M3 Ch1, the drowned-tower dive"
@@ -73,6 +77,7 @@
       "_note": "M3 Ch6, Sefir's barge; his motif"
     },
     "the_ebbing": {
+      "beat": {"bpm": 64.0, "downbeat_offset_s": 0.5},
       "file": "res://assets/audio/music/the_ebbing.ogg",
       "_note": "M3 Ch9, the Ebbing (through-composed)",
       "markers": {"cantor": 11.75, "dance": 34.25, "dance_full": 56.75, "thinning": 79.25, "last_chord": 96.125}
@@ -322,14 +327,17 @@
       "_note": "Ch16, the Drowned Choir. Act II final (M3-AUD-843; Git LFS; the sketch assets/audio/music/drowned_choir.ogg stays as the fallback); no zone row until ch16/drowned_choir/drowned_choir.tscn exists"
     },
     "tidecup_after": {
+      "beat": {"bpm": 58.0, "downbeat_offset_s": 0.6},
       "file": "res://assets/audio/music/tidecup_after.ogg",
       "_note": "Ch7 B07 After the Bell (ch07_after_the_bell.dlg) and its B10 reprise (ch07_leaving_tamsule.dlg): a through-composed cutscene cue (M3-AUD-822)"
     },
     "tidecup_crowd": {
+      "beat": "free",
       "file": "res://assets/audio/music/tidecup_crowd.ogg",
       "_note": "Ch7 B04 the galleries (ch07_galleries.dlg): the packed bowl under the Bell, a loop under the bell_hum layer (M3-AUD-822)"
     },
     "virel_bound": {
+      "beat": {"bpm": 100.0, "downbeat_offset_s": 1.15},
       "file": "res://assets/audio/music/virel_bound.ogg",
       "_note": "Ch8 B06 the binding of Virel (ch08_binding.dlg): a sting, the Hush's first phrase on the spire reed (M3-AUD-822)"
     },
@@ -350,6 +358,7 @@
     }
 ,
     "hearer_hum": {
+      "beat": "free",
       "file": "res://assets/audio/music/hearer_hum.ogg",
       "_note": "Ch4 C4-06, the dock in the dark (ch04_dock_in_the_dark.dlg): the sea, the far wake, and the dead humming in the next room; a loop (M3-AUD-820); the sequencer plays it by name"
     }
@@ -360,11 +369,13 @@
     }
 ,
     "name_board_home": {
+      "beat": {"bpm": 46.0, "downbeat_offset_s": 1.5},
       "file": "res://assets/audio/music/name_board_home.ogg",
       "_note": "Ch4 C4-14, the name-board (ch04_name_board.dlg): the beach's star-path phrase once, resolved home (M3-AUD-820); the sequencer plays it by name"
     }
 ,
     "the_long_way_round": {
+      "beat": {"bpm": 88.0, "downbeat_offset_s": 2.2},
       "file": "res://assets/audio/music/the_long_way_round.ogg",
       "_note": "Ch4 C4-04/C4-05, the shell is set (ch04_shell_is_set.dlg): the village's farewell song, diegetic; the sung lines' markers for @wait music= are in assets_src/music/the_long_way_round.py (M3-AUD-820)",
       "markers": {"ch04_shell_012": 2.2, "ch04_shell_013": 13.252, "ch04_shell_014": 25.082, "ch04_shell_015": 35.793,
@@ -372,22 +383,24 @@
     }
 ,
     "oruvel_theme": {
+      "beat": {"bpm": 63.0, "downbeat_offset_s": 5.0},
       "file": "res://assets/audio/music/oruvel_theme.ogg",
       "_note": "Ch7 B09, the Empty Moorings (ch07_empty_moorings.dlg): Ch1's Oruvel tune on one flute over the Tamsule Bell's hum (M3-AUD-820); the sequencer plays it by name"
     }
 ,
     "tavi_kell": {
+      "beat": "free",
       "file": "res://assets/audio/music/tavi_kell.ogg",
       "_note": "Ch7 B03, Tavi (ch07_tavi.dlg), after the hold on 'She couldn't swim': solo piano (M3-AUD-820); the sequencer plays it by name"
     },
-    "rhen_current_hum": {"file": "res://assets/audio/music/rhen_current_hum.ogg", "_note": "Ch1 C1-06, ch01_current_shaft.dlg (M3-AUD-819): Rhen hums phrase 1 of Dace's current-song (motifs.py) riding the shaft; one pass, not a loop"},
-    "going_under": {"file": "res://assets/audio/music/going_under.ogg", "_note": "Ch1 C1-15, ch01_going_under.dlg (M3-AUD-819): the roar falling away, then the whole current-song far below; ends in silence (the last note at 22.9 s)"},
+    "rhen_current_hum": {"beat": "free", "file": "res://assets/audio/music/rhen_current_hum.ogg", "_note": "Ch1 C1-06, ch01_current_shaft.dlg (M3-AUD-819): Rhen hums phrase 1 of Dace's current-song (motifs.py) riding the shaft; one pass, not a loop"},
+    "going_under": {"beat": "free", "file": "res://assets/audio/music/going_under.ogg", "_note": "Ch1 C1-15, ch01_going_under.dlg (M3-AUD-819): the roar falling away, then the whole current-song far below; ends in silence (the last note at 22.9 s)"},
     "undertow_rising": {"stems": ["res://assets/audio/music/undertow_rising_p1.ogg", "res://assets/audio/music/undertow_rising_p2.ogg"], "start_stems": [0], "_note": "Ch1 C1-12 ch01_the_rising.dlg, C1-13 the run; Ch8 B07-B09 ch08_beacon_opened.dlg, ch08_run_back.dlg (M3-AUD-819). Loops after its intro. Intended: C1-13's run brings stem 1 (the pulse) in over 2 s; Ch8 plays stem 0 only"},
     "corrow_night": {"file": "res://assets/audio/music/corrow_night.ogg", "resume": true, "_note": "Ch9 B01 ch09_strand.dlg, B03 and B08 ch09_the_ebbing.dlg (M3-AUD-819); no zone row until the ch08/corrow night variant exists"},
     "dawn_road": {"file": "res://assets/audio/music/dawn_road.ogg", "_note": "Ch9 B09 ch09_the_road_out.dlg (M3-AUD-819)"},
     "lanternfall": {"file": "res://assets/audio/music/lanternfall.ogg", "_note": "Ch5 B04-B06, Lanternfall in Pemakar (ch05_lanternfall_boats.dlg, ch05_lanternfall_weir.dlg, ch05_inn_gate.dlg; M3-AUD-821): the town's festival music, thinning to one drum that loops at the weir"},
-    "hush_second_verse": {"file": "res://assets/audio/music/hush_second_verse.ogg", "_note": "Ch5 B10, the second verse in Ashcrown's anvil court (ch05_kahre.dlg; M3-AUD-821); not looped; mir at 31.54 s, the thunder at 32.59 s"},
-    "kerrid_stair": {"file": "res://assets/audio/music/kerrid_stair.ogg", "_note": "Ch5 B05 close, Kerrid falls in at the weir (ch05_lanternfall_weir.dlg; M3-AUD-821); his motif's first statement, not looped (motifs.py KERRID_STAIR)"},
+    "hush_second_verse": {"beat": "free", "file": "res://assets/audio/music/hush_second_verse.ogg", "_note": "Ch5 B10, the second verse in Ashcrown's anvil court (ch05_kahre.dlg; M3-AUD-821); not looped; mir at 31.54 s, the thunder at 32.59 s"},
+    "kerrid_stair": {"beat": {"bpm": 48.0, "downbeat_offset_s": 0.15}, "file": "res://assets/audio/music/kerrid_stair.ogg", "_note": "Ch5 B05 close, Kerrid falls in at the weir (ch05_lanternfall_weir.dlg; M3-AUD-821); his motif's first statement, not looped (motifs.py KERRID_STAIR)"},
     "liss_theme": {"file": "res://assets/audio/music/liss_theme.ogg", "_note": "Ch6 B06-B07 in the burned camp, the Brine Shoals (ch06_after_barge.dlg, ch06_liss_lantern.dlg; M3-AUD-821): Liss's theme"},
     "raid": {"file": "res://assets/audio/music/raid.ogg", "_note": "Ch6 B03, the raid on the salvage camp (ch06_raid.dlg; M3-AUD-821): fire, a drum and the Order's hum; it leaves its first 23 s to the stillguard_hum SFX"},
     "shoals_dusk": {"file": "res://assets/audio/music/shoals_dusk.ogg", "_note": "Ch6 B08, the camp on the wreck-ridge at night (ch06_ridge_camp.dlg; M3-AUD-821): the shoals' tune on one reed and the tide"}
