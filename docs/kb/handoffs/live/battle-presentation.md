@@ -104,6 +104,47 @@ Session `session_015hKkhtpX67kS4yZeA8AAhv`. Integration branch `claude/undertow-
     Kahre, the shop tier).
   - The integration branch's coverage reds.
 
+### 2026-10-30 ~03:xx: GPU QA pass 3 rows 57 and 61 (fixed, 921e5fec), and Act II begins (ADR 0205)
+- **Row 57 (battle_choreo_summon), fixed.** Nobody overlapped on the floor. The summon shot sat 4.2 m behind Ilun
+  on the battle axis, so Ilun covered the foes and the gull read through the eel.
+  - It now looks in from the side (back 1.2, side 6.2, up 1.3, fov 54). Ilun is clear of the foes, and the gull is
+    clear of the eel.
+  - SELF-RENDERED and viewed.
+- **Row 61 (battle_arena_seawall_stairhead_surge), fixed.** The preview put the Reach on Slot0 under the authored
+  camera, which is not what its fight shows.
+  - The preview now seats it on its boss_seats mark and takes the fight's rest_by_enemy fit
+    (BattleCameraDirector.rest_fit, now static and shared). The Reach's arm and head read over the wall, with the
+    party beside them.
+  - **env-art please note:** game/levels/_tests/battle_arenas/battle_arena_preview.gd gets one call, and
+    BattleArenaLayout gains `enemy_slots`.
+- Tests `--filter=` camera 60/0, summon 23/0, vowbound 89/0, arena 18/0, boss 84/0.
+- **No open Act I row is left for this track,** so Act II starts (ADR 0205).
+  - Claimed M4-A2P-060 (Act II battle VFX) and M4-A2P-062 (the Wakefin in the dark).
+  - **M4-A2P-060, part 1 (65ea933e):** tools/vfx/gen_act2_ability_vfx.py gives the eight Act II regulars' skills
+    their own effects (Ch10 to Ch16), with ADR 0204's no-ice rule for Ch12 to Ch15. Test
+    test_battle_act2_ability_vfx. Ownership row added.
+  - **M4-A2P-062, viewed:** the battle_arena_bridal_barge_night preview is dark and readable (the party lit, the sea
+    at night). **But the Wakefin is a capsule there, because it has no enemy row with a `model`.**
+- **LEAD-ASK:** the four Act II creature bosses (mangrove_drowner, lamp_engine, avalanche_ram, wakefin) have
+  creatures.json models and full battle staging (M3-BPR-408/418), but no enemies.json or encounters.json rows. So
+  their intros, cameras, the darkness fight and their skills' VFX can't go live or be viewed.
+  - M3-BPR-419 (the request, with the staged ids) is now `todo`.
+  - Who writes those rows: the chapters' combat seat?
+  - Default if no answer: battle-presentation writes PROVISIONAL rows (model, arena, phases from creatures.json, and
+    stats copied from the Act II boss curve with a `_note`) so the presentation can be built and viewed. The combat
+    seat then owns the numbers.
+- **The Act I encounter sweep (the Lead's 23:10)**, so far:
+  - Done: ch02_tideline clean (arena, impacts, framing). The Drownbell's 8 stills were viewed and are clean after
+    the hit-core and float fixes.
+  - The tool runs about 50 min per boss fight on lavapipe, so the caps dropped to 10 actions and 2 min.
+  - The remaining 31 run in background batches between Act II items, and findings go here.
+- **The wedding-trap step-hold (ADR 0204 / act2_plan Ch14):** needs the court-steps encounter (combat) and the
+  `ansedra_lacquer_court` arena, which has no arena scene in arenas.json yet (env-art).
+  - Presentation is ready by role: the ward entry ("Merel's knife") uses BattleEntryCamera and the StairHead_ward
+    mark, as the Fisher Stair does.
+  - The arena needs `StairHead_ward` and `CameraHints/the_stair_head` marks. A request follows when the encounter
+    is drafted.
+
 ### 2026-10-30 ~01:xx: the big17 gate's drownbell_flood regression (the Lead's 00:47), fixed @ 9524f9f0
 - **Cause, mine:** M3-BPR-426's phase moment.
   - The fixture forces the Flood (BossMechanics.check_phases). That now eases the camera onto the bell, and the
