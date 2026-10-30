@@ -830,6 +830,14 @@ that test at this branch's zones.
     from each spawn found 12 m clear behind its facing at head height (the probe's reach), and no facing does better.
     The camera's pull-in isn't a collider behind the party, so it's the field camera's (hero-integration's) to trace.
   - **MERGE-READY @ edb18aae** (row 65; rows 45–63 were fixed earlier, see above).
+- **BACKLOG EMPTY (10-30, session handoff `docs/kb/handoffs/2026-10-30-env-art-b-1.md`):**
+  - No open Act I row is mine: 45–65 are fixed or traced. 34 is the request path, 38 the field camera, 50
+    hero-integration's spawn.
+  - Ch13 and Ch15 are dressed and with review, and the ripples are with review.
+  - The rest of Ch14–Ch16 waits on chapters: M4-A2P-103 (the Sanctum's light rows), 104 (the escape's ripples and the
+    after-the-trap blocks), 105 (Ch15's shoal mark and dawn row) and 106 (the Choir's relayout).
+  - The looks only the PC can judge are queued.
+  - The next step for each request is in the handoff.
 
 ### PC-QUEUE
 - Pass 3 row 65 (@ edb18aae): re-measure the camp's smoke columns (24 steps at High) and the Tamsule drop (High has no
