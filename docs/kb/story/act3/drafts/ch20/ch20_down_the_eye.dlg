@@ -1,0 +1,32 @@
+// DRAFT (Act III, planning only: ../README.md). Ch20 U00 "Down the eye" (C, 2 min). act3_ch20.md §2 U00; rule 6.
+// The Kite on Liss's dive rig, sails furled, dropping down the well; every held light the storm has taken hangs in the
+// walls of water like a night sky turned inside out (held: no motion). LISS SPENDS TOBIN'S LAMP (ending_cost_audit §4):
+// she stops trying to mend it and seats it in the engine socket; his held light is part of the last full charge that
+// takes them down. One line (the Ch14 talk, turned). Kerrid is first off the Kite onto the first floor (ADR 0020).
+title: ch20_down_the_eye
+location: ch20/undertow_layers
+---
+@letterbox on
+@camera U01
+@music undertow_descent fade=2.0
+@vfx glimmer_held at=well_walls count=200 drift=down_seaward rate=slow
+@wait 5.0
+@camera U02
+@mark liss engine_socket walk
+@anim liss open lamp_box
+@wait 3.0
+@anim liss seat cracked_lamp
+@vfx glimmer_bound at=engine_socket count=1
+@sfx lamp_seat
+@wait 3.0
+Liss [grief]: He volunteered. So nobody'd have to be chosen. #line:ch20_eye_001
+@wait 4.0
+@camera U03
+@sfx kite_engine_strains
+@wait 4.0
+@sfx kite_touches_floor
+@mark kerrid first_floor walk
+@wait 3.0
+<<set $ch20_started = true>>
+@letterbox off
+===

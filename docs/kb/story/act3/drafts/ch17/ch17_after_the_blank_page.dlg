@@ -1,0 +1,21 @@
+// DRAFT (Act III, planning only). Ch17 B06 "After the blank page" (C, 1.5 min). act3_ch17.md §2 B06.
+// Dusk on the hull's deck. Rhen at the rail; Kerrid there, STANDING. One line, plain; Rhen doesn't answer; Kerrid stays.
+// Kerrid never learns that Dace went in on purpose (ADR 0022): he speaks only of the stair he knew. §10 Q4: cut the
+// line if review reads it as explaining Dace for him.
+title: ch17_after_the_blank_page
+location: ch17/hollowmere
+---
+@letterbox on
+@camera D11
+@music silence fade=1.0
+@mark rhen deck_rail walk
+@wait 3.0
+@mark kerrid deck_rail_b walk
+@wait 4.0
+Kerrid [neutral]: He was first down the stair. He'd have been first into that, too. #line:ch17_blank_001
+@wait 5.0
+@anim kerrid look_at sea
+@wait 4.0
+@fade out 2.0
+@letterbox off
+===

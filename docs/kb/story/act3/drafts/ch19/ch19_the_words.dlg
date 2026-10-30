@@ -1,0 +1,27 @@
+// DRAFT (Act III, planning only). Ch19 I04 "The words" (optional, E, 2 min, ~100 words). act3_ch19.md §2 I04;
+// act3_threads T-04; ending_cost_audit §6. Ysolde and Asha on the plaza steps. Ysolde has the Eighth Verse whole (the
+// words from the Choir stones, the tune read through the farewell-tide, its place from Ama's question-knot). She reads
+// the words aloud, SPOKEN, NOT SUNG (README rule 3); Asha repeats them once, spoken. Then Ysolde's want turns, dry,
+// never a joke. THE VERSE'S WORDS ARE A PLACEHOLDER built from the glossary's Lamptongue roots (ish light, mir stay,
+// tash let go, re again, oan home): Audio owns the lyric (SPEC §16 Q4/Q5); replace both lines with the final words.
+title: ch19_the_words
+location: prologue
+---
+@camera I04
+@mark ysolde plaza_steps_b walk
+@anim ysolde open book
+@wait 2.0
+Ysolde [neutral]: Ish mir, ish re. Oan, oan. Tash. #line:ch19_words_001 #notr #tn:"PLACEHOLDER Lamptongue (Audio owns the lyric). Spoken flat, not sung. Do not translate."
+@wait 2.0
+Asha [neutral]: Ish mir, ish re. Oan, oan. Tash. #line:ch19_words_002 #notr #tn:"PLACEHOLDER Lamptongue, Asha repeating it once, spoken. Do not translate."
+@wait 2.0
+Ysolde [neutral]: Never the words and the tune together. Not until it's time. #line:ch19_words_003
+@anim ysolde close book
+@wait 3.0
+Ysolde [neutral]: I came to give you a good death. #line:ch19_words_004
+@wait 2.0
+Ysolde [tender]: I would like to give you a long, dull life instead. #line:ch19_words_005
+@wait 2.0
+Asha [soft_smile]: I'll try. #line:ch19_words_007
+<<set $ch19_words_whole = true>>
+===

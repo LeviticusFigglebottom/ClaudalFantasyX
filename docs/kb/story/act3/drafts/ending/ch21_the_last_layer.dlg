@@ -1,0 +1,18 @@
+// DRAFT (Act III, planning only: ../README.md). Ch21 H01 "The last layer opens" (P, 4 min). act3_ending.md §2 H01.
+// After the Cage falls the last remembered room dissolves; the party walks a floor of held light toward the centre.
+// Everything in frame drifts down and inward; the party are the only things moving forward. One rail, no encounters:
+// the walk is the threat. Far ahead, two lights stand close together (§0 rule 8: from here Imra and Dace read only as
+// two light columns, no silhouette, until an authored camera goes in close). No dialogue.
+title: ch21_the_last_layer
+location: ch21/heart
+---
+@letterbox on
+@camera HT01
+@music heart_approach fade=3.0
+@vfx glimmer_held at=heart_floor count=300 drift=down_seaward rate=slow
+@wait 5.0
+@camera HT02
+@vfx glimmer_bound at=two_lamps count=2
+@wait 4.0
+@letterbox off
+===

@@ -1,0 +1,47 @@
+// DRAFT (Act III, planning only). Ch18 K05 "The farewell-tide, taught" (E, held input, 4 min). act3_ch18.md §2 K05;
+// act3_threads T-04; ending_cost_audit §1. Dusk, the shore. Pell teaches Asha the tune WORDLESS, the way Kirru children
+// learn it: hum, then turn your back, then hum again; held inputs on the turn (the player turns Asha's back). The clutch
+// hums under them. Ysolde writes the shape (rises and falls, no notes): "That's the Letting." said ONCE.
+// README rule 3: ASHA NEVER SINGS WORDS HERE; the Eighth Verse is never sung before H07.
+// THE TRADE: when Pell is done, Asha hums the Velamir lullaby back to him, unasked. The only time in the game she hums
+// something because she wants to; nobody says it's the last. Rhen hears it from the shore's edge.
+title: ch18_farewell_tide_taught
+location: ch10/reedhollow
+---
+@camera K09
+@music farewell_tide fade=3.0
+@mark pell shore_teach walk
+@mark asha shore_teach_b walk
+@mark rhen shore_edge walk
+@wait 3.0
+Pell [neutral]: Hum it with me. Then turn your back. Then hum it again. That is all children are told. #line:ch18_tide_001
+@anim pell hum
+@anim asha hum
+@wait 6.0
+<<event hold_input turn_back>>
+@anim asha turn_back sea
+@anim pell turn_back sea
+@wait 3.0
+<<event hold_input_end>>
+@sfx clutch_hum vol=0.5
+@anim asha hum
+@wait 8.0
+@camera K10
+@anim ysolde write farewell_shape
+@wait 3.0
+Ysolde [neutral]: That's the Letting. #line:ch18_tide_002
+@wait 3.0
+@camera K09
+Pell [tender]: You have it. Your back was the right way. #line:ch18_tide_003
+@wait 3.0
+@music silence fade=2.0
+@anim asha turn_to pell
+@sfx velamir_lullaby_hum at=asha vol=0.6
+@wait 10.0
+@camera K11
+@anim rhen look_at asha
+@wait 3.0
+Pell [soft_smile]: A trade, then. I will keep it. #line:ch18_tide_004
+@wait 3.0
+<<set $ch18_learned_farewell_tide = true>>
+===
