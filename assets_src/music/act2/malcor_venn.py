@@ -103,8 +103,8 @@ def build_p2(mx: LoopMixer) -> None:
     for bar, ch in enumerate(CHORDS, start=1):
         mx.add("big", big_drum(0.7 * float(g.uniform(0.92, 1.04)), variant=bar % 4, seed=SEED + 40), t_of(bar))
         for s in range(16):                                                       # the roll, building every two bars
-            if s % 2 == 1 and bar % 2 == 1:
-                continue
+            if (s % 2 == 1 and bar % 2 == 1) or (s == 15 and bar % 2 == 0):
+                continue                                                  # a breath before each phrase's downbeat
             v = 0.2 + 0.4 * ((bar - 1) % 2 * 16 + s) / 31
             mx.add("roll", frame_drum("tek", v, variant=s % 4, seed=SEED + 41), t_of(bar, s / 4) + float(g.normal(0, 0.003)),
                    pan=float(g.uniform(-0.3, 0.3)))
@@ -152,7 +152,7 @@ def render(out_path: str = OUT, verbose: bool = True, stats: dict | None = None)
     L = len(full)
     for _ in range(4):                    # one limiter gain curve for both stems, from the full stack (wrap-aware)
         f = full * gain
-        lg = limit_gain(np.concatenate([f[-ctx:], f, f[:ctx]]), -2.0)[ctx: ctx + L]
+        lg = limit_gain(np.concatenate([f[-ctx:], f, f[:ctx]]), -3.0)[ctx: ctx + L]   # drums overshoot when decoded
         cur = integrated_lufs(f * lg[:, None])
         if abs(cur - TARGET_LUFS) < 0.1:
             break

@@ -82,7 +82,7 @@ def build_p1(mx: LoopMixer) -> None:
             mx.add("march", frame_drum("dum", 0.6 * float(g.uniform(0.94, 1.03)), variant=bar % 3, size=1.2, seed=SEED + 10),
                    t_of(bar, beat), pan=-0.1)
         if bar % 4 == 0:                                                     # the roll into each fourth bar
-            for s in range(8):
+            for s in range(7):                                            # ends a sixteenth early: the seam's breath
                 mx.add("march", frame_drum("tek", 0.25 + 0.05 * s, variant=s % 4, seed=SEED + 11), t_of(bar, 2 + s / 4),
                        pan=0.15)
         mx.add("gong", kettle_gong(n(ROOTS[ch]) + 12, 0.45, seed=SEED + 20 + bar % 4, t60=1.2, damp_at=0.8), t_of(bar),
@@ -135,7 +135,7 @@ def render(out_path: str = OUT, verbose: bool = True, stats: dict | None = None)
     L = len(full)
     for _ in range(4):                    # one limiter gain curve for both stems, from the full stack (wrap-aware)
         f = full * gain
-        lg = limit_gain(np.concatenate([f[-ctx:], f, f[:ctx]]), -2.0)[ctx: ctx + L]
+        lg = limit_gain(np.concatenate([f[-ctx:], f, f[:ctx]]), -3.0)[ctx: ctx + L]   # drums overshoot when decoded
         cur = integrated_lufs(f * lg[:, None])
         if abs(cur - TARGET_LUFS) < 0.1:
             break

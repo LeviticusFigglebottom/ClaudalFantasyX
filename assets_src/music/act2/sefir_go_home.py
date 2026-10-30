@@ -75,10 +75,12 @@ CHORDS = (["C", "Am", "F", "G"] + ["C", "C", "F", "F", "F", "F"] +
 LH = {"C": "C3 G3 E4", "Am": "A2 E3 C4", "F": "F2 C3 A3", "G": "G2 D3 B3", "Dm": "D3 A3 F4", "Em": "E3 B3 G4"}
 PAD = {"C": "C3 E3 G3", "Am": "A2 C3 E3", "F": "F2 A2 C3", "G": "G2 B2 D3", "Dm": "D3 F3 A3", "Em": "E3 G3 B3"}
 MOTIF_AT = (5, 29)
-SING_AT = 11
+SING_AT = (11, 20)        # the lullaby sung twice, the second time from bar 20
 SING_STRETCH = 1.5          # ORDER_HUM's beats lengthened for the lullaby
 VOWELS = ["o", "a", "u", "a", "o", "e", "a", "u", "o", "a"]
-GAINS = {"piano": 0.0, "pad": -14.0, "choir": -5.0}
+# Bus gains from measured bus loudness (render(stats=...)): the piano leads (about -18 LUFS on its bus), the choir
+# 2 LU under it, the pad about 12 under. The grand piano model's raw level is far below a voice's, hence its gain.
+GAINS = {"piano": 35.0, "pad": 6.0, "choir": -10.0}
 
 
 def t_of(bar: int, beat: float = 0.0) -> float:
@@ -110,7 +112,9 @@ def add_choir(mx: Mixer, g) -> None:
         ph = [(VOWELS[i % len(VOWELS)], d) for i, (_, d) in enumerate(line)]
         pi = [(m + shift + cents / 100.0, d) for m, d in line]
         x = sing(ph, pi, vel=0.5, seed=SEED + 500 + v, scale=1.17 if female else 1.0, vib_cents=10.0)
-        mx.add("choir", x, t_of(SING_AT) + float(g.uniform(0, 0.15)), pan=float(g.uniform(-0.8, 0.8)))
+        for k, bar in enumerate(SING_AT):
+            mx.add("choir", x * (1.0 if k == 0 else 0.85), t_of(bar) + float(g.uniform(0, 0.15)),
+                   pan=float(g.uniform(-0.8, 0.8)))
 
 
 def render(out_path: str = OUT, verbose: bool = True, stats: dict | None = None) -> dict:
@@ -125,7 +129,7 @@ def render(out_path: str = OUT, verbose: bool = True, stats: dict | None = None)
     for nt, x in zip(notes, render_jobs(HFV._piano_jobs(notes, pedal, SEED + 5))):
         mx.add("piano", x, nt["t0"], pan=float(np.clip((nt["m"] - 64) / 60.0, -0.3, 0.3)))
     for bar, ch in enumerate(CHORDS, start=1):
-        if SING_AT <= bar < MOTIF_AT[1]:
+        if SING_AT[0] <= bar < MOTIF_AT[1]:
             mx.add("pad", pad_chord([n(p) for p in PAD[ch].split()], BAR * 1.02, 0.4, seed=SEED + 300 + bar,
                                     attack=1.0, release=1.5), t_of(bar) - 0.1)
     add_choir(mx, g)

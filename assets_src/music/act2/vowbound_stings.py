@@ -147,7 +147,7 @@ def kesh_bound(mx: Mixer, g) -> float:
     t += 0.9
     k = int(0.5 * SR)                                                                     # lightning: a static chime
     static = np.zeros(k)                                                                  # sparse, band-limited ticks
-    for _ in range(24):
+    for _ in range(10):
         s0 = int(g.uniform(0, k - 200))
         static[s0: s0 + 120] += filt(g.standard_normal(120), [bq_bandpass(float(g.uniform(3000, 6000)), 1.5)]) \
             * np.linspace(1, 0, 120) * float(g.uniform(0.2, 0.6))
@@ -155,7 +155,7 @@ def kesh_bound(mx: Mixer, g) -> float:
     mx.add("glass", _glass(n("D#6"), 0.35, SEED + 93, decay=1.2), t, pan=0.0)
     t += 0.9
     for _ in range(10):                                                                   # water
-        mx.add("air", np.repeat(bubble(float(g.uniform(2.0, 5.0)), float(g.uniform(0.2, 0.5)))[:, None], 2, axis=1),
+        mx.add("air", np.repeat(bubble(float(g.uniform(2.0, 5.0)), float(g.uniform(0.1, 0.25)))[:, None], 2, axis=1),
                t + float(g.uniform(0, 0.7)), pan=0.3)
     t += 0.9
     mx.add("bells", tower_bell(n("E5"), 0.5, seed=SEED + 94, t60=3.0, dark=0.2), t, pan=0.4)   # holy
@@ -178,7 +178,7 @@ def render_one(name: str, out_dir: str = OUT_DIR, verbose: bool = True) -> dict:
     mx = Mixer(10.5)
     mx.bus("voice", -2.0, send=0.45, process=lambda x: filt(x, [bq_highpass(200, 0.7), bq_lowpass(5500, 0.7)]))
     mx.bus("glass", -6.0, send=0.6, process=lambda x: filt(x, [bq_lowpass(9000, 0.7)]))
-    mx.bus("air", -12.0, send=0.4)
+    mx.bus("air", -12.0, send=0.4, process=lambda x: filt(x, [bq_lowpass(7000, 0.7)]))
     mx.bus("pluck", 0.0, send=0.35, process=lambda x: filt(x, [bq_lowpass(5500, 0.7)]))
     mx.bus("bells", -4.0, send=0.5, process=lambda x: filt(x, [bq_lowpass(5000, 0.7)]))
     mx.bus("pad", -4.0, send=0.45, process=lambda x: string_body(x, cutoff=1600.0))

@@ -97,7 +97,8 @@ def event_fn(cid: str, event: str, v: int, seed: int):
         layer = MATERIAL[cid](g)
         at = 0.0 if event in ("move", "idle") else float(g.uniform(0.05, 0.15))
         if cid == "root_crab" and event in ("move", "idle"):
-            layer = layer + 0.4 * _len(drip(0.4, 2.2, seed=seed + 3), len(layer) / SR)[: len(layer)]
+            d = drip(0.4, 2.2, seed=seed + 3)
+            layer = layer + 0.4 * np.concatenate([d, np.zeros(max(0, len(layer) - len(d)))])[: len(layer)]
         out = np.zeros(max(len(x), int(at * SR) + len(layer)))
         out[: len(x)] += x
         s = int(at * SR)
