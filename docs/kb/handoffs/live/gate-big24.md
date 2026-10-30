@@ -55,3 +55,15 @@ GATE-BUILT @ 019596bb (merge tip; this log commit sits on top)
     test_battle_screen_spread.gd.uid was removed so the committed one wins.
   - Checks after these: validate_data 0/0 · taskboard clean · gdlint and gdformat clean (1051 files) · no new duplicate PROVENANCE rows.
   - Re-gate list: 49 files (the hero-integration 46 plus 3 for these merges).
+- claude/characters @ f277973a (MERGE-READY @ b344b974: the human playtest FAST-TRACK, the default run is a brisk,
+  grounded jog for Asha, Rhen and Toma). Clean. Checks: validate_data 0/0 · gdlint and gdformat clean · no new duplicate PROVENANCE rows.
+  big24 now carries all five playtest fixes: ui's battle return and objectives, hero-integration's resident field and
+  water guard, env-art-b's shore walls, creatures' resident-loads fix, and characters' jog.
+- Re-gate list: 53 files (the merges' selections, plus the jog's locomotion/clip users, plus test_causeway_route).
+
+## Lane B (GATE-HELPER), @ 797b02cc, arrived 14:33
+- 35 files: 33 green.
+  - test_resident_loads: 9/1, Haluna's shop villagers unlisted. creatures' 9b29d8b3 (merged since) regenerates
+    scene_loads.json for exactly this; re-gated.
+  - test_causeway_route: 5/1, "at least 2 fights (206 m walk)" after the Harrier. Classifying on big23's tree; re-gated
+    on the jog build.
