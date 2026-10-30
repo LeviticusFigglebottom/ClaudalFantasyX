@@ -2,9 +2,8 @@
 id: M4-A2P-008
 title: "Act II state lines: heresy barks, Kerrid's revealed barks, and the people's codex pages"
 role: narrative
-status: blocked
-blocked-by: ADR 0203
-owner_session: ""
+status: doing
+owner_session: "act2 story track (claude/act2-plan, ADR 0205)"
 depends_on: [M4-A2P-005, M4-A2P-006]
 reviewer: ui
 milestone: M4
