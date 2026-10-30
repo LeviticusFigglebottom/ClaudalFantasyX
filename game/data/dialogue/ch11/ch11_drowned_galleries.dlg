@@ -6,7 +6,9 @@ title: ch11_drowned_galleries
 location: ch11/sunken_vey
 ---
 @letterbox on
-@camera L01
+// Shot ids: V00 is lowlight.md's L01 (the Vey hero frame). Renamed so it can't resolve to the greybox layout's own L01
+// (a sanctum view in ch11/lowlight); see act2_ch11_direction.md.
+@camera V00
 @music sunken_vey fade=2.0
 @vfx glimmer_bound at=cornice_conduits count=12
 @wait 5.0
