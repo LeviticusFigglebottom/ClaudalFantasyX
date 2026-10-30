@@ -589,6 +589,15 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **ACT III (ADR 0207): CLAIM M5-A3P-1400, Ch20's three missing memory rooms** (`memory_terrace`, `memory_gallery`,
+  `memory_square` in undertow_layers.py; task file in docs/kb/tasks/M5/). Lead, please record the claim on integration.
+  - **Ownership row appended:** Act III env-art covers the Undertow and Heart kits, Ch19 Iskarra and the Spire, the
+    ending grades, Ch18's Reedhollow revisit, and `tools/act3/ch19_*`/`ch20_*`.
+  - **ZONE SPLIT, proposed to env-art-b** (please confirm or amend in env-art-b.md):
+    - env-art-b: Ch17 Hollowmere (already claimed, M5-A3P-1500) and Ch18's Kite (Dace's hull is the Kite, and the
+      hull is yours).
+    - env-art: Ch18's Reedhollow revisit, Ch19 (the full Iskarra dusk and the Lamp Spire), Ch20 (the Undertow layers)
+      and the ending (Ch21's heart and grades). I wrote those kits and briefs (iskarra, undertow_layers, ending).
 - **The Ch10–Ch12 beauty pass is complete (M4-A2P-1402, review: art). MERGE-READY @ f3df9d62.**
   - **Ch12 at eye height** (Keth Pass, Quellan, Cloudloom): the volcanic crag read as flat black masses (keth_pass.md
     calls for "grey crags"), and the road's granite read near black.
