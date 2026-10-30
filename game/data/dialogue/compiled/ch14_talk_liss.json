@@ -1,0 +1,15 @@
+{
+ "format": 1,
+ "scene": "ch14_talk_liss",
+ "source": "game/data/dialogue/ch14/ch14_talk_liss.dlg",
+ "start": "ch14_talk_liss",
+ "nodes": {
+  "ch14_talk_liss": {
+   "headers": {"location": "ch13/ansedra_lacquer_court"},
+   "ops": [
+    {"op": "line", "id": "ch14_liss_001", "key": "DLG_CH14_LISS_001", "speaker": "liss", "emotion": "worried", "voice": "", "src": 5},
+    {"op": "line", "id": "ch14_liss_002", "key": "DLG_CH14_LISS_002", "speaker": "liss", "emotion": "soft_smile", "voice": "", "src": 6}
+   ]
+  }
+ }
+}

@@ -37,6 +37,9 @@ var _data: Dictionary = {}
 var _scene_loads: Dictionary = {}
 ## The paths the zone being entered wants (they go to `scene`, not `resident`).
 var _scene_wanted: Dictionary = {}
+## ADR 0111 amendment 4: the zone's runtime materials and scenes as their loads finish, for ShaderPrewarm to stage
+## under the cover (take_prewarm). A zone's dressing builds at runtime, so the prewarm's own scene scan never sees it.
+var _prewarm_queue: Array[Resource] = []
 ## The paths requested from the loader and not in yet (at most max_in_flight).
 var _in_flight: PackedStringArray = []
 var _done_count := 0
@@ -132,6 +135,7 @@ func load_scene(scene_path: String) -> void:
 		if not wanted.has(path):
 			scene.erase(path)
 	_scene_wanted = wanted
+	_prewarm_queue.clear()
 	for path: String in wanted:
 		if resident.has(path) or scene.has(path) or pending.has(path):
 			continue
@@ -170,6 +174,19 @@ func swap_wait_progress() -> int:
 	return total
 
 
+## Up to `n` of the zone's loaded materials and scenes not yet handed to the prewarm (ADR 0111 amendment 4).
+func take_prewarm(n: int) -> Array[Resource]:
+	var out: Array[Resource] = []
+	while not _prewarm_queue.is_empty() and out.size() < n:
+		out.append(_prewarm_queue.pop_front())
+	return out
+
+
+## True while a zone load is still coming in or a loaded one waits for the prewarm.
+func prewarm_pending() -> bool:
+	return not _prewarm_queue.is_empty() or not pending.is_empty()
+
+
 ## True when every resident path is in.
 func is_ready() -> bool:
 	return pending.is_empty()
@@ -192,6 +209,8 @@ func poll() -> void:
 			var res := ResourceLoader.load_threaded_get(path)
 			if _scene_wanted.has(path) and not _resident_wanted.has(path):
 				scene[path] = res
+				if res is Material or res is PackedScene:
+					_prewarm_queue.append(res)
 			else:
 				resident[path] = res
 			_done_with(path)

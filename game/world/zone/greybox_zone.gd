@@ -82,6 +82,11 @@ func build() -> void:
 		encounters = FieldEncounters.new()
 		encounters.name = "Encounters"
 		add_child(encounters)
+	# ADR 0111 amendment 4: a ZoneCast child instances its villager models here, on SceneRouter's worker thread when
+	# the router instances the zone, not in the zone's swap frame.
+	var zone_cast := get_node_or_null(^"Cast")
+	if zone_cast != null and zone_cast.has_method(&"prebuild"):
+		zone_cast.call(&"prebuild")
 
 
 func _ready() -> void:

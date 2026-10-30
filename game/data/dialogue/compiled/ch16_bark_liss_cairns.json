@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch16_bark_liss_cairns",
+ "source": "game/data/dialogue/ch16/ch16_bark_liss_cairns.dlg",
+ "start": "ch16_bark_liss_cairns",
+ "nodes": {
+  "ch16_bark_liss_cairns": {
+   "headers": {"location": "ch16/pale_rim"},
+   "ops": [
+    {"op": "line", "id": "ch16_bark_cairns_001", "key": "DLG_CH16_BARK_CAIRNS_001", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 5}
+   ]
+  }
+ }
+}

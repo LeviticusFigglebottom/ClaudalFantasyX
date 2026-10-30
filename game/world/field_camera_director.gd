@@ -391,6 +391,9 @@ func state_snapshot() -> Dictionary:
 ## (field_camera.json "occlusion"): at once to margin_m short of the wall, then eased back out at release_mps once the
 ## view is clear.
 ## Never nearer him than min_distance_m. The pose keeps its rotation (sliding along its line to him keeps him framed).
+## When the clear stretch is shorter than min_view_m (the camera would end up in his face), it cranes up or round
+## instead (crane()); when nothing clears, it pulls in as before while min_distance_m is clear, and keeps the shot's own
+## pose when not even that is (his chest boxed in) rather than push into his face.
 func clear_view(pose: CameraPose, delta: float) -> CameraPose:
 	var cfg := data.get("occlusion", {}) as Dictionary
 	if target == null or not bool(cfg.get("enabled", false)) or not target.is_inside_tree():
@@ -405,6 +408,16 @@ func clear_view(pose: CameraPose, delta: float) -> CameraPose:
 	var hit := view_blocker(chest, pose.origin)
 	if not hit.is_empty():
 		var free := chest.distance_to(hit["position"] as Vector3) - float(cfg.get("margin_m", 0.0))
+		if free < float(cfg.get("min_view_m", 0.0)):  # pulled in this far it'd sit in his face: crane up instead
+			var craned := crane(pose, chest, cfg)
+			if craned != null:
+				_pull_m = 0.0
+				return craned
+			if free < float(cfg.get("min_distance_m", 0.0)):
+				# not even min_distance_m is clear (his chest is boxed in: Coilspire's Tier4 spawn stands inside the
+				# spiral's steps): the shot's own pose, not a camera pushed into his face
+				_pull_m = 0.0
+				return pose
 		want = clampf(length - maxf(free, float(cfg.get("min_distance_m", 0.0))), 0.0, length)
 	if want >= _pull_m:
 		_pull_m = want
@@ -415,6 +428,55 @@ func clear_view(pose: CameraPose, delta: float) -> CameraPose:
 	var out := pose.copy()
 	out.origin = pose.origin - line / length * minf(_pull_m, length)
 	return out
+
+
+## `pose` raised straight up by crane_step_m at a time, up to crane_max_m, to the first height where no wall stands
+## between it and the leader's `chest` and the camera itself isn't inside a solid (crane_clear_m), looking down at
+## him; when none does (a ceiling right over him), a ring of spots round him (crane_ring_m out, crane_ring_up_m over his
+## chest, crane_ring_turns of them, from the shot's side first); null when nothing clears (the PC's GPU QA row 38:
+## Coilspire's Tier4, where the spiral's next turn over his head put the camera inside it).
+func crane(pose: CameraPose, chest: Vector3, cfg: Dictionary) -> CameraPose:
+	var step := float(cfg.get("crane_step_m", 0.0))
+	var top := float(cfg.get("crane_max_m", 0.0))
+	if step <= 0.0:
+		return null
+	var space := get_world_3d().direct_space_state if is_inside_tree() else null
+	var probe := SphereShape3D.new()
+	probe.radius = float(cfg.get("crane_clear_m", 0.0))
+	var h := step
+	while h <= top + 1e-4:
+		var at := pose.origin + Vector3.UP * h
+		if view_blocker(chest, at).is_empty() and not _inside_solid(space, probe, at):
+			return CameraPose.looking(at, chest, pose.fov_deg, pose.dof)
+		h += step
+	# a ceiling right over him (a spiral's next turn): no height clears, so look in from the side instead, around
+	# him from the shot's own side first, at crane_ring_m out and crane_ring_up_m over his chest
+	var away := Vector3(pose.origin.x - chest.x, 0.0, pose.origin.z - chest.z)
+	var start := atan2(away.x, away.z) if away.length_squared() > 1e-6 else 0.0
+	var turns := maxi(int(cfg.get("crane_ring_turns", 0)), 1)
+	for dist: Variant in cfg.get("crane_ring_m", []):
+		for k in turns:
+			# 0, +1, -1, +2, -2 ... steps round from the shot's side
+			var n := (k + 1) / 2 * (1 if k % 2 == 1 else -1)
+			var angle := start + TAU * n / turns
+			var at := chest + Vector3(sin(angle), 0.0, cos(angle)) * float(dist)
+			at.y += float(cfg.get("crane_ring_up_m", 0.0))
+			if view_blocker(chest, at).is_empty() and not _inside_solid(space, probe, at):
+				return CameraPose.looking(at, chest, pose.fov_deg, pose.dof)
+	return null
+
+
+## True when a sphere `probe` at `at` overlaps a solid body (a crane height inside a step or a floor).
+func _inside_solid(space: PhysicsDirectSpaceState3D, probe: SphereShape3D, at: Vector3) -> bool:
+	if space == null or probe.radius <= 0.0:
+		return false
+	var q := PhysicsShapeQueryParameters3D.new()
+	q.shape = probe
+	q.transform = Transform3D(Basis.IDENTITY, at)
+	q.collide_with_areas = false
+	if target is CollisionObject3D:
+		q.exclude = [(target as CollisionObject3D).get_rid()]
+	return not space.intersect_shape(q, 1).is_empty()
 
 
 ## The nearest wall a player sees on the segment `from` -> `to`: {"position", "node"} of the first visible occluder
@@ -493,6 +555,14 @@ func evaluate(shot: CameraShot, delta: float) -> CameraPose:
 		CameraShot.Mode.PAN_FOLLOW:
 			var from := _to_world(shot.position)
 			var desired := pan_aim(from, _to_world(shot.look_at), aim_target, shot.follow_weight, shot.max_pan_deg)
+			desired = keep_in_frame(
+				from,
+				desired,
+				aim_target,
+				fov,
+				float(data.get("keep_in_frame_share", 1.0)),
+				float(data.get("keep_in_frame_aspect", 1.0))
+			)
 			var rate := _rate(shot.follow_smoothing, "pan_follow_smoothing_per_sec")
 			var aim := _smoothed(shot, "aim", desired, rate, delta) as Vector3
 			return CameraPose.looking(from, aim, fov, shot.dof_dict(), shot.roll_deg)
@@ -518,6 +588,15 @@ func evaluate(shot: CameraShot, delta: float) -> CameraPose:
 			var from := _smoothed(shot, "follow_pos", desired, rate, delta) as Vector3
 			return CameraPose.looking(from, aim_target, fov, shot.dof_dict(), shot.roll_deg)
 	var fixed_aim := aim_target if subject != target else _to_world(shot.look_at)
+	if subject == target and target != null:  # a safety net: a locked frame that would lose the leader turns to him
+		fixed_aim = keep_in_frame(
+			_to_world(shot.position),
+			fixed_aim,
+			aim_target,
+			fov,
+			float(data.get("keep_in_frame_fixed_share", 1.0)),
+			float(data.get("keep_in_frame_aspect", 1.0))
+		)
 	return CameraPose.looking(_to_world(shot.position), fixed_aim, fov, shot.dof_dict(), shot.roll_deg)
 
 
@@ -573,6 +652,34 @@ static func pan_aim(from: Vector3, authored: Vector3, player: Vector3, weight: f
 		return desired
 	var limited := base_dir.slerp(want_dir, max_rad / angle)
 	return from + limited.normalized() * want_dir.length()
+
+
+## The aim from `from` turned toward `subject` just enough that the subject sits within `share` of the frame's half
+## angles of it, vertically (fov_deg, the vertical field of view) and horizontally (from `aspect`, width over height):
+## a PAN_FOLLOW's capped pan never lets the leader leave the frame (the Lead's 10-29 walk audit: Coilspire's Tier1 and
+## Tier2 lost Rhen for 3.6 s up the spiral), while a composition that keeps him inside (on a third) is left as authored.
+static func keep_in_frame(
+	from: Vector3, aim: Vector3, subject: Vector3, fov_deg: float, share: float, aspect: float = 1.0
+) -> Vector3:
+	var aim_dir := aim - from
+	var to_subject := subject - from
+	if aim_dir.length_squared() < 1e-8 or to_subject.length_squared() < 1e-8 or absf(aim_dir.normalized().y) > 0.999:
+		return aim
+	var basis := Basis.looking_at(aim_dir, Vector3.UP)
+	var local := basis.inverse() * to_subject
+	if local.z >= 0.0:
+		return subject  # behind the camera: aim straight at him
+	var half_v := deg_to_rad(fov_deg * 0.5)
+	var limit_v := half_v * share
+	var limit_h := atan(tan(half_v) * aspect) * share
+	var yaw := atan2(local.x, -local.z)
+	var pitch := atan2(local.y, -local.z)
+	var turn_yaw := yaw - clampf(yaw, -limit_h, limit_h)
+	var turn_pitch := pitch - clampf(pitch, -limit_v, limit_v)
+	if turn_yaw == 0.0 and turn_pitch == 0.0:
+		return aim
+	var dir := Vector3.FORWARD.rotated(Vector3.RIGHT, turn_pitch).rotated(Vector3.UP, -turn_yaw)
+	return from + (basis * dir).normalized() * aim_dir.length()
 
 
 ## The target's projected progress along the shot's track (0..1), mapped to dolly progress.

@@ -307,7 +307,10 @@ def build(seed: int = SEED) -> dict:
         + pc.TOWN_CENTRE[0]
     pieces.append(piece("harbour_quay", np.array([0.0, HARBOUR_DECK_Y, HARBOUR_FRONT_Z]), 0.0))
     pieces.append(piece("wake_wall", np.array([8.0, HARBOUR_DECK_Y, HARBOUR_FRONT_Z - 4.3]), 0.0))
-    pieces.append(piece("sea_cut_weir", np.array([outflow_x, WEIR_CREST_Y, SEA_SHORE_Z_M - 0.4]), 0.0))
+    # its stone: the wet weir stone (kit_weir_stone, written by env-art-b's tools/act1/ch05_pemakar_dressing.py; the
+    # PC's pass 3 row 62: the slabs read as flat grey boxes in the kit's dry dressed stone)
+    pieces.append(piece("sea_cut_weir", np.array([outflow_x, WEIR_CREST_Y, SEA_SHORE_Z_M - 0.4]), 0.0,
+                        materials={"kit_volcanic_dressed": "kit_weir_stone", "kit_channel_water": "kit_water_spill"}))
     pieces.append(piece("crown_bell", np.array([3.0, float(pc.tier_tread_y(pc.TOWN_TIERS - 1)) + 0.08, -67.054]), 0.0))
 
     # --- skyline and far lights -------------------------------------------------------------------

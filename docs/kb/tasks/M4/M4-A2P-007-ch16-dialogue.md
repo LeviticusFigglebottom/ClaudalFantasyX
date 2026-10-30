@@ -2,9 +2,8 @@
 id: M4-A2P-007
 title: "Ch16 “The Edge of the World” dialogue scripts and the Act II break voice-over"
 role: narrative
-status: blocked
-blocked-by: ADR 0203
-owner_session: ""
+status: review
+owner_session: "act2 story track (claude/act2-plan, ADR 0205)"
 depends_on: [M4-C16-01, M4-A2P-006]
 reviewer: cinematics
 milestone: M4
@@ -21,5 +20,8 @@ Ch16's scripts from M4-C16-01: the Rim, the wade, Kesh's binding and memory (wha
 ## Notes
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). Plan §2 Ch16.
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
+
+## Done (story track, 2026-10-30)
+- Scripts written from the beat-sheet draft, ADR 0204 applied ("Captain." stays; ORDER_HUM sung once; Kesh colossal only in the bind); the act card's caption "Act III: The Unbinding" and the act-break VO; compiled; speaker `kesh`; flags; `test_act2_dialogue.gd` PASS. Scripts written; reviewer: cinematics (the Lead reviews Ch16 too).
 
 ## Review log

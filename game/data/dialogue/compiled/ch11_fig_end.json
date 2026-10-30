@@ -1,0 +1,15 @@
+{
+ "format": 1,
+ "scene": "ch11_fig_end",
+ "source": "game/data/dialogue/ch11/ch11_fig_end.dlg",
+ "start": "ch11_fig_end",
+ "nodes": {
+  "ch11_fig_end": {
+   "headers": {"location": "ch11/sunken_vey"},
+   "ops": [
+    {"op": "line", "id": "ch11_fig_001", "key": "DLG_CH11_FIG_001", "speaker": "pell", "emotion": "worried", "voice": "", "src": 6},
+    {"op": "set", "flag": "ch11_found_fig_cache", "value": ["lit", true], "src": 7}
+   ]
+  }
+ }
+}

@@ -102,6 +102,15 @@ def collision() -> dict:
 RUBBLE_PIECES = ("wall_apron", "seawall_breach_a", "seawall_breach_b", "seawall_breach_end_e", "seawall_breach_end_w",
                  "lowtown_rubble", "strand_rocks", "milestone")
 APRON_NIGHT = {"cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"}
+# The shrouds (the PC's pass 3, row 51: from the field camera the rows read as blurred orange rectangles): the trader's
+# tan canvas took the vigil lamps as flat orange and its fine weave mipmapped away. The dead lie under grey, damp
+# sailcloth: darker and cooler, a coarser weave that holds at field distance, the creases darkened over the bodies.
+SHROUD_NAME = "corrow_shroud_canvas_material.tres"
+SHROUD_OVERRIDES = {"col_paint": "Color(0.66, 0.65, 0.61, 1)", "paint_cover": "0.45", "tile_m": "Vector2(0.2, 0.2)",
+                    "normal_strength": "1.7", "variation_value": "0.18", "salt_coverage": "Vector2(0.05, 0.3)"}
+SHROUD_ADDED = {"cavity_darken": "0.55"}
+SHROUD_PIECES = ("shroud_bound_a", "shroud_bound_b", "shroud_bound_small")  # b_strand.py's crisper shrouds
+SHROUD_SLOTS = {"cw_sail": "res://game/levels/ch09/corrow_night/" + SHROUD_NAME}
 
 
 def dressing() -> dict:
@@ -125,6 +134,8 @@ def dressing() -> dict:
     pieces += strand_pieces() + iskarra_pieces() + strand_kit_pieces()
     pieces += flood_debris_pieces(pieces)
     for p in pieces:  # the night's rubble: dry broken laterite, not the wet black cw_rubble (GPU QA row 28's spheres)
+        if p["piece"] in SHROUD_PIECES and not p.get("kit_dir"):
+            p["material_paths"] = dict(SHROUD_SLOTS)
         if p["piece"] in RUBBLE_PIECES and not p.get("kit_dir"):
             p["material_paths"] = dict(APRON_NIGHT)
     src.update(pieces=pieces, environment=RES_C8 + "corrow_ch09_environment.tres", time_of_day_h=22.0,
@@ -220,7 +231,8 @@ def strand_pieces() -> list[dict]:
             u = (i + 0.5) * SHROUD_PITCH_M - n * SHROUD_PITCH_M * 0.5
             x, z = _along(b, u, rng.uniform(-SHROUD_JITTER[1], SHROUD_JITTER[1]))
             soldier = rid in STILLGUARD_ROWS
-            piece = "shroud_small" if not soldier and i % SHROUD_SMALL_EVERY == 2 else ("shroud_a", "shroud_b")[i % 2]
+            piece = ("shroud_bound_small" if not soldier and i % SHROUD_SMALL_EVERY == 2
+                     else ("shroud_bound_a", "shroud_bound_b")[i % 2])
             out.append({"piece": piece, "at": [cf.r3(x), cf.r3(z)], "y": STRAND_Y,
                         "yaw_deg": cf.yaw_norm(b.get("yaw", 0.0) + 90.0 + rng.uniform(-SHROUD_JITTER[0], SHROUD_JITTER[0])),
                         "block": rid})
@@ -237,7 +249,7 @@ def strand_pieces() -> list[dict]:
     for lid in ("LampA", "LampB", "LampC", "LampD"):
         b = rows[lid]
         out.append({"piece": "strand_lamp", "at": [b["pos"][0], b["pos"][2]], "y": STRAND_Y, "yaw_deg": 0.0, "block": lid})
-    for bid, piece, kit in (("Raft", "ebbing_raft", ""), ("IvoShroud", "shroud_a", ""), ("HoistCoil", "rope_coil", HALUNA),
+    for bid, piece, kit in (("Raft", "ebbing_raft", ""), ("IvoShroud", "shroud_bound_a", ""), ("HoistCoil", "rope_coil", HALUNA),
                             ("Milestone", "milestone", "")):
         b = rows[bid]
         y = b["pos"][1] if bid == "Raft" else b["pos"][1] - b["size"][1] * 0.5
@@ -443,6 +455,8 @@ def main() -> None:
     if "--moon-relayout" in sys.argv:
         moon_relayout()
     write_dawn_grade()
+    (ZONE / SHROUD_NAME).write_text(c8.zl.copy_material(c8.RES_ZONE + c8.CANVAS_NAME, SHROUD_NAME, SHROUD_OVERRIDES,
+                                                        SHROUD_ADDED), encoding="utf-8")
     (ZONE / "corrow_night_collision.json").write_text(json.dumps(collision(), indent=1) + "\n", encoding="utf-8")
     (ZONE / "corrow_night_dressing.json").write_text(json.dumps(dressing(), indent=1) + "\n", encoding="utf-8")
 

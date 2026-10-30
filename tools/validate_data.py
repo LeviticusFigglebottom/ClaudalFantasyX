@@ -189,6 +189,8 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
         for key in ("power", "mp_cost", "accuracy", "delay_ranks"):
             if key in s and (not isinstance(s[key], int) or s[key] < 0):
                 rep.err(f"{w}: '{key}' must be a non-negative int")
+        if "drain_pct" in s and (not isinstance(s["drain_pct"], int) or not 1 <= s["drain_pct"] <= 100):
+            rep.err(f"{w}: 'drain_pct' must be an int in 1..100 (M4-CMB-1001)")
         if not isinstance(s.get("magic", False), bool):
             rep.err(f"{w}: 'magic' must be a bool")
         if "name_key" not in s:

@@ -280,7 +280,9 @@ static func swap_progress(holders: Array[Object]) -> int:
 	var total := -1
 	for h in holders:
 		if h != null and h.has_method(&"swap_wait_progress"):
-			total = maxi(total, 0) + int(h.call(&"swap_wait_progress"))
+			var p := int(h.call(&"swap_wait_progress"))
+			if p >= 0:  # -1: not loading now (ShaderPrewarm outside a zone feed)
+				total = maxi(total, 0) + p
 	return total
 
 

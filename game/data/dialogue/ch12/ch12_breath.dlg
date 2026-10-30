@@ -1,0 +1,37 @@
+// Ch12 B03 "Breath" (E, 1.5 min). act2_ch12.md §2 B03; RULE 3. K04 (keth_pass.md's breath frame): the third
+// flight in the crag's shade; every breath fogs except KERRID'S. P03: a WIDE two-shot of Toma and Kerrid
+// against the dark crag: the camera never points at it; the player who's looking sees it. Toma sees it: his
+// own plume hangs in front of him. P04: when the others have moved on, Toma says ONE sentence (the line
+// act1_ch09 B01 set up) without accusation. Kerrid looks at him a long time and walks on up the road. Toma
+// doesn't follow it up. Nobody says "dead", "breath" or "captain" again in this chapter. No music sting.
+title: ch12_breath
+location: ch12/keth_pass
+---
+@letterbox on
+@camera K04
+@wait 3.0
+@camera P03
+@wait 4.0
+@anim toma look_at kerrid
+@wait 2.5
+@mark rhen flight_3_up walk
+@mark asha flight_3_up walk
+@mark ysolde flight_3_up walk
+@mark liss flight_3_up walk
+@mark pell flight_3_up walk
+@wait 3.0
+@camera P04
+<<if $ch08_fishwife_called>>
+    Toma [neutral]: At Corrow, one of the old watch told me she had seen her captain on the stair. #line:ch12_breath_001 #tn:"Said quietly, not as an accusation. 'Her captain': the captain of the stair-watch."
+<<else>>
+    Toma [neutral]: At Corrow, the old watch still tells of a captain who held the stair. #line:ch12_breath_002
+<<endif>>
+@anim kerrid look_at toma
+@wait 4.0
+@mark kerrid flight_3_up walk
+@wait 2.0
+@mark toma flight_3_up walk
+<<set $ch12_toma_saw_breath = true>>
+@letterbox off
+@camera release
+===

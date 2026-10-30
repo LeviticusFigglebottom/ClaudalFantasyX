@@ -86,12 +86,12 @@ Narrator(rhen) [tender]: Seven of us walked out of Corrow that morning. I didn't
 <<set $ch09_act_one_complete = true>>
 <<jump ch09_act_card>>
 ===
-// B11 "Act card" (C, 0.2 min). Black, "Act II: The Truth". A caption on black stands in for UI's act
-// card widget (act1_ch09.md §9 UI 2; M3-C09-05). Then Ch10 opens; Ch10 isn't in M3, so the chapter
-// flow hands off to the end card.
+// B11 "Act card" (C, 0.2 min). Black, "Act II: The Truth": the line's #card shows it as UI's ActCard caption on
+// black (M2-FP-121; act1_ch09.md §9 UI 2; M3-C09-05). Then the chapter flow hands off to the end card (Act I's
+// credits) until Act II opens.
 title: ch09_act_card
 ---
 @wait 1.5
-Act II\: The Truth #line:ch09_act_card_001 #tn:"The act card between Act I and Act II. Title case, as a chapter heading."
+Act II\: The Truth #line:ch09_act_card_001 #card #tn:"The act card between Act I and Act II. Title case, as a chapter heading."
 @wait 2.0
 ===

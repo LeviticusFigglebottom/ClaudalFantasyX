@@ -2,9 +2,8 @@
 id: M4-A2P-044
 title: "The Lacquer Court and the lagoon at night at final quality, with the watching city"
 role: environment
-status: blocked
-blocked-by: ADR 0203
-owner_session: ""
+status: doing
+owner_session: env-art-b
 depends_on: [M4-A2P-047]
 reviewer: rendering
 milestone: M4
@@ -20,5 +19,6 @@ The court (colonnade, dais, galleries, the Conclave's gallery, the water-steps, 
 ## Notes
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). Plan §2 Ch14.
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
+- 2026-10-30: started by env-art-b under ADR 0205.
 
 ## Review log

@@ -1,13 +1,11 @@
 {
-  "_doc": "The Avalanche Ram's surfaces (docs/kb/art/creatures/act2/avalanche_ram.md). Slots are the glTF material names; write_materials.py writes assets/creatures/avalanche_ram/materials/<slot>.tres on game/shaders/creature/creature.gdshader. fleece is the coat, the six chains of frozen locks, the mane and the bib, the head (M3-CRE-635: its face, the soft muzzle and the jaw in the coat's colour, darkened laterite only at the nose and lips by vertex colour), the woolly cap and ears (undyed sand_cloth gone grey to overcast_slate, ice plates in salt_glass glossy by wetness) and the partings, whose emission mask glows spawn_wound (the weak points); hide is the darkened laterite legs (their wool above the knee by vertex colour), the nostrils and hooves and the faded lacquer_red herd-cord; ice is the icicles at the lock tips, the jaw and the belly (salt_glass); eye is wet lacquer_black. Colours are palette.json swatches.",
+  "_doc": "The Avalanche Ram's surfaces (docs/kb/art/creatures/act2/avalanche_ram.md). Slots are the glTF material names; write_materials.py writes assets/creatures/avalanche_ram/materials/<slot>.tres on game/shaders/creature/creature.gdshader. fleece is the coat, the six chains of sodden locks, the mane and the bib, the head (M3-CRE-635: its face, the soft muzzle and the jaw in the coat's colour, darkened laterite only at the nose and lips by vertex colour), the woolly cap and ears (undyed sand_cloth gone grey to overcast_slate, the wet mats, the beard and the dripping lock ends soaked dark and glossy by wetness (M4-A2P-059, ADR 0015: no ice)) and the partings, whose emission mask glows spawn_wound (the weak points); hide is the darkened laterite legs (their wool above the knee by vertex colour), the nostrils and hooves and the faded lacquer_red herd-cord; eye is wet lacquer_black. Colours are palette.json swatches.",
   "slots": {
     "fleece": {"roughness_dry": 0.95, "roughness_wet": 0.3, "wet_darken": 0.15, "clearcoat_wet": 0.6,
                "detail_scale": 26.0, "detail_albedo": 0.22, "detail_bump": 0.8, "cavity_albedo": 0.45,
                "emission_color": "#3FE0C8", "emission_energy": 2.2, "emission_pulse_hz": 0.2, "emission_pulse_depth": 0.35},
     "hide": {"roughness_dry": 0.75, "roughness_wet": 0.35, "detail_scale": 60.0, "detail_albedo": 0.15,
              "detail_bump": 0.4, "cavity_albedo": 0.4},
-    "ice": {"roughness_dry": 0.12, "roughness_wet": 0.05, "specular": 0.7, "wet_darken": 0.0, "clearcoat_wet": 1.0,
-            "detail_scale": 18.0, "detail_albedo": 0.08, "detail_bump": 0.25, "cavity_albedo": 0.2},
     "eye": {"roughness_dry": 0.12, "roughness_wet": 0.06, "specular": 0.7, "clearcoat_wet": 1.0, "detail_albedo": 0.0,
             "detail_bump": 0.0}
   }

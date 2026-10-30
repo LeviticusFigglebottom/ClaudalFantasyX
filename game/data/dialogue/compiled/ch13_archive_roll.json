@@ -1,0 +1,33 @@
+{
+ "format": 1,
+ "scene": "ch13_archive_roll",
+ "source": "game/data/dialogue/ch13/ch13_archive_roll.dlg",
+ "start": "ch13_archive_roll",
+ "nodes": {
+  "ch13_archive_roll": {
+   "headers": {"location": "ch13/lamp_archive"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["R03"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "music", "args": ["lamp_archive"], "kwargs": {"fade": 1.0}, "src": 10},
+    {"op": "line", "id": "ch13_rec_roll_001", "key": "DLG_CH13_REC_ROLL_001", "speaker": "", "emotion": "", "voice": "", "src": 11},
+    {"op": "cue", "cue": "camera", "args": ["R04"], "kwargs": {}, "src": 12},
+    {"op": "line", "id": "ch13_rec_roll_002", "key": "DLG_CH13_REC_ROLL_002", "speaker": "", "emotion": "", "voice": "", "src": 13},
+    {"op": "cue", "cue": "camera", "args": ["R05"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 2.0}, "src": 15},
+    {"op": "line", "id": "ch13_roll_001", "key": "DLG_CH13_ROLL_001", "speaker": "ysolde", "emotion": "cold", "voice": "", "src": 16},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 17},
+    {"op": "line", "id": "ch13_roll_002", "key": "DLG_CH13_ROLL_002", "speaker": "ysolde", "emotion": "cold", "voice": "", "src": 18},
+    {"op": "cue", "cue": "anim", "args": ["ysolde", "look_at", "asha"], "kwargs": {}, "src": 19},
+    {"op": "line", "id": "ch13_roll_003", "key": "DLG_CH13_ROLL_003", "speaker": "ysolde", "emotion": "grief", "voice": "", "src": 20},
+    {"op": "line", "id": "ch13_roll_004", "key": "DLG_CH13_ROLL_004", "speaker": "asha", "emotion": "grief", "voice": "", "src": 21},
+    {"op": "line", "id": "ch13_roll_005", "key": "DLG_CH13_ROLL_005", "speaker": "ysolde", "emotion": "tender", "voice": "", "src": 22},
+    {"op": "cue", "cue": "camera", "args": ["R06"], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "anim", "args": ["ysolde", "hands_on_lectern"], "kwargs": {}, "src": 24},
+    {"op": "cue", "cue": "mark", "args": ["liss", "beside_ysolde", "walk"], "kwargs": {}, "src": 25},
+    {"op": "cue", "cue": "wait", "args": [5.0], "kwargs": {}, "src": 26},
+    {"op": "set", "flag": "ch13_read_cantor_roll", "value": ["lit", true], "src": 27},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 28}
+   ]
+  }
+ }
+}

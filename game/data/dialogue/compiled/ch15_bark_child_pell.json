@@ -1,0 +1,15 @@
+{
+ "format": 1,
+ "scene": "ch15_bark_child_pell",
+ "source": "game/data/dialogue/ch15/ch15_bark_child_pell.dlg",
+ "start": "ch15_bark_child_pell",
+ "nodes": {
+  "ch15_bark_child_pell": {
+   "headers": {"location": "ch17/hollowmere"},
+   "ops": [
+    {"op": "line", "id": "ch15_bark_tall_001", "key": "DLG_CH15_BARK_TALL_001", "speaker": "child", "emotion": "surprised", "voice": "", "src": 5},
+    {"op": "line", "id": "ch15_bark_tall_002", "key": "DLG_CH15_BARK_TALL_002", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 6}
+   ]
+  }
+ }
+}

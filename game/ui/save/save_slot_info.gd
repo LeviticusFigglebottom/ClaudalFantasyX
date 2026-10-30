@@ -18,6 +18,8 @@ var location_key := ""
 ## Unix seconds (UTC).
 var saved_at := 0
 var reason := ""
+## A save made after the wedding trap (Act II, M4-A2P-082): its chapter line carries the heretic tag.
+var heretic := false
 ## The active line when it was saved (party_ids; the row shows their faces).
 var party: Array[StringName] = []
 
@@ -33,6 +35,7 @@ static func from_dict(d: Dictionary) -> SaveSlotInfo:
 	info.location_key = str(d.get("location_key", ""))
 	info.saved_at = int(d.get("saved_at", 0))
 	info.reason = str(d.get("reason", ""))
+	info.heretic = bool(d.get("heretic", false))
 	for v: Variant in d.get("party", []) as Array:
 		info.party.append(StringName(str(v)))
 	return info
@@ -65,7 +68,8 @@ func slot_name() -> String:
 func chapter_text() -> String:
 	if chapter <= 0:
 		return tr("SAVE_SLOT_PROLOGUE")
-	return tr("SAVE_SLOT_CHAPTER_FMT").format({"n": chapter})
+	var text := tr("SAVE_SLOT_CHAPTER_FMT").format({"n": chapter})
+	return tr("SAVE_SLOT_HERETIC_FMT").format({"chapter": text}) if heretic else text
 
 
 ## The location's display name, or the "unknown place" string when the key has no entry.

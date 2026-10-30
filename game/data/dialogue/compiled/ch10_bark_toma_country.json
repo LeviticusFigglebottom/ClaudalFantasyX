@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch10_bark_toma_country",
+ "source": "game/data/dialogue/ch10/ch10_bark_toma_country.dlg",
+ "start": "ch10_bark_toma_country",
+ "nodes": {
+  "ch10_bark_toma_country": {
+   "headers": {"location": "ch10/ossa_fen"},
+   "ops": [
+    {"op": "line", "id": "ch10_bark_country_001", "key": "DLG_CH10_BARK_COUNTRY_001", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 5}
+   ]
+  }
+ }
+}
