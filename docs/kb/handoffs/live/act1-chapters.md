@@ -878,6 +878,34 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
     - The PC re-check of rows 34 and 39.
   - Everything listed under the 10:07 BACKLOG EMPTY above still stands.
 
+### FAST-TRACK: encounter pacing (the Lead, 10-30 12:13; the human's playtest)
+1. **Grace after every battle** (`game/world/zone/field_encounters.gd`):
+   - A battle owes the grace whether it is scripted (Haluna's tideline, a gate fight) or random. EventBus.battle_ended
+     marks it, and the next meter set up takes it.
+   - The grace is now walked *and* timed: `grace_m` 15 m (was 12) and `grace_s` 12 s.
+   - Every gap is at least `min_gap_m` 95 m. All three values are in `greybox_defaults.json` `encounters`, and a
+     layout may override them.
+2. **Rates:** every zone with random fights now draws a 95–145 m gap:
+   - Act I: Oruvel Underway (was 18–34), the Saltgrass causeway (67.6–95.1), the Brightwater derelict (22–40),
+     Ashcrown (30–50), Brine Shoals (24–40), Coilspire (26–42).
+   - Act II: Ch10, Ch11, Ch12 and Ch16 (30–50), with their generators kept in step.
+   - Haluna's beach has no random table. Its one fight is the tideline gate strip, which the any-battle grace now
+     separates from the causeway's first random fight.
+3. **The black screen:** field time runs only after Rhen's first step since the zone came back, and only while the
+   story is free. So the fade back from a battle, however long, is never counted. The test
+   `test_any_battle_owes_the_grace_and_the_fade_back_is_not_field_time` checks it.
+- **Headless check:** `tools/act1/encounter_pacing.py` (+ `tools/tests/test_encounter_pacing.py`).
+  - Every zone's breather between ordinary fights is now **30.6–44.4 s** at the 3.6 m/s run. Before, Oruvel's was
+    about 8–13 s and the derelict's about 9–15 s.
+  - The meter is distance plus field time, so the bounds are exact for a straight run (not a sampled walk). Walking,
+    Light Step and Ch1's lantern only lengthen them.
+- **Checks:**
+  - Godot: zone_story (18/0, two new tests), light_step, fp_thread, ch01, ch04, ch05, ch06, ch08, ch10, ch11, ch12
+    and encounter all green.
+  - Tools: validate_data, chapter_flow_check (now allows `grace_s` and `min_gap_m`), gdlint, gdformat, and the 549
+    tool tests that read these files.
+- MERGE-READY @ 8b76cb3d0
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
