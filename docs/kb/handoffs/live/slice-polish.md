@@ -1128,6 +1128,16 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - ch10_fen_edge's O02 uses `track=toma`; the farewell-tide uses the release gate.
   - **Request M4-CIN-1305 (the chapters track):** the party and Owa as stage actors, the Drowner's cast, and the hold
     gate with its two prompts. Stills follow once the actors stand there.
+- **Ch10 staging stills (greybox, before the actors), MERGE-READY @ 4ad355b8e:**
+  - Five pending shots: ch10_edge_o02, ch10_causeway_r03, ch10_tide_f02, ch10_tide_t04 and ch10_outside_r07.
+  - Viewed: each camera frames its set (O02 back at the bank's lip with Pell, R03 down the causeway to Owa's mark,
+    F02 the clutch's backs with the lagoon beyond, T04 behind and above the clutch, R07 the two-shot's place).
+  - R07 and R08 moved to the north side: the west bound wall filled half the south view.
+  - The people wait on M4-CIN-1305; the stills get re-shot when the actors stand there.
+  - **Next:** when the chapters track lands M4-CIN-1305, re-render the five, then stage ch10_why_swim, dead_channel,
+    what_went_up and dawn_gate in stills.
+- For the Lead: `tools.tests.test_screenshots` now fails on `wildlife_zone_ossa_fen_walk0` (not mine; no baseline
+  and no pending flag).
 ### PC-QUEUE
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan
