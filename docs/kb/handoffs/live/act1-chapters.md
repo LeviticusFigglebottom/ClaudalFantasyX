@@ -543,6 +543,13 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - Next: Ch15's open_sea and Hollowmere cameras (U02–U07, H02–H04).
 - MERGE-READY @ 98088f53e
 
+- **Ch15 cameras (M4-A2P-015, claimed):**
+  - Added U02–U07 and H02–H04 (viewed) and the `Reveal` spawn (Rhen clear of U04).
+  - Marks for the reveal, the bow, the confession and the supper. Deck, Dock and jetty volumes.
+  - field_camera, ch14_16 and layout are green.
+  - Next: M3-BPR-419 (battle-presentation's request on the Act II boss ids), then Ch16's cameras.
+- MERGE-READY @ (this push)
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.

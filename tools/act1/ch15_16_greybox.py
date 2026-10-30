@@ -29,7 +29,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from ch10_greybox import WALK_W, box, r3, walk, water  # noqa: E402
+from ch10_greybox import WALK_W, box, follow_volumes, r3, walk, water  # noqa: E402
 from ch11_greybox import floor, walls  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -76,10 +76,28 @@ def open_sea() -> dict:
         "environment": {"background": "#0b1630", "ambient_color": "#1c2a40", "ambient_energy": 0.35},
         "block_color": COL_BARGE,
         "blocks": blocks,
-        "spawns": {"Deck": [0.0, 0.0, 3.5, 0.0]},
-        "marks": {"tobin_bier": [0.8, 0.0, 1.5, 270.0], "kerrid_sits": [0.0, 0.0, 4.2, 0.0], "bow": [0.0, 0.0, -4.2, 0.0]},
+        # M4-A2P-015: Reveal is Rhen's place at the stern for C3, clear of U04's line to Kerrid
+        "spawns": {"Deck": [0.0, 0.0, 3.5, 0.0], "Reveal": [1.4, 0.0, 3.0, 180.0]},
+        "marks": {"tobin_bier": [0.8, 0.0, 1.5, 270.0], "kerrid_sits": [0.0, 0.0, 4.2, 0.0], "bow": [0.0, 0.0, -4.2, 0.0],
+                  # M4-A2P-015: the party seated about the stern for the reveal (C3); Liss at the bow (C4)
+                  "reveal_asha": [-1.4, 0.0, 1.0, 180.0], "reveal_toma": [-1.4, 0.0, 2.2, 180.0],
+                  "reveal_liss": [-1.4, 0.0, 3.3, 180.0], "reveal_ysolde": [1.4, 0.0, 1.8, 180.0],
+                  "bow_liss": [0.0, 0.0, -4.4, 0.0]},
         "actors": {},
-        "shots": {"U01": {"pos": [1.6, 1.4, -3.0], "look_at": [0.0, 0.8, 4.2], "fov": 40}},
+        "shots": {"U01": {"pos": [1.6, 1.4, -3.0], "look_at": [0.0, 0.8, 4.2], "fov": 40},
+                  # M4-A2P-015 (docs/kb/plan/act2/chapters/ch15.md §4): C1 the bier under the bridal cloth; C2a low
+                  # on the water by the stern as the Wakefin rises; C3 the reveal, a medium single at Kerrid's seated
+                  # eye level that holds (~2.5 min), the insert on his hands, the party listening across the deck;
+                  # C4 the bow in fog, Liss singing
+                  "U02": {"pos": [-2.49, 1.93, -0.57], "look_at": [0.0, 0.6, 1.5], "fov": 45},
+                  "U03": {"pos": [3.24, 0.19, 7.77], "look_at": [-0.5, 0.8, 4.5], "fov": 50},
+                  "U04": {"pos": [0.4, 1.0, 2.2], "look_at": [0.0, 0.95, 4.2], "fov": 35},
+                  "U05": {"pos": [0.6, 0.9, 3.2], "look_at": [0.0, 0.7, 4.0], "fov": 30},
+                  "U06": {"pos": [0.6, 1.3, 4.8], "look_at": [0.0, 0.9, 0.5], "fov": 50},
+                  "U07": {"pos": [1.42, 1.49, -1.27], "look_at": [-0.5, 1.3, -8.0], "fov": 45}},
+        # M4-A2P-015: the deck from astern, high enough that the orbit sees the bier and the bow
+        "camera_volumes": [{"id": "Deck", "mode": "pan_follow", "at": [0.0, 1.0, 0.0], "size": [6.0, 4.0, 12.0],
+                            "pos": [3.5, 3.5, 7.0], "look_at": [0.0, 0.5, 0.0], "fov": 50, "priority": 1}],
         "triggers": [{"id": "dawn", "activation": "interact", "at": [0.0, 0.0, -4.2], "size": [2.0, 0, 1.2],
                       "prompt_key": "FIELD_PROMPT_CH15_BOW", "payload": {"beat": "to_hollowmere"}, "yaw": 0.0}],
     }
@@ -120,9 +138,20 @@ def hollowmere() -> dict:
         "blocks": blocks,
         "spawns": {"Dock": [2.0, 0.0, 0.0, 270.0]},
         "marks": {"fathers_door": [28.0, 0.0, -16.6, 0.0], "pyre_raft": [60.5, 0.0, 0.0, 270.0],
-                  "supper": [40.0, 0.0, -0.8, 180.0]},
+                  "supper": [40.0, 0.0, -0.8, 180.0],
+                  # M4-A2P-015: Toma and Liss by the bier at the dock's end (C6); Liss's father across the table (C8)
+                  "confess_toma": [57.0, 0.0, 0.6, 90.0], "confess_liss": [58.4, 0.0, -0.4, 270.0],
+                  "supper_father": [40.0, 0.0, 1.0, 0.0]},
         "actors": {},
-        "shots": {"H01": {"pos": [-1.0, 2.6, 2.0], "look_at": [40.0, 1.5, -10.0], "fov": 45}},
+        "shots": {"H01": {"pos": [-1.0, 2.6, 2.0], "look_at": [40.0, 1.5, -10.0], "fov": 45},
+                  # M4-A2P-015: C6 Toma and Liss by the bier, close; C7 the pyre-raft pushed off, wide; C8 the supper
+                  # table side-on, Rhen and Liss's father both in frame (the table rule)
+                  "H02": {"pos": [55.56, 1.56, -2.38], "look_at": [57.7, 1.4, 0.0], "fov": 40},
+                  "H03": {"pos": [52.06, 2.99, -7.97], "look_at": [68.0, 0.5, 0.0], "fov": 45},
+                  "H04": {"pos": [37.42, 1.44, 0.2], "look_at": [40.0, 1.1, 0.2], "fov": 45}},
+        # M4-A2P-015: the dock in two runs and the jetty to Liss's father's house (Act III re-uses them)
+        "camera_volumes": follow_volumes("Dock", [(0.0, 0.0), (30.0, 0.0), (60.0, 0.0)])
+        + follow_volumes("FathersJetty", [(28.0, -1.8), (28.0, -19.0)]),
         "triggers": [{"id": "ship", "activation": "interact", "at": [30.0, 0.0, 1.6], "size": [6.0, 0, 1.2],
                       "prompt_key": "FIELD_PROMPT_CH15_SHIP", "payload": {"beat": "to_rim"}, "yaw": 0.0}],
     }
