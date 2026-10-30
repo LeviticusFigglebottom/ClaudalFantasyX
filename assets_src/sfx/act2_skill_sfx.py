@@ -22,7 +22,14 @@ leave room, and each sound is timed to its clip (wind-up, then contact at the sh
     close_circle   (a phase sound, phase_close_circle.ogg) it rams the hull: a hollow boom, the barge rocking and
                    creaking, the water slapping back
 
-The skill ids are the sheet's proposed ones; combat owns them, and the rows wait in battle_sfx.json until they land.
+and two Vowbound skills (M4-A2P-024, called by Asha) whose effect is no hit, heal or status:
+
+    nhoa_echo      Nhoa copies the last enemy action: a salt-glass sweep drawn in, and the same figure given back from
+                   her, a beat later and brighter (the echo)
+    cord_lift      Hesk lifts the party's statuses: pale threads drawn up (a rising plucked-cord glissando), each knot's
+                   light loosing, and a soft holy bell at the top
+
+The Wakefin's skill ids are the sheet's proposed ones; combat owns them, and the rows wait in battle_sfx.json until they land.
 
 Synthesized here and in tools/audio/synth/ (SPEC §2, §9). Files are assets/audio/act2/sfx/battle/skill_<id>.ogg (mono,
 q4), at -19 LUFS momentary max (the combat rule).
@@ -155,6 +162,35 @@ def close_circle(g) -> np.ndarray:
 SKILLS: list[tuple[str, object, float]] = [("unravel", unravel, CAST), ("fin_cut", fin_cut, CAST),
                                            ("sound_dive", sound_dive, CAST), ("wakefin_rise", wakefin_rise, CAST),
                                            ("wake_wash", wake_wash, CAST), ("bill_strike", bill_strike, CAST)]
+def _glass_sweep(g, f0: float, f1: float, count: int, sec: float, amp: float = 1.0) -> np.ndarray:
+    x = buf(sec + 0.8)
+    for k in range(count):
+        f = f0 * (f1 / f0) ** (k / max(1, count - 1))
+        place(x, glass_ring(g, f, 0.5, 0.5), sec * k / count)
+    return amp * x
+
+
+def nhoa_echo(g) -> np.ndarray:
+    x = buf(2.2)
+    place(x, _glass_sweep(g, 3800.0, 2300.0, 6, 0.5, 0.8), 0.0)          # drawn in
+    place(x, _glass_sweep(g, 2300.0 * 1.5, 3800.0 * 1.5, 6, 0.5, 0.6), 0.75)   # given back, brighter
+    air = noise(g, _n(1.4), [bq_bandpass(2800, 0.8)]) * np.sin(np.pi * _t(_n(1.4)) / 1.4) ** 2
+    place(x, air / (np.abs(air).max() + 1e-9), 0.1, 0.12)
+    return x
+
+
+def cord_lift(g) -> np.ndarray:
+    x = buf(2.6)
+    for k in range(9):                                                    # pale threads drawn up
+        f = 440.0 * 2 ** (k * 4 / 12 / 2)
+        place(x, tap(g, [f, f * 2.01, f * 3.02], [0.25, 0.15, 0.08], 0.6, click=0.3), 0.08 * k)
+    place(x, _glass_sweep(g, 1760.0, 3520.0, 5, 0.6, 0.3), 0.3)          # the knots loosing their light
+    place(x, glass_ring(g, 880.0, 1.6, 0.35), 0.8)                         # a soft holy bell
+    place(x, glass_ring(g, 1320.0, 1.4, 0.2), 0.82)
+    return x
+
+
+SKILLS += [("nhoa_echo", nhoa_echo, CAST), ("cord_lift", cord_lift, CAST)]   # appended: earlier seeds stay
 PHASES: list[tuple[str, object, float]] = [("close_circle", close_circle, CAST)]
 FILES = [f"skill_{name}.ogg" for name, _, _ in SKILLS] + [f"phase_{name}.ogg" for name, _, _ in PHASES]
 

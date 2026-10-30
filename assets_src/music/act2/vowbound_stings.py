@@ -1,7 +1,7 @@
 """Act II's Vowbound stings (M4-A2P-091; act2_plan.md §4.4; the cue sheet §3): each new Vowbound's `*_bound` sting
 (its binding cinematic; a music.json cue, as Act I's virel_bound) and `*_summon` sting (battle_sfx.json
-`vowbound_stings`, on the Music bus, as virel_summon). Kesh has only `kesh_bound` (`kesh_summon` belongs to Act III's
-H03).
+`vowbound_stings`, on the Music bus, as virel_summon). Kesh is callable from Ch16 on (vowbound.json `kesh`,
+`bound_flag` ch16_kesh_bound), so she has her `kesh_summon` too; Act III's H03 reuses it.
 
 Original (SPEC §2, §9). Each sting is built from its Vowbound's own world. Every figure was written here or is our
 own motif, imported: the Kirru-mode Letting cell is farewell_tide.py's, and the loom figure is cloudloom.py's. None
@@ -21,6 +21,8 @@ is taken from any existing music.
     kesh_bound     Ch16, Kesh bound, all six elements in turn: six short colours chained (a fire-bell with crackle, ice
                    glass, a static chime, water bubbling, a holy bell, glimmer shimmer), resolving onto the Hush's A
                    minor. About 8 s.
+    kesh_summon    Kesh called: the six colours again, quick (a flick each), and the Hush's A minor under them. About
+                   5 s.
 
 Stereo, -16 LUFS integrated, Vorbis q4, under assets/audio/act2/music/stings/ (plain git, ADR 0175).
 
@@ -168,8 +170,24 @@ def kesh_bound(mx: Mixer, g) -> float:
     return 8.5
 
 
+def kesh_summon(mx: Mixer, g) -> float:
+    t = 0.05
+    flicks = [("bells", lambda: tower_bell(n("A5"), 0.4, seed=SEED + 110, t60=1.2, dark=0.0)),          # fire
+              ("glass", lambda: _glass(n("E7"), 0.3, SEED + 111, decay=1.0)),                          # ice
+              ("glass", lambda: _glass(n("D#6"), 0.3, SEED + 112, decay=0.8)),                         # lightning
+              ("air", lambda: np.repeat(bubble(3.5, 0.2)[:, None], 2, axis=1)),                        # water
+              ("bells", lambda: tower_bell(n("E5"), 0.4, seed=SEED + 113, t60=2.0, dark=0.2)),          # holy
+              ("glass", lambda: _glass(n("C7"), 0.25, SEED + 114, decay=1.6))]                         # glimmer
+    for i, (bus, f) in enumerate(flicks):
+        mx.add(bus, f(), t + 0.32 * i, pan=-0.6 + 0.24 * i)
+    mx.add("pad", pad_chord([n(p) for p in ("A2", "E3", "A3", "C4", "E4")], 2.6, 0.45, seed=SEED + 115, attack=0.9,
+                            release=1.2), 0.4)                                                      # the Hush's A minor
+    return 5.0
+
+
 STINGS = {"nhoa_bound": nhoa_bound, "nhoa_summon": nhoa_summon, "hesk_bound": hesk_bound, "hesk_summon": hesk_summon,
-          "ethren_bound": ethren_bound, "ethren_summon": ethren_summon, "kesh_bound": kesh_bound}
+          "ethren_bound": ethren_bound, "ethren_summon": ethren_summon, "kesh_bound": kesh_bound,
+          "kesh_summon": kesh_summon}
 FILES = [f"{s}.ogg" for s in STINGS]
 
 

@@ -7,7 +7,7 @@
   "ch10_bark_owa": {
    "headers": {"location": "ch10/reedhollow"},
    "ops": [
-    {"op": "if_not", "cond": ["flag", "ch10_tide_witnessed"], "to": 3, "src": 5},
+    {"op": "if_not", "cond": ["flag", "ch10_farewell_tide_seen"], "to": 3, "src": 5},
     {"op": "line", "id": "ch10_bark_owa_001", "key": "DLG_CH10_BARK_OWA_001", "speaker": "owa", "emotion": "neutral", "voice": "", "src": 6, "name_key": "DLG_NAME_OWA_THE_ELDEST", "tags": ["long"]},
     {"op": "goto", "to": 5, "src": 5},
     {"op": "line", "id": "ch10_bark_owa_002", "key": "DLG_CH10_BARK_OWA_002", "speaker": "owa", "emotion": "neutral", "voice": "", "src": 8, "name_key": "DLG_NAME_OWA_THE_ELDEST"},

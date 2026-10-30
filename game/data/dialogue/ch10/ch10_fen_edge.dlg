@@ -19,7 +19,9 @@ location: ch10/ossa_fen
 @mark kerrid fen_line_7 walk
 @wait 3.0
 @music ossa_fen fade=3.0
-@camera O02 blend=6.0 ease=in_out_sine
+// M4-CIN-1304 (cinematics): O02 tracks Toma, the line's leader (track=), so the camera goes on with the line while
+// Pell stops, as one continuous move; it ends when Toma reaches his mark.
+@camera O02 blend=6.0 ease=in_out_sine track=toma
 @mark toma root_walk_1 walk
 @mark asha root_walk_2 walk
 @mark ysolde root_walk_3 walk

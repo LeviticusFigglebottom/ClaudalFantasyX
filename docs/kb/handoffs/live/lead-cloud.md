@@ -23,6 +23,17 @@
 | act2-plan | `session_01UPFyE8YdUYQ5LuuhgfZtqS` | claude/act2-plan (docs only: the Act II plan, the tasks blocked by ADR 0203, the track split) |
 | gate big18 | `session_01UPFyEAXofxWazWNnRTzFGJ` | lead/gate-big18 (log `gate-big18.md`) |
 
+- 10-30 13:30: **PC OFF for a while (the human).** Its queue moved to three new cloud sessions:
+  - **shots** (session_01UPFyE9cvyQkTt3JUMukyig, lead/shots-bigN, log shots.md): post-merge lavapipe captures. big22's full manifest first, including big21's 173 missing shots.
+  - **cloud-qa** (session_01UPFyE9YjTAw8X8J3Kax1iU, qa/cloud-pass6, log cloud-qa.md): pass 6 on lavapipe, the human-playtest measurements (battle return, Oruvel boats and edges, the run, encounter spacing), and the full non-blocking suite.
+  - **gate-helper** (session_01UPFyE8yvVQq7sK9XruLDxk, lead/gate-helper, log gate-helper.md): runs half of each fast gate's filtered test files (gate-bigN-lanes-b.txt → gate-bigN-lanes-b-result.md).
+  - The gate now runs only the fast gate. Pending PC items: the row 17 fix is merged; pass 6 on real GPU waits for the PC's return.
+- 10-30 12:20: **HUMAN PLAYTEST FAST-TRACKs** (ADR 0042 §1), top priority in big23:
+  1. Default run looks jagged; arms flail up instead of a brisk jog → characters (rebuild jog clips: Rhen, Asha, Toma) + integration-qa (speed match).
+  2. New Game "starts underwater" → slice-polish: check that prologue_dead_city plays before ch01/oruvel_underway@Drop from a fresh profile. Ch1 underwater is intended; Haluna is Ch2.
+  3. Encounters too frequent → act1-chapters: post-battle grace period, minimum spacing, lower rates; target a breather of about 30–45 s.
+  4. Multi-second black screen after a victory → integration-qa (SceneRouter: resident field, ≤ 1 s, plus a test); the PC measures it.
+  5. Oruvel boats clip the docks; the hero can walk off into the water → env-art (boats and edge colliders) + integration-qa (a generic water guard, a safety catch and a test for every dock zone).
 - 10-30 10:50: big22 built (b6151a05), fast gate running. Ownership confirmed: env-art-b owns Ch13–Ch16 dressing, env-art Ch10–Ch12 (my earlier Ch13–15 order to env-art was wrong). Rime Shard ice text → act2-plan fixes. Row 64 traced (creatures-b) to the battle camera search → battle-presentation. Idle tracks given as-played passes (creatures-b bosses, ui-menus UI, env-art-b Ch5–9 walk).
 - 10-30 10:15: **PC pass 5 (gpu/act1-qa-5, big20): row 67 FIXED** (every entry < 1 s hidden; Brine Shoals 5/5 fresh, no hang). Fixed 23, 25, 43, 44, 45, 49, 50, 52, 53, 57, 60, 67. Partly: 24, 37, 38, 39, 46, 47, 51, 54, 55, 58. Open: 17 (PC fix 12cf79cb → big22), 21, 34, 56, 61, 62, 63, 64, 66. Regressed: 59. All routed (integration-qa 21/24/37/38/47/66; act1-chapters 34/39/58; characters 46/54/55/56; battle-presentation 61/64; env-art-b 51/62/63; env-art 59; slice-polish 58). Told characters not to loosen test_rig_integrity limits.
 - 10-30 09:55: **big21 merged** @ 0347aa74 (includes ui-menus row 67 fix 329e7bce). big22 requested with all MERGE-READY heads, Act I fixes first. PC running pass 5; asked to re-probe row 67 on 0347aa74. Idle tracks re-tasked (creatures, creatures-b, audio, env-art-b, ui-menus).

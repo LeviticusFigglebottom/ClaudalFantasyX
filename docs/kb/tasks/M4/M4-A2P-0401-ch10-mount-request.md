@@ -3,7 +3,7 @@ id: M4-A2P-0401
 title: "Mount env-art's Ch10 dressing in ch10/ossa_fen and ch10/reedhollow (request to chapters)"
 role: cinematics
 status: review
-owner_session: act1-chapters
+owner_session: "chapters (claude/act1-chapters; owner filled by the big22 gate from e64595ad)"
 depends_on: [M4-A2P-040]
 milestone: M4
 request-from: environment

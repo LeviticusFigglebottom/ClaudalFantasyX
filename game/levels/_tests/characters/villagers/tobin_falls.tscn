@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/villagers/tobin_stage.tscn" id="stage"]
+
+[node name="TobinStage" instance=ExtResource("stage")]
+emotion = "surprised"
+clip = &"tobin_falls"
+clip_time = 2.4
