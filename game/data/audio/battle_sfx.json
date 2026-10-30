@@ -150,7 +150,22 @@
     "rime_spine": "hit_ice",
     "scree_slide": "hit_ice",
     "unravel": "status_apply",
-    "skate_sting": "hit_none"
+    "skate_sting": "hit_none",
+    "drowner_drag": "hit_none",
+    "rising_water": "hit_water",
+    "root_stamp": "hit_none",
+    "lamp_trim": "hit_none",
+    "lamp_gather": "status_apply",
+    "lamp_flare": "hit_none",
+    "core_pulse": "hit_none",
+    "horn_toss": "hit_none",
+    "ram_charge_gather": "status_apply",
+    "ram_charge": "hit_none",
+    "ram_bellow": "hit_none",
+    "fin_cut": "hit_none",
+    "sound_dive": "status_apply",
+    "wake_breach": "hit_none",
+    "wake_wheel": "hit_none"
   },
   "skills": {
     "toll": "drownbell_toll",

@@ -20,7 +20,11 @@ func test_every_act_two_foe_skill_has_its_own_effect() -> void:
 		if ch < 10 or ch > 16:
 			continue
 		for eid: Variant in (db.encounters[enc_id] as Dictionary).get("enemies", []):
-			for sid: Variant in (db.enemies[StringName(str(eid))] as Dictionary).get("skills", []):
+			var row := db.enemies[StringName(str(eid))] as Dictionary
+			var ids: Array = (row.get("skills", []) as Array).duplicate()
+			for phase: Dictionary in row.get("phases", []):  # a boss's phase skills
+				ids.append_array(phase.get("skills", []))
+			for sid: Variant in ids:
 				if str(sid) == "attack":
 					continue  # the plain attack is the element hit
 				var effect := str(((_fx["map"] as Dictionary)["skills"] as Dictionary).get(str(sid), ""))

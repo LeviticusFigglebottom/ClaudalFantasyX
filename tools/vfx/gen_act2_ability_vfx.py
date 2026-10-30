@@ -23,6 +23,7 @@ _spec = importlib.util.spec_from_file_location("gen_act1_ability_vfx", HERE / "g
 A1 = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(A1)
 fx, slash, heavy, burst, spray, shards, sink = A1.fx, A1.slash, A1.heavy, A1.burst, A1.spray, A1.shards, A1.sink
+ring, charge = A1.ring, A1.charge
 
 # The Act II regulars' skills (ch10..ch16 encounters). Their foes' plain `attack` keeps the element hit.
 SKILLS = {
@@ -46,6 +47,34 @@ SKILLS = {
     # Ch16 the Pale Rim
     "skate_sting": fx("chest", slash("salt_glass", "palm_green", 30) + sink("palm_green", "foliage_shadow", 14, 0.25),
                       "The glass skate's sting: a needle of pale glass, then the poison settling."),
+    # The Act II creature bosses (PROVISIONAL rows, 10-30; their sheets' attack and cast reads)
+    "drowner_drag": fx("ground", spray("deep_teal_shadow", "foam_white", 50),
+                       "The Mangrove Drowner hauls the footing: fen water dragged back along the roots."),
+    "rising_water": fx("ground", spray("lagoon_teal", "deep_teal_shadow", 60),
+                       "The Drowner's rising water climbs around each of the party (water, never glimmer)."),
+    "root_stamp": fx("ground", heavy("timber_weathered", "foliage_shadow", "sand_wet", "deep_teal_shadow", 56),
+                     "Risen on its root-feet, the Drowner stamps: splinters and fen mud."),
+    "lamp_trim": fx("chest", slash("brass", "salt_glass", 36), "The Lamp Engine's scissor arm snips: brass sparks."),
+    "lamp_gather": fx("chest", charge("glimmer_bound", "salt_glass", 44),
+                      "The Lamp Engine gathers: every lamp turns to the party and brightens (bound light, steady)."),
+    "lamp_flare": fx("chest", burst("glimmer_bound", "salt_glass", 44, -1.0),
+                     "The lamps loose together: bound light in the eyes (capped by particles, not a screen flash)."),
+    "core_pulse": fx("chest", burst("glimmer_bound", "lagoon_teal", 50, -1.5),
+                     "The bared core pulses: a ring of steady bound light breaking over each of the party."),
+    "horn_toss": fx("chest", slash("sand_cloth", "overcast_slate", 36), "The Avalanche Ram tosses its head: wet wool and grit."),
+    "ram_charge_gather": fx("ground", ring("mortar_white", "sand_dry", 40, 1.2),
+                            "The Ram paws the terrace, head low: snow kicked up around its feet (no ice, ADR 0204)."),
+    "ram_charge": fx("ground", heavy("sand_cloth", "overcast_slate", "mortar_white", "sand_dry", 60),
+                     "The Ram drives through: snow and grit thrown out low."),
+    "ram_bellow": fx("head", sink("mortar_white", "overcast_slate", 40, 0.5),
+                     "The bellow brings the snow down off the wall onto the party (wet snow, never ice)."),
+    "fin_cut": fx("chest", slash("sea_glow", "abyss_navy", 40), "The Wakefin's blade cuts across the rail: a seam of sea-glow."),
+    "sound_dive": fx("ground", ring("sea_glow", "abyss_navy", 48, 1.6),
+                     "The Wakefin sounds: the water darkens, then a ring of sea-glow marks where it will rise (a glow, not a light)."),
+    "wake_breach": fx("chest", spray("sea_glow", "deep_teal_shadow", 60),
+                      "It breaches alongside and the fin sweeps the deck: black water lit from below."),
+    "wake_wheel": fx("ground", spray("deep_teal_shadow", "sea_glow", 44),
+                     "The circle closes: the wake rocks the barge under each of the party."),
 }
 
 
