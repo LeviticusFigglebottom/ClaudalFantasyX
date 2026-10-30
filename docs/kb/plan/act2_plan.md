@@ -10,6 +10,7 @@
   - the art sheets: [color_script.md](../art/color_script.md) `ch10`–`ch16`, `docs/kb/art/environments/{ossa_fen,lowlight,keth_pass,ansedra,open_sea_ch15,hollowmere,pale_rim}.md`, [act2_roster.md](../art/creatures/act2_roster.md) and `act2/*.md`, `vowbound/{nhoa,hesk,ethren}.md`;
   - [act2_finals.md](../audio/act2_finals.md) (the Act II score);
   - [balance_targets.md](../design/balance_targets.md) and [set_piece_battles.md](../design/set_piece_battles.md).
+- **Lane docs:** each track drafts its own Act II lane plan under [`docs/kb/plan/act2/<lane>/`](act2/) (ui-menus, audio, creatures, act1-chapters so far, 2026-10-30). Where a lane doc and this plan differ, the lane doc is the detail and this plan is the index.
 - **Companion files:** [act2_tracks.md](act2_tracks.md) (the proposed track split and ownership globs); [act2_inventory.md](act2_inventory.md) (the branch-by-branch evidence for §3); the M4 task files `docs/kb/tasks/M4/M4-A2P-*.md` (one per gap, filed by this plan).
 
 ## 0. The bar
@@ -466,6 +467,7 @@ All `status: blocked`, `blocked-by: ADR 0203`; the Lead flips them to `todo` at 
 | [M4-A2P-056](../tasks/M4/M4-A2P-056-act2-wildlife.md) | character | environment | Act II wildlife for the new zones |
 | [M4-A2P-057](../tasks/M4/M4-A2P-057-kesh-sheet-and-model.md) | character | rendering | Kesh, the First Voice: the design sheet, then the model |
 | [M4-A2P-058](../tasks/M4/M4-A2P-058-act2-creature-vfx.md) | character | combat | Act II creatures' own VFX: snagged motes, lamps, snow, wake and the regulars' skills |
+| [M4-A2P-059](../tasks/M4/M4-A2P-059-avalanche-ram-no-ice.md) | character | rendering | The Avalanche Ram without ice: wet, matted, seep-lit wool (ADR 0015; Lead 2026-10-30) |
 | [M4-A2P-060](../tasks/M4/M4-A2P-060-act2-battle-vfx.md) | combat | rendering | Act II battle VFX in effects.json: every new skill, boss and set piece |
 | [M4-A2P-061](../tasks/M4/M4-A2P-061-vowbound-summons.md) | combat | rendering | Nhoa, Hesk, Ethren and Kesh: summon cinematics (full and short) and Swell finishers |
 | [M4-A2P-062](../tasks/M4/M4-A2P-062-darkness-fight.md) | combat | rendering | The Wakefin in the dark: a battle lit only by the sea-glow, telegraphs by sound and glow |
