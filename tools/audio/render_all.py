@@ -231,6 +231,9 @@ JOBS = [
      "sfx"),
     # M4-A2P-090 (ADR 0175): Act II scene cues, plain git under assets/audio/act2/music/
     ("assets_src/music/act2/farewell_tide.py", "assets/audio/act2/music", ["farewell_tide.ogg"], "music"),
+    ("assets_src/music/act2/peace_wedding_break.py", "assets/audio/act2/music", ["peace_wedding_break.ogg"], "music"),
+    ("assets_src/music/act2/lagoon_escape.py", "assets/audio/act2/music", ["lagoon_escape.ogg"], "music"),
+    ("assets_src/music/act2/kerrid_at_sea.py", "assets/audio/act2/music", ["kerrid_at_sea.ogg"], "music"),
     ("assets_src/music/prologue_dusk.py", "assets/lfs/audio/music", ["prologue_dusk.ogg", "prologue_dusk.loop.json"], "music_loop"),
     # M3-AUD-832: the UI track's new screens (menu motion, the title's reveal, save slots, shrine travel, Reefball HUD)
     ("assets_src/sfx/screen_sfx.py", "assets/audio/sfx", _source_files("assets_src/sfx/screen_sfx.py"), "sfx"),
