@@ -47,6 +47,8 @@ AI_CONDITIONS = {"self_hp_below_pct", "turn_mod", "foe_has_status", "allies_aliv
 # every living active ally but the user (Shallows Verse: a song for the others, never the singer).
 SKILL_ONLY_TARGETS = {"all_other_allies"}
 SKILL_ONLY_TARGETS.add("ward")  # M3-CMB-01: a set piece's ward entry (the Climb), set_piece_battles.md
+AI_TARGETS.add("broken_ally")  # M4-A2P-022 (BattleParts): the first living ally with a broken part
+AI_CONDITIONS.update({"ally_part_broken", "ally_struck"})  # M4-A2P-022: bool args
 STAT_KEYS = {"level", "hp", "mp", "strength", "magic", "defense", "magic_defense",
              "agility", "accuracy", "evasion", "luck"}
 CANON_STATUSES = {"poison", "sleep", "silence", "darkness", "petrify", "slow", "haste", "stop",
@@ -193,6 +195,8 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
             rep.err(f"{w}: 'drain_pct' must be an int in 1..100 (M4-CMB-1001)")
         if "root_turns" in s and (not isinstance(s["root_turns"], int) or s["root_turns"] < 1):
             rep.err(f"{w}: 'root_turns' must be a positive int (M4-A2P-020)")
+        if "restores_part" in s and not isinstance(s["restores_part"], bool):
+            rep.err(f"{w}: 'restores_part' must be a bool (M4-A2P-022)")
         if not isinstance(s.get("magic", False), bool):
             rep.err(f"{w}: 'magic' must be a bool")
         if "name_key" not in s:
@@ -255,6 +259,10 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
             rep.err(f"{w}: currency must be a non-negative int")
         if "delay_immune" in e and not isinstance(e["delay_immune"], bool):
             rep.err(f"{w}: delay_immune must be true or false")
+        charged = {str(s.get("charge", {}).get("skill")) for s in skills if s["id"] in own and s.get("charge")}
+        for part in e.get("parts", []):  # M4-A2P-022: a part is a charge one of its own skills gathers
+            if part not in charged:
+                rep.err(f"{w}: part '{part}' is not the charge of one of its skills")
         for d in e.get("drops", []):
             if not isinstance(d, dict) or d.get("item") not in item_ids:
                 rep.err(f"{w}: drop {d!r} names an unknown item (game/data/items/items.json)")
@@ -303,6 +311,8 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
 
 
 def _ai_arg_ok(cond: str, arg: object, status_ids: set[str]) -> bool:
+    if cond in ("ally_part_broken", "ally_struck"):
+        return isinstance(arg, bool)
     if cond == "turn_mod":
         return (isinstance(arg, list) and len(arg) == 2 and all(isinstance(x, int) for x in arg)
                 and arg[0] > 0 and 0 <= arg[1] < arg[0])
