@@ -90,6 +90,46 @@
       "voices": 1,
       "volume_db": 0.0,
       "_note": "M4-A2P-092: the wakefin's intro sting (reduced audio) (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_malcor_venn": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_malcor_venn.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: Malcor Venn's intro sting (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_malcor_venn_soft": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_malcor_venn_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: Malcor Venn's intro sting (reduced audio) (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_abiding_guard": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_abiding_guard.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the Abiding guard's intro sting (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_abiding_guard_soft": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_abiding_guard_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the Abiding guard's intro sting (reduced audio) (assets_src/sfx/act2_boss_stings.py)"
     }
   }
 }

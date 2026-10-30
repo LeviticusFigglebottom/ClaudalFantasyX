@@ -10,8 +10,15 @@ shows, about 4 s, and an open fifth struck high above), and in it the boss's own
                       wool, no ice)
     wakefin           Ch15: the blade cutting the black water and the breach, in the dark
 
-battle_stings.json `boss_intro.by_arg` keys them by the intro's title key: their encounters aren't written yet, and
-choreo.json `boss_intro.by_enemy` stages their intros. StingAudio tries the encounter first, then the title key.
+and the two people bosses, whose sounds are the Order's (keyed by their encounter ids, ch14.md and ch16.md §3):
+
+    ch14_malcor_venn     the pursuit barge closing: the flat-engine's drone swelling under the frame, its gong pulse
+                         on the timeline's slow tick (a pulse every four beats at malcor_venn's 96 BPM), muted
+    ch16_abiding_guard   the guard closing ranks: ORDER_HUM's first cell, hummed low and close, cut off mid-note
+                         by the big drum (the cue sheet's "big drum, hum cut off")
+
+battle_stings.json `boss_intro.by_arg` keys the creature bosses by the intro's title key: their encounters aren't
+written yet, and choreo.json `boss_intro.by_enemy` stages their intros. StingAudio tries the encounter first, then the title key.
 Each has a `_soft` twin without sub-bass for reduced audio. Synthesized here and in tools/audio/synth/ (SPEC §2, §9);
 each fifth is an open interval on a struck bar, not a melody.
 
@@ -27,6 +34,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 sys.path.insert(0, os.path.join(ROOT, "tools", "audio"))
+sys.path.insert(0, os.path.join(ROOT, "assets_src", "music"))
 sys.path.insert(0, HERE)
 
 import numpy as np  # noqa: E402
@@ -36,8 +44,14 @@ import act2_creature_sfx as A2  # noqa: E402
 import battle_sfx as B  # noqa: E402
 import creature_sfx as C  # noqa: E402
 from act1_skill_sfx import creak, rumble  # noqa: E402
-from synth.dsp import bq_bandpass, bq_highpass, filt, rng  # noqa: E402
+from motifs import ORDER_HUM  # noqa: E402
+from synth.drums import big_drum, frame_drum  # noqa: E402
+from synth.dsp import bq_bandpass, bq_highpass, bq_lowpass, filt, rng  # noqa: E402
+from synth.gongs import kettle_gong  # noqa: E402
 from synth.mixer import measure, write_ogg  # noqa: E402
+from synth.pad import pad_chord  # noqa: E402
+from synth.score import n  # noqa: E402
+from synth.voice import hum_ensemble  # noqa: E402
 
 OUT_DIR = os.path.join(ROOT, "assets", "audio", "act2", "sfx", "battle")
 SEED = 20262300
@@ -80,8 +94,38 @@ def wakefin(g):
     return x
 
 
+def _mono(x: np.ndarray) -> np.ndarray:
+    return x.mean(axis=1) if x.ndim == 2 else x
+
+
+def malcor_venn(g):
+    x = S1.frame(g, "C2", "G5", SEED + 50, drum=0.5)
+    N = len(x)
+    drone = _mono(pad_chord([n("C2"), n("G2"), n("C3")], S1.SEC, vel=1.0, seed=SEED + 51, attack=2.4, release=0.8))
+    drone = filt(drone, [bq_lowpass(420, 0.7), bq_lowpass(420, 0.7)])      # the motion filtered out: flat
+    x += 2.2 * drone[:N] / (np.abs(drone).max() + 1e-9) * np.clip(B._t(N) / 2.6, 0, 1)
+    for k in range(1, 3):                                              # the slow tick: every four beats at 96 BPM
+        B._place(x, 0.35 * kettle_gong(n("C3"), 0.5, seed=SEED + 52 + k, t60=1.0, damp_at=0.6)[: N], 2.5 * k - 1.3)
+    return x
+
+
+def abiding_guard(g):
+    x = S1.frame(g, "A1", "E5", SEED + 60, drum=0.4)
+    N = len(x)
+    line = [(float(m) - 12, d * 60.0 / 96.0) for m, d in ORDER_HUM[:3]]
+    hum = _mono(hum_ensemble(line, voices=10, seed=SEED + 61, register="low", spread=0.6))
+    cut = B._n(1.55)                                                    # cut off mid-note
+    hum = hum[:cut] * np.minimum(1.0, np.linspace(30.0, 0.0, cut))
+    B._place(x, 1.4 * hum / (np.abs(hum).max() + 1e-9), 0.1)
+    for i, at in enumerate((1.6, 1.6 + 60.0 / 96.0)):                 # the ranks close: the big drum, twice
+        B._place(x, 0.9 * big_drum(0.85 - 0.15 * i, variant=i, seed=SEED + 62), at)
+    for s in range(3):
+        B._place(x, 0.3 * frame_drum("tek", 0.4, variant=s, seed=SEED + 63), 2.6 + 0.16 * s)
+    return x
+
+
 BOSSES = {"mangrove_drowner": mangrove_drowner, "lamp_engine": lamp_engine, "avalanche_ram": avalanche_ram,
-          "wakefin": wakefin}
+          "wakefin": wakefin, "malcor_venn": malcor_venn, "abiding_guard": abiding_guard}
 
 
 def _sting(fn, i: int, soft: bool):
