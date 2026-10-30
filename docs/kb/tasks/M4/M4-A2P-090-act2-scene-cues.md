@@ -22,4 +22,6 @@ The scene cues act2_finals.md lists as not written, timed to the beat sheets and
 - 2026-10-30: the pre-gate beat-sheet drafts add two proposed cues: `tobin_pyre` (act2_ch15 §6, ~60 s, the wedding's vow phrase on a fiddle) and `kesh_memory` (act2_ch16 §6, ~3 min, the memory sequence). Time every cue to the drafts' beats.
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
 
+- 2026-10-30 (audio): rendered and wired: farewell_tide, peace_wedding_break, lagoon_escape, kerrid_at_sea, hollowmere_answers, sefir_go_home, act2_break (assets/audio/act2/music/, ADR 0175). The pyre-raft reprises hush_first_verse (ADR 0204 §12), so the drafts' `tobin_pyre` is not made; `kesh_memory` is a row on drowned_choir under the muffle (the cue sheet). Still to do: retime each cue to the beat sheets once they are final, and the `@music` lines in the Act II .dlg (Story's).
+
 ## Review log
