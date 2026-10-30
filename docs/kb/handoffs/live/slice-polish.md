@@ -977,6 +977,25 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
 - **M2-FP-121 (Ch1's "One month earlier." as UI's card on black), MERGE-READY:** a `#card` line is ActCard's caption.
   A card before the first fade-in no longer stops a scene starting black. cutscene 98, ch01 20, dialogue 85,
   cutscene_sequencer 19, all 0 failed (mutation-checked).
+- **M3-CIN-1234 (found in the Ch1 beat pass on big18): every arrival `place` step was undone in play.**
+  - **Seen:** in Ch1's scale-hull scene Rhen never appears, though he has half the lines. O02 is my over-the-shoulder
+    from beside ScaleHull, and it framed the booth alone. `tools/cutscene_frames --log-player` (new) shows Rhen at
+    Surface (0, 0, 13) for the whole scene.
+  - **Cause:** ZoneStory (`game/flow/zone_story.gd`; the architect seat, integration-qa's) begins its arrival steps
+    with a deferred call in `_ready`, the frame the router swaps the scene in. SceneRouter places the party on the
+    travel spawn one frame later, so the arrival's `place` step is overwritten.
+  - **Scope:** 20+ arrivals in Ch1 and Ch4–Ch9 place the party somewhere other than their travel spawn: Ch4's ferry
+    (Stern, Landing), Ch5 (Harbour, FromAshcrown, AnvilCourt), Ch6 (Entry, CampWaterline), Ch7 (RiverMouth, the
+    galleries), Ch8 (MoleStair, WallHead ×6, Gallery), Ch9 (Strand, RoadGate). The thread tests bypass the router, so
+    none caught it.
+  - **Fix (pushed; the human is playtesting, so I did not wait):** with a swap in progress, `_autostart` waits for
+    `EventBus.scene_changed`, which the router emits right after placing the party. With no swap (tests), nothing
+    changes. zone_story 15, _thread 40, haluna 65, act1_route 3, scene_router 17, all 0 failed. Verifying render
+    running.
+  - **For integration-qa:** please review. A router-level test would catch any regression: a real change_scene with
+    a spawn, plus an arrival that places elsewhere.
+  - **For act1-chapters:** your Ch4–Ch9 arrival scenes have staged on the travel spawn until now. Re-view any arrival
+    still that looked off.
 ### PC-QUEUE
 - New Game → the beach: 15 s of black before the fade on lavapipe (the load and prewarm at a fixed 30 fps). Measure it on
   the GPU against ADR 0042's ≤ 1 s hidden-frames target.
