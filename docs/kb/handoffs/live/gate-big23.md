@@ -28,3 +28,12 @@ act2-plan's sfx request (taskboard --check: duplicate id).
 
 Checks at the build: validate_data 0/0; taskboard ok; dlgc 0/0; gdlint and gdformat clean; no duplicate loc keys or
 PROVENANCE rows; no conflict markers.
+
+### Fast gate (12:33 UTC)
+- Import clean; **boot smoke 0 ERROR lines**; 144 test files selected, 3 lanes.
+- **Playtest FAST-TRACK merged mid-batch:** env-art @ 7fbb9319, "Oruvel's boats no longer clip the docks" (b4285fc4;
+  oruvel_dressing.json, ov_zone_dressing.py, the new tools test test_oruvel_moorings: OK). The Godot tests that load
+  Oruvel run again after the lanes (they started before the merge).
+- 13:04: per the Lead, the PC takes the post-merge captures (big21's 173 missing shots, big22's), the full suite and the
+  Blender verifies (gpu/shots-big22). The cloud big21 capture is stopped (my loops and their renders only); the fast
+  gate is this session's only job.
