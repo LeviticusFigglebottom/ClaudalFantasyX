@@ -1389,6 +1389,16 @@
       ]
     },
     {
+      "id": "creature_kesh",
+      "owner": "character",
+      "sources": ["assets_src/creatures/kesh/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/kesh/*.glb", "assets/creatures/kesh/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/kesh/build_kesh.py", "--", "--out", "assets/creatures/kesh/kesh.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "kesh"]
+      ]
+    },
+    {
       "id": "crowd_boy_small",
       "threads": 4,
       "owner": "character",

@@ -292,6 +292,14 @@
       "contact": {"attack": 0.55, "cast": 0.8, "stop": 0.9, "ward": 0.8, "special": 1.45},
       "stand_in": {"yaw_deg": -90.0, "height": 2.5, "radius": 0.6}
     },
+    "kesh": {
+      "scene": "res://game/creatures/kesh/kesh_battle.tscn",
+      "vowbound": true,
+      "vowbound_pending": "M4-A2P-024/M4-A2P-025 (combat) add the vowbound.json row, the six voices, kesh_shift and the_seven; the clip map is ready in docs/kb/art/creatures/vowbound/kesh.md (As built, M4-A2P-057)",
+      "contact": {"attack": 0.55, "cast": 0.8, "special": 1.8, "voice_water": 0.9, "voice_lightning": 0.7, "voice_fire": 0.8,
+                  "voice_ice": 0.9, "voice_holy": 0.8, "voice_glimmer": 0.9},
+      "stand_in": {"yaw_deg": -90.0, "height": 4.2, "radius": 0.8}
+    },
     "ilun_held": {
       "scene": "res://game/creatures/ilun/ilun_held_battle.tscn",
       "ko": "release",

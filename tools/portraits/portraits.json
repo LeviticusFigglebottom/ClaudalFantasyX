@@ -603,6 +603,11 @@
       "out_dir": "res://assets/ui/portraits/creatures"
     },
     {
+      "id": "kesh",
+      "scene": "res://game/creatures/kesh/kesh_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
       "id": "ilun_held",
       "scene": "res://game/creatures/ilun/ilun_held_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures"

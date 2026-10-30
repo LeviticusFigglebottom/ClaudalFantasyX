@@ -199,6 +199,97 @@ const ETHREN_CORE_Y := Vector2(1.6, 1.9)
 const ETHREN_CORE_FRONT_M := 0.1
 const ETHREN_KEEPSAKE_NEAR_M := 0.15
 const ETHREN_END_SEC := 0.001
+const KESH: StringName = &"kesh"
+## The Vowbound contract, one clip per voice and the shift (plain and per element), and The Seven (`special`).
+const KESH_CLIPS: Array[StringName] = [
+	&"idle",
+	&"idle_b",
+	&"ready",
+	&"rise",
+	&"dismiss",
+	&"attack",
+	&"cast",
+	&"hit",
+	&"hit_b",
+	&"defend",
+	&"ko",
+	&"victory",
+	&"special",
+	&"shift",
+	&"shift_water",
+	&"shift_lightning",
+	&"shift_fire",
+	&"shift_ice",
+	&"shift_holy",
+	&"shift_glimmer",
+	&"voice_water",
+	&"voice_lightning",
+	&"voice_fire",
+	&"voice_ice",
+	&"voice_holy",
+	&"voice_glimmer",
+]
+## Her striking clips, each with a creatures.json `contact`.
+const KESH_STRIKES: Array[StringName] = [
+	&"attack",
+	&"cast",
+	&"special",
+	&"voice_water",
+	&"voice_lightning",
+	&"voice_fire",
+	&"voice_ice",
+	&"voice_holy",
+	&"voice_glimmer",
+]
+## Clips that start where the idle starts (rise starts folded: it is the call).
+const KESH_FROM_IDLE: Array[StringName] = [
+	&"idle_b",
+	&"ready",
+	&"dismiss",
+	&"attack",
+	&"cast",
+	&"hit",
+	&"hit_b",
+	&"defend",
+	&"ko",
+	&"victory",
+	&"special",
+	&"shift",
+	&"shift_water",
+	&"shift_lightning",
+	&"shift_fire",
+	&"shift_ice",
+	&"shift_holy",
+	&"shift_glimmer",
+	&"voice_water",
+	&"voice_lightning",
+	&"voice_fire",
+	&"voice_ice",
+	&"voice_holy",
+	&"voice_glimmer",
+]
+## The bones compared for "the same frame" (the far ends of every chain), and how close they must be.
+const KESH_ENDS: Array[String] = [
+	"head", "hand_l", "hand_r", "hair_l2", "hair_r2", "robe_f2", "robe_b2", "robe_l2", "robe_r2", "key_1", "spine_2"
+]
+const KESH_SAME_M := 0.005
+## In battle she is 4.2 m (ADR 0204 §7): the stand-in's height, and the model's crown within this of it.
+const KESH_HEIGHT_M := 4.2
+const KESH_HEIGHT_TOL_M := 0.15
+## The heart in her chest, the key at her hip (metres over the water).
+const KESH_CORE_Y := Vector2(2.5, 3.1)
+const KESH_KEY_Y := Vector2(1.0, 1.9)
+## Grounded through the column: `root` and the column's base stay on the water in every clip.
+const KESH_GROUND_TOL_M := 0.001
+const KESH_GROUND_SAMPLES := 6
+## The Seven: she rises at least this far on the column by the contact.
+const KESH_SEVEN_RISE_M := 0.9
+## The ice voice: completely still between these times (the near hand and the head move less than this).
+const KESH_ICE_STILL := Vector2(0.25, 0.8)
+const KESH_ICE_STILL_M := 0.01
+## The KO sinks her into the column to the shoulders: the shoulders at least this far down at the end.
+const KESH_KO_SINK_M := 1.0
+const KESH_END_SEC := 0.001
 
 var hesk_made: Array[Node] = []
 
@@ -638,6 +729,181 @@ func _ethren_assert_same(got: Array[Vector3], want: Array[Vector3], what: String
 
 ## Names of the bones some vertex actually weights (> 0) in any skinned mesh under the skeleton.
 func _ethren_weighted_bones(skel: Skeleton3D) -> Dictionary:
+	var out: Dictionary = {}
+	for n: Node in skel.find_children("*", "MeshInstance3D", true, false):
+		var mi := n as MeshInstance3D
+		if mi.skin == null or mi.mesh == null:
+			continue
+		for s in mi.mesh.get_surface_count():
+			var arrays := mi.mesh.surface_get_arrays(s)
+			var bones: PackedInt32Array = arrays[Mesh.ARRAY_BONES]
+			var weights: PackedFloat32Array = arrays[Mesh.ARRAY_WEIGHTS]
+			for i in mini(bones.size(), weights.size()):
+				if weights[i] > 0.0:
+					var b := mi.skin.get_bind_name(bones[i])
+					out[String(b) if b != &"" else skel.get_bone_name(mi.skin.get_bind_bone(bones[i]))] = true
+	return out
+
+
+func test_kesh_has_the_vowbound_clip_set_and_a_clip_per_skill() -> void:
+	var made: Array[Node] = []
+	var a := _kesh_actor(made)
+	for clip in KESH_CLIPS:
+		assert_true(a.has_clip(clip), "kesh has %s" % clip)
+	_kesh_free(made)
+
+
+func test_kesh_each_strike_winds_up_before_its_contact() -> void:
+	var made: Array[Node] = []
+	var a := _kesh_actor(made)
+	for clip in KESH_STRIKES:
+		var t := a.contact_time(clip)
+		assert_true(t >= VOWBOUND_WIND_UP_MIN_SEC, "kesh's %s winds up %.2f s before contact" % [clip, t])
+		assert_true(t < a.clip_length(clip), "kesh's %s lands inside the clip" % clip)
+	_kesh_free(made)
+
+
+func test_kesh_has_her_unweighted_anchor_bones() -> void:
+	var made: Array[Node] = []
+	var skel := _kesh_skeleton(_kesh_actor(made))
+	for bone in VOWBOUND_ACT2_ANCHORS:
+		assert_true(skel.find_bone(String(bone)) >= 0, "kesh has the %s bone" % bone)
+	var weighted := _kesh_weighted_bones(skel)
+	assert_true(weighted.has("spine_1"), "her mesh is weighted (the check is live)")
+	for bone in VOWBOUND_ACT2_ANCHORS:
+		assert_false(weighted.has(String(bone)), "her %s carries no vertices" % bone)
+	var posed := _kesh_pose(_kesh_actor(made), &"idle", 0.0)
+	var core := _kesh_bone_at(posed, "vfx_core")
+	var keep := _kesh_bone_at(posed, "vfx_keepsake")
+	assert_true(
+		core.y > KESH_CORE_Y.x and core.y < KESH_CORE_Y.y, "the core is the heart in her chest (y %.2f)" % core.y
+	)
+	assert_true(keep.y > KESH_KEY_Y.x and keep.y < KESH_KEY_Y.y, "the keepsake is the key at her hip (y %.2f)" % keep.y)
+	_kesh_free(made)
+
+
+func test_kesh_stands_four_point_two_metres() -> void:
+	var made: Array[Node] = []
+	var spec := BattleStage.stand_in_spec(KESH)
+	assert_true(is_equal_approx(float(spec["height"]), KESH_HEIGHT_M), "her stand-in is 4.2 m (ADR 0204)")
+	var skel := _kesh_pose(_kesh_actor(made), &"idle", 0.0)
+	var top := -INF
+	for n: Node in skel.find_children("*", "MeshInstance3D", true, false):
+		var mi := n as MeshInstance3D
+		top = maxf(top, (mi.global_transform * mi.get_aabb()).end.y)
+	assert_true(absf(top - KESH_HEIGHT_M) < KESH_HEIGHT_TOL_M, "her model stands %.2f m" % top)
+	_kesh_free(made)
+
+
+func test_kesh_every_clip_starts_where_the_idle_starts() -> void:
+	var made: Array[Node] = []
+	var a := _kesh_actor(made)
+	var idle0 := _kesh_ends_at(a, &"idle", 0.0)
+	for clip in KESH_FROM_IDLE:
+		_kesh_assert_same(_kesh_ends_at(a, clip, 0.0), idle0, "%s starts on idle's first frame" % clip)
+		if clip not in [&"ko", &"dismiss"]:
+			_kesh_assert_same(_kesh_ends_at(a, clip, INF), idle0, "%s ends on idle's first frame" % clip)
+	_kesh_assert_same(_kesh_ends_at(a, &"rise", INF), idle0, "rise ends on idle's first frame")
+	_kesh_free(made)
+
+
+func test_kesh_stands_on_the_water_through_the_column_in_every_clip() -> void:
+	var made: Array[Node] = []
+	var a := _kesh_actor(made)
+	var base := _kesh_bone_at(_kesh_pose(a, &"idle", 0.0), "column_0").y
+	for clip in KESH_CLIPS:
+		var length := a.clip_length(clip)
+		for i in KESH_GROUND_SAMPLES + 1:
+			var skel := _kesh_pose(a, clip, length * i / KESH_GROUND_SAMPLES)
+			assert_true(
+				absf(_kesh_bone_at(skel, "root").y) < KESH_GROUND_TOL_M, "%s keeps the root on the water" % clip
+			)
+			var y := _kesh_bone_at(skel, "column_0").y
+			assert_true(absf(y - base) < KESH_GROUND_TOL_M, "%s keeps the column's base on the water" % clip)
+	_kesh_free(made)
+
+
+func test_kesh_the_seven_rises_on_the_column() -> void:
+	var made: Array[Node] = []
+	var a := _kesh_actor(made)
+	var rest := _kesh_bone_at(_kesh_pose(a, &"idle", 0.0), "spine_0").y
+	var lifted := _kesh_bone_at(_kesh_pose(a, &"special", a.contact_time(&"special")), "spine_0").y
+	assert_true(lifted > rest + KESH_SEVEN_RISE_M, "she rises %.2f m on the column for The Seven" % (lifted - rest))
+	_kesh_free(made)
+
+
+func test_kesh_ice_voice_goes_completely_still() -> void:
+	var made: Array[Node] = []
+	var a := _kesh_actor(made)
+	var s0 := _kesh_pose(a, &"voice_ice", KESH_ICE_STILL.x)
+	var h0 := _kesh_bone_at(s0, "hand_l")
+	var d0 := _kesh_bone_at(s0, "head")
+	var s1 := _kesh_pose(a, &"voice_ice", KESH_ICE_STILL.y)
+	assert_true(h0.distance_to(_kesh_bone_at(s1, "hand_l")) < KESH_ICE_STILL_M, "her hands are still")
+	assert_true(d0.distance_to(_kesh_bone_at(s1, "head")) < KESH_ICE_STILL_M, "her head is still")
+	_kesh_free(made)
+
+
+func test_kesh_ko_sinks_her_into_the_column() -> void:
+	var made: Array[Node] = []
+	var a := _kesh_actor(made)
+	var rest := _kesh_bone_at(_kesh_pose(a, &"idle", 0.0), "spine_2").y
+	var sunk := _kesh_bone_at(_kesh_pose(a, &"ko", INF), "spine_2").y
+	assert_true(sunk < rest - KESH_KO_SINK_M, "the KO sinks her to the shoulders (%.2f m)" % (rest - sunk))
+	_kesh_free(made)
+
+
+func _kesh_actor(made: Array[Node]) -> CreatureActor:
+	var row := CreatureActor.row_for(KESH)
+	var a := (load(str(row.get("scene", ""))) as PackedScene).instantiate() as CreatureActor
+	var tree := Engine.get_main_loop() as SceneTree
+	(tree.current_scene if tree.current_scene != null else tree.root).add_child(a)
+	made.append(a)
+	return a
+
+
+func _kesh_free(made: Array[Node]) -> void:
+	for n in made:
+		if is_instance_valid(n):
+			if n.get_parent() != null:
+				n.get_parent().remove_child(n)
+			n.free()
+	made.clear()
+
+
+func _kesh_skeleton(a: Node) -> Skeleton3D:
+	return a.find_children("*", "Skeleton3D", true, false)[0] as Skeleton3D
+
+
+## Poses the actor's model at `sec` into `clip` (clamped to just before its end) and returns its skeleton.
+func _kesh_pose(a: CreatureActor, clip: StringName, sec: float) -> Skeleton3D:
+	var player := a.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
+	player.play(clip)
+	player.seek(minf(sec, player.get_animation(clip).length - KESH_END_SEC), true)
+	return _kesh_skeleton(a)
+
+
+func _kesh_bone_at(skel: Skeleton3D, bone: String) -> Vector3:
+	return (skel.global_transform * skel.get_bone_global_pose(skel.find_bone(bone))).origin
+
+
+func _kesh_ends_at(a: CreatureActor, clip: StringName, sec: float) -> Array[Vector3]:
+	var skel := _kesh_pose(a, clip, sec)
+	var out: Array[Vector3] = []
+	for bone in KESH_ENDS:
+		out.append(_kesh_bone_at(skel, bone))
+	return out
+
+
+func _kesh_assert_same(got: Array[Vector3], want: Array[Vector3], what: String) -> void:
+	var worst := 0.0
+	for i in got.size():
+		worst = maxf(worst, got[i].distance_to(want[i]))
+	assert_true(worst < KESH_SAME_M, "%s (off by %.3f m)" % [what, worst])
+
+
+## Names of the bones some vertex actually weights (> 0) in any skinned mesh under the skeleton.
+func _kesh_weighted_bones(skel: Skeleton3D) -> Dictionary:
 	var out: Dictionary = {}
 	for n: Node in skel.find_children("*", "MeshInstance3D", true, false):
 		var mi := n as MeshInstance3D

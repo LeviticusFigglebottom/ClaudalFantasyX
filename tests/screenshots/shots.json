@@ -6854,6 +6854,15 @@
       ]
     },
     {
+      "id": "creature_kesh",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/creatures/shots/creature_kesh.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
       "id": "creature_ilun_held",
       "scene": "res://game/levels/_tests/creatures/shots/creature_ilun_held.tscn",
       "resolution": [
