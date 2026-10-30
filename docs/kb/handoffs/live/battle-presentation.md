@@ -176,6 +176,29 @@ ch01_wickfry, ch01_oil_slug, ch01_shaft_limpet and ch01_scuttlers.
 - An earlier run showed 4 reds (battle_result_motion, battle_stings). They came from merging the integration branch
   while the run was going: each file passes 5/0 on the merged tree, and the clean run above is 817/0.
 
+### 2026-10-30 ~14:10: status for the Lead's 14:09 (for big24)
+| Item | State | Commits |
+|---|---|---|
+| Glimmer element hit | **MERGE-READY**, verified on big21 | 4c4a3dd3 |
+| Row 61 (the Reach's rest frame) | **MERGE-READY**, viewed | ef997f3d |
+| Row 64 (the camera search behind the fade) | **MERGE-READY**: reveal frame 1.2–2.6 ms headless | 7c3307df (+ 65e776af, the particle variants) |
+| Act II foe-skill effects | **MERGE-READY**: the Act II regulars and bosses (65ea933e, 8d0fe783..f2bbb673); act1-chapters' 3 new conduit-crawler skills and the Vowbound's 19 are written as their rows land | 6f3608a7, 97e22896 |
+| Rank overlap and the command-menu safe area | **MERGE-READY @ aa227a57** once the full `--filter=battle` re-run is clean (running) | c552664f, 3d65ec00, aa227a57 |
+
+- **Act II effects:** act1-chapters' and gate-big22's skills.json hold 3 Act II foe skills with no effect (brush_jab,
+  crawler_mend, crawler_tend). Those are in FOES_PENDING. On gate-big22's data, gen_act2_ability_vfx writes them
+  with the Vowbound's 19, and `--check` is clean. **After big22/big23 merge, run `python3 tools/vfx/gen_act2_ability_vfx.py`
+  (or I will on my next integration merge).**
+  - I found 3 such skills, not 6. The only other candidates (drowning_grasp, tide_gather) are on older branches.
+- **Rank overlap (BattleScreenSpread):**
+  - At spawn, on the fight's rest frame, foes whose boxes share more than 20% of the smaller step apart. The left
+    foe steps away from the party, and the right foe steps back. A foe on the command menu steps back or right.
+  - No step lands a foe in another's footprint, on the menu or in a melee lane. A lone foe keeps its seat.
+  - Viewed: tideline, the stair's tortoises, the flats' crabs, both underway fights and the fen's root crabs.
+  - Allowance: the causeway's and the flats' Crabs are boxed in by the Eel and the Gull. Their leg tips may reach
+    56 px over the menu's top edge (`spacing.screen.menu_edge_px`), but never their bodies.
+  - Baseline drift: the opening line-up moves in any multi-foe fight, so the gate re-renders the battle shots.
+
 ### 2026-10-30 ~11:xx: the Lead's 10:47 item (row 64 is the camera search, after creatures-b's trace)
 **MERGE-READY @ 7c3307df** (+ this log commit). Rows 61 (ef997f3d) and the glimmer hit (4c4a3dd3) were done before.
 - **Row 64's cause** (creatures-b's trace of pc-gpu's big21 capture): BattleBossHeroShot.search ran on the first
