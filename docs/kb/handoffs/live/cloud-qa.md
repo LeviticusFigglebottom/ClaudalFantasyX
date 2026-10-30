@@ -158,7 +158,14 @@ reaches 3.59–3.66 m/s on open ground).
 - **56, Asha's run:** the pose changed a little (a foot shows), but the skirt is still a cone. Still open.
 - **54, Sefir's face:** the floating strands are thinner, but it's still a cap. Partly.
 - Unchanged since 19e7f01c: 17, 46, 55 (Sabe and Fenn), 59, 61, 62 and 51's shot.
-- The walk rows (24, 37, 39) on big25 are rendering now; see below when done.
+- **37: fixed on lavapipe.** At AfterHarrier the whole party is in frame; the shield no longer fills a third.
+- **39: fixed on lavapipe.** Ch9's followers walk with Rhen at Strand and RoadGate.
+- **24: unchanged.** DockShore has a half-faded party member at the lens; DockEnd has no hero in frame.
+  (`big25_rows37_39_24_spawns.jpg`)
+- **Tally on big25:**
+  - fixed on lavapipe: 34, 37, 38, 39, 46, 47, 51, 59, 63;
+  - partly fixed: 17, 24, 54, 55, 58, 61, 66 (not re-walked);
+  - open: 21 (not reachable here), 56, 62, 64 (big25 still has the boss-intro spike; see row 64).
 
 ## THE LEAD'S ASKS (14:09–16:26), answered on big25 @ 4b198810 (it contains big23 8fe3644b and big24 efe7fb10)
 Pass or fail per check, each against the playtest fix:
