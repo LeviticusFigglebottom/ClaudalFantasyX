@@ -25,6 +25,21 @@ index, so appending keeps every earlier bed byte-identical.
                        a loom clacking in a house, a goat-bell far up the slope, and a door now and then.
     cloudloom_hall     Ch12, Cloudloom, the open-roofed weaving-hall: looms and shuttles working, thousands of keth
                        cords stirring in the wind through the open roof, and a few women's voices low between them.
+    ansedra_still      Ch13, Ansedra, the holy city of perfect stillness (art/environments/ansedra.md): almost nothing. No
+                       wildlife at all (ADR 0204 §1: no seabirds). Very low air over still water, a moored barge's
+                       lacquered hull ticking, pilgrims murmuring far off, and one far bell in the loop.
+    lacquer_court      Ch14, the Lacquer Court at dusk: a gathered crowd's low murmur under a colonnade, silk moving, the
+                       water-steps' faint lap, and a far gong.
+    archive_room       Ch13, the Lamp Archive's reading room: a still room, a lamp's flame fluttering, paper shifting
+                       somewhere in the stacks, and now and then a page turned.
+    sanctum_basin      Ch13, the Sanctum of the Level: the still basin's air and nothing else, just above silence (its
+                       music, sanctum_of_the_level, carries the light).
+    open_sea_night     Ch15, the unlamped bridal barge at night: the sea against the hull, the barge's timbers, Merel's
+                       bridal cloth over the bier stirring, and a light wind.
+    pale_rim_shallows  Ch16, the Pale Rim: white shallows under a white sky. A soft wind, a thin wash over the flats,
+                       far ripples, and a cairn stone settling.
+    choir_bowl         Ch16, the Drowned Choir's bowl at moonrise: wind moaning through the colossal stone mouths (a few
+                       slow resonant tones that never make a tune) and water moving in the bowl.
 
 assets/audio/act2/ambience/<bed>.ogg + .loop.json (stereo, Vorbis q1 like the Act I beds; the rule
 `act2/ambience/*.ogg`: -26 LUFS integrated +- 0.5, true peak under -5 dBTP). Synthesized here and in tools/audio/synth/
@@ -62,7 +77,9 @@ TARGET_LUFS = -26.0
 CEILING_DB = -6.0
 QUALITY = 1.0
 LOOPS = {"fen_dusk": 48.0, "reedhollow_roost": 46.0, "vey_galleries": 50.0, "lowlight_temple": 48.0,
-         "keth_pass_wind": 44.0, "quellan_town": 46.0, "cloudloom_hall": 44.0}
+         "keth_pass_wind": 44.0, "quellan_town": 46.0, "cloudloom_hall": 44.0, "ansedra_still": 50.0,
+         "lacquer_court": 46.0, "archive_room": 44.0, "sanctum_basin": 40.0, "open_sea_night": 48.0,
+         "pale_rim_shallows": 50.0, "choir_bowl": 52.0}
 # The Kirru mode on A (reedhollow.py): A B C# D# F#, G# only as the top of a rise; never E.
 KIRRU = {"A3": 57, "B3": 59, "C#4": 61, "D#4": 63, "F#4": 66, "F#3": 54, "G#4": 68}
 
@@ -411,9 +428,148 @@ def cloudloom_hall(g):
     return mx, _room(SEED % 9973 + 7, 1.8, 2.2, highcut=5500.0)
 
 
+def hull_tick(g) -> np.ndarray:
+    """A lacquered hull at its mooring: a small hard tick as it touches the post."""
+    b = float(g.uniform(600, 900))
+    return FA.modal([b, b * 2.1, b * 3.7], [0.02, 0.012, 0.006], [1.0, 0.4, 0.15], 0.1, g, click=0.4)
+
+
+def far_bell(g) -> np.ndarray:
+    from synth.bells import tower_bell
+    return tower_bell(float(g.choice([50.0, 52.0, 55.0])), 0.5, seed=int(g.integers(1 << 30)), t60=7.0, dark=0.7)
+
+
+def page(g) -> np.ndarray:
+    """A page turned: a lift, a soft flutter and the paper settling."""
+    n = int(0.6 * SR)
+    t = np.arange(n) / n
+    y = filt(g.standard_normal(n), [bq_bandpass(float(g.uniform(2500, 3800)), 1.0)])
+    return y * (np.sin(np.pi * t) ** 2) * (0.6 + 0.4 * np.sin(2 * np.pi * 14 * t) ** 2)
+
+
+def mouth_moan(L: int, g, f0: float) -> np.ndarray:
+    """Wind through a colossal stone mouth: noise through two resonances near f0 and 2.7 f0, swelling slowly."""
+    swell = 0.3 + 0.7 * (0.5 + 0.5 * FA.plfo(L, float(g.uniform(0.02, 0.05)), g)) ** 2
+    y = FA.stereo_noise(L, g, [bq_bandpass(f0, 12.0)], 0.5) + 0.4 * FA.stereo_noise(L, g, [bq_bandpass(f0 * 2.7, 10.0)], 0.5)
+    return y * swell[:, None]
+
+
+def ansedra_still(g):
+    mx, L = _mixer("ansedra_still")
+    mx.bus("air", 0.0, send=0.1)
+    mx.bus("hulls", 0.0, send=0.4)
+    mx.bus("far", 0.0, send=0.6, process=lambda x: filt(x, [bq_lowpass(2200, 0.7)]))
+    mx.add("air", FA.stereo_noise(L, g, [bq_lowpass(500, 0.6), bq_highpass(60, 0.7)], 0.6) * 0.1, 0.0)
+    for t in FA.schedule(L, 4.5, g, 0.6):
+        mx.add("hulls", hull_tick(g), t, pan=float(g.uniform(-0.8, 0.8)), gain=float(g.uniform(0.1, 0.3)))
+    t = 2.0
+    while t < LOOPS["ansedra_still"] - 3.0:
+        mx.add("far", FA.murmur_phrase(g, bool(g.random() < 0.5)), t, pan=float(g.uniform(-0.6, 0.6)),
+               gain=float(g.uniform(0.15, 0.3)))
+        t += float(g.uniform(4.0, 9.0))
+    mx.add("far", far_bell(g), 21.0, pan=0.4, gain=0.25)
+    return mx, _room(SEED % 9973 + 8, 2.2, 2.0, highcut=5000.0)
+
+
+def lacquer_court(g):
+    mx, L = _mixer("lacquer_court")
+    mx.bus("crowd", 0.0, send=0.35, process=lambda x: filt(x, [bq_lowpass(2600, 0.7)]))
+    mx.bus("silk", 0.0, send=0.25)
+    mx.bus("water", 0.0, send=0.2)
+    mx.bus("far", 0.0, send=0.5, process=lambda x: filt(x, [bq_lowpass(1500, 0.7)]))
+    t = 0.3
+    while t < LOOPS["lacquer_court"] - 2.0:
+        mx.add("crowd", FA.murmur_phrase(g, bool(g.random() < 0.5)), t, pan=float(g.uniform(-0.8, 0.8)),
+               gain=float(g.uniform(0.25, 0.55)))
+        t += float(g.uniform(0.6, 1.6))
+    for t in FA.schedule(L, 2.8, g, 0.6):
+        mx.add("silk", reed_rustle(g, float(g.uniform(0.5, 1.0))), t, pan=float(g.uniform(-0.8, 0.8)),
+               gain=float(g.uniform(0.05, 0.12)))
+    for t in FA.schedule(L, 3.0, g, 0.5):
+        mx.add("water", FA.lap(g, float(g.uniform(0.4, 0.7))), t, pan=float(g.uniform(-0.5, 0.5)),
+               gain=float(g.uniform(0.15, 0.3)))
+    from synth.gongs import kettle_gong
+    mx.add("far", kettle_gong(38.0, 0.5, seed=int(g.integers(1 << 30)), t60=3.0), 30.0, pan=-0.5, gain=0.4)
+    return mx, _room(SEED % 9973 + 9, 1.6, 1.6)
+
+
+def archive_room(g):
+    mx, L = _mixer("archive_room")
+    mx.bus("room", 0.0, send=0.2)
+    mx.bus("lamp", 0.0, send=0.25)
+    mx.bus("paper", 0.0, send=0.4)
+    mx.add("room", FA.stereo_noise(L, g, [bq_lowpass(350, 0.6), bq_highpass(50, 0.7)], 0.7) * 0.08, 0.0)
+    mx.add("lamp", fire(g, LOOPS["archive_room"] - 1.0) * 0.6, 0.5, pan=0.3, gain=0.2)
+    for t in FA.schedule(L, 6.0, g, 0.6):
+        mx.add("paper", page(g) if g.random() < 0.4 else reed_rustle(g, float(g.uniform(0.3, 0.6))) * 0.5, t,
+               pan=float(g.uniform(-0.8, 0.8)), gain=float(g.uniform(0.08, 0.2)))
+    return mx, _room(SEED % 9973 + 10, 1.1, 1.0, highcut=6000.0)
+
+
+def sanctum_basin(g):
+    mx, L = _mixer("sanctum_basin")
+    mx.bus("air", 0.0, send=0.4)
+    mx.add("air", FA.stereo_noise(L, g, [bq_lowpass(260, 0.6), bq_highpass(40, 0.7)], 0.8) * 0.12, 0.0)
+    mx.add("air", FA.stereo_noise(L, g, [bq_bandpass(900, 0.6)], 0.8) * 0.015, 0.0)
+    return mx, _room(SEED % 9973 + 11, 4.0, 2.4, highcut=4000.0)
+
+
+def open_sea_night(g):
+    mx, L = _mixer("open_sea_night")
+    mx.bus("sea", 0.0, send=0.1)
+    mx.bus("barge", 0.0, send=0.25)
+    mx.bus("cloth", 0.0, send=0.2)
+    swell = 0.5 + 0.5 * FA.plfo(L, 0.09, g)
+    mx.add("sea", FA.stereo_noise(L, g, [bq_lowpass(450, 0.6), bq_highpass(40, 0.7)], 0.5)
+           * (0.6 + 0.4 * swell)[:, None] * 0.16, 0.0)
+    for t in FA.schedule(L, 1.6, g, 0.5):
+        mx.add("sea", FA.slap(g) if g.random() < 0.5 else FA.lap(g, 0.9), t, pan=float(g.uniform(-0.8, 0.8)),
+               gain=float(g.uniform(0.25, 0.6)))
+    for t in FA.schedule(L, 3.4, g, 0.5):
+        mx.add("barge", creak(g, float(g.uniform(0.7, 1.4)), 35, 170), t, pan=float(g.uniform(-0.6, 0.6)),
+               gain=float(g.uniform(0.2, 0.4)))
+    for t in FA.schedule(L, 5.0, g, 0.5):
+        mx.add("cloth", reed_rustle(g, float(g.uniform(0.8, 1.6))) * 0.7, t, pan=-0.3, gain=float(g.uniform(0.06, 0.12)))
+    return mx, _room(SEED % 9973 + 12, 0.6, 1.2, highcut=5500.0)
+
+
+def pale_rim_shallows(g):
+    mx, L = _mixer("pale_rim_shallows")
+    mx.bus("wind", 0.0, send=0.1)
+    mx.bus("wash", 0.0, send=0.15)
+    mx.bus("far", 0.0, send=0.5, process=lambda x: filt(x, [bq_lowpass(2500, 0.7)]))
+    gust = 0.5 + 0.5 * FA.plfo(L, 0.05, g)
+    mx.add("wind", FA.stereo_noise(L, g, [bq_lowpass(900, 0.6), bq_highpass(150, 0.7)], 0.4)
+           * (0.4 + 0.6 * gust)[:, None] * 0.1, 0.0)
+    mx.add("wash", FA.stereo_noise(L, g, [bq_bandpass(1800, 0.5), bq_highpass(600, 0.7)], 0.3)
+           * (0.5 + 0.5 * FA.plfo(L, 0.12, g))[:, None] * 0.05, 0.0)
+    for t in FA.schedule(L, 4.0, g, 0.6):
+        mx.add("far", FA.lap(g, float(g.uniform(0.3, 0.6))), t, pan=float(g.uniform(-0.9, 0.9)),
+               gain=float(g.uniform(0.15, 0.3)))
+    for t in FA.schedule(L, 17.0, g, 0.4):
+        b = float(g.uniform(200, 320))
+        mx.add("far", FA.modal([b, b * 2.4], [0.05, 0.03], [1.0, 0.4], 0.2, g, click=0.4), t,
+               pan=float(g.uniform(-0.7, 0.7)), gain=0.2)
+    return mx, _room(SEED % 9973 + 13, 0.4, 0.8)
+
+
+def choir_bowl(g):
+    mx, L = _mixer("choir_bowl")
+    mx.bus("mouths", 0.0, send=0.5)
+    mx.bus("water", 0.0, send=0.3)
+    for k, f0 in enumerate((92.0, 123.0, 155.0, 207.0)):       # four mouths, never a chord that resolves
+        mx.add("mouths", mouth_moan(L, g, f0) * (0.08 if k else 0.1), 0.0)
+    for t in FA.schedule(L, 2.4, g, 0.6):
+        mx.add("water", FA.lap(g, float(g.uniform(0.6, 1.2))), t, pan=float(g.uniform(-0.7, 0.7)),
+               gain=float(g.uniform(0.2, 0.45)))
+    return mx, _room(SEED % 9973 + 14, 3.0, 2.6, highcut=4500.0)
+
+
 BEDS = {"fen_dusk": fen_dusk, "reedhollow_roost": reedhollow_roost, "vey_galleries": vey_galleries,
         "lowlight_temple": lowlight_temple, "keth_pass_wind": keth_pass_wind, "quellan_town": quellan_town,
-        "cloudloom_hall": cloudloom_hall}
+        "cloudloom_hall": cloudloom_hall, "ansedra_still": ansedra_still, "lacquer_court": lacquer_court,
+        "archive_room": archive_room, "sanctum_basin": sanctum_basin, "open_sea_night": open_sea_night,
+        "pale_rim_shallows": pale_rim_shallows, "choir_bowl": choir_bowl}
 FILES = [f"{b}{ext}" for b in BEDS for ext in (".ogg", ".loop.json")]
 
 

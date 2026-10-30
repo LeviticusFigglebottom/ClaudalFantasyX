@@ -90,6 +90,11 @@ RULES = [
                 "step", "drift")],  # M3-AUD-857: Kahre's knuckle-walk, Virel's cloth
     ("sfx/creatures/*_idle_*.ogg", "momentary", -20.0, 1.0, -1.0, "a creature's idle voice (under the battle)"),
     ("sfx/creatures/*.ogg", "momentary", -18.0, 1.0, -1.0, "creature voices: attack, hurt, death"),
+    # M4-AUD-1001 (assets_src/sfx/act2_variant_creature_sfx.py): Act II's variant foes, their own sets (ADR 0175)
+    *[(f"act2/sfx/creatures/*_{w}_*.ogg", "momentary", -21.0, 1.0, -1.0, f"Act II creature movement ({w})")
+      for w in ("skitter", "flap", "plod")],
+    ("act2/sfx/creatures/*_idle_*.ogg", "momentary", -20.0, 1.0, -1.0, "an Act II creature's idle voice"),
+    ("act2/sfx/creatures/*.ogg", "momentary", -18.0, 1.0, -1.0, "Act II creature voices: attack, hurt, death"),
     # M3-AUD-802 (assets_src/sfx/hero_foley.py): the field heroes' steps (played at walk_db), scuffs and foley layers
     ("sfx/foley/step_*.ogg", "momentary", -18.5, 1.0, -1.0, "hero footsteps by surface and gait (-18, transients limited)"),
     ("sfx/foley/stop_*.ogg", "momentary", -20.0, 1.0, -1.0, "the halt scuff, after the last step"),
