@@ -740,8 +740,26 @@ that test at this branch's zones.
     floor and clear sightlines hold). Preview `preview_lacquer_court_steps.tscn`; shot
     `battle_arena_lacquer_court_steps`, viewed. The Stillguard shows as a stand-in capsule: it has no model yet
     (creatures').
-  - **MERGE-READY @ a881234d.**
-  - **Next:** Ch15: Hollowmere's first visit (`ch15_hollowmere.md`, M4-A2P-045).
+  - **MERGE-READY @ a881234d.** **Correction:** that commit lacked the arena's provenance row, so `validate_data`
+    failed on it. Fixed @ 003bb202 (that commit also carries the Hollowmere pieces' rows). Merge 003bb202 or later.
+- **Hollowmere's first visit, Ch15's dawn (M4-A2P-045 → review, rendering):**
+  - **New pieces** in `hollowmere.py`: `hm_dock_4m` with `_open_n`, `_open_s` and `_open_ns` variants (a floating
+    plank walk on log pontoons), `pyre_raft` (unlit), `hm_ship` (the twin-hulled trader), `hm_supper_table` and
+    `hm_oil_lamp`.
+  - **`tools/act2/ch15_hollowmere_dressing.py`:** in the greybox's frame, no mark moved. The lagoon is 0.9 m under the
+    walk, the lashed hulls' own deck height. Each dock module keeps a rail only where the greybox has one, so the
+    jetty mouths and the gangway stay open.
+  - **Placed:** 13 homes (on the three house platforms and in the lanes), windmills, tide-wheels, the Dace's frame at
+    the edge, and the far flotilla. Six oil lamps are warm, each light at its flame, plus the supper's lamp, and four
+    signal lamps are teal.
+  - **The look:** the dawn grade with `lut_ch15_hollowmere_dawn` (fog 0.018, not the spec's 0.03, so the dock's far
+    end still reads) and a grey-teal dawn water. `hollowmere.tscn` gets the `Water`, `Tide` and `Dressing` nodes.
+  - **Shots (new):** `ch15_hollowmere_arrival`, `_dock`, `_lanes`, `_pyre`, `_supper`, all viewed.
+  - **Checks:** tools test_ch15_hollowmere_dressing (new), test_hollowmere, test_kite, test_haluna_kit;
+    validate_data 0/0 (after the fix); taskboard; gdlint and gdformat. Godot: hollowmere 2/0 (the dock to the pyre,
+    a jetty to the father's door, lamps lit), dressing 27/0, placeholder 8/0, party_spawns 3/0.
+  - **MERGE-READY @ bb1d7aca.**
+  - **Next:** Ch15's open sea (`ch15_open_sea.md`), then Ch16 (the Pale Rim and the Drowned Choir, M4-A2P-046).
 
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
