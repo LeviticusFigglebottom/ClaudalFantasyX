@@ -42,3 +42,4 @@ GATE-BUILT @ 63f6aa2b
 
 ## Fast gate
 - Selected: 104 test files (plus test_cutscene_face_per_actor and test_villager_routines, to re-check big29's routed reds).
+- Lane A (mine): 52; lane B (GATE-HELPER): 52, in `gate-big30-lanes-b.txt` @ f2b6b633.
