@@ -1096,3 +1096,8 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - Checks: validate_data; gen_crowd --check; tools test_npc 28 OK; Godot crowd 12/0, villager 40/0, haluna 65/0, npc 10/0.
 - **MERGE-READY @ 7b5deabd** (the crowd commits; the log commit after it is docs only).
 - **The Act II towns' crowds are not this track's paths.** act2_tracks.md row 55 gives characters the Kirru (base, Owa, child, clutch: Reedhollow's `clutch_0..7`, `kirru_child`), the Ansedran, Hollowmere and Quellan crowd sets, and the Act II rows of crowd.json. None has landed. When they do, I wire their VillagerLayer zone rows (game/data/world/npc/zones, mine) the same hour.
+- **BACKLOG EMPTY:**
+  - The as-played pass is done.
+  - Act I crowd variety is done: no adjacent clones in any zone.
+  - The Act II town crowds are characters' sets (row 55) and have not landed.
+  - Waiting on the Haluna LEAD-ASK and on Combat's conduit_crawler row.
