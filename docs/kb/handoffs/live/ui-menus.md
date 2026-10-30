@@ -1462,3 +1462,16 @@ MERGE-READY @ 5c4c9ca6b: M5-A3P-1700, the closing credits roll.
   - **Next:** the optional-content log (Act III's revisits and errands, act3_ch18). Then the ending flow, once
     slice-polish's E7 lands.
 MERGE-READY @ 9a4d0b55f: M5-A3P-1702, the Kite's Act III revisits (with c2b8608b5, the credits scene).
+
+- **M5-A3P-1703, the Kite's log (52cd5a5bb):**
+  - "The ship's log" on the Kite chart opens a read-only page:
+    - the eight revisits (Seen once each side scene has played, with what changed there);
+    - the seven heirloom errands ("Rhen, for Dace": where it waits, then Carried).
+  - The chart's ring follows each row. There are no counts or percentages (act3_ch18 rule 3).
+  - Data: `game/data/world/kite_log.json`. Model: KiteLogModel.
+  - Declared `ch18_revisit_<town>` (8 flags). Request **M5-A3P-1704** asks cinematics to set them as each revisit
+    scene plays; nothing sets them yet.
+  - **Tests and checks:** test_kite_map 15/0; shot `kite_log` (pending_baseline), rendered and viewed;
+    validate_data 0/0; taskboard ok; lint ok; audio audit UI 0.
+  - **Next:** the ending flow, once slice-polish's E7 lands. Meanwhile, more Act III UI per ADR 0207.
+MERGE-READY @ 52cd5a5bb: M5-A3P-1703, the Kite's log.
