@@ -278,9 +278,7 @@ func _battle_step(ctl: FieldBattle, result_at: float, t: float) -> float:
 	for foe in ctl.engine.enemies:
 		foe.hp = mini(foe.hp, 1)
 	if ctl.state == BattleController.STATE_COMMAND and ctl.engine.is_party_turn():
-		var foes := ctl.engine.living_foes_of(ctl.engine.current)
-		if not foes.is_empty():
-			ctl.act(&"attack", [foes[0].id])
+		_party_act(ctl)
 		return result_at
 	if ctl.state == BattleController.STATE_RESULT:
 		if result_at < 0.0:
@@ -292,6 +290,25 @@ func _battle_step(ctl: FieldBattle, result_at: float, t: float) -> float:
 	if int(t / TAP_S) != int((t - 0.02) / TAP_S) and ctl.state not in [BattleController.STATE_TARGET]:
 		_tap(&"ui_accept")
 	return result_at
+
+
+## Attack the first foe; when Attack is refused (Ch6: Toma won't strike the Stillguard), any other skill that takes, on
+## a foe or on the actor himself, as a player would use his lent Brace or Shield Wall.
+func _party_act(ctl: FieldBattle) -> void:
+	var actor := ctl.engine.current
+	var foes := ctl.engine.living_foes_of(actor)
+	if foes.is_empty():
+		return
+	var res := ctl.act(&"attack", [foes[0].id])
+	if res == null or res.ok:
+		return
+	for skill: StringName in actor.skills:
+		if not ctl.engine.is_party_turn() or ctl.engine.current != actor:
+			return
+		for target: StringName in [foes[0].id, actor.id]:
+			var r := ctl.act(skill, [target])
+			if r != null and r.ok:
+				return
 
 
 func _on_flag(flag: StringName, value: Variant) -> void:
