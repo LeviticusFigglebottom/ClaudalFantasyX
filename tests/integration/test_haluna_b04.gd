@@ -42,6 +42,9 @@ func test_osu_waits_for_cutscene_a_then_tells_of_teyo_and_pila() -> void:
 	assert_eq(osu.payload, {"dialogue": String(PILA)})
 	assert_false(osu.is_available(), "not before Cutscene A")
 	Game.set_flag(&"ch02_met_asha", true)
+	# M4-A2P-115 A4: her causeway line waits for Neme's table (B02); she isn't there at dawn.
+	assert_false(osu.is_available(), "not before Neme's table")
+	Game.set_flag(&"ch02_ate_at_nemes", true)
 	assert_true(osu.try_interact())
 	assert_true(&"osu" in speakers and &"rhen" in speakers, "Osu and Rhen speak")
 	assert_true(&"ch02_pila_granddaughter_005" in lines, "Teyo Marrin's shell")
@@ -55,6 +58,7 @@ func test_osu_waits_for_cutscene_a_then_tells_of_teyo_and_pila() -> void:
 
 func test_a_second_visit_is_one_short_line() -> void:
 	Game.set_flag(&"ch02_met_asha", true)
+	Game.set_flag(&"ch02_ate_at_nemes", true)
 	Game.set_flag(&"ch02_heard_pila", true)
 	assert_true(_interactable(&"npc_osu").try_interact())
 	assert_eq(lines, [&"ch02_pila_granddaughter_015"] as Array[StringName])
@@ -64,6 +68,7 @@ func test_a_second_visit_is_one_short_line() -> void:
 
 func test_b09_answers_with_teyo_once_osu_has_been_heard() -> void:
 	Game.set_flag(&"ch02_met_asha", true)
+	Game.set_flag(&"ch02_ate_at_nemes", true)
 	assert_false(_reaches(&"ch03_the_first_verse", &"ch03_verse_034"), "no Teyo line before B04")
 	_interactable(&"npc_osu").try_interact()
 	assert_true(_reaches(&"ch03_the_first_verse", &"ch03_verse_034"), "B09's Teyo line after it")

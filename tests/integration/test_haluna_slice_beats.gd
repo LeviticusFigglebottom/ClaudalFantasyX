@@ -44,18 +44,31 @@ func test_the_four_fragments_are_walk_past_triggers_after_the_beach() -> void:
 			continue
 		assert_eq(t.activation, Interactable.Activation.TOUCH)
 		assert_true(t.once, "%s plays once" % id)
-		assert_eq(t.requires_flag, &"ch02_met_asha", "%s waits for Cutscene A" % id)
+		assert_eq(t.requires_flag, &"ch02_ate_at_nemes", "%s waits for Neme's table (M4-A2P-115 A4)" % id)
+		assert_eq(t.sets_flag, t.blocked_by_flag, "%s is heard once, across reloads (A6)" % id)
 		assert_eq(t.payload, {"dialogue": String(FRAGMENTS[id]), "overheard": true})
 		var runner := DialogueRunner.new(DialogueFlagAccess.new())
 		runner.forward_events_to_bus = false
 		assert_true(runner.load_scene(FRAGMENTS[id]) and runner.start(), "%s loads" % FRAGMENTS[id])
 	var lane := _interactable(&"npc_lane")
-	assert_true(lane != null and lane.payload == {"dialogue": "ch02_bark_lane"}, "the lane child also talks")
+	assert_true(
+		lane != null and lane.payload == {"dialogue": "ch02_bark_lane_listen"},
+		"the lane child also talks (A5: its own bark)"
+	)
+	_done()
+
+
+## M4-A2P-115 A4: at dawn, before Neme's table, none of B03's town plays (the fragments, Osu, the causeway rule).
+func test_dawn_before_nemes_table_has_no_b03() -> void:
+	Game.set_flag(&"ch02_met_asha", true)
+	for id: StringName in [&"overhear_market", &"overhear_dock", &"npc_dock", &"npc_osu", &"causeway_head_unsaved"]:
+		assert_false(_interactable(id).is_available(), "%s waits for Neme's table" % id)
 	_done()
 
 
 func test_an_overheard_fragment_lets_rhen_walk_on_and_blocks_nothing() -> void:
 	Game.set_flag(&"ch02_met_asha", true)
+	Game.set_flag(&"ch02_ate_at_nemes", true)
 	var market := _interactable(&"overhear_market")
 	assert_true(market.on_touched())
 	assert_true(story.overhear.is_playing(), "the fragment plays")

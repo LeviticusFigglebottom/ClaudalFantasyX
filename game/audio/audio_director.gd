@@ -61,6 +61,8 @@ var impact: ImpactAudio
 var cutscene: CutsceneAudio
 ## Field objects' own sounds when used (M3-AUD-864; interact_audio.gd).
 var interact: InteractAudio
+## Cinematics' staged practicals that sound (prop_sfx.json).
+var props: PropAudio
 var stings := StingAudio.new()
 var music: MusicDeck
 var sfx: SfxBank
@@ -155,6 +157,7 @@ func setup(mix_table: Dictionary, music_table: Dictionary, sfx_table: Dictionary
 		add_child(impact)
 	if interact == null:
 		interact = InteractAudio.new(AudioData.table(AudioData.INTERACT_SFX))
+		props = PropAudio.new(AudioData.table(AudioData.PROP_SFX))
 		interact.name = "InteractAudio"
 		interact.bind_director(self)
 		add_child(interact)
@@ -233,6 +236,9 @@ func advance(delta: float) -> void:
 func play_music(cue_id: StringName, sec: float = -1.0) -> bool:
 	var fade := float(music_cfg().get("crossfade_sec", 0.0)) if sec < 0.0 else sec
 	if cue_id == AudioData.SILENCE or cue_id == &"":
+		var release := StringName(str(AudioData.cue(music_data, music.current).get("release", "")))
+		if release != &"" and not music.is_silent():  # its own ending instead of a fade (the Ebbing)
+			return play_music(release, fade)
 		music.stop(fade)
 		return true
 	var row := AudioData.cue(music_data, cue_id)
@@ -554,6 +560,8 @@ func _on_node_added(node: Node) -> void:
 		_later(interact.watch, node)
 		if ui != null and ui.wants(node):
 			_later(ui.watch, node)
+	elif props != null and props.wants(node):
+		_later(props.attach, node)
 	elif ui != null and ui.wants(node):
 		_later(ui.watch, node)
 

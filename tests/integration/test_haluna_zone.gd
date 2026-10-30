@@ -15,10 +15,10 @@ const BUILD_BUDGET_MSEC := 1000
 ## How far a spawn marker may sit from the floor found under it.
 const GROUND_TOLERANCE_M := 0.1
 const NPCS := {
-	&"npc_market": "ch02_bark_market",
-	&"npc_chapel": "ch02_bark_chapel",
-	&"npc_dock": "ch02_bark_dock",
-	&"npc_lane": "ch02_bark_lane",
+	&"npc_market": "ch02_bark_market_listen",
+	&"npc_chapel": "ch02_bark_chapel_listen",
+	&"npc_dock": "ch02_bark_dock_listen",
+	&"npc_lane": "ch02_bark_lane_listen",
 }
 const BARKS: Array[StringName] = [&"ch02_bark_market", &"ch02_bark_chapel", &"ch02_bark_dock", &"ch02_bark_lane"]
 const STAGE_SHOTS: Array[StringName] = [&"H05", &"H05_up", &"H06", &"H01", &"H08", &"H08_hand", &"H03", &"B02_bag"]
@@ -106,6 +106,7 @@ func test_the_zone_walks_frames_and_holds_rhen() -> void:
 
 func test_villagers_and_triggers_fire_their_payloads() -> void:
 	_load_into_tree()
+	Game.set_flag(&"ch02_ate_at_nemes", true)  # M4-A2P-115 A4: the B03 villagers talk after Neme's table
 	var fired: Array[StringName] = []
 	var found := {}
 	for n in zone.get_tree().get_nodes_in_group(Interactable.GROUP):

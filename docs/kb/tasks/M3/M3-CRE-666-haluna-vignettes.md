@@ -24,5 +24,7 @@ named villagers, with no crowd.
       last basket home.
 - [x] No body already placed in another zone moves (`assign.late_zones`).
 - [x] Tests (tools test_npc; Godot test_crowd_villagers) and review shots `npc_haluna_vignette_*`.
+- [x] The Lead's 18:45 follow-up: the same for Oruvel's commons deck (6 people) and the Pemakar quay at Lanternfall
+      (5), as late people by id prefix (`late_prefixes`). Shots `crowd_vignette_oruvel_*` and `crowd_vignette_pemakar_*`.
 
 ## Review log

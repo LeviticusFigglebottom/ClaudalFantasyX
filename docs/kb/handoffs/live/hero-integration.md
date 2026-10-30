@@ -2051,3 +2051,14 @@ MERGE-READY @ (this commit). **Take it into the next batch:** big24 and big25 ca
   (game/flow). The resident field needs the stories to arrive again, and the bug (hand-off state kept, arrival
   skipped) is from my change.
 MERGE-READY @ (this commit).
+
+### big27 (9572c412), merged here (56d3005d2); the Lead 10-30 18:44
+- **The field-camera rows on 9572c412 + this branch (only 799b6633a on top), a fresh import:**
+  - qa_field_camera 2/0 covers 24 (DockShore), 47 (FerryAft) and 38 (Coilspire's Encounter). The only KNOWN entries
+    are other tracks': Tier4 (M3-HER-1157, env-art-b) and B02 (M3-HER-1160, m2-slice).
+  - qa_party 3/0, camera_director 56/0.
+  - **37 (AfterHarrier):** the still is clean; Rhen at centre, the followers at a reading scale.
+  - **66 (Ch4 opening), real time:** never nearer than 5.1 m; 6 of 111 samples, all in the 1.2 s cross-town blend;
+    settles on NemeDoor at 9.8 m.
+  - **21 (Haluna beach start), real time:** 0 of 121 samples out of frame; settles on beach_shallows at 7.5 m.
+  - Unchanged from big23 and big25: **all six are fixed on the headless checks.** The PC confirms by hand.

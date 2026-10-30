@@ -2325,7 +2325,7 @@
         "hair": "#2B1D14"
       },
       "work": "play_stones",
-      "about": "Kneeling on the sand at a game of stones with the boy facing her."
+      "about": "Kneeling on the open sand below the dunes at a game of stones with the boy facing her."
     },
     {
       "id": "haluna_stones_boy",
@@ -2546,6 +2546,226 @@
       },
       "work": "carry",
       "about": "Bringing the last basket home past the market stall after dark."
+    },
+    {
+      "id": "oruvel_deck_stones",
+      "zone": "ch01/oruvel",
+      "stage_actor": "CrowdSpots/oruvel_deck_stones",
+      "role": "child_stones",
+      "island": "low_reaches",
+      "community": "oruvel",
+      "age_band": "child",
+      "sex": "female",
+      "build": "teen",
+      "body": "crowd_girl_teen",
+      "tints": {
+        "cloth_a": "#EBE7DE",
+        "cloth_b": "#34416D",
+        "cloth_c": "#4A7485",
+        "hair": "#271C15"
+      },
+      "work": "play_stones",
+      "about": "A girl at a game of stones by herself against the commons' north rail."
+    },
+    {
+      "id": "oruvel_deck_sweeper",
+      "zone": "ch01/oruvel",
+      "stage_actor": "CrowdSpots/oruvel_deck_sweeper",
+      "role": "sweeper",
+      "island": "low_reaches",
+      "community": "oruvel",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_man_lean_a",
+      "tints": {
+        "cloth_a": "#E5DED0",
+        "cloth_b": "#7CABA6",
+        "cloth_c": "#40617C",
+        "hair": "#211A16"
+      },
+      "work": "sweep",
+      "about": "Sweeping the commons deck along the west rail, two strokes at a time."
+    },
+    {
+      "id": "oruvel_deck_hauler",
+      "zone": "ch01/oruvel",
+      "stage_actor": "CrowdSpots/oruvel_deck_hauler",
+      "role": "fisher",
+      "island": "low_reaches",
+      "community": "oruvel",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "medium",
+      "body": "crowd_man_medium_b",
+      "tints": {
+        "cloth_a": "#E3DBCC",
+        "cloth_b": "#5C86A2",
+        "cloth_c": "#456C81",
+        "hair": "#3E2617"
+      },
+      "work": "haul",
+      "about": "Hauling a line in over the south rail, hand over hand."
+    },
+    {
+      "id": "oruvel_deck_carrier",
+      "zone": "ch01/oruvel",
+      "stage_actor": "CrowdSpots/oruvel_deck_carrier",
+      "role": "townsfolk",
+      "island": "low_reaches",
+      "community": "oruvel",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "lean",
+      "body": "crowd_woman_lean_b",
+      "tints": {
+        "cloth_a": "#E5DED1",
+        "cloth_b": "#7EABA6",
+        "cloth_c": "#4F7F8A",
+        "hair": "#3D2617"
+      },
+      "work": "carry",
+      "about": "A basket on her hip by the cookboat, waiting on the cook."
+    },
+    {
+      "id": "oruvel_deck_folder",
+      "zone": "ch01/oruvel",
+      "stage_actor": "CrowdSpots/oruvel_deck_folder",
+      "role": "folder",
+      "island": "low_reaches",
+      "community": "oruvel",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "heavy",
+      "body": "crowd_man_heavy_b",
+      "tints": {
+        "cloth_a": "#DED4C1",
+        "cloth_b": "#5A5E75",
+        "cloth_c": "#4F7E8A",
+        "hair": "#211A16"
+      },
+      "work": "fold",
+      "about": "Laying fish to dry along the south rail."
+    },
+    {
+      "id": "oruvel_deck_mender",
+      "zone": "ch01/oruvel",
+      "stage_actor": "CrowdSpots/oruvel_deck_mender",
+      "role": "netmender",
+      "island": "low_reaches",
+      "community": "oruvel",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_man_lean_b",
+      "tints": {
+        "cloth_a": "#DED3BF",
+        "cloth_b": "#38446E",
+        "cloth_c": "#456B81",
+        "hair": "#251B15"
+      },
+      "work": "mend",
+      "about": "Knelt on the commons mending a lamp-diver's net bag."
+    },
+    {
+      "id": "pemakar_quay_mender",
+      "zone": "ch05/pemakar",
+      "stage_actor": "CrowdSpots/pemakar_quay_mender",
+      "role": "netmender",
+      "island": "pemakar_terraces",
+      "community": "pemakar",
+      "age_band": "elder",
+      "sex": "male",
+      "build": "heavy",
+      "body": "crowd_elder_man_b",
+      "tints": {
+        "cloth_a": "#DCD1BC",
+        "cloth_b": "#2D613A",
+        "cloth_c": "#2D603A",
+        "hair": "#B9B5AE"
+      },
+      "work": "mend",
+      "about": "An old man knelt at the quay's west end mending a net while the town readies for Lanternfall."
+    },
+    {
+      "id": "pemakar_quay_hauler",
+      "zone": "ch05/pemakar",
+      "stage_actor": "CrowdSpots/pemakar_quay_hauler",
+      "role": "boatman",
+      "island": "low_reaches",
+      "community": "brightwater",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "heavy",
+      "body": "crowd_man_heavy_b",
+      "tints": {
+        "cloth_a": "#2C3B6B",
+        "cloth_b": "#4F5573",
+        "cloth_c": "#993627",
+        "hair": "#201A16"
+      },
+      "work": "haul",
+      "about": "A Low Reaches trader off the Brightwater crossing, hauling his skiff in to the quay for the night."
+    },
+    {
+      "id": "pemakar_quay_trader",
+      "zone": "ch05/pemakar",
+      "stage_actor": "CrowdSpots/pemakar_quay_trader",
+      "role": "trader",
+      "island": "low_reaches",
+      "community": "brightwater",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "medium",
+      "body": "crowd_man_medium_b",
+      "tints": {
+        "cloth_a": "#303E6C",
+        "cloth_b": "#35426D",
+        "cloth_c": "#9B3828",
+        "hair": "#482B19"
+      },
+      "work": "carry",
+      "about": "His partner, a basket of Low Reaches salt fish on his hip."
+    },
+    {
+      "id": "pemakar_quay_carrier",
+      "zone": "ch05/pemakar",
+      "stage_actor": "CrowdSpots/pemakar_quay_carrier",
+      "role": "townsfolk",
+      "island": "pemakar_terraces",
+      "community": "pemakar",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "body": "crowd_woman_medium",
+      "tints": {
+        "cloth_a": "#E0D6C4",
+        "cloth_b": "#525874",
+        "cloth_c": "#7E1813",
+        "hair": "#201A16"
+      },
+      "work": "carry",
+      "about": "A basket of paper lanterns on her hip, come down for the folded boats."
+    },
+    {
+      "id": "pemakar_quay_folder",
+      "zone": "ch05/pemakar",
+      "stage_actor": "CrowdSpots/pemakar_quay_folder",
+      "role": "folder",
+      "island": "pemakar_terraces",
+      "community": "pemakar",
+      "age_band": "elder",
+      "sex": "female",
+      "build": "heavy",
+      "body": "crowd_elder_woman_b",
+      "tints": {
+        "cloth_a": "#DFCFB1",
+        "cloth_b": "#3A466E",
+        "cloth_c": "#2E623A",
+        "hair": "#48423E"
+      },
+      "work": "fold",
+      "about": "An old woman folding leaf-boats for Lanternfall at the quay's east end."
     }
   ]
 }
