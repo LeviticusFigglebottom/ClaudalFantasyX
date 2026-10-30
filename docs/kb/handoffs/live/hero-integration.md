@@ -2141,3 +2141,13 @@ MERGE-READY @ (this commit).
 - **The probe is committed** for reuse: `tools/gpu_bench/return_probe.gd` / `.tscn` (cloud-qa's, from
   qa/cloud-pass6), with a `--trace` option that prints the fade, the current scene and the router's reveal holders
   every 100 ms.
+- **The Lead (10-30 21:46): Haluna's ~1.5 s add-to-tree frame goes to slice-polish (haluna_zone.gd), target no hidden
+  frame over 1 s.** I re-measure the Drownbell after their fix. **How to measure it (for slice-polish):**
+  - The add frame alone: `godot --headless --path . res://game/core/debug/scene_swap_probe.tscn -- --to=res://game/levels/ch02/haluna/haluna.tscn --resident-loads --warm-resident`
+    prints `SCENE_SWAP_PROBE {…}`. `frame_ms[0]` and `max_frame_ms` are the add-to-tree frame (was 699–853 ms, and
+    ~1.5 s inside the Drownbell's return), `instantiate_ms` is the threaded instantiate, and `over_budget` is a
+    hidden frame over 1 s.
+  - As played: `godot --headless --path . --audio-driver Dummy res://tools/gpu_bench/return_probe.tscn -- --cases=drownbell --trace`.
+    The TRACE lines show the gap between the last `scene=FieldBattle` line and the first `scene=Haluna` line (that
+    frame), then any `reveal=[…]` hold.
+  - Headless (lavapipe) inflates both; judge by the split and against the same probe before your change.
