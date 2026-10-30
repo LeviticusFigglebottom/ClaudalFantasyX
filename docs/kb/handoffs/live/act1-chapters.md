@@ -744,7 +744,7 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - Checks: snaps, field_camera, ch09_thread, qa_encounters, double_submit, pseudo_loc_screens, lattice_menu,
     battle_cycle, ch11, ch13, layout; tools audio_audit, vfx_coverage; validate, lint and format.
   - **Next:** the Ch10, Ch11 and Ch12 kit mounts (M4-A2P-0401, 0411, 0421).
-- MERGE-READY @ (this push)
+- MERGE-READY @ e9fb14438 (FAST-TRACKs 1-6)
 
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
