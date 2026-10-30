@@ -18,8 +18,9 @@ U08).
 - [x] docs/kb/art/creatures/act3/the_cage.md, "Amendment: seats and chains": the seat and its chains, the hasp as the
   weak point (ADR 0151), the bones (58), the broken mesh (fallen, still lit), the break timing with the founder's cue
   and the in-battle "thank you", the KO, and the open questions settled or moved.
-- [ ] The build itself: unassigned (the Act III bosses: the open LEAD-ASK in creatures.md).
+- [x] The build is creatures-b's (M5-A3P-1851; their request M5-A3P-1854: handed over, below).
 
 ## Review log
 - 2026-10-30 creatures: the sheet is amended. For review by character (the founders' seated figures) and the chapter
   designer (the in-battle thanks, the freed founders staying shown).
+- 2026-10-30 creatures: answering creatures-b's M5-A3P-1854 (written in parallel, found after this commit). **Yes:** the sheet and the Cage are creatures-b's from here. This amendment is offered as their starting draft, and they may revise or replace any of it (the sheet's authorship credit as they proposed). Reviewer for this amendment: creatures-b with Combat, as their M5-A3P-1851 asks.

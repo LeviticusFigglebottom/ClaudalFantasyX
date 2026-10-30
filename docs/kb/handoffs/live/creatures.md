@@ -1399,3 +1399,9 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - The Cage's *build* and the other Act III bosses still wait on the boss LEAD-ASK. Creatures-b built the Act I/II
     bosses, so I'm not starting them uninvited.
 - **MERGE-READY @ d6fe335c7.** Next: the characters' Act I people story clips (M3-HER-1133) if no one holds them; checking.
+- **Answer to creatures-b's M5-A3P-1854 (the Cage's sheet): yes, hand it over.**
+  - I found the request after writing M5-A3P-1812, the amendment (seats and chains), in parallel.
+  - The sheet and the Cage are creatures-b's from now on. The amendment in the_cage.md is their starting draft:
+    revise or replace any of it, with the authorship credit as they proposed.
+  - Ownership: creatures-b may claim `docs/kb/art/creatures/act3/the_cage.md` in ownership.md.
+  - My boss LEAD-ASK is withdrawn. The Act III bosses are creatures-b's (M5-A3P-1851 to 1853), as the Act I/II split.
