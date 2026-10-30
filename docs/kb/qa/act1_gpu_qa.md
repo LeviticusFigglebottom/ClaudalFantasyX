@@ -112,12 +112,12 @@ every zone, one battle per arena and every Act I boss intro. Contact sheets go o
 | 14 | battle_choreo_summon, _vowbound_rise (big14 adds creature_ilun: check in battle) | Ilun (Vowbound) is a teal dome stand-in. | creatures-b | fixed @ 6466a6f5 | pass A (2026-10-28, integration 048b0a7f) |
 | 15 | battle_arena_underway, _underway_tower | Hard-edged rectangular lit patches on the floor (a light or GI leak) in an otherwise dark arena. **pass 3: the floor patches are sand-covered slabs (texture), no hard light rectangles; none in live play either.** | env-art-b | fixed @ 84422d11 | pass A (2026-10-28, integration 048b0a7f) |
 | 16 | battle_arena_terrace, _ash_terrace_lanternfall | Very dark at High; the party is barely lit against the terraces. | env-art-b | fixed @ 6466a6f5 | pass A (2026-10-28, integration 048b0a7f) |
-| 17 | undertow_eye (also undertow_night) | Concentric streak rings at the eye's centre, and a grid-like dither over the cloud body. Possibly a still-frame TAA effect: to check in motion in pass B. **pass 3: the concentric streak rings at the eye's centre and a dot dither over the cloud body are still there (still frame).** | rendering (pc-gpu) | still open @ 84422d11 | pass A (2026-10-28, integration 048b0a7f) |
+| 17 | undertow_eye (also undertow_night) | Concentric streak rings at the eye's centre, and a grid-like dither over the cloud body. Possibly a still-frame TAA effect: to check in motion in pass B. **pass 3: the concentric streak rings at the eye's centre and a dot dither over the cloud body are still there (still frame).** **Fixed on gpu/row17-undertow-eye-rings @ 12cf79cb (M3-RND-29, in review).** The rings were the storm sea: its foam and throat-glow log-spirals winding to the axis, and specular off the funnel's interpolated normals. They're anti-aliased, the streaks redirected, and the normal is now computed per pixel; +0.02–0.10 ms. The dither is a frozen-clock still artefact: it reads smooth with the storm playing. | rendering (pc-gpu) | fix in review (12cf79cb) | pass A (2026-10-28, integration 048b0a7f) |
 | 18 | slice_causeway_harrier_view (**reframed in big14**) | No harrier in frame (the lavapipe baseline has none either): a framing or timing gap, not a GPU issue. **pass 3: a harrier is in the sky.** | slice-polish | fixed @ 84422d11 | pass A (2026-10-28, integration 048b0a7f) |
 | 19 | Prologue vigil terrace (New Game) | A hard-edged, bright-green rectangle in the water beside the terrace (also on lavapipe in iskarra_p01). **pass 3: no green rectangle in the water (iskarra_p01, the New Game Prologue).** | env-art | fixed @ 84422d11 | big14 playtest (2026-10-28, gpu/gate-big14-shots) |
 | 20 | Ch2 beach arrival (ch02_girl_on_the_beach) | Rhen is never in frame. Four lines are framed on empty sky (Rhen's view on his back?) with no face in it. **Fixed on lead/gate-ft-beach @ 93d0741e**: Rhen in the shallows, Asha kneeling beside him, both faces in frame. | slice-polish, hero-integration | fixed @ 6466a6f5 | big14 playtest (2026-10-28, gpu/gate-big14-shots) |
 | 21 | Haluna field start (after the beach; Village spawn too) | The field camera starts over the shallows with Rhen not on screen; Asha and Toma walk ahead, spaced. On ft-beach the camera starts below the waterline, looking up through the surface. **pass 3: New Game now runs the Prologue into the beach cutscene, and the walk's spawns stay inside it, so the field start after the beach was not reached. Needs a hand playthrough.** | hero-integration | open (not re-checkable) | big14 playtest (2026-10-28, gpu/gate-big14-shots) |
-| 22 | Scene changes: New Game→Prologue, Ch1, Ch2, the first fight | Hidden frames over ADR 0029's 1000 ms: 3025 / 1276 / 2017 / 1669 ms (warm), up to 4058 ms cold. Dwell hitches > 33 ms: 9 / 14 / 8. | tech / ui (loading) | open | big14 playtest (2026-10-28, gpu/gate-big14-shots) |
+| 22 | Scene changes: New Game→Prologue, Ch1, Ch2, the first fight | Hidden frames over ADR 0029's 1000 ms: 3025 / 1276 / 2017 / 1669 ms (warm), up to 4058 ms cold. Dwell hitches > 33 ms: 9 / 14 / 8. **pass 3, clean High run: New Game into the Prologue and the beach 382 ms worst hidden (1.55 s entry), Ch1 390, Ch2 388, the first fight 133 ms. Every visible frame is within 50 ms.** | tech / ui (loading) | fixed @ 84422d11 (ADR 0205) | big14 playtest (2026-10-28, gpu/gate-big14-shots) |
 | 23 | ch01_bell_room, ch01_kell_stall, ch01_scale_hull | The camera sits in or against a wall: Rhen's "Morning. Don't get up.", Mother Kell's and the Scale-Man's lines play over a wall with no speaker in frame. **pass 3: kell_stall and scale_hull fixed (the speaker is in frame). ch01_bell_room: the camera is behind Rhen and the room is washed out by a thick orange haze; no listener in frame (also the BellRoom1 spawn).** | act1-chapters (shot cameras), env-art | still open @ 84422d11 | pass A, big14's new shots (2026-10-28) |
 | 24 | zone_wake_h02, zone_wake_h08, zone_wake_c01 | The camera is inside a black wall (h02) or pressed against a shell-covered surface (h08, c01). **pass 3: zone_wake_* shots are gone from the manifest. In the walk, the haluna_wake DockShore spawn puts the camera inside Rhen's body; FeastEdge, InkLamp and WallDawn look straight down, dark, with the party tiny.** | env-art | still open @ 84422d11 | pass A, big14's new shots (2026-10-28) |
 | 25 | brightwater_landing_f06 | The camera is pressed against a wooden wall; f01 is very dark. **pass 3: f06 fixed (deck and props read). f01 is still dark (lower half black); the Brightwater landing pier is a black slab at night in the walk (new row 47).** | env-art | still open @ 84422d11 | pass A, big14's new shots (2026-10-28) |
@@ -136,8 +136,8 @@ every zone, one battle per arena and every Act I boss intro. Contact sheets go o
 | 38 | coilspire spawns SpireBase, Tier2, Tier4 | The field camera is pressed against the spire wall with Rhen out of view: the camera doesn't pull in when the tower blocks it. **pass 3: SpireBase and Tier2 read from above. Tier4: the camera is inside Rhen's head. Encounter: the camera looks at open sea with no Rhen.** | hero-integration (field camera), env-art-b (spawns) | still open @ 84422d11 | pass B (2026-10-28, lead/gate-ft-beach @ 93d0741e) |
 | 39 | ch09 spawns RoadGate; Ch9 start | At RoadGate the camera sits behind the gate rocks with Rhen barely visible. In Ch9 Rhen walks alone though Asha and Toma are in the chapter's party (also no Toma in Ch4's field and battles). **pass 3: Ch9 Rhen walks alone on the strand and at RoadGate (the RoadGate camera is now clear of the rocks). Ch4: Toma is in Haluna's field at the chapter start, but the walk's Brightwater battles (started from the location) field only Rhen and Asha: re-check with the chapter's own encounter flow.** | act1-chapters | still open @ 84422d11 | pass B (2026-10-28, lead/gate-ft-beach @ 93d0741e) |
 | 40 | ch01 underway arenas (ch01_wickfry, ch01_oil_slug, in battle) | Row 15's hard rectangular lit floor patches show in live play. The Oil Slug is a small dark shape, hard to see against the floor. **pass 3: the slug is readable in battle (lit orange spines); no rectangles.** | env-art-b; creatures (the slug's read) | fixed @ 84422d11 | pass B (2026-10-28, lead/gate-ft-beach @ 93d0741e) |
-| 41 | Scene entries (pass B timings, not budget-grade) | Coilspire's entry has a 4324 ms hidden frame, the worst in Act I; field battles about 1.9 s. The budget run gives the per-zone table below. | tech / ui (loading) | open | pass B (2026-10-28, lead/gate-ft-beach @ 93d0741e) |
-| 42 | Ch5 fresh entry (F8 chapter start) | A visible frame of 61.6 ms after the fade (ADR 0029: 50 ms), on top of a 6178 ms hidden frame. | tech / ui (loading) | open | budget check, fresh launches (2026-10-28) |
+| 41 | Scene entries (pass B timings, not budget-grade) | Coilspire's entry has a 4324 ms hidden frame, the worst in Act I; field battles about 1.9 s. The budget run gives the per-zone table below. **pass 3: under ADR 0205's 2 s in the walk (worst Ch8 1817 ms). The fresh-process swap sweep leaves Corrow at 2151 and Pemakar at 2016 ms, just over.** | tech / ui (loading) | mostly fixed @ 84422d11 | pass B (2026-10-28, lead/gate-ft-beach @ 93d0741e) |
+| 42 | Ch5 fresh entry (F8 chapter start) | A visible frame of 61.6 ms after the fade (ADR 0029: 50 ms), on top of a 6178 ms hidden frame. **pass 3: Ch5 entry 1772 ms hidden, 16.5 ms visible (walk); Pemakar's fresh swap 16.0 ms visible.** | tech / ui (loading) | fixed @ 84422d11 | budget check, fresh launches (2026-10-28) |
 | 43 | field_hud_over_haluna_wake | The shot's backdrop `res://game/levels/_tests/haluna_wake_dressing/haluna_wake_dressed.tscn` does not exist on this tree. The load fails (`instantiate` on null, then `make_current` on null) and capture_preset hangs until the 25-min timeout. The gate will hang the same way. | ui-menus (shot), env-art (the wake's dressed scene) | open | pass 3 (2026-10-30, big18 + integration @ 84422d11) |
 | 44 | ch08 Corrow (ch08_corrow_arrival/_stair/_flood/_lake/_storm, crowd_zone_corrow, npc_corrow_storm_figure[_near], the ch08 walk after Bastion) | Freeing any Corrow scene prints 4 × `Parameter "material" is null` (material_casts_shadows, is_animated, get_instance_shader_parameters, update_dependency). Only scenes with the storm figure do it, and the storm-figure shots alone do it too: its mesh keeps a freed material (hero-integration's PC-QUEUE ask). | creatures (the storm figure, M3-HER-1142) | open | pass 3 (2026-10-30, big18 + integration @ 84422d11) |
 | 45 | ch05_ashcrown_crown, crowd_zone_ashcrown | The crown's bench and step faces carry a stretched, streaky texture (UV stretch); it reads low-quality next to the clean paving. | env-art-b | open | pass 3 (2026-10-30, big18 + integration @ 84422d11) |
@@ -159,6 +159,55 @@ every zone, one battle per arena and every Act I boss intro. Contact sheets go o
 | 61 | battle_arena_seawall_stairhead_surge | The Surge's dark body fills half the frame against the camera; the boss doesn't read. | battle-presentation (camera), creatures-b | open | pass 3 A (2026-10-30, big18 + integration @ 84422d11; reviewed and spot-checked) |
 | 62 | pemakar_p11_sea_cut_weir_day | The weir slabs read as flat, near-untextured grey boxes. | env-art-b | open | pass 3 A (2026-10-30, big18 + integration @ 84422d11; reviewed and spot-checked) |
 | 63 | battle_boss_intro_matron | Stretched-UV streaks on the mouldings left of the boss, and a flat light-grey panel behind her shoulder. | env-art-b | open | pass 3 A (2026-10-30, big18 + integration @ 84422d11; reviewed and spot-checked) |
+| 64 | Fight entries: ch02_tideline, ch03_causeway_shore, the Drownbell, ch04_bottle_hermit, ch05_cinder_matron, ch06_inquisitor | A visible frame over ADR 0042's 50 ms in the 60 frames after the fade lifts: 78.6 / 123.0 / 98.4 / 108.4 / 141.6 (swap sweep) / 55–70 ms. The boss fights also do it in a fresh process. Likely a first-draw compile in the intro VFX or the boss rig, after the fade has lifted. | battle-presentation (boss intro VFX), tech | open | pass 3 hitches (2026-10-30, clean High walk + GPU swap sweep) |
+| 65 | arena_camp (M3-RND-21), tamsule_bell_kit T01/T03 (M3-RND-26) | Over the 0.3 ms cost target at High 1440p. The smoke columns cost 0.31 ms for three (about 0.42 ms for four). The Tamsule drop costs 0.36–0.43 ms. The fires themselves are cheap (0.03 ms). | env-art-b | open | pass 3 costs (2026-10-30) |
+
+## Pass 3 hitches (2026-10-30, ADR 0205: hidden ≤ 2 s, visible ≤ 50 ms), High 2560×1440
+
+**Clean walk:** `--budget` with no stills, on 84422d11. The per-zone rows are `act1_big18:*` in `docs/kb/qa/gpu/perf_baseline.csv`. The Lead asked for a quick confirm, so Low and Ultra were not run.
+- **Every hidden frame passes the 2 s bar.** The six worst:
+
+| Zone | Worst hidden frame |
+|---|---|
+| Ch8 | 1817 ms |
+| Ch5 | 1772 ms |
+| Pemakar | 1723 ms |
+| Ch6 | 1653 ms |
+| Ch9 | 1476 ms |
+| Corrow-night | 1286 ms |
+
+  Everything else is under 1 s; launch is 827 ms behind the boot card.
+- **All 100 spawn segments are within budget.**
+- **Visible frames over 50 ms**, all in fights, in the 60 frames after the fade:
+  - the tideline (the first fight), 78.6 ms;
+  - the causeway shore, 123.0 ms;
+  - the Drownbell, 98.4 ms;
+  - the Bottle Hermit, 108.4 ms;
+  - Moll, 55.0 ms.
+
+  Pass B, with stills, gave the same five, so the stills aren't the cause. **New row 64** (owner battle-presentation / tech).
+
+**Fresh-process swap sweep:** `tools/loading/act1_swap_sweep.py`, run windowed on the GPU: ResidentLoads on, residents warmed, a cold process per target.
+- Every change is covered by the fade.
+- **Hidden frames over 2 s:** Corrow 2151 ms and Pemakar 2016 ms. Brine Shoals is 1933, Corrow-night 1808, Tamsule 1237, the Bell Galleries 1222 and Coilspire 1101; every other zone is under 1 s.
+- **Field battles:** 366–739 ms hidden; entries 0.97–1.37 s.
+- **Visible frames over 50 ms**, at the boss fights: the Cinder Matron 141.6 ms, the Bottle Hermit 121.4 ms, Moll 69.9 ms. The Hullgnaw is just under, at 47.7 ms.
+
+**The PC-QUEUE timings:**
+- **New Game to the beach:** 1.55 s, with a worst hidden frame of 382 ms (lavapipe's 15 s of black doesn't happen on the GPU).
+- **The ShaderPrewarm boot:** 823 ms worst frame behind the boot card, a 2.9 s reveal wait, and 15.9 ms worst visible frame.
+- **The Shell Shrine's cold first frame:** 217 ms hidden (fresh process).
+
+## Pass 3 costs (env-art-b's PC-QUEUE), RX 9070 XT, High 2560×1440
+
+Measured by difference with gpu_bench's new `--hide=<glob>`, which hides runtime-built dressing by name: GPU median over 600 frames, two runs each.
+- **The camp fires (alpha-blended flame_tongue):**
+  - arena_camp, 20 fire nodes: 2.59 → 2.56 ms, so **0.03 ms**. Cheap.
+  - The ch06 Brine Shoals zone (Cameras/Camp): within its ±0.2 ms run-to-run noise, so not resolvable.
+- **M3-RND-21, the smoke columns:** arena_camp's 3 SmokeColumns cost **0.31 ms** (2.59 → 2.28), so about 0.42 ms for four. **That's over the 0.3 ms target** at the arena's camera. The ch06 zone names its columns differently, so it wasn't isolated there.
+- **M3-RND-26, the Tamsule drop:** **0.36 ms** at T01 (2.69 → 2.33) and **0.43 ms** at T03 (2.55 → 2.13). **That's over 0.3 ms.**
+
+Both are filed as row 65 (env-art-b).
 
 ## Frame-time budget per zone (ADR 0029/0037, the walk with --budget)
 

@@ -23,6 +23,30 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
     the Corrow storm figure (row 44, creatures).
   - Pass B's budget (the walk with stills): hidden-frame entries are mostly < 1 s now. Still OVER: Ch5 1707,
     Pemakar 1625, Ch6 1640, Ch8 1804, Ch9 1529 and Corrow-night 1279 ms. The clean, still-free numbers are item 3.
+- **Items 2 and 3 are done** (the PC-QUEUE, and the hitches as a quick confirm per ADR 0205). Results are in
+  act1_gpu_qa.md under "Pass 3 hitches" and "Pass 3 costs"; the per-zone rows are `act1_big18:*` in perf_baseline.csv.
+  - Clean High walk: every hidden frame is ≤ 1.82 s, so all pass the 2 s bar.
+  - Fresh-process GPU swap sweep: Corrow 2151 ms and Pemakar 2016 ms, just over 2 s.
+  - Row 64: fights show a visible frame over 50 ms after the fade (tideline 79, causeway 123, Drownbell 98, Hermit
+    108–121, Matron 142, Moll 55–70 ms). Owner battle-presentation / tech.
+  - Row 65: M3-RND-21's smoke is 0.31 ms for 3 columns, and M3-RND-26's drop is 0.36–0.43 ms, both over 0.3 ms. The
+    fires cost 0.03 ms.
+  - The Spar-wraith's 45° turn is still open: it needs a capture in motion.
+  - Low and Ultra were not run (the Lead's quick-confirm call).
+  - New tool options: `--hide=<glob>` in gpu_bench and capture_preset.
+- **Row 17 (Undertow eye), the Lead's ask: MERGE-READY `gpu/row17-undertow-eye-rings` @ 12cf79cb (M3-RND-29, in
+  review).**
+  - The sea shader only: the spiral patterns are anti-aliased, the throat streaks redirected, and the normal is now
+    computed per pixel.
+  - `--filter=undertow` 53/0. Cost +0.02–0.10 ms at High 1440p.
+  - Lavapipe: the undertow_* shots that see the storm's sea will drift; re-approve them after viewing.
+- **Item 5 (Blender verifies): skipped**, per the Lead (ADR 0205: non-blocking).
+- **Item 4 (my RND work):** every RND branch named (M2-RND-01/02/03/04, M1-RND-22) is already merged and `done`.
+  Taking the rendering request tasks instead:
+  - `gpu/m3-her-1152-1124-freed-casts` @ b0f19abc fixes M3-HER-1152 (the RevenantTells cast) and M3-HER-1124 (the
+    UnderwaterRig deferred root). Tests are running.
+  - Still for rendering: M3-RND-28 (the Ch8 storm figure's capsule over the water) and M3-HER-1161 (EbbingMotes, fixed by
+    env-art-b on their branch).
 - **Item 1 (the plan as started), Act I real-GPU QA pass 3:** on `gpu/act1-qa-3`. That's origin/lead/gate-big18 @ 37a90b4c,
   plus integration cf03aa8d (4 commits ahead), plus gpu/act1-qa-2, which held act1_gpu_qa.md and had never been merged.
   The worktree is C:/Users/Aaron/hymn_qa3.

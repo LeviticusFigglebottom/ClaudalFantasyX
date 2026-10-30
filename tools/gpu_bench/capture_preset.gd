@@ -21,6 +21,8 @@ extends Node
 ## Storm:half_res_compute=false, M2-RND-01).
 ## --add-box=x,y,z,sx,sy,sz adds an opaque grey box (world centre and size, metres) to the scene, e.g. a
 ## pillar inside the Undertow's wall foot to check its occlusion (M2-RND-01).
+## --hide=<glob>[;<glob>...] hides every Node3D whose name matches, each settle frame (runtime-built children
+## included): an element's look by difference (row 17, the Undertow eye).
 ## --setup applies each shot's setup block (globals, nodes, time_scale; not viewport) as capture.tscn does, held every
 ## frame after the scene's own _process (Act I real-GPU QA: moods, the slice cutscene shots).
 
@@ -104,6 +106,7 @@ func _run() -> void:
 					held.append(n as UndertowStorm)
 		for i in maxi(int(shot.get("settle_frames", 1)), int(_opts.get("settle", 60))):
 			await get_tree().process_frame
+			_hide(scene)
 			if not _opts.has("freeze-jitter"):
 				for storm in held:
 					storm.state.frame += 1
@@ -183,3 +186,9 @@ func _add_box(scene: Node, spec: String) -> void:
 	box.mesh = mesh
 	scene.add_child(box)
 	box.global_position = Vector3(v[0], v[1], v[2])
+
+
+func _hide(scene: Node) -> void:
+	for pattern in str(_opts.get("hide", "")).split(";", false):
+		for n in scene.find_children(pattern, "Node3D", true, false):
+			(n as Node3D).visible = false

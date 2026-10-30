@@ -20,6 +20,8 @@ extends Node
 ##   --override=key=value,...     GraphicsSettings overrides on top of each preset (e.g. vegetation_detail=low)
 ##   --undertow-half=<scale>     render every UndertowStorm's body at this resolution fraction (M2-RND-01)
 ##   --node-set=Path:prop=value,...   set a property on a node of the scene (e.g. Underwater:active=false)
+##   --hide=<glob>[;<glob>...]    after the settle, hide every Node3D whose name matches (e.g. camp_fire*;smoke_*):
+##                                an element's cost by difference, runtime-built dressing included
 ##   --hide-storms                hide every UndertowStorm (the frame without the storm: its own cost by difference)
 ##   --debug-draw=overdraw      render Viewport.DEBUG_DRAW_OVERDRAW (pair with --png-dir; M1-ENV-03 budget)
 ##   --tag-vegetation             tag MultiMeshes (vegetation_multimesh, small_foliage) and range-limited
@@ -119,6 +121,13 @@ func _run() -> void:
 		cam.make_current()
 	for i in SETTLE_FRAMES:
 		await get_tree().process_frame
+	# --hide runs after the settle so runtime-built dressing (ZoneKitDressing) is already in the tree.
+	for pattern in str(_opts.get("hide", "")).split(";", false):
+		var hidden := 0
+		for n in _scene.find_children(pattern, "Node3D", true, false):
+			(n as Node3D).visible = false
+			hidden += 1
+		print("GPU_BENCH hide '%s': %d node(s)" % [pattern, hidden])
 	if _opts.has("tag-vegetation"):
 		var groups := GraphicsSettings.new().data.get("vegetation_groups", {}) as Dictionary
 		for n in _scene.find_children("*", "GeometryInstance3D", true, false):
