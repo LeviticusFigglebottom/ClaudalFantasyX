@@ -277,6 +277,8 @@
     "cloudloom": {"file": "res://assets/audio/act2/music/cloudloom.ogg", "resume": true, "_note": "M4-A2P-091: Ch12, Cloudloom's open-roofed weaving-hall: the loom figure, the light, the weavers' line; A minor 72 BPM, 120 s loop (plain git, ADR 0175)"},
     "sanctum_of_the_level": {"file": "res://assets/audio/act2/music/sanctum_of_the_level.ogg", "resume": true, "_note": "M4-A2P-091: Ch13, the Sanctum: one C major chord that never changes, a bell every four bars, the Order's hum far off; flat by design (plain git, ADR 0175)"},
     "battle_heretic": {"file": "res://assets/audio/act2/music/battle_heretic.ogg", "_note": "M4-A2P-091 (ADR 0204 §9): the regular battle theme from Ch14 on, the party heretics: battle_standard_v2 darkened (the lead an octave down, the metal down, the bronze up, ORDER_HUM hummed under the riff); same intro and loop, so the two swap. Ch14+ encounter rows name it as combat adds them (plain git, ADR 0175)"},
+    "hollowmere_answers": {"file": "res://assets/audio/act2/music/hollowmere_answers.ogg", "beat": {"bpm": 76.0, "downbeat_offset_s": 3.0}, "_note": "M4-A2P-090: Ch15 C4, dawn in fog: Liss sings the current-song (CURRENT_SONG; sung, ADR 0204 §10) and Hollowmere answers; rings into the hollowmere loop (plain git, ADR 0175)"},
+    "act2_break": {"file": "res://assets/audio/act2/music/act2_break.ogg", "beat": "free", "_note": "M4-A2P-090: Ch16 C9, the act break: a bed for Rhen's voice-over; the Hush's first phrase remembered, the Letting's cell once, unresolved (plain git, ADR 0175)"},
     "sunken_vey": {
       "file": "res://assets/audio/music/act2/sunken_vey.ogg",
       "resume": true,
@@ -313,7 +315,7 @@
     "peace_wedding": {
       "file": "res://assets/audio/music/act2/peace_wedding.ogg",
       "resume": true,
-      "_note": "Ch14, the peace wedding in the Lacquer Court at dusk. Act II final (M3-AUD-843; Git LFS; the sketch assets/audio/music/peace_wedding.ogg stays as the fallback); no zone row until ch13/ansedra_lacquer_court/ansedra_lacquer_court.tscn exists"
+      "_note": "Ch14, the peace wedding in the Lacquer Court at dusk. Act II final (M3-AUD-843; Git LFS; the older M3-AUD-805 render, assets/audio/music/peace_wedding.ogg, stays committed but nothing plays it); no zone row until ch13/ansedra_lacquer_court/ansedra_lacquer_court.tscn exists"
     }
 ,
     "unlamped": {
