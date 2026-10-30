@@ -576,3 +576,6 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
 - MERGE-READY @ dd590bd7
 - **Next:** the hand-prop request (Aldous's dock-hook and salt-glass housing, the wedding cord) to cinematics. Then
   the Act II queue is done for characters, apart from the crowd sets (blocked as above) and Owa (Act III).
+- **Hand props (Act II):** assets/characters/props/act2/{dock_hook,salt_glass_housing,wedding_cord}.glb. Each
+  origin is the grip, for a BoneAttachment3D. The housing's bound glow is `emission_energy_multiplier` on
+  housing_glass.tres, off by default. The shot was viewed and the job is identical on 3 paths. MERGE-READY @ 1d4f93cb
