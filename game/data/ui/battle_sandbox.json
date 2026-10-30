@@ -23,7 +23,7 @@
                "scene": "res://game/hero_motion/battle/toma_battle_actor.tscn", "yaw_deg": -90.0},
       "ysolde": {"shape": "capsule", "color": "#B08A52", "radius": 0.27, "height": 1.66, "tint": "#B08A52",
                  "scene": "res://game/hero_motion/battle/ysolde_battle_actor.tscn", "yaw_deg": -90.0},
-      "liss": {"shape": "capsule", "color": "#7A8F6A", "radius": 0.26, "height": 1.62, "tint": "#7A8F6A",
+      "liss": {"shape": "capsule", "color": "#7A8C5A", "radius": 0.26, "height": 1.62, "tint": "#7A8C5A",
                "scene": "res://game/hero_motion/battle/liss_battle_actor.tscn", "yaw_deg": -90.0},
       "stillguard_inquisitor": {"shape": "capsule", "color": "#6E6A62", "radius": 0.3, "height": 1.86, "tint": "#8A8478",
                                 "scene": "res://game/characters/foes/moll_battle.tscn", "yaw_deg": 90.0},

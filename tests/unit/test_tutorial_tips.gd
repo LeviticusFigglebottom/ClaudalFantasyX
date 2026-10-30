@@ -8,11 +8,7 @@ var made: Array[Node] = []
 
 
 func before_each() -> void:
-	for n in made:
-		if is_instance_valid(n):
-			n.get_parent().remove_child(n)
-			n.free()
-	made.clear()
+	_free_made()
 	(Engine.get_main_loop() as SceneTree).paused = false
 	UiSettings.set_shared(UiSettings.new())
 	flags = {}
@@ -38,6 +34,23 @@ func test_each_trigger_raises_its_tip_once_per_save() -> void:
 	assert_true(flags.get(&"tut_objective_seen", false), "taking a tip marks it seen")
 	t.raise_field_ready()
 	assert_eq(_ids(t), [&"shop", &"field_menu"], "a seen tip never comes back")
+	_done()
+
+
+## The Lead's Act I onboarding pass (2026-10-29): the Swell tip (the gauge, its techniques and the field menu's fill
+## modes) comes on the field after the menu's own tips have been read, never with them.
+func test_the_swell_tip_follows_the_menu_tips() -> void:
+	var t := _tips()
+	flags[&"tut_field_menu_seen"] = true
+	t.raise_field_ready()
+	assert_eq(_ids(t), [&"menu_save"], "the menu-save tip first")
+	assert_eq(t.take()["id"], "menu_save")
+	t.raise_field_ready()
+	assert_eq(_ids(t), [&"swell"], "then the Swell tip, on the next field")
+	assert_eq(t.take()["id"], "swell")
+	assert_true(flags.get(&"tut_swell_seen", false))
+	t.raise_field_ready()
+	assert_true(t.queue.is_empty(), "once per save")
 	_done()
 
 
@@ -115,5 +128,14 @@ func _ids(t: TutorialTips) -> Array[StringName]:
 
 
 func _done() -> void:
+	_free_made()  # a test leaves no card in the tree
 	InputNames.using_pad = false
 	UiSettings.set_shared(null)
+
+
+func _free_made() -> void:
+	for n in made:
+		if is_instance_valid(n):
+			n.get_parent().remove_child(n)
+			n.free()
+	made.clear()
