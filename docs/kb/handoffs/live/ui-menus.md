@@ -1495,3 +1495,11 @@ MERGE-READY @ 80f0fdcc3: M5-A3P-1705, the Vowbound menus lose a name on release.
   - **Tests and checks:** test_ledger_reader 3/0; shot `ledger_reader` (pending_baseline), rendered and viewed;
     validate_data 0/0; taskboard ok; lint ok; audio audit UI 0.
 MERGE-READY @ dd8d136e1: M5-A3P-1706, the ledger page.
+
+- **M5-A3P-1708, the Vowbound answers (a27a38bc0):**
+  - B09's hook. As Kesh is called she answers over herself, after Asha's call bark: "I hold. Call, and I will come."
+    until `ch17_chose_the_unbinding` is set, then "You chose. A thousand years, and one of you finally chose."
+  - The lines are the script's own keys, from `game/data/ui/vowbound_answers.json`.
+  - No shot changes: captures read no flags.
+  - **Tests and checks:** test_battle_barks 6/0; vowbound 119/0; validate_data 0/0; taskboard ok; lint ok.
+MERGE-READY @ a27a38bc0: M5-A3P-1708, the Vowbound answers (Ch17 B09).
