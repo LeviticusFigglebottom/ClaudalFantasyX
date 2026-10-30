@@ -29,10 +29,10 @@ location: ch17/hollowmere
 @camera H14
 @anim asha look_at lamp_housing
 @wait 2.0
-@anim pell turn_back
-@wait 2.0
 @anim liss take lamp_housing
-@wait 4.0
+@wait 3.0
+@anim pell turn_back
+@wait 3.0
 @music silence fade=4.0
 <<set $ch15_pyre_raft = true>>
 @fade out 3.0
