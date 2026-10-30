@@ -1,5 +1,5 @@
 {
- "_doc": "M4-A2P-075 (Ch15, cinematics'): the open sea's cutscene shots and marks (the barge), staged from docs/kb/story/beats/act2_ch15_direction.md. U01-U03 and U05-U07 replace the greybox's close deck views (U04 stays the layout's, for play). H01-H03 are ch15_current_song's (at sea). Kerrid sits for the confession, so his singles (K06-K16, K19) look at a seated eye line (1.15 m; the notes' 1.4 m put his eyes under the 85 mm frames). kerrid_opposite stands Rhen at Kerrid's right on the starboard side, out of every Kerrid single (on the axis he'd fill them); K11 is over Kerrid's shoulder onto him, and K12's camera moves off him. K03 frames Kerrid at the stern (the notes' camera stood 0.75 m from him).",
+ "_doc": "M4-A2P-075 (Ch15, cinematics'): the open sea's cutscene shots and marks (the barge), staged from docs/kb/story/beats/act2_ch15_direction.md. U01-U03 and U05-U07 replace the greybox's close deck views (U04 stays the layout's, for play). H01-H03 are ch15_current_song's (at sea). Kerrid sits for the confession, so his singles (K06-K16, K19) look at a seated eye line (1.15 m; the notes' 1.4 m put his eyes under the 85 mm frames). kerrid_opposite stands Rhen at Kerrid's right on the starboard side, out of every Kerrid single (on the axis he'd fill them); K11 is over Kerrid's shoulder onto him, and K12's camera moves off him. K03 frames Kerrid at the stern (the notes' camera stood 0.75 m from him). The @vfx places: shoal_floor on the Shoal block's sand under K01, shoal_rising off the water at the starboard side (K02), kerrid_orbit at Kerrid's chest and kerrid_scar at his forearm (K03, K04).",
  "replace": [
   "U01",
   "U02",
@@ -425,6 +425,30 @@
    0.0,
    3.2,
    130.0
+  ],
+  "shoal_floor": [
+   3.8,
+   -2.7,
+   2.0,
+   0.0
+  ],
+  "shoal_rising": [
+   2.6,
+   -0.3,
+   2.5,
+   0.0
+  ],
+  "kerrid_orbit": [
+   0.0,
+   1.3,
+   4.2,
+   0.0
+  ],
+  "kerrid_scar": [
+   0.25,
+   1.05,
+   4.0,
+   0.0
   ]
  }
 }

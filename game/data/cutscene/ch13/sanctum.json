@@ -1,5 +1,5 @@
 {
- "_doc": "M4-A2P-075 (Ch13, cinematics'): the Sanctum's cutscene shots and marks, from act2_ch13_direction.md. S02 replaces the greybox's (it frames Liss at the rim). basin_rim stands Liss outside the east kneeling ledge, looking down at the basin; before_ethren is a pace in front of Ethren's rise (the layout's corran). S06 and S09 look at Ysolde's eye line.",
+ "_doc": "M4-A2P-075 (Ch13, cinematics'): the Sanctum's cutscene shots and marks, from act2_ch13_direction.md. S02 replaces the greybox's (it frames Liss at the rim). basin_rim stands Liss outside the east kneeling ledge, looking down at the basin; before_ethren is a pace in front of Ethren's rise (the layout's corran). S06 and S09 look at Ysolde's eye line. basin_light (S01's light under the mirror) and asha_sleeve (S07's binding, at Asha's arm by sa_asha) place the scene's @vfx at=.",
  "replace": [
   "S02"
  ],
@@ -120,6 +120,18 @@
    7.5,
    0.0,
    -40.6,
+   0.0
+  ],
+  "basin_light": [
+   0.0,
+   -0.2,
+   -31.0,
+   0.0
+  ],
+  "asha_sleeve": [
+   6.7,
+   1.1,
+   -39.3,
    0.0
   ]
  }

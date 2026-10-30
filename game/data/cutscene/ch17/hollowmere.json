@@ -1,5 +1,5 @@
 {
- "_doc": "M4-A2P-075 (Ch15, cinematics'): Hollowmere's cutscene shots and marks for Ch15's arrival, staged from act2_ch15_direction.md. H04 replaces the greybox's supper-table frame (its H01-H03 stay: the script's H01-H03 are at sea, in ch15/open_sea.json). H05 faces the dock-master from his door (the notes' camera saw his back); H06 is a long lens from the barge, so the two stay small and unheard; fathers_door_liss puts Liss beside him (she shared his mark). H11 tracks Toma (track=toma in the script) down the jetty; H13 looks out to the raft; H14 holds Liss at the jetty end; H16 is from the dock, so the hull doesn't hide the quay (the notes' camera was behind the ship). The ship's deck marks are on the Ship block's top (2.5 m).",
+ "_doc": "M4-A2P-075 (Ch15, cinematics'): Hollowmere's cutscene shots and marks for Ch15's arrival, staged from act2_ch15_direction.md. H04 replaces the greybox's supper-table frame (its H01-H03 stay: the script's H01-H03 are at sea, in ch15/open_sea.json). H05 faces the dock-master from his door (the notes' camera saw his back); H06 is a long lens from the barge, so the two stay small and unheard; fathers_door_liss puts Liss beside him (she shared his mark). H11 tracks Toma (track=toma in the script) down the jetty; H13 looks out to the raft; H14 holds Liss at the jetty end; H16 is from the dock, so the hull doesn't hide the quay (the notes' camera was behind the ship). The ship's deck marks are on the Ship block's top (2.5 m). lamp_housing and lamp_crack (ch15_pyre_raft's @vfx at=) are Tobin's lamp in Liss's hands at jetty_end_liss.",
  "replace": [
   "H04"
  ],
@@ -214,6 +214,18 @@
    2.5,
    7.3,
    90.0
+  ],
+  "lamp_housing": [
+   60.75,
+   1.0,
+   -0.7,
+   0.0
+  ],
+  "lamp_crack": [
+   60.75,
+   1.05,
+   -0.6,
+   0.0
   ]
  }
 }
