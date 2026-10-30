@@ -45,6 +45,8 @@ var _in_flight: PackedStringArray = []
 var _done_count := 0
 ## The resident paths warm() asked for (a path both lists name stays resident).
 var _resident_wanted: Dictionary = {}
+## The scene load_scene() last loaded for (M3-HER-1167: the title starts the first zone's loads early).
+var _scene_path := ""
 
 
 ## Adds a ResidentLoads under `router` and connects it to the router's change_started. Idempotent.
@@ -119,7 +121,7 @@ func warm() -> void:
 
 
 ## Starts loading the resources `scene_path` holds once in the tree (scene_loads.json), on worker threads, and
-## drops the last zone's. No hold.
+## drops the last zone's. No hold. The title calls it early for the zone its highlighted choice enters (M3-HER-1167).
 func load_scene(scene_path: String) -> void:
 	_ensure_data()
 	var wanted := {}
@@ -140,7 +142,11 @@ func load_scene(scene_path: String) -> void:
 		if not wanted.has(path):
 			scene.erase(path)
 	_scene_wanted = wanted
-	_prewarm_queue.clear()
+	# The same zone asked again (the title started its loads; now its change starts): what is in and still waits
+	# for the prewarm stays queued, so its pipelines still compile under the cover.
+	if scene_path != _scene_path:
+		_prewarm_queue.clear()
+	_scene_path = scene_path
 	for path: String in wanted:
 		if resident.has(path) or scene.has(path) or pending.has(path):
 			continue

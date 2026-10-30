@@ -138,6 +138,34 @@ func test_a_change_loads_the_zone_s_list_and_drops_the_last() -> void:
 	_done()
 
 
+## M3-HER-1167: the title starts the first zone's loads while it shows. When that zone's change then starts, the
+## same request again loads nothing twice and keeps what waits for the prewarm queued (its pipelines still compile
+## under the cover); another zone's request clears it.
+func test_the_title_s_early_start_keeps_the_zone_s_prewarm_for_its_change() -> void:
+	ResidentLoads.run_headless = true
+	var router := Node.new()
+	router.set_script(load("res://tests/fixtures/resident/hold_router.gd"))
+	_add(router)
+	var r := ResidentLoads.install(router)
+	var ch1 := "res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn"
+	r.load_scene(ch1)
+	while not r.is_ready():
+		r.poll()
+		OS.delay_msec(5)
+	assert_true(r.prewarm_pending(), "the zone's materials wait for the prewarm")
+	var loaded := r.scene.size()
+	r.load_scene(ch1)
+	assert_true(r.is_ready(), "nothing to load again")
+	assert_eq(r.scene.size(), loaded)
+	assert_true(r.prewarm_pending(), "and its prewarm is still queued for the change")
+	r.load_scene("res://game/levels/ch08/coilspire/coilspire.tscn")
+	assert_true(r.take_prewarm(loaded).is_empty(), "another zone's request clears the last zone's queue")
+	while not r.is_ready():
+		r.poll()
+		OS.delay_msec(5)
+	_done()
+
+
 ## A field battle keeps the zone's loads, so the change back to the field reads nothing again (the human playtest's
 ## seconds of black after a won fight, 2026-10-30).
 func test_a_field_battle_keeps_the_zone_s_loads_for_the_return() -> void:

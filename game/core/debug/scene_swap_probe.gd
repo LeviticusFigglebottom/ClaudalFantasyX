@@ -33,6 +33,9 @@ const ARG_FRAME_USEC := "--frame-usec="
 const ARG_RESIDENT_LOADS := "--resident-loads"
 const ARG_WARM_RESIDENT := "--warm-resident"
 const ARG_ENCOUNTER := "--encounter="
+## --warm-scene (M3-HER-1167) also starts the destination zone's loads before the change and lets them finish, as the
+## title does for the zone its highlighted choice enters while it shows.
+const ARG_WARM_SCENE := "--warm-scene"
 ## --round-trip=<encounter>: after the change to --to, a field battle for <encounter> and the change back to --to;
 ## the stats printed are the return's (the playtest's black screen after a won fight, 2026-10-30).
 const ARG_ROUND_TRIP := "--round-trip="
@@ -67,6 +70,7 @@ func _run() -> void:
 	var launch := false
 	var frame_usec := 0
 	var warm_resident := false
+	var warm_scene := false
 	var round_trip := &""
 	var back_to := ""
 	for arg in OS.get_cmdline_user_args():
@@ -82,6 +86,8 @@ func _run() -> void:
 			ResidentLoads.run_headless = true
 		elif arg == ARG_WARM_RESIDENT:
 			warm_resident = true
+		elif arg == ARG_WARM_SCENE:
+			warm_scene = true
 		elif arg.begins_with(ARG_ENCOUNTER):
 			to = _queue_battle(StringName(arg.trim_prefix(ARG_ENCOUNTER)))
 		elif arg.begins_with(ARG_ROUND_TRIP):
@@ -112,6 +118,12 @@ func _run() -> void:
 		var warm_frames := int(cfg.get("timeout_frames", 0))
 		while not resident.is_ready() and warm_frames > 0:
 			warm_frames -= 1
+			await get_tree().process_frame
+	if warm_scene and resident != null:
+		resident.load_scene(to)
+		var scene_frames := int(cfg.get("timeout_frames", 0))
+		while not resident.is_ready() and scene_frames > 0:
+			scene_frames -= 1
 			await get_tree().process_frame
 	if round_trip != &"":
 		await _change_and_wait(to, cfg)
