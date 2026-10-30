@@ -1799,3 +1799,13 @@ MERGE-READY @ (this commit).
   before big20's Ch12 cameras). It's report-only and is re-checked against the kit.
 MERGE-READY @ (this commit).
 - Next: the Act I encounter-entry smoke and the headless playthrough on 7dc3ab41, in a clean worktree. Results follow.
+
+### Act I gate criterion 2 on big20 (7dc3ab41), clean worktree, 10-30 ~11:00
+- **PASS.** Each suite ran alone with its own XDG_DATA_HOME, all with **0 SCRIPT ERRORs**:
+  - qa_threads 1/0: every chapter thread start to end, save and load at every shrine;
+  - **qa_encounters 1/0 (the encounter-entry smoke):** every Act I encounter entered, won and left;
+  - fp_ 30/0: title → New Game → Prologue → the slice → Ch3;
+  - save_ 153/0;
+  - **act1_route 3/0:** M3-CIN-1233's continuous path, New Game → Ch1 → the slice → Ch4 → Ch9's end card → the title.
+- **act1_gate_check.py fix:** it looked only for `test_*continuous*.gd`, so it reported M3-CIN-1233's test as missing.
+  It now runs `tests/integration/test_act1_route.gd` too (CONTINUOUS_TESTS), with a unit test.
