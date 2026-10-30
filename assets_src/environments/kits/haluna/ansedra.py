@@ -1042,6 +1042,19 @@ def build_archive_case(seed: int = 2131) -> list[kc.MeshBuilder]:
             for face in (-1.0, 1.0):
                 kc.tube(mb, np.array([[-hx, height - 0.12, face * (hz + 0.005)], [hx, height - 0.12, face * (hz + 0.005)]]),
                         0.015, 4, gilt)
+            # the ends: a red inset panel in a gilt frame and a gilt label plate (a plain black end read as a flat
+            # navy slab down the dim aisles; the Ch13 walk, 10-30)
+            for sx in (-1.0, 1.0):
+                ex = sx * hx
+                kc.rounded_block(mb, (ex + sx * 0.005, height * 0.5, 0.0), (0.01, height * 0.5 - 0.25, hz - 0.15), red,
+                                 radius=0.01, seg=1, variation=float(rng.random()))
+                for zz in (-1.0, 1.0):
+                    kc.rounded_block(mb, (ex + sx * 0.015, height * 0.5, zz * (hz - 0.15)), (0.008, height * 0.5 - 0.25,
+                                     0.02), gilt, radius=0.005, seg=1)
+                for yy in (0.25, height - 0.25):
+                    kc.rounded_block(mb, (ex + sx * 0.015, yy, 0.0), (0.008, 0.02, hz - 0.15), gilt, radius=0.005, seg=1)
+                kc.rounded_block(mb, (ex + sx * 0.02, height * 0.72, 0.0), (0.008, 0.07, 0.16), gilt, radius=0.01,
+                                 seg=1)
         out.append(mb)
     return out
 

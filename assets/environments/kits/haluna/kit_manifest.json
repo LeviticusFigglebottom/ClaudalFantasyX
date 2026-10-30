@@ -51,9 +51,9 @@
         6000,
         300
       ],
-      "bytes": 194556,
+      "bytes": 209288,
       "lods": {
-        "archive_case": 1576,
+        "archive_case": 1720,
         "archive_case-lod1": 264
       }
     },
