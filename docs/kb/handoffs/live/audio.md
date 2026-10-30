@@ -3,6 +3,30 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ 6fcbce03d: the Lead's 21:25 item, the audio accessibility pass (M4-A2P-1952, to review).**
+  - **Sliders reach every sound.** Every bus sends to a slider bus (UI, World and Combat under SFX; Ambience with the effects slider). Two fixes:
+    - **Strays:** a player that never names a bus would sit on Master, under no slider but the master's. `AudioDirector.route_stray` now moves it to mix.json `stray_bus` (SFX). Nothing hits this today (the dialogue blip goes to Voice, the cutscene sound fallback to SFX); it guards any track's future players.
+    - **Voice-like barks:** the townsfolk's chatter (`villager_murmur_*`) was on World, under the effects slider only. It now plays on a new **Walla** bus sending through World, so the voice slider reaches it while it still ducks under a line and keeps the zone's reverb. The voice slider's help text says so.
+    - Battle barks are dialogue lines (the Voice blip), and the creatures' voices are effects; neither changes.
+  - **Mono.** A new `mono_audio` setting on the Audio page folds Master to (L + R) / 2: a StereoEnhance with `pan_pullout` 0, applied live.
+    - The new `tools/audio/mono_check.py` checks all 1,289 renders (186 of them stereo).
+    - One failed: `sefir_theme` lost 8.5 dB at 39.4 s, where its hall's late field went out of phase under the bar-9 hum. Re-rendered with the hall at width 0.7, it now thins by 6.4 dB for that moment; loudness is unchanged at -15.98 LUFS.
+    - The largest whole-file loss is 2.1 LU (kesh_memory). Fifteen music cues thin by 4–7.4 dB for a moment and keep every part (listed by the tool). **PC-QUEUE:** sefir_theme at bar 9, by ear.
+  - **Captions.** The game has no captions setting. Dialogue, narration and voice-over are subtitled, but non-dialogue cues aren't. That is requested from UI as **M4-A2P-1953**: a `captions` setting (default off) and a caption line. Audio then emits the battle tells and the off-screen story `@sfx` with loc keys.
+  - **Act I tells are distinct.** The new `tools/audio/tell_check.py` checks the seven Act I wind-ups:
+    - each against its enemy's attack;
+    - each against every tell it can meet in one fight.
+
+    All are distinct; the closest is Hullgnaw's coil against its bite (4.8 times as long, 1.28 times brighter). The Cinder Matron's recrust (Ch5) and the Grip (Ch8) sound alike (3.8 dB apart in colour) but never share a fight, so that pair is reported, not failed.
+  - **Touched outside audio's files:**
+    - `test_ui_settings.gd`: its pinned settings list gains `mono_audio`, one id appended.
+    - accessibility.json, audio_menu.json, strings.csv: appended rows, each in its own commit.
+  - **Checks:**
+    - gdlint and gdformat clean (game, tests); validate_data 0; taskboard OK.
+    - tools tests: audio_data, audio_loudness, dialogue_clarity, mono_check (new), tell_check (new), all OK.
+    - Godot tests: audio_accessibility 3/0 (new), ui_settings 12/0, settings 49/0, audio_menu 4/0, audio_runtime 11/0, life_audio 14/0, battle_audio 22/0, battle_stings 8/0, flame_audio 3/0, prop_audio 2/0, music_release 4/0.
+    - Skipped: screenshots (the Audio page gains a row; UI's settings shots may shift by one row: **LEAD-ASK** whether to re-baseline them on merge), Blender, coverage.
+- **BACKLOG EMPTY (after 6fcbce03d):** waiting on Ch11 and Ch13 staging, combat's Ch14–Ch16 fights, env-art-b's merge and UI's M4-A2P-1953.
 - **MERGE-READY @ 1ad5bbcfb: the Lead's 21:05 item.**
   - **The Act II boss themes as played in the intros (bdc5ef22):** done at d04d79422 (above). Each sting now lands with the title card at 0.7 s, under the boss cue's 3.5 s duck.
   - **Victory stings:** each Act II boss win returns to the field (the chapter flows: `victory_flag`, then the zone), not into a scene of grief, the same as Act I. So the one modest victory figure (pentatonic, open fifths) stays, with no triumphant boss fanfare. act1_mix_pass `--act 2`: 62 handovers, none with a step over 3 LU. Victory → field is level in every Act II zone (-16.0 against -16.0 to -16.1, at most 0.1 LU).
