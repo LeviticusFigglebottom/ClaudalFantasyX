@@ -2,8 +2,8 @@
 id: M5-A3P-1804
 title: "Ch20: the drowned lantern, a lantern-jelly with held light in its bell (act3/drowned_lantern.md)"
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "creatures (claude/creatures)"
 depends_on: []
 milestone: M5
 reviewer: character

@@ -1350,3 +1350,9 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - byte-identical, PROVENANCE, portrait, shot `creature_spire_moth` (viewed).
   - **Also:** the chain lamp's `lit_ceramic` hex corrected, rebuilt.
 - **MERGE-READY @ b89f039ec.** Ch19's three are done. Next: M5-A3P-1803, the held shoal (claimed).
+- **M5-A3P-1803, the held shoal @ c0611d659:**
+  - 24 fish of held light in three counter-turning rings round a crusted net float (its open seam is the weak point);
+  - the rise rule measured at 0 mm in every clip; `idle_turned` for the targetable state;
+  - 5.8k triangles, 54 bones; byte-identical, PROVENANCE, portrait, shot `creature_held_shoal` (viewed).
+  - Tech/Combat: an idle that follows its untargetable phase.
+- **MERGE-READY @ c0611d659.** Next: M5-A3P-1804, the drowned lantern (claimed).
