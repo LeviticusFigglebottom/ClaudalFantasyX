@@ -24,4 +24,23 @@ DLG_CH09_ROAD_004	ch09_the_road_out		'Below' is the sea and those still under it
 DLG_CH09_ACT_CARD_001	ch09_the_road_out		The act card between Act I and Act II. Title case, as a chapter heading.	Act II: The Truth
 DLG_CH09_SHIELD_006	ch09_toma		The Stillguard's greeting. A living comrade answers 'And still.' The dead man can't.	Be level.
 DLG_CH09_SHIELD_010	ch09_toma		Said very quietly, answering for the dead man himself.	And still.
+DLG_CH10_BARK_GLOW_001	ch10_bark_asha_no_glow		She notices the water does not glow with the drowned's light, as the sea does.	No glow.
+DLG_CH10_KIRRU_SHELL_001	ch10_bark_kirru_netmender		The empty place on the name-shell cord was Pell's.	His.
+DLG_CH10_KIRRU_RESSA_002	ch10_bark_kirru_ressa		Ressa is a Kirru name. 'Watched' is the wrong thing to do: the Kirru turn their backs so the dead can lift.	Ressa's brother. She went to the sea. We sang. He watched.
+DLG_CH10_CAUSEWAY_004	ch10_causeway		Literal, not sarcastic: the Kirru speak the human tongue without idioms.	Yes. Behind. He is good at standing behind.
+DLG_CH10_DAWN_004	ch10_dawn_gate		Not a compliment and not an insult: a plain fact, gently said.	You are very good at asking.
+DLG_CH10_CHANNEL_003	ch10_dead_channel		Kirru word for the dead who cannot lift: kept down, not resting.	Held.
+DLG_CH10_TIDE_002	ch10_farewell_tide		Her Ebbing at Corrow led the dead down into the sea; these went up.	Mine went down.
+DLG_CH10_EDGE_002	ch10_fen_edge		'Theirs': the Kirru clutch's. Pell is an exile and may not enter their water.	The water is theirs. I walk on the roots. Not in.
+DLG_CH10_SCRAPE_002	ch10_scrape_mark		Where the Kirru stand to sing for their dead.	Standing places.
+DLG_CH10_UP_002	ch10_what_went_up		She means the direction the dead are supposed to go (down, to the sea), by her faith.	That is not the direction.
+DLG_CH14_DECL_002	ch14_the_vows		'Outside the Level' is the Order's formal phrase for heresy. Keep it a fixed phrase, capitalised as a title.	The guardians of the Lady Cantor, having sheltered binders and handled the sealed ledgers, are declared Outside the Level.
+DLG_CH14_TOBIN_FALL_002	ch14_the_vows		Said to Merel, gently, almost a joke between them: his last words.	...Your knots are terrible.
+DLG_CH14_TOBIN_FALL_003	ch14_the_vows		A wright's repair words ('seat it', 'she'll hold'), said to his wound as if it were a machine.	Hold it. Hold, hold, she'll hold, seat it, hold—
+DLG_CH15_BARK_PUMP_001	ch15_bark_wright_pump		The pump is powered by the bound light of the speaker's dead grandmother; said with pride and affection.	She's a grandmother of mine. Pumps the bilge every night. Best worker on the hull.
+DLG_CH15_SHIP_001	ch15_the_ship		Deliberately ambiguous: the lamp, the ship, or herself.	Bring it back.
+DLG_CH15_CONF_011	ch15_the_shoal		The first time Kerrid uses Rhen's name in the game. It should land hard.	She heard a man drowning under my stair and went down for him. A diver she'd never met. Your father, Rhen.
+DLG_CH15_CONF_018	ch15_the_shoal		'Stilled': the Order's rite on the dead who stay (the Stilling). It is mentioned, never shown.	I'd stood on the wall twice while they Stilled one of us. I was gone before light.
+DLG_CH15_CONF_020	ch15_the_shoal		'This' is the tortoiseshell comb in her hair. 'A lantern like that': Rhen's lantern's twin.	A man with a lantern like that brought me this. I was seven.
+DLG_CH15_CONF_031	ch15_the_shoal		Dry, not a joke: he had just drowned.	I don't know. I was in no state to ask.
 DLG_TEST_DLG_020	test_dialogue_fixture	yes	Invented language: keep as written.	Ennu re.

@@ -1,0 +1,11 @@
+// Ch10 B07 Kirru bark 2: a mother, about her child. With Toma's line if he knelt with Ivo at Corrow
+// (he watches a Kirru mother carry her child on her back through the water).
+title: ch10_bark_kirru_mother
+location: ch10/reedhollow
+---
+Kirru as "Kirru mother" [soft_smile]: She asks too many questions. Good. #line:ch10_kirru_mother_001
+<<if $ch09_toma_knelt_with_ivo>>
+    @anim toma look_at kirru
+    Toma [sad]: They called them soulless. At the Bastion. Every morning, in the prayers. #line:ch10_kirru_mother_002
+<<endif>>
+===

@@ -1,0 +1,29 @@
+// Ch10 B08 side scene (optional): "Why do they swim?" (E, 3 min, ~150 words). act2_ch10.md §4. A Kirru
+// child (about twenty: a child, already taller than Rhen) climbs out of the water beside Asha. Curious,
+// not wise. Asha starts the Order's answer and can't finish it. No Kirru adult intervenes.
+title: ch10_why_swim
+location: ch10/reedhollow
+---
+@camera R06
+@mark kirru_child platform_edge_child walk
+@anim kirru_child look_at asha_staff
+@wait 2.5
+Kirru_child as "Kirru child" [neutral]: You are the one who makes the dead swim. #line:ch10_swim_001
+Asha [sad]: I led them out to sea. At Corrow. #line:ch10_swim_002
+Kirru_child as "Kirru child" [neutral]: Why do they swim? Ours go up. #line:ch10_swim_003
+Asha [worried]: They go to rest in the sea, until the— #line:ch10_swim_004
+@wait 2.0
+-> I don't know. #line:ch10_swim_005
+    <<set $ch10_asha_answered_child = true>>
+    Kirru_child as "Kirru child" [neutral]: Then ask them. #line:ch10_swim_006
+-> Because we're afraid to let them go. #line:ch10_swim_007
+    <<set $ch10_asha_answered_child = true>>
+    @wait 1.5
+    Kirru_child as "Kirru child" [neutral]: Yes. You-people hold everything. #line:ch10_swim_008
+@mark kirru_child lagoon_swim walk
+@wait 2.0
+@mark rhen platform_edge_rhen walk
+@wait 1.5
+Asha [sad]: I didn't finish the sentence, Rhen. I've said it all my life. #line:ch10_swim_009
+<<set $ch10_child_asked = true>>
+===

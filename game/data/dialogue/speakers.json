@@ -37,6 +37,16 @@
   {"id": "inquisitor", "name_key": "CHAR_INQUISITOR", "blip_pitch": 0.76, "portrait_id": "portrait_villager_placeholder"},
   {"id": "clerk", "name_key": "CHAR_CLERK", "blip_pitch": 0.96, "portrait_id": "portrait_villager_placeholder"},
   {"id": "wright", "name_key": "CHAR_WRIGHT", "blip_pitch": 1.04, "portrait_id": "portrait_villager_placeholder"},
-  {"id": "ivo", "name_key": "CHAR_IVO", "blip_pitch": 0.88, "portrait_id": "portrait_villager_placeholder"}
+  {"id": "ivo", "name_key": "CHAR_IVO", "blip_pitch": 0.88, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "owa", "name_key": "CHAR_OWA", "blip_pitch": 0.8, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "kirru", "name_key": "CHAR_KIRRU", "blip_pitch": 0.86, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "kirru_child", "name_key": "CHAR_KIRRU_CHILD", "blip_pitch": 1.05, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "tobin", "name_key": "CHAR_TOBIN", "blip_pitch": 1.08, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "merel", "name_key": "CHAR_MEREL", "blip_pitch": 1.14, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "malcor_venn", "name_key": "CHAR_MALCOR_VENN", "blip_pitch": 0.76, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "brannoc_hale", "name_key": "CHAR_BRANNOC_HALE", "blip_pitch": 0.8, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "hull_captain", "name_key": "CHAR_HULL_CAPTAIN", "blip_pitch": 0.9, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "aldous_varrow", "name_key": "CHAR_ALDOUS_VARROW", "blip_pitch": 0.82, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "hull_widow", "name_key": "CHAR_HULL_WIDOW", "blip_pitch": 1.0, "portrait_id": "portrait_villager_placeholder"}
  ]
 }
