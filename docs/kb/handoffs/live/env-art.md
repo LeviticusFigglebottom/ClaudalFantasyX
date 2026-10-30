@@ -589,6 +589,35 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **CONFIRMED 21:06: the last Oruvel outrigger fix (M3-ENV-1391) is pushed.** It is 0de280e2 on origin/claude/env-art,
+  MERGE-READY.
+- **LEAD (21:05), answered: the Act II Ch10–Ch12 beauty pass (M4-A2P-1402, review: art). MERGE-READY @ a60417fc.**
+  - **Viewed:** eye-height stills at every interactable and zone-map POI: Ossa Fen 7, the Sunken Vey 5, Lowlight 5.
+  - **Fixed:**
+    - The fen's reed platforms read plastic green; `kit_fen_reed` is now straw-grey.
+    - The fen mud and bank used mirror-wet defaults; they are now matte damp.
+  - **Kept:**
+    - The fen edge's sheen is backlight from the low sun.
+    - The Vey and Lowlight read cold and empty, as designed.
+  - **LEAD-ASK:** the Vey landing is a bare flagged platform with a rail. Dressing it would be new content; your
+    call.
+  - **Checks:**
+    - Tools: the fen and haluna kit tests OK.
+    - Godot `--filter=ch10`: 3/0.
+    - validate_data and taskboard --check clean.
+  - **Baselines that move (none written):** the Ossa Fen shots with reed platforms.
+- **STATUS 20:46 (answers the Lead's 20:45 check-in): everything is pushed; the head is the log commit after 937389e9.**
+  - Oruvel's last outrigger (M3-ENV-1391): MERGE-READY @ 0de280e2 (pushed 19:58).
+  - The Ch4 beauty pass and the Prologue-to-Ch4 arrivals (M4-A2P-1401): MERGE-READY @ 937389e9 (pushed 19:58).
+  - **Transitions, viewed as played:**
+    - Zone exits: this stretch has none to walk through; every hand-off is a beat or cutscene. So I viewed the frame
+      the player gets on arriving at each spawn (M4-A2P-1401 has the findings: the ferry Landing is fixed; the
+      DockShore camera and the shrine Entry party stacking are the Lead's call).
+    - Chapter cards: flow_chapter_card_ch04_voice, flow_chapter_card_ch04 and cutscene_act_card were captured to my
+      scratchpad (no baseline) and viewed. They are clean: centred serif titles on black under the gold rule.
+    - One typography note for UI/narrative: the Ch4 voice caption uses straight ASCII quotes ("...") on the serif card;
+      typographic quotes would match the card. That's a loc string, not env-art's.
+    - Ch1 to Ch3 have no chapter card in the played route; each hand-off is a fade into the next zone's arrival.
 - **LEAD (19:45), answered: M3-ENV-1391's last box. MERGE-READY @ 4f46aecd.** LowHull's outrigger lay along the run's
   two plank bridges, its booms through their rails. It now floats alongside the run (z -21.25, yaw 180), with its
   AABB 0.1 m clear. The salvage on the planks over LowHull still blocks the way, and both still drift with the block.

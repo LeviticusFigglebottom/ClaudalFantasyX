@@ -1238,8 +1238,11 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     or keep Haluna resident across the battle.
   - **Gotcha, cinematics tools:** `tools/cutscene_frames` travels without booting, so ResidentLoads hasn't warmed the
     shared character and water shaders. Haluna's and Oruvel's threaded loads then fail ("Parse Error" on an
-    ExtResource line), and the run stays black. From boot they load. Re-render B11 frames from boot until the tool
-    boots first (my next fix).
+    ExtResource line), and the run stays black. From boot they load. **Fixed @ e9551cf83:** the tool warms the resident shaders
+    first, as boot does. Haluna at DockNight now arrives with no parse errors. On lavapipe a Haluna frame takes 1.5-6 s,
+    so B11 frame runs need a wall-clock budget of over an hour.
+- **MERGE-READY @ e9551cf83:** M4-A2P-1600's renumbering, the B11 timing finding (for integration-qa), the cutscene_frames
+  fix.
 ### PC-QUEUE
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan

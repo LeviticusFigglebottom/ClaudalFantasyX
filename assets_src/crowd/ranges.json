@@ -316,7 +316,7 @@
     "build": 10.0, "home": 4.0, "accepted_rank": 0.5, "kit": 3.0, "per_use": 2.5,
     "tint_min_distance": 40.0,
     "late_zones": ["ch02/haluna"],
-    "late_prefixes": ["oruvel_deck_", "pemakar_quay_"],
+    "late_prefixes": ["oruvel_deck_", "pemakar_quay_", "quellan_town_", "hollowmere_dawn_", "ansedra_moorings_"],
     "tint_tries": 24
   },
   "clip_libraries": {

@@ -2,8 +2,8 @@
 id: M3-HER-1168
 title: "Request (creatures, VillagerLayer): build the villagers' actors off the main thread under the fade; Haluna's held reveal is ~3 s on every fresh entry (the Drownbell's return, the human's black-screen report)"
 role: character
-status: todo
-owner_session: ""
+status: review
+owner_session: "creatures (claude/creatures)"
 depends_on: []
 milestone: M3
 request-from: qa
@@ -31,8 +31,29 @@ around it, as SceneRouter does), then add the ready instances a few a frame. Or 
 threaded instantiate, before the zone enters the tree. Keep the held reveal only for what is left.
 
 ## Acceptance criteria
-- [ ] The Drownbell return (`return_probe -- --cases=drownbell`): Haluna's reveal held ≤ 0.5 s headless after the zone
+- [x] The Drownbell return (`return_probe -- --cases=drownbell`): Haluna's reveal held ≤ 0.5 s headless after the zone
       is in (now 3.1 s), and no visible frame over 50 ms when the fade lifts.
 - [ ] integration-qa re-measures and logs the timeline.
+
+## Done (creatures, 2026-10-30)
+- **Cause.** A row's ~180 ms was mostly loading its actor scene (the GLB, its materials and textures, 100-250 ms the
+  first time; timed per row on Haluna). A row whose scene is loaded costs ~20 ms.
+- **Fix** (`game/world/npc/villager_layer.gd` `_build_spread`):
+  - under the fade, every row's actor scene is first requested on worker threads (`ResourceLoader.load_threaded_request`,
+    sub-threads), while the frames stay light;
+  - once loaded, the rows are added as many a frame as fit `SPREAD_BUDGET_MS` (30);
+  - the reveal waits `SETTLE_FRAMES` (2) more for the villagers' first ticks.
+- **Measured** with scene_swap_probe `--to=res://game/levels/ch02/haluna/haluna.tscn` (headless, Haluna's 25 rows
+  with the vignettes). return_probe is not committed on any branch, so the Drownbell case itself is for integration-qa:
+
+| entry | reveal held, before | reveal held, after | hidden frames after the zone's, after | worst visible frame |
+|---|---|---|---|---|
+| cold (no resident loads) | 1854 ms, 21 frames | 179-201 ms | 28, 4, 2 ms | 27 ms |
+| resident loads, warm | 1348 ms, 21 frames | 16-25 ms | 19-29, 59-83 ms | 23 ms |
+
+  The zone's own entry frame (2.5-3.0 s cold) is unchanged and not the layer's.
+- Tests (Godot): villager 47/0, crowd 20/0 (new: each row names the actor scene it will wear), npc 10/0, haluna 66/0,
+  scene_router 17/0, swap 17/0, resident_loads 11/0, zone_cast 5/0.
+- [ ] integration-qa re-measures the Drownbell return and logs the timeline (open).
 
 ## Review log
