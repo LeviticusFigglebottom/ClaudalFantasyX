@@ -1,0 +1,196 @@
+{
+ "version": 1,
+ "doc": "Act I pass-4 row re-check walk (pc-gpu): only the segments behind the walk-only open rows (37, 38, 39, 24, 47-51, 34). Generated from act1_walk.json.",
+ "segments": [
+  {
+   "id": "launch",
+   "kind": "launch",
+   "arg": "res://game/core/boot.tscn"
+  },
+  {
+   "id": "title",
+   "kind": "scene",
+   "arg": "res://game/core/boot.tscn"
+  },
+  {
+   "id": "ch03",
+   "kind": "chapter",
+   "arg": "ch03",
+   "dwell": 45,
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch03_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "ch03_b_ch03_causeway_shore",
+   "kind": "battle",
+   "arg": "ch03_causeway_shore",
+   "dwell": 16,
+   "return": "ch03/saltgrass_causeway",
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch04",
+   "kind": "chapter",
+   "arg": "ch04",
+   "dwell": 45,
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch04_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "haluna_wake",
+   "kind": "location",
+   "arg": "ch04/haluna_wake",
+   "dwell": 30,
+   "press": "ui_accept"
+  },
+  {
+   "id": "haluna_wake_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "brightwater_ferry",
+   "kind": "location",
+   "arg": "ch04/brightwater_ferry",
+   "dwell": 30,
+   "press": "ui_accept"
+  },
+  {
+   "id": "brightwater_ferry_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "brightwater_ferry_b_ch04_sail_leeches",
+   "kind": "battle",
+   "arg": "ch04_sail_leeches",
+   "dwell": 16,
+   "return": "ch04/brightwater_ferry",
+   "press": "ui_accept"
+  },
+  {
+   "id": "brightwater_ferry_b_ch04_bottle_hermit",
+   "kind": "battle",
+   "arg": "ch04_bottle_hermit",
+   "dwell": 16,
+   "return": "ch04/brightwater_ferry",
+   "press": "ui_accept"
+  },
+  {
+   "id": "brightwater_ferry_b_ch04_spar_wraith",
+   "kind": "battle",
+   "arg": "ch04_spar_wraith",
+   "dwell": 16,
+   "return": "ch04/brightwater_ferry",
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch05",
+   "kind": "chapter",
+   "arg": "ch05",
+   "dwell": 45,
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch05_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "ashcrown",
+   "kind": "location",
+   "arg": "ch05/ashcrown",
+   "dwell": 30,
+   "press": "ui_accept"
+  },
+  {
+   "id": "ashcrown_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "pemakar",
+   "kind": "location",
+   "arg": "ch05/pemakar",
+   "dwell": 30,
+   "press": "ui_accept"
+  },
+  {
+   "id": "pemakar_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "ch06",
+   "kind": "chapter",
+   "arg": "ch06",
+   "dwell": 45,
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch06_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "ch06_b_ch06_ridge_skippers",
+   "kind": "battle",
+   "arg": "ch06_ridge_skippers",
+   "dwell": 16,
+   "return": "ch06/brine_shoals",
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch08",
+   "kind": "chapter",
+   "arg": "ch08",
+   "dwell": 45,
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch08_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "ch08_b_undertows_reach",
+   "kind": "battle",
+   "arg": "undertows_reach",
+   "dwell": 16,
+   "return": "ch08/corrow",
+   "press": "ui_accept"
+  },
+  {
+   "id": "coilspire",
+   "kind": "location",
+   "arg": "ch08/coilspire",
+   "dwell": 30,
+   "press": "ui_accept"
+  },
+  {
+   "id": "coilspire_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "ch09",
+   "kind": "chapter",
+   "arg": "ch09",
+   "dwell": 45,
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch09_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "corrow_night",
+   "kind": "location",
+   "arg": "ch09/corrow_night",
+   "dwell": 30,
+   "press": "ui_accept"
+  },
+  {
+   "id": "corrow_night_spawns",
+   "kind": "spawns"
+  }
+ ]
+}
