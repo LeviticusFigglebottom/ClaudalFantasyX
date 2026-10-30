@@ -1,4 +1,4 @@
-# big22: 598 shots: 334 PASS, 160 DRIFT (0 size mismatch), 84 NO-BASELINE, 20 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
+# big22: 582 shots: 334 PASS, 164 DRIFT (0 size mismatch), 84 NO-BASELINE, 0 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
 PASS boot_title rmse 0.00000 (limit 0.00400)
 NO-BASELINE slice_end_card (pending_baseline)
 PASS lighting_probe rmse 0.00000 (limit 0.00800)
@@ -375,10 +375,10 @@ PASS ch07_bell_galleries rmse 0.00713 (limit 0.00800)
 PASS ch07_bell_moorings rmse 0.00226 (limit 0.00800)
 PASS reefball_hud_choice rmse 0.00000 (limit 0.00800)
 PASS reefball_hud_goal rmse 0.00000 (limit 0.00800)
-FAILED-TO-CAPTURE npc_haluna_dock [capture rc=124 nopng 600s]
-FAILED-TO-CAPTURE npc_haluna_market [capture rc=124 nopng 600s]
-FAILED-TO-CAPTURE npc_haluna_chapel [capture rc=124 nopng 600s]
-FAILED-TO-CAPTURE npc_haluna_lane [capture rc=124 nopng 601s]
+DRIFT npc_haluna_dock rmse 0.05691 (limit 0.00800)
+DRIFT npc_haluna_market rmse 0.01196 (limit 0.00800)
+DRIFT npc_haluna_chapel rmse 0.11735 (limit 0.00800)
+DRIFT npc_haluna_lane rmse 0.01172 (limit 0.00800)
 PASS wildlife_zone_brine_flats rmse 0.00009 (limit 0.00800)
 PASS wildlife_zone_brine_wrecks rmse 0.00016 (limit 0.00800)
 NO-BASELINE wildlife_zone_ossa_fen_walk0
@@ -400,17 +400,9 @@ DRIFT creature_lamp_engine_opened rmse 0.05482 (limit 0.00800)
 PASS npc_wake_feast rmse 0.00022 (limit 0.00800)
 DRIFT creature_avalanche_ram rmse 0.02548 (limit 0.00800)
 DRIFT creature_wakefin rmse 0.02191 (limit 0.00800)
-FAILED-TO-CAPTURE slice_prologue_vigil_line [capture rc=124 nopng 600s]
-FAILED-TO-CAPTURE slice_beach_h05_asha [capture rc=124 nopng 600s]
-FAILED-TO-CAPTURE slice_beach_h06_toma [capture rc=124 nopng 600s]
-FAILED-TO-CAPTURE slice_beach_standing [capture rc=124 nopng 601s]
 DRIFT slice_haluna_villagers_village rmse 0.07437 (limit 0.00800)
 PASS slice_causeway_head rmse 0.00126 (limit 0.00800)
 DRIFT slice_causeway_harrier_view rmse 0.18130 (limit 0.00800)
-FAILED-TO-CAPTURE slice_verse_steps [capture rc=124 nopng 601s]
-FAILED-TO-CAPTURE slice_verse_threshold [capture rc=124 nopng 600s]
-FAILED-TO-CAPTURE slice_verse_recognition [capture rc=124 nopng 600s]
-FAILED-TO-CAPTURE slice_verse_c08 [capture rc=124 nopng 600s]
 DRIFT iskarra_p01_plaza_dusk rmse 0.16533 (limit 0.00800)
 DRIFT iskarra_i02_gate_from_the_plaza rmse 0.12358 (limit 0.00800)
 DRIFT iskarra_i03_broken_tower rmse 0.15821 (limit 0.00800)
@@ -487,7 +479,6 @@ DRIFT creature_fen_leech rmse 0.04150 (limit 0.00800)
 DRIFT creature_scree_crawler rmse 0.05364 (limit 0.00800)
 DRIFT creature_rim_crawler rmse 0.00899 (limit 0.00800)
 DRIFT creature_flat_engine rmse 0.01872 (limit 0.00800)
-FAILED-TO-CAPTURE slice_dock_night_yes [capture rc=124 nopng 600s]
 DRIFT ch01_oruvel_dressed rmse 0.16814 (limit 0.00800)
 DRIFT ch01_underway_crown rmse 0.07824 (limit 0.00800)
 DRIFT ch01_underway_gallery rmse 0.07341 (limit 0.00800)
@@ -590,10 +581,3 @@ NO-BASELINE menu_glyphs
 NO-BASELINE field_menu_map_keth_pass
 NO-BASELINE field_menu_map_lowlight
 NO-BASELINE field_menu_map_ansedra
-FAILED-TO-CAPTURE slice_neme_table [capture rc=124 nopng 600s]
-FAILED-TO-CAPTURE ch01_oruvel_storm [capture rc=124 nopng 600s]
-FAILED-TO-CAPTURE ch01_drop [capture rc=124 nopng 600s]
-FAILED-TO-CAPTURE ch01_bell_room [capture rc=124 nopng 600s]
-FAILED-TO-CAPTURE ch01_scale_hull [capture rc=124 nopng 600s]
-FAILED-TO-CAPTURE ch01_net_pen [capture rc=124 nopng 600s]
-FAILED-TO-CAPTURE ch01_hullgnaw_rises [capture rc=124 nopng 600s]
