@@ -35,3 +35,12 @@ Haluna.
   (H02-H16, C01, C02) re-aimed and viewed.
 
 ## Review log
+- 2026-10-29 integration-qa (qa, reviewer): **changes requested (one test).** On claude/hero-integration (big16
+  merged), `--filter=ch04` is 12/13 and `zone_map` 21/0. The failure is
+  `test_ch04_zones::test_the_wakes_field_camera_is_halunas: expected <8> got <10>`. m2-slice's M2-FP-109 gave
+  Haluna two more camera volumes (B02 at Neme's table, B11 at the dock's end), and the wake mirrors Haluna's, so
+  the zone is right and the hard-coded 8 is stale. Suggested fix: count Haluna's own volumes, so the two can't drift
+  again:
+  `var want := (load("res://game/levels/ch02/haluna/haluna.tscn") as PackedScene).get_state()` ... or simply
+  instantiate it and compare `get_node(^"CameraVolumes").get_child_count()` (free it after). Everything else
+  matches the Done list. Accept once that test is green.

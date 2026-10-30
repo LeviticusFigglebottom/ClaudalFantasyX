@@ -44,6 +44,7 @@ sys.path.insert(0, str(KIT_SRC))
 sys.path.insert(0, str(ROOT / "assets_src" / "environments" / "kits" / "brightwater_ferry"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import bf_common as bf  # noqa: E402
+import ch05_09_zone_looks as zl  # noqa: E402
 import numpy as np  # noqa: E402
 import pemakar_common as pc  # noqa: E402
 import pemakar_skyline as sky  # noqa: E402
@@ -80,6 +81,13 @@ WEIR_LIGHTS = [
     {"at": [WEIR_LAMP_AT[0], WEIR_LAMP_AT[1] + 1.35, WEIR_LAMP_AT[2]], "color": "#FFA757", "energy": 1.6, "range": 7.0},
     {"at": [WEIR_AT[0], WEIR_AT[1] + 0.3, WEIR_AT[2] + 0.5], "color": "#FF9A4A", "energy": 1.1, "range": 5.0},
 ]
+# The quay at night (the Lead's 10-29 final-quality audit): the party lands on a quay that read pitch black at player
+# height, lit only by their own hand lanterns. The kit's lamp pillars stand along its back edge, clear of the story's
+# marks (the weir folk, the wake wall, the line), each with the weir lamp's light.
+QUAY_LAMP_XS = (-12.5, -6.0, 10.5)
+QUAY_LAMP_Z = QUAY_BACK_Z + 0.45
+QUAY_LIGHTS = [{"at": [x, QUAY_Y + 1.35, QUAY_LAMP_Z], "color": "#FFA757", "energy": 1.6, "range": 7.0}
+               for x in QUAY_LAMP_XS]
 # The plume at night (the Lead's gate review, 10-28): the kit's far plume material is a hard-edged near-black
 # silhouette from the harbour, so it read as a blob in the sky. The zone's own night material (the same
 # env_ash_plume shader) softens and thins its edges and lifts the crater's ember up its underside, so it reads as
@@ -277,6 +285,21 @@ def swapped(p: dict) -> dict:
     return p
 
 
+# The kit's flat StandardMaterial metals and lacquers (M3-ENV-1326): the shrine-boxes, gates, bell frame and forge read
+# as plastic at player height. Zone looks by slot on every Pemakar piece (`kit_material_paths`), and on the Pemakar
+# pieces Ashcrown borrows (ch05_ashcrown_dressing.py reads PEMAKAR_SLOTS).
+KIT_LOOKS = {
+    "kit_lacquer_red": ("pemakar_lacquer_red_material.tres", zl.lacquer((0.702, 0.149, 0.1176))),
+    "kit_lacquer_black": ("pemakar_lacquer_black_material.tres",
+                          zl.lacquer((0.1137, 0.0980, 0.0863), undercoat=(0.3216, 0.1176, 0.0863))),
+    "kit_copper_vein": ("pemakar_copper_vein_material.tres", dict(zl.VERDIGRIS)),
+    "kit_copper_raw": ("pemakar_copper_raw_material.tres", dict(zl.NEW_COPPER)),
+    "kit_gold_leaf": ("pemakar_gold_leaf_material.tres", dict(zl.GOLD)),
+    "kit_iron": ("pemakar_iron_material.tres", dict(zl.SEA_IRON, col_bronze=(0.1647, 0.149, 0.1412))),
+}
+PEMAKAR_SLOTS = {slot: RES_ZONE + name for slot, (name, _) in KIT_LOOKS.items()}
+
+
 def dressing() -> dict:
     pv = preview()
     pieces = []
@@ -304,10 +327,13 @@ def dressing() -> dict:
     pieces += ferry()
     pieces.append({"piece": "lamp_pillar", "at": [r3(WEIR_LAMP_AT[0]), r3(WEIR_LAMP_AT[2])], "y": WEIR_LAMP_AT[1],
                    "yaw_deg": 0.0, "block": NIGHT_BLOCK, "collide": True})
+    for x in QUAY_LAMP_XS:
+        pieces.append({"piece": "lamp_pillar", "at": [r3(x), r3(QUAY_LAMP_Z)], "y": QUAY_Y, "yaw_deg": 0.0,
+                       "block": NIGHT_BLOCK, "collide": True})
     pieces.append({"piece": "weir_leat", "at": [r3(LEAT_AT[0]), r3(LEAT_AT[2])], "y": r3(LEAT_AT[1]), "yaw_deg": 0.0,
                    "block": STORY_PIECES["sea_cut_weir"]})
     lights = [dict({k: v for k, v in light.items() if k != "at"}, at=light["at"], block=NIGHT_BLOCK)
-              for light in pv["lights"] + WEIR_LIGHTS]
+              for light in pv["lights"] + WEIR_LIGHTS + QUAY_LIGHTS]
     boats = pv["boats"]
     far = [dict(pv[k], name=n, block=NIGHT_BLOCK) for k, n in (("far_lights", "FarLights"), ("sea_lights",
                                                                                             "SeaLights"))]
@@ -329,6 +355,7 @@ def dressing() -> dict:
         "multimeshes": [{"name": "LeafBoats", "piece": boats["piece"], "transforms": boats["transforms"],
                          "block": NIGHT_BLOCK}],
         "far_lights": far,
+        "kit_material_paths": dict(PEMAKAR_SLOTS),
         "pieces": pieces,
     }
 
@@ -530,6 +557,8 @@ def main() -> None:
         weir_relayout()
     (ZONE / "pemakar_collision.json").write_text(json.dumps(collision(), indent=1) + "\n", encoding="utf-8")
     (ZONE / "pemakar_dressing.json").write_text(json.dumps(dressing(), indent=1) + "\n", encoding="utf-8")
+    for name, params in KIT_LOOKS.values():
+        (ZONE / name).write_text(zl.bronze_material(name, params), encoding="utf-8")
 
 
 if __name__ == "__main__":

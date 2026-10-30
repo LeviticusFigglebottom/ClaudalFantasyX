@@ -15,9 +15,9 @@
  "fire_lights": [
   {
    "at": [
-    32,
-    2.6,
-    -9
+    33.8,
+    4.632,
+    -11.7
    ],
    "energy": 3.0,
    "range": 9.0,
@@ -58,7 +58,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck",
+   "piece": "raft_deck_tucked",
    "at": [
     -13.5,
     -3.5
@@ -67,7 +67,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck",
+   "piece": "raft_deck_tucked",
    "at": [
     -13.5,
     -10.5
@@ -76,7 +76,7 @@
    "yaw_deg": 180.0
   },
   {
-   "piece": "raft_deck",
+   "piece": "raft_deck_tucked",
    "at": [
     -13.5,
     -17.5
@@ -85,7 +85,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck_small",
+   "piece": "raft_deck_small_tucked",
    "at": [
     -15.0,
     -22.6
@@ -94,7 +94,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck_small",
+   "piece": "raft_deck_small_tucked",
    "at": [
     -10.5,
     -22.6
@@ -103,7 +103,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck",
+   "piece": "raft_deck_tucked",
    "at": [
     -4.5,
     -3.5
@@ -112,7 +112,7 @@
    "yaw_deg": 180.0
   },
   {
-   "piece": "raft_deck",
+   "piece": "raft_deck_tucked",
    "at": [
     -4.5,
     -10.5
@@ -121,7 +121,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck",
+   "piece": "raft_deck_tucked",
    "at": [
     -4.5,
     -17.5
@@ -130,7 +130,7 @@
    "yaw_deg": 180.0
   },
   {
-   "piece": "raft_deck_small",
+   "piece": "raft_deck_small_tucked",
    "at": [
     -6.0,
     -22.6
@@ -139,7 +139,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck_small",
+   "piece": "raft_deck_small_tucked",
    "at": [
     -1.5,
     -22.6
@@ -148,7 +148,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck",
+   "piece": "raft_deck_tucked",
    "at": [
     4.5,
     -3.5
@@ -157,7 +157,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck",
+   "piece": "raft_deck_tucked",
    "at": [
     4.5,
     -10.5
@@ -166,7 +166,7 @@
    "yaw_deg": 180.0
   },
   {
-   "piece": "raft_deck",
+   "piece": "raft_deck_tucked",
    "at": [
     4.5,
     -17.5
@@ -175,7 +175,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck_small",
+   "piece": "raft_deck_small_tucked",
    "at": [
     3.0,
     -22.6
@@ -184,7 +184,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck_small",
+   "piece": "raft_deck_small_tucked",
    "at": [
     7.5,
     -22.6
@@ -193,7 +193,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck",
+   "piece": "raft_deck_tucked",
    "at": [
     13.5,
     -3.5
@@ -202,7 +202,7 @@
    "yaw_deg": 180.0
   },
   {
-   "piece": "raft_deck",
+   "piece": "raft_deck_tucked",
    "at": [
     13.5,
     -10.5
@@ -211,7 +211,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck",
+   "piece": "raft_deck_tucked",
    "at": [
     13.5,
     -17.5
@@ -220,7 +220,7 @@
    "yaw_deg": 180.0
   },
   {
-   "piece": "raft_deck_small",
+   "piece": "raft_deck_small_tucked",
    "at": [
     12.0,
     -22.6
@@ -229,7 +229,7 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "raft_deck_small",
+   "piece": "raft_deck_small_tucked",
    "at": [
     16.5,
     -22.6
@@ -246,7 +246,16 @@
    "y": 0.0,
    "yaw_deg": 90.0,
    "collide": true,
-   "scale": 0.686
+   "scale": 0.986
+  },
+  {
+   "piece": "lintel_gull_open",
+   "at": [
+    -14.859,
+    -19.0
+   ],
+   "y": 3.233,
+   "yaw_deg": -75.91
   },
   {
    "piece": "cookboat",
@@ -417,7 +426,7 @@
     -36.6
    ],
    "y": 5.69,
-   "yaw_deg": -75.91,
+   "yaw_deg": -69.21,
    "scale": 1.35
   },
   {
@@ -468,6 +477,15 @@
    "yaw_deg": -90.0
   },
   {
+   "piece": "lintel_gull_open",
+   "at": [
+    31.1,
+    -11.7
+   ],
+   "y": 3.25,
+   "yaw_deg": -70.07
+  },
+  {
    "piece": "plank_bridge",
    "at": [
     35.0,
@@ -494,7 +512,16 @@
     -9
    ],
    "y": 2.7,
-   "yaw_deg": -69.21
+   "yaw_deg": -76.41
+  },
+  {
+   "piece": "gull_post",
+   "at": [
+    47,
+    -9
+   ],
+   "y": 0.0,
+   "yaw_deg": -76.41
   },
   {
    "piece": "plank_bridge",
@@ -531,6 +558,17 @@
    ],
    "y": -0.5,
    "yaw_deg": 0.0,
+   "block": "LowHull"
+  },
+  {
+   "piece": "salvage_heap",
+   "at": [
+    39,
+    -17
+   ],
+   "y": -0.05,
+   "yaw_deg": 90.0,
+   "scale": 0.65,
    "block": "LowHull"
   },
   {

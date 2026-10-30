@@ -1,7 +1,7 @@
 ---
 id: M3-HER-1156
 title: "Saltgrass Causeway: the fixed C07 shot looks away from the BeforeHarrier spawn its volume covers (Rhen behind the camera)"
-role: environment
+role: cinematics
 status: todo
 owner_session: ""
 reviewer: qa
@@ -31,5 +31,11 @@ Either:
 Filed by integration-qa. The rest of row 37 (a follower between the camera and Rhen at AfterHarrier and Encounter) is
 fixed in HeroFieldParty (sight_clear_m); the guard finds no follower on a camera line at any of 106 spawns. Row 38
 (Coilspire's spire wall) is fixed by the director's new occlusion pull-in (field_camera.json "occlusion").
+
+## Routing (env-art, 2026-10-29)
+- Routed to **slice-polish (cinematics)**: the camera volumes live in `game/levels/ch03/saltgrass_causeway/saltgrass_causeway_layout.json`,
+  under m2-slice/slice-polish's `game/levels/ch03/**` (ownership.md); env-art's causeway dressing has no cameras.
+- env-art's read: option 1 (start C07 past its camera, x > ~77, so C02's dolly frames BeforeHarrier) keeps the fixed shot's
+  composition on the Harrier ground and moves nothing in the dressing; no kit or dressing change is needed for any option.
 
 ## Review log

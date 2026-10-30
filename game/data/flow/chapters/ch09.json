@@ -12,7 +12,9 @@
           {"play": "ch09_strand"}
         ]},
         {"when": {"set": ["ch09_pell_joined"], "unset": ["ch09_kerrid_on_road"]}, "steps": [
-          {"place": "RoadGate"}
+          {"place": "RoadGate"},
+          {"zone": "hide_block", "args": ["asha"]},
+          {"zone": "hide_block", "args": ["toma"]}
         ]}
       ],
       "beats": {
@@ -21,6 +23,8 @@
           {"go": {"location": "ch09/corrow_night", "spawn": "RoadGate"}}
         ]},
         "road_out": {"when": {"set": ["ch09_pell_joined"], "unset": ["ch09_kerrid_on_road"]}, "steps": [
+          {"zone": "place_actor", "args": ["asha", "near_asha"]},
+          {"zone": "place_actor", "args": ["toma", "near_toma"]},
           {"play": "ch09_the_road_out"},
           {"scene": "res://game/flow/end_card.tscn"}
         ]}

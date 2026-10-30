@@ -21,17 +21,6 @@
       "threshold_rmse": 0.004
     },
     {
-      "id": "slice_end_card_voice",
-      "pending_baseline": true,
-      "scene": "res://game/flow/end_card.tscn",
-      "resolution": [
-        1920,
-        1080
-      ],
-      "settle_frames": 180,
-      "threshold_rmse": 0.004
-    },
-    {
       "id": "slice_end_card",
       "pending_baseline": true,
       "scene": "res://game/flow/end_card.tscn",
@@ -5088,6 +5077,66 @@
       "settle_frames": 30
     },
     {
+      "id": "stillguard_a_clip_walk_torch",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_a_clip_walk_torch.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_c_clip_hold_arm",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_c_clip_hold_arm.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_a_clip_kneel_palms_flat",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_a_clip_kneel_palms_flat.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "officer_front",
+      "scene": "res://game/levels/_tests/characters/stillguard/officer_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "officer_face",
+      "scene": "res://game/levels/_tests/characters/stillguard/officer_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "officer_clip_hatchet_blow",
+      "scene": "res://game/levels/_tests/characters/stillguard/officer_clip_hatchet_blow.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "ch05_pemakar_harbour",
       "scene": "res://game/levels/_tests/act1_zones/ch05_pemakar_shots.tscn",
       "camera": "Cameras/Harbour",
@@ -5289,7 +5338,8 @@
               "ch02_tideline_won",
               "ch02_ate_at_nemes",
               "ch03_drownbell_defeated"
-            ]
+            ],
+            "hold_line": "ch03_dock_007"
           }
         }
       }
@@ -7951,6 +8001,59 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "slice_verse_s08",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 900,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch03/first_verse/first_verse.tscn",
+            "scene_id": "ch03_the_first_verse",
+            "flags": [
+              "ch02_met_asha"
+            ],
+            "hold_cue": "vfx glimmer_bound"
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "flow_chapter_card_ch04_voice",
+      "pending_baseline": true,
+      "scene": "res://game/flow/chapter_card.tscn",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "settle_frames": 150,
+      "threshold_rmse": 0.004
+    },
+    {
+      "id": "flow_chapter_card_ch04",
+      "pending_baseline": true,
+      "scene": "res://game/flow/chapter_card.tscn",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "settle_frames": 480,
+      "threshold_rmse": 0.004
     }
   ]
 }

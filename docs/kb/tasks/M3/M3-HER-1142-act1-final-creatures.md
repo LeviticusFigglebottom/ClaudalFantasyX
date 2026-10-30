@@ -2,7 +2,7 @@
 id: M3-HER-1142
 title: "ADR 0041 (Act I at final quality): creatures's items in the placeholder inventory (2: 2 high, 0 medium, 0 low)"
 role: character
-status: review
+status: done
 owner_session: "creatures (session_01UPFyE7ob7hr4Skv4cw3rtN)"
 reviewer: qa
 depends_on: []
@@ -15,9 +15,9 @@ ADR 0041: everything a player meets from the title to the end of Ch9 reaches fin
 **creatures** owns regular enemies and wildlife. This task carries those rows; the inventory's "creatures" section is the live list.
 
 ## Acceptance criteria
-- [ ] Every row of the inventory's "creatures" section is final (fix the item, then re-run the audit; don't edit the
+- [x] Every row of the inventory's "creatures" section is final (fix the item, then re-run the audit; don't edit the
       table by hand).
-- [ ] The audit lists nothing for creatures: `python3 tools/placeholder_audit.py` (with Godot on PATH; it runs the zone
+- [x] The audit lists nothing for creatures: `python3 tools/placeholder_audit.py` (with Godot on PATH; it runs the zone
       scan itself) shows no "creatures" line.
 
 ## The rows as first audited (2026-10-28)
@@ -33,3 +33,5 @@ ADR 0041: everything a player meets from the title to the end of Ch9 reaches fin
 - The first-audited Brine Shoals rows (hound, inquisitor) were already closed (M3-CRE-658 and characters).
 
 ## Review log
+- 2026-10-29 ~23:50 integration-qa (qa, reviewer): **accepted, done.** The full audit (import + runtime scan) on
+  lead/gate-big18 lists nothing for this owner. Act I has 2 items left in all, both env-art-b's (M3-HER-1141).

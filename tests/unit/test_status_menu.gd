@@ -68,11 +68,22 @@ func test_the_page_says_gear_swell_lattice_and_carried_statuses() -> void:
 	assert_eq((lat["lines"] as Array)[0], tr("STATUS_MENU_MOVEMENT_FMT").format({"count": 3}))
 	assert_eq((lat["lines"] as Array)[1], tr("STATUS_MENU_WOKEN_FMT").format({"count": 2}))
 	assert_eq(p["statuses"], [tr("STATUS_POISON")] as Array[String])
+	assert_eq(p["status_descs"], ["%s: %s" % [tr("STATUS_POISON"), tr("STATUS_POISON_DESC")]] as Array[String])
 	var asha := m.page(&"asha")
 	assert_eq(asha["statuses"], [tr("STATUS_MENU_NONE")] as Array[String])
+	assert_true((asha["status_descs"] as Array).is_empty(), "nothing carried, nothing to explain")
 	assert_eq((asha["swell"] as Dictionary)["mode"], &"ballast", "no saved mode: swell.json's default")
 	assert_eq((asha["swell"] as Dictionary)["points"], 0)
 	assert_true(m.page(&"nobody").is_empty())
+
+
+## The Lead's Act I pass: every status a fight can leave on a hero says what it does (STATUS_<ID>_DESC).
+func test_every_status_has_a_description() -> void:
+	var rows: Dictionary = BattleDB.load_default().statuses
+	assert_true(rows.size() > 10)
+	for sid: Variant in rows:
+		var key := str((rows[sid] as Dictionary).get("name_key", "")) + StatusMenuModel.DESC_SUFFIX
+		assert_ne(tr(key), key, "%s has a description (%s)" % [sid, key])
 
 
 func test_a_fallen_hero_says_so() -> void:

@@ -5,14 +5,12 @@ They are grown by the vegetation generators (assets_src/environments/vegetation/
 windbreak.py: leaf-level sprays on twigs, painted bark, buttresses, prop and aerial roots) and only
 exported here, as kit pieces, so the Haluna dresser places them with no layout or scene change:
 
-  banyan_placeholder     the hero banyan, 14 m, ~25 m across (piece name kept; see below)
-  windbreak_placeholder  the windbreak tree, 8 m, an upright oval crown (piece name kept)
-  banyan_hero, windbreak_tree  the same two trees under their real names (M3-ENV-746); the zone moves to them
+  banyan_hero     the hero banyan, 14 m, ~25 m across
+  windbreak_tree  the windbreak tree, 8 m, an upright oval crown
 
 The piece names are the scene contract: haluna_layout.json places them, the zone's collision table
-and test_haluna_zone.gd name them. They are no longer placeholders: build.py writes no PLACEHOLDER
-extras for them and kit_manifest.json carries no PLACEHOLDER tag. Renaming them is a layout change for
-the zone's owners (M2-ENV-07 notes).
+and test_haluna_zone.gd name them. Until M3-ENV-750 they were `banyan_placeholder` and
+`windbreak_placeholder` (the names of M1's stand-ins), with the same geometry.
 
 Kit pieces carry exactly two LODs (`<piece>`, `<piece>-lod1`); the dresser draws LOD1 beyond
 `lod1_from_m` (75 m in Haluna). The vegetation frame (+Z up) is converted to the kit's (Godot's +Y up,
@@ -47,8 +45,6 @@ SLOTS = {
 }
 
 TRI_BUDGET = {
-    "banyan_placeholder": tuple(banyan.TRI_BUDGET),
-    "windbreak_placeholder": tuple(windbreak.TRI_BUDGET),
     "banyan_hero": tuple(banyan.TRI_BUDGET),
     "windbreak_tree": tuple(windbreak.TRI_BUDGET),
 }
@@ -74,15 +70,12 @@ def _export(builders: list, piece: str) -> list[kc.MeshBuilder]:
     return [to_kit(b, piece if i == 0 else f"{piece}-lod{i}") for i, b in enumerate(builders)]
 
 
-def build_banyan(piece: str = "banyan_placeholder") -> list[kc.MeshBuilder]:
+def build_banyan(piece: str = "banyan_hero") -> list[kc.MeshBuilder]:
     return _export(banyan.build("hero"), piece)
 
 
-def build_windbreak(piece: str = "windbreak_placeholder") -> list[kc.MeshBuilder]:
+def build_windbreak(piece: str = "windbreak_tree") -> list[kc.MeshBuilder]:
     return _export(windbreak.build("a"), piece)
 
 
-# M3-ENV-746: the same two trees under names that aren't "placeholder" (the Act I inventory flags the old ones). The
-# old names stay until the zone's layout, collision rules and tests move to the new ones (M3-ENV-750); then they go.
-TARGETS = {"banyan_placeholder": build_banyan, "windbreak_placeholder": build_windbreak,
-           "banyan_hero": lambda: build_banyan("banyan_hero"), "windbreak_tree": lambda: build_windbreak("windbreak_tree")}
+TARGETS = {"banyan_hero": build_banyan, "windbreak_tree": build_windbreak}

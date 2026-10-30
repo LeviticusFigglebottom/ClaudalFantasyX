@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3]
+[gd_scene load_steps=29 format=3]
 
 [ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
 [ext_resource type="Shader" path="res://game/shaders/environment/env_sky_low_sun.gdshader" id="2_r"]
@@ -23,6 +23,7 @@
 [ext_resource type="PackedScene" path="res://assets/environments/kits/corrow/lowtown_house_b.glb" id="21_r"]
 [ext_resource type="Script" path="res://game/vfx/undertow/undertow_storm.gd" id="storm_script"]
 [ext_resource type="Script" path="res://game/levels/act1/storm_far_plane.gd" id="storm_far"]
+[ext_resource type="Script" path="res://game/levels/act1/kit_slot_swaps.gd" id="slot_swaps"]
 
 [sub_resource type="ShaderMaterial" id="SkyMat"]
 shader = ExtResource("2_r")
@@ -831,3 +832,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.84, -0.517, 5.092)
 
 [node name="the_stair_head" type="Marker3D" parent="CameraHints"]
 transform = Transform3D(-0.541373, 0.224776, -0.81018, 0, 0.963602, 0.267341, 0.840783, 0.144731, -0.521668, 5, 2.4, -0.6)
+
+[node name="KitSlotSwaps" type="Node" parent="."]
+script = ExtResource("slot_swaps")
+paths = {"cw_copper": "res://game/levels/ch08/corrow/corrow_copper_material.tres", "cw_iron": "res://game/levels/ch08/corrow/corrow_iron_material.tres", "cw_lacquer_dark": "res://game/levels/ch08/corrow/corrow_lacquer_dark_material.tres", "cw_lacquer_red": "res://game/levels/ch08/corrow/corrow_lacquer_red_material.tres", "cw_sail": "res://game/levels/ch08/corrow/corrow_canvas_material.tres", "cw_watch_red": "res://game/levels/ch08/corrow/corrow_watch_red_material.tres"}

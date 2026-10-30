@@ -2,7 +2,7 @@
 id: M3-AUD-04
 title: Area themes: Terraces of Ash (Ch5) and the Seawall (Ch8)
 role: audio
-status: review
+status: done
 reviewer: qa
 owner_session: "audio (claude/audio; worktree agents for M2-AUD-10, M3-AUD-02, -04, -06, -07)"
 depends_on: [M2-AUD-02]
@@ -35,3 +35,9 @@ Ch5 Pemakar's Lanternfall festival among the graves; Ch8 Corrow Bastion, nine hu
 - Gates: validate_data, taskboard --check, `unittest -p "test_audio_*.py"`, Godot `--filter=audio` (37/37).
 
 ## Review log
+- 2026-10-29 integration-qa (qa, reviewer): **accepted, done.** Every criterion is ticked, and the checks behind
+  them are green on lead/gate-big17 (audio's head included): Godot `--filter=audio` 175/0; tools test_audio_data,
+  test_audio_loudness and test_act1_audio_audit 50/0. `tools/audio/act1_audio_audit.py` shows 0 zones, enemies,
+  skills, cutscenes and UI items; its 3 remaining items are M3-HER-1163, from a later battle-presentation change.
+  This review covers the technical criteria (wired, resolved, loudness, deterministic). How the music and sound
+  feel is the human's call at playtest.

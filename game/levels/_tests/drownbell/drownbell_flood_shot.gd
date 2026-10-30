@@ -22,3 +22,6 @@ func _start() -> void:
 	var boss := (ctl.stage.get_node(^"BattleVfx") as BattleVfx).boss
 	boss.settle()
 	ctl.stage.settle_actors()  # M2-CRE-08: the bell model's sink and tilt, at their end
+	# M3-BPR-426's phase moment (the camera eases onto the bell as the Flood starts) is not this frame: the big17 gate
+	# froze it mid push-in, the party out of shot.
+	ctl.stage.choreo.camera.end_moment()

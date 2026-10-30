@@ -68,7 +68,9 @@ def _preview() -> dict:
 TEMPLE_LIGHT = {  # ashcrown.md §0 `ch05_temple` (13:00): the sun through the ash veil, ash haze
     "sub_frame": "ch05_temple",
     "sun": {"elev": 58.0, "az": 225.0, "color": "#FFF0DC", "energy": 2.8},
-    "fill": {"color": "#8E959C", "energy": 0.45},
+    # the fill is the zone's (tools/act1/ch05_ashcrown_dressing.py ZONE_AMBIENT_ENERGY, M3-ENV-1325): at 0.45 the tiers'
+    # shaded faces behind the enemy line were black planes
+    "fill": {"color": "#8E959C", "energy": 1.8},
     "exposure": 0.72,
     "glow": (0.35, 0.03, 1.1),
     "fog": {"color": "#8C8882", "aerial": 0.5, "density": 0.0018, "sky_affect": 0.25, "height": 0.0,
@@ -160,6 +162,11 @@ ARENAS = {"ashcrown_forecourt_day": forecourt, "ashcrown_anvil_court": court}
 PLUME_GLB = "res://assets/environments/kits/pemakar/ash_plume_near.glb"
 PLUME_DAY = KIT + "materials/ac_plume_day.tres"
 PLUME_MESHES = ("ash_plume_near", "ash_plume_near-lod1")
+# The big17 gate review (10-30): at the forecourt's ~110 m the Pemakar kit's LOD chain (LOD1 from 70 m) drew the
+# plume's coarse LOD1, a flat faceted slab across the battle camera's top left. The zone keeps LOD0 to 900 m
+# (the Ashcrown preview's plume row) and narrows it to 0.75 across; the arenas do the same.
+PLUME_LOD1_FROM_M = 900.0
+PLUME_SCALE_XZ = 0.75
 
 
 def plume_day(text: str) -> str:
@@ -174,17 +181,36 @@ def plume_day(text: str) -> str:
     text = text[:last.end()] + f'\n[ext_resource type="Material" path="{PLUME_DAY}" id="plume_day"]' + text[last.end():]
     path = f"{node.group(2)}/{node.group(1)}"
     for k, mesh in enumerate(PLUME_MESHES):
+        rng = "visibility_range_end" if k == 0 else "visibility_range_begin"
         text = text.rstrip("\n") + (f'\n\n[node name="{mesh}" parent="{path}" index="{k}"]\n'
-                                    'surface_material_override/0 = ExtResource("plume_day")\n')
+                                    'surface_material_override/0 = ExtResource("plume_day")\n'
+                                    f'{rng} = {PLUME_LOD1_FROM_M}\n')
+    # The zone's narrowing (ch05_ashcrown_dressing.PLUME_SCALE_XZ): the column stands back over its vent
+    old = re.search(rf'(\[node name="{re.escape(node.group(1))}" parent="{re.escape(node.group(2))}" instance=[^\n]*\]\n)'
+                    r"transform = Transform3D\(1, 0, 0, 0, 1, 0, -?0, 0, 1, ", text)
+    if old is not None:
+        sx = f"{PLUME_SCALE_XZ:g}"
+        text = text.replace(old.group(0), old.group(1) + f"transform = Transform3D({sx}, 0, 0, 0, 1, 0, 0, 0, {sx}, ", 1)
     return text
+
+
+# The zone's slot swaps (M3-ENV-1325: weathered copper, gold and lacquer, the stone's lighter baked occlusion), applied
+# to the written scene by a KitSlotSwaps node (tools/act1/ch05_09_zone_looks.py).
+def _zone_looks():
+    spec = importlib.util.spec_from_file_location("ch05_09_zone_looks", ROOT / "tools" / "act1" / "ch05_09_zone_looks.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
 
 
 def main(out_dir: Path | None = None) -> int:
     if out_dir is not None:  # tools/tests/test_b_arenas.py writes to a scratch dir
         AS.OUT_DIR = out_dir
+    zl = _zone_looks()
+    paths = zl.load_generator("ch05_ashcrown_dressing").metal_paths()
     for aid, fn in ARENAS.items():
         path = AS.write_arena(fn())
-        path.write_text(plume_day(path.read_text(encoding="utf-8")), encoding="utf-8")
+        path.write_text(zl.add_kit_slot_swaps(plume_day(path.read_text(encoding="utf-8")), paths), encoding="utf-8")
         print(f"ARENA {path.name}")
     return 0
 
