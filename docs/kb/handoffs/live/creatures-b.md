@@ -781,3 +781,19 @@ What the Act II fights still need from others: enemy rows and encounters (combat
   (0.72, 3.99, 9.76) sits inside the bounds of `Arena/Ground/engine_hall` (the ray's first hit at 0 m), and the Engine
   is 7–8 m behind it: a wall of the hall stands between the battle camera and the fight in every wide frame (the
   opening, mid-fight, the KO). The close shots (intro, hits, phase) are clear.
+- **Ch10 Mangrove Drowner, as played** (Ethren called): intro, hits, the uprooted stance (rising_water, hit and
+  root_stamp in their `_risen` versions), its KO and the victory; Ethren rises, strikes, guards (`defend`), is hit and
+  falls cleanly. **For battle-presentation:** (1) the intro's hero shot looks from behind the party; the Drowner
+  stands far back, washed out and partly behind the title card, so the intro doesn't show the boss (it reads at the
+  opening's default camera: the dark root mass and its teal snag lights). (2) A called Vowbound on the vowbound slot
+  stands right before the default camera: Ethren (2.5 m) fills a third of the frame and hides the Drowner during his
+  own turns (Kesh at 4.2 m will be worse); the slot or the camera, not the models.
+- **Ch12 Avalanche Ram, as played** (Nhoa called): intro, charge_gather, neck_sweep, the torn_fleece stance (its
+  `_torn` charge, hit, sweep and KO) and the victory all read; Nhoa rises, attacks, is hit and falls cleanly.
+- **The phase clips themselves** (the Drowner's uproot, the Ram's tear) aren't caught mid-way: the next-turn cut
+  above (the Engine's `phase_change` was, on its slower turn order). Nothing in the Act II models needs fixing.
+- **BACKLOG EMPTY (15:40):** the Act I and the mounted Act II boss fights are played and fixed where they were mine
+  (650257ea, f893ee59); the open items are other tracks' (the phase-moment cut, the intro framings, ch11's camera
+  behind engine_hall, ch11's line-up, the Vowbound slot before the camera, Kahre's rise during the Climb's cut).
+  Next when they land: battle-presentation's Act II effects (view them on my bodies, the agreed split), the Abiding
+  guard's actor (its stand-in), the flat-engine's row and Liss's break.
