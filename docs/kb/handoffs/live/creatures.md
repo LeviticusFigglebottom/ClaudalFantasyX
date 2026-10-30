@@ -967,3 +967,14 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
 - LEAD-ASK: M4-A2P-056 (role: character) is still `blocked` by ADR 0203. Please record my claim (`doing`, claude/creatures) on the integration branch per ADR 0205.
 - **MERGE-READY @ 2ea2d324** (includes everything above).
 - Next: the fen kingfisher (Ch10), the woolback (Ch12), the rim rays (Ch16).
+- **M4-A2P-056, the Act II wildlife: all four built and placed, task in review (reviewer: environment)**:
+  - fen fireflies @ 2ea2d324;
+  - fen kingfishers @ 0ebe065a (gull recipe, their own kind, rows and two MultiMeshes);
+  - woolback herds @ 97291f9b (the ram's build without seep or ice, drawn at 0.3; the new skinned WildlifeHerd; idle, look and walk clips with the walk's hooves solved per frame);
+  - rim rays @ fe0da8c2 (a ray kind of the fish shoal drawn with the flap mode).
+  - Budgets and draw_calls: draw_calls 10, kingfishers 6, woolbacks 6, rays 16.
+  - Validator, tools and Godot tests: wildlife 22/0, ch10, ch12, ch16. Blender verify identical for wildlife_insect, wildlife_kingfisher, creature_woolback and wildlife_rim_ray.
+  - New shots, SELF-RENDERED and viewed, **baselines needed**: wildlife_zone_ossa_fen_walk0, wildlife_zone_ossa_fen_pocket, wildlife_zone_ossa_fen_rail0, wildlife_zone_keth_pass_foot, wildlife_zone_keth_pass_saddle, wildlife_zone_pale_rim_wade.
+  - All four are placed on the greybox layouts. Re-seat them when the dressed kits arrive; the woolbacks go to the Keth troughs.
+  - LEAD-ASK: the task file now says `review`, owner claude/creatures. Please carry the claim and the status to the integration branch.
+- **MERGE-READY @ fe0da8c2** (includes everything since 2ea2d324).
