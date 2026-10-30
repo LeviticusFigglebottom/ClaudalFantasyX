@@ -2,7 +2,7 @@
 id: M4-A2P-104
 title: "Ch14's escape: drive the ripples, and the court's after-the-trap state (layout blocks for env-art-b)"
 role: cinematics
-status: doing
+status: review
 owner_session: act1-chapters
 depends_on: [M4-A2P-047]
 reviewer: environment
@@ -44,5 +44,10 @@ chapter's to wire, because they belong to its flow and its layout (`tools/act1/c
   - **Part 1, open:** driving the ripples (the barge's `wake_target`, a `strike` per pole stroke) needs the escape
     scene and its moving barge. That waits on story's Ch14 scenes (M4-C14-01); the escape beat today is only the
     `go`.
+  - **Part 1, done (later the same day):** `ch14_first_ripple` cues each of Merel's strokes as `@sfx pole_stroke`.
+    `Ch13Zone` listens to its sequencer's `cue_played`, so each stroke strikes a ring from the barge's stern
+    (`BargeStern`) through `RippleField.find`. The barge is a greybox block that doesn't travel, so there is no
+    `wake_target` yet: when env-art-b's barge moves in the scene, set `wake_target` to it in the court's scene (one
+    export) and the wake follows. Test: `test_ch13_thread.gd::test_a_pole_stroke_ripples_the_lagoon`.
 
 ## Review log

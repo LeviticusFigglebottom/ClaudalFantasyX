@@ -120,6 +120,22 @@ func _battle(encounter: StringName, victory_flag: StringName) -> void:
 
 
 ## Opens `path` (closing the zone before) and runs its arrival: a `go` ends the story's run, so each way is a visit.
+## M4-A2P-104: each pole stroke of the escape (`@sfx pole_stroke`) sends a ring out from the barge's stern.
+func test_a_pole_stroke_ripples_the_lagoon() -> void:
+	_visit(COURT)
+	var field := RippleField.find(zone.get_tree())
+	assert_true(field != null, "the court has its ripple field")
+	if field == null:
+		return
+	var before := field.sources.size()
+	story.sequencer.cue_played.emit(&"sfx", [&"pole_stroke"], {})
+	assert_eq(field.sources.size(), before + 1, "one ring per stroke")
+	story.sequencer.cue_played.emit(&"sfx", [&"bell_toll"], {})
+	assert_eq(field.sources.size(), before + 1, "other sounds leave the water still")
+	_close()
+	Game.state = saved_state
+
+
 func _visit(path: String) -> void:
 	_close()
 	hand_offs.clear()
