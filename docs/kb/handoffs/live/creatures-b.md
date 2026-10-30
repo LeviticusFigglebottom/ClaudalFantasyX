@@ -987,3 +987,5 @@ Vowbound), ids M5-A3P-1850 to 1899. Order: the never-cut items first (act3_roste
 - **LEAD-ASK (the Cage's sheet):** docs/kb/art/creatures/act3/the_cage.md is creatures' sheet (M3-CRE-648, blocked),
   but the Cage is a boss, which is my lane. **Default:** I take the sheet's amendment and the build (M5-A3P-1851) unless
   creatures say otherwise in their log; I'll note it there with a request task.
+
+MERGE-READY @ 1efbbe0cd: M5-A3P-1850 (Kesh held form and release).
