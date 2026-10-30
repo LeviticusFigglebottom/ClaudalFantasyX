@@ -18,7 +18,7 @@ A skate buried in the white sand of the shallows, its back the colour of the wat
 `back`, `belly`, `eye`.
 
 ## Rig
-14 bones; 3638 triangles in `assets/creatures/glass_skate/glass_skate.glb` (job `creature_glass_skate` in tools/dev/blender_builds.json).
+14 bones; 3862 triangles in `assets/creatures/glass_skate/glass_skate.glb` (job `creature_glass_skate` in tools/dev/blender_builds.json).
 
 ## Clips
 `idle`, `attack`, `cast`, `hit`, `ko`, `hit_b`, `idle_b` (the clip contract: idle, attack, cast, hit with its peak near 0.1 s, ko, plus the kit's hit_b and idle_b).
@@ -38,3 +38,4 @@ Meets the bar. Its `cast` slides 63 cm: that is the burial wriggle into the sand
 
 ## Work at the gate (after `act1-complete`)
 ~~Enemy `model` key~~ (done 2026-10-30); `skate_sting` effect; check the risen read in the Rim arena.
+As-played pass DONE 2026-10-30 (ch16_rim_skates, battle distance; Ch16 names no arena yet, so the default stage): the clear back and thin rim melted into the white sand. The back's clearcoat and rim sheen are cut back (they washed it white in sun), the sand_wet rim is wider and darker, and each wing carries a dark eyespot (its own small part). Viewed: two pale skates with dark spots and edges against the sand, still camouflaged.

@@ -42,18 +42,30 @@ class ZoneMistakes(unittest.TestCase):
             path.write_text(json.dumps(data), encoding="utf-8")
             # Actor scenes and locations resolve against the real repository.
             rel = path.relative_to(Path(tmp))
-            orig = vn.ACTOR
+            orig, orig_crowd = vn.ACTOR, vn.CROWD_ACTOR
             try:
                 vn.ACTOR = str(ROOT / orig)
-                return vn.zone_errors(Path(tmp), str(rel), vn._location_ids(ROOT), vn._declared_flags(ROOT))
+                vn.CROWD_ACTOR = str(ROOT / orig_crowd)  # the shop keepers are crowd people (haluna_*)
+                return vn.zone_errors(Path(tmp), str(rel), vn._location_ids(ROOT), vn._declared_flags(ROOT),
+                                      vn.crowd_people(ROOT))
             finally:
-                vn.ACTOR = orig
+                vn.ACTOR, vn.CROWD_ACTOR = orig, orig_crowd
 
     def _haluna(self) -> dict:
         return copy.deepcopy(_load(HALUNA))
 
     def test_the_unchanged_file_passes(self) -> None:
         self.assertEqual(self._errors(self._haluna()), [])
+
+    def test_a_scene_path_stage_actor_is_the_stand_in_itself(self) -> None:
+        """Haluna's shop keepers stand in the town's own stand-ins (NPCs/Town/...), not a CutsceneStage actor."""
+        self.assertEqual(vn.person_stand_in({"stage_actor": "NPCs/Town/Smith"}), "NPCs/Town/Smith")
+        self.assertEqual(vn.person_stand_in({"stage_actor": "clerk"}), "CutsceneStage/Actors/clerk")
+        data = self._haluna()
+        self.assertEqual(self._errors(data), [])
+        row = next(r for r in data["villagers"] if r.get("crowd") == "haluna_smith")
+        row["stand_in"] = "CutsceneStage/Actors/NPCs/Town/Smith"
+        self.assertTrue(any("stands at stage actor" in e for e in self._errors(data)))
 
     def test_zone_must_name_the_file_and_be_a_location(self) -> None:
         d = self._haluna()
@@ -156,7 +168,8 @@ class Crowd(unittest.TestCase):
         self.assertEqual(sum(p["stage_actor"] == "wrights" for p in self.crowd["people"]),
                          self.crowd["groups"]["brine_shoals_wrights"]["people"])
         self.assertNotIn("ch04/haluna_wake", by_zone, "Haluna's own villagers keep their M2-CHR-03 bodies")
-        self.assertEqual(len(self.crowd["people"]), 56)
+        self.assertEqual(by_zone["ch02/haluna"], {"NPCs/Town/Shopkeeper", "NPCs/Town/Smith", "NPCs/Town/Innkeeper"})
+        self.assertEqual(len(self.crowd["people"]), 59)
 
     def test_crowd_rows_must_match_their_person(self) -> None:
         data = copy.deepcopy(_load(CROWD_ZONE))

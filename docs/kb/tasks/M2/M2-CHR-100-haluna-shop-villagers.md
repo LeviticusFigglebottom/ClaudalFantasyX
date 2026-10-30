@@ -25,5 +25,6 @@ model of their own: the shopkeeper wears the netmender's, the smith the fisher's
 ## Notes
 - Where they stand: the shopkeeper by the market (-35.5, 1.75, -0.6), the smith near the dock road (-12, 0.86, 50),
   the innkeeper by the inn (-30, 1.8, 58.5). Each turns to Rhen and plays `talk` during its bark.
+- 2026-10-30 (claude/creatures, the Lead's 10:27 crowd-variety directive): the three rows in game/data/world/npc/zones/ch02_haluna.json no longer borrow the netmender's, fisher's and vendor's models. Each is a crowd person (`haluna_shopkeeper`, `haluna_smith`, `haluna_innkeeper`; crowd.json, the generator's `haluna` community) @ 92f60b06. M3-CHR-512 built bespoke models for all three; the Lead picks which ships (LEAD-ASK in docs/kb/handoffs/live/creatures.md). Status left to the character role.
 
 ## Review log
