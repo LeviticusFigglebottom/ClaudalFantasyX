@@ -3,7 +3,7 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
-- **MERGE-READY @ HEAD (see the commit after this line): Act II audio, all of the cue sheet that needs no beat sheet or encounter.**
+- **MERGE-READY @ 3ec09d01: Act II audio, all of the cue sheet that needs no beat sheet or encounter.**
   - **Every Act II zone plays:** `music.json` zone rows for all 14 levels, and 14 beds of their own (plain git under `assets/audio/act2/`, ADR 0175). The Act II audit is at **0 in every section** (`act1_audio_audit.py --act 2`); Act I is still 0.
   - **Loops:** `cloudloom` (the weaving-hall) and `sanctum_of_the_level` (one chord that never changes, flat by design).
   - **Battle:** `battle_heretic` (ADR 0204 §9; v2 darkened, measured against it). The people bosses `malcor_venn` and `abiding_guard`, two stems each. The seven Vowbound stings (nhoa, hesk and ethren bound and summoned; kesh bound).
