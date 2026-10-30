@@ -5,13 +5,16 @@ extends Node
 ##   godot --headless --path . --audio-driver Dummy res://tools/gpu_bench/encounter_gap_probe.tscn -- [--zones=...]
 ## Per zone: the F8 chapter start, the location, the flags that switch its random encounters on; then the zone's own
 ## live FieldEncounters meter (its table, gap, grace, rate and seeded rng, as the zone set it up) is read, and the
-## first ENCOUNTERS gaps are drawn from a copy of its rng exactly as walked() would. The hero is pushed with the field
-## controller's stick from the route's start spawn for PUSH_S to measure the run speed he really reaches there, and
-## the route's straight-line length through its spawns (a lower bound on the walk) is summed. Prints
-## ENCOUNTER_GAP <zone> {json}: metres and seconds at the measured speed between encounters (the first has no grace).
+## first ENCOUNTERS gaps are drawn with its own _draw() (its rng restored after), plus its grace (metres and, from
+## big23, seconds). The hero is pushed with the field controller's stick toward the route's next spawn for PUSH_S to
+## check the run speed he reaches there, and the route's straight-line length through its spawns (a lower bound on
+## the walk) is summed. Prints ENCOUNTER_GAP <zone> {json}: metres and seconds at RUN_MPS between encounters (the
+## first owes only the grace left at entry).
 
 const CHAPTER_SELECT := "res://game/data/debug/chapter_select.json"
 const ENCOUNTERS := 8
+## field_movement.json's run_speed_mps: the seconds are at this speed (the measured push is printed beside it).
+const RUN_MPS := 3.6
 const PUSH_S := 3.0
 const SPEED_SKIP_S := 1.0
 ## [zone, chapter, location, flags, route spawns in walking order]
@@ -84,18 +87,26 @@ func _zone(z: Array) -> void:
 	var fe := meters[0] as FieldEncounters
 	var mult := float(zone.call(&"encounter_rate_mult")) if zone.has_method(&"encounter_rate_mult") else 1.0
 	# The draws walked() would make: the gap in progress, then grace + a fresh draw after each encounter.
-	var rng := RandomNumberGenerator.new()
-	rng.seed = fe.rng.seed
-	rng.state = fe.rng.state
-	var gaps: Array[float] = [maxf(fe.next_m - fe.walked_m, 0.0) + fe.grace_m]
+	# The gaps the zone's own _draw() makes from its rng (restored after), so a change to the draw is measured too.
+	var saved_state := fe.rng.state
+	var draws: Array[float] = [maxf(fe.next_m - fe.walked_m, 0.0)]
 	for i in ENCOUNTERS - 1:
-		gaps.append(
-			fe.grace_after_m + rng.randf_range(fe.min_m, fe.max_m) * FieldEncounters.FULL_RATE_PCT / fe.rate_pct
-		)
+		draws.append(float(fe.call(&"_draw")))
+	fe.rng.state = saved_state
+	# The grace (big23 adds grace_s, seconds of field time, beside grace_m walked): the first gap owes what is left
+	# now, every later one the full grace.
+	var grace_s_after := float(fe.get(&"grace_after_s")) if fe.get(&"grace_after_s") != null else 0.0
+	var grace_s_now := float(fe.get(&"grace_s")) if fe.get(&"grace_s") != null else 0.0
 	# Every metre walked counts `mult` metres (Ch1's lantern), so the walked distance is gap / mult.
+	var m := maxf(mult, 0.001)
 	var walked: Array[float] = []
-	for g in gaps:
-		walked.append(g / maxf(mult, 0.001))
+	var secs: Array = []
+	for i in draws.size():
+		var grace_m := (fe.grace_m if i == 0 else fe.grace_after_m) / m
+		var grace_t := grace_s_now if i == 0 else grace_s_after
+		var gap := draws[i] / m
+		walked.append(snappedf(maxf(grace_m, grace_t * RUN_MPS) + gap, 0.1))
+		secs.append(snappedf(maxf(grace_m / RUN_MPS, grace_t) + gap / RUN_MPS, 0.1))
 	var spawns: Dictionary = {}
 	for s in route:
 		var n := zone.get_node_or_null(NodePath("Spawns/" + str(s))) as Node3D
@@ -107,7 +118,6 @@ func _zone(z: Array) -> void:
 	if spawns.has(str(route[0])) and spawns.has(str(route[1])):
 		toward = (spawns[str(route[1])] as Vector3) - (spawns[str(route[0])] as Vector3)
 	var speed := await _run_speed(toward)
-	var secs: Array = walked.map(func(m: float) -> float: return snappedf(m / maxf(speed, 0.01), 0.1))
 	var length := 0.0
 	for i in route.size() - 1:
 		if spawns.has(str(route[i])) and spawns.has(str(route[i + 1])):
@@ -121,10 +131,11 @@ func _zone(z: Array) -> void:
 		"min_m": fe.min_m,
 		"max_m": fe.max_m,
 		"grace_m": fe.grace_after_m,
+		"grace_s": grace_s_after,
 		"rate_pct": fe.rate_pct,
 		"rate_mult": mult,
 		"run_mps": snappedf(speed, 0.01),
-		"walked_m": walked.map(func(m: float) -> float: return snappedf(m, 0.1)),
+		"walked_m": walked,
 		"secs": secs,
 		"route_m_min": snappedf(length, 0.1),
 		"route_encounters_est": _count_within(walked, length),
