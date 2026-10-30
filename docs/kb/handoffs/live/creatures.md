@@ -1229,3 +1229,24 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
     - `wildlife_zone_ossa_fen_rail0` and `wildlife_zone_pale_rim_wade` have no baselines yet.
 - **MERGE-READY @ cbcd5b5cc.**
 - **BACKLOG EMPTY:** M4-CRE-702 is in review (character); Act III stays planning-only.
+- **Your 17:45 relay: Haluna lived in, M3-CRE-666 @ ba2445136.** (The Act II enemy polish was already done, @ d91a783fb.)
+  - **Who is there.** Fifteen crowd people (community `haluna`, new faces) at work by what they work on, on ground probed against the zone's collision:
+    - **causeway head:** fish laid on the drying rack, a buyer with her basket at the stall, a line hauled at the water's edge, two children at a game of stones;
+    - **tide-wall lane:** an old woman mending at the net heap, a basket carrier, two children at a clapping game, a sweeper between two stations;
+    - **dock:** a mender at the net heap, fish turned on the rack, a mooring line hauled, a basket of the catch.
+  - **New clips:** `play_stones` (knelt, toss, sweep and catch) and `play_clap` (clap and palms out, the pair 0.6 m apart where the palms meet), in the child libraries.
+  - **The dock at night:** VillagerLayer rows take `shown: day|night`, read from the zone's `is_night` (HalunaZone.set_night). No zone code changed.
+    - The dock's people and the children are gone home.
+    - The lane's mender and sweeper work by lamplight.
+    - One woman brings the last basket home past the market.
+  - **No reshuffle:** `assign.late_zones` keeps every body already placed in other zones (a tools test holds it).
+  - **Checks:**
+    - tools test_npc 35 OK; validate_data/npc; gen_crowd --check;
+    - Godot crowd 17/0, villager 45/0, npc 10/0, haluna 65/0;
+    - the rebuilt child libraries match the jobs' output.
+  - **FAST-TRACK (not mine, pre-existing):** every crowd body's `materials/brow.tres` and crowd_woman_lean_a's head textures and UVs rebuild differently from the committed files on an unchanged tree. That is drift from the shared villager sources (characters, likely 7fbc2da2c). The crowd jobs are owned "character"; a rebuild of all 22 crowd jobs would commit it.
+  - **Shots:** new `npc_haluna_vignette_*` shots (no baselines).
+    - Viewed: lane_mender, dock and night_market (the vendor and the night carrier by lamplight). All good.
+    - causeway and lane_games: re-aimed (the first frames were behind the tide wall and inside a wall), re-rendering now.
+    - The existing `npc_haluna_dock`, `npc_haluna_lane` and `npc_haluna_market`, and `slice_haluna_villagers_village`, will gain people. They need new baselines (shots session).
+- **MERGE-READY @ ba2445136.** Next: the same vignettes for Oruvel (Ch1) and the Pemakar harbour (your 18:45 relay).
