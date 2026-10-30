@@ -1,0 +1,51 @@
+{
+ "format": 1,
+ "scene": "ch18_night_aboard",
+ "source": "game/data/dialogue/ch18/ch18_night_aboard.dlg",
+ "start": "ch18_night_aboard",
+ "nodes": {
+  "ch18_night_aboard": {
+   "headers": {"location": "ch18/kite"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["K14"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "music", "args": ["kite_night"], "kwargs": {"fade": 3.0}, "src": 8},
+    {"op": "cue", "cue": "mark", "args": ["kerrid", "stern_rail", "walk"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 10},
+    {"op": "if_not", "cond": ["not", ["or", ["or", ["or", ["or", ["or", ["or", ["flag", "ch10_camp_talk"], ["flag", "ch11_camp_talk"]], ["flag", "ch12_camp_talk"]], ["flag", "ch13_camp_talk"]], ["flag", "ch14_camp_talk"]], ["flag", "ch15_camp_talk"]], ["flag", "ch16_camp_talk"]]], "to": 8, "src": 11},
+    {"op": "line", "id": "ch18_night_001", "key": "DLG_CH18_NIGHT_001", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 12},
+    {"op": "line", "id": "ch18_night_002", "key": "DLG_CH18_NIGHT_002", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 13},
+    {"op": "goto", "to": 8, "src": 11},
+    {"op": "if_not", "cond": ["flag", "ch10_camp_talk"], "to": 12, "src": 15},
+    {"op": "line", "id": "ch18_night_003", "key": "DLG_CH18_NIGHT_003", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 16},
+    {"op": "line", "id": "ch18_night_004", "key": "DLG_CH18_NIGHT_004", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 17},
+    {"op": "goto", "to": 12, "src": 15},
+    {"op": "if_not", "cond": ["flag", "ch11_camp_talk"], "to": 16, "src": 19},
+    {"op": "line", "id": "ch18_night_005", "key": "DLG_CH18_NIGHT_005", "speaker": "asha", "emotion": "tender", "voice": "", "src": 20},
+    {"op": "line", "id": "ch18_night_006", "key": "DLG_CH18_NIGHT_006", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 21},
+    {"op": "goto", "to": 16, "src": 19},
+    {"op": "if_not", "cond": ["flag", "ch12_camp_talk"], "to": 20, "src": 23},
+    {"op": "line", "id": "ch18_night_007", "key": "DLG_CH18_NIGHT_007", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 24},
+    {"op": "line", "id": "ch18_night_008", "key": "DLG_CH18_NIGHT_008", "speaker": "toma", "emotion": "soft_smile", "voice": "", "src": 25},
+    {"op": "goto", "to": 20, "src": 23},
+    {"op": "if_not", "cond": ["flag", "ch13_camp_talk"], "to": 24, "src": 27},
+    {"op": "line", "id": "ch18_night_009", "key": "DLG_CH18_NIGHT_009", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 28},
+    {"op": "line", "id": "ch18_night_010", "key": "DLG_CH18_NIGHT_010", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 29},
+    {"op": "goto", "to": 24, "src": 27},
+    {"op": "if_not", "cond": ["flag", "ch14_camp_talk"], "to": 28, "src": 31},
+    {"op": "line", "id": "ch18_night_011", "key": "DLG_CH18_NIGHT_011", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 32},
+    {"op": "line", "id": "ch18_night_012", "key": "DLG_CH18_NIGHT_012", "speaker": "liss", "emotion": "sad", "voice": "", "src": 33},
+    {"op": "goto", "to": 28, "src": 31},
+    {"op": "if_not", "cond": ["flag", "ch15_camp_talk"], "to": 32, "src": 35},
+    {"op": "line", "id": "ch18_night_013", "key": "DLG_CH18_NIGHT_013", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 36},
+    {"op": "line", "id": "ch18_night_014", "key": "DLG_CH18_NIGHT_014", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 37},
+    {"op": "goto", "to": 32, "src": 35},
+    {"op": "if_not", "cond": ["flag", "ch16_camp_talk"], "to": 36, "src": 39},
+    {"op": "line", "id": "ch18_night_015", "key": "DLG_CH18_NIGHT_015", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 40},
+    {"op": "line", "id": "ch18_night_016", "key": "DLG_CH18_NIGHT_016", "speaker": "rhen", "emotion": "tender", "voice": "", "src": 41},
+    {"op": "goto", "to": 36, "src": 39},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 43},
+    {"op": "set", "flag": "ch18_night_aboard", "value": ["lit", true], "src": 44}
+   ]
+  }
+ }
+}

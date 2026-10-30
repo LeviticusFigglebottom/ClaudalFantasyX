@@ -1,0 +1,17 @@
+{
+ "format": 1,
+ "scene": "ending_rest_hands",
+ "source": "game/data/dialogue/ending/ending_rest_hands.dlg",
+ "start": "ending_rest_hands",
+ "nodes": {
+  "ending_rest_hands": {
+   "headers": {"location": "ch18/kite"},
+   "ops": [
+    {"op": "cue", "cue": "music", "args": ["ending_lift_bed"], "kwargs": {"fade": 2.0}, "src": 6},
+    {"op": "cue", "cue": "mark", "args": ["ysolde", "by_asha", "walk"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "anim", "args": ["ysolde", "take_hands", "asha"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "wait", "args": [40.0], "kwargs": {}, "src": 9}
+   ]
+  }
+ }
+}

@@ -1,0 +1,36 @@
+{
+ "format": 1,
+ "scene": "ch20_hesk_release",
+ "source": "game/data/dialogue/ch20/ch20_hesk_release.dlg",
+ "start": "ch20_hesk_release",
+ "nodes": {
+  "ch20_hesk_release": {
+   "headers": {"location": "ch20/undertow_layers"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "camera", "args": ["U18"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 1.0}, "src": 9},
+    {"op": "line", "id": "ch20_hesk_001", "key": "DLG_CH20_HESK_001", "speaker": "hesk", "emotion": "neutral", "voice": "", "src": 10, "name_key": "DLG_NAME_HESK_AMA"},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 11},
+    {"op": "if_not", "cond": ["flag", "ch12_ysolde_confessed"], "to": 8, "src": 12},
+    {"op": "line", "id": "ch20_hesk_002", "key": "DLG_CH20_HESK_002", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 13},
+    {"op": "goto", "to": 10, "src": 12},
+    {"op": "line", "id": "ch20_hesk_003", "key": "DLG_CH20_HESK_003", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 15},
+    {"op": "goto", "to": 10, "src": 14},
+    {"op": "line", "id": "ch20_hesk_004", "key": "DLG_CH20_HESK_004", "speaker": "toma", "emotion": "sad", "voice": "", "src": 17},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 18},
+    {"op": "line", "id": "ch20_hesk_005", "key": "DLG_CH20_HESK_005", "speaker": "toma", "emotion": "tender", "voice": "", "src": 19},
+    {"op": "if_not", "cond": ["and", ["flag", "ch15_toma_confessed"], ["flag", "ch14_toma_refused"]], "to": 16, "src": 20},
+    {"op": "line", "id": "ch20_hesk_006", "key": "DLG_CH20_HESK_006", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 21},
+    {"op": "goto", "to": 16, "src": 20},
+    {"op": "cue", "cue": "music", "args": ["release_sting"], "kwargs": {"fade": 0.0}, "src": 23},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "hesk", "count": 40, "motion": "spiral_up", "rate": "slow"}, "src": 24},
+    {"op": "cue", "cue": "wait", "args": [6.0], "kwargs": {}, "src": 25},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "keth_bundle", "count": 1, "motion": "spiral_up", "rate": "slow"}, "src": 26},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 27},
+    {"op": "set", "flag": "ch20_hesk_released", "value": ["lit", true], "src": 28},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 29}
+   ]
+  }
+ }
+}

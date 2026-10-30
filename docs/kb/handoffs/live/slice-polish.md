@@ -1243,6 +1243,41 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     so B11 frame runs need a wall-clock budget of over an hour.
 - **MERGE-READY @ e9551cf83:** M4-A2P-1600's renumbering, the B11 timing finding (for integration-qa), the cutscene_frames
   fix.
+- **big29 red test_zone_map_pois, fixed, MERGE-READY @ 4d5c9ed0b:**
+  - The Underway map's `stair_lip` POI follows A2's widened low_lights trigger (z −28).
+  - tools test OK; zone_map 22, 0 failed.
+  - **My miss:** I didn't run the tools suite after moving a trigger in A2. I now run it for any layout change.
+  - Full tools suite on this head: the remaining reds are other tracks':
+    - characters: rig_integrity (10 rigs), hero_clips (Asha's and Sefir's clip lists), villagers;
+    - audio: audio_loudness;
+    - env-art: palette_check, the Haluna H07 chapel face;
+    - the Lead: test_screenshots, wildlife_zone_ossa_fen_walk0 with no baseline.
+- **Ch11 staging (the Lead's next item):** already on integration since big27 (de52fb88, at_mark 61fc9729).
+  - Every Ch11 music cue id resolves (sunken_vey, lamp_engine, lowlight, nhoa_bound; audio's renders fill the files).
+  - The five stills postdate the zones' last change.
+  - The people still wait on M4-CIN-1305: the Ch11 layouts have no party actors, Nhoa included.
+- **FAST-TRACK, Haluna's hidden frame (the human's black-screen report), MERGE-READY @ this commit (git log -1 -- game/levels/ch02/haluna/haluna_actor_pose.gd):**
+  - The fix: HalunaActorPose (Asha's beach pose, about 0.2 s of per-bone solve) no longer poses in the frame that adds
+    Haluna during a router swap; it poses on its first process frame, which is still under the fade. Tests and captures
+    (no swap) pose at once, as before.
+  - Measured with integration-qa's scene_swap_probe (`--to=haluna --resident-loads --warm-resident`, headless):
+    - before (10 runs): frame 0 727–1011 ms, median ≈ 810; frame 1 25–110 ms;
+    - after (7 runs): frame 0 528–782 ms, median ≈ 670; frame 1 230–326 ms; no frame over 1 s;
+    - instantiate (threaded) unchanged, at about 0.8–1.2 s.
+  - **Tried and dropped:**
+    - **Deferring the zone's own start-spawn snap and the director's `_ready` snap during a swap** (Systems' file): no
+      measurable gain. The router place_at's the travel spawn inside the same measured frame 0, and that snap (about
+      0.35 s headless, the director building its occluders' triangles) is paid there either way.
+    - **An `await process_frame` version of the pose deferral:** 2 of 7 probe runs crashed (signal 11, mid-swap). The
+      `_process` one-shot that shipped crashed 0 of 7, and the baseline 0 of 10.
+  - **LEAD-ASK (integration-qa / Systems):** the rest of frame 0 is outside Haluna's `_ready`. The biggest piece is
+    that first director snap at the router's place_at. Building the director's triangle cache on the instantiate
+    thread, or snapping a frame later, would take out about another 0.35 s. That is router and director code, not my
+    lane.
+  - Tests: haluna 66/0, fp_ 30/0; gdlint/gdformat clean. The cutscene and scene_router filters are still running at commit; I log their results next.
+  - **Seen, not mine:** `test_haluna_villagers` logs "Parent node is busy setting up children" from
+    `villager_layer.gd:267 _spot` (the new VillagerLayer build in `_ready`). The tests pass; flagging it for the
+    VillagerLayer owner.
 ### PC-QUEUE
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan

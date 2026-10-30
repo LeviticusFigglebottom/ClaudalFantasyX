@@ -880,7 +880,9 @@ SET_VOLUME_MUSIC_HELP,The score and the cutscenes' music.
 SET_VOLUME_SFX,Effects volume
 SET_VOLUME_SFX_HELP,"Battle and world sounds, menus, and the sea and wind around you."
 SET_VOLUME_VOICE,Voice volume
-SET_VOLUME_VOICE_HELP,The voice sounds under each line of dialogue.
+SET_VOLUME_VOICE_HELP,"The voice sounds under each line of dialogue, and townsfolk talking among themselves."
+SET_MONO_AUDIO,Mono audio
+SET_MONO_AUDIO_HELP,"Both speakers play the same sound: nothing is lost on one speaker, one ear or a single earbud."
 SET_VOLUME_0,0%
 SET_VOLUME_10,10%
 SET_VOLUME_20,20%

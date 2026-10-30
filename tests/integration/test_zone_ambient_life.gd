@@ -60,3 +60,20 @@ func test_flames_flicker_and_debris_drifts() -> void:
 	assert_true(moved, "the litter drifts")
 	host.remove_child(zone)
 	zone.free()
+
+
+func test_a_zone_fire_fade_reaches_every_lamp() -> void:
+	var dressing := ZoneKitDressing.new()
+	dressing.layout = {
+		ZoneKitDressing.KEY_FIRE: [{"at": [0, 1, 0]}, {"at": [5, 1, 0], "flicker": 0.2}],
+		ZoneKitDressing.KEY_FIRE_FADE: [70.0, 20.0],
+	}
+	dressing._place_fire_lights()
+	var lights := dressing.get_node(NodePath(String(ZoneKitDressing.FIRE_LIGHTS))).get_children()
+	assert_eq(lights.size(), 2, "both lamps")
+	for l: Node in lights:
+		var o := l as OmniLight3D
+		assert_true(o.distance_fade_enabled, "%s fades with distance" % o.name)
+		assert_eq(o.distance_fade_begin, 70.0, "from 70 m")
+		assert_eq(o.distance_fade_length, 20.0, "over 20 m")
+	dressing.free()

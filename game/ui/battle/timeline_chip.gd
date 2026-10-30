@@ -124,6 +124,8 @@ func _layout_children() -> void:
 	var name_w := maxf(size.x - name_x - right, 0.0)
 	var show_caption := caption != "" and size.y > HudLayout.num(_metrics, "chip_height")
 	var cap_h := HudLayout.num(_metrics, "caption_height") if show_caption else 0.0
+	if show_caption:  # the readability pass (10-30): at 130 % text the caption grew past the chip's bottom border
+		cap_h = maxf(cap_h, _caption.get_combined_minimum_size().y)
 	_name.position = Vector2(name_x, 0.0)
 	_name.size = Vector2(name_w, size.y - cap_h)
 	_caption.visible = show_caption

@@ -1,0 +1,24 @@
+{
+ "format": 1,
+ "scene": "ch20_kahre",
+ "source": "game/data/dialogue/ch20/ch20_kahre.dlg",
+ "start": "ch20_kahre",
+ "nodes": {
+  "ch20_kahre": {
+   "headers": {"location": "ch20/undertow_layers"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "camera", "args": ["U09"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "music", "args": ["memory_lanternfall"], "kwargs": {"fade": 3.0}, "src": 10},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "channel_boats", "count": 80, "rate": "slow"}, "src": 11},
+    {"op": "cue", "cue": "wait", "args": [5.0], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "camera", "args": ["U10"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "anim", "args": ["kahre", "rise", "terrace"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 15},
+    {"op": "line", "id": "ch20_kahre_001", "key": "DLG_CH20_KAHRE_001", "speaker": "kahre", "emotion": "laugh", "voice": "", "src": 16, "name_key": "DLG_NAME_KAHRE_DARO"},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 17},
+    {"op": "event", "name": "start_battle", "args": ["ch20_kahre"], "src": 18}
+   ]
+  }
+ }
+}

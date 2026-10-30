@@ -1,0 +1,27 @@
+{
+ "format": 1,
+ "scene": "ch18_child_older",
+ "source": "game/data/dialogue/ch18/ch18_child_older.dlg",
+ "start": "ch18_child_older",
+ "nodes": {
+  "ch18_child_older": {
+   "headers": {"location": "ch10/reedhollow"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["K12"], "kwargs": {}, "src": 6},
+    {"op": "cue", "cue": "mark", "args": ["kirru_child", "platform_edge_child", "walk"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 8},
+    {"op": "line", "id": "ch18_child_001", "key": "DLG_CH18_CHILD_001", "speaker": "kirru_child", "emotion": "neutral", "voice": "", "src": 9, "name_key": "DLG_NAME_KIRRU_CHILD_KIRRU_CHILD"},
+    {"op": "if_not", "cond": ["flag", "ch10_asha_answered_child"], "to": 7, "src": 10},
+    {"op": "line", "id": "ch18_child_002", "key": "DLG_CH18_CHILD_002", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 11},
+    {"op": "goto", "to": 9, "src": 10},
+    {"op": "line", "id": "ch18_child_003", "key": "DLG_CH18_CHILD_003", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 13},
+    {"op": "goto", "to": 9, "src": 12},
+    {"op": "line", "id": "ch18_child_004", "key": "DLG_CH18_CHILD_004", "speaker": "kirru_child", "emotion": "neutral", "voice": "", "src": 15, "name_key": "DLG_NAME_KIRRU_CHILD_KIRRU_CHILD"},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 16},
+    {"op": "line", "id": "ch18_child_005", "key": "DLG_CH18_CHILD_005", "speaker": "asha", "emotion": "tender", "voice": "", "src": 17},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 18},
+    {"op": "set", "flag": "ch18_child_answered", "value": ["lit", true], "src": 19}
+   ]
+  }
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "format": 1,
+ "scene": "ch18_revisit_oruvel",
+ "source": "game/data/dialogue/ch18/ch18_revisit_oruvel.dlg",
+ "start": "ch18_revisit_oruvel",
+ "nodes": {
+  "ch18_revisit_oruvel": {
+   "headers": {"location": "ch01/oruvel"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["K18"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "kell_stall", "walk"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 9},
+    {"op": "if_not", "cond": ["flag", "ch07_told_tavi"], "to": 10, "src": 10},
+    {"op": "cue", "cue": "mark", "args": ["tavi", "kell_stall_b", "walk"], "kwargs": {}, "src": 11},
+    {"op": "line", "id": "ch18_oruvel_001", "key": "DLG_CH18_ORUVEL_001", "speaker": "tavi", "emotion": "neutral", "voice": "", "src": 12},
+    {"op": "line", "id": "ch18_oruvel_002", "key": "DLG_CH18_ORUVEL_002", "speaker": "rhen", "emotion": "tender", "voice": "", "src": 13},
+    {"op": "line", "id": "ch18_oruvel_003", "key": "DLG_CH18_ORUVEL_003", "speaker": "tavi", "emotion": "soft_smile", "voice": "", "src": 14},
+    {"op": "line", "id": "ch18_oruvel_004", "key": "DLG_CH18_ORUVEL_004", "speaker": "rhen", "emotion": "soft_smile", "voice": "", "src": 15},
+    {"op": "goto", "to": 12, "src": 10},
+    {"op": "line", "id": "ch18_oruvel_005", "key": "DLG_CH18_ORUVEL_005", "speaker": "townsfolk", "emotion": "neutral", "voice": "", "src": 17, "name_key": "DLG_NAME_TOWNSFOLK_HULL_WRIGHT"},
+    {"op": "goto", "to": 12, "src": 16},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "hand_on", "stall_frame"], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 20}
+   ]
+  }
+ }
+}

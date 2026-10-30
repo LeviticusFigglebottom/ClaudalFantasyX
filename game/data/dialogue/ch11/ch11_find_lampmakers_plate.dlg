@@ -7,7 +7,7 @@ location: ch11/sunken_vey
 Ysolde [neutral]: A maker's plate. Lamptongue, the old court hand. Give me a moment. #line:ch11_plate_001
 Ysolde [neutral]: "We borrow the light. At the end of the day we give it back." #line:ch11_plate_002
 Rhen [neutral]: Give it back to what? #line:ch11_plate_003
-Ysolde [neutral]: It doesn't say. To the sky, I suppose. The way the Kirru do. #line:ch11_plate_004
+Ysolde [neutral]: It does not say. To the sky, I suppose. The way the Kirru do. #line:ch11_plate_004
 Ysolde [worried]: Every lamp in these galleries is still lit. #line:ch11_plate_005
 Ysolde [cold]: Somebody stopped giving it back. #line:ch11_plate_006
 <<set $ch11_read_makers_plate = true>>

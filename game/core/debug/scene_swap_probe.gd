@@ -22,6 +22,9 @@ extends Node
 ## of black after every battle): it enters the zone, routes to the field battle, then routes back to the zone's
 ## "Encounter" spawn, and prints that return's stats ("resident": the field kept through the fight, SceneRouter).
 ## --no-resident turns the resident field off, to measure the full reload for comparison.
+## --ready-profile prints the measured change's add-to-tree frame by node: each node's `ready` is stamped as the new
+## scene enters the tree (SceneRouter.scene_instantiated), and the slowest gaps print as READY_PROFILE lines (a
+## node's own _ready, its children's already counted): what a zone's hidden add frame spends (Haluna's ~1.5 s).
 
 const BUDGETS_PATH := "res://game/data/debug/perf_budgets.json"
 const SECTION := "scene_swap"
@@ -41,6 +44,9 @@ const ARG_WARM_SCENE := "--warm-scene"
 const ARG_ROUND_TRIP := "--round-trip="
 const ARG_RETURN := "--return="
 const ARG_NO_RESIDENT := "--no-resident"
+const ARG_READY_PROFILE := "--ready-profile"
+## --ready-profile: how many of the slowest nodes' _ready to print (READY_PROFILE <ms> <node path>).
+const READY_PROFILE_TOP := 15
 const EXIT_OK := 0
 const EXIT_FAILED := 1
 
@@ -73,6 +79,7 @@ func _run() -> void:
 	var warm_scene := false
 	var round_trip := &""
 	var back_to := ""
+	var profile := false
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with(ARG_TO):
 			to = arg.trim_prefix(ARG_TO)
@@ -96,6 +103,8 @@ func _run() -> void:
 			back_to = arg.trim_prefix(ARG_RETURN)
 		elif arg == ARG_NO_RESIDENT:
 			SceneRouter.keep_field_resident = false
+		elif arg == ARG_READY_PROFILE:
+			profile = true
 	if frame_usec > 0:
 		SceneRouter.set_measure_clock(frame_clock(frame_usec))
 	if launch and not cfg.is_empty():
@@ -138,6 +147,9 @@ func _run() -> void:
 		await _until_idle(int(cfg.get("timeout_frames", 0)))
 		to = back_to
 	SceneRouter.last_swap_stats = {}
+	var stamps: Array = []
+	if profile:
+		SceneRouter.scene_instantiated.connect(func(n: Node) -> void: _stamp_ready(n, stamps), CONNECT_ONE_SHOT)
 	SceneRouter.change_scene(to, FieldEncounters.RETURN_SPAWN if back_to != "" else &"")
 	var frames_left := int(cfg.get("timeout_frames", 0))
 	# M1-ARC-16: the visible window (the fade lifting plus VISIBLE_MEASURE_FRAMES) ends after is_busy() does.
@@ -154,6 +166,8 @@ func _run() -> void:
 			)
 		)
 	stats["legacy"] = legacy
+	if profile:
+		_print_ready_profile(stamps)
 	print("%s %s" % [OUTPUT_TAG, JSON.stringify(stats)])
 	get_tree().quit(EXIT_OK if stats.has("max_frame_ms") else EXIT_FAILED)
 
@@ -165,6 +179,28 @@ func _change_and_wait(path: String, cfg: Dictionary) -> void:
 	while (SceneRouter.is_busy() or SceneRouter.is_measuring()) and frames_left > 0:
 		frames_left -= 1
 		await get_tree().process_frame
+
+
+## Stamps every node of `root` as it emits ready ([usec, path], in order), the first one at the start of the add.
+static func _stamp_ready(root: Node, stamps: Array) -> void:
+	var nodes: Array[Node] = [root]
+	nodes.append_array(root.find_children("*", "", true, false))
+	for n in nodes:
+		var path := str(root.get_path_to(n))
+		n.ready.connect(func() -> void: stamps.append([Time.get_ticks_usec(), path]), CONNECT_ONE_SHOT)
+	root.tree_entered.connect(func() -> void: stamps.push_front([Time.get_ticks_usec(), "<enter>"]), CONNECT_ONE_SHOT)
+
+
+## The slowest gaps between consecutive ready stamps (each node's own _ready), READY_PROFILE_TOP of them.
+static func _print_ready_profile(stamps: Array) -> void:
+	var costs: Array = []
+	for i in range(1, stamps.size()):
+		costs.append([(int(stamps[i][0]) - int(stamps[i - 1][0])) / 1000.0, str(stamps[i][1])])
+	costs.sort_custom(func(a: Array, b: Array) -> bool: return float(a[0]) > float(b[0]))
+	var total := (int(stamps[-1][0]) - int(stamps[0][0])) / 1000.0 if stamps.size() > 1 else 0.0
+	print("READY_PROFILE total %.1f ms over %d nodes" % [total, maxi(stamps.size() - 1, 0)])
+	for c: Array in costs.slice(0, READY_PROFILE_TOP):
+		print("READY_PROFILE %8.1f ms  %s" % [float(c[0]), str(c[1])])
 
 
 func _until_idle(frames: int) -> void:

@@ -1302,3 +1302,39 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - Quellan, Hollowmere and Ansedra (`late_prefixes`), plus Reedhollow's Kirru: fishers wading, a pair talking, a youngster watching, on the clips the Kirru have;
   - shots `crowd_vignette_{quellan,hollowmere,ansedra,reedhollow}_*`;
   - viewed: Quellan square and well, Hollowmere dock, Ansedra moorings. The Hollowmere platform cameras are re-aimed, and they and Reedhollow are still to view (next).
+- **The Act II town vignettes, done @ f2588bcc7** (your 20:26 relay):
+  - **Quellan** (8): children clapping and at stones in the square, a well rope hauled, cloth folded and cord mended at the doors, a sweeper.
+  - **Hollowmere's dawn** (4): work only, no games, after the burning.
+  - **Ansedra's moorings** (7): the polers' families.
+  - **Reedhollow** (6 Kirru): fishers on the ring's edge (the lagoon is a mangrove stand, so wading was dropped), a pair talking, a youngster watching, on the Kirru's own clips.
+  - **Checks:** tools test_npc OK; Godot crowd 20/0, villager 47/0.
+  - **Shots, all viewed:** `crowd_vignette_quellan_{square,well}`, `_hollowmere_{dock,platforms,mender}`, `_ansedra_moorings`, `_reedhollow_lagoon`. All new, no baselines. The existing Act II crowd shots gain people (shots session).
+- **MERGE-READY @ f2588bcc7** (includes M3-HER-1168 @ 445d5888e).
+- **BACKLOG EMPTY:**
+  - M4-CRE-702 and M3-CRE-666 are in review (character);
+  - M3-HER-1168's Drownbell re-measure is integration-qa's;
+  - Act III stays planning-only.
+- **Your 21:56 relay (ADR 0207): Act III production started.**
+  - **Tasks:** M5-A3P-1800..1808, the lane's regulars and wildlife:
+    - wick_crawler, chain_lamp, spire_moth (Ch19);
+    - held_shoal, drowned_lantern (Ch20);
+    - deep_scuttler, hull_rasp (Ch17);
+    - the conduit crawler's Act III row; the Kite's gulls.
+    - The Act III bosses (the Cage, the tide matron, the old leviathan) are not in this range. **LEAD-ASK:** say if they're mine or creatures-b's.
+  - **M5-A3P-1805, the deep scuttler @ b82b920e4:**
+    - the scuttler's rig and clips; darker plates, seams opened, small raw wounds, a second pair of eyes, a barbed spine ridge (the new silhouette); 1.3× the scuttler's size in battle;
+    - byte-identical build, PROVENANCE, portrait, review shot `creature_deep_scuttler` (viewed; no baseline);
+    - tools test_creatures OK; Godot creature 160/0.
+    - For Combat: an enemies.json row and the Ch17 moorings encounter.
+- **MERGE-READY @ b82b920e4.** Next: M5-A3P-1806, the hull rasp (claimed).
+- **M5-A3P-1806, the hull rasp @ 63c6157ef:**
+  - the hullgnaw's rig, clips and breach; a darker, salt-scabbed body; eleven glowing bore-holes; salt-white keel timbers as the breakable part; 0.62× the hullgnaw;
+  - byte-identical build, PROVENANCE, portrait, shot `creature_hull_rasp` (viewed);
+  - tools test_creatures OK (floor and sink exemptions as the hullgnaw's); Godot creature 160/0.
+- **MERGE-READY @ 63c6157ef.** Next: M5-A3P-1800, the wick crawler (claimed; a new build from its sheet).
+- **M5-A3P-1800, the wick crawler @ 8cc959b6e:**
+  - the sheet as written: 5.6k triangles, 44 bones; feet pinned; KO eased (only the collapse slide flags);
+  - byte-identical build, PROVENANCE, portrait, shot `creature_wick_crawler` (viewed);
+  - tools test_creatures OK; Godot creature 160/0.
+  - `clip_by_skill` waits for Combat's skill ids.
+- **MERGE-READY @ 8cc959b6e.** Next: M5-A3P-1801, the chain lamp (claimed).

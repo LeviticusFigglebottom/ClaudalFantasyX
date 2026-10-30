@@ -1,0 +1,36 @@
+{
+ "format": 1,
+ "scene": "ch19_the_vigil",
+ "source": "game/data/dialogue/ch19/ch19_the_vigil.dlg",
+ "start": "ch19_the_vigil",
+ "nodes": {
+  "ch19_the_vigil": {
+   "headers": {"location": "prologue"},
+   "ops": [
+    {"op": "cue", "cue": "anim", "args": ["kerrid", "vigil_stand"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "anim", "args": ["pell", "turn_back", "sea"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "anim", "args": ["ysolde", "vigil_book_shut"], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "anim", "args": ["asha", "sit", "plaza_steps"], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "camera", "args": ["P01"], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "light", "args": ["LanternLight", "off"], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "wait", "args": [3.5], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "by_asha", "walk"], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "camera", "args": ["P02"], "kwargs": {"blend": 7.0, "ease": "in_out_sine"}, "src": 23},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "look_at", "asha"], "kwargs": {}, "src": 24},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 25},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "trim_wicks"], "kwargs": {}, "src": 26},
+    {"op": "cue", "cue": "light", "args": ["LanternLight", "on", 1.4], "kwargs": {}, "src": 27},
+    {"op": "cue", "cue": "wait", "args": [0.6], "kwargs": {}, "src": 28},
+    {"op": "line", "id": "ch19_vigil_001", "key": "DLG_CH19_VIGIL_001", "speaker": "", "emotion": "tender", "voice": "", "src": 29, "narrator": "rhen", "tags": ["vo"]},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 30},
+    {"op": "cue", "cue": "camera", "args": ["P01"], "kwargs": {}, "src": 31},
+    {"op": "cue", "cue": "wait", "args": [6.0], "kwargs": {}, "src": 32},
+    {"op": "set", "flag": "ch19_vigil", "value": ["lit", true], "src": 33},
+    {"op": "cue", "cue": "fade", "args": ["out", 2.5], "kwargs": {}, "src": 34},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 35}
+   ]
+  }
+ }
+}

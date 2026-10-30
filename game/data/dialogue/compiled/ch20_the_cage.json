@@ -1,0 +1,24 @@
+{
+ "format": 1,
+ "scene": "ch20_the_cage",
+ "source": "game/data/dialogue/ch20/ch20_the_cage.dlg",
+ "start": "ch20_the_cage",
+ "nodes": {
+  "ch20_the_cage": {
+   "headers": {"location": "ch20/undertow_layers"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "camera", "args": ["U28"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "music", "args": ["the_cage"], "kwargs": {"fade": 2.0}, "src": 12},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_bound"], "kwargs": {"at": "cage_seats", "count": 4}, "src": 13},
+    {"op": "cue", "cue": "wait", "args": [5.0], "kwargs": {}, "src": 14},
+    {"op": "line", "id": "ch20_cage_001", "key": "DLG_CH20_CAGE_001", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 15},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "mark", "args": ["toma", "cage_line", "walk"], "kwargs": {}, "src": 17},
+    {"op": "line", "id": "ch20_cage_002", "key": "DLG_CH20_CAGE_002", "speaker": "toma", "emotion": "determined", "voice": "", "src": 18},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 19},
+    {"op": "event", "name": "start_battle", "args": ["ch20_the_cage"], "src": 20}
+   ]
+  }
+ }
+}

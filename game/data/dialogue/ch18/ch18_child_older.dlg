@@ -1,0 +1,20 @@
+// M5-A3P-1003. Ch18 K06 "The child, older" (optional, E, 1.5 min). act3_ch18.md §2 K06.
+// Requires ch10_child_asked (the flow gates it). The Kirru child from Ch10, a year older, asks Asha a second question.
+title: ch18_child_older
+location: ch10/reedhollow
+---
+@camera K12
+@mark kirru_child platform_edge_child walk
+@wait 2.0
+Kirru_child as "Kirru child" [neutral]: You came back. Did you find out how to stop? #line:ch18_child_001
+<<if $ch10_asha_answered_child>>
+    Asha [neutral]: I think so. It's going to cost a lot. #line:ch18_child_002
+<<else>>
+    Asha [neutral]: I'm finding out. #line:ch18_child_003
+<<endif>>
+Kirru_child as "Kirru child" [neutral]: Will you turn around, when it's yours? #line:ch18_child_004
+@wait 3.0
+Asha [tender]: I hope someone will turn around for me. #line:ch18_child_005
+@wait 2.0
+<<set $ch18_child_answered = true>>
+===

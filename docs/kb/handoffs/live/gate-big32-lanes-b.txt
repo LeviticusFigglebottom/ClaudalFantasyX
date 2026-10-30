@@ -1,0 +1,4 @@
+# sha 7f6211b3e85d7c546536b4dc2c2ab018045de49c
+res://tests/unit/test_battle_portraits.gd
+res://tests/integration/test_ch09_thread.gd
+res://tests/integration/test_qa_capsules.gd

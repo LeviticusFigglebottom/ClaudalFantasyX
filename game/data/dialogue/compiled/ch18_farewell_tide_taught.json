@@ -1,0 +1,49 @@
+{
+ "format": 1,
+ "scene": "ch18_farewell_tide_taught",
+ "source": "game/data/dialogue/ch18/ch18_farewell_tide_taught.dlg",
+ "start": "ch18_farewell_tide_taught",
+ "nodes": {
+  "ch18_farewell_tide_taught": {
+   "headers": {"location": "ch10/reedhollow"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["K09"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "music", "args": ["farewell_tide"], "kwargs": {"fade": 3.0}, "src": 12},
+    {"op": "cue", "cue": "mark", "args": ["pell", "shore_teach", "walk"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "mark", "args": ["asha", "shore_teach_b", "walk"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "shore_edge", "walk"], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 16},
+    {"op": "line", "id": "ch18_tide_001", "key": "DLG_CH18_TIDE_001", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 17},
+    {"op": "cue", "cue": "anim", "args": ["pell", "hum"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "anim", "args": ["asha", "hum"], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "wait", "args": [6.0], "kwargs": {}, "src": 20},
+    {"op": "event", "name": "hold_input", "args": ["turn_back"], "src": 21},
+    {"op": "cue", "cue": "anim", "args": ["asha", "turn_back", "sea"], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "anim", "args": ["pell", "turn_back", "sea"], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 24},
+    {"op": "event", "name": "hold_input_end", "args": [], "src": 25},
+    {"op": "cue", "cue": "sfx", "args": ["clutch_hum"], "kwargs": {"vol": 0.5}, "src": 26},
+    {"op": "cue", "cue": "anim", "args": ["asha", "hum"], "kwargs": {}, "src": 27},
+    {"op": "cue", "cue": "wait", "args": [8.0], "kwargs": {}, "src": 28},
+    {"op": "cue", "cue": "camera", "args": ["K10"], "kwargs": {}, "src": 29},
+    {"op": "cue", "cue": "anim", "args": ["ysolde", "write", "farewell_shape"], "kwargs": {}, "src": 30},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 31},
+    {"op": "line", "id": "ch18_tide_002", "key": "DLG_CH18_TIDE_002", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 32},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 33},
+    {"op": "cue", "cue": "camera", "args": ["K09"], "kwargs": {}, "src": 34},
+    {"op": "line", "id": "ch18_tide_003", "key": "DLG_CH18_TIDE_003", "speaker": "pell", "emotion": "tender", "voice": "", "src": 35},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 36},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 2.0}, "src": 37},
+    {"op": "cue", "cue": "anim", "args": ["asha", "turn_to", "pell"], "kwargs": {}, "src": 38},
+    {"op": "cue", "cue": "sfx", "args": ["velamir_lullaby_hum"], "kwargs": {"at": "asha", "vol": 0.6}, "src": 39},
+    {"op": "cue", "cue": "wait", "args": [10.0], "kwargs": {}, "src": 40},
+    {"op": "cue", "cue": "camera", "args": ["K11"], "kwargs": {}, "src": 41},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "look_at", "asha"], "kwargs": {}, "src": 42},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 43},
+    {"op": "line", "id": "ch18_tide_004", "key": "DLG_CH18_TIDE_004", "speaker": "pell", "emotion": "soft_smile", "voice": "", "src": 44},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 45},
+    {"op": "set", "flag": "ch18_learned_farewell_tide", "value": ["lit", true], "src": 46}
+   ]
+  }
+ }
+}

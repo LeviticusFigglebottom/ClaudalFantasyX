@@ -2098,3 +2098,70 @@ MERGE-READY @ (this commit).
   headless (much less on the PC) acceptable after M3-HER-1168?
 - **B11's opening:** after the router's fade lifts (5.3 s), B11 opens from the field, with no extra black of its own in
   the trace. Nothing to agree with slice-polish there.
+
+### big29 (46d8a067): the Act I smoke run and the field-camera rows; the Lead 10-30 20:45
+- **The Drownbell (the Lead's answer):** about 1.9 s headless is accepted once M3-HER-1168 (creatures) lands, and
+  Haluna is not to be kept resident. I re-measure when M3-HER-1168 merges.
+- **The Act I smoke run on 46d8a067** (cloud-qa hadn't posted one), in a clean worktree with a fresh profile:
+  **PASS, 0 SCRIPT ERRORs.**
+  - qa_threads 1/0, qa_encounters 1/0, fp_ 30/0, save_ 153/0;
+  - **act1_route 3/0,** New Game → Ch9's end card → the title.
+  - No soft-lock, stuck transition or held reveal in the logs.
+- **The field-camera rows on 46d8a067 + this branch (cbbbc34bf), a fresh import:**
+  - qa_field_camera 2/0, qa_party 3/0, camera_director 56/0. The only KNOWN entries are Tier4 (M3-HER-1157,
+    env-art-b) and B02 (M3-HER-1160, m2-slice).
+  - **24, 47 and 38:** clean in the spawn sweep.
+  - **37 (AfterHarrier):** the still is clean.
+  - **66:** never nearer than 5.1 m; 6 of 111 samples, all in the cross-town blend.
+  - **21:** 0 of 121 samples out of frame.
+  - **All six hold on big29.** They need the PC's hand pass to close.
+MERGE-READY @ (this commit).
+
+### The Drownbell → Haluna return re-measured with M3-HER-1168 (integration 7c4c6de18 + claude/creatures e0b9afb5, a trial tree); the Lead 10-30 21:25
+- `return_probe -- --trace` (headless). The trace is from the victory panel's Return:
+
+  | from Return | before M3-HER-1168 (big28) | now |
+  |---|---|---|
+  | fade down | 0–0.4 s | 0–0.4 s |
+  | Haluna loading and instantiating | 0.4–1.9 s | 0.4–2.8 s (one hidden frame 1.36 → 2.84 s, **~1.5 s**) |
+  | VillagerLayer's held reveal | **1.9–5.0 s (3.1 s)** | **2.8–3.1 s (0.26 s)** |
+  | fade lifting | 5.0–5.3 s | 3.1–3.4 s |
+  | **covered (field clear)** | **5.3 s** | **3.4 s** |
+
+- **M3-HER-1168 does what it says:** the villager hold is 0.26 s. The probe's `black_ms` (9.3 s) still counts B11's
+  chapter card and the Ch4 wake after Haluna; that is story black.
+- **Still over the ~2 s target:** 3.4 s to a clear field. The rest is Haluna's own entry, about 2.4 s headless,
+  including a ~1.5 s hidden frame (Haluna entering the tree), which is over ADR 0029's 1 s hidden-frame budget by
+  itself.
+  **LEAD-ASK:** is Haluna's add-to-tree frame worth a request? It's Haluna's own setup (`haluna_zone.gd`, m2-slice /
+  slice-polish's), and every fresh Haluna entry pays it. Or do we take the 3.4 s headless as is, given the PC is
+  several times faster?
+- The other cases on this tree: tideline 168 ms black, causeway 51, oruvel_scuttlers 78, ch04_ferry 100, ch06 79.
+  Their ready times as before.
+- **The probe is committed** for reuse: `tools/gpu_bench/return_probe.gd` / `.tscn` (cloud-qa's, from
+  qa/cloud-pass6), with a `--trace` option that prints the fade, the current scene and the router's reveal holders
+  every 100 ms.
+- **The Lead (10-30 21:46): Haluna's ~1.5 s add-to-tree frame goes to slice-polish (haluna_zone.gd), target no hidden
+  frame over 1 s.** I re-measure the Drownbell after their fix. **How to measure it (for slice-polish):**
+  - The add frame alone: `godot --headless --path . res://game/core/debug/scene_swap_probe.tscn -- --to=res://game/levels/ch02/haluna/haluna.tscn --resident-loads --warm-resident`
+    prints `SCENE_SWAP_PROBE {…}`. `frame_ms[0]` and `max_frame_ms` are the add-to-tree frame (was 699–853 ms, and
+    ~1.5 s inside the Drownbell's return), `instantiate_ms` is the threaded instantiate, and `over_budget` is a
+    hidden frame over 1 s.
+  - As played: `godot --headless --path . --audio-driver Dummy res://tools/gpu_bench/return_probe.tscn -- --cases=drownbell --trace`.
+    The TRACE lines show the gap between the last `scene=FieldBattle` line and the first `scene=Haluna` line (that
+    frame), then any `reveal=[…]` hold.
+  - Headless (lavapipe) inflates both; judge by the split and against the same probe before your change.
+
+### 2026-10-30: Haluna's add-to-tree frame, split by node (offered to slice-polish, ADR 0207)
+- New: `SceneRouter.scene_instantiated(node)` is emitted after the (threaded) instantiate, before the add. `SceneSwapProbe --ready-profile` stamps every node's `ready` and prints the slowest gaps as `READY_PROFILE` lines. Run it with `godot --headless --path . res://game/core/debug/scene_swap_probe.tscn -- --to=res://game/levels/ch02/haluna/haluna.tscn --resident-loads --ready-profile`.
+- Real router path (worker instantiate, then `prebuild()`, then add; headless, this box): **max hidden frame 718 ms** (under the 1 s bar); instantiate 811 ms on the thread; reveal wait 1.29 s.
+  - Readies total **603 ms** over 4,320 nodes.
+  - Root `.` (HalunaZone `_ready`, its own share) 311 ms.
+  - `CutsceneStage/Actors/asha` 168 ms. That's the cast actor building its model or materials in `_ready`; toma's is 0.3 ms, so asha's is the outlier.
+  - `HalunaMood/WorldEnvironment` 48 ms.
+  - Player 21 ms; SaveShrine BoundGlimmer 16 ms; WildlifeLayer 10 ms; Story 10 ms. Everything else is under 4 ms.
+  - About 115 ms of the frame is `_enter_tree` and notifications outside the readies.
+- For slice-polish:
+  - The biggest levers are what HalunaZone `_ready` still does after `prebuild`, and asha's actor in CutsceneStage (move its build into `prebuild` or defer it until the scene is revealed).
+  - I don't edit `haluna_zone.gd`. When their fix lands, I'll re-measure the Drownbell return with `return_probe -- --cases=drownbell --trace`.
+MERGE-READY @ (this commit).
