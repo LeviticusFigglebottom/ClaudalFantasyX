@@ -1592,6 +1592,17 @@
       "settle_frames": 30
     },
     {
+      "id": "props_act2_hand",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/props/act2_props_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 10
+    },
+    {
       "id": "villager_tobin_front",
       "pending_baseline": true,
       "scene": "res://game/levels/_tests/characters/villagers/tobin_stage.tscn",
@@ -2075,6 +2086,39 @@
       "id": "toma_battle_attack",
       "scene": "res://game/levels/_tests/characters/toma/toma_battle_attack.tscn",
       "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "sefir_temptation_tender",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/sefir/sefir_temptation_tender.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "sefir_temptation_sad",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/sefir/sefir_temptation_sad.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "sefir_memory_grief",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/sefir/sefir_memory_grief.tscn",
+      "camera": "Cameras/Face",
       "resolution": [
         960,
         540
