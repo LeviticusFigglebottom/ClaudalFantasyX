@@ -2,8 +2,8 @@
 id: M5-A3P-1806
 title: "Ch17: the hull rasp, a hullgnaw variant boring the flotilla's keels (act3_roster.md, reconciled)"
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "creatures (claude/creatures)"
 depends_on: []
 milestone: M5
 reviewer: character

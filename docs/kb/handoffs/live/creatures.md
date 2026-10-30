@@ -1314,3 +1314,16 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - M4-CRE-702 and M3-CRE-666 are in review (character);
   - M3-HER-1168's Drownbell re-measure is integration-qa's;
   - Act III stays planning-only.
+- **Your 21:56 relay (ADR 0207): Act III production started.**
+  - **Tasks:** M5-A3P-1800..1808, the lane's regulars and wildlife:
+    - wick_crawler, chain_lamp, spire_moth (Ch19);
+    - held_shoal, drowned_lantern (Ch20);
+    - deep_scuttler, hull_rasp (Ch17);
+    - the conduit crawler's Act III row; the Kite's gulls.
+    - The Act III bosses (the Cage, the tide matron, the old leviathan) are not in this range. **LEAD-ASK:** say if they're mine or creatures-b's.
+  - **M5-A3P-1805, the deep scuttler @ b82b920e4:**
+    - the scuttler's rig and clips; darker plates, seams opened, small raw wounds, a second pair of eyes, a barbed spine ridge (the new silhouette); 1.3× the scuttler's size in battle;
+    - byte-identical build, PROVENANCE, portrait, review shot `creature_deep_scuttler` (viewed; no baseline);
+    - tools test_creatures OK; Godot creature 160/0.
+    - For Combat: an enemies.json row and the Ch17 moorings encounter.
+- **MERGE-READY @ b82b920e4.** Next: M5-A3P-1806, the hull rasp (claimed).
