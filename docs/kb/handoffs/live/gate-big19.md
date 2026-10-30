@@ -63,7 +63,7 @@ gdformat --check clean; no duplicate loc keys, PROVENANCE rows or shot ids (623 
   - **CHANGED:** test_screenshots: "slice_end_card is approved: drop its pending_baseline key". The integration branch
     approved `slice_end_card`; m2-slice's M3-CIN-1233 (782351c7, no demo card mid-Act I) changed what it shows and
     marks it pending. big18's `villager_shopkeeper_front` (no baseline) is fixed by the approvals.
-LEAD-ASK: test_screenshots and test_palette_check come from the big17 approvals meeting the tracks. `slice_end_card`
+LEAD-ANSWERED: test_screenshots and test_palette_check come from the big17 approvals meeting the tracks. `slice_end_card`
 is approved, but m2-slice's M3-CIN-1233 marks it pending (new content), so either the approval goes or the pending key
 does. The approved `haluna_h07_chapel_court` fails its palette check (ΔE 0.042 > 0.03). I'm not changing either on
 the gate.
@@ -79,3 +79,16 @@ the gate.
   whose scene or the scenes, resources and data it loads changed (code excluded; the tests cover it). Asha's glb alone
   reaches 45 shots; the Corrow and Brine Shoals slot materials and Ch1's dressing most of the rest. Two parallel
   lavapipe captures, each with its own XDG_DATA_HOME.
+- (Lead, 02:48: screenshots don't block (ADR 0205 amendment, 78b94328); `slice_end_card`'s stale baseline was dropped
+  on the integration branch (c0104864); test_palette_check routed to env-art and test_npc to creatures, neither
+  blocking.) Merged the integration branch @ 78b94328 again (bf502055). test_screenshots now stops at `kerrid_front`:
+  160 manifest shots have no baseline yet (the 187 approved so far cover only part of big17's 372 captured). That
+  waits on approvals and is not batch fallout.
+- Gate fixes on big19:
+  - b7a06f31: the .import/.uid files Godot's import generated (officer textures, two new scripts).
+  - **85b0d58b, batch content made the merge red:** test_qa_capsules: "corrow.tscn: figure is KNOWN but no longer a
+    capsule; drop it from qa_known.json". creatures' M3-HER-1142 (3d66961a) gave the Corrow storm figure a body.
+    Dropped the one entry; the test passes (3/0). Red on `claude/creatures` alone, so creatures should take the same
+    removal (FAST-TRACK).
+- The two captures are paused (SIGSTOP on my two capture.sh loops, between shots) so the blocking test lanes get the
+  CPUs (48 of 282 files in the first 25 min). They resume after GATE-FAST-DONE.
