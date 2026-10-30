@@ -3,6 +3,31 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ b97ac894: the Lead's 18:24 item, the Act I audio polish pass on the slice path (Prologue → Ch3), as played.**
+  - **Interactables:** every interact trigger on the path is heard.
+    - Oruvel's lashings and the underway's tethers, hinge and tin have their own rows (InteractAudio).
+    - The underway kit's three new triggers (big23–26) are voiced elsewhere, per interact_sfx.json's rule:
+      - `gauge_wheel` → the `ch01_gauge_wheel` cutscene (`salvage_cut` ×2);
+      - `current_shaft` → `ch01_current_shaft` (`@anim clip_on` foley, `rhen_current_hum`);
+      - `limpet` → a battle and its stinger.
+    - `causeway_notice` opens the document reader (its page, cursor and mark sounds). Talkers speak their dialogue.
+  - **Menus:** the audits' UI checks were 0, but they work per class.
+    - Checked per action: every action signal on every hooked UI class, and on subclasses hooked through a base, against its hook.
+    - One was silent: the Kite's flight map (`KiteMapMenu`, later in the game) had only the field submenu's open and close. It now has its own hook: open, close, `flight_chosen` → `ui_confirm`, its list and chart cursors → `ui_cursor`, its pages → `ui_page`.
+    - `ReadPanel.closed` is heard through its `is_open()` watch.
+    - New `tests/unit/test_ui_polish_audio.gd`: every ui_sfx.json watch expression parses and every signal names a real row (a typo there is silence, not an error), plus a real kite map driven through UiAudio.
+  - **Ambience vs dialogue (keep dialogue clear):** a line's blip stream is -23.3 LUFS (mix.md §6).
+    - Under an open box, the beds were ducked only 2 dB, and multi-bed zones stacked up to it (wind at its loudest): Haluna by day margin 0, the causeway 0, Haluna at night -1.3, Oruvel +1.8.
+    - **Fix:** mix.json `ducks.dialogue.Ambience` -2 → **-6** (the bed breathes down over the 0.25 s ramp, it doesn't vanish), and the wake's mourners walla `volume_db` -4 → -7. The wake stacks four beds and the wind; the people at the tables hush while someone speaks.
+    - Every zone in the game (34 states) now leaves the blips ≥ 2.5 LU clear (worst: the wake +2.5, Haluna at night +2.7). The slice path: Oruvel +5.8, Haluna day +3.9, causeway +4.0, single-bed zones +8.8.
+    - New `tools/tests/test_dialogue_clarity.py` holds it.
+  - **Checks:**
+    - Act I audit 0; act1_loop_check 43 files, 0 problems (beds still ~10 LU under their music); validate_data 0.
+    - test_audio_data, test_act1_audio_audit, test_dialogue_clarity and test_audio_loudness OK.
+    - Godot: audio_runtime 11/0, field_audio 22/0, voice_audio 12/0, foley_detail 4/0, ui_polish_audio 2/0 (new), screen_audio 11/0.
+    - **Skipped:** screenshots, Blender, coverage.
+  - **PC-QUEUE:** a New Game run to Ch3 by ear, especially a line in Haluna at night and on the causeway (the duck's depth).
+- **BACKLOG EMPTY (after b97ac894):** waiting on combat's Ch14–Ch16 fights, slice-polish's staging, and the listening verdict.
 - **MERGE-READY @ 84ef34df: M4-A2P-1951, the Act II mix pass as played, Ch14–Ch16** (the second half of the 18:04 item).
   - **Loudness:** 22 hand-overs, 0 over 3 LU (62 across Ch10–Ch16; report `docs/kb/audio/act2_mix_pass.md`). Silences: none. Doubled starts: none.
   - **Found and fixed, the cutscene → battle seam:** three fights would have played the generic `battle_standard_v2` instead of their delivered two-stem cues.
