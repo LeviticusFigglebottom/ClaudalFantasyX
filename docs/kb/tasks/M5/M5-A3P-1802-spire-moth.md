@@ -2,8 +2,8 @@
 id: M5-A3P-1802
 title: "Ch19: the spire moth, the flue moth's glass-winged variant (act3/spire_moth.md)"
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "creatures (claude/creatures)"
 depends_on: []
 milestone: M5
 reviewer: character

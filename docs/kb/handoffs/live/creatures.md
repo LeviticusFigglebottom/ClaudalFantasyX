@@ -1338,3 +1338,10 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - tools test_creatures OK; Godot creature 160/0.
   - `clip_by_skill` waits for Combat's skill ids.
 - **MERGE-READY @ 8cc959b6e.** Next: M5-A3P-1801, the chain lamp (claimed).
+- **M5-A3P-1801, the chain lamp @ a22b86fa5:**
+  - 4.6k triangles, 20 bones;
+  - the light shows in slits between the louvres, which open on the beat;
+  - the cage swings as a pendulum and falls when the shackle parts;
+  - audit clean; byte-identical, PROVENANCE, portrait, shot `creature_chain_lamp` (viewed).
+  - **Also fixed:** the wick crawler's thimble, cup and reservoir were inside out (lathe order). Its portrait is re-rendered; `creature_wick_crawler` has no baseline yet.
+- **MERGE-READY @ a22b86fa5.** Next: M5-A3P-1802, the spire moth (claimed).
