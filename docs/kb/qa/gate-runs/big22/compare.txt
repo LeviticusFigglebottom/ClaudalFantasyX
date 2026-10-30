@@ -1,4 +1,4 @@
-# big22: 404 shots: 280 PASS, 103 DRIFT (0 size mismatch), 15 NO-BASELINE, 6 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
+# big22: 439 shots: 288 PASS, 112 DRIFT (0 size mismatch), 28 NO-BASELINE, 11 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
 PASS boot_title rmse 0.00000 (limit 0.00400)
 NO-BASELINE slice_end_card (pending_baseline)
 PASS lighting_probe rmse 0.00000 (limit 0.00800)
@@ -400,6 +400,41 @@ DRIFT creature_lamp_engine_opened rmse 0.05482 (limit 0.00800)
 PASS npc_wake_feast rmse 0.00022 (limit 0.00800)
 DRIFT creature_avalanche_ram rmse 0.02548 (limit 0.00800)
 DRIFT creature_wakefin rmse 0.02191 (limit 0.00800)
+FAILED-TO-CAPTURE slice_prologue_vigil_line [capture rc=124 nopng 600s]
 FAILED-TO-CAPTURE slice_beach_h05_asha [capture rc=124 nopng 600s]
 FAILED-TO-CAPTURE slice_beach_h06_toma [capture rc=124 nopng 600s]
+FAILED-TO-CAPTURE slice_beach_standing [capture rc=124 nopng 601s]
 DRIFT slice_haluna_villagers_village rmse 0.07437 (limit 0.00800)
+PASS slice_causeway_head rmse 0.00126 (limit 0.00800)
+DRIFT slice_causeway_harrier_view rmse 0.18130 (limit 0.00800)
+FAILED-TO-CAPTURE slice_verse_steps [capture rc=124 nopng 601s]
+FAILED-TO-CAPTURE slice_verse_threshold [capture rc=124 nopng 600s]
+FAILED-TO-CAPTURE slice_verse_c08 [capture rc=124 nopng 600s]
+DRIFT iskarra_p01_plaza_dusk rmse 0.16533 (limit 0.00800)
+DRIFT iskarra_i03_broken_tower rmse 0.15821 (limit 0.00800)
+NO-BASELINE kerrid_front
+NO-BASELINE kerrid_three_quarter
+NO-BASELINE kerrid_face
+NO-BASELINE kerrid_confession_guilty (pending_baseline)
+NO-BASELINE kerrid_confession_burns (pending_baseline)
+DRIFT kerrid_silhouette_lineup rmse 0.01714 (limit 0.00800)
+NO-BASELINE kerrid_clip_collar_haul
+PASS moll_three_quarter rmse 0.00000 (limit 0.00800)
+PASS moll_profile rmse 0.00000 (limit 0.00800)
+DRIFT moll_face_yield rmse 0.16316 (limit 0.00800)
+PASS moll_clip_yield rmse 0.00000 (limit 0.00800)
+NO-BASELINE kerrid_battle_idle
+NO-BASELINE kerrid_battle_attack
+PASS stillguard_a_three_quarter rmse 0.00000 (limit 0.00800)
+DRIFT stillguard_a_face rmse 0.16301 (limit 0.00800)
+PASS stillguard_b_clip_level_spear rmse 0.00000 (limit 0.00800)
+PASS stillguard_d_three_quarter rmse 0.00000 (limit 0.00800)
+DRIFT stillguard_b_face rmse 0.14176 (limit 0.00800)
+NO-BASELINE venn_front (pending_baseline)
+NO-BASELINE venn_face_cold (pending_baseline)
+NO-BASELINE venn_clip_yield (pending_baseline)
+NO-BASELINE ivo_face
+NO-BASELINE ivo_clip_kneel_palms_flat
+PASS stillguard_c_clip_hold_arm rmse 0.00000 (limit 0.00800)
+DRIFT officer_face rmse 0.14820 (limit 0.00800)
+DRIFT ch05_pemakar_crown rmse 0.01003 (limit 0.00800)
