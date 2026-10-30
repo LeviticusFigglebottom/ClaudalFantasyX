@@ -7178,6 +7178,9 @@
             "spawn": "NetPenAfter",
             "scene_id": "ch01_hullgnaw_rises",
             "hold_line": "ch01_hullgnaw_001",
+            "show": [
+              "hullgnaw"
+            ],
             "flags": [
               "ch01_started",
               "ch01_gulls_cried"

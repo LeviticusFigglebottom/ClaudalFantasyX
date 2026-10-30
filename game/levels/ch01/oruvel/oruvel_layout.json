@@ -56,7 +56,8 @@
     "sabe": {"at": [0, 0, -37, 0], "color": "#9a8a9a", "model": "res://assets/characters/villagers/sabe/sabe_actor.tscn"},
     "kell": {"at": [29.0, 0, -7.0, 100], "color": "#7a5a8a", "model": "res://assets/characters/villagers/kell/kell_actor.tscn"},
     "pen_child_2": {"at": [29, 0, -25, 0], "color": "#c4a07a", "radius": 0.18, "height": 1.0, "hidden": true, "model": "res://assets/characters/villagers/child/child_actor.tscn"},
-    "pen_child_3": {"at": [31, 0, -25, 0], "color": "#b4907a", "radius": 0.18, "height": 0.9, "hidden": true, "model": "res://assets/characters/villagers/child/child_actor.tscn"}
+    "pen_child_3": {"at": [31, 0, -25, 0], "color": "#b4907a", "radius": 0.18, "height": 0.9, "hidden": true, "model": "res://assets/characters/villagers/child/child_actor.tscn"},
+    "hullgnaw": {"at": [27.5, -1.2, -25.5, 39], "hidden": true, "model": "res://assets/creatures/hullgnaw/hullgnaw.glb"}
   },
   "shots": {
     "O01": {"pos": [0, 0.3, 26], "look_at": [0, 1.2, 0], "fov": 52},
