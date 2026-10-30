@@ -36,3 +36,4 @@ GATE-BUILT @ e94beb97
 ## Fast gate
 - Selected: 100 test files.
 - Lane A (mine): 50; lane B (GATE-HELPER): 50, in `gate-big28-lanes-b.txt` @ e4a5e089.
+- Lead (18:45): battle-presentation @ 5aa9f169 (064c9e46 crawler and Vowbound effects, bdc5ef22 Act II boss intros) and creatures-b @ ≥ 6973ffc0 (the Lamp Engine lineup fix): both already in (pinned heads e72820da and 5e3492af).
