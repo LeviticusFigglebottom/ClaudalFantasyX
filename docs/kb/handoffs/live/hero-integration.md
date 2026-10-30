@@ -1822,3 +1822,11 @@ MERGE-READY @ (this commit).
   - 37 AfterHarrier (Toma's shield at frame right): next, stills on this tree.
   - 21: next, the beach-cutscene hand-off in real time (likely the same pull bug as 66).
 MERGE-READY @ (this commit).
+- **Row 37 at AfterHarrier (Toma's shield at frame right): fixed.** C07 is a fixed camera at eye height (1.2 m), 6 m
+  behind Rhen. Toma was laid out just outside camera_near_m (3.0), so at that height he filled the right third.
+  `followers.camera_near_m` is now **4.0**: the still shows all three at a reading scale, with Rhen clear at centre.
+  - 4.5 was tried first. It also read well, but at Ch13's Sanctum Gate the followers then started following 33–39
+    frames after Rhen, against qa_party's 30-frame limit.
+  - Checks: hero_ 116/0, hero_followers 14/0, qa_party 3/0, qa_walk_audit 1/0, qa_field_camera 2/0 (4.5 results,
+    with qa_party and hero_followers re-run at 4.0); validate_data 0/0.
+MERGE-READY @ (this commit).
