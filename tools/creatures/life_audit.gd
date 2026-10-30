@@ -1,20 +1,22 @@
-extends SceneTree
+extends Node
 ## The zone life audit (creatures, 2026-10-29: the Act I final-quality audit). Loads each Act I zone that has villagers
 ## (game/data/world/npc/zones/) or wildlife (game/data/world/wildlife/) as the game does, lets it run RUN_FRAMES, and
 ## reports:
-##   villagers  every FieldNpc in the zone: its AnimationPlayer playing a clip, and its pose moving over the run (a
+##   villagers  every FieldNpc in the zone: its AnimationPlayer playing a clip, and some bone moving over the run (a
 ##              frozen villager: no player, nothing playing, or a still skeleton);
-##   wildlife   the zone's WildlifeLayer: built, and its animals' instance buffers changing over the run.
-## godot --headless --path . -s tools/creatures/life_audit.gd [-- zone_id ...]
+##   wildlife   the zone's WildlifeLayer (culling off): its animals' instance buffers changing over the run.
+## godot --headless --path . res://tools/creatures/life_audit.tscn [-- zone_id ...]  (a scene, so the autoloads are
+## there as the zones expect)
 
 const NPC_DIR := "res://game/data/world/npc/zones/"
 const WILDLIFE_DIR := "res://game/data/world/wildlife/"
 const LOCATIONS := "res://game/data/world/locations.json"
-const RUN_FRAMES := 90
+const RUN_FRAMES := 480  # ~4 s of game time headless (a frame steps about half its time there): a kneeling mourner
+## breathes slowly, and a resting crab waits up to 7 s between shuffles
 const STILL_M := 0.0005
 
 
-func _initialize() -> void:
+func _ready() -> void:
 	_run.call_deferred()
 
 
@@ -43,21 +45,23 @@ func _run() -> void:
 			print("%s: no scene" % zone)
 			continue
 		await _audit(zone, path)
-	quit()
+	get_tree().quit()
 
 
 func _audit(zone: String, path: String) -> void:
 	var node := (load(path) as PackedScene).instantiate() as Node3D
-	root.add_child(node)
-	await process_frame
+	add_child(node)
+	await get_tree().process_frame
 	var npcs: Array[FieldNpc] = []
 	for n: Node in node.find_children("*", "FieldNpc", true, false):
 		npcs.append(n as FieldNpc)
 	var before := _poses(npcs)
 	var layers := node.find_children("*", "WildlifeLayer", true, false)
+	for l: Node in layers:
+		l.set("cull", false)  # off-screen groups pause by design: judge the animals, not the camera
 	var wild_before := _wild(layers)
 	for i in RUN_FRAMES:
-		await process_frame
+		await get_tree().process_frame
 	var after := _poses(npcs)
 	var wild_after := _wild(layers)
 	var frozen: Array[String] = []
@@ -68,7 +72,7 @@ func _audit(zone: String, path: String) -> void:
 		var anim := npc.anim
 		if anim == null or not anim.is_playing() or anim.current_animation == "":
 			frozen.append("%s (no clip playing)" % npc.name)
-		elif before[i].distance_to(after[i]) < STILL_M:
+		elif _moved(before[i], after[i]) < STILL_M:
 			frozen.append("%s (pose still on %s)" % [npc.name, anim.current_animation])
 	var wild := "no wildlife layer"
 	if not layers.is_empty():
@@ -83,18 +87,26 @@ func _audit(zone: String, path: String) -> void:
 	node.free()
 
 
-## Each villager's head bone (or its actor's origin) in world space: a breathing, glancing villager moves it.
-func _poses(npcs: Array[FieldNpc]) -> PackedVector3Array:
-	var out := PackedVector3Array()
+## Each villager's bones in world space (or its origin when it has no skeleton): a villager that breathes, glances,
+## works its hands or walks moves some of them.
+func _poses(npcs: Array[FieldNpc]) -> Array[PackedVector3Array]:
+	var out: Array[PackedVector3Array] = []
 	for npc in npcs:
-		var p := npc.global_position
+		var pts := PackedVector3Array([npc.global_position])
 		var skel := HeroMotion.skeleton_of(npc.actor) if npc.actor != null else null
 		if skel != null:
-			var b := skel.find_bone("DEF-spine.006")
-			b = b if b >= 0 else skel.get_bone_count() - 1
-			p = skel.global_transform * skel.get_bone_global_pose(b).origin
-		out.append(p)
+			for b in skel.get_bone_count():
+				pts.append(skel.global_transform * skel.get_bone_global_pose(b).origin)
+		out.append(pts)
 	return out
+
+
+## The farthest any one point moved between two samples.
+func _moved(a: PackedVector3Array, b: PackedVector3Array) -> float:
+	var m := 0.0
+	for k in mini(a.size(), b.size()):
+		m = maxf(m, a[k].distance_to(b[k]))
+	return m
 
 
 func _wild(layers: Array) -> int:
