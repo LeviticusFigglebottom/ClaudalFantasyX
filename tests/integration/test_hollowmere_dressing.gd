@@ -18,7 +18,8 @@ func _at(id: StringName) -> Vector3:
 
 func test_the_dock_reaches_the_pyre_and_the_fathers_door() -> void:
 	var start := zone.spawn_marker(&"Dock").position
-	var pts: Array[Vector3] = [start, Vector3(30.0, 0.0, 1.0), Vector3(39.0, 0.0, 1.0), _at(&"pyre_raft")]
+	# the north half, past the supper mark (the table stands by the father's place on the south rail)
+	var pts: Array[Vector3] = [start, Vector3(30.0, 0.0, -0.8), _at(&"supper"), _at(&"pyre_raft")]
 	var end := walk("along the dock", pts, start.y)
 	assert_true(absf(end - FLOOR_Y) < 0.05, "on the dock at the pyre (y %.2f)" % end)
 	pts = [Vector3(28.0, 0.0, 0.0), Vector3(28.0, 0.0, -8.0), _at(&"fathers_door")]
