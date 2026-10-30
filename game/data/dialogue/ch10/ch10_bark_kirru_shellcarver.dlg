@@ -4,6 +4,6 @@ location: ch10/reedhollow
 ---
 Kirru as "Name-carver" [neutral]: The name goes on the inside. Against the throat. You hear it with your skin. #line:ch10_bark_carver_001
 <<if $ch10_heard_ressa>>
-    Kirru as "Name-carver" [sad]: I scraped one blank, the spring before last. I was asked to. My hands remember it. #line:ch10_bark_carver_002
+    Kirru as "Name-carver" [sad]: I scraped one blank, long ago, before my crest was white. I was asked to. My hands remember it. #line:ch10_bark_carver_002
 <<endif>>
 ===

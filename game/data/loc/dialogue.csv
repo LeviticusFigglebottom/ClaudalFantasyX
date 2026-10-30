@@ -91,8 +91,8 @@ DLG_CH01_RISING_007,"Not me, you fool! The net-pen! The little ones!"
 DLG_CH01_RISING_008,Go to the net-pen.
 DLG_CH01_RISING_009,Kell first.
 DLG_CH01_TUT_001,"Walk with the left stick or {field_move_forward}, {field_move_left}, {field_move_back}, {field_move_right}. The right stick or {field_camera_left} and {field_camera_right} turn the camera."
-DLG_CH01_TUT_003,"Hold {field_lantern_shutter} to open the shutter. The more you light, the more you see, and the more that sees you."
-DLG_CH01_TUT_002,"A tether point. Press {field_interact} beside it to drop to the floor below, or to climb back up."
+DLG_CH01_TUT_003,"Hold {field_lantern_shutter} to open the shutter. Open, the lamp finds hidden things, but more creatures find you."
+DLG_CH01_TUT_002,A tether point. Press {field_interact} beside it to drop to the floor below.
 DLG_CH02_BARK_CAUSEWAY_UNSAVED_001,"Hold, Rhen. No one walks the causeway without resting at the town shrine first."
 DLG_CH02_BARK_CAUSEWAY_UNSAVED_002,"It only takes a moment. Sit at the little shrine in town, then we'll go."
 DLG_CH02_BARK_CHAPEL_001,The Lady Cantor's shell is cut. They'll set it at the wake.
@@ -786,7 +786,7 @@ DLG_CH09_SHIELD_012,I'll take him first.
 DLG_CH10_BARK_GLOW_001,No glow.
 DLG_CH10_KIRRU_BOOK_001,You keep words in a box. We keep them in the throat.
 DLG_NAME_KIRRU_OLD_KIRRU,Old Kirru
-DLG_CH10_BARK_KCHILD_001,They went up. All three. I counted. My mother says you do not count. I counted anyway.
+DLG_CH10_BARK_KCHILD_001,They went up. So many. I counted. My mother says you do not count. I counted anyway.
 DLG_NAME_KIRRU_CHILD_KIRRU_CHILD,Kirru child
 DLG_CH10_BARK_KCHILD_002,"Tonight is the tide. You will see. You will have to turn around, though."
 DLG_CH10_KIRRU_DUSK_001,At dusk. You may watch. Do not stay watching.
@@ -802,9 +802,9 @@ DLG_CH10_KIRRU_RESSA_001,The tall one at the gate. Pell. What did he do?
 DLG_CH10_KIRRU_RESSA_002,Ressa's brother. She went to the sea. We sang. He watched.
 DLG_CH10_BARK_CARVER_001,The name goes on the inside. Against the throat. You hear it with your skin.
 DLG_NAME_KIRRU_NAME_CARVER,Name-carver
-DLG_CH10_BARK_CARVER_002,"I scraped one blank, the spring before last. I was asked to. My hands remember it."
+DLG_CH10_BARK_CARVER_002,"I scraped one blank, long ago, before my crest was white. I was asked to. My hands remember it."
 DLG_CH10_BARK_KNOTS_001,Somebody knows knots. Three turns and a lock. She'll hold a cart.
-DLG_CH10_BARK_OWA_001,You kept your backs to the water. Good. The three did not have to see you while they went.
+DLG_CH10_BARK_OWA_001,You kept your backs to the water. Good. The season's dead did not have to see you while they went.
 DLG_NAME_OWA_THE_ELDEST,The eldest
 DLG_CH10_BARK_OWA_002,At dusk we go to the shore. Stand at the back. Do not sing. You do not know the song.
 DLG_CH10_BARK_PEDGE_001,The roots are quiet. They will grow back over the cut. That is right.
@@ -816,17 +816,9 @@ DLG_CH10_BARK_COUNTRY_001,The Order calls this country empty. It is not empty.
 DLG_CH10_BARK_EGRETS_001,Herons are sacred to nobody. It is restful.
 DLG_CH10_CAMP_001,You're still up.
 DLG_CH10_CAMP_002,The fen is loud at night. Frogs. The water under the roots. I like to hear it.
-DLG_CH10_CAMP_003,Can I ask you something? Your shell. Why's it blank?
-DLG_CH10_CAMP_004,"When one of us goes into the sea, the clutch turns its back and sings. So the one going does not look back at us."
-DLG_CH10_CAMP_005,I did not turn around.
-DLG_CH10_CAMP_006,Why not?
-DLG_CH10_CAMP_007,"When a thing is given, somebody should see it given. Otherwise it is only gone."
-DLG_CH10_CAMP_008,So they took my name. That is fair. I knew it would cost that.
-DLG_CH10_CAMP_009,Would you do it again?
-DLG_CH10_CAMP_010,Yes.
 DLG_CH10_CAMP_011,You keep a tin at your belt. You touch it when you think nobody sees.
 DLG_CH10_CAMP_012,"Everybody sees, apparently."
-DLG_CH10_CAMP_013,It's a wick. My mother's. Kell's. She gave it to me before I went under. I haven't lit it.
+DLG_CH10_CAMP_013,It's a wick. Kell's. She raised me. She gave it to me before I went under. I haven't lit it.
 DLG_CH10_CAMP_014,You are waiting for the right thing to light it for.
 DLG_CH10_CAMP_015,Something like that.
 DLG_CH10_CAMP_016,You will know it. It will cost you something. That is how you will know.
@@ -841,7 +833,7 @@ DLG_CH10_DAWN_004,You are very good at asking.
 DLG_CH10_DAWN_005,Your shell. They scraped it because of her. Ressa.
 DLG_CH10_DAWN_006,Your shell. Why's it blank?
 DLG_CH10_DAWN_007,I did not turn around.
-DLG_CH10_DAWN_008,She went into the sea. I watched her go. Seventy years.
+DLG_CH10_DAWN_008,Ressa. My sister. She went into the sea. I watched her go. Seventy years.
 DLG_CH10_CHANNEL_001,Three of the clutch. Drowned here. At the full moon before last.
 DLG_CH10_CHANNEL_002,They're still here.
 DLG_CH10_CHANNEL_003,Held.
@@ -881,7 +873,7 @@ DLG_CH10_SWIM_008,Yes. You-people hold everything.
 DLG_CH10_SWIM_009,"I didn't finish the sentence, Rhen. I've said it all my life."
 DLG_CH11_BARK_LIFT_001,Nobody comes to lift them.
 DLG_CH11_BARK_KGAL_001,"Somebody built this to last, and it did. The stone did, anyway."
-DLG_CH11_BARK_KEEPER_001,"The cold came up the shaft last night, and then it stopped. Forty years I've kept this temple. It has never stopped."
+DLG_CH11_BARK_KEEPER_001,"The cold came up the shaft an hour ago, and then it stopped. Forty years I've come down to this temple. It has never stopped."
 DLG_NAME_TENDER_LOWLIGHT_KEEPER,Lowlight keeper
 DLG_CH11_BARK_KEEPER_002,The water takes a step a year. We pray on the step above it. There are not many steps left.
 DLG_CH11_BARK_PCOND_001,I keep listening for her in the pipes. She is not in the pipes. I keep listening.
@@ -892,7 +884,7 @@ DLG_CH11_BARK_SALVAGE_002,You could have.
 DLG_CH11_BARK_WINDOWS_001,People lived here. The Order says the Lit Age were a wicked people.
 DLG_CH11_BARK_WINDOWS_002,They had window boxes.
 DLG_CH11_BARK_BRACKETS_001,Lamptongue on the brackets. 'Kept for the gathering.' The gathering has been under water for some time.
-DLG_CH11_CAMP_001,"Pell. I should have stopped. When I saw your face, I should have stopped."
+DLG_CH11_CAMP_001,Pell. At the ledge. I didn't know it was her until it was done.
 DLG_CH11_CAMP_002,You did not know her name.
 DLG_CH11_CAMP_003,I do now. Ressa.
 DLG_CH11_CAMP_004,Yes.
@@ -901,7 +893,6 @@ DLG_CH11_CAMP_006,She was alone down there a long time. Now someone is calling h
 DLG_CH11_CAMP_007,I do not know if glad is the right word. It is the word I would want.
 DLG_CH11_CAMP_008,Then I'll call her by name. Every time. Not the Saint's. Hers.
 DLG_CH11_CAMP_009,Good.
-DLG_CH11_CAMP_010,"You are holding her now, Lady Cantor. Someone should see it. I will."
 DLG_CH11_VEY_001,Four hundred years and she's still lit. Nobody's touched her. Look at her.
 DLG_CH11_VEY_002,Many in there.
 DLG_CH11_FIG_001,Held. In the roots. Like the fen.
@@ -932,9 +923,9 @@ DLG_CH11_BENCH_001,Pair-built.
 DLG_CH11_BENCH_002,Yeah.
 DLG_CH11_NHOA_001,She is here. She is not lifted. Do not speak yet. Please.
 DLG_CH11_SHRINE_001,"The Level-stone is cold. The lamp beside it still burns, but the shrine doesn't know you any more."
-DLG_CH11_SHRINE_002,"A Level-stone on the highest dry step, and beside it a lamp the keepers say has never once gone out. The water is two steps down."
+DLG_CH11_SHRINE_002,"A Level-stone on the highest dry step, and beside it a lamp the tenders who come down say has never once gone out. The water is two steps down."
 DLG_CH11_ALTAR_001,"One more year, on that step. Thank you."
-DLG_CH11_ALTAR_002,The altar lamp has to go up a step before the water reaches it. There used to be four of us to lift it.
+DLG_CH11_ALTAR_002,The altar lamp has to go up a step before the water reaches it. There used to be four of us who came down to lift it.
 DLG_CH11_ALTAR_003,Toma lifts it.
 DLG_CH11_ALTAR_004,Show me where.
 DLG_CH11_ALTAR_005,Gently. It has never once gone out.
@@ -947,7 +938,7 @@ DLG_CH11_ENGINE_002,She's beautiful.
 DLG_CH11_ENGINE_003,Break her.
 DLG_CH11_TWICE_001,That is twice.
 DLG_CH11_TWICE_002,They were waiting. Inside it. All this time.
-DLG_CH11_WENNA_001,Same hand as Coilspire. Somebody went through every temple and left her name for us. Nobody ever looked.
+DLG_CH11_WENNA_001,Same hand as Coilspire. Somebody went through every temple and left a mark for us. Nobody ever looked.
 DLG_CH12_BARK_EVEN_001,Even here.
 DLG_CH12_BARK_CKEEPER_001,"We keep the Order's hours, and the Ullari keep the cords. Nobody has asked which of us the roof is for."
 DLG_NAME_TENDER_CLOUDLOOM_KEEPER,Cloudloom keeper
@@ -996,7 +987,7 @@ DLG_CH12_CAMP_015,Then I will keep her safe to the end of the road. And then I w
 DLG_CH12_ROAD_001,Quick. Up here.
 DLG_CH12_VOICES_001,I read the cords. I lied to you about them. I would like to stop doing that now.
 DLG_CH12_VOICES_002,What do they say?
-DLG_CH12_VOICES_003,"They are a count. Hers. Ama Quillo's. Every Cantor on the roll up to her own name, one knot each. Forty-seven."
+DLG_CH12_VOICES_003,"They are a count. Hers. Ama Quillo's, the Saint at the dais, before she was Hesk. Every Cantor on the roll up to her own name, one knot each. Forty-seven."
 DLG_CH12_VOICES_004,And then the Saints. The houses that keep one. One knot each.
 DLG_CH12_VOICES_005,Forty-seven voices. Seven houses.
 DLG_CH12_VOICES_006,...Where did the rest go?
@@ -1071,10 +1062,9 @@ DLG_CH13_BARK_GUARD_001,Okeru? From the Corrow wall?
 DLG_CH13_BARK_GUARD_002,Once.
 DLG_CH13_BARK_TENDER_001,Lady Cantor. The water has not moved in four hundred years. Isn't it peaceful?
 DLG_CH13_BARK_HOLINESS_001,I grew up here. I used to think the quiet was holiness.
-DLG_CH13_CAMP_001,Ysolde. Today. I didn't know he was your husband until you said his name.
+DLG_CH13_CAMP_001,Ysolde. Today. I didn't know he was your husband until you stood in front of him.
 DLG_CH13_CAMP_002,"I know. I didn't tell you. That was mine to carry, not yours."
 DLG_CH13_CAMP_003,Every year on our day I came to the ledge and told him the news. Who married. Who died. That the bread was worse without him.
-DLG_CH13_CAMP_004,He was a terrible cook. He'd have been delighted.
 DLG_CH13_CAMP_005,Did he hear you?
 DLG_CH13_CAMP_006,I don't know. I told him anyway.
 DLG_CH13_CAMP_007,If there were a way to break it. To end all this. Would you want him back?
