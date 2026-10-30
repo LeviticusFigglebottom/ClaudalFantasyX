@@ -945,3 +945,26 @@ MERGE-READY @ c095cfec2: M3-HER-1134. The Cinder Matron's cutscene cues play her
   Brush Jab (a brass spark on its target) all sit on their bodies. Nhoa's impacts check is clean; Hesk's run ended on
   its time limit (the pass keeps the Vowbound unkillable, so the fight is long). The crawler's mend and tend didn't
   come up in this sweep. M4-A2P-1850 is the only request.
+
+## 2026-10-30 ~23:00: the Act II boss feel pass (the Lead's 20:45)
+Measured as for Act I: each Act II boss in its own fight at the default camera (1920x1080); the farthest any bone
+moves on screen, and its peak speed in px per 0.05 s.
+
+| Boss | body | hit | hit_b | idle | the tells |
+|---|---|---|---|---|---|
+| Mangrove Drowner | 378 px | 29 / v23 | 34 / v28 | 10 / v1 | **rising_water 30 / v6**, snag 164 / v98, phase_change 326 / v138 |
+| Lamp Engine | 452 | 55 / v43 | 79 / v56 | 36 / v3 | lamp_gather 148 / v33, call 175 / v174, phase_change 107 / v19 |
+| Avalanche Ram | 527 | 170 / v113 | 160 / v115 | 38 / v3 | charge_gather 238 / v51, neck_sweep 234 / v67, phase_tear 387 / v226 |
+| Wakefin | 246 | 42 / v36 | 44 / v28 | 45 / v3 | dive 141 / v40, rise_strike 421 / v233, phase_close 284 / v61 |
+
+- Every hit is a fast jolt against a slow idle, and every tell clears the idle, **except the Drowner's rooted
+  `rising_water`**: its party-wide call every third turn, with no charge, so its own motion is the only warning.
+  It moved the body 30 px at 6 px per 0.05 s.
+- **MERGE-READY @ ef0cad9f1: Rising Water's heave is doubled** (the mass rises 0.55 m, the arches and aerial roots swing
+  further, the trunk lifts 0.18 m): now 65 / v23, and the uprooted version 303 / v34. Clip sheet viewed in its fight:
+  the dark mass heaves up between the arches with its teal lights high. New tools/tests/test_mangrove_drowner.py
+  (the heave is at least 0.45 m; the old clip's 0.27 m fails it). Blender creature_mangrove_drowner 4 identical;
+  Godot bosses_act2 32/0, creature_vfx 15/0, creature_actor 31/0; tools test_creatures and test_blender_builds OK.
+- **BACKLOG EMPTY (23:00):** the Act I and Act II feel passes, the boss and summon passes, the effects on the bodies
+  (M4-A2P-1850 filed for battle-presentation) and M3-HER-1134 are done, and every fix in my lane is MERGE-READY. Next
+  when they land: M4-A2P-1850's re-view, the Abiding guard's actor, the flat-engine's row, and the Ch13+ bosses.
