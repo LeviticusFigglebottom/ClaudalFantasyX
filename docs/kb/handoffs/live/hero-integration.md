@@ -1602,3 +1602,30 @@ Owners follow the Act I split until act2_tracks.md's ownership lands: env-art-b 
 - So with this branch folded in, the remaining Act I gate work for criteria 1-2 is:
   - env-art-b renames or replaces the two drop proxies;
   - M3-CIN-1233 lands its flow fix and the continuous test.
+
+### 4, continued: stills from the scripted walks, and a camera fix (2026-10-30 ~03:00), @ b07d5bf35
+- **New tool: `tools/hero/walk_stills.tscn`.** It renders any route of qa_walk_routes.json with the audit's own
+  walker: `godot-render --path . --resolution 960x540 res://tools/hero/walk_stills.tscn -- --route=<id> --every=<n>
+  --out=<dir>`. It simulates between stills, so a 2,000-frame climb renders in minutes. Viewed:
+  - **Haluna's lane:** on the beach and down the lane, the camera rides behind and above, all three in frame,
+    nothing clipping. At the stop by Neme's table, Toma's shield fills the left third of the frame: that's
+    **M3-HER-1160** (m2-slice's B02 close volume covers the Village arrival), already routed.
+  - **Ashcrown's flying stair:** Rhen climbs with his feet on the steps, framed from above, and stands on tier 6 at
+    the top. He's alone, because the followers are staged (M3-HER-1164).
+  - **Coilspire's spiral: FOUND and FIXED.** Under Tier1 and Tier2 (PAN_FOLLOW shots looking down the well), Rhen
+    climbed out of the frame: **215 frames (3.6 s) out of frame**. PAN_FOLLOW's pan is capped (`max_pan_deg`) and
+    nothing kept the player in frame. My audit had only checked whether a wall hid him, not whether he was in the
+    frustum.
+    - **FieldCameraDirector.keep_in_frame:** after the capped pan, if the leader is outside `keep_in_frame_share`
+      (0.5) of the frame's half angles, the aim turns just enough to hold him. The limits are vertical from the fov
+      and horizontal from `keep_in_frame_aspect` (16:9), so a composition with him on a third stays as authored.
+    - Coilspire now loses him for **0 frames**, and the re-rendered stills show him whole, head included, mid-climb.
+    - **The audit now fails on the leader out of frame for more than 30 frames in a row.**
+  - Screenshots it could move, self-rendered: field_court_pan (PAN_FOLLOW) PASS 0.00025, field_lane_fixed PASS,
+    field_causeway_dolly PASS. save_shrine_field FAILs at rmse 0.10456 **identically with keep_in_frame switched
+    off**, so it was already drifting: a gate item, not this change.
+- Checks:
+  - camera 63/0 (test_camera_director: the new keep_in_frame unit test plus the pan test's rule);
+  - qa_field_camera 2/0, qa_walk_audit 1/0 (every route 0 frames out of frame);
+  - gdlint/gdformat clean, validate_data 0/0.
+MERGE-READY @ b07d5bf35 (+ this log).
