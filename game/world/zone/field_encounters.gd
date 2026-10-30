@@ -148,8 +148,8 @@ func walked(metres: float) -> StringName:
 	var spent := minf(grace_m, m)
 	grace_m -= spent
 	walked_m += m - spent
-	if walked_m < next_m or not _zone.story.is_free():
-		return &""
+	if walked_m < next_m or not _zone.story.is_free() or BattleRequest.opening():
+		return &""  # M3-BPR-427: never while another battle is opening (the QA walk starts fights from outside)
 	var id := pick()
 	walked_m = 0.0
 	next_m = _draw()

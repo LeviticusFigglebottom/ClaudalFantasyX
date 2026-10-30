@@ -1133,10 +1133,6 @@ SKILL_FIN_CUT,Fin Cut
 SKILL_SOUND_DIVE,Sound Dive
 SKILL_WAKE_BREACH,Breach
 SKILL_WAKE_WHEEL,Closing Circle
-ENEMY_MANGROVE_DROWNER,Mangrove Drowner
-ENEMY_LAMP_ENGINE,Lamp Engine
-ENEMY_AVALANCHE_RAM,Avalanche Ram
-ENEMY_WAKEFIN,Wakefin
 PHASE_MANGROVE_DROWNER_FIRST,Rooted
 PHASE_MANGROVE_DROWNER_UPROOTED,Uprooted
 PHASE_LAMP_ENGINE_FIRST,The Lamps
@@ -1149,10 +1145,6 @@ ENC_CH10_MANGROVE_DROWNER,The Roots
 ENC_CH11_LAMP_ENGINE,The Engine Hall
 ENC_CH12_AVALANCHE_RAM,The Seeping Wall
 ENC_CH15_WAKEFIN,The Dark Water
-LORE_MANGROVE_DROWNER,"Undertow-spawn grown through a mangrove's prop-roots. Its body is the root cage; its wounds open between the roots. The held lights it has dragged out of the fen snag there."
-LORE_LAMP_ENGINE,"A Lit Age machine still running in Lowlight's engine hall: salt-glass lamps on a brass frame around one cracked core, every lamp full of the bound dead."
-LORE_AVALANCHE_RAM,"A woolback grown monstrous on the drowned glimmer seeping from a terrace wall. Its fleece hangs wet and matted, and the seep's cold light shows through the parting."
-LORE_WAKEFIN,"Undertow-spawn that followed the first wake out of Ansedra's lagoon. In the dark it is mostly a tall black fin and the sea-glow running along its flanks."
 OBJ_FEN_ROAD,Follow the root-walks through the fen to Reedhollow.
 OBJ_REED_CLUTCH,Walk the reed causeway in to the clutch's stone.
 OBJ_VEY_GALLERIES,Cross the drowned galleries to Lowlight.

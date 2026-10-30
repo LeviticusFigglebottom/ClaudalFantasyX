@@ -3,7 +3,7 @@
 [ext_resource type="Shader" path="res://game/shaders/creature/creature.gdshader" id="1_shader"]
 
 [resource]
-resource_name = "ice"
+resource_name = "glass"
 shader = ExtResource("1_shader")
 shader_parameter/cavity_albedo = 0.2
 shader_parameter/clearcoat_wet = 0.8

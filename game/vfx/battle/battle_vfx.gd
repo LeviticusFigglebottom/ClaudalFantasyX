@@ -421,8 +421,10 @@ func _apply_motion(p: GPUParticles3D, def: Dictionary) -> void:
 
 
 func _process_for(effect_id: StringName, def: Dictionary) -> ParticleProcessMaterial:
-	if _process_cache.has(effect_id):
-		return _process_cache[effect_id]
+	var dim := dark_scale(def)
+	var key := "%s@%s" % [effect_id, dim]  # the same effect in a lit fight and a dark one
+	if _process_cache.has(key):
+		return _process_cache[key]
 	var mat := (load(PROCESS_MATERIAL) as ParticleProcessMaterial).duplicate() as ParticleProcessMaterial
 	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
 	mat.emission_sphere_radius = float(def.get("emission_radius_m", 0.1))
@@ -435,7 +437,7 @@ func _process_for(effect_id: StringName, def: Dictionary) -> ParticleProcessMate
 	mat.scale_min = float(size[0])
 	mat.scale_max = float(size[1])
 	mat.turbulence_noise_strength = float(def.get("turbulence", 0.0))
-	var energy := float(def.get("energy", 1.0))
+	var energy := float(def.get("energy", 1.0)) * dim
 	var c0 := Color(str(def.get("color", "#FFFFFF")))
 	var c1 := Color(str(def.get("color_end", def.get("color", "#FFFFFF"))))
 	# Held near full until RAMP_HOLD of the life, then out: a linear fade emptied a burst before it read.
@@ -447,7 +449,7 @@ func _process_for(effect_id: StringName, def: Dictionary) -> ParticleProcessMate
 	var tex := GradientTexture1D.new()
 	tex.gradient = ramp
 	mat.color_ramp = tex
-	_process_cache[effect_id] = mat
+	_process_cache[key] = mat
 	return mat
 
 
@@ -489,3 +491,23 @@ func _flash(effect_id: StringName, def: Dictionary) -> void:
 	_flash_tween = create_tween()
 	_flash_tween.tween_property(_flash_rect, "color:a", flash_alpha(def), maxf(float(def.get("in_s", 0.05)), min_ramp))
 	_flash_tween.tween_property(_flash_rect, "color:a", 0.0, maxf(float(def.get("out_s", 0.3)), min_ramp))
+
+
+## M4-A2P-062 (the Wakefin in the dark): in an effects.json dark_arenas fight, a layer's energy scales by its row's
+## energy_scale, so a hit's white core does not light the night; a layer with one of keep_swatches (the sea-glow,
+## the fight's only light) keeps its own. 1.0 elsewhere.
+func dark_scale(def: Dictionary) -> float:
+	var row := (data.get("dark_arenas", {}) as Dictionary).get(String(_arena_id()), {}) as Dictionary
+	if row.is_empty():
+		return 1.0
+	var keep: Array = row.get("keep_swatches", [])
+	for sw: Variant in def.get("swatches", []):
+		if keep.has(sw):
+			return 1.0
+	return float(row.get("energy_scale", 1.0))
+
+
+func _arena_id() -> StringName:
+	if _engine == null or _engine.db == null:
+		return &""
+	return StringName(str((_engine.db.encounters.get(_engine.encounter_id, {}) as Dictionary).get("arena", "")))

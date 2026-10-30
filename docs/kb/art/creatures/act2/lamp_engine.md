@@ -107,3 +107,19 @@ are solved every 0.1 s so the feet stay planted (`legs_follow`). Nothing goes un
 validate_creatures rejects unknown skills, so the parts wait for combat's skill ids (M4-A2P-022). A `broken` variant of
 each ring's four lamps (dark glass, slack gimbals) costs about 1.4-4.8k triangles against the 1.3k left in the budget.
 That is a budget call for the art lead when M4-A2P-022 lands.
+
+## Own VFX (M4-A2P-058)
+
+In the battle scene (`AmbientVfx`, CreatureAmbientVfx; data `game/data/creatures/creature_vfx.json`).
+
+- **The lamps.** A soft `glimmer_bound` halo on each of the twelve lamps (on its gimbal bone, 0.6 m) and a larger one
+  on the core (1.5 m, seen once the rings open), plus one dim `glimmer_bound` OmniLight3D in the core (0.6, 2.4 m).
+  **Steady: no flicker** (colour script rule 2: bound light never flickers; the task's "flicker" is void, as the
+  Ram's ice is). Never gold.
+- **The KO.** From 0.3 s into the KO, over 1.8 s, the halos, the core light and the lamps' own glow (this instance's
+  copies of the `glass` and `core` materials, `emission_energy` to 0) go dark. At 0.7 s twelve motes leave the core
+  through its crack (`vfx_phase`), out from under the hood and up, blending `glimmer_bound` to `glimmer_lift`
+  (rule 1's release; the act outline's "a small upward lift"); at 2.4 s a little cold dust lifts off the floor as it
+  settles on its knees.
+- **Viewed** (lavapipe, `lowlight_engine_hall` at enemy slot 0; battle camera and close): the halos are a quiet bloom
+  round each lamp; at the KO the glass goes pale salt-glass and the motes rise past the hood's rim.

@@ -45,6 +45,7 @@ import fen_zones  # noqa: E402
 import vey_zones  # noqa: E402
 import lowlight_zones  # noqa: E402
 import keth_zones  # noqa: E402
+import ansedra_zones  # noqa: E402
 import kit_common as kc  # noqa: E402
 import props  # noqa: E402
 import ruins  # noqa: E402
@@ -137,6 +138,8 @@ def targets() -> dict:
         out[name] = (name, lowlight_zones, fn)
     for name, fn in sorted(keth_zones.TARGETS.items()):  # M4-A2P-042 the Ch12 zones, from their greybox
         out[name] = (name, keth_zones, fn)
+    for name, fn in sorted(ansedra_zones.TARGETS.items()):  # M4-A2P-043 Ansedra's walks and buildings, from its greybox
+        out[name] = (name, ansedra_zones, fn)
     return out
 
 

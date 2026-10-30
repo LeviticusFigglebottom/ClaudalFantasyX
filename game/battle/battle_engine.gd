@@ -25,6 +25,8 @@ signal phase_changed(enemy: BattleCombatant, phase_id: StringName)
 signal combatants_joined(added: Array[BattleCombatant])
 signal charge_started(actor: BattleCombatant, skill_id: StringName, turns: int)
 signal charge_broken(enemy: BattleCombatant, skill_id: StringName)
+## M4-A2P-022: a restores_part skill mended `enemy`'s part (the charge skill id its creatures.json break_parts keys).
+signal part_restored(enemy: BattleCombatant, skill_id: StringName)
 signal field_cleared(field_id: StringName, fallen: Array[BattleCombatant])
 
 const OUTCOME_VICTORY := &"victory"
@@ -34,6 +36,8 @@ const OUTCOME_ESCAPED := &"escaped"
 ## the Escape command, and it counts as surviving the fight (BattleSetPiece; set_piece_battles.md).
 const OUTCOME_SCRIPTED_ESCAPE := &"scripted_escape"
 const MAX_ACTIVE := 3
+## swap_refusal: a hero held by the roots (rooted_turns > 0, M4-A2P-020).
+const FAIL_ROOTED := &"rooted"
 ## Consecutive turns lost to Stop/Sleep with nobody able to act before the battle is ruled a
 ## stalemate (only reachable with "until cured" durations on everyone; ends as defeat).
 const MAX_CONSECUTIVE_LOST_TURNS := 1000
@@ -77,6 +81,8 @@ var objective: Dictionary = {}
 var objective_count := 0
 var locked_active: Array[StringName] = []
 var locked_key := ""
+## M4-A2P-024 (BattleEcho): the last skill an enemy-side combatant used, for an echo skill to copy. &"" = none yet.
+var last_foe_skill: StringName = &""
 var unavailable: Array[StringName] = []
 var unavailable_key := ""
 
@@ -142,6 +148,7 @@ func begin() -> void:
 		c.next_time = Formulas.initial_ticks(c.agility, rng.randi_range(0, Formulas.base_delay(c.agility)))
 		c.participated = c.team == BattleCombatant.TEAM_PARTY
 	BattleOpening.apply(opening, party_active, enemies)
+	BattleCover.begin(self)
 	_advance()
 
 
@@ -352,7 +359,13 @@ func _perform(actor: BattleCombatant, skill_id: StringName, targets: Array[Battl
 	var cost := int(sk.get("mp_cost", 0))
 	if actor.mp < cost:
 		return ActionResult.failed(actor.id, skill_id, &"no_mp")
-	return _checked(actor, skill_id, sk, targets)
+	if bool(sk.get("echo", false)):  # M4-A2P-024: Nhoa copies the last enemy action
+		sk = BattleEcho.row(self, sk)
+		if sk.is_empty():
+			return ActionResult.failed(actor.id, skill_id, BattleEcho.FAIL_NOTHING)
+	var result := _checked(actor, skill_id, sk, targets)
+	BattleEcho.record(self, actor, skill_id, result.ok)
+	return result
 
 
 ## A row the current party member need not have learned or pay MP for: a Swell technique,
@@ -368,9 +381,11 @@ func perform_row(skill_id: StringName, sk: Dictionary, targets: Array[BattleComb
 func _checked(
 	actor: BattleCombatant, skill_id: StringName, sk: Dictionary, targets: Array[BattleCombatant]
 ) -> ActionResult:
-	if bool(sk.get("magic", false)) and actor.has_status(&"silence"):
-		return ActionResult.failed(actor.id, skill_id, &"silenced")
-	var refused := BossMechanics.refusal(self, sk)
+	var refused := &"silenced" if bool(sk.get("magic", false)) and actor.has_status(&"silence") else &""
+	if refused == &"" and not BattleCycle.allows(actor, skill_id):
+		refused = BattleCycle.FAIL_OUT_OF_CYCLE  # M4-A2P-025: not this turn's element
+	if refused == &"":
+		refused = BossMechanics.refusal(self, sk)
 	if refused != &"":
 		return ActionResult.failed(actor.id, skill_id, refused)
 	var valid := _valid_targets(actor, sk, targets)
@@ -592,7 +607,7 @@ func attack_element(actor: BattleCombatant, target: BattleCombatant, sk: Diction
 func living_foes_of(c: BattleCombatant) -> Array[BattleCombatant]:
 	var out: Array[BattleCombatant] = []
 	for f in _living(enemies if c.team == BattleCombatant.TEAM_PARTY else party_active):
-		if not f.untargetable:
+		if not f.untargetable and BattleParts.may_strike(c, f):
 			out.append(f)
 	return out
 
@@ -621,9 +636,16 @@ func ward() -> BattleCombatant:
 
 
 ## Why the current turn's swap would refuse to take `out_id` off the field for a reason the menu
-## names: BattleSetPiece.FAIL_LOCKED (Toma holds the stair; locked_key says it), else &"".
+## names: BattleSetPiece.FAIL_LOCKED (Toma holds the stair; locked_key says it), FAIL_ROOTED (a
+## root crab's Root Drag holds it: rooted_turns, M4-A2P-020), else &"".
 func swap_refusal(out_id: StringName) -> StringName:
-	return BattleSetPiece.swap_refusal(self, out_id)
+	var locked := BattleSetPiece.swap_refusal(self, out_id)
+	if locked != &"":
+		return locked
+	var c := find(out_id)
+	if c != null and c.is_alive() and c.rooted_turns > 0 and party_active.has(c):
+		return FAIL_ROOTED
+	return &""
 
 
 # --- internals ---------------------------------------------------------------------------
@@ -665,6 +687,8 @@ func _turn_ticks(actor: BattleCombatant) -> Array[Dictionary]:
 			changes.append(_change(actor, &"regen", -actor.restore_hp(Formulas.regen_heal(actor.max_hp))))
 	changes.append_array(_tick(actor))
 	actor.turns_taken += 1
+	BattleCover.on_turn_end(self, actor)
+	BattleCycle.advance(actor)
 	turn_ended.emit(actor, changes)
 	return changes
 
@@ -714,6 +738,7 @@ func _advance() -> void:
 				_finish(OUTCOME_DEFEAT)
 			continue
 		current = actor
+		BattleCover.keep_one(self)  # M4-A2P-021: the visible foes may have fallen since
 		BattleSetPiece.on_turn_start(self, actor)
 		turn_started.emit(actor)
 		return
@@ -784,6 +809,8 @@ func _valid_targets(actor: BattleCombatant, sk: Dictionary, targets: Array[Battl
 				continue
 		elif t.is_entry() and t != actor or is_foe and t.untargetable:
 			continue
+		if is_foe and not BattleParts.may_strike(actor, t):
+			continue  # M4-A2P-023: another hero's part (a group skill passes over it)
 		match kind:
 			"single_foe", "all_foes":
 				if not is_foe:

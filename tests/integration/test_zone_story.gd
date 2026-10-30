@@ -269,3 +269,19 @@ func _done() -> void:
 
 func _host() -> Node:
 	return (Engine.get_main_loop() as SceneTree).current_scene
+
+
+func test_no_encounter_rolls_while_another_battle_is_opening() -> void:
+	# M3-BPR-427 (GPU QA row 34): a fight started from outside the zone (the QA walk's BattleRequest.start) is opening;
+	# a random one fired now would replace its request and send the battle to the sandbox fight.
+	Game.set_flag(&"test_flag", true)
+	var fired: Array[StringName] = []
+	zone.encounters.on_encounter = func(id: StringName) -> void: fired.append(id)
+	zone.place_at(&"AfterFight")
+	BattleRequest._pending = BattleRequest.new()
+	BattleRequest._opening = true
+	assert_eq(zone.encounters.walked(zone.encounters.next_m + 0.1), &"", "held while the other battle opens")
+	assert_eq(fired.size(), 0)
+	BattleRequest.clear()
+	assert_ne(zone.encounters.walked(0.1), &"", "and it fires on the next step once that battle has its request")
+	_done()

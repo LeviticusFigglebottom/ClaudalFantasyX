@@ -1,0 +1,18 @@
+{
+ "format": 1,
+ "scene": "ch13_bark_bargeman",
+ "source": "game/data/dialogue/ch13/ch13_bark_bargeman.dlg",
+ "start": "ch13_bark_bargeman",
+ "nodes": {
+  "ch13_bark_bargeman": {
+   "headers": {"location": "ch13/ansedra"},
+   "ops": [
+    {"op": "if_not", "cond": ["flag", "ch14_declared_heretics"], "to": 3, "src": 5},
+    {"op": "line", "id": "ch13_bark_barge_001", "key": "DLG_CH13_BARK_BARGE_001", "speaker": "boatman", "emotion": "afraid", "voice": "", "src": 6, "name_key": "DLG_NAME_BOATMAN_POLE_BARGE_MAN"},
+    {"op": "goto", "to": 5, "src": 5},
+    {"op": "line", "id": "ch13_bark_barge_002", "key": "DLG_CH13_BARK_BARGE_002", "speaker": "boatman", "emotion": "neutral", "voice": "", "src": 8, "name_key": "DLG_NAME_BOATMAN_POLE_BARGE_MAN", "tags": ["long"]},
+    {"op": "goto", "to": 5, "src": 7}
+   ]
+  }
+ }
+}
