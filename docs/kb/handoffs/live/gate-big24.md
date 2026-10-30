@@ -82,3 +82,43 @@ GATE-BUILT @ 019596bb (merge tip; this log commit sits on top)
   re-import (FieldShore wasn't in the class cache), so they were invalid. All are re-run in the 83-file re-gate on
   the final tree (fresh import), which also covers every mid-batch merge.
 - Checks on the final tree: validate_data 0/0 · taskboard clean · gdlint and gdformat clean (1052 files) · no new duplicate PROVENANCE rows.
+
+## Re-gate on the final tree (04e26ad4): 83 files, fresh import
+- Import check clean · boot 0 ERROR lines · log check 0 · 81/83 green.
+- **test_causeway_route** 5/1 ("at least 2 fights (206 m walk)" after the Harrier). Red on claude/act1-chapters @ d137f127
+  alone, so branch content. b368c93a fixed test_causeway_gameplay (the generator's 95–145 m band), not this test's
+  2–3 fight expectation under the new pacing. Routed: **act1-chapters**.
+- **test_qa_field_camera** 2/1: `lowlight.tscn:Sanctum (shot Hall): the leader is out of frame`. Batch-caused:
+  green on the integration head, claude/hero-integration, claude/env-art and claude/characters; red on big24 from
+  2f12e5ac (the hero-integration FAST-TRACK merge) on, and green at 0b486cd8 just before it. Root cause, found with
+  the Lead's merge already done (no longer bisecting, per the Lead 15:49):
+  - Lowlight's base `Water` (lowlight.tscn, y −2.05, plane box x 32–72) covers the Sanctum spawn (60, −8, 4), so the
+    hero stands about 6 m under the surface. That water came in big23 (act1-chapters' M4-A2P-0411 Ch11 mount);
+    hero-integration's branch has the older lowlight, with no water, so its own run is green.
+  - `FieldShore.settle()` lacks the seabed exemption that `refuses()` and the class comment have ("more than
+    underwater_m under the surface walks the seabed ... with no shore rule at all"). Grounded 6 m down, settle puts him
+    back on `last_safe`; in the test that's the EngineHall spawn, so the Hall shot loses him. With the shore off,
+    the test is green.
+  - **In play:** the same gap snaps a hero back out of Lowlight's sanctum. Also check whether `refuses()` lets him walk
+    down into it at all: each step deeper than deep_water_m from shallower ground is refused until he is already
+    past underwater_m.
+  - **Proposed patch** (verified: test_qa_field_camera 2/0 with it; the other shore tests were not finished when the Lead merged):
+    ```
+    @@ -93,6 +93,8 @@ func settle(body: CharacterBody3D, grounded: bool) -> bool:
+     	var at := body.global_position
+     	var water := water_y(body, at)
+     	var under := water - at.y if not is_nan(water) else -INF
+    +	if under > float(cfg.get("underwater_m", INF)):
+    +		return false  # he walks the seabed (Oruvel's underway, Lowlight's sanctum): no shore rule down there
+     	if under <= float(cfg.get("deep_water_m", INF)):
+     		last_safe = at
+     		return false
+    ```
+  - Routed: **integration-qa (claude/hero-integration) as a playtest FAST-TRACK**, per the Lead (FieldShore vs the
+    Sanctum spawn).
+- Tools suite (-j 2): reds were test_causeway_gameplay (fixed by b368c93a, re-run green), test_npc (Kirru clips,
+  fixed in 08119e97), and the known test_palette_check, test_screenshots and test_villagers.
+
+GATE-FAST-DONE @ 04e26ad4 (the Lead merged it as efe7fb10, 15:49). Routed: act1-chapters (test_causeway_route);
+integration-qa FAST-TRACK (FieldShore.settle vs Lowlight's Sanctum: test_qa_field_camera); known: test_palette_check,
+test_screenshots, test_villagers.
