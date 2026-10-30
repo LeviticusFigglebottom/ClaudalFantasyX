@@ -1809,3 +1809,16 @@ MERGE-READY @ (this commit).
   - **act1_route 3/0:** M3-CIN-1233's continuous path, New Game → Ch1 → the slice → Ch4 → Ch9's end card → the title.
 - **act1_gate_check.py fix:** it looked only for `test_*continuous*.gd`, so it reported M3-CIN-1233's test as missing.
   It now runs `tests/integration/test_act1_route.gd` too (CONTINUOUS_TESTS), with a unit test.
+- **Row 38's Encounter ("looks at open sea, no Rhen"): FIXED, and it was the spawn, not the camera.** A zone's
+  "Encounter" spawn is where the last random fight left Rhen. Before any fight, its marker sat at the world origin
+  (0, 0, 0), so the PC's spawn walk put Coilspire's party at the origin, far off the tower at x ≈ 308, looking at sea.
+  Real play always has a return point. The marker now starts on the zone's first spawn (greybox_zone.gd). The stale
+  `coilspire.tscn:Encounter` KNOWN entry in test_qa_field_camera is gone.
+  - Checks: camera 70/0 (qa_field_camera with no Encounter row), encounter 3/0, hero_field_snaps 2/0, qa_party 3/0.
+- **Pass-5 rows after this branch merges:**
+  - 24 DockShore and 47 FerryAft: fixed by 0ffe9260d (standoff, widest_view).
+  - 66: fixed by e7af4147d (the pull kept as a distance).
+  - 38 Encounter: fixed by this commit.
+  - 37 AfterHarrier (Toma's shield at frame right): next, stills on this tree.
+  - 21: next, the beach-cutscene hand-off in real time (likely the same pull bug as 66).
+MERGE-READY @ (this commit).
