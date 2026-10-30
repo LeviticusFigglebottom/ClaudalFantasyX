@@ -74,7 +74,7 @@ Rhen [neutral]: Your shell's blank. #line:ch09_road_008
 title: ch09_the_vigil
 ---
 @camera P02
-@music hush_first_verse fade=1.0
+@music hush_coda fade=1.0
 @wait 3.0
 @camera P03 blend=8.0 ease=in_out_sine
 Narrator(rhen) [tender]: Seven of us walked out of Corrow that morning. I didn't count us then. I count us every night now. #line:ch09_vigil_001 #vo
