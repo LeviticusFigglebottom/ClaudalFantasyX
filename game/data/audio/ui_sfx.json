@@ -163,6 +163,17 @@
       "_note": "M3-AUD-15: any field-menu page without its own hook opens and closes (hook_for takes the most derived class)"
     },
     {
+      "class": "KiteMapMenu",
+      "on_enter": "ui_menu_open",
+      "signals": {"closed": "ui_menu_close", "flight_chosen": "ui_confirm"},
+      "watch": [
+        {"expr": "node.rows_page().cursor", "sfx": "ui_cursor", "_note": "the destination list"},
+        {"expr": "node.cell", "sfx": "ui_cursor", "_note": "the chart's cursor, a cell at a time"},
+        {"expr": "node.level", "sfx": "ui_page", "_note": "list <-> chart <-> confirm"}
+      ],
+      "_note": "the Lead's 10-30 18:24 polish pass: the Kite's flight map (M5) had only FieldSubmenu's open and close; choosing a flight (flight_chosen) was silent. A hook here replaces the base's, so it repeats them"
+    },
+    {
       "class": "LatticeMenu",
       "on_enter": "ui_menu_open",
       "signals": {"closed": "ui_menu_close"},
