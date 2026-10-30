@@ -3,6 +3,19 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ b436efa1: the Lead's 13:08 item, the Act II battle arenas' ambience and Ch11's cues** (b436efa1). The 12:28 item was already MERGE-READY @ 023c94f1 below.
+  - **Arena beds:** before, a battle had no ambience of its own. The field's beds carried on 3 dB down, and with integration-qa's resident field nothing would have reset them. Now the encounter's arena (encounters.json `arena`) plays ambience.json `arenas` beds in place of the field's, fading over `arena_fade_sec` 1.0. The field's beds come back when the battle's listener leaves (`AudioDirector.set_arena_ambience` / `release_arena_ambience`, owned by its `BattleAudio`). A retry's new listener keeps the beds; an arena with no row keeps the field's.
+    - Five new loops (`act2_ambience.py`, appended so the 14 existing beds stay byte-identical): `arena_fen_roots` (Ch10, the Drowner's mudbank: the fen gone quiet), `arena_engine_hall` (Ch11, the engine's throb near), `arena_seep_terrace` (Ch12), `arena_lagoon_dusk` (Ch14, Malcor Venn on the barge, a far wedding bell) and `arena_court_steps` (Ch14).
+    - `bridal_barge_night` uses `open_sea_night` and `drowned_choir_ring` uses `choir_bowl`: same places.
+    - `data_check` checks every arena id and bed.
+  - **Ch11:** every `@music`, `@sfx` and `@anim` in the Ch11 scripts resolves; the Act II audit shows cutscenes 0. Ch11 has no staging yet on claude/m2-slice. The one silent Ch11 piece was the Lamp Engine's new conduit crawlers (big22): `crawler_mend` (leg-ticks, a spark, the bound light humming back up) and `crawler_tend` now sound (`act2_skill_sfx.py`, appended).
+  - **Checks:**
+    - Renders: all 19 Act II beds rendered, the old 14 unchanged; the 5 arena beds at -26.1 LUFS, seams flux ≤ x1.49, `loop=true` in their imports, re-rendered byte-identical; the crawler skills at -19 and `--determinism` identical.
+    - Data and tools: validate_data 0; the Act I audit 0 and the Act II audit 0 (skills now 0); test_audio_data, test_audio_loudness and test_act1_audio_audit OK.
+    - Godot: arena_ambience 3/0 (new), battle_audio 22/0, audio_runtime 11/0, zone_return 8/0, battle_stings 7/0, field_audio 22/0.
+    - **Skipped:** screenshots (no scene or shader), Blender, coverage (nothing under game/battle or game/progression).
+  - **PC-QUEUE:** the five arena beds under their bosses' cues; the field coming back after a fight.
+- **BACKLOG EMPTY (after b436efa1):** what's left waits on input: Ch11 staging (slice-polish), integration-qa's resident return, the encounter spacing, the people bosses' encounters, and the listening verdict.
 - **MERGE-READY @ 023c94f1: the Lead's 12:28 item, the victory sting into the field over the short return, then the battle-start stinger over the new encounter spacing** (e271faa7, 023c94f1).
   - **Victory → field:** before, the zone's music came back only through the router's `apply_zone` on the swap, or after 3 s of silence (`zone_return_sec`). With integration-qa's resident field, under 1 s back and no swap, that left a 3 s gap after the sting. Now, once a battle leaves the tree, the zone's cue returns after `battle_return_sec` 0.3 and fades in over `battle_return_fade_sec` 2.0 (mix.json; `AudioDirector._step_zone_return`, `_after_battle`).
     - It sits under the sting's 2.4 s tail. The sting plays on the Combat bus from the director's own SfxBank, so neither the scene change nor the music clips it.
