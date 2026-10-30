@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/act1_zones/act1_zone_rig.gd" id="1_rig"]
+[ext_resource type="PackedScene" path="res://game/levels/ch13/ansedra/ansedra.tscn" id="2_zone"]
+
+[node name="Ch13AnsedraShots" type="Node3D"]
+script = ExtResource("1_rig")
+zone_scene = ExtResource("2_zone")
+views = {
+"Arrival": [[0.0, 2.5, 16.0], [0.0, 6.0, -94.0], 40.0],
+"Moorings": [[-20.0, 3.0, 26.0], [0.0, 2.0, 4.0], 50.0],
+"Causeway": [[0.0, 1.7, -2.0], [0.0, 1.5, -30.0], 50.0],
+"Mirror": [[8.0, 0.6, -62.0], [0.0, 6.0, -94.0], 45.0],
+"SefirHouse": [[10.0, 2.0, -32.0], [5.0, 3.0, -46.0], 50.0],
+"CorranHouse": [[-34.0, 1.8, -36.0], [-44.0, 2.5, -44.0], 50.0]
+}
