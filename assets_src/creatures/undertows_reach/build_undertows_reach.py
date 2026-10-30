@@ -1236,8 +1236,8 @@ def build_clips() -> list[ck.Clip]:
     for i, b in enumerate(arm[:-1]):
         idle_dark.wave(b, amp_rot=(1.0, 0.6, 0.8), cycles=1, phase=-i * 0.8)
     # the Breach: it lets go and draws back over the sea, the hand raised and open, gathering
-    # (M3-CRB-013: 2.6 m back, not 4.5: further out it left the battle camera's frame for the whole phase)
-    breach_pose = {"root": ((-10.0, 0, 0), (0, 1.0, -2.6)), "hand": ((-55.0, 0, 0), (0, 0.6, 0))}
+    # (M3-CRB-013: 1.8 m back, not 4.5: further out it left the battle camera's frame for the whole phase)
+    breach_pose = {"root": ((-8.0, 0, 0), (0, 0.6, -1.8)), "hand": ((-55.0, 0, 0), (0, 0.6, 0))}
     phase_breach = ck.Clip("phase_breach", 3.0)
     for t, s in ((0.0, 0.0), (0.6, 0.15), (2.4, 1.0), (3.0, 1.0)):
         for b, (r, l) in breach_pose.items():
@@ -1294,15 +1294,15 @@ def build_clips() -> list[ck.Clip]:
     gather = ck.Clip("breach_gather", 2.6)
     for t, s, shake in ((0.0, 0.0, 0.0), (0.8, 1.0, 0.0), (1.2, 1.0, 1.0), (1.5, 1.0, -1.0), (1.8, 1.0, 1.0),
                         (2.1, 1.0, -0.6), (2.6, 0.0, 0.0)):
-        gather.key("root", t, (-4.0 * s, 0.0, 1.2 * shake), (0.0, 0.6 * s, -0.8 * s))
+        gather.key("root", t, (-4.0 * s, 0.0, 1.2 * shake), (0.0, 0.2 * s, -0.3 * s))
         gather.key("hand", t, (-15.0 * s + 3.0 * shake, 0.0, 0.0), (0.0, 0.3 * s, 0.0))
         curl(gather, t, -0.5 * s)
     # Breach (the strike): it coils back, then hurls the whole limb down onto the wall-head like a breaking wave (1.2 s),
     # rebounds and draws back over the sea.
     crash = ck.Clip("breach", 2.6)
     for t, rr, y, z, h, c in ((0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.6, -6.0, 0.8, -1.0, -20.0, -0.4),
-                              (1.0, 4.0, -0.4, 1.4, 20.0, 0.2), (1.2, 10.0, -1.0, 2.6, 50.0, 0.8),
-                              (1.5, 8.0, -0.8, 2.2, 40.0, 0.9), (2.6, 0.0, 0.0, 0.0, 0.0, 0.0)):
+                              (1.0, 3.0, -0.25, 1.0, 20.0, 0.2), (1.2, 8.0, -0.6, 1.8, 50.0, 0.8),
+                              (1.5, 6.0, -0.45, 1.5, 40.0, 0.9), (2.6, 0.0, 0.0, 0.0, 0.0, 0.0)):
         crash.key("root", t, (rr, 0.0, 0.0), (0.0, y, z))
         crash.key("hand", t, (h, 0.0, 0.0))
         curl(crash, t, c)
