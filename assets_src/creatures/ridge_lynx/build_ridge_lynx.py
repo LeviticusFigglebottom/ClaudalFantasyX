@@ -5,9 +5,10 @@ blender --background --factory-startup --python assets_src/creatures/ridge_lynx/
 
 A high-pass lynx in its thick winter coat: ordinary, hungry, beautiful, the first Act II foe that is only an animal in
 a hard winter. A long-legged cat 0.75 m at the shoulder, on big snowshoe paws, with a short black-tipped tail, black
-ear tufts and a frosted ruff. Its one exaggeration is the pounce: it crouches low (the telegraph) and clears the
+ear tufts and a snow-tipped ruff. Its one exaggeration is the pounce: it crouches low (the telegraph) and clears the
 front row in one leap. The coat is overcast_slate going cumulus_shadow on the belly, with faint lacquer_black spots;
-the eyes dusk_gold; frost on the ruff salt_glass. Its weak point is an old wound on its camera-side flank (-x) where a
+the eyes dusk_gold; dry snow on the ruff tips and settled along the back, grit packed in the paws (no frost or rime:
+ADR 0015 and ADR 0204 §2 keep ice out of Ch12; M4-CRE-670). Its weak point is an old wound on its camera-side flank (-x) where a
 herder's sling caught it, small, in spawn_wound.
 
 The legs hang from a `body` carrier (like the Avalanche Ram's), so the spine breathes without lifting a paw, and they
@@ -33,16 +34,20 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "common"))
 import creature_kit as ck  # noqa: E402
+import grounding as gr  # noqa: E402
 
 SEED = 8213
 PAL = {k: ck.hexrgb(v) for k, v in {
     "overcast_slate": "#6F7E8E", "cumulus_shadow": "#8FA7C4", "lacquer_black": "#1D1916", "dusk_gold": "#F2A64A",
-    "salt_glass": "#BFE6E0", "spawn_wound": "#3FE0C8", "storm_slate": "#3E4A57",
+    "snow": "#E8E6DF", "spawn_wound": "#3FE0C8", "storm_slate": "#3E4A57",
 }.items()}
 COAT = PAL["overcast_slate"]
 BELLY = ck.mix(PAL["cumulus_shadow"], PAL["overcast_slate"], 0.25)
 BLACK = PAL["lacquer_black"]
-FROST = PAL["salt_glass"] * 0.95
+# Dry snow caught in the coat (no frost or rime: ADR 0015 and ADR 0204 §2 keep ice out of Ch12; M4-CRE-670)
+SNOW = PAL["snow"]
+GRIT = ck.mix(PAL["storm_slate"], PAL["lacquer_black"], 0.7)  # scree grit packed in the paws
+SNOW_TOP = (0.03, 0.09)  # the band over the body's midline (m above it) where snow settles on the back
 PAD = ck.mix(PAL["storm_slate"], PAL["lacquer_black"], 0.5)
 
 # ---------------------------------------------------------------------------------------------
@@ -145,6 +150,10 @@ def torso(mesh: ck.Mesh, rig: ck.Rig) -> None:
     under = ck.smoothstep(cy - 0.02, cy - 0.13, P[:, 1])
     P, clump = tufted(P, T, FUR * (1.0 + 0.6 * ck.smoothstep(cy, cy + 0.1, P[:, 1])), SEED + 10)
     col = coat_colour(P, under, clump, SEED + 11)
+    # dry snow settled in the coat's clumps along the back (matte, uneven: it fell, it is not frost)
+    snowy = ck.smoothstep(cy + SNOW_TOP[0], cy + SNOW_TOP[1], P[:, 1]) * ck.smoothstep(0.35, 0.7, clump)
+    snowy = snowy * ck.smoothstep(0.3, 0.6, ck.fbm(P * 7.0, SEED + 12))
+    col = ck.mix(col, SNOW, (0.85 * snowy)[:, None])
     # the old sling wound: a short ridged scar on the flank, its parting glowing (centred on the coat's surface
     # nearest WOUND's height and length, on its side)
     side = np.where(P[:, 0] * np.sign(WOUND[0]) > 0.0, 0.0, 1e3)
@@ -182,7 +191,7 @@ def neck_and_ruff(mesh: ck.Mesh, rig: ck.Rig) -> None:
     P, clump = tufted(P, T, FUR * 1.3, SEED + 20)
     skin = rig.chain(["spine3", "neck0", "neck1"], [SPINE[3], NECK[0], NECK[1], NECK[2]])
     ck.finish(mesh, P, T, "coat", coat_colour(P, under, clump, SEED + 21), skin, cavity=0.25 * (1.0 - clump))
-    # the ruff: a flared collar of fur round the cheeks and throat, its points swept back and frosted
+    # the ruff: a flared collar of fur round the cheeks and throat, its points swept back and snow-tipped
     n_ang, n_row = 30, 4
     ang = np.linspace(-0.92 * math.pi, 0.92 * math.pi, n_ang)  # open at the top of the head
     centre = np.array([0.0, 0.81, 0.655])
@@ -196,7 +205,7 @@ def neck_and_ruff(mesh: ck.Mesh, rig: ck.Rig) -> None:
     P = np.vstack(rows)
     T = ck.grid_tris(n_row, n_ang, False)
     tip = np.repeat(np.linspace(0.0, 1.0, n_row), n_ang)
-    col = ck.mix(ck.mix(BELLY, COAT, 0.3), FROST, ck.smoothstep(0.55, 1.0, tip)[:, None])
+    col = ck.mix(ck.mix(BELLY, COAT, 0.3), SNOW, ck.smoothstep(0.55, 1.0, tip)[:, None])
     N = np.tile(np.array([0.0, 0.0, 1.0]), (len(P), 1))
     radial = P - centre
     radial[:, 2] = 0.0
@@ -232,7 +241,7 @@ def head(mesh: ck.Mesh, rig: ck.Rig) -> None:
     chin = h1 + np.array([0.0, 0.004, 0.024])  # the chin reaches under the whisker pads
     Pj, Tj = ck.tube(np.array([h0, (h0 + h1) / 2, h1, chin]), np.array([0.035, 0.03, 0.022, 0.012]), 8, squash=0.7,
                      up_hint=(1.0, 0.0, 0.0))
-    ck.finish(mesh, Pj, Tj, "coat", ck.mix(BELLY, PAL["salt_glass"] * 0.8, 0.3), rig.rigid("jaw"), cavity=0.2)
+    ck.finish(mesh, Pj, Tj, "coat", ck.mix(BELLY, SNOW * 0.85, 0.3), rig.rigid("jaw"), cavity=0.2)
 
 
 def muzzle(mesh: ck.Mesh, hb: int) -> None:
@@ -255,7 +264,7 @@ def muzzle(mesh: ck.Mesh, hb: int) -> None:
     out[-segs:] = (0.0, 0.0, 1.0)  # the front cap faces forward
     T = np.where(((fn * out).sum(axis=1) < 0)[:, None], T[:, ::-1], T)
     pale = ck.smoothstep(axis_y + 0.004, axis_y - 0.018, P[:, 1])
-    col = ck.mix(COAT, ck.mix(BELLY, PAL["salt_glass"] * 0.8, 0.4), pale[:, None])
+    col = ck.mix(COAT, ck.mix(BELLY, SNOW * 0.85, 0.4), pale[:, None])
     col = col * (0.95 + 0.06 * ck.fbm(P * 40.0, SEED + 32))[:, None]
     ck.finish(mesh, P, T, "coat", col, hb, cavity=0.15)
     # the nose leather: a rounded triangle, broad at the top, on the muzzle's front
@@ -263,13 +272,13 @@ def muzzle(mesh: ck.Mesh, hb: int) -> None:
     Pn[:, 0] *= 0.55 + 0.45 * ck.smoothstep(NOSE_TIP[1] - 0.012, NOSE_TIP[1] + 0.008, Pn[:, 1])
     ck.finish(mesh, Pn, Tn, "coat", ck.mix(PAD, BLACK, 0.4), hb, wet=0.7, cavity=0.2)
     # the whisker pads, pale and full, with three rows of dark whisker spots and the whiskers themselves
-    whisk = PAL["salt_glass"] * 0.95
+    whisk = SNOW * 0.95
     for sx in (1.0, -1.0):
         c = np.array([sx * PAD_AT[0], PAD_AT[1], PAD_AT[2]])
         Pp, Tp = ck.ellipsoid(c, PAD_R, 5, 8)
         q = (Pp - c) / np.array(PAD_R)
         spots = ((np.sin(q[:, 1] * 7.0) > 0.55) & (np.abs(q[:, 0]) > 0.45) & (q[:, 2] > -0.2)).astype(np.float64)
-        cp = ck.mix(ck.mix(BELLY, PAL["salt_glass"] * 0.9, 0.75), BLACK, (0.6 * spots)[:, None])
+        cp = ck.mix(ck.mix(BELLY, SNOW * 0.9, 0.75), BLACK, (0.6 * spots)[:, None])
         ck.finish(mesh, Pp, Tp, "coat", cp, hb, cavity=0.1)
         for k in range(4):
             root = c + np.array([sx * 0.02, 0.008 - 0.007 * k, -0.002 - 0.003 * k])
@@ -340,6 +349,8 @@ def legs(mesh: ck.Mesh, rig: ck.Rig) -> None:
         Pp[:, 1] = np.maximum(Pp[:, 1], 0.0)  # the sole flat on the ground
         sole = ck.smoothstep(0.008, 0.0, Pp[:, 1])
         cp = ck.mix(ck.mix(BELLY, COAT, 0.4), PAD, sole[:, None])
+        grit = ck.smoothstep(0.6, 0.8, ck.value_noise(Pp * 120.0, SEED + 70 + LEGS.index(name)))
+        cp = ck.mix(cp, GRIT, (0.7 * grit * (1.0 - 0.5 * sole))[:, None])  # scree grit packed in the fur
         ck.finish(mesh, Pp, Tp, "coat", cp, rig.rigid(f"{name}_paw"), cavity=0.2 * sole)
         for k in range(4):
             a = (k - 1.5) * 0.42
@@ -667,6 +678,18 @@ def report(rig: ck.Rig, mesh: ck.Mesh, clips: list[ck.Clip]) -> None:
               f" pad soles y {paws}; peak {int(np.argmax(disp)) / ck.FPS:.2f}s")
 
 
+# Kept on the floor and held where they touch down (common/grounding.py, the Act I audit's foot sliding: its paws slid
+# 18-29 cm on attack and hit, M4-CRE-670): each leg turns up at the shoulder or hip the least it takes, then its planted
+# paw stays put while the body crouches, recoils or lands over it.
+GROUNDED_LIMBS = [(f"{n}_upper", 0, -1.0, 45.0) for n in LEGS]
+PINNED_LEGS = [(f"{n}_upper", f"{n}_lower", 0, -1.0, True) for n in LEGS]  # True: the hip can roll sideways
+
+
+def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
+    pinned = gr.pinned(rig, mesh, gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS), PINNED_LEGS)
+    return gr.reground(rig, mesh, pinned, GROUNDED_LIMBS)
+
+
 def build() -> tuple[ck.Rig, ck.Mesh, list[ck.Clip]]:
     rig = build_rig()
     return rig, build_mesh(rig), build_clips()
@@ -682,7 +705,7 @@ def main() -> None:
     if args.report or not args.out:
         report(rig, mesh, clips)
         return
-    info = ck.export_creature(mesh, rig, clips, args.out, extras={"hymn_creature": "ridge_lynx"})
+    info = ck.export_creature(mesh, rig, export_clips(rig, mesh), args.out, extras={"hymn_creature": "ridge_lynx"})
     print(f"ridge_lynx: {info}")
 
 

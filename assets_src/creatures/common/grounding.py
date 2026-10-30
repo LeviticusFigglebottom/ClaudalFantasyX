@@ -197,6 +197,7 @@ PIN_ITERS = 10
 PIN_FLOOR_PASSES = 10  # re-solves that lift a held foot whose toes went under the floor
 PIN_DAMP = 1e-6  # Levenberg-Marquardt damping (m^2 per deg^2)
 PIN_MAX_STEP_DEG = 8.0  # the most one iteration turns a joint
+PIN_REST_PULL = 5e-6  # a rolling leg's pull toward its authored pose (m^2 per deg^2)
 PIN_STEP_DEG = 0.5  # the solve's finite-difference step
 PIN_LIMIT_DEG = 50.0  # the most the pin turns any joint
 PIN_ROUND = 5  # decimals the solved turns keep, so a build is byte-identical on every numpy SIMD path
@@ -213,19 +214,25 @@ def _turn(rot, spec, sign: float, c: float) -> tuple:
 
 def pinned(rig: ck.Rig, mesh: ck.Mesh | list[ck.Mesh], clips: list[ck.Clip], legs: list[tuple],
            floor: float = 0.0, only: tuple = PIN_CLIPS) -> list[ck.Clip]:
-    """`legs`: (upper bone, lower bone or None, bend axis 0/1/2 or (wx, wy, wz), sign) per leg; the upper bone's yaw
-    is its Euler y. A leg of one bone (a fin planted on the floor) is held by its yaw and bend alone. Run after grounded() (it adds no hit_b or idle_b of its own). Clips not in `only` are returned as they
-    are; in the others the legs' two bones are keyed at every frame."""
+    """`legs`: (upper bone, lower bone or None, bend axis 0/1/2 or (wx, wy, wz), sign[, roll]) per leg; the upper
+    bone's yaw is its Euler y. A leg of one bone (a fin planted on the floor) is held by its yaw and bend alone. `roll`
+    True (a bend axis 0 or 2 only) adds a fourth turn, the hip's abduction about the other horizontal axis, for a leg
+    the body twists sideways over (the ridge lynx's hit: a near-vertical leg's yaw cannot reach sideways). Run after
+    grounded() (it adds no hit_b or idle_b of its own). Clips not in `only` are returned as they are; in the others
+    the legs' two bones are keyed at every frame."""
     poser = Poser(rig, mesh)
     legs_i = []
-    for up, low, axis, sign in legs:
+    for up, low, axis, sign, *opt in legs:
+        roll = (2 if axis == 0 else 0) if opt and opt[0] else None
+        if roll is not None and axis not in (0, 2):
+            raise ValueError(f"pinned: {up}'s roll needs a bend axis of 0 or 2")
         sub = poser.subtree(up)
         lower = poser.subtree(low if low is not None else up)
         mask = (np.isin(poser.J, lower) & (poser.W > 0.5)).any(axis=1)
         rest = poser.vertices(poser.matrices({}), mask)
         tip = int(np.flatnonzero(mask)[int(np.argmin(rest[:, 1]))])
         whole = (np.isin(poser.J, sub) & (poser.W > 1e-6)).any(axis=1)  # every vertex the leg moves (paw, toes)
-        legs_i.append((up, low, axis, sign, sub, tip, whole))
+        legs_i.append((up, low, axis, sign, sub, tip, whole, roll))
     out = []
     for clip in clips:
         if clip.name not in only:
@@ -238,9 +245,10 @@ def pinned(rig: ck.Rig, mesh: ck.Mesh | list[ck.Mesh], clips: list[ck.Clip], leg
                 fixed.keys[b] = list(ks)
         times = frame_times(clip)
         poses = [pose_at(clip, poser.names, t) for t in times]
-        for up, low, axis, sign, sub, tip, whole in legs_i:
+        for up, low, axis, sign, sub, tip, whole, roll in legs_i:
+            n = 3 if roll is None else 4  # the turns solved: hip yaw, hip bend, knee bend[, hip roll]
             anchor = None
-            hold = np.zeros(3)
+            hold = np.zeros(n)
             fade = 0
             for k, t in enumerate(times):
                 pose = poses[k]
@@ -250,13 +258,14 @@ def pinned(rig: ck.Rig, mesh: ck.Mesh | list[ck.Mesh], clips: list[ck.Clip], leg
                 if planted:
                     if anchor is None:
                         anchor = np.array([p[0], floor, p[2]])
-                    c = _solve(poser, mats, pose, up, low, axis, sign, sub, tip, anchor, hold)
+                    c = _solve(poser, mats, pose, up, low, axis, sign, sub, tip, anchor, hold, roll)
                     # held at its spot, the leg may tip a toe or a pad under the floor: raise the target by that much
                     for _ in range(PIN_FLOOR_PASSES):
-                        under = floor - _leg_low(poser, mats, pose, up, low, axis, sign, sub, whole, c)
+                        under = floor - _leg_low(poser, mats, pose, up, low, axis, sign, sub, whole, c, roll)
                         if under <= 1e-4:
                             break
-                        c = _solve(poser, mats, pose, up, low, axis, sign, sub, tip, anchor + [0.0, under, 0.0], c)
+                        c = _solve(poser, mats, pose, up, low, axis, sign, sub, tip, anchor + [0.0, under, 0.0], c,
+                                   roll)
                     hold, fade = c, RELEASE_FRAMES
                 else:
                     anchor = None
@@ -266,18 +275,17 @@ def pinned(rig: ck.Rig, mesh: ck.Mesh | list[ck.Mesh], clips: list[ck.Clip], leg
                         # the fading turn must not push the lifting foot through the floor (the authored pose, which
                         # grounded() set on it, never does): shrink it until the leg clears
                         for _ in range(PIN_FLOOR_PASSES + 1):
-                            if _leg_low(poser, mats, pose, up, low, axis, sign, sub, whole, hold) >= floor - 1e-4:
+                            if _leg_low(poser, mats, pose, up, low, axis, sign, sub, whole, hold, roll) >= floor - 1e-4:
                                 break
                             hold = hold * 0.5
                         else:
-                            hold = np.zeros(3)
+                            hold = np.zeros(n)
                     else:
-                        hold = np.zeros(3)
+                        hold = np.zeros(n)
                     c = hold
                 c = np.round(c, PIN_ROUND)
                 rot_up, loc_up = pose.get(up, ((0.0, 0.0, 0.0), (0.0, 0.0, 0.0)))
-                r_up = _turn(_turn(rot_up, 1, 1.0, float(c[0])), axis, sign, float(c[1]))
-                fixed.key(up, t, r_up, loc_up)
+                fixed.key(up, t, _hip(rot_up, axis, sign, c, roll), loc_up)
                 if low is not None:
                     rot_low, loc_low = pose.get(low, ((0.0, 0.0, 0.0), (0.0, 0.0, 0.0)))
                     fixed.key(low, t, _turn(rot_low, axis, sign, float(c[2])), loc_low)
@@ -285,12 +293,18 @@ def pinned(rig: ck.Rig, mesh: ck.Mesh | list[ck.Mesh], clips: list[ck.Clip], leg
     return out
 
 
+def _hip(rot_up, axis, sign: float, c: np.ndarray, roll) -> tuple:
+    """The upper bone's Euler degrees turned by the solved hip turns (yaw, bend[, roll])."""
+    r = _turn(_turn(rot_up, 1, 1.0, float(c[0])), axis, sign, float(c[1]))
+    return _turn(r, roll, 1.0, float(c[3])) if roll is not None else r
+
+
 def _leg_low(poser: Poser, mats, pose: dict, up: str, low: str | None, axis, sign: float, sub: list[int],
-             whole: np.ndarray, c: np.ndarray) -> float:
+             whole: np.ndarray, c: np.ndarray, roll=None) -> float:
     """The leg's lowest vertex y with the turns `c` applied (the pose and `mats` are left as they were)."""
     keep = {b: pose[b] for b in (up, low) if b is not None and b in pose}
     rot_up, loc_up = pose.get(up, ((0.0, 0.0, 0.0), (0.0, 0.0, 0.0)))
-    pose[up] = (_turn(_turn(rot_up, 1, 1.0, float(c[0])), axis, sign, float(c[1])), loc_up)
+    pose[up] = (_hip(rot_up, axis, sign, c, roll), loc_up)
     if low is not None:
         rot_low, loc_low = pose.get(low, ((0.0, 0.0, 0.0), (0.0, 0.0, 0.0)))
         pose[low] = (_turn(rot_low, axis, sign, float(c[2])), loc_low)
@@ -308,15 +322,17 @@ def _leg_low(poser: Poser, mats, pose: dict, up: str, low: str | None, axis, sig
 
 
 def _solve(poser: Poser, mats, pose: dict, up: str, low: str, axis, sign: float, sub: list[int], tip: int,
-           target: np.ndarray, start: np.ndarray) -> np.ndarray:
-    """Turns (hip yaw, hip bend, knee bend) in degrees that bring the tip to `target` (damped least squares)."""
+           target: np.ndarray, start: np.ndarray, roll=None) -> np.ndarray:
+    """Turns (hip yaw, hip bend, knee bend[, hip roll]) in degrees that bring the tip to `target` (damped least
+    squares); as many turns as `start` has."""
     rot_up, loc_up = pose.get(up, ((0.0, 0.0, 0.0), (0.0, 0.0, 0.0)))
     rot_low, loc_low = pose.get(low, ((0.0, 0.0, 0.0), (0.0, 0.0, 0.0))) if low is not None else ((), ())
     one = np.eye(1, len(poser.P), tip, dtype=bool)[0]
-    n = 3 if low is not None else 2
+    m = len(start)  # the turns solved
+    n = (3 if low is not None else 2) if m == 3 else [0, 1, 2, 3] if low is not None else [0, 1, 3]
 
     def tip_at(c: np.ndarray) -> np.ndarray:
-        pose[up] = (_turn(_turn(rot_up, 1, 1.0, float(c[0])), axis, sign, float(c[1])), loc_up)
+        pose[up] = (_hip(rot_up, axis, sign, c, roll), loc_up)
         if low is not None:
             pose[low] = (_turn(rot_low, axis, sign, float(c[2])), loc_low)
         poser.resolve(mats, pose, sub)
@@ -327,17 +343,23 @@ def _solve(poser: Poser, mats, pose: dict, up: str, low: str, axis, sign: float,
         r = tip_at(c) - target
         if float(np.linalg.norm(r)) < 1e-4:
             break
-        J = np.zeros((3, 3))
-        for j in range(n):
-            d = np.zeros(3)
+        J = np.zeros((3, m))
+        for j in range(n) if isinstance(n, int) else n:
+            d = np.zeros(m)
             d[j] = PIN_STEP_DEG
             J[:, j] = (tip_at(c + d) - tip_at(c)) / PIN_STEP_DEG  # tip_at(c) recomputed: resolve() leaves mats posed
         # damped (Levenberg-Marquardt) and clamped, so a far target never flings a joint to another solution
-        A = J.T @ J + PIN_DAMP * np.eye(3)
-        step = np.linalg.solve(A, -J.T @ r)
+        A = J.T @ J + PIN_DAMP * np.eye(m)
+        if m == 3:
+            step = np.linalg.solve(A, -J.T @ r)
+        else:
+            # four turns for three targets: of the poses that hold the tip, prefer the authored one (pull the turns
+            # toward 0), so a leg the clip returns to rest ends at rest (the ridge lynx's hit_b drifted 1.1 cm)
+            A = A + PIN_REST_PULL * np.eye(m)
+            step = np.linalg.solve(A, -(J.T @ r + PIN_REST_PULL * c))
         step = np.clip(step, -PIN_MAX_STEP_DEG, PIN_MAX_STEP_DEG)
         c = np.clip(c + step, -PIN_LIMIT_DEG, PIN_LIMIT_DEG)
-    tip_at(np.zeros(3))  # leave the pose as it was: the caller keys the result
+    tip_at(np.zeros(m))  # leave the pose as it was: the caller keys the result
     pose[up] = (rot_up, loc_up)
     if low is not None:
         pose[low] = (rot_low, loc_low)

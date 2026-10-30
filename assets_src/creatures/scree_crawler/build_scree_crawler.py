@@ -3,10 +3,11 @@
 blender --background --factory-startup --python assets_src/creatures/scree_crawler/build_scree_crawler.py -- \
     --out assets/creatures/scree_crawler/scree_crawler.glb
 
-A variant of the slag tortoise: a mountain tortoise whose shell carries frost-split scree instead of slag. The slag
+A variant of the slag tortoise: a mountain tortoise whose shell carries split scree instead of slag. The slag
 tortoise's rig and clips, rebuilt through the base build's parameters (so the slag tortoise's own output is
 unchanged): more, smaller and sharper plates, faceted like split stone, in grey slate (overcast_slate, storm_slate)
-with salt_glass rime in the splits and on the crown, and a shaggier skin (tufted) in a cold grey-brown. The
+with dry snow packed in the splits and dusted on the crown and dark grit between the stones (no frost or rime: ADR
+0015 and ADR 0204 §2 keep ice out of Ch12; M4-CRE-670), and a shaggier skin (tufted) in a cold grey-brown. The
 spawn_wound crack over the neck is the base's. The base build is imported, not copied, so a fix to the slag
 tortoise reaches the scree crawler on its next rebuild.
 """
@@ -27,12 +28,12 @@ import creature_kit as ck  # noqa: E402
 
 SEED = 8287
 SW = {k: ck.hexrgb(v) for k, v in {
-    "overcast_slate": "#6F7E8E", "storm_slate": "#3E4A57", "salt_glass": "#BFE6E0", "timber_weathered": "#7E6A55",
-    "sand_dry": "#EFDDB4",
+    "overcast_slate": "#6F7E8E", "storm_slate": "#3E4A57", "snow": "#E8E6DF", "timber_weathered": "#7E6A55",
+    "sand_dry": "#EFDDB4", "lacquer_black": "#1D1916",
 }.items()}
 
 base.SEED = SEED
-base.SHELL_CELLS = 40  # frost-split: more, smaller stones (slag tortoise 22)
+base.SHELL_CELLS = 40  # split scree: more, smaller stones (slag tortoise 22)
 base.SHELL_LUMP = 0.08
 base.SHELL_FLAT = True  # each stone's faces read as split, not glassy
 base.SKIN_SHAG = 0.022  # the shaggier skin
@@ -41,10 +42,14 @@ base.PAL.update({
     # the crust's colour is mix(volcanic_stone * 0.8, lacquer_black, 0.6..0.9): here both are slate scree
     "volcanic_stone": SW["overcast_slate"] / 0.8,
     "lacquer_black": ck.mix(SW["overcast_slate"], SW["storm_slate"], 0.45),
-    "bronze_patina": ck.mix(SW["salt_glass"], SW["overcast_slate"], 0.3),  # rime in the splits (the base's copper)
-    "sand_dry": ck.mix(SW["salt_glass"], SW["sand_dry"], 0.3),  # frost on the crown; the skin's pale folds
+    "bronze_patina": ck.mix(SW["snow"], SW["overcast_slate"], 0.15),  # dry snow packed in the splits (the base's copper)
+    "sand_dry": ck.mix(SW["snow"], SW["sand_dry"], 0.3),  # snow dusted on the crown; the skin's pale folds
     "laterite": ck.mix(SW["timber_weathered"], SW["overcast_slate"], 0.35),  # a cold grey-brown skin
 })
+
+
+GRIT_SCALE = 40.0  # grit speckles per metre
+GRIT_DARKEN = 0.35
 
 
 def stones(mesh: ck.Mesh) -> None:
@@ -53,6 +58,8 @@ def stones(mesh: ck.Mesh) -> None:
     P, C, E = mesh.pos[0], mesh.col[0], mesh.uv2[0]
     centre = np.repeat(P.reshape(-1, 3, 3).mean(axis=1), 3, axis=0)
     tone = 0.82 + 0.3 * ck.value_noise(centre * 5.5, SEED + 7) + 0.08 * ck.value_noise(centre * 23.0, SEED + 8)
+    grit = ck.smoothstep(0.7, 0.85, ck.value_noise(centre * GRIT_SCALE, SEED + 9))  # dark grit between the stones
+    tone = tone * (1.0 - GRIT_DARKEN * grit)
     keep = E[:, 1] > 0.05  # the weak point's crack keeps its colour
     C[:, :3] = np.where(keep[:, None], C[:, :3], np.maximum(C[:, :3] * tone[:, None], ck.hexrgb("#1D1916")))
 
