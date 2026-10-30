@@ -180,7 +180,7 @@
     },
     "fen_leech": {
       "scene": "res://game/creatures/fen_leech/fen_leech_battle.tscn",
-      "stand_in": {"hover": 1.38},
+      "stand_in": {"hover": 0.85},
       "contact": {"attack": 0.7},
       "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}
     },

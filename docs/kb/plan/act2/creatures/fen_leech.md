@@ -4,7 +4,7 @@ id: fen_leech
 kind: variant (sail leech)
 chapter: 10
 exists: yes, on the integration branch (built; `creatures.json` row, review baseline, portrait)
-meets_bar: no
+meets_bar: close (hung low since 2026-10-30; check in the dusk fen arena)
 ---
 # fen_leech (Ch10, Ossa Fen, the dark water)
 
@@ -35,4 +35,4 @@ build_sail_leech (rig, clips, KO_DROP). Its own: proportions, palette.
 Below the bar for its read (not its model): the edge-on silhouette.
 
 ## Work at the gate (after `act1-complete`)
-Lower hover + KO_DROP; a battle-scale check; `leech_bite` effect; enemy `model` key.
+DONE 2026-10-30: hover 0.85 m (KO_DROP matched; its attack dips 0.70 m), so it reads as a long dark ribbon with glowing slits over its shadow (viewed in its ch10_fen_leeches encounter on the default arena). Left: a check in the dusk fen arena when it exists; `leech_bite` effect.
