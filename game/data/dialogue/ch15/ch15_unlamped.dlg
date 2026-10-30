@@ -17,7 +17,6 @@ location: ch15/open_sea
 @camera U03
 @vfx glimmer_held at=tobin_bier count=6 rate=slow
 @wait 4.0
-<<set $ch15_started = true>>
 @letterbox off
 @camera release
 ===

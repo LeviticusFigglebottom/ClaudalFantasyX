@@ -1,0 +1,35 @@
+{
+ "format": 1,
+ "scene": "ch11_held_by_you",
+ "source": "game/data/dialogue/ch11/ch11_held_by_you.dlg",
+ "start": "ch11_held_by_you",
+ "nodes": {
+  "ch11_held_by_you": {
+   "headers": {"location": "ch11/sunken_vey"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["V08"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "music", "args": ["sunken_vey"], "kwargs": {"fade": 2.0}, "src": 8},
+    {"op": "cue", "cue": "mark", "args": ["asha", "landing_pell", "walk"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 10},
+    {"op": "line", "id": "ch11_held_001", "key": "DLG_CH11_HELD_001", "speaker": "asha", "emotion": "grief", "voice": "", "src": 11},
+    {"op": "line", "id": "ch11_held_002", "key": "DLG_CH11_HELD_002", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 12},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 13},
+    {"op": "line", "id": "ch11_held_003", "key": "DLG_CH11_HELD_003", "speaker": "pell", "emotion": "sad", "voice": "", "src": 14},
+    {"op": "line", "id": "ch11_held_004", "key": "DLG_CH11_HELD_004", "speaker": "asha", "emotion": "sad", "voice": "", "src": 15},
+    {"op": "line", "id": "ch11_held_005", "key": "DLG_CH11_HELD_005", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 16},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "camera", "args": ["V09"], "kwargs": {}, "src": 18},
+    {"op": "if_not", "cond": ["flag", "ch11_lamp_repaired"], "to": 16, "src": 19},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "line_back_a", "walk"], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "mark", "args": ["liss", "line_back_b", "walk"], "kwargs": {}, "src": 21},
+    {"op": "goto", "to": 19, "src": 19},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "line_back_a", "walk"], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "mark", "args": ["liss", "line_front", "walk"], "kwargs": {}, "src": 24},
+    {"op": "goto", "to": 19, "src": 22},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 26},
+    {"op": "set", "flag": "ch11_complete", "value": ["lit", true], "src": 27},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 28}
+   ]
+  }
+ }
+}

@@ -34,6 +34,10 @@ DLG_CH10_TIDE_002	ch10_farewell_tide		Her Ebbing at Corrow led the dead down int
 DLG_CH10_EDGE_002	ch10_fen_edge		'Theirs': the Kirru clutch's. Pell is an exile and may not enter their water.	The water is theirs. I walk on the roots. Not in.
 DLG_CH10_SCRAPE_002	ch10_scrape_mark		Where the Kirru stand to sing for their dead.	Standing places.
 DLG_CH10_UP_002	ch10_what_went_up		She means the direction the dead are supposed to go (down, to the sea), by her faith.	That is not the direction.
+DLG_CH11_VEY_002	ch11_drowned_galleries		He means the bound dead inside the lights.	Many in there.
+DLG_CH11_MARK_002	ch11_housing_mark		'Seats' and 'pair-built': wright terms; the lantern was made as one of a pair.	Same hand. Same seats. Pair-built. This mark's older than you. Whose is it?
+DLG_CH11_BENCH_001	ch11_lamp_bench		A wright's term for things made as a matching pair: said of the two lamps, meant of the two of them.	Pair-built.
+DLG_CH11_NHOA_001	ch11_nhoa		'Lifted': the Kirru word for the dead who have gone up. Pell speaks of his sister.	She is here. She is not lifted. Do not speak yet. Please.
 DLG_CH14_DECL_002	ch14_the_vows		'Outside the Level' is the Order's formal phrase for heresy. Keep it a fixed phrase, capitalised as a title.	The guardians of the Lady Cantor, having sheltered binders and handled the sealed ledgers, are declared Outside the Level.
 DLG_CH14_TOBIN_FALL_002	ch14_the_vows		Said to Merel, gently, almost a joke between them: his last words.	...Your knots are terrible.
 DLG_CH14_TOBIN_FALL_003	ch14_the_vows		A wright's repair words ('seat it', 'she'll hold'), said to his wound as if it were a machine.	Hold it. Hold, hold, she'll hold, seat it, hold—

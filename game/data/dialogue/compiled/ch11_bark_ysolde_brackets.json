@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch11_bark_ysolde_brackets",
+ "source": "game/data/dialogue/ch11/ch11_bark_ysolde_brackets.dlg",
+ "start": "ch11_bark_ysolde_brackets",
+ "nodes": {
+  "ch11_bark_ysolde_brackets": {
+   "headers": {"location": "ch11/sunken_vey"},
+   "ops": [
+    {"op": "line", "id": "ch11_bark_brackets_001", "key": "DLG_CH11_BARK_BRACKETS_001", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 5}
+   ]
+  }
+ }
+}

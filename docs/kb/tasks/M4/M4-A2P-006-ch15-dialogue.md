@@ -2,7 +2,7 @@
 id: M4-A2P-006
 title: "Ch15 “Unlamped” dialogue scripts: Kerrid's confession, Hollowmere, Toma's confession"
 role: narrative
-status: doing
+status: review
 owner_session: "act2 story track (claude/act2-plan, ADR 0205)"
 depends_on: [M4-C15-01, M4-A2P-005]
 reviewer: cinematics
@@ -21,5 +21,8 @@ Ch15's scripts from M4-C15-01: the unlamped drift, the Wakefin, **Kerrid's confe
 ## Notes
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). Plan §2 Ch15 and §4.3.
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
+
+## Done (story track, 2026-10-30)
+- Scripts written in `game/data/dialogue/ch1x/` from the beat-sheet draft, ADR 0204 applied; compiled; speakers, voices and loc rows added; flags declared. `tests/unit/test_act2_dialogue.gd` runs every Act II scene down every path (PASS). Scripts written; reviewer: cinematics.
 
 ## Review log

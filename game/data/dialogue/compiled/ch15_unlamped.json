@@ -18,9 +18,8 @@
     {"op": "cue", "cue": "camera", "args": ["U03"], "kwargs": {}, "src": 17},
     {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "tobin_bier", "count": 6, "rate": "slow"}, "src": 18},
     {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 19},
-    {"op": "set", "flag": "ch15_started", "value": ["lit", true], "src": 20},
-    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 21},
-    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 22}
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 21}
    ]
   }
  }
