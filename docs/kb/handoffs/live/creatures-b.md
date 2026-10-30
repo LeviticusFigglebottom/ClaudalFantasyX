@@ -725,3 +725,18 @@ What the Act II fights still need from others: enemy rows and encounters (combat
   - **For battle-presentation (camera, not models):** (1) in undertows_reach, a Vowbound called during the Climb's
     entry cut rises off screen (the camera is on CameraHints/along_the_walk while Kahre's rise plays); (2) the
     Spar-Wraith reads as a small dark shape in the rigging at the fight's rest frame (the M3-CRB-011 note).
+- **MERGE-READY @ 650257eaa: a boss phase change waits for the blow that turned it** (M3-CRB-016, review request
+  for creatures). Godot battle 856 run: 3 reds, none from this change (the Act I/II ability-VFX rows wait on
+  battle-presentation's M4-A2P-061; the lineup red is below); creature 159/0, boss 121/0, phase 2/0. Tools suite: the
+  reds are all other tracks' (blender coverage of oruvel_seabed.glb, the ossa_fen wildlife shot, loc "Shell-carver",
+  zone map pois, cutscene sfx todo, a palette baseline, villager clips, audio loudness); test_avalanche_ram passes.
+- **big22 red test_battle_lineup (ch11_lamp_engine), not fixable in my lane without a regression; for
+  battle-presentation and chapters.** The Lamp Engine opens 2.49 and 2.55 m from the two conduit crawlers M4-A2P-022
+  added (needs 2.74: its footprint 2.10 + 0.52 + 0.12). Its footprint is its own mesh (3.6 x 2.35 m) at the stand-in
+  yaw 55°, not its VFX (particles add nothing). Side-on (0° or 90°) it is 1.51 and would pass, but the intro renders at
+  10° and the earlier 90° pass both put the near arm across the body and the core, the reason for 55° (lamp_engine.md
+  As built). Options: (a) battle-presentation lets `boss_seats` seat a boss with adds (the Engine 1–1.5 m back), or
+  (b) chapters spreads ch11's crawler slots, or (c) a larger lineup cap for this fight.
+- **For battle-presentation/env-art: ch11_lamp_engine's default camera is broken on big22.** The left half of the
+  frame is a dark wall and neither the Engine nor the crawlers are in view, only the party (my 09:30 render of the same
+  fixture showed the Engine whole). The boss-intro hero shot is fine.
