@@ -267,7 +267,10 @@ func test_a_vigil_takes_its_body_when_its_hero_has_one() -> void:
 	if feet != null:
 		var y := feet.global_position.y
 		assert_between(y, PAVING_TOP_Y - FEET_TOLERANCE, PAVING_TOP_Y + FEET_TOLERANCE, "feet on the paving")
+	# The others follow the data: Liss has had her body since M3-HER-100; Pell waits for his.
 	for id: String in ["Pell", "Liss"]:
-		assert_true((scene.get_node(NodePath("City/Vigils/" + id)) as MeshInstance3D).mesh != null, id + " waits")
+		var has_body := heroes.has(id.to_lower())
+		var capsule := (scene.get_node(NodePath("City/Vigils/" + id)) as MeshInstance3D).mesh != null
+		assert_true(capsule != has_body, id + (" takes its body" if has_body else " waits"))
 	HeroFieldActor._data_cache = saved
 	_done()

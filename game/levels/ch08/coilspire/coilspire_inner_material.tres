@@ -1,0 +1,35 @@
+[gd_resource type="ShaderMaterial" load_steps=5 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/environment/env_weathering.gdshader" id="1_shader"]
+[ext_resource type="Texture2D" path="res://assets/environments/kits/corrow/textures/laterite_blocks_albedo.png" id="2_tex"]
+[ext_resource type="Texture2D" path="res://assets/environments/kits/corrow/textures/laterite_blocks_normal.png" id="3_tex"]
+[ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/weathering_detail.png" id="4_tex"]
+
+[resource]
+resource_name = "coilspire_inner_material"
+shader = ExtResource("1_shader")
+shader_parameter/ao_strength = 0.9
+shader_parameter/base_triplanar = false
+shader_parameter/cavity_darken = 0.55
+shader_parameter/col_lichen = Color(0.7529, 0.5412, 0.2275, 1)
+shader_parameter/col_moss = Color(0.1686, 0.3333, 0.1608, 1)
+shader_parameter/col_salt = Color(0.4314, 0.6196, 0.5569, 1)
+shader_parameter/col_tint = Color(0.8314, 0.7765, 0.7373, 1)
+shader_parameter/detail_scale_m = 0.5
+shader_parameter/erosion_lighten = 0.04
+shader_parameter/normal_strength = 1.4
+shader_parameter/roughness_base = 0.9
+shader_parameter/salt_band_m = Vector2(-200.0, 200.0)
+shader_parameter/salt_cavity_gather = 0.3
+shader_parameter/salt_coverage = Vector2(0.0, 0.16)
+shader_parameter/salt_roughness = 0.9
+shader_parameter/specular_base = 0.3
+shader_parameter/tex_albedo = ExtResource("2_tex")
+shader_parameter/tex_detail = ExtResource("4_tex")
+shader_parameter/tex_normal = ExtResource("3_tex")
+shader_parameter/tile_m = Vector2(6, 1)
+shader_parameter/use_algae = false
+shader_parameter/use_barnacles = false
+shader_parameter/use_moss = false
+shader_parameter/variation_value = 0.14
+shader_parameter/variation_warmth = 0.05

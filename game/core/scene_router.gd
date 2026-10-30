@@ -60,10 +60,15 @@ extends Node
 ##   (game/data/settings/boot_card.json) is fed each frame and holders_progress() (the holders' wait_progress(),
 ##   a BootCard's sums its work); the fade lifts on a stall (stall_timeout_ms with no progress) or the absolute
 ##   cap (max_wait_ms), recorded as reveal_wait_end. font_warm_progress() reports the font warm-up's progress.
+## ADR 0111 (Lead 2026-10-28, the PC's 1.3-3 s hidden frames): signal change_started(scene_path) fires as a change
+##   begins, before the fade; ResidentLoads.install(self) loads the hero bodies there on worker threads and holds the
+##   swap until they are in, so the new scene's first frame finds them cached.
 ## M2-ARC-05: every window's frames are wall time, timed by a FrameClock (Time.get_ticks_usec between
 ## frames), never the process `delta`, which Godot caps at about 150 ms.
 
 signal prewarm_requested(scene_path: String)
+## ADR 0111: emitted when change_scene() starts (before the fade): ResidentLoads starts its threaded loads here.
+signal change_started(scene_path: String)
 ## Emitted under the opaque fade, just before the new scene enters the tree (zone globals reset here).
 signal scene_swapping(scene_path: String)
 ## Emitted after each successful swap with the same dictionary stored in last_swap_stats.
@@ -88,6 +93,10 @@ const VISIBLE_MEASURE_FRAMES := 60
 ## Upper bound on frames a swap waits for its holders (hold_swap), e.g. a time-sliced ShaderPrewarm
 ## stage (M1-RND-15).
 const PREWARM_WAIT_MAX_FRAMES := 120
+## ADR 0111: past PREWARM_WAIT_MAX_FRAMES a held swap waits on while its holders make progress, until they stall this
+## long (ms of wall time) or the wait reaches SWAP_WAIT_CAP_MS (the hidden loading time stays in short frames).
+const SWAP_STALL_MS := 3000.0
+const SWAP_WAIT_CAP_MS := 15000.0
 const USEC_PER_MSEC := 1000.0
 const LOG_PREFIX := "SceneRouter"
 
@@ -143,6 +152,7 @@ func _ready() -> void:
 	ShaderPrewarm.install(self)
 	ShaderGlobals.install(self)
 	WeatherClock.install(self)
+	ResidentLoads.install(self)
 	world_return = WorldReturn.new()
 	world_return.name = "WorldReturn"
 	add_child(world_return)
@@ -214,6 +224,7 @@ func change_scene(scene_path: String, spawn: StringName = &"") -> void:
 	var entry_start := _now_usec()
 	var stats := {"scene_path": scene_path, "budget_ms": HIDDEN_FRAME_BUDGET_MS}
 	ResourceLoader.load_threaded_request(scene_path)
+	change_started.emit(scene_path)
 	_start_font_warm(stats)
 	await _fade_to(1.0)
 	while ResourceLoader.load_threaded_get_status(scene_path) == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
@@ -254,6 +265,17 @@ func _wait_for_reveal(stats: Dictionary) -> void:
 		)
 	for w in judge_reveal_wait(stats, frames, _ms_since(start), worst):
 		push_warning("%s: %s: %s" % [LOG_PREFIX, w, stats.get("scene_path", "")])
+
+
+## ADR 0111: the summed swap_wait_progress() of the swap `holders` that report loading work (ResidentLoads), or -1
+## when none does. Only such a holder keeps a swap waiting past PREWARM_WAIT_MAX_FRAMES; ShaderPrewarm's
+## wait_progress() counts frames (the reveal's stall check), not work, so it never extends the swap.
+static func swap_progress(holders: Array[Object]) -> int:
+	var total := -1
+	for h in holders:
+		if h != null and h.has_method(&"swap_wait_progress"):
+			total = maxi(total, 0) + int(h.call(&"swap_wait_progress"))
+	return total
 
 
 ## M2-ARC-08: the summed wait_progress() of `holders` that report one (a BootCard; others count 0).
@@ -315,7 +337,18 @@ func _swap(
 		push_error("SceneRouter: failed to instantiate %s" % scene_path)
 		return
 	var waited := 0
-	while waited < PREWARM_WAIT_MAX_FRAMES and not swap_holders().is_empty():
+	var wait_start := _now_usec()
+	var last_move := wait_start
+	var progress := swap_progress(swap_holders())
+	while not swap_holders().is_empty():
+		var now := swap_progress(swap_holders())
+		var clock := _now_usec()
+		if now != progress:
+			progress = now
+			last_move = clock
+		var stalled_ms := (clock - last_move) / USEC_PER_MSEC if now >= 0 else INF  # no loader: the frame cap only
+		if not swap_wait_continues(waited, stalled_ms, (clock - wait_start) / USEC_PER_MSEC):
+			break
 		await get_tree().process_frame
 		waited += 1
 	stats["prewarm_wait_frames"] = waited
@@ -348,6 +381,16 @@ func _swap(
 	_record(stats, frames)
 
 
+## Whether a swap held by its holders (hold_swap) waits another frame: always up to PREWARM_WAIT_MAX_FRAMES;
+## past that only while a loading holder still makes progress (its swap_wait_progress() moved within the last
+## SWAP_STALL_MS of wall time; ADR 0111: a zone's threaded loads, ResidentLoads, where one model can take a second
+## and more), and never past SWAP_WAIT_CAP_MS in all. Wall time, not frames: frames under the fade are uncapped.
+static func swap_wait_continues(waited: int, stalled_ms: float, waited_ms: float) -> bool:
+	if waited < PREWARM_WAIT_MAX_FRAMES:
+		return true
+	return waited_ms < SWAP_WAIT_CAP_MS and stalled_ms < SWAP_STALL_MS
+
+
 ## Without split_swap, where the first measured frame starts: at the swap's start, unless frames were
 ## waited for the prewarm. Those were rendered (and are counted in prewarm_wait_frames), so frame 0
 ## starts after them, not before (review-sweep-J S1, M1-RND-22).
@@ -369,10 +412,12 @@ func _instantiate(packed: PackedScene, stats: Dictionary) -> Node:
 	var holder: Array[Node] = []
 	stats["instantiated_on_thread"] = instantiate_on_thread
 	if instantiate_on_thread:
+		ShaderGlobals.hold_writes()  # M3-HER-1151: no global write while the thread creates the zone's materials
 		var task := WorkerThreadPool.add_task(func() -> void: holder.append(packed.instantiate()))
 		while not WorkerThreadPool.is_task_completed(task):
 			await get_tree().process_frame
 		WorkerThreadPool.wait_for_task_completion(task)
+		ShaderGlobals.release_writes()
 	else:
 		holder.append(packed.instantiate())
 	stats["instantiate_ms"] = _ms_since(t)

@@ -43030,7 +43030,12 @@
     0.0,
     -760.0
    ],
-   "y": 250.0
+   "y": 250.0,
+   "kit_dir": "res://assets/environments/kits/pemakar/",
+   "materials": {
+    "kit_plume": "pemakar_plume_night"
+   },
+   "materials_dir": "res://game/levels/ch05/pemakar/"
   },
   {
    "piece": "frangipani_b",

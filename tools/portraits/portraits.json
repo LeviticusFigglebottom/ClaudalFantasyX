@@ -1,5 +1,5 @@
 {
-  "doc": "Menu portrait manifest (M2-MNU-301, ADR 0120). tools/portraits/render.sh renders every entry with tools/portraits/portrait_renderer.tscn on the lavapipe wrapper, one Godot process per entry. 'heroes': each hero's review stage (the characters track's AshaStage scene: model, hero materials, shader tier, face-pose table, lights) posed once per emotion tag of game/data/dialogue/emotions.json and seen through the stage's Face camera with this file's framing (camera keys override the defaults'); the nodes in hide_nodes and the sky are dropped for a transparent background. 'model', 'materials' and 'face_poses' name the sources the stage uses (tests check they agree; the PROVENANCE rows cite them). Output: <out_dir>/<id>_<emotion>.png at 'size', drawn at size x supersample and Lanczos-reduced, after 'settle_frames' frames (deterministic: pinned wind, no TAA). 'creatures' is the bestiary's list (M2-MNU-302): one entry per creatures.json row (its id and its battle actor 'scene', which enemies.json's `model` names), rendered alone in a small world built from 'creature_stage' (environment keys set on a new Environment, colours as [r, g, b(, a)]; directional 'lights' with yaw_deg relative to the camera's yaw, 0 = from the camera's side, 180 = from behind; dark-blue panels want the cool rims; an entry's 'light_scale' multiplies the energy of the lights whose names start with each key (e.g. {\"rim\": 4.0}) for the glossy black creatures, which otherwise sink into the panel), held and framed from creatures.json's `portrait` block (CreatureFraming.hold and frame_fit); an entry's own 'portrait' keys override that block where a framing reads badly at menu size (wide fliers and tall shapes cropped, flat ones seen edge-on). Output <out_dir>/<id>.png, same size and supersample; the bestiary finds an enemy's picture through its model's creature id (CreaturePortraits).",
+  "doc": "Menu portrait manifest (M2-MNU-301, ADR 0120). tools/portraits/render.sh renders every entry with tools/portraits/portrait_renderer.tscn on the lavapipe wrapper, one Godot process per entry. 'heroes': each hero's review stage (the characters track's AshaStage scene: model, hero materials, shader tier, face-pose table, lights) posed once per emotion tag of game/data/dialogue/emotions.json (a speaking extra whose stage has no face-pose table, such as the Stillguard, has 'face_poses' \"\" and the neutral portrait alone) and seen through the stage's Face camera with this file's framing (camera keys override the defaults'); the nodes in hide_nodes and the sky are dropped for a transparent background. 'model', 'materials' and 'face_poses' name the sources the stage uses (tests check they agree; the PROVENANCE rows cite them). Output: <out_dir>/<id>_<emotion>.png at 'size', drawn at size x supersample and Lanczos-reduced, after 'settle_frames' frames (deterministic: pinned wind, no TAA). 'creatures' is the bestiary's list (M2-MNU-302): one entry per creatures.json row (its id and its battle actor 'scene', which enemies.json's `model` names), rendered alone in a small world built from 'creature_stage' (environment keys set on a new Environment, colours as [r, g, b(, a)]; directional 'lights' with yaw_deg relative to the camera's yaw, 0 = from the camera's side, 180 = from behind; dark-blue panels want the cool rims; an entry's 'light_scale' multiplies the energy of the lights whose names start with each key (e.g. {\"rim\": 4.0}) for the glossy black creatures, which otherwise sink into the panel), held and framed from creatures.json's `portrait` block (CreatureFraming.hold and frame_fit); an entry's own 'portrait' keys override that block where a framing reads badly at menu size (wide fliers and tall shapes cropped, flat ones seen edge-on). Output <out_dir>/<id>.png, same size and supersample; the bestiary finds an enemy's picture through its model's creature id (CreaturePortraits).",
   "defaults": {
     "size": [256, 256],
     "supersample": 2,
@@ -86,6 +86,226 @@
       "model": "res://assets/characters/sefir/sefir.glb",
       "materials": "res://assets/characters/sefir/materials/",
       "face_poses": "res://game/levels/_tests/characters/sefir/sefir_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "stillguard",
+      "stage": "res://game/levels/_tests/characters/stillguard/stillguard_a_stage.tscn",
+      "model": "res://assets/characters/stillguard_a/stillguard_a.glb",
+      "materials": "res://assets/characters/stillguard_a/materials/",
+      "face_poses": "",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral"],
+      "camera": {}
+    },
+    {
+      "id": "ivo",
+      "stage": "res://game/levels/_tests/characters/stillguard/ivo_stage.tscn",
+      "model": "res://assets/characters/ivo/ivo.glb",
+      "materials": "res://assets/characters/ivo/materials/",
+      "face_poses": "",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral"],
+      "camera": {}
+    },
+    {
+      "id": "tavi",
+      "stage": "res://game/levels/_tests/characters/villagers/tavi_stage.tscn",
+      "model": "res://assets/characters/villagers/tavi/tavi.glb",
+      "materials": "res://assets/characters/villagers/tavi/materials/",
+      "face_poses": "res://game/levels/_tests/characters/villagers/tavi_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "kell",
+      "stage": "res://game/levels/_tests/characters/villagers/kell_stage.tscn",
+      "model": "res://assets/characters/villagers/kell/kell.glb",
+      "materials": "res://assets/characters/villagers/kell/materials/",
+      "face_poses": "res://game/levels/_tests/characters/villagers/kell_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "garo",
+      "stage": "res://game/levels/_tests/characters/villagers/garo_stage.tscn",
+      "model": "res://assets/characters/villagers/garo/garo.glb",
+      "materials": "res://assets/characters/villagers/garo/materials/",
+      "face_poses": "res://game/levels/_tests/characters/villagers/garo_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "neme",
+      "stage": "res://game/levels/_tests/characters/villagers/neme_stage.tscn",
+      "model": "res://assets/characters/villagers/neme/neme.glb",
+      "materials": "res://assets/characters/villagers/neme/materials/",
+      "face_poses": "res://game/levels/_tests/characters/villagers/neme_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "osu",
+      "stage": "res://game/levels/_tests/characters/villagers/osu_stage.tscn",
+      "model": "res://assets/characters/villagers/osu/osu.glb",
+      "materials": "res://assets/characters/villagers/osu/materials/",
+      "face_poses": "res://game/levels/_tests/characters/villagers/osu_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "fenn",
+      "stage": "res://game/levels/_tests/characters/villagers/fenn_stage.tscn",
+      "model": "res://assets/characters/villagers/fenn/fenn.glb",
+      "materials": "res://assets/characters/villagers/fenn/materials/",
+      "face_poses": "res://game/levels/_tests/characters/villagers/fenn_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "hobb",
+      "stage": "res://game/levels/_tests/characters/villagers/hobb_stage.tscn",
+      "model": "res://assets/characters/villagers/hobb/hobb.glb",
+      "materials": "res://assets/characters/villagers/hobb/materials/",
+      "face_poses": "res://game/levels/_tests/characters/villagers/hobb_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "marra",
+      "stage": "res://game/levels/_tests/characters/villagers/marra_stage.tscn",
+      "model": "res://assets/characters/villagers/marra/marra.glb",
+      "materials": "res://assets/characters/villagers/marra/materials/",
+      "face_poses": "res://game/levels/_tests/characters/villagers/marra_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "sabe",
+      "stage": "res://game/levels/_tests/characters/villagers/sabe_stage.tscn",
+      "model": "res://assets/characters/villagers/sabe/sabe.glb",
+      "materials": "res://assets/characters/villagers/sabe/materials/",
+      "face_poses": "res://game/levels/_tests/characters/villagers/sabe_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "ione",
+      "stage": "res://game/levels/_tests/characters/villagers/ione_stage.tscn",
+      "model": "res://assets/characters/villagers/ione/ione.glb",
+      "materials": "res://assets/characters/villagers/ione/materials/",
+      "face_poses": "res://game/levels/_tests/characters/villagers/ione_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "skipper_sadi",
+      "stage": "res://game/levels/_tests/characters/villagers/skipper_sadi_stage.tscn",
+      "model": "res://assets/characters/villagers/skipper_sadi/skipper_sadi.glb",
+      "materials": "res://assets/characters/villagers/skipper_sadi/materials/",
+      "face_poses": "res://game/levels/_tests/characters/villagers/skipper_sadi_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "poolkeeper",
+      "stage": "res://game/levels/_tests/characters/villagers/poolkeeper_stage.tscn",
+      "model": "res://assets/characters/villagers/poolkeeper/poolkeeper.glb",
+      "materials": "res://assets/characters/villagers/poolkeeper/materials/",
+      "face_poses": "res://game/levels/_tests/characters/villagers/poolkeeper_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "scaleman",
+      "stage": "res://game/levels/_tests/characters/villagers/scaleman_stage.tscn",
+      "model": "res://assets/characters/villagers/scaleman/scaleman.glb",
+      "materials": "res://assets/characters/villagers/scaleman/materials/",
+      "face_poses": "res://game/levels/_tests/characters/villagers/scaleman_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "ferrymaster",
+      "stage": "res://game/levels/_tests/characters/villagers/ferrymaster_stage.tscn",
+      "model": "res://assets/characters/villagers/ferrymaster/ferrymaster.glb",
+      "materials": "res://assets/characters/villagers/ferrymaster/materials/",
+      "face_poses": "res://game/levels/_tests/characters/villagers/ferrymaster_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "tender",
+      "stage": "res://game/levels/_tests/characters/villagers/tender_stage.tscn",
+      "model": "res://assets/characters/villagers/tender/tender.glb",
+      "materials": "res://assets/characters/villagers/tender/materials/",
+      "face_poses": "res://game/levels/_tests/characters/villagers/tender_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "reed",
+      "stage": "res://game/levels/_tests/characters/villagers/reed_stage.tscn",
+      "model": "res://assets/characters/villagers/reed/reed.glb",
+      "materials": "res://assets/characters/villagers/reed/materials/",
+      "face_poses": "res://game/levels/_tests/characters/villagers/reed_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "netmender",
+      "stage": "res://game/levels/_tests/characters/villagers/netmender_stage.tscn",
+      "model": "res://assets/characters/villagers/netmender/netmender.glb",
+      "materials": "res://assets/characters/villagers/netmender/materials/",
+      "face_poses": "res://game/levels/_tests/characters/villagers/netmender_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "fisher",
+      "stage": "res://game/levels/_tests/characters/villagers/fisher_stage.tscn",
+      "model": "res://assets/characters/villagers/fisher/fisher.glb",
+      "materials": "res://assets/characters/villagers/fisher/materials/",
+      "face_poses": "res://game/levels/_tests/characters/villagers/fisher_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "vendor",
+      "stage": "res://game/levels/_tests/characters/villagers/vendor_stage.tscn",
+      "model": "res://assets/characters/villagers/vendor/vendor.glb",
+      "materials": "res://assets/characters/villagers/vendor/materials/",
+      "face_poses": "res://game/levels/_tests/characters/villagers/vendor_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "child",
+      "stage": "res://game/levels/_tests/characters/villagers/child_stage.tscn",
+      "model": "res://assets/characters/villagers/child/child.glb",
+      "materials": "res://assets/characters/villagers/child/materials/",
+      "face_poses": "res://game/levels/_tests/characters/villagers/child_face_poses.json",
       "out_dir": "res://assets/ui/portraits/heroes",
       "emotions": ["neutral", "smile", "determined", "worried", "grief"],
       "camera": {}

@@ -1,0 +1,143 @@
+{
+  "version": 1,
+  "doc": "M3-C09-03: the Ebbing's motes (EbbingMotes, game/vfx/ebbing/ebbing_motes.gd; docs/kb/tech/ebbing.md). Ch9's held fields by the .dlg cue's mark (`@vfx glimmer_held at=<mark>`), every one HELD (act1_ch09.md §9 rule 1: no release, no gold, nothing rises). Field extents are GlimmerField's (disc: x radius, y half height); amount is its amount_multiplier over glimmer.json's base, tier-scaled by the field. `ends` stops earlier fields when a later one starts (their motes run out their life and sink).",
+  "sea_direction": [
+    0.1,
+    0.0,
+    0.995
+  ],
+  "_sea_note": "Out of the harbour mouth: from the harbour_stream mark toward harbour_mouth (+Z, a little east), the heading the Ch8 storm came in on.",
+  "water_height_m": -0.55,
+  "_water_note": "The zone's Tide water_height_y: held motes sink through it and are absorbed; the still-water mirror plane.",
+  "staff": {
+    "_note": "One attractor on the lantern-staff's head, following Asha (a StaffHead node the rig puts on her body at head_offset_m, raised). Pull low enough that the stream lags and sinks behind it (item 3; tests/unit/test_ebbing_motes.gd checks the median heading stays down at the staff's highest point).",
+    "actor": "asha",
+    "head_offset_m": [
+      0.25,
+      2.35,
+      0.1
+    ],
+    "strength": 0.22,
+    "radius_m": 1.4,
+    "swirl": 0.5,
+    "half_height_m": 0.3
+  },
+  "mourners": {
+    "_note": "Grief anchors on the kneeling mourners (item 4): slow orbits, and as the staff passes within pass_radius_m each one's pull eases to nothing over ramp_s, so the motes leave reluctantly.",
+    "actors": [
+      "mourner_1",
+      "mourner_2",
+      "mourner_3",
+      "mourner_4"
+    ],
+    "strength": 0.7,
+    "radius_m": 0.8,
+    "swirl": 0.6,
+    "half_height_m": 0.5,
+    "pass_radius_m": 3.5,
+    "ramp_s": 4.0
+  },
+  "fields": {
+    "lowtown_motes": {
+      "shape": "disc",
+      "extents_m": [
+        16.0,
+        2.0,
+        0.0
+      ],
+      "amount": 1.6,
+      "height_bias": 2.8,
+      "reflection": true
+    },
+    "strand_motes": {
+      "shape": "box",
+      "extents_m": [
+        12.0,
+        1.8,
+        5.0
+      ],
+      "amount": 1.6,
+      "height_bias": 2.4,
+      "staff": true
+    },
+    "mourners_motes": {
+      "shape": "box",
+      "extents_m": [
+        6.0,
+        1.2,
+        3.0
+      ],
+      "amount": 0.6,
+      "height_bias": 1.4,
+      "staff": true,
+      "mourners": true
+    },
+    "mourner_hand": {
+      "shape": "box",
+      "extents_m": [
+        1.0,
+        0.6,
+        1.0
+      ],
+      "amount": 0.15,
+      "mourners": true
+    },
+    "harbour_stream": {
+      "shape": "box",
+      "extents_m": [
+        6.0,
+        2.0,
+        14.0
+      ],
+      "amount": 2.6,
+      "height_bias": 3.0,
+      "reflection": true,
+      "staff": true,
+      "ends": [
+        "lowtown_motes"
+      ]
+    },
+    "stream_overhead": {
+      "shape": "box",
+      "extents_m": [
+        5.0,
+        2.0,
+        10.0
+      ],
+      "amount": 1.8,
+      "height_bias": 2.8,
+      "reflection": true,
+      "staff": true
+    },
+    "wallhead_motes": {
+      "_note": "N13, the cutaway: seaward behind Kerrid, no attractor at all and not the scene focus (item 8).",
+      "shape": "box",
+      "extents_m": [
+        10.0,
+        1.2,
+        3.0
+      ],
+      "amount": 1.0,
+      "height_bias": 2.0,
+      "focus": false
+    },
+    "harbour_mouth": {
+      "shape": "box",
+      "extents_m": [
+        8.0,
+        1.5,
+        12.0
+      ],
+      "amount": 2.0,
+      "height_bias": 3.0,
+      "reflection": true,
+      "ends": [
+        "strand_motes",
+        "mourners_motes",
+        "mourner_hand",
+        "wallhead_motes"
+      ]
+    }
+  },
+  "end_fade_s": 14.0
+}

@@ -12,7 +12,7 @@
     {"op": "cue", "cue": "face", "args": ["asha", "neutral"], "kwargs": {}, "src": 11},
     {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 12},
     {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 13},
-    {"op": "cue", "cue": "mark", "args": ["asha", "stair_head_on", "walk"], "kwargs": {}, "src": 14}
+    {"op": "cue", "cue": "mark", "args": ["asha", "stair_head_on", "walk"], "kwargs": {"via": "way_approach_top"}, "src": 14}
    ]
   }
  }

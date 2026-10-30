@@ -32,14 +32,14 @@ Neme [sad]: Eat when they feed you. #line:ch04_dawn_001
 Asha [soft_smile]: I will. #line:ch04_dawn_002
 @wait 1.0
 @camera C01 grade=ch02
-@mark toma causeway_toma walk
-@mark asha causeway_asha walk
+@mark toma causeway_toma walk via=wall_away,way_wall_east,way_rail_gap,way_flats
+@mark asha causeway_asha walk via=wall_away,way_wall_east,way_rail_gap,way_flats
 @mark rhen causeway_rhen walk
-@wait 6.0
+@wait 14.0
 @anim rhen look_back
 @wait 1.5
 @camera C02 grade=ch02
-@wait 3.0
+@wait 18.0
 @fade out 2.0
 @letterbox off
 ===

@@ -13,7 +13,9 @@
       {"set": "ch04_started"},
       {"party": {"party": ["rhen", "asha", "toma"], "reserve": []}},
       {"play": "ch04_lamps_to_the_wall"},
-      {"zone": "refresh_states"}
+      {"zone": "refresh_states"},
+      {"zone": "place_actor", "args": ["toma", "table_lane"]},
+      {"zone": "place_actor", "args": ["neme", "neme_table"]}
      ]
     }
    ],
@@ -29,10 +31,17 @@
     "shell_set": {
      "when": {"set": ["ch04_feast_neme"], "unset": ["ch04_shell_set"]},
      "steps": [
+      {"zone": "place_actor", "args": ["osu", "wall_osu"]},
+      {"zone": "place_actor", "args": ["neme", "wall_neme"]},
+      {"zone": "place_actor", "args": ["toma", "wall_toma"]},
+      {"zone": "place_actor", "args": ["vendor", "wall_vendor"]},
+      {"zone": "place_actor", "args": ["fisher", "wall_fisher"]},
       {"play": "ch04_shell_is_set"},
       {"set": "ch04_shell_set"},
       {"zone": "refresh_states"},
       {"place": "DockEnd"},
+      {"zone": "place_actor", "args": ["asha", "dock_asha_from"]},
+      {"zone": "place_actor", "args": ["toma", "dock_toma_from"]},
       {"play": "ch04_dock_in_the_dark"},
       {"set": "ch04_dock_comforted"},
       {"zone": "refresh_states"},
@@ -47,6 +56,10 @@
      "when": {"set": ["ch04_dock_comforted"], "unset": ["ch04_left_haluna"]},
      "steps": [
       {"place": "WallDawn"},
+      {"zone": "place_actor", "args": ["asha", "wall_gap"]},
+      {"zone": "place_actor", "args": ["toma", "wall_toma"]},
+      {"zone": "place_actor", "args": ["neme", "dawn_neme"]},
+      {"zone": "show_actor", "args": ["ysolde", false]},
       {"play": "ch04_long_way_round"},
       {"set": "ch04_left_haluna"},
       {"go": {"location": "ch04/brightwater_ferry", "spawn": "Landing"}}

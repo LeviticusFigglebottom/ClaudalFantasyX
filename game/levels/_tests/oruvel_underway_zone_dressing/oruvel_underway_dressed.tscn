@@ -15,9 +15,9 @@ fov_deg = 60
 [sub_resource type="Resource" id="ShotU03"]
 script = ExtResource("3_shot")
 id = &"U03"
-position = Vector3(40, 2.6, 14)
-look_at = Vector3(40, 1.4, 8)
-fov_deg = 50
+position = Vector3(37.2, 2.1, 8.6)
+look_at = Vector3(40, 1.45, 11.6)
+fov_deg = 45
 
 [sub_resource type="Resource" id="ShotU06"]
 script = ExtResource("3_shot")

@@ -2,8 +2,9 @@
 id: M3-RND-26
 title: The Reefball water drop's look (inside the Tamsule Bell), on the agreed volume
 role: rendering
-status: todo
-owner_session: ""
+status: review
+reviewer: art (env-art, the Tamsule Bell kit's owner)
+owner_session: "env-art-b (session_01F3vrUNt6trAMrjeYavaDNC, claude/env-art-b; Lead 2026-10-28: rendering's zone and kit looks go to env-art-b)"
 depends_on: [M3-ENV-01]
 milestone: M3
 request-from: environment
@@ -23,14 +24,14 @@ weep column of radius 0.8 to 0.6 m down to the catch-pool water at y 0.35; >= 2.
 `game/levels/_tests/tamsule_bell_kit/tamsule_bell_kit.tscn` (`reefball_drop_proxy.glb`, tagged PLACEHOLDER).
 
 ## Acceptance criteria
-- [ ] The contract is accepted or amended in writing (pc-gpu.md and this file). An amendment that changes the size
+- [x] The contract is accepted or amended in writing (pc-gpu.md and this file). An amendment that changes the size
       or the anchor goes back to Environment, because the bell's inner profile and the clearance test move with it.
-- [ ] N-12's look: perfectly still at rest (bound light holds it: no ripples until bodies move it), a slightly
+- [x] N-12's look: perfectly still at rest (bound light holds it: no ripples until bodies move it), a slightly
       flattened drop rather than a perfect sphere, the weep column falling from its lowest point, light through it
       casting caustics on the catch-pool, the posts and the bell's underside (the shade disc under the Bell is the
       zone's value idea, tamsule_bell.md §0). The colour script's ch07 row: the drop pushed cyan, caustics under the
       Bell allowed to clip to white. Any glimmer in it obeys the bound-light rule (`glimmer_bound`, steady).
-- [ ] It replaces `Drop` under `SphereAnchor` in the preview scene, viewed in T01, T02, T03 and T05; the two
+- [x] It replaces `Drop` under `SphereAnchor` in the preview scene, viewed in T01, T02, T03 and T05; the two
       registered shots (`tamsule_t01_bell_from_the_mouth`, `tamsule_t03_oruvel_moorings`) re-approved after viewing.
 - [ ] Cost measured on the PC GPU presets (it is seen through 48 glass bays and from beneath).
 
@@ -43,6 +44,24 @@ weep column of radius 0.8 to 0.6 m down to the catch-pool water at y 0.35; >= 2.
 
 - **Renumbered (Lead merge, big8, 2026-10-24):** filed as M3-RND-01, which collided with the PC's M3-RND-01 (the Reefball water sphere, built and merged at big7). Now M3-RND-26, the next id free across all branches.
 
+## Notes (env-art-b, 2026-10-28, owning it for Rendering by the Lead's decision)
+- **The contract is accepted unchanged** (rendering's answer; the PC's pc-gpu.md is the PC's to edit, so it's here
+  and in env-art-b.md): the 14.0 × 11.5 m spheroid at `SphereAnchor` (0, 31.5, 0), weep point y 20.0, surface y 43.0.
+- **The look:** `WaterSphereRig` with `profile = "tamsule_drop"` (`game/data/vfx/water_sphere.json` `profiles`; docs
+  `docs/kb/tech/water_sphere.md` "The Tamsule Bell's held drop"). The rig's passes now take a flattened spheroid
+  (`sphere_flatten`), the drop is still (no swell, a steady web), pushed cyan (turquoise_shallow over 18 m), glows
+  with its bound light (glimmer_bound, steady), and throws its web under it on the pool, its coping and the posts, and
+  the pool's reflected web on the faces turned down under the bell, allowed to clip to white. The Reefball arena's
+  ball is unchanged (the empty profile).
+- **The weep column** is the contract's now: 0.8 → 0.6 m, from the pool's surface into the drop (`b_column.py`),
+  turquoise in the zones.
+- **Placed:** the preview (`SphereAnchor/Drop` is the rig, `SphereAnchor/WeepColumn` the column; `preview_scene.py`),
+  `ch07/tamsule_bell_galleries` and `ch07/tamsule` (ZoneKitDressing's new `drops` rows).
+- **Viewed** (self-rendered, lavapipe): T01, T02, T03, T05, `ch07_bell_galleries`, `ch07_bell_moorings`,
+  `ch07_tamsule_gantry`, `ch07_tamsule_mouth`. `tamsule_t01_bell_from_the_mouth` and `tamsule_t03_oruvel_moorings`
+  drift (the drop is cyan and the column wider): their re-approval is the Lead's gate (env-art-b never writes baselines).
+- **Left:** the cost on the PC presets (the last criterion), and the two baselines' re-approval.
+
 ## Review log
 
 ## Notes (env-art-b, 2026-10-28, ADR 0041)
@@ -52,3 +71,4 @@ weep column of radius 0.8 to 0.6 m down to the catch-pool water at y 0.35; >= 2.
   the contract above (a 16 m sphere cuts the bronze), and its post passes intersect the sphere analytically, so the
   node can't simply be scaled. Asks: a per-placement size (radius and vertical semi-axis) or a per-use data row, and
   the weep column. env-art-b places them in both zones the day they land.
+- **2026-10-28 (env-art-b):** the weep column is done as a static kit piece (M3-ENV-1321, at the Lead's ask under ADR 0041). It is on both Ch7 zones, and the galleries keep no greybox. Still yours: the sphere rig sized to the drop contract, and a flowing look for the column if wanted (swap its zone materials).

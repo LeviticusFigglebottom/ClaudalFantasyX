@@ -2,8 +2,8 @@
 id: M3-ENV-750
 title: "Haluna: move the two trees to their real piece names (banyan_hero, windbreak_tree) (request to slice-polish)"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: "slice-polish (session_01F3vrUPLtDQMGSRrMHJtpz1)"
 depends_on: []
 milestone: M3
 request-from: environment
@@ -25,3 +25,4 @@ commit on the zone owner's side.
       glbs, the manifest, PROVENANCE, `haluna_kit_sheet.gd`) and re-runs `tools/placeholder_audit.py`.
 
 ## Review log
+- 2026-10-28 slice-polish: done. `haluna_layout.json` (50 pieces), `haluna.tscn`'s two piece_rules, test_haluna_zone and test_post_import all use `banyan_hero` and `windbreak_tree`. Env-art: remove the placeholder-named trees from the kit (trees.py, glbs, manifest, PROVENANCE, haluna_kit_sheet.gd, test_haluna_kit). Checks: haluna 65, post_import 21, all 0 failed.

@@ -8,7 +8,7 @@
 [ext_resource type="Material" path="res://game/levels/_tests/tamsule_bell_kit/tamsule_water_material.tres" id="6_water_mat"]
 [ext_resource type="Environment" path="res://game/levels/_tests/tamsule_bell_kit/tamsule_noon_environment.tres" id="7_env"]
 [ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/sand_albedo.png" id="8_sand"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/reefball_drop_proxy.glb" id="9_drop"]
+[ext_resource type="Script" path="res://game/world/water/sphere/water_sphere_rig.gd" id="9_drop"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/boardwalk_8m.glb" id="10_boardwalk_8m"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/captain_platform.glb" id="11_captain_platform"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/catch_pool.glb" id="12_catch_pool"]
@@ -29,6 +29,7 @@
 [ext_resource type="PackedScene" path="res://assets/environments/vegetation/palm_coconut_a.glb" id="27_palm_coconut_a"]
 [ext_resource type="PackedScene" path="res://assets/environments/vegetation/palm_coconut_b.glb" id="28_palm_coconut_b"]
 [ext_resource type="PackedScene" path="res://assets/environments/vegetation/palm_coconut_c.glb" id="29_palm_coconut_c"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/weep_column.glb" id="30_weep_column"]
 
 [sub_resource type="Resource" id="ShotT01"]
 script = ExtResource("3_shot")
@@ -1249,7 +1250,12 @@ scale = Vector3(0.92, 0.92, 0.92)
 position = Vector3(0, 31.5, 0)
 gizmo_extents = 14.0
 
-[node name="Drop" parent="SphereAnchor" instance=ExtResource("9_drop")]
+[node name="Drop" type="Node3D" parent="SphereAnchor"]
+script = ExtResource("9_drop")
+profile = "tamsule_drop"
+
+[node name="WeepColumn" parent="SphereAnchor" instance=ExtResource("30_weep_column")]
+position = Vector3(0, -31.15, 0)
 
 [node name="ColumnAnchor" type="Marker3D" parent="."]
 position = Vector3(0, 20, 0)

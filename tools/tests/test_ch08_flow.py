@@ -36,6 +36,14 @@ def _block_ids(layout: dict) -> set:
     return ids
 
 
+def _with_collision(layout: dict) -> dict:
+    """The layout with its kit collision file's blocks and ramps joined (KitCollision.merge, ADR 0200)."""
+    if "collision_path" not in layout:
+        return layout
+    extra = _json(ROOT / layout["collision_path"].removeprefix("res://"))
+    return dict(layout, blocks=layout["blocks"] + extra.get("blocks", []) + extra.get("ramps", []))
+
+
 def _steps(zone: dict):
     for row in zone.get("arrive", []):
         yield from row.get("steps", [])
@@ -49,7 +57,8 @@ class Ch08FlowTest(unittest.TestCase):
         cls.chapter = _json(CHAPTER)
         cls.field = _json(FIELD)
         cls.flags = vd.declared_flags_quiet(ROOT)
-        cls.layouts = {"ch08/corrow": _json(CORROW), "ch08/coilspire": _json(COILSPIRE)}
+        zones = (("ch08/corrow", CORROW), ("ch08/coilspire", COILSPIRE))
+        cls.layouts = {loc: _with_collision(_json(p)) for loc, p in zones}
 
     def test_every_set_piece_fight_carries_the_stair_meter(self) -> None:
         seen = set()

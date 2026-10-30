@@ -384,6 +384,23 @@ When the bell dies, its motes do **not** rise. They slide seaward (held), which 
 | LUT intent | lut_ch09_ebbing: shadows deep teal-navy, motes allowed to bloom to 35% of frame, slight warm lift on Asha only (character-lit rim). No gold gain: the light that should rise is being led down. |
 | Emotional note | The most beautiful sequence of Act I, and the most wrong. Thousands of motes follow the lantern-staff sideways and down into the sea. Use glimmer_held, not lift: cyan, sinking. |
 
+#### `ch09_dawn` (B09, the dawn road; M3-C09-10, env-art-b for Rendering, 2026-10-28)
+Zone `ch09/corrow_night`, the dawn variant (`ch09_pell_joined`). Grade: `game/levels/ch08/corrow/corrow_ch09_dawn_environment.tres`, written by `tools/act1/ch09_corrow_night.py`.
+
+| Field | Value |
+|---|---|
+| Time of day | Dawn, 05:50, the storm cleared |
+| Sun | elevation 8 deg, azimuth 90 deg (east, low over the road) |
+| Key | `#FFC98A`, energy 1.1 |
+| Sky zenith / horizon (sun) / horizon (away) | `#788EA2` / `#FFC885` / `#A4A1A3`, broken cloud (coverage 0.45) lit `#FFCC99` from beneath |
+| Ambient | `#B8A899`, energy 0.9 |
+| Fog | `#C8AD94`, depth fog 0.0022, aerial perspective 0.5 |
+| Exposure | 0.9, `lut_ch08_storm` (it keeps the laterite warm) |
+| Emotional note | The last warm light of Act I before Act II's overcast (SPEC §7.2): washed, low and gold, on a wet laterite road. Nothing glows but the sun. |
+
+#### The act-break vigil (P02, the Iskarra plaza in Ch9)
+It reuses `prologue_iskarra_dusk` a few minutes deeper into the dusk: sun elevation 2 deg (1 deg lower), and Rhen's lantern practical at 0.85×. The motes are the Prologue's own (`glimmer_lift`), so the exception to rule 1 is the Prologue's light, not Ch9's. In the zone's greybox stand-in (x 300 in `ch09/corrow_night`), the vigil takes the active variant's light, which is dawn. It gets its own light when its staging is settled (M3-C09-04).
+
 ## Act II: The Truth (overcast, storm, moonlight, cold blue stone)
 
 ### Ch10 "Fen of the Kirru"
@@ -750,3 +767,4 @@ gate is the camera's height above the water it looks at). Values confirmed: the 
   no shot uses them yet. act1-chapters wires them into Ch06Zone's light rows.
 - 2026-10-27 (env-art, M3-C05-03): added the Ch5 sub-frames `ch05_harbour_dusk` (new) and `ch05_ashcrown_day` (from
   ashcrown.md's `ch05_temple`), each with an Environment, LUT and sun row (`pemakar_grades.py`). No baseline changes.
+- 2026-10-28 (env-art-b for Rendering, M3-C09-10): added the Ch9 sub-frames `ch09_dawn` (its own grade, `corrow_ch09_dawn_environment.tres`, in place of the Ch8 storm grade the dawn variant borrowed) and the act-break vigil (the Prologue's frame, 1° lower). Baselines affected: `ch09_corrow_road` (slightly warmer).
