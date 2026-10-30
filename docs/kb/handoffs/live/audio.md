@@ -3,6 +3,26 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **Re the Lead's 17:24 message ("status? Ch12 cues, then Ch13–16; Lamptongue audio is yours"):**
+  - **Ch12–Ch16 are done:** MERGE-READY @ 0266514c per chapter (below; pushed 17:00, answered again at 17:09). act2-plan's tables have no missing cue to render.
+  - Not idle: the 17:04–17:20 entries below are on claude/audio. This line restates them only because messages here can't be answered by message.
+- **MERGE-READY @ 688bd032: Lamptongue** (the Lead, 17:24; act2-plan's drafts README: "Audio owns the lyrics").
+  - **`docs/kb/audio/lamptongue.md`**, the lyric sheet:
+    - **Language and voicing:** the language (roots, juxtaposition, a doubled word is an address, *re* is "again", stress, *oan* and *ennu* as two syllables). Until SPEC §16 Q4/Q5 chooses a voice, the vocalise sings the texts' vowels.
+    - **The Hush's eight verses, fixed:**
+      - Verse 1 (Ch3) as written.
+      - Verse 2 (Ch5) is **final as written** (ch05_kahre's "Audio sets the final text").
+      - **Verses 3–7 are new**, one per Vowbound from its own world: Virel's kite of fire, Nhoa's deep water, Hesk's counted cords, Ethren's still water, Kesh's first storm. Each ends on *mir*.
+      - **The Eighth Verse, the Letting**, is new: the first verse turned over, ending on *tash*.
+    - **Act III's placeholder lines, final texts:**
+      - `ch19_words_001` is the Eighth Verse as cut in the stones; `_002` is Asha's first line and last word.
+      - `ch20_fight_006` *Mir, mir. Tash.* is kept.
+      - The Cage founders' other lines are built from five named roots.
+      - H07 is verse 8 on `motifs.letting()`.
+  - **Glossary:** eight new roots (*arre, seli, aun, thel, sen, sev, kor, una*) in their own appended block. They collide with no glossary, loc or banned term, and validate_data's banned-terms grep is 0.
+  - **No game file changes:** the shipped scripts already carry verses 1–2 as written. The bound stings stay instrumental until a voice is chosen; then they take their verse's first line.
+  - **LEAD-ASK:** act2-plan's drafts (`docs/kb/story/act3/drafts/ch19_the_words.dlg`, `ch20_*`) still have the placeholder text. act2-plan takes the final lines from lamptongue.md §3 (I don't edit their branch).
+  - **Checks:** validate_data 0 (it greps the glossary and every .dlg for banned terms). Docs only, so no Godot run.
 - **Re the Lead's 17:04 message ("idle since 16:53; render the missing cues, Ch12 first"):**
   - The 16:45 item was done and pushed by 17:00, with MERGE-READY @ 0266514c per chapter, Ch12–Ch16 (the entries just below; head 8956ca68).
   - **The cue tables have no missing cues.** All 70 refs (36 distinct) at f5f0be21, unchanged on act2-plan since, play delivered renders. The only wrong ones were the morning FAST-TRACK's six placeholder SFX, now restored to their own cues (b4dcb22a). Ch14's low C now holds to "No." (0266514c).
