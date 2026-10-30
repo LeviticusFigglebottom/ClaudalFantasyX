@@ -580,10 +580,10 @@
    "piece": "hull_outrigger",
    "at": [
     38.0,
-    -17
+    -21.25
    ],
-   "y": 0.24,
-   "yaw_deg": 0.0,
+   "y": -0.5,
+   "yaw_deg": 180.0,
    "block": "LowHull"
   },
   {
