@@ -739,6 +739,50 @@
         "hesk_dais-lod1": 36
       }
     },
+    "hm_dock_4m": {
+      "budget": [
+        2500,
+        200
+      ],
+      "bytes": 76844,
+      "lods": {
+        "hm_dock_4m": 988,
+        "hm_dock_4m-lod1": 196
+      }
+    },
+    "hm_dock_4m_open_n": {
+      "budget": [
+        2500,
+        200
+      ],
+      "bytes": 69392,
+      "lods": {
+        "hm_dock_4m_open_n": 910,
+        "hm_dock_4m_open_n-lod1": 156
+      }
+    },
+    "hm_dock_4m_open_ns": {
+      "budget": [
+        2500,
+        200
+      ],
+      "bytes": 61912,
+      "lods": {
+        "hm_dock_4m_open_ns": 832,
+        "hm_dock_4m_open_ns-lod1": 116
+      }
+    },
+    "hm_dock_4m_open_s": {
+      "budget": [
+        2500,
+        200
+      ],
+      "bytes": 69392,
+      "lods": {
+        "hm_dock_4m_open_s": 910,
+        "hm_dock_4m_open_s-lod1": 156
+      }
+    },
     "hm_far_flotilla": {
       "budget": [
         9000,
@@ -761,6 +805,28 @@
         "hm_lashed_hulls-lod1": 368
       }
     },
+    "hm_oil_lamp": {
+      "budget": [
+        600,
+        80
+      ],
+      "bytes": 17432,
+      "lods": {
+        "hm_oil_lamp": 102,
+        "hm_oil_lamp-lod1": 74
+      }
+    },
+    "hm_ship": {
+      "budget": [
+        14000,
+        900
+      ],
+      "bytes": 127084,
+      "lods": {
+        "hm_ship": 2164,
+        "hm_ship-lod1": 424
+      }
+    },
     "hm_signal_lamp": {
       "budget": [
         1500,
@@ -770,6 +836,17 @@
       "lods": {
         "hm_signal_lamp": 136,
         "hm_signal_lamp-lod1": 68
+      }
+    },
+    "hm_supper_table": {
+      "budget": [
+        1500,
+        150
+      ],
+      "bytes": 34012,
+      "lods": {
+        "hm_supper_table": 392,
+        "hm_supper_table-lod1": 104
       }
     },
     "hm_tide_wheel": {
@@ -1573,6 +1650,17 @@
       "lods": {
         "pursuit_barge": 1956,
         "pursuit_barge-lod1": 484
+      }
+    },
+    "pyre_raft": {
+      "budget": [
+        2500,
+        320
+      ],
+      "bytes": 63796,
+      "lods": {
+        "pyre_raft": 628,
+        "pyre_raft-lod1": 288
       }
     },
     "quellan_house": {

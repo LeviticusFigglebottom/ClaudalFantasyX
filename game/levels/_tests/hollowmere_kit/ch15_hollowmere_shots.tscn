@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/act1_zones/act1_zone_rig.gd" id="1_rig"]
+[ext_resource type="PackedScene" path="res://game/levels/ch17/hollowmere/hollowmere.tscn" id="2_zone"]
+
+[node name="Ch15HollowmereShots" type="Node3D"]
+script = ExtResource("1_rig")
+zone_scene = ExtResource("2_zone")
+views = {
+"Arrival": [[-1.0, 2.6, 2.0], [40.0, 1.5, -10.0], 45.0],
+"Dock": [[20.0, 1.7, 0.5], [40.0, 1.5, 0.0], 50.0],
+"Lanes": [[20.0, 2.0, -12.0], [28.0, 2.0, -40.0], 50.0],
+"Pyre": [[56.0, 1.6, 0.5], [66.0, 0.0, 0.0], 50.0],
+"Supper": [[37.5, 1.6, 1.3], [41.4, 0.5, -0.9], 50.0]
+}
