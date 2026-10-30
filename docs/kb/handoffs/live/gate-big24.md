@@ -47,3 +47,11 @@ GATE-BUILT @ 019596bb (merge tip; this log commit sits on top)
   The runtime fixes compose: ui's in `resident_loads.gd`, hero-integration's in `scene_router.gd`.
 - Re-gated: re-import, boot, and the 46 test files this merge touches (scene_router/field/shore users), run by me after my lane A.
 - Characters' jog (b344b974): pushed at 14:15 but not yet MERGE-READY; it will be merged into big24 the moment it is.
+- Per the Lead (14:28), also merged:
+  - claude/creatures @ 6a4cbe78 (the Kirru crowd; the big23 test_resident_loads FAST-TRACK: Haluna's scene_loads.json regenerated).
+    `tools/dev/blender_builds.json` conflicted where both sides appended new jobs (ours oruvel_seabed, theirs four crowd_kirru_*);
+    both kept, 147 jobs, no duplicate id.
+  - claude/env-art-b @ 04ad9b5d (MERGE-READY @ 02640c97, Pemakar's shore walls). Clean; a local import-written
+    test_battle_screen_spread.gd.uid was removed so the committed one wins.
+  - Checks after these: validate_data 0/0 · taskboard clean · gdlint and gdformat clean (1051 files) · no new duplicate PROVENANCE rows.
+  - Re-gate list: 49 files (the hero-integration 46 plus 3 for these merges).
