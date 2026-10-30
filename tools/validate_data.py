@@ -259,6 +259,11 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
             rep.err(f"{w}: currency must be a non-negative int")
         if "delay_immune" in e and not isinstance(e["delay_immune"], bool):
             rep.err(f"{w}: delay_immune must be true or false")
+        if "answered_by" in e and e["answered_by"] not in char_ids:  # M4-A2P-023
+            rep.err(f"{w}: answered_by '{e['answered_by']}' is not a character")
+        for ph in e.get("phases", []):
+            if "when_down" in ph and ph["when_down"] not in enemy_ids:
+                rep.err(f"{w}: phase {ph.get('id')} when_down '{ph['when_down']}' is not an enemy")
         charged = {str(s.get("charge", {}).get("skill")) for s in skills if s["id"] in own and s.get("charge")}
         for part in e.get("parts", []):  # M4-A2P-022: a part is a charge one of its own skills gathers
             if part not in charged:
@@ -2040,6 +2045,7 @@ BOSS_PHASE_STATS = {"strength", "magic", "defense", "magic_defense", "agility", 
 BOSS_PHASE_KEYS = {"id", "at_hp_pct", "name_key", "prompt_key", "skills", "ai", "affinities", "stats",
                    "delay_immune", "field", "spawn", "remove"}
 BOSS_PHASE_KEYS |= {"untargetable", "damage_immune", "spawn_bound", "field_rules"}  # M3-CMB-01 (set pieces)
+BOSS_PHASE_KEYS.add("when_down")  # M4-A2P-023: the phase comes when that enemy is down (BattleParts)
 
 
 def _boss_ai_errors(ai: object, w: str, own: set[str], status_ids: set[str]) -> list[str]:
