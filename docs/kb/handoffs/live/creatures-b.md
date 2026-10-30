@@ -903,3 +903,19 @@ farthest any bone moves on screen from the idle's first frame, and its peak spee
 - Moll (the Inquisitor) is the characters track's actor, so its clips are outside this measure.
 - Stagger and phase tells were all clear: the phase clips move 88 to 849 px. What hides them in play is the
   phase-moment cut (battle-presentation, traced above), not the clips.
+- **The Vowbound summon passes: COMPLETE** (all seven, every skill once plus the finisher, in the mounted Act II
+  fights). All clips read on their bodies:
+  - **Ilun** (ch10): Brine Lash, Tidal Ward, the Floodnet finisher (the net-wings spread).
+  - **Nhoa** (ch10): Silt Fall, Deep Well, Echo, the Farewell Tide finisher (she lifts, arms raised).
+  - **Kahre** (ch11): Forge Bolt, the Last Strike finisher. Its mid-clip still looks like Forge Bolt's, so I
+    measured both: Last Strike peaks 2.8 m from rest over 2.8 s with two strikes, Forge Bolt 1.5 m over 1.6 s.
+  - **Hesk** (ch11): Knot Light, Cord Lift (`cleanse`), Mending, the Pass Cord finisher, and the guard.
+  - **Virel**, **Ethren**, **Kesh** (ch12): as above.
+  - **Fixed in my lane:** Kesh's rise (021ce740). **For battle-presentation:** the normal call's hold (1.3 s after
+    the 0.95 s delay) is shorter than the 2.6 s rises; Kesh's 4.2 m (and The Seven's lift) leave the frame at the
+    vowbound slot; the slot stands before the default camera.
+  - The effects on these skills are battle-presentation's (big25+); I re-run the same passes to view them on the
+    bodies once they are on the integration branch (the agreed split).
+- **BACKLOG EMPTY (19:40):** the Act I and Act II boss passes, the Act I feel pass (de6c131b) and the Vowbound summon
+  passes are done, with every fix in my lane MERGE-READY. Next when they land: battle-presentation's Act II effects
+  (view them on the bodies), the Abiding guard's actor, the flat-engine's row, and the Ch13+ boss encounters.
