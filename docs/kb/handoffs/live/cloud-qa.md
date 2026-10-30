@@ -167,9 +167,37 @@ Same probes and box. Milliseconds from Return, big27 → big28:
   - **Real finding, owner ui-menus + act1-chapters: Ch6 Brine Shoals and Ch8 (Corrow, the Coilspire) have no objective
     rows in `objectives.json`.** On arriving in Ch6 the objective line reads "No errand calls just now. The road will
     keep." with no marker. Every other Act I zone has 1–7 rows (ch09/corrow_night has 4).
-  - **Ch6 → the end card** is running from the F8 Ch6 start (`--chapter=ch06`). Where there's no objective, the probe now
-    steps through the zone's available story triggers. Results below when done.
-  - The Ch1–Ch6 log is in the scratchpad only (play_full_ch1_ch6.log); the lines above are its summary.
+  - **Ch6 → the end card, on c646c3a8: REACHED.** Pieced together from F8 chapter starts once the fresh run reached Ch6:
+    - **Ch6 (F8 start), then on through Ch7 into Ch8 in one run, played.** The midday, Liss sheltered, the Inquisitor
+      fight (Moll yields), on to Tamsule, the bell galleries, the Tidecup match, Tavi withdrawn, then Ch8: Corrow, Ivo,
+      the save shrine, the stair, the Coilspire path fight, feeding the beacon.
+    - **The Coilspire door: not passed by the probe.** Its touch beat fires when the hero is placed on it fresh
+      (headless check), but not in the probe's flow after the beacon scene. Inside is the flue-key puzzle and the two
+      moth fights, which guided hops can't play anyway. Ch8's interior, the crown binding and the beacon opening are
+      unplayed by this smoke.
+    - **Ch9 (F8 start) → the Act I end card, played: 216 s, 59 flags.** The Ebbing dance (two "hold to raise the
+      staff" prompts held), Asha, Pell joins and is named, Kerrid on the road, ch09_act_one_complete, then
+      end_card.tscn.
+  - **No game soft-lock anywhere it played.** Every stop was a probe limit, each checked headlessly:
+    - Ch4: the hold-hatch lip;
+    - Ch5: the Ashcrown heights;
+    - Ch6: Toma's refused Attack;
+    - Ch8: the door, after the beacon scene;
+    - Ch9: the hold prompt, which needs a hold, not a tap;
+    - plus a shop menu and a freed trigger in the probe itself.
+  - **Real findings from the run:**
+    - **No objective rows in Ch6 or Ch8** (above): the player gets "No errand calls just now" all through Brine Shoals,
+      Corrow and the Coilspire (ui-menus, act1-chapters).
+    - **The UiAudio reconnect ERROR** after each resident return (above): 134 in Ch1–Ch6, 11 to 21 per later run
+      (audio, integration-qa).
+    - **New ERROR, owner audio:** `Amount of unbind() arguments must be 1 or greater` at `game/audio/ashcrown_audio.gd:53`
+      (`_connect`, from `attach`, `audio_director.gd:663 attach_ashcrown`), twice on entering Ashcrown. A signal with
+      no arguments goes through `unbind(0)`; it wants a plain callable when argc is 0 (as ui_audio.gd does).
+    - Minor (act1-chapters, env-art): a touch beat entered while another scene plays is dropped until the hero steps
+      out and back in. The Ch4 hold hatch's 0.42 m lip catches a hero walking into its corner. The Ch9 objective marker
+      at the landing (−27.1, 29.9) sits past a ledge: a straight walk stops 3.5 m short at (−30.6, 29.4), though the
+      way round works.
+  - Logs (scratchpad only): play_full_ch1_ch6.log, play_ch06_to_ch08.log, play_ch08.log, play_ch09.log.
 
 ## RE-RUN after "Merge lead/gate-big27" (integration @ 9572c4129): playtest (a) and (b)
 Same probes and box. The deltas against big25:

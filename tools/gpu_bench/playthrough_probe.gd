@@ -13,6 +13,7 @@ extends Node
 ## takes input), PLAY_TELEPORT (hops held back by the zone's guards: the hero jumps beside the target),
 ## PLAY_SWEEP (at the target with no progress: it steps onto each trigger near it),
 ## PLAY_SKIP (a soft-lock on a puzzle: the objective's until flag raised so the smoke goes on; the step is unplayed),
+## PLAY_HOLD (a hold prompt showed: its action is held until the prompt goes),
 ## PLAY_FELL (the hero fell out of the world after a hop: put back on the ground; no fall recovery in the game),
 ## PLAY_NO_TARGET (the field takes input but the objective names no target), PLAY_ARRIVED / PLAY_TIMEOUT.
 
@@ -35,6 +36,7 @@ const SWEEP_RADIUS_M := 20.0
 ## A teleport settles the hero's origin a hair under the deck (y -0.0004), under a touch box that starts exactly at
 ## deck height, so the sweep lands him this far above the trigger's floor and lets him drop into it.
 const SWEEP_LIFT_M := 0.3
+const STEP_OFF_M := 5.0
 ## A hero under this height has fallen out of the world (Ashcrown's stair foot is at -81 m, so a target-relative
 ## test misfires).
 const OUT_OF_WORLD_Y := -500.0
@@ -96,8 +98,6 @@ func _run() -> void:
 	var last_target := Vector3.INF
 	var sweep: Array = []
 	var hold_until := 0.0
-	var hold_logged := true
-	var sweep_last: Node3D = null
 	_last_progress = _now()
 	while _now() < secs:
 		await get_tree().physics_frame
@@ -129,6 +129,13 @@ func _run() -> void:
 		if not live:
 			if busy_since < 0.0:
 				busy_since = t
+			# A hold prompt (Ch9: "Hold to raise the staff") wants its action held, not tapped.
+			var held := _held_prompt_action()
+			if held != &"":
+				if not Input.is_action_pressed(held):
+					print("PLAY_HOLD %.1f %s" % [t, held])
+				Input.action_press(held)
+				continue
 			if t >= next_tap:
 				# Past CANCEL_AFTER_S with no progress, every other tap is ui_cancel: a menu the hero opened closes.
 				var cancel := t - _last_progress > CANCEL_AFTER_S and int(t / TAP_S) % 2 == 1
@@ -151,20 +158,6 @@ func _run() -> void:
 			get_tree().quit()
 			return
 		if t < hold_until:
-			if not hold_logged:
-				hold_logged = true
-				var it := sweep_last as Interactable
-				print(
-					(
-						"PLAY_SWEEP_HOLD %.1f at %s inside %s available %s"
-						% [
-							t,
-							p.global_position,
-							it.contains_point(p.global_position) if it else "?",
-							it.call(&"is_available") if it and it.has_method(&"is_available") else "?"
-						]
-					)
-				)
 			continue  # standing on a swept trigger
 		var target := _target()
 		if target != last_target:
@@ -191,9 +184,11 @@ func _run() -> void:
 						)
 					)
 				if not sweep.is_empty():
-					var a := sweep.pop_front() as Node3D
+					var a: Node3D = _next_alive(sweep)
+					if a == null:
+						continue
 					p.velocity = Vector3.ZERO
-					p.global_position = _on_ground(p, a.global_position)
+					await _step_onto(p, a)
 					p.interact.call_deferred()
 					next_interact = t + SWEEP_DWELL_S
 					hold_until = t + SWEEP_DWELL_S
@@ -243,11 +238,11 @@ func _run() -> void:
 							)
 						)
 					if not sweep.is_empty():
-						var a := sweep.pop_front() as Node3D
-						sweep_last = a
-						hold_logged = false
+						var a: Node3D = _next_alive(sweep)
+						if a == null:
+							continue
 						p.velocity = Vector3.ZERO
-						p.global_position = _on_ground(p, a.global_position)
+						await _step_onto(p, a)
 						p.interact.call_deferred()
 						next_interact = t + SWEEP_DWELL_S
 						hold_until = t + SWEEP_DWELL_S
@@ -373,6 +368,39 @@ func _skip_objective() -> String:
 		if hud.tracker != null:
 			return str(hud.tracker.current(hud.zone).get("until", ""))
 	return ""
+
+
+## Steps the hero off `a` for a few frames, then onto it: a touch fires on entering, so standing in it already (or
+## having entered it while the story was busy) never fires it again.
+func _step_onto(p: FieldController, a: Node3D) -> void:
+	p.global_position = _on_ground(p, a.global_position + Vector3(STEP_OFF_M, 0, 0))
+	for i in 3:
+		await get_tree().physics_frame
+	p.velocity = Vector3.ZERO
+	p.global_position = _on_ground(p, a.global_position)
+
+
+## The action of a showing HoldPrompt (&"" when none); every other held prompt action is released.
+func _held_prompt_action() -> StringName:
+	var out := &""
+	for n in get_tree().root.find_children("*", "HoldPrompt", true, false):
+		var hp := n as HoldPrompt
+		if hp.action == &"":
+			continue
+		if hp.is_inside_tree() and hp.is_showing():
+			out = hp.action
+		elif Input.is_action_pressed(hp.action):
+			Input.action_release(hp.action)
+	return out
+
+
+## The next swept trigger still in the tree (one-shot triggers free themselves), or null.
+static func _next_alive(sweep: Array) -> Node3D:
+	while not sweep.is_empty():
+		var n: Variant = sweep.pop_front()
+		if is_instance_valid(n) and (n as Node3D).is_inside_tree():
+			return n as Node3D
+	return null
 
 
 func _objective_text() -> String:
