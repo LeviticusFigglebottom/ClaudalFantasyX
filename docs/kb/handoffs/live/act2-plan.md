@@ -220,3 +220,15 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - MERGE-READY Ch16 @ 11f5c5c18: 4 rows; `TUT_CH16_*`, the line-hold HUD lines, `TIP_SWELL_MODE_*`; `rim_salt`, `kerrid_rim_wraps`; `ch16_shrine_pale_rim`.
 - **LEAD-ASK (route to progression or ui):** `ITEM_RIME_SHARD_DESC` says "Highland ice that does not melt", which breaks ADR 0015 if the item drops in Ch12–Ch15.
 - BACKLOG EMPTY (story track).
+
+## 2026-10-30: ADR 0015 text sweep (Lead answer to the Rime Shard ask)
+- I grepped every loc csv, `dialogue.csv` and the Act II `.dlg` files for ice, icy, frost, frozen, freeze, glacier, rime, icicle, snow and sleet. Fixed:
+  - `ITEM_RIME_SHARD_DESC`: "Highland salt-rime that never dissolves, even in the sea."
+  - `LORE_RIME_URCHIN` (Ch11): the rime is now a salt crust ("the water never takes it back"). Lowlight is "nothing frozen".
+  - `LORE_RIDGE_LYNX` (Ch12): frost → blown snow. `LORE_SCREE_CRAWLER` (Ch12): frost-split → weather-split scree and grit. Both follow ADR 0204 §2.
+- **Kept on purpose:**
+  - Ch12's snow on the road (`OBJ_CH12_WALL`, `TUT_RAM_FIELD`, the Ram's lore). ADR 0015 calls the pass's snow weather, which is allowed outside temples.
+  - The game element Ice (`ELEMENT_ICE`, `ABILITY_RIME_*`, `SKILL_FROST`, Kesh's `SKILL_VOICE_ICE` in Ch16). These are element names, not Ch12–15 imagery.
+  - "cold" lines in Ch11 (the deep's cold).
+- validate_data 0/0; loc tools tests OK.
+- MERGE-READY @ dc18517e3
