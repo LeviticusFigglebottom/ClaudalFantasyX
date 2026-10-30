@@ -454,3 +454,10 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - **Checks** (docs only): validate_data 0/0 · taskboard clean. No Godot run: nothing it tests changed.
 - MERGE-READY setters request @ bb7817771
 - BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114 (act1-chapters), M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Ch12–Ch16 direction notes, complete (Lead)
+- All five were already written: Ch12 and Ch13 are on integration; **Ch14, Ch15 and Ch16 are on this branch only** (since 603fb1f36), so this merge brings them.
+- **For audio:** each of the five now ends with **"Audio cues by shot"**: every `@music` and `@sfx` in the chapter's scenes, in script order, with the shot it lands on and the line or hold that follows (Ch12 10, Ch13 14, Ch14 14, Ch15 15, Ch16 17). Hard cuts are the `fade=0.0` rows.
+- **Checks** (docs only): validate_data 0/0 · taskboard clean.
+- MERGE-READY Ch12–Ch16 direction notes @ f5f0be211
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114 (act1-chapters), M4-A2P-112 items 3, 5 and 6.
