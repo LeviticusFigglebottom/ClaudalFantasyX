@@ -34,3 +34,5 @@ and reports; it never edits game or test files.
   **All 16 green**, so test_causeway_route's red earlier was big24's code, not big25's.
 - big27 @ 66ae0cc2 (HEAD checked): lanes B 27 files, 17:56-18:08 UTC (12 min). **All 27 green.**
   Result: gate-big27-lanes-b-result.md.
+- big28 @ e4a5e089 (HEAD checked): lanes B 50 files, 18:51-19:12 UTC (21 min). **All 50 green.**
+  Result: gate-big28-lanes-b-result.md.
