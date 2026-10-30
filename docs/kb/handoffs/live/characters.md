@@ -429,3 +429,20 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
   the beard, and the burns glow at the Ch15 peak. Unit test 3/3; lint and data OK. Task -> review (cinematics).
 - MERGE-READY @ 09a7928c
 - **Next:** M4-A2P-050 (Tobin and Merel), then M4-A2P-051 (Malcor Venn, the Abiding guard).
+
+## 2026-10-30, Act II: M4-A2P-050 Tobin and Merel
+- Both are on the villager build with 40 face shapes, face rows, stages and shots. All 7 shots were viewed.
+  - **Tobin:** Liss's family face, the Saltwright coat with the Warden's red sash, line-marks; LOD0 27.5k.
+  - **Merel:** wedding red, the bridal cloth as a new `solid` shawl, LOD0 35.6k/36k.
+  - **The bloodied sleeve:** `_blood` -> villager_textures.blood_atlas -> `cloth_a_blood.tres`. It is swapped in at
+    runtime by `CostumeVariant` (game/characters/costume_variant.gd).
+  - **Clips:** hold_hands, pole_barge, and the new tobin_falls.
+- **Checks:** villager_tobin, villager_merel, villager_marra and villager_skipper_sadi are identical on all 3 numpy
+  paths. test_villagers 45 OK, test_costume_variant 2/2, validate_data OK. The task is in review (rendering).
+- **Known limit:** the faces are at the villager level, like Skipper Sadi's. A hero-path upgrade is possible if the GPU
+  review holds Ch14's close-ups to the hero bar. Portraits are M4-A2P-081 (ui).
+- LEAD-ASK: the new shots (kerrid_confession_*, villager_tobin_*, villager_merel_*) are marked pending_baseline.
+  test_screenshots still fails on integration for the older unbaselined kerrid_/ivo_/pell_... shots, which carry no
+  pending key; that predates these.
+- MERGE-READY @ 83b8326c
+- **Next:** M4-A2P-051 (Malcor Venn on Moll's kit with a halberd and Moll's battle set; then the Abiding guard).
