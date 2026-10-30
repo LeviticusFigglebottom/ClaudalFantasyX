@@ -1110,6 +1110,10 @@ that test at this branch's zones.
     or lengthen the sand. My dressing follows either way.
   - **Act II town interiors:** still none (see above).
   - **MERGE-READY @ 1f9d2e8c** (the request; no change of mine was needed).
+- **Renumbered (10-30, the Lead):** the Pale Rim exit request is **M4-A2P-1500**. Act II ids are per track now, and
+  env-art-b's are M4-A2P-1500 to 1599 (TRACK-RULES). The Act II town interiors still have nothing to walk: no shop or
+  inn interior exists, the shops wait on M4-A2P-031, and the two existing towns were walked above (M4-A2P-115).
+  **MERGE-READY @ a18348d9.**
 ### PC-QUEUE
 - Pass 3 row 65 (@ edb18aae): re-measure the camp's smoke columns (24 steps at High) and the Tamsule drop (High has no
   god rays now) at High 1440p against the 0.3 ms target.
