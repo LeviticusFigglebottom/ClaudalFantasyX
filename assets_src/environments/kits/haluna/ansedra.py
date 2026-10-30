@@ -57,6 +57,19 @@ The Sanctum of the Level (M4-A2P-043; ch13_sanctum.md), in its greybox's frame (
                       step, the gilt Level line round it at eye height, nothing on it. Origin at the end wall's foot.
   cantor_stand        the Cantor's stand at the binding: a marble post with a gilt-edged slanted top. Origin at its
                       foot.
+The Lamp Archive's reading room (M4-A2P-043; ch13_lamp_archive.md), in its greybox's frame (20 x 32 m, floor y 0):
+  archive_case        one double-faced ledger case (5 x 6 x 1 m, along X), black lacquer with red shelves, the ledgers'
+                      cream and red spines in runs on both faces, a gilt Level line along its top. Origin at its foot,
+                      centre.
+  archive_hall_bay    one 6.4 m bay of the room along Z: the paved floor, cold marble walls (inner faces at +-9.75) to the
+                      clerestory band, open clerestory windows (grey daylight is the room's only light) between piers,
+                      and a skinned marble vault springing at 9.2 m. Origin at the bay's floor centre.
+  archive_end_walls   the room's end walls: the south one with the lacquered door shut behind the party, the north one
+                      plain; 32 m apart. Origin at the south wall's foot, centre (the room runs to -Z).
+  reading_table       a black-lacquered reading table (2 x 4 m) with ledgers open on it, a reading weight and an unlit
+                      oil lamp. Origin at its foot, centre.
+  roll_table          the same table with the Cantor roll unrolled along it, its rollers at the ends.
+  ledger_stack        a pile of ledgers and rolled lists for the floor by the tables (the days' work). Origin at its foot.
 """
 
 from __future__ import annotations
@@ -84,7 +97,9 @@ TRI_BUDGET = {"bowl_dome": (6000, 400), "ansedra_far_domes": (8000, 3000), "purs
               "archive_stacks": (9000, 500), "ansedra_causeway_6m": (3000, 200), "gold_lamp_post": (1500, 200),
               "island_plinth_16m": (8000, 400), "mooring_platform": (9000, 650), "sanctum_nave_bay": (6000, 600),
               "sanctum_nave_floor": (12000, 300), "sanctum_basin_nave": (6000, 300), "sanctum_vestibule": (8000, 600),
-              "sanctum_bench": (600, 60), "sanctum_apse": (8000, 900), "cantor_stand": (800, 80)}
+              "sanctum_bench": (600, 60), "sanctum_apse": (8000, 900), "cantor_stand": (800, 80),
+              "archive_case": (6000, 300), "archive_hall_bay": (6000, 500), "archive_end_walls": (3000, 300),
+              "reading_table": (2500, 150), "roll_table": (2500, 200), "ledger_stack": (900, 60)}
 BUDGET_KEY = {"ansedra_far_domes_lit": "ansedra_far_domes"}
 
 PLINTH_TOP = 0.6
@@ -478,8 +493,11 @@ SUBMERGED_WET = 0.3  # each step further under the water darker (wet), so the wh
 MARBLE_W = kc.Weathering(moss=0.0, salt=0.06, wet=0.04, erosion=0.08, noise_scale_m=1.2)
 
 
-def _paving(mb, rng, hx: float, hz: float, size: float, stone) -> None:
-    """Thin marble slabs over a bedding block, the joints shadowed (top at y 0)."""
+def _paving(mb, rng, hx: float, hz: float, size: float, stone, *, bed: bool = False) -> None:
+    """Thin marble slabs, the joints shadowed (top at y 0); with `bed`, over their own bedding slab (a floor with no
+    block under it would show the sky through its joints)."""
+    if bed:
+        kc.rounded_block(mb, (0.0, -0.2, 0.0), (hx, 0.14, hz), stone, radius=0.01, seg=1, weather=MARBLE_W)
     nx, nz = max(1, round(2 * hx / size)), max(1, round(2 * hz / size))
     sx, sz = 2 * hx / nx, 2 * hz / nz
     for i in range(nx):
@@ -741,7 +759,12 @@ def build_sanctum_nave_floor(seed: int = 2122) -> list[kc.MeshBuilder]:
         rng = kc.rng_for("sanctum_nave_floor", seed)
         mb = kc.MeshBuilder("sanctum_nave_floor" + ("-lod1" if lod else ""))
         stone, gilt = mb.material(M_STONE), mb.material(M_GILT)
-        # The floor round the opening as four slabs (the polished field), then the kneeling band inside them.
+        # The floor round the opening as four slabs (the polished field), then the kneeling band inside them; each
+        # field on a bedding slab so its joints don't show the dark under the floor.
+        for (cx, cz, sx, sz) in ((0.0, -(hz + oz) * 0.5, hx, (hz - oz) * 0.5), (0.0, (hz + oz) * 0.5, hx, (hz - oz) * 0.5),
+                                 (-(hx + ox) * 0.5, 0.0, (hx - ox) * 0.5, oz), ((hx + ox) * 0.5, 0.0, (hx - ox) * 0.5, oz)):
+            if not lod:
+                kc.rounded_block(mb, (cx, -0.4, cz), (sx, 0.1, sz), stone, radius=0.01, seg=1, weather=MARBLE_W)
         for (cx, cz, sx, sz) in ((0.0, -(hz + kz) * 0.5, hx, (hz - kz) * 0.5), (0.0, (hz + kz) * 0.5, hx, (hz - kz) * 0.5),
                                  (-(hx + kx) * 0.5, 0.0, (hx - kx) * 0.5, kz), ((hx + kx) * 0.5, 0.0, (hx - kx) * 0.5, kz)):
             if lod:
@@ -809,7 +832,7 @@ def build_sanctum_vestibule(seed: int = 2124) -> list[kc.MeshBuilder]:
         if lod:
             kc.rounded_block(mb, (0.0, -0.15, 0.0), (h, 0.15, h), stone, radius=0.01, seg=1, weather=MARBLE_W)
         else:
-            _paving(mb, rng, h, h, 2.0, stone)
+            _paving(mb, rng, h, h, 2.0, stone, bed=True)
         kc.rounded_block(mb, (0.0, VEST_H + 0.2, 0.0), (h + 0.5, 0.2, h + 0.25), stone, radius=0.02, seg=1,
                          weather=MARBLE_W)  # the ceiling
         for sx in (-1.0, 1.0):  # the side walls, and the south wall either side of the gate
@@ -920,6 +943,212 @@ def build_cantor_stand(seed: int = 2127) -> list[kc.MeshBuilder]:
     return out
 
 
+# --- the Lamp Archive's reading room (M4-A2P-043) -------------------------------------------------------------------
+CASE = (2.5, 6.0, 0.5)  # half length (x), height, half depth (z): the greybox's Stack blocks
+SHELVES = 6
+HALL_HALF_W = 9.75
+HALL_BAY = 6.4
+HALL_LEN = 32.0
+CLERESTORY = (6.6, 8.4)  # the windows' sill and head
+HALL_SPRING = 9.2
+HALL_CROWN = 12.5
+HALL_DOOR_HALF = 2.2
+TABLE = (1.0, 0.9, 2.0)  # half width, height, half length
+PAPER_W = kc.Weathering(moss=0.0, salt=0.0, wet=0.0, erosion=0.04, noise_scale_m=0.5)  # indoors: dry, barely worn
+
+
+def _ledger_run(mb, x0: float, x1: float, y: float, z: float, face: float, h: float, rng, paper: int, red: int) -> None:
+    """Ledgers standing on a shelf from x0 to x1, their spines toward `face` (+-1 in z), in runs of a few volumes."""
+    x = x0
+    while x < x1 - 0.05:
+        w = min(x1 - x, 0.25 + 0.5 * float(rng.random()))
+        hh = h * (0.7 + 0.3 * float(rng.random()))
+        mat = red if rng.random() < 0.35 else paper
+        kc.rounded_block(mb, (x + w * 0.5, y + hh * 0.5, z), (w * 0.5 - 0.01, hh * 0.5, 0.15), mat, radius=0.01, seg=1,
+                         weather=PAPER_W, variation=float(rng.random()))
+        x += w
+
+
+def build_archive_case(seed: int = 2131) -> list[kc.MeshBuilder]:
+    out = []
+    hx, height, hz = CASE
+    for lod in (False, True):
+        rng = kc.rng_for("archive_case", seed)
+        mb = kc.MeshBuilder("archive_case" + ("-lod1" if lod else ""))
+        black, red, gilt, paper = (mb.material(M_BLACK), mb.material(M_LACQUER), mb.material(M_GILT),
+                                   mb.material(M_PAPER))
+        kc.rounded_block(mb, (0.0, height * 0.5, 0.0), (hx, height * 0.5, 0.06), black, radius=0.02, seg=1)  # the spine
+        for sx in (-1.0, 1.0):  # the ends
+            kc.rounded_block(mb, (sx * (hx - 0.06), height * 0.5, 0.0), (0.06, height * 0.5, hz), black, radius=0.02,
+                             seg=1)
+        kc.rounded_block(mb, (0.0, height - 0.06, 0.0), (hx, 0.06, hz), black, radius=0.02, seg=1)
+        kc.rounded_block(mb, (0.0, 0.08, 0.0), (hx, 0.08, hz), black, radius=0.02, seg=1)
+        pitch = (height - 0.3) / SHELVES
+        for k in range(SHELVES):
+            y = 0.16 + pitch * k
+            if k:
+                kc.rounded_block(mb, (0.0, y, 0.0), (hx - 0.12, 0.025, hz - 0.02), red, radius=0.01, seg=1)
+            if lod:
+                for face in (-1.0, 1.0):
+                    kc.rounded_block(mb, (0.0, y + pitch * 0.4, face * (hz - 0.2)), (hx - 0.14, pitch * 0.38, 0.15),
+                                     paper, radius=0.01, seg=1, weather=PAPER_W)
+                continue
+            for face in (-1.0, 1.0):
+                _ledger_run(mb, -hx + 0.14, hx - 0.14, y + 0.025, face * (hz - 0.2), face, pitch * 0.85, rng, paper, red)
+        if not lod:
+            for face in (-1.0, 1.0):
+                kc.tube(mb, np.array([[-hx, height - 0.12, face * (hz + 0.005)], [hx, height - 0.12, face * (hz + 0.005)]]),
+                        0.015, 4, gilt)
+        out.append(mb)
+    return out
+
+
+def build_archive_hall_bay(seed: int = 2132) -> list[kc.MeshBuilder]:
+    out = []
+    hb = HALL_BAY * 0.5
+    sill, head = CLERESTORY
+    for lod in (False, True):
+        rng = kc.rng_for("archive_hall_bay", seed)
+        mb = kc.MeshBuilder("archive_hall_bay" + ("-lod1" if lod else ""))
+        stone, gilt, bronze = mb.material(M_STONE), mb.material(M_GILT), mb.material(M_BRONZE)
+        if lod:
+            kc.rounded_block(mb, (0.0, -0.15, 0.0), (HALL_HALF_W, 0.15, hb), stone, radius=0.01, seg=1, weather=MARBLE_W)
+        else:
+            _paving(mb, rng, HALL_HALF_W, hb, 1.6, stone, bed=True)
+        for sx in (-1.0, 1.0):
+            wx = sx * (HALL_HALF_W + 0.4)
+            kc.rounded_block(mb, (wx, sill * 0.5, 0.0), (0.4, sill * 0.5, hb), stone, radius=0.02, seg=1,
+                             weather=MARBLE_W, variation=float(rng.random()))
+            top = HALL_SPRING + WALL_OVERLAP_M
+            kc.rounded_block(mb, (wx, (head + top) * 0.5, 0.0), (0.4, (top - head) * 0.5, hb), stone, radius=0.02, seg=1,
+                             weather=MARBLE_W)
+            for z in (-hb, hb):  # the piers between the windows (half of one at each end)
+                kc.rounded_block(mb, (wx, (sill + head) * 0.5, z * 0.94), (0.4, (head - sill) * 0.5, 0.4 * 0.5 + 0.01),
+                                 stone, radius=0.02, seg=1, weather=MARBLE_W)
+            if not lod:  # the window's bronze mullions, and the Level line on the sill
+                for zm in np.linspace(-hb + 1.6, hb - 1.6, 3):
+                    kc.tube(mb, np.array([[wx, sill, zm], [wx, head, zm]]), 0.05, 4, bronze)
+                kc.tube(mb, np.array([[sx * (HALL_HALF_W - 0.01), sill - 0.15, -hb], [sx * (HALL_HALF_W - 0.01), sill - 0.15,
+                                                                                       hb]]), 0.02, 4, gilt)
+        rise = HALL_CROWN - HALL_SPRING
+        r = (HALL_HALF_W ** 2 + rise ** 2) / (2 * rise)
+        cy = HALL_CROWN - r
+        half_a = math.asin(HALL_HALF_W / r)
+        a = np.linspace(-half_a, half_a, 6 if lod else 16)
+        arc = np.stack([r * np.sin(a), cy + r * np.cos(a)], -1)
+        _shell(mb, np.array([[[x, y, z] for x, y in arc] for z in (-hb, hb)]), stone, (0.0, 2.0, 0.0))
+        out.append(mb)
+    return out
+
+
+def build_archive_end_walls(seed: int = 2133) -> list[kc.MeshBuilder]:
+    out = []
+    w = HALL_HALF_W + 0.8
+    top = HALL_CROWN + SHELL_SKIN_M
+    for lod in (False, True):
+        rng = kc.rng_for("archive_end_walls", seed)
+        mb = kc.MeshBuilder("archive_end_walls" + ("-lod1" if lod else ""))
+        stone, red, black, gilt = (mb.material(M_STONE), mb.material(M_LACQUER), mb.material(M_BLACK),
+                                   mb.material(M_GILT))
+        kc.rounded_block(mb, (0.0, top * 0.5, -HALL_LEN - 0.25), (w, top * 0.5, 0.25), stone, radius=0.02, seg=1,
+                         weather=MARBLE_W)
+        d = HALL_DOOR_HALF
+        for sx in (-1.0, 1.0):
+            kc.rounded_block(mb, (sx * (d + (w - d) * 0.5), top * 0.5, 0.25), ((w - d) * 0.5, top * 0.5, 0.25), stone,
+                             radius=0.02, seg=1, weather=MARBLE_W, variation=float(rng.random()))
+            kc.rounded_block(mb, (sx * (d - 0.1), 2.1, 0.1), (0.12, 2.1, 0.18), red, radius=0.02, seg=1)
+            kc.rounded_block(mb, (sx * (d * 0.5 - 0.05), 2.0, 0.05), (d * 0.5 - 0.1, 2.0, 0.06), black, radius=0.015, seg=1)
+            if not lod:
+                kc.tube(mb, np.array([[sx * 0.3, 1.25, -0.02], [sx * 0.3, 1.0, -0.04], [sx * 0.42, 0.9, -0.04]]), 0.02, 5,
+                        gilt)
+        kc.rounded_block(mb, (0.0, 4.3, 0.1), (d + 0.05, 0.12, 0.2), red, radius=0.02, seg=1)
+        kc.rounded_block(mb, (0.0, (top + 4.42) * 0.5, 0.25), (d, (top - 4.42) * 0.5, 0.25), stone, radius=0.02, seg=1,
+                         weather=MARBLE_W)
+        if not lod:
+            kc.rounded_block(mb, (0.0, 4.75, -0.01), (d + 0.6, 0.012, 0.01), gilt, radius=0.004, seg=1)
+        out.append(mb)
+    return out
+
+
+def _table(mb, lod: bool) -> None:
+    hw, h, hl = TABLE
+    black = mb.material(M_BLACK)
+    kc.rounded_block(mb, (0.0, h - 0.04, 0.0), (hw, 0.04, hl), black, radius=0.015, seg=1)
+    for sx in (-1.0, 1.0):
+        for sz in (-1.0, 1.0):
+            kc.rounded_block(mb, (sx * (hw - 0.1), (h - 0.08) * 0.5, sz * (hl - 0.1)), (0.05, (h - 0.08) * 0.5, 0.05),
+                             black, radius=0.01, seg=1)
+    if not lod:
+        kc.rounded_block(mb, (0.0, 0.25, 0.0), (0.03, 0.03, hl - 0.15), black, radius=0.01, seg=1)  # the stretcher
+
+
+def build_reading_table(seed: int = 2134) -> list[kc.MeshBuilder]:
+    out = []
+    hw, h, hl = TABLE
+    for lod in (False, True):
+        rng = kc.rng_for("reading_table", seed)
+        mb = kc.MeshBuilder("reading_table" + ("-lod1" if lod else ""))
+        paper, red, bronze = mb.material(M_PAPER), mb.material(M_LACQUER), mb.material(M_BRONZE)
+        _table(mb, lod)
+        for k, z in enumerate(np.linspace(-hl + 0.6, hl - 0.6, 2 if lod else 4)):  # ledgers open side by side
+            yaw = 0.15 * (float(rng.random()) - 0.5)
+            for side in (-1.0, 1.0):
+                kc.rounded_block(mb, (side * 0.22, h + 0.015, z), (0.21, 0.015, 0.3), paper, rot=kc.rot_y(yaw) @
+                                 kc.rot_z(side * 0.06), radius=0.005, seg=1, weather=PAPER_W, variation=float(rng.random()))
+            kc.rounded_block(mb, (0.0, h + 0.005, z), (0.03, 0.01, 0.31), red, radius=0.004, seg=1)
+        if not lod:  # the reading weight on a page, and the unlit oil lamp at the table's head
+            kc.rounded_block(mb, (0.25, h + 0.05, -hl + 0.6), (0.06, 0.02, 0.12), bronze, radius=0.01, seg=1)
+            _revolve_at(mb, -0.6, hl - 0.3, h + np.array([0.0, 0.03, 0.08, 0.1, 0.14]),
+                        np.array([0.06, 0.08, 0.06, 0.02, 0.0]), 10, M_BRONZE)
+        out.append(mb)
+    return out
+
+
+def build_roll_table(seed: int = 2135) -> list[kc.MeshBuilder]:
+    out = []
+    hw, h, hl = TABLE
+    for lod in (False, True):
+        rng = kc.rng_for("roll_table", seed)
+        mb = kc.MeshBuilder("roll_table" + ("-lod1" if lod else ""))
+        paper, red, gilt = mb.material(M_PAPER), mb.material(M_LACQUER), mb.material(M_GILT)
+        _table(mb, lod)
+        kc.rounded_block(mb, (0.0, h + 0.005, 0.0), (0.32, 0.005, hl - 0.35), paper, radius=0.003, seg=1,
+                         weather=PAPER_W, variation=float(rng.random()))  # the Cantor roll, unrolled
+        for sz in (-1.0, 1.0):  # its rollers, red with gilt ends, the rolled paper round them
+            z = sz * (hl - 0.25)
+            kc.tube(mb, np.array([[-0.42, h + 0.07, z], [0.42, h + 0.07, z]]), 0.035, 6 if lod else 10, red, cap_end=True,
+                    cap_start=True)
+            kc.tube(mb, np.array([[-0.33, h + 0.07, z], [0.33, h + 0.07, z]]), 0.06, 6 if lod else 12, paper, cap_end=True,
+                    cap_start=True, weather=PAPER_W)
+            if not lod:
+                for sx in (-1.0, 1.0):
+                    kc.tube(mb, np.array([[sx * 0.42, h + 0.07, z], [sx * 0.47, h + 0.07, z]]), 0.045, 8, gilt,
+                            cap_end=True, cap_start=True)
+        out.append(mb)
+    return out
+
+
+def build_ledger_stack(seed: int = 2136) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("ledger_stack", seed)
+        mb = kc.MeshBuilder("ledger_stack" + ("-lod1" if lod else ""))
+        paper, red = mb.material(M_PAPER), mb.material(M_LACQUER)
+        y = 0.0
+        for k in range(3 if lod else 9):
+            th = 0.04 + 0.03 * float(rng.random())
+            kc.rounded_block(mb, (0.03 * float(rng.random()), y + th * 0.5, 0.03 * float(rng.random())),
+                             (0.2, th * 0.5, 0.28), red if k % 3 == 1 else paper, rot=kc.rot_y(0.3 * float(rng.random())),
+                             radius=0.006, seg=1, weather=PAPER_W, variation=float(rng.random()))
+            y += th
+        if not lod:  # two rolled lists against the pile
+            for k in range(2):
+                kc.tube(mb, np.array([[0.3, 0.05, -0.2 + 0.25 * k], [0.32, 0.05, 0.25 + 0.25 * k]]), 0.05, 8, paper,
+                        cap_end=True, cap_start=True, weather=PAPER_W)
+        out.append(mb)
+    return out
+
+
 TARGETS = {
     "bowl_dome": build_bowl_dome,
     "ansedra_far_domes": build_far_domes,
@@ -940,4 +1169,10 @@ TARGETS = {
     "sanctum_bench": build_sanctum_bench,
     "sanctum_apse": build_sanctum_apse,
     "cantor_stand": build_cantor_stand,
+    "archive_case": build_archive_case,
+    "archive_hall_bay": build_archive_hall_bay,
+    "archive_end_walls": build_archive_end_walls,
+    "reading_table": build_reading_table,
+    "roll_table": build_roll_table,
+    "ledger_stack": build_ledger_stack,
 }

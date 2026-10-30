@@ -46,6 +46,39 @@
         "ansedra_far_domes_lit-lod1": 2720
       }
     },
+    "archive_case": {
+      "budget": [
+        6000,
+        300
+      ],
+      "bytes": 194556,
+      "lods": {
+        "archive_case": 1576,
+        "archive_case-lod1": 264
+      }
+    },
+    "archive_end_walls": {
+      "budget": [
+        3000,
+        300
+      ],
+      "bytes": 32596,
+      "lods": {
+        "archive_end_walls": 160,
+        "archive_end_walls-lod1": 108
+      }
+    },
+    "archive_hall_bay": {
+      "budget": [
+        6000,
+        500
+      ],
+      "bytes": 94832,
+      "lods": {
+        "archive_hall_bay": 808,
+        "archive_hall_bay-lod1": 128
+      }
+    },
     "archive_stacks": {
       "budget": [
         9000,
@@ -1069,6 +1102,17 @@
         "laundry_line-lod1": 86
       }
     },
+    "ledger_stack": {
+      "budget": [
+        900,
+        60
+      ],
+      "bytes": 23424,
+      "lods": {
+        "ledger_stack": 172,
+        "ledger_stack-lod1": 36
+      }
+    },
     "lintel_gull_a": {
       "budget": [
         2400,
@@ -1454,6 +1498,17 @@
         "quellan_well-lod1": 64
       }
     },
+    "reading_table": {
+      "budget": [
+        2500,
+        150
+      ],
+      "bytes": 47840,
+      "lods": {
+        "reading_table": 308,
+        "reading_table-lod1": 132
+      }
+    },
     "reed_bed": {
       "budget": [
         3000,
@@ -1485,6 +1540,17 @@
       "lods": {
         "reed_platform_6m": 2190,
         "reed_platform_6m-lod1": 120
+      }
+    },
+    "roll_table": {
+      "budget": [
+        2500,
+        200
+      ],
+      "bytes": 48224,
+      "lods": {
+        "roll_table": 388,
+        "roll_table-lod1": 168
       }
     },
     "roof_fan_shell": {
@@ -1635,9 +1701,9 @@
         12000,
         300
       ],
-      "bytes": 218312,
+      "bytes": 223208,
       "lods": {
-        "sanctum_nave_floor": 2024,
+        "sanctum_nave_floor": 2072,
         "sanctum_nave_floor-lod1": 96
       }
     },
@@ -1646,9 +1712,9 @@
         8000,
         600
       ],
-      "bytes": 139368,
+      "bytes": 140588,
       "lods": {
-        "sanctum_vestibule": 1096,
+        "sanctum_vestibule": 1108,
         "sanctum_vestibule-lod1": 204
       }
     },
