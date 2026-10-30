@@ -1147,3 +1147,6 @@ ENC_CH12_AVALANCHE_RAM,The Seeping Wall
 ENC_CH15_WAKEFIN,The Dark Water
 HUD_READ_PARTS,Broken
 HUD_READ_PARTS_BROKEN_FMT,"{list}: silent until it is mended"
+SET_MENU_CONTROLS_HUB,Up and Down: choose · Confirm: open · Cancel: back
+SET_MENU_CONTROLS_PAGE,Up and Down: choose · Left and Right: change · Cancel: back
+SET_MENU_CONTROLS_REBIND,Up and Down: choose · Confirm: change · Cancel: back
