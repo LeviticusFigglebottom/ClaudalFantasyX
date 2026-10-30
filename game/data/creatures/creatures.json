@@ -110,13 +110,17 @@
     },
     "mangrove_drowner": {
       "scene": "res://game/creatures/mangrove_drowner/mangrove_drowner_battle.tscn",
-      "contact": {"attack": 0.7, "cast": 1.0, "attack_risen": 0.7, "cast_risen": 1.0},
-      "loop": ["idle", "idle_risen"],
+      "contact": {"attack": 0.7, "cast": 1.0, "rising_water": 1.0, "snag": 0.75, "attack_risen": 0.7, "cast_risen": 1.0,
+                  "rising_water_risen": 1.0, "snag_risen": 0.75, "root_stamp_risen": 0.8},
+      "loop": ["idle", "idle_risen", "ready", "ready_risen"],
       "ko_fade_sec": 1.2,
       "stand_in": {"yaw_deg": 90.0},
+      "vfx_anchors": {"core": "vfx_core", "wound": "vfx_wound"},
       "phases": {
         "uprooted": {"clip": "phase_change", "idle": "idle_risen", "hide_after": ["Stump"], "sec": 0,
-                     "clips": {"attack": "attack_risen", "cast": "cast_risen", "hit": "hit_risen"}}
+                     "clips": {"attack": "attack_risen", "cast": "cast_risen", "hit": "hit_risen", "hit_b": "hit_b_risen",
+                               "ready": "ready_risen", "ko": "ko_risen", "snag": "snag_risen",
+                               "rising_water": "rising_water_risen", "snag_break": "snag_break_risen"}}
       },
       "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}
     },

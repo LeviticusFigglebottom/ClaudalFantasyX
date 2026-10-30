@@ -83,6 +83,49 @@ const LAMP_ENGINE_INTRO_MIN_SEC := 1.5
 const LAMP_ENGINE_INTRO_MAX_SEC := 3.5
 ## The move-pass rule: a wind-up of at least this long reads before contact.
 const LAMP_ENGINE_WIND_UP_SEC := 0.45
+## M4-CRB-002: the Mangrove Drowner (Ch10; docs/kb/plan/act2/bosses/mangrove_drowner.md "Move list").
+const MANGROVE_DROWNER := &"mangrove_drowner"
+const MANGROVE_DROWNER_CLIPS: Array[StringName] = [
+	&"idle",
+	&"idle_b",
+	&"ready",
+	&"intro",
+	&"attack",
+	&"cast",
+	&"rising_water",
+	&"snag",
+	&"hit",
+	&"hit_b",
+	&"snag_break",
+	&"ko",
+	&"phase_change",
+	&"idle_risen",
+	&"ready_risen",
+	&"attack_risen",
+	&"cast_risen",
+	&"rising_water_risen",
+	&"snag_risen",
+	&"root_stamp_risen",
+	&"hit_risen",
+	&"hit_b_risen",
+	&"snag_break_risen",
+	&"ko_risen"
+]
+## Each striking clip and its contact (creatures.json `contact`): the wind-up before it is at least the move rule's.
+const MANGROVE_DROWNER_STRIKES: Array[StringName] = [
+	&"attack",
+	&"rising_water",
+	&"snag",
+	&"attack_risen",
+	&"cast_risen",
+	&"rising_water_risen",
+	&"snag_risen",
+	&"root_stamp_risen"
+]
+const MANGROVE_DROWNER_PHASE := &"uprooted"
+## The two snag roots (the break parts): each part's whole and broken nodes.
+const MANGROVE_DROWNER_PARTS: Array[StringName] = [&"SnagA", &"SnagABroken", &"SnagB", &"SnagBBroken"]
+
 var made: Array[Node] = []
 var lamp_engine_made: Array[Node] = []
 
@@ -288,3 +331,95 @@ func _lamp_engine_weighted_bones(skel: Skeleton3D) -> Dictionary:
 					var b := mi.skin.get_bind_name(bones[i])
 					out[String(b) if b != &"" else skel.get_bone_name(mi.skin.get_bind_bone(bones[i]))] = true
 	return out
+
+
+func test_mangrove_drowner_has_the_full_clip_set() -> void:
+	var a := _mangrove_drowner_actor(MANGROVE_DROWNER)
+	for clip in MANGROVE_DROWNER_CLIPS:
+		assert_true(a.has_clip(clip), "mangrove_drowner has %s" % clip)
+	before_each()
+
+
+func test_mangrove_drowner_intro_fits_the_camera_hold() -> void:
+	var sec := _mangrove_drowner_actor(MANGROVE_DROWNER).clip_length(&"intro")
+	assert_true(sec >= INTRO_MIN_SEC and sec <= INTRO_MAX_SEC, "mangrove_drowner intro is %.2f s" % sec)
+	before_each()
+
+
+func test_mangrove_drowner_strikes_wind_up_before_contact() -> void:
+	var a := _mangrove_drowner_actor(MANGROVE_DROWNER)
+	var contact := CreatureActor.row_for(MANGROVE_DROWNER).get("contact", {}) as Dictionary
+	for clip in MANGROVE_DROWNER_STRIKES:
+		var at := float(contact.get(String(clip), -1.0))
+		assert_true(at >= WIND_UP_MIN_SEC, "%s lands at %.2f s, after a %.2f s wind-up" % [clip, at, WIND_UP_MIN_SEC])
+		assert_true(at < a.clip_length(clip), "%s lands inside its %.2f s" % [clip, a.clip_length(clip)])
+	before_each()
+
+
+func test_mangrove_drowner_phase_maps_every_clip_to_its_risen_stance() -> void:
+	var a := _mangrove_drowner_actor(MANGROVE_DROWNER)
+	assert_true(a.enter_phase(MANGROVE_DROWNER_PHASE, true), "it enters uprooted")
+	for clip: StringName in [&"attack", &"cast", &"hit", &"hit_b", &"ready", &"ko", &"snag", &"rising_water"]:
+		var mapped := a.phase_clip(clip)
+		assert_eq(String(mapped), "%s_risen" % clip, "uprooted plays %s for %s" % [mapped, clip])
+		assert_true(a.has_clip(mapped), "it has %s" % mapped)
+	before_each()
+
+
+func test_mangrove_drowner_has_its_vfx_anchor_bones() -> void:
+	var skel := _mangrove_drowner_skeleton(_mangrove_drowner_actor(MANGROVE_DROWNER))
+	assert_true(skel != null, "mangrove_drowner has a skeleton")
+	if skel == null:
+		return
+	var weighted := _mangrove_drowner_weighted_bones(skel)
+	assert_false(weighted.is_empty(), "its mesh is weighted to some bones (the check is live)")
+	for bone in BOSS_ANCHORS:
+		assert_true(skel.find_bone(String(bone)) >= 0, "mangrove_drowner has the %s bone" % bone)
+		assert_false(weighted.has(String(bone)), "its %s carries no vertices" % bone)
+	before_each()
+
+
+func test_mangrove_drowner_snag_roots_start_whole() -> void:
+	var a := _mangrove_drowner_actor(MANGROVE_DROWNER)
+	for part in MANGROVE_DROWNER_PARTS:
+		var node := a.find_child(String(part), true, false) as Node3D
+		assert_true(node != null, "it has the %s node" % part)
+		if node != null:
+			assert_eq(node.visible, not String(part).ends_with("Broken"), "%s starts %s" % [part, node.visible])
+	before_each()
+
+
+func _mangrove_drowner_actor(id: StringName) -> CreatureActor:
+	var row := CreatureActor.row_for(id)
+	var a := (load(str(row.get("scene", ""))) as PackedScene).instantiate() as CreatureActor
+	var tree := Engine.get_main_loop() as SceneTree
+	(tree.current_scene if tree.current_scene != null else tree.root).add_child(a)
+	made.append(a)
+	return a
+
+
+func _mangrove_drowner_skeleton(a: Node) -> Skeleton3D:
+	var found := a.find_children("*", "Skeleton3D", true, false)
+	return found[0] as Skeleton3D if not found.is_empty() else null
+
+
+## Bones some skinned vertex is bound to (as in test_creature_bosses_act1.gd).
+func _mangrove_drowner_weighted_bones(skel: Skeleton3D) -> Dictionary:
+	var out: Dictionary = {}
+	for n: Node in skel.find_children("*", "MeshInstance3D", true, false):
+		var mi := n as MeshInstance3D
+		if mi.skin == null or mi.mesh == null:
+			continue
+		for s in mi.mesh.get_surface_count():
+			var arrays := mi.mesh.surface_get_arrays(s)
+			var bones: PackedInt32Array = arrays[Mesh.ARRAY_BONES]
+			var weights: PackedFloat32Array = arrays[Mesh.ARRAY_WEIGHTS]
+			for i in mini(bones.size(), weights.size()):
+				if weights[i] > 0.0:
+					out[_mangrove_drowner_bind_bone_name(skel, mi.skin, bones[i])] = true
+	return out
+
+
+func _mangrove_drowner_bind_bone_name(skel: Skeleton3D, skin: Skin, bind: int) -> String:
+	var b := skin.get_bind_name(bind)
+	return String(b) if b != &"" else skel.get_bone_name(skin.get_bind_bone(bind))
