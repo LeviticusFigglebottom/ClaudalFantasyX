@@ -1195,3 +1195,37 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - **The Act III bestiary list** @ d7509e52b, planning only, no assets. It is in docs/kb/art/creatures/act3_roster.md, section "Reconciled with the Act III beat sheets (2026-10-30)": every creature docs/kb/story/act3/ implies, chapter by chapter (Ch17 to Ch21), with design notes, status against the 10-28 roster, a revised order of work and two questions for the chapter designer.
   - **The Act II wildlife idle behaviours:** the kingfisher plunge-dive and per-woolback grazing pace, @ 3a287760b (dive) and 517c22705 (pace). Every Act II animal now does what its plan sheet describes.
 - **MERGE-READY @ 517c22705** (unchanged since 16:08). **BACKLOG EMPTY.**
+- **Your 16:45 relay: Act I animation polish @ b2b5678b6.**
+  - **tools/creatures/clip_audit.gd** now judges what you asked for across all 22 Act I regulars:
+    - stiff idles: skin motion under 3% of the actor's size;
+    - hit reacts that don't read: under 6% travel, or under 70% of it by 0.25 s;
+    - KOs that float or pop: the whole mesh's lowest point at the end, counting the battle hover. A KO "sinks" only if it ends below where it started; the hullgnaw's slide back into its breach is exempt by design.
+  - **Fixed:**
+    - the tower limpet's idle (it read as a still frame);
+    - the tide crawler's and sail leech's `idle_b` (now authored);
+    - the sail leech's KO (it ended 9 cm in the air; its sails now drape onto the deck);
+    - the fen leech's KO (6 cm up after today's bow; the mesh is set down 1 cm over its floor).
+    - Root drops still equal the hovers (test_creatures). The rim crawler and fen leech were rebuilt on their bases.
+  - **Clean, no change needed:** every other idle, hit and KO. The eel's KO stays in the water it stands in, and the scuttler's and squall wing's hits get 70%+ of their travel in early.
+  - Checks: builds byte-identical (5 jobs); tools test_creatures OK; Godot creature 159/0; validate_data.
+  - **Shots that need new baselines** (the shots session): `creature_tower_limpet`, `creature_tide_crawler`, `creature_sail_leech`, `creature_fen_leech`, `creature_rim_crawler`, and the fen_leech portrait.
+- **MERGE-READY @ b2b5678b6.**
+- **BACKLOG EMPTY:** M4-CRE-702 is in review; Act III stays planning-only.
+- **Your 17:24 relay, part 1: Act II animation polish @ d91a783fb.**
+  - The clip audit was run across all 11 Act II regulars. Two needed work:
+    - the glass skate's idle (it read as a held frame): it now breathes deeper, ripples its disc margins front to back and sweeps its tail;
+    - the cord moth's hit (it snapped, with only 8–12% of its travel eased): its wings and root roll now ease in and out over five keys.
+  - **Clean, no change needed:** every other idle, hit and KO. The tannin archer's KO ends 8 cm down, by design: it stands in water and ends where it started.
+  - Checks: builds byte-identical (2 jobs); Godot creature 159/0.
+  - **Shots that need new baselines** (the shots session): `creature_glass_skate`, `creature_cord_moth`, and the glass_skate portrait.
+- **Part 2: Act I wildlife reactions @ cbcd5b5cc.**
+  - **Birds lift.** A gull perched within 6 m of the party (a kingfisher within 4 m) takes off after its own delay (gulls 0–0.9 s, kingfishers 0–0.4 s), so a rail of birds goes up one after another. Landing birds avoid perches by the party, and a kingfisher there won't plunge.
+  - **Fish scatter.** A startled school spreads to 2.2× (rays 1.4×) and closes up as the startle fades. The shoal's bounds include the wider spread.
+  - New kind keys: `flush_radius_m`, `flush_delay_s` (gull, kingfisher) and `scatter_spread` (fish, ray), in the validator's schema. Documented in docs/kb/art/wildlife.md.
+  - Checks: validate_data; tools test_wildlife 20 OK; Godot wildlife 26/0 (two new tests).
+  - **Shots:**
+    - `wildlife_stage` changes (rmse 0.020): the stage's player stands by the left post, so that gull is in the air and the school is scattered. It needs a new baseline (shots session).
+    - `wildlife_zone_brine_wrecks` passes.
+    - `wildlife_zone_ossa_fen_rail0` and `wildlife_zone_pale_rim_wade` have no baselines yet.
+- **MERGE-READY @ cbcd5b5cc.**
+- **BACKLOG EMPTY:** M4-CRE-702 is in review (character); Act III stays planning-only.

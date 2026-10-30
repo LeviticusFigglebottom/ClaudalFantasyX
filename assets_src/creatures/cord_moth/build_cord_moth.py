@@ -317,14 +317,16 @@ def build_hit() -> ck.Clip:
     """It tumbles in the air, peaking at 0.1 s: rolled and pitched over, dropped, one wing flung up and the other
     down; it rights itself."""
     hit = ck.Clip("hit", HIT_SEC)
-    for t, s in ((0.0, 0.0), (0.1, 1.0), (0.25, 0.45), (HIT_SEC, 0.0)):
-        hit.key("root", t, (22.0 * s, 0.0, 38.0 * s), (0.04 * s, -0.12 * s, -0.06 * s))
-        hit.key("fore_l0", t, (0.0, 0.0, 40.0 * s))
-        hit.key("fore_r0", t, (0.0, 0.0, 30.0 * s))
-        hit.key("fore_l1", t, (0.0, 0.0, -20.0 * s))
-        hit.key("fore_r1", t, (0.0, 0.0, 18.0 * s))
-        hit.key("hind_l0", t, (0.0, 0.0, 30.0 * s))
-        hit.key("hind_r0", t, (0.0, 0.0, 22.0 * s))
+    # the animation polish pass (2026-10-30): the wings swung 40 deg and the body rolled 38 deg in 0.1 s, a wing
+    # jumping 26 cm in one frame (hit_b); both swing 30% less, eased in to a peak at 0.13 s
+    for t, s, w in ((0.0, 0.0, 0.0), (0.06, 0.5, 0.5), (0.13, 1.0, 1.0), (0.25, 0.45, 0.45), (HIT_SEC, 0.0, 0.0)):
+        hit.key("root", t, (16.0 * s, 0.0, 26.0 * s), (0.04 * s, -0.12 * s, -0.06 * s))
+        hit.key("fore_l0", t, (0.0, 0.0, 28.0 * w))
+        hit.key("fore_r0", t, (0.0, 0.0, 21.0 * w))
+        hit.key("fore_l1", t, (0.0, 0.0, -14.0 * w))
+        hit.key("fore_r1", t, (0.0, 0.0, 13.0 * w))
+        hit.key("hind_l0", t, (0.0, 0.0, 21.0 * w))
+        hit.key("hind_r0", t, (0.0, 0.0, 15.0 * w))
     return hit
 
 

@@ -6,6 +6,11 @@ extends SceneTree
 ##   pop    the largest one-frame jump of any bone (cm), and its share of the actor's size: popping;
 ##   seam   a looping clip's largest bone gap between its last frame and its first (cm): a loop that hitches;
 ##   under  how far the lowest contact vertex dips under the floor (cm);
+##   motion the largest any skin vertex (idle, hit; else bone) travels from its first-frame place (share of the
+##          actor's size): an idle under STIFF_SHARE is stiff, a hit under HIT_SHARE doesn't read (nor one
+##          reaching less than HIT_EARLY of its travel by HIT_PEAK_S);
+##   float  where a KO ends: the whole skinned mesh's lowest point over the floor (cm), counting the battle hover the
+##          creatures.json row raises it by (stand_in.hover), so a KO that leaves it in the air is caught;
 ## and per actor the reactions it lacks (hit, ko; a villager's idle, talk, walk).
 ## godot --headless --path . -s tools/creatures/clip_audit.gd [-- --json OUT] [-- id ...]
 ## (no ids: the roster below; an id may also name any creatures.json row,
@@ -30,6 +35,16 @@ const SLIP_FLAG_CM := 2.0
 const POP_FLAG_SHARE := 0.08  # a one-frame jump past 8% of the actor's size
 const SEAM_FLAG_CM := 1.0
 const UNDER_FLAG_CM := 1.5
+const STIFF_SHARE := 0.03  # an idle whose skin stays within 3% of the actor's size reads as a still frame
+const HIT_SHARE := 0.06
+const HIT_PEAK_S := 0.25
+const HIT_EARLY := 0.7  # of its travel by HIT_PEAK_S
+const FLOAT_FLAG_CM := 4.0
+## KOs that go under on purpose: the hullgnaw slides back down into its breach (build_hullgnaw.ko_clip).
+const KO_SUBMERGES: Array[String] = ["hullgnaw"]
+const IDLE_CLIPS: Array[String] = ["idle", "idle_b"]
+const MOTION_STRIDE := 7  # every 7th skinned vertex for the idle and hit motion
+const HIT_CLIPS: Array[String] = ["hit", "hit_b"]
 ## Gaits played in place while the node moves (FieldNpc): their feet travel by design.
 const IN_PLACE_GAITS: Array[String] = ["walk", "run"]
 const FOE_CLIPS: Array[String] = ["idle", "attack", "hit", "ko"]
@@ -114,6 +129,7 @@ func _audit(id: String, scene_path: String, kind: String) -> void:
 	var skel := _animated_skeleton(anim, skels)
 	var clips := Array(anim.get_animation_list()).filter(func(c: String) -> bool: return c != "RESET")
 	var contacts := _contacts(actor)
+	var samples := _samples(actor, MOTION_STRIDE)
 	if not clips.is_empty():  # a player's first seek after load does not pose the skeleton: warm it up
 		anim.play(StringName(str(clips[0])))
 		anim.seek(0.0, true)
@@ -127,7 +143,11 @@ func _audit(id: String, scene_path: String, kind: String) -> void:
 	)
 	print(line)
 	for clip: String in clips:
-		var r := _measure(anim, skel, StringName(clip), size, contacts)
+		var r := _measure(anim, skel, StringName(clip), size, contacts, samples)
+		if clip == "ko":
+			r["float_cm"] = 100.0 * (_mesh_lowest(actor, skel) + _hover(scene_path))
+			anim.seek(0.0, true)
+			r["start_cm"] = 100.0 * (_mesh_lowest(actor, skel) + _hover(scene_path))
 		r["id"] = id
 		r["kind"] = kind
 		r["clip"] = clip
@@ -137,9 +157,21 @@ func _audit(id: String, scene_path: String, kind: String) -> void:
 		flags += "!" if float(r["pop_share"]) > POP_FLAG_SHARE else " "
 		flags += "!" if float(r["seam_cm"]) > SEAM_FLAG_CM else " "
 		flags += "!" if float(r["under_cm"]) > UNDER_FLAG_CM else " "
+		var notes: Array[String] = []
+		if IDLE_CLIPS.has(clip) and float(r["motion_share"]) < STIFF_SHARE:
+			notes.append("STIFF")
+		if HIT_CLIPS.has(clip) and (float(r["motion_share"]) < HIT_SHARE or float(r["early_share"]) < HIT_EARLY):
+			notes.append("WEAK HIT")
+		if r.has("float_cm") and float(r["float_cm"]) > FLOAT_FLAG_CM:
+			notes.append("FLOATS %.0f cm" % r["float_cm"])
+		# a KO sinks when it ends lower than it began (a sea creature already standing in the water is not sinking)
+		var start_low := minf(float(r.get("start_cm", 0.0)), 0.0)
+		if r.has("float_cm") and float(r["float_cm"]) < start_low - FLOAT_FLAG_CM and not KO_SUBMERGES.has(id):
+			notes.append("SINKS %.0f cm" % (start_low - float(r["float_cm"])))
+		r["notes"] = notes
 		print(
 			(
-				"  %-14s %s slip %5.1f (%s)  pop %5.1f (%3.0f%%, %s)  seam %5.1f  under %4.1f"
+				"  %-14s %s slip %5.1f (%s)  pop %5.1f (%3.0f%%, %s)  seam %5.1f  under %4.1f  motion %4.1f%% @%.2fs %s"
 				% [
 					clip,
 					flags,
@@ -150,6 +182,9 @@ func _audit(id: String, scene_path: String, kind: String) -> void:
 					r["pop_bone"],
 					r["seam_cm"],
 					r["under_cm"],
+					100.0 * float(r["motion_share"]),
+					r["peak_s"],
+					" ".join(notes),
 				]
 			)
 		)
@@ -160,6 +195,46 @@ func _audit(id: String, scene_path: String, kind: String) -> void:
 func missing_rows(id: String, kind: String, missing: Array[String]) -> void:
 	for m in missing:
 		rows.append({"id": id, "kind": kind, "clip": m, "missing": true})
+
+
+## The whole skinned mesh's lowest point in the current pose (the clip held at its end by _measure's last seek).
+func _mesh_lowest(actor: Node3D, skel: Skeleton3D) -> float:
+	var low := INF
+	for p in _skinned(skel, _samples(actor, 3)):
+		low = minf(low, p.y)
+	return low if low != INF else 0.0
+
+
+## Every `stride`-th vertex of every skinned mesh, in _contacts' form (for the lowest point and the motion).
+func _samples(actor: Node3D, stride: int) -> Array:
+	var all: Array = []
+	for mi: MeshInstance3D in actor.find_children("*", "MeshInstance3D", true, false):
+		if mi.mesh == null or mi.skin == null:
+			continue
+		for s in mi.mesh.get_surface_count():
+			var arr := mi.mesh.surface_get_arrays(s)
+			var verts: PackedVector3Array = arr[Mesh.ARRAY_VERTEX]
+			if arr[Mesh.ARRAY_BONES] == null or verts.is_empty():
+				continue
+			var bones: PackedInt32Array = arr[Mesh.ARRAY_BONES]
+			var weights: PackedFloat32Array = arr[Mesh.ARRAY_WEIGHTS]
+			var per := bones.size() / verts.size()
+			for v in range(0, verts.size(), stride):
+				var bi: Array[int] = []
+				var bw: Array[float] = []
+				for k in per:
+					bi.append(bones[v * per + k])
+					bw.append(weights[v * per + k])
+				all.append([mi, verts[v], bi, bw])
+	return all
+
+
+## The battle hover (m) the creatures.json row whose scene this is raises the actor by (0 when none).
+func _hover(scene_path: String) -> float:
+	for row: Variant in (_creatures().get("creatures", {}) as Dictionary).values():
+		if row is Dictionary and str(row.get("scene", "")) == scene_path:
+			return float(((row as Dictionary).get("stand_in", {}) as Dictionary).get("hover", 0.0))
+	return 0.0
 
 
 ## The Skeleton3D the clips drive (a body can carry more than one): the first bone track's node, else the first found.
@@ -253,16 +328,22 @@ func _poses(anim: AnimationPlayer, skel: Skeleton3D, t: float) -> PackedVector3A
 	return out
 
 
-func _measure(anim: AnimationPlayer, skel: Skeleton3D, clip: StringName, size: float, contacts: Array) -> Dictionary:
+func _measure(
+	anim: AnimationPlayer, skel: Skeleton3D, clip: StringName, size: float, contacts: Array, samples: Array
+) -> Dictionary:
 	anim.speed_scale = 0.0  # held: only seek() moves it (pause() drops current_animation on some players)
 	anim.play(clip, 0.0)
 	var a := anim.get_animation(clip)
 	var n := maxi(int(ceil(a.length * FPS)), 1)
 	var frames: Array[PackedVector3Array] = []
 	var touch: Array[PackedVector3Array] = []
+	var skin: Array[PackedVector3Array] = []
+	var judged := IDLE_CLIPS.has(String(clip)) or HIT_CLIPS.has(String(clip))
 	for k in n + 1:
 		frames.append(_poses(anim, skel, minf(k / FPS, a.length)))
 		touch.append(_skinned(skel, contacts))
+		if judged:
+			skin.append(_skinned(skel, samples))
 	var nb := skel.get_bone_count()
 	var nc := contacts.size()
 	var lowest := PackedFloat32Array()
@@ -303,6 +384,18 @@ func _measure(anim: AnimationPlayer, skel: Skeleton3D, clip: StringName, size: f
 	var under := 0.0
 	for c in nc:
 		under = maxf(under, -lowest[c])
+	var motion := 0.0  # the skin's largest travel from its first frame (bones' origins miss a leaf bone's turn)
+	var peak_s := 0.0
+	var early := 0.0  # the travel reached by HIT_PEAK_S: a hit reads when most of it comes at once
+	var moving := skin if judged else frames
+	for k in moving.size():
+		for v in moving[k].size():
+			var d := moving[k][v].distance_to(moving[0][v])
+			if d > motion:
+				motion = d
+				peak_s = minf(k / FPS, a.length)
+			if k / FPS <= HIT_PEAK_S:
+				early = maxf(early, d)
 	return {
 		"slip_cm": 100.0 * slip,
 		"slip_bone": slip_bone,
@@ -311,6 +404,9 @@ func _measure(anim: AnimationPlayer, skel: Skeleton3D, clip: StringName, size: f
 		"pop_bone": pop_bone,
 		"seam_cm": 100.0 * seam,
 		"under_cm": 100.0 * under,
+		"motion_share": motion / maxf(size, 0.01),
+		"peak_s": peak_s,
+		"early_share": early / maxf(motion, 1e-6),
 		"loop": a.loop_mode != Animation.LOOP_NONE,
 		"length": a.length,
 	}
