@@ -437,7 +437,16 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   gate's camera with Rhen in it; check Ch4's fights show Toma.
 
 ## Exact next step
-**BACKLOG EMPTY (2026-10-29 late: after the flow and pacing pass; before that @ cb97a0cf after QA rows 23, 34, 39):** waiting on M3-CIN-1233 (slice-polish's switch, which I review when MERGE-READY) and M3-CIN-1234. the fresh title → Ch9 playthrough is done (handoff
+**BACKLOG EMPTY (2026-10-30 ~02:00):** the flow and pacing pass is done (`docs/kb/qa/act1_flow_pacing_pass.md`) and the
+Act II chapter drafts are written (`docs/kb/plan/act2/chapters/`, pre-gate). Waiting on:
+- **M3-CIN-1233** (slice-polish flips the M2 switch): when they log MERGE-READY, merge their head into a scratch
+  worktree, run every `_thread` test, render stills of the Ch1 Drop and Ch4 NemeDoor arrivals, and write the review
+  in the task's log.
+- **gpu/act1-qa-3:** any new row for act1-chapters comes first.
+- M3-CIN-1234 (Ch1's dive rate, slice-polish), and the filed Act I requests.
+- At the `act1-complete` tag (ADR 0203): turn the Act II drafts into data, Ch10 first.
+
+### Earlier exact next step
 `docs/kb/handoffs/2026-10-29-cinematics-act1-chapters-1.md`). Every `_thread` test passes. Every Act I cutscene of
 Ch1 and Ch4–Ch9 was viewed in flow-order stills, and every problem in my lane is fixed and re-viewed (the fourth pass in
 `docs/kb/qa/act1_playthrough_ch04_ch09.md`). Ashcrown's POIs have camera volumes. What is left waits on filed requests:
