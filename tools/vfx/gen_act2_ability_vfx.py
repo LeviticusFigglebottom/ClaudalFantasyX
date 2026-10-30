@@ -52,7 +52,7 @@ SKILLS = {
                        "The Mangrove Drowner hauls the footing: fen water dragged back along the roots."),
     "rising_water": fx("ground", spray("lagoon_teal", "deep_teal_shadow", 60),
                        "The Drowner's rising water climbs around each of the party (water, never glimmer)."),
-    "root_stamp": fx("ground", heavy("timber_weathered", "foliage_shadow", "sand_wet", "deep_teal_shadow", 56),
+    "root_stamp": fx("ground", heavy("timber_weathered", "laterite", "sand_wet", "foliage_shadow", 56),
                      "Risen on its root-feet, the Drowner stamps: splinters and fen mud."),
     "lamp_trim": fx("chest", slash("brass", "salt_glass", 36), "The Lamp Engine's scissor arm snips: brass sparks."),
     "lamp_gather": fx("chest", charge("glimmer_bound", "salt_glass", 44),
@@ -69,8 +69,14 @@ SKILLS = {
     "ram_bellow": fx("head", sink("mortar_white", "overcast_slate", 40, 0.5),
                      "The bellow brings the snow down off the wall onto the party (wet snow, never ice)."),
     "fin_cut": fx("chest", slash("sea_glow", "abyss_navy", 40), "The Wakefin's blade cuts across the rail: a seam of sea-glow."),
-    "sound_dive": fx("ground", ring("sea_glow", "abyss_navy", 48, 1.6),
-                     "The Wakefin sounds: the water darkens, then a ring of sea-glow marks where it will rise (a glow, not a light)."),
+    # at its head, rising: from the fight's frame the barge's rail hides the whole waterline beside the hull, so a ring
+    # on the water (tried at the near face, then at the fin's feet, 10-30) was never seen; the fin dives as it sounds
+    # large, slow and long-lived: at 12 m in the dark, the stock rise motes read as one dot (10-30)
+    "sound_dive": fx("head", [A1.layer("sea_glow", "lagoon_teal", 70, 2.4, 0.15, (0.3, 0.7), 20, (0, 0.2, 0), (0.3, 0.55),
+                                       radius=1.0, turb=0.25, energy=2.2),
+                              A1.layer("sea_glow", "abyss_navy", 30, 2.8, 0.1, (0.15, 0.35), 30, (0, 0.1, 0), (0.5, 0.8),
+                                       radius=0.6, turb=0.2, energy=1.6)],
+                     "The Wakefin sounds: it goes under and sea-glow rises off the water where its fin was, marking where it will come up (a glow, not a light)."),
     "wake_breach": fx("chest", spray("sea_glow", "deep_teal_shadow", 60),
                       "It breaches alongside and the fin sweeps the deck: black water lit from below."),
     "wake_wheel": fx("ground", spray("deep_teal_shadow", "sea_glow", 44),
@@ -88,10 +94,13 @@ def main() -> int:
         return 1
     for sid, eff in SKILLS.items():
         mapped = data["map"]["skills"].get(sid)
-        if mapped is not None and data["effects"].get(mapped, {}).get("note") != eff["note"]:
-            continue  # someone else's mapping wins
+        if mapped not in (None, sid, sid + "_hit") and data["effects"].get(mapped, {}).get("note") != eff["note"]:
+            continue  # someone else's mapping wins (this tool's own ids are rewritten)
         own = data["effects"].get(sid)
-        eid = sid if own is None or own.get("note") == eff["note"] else sid + "_hit"
+        if mapped in (sid, sid + "_hit"):
+            eid = mapped  # this tool's own effect: rewritten in place
+        else:
+            eid = sid if own is None or own.get("note") == eff["note"] else sid + "_hit"
         data["effects"][eid] = eff
         data["map"]["skills"][sid] = eid
     out = json.dumps(data, indent=2) + "\n"

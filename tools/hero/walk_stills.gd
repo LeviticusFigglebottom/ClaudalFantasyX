@@ -104,6 +104,25 @@ func _process(_delta: float) -> void:
 	get_viewport().get_texture().get_image().save_png(
 		out.path_join("%s_%05d.png" % [_args.get("route", "walk"), _frame])
 	)
+	var cam := get_viewport().get_camera_3d()
+	if cam != null:  # the pose in numbers, beside the still: the shot, the pitch, how far from the leader's chest
+		var chest := _player.global_position + Vector3.UP * 1.2
+		print(
+			(
+				"still %05d shot=%s volume=%s mode=%d authored=%s kept=%.2f cam=%s pitch=%.0f to_chest=%.2f m"
+				% [
+					_frame,
+					_player.director.active_shot_id(),
+					_player.director.state_snapshot().get("volume", ""),
+					_player.director.active_shot.mode,
+					_player.director.active_shot.position,
+					minf(_player.director.get(&"_kept_m"), 999.0),
+					cam.global_position,
+					rad_to_deg(asin(clampf(-cam.global_basis.z.y, -1.0, 1.0))),
+					cam.global_position.distance_to(chest),
+				]
+			)
+		)
 	if _tail >= TAIL_FRAMES:
 		get_tree().quit(0)
 		return

@@ -264,6 +264,7 @@ static func build(row: Dictionary, vowbound_id: StringName, caller: BattleCombat
 	var d := {"name_key": row.get("name_key", ""), "stats": stats}
 	d["skills"] = row.get("skills", [])
 	d["affinities"] = row.get("affinities", {})
+	d["cycle"] = row.get("cycle", [])  # M4-A2P-025: Kesh's six voices
 	return BattleCombatant.from_dict(vowbound_id, BattleCombatant.TEAM_PARTY, d)
 
 
