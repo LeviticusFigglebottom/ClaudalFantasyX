@@ -1303,3 +1303,23 @@ BACKLOG EMPTY (big26 checked at 20:00): every remaining item waits on another tr
 - **Already covered:** every Act II speaker with a model has a face, and every foe with a model has its bestiary
   portrait.
 - **To merge:** claude/ui at 43fa81abe for big26's aspect red.
+- 2026-10-30 20:50, **the Lead's 18:04 note: the Act II UI as played on Ch10–Ch13** (M4-A2P-1700, my range 1700–1799).
+  - **The walk:** `tests/unit/test_act2_ui_as_played.gd` (5/0) runs at 100% and 130%.
+    - **Zone titles:** every Ch10–Ch13 location's area title card.
+    - **Objective lines:** every Ch10–Ch13 line, main and side. A main line shows in its zone; on demand it's the
+      Where-to-next card.
+    - **Shops and inns:** Quellan's and Ansedra's, walked with the pad (Buy, every stock row, a purchase, Rest,
+      Leave), open and closed.
+    - **Vowbound calls:** Asha's battle menu with the six Vowbound bound by Ch13, each Call row reached by the pad.
+    - **It fails on:** a Control off screen, text out of its panel, and text cut short (wrapped or one-line).
+  - **Found and fixed (fca18c182):**
+    1. **An inn's refusal was cut to one line.** "The door is barred. No rooms for…" at 130%: the status kept its
+       built height. It now gets the column down to the help line.
+    2. **Quellan's and Ansedra's Rest lines were cut at 130%.** They needed 365 px of a 326 px column. The inn panel
+       is now 618 tall (was 558) and its line's cap is 400.
+  - **Renders viewed:** inn_menu at 100% and at 130% (Quellan). The inn_menu baseline changes with the taller panel.
+  - **Clean:** the area titles, every objective line, the shops' stock, and the six Call rows (all on screen; the
+    root grows to 12 rows and still fits).
+  - **Tests:** act2_ui_as_played 5/0, inn 11/0, shop 28/0, town 6/0, aspect 18/0, pseudo_loc 26/0,
+    input_parity_shop 3/0; validate_data 0/0; taskboard ok.
+MERGE-READY @ fca18c182: M4-A2P-1700, the Act II UI as played (inn refusals and Rest lines whole at 130%).
