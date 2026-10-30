@@ -31,3 +31,5 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - LEAD-ASK: M4-A2P-100 (`placeholder_audit.py --act 2`) is tools work that ADR 0203 allows **before** the gate. Hand it to integration-qa now as `todo`? It's filed `blocked` like the rest.
 
 ### MERGE-READY
+- MERGE-READY @ b470c65b: the Act II plan (act2_plan.md, act2_inventory.md, act2_tracks.md proposed), 67 M4-A2P tasks blocked by ADR 0203, LEAD-ASKs above; integration @ 89021833 merged in. Checks run: validate_data 0/0, taskboard --check clean, banned-terms grep over every new file clean. Checks skipped: Godot, lint, format, dlgc, tools tests (docs only; no code, data or dialogue touched).
+- BACKLOG EMPTY: every deliverable in the brief is done (plan, inventory, tasks, track split, critical path and risks); the next steps are the Lead's (LEAD-ASKs). Act II content stays paused (ADR 0041) until the gate.
