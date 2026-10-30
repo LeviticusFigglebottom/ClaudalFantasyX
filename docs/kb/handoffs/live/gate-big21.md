@@ -37,3 +37,31 @@ Merge fallout fixes:
 
 Checks at the build: validate_data 0/0; taskboard ok; dlgc 0/0; gdlint and gdformat clean; no duplicate loc keys, codex
 ids, PROVENANCE rows or shot ids (669 shots); no conflict markers.
+
+### Fast gate (07:55–09:03 UTC; big19's last capture paused for it)
+- Godot import clean; **boot smoke 0 ERROR lines**.
+- **Filtered Godot tests: 309 files** (diff against the integration branch, which then held big19 only). 6 red:
+  - **FIXED on the gate (merge fallout), cf238776:** test_battle_vowbound_model: "kesh voice_water: its own clip" (6
+    voices). creatures-b's kesh row (contacts per voice) met act1-chapters' M4-A2P-024/025 vowbound row and skills.
+    Kesh's `clip_by_skill` was pasted from `docs/kb/art/creatures/vowbound/kesh.md` (the six voices, the_seven; kesh_shift
+    isn't a skill yet). 4/0 after.
+  - **FIXED on the gate, 9ffec236 (keep it, the Lead):** test_pseudo_loc_screens::test_party_pages_fit: a script
+    error, battle_cycle.gd:23 "'cycle' on Nil". M4-A2P-025's cycle check in `skill_help()` ran with no current actor
+    (the lattice menu, out of battle). A null guard: 17/0 after, test_battle_cycle 5/0, test_lattice_menu 25/0.
+    (The end-of-run log check still flags its pre-fix log.)
+  - **Routed: battle-presentation** (the Lead sent it): test_battle_vfx: "element of voice_glimmer / level_hand /
+    still_water": the VFX map has no `glimmer` element for the new glimmer skills.
+  - **Routed: battle-presentation / act1-chapters:** test_battle_act1_ability_vfx: "swell the_seven / farewell_tide has
+    its own effect": the Act II finishers have no effects yet.
+  - **Routed: env-art-b, red on claude/env-art-b alone:** test_ch14_16_walkable::test_hollowmeres_dock:
+    "kit:hm_supper_table.glb@(41.4, 0.0, -0.9) blocks a body at (40.7, 0.00, -0.8)".
+  - **Already FAST-TRACKed (big20):** test_hero_field_snaps (Lowlight, the Sanctum).
+- **Tools suite: 201 units, 22 failing.** All branch content (re-run on the heads): the same as big20 (characters'
+  13 villager rig checks; act1-chapters' test_act1_audio_audit; act2-plan's test_cutscene_sfx_files and test_hero_clips;
+  env-art's test_keth; the known test_palette_check, test_villagers, test_screenshots), plus three new ones:
+  - test_blender_builds: `assets/cutscene/ch01/oruvel_seabed.glb` has no Blender job (m2-slice's FAST-TRACK seabed;
+    red on claude/m2-slice and claude/act1-chapters alone). Route to m2-slice.
+  - test_arenas: `bridal_barge_night` and `ansedra_lagoon_escape` aren't reproducible from their generator (red on
+    claude/env-art-b alone). Route to env-art-b.
+  - test_status_names: "dialogue.csv DLG_NAME_KIRRU_SHELL_CARVER: 'Shell' is an old status name (ADR 0202: Tide Ward)"
+    (red on claude/act2-plan alone). Route to act2-plan.
