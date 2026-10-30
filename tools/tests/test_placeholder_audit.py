@@ -221,5 +221,39 @@ class RealRepoTests(unittest.TestCase):
         self.assertIn("# Act I final-quality inventory", text)
 
 
+class ActScopeTests(unittest.TestCase):
+    """ADR 0203: `--act 2` audits Ch10-Ch16 into docs/kb/qa/act2_inventory.md, report-only; Act I stays the default."""
+
+    def tearDown(self) -> None:
+        pa.set_scope(1)
+
+    def test_act_one_is_the_default(self) -> None:
+        self.assertEqual((pa.ACT, pa.FIRST_CHAPTER, pa.LAST_CHAPTER), (1, 0, 9))
+        self.assertTrue(pa.INVENTORY.name.startswith("act1_"))
+        self.assertEqual(pa.dialogue_dirs()[0], "prologue")
+        self.assertIn("ch09", pa.dialogue_dirs())
+        self.assertNotIn("ch10", pa.dialogue_dirs())
+
+    def test_act_two_is_ch10_to_ch16_in_its_own_file(self) -> None:
+        pa.set_scope(2)
+        self.assertEqual(pa.INVENTORY.name, "act2_inventory.md")
+        self.assertEqual(pa.dialogue_dirs(), ["ch%02d" % n for n in range(10, 17)])
+        self.assertTrue(pa.in_scope(10) and pa.in_scope(16))
+        self.assertFalse(pa.in_scope(9) or pa.in_scope(17))
+        self.assertFalse(pa.in_scope(None), "a shared asset's name is Act I's row, not repeated")
+        pa.set_scope(1)
+        self.assertTrue(pa.in_scope(None) and pa.in_scope(0) and not pa.in_scope(10))
+
+    def test_act_two_is_report_only_and_titled_so(self) -> None:
+        pa.set_scope(2)
+        item = pa.Item("game/levels/ch10/x/x.tscn", "zone greybox", 10, pa.OWNER_ZONES_LATE, "high", "greybox")
+        text = pa.render([item], "static checks only")
+        self.assertIn("Act II inventory (ADR 0203, report-only)", text.splitlines()[0])
+        self.assertIn("--act 2 --write", text)
+        with tempfile.TemporaryDirectory() as tmp:
+            pa.INVENTORY = Path(tmp) / "act2_inventory.md"
+            self.assertEqual(pa.main(["--static-only", "--act", "2", "--check"]), 0, "Act II never fails --check")
+
+
 if __name__ == "__main__":
     unittest.main()
