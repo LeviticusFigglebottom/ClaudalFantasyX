@@ -146,8 +146,10 @@
       {"id": "kerrid_stair", "category": "people", "title_key": "CODEX_KERRID_STAIR_TITLE",
        "body_key": "CODEX_KERRID_STAIR_BODY", "unlock": {"flag": "ch15_kerrid_told"}},
       {"id": "keth", "category": "world", "title_key": "CODEX_KETH_TITLE", "body_key": "CODEX_KETH_BODY", "unlock": {"flag": "ch12_reached_quellan"}},
-      {"id": "conclave", "category": "world", "title_key": "CODEX_CONCLAVE_TITLE", "body_key": "CODEX_CONCLAVE_BODY", "unlock": {"flag": "ch13_started"}},
-      {"id": "malcor_venn", "category": "people", "title_key": "CODEX_MALCOR_VENN_TITLE", "body_key": "CODEX_MALCOR_VENN_BODY", "unlock": {"flag": "ch14_started"}},
+      {"id": "conclave", "category": "people", "title_key": "CODEX_CONCLAVE_TITLE",
+       "body_key": "CODEX_CONCLAVE_BODY", "unlock": {"flag": "ch14_declared_heretics"}},
+      {"id": "malcor_venn", "category": "people", "title_key": "CODEX_MALCOR_VENN_TITLE",
+       "body_key": "CODEX_MALCOR_VENN_BODY", "unlock": {"flag": "ch14_declared_heretics"}},
       {"id": "heresy", "category": "world", "title_key": "CODEX_HERESY_TITLE", "body_key": "CODEX_HERESY_BODY", "unlock": {"flag": "ch14_declared_heretics"}}
     ]
   }
