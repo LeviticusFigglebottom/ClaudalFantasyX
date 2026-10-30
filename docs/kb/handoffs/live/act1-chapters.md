@@ -602,7 +602,7 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - Requested the readout from UI (M3-UI-1241).
   - Checks: cover, battle_engine, set_piece, boss, validate, lint and format.
   - Next: M4-A2P-022, part repair (the Lamp Engine's answer). It unblocks the Lamp Engine's role band.
-- MERGE-READY @ (this push)
+- MERGE-READY @ 42e34dcbe
 
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
