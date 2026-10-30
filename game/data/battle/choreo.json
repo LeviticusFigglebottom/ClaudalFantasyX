@@ -207,7 +207,6 @@
                            "look_up_m": -0.5, "fov": 54.0}
       },
       "enemy_by_skill": {"doc": "M3-BPR-420 (ADR 0041): the Act I bosses' big moves get a shot, not the enemy's default push. A heavy single blow frames the boss at its strike point, then the hero it hits (boss_blow, target); a move on the whole party frames the boss winding up from its mark (boss_sweep) and then holds wide. Checked before enemy_by_actor; a shot that fails the safe frame falls back to the default. A foe whose body at its strike point stands across the lens's sight of its targets drops that shot (the director's body check). The Reach keeps the default frame for all its moves: at its size every placed shot saw only its body or dropped under the wall-head, while the default frame already shows its hand over the party.",
-                         "sound_dive": {"lead": "boss_over_rail", "contact": "", "_doc": "M4-A2P-062: the Wakefin's telegraph is a ring of sea-glow on the water around the fin; from the deck the barge's edge hid it (the boss camera sheet, 10-30), so the camera looks down over the rail as the intro does."},
                          "hood_slam": {"lead": "boss_blow", "contact": "target"},
                          "gnaw": {"lead": "boss_blow", "contact": "target"},
                          "thrash": {"lead": "boss_blow", "contact": "target"},

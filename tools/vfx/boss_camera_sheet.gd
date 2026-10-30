@@ -11,6 +11,7 @@ extends Node
 const SCENE := "res://game/battle/scene/battle_sandbox.tscn"
 const PARTY: Array[StringName] = [&"rhen", &"asha", &"toma"]
 const SETTLE_FRAMES := 30
+const SETTLE_SEC := 2.0
 const FIGHTS := {
 	&"ch01_hullgnaw": [&"hullgnaw", [&"gnaw", &"thrash"]],
 	&"ch04_spar_wraith": [&"spar_wraith", [&"haul", &"sea_lash", &"shroud_sweep"]],
@@ -102,8 +103,8 @@ func _run() -> void:
 				print("BOSS_CAMERA_SHEET %s %s %s %s" % [enc, sid, moment, choreo.camera.shot_ids])
 			choreo.frozen = false
 			choreo.seek(float(choreo.current().get("total", 0.0)) + 1.0)
-			for i in 10:
-				await get_tree().process_frame
+			# the last move's particles die out first (Rising Water's teal had hung over Root Stamp's frames)
+			await get_tree().create_timer(SETTLE_SEC).timeout
 		remove_child(ctl)
 		ctl.queue_free()
 	get_tree().quit()

@@ -70,8 +70,9 @@ SKILLS = {
                      "The bellow brings the snow down off the wall onto the party (wet snow, never ice)."),
     "fin_cut": fx("chest", slash("sea_glow", "abyss_navy", 40), "The Wakefin's blade cuts across the rail: a seam of sea-glow."),
     # feet, not ground: ground sits on the body's near face, which for a fin in the water is against the barge's hull
-    "sound_dive": fx("feet", ring("sea_glow", "abyss_navy", 48, 1.6),
-                     "The Wakefin sounds: the water darkens, then a ring of sea-glow marks where it will rise (a glow, not a light)."),
+    # and motes of it rise up the fin: the ring alone, at the waterline, was under the rail from the deck (10-30)
+    "sound_dive": fx("feet", ring("sea_glow", "abyss_navy", 48, 1.6) + A1.rise("sea_glow", "lagoon_teal", 40, 1.4, 0.5),
+                     "The Wakefin sounds: the water darkens, a ring of sea-glow marks where it will rise and the glow climbs its fin (a glow, not a light)."),
     "wake_breach": fx("chest", spray("sea_glow", "deep_teal_shadow", 60),
                       "It breaches alongside and the fin sweeps the deck: black water lit from below."),
     "wake_wheel": fx("ground", spray("deep_teal_shadow", "sea_glow", 44),
@@ -89,10 +90,13 @@ def main() -> int:
         return 1
     for sid, eff in SKILLS.items():
         mapped = data["map"]["skills"].get(sid)
-        if mapped is not None and data["effects"].get(mapped, {}).get("note") != eff["note"]:
-            continue  # someone else's mapping wins
+        if mapped not in (None, sid, sid + "_hit") and data["effects"].get(mapped, {}).get("note") != eff["note"]:
+            continue  # someone else's mapping wins (this tool's own ids are rewritten)
         own = data["effects"].get(sid)
-        eid = sid if own is None or own.get("note") == eff["note"] else sid + "_hit"
+        if mapped in (sid, sid + "_hit"):
+            eid = mapped  # this tool's own effect: rewritten in place
+        else:
+            eid = sid if own is None or own.get("note") == eff["note"] else sid + "_hit"
         data["effects"][eid] = eff
         data["map"]["skills"][sid] = eid
     out = json.dumps(data, indent=2) + "\n"
