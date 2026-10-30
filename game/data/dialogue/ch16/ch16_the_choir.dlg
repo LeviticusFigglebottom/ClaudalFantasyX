@@ -116,7 +116,7 @@ Asha [afraid]: And it's me next. #line:ch16_inside_002
 title: ch16_the_high_warden
 ---
 @camera C10
-@sfx barge_no_wake
+@sfx barge_pole
 @wait 4.0
 @camera C11
 @mark sefir sefir walk

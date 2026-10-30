@@ -1042,3 +1042,62 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   3. **Rime urchin, water not ice: DONE @ 2894526a.** It absorbs water, and `rime_spine` is water. The ids, the name and the loc stay; the lore line still reads true of salt.
      - Checks: validate_data clean; Godot battle 818/0 and creature 88/0; tools battle-data suites OK.
 - **MERGE-READY @ 2894526a.** BACKLOG EMPTY, the same as at 04:40.
+- **Your 09:01 relay:**
+  1. **big20 (7dc3ab41) merged** @ 49ad1e53, with no conflicts. Checks: validate_data, taskboard, lint; tools test_creatures, test_wildlife and test_npc; Godot creature 125/0 and wildlife 22/0.
+  2. Row 44 and M3-CIN-1250 were done earlier: row 44 in the PC pass 3 fixes; M3-CIN-1250 was already fixed by 42438cd5, as noted at 04:20.
+  3. The tortoise and scree crawler LOD1 ≤ 8k is done @ 664e7c86 (7,674 triangles).
+  4. **The Ch10–Ch13 enemies:**
+     - Every enemy in every Ch10–Ch12 encounter (the 10 regulars and the 3 bosses) already has a real model, rig, clips and portrait, with an enemies.json `model`.
+     - Combat has no Ch13 (Ansedra) enemy ids or encounters yet. When they land, I build them, one MERGE-READY each.
+     - Wildlife for Ch10–Ch13 is done (fireflies, kingfishers, woolbacks; none in Ansedra, per ADR 0204).
+- Taskboard: M3-CRE-01 (the Act I bestiary roster) still shows `doing` and STALE from an old session. It was delivered long ago; set it to done when convenient, or tell me to.
+- **MERGE-READY @ 49ad1e53.** BACKLOG EMPTY: waiting on Combat's Ch13 ids and the items listed at 04:40.
+- **Your 09:58 relay:**
+  - **Ch10–Ch12 regulars:** none lacks a real mesh, rig, clips or portrait. All ten were built and have `model` keys (see 09:01). The LOD1 is done too (664e7c86).
+  - **Ch13+ from the beat sheets:**
+    - Ch13–14 Ansedra: no animals, by design (bible §5.8, ADR 0204 §1).
+    - Ch15 open sea: only the Wakefin and the sea-glow.
+    - Ch16: the rim rays, done.
+    - Kesh, Ch16's Vowbound, is creatures-b's (ownership.md row 79).
+  - **Hollowmere** (`ch17/hollowmere`, first visited in Ch15) @ 9b65894c: Act I's gulls on the dock piles and a fish shoal, the life after Ansedra.
+    - Checks: validate_data, tools test_wildlife, Godot wildlife 22/0.
+    - New shot `wildlife_zone_hollowmere_dock`, SELF-RENDERED and viewed. **Its baseline is needed.**
+- **MERGE-READY @ 9b65894c.** BACKLOG EMPTY: no ambient creature the beat sheets describe is left unbuilt. Still waiting on Combat's Ch13+ enemy ids.
+- **Your 10:07 relay, checked against the integration branch @ 15d80358 and act2_roster.md:**
+  - enemies.json has 42 rows. The only one without a `model` is `stillguard_inquisitor`, a person and the characters track's (Act I).
+  - Every Act II roster id is built with a real mesh, rig, clips and portrait: the 10 regulars, plus the bosses and parts creatures-b owns (mangrove_drowner, lamp_engine, avalanche_ram, flat_engine, wakefin).
+  - The one roster id with no enemy row is `conduit_crawler`. Its model is built (jointed legs @ 563eda19); the row is Combat's (M4-A2P-022, the Lamp Engine's add). When that row lands I add its `model` and portrait the same hour.
+  - Act II zone wildlife from the beat sheets is all done (Ch10, Ch12, Ch16 and Hollowmere; none in Ansedra or the Ch15 open sea).
+- **BACKLOG EMPTY:** no Act II enemy id lacks a model. Next: conduit_crawler's row (Combat) and any new Ch13+ ids.
+- **Your 10:27 relay: the as-played pass, batch 1 (35 encounters).**
+  - Every Act I and Act II regular rendered in its encounter's real battle, at battle distance: `arena_shot.gd` runs the real BattleController with the encounter's arena, lighting and lineup. All 35 stills viewed.
+  - **Fixed @ 3bf5cb75:**
+    - **Fen leech:** side-on in the Ossa Fen arena it still read as a plank hung over the mud. The mesh is now bowed lengthwise (ARCH 0.28 m) with a thicker body, and it reads as a humped animal.
+    - **Glass skate:** it vanished on the Rim's white sand. Clearcoat and rim sheen are cut, the rim is wider and darker, and each wing has a dark eyespot. It is still camouflaged, by design.
+    - Both portraits re-rendered; both builds verified byte-identical.
+    - SELF-RENDERED and viewed: `creature_fen_leech` and `creature_glass_skate`. **Both baselines need rewriting.**
+  - **No other creature reads blocky, untextured, mis-scaled or through the floor.**
+  - **Findings for others** (not this track's paths):
+    1. **Battle layout:** two enemies in one rank overlap heavily: ch02_tideline (eel and crab), ch05_stair_tortoises, ch10_fen_roots, ch06_flats_crabs. The bottom-left enemy also sits partly under the command menu in the underway_tower encounters. Battle presentation's slot spacing.
+    2. **Missing arenas:** Ch11 (`ch11_vey_rays`, `ch11_vey_urchins`) and Ch16 (`ch16_rim_skates`, `ch16_rim_crawlers`) encounters name no `arena` in encounters.json, so they fight on the default stage. Combat or env-art.
+    3. **Pre-existing reds on the integration branch:** `test_palette_check` fails on the committed baseline `haluna_h07_chapel_court` (order_marble ΔE 0.042 against a max of 0.03). verify_blender_builds reports `assets/cutscene/ch01/oruvel_seabed.glb` uncovered (no job).
+  - Checks: validate_data clean; taskboard OK; tools test_creatures and test_palette_rules OK; Godot creature 155/0.
+- **MERGE-READY @ 3bf5cb75** (the as-played fixes).
+- **Crowd variety, batch 1 (Haluna) @ 92f60b06 and its test commit:**
+  - Haluna's shopkeeper, smith and innkeeper wore the netmender's, fisher's and vendor's models. They are now crowd people: `haluna_shopkeeper`, `haluna_smith` and `haluna_innkeeper`, from a new `haluna` community and `smith` role in ranges.json.
+  - They stand at the town's own stand-ins. validate_npc now reads a stage actor that contains a `/` as the stand-in path itself.
+  - VillagerLayer replaces the borrowed-model villager that HalunaVillagers places first, so each shows once.
+  - Viewed in the real zone (temporary cameras). No crowd body changed and no clip library changed, so nothing needed a Blender rebuild.
+  - **LEAD-ASK:** M3-CHR-512 (characters, in review) built bespoke `shopkeeper`, `smith` and `innkeeper` villagers, and their task note says you decide which ships. To ship those instead, two edits are needed:
+    - drop the `crowd` key from the three rows in `ch02_haluna.json` (mine);
+    - delete game/data/flow/haluna_villagers.json's rows (slice-polish's), or the layer adopts its borrowed actors.
+  - Oruvel, Pemakar, Ashcrown and every other Act I zone: no body repeats within a zone and no row borrows a model (checked across all 12 zone files).
+    - Ashcrown's beat sheet names only Tender Ruwen, who has a crowd body.
+  - Checks: validate_data; gen_crowd --check; tools test_npc 28 OK; Godot crowd 12/0, villager 40/0, haluna 65/0, npc 10/0.
+- **MERGE-READY @ 7b5deabd** (the crowd commits; the log commit after it is docs only).
+- **The Act II towns' crowds are not this track's paths.** act2_tracks.md row 55 gives characters the Kirru (base, Owa, child, clutch: Reedhollow's `clutch_0..7`, `kirru_child`), the Ansedran, Hollowmere and Quellan crowd sets, and the Act II rows of crowd.json. None has landed. When they do, I wire their VillagerLayer zone rows (game/data/world/npc/zones, mine) the same hour.
+- **BACKLOG EMPTY:**
+  - The as-played pass is done.
+  - Act I crowd variety is done: no adjacent clones in any zone.
+  - The Act II town crowds are characters' sets (row 55) and have not landed.
+  - Waiting on the Haluna LEAD-ASK and on Combat's conduit_crawler row.

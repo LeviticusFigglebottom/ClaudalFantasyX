@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch15_shrine_hollowmere",
+ "source": "game/data/dialogue/ch15/ch15_shrine_hollowmere.dlg",
+ "start": "ch15_shrine_hollowmere",
+ "nodes": {
+  "ch15_shrine_hollowmere": {
+   "headers": {"location": "ch15/hollowmere"},
+   "ops": [
+    {"op": "line", "id": "ch15_shrine_001", "key": "DLG_CH15_SHRINE_001", "speaker": "", "emotion": "", "voice": "", "src": 5, "tags": ["long"]}
+   ]
+  }
+ }
+}

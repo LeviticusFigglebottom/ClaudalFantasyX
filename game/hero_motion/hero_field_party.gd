@@ -32,6 +32,8 @@ extends Node
 const NAME := &"HeroParty"
 ## Nearer than this to the speaker (flat metres), a follower keeps its heading: the direction would be noise.
 const FACE_MIN_M := 0.05
+## How far past camera_near_m a follower stood beyond the leader goes (just clear of it).
+const LENS_CLEAR_M := 0.05
 
 var controller: FieldController
 ## The leader's body (its hero id is never a follower).
@@ -366,13 +368,20 @@ func near_camera(at: Vector3) -> bool:
 
 
 ## Follower i's place when the party is laid out: its trail point if that is clear (no wall, at least min_gap_m
-## from every body in `placed`), else further back along the trail, else a ring around the leader; never on top
+## from every body in `placed`), moved off the lens as follow_point() moves it when it is near the camera (the same
+## spot it then follows: a layout behind the lens that follow_point() pulls in front of it re-ran catch_up() every few
+## frames, Ch13's Sanctum Gate), else further back along the trail, else a ring around the leader; never on top
 ## of another body (the human's playtest: followers stacked inside each other at a spawn).
 func _formation_spot(i: int, placed: Array[Vector3]) -> Vector3:
 	var spacing := float(_cfg.get("spacing_m", 0.0))
 	var gap := float(_cfg.get("min_gap_m", 0.0))
 	var lead := controller.global_position
 	var steps := int(_cfg.get("spawn_search_steps", 0))
+	var own := sight_clear(i, trail_point((i + 1) * spacing))
+	if near_camera(own):
+		own = off_lens(i, own)
+		if _clear_of(own, placed, gap) and not blocked(own):
+			return own
 	for k in steps + 1:
 		var at := sight_clear(i, trail_point((i + 1) * spacing + k * gap))
 		if _clear_of(at, placed, gap) and not blocked(at) and not near_camera(at):
@@ -467,7 +476,8 @@ func follow_point(i: int) -> Vector3:
 
 
 ## `at` moved beside the leader, square to the camera's line to him, (i + 1) * spacing_m out on follower i's side
-## (the other side when that is blocked or still near the lens), else that far beyond him, away from the lens; with
+## (the other side when that is blocked or still near the lens), else beyond him, away from the lens, that far or
+## far enough to clear camera_near_m; with
 ## the camera close behind him (none of those clear of the lens), the unblocked one farthest from it; `at` unchanged
 ## when all are blocked.
 func off_lens(i: int, at: Vector3) -> Vector3:
@@ -483,7 +493,9 @@ func off_lens(i: int, at: Vector3) -> Vector3:
 	var side := _sight_side[i] if i < _sight_side.size() and _sight_side[i] != 0 else (1 if i % 2 == 0 else -1)
 	var base := Vector3(lead.x, at.y, lead.z)
 	var spots: Array[Vector3] = [base + right * (side * out), base - right * (side * out)]
-	spots.append(base + line.normalized() * out)
+	# beyond him, away from the lens: out, or far enough past him to clear camera_near_m (a camera close behind him)
+	var past := maxf(out, float(_cfg.get("camera_near_m", 0.0)) - line.length() + i * float(_cfg.get("min_gap_m", 0.0)))
+	spots.append(base + line.normalized() * (past + LENS_CLEAR_M))
 	var best := at
 	var best_d := Vector2(at.x - cam.global_position.x, at.z - cam.global_position.z).length()
 	for spot in spots:

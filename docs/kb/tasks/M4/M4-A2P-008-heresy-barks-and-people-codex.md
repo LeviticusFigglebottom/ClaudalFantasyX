@@ -28,7 +28,7 @@ The lines that change by state across Act II: every town NPC's heretic-state lin
 - **Codex (people), 12 entries:** `owa`, `tobin`, `merel`, `ressa`, `ama_quillo`, `corran`, `malcor_venn`, `conclave`, `brannoc_hale`, `aldous_varrow`, `kesh`, `kerrid_stair`.
   - Each unlocks on its chapter's flag and uses the bible's own words (unrisen, held).
   - The rows are appended to `codex.json`, `loc/codex.csv` and `flags.tres` (`codex_<id>_read`).
-  - The Kerrid entry is a second page, `kerrid_stair`, unlocked by `ch15_kerrid_told`, because the codex has no conditional body.
+  - The Kerrid entry is a second page, `kerrid_stair`, unlocked by `ch15_kerrid_revealed`, because the codex has no conditional body.
   - The Archive's records stay in the `ch13_archive_*` scripts for the document reader: a `records` or `world` entry would break `test_codex.gd`'s pinned counts, which are ui-menus'.
 - **Heresy barks:** `ch14_bark_purveyor_refuses`, `ch14_bark_dark_shrine` and `ch15_bark_outside_the_level`.
 - **Kerrid's post-reveal barks:** `ch15_bark_kerrid_night` and `ch15_bark_kerrid_floors`, plus the Ch16 wade bark.

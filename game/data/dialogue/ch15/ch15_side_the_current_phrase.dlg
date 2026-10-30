@@ -1,0 +1,13 @@
+// Ch15 side errand (optional; requires ch15_reached_hollowmere). The current-singer (ch15_bark_current_singer) teaches
+// Asha one phrase of Hollowmere's current-song. A Cantor learning a song the Order doesn't own. It is Hollowmere's,
+// never Dace's (the Ch15 rule). Sets ch15_learned_current_phrase.
+title: ch15_side_the_current_phrase
+location: ch15/hollowmere
+---
+Townsfolk as "Current-singer" [neutral]: You're the Cantor. You sing for a living, then. Try this one. It's for the water off the bow. #line:ch15_phrase_001 #long
+Asha [neutral]: There are no words. #line:ch15_phrase_002
+Townsfolk as "Current-singer" [neutral]: The water doesn't know words. It knows low and high. Low in the middle. Like that. #line:ch15_phrase_003
+Asha [soft_smile]: Like that? #line:ch15_phrase_004
+Townsfolk as "Current-singer" [smile]: The hull knows it. Feel her settle? You'd make a Saltwright, Cantor. #line:ch15_phrase_005
+<<set $ch15_learned_current_phrase = true>>
+===

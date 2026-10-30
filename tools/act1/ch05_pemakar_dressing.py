@@ -289,10 +289,15 @@ def swapped(p: dict) -> dict:
 # and salt-white everywhere, but the sea runs over this one. Darker, wet-dark below the crest, weed in a band at the
 # waterline and the salt only above it. The kit preview's weir row takes the same material (pemakar_layout.py).
 WEIR_STONE = "kit_weir_stone"  # in the kit's materials folder, so the kit preview (which names slots) can take it
-WEIR_STONE_OVERRIDES = {"col_tint": "Color(0.72, 0.72, 0.74, 1)", "use_algae": "true", "salt_coverage": "Vector2(0.1, 0.4)",
-                        "normal_strength": "1.1", "cavity_darken": "0.4", "variation_value": "0.18",
-                        "salt_band_m": "Vector2(0.4, 10000)"}
-WEIR_STONE_ADDED = {"algae_band_m": "Vector2(-0.9, 0.35)", "algae_coverage": "Vector2(0.35, 0.8)",
+# The PC's pass 5 (row 62 still flat grey): each block takes its own value (variation 0.4), the relief and the cavities
+# are stronger, and the salt crust and the algae band are wider, so the courses read as separate wet stones.
+WEIR_STONE_OVERRIDES = {"col_tint": "Color(0.9, 0.88, 0.86, 1)", "use_algae": "true", "salt_coverage": "Vector2(0.2, 0.6)",
+                        "normal_strength": "1.7", "cavity_darken": "0.6", "variation_value": "0.4",
+                        "variation_warmth": "0.06", "detail_scale_m": "0.3", "salt_band_m": "Vector2(0.4, 10000)"}
+# Soaked stone keeps its relief and most of its value (the shader's defaults, 0.6 flatten and x0.55, made the whole
+# wet weir one smooth dark face).
+WEIR_STONE_ADDED = {"algae_band_m": "Vector2(-0.9, 0.35)", "algae_coverage": "Vector2(0.5, 0.95)",
+                    "wet_darken": "0.75", "wet_flatten": "0.15", "wet_roughness": "0.3",
                     "col_algae": "Color(0.239, 0.29, 0.161, 1)"}
 # ... and the water arriving over the crest runs (the kit's flowing spill water), not the channels' still near-mirror,
 # which read as a flat pale panel on the crest under a grey sky
@@ -386,7 +391,7 @@ def write_plume_night() -> None:
 # preview's night grade takes its ambient from a near-black sky, so the layout's fill colour did nothing; the zone's
 # copy takes a colour ambient (as the day grade does) and the layout's `environment` row carries a moonlit fill.
 NIGHT_SUN = {"pitch_deg": -55.0, "yaw_deg": -20.0, "energy": 0.45, "color": "#5a6c94"}
-NIGHT_FILL = {"ambient_color": "#6c7898", "ambient_energy": 0.6}
+NIGHT_FILL = {"ambient_color": "#6c7898", "ambient_energy": 0.8}  # pass 4: the harbour's foreground still near-black at 0.6
 
 
 def copy_grades() -> None:

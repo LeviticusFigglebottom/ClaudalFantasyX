@@ -616,3 +616,92 @@ What the Act II fights still need from others: enemy rows and encounters (combat
   Open asks are the LEAD-ASKs above (M4-A2P-058's split; Kesh's face); defaults taken. Next when anything lands:
   wire-up checks once combat adds the enemy rows and skills (paste the clip maps, re-render the bosses in their real
   fights), and any new GPU QA row first.
+
+## 2026-10-30 ~09:30: the Lead's 09:00 message (the bosses on combat's ids)
+- Merged the integration branch (it adds combat's PROVISIONAL rows, skills and encounters for the four creature
+  bosses). Row 44 and M3-CIN-1250 are not creatures-b's (hero-integration's; creatures' crowd layer).
+- **MERGE-READY @ 9781d0fe2: the four Act II bosses wired to combat's skill ids** (creatures.json `clip_by_skill`,
+  each charge's release included): Drowner drowner_drag -> attack, rising_water, root_stamp -> root_stamp_risen;
+  Lamp Engine lamp_trim -> attack, lamp_gather, lamp_flare (release) -> lamp_burn, core_pulse -> cast; Ram horn_toss ->
+  neck_sweep, ram_charge_gather -> charge_gather, ram_charge (release) -> attack, ram_bellow -> cast; Wakefin fin_cut
+  -> attack, sound_dive -> dive, wake_breach (release) -> rise_strike, wake_wheel -> wake_wash. Phase maps translate
+  them in uprooted/opened/torn_fleece/close_circle. New test: every skill and charge release of each boss, in every
+  phase, plays a clip the model has (live: a wrong map fails it). Godot creature 156/0, boss 118/0, validate_data.
+- **SELF-RENDERED (scratch, default camera, each boss's real encounter: ch10_mangrove_drowner, ch11_lamp_engine,
+  ch12_avalanche_ram, ch15_wakefin), viewed:** the Engine and the Ram read big and clear; the Drowner whole on its
+  seat with its snag motes lit, but its arena is full of mangroves like it (it blends a little: a seat further
+  forward or a brighter grade around it is battle-presentation's/env-art-b's call); the Wakefin a dark fin in the
+  water beyond the rail, its sea-glow faint at this distance (the darkness fight, M4-A2P-062).
+- **For combat:** "Horn Toss" names a horn the Ram doesn't have (a camelid head, M3-CRE-635); suggest "Head Toss" or
+  "Neck Sweep" (loc is yours). No `break_parts`: none of the four rows defines a break yet (the Drowner's snag block
+  is ready in its art sheet, keyed by whichever charge it should silence).
+- **BACKLOG EMPTY (09:40):** every Act II boss and Vowbound in my lane is built, wired to combat's ids where they
+  exist (the Vowbound's rows are M4-A2P-024's; the flat-engine's M4-A2P-023's) and viewed. Next: the Vowbound maps
+  when their rows land; any new GPU QA row first.
+
+## 2026-10-30 ~10:20: the Lead's 09:58 re-send (crossed my 09:40 MERGE-READY)
+- The re-sent queue is already done: the four Act II bosses' models, rigs, clip sets and own VFX are built and viewed,
+  and wired to combat's ids in **MERGE-READY @ 9781d0fe2** above (not yet in big21, which merged creatures-b @
+  10490ad9). Drowner (Ch10), Lamp Engine (Ch11), Ram (Ch12), Wakefin (Ch15), in chapter order.
+- Kesh: the creature-kit face with the stylized mask/veil reading stays (no lane crossed, no ADR).
+- Merged the integration branch @ 6a8349e7 (ownership.md: theirs; PROVENANCE union, no stale ice.tres row).
+- **MERGE-READY @ 618d916b3:** M4-A2P-024's Vowbound wiring mapped Ethren's hold_the_hour and lacquer_screen to
+  `cast`, so his built `stop` and `ward` clips never played; now per his sheet (`stop`, `ward`). New test: every
+  Act II Vowbound skill and swell plays a clip the model has, and each built signature clip is reached (live: the old
+  map fails it). Nhoa, Hesk and Kesh's maps already matched their sheets. Godot creature 157/0, validate_data
+  (the one warning, rime_urchin's ice.tres, is not mine).
+- **BACKLOG EMPTY (10:20):** all four bosses and four Vowbound built, wired and checked; the flat-engine waits on its
+  M4-A2P-023 row and Liss's break; no GPU QA row open on my side.
+
+## 2026-10-30 ~10:40: the Lead's 10:08 message ("no BACKLOG EMPTY while an Act II boss lacks its model")
+- Every Act II boss in combat's encounters.json (ch10_mangrove_drowner, ch11_lamp_engine, ch12_avalanche_ram,
+  ch15_wakefin) draws its own creatures-b model: enemies.json `model` and creatures.json `scene` both exist, rigged,
+  with full clip sets, their own VFX and combat's skill ids (9781d0fe2, test_act2_boss_skills_each_play_a_clip_the_model_has).
+- The other two Act II bosses are people, so their models are **characters'** (act2_tracks.md, M4-A2P-051): Malcor Venn
+  is built on claude/characters @ 3f0f5d67 (with `game/characters/foes/venn_battle.tscn`), not yet merged; the
+  Abiding guard is in progress there. My part (ADR 0204 §5, act2_tracks row 57) is their battle_sandbox stand-ins.
+- **MERGE-READY @ ec78978ba:** stand_ins.`malcor_venn` -> venn_battle.tscn (Moll's spec: capsule fallback 1.86 m, yaw 90).
+  Test: it names the actor, and once the actor is on the branch FighterStandIn seats a real body (checked with
+  characters' Venn files brought in temporarily: 32/0; without them 32/0). qa_capsules, stand_in 3/0 each; boss_seat
+  3/0 (its one leftover node predates this). Merge after claude/characters, or it falls back to the capsule until then.
+- **Waits:** the Abiding guard's stand-ins (`abiding_first`, `abiding_guard`) when characters names their battle
+  actors; the enemy rows (`malcor_venn`, the Abiding ids) are chapters'/combat's.
+- **BACKLOG EMPTY (10:40):** no Act II boss in my lane lacks its model; the two people bosses' models are characters'
+  (Venn built, the guard in progress), and their stand-ins follow when the actors land.
+
+## 2026-10-30 ~11:10: the Lead's 10:27 message (Act II quality check, then help row 64)
+- **Act II:** every Act II boss and Vowbound in my lane is at real-model quality (the four bosses and four Vowbound
+  built, reviewed, wired; see above). No stand-in mesh ships: Venn's `stand_ins` entry only points at characters'
+  real `venn_battle.tscn` (ec78978b) and falls back to the capsule only until claude/characters merges.
+- **Row 64 (for battle-presentation, who owns the intro, BattleBossIntro and BattleBossHeroShot): the boss rigs are not
+  the cause, so there is nothing of mine to prewarm.** pc-gpu's big21 trace (gpu/act1-qa-5, act1_gpu_qa.md row 64)
+  found zero pipeline compiles on the spiking frame; the time is `_frame_boss()` -> `BattleBossHeroShot.search` on the
+  first uncovered frame. battle-presentation's 65e776af (warm the particle variants) addresses the earlier guess;
+  the trace says the frame stays.
+  My headless timing of the search in each fight (scratch harness, shared CPU, so absolute ms differ from the PC's;
+  "cold" = an empty `_tri_cache`):
+
+  | Fight | Occluders | Triangle meshes built | Search cold / warm | Biggest occluder sets |
+  |---|---|---|---|---|
+  | Drownbell | 943 | 223 ms | 167 / 158 ms | saltgrass_clumps x700 + x179 (multimesh instances) |
+  | Hermit | 69 | 12 | 121 / 113 | lamp flames, posts, masts |
+  | Inquisitor (Moll) | 66 | 21 | 93 / 99 | camp fires, the party |
+  | Matron | 39 | 2 | 40 / 32 | the party |
+  | Hullgnaw | 99 | 28 | 13 / 12 | |
+  | Spar-Wraith | 69 | 7 | 1 / 1 | |
+  | the Reach | 319 | 20 | 4 / 3 | watcher heads x104 |
+
+  The boss bodies are small (2–12 visual nodes each) and enter only as `bounds`. Two causes:
+  1. **The Drownbell:** 879 of its 943 occluders are saltgrass clumps, ankle-high grass that can never block a lens.
+     Each sight line walks all of them, and the first search builds about 220 ms of triangle meshes.
+     *Suggestion:* `_occluders` skips multimesh instances (or any box) shorter than about 0.5 m, or below the lens
+     and the boss's waist.
+  2. **The Hermit and Moll:** few occluders, but many candidate poses fail before one holds.
+     *Suggestion:* run `_frame_boss()` while the fade still covers the screen (at `_on_first_turn` when
+     `_covered()` is true, keeping `_pose` for the reveal) and warm `_tri_cache` there too. This is pc-gpu's
+     proposed fix, and it covers every fight.
+  Both changes are in battle-presentation's files (game/battle/scene/**), so I made neither. The scratch harness is
+  `game/_scratch_crb/r64/time_hero.{gd,tscn}` (git-excluded; copy on request).
+- **BACKLOG EMPTY (11:10):** the Act II bosses and Vowbound are all at real-model quality. Row 64's cause and its two
+  fixes are measured and handed to battle-presentation, with nothing on my rigs to prewarm. Venn's stand-in waits on
+  claude/characters' merge; the Abiding guard's waits on its actor.

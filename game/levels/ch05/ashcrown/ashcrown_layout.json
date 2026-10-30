@@ -110,6 +110,6 @@
     {"id": "release_t4", "activation": "interact", "at": [16.294, 24.0, 3.859], "size": [2.0, 0.0, 2.0], "prompt_key": "FIELD_PROMPT_RELEASE", "requires_flag": "ch05_trial_begun", "blocked_by_flag": "ch05_strike_landed", "payload": {"trial": "release", "id": "t4"}, "yaw": 0.0},
     {"id": "anvil_court", "at": [10.859, 24.0, 7.694], "size": [2.0, 0.0, 2.0], "requires_flag": "ch05_strike_landed", "blocked_by_flag": "ch05_matron_quieted", "payload": {"beat": "matron"}, "yaw": 0.0}
   ],
-  "encounters": {"table": [{"encounter": "ch05_stair_ashwings", "weight": 2}, {"encounter": "ch05_stair_tortoise_sparker", "weight": 1}, {"encounter": "ch05_stair_tortoise_ashwing", "weight": 1}], "min_m": 30, "max_m": 50, "when": {"set": ["ch05_tortoises_won"], "unset": ["ch05_trial_begun"]}, "seed": 5},
+  "encounters": {"table": [{"encounter": "ch05_stair_ashwings", "weight": 2}, {"encounter": "ch05_stair_tortoise_sparker", "weight": 1}, {"encounter": "ch05_stair_tortoise_ashwing", "weight": 1}], "min_m": 95, "max_m": 145, "when": {"set": ["ch05_tortoises_won"], "unset": ["ch05_trial_begun"]}, "seed": 5},
   "collision_path": "res://game/levels/ch05/ashcrown/ashcrown_collision.json"
 }

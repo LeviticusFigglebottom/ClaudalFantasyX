@@ -2,8 +2,7 @@
 id: M4-A2P-074
 title: "Stage the Drowned Choir: Sefir's temptation, the refusal, the storm, the act break"
 role: cinematics
-status: blocked
-blocked-by: ADR 0203
+status: todo
 owner_session: ""
 depends_on: [M4-A2P-007, M4-A2P-048]
 reviewer: narrative

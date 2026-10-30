@@ -1493,6 +1493,83 @@
       "settle_frames": 30
     },
     {
+      "id": "villager_tobin_front",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/tobin_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_tobin_face",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/tobin_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_tobin_falls",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/tobin_falls.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_merel_front",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/merel_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_merel_face",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/merel_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_merel_pole_barge",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/merel_pole_barge.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_merel_bloodied",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/merel_bloodied.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "villager_ferrymaster_front",
       "scene": "res://game/levels/_tests/characters/villagers/ferrymaster_stage.tscn",
       "camera": "Cameras/Front",
@@ -4235,6 +4312,22 @@
       }
     },
     {
+      "id": "wildlife_zone_hollowmere_dock",
+      "scene": "res://game/levels/_tests/wildlife/zone_wildlife_hollowmere.tscn",
+      "camera": "Cameras/Dock",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
       "id": "wildlife_zone_underway_crown",
       "scene": "res://game/levels/_tests/wildlife/zone_wildlife_oruvel_underway.tscn",
       "camera": "Cameras/Crown",
@@ -4777,6 +4870,39 @@
       "settle_frames": 30
     },
     {
+      "id": "kerrid_confession_grief",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kerrid/kerrid_confession_grief.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kerrid_confession_guilty",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kerrid/kerrid_confession_guilty.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kerrid_confession_burns",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kerrid/kerrid_confession_grief.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "kerrid_face_stylized",
       "scene": "res://game/levels/_tests/characters/kerrid/kerrid_face_stylized.tscn",
       "camera": "Cameras/Compare",
@@ -5000,6 +5126,83 @@
       "id": "stillguard_c_face",
       "scene": "res://game/levels/_tests/characters/stillguard/stillguard_c_face.tscn",
       "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "venn_front",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "venn_three_quarter",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_stage.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "venn_face",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_face.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "venn_face_cold",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_face_cold.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "venn_clip_attack",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_clip_attack.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "venn_clip_defend",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_clip_defend.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "venn_clip_yield",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_clip_yield.tscn",
+      "camera": "Cameras/ThreeQuarter",
       "resolution": [
         960,
         540
@@ -8761,6 +8964,205 @@
     {
       "id": "battle_boss_intro_wakefin",
       "scene": "res://game/battle/scene/shots/battle_boss_intro_wakefin.tscn"
+    },
+    {
+      "id": "battle_arena_pale_rim_shallows",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_pale_rim_shallows.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch10_edge_o02",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 480,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch10/ossa_fen/ossa_fen.tscn",
+            "scene_id": "ch10_fen_edge",
+            "spawn": "FenEdge",
+            "hold_line": "ch10_edge_001",
+            "flags": [
+              "ch10_started"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch10_causeway_r03",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 480,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch10/reedhollow/reedhollow.tscn",
+            "scene_id": "ch10_causeway",
+            "spawn": "Gate",
+            "hold_line": "ch10_causeway_002",
+            "flags": [
+              "ch10_started"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch10_tide_f02",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 480,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch10/reedhollow/reedhollow.tscn",
+            "scene_id": "ch10_farewell_tide",
+            "spawn": "Shore",
+            "hold_cue": "camera F02",
+            "show": [
+              "clutch_0",
+              "clutch_1",
+              "clutch_2",
+              "clutch_3",
+              "clutch_4",
+              "clutch_5",
+              "clutch_6",
+              "clutch_7"
+            ],
+            "flags": [
+              "ch10_started"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch10_tide_t04",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 480,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch10/reedhollow/reedhollow.tscn",
+            "scene_id": "ch10_farewell_tide",
+            "spawn": "Shore",
+            "hold_cue": "anim clutch",
+            "show": [
+              "clutch_0",
+              "clutch_1",
+              "clutch_2",
+              "clutch_3",
+              "clutch_4",
+              "clutch_5",
+              "clutch_6",
+              "clutch_7"
+            ],
+            "flags": [
+              "ch10_started"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch10_outside_r07",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 900,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch10/reedhollow/reedhollow.tscn",
+            "scene_id": "ch10_farewell_tide",
+            "spawn": "Gate",
+            "hold_cue": "camera R07",
+            "flags": [
+              "ch10_started"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
     }
   ]
 }

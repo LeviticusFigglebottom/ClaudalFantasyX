@@ -10,7 +10,8 @@
   points or {at, pause_sec, activity} with a known activity; shelter and work_at are [x, y, z] or
   [x, y, z, yaw_deg]; storm_flag (when set) is a declared flag.
 * Crowd rows (M3-CRE-659, ADR 0152): a row's `crowd` names a person in game/data/world/npc/crowd.json who stands
-  in this zone at this stage actor (stand_in CutsceneStage/Actors/<stage_actor>, attach child); their body's actor
+  in this zone at this stage actor (stand_in CutsceneStage/Actors/<stage_actor>, or the stage actor itself when it is
+  a scene path with a "/", attach child); their body's actor
   scene exists; `offset` is [x, y, z] or [x, y, z, yaw_deg], inside the stand-in only.
 * game/data/world/npc/crowd.json: ids unique; each person's zone is a location, their body a planned body with an
   actor scene whose age band and sex are theirs, their work a crowd work clip (or none), their tints exactly
@@ -143,6 +144,13 @@ def crowd_people(root: Path) -> dict[str, dict]:
     return {str(p.get("id")): p for p in data.get("people", []) if isinstance(p, dict)}
 
 
+def person_stand_in(person: dict) -> str:
+    """A person's stand-in: CutsceneStage/Actors/<stage_actor>, or the stage actor itself when it is a scene path
+    (a "/" in it: a town's own stand-in, such as Haluna's NPCs/Town/Shopkeeper)."""
+    actor = str(person.get("stage_actor", ""))
+    return actor if "/" in actor else STAGE_ACTORS + actor
+
+
 def _crowd_row_errors(root: Path, where: str, zone: str, row: dict, people: dict[str, dict]) -> list[str]:
     errs: list[str] = []
     pid = str(row.get("crowd", ""))
@@ -151,7 +159,7 @@ def _crowd_row_errors(root: Path, where: str, zone: str, row: dict, people: dict
         return [f"{where}: crowd {pid!r} is not a person in {CROWD_FILE}"]
     if str(person.get("zone")) != zone:
         errs.append(f"{where}: crowd {pid!r} stands in {person.get('zone')!r}, not {zone!r}")
-    if str(row.get("stand_in", "")) != STAGE_ACTORS + str(person.get("stage_actor", "")):
+    if str(row.get("stand_in", "")) != person_stand_in(person):
         errs.append(f"{where}: crowd {pid!r} stands at stage actor {person.get('stage_actor')!r}, "
                     f"not {row.get('stand_in')!r}")
     body = str(person.get("body", ""))

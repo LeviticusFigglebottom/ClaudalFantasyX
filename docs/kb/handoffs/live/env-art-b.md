@@ -838,7 +838,96 @@ that test at this branch's zones.
     after-the-trap blocks), 105 (Ch15's shoal mark and dawn row) and 106 (the Choir's relayout).
   - The looks only the PC can judge are queued.
   - The next step for each request is in the handoff.
+- **GPU pass 4 (10-30, re-checked on big20 7dc3ab41 merged into this branch).** Pass 4 ran on big19, which had none of
+  my pass-3 fixes.
+  - 45 (crown steps), 52 (brine_b05 barge painted), 53 (headland textured), 62 (weir stone) and 63 (matron): fine on
+    this head in self-rendered stills, so no change.
+  - 49 (Pemakar harbour foreground black): the night fill goes from 0.6 to 0.8 (`ch05_pemakar_dressing.py`). The
+    party reads from every spawn, and the quay foreground is lifted but still night-dark. It's a PC-QUEUE look.
+  - 51 (Ch9 graves not readable): the shrouds were flat slabs at field range. They now have a rounded superellipse
+    outline, are fuller (1.4) with a wider hem and shallower creases, and read as a row of bound mounds with rope
+    ties from the strand spawn.
+  - `lacquer_court_steps`' PROVENANCE row: it came in with big20 (one row, no duplicate added).
+  - Ch16 Pale Rim: dressed (MERGE-READY @ ab41c94b, not in big20 yet). The Choir's amphitheatre stays mounted on
+    M4-A2P-106: its kit pieces are built, and the zone's dressing slot is left empty until the relayout.
+  - Checks: test_corrow_kit, test_pemakar_kit (50 OK), validate_data, taskboard; Godot --filter=corrow (18) and
+    pemakar (10) pass.
+  - **MERGE-READY @ c6abd321.**
+- **BACKLOG EMPTY (10-30, after pass 4):** pass 4's Act I rows on my side are fixed or verified (above). Ch13–Ch16
+  are dressed as far as the chapters allow. The rest waits on M4-A2P-103 to 106 (the mount points are in the handoff),
+  and the looks are queued for the PC.
 
+- **big21 FAST-TRACKs (10-30, on big21 6a8349e7 merged into this branch):**
+  - Rows 45, 52, 53, 62 and 63, and the brine_b05 barge texture, were already verified fine on big20 in self-rendered
+    stills (see pass 4 above). big21 doesn't touch them.
+  - test_arenas (`bridal_barge_night`, `ansedra_lagoon_escape` not reproducible): `haluna/ansedra_arenas.py` writes
+    them with the zone looks, as ownership.md says. They're now in `test_b_arenas.py`'s WRAPPERS with
+    `lacquer_court_steps`, so test_arenas skips them and test_b_arenas reproduces them. Both suites pass (22).
+  - test_ch14_16_walkable::test_hollowmeres_dock: the supper table stood on the line from the `supper` mark to the
+    pyre-raft. It's now by the father's place against the south rail (42.0, 0.95). My own dock test now walks the
+    north half through the supper mark. Godot --filter=ch14_16 (5) and hollowmere (2) pass. Viewed
+    ch15_hollowmere_supper and _dock: the table stands by the rail, and the lane is clear.
+  - Merge of big21: PROVENANCE.md, shots.json and ownership.md were taken as integration's (my side had only rows
+    integration removed on purpose).
+  - **MERGE-READY @ 7999fb30.**
+- **BACKLOG EMPTY (10-30, after big21):** Ch16's Pale Rim is dressed (@ ab41c94b, in big21). What's left of Ch14–16
+  waits on M4-A2P-103 to 106, and the looks are queued for the PC.
+- **GPU pass 5 (gpu/act1-qa-5, run on big20; checked on this head with big21 merged):**
+  - **Row 63** (a flat bright panel behind the Matron): it was the open crater loggia. A new kit piece,
+    `loggia_screen` (`ashcrown/b_trial.py`), is the Tenders' black-lacquer wind lattice, and the anvil-court arena
+    hangs it across the loggia (`b_arenas.py`). In `battle_boss_intro_matron` the opening now reads as a lattice
+    window with the crater light through it. The moulding streaks don't show on lavapipe.
+  - **Row 62** (the weir slabs flat grey): `kit_weir_stone` was in place but the shader's wet pass flattened and
+    darkened the whole weir. Wet stone now keeps its relief (`wet_flatten` 0.15, `wet_darken` 0.75), and the weir
+    gets per-block value 0.4, stronger relief, and wider salt and algae bands. The courses' pill shape (0.07 m radius on
+    a 0.13 m half-height) and the flat water sheet over the crest are env-art's kit code: request **M3-ENV-1328**.
+  - **Row 51** (the graves soft orange rectangles under the field camera): a red test showed the shrouds were
+    full rectangular sheets. The superellipse had only lowered the corners. The shroud grid now maps onto its
+    rounded outline, the cloth drapes the body more widely (10 passes), the grid is finer (1920 tris), and the
+    canvas is cooler with a soft, coarser weave (at 1.7 its normal had shaded stripes that read as spikes). From the
+    strand spawn they read as soft rounded bound mounds with rope ties.
+  - **Row 34, the arena side:** `ch06_ridge_skippers` resolves to `brine_shoals_afternoon` and its own enemies on
+    this head (test_act1_encounters_resolve passes). The arena scene and data are fine, so the GPU's sandbox fight is
+    the request path's (act1-chapters).
+  - Checks: test_corrow_kit, test_pemakar_kit, test_ashcrown_kit (the new piece's import settings), test_arenas,
+    test_b_arenas, validate_data, taskboard; Godot --filter=corrow (18), ashcrown (22), arena (18) and
+    encounters_resolve pass.
+- **Ch16 Pale Rim: the `pale_rim_shallows` arena** (ch16.md names it for `ch16_rim_skates` and `ch16_rim_crawlers`;
+  the gap was mine): `haluna/rim_arenas.py` writes it from the zone's dressing, sky, fog, water and `lut_ch16_rim`.
+  The battle camera looks down the wade, with the cairn line into the white behind the enemy line. The id is in
+  `arenas.json` `scenes`, with a preview, the shot `battle_arena_pale_rim_shallows` (viewed: white overcast, still
+  water, cairns and poles into the fog) and a PROVENANCE row. Naming it on the two encounter rows is combat's:
+  request **M4-A2P-107**. The Choir still waits on M4-A2P-106.
+  - **MERGE-READY @ e1903b9e** (rows 51, 62, 63 @ e72c9631; the arena on top).
+- **BACKLOG EMPTY (10-30, after pass 5):** my pass-5 rows are fixed, or handed off with a request (62's kit
+  geometry: M3-ENV-1328). Row 34 is the request path's. The rest of Ch14–Ch16 waits on M4-A2P-103 to 107.
+- **Player-height walk, Ch5–Ch9 (10-30, on big21 0347aa74+ merged into this branch):** 548 eye-height stills
+  (every spawn, trigger and story mark, looking N, E, S and W) over the eight zones, all viewed on contact sheets.
+  - **Fixed here:**
+    - **Corrow (Ch8 and Ch9):** the Bastion's two end walls left a 0.5 m slit of sky between their 12 m
+      segments (the end is 24.5 m). They now slide together to meet.
+    - **The low town's black pools:** this was `corrow_far` showing through the town cells' hollows (they dip
+      3.75 cm; the far ground lay 3 cm under the town). It's lowered 3 cm, and the pools now read as wet hollows.
+    - **Tamsule's market cloths** (awnings, boat canopies, sun umbrellas) read as flat colour: the kit's cloths are
+      92 % flat paint. The zone copies (`tamsule_cloth_*_material.tres`) show the weave through a sun-faded dye.
+  - **Kit code, so requested from env-art:**
+    - **M3-ENV-1329:** Brine Shoals' hard wet/dry lines where the channel tiles meet the mudflat tiles. A test
+      showed it's the baked wetness, not variation or LOD. The task has a one-line patch.
+    - **M3-ENV-1330:** Corrow's low town ground has per-triangle cobble patches with hard edges, which stop at the
+      tile edges.
+  - **Seen and left:**
+    - **Ashcrown:** the plume is a lumpy grey mass seen close from the crown terraces.
+    - **Coilspire:** north from the headland is the storm-graded flat of Corrow's far ground.
+    - **Ch9's strand:** the shoreline is ruler-straight where the still water meets the beach's planar slope.
+    - **Not walk views:** the marks out at sea, in the drop and inside actors (Kahre's heart).
+  - Checks: test_corrow_kit, test_tamsule_bell_kit, test_ch08_flow, validate_data, taskboard; Godot
+    --filter=corrow (18), tamsule (7), ch07 (18), ch08 (25) and ch09 (13) pass. Viewed `ch07_tamsule_market`,
+    `ch08_corrow_flood` and `ch08_corrow_arrival`.
+  - **MERGE-READY @ 008c7de3.**
+  - Next: the same walk for Ch13–Ch16 once act1-chapters mounts them (the zones are dressed; the walk rig takes any
+    zone and layout).
+- **BACKLOG EMPTY (10-30, after the Ch5–Ch9 walk):** what's left from the walk is with env-art (M3-ENV-1328/1329/1330).
+  Ch13–Ch16's walk waits on the mount, and the rest of Ch14–Ch16 on M4-A2P-103 to 107.
 ### PC-QUEUE
 - Pass 3 row 65 (@ edb18aae): re-measure the camp's smoke columns (24 steps at High) and the Tamsule drop (High has no
   god rays now) at High 1440p against the 0.3 ms target.
@@ -874,3 +963,7 @@ SELF-RENDERED @ f51f81f2: battle_boss_intro_matron (the anvil court), battle_bos
 SELF-RENDERED @ 22b289bf: Virel in the Coilspire crown chamber (three scratch views) and ch08_coilspire_storm/_hall (unchanged), viewed.
 SELF-RENDERED @ 8c535d1e: ch07_bell_galleries, ch07_bell_moorings (the weeping column reads), ch07_tamsule_gantry, ch07_tamsule_mouth (the column sits behind the gantry leg head-on), all viewed.
 SELF-RENDERED @ 3be35a85: ch06_brine_camp, _road, ch08_coilspire_hall, _gate, ch08_corrow_arrival, ch09_corrow_strand, _rocks, battle_arena_underway, _underway_tower, _terrace, _ash_terrace_lanternfall, ch05_ashcrown_tiers (the GPU QA rows on this head), all viewed; hall, gate, rocks and Lanternfall re-rendered after the fixes.
+SELF-RENDERED @ c6abd321: zz_pem_harbour, zz_pem_road, zz_pem_weir, zz_cor_strand (scratch spawn views), ch05_ashcrown_crown, crowd_zone_ashcrown, ch05_pemakar_harbour, ch09_corrow_strand, brine_b05_barge_channel, battle_arena_coilspire_headland_path, pemakar_p11_sea_cut_weir_day, battle_boss_intro_matron (GPU pass 4 rows on big20), all viewed; the strand re-rendered after each shroud change.
+SELF-RENDERED @ 7999fb30: ch15_hollowmere_supper, ch15_hollowmere_dock, viewed (the supper table by the south rail).
+SELF-RENDERED @ e1903b9e: battle_boss_intro_matron, battle_arena_ashcrown_anvil_court (the loggia lattice), pemakar_p11_sea_cut_weir_day (before, after and a tint test), ch09_corrow_strand plus the strand spawn view (scratch, each shroud step plus a red paint test), battle_arena_pale_rim_shallows (new), all viewed.
+SELF-RENDERED @ 008c7de3: the Ch5–Ch9 eye-height walk (548 stills, scratch), Brine Shoals' variation, LOD and wet tests, Tamsule's cloth and Corrow's wall-slit and pool before/after views (scratch), ch07_tamsule_market, ch08_corrow_flood, ch08_corrow_arrival — all viewed.

@@ -40,7 +40,7 @@
     "SpireBase": [306.573, 39.285, 156.769, 255.0],
     "Tier2": [307.824, 48.285, 156.808, 48.08],
     "Tier4": [309.56, 66.285, 158.797, 290.65],
-    "Gallery": [307.634, 81.885, 155.924, 226.16]
+    "Gallery": [307.634, 81.885, 155.924, 226.16], "Encounter": [233.853, 12.353, 108.306, 271.48]
   },
   "marks": {
     "hearth_asha": [310.695, 38.99, 151.457, 255.0],
@@ -150,7 +150,7 @@
     {"id": "crown", "at": [308.465, 74.285, 159.112], "size": [8, 0, 2], "requires_flag": "ch08_flame_at_crown", "blocked_by_flag": "ch08_virel_bound", "payload": {"beat": "binding"}, "yaw": -144.0},
     {"id": "great_key", "activation": "interact", "at": [307.892, 81.885, 161.556], "size": [2, 0, 1.6], "prompt_key": "FIELD_PROMPT_CH08_GREAT_KEY", "requires_flag": "ch08_virel_bound", "blocked_by_flag": "ch08_beacon_opened", "payload": {"beat": "open_beacon"}, "yaw": 20.0}
   ],
-  "encounters": {"table": [{"encounter": "ch08_headland_gulls", "weight": 2}, {"encounter": "ch08_headland_crabs", "weight": 1}], "min_m": 26, "max_m": 42, "when": {"unset": ["ch08_entered_coilspire"]}, "seed": 8},
+  "encounters": {"table": [{"encounter": "ch08_headland_gulls", "weight": 2}, {"encounter": "ch08_headland_crabs", "weight": 1}], "min_m": 95, "max_m": 145, "when": {"unset": ["ch08_entered_coilspire"]}, "seed": 8},
   "states": [
     {"flag": "ch08_entered_coilspire", "place": {"asha": "in_asha", "toma": "in_toma", "ysolde": "in_ysolde", "liss": "in_liss", "tender": "gallery_tender"}},
     {"flag": "ch08_virel_bound", "hide": ["virel"], "show": ["StormWall"], "place": {"asha": "gallery_asha", "toma": "gallery_toma", "ysolde": "gallery_ysolde", "liss": "gallery_liss"}}

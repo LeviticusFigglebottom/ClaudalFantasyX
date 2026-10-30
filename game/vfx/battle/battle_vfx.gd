@@ -336,9 +336,10 @@ func anchor(target: StringName, at: String) -> Vector3:
 	# M3-BPR-420: a flier stands at its hover (the gulls, the squall wings): its hit lands on it, not on the sand below.
 	var p := f.global_position + Vector3.UP * (float(spec.get("hover", 0.0)) + height * frac)
 	var cam := get_viewport().get_camera_3d() if is_inside_tree() else null
-	if at == "feet" or cam == null:
+	if cam == null or (data.get("anchor_centred", ["feet"]) as Array).has(at):
 		return p
 	# M3-BPR-420: on the body's near face, not its middle: inside the Cinder Matron's 2.9 m bulk a hit was hidden.
+	# anchor_centred heights stay on its middle (the Wakefin's crest: its near face is against the barge's hull).
 	var to_cam := Vector3(cam.global_position.x - p.x, 0.0, cam.global_position.z - p.z)
 	return p + to_cam.normalized() * _half_depth(target, f) if to_cam.length() > 0.01 else p
 

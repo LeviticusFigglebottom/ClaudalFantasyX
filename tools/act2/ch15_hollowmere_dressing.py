@@ -59,7 +59,8 @@ OIL_COLOR = "#FFB16E"
 OIL_ENERGY = 0.9
 OIL_RANGE_M = 5.0
 LAMP_FLAME = (0.0, 1.55, 0.45)  # hollowmere.LAMP_FLAME
-SUPPER_AT = (41.4, -0.9, 0.0)  # beside the supper mark, against the north rail (the walk stays 1.8 m clear)
+SUPPER_AT = (42.0, 0.95, 0.0)  # by the father's place, against the south rail: the walk from the supper mark to the
+#   pyre-raft runs along the north half (z -0.8 to 0), so the table's box (stools at +-0.87 m) stays 0.4 m clear of a body
 DACE_AT = (78.0, -24.0, 30.0)  # seen at the zone's edge in Ch15 (Ch17's heart)
 FLOTILLA_AT = (25.0, -5.0)
 

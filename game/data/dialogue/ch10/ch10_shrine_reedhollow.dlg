@@ -1,0 +1,9 @@
+// Kirru shrine (save point): a ring of name-shells hung on a mangrove root over the lagoon. A Kirru shrine; it answers the party in every state (TIP_DARK_SHRINE).
+title: ch10_shrine_reedhollow
+location: ch10/reedhollow
+---
+A ring of shells hangs from a mangrove root over the water. Every one has a name cut on the inside. They knock together softly when the wind moves. #line:ch10_shrine_001 #narration #long
+<<if $ch14_declared_heretics>>
+    The Kirru never asked what the Order thinks of you. The shells go on knocking. #line:ch10_shrine_002 #narration
+<<endif>>
+===

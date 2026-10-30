@@ -67,8 +67,10 @@ func build() -> void:
 	_build_lighting()
 	_build_blocks()
 	var spawns: Dictionary = (layout.get("spawns", {}) as Dictionary).duplicate()
-	if layout.has("encounters"):
-		spawns[String(FieldEncounters.RETURN_SPAWN)] = [0, 0, 0, 0]
+	if layout.has("encounters") and not spawns.has(String(FieldEncounters.RETURN_SPAWN)):
+		# a layout may name its own fallback (M3-HER-1159); else the zone's first spawn, not the world's origin, before
+		# any fight (the PC's row 38: Coilspire's Encounter, at the origin, looked at open sea far off the tower)
+		spawns[String(FieldEncounters.RETURN_SPAWN)] = spawns.values()[0] if not spawns.is_empty() else [0, 0, 0, 0]
 	_build_markers(SPAWNS, spawns)
 	_build_player()
 	_build_stage()

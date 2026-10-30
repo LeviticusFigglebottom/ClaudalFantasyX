@@ -3,11 +3,11 @@ LOCATION_CH12_KETH_PASS,Keth Pass
 LOCATION_CH12_QUELLAN,Quellan
 LOCATION_CH12_CLOUDLOOM,Cloudloom
 ENEMY_RIDGE_LYNX,Ridge Lynx
-LORE_RIDGE_LYNX,"A lynx of the high pass in its slate-grey winter coat, ear tufts white with frost. It takes the slowest of a line, the way it takes the last of a flock."
+LORE_RIDGE_LYNX,"A lynx of the high pass in its slate-grey winter coat, ear tufts white with blown snow. It takes the slowest of a line, the way it takes the last of a flock."
 ENEMY_CORD_MOTH,Cord Moth
 LORE_CORD_MOTH,"A pale moth whose larvae live in old keth cords. The knots it ate come out on its wings, and the Ullari say a few of them can still be read."
 ENEMY_SCREE_CRAWLER,Scree Crawler
-LORE_SCREE_CRAWLER,A mountain tortoise whose shell is frost-split scree. It sleeps through the summers and the passes are cleared around it.
+LORE_SCREE_CRAWLER,A mountain tortoise whose shell is weather-split scree and grit. It sleeps through the summers and the passes are cleared around it.
 SKILL_UNRAVEL,Unravel
 SKILL_SCREE_SLIDE,Scree Slide
 ENC_CH12_PASS,Keth Pass
@@ -20,3 +20,21 @@ CHAR_ULLARI,Ullari
 CHAR_ULLARI_WOMAN,Ullari woman
 ENEMY_AVALANCHE_RAM,Avalanche Ram
 LORE_AVALANCHE_RAM,"A woolback grown past any herd's size, its fleece felted into plates that hang to its knees. A red herd-cord still runs through the wool: somebody once named it and walked it home every night. It drinks at the weeping wall above Quellan, and the snow comes down when it is angry."
+OBJ_CH12_WALL,Something is bringing the snow down on the road. Climb on.
+OBJ_CH12_TO_QUELLAN,Over the saddle to Quellan.
+OBJ_CH12_ROAD_UP,Climb on to Cloudloom.
+OBJ_CH12_DAIS,Find the Saint of the weaving-hall.
+OBJ_CH12_INN,Spend the night at Quellan's inn.
+OBJ_CH12_ON,"Down the other side, toward Ansedra. Don't look back."
+OBJ_CH12_SIDE_BOY,A herder's boy needs a knot tied on the pass.
+OBJ_CH12_SIDE_CORD,Someone in Quellan is asking after the big woolback.
+TUT_CH12_UNRAVEL,Cord moths unpick the wards you've woven. Strike them before your wards are gone.
+TUT_RAM_FIELD,Every charge brings more snow down. The field shows what the next one costs.
+ITEM_WOOLBACK_FELT,Woolback Felt
+ITEM_WOOLBACK_FELT_DESC,"A pad of felted woolback fleece, dense enough to turn a blade. Used in Customize."
+ITEM_BUTTER_TEA,Butter Tea
+ITEM_BUTTER_TEA_DESC,"Salted Ullari tea, thick with butter. The highlands say it puts the breath back into you."
+EQUIP_ASHA_KETH_BANGLE,Keth-Cord Bangle
+EQUIP_ASHA_KETH_BANGLE_DESC,A bangle of knotted Ullari cord. A keth-reader tied it and wouldn't say what it reads.
+EQUIP_TOMA_FELT_SHIELD,Felt-Faced Shield
+EQUIP_TOMA_FELT_SHIELD_DESC,A highland shield faced with woolback felt. It takes a blow quietly.

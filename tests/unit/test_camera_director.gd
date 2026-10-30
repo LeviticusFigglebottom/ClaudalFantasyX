@@ -246,6 +246,22 @@ func test_a_fixed_shot_that_would_lose_him_turns_to_hold_him() -> void:
 	_free()
 
 
+## A cutscene's shot is a composition (an insert on a prop, a reverse with the leader off-frame): the safety net above
+## never turns it to him (big20 had O07's name-board insert turn to Rhen across the town).
+func test_a_scripted_shot_is_never_turned_to_the_leader() -> void:
+	_settle()
+	var insert := CameraShot.new()
+	insert.id = &"insert"
+	insert.position = player.global_position + Vector3(0, 1.6, 6)
+	insert.look_at = insert.position + Vector3(0, 0, 4)  # straight away from him
+	director.play_shot(insert, 0.0)
+	_settle()
+	var aim := (insert.look_at - insert.position).normalized()
+	assert_true(-director.camera.global_basis.z.dot(aim) > AIM_TOLERANCE, "the insert holds its authored frame")
+	director.release(0.0)
+	_free()
+
+
 ## PC QA row 59 (Ch1's O10, a telephoto on a lintel-gull): a cutscene's FIXED shot keeps its composition even when the
 ## leader is out of frame; only a volume's shot has the safety net above.
 func test_a_scripted_fixed_shot_keeps_its_frame_without_him() -> void:

@@ -281,20 +281,30 @@ def build_shroud_bound(name: str, seed: int, *, length: float = 1.8, turn: float
         rng = kc.rng_for(name, seed)
         noise = kc.Noise3(rng)
         mb = kc.MeshBuilder(name + ("-lod1" if lod else ""))
-        nx, nz = (15, 29) if not lod else (5, 7)
+        nx, nz = (21, 41) if not lod else (5, 7)  # fine enough that the outline's hem doesn't saw-tooth
         half_w, half_l = 0.42 * length / 1.8 + 0.08, length * 0.5 + 0.1
-        X, Z = np.meshgrid(np.linspace(-half_w, half_w, nx), np.linspace(-half_l, half_l, nz))
+        # The grid maps onto the superellipse (square rings to superellipse rings), so the cloth's outline follows the
+        # body, tapering to the head and feet: a rectangular sheet read as a flat rectangle from the field camera above
+        # (the PC's passes 4 and 5, row 51).
+        U, V = np.meshgrid(np.linspace(-1.0, 1.0, nx), np.linspace(-1.0, 1.0, nz))
+        ring = np.maximum(np.abs(U), np.abs(V))
+        norm = (np.abs(U) ** SHROUD_OUTLINE_P + np.abs(V) ** SHROUD_OUTLINE_P) ** (1.0 / SHROUD_OUTLINE_P)
+        f = np.divide(ring, norm, out=np.zeros_like(ring), where=norm > 0.0)
+        X, Z = U * f * half_w, V * f * half_l
         body = cw_night._form(X, Z, length, turn, arm) * SHROUD_FULL
         k = np.array([0.25, 0.5, 0.25])
-        soft = np.apply_along_axis(lambda r: np.convolve(np.pad(r, 1, mode="edge"), k, "valid"), 1, body)
-        soft = np.apply_along_axis(lambda c: np.convolve(np.pad(c, 1, mode="edge"), k, "valid"), 0, soft)
-        y = np.maximum(soft, body * 0.96) + 0.015
+        soft = body
+        for _ in range(SHROUD_DRAPE_PASSES):  # the cloth bridges the limbs: no spiky ridge over an arm or the feet
+            soft = np.apply_along_axis(lambda r: np.convolve(np.pad(r, 1, mode="edge"), k, "valid"), 1, soft)
+            soft = np.apply_along_axis(lambda c: np.convolve(np.pad(c, 1, mode="edge"), k, "valid"), 0, soft)
+        y = np.maximum(soft, body * SHROUD_DRAPE_HUG) + 0.015
         if not lod:  # creases along the length, deeper where the cloth stands off the body
             crease = np.sin(X / half_w * math.pi * 3.0 + rng.uniform(0, 6.28)) * 0.5 + 0.5
             p = np.stack([X, np.zeros_like(X), Z], axis=-1)
             y += (crease - 0.5) * SHROUD_CREASE_M * kc.smoothstep(0.03, 0.12, y)
-            y += (noise.fbm(p / 0.15, 2) - 0.5) * 0.02
-        edge = np.minimum(1.0 - np.abs(X) / half_w, 1.0 - np.abs(Z) / half_l)
+            y += (noise.fbm(p / 0.15, 2) - 0.5) * SHROUD_NOISE_M
+        # The hem rolls down to the shingle over the outer rings.
+        edge = 1.0 - ring
         y = y * kc.smoothstep(0.0, SHROUD_HEM, edge) + 0.008
         P = np.stack([X, y, Z], axis=-1)
         uv = np.stack([X * 1.5, Z * 1.5], axis=-1)
@@ -303,9 +313,10 @@ def build_shroud_bound(name: str, seed: int, *, length: float = 1.8, turn: float
         if not lod:
             for zf in SHROUD_TIES:
                 z = -length * 0.5 + zf * length
-                row = int(round((z + half_l) / (2 * half_l) * (nz - 1)))
-                xs = np.linspace(-half_w * 0.85, half_w * 0.85, 11)
-                ys = np.interp(xs, X[row], y[row]) + 0.012
+                reach = half_w * (1.0 - abs(z / half_l) ** SHROUD_OUTLINE_P) ** (1.0 / SHROUD_OUTLINE_P)
+                xs = np.linspace(-reach * 0.85, reach * 0.85, 11)
+                near = [np.argmin((X - xx) ** 2 + (Z - z) ** 2) for xx in xs]  # the cloth's nearest vertex
+                ys = y.ravel()[near] + 0.012
                 kc.tube(mb, np.stack([xs, ys, np.full_like(xs, z)], axis=-1), 0.014, 4, mb.material(cw.M_ROPE),
                         variation=float(rng.random()))
         out.append(mb)
@@ -313,10 +324,14 @@ def build_shroud_bound(name: str, seed: int, *, length: float = 1.8, turn: float
 
 
 M_SHROUD = "cw_sail"  # cw_night's shroud slot (the zones swap it for their own sailcloth)
-SHROUD_FULL = 1.15  # the body forms a little fuller, so the cloth reads over them from above
-SHROUD_CREASE_M = 0.03
-SHROUD_HEM = 0.06  # the cloth drops to the shingle within this fraction of the half-size (cw_night: 0.12)
+SHROUD_FULL = 1.4  # the body forms fuller, so the cloth reads as a body under it from the field camera above
+SHROUD_CREASE_M = 0.01  # shallow: over the fuller form deeper creases read as spiky ridges
+SHROUD_HEM = 0.14  # the cloth rolls down to the shingle over this fraction of the half-size (cw_night: 0.12)
+SHROUD_OUTLINE_P = 2.6  # the outline's superellipse exponent: rounded at the shoulders, tapering at head and feet
 SHROUD_TIES = (0.13, 0.36, 0.66, 0.9)  # neck, chest, knees, ankles
+SHROUD_NOISE_M = 0.006
+SHROUD_DRAPE_PASSES = 10
+SHROUD_DRAPE_HUG = 0.55  # the body shows through the drape at this fraction of its height
 
 
 TARGETS = {

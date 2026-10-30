@@ -1,0 +1,24 @@
+// Ch12 camp (optional, the Quellan inn, the night after Cloudloom; requires ch12_ysolde_confessed). Toma and Ysolde,
+// two people of the Order. Ysolde has read Ama Quillo's count; Toma does the sum to its end, and the end is Asha. He was
+// made to keep her safe to the end of the road; nobody told him what was there (pillar 6). No Act III fact: nobody says
+// what the Hush does (that is Ch16's). Sets ch12_camp_talk.
+title: ch12_camp_the_end_of_the_road
+location: ch12/quellan
+---
+Toma [neutral]: Forty-seven knots. #line:ch12_camp_001
+Ysolde [neutral]: Forty-seven Cantors, up to Ama Quillo's own name. And the ones since. #line:ch12_camp_002
+Toma [neutral]: And then the Lady Cantor's mother. #line:ch12_camp_003
+Ysolde [sad]: Yes. #line:ch12_camp_004
+Toma [neutral]: And then her. #line:ch12_camp_005
+Ysolde [neutral]: The cords don't say that. #line:ch12_camp_006
+Toma [cold]: They do not need to. #line:ch12_camp_007
+Toma [neutral]: When I took the oath, they said, keep her safe to the end of the road. I said I would. I meant it. #line:ch12_camp_008
+Toma [grief]: Nobody told me what was at the end of it. #line:ch12_camp_009
+Ysolde [guilty]: I knew more than you did. Not all of it. More. #line:ch12_camp_010
+-> Toma: "Why didn't you say?" #line:ch12_camp_011
+    Ysolde [guilty]: Because I wanted it to be wrong. And because I am a coward about the things I love. #line:ch12_camp_012
+-> Toma: "Will you tell me now?" #line:ch12_camp_013
+    Ysolde [neutral]: Everything I learn. The day I learn it. I promise you that. #line:ch12_camp_014
+Toma [neutral]: Then I will keep her safe to the end of the road. And then I will see what the road is. #line:ch12_camp_015
+<<set $ch12_camp_talk = true>>
+===

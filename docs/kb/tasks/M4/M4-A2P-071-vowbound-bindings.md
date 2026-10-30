@@ -2,8 +2,7 @@
 id: M4-A2P-071
 title: "Stage the four bindings: Nhoa, Hesk, Ethren and Kesh"
 role: cinematics
-status: blocked
-blocked-by: ADR 0203
+status: todo
 owner_session: ""
 depends_on: [M4-A2P-002, M4-A2P-003, M4-A2P-004, M4-A2P-007]
 reviewer: narrative

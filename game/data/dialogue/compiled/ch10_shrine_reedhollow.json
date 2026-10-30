@@ -1,0 +1,17 @@
+{
+ "format": 1,
+ "scene": "ch10_shrine_reedhollow",
+ "source": "game/data/dialogue/ch10/ch10_shrine_reedhollow.dlg",
+ "start": "ch10_shrine_reedhollow",
+ "nodes": {
+  "ch10_shrine_reedhollow": {
+   "headers": {"location": "ch10/reedhollow"},
+   "ops": [
+    {"op": "line", "id": "ch10_shrine_001", "key": "DLG_CH10_SHRINE_001", "speaker": "", "emotion": "", "voice": "", "src": 5, "tags": ["long"]},
+    {"op": "if_not", "cond": ["flag", "ch14_declared_heretics"], "to": 4, "src": 6},
+    {"op": "line", "id": "ch10_shrine_002", "key": "DLG_CH10_SHRINE_002", "speaker": "", "emotion": "", "voice": "", "src": 7},
+    {"op": "goto", "to": 4, "src": 6}
+   ]
+  }
+ }
+}
