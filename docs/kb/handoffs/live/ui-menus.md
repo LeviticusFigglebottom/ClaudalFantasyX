@@ -1082,3 +1082,20 @@ MERGE-READY @ a4336326a: Act II battle floats.
   - **Drift:** the 100% field-menu shots move by about 1 px in the cards' text (and their baseline already predated
     Toma's portrait), and battle_statuses_colorblind changes with the new orange.
 MERGE-READY @ 4edf33c21: the as-played Act I UI pass.
+- 2026-10-30 17:40, **the Lead's 11:47 note.** I merged the integration branch (ADR 0206: British spelling).
+  - **ADR 0206:** my new strings are British. The one older American string I own (`STATUS_MENU_ARMOR`, "Armor") is in
+    act2-plan's FAST-TRACK, so I left it to avoid a clash.
+  - **Focus order:** done in the 10:47 pass (input_parity 65/0, keys, pad and mouse).
+  - **Battle at every text size** (8132685db):
+    - **Method:** the HUD, swap and Read shots rendered at 115% and 130%, through the fixtures' `ui_settings` (data
+      restored afterwards). All viewed.
+    - **"Acting now" at 130%:** the head chip read "Acting …", and names like "Gull Harrier" lost their ends. Both now
+      fit their width (down to 80%) before an ellipsis cuts them.
+    - **Party rows at 130%:** the HP and MP numbers sat on their gauges. Above 100% a number's bottom now stays on its
+      gauge's top. At 100% nothing moves; I checked against the baseline, and the party panel is pixel-identical.
+    - **Costs:** every command's cost shows at both sizes (MP, rank, escape odds, "No time"), and so does the help
+      line's outcome ("Rhen acts again in 5 turns").
+    - **The Read panel at 130%** grows over the party panel's lower edge. It is modal, its own text is whole, and the
+      battle waits while it is open, so I left it.
+    - **Tests:** battle_controller 33/0, timeline 30/0, pseudo_loc_screens 17/0.
+MERGE-READY @ 8132685db: the battle text-size fixes.
