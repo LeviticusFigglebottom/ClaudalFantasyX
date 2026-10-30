@@ -280,7 +280,11 @@ static func _clip_faces(
 			var to_box := frame.affine_inverse()
 			var rest: Array[PackedVector3Array] = []
 			for poly in outside:
-				var pieces := _cut_by_box(to_box * poly, box[1])
+				var local := to_box * poly
+				if _clear_of_box(local, box[1]):  # wholly past one face: nothing to cut (most of a mesh; ADR 0111)
+					rest.append(poly)
+					continue
+				var pieces := _cut_by_box(local, box[1])
 				for k in pieces.size():
 					var world := frame * pieces[k]
 					if k == 0:
@@ -295,6 +299,20 @@ static func _clip_faces(
 			for k in range(1, poly.size() - 1):
 				out.append_array([back * poly[0], back * poly[k], back * poly[k + 1]])
 	return out
+
+
+## True when every point of `poly` (in a box's frame) lies past the same face of the box of half size `h`, so the
+## polygon cannot touch it. The clip then keeps it whole, as _cut_by_box would, without the per-plane work.
+static func _clear_of_box(poly: PackedVector3Array, h: Vector3) -> bool:
+	for axis in 3:
+		var above := true
+		var below := true
+		for p in poly:
+			above = above and p[axis] > h[axis]
+			below = below and p[axis] < -h[axis]
+		if above or below:
+			return true
+	return false
 
 
 ## A convex polygon (in a box's frame) cut by the box of half size `h`: [the part inside, the parts outside...].

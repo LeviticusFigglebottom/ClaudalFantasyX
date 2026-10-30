@@ -434,7 +434,7 @@
         "ch05_cinder_matron": {"enemy": "cinder_matron", "shot": "boss_skyward", "hold_sec": 2.2,
                                "title_key": "BOSS_TITLE_CINDER_MATRON", "epithet_key": "BOSS_EPITHET_CINDER_MATRON",
                                "on_retry": false},
-        "ch06_inquisitor": {"enemy": "stillguard_inquisitor", "shot": "boss", "hold_sec": 2.0,
+        "ch06_inquisitor": {"enemy": "stillguard_inquisitor", "shot": "boss", "hold_sec": 2.0, "fit_margin": 1.1,
                             "title_key": "BOSS_TITLE_INQUISITOR", "epithet_key": "BOSS_EPITHET_INQUISITOR",
                             "on_retry": false},
         "drownbell": {"enemy": "drownbell", "shot": "boss_tall", "hold_sec": 2.2, "title_key": "BOSS_TITLE_DROWNBELL",

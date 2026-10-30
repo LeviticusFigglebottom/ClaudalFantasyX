@@ -827,7 +827,7 @@ SAVE_SLOT_PROLOGUE,Prologue
 FLOW_END_CARD_VOICE,"""I said yes to a girl I'd known for two days. I didn't know yet what I was walking her toward."""
 CREDITS_GAME,Hymn of the Undertow
 CREDITS_SLICE,"The first playable: Haluna, the Saltgrass Causeway and the Shell Shrine"
-CREDITS_MUSIC,"Original music, in prototype"
+CREDITS_MUSIC,Original music
 CREDITS_ENGINE,Made with the Godot Engine (MIT License)
 CREDITS_FONTS,EB Garamond and Source Sans 3 (SIL Open Font License)
 CREDITS_THANKS,Thank you for playing.

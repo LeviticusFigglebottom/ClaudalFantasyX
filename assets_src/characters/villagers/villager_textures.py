@@ -16,7 +16,13 @@ packing of asha.md §4.2 and the map contract in docs/kb/tech/character_shading.
   - reach-bands (bible §5.1: one per voyage survived; toma.md §9's generator, toma_textures'
     `_reach_bands` and `_forearm`, with the villager's counts, seed and ink opacity; old ink is
     fainter and softer);
-  - stubble (`_skin.stubble`): the toma_hair beard region as a short shadow, a share of it grey.
+  - stubble (`_skin.stubble`): the toma_hair beard region as a short shadow, a share of it grey;
+  - Saltwright line-marks (`_skin.line_marks`, M3-CHR-511): liss_textures' generator (`line_marks`, `paint_marks`
+    on `liss_charts`, right side only) with the villager's own seed, placement (region -> count) and stroke sizes;
+    `_skin.body_size` ([albedo/normal, ORM/mask] px) raises the body maps so the strokes resolve (Liss's 2K rule).
+  - a feathered hairline (`_hair.hairline_feather`, M3-CHR-534): asha_textures' opt-in HAIRLINE_FEATHER, a broken
+    painted edge with thinning outer strands where the cropped and short card rows stop at the forehead;
+  Every one of these keys is optional, and a villager without it builds exactly as before.
 * Cloth, shared by every villager (assets/characters/villagers/textures/villagers_cloth_*): one 2K
   atlas for villager_costume.ATLAS in near-neutral undyed tones (light enough that the materials'
   `col_albedo` tints carry the dye colours): plain-weave cotton with fold wear and salt fading for
@@ -48,6 +54,7 @@ import asha_textures as at  # noqa: E402
 from asha_textures import blur, height_to_normal, hexc, periodic_noise, smoothstep, weave  # noqa: E402
 
 PARAMS_DIR = HERE / "params"
+LISS_DIR = HERE.parent / "liss"  # liss_textures: the Saltwright line-mark generator (M3-CHR-511)
 OUT_ROOT = ROOT / "assets" / "characters" / "villagers"
 TATTOO_INK = "#24323A"
 HEAD_SIZE = (1024, 512)  # albedo/normal, ORM/skinmask
@@ -55,8 +62,30 @@ BODY_SIZE = (512, 512)
 AGE_FOLD_DARKEN = 0.10  # albedo darkening in a full-depth fold at age 1
 AGE_DESAT = 0.10  # saturation lost at age 1
 STUBBLE_DENSITY = 0.42
+STUBBLE_SHADOW_TINT = (0.62, 0.64, 0.66)  # `stubble_shadow`: the beard region at full shadow (darker, a touch cool)
+STUBBLE_SHADOW_RAMP = (-0.01, 0.06)  # head heights into the beard (toma_hair.beard_v) over which the shadow fades in
 OIL_WARM = (1.04, 0.94, 0.80)  # fingertip_oil: lamp oil darkens the pads toward a warm brown (M3-CHR-03, Kell)
 OIL_PAD_R = 1.7  # x the finger's tip radius: how far round the last phalanx the stain reaches
+CHALK_HEX = "#E4E0D6"  # `fingertip_chalk`: slate chalk dust (M3-CHR-535, the pool-keeper)
+CHALK_MOTTLE = 0.45  # share of the chalk the dust's unevenness takes away
+# `burn_scars` (M3-CHR-532, Garo's forearms): healed burns as pale, glossy-looking patches with a darker rim
+BURN_FOREARM_R = 0.03  # m at S = 1: the forearm's radius, to measure the patches' width round it
+BURN_PALE = (1.24, 1.06, 1.04)  # the healed skin against the skin round it (paler, pinker)
+BURN_DESAT = 0.35
+BURN_RIM_DARK = 0.12  # the hyperpigmented rim
+BURN_EDGE_NOISE = 0.45  # how ragged a patch's edge is
+BURN_MOTTLE = 0.5  # the scar tissue's unevenness inside a patch (share of its paleness)
+# `brow_strands` (M3-CHR-536/539/519, the old villagers' brows): single hairs painted on the brow skin under the brow
+# cards, laid in asha_eyes.brow's own frame (its bottom, centre and top lines), so an aged brow reads as separate wiry
+# hairs, some dark among the grey, rather than as one flat band. Lengths and widths are m at the head scale.
+BROW_STRAND_LEN = (0.0035, 0.0075)
+BROW_STRAND_WIDTH = 0.0003
+BROW_STRAND_LONG = (0.08, 1.5)  # share of stray long hairs, and how much longer they are
+BROW_STRAND_RISE = (55.0, 12.0)  # degrees above the brow's line: the head's hairs stand up, the body's and tail's lie
+BROW_STRAND_HEAD = 0.3  # share of the brow's length (medial) over which the hairs turn from standing to lying
+BROW_STRAND_CONVERGE = 30.0  # degrees: hairs rooted low tilt up and those rooted high tilt down, onto the centre line
+BROW_STRAND_JITTER = 14.0  # degrees of random lie per hair (wiry)
+BROW_STRAND_TIP = 0.35  # a hair's opacity at its tip against its root
 
 
 def load(npc: str) -> dict:
@@ -159,9 +188,15 @@ def _albedo_villager(orig, sk: dict, hstyle, hair_hex: str):
     ink_op = float(sk.get("ink_opacity", 0.7))
     stub = float(sk.get("stubble", 0.0))
     density = float(sk.get("scalp_density", 0.95))
+    scalp_shade = float(sk.get("scalp_shade", 0.0))  # 0 = the bare skin between painted hairs stays lit (default)
     seed = int(sk.get("seed", 1))
     lip = sk.get("lip")
     oil = float(sk.get("fingertip_oil", 0.0))  # a chandler's oil-dark fingertips (act1_npcs.md §4.2)
+    chalk = float(sk.get("fingertip_chalk", 0.0))  # M3-CHR-535 (optional): the pool-keeper's chalky fingers
+    burns = sk.get("burn_scars")  # M3-CHR-532 (optional): a smith's burned forearms
+    lm_spec = sk.get("line_marks")  # M3-CHR-511: Saltwright line-marks (liss_textures' generator)
+    brows = sk.get("brow_strands")  # M3-CHR-536 (optional): an old villager's wiry brow hairs
+    marks_state: dict = {}
 
     def desat(col, k):
         g = col.mean(axis=1, keepdims=True)
@@ -197,10 +232,22 @@ def _albedo_villager(orig, sk: dict, hstyle, hair_hex: str):
             if oil > 0.0:
                 wt = fingertip_weight(lm, Ph)[:, None]
                 col = col + (col * (1.0 - oil) * np.array(OIL_WARM) - col) * wt
+            if chalk > 0.0:
+                wt = fingertip_weight(lm, Ph) * chalk * (1.0 - CHALK_MOTTLE * at.noise3(Ph, 0.002 * s, 191 + seed))
+                col = col + (hexc(sk.get("chalk_hex", CHALK_HEX)) - col) * wt[:, None]
+            if burns:
+                col = _burn_scars(col, Ph, lm, burns, seed)
+            if lm_spec:
+                col = _ink_marks(col, Ph, lm, lm_spec, marks_state)
             return np.clip(col, at.FLOOR, at.CEIL)
         haired = orig(Ph, Nh, key, face, lm, hair_mod, r, npz)
         if density < 0.95:
             bare = orig(Ph, Nh, key, face, lm, tt._Bald, r, npz)
+            if scalp_shade > 0.0:
+                # M2-CHR-524: Toma's scalp, the skin between the painted hairs in the hair's shadow (darker, cooler),
+                # so the gaps between the cropped cards read as hair, not as lit skin
+                region = np.clip(np.abs(haired - bare).sum(axis=1) / tt.SCALP_REGION_DIFF, 0.0, 1.0)[:, None]
+                bare = bare * (1.0 - scalp_shade * region) * (1.0 + (tt.SCALP_COOL - 1.0) * region)
             col = bare + (haired - bare) * (density / tt.SCALP_FULL)
         else:
             col = haired
@@ -221,11 +268,129 @@ def _albedo_villager(orig, sk: dict, hstyle, hair_hex: str):
             cover = smoothstep(0.35, 0.65, streak) * smoothstep(-0.006, 0.010, bv)
             grey = (at.noise3(Ph, 0.001 * s, 182) > 0.55).astype(float) * float(sk.get("stubble_grey", 0.0))
             hcol = hexc(hair_hex) * (1 - grey[:, None]) + hexc(sk.get("stubble_grey_hex", "#9A948A")) * grey[:, None]
-            dens = STUBBLE_DENSITY * stub * cover
+            shadow = float(sk.get("stubble_shadow", 0.0))
+            if shadow > 0.0:  # M3-CHR-529 (optional): the cut hairs under the skin, a cool shadow over the beard region
+                region = smoothstep(*STUBBLE_SHADOW_RAMP, bv) * shadow
+                cool = col * np.array(STUBBLE_SHADOW_TINT)
+                col = col + (cool - col) * region[:, None]
+            dens = float(sk.get("stubble_density", STUBBLE_DENSITY)) * stub * cover  # M3-CHR-529: optional
             col = col * (1 - dens[:, None]) + hcol * dens[:, None]
+        if brows:
+            col = _brow_strands(col, Ph, face, lm, brows, seed)
+        if lm_spec:
+            col = _ink_marks(col, Ph, lm, lm_spec, marks_state)
         return np.clip(col, at.FLOOR, at.CEIL)
 
     return albedo
+
+
+def brow_frame(face, side: str) -> np.ndarray:
+    """asha_eyes.brow's first card layer as laid in the (x, z) plane: rows bottom, centre, top; columns medial ->
+    lateral. Built by asha_eyes.brow itself on a flat stand-in surface, so the painted hairs follow the cards."""
+    import asha_eyes
+
+    part = asha_eyes.brow(face, side, lambda q: np.stack([q[:, 0], np.zeros(len(q)), q[:, 1]], axis=1))
+    V = part.varr()
+    n = len(V) // (3 * at.BROW_LAYERS)
+    return V[:3 * n].reshape(3, n, 3)[:, :, [0, 2]]
+
+
+def _brow_strands(col: np.ndarray, P: np.ndarray, face, lm, spec: dict, seed: int) -> np.ndarray:
+    """Single brow hairs painted over `col` (M3-CHR-536): `count` per brow, `dark_share` of them `dark_hex`, the rest
+    `light_hex`, at `opacity`. Seeded, deterministic."""
+    s = lm.h / 0.222
+    yc = lm.P("head_c")[1]
+    front = smoothstep(0.0, -0.3, (P[:, 1] - yc) / lm.h)
+    X = P[:, [0, 2]]
+    dark, light = hexc(spec["dark_hex"]), hexc(spec["light_hex"])
+    opacity = float(spec.get("opacity", 1.0))
+    width = BROW_STRAND_WIDTH * s
+    for si, side in enumerate(("L", "R")):
+        B = brow_frame(face, side)
+        n = B.shape[1]
+        lo, hi = B.min(axis=(0, 1)) - BROW_STRAND_LEN[1] * BROW_STRAND_LONG[1] * s, B.max(axis=(0, 1)) + \
+            BROW_STRAND_LEN[1] * BROW_STRAND_LONG[1] * s
+        near = np.nonzero(((X >= lo) & (X <= hi)).all(axis=1) & (front > 0.0))[0]
+        Xn = X[near]
+        rng = np.random.default_rng([seed, 83, si])
+        for _ in range(int(spec["count"])):
+            u = rng.uniform(0.0, 1.0) * (n - 1)
+            i = min(int(u), n - 2)
+            t = u - i
+            pt = lambda row: B[row, i] * (1.0 - t) + B[row, i + 1] * t  # noqa: E731
+            f = rng.uniform(-0.5, 0.5)
+            root = pt(1) + f * (pt(2) - pt(0))
+            along = B[1, i + 1] - B[1, i]
+            along /= np.linalg.norm(along)
+            up = np.array([-along[1], along[0]])
+            up = up if up[1] > 0.0 else -up
+            k = smoothstep(0.0, BROW_STRAND_HEAD, u / (n - 1))
+            rise = np.radians(BROW_STRAND_RISE[0] + (BROW_STRAND_RISE[1] - BROW_STRAND_RISE[0]) * k
+                              - 2.0 * f * BROW_STRAND_CONVERGE + rng.uniform(-1.0, 1.0) * BROW_STRAND_JITTER)
+            d = along * np.cos(rise) + up * np.sin(rise)
+            length = rng.uniform(*BROW_STRAND_LEN) * s
+            if rng.random() < BROW_STRAND_LONG[0]:
+                length *= BROW_STRAND_LONG[1]
+            c = dark if rng.random() < float(spec["dark_share"]) else light
+            q = Xn - root
+            tt = np.clip(q @ d / length, 0.0, 1.0)
+            dist = np.linalg.norm(q - np.outer(tt * length, d), axis=1)
+            a = np.exp(-(dist / width) ** 2) * (1.0 - (1.0 - BROW_STRAND_TIP) * tt) * opacity * front[near]
+            col[near] = col[near] * (1.0 - a[:, None]) + c * a[:, None]
+    return col
+
+
+def _burn_scars(col: np.ndarray, P: np.ndarray, lm, spec: dict, seed: int) -> np.ndarray:
+    """Healed burns on the forearms (M3-CHR-532): `count` [L, R] irregular patches, `size_mm` [lo, hi] across round
+    the arm, stretched along it by `aspect` [lo, hi], over `span` [lo, hi] of the forearm from the wrist; paler, pinker
+    and less saturated than the skin round them, with a darker rim and a ragged edge. Seeded, deterministic."""
+    import toma_textures as tt
+
+    S = lm.S
+    s = lm.h / 0.222
+    opacity = float(spec.get("opacity", 1.0))
+    edge = at.noise3(P, 0.004 * s, 197 + seed)
+    for si, side in enumerate(("L", "R")):
+        n = int(spec["count"][si])
+        if not n:
+            continue
+        d, ang, near = tt._forearm(lm, P, side, S)
+        length = float(np.linalg.norm(lm.side_pt("elbow", side) - lm.side_pt("wrist", side))) / S
+        rng = np.random.default_rng([seed, 61, si])
+        scar = np.zeros(len(P))
+        rim = np.zeros(len(P))
+        for _ in range(n):
+            c_d = rng.uniform(*spec.get("span", (0.15, 0.85))) * length
+            c_a = rng.uniform(0.0, 2.0 * np.pi)
+            size = 0.5e-3 * rng.uniform(*spec["size_mm"])
+            aspect = rng.uniform(*spec.get("aspect", (1.2, 2.2)))
+            da = np.angle(np.exp(1j * (ang - c_a))) * BURN_FOREARM_R
+            q = np.hypot((d - c_d) / aspect, da) / size
+            q = q * (1.0 + BURN_EDGE_NOISE * (edge - 0.5))
+            scar = np.maximum(scar, smoothstep(1.0, 0.7, q) * near)
+            rim = np.maximum(rim, np.exp(-((q - 1.0) / 0.2) ** 2) * near)
+        g = col.mean(axis=1, keepdims=True)
+        pale = (col + (g - col) * BURN_DESAT) * np.array(BURN_PALE)
+        mottle = 1.0 - BURN_MOTTLE * at.noise3(P, 0.0025 * s, 199 + seed)
+        col = col + (pale - col) * (scar * opacity * mottle)[:, None]
+        col = col * (1.0 - BURN_RIM_DARK * opacity * (rim * (1.0 - scar))[:, None])
+    return col
+
+
+def _ink_marks(col: np.ndarray, P: np.ndarray, lm, spec: dict, state: dict) -> np.ndarray:
+    """Saltwright line-marks over `col` at the points P (M3-CHR-511): liss_textures.line_marks with this villager's
+    seed and placement, painted on its own landmarks' charts (right side only, as Liss's)."""
+    if str(LISS_DIR) not in sys.path:  # appended, never ahead of the villager modules (kerrid and moll import this)
+        sys.path.append(str(LISS_DIR))
+    import liss_textures as lt
+
+    if "marks" not in state:
+        state["marks"] = lt.line_marks(int(spec["seed"]), spec["placement"], tuple(spec.get("length_m", (0.03, 0.06))),
+                                       float(spec.get("line_mm", 0.6)), float(spec.get("gap_mm", 1.2)),
+                                       float(spec.get("dot_mm", 1.5)))
+        state["charts"] = lt.liss_charts(lm)
+    ink = lt.paint_marks(P, lm, state["marks"], state["charts"], int(spec["seed"])) * float(spec.get("opacity", 1.0))
+    return col * (1 - ink[:, None]) + hexc(spec.get("ink_hex", TATTOO_INK)) * ink[:, None]
 
 
 def skin(npc: str, bake_dir: Path) -> None:
@@ -249,18 +414,22 @@ def skin(npc: str, bake_dir: Path) -> None:
     at.albedo = _albedo_villager(orig_albedo, sk, hstyle, hp.get("colour", "#201A16"))
     at.detail_height = _detail_with_age(orig_detail, float(sk.get("age", 0.0)))
     pre_round = at.PRE_ROUND
+    feather = at.HAIRLINE_FEATHER
+    at.HAIRLINE_FEATHER = float(hp.get("hairline_feather", 0.0))  # M3-CHR-534 (optional): a broken, feathered edge
     if extra.get("_build", {}).get("host_snaps", False):  # M1-CHR-14's x.5-texel rounding guard (M3-CHR-03 opt-in)
         at.PRE_ROUND = at.PRE_ROUND_DECIMALS
     try:
         params = bb_params.load_params(path=str(PARAMS_DIR / f"{npc}.json"))
         lm = bb_donor.fit(params).lm
         body = bb_anatomy.Body(lm)
-        for key, (size, small) in (("head", HEAD_SIZE), ("body", BODY_SIZE)):
+        body_size = tuple(int(x) for x in sk.get("body_size", BODY_SIZE))
+        for key, (size, small) in (("head", HEAD_SIZE), ("body", body_size)):
             npz = dict(np.load(bake_dir / f"{key}.npz"))
             at.skin_maps(key, npz, size, small, body, body.face, lm, hstyle)
     finally:
         at.albedo, at.detail_height = orig_albedo, orig_detail
         at.PRE_ROUND = pre_round
+        at.HAIRLINE_FEATHER = feather
 
 
 # ---------------------------------------------------------------------------------------------

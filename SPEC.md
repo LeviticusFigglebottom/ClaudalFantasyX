@@ -248,7 +248,7 @@ This is a **seed**. The Narrative agent owns `docs/kb/story/` and must expand it
 ### 6.8 Status Effects, Elements, Formulas
 
 - **Elements:** Fire, Water, Lightning, Ice, Holy, and **Glimmer** (an original non-elemental-spirit element).
-- **Statuses:** Poison, Sleep, Silence, Darkness, Petrify, Slow, Haste, Stop, Berserk, Confuse, Doom, Zombie, Shell, Protect, Reflect, Regen, Armor Break, Mental Break, Power Break, Magic Break, and Provoke.
+- **Statuses:** Poison, Sleep, Silence, Darkness, Petrify, Slow, Haste, Stop, Berserk, Confuse, Last Tide, Hollowed, Tide Ward, Bulwark, Mirrorwater, Mending, Sundered, Unmoored, Weakened, Dimmed, and Provoke (names per ADR 0202).
 - All formulas live in **one documented file** (`docs/kb/design/formulas.md`) mirrored exactly by `game/battle/formulas.gd`, with unit tests per formula. The damage cap is 9,999, with an ability that lifts it later.
 
 ### 6.9 Balancing
@@ -524,3 +524,4 @@ It must include the following: a link to this spec, the pillars, the guardrails,
 - v1.3 (2026-10-24): §4.2's hitch limit now names the visible frames (50 ms) and budgets frames hidden behind a fade as loading time (1 s per frame, 3 s per zone entry); see ADR 0029 (accepted with an amendment by review-sweep-Q).
 - v1.4 (2026-10-24): §4.2 allows a hidden frame of up to 1.7 s on a cold first launch only, behind the boot card with its first-run cue; see ADR 0037 (measured by M2-RND-18; Godot compiles one draw's pipeline set synchronously).
 - v1.5 (2026-10-29): §3's roster row for Pell describes his niche in our own words; it named the inspiring series' job class (IP guardrail §2). See ADR 0201; no design change.
+- v1.6 (2026-10-29): §6.8's status names replaced with our own (Shell, Protect, Reflect, Regen, Doom, Zombie and the four Breaks echoed the inspiring series' set; IP guardrail §2). See ADR 0202; no mechanic changes.

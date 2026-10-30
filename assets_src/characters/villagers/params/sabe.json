@@ -1,0 +1,121 @@
+{
+  "_about": "Sabe, Oruvel's old diver (Ch1 C1-10/11, speaker `sabe`; act1_ch01.md: sits under the keel-hull's carved lintel-gull, says the gulls have been quiet all morning, then shouts 'Lines in!'), about 72, a woman. Small, hard and weathered, white hair cropped short as divers keep it, dense faded reach-bands to the elbow (a lifetime of dives), a faded sea-blue sleeveless diver's tunic over faded indigo shin trousers, an undyed sash, barefoot on the hulls (M3-CHR-526). Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials, villager_clips), not by bb_params.",
+  "name": "sabe",
+  "height_m": 1.54,
+  "heads_tall": 6.9,
+  "shoulder_width_heads": 1.62,
+  "chest_width_heads": 1.18,
+  "chest_depth_heads": 0.9,
+  "waist_width_heads": 1.12,
+  "hip_width_heads": 1.4,
+  "crotch_height_heads": 3.3,
+  "arm_span_ratio": 1.0,
+  "hand_length_heads": 0.82,
+  "foot_length_ratio": 0.152,
+  "neck_length_heads": 0.36,
+  "neck_width_ratio": 0.52,
+  "head_width_ratio": 0.67,
+  "femininity": 0.85,
+  "muscle": 0.5,
+  "mass": 0.2,
+  "breast": 0.2,
+  "eye_scale": 1.04,
+  "ipd_m": 0.061,
+  "arm_abduction_deg": 47.0,
+  "skin_hex": "#875438",
+  "eye_tilt_deg": 0.5,
+  "jaw_width": 1.04,
+  "cheekbone_height": 0.002,
+  "cheekbone_width": 1.08,
+  "chin_size": 1.0,
+  "nose_bridge_width": 1.1,
+  "nose_tip_projection": 0.92,
+  "lip_fullness": 0.7,
+  "lip_close": 0.6,
+  "lip_seal": 0.96,
+  "lip_lower_fullness": 0.68,
+  "mouth_corner_lift": 0.0,
+  "brow_ridge": 1.0,
+  "donor_mix_african": 0.5,
+  "donor_mix_asian": 0.4,
+  "donor_mix_caucasian": 0.1,
+  "_skin": {
+    "brow_strands": {"count": 70, "dark_share": 0.3, "dark_hex": "#4A4640", "light_hex": "#C9C3B8", "opacity": 0.9},
+    "hex": "#875438",
+    "age": 0.95,
+    "freckles": 0,
+    "reach_bands": {
+      "L": 13,
+      "R": 12
+    },
+    "ink_opacity": 0.48,
+    "seed": 126,
+    "lip": "#6E4236"
+  },
+  "_hair": {
+    "brow_params": {"alpha_boost": "1.0", "strand_value_jitter": "0.4"},
+    "hairline_feather": 1.0,
+    "kind": "short",
+    "hairline": "female",
+    "seed": 46,
+    "length_m": [
+      0.02,
+      0.035
+    ],
+    "scalp_cards": [
+      220,
+      170,
+      110
+    ],
+    "hairline_cards": 50,
+    "rise": 0.6,
+    "colour": "#C9C3B8",
+    "grey": "#E4E0D8",
+    "grey_share": 0.5,
+    "underpaint": "#B0AAA0",
+    "brow": "#9A948A",
+    "spec": "#D8D2C8",
+    "grey_strands": "all",
+    "grey_width_k": 1.2
+  },
+  "_eyes": {
+    "iris": "#2A1A10"
+  },
+  "_costume": {
+    "top": {
+      "mat": "cloth_c",
+      "hem": "hip",
+      "sleeve": 0.0,
+      "neck_v_m": 0.05,
+      "armhole_drop_m": 0.1,
+      "cover_margin_m": 0.02,
+      "armhole_cut": "tank"
+    },
+    "trousers": {
+      "mat": "cloth_b",
+      "hem": "shin",
+      "loose_m": 0.014
+    },
+    "sash": {
+      "mat": "cloth_a",
+      "width_m": 0.07,
+      "turns": 2
+    }
+  },
+  "_tints": {
+    "cloth_a": "#D2C6AC",
+    "cloth_b": "#3E4C74",
+    "cloth_c": "#5F8DA6",
+    "leather": "#FFFFFF"
+  },
+  "_build": {
+    "shapes": "all",
+    "host_snaps": true,
+    "garment_fit": true
+  },
+  "_persona": {
+    "sway": 0.5,
+    "lean": 5.0,
+    "arms_down": 40.0
+  }
+}

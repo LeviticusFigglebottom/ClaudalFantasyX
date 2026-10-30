@@ -25,4 +25,7 @@ flights and the sanctum (`nhoa`). Say whether the lower temple is swum (Ch1's un
 - [ ] `docs/kb/story/beats/act2_ch11.md`, every outline beat placed, timed and tagged C/E/P; flags `ch11_*` with setter
       and reader; requests to other roles listed; validate_data and the banned-terms grep clean.
 
+## Notes
+- 2026-10-30 (act2-plan track, the Lead's assignment): **draft: pre-gate** written at `docs/kb/story/beats/act2_ch11.md`. It is not reviewed; the task stays `blocked` until the gate, then the story track takes it to review. The sanctum is walked (design default (a), accepted).
+
 ## Review log

@@ -30,7 +30,6 @@ const KNOWN: Dictionary = {
 	"Set/ChamberPassage": "env-art's passage behind the shrine's east door (part of its dressing)",
 	"Dressing/ChamberPassage": "the same, in the shrine level",
 	"Room/InnerPoolWater/": "the First Verse's pool water (a flat octagon, the shrine level's own shape)",
-	"Greybox/LowHull/": "Ch1's lashed low hull (C1-13's run), kept greybox until a kit piece fits it",
 	"Underwater/UnderwaterPost": "the UnderwaterRig's full-screen post passes (quads, never seen as shapes)",
 }
 

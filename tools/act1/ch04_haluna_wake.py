@@ -32,6 +32,16 @@ HALUNA = "res://game/levels/ch02/haluna/"
 # at the causeway head (-14.61, -122.14, -31.1 deg; the shells on its south face) and the causeway's slabs.
 DOCK_AT, DOCK_YAW = (-6.0, 60.0), 35.0
 WALL_FACE_YAW = 16.0  # facing the wall's shells from the village side
+GAP = (-13.9, -119.6)  # where a shell is set, in front of Imra's
+
+
+def at_wall(back_m: float, along_m: float) -> tuple[float, float, float]:
+    """A place facing the wall's gap, back_m behind it (village side) and along_m along the wall."""
+    a = math.radians(WALL_FACE_YAW)
+    dx, dz = -math.sin(a), -math.cos(a)  # the facing
+    tx, tz = -dz, dx  # along the wall
+    return (round(GAP[0] - dx * back_m + tx * along_m, 2), round(GAP[1] - dz * back_m + tz * along_m, 2),
+            WALL_FACE_YAW)
 CAUSEWAY_YAW = 300.0  # walking out along the causeway (north-east)
 
 
@@ -50,15 +60,32 @@ SPAWNS = {
     "DockEnd": dock(36.0) + (DOCK_OUT_YAW,),
     "DockShore": dock(4.0) + (DOCK_IN_YAW,),
     "WallDawn": (-12.5, -118.0, WALL_FACE_YAW),
+    "Shrine": (-67.0, 44.3, 180.0),  # the dressing's SaveShrine (haluna_shrine) respawns here, as on ch02/haluna
 }
 MARKS = {
     "table_lane": (-0.5, -102.5, 0.0),
+    "lane_toma": (-52.5, -4.5, 270.0),  # C4-01: Toma out along the lane with the table's heavy end (the flow then seats him)
     "neme_table": (4.0, -111.5, 315.0),
-    "wall_gap": (-13.9, -119.6, WALL_FACE_YAW),
+    "wall_gap": GAP + (WALL_FACE_YAW,),
+    # C4-04: the village gathered at the wall when it calls (the flow stands them here before the shell is set)
+    "wall_osu": at_wall(1.4, 0.0),
+    "wall_neme": at_wall(3.0, -1.6),
+    "wall_toma": at_wall(3.0, 0.8),
+    "wall_vendor": at_wall(3.6, -3.2),
+    "wall_fisher": at_wall(3.8, 4.8),
     "feast_edge": (10.5, -108.0, 90.0),
     "dock_end": dock(35.5) + (DOCK_OUT_YAW,),
     "dock_shore": dock(3.0) + (DOCK_IN_YAW,),
+    # C4-06: Asha and Toma come down to the dock after the shell (the flow stands them here before the scene)
+    "dock_asha_from": dock(27.5) + (DOCK_OUT_YAW,),  # C4-06: 8 m short of the end, so she reaches Rhen in H13
+    "dock_toma_from": dock(-2.5) + (DOCK_OUT_YAW,),
     "wall_away": (-8.5, -123.0, 90.0),
+    "dawn_neme": (-15.4, -117.6, -37.0),  # C4-08: beside Asha at her shell, out of H08's line, watching her
+    # C4-05: Rhen, then Asha and Toma, walk a few metres from the wall toward the feast before the fade (the dock
+    # scene places them after; a walk to the feast's edge ran on 45 s in black).
+    "leave_rhen": (-7.07, -116.25, -115.0),
+    "leave_asha": (-6.92, -114.56, -111.0),
+    "leave_toma": (-9.51, -115.81, -111.0),
     "causeway_toma": (12.55, -130.0, CAUSEWAY_YAW),
     "causeway_asha": (10.4, -128.5, CAUSEWAY_YAW),
     "causeway_rhen": (8.6, -127.2, CAUSEWAY_YAW),
@@ -73,7 +100,7 @@ ACTORS = {  # id: ((x, z, yaw), extra); the feast's villagers face the wall's ga
     "toma": ((-56.4, -3.4, 0.0), {"color": "#6f7f8f", "radius": 0.36, "height": 1.9}),
     "neme": ((-59.6, -3.3, 0.0), {"cast": "neme", "color": "#8f6f5f"}),
     "osu": ((6.0, -103.3, 51.0), {"cast": "osu", "color": "#9a8a7a"}),
-    "vendor": ((1.6, -105.2, 47.0), {"cast": "vendor", "color": "#7a8a5a"}),
+    "vendor": ((3.4, -104.6, 47.0), {"cast": "vendor", "color": "#7a8a5a"}),
     "fisher": ((8.3, -107.6, 62.0), {"cast": "fisher", "color": "#5a7a8a"}),
     "child": ((-70.0, -9.5, 90.0), {"cast": "child", "color": "#d4b07a", "radius": 0.2, "height": 1.1}),
     "netmender": ((-5.2, 56.4, 0.0), {"cast": "netmender", "color": "#8a9a7a"}),  # on the sand by the dock's foot
@@ -122,15 +149,23 @@ SHOTS = {  # id: (pos, look_at, fov[, "abs"]); heights over Haluna's ground (pro
     "H04": ((-34.0, 3.0, 6.0), (-41.0, 1.0, 0.0), 46),
     "H07": ((-108.0, 2.2, 36.0), (-117.0, 1.6, 32.0), 40),
     "H09": ((-3.5, 2.6, 60.5), (14.0, 0.8, 47.0), 46),
-    "H08": ((-13.6, 1.4, -119.0), (-14.5, 1.2, -120.5), 28),
-    "H12": ((-6.0, 3.0, -97.0), (-8.0, 1.0, -117.0), 62),
+    "H08": ((-13.2, 1.5, -117.2), (-14.4, 1.3, -120.6), 28),  # 2.5 m back from the gap: the hands and the shells
+    "H12": ((16.0, 3.0, -98.0), (-6.0, 1.0, -114.0), 62),  # from east of the feast: the mats, the lamps, the wall
     "H13": ((26.9, 0.9, 44.2), (23.1, 2.1, 39.6), 54, "abs"),  # low, off the dock end's side, over the sea
     "H14": ((19.4, 3.0, 42.2), (23.1, 2.9, 39.6), 16, "abs"),  # down the dock's middle at eye height
     "H15": ((-12.6, 1.0, -118.8), (-13.9, 1.2, -120.2), 18),
-    "H16": ((3.0, 1.6, -110.0), (4.2, 1.4, -112.0), 16),
-    "C01": ((2.0, 2.0, -118.0), (30.0, -0.5, -140.0), 40),
-    "C02": ((16.0, 1.4, -128.0), (10.0, 0.2, -129.0), 30),
+    "H16": ((-15.05, 1.55, -117.82), (-14.61, 1.55, -116.28), 22),  # Neme at the wall, close, from the wall's side
+    "H17": ((-9.7, 1.55, -114.1), (-10.2, 1.55, -115.8), 24),  # Asha at the wall, close (C4-04's smile)
+    "C01": ((-12.0, 5.5, -113.0), (8.0, 0.5, -127.0), 45, "abs"),  # behind the three: the path leading away
+    "C02": ((6.0, 6.5, -112.0), (14.0, 0.5, -136.0), 50, "abs"),  # nearer: the causeway's first slabs, the islet
 }
+# Field camera volumes over Haluna's own (Ch04Zone copies ch02/haluna's CameraVolumes): where those leave only the
+# hub orbit and the orbit's default side is a roof. Absolute coordinates.
+CAMERA_VOLUMES = [
+    # Neme's door, deep in the tidewall lane's roofs: from the lane's north-west end, over the gate.
+    {"id": "NemeDoor", "mode": "pan_follow", "at": [-58.0, 3.0, -3.6], "size": [10.0, 6.0, 10.0],
+     "pos": [-64.0, 5.5, -11.0], "look_at": [-58.0, 2.4, -3.6], "fov": 46.4, "priority": 1},
+]
 STATES = [
     {"flag": "ch03_rhen_sworn_guardian", "show_sets": ["ch04_wake", "ch04_shell_imra_faded"]},
     {"flag": "ch04_shell_set", "show_sets": ["ch04_shell_asha"], "hide": ["ysolde_edge"]},
@@ -198,6 +233,7 @@ def layout() -> dict:
         "actors": actors,
         "shots": shots,
         "triggers": triggers,
+        "camera_volumes": CAMERA_VOLUMES,
         "states": STATES,
     }
 

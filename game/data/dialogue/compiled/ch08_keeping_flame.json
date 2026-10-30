@@ -13,7 +13,7 @@
     {"op": "cue", "cue": "anim", "args": ["fenn", "feed_fire"], "kwargs": {}, "src": 17},
     {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 18},
     {"op": "line", "id": "ch08_flame_001", "key": "DLG_CH08_FLAME_001", "speaker": "fenn", "emotion": "neutral", "voice": "", "src": 19},
-    {"op": "cue", "cue": "mark", "args": ["asha", "hearth_asha", "walk"], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "mark", "args": ["asha", "hearth_asha", "walk"], "kwargs": {"via": "way_forecourt_e,way_hut_door_out,way_hut_door_in"}, "src": 20},
     {"op": "cue", "cue": "wait", "args": [0.8], "kwargs": {}, "src": 21},
     {"op": "line", "id": "ch08_flame_002", "key": "DLG_CH08_FLAME_002", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 22},
     {"op": "cue", "cue": "camera", "args": ["F01_hands"], "kwargs": {}, "src": 23},

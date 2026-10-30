@@ -1,6 +1,6 @@
 {
   "zone_maps": {
-    "doc": "M2-UI-16/18: the zones the objective system and the field menu's map know. Each zone: its scene (the field's current scene is matched against it), its name_key, its route_index on the pilgrimage strip (Haluna -> the Saltgrass Causeway -> the Shell Shrine), the world rectangle the map shows ([x, z, width, depth] in metres), its shape source (Haluna: its layout JSON; the Shell Shrine: its trial JSON), and its points of interest. A POI is {id, name_key, kind, at: [x, z], source}: `at` is a world position (x east, z south), `source` names where it comes from ('node:<path in the zone scene>' or 'layout:<key in the shape source>'), and tools/tests/test_zone_map_pois.py checks the two agree. Kinds draw as glyphs: shrine, shop, inn, talk, path, door, pool, dock, home. route lists the pilgrimage strip in order; a route stop with no zone is a place the party passes through without a map of its own yet. M3-UI-04: the Act I greybox zones (Ch1, Ch4 to Ch9) are shape_kind greybox_layout: their shapes are the layout's blocks (ZoneMapShapes.greybox_layer), with shape_hints naming blocks by layer where height alone reads them wrong (sea: open water under everything; water, floors, pads, buildings, structures, skip). A greybox zone's scene is only its root, so its POI sources name layout points instead of nodes: 'spawn:<id>', 'trigger:<id>' (the trigger's at), 'actor:<id>' (the actor's at) and 'mark:<id>'. The route runs the whole of Act I; the strip shows only the stops near the current one (zone_map_menu.json route before/after). M3-UI-206: the Act II greybox zones (Ch10 to Ch16, from act1-chapters) follow on the route; their layouts lay a 'Water' sheet over a 'Bed', hinted sea and skip, and their flights of steps are layout 'ramps', drawn as pads.",
+    "doc": "M2-UI-16/18: the zones the objective system and the field menu's map know. Each zone: its scene (the field's current scene is matched against it), its name_key, its route_index on the pilgrimage strip (Haluna -> the Saltgrass Causeway -> the Shell Shrine), the world rectangle the map shows ([x, z, width, depth] in metres), its shape source (Haluna: its layout JSON; the Shell Shrine: its trial JSON), and its points of interest. A POI is {id, name_key, kind, at: [x, z], source}: `at` is a world position (x east, z south), `source` names where it comes from ('node:<path in the zone scene>' or 'layout:<key in the shape source>'), and tools/tests/test_zone_map_pois.py checks the two agree. Kinds draw as glyphs: shrine, shop, inn, talk, path, door, pool, dock, home. route lists the pilgrimage strip in order; a route stop with no zone is a place the party passes through without a map of its own yet. M3-UI-04: the Act I greybox zones (Ch1, Ch4 to Ch9) are shape_kind greybox_layout: their shapes are the layout's blocks (ZoneMapShapes.greybox_layer), with shape_hints naming blocks by layer where height alone reads them wrong (sea: open water under everything; water, floors, pads, buildings, structures, skip). A greybox zone's scene is only its root, so its POI sources name layout points instead of nodes: 'spawn:<id>', 'trigger:<id>' (the trigger's at), 'actor:<id>' (the actor's at) and 'mark:<id>'. The route runs the whole of Act I; the strip shows only the stops near the current one (zone_map_menu.json route before/after). M3-UI-206: the Act II greybox zones (Ch10 to Ch16, from act1-chapters) follow on the route; their layouts lay a 'Water' sheet over a 'Bed', hinted sea and skip, and their flights of steps are layout 'ramps', drawn as pads. A zone laid on another zone's map (Ch4's wake on Haluna's shapes) names its own GreyboxZone layout in 'points': its POIs' spawn/trigger/actor/mark sources are looked up there (tools/tests/test_zone_map_pois.py).",
     "route": [
       {"id": "ch01/oruvel_underway", "name_key": "MAP_ROUTE_UNDERWAY"},
       {"id": "ch01/oruvel", "name_key": "MAP_ROUTE_ORUVEL"},
@@ -42,7 +42,7 @@
         "shape_kind": "haluna_layout",
         "bounds": [-150.0, -150.0, 210.0, 230.0],
         "pois": [
-          {"id": "beach", "name_key": "MAP_POI_BEACH", "kind": "path", "at": [-1.0, 8.0], "source": "node:Spawns/Beach"},
+          {"id": "beach", "name_key": "MAP_POI_BEACH", "kind": "path", "at": [-4.0, 8.0], "source": "node:Spawns/Beach"},
           {"id": "village", "name_key": "MAP_POI_NEMES_HOUSE", "kind": "home", "at": [-54.1, -1.9], "source": "node:NPCs/Neme/Neme"},
           {"id": "market", "name_key": "MAP_POI_MARKET", "kind": "talk", "at": [-40.0, 1.5], "source": "node:NPCs/Market/Vendor"},
           {"id": "shop", "name_key": "MAP_POI_SHOP", "kind": "shop", "at": [-35.5, -0.6], "source": "node:NPCs/Town/Shopkeeper"},
@@ -99,7 +99,7 @@
         "shape_hints": {"sea": ["Sea"]},
         "bounds": [-40.0, -44.0, 92.0, 62.0],
         "pois": [
-          {"id": "scale_hull", "name_key": "MAP_POI_O_SCALE_HULL", "kind": "shop", "at": [0.0, 8.0], "source": "spawn:ScaleHull"},
+          {"id": "scale_hull", "name_key": "MAP_POI_O_SCALE_HULL", "kind": "shop", "at": [-4.6, 10.5], "source": "spawn:ScaleHull"},
           {"id": "cookboats", "name_key": "MAP_POI_O_COOKBOATS", "kind": "talk", "at": [-12.0, -6.0], "source": "actor:cook"},
           {"id": "net_lanes", "name_key": "MAP_POI_O_NET_LANES", "kind": "talk", "at": [12.0, -6.0], "source": "actor:netmender"},
           {"id": "outer_mooring", "name_key": "MAP_POI_O_OUTER_MOORING", "kind": "dock", "at": [-28.0, -12.0], "source": "actor:skipper_sadi"},
@@ -116,6 +116,7 @@
         "id": "ch04/haluna_wake",
         "scene": "res://game/levels/ch04/haluna_wake/haluna_wake.tscn",
         "name_key": "LOCATION_CH04_HALUNA_WAKE",
+        "points": "res://game/levels/ch04/haluna_wake/haluna_wake_layout.json",
         "shapes": "res://game/levels/ch02/haluna/haluna_layout.json",
         "shape_kind": "haluna_layout",
         "bounds": [-150.0, -150.0, 210.0, 230.0],

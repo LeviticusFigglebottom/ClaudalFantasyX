@@ -27,6 +27,16 @@ battle_boss_intro_inquisitor and battle_arena_camp.
 ## Notes
 - Filed 2026-10-28 by the characters track.
 
+## Done (creatures-b @ 066cc8b9)
+- enemies.json `model` can't name a non-creature scene (validate_data: "must be a res://game/creatures/...tscn path"),
+  so Moll is wired the way the heroes are: `game/data/ui/battle_sandbox.json` `stand_ins.stillguard_inquisitor.scene`
+  = `res://game/characters/foes/moll_battle.tscn`, `yaw_deg` 90 (he faces the party), height 1.86.
+- choreo.json `boss_intro.rows.ch06_inquisitor.fit_margin` 1.1: with his real (narrow) body the default fit put Toma
+  over the timeline (test_no_party_member_crowds_a_boss_intro); at 1.1 the intro is a clean side view of Moll and the
+  hound facing the party.
+- SELF-RENDERED and viewed: battle_boss_intro_inquisitor, battle_arena_camp (no capsule). His `ko` is his yield clip
+  (characters' clip set); not re-checked here beyond the ch06 tests (5/0).
+
 ## Review log
 - 2026-10-28, battle-presentation (the Lead, 13:25): wired, as above. His clips are idle, attack, cast, defend, dodge,
   finisher, hit, ko and yield, played through his AnimationPlayer as the heroes' are. His intro now plays its hero

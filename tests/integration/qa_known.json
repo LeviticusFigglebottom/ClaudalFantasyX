@@ -57,6 +57,7 @@
       "child_a",
       "child_b",
       "child_c",
+      "figure",
       "fisher_a",
       "gatekeeper",
       "hobb",
@@ -66,6 +67,7 @@
       "marra",
       "netmender",
       "officer",
+      "pell",
       "stillguard_a",
       "stillguard_b",
       "townsfolk_a",
@@ -160,8 +162,21 @@
       "ilun": "creatures, M3-HER-1126 (the Vowbound's battle bodies)",
       "kahre": "creatures, M3-HER-1126",
       "virel": "creatures, M3-HER-1126",
-      "stillguard_inquisitor": "characters, M3-CRE-625 (Inquisitor Hadric Moll)"
-    }
+      "stillguard_inquisitor": "characters, M3-CRE-625 (Inquisitor Hadric Moll)",
+      "tannin_archer": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
+      "root_crab": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
+      "fen_leech": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
+      "gallery_ray": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
+      "rime_urchin": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
+      "ridge_lynx": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
+      "cord_moth": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
+      "scree_crawler": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
+      "glass_skate": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
+      "rim_crawler": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts"
+    },
+    "ossa_fen.tscn": [
+      "pell"
+    ]
   },
   "unraised_doc": "test_qa_threads.gd: a flag a thread's chapter or main objectives wait on that its thread never raises -> why it isn't a softlock, and the task that closes the gap.",
   "unraised": {

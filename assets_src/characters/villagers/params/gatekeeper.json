@@ -1,0 +1,124 @@
+{
+  "_about": "The stair-watch's gatekeeper at Corrow's watch-red wall-gate (Ch8 W07, `@anim gatekeeper open_gate`; act1_ch08.md: lets the party through for the Cantor; the gate Kerrid kept in 1001), about 45. Solid, unhurried; short black hair, a dark stubble; a storm-slate long-sleeved wrap top, indigo shin trousers, a watch-red sash (the watch's colour, corrow.md: browner than the Order's lacquer red), a watch-red headband, sandals. Reach-bands left 4, right 4. (M3-CHR-537.) Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials, villager_clips), not by bb_params.",
+  "name": "gatekeeper",
+  "height_m": 1.73,
+  "heads_tall": 7.3,
+  "shoulder_width_heads": 1.8,
+  "chest_width_heads": 1.32,
+  "chest_depth_heads": 0.98,
+  "waist_width_heads": 1.2,
+  "hip_width_heads": 1.4,
+  "crotch_height_heads": 3.5,
+  "arm_span_ratio": 1.0,
+  "hand_length_heads": 0.8,
+  "foot_length_ratio": 0.15,
+  "neck_length_heads": 0.4,
+  "neck_width_ratio": 0.6,
+  "head_width_ratio": 0.67,
+  "femininity": 0.05,
+  "muscle": 0.65,
+  "mass": 0.3,
+  "breast": 0.0,
+  "eye_scale": 1.04,
+  "ipd_m": 0.064,
+  "arm_abduction_deg": 47.0,
+  "skin_hex": "#946246",
+  "eye_tilt_deg": 0.5,
+  "jaw_width": 1.08,
+  "cheekbone_height": 0.001,
+  "cheekbone_width": 1.04,
+  "chin_size": 1.06,
+  "nose_bridge_width": 1.06,
+  "nose_tip_projection": 1.0,
+  "lip_fullness": 0.76,
+  "lip_close": 0.6,
+  "lip_seal": 0.96,
+  "lip_lower_fullness": 0.74,
+  "mouth_corner_lift": 0.0,
+  "brow_ridge": 1.12,
+  "donor_mix_african": 0.35,
+  "donor_mix_asian": 0.4,
+  "donor_mix_caucasian": 0.25,
+  "_skin": {
+    "hex": "#946246",
+    "age": 0.4,
+    "freckles": 0,
+    "reach_bands": {
+      "L": 4,
+      "R": 4
+    },
+    "ink_opacity": 0.6,
+    "stubble": 0.55,
+    "stubble_grey": 0.1,
+    "seed": 137,
+    "lip": "#74443A",
+    "stubble_shadow": 0.3
+  },
+  "_hair": {
+    "kind": "short",
+    "hairline": "male",
+    "seed": 57,
+    "length_m": [
+      0.018,
+      0.03
+    ],
+    "scalp_cards": [
+      190,
+      150,
+      100
+    ],
+    "hairline_cards": 40,
+    "rise": 0.7,
+    "colour": "#141417",
+    "underpaint": "#16161A",
+    "spec": "#6A6460"
+  },
+  "_eyes": {
+    "iris": "#2A1A10"
+  },
+  "_costume": {
+    "top": {
+      "mat": "cloth_c",
+      "hem": "hip",
+      "sleeve": 0.9,
+      "neck_v_m": 0.05
+    },
+    "trousers": {
+      "mat": "cloth_b",
+      "hem": "shin",
+      "loose_m": 0.014
+    },
+    "sash": {
+      "mat": "cloth_a",
+      "width_m": 0.07,
+      "turns": 2
+    },
+    "headwrap": {
+      "mat": "cloth_a",
+      "band_only": true,
+      "edge_lift": -0.02,
+      "band_m": 0.028,
+      "seed": 181,
+      "off_m": 0.004,
+      "edge_off_m": 0.0015,
+      "press_hair": 0.002
+    },
+    "sandals": "leather"
+  },
+  "_tints": {
+    "cloth_a": "#8E3B2E",
+    "cloth_b": "#33406A",
+    "cloth_c": "#4A5562",
+    "leather": "#FFFFFF"
+  },
+  "_build": {
+    "shapes": "all",
+    "host_snaps": true,
+    "garment_fit": true
+  },
+  "_persona": {
+    "sway": 0.5,
+    "lean": 0.5,
+    "arms_down": 41.0
+  }
+}

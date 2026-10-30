@@ -79,6 +79,7 @@ func test_the_vowbound_stand_in_resolves_to_the_model() -> void:
 	assert_true(r > 0.0 and r < MAX_RADIUS, "a ring round her talons")
 	assert_false(CreatureModels.models().has("hesk"), "she is no enemy")
 	assert_eq(CreatureModels.stand_in_overrides("ilun").get("scene", ""), "res://game/creatures/ilun/ilun_battle.tscn")
+	before_each()
 
 
 func test_the_scene_loads_headless_with_its_clips() -> void:
@@ -91,6 +92,7 @@ func test_the_scene_loads_headless_with_its_clips() -> void:
 	for clip: StringName in [&"attack", &"cast", &"special"]:
 		var t := a.contact_time(clip)
 		assert_true(t > 0.0 and t < a.clip_length(clip), "%s lands inside the clip" % clip)
+	before_each()
 
 
 func test_the_stand_in_plays_the_stage_clips_on_the_model() -> void:
@@ -104,6 +106,7 @@ func test_the_stand_in_plays_the_stage_clips_on_the_model() -> void:
 	assert_true(BattleClips.play(f, &"ko"), "the fall's clip")
 	f.set_ko(true, 0.25, 0.35)
 	assert_true(f.creature().is_ko())
+	before_each()
 
 
 func test_she_stands_on_the_water_in_every_clip() -> void:
@@ -115,6 +118,7 @@ func test_she_stands_on_the_water_in_every_clip() -> void:
 		for k in SAMPLES + 1:
 			var skel := _pose(a, clip, length * k / SAMPLES)
 			assert_true(_bone_at(skel, "talon_r").y < PLANTED_Y, "%s keeps her talon on the water" % clip)
+	before_each()
 
 
 func test_the_clips_follow_the_sheet() -> void:
@@ -142,6 +146,7 @@ func test_the_clips_follow_the_sheet() -> void:
 	skel = _pose(a, &"rise", 0.0)
 	assert_true(_bone_at(skel, "head").y < head0.y - HUNCH_M, "the rise starts hunched")
 	assert_true(_cord_gap(skel) < FOLDED_GAP_M, "and folded")
+	before_each()
 
 
 func test_only_the_cords_and_eyes_carry_the_bound_light() -> void:
@@ -157,6 +162,7 @@ func test_only_the_cords_and_eyes_carry_the_bound_light() -> void:
 		assert_true(
 			m != null and is_zero_approx(float(m.get_shader_parameter("emission_energy"))), "%s is unlit" % slot
 		)
+	before_each()
 
 
 func _cord_gap(skel: Skeleton3D) -> float:

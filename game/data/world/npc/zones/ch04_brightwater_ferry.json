@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "doc": "The Brightwater ferry's passengers (M3-CRE-659, ADR 0152): a child, a Reed and two traders who talk on the crossing, each a crowd person (game/data/world/npc/crowd.json) inside its stage actor (attach child). The ferrymaster and the purser are named speakers (characters).",
+  "zone": "ch04/brightwater_ferry",
+  "villagers": [
+    {
+      "npc_id": "brightwater_ferry_passenger_child",
+      "crowd": "brightwater_ferry_passenger_child",
+      "stand_in": "CutsceneStage/Actors/passenger_child",
+      "attach": "child"
+    },
+    {
+      "npc_id": "brightwater_ferry_passenger_reed",
+      "crowd": "brightwater_ferry_passenger_reed",
+      "stand_in": "CutsceneStage/Actors/passenger_reed",
+      "attach": "child"
+    },
+    {
+      "npc_id": "brightwater_ferry_trader_a",
+      "crowd": "brightwater_ferry_trader_a",
+      "stand_in": "CutsceneStage/Actors/trader_a",
+      "attach": "child",
+      "chat_with": "brightwater_ferry_trader_b"
+    },
+    {
+      "npc_id": "brightwater_ferry_trader_b",
+      "crowd": "brightwater_ferry_trader_b",
+      "stand_in": "CutsceneStage/Actors/trader_b",
+      "attach": "child",
+      "chat_with": "brightwater_ferry_trader_a"
+    }
+  ]
+}

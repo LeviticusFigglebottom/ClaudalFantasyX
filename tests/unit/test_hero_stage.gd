@@ -13,6 +13,8 @@ const TOMA_STAGE := "res://game/levels/_tests/characters/toma/toma_stage.tscn"
 const TOMA_SMILE := "res://game/levels/_tests/characters/toma/toma_face_smile.tscn"
 const YSOLDE_STAGE := "res://game/levels/_tests/characters/ysolde/ysolde_stage.tscn"
 const YSOLDE_CAST := "res://game/levels/_tests/characters/ysolde/ysolde_clip_cast_glyph.tscn"
+## ADR 0140: the Lead's budget for the runtime skirt work, per hero per frame.
+const FOLDS_BUDGET_MS := 0.2
 
 
 func test_rhen_stage_names_the_character_and_assigns_every_material() -> void:
@@ -201,6 +203,7 @@ func test_smile_variant_is_opt_in_data() -> void:
 
 
 ## M1-CHR-15: HeroHelperBones (the stages' solve for hand-set poses) matches the helper keys the clips bake
+## (ADR 0140: the even-numbered skirt panels, not baked, derived from the baked odd ones as HeroSkirtFolds does)
 ## (hero_clips.py's solve): the skirt panels and the shoulder correctives, within a degree, and the lowest panel bones'
 ## floor gathers (scales) within 0.03.
 ## Sampled on 15 fps keys: between keys the baked helpers interpolate while the solve sees the interpolated body.
@@ -216,6 +219,7 @@ func test_helper_bones_match_the_baked_clips() -> void:
 		ap.play(spec[1])
 		ap.seek(float(spec[2]), true)
 		ap.pause()
+		HeroHelperBones.apply_folds(skel, HeroHelperBones.fold_rig(skel))  # ADR 0140: what HeroSkirtFolds sets
 		var baked := {}
 		var baked_s := {}
 		for i: int in skel.get_bone_count():
@@ -232,3 +236,31 @@ func test_helper_bones_match_the_baked_clips() -> void:
 			var ds := ((baked_s[i] as Vector3) - skel.get_bone_pose_scale(i)).length()
 			assert_true(ds < 0.03, "%s %s %s: scale off by %.3f" % [spec[0], spec[1], skel.get_bone_name(i), ds])
 		model.free()
+
+
+## ADR 0140: every imported Asha carries the HeroSkirtFolds modifier, the clips bake no even-numbered skirt panel, and
+## the modifier sets those panels from the odd ones within the frame budget.
+func test_skirt_folds_are_derived_at_runtime() -> void:
+	var model := (load("res://assets/characters/asha/asha.glb") as PackedScene).instantiate()
+	_host().add_child(model)
+	var skel := model.find_child("Skeleton3D", true, false) as Skeleton3D
+	assert_true(skel.get_node_or_null("SkirtFolds") is HeroSkirtFolds, "the import adds the folds modifier")
+	var ap := model.find_child("AnimationPlayer", true, false) as AnimationPlayer
+	for lib_name: StringName in ap.get_animation_library_list():
+		for clip: StringName in ap.get_animation_library(lib_name).get_animation_list():
+			var anim := ap.get_animation_library(lib_name).get_animation(clip)
+			for t: int in anim.get_track_count():
+				var bone := String(anim.track_get_path(t).get_concatenated_subnames())
+				var derived := bone.begins_with("DEF-skirt_") and int(bone.substr(10).get_slice(".", 0)) % 2 == 0
+				assert_false(derived, "%s bakes a derived panel: %s" % [clip, bone])
+	ap.play(&"kneel_over_rhen")
+	ap.seek(1.6, true)
+	ap.pause()
+	var rig := HeroHelperBones.fold_rig(skel)
+	var n := 200
+	var t0 := Time.get_ticks_usec()
+	for i: int in n:
+		HeroHelperBones.apply_folds(skel, rig)
+	var ms := float(Time.get_ticks_usec() - t0) / n / 1000.0
+	assert_true(ms < FOLDS_BUDGET_MS, "apply_folds %.3f ms per hero" % ms)
+	model.free()

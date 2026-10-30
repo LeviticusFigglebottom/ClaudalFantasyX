@@ -9,6 +9,8 @@ Run: python3 -m unittest tools.tests.test_stillguard
   materials (the weathered ones on the shared worn atlases) and textures.
 * The rules on the shipped mesh (rig_probe reads the GLB, no Blender): the spear and the shield rigid on their bones,
   the helm rigid on the head, the spear gripped (grips.json), the probe config, the clips.
+* M3-CHR-540, Ivo Brannick (the named Stillguard): his table, GLB, materials, the chipped tooth, the clips his
+  dialogue calls, the shield-only rig and the wiring.
 """
 import json
 import re
@@ -154,6 +156,122 @@ class TestRigRules(unittest.TestCase):
             self.assertEqual(grips[f"{n}_skeleton"]["bone"], "DEF-spear", n)
             self.assertEqual(cfg[n]["props"], ["Spear", "Shield"], n)
             self.assertNotIn("Spear", cfg[n].get("penetration", {}).get("limits_mm", {}), n)
+
+
+# ---------------------------------------------------------------------------------------------
+# M3-CHR-540: Ivo Brannick, a named Stillguard (stillguard_variants.json `named`), built and wired like a variant
+# ---------------------------------------------------------------------------------------------
+IVO = "ivo"
+IVO_MESHES = ("Head", "Body", "Costume", "Sleeves", "Shield", "HairHead")
+IVO_CLIPS = ["idle", "walk", "run", "talk", "hug_lift", "kneel_palms_flat"]
+IVO_HEIGHT = (1.78, 1.84)  # m: a broad man, at the squad's tall end
+CHIP_MM = (1.0, 4.0)  # the broken tooth: how far its chipped edge sits off its mirror twin
+CHIP_VERTS = 30  # and on how few vertices (one tooth's edge)
+
+
+def dialogue_calls(actor: str) -> set:
+    calls = set()
+    for dlg in (ROOT / "game/data/dialogue").rglob("*.dlg"):
+        if "test" in dlg.parts:
+            continue
+        calls |= set(re.findall(rf"@anim {actor} ([a-z_]+)", dlg.read_text(encoding="utf-8")))
+    return calls
+
+
+class TestIvo(unittest.TestCase):
+    def test_table(self):
+        self.assertNotIn(IVO, sg_table.variants())  # the squad stays six
+        self.assertEqual(sg_table.named(), [IVO])
+        self.assertEqual(sg_table.name(IVO), IVO)  # his own folder and the dialogue's speaker id
+        p = sg_table.variant_params(IVO)
+        var = p["_variant"]
+        self.assertEqual((var["hair"], var["helm"], var["spear"]), ("crop", False, False))  # face and hair bare
+        self.assertGreater(var["broken_tooth"], 0.0)
+        self.assertTrue(IVO_HEIGHT[0] <= p["height_m"] <= IVO_HEIGHT[1], p["height_m"])
+        squad = [sg_table.variant_params(v) for v in sg_table.variants()]
+        self.assertNotIn(p["skin_hex"], {q["skin_hex"] for q in squad})
+        self.assertGreaterEqual(p["muscle"], max(q["muscle"] for q in squad if q["shoulder_width_heads"] < 1.9))
+        self.assertFalse(p["_costume"]["sash"])
+        self.assertEqual(p["_costume"]["shield_diameter_m"], 0.62)
+
+    def test_glb(self):
+        js = glb_json(out(IVO) / f"{IVO}.glb")
+        self.assertLessEqual(tris(js), LOD0_MAX)
+        self.assertLessEqual(tris(glb_json(out(IVO) / f"{IVO}_lod1.glb")), LOD1_MAX)
+        self.assertLess((out(IVO) / f"{IVO}.glb").stat().st_size, MAX_BYTES)
+        meshes = {m.get("name") for m in js["meshes"]}
+        for mesh in IVO_MESHES:
+            self.assertIn(mesh, meshes)
+        self.assertNotIn("Helm", meshes)
+        self.assertNotIn("Spear", meshes)
+        head = next(m for m in js["meshes"] if m.get("name") == "Head")
+        self.assertEqual(head.get("extras", {}).get("targetNames", []), API + VISEMES)
+        nodes = js["nodes"]
+        parent = {c: i for i, nd in enumerate(nodes) for c in nd.get("children", [])}
+        idx = {nd.get("name"): i for i, nd in enumerate(nodes)}
+        self.assertNotIn("DEF-spear", idx)
+        for bone, par in EXTRA_BONES.items():
+            if bone != "DEF-spear":
+                self.assertEqual(nodes[parent[idx[bone]]]["name"], par, bone)
+
+    def test_materials_and_textures(self):
+        from PIL import Image
+
+        mats = {m["name"] for m in glb_json(out(IVO) / f"{IVO}.glb")["materials"]}
+        have = {p.stem for p in (out(IVO) / "materials").glob("*.tres")}
+        self.assertEqual(mats - have, set())
+        self.assertFalse({"spear", "steel"} & have)
+        for tres in (out(IVO) / "materials").glob("*.tres"):
+            for path in re.findall(r'path="res://([^"]+)"', tres.read_text(encoding="utf-8")):
+                self.assertTrue((ROOT / path).exists(), f"{tres.name}: {path}")
+        self.assertIn("stillguard_worn_cloth_albedo.png", (out(IVO) / "materials/cloth.tres").read_text(encoding="utf-8"))
+        for png in (out(IVO) / "textures").glob("*.png"):
+            self.assertLess(png.stat().st_size, MAX_BYTES, png.name)
+            with Image.open(png) as im:
+                w, h = im.size
+            self.assertEqual((w & (w - 1), h & (h - 1)), (0, 0), png.name)
+
+    def test_broken_tooth(self):
+        """One upper front tooth chipped: the teeth are mirror-symmetric but for a few millimetres on one edge."""
+        import numpy as np
+        import rig_probe
+
+        teeth = np.vstack([p.P for p in rig_probe.Rig(IVO).prims["Head"] if p.material == "teeth"])
+        left, right = teeth[teeth[:, 0] > 1e-4], teeth[teeth[:, 0] < -1e-4] * np.array([-1.0, 1.0, 1.0])
+        off = np.sqrt(((left[:, None, :] - right[None, :, :]) ** 2).sum(-1)).min(axis=1) * 1000.0
+        self.assertTrue(CHIP_MM[0] <= off.max() <= CHIP_MM[1], off.max())
+        self.assertLess(int((off > 0.5).sum()), CHIP_VERTS)
+
+    def test_clips_cover_his_dialogue(self):
+        """Every `@anim ivo <clip>` has a clip (look_at is the sequencer's own turn); his library has them all."""
+        import hero_clips
+
+        self.assertEqual(hero_clips.CLIPS[IVO], IVO_CLIPS)
+        called = dialogue_calls(IVO)
+        self.assertTrue(called)
+        self.assertEqual(called - set(IVO_CLIPS) - {"look_at"}, set())
+        text = hero_clips.out_path(IVO).read_text(encoding="utf-8")
+        self.assertEqual(set(re.findall(r'resource_name = &"([a-z_0-9]+)"', text)), set(IVO_CLIPS))
+
+    def test_rig_rules(self):
+        import rig_probe
+
+        rig = rig_probe.Rig(IVO)
+        part = rig.part("Shield")
+        self.assertEqual({rig.joint_names[j] for j, w in zip(part.J.ravel(), part.W.ravel()) if w > 1e-4},
+                         {"DEF-shield"})
+        cfg = json.loads((ROOT / "tools/dev/rig_checks.json").read_text())["heroes"][IVO]
+        self.assertEqual(cfg["props"], ["Shield"])
+        grips = json.loads((ROOT / "game/data/characters/grips.json").read_text())["skeletons"]
+        self.assertNotIn(f"{IVO}_skeleton", grips)  # no held prop
+
+    def test_wiring(self):
+        rules = json.loads((ROOT / "game/data/import/characters.json").read_text(encoding="utf-8"))
+        self.assertIn(f"res://assets/characters/{IVO}/", rules["assets"])
+        jobs = {j["id"]: j for j in json.loads((ROOT / "tools/dev/blender_builds.json").read_text())["jobs"]}
+        self.assertIn(f"assets/characters/{IVO}/*.glb", jobs[IVO]["outputs"])
+        speakers = json.loads((ROOT / "game/data/dialogue/speakers.json").read_text(encoding="utf-8"))
+        self.assertIn(IVO, {s["id"] for s in speakers["speakers"]})
 
 
 class TestMollUnchanged(unittest.TestCase):

@@ -40,6 +40,7 @@
   "donor_mix_asian": 0.45,
   "donor_mix_caucasian": 0.15,
   "_skin": {
+    "brow_strands": {"count": 70, "dark_share": 0.3, "dark_hex": "#4A4640", "light_hex": "#BDB6AA", "opacity": 0.9},
     "hex": "#966548",
     "age": 0.95,
     "freckles": 0,
@@ -52,6 +53,7 @@
     "seed": 102
   },
   "_hair": {
+    "brow_params": {"alpha_boost": "1.0", "strand_value_jitter": "0.4"},
     "kind": "wrap",
     "hairline": "female",
     "seed": 22,
@@ -95,7 +97,8 @@
       "edge_lift": 0.02,
       "puff_m": 0.009,
       "knot_m": 0.03,
-      "seed": 23
+      "seed": 23,
+      "edge_off_m": 0.002
     },
     "sandals": "leather"
   },

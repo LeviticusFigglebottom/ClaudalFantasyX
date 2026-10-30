@@ -39,6 +39,9 @@ extends Node3D
 @export var face_yaw_degrees: float = 25.0
 @export var face_pitch_degrees: float = 0.0
 @export var face_aim_drop: float = 0.03
+## M3-CHR-506: nodes of the instanced character hidden at _ready (a costume state the scene toggles, such as
+## Pell's NameShellCarved in Acts I-II), by name anywhere under the character.
+@export var hide_nodes: Array[StringName] = []
 ## Wind pinned for the capture (globals; restored on exit).
 @export var wind: Vector4 = Vector4.ZERO
 @export var wind_time: float = 0.0
@@ -68,6 +71,7 @@ func _ready() -> void:
 	_turntable.add_child(_character)
 	_assign_materials(_character)
 	CharacterShaderTiers.apply_to_tree(_character, tier)
+	_hide_nodes(_character)
 	_apply_face(_character)
 	_apply_pose(_character)
 	_apply_clip(_character)
@@ -101,6 +105,12 @@ func _build_compare() -> void:
 	_apply_face(other)
 	face_extra = saved
 	face_variant = saved_variant
+
+
+func _hide_nodes(root: Node) -> void:
+	for node_name: StringName in hide_nodes:
+		for node: Node in root.find_children(String(node_name), "Node3D", true, false):
+			(node as Node3D).visible = false
 
 
 func _process(delta: float) -> void:

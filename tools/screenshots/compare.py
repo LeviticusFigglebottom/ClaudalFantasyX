@@ -33,6 +33,9 @@ BASELINES = ROOT / "tests" / "screenshots" / "baselines"
 OUT = ROOT / "tests" / "screenshots" / "out"
 REQUIRED = ("id", "scene", "camera", "resolution", "threshold_rmse")
 SETUP_KEYS = {"globals", "nodes", "viewport", "time_scale"}  # must match CaptureSetup.KEYS (M1-QA-04)
+# A new shot waits for its first baseline: `"pending_baseline": true` until the Lead's gate views and approves it
+# (then the key goes). compare.py reports it PENDING instead of failing; with a baseline present it is compared.
+PENDING = "pending_baseline"
 BASELINE_META = "baselines.json"
 DIFF_GAIN = 8.0  # error 1/8 of full scale (linear) saturates the red channel in the diff image
 DIFF_BACKDROP = 0.35  # baseline brightness under the red error overlay
@@ -54,6 +57,8 @@ def load_shots(path: Path) -> list[dict]:
         setup = shot.get("setup", {})
         if not isinstance(setup, dict) or not set(setup) <= SETUP_KEYS:
             raise ValueError(f"shot {shot['id']}: setup must be an object with keys from {sorted(SETUP_KEYS)}")
+        if not isinstance(shot.get(PENDING, False), bool):
+            raise ValueError(f"shot {shot['id']}: {PENDING} must be true or false")
         seen.add(shot["id"])
         shots.append(shot)
     return shots
@@ -96,6 +101,8 @@ def compare_shot(shot: dict, out_dir: Path, base_dir: Path) -> tuple[bool, str]:
     if not actual_p.exists():
         return False, "no capture (run tools/screenshots/capture.sh)"
     if not base_p.exists():
+        if shot.get(PENDING, False):
+            return True, "PENDING its first baseline (the gate views and approves it)"
         return False, "no baseline (inspect out/, then compare.py --update-baselines %s)" % sid
     actual, base = pngio.read(actual_p), pngio.read(base_p)
     if actual.shape[:2] != base.shape[:2]:

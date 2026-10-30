@@ -88,6 +88,11 @@ func _ready() -> void:
 	model.changed.connect(_render)
 	_render()
 	reveal.play(self, logo, _page, _help, _d.get("reveal", {}) as Dictionary)
+	# ADR 0111: the hero bodies load on worker threads while the title shows, so New Game's first frame finds
+	# them cached. Not in a headless run (tests): nothing draws there, and a load in flight at quit is noise.
+	var resident := ResidentLoads.shared()
+	if resident != null and DisplayServer.get_name() != "headless":
+		resident.warm()
 	if MemoryReplay.take_gallery_request() and model.has_memories:
 		model.set_cursor(model.row_ids().find(TitleMenuModel.CHOICE_MEMORIES))
 		open_memories(MemoryReplay.last_memory)
