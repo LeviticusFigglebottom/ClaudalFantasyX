@@ -901,3 +901,124 @@ Skipped: coverage (no game/battle or game/progression code changed) and Blender 
 MERGE-READY @ HEAD of claude/ui (this commit): the document reader's shots as pending baselines.
 - **BACKLOG EMPTY:** still true. What remains waits on combat (Pell's row, the rooted status), characters (Act II NPC
   models), narrative (records.json, Kerrid's Ch15 body) and audio (M4-AUD-1080).
+- 2026-10-30 09:40, **the Lead's FAST-TRACK: act1_gpu_qa row 67** (big19's heavy entries over 2 s, and one Brine Shoals
+  hang). Commit 329e7bce; ADR 0111 amendment 5 has the detail.
+  - **The hang:** one fresh run printed nothing for 600 s, so the main thread froze. If the router had only been
+    waiting, the probe's 2400-frame cap would have printed stats long before that.
+    - The router started instantiating the zone on a worker thread while ResidentLoads' threaded loads were still in
+      flight. GreyboxZone builds during instantiate, so the zone's own `load()` calls ran beside those loads, as did
+      the main thread's (ZoneCast and VillagerLayer in _ready). That is the engine's deadlock-prone path.
+    - **Fix:** the router now waits on its swap holders first, then instantiates.
+    - Headless: no hang in 7 Brine Shoals runs or the full 49-target sweep (every target covered and printed stats).
+      Instantiate fell to 21–56 ms per zone, because everything is cached.
+  - **The cost, per zone:** big19's cast models were never listed in scene_loads.json. VillagerLayer adopts or
+    replaces each cast body before the tool looks, so all of them loaded cold on the instantiate thread.
+    - Brine Shoals: 12 unlisted (Moll, the clerk, three Stillguard, a child, two wright children, four reeds), plus
+      big19's five slot materials.
+    - Corrow: 11 unlisted (Ivo, Hobb, two Stillguard, the gatekeeper, four children, Marra, the officer), plus six slot
+      materials and +173 dressing rows.
+    - Tamsule (Ch7): 7 unlisted villagers, plus the gold leaf.
+    - Coilspire (Ch8): the new copper and iron slots, and a reshuffled dressing.
+    - **Fix:** the tool lists each `cast` row's model, and the registry is regenerated (Brine Shoals +158 paths,
+      Corrow +164). `max_in_flight` goes from 2 to 4, so the loads keep the PC's cores busy now that the instantiate
+      no longer overlaps them.
+  - **Nothing filed to asset owners yet.** The excess is loading order and listing, not proven asset weight. If the
+    PC's re-measure is still over 2 s after big20, I'll split it by zone and file the heavy ones (env-art-b for the
+    Corrow and Brine Shoals dressing, characters for the villager count).
+  - **Headless numbers:** this 4-core box's entries are 2.3–7 s whatever the order. The time is disk and CPU
+    decoding, which the PC does several times faster, so they don't predict the 2 s bar. Only the PC can confirm.
+  - **Checks:** scene_router 17/0, resident_loads 8/0, prewarm 26/0, shader_prewarm 22/0, creature_ 88/0,
+    dialogue_box 26/0; act1_swap_sweep tests OK; validate_data 0/0; lint and format clean. The full sweep found all 49
+    targets covered.
+
+### PC-QUEUE (row 67, after big20)
+- Re-run pass 4's hitch probes on big20, which carries amendment 4 and amendment 5:
+  - Brine Shoals: the walk, and **fresh ×5** (the hang showed in 1 of 2);
+  - Corrow, fresh;
+  - Ch7 and Ch8, in the walk.
+- Report the hidden ms per entry, and any run that prints nothing.
+- If an entry is still over 2 s, include the probe's stats line: instantiate_ms, prewarm_wait_frames and the holders
+  warning.
+MERGE-READY @ 329e7bce (FAST-TRACK row 67): the router instantiates only after its loads are in; scene_loads lists
+every cast model; max_in_flight 4.
+- 2026-10-30 10:30, **the Lead's 05:52 Act II lane.** I merged the integration branch (1e63e5ba, baseline approvals).
+  - **Heresy words** (e9de89f6): ADR 0204 approved "Outside the Level". The field-menu subtitle, a heretic save's slot
+    ("Chapter 14 · Outside the Level", rendered and viewed: it fits) and the Order shop's refusal now use it, along with
+    heresy.md. The save fixtures can now carry `flags`.
+  - **Codex, M4-A2P-008** (dbc4fa8a): `keth`, `conclave` (only the public "Conclave of Elders", nothing about its truth
+    and no "revenant"), `malcor_venn` (a man, nothing stranger) and `heresy` ("Outside the Level"). These are every plan
+    entry whose unlock flag is declared today. The rest land as the Ch11–Ch16 beats declare their flags.
+    test_codex 16/0, pseudo_loc_screens 17/0; validate_data clean, banned terms included.
+  - **No Vowbound category yet:** Act I's three have no entries of their own, and what the party knows of each one's
+    human life at its binding is Narrative's call (vowbound.md holds the whole truth). I won't write these until a beat
+    says what's known.
+  - **Portraits:** none of Act II's new speakers has a model on any branch (Tobin, Merel, Malcor Venn, the Kirru, the
+    Ullari, Liss's father), so none was baked and none was stubbed.
+  - **Bestiary:** Ch10's three rows in enemies.json have no `model`, so the bestiary has no picture, and the fight
+    probably draws a capsule. Noted on Combat's request M3-UI-208 (578a6ceb).
+MERGE-READY @ 578a6ceb: the heresy's words per ADR 0204, and four Act II codex entries.
+- **BACKLOG EMPTY:** the rest of Act II waits on other tracks:
+  - Ch11–Ch16 flags and beats (more codex entries);
+  - speaker models (portraits);
+  - Combat: Pell's row, the rooted status, the enemy model links;
+  - Narrative: records.json and the Vowbound text.
+  - Row 67's PC verification (gpu/row67-verify) would jump ahead of everything.
+- 2026-10-30 11:20, **the Lead's 09:01 items.** I merged big20 (7dc3ab41) as 0a85bf07.
+  - In the codex merge, Narrative's Act II people set wins: its `malcor_venn` and `conclave` replace mine. My `keth` and
+    `heresy` stay under World (test_codex 16/0).
+  - **LEAD-ASK, row 67: big20 has amendment 4 (5c662779) but not the row 67 fix (329e7bce), and they belong together.**
+    - Amendment 4 moves ZoneCast's model instancing into GreyboxZone.build. That runs on the router's instantiate
+      thread while ResidentLoads' threaded loads are in flight, so big20 widens the window in which the hang showed.
+    - 329e7bce closes it: the router waits on its loads before it instantiates.
+    - Please take 329e7bce, and this branch, into big21 ahead of the next PC pass. If big20's PC pass shows more
+      hangs, that is the reason.
+  - **Portraits re-baked on big20's models** (cd38c0c9): 23 speakers, 115 images. Their models had all changed since
+    the last bake: Pell, Moll, Sefir and 20 villagers.
+    - Pell's fur now has texture (the PC's pass 3 note), and Sefir's veil hangs over his face. I viewed both, side by
+      side with the old bakes.
+    - **For characters:** Moll's new hair casts a hard shadow across half her face under her stage's key light. The
+      bake is faithful to the model; the fix is in her stage or hair.
+    - Every dialogue speaker without a portrait (the generic barks, and Act II's people with no model yet) shows no
+      picture. No placeholder ever shows.
+    - Shots that show these portraits (dialogue, status, the party cards) will drift on the gate.
+  - **Act II map regions:** all 15 Act II zones already had maps. Each now gets a main-path objective, 17 rows chained
+    on the declared Ch10–Ch16 flags, so the line and the gold marker point at the chapter's next place (8287ca8b).
+    - Ch13 goes to the Sanctum first, then the Archive.
+    - The lines are in Act I's register and say nothing past their beat.
+    - The Lowlight map shot now stages arrival (`ch11_reached_lowlight`). I viewed Keth Pass, Lowlight and Ansedra.
+    - test_objective_tracker 16/0 (a new walk of all 17 rows); zone_map 22/0; pseudo_loc_screens 17/0; validate_data
+      0/0.
+    - The three map shots will drift on the gate.
+MERGE-READY @ 8287ca8b: the portraits re-baked on big20's models, and the Act II objectives.
+- 2026-10-30 12:30, **Malcor Venn's portrait** waits on its merge. His model and stage are on claude/characters
+  (3f0f5d679, M4-A2P-051), not on the integration branch. When they land, I add `malcor_venn` to portraits.json from
+  his stage (`venn_stage.tscn`), bake his five faces, view them and add their PROVENANCE rows. No other Act II speaker
+  has a model on any branch.
+- **BACKLOG EMPTY** after the 09:01 items:
+  - **Done:** big20 merged; portraits re-baked; Act II maps point along the main path; the heresy's words and four
+    codex entries; row 67's fix waiting for a batch.
+  - **Waits on others:**
+    - Malcor Venn's model (its merge);
+    - the other Act II speakers' models;
+    - Ch11–Ch16 beat flags (more codex);
+    - Combat: Pell's row, the rooted status, the enemy model links;
+    - Narrative: records.json and the Vowbound text;
+    - the PC's row 67 verification.
+- 2026-10-30 13:40, **the Lead's 09:58 note:** big21 (0347aa74) carries row 67's fix, and the PC is measuring it.
+  - **Merged big21** (59202bae1). Its own resolution wins for the codex, flags and Sefir's portraits (the characters
+    track's GPU-QA re-render). strings.csv keeps my Act II objective lines; its four Act II LORE rows now live in
+    ch10/ch15.csv. I redid the merge once, after a stash dropped its MERGE_HEAD, so the commit is a true merge.
+  - **The Status page's Bound section** (5e1e8d38a): a caller (Asha) lists the Vowbound bound so far, in bind order, or "None
+    yet". It sits under Lattice in the right column, because the left one has no room once seven heroes are listed
+    (screens.md updated). I viewed it with all six of Act II. test_status_menu 8/0, aspect 18/0,
+    pseudo_loc_screens 17/0.
+  - **Act II inns** (92151e255): `ansedra_guest` (shops.json, `order: true`, price 0, from `ch13_started`).
+    - The rest reads "No charge" and "A night here costs nothing."; an empty purse still rests.
+    - Any inn marked `order` refuses those outside the Level ("The door stays shut. The Order keeps no guests
+      outside the Level."). Saltwright inns still take them.
+    - I viewed it through the inn shot (temporarily pointed at the guest house). test_inn_menu and test_inn 11/0,
+      shop 28/0.
+    - **For the Ch13 zone's owner:** place a trigger at Sefir's house (the `sefir` POI) with
+      `{"inn": "ansedra_guest"}`, as Quellan's inn does.
+  - **Portraits:** Malcor Venn and the three Abiding guards aren't in big21 yet; I'll bake them as soon as they land.
+MERGE-READY @ 92151e255: big21 merged; the Bound section; Act II inns.

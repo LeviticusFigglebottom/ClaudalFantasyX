@@ -391,3 +391,80 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
   (lavapipe has no real sheen/SSS balance); pell_front, pell_face, pell_storm_ch8.
 - **WIP on the branch head (2026-10-30):** the Lead's big17-review items (Asha's skirt as soft cloth in big poses, the
   villagers' face variety) are rebuilding. **Merge only up to MERGE-READY @ 440c1f9e** until a new MERGE-READY line.
+
+- MERGE-READY @ e151c0f0: **the PC's GPU QA pass 3 rows 31, 46, 54, 55 and 56, Pell's look, and the big17 review items**
+  (Asha's skirt as soft cloth, villager face variety). Replaces the WIP note above.
+  - **Rows 31 and 56, Asha's skirt:** the knee and shin bend bands widen (0.06/0.08 -> 0.16/0.18 m) and the outer
+    skirt is denser (64 x 20), so the 16 panel chains bend the cloth instead of creasing it; the underskirt takes the
+    outer skirt's weights (no white wedges), its hem is just above the ankle (her feet show in the run), and it has a
+    lawn texture (folds, two pintucks, a drawn-thread band); clear_m 0.085 -> 0.075 (the striding leg shapes the
+    front). The kneels are the two-knee kneel (M3-CHR-102). LOD0 64,962 (budget 65,000; the hidden legs under the
+    skirt decimate harder). Also fixes a host-determinism edge (a skirt ring column exactly on a sector edge).
+  - **Row 46, Moll's face:** the hard edge was his shield's and iron's cast shadow under the stage's low key; the face
+    shots (moll_face, stillguard_a/b/c_face) use face-only stage variants without the props, from the lit side.
+  - **Row 54, Sefir:** gown folds (14 periods, second harmonic, 16 mm at the hem, 18 columns per panel); a fuller,
+    less transparent hair cap (scalp cards 300 -> 420, alpha 1.5); the side strands closer in (lateral 0.12, body
+    pull 0.4, cohesion 0.45/0.8); mantle gold 14% -> 13% to hold the 5% waist-up budget. LOD0 61,210 (62,000).
+  - **Row 55, villager hair and brows:** Toma's short-hair tufts for the child, Reed, the netmender, the smith (and
+    the earlier ten); grey as strands on the netmender; Fenn's crop painted (his cards' tips read as flakes); Sabe
+    without the white hairline row; every villager's brows softer (alpha 0.95) and tinted 30% toward the skin (the
+    near-black cards read as scribbles); lashes unchanged.
+  - **Pell (PC pass 3):** fur value patches and stronger clumps, the face desaturated, muscle 0.3 -> 0.6 and mass
+    0.15 with outline fur down the forearms. His arms are still lean: there is no arm-girth slider, and inflating the
+    arm skin would push it through the forearm wraps.
+  - **Face variety (big17 review):** the 34 villagers' face sliders spread per name and each adult a distinct leading
+    ancestry (MPFB2 macro targets); Kell keeps Tavi's nose.
+  - Checks: every changed Blender job (asha, sefir, pell, 34 villagers) identical natively, X86_V4-off and
+    X86_V3+V4-off; rig probes asha, pell OK (limits pinned with reasons); unit tests test_asha, test_pell, test_sefir,
+    test_villagers, test_hero_clips, test_hero_locomotion, test_hero_battle_clips, test_blender_builds OK; Godot
+    hero_stage 11, post_import 21, pell 3, cutscene_pose 5, zone_cast 5, villager 38, field_npc 10, hero_portraits
+    9, dialogue_box 26 (all 0 failed); portraits of 20 villagers, Pell and Sefir re-rendered and viewed. Every row
+    self-rendered and viewed at close-up and field distance.
+- **Next (ADR 0205):** Act II, Kerrid's reveal rig (act2_plan's longest lead for this track).
+
+## 2026-10-30, Act II: M4-A2P-054 Kerrid's reveal (ADR 0205)
+- `KerridBurnGlow` (game/characters/heroes/kerrid_burn_glow.gd, data game/data/characters/kerrid_glow.json) lights
+  the Burns shell per instance (glow 0..1, lift held->gold for H09) and lists the 14 VFX sockets for M4-A2P-049.
+  Confession close-ups `kerrid_confession_{grief,guilty,burns}` were self-rendered and viewed: the mouth reads through
+  the beard, and the burns glow at the Ch15 peak. Unit test 3/3; lint and data OK. Task -> review (cinematics).
+- MERGE-READY @ 09a7928c
+- **Next:** M4-A2P-050 (Tobin and Merel), then M4-A2P-051 (Malcor Venn, the Abiding guard).
+
+## 2026-10-30, Act II: M4-A2P-050 Tobin and Merel
+- Both are on the villager build with 40 face shapes, face rows, stages and shots. All 7 shots were viewed.
+  - **Tobin:** Liss's family face, the Saltwright coat with the Warden's red sash, line-marks; LOD0 27.5k.
+  - **Merel:** wedding red, the bridal cloth as a new `solid` shawl, LOD0 35.6k/36k.
+  - **The bloodied sleeve:** `_blood` -> villager_textures.blood_atlas -> `cloth_a_blood.tres`. It is swapped in at
+    runtime by `CostumeVariant` (game/characters/costume_variant.gd).
+  - **Clips:** hold_hands, pole_barge, and the new tobin_falls.
+- **Checks:** villager_tobin, villager_merel, villager_marra and villager_skipper_sadi are identical on all 3 numpy
+  paths. test_villagers 45 OK, test_costume_variant 2/2, validate_data OK. The task is in review (rendering).
+- **Known limit:** the faces are at the villager level, like Skipper Sadi's. A hero-path upgrade is possible if the GPU
+  review holds Ch14's close-ups to the hero bar. Portraits are M4-A2P-081 (ui).
+- LEAD-ASK: the new shots (kerrid_confession_*, villager_tobin_*, villager_merel_*) are marked pending_baseline.
+  test_screenshots still fails on integration for the older unbaselined kerrid_/ivo_/pell_... shots, which carry no
+  pending key; that predates these.
+- MERGE-READY @ 83b8326c
+- **Next:** M4-A2P-051 (Malcor Venn on Moll's kit with a halberd and Moll's battle set; then the Abiding guard).
+
+## 2026-10-30, Act II: M4-A2P-051 part 1, Warden Malcor Venn
+- **Build:** a named build on the Stillguard and Moll kit (`stillguard_variants.json` `named.venn`).
+  - **Costume:** a Warden's dyes, black lacquer with gold piping, an order_marble tunic and a lacquer_red sash. They
+    come from the opt-in `palette` in moll_textures.cloth_atlas and `sg_textures.dyed_cloth`.
+  - **Head:** a grey crop.
+  - **Weapon:** a heavy **halberd** (`sg_halberd.py`, on the spear's bone) and **no shield** (build_moll `no_shield`).
+- **Clips:** Moll's battle contract and yield (B09's "driven back") plus a two-handed parry for `defend`
+  (`venn_parry`).
+- **Actors:** a battle actor (`game/characters/foes/venn_battle.tscn`), a field actor wrapper
+  (`assets/characters/villagers/venn/venn_actor.tscn`), stages and 7 viewed shots (pending_baseline).
+- **Checks:**
+  - The rig probe passes; limits are pinned with reasons, as Moll's.
+  - test_stillguard, test_hero_clips and test_blender_builds pass (63 tests).
+  - Godot post_import 21, hero_stage 11, battle_actor 5.
+  - venn, moll, the stillguard squad, ivo and the officer are identical on all 3 numpy paths, so the opt-in switches
+    leave the existing builds unchanged.
+- **Known limits:**
+  - His face and crop are at Ivo's level.
+  - In the parry the left hand stops at the chest, short of the haft.
+- MERGE-READY @ 3f0f5d67
+- **Next:** the Abiding guard (veiled gold lacquer: halberdier, Bulwark caster, the Captain of the Veil), in progress.

@@ -10,6 +10,369 @@
       "voices": 2,
       "volume_db": 0.0,
       "_note": "M4-A2P-093: the cord moth's unravel, a weave pulled apart and a ward's ring dying"
+    },
+    "sting_boss_mangrove_drowner": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_mangrove_drowner.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the mangrove drowner's intro sting (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_mangrove_drowner_soft": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_mangrove_drowner_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the mangrove drowner's intro sting (reduced audio) (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_lamp_engine": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_lamp_engine.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the lamp engine's intro sting (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_lamp_engine_soft": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_lamp_engine_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the lamp engine's intro sting (reduced audio) (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_avalanche_ram": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_avalanche_ram.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the avalanche ram's intro sting (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_avalanche_ram_soft": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_avalanche_ram_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the avalanche ram's intro sting (reduced audio) (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_wakefin": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_wakefin.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the wakefin's intro sting (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_wakefin_soft": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_wakefin_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the wakefin's intro sting (reduced audio) (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_malcor_venn": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_malcor_venn.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: Malcor Venn's intro sting (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_malcor_venn_soft": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_malcor_venn_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: Malcor Venn's intro sting (reduced audio) (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_abiding_guard": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_abiding_guard.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the Abiding guard's intro sting (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "sting_boss_abiding_guard_soft": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/sting_boss_abiding_guard_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-092: the Abiding guard's intro sting (reduced audio) (assets_src/sfx/act2_boss_stings.py)"
+    },
+    "skill_fin_cut": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/skill_fin_cut.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the Wakefin's fin_cut (wakefin.md §4, the sheet's proposed id): the seam's high hiss along the rail, then the sweep (contact 0.8 s)"
+    },
+    "skill_sound_dive": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/skill_sound_dive.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the Wakefin's sound_dive (wakefin.md §4, the sheet's proposed id): the blade sinking: a falling plunk, bubbles going down, a thrum still there below (it's gone deep, not gone; ADR 0204 §3)"
+    },
+    "skill_wakefin_rise": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/skill_wakefin_rise.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the Wakefin's wakefin_rise (wakefin.md §4, the sheet's proposed id): the sea-glow ring opening at 1.9 kHz, then the breach under one hero (contact 0.85 s)"
+    },
+    "skill_wake_wash": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/skill_wake_wash.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the Wakefin's wake_wash (wakefin.md §4, the sheet's proposed id): the hard turn, the tail slap (0.75 s), the wake washing over the deck"
+    },
+    "skill_bill_strike": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/skill_bill_strike.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the Wakefin's bill_strike (wakefin.md §4, the sheet's proposed id): phase 2: it rears at the bow, the stab and the knock on the planking (0.7 s)"
+    },
+    "phase_close_circle": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/phase_close_circle.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the Wakefin's close_circle phase (ADR 0204 §6): it rams the hull, the barge rocks and creaks"
+    },
+    "abl_core_pulse": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/abl_core_pulse.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the Lamp Engine's bared core pulsing (all foes): a hum swelling into a bright glass bloom (assets_src/sfx/act2_ability_sfx.py)"
+    },
+    "abl_drowner_drag": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/abl_drowner_drag.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: two roots haul a hero along the water: creak, drag, the roots knocking shut (assets_src/sfx/act2_ability_sfx.py)"
+    },
+    "abl_glide_lash": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/abl_glide_lash.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the gallery ray's tail: the broad wing, a whip of air, the lash (assets_src/sfx/act2_ability_sfx.py)"
+    },
+    "abl_horn_toss": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/abl_horn_toss.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the ram's head-toss: a hoof, the wet locks swinging, the heavy blow, water shed (assets_src/sfx/act2_ability_sfx.py)"
+    },
+    "abl_lamp_flare": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/abl_lamp_flare.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the lamps loosed together (darkness): salt-glass rings rising to a flash, then dimming (assets_src/sfx/act2_ability_sfx.py)"
+    },
+    "abl_lamp_gather": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/abl_lamp_gather.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: every lamp swings to face the party: ratchets, a rising hum, the lamps chiming in turn (assets_src/sfx/act2_ability_sfx.py)"
+    },
+    "abl_lamp_trim": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/abl_lamp_trim.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the shear arm snips: the blade, the brass ring of the arm (assets_src/sfx/act2_ability_sfx.py)"
+    },
+    "abl_leech_bite": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/abl_leech_bite.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the fen leech's draining bite: a wet catch and the pull drawn back up to it (assets_src/sfx/act2_ability_sfx.py)"
+    },
+    "abl_ram_bellow": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/abl_ram_bellow.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the bellow and the snow sliding off the terrace (slow) (assets_src/sfx/act2_ability_sfx.py)"
+    },
+    "abl_ram_charge": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/abl_ram_charge.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the stamp, three strides gathering, the drive through (assets_src/sfx/act2_ability_sfx.py)"
+    },
+    "abl_ram_charge_gather": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/abl_ram_charge_gather.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the head drops and it paws the terrace: two slow hooves, a snort, a held breath (assets_src/sfx/act2_ability_sfx.py)"
+    },
+    "abl_rime_spine": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/abl_rime_spine.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: a salt-glass spine breaking in a striker (slow): the crack, the shards, the ring (assets_src/sfx/act2_ability_sfx.py)"
+    },
+    "abl_rising_water": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/abl_rising_water.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the Drowner's roots spread and the tannin water rises over the party (assets_src/sfx/act2_ability_sfx.py)"
+    },
+    "abl_root_drag": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/abl_root_drag.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the root crab drags its target into the roots (delay): a smaller creak and drag, a knock (assets_src/sfx/act2_ability_sfx.py)"
+    },
+    "abl_root_stamp": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/abl_root_stamp.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the risen Drowner stamps on its root-feet: a heavy wet blow, the roots knocking (assets_src/sfx/act2_ability_sfx.py)"
+    },
+    "abl_scree_slide": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/abl_scree_slide.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the scree crawler sheds split scree: grit and stones sliding, snow hiss behind (no ice) (assets_src/sfx/act2_ability_sfx.py)"
+    },
+    "abl_skate_sting": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/abl_skate_sting.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the glass skate's tail from the sand (poison): sand, the whip, the sting's sharp tick (assets_src/sfx/act2_ability_sfx.py)"
+    },
+    "abl_tannin_jet": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/abl_tannin_jet.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the archer's jet, which knocks its target back: the pressured hiss, the splash, the shove (assets_src/sfx/act2_ability_sfx.py)"
+    },
+    "abl_tide_gather": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/abl_tide_gather.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the risen Drowner draws its roots in (a charge): slow creaks, the water drawn off, a low moan (assets_src/sfx/act2_ability_sfx.py)"
+    },
+    "skill_nhoa_echo": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/skill_nhoa_echo.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Nhoa's echo: a salt-glass sweep drawn in and given back brighter, a beat later (assets_src/sfx/act2_skill_sfx.py)"
+    },
+    "skill_cord_lift": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/skill_cord_lift.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-AUD-1010: Hesk's cord lift: pale threads drawn up, the knots' light loosing, a soft bell (assets_src/sfx/act2_skill_sfx.py)"
     }
   }
 }

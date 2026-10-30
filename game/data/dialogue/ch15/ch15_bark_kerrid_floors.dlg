@@ -2,7 +2,7 @@
 title: ch15_bark_kerrid_floors
 location: ch17/hollowmere
 ---
-<<if $ch15_kerrid_told>>
+<<if $ch15_kerrid_revealed>>
     Kerrid [soft_smile]: Floors that float. I'd have liked this, alive. #line:ch15_kerrid_floors_001
 <<endif>>
 ===

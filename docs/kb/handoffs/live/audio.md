@@ -3,6 +3,74 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **Godot on 792ccc26 (all green):** vowbound 116/0 (one node left in the tree, as on fda21daa before this set: a test's leak, not audio's), choreo_audio 17/0, creature_audio 8/0, field_audio 22/0, document_reader 7/0, battle_audio 22/0.
+- **BACKLOG EMPTY (2026-10-30, after 792ccc26):** the Lead's lists are done; the Act I and Act II audits are 0; 1010 and 1080 are in review. What's left waits on input: the people bosses' encounters (Combat), the remaining §4 families as their features land, and the listening verdict.
+- **MERGE-READY @ 792ccc26: the Lead's 09:58 list on 0347aa74, plus two audio requests found on the board.** Merged 0347aa74 first.
+  - **Already done, checked again:** env-art and env-art-b build exactly the 14 Act II levels, and every one has its zone music and its own bed. Battle themes for Ch13–16 are `battle_heretic` (regulars from Ch14) and the six boss stem sets. Every Act II boss sting exists, keyed by encounter id.
+  - **Act I gate, red after the merge and fixed:** Nhoa's `nhoa_echo` and Hesk's `cord_lift` (new Vowbound skills, no enemy rows) were silent. Both are voiced now (`act2_skill_sfx.py`). Kesh is callable from Ch16, so she has her call sting, `kesh_summon` (`vowbound_stings.py`; Act III's H03 reuses it).
+  - **M4-AUD-1010** (Combat's request, now in review): full battle voices and summon layers for Nhoa, Hesk, Ethren and Kesh in `vowbound_sfx.py`. Act I's three render byte-identical. Each has its own keepsake sound: Nhoa's bone name-shell, Hesk's holy bell, Ethren's ring click and gold bowl-halo, Kesh's brass lamp-key. All four are in `no_steps` (they hover, fly or are a column of water), and `sfx_pending` is dropped from their vowbound.json rows. Kesh's rise layer is `kesh_stand`, because the Ch16 cutscene owns `kesh_rise`. Their spectra were toned against the Act I Vowbound set. Nhoa's glass and Kesh's water stay a few dB past its medians on purpose.
+  - **M4-AUD-1080** (ui-menus' request, now in review): the document reader's `ui_hand_found` (the same bar struck twice, quiet and certain) and `ui_mark` (a pen's stroke, -24), named in the DocumentReader hook. Source: `act2_ui_sfx.py`.
+  - **Act I mix pass on 0347aa74:** 81 hand-overs, 0 over 3 LU, the same as the report (docs/kb/audio/act1_mix_pass.md).
+  - **Checks:** validate_data 0 errors; test_vowbound_sfx, test_audio_loudness, test_audio_data, test_act1_audio_audit and test_cutscene_sfx_files OK; the Act I and Act II audits 0; Godot vowbound, ui_audio, choreo_audio and creature_audio filters running (the result follows in the next entry); every render byte-identical twice. **Skipped:** screenshots (no scene touched), Blender.
+  - **PC-QUEUE:** the four Vowbound in battle; the reader's found hand.
+- **BACKLOG EMPTY (2026-10-30, after 17ef4f2c):** both 10-30 lists are done, and the Act II and Act I audits are 0. What's left waits on input: the people bosses' encounters (Combat; their stings and court_steps are keyed by the planned ids), the remaining §4 families as their features land (drain and rooted, repair, part breaks, heresy and reader UI), and the listening verdict.
+- **MERGE-READY @ 17ef4f2c: the Lead's second 10-30 list, and the Act I mix pass.** Merged the integration branch (7dc3ab41) first. Story's Act II scripts and Combat's boss rows had landed, so the Act II audit found new gaps; it is now **0 in every section**, and Act I is 0.
+  - **Act I gate (red after the merge, fixed):** `ch01/oruvel/dive_lamp.tscn` (a light, not a level) was counted as a zone. The audit now treats only `<level>/<level>.tscn` as a level, and a test pins that. The Act II abilities Combat added without enemy rows are voiced (below).
+  - **Boss music (Combat's ids):** `music.json` `battle.encounters` for ch10_mangrove_drowner, ch11_lamp_engine, ch12_avalanche_ram and ch15_wakefin, and phase rows `uprooted`, `opened`, `torn_fleece` and `close_circle` that bring stem 2 in over 3 s. Their intro stings are keyed by encounter id too.
+  - **19 ability sounds** (`assets_src/sfx/act2_ability_sfx.py`), each the effect itself, made from its creature's materials, toned against the Act I ability set's spectra. `fin_cut`, `sound_dive`, `wake_breach` (the rise) and `wake_wheel` (the wash) use the Wakefin's set.
+  - **Cutscenes:**
+    - 61 `@anim` gestures map to foley or to silence (faces and voices).
+    - 17 `@sfx` cues (`assets_src/sfx/act2_cutscene_sfx.py`): the egret, the lamp bench, the engine, the still water and the first ripple, the city's bells, the water-gate, the level pin, the pyre-raft and its lamp, Kerrid sitting, the storm wall, Liss humming the current-song, Kesh rising, the barge with no wake, the fin's first pass.
+    - `kesh_memory`: the Choir through water, MEL_A sung by one far voice.
+  - **Found:** the CutsceneSequencer finds `@sfx` at `sfx_dir/<id>.ogg` and `@music` by `music_dir` or a stand-in. So the Act II `@sfx` files are plain git in `assets/audio/sfx/` as Act I's are (not `assets/audio/act2/`, ADR 0175's folder), and `sequencer.json` gains 17 `music_stand_ins`; `../act2/music/<cue>` resolves in Godot.
+  - **Act I mix pass** (`tools/audio/act1_mix_pass.py`, report `docs/kb/audio/act1_mix_pass.md`): 81 music hand-overs (cutscene -> field, field <-> battle, field <-> boss). 6 stepped over 3 LU, all Ch8's three-stem bosses starting on stem 1 at -19.4. `volume_db` +1.0 on the Reach and +0.5 on the seawall hold brought them to 0 over 3 LU. The beds are 10 LU under, 0 problems.
+  - **For Story:** these `@music` lines use `fade=0.0`: nhoa_bound, hesk_bound and ethren_bound, peace_wedding_break, a `silence` in ch14_the_vows, and abiding_guard in ch16_swept_away. The deck holds every fade to `min_fade_sec` (0.2 s), so they play as near-cuts. That's right for the trap; the others may want 0.5.
+  - **Checks:** validate_data 0 errors; test_audio_loudness, test_audio_data, test_cutscene_sfx_files, test_act1_audio_audit and test_act1_mix_pass OK; Godot battle_audio 22/0, cutscene_audio 8/0, cutscene_sound 3/0, cutscene_music_resolves 3/0, cutscene_sequencer 22/0, music_transitions 7/0, music 11/0, sting 18/0 (the whole `cutscene` filter outruns 18 min here and was stopped); every render byte-identical twice. **Skipped:** screenshots (no scene touched), Blender.
+  - **PC-QUEUE:** the Ch8 boss hand-overs after the lift; kesh_memory's voice over the water; the cutscene cues in their scenes.
+- **BACKLOG EMPTY (2026-10-30, after 79546256):** the Lead's list is done. The rest waits on inputs from other tracks: the `@music`/`@sfx` lines on Story's Act II `.dlg`; the encounter and phase rows (the Wakefin's skill ids included) on combat; the remaining §4 families (ripples and bells, drain and rooted, repair, part breaks, heresy and reader UI) on their features; and revisions on the listening verdict.
+- **MERGE-READY @ 79546256: the Lead's 10-30 Act II list ("the remaining Act II cues"), since a6055ad2.** Merged the integration branch (3a5759ad) first.
+  - **Already done before this item:** every Ch10–Ch16 field theme has its zone row, `battle_heretic` covers the Ch14–Ch16 regulars (Ch13 and Ch15 have no regular fights), all six Act II bosses have two stems, and all 14 zones have their own beds.
+  - **New: `court_steps`** (Ch14's step-hold, `ch14_hold_the_steps`): two stems, a 60 s loop in C minor at 112 BPM. Stem 1 is the hold: the wedding's gong stepping, a 3+3+2 frame drum against it, the Stillguard's hum, and the couple's tune in diminution on the flute. Stem 2 is the last turn: the big drum, a building roll, the tune an octave up on bars, and a sixteenth ostinato. Every phrase ends on G, so it hands on the beat to `lagoon_escape`. Seam jump ×1.8 and flux ×0.2 against limits of ×10 and ×3.
+  - **New: the people bosses' intro stings,** `sting_boss_malcor_venn` (the flat-engine's drone swelling, its gong on the slow tick) and `sting_boss_abiding_guard` (ORDER_HUM cut off by the big drum), each with a reduced-audio twin. They're keyed by the planned encounter ids `ch14_malcor_venn` and `ch16_abiding_guard`.
+  - **Fixed: the Avalanche Ram's intro sting** was rendered before 114d5cf1 and still had the ice voice. It's re-rendered with the wet wool.
+  - **New: the Wakefin's foley** (wakefin.md §4): `fin_cut`, `sound_dive` (says "gone deep": a falling plunk with a thrum left below), `wakefin_rise`, `wake_wash`, `bill_strike`, and `phase_close_circle` (the hull ram). Each telegraph wind-up sits in its own spot inside 1–4 kHz, checked by spectrum. The `battle_sfx.json` rows use the sheet's *proposed* skill ids; **for combat:** keep those ids, or tell audio the final ones.
+  - **Checks:** validate_data 0 errors; test_audio_loudness and test_act1_audio_audit OK; the Act II audit is 0 and Act I is 0; Godot `sting` 18/0 and `battle_audio` 22/0; every render byte-identical twice. **Skipped:** screenshots (no scene touched), Blender.
+  - **PC-QUEUE:** court_steps' stem change on real speakers; the Wakefin's telegraphs in the dark, against the `wakefin` stems.
+- **MERGE-READY @ 114d5cf1: since 3ec09d01.**
+  - **The four creature bosses' intro stings** (the Drowner, the Lamp Engine, the Avalanche Ram, the Wakefin), with reduced-audio twins. Their encounters aren't written yet, so `battle_stings.json` keys them by the intro's title key (`BOSS_TITLE_*`, choreo.json `boss_intro.by_enemy`). StingAudio now tries the encounter first, then later arguments, so a staged intro is named the moment combat writes the encounter (a new test in test_battle_stings).
+  - **The Avalanche Ram's own voice lost its ice** (ADR 0204 §2): wet, matted wool shedding water. Only the ram's 7 files changed.
+  - **Checks:** test_battle_stings 6/0; Godot `--filter=audio` 175/0; loudness and data OK; validate_data 0 errors; renders byte-identical twice.
+  - LEAD-ANSWERED (2026-10-30): salt-glass spines on a salt-glass plinth. Its voice is re-materialled to match: glassy and brittle, no icicles. Was: Ch11's `rime_urchin` is designed with "ice-crusted spines on an ice plinth" (its sound rattles like icicles), but act2_plan notes ADR 0015's "nothing frozen" for Lowlight. Keep, or re-material it (salt-glass spines)? Default: keep until creatures answer. If it changes, its sound follows.
+- **BACKLOG EMPTY (2026-10-30, after 114d5cf1):** every Act II audio item that needs no other track's input is done. act1_gpu_qa has no audio rows and no listening verdict has come in. What's left is below, each waiting on its input.
+- **BACKLOG (Act II), what's left and why it waits:**
+  - the `@music` and `@sfx` lines in the Act II scripts: Story's `.dlg` don't exist yet;
+  - the boss encounter and phase rows: combat's encounters aren't written;
+  - `court_steps`: the step-hold set piece isn't designed in data yet;
+  - the rest of the cue sheet's §4 SFX families: each waits for its feature (ripples and bells with the lagoon scene, drain and rooted with M4-CMB-1001, repair and part breaks with the engine features, the Wakefin's telegraphs with its rows, heresy and reader UI with ui-menus);
+  - retiming each scene cue to the final beat sheets.
+  - Meanwhile I'll take Act I FAST-TRACK and PC rows first if any appear.
+
+- **MERGE-READY @ 3ec09d01: Act II audio, all of the cue sheet that needs no beat sheet or encounter.**
+  - **Every Act II zone plays:** `music.json` zone rows for all 14 levels, and 14 beds of their own (plain git under `assets/audio/act2/`, ADR 0175). The Act II audit is at **0 in every section** (`act1_audio_audit.py --act 2`); Act I is still 0.
+  - **Loops:** `cloudloom` (the weaving-hall) and `sanctum_of_the_level` (one chord that never changes, flat by design).
+  - **Battle:** `battle_heretic` (ADR 0204 §9; v2 darkened, measured against it). The people bosses `malcor_venn` and `abiding_guard`, two stems each. The seven Vowbound stings (nhoa, hesk and ethren bound and summoned; kesh bound).
+  - **Scene cues:** farewell_tide, peace_wedding_break, lagoon_escape, kerrid_at_sea, hollowmere_answers (Liss sings, ADR 0204 §10), sefir_go_home (the Order's one sung lullaby), act2_break.
+  - **SFX:** the root, snow and slate footsteps; the four variant creatures' own voices (M4-AUD-1001; scree_crawler with snow and grit, ADR 0204 §2); unravel's sound.
+  - **Review fixes, each found by viewing spectrograms or level over time before commit:**
+    - lacquer_court had no floor;
+    - kesh_bound clipped when decoded;
+    - sefir_go_home's piano sat 35 dB under the choir;
+    - kerrid_at_sea's string filled the voice band;
+    - the bosses' rolls cut their seams;
+    - abiding_guard's guard stem sat at −36 LUFS.
+  - **Checks:** validate_data 0 errors; taskboard --check; test_audio_loudness, test_audio_data and test_act1_audio_audit OK (the 105 MiB budget included); Godot `--filter=audio` 175/0, `footstep` 23/0, `music` 10/0; every render byte-identical twice. **Skipped:** screenshots (no scene touched), Blender.
+  - **For combat:** `scree_slide` still has `"element": "ice"`, against ADR 0204 §2 (no frost from Ch12 to Ch15).
+  - **Waiting on others:**
+    - the `@music` lines need Story's Act II `.dlg`;
+    - the boss encounter and phase rows, `court_steps` and the six boss-intro stings need combat's encounter ids;
+    - the remaining §4 SFX families need their features: ripples and bells, drain and rooted, repair, part breaks, darkness telegraphs, heresy and reader UI.
+  - **PC-QUEUE (real speakers):** the 14 beds against their zone music; sefir_go_home's sung lullaby; kerrid_at_sea under a voice; the bosses' stem changes.
+
 - **MERGE-READY @ f86639b3: Act II, Ch10 and the two set pieces.**
   - **Ch10 zones play:** `music.json` zone rows for Ossa Fen and Reedhollow (the existing finals). Their own beds: `fen_dusk` (insects, frogs, drips in tannin water, root creak, a far fen bird) and `reedhollow_roost` (reed wind, the lagoon, a cook-fire, the clutch's wordless hum in the Kirru mode).
   - **The footstep surfaces root, snow and slate** (ADR 0204 §11), 48 files, and footsteps.json rows naming the ground of all 14 Act II levels. The Act II audit's Footsteps section is at 0.

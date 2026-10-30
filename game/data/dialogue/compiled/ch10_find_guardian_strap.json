@@ -1,0 +1,21 @@
+{
+ "format": 1,
+ "scene": "ch10_find_guardian_strap",
+ "source": "game/data/dialogue/ch10/ch10_find_guardian_strap.dlg",
+ "start": "ch10_find_guardian_strap",
+ "nodes": {
+  "ch10_find_guardian_strap": {
+   "headers": {"location": "ch10/ossa_fen"},
+   "ops": [
+    {"op": "line", "id": "ch10_strap_001", "key": "DLG_CH10_STRAP_001", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 7},
+    {"op": "line", "id": "ch10_strap_002", "key": "DLG_CH10_STRAP_002", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 8},
+    {"op": "line", "id": "ch10_strap_003", "key": "DLG_CH10_STRAP_003", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 9},
+    {"op": "if_not", "cond": ["flag", "ch10_heard_ressa"], "to": 6, "src": 10},
+    {"op": "line", "id": "ch10_strap_004", "key": "DLG_CH10_STRAP_004", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 11},
+    {"op": "goto", "to": 6, "src": 10},
+    {"op": "line", "id": "ch10_strap_005", "key": "DLG_CH10_STRAP_005", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 13},
+    {"op": "set", "flag": "ch10_found_guardian_strap", "value": ["lit", true], "src": 14}
+   ]
+  }
+ }
+}

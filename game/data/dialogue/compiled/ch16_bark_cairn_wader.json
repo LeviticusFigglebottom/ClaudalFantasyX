@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch16_bark_cairn_wader",
+ "source": "game/data/dialogue/ch16/ch16_bark_cairn_wader.dlg",
+ "start": "ch16_bark_cairn_wader",
+ "nodes": {
+  "ch16_bark_cairn_wader": {
+   "headers": {"location": "ch16/pale_rim"},
+   "ops": [
+    {"op": "line", "id": "ch16_bark_cairn_001", "key": "DLG_CH16_BARK_CAIRN_001", "speaker": "townsfolk", "emotion": "neutral", "voice": "", "src": 5, "name_key": "DLG_NAME_TOWNSFOLK_CAIRN_WADER"}
+   ]
+  }
+ }
+}

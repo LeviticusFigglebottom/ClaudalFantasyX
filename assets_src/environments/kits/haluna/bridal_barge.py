@@ -11,6 +11,8 @@ Built in the Haluna kit (its import kind and materials), as iskarra.py, keth.py,
 Nothing on it gives light: no lamp, no flame (the colour script's ch15).
 
   bridal_barge_wedding  the same barge before Ch15 (Ansedra's moorings, the Lacquer Court): the canopy without the bier.
+  bridal_barge_sea    the same barge as Ch15's open-sea zone carries it: the canopy and the bier moved SEA_CANOPY_SHIFT
+                      along X (mid-deck), so the zone's greybox deck fits it at a smaller scale.
 """
 
 from __future__ import annotations
@@ -27,7 +29,10 @@ M_DECK = "kit_timber"
 M_CLOTH = "kit_keth_red"  # the bridal cloth: a woven red, matte (the keth's red wool)
 M_SEAM = "kit_interior_dark"
 
-TRI_BUDGET = {"bridal_barge": (16000, 1200), "bridal_barge_wedding": (16000, 1200)}
+TRI_BUDGET = {"bridal_barge": (16000, 1200), "bridal_barge_wedding": (16000, 1200), "bridal_barge_sea": (16000, 1200)}
+# The Ch15 zone's barge (M4-A2P-045, env-art-b): placed at SEA_SCALE on the greybox deck, its canopy and bier moved
+# forward so the bier lands on the greybox's Bier block and the stern stays clear for Kerrid's seat.
+SEA_CANOPY_SHIFT = -4.8
 
 BOW_X, STERN_X = -8.6, 8.0
 HALF_BEAM = 3.75
@@ -47,7 +52,8 @@ def half_beam(x) -> np.ndarray:
     return HALF_BEAM * bow * stern
 
 
-def build_barge(seed: int = 2001, *, bier: bool = True, name: str = "bridal_barge") -> list[kc.MeshBuilder]:
+def build_barge(seed: int = 2001, *, bier: bool = True, name: str = "bridal_barge",
+                canopy_shift: float = 0.0) -> list[kc.MeshBuilder]:
     out = []
     for lod in (False, True):
         rng = kc.rng_for("bridal_barge", seed)
@@ -97,7 +103,7 @@ def build_barge(seed: int = 2001, *, bier: bool = True, name: str = "bridal_barg
                 for p in top:
                     kc.tube(mb, np.array([[p[0], 0.0, p[2]], [p[0], RAIL_H, p[2]]]), 0.03, 5, hull)
                     kc.rounded_block(mb, p + [0.0, 0.03, 0.0], (0.04, 0.03, 0.04), gilt, radius=0.02, seg=1)
-        _canopy(mb, rng, noise, lod, bier=bier)
+        _canopy(mb, rng, noise, lod, bier=bier, shift=canopy_shift)
         _bow_hook(mb, lod)
         if not lod:  # the punt poles, laid along the rails
             for side, x0 in ((-1.0, -5.0), (1.0, -3.0)):
@@ -107,14 +113,16 @@ def build_barge(seed: int = 2001, *, bier: bool = True, name: str = "bridal_barg
     return out
 
 
-def _canopy(mb, rng, noise, lod, *, bier: bool = True) -> None:
-    """Four gilt posts, a sagging roof of red bridal cloth with swags, and (with `bier`) Tobin's bier under it."""
+def _canopy(mb, rng, noise, lod, *, bier: bool = True, shift: float = 0.0) -> None:
+    """Four gilt posts, a sagging roof of red bridal cloth with swags, and (with `bier`) Tobin's bier under it; all
+    moved `shift` m along X (the Ch15 zone's barge carries them mid-deck)."""
+    canopy = tuple((x + shift, w) for x, w in CANOPY)
     gilt, cloth = mb.material(M_GILT), mb.material(M_CLOTH)
     h = 2.4
-    corners = [(x, s * w) for x, w in CANOPY for s in (-1.0, 1.0)]
+    corners = [(x, s * w) for x, w in canopy for s in (-1.0, 1.0)]
     for x, z in corners:
         kc.tube(mb, np.array([[x, 0.0, z], [x, h, z]]), 0.05, 4 if lod else 8, gilt, cap_end=True)
-    (x0, w0), (x1, w1) = CANOPY
+    (x0, w0), (x1, w1) = canopy
     nu, nv = (3, 3) if lod else (9, 7)
     u = np.linspace(0.0, 1.0, nu)
     v = np.linspace(-1.0, 1.0, nv)
@@ -138,7 +146,7 @@ def _canopy(mb, rng, noise, lod, *, bier: bool = True) -> None:
     if not bier:
         return
     # The bier: a low timber platform, and Tobin's body under Merel's bridal cloth (the cloth's heightfield over him).
-    bx, bz = BIER_AT
+    bx, bz = BIER_AT[0] + shift, BIER_AT[1]
     kc.rounded_block(mb, (bx, 0.2, bz), (1.05, 0.2, 0.45), mb.material(M_DECK), radius=0.03, seg=1)
     nx, nz = (4, 3) if lod else (17, 9)
     xs = np.linspace(-1.15, 1.15, nx)
@@ -167,4 +175,6 @@ def _bow_hook(mb, lod) -> None:
 
 TARGETS = {"bridal_barge": build_barge,
            # M4-A2P-043/044 (env-art-b): the same barge before Ch15, dressed for the wedding (no bier: Tobin lives).
-           "bridal_barge_wedding": lambda: build_barge(bier=False, name="bridal_barge_wedding")}
+           "bridal_barge_wedding": lambda: build_barge(bier=False, name="bridal_barge_wedding"),
+           # M4-A2P-045 (env-art-b): Ch15's barge at sea, its canopy and the bier mid-deck.
+           "bridal_barge_sea": lambda: build_barge(name="bridal_barge_sea", canopy_shift=SEA_CANOPY_SHIFT)}

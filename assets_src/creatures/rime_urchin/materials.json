@@ -1,12 +1,12 @@
 {
-  "_doc": "The rime urchin's surfaces (docs/kb/art/creatures/act2/rime_urchin.md). Slots are the glTF material names; write_materials.py writes assets/creatures/rime_urchin/materials/<slot>.tres on game/shaders/creature/creature.gdshader. body is the wet test (abyss_navy lifted with deep_teal_shadow, its ambulacral bands a shade lighter) and the bone tube feet, whose emission mask is the mouth underneath (the peristome's ring and the five teeth), the spawn_wound weak point; spine is the spine field, deep_teal_shadow at the root going salt_glass and, where the rime crusts it, toward foam_white (held under the albedo ceiling), faceted, with a rim sheen so the rime catches the light; ice is the plinth it sits on, salt_glass frosted on top. Colours are palette.json swatches.",
+  "_doc": "The rime urchin's surfaces (docs/kb/art/creatures/act2/rime_urchin.md). Slots are the glTF material names; write_materials.py writes assets/creatures/rime_urchin/materials/<slot>.tres on game/shaders/creature/creature.gdshader. body is the wet test (abyss_navy lifted with deep_teal_shadow, its ambulacral bands a shade lighter) and the bone tube feet, whose emission mask is the mouth underneath (the peristome's ring and the five teeth), the spawn_wound weak point; spine is the spine field, deep_teal_shadow at the root going salt_glass and, where the salt crusts it, toward a pale salt (salt_glass toward bone), faceted, with a rim sheen so the crust catches the light; glass is the mound it sits on, salt-glass (glossy: high wetness) bloomed with salt on top. Salt-glass, not ice: nothing is frozen in Lowlight (ADR 0015). Colours are palette.json swatches.",
   "slots": {
     "body": {"roughness_dry": 0.4, "roughness_wet": 0.14, "specular": 0.6, "wet_darken": 0.5, "clearcoat_wet": 0.8,
              "detail_scale": 50.0, "detail_albedo": 0.1, "detail_bump": 0.5, "cavity_albedo": 0.5,
              "emission_color": "#3FE0C8", "emission_energy": 2.0, "emission_pulse_hz": 0.3, "emission_pulse_depth": 0.4},
     "spine": {"roughness_dry": 0.55, "roughness_wet": 0.2, "specular": 0.55, "wet_darken": 0.4, "clearcoat_wet": 0.5,
               "detail_scale": 90.0, "detail_albedo": 0.12, "detail_bump": 0.3, "cavity_albedo": 0.3, "rim_sheen": 0.6},
-    "ice": {"roughness_dry": 0.25, "roughness_wet": 0.08, "specular": 0.7, "wet_darken": 0.2, "clearcoat_wet": 0.8,
+    "glass": {"roughness_dry": 0.25, "roughness_wet": 0.08, "specular": 0.7, "wet_darken": 0.2, "clearcoat_wet": 0.8,
             "detail_scale": 16.0, "detail_albedo": 0.08, "detail_bump": 0.25, "cavity_albedo": 0.2}
   }
 }

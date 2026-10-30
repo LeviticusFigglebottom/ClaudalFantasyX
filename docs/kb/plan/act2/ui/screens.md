@@ -50,7 +50,7 @@ Each entry lists the beat that needs it, what the player does, the controls on e
 - **Today:** a Vowbound's call is its caller's skill ("Call Ilun", Asha), so each hero's Skills page lists only their own
   calls. Nothing to build. Check: a caller with two or more Vowbound (the plan names the callers per Vowbound in
   vowbound.json) sees them in Skills, in bind order.
-- **The status page:** a "Bound" line under Swell lists the hero's Vowbound (new section, one line).
+- **The status page:** a "Bound" section at the foot of the right column, under Lattice, lists the hero's Vowbound (the left column has no room once seven heroes are listed).
 - **Loc keys:** `SKILL_CALL_NHOA`, `SKILL_CALL_HESK`, `SKILL_CALL_ETHREN`, `SKILL_CALL_KESH` (Kesh's call shows in Act III);
   `VOWBOUND_NHOA`, `VOWBOUND_HESK`, `VOWBOUND_ETHREN`, `VOWBOUND_KESH`; `STATUS_MENU_BOUND`, `STATUS_MENU_BOUND_NONE`.
 

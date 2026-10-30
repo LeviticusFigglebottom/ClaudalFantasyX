@@ -1,0 +1,14 @@
+// Ch16 lore find (optional, at an old cairn): a flat stone at its foot scratched with rows of short marks, a crossing
+// counted for each. Liss reads it as a wader's tally; Kerrid reads it as someone keeping a watch. Before the Choir
+// (nothing of what the Hush does; ch16_learned_the_hush is after). Sets ch16_found_counting_stone.
+title: ch16_find_the_counting_stone
+location: ch16/pale_rim
+---
+Liss [neutral]: Scratches. Rows of them. Somebody counted something. #line:ch16_count_001
+Liss [neutral]: Crossings, I'd guess. One for each time they walked out and back. #line:ch16_count_002
+Kerrid [neutral]: The rows get shorter at the end. #line:ch16_count_003
+Liss [worried]: So they stopped coming back. Or they stopped counting. #line:ch16_count_004
+Kerrid [neutral]: Somebody kept a watch here. Same as me. #line:ch16_count_005
+Asha [neutral]: Put a stone on it. For whoever it was. #line:ch16_count_006
+<<set $ch16_found_counting_stone = true>>
+===

@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/characters/venn/venn_lod1.glb" id="model"]
+
+[node name="VennBattle" type="Node3D"]
+metadata/hymn_battle_actor = &"venn"
+
+[node name="Model" parent="." instance=ExtResource("model")]

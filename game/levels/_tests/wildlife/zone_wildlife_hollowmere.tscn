@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/wildlife/zone_wildlife.gd" id="stage"]
+
+[node name="ZoneWildlife" type="Node3D"]
+script = ExtResource("stage")
+zone_scene = "res://game/levels/ch17/hollowmere/hollowmere.tscn"
+zone_id = &"ch17/hollowmere"
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Dock" type="Camera3D" parent="Cameras"]
+transform = Transform3D(-0.0384331, -0.0498639, -0.998016, 0, 0.998754, -0.0499008, 0.999261, -0.00191784, -0.0383852, 4, 1.7, 0)
+fov = 50.0

@@ -445,6 +445,10 @@
       }
     },
     "rim_crawler": {"family": "crab", "_note": "Ch16 variant: a bleached, chalky tide crawler; its own set (M4-AUD-1001): drier, chalk ticks and dust", "events": {"idle": "cre_rim_crawler_idle", "attack": "cre_rim_crawler_attack", "hurt": "cre_rim_crawler_hurt", "death": "cre_rim_crawler_death", "move": "cre_rim_crawler_skitter"}},
+    "nhoa": {"family": "vowbound", "_note": "M4-AUD-1010: Nhoa (Ressa; Ice): salt-glass beads, a cold rush of air, a wordless Kirru whistle, the bone name-shell's knock; heard by the combatant id and the model's clips; assets_src/sfx/vowbound_sfx.py", "events": {"idle": "cre_nhoa_idle", "attack": "cre_nhoa_attack", "hurt": "cre_nhoa_hurt", "death": "cre_nhoa_death", "move": "cre_nhoa_drift"}},
+    "hesk": {"family": "vowbound", "_note": "M4-AUD-1010: Hesk (Holy): the keth cords singing, cloth-heavy wings, a condor's hiss, a soft holy bell; heard by the combatant id and the model's clips; assets_src/sfx/vowbound_sfx.py", "events": {"idle": "cre_hesk_idle", "attack": "cre_hesk_attack", "hurt": "cre_hesk_hurt", "death": "cre_hesk_death", "move": "cre_hesk_wingbeat"}},
+    "ethren": {"family": "vowbound", "_note": "M4-AUD-1010: Ethren (Corran; Glimmer): a held glass harmonic with no attack, lacquer panels, the gold bowl-halo, the ring's dry click; heard by the combatant id and the model's clips; assets_src/sfx/vowbound_sfx.py", "events": {"idle": "cre_ethren_idle", "attack": "cre_ethren_attack", "hurt": "cre_ethren_hurt", "death": "cre_ethren_death", "move": "cre_ethren_drift"}},
+    "kesh": {"family": "vowbound", "_note": "M4-AUD-1010: Kesh (all six): falling water, many mouths humming on A minor, the Lamplighter's brass lamp-key; heard by the combatant id and the model's clips; assets_src/sfx/vowbound_sfx.py", "events": {"idle": "cre_kesh_idle", "attack": "cre_kesh_attack", "hurt": "cre_kesh_hurt", "death": "cre_kesh_death", "move": "cre_kesh_surge"}},
     "ilun": {
       "family": "vowbound",
       "_note": "M3-AUD-846: Ilun the Net-Warden (Asha's Vowbound): heard by his combatant id and, once M3-CRE-638's model lands, its clips; assets_src/sfx/vowbound_sfx.py",

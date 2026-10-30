@@ -1493,6 +1493,83 @@
       "settle_frames": 30
     },
     {
+      "id": "villager_tobin_front",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/tobin_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_tobin_face",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/tobin_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_tobin_falls",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/tobin_falls.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_merel_front",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/merel_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_merel_face",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/merel_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_merel_pole_barge",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/merel_pole_barge.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_merel_bloodied",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/merel_bloodied.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "villager_ferrymaster_front",
       "scene": "res://game/levels/_tests/characters/villagers/ferrymaster_stage.tscn",
       "camera": "Cameras/Front",
@@ -4235,6 +4312,22 @@
       }
     },
     {
+      "id": "wildlife_zone_hollowmere_dock",
+      "scene": "res://game/levels/_tests/wildlife/zone_wildlife_hollowmere.tscn",
+      "camera": "Cameras/Dock",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
       "id": "wildlife_zone_underway_crown",
       "scene": "res://game/levels/_tests/wildlife/zone_wildlife_oruvel_underway.tscn",
       "camera": "Cameras/Crown",
@@ -4777,6 +4870,39 @@
       "settle_frames": 30
     },
     {
+      "id": "kerrid_confession_grief",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kerrid/kerrid_confession_grief.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kerrid_confession_guilty",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kerrid/kerrid_confession_guilty.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kerrid_confession_burns",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kerrid/kerrid_confession_grief.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "kerrid_face_stylized",
       "scene": "res://game/levels/_tests/characters/kerrid/kerrid_face_stylized.tscn",
       "camera": "Cameras/Compare",
@@ -5000,6 +5126,83 @@
       "id": "stillguard_c_face",
       "scene": "res://game/levels/_tests/characters/stillguard/stillguard_c_face.tscn",
       "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "venn_front",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "venn_three_quarter",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_stage.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "venn_face",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_face.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "venn_face_cold",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_face_cold.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "venn_clip_attack",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_clip_attack.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "venn_clip_defend",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_clip_defend.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "venn_clip_yield",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_clip_yield.tscn",
+      "camera": "Cameras/ThreeQuarter",
       "resolution": [
         960,
         540
@@ -6969,6 +7172,15 @@
       ]
     },
     {
+      "id": "creature_kesh",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/creatures/shots/creature_kesh.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
       "id": "creature_ilun_held",
       "scene": "res://game/levels/_tests/creatures/shots/creature_ilun_held.tscn",
       "resolution": [
@@ -8527,6 +8739,231 @@
       "id": "document_reader_one",
       "pending_baseline": true,
       "scene": "res://game/levels/_tests/document_reader/document_reader_one.tscn"
+    },
+    {
+      "id": "ch15_hollowmere_arrival",
+      "scene": "res://game/levels/_tests/hollowmere_kit/ch15_hollowmere_shots.tscn",
+      "camera": "Cameras/Arrival",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch15_hollowmere_dock",
+      "scene": "res://game/levels/_tests/hollowmere_kit/ch15_hollowmere_shots.tscn",
+      "camera": "Cameras/Dock",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch15_hollowmere_lanes",
+      "scene": "res://game/levels/_tests/hollowmere_kit/ch15_hollowmere_shots.tscn",
+      "camera": "Cameras/Lanes",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch15_hollowmere_pyre",
+      "scene": "res://game/levels/_tests/hollowmere_kit/ch15_hollowmere_shots.tscn",
+      "camera": "Cameras/Pyre",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch15_hollowmere_supper",
+      "scene": "res://game/levels/_tests/hollowmere_kit/ch15_hollowmere_shots.tscn",
+      "camera": "Cameras/Supper",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch15_sea_deck",
+      "scene": "res://game/levels/_tests/hollowmere_kit/ch15_open_sea_shots.tscn",
+      "camera": "Cameras/Deck",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch15_sea_bier",
+      "scene": "res://game/levels/_tests/hollowmere_kit/ch15_open_sea_shots.tscn",
+      "camera": "Cameras/Bier",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch15_sea_wide",
+      "scene": "res://game/levels/_tests/hollowmere_kit/ch15_open_sea_shots.tscn",
+      "camera": "Cameras/Wide",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch16_rim_ship",
+      "scene": "res://game/levels/_tests/drowned_choir_kit/ch16_pale_rim_shots.tscn",
+      "camera": "Cameras/Ship",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch16_rim_wade",
+      "scene": "res://game/levels/_tests/drowned_choir_kit/ch16_pale_rim_shots.tscn",
+      "camera": "Cameras/Wade",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch16_rim_cairns",
+      "scene": "res://game/levels/_tests/drowned_choir_kit/ch16_pale_rim_shots.tscn",
+      "camera": "Cameras/Cairns",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_boss_intro_drowner",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_drowner.tscn"
+    },
+    {
+      "id": "battle_boss_intro_lamp_engine",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_lamp_engine.tscn"
+    },
+    {
+      "id": "battle_boss_intro_ram",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_ram.tscn"
+    },
+    {
+      "id": "battle_boss_intro_wakefin",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_wakefin.tscn"
     },
     {
       "id": "ch10_edge_o02",

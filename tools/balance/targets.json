@@ -1244,7 +1244,7 @@
     },
     {
       "id": "ch10_mangrove_drowner",
-      "chapter": "Ch10 boss (the Mangrove Drowner, Ossa Fen's clearing; act2_plan §2 Ch10: the Act II boss curve, smart report only with an ease floor as ch05_cinder_matron (a logged exception, balance_targets.md); the ch08_seawall loadout until M4-A2P-019's Ch10 loadout)",
+      "chapter": "Ch10 boss (the Mangrove Drowner, Ossa Fen's clearing; act2_plan §2 Ch10: the Act II boss curve, smart report only with an ease floor as ch05_cinder_matron (a logged exception, balance_targets.md); tuned on the Combat side's record row, the role answer Ysolde's fire inside her MP; the ch08_seawall loadout until M4-A2P-019's Ch10 loadout)",
       "kind": "boss",
       "encounter": "ch10_mangrove_drowner",
       "active": [
@@ -1273,7 +1273,7 @@
       "loadout": "ch08_seawall",
       "swell": "good",
       "mean_turns_min": {
-        "smart": 30
+        "smart": 20
       }
     },
     {
@@ -1501,6 +1501,108 @@
       "p90_turns_max": 35,
       "loadout": "ch08_seawall",
       "swell": "good"
+    },
+    {
+      "id": "ch11_lamp_engine",
+      "chapter": "Ch11 boss (the Lamp Engine and two conduit crawlers; act2_plan: the Act II boss curve; the role answer kills the tenders first (Ysolde), then Liss on the engine, whose lamps break on the weak point and stay dark unless a crawler mends them (BattleParts); tuned on the Combat side's record row by the chapters combat seat, smart report only with an ease floor as ch05_cinder_matron; the ch08_seawall loadout until M4-A2P-019)",
+      "kind": "boss",
+      "encounter": "ch11_lamp_engine",
+      "active": [
+        "rhen",
+        "asha",
+        "liss"
+      ],
+      "reserve": [
+        "toma",
+        "ysolde"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          3
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          55,
+          80
+        ],
+        "smart": null,
+        "ward_guard": null
+      },
+      "p90_turns_max": 80,
+      "loadout": "ch08_seawall",
+      "swell": "good",
+      "mean_turns_min": {
+        "smart": 30
+      }
+    },
+    {
+      "id": "ch12_avalanche_ram",
+      "chapter": "Ch12 boss (the Avalanche Ram; Kerrid's Fluke Cleave breaks its armour; act2_plan: the Act II boss curve; tuned on the Combat side's record row by the chapters combat seat, smart report only with an ease floor as ch05_cinder_matron; the ch08_seawall loadout until M4-A2P-019)",
+      "kind": "boss",
+      "encounter": "ch12_avalanche_ram",
+      "active": [
+        "rhen",
+        "asha",
+        "kerrid"
+      ],
+      "reserve": [
+        "toma",
+        "ysolde"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          3
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          55,
+          80
+        ],
+        "smart": null,
+        "ward_guard": null
+      },
+      "p90_turns_max": 80,
+      "loadout": "ch08_seawall",
+      "swell": "good",
+      "mean_turns_min": {
+        "smart": 30
+      }
+    },
+    {
+      "id": "ch15_wakefin",
+      "chapter": "Ch15 boss (the Wakefin in the dark; Toma's Shell Breaker; act2_plan: the Act II boss curve; tuned on the Combat side's record row by the chapters combat seat, smart report only with an ease floor as ch05_cinder_matron; the ch08_seawall loadout until M4-A2P-019)",
+      "kind": "boss",
+      "encounter": "ch15_wakefin",
+      "active": [
+        "rhen",
+        "asha",
+        "toma"
+      ],
+      "reserve": [
+        "ysolde",
+        "kerrid"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          3
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          55,
+          80
+        ],
+        "smart": null,
+        "ward_guard": null
+      },
+      "p90_turns_max": 80,
+      "loadout": "ch08_seawall",
+      "swell": "good",
+      "mean_turns_min": {
+        "smart": 30
+      }
     }
   ]
 }

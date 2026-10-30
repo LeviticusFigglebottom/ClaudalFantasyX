@@ -1,0 +1,20 @@
+[gd_resource type="ParticleProcessMaterial" load_steps=3 format=3]
+
+[sub_resource type="Gradient" id="Gradient_ramp"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ramp"]
+gradient = SubResource("Gradient_ramp")
+
+[resource]
+resource_name = "battle_spark_process_ramp_turb"
+emission_shape = 1
+emission_sphere_radius = 0.1
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 1.0
+initial_velocity_max = 2.0
+gravity = Vector3(0, -3, 0)
+color_ramp = SubResource("GradientTexture1D_ramp")
+turbulence_enabled = true
+turbulence_noise_strength = 0.3

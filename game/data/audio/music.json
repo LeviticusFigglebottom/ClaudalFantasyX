@@ -189,7 +189,7 @@
     },
     "seawall_hold_rope": {"stems": ["res://assets/audio/music/seawall_hold_p1.ogg", "res://assets/audio/music/seawall_hold_p2.ogg", "res://assets/audio/music/seawall_hold_p3.ogg"], "start_stems": [0, 1], "_note": "M3-AUD-861: wave 2 'The Rope' (ch08_stair_hold_2): seawall_hold's stems, starting with stem 2 already in (the cue's intended wave 2)"},
     "seawall_hold_last": {"stems": ["res://assets/audio/music/seawall_hold_p1.ogg", "res://assets/audio/music/seawall_hold_p2.ogg", "res://assets/audio/music/seawall_hold_p3.ogg"], "start_stems": [0, 1, 2], "_note": "M3-AUD-861: wave 3 'The Last of the Low Town' (ch08_stair_hold_3): all three of seawall_hold's stems from the start"},
-    "undertow_reach": {"stems": ["res://assets/audio/music/undertows_reach_p1.ogg", "res://assets/audio/music/undertows_reach_p2.ogg", "res://assets/audio/music/undertows_reach_p3.ogg"], "start_stems": [0], "_note": "M3-AUD-861: the scripts' id for `undertows_reach` (ch08_the_reach.dlg): the same stems, so the cutscene plays the whole cue on the deck (CutsceneSound.music)"},
+    "undertow_reach": {"volume_db": 1.0, "stems": ["res://assets/audio/music/undertows_reach_p1.ogg", "res://assets/audio/music/undertows_reach_p2.ogg", "res://assets/audio/music/undertows_reach_p3.ogg"], "start_stems": [0], "_note": "M3-AUD-861: the scripts' id for `undertows_reach` (ch08_the_reach.dlg): the same stems, so the cutscene plays the whole cue on the deck (CutsceneSound.music)"},
     "cinder_matron": {
       "stems": [
         "res://assets/audio/music/cinder_matron_p1.ogg",
@@ -201,6 +201,7 @@
       "_note": "Ch5 boss (M3-AUD-09). No encounter or phase row until the fight exists; intended: battle.encounters cinder_matron -> cinder_matron, and phase `crust_broken` (Kerrid breaks its armour) -> stems_on [1] over 3 s"
     },
     "undertows_reach": {
+      "volume_db": 1.0,
       "stems": [
         "res://assets/audio/music/undertows_reach_p1.ogg",
         "res://assets/audio/music/undertows_reach_p2.ogg",
@@ -276,14 +277,18 @@
     "kerrid_at_sea": {"file": "res://assets/audio/act2/music/kerrid_at_sea.ogg", "beat": "free", "_note": "M4-A2P-090: Ch15 C3, the reveal: a bed for Kerrid's telling, his tread slowing until it stops, the held motes sideways (assets_src/music/act2/kerrid_at_sea.py; plain git, ADR 0175)"},
     "cloudloom": {"file": "res://assets/audio/act2/music/cloudloom.ogg", "resume": true, "_note": "M4-A2P-091: Ch12, Cloudloom's open-roofed weaving-hall: the loom figure, the light, the weavers' line; A minor 72 BPM, 120 s loop (plain git, ADR 0175)"},
     "sanctum_of_the_level": {"file": "res://assets/audio/act2/music/sanctum_of_the_level.ogg", "resume": true, "_note": "M4-A2P-091: Ch13, the Sanctum: one C major chord that never changes, a bell every four bars, the Order's hum far off; flat by design (plain git, ADR 0175)"},
-    "battle_heretic": {"file": "res://assets/audio/act2/music/battle_heretic.ogg", "_note": "M4-A2P-091 (ADR 0204 §9): the regular battle theme from Ch14 on, the party heretics: battle_standard_v2 darkened (the lead an octave down, the metal down, the bronze up, ORDER_HUM hummed under the riff); same intro and loop, so the two swap. Ch14+ encounter rows name it as combat adds them (plain git, ADR 0175)"},
-    "sefir_go_home": {"file": "res://assets/audio/act2/music/sefir_go_home.ogg", "beat": {"bpm": 52.0, "downbeat_offset_s": 0.6}, "_note": "M4-A2P-090: Ch16 C5, the temptation: piano lullaby, Sefir's motif with its held C#, ORDER_HUM sung once (ADR 0204 §10); the scene cuts it to silence on Asha's refusal (plain git, ADR 0175)"},
     "nhoa_bound": {"file": "res://assets/audio/act2/music/stings/nhoa_bound.ogg", "beat": "free", "_note": "M4-A2P-091: Ch11 C3, Ressa bound (the bind cinematic's sting) (plain git, ADR 0175)"},
     "hesk_bound": {"file": "res://assets/audio/act2/music/stings/hesk_bound.ogg", "beat": "free", "_note": "M4-A2P-091: Ch12 C3, Hesk bound in the weaving-hall (plain git, ADR 0175)"},
     "ethren_bound": {"file": "res://assets/audio/act2/music/stings/ethren_bound.ogg", "beat": "free", "_note": "M4-A2P-091: Ch13 C4, Ethren bound in the Sanctum (plain git, ADR 0175)"},
     "kesh_bound": {"file": "res://assets/audio/act2/music/stings/kesh_bound.ogg", "beat": "free", "_note": "M4-A2P-091: Ch16 C4, Kesh bound: the six elements in turn, onto the Hush's A minor (plain git, ADR 0175)"},
+    "battle_heretic": {"file": "res://assets/audio/act2/music/battle_heretic.ogg", "_note": "M4-A2P-091 (ADR 0204 §9): the regular battle theme from Ch14 on, the party heretics: battle_standard_v2 darkened (the lead an octave down, the metal down, the bronze up, ORDER_HUM hummed under the riff); same intro and loop, so the two swap. Ch14+ encounter rows name it as combat adds them (plain git, ADR 0175)"},
     "hollowmere_answers": {"file": "res://assets/audio/act2/music/hollowmere_answers.ogg", "beat": {"bpm": 76.0, "downbeat_offset_s": 3.0}, "_note": "M4-A2P-090: Ch15 C4, dawn in fog: Liss sings the current-song (CURRENT_SONG; sung, ADR 0204 §10) and Hollowmere answers; rings into the hollowmere loop (plain git, ADR 0175)"},
+    "sefir_go_home": {"file": "res://assets/audio/act2/music/sefir_go_home.ogg", "beat": {"bpm": 52.0, "downbeat_offset_s": 0.6}, "_note": "M4-A2P-090: Ch16 C5, the temptation: piano lullaby, Sefir's motif with its held C#, ORDER_HUM sung once (ADR 0204 §10); the scene cuts it to silence on Asha's refusal (plain git, ADR 0175)"},
     "act2_break": {"file": "res://assets/audio/act2/music/act2_break.ogg", "beat": "free", "_note": "M4-A2P-090: Ch16 C9, the act break: a bed for Rhen's voice-over; the Hush's first phrase remembered, the Letting's cell once, unresolved (plain git, ADR 0175)"},
+    "kesh_memory": {"file": "res://assets/audio/act2/music/kesh_memory.ogg", "beat": "free", "_note": "M4-A2P-090: Ch16 C4, Kesh's memory (ch16_the_choir.dlg): the Drowned Choir through water and time, MEL_A sung by one far voice (assets_src/music/act2/kesh_memory.py; plain git, ADR 0175)"},
+    "malcor_venn": {"stems": ["res://assets/audio/act2/music/malcor_venn_p1.ogg", "res://assets/audio/act2/music/malcor_venn_p2.ogg"], "start_stems": [0], "_note": "Ch14 boss, Warden Malcor Venn (M4-A2P-092): stem 1 the flat-engine (a still drone, the engine's pulse on every fourth beat), stem 2 he boards. No encounter or phase row until the fight exists; intended: battle.encounters <its id> -> malcor_venn, the engine part broken -> stems_on [1] over 3 s (plain git, ADR 0175)"},
+    "abiding_guard": {"stems": ["res://assets/audio/act2/music/abiding_guard_p1.ogg", "res://assets/audio/act2/music/abiding_guard_p2.ogg"], "start_stems": [0], "_note": "Ch16 boss, Sefir's Abiding guard (M4-A2P-092): stem 1 the guard's march and hum, stem 2 the storm waking early (undertows_reach's surge). No encounter or phase row until the fight exists; intended: the storm's row -> stems_on [1] over 4 s, then the scripted escape (plain git, ADR 0175)"},
+    "court_steps": {"stems": ["res://assets/audio/act2/music/court_steps_p1.ogg", "res://assets/audio/act2/music/court_steps_p2.ogg"], "start_stems": [0], "_note": "Ch14 set piece ch14_hold_the_steps (M4-A2P-092; the cue sheet §2): stem 1 the hold (the wedding's gong and the couple's tune in diminution), stem 2 the last turn as Merel's knife is nearly through. No encounter or phase row until the set piece exists; intended: the ward's last turn -> stems_on [1] over 3 s, then out on the beat to lagoon_escape (plain git, ADR 0175)"},
     "sunken_vey": {
       "file": "res://assets/audio/music/act2/sunken_vey.ogg",
       "resume": true,
@@ -360,6 +365,7 @@
       "_note": "Ch8 B18 the cut rope (ch08_cut_rope.dlg): rain and a single plucked string, a loop to the chapter's end (M3-AUD-822)"
     },
     "seawall_hold": {
+      "volume_db": 0.5,
       "stems": [
         "res://assets/audio/music/seawall_hold_p1.ogg",
         "res://assets/audio/music/seawall_hold_p2.ogg",
@@ -487,7 +493,8 @@
     "encounters": {
       "drownbell": "drownbell",
       "ch01_hullgnaw": "hullgnaw", "ch04_spar_wraith": "spar_wraith", "ch05_cinder_matron": "cinder_matron", "ch06_inquisitor": "stillguard_inquisitor",
-      "ch08_stair_hold_1": "seawall_hold", "ch08_stair_hold_2": "seawall_hold_rope", "ch08_stair_hold_3": "seawall_hold_last", "undertows_reach": "undertows_reach"
+      "ch08_stair_hold_1": "seawall_hold", "ch08_stair_hold_2": "seawall_hold_rope", "ch08_stair_hold_3": "seawall_hold_last", "undertows_reach": "undertows_reach",
+      "ch10_mangrove_drowner": "mangrove_drowner", "ch11_lamp_engine": "lamp_engine", "ch12_avalanche_ram": "avalanche_ram", "ch15_wakefin": "wakefin"
     },
     "phases": {
       "flood": {
@@ -498,7 +505,11 @@
         "_note": "the Flood (phase 2): low strings and the rising water come in over 4 s"
       }, "pour": {"stems_on": [1], "sec": 3.0, "_note": "M3-AUD-828: the Cinder Matron's Pour (phase 2): its second stem over 3 s"},
       "dark": {"stems_on": [1], "sec": 4.0, "_note": "M3-AUD-861: the Undertow's Reach at 60% HP (the storm goes dark): its second stem over 4 s"},
-      "breach": {"stems_on": [2], "sec": 2.0, "_note": "M3-AUD-861: the Reach's Breach at 30% HP (the wall gives; the scripted escape follows): its third stem over 2 s"}
+      "breach": {"stems_on": [2], "sec": 2.0, "_note": "M3-AUD-861: the Reach's Breach at 30% HP (the wall gives; the scripted escape follows): its third stem over 2 s"},
+      "uprooted": {"stems_on": [1], "sec": 3.0, "_note": "M4-A2P-092: the Mangrove Drowner uprooted (50% HP): the full ensemble and the motes' chimes over 3 s"},
+      "opened": {"stems_on": [1], "sec": 3.0, "_note": "M4-A2P-092: the Lamp Engine opened (50% HP): the core bared, its second stem over 3 s"},
+      "torn_fleece": {"stems_on": [1], "sec": 3.0, "_note": "M4-A2P-092: the Avalanche Ram's torn fleece (ADR 0204 §6, 40% HP): the bellow's rage over 3 s"},
+      "close_circle": {"stems_on": [1], "sec": 3.0, "_note": "M4-A2P-092: the Wakefin closes its circle (ADR 0204 §6, 40% HP): the full chase over 3 s"}
     }
   }
 }

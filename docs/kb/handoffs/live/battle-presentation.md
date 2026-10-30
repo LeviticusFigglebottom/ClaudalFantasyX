@@ -176,6 +176,49 @@ ch01_wickfry, ch01_oil_slug, ch01_shaft_limpet and ch01_scuttlers.
 - An earlier run showed 4 reds (battle_result_motion, battle_stings). They came from merging the integration branch
   while the run was going: each file passes 5/0 on the merged tree, and the clean run above is 817/0.
 
+### 2026-10-30 ~10:xx: the Lead's 10:07 item (PC pass 5 rows 61 and 64)
+**MERGE-READY @ ef997f3d** (+ this log commit). The glimmer swatch is in 4c4a3dd3 (below).
+- **Row 64 (65e776af): a 73-119 ms frame in the 60 after the fade, in five fights.**
+  - Cause: a ParticleProcessMaterial compiles one shader per feature set. Every battle effect sets a color ramp, and
+    most motes add turbulence. prewarm_materials.json warmed only the bare base spark material, so the first effect
+    after the fade compiled its variant.
+  - Fix: the registry now stages the ramped variant and the ramped turbulent one for the battle scenes
+    (battle_spark_process_ramp{,_turb}.tres).
+  - Test test_battle_vfx_prewarm: every effect layer, as BattleVfx builds it (reduced motion too), matches a warmed
+    variant. It fails without the two rows. `--filter=prewarm` 23/0.
+  - **PC-QUEUE:** re-measure the 60 frames after the fade at tideline, causeway, the Drownbell, the Hermit and Moll.
+    This is the likely cause, but only the GPU can confirm it. If a frame stays over the bar, the next suspect is
+    the runtime actor scenes (boss rigs), which the scene harvest can't see.
+- **Row 61 (ef997f3d):** the Reach's rest frame (rest_by_enemy) is now 6 m back and 1.6 m up at 56° (was 4, 2, 48).
+  - SELF-RENDERED battle_arena_seawall_stairhead_surge, three tries, viewed. Its hand grips the wall beside the
+    party, the arm takes about a fifth of the frame, and the party and the sea read.
+  - Tests: camera 65/0, boss 86/0, arena 18/0.
+
+### 2026-10-30 ~09:xx: the Lead's 09:00 item (the glimmer element's hit)
+**MERGE-READY @ 4c4a3dd3** (+ this log commit): `hit_glimmer` and `map.elements.glimmer` for act1-chapters' glimmer
+element (voice_glimmer, level_hand, still_water).
+- The effect: a soft pale-gold core, then motes rising off the target. It is released glimmer (color_script rule 1:
+  glimmer_lift brightening to glimmer_lift_hi, rising, never the held cyan).
+- Its sound stands in on hit_holy (battle_sfx.json vfx row) until audio writes its own.
+- **Verified on origin/lead/gate-big21 with this branch merged** (scratch worktree, imported): `--filter=battle_vfx`
+  10/0, and validate_data is clean.
+- Merge note: tests/screenshots/shots.json conflicts with big18+ (both sides append at the end). Keep both.
+- **A big21 red that isn't mine:** `test_battle_vowbound_model::test_a_real_vowbound_lands_each_action_on_its_clip_contact`
+  fails for every Kesh action (voice_* and the_seven: no clip of its own, no contact time). It fails the same on
+  big21 without this branch. BattleClips.action_clip reads Kesh's creatures.json row (clip_for), which maps none of
+  his skills. That row belongs to the creatures lane (Kesh's model and clips).
+  - The rest of that suite passes on big21 + this branch: `--filter=vowbound` 116 run, that 1 failed; `--filter=vfx`
+    45/0.
+- **M4-A2P-061 claimed:** the four Act II Vowbound's VFX and finishers are in gen_act2_ability_vfx.py (97e22896).
+  Each is written once its skill row lands (big21), and all 19 are checked there.
+- **Rows 57 and 61, verified on big21 + this branch (SELF-RENDERED, viewed):**
+  - battle_choreo_summon: the side-on frame keeps Ilun clear of the foes and the gull clear of the eel.
+  - battle_arena_seawall_stairhead_surge: the Reach is on its mark, its arm over the wall, with the party on the
+    wall-walk beside it.
+- Also MERGE-READY in this range: the Act II boss intros (c3e45bb0), the Act II boss moves fixed and viewed
+  (8d0fe783..f2bbb673; M4-A2P-062 Sound Dive verified in live play: sea-glow at the fin's crest beside the Breach
+  telegraph), and the Hullgnaw fall frame (8b0e12c2, viewed in a re-run of the sweep).
+
 ### 2026-10-30 ~03:xx: GPU QA pass 3 rows 57 and 61 (fixed, 921e5fec), and Act II begins (ADR 0205)
 - **Row 57 (battle_choreo_summon), fixed.** Nobody overlapped on the floor. The summon shot sat 4.2 m behind Ilun
   on the battle axis, so Ilun covered the foes and the gull read through the eel.
@@ -205,6 +248,32 @@ ch01_wickfry, ch01_oil_slug, ch01_shaft_limpet and ch01_scuttlers.
   - Default if no answer: battle-presentation writes PROVISIONAL rows (model, arena, phases from creatures.json, and
     stats copied from the Act II boss curve with a `_note`) so the presentation can be built and viewed. The combat
     seat then owns the numbers.
+- **Act II boss intros (c3e45bb0), SELF-RENDERED and viewed:** battle_boss_intro_drowner, _lamp_engine, _ram and
+  _wakefin, on the PROVISIONAL encounters.
+  - The Drowner, the Lamp Engine and the Ram take their hero shots under their cards.
+  - The Wakefin's did not: no low lens was clear of the barge, and the fitted fallback framed its mostly-submerged
+    bounds from 17 m behind the hull, so it was not in shot. Its row now takes `camera.shots.boss_over_rail` (hero
+    and fit off): the fin above the card, with the rail leading to it.
+  - New baselines for the gate: those four shots (never written by this track).
+- **Act II boss moves, viewed** on tools/vfx/boss_camera_sheet (now covering the four Act II creature bosses):
+  - **The Wakefin in the dark (M4-A2P-062):**
+    - Each hit's white core was a flash in the night. effects.json `dark_arenas` now scales every layer's energy in
+      bridal_barge_night by 0.35, except the sea-glow's (BattleVfx.dark_scale). 8d0fe783.
+    - Sound Dive's ring played on the fin's near face against the hull, hidden by the barge. It now centres on the
+      fin, and sea-glow motes climb the fin over the rail. A tried over-rail cut framed mostly deck and was
+      withdrawn. 8d0fe783, 5d16499d.
+  - **The Avalanche Ram:** Toma's shield stood across the Ram and its head left the frame in its charge_side shot.
+    1.0 m up and 7.2 m out keep both. Viewed. 5dc0eb00.
+  - **The Lamp Engine:** its canopy left the top of the rest frame (rest_by_enemy lamp_engine). Viewed. fdc92fbe.
+  - **The Mangrove Drowner:** Root Stamp throws splinters and fen mud. The teal over it was Rising Water's,
+    left on the sheet, which now waits out each move. 3ae3896c, 5d16499d.
+- **Act I sweep, Hullgnaw (batch 3):**
+  - Checks clean: the arena, impacts, framing, and no dead time.
+  - But the victory frame put the fall moment behind the raft's rail and a post. With Rhen alone, the intro's hero
+    shot is a low 30° lens from across the raft. The fall now searches its own higher lenses (moments.fall.hero).
+    8b0e12c2, test test_the_fall_looks_down_from_above_the_intros_lens.
+- **Not mine, for the Lead:** test_cutscene_vfx_hosts fails to parse on this branch with or without my changes. It
+  uses `CutsceneMotes`, which 93c1aa2d removed.
 - **The Act I encounter sweep (the Lead's 23:10)**, so far:
   - Done: ch02_tideline clean (arena, impacts, framing). The Drownbell's 8 stills were viewed and are clean after
     the hit-core and float fixes.
@@ -254,8 +323,16 @@ ch01_wickfry, ch01_oil_slug, ch01_shaft_limpet and ch01_scuttlers.
     hides it too, it comes home for the contact. Test: test_a_bystander_across_the_sight_line_keeps_the_default.
   - Re-rendered: the crab shows at every contact.
 - **Next:** view each encounter's contact sheet, fix, file and log. BACKLOG EMPTY only when every encounter is clean.
+- **Batch 3 (10-30), on big21 + this branch:**
+  - Clean (checks clean, stills viewed): ch01_underway_shoals, ch01_underway_limpet, ch04_sail_leeches.
+  - ch01_hullgnaw: checks clean, but the fall moment's frame was behind the rail. Fixed in 8b0e12c2 and viewed.
+  - **ch04_bottle_hermit, open:** at Glass Flare's contact (a single-target fire hit), a red "119" stands at the
+    screen's left edge, away from any hero, and the party crowds the right edge under the timeline. The checks did
+    not flag either. Next: re-run with each float's target and screen position logged.
+  - ch04_spar_wraith: running.
 
 ### PC-QUEUE
+- Row 64 re-measure (65e776af): the 60 frames after the fade at tideline, causeway, the Drownbell, the Hermit and Moll.
 - GPU QA row 36 (the Reach): re-check in live play on the RX 9070 XT (M3-BPR-425's rest frame).
 - GPU QA row 34: re-check once M3-BPR-427 lands (and hold the zone's random encounters in the walk).
 

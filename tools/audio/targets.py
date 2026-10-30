@@ -22,7 +22,9 @@ RULES = [
     ("music/act2/wakefin_p*.ogg", "stem", -16.0, 0.5, -1.0, "the Wakefin's two stems, stacked at -16 (Git LFS, M3-AUD-844/845)"),
     ("music/act3/hesper_and_ilsabet_s*.ogg", "stem", -16.0, 0.5, -1.0, "the revenant pair's two stems, stacked at -16 (Git LFS, M3-AUD-858)"),
     ("music/*.ogg", "integrated", -16.0, 0.5, -1.0, "music beds, themes and cutscene cues"),
-    ("act2/music/*_p*.ogg", "stem", -16.0, 0.5, -1.0, "Act II boss stems in plain git, stacked at -16 (ADR 0175)"),
+    ("act2/music/malcor_venn_p*.ogg", "stem", -16.0, 0.5, -1.0, "Malcor Venn's two stems, stacked at -16 (ADR 0175)"),
+    ("act2/music/abiding_guard_p*.ogg", "stem", -16.0, 0.5, -1.0, "the Abiding guard's two stems, stacked at -16 (ADR 0175)"),
+    ("act2/music/court_steps_p*.ogg", "stem", -16.0, 0.5, -1.0, "Ch14's step-hold, two stems stacked at -16 (ADR 0175)"),
     ("act2/music/*.ogg", "integrated", -16.0, 0.5, -1.0, "Act II scene cues, loops and stings in plain git (ADR 0175)"),
     ("ambience/*.ogg", "integrated", -26.0, 0.5, -5.0, "ambience beds (mix.md: -26, peaks well down)"),
     ("act2/ambience/*.ogg", "integrated", -26.0, 0.5, -5.0, "Act II ambience beds (M4-A2P-093, ADR 0175)"),
@@ -59,6 +61,7 @@ RULES = [
     ("sfx/step_*.ogg", "momentary", -18.5, 1.5, -1.0, "footsteps"),
     ("sfx/drownbell_toll.ogg", "momentary", -18.0, 1.0, -1.0, "the cutscene's far toll"),
     ("sfx/text_blip.ogg", "momentary", -27.0, 1.0, -3.0, "one dialogue blip"),
+    ("sfx/ui_mark.ogg", "momentary", -24.0, 1.0, -2.5, "the reader's mark, under the found hand (M4-AUD-1080)"),
     ("sfx/ui_*.ogg", "momentary", -20.0, 1.0, -2.5, "UI SFX"),
     ("sfx/voice/blip_*.ogg", "momentary", -27.0, 1.0, -3.0, "per-speaker dialogue blips (M3-AUD-07)"),
     # M3-AUD-06 (assets_src/sfx/reefball_sfx.py, underwater_sfx.py); the ambience/ beds fall under ambience/*.ogg
@@ -81,6 +84,10 @@ RULES = [
     ("sfx/choreo/ilun_*.ogg", "momentary", -22.0, 1.0, -1.0, "Ilun's layers under the shared Vowbound rows (M3-AUD-846)"),
     ("sfx/choreo/kahre_*.ogg", "momentary", -22.0, 1.0, -1.0, "Kahre's layers under the shared Vowbound rows (M3-AUD-857)"),
     ("sfx/choreo/virel_*.ogg", "momentary", -22.0, 1.0, -1.0, "Virel's layers under the shared Vowbound rows (M3-AUD-857)"),
+    ("sfx/choreo/nhoa_*.ogg", "momentary", -22.0, 1.0, -1.0, "Nhoa's layers under the shared Vowbound rows (M4-AUD-1010)"),
+    ("sfx/choreo/hesk_*.ogg", "momentary", -22.0, 1.0, -1.0, "Hesk's layers under the shared Vowbound rows (M4-AUD-1010)"),
+    ("sfx/choreo/ethren_*.ogg", "momentary", -22.0, 1.0, -1.0, "Ethren's layers under the shared Vowbound rows (M4-AUD-1010)"),
+    ("sfx/choreo/kesh_*.ogg", "momentary", -22.0, 1.0, -1.0, "Kesh's layers under the shared Vowbound rows (M4-AUD-1010)"),
     ("sfx/choreo/*.ogg", "momentary", -18.0, 1.0, -1.0, "KO collapse, toll wave, surge, the Vowbound's rise and fall"),
     # M3-AUD-14 (assets_src/sfx/creature_sfx.py): movement repeats on every action, idles sit under the battle
     *[(f"sfx/creatures/*_{w}_*.ogg", "momentary", -21.0, 1.0, -1.0, f"creature movement ({w})")
@@ -95,6 +102,8 @@ RULES = [
       for w in ("skitter", "flap", "plod")],
     ("act2/sfx/creatures/*_idle_*.ogg", "momentary", -20.0, 1.0, -1.0, "an Act II creature's idle voice"),
     ("act2/sfx/creatures/*.ogg", "momentary", -18.0, 1.0, -1.0, "Act II creature voices: attack, hurt, death"),
+    ("act2/sfx/battle/sting_boss*_soft.ogg", "momentary", -17.0, 1.0, -1.0, "Act II reduced-audio boss stings"),
+    ("act2/sfx/battle/sting_boss*.ogg", "momentary", -16.0, 1.0, -1.0, "Act II boss intro stings (M4-A2P-092)"),
     ("act2/sfx/battle/*.ogg", "momentary", -19.0, 2.5, -1.0, "Act II combat SFX (M4-A2P-093)"),
     # M3-AUD-802 (assets_src/sfx/hero_foley.py): the field heroes' steps (played at walk_db), scuffs and foley layers
     ("sfx/foley/step_*.ogg", "momentary", -18.5, 1.0, -1.0, "hero footsteps by surface and gait (-18, transients limited)"),
@@ -232,6 +241,23 @@ RULES = [
     ("sfx/raft_pole.ogg", "momentary", -22.0, 1.0, -1.0, "an Act I cutscene cue"),
     ("sfx/staff_bell_shells.ogg", "momentary", -21.0, 1.0, -1.0, "an Act I cutscene cue"),
     ("sfx/harbour_lap.ogg", "momentary", -25.0, 1.0, -1.0, "an Act I cutscene cue"),
+    ("sfx/egret_lift.ogg", "momentary", -24.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/lamp_seat.ogg", "momentary", -26.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/engine_tick.ogg", "momentary", -25.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/pole_no_wake.ogg", "momentary", -30.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/pole_stroke.ogg", "momentary", -24.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/stirring_bells.ogg", "momentary", -21.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/water_gate_drop.ogg", "momentary", -19.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/level_pin_ring.ogg", "momentary", -28.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/pyre_crackle.ogg", "momentary", -23.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/lamp_housing_close.ogg", "momentary", -25.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/lamp_crack.ogg", "momentary", -26.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/kerrid_sits.ogg", "momentary", -26.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/storm_wall.ogg", "momentary", -19.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/current_song_hum.ogg", "momentary", -24.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/kesh_rise.ogg", "momentary", -21.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/barge_no_wake.ogg", "momentary", -27.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
+    ("sfx/fin_cut.ogg", "momentary", -22.0, 1.0, -1.0, "an Act II cutscene cue (M4-A2P-093)"),
 ]
 FILE_LIMIT = 5 * 1024 * 1024        # CLAUDE.md §8: no file over 5 MB
 TOTAL_BUDGET = 105 * 1024 * 1024    # every shipped audio file (ADR 0175: Act II under assets/audio/act2/; 0174, 0171, 0170)

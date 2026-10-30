@@ -267,11 +267,30 @@ Root Stomp and a two-turn charged Drowning Grasp.
 - **The tuning that mattered:** the fight's length. At 4,800 HP, `role_answer` (which never heals) lost by attrition at
   every damage level. At 3,600 HP behind defence 120, Shell Breaker's answer carries it.
 
+### Ch10: the Mangrove Drowner on its record row (big20; the Lead 10-30 05:28: one definition, the chapters seat owns the numbers)
+- **Superseded above:** my own row's tune (role answer Toma, Root Lash, Drowning Grasp). There's one row now:
+  battle-presentation's.
+  - Role answer: Ysolde (fire on a fire-weak boss).
+  - Skills: Root Haul (`drowner_drag`), Rising Water, Root Stamp.
+  - Phase `uprooted` at 50%.
+- **Stats changed:**
+  - HP 5200 → 2200, strength 30 → 11, magic 20 → 8, defence 60 → 200.
+  - `uprooted` defence 36 → 160.
+- **Why:**
+  - Ysolde's Ember costs 4 MP, and the role play never uses items, so her fire must finish it inside her MP.
+  - The physical wall (defence 200, then 160) keeps a naive basic-attack party out.
+- **The ease floor** drops to 20 turns: the record row is the shorter fight.
+- **Results** (1,000 seeds, `ch08_seawall`):
+  - naive 1.1, role_answer 62.1, smart 100 (about 24 turns, report only).
+  - **naive_swell 100** (report only): a player who fills the Swell overpowers it. Watch this once the Ch10 loadout
+    lands.
+
 ### Act II creature bosses: the combat seat's tune for battle-presentation's PROVISIONAL rows (1dbfed6d5)
 
-- **Status:** battle-presentation wrote the rows so the staging (M3-BPR-419) could go live. These values were tuned in a
-  scratch worktree of their branch (1,000 seeds). The chapters seat applies them, and adds the three suites, once the
-  rows reach the integration branch.
+- **Status: applied** on the record rows (big20), with suites `ch11_lamp_engine`, `ch12_avalanche_ram` and
+  `ch15_wakefin` added. The same 1,000-seed numbers as below.
+- **History:** battle-presentation wrote the rows so the staging (M3-BPR-419) could go live. I tuned them first in a
+  scratch worktree of their branch.
 - **Common to all three:**
   - Loadout `ch08_seawall` until M4-A2P-019.
   - Swell `good`.
@@ -279,13 +298,12 @@ Root Stomp and a two-turn charged Drowning Grasp.
 
 | Boss (suite) | Party (reserve) | Stats changed from the provisional row | `naive` | `role_answer` | `smart` (turns) |
 |---|---|---|---|---|---|
-| Lamp Engine (`ch11_lamp_engine`) | Rhen, Asha, Liss (Toma, Ysolde) | HP 5600 → 4000, strength 28 → 22, magic 26 → 20, defence 110 → 140, magic defence 40 → 60; `opened` defence 30 → 80, magic defence 20 → 40 | 2.7 | **report only** (9.7) | 100 (68) |
+| Lamp Engine (`ch11_lamp_engine`), **with two conduit crawlers (M4-A2P-022)** | Rhen, Asha, Liss (Toma, Ysolde) | HP 2000, strength 5, magic 5, defence 80, magic defence 60; `opened` defence 50, magic defence 40. Crawlers: HP 200, strength 9, defence 20. The lamps a part on a 2-hit weak point | 0.2 | 55–80% (63.2) | 100 (33) |
 | Avalanche Ram (`ch12_avalanche_ram`) | Rhen, Asha, Kerrid (Toma, Ysolde) | HP 6200 → 4000, strength 36 → 22, defence 44 → 120; `torn_fleece` defence 22 → 40 | 2.2 | 61.3 | 100 (43) |
 | Wakefin (`ch15_wakefin`) | Rhen, Asha, Toma (Ysolde, Kerrid) | HP 7000 → 5000, strength 38 → 30, magic 18 → 16, agility 22 → 16, evasion 8 → 4, defence 36 → 120 | 0.0 | 70.3 | 100 (43) |
 
 - **Why the defence wall:** the sim's `role_answer` opens with a Break skill the foe lacks: Kerrid's Fluke Cleave on
   the Ram, Toma's Shell Breaker on the Wakefin. At the rows' low defence, nothing separated a naive player from the
   answer. As provisional, every policy lost by attrition (role 0–5%).
-- **The Lamp Engine's answer is Liss's part repair (M4-A2P-022), which is not data yet.**
-  - Liss has no Break skill, so `role_answer` can't beat naive, and her row stays report only until the mechanic lands.
-  - Re-tune it then.
+- **The Lamp Engine's answer** now has its adds (M4-A2P-022). The role play kills the tenders first, then works the
+  engine, so it has a real band. Its low numbers fit the Ch8 loadout; re-tune on the Ch11 loadout.

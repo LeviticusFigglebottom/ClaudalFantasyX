@@ -1,0 +1,10 @@
+// Ch11: Pell at the galleries' conduits. After the binding he still listens for her.
+title: ch11_bark_pell_conduits
+location: ch11/sunken_vey
+---
+<<if $ch11_nhoa_bound>>
+    Pell [sad]: I keep listening for her in the pipes. She is not in the pipes. I keep listening. #line:ch11_bark_pcond_001
+<<else>>
+    Pell [worried]: Do not touch the warm ones. #line:ch11_bark_pcond_002
+<<endif>>
+===

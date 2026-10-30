@@ -1,8 +1,8 @@
 extends Node
 ## M3-BPR-420 (ADR 0041): renders each Act I boss's big moves (camera.enemy_by_skill) in its own fight and arena, so
 ## the shots are viewed: the move is built as the engine reports it (ActionResult) and played by the real choreography,
-## frozen at the lead shot (`lead` of the way to contact, default 0.7) and at the contact. Saves
-## <out>/<encounter>_<skill>_{lead,contact}.png. Run it like a capture:
+## frozen at the lead shot (`lead` of the way to contact, default 0.7), at the contact and AFTER_SEC after it. Saves
+## <out>/<encounter>_<skill>_{lead,contact,after}.png. Run it like a capture:
 ##   godot-render --path . --audio-driver Dummy --fixed-fps 60 --disable-vsync --rendering-driver vulkan \
 ##     res://tools/vfx/boss_camera_sheet.tscn -- --out=<abs dir> [--lead=0.7] [--only=<encounter>]
 ##     [--moment=phase|fall]   (M3-BPR-426: each fight's camera moment instead, mid-hold)
@@ -11,6 +11,8 @@ extends Node
 const SCENE := "res://game/battle/scene/battle_sandbox.tscn"
 const PARTY: Array[StringName] = [&"rhen", &"asha", &"toma"]
 const SETTLE_FRAMES := 30
+const SETTLE_SEC := 2.0
+const AFTER_SEC := 0.8
 const FIGHTS := {
 	&"ch01_hullgnaw": [&"hullgnaw", [&"gnaw", &"thrash"]],
 	&"ch04_spar_wraith": [&"spar_wraith", [&"haul", &"sea_lash", &"shroud_sweep"]],
@@ -19,6 +21,11 @@ const FIGHTS := {
 	&"drownbell": [&"drownbell", [&"hood_slam"]],
 	&"ch04_bottle_hermit": [&"bottle_hermit", []],  # moments only (no big move)
 	&"undertows_reach": [&"undertows_reach", []],  # moments only (its moves keep the default frame)
+	# ADR 0205: the Act II creature bosses (PROVISIONAL rows), each move with its own effect
+	&"ch10_mangrove_drowner": [&"mangrove_drowner", [&"drowner_drag", &"rising_water", &"root_stamp"]],
+	&"ch11_lamp_engine": [&"lamp_engine", [&"lamp_trim", &"lamp_flare", &"core_pulse"]],
+	&"ch12_avalanche_ram": [&"avalanche_ram", [&"horn_toss", &"ram_charge", &"ram_bellow"]],
+	&"ch15_wakefin": [&"wakefin", [&"fin_cut", &"sound_dive", &"wake_breach", &"wake_wheel"]],
 }
 
 var _opts: Dictionary = {}
@@ -65,7 +72,11 @@ func _run() -> void:
 			r.actor_id = boss.id
 			r.skill_id = sid
 			var hits: Array[Dictionary] = []
-			for h in ctl.engine.party_active:
+			var row := ctl.engine.db.skill(sid)
+			var charge := row.get("charge", {}) as Dictionary
+			if str(row.get("target", "")) == "self":  # a telegraph (the Wakefin's Sound Dive): on itself
+				hits.append({"target_id": boss.id, "hit": true, "crit": false, "amount": 0, "statuses_added": []})
+			for h in ctl.engine.party_active if hits.is_empty() else []:
 				hits.append({"target_id": h.id, "hit": true, "crit": false, "amount": 10, "statuses_added": []})
 				if not _sweeps(sid):
 					break
@@ -78,11 +89,16 @@ func _run() -> void:
 			choreo.skip = false
 			choreo.speed = 1.0
 			ctl.engine.action_resolved.emit(r)
+			if not charge.is_empty():  # as BossMechanics: the charge's own staging (M3-BPR-418's blade under)
+				var next := StringName(str(charge.get("skill", "")))
+				ctl.engine.charge_started.emit(boss, next, maxi(int(charge.get("turns", 1)), 1))
 			var c := float(choreo.current().get("contact", 0.5))
-			for moment: String in ["lead", "contact"]:
+			for moment: String in ["lead", "contact", "after"]:
 				choreo.seek(c * float(_opts.get("lead", 0.7)) if moment == "lead" else c)
 				for i in 3:
 					await get_tree().process_frame
+				if moment == "after":  # the effect grown (it spawns at contact): AFTER_SEC of it, the camera held
+					await get_tree().create_timer(AFTER_SEC).timeout
 				await RenderingServer.frame_post_draw
 				var img := get_viewport().get_texture().get_image()
 				img.convert(Image.FORMAT_RGB8)
@@ -90,8 +106,8 @@ func _run() -> void:
 				print("BOSS_CAMERA_SHEET %s %s %s %s" % [enc, sid, moment, choreo.camera.shot_ids])
 			choreo.frozen = false
 			choreo.seek(float(choreo.current().get("total", 0.0)) + 1.0)
-			for i in 10:
-				await get_tree().process_frame
+			# the last move's particles die out first (Rising Water's teal had hung over Root Stamp's frames)
+			await get_tree().create_timer(SETTLE_SEC).timeout
 		remove_child(ctl)
 		ctl.queue_free()
 	get_tree().quit()
@@ -168,10 +184,12 @@ func _moment(ctl: BattleController, boss: BattleCombatant, out: String, enc: Str
 	print("BOSS_CAMERA_SHEET %s %s %s" % [enc, which, choreo.camera.moments_played])
 
 
-## A move on the whole party (its enemy_by_skill lead is boss_sweep) hits every hero.
+## A move on the whole party (its enemy_by_skill lead is boss_sweep, or it targets all foes) hits every hero.
 func _sweeps(sid: StringName) -> bool:
 	var by_skill := BattleChoreo.load_data()["camera"]["enemy_by_skill"] as Dictionary
-	return str((by_skill.get(String(sid), {}) as Dictionary).get("lead", "")) == "boss_sweep"
+	if str((by_skill.get(String(sid), {}) as Dictionary).get("lead", "")) == "boss_sweep":
+		return true
+	return str(BattleDB.load_default().skill(sid).get("target", "")) == "all_foes"
 
 
 func _args() -> Dictionary:

@@ -1,12 +1,15 @@
 """The Lacquer Court's step-hold arena (env-art-b; M4-A2P-044, arenas_ch13_16.md), written by env-art's arena writer
 (`arena_scenes.py`, read-only: its `write_arena` and table format), as Act I's Ashcrown arenas are (ashcrown/b_arenas.py):
 
-  lacquer_court_steps  Ch14's step-hold: the party holds the top of the court's water-steps while Merel cuts the barge
+  lacquer_court_steps  (its own table) Ch14's step-hold: the party holds the top of the court's water-steps while Merel cuts the barge
                        loose; the bridal barge and the water-gate behind the party, the lit dais and the Conclave's
                        gallery behind the enemy line (the Stillguard come up from the court). `ch14` dusk at peak
                        contrast, the ceremony's lamp-stands lit.
 
-The arena is the court zone's own dressing (tools/act2/ch14_lacquer_court_dressing.py) moved into the arena frame
+Also ansedra_lagoon_escape (Ch14's boss) and bridal_barge_night (Ch15's), from env-art's tables with the zone looks
+over their flat slots (KitSlotSwaps).
+
+The step-hold arena is the court zone's own dressing (tools/act2/ch14_lacquer_court_dressing.py) moved into the arena frame
 about COURT_AT (the fight's centre on the court's paving, near the steps' head). Re-run after the
 kit or the court changes:
 
@@ -103,7 +106,11 @@ def steps() -> dict:
     }
 
 
-ARENAS = {"lacquer_court_steps": steps}
+# The two Ch14-15 arenas env-art built (its tables, arena_scenes.ANSEDRA_ESCAPE and BRIDAL_ARENA, read-only) are written
+# here too, so they carry the city's zone looks over the kit's flat slots (the barges' lacquer and gilt, the domes'
+# gold; arenas_ch13_16.md). Without the swaps they reproduce env-art's scenes byte for byte.
+ARENAS = {"lacquer_court_steps": steps, "ansedra_lagoon_escape": lambda: AS.ANSEDRA_ESCAPE,
+          "bridal_barge_night": lambda: AS.BRIDAL_ARENA}
 
 
 def main(out_dir: Path | None = None) -> int:
