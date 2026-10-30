@@ -7,8 +7,9 @@ extends RefCounted
 
 ## The hit dictionary for `sk` from `actor` landing on `target` (after Reflect):
 ## {target_id, hit, crit, amount (HP lost; < 0 heals), statuses_added, element}, plus "read" for
-## Read, "delay_ticks" when it pushes the target back, and "absorbed" (the HP the target's absorb
-## affinity drank, before the max-HP cap: ADR 0027 A1, the Vowbound gauge) when it absorbs.
+## Read, "delay_ticks" when it pushes the target back, "drained" (the HP its user won back, M4-CMB-1001)
+## for a drain, and "absorbed" (the HP the target's absorb affinity drank, before the max-HP cap:
+## ADR 0027 A1, the Vowbound gauge) when it absorbs.
 static func resolve(
 	engine: BattleEngine, actor: BattleCombatant, target: BattleCombatant, sk: Dictionary
 ) -> Dictionary:
@@ -69,12 +70,22 @@ static func resolve(
 				hit["read"] = BattleRead.reveal(target, engine.db.enemies.get(BattleEngine.enemy_id(target), {}))
 		_:
 			push_error("BattleEngine: unknown skill kind '%s'" % kind)
+	_drain(actor, hit, sk)
 	added.append_array(_inflict(engine, actor, target, sk))
 	hit["statuses_added"] = added
 	var delay_ranks := int(sk.get("delay_ranks", 0))
 	if delay_ranks > 0 and target.is_alive():
 		hit["delay_ticks"] = engine.push_delay(target, delay_ranks)
 	return hit
+
+
+## M4-CMB-1001: a `drain_pct` skill heals its user by that share of the HP the hit took ("drained" on the hit).
+static func _drain(actor: BattleCombatant, hit: Dictionary, sk: Dictionary) -> void:
+	var pct := int(sk.get("drain_pct", 0))
+	var lost := int(hit["amount"])
+	if pct <= 0 or lost <= 0 or not actor.is_alive():
+		return
+	hit["drained"] = actor.restore_hp(Formulas.drain_heal(lost, pct))
 
 
 ## A negative damage roll is an absorb: record what it drank, even when the target was full.

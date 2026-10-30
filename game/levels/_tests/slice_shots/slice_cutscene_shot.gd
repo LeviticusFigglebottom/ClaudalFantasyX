@@ -28,6 +28,8 @@ extends Node3D
 ## M2-FP-120: "<cue> <first arg>" (e.g. "vfx glimmer_bound"): once that cue has run, the scene's clock stops, so a
 ## beat with no line (S08's held form) holds whatever the frame count. Empty = run on.
 @export var hold_cue: String = ""
+## Stage actors to show before the scene, as a chapter beat's `show_block` steps do (Ch1's Hullgnaw).
+@export var show: Array = []
 
 var level: Node3D
 var sequencer: CutsceneSequencer
@@ -69,6 +71,10 @@ func start() -> void:
 	if scene_id == &"":
 		return
 	var stage := level.get(&"stage") as CutsceneStage
+	for id: Variant in show:
+		var shown := stage.actor(StringName(str(id))) if stage != null else null
+		if shown != null:
+			shown.visible = true
 	sequencer = CutsceneSequencer.new()
 	sequencer.name = "ShotSequencer"
 	sequencer.auto_advance = true

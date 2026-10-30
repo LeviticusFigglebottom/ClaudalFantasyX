@@ -36,6 +36,23 @@
     }
    ],
    "beats": {
+    "drowner": {
+     "when": {
+      "set": [
+       "ch10_started"
+      ],
+      "unset": [
+       "ch10_drowner_defeated"
+      ]
+     },
+     "steps": [
+      {
+       "battle": "ch10_mangrove_drowner",
+       "return_spawn": "DrownerArena",
+       "victory_flag": "ch10_drowner_defeated"
+      }
+     ]
+    },
     "to_reedhollow": {
      "steps": [
       {

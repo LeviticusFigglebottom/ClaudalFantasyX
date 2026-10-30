@@ -23,6 +23,7 @@
 | act2-plan | `session_01UPFyE8YdUYQ5LuuhgfZtqS` | claude/act2-plan (docs only: the Act II plan, the tasks blocked by ADR 0203, the track split) |
 | gate big18 | `session_01UPFyEAXofxWazWNnRTzFGJ` | lead/gate-big18 (log `gate-big18.md`) |
 
+- 10-30 05:55: big19's second shot batch reviewed and approved (83, 1e63e5ba). big20 fast gate running (lead/gate-big20 @ 4e3c74c9); its one red so far, test_slice_primitives (the Oruvel seabed PlaneMesh, e3ad5bbe), is a FAST-TRACK to slice-polish; the gate reverts just that actor if the fix isn't in by the end of the lanes. Drowner: the Combat side's definition stands. PC asked to measure claude/ui @ 329e7bce (row 67) now; pass 5 after big20. Idle tracks given work: creatures (urchin element off ice, tortoise LOD1), env-art (Act I rows 25/47, ΔE, o17, then Ch13–15 kits), act2-plan (Act II barks and lore), ui-menus (Act II UI and portraits), audio (Act II cues).
 - 21:25: **big17 merged** @ 96222b30 ahead of its shots (the human asked to play it now, in the gate session). big18 gate started.
 | audio | `session_01UPFyE9L9BA3QodpCNJEfAs` | claude/audio (started 23:10: Act I sound audit) |
 

@@ -977,7 +977,122 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
 - **M2-FP-121 (Ch1's "One month earlier." as UI's card on black), MERGE-READY:** a `#card` line is ActCard's caption.
   A card before the first fade-in no longer stops a scene starting black. cutscene 98, ch01 20, dialogue 85,
   cutscene_sequencer 19, all 0 failed (mutation-checked).
+- **M3-CIN-1234 (found in the Ch1 beat pass on big18): every arrival `place` step was undone in play.**
+  - **Seen:** in Ch1's scale-hull scene Rhen never appears, though he has half the lines. O02 is my over-the-shoulder
+    from beside ScaleHull, and it framed the booth alone. `tools/cutscene_frames --log-player` (new) shows Rhen at
+    Surface (0, 0, 13) for the whole scene.
+  - **Cause:** ZoneStory (`game/flow/zone_story.gd`; the architect seat, integration-qa's) begins its arrival steps
+    with a deferred call in `_ready`, the frame the router swaps the scene in. SceneRouter places the party on the
+    travel spawn one frame later, so the arrival's `place` step is overwritten.
+  - **Scope:** 20+ arrivals in Ch1 and Ch4–Ch9 place the party somewhere other than their travel spawn: Ch4's ferry
+    (Stern, Landing), Ch5 (Harbour, FromAshcrown, AnvilCourt), Ch6 (Entry, CampWaterline), Ch7 (RiverMouth, the
+    galleries), Ch8 (MoleStair, WallHead ×6, Gallery), Ch9 (Strand, RoadGate). The thread tests bypass the router, so
+    none caught it.
+  - **Fix (pushed; the human is playtesting, so I did not wait):** with a swap in progress, `_autostart` waits for
+    `EventBus.scene_changed`, which the router emits right after placing the party. With no swap (tests), nothing
+    changes. zone_story 15, _thread 40, haluna 65, act1_route 3, scene_router 17, all 0 failed.
+  - **Viewed (`--log-player`, the real arrival):** Rhen stands at ScaleHull (-4.6, 0, 10.5) from the scene's first
+    frame. O02 is the over-the-shoulder as staged: Rhen in the right foreground with his lantern, the Scale-Man across
+    the counter. **MERGE-READY @ the branch head** (for big19; integration-qa to review).
+  - **For integration-qa:** please review. A router-level test would catch any regression: a real change_scene with
+    a spawn, plus an arrival that places elsewhere.
+  - **For act1-chapters:** your Ch4–Ch9 arrival scenes have staged on the travel spawn until now. Re-view any arrival
+    still that looked off.
+- **QA pass 3 (origin/gpu/act1-qa-3): rows 58 and 60 and the Ch1 dive, MERGE-READY @ e3ad5bbec** (for big19).
+  - **Id note:** the Lead's "M3-CIN-1234, the Ch1 dive's encounter gaps" collides with my M3-CIN-1234 (the arrival
+    place steps, above). I read it as M3-CIN-1232's open item (U09 and U11, the dive's blank shots) and closed that.
+    Rows 58 and 60 are M3-CIN-1235 and M3-CIN-1236 (task files in docs/kb/tasks/M3/).
+  - **Row 58, M3-CIN-1235 (viewed, lavapipe):**
+    - ch01_hullgnaw_rises: Oruvel had no Hullgnaw. A hidden layout actor with the creature's model is shown by the
+      chapter beat's `show_block` and rises (`@anim hullgnaw intro`) through the net-pen deck at the centre of O16, in
+      front of Rhen. It reads as a dark mass with its cyan glow (the storm light; see PC-QUEUE).
+    - ch01_net_pen: P01, over Rhen's shoulder onto the pen; the children are in frame on the Child's line.
+    - O07 (ch01_bark_outer_mooring): square on the Seventh Terrace's name-board, which fills the frame. The 1.5 s
+      insert now ends before Sadi's answer, and the shot holds the insert (`hold_cue: camera O07`).
+  - **Row 60, M3-CIN-1236 (viewed):** S07 sat between Rhen and Toma, 1.6 m behind them. It is pulled back to a clear
+    over-the-shoulder on Asha, and a new reverse, S07_reverse, plays Rhen's and Toma's answers on their faces.
+    slice_verse_hall shows Rhen speaking in frame, Toma beside him, Asha's shoulder at the edge.
+  - **The dive, M3-CIN-1232 (viewed):**
+    - Oruvel gets an UnderwaterRig on its Water.
+    - U10 looks up from under the water at the hulls, with Rhen's lantern (the `dive_lamp` practical, `@light
+      DiveLamp`) and held motes sinking from a mark in frame. `at=rhen` had resolved to the player, up on the pen.
+    - U11 looks down at a slant, with held motes sinking into the dark.
+    - U09 had a look_at straight above the camera (colinear with up), so it never turned and showed the seabed. It
+      now sits inside the current shaft above Rhen, looking up the tube to its lit mouth.
+    - New pending stills: ch01_going_under_u10, ch01_going_under_u11, ch01_current_shaft_u09.
+  - **For rendering (UnderwaterRig):** over open water the post takes the 400 m path, and its multiply pass zeroes
+    every transparent in front of it, GlimmerField motes included. U11 was a flat colour until I put a dark seabed
+    plane (`seabed` stage actor) under the pen. Zones with no floor under the camera will hit this again.
+  - **Checks:** ch01 20, underway 9, oruvel 17, underwater 9, first_verse 3, slice_primitives 1, cutscene 98,
+    qa_threads 1, fp_thread 2, slice_shots 1, all 0 failed. validate_data 0/0, dlgc --check, taskboard --check,
+    gdlint and gdformat clean. Above water the rig and seabed change nothing (ch01_hullgnaw_rises: a mean 0.005 per
+    channel). ch01_oruvel_dressed differs from its 10-28 baseline by content drift (the scale-man's stall moved).
+  - **Also fixed:** test_slice_shots failed on slice_dock_night_yes since f7a5f332. A story_call shot names no
+    scene_id, so its held line is now looked up in every compiled scene.
+  - **Skipped:** coverage and Blender (nothing they cover).
+- **ACT II STARTED (ADR 0205; the Lead's 02:26 message): this track is now Act II cinematics.** My Act I rows are all
+  closed: 48 (by the M3-CIN-1233 switch), 58 and 60 (M3-CIN-1235 and 1236 above). The branch stays `claude/m2-slice`;
+  act2_tracks.md proposes the live log `cinematics.md`, and this file carries on until the Lead renames it. Act I
+  FAST-TRACKs still come first.
+  - **M4-C10-01, the Ch10 beat sheet: cinematics' staging review is in its Review log.** The blocking item is the
+    farewell-tide's score. The clutch's turn must land on the held top note, and the player sets it off by
+    letting go, so `farewell_tide` needs a section that can hold plus a tail started on release. Requested from
+    audio as **M4-CIN-1301** (role audio, todo). The other items are framing notes for M4-A2P-070 (T04 from behind the
+    party, so thirty faces come round and Asha is left facing the water) and R02 (one held single on the eldest,
+    with no cut to Kerrid).
+  - **M4-CIN-1302, MERGE-READY @ f14110d05** (review: narrative), the tools Ch10's staging needs, built ahead of the
+    scripts:
+    - `<<event release_input <prompt>>>` (CutsceneHoldGate): time stands still while held and goes on when the player
+      lets go;
+    - `@camera <shot> track=<actor>` (CutsceneTrack): one continuous move with a walking actor, for O02;
+    - `@anim <group> <clip>` (CutsceneGroup): every `<group>_*` actor, each after its own fixed delay, for T04.
+    - `@wait vfx=` is dropped: count= motes persist and can't be read back. O06's hold is timed against stills.
+    - Checks: cutscene 103, release_gate 3, hold_prompt 3, ch09_thread 7, all 0 failed; validate_data, dlgc,
+      taskboard, gdlint and gdformat clean. The sequencer is at 991 lines (cap 1000): new cues go in helpers.
+  - **Next:** M4-A2P-070 (the farewell-tide) and the rest of Ch10's staging, as the story track's scripts land
+    (M4-A2P-001). Until then: Ch10's shots on the greybox from the beat sheet's §7 list (on chapters' layout, so as
+    a request), and the Ebbing-style stills harness for Reedhollow.
+- **MERGE-READY @ 0c9738f5d** (supersedes the two MERGE-READY lines above for this branch):
+  - **A fix to M3-CIN-1236:** the new reverse was `S07R`, which failed test_dialogue_vs_scenes (cameras use
+    haluna.md shot ids or a stage variant of one). It is `S07_reverse` now; dialogue 85 and first_verse 3 pass.
+    It was never on integration.
+  - **M4-CIN-1303:** `@vfx glimmer_lift at=<place> release=<sec>` lets the held light already at a place go,
+    rising and turning gold, for B05 and T03. cutscene_sequencer 22, cutscene_directives 2, cutscene_vfx 4,
+    glimmer 36, all 0 failed.
+  - **For env-art (haluna.md §5, the art doc):** S07's row still says "Rhen and Toma are soft shoulders at the
+    left and right frame edges (they speak from there)". That framing was row 60. Please update the row to the
+    pulled-back over-the-shoulder plus S07_reverse.
+- **For the Lead (integration is red in the tools suite, not mine):** `tools.tests.test_screenshots`
+  `test_repo_manifest_is_valid_and_baselined` fails on `kerrid_front`. Characters added it in M3-CHR-505 (b4cc69cb,
+  merged in big19) with no baseline and no `"pending_baseline": true`. ADR 0205 makes the tools suite blocking.
+- **The big18 beat pass, Ch1's last stills (viewed after this session's fixes, lavapipe), no changes needed:**
+  - ch01_kell_stall: Mother Kell in frame on her line.
+  - ch01_oruvel_storm: Rhen's view of the storm wall, his line off-screen as he watches.
+  - ch01_o10_gull: the lintel-gull insert.
+  - ch01_bell_room: over Rhen's shoulder toward the figure he speaks to.
+  - ch01_drop: Rhen on the Underway's floor in his lantern's light.
+  - With this session's rows 58 and 60 and the dive, every Ch1 and slice beat has been viewed.
+  - **Thread tests:** _thread 40, 0 failed (this branch's head).
+- **BACKLOG EMPTY @ d6c209c61:**
+  - **Act I:** no open row is mine. QA pass 3's rows 48, 58 and 60 and the dive are fixed and viewed, and the big18
+    beat pass is through every Ch1 and slice beat. The PC-QUEUE items below need the GPU.
+  - **Act II:** the cinematics tasks M4-A2P-070…075 wait on the Ch10 scripts (M4-A2P-001, story), the Kirru
+    (M4-A2P-053, characters) and the farewell-tide score (M4-A2P-090 and my request M4-CIN-1301, audio). The beat
+    sheet's staging review is done, and the tools its staging needs are built (M4-CIN-1302/1303, MERGE-READY).
+  - **For the Lead:** apply act2_tracks.md's cinematics rows (`game/data/cutscene/ch1[0-6]/**`,
+    `game/cutscene/act2/**`) and unblock M4-A2P-070 when Ch10's scripts land; I start it then.
+- **FAST-TRACK (big20, test_slice_primitives): Oruvel's seabed, MERGE-READY @ d207cb49.**
+  - The PlaneMesh is gone. `assets_src/cutscene/ch01/oruvel_seabed.py` generates a 40 m floor from a fixed seed:
+    silt in current ripples over low dunes, with fourteen half-buried rock lumps, vertex-coloured. It writes
+    `assets/cutscene/ch01/oruvel_seabed.glb` (`--check` rebuilds and compares), with a PROVENANCE row. The layout's
+    `seabed` actor uses the glb. New paths for this track: `assets_src/cutscene/**` and `assets/cutscene/**`.
+  - **Checks:** slice_primitives 1, ch01 20, oruvel 17, all 0 failed; validate_data clean.
+  - **Viewed (lavapipe):** ch01_going_under_u11 shows the rippled floor and rocks, the pen's drowned frame and
+    pilings in silhouette, and the motes sinking over them. ch01_going_under_u10 is unchanged.
 ### PC-QUEUE
+- Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan
+  emissive reading. Check that its glow and silhouette read on the GPU; if not, it needs a rim light or a grade.
+- The Ch1 dive (ch01_going_under_u10/_u11, ch01_current_shaft_u09): the underwater look and motes on the GPU.
 - New Game → the beach: 15 s of black before the fade on lavapipe (the load and prewarm at a fixed 30 fps). Measure it on
   the GPU against ADR 0042's ≤ 1 s hidden-frames target.
 - Re-check PC GPU QA rows 18 (C07 harrier) and 32 (beach standing lines) on the GPU: both are fixed here (rendered on

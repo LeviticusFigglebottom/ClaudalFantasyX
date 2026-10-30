@@ -3,13 +3,15 @@ shader_type spatial;
 // MultiMesh. The meshes carry the creature kit's vertex data (assets_src/wildlife/common/wildlife_kit.py):
 //   COLOR.rgb  albedo (sRGB palette colour)     COLOR.a  wetness (0 dry .. 1 wet)
 //   UV         a rest-pose detail coordinate (metres)
-//   UV2.x      cavity (0 open .. 1 deep)        UV2.y    the motion mask (below); wildlife never emits
+//   UV2.x      cavity (0 open .. 1 deep)        UV2.y    the motion mask (below)
+// Wildlife never emits, except the firefly's lantern (mode 6, glow_energy > 0): an animal's light, never glimmer.
 // The motion comes from the CPU through INSTANCE_CUSTOM, so it is deterministic (no TIME):
 //   r phase (radians, wrapped)  g amplitude (0 .. 1)  b mode  a mode parameter
 // Modes: 0 still; 1 flap (UV2.y = wing span 0 .. 1; a = the wings' dihedral, radians); 2 head turn (UV2.y = 1 on
 // the head; a = yaw, radians; g = a nod); 3 legs (|UV2.y| = hip 0 .. tip 1, its sign the gait group); 4 swim (no
 // mask: the body bends by its distance behind the snout); 5 wing flutter (M3-CRE-616: |UV2.y| = wing span root 0 ..
-// tip 1, its sign the side; the wings beat about the body's long axis; a = the wings' rest angle, radians).
+// tip 1, its sign the side; the wings beat about the body's long axis; a = the wings' rest angle, radians); 6 the
+// firefly (M4-A2P-056): mode 5's flutter at a rest angle of 0, a = the lantern's blink (0 dark .. 1 lit).
 render_mode blend_mix, depth_draw_opaque, cull_disabled, diffuse_burley, specular_schlick_ggx;
 
 uniform float roughness_dry : hint_range(0.0, 1.0) = 0.8;
@@ -49,6 +51,18 @@ uniform float flutter_angle = 0.5;
 uniform float flutter_split_z = -1.0;
 uniform float flutter_hind_lag = 0.0;
 uniform float flutter_bob = 0.001;
+// Glow (mode 6): the lantern (the mesh behind glow_tail_z, model space) lit glow_color at glow_energy x the blink.
+uniform vec4 glow_color : source_color = vec4(0.0, 0.0, 0.0, 1.0);
+uniform float glow_energy = 0.0;
+uniform float glow_tail_z = 0.0;
+// The lit lantern swells about glow_centre (model space), so a 1 cm insect's light still reads as a point at any
+// distance (a bloom stand-in that needs no post effect): at full blink its radius grows from glow_radius to about
+// glow_angle (radians) of the view at the lantern's distance, so near it stays small and far it holds a few pixels.
+uniform vec3 glow_centre = vec3(0.0);
+uniform float glow_radius = 0.0017;
+uniform float glow_angle = 0.0;
+
+varying float glow;
 
 vec2 rot2(vec2 p, float a) {
 	float c = cos(a);
@@ -62,6 +76,15 @@ void vertex() {
 	int mode = int(INSTANCE_CUSTOM.b + 0.5);
 	float aux = INSTANCE_CUSTOM.a;
 	float m = UV2.y;
+	glow = 0.0;
+	if (mode == 6) {
+		glow = aux * smoothstep(glow_tail_z + 0.0006, glow_tail_z - 0.0006, VERTEX.z);
+		float dist = length((MODELVIEW_MATRIX * vec4(glow_centre, 1.0)).xyz);
+		float swell = max(dist * glow_angle / glow_radius - 1.0, 0.0);
+		VERTEX = glow_centre + (VERTEX - glow_centre) * (1.0 + swell * glow);
+		mode = 5;
+		aux = 0.0;
+	}
 	if (mode == 1) {
 		if (m > 0.0) {
 			float side = VERTEX.x < 0.0 ? -1.0 : 1.0;
@@ -155,5 +178,8 @@ void fragment() {
 	if (rim_sheen > 0.0) {
 		float f = pow(1.0 - clamp(abs(dot(NORMAL, VIEW)), 0.0, 1.0), 3.0);
 		EMISSION = base * f * rim_sheen;
+	}
+	if (glow_energy > 0.0) {
+		EMISSION += glow_color.rgb * glow_energy * glow;
 	}
 }

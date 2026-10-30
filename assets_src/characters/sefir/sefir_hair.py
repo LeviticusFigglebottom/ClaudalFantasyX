@@ -49,9 +49,9 @@ DRAPE_GRID = 1e-5  # m: the drape's state is rounded to this every step (the ite
 # numpy's SIMD paths leave in the field and the projections, so hosts disagreed by a micron by the tips)
 HEAD_REACH = 0.04  # m: farther than this from the head skin a point is off the head
 BIAS_FADE = 0.18  # m of drop over which a group's back/forward bias fades
-COHESION = {"b": 0.35, "f": 0.6}  # how far a group's strands close up below the head, behind and in front
-LATERAL = 0.25  # an outward push off the sides of the head per unit drop (fading with the bias)
-BODY_PULL = 0.25  # pull toward the nearest surface under the strand, per unit drop
+COHESION = {"b": 0.45, "f": 0.8}  # (GPU QA row 54: was 0.35/0.6; strands floated apart)  # how far a group's strands close up below the head, behind and in front
+LATERAL = 0.12  # an outward push off the sides of the head per unit drop (fading with the bias)
+BODY_PULL = 0.4  # pull toward the nearest surface under the strand, per unit drop
 
 
 # ---------------------------------------------------------------------------------------------

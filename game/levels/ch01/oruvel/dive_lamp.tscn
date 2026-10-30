@@ -1,0 +1,11 @@
+[gd_scene format=3]
+
+[node name="DiveLampBody" type="Node3D"]
+
+[node name="DiveLamp" type="OmniLight3D" parent="."]
+visible = false
+light_color = Color(1, 0.694118, 0.431373, 1)
+light_energy = 9.0
+light_specular = 0.4
+omni_range = 9.0
+omni_attenuation = 1.4

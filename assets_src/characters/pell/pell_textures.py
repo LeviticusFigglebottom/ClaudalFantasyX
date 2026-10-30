@@ -88,7 +88,9 @@ CLUMP_M = (0.0025, 0.008)  # m: the body fur's clumps across and along the flow 
 STRAND_STRETCH = 4.0  # the strand streaks: this much longer along the flow than across (short fur, not grain)
 FUR_STREAK = 0.08  # the albedo's strand streaks (+/- half this): fine and soft (the review: 0.32 read as wood grain)
 FUR_CLUMP = 0.06  # and its clumps (the face; the body's is FUR_CLUMP_BODY)
-FUR_CLUMP_BODY = 0.14  # second look-dev pass: the body read smooth between the outline cards at full figure
+FUR_CLUMP_BODY = 0.22  # the body read smooth between the outline cards at full figure (0.14 still did, GPU pass 3)
+FUR_PATCH = (0.2, 0.12)  # GPU pass 3: broad value breakup over the fur (+/- half, at this scale in m x S)
+FACE_DESAT = 0.3  # GPU pass 3: the face read as uniform plastic orange under the warm key
 FEATHER_BARBS = 2.0  # the crest feathers' barbs per texel row: a full vane that reads at dialogue range
 LIP_DARK = 0.55  # how far the lips take the nose pad's dark: an otter's lip line
 FUR_RELIEF = (0.00025, 0.0006)  # m: the face's strand relief, the body's clump relief
@@ -267,6 +269,11 @@ def fur_maps(key: str, npz: dict, size: int, lm, face, fp: dict) -> None:
     tone = 1.0 + FUR_STREAK * (streak - 0.5) + fur_clump * (clump - 0.5) + 0.06 * (at.fbm3(P, 0.02 * S, 406,
                                                                                           octaves=3) - 0.5)
     col = col * tone[:, None]
+    # GPU pass 3: broad lighter and darker patches, so the fur's value varies across a limb or the face
+    patch = 1.0 + FUR_PATCH[0] * (at.fbm3(P, FUR_PATCH[1] * S, 410, octaves=3) - 0.5)
+    col = col * patch[:, None]
+    if key == "head":
+        col = desat(col, FACE_DESAT)
     if key == "head":
         g = smoothstep(1.0 - float(fp["grey_guard_share"]) - 0.02, 1.0 - float(fp["grey_guard_share"]) + 0.02,
                        at.aniso_noise(P, D, 0.0008 * S, STRAND_STRETCH, 407)) * reg["grey"] * 0.6

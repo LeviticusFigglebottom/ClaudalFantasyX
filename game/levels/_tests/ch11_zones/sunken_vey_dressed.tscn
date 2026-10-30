@@ -1,0 +1,97 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/levels/ch11/ch11_zone.gd" id="1_zone"]
+[ext_resource type="Script" path="res://game/levels/act1/zone_kit_dressing.gd" id="2_dressing"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/weathering_tide.gd" id="3_tide"]
+[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="4_water"]
+[ext_resource type="Resource" path="res://game/levels/ch11/sunken_vey/sunken_vey_waves.tres" id="5_waves"]
+[ext_resource type="Material" path="res://game/levels/ch11/sunken_vey/sunken_vey_water_material.tres" id="6_mat"]
+[ext_resource type="Script" path="res://game/levels/act1/zone_cast.gd" id="7_cast"]
+
+[node name="SunkenVey" type="Node3D"]
+script = ExtResource("1_zone")
+location_id = &"ch11/sunken_vey"
+layout_path = "res://game/levels/ch11/sunken_vey/sunken_vey_layout.json"
+
+[node name="Cast" type="Node" parent="."]
+script = ExtResource("7_cast")
+
+[node name="Water" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0)
+script = ExtResource("4_water")
+publishes_water_level = true
+wave_set = ExtResource("5_waves")
+material = ExtResource("6_mat")
+
+[node name="Tide" type="Node" parent="." node_paths=PackedStringArray("water")]
+script = ExtResource("3_tide")
+tide_line_y = -0.3
+water_height_y = -0.3
+water = NodePath("../Water")
+
+[node name="Dressing" type="Node3D" parent="." node_paths=PackedStringArray("tide")]
+script = ExtResource("2_dressing")
+layout_path = "res://game/levels/ch11/sunken_vey/sunken_vey_dressing.json"
+tide = NodePath("../Tide")
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="V01_landing" type="Camera3D" parent="Cameras"]
+fov = 45.0
+near = 0.1
+far = 1500.0
+transform = Transform3D(0.42809, 0.04294, -0.90272, -0.00000, 0.99887, 0.04751, 0.90374, -0.02034, 0.42760, -8.0, 3.0, 4.0)
+
+[node name="L01_mouth" type="Camera3D" parent="Cameras"]
+fov = 50.0
+near = 0.1
+far = 1500.0
+transform = Transform3D(0.15799, -0.03508, -0.98682, -0.00000, 0.99937, -0.03553, 0.98744, 0.00561, 0.15789, -10.0, 1.2, 2.0)
+
+[node name="V02_gallery" type="Camera3D" parent="Cameras"]
+fov = 50.0
+near = 0.1
+far = 1500.0
+transform = Transform3D(0.13757, 0.03812, -0.98976, -0.00000, 0.99926, 0.03849, 0.99049, -0.00530, 0.13747, 6.0, 1.7, 0.5)
+
+[node name="V03_bend" type="Camera3D" parent="Cameras"]
+fov = 50.0
+near = 0.1
+far = 1500.0
+transform = Transform3D(0.81153, 0.01896, -0.58400, -0.00000, 0.99947, 0.03244, 0.58430, -0.02633, 0.81111, 24.0, 1.7, -1.5)
+
+[node name="L03_court" type="Camera3D" parent="Cameras"]
+fov = 50.0
+near = 0.1
+far = 1500.0
+transform = Transform3D(0.87790, -0.01528, 0.47861, 0.00000, 0.99949, 0.03191, -0.47885, -0.02801, 0.87745, 40.0, 1.7, -18.0)
+
+[node name="V04_mark" type="Camera3D" parent="Cameras"]
+fov = 40.0
+near = 0.1
+far = 1500.0
+transform = Transform3D(0.94299, -0.03670, 0.33079, 0.00000, 0.99390, 0.11026, -0.33282, -0.10398, 0.93724, 34.6, 1.55, -27.3)
+
+[node name="Side_fig_end" type="Camera3D" parent="Cameras"]
+fov = 50.0
+near = 0.1
+far = 1500.0
+transform = Transform3D(1.00000, 0.00000, -0.00000, -0.00000, 0.99809, -0.06179, 0.00000, 0.06179, 0.99809, 38.0, 1.7, -36.0)
+
+[node name="Out_gallery" type="Camera3D" parent="Cameras"]
+fov = 50.0
+near = 0.1
+far = 1500.0
+transform = Transform3D(-0.14834, -0.00978, -0.98889, 0.00000, 0.99995, -0.00989, 0.98894, -0.00147, -0.14833, 50.0, 1.7, -20.5)
+
+[node name="Gate_lowlight" type="Camera3D" parent="Cameras"]
+fov = 55.0
+near = 0.1
+far = 1500.0
+transform = Transform3D(0.00000, -0.16211, -0.98677, 0.00000, 0.98677, -0.16211, 1.00000, 0.00000, -0.00000, 82.0, 1.7, -16.0)
+
+[node name="Overhead" type="Camera3D" parent="Cameras"]
+fov = 55.0
+near = 0.1
+far = 1500.0
+transform = Transform3D(1.00000, 0.00000, -0.00000, -0.00000, 0.75617, 0.65438, 0.00000, -0.65438, 0.75617, 45.0, 45.0, 30.0)

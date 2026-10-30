@@ -108,14 +108,57 @@ func spawn(engine: BattleEngine) -> void:
 	for i in engine.party_active.size():
 		_place(engine.party_active[i].id, _party_slots[i])
 	_enemy_slot_of.clear()
+	var seats := _seat_order(engine.enemies)
 	for i in engine.enemies.size():
-		_seat_enemy(engine.enemies[i].id, mini(i, _enemy_slots.size() - 1))
+		_seat_enemy(engine.enemies[i].id, seats[i])
 	_seat_lone_boss(engine)
 	if is_inside_tree():  # M3-BPR-403: the opening line-up keeps the real models' footprints apart
 		var data := BattleChoreo.load_data()
 		var axis := camera.global_basis.x if camera != null else Vector3.RIGHT  # sideways on screen
 		BattleLineup.apply(_side(engine.party_active), data, axis)
 		BattleLineup.apply(_side(engine.enemies), data, axis)
+
+
+## Each opening foe's slot. The encounter sweep (10-30): on the causeway the 2.9 m Lantern Eel, first in the list, took
+## the slot nearest the camera and hid the Gull Harrier behind it until it struck. With choreo.json
+## spacing.tall_to_back, the tallest foes (stand-in height plus hover) take the slots farthest from the camera; foes of
+## equal height keep their own slots. Otherwise slot i, the last shared.
+func _seat_order(foes: Array[BattleCombatant]) -> Array[int]:
+	var n := foes.size()
+	var out: Array[int] = []
+	for i in n:
+		out.append(mini(i, _enemy_slots.size() - 1))
+	var sp := BattleChoreo.load_data().get("spacing", {}) as Dictionary
+	if not bool(sp.get("tall_to_back", false)) or camera == null or n < 2 or n > _enemy_slots.size():
+		return out
+	var slots: Array[int] = []
+	for i in n:
+		slots.append(i)
+	var eye := camera.global_position
+	slots.sort_custom(
+		func(a: int, b: int) -> bool:
+			var da := _enemy_slots[a].global_position.distance_to(eye)
+			var db := _enemy_slots[b].global_position.distance_to(eye)
+			return da > db if not is_equal_approx(da, db) else a < b
+	)
+	var order: Array[int] = []
+	for i in n:
+		order.append(i)
+	var top := func(c: BattleCombatant) -> float:
+		var spec := stand_in_spec(c.id)
+		return float(spec.get("height", 0.0)) + float(spec.get("hover", 0.0))
+	var dist := func(i: int) -> float: return _enemy_slots[out[i]].global_position.distance_to(eye)
+	order.sort_custom(
+		func(a: int, b: int) -> bool:
+			var ta: float = top.call(foes[a])
+			var tb: float = top.call(foes[b])
+			if not is_equal_approx(ta, tb):
+				return ta > tb
+			return float(dist.call(a)) > float(dist.call(b))  # equal heights keep their own slots
+	)
+	for k in n:
+		out[order[k]] = slots[k]
+	return out
 
 
 func _side(cs: Array[BattleCombatant]) -> Array:

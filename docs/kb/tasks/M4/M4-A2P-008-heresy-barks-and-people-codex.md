@@ -20,6 +20,7 @@ The lines that change by state across Act II: every town NPC's heretic-state lin
 ## Notes
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). Plan §4.2, §4.3, §4.5.
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
+- 2026-10-30 ui-menus: Act II started per track (ADR 0205). Ch10 codex entries in: the farewell-tide (`ch10_farewell_tide_seen`, declared here for the Ch10 dialogue to set), name-shells and the Eldest of Reedhollow (`ch10_reached_reedhollow`). The heresy barks and Kerrid's barks wait on the Ch14/Ch15 dialogue (M4-A2P-005/006).
 
 ## Done (story track, 2026-10-30)
 - **Codex (people), 12 entries:** `owa`, `tobin`, `merel`, `ressa`, `ama_quillo`, `corran`, `malcor_venn`, `conclave`, `brannoc_hale`, `aldous_varrow`, `kesh`, `kerrid_stair`.

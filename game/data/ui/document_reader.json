@@ -1,0 +1,10 @@
+{
+  "document_reader": {
+    "doc": "The document reader (M4-A2P-080; DocumentReader). Rects are x, y, w, h at the 1920 x 1080 reference, multiples of 3 (the codex's frame). 'panes' is the area the record's panes share side by side, gap px apart (the gold rule between found lines crosses the gap); each pane is a small panel with pad, its title (title_height), a dim 'n of count' line (sub_height), then its lines, line_gap apart, clipped and scrolled by scroll_step_px (Page Up / Page Down, the wheel) and kept in view as the cursor moves. A line under the cursor gets a cursor_alpha wash of the focus colour; a marked line a mark_px gold bar at its left; a found hand's lines turn gold, and a rule_px gold rule joins them across the gaps, drawn on over rule_sec (at once under Reduced motion). 'hands_height' is the line under the panes that says how many hands are left. canvas_layer: the codex's.",
+    "canvas_layer": 64,
+    "panel": {"rect": [159, 87, 1602, 906], "pad": 27, "title_height": 57, "help_height": 39},
+    "panes": {"rect": [186, 177, 1548, 711], "gap": 54, "pad": 21, "title_height": 45, "sub_height": 33,
+              "line_gap": 9, "scroll_step_px": 90, "cursor_alpha": 0.22, "mark_px": 4, "rule_px": 2, "rule_sec": 0.45},
+    "hands_height": 36
+  }
+}

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Lead tool: ADR 0203's Act I completion gate, criteria 1 and 2, on the checkout it runs in. Prints PASS or FAIL per
-criterion with the evidence; exit 0 only when both pass. Run it from the batch's worktree root after an import:
+"""Lead tool: the Act I completion criteria (ADR 0205 §3, which replaces ADR 0203's list), the two a checkout can show,
+on the checkout it runs in. Prints PASS or FAIL per criterion with the evidence; exit 0 only when both pass. Run it
+from the batch's worktree root after an import:
 
   python3 tools/dev/lead/act1_gate_check.py               # both criteria (Godot from PATH or the fetch cache)
   python3 tools/dev/lead/act1_gate_check.py --only 1      # the audit alone
@@ -134,8 +135,12 @@ def main(argv: list[str] | None = None) -> int:
         print("%s  2. Playthrough: Act I played headless, zero SCRIPT ERRORs" % ("PASS" if ok else "FAIL"))
         print("\n".join("      " + ln for ln in lines))
         results.append(ok)
-    print("ADR 0203 criteria %s: %s" % ("1-2" if args.only is None else args.only, "PASS" if all(results) else "FAIL"))
-    print("(3-5 are the batch gate, the PC's GPU QA and the hitch budget: the Lead's and the PC's records.)")
+    which = "1-2" if args.only is None else args.only
+    print("ADR 0205 §3 criteria %s: %s" % (which, "PASS" if all(results) else "FAIL"))
+    print(
+        "(The other three are records, not checks: the last fast gate green; the PC's newest pass with no open Act I "
+        "row a track can fix; hitches <= 2 s hidden and <= 50 ms visible per scene change.)"
+    )
     return 0 if all(results) else 1
 
 

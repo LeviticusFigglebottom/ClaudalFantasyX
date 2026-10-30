@@ -119,3 +119,23 @@ swap wait while holders make progress, as the reveal hold already does (M2-ARC-0
   - `tools/loading/act1_swap_sweep.py`: the probe once per Act I zone, the title and the battle sandbox, with
     ResidentLoads on (`--resident-loads`); exits 1 on an uncovered change. Its frame times are the cloud box's.
 - **The 1 s target itself** is measured only on the PC (PC-QUEUE in the ui-menus live log).
+
+## Amendment 4 (2026-10-30, the PC's pass 3: Ch5 to Ch9 entries still over 1 s hidden)
+- **The pattern:**
+  - The zones still over budget on the RX 9070 XT (Pemakar, Brine Shoals, Corrow, Corrow at night) carry 295–357 unique
+    materials once built. The ones under carry 155–257. Pemakar also has 390 omni lights and 857 meshes.
+  - Headless they were mostly under budget, so the excess is GPU work on first draw: pipelines and uniform sets for
+    materials that the zone builds at runtime, which ShaderPrewarm's scene scan never sees.
+- **Fixes:**
+  - **ShaderPrewarm stages the zone's runtime loads** (PrewarmZoneFeed; registry `zone_loads`, `zone_loads_per_frame`
+    6). As ResidentLoads loads each listed Material or PackedScene, the prewarm stages it: a scene by its SceneState, a
+    material on the quad. It reports the staging as loading progress (`swap_wait_progress`), so the router waits on it
+    as on a load. Outside a feed it reports -1, and swap_progress counts only holders at 0 or more (amendment 2 stands).
+  - **scene_loads.json regenerated:** it was stale against the NPC work merged since, which added up to 91 paths a zone.
+    That alone took Brine Shoals' worst hidden frame from 1535 ms to 341 ms and Corrow's from 1278 ms to 480 ms (headless).
+  - **ZoneCast instances its villager models in GreyboxZone.build()** (on the router's worker thread), not in the swap
+    frame. Their idles still start in _ready, and hero casts still attach in the tree.
+  - **VillagerLayer, built during a scene change,** adopts one villager a frame and holds the router's reveal until the
+    last is in. Adopting moves a whole model out of the tree and back (100–240 ms headless each). The fade stays
+    opaque, so no capsule shows.
+- **Headless, Pemakar:** 1643 ms → 739 ms. **The PC re-measures after big19** (PC-QUEUE).

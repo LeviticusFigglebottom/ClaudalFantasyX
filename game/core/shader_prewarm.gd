@@ -122,6 +122,8 @@ var _live_pending := false
 # ResourceLoader's threaded request (M2-RND-910); _harvest_requested while the queue's head is loading.
 var _harvest_queue: PackedStringArray = PackedStringArray()
 var _harvest_requested := false
+# ADR 0111 amendment 4: the zone's runtime materials and scenes, staged as they load (PrewarmZoneFeed); null when off.
+var _zone: PrewarmZoneFeed
 var _last_frame_usec := 0
 var _stage_alive := false
 var _frames_to_render := 0
@@ -252,6 +254,8 @@ func start(for_scene: String = "") -> int:
 	var per_frame := int(config.get("materials_per_frame", 0))
 	if first_run and config.has("first_run_materials_per_frame"):
 		per_frame = int(config["first_run_materials_per_frame"])
+	_zone = PrewarmZoneFeed.for_transition(config, for_scene, resident_only or first_run)
+	per_frame = maxi(per_frame, _zone.per_frame()) if _zone != null else per_frame
 	_batch = per_frame if per_frame > 0 else maxi(_pending.size(), 1)
 	_min_batch_seen = _batch
 	_draws_total = _pending.size()
@@ -471,6 +475,12 @@ func wait_progress() -> int:
 	return _frames_measured
 
 
+## ADR 0111 amendment 4: the zone draws staged so far, while this transition stages the zone's runtime loads (a
+## loading holder's progress: SceneRouter waits on while it rises); -1 otherwise (frames are not work, amendment 2).
+func swap_wait_progress() -> int:
+	return _zone.staged if _zone != null and _stage_alive else -1
+
+
 ## How far the staging is, 0..1: bring-up steps and draws staged over those queued (1 once the stage is cleared).
 func progress_fraction() -> float:
 	if not _running or not _stage_alive:
@@ -519,6 +529,9 @@ func tick(frame_ms: float) -> void:
 	elif _stage_alive and not _harvest_queue.is_empty():
 		_harvest_next_scene()
 	elif _stage_alive:
+		var pulled := _zone.pull(self, int(config.get("max_scene_materials", 0))) if _zone != null else 0
+		_instanced += pulled
+		_draws_total += pulled
 		if not _pending.is_empty():
 			# The first frame also carries start() and the stage's set-up, so it says nothing about how
 			# big a batch the card can take (review-sweep-J S3): never halve on it.
@@ -526,7 +539,7 @@ func tick(frame_ms: float) -> void:
 				_batch = maxi(floori(_batch / 2.0), 1)
 				_min_batch_seen = mini(_min_batch_seen, _batch)
 			_stage_next_batch()
-		elif not _poll_live_scenes():
+		elif not _poll_live_scenes() and not (_zone != null and _zone.pending()):
 			_frames_since_batch += 1
 			if _frames_since_batch >= _frames_to_render:
 				_clear_stage()
@@ -644,14 +657,15 @@ func _stage_next_batch() -> void:
 		return
 	var batch := _pending.slice(0, n)
 	_pending = _pending.slice(n)
+	if _zone != null:
+		_zone.staged += n
 	for item: Variant in batch:
 		var node: Node
 		if item is Node:
 			node = item as Node
 		elif item is Array:
-			node = _draw_for(
-				(item as Array)[0] as Material, (item as Array)[1] as Mesh, (item as Array)[2] as MultiMesh
-			)
+			var it := item as Array
+			node = PrewarmHarvest.draw_for(it[0] as Material, it[1] as Mesh, it[2] as MultiMesh, config)
 		else:
 			node = _build_entry(item as Dictionary)
 		if node == null:
@@ -952,29 +966,6 @@ func _harvest_state(
 			# (about 75 ms each), which belongs in a batch frame, not in start().
 			_pending.append(pair)
 			counter[0] = int(counter[0]) + 1
-
-
-## The stage draw of one harvested pair: a MeshInstance3D, or a MultiMeshInstance3D with the source's
-## vertex format (colours, custom data) when it came from one.
-func _draw_for(mat: Material, mesh: Mesh, src: MultiMesh) -> GeometryInstance3D:
-	var node: GeometryInstance3D
-	if src != null:
-		var mm := MultiMesh.new()
-		mm.transform_format = src.transform_format
-		mm.use_colors = src.use_colors
-		mm.use_custom_data = src.use_custom_data
-		mm.mesh = mesh
-		mm.instance_count = int(config.get("multimesh_instances", 1))
-		var mmi := MultiMeshInstance3D.new()
-		mmi.multimesh = mm
-		node = mmi
-	else:
-		var mi := MeshInstance3D.new()
-		mi.mesh = mesh
-		node = mi
-	node.material_override = mat
-	node.position = Vector3.FORWARD * float(config.get("quad_distance", 0.0))
-	return node
 
 
 func _ensure_stage_env() -> Environment:

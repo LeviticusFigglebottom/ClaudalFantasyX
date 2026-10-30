@@ -11,6 +11,13 @@
                   0.6 m on four trestles, a hand-rail each side. Origin at its strand end on the deck, centred;
                   it runs along +X.
 
+  shroud_bound_a, shroud_bound_b, shroud_bound_small
+                  the drowned under sailcloth as the field camera sees them (the PC's pass 3, row 51: cw_night's
+                  shrouds, blurred twice and fading at the hem, read from above as soft orange rectangles): the
+                  same body forms (cw_night._form, read-only) blurred once and a little fuller, a firm hem where
+                  the cloth meets the shingle, creases running the length, and four ties (neck, chest, knees,
+                  ankles). Face covered, shape only. Origin on the ground at the body's centre; head at -Z.
+
 Heights and plans are the zone's collision (tools/act1/ch09_corrow_night.py); the art sits on it.
 """
 
@@ -23,7 +30,9 @@ import numpy as np
 import cw_common as cw
 from cw_common import kc
 
+BUDGET_KEY = {"shroud_bound_a": "shroud_bound", "shroud_bound_b": "shroud_bound", "shroud_bound_small": "shroud_bound"}
 TRI_BUDGET = {
+    "shroud_bound": (4000, 300),
     "strand_landing": (9000, 800),
     "strand_rocks": (12000, 900),
     "mole_bridge": (9000, 800),
@@ -264,7 +273,56 @@ def build_bridge(seed: int = 923) -> list:
     return out
 
 
+def build_shroud_bound(name: str, seed: int, *, length: float = 1.8, turn: float = 0.0, arm: float = 0.0) -> list:
+    import cw_night  # noqa: PLC0415  (the body forms, read-only)
+
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for(name, seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder(name + ("-lod1" if lod else ""))
+        nx, nz = (15, 29) if not lod else (5, 7)
+        half_w, half_l = 0.42 * length / 1.8 + 0.08, length * 0.5 + 0.1
+        X, Z = np.meshgrid(np.linspace(-half_w, half_w, nx), np.linspace(-half_l, half_l, nz))
+        body = cw_night._form(X, Z, length, turn, arm) * SHROUD_FULL
+        k = np.array([0.25, 0.5, 0.25])
+        soft = np.apply_along_axis(lambda r: np.convolve(np.pad(r, 1, mode="edge"), k, "valid"), 1, body)
+        soft = np.apply_along_axis(lambda c: np.convolve(np.pad(c, 1, mode="edge"), k, "valid"), 0, soft)
+        y = np.maximum(soft, body * 0.96) + 0.015
+        if not lod:  # creases along the length, deeper where the cloth stands off the body
+            crease = np.sin(X / half_w * math.pi * 3.0 + rng.uniform(0, 6.28)) * 0.5 + 0.5
+            p = np.stack([X, np.zeros_like(X), Z], axis=-1)
+            y += (crease - 0.5) * SHROUD_CREASE_M * kc.smoothstep(0.03, 0.12, y)
+            y += (noise.fbm(p / 0.15, 2) - 0.5) * 0.02
+        edge = np.minimum(1.0 - np.abs(X) / half_w, 1.0 - np.abs(Z) / half_l)
+        y = y * kc.smoothstep(0.0, SHROUD_HEM, edge) + 0.008
+        P = np.stack([X, y, Z], axis=-1)
+        uv = np.stack([X * 1.5, Z * 1.5], axis=-1)
+        kc.quad_strip(mb, P, mb.material(M_SHROUD), uv=uv, col=np.array([0.0, 0.25, 0.25, 0.3]),
+                      uv2=np.array([0.85, float(rng.random())]), flip=True)
+        if not lod:
+            for zf in SHROUD_TIES:
+                z = -length * 0.5 + zf * length
+                row = int(round((z + half_l) / (2 * half_l) * (nz - 1)))
+                xs = np.linspace(-half_w * 0.85, half_w * 0.85, 11)
+                ys = np.interp(xs, X[row], y[row]) + 0.012
+                kc.tube(mb, np.stack([xs, ys, np.full_like(xs, z)], axis=-1), 0.014, 4, mb.material(cw.M_ROPE),
+                        variation=float(rng.random()))
+        out.append(mb)
+    return out
+
+
+M_SHROUD = "cw_sail"  # cw_night's shroud slot (the zones swap it for their own sailcloth)
+SHROUD_FULL = 1.15  # the body forms a little fuller, so the cloth reads over them from above
+SHROUD_CREASE_M = 0.03
+SHROUD_HEM = 0.06  # the cloth drops to the shingle within this fraction of the half-size (cw_night: 0.12)
+SHROUD_TIES = (0.13, 0.36, 0.66, 0.9)  # neck, chest, knees, ankles
+
+
 TARGETS = {
+    "shroud_bound_a": lambda: build_shroud_bound("shroud_bound_a", 931),
+    "shroud_bound_b": lambda: build_shroud_bound("shroud_bound_b", 932, turn=0.6, arm=0.12),
+    "shroud_bound_small": lambda: build_shroud_bound("shroud_bound_small", 933, length=1.05),
     "strand_landing": build_landing,
     "strand_rocks": build_rocks,
     "mole_bridge": build_bridge,

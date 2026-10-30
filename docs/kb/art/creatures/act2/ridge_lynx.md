@@ -10,7 +10,7 @@ is only an animal in a hard winter. The one exaggeration: **the pounce** (it cle
 ruff. It crouches low before the leap, and that crouch is the telegraph.
 
 **Palette:** coat `overcast_slate` going `cumulus_shadow` on the belly, faint `lacquer_black` spots; ear tufts and
-tail tip `lacquer_black`; eyes `dusk_gold`; frost on the ruff `salt_glass`; weak point (an old wound on the
+tail tip `lacquer_black`; eyes `dusk_gold`; dry snow on the ruff tips and settled along the back, scree grit in the paws (snow in `gauze_white`, the albedo ceiling; no frost or rime: ADR 0015, ADR 0204 §2, M4-CRE-670); weak point (an old wound on the
 flank where a herder's sling caught it) `spawn_wound`, small.
 
 **Clips:** `idle` (tail flick, ears turn, a breath that steams); `attack` (the crouch, then the leap over the
@@ -24,9 +24,16 @@ names and contact times are unchanged):
 - **A wedge muzzle:** a lofted, squared section from the brow to a blunt front about 4 cm further out, narrowing from
   above and from the side, coat on top and pale below.
 - **A cat's nose and mouth:** a dark nose leather (a rounded triangle, broad at the top), pale full whisker pads with
-  rows of dark whisker spots, four pale `salt_glass` whiskers a side swept back along the cheek, a dark mouth line from
+  rows of dark whisker spots, four pale snow-white whiskers a side swept back along the cheek, a dark mouth line from
   the nose down between the pads and back under them, and a longer chin.
 - **The ear tufts** are kept as they were.
 - **The KO:** the head turns a little less than the neck as it lies down (its yaw on the head bone halved), so the
   longer muzzle lies on the snow, not in it.
 - The weak point is unchanged: the one small sling-wound slit on the camera-side flank (ADR 0151).
+
+## Leg shaping (2026-10-30, ADR 0205)
+The legs read as plain rounded cylinders up close. Each is now flatter side to side (0.8 of its depth) and shaped
+along its length: the shoulder's or haunch's muscle at the top, a forearm or gaskin swelling below the elbow or
+stifle, a slim wrist or hock, and the pastern widening into the snowshoe paw. The tube starts inside the torso, so no
+rim shows where the leg meets the body. The four toes stand up out of the pad's fur as knuckles, creased where they
+meet. 7,544 triangles (budget 8k).

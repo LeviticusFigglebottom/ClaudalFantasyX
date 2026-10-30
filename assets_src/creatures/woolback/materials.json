@@ -1,0 +1,11 @@
+{
+  "_doc": "The woolback's surfaces (Ch12 wildlife, M4-A2P-056; docs/kb/plan/act2/creatures/woolback.md): the Avalanche Ram's slots without the seep and the ice. Slots are the glTF material names; write_materials.py writes assets/creatures/woolback/materials/<slot>.tres on game/shaders/creature/creature.gdshader. fleece is the coat, the six chains of locks (sun-bleached toward bone at the tips where the ram's are frosted), the mane, the head and ears (undyed sand_cloth gone grey to overcast_slate); its wetness barely shows (the ram's ice plates are dry bleached wool here: a high wet roughness, little clearcoat), and it has no emission. hide is the darkened laterite legs, the nostrils, the hooves and the faded lacquer_red herd-cord; eye is wet lacquer_black. Colours are palette.json swatches.",
+  "slots": {
+    "fleece": {"roughness_dry": 0.95, "roughness_wet": 0.85, "wet_darken": 0.9, "clearcoat_wet": 0.05,
+               "detail_scale": 26.0, "detail_albedo": 0.22, "detail_bump": 0.8, "cavity_albedo": 0.45},
+    "hide": {"roughness_dry": 0.75, "roughness_wet": 0.35, "detail_scale": 60.0, "detail_albedo": 0.15,
+             "detail_bump": 0.4, "cavity_albedo": 0.4},
+    "eye": {"roughness_dry": 0.12, "roughness_wet": 0.06, "specular": 0.7, "clearcoat_wet": 1.0, "detail_albedo": 0.0,
+            "detail_bump": 0.0}
+  }
+}

@@ -12,6 +12,10 @@ aerial roots to the water. In the `uprooted` phase the snapped top splinters off
 trunk tips forward like a felled tree that walks, on three root-clusters of two roots, the rest hanging, trailing
 or reaching (M3-CRE-622: a bulb with radiating roots read as a spider, so nothing here is radial).
 
+M4-CRB-002 (the move pass to the Act I bar): one clip per skill, the risen stance's own versions of each, the roots
+that stand on the water held there by IK at every frame, the VFX anchors, and the two drag roots' cradles of snagged
+motes (the break parts, whole and torn).
+
 Run without Blender (`python3 build_mangrove_drowner.py --report`) to print the triangle count and the feet
 without exporting.
 """
@@ -81,6 +85,7 @@ SEG_SWELL = (KNUCKLE_SWELL, -0.02, 0.0, 0.02)  # the radius at those rings
 JOINT_U = (0.0, 0.3, 0.58, 1.0)  # arc-length fractions of a root's three bones (each snapped to its nearest gnarl)
 ROOT_SEGS = 9
 BARNACLES = 4  # per root, crowding the high-water line
+BARNACLE_SIDES = 7
 ROOTLETS = (3, 0.32, 0.6)  # the frayed fine roots at a free root's tip: (count, shortest, longest)
 FORKS = ((4, 0.6, 1.0), (10, 0.55, -1.0), (8, 0.62, 1.0), (11, 0.5, -1.0), (0, 0.66, -1.0))  # (root, from u, side)
 # (forks only on roots that never plant, so a bent leg never drives its fork through the water)
@@ -287,7 +292,9 @@ def roots(mesh: ck.Mesh, rig: ck.Rig, specs: list[dict]) -> None:
             nrm = math.cos(ang) * out + math.sin(ang) * tan
             rr = float(root_radius(spec, np.array([k / 200.0]))[0]) * 0.9
             sz = rng.uniform(0.03, 0.055)
-            Pb, Tb = ck.lathe([(0.0, sz * 0.5), (sz * 0.45, sz * 0.75), (sz * 0.9, sz * 0.2), (sz, -sz * 0.3)], 5)
+            # M4-CRB-002: seven sides, not five (five read as flat pentagons up close)
+            Pb, Tb = ck.lathe([(0.0, sz * 0.5), (sz * 0.45, sz * 0.75), (sz * 0.9, sz * 0.2), (sz, -sz * 0.3)],
+                              BARNACLE_SIDES)
             Pb = ck.transform(Pb, _align_y(nrm), c + nrm * rr)
             ck.finish(mesh, Pb, Tb, "bark", PAL["coral_stone_weathered"] * rng.uniform(0.8, 1.0),
                       rig.rigid(names[2]), wet=0.5, cavity=0.35)
@@ -678,6 +685,95 @@ def stump(rig: ck.Rig) -> ck.Mesh:
 
 
 # ---------------------------------------------------------------------------------------------
+# The snag roots (the break parts, M4-CRB-002): the two drag roots each hold six snagged motes in a cradle of fine
+# rootlets slung under their arch, on the camera's and the party's side; broken, the cradle is torn and empty
+# ---------------------------------------------------------------------------------------------
+SNAG_PARTS = (0, 11)  # the drag's two roots (a, b): a broken one weakens the haul (ADR 0204)
+SNAG_SPAN = (0.34, 0.56)  # the cradle hangs under this stretch of the root (arc-length fractions)
+SNAG_MOTES = 6
+MOTE_R = (0.04, 0.06)  # a mote's radius: big enough to read as a point of light from the battle camera
+MOTE_HANG = (0.08, 0.3)  # how far under the root a mote hangs on its thread
+CRADLE_FIBRES = 4  # fine rootlets slung under the root that the motes are caught in
+GLIMMER_HELD = "#7FC6D9"  # palette glimmer_held: a held mote (steady; it only rises once released)
+
+
+def snag_point(spec: dict, u: float) -> tuple[np.ndarray, np.ndarray]:
+    """A point on the underside of a root at arc-length fraction u, and the root's radius there."""
+    p = _resample(spec["line"], np.array([u]))[0]
+    r = float(root_radius(spec, np.array([u]))[0])
+    return p - np.array([0.0, 0.8 * r, 0.0]), r
+
+
+def snag_bone_head(spec: dict) -> np.ndarray:
+    return snag_point(spec, 0.5 * (SNAG_SPAN[0] + SNAG_SPAN[1]))[0]
+
+
+def _fibre(mesh: ck.Mesh, a: np.ndarray, b: np.ndarray, sag: float, bone: int, r: float, seed: int) -> np.ndarray:
+    """A fine rootlet slung from a to b, sagging by `sag`; returns its path."""
+    mid = 0.5 * (a + b) - np.array([0.0, sag, 0.0])
+    path = ck.bezier([a, mid, b], 7)
+    P, T = ck.tube(path, np.full(7, r), 4, cap_start=False, cap_end=False)
+    col, wet, cav = bark_colour(P, np.zeros(len(P)), np.zeros(len(P)), seed)
+    ck.finish(mesh, P, T, "bark", col * 0.8, bone, wet=wet, cavity=cav)
+    return path
+
+
+def snag_parts(rig: ck.Rig, specs: list[dict]) -> list[ck.Mesh]:
+    """Per snag root, `SnagA`/`SnagB` (whole: the cradle and its six motes) and `SnagABroken`/`SnagBBroken` (torn: the
+    cradle's frayed ends hanging slack, no motes), each rigid on its `snag_root_*` bone."""
+    out = []
+    rng = np.random.default_rng(SEED + 90)
+    for k, i in enumerate(SNAG_PARTS):
+        spec = specs[i]
+        bone = rig.index(f"snag_root_{'ab'[k]}")
+        whole = ck.Mesh(f"Snag{'AB'[k]}")
+        broken = ck.Mesh(f"Snag{'AB'[k]}Broken")
+        anchors = [snag_point(spec, u)[0] for u in np.linspace(SNAG_SPAN[0], SNAG_SPAN[1], CRADLE_FIBRES + 1)]
+        paths = []
+        for f in range(CRADLE_FIBRES):  # each slung across two neighbouring knots, crossing the next
+            a, b = anchors[f], anchors[min(f + 2, CRADLE_FIBRES)]
+            sag = rng.uniform(0.18, 0.32)
+            paths.append(_fibre(whole, a, b, sag, bone, rng.uniform(0.008, 0.012), SEED + 91))
+            # torn: each end hangs from its knot, frayed short
+            for end in (a, b):
+                ln = rng.uniform(0.1, 0.22)
+                _fibre(broken, end, end + np.array([rng.uniform(-0.05, 0.05), -ln, rng.uniform(-0.05, 0.05)]),
+                       0.02, bone, 0.009, SEED + 92)
+        for m in range(SNAG_MOTES):  # caught in the cradle: each on a fibre, hanging on a short thread
+            path = paths[m % CRADLE_FIBRES]
+            p = _resample(path, np.array([rng.uniform(0.3, 0.7)]))[0]
+            hang = rng.uniform(*MOTE_HANG) * 0.4
+            c = p - np.array([0.0, hang, 0.0])
+            if hang > 0.02:
+                _fibre(whole, p, c, 0.0, bone, 0.006, SEED + 93)
+            rad = rng.uniform(*MOTE_R)
+            Pm, Tm = ck.ellipsoid(c - np.array([0.0, rad, 0.0]), (rad, rad * 1.1, rad), rings=4, segs=7)
+            ck.finish(whole, Pm, Tm, "mote_snag", ck.hexrgb(GLIMMER_HELD), bone, wet=0.3, cavity=0.0,
+                      emission=1.0)
+        out += [whole, broken]
+    return out
+
+
+def anchor_bones(rig: ck.Rig, feat: dict, specs: list[dict]) -> None:
+    """The VFX anchors (unweighted, ADR 0041): vfx_wound on the largest front fold's seam (core2), vfx_core at the
+    mass's centre (core1), vfx_phase at the trunk's torn top, where the snapped top splinters off (root); and the
+    snag roots' bones (the break parts) on their roots' middle bones."""
+    front = [f for f in feat["folds"] if abs(math.degrees(np.angle(np.exp(1j * f[0])))) < 45.0]
+    big = max(front, key=lambda f: f[3])
+    y = 0.7
+    az = float(fold_az(big, np.array([y]))[0])
+    p = core_point(np.array([y]), np.array([az]), feat, specs)[0]
+    n = np.array([math.sin(az), 0.0, math.cos(az)])
+    rig.add("vfx_wound", p, p + n * 0.25, "core2")
+    c = CORE_C + np.array([0.0, 0.45, 0.0])
+    rig.add("vfx_core", c, c + np.array([0.0, 0.25, 0.0]), "core1")
+    rig.add("vfx_phase", (0.0, TRUNK_TOP - 0.1, 0.0), (0.0, TRUNK_TOP + 0.2, 0.0), "root")
+    for k, i in enumerate(SNAG_PARTS):
+        h = snag_bone_head(specs[i])
+        rig.add(f"snag_root_{'ab'[k]}", h, h - np.array([0.0, 0.25, 0.0]), f"root{i}_b")
+
+
+# ---------------------------------------------------------------------------------------------
 # Rig
 # ---------------------------------------------------------------------------------------------
 def build_rig(specs: list[dict]) -> ck.Rig:
@@ -697,6 +793,7 @@ def build_rig(specs: list[dict]) -> ck.Rig:
     for k in range(len(AERIAL)):
         p0 = aerial_top(k)
         rig.add(f"aerial{k}", p0, (p0[0], FOOT_Y + AERIAL_TIP, p0[2]), "root")
+    anchor_bones(rig, core_features(), specs)
     return rig
 
 
@@ -757,16 +854,17 @@ def _plane(spec: dict) -> np.ndarray:
 
 def solve_bend(spec: dict, lift: float, target: tuple[float, float], prefer=(0.0, 0.0, 0.0), tilt=None,
                span: float = 60.0, a_range: tuple | None = None, r_free: float = 0.0, roll: float = 0.0,
-               stick: float = 1e-4) -> tuple:
+               stick: float = 1e-4, step: float = 1.5) -> tuple:
     """The (a, b, c) degrees that put the root's foot at `target` (radius, y) with the body lifted by `lift` (and
     turned by `tilt`, the root bone's (rx, ry, rz) degrees, when given): an exhaustive grid in the root's plane
     (deterministic), nearest `prefer` among equally good fits. `a_range` limits the first bone's bend; a foot within
     `r_free` of the target's radius is as good as on it; `roll` is the plane's turn about the root's heading (bend's);
-    `stick` weighs nearness to `prefer` (per degree squared) against the fit (per metre squared, x400).
+    `stick` weighs nearness to `prefer` (per degree squared) against the fit (per metre squared, x400); `step` is the
+    grid's spacing (degrees; M4-CRB-002's wide one-off poses search a coarser grid).
     """
     j = _plane(spec)
-    grid = np.arange(-span, span + 1.0, 1.5)
-    ga = grid if a_range is None else np.arange(a_range[0], a_range[1] + 0.1, 1.5)
+    grid = np.arange(-span, span + 1.0, step)
+    ga = grid if a_range is None else np.arange(a_range[0], a_range[1] + 0.1, step)
     A, B, C = np.meshgrid(ga, grid, grid, indexing="ij")
     A, B, C = A.ravel(), B.ravel(), C.ravel()
     v1, v2, v3 = j[1] - j[0], j[2] - j[1], j[3] - j[2]
@@ -856,24 +954,55 @@ def risen_pose(specs: list[dict], bends: dict) -> dict:
 # ---------------------------------------------------------------------------------------------
 # Clips
 # ---------------------------------------------------------------------------------------------
-def build_clips(specs: list[dict]) -> list[ck.Clip]:
-    rng = np.random.default_rng(SEED + 70)
-    idle = ck.Clip("idle", 4.0, loop=True)  # the tide's slow breath: the roots flex, the mass shifts among them
-    for i, spec in enumerate(specs):
-        ph = spec["az"] * 2.0
-        n = 12
-        for s in range(n + 1):
-            t = 4.0 * s / n
-            w = math.sin(2 * math.pi * s / n + ph)
-            bend(idle, i, spec, t, -1.2 * w, 1.0 * w, 1.4 * w)
-    idle.wave("root", amp_loc=(0.0, 0.015, 0.0), cycles=1)
-    idle.wave("core1", amp_rot=(2.0, 0.0, 2.5), amp_loc=(0.03, 0.03, 0.02), cycles=1, phase=0.8)
-    idle.wave("core2", amp_rot=(2.5, 0.0, -2.0), cycles=1, phase=1.6)
-    idle.wave("stump", amp_rot=(0.3, 0.0, 0.5), cycles=1, phase=0.4)
-    for k in range(len(AERIAL)):
-        idle.wave(f"aerial{k}", amp_rot=(1.2, 0.0, 1.0), cycles=1, phase=0.9 * k)
+# M4-CRB-002 (the move pass to the Act I bar, ADR 0041; docs/kb/plan/act2/bosses/mangrove_drowner.md "Move list"):
+# every skill has its own clip; every clip in a phase starts and ends on that phase's idle first frame (its stance,
+# `in_pose`), so nothing pops; and the roots that stand on the water are held there by IK at every frame
+# (`plant_roots`), lifting only where a clip reaches, stamps or lets go.
+SNAG = 0  # drowner_snag: the drag's longer root lifts high over the water and drops on a hero's legs
+STAMP = (5, 6)  # root_stamp: the front pair under the lean (the back cluster's legs, swung forward once risen)
+KNUCKLE_ROOT = 3  # idle_b: the low front root that knuckles up and resettles
+STAMP_LIFT = (0.75, 0.25)  # root_stamp: how far the pair's feet rise and draw in toward the trunk (metres)
+LET_GO = 0.3  # a root letting go blends from planted to its own pose over this (seconds)
 
-    attack = ck.Clip("attack", 1.4)  # the drag: the front two roots reach out along the water and haul back
+
+def stance(clip: ck.Clip, t: float = 0.0) -> dict:
+    """A clip's pose at t as {bone: (rot, loc)} for every bone it keys: a phase's stance is its idle's first frame."""
+    return {b: tuple(np.asarray(v, float) for v in clip.sample(b, t)) for b in sorted(clip.keys)}
+
+
+def pin(c: ck.Clip, t: float, pose: dict) -> None:
+    """Keys every bone of `pose` at t to it, replacing what was keyed there (a clip begins or ends on a stance)."""
+    for b, (r, loc) in pose.items():
+        c.keys[b] = [k for k in c.keys.get(b, []) if abs(k[0] - t) > 1e-6]
+        c.key(b, t, tuple(r), tuple(loc))
+
+
+def osc(c: ck.Clip, bone: str, t0: float, t1: float, amp, hz: float, decay: float = 1.0) -> None:
+    """A tremor of `bone` between t0 and t1 (zero at both): swings of `amp` degrees at `hz`, shrinking by `decay`."""
+    c.key(bone, t0)
+    t, sign = t0 + 0.25 / hz, 1.0
+    while t < t1 - 0.25 / hz:
+        e = 1.0 - decay * (t - t0) / (t1 - t0)
+        c.key(bone, t, tuple(sign * e * v for v in amp))
+        sign = -sign
+        t += 0.5 / hz
+    c.key(bone, t1)
+
+
+def free_between(t0: float, t1: float, ease: float = 0.15):
+    """A planting weight: planted (1) outside t0..t1, free (0) inside, easing over `ease` at either end."""
+    return lambda t: 1.0 - float(ck.smoothstep(t0, t0 + ease, t)) * float(ck.smoothstep(t1, t1 - ease, t))
+
+
+def let_go(t0: float):
+    """A planting weight: planted until t0, then let go over LET_GO."""
+    return lambda t: float(ck.smoothstep(t0 + LET_GO, t0, t))
+
+
+def haul_clip(specs: list[dict]) -> ck.Clip:
+    """drowner_haul (`attack`, contact 0.7): the front two roots rise and hang over the water (0-0.5 s, the tell),
+    then reach out along it and haul back."""
+    attack = ck.Clip("attack", 1.4)
     for t, rx in ((0.0, 0.0), (0.45, -3.0), (0.7, 4.0), (1.05, 1.5), (1.4, 0.0)):
         attack.key("root", t, (rx, 0.0, 0.0))
         attack.key("core1", t, (-rx * 1.2, 0.0, 0.0), (0.0, 0.0, 0.03 * rx))
@@ -885,16 +1014,146 @@ def build_clips(specs: list[dict]) -> list[ck.Clip]:
         haul = solve_bend(spec, 0.0, (r0 + 0.5, 0.0), (-5.0, 0.0, 10.0))
         for t, pose in ((0.0, (0.0, 0.0, 0.0)), (0.45, wind), (0.7, reach), (1.05, haul), (1.4, (0.0, 0.0, 0.0))):
             bend(attack, i, spec, t, *pose)
+    return attack
 
-    cast = ck.Clip("cast", 1.8)  # the rising water: the roots spread, the mass swells up, the wounds flare (VFX)
-    for t, s in ((0.0, 0.0), (0.6, 0.6), (1.0, 1.0), (1.35, 0.9), (1.8, 0.0)):
+
+def snag_bends(spec: dict, tilt=None, lift: float = 0.0) -> list[tuple[float, tuple]]:
+    """drowner_snag's root, as (t, (a, b, c)): it rises (0-0.3 s) and hangs high with its tip down over the water
+    (0.3-0.6 s, the tell), drops at full speed on the hero's legs (0.75 s), curls its tip up round them and pulls,
+    then lets go. Rooted the bends are the root's own; risen they are solved under the tipped trunk (`tilt`)."""
+    if tilt is None:
+        r0 = float(_plane(spec)[3][0])
+        rise = solve_bend(spec, 0.0, (r0 - 0.4, 1.9), (-35.0, -10.0, -10.0))
+        hang = solve_bend(spec, 0.0, (r0 + 0.1, 2.5), (-45.0, -10.0, 30.0))
+        strike = solve_bend(spec, 0.0, (r0 + 0.6, 0.06), (-15.0, 0.0, 10.0))
+        pull = solve_bend(spec, 0.0, (r0 + 0.3, 0.1), (-8.0, 0.0, 10.0))
+    else:
+        rise = solve_bend(spec, lift, (2.4, 2.2), (-20.0, -10.0, -10.0), tilt, 90.0, r_free=0.3, step=3.0)
+        hang = solve_bend(spec, lift, (2.8, 2.7), (-30.0, -10.0, 30.0), tilt, 90.0, r_free=0.3, step=3.0)
+        strike = solve_bend(spec, lift, (3.4, 0.35), (0.0, 0.0, 10.0), tilt, 90.0, r_free=0.4, step=3.0)
+        pull = solve_bend(spec, lift, (3.0, 0.4), (10.0, 0.0, 10.0), tilt, 90.0, r_free=0.4, step=3.0)
+    wrap = (strike[0], strike[1] + 4.0, strike[2] - 38.0)
+    held = (pull[0], pull[1] + 4.0, pull[2] - 38.0)
+    return [(0.3, rise), (0.6, hang), (0.75, strike), (0.95, wrap), (1.2, held)]
+
+
+def snag_clip(specs: list[dict]) -> ck.Clip:
+    """drowner_snag (`snag`, contact 0.75): one root lifts high and hangs, drops and wraps a hero's legs (Rooted)."""
+    c = ck.Clip("snag", 1.6)
+    bend(c, SNAG, specs[SNAG], 0.0, 0.0, 0.0, 0.0)
+    for t, pose in snag_bends(specs[SNAG]):
+        bend(c, SNAG, specs[SNAG], t, *pose)
+    bend(c, SNAG, specs[SNAG], 1.6, 0.0, 0.0, 0.0)
+    snag_body(c)
+    return c
+
+
+def snag_body(c: ck.Clip) -> None:
+    """The trunk and the mass behind the snag: they draw back with the lift and lurch after the drop."""
+    for t, rx, cz in ((0.0, 0.0, 0.0), (0.6, -2.5, -0.06), (0.75, 3.0, 0.08), (1.2, 1.5, 0.04), (1.6, 0.0, 0.0)):
+        c.key("root", t, (rx, 0.0, 0.0))
+        c.key("core1", t, (-2.0 * rx, 0.0, 0.0), (0.0, 0.0, cz))
+    osc(c, "core2", 0.75, 1.25, (5.0, 0.0, 3.0), 5.0)
+
+
+def rising_water_risen(specs: list[dict]) -> ck.Clip:
+    """rising_water from the lean (contact 1.0): as rooted, and the trunk rears back off its lean and rises on its
+    planted legs, so the call reads from the felled tree too."""
+    c = rising_water_clip(specs)
+    c.name = "rising_water_risen"
+    c.keys["root"] = []
+    for t, s in ((0.0, 0.0), (0.4, 0.35), (0.85, 0.75), (1.0, 1.0), (1.4, 0.9), (2.0, 0.0)):
+        c.key("root", t, (-7.0 * s, 0.0, 0.0), (0.0, risen_clear((-7.0 * s, 0.0, 0.0), 0.14 * s), 0.0))
+    return c
+
+
+def rising_water_clip(specs: list[dict]) -> ck.Clip:
+    """rising_water (contact 1.0): the roots' arches lift and part over their planted feet, the mass heaves up and
+    the trunk rises a little with it (0-0.9 s, the tell), a last surge at 1.0 s, held, then it settles."""
+    c = ck.Clip("rising_water", 2.0)
+    for t, s in ((0.0, 0.0), (0.4, 0.35), (0.85, 0.75), (1.0, 1.0), (1.4, 0.9), (2.0, 0.0)):
         for i, spec in enumerate(specs):
-            bend(cast, i, spec, t, -6.0 * s, 4.0 * s, 5.0 * s)
-        cast.key("core0", t, (0.0, 0.0, 0.0), (0.0, 0.14 * s, 0.0))
-        cast.key("core2", t, (-6.0 * s, 0.0, 0.0))
-        cast.key("root", t, (0.0, 0.0, 0.0), (0.0, 0.05 * s, 0.0))
+            bend(c, i, spec, t, -10.0 * s, 8.0 * s, 6.0 * s)
+        c.key("core0", t, (-5.0 * s, 0.0, 0.0), (0.0, 0.26 * s, 0.08 * s))
+        c.key("core2", t, (-10.0 * s, 0.0, 0.0))
+        c.key("root", t, (-1.5 * s, 0.0, 0.0), (0.0, 0.07 * s, 0.0))
+        for k in range(len(AERIAL)):
+            c.key(f"aerial{k}", t, (7.0 * s, 0.0, 5.0 * s * (1 if k % 2 else -1)))
+    osc(c, "core1", 0.85, 1.5, (4.0, 0.0, 3.0), 6.0)
+    return c
 
-    # M3-CRE-617: the tree shudders and the mass recoils among the roots, peaking at 0.1 s, then rings down
+
+def intro_clip(specs: list[dict]) -> ck.Clip:
+    """intro (2.6 s): a dead tree with a dark mass drawn back under it; the mass heaves up between the roots, the
+    roots' arches lift, the trunk shudders and the aerial roots swing (0.9-1.4 s), it drops back with a rebound and
+    settles on idle's first frame. The boss_tall camera holds 2.2 s of it."""
+    c = ck.Clip("intro", 2.6)
+    rows = ((0.0, -10.0, (0.0, -0.1, -0.32), 6.0, 0.0, 0.0), (0.45, -8.0, (0.0, -0.08, -0.28), 5.0, 0.0, 0.0),
+            (0.9, -2.0, (0.0, 0.16, -0.02), -3.0, 1.0, 0.02), (1.35, 8.0, (0.0, 0.44, 0.2), -10.0, 2.5, 0.05),
+            (1.75, 1.0, (0.0, -0.02, 0.06), 3.0, -1.2, 0.0), (2.1, -1.0, (0.0, 0.07, 0.0), -2.0, 0.5, 0.01),
+            (2.6, 0.0, (0.0, 0.0, 0.0), 0.0, 0.0, 0.0))
+    for t, crx, cloc, arch, trx, tly in rows:
+        c.key("core0", t, (crx, 0.0, -0.4 * crx), cloc)
+        c.key("core1", t, (-1.2 * crx, 0.0, 0.5 * crx))
+        c.key("core2", t, (-1.0 * crx, 0.0, -0.4 * crx))
+        c.key("root", t, (trx, 0.0, -0.6 * trx), (0.0, tly, 0.0))
+        for i, spec in enumerate(specs):
+            bend(c, i, spec, t, arch, -0.8 * arch, -0.6 * arch)
+    for k in range(len(AERIAL)):
+        c.key(f"aerial{k}", 0.0)
+        c.key(f"aerial{k}", 0.9)
+        for t, s in ((1.25, 1.0), (1.6, -0.75), (1.95, 0.45), (2.3, -0.2)):
+            c.key(f"aerial{k}", t, (9.0 * s, 0.0, 6.0 * s * (1 if k % 2 else -1)))
+        c.key(f"aerial{k}", 2.6)
+    osc(c, "stump", 1.3, 2.2, (1.5, 0.0, 2.0), 6.0)
+    return c
+
+
+def ready_clip(specs: list[dict], tilt=None, lift: float = 0.0) -> ck.Clip:
+    """ready (a 1.6 s loop): alert, the mass up 10 cm, the two front roots lifted off the water and trembling."""
+    c = ck.Clip("ready", 1.6, loop=True)
+    c.wave("core0", amp_rot=(1.5, 0.0, 1.0), amp_loc=(0.0, 0.015, 0.0), base_loc=(0.0, 0.1, 0.0), cycles=1)
+    c.wave("core1", amp_rot=(2.0, 0.0, -1.5), cycles=2, phase=0.6)
+    c.wave("root", amp_rot=(0.5, 0.0, 0.4), base_rot=(-1.0 if tilt is None else -4.0, 0.0, 0.0),
+           base_loc=(0.0, 0.0 if tilt is None else 0.06, 0.0), cycles=1)
+    for i in FRONT:
+        spec = specs[i]
+        if tilt is None:
+            r0 = float(_plane(spec)[3][0])
+            up = solve_bend(spec, 0.0, (r0 - 0.15, 0.5), (-12.0, 0.0, 0.0))
+        else:
+            up = (-12.0, 5.0, 2.0)  # a delta over the risen stance: the front roots lift higher
+        for s in range(13):
+            w = math.sin(2 * math.pi * s / 12 + i)
+            bend(c, i, spec, 1.6 * s / 12, up[0] + 1.5 * w, up[1] - 1.5 * w, up[2] + 2.0 * w)
+    return c
+
+
+def idle_b_clip(specs: list[dict]) -> ck.Clip:
+    """idle_b (1.4 s): one low front root knuckles up over its planted foot and resettles; the mass shifts."""
+    c = ck.Clip("idle_b", 1.4)
+    spec = specs[KNUCKLE_ROOT]
+    for t, s in ((0.0, 0.0), (0.45, 1.0), (0.7, 0.85), (1.1, -0.1), (1.4, 0.0)):
+        bend(c, KNUCKLE_ROOT, spec, t, -9.0 * s, 16.0 * s, -4.0 * s)
+        c.key("core1", t, (-2.0 * s, 0.0, 3.0 * s), (0.02 * s, 0.0, 0.0))
+    return c
+
+
+def snag_break_clip(specs: list[dict]) -> ck.Clip:
+    """snag_break (0.8 s): a snag root jerks as it is torn, the mass flinches, then the root sags (its motes lift)."""
+    c = ck.Clip("snag_break", 0.8)
+    for i in SNAG_PARTS:
+        for t, a, b, cc in ((0.0, 0.0, 0.0, 0.0), (0.08, -9.0, 6.0, 5.0), (0.25, 5.0, -3.0, -4.0),
+                            (0.45, 2.0, -1.0, -1.5), (0.8, 0.0, 0.0, 0.0)):
+            bend(c, i, specs[i], t, a, b, cc)
+    for t, s in ((0.0, 0.0), (0.1, 1.0), (0.3, -0.4), (0.8, 0.0)):
+        c.key("core1", t, (-5.0 * s, 0.0, 3.0 * s))
+        c.key("root", t, (0.0, 0.0, 0.8 * s))
+    return c
+
+
+def hit_clip(specs: list[dict]) -> ck.Clip:
+    """M3-CRE-617: the tree shudders and the mass recoils among the roots, peaking at 0.1 s, then rings down."""
     hit = ck.Clip("hit", 0.6)
     for t, s in ((0.0, 0.0), (0.1, 1.0), (0.22, -0.45), (0.34, 0.2), (0.46, -0.08), (0.6, 0.0)):
         hit.key("root", t, (-2.5 * s, 0.0, 1.0 * s), (0.0, 0.0, -0.04 * s))
@@ -906,26 +1165,129 @@ def build_clips(specs: list[dict]) -> list[ck.Clip]:
         hit.key("stump", t, (-1.5 * s, 0.0, 1.2 * s))
         for k in range(len(AERIAL)):
             hit.key(f"aerial{k}", t, (4.0 * s, 0.0, -3.0 * s * (1 if k % 2 else -1)))
+    return hit
 
-    # the roots let go one by one and slide out along their bundles; the dead tree keels over backward, pivoting on
-    # its foot's edge on the water, and the mass slumps out of the roots onto the water (M3-CRE-622: nothing goes
-    # under the floor; the water's VFX takes the sinking)
+
+def cast_clip(specs: list[dict]) -> ck.Clip:
+    """`cast` (the generic fallback; contact 1.0): the roots spread, the mass swells up."""
+    cast = ck.Clip("cast", 1.8)
+    for t, s in ((0.0, 0.0), (0.6, 0.6), (1.0, 1.0), (1.35, 0.9), (1.8, 0.0)):
+        for i, spec in enumerate(specs):
+            bend(cast, i, spec, t, -6.0 * s, 4.0 * s, 5.0 * s)
+        cast.key("core0", t, (0.0, 0.0, 0.0), (0.0, 0.14 * s, 0.0))
+        cast.key("core2", t, (-6.0 * s, 0.0, 0.0))
+        cast.key("root", t, (0.0, 0.0, 0.0), (0.0, 0.05 * s, 0.0))
+    return cast
+
+
+def drink_clip(specs: list[dict]) -> ck.Clip:
+    """drink_the_fen (`cast_risen`, contact 1.0): the trunk sinks onto its legs and the hanging roots dig their tips
+    at the water (0-0.8 s, the tell), the mass swells and pulses as it draws (1.0 s), then lets go."""
+    c = ck.Clip("cast_risen", 2.0)
+    for t, s in ((0.0, 0.0), (0.45, 0.55), (0.8, 0.9), (1.0, 1.0), (1.5, 0.85), (2.0, 0.0)):
+        c.key("root", t, (-4.0 * s, 0.0, 0.0), (0.0, risen_clear((-4.0 * s, 0.0, 0.0), -0.06 * s), 0.0))
+        c.key("core0", t, (-14.0 * s, 0.0, 0.0), (0.0, 0.16 * s, 0.16 * s))
+        for i, spec in enumerate(specs):
+            if i not in LEGS:
+                bend(c, i, spec, t, 5.0 * s, 8.0 * s, 14.0 * s)
+    osc(c, "core1", 0.8, 1.6, (5.0, 0.0, 4.0), 2.5, 0.5)
+    osc(c, "core2", 0.85, 1.6, (-4.0, 0.0, 3.0), 2.5, 0.5)
+    return c
+
+
+def stamp_clip() -> ck.Clip:
+    """root_stamp (`root_stamp_risen`, contact 0.8): the trunk rocks back off its lean and rises as the front pair of
+    root-feet lift high (0.1-0.65 s, the tell; their feet move by plant_roots' STAMP offsets), then it lurches forward
+    and stamps them down where they stood at 0.8 s; the trunk shudders and settles."""
+    c = ck.Clip("root_stamp_risen", 1.8)
+    for t, rx, ly in ((0.0, 0.0, 0.0), (0.3, -6.0, 0.08), (0.65, -11.0, 0.16), (0.8, 5.0, -0.07), (0.95, 2.5, -0.03),
+                      (1.25, -1.0, 0.01), (1.8, 0.0, 0.0)):
+        c.key("root", t, (rx, 0.0, 0.0), (0.0, risen_clear((rx, 0.0, 0.0), ly), 0.0))
+        c.key("core0", t, (-1.5 * rx, 0.0, 0.0), (0.0, 0.0, -0.01 * rx))
+    osc(c, "core1", 0.8, 1.4, (5.0, 0.0, 4.0), 6.0)
+    for k in range(len(AERIAL)):
+        osc(c, f"aerial{k}", 0.8, 1.6, (6.0, 0.0, 4.0 * (1 if k % 2 else -1)), 3.0)
+    return c
+
+
+def risen_clear(rot: tuple, ly: float) -> float:
+    """A risen clip's trunk drop `ly` (metres, off the stance's LIFT), raised as far as it takes for the trunk's foot,
+    turned by `rot` (degrees) over the risen lean, to stay on the water."""
+    need = trunk_keel_lift(tuple(np.asarray(RISEN_TILT) + np.asarray(rot))) - trunk_keel_lift(RISEN_TILT)
+    return max(ly, need) if need > 0.0 else ly
+
+
+def stamp_offset(i: int, target: np.ndarray):
+    """A stamping foot's path off its planted spot: up and in toward the trunk, hung, then down accelerating."""
+    inward = -np.array([target[0], 0.0, target[2]]) / max(float(np.hypot(target[0], target[2])), 1e-6)
+
+    def f(t: float) -> np.ndarray:
+        if t <= 0.62:
+            s = float(ck.smoothstep(0.1, 0.55, t))
+        else:
+            s = max(0.0, 1.0 - ((t - 0.62) / 0.18) ** 2)
+        return s * (np.array([0.0, STAMP_LIFT[0], 0.0]) + inward * STAMP_LIFT[1])
+    return f
+
+
+def ko_risen_clip(specs: list[dict], rng) -> tuple[ck.Clip, dict]:
+    """ko_risen (2.6 s, the KO in phase 2): it shudders, its root-feet let go one by one and slide out as the trunk
+    sags; then the dead tree keels over backward on its foot's edge and the mass slumps out onto the water. Returns
+    the clip (absolute keys for the trunk and the roots) and each leg's let-go time."""
+    c = ck.Clip("ko_risen", 2.6)
+    tilt = np.asarray(RISEN_TILT)
+    rows = ((0.0, tilt, LIFT), (0.35, tilt + (2.0, 0.0, -3.0), LIFT + 0.03), (1.2, tilt * 0.62, None),
+            (2.0, np.array([-14.0, 6.0, 10.0]), None), (2.35, np.array([-20.0, 6.0, 12.0]), None),
+            (2.6, np.array([-18.0, 6.0, 12.0]), None))
+    body = []
+    for t, rot, lift in rows:
+        lift = trunk_keel_lift(tuple(rot)) if lift is None else lift
+        body.append((t, tuple(float(v) for v in rot), float(lift)))
+        c.key("root", t, tuple(rot), (0.0, lift, 0.0))
+        plumb(c, t, tuple(rot), lift)
+    order = [int(i) for i in rng.permutation(LEGS)]
+    lets = {i: 0.35 + 0.17 * k for k, i in enumerate(order)}
+
+    def body_at(t: float) -> tuple[tuple, float]:
+        rdeg, loc = c.sample("root", t)
+        return tuple(float(v) for v in rdeg), float(loc[1])
+    for i, spec in enumerate(specs):
+        t0 = lets.get(i, 0.5 + 0.1 * i)
+        r1, l1 = body_at(min(t0 + 0.5, 2.6))
+        r2, l2 = body_at(2.6)
+        r_out = RISEN[i][0] + KO_SPLAY
+        slack = solve_bend(spec, l1, (r_out, FOOT_REST + 0.05), (30.0, 10.0, 0.0), r1, 90.0, r_free=0.4, step=3.0)
+        flat = solve_bend(spec, l2, (r_out + 0.3, FOOT_REST + 0.05), (20.0, 15.0, 10.0), r2, 90.0, r_free=0.6, step=3.0)
+        bend(c, i, spec, t0 + 0.5, *slack)
+        bend(c, i, spec, 2.6, *flat)
+    for t, s in ((0.0, 0.0), (1.2, 0.3), (2.0, 0.8), (2.6, 1.0)):
+        c.key("core0", t, tuple(np.asarray(RISEN_CORE[0]) + np.array([30.0, 0.0, -6.0]) * s),
+              tuple(np.asarray(RISEN_CORE[1]) + np.array([0.0, -0.25, 0.4]) * s))
+    osc(c, "core1", 0.0, 0.9, (6.0, 0.0, 5.0), 5.0)
+    return c, lets
+
+
+def ko_clip(specs: list[dict], rng) -> tuple[ck.Clip, dict]:
+    """ko (phase 1, 3.2 s): the roots let go one by one and slide out along their bundles; the dead tree keels over
+    backward, pivoting on its foot's edge on the water, and the mass slumps out of the roots onto the water
+    (M3-CRE-622: nothing goes under the floor; the water's VFX takes the sinking). Returns it and the let-go times."""
     ko = ck.Clip("ko", 3.2)
 
     def keel(t: float) -> tuple[tuple, float]:
         rot = tuple(np.asarray(KO_KEEL) * float(np.interp(t, *zip(*KO_KEEL_KEYS))))
         return rot, trunk_keel_lift(rot)
     order = rng.permutation(N_ROOTS)
+    lets = {}
     for k, i in enumerate(order):
         spec = specs[int(i)]
         t0 = 0.2 + 0.13 * k
+        lets[int(i)] = t0
         foot = root_joints(spec)[3]
         r0 = float(np.hypot(foot[0], foot[2]))
         rot1, lift1 = keel(t0 + 0.4)
         rot2, lift2 = keel(ko.length)
         slack = solve_bend(spec, lift1, (r0 + KO_SPLAY * 0.45, FOOT_REST), (-10.0, 10.0, 8.0), rot1, r_free=0.1)
         flat = solve_bend(spec, lift2, (r0 + KO_SPLAY, FOOT_REST), (-14.0, 14.0, 12.0), rot2, r_free=0.1)
-        bend(ko, int(i), spec, 0.0, 0.0, 0.0, 0.0)
         bend(ko, int(i), spec, t0, 0.0, 0.0, 0.0)
         bend(ko, int(i), spec, t0 + 0.4, *slack)
         bend(ko, int(i), spec, ko.length, *flat)
@@ -936,8 +1298,12 @@ def build_clips(specs: list[dict]) -> list[ck.Clip]:
     for t, sink in ((0.0, 0.0), (1.2, 0.2), (2.4, 0.75), (3.2, 1.0)):
         ko.key("core0", t, (8.0 * sink, 0.0, -5.0 * sink), (0.0, -KO_SLUMP[0] * sink, KO_SLUMP[1] * sink))
         ko.key("core1", t, (6.0 * sink, 0.0, -4.0 * sink))
+    return ko, lets
 
-    phase = ck.Clip("phase_change", 2.2)  # `uprooted`: it wrenches free, the top splinters off, it tips and plants
+
+def phase_clip(specs: list[dict]) -> tuple[ck.Clip, dict]:
+    """`uprooted`: it wrenches free, the top splinters off, it tips and plants (2.2 s). Returns it and the stance."""
+    phase = ck.Clip("phase_change", 2.2)
     lifts = {0.0: 0.0, 0.15: 0.0, 0.3: 0.0, 0.45: 0.0, 0.6: 0.06, 1.0: 0.45, 2.2: LIFT}
     for t, ry, rz in ((0.0, 0.0, 0.0), (0.15, 5.0, 1.5), (0.3, -5.0, -1.5), (0.45, 4.0, 1.0), (0.6, -2.0, 0.0),
                       (1.0, 0.0, 0.0), (2.2, 0.0, 0.0)):
@@ -979,8 +1345,12 @@ def build_clips(specs: list[dict]) -> list[ck.Clip]:
                                  (2.2, 1.8, -1.6, 160)):
             phase.key(f"shard{k}", t, tuple(axis_euler(np.cross(np.array([0.0, 1.0, 0.0]), out), spin)),
                       tuple(out * fly + np.array([0.0, up, 0.0])))
+    return phase, pose
 
-    risen = ck.Clip("idle_risen", 3.6, loop=True)  # a felled tree at rest on its root-feet: it sways, the rest hang
+
+def risen_idle(specs: list[dict], pose: dict) -> ck.Clip:
+    """A felled tree at rest on its root-feet (3.6 s loop): it sways, the hanging roots swing."""
+    risen = ck.Clip("idle_risen", 3.6, loop=True)
     for i, spec in enumerate(specs):
         ph = spec["az"] + (0.0 if i in LEGS else 1.3)
         n = 12
@@ -996,16 +1366,211 @@ def build_clips(specs: list[dict]) -> list[ck.Clip]:
     risen.wave("core2", amp_rot=(2.0, 0.0, -2.5), cycles=1, phase=2.0)
     for k in range(len(AERIAL)):
         risen.wave(f"aerial{k}", amp_rot=(1.5, 0.0, 1.2), cycles=1, phase=0.9 * k)
-    risen = ck.in_pose(risen, "idle_risen", pose)
-    return [idle, attack, cast, hit, ko, phase, risen, ck.in_pose(attack, "attack_risen", pose),
-            ck.in_pose(cast, "cast_risen", pose), ck.in_pose(hit, "hit_risen", pose)]
+    return ck.in_pose(risen, "idle_risen", pose)
+
+
+def idle_clip(specs: list[dict]) -> ck.Clip:
+    """The tide's slow breath (4 s loop): the roots flex, the mass shifts among them."""
+    idle = ck.Clip("idle", 4.0, loop=True)
+    for i, spec in enumerate(specs):
+        ph = spec["az"] * 2.0
+        n = 12
+        for s in range(n + 1):
+            t = 4.0 * s / n
+            w = math.sin(2 * math.pi * s / n + ph)
+            bend(idle, i, spec, t, -1.2 * w, 1.0 * w, 1.4 * w)
+    idle.wave("root", amp_loc=(0.0, 0.015, 0.0), cycles=1)
+    idle.wave("core1", amp_rot=(2.0, 0.0, 2.5), amp_loc=(0.03, 0.03, 0.02), cycles=1, phase=0.8)
+    idle.wave("core2", amp_rot=(2.5, 0.0, -2.0), cycles=1, phase=1.6)
+    idle.wave("stump", amp_rot=(0.3, 0.0, 0.5), cycles=1, phase=0.4)
+    for k in range(len(AERIAL)):
+        idle.wave(f"aerial{k}", amp_rot=(1.2, 0.0, 1.0), cycles=1, phase=0.9 * k)
+    return idle
+
+
+def foot_of(rig: ck.Rig, clip: ck.Clip, i: int, t: float) -> np.ndarray:
+    b = rig.bones[rig.index(f"root{i}_c")]
+    R, off = fk(rig, clip, t)[b.name]
+    return R @ np.asarray(b.tail) + off
+
+
+def build_clips(specs: list[dict], rig: ck.Rig) -> tuple[list[ck.Clip], dict]:
+    """The clips, and per clip how its roots are planted: {name: f(i, t) -> (weight, world target or None)}."""
+    rng = np.random.default_rng(SEED + 70)
+    idle = idle_clip(specs)
+    idle0 = stance(idle)
+    rooted = {i: root_joints(spec)[3] for i, spec in enumerate(specs)}  # where each root stands on the water
+    ko, ko_lets = ko_clip(specs, rng)
+    phase, pose = phase_clip(specs)
+    risen = risen_idle(specs, pose)
+    risen0 = stance(risen)
+    stood = {}
+    for i in LEGS:  # where each leg stands once risen: under its foot at the stance, on the water
+        p = foot_of(rig, risen, i, 0.0)
+        stood[i] = np.array([p[0], FOOT_REST, p[2]])
+    ko_r, ko_r_lets = ko_risen_clip(specs, rng)
+
+    hit = hit_clip(specs)
+    hit_b = ck.varied(hit, "hit_b", **ck.HIT_B)
+    snag = snag_clip(specs)
+    haul, rising, snag_break = haul_clip(specs), rising_water_clip(specs), snag_break_clip(specs)
+    deltas1 = [haul, cast_clip(specs), rising, snag, hit, hit_b, snag_break, idle_b_clip(specs)]
+    clips = [idle, ck.in_pose(intro_clip(specs), "intro", idle0), ck.in_pose(ready_clip(specs), "ready", idle0)]
+    clips += [ck.in_pose(d, d.name, idle0) for d in deltas1]
+    pin(ko, 0.0, idle0)
+    pin(phase, 0.0, idle0)
+    pin(phase, phase.length, risen0)
+    clips += [ko, phase, risen]
+    for d in (haul, rising_water_risen(specs), hit, hit_b, snag_break, drink_clip(specs), stamp_clip()):
+        name = d.name if d.name.endswith("_risen") else f"{d.name}_risen"
+        clips.append(ck.in_pose(d, name, risen0))
+    rd = ready_clip(specs, RISEN_TILT, LIFT)
+    rd.name = "ready_risen"
+    clips.append(ck.in_pose(rd, "ready_risen", risen0))
+    sr = ck.Clip("snag", snag.length)
+    sr.keys = {b: ks for b, ks in snag.keys.items() if not b.startswith(f"root{SNAG}_")}
+    sr = ck.in_pose(sr, "snag_risen", risen0)
+    pin(sr, 0.0, {b: v for b, v in risen0.items() if b.startswith(f"root{SNAG}_")})
+    for t, p in snag_bends(specs[SNAG], RISEN_TILT, LIFT):
+        bend(sr, SNAG, specs[SNAG], t, *p)
+    pin(sr, sr.length, {b: v for b, v in risen0.items() if b.startswith(f"root{SNAG}_")})
+    clips.append(sr)
+    pin(ko_r, 0.0, risen0)
+    clips.append(ko_r)
+
+    def rooted_plant(free: dict | None = None):
+        def f(i: int, t: float):
+            return ((free[i](t) if free and i in free else 1.0), rooted[i])
+        return f
+
+    def risen_plant(free: dict | None = None, offset: dict | None = None):
+        def f(i: int, t: float):
+            if i not in LEGS:
+                return 0.0, None
+            tgt = stood[i] + (offset[i](t) if offset and i in offset else 0.0)
+            return (free[i](t) if free and i in free else 1.0), tgt
+        return f
+
+    def phase_plant(i: int, t: float):
+        if t < 1.2:
+            return float(ck.smoothstep(0.7, 0.45, t)), rooted[i]
+        return (float(ck.smoothstep(1.9, 2.2, t)), stood[i]) if i in LEGS else (0.0, None)
+
+    plant = {name: rooted_plant() for name in ("idle", "intro", "cast", "rising_water", "hit", "hit_b", "snag_break",
+                                                "idle_b")}
+    plant["ready"] = rooted_plant({i: (lambda t: 0.0) for i in FRONT})
+    plant["attack"] = rooted_plant({i: free_between(0.0, 1.4) for i in FRONT})
+    plant["snag"] = rooted_plant({SNAG: free_between(0.0, 1.6)})
+    plant["ko"] = rooted_plant({i: let_go(t0) for i, t0 in ko_lets.items()})
+    plant["phase_change"] = phase_plant
+    for name in ("idle_risen", "ready_risen", "attack_risen", "rising_water_risen", "hit_risen", "hit_b_risen",
+                 "snag_break_risen", "cast_risen", "snag_risen"):
+        plant[name] = risen_plant()
+    plant["root_stamp_risen"] = risen_plant(offset={i: stamp_offset(i, stood[i]) for i in STAMP})
+    plant["ko_risen"] = risen_plant({i: let_go(t0) for i, t0 in ko_r_lets.items()})
+    return clips, plant
+
+
+# ---------------------------------------------------------------------------------------------
+# Planted roots (M4-CRB-002): IK holds a standing root's foot on its spot on the water at every frame
+# ---------------------------------------------------------------------------------------------
+IK_ITERS = 30
+IK_TOL = 2e-4  # metres
+IK_DAMP = 1e-6
+IK_ROLL_COST = 2.0  # the first bone's roll is dearer than a bend: the root keeps to its own plane
+IK_LIMIT = 60.0  # degrees: the most IK turns a bone off its authored pose
+PLANT_LIFTS = 3  # tries at standing a foot higher when its turned tip would dip under the water
+
+
+class RootIK:
+    """A root's three bones turned so its foot (root{i}_c's tail) lands on a world point: damped Gauss-Newton on four
+    small turns added to the authored pose (the first bone's bend and roll about its heading, the others' bends),
+    least-norm, so the root keeps its authored shape as far as the foot allows (its arch can still rise and part)."""
+
+    def __init__(self, rig: ck.Rig, i: int, spec: dict) -> None:
+        self.names = [f"root{i}_{s}" for s in "abc"]
+        self.heads = [np.asarray(rig.bones[rig.index(n)].head, float) for n in self.names]
+        self.tail = np.r_[np.asarray(rig.bones[rig.index(self.names[2])].tail, float), 1.0]
+        self.out, self.tan = _dirs(spec["az"])
+
+    def _foot(self, M0: np.ndarray, Rs: list, locs: list) -> np.ndarray:
+        M = M0
+        for h, R, loc in zip(self.heads, Rs, locs):
+            L = np.eye(4)
+            L[:3, :3] = R
+            L[:3, 3] = h + loc - R @ h
+            M = M @ L
+        return (M @ self.tail)[:3]
+
+    def _turned(self, Rs: list, d: np.ndarray) -> list:
+        return [axis_mat(self.out, d[3]) @ axis_mat(self.tan, d[0]) @ Rs[0], axis_mat(self.tan, d[1]) @ Rs[1],
+                axis_mat(self.tan, d[2]) @ Rs[2]]
+
+    def solve(self, M0: np.ndarray, rots: list, locs: list, goal: np.ndarray, w: float) -> list:
+        """The bones' (rx, ry, rz) degrees with the foot on `goal`, blended by `w` (0 authored .. 1 planted)."""
+        Rs = [ck.euler(*r) for r in rots]
+        scale = np.array([1.0, 1.0, 1.0, IK_ROLL_COST])
+        d = np.zeros(4)
+        for _ in range(IK_ITERS):
+            f = self._foot(M0, self._turned(Rs, d), locs)
+            e = goal - f
+            if float(np.linalg.norm(e)) < IK_TOL:
+                break
+            J = np.column_stack([(self._foot(M0, self._turned(Rs, d + 0.05 * np.eye(4)[k]), locs) - f) / 0.05
+                                 for k in range(4)]) / scale
+            d = np.clip(d + (J.T @ np.linalg.solve(J @ J.T + IK_DAMP * np.eye(3), e)) / scale, -IK_LIMIT, IK_LIMIT)
+        return [mat_euler(R) for R in self._turned(Rs, d * w)]
+
+
+def plant_roots(rig: ck.Rig, meshes: list[ck.Mesh], specs: list[dict], clips: list[ck.Clip], plant: dict
+                ) -> list[ck.Clip]:
+    """Re-keys every root's bones at every baked frame of each clip in `plant`, its foot held on its spot."""
+    poser = gr.Poser(rig, meshes)
+    iks = [RootIK(rig, i, spec) for i, spec in enumerate(specs)]
+    root = rig.index("root")
+    bones = {n for ik in iks for n in ik.names}
+    feet = []  # the vertices each root's foot bone moves (its tip, rootlets and fork)
+    for i in range(N_ROOTS):
+        feet.append((np.isin(poser.J, poser.subtree(f"root{i}_c")) & (poser.W > 1e-6)).any(axis=1))
+    out = []
+    for clip in clips:
+        fn = plant.get(clip.name)
+        if fn is None:
+            out.append(clip)
+            continue
+        fixed = ck.Clip(clip.name, clip.length, loop=clip.loop)
+        fixed.keys = {b: list(ks) for b, ks in clip.keys.items() if b not in bones}
+        for t in gr.frame_times(clip):
+            pose = gr.pose_at(clip, poser.names, t)
+            mats = poser.matrices(pose)
+            M0 = mats[root]
+            for i, ik in enumerate(iks):
+                rots = [pose[n][0] for n in ik.names]
+                locs = [np.asarray(pose[n][1], float) for n in ik.names]
+                w, goal = fn(i, t)
+                if w > 1e-4 and goal is not None:
+                    goal = np.asarray(goal, float).copy()
+                    authored = rots
+                    for _ in range(PLANT_LIFTS):  # a foot turned so its tip would dip stands that much higher
+                        rots = ik.solve(M0, authored, locs, goal, w)
+                        for n, r, loc in zip(ik.names, rots, locs):
+                            pose[n] = (tuple(r), tuple(loc))
+                        poser.resolve(mats, pose, poser.subtree(ik.names[0]))
+                        low = float(poser.vertices(mats, feet[i])[:, 1].min())
+                        if low >= GROUND_FLOOR:
+                            break
+                        goal[1] += GROUND_FLOOR - low + 1e-3
+                for n, r, loc in zip(ik.names, rots, locs):
+                    fixed.key(n, t, tuple(float(v) for v in r), tuple(float(v) for v in loc))
+        out.append(fixed)
+    return out
 
 
 # ---------------------------------------------------------------------------------------------
 # On the water (M3-CRE-622): every vertex of every frame of every clip stays on or over y 0 (GroundedClipsTest)
 # ---------------------------------------------------------------------------------------------
 GROUND_FLOOR = 0.002  # the corrected clips' lowest vertex (the test allows 5 mm under 0)
-GROUND_ROOT_LIMIT = (35.0, 45.0, 60.0)  # the most a root's foot, middle and first bone turn up to clear the water
+GROUND_ROOT_LIMIT = (60.0, 75.0, 90.0)  # the most a root's foot, middle and first bone turn up to clear the water
 GROUND_LIFT_LIMIT = {"core0": 0.6, "aerial": 0.5}  # the most the mass or an aerial root lifts to clear it
 GROUND_STEPS = (16, 28)  # the search's coarse steps over a limit, then bisections down to the least that clears
 
@@ -1079,7 +1644,13 @@ def grounded_clips(rig: ck.Rig, meshes: list[ck.Mesh], specs: list[dict], clips:
 
 
 def export_clips(rig: ck.Rig, meshes: list[ck.Mesh], specs: list[dict]) -> list[ck.Clip]:
-    return grounded_clips(rig, meshes, specs, build_clips(specs))
+    """Plant the standing roots, keep everything on the water, plant them again over the corrected body, and take any
+    foot that still dips back up to the water (the Drownbell's order, M3-CRB-013)."""
+    clips, plant = build_clips(specs, rig)
+    clips = plant_roots(rig, meshes, specs, clips, plant)
+    clips = grounded_clips(rig, meshes, specs, clips)
+    return grounded_clips(rig, meshes, specs, plant_roots(rig, meshes, specs, clips, plant))
+
 
 
 # ---------------------------------------------------------------------------------------------
@@ -1101,28 +1672,33 @@ def fk(rig: ck.Rig, clip: ck.Clip, t: float) -> dict:
     return out
 
 
-def report(specs: list[dict], rig: ck.Rig, mesh: ck.Mesh, extra: list[ck.Mesh], clips: list[ck.Clip]) -> None:
+def report(specs: list[dict], rig: ck.Rig, mesh: ck.Mesh, extra: list[ck.Mesh], clips: list[ck.Clip],
+           plant: dict) -> None:
+    """The budget, each clip's lowest vertex and length, and how far a planted foot strays from its spot."""
     tris = mesh.triangle_count + sum(m.triangle_count for m in extra)
-    print(f"triangles: {tris} (body {mesh.triangle_count}, stump {extra[0].triangle_count}); bones {len(rig.bones)}")
+    parts = ", ".join(f"{m.name} {m.triangle_count}" for m in extra)
+    print(f"triangles: {tris} (body {mesh.triangle_count}, {parts}); bones {len(rig.bones)}")
     poser = gr.Poser(rig, [mesh] + extra)
     for c in clips:
-        print(f"{c.name}: lowest vertex {min(gr.lowest(poser, c)):+.4f} m")
-    for c in clips:
-        if c.name not in ("idle_risen", "phase_change", "attack", "ko", "idle"):
-            continue
-        t = c.length if c.name in ("phase_change", "ko") else (0.7 if c.name == "attack" else 0.0)
-        pose = fk(rig, c, t)
-        feet = []
-        for i in range(N_ROOTS):
-            b = rig.bones[rig.index(f"root{i}_c")]
-            R, off = pose[b.name]
-            p = R @ np.asarray(b.tail) + off
-            feet.append((i, round(float(np.hypot(p[0], p[2])), 2), round(float(p[1]), 2)))
-        print(f"{c.name} @ {t:.2f}s feet (i, r, y): {feet}")
+        slide, rise = 0.0, 0.0
+        fn = plant.get(c.name)
+        for t in gr.frame_times(c) if fn else []:
+            pose = fk(rig, c, t)
+            for i in range(N_ROOTS):
+                w, goal = fn(i, t)
+                if w >= 0.999 and goal is not None:
+                    b = rig.bones[rig.index(f"root{i}_c")]
+                    R, off = pose[b.name]
+                    d = R @ np.asarray(b.tail) + off - goal
+                    slide, rise = max(slide, float(np.hypot(d[0], d[2]))), max(rise, abs(float(d[1])))
+        low = gr.lowest(poser, c)
+        print(f"{c.name} ({c.length:.2f} s): lowest vertex {min(low):+.4f} m (frame {int(np.argmin(low))}); "
+              f"a planted foot slides {slide * 100:.1f} cm, rises {rise * 100:.1f} cm")
 
 
 def build_meshes(specs: list[dict], rig: ck.Rig) -> list[ck.Mesh]:
-    """The body and the snapped top (its own node: the `uprooted` phase splinters it, then hides it)."""
+    """The body, the snapped top (its own node: the `uprooted` phase splinters it, then hides it) and the snag roots'
+    parts (whole and broken, M4-CRB-002)."""
     mesh = ck.Mesh("mangrove_drowner")
     feat = core_features()
     roots(mesh, rig, specs)
@@ -1134,7 +1710,7 @@ def build_meshes(specs: list[dict], rig: ck.Rig) -> list[ck.Mesh]:
     core(mesh, rig, feat, specs)
     blisters(mesh, rig, feat, specs)
     seams(mesh, rig, feat, specs)
-    return [mesh, stump(rig)]
+    return [mesh, stump(rig)] + snag_parts(rig, specs)
 
 
 def main() -> None:
@@ -1148,7 +1724,7 @@ def main() -> None:
     mesh, *extra = build_meshes(specs, rig)
     clips = export_clips(rig, [mesh] + extra, specs)
     if args.report or not args.out:
-        report(specs, rig, mesh, extra, clips)
+        report(specs, rig, mesh, extra, clips, build_clips(specs, rig)[1])
         return
     info = ck.export_creature(mesh, rig, clips, args.out, extra_meshes=extra,
                               extras={"hymn_creature": "mangrove_drowner"})

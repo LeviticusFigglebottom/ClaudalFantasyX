@@ -49,6 +49,10 @@ M_WOOL = "kit_keth_wool"
 M_RED = "kit_keth_red"
 M_DARK = "kit_interior_dark"
 M_TIMBER = "kit_timber"
+# M4-A2P-042: Quellan's houses in the road's lighter granite (the volcanic crag read black in the street's shade) and
+# their roof turf the ground's sward (the grass cards' flat colour read as snow on the roofs; ADR 0015).
+M_DRYSTONE = M_ROAD
+M_TURF = "kit_keth_turf"
 
 TRI_BUDGET = {"cloudloom_hall": (16000, 1200), "keth_curtain": (4000, 300), "quellan_house": (7000, 500),
               "woven_awning": (1500, 120), "keth_road_switchback": (8000, 500), "keth_scree_slope": (12000, 1000), "woolback_trough": (2000, 150),
@@ -580,7 +584,7 @@ def build_quellan_house(seed: int = 1512) -> list[kc.MeshBuilder]:
         rng = kc.rng_for("quellan_house", seed)
         noise = kc.Noise3(rng)
         mb = kc.MeshBuilder("quellan_house" + ("-lod1" if lod else ""))
-        crag, timber = mb.material(M_CRAG), mb.material(M_TIMBER)
+        crag, timber = mb.material(M_DRYSTONE), mb.material(M_TIMBER)
         w, d, h = 6.0, 6.0, 5.2
         if lod:
             kc.rounded_block(mb, (0.0, h * 0.5, -d * 0.5), (w * 0.5, h * 0.5, d * 0.5), crag, radius=0.1, seg=1)
@@ -589,7 +593,7 @@ def build_quellan_house(seed: int = 1512) -> list[kc.MeshBuilder]:
             kc.rounded_block(mb, (0.0, 2.05, 0.05), (0.7, 0.08, 0.3), timber, radius=0.02, seg=1)  # the lintel
         # The flat roof, its turf edge, and the door's woven awning on two poles.
         kc.rounded_block(mb, (0.0, h + 0.12, -d * 0.5), (w * 0.5 + 0.2, 0.12, d * 0.5 + 0.2), timber, radius=0.03, seg=1)
-        kc.rounded_block(mb, (0.0, h + 0.3, -d * 0.5), (w * 0.5 + 0.15, 0.08, d * 0.5 + 0.15), mb.material(M_GRASS),
+        kc.rounded_block(mb, (0.0, h + 0.3, -d * 0.5), (w * 0.5 + 0.15, 0.08, d * 0.5 + 0.15), mb.material(M_TURF),
                          radius=0.06, seg=1, noise=None if lod else noise, disp_m=0.03)
         _awning(mb, rng, (0.0, 0.0, 1.2), 2.4, 1.8, 2.3, lod)
         out.append(mb)
@@ -656,7 +660,7 @@ def build_quellan_inn(seed: int = 1514) -> list[kc.MeshBuilder]:
         rng = kc.rng_for("quellan_inn", seed)
         noise = kc.Noise3(rng)
         mb = kc.MeshBuilder("quellan_inn" + ("-lod1" if lod else ""))
-        crag, timber, red = mb.material(M_CRAG), mb.material(M_TIMBER), mb.material(M_RED)
+        crag, timber, red = mb.material(M_DRYSTONE), mb.material(M_TIMBER), mb.material(M_RED)
         w, d, h = INN_W, INN_D, INN_H
         if lod:
             kc.rounded_block(mb, (0.0, h * 0.5, -d * 0.5), (w * 0.5, h * 0.5, d * 0.5), crag, radius=0.1, seg=1)
@@ -682,7 +686,7 @@ def build_quellan_inn(seed: int = 1514) -> list[kc.MeshBuilder]:
             kc.tube(mb, np.array([[-w * 0.5 + 0.4, gy + 0.95, 1.1], [w * 0.5 - 0.4, gy + 0.95, 1.1]]), 0.04, 5, timber)
         kc.rounded_block(mb, (0.0, h + 0.12, -d * 0.5), (w * 0.5 + 0.25, 0.12, d * 0.5 + 0.25), timber, radius=0.03,
                          seg=1)
-        kc.rounded_block(mb, (0.0, h + 0.3, -d * 0.5), (w * 0.5 + 0.2, 0.08, d * 0.5 + 0.2), mb.material(M_GRASS),
+        kc.rounded_block(mb, (0.0, h + 0.3, -d * 0.5), (w * 0.5 + 0.2, 0.08, d * 0.5 + 0.2), mb.material(M_TURF),
                          radius=0.06, seg=1, noise=None if lod else noise, disp_m=0.03)
         # The red banner on its bracket by the door (the greybox's InnBanner at x 0, y 2.3-4.1, z +0.1).
         kc.tube(mb, np.array([[0.0, 4.2, 0.05], [0.0, 4.2, 0.75]]), 0.03, 4 if lod else 6, timber, cap_end=True)

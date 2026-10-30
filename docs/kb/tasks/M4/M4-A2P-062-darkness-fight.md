@@ -2,9 +2,8 @@
 id: M4-A2P-062
 title: "The Wakefin in the dark: a battle lit only by the sea-glow, telegraphs by sound and glow"
 role: combat
-status: blocked
-blocked-by: ADR 0203
-owner_session: ""
+status: doing
+owner_session: claude/battle-presentation (session_01UPFyEA8QkJULH74MGgnMvJ; ADR 0205: Act II starts for battle-presentation)
 depends_on: []
 reviewer: rendering
 milestone: M4

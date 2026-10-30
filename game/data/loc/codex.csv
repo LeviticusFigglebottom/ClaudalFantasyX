@@ -127,6 +127,12 @@ CODEX_EBBING_TITLE,The Ebbing
 CODEX_EBBING_BODY,"The Order's dance for the dead. After a drowning a priest dances on a floating platform with a long lantern-staff, and the motes of the dead follow the staff out to sea while the mourners kneel facing the water. After an Undertow the dance falls to a Cantor, and the whole strand watches her. It is the most beautiful thing the Order does."
 CODEX_MOLL_TITLE,Inquisitor Hadric Moll
 CODEX_MOLL_BODY,"An Inquisitor of the Stillguard, one of the officers who enforce the Salt Edicts, met on the Brine Shoals with a raid-hound and a long-hafted brine-iron. He is in his forties, tired, and sincere: he believes in what he burns. When the fight was done he knelt in the mud, and when the High Warden told him to put the iron in the water, he did not argue."
+CODEX_FAREWELL_TIDE_TITLE,The Farewell-Tide
+CODEX_FAREWELL_TIDE_BODY,"When a Kirru dies, the clutch gathers at the tideline at dusk and sings the farewell-tide, a wordless song that rises and keeps rising. Then they turn their backs to the water, so that the dead are not held by being watched. Within the hour the light goes up, straight up, and no one turns to see it go."
+CODEX_NAME_SHELLS_TITLE,Name-Shells
+CODEX_NAME_SHELLS_BODY,"Every Kirru wears a shell at the throat with their name cut into it, a spiral of notches no human script can read. It is not a keepsake: the Kirru keep nothing of their dead, and the shell is the name itself. A shell ground blank means its wearer has been sent away, until they can sing for the one they would not let go."
+CODEX_KIRRU_ELDEST_TITLE,The Eldest of Reedhollow
+CODEX_KIRRU_ELDEST_BODY,"A clutch is led by the eldest who still swims, and at Reedhollow that is a Kirru older than the lagoon's oldest roots. The eldest speaks the human tongue slowly, as if each word were borrowed and had to be given back. Pell is not let past the fen's edge."
 CODEX_OWA_TITLE,Owa
 CODEX_OWA_BODY,"The eldest of Reedhollow's clutch who still swims: grey at the muzzle, her crest gone white. She lets strangers into the village for what they have done, and keeps out the one who walked them there, because he did not turn around."
 CODEX_TOBIN_TITLE,Tobin Varrow
@@ -151,10 +157,6 @@ CODEX_KESH_TITLE,Kesh
 CODEX_KESH_BODY,"The first Cantor, a Lamplighter of Iskarra, who sang herself into the storm a thousand years ago. She has been awake in the Choir's stones ever since."
 CODEX_KERRID_STAIR_TITLE,The Captain of the Stair
 CODEX_KERRID_STAIR_BODY,"Kerrid kept the Fisher Stair at Corrow for fourteen years, captain of a watch of conscripted fishers, with no rank in the Order. In 1001 he held the stair for a Cantor and a diver who had never met, and the sea took him off the bottom step. His light did not lift. He is one of the unrisen: held, and still keeping the watch, because somebody is still below."
-CODEX_FAREWELL_TIDE_TITLE,The Farewell-Tide
-CODEX_FAREWELL_TIDE_BODY,"The Kirru's rite for their dead. At dusk the clutch wades out to the standing places and sings, then turns its back to the water, and the light of the dead goes up behind them. Nobody watches it go. The Kirru say a watched light looks back, and then it cannot leave."
-CODEX_NAME_SHELLS_TITLE,Name-Shells
-CODEX_NAME_SHELLS_BODY,"Every Kirru wears a shell at the throat with their name carved on the inside, against the skin. The shell is not a keepsake; it is the name. A shell scraped blank means the clutch has stopped saying that name, and the one who wears it is not called anything by them again."
 CODEX_OUTSIDE_THE_LEVEL_TITLE,Outside the Level
 CODEX_OUTSIDE_THE_LEVEL_BODY,"The Order's word for those it has cast out. Its shops will not sell to them and its shrines will not answer them, and the faithful are asked to let them pass unspoken to. The Order does not say what becomes of them after that. It has never needed to."
 CODEX_THE_HUSH_TITLE,What the Hush Does
