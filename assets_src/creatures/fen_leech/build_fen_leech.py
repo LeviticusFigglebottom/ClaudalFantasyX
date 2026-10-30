@@ -35,6 +35,7 @@ base.SEED = SEED
 base.HALF_W = 0.44  # ribbon-narrow (sail leech 0.7)
 base.HALF_L = 0.95  # and long (0.5)
 base.THICK = 0.035  # flat (0.07)
+base.KO_DROP = 1.38  # its fall from its own 1.38 m hover (the sail leech hangs lower since the Act I audit)
 base.DOME = 0.025
 base.FRILL = 0.006  # no canvas: only a slight ripple at the edge (0.022)
 base.FRILL_WAVES = 22.0
