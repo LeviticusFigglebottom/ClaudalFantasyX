@@ -44,6 +44,7 @@ import reedhollow  # noqa: E402
 import fen_zones  # noqa: E402
 import vey_zones  # noqa: E402
 import lowlight_zones  # noqa: E402
+import keth_zones  # noqa: E402
 import kit_common as kc  # noqa: E402
 import props  # noqa: E402
 import ruins  # noqa: E402
@@ -134,6 +135,8 @@ def targets() -> dict:
         out[name] = (name, vey_zones, fn)
     for name, fn in sorted(lowlight_zones.TARGETS.items()):  # M4-A2P-041 Lowlight's rooms, from its greybox
         out[name] = (name, lowlight_zones, fn)
+    for name, fn in sorted(keth_zones.TARGETS.items()):  # M4-A2P-042 the Ch12 zones, from their greybox
+        out[name] = (name, keth_zones, fn)
     return out
 
 

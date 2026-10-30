@@ -20,4 +20,9 @@ Place the built kit (M3-ENV-717, 734) per keth_pass.md §6: the switchbacks and 
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). Plan §2 Ch12.
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
 
+- 2026-10-30 (env-art): **built**, `tools/act2/ch12_keth_dressing.py`. Each zone's ground and stone are built from
+  the greybox (`keth_zones.py`), with the kit placed round them. env-art's previews (`game/levels/_tests/ch12_zones/`)
+  were viewed at thirty cameras. Tests: `tools/tests/test_ch12_keth_dressing.py`. The mount is chapters'
+  (M4-A2P-0421). Weather snow and wind are rendering's.
+
 ## Review log

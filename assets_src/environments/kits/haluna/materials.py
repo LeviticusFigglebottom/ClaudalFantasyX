@@ -533,6 +533,14 @@ MATERIALS["kit_vey_silt"] = stone("sand_albedo.png", "sand_normal.png", (2.5, 2.
                                   variation_value=0.1, use_moss=False, use_barnacles=False, use_salt=False,
                                   algae_coverage="Vector2(0.3, 0.7)")
 
+# ---- M4-A2P-042 (appended by env-art): the Ch12 zones' ground (keth_zones.py) ---------------------------------------
+# The highland's thin turf on the level ground between the crags (kit_keth_grass is the cards' flat colour, and laid on
+# the ground it read as snow, which ADR 0015 forbids): the Pemakar ash soil gone to a pale olive-grey sward, lichen.
+MATERIALS["kit_keth_turf"] = _ext_stone(_PEM + "ash_soil_albedo.png", _PEM + "ash_soil_normal.png", (2.2, 2.2),
+                                        base_triplanar=True, col_tint=hexc("#A9B08E"), normal_strength=0.6,
+                                        roughness_base=0.95, cavity_darken=0.3, variation_value=0.16,
+                                        col_lichen=hexc("#8E9A6E"), **_DRY)
+
 
 if __name__ == "__main__":
     sys.exit(main())
