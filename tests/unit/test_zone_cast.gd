@@ -57,7 +57,8 @@ func test_a_cast_actor_shows_its_model_and_idles_out_of_step() -> void:
 	# either way the actor's AnimationPlayer is the one the cutscenes' @anim lines play.
 	var a := HeroMotion.player_of(fisher)
 	var b := HeroMotion.player_of(boatman)
-	assert_true(a != null and a.is_playing() and a.current_animation == "idle", "the fisher idles")
+	# its idle, or the crowd routine a VillagerLayer gives it (M3-CRE-657: haul, mend, sweep ...)
+	assert_true(a != null and a.is_playing() and a.current_animation != "", "the fisher idles or works")
 	assert_true(b != null and b.is_playing(), "the boatman idles")
 	assert_true(absf(a.current_animation_position - b.current_animation_position) > 0.05, "out of step")
 	_close()
