@@ -495,3 +495,12 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   **Open:** the ring break parts wait on combat's skills (break_parts is keyed by skill; M4-A2P-022) and on a budget
   call (broken lamp variants cost ~1.4-4.8k triangles against 1.3k left). Pre-existing, not mine: `--filter=part`
   fails the Liss stand-in tint test (#7A8C5A vs battle_sandbox's #7A8F6A).
+- **MERGE-READY @ (this commit): M4-CRB-002, the Mangrove Drowner at the final bar** (worktree agent, viewed by it;
+  review combat). Roots planted by IK every frame (they lifted up to 24 cm), 24 clips (intro, ready, idle_b, a clip
+  per skill, risen versions, snag_break), anchors, the two snag roots carry mote cradles with torn twins (new
+  `mote_snag` material, PROVENANCE row), barnacles fixed; 17,676 triangles (≤18k); portrait re-rendered. **Clip map
+  for combat:** drowner_haul -> attack 0.7; rising_water 1.0; drowner_snag -> snag 0.75; root_stamp ->
+  root_stamp_risen 0.8 (phase 2); drink_the_fen -> cast 1.0; each `_risen` in `uprooted` (map in creatures.json);
+  the `break_parts` block (keyed drowner_haul) is ready in the art sheet. **Boss seat** [-5.0, 0, -3.0] added to
+  battle_sandbox.json `boss_seats` (on the default slot the trunk filled a third of the frame, its top cut).
+  Checks: Blender identical; tools OK; Godot creature 106/0. Open: risen feet slide ≤6 cm in rising_water_risen.
