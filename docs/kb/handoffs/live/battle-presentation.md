@@ -104,6 +104,59 @@ Session `session_015hKkhtpX67kS4yZeA8AAhv`. Integration branch `claude/undertow-
     Kahre, the shop tier).
   - The integration branch's coverage reds.
 
+**MERGE-READY @ afe59523** (+ this log commit): the Act II creature bosses' PROVISIONAL rows and staging, and two Act I
+sweep fixes.
+- **LEAD-ANSWERED (03:44): the Act II boss rows, PROVISIONAL (1dbfed6d).**
+  - enemies.json:
+    - mangrove_drowner: Ch10, L9, 5200 HP; phase uprooted at 50%;
+    - lamp_engine: Ch11, L10, 5600 HP; opened at 50%;
+    - avalanche_ram: Ch12, L11, 6200 HP; torn_fleece at 40%;
+    - wakefin: Ch15, L13, 7000 HP; close_circle at 40%.
+  - Each row has its creatures.json model and phases, lore, and `"provisional": true`. 15 skills come from
+    creatures-b's sheets, and none of them use ice (ADR 0204).
+  - encounters.json: ch10_mangrove_drowner, ch11_lamp_engine, ch12_avalanche_ram and ch15_wakefin, on M3-BPR-419's
+    arenas. **Not yet placed in zones** (that is chapters' job).
+  - **For act1-chapters (the chapters' combat seat):** tune these with the sim against the Act II boss band
+    (balance_targets.md: naive ≤ 3%, role_answer 55–80%, smart 70–90%). No suite exists for them yet.
+  - Request **M3-BPR-428**: an evasion-up status for Sound Dive (ADR 0204 #3), and the Ram's snow field.
+  - Their skills' effects are in gen_act2_ability_vfx.py (23 Act II skills), and test_battle_act2_ability_vfx
+    covers phase skills.
+- **On stage (26db1af3, afe59523):**
+  - The Wakefin's seat is in the water past the barge's back rail (boss_seats; its blade had stood out of the deck
+    planks), and its blows stay in place (style_by_actor).
+  - The Drowner has a seat and a fitted rest frame. Its root cage had filled the frame and its top was cut off.
+  - The whole-party sweeps (ram_bellow, wake_breach, wake_wheel) play in place.
+  - SELF-RENDERED and viewed the four bosses' arena previews:
+    - the Wakefin's black fin cuts the dark water beyond the rail;
+    - the whole Drowner stands beside a readable party;
+    - the Lamp Engine and the Ram read whole (no change).
+- **For the Lead at merge:** on big18, creatures-b moved the Reach's seat to [-5.0, 0, -2.4] (a654ccc5, GPU QA rows 35
+  and 36), and this branch's boss_seats line adds the Wakefin and the Drowner. Keep their Reach value plus this
+  branch's two new rows (the scratch merge does exactly that).
+- **Act I sweep fix (21ef24f9 + 26db1af3):** the tallest foes are seated farthest from the camera (spacing.tall_to_back).
+  - On the causeway the Lantern Eel had hidden the Gull Harrier at rest, and in the harrier fight the gull hid the
+    crab. Foes of equal height keep their own slots.
+  - Test test_battle_seat_order fails without it.
+  - **Multi-foe battle shots move (their seating): the gate views them.**
+- **Checks run:**
+  - Godot `--filter=battle` **819 run, 0 failed** (fresh user dir, on 26db1af3);
+  - on afe59523 (data only): `--filter=` boss_camera 8/0, act2_bosses 5/0, arena 18/0, seat_order 2/0;
+  - earlier: ability_vfx 6/0, act2 6/0, encounter 1/0, boss 85/0, set_piece_shots 4/0, party_kits 4/0;
+  - validate_data 0/0, taskboard --check, gdlint, gdformat, and gen_act1/2 --check.
+- **Skipped:** the full manifest (ADR 0205; the gate views the moved battle shots and the four boss arena previews),
+  Blender (none touched), coverage (no game/battle core .gd change).
+
+**The Act I encounter sweep, batch 2** (on big18 + this branch at e9d38ec4): ch03_causeway_shore, ch03_causeway_harrier,
+ch01_wickfry, ch01_oil_slug, ch01_shaft_limpet and ch01_scuttlers.
+- Every automatic check is clean: the arena is right, every landed hit and status has its effect, and no framing
+  issue.
+- Contact sheets viewed:
+  - The causeway's eel-over-gull was fixed by the seat order.
+  - The Underway fights read in their dark arena.
+  - wickfry and oil_slug end in one action, so they have few stills.
+- ch01_hullgnaw hit the batch cap after its opening (viewed: it reads), so it leads batch 3.
+- Batch 3 is running: hullgnaw, the two Underway fights, and Ch4's leeches, Hermit and Spar-Wraith.
+
 **MERGE-READY @ ac34fe8b** (+ this log commit; integration merged in at 1060a593):
 - The items:
   - drownbell_flood (9524f9f0);
