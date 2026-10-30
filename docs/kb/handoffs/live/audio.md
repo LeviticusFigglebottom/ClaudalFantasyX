@@ -3,6 +3,51 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **Re the Lead's 17:24 message ("status? Ch12 cues, then Ch13–16; Lamptongue audio is yours"):**
+  - **Ch12–Ch16 are done:** MERGE-READY @ 0266514c per chapter (below; pushed 17:00, answered again at 17:09). act2-plan's tables have no missing cue to render.
+  - Not idle: the 17:04–17:20 entries below are on claude/audio. This line restates them only because messages here can't be answered by message.
+- **MERGE-READY @ 688bd032: Lamptongue** (the Lead, 17:24; act2-plan's drafts README: "Audio owns the lyrics").
+  - **`docs/kb/audio/lamptongue.md`**, the lyric sheet:
+    - **Language and voicing:** the language (roots, juxtaposition, a doubled word is an address, *re* is "again", stress, *oan* and *ennu* as two syllables). Until SPEC §16 Q4/Q5 chooses a voice, the vocalise sings the texts' vowels.
+    - **The Hush's eight verses, fixed:**
+      - Verse 1 (Ch3) as written.
+      - Verse 2 (Ch5) is **final as written** (ch05_kahre's "Audio sets the final text").
+      - **Verses 3–7 are new**, one per Vowbound from its own world: Virel's kite of fire, Nhoa's deep water, Hesk's counted cords, Ethren's still water, Kesh's first storm. Each ends on *mir*.
+      - **The Eighth Verse, the Letting**, is new: the first verse turned over, ending on *tash*.
+    - **Act III's placeholder lines, final texts:**
+      - `ch19_words_001` is the Eighth Verse as cut in the stones; `_002` is Asha's first line and last word.
+      - `ch20_fight_006` *Mir, mir. Tash.* is kept.
+      - The Cage founders' other lines are built from five named roots.
+      - H07 is verse 8 on `motifs.letting()`.
+  - **Glossary:** eight new roots (*arre, seli, aun, thel, sen, sev, kor, una*) in their own appended block. They collide with no glossary, loc or banned term, and validate_data's banned-terms grep is 0.
+  - **No game file changes:** the shipped scripts already carry verses 1–2 as written. The bound stings stay instrumental until a voice is chosen; then they take their verse's first line.
+  - **LEAD-ASK:** act2-plan's drafts (`docs/kb/story/act3/drafts/ch19_the_words.dlg`, `ch20_*`) still have the placeholder text. act2-plan takes the final lines from lamptongue.md §3 (I don't edit their branch).
+  - **Checks:** validate_data 0 (it greps the glossary and every .dlg for banned terms). Docs only, so no Godot run.
+- **Re the Lead's 17:04 message ("idle since 16:53; render the missing cues, Ch12 first"):**
+  - The 16:45 item was done and pushed by 17:00, with MERGE-READY @ 0266514c per chapter, Ch12–Ch16 (the entries just below; head 8956ca68).
+  - **The cue tables have no missing cues.** All 70 refs (36 distinct) at f5f0be21, unchanged on act2-plan since, play delivered renders. The only wrong ones were the morning FAST-TRACK's six placeholder SFX, now restored to their own cues (b4dcb22a). Ch14's low C now holds to "No." (0266514c).
+  - **LEAD-ASK:** act2-plan's branch still names those six placeholders (`barge_pole` ×6, `hearth_crackle`, `undertow_wall_roar`, `current_song`) on the same lines. When both merge, keep claude/audio's ids (`pole_no_wake`, `pole_stroke`, `pyre_crackle`, `storm_wall`, `current_song_hum`, `barge_no_wake`), or ask act2-plan to take them.
+- **The Lead's 16:45 item: score Ch12–Ch16 from act2-plan's audio cue tables** (`## Audio cues by shot` in `act2_ch12..16_direction.md`, f5f0be21 on claude/act2-plan).
+  - **What the tables hold:** 70 `@music`/`@sfx` refs, 36 distinct, by shot. Every one already resolves: the 15 music refs through sequencer stand-ins point at the real Act II renders of the same name, and `hush_first_verse` → `hush_theme_v2` is ADR 0204 §12's reprise. So there was nothing new to render.
+  - **Placeholders:** the morning's FAST-TRACK (ab6b7704) had made the scripts resolve by renaming six script SFX to existing generic sounds. Their own cues have since been delivered (`act2_cutscene_sfx.py`), so the scripts now name them again (b4dcb22a; `dlgc` recompiled only those five scenes).
+    - **Lines restored:**
+      - `pole_no_wake` (Ch13 still city);
+      - `pole_stroke` ×4 (Ch14 first ripple);
+      - `pyre_crackle` (Ch15 pyre-raft);
+      - `storm_wall` and `current_song_hum` (Ch16 swept away);
+      - `barge_no_wake` (Ch16 the High Warden).
+    - **act2-plan:** their branch still has the placeholders on the same lines. Whichever merges second keeps these ids (a one-word merge each).
+  - **Timing against the notes' holds:** `docs/kb/audio/act2_direction_holds.json` now carries the Ch14–Ch16 notes' stated holds too (W03, L02, L10, U01, U02, K11, H06, C01, C09, C13). With them, `act1_playthrough.py --act 2 --holds` finds no music gap anywhere in Act II.
+    - **Ch14's one gap was audio's fault, not a question for Story.** The cue sheet makes `peace_wedding_break` "end in a held low C", and the script hard-cuts it (`@music silence fade=0.0`) on Asha's "No.". The C had run out ~12 s before. It now holds 18 s longer, settled 12 dB down, under the loudness gate (44.2 s; -15.96 LUFS; `--determinism` identical) (0266514c).
+    - `test_direction_holds` no longer excuses any scene.
+  - **Staging:** slice-polish has staged only Ch10 (`game/data/cutscene/ch10/`). The cues above are wired in the scripts, so nothing more is needed as each chapter's staging lands; I'll rerun the gap check on each.
+  - **Checks (all chapters):** dlgc --check 0; validate_data 0; the Act II audit's cutscenes 0; test_cutscene_sfx_files, test_direction_holds, test_audio_loudness and test_audio_data OK; Godot music_transitions 7/0. **Skipped:** screenshots, Blender, coverage.
+- **MERGE-READY @ 0266514c (Ch12):** every cue resolves to its render. With the notes' holds, `hesk_bound`'s tail (b39dfacb) covers C03 → C06 with ~7 s to spare. No change.
+- **MERGE-READY @ 0266514c (Ch13):** `pole_no_wake` restored on A02. `ethren_bound`'s tail covers S07 → S09. The notes' "A05 is half a beat" falls under `ansedra`, a loop.
+- **MERGE-READY @ 0266514c (Ch14):** `pole_stroke` ×4 restored on L02 and L03 (×3). `peace_wedding_break` holds to "No.". The notes' W03 ≥ 5 s and L02 ≥ 6 s fall under looping cues.
+- **MERGE-READY @ 0266514c (Ch15):** `pyre_crackle` restored on H13. `kerrid_at_sea`, `hollowmere_answers` and the Ch15 SFX resolve. U01 (8 s) and H06 (≥ 8 s) fall under `unlamped`/silence as written.
+- **MERGE-READY @ 0266514c (Ch16):** `storm_wall` (S01), `current_song_hum` (S02) and `barge_no_wake` (C10) restored. `kesh_bound`'s tail covers C04 → C05. C01, C09 and C13 fall under `drowned_choir`/`sefir_go_home`. B10's hard cuts are the scripts' `fade=0.0` lines (the deck's 0.2 s floor), as the notes ask.
+- **BACKLOG EMPTY (after 0266514c):** waiting on slice-polish's Ch11–Ch16 staging (each gets a gap-check rerun), the people bosses' encounters, and the listening verdict.
 - **MERGE-READY @ b39dfacb: the Lead's 16:27 item, the Ch12–Ch13 cutscene cues against act2-plan's direction notes** (`act2_ch12_direction.md`, `act2_ch13_direction.md`, on integration since big24; integration merged). Ch15–Ch16 ambience was already done (529a1f3c).
   - **What the notes change for audio:** time, as with Ch11. The scenes run about 3–5x their scripts' floor (B10–B11 Hesk 0.83 → 4.5 min, B05–B06 Ethren 0.86 → 6.5 min), with long held shots (K06 ≥ 5 s, S02 ≥ 8 s, S05 ≥ 6 s, A01 8 s, B13's rail ≥ 40 s).
     - Every Ch12–Ch13 scene sits under a looping cue (keth_pass, cloudloom, ansedra, lamp_archive, sanctum_of_the_level) or an intended `@music silence`, except the two bindings.
