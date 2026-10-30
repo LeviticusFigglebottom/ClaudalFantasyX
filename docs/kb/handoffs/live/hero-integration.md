@@ -1843,3 +1843,7 @@ MERGE-READY @ (this commit).
   verified here; row 50 is closed, not reproduced. Still waiting on other tracks: M3-HER-1157 (env-art-b, Tier4's spawn
   inside the steps), M3-HER-1159 (act1-chapters, shots facing away), M4-HER-1166 (Lowlight's open gate).
 MERGE-READY @ (this commit).
+- **Inventories on big20 + this branch:**
+  - **Act I:** 2 items, both low and both env-art-b's (the tamsule_bell drop proxies, as before).
+  - **Act II:** `act2_inventory.md` refreshed: 38 items (15 high, 23 medium), up from 34 as big20 brought Act II
+    zones in. Audio has 19, env-art-b 11 and battle-presentation 4. It is report-only (ADR 0205).
