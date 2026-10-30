@@ -827,3 +827,10 @@ What the Act II fights still need from others: enemy rows and encounters (combat
 - **MERGE-READY @ fc7106b6c** (big25 merged in, no conflicts, validate_data 0/0).
 - **Vowbound summon passes: RUNNING since 16:45** (two render jobs; all seven Vowbound, each skill and the Swell,
   in Ch10–12). Results land here as each finishes.
+- **FAST-TRACK fixed, MERGE-READY @ 6973ffc08: test_battle_lineup (ch11_lamp_engine).** Fixed in my data, so nothing is
+  needed from act1-chapters: the encounter's slots stay as they are. The Lamp Engine's stand-in yaw is now 80°
+  (it was 55°). Its footprint at 55° was 2.10 m because the 3.6 x 2.35 m body stood diagonally. At 80° it is 1.75 m,
+  and the crawlers clear it: needed 1.75 + 0.52 + 0.12 = 2.39 m, against 2.49 and 2.55. The 90° problem was the near
+  arm crossing the core; rendered in the intro hero shot at 80°, both the closed and opened stances keep both arms
+  raised either side and the core whole. lamp_engine.md "As built" is updated. Checks: Godot battle_lineup 5/0
+  (red before), creature 159/0, boss green, boss_seat and stand_in 3/0, validate_data 0/0.
