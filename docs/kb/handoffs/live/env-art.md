@@ -589,6 +589,20 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ 14ff2eb7: M4-A2P-043, Ch13 (Ansedra, the Sanctum, the Lamp Archive) dressed** (the Lead's (b)). The
+  change is additive; chapters mount it (M4-A2P-0431, filed). The details are in ansedra.md's revision line.
+  - **Ansedra:** vey_zones' walk builders reused on Ansedra's greybox, in marble and gilt (a small refactor: an
+    `order` parameter, and the Vey's glbs are byte-identical). Order lamps, Sefir's and Corran's houses, the Archive
+    and Sanctum domes on base storeys with their doors, lofted barges, fourteen island domes and the far skyline, the
+    still mirror.
+  - **Interiors:** the Sanctum (the basin over the bound light, the apse) and the Archive (lacquered ledger cases,
+    the reading tables).
+  - **New grade:** `lut_ch13_still`.
+  - **Gates:**
+    - Viewed at 30 cameras.
+    - Python suites OK: test_ch13 (4), ch10–12, haluna_kit.
+    - Godot `ch13` 4/4; gdlint, validate_data and taskboard clean.
+    - The full haluna_kit build reproduces all 227 glbs.
 - **VERIFIED on lead/gate-big20 (4e3c74c9), with self-rendered stills on lavapipe: the Lead's Act I rows.**
   - **Closed (env-art's part):**
     - **Row 25:** `brightwater_landing_f01`'s lower half reads (the islet's moon fill, 2e2233c3). f06 is fine.
