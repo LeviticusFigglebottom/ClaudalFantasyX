@@ -144,6 +144,7 @@ func begin() -> void:
 		c.next_time = Formulas.initial_ticks(c.agility, rng.randi_range(0, Formulas.base_delay(c.agility)))
 		c.participated = c.team == BattleCombatant.TEAM_PARTY
 	BattleOpening.apply(opening, party_active, enemies)
+	BattleCover.begin(self)
 	_advance()
 
 
@@ -674,6 +675,7 @@ func _turn_ticks(actor: BattleCombatant) -> Array[Dictionary]:
 			changes.append(_change(actor, &"regen", -actor.restore_hp(Formulas.regen_heal(actor.max_hp))))
 	changes.append_array(_tick(actor))
 	actor.turns_taken += 1
+	BattleCover.on_turn_end(self, actor)
 	turn_ended.emit(actor, changes)
 	return changes
 
@@ -723,6 +725,7 @@ func _advance() -> void:
 				_finish(OUTCOME_DEFEAT)
 			continue
 		current = actor
+		BattleCover.keep_one(self)  # M4-A2P-021: the visible foes may have fallen since
 		BattleSetPiece.on_turn_start(self, actor)
 		turn_started.emit(actor)
 		return

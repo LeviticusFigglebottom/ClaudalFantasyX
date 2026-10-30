@@ -596,6 +596,14 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - Next: M4-A2P-021, glide and ambush.
 - MERGE-READY @ ebdac75c9
 
+- **M4-A2P-021 glide and ambush (combat seat): done, in review.**
+  - Added BattleCover. It never hides the last strikable foe.
+  - The ray glides and the skate ambushes; both suites are in band.
+  - Requested the readout from UI (M3-UI-1241).
+  - Checks: cover, battle_engine, set_piece, boss, validate, lint and format.
+  - Next: M4-A2P-022, part repair (the Lamp Engine's answer). It unblocks the Lamp Engine's role band.
+- MERGE-READY @ (this push)
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.

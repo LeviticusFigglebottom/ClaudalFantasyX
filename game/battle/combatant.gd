@@ -120,6 +120,11 @@ var summon_cap := -1
 ## takes HP): the Undertow's Reach drawn back over the sea.
 var untargetable := false
 var damage_immune := false
+## M4-A2P-021 (BattleCover): enemies.json "glide" (up out of reach every other turn) and "ambush" (buried until its
+## first turn); `covered` is cover's own untargetable, so a phase's untargetable is never lifted by it.
+var glides := false
+var ambushes := false
+var covered := false
 ## enemies.json "hp_floor_pct": hits never take it below this share of max HP (the Reach can't fall
 ## before its last phase begins). -1 = none.
 var hp_floor_pct := -1
@@ -157,6 +162,8 @@ static func from_dict(cid: StringName, team_id: StringName, d: Dictionary) -> Ba
 	c.ai_rules = (d.get("ai", []) as Array).duplicate(true)
 	c.xp_reward = int(d.get("xp", 0))
 	c.delay_immune = bool(d.get("delay_immune", false))
+	c.glides = bool(d.get("glide", false))
+	c.ambushes = bool(d.get("ambush", false))
 	c.phases = (d.get("phases", []) as Array).duplicate(true)
 	c.weak_point = (d.get("weak_point", {}) as Dictionary).duplicate(true)
 	c.field = StringName(str(d.get("field", "")))
