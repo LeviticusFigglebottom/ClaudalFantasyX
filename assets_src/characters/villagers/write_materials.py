@@ -100,7 +100,9 @@ def tables(npc: str, extra: dict) -> tuple[dict, dict, dict]:
                                        "spec_secondary_intensity": "0.0", "transmission_strength": "0.1",
                                        "indirect_specular": "0.03", "col_root": brow, "col_tip": brow, **still},
                  {"tex_hair": A + "asha_facehair.png"}),
-        "brow": ("character_hair", 0, {"flow_strength": "0.0", "spec_primary_intensity": "0.08", "alpha_boost": "1.6",
+        # GPU QA row 55: at 1.6 the brow cards' few dark hairs read as scribbles; softer, the painted brow shows through
+        "brow": ("character_hair", 0, {"flow_strength": "0.0", "spec_primary_intensity": "0.08", "alpha_boost": "0.95",
+                                       "strand_value_jitter": "0.08",
                                        "spec_secondary_intensity": "0.05", "transmission_strength": "0.2",
                                        "root_occlusion": "0.2", "indirect_specular": "0.05",
                                        "col_root": brow, "col_tip": brow, **still,

@@ -60,6 +60,7 @@
   "_hair": {
     "brow_params": {"alpha_boost": "1.0", "strand_value_jitter": "0.4"},
     "kind": "cropped",
+    "tufts": true,
     "hairline": "male",
     "seed": 56,
     "length_m": [
@@ -79,7 +80,6 @@
     "underpaint": "#B39A86",
     "brow": "#8E877C",
     "spec": "#CFC8BC",
-    "grey_strands": "all",
     "grey_width_k": 1.3
   },
   "_eyes": {

@@ -302,6 +302,8 @@ def convex_radii(r: np.ndarray, D: np.ndarray) -> np.ndarray:
 
 
 SKIRT_OUTER_GRID = (64, 20)  # columns round, rows down (was 56 x 22; the LOD0 budget, asha.md §8.1, holds it here)
+UNDERSKIRT_HEM = 0.095  # m (x S) above the floor: just above the ankle (GPU QA row 56: at 0.065 the feet never
+# showed in the run, so she seemed to slide)
 SKIRT_INNER_GRID = (48, 12)  # (it follows the outer skirt's weights now, so its own density matters less)
 
 
@@ -575,7 +577,7 @@ def build_costume(body, params: dict) -> dict[str, Part]:
     out["SkirtOuter"] = skirt(fields, "SkirtOuter", ATLAS["skirt_outer"], z_waist - 0.03 * S, hem_outer, 0.008 * S,
                               SKIRT_OUTER_GRID[0], SKIRT_OUTER_GRID[1], 11, 0.012, 0.16, 0.0015 * S, int(params["seed"]))
     out["SkirtInner"] = skirt(fields, "SkirtInner", ATLAS["skirt_inner"], float(lm.P("crotch")[2]) - 0.05 * S,
-                              lambda th: np.full_like(th, 0.065 * S), 0.004 * S, SKIRT_INNER_GRID[0],
+                              lambda th: np.full_like(th, UNDERSKIRT_HEM * S), 0.004 * S, SKIRT_INNER_GRID[0],
                               SKIRT_INNER_GRID[1], 9, 0.008, 0.13,
                               0.0012 * S, int(params["seed"]) + 1, convex=(z_waist, z_waist - 0.01 * S))
     # 4. sash

@@ -16,6 +16,6 @@ shader_parameter/indirect_specular = 0.05
 shader_parameter/root_occlusion = 0.2
 shader_parameter/spec_primary_intensity = 0.08
 shader_parameter/spec_secondary_intensity = 0.05
-shader_parameter/strand_value_jitter = 0.4
+shader_parameter/strand_value_jitter = 0.15
 shader_parameter/transmission_strength = 0.2
 shader_parameter/wind_response = 0.0
