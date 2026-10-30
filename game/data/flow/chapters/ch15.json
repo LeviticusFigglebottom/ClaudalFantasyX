@@ -1,5 +1,5 @@
 {
- "doc": "M4-C15-02 (docs/kb/tech/chapter_flow.md): Ch15 'Unlamped' as a greybox before the beat sheet (M4-C15-01): the party adrift on the bridal barge at night (the chapter becomes 15), then at dawn into Hollowmere (its first visit; Act III's zone) and on to the Rim aboard a Hollowmere ship (Ch16). The Wakefin, Kerrid's reveal at sea, Liss's current-song, Toma's confession and the supper on the dock come with the beat sheet.",
+ "doc": "M4-C15-02 (docs/kb/tech/chapter_flow.md): Ch15 'Unlamped' as a greybox before the beat sheet (M4-C15-01): the party adrift on the bridal barge at night (the chapter becomes 15), then at dawn into Hollowmere (its first visit; Act III's zone) and on to the Rim aboard a Hollowmere ship (Ch16). The Wakefin, Kerrid's reveal at sea, Liss's current-song, Toma's confession and the supper on the dock come with the beat sheet. M4-A2P-1012: the sheet's §1 in order: the unlamped barge on arrival (B01), the deck talks (B02), the fin at the bow and the Wakefin (B03-B04), the shoal and the confession on the return (B06-B08), the current-song at dawn and on to Hollowmere (B09), the dock-master on arrival (B10), the bier and the pyre-raft at the dock's end (B12-B13), the supper (B14) and the ship (B15).",
  "chapter": "ch15",
  "zones": {
   "ch15/open_sea": {
@@ -30,19 +30,68 @@
        "chapter": 15
       },
       {
+       "play": "ch15_unlamped"
+      },
+      {
        "set": "ch15_started"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch15_wakefin_felled"
+      ],
+      "unset": [
+       "ch15_kerrid_revealed"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Reveal"
+      },
+      {
+       "play": "ch15_the_shoal"
       }
      ]
     }
    ],
    "beats": {
     "to_hollowmere": {
+     "when": {
+      "set": [
+       "ch15_kerrid_revealed"
+      ]
+     },
      "steps": [
+      {
+       "play": "ch15_current_song"
+      },
       {
        "go": {
         "location": "ch17/hollowmere",
         "spawn": "Dock"
        }
+      }
+     ]
+    },
+    "fin": {
+     "when": {
+      "set": [
+       "ch15_started"
+      ],
+      "unset": [
+       "ch15_wakefin_felled"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch15_the_fin"
+      },
+      {
+       "battle": "ch15_wakefin",
+       "return_spawn": "Deck",
+       "victory_flag": "ch15_wakefin_felled"
       }
      ]
     }
@@ -73,6 +122,9 @@
        "place": "Dock"
       },
       {
+       "play": "ch15_the_dock_master"
+      },
+      {
        "set": "ch15_reached_hollowmere"
       }
      ]
@@ -80,12 +132,38 @@
    ],
    "beats": {
     "to_rim": {
+     "when": {
+      "set": [
+       "ch15_pyre_raft"
+      ]
+     },
      "steps": [
+      {
+       "play": "ch15_the_ship"
+      },
       {
        "go": {
         "location": "ch16/pale_rim",
         "spawn": "Rim"
        }
+      }
+     ]
+    },
+    "jetty": {
+     "when": {
+      "set": [
+       "ch15_liss_told_father"
+      ],
+      "unset": [
+       "ch15_toma_confessed"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch15_let_me_carry_him"
+      },
+      {
+       "play": "ch15_pyre_raft"
       }
      ]
     }

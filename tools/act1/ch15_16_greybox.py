@@ -48,6 +48,26 @@ COL_CAIRN = "#c8c4b8"
 COL_CHOIR = "#6a6e70"
 
 
+
+def overheard(dialogue: str, at: tuple[float, float, float], size: tuple[float, float, float], requires: str,
+              blocked_by: str = "") -> dict:
+    """M4-A2P-1012: a bark heard once in passing (a touch box; the dialogue plays overheard, the walk goes on)."""
+    row = {"id": dialogue.split("_", 1)[1], "activation": "touch", "at": list(at), "size": list(size), "once": True,
+           "requires_flag": requires, "payload": {"dialogue": dialogue, "overheard": True}, "yaw": 0.0}
+    if blocked_by:
+        row["blocked_by_flag"] = blocked_by
+    return row
+
+
+def listen(tid: str, dialogue: str, at: tuple[float, float, float], requires: str, blocked_by: str = "",
+           prompt: str = "FIELD_PROMPT_LISTEN") -> dict:
+    """M4-A2P-1012: someone (or something) to stop at: an interact box with a prompt."""
+    row = {"id": tid, "activation": "interact", "at": list(at), "size": [1.4, 0, 1.4], "prompt_key": prompt,
+           "requires_flag": requires, "payload": {"dialogue": dialogue}, "yaw": 0.0}
+    if blocked_by:
+        row["blocked_by_flag"] = blocked_by
+    return row
+
 def write(zone: str, name: str, layout: dict) -> None:
     out = LEVELS / zone / name / f"{name}_layout.json"
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -98,8 +118,17 @@ def open_sea() -> dict:
         # M4-A2P-015: the deck from astern, high enough that the orbit sees the bier and the bow
         "camera_volumes": [{"id": "Deck", "mode": "pan_follow", "at": [0.0, 1.0, 0.0], "size": [6.0, 4.0, 12.0],
                             "pos": [3.5, 3.5, 7.0], "look_at": [0.0, 0.5, 0.0], "fov": 50, "priority": 1}],
-        "triggers": [{"id": "dawn", "activation": "interact", "at": [0.0, 0.0, -4.2], "size": [2.0, 0, 1.2],
-                      "prompt_key": "FIELD_PROMPT_CH15_BOW", "payload": {"beat": "to_hollowmere"}, "yaw": 0.0}],
+        # M4-A2P-1012: at the bow, the wait for dawn is broken by the fin (B03-B04); after the shoal it comes (B09)
+        "triggers": [{"id": "fin", "activation": "interact", "at": [0.0, 0.0, -4.2], "size": [2.0, 0, 1.2],
+                      "prompt_key": "FIELD_PROMPT_CH15_BOW", "requires_flag": "ch15_started",
+                      "blocked_by_flag": "ch15_wakefin_felled", "payload": {"beat": "fin"}, "yaw": 0.0},
+                     {"id": "dawn", "activation": "interact", "at": [0.0, 0.0, -4.2], "size": [2.0, 0, 1.2],
+                      "prompt_key": "FIELD_PROMPT_CH15_BOW", "requires_flag": "ch15_kerrid_revealed",
+                      "payload": {"beat": "to_hollowmere"}, "yaw": 0.0}]
+        # B02: the deck at night, talk to each (before the fin)
+        + [listen(f"deck_{who}", f"ch15_deck_{who}", at, "ch15_started", "ch15_wakefin_felled")
+           for who, at in (("liss", (0.8, 0.0, 1.5)), ("asha", (-1.4, 0.0, 0.4)), ("toma", (-1.4, 0.0, 2.2)),
+                           ("ysolde", (1.4, 0.0, -0.2)), ("pell", (1.4, 0.0, -1.8)), ("kerrid", (0.0, 0.0, 4.6)))],
     }
 
 
@@ -153,13 +182,42 @@ def hollowmere() -> dict:
         "camera_volumes": follow_volumes("Dock", [(0.0, 0.0), (30.0, 0.0), (60.0, 0.0)])
         + follow_volumes("FathersJetty", [(28.0, -1.8), (28.0, -19.0)]),
         "triggers": [{"id": "ship", "activation": "interact", "at": [30.0, 0.0, 1.6], "size": [6.0, 0, 1.2],
-                      "prompt_key": "FIELD_PROMPT_CH15_SHIP", "payload": {"beat": "to_rim"}, "yaw": 0.0}],
+                      "prompt_key": "FIELD_PROMPT_CH15_SHIP", "requires_flag": "ch15_pyre_raft",
+                      "payload": {"beat": "to_rim"}, "yaw": 0.0},
+                     # M4-A2P-1012: the bier at the dock's end: "Let me carry him." (B12), then the pyre-raft (B13)
+                     {"id": "jetty", "activation": "touch", "at": [56.0, 0.0, 0.0], "size": [2.0, 0, WALK_W],
+                      "once": True, "requires_flag": "ch15_liss_told_father", "blocked_by_flag": "ch15_toma_confessed",
+                      "payload": {"beat": "jetty"}, "yaw": 0.0},
+                     # B14 and the side errands, the camp, Hollowmere's people (B11)
+                     listen("supper", "ch15_two_daces", (40.0, 0.0, -1.2), "ch15_pyre_raft", "ch15_supper_with_father",
+                            "FIELD_PROMPT_REST"),
+                     listen("side_current_phrase", "ch15_side_the_current_phrase", (8.0, 0.0, -1.4),
+                            "ch15_reached_hollowmere", "ch15_learned_current_phrase"),
+                     listen("side_tally_hull", "ch15_side_the_tally_hull", (12.0, 0.0, -17.0), "ch15_toma_confessed",
+                            "ch15_toma_on_the_tally", "FIELD_PROMPT_LOOK"),
+                     listen("camp", "ch15_camp_the_bottom_step", (44.0, 0.0, -17.0), "ch15_kerrid_revealed",
+                            "ch15_camp_talk", "FIELD_PROMPT_REST"),
+                     listen("npc_wright", "ch15_bark_wright_pump", (20.0, 0.0, -1.4), "ch15_reached_hollowmere"),
+                     listen("npc_outside", "ch15_bark_outside_the_level", (20.0, 0.0, 1.4), "ch15_reached_hollowmere"),
+                     listen("npc_widow", "ch15_bark_widow", (34.0, 0.0, -1.4), "ch15_reached_hollowmere"),
+                     listen("npc_lookout", "ch15_bark_lookout", (48.0, 0.0, -1.4), "ch15_reached_hollowmere"),
+                     listen("npc_cook", "ch15_bark_raft_cook", (52.0, 0.0, 1.4), "ch15_reached_hollowmere"),
+                     listen("npc_kerrid", "ch15_bark_kerrid_night", (28.0, 0.0, -8.0), "ch15_pyre_raft"),
+                     overheard("ch15_bark_current_singer", (5.0, 0.0, 0.0), (2.0, 0, WALK_W), "ch15_reached_hollowmere"),
+                     overheard("ch15_bark_child_pell", (16.0, 0.0, 0.0), (2.0, 0, WALK_W), "ch15_reached_hollowmere"),
+                     overheard("ch15_bark_kerrid_floors", (38.0, 0.0, 0.0), (2.0, 0, WALK_W), "ch15_kerrid_revealed"),
+                     overheard("ch15_bark_raft_child", (46.0, 0.0, 0.0), (2.0, 0, WALK_W), "ch15_pyre_raft")],
     }
 
 
 # --- Ch16: the Pale Rim -----------------------------------------------------------------------------------------------
 
 RIM_LEN = 220.0
+
+
+def cairn(k: int) -> tuple[float, float]:
+    """The k-th cairn the waders keep to (x, z)."""
+    return 10.0 + k * (RIM_LEN - 20.0) / 7, (-1.0) ** k * 4.0
 
 
 def pale_rim() -> dict:
@@ -172,8 +230,8 @@ def pale_rim() -> dict:
         blocks.append(box(f"Haze{side}", x, 1.5, z, sx, 3.0, sz, color=COL_SAND))  # the white closes in: bounds
     blocks.append(box("Ship", -30.0, 1.5, 0.0, 6.0, 3.0, 18.0, color=COL_HULL))
     for k in range(8):  # cairns the waders keep to
-        x = 10.0 + k * (RIM_LEN - 20.0) / 7
-        blocks.append(box(f"Cairn{k}", x, 0.6, (-1.0) ** k * 4.0, 0.8, 1.2, 0.8, color=COL_CAIRN))
+        x, z = cairn(k)
+        blocks.append(box(f"Cairn{k}", x, 0.6, z, 0.8, 1.2, 0.8, color=COL_CAIRN))
     return {
         "doc": "M4-C16-02 greybox (tools/act1/ch15_16_greybox.py; do not edit by hand): the Pale Rim, the white "
         "shallows at a white overcast noon (colour script ch16: no shadows). The ship waits at the Rim (west, Rim), then "
@@ -204,7 +262,21 @@ def pale_rim() -> dict:
            for k, x0 in enumerate((-30.0, 30.0, 90.0, 150.0, 210.0 - 30.0))],
         # M4-A2P-1500 (env-art-b): the exit stands on the sand, which ends at RIM_LEN; the east haze closes there
         "triggers": [{"id": "to_choir", "activation": "touch", "at": [RIM_LEN - 4.0, 0.0, 0.0], "size": [2.0, 0, 20.0],
-                      "payload": {"beat": "to_choir"}, "yaw": 0.0}],
+                      "payload": {"beat": "to_choir"}, "yaw": 0.0}]
+        # M4-A2P-1012: the wade's barks, day by day (B02), across the whole white; the cairns' finds and people
+        + [overheard(d, (x, 0.0, 0.0), (2.0, 0, 58.0), "ch16_started")
+           for d, x in (("ch16_bark_rhen_forward", 15.0), ("ch16_bark_ysolde_corran", 45.0),
+                        ("ch16_bark_liss_cairns", 80.0), ("ch16_bark_toma_walked_back", 110.0),
+                        ("ch16_bark_kerrid_south", 145.0), ("ch16_bark_asha_mother", 175.0))]
+        + [listen("npc_cairn_wader", "ch16_bark_cairn_wader", (cairn(1)[0], 0.0, cairn(1)[1] + 1.4), "ch16_started"),
+           listen("npc_turning_back", "ch16_bark_turning_back", (cairn(4)[0], 0.0, cairn(4)[1] - 1.4),
+                  "ch16_started"),
+           listen("counting_stone", "ch16_find_the_counting_stone", (cairn(2)[0], 0.0, cairn(2)[1] - 1.4),
+                  "ch16_started", "ch16_found_counting_stone", "FIELD_PROMPT_LOOK"),
+           listen("fallen_cairn", "ch16_side_the_fallen_cairn", (cairn(5)[0], 0.0, cairn(5)[1] + 1.4),
+                  "ch16_started", "ch16_rebuilt_cairn", "FIELD_PROMPT_LOOK"),
+           listen("camp", "ch16_camp_coming_up", (RIM_LEN - 30.0, 0.0, 3.0), "ch16_started", "ch16_camp_talk",
+                  "FIELD_PROMPT_REST")],
         # M4-C16-03: the rim's random fights (act2_roster.md Ch16); none in the Drowned Choir
         "encounters": {"table": [{"encounter": "ch16_rim_skates", "weight": 1}, {"encounter": "ch16_rim_crawlers", "weight": 1}],
                        "min_m": 95, "max_m": 145, "when": {"set": ["ch16_started"]}, "seed": 16},
