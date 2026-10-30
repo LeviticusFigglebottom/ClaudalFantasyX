@@ -7922,6 +7922,63 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "ch13_sanctum_gate",
+      "scene": "res://game/levels/_tests/ansedra_kit/ch13_sanctum_shots.tscn",
+      "camera": "Cameras/Gate",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch13_sanctum_basin",
+      "scene": "res://game/levels/_tests/ansedra_kit/ch13_sanctum_shots.tscn",
+      "camera": "Cameras/Basin",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch13_sanctum_vault",
+      "scene": "res://game/levels/_tests/ansedra_kit/ch13_sanctum_shots.tscn",
+      "camera": "Cameras/Vault",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }
