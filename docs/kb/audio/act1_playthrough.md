@@ -39,5 +39,6 @@ pacing, and the zone comes back 3 s after each scene now.
   the confession.
 - **For Story:** eight `@music ... fade=0.0` lines (ch14_the_vows, ch15_current_song, ch16_swept_away, ch16_the_choir).
   The deck plays them as 0.2 s fades. That is right for the trap and the storm; the others may want 0.5.
-- `peace_wedding_break` (about 27 s) ends roughly 12 s before ch14_the_vows' `@music silence`, which is the held low C
-  dying away under the declaration, as written. `kesh_bound` ends about 4 s before `kesh_memory`.
+- What remains is five stings that end into a held quiet before the scene's next cue, as written: `nhoa_bound`,
+  `hesk_bound`, `ethren_bound` and `kesh_bound` (each about 8 s, in its binding scene), and `peace_wedding_break`. The
+  wedding break's held low C dies away about 12 s before ch14_the_vows' `@music silence`, under the declaration.

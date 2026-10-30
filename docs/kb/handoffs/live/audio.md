@@ -3,6 +3,13 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ 2b5a7593: the Lead's 10:27 item, the Act I as-played pass on 0347aa74** (report: docs/kb/audio/act1_playthrough.md). Every Act II cue the Lead listed already existed; the audits are 0, and test_cutscene_sfx_files plays every Act II `@music`.
+  - **Fixed: the field fell silent.** A scene ending on `@music silence` or a one-shot (24 Act I scenes), or a battle ending in the zone it began in, left the field silent until the next scene swap. AudioDirector now brings the zone's cue back after mix.json `music.zone_return_sec` (3.0 s) of silence with no cutscene, battle or loading cue (c8fe0fa8). `tests/unit/test_zone_return.gd` covers 6 cases.
+  - **Inside the scenes** (`tools/audio/act1_playthrough.py`, each script's timeline against the cues' lengths): no cuts and no double starts. Three statements end a few seconds before a quiet walk-away (ch07_empty_moorings, ch07_tavi, ch08_binding); they stay as the scenes' pacing.
+  - **Loudness:** 81 hand-overs, 0 over 3 LU (act1_mix_pass.py).
+  - **Act II, from the same tool:** `kerrid_at_sea` ran out about 88 s before ch15_the_shoal ends it. It is retimed to Story's scene at 270 s (2b5a7593). The 8 `fade=0.0` lines are still for Story.
+  - **Checks:** gdlint and gdformat clean; Godot zone_return 6/0, music_transitions 7/0, audio_runtime 11/0; validate_data 0 errors; test_audio_loudness, test_audio_data and test_cutscene_sfx_files OK; kerrid_at_sea byte-identical twice. **Skipped:** screenshots (no scene touched), Blender.
+  - **Next (the Lead's list):** sync the Act II cutscene cues to slice-polish's Ch10 staging as it lands.
 - **Godot on 792ccc26 (all green):** vowbound 116/0 (one node left in the tree, as on fda21daa before this set: a test's leak, not audio's), choreo_audio 17/0, creature_audio 8/0, field_audio 22/0, document_reader 7/0, battle_audio 22/0.
 - **BACKLOG EMPTY (2026-10-30, after 792ccc26):** the Lead's lists are done; the Act I and Act II audits are 0; 1010 and 1080 are in review. What's left waits on input: the people bosses' encounters (Combat), the remaining §4 families as their features land, and the listening verdict.
 - **MERGE-READY @ 792ccc26: the Lead's 09:58 list on 0347aa74, plus two audio requests found on the board.** Merged 0347aa74 first.
