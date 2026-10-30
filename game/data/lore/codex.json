@@ -118,7 +118,31 @@
        "body_key": "CODEX_BASIN_STEPS_BODY", "unlock": {"record": true}},
       {"id": "farewell_tide", "category": "world", "title_key": "CODEX_FAREWELL_TIDE_TITLE", "body_key": "CODEX_FAREWELL_TIDE_BODY", "unlock": {"flag": "ch10_farewell_tide_seen"}},
       {"id": "name_shells", "category": "world", "title_key": "CODEX_NAME_SHELLS_TITLE", "body_key": "CODEX_NAME_SHELLS_BODY", "unlock": {"flag": "ch10_reached_reedhollow"}},
-      {"id": "kirru_eldest", "category": "people", "title_key": "CODEX_KIRRU_ELDEST_TITLE", "body_key": "CODEX_KIRRU_ELDEST_BODY", "unlock": {"flag": "ch10_reached_reedhollow"}}
+      {"id": "kirru_eldest", "category": "people", "title_key": "CODEX_KIRRU_ELDEST_TITLE", "body_key": "CODEX_KIRRU_ELDEST_BODY", "unlock": {"flag": "ch10_reached_reedhollow"}},
+      {"id": "owa", "category": "people", "title_key": "CODEX_OWA_TITLE",
+       "body_key": "CODEX_OWA_BODY", "unlock": {"flag": "ch10_pell_kept_out"}},
+      {"id": "tobin", "category": "people", "title_key": "CODEX_TOBIN_TITLE",
+       "body_key": "CODEX_TOBIN_BODY", "unlock": {"flag": "ch13_met_tobin"}},
+      {"id": "merel", "category": "people", "title_key": "CODEX_MEREL_TITLE",
+       "body_key": "CODEX_MEREL_BODY", "unlock": {"flag": "ch13_met_tobin"}},
+      {"id": "ressa", "category": "people", "title_key": "CODEX_RESSA_TITLE",
+       "body_key": "CODEX_RESSA_BODY", "unlock": {"flag": "ch11_nhoa_bound"}},
+      {"id": "ama_quillo", "category": "people", "title_key": "CODEX_AMA_QUILLO_TITLE",
+       "body_key": "CODEX_AMA_QUILLO_BODY", "unlock": {"flag": "ch12_ysolde_confessed"}},
+      {"id": "corran", "category": "people", "title_key": "CODEX_CORRAN_TITLE",
+       "body_key": "CODEX_CORRAN_BODY", "unlock": {"flag": "ch13_ethren_bound"}},
+      {"id": "malcor_venn", "category": "people", "title_key": "CODEX_MALCOR_VENN_TITLE",
+       "body_key": "CODEX_MALCOR_VENN_BODY", "unlock": {"flag": "ch14_declared_heretics"}},
+      {"id": "conclave", "category": "people", "title_key": "CODEX_CONCLAVE_TITLE",
+       "body_key": "CODEX_CONCLAVE_BODY", "unlock": {"flag": "ch14_declared_heretics"}},
+      {"id": "brannoc_hale", "category": "people", "title_key": "CODEX_BRANNOC_HALE_TITLE",
+       "body_key": "CODEX_BRANNOC_HALE_BODY", "unlock": {"flag": "ch14_toma_refused"}},
+      {"id": "aldous_varrow", "category": "people", "title_key": "CODEX_ALDOUS_VARROW_TITLE",
+       "body_key": "CODEX_ALDOUS_VARROW_BODY", "unlock": {"flag": "ch15_liss_told_father"}},
+      {"id": "kesh", "category": "people", "title_key": "CODEX_KESH_TITLE",
+       "body_key": "CODEX_KESH_BODY", "unlock": {"flag": "ch16_learned_the_hush"}},
+      {"id": "kerrid_stair", "category": "people", "title_key": "CODEX_KERRID_STAIR_TITLE",
+       "body_key": "CODEX_KERRID_STAIR_BODY", "unlock": {"flag": "ch15_kerrid_told"}}
     ]
   }
 }

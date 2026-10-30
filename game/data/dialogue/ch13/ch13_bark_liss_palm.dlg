@@ -1,0 +1,8 @@
+// Ch13 B04 bark: Liss kneels at the lagoon's edge and puts her palm flat on the water (bible §5.8: forbidden
+// machinery under the city holds it flat; the ledgers confirm it on day two).
+title: ch13_bark_liss_palm
+location: ch13/ansedra
+---
+@anim liss palm_on_water
+Liss [worried]: It's pushing back. Something's holding it down. #line:ch13_bark_palm_001
+===

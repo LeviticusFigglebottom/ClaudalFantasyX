@@ -1,0 +1,44 @@
+{
+ "format": 1,
+ "scene": "ch13_someone_elses_house",
+ "source": "game/data/dialogue/ch13/ch13_someone_elses_house.dlg",
+ "start": "ch13_someone_elses_house",
+ "nodes": {
+  "ch13_someone_elses_house": {
+   "headers": {"location": "ch13/ansedra"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["A15"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 1.0}, "src": 8},
+    {"op": "cue", "cue": "anim", "args": ["ysolde", "look_at", "red_door"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 10},
+    {"op": "line", "id": "ch13_house_side_001", "key": "DLG_CH13_HOUSE_SIDE_001", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 11},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 12},
+    {"op": "line", "id": "ch13_house_side_002", "key": "DLG_CH13_HOUSE_SIDE_002", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 13},
+    {"op": "line", "id": "ch13_house_side_003", "key": "DLG_CH13_HOUSE_SIDE_003", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 14},
+    {"op": "line", "id": "ch13_house_side_004", "key": "DLG_CH13_HOUSE_SIDE_004", "speaker": "ysolde", "emotion": "cold", "voice": "", "src": 15},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 16},
+    {"op": "line", "id": "ch13_house_side_005", "key": "DLG_CH13_HOUSE_SIDE_005", "speaker": "ysolde", "emotion": "sad", "voice": "", "src": 17},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "knock", "red_door"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "mark", "args": ["householder", "door", "walk"], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "anim", "args": ["householder", "bow", "ysolde"], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "mark", "args": ["ysolde", "front_room", "walk"], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "front_room", "walk"], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "anim", "args": ["ysolde", "look_at", "scorch_mark"], "kwargs": {}, "src": 24},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 25},
+    {"op": "line", "id": "ch13_house_side_006", "key": "DLG_CH13_HOUSE_SIDE_006", "speaker": "ysolde", "emotion": "soft_smile", "voice": "", "src": 26},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "laugh"], "kwargs": {}, "src": 27},
+    {"op": "cue", "cue": "anim", "args": ["ysolde", "laugh"], "kwargs": {}, "src": 28},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 29},
+    {"op": "line", "id": "ch13_house_side_007", "key": "DLG_CH13_HOUSE_SIDE_007", "speaker": "householder", "emotion": "worried", "voice": "", "src": 30, "name_key": "DLG_NAME_HOUSEHOLDER_THE_HOUSEHOLDER"},
+    {"op": "line", "id": "ch13_house_side_008", "key": "DLG_CH13_HOUSE_SIDE_008", "speaker": "ysolde", "emotion": "tender", "voice": "", "src": 31},
+    {"op": "cue", "cue": "mark", "args": ["ysolde", "street", "walk"], "kwargs": {}, "src": 32},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "street", "walk"], "kwargs": {}, "src": 33},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 34},
+    {"op": "line", "id": "ch13_house_side_009", "key": "DLG_CH13_HOUSE_SIDE_009", "speaker": "ysolde", "emotion": "soft_smile", "voice": "", "src": 35},
+    {"op": "set", "flag": "ch13_corran_house", "value": ["lit", true], "src": 36},
+    {"op": "cue", "cue": "music", "args": ["ansedra"], "kwargs": {"fade": 3.0}, "src": 37}
+   ]
+  }
+ }
+}

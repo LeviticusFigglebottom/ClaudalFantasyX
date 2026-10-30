@@ -1,0 +1,8 @@
+// Ch15 B02 talk: Kerrid standing at the stern behind the bier, looking back north. No line: he nods at Rhen.
+// (A scene with no spoken text plays a gesture only.)
+title: ch15_deck_kerrid
+location: ch15/open_sea
+---
+@anim kerrid nod rhen
+@wait 1.5
+===

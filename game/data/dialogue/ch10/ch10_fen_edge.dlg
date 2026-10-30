@@ -1,0 +1,40 @@
+// Ch10 B01 "Pell stops at the edge" (C, 1.5 min). docs/kb/story/beats/act2_ch10.md §2 B01.
+// O01: the first frame of Act II, overcast and flat after Ch9's gold dawn (color script `ch10`). The party
+// comes down the bank in its Ch9 line: Toma, Pell, Asha, Ysolde, Liss, Rhen, Kerrid last.
+// O02: at the water's edge PELL STOPS. The camera keeps tracking with the line onto the root-walk and does
+// NOT stop with him: he grows small and tall and still behind them until Rhen turns. The act's first
+// lesson in standing back (act1_ch09 §10). From here on Pell never steps off a lashed root into the water.
+title: ch10_fen_edge
+location: ch10/ossa_fen
+---
+@letterbox on
+@music silence
+@camera O01
+@mark toma fen_line_1 walk
+@mark pell pell_edge walk
+@mark asha fen_line_3 walk
+@mark ysolde fen_line_4 walk
+@mark liss fen_line_5 walk
+@mark rhen fen_line_6 walk
+@mark kerrid fen_line_7 walk
+@wait 3.0
+@music ossa_fen fade=3.0
+@camera O02 blend=6.0 ease=in_out_sine
+@mark toma root_walk_1 walk
+@mark asha root_walk_2 walk
+@mark ysolde root_walk_3 walk
+@mark liss root_walk_4 walk
+@mark kerrid root_walk_6 walk
+@wait 5.0
+@mark rhen root_walk_5 walk
+@wait 1.5
+@anim rhen look_at pell
+Rhen [neutral]: You coming? #line:ch10_edge_001
+@wait 2.0
+Pell [neutral]: The water is theirs. I walk on the roots. Not in. #line:ch10_edge_002 #tn:"'Theirs': the Kirru clutch's. Pell is an exile and may not enter their water."
+@wait 1.0
+@mark pell root_walk_1b walk
+@wait 2.0
+@letterbox off
+@camera release
+===

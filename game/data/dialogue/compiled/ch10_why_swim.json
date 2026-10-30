@@ -1,0 +1,36 @@
+{
+ "format": 1,
+ "scene": "ch10_why_swim",
+ "source": "game/data/dialogue/ch10/ch10_why_swim.dlg",
+ "start": "ch10_why_swim",
+ "nodes": {
+  "ch10_why_swim": {
+   "headers": {"location": "ch10/reedhollow"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["R06"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "mark", "args": ["kirru_child", "platform_edge_child", "walk"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "anim", "args": ["kirru_child", "look_at", "asha_staff"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 10},
+    {"op": "line", "id": "ch10_swim_001", "key": "DLG_CH10_SWIM_001", "speaker": "kirru_child", "emotion": "neutral", "voice": "", "src": 11, "name_key": "DLG_NAME_KIRRU_CHILD_KIRRU_CHILD"},
+    {"op": "line", "id": "ch10_swim_002", "key": "DLG_CH10_SWIM_002", "speaker": "asha", "emotion": "sad", "voice": "", "src": 12},
+    {"op": "line", "id": "ch10_swim_003", "key": "DLG_CH10_SWIM_003", "speaker": "kirru_child", "emotion": "neutral", "voice": "", "src": 13, "name_key": "DLG_NAME_KIRRU_CHILD_KIRRU_CHILD"},
+    {"op": "line", "id": "ch10_swim_004", "key": "DLG_CH10_SWIM_004", "speaker": "asha", "emotion": "worried", "voice": "", "src": 14},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 15},
+    {"op": "options", "choices": [{"id": "ch10_swim_005", "key": "DLG_CH10_SWIM_005", "to": 10, "src": 16}, {"id": "ch10_swim_007", "key": "DLG_CH10_SWIM_007", "to": 13, "src": 19}], "src": 16, "next": 17},
+    {"op": "set", "flag": "ch10_asha_answered_child", "value": ["lit", true], "src": 17},
+    {"op": "line", "id": "ch10_swim_006", "key": "DLG_CH10_SWIM_006", "speaker": "kirru_child", "emotion": "neutral", "voice": "", "src": 18, "name_key": "DLG_NAME_KIRRU_CHILD_KIRRU_CHILD"},
+    {"op": "goto", "to": 17, "src": 16},
+    {"op": "set", "flag": "ch10_asha_answered_child", "value": ["lit", true], "src": 20},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 21},
+    {"op": "line", "id": "ch10_swim_008", "key": "DLG_CH10_SWIM_008", "speaker": "kirru_child", "emotion": "neutral", "voice": "", "src": 22, "name_key": "DLG_NAME_KIRRU_CHILD_KIRRU_CHILD"},
+    {"op": "goto", "to": 17, "src": 19},
+    {"op": "cue", "cue": "mark", "args": ["kirru_child", "lagoon_swim", "walk"], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 24},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "platform_edge_rhen", "walk"], "kwargs": {}, "src": 25},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 26},
+    {"op": "line", "id": "ch10_swim_009", "key": "DLG_CH10_SWIM_009", "speaker": "asha", "emotion": "sad", "voice": "", "src": 27},
+    {"op": "set", "flag": "ch10_child_asked", "value": ["lit", true], "src": 28}
+   ]
+  }
+ }
+}

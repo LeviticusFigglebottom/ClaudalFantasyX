@@ -1,0 +1,14 @@
+// Ch14 B01 optional talk: Tobin before the vows (act2_ch14.md §2 B01). A Saltwright wedding coat with a
+// Warden's red sash over it, both families' colours; he can't stop grinning. He talks to Rhen as if they've
+// been friends for years. The last line carries the chapter, sincerely (ADR 0020: he volunteered so nobody
+// would be chosen; it rhymes with every Cantor, and nobody in the scene hears it).
+title: ch14_talk_tobin
+location: ch13/ansedra_lacquer_court
+---
+Tobin [smile]: She chose the sash. I chose the coat. We argued for a week. Best week of my life. #line:ch14_tobin_001
+@anim tobin look_at liss
+Tobin [soft_smile]: Look at her. She's pretending she isn't happy. She's terrible at it. #line:ch14_tobin_002
+@anim tobin look_at rhen
+Tobin [tender]: Nobody had to be chosen, Rhen. I volunteered. That's the whole point. Somebody has to go first. #line:ch14_tobin_003
+<<set $ch14_spoke_with_tobin = true>>
+===

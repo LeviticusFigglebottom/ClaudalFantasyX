@@ -1,0 +1,15 @@
+// Ch13 B04 optional: the outer moorings at dusk. Kerrid STANDING among the polers, an oil lamp on a pole.
+// Rhen can stand with him. Kerrid says nothing for a long time; then a stair-watch captain's eye on water
+// that won't move. A poler offers him a bowl of rice; he sets it down untouched (he never eats).
+title: ch13_moorings_kerrid
+location: ch13/ansedra
+---
+@mark rhen outer_moorings_rhen walk
+@wait 6.0
+Kerrid [neutral]: They pole well here. #line:ch13_moorings_001
+@wait 2.0
+Kerrid [cold]: Too well. #line:ch13_moorings_002 #tn:"He means: the water is being held unnaturally still."
+@anim kerrid set_down rice_bowl
+@wait 2.0
+<<set $ch13_sat_at_moorings = true>>
+===
