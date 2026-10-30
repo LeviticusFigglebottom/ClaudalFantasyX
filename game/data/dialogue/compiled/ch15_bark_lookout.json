@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch15_bark_lookout",
+ "source": "game/data/dialogue/ch15/ch15_bark_lookout.dlg",
+ "start": "ch15_bark_lookout",
+ "nodes": {
+  "ch15_bark_lookout": {
+   "headers": {"location": "ch15/hollowmere"},
+   "ops": [
+    {"op": "line", "id": "ch15_bark_look_001", "key": "DLG_CH15_BARK_LOOK_001", "speaker": "townsfolk", "emotion": "worried", "voice": "", "src": 5, "name_key": "DLG_NAME_TOWNSFOLK_LOOKOUT"}
+   ]
+  }
+ }
+}
