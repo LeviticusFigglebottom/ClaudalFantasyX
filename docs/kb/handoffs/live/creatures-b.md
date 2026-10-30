@@ -810,3 +810,12 @@ What the Act II fights still need from others: enemy rows and encounters (combat
 - **BACKLOG EMPTY (16:30):** every mounted Act I and Act II boss fight is played; fixes in my lane are merged-ready
   (650257ea, f893ee59); the rest is logged for its owners. Next when they land: battle-presentation's Act II effects
   (big25: view them on my bodies), the Abiding guard's actor, the flat-engine's row, Ch13+ boss encounters.
+
+## 2026-10-30 ~16:40: the Lead's 16:27 (status; the Act II Vowbound summon passes)
+- **Status: the Act II boss passes are done and pushed. MERGE-READY @ 51a8e99a1** (big24 merged in; carries 098a878d1,
+  650257eaa, f893ee590 and the logs). Nothing else of mine is unpushed.
+- **The Vowbound summon passes, running:** every Act II and Act I Vowbound called into the mounted Act II fights, each
+  skill used once and then the Swell technique, with a still of each clip mid-way: ch10_mangrove_drowner (Ilun, Nhoa),
+  ch11_lamp_engine (Kahre, Hesk), ch12_avalanche_ram (Virel, Ethren, Kesh). **With battle-presentation:** this run
+  checks the bodies and clips; their effects land with big25, and I re-run the same passes on it to view each effect
+  on its body (the agreed split) and file any misfit to them.
