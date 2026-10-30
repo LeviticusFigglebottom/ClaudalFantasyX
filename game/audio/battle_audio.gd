@@ -7,7 +7,8 @@ extends Node
 ## - **Music:** the encounter's cue (music.json battle) cuts in at the start; an engine phase_changed id named in
 ##   battle.phases brings stems in or out (the Drownbell's Flood); the battle's end fades it out.
 ## - **Ambience:** the encounter's arena (encounters.json `arena`) plays its own beds (ambience.json `arenas`) in
-##   place of the field's; the field's come back when this listener leaves.
+##   place of the field's (or the encounter's own, ambience.json `encounters`); the field's come back when this
+##   listener leaves.
 ## - **SFX:** game/data/audio/battle_sfx.json maps each BattleVfx effect id (as the view plays it) and each
 ##   engine moment that has no particle (the toll's ring, the Flood, Floodnet, the Vowbound's call and dismiss,
 ##   the opening stingers) to an sfx.json row on the Combat bus. Sections other than `vfx` are fallbacks: one is
@@ -60,14 +61,15 @@ func attach(dir: AudioDirector, controller: BattleController, eng: BattleEngine,
 	_attach_creatures(controller)
 
 
-## The arena's beds (ambience.json `arenas`) in place of the field's; an arena with none keeps the field's.
+## The encounter's or its arena's beds (ambience.json `encounters`, `arenas`) in place of the field's; an arena with
+## none keeps the field's.
 func _apply_arena_ambience() -> void:
 	if engine.db == null:
 		return
 	var enc: Dictionary = engine.db.encounters.get(
 		engine.encounter_id, engine.db.encounters.get(String(engine.encounter_id), {})
 	)
-	var ids := AudioData.arena_beds(director.ambience_data, str(enc.get("arena", "")))
+	var ids := AudioData.battle_beds(director.ambience_data, String(engine.encounter_id), str(enc.get("arena", "")))
 	if not ids.is_empty():
 		director.set_arena_ambience(self, ids)
 

@@ -240,6 +240,17 @@ def _arena_ids() -> set[str] | None:
         return None
 
 
+def _encounter_ids() -> set[str] | None:
+    """The encounters.json ids, or None when the file can't be read."""
+    try:
+        with open(Path(__file__).resolve().parents[2] / "game/data/battle/encounters.json", encoding="utf-8") as f:
+            doc = json.load(f)
+        rows = doc.get("encounters", doc) if isinstance(doc, dict) else doc
+        return {str(r["id"]) for r in rows}
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+
+
 def ambience_errors(doc: object, exists, flags: set[str], buses: set[str], music_beds: set[str]) -> list[str]:
     """ambience.json (M2-AUD-05): its beds, the zones' bed lists, night flags, and the wind mapping."""
     if not isinstance(doc, dict):
@@ -267,6 +278,19 @@ def ambience_errors(doc: object, exists, flags: set[str], buses: set[str], music
         w = f"{AMBIENCE} arenas.{arena}"
         if arenas is not None and arena not in arenas:
             errs.append(f"{w}: not an arenas.json arena")
+        if not isinstance(ids, list) or not ids:
+            errs.append(f"{w}: must be a non-empty list of beds")
+            continue
+        for b in ids:
+            if b not in beds:
+                errs.append(f"{w}: unknown bed {b}")
+    encs = _encounter_ids()
+    pending = set(doc.get("pending_encounters") or [])
+    for enc, ids in (doc.get("encounters") or {}).items():
+        w = f"{AMBIENCE} encounters.{enc}"
+        if encs is not None and enc not in encs and enc not in pending:
+            # pending_encounters: a set piece planned in its chapter doc that combat has not written yet
+            errs.append(f"{w}: not an encounters.json encounter (or listed in pending_encounters)")
         if not isinstance(ids, list) or not ids:
             errs.append(f"{w}: must be a non-empty list of beds")
             continue

@@ -58,6 +58,19 @@ bed (the bridal barge at night: open_sea_night; the Drowned Choir's ring: choir_
     arena_court_steps  Ch14, the Lacquer Court's water-steps: the crowd drawn back, murmuring low and far, silk
                        banners stirring, water on the steps, a far gong.
 
+Ch15 and Ch16's remaining beds (the Lead's 10-30 13:48 item; beats act2_ch15.md §6, act2_ch16.md):
+
+    hollowmere_flotilla Ch15 B10-B12, Hollowmere's first visit (`ch17/hollowmere`): "ambience only, no zone loop"; the
+                        first visit is grief. The Saltwright flotilla's own sound: water among the moored hulls, the
+                        tide-wheels turning slowly, a pump's steady hum, gulls, hammers far off and few, low voices.
+                        No laughter, no song (Act III's `hollowmere` cue brings the warmth back in Ch17).
+    open_sea_fog        Ch15 B09, the bow at dawn in fog (`ch15/open_sea` once `ch15_pell_said_he_knew` is set): flat
+                        calm under a white wall, a low swell, fog-damp dripping off the canopy and the empty lamp hook,
+                        the barge barely creaking. Nothing beyond the fog yet (hollowmere_answers brings the answer).
+    choir_storm         Ch16, the storm waking early at the Drowned Choir (`ch16_holding_the_line`, by encounter):
+                        the stone mouths roaring in a rising gale, surge pounding the ring channel, spray, the sea's
+                        low roar under it all. It is weather, not the Undertow's voice (storm_wall carries that).
+
 assets/audio/act2/ambience/<bed>.ogg + .loop.json (stereo, Vorbis q1 like the Act I beds; the rule
 `act2/ambience/*.ogg`: -26 LUFS integrated +- 0.5, true peak under -5 dBTP). Synthesized here and in tools/audio/synth/
 (SPEC §2, §9): no samples, no recordings, no generated audio.
@@ -97,7 +110,8 @@ LOOPS = {"fen_dusk": 48.0, "reedhollow_roost": 46.0, "vey_galleries": 50.0, "low
          "keth_pass_wind": 44.0, "quellan_town": 46.0, "cloudloom_hall": 44.0, "ansedra_still": 50.0,
          "lacquer_court": 46.0, "archive_room": 44.0, "sanctum_basin": 40.0, "open_sea_night": 48.0,
          "pale_rim_shallows": 50.0, "choir_bowl": 52.0, "arena_fen_roots": 40.0, "arena_engine_hall": 36.0,
-         "arena_seep_terrace": 40.0, "arena_lagoon_dusk": 42.0, "arena_court_steps": 40.0}
+         "arena_seep_terrace": 40.0, "arena_lagoon_dusk": 42.0, "arena_court_steps": 40.0,
+         "hollowmere_flotilla": 48.0, "open_sea_fog": 44.0, "choir_storm": 36.0}
 # The Kirru mode on A (reedhollow.py): A B C# D# F#, G# only as the top of a rise; never E.
 KIRRU = {"A3": 57, "B3": 59, "C#4": 61, "D#4": 63, "F#4": 66, "F#3": 54, "G#4": 68}
 
@@ -712,13 +726,96 @@ def arena_court_steps(g):
     return mx, _room(SEED % 9973 + 19, 1.6, 1.6)
 
 
+def wheel(g, sec: float, period: float) -> np.ndarray:
+    """A tide-wheel turning slowly: a paddle's wet slap and a wooden axle knock, once every `period` s."""
+    out = np.zeros(int(sec * SR))
+    t = float(g.uniform(0, period))
+    while t < sec - 0.6:
+        s = int(t * SR)
+        x = 0.6 * FA.slap(g)
+        out[s: s + len(x)] += x[: len(out) - s]
+        b = float(g.uniform(140, 190))
+        k = FA.modal([b, b * 2.5], [0.06, 0.03], [1.0, 0.3], 0.3, g, click=0.3) * 0.5
+        s2 = int((t + 0.25) * SR)
+        out[s2: s2 + len(k)] += k[: max(0, len(out) - s2)]
+        t += period * float(g.uniform(0.95, 1.05))
+    return out
+
+
+def hollowmere_flotilla(g):
+    mx, L = _mixer("hollowmere_flotilla")
+    mx.bus("water", 0.0, send=0.15)
+    mx.bus("wheels", 0.0, send=0.3)
+    mx.bus("pump", 0.0, send=0.25, process=lambda x: filt(x, [bq_lowpass(900, 0.7)]))
+    mx.bus("far", 0.0, send=0.5, process=lambda x: filt(x, [bq_lowpass(3000, 0.7)]))
+    mx.add("water", FA.stereo_noise(L, g, [bq_lowpass(500, 0.6), bq_highpass(50, 0.7)], 0.5) * 0.1, 0.0)
+    for t in FA.schedule(L, 1.4, g, 0.5):                                  # water among the hulls
+        mx.add("water", FA.slap(g) if g.random() < 0.4 else FA.lap(g, 0.8), t, pan=float(g.uniform(-0.9, 0.9)),
+               gain=float(g.uniform(0.2, 0.5)))
+    for k, (pan, period) in enumerate(((-0.6, 4.2), (0.5, 5.6))):          # two tide-wheels, out of step
+        mx.add("wheels", wheel(g, LOOPS["hollowmere_flotilla"] - 1.0, period), 0.3 + k, pan=pan, gain=0.3 - 0.1 * k)
+    mx.add("pump", throb(L, g, 1.2, 98.0) * 0.06, 0.0)                     # a pump's steady stroke
+    mx.add("pump", conduit_hum(L, g, 98.0) * 0.015, 0.0)
+    for t in FA.schedule(L, 9.0, g, 0.5):                                  # gulls
+        mx.add("far", FA.gull_call(g), t, pan=float(g.uniform(-0.9, 0.9)), gain=float(g.uniform(0.1, 0.22)))
+    for t in FA.schedule(L, 12.0, g, 0.5):                                 # hammers, far off and few
+        mx.add("far", FA.mallet_cluster(g), t, pan=float(g.uniform(-0.8, 0.8)), gain=float(g.uniform(0.1, 0.2)))
+    t = 3.0
+    while t < LOOPS["hollowmere_flotilla"] - 3.0:                          # low voices, a people grieving at work
+        mx.add("far", FA.murmur_phrase(g, bool(g.random() < 0.4)), t, pan=float(g.uniform(-0.7, 0.7)),
+               gain=float(g.uniform(0.12, 0.25)))
+        t += float(g.uniform(3.0, 7.0))
+    return mx, _room(SEED % 9973 + 20, 0.9, 1.6, highcut=6000.0)
+
+
+def open_sea_fog(g):
+    mx, L = _mixer("open_sea_fog")
+    mx.bus("sea", 0.0, send=0.2)
+    mx.bus("barge", 0.0, send=0.3)
+    mx.bus("drip", 0.0, send=0.4)
+    swell = 0.5 + 0.5 * FA.plfo(L, 0.07, g)
+    mx.add("sea", FA.stereo_noise(L, g, [bq_lowpass(300, 0.6), bq_highpass(40, 0.7)], 0.6)
+           * (0.6 + 0.4 * swell)[:, None] * 0.12, 0.0)
+    for t in FA.schedule(L, 3.2, g, 0.5):                                  # a low swell lapping the hull
+        mx.add("sea", FA.lap(g, float(g.uniform(0.6, 1.0))), t, pan=float(g.uniform(-0.6, 0.6)),
+               gain=float(g.uniform(0.15, 0.35)))
+    for t in FA.schedule(L, 1.6, g, 0.7):                                  # fog-damp off the canopy and the hook
+        mx.add("drip", drip(float(g.uniform(0.1, 0.3)), float(g.uniform(2.6, 4.2)), seed=int(g.integers(1 << 30))), t,
+               pan=float(g.uniform(-0.8, 0.8)), gain=float(g.uniform(0.06, 0.16)))
+    for t in FA.schedule(L, 8.0, g, 0.5):                                  # the barge barely creaking
+        mx.add("barge", creak(g, float(g.uniform(0.8, 1.4)), 30, 140), t, pan=float(g.uniform(-0.5, 0.5)),
+               gain=float(g.uniform(0.12, 0.22)))
+    return mx, _room(SEED % 9973 + 21, 1.6, 2.2, highcut=3500.0)     # fog: a close, dull, swallowing room
+
+
+def choir_storm(g):
+    mx, L = _mixer("choir_storm")
+    mx.bus("gale", 0.0, send=0.1)
+    mx.bus("mouths", 0.0, send=0.4)
+    mx.bus("surge", 0.0, send=0.25)
+    mx.bus("roar", 0.0, send=0.2, process=lambda x: filt(x, [bq_lowpass(220, 0.7)]))
+    gust = 0.5 + 0.5 * FA.plfo(L, 0.11, g)
+    mx.add("gale", FA.stereo_noise(L, g, [bq_lowpass(2400, 0.6), bq_highpass(150, 0.7)], 0.3)
+           * (0.45 + 0.55 * gust ** 1.3)[:, None] * 0.2, 0.0)
+    for k, f0 in enumerate((92.0, 123.0, 155.0, 207.0)):                  # the same mouths, roaring now
+        mx.add("mouths", mouth_moan(L, g, f0) * (0.1 + 0.02 * k) * (0.5 + 0.5 * gust)[:, None], 0.0)
+    for t in FA.schedule(L, 2.2, g, 0.4):                                  # surge in the ring channel, and spray
+        mx.add("surge", FA.burst(g, 1.4, [bq_lowpass(1600, 0.7), bq_highpass(120, 0.7)], 0.15, 0.6), t,
+               pan=float(g.uniform(-0.9, 0.9)), gain=float(g.uniform(0.25, 0.5)))
+        mx.add("surge", FA.burst(g, 0.8, [bq_bandpass(3500, 0.7)], 0.02, 0.3), t + 0.25,
+               pan=float(g.uniform(-0.9, 0.9)), gain=float(g.uniform(0.06, 0.12)))
+    mx.add("roar", FA.stereo_noise(L, g, [bq_lowpass(160, 0.6), bq_highpass(30, 0.7)], 0.7) * 0.25, 0.0)
+    return mx, _room(SEED % 9973 + 22, 2.4, 2.6, highcut=5000.0)
+
+
 BEDS = {"fen_dusk": fen_dusk, "reedhollow_roost": reedhollow_roost, "vey_galleries": vey_galleries,
         "lowlight_temple": lowlight_temple, "keth_pass_wind": keth_pass_wind, "quellan_town": quellan_town,
         "cloudloom_hall": cloudloom_hall, "ansedra_still": ansedra_still, "lacquer_court": lacquer_court,
         "archive_room": archive_room, "sanctum_basin": sanctum_basin, "open_sea_night": open_sea_night,
         "pale_rim_shallows": pale_rim_shallows, "choir_bowl": choir_bowl, "arena_fen_roots": arena_fen_roots,
         "arena_engine_hall": arena_engine_hall, "arena_seep_terrace": arena_seep_terrace,
-        "arena_lagoon_dusk": arena_lagoon_dusk, "arena_court_steps": arena_court_steps}
+        "arena_lagoon_dusk": arena_lagoon_dusk, "arena_court_steps": arena_court_steps,
+        "hollowmere_flotilla": hollowmere_flotilla, "open_sea_fog": open_sea_fog, "choir_storm": choir_storm}
 FILES = [f"{b}{ext}" for b in BEDS for ext in (".ogg", ".loop.json")]
 
 

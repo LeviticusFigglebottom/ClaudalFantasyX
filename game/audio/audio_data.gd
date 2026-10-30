@@ -140,6 +140,18 @@ static func arena_beds(amb: Dictionary, arena: String) -> Array[StringName]:
 	return out
 
 
+## The beds a battle against `encounter` in arena `arena` plays: ambience.json `encounters` (a set piece whose arena
+## changes, the storm waking at the Choir) first, else the arena's (arena_beds).
+static func battle_beds(amb: Dictionary, encounter: String, arena: String) -> Array[StringName]:
+	var by_enc := amb.get("encounters", {}) as Dictionary
+	if not by_enc.has(encounter):
+		return arena_beds(amb, arena)
+	var out: Array[StringName] = []
+	for b: Variant in by_enc[encounter] as Array:
+		out.append(StringName(str(b)))
+	return out
+
+
 ## The wind bed's level offset (dB) for a wind of `speed` m/s: ambience.json `wind` maps min_m_s..max_m_s
 ## linearly onto min_db..max_db, clamped.
 static func wind_db(amb: Dictionary, speed: float) -> float:

@@ -77,3 +77,31 @@ func test_every_act2_arena_has_beds_and_every_bed_is_a_row() -> void:
 			assert_true(dir.bed_table.has(String(id)), "%s is a bed row" % id)
 	assert_true(float(dir.ambience_data.get("arena_fade_sec", -1.0)) >= 0.0, "a fade is set")
 	_done()
+
+
+func test_a_set_piece_switches_its_arena_by_encounter() -> void:
+	var amb := dir.ambience_data
+	var storm := AudioData.battle_beds(amb, "ch16_holding_the_line", "drowned_choir_ring")
+	assert_true(storm.has(&"choir_storm"), "the storm waking at the Choir plays the storm")
+	assert_eq(
+		AudioData.battle_beds(amb, "ch16_abiding_guard", "drowned_choir_ring"),
+		[&"choir_bowl"] as Array[StringName],
+		"the guard before it, the Choir at moonrise"
+	)
+	assert_eq(
+		AudioData.battle_beds(amb, "ch15_wakefin", "bridal_barge_night"),
+		[&"open_sea_night"] as Array[StringName],
+		"no row: the arena's"
+	)
+	for id: StringName in storm:
+		assert_true(dir.bed_table.has(String(id)), "%s is a bed row" % id)
+	_done()
+
+
+func test_ch15_and_ch16_zones_have_their_beds() -> void:
+	var zones := dir.ambience_data.get("zones", {}) as Dictionary
+	var sea := zones.get("res://game/levels/ch15/open_sea/open_sea.tscn", {}) as Dictionary
+	assert_eq(sea.get("night", []), ["open_sea_fog"], "the dawn fog at the bow")
+	var mere := zones.get("res://game/levels/ch17/hollowmere/hollowmere.tscn", {}) as Dictionary
+	assert_eq(mere.get("day", []), ["hollowmere_flotilla"], "Hollowmere's first visit is ambience only")
+	_done()
