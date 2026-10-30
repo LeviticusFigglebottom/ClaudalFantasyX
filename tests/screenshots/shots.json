@@ -9307,6 +9307,82 @@
           }
         }
       }
+    },
+    {
+      "id": "crowd_vignette_oruvel_north",
+      "scene": "res://game/levels/_tests/npc/crowd_oruvel.tscn",
+      "camera": "Cameras/DeckNorth",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "crowd_vignette_oruvel_south",
+      "scene": "res://game/levels/_tests/npc/crowd_oruvel.tscn",
+      "camera": "Cameras/DeckSouth",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "crowd_vignette_pemakar_west",
+      "scene": "res://game/levels/_tests/npc/crowd_pemakar.tscn",
+      "camera": "Cameras/QuayWest",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "crowd_vignette_pemakar_east",
+      "scene": "res://game/levels/_tests/npc/crowd_pemakar.tscn",
+      "camera": "Cameras/QuayEast",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }

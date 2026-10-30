@@ -116,8 +116,9 @@ collision). Each stands beside something it would work on:
 The details:
 - **Roster.** The community is `haluna` (ranges.json: Low Reaches, the haluna.md palette of indigo, sea blue and sand
   with one red note), with new faces only (ADR 0152).
-- **No reshuffling.** `assign.late_zones` assigns Haluna after every other zone, so no body already placed moved
-  (tools test `test_late_zones_never_reshuffle_the_others`).
+- **No reshuffling.** Late people (`assign.late_zones`: Haluna; `assign.late_prefixes`: `oruvel_deck_`,
+  `pemakar_quay_`) are assigned after everyone else, zone by zone, never wearing a body their zone already shows, so
+  no body already placed moved (tools test `test_late_people_never_reshuffle_the_others`).
 - **The children's games** (`crowd_clips.py`, roles `child_stones` and `child_clap`):
   - `play_stones`, 4 s: knelt back on the heels, a stone tossed to 0.66 m, the eyes up after it, a sweep of the
     ground and the catch, twice a loop;
@@ -126,3 +127,22 @@ The details:
 - **Libraries.** The child and child_small libraries carry them.
 - **Review:** `npc_haluna_vignette_causeway`, `_lane_games`, `_lane_mender`, `_dock`, `_night_market` and `_night_lane`
   (game/levels/_tests/npc/haluna_villagers.tscn; `night` stages the story's dock at night).
+
+### Oruvel and the Pemakar quay (the Lead, 2026-10-30)
+- **Oruvel's commons deck** (`zones/ch01_oruvel.json`), six people at its edges so the deck's paths stay clear:
+  - a girl at stones by the north rail, and a man mending a diver's net bag;
+  - a man sweeping along the west rail between two stations, and a woman with her basket by the cookboat;
+  - along the south rail, a man laying fish to dry and a man hauling a line in.
+- **The Pemakar quay at Lanternfall** (`zones/ch05_pemakar.json`), five people on the quay's two ends (the middle is
+  the story's):
+  - an old man mending a net;
+  - two Low Reaches traders off the Brightwater crossing, one hauling his skiff in and one with a basket of salt fish;
+  - a woman come down for the folded boats with a basket of lanterns;
+  - an old woman folding leaf-boats.
+- **Why so few children.** Body capacity decides the cast, because no body repeats within a zone and each community
+  accepts only some bodies:
+  - Oruvel had one child body left, so its child plays stones alone, and men carry most of its work;
+  - Pemakar had no child body and no Pemakar-accepted man left. Its quay men are traders from the ferry
+    (community `brightwater`, which the crossing brings), with Pemakar's own elders and a woman.
+  - More children would need more planned child bodies (a characters-track body plan).
+- **Review:** `crowd_vignette_oruvel_north`, `_oruvel_south`, `_pemakar_west` and `_pemakar_east`.
