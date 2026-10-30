@@ -2,7 +2,7 @@
 # Lead tool: list every LEAD-ASK line in the tracks' live logs (and the PC's newest gpu/ branch).
 # Usage: tools/dev/lead/leadask.sh   (run from the repo root; it fetches first)
 # Track branch : live-log name pairs. Edit when the roster changes.
-TRACKS="hero-integration:integration-qa characters:characters env-art:env-art env-art-b:env-art-b act1-chapters:act1-chapters creatures:creatures creatures-b:creatures-b battle-presentation:battle-presentation ui:ui-menus audio:audio m2-slice:slice-polish"
+TRACKS="hero-integration:integration-qa characters:characters env-art:env-art env-art-b:env-art-b act1-chapters:act1-chapters creatures:creatures creatures-b:creatures-b battle-presentation:battle-presentation ui:ui-menus audio:audio m2-slice:slice-polish act2-plan:act2-plan"
 git fetch -q origin 2>/dev/null
 for p in $TRACKS; do
   b=${p%%:*}; f=${p##*:}
