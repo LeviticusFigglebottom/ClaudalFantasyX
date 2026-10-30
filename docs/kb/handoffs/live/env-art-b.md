@@ -957,6 +957,23 @@ that test at this branch's zones.
   - **MERGE-READY @ 2d9a9c36.**
 - **BACKLOG EMPTY (10-30, after the Ch13–16 walk):** the walk's findings are fixed or logged as mount points above,
   and the kit requests are with env-art (M3-ENV-1328/1329/1330). The rest waits on M4-A2P-103 to 107.
+- **Walking into the water (the human's Oruvel playtest; on big23 8fe3644b merged, d4e21dde):** my zones' shores
+  are kit terrain, not greybox walk blocks, so env-art's `zone_edges.py` (28b005ad) can't see them.
+  `tools/act1/shore_walls.gd` (new) flood-fills the walkable ground from the spawns the way the controller walks
+  (steps ≤ 0.35 m, blocked by anything at chest height), walls every edge onto water deeper than 10 cm, merges the
+  runs and writes `<zone>_shore_walls.json`. The generator reads it into `edge_walls` (`zl.shore_walls`).
+  - **Probed** (reachable cells whose ground lies more than 0.3 m under the water):
+    - Pemakar: 463, on the beaches either side of the harbour (the quay itself was closed).
+    - None in Brine Shoals, Ch8 Corrow, Ch9's strand and pier, Ansedra, the Lacquer Court (its water-steps end on
+      the barge deck above the water), Hollowmere's dock or the open sea's deck. The Pale Rim's wade is in water by
+      design.
+  - **Pemakar:** 687 shore walls. Re-probed: 0 deep cells reachable. `tests/integration/test_shore_walls.gd` (new):
+    one invisible body per row, and a body can't cross a sampled wall. Godot --filter=pemakar (10) and
+    shore_walls (2) pass; test_pemakar_kit, validate_data and taskboard pass.
+  - **MERGE-READY @ 02640c97.**
+  - The Ch5–Ch6 eye-height walk and rows 62/63 were already done and pushed (above: 008c7de3, e72c9631).
+- **BACKLOG EMPTY (10-30, after the shore walls):** what's left waits on env-art's kits (M3-ENV-1328/1329/1330) and
+  on M4-A2P-103 to 107.
 ### PC-QUEUE
 - Pass 3 row 65 (@ edb18aae): re-measure the camp's smoke columns (24 steps at High) and the Tamsule drop (High has no
   god rays now) at High 1440p against the 0.3 ms target.
