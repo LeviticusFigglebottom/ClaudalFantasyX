@@ -151,6 +151,17 @@ func test_camera_volumes_and_rails_are_built() -> void:
 	_done()
 
 
+func test_a_touch_box_reaches_below_its_floor() -> void:
+	# cloud-qa (the Lead, 10-30): a hero who lands on a deck settles a hair under it and must still stand in the box
+	var gate := _trigger(&"gate")
+	var cs := gate.get_node("Shape") as CollisionShape3D
+	var bottom := gate.global_position.y + cs.position.y - (cs.shape as BoxShape3D).size.y * 0.5
+	var sink := float(zone.setting("trigger_sink_m"))
+	assert_true(sink > 0.0, "greybox_defaults.json trigger_sink_m")
+	assert_true(is_equal_approx(bottom, gate.global_position.y - sink), "the box starts below the floor")
+	_done()
+
+
 func test_field_encounters_wait_for_their_flag_and_the_gap() -> void:
 	var fired: Array[StringName] = []
 	zone.encounters.on_encounter = func(id: StringName) -> void: fired.append(id)

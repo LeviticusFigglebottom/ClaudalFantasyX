@@ -131,6 +131,8 @@ var parts: Array[StringName] = []
 ## M4-A2P-023: enemies.json "answered_by" (the one hero who may act on it) and "answered_key" (why, for the cursor).
 var answered_by: StringName = &""
 var answered_key := ""
+## M4-A2P-1200: enemies.json "leaves_with" (an enemy id): the part withdraws once no foe of that id stands.
+var leaves_with: StringName = &""
 var broken_parts: Array[StringName] = []
 var struck := false
 ## M4-A2P-025 (BattleCycle): a "cycle" row's skills, one per element in order, and the one this turn holds.
@@ -177,6 +179,7 @@ static func from_dict(cid: StringName, team_id: StringName, d: Dictionary) -> Ba
 	c.ambushes = bool(d.get("ambush", false))
 	c.answered_by = StringName(str(d.get("answered_by", "")))
 	c.answered_key = str(d.get("answered_key", ""))
+	c.leaves_with = StringName(str(d.get("leaves_with", "")))
 	for s: Variant in d.get("cycle", []):
 		c.cycle.append(StringName(str(s)))
 	for p: Variant in d.get("parts", []):

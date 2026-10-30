@@ -33,6 +33,47 @@
        "set": "ch14_started"
       }
      ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch14_steps_held"
+      ],
+      "unset": [
+       "ch14_venn_beaten"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Barge"
+      },
+      {
+       "play": "ch14_first_ripple"
+      },
+      {
+       "battle": "ch14_malcor_venn",
+       "return_spawn": "Barge",
+       "victory_flag": "ch14_venn_beaten"
+      }
+     ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch14_venn_beaten"
+      ],
+      "unset": [
+       "ch14_complete"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Barge"
+      },
+      {
+       "play": "ch14_left_standing"
+      }
+     ]
     }
    ],
    "beats": {
@@ -43,6 +84,31 @@
         "location": "ch15/open_sea",
         "spawn": "Deck"
        }
+      }
+     ],
+     "when": {
+      "set": [
+       "ch14_complete"
+      ]
+     }
+    },
+    "dais": {
+     "when": {
+      "set": [
+       "ch14_started"
+      ],
+      "unset": [
+       "ch14_vows_spoken"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch14_the_vows"
+      },
+      {
+       "battle": "ch14_water_steps",
+       "return_spawn": "Barge",
+       "victory_flag": "ch14_steps_held"
       }
      ]
     }

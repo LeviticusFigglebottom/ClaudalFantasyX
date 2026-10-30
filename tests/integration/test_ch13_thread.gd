@@ -7,6 +7,8 @@ extends TestCase
 const CITY := "res://game/levels/ch13/ansedra/ansedra.tscn"
 const SANCTUM := "res://game/levels/ch13/sanctum/sanctum.tscn"
 const ARCHIVE := "res://game/levels/ch13/lamp_archive/lamp_archive.tscn"
+## Ch14's Lacquer Court is a ch13/ zone, so this thread is the one test_qa_threads checks its rows on (M3-UI-1242).
+const COURT := "res://game/levels/ch13/ansedra_lacquer_court/ansedra_lacquer_court.tscn"
 
 var saved_state: GameStateData
 var zone: Ch13Zone
@@ -67,6 +69,35 @@ func test_the_still_city_plays_its_scenes_in_order() -> void:
 	assert_true(bool(Game.get_flag(&"ch13_complete")), "closes the chapter")
 	_close()
 	Game.state = saved_state
+
+
+## M4-A2P-1200: Ch14 in the court: the vows and the trap at the dais (B02-B05), the water-steps held (B06), the first
+## ripple and Warden Venn on the lagoon (B07-B09), left standing (B10), then the barge out to the open sea.
+func test_the_wedding_court_plays_its_story_in_order() -> void:
+	_visit(COURT)
+	assert_eq(Game.state.chapter, 14, "the chapter step")
+	assert_false(_trigger(&"barge").is_available(), "no escape before the trap")
+	assert_true(_trigger(&"dais").on_touched())
+	assert_true(bool(Game.get_flag(&"ch14_vows_spoken")), "the vows")
+	assert_true(bool(Game.get_flag(&"ch14_declared_heretics")), "and the trap")
+	_battle(&"ch14_water_steps", &"ch14_steps_held")
+	_visit(COURT)
+	assert_true(bool(Game.get_flag(&"ch14_merel_taken")), "the first ripple: Merel at the water-gate")
+	_battle(&"ch14_malcor_venn", &"ch14_venn_beaten")
+	_visit(COURT)
+	assert_true(bool(Game.get_flag(&"ch14_complete")), "left standing")
+	_go(&"barge", "ch15/open_sea", "Deck")
+	_close()
+	Game.state = saved_state
+
+
+## The last hand-off is battle `encounter` with `victory_flag`; the win is set as the battle would.
+func _battle(encounter: StringName, victory_flag: StringName) -> void:
+	assert_true(not hand_offs.is_empty() and hand_offs.back()[0] == ZoneStory.KIND_BATTLE, "%s starts" % encounter)
+	var r := hand_offs.back()[1] as BattleRequest
+	assert_eq(r.encounter, encounter)
+	assert_eq(r.victory_flag, victory_flag)
+	Game.set_flag(victory_flag)
 
 
 ## Opens `path` (closing the zone before) and runs its arrival: a `go` ends the story's run, so each way is a visit.

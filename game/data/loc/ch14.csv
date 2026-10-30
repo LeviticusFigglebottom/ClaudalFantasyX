@@ -24,3 +24,30 @@ ITEM_TOBINS_CRACKED_LAMP,Tobin's Lamp
 ITEM_TOBINS_CRACKED_LAMP_DESC,"A wright's lamp with a crack across the glass, carried in a padded box. Liss won't let anyone else hold the box."
 EQUIP_YSOLDE_RED_LACQUER_GUARDS,Red-Lacquer Guards
 EQUIP_YSOLDE_RED_LACQUER_GUARDS_DESC,Wrist-guards lacquered the court's red. She wore them to the wedding.
+ENEMY_FLAT_ENGINE,The Flat-Engine
+LORE_FLAT_ENGINE,"A black lacquer drum on the stern of the Warden's barge, with a fan of eight paddles that press the lagoon flat. A steady teal light burns in its window."
+PHASE_MALCOR_VENN_FIRST,On His Barge
+PHASE_MALCOR_VENN_BOARDED,Boarded
+ENC_CH14_MALCOR_VENN,Warden Malcor Venn
+HUD_SWAP_CH14_LISS_ENGINE,Liss stays in: only she can reach the engine's works.
+PART_FLAT_ENGINE_LISS,Only Liss can reach the engine's works.
+SKILL_FLAT_PULSE,Flat Pulse
+SKILL_ENGINE_CHURN,Churn
+SKILL_VENN_SENTENCE,Sentence
+SKILL_GRAPNEL_LINE,Grapnel Line
+SKILL_ROD_SWEEP,Rod Sweep
+SKILL_STILL_HAND,Still Hand
+SKILL_LEVEL_GUARD,Level Guard
+PHASE_FLAT_ENGINE_BROKEN,Broken
+ENC_CH14_WATER_STEPS,The Water-Steps
+ENEMY_COURT_STILLGUARD,Court Stillguard
+LORE_COURT_STILLGUARD,"Stillguard in the court's wedding lacquer, sent down the water-steps when the Conclave sprang its trap. They are as patient as the water they keep."
+ENTRY_CH14_MERELS_KNIFE,Merel's Knife
+ENTRY_CH14_THE_COURT,The Court
+SKILL_CUT_THE_LINE,Cut the Line
+SKILL_COURT_REINFORCE,More Come Down
+SKILL_COURT_WAIT,The Court Waits
+SKILL_SEIZE_THE_LINE,Seize the Line
+SKILL_HOLD_THE_STEPS,Hold the Steps
+HUD_SWAP_CH14_KERRID_STEPS,Kerrid holds the steps: he stays in until the barge is loose.
+HUD_CH14_BARGE_LOOSE,The barge is loose.

@@ -1385,3 +1385,28 @@ MERGE-READY @ a3065f588: M4-A2P-1702, the Act II first-time tips and M4-A2P-1004
     - **Tests:** autosave 23/0 (new: test_a_chapter_autosave_continues_in_the_chapter_s_zone), continue_every 1/0,
       save_system 11/0, world_return 17/0, title_menu 17/0, save_new_run 4/0; validate_data 0/0; taskboard ok.
 MERGE-READY @ ace2d088c: M4-A2P-1705 (ADR 0121), plus requests M4-A2P-1703 and M4-A2P-1704.
+- 2026-10-30 23:45, **the Lead's 20:26 note.**
+  - **Save and load pass:** pushed. MERGE-READY @ ace2d088c (M4-A2P-1705, ADR 0121); origin/claude/ui is at b084899d9.
+    - Every Act I zone: a chapter autosave, then Continue from the title, restores the party, flags, zone and spawn.
+    - Mid-cutscene: the autosave waits for the cutscene's end and saves that (test_autosave_deferred, green).
+    - Fixed: Continue from a chapter autosave went to the last shrine, a chapter back.
+  - **The Drownbell re-measure waits.** integration-qa's trace (hero-integration 3b8d02d70, on big28) already splits
+    the return:
+    - 0.4–1.9 s: Haluna loading (the victory-panel preload, 95f51b987, is in effect there);
+    - 1.9–5.0 s: the reveal held by VillagerLayer's per-frame builds, the fix filed as M3-HER-1168 (creatures),
+      not landed.
+    - Until it lands, a re-measure only measures that hold again.
+    - **Next step:** when M3-HER-1168 is on the integration branch, run the return probe
+      (`scene_swap_probe --resident-loads --warm-resident --encounter=<drownbell> --return=<haluna>`) with and
+      without `FieldBattle._prepare_return`, and log the split here.
+- 2026-10-31 00:20, **the Lead's 21:05 note: the Act II save and load pass in Ch10–Ch13** (M4-A2P-1707, 3df48256a).
+  - **The sweep:** test_continue_every_act1_zone now has an Act II case. It covers all 11 enterable Ch10–Ch13
+    locations, with the seven (Rhen, Asha and Pell in the line; Toma, Ysolde, Liss and Kerrid in reserve) and Act II's
+    flags. A chapter autosave, then Continue from the title, restores everything, and the party enters that location
+    at a named spawn. 2/0 (Act I and Act II).
+  - **Shrine round trip:** test_qa_save_shrines walks every zone and stays green, 2/0.
+  - **Found:** no Ch10–Ch13 zone has a save shrine or rest point. The player can only autosave at a chapter's start.
+    The plan names Reedhollow, Lowlight, Quellan and Ansedra (whose flavour dialogue exists); the shrines are the
+    chapters'. Requested as **M4-A2P-1706** (cinematics: act1-chapters).
+  - **Waiting:** the Drownbell re-measure, on M3-HER-1168 (creatures).
+MERGE-READY @ 3df48256a: M4-A2P-1707, the Act II Continue sweep; M4-A2P-1706 requested.

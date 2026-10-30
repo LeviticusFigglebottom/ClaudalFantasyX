@@ -5,7 +5,7 @@
  "start": "ch14_side_six_lamps",
  "nodes": {
   "ch14_side_six_lamps": {
-   "headers": {"location": "ch14/lacquer_court"},
+   "headers": {"location": "ch13/ansedra_lacquer_court"},
    "ops": [
     {"op": "if_not", "cond": ["flag", "ch13_fixed_lamplighter_lamp"], "to": 4, "src": 7},
     {"op": "line", "id": "ch14_lamps_001", "key": "DLG_CH14_LAMPS_001", "speaker": "townsfolk", "emotion": "smile", "voice": "", "src": 8, "name_key": "DLG_NAME_TOWNSFOLK_YOUNG_LAMP_BEARER"},
