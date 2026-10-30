@@ -968,3 +968,22 @@ moves on screen, and its peak speed in px per 0.05 s.
 - **BACKLOG EMPTY (23:00):** the Act I and Act II feel passes, the boss and summon passes, the effects on the bodies
   (M4-A2P-1850 filed for battle-presentation) and M3-HER-1134 are done, and every fix in my lane is MERGE-READY. Next
   when they land: M4-A2P-1850's re-view, the Abiding guard's actor, the flat-engine's row, and the Ch13+ bosses.
+
+## 2026-10-30 ~22:40: Act III opens (ADR 0207; the Lead's 21:56)
+My Act I and Act II rows are done or waiting on other tracks, so I'm on Act III production in my lane (bosses and
+Vowbound), ids M5-A3P-1850 to 1899. Order: the never-cut items first (act3_roster.md "Order of work").
+- **M5-A3P-1850, Kesh's held form and release (to review):** act3_ending H03 releases Kesh as the Ch20 six (T-01,
+  accepted). She has the held light (`materials_held/`), `kesh_held_battle.tscn`, a creatures.json `kesh_held` row
+  (KO = the held `release`), a portrait, and a 3.5 s `release`: the arms open low, palms out; the face lifts and turns
+  away; the column carries her up 2.2 m, out of the frame. Clip sheet viewed. New test_creature_kesh_held 3/0 (Godot
+  vowbound 118/0, creature_portraits 4/0; Blender kesh 7 identical; validate_data 0/0).
+- **Claimed (todo):** M5-A3P-1851 the Cage (Ch20 boss; the sheet's seats-and-chains amendment first),
+  M5-A3P-1852 tide_matron and M5-A3P-1853 old_leviathan (Ch18 optional, last). An ownership row is appended for the
+  Act III ids.
+- **LEAD-ASK (the Undertow heart):** your 21:56 names "the finale's Undertow heart" for me, but act3_roster.md
+  (creatures) gives the Undertow-heart (Sefir's phase 2) and the storm's eye to the rendering track ("the rendering
+  track's Undertow, not a creature"). **Default:** the roster stands, and I offer rendering the heart's body if they
+  want a rigged form (a request task, ADR 0207 supplement). Say if you want me to take it instead.
+- **LEAD-ASK (the Cage's sheet):** docs/kb/art/creatures/act3/the_cage.md is creatures' sheet (M3-CRE-648, blocked),
+  but the Cage is a boss, which is my lane. **Default:** I take the sheet's amendment and the build (M5-A3P-1851) unless
+  creatures say otherwise in their log; I'll note it there with a request task.

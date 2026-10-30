@@ -676,6 +676,11 @@
       "id": "ethren_held",
       "scene": "res://game/creatures/ethren/ethren_held_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "kesh_held",
+      "scene": "res://game/creatures/kesh/kesh_held_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
     }
   ],
   "creature_stage": {
