@@ -753,3 +753,14 @@ What the Act II fights still need from others: enemy rows and encounters (combat
   12:40, logged MERGE-READY 13:15). **MERGE-READY @ c8de3434f** (big23 merged in, no conflicts): carries 098a878d1 (the Ram
   test) and 650257eaa (phase after the blow, M3-CRB-016). test_avalanche_ram OK on this head; validate_data 0/0;
   Godot creature_bosses green.
+- **MERGE-READY @ f893ee590: the Spar-Wraith's deck KO no longer rises.** As played (ch04_spar_wraith, hauled_down then the
+  KO), the victory still showed it apparently back up by its web: `ko_deck` pitched the face 40° down into the planks,
+  more than grounding's 30° head turn takes back, so grounding lifted the whole body 0.5 m as it died (body0 -1.19 ->
+  -0.68 between 0.4 s and 1.05 s). The head now turns aside onto the planks (4° pitch, 18° turn); body0 ends at -1.115,
+  inside the deck idle's own breathing range. New tools/tests/test_spar_wraith.py (fails on the old GLB). Blender
+  creature_spar_wraith 6 identical; tools test_spar_wraith, test_creatures, test_blender_builds 52/0; Godot creature
+  159/0; validate_data 0/0; clip sheet viewed (idle_deck, ko_deck).
+- **The as-played pass, all fights reviewed** (intro, mid-fight, each phase, defeat): Hullgnaw, the Drownbell, the
+  Hermit, the Spar-Wraith, the Matron, the Inquisitor, the Reach (the Surge), and Ilun, Kahre and Virel called into
+  them. Fixed in my lane: the phase timing (650257ea) and the Wraith's deck KO (above). Open in other lanes: the phase
+  moment cut by the next turn, Kahre rising during the Climb's cut, the Wraith's rest framing, ch11's camera and line-up.
