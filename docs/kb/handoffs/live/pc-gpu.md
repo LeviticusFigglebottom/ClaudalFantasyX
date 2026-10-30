@@ -19,6 +19,12 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
   - **Partly fixed (10):** 24, 37, 38, 39, 46, 47, 51, 54, 55, 58.
   - **Still open:** 17 (my fix 12cf79cb, not merged), 21, 34, 56, 61, 62, 63, 64, 66.
   - **Regressed:** 59 (the gull shot looks down on ring decals).
+- **Row 67 on big21 (0347aa74, with 329e7bce), the Lead's ask:**
+  - **Hidden frames are all under 2 s, and lower than big20.** Brine Shoals fresh 240–248 ms (5/5, no hang),
+    Corrow 375/377, Tamsule 444, Coilspire 518; in the walk Ch6 254–262, Ch7 412, Ch8 344–348.
+  - The covered entries lengthen to 8.1–8.5 s fresh (big20 6.0–6.4).
+  - **New row 68:** 1 of 3 hitch walks segfaulted on the Ch6 entry, after duplicate-load errors for reed_b/reed_d.glb
+    ("Another resource is loaded from path"). It points at 329e7bce's four loads in flight. Owner ui-menus.
 - The worktree is C:/Users/Aaron/hymn_qa4 (branch gpu/act1-qa-5). The C:/Users/Aaron/hymn_ui worktree (329e7bce) was
   never needed; I'll remove it.
 
