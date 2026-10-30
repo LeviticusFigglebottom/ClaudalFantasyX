@@ -39,3 +39,15 @@ SKILL_ROD_SWEEP,Rod Sweep
 SKILL_STILL_HAND,Still Hand
 SKILL_LEVEL_GUARD,Level Guard
 PHASE_FLAT_ENGINE_BROKEN,Broken
+ENC_CH14_WATER_STEPS,The Water-Steps
+ENEMY_COURT_STILLGUARD,Court Stillguard
+LORE_COURT_STILLGUARD,"Stillguard in the court's wedding lacquer, sent down the water-steps when the Conclave sprang its trap. They are as patient as the water they keep."
+ENTRY_CH14_MERELS_KNIFE,Merel's Knife
+ENTRY_CH14_THE_COURT,The Court
+SKILL_CUT_THE_LINE,Cut the Line
+SKILL_COURT_REINFORCE,More Come Down
+SKILL_COURT_WAIT,The Court Waits
+SKILL_SEIZE_THE_LINE,Seize the Line
+SKILL_HOLD_THE_STEPS,Hold the Steps
+HUD_SWAP_CH14_KERRID_STEPS,Kerrid holds the steps: he stays in until the barge is loose.
+HUD_CH14_BARGE_LOOSE,The barge is loose.
