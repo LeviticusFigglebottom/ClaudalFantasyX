@@ -1171,6 +1171,17 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     - The beat sheet makes O07 the one insert, with no one in it, so Sadi gets her own single, O07_sadi, for her
       lines (her ship behind her). New pending still `ch01_sadi_mooring`.
   - Viewed: all four stills. The GPU should confirm the Hullgnaw's light (PC-QUEUE).
+- **Ch10 staging against env-art's dressing (mounted in big22):**
+  - Re-rendered the five Ch10 stills on the dressed sets.
+  - O02 sees Pell at the bank's lip on his real body.
+  - R03 looks down an open causeway to Owa's mark.
+  - F02 now aims lower, at the clutch's backs and the name-shell cords, not the canopy.
+  - T04 moves south, clear of the shore's roost-shell.
+  - R07 looks over the reed bed that would have hidden the pair below the waist.
+  - Re-rendering F02, T04 and R07. On lavapipe the dressed zones take 9–24 min a shot (`HYMN_SHOT_TIMEOUT=1700`).
+  - **For env-art:** the farewell-tide's T03 looks straight up for the cloud gap, but the lagoon's canopy covers
+    most of the sky over the shore (F02 showed it). The beat needs open sky over the lagoon (act2_ch10.md T03).
+  - The people still wait on M4-CIN-1305 (the chapters track): the actors aren't in the layouts yet.
 ### PC-QUEUE
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan
