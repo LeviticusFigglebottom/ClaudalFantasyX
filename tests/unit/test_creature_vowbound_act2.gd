@@ -290,6 +290,17 @@ const KESH_ICE_STILL_M := 0.01
 ## The KO sinks her into the column to the shoulders: the shoulders at least this far down at the end.
 const KESH_KO_SINK_M := 1.0
 const KESH_END_SEC := 0.001
+## M4-A2P-024 wired the Act II Vowbound's skills (vowbound.json) to clips; every skill and swell plays a clip the
+## model has, and each built signature clip (the art sheets' maps) is reached by some skill, not left for `cast`.
+const VOWBOUND_ACT2_SIGNATURES := {
+	&"nhoa": [&"deep_well", &"echo", &"special"],
+	&"hesk": [&"cleanse", &"mending", &"special"],
+	&"ethren": [&"stop", &"ward", &"special"],
+	&"kesh":
+	[&"voice_water", &"voice_lightning", &"voice_fire", &"voice_ice", &"voice_holy", &"voice_glimmer", &"special"],
+}
+const VOWBOUND_ACT2_PATH := "res://game/data/battle/vowbound.json"
+const VOWBOUND_ACT2_SKILLS_PATH := "res://game/data/battle/skills.json"
 
 var hesk_made: Array[Node] = []
 
@@ -919,3 +930,39 @@ func _kesh_weighted_bones(skel: Skeleton3D) -> Dictionary:
 					var b := mi.skin.get_bind_name(bones[i])
 					out[String(b) if b != &"" else skel.get_bone_name(mi.skin.get_bind_bone(bones[i]))] = true
 	return out
+
+
+func test_act2_vowbound_skills_play_their_built_clips() -> void:
+	var skills := {}
+	for row: Dictionary in _vowbound_act2_json(VOWBOUND_ACT2_SKILLS_PATH).get("skills", []) as Array:
+		skills[str(row.get("id", ""))] = row
+	var seen := {}
+	for row: Dictionary in _vowbound_act2_json(VOWBOUND_ACT2_PATH).get("vowbound", []) as Array:
+		var id := StringName(str(row.get("id", "")))
+		if not VOWBOUND_ACT2_SIGNATURES.has(id):
+			continue
+		seen[id] = true
+		var made: Array[Node] = []
+		var a := (load(str(CreatureActor.row_for(id).get("scene", ""))) as PackedScene).instantiate() as CreatureActor
+		var tree := Engine.get_main_loop() as SceneTree
+		(tree.current_scene if tree.current_scene != null else tree.root).add_child(a)
+		made.append(a)
+		var ids: Array = (row.get("skills", []) as Array).duplicate()
+		ids.append(str((row.get("swell", {}) as Dictionary).get("technique", "")))
+		var played := {}
+		for sid: Variant in ids:
+			var kind := StringName(str((skills.get(str(sid), {}) as Dictionary).get("kind", "")))
+			var clip := a.clip_for(StringName(str(sid)), kind)
+			played[clip] = true
+			assert_true(a.has_clip(clip), "%s's %s plays a clip it has (%s)" % [id, sid, clip])
+		for clip: StringName in VOWBOUND_ACT2_SIGNATURES[id]:
+			assert_true(played.has(clip), "some skill of %s plays its built %s clip" % [id, clip])
+		for n in made:
+			n.get_parent().remove_child(n)
+			n.free()
+	assert_eq(seen.size(), VOWBOUND_ACT2_SIGNATURES.size(), "every Act II Vowbound has a vowbound.json row")
+
+
+func _vowbound_act2_json(path: String) -> Dictionary:
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+	return parsed as Dictionary if parsed is Dictionary else {}

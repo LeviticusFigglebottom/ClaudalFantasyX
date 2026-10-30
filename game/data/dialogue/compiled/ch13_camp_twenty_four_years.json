@@ -1,0 +1,24 @@
+{
+ "format": 1,
+ "scene": "ch13_camp_twenty_four_years",
+ "source": "game/data/dialogue/ch13/ch13_camp_twenty_four_years.dlg",
+ "start": "ch13_camp_twenty_four_years",
+ "nodes": {
+  "ch13_camp_twenty_four_years": {
+   "headers": {"location": "ch13/ansedra"},
+   "ops": [
+    {"op": "line", "id": "ch13_camp_001", "key": "DLG_CH13_CAMP_001", "speaker": "asha", "emotion": "guilty", "voice": "", "src": 8},
+    {"op": "line", "id": "ch13_camp_002", "key": "DLG_CH13_CAMP_002", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 9},
+    {"op": "line", "id": "ch13_camp_003", "key": "DLG_CH13_CAMP_003", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 10, "tags": ["long"]},
+    {"op": "line", "id": "ch13_camp_004", "key": "DLG_CH13_CAMP_004", "speaker": "ysolde", "emotion": "soft_smile", "voice": "", "src": 11},
+    {"op": "line", "id": "ch13_camp_005", "key": "DLG_CH13_CAMP_005", "speaker": "asha", "emotion": "sad", "voice": "", "src": 12},
+    {"op": "line", "id": "ch13_camp_006", "key": "DLG_CH13_CAMP_006", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 13},
+    {"op": "line", "id": "ch13_camp_007", "key": "DLG_CH13_CAMP_007", "speaker": "asha", "emotion": "worried", "voice": "", "src": 14},
+    {"op": "line", "id": "ch13_camp_008", "key": "DLG_CH13_CAMP_008", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 15},
+    {"op": "line", "id": "ch13_camp_009", "key": "DLG_CH13_CAMP_009", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 16},
+    {"op": "line", "id": "ch13_camp_010", "key": "DLG_CH13_CAMP_010", "speaker": "ysolde", "emotion": "tender", "voice": "", "src": 17, "tags": ["long"]},
+    {"op": "set", "flag": "ch13_camp_talk", "value": ["lit", true], "src": 18}
+   ]
+  }
+ }
+}

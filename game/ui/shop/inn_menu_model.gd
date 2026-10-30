@@ -17,7 +17,13 @@ const NO_SAVE_KEY := "INN_MENU_NO_SAVE"
 const RESTED_KEY := "INN_MENU_RESTED"
 const PREVIEW_KEY := "INN_MENU_PREVIEW_FMT"
 const UNKNOWN_TITLE_KEY := "INN_MENU_UNKNOWN_TITLE"
+## A night that costs nothing (price 0: Sefir's guest rooms in Ansedra, Act II screens.md section 5).
+const FREE_KEY := "INN_MENU_FREE"
+const PREVIEW_FREE_KEY := "INN_MENU_PREVIEW_FREE"
+## An inn marked `order` in shops.json turns the party away once they are outside the Level (heresy.md section 2).
+const ERR_HERETIC := ShopMenuModel.ERR_HERETIC
 const REFUSAL_KEYS := {
+	ERR_HERETIC: "INN_ERR_HERETIC",
 	Inn.ERR_UNKNOWN_INN: "INN_ERR_UNKNOWN",
 	Inn.ERR_CLOSED: "INN_ERR_CLOSED",
 	Inn.ERR_NO_FUNDS: "INN_ERR_NO_FUNDS_FMT",
@@ -64,14 +70,14 @@ func purse_text() -> String:
 
 ## Rest (with its price on the right, disabled-colored when refused) and Leave.
 func root_rows() -> Array[Dictionary]:
-	var ok := inn.rest_error(party, flags) == Inn.RESULT_OK
+	var ok := rest_error() == Inn.RESULT_OK
 	return [
 		{
 			"id": ROW_REST,
 			"label": _tr(REST_KEY),
-			"right": lume(inn.price()),
+			"right": price_text(),
 			"right_role": &"text" if ok else &"text_disabled",
-			"enabled": inn.exists() and inn.is_open(flags),
+			"enabled": inn.exists() and inn.is_open(flags) and not _heretic(),
 		},
 		{"id": ROW_LEAVE, "label": _tr(LEAVE_KEY), "right": "", "enabled": true},
 	]
@@ -91,17 +97,29 @@ func row_desc(id: StringName) -> String:
 	return "\n".join(lines)
 
 
+## A night's price as the Rest row shows it ("No charge" when it is free).
+func price_text() -> String:
+	return _tr(FREE_KEY) if inn.price() == 0 else lume(inn.price())
+
+
+## Why the party can't rest here now (Inn.rest_error, then the heresy for an Order house), or RESULT_OK.
+func rest_error() -> StringName:
+	return ERR_HERETIC if _heretic() else inn.rest_error(party, flags)
+
+
 ## {text, ok}: the cost of a night, or why the inn turns the party away.
 func rest_line() -> Dictionary:
-	var err := inn.rest_error(party, flags)
+	var err := rest_error()
 	if err != Inn.RESULT_OK:
 		return {"text": refusal_text(err), "ok": false}
+	if inn.price() == 0:
+		return {"text": _tr(PREVIEW_FREE_KEY), "ok": true}
 	return {"text": _tr(PREVIEW_KEY).format({"price": lume(inn.price())}), "ok": true}
 
 
 ## Pays and rests. Returns {ok, text}: "The party wakes restored." or the refusal.
 func rest() -> Dictionary:
-	var err := inn.rest(party, flags, heal)
+	var err := ERR_HERETIC if _heretic() else inn.rest(party, flags, heal)
 	if err != Inn.RESULT_OK:
 		return {"text": refusal_text(err), "ok": false}
 	rests += 1
@@ -113,6 +131,10 @@ func refusal_text(err: StringName) -> String:
 	if key == "":
 		return ""
 	return _tr(key).format({"price": lume(inn.price()), "purse": lume(party.wallet.amount())})
+
+
+func _heretic() -> bool:
+	return bool(inn.row.get(ShopMenuModel.KEY_ORDER, false)) and flags.is_set(ShopMenuModel.HERETIC_FLAG)
 
 
 static func _tr(key: String) -> String:

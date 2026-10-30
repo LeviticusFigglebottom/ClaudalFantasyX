@@ -15,7 +15,7 @@ location: ch17/hollowmere
 @wait 5.0
 @camera H13
 @anim aldous_varrow push_off pyre_raft
-@sfx pyre_crackle
+@sfx hearth_crackle
 @wait 4.0
 @vfx glimmer_held at=pyre_raft count=6 rate=slow
 @anim aldous_varrow raise lamp_housing

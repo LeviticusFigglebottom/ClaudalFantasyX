@@ -293,8 +293,11 @@ def build_shroud_bound(name: str, seed: int, *, length: float = 1.8, turn: float
             crease = np.sin(X / half_w * math.pi * 3.0 + rng.uniform(0, 6.28)) * 0.5 + 0.5
             p = np.stack([X, np.zeros_like(X), Z], axis=-1)
             y += (crease - 0.5) * SHROUD_CREASE_M * kc.smoothstep(0.03, 0.12, y)
-            y += (noise.fbm(p / 0.15, 2) - 0.5) * 0.02
-        edge = np.minimum(1.0 - np.abs(X) / half_w, 1.0 - np.abs(Z) / half_l)
+            y += (noise.fbm(p / 0.15, 2) - 0.5) * SHROUD_NOISE_M
+        # The outline follows the body (a superellipse, tapering to the head and feet), not the grid's rectangle: from
+        # the field camera above, a straight-edged hem read as a flat rectangle (the PC's pass 4, row 51).
+        rr = ((np.abs(X) / half_w) ** SHROUD_OUTLINE_P + (np.abs(Z) / half_l) ** SHROUD_OUTLINE_P) ** (1.0 / SHROUD_OUTLINE_P)
+        edge = np.clip(1.0 - rr, 0.0, 1.0)
         y = y * kc.smoothstep(0.0, SHROUD_HEM, edge) + 0.008
         P = np.stack([X, y, Z], axis=-1)
         uv = np.stack([X * 1.5, Z * 1.5], axis=-1)
@@ -313,10 +316,12 @@ def build_shroud_bound(name: str, seed: int, *, length: float = 1.8, turn: float
 
 
 M_SHROUD = "cw_sail"  # cw_night's shroud slot (the zones swap it for their own sailcloth)
-SHROUD_FULL = 1.15  # the body forms a little fuller, so the cloth reads over them from above
-SHROUD_CREASE_M = 0.03
-SHROUD_HEM = 0.06  # the cloth drops to the shingle within this fraction of the half-size (cw_night: 0.12)
+SHROUD_FULL = 1.4  # the body forms fuller, so the cloth reads as a body under it from the field camera above
+SHROUD_CREASE_M = 0.01  # shallow: over the fuller form deeper creases read as spiky ridges
+SHROUD_HEM = 0.14  # the cloth rolls down to the shingle over this fraction of the half-size (cw_night: 0.12)
+SHROUD_OUTLINE_P = 2.6  # the outline's superellipse exponent: rounded at the shoulders, tapering at head and feet
 SHROUD_TIES = (0.13, 0.36, 0.66, 0.9)  # neck, chest, knees, ankles
+SHROUD_NOISE_M = 0.006
 
 
 TARGETS = {
