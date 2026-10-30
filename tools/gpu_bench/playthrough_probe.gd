@@ -12,6 +12,7 @@ extends Node
 ## for STUCK_S with no flag or scene change), PLAY_SOFTLOCK (no flag or scene change for SOFTLOCK_S while the field
 ## takes input), PLAY_TELEPORT (hops held back by the zone's guards: the hero jumps beside the target),
 ## PLAY_SWEEP (at the target with no progress: it steps onto each trigger near it),
+## PLAY_FELL (the hero fell out of the world after a hop: put back on the ground; no fall recovery in the game),
 ## PLAY_NO_TARGET (the field takes input but the objective names no target), PLAY_ARRIVED / PLAY_TIMEOUT.
 
 const BOOT := "res://game/core/boot.tscn"
@@ -31,6 +32,10 @@ const SWEEP_RADIUS_M := 20.0
 ## A teleport settles the hero's origin a hair under the deck (y -0.0004), under a touch box that starts exactly at
 ## deck height, so the sweep lands him this far above the trigger's floor and lets him drop into it.
 const SWEEP_LIFT_M := 0.3
+## A hero this far under the objective's target has fallen out of the world.
+const FALL_M := 20.0
+## Jumps find the ground with a ray from this high above the spot.
+const GROUND_RAY_M := 40.0
 
 var _opts: Dictionary = {}
 var _t0 := 0
@@ -175,11 +180,18 @@ func _run() -> void:
 						)
 					)
 					p.velocity = Vector3.ZERO
-					p.global_position = Vector3(target.x, target.y + 0.1, target.z) - to.normalized() * (NEAR_M * 0.5)
+					p.global_position = _on_ground(
+						p, Vector3(target.x, target.y, target.z) - to.normalized() * (NEAR_M * 0.5)
+					)
 					best_dist = INF
 					best_at = t
 					continue
 				p.velocity = Vector3.ZERO
+				if p.global_position.y < target.y - FALL_M:
+					# Fell out of the world (a hop or a jump under the ground): back on the ground near the target.
+					print("PLAY_FELL %.1f %s: at %s, put back near %s" % [t, path, p.global_position, target])
+					p.global_position = _on_ground(p, target - to.normalized() * NEAR_M)
+					continue
 				p.global_position += to.normalized() * minf(HOP_M, to.length())
 			elif t >= next_interact:
 				p.interact()
@@ -278,6 +290,14 @@ func _triggers_near(cur: Node, at: Vector3) -> Array:
 		func(a: Node3D, b: Node3D) -> bool: return a.global_position.distance_to(at) < b.global_position.distance_to(at)
 	)
 	return out
+
+
+## `at` moved onto the ground under it (a ray down from GROUND_RAY_M above), lifted SWEEP_LIFT_M; `at` if none.
+func _on_ground(p: FieldController, at: Vector3) -> Vector3:
+	var q := PhysicsRayQueryParameters3D.create(at + Vector3.UP * GROUND_RAY_M, at + Vector3.DOWN * GROUND_RAY_M)
+	q.exclude = [p.get_rid()]
+	var hit := p.get_world_3d().direct_space_state.intersect_ray(q)
+	return ((hit["position"] as Vector3) if not hit.is_empty() else at) + Vector3.UP * SWEEP_LIFT_M
 
 
 func _objective_text() -> String:
