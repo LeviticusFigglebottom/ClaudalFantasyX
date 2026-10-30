@@ -8,6 +8,8 @@ extends TestCase
 ##     exception by design: its help line is the action's cost and turn, and Cancel there opens the pause);
 ##   - focus is not lost: when a Control holds the focus it is one on screen (a hidden or freed one takes the pad's
 ##     presses and nothing answers).
+## The save list (a shrine's) and the load list (the title's Load) are walked over every slot, a used slot's
+## question opened in the save list, and both closed with Cancel.
 ## In battle, each command row is chosen and walked the same way (into its page and its target pick, then Cancel back
 ## to the command menu), and the pause menu is opened with Cancel and walked, Settings and back included.
 ## Each screen's own parity test covers its moves; test_input_parity_dead_ends covers Cancel walking out.
@@ -19,6 +21,8 @@ const MAX_BACKS := 8
 const NOT_KEY_KEYS: Array[String] = ["HUD_CMD_ESCAPE"]
 ## The word every menu's help names the way back with (English: the tests run in it).
 const BACK_WORD := "Cancel"
+const SAVE_DIR := "user://test_input_parity_pad_walk"
+const SAVE_CLOCK := 1792500000
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const BATTLE_ROWS: Array[StringName] = [
 	BattleMenus.ROW_ATTACK,
@@ -139,6 +143,46 @@ func test_every_battle_command_and_the_pause_show_the_pad_s_prompts_and_keep_foc
 	assert_eq(ctl.state, BattleController.STATE_COMMAND, "and the command menu has the input again")
 	_check(ctl, "pause: resumed", false)
 	_free_battle()
+
+
+func test_the_save_and_load_lists_show_the_pad_s_prompts_and_keep_focus() -> void:
+	_collect_key_names()
+	var saved := [SaveSystem.save_dir, SaveSystem.clock, SaveSystem.autosave_enabled, Game.state]
+	SaveSystem.autosave_enabled = false
+	var fx := SaveShrineShot.load_fixtures()
+	fx["save_dir"] = SAVE_DIR
+	SaveShrineShot.write_fixtures(fx)
+	SaveSystem.clock = func() -> int: return SAVE_CLOCK
+	Game.state = GameStateData.new()
+	var d := InputDriver.new(InputDriver.Kind.PAD)
+	for mode: SaveMenuModel.Mode in [SaveMenuModel.Mode.SAVE, SaveMenuModel.Mode.LOAD]:
+		var where := "save list" if mode == SaveMenuModel.Mode.SAVE else "load list"
+		var list := SaveMenu.open_in(ParityHost.scene_root(), mode, {}, "", SaveSystem)
+		list.animate = false
+		d.press(&"ui_down")
+		for i in list.model.slots.size():
+			_check(list.get_parent(), "%s: slot %d" % [where, list.model.cursor])
+			d.press(&"ui_down")
+		if mode == SaveMenuModel.Mode.SAVE:
+			while list.model.slots[list.model.cursor].status != &"ok":
+				d.press(&"ui_down")
+			d.press(&"ui_accept")
+			assert_eq(list.model.phase, SaveMenuModel.Phase.CONFIRM, "a used slot asks first")
+			_check(list.get_parent(), "%s: the question" % where)
+			d.press(&"ui_right")
+			_check(list.get_parent(), "%s: the question's other choice" % where)
+			d.press(&"ui_cancel")
+			_check(list.get_parent(), "%s: back from the question" % where)
+		d.press(&"ui_cancel")
+		assert_false(list.is_open(), "%s: Cancel closes it" % where)
+		var layer := list.get_parent()
+		layer.get_parent().remove_child(layer)
+		layer.free()
+	SaveShrineShot.clear_fixtures(fx)
+	SaveSystem.save_dir = saved[0]
+	SaveSystem.clock = saved[1]
+	SaveSystem.autosave_enabled = saved[2]
+	Game.state = saved[3]
 
 
 func _start_battle() -> void:

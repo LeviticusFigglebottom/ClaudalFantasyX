@@ -1150,3 +1150,7 @@ HUD_READ_PARTS_BROKEN_FMT,"{list}: silent until it is mended"
 SET_MENU_CONTROLS_HUB,Up and Down: choose · Confirm: open · Cancel: back
 SET_MENU_CONTROLS_PAGE,Up and Down: choose · Left and Right: change · Cancel: back
 SET_MENU_CONTROLS_REBIND,Up and Down: choose · Confirm: change · Cancel: back
+SAVE_CONTROLS_SAVE,Confirm: record · Cancel: close
+SAVE_CONTROLS_LOAD,Confirm: continue · Cancel: close
+SAVE_CONTROLS_QUESTION,Up and Down: choose · Cancel: keep it
+SAVE_CONTROLS_RESULT,Confirm: continue
