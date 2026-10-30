@@ -84,6 +84,10 @@ var _seen_box_open := false
 var _seen_battle := false
 ## A cue waiting for its files to load on a worker thread: {cue, sec, files} ({} when none).
 var _pending: Dictionary = {}
+## M3-AUD-864 (the as-played pass): the zone returns on release. Every CutsceneSequencer seen, and how long the
+## field has been silent with no scene or battle playing.
+var _sequencers: Array[Node] = []
+var _quiet_sec := 0.0
 
 
 func _ready() -> void:
@@ -187,6 +191,7 @@ func _process(delta: float) -> void:
 func advance(delta: float) -> void:
 	_poll_hooks()
 	music.advance(delta)
+	_step_zone_return(delta)
 	for bed: FadeVoice in beds.values():
 		bed.step(delta, music.floor_db)
 	_step_ducks(delta)
@@ -272,6 +277,31 @@ func _poll_pending() -> void:
 		if st == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
 			return
 	flush_pending()
+
+
+## M3-AUD-864 (the as-played pass): the zone returns on release. A scene that ends on `@music silence` or on a
+## one-shot cue, or a battle that ends in the zone it started in (battle_out stops the music), would leave the field
+## silent until the next scene swap. Once no cutscene plays, no battle is in the tree, no cue is loading and the deck
+## has been silent for mix.json music.zone_return_sec, the zone's own cue comes back (resuming where it left off).
+## A swap or a battle that follows at once starts its own cue first, so this never double-starts one.
+func _step_zone_return(delta: float) -> void:
+	var sec := float(music_cfg().get("zone_return_sec", 0.0))
+	if sec <= 0.0 or not zone.has("music") or not _pending.is_empty() or not music.is_silent() or music.is_held():
+		_quiet_sec = 0.0
+		return
+	_sequencers = _alive(_sequencers)
+	_battles = _alive(_battles)
+	for seq: Node in _sequencers:
+		if (seq as CutsceneSequencer).is_playing():
+			_quiet_sec = 0.0
+			return
+	if not _battles.is_empty():
+		_quiet_sec = 0.0
+		return
+	_quiet_sec += delta
+	if _quiet_sec >= sec:
+		_quiet_sec = 0.0
+		play_music(StringName(str(zone["music"])))
 
 
 ## Applies the zone row for `scene_path` (SceneRouter.scene_swapping calls this under the fade).
@@ -445,6 +475,7 @@ func _on_node_added(node: Node) -> void:
 	if node is CutsceneSequencer:
 		# its players are routed as they enter (below); its lines tell the box's VoiceAudio who speaks
 		var seq := node as CutsceneSequencer
+		_sequencers.append(seq)
 		if not seq.line_shown.is_connected(_on_line_shown):
 			seq.line_shown.connect(_on_line_shown.bind(seq))
 		if cutscene != null:
