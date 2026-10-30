@@ -670,7 +670,23 @@ that test at this branch's zones.
     pass; validate_data 0/0; taskboard; gdlint and gdformat. Godot: sanctum 3/0, ansedra 4/0, ch13 4/0,
     zone_kit 13/0, dressing 21/0, placeholder 8/0, party_spawns 3/0.
   - **MERGE-READY @ f5675f19.**
-  - **Next:** the Lamp Archive (`ch13_lamp_archive.md`), then Ch14's Lacquer Court and the ripples.
+- **The Lamp Archive (ch13) dressed; M4-A2P-043 → review (rendering):**
+  - **New pieces** in `ansedra.py`: `archive_case` (on every greybox `Stack` block; black lacquer, red shelves, runs
+    of ledgers), `archive_hall_bay` (open clerestories, so grey daylight is the only light, and a skinned vault),
+    `archive_end_walls` (the shut door), `reading_table`, `roll_table` (the Cantor roll) and `ledger_stack`. The
+    spec's `archive_stacks` and `lowlight_nave_bay` didn't match the greybox's blocks and walls, so I built to them.
+  - **`tools/act2/ch13_archive_dressing.py`:** in the greybox's frame, no story point moved, under Ansedra's grade
+    and looks. No lamp is lit.
+  - **Fixed in passing:** `_paving` now lays a bedding slab where a floor has no block under it (the Archive bays,
+    the Sanctum's floor and vestibule showed the dark through their joints). Paper is dry indoors (`PAPER_W`).
+  - **Shots (new):** `ch13_archive_door`, `_aisle`, `_table`, `_roll`, all viewed. `ch13_sanctum_gate` was
+    re-viewed after the bedding change. Known: shaded pages read a dim warm brown under the layout's warm 0.5
+    ambient (chapters' row); the spec's day-by-day daylight variants (C6) are still to come.
+  - **Checks:** tools test_ch13_archive/sanctum/ansedra_dressing, test_ansedra; validate_data 0/0; taskboard; gdlint
+    and gdformat. Godot: lamp_archive 2/0, sanctum 3/0, ansedra 4/0, ch13 4/0.
+  - **MERGE-READY @ 9b2f4e2f.**
+  - **Next:** Ch14: the Lacquer Court (`ch14_lacquer_court.md`, M4-A2P-044), then the ripples (M4-A2P-047's second
+    half) and the `lacquer_court_steps` arena.
 
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
