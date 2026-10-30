@@ -27,3 +27,8 @@ and reports; it never edits game or test files.
   .uid and .import files blocked it) and the script went on at big24's 797b02cc. big26's run hit the same fault and was not
   pushed. Fixed (the run now resets my own scratch worktree, aborts on a failed checkout and checks HEAD); rerunning
   big26 @ e8ae9b74 now, then big25 @ 829b09a6.
+- big26 @ e8ae9b74 (rerun, HEAD checked): lanes B 60 files, 16:57-17:10 UTC (13 min). **All 60 green.**
+  test_footsteps_jog, test_input_parity_pad_walk and test_qa_dock_edges now run (they were the 0-run files at the wrong
+  sha). Result: gate-big26-lanes-b-result.md.
+- big25 @ 829b09a6 (rerun, HEAD checked; replaces the invalid result): lanes B 16 files, 17:10-17:26 UTC.
+  **All 16 green**, so test_causeway_route's red earlier was big24's code, not big25's.
