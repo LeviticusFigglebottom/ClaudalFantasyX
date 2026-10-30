@@ -1,0 +1,21 @@
+STEP-RESULT blender exit=1 in 11003s
+BLENDER FAIL brine_shoals_kit  24.6 s  3 DIFF, 82 identical
+    DIFF      assets/environments/kits/brine_shoals/camp_tent_burned.glb  sha256 6dd593a4cb95 committed vs f06aa7a47120 rebuilt; data differs: camp_tent_burned.POSITION, camp_tent_burned.NORMAL, camp_tent_burned.COLOR_0, camp_tent_burned.NORMAL  [camp_tent_burned.COLOR_0, camp_tent_burned.NORMAL, camp_tent_burned.POSITION]
+    DIFF      assets/environments/kits/brine_shoals/materials/bs_fire_core.tres  committed but not produced by the build  [<not produced>]
+    DIFF      assets/environments/kits/brine_shoals/materials/bs_fire_outer.tres  committed but not produced by the build  [<not produced>]
+BLENDER FAIL crowd_man_heavy  60.4 s  1 DIFF, 20 identical
+    DIFF      assets/crowd/crowd_man_heavy/textures/crowd_man_heavy_head_albedo.png  sha256 5ed900bc640d committed vs 02a00ee46c24 rebuilt  [<bytes>]
+BLENDER FAIL crowd_man_lean_a  58.2 s  1 DIFF, 19 identical
+    DIFF      assets/crowd/crowd_man_lean_a/textures/crowd_man_lean_a_head_albedo.png  sha256 c2ae91c5220d committed vs d42b3151f20b rebuilt  [<bytes>]
+BLENDER FAIL crowd_man_medium_a  59.8 s  1 DIFF, 20 identical
+    DIFF      assets/crowd/crowd_man_medium_a/textures/crowd_man_medium_a_head_albedo.png  sha256 bdc79c64243b committed vs 53ffb21170b1 rebuilt  [<bytes>]
+BLENDER FAIL crowd_man_medium_b  61.2 s  1 DIFF, 21 identical
+    DIFF      assets/crowd/crowd_man_medium_b/textures/crowd_man_medium_b_head_albedo.png  sha256 19bc09c53e12 committed vs fa1620dfa47b rebuilt  [<bytes>]
+BLENDER FAIL crowd_order_man  61.8 s  1 DIFF, 20 identical
+    DIFF      assets/crowd/crowd_order_man/textures/crowd_order_man_head_albedo.png  sha256 a52c1e6921bb committed vs a2240f97cbe8 rebuilt  [<bytes>]
+BLENDER FAIL crowd_woman_lean_a  56.5 s  5 DIFF, 15 identical
+    DIFF      assets/crowd/crowd_woman_lean_a/crowd_woman_lean_a.glb  sha256 040fc7f9ba1a committed vs ff390c13ec9d rebuilt; data differs: Head.001.TEXCOORD_0, Head.001.TEXCOORD_0  [Head.001.TEXCOORD_0]
+    DIFF      assets/crowd/crowd_woman_lean_a/textures/crowd_woman_lean_a_head_albedo.png  sha256 6ae3b4c09b87 committed vs f8c228af64e7 rebuilt  [<bytes>]
+    DIFF      assets/crowd/crowd_woman_lean_a/textures/crowd_woman_lean_a_head_normal.png  sha256 0a624b87e58a committed vs de7f70493fd6 rebuilt  [<bytes>]
+    DIFF      assets/crowd/crowd_woman_lean_a/textures/crowd_woman_lean_a_head_orm.png  sha256 ed8bdc1dc7c1 committed vs 5aa7ca1d9179 rebuilt  [<bytes>]
+    DIFF      assets/crowd/crowd_woman_lean_a/textures/crowd_woman_lean_a_head_skinmask.png  sha256 97fd02e4586f committed vs 3b5670e27423 rebuilt  [<bytes>]

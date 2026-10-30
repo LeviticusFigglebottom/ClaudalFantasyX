@@ -1,0 +1,13 @@
+  FAIL test_ch04_zones.gd::test_the_wakes_field_camera_is_halunas
+SCRIPT ERROR: Parse Error: Could not find type "CutsceneMotes" in the current scope.
+ERROR: Failed to load script "res://tests/unit/test_cutscene_vfx_hosts.gd" with error "Parse error".
+  FAIL test_dialogue_box.gd::test_every_act1_speaker_with_a_model_has_a_portrait
+  FAIL test_iskarra_city.gd::test_the_city_instances_its_pieces_with_kit_materials
+  FAIL test_zone_cast.gd::test_a_cast_actor_shows_its_model_and_idles_out_of_step
+FAILURE test_ch04_zones.gd::test_the_wakes_field_camera_is_halunas: expected <8> got <10> ch02/haluna's eight volumes
+FAILURE test_cutscene_vfx_hosts.gd: failed to load (parse error?)
+FAILURE test_dialogue_box.gd::test_every_act1_speaker_with_a_model_has_a_portrait: expected <pell> got <> pell has a model, so a portrait
+FAILURE test_iskarra_city.gd::test_the_city_instances_its_pieces_with_kit_materials: VigilLights has meshes
+FAILURE test_zone_cast.gd::test_a_cast_actor_shows_its_model_and_idles_out_of_step: the fisher idles
+FAILURE test_zone_cast.gd::test_a_cast_actor_shows_its_model_and_idles_out_of_step: out of step
+Tests: 3241 run, 5 failed, 59 left nodes in the tree
