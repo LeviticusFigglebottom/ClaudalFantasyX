@@ -589,6 +589,15 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **LEAD (16:09), answered: the Ch10–Ch12 eye-height walk, the dock-edge check (the Sunken Vey gallery included) and
+  env-art-b's kit requests are done.**
+  - The branch head is f4b2b548 plus a `.uid` commit. The MERGE-READY lines below cover each part:
+    - 990bdbb2: dock edges and the Ch10–Ch12 walk;
+    - 9ba63a92, d11b8437, 08f61623: M3-ENV-1329, 1328, 1330;
+    - a319362b and f4b2b548: M3-ENV-1327's parts and `camp_tent`.
+  - **M4-A2P-114 (the pier kit):** not touched here. It's env-art-b's, as the Lead says.
+  - **Still open for env-art (smaller):** the kits' own flat preview slots, the Coilspire headland's far facets, the
+    order chapel's plain white box. M3-ENV-1323 waits on the PC.
 - **MERGE-READY @ a319362b: env-art-b's kit requests, the next batch.**
   - **M3-ENV-1327, partly** (798184107, 5d9d63a4, a319362b), each viewed:
     - Corrow's puddles bake damp, not mirror-wet: no black holes at `foot_kerrid`.
