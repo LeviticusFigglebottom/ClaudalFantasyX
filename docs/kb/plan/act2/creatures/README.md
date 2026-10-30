@@ -19,9 +19,9 @@ branch: tools/creatures/clip_audit.gd (slip, pops, dips) and clip_sheet.tscn (po
 | [gallery_ray](gallery_ray.md) | 11 | reef beast | **no (read)** | pale on pale and flat: pattern or margin glow, lower hover |
 | [rime_urchin](rime_urchin.md) | 11 | reef beast | yes, but its KO | a readable KO |
 | [conduit_crawler](conduit_crawler.md) | 11 | construct | close | **no enemy row** (a boss add, M4-A2P-022); jointed legs |
-| [ridge_lynx](ridge_lynx.md) | 12 | beast | **no** | paws slide 18–29 cm: `grounding.pinned`, a stepping pounce, leg shaping |
+| [ridge_lynx](ridge_lynx.md) | 12 | beast | **no** | paws slide 18–29 cm: `grounding.pinned`, a stepping pounce, leg shaping; frost to snow (M4-CRE-670) |
 | [cord_moth](cord_moth.md) | 12 | beast | yes (read: medium) | battle scale like the ashwing's |
-| [scree_crawler](scree_crawler.md) | 12 | variant (slag tortoise) | yes | `model` key; 17.5k tris vs budget |
+| [scree_crawler](scree_crawler.md) | 12 | variant (slag tortoise) | yes | `model` key; 17.5k tris vs budget; frost to snow and grit (M4-CRE-670) |
 | [glass_skate](glass_skate.md) | 16 | reef beast | yes | the risen read on white water |
 | [rim_crawler](rim_crawler.md) | 16 | variant (tide crawler) | model yes, **read no** | chalk on white: value check |
 
@@ -40,6 +40,6 @@ their skills have no effects yet (test_battle_act1_ability_vfx lists them).
 **No wildlife on purpose:**
 - **Ansedra (Ch13–14):** bible §5.8 and ansedra.md: "no seabirds, no dogs, and no children's games in the squares".
   The city's silence is the point (beautiful and airless), so the plan's "still-city birds (Ch13)" is not built;
-  M4-A2P-056's goal line should drop it (LEAD-ASK in the creatures live log).
+  ADR 0204 §1 confirms it; M4-A2P-056's goal line no longer lists it.
 - **Lowlight, the Lamp Archive, Sunken Vey's dry halls:** interiors.
 - **The open sea at night (Ch15):** only the Wakefin and the sea-glow (act_outline).

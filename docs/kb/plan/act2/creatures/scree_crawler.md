@@ -12,10 +12,10 @@ Plan sheet for ADR 0203's Act II preparation (creatures, 2026-10-30). Docs only:
 before the `act1-complete` tag. The art sheet is [variants.md](../../../art/creatures/act2/variants.md).
 
 ## Silhouette
-The slag tortoise with frost-split scree slabs on its shell instead of slag (rebuilt with the tortoise's primitive pass, M3-CRE-660).
+The slag tortoise with snow-dusted, grit-packed scree slabs on its shell instead of slag (rebuilt with the tortoise's primitive pass, M3-CRE-660). Its build still says frost-split: no ice in Ch12 (ADR 0015, ADR 0204 §2), so the frost becomes dry snow in the seams and grit (M4-CRE-670).
 
 ## Materials
-`crust` (frost scree), `skin`, `eye`.
+`crust` (scree; snow in the seams, no ice sheen after M4-CRE-670), `skin`, `eye`.
 
 ## Rig
 9 bones; 17502 triangles in `assets/creatures/scree_crawler/scree_crawler.glb` (job `creature_scree_crawler` in tools/dev/blender_builds.json, built on build_slag_tortoise).
@@ -35,4 +35,4 @@ build_slag_tortoise (rig, clips, the flip-over KO).
 Meets the bar (17.5k tris: check the budget at the gate).
 
 ## Work at the gate (after `act1-complete`)
-Enemy `model` key; arena shot; `scree_slide` effect.
+Frost to snow and grit (M4-CRE-670); enemy `model` key; arena shot; `scree_slide` effect.

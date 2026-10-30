@@ -12,7 +12,7 @@ Plan sheet for ADR 0203's Act II preparation (creatures, 2026-10-30). Docs only:
 before the `act1-complete` tag. The art sheet is [ridge_lynx.md](../../../art/creatures/act2/ridge_lynx.md).
 
 ## Silhouette
-A high-pass lynx in a thick slate-grey winter coat, frosted ear tufts, a short tail, big snowshoe paws.
+A high-pass lynx in a thick slate-grey winter coat with snow caught in it, snow-tipped ear tufts, a short tail, big snowshoe paws gritty from the scree. No frost or rime (ADR 0015 and ADR 0204 §2: no ice in Ch12–Ch15; the swap is M4-CRE-670).
 
 ## Materials
 `coat` (the fur in the vertex colour and shader detail), `eye`.
@@ -35,4 +35,4 @@ Its own quadruped build; the raid hound's rig is its nearest sibling.
 **Below the bar:** its paws slide 18–29 cm on attack and hit (clip audit: the same `grounded()`-only slide the hound had), and its legs and paws read as plain rounded cylinders up close. At the gate: `grounding.pinned` on its four legs, and the hound's lunge treatment (forepaws step) on its pounce; a shaping pass on the legs and paws.
 
 ## Work at the gate (after `act1-complete`)
-Pin and step; leg/paw shaping; `pounce` effect; enemy `model` key.
+Pin and step; leg/paw shaping; frost to snow and grit (M4-CRE-670, one rebuild with the pin); `pounce` effect; enemy `model` key.

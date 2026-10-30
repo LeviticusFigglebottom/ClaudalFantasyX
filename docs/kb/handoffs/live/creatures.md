@@ -792,7 +792,7 @@ Merged `origin/claude/new-session-mj8c3c` (pc-gpu.md conflict: kept ours, the ne
 - **test_post_import (tools):** `tools/tests/test_post_import.py` KINDS lacked `crowd` (the big15 fix only did the Godot test).
 - **Confirmed on big17 itself:** cherry-picked onto `origin/lead/gate-big17` in a scratch worktree: test_npc + test_post_import 33/0.
 - **Also:** dropped a stale `shrine_offering.glb` PROVENANCE row the characters merge re-added (big17 has none): validate_data 0/0.
-- **villager_shopkeeper_front (NO BASE):** SELF-RENDERED and viewed: a full Haluna shopkeeper in T-pose on the review stage, clean, no placeholder (characters' M3-CHR-512 villager). **LEAD-ASK: approve villager_shopkeeper_front's baseline at the gate (I wrote none).**
+- **villager_shopkeeper_front (NO BASE):** SELF-RENDERED and viewed: a full Haluna shopkeeper in T-pose on the review stage, clean, no placeholder (characters' M3-CHR-512 villager). **LEAD-ANSWERED: villager_shopkeeper_front approved at the gate (I wrote none).**
 - Checks: tools test_npc 27/0, test_post_import 6/0; Godot crowd 7/0, villager 35/0, post_import 21/0, npc 10/0; validate_data, lint, format.
 
 ### M3-HER-1142: Corrow's storm figure (audit row, high): done, in review
@@ -829,7 +829,7 @@ Merged `origin/claude/new-session-mj8c3c` (pc-gpu.md conflict: kept ours, the ne
 - creature_oil_slug, creature_oil_slug_battle (new): it reads; a warm glow and crest at battle distance.
 - creature_tide_crawler: drift expected (rebuilt).
 - creature_shoal_skipper, creature_raid_hound, creature_hullgnaw: current builds; the old baselines are stale.
-- **LEAD-ASK: at the gate, approve baselines for villager_shopkeeper_front, creature_oil_slug_battle, npc_corrow_storm_figure, npc_corrow_storm_figure_near (new), and re-approve creature_oil_slug, creature_tide_crawler, creature_rim_crawler, plus the stale creature_shoal_skipper, creature_raid_hound, creature_hullgnaw and creature_slag_tortoise. Crowd shots for crowd_girl_teen's zones (pemakar, brine_shoals, lineups) may drift slightly.**
+- **LEAD-ANSWERED (ADR 0204 message: approved with big17/18): at the gate, approve baselines for villager_shopkeeper_front, creature_oil_slug_battle, npc_corrow_storm_figure, npc_corrow_storm_figure_near (new), and re-approve creature_oil_slug, creature_tide_crawler, creature_rim_crawler, plus the stale creature_shoal_skipper, creature_raid_hound, creature_hullgnaw and creature_slag_tortoise. Crowd shots for crowd_girl_teen's zones (pemakar, brine_shoals, lineups) may drift slightly.**
 
 ### PC-QUEUE
 - GPU QA row 40: recheck the Oil Slug in ch01_oil_slug on the RX 9070 XT (LampGlow on real GPU; the arena's lit floor patches are env-art-b's row 15).
@@ -844,7 +844,7 @@ Merged `origin/claude/new-session-mj8c3c` (pc-gpu.md conflict: kept ours, the ne
   - Portrait re-baked; verify identical. The doc's budget is raised to ≤10k (a lone foe).
 - **Read finished, left as they are:** the wall polyp's stone (worn, chipped, mortared laterite with the carved Watcher; its blockiness is masonry) and the reef crab family (7.9k of an 8k budget; shaped, banded legs, no blockiness at battle distance). The rest read finished.
 - Battle suite on this tree: 790 run, 3 failed, all on the known list (test_battle_act1_ability_vfx's Act II foe effects, test_battle_party_stand_ins' Liss tint, test_battle_result_motion), none from these changes.
-- **Add to the LEAD-ASK baseline list:** creature_tower_limpet (rebuilt).
+- **Added to the (now answered) baseline list:** creature_tower_limpet (rebuilt).
 
 MERGE-READY @ (this push): the big17 gate reds (test_npc, test_post_import), M3-HER-1142 (the Corrow storm figure), GPU QA row 40 (the Oil Slug), and the primitive pass on the tide crawler and the tower limpet. Checks run: validate_data 0/0, taskboard, gdlint and gdformat (game, tests), tools test_npc, test_post_import and test_creatures; Godot creature 85/0, portrait 21/0, crowd 9/0, villager 37/0, npc 10/0, post_import 21/0, battle 790/3 (known); Blender verify identical for every changed job (crowd_girl_teen, oil_slug, tide_crawler, rim_crawler, tower_limpet). Skipped: coverage (no game/battle or game/progression change) and the full manifest.
 
@@ -911,7 +911,7 @@ BACKLOG EMPTY (again): no other items.
   - Blender verify identical: 49 creature jobs after `pinned`, then sail_leech, fen_leech, ashwing.
 - Integration merged (c789b9a9): test_zone_cast kept mine (it accepts a work clip as the resting clip; integration's version requires `idle`, which Tamsule's crowd fisher on `haul` fails); shots.json rebuilt by hand (merge_union couldn't parse the base); the three stale wake-dressing PROVENANCE rows dropped again.
 - **SELF-RENDERED (viewed, no baselines written):** creature_tide_crawler, creature_tower_limpet, creature_oil_slug(_battle), npc_corrow_storm_figure(_near), crowd_mourners, crowd_work, crowd_lineup_*. The 16 encounter renders were scratch shots in a worktree, not committed.
-- **LEAD-ASK: baselines at the gate.** Add creature_tower_limpet, creature_sail_leech, creature_ashwing, creature_reef_crab, creature_wallcrab, creature_wreck_crab, creature_raid_hound, creature_vein_sparker, creature_bottle_hermit, creature_shoal_skipper and creature_rim_crawler (all rebuilt or rescaled) to the earlier list.
+- **LEAD-ANSWERED (approved with big17/18; many at the partial gate d987cc6b): baselines at the gate.** Add creature_tower_limpet, creature_sail_leech, creature_ashwing, creature_reef_crab, creature_wallcrab, creature_wreck_crab, creature_raid_hound, creature_vein_sparker, creature_bottle_hermit, creature_shoal_skipper and creature_rim_crawler (all rebuilt or rescaled) to the earlier list.
 
 MERGE-READY @ (this push): the Act I final-quality audit (planted feet, KOs, the ashwing, the sail leech, the wildlife re-seated, fish, crab ground, M3-CRE-664/665, the audit tools).
 
@@ -923,7 +923,9 @@ MERGE-READY @ (this push): the Act I final-quality audit (planted feet, KOs, the
   - rim crawler (chalk on white).
 - **None of the ten enemy rows has a `model` key.**
 - **Wildlife proposals:** fen kingfisher (never a heron: the Kirru), fen fireflies (never glimmer), woolback (the ram's build at 0.3 scale), rim rays (fish-sized, always moving, unlike the glass skate).
-- **LEAD-ASK: Ansedra has "no seabirds" (bible §5.8, ansedra.md). M4-A2P-056's "still-city birds (Ch13)" contradicts canon. Drop it from the task (I proposed no Ansedra wildlife, by design).**
+- **LEAD-ANSWERED (ADR 0204 §1: dropped from M4-A2P-056; Ch12 regulars: frost to snow, filed as M4-CRE-670): Ansedra has "no seabirds" (bible §5.8, ansedra.md). M4-A2P-056's "still-city birds (Ch13)" contradicts canon. Drop it from the task (I proposed no Ansedra wildlife, by design).**
 - PC rows (the Oil Slug, the storm figure) come first when the PC reports on gpu/act1-qa-3.
 
 BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are written (docs only until `act1-complete`). The rest waits on others: M3-CRE-664 (environment), M3-CRE-665 (combat), the PC's QA pass, the Lead's baselines.
+
+- 10-30 01:30, the Lead (ADR 0204): M4-A2P-056 edited (no Ansedra wildlife). **M4-CRE-670** filed (blocked by ADR 0203): the ridge lynx and scree crawler swap frost for snow and grit. The plan sheets are updated. BACKLOG EMPTY stands.
