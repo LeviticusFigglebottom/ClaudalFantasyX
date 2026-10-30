@@ -1274,7 +1274,7 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     that first director snap at the router's place_at. Building the director's triangle cache on the instantiate
     thread, or snapping a frame later, would take out about another 0.35 s. That is router and director code, not my
     lane.
-  - Tests: haluna 66/0, fp_ 30/0; gdlint/gdformat clean. The cutscene and scene_router filters are still running at commit; I log their results next.
+  - Tests: haluna 66/0, fp_ 30/0, scene_router 17/0, cutscene_pose 5/0, slice_shots 1/0; gdlint/gdformat clean. MERGE-READY @ 97c591c34.
   - **Seen, not mine:** `test_haluna_villagers` logs "Parent node is busy setting up children" from
     `villager_layer.gd:267 _spot` (the new VillagerLayer build in `_ready`). The tests pass; flagging it for the
     VillagerLayer owner.
