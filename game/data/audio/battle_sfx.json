@@ -168,6 +168,7 @@
     "wake_wheel": "hit_none"
   },
   "skills": {
+    "unravel": "skill_unravel",
     "toll": "drownbell_toll",
     "rouse_polyp": "skill_rouse_polyp",
     "gnaw_coil": "skill_gnaw_coil",
@@ -219,6 +220,9 @@
   "vowbound_stings": {
     "ilun": "ilun_summon",
     "virel": "virel_summon",
-    "kahre": "kahre_summon"
+    "kahre": "kahre_summon",
+    "nhoa": "nhoa_summon",
+    "hesk": "hesk_summon",
+    "ethren": "ethren_summon"
   }
 }
