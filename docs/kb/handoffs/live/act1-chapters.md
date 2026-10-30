@@ -752,6 +752,13 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - Next: the Ch11 mount (0411).
 - MERGE-READY @ e64595ada
 
+- **M4-A2P-0411 Ch11 mount: done, in review.**
+  - The Vey and Lowlight carry env-art's Water, Tide and Dressing. The Lamp Engine's model stands in its hall.
+  - The well's mouth is ringed off, so Pell kneels beside it, not over it.
+  - Five shots viewed. Checks: ch11, walkable, snaps, field_camera, zone_cast.
+  - Next: the Ch12 mount (0421).
+- MERGE-READY @ (this push)
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
