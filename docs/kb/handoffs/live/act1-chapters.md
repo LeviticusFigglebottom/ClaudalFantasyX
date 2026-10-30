@@ -813,6 +813,14 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - Checks: shrine, ch06, ch07, ch08, coilspire, zone_map_pois, chapter_flow, validate.
 - MERGE-READY @ f111ce028
 
+- **env-art-b's requests:**
+  - **M4-A2P-103:** the Sanctum is lit only from below (sun 0, fill 0.2). Done, in review.
+  - **M4-A2P-104:** the court's after-the-trap lamp sets are swapped by `ch14_declared_heretics`. Done. Its ripple
+    half waits on the Ch14 escape scene.
+  - **For env-art-b:** re-render `ch13_sanctum_*`, and bind the gilt lamp stands to the two anchors.
+  - Checks: ch13, ch14, layout, field_camera, validate.
+- MERGE-READY @ (this push)
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
