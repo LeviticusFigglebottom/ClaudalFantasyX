@@ -119,7 +119,11 @@ def lacquer_court() -> dict:
                      {"when": {"set": ["ch14_declared_heretics"]}, "hide": ["CeremonyLamps"],
                       "show": ["CeremonyLampsFallen"]}],
         "triggers": [{"id": "barge", "activation": "touch", "at": [cx, DECK_Y, cz + hz + 12.0], "size": [3.0, 0, 3.0],
-                      "payload": {"beat": "escape"}, "yaw": 0.0}],
+                      "requires_flag": "ch14_complete", "payload": {"beat": "escape"}, "yaw": 0.0},
+                     # M4-A2P-1200: the dais, where the vows are spoken and the trap is sprung (B02-B05)
+                     {"id": "dais", "activation": "touch", "at": [cx, 0.0, cz - hz + 7.5], "size": [4.0, 0, 1.5],
+                      "requires_flag": "ch14_started", "blocked_by_flag": "ch14_vows_spoken",
+                      "payload": {"beat": "dais"}, "yaw": 0.0}],
     }
 
 

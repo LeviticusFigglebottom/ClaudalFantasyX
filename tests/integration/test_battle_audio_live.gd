@@ -423,10 +423,14 @@ func test_the_boss_card_sting_ducks_the_music_and_lets_go() -> void:
 	var row := (dir.stings.data["events"] as Dictionary)["boss_intro"] as Dictionary
 	# BattleBossIntro's announcement (claude/battle-presentation M3-BPR-02): [encounter id, title_key].
 	EventBus.dialogue_event.emit(&"boss_intro", [BOSS_ENCOUNTER, "BOSS_TITLE"])
+	assert_true(dir.ducks.has(StringName(str(row["duck"]))), "the music ducks as the intro's camera moves")
+	assert_eq(dir.stings.played, [] as Array[StringName], "the sting waits for the title card (delay_sec)")
+	var t := 0.0
+	while t < float(row.get("delay_sec", 0.0)) + 0.05:
+		_frame()
+		t += DT
 	assert_eq(dir.stings.played, [&"sting_boss_bell"] as Array[StringName], "the Drownbell's own sting, once")
 	assert_eq(_history_count(&"sting_boss_bell"), 1, "the bank played it")
-	assert_true(dir.ducks.has(StringName(str(row["duck"]))), "the music ducks under the card")
-	var t := 0.0
 	while t < float(row["duck_sec"]) + 0.1:
 		_frame()
 		t += DT

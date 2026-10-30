@@ -84,7 +84,7 @@
           {"id": "bell_tether", "name_key": "MAP_POI_U_BELL_TETHER", "kind": "path", "at": [36.0, 3.6], "source": "trigger:tether_bell"},
           {"id": "galleries", "name_key": "MAP_POI_U_GALLERIES", "kind": "path", "at": [80.0, 12.0], "source": "spawn:Gallery"},
           {"id": "bell_room_2", "name_key": "MAP_POI_U_BELL_ROOM_2", "kind": "inn", "at": [80.0, -20.0], "source": "trigger:bell_rest_2"},
-          {"id": "stair_lip", "name_key": "MAP_POI_U_STAIR_LIP", "kind": "path", "at": [80.0, -33.0], "source": "trigger:low_lights"},
+          {"id": "stair_lip", "name_key": "MAP_POI_U_STAIR_LIP", "kind": "path", "at": [80.0, -28.0], "source": "trigger:low_lights"},
           {"id": "gauge_room", "name_key": "MAP_POI_U_GAUGE_ROOM", "kind": "door", "at": [93.0, -26.0], "source": "spawn:GaugeRoom"},
           {"id": "gauge_wheel", "name_key": "MAP_POI_U_GAUGE_WHEEL", "kind": "talk", "at": [96.0, -31.0], "source": "trigger:gauge_wheel"},
           {"id": "current_shaft", "name_key": "MAP_POI_U_CURRENT_SHAFT", "kind": "path", "at": [97.0, -38.0], "source": "trigger:current_shaft"}

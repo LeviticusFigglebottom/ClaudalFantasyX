@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "doc": "Hollowmere's townsfolk at the Ch15 dawn (B11: the people the Order burned, looking at Toma's pauldron; the Lead, 2026-10-30: Act II crowds from the bodies that exist). Saltwright crowd people (crowd.json, the saltwright community) on the hull-house platforms and along the dock's edges, clear of the walkway and the story marks (fathers_door, supper, confess_*). The greybox names no actors here, so each row's `at` makes its stand-in at CrowdSpots/<id> (VillagerLayer). Liss's father, the brine-branded old woman and the widow are the characters track's named people, not these.",
+  "doc": "Hollowmere's townsfolk at the Ch15 dawn (B11: the people the Order burned, looking at Toma's pauldron; the Lead, 2026-10-30: Act II crowds from the bodies that exist). Saltwright crowd people (crowd.json, the saltwright community) on the hull-house platforms and along the dock's edges, clear of the walkway and the story marks (fathers_door, supper, confess_*). The greybox names no actors here, so each row's `at` makes its stand-in at CrowdSpots/<id> (VillagerLayer). Liss's father, the brine-branded old woman and the widow are the characters track's named people, not these. The vignettes at the Ch15 dawn (the Lead, 2026-10-30: the Act II towns lived in; ground probed 2026-10-30): the work of the morning after the burning, no games: a man hauling a salvage line at the dock's edge, a man carrying a basket of what was saved, an old man mending a scorched net on his platform, a girl folding the cloths her family saved.",
   "zone": "ch17/hollowmere",
   "storm_flag": "",
   "villagers": [
@@ -73,6 +73,30 @@
       "attach": "child",
       "stand_in": "CrowdSpots/hollowmere_sweeper",
       "at": [49.0, 0.0, 1.35, 0.0]
+    },
+    {
+      "npc_id": "hollowmere_dawn_hauler",
+      "crowd": "hollowmere_dawn_hauler",
+      "stand_in": "CrowdSpots/hollowmere_dawn_hauler",
+      "at": [36.0, 0.0, 1.35, -180.0]
+    },
+    {
+      "npc_id": "hollowmere_dawn_carrier",
+      "crowd": "hollowmere_dawn_carrier",
+      "stand_in": "CrowdSpots/hollowmere_dawn_carrier",
+      "at": [27.0, 0.0, -1.35, -90.0]
+    },
+    {
+      "npc_id": "hollowmere_dawn_mender",
+      "crowd": "hollowmere_dawn_mender",
+      "stand_in": "CrowdSpots/hollowmere_dawn_mender",
+      "at": [30.0, 0.0, -16.5, -180.0]
+    },
+    {
+      "npc_id": "hollowmere_dawn_folder",
+      "crowd": "hollowmere_dawn_folder",
+      "stand_in": "CrowdSpots/hollowmere_dawn_folder",
+      "at": [44.5, 0.0, -16.2, -180.0]
     }
   ]
 }
