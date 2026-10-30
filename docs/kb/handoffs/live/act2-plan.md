@@ -206,3 +206,17 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
   - chapters and towns: place the interactables, NPC actors and camp rest points;
   - ui-menus: add the errands' `side` rows in objectives.json, with `OBJ_SIDE_*` keys.
 - BACKLOG EMPTY (story track).
+
+## 2026-10-30: M4-A2P-109, Act II objectives, tips, items and shrine text (Lead request)
+- Integration merged first (clean).
+- **Checks:** validate_data 0/0 · dlgc --check 0/0 · taskboard clean · tools tests `test_loc_key_names`, `test_loc_literals`, `test_loc_readiness`, `test_tutorial_tips` and `test_cutscene_sfx_files` OK · Godot `objective` 15/0, `act2_dialogue` 1/0, `zone_map` 22/0, `pseudo_loc` 26/0.
+- **Coordinating ids with act1-chapters, progression, combat and ui-menus:** `docs/kb/plan/act2/act2_text_ids.md` lists every id and its owner. I don't use send_message, so this file is the handoff.
+- MERGE-READY Ch10 @ 11f5c5c18: 5 objective rows; `TUT_CH10_*`, `TUT_DROWNER_ROOTS`, `FORMATION_AWAY_PELL_FEN`; `tannin_bark`, `reed_salve`, `rhen_fenroot_hooks`, `INN_REEDHOLLOW`; `ch10_shrine_reedhollow`.
+- MERGE-READY Ch11 @ 11f5c5c18: 5 rows; `TUT_LAMP_ENGINE_CRAWLERS`; `conduit_glass`, `asha_conduit_staff`, `liss_lowlight_sleeve`; `ch11_shrine_lowlight`.
+- MERGE-READY Ch12 @ 11f5c5c18: 8 rows; `TUT_CH12_UNRAVEL`, `TUT_RAM_FIELD`; `woolback_felt`, `butter_tea`, `asha_keth_bangle`, `toma_felt_shield`; `ch12_shrine_quellan`.
+- MERGE-READY Ch13 @ 11f5c5c18: 9 rows; `TIP_RECORDS_*`; `torn_ledger_line`, `ysolde_archive_copybook`, `INN_ANSEDRA`; `ch13_shrine_ansedra`.
+- MERGE-READY Ch14 @ 11f5c5c18: 4 rows; `TUT_CH14_HOLD_STEPS`, `TUT_MALCOR_ENGINE`, the step-hold HUD lines, `TIP_DARK_SHRINE_*`; `red_lacquer_chip`, `tobins_cracked_lamp`, `ysolde_red_lacquer_guards`.
+- MERGE-READY Ch15 @ 11f5c5c18: 7 rows; `TUT_WAKEFIN_DARK`; `seaglow_scale`, `current_broth`, four gear pieces; `ch15_shrine_hollowmere`.
+- MERGE-READY Ch16 @ 11f5c5c18: 4 rows; `TUT_CH16_*`, the line-hold HUD lines, `TIP_SWELL_MODE_*`; `rim_salt`, `kerrid_rim_wraps`; `ch16_shrine_pale_rim`.
+- **LEAD-ASK (route to progression or ui):** `ITEM_RIME_SHARD_DESC` says "Highland ice that does not melt", which breaks ADR 0015 if the item drops in Ch12–Ch15.
+- BACKLOG EMPTY (story track).
