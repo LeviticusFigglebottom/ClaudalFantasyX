@@ -37,9 +37,11 @@ Merge fallout fix (b6151a05):
 - M4-A2P-0401: `status: review` with an empty owner_session (taskboard --check; red on claude/act1-chapters alone):
   filled with chapters (its e64595ad).
 
-LEAD-ASK: who owns Ch13–15 dressing now? env-art has dressed the Sanctum, Lamp Archive, Lacquer Court and open sea
+LEAD-ANSWERED: who owns Ch13–15 dressing now? env-art has dressed the Sanctum, Lamp Archive, Lacquer Court and open sea
 twice ("the Lead's order"), while act2_tracks.md and ownership.md give them to env-art-b; the gate keeps env-art-b's
 on every conflict. If env-art now owns some of them, the ownership rows need updating, and the gate will follow them.
 
 Checks at the build: validate_data 0/0; taskboard ok; dlgc 0/0; gdlint and gdformat clean; no duplicate loc keys,
 codex ids, PROVENANCE rows or shot ids (687 shots); no conflict markers.
+(Lead, 10:47: ownership.md and act2_tracks.md stand. env-art-b owns Ch13–Ch16 dressing, so keep env-art-b's on every
+conflict; env-art owns Ch10–Ch12 and hands any useful Ch13–15 pieces to env-art-b by request task.)
