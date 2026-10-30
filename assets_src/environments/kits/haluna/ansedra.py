@@ -27,6 +27,19 @@ Built in the Haluna kit (its import kind and materials), as keth.py, lowlight.py
   archive_stacks      one bay of the Lamp Archive: two lacquered ledger cases (6 x 3.2 m) facing across an aisle,
                       the ledgers' spines in rows, a rolling ladder, and the Cantor roll's lectern at the aisle's end.
                       Origin at the aisle's floor centre.
+
+The city's walk (M4-A2P-043, env-art-b; docs/kb/plan/act2/zones/ch13_ansedra.md):
+  ansedra_causeway_6m one 6 m module of the causeways along Z: white Order-marble deck slabs (top y 0) between low
+                      marble kerbs, on three piers to the lagoon bed. Origin at the deck's centre.
+  gold_lamp_post      the causeways' lamp-post (bible §5.8) on its own pier in the water: a slender marble shaft, a
+                      gilt cage and an unlit salt-glass globe (the Order lights nothing on the water). Origin at the
+                      water line under the shaft.
+  island_plinth_16m   an island's edge: a paved marble top (y 0) and three steps down into the water all round, the
+                      Level line inlaid in gilt across it. Scaled per island (origin the top's centre, so the top stays
+                      at y 0).
+  mooring_platform    the outer moorings (16 x 16 m, top y 0): a marble landing stage with water-steps and marble
+                      bollards on its east and west edges, two punt-pole racks, and the lacquered mooring arch over the
+                      north exit. Origin at the platform's top centre.
 """
 
 from __future__ import annotations
@@ -51,7 +64,8 @@ M_PAPER = "kit_cloth_sand"
 
 TRI_BUDGET = {"bowl_dome": (6000, 400), "ansedra_far_domes": (8000, 3000), "pursuit_barge": (10000, 700),
               "lacquer_hall": (8000, 500), "lacquer_court_ground": (12000, 800), "sanctum_basin": (8000, 500),
-              "archive_stacks": (9000, 500)}
+              "archive_stacks": (9000, 500), "ansedra_causeway_6m": (3000, 200), "gold_lamp_post": (1500, 200),
+              "island_plinth_16m": (8000, 400), "mooring_platform": (9000, 650)}
 BUDGET_KEY = {"ansedra_far_domes_lit": "ansedra_far_domes"}
 
 PLINTH_TOP = 0.6
@@ -67,6 +81,13 @@ ENGINE_AT = (5.0, 1.6)  # x, deck height of the flat-engine's hub over the poop
 def _revolve(mb, ys, rs, sides, mat, *, cap=False):
     """A surface of revolution about Y: radius rs[i] at height ys[i]."""
     pts = np.stack([np.zeros(len(ys)), ys, np.zeros(len(ys))], -1)
+    kc.tube(mb, pts, np.maximum(rs, 0.002), sides, mb.material(mat), cap_end=cap, u_repeat=2.0, v_scale=0.5,
+            first_normal=(1.0, 0.0, 0.0))
+
+
+def _revolve_at(mb, x, z, ys, rs, sides, mat, *, cap=False):
+    """_revolve about a vertical axis through (x, z)."""
+    pts = np.stack([np.full(len(ys), x), ys, np.full(len(ys), z)], -1)
     kc.tube(mb, pts, np.maximum(rs, 0.002), sides, mb.material(mat), cap_end=cap, u_repeat=2.0, v_scale=0.5,
             first_normal=(1.0, 0.0, 0.0))
 
@@ -423,6 +444,197 @@ def build_archive_stacks(seed: int = 2107) -> list[kc.MeshBuilder]:
     return out
 
 
+# --- the city's walk (M4-A2P-043) ------------------------------------------------------------------------------
+CAUSEWAY_LEN = 6.0
+CAUSEWAY_HALF_W = 1.8  # the deck between the kerbs (the greybox's 3.6 m)
+KERB = (0.2, 0.5)  # half width, height over the deck
+BED_Y = -1.6  # the greybox's lagoon bed (its top)
+LAMP_H = 3.2
+PLINTH_HALF = 8.0
+PLINTH_STEPS = 3
+PLINTH_STEP = (0.5, 0.25)  # tread, rise
+MOOR_HALF = 8.0
+MOOR_EXIT_HALF = 2.2  # the north exit to the causeway (the greybox's gap)
+SUBMERGED_WET = 0.3  # each step further under the water darker (wet), so the white stone doesn't glow cyan
+MARBLE_W = kc.Weathering(moss=0.0, salt=0.06, wet=0.04, erosion=0.08, noise_scale_m=1.2)
+
+
+def _paving(mb, rng, hx: float, hz: float, size: float, stone) -> None:
+    """Thin marble slabs over a bedding block, the joints shadowed (top at y 0)."""
+    nx, nz = max(1, round(2 * hx / size)), max(1, round(2 * hz / size))
+    sx, sz = 2 * hx / nx, 2 * hz / nz
+    for i in range(nx):
+        for k in range(nz):
+            kc.rounded_block(mb, (-hx + sx * (i + 0.5), -0.03, -hz + sz * (k + 0.5)), (sx * 0.5 - 0.01, 0.03, sz * 0.5 - 0.01),
+                             stone, radius=0.008, seg=1, weather=MARBLE_W, variation=float(rng.random()))
+
+
+def build_causeway(seed: int = 2111) -> list[kc.MeshBuilder]:
+    out = []
+    hl = CAUSEWAY_LEN * 0.5
+    hw = CAUSEWAY_HALF_W
+    for lod in (False, True):
+        rng = kc.rng_for("ansedra_causeway_6m", seed)
+        mb = kc.MeshBuilder("ansedra_causeway_6m" + ("-lod1" if lod else ""))
+        stone, gilt = mb.material(M_STONE), mb.material(M_GILT)
+        kc.rounded_block(mb, (0.0, -0.25, 0.0), (hw + KERB[0] * 2, 0.19, hl), stone, radius=0.03, seg=1,
+                         weather=MARBLE_W)  # the deck's bedding beam
+        if lod:
+            kc.rounded_block(mb, (0.0, -0.03, 0.0), (hw, 0.03, hl), stone, radius=0.01, seg=1, weather=MARBLE_W)
+        else:  # slabs laid across the walk, alternate rows offset (a running bond)
+            for k in range(6):
+                z0 = -hl + k + 0.5
+                cuts = [-hw, 0.0, hw] if k % 2 else [-hw, -hw * 0.5, hw * 0.5, hw]
+                for a, b in zip(cuts[:-1], cuts[1:]):
+                    kc.rounded_block(mb, ((a + b) * 0.5, -0.03, z0), ((b - a) * 0.5 - 0.008, 0.03, 0.492), stone,
+                                     radius=0.008, seg=1, weather=MARBLE_W, variation=float(rng.random()))
+        for sx in (-1.0, 1.0):  # the kerbs, a gilt fillet along their outer top edge
+            kx = sx * (hw + KERB[0])
+            kc.rounded_block(mb, (kx, KERB[1] * 0.5 - 0.05, 0.0), (KERB[0], KERB[1] * 0.5 + 0.05, hl - 0.005), stone,
+                             radius=0.04, seg=1 if lod else 2, weather=MARBLE_W, variation=float(rng.random()))
+            if not lod:
+                kc.tube(mb, np.array([[kx + sx * KERB[0], KERB[1] - 0.03, -hl], [kx + sx * KERB[0], KERB[1] - 0.03, hl]]),
+                        0.018, 4, gilt)
+        for z in ((-hl + 0.5, hl - 0.5) if lod else (-hl + 0.5, 0.0, hl - 0.5)):  # the piers to the bed
+            ph = (-0.44 - BED_Y) * 0.5
+            kc.rounded_block(mb, (0.0, -0.44 - ph, z), (hw + 0.1, ph, 0.45), stone, radius=0.05, seg=1,
+                             weather=kc.Weathering(moss=0.0, salt=0.25, wet=0.3, erosion=0.12, noise_scale_m=0.8),
+                             wet_bias=0.2)
+        out.append(mb)
+    return out
+
+
+def build_lamp_post(seed: int = 2112) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("gold_lamp_post", seed)
+        mb = kc.MeshBuilder("gold_lamp_post" + ("-lod1" if lod else ""))
+        stone, gilt, glass = mb.material(M_STONE), mb.material(M_GILT), mb.material(M_GLASS)
+        sides = 6 if lod else 12
+        # The pier from the bed, a square marble base over the water, the shaft.
+        kc.rounded_block(mb, (0.0, (BED_Y + 0.25) * 0.5, 0.0), (0.42, (0.25 - BED_Y) * 0.5, 0.42), stone, radius=0.04,
+                         seg=1, weather=kc.Weathering(moss=0.0, salt=0.25, wet=0.3, erosion=0.12), wet_bias=0.2)
+        kc.rounded_block(mb, (0.0, 0.33, 0.0), (0.3, 0.08, 0.3), stone, radius=0.03, seg=1, weather=MARBLE_W)
+        ys = np.array([0.41, 0.6, 0.7, LAMP_H - 0.55, LAMP_H - 0.45])
+        rs = np.array([0.13, 0.1, 0.075, 0.06, 0.09])
+        _revolve(mb, ys, rs, sides, M_STONE, cap=True)
+        # The gilt cage: a collar, four ribs bowing out round the globe, a cap and a finial.
+        y0, y1 = LAMP_H - 0.45, LAMP_H + 0.15
+        _revolve(mb, np.array([y0 - 0.04, y0, y0 + 0.04]), np.array([0.1, 0.14, 0.12]), sides, M_GILT)
+        if lod:
+            _revolve(mb, np.array([y0 + 0.04, (y0 + y1) * 0.5, y1]), np.array([0.12, 0.2, 0.08]), sides, M_GLASS)
+        else:
+            t = np.linspace(0.0, 1.0, 9)
+            yy = y0 + 0.04 + (y1 - y0 - 0.04) * t
+            _revolve(mb, yy, 0.05 + 0.15 * np.sin(np.pi * np.clip(t * 1.05, 0, 1)), 16, M_GLASS, cap=True)
+            for k in range(4):
+                a = k * math.pi * 0.5 + math.pi * 0.25
+                r = 0.06 + 0.17 * np.sin(np.pi * t)
+                pts = np.stack([np.cos(a) * r, yy, np.sin(a) * r], -1)
+                kc.tube(mb, pts, 0.012, 4, gilt)
+        _revolve(mb, np.array([y1, y1 + 0.03, y1 + 0.12, y1 + 0.13]), np.array([0.12, 0.13, 0.04, 0.0]), sides, M_GILT)
+        kc.tube(mb, np.array([[0.0, y1 + 0.12, 0.0], [0.0, y1 + 0.4, 0.0]]), np.array([0.018, 0.004]), 5, gilt)
+        if not lod:  # the Level ring on the shaft (a level line circling it)
+            _revolve(mb, np.array([1.55, 1.57, 1.59]), np.array([0.064, 0.072, 0.064]), sides, M_GILT)
+        del rng
+        out.append(mb)
+    return out
+
+
+def build_island_plinth(seed: int = 2113) -> list[kc.MeshBuilder]:
+    out = []
+    h = PLINTH_HALF
+    tread, rise = PLINTH_STEP
+    for lod in (False, True):
+        rng = kc.rng_for("island_plinth_16m", seed)
+        mb = kc.MeshBuilder("island_plinth_16m" + ("-lod1" if lod else ""))
+        stone, gilt = mb.material(M_STONE), mb.material(M_GILT)
+        kc.rounded_block(mb, (0.0, -0.45, 0.0), (h, 0.39, h), stone, radius=0.04, seg=1, weather=MARBLE_W)
+        if lod:
+            kc.rounded_block(mb, (0.0, -0.03, 0.0), (h, 0.03, h), stone, radius=0.01, seg=1, weather=MARBLE_W)
+        else:
+            _paving(mb, rng, h, h, 2.0, stone)
+            kc.rounded_block(mb, (0.0, 0.002, 0.0), (h - 0.6, 0.003, 0.05), gilt, radius=0.002, seg=1)  # the Level line
+        wet = kc.Weathering(moss=0.0, salt=0.2, wet=0.2, erosion=0.1, noise_scale_m=1.0)
+        for k in range(PLINTH_STEPS):  # the steps down into the lagoon, each a ring of four blocks
+            g = h + tread * (k + 1)
+            top = -rise * (k + 1)
+            hy = 0.5 * (top - BED_Y)
+            cy = top - hy
+            for (cx, cz, sx, sz) in ((0.0, -g + tread * 0.5, g, tread * 0.5), (0.0, g - tread * 0.5, g, tread * 0.5),
+                                     (-g + tread * 0.5, 0.0, tread * 0.5, g - tread), (g - tread * 0.5, 0.0, tread * 0.5, g - tread)):
+                kc.rounded_block(mb, (cx, cy, cz), (sx, hy, sz), stone, radius=0.03, seg=1, weather=wet if k else MARBLE_W,
+                                 variation=float(rng.random()), wet_bias=SUBMERGED_WET * k)
+        out.append(mb)
+    return out
+
+
+def build_mooring_platform(seed: int = 2114) -> list[kc.MeshBuilder]:
+    out = []
+    h = MOOR_HALF
+    for lod in (False, True):
+        rng = kc.rng_for("mooring_platform", seed)
+        mb = kc.MeshBuilder("mooring_platform" + ("-lod1" if lod else ""))
+        stone, gilt, red, black, timber = (mb.material(M_STONE), mb.material(M_GILT), mb.material(M_LACQUER),
+                                           mb.material(M_BLACK), mb.material(M_DECK))
+        sides = 6 if lod else 12
+        kc.rounded_block(mb, (0.0, -0.45, 0.0), (h, 0.39, h), stone, radius=0.04, seg=1, weather=MARBLE_W)
+        if lod:
+            kc.rounded_block(mb, (0.0, -0.03, 0.0), (h, 0.03, h), stone, radius=0.01, seg=1, weather=MARBLE_W)
+        else:
+            _paving(mb, rng, h, h, 2.0, stone)
+        wet = kc.Weathering(moss=0.0, salt=0.25, wet=0.3, erosion=0.12, noise_scale_m=0.8)
+        # The water-steps along the east and west edges, where the barges lie; a plain wall on the south.
+        for sx in (-1.0, 1.0):
+            for k in range(3):
+                top = -0.2 * (k + 1)
+                hy = 0.5 * (top - BED_Y)
+                kc.rounded_block(mb, (sx * (h + 0.35 + 0.7 * k), top - hy, 0.0), (0.35, hy, h - 1.0), stone, radius=0.03,
+                                 seg=1, weather=wet, variation=float(rng.random()), wet_bias=SUBMERGED_WET * (k + 1))
+            for z in (-4.5, 0.0, 4.5):  # marble bollards with gilt caps
+                kc.tube(mb, np.array([[sx * (h - 0.45), 0.0, z], [sx * (h - 0.45), 0.55, z]]),
+                        np.array([0.17, 0.14]), sides, stone, cap_end=True)
+                if not lod:
+                    _revolve_at(mb, sx * (h - 0.45), z, np.array([0.5, 0.56, 0.62, 0.64]), np.array([0.15, 0.17, 0.1, 0.0]),
+                                sides, M_GILT)
+        kc.rounded_block(mb, (0.0, (BED_Y - 0.06) * 0.5 - 0.03, h + 0.3), (h + 2.4, (-0.06 - BED_Y) * 0.5, 0.3), stone,
+                         radius=0.03, seg=1, weather=wet)
+        # The punt-pole racks: two low timber trestles with the poles laid across them, along Z.
+        for sx in (-1.0, 1.0):
+            rx, rz = sx * (h - 1.7), 5.6
+            for dz in (-1.3, 1.3):
+                for lx in (-0.35, 0.35):  # a trestle: two splayed legs each side and a cross-bar
+                    kc.tube(mb, np.array([[rx + lx * 1.4, 0.0, rz + dz], [rx + lx * 0.5, 0.8, rz + dz]]), 0.045,
+                            4 if lod else 6, timber, cap_end=True)
+                kc.tube(mb, np.array([[rx - 0.5, 0.82, rz + dz], [rx + 0.5, 0.82, rz + dz]]), 0.06, 4 if lod else 6,
+                        timber, cap_end=True, cap_start=True)
+            n_poles = 2 if lod else 5
+            for k in range(n_poles):
+                px = rx - 0.36 + 0.72 * k / max(1, n_poles - 1)
+                pz = rz + 0.4 * (float(rng.random()) - 0.5)
+                kc.tube(mb, np.array([[px, 0.92, pz - 2.3], [px, 0.92, pz + 2.3]]), 0.035, 4 if lod else 5, timber,
+                        cap_end=True, cap_start=True)
+        # The mooring arch over the north exit: two red posts, a black tie beam, a gilt-capped red lintel with
+        # upswept ends, and the gilt Level plaque between them.
+        ax, az, ah = MOOR_EXIT_HALF + 0.45, -h + 0.5, 5.2
+        for sx in (-1.0, 1.0):
+            kc.rounded_block(mb, (sx * ax, 0.2, az), (0.42, 0.2, 0.42), stone, radius=0.04, seg=1, weather=MARBLE_W)
+            kc.tube(mb, np.array([[sx * ax, 0.4, az], [sx * ax, ah, az]]), np.array([0.26, 0.22]), sides, red, cap_end=True)
+            if not lod:
+                _revolve_at(mb, sx * ax, az, np.array([0.4, 0.46, 0.52]), np.array([0.3, 0.3, 0.26]), sides, M_GILT)
+        kc.rounded_block(mb, (0.0, ah - 0.9, az), (ax + 0.3, 0.14, 0.16), black, radius=0.03, seg=1)
+        kc.rounded_block(mb, (0.0, ah + 0.2, az), (ax + 0.9, 0.2, 0.3), red, radius=0.04, seg=1)
+        kc.rounded_block(mb, (0.0, ah + 0.45, az), (ax + 1.0, 0.05, 0.34), gilt, radius=0.02, seg=1)
+        for sx in (-1.0, 1.0):
+            kc.tube(mb, np.array([[sx * (ax + 1.0), ah + 0.45, az], [sx * (ax + 1.5), ah + 0.9, az]]),
+                    np.array([0.12, 0.03]), 5, gilt)
+        kc.rounded_block(mb, (0.0, ah - 0.35, az), (0.7, 0.32, 0.05), gilt, radius=0.02, seg=1)
+        if not lod:
+            kc.rounded_block(mb, (0.0, ah - 0.35, az + 0.055), (0.55, 0.012, 0.01), black, radius=0.004, seg=1)
+        out.append(mb)
+    return out
+
+
 TARGETS = {
     "bowl_dome": build_bowl_dome,
     "ansedra_far_domes": build_far_domes,
@@ -432,4 +644,8 @@ TARGETS = {
     "lacquer_court_ground": build_court_ground,
     "sanctum_basin": build_sanctum_basin,
     "archive_stacks": build_archive_stacks,
+    "ansedra_causeway_6m": build_causeway,
+    "gold_lamp_post": build_lamp_post,
+    "island_plinth_16m": build_island_plinth,
+    "mooring_platform": build_mooring_platform,
 }

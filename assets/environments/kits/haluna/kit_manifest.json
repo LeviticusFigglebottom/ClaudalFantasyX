@@ -13,6 +13,17 @@
         "anchor_engine-lod1": 564
       }
     },
+    "ansedra_causeway_6m": {
+      "budget": [
+        3000,
+        200
+      ],
+      "bytes": 41276,
+      "lods": {
+        "ansedra_causeway_6m": 340,
+        "ansedra_causeway_6m-lod1": 72
+      }
+    },
     "ansedra_far_domes": {
       "budget": [
         8000,
@@ -486,6 +497,17 @@
         "garland_string-lod1": 476
       }
     },
+    "gold_lamp_post": {
+      "budget": [
+        1500,
+        200
+      ],
+      "bytes": 51140,
+      "lods": {
+        "gold_lamp_post": 838,
+        "gold_lamp_post-lod1": 172
+      }
+    },
     "ground_lamp": {
       "budget": [
         300,
@@ -871,6 +893,17 @@
         "iskarra_vigil_dressing-lod1": 60
       }
     },
+    "island_plinth_16m": {
+      "budget": [
+        8000,
+        400
+      ],
+      "bytes": 116540,
+      "lods": {
+        "island_plinth_16m": 936,
+        "island_plinth_16m-lod1": 168
+      }
+    },
     "keth_curtain": {
       "budget": [
         4000,
@@ -1199,6 +1232,17 @@
       "lods": {
         "memory_stands": 1648,
         "memory_stands-lod1": 268
+      }
+    },
+    "mooring_platform": {
+      "budget": [
+        9000,
+        650
+      ],
+      "bytes": 219284,
+      "lods": {
+        "mooring_platform": 2224,
+        "mooring_platform-lod1": 568
       }
     },
     "name_shell_cord": {

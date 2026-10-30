@@ -1,12 +1,33 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://game/levels/ch13/ch13_zone.gd" id="1_zone"]
+[ext_resource type="Script" path="res://game/levels/act1/zone_kit_dressing.gd" id="2_dressing"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/weathering_tide.gd" id="3_tide"]
+[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="4_water"]
+[ext_resource type="Resource" path="res://game/levels/ch13/ansedra/ansedra_still_waves.tres" id="5_waves"]
+[ext_resource type="Material" path="res://game/levels/ch13/ansedra/ansedra_still_water_material.tres" id="6_sea"]
 [ext_resource type="Script" path="res://game/levels/act1/zone_cast.gd" id="90_cast"]
 
 [node name="Ansedra" type="Node3D"]
 script = ExtResource("1_zone")
 location_id = &"ch13/ansedra"
 layout_path = "res://game/levels/ch13/ansedra/ansedra_layout.json"
+
+[node name="Water" type="Node3D" parent="."]
+script = ExtResource("4_water")
+publishes_water_level = true
+wave_set = ExtResource("5_waves")
+material = ExtResource("6_sea")
+
+[node name="Tide" type="Node" parent="." node_paths=PackedStringArray("water")]
+script = ExtResource("3_tide")
+water_height_y = 0.0
+water = NodePath("../Water")
+
+[node name="Dressing" type="Node3D" parent="." node_paths=PackedStringArray("tide")]
+script = ExtResource("2_dressing")
+layout_path = "res://game/levels/ch13/ansedra/ansedra_dressing.json"
+tide = NodePath("../Tide")
 
 [node name="Cast" type="Node" parent="."]
 script = ExtResource("90_cast")
