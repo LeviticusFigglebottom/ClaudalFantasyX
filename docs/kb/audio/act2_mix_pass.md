@@ -40,3 +40,25 @@
 | ch13 | victory -> field | `sfx:victory` | -16.0 | `ansedra` | -16.0 | -0.0 |
 | ch13 | victory -> field | `sfx:victory` | -16.0 | `lamp_archive` | -16.1 | -0.1 |
 | ch13 | victory -> field | `sfx:victory` | -16.0 | `sanctum_of_the_level` | -16.1 | -0.1 |
+| ch14 | cutscene (ch14_the_vows) | `peace_wedding` | -16.0 | `peace_wedding_break` | -16.0 | 0.1 |
+| ch14 | cutscene -> field (ch14_first_ripple) | `lagoon_escape` | -16.0 | `ansedra` | -16.0 | -0.0 |
+| ch14 | cutscene -> field (ch14_left_standing) | `unlamped` | -16.0 | `ansedra` | -16.0 | 0.0 |
+| ch14 | cutscene -> field (ch14_the_vows) | `peace_wedding_break` | -16.0 | `ansedra` | -16.0 | -0.0 |
+| ch15 | cutscene (ch15_the_shoal) | `unlamped` | -16.0 | `kerrid_at_sea` | -16.0 | 0.0 |
+| ch15 | cutscene -> field (ch15_current_song) | `hollowmere_answers` | -16.0 | `unlamped` | -16.0 | -0.1 |
+| ch15 | cutscene -> field (ch15_the_shoal) | `kerrid_at_sea` | -16.0 | `unlamped` | -16.0 | -0.0 |
+| ch15 | field <-> battle | `unlamped` | -16.0 | `battle_standard_v2` | -16.1 | -0.0 |
+| ch15 | field <-> boss (ch15_wakefin) | `unlamped` | -16.0 | `wakefin` | -18.0 | -1.9 |
+| ch15 | victory -> field | `sfx:victory` | -16.0 | `unlamped` | -16.0 | -0.0 |
+| ch16 | cutscene (ch16_swept_away) | `abiding_guard` | -17.9 | `act2_break` | -16.0 | 1.9 |
+| ch16 | cutscene (ch16_the_choir) | `drowned_choir` | -16.0 | `kesh_bound` | -16.1 | -0.1 |
+| ch16 | cutscene (ch16_the_choir) | `kesh_bound` | -16.1 | `kesh_memory` | -16.0 | 0.0 |
+| ch16 | cutscene (ch16_the_choir) | `kesh_memory` | -16.0 | `sefir_go_home` | -16.1 | -0.0 |
+| ch16 | cutscene -> field (ch16_swept_away) | `act2_break` | -16.0 | `drowned_choir` | -16.0 | -0.0 |
+| ch16 | cutscene -> field (ch16_the_choir) | `sefir_go_home` | -16.1 | `drowned_choir` | -16.0 | 0.1 |
+| ch16 | field <-> battle | `drowned_choir` | -16.0 | `battle_standard_v2` | -16.1 | -0.1 |
+| ch16 | field <-> battle | `pale_rim` | -16.0 | `battle_standard_v2` | -16.1 | -0.0 |
+| ch16 | field <-> boss (ch16_abiding_guard) | `drowned_choir` | -16.0 | `abiding_guard` | -17.9 | -1.9 |
+| ch16 | field <-> boss (ch16_abiding_guard) | `pale_rim` | -16.0 | `abiding_guard` | -17.9 | -1.9 |
+| ch16 | victory -> field | `sfx:victory` | -16.0 | `drowned_choir` | -16.0 | -0.0 |
+| ch16 | victory -> field | `sfx:victory` | -16.0 | `pale_rim` | -16.0 | -0.0 |
