@@ -535,6 +535,33 @@ that test at this branch's zones.
     the dock water is clean, and the pool keeps its web.
   - **MERGE-READY @ 9fdf14f9.** The shots that drift by design: the six above.
 
+- **Merged integration @ d987cc6b** (big17 approved; clean).
+- **The PC's QA pass 3 (the Lead's 01:08 order: it comes first):** still running on the PC (`gpu/act1-qa-3` @ 84422d11
+  has only extended the walk list; no results yet). The open rows on that branch are pass 1–2's, all fixed or
+  explained in this log (6, 26, 27, 28 fixed; 15, 40 env-art's Ch1; 34 act1-chapters' lookup; 38 hero-integration's
+  camera). I take pass 3's rows when they land.
+- **Act II preparation (ADR 0203, docs only), done @ 808faa2c:** `docs/kb/plan/act2/zones/`, all `draft: pre-gate`.
+  - Eight zone kit specs for my chapters (act2_tracks.md: env-art-b has Ch13–Ch16): Ansedra (with Ch14's night
+    lagoon), the Sanctum, the Lamp Archive, the Lacquer Court, the open sea, Hollowmere's first visit, the Pale Rim
+    and the Drowned Choir.
+  - The arenas: three exist, plus a new `lacquer_court_steps` for the step-hold.
+  - Each spec covers the piece list (existing versus new `b_*.py` pieces), the materials in Act II's palette (the
+    flat gold, lacquer and window slots take zone looks, as in Act I), the lighting from the colour script, the reused
+    kits, and a shot list.
+  - **Found on the way:**
+    - `lut_ch13_still` and `lut_ch16_rim` don't exist yet;
+    - Hollowmere's Ch15 dawn needs its own grade (only Ch17's dusk exists);
+    - several greyboxes are smaller than their kit pieces (the Sanctum's basin, the Lacquer Court, the barge deck,
+      the Choir's ring at r 24 versus the art sheet's r 44) and need a one-time relayout;
+    - the still mirror and the ripples are the hero rendering items.
+  - **The Ch10–Ch12 kit inventory** (`inventory_ch10_12.md`): all 40 pieces built across four kits, three arenas
+    with baselines, no zone dressed; flat slots in every kit (the fen's canopy and reeds, Lowlight's conduits and
+    copper, Keth's grass and seep); zone grades exist only inside the arenas.
+  - **Checks:** validate_data 0/0 (banned terms included), taskboard --check. No builds and no game files (ADR 0203).
+  - **MERGE-READY @ 808faa2c.**
+- **BACKLOG EMPTY (10-30 ~01:40):** Act I is clean in my lane, and the Act II preparation docs are written. Next:
+  the PC's pass-3 rows for env-art-b when they land.
+
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
   on the PC presets (two large and three small fires in `ch06/brine_shoals` and `salvage_camp_burning`).
