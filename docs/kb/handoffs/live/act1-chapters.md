@@ -746,6 +746,12 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - **Next:** the Ch10, Ch11 and Ch12 kit mounts (M4-A2P-0401, 0411, 0421).
 - MERGE-READY @ e9fb14438 (FAST-TRACKs 1-6)
 
+- **M4-A2P-0401 Ch10 mount: done, in review.**
+  - Ossa Fen and Reedhollow carry env-art's Water, Tide and Dressing; ambient 0.85; Pell's model in.
+  - Five shots viewed. Checks: ch10, snaps, field_camera, layout, walkable.
+  - Next: the Ch11 mount (0411).
+- MERGE-READY @ (this push)
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
