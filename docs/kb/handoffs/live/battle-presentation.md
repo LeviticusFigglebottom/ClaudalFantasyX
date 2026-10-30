@@ -16,6 +16,9 @@ The gap (the human's playtest note): battles had no action animation. This track
   run had set the scale on a private UiSettings and missed it.
 - **Tideline at 1.0 and 1.3:** turn order, cost, target ring and damage number all read. No overflow, no float over
   the timeline or the party panel.
+- **Queue after this (the Lead's 21:56, ADR 0207):** the Act I readability pass, then the Act II one, then the
+  paused Act I sweep (Ch6, Ch8). After that: Act III production (battle VFX, boss intros, the finale camera; ids
+  M5-A3P-1900..1949), or an offer to slice-polish's Act II cutscene staging by request task.
 - **Running:** every Act I fight at 1.3 (the sweep covered 1.0). The Ch6 encounter sweep is paused so this pass has
   the CPU. Then the same pass for Act II.
 
