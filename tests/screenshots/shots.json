@@ -8321,6 +8321,63 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "ch16_rim_ship",
+      "scene": "res://game/levels/_tests/drowned_choir_kit/ch16_pale_rim_shots.tscn",
+      "camera": "Cameras/Ship",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch16_rim_wade",
+      "scene": "res://game/levels/_tests/drowned_choir_kit/ch16_pale_rim_shots.tscn",
+      "camera": "Cameras/Wade",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch16_rim_cairns",
+      "scene": "res://game/levels/_tests/drowned_choir_kit/ch16_pale_rim_shots.tscn",
+      "camera": "Cameras/Cairns",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }
