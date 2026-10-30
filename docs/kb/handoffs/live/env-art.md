@@ -589,6 +589,33 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **LEAD (16:45), answered: the Prologue dead-city dressing pass. MERGE-READY @ b39caa29.**
+  - Eye-height stills along the whole cutscene path were viewed before and after: P01, the P01-to-P02 blend at 25/50/75 %,
+    P02, Rhen's crossing, the plaza in eight directions, and up at the towers.
+  - **Found and fixed (Iskarra kit, `iskarra.py` + `materials.py`):**
+    - The towers read clean. Their painted tide band, rain streaks and the new old high-water ring now show at P01's
+      distance: 1 m shaft rows, and LOD1 has 24 sides at 3 m (P01's towers are past the 70 m LOD switch).
+    - `env_weathering_body.gdshaderinc` gains opt-in `grime_from_wet` (default 0, so every other material is
+      unchanged). Iskarra's cladding uses it: wet gloss had mirrored the dusk sky and hidden the stains.
+    - The lamp globes read as white electric street lamps. They are now dim amber oil-light, so Rhen's lantern
+      stays the flame.
+    - The low plaza flags hold standing water.
+    - The dais top, the lower half of P02 where the line lands, was one blank slab. It is now paved with flags.
+  - **Not changed:**
+    - The south and south-west views are open sea, but no shot faces that way.
+    - The sky is a flat gradient; the environment is in `prologue.tscn` (m2-slice's).
+  - **Checks:**
+    - test_haluna_kit, test_iskarra, test_iskarra_spire and test_haluna_dressing: 44 OK.
+    - Godot `--filter`: prologue 8/0, iskarra 1/0, environment_shaders 11/0, shader_prewarm 22/0, weathering 2/0,
+      corrow 18/0.
+    - Untouched Iskarra pieces rebuild byte-identical.
+    - `--filter=import` has 1 failure, and it predates this change: `test_every_glb_import_runs_its_category_script`.
+      41 committed haluna `.glb.import` files have no `import_script/path` (ansedra_causeway_6m from 86e01d57,
+      court_*, archive_*, hm_dock_*, ...). This change touched no `.import` file. It's env-art-b's Ansedra batch;
+      flagged, not fixed.
+  - **Baselines that will move (none written):** iskarra_p01/i02/i03, slice_prologue_p01, slice_prologue_vigil_line,
+    battle_arena_iskarra_spire_crown, and the Ch9 Corrow shots that frame Iskarra towers.
+  - **PC-QUEUE:** a real-GPU look at P01/P02 for the tower grime and the puddle gloss.
 - **LEAD (16:26), answered: cloud-qa pass 6's Oruvel hull-vs-deck overlaps are fixed. MERGE-READY @ bc790ea8.**
   - Each pair was viewed at eye height before and after (scale booth, keel moorings, Terrace raft, commons canoe):
     - scale_hull x raft deck: the booth's raft is now `raft_deck_square` (new kit piece, 10 x 10 m, tucked float
@@ -1122,6 +1149,7 @@ Read this section first; everything below it is history. The branch is `claude/e
     (characters/slice-polish), and `reefball_drop_proxy` / `tb_drop_proxy` are env-art-b's (M3-RND-26).
 
 ### PC-QUEUE
+- Prologue dressing pass (b39caa29): look at P01 and P02 on a real GPU for the Iskarra towers' grime streaks and tide band, the plaza puddles' gloss and the amber lamp globes.
 - **M3-ENV-1323 (2026-10-30):** A/B `battle_arena_underway_tower` with its Sun node hidden. Rectangles that
   stay are the F9 slabs against the sand (a material edge); rectangles that go are window light.
 - **Ch12 shade at spawn height (2026-10-30):** Keth Pass (PassFoot, RamArena, FromQuellan), Quellan (FromPass,

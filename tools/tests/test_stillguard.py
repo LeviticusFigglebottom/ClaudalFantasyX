@@ -181,7 +181,8 @@ def dialogue_calls(actor: str) -> set:
 class TestIvo(unittest.TestCase):
     def test_table(self):
         self.assertNotIn(IVO, sg_table.variants())  # the squad stays six
-        self.assertEqual(sg_table.named(), [IVO, "officer", "venn"])  # M3-CHR-593: the Ch8 officer; M4-A2P-051
+        self.assertEqual(sg_table.named(), [
+            "abiding_bulwark", "abiding_captain", "abiding_halberd", IVO, "officer", "venn"])  # M3-CHR-593; M4-A2P-051
         self.assertEqual(sg_table.name(IVO), IVO)  # his own folder and the dialogue's speaker id
         p = sg_table.variant_params(IVO)
         var = p["_variant"]
@@ -314,6 +315,37 @@ class TestVenn(unittest.TestCase):
         jobs = {j["id"]: j for j in json.loads((ROOT / "tools/dev/blender_builds.json").read_text())["jobs"]}
         self.assertIn(f"assets/characters/{VENN}/*.glb", jobs[VENN]["outputs"])
         self.assertTrue((ROOT / "game/characters/foes/venn_battle.tscn").exists())
+
+
+ABIDING = ("abiding_halberd", "abiding_bulwark", "abiding_captain")
+
+
+class TestAbidingGuard(unittest.TestCase):
+    """M4-A2P-051: Sefir's Abiding guard (act2_ch16.md 5a), veiled gold lacquer on the kit: the halberdier and the
+    captain with the halberd, the Bulwark caster with Moll's brine-iron and shield."""
+
+    def test_table(self):
+        for n in ABIDING:
+            with self.subTest(n=n):
+                p = sg_table.variant_params(n)
+                self.assertTrue(p["_variant"]["helm"])
+                self.assertTrue(p["_costume"]["veil"])
+        self.assertTrue(sg_table.variant_params("abiding_bulwark")["_variant"]["iron"])
+        self.assertTrue(sg_table.variant_params("abiding_captain")["_costume"]["sash"])
+
+    def test_committed(self):
+        import rig_probe
+
+        props = {"abiding_halberd": ("Spear", None), "abiding_captain": ("Spear", None),
+                 "abiding_bulwark": ("Iron", "Shield")}
+        for n, (held, shield) in props.items():
+            with self.subTest(n=n):
+                rig = rig_probe.Rig(n)
+                self.assertIsNotNone(rig.part(held))
+                self.assertEqual(rig.part("Shield") is not None, shield is not None)
+                self.assertTrue((ROOT / f"game/characters/foes/{n}_battle.tscn").exists())
+                jobs = {j["id"] for j in json.loads((ROOT / "tools/dev/blender_builds.json").read_text())["jobs"]}
+                self.assertIn(n, jobs)
 
 
 class TestMollUnchanged(unittest.TestCase):

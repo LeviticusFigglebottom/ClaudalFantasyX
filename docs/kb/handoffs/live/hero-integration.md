@@ -1981,3 +1981,35 @@ MERGE-READY @ (this commit).
   57 MB, 4 in flight, requested only when the change starts. SceneRouter waits on nothing else.
 - **Filed M3-HER-1167 (ui-menus):** start the New Game zone's loads with `ResidentLoads.load_scene()` while the
   title shows, as `warm()` does for the bodies, so the hold finds them in.
+
+### big25 (4b198810), merged here; the Lead 10-30 17:04
+- **The test_qa_field_camera red in big24 and big25 (lowlight.tscn:Sanctum) is fixed by 314559cfc,** which big25
+  doesn't carry (it took this branch before it). On big25 + this branch (1204cbffd, a fresh import):
+  test_qa_field_camera 2/0 and field_shore 3/0. **big26 needs 314559cfc, together with b335f0325.**
+- **The field-camera rows on big25 + this branch:**
+  - qa_field_camera 2/0 (spawn sweep with in-face and steep checks) covers 24 (DockShore), 47 (FerryAft) and 38
+    (Coilspire's Encounter). The only KNOWN entries are Tier4 (M3-HER-1157, env-art-b's spawn) and B02 (M3-HER-1160,
+    m2-slice).
+  - qa_party 3/0, camera_director 56/0.
+  - **37 (AfterHarrier):** the still on this tree shows Rhen clear at centre, Asha and Toma at a reading scale.
+  - **66 (Ch4 opening), real time:** never nearer than 5.1 m in the 12 s after the release; 6 of 111 samples during
+    the 1.2 s cross-town blend; settles on NemeDoor at 9.8 m.
+  - **21 (Haluna beach start), real time:** 0 of 121 samples out of frame; settles on beach_shallows at 7.5 m.
+MERGE-READY @ (this commit) (it includes 314559cfc and b335f0325).
+
+### URGENT, found while extending the resident return (the Lead 10-30 17:24): a resident zone came back deaf
+- **The bug, live in big24 and big25 for random fights:** a re-attached zone doesn't re-run `_ready`, and many nodes
+  let go of things in `_exit_tree` that they only take in `_ready`.
+  - Every ZoneStory and HalunaStory dropped its `field_interacted` and `field_trigger_entered` connections.
+  - Ashcrown and Coilspire dropped one more `field_interacted` connection each.
+  - Haluna's and the wake's shrines unregistered from the ShrineNetwork.
+  - **So after a random fight, that zone's story triggers and talk interactions stopped answering.**
+- **Fix (SceneRouter, generic; no other track's file touched):**
+  - `zone_links(zone)` records, at detach, every EventBus connection whose target is inside the zone, and its
+    registered shrines.
+  - `restore_links()` puts back whatever is missing on the first frame after the re-attach, before the spawn and
+    `scene_changed`.
+- **Guard:** new `tests/integration/test_resident_reattach.gd` detaches and re-attaches every field zone the way the
+  router does, then compares EventBus connections per signal, registered shrines and root children. Before the fix
+  it failed in every zone; now it passes. battle_return 1/0 and scene_router 17/0.
+MERGE-READY @ (this commit). **Take it into the next batch:** big24 and big25 carry the bug.

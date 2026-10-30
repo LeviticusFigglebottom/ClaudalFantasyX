@@ -1,0 +1,23 @@
+// DRAFT (Act III, planning only). Ch20 U01 layer 1, Ilun (Asha), the arrival. act3_ch20.md §2 U01; vowbound §1.
+// Memory: Oruvel's market hull at noon (Ch1), the cookboats, the scale-hull; held shapes buying and selling (they don't
+// speak to the party: rule 3). §10 Q2 default: Kell's stall stands with someone at it, back turned, trimming wicks;
+// Rhen sees it and doesn't go over. No line. Imra and Dace are not seen in Ch20 (rule 5).
+title: ch20_ilun
+location: ch20/undertow_layers
+---
+@letterbox on
+@camera U04
+@music memory_oruvel fade=3.0
+@vfx glimmer_held at=market_shapes count=60 rate=slow
+@wait 5.0
+@camera U05
+@anim rhen look_at kell_stall
+@wait 4.0
+@anim rhen turn_to asha
+@wait 2.0
+@camera U06
+@anim ilun rise market_water
+@wait 3.0
+@letterbox off
+<<event start_battle ch20_ilun>>
+===

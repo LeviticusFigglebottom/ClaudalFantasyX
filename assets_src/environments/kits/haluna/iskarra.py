@@ -83,6 +83,20 @@ BUDGET_KEY["iskarra_drowned_dome"] = "iskarra_drowned"
 WINDOW_PITCH_M = 2.6  # arc length between a storey's windows
 STOREY_ROWS = (3.4, 6.6)  # window-row centres below each gallery
 
+# The Prologue dressing pass (the Lead, 10-30): the shafts' decline read from P01's 70-100 m. The tide band stands
+# 2.4 m up the foot (it was 1.2 m, lost under the swell), a fainter old high-water ring 5-7 m up, and the rain streaks
+# under each ledge run darker and longer (9 m, was 5 m at 0.55).
+TIDE_BAND_M = 2.4
+HIGH_WATER_M = (5.0, 7.0)
+HIGH_WATER_WET = 0.5
+STAIN_WET = 0.75
+STAIN_RUN_M = 9.0
+STAIN_FREQ = 10.0  # the streaks' breakup round the shaft (was 4: broad patches, not runs)
+# The shaft's vertex rows carry the streaks and bands: 1 m at LOD0 (was 2), and LOD1 (P01's towers stand 60-110 m off,
+# past the 70 m switch) 24 sides at 3 m (was 12 at 8 m: no streak survived), the galleries' LOD1 rings matching.
+SHAFT_ROW_M = 1.0
+LOD1_SIDES = 24
+LOD1_ROW_M = 3.0
 WORN = kc.Weathering(moss=0.0, salt=0.6, wet=0.0, erosion=0.6)  # dry above the tide: the shaft paints its own band
 
 
@@ -92,8 +106,9 @@ def _shaft(mb: kc.MeshBuilder, y0: float, y1: float, r0: float, r1: float, rng, 
     (salt and wet below `waterline`+1 m) and wear; `top_jagged` > 0 breaks the top rim into a ragged edge.
     `stains` (gallery heights, M3-ENV-724): a thousand years of rain run off each ledge in dark streaks, wet in the
     vertex colour, fading over the 5 m below it, broken round the shaft by noise."""
-    na = (FLUTES * 4 if not lod else 12) + 1
-    ny = max(2, int((y1 - y0) / (2.0 if not lod else 8.0)) + 1)
+    marked = waterline is not None or bool(stains)  # a tower's shaft: its rows carry the bands and streaks
+    na = (FLUTES * 4 if not lod else (LOD1_SIDES if marked else 12)) + 1
+    ny = max(2, int((y1 - y0) / ((SHAFT_ROW_M if marked else 2.0) if not lod else (LOD1_ROW_M if marked else 8.0))) + 1)
     a = np.linspace(0.0, 2 * math.pi, na)
     t = np.linspace(0.0, 1.0, ny)
     A, T = np.meshgrid(a, t)
@@ -108,17 +123,23 @@ def _shaft(mb: kc.MeshBuilder, y0: float, y1: float, r0: float, r1: float, rng, 
             Y[-2] = np.minimum(Y[-2], Y[-1] - 0.2)
     P = np.stack([np.cos(A) * R, Y, np.sin(A) * R], axis=-1)
     if waterline is not None:
-        wet = 1.0 - kc.smoothstep(waterline, waterline + 1.2, Y)
+        wet = 1.0 - kc.smoothstep(waterline, waterline + TIDE_BAND_M, Y)
         salt = np.clip(1.0 - kc.smoothstep(waterline + 0.5, waterline + 4.0, Y), 0.0, 1.0) * 0.8
+        # The Prologue dressing pass (the Lead, 10-30: beautiful and doomed at dusk): an older, higher sea's mark, a
+        # faint dark ring round every drowned shaft, broken by noise: the water has stood higher, and will again.
+        ring = (kc.smoothstep(waterline + HIGH_WATER_M[0], waterline + HIGH_WATER_M[0] + 0.4, Y)
+                * (1.0 - kc.smoothstep(waterline + HIGH_WATER_M[1] - 0.6, waterline + HIGH_WATER_M[1], Y)))
+        ring_breakup = noise.fbm(np.stack([np.cos(A) * 2.0, Y * 0.3, np.sin(A) * 2.0], -1), 2)
+        wet = np.maximum(wet, HIGH_WATER_WET * ring * np.clip(ring_breakup * 1.6 - 0.2, 0.0, 1.0))
     else:
         wet = np.zeros_like(Y)
         salt = np.zeros_like(Y)
     breakup = noise.fbm(P / 4.0, 2) if not lod else np.full(Y.shape, 0.5)
     for g in stains:
-        runs = np.clip((noise.fbm(np.stack([np.cos(A) * 4.0, np.full_like(A, g * 0.1), np.sin(A) * 4.0], -1), 2)
-                        - 0.45) * 3.0, 0.0, 1.0)
-        below = (Y < g - 0.3) * np.clip(1.0 - (g - 0.3 - Y) / 5.0, 0.0, 1.0)
-        wet = np.maximum(wet, 0.55 * runs * below)
+        runs = np.clip((noise.fbm(np.stack([np.cos(A) * STAIN_FREQ, np.full_like(A, g * 0.1), np.sin(A) * STAIN_FREQ],
+                                           -1), 2) - 0.45) * 4.0, 0.0, 1.0)
+        below = (Y < g - 0.3) * np.clip(1.0 - (g - 0.3 - Y) / STAIN_RUN_M, 0.0, 1.0)
+        wet = np.maximum(wet, STAIN_WET * runs * below)
     col = np.stack([np.zeros_like(Y), np.clip(salt + 0.15 * breakup, 0, 1), wet, 0.35 + 0.5 * breakup], axis=-1)
     uv = np.stack([A * (r0 + r1) * 0.5, Y], axis=-1)  # metres: the cladding's tile runs level round the shaft
     uv2 = np.stack([np.full(Y.shape, 0.9), np.full(Y.shape, float(rng.random()))], axis=-1)
@@ -148,10 +169,10 @@ def _ring(rad: float, y: float, a: np.ndarray) -> np.ndarray:
     return np.stack([np.cos(a) * rad, np.full_like(a, y), np.sin(a) * rad], axis=-1)
 
 
-def _gallery(mb: kc.MeshBuilder, y: float, r: float, rng, lod: bool) -> None:
+def _gallery(mb: kc.MeshBuilder, y: float, r: float, rng, lod: bool, *, sides1: int = 12) -> None:
     """A gallery: a ledge projecting 0.9 m (its top, edge and soffit), a parapet rail on posts, and under it a band
     of reef-blue glazed tile."""
-    a = np.linspace(0.0, 2 * math.pi, (48 if not lod else 12) + 1)
+    a = np.linspace(0.0, 2 * math.pi, (48 if not lod else sides1) + 1)  # a tower's LOD1: its shaft's sides
     ro = r + 0.9
     cer, glaze = mb.material(M_CERAMIC), mb.material(M_GLAZE)
     out = lambda c: np.array([c[0], 0.0, c[2]])  # noqa: E731
@@ -259,7 +280,7 @@ def build_tower(kind: str, seed: int) -> list[kc.MeshBuilder]:
             _shaft(mb, 0.0, 52.0, 6.0, 5.16, rng, noise, lod=lod, waterline=WATERLINE_M, stains=gal)
             _damage(mb, rng, 5.0, 50.0, lambda y: 6.0 - 0.84 * y / 52.0, 26, lod)
             for y in gal[:-1]:
-                _gallery(mb, y, 6.0 - 0.84 * y / 52.0, rng, lod)
+                _gallery(mb, y, 6.0 - 0.84 * y / 52.0, rng, lod, sides1=LOD1_SIDES)
             _storeys(mb, gal, lambda y: 6.0 - 0.84 * y / 52.0, lod)
             _dome(mb, 52.0, 5.3, 7.0, rng, noise, lod)
         elif kind == "stepped":
@@ -269,7 +290,7 @@ def build_tower(kind: str, seed: int) -> list[kc.MeshBuilder]:
                        stains=(y1,))
                 _damage(mb, rng, max(y0, 4.0) + 0.5, y1 - 1.5, lambda y, a=r0, b=r1, c=y0, d=y1: a + (b - a) * (y - c) /
                         (d - c), 8, lod)
-                _gallery(mb, y1, r1 + 0.2, rng, lod)
+                _gallery(mb, y1, r1 + 0.2, rng, lod, sides1=LOD1_SIDES)
                 if not lod and y1 < 42.0:
                     # The set-back's flat roof between tiers.
                     a = np.linspace(0.0, 2 * math.pi, 37)
@@ -286,20 +307,20 @@ def build_tower(kind: str, seed: int) -> list[kc.MeshBuilder]:
                    stains=(13.0, 24.0, 36.0))
             _damage(mb, rng, 5.0, 34.0, lambda y: 5.0 - 0.7 * y / 40.0, 30, lod)
             for y in (13.0, 24.0):
-                _gallery(mb, y, 5.0 - 0.7 * y / 40.0, rng, lod)
+                _gallery(mb, y, 5.0 - 0.7 * y / 40.0, rng, lod, sides1=LOD1_SIDES)
             _storeys(mb, (13.0, 24.0, 33.0), lambda y: 5.0 - 0.7 * y / 40.0, lod, y_top=34.5)
         elif kind == "small":
             _shaft(mb, 0.0, 17.0, 3.5, 3.1, rng, noise, lod=lod, waterline=WATERLINE_M, stains=(10.0, 17.0))
             _damage(mb, rng, 4.5, 15.5, lambda y: 3.5 - 0.4 * y / 17.0, 8, lod)
-            _gallery(mb, 10.0, 3.26, rng, lod)
-            _gallery(mb, 17.0, 3.1, rng, lod)
+            _gallery(mb, 10.0, 3.26, rng, lod, sides1=LOD1_SIDES)
+            _gallery(mb, 17.0, 3.1, rng, lod, sides1=LOD1_SIDES)
             _storeys(mb, (10.0, 17.0), lambda y: 3.5 - 0.4 * y / 17.0, lod)
             _dome(mb, 17.0, 3.2, 3.6, rng, noise, lod)
         else:  # small_broken
             _shaft(mb, 0.0, 14.0, 3.0, 2.7, rng, noise, lod=lod, top_jagged=1.8, waterline=WATERLINE_M,
                    stains=(8.5, 12.0))
             _damage(mb, rng, 4.5, 11.0, lambda y: 3.0 - 0.3 * y / 14.0, 10, lod)
-            _gallery(mb, 8.5, 2.82, rng, lod)
+            _gallery(mb, 8.5, 2.82, rng, lod, sides1=LOD1_SIDES)
             _storeys(mb, (13.0,), lambda y: 3.0 - 0.3 * y / 14.0, lod, y_top=11.5)
         out.append(mb)
     return out
@@ -330,8 +351,22 @@ def _flat_top(mb: kc.MeshBuilder, v0: int) -> None:
     n[up] = (0.0, 1.0, 0.0)
     mb.nrm[v0:] = n.tolist()
 
+# The Prologue dressing pass: the low and sunk flags hold the last rain or the spray, standing water that mirrors the
+# dusk (the shader's wet layer: darker, glossy, its normal flattened). Chosen by noise (no rng draw, so the slab layout
+# is unchanged): a puddle field over PUDDLE_NOISE, or any slab sunk deeper than PUDDLE_SUNK_M.
+PUDDLED = kc.Weathering(moss=0.0, salt=0.3, wet=1.0, erosion=0.6)
+PUDDLE_NOISE = 0.6
+PUDDLE_PERIOD_M = 5.0
+PUDDLE_SUNK_M = 0.03
+
+
+def _puddled(noise, x: float, z: float, dy: float) -> bool:
+    field = float(noise.fbm(np.array([[x / PUDDLE_PERIOD_M, 0.37, z / PUDDLE_PERIOD_M]]), 2)[0])
+    return field > PUDDLE_NOISE or dy < -PUDDLE_SUNK_M
+
+
 def _paving(mb: kc.MeshBuilder, x0: float, x1: float, z0: float, z1: float, y: float, rng, noise, lod: bool,
-            keep=None, slab: float = 1.5) -> None:
+            keep=None, slab: float = 1.5, tufts: bool = True) -> None:
     """Paving slabs on a grid, each a separate block with a joint around it, a few sunk or lifted; `keep(x, z)`
     drops slabs (the broken corner). Every fourth row carries an inlaid ceramic channel: a narrow strip along the
     middle of each slab, flush with it, so the rows read as lines across the plaza (not a checkerboard)."""
@@ -344,19 +379,20 @@ def _paving(mb: kc.MeshBuilder, x0: float, x1: float, z0: float, z1: float, y: f
             dy = rng.normal(0.0, 0.02) - (0.08 if rng.random() < 0.06 else 0.0)
             yaw = rng.normal(0.0, 0.01)
             v0 = mb.vertex_count
+            wear = PUDDLED if _puddled(noise, x, z, dy) else WORN
             if rng.random() < 0.12:  # M3-ENV-724: a slab cracked across, its halves settled apart
                 tilt = rng.normal(0.0, 0.02)
                 for sgn in (-1.0, 1.0):
                     kc.rounded_block(mb, (x + sgn * slab * 0.25, y - 0.15 + dy - (0.02 if sgn > 0 else 0.0), z),
                                      (slab * 0.25 - 0.035, 0.15, slab * 0.5 - 0.03), mb.material(M_PAVING),
                                      rot=kc.rot_y(yaw + sgn * 0.02) @ kc.rot_z(tilt * sgn), radius=0.03, seg=1,
-                                     noise=noise, disp_m=0.008, weather=WORN, variation=float(rng.random()))
+                                     noise=noise, disp_m=0.008, weather=wear, variation=float(rng.random()))
             else:
                 kc.rounded_block(mb, (x, y - 0.15 + dy, z), (slab * 0.5 - 0.03, 0.15, slab * 0.5 - 0.03),
                                  mb.material(M_PAVING), rot=kc.rot_y(yaw), radius=0.03, seg=1, noise=noise,
-                                 disp_m=0.008, weather=WORN, variation=float(rng.random()))
+                                 disp_m=0.008, weather=wear, variation=float(rng.random()))
             _flat_top(mb, v0)
-            if rng.random() < 0.18:  # sea-grass grown in the joint at the slab's corner
+            if rng.random() < 0.18 and tufts:  # sea-grass grown in the joint at the slab's corner
                 _tuft(mb, rng, (x + slab * 0.5, y, z + slab * 0.5), float(rng.uniform(0.15, 0.4)))
             if j % 4 == 1:
                 kc.rounded_block(mb, (x, y - 0.02 + dy + 0.003, z), (slab * 0.5 - 0.03, 0.02, CHANNEL_HALF_W),
@@ -465,13 +501,23 @@ def build_plaza(seed: int = 722, *, w: float = 34.0, d: float = 18.0) -> list[kc
     return out
 
 
+RISE_TOP_Y = 0.8
+RISE_FLAG_M = 1.02
+RISE_FLAGS_HX = 4.08  # eight flags across, inside the glazed border (x 4.34)
+RISE_FLAGS_Z = (-2.44, 1.64)  # four rows, border to border
+RISE_FLAGS_UP_M = 0.0
+RISE_FLAG_DEPTH_M = 0.05  # the core stops this far under the flags' top: shallow dark joints (each flag beds into it)
+
+
 def build_plaza_rise(seed: int = 723) -> list[kc.MeshBuilder]:
     out = []
     for lod in (False, True):
         rng = kc.rng_for("iskarra_plaza_rise", seed)
         noise = kc.Noise3(rng)
         mb = kc.MeshBuilder("iskarra_plaza_rise" + ("-lod1" if lod else ""))
-        kc.rounded_block(mb, (0.0, 0.4, -0.4), (5.0, 0.4, 2.6), mb.material(M_PAVING), radius=0.06,
+        # LOD0: the dais's core stops a flag's depth under its top (the flags drawn on it below are the top).
+        core = RISE_TOP_Y if lod else RISE_TOP_Y - RISE_FLAG_DEPTH_M
+        kc.rounded_block(mb, (0.0, core * 0.5, -0.4), (5.0, core * 0.5, 2.6), mb.material(M_PAVING), radius=0.06,
                          seg=1 if lod else 2, noise=None if lod else noise, disp_m=0.01, weather=WORN)
         for k in range(3 if not lod else 1):
             kc.rounded_block(mb, (0.0, 0.8 - (k + 1) * 0.27 + 0.135, 2.2 + 0.27 * k + 0.135),
@@ -487,6 +533,11 @@ def build_plaza_rise(seed: int = 723) -> list[kc.MeshBuilder]:
             for k in range(3):
                 kc.rounded_block(mb, (0.0, 0.8 - (k + 1) * 0.27 + 0.135, 2.2 + 0.27 * k + 0.282),
                                  (4.1, 0.05, 0.006), glaze, radius=0.0, seg=1)
+            # The Prologue dressing pass: the dais top was one blank slab filling P02's lower half (the two-shot where
+            # Rhen's line lands). The plaza's own flags inside the glazed border, cracked and settled, the low ones
+            # holding water; drawn last, so the rng above is unchanged.
+            _paving(mb, -RISE_FLAGS_HX, RISE_FLAGS_HX, RISE_FLAGS_Z[0], RISE_FLAGS_Z[1], RISE_TOP_Y + RISE_FLAGS_UP_M,
+                    rng, noise, lod, slab=RISE_FLAG_M, tufts=False)  # no grass round the cast's feet
         out.append(mb)
     return out
 

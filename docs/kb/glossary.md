@@ -290,3 +290,6 @@ Hullgnaw, Drownbell (slice), Spar-Wraith, Cinder Matron, the Undertow's Reach, M
 
 ### Spelling (Lead, 2026-10-30)
 Player-facing text uses British spelling with Oxford -ize: colour, armour, defence, grey, harbour, honour, traveller, but Customize. Code ids and loc keys keep their spelling (`STAT_DEFENSE`, `EQUIP_MENU_SLOT_ARMOR`).
+
+### Lamptongue Roots, added (Audio, 2026-10-30)
+The Hush's verses 3-8 (docs/kb/audio/lamptongue.md, the full sheet): *arre* fire/flare · *seli* sail/kite · *aun* deep/below · *thel* cord/thread · *sen* count/number · *sev* still/level · *kor* storm · *una* one/the first.

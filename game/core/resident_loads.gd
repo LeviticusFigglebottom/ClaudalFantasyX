@@ -45,6 +45,8 @@ var _in_flight: PackedStringArray = []
 var _done_count := 0
 ## The resident paths warm() asked for (a path both lists name stays resident).
 var _resident_wanted: Dictionary = {}
+## The scene load_scene() last loaded for (M3-HER-1167: the title starts the first zone's loads early).
+var _scene_path := ""
 
 
 ## Adds a ResidentLoads under `router` and connects it to the router's change_started. Idempotent.
@@ -119,7 +121,7 @@ func warm() -> void:
 
 
 ## Starts loading the resources `scene_path` holds once in the tree (scene_loads.json), on worker threads, and
-## drops the last zone's. No hold.
+## drops the last zone's. No hold. The title calls it early for the zone its highlighted choice enters (M3-HER-1167).
 func load_scene(scene_path: String) -> void:
 	_ensure_data()
 	var wanted := {}
@@ -140,12 +142,41 @@ func load_scene(scene_path: String) -> void:
 		if not wanted.has(path):
 			scene.erase(path)
 	_scene_wanted = wanted
-	_prewarm_queue.clear()
+	# The same zone asked again (the title started its loads; now its change starts): what is in and still waits
+	# for the prewarm stays queued, so its pipelines still compile under the cover.
+	if scene_path != _scene_path:
+		_prewarm_queue.clear()
+	_scene_path = scene_path
 	for path: String in wanted:
 		if resident.has(path) or scene.has(path) or pending.has(path):
 			continue
 		pending.append(path)
 	_pump()
+
+
+## The scene a won (or escaped) field battle returns to: its own return_scene, else return_location's scene; "" when
+## none resolves. `registry` defaults to LocationRegistry.load_default().
+static func return_scene_of(request: BattleRequest, registry: LocationRegistry = null) -> String:
+	if request == null:
+		return ""
+	if request.return_scene != "":
+		return request.return_scene
+	if request.return_location == &"":
+		return ""
+	var reg := registry if registry != null else LocationRegistry.load_default()
+	return str(reg.resolve(request.return_location).get(LocationRegistry.KEY_SCENE, ""))
+
+
+## The Lead's battle-return work (2026-10-30): while the victory panel stays up (a second or more), the scene the
+## return goes to starts loading, so a scripted fight that ends somewhere new (the Drownbell to Haluna) finds most of
+## it in. Nothing when the return is the field kept resident through the fight (SceneRouter.resident_path()), or
+## when it resolves to nothing. Returns the scene asked for ("" when none).
+func prepare_return(request: BattleRequest, resident_path: String = "", registry: LocationRegistry = null) -> String:
+	var to := return_scene_of(request, registry)
+	if to == "" or to == resident_path:
+		return ""
+	load_scene(to)
+	return to
 
 
 ## A field battle's runtime loads for `encounter`: its arena scene (encounters.json `arena`) and each enemy's actor

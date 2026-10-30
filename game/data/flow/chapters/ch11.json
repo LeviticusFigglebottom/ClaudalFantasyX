@@ -33,6 +33,24 @@
        "set": "ch11_started"
       }
      ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch11_nhoa_bound"
+      ],
+      "unset": [
+       "ch11_complete"
+      ]
+     },
+     "steps": [
+      {
+       "place": "FromLowlight"
+      },
+      {
+       "play": "ch11_held_by_you"
+      }
+     ]
     }
    ],
    "beats": {
@@ -76,6 +94,27 @@
        "set": "ch11_reached_lowlight"
       }
      ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch11_engine_released"
+      ],
+      "unset": [
+       "ch11_twice_seen"
+      ]
+     },
+     "steps": [
+      {
+       "place": "EngineHall"
+      },
+      {
+       "play": "ch11_twice"
+      },
+      {
+       "set": "ch11_twice_seen"
+      }
+     ]
     }
    ],
    "beats": {
@@ -86,6 +125,44 @@
         "location": "ch11/sunken_vey",
         "spawn": "FromLowlight"
        }
+      }
+     ]
+    },
+    "engine": {
+     "when": {
+      "set": [
+       "ch11_reached_lowlight"
+      ],
+      "unset": [
+       "ch11_engine_released"
+      ]
+     },
+     "steps": [
+      {
+       "play": "ch11_the_engine"
+      },
+      {
+       "battle": "ch11_lamp_engine",
+       "return_spawn": "EngineHall",
+       "victory_flag": "ch11_engine_released"
+      }
+     ]
+    },
+    "sanctum": {
+     "when": {
+      "set": [
+       "ch11_engine_released"
+      ],
+      "unset": [
+       "ch11_nhoa_bound"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Sanctum"
+      },
+      {
+       "play": "ch11_nhoa"
       }
      ]
     }

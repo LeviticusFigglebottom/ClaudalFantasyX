@@ -1,0 +1,36 @@
+// DRAFT (Act III, planning only). Ending E3 "Kerrid, last off the wall" (C, 2 min). GOODBYE: KERRID. act3_ending.md §2
+// E3; ADR 0020 (e); ADR 0022 (g). He has been coming apart since H09, slowly, from the rope-burns on his hands outward
+// (released THEN, like everyone: rule 7); his motes RISE throughout (glimmer_lift; no held light in the last farewell).
+// He looks over the rail at the sea once, the way a captain checks a stair, and REPORTS: "Stair's clear." (a report,
+// not a release). Then, to Rhen, a small thing. Dry and plain, gallows humour, no speech. He fixes Rhen's collar the way
+// he grabbed it at Corrow. His own rising light throws HIS SHADOW across the deck onto Rhen's feet: for a moment the
+// shadow is clearer than the man. The camera stays at Rhen's height; framed with Rhen only (rule 8). T-08 (optional
+// insert): if ch19_learned_the_hitch, Kerrid sees the hitch on Rhen's wrist line before he goes; no line.
+// `goodbye_kerrid`: a solo low string with a gamelan pulse, the walking rhythm slowing to a stop.
+title: ending_kerrid
+location: ch18/kite
+---
+@letterbox on
+@camera E07
+@music goodbye_kerrid fade=2.0
+@vfx glimmer_lift at=kerrid_hands count=20 motion=spiral_up rate=slow
+@mark kerrid kite_rail walk
+@anim kerrid look_at sea
+@wait 4.0
+Kerrid [neutral]: Stair's clear. #line:ending_kerrid_001 #tn:"The Corrow stair-watch's all-clear: a captain's report, not a farewell."
+@wait 3.0
+<<if $ch19_learned_the_hitch>>
+    @camera E08
+    @anim kerrid look_at rhen_hitch
+    @wait 3.0
+<<endif>>
+@camera E07
+@anim kerrid fix_collar rhen
+@wait 2.0
+Kerrid [soft_smile]: Stand up straight. Your father slouched. #line:ending_kerrid_002
+@wait 3.0
+@vfx glimmer_lift at=kerrid count=60 motion=spiral_up rate=slow
+@anim kerrid shadow_on rhen
+@wait 8.0
+@letterbox off
+===

@@ -37,6 +37,7 @@ FRILL = 0.022  # the edge frill's ripple (the sail-like canvas edge)
 # below the battle camera, so the camera looks down onto its face and its pale canvas edge (the Act I audit: hung at eye
 # height it was seen edge-on, a row of glowing dashes on the night deck)
 KO_DROP = 0.97
+KO_DROP_DRAPE = 0.18  # the KO's last sail fold (+1 folds them 20 deg down, as the attack): draped on the deck
 CANVAS_FROM = 0.74  # where the pale canvas edge begins (share of the radius)
 # old salt-bleached sailcloth: sand_cloth weathered toward coral_stone_weathered
 CANVAS = ck.mix(ck.hexrgb("#C9B48E"), ck.hexrgb("#B9AE98"), 0.7)
@@ -305,12 +306,20 @@ def build_clips() -> list[ck.Clip]:
             hit.key(b, t, (0, 0, -18.0 * c * s))
     ko = ck.Clip("ko", 1.6)  # it falls like a wet sheet to the deck, from its hover (KO_DROP)
     k = KO_DROP / 1.38  # the keys were drawn for a 1.38 m fall
+    # the animation polish pass (2026-10-30): it ended with its sails folded flat, its lowest point 9 cm over the deck;
+    # now the sails settle draped down onto the deck (KO_DROP_DRAPE), as a wet sheet lies
     for t, drop, fold in ((0.0, 0, 0), (0.4, 0.2 * k, 0.5), (1.0, 1.25 * k, -0.4), (1.3, 1.36 * k, 0.2),
-                          (1.6, KO_DROP, 0.0)):
+                          (1.6, KO_DROP, KO_DROP_DRAPE)):
         ko.key("root", t, (8.0 * min(t, 1.0), 0, 0), (0, -drop, 0))
         for b, s, k in wings:
             ko.key(b, t, (0, 0, -20.0 * fold * s))
-    return [idle, attack, cast, hit, ko]
+    # its own fidget (the animation polish pass, 2026-10-30: the kit's idle_b, the cast's shudder at 0.3, barely moved):
+    # a slow ripple runs out along both sails from the body, and the body lifts a hand's width under it
+    idle_b = ck.Clip("idle_b", 1.2)
+    for b, s, k in wings:
+        idle_b.wave(b, amp_rot=(0.0, 0.0, 14.0 * s), cycles=1, phase=-k * 0.7)
+    idle_b.wave("body", amp_loc=(0.0, 0.06, 0.0), cycles=1)
+    return [idle, attack, cast, hit, ko, idle_b]
 
 
 def main() -> None:

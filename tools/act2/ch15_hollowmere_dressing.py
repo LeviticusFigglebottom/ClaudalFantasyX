@@ -42,6 +42,10 @@ SCENE = ZONE / "hollowmere.tscn"
 KIT = ans.KIT
 
 WATER_Y = -0.9  # hollowmere.DECK_Y under the walk
+PILE_BED_Y = -1.6  # the bed under the dock (ch17_hollowmere.json's doc)
+PILE_TOP_Y = 2.7  # the greybox piles' tops: the gulls' perch height
+PILE_POST_M = 2.4  # village.py's timber_stilt_post
+PILE_SCALE = (PILE_TOP_Y - PILE_BED_Y) / PILE_POST_M
 DOCK_MODULE_M = 4.0
 RAIL_COVER = 0.5  # a dock module keeps its rail on a side the greybox's rails cover at least this much
 JETTY_MODULES = 3
@@ -152,6 +156,10 @@ def dressing() -> dict:
     pieces.append(_row("hm_ship", b["Ship"]["pos"][0], b["Ship"]["pos"][2], WATER_Y))
     pieces.append(_row("dace_hull_frame", DACE_AT[0], DACE_AT[1], WATER_Y, DACE_AT[2]))
     pieces.append(_row("hm_far_flotilla", FLOTILLA_AT[0], FLOTILLA_AT[1], WATER_Y))
+    # The dock's mooring piles, where the greybox stood them (DockPile*: the gulls' perches, tops y 2.7; the wildlife
+    # audit found the perches over open water with the greybox hidden): a stilt post from the bed, scaled to the top.
+    pieces += [_row("timber_stilt_post", v["pos"][0], v["pos"][2], PILE_BED_Y, 0.0, scale=r3(PILE_SCALE))
+               for k, v in sorted(b.items()) if k.startswith("DockPile")]
     lights = [{"at": _flame(x, z, yaw), "energy": OIL_ENERGY, "range": OIL_RANGE_M} for x, z, yaw in OIL_LAMPS]
     lights.append({"at": [SUPPER_AT[0] + 0.15, 0.75, SUPPER_AT[1] - 0.2], "energy": 0.6, "range": 3.5})
     lights += [{"at": [x + 0.55, 3.0, z], "energy": 0.8, "range": 6.0, "color": SIGNAL_COLOR} for x, z in SIGNAL_LAMPS]
