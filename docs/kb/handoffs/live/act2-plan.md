@@ -321,3 +321,20 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - **Checks:** banned-terms scan of every edited doc: 0 hits. validate_data 0/0. taskboard clean.
 - MERGE-READY @ 39859600c
 - BACKLOG EMPTY (story track).
+
+## 2026-10-30: ending-cost proposals applied; Ch10 staging review (Lead request)
+- **act3_ending (accepted):**
+  - E2 now rhymes with Ch8 B17: Dace's turn toward Rhen mirrors W22's turn away, and the reverse at "Goodbye, Dad." uses W23's lens and distance.
+  - CR stages Toma's beach rite as a credits vignette. Its fallback line, when `ch18_haluna_lifted` is unset: "Backs to the water. Like this. They go easier when nobody watches."
+  - ending_cost_audit.md is marked accordingly.
+- **ADR 0206 spelling FAST-TRACK:** pushed on `origin/claude/act2-plan` (bdc5be59d, 18 strings). Integration has ADR 0206 but not this commit yet; it lands with this branch's next merge.
+- **Ch10 staging review** (slice-polish, `origin/claude/m2-slice`, M4-A2P-070/M4-CIN-1304): **M4-A2P-112** (cinematics, todo). I can't edit another environment's live log, so the notes are in that task. The review walked each scene's cues and checked every spoken line against the active shot. Findings:
+  1. Their farewell-tide still sets the retired `ch10_tide_witnessed`. Take `ch10_farewell_tide_seen` at merge.
+  2. Dawn gate: R10 framed empty air, because Pell was never placed on `causeway_last_root`. **Fixed here** in `ch10_dawn_gate`.
+  3. B06: Owa's first line is about 38° off R02's axis (R02 is the layout's shot, never staged). It needs the 50 mm singles.
+  4. B05: Pell's "It is the direction." was spoken from behind O07's lens. **Fixed here**: the line now comes before his exit.
+  5. B09: Ysolde has no mark for "Turn around".
+  6. Pacing: every staged scene runs 3–5× shorter than act2_ch10 §1, with specific holds proposed.
+- **Checks:** dlgc --check 0/0 · validate_data 0/0 · taskboard clean · Godot `act2_dialogue` 1/0 and `dialogue` 86/0.
+- MERGE-READY @ 4185052e2
+- BACKLOG EMPTY (story track).
