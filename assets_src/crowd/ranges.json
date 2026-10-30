@@ -118,6 +118,19 @@
         "c": [["lacquer_red", "laterite", 0.0, 0.6], ["lacquer_red_deep", "timber_weathered", 0.0, 0.4], ["indigo_dye", "bone", 0.0, 0.3]]
       }
     },
+    "haluna": {
+      "island": "low_reaches",
+      "about": "Haluna's neighbours (bible section 5, the vertical slice; the Lead, 2026-10-30: ambient vignettes so the village feels lived in): the fishing village's people beyond its named villagers, new faces from the Low Reaches bodies (ADR 0152: never Haluna's villagers' faces). The haluna.md palette the villagers wear: indigo, sea blue and sand, one red note.",
+      "accepts": ["oruvel", "sorrin", "brightwater", "tamsule", "saltwright", "corrow", "pemakar"],
+      "skin": ["#B9876A", "#8A5A3E"],
+      "reach_bands": {"adult": [1, 6], "elder": [6, 12]},
+      "hair": [["hair_black", "hair_dark_brown", 0.0, 0.5]],
+      "cloth": {
+        "a": [["sand_cloth", "gauze_white", 0.0, 0.7], ["gauze_white", "sand_cloth", 0.0, 0.3]],
+        "b": [["indigo_dye", "sand_cloth", 0.0, 0.35], ["sea_blue_cloth", "sand_cloth", 0.0, 0.4], ["faded_teal_cloth", "indigo_dye", 0.1, 0.5]],
+        "c": [["sea_blue_cloth", "gauze_white", 0.0, 0.3], ["indigo_dye", "sea_blue_cloth", 0.2, 0.7], ["roof_clay", "lacquer_red_deep", 0.0, 0.5]]
+      }
+    },
     "order": {
       "island": "order",
       "about": "The Order of the Still Water (bible section 4): tenders, a clerk and a Reed. Their dress is imported: white and marble, a pale-ochre or indigo sash; a temple tender may wear lacquer red.",
@@ -157,7 +170,9 @@
     "cook": {"kits": ["worker_f", "market_f"], "work": "fold"},
     "ferryman_mate": {"kits": ["worker_m", "fisher_m"], "work": "haul"},
     "brand_girl": {"kits": ["child_f", "wright"], "work": ""},
-    "poler": {"kits": ["worker_m", "fisher_m", "trader_m"], "work": "haul"}
+    "poler": {"kits": ["worker_m", "fisher_m", "trader_m"], "work": "haul"},
+    "child_stones": {"kits": ["child_m", "child_f"], "work": "play_stones"},
+    "child_clap": {"kits": ["child_f", "child_m"], "work": "play_clap"}
   },
   "side_cloth": {
     "_about": "Reefball sides' colours for the divers (act1_ch07 section 8: Oruvel's side is oil-black and brass; Sorrin's is its own sea-blue and clay), by community.",
@@ -297,9 +312,10 @@
                 "sash": {"mat": "cloth_c", "width_m": [0.05, 0.06], "turns": 1}, "?sandals": "leather"}
   },
   "assign": {
-    "_about": "Person -> body scores (gen_crowd.assign): a body must match the person's age band and sex, be in the community's `accepts` and not be used in the zone yet; robe bodies only wear Order roles and Order roles only robes. Among those: the build, the body's own community, a preferred kit; each earlier use costs `per_use`. Ties break by a seeded hash.",
+    "_about": "Person -> body scores (gen_crowd.assign): a body must match the person's age band and sex, be in the community's `accepts` and not be used in the zone yet; robe bodies only wear Order roles and Order roles only robes. `late_zones` (crowds added after the rest: Haluna's vignettes, the Lead 2026-10-30) are assigned after every other zone, so they never reshuffle bodies already placed. Among those: the build, the body's own community, a preferred kit; each earlier use costs `per_use`. Ties break by a seeded hash.",
     "build": 10.0, "home": 4.0, "accepted_rank": 0.5, "kit": 3.0, "per_use": 2.5,
     "tint_min_distance": 40.0,
+    "late_zones": ["ch02/haluna"],
     "tint_tries": 24
   },
   "clip_libraries": {

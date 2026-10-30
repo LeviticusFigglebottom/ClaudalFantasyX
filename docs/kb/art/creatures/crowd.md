@@ -13,7 +13,7 @@ person at runtime. Runtime and zone rows: [`docs/kb/tech/field_npc.md`](../../te
 | Ranges | `assets_src/crowd/ranges.json` | per community: skin endpoints, hair mixes, cloth mixes (a, b, c), reach-bands, `accepts`; per role: kits, work clip, cloth; per age band / sex / build: body sliders; per band: face sliders; per hair kind; per kit: villager_costume pieces |
 | Generator | `assets_src/crowd/gen_crowd.py` | seeded (crc32 of names), deterministic: `params/<body>.json` in the villager schema (+ `_work`) and the roster's generated fields. `--check` for CI |
 | Build | `assets_src/crowd/build_crowd.py` | Blender: `build_villager.main` with its `PARAMS_DIR` moved; LOD0 to the bake dir, LOD1 shipped as `assets/crowd/<body>/<body>.glb`. python3: `villager_textures.skin` (head 512/256, body 256), `write_materials.tables` re-rooted (only the GLB's slots), `<body>_actor.tscn`; a library's reference body also writes its group's shared clip library (§5) |
-| Work clips | `assets_src/crowd/crowd_clips.py` | `mend`, `sweep`, `carry`, `fold`, `haul`, `kneel_mourn`, `vigil` on hero_clips; kneels solved from the skeleton's bone lengths |
+| Work clips | `assets_src/crowd/crowd_clips.py` | `mend`, `sweep`, `carry`, `fold`, `haul`, `kneel_mourn`, `vigil`, and the children's games `play_stones` and `play_clap`, on hero_clips; kneels solved from the skeleton's bone lengths |
 | Import | `game/data/import/crowd.json`, `crowd_post_import.gd`, `write_imports.py`, `game/world/npc/crowd_clip_library.gd` | as the characters rule: slot materials, auto LODs; plus the group's shared clip library on an AnimationPlayer, the armature renamed and the hips track scaled to the body (§5) |
 | Jobs | `tools/dev/blender_builds.json` `crowd_<body>` | verified byte for byte by `verify_blender_builds.py` |
 
@@ -98,3 +98,31 @@ bodies are `ranges.json` `clip_libraries`. The import map is the same table, whi
   so the wrights' forearms are bare.
 - No hand props: the work clips read through the hands and head alone (M3-CRE-614 covers props for the villagers).
 - The build still makes and discards LOD0 (about a third of each Blender run).
+
+## 7. Haluna's vignettes (the Lead, 2026-10-30)
+"The slice zones lived in: mending nets, carrying baskets, children playing." Haluna had only its named villagers;
+fifteen crowd people now work in it (`zones/ch02_haluna.json`, `at` spots, ground heights probed against the zone's
+collision). Each stands beside something it would work on:
+- **The causeway head:** a woman laying fish on the drying rack, a buyer with her basket at the stall, a man hauling a
+  line at the water's edge below the causeway steps, and two children at a game of stones on the sand.
+- **The tide-wall lane:** an old woman mending at the net heap by her door, a woman back from the dock with her basket
+  by the sacks, two children at a clapping game, and a man sweeping between two stations in front of his house.
+- **The dock:** a man mending at the net heap, an old woman turning fish on the rack, a man hauling a mooring line, and
+  a man with a basket of the catch by the jars.
+- **At night** (the dock at night, after the Drownbell): the dock's, the causeway head's and the children's rows are
+  gone home (`shown: day`). The lane's mender and sweeper work on by lamplight, and one woman brings the last basket
+  home past the market (`shown: night`).
+
+The details:
+- **Roster.** The community is `haluna` (ranges.json: Low Reaches, the haluna.md palette of indigo, sea blue and sand
+  with one red note), with new faces only (ADR 0152).
+- **No reshuffling.** `assign.late_zones` assigns Haluna after every other zone, so no body already placed moved
+  (tools test `test_late_zones_never_reshuffle_the_others`).
+- **The children's games** (`crowd_clips.py`, roles `child_stones` and `child_clap`):
+  - `play_stones`, 4 s: knelt back on the heels, a stone tossed to 0.66 m, the eyes up after it, a sweep of the
+    ground and the catch, twice a loop;
+  - `play_clap`, 3.2 s: a clap and both palms pushed out to the partner's, on a knee-bounce, eight beats a loop. The
+    pair stand 0.6 m apart, where their palms meet.
+- **Libraries.** The child and child_small libraries carry them.
+- **Review:** `npc_haluna_vignette_causeway`, `_lane_games`, `_lane_mender`, `_dock`, `_night_market` and `_night_lane`
+  (game/levels/_tests/npc/haluna_villagers.tscn; `night` stages the story's dock at night).
