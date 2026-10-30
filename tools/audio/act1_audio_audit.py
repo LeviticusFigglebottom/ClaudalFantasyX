@@ -112,8 +112,8 @@ def act1_scenes() -> list[str]:
     out = []
     for d in ACT1_DIRS:
         for p in sorted((ROOT / "game" / "levels" / d).rglob("*.tscn")):
-            if p.stem.endswith("_dressing"):
-                continue
+            if p.stem.endswith("_dressing") or p.stem != p.parent.name:
+                continue                # a level is <level>/<level>.tscn; other scenes there are parts it instances
             out.append("res://" + p.relative_to(ROOT).as_posix())
     return out
 

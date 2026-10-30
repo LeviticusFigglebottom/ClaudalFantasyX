@@ -490,7 +490,8 @@
     "encounters": {
       "drownbell": "drownbell",
       "ch01_hullgnaw": "hullgnaw", "ch04_spar_wraith": "spar_wraith", "ch05_cinder_matron": "cinder_matron", "ch06_inquisitor": "stillguard_inquisitor",
-      "ch08_stair_hold_1": "seawall_hold", "ch08_stair_hold_2": "seawall_hold_rope", "ch08_stair_hold_3": "seawall_hold_last", "undertows_reach": "undertows_reach"
+      "ch08_stair_hold_1": "seawall_hold", "ch08_stair_hold_2": "seawall_hold_rope", "ch08_stair_hold_3": "seawall_hold_last", "undertows_reach": "undertows_reach",
+      "ch10_mangrove_drowner": "mangrove_drowner", "ch11_lamp_engine": "lamp_engine", "ch12_avalanche_ram": "avalanche_ram", "ch15_wakefin": "wakefin"
     },
     "phases": {
       "flood": {
@@ -501,7 +502,11 @@
         "_note": "the Flood (phase 2): low strings and the rising water come in over 4 s"
       }, "pour": {"stems_on": [1], "sec": 3.0, "_note": "M3-AUD-828: the Cinder Matron's Pour (phase 2): its second stem over 3 s"},
       "dark": {"stems_on": [1], "sec": 4.0, "_note": "M3-AUD-861: the Undertow's Reach at 60% HP (the storm goes dark): its second stem over 4 s"},
-      "breach": {"stems_on": [2], "sec": 2.0, "_note": "M3-AUD-861: the Reach's Breach at 30% HP (the wall gives; the scripted escape follows): its third stem over 2 s"}
+      "breach": {"stems_on": [2], "sec": 2.0, "_note": "M3-AUD-861: the Reach's Breach at 30% HP (the wall gives; the scripted escape follows): its third stem over 2 s"},
+      "uprooted": {"stems_on": [1], "sec": 3.0, "_note": "M4-A2P-092: the Mangrove Drowner uprooted (50% HP): the full ensemble and the motes' chimes over 3 s"},
+      "opened": {"stems_on": [1], "sec": 3.0, "_note": "M4-A2P-092: the Lamp Engine opened (50% HP): the core bared, its second stem over 3 s"},
+      "torn_fleece": {"stems_on": [1], "sec": 3.0, "_note": "M4-A2P-092: the Avalanche Ram's torn fleece (ADR 0204 §6, 40% HP): the bellow's rage over 3 s"},
+      "close_circle": {"stems_on": [1], "sec": 3.0, "_note": "M4-A2P-092: the Wakefin closes its circle (ADR 0204 §6, 40% HP): the full chase over 3 s"}
     }
   }
 }
