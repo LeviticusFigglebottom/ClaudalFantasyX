@@ -14,3 +14,9 @@ SKILL_DEEP_WELL,Deep Well
 SKILL_NHOA_ECHO,Echo
 SKILL_FAREWELL_TIDE,Farewell-Tide
 HUD_FAIL_NOTHING_TO_ECHO,Nothing to echo yet: no foe has acted.
+ENEMY_CONDUIT_CRAWLER,Conduit Crawler
+LORE_CONDUIT_CRAWLER,"Small domed tenders that walk the engine's conduits on six legs. They keep its lamps as they always have. They do not fight for it until someone strikes it."
+SKILL_BRUSH_JAB,Brush Jab
+SKILL_CRAWLER_MEND,Mend
+SKILL_CRAWLER_TEND,Tend
+PART_LAMP_ENGINE_LAMPS,The lamps
