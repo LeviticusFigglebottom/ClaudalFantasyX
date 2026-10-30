@@ -9,6 +9,9 @@ extends RefCounted
 ##   Drownbell's own sting), then later ones, so a boss intro staged before its encounter exists (choreo.json
 ##   boss_intro.by_enemy, Act II) is keyed by its title key.
 ## - `duck` / `duck_sec`: a mix.json duck held that long under the sting (the boss card dips the battle music).
+## - `delay_sec`: the row plays this long after the event (the boss intro announces itself as its camera starts to
+##   move; its title card shows card_at_sec later, choreo.json boss_intro, and the sting lands with the card). The
+##   duck still starts with the event.
 ## - `reduced`: with reduced audio on, a row is swapped for its version without sub-bass.
 ## An event with no row is ignored. Listen-only: nothing here writes game state.
 ## Time passes only through advance(delta) (AudioDirector.advance calls it; tests call it directly).
@@ -25,6 +28,8 @@ var data: Dictionary = {}
 var played: Array[StringName] = []
 ## Each duck held: reason -> seconds left.
 var held: Dictionary = {}
+## Rows waiting on their delay_sec: [{id, left}].
+var queued: Array[Dictionary] = []
 
 
 func _init(table: Dictionary = {}) -> void:
@@ -46,9 +51,11 @@ func on_event(event: StringName, args: Array) -> StringName:
 		return &""
 	if reduced.is_valid() and bool(reduced.call()):
 		id = StringName(str((data.get("reduced", {}) as Dictionary).get(String(id), id)))
-	if player.is_valid():
-		player.call(id)
-	played.append(id)
+	var delay := float(row.get("delay_sec", 0.0))
+	if delay > 0.0:
+		queued.append({"id": id, "left": delay})
+	else:
+		_play(id)
 	var reason := StringName(str(row.get("duck", "")))
 	if reason != &"" and ducker.is_valid():
 		ducker.call(reason, true)
@@ -56,7 +63,21 @@ func on_event(event: StringName, args: Array) -> StringName:
 	return id
 
 
+func _play(id: StringName) -> void:
+	if player.is_valid():
+		player.call(id)
+	played.append(id)
+
+
 func advance(delta: float) -> void:
+	var due: Array[StringName] = []
+	for q: Dictionary in queued:
+		q["left"] = float(q["left"]) - delta
+		if float(q["left"]) <= 0.0:
+			due.append(q["id"])
+	queued = queued.filter(func(q: Dictionary) -> bool: return float(q["left"]) > 0.0)
+	for id: StringName in due:
+		_play(id)
 	for reason: StringName in held.keys():
 		held[reason] = float(held[reason]) - delta
 		if float(held[reason]) <= 0.0:
