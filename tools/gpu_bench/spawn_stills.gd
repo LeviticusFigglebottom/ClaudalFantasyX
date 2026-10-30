@@ -4,7 +4,8 @@ extends Node
 ## slice_sweep's timed dwell (at lavapipe's ~2 s frames its 60-frame floor costs minutes a spawn, and its memory
 ## outgrew the cloud box).
 ##   godot-render --path . --audio-driver Dummy res://tools/gpu_bench/spawn_stills.tscn -- --out=/abs/dir \
-##     --chapter=ch09 --location=ch09/corrow_night --spawns=Strand,RoadGate [--frames=24 --battle=ch06_ridge_skippers]
+##     --chapter=ch09 --location=ch09/corrow_night --spawns=Strand,RoadGate [--frames=24 --battle=ch06_ridge_skippers
+##     --views="name:x,y,z>tx,ty,tz;..." --fov=55]
 ## The F8 chapter start (the story so far and the party), then the location; each spawn is placed as WorldReturn
 ## places the player, and <out>/<location>_<spawn>.png is saved after --frames frames. "-" in --spawns is the
 ## location's arrival view; --spawns=* walks every spawn. --battle=<encounter> asks that fight from the location
@@ -64,6 +65,25 @@ func _run() -> void:
 		await _frames(frames)
 		_save(out_dir.path_join("%s_%s.png" % [tag, s.replace("-", "arrival")]))
 		print("SPAWN_STILL %s %s" % [location, s])
+	# --views=name:x,y,z>tx,ty,tz;... : a free camera at each point looking at its target (the field director is
+	# stopped first so it can't take the view back).
+	var views := str(_opts.get("views", ""))
+	if views != "":
+		for d in get_tree().current_scene.find_children("*", "FieldCameraDirector", true, false):
+			d.process_mode = Node.PROCESS_MODE_DISABLED
+		var cam := Camera3D.new()
+		cam.fov = float(_opts.get("fov", 55))
+		get_tree().current_scene.add_child(cam)
+		for v in views.split(";", false):
+			var nv := v.split(":", true, 1)
+			var pts := nv[1].split(">")
+			var a := pts[0].split_floats(",")
+			var b := pts[1].split_floats(",")
+			cam.look_at_from_position(Vector3(a[0], a[1], a[2]), Vector3(b[0], b[1], b[2]))
+			cam.make_current()
+			await _frames(frames)
+			_save(out_dir.path_join("%s_view_%s.png" % [tag, nv[0]]))
+			print("SPAWN_VIEW %s" % nv[0])
 	var battle := str(_opts.get("battle", ""))
 	if battle != "":
 		BattleRequest.start(StringName(battle), location, &"")

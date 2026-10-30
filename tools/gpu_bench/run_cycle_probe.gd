@@ -15,7 +15,7 @@ var _opts: Dictionary = {}
 
 func _ready() -> void:
 	if get_parent() != get_tree().root or get_tree().current_scene == self:
-		var driver := RunCycleProbe.new()
+		var driver := (get_script() as GDScript).new() as Node
 		driver.name = "RunCycleProbeDriver"
 		get_tree().root.add_child.call_deferred(driver)
 		return

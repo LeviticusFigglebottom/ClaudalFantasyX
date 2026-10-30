@@ -122,6 +122,27 @@ reaches 3.59–3.66 m/s on open ground).
 - With the longer gaps, the main routes (straight-line spawn-to-spawn: 13–197 m) now hold 0–1 random fights each. The
   Coilspire path (102 m) and the derelict (13 m) hold none.
 
+## THE LEAD'S ASKS (14:09–16:26), answered on big25 @ 4b198810 (it contains big23 8fe3644b and big24 efe7fb10)
+Pass or fail per check, each against the playtest fix:
+- **(a) Battle return: PASS for random fights, FAIL for scripted fights.** The causeway, ferry and Ch6 returns (random)
+  have 60–69 ms of black, with the fade clear by 738–766 ms; before (19e7f01c) they had 3.7–11.4 s. The scripted fights
+  still reload cold: tideline 5.5 s, Oruvel scuttlers 2.8 s, and the Drownbell 4.0 s to Haluna. Row 74 is now partly
+  fixed (integration-qa).
+- **(b) Oruvel edges: PASS** on big23 and big25 (0 of 260 pushes off the deck; before, 215). **Oruvel boats: FAIL
+  (partly).** 10 AABB pairs remain, and I viewed each one on lavapipe (`docs/kb/qa/cloud/pass6/row75_oruvel_overlap_views_big25.jpg`).
+  Real clips: scale_hull × its deck, keel_hull and terrace_hull × their tucked decks, and the second outrigger under the
+  two plank bridges. The first outrigger's boom rests on a deck edge (check it). The dive raft's are intended. Filed to
+  env-art as **M3-ENV-1391** (on this branch).
+- **(c) Rhen's run: PASS.** Before (19e7f01c, run 0.667 s), the front view swung open hands to face height. After (the
+  jog, 0.733 s), the hands stay at waist to chest height and the stride and footplants hold. Before/after sheet:
+  `docs/kb/qa/cloud/pass6/playtest_c_rhen_run_before_after_big25.jpg`.
+- **(d) Encounter spacing: PASS** (31.0–52.0 s on big23 and big25; before, 6–30 s). About a third of the draws run 46–52 s.
+- **New Game → the Prologue first: PASS.** From a fresh profile (an empty XDG_DATA_HOME, headless,
+  `tools/gpu_bench/newgame_probe.tscn`), the title's New Game goes to prologue.tscn at 9.2 s, then
+  ch01/oruvel_underway at 42.0 s, tapping through.
+- The row walk had already run one job at a time (spawn_stills) before these asks arrived, and the suite remainder ran
+  file by file. Both results are above.
+
 ## RE-RUN after "Merge lead/gate-big25" (integration @ 4b198810): playtest (a), (b) and (d)
 Same probes and box, in a worktree of 4b198810 (LFS pulled, imported). The deltas against big23:
 - **(a) Victory exit → field** (ms from Return; big23 → big25):
