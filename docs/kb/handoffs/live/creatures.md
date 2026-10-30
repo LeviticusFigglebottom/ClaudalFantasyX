@@ -1042,3 +1042,13 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   3. **Rime urchin, water not ice: DONE @ 2894526a.** It absorbs water, and `rime_spine` is water. The ids, the name and the loc stay; the lore line still reads true of salt.
      - Checks: validate_data clean; Godot battle 818/0 and creature 88/0; tools battle-data suites OK.
 - **MERGE-READY @ 2894526a.** BACKLOG EMPTY, the same as at 04:40.
+- **Your 09:01 relay:**
+  1. **big20 (7dc3ab41) merged** @ 49ad1e53, with no conflicts. Checks: validate_data, taskboard, lint; tools test_creatures, test_wildlife and test_npc; Godot creature 125/0 and wildlife 22/0.
+  2. Row 44 and M3-CIN-1250 were done earlier: row 44 in the PC pass 3 fixes; M3-CIN-1250 was already fixed by 42438cd5, as noted at 04:20.
+  3. The tortoise and scree crawler LOD1 ≤ 8k is done @ 664e7c86 (7,674 triangles).
+  4. **The Ch10–Ch13 enemies:**
+     - Every enemy in every Ch10–Ch12 encounter (the 10 regulars and the 3 bosses) already has a real model, rig, clips and portrait, with an enemies.json `model`.
+     - Combat has no Ch13 (Ansedra) enemy ids or encounters yet. When they land, I build them, one MERGE-READY each.
+     - Wildlife for Ch10–Ch13 is done (fireflies, kingfishers, woolbacks; none in Ansedra, per ADR 0204).
+- Taskboard: M3-CRE-01 (the Act I bestiary roster) still shows `doing` and STALE from an old session. It was delivered long ago; set it to done when convenient, or tell me to.
+- **MERGE-READY @ 49ad1e53.** BACKLOG EMPTY: waiting on Combat's Ch13 ids and the items listed at 04:40.
