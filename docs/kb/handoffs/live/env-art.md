@@ -597,8 +597,26 @@ Read this section first; everything below it is history. The branch is `claude/e
   - test_oruvel_moorings drops the LowHull allowance and passes; test_zone_dressing_ch01 OK.
   - Godot `--filter=ch01` and `--filter=edge_walls` are green.
   - The Ch4 pass continues (the galley's satin walls are in at 7d2197e6).
-- **LEAD (19:25), IN PROGRESS: the Ch4 beauty pass (the Haluna wake, the Brightwater ferry), then the Prologue-to-Ch4
-  transitions as played.** Eye-height stills are rendering.
+- **LEAD (19:25), answered: the Ch4 beauty pass and the Prologue-to-Ch4 arrivals (M4-A2P-1401, review: art).
+  MERGE-READY @ 34fdefa3.**
+  - **Viewed:**
+    - eye-height stills along the walkthrough legs: Haluna wake 18, ferry 18;
+    - the arrival frame at each hand-off's spawn (`tools/hero/walk_stills`, the real camera and party): Drop, Surface,
+      Beach, FromHaluna, Entry, NemeDoor, DockShore and Landing.
+  - **Fixed:**
+    - The Terrace galley's lacquer boards streaked white with sky reflections indoors; they are now satin
+      (`bf_lacquer_black_satin`, 7d2197e6).
+    - The Landing arrival was a black rock. A ferry lantern now sits at the gangplank's head as its warm key light.
+  - **LEAD-ASK (not env-art's to change):**
+    - The Haluna wake's night shallows glow bright day-cyan (`haluna_mood.gd`'s held-glimmer sea-glow). Intended, or
+      calm it?
+    - The DockShore arrival camera sits behind Rhen's head, so he fills the frame (camera).
+    - At the shrine Entry arrival, Asha and Toma stand stacked into Rhen (party spawn spots).
+  - **Checks:**
+    - Tools: the ch04 and ferry tests OK.
+    - Godot `--filter=ch04`: 13/0.
+    - validate_data and taskboard --check clean.
+  - **Baselines that move (none written):** the ferry galley and landing shots.
 - **LEAD (18:24), answered: the Ch2 Haluna and Ch3 causeway beauty pass (M4-A2P-1400, review: art). MERGE-READY @ dadb6930.**
   - Stills at eye height along the walkthrough legs, viewed: Haluna 22, the causeway 12, the Shell Shrine 8.
   - **Fixed:** Haluna's 49 windbreak trees rendered as black blots from every side. `kit_windbreak_leaf` now has a
