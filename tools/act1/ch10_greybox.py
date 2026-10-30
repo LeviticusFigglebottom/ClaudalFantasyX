@@ -163,8 +163,11 @@ def ossa_fen() -> dict:
         + follow_volumes("Exit", list(FEN_EXIT))
         + [{"id": "Clearing", "mode": "pan_follow", "at": [112.0, 1.5, 0.0], "size": [18.0, 4.0, 18.0],
             "pos": [101.05, 5.98, -7.97], "look_at": [112.0, 0.8, 0.0], "fov": 55, "priority": 2}],
-        "triggers": [{"id": "to_reedhollow", "activation": "touch", "at": [138.0, 0.0, 0.0], "size": [2.0, 0, WALK_W],
-                      "payload": {"beat": "to_reedhollow"}, "yaw": 0.0}],
+        "triggers": [{"id": "clearing", "activation": "touch", "at": [96.0, 0.0, 0.5], "size": [2.0, 0, WALK_W],
+                      "requires_flag": "ch10_started", "blocked_by_flag": "ch10_drowner_defeated",
+                      "payload": {"beat": "drowner"}, "yaw": 0.0},  # M4-A2P-010: the Drowner's clearing
+                     {"id": "to_reedhollow", "activation": "touch", "at": [138.0, 0.0, 0.0], "size": [2.0, 0, WALK_W],
+                      "requires_flag": "ch10_drowner_defeated", "payload": {"beat": "to_reedhollow"}, "yaw": 0.0}],
         # M4-C10-03: the root-walks' random fights (act2_roster.md Ch10); none in Reedhollow (the roster's proposal)
         "encounters": {"table": [{"encounter": "ch10_fen_archers", "weight": 2}, {"encounter": "ch10_fen_roots", "weight": 1},
                                  {"encounter": "ch10_fen_leeches", "weight": 1}],

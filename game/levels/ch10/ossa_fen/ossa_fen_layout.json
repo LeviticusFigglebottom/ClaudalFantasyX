@@ -1545,6 +1545,26 @@
  ],
  "triggers": [
   {
+   "id": "clearing",
+   "activation": "touch",
+   "at": [
+    96.0,
+    0.0,
+    0.5
+   ],
+   "size": [
+    2.0,
+    0,
+    3.6
+   ],
+   "requires_flag": "ch10_started",
+   "blocked_by_flag": "ch10_drowner_defeated",
+   "payload": {
+    "beat": "drowner"
+   },
+   "yaw": 0.0
+  },
+  {
    "id": "to_reedhollow",
    "activation": "touch",
    "at": [
@@ -1557,6 +1577,7 @@
     0,
     3.6
    ],
+   "requires_flag": "ch10_drowner_defeated",
    "payload": {
     "beat": "to_reedhollow"
    },

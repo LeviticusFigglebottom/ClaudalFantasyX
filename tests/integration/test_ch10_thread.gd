@@ -31,6 +31,17 @@ func test_the_fen_opens_act_two_and_leads_to_reedhollow_and_back() -> void:
 	assert_true(zone.player.position.distance_to(zone.spawn_marker(&"FenEdge").position) < 0.01, "at the fen's edge")
 	var pell := zone.stage.actor(&"pell")
 	assert_true(pell != null and pell.position.distance_to(zone.stage.mark(&"pell_edge").position) < 0.01, "Pell stops")
+	assert_false(_trigger(&"to_reedhollow").is_available(), "the way on waits on the Drowner")
+	assert_true(_trigger(&"clearing").on_touched())
+	assert_true(not hand_offs.is_empty() and hand_offs.back()[0] == ZoneStory.KIND_BATTLE, "the Drowner rises")
+	var r := hand_offs.back()[1] as BattleRequest
+	assert_eq(r.encounter, &"ch10_mangrove_drowner")
+	assert_eq(r.victory_flag, &"ch10_drowner_defeated")
+	Game.set_flag(&"ch10_drowner_defeated")  # the battle's victory
+	_close()
+	_open(FEN)
+	story.begin()
+	assert_false(_trigger(&"clearing").is_available(), "the clearing is quiet")
 	assert_true(_trigger(&"to_reedhollow").on_touched())
 	assert_eq(hand_offs.back(), [ZoneStory.KIND_GO, {"location": "ch10/reedhollow", "spawn": "Gate"}])
 	_close()
