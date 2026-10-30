@@ -433,6 +433,156 @@
         }
       }
     },
+    "kirru_elder": {
+      "garments": [
+        "Costume",
+        "Wraps",
+        "Crest"
+      ],
+      "props": [
+        "Staff",
+        "NameShell",
+        "NameShellBlank",
+        "NameShellCarved"
+      ],
+      "seams": {
+        "groups": [
+          [
+            "Body",
+            "Head:skin_head"
+          ],
+          [
+            "Costume"
+          ],
+          [
+            "Wraps"
+          ]
+        ],
+        "max_exposed": 23
+      },
+      "_stage_poses": "The crest's two keys (crest_raise, crest_flat) are morph targets, which rig_probe does not apply; tools/tests/test_pell.py checks the Crest clear of the head in both keys (its crest_raise stage pose) instead.",
+      "_allowances": "M4-A2P-053: Pell's kit on a Kirru variant (pell_variant.py); Pell's limits, the probe below.",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 45.0,
+          "Wraps": 20.0,
+          "Crest": 5.0,
+          "NameShell": 45.0,
+          "NameShellBlank": 20.0,
+          "NameShellCarved": 20.0,
+          "Body": 104.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Wraps": 6,
+          "Crest": 5,
+          "NameShell": 6,
+          "NameShellBlank": 6,
+          "NameShellCarved": 6,
+          "Body": 113
+        }
+      }
+    },
+    "kirru_adult": {
+      "garments": [
+        "Costume",
+        "Wraps",
+        "Crest"
+      ],
+      "props": [
+        "Staff",
+        "NameShell",
+        "NameShellBlank",
+        "NameShellCarved"
+      ],
+      "seams": {
+        "groups": [
+          [
+            "Body",
+            "Head:skin_head"
+          ],
+          [
+            "Costume"
+          ],
+          [
+            "Wraps"
+          ]
+        ],
+        "max_exposed": 23
+      },
+      "_stage_poses": "The crest's two keys (crest_raise, crest_flat) are morph targets, which rig_probe does not apply; tools/tests/test_pell.py checks the Crest clear of the head in both keys (its crest_raise stage pose) instead.",
+      "_allowances": "M4-A2P-053: Pell's kit on a Kirru variant (pell_variant.py); Pell's limits, the probe below.",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 45.0,
+          "Wraps": 20.0,
+          "Crest": 5.0,
+          "NameShell": 45.0,
+          "NameShellBlank": 20.0,
+          "NameShellCarved": 20.0,
+          "Body": 104.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Wraps": 6,
+          "Crest": 5,
+          "NameShell": 6,
+          "NameShellBlank": 6,
+          "NameShellCarved": 6,
+          "Body": 113
+        }
+      }
+    },
+    "kirru_child": {
+      "garments": [
+        "Costume",
+        "Wraps",
+        "Crest"
+      ],
+      "props": [
+        "Staff",
+        "NameShell",
+        "NameShellBlank",
+        "NameShellCarved"
+      ],
+      "seams": {
+        "groups": [
+          [
+            "Body",
+            "Head:skin_head"
+          ],
+          [
+            "Costume"
+          ],
+          [
+            "Wraps"
+          ]
+        ],
+        "max_exposed": 23
+      },
+      "_stage_poses": "The crest's two keys (crest_raise, crest_flat) are morph targets, which rig_probe does not apply; tools/tests/test_pell.py checks the Crest clear of the head in both keys (its crest_raise stage pose) instead.",
+      "_allowances": "M4-A2P-053: Pell's kit on a Kirru variant (pell_variant.py); Pell's limits, the probe below.",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 45.0,
+          "Wraps": 20.0,
+          "Crest": 5.0,
+          "NameShell": 45.0,
+          "NameShellBlank": 20.0,
+          "NameShellCarved": 20.0,
+          "Body": 104.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Wraps": 6,
+          "Crest": 5,
+          "NameShell": 6,
+          "NameShellBlank": 6,
+          "NameShellCarved": 6,
+          "Body": 113
+        }
+      }
+    },
     "stillguard_a": {
       "garments": [
         "Costume",

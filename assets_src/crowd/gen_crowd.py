@@ -388,8 +388,9 @@ def feasible(ranges: dict, person: dict, bodies: dict, used_in_zone: set) -> lis
 
 def assign(ranges: dict, roster: dict) -> dict[str, str]:
     """person id -> body. Zones with the most people go first (Act I's before Act II's, so a new Act II town never
-    reshuffles Act I's bodies); within a zone, the person with the fewest choices."""
+    reshuffles Act I's bodies; `late_zones`, crowds added after the rest, go last for the same reason); within a zone, the person with the fewest choices."""
     w = ranges["assign"]
+    late = set(w.get("late_zones", []))
     bodies = roster["bodies"]
     people = roster["people"]
     zones: dict[str, list[int]] = {}
@@ -397,7 +398,7 @@ def assign(ranges: dict, roster: dict) -> dict[str, str]:
         zones.setdefault(p["zone"], []).append(i)
     uses = {bid: 0 for bid in bodies}
     out: dict[str, str] = {}
-    for zone in sorted(zones, key=lambda z: (chapter_of(z) >= ACT2_CHAPTER, -len(zones[z]), z)):
+    for zone in sorted(zones, key=lambda z: (z in late, chapter_of(z) >= ACT2_CHAPTER, -len(zones[z]), z)):
         used: set = set()
         left = list(zones[zone])
         while left:

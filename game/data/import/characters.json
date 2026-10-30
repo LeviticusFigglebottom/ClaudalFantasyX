@@ -9,7 +9,8 @@
              "res://assets/characters/villagers/fisher/", "res://assets/characters/sefir/",
              "res://assets/characters/ysolde/", "res://assets/characters/villagers/tavi/",
              "res://assets/characters/villagers/kell/", "res://assets/characters/props/wick/",
-             "res://assets/characters/liss/", "res://assets/characters/kerrid/", "res://assets/characters/pell/",
+             "res://assets/characters/liss/", "res://assets/characters/kerrid/", "res://assets/characters/pell/", "res://assets/characters/kirru_elder/", "res://assets/characters/kirru_adult/",
+             "res://assets/characters/kirru_child/",
              "res://assets/characters/moll/",
              "res://assets/characters/stillguard_a/",
              "res://assets/characters/stillguard_b/",
@@ -37,7 +38,7 @@
              "res://assets/characters/villagers/fenn/", "res://assets/characters/villagers/gatekeeper/",
              "res://assets/characters/villagers/hobb/", "res://assets/characters/villagers/marra/",
              "res://assets/characters/villagers/tobin/", "res://assets/characters/villagers/merel/",
-             "res://assets/characters/villagers/aldous/"],
+             "res://assets/characters/villagers/aldous/", "res://assets/characters/villagers/ullari_woman/"],
   "adoption_pending": {},
   "generate_lods": true,
   "materials": {

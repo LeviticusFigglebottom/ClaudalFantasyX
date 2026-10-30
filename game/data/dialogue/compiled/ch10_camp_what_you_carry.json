@@ -9,21 +9,13 @@
    "ops": [
     {"op": "line", "id": "ch10_camp_001", "key": "DLG_CH10_CAMP_001", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 8},
     {"op": "line", "id": "ch10_camp_002", "key": "DLG_CH10_CAMP_002", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 9},
-    {"op": "line", "id": "ch10_camp_003", "key": "DLG_CH10_CAMP_003", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 10},
-    {"op": "line", "id": "ch10_camp_004", "key": "DLG_CH10_CAMP_004", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 11, "tags": ["long"]},
-    {"op": "line", "id": "ch10_camp_005", "key": "DLG_CH10_CAMP_005", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 12},
-    {"op": "line", "id": "ch10_camp_006", "key": "DLG_CH10_CAMP_006", "speaker": "rhen", "emotion": "sad", "voice": "", "src": 13},
-    {"op": "line", "id": "ch10_camp_007", "key": "DLG_CH10_CAMP_007", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 14},
-    {"op": "line", "id": "ch10_camp_008", "key": "DLG_CH10_CAMP_008", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 15},
-    {"op": "line", "id": "ch10_camp_009", "key": "DLG_CH10_CAMP_009", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 16},
-    {"op": "line", "id": "ch10_camp_010", "key": "DLG_CH10_CAMP_010", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 17},
-    {"op": "line", "id": "ch10_camp_011", "key": "DLG_CH10_CAMP_011", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 18},
-    {"op": "line", "id": "ch10_camp_012", "key": "DLG_CH10_CAMP_012", "speaker": "rhen", "emotion": "soft_smile", "voice": "", "src": 19},
-    {"op": "line", "id": "ch10_camp_013", "key": "DLG_CH10_CAMP_013", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 20},
-    {"op": "line", "id": "ch10_camp_014", "key": "DLG_CH10_CAMP_014", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 21},
-    {"op": "line", "id": "ch10_camp_015", "key": "DLG_CH10_CAMP_015", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 22},
-    {"op": "line", "id": "ch10_camp_016", "key": "DLG_CH10_CAMP_016", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 23},
-    {"op": "set", "flag": "ch10_camp_talk", "value": ["lit", true], "src": 24}
+    {"op": "line", "id": "ch10_camp_011", "key": "DLG_CH10_CAMP_011", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 10},
+    {"op": "line", "id": "ch10_camp_012", "key": "DLG_CH10_CAMP_012", "speaker": "rhen", "emotion": "soft_smile", "voice": "", "src": 11},
+    {"op": "line", "id": "ch10_camp_013", "key": "DLG_CH10_CAMP_013", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 12},
+    {"op": "line", "id": "ch10_camp_014", "key": "DLG_CH10_CAMP_014", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 13},
+    {"op": "line", "id": "ch10_camp_015", "key": "DLG_CH10_CAMP_015", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 14},
+    {"op": "line", "id": "ch10_camp_016", "key": "DLG_CH10_CAMP_016", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 15},
+    {"op": "set", "flag": "ch10_camp_talk", "value": ["lit", true], "src": 16}
    ]
   }
  }

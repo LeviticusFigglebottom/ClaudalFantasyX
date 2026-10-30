@@ -84,7 +84,8 @@ Narrator(rhen) [tender]: Seven of us walked out of Corrow that morning. I didn't
 @fade out 3.0
 @music silence fade=2.0
 <<set $ch09_act_one_complete = true>>
-<<jump ch09_act_card>>
+// M4-A2P-116 C9: the Act II card is held while Ch9 still hands off to the end card ("The end of Act I"); the scene
+// jumps to ch09_act_card again when the flow hands on to Ch10.
 ===
 // B11 "Act card" (C, 0.2 min). Black, "Act II: The Truth": the line's #card shows it as UI's ActCard caption on
 // black (M2-FP-121; act1_ch09.md §9 UI 2; M3-C09-05). Then the chapter flow hands off to the end card (Act I's

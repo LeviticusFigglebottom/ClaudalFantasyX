@@ -16,7 +16,7 @@ location: ch12/quellan
 Ysolde [guilty]: I read the cords. I lied to you about them. I would like to stop doing that now. #line:ch12_voices_001
 @wait 2.0
 Asha [neutral]: What do they say? #line:ch12_voices_002
-Ysolde [neutral]: They are a count. Hers. Ama Quillo's. Every Cantor on the roll up to her own name, one knot each. Forty-seven. #line:ch12_voices_003 #long
+Ysolde [neutral]: They are a count. Hers. Ama Quillo's, the Saint at the dais, before she was Hesk. Every Cantor on the roll up to her own name, one knot each. Forty-seven. #line:ch12_voices_003 #long
 @wait 1.5
 Ysolde [neutral]: And then the Saints. The houses that keep one. One knot each. #line:ch12_voices_004
 @wait 1.5
