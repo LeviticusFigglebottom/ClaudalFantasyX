@@ -7808,6 +7808,120 @@
         540
       ],
       "settle_frames": 30
+    },
+    {
+      "id": "ch13_ansedra_arrival",
+      "scene": "res://game/levels/_tests/ansedra_kit/ch13_ansedra_shots.tscn",
+      "camera": "Cameras/Arrival",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch13_ansedra_moorings",
+      "scene": "res://game/levels/_tests/ansedra_kit/ch13_ansedra_shots.tscn",
+      "camera": "Cameras/Moorings",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch13_ansedra_causeway",
+      "scene": "res://game/levels/_tests/ansedra_kit/ch13_ansedra_shots.tscn",
+      "camera": "Cameras/Causeway",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch13_ansedra_mirror",
+      "scene": "res://game/levels/_tests/ansedra_kit/ch13_ansedra_shots.tscn",
+      "camera": "Cameras/Mirror",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch13_ansedra_sefir_house",
+      "scene": "res://game/levels/_tests/ansedra_kit/ch13_ansedra_shots.tscn",
+      "camera": "Cameras/SefirHouse",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch13_ansedra_corran_house",
+      "scene": "res://game/levels/_tests/ansedra_kit/ch13_ansedra_shots.tscn",
+      "camera": "Cameras/CorranHouse",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }
