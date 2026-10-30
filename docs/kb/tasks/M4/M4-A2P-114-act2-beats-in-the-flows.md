@@ -26,28 +26,38 @@ beat, so none of them is a softlock.
 flag's `unraised` row in the same commit. The guard then holds it for good. The rows in `objectives.json` need no
 change.
 
-## What to wire (the scene that sets each flag, and the row that waits on it)
-| Flag | Set by (scene or battle) | Rows that wait on it |
-|---|---|---|
-| ch10_farewell_tide_seen | `ch10_farewell_tide` | r_shore `until`; r_gate |
-| ch10_complete | `ch10_dawn_gate` | r_gate `until` |
-| ch11_nhoa_bound | `ch11_nhoa` | l_down `until`; l_out |
-| ch11_complete | `ch11_held_by_you` | l_out `until` |
-| ch12_ram_felled | **the Avalanche Ram's battle: a `victory_flag` in ch12.json** (only the side scene `ch12_herd_cord` sets it now) | k_wall `until`; k_to_quellan |
-| ch12_hesk_bound | `ch12_hesk` | c_dais `until`; q_inn |
-| ch12_ysolde_confessed | `ch12_forty_seven_voices` | q_inn `until`; q_on |
-| ch12_complete | `ch12_down_the_other_side` | q_on `until` |
-| ch13_ethren_bound | `ch13_ethren` | a_sanctum and s_ledge `until`; a_archive `requires` |
-| ch13_read_ledgers | `ch13_archive_ledgers` | la_ledgers `until`; la_roll |
-| ch13_read_cantor_roll | `ch13_archive_roll` | la_roll `until` |
-| ch13_archive_read | `ch13_archive_hands` | a_archive `until`; a_moorings |
-| ch13_pact_of_silence, ch13_complete | `ch13_the_pact` | a_moorings, a_rest |
-| ch14_vows_spoken, ch14_declared_heretics | `ch14_the_vows` | lc_vows (`requires` ch14_started, `until` ch14_vows_spoken); lc_steps |
-| ch14_steps_held | the water-steps set piece's scripted escape (and `ch14_first_ripple`, which now sets it as it opens) | lc_steps `until`; lc_gate |
-| ch14_complete | `ch14_left_standing` | lc_gate `until` |
+## What to wire: the exact setter for each of the 19 flags
+Every scene below already sets its flag with `<<set>>`, so the flow only has to **play** it. Use the Act I pattern
+(ch05.json): a beat on a trigger, with `when` gating and `play` steps. A **new trigger** sits at the objective row's
+target POI, which needs placing in the layout (act1-chapters' lane: trigger placement). For battles, use a flow `battle`
+step with `victory_flag` and `return_spawn`, as ch10's drowner does. Where a scene already ends on
+`<<event start_battle …>>`, take **one** of the two routes, not both.
 
-The scenes' running order and the flags they set are in each `act2_chNN.md` §1, and their staging is in
-`act2_chNN_direction.md`.
+| # | Flag | Zone | Trigger (where) | `when` | Steps |
+|---|---|---|---|---|---|
+| 1 | ch10_farewell_tide_seen | ch10/reedhollow | new `shore` at the `Shore` spawn (row r_shore's POI `shore`) | set ch10_reached_reedhollow; unset ch10_farewell_tide_seen | place Shore; play `ch10_farewell_tide` (B09) |
+| 2 | ch10_complete | ch10/reedhollow | the same `shore` beat continues (`ch10_farewell_tide` already jumps to B10 `ch10_outside_causeway`) | set ch10_farewell_tide_seen; unset ch10_complete | place Gate; play `ch10_dawn_gate` (B11, dawn) |
+| 3 | ch11_nhoa_bound | ch11/lowlight | arrive at spawn `Sanctum` via a new `to_sanctum` trigger at the well-shaft foot (row l_down's POI `sanctum`); before it, a new `engine` trigger at the engine hall's stair head (`EngineHall`) | engine: set ch11_reached_lowlight, unset ch11_engine_released. sanctum: set ch11_engine_released, unset ch11_nhoa_bound | engine: play `ch11_the_engine` → battle `ch11_lamp_engine`, victory_flag `ch11_engine_released` (**declare it** in flags.tres: §1's name), return_spawn EngineHall → play `ch11_twice`. sanctum: place Sanctum; play `ch11_nhoa` |
+| 4 | ch11_complete | ch11/sunken_vey | arrive from Lowlight (`FromLowlight`) | set ch11_nhoa_bound; unset ch11_complete | place FromLowlight; play `ch11_held_by_you` (B11) |
+| 5 | ch12_ram_felled | ch12/keth_pass | new `terrace` trigger under the seeping wall (row k_wall's POI `terrace`; arena spawn `RamArena`) | set ch12_started; unset ch12_ram_felled | play `ch12_weeping_wall` → battle `ch12_avalanche_ram`, **victory_flag `ch12_ram_felled`**, return_spawn RamArena → play `ch12_herd_cord` (B07, which sets it too) |
+| 6 | ch12_hesk_bound | ch12/cloudloom | new `dais` trigger at the hall's dais (row c_dais's POI `dais`; spawn `Hall`) | set ch12_reached_cloudloom; unset ch12_hesk_bound | place Hall; play `ch12_hesk` (B10–B11; it also sets ch12_ysolde_lied) |
+| 7 | ch12_ysolde_confessed | ch12/quellan | arrive `FromCloudloom` (row q_inn's POI `inn`) | set ch12_hesk_bound; unset ch12_ysolde_confessed | place FromCloudloom; play `ch12_forty_seven_voices` (B12, night) |
+| 8 | ch12_complete | ch12/keth_pass | arrive `FromQuellan` | set ch12_ysolde_confessed; unset ch12_complete | place FromQuellan; play `ch12_down_the_other_side` (B13) |
+| 9 | ch13_ethren_bound | ch13/sanctum | the existing arrive row, then a new `ledge` trigger at the basin's edge (row s_ledge's POI `ledge`) | set ch13_entered_sanctum; unset ch13_ethren_bound | play `ch13_ethren` (B05–B06) |
+| 10 | ch13_read_ledgers | ch13/lamp_archive | new `ledgers` trigger at the ledger shelves (row la_ledgers's POI `ledgers`) | set ch13_entered_archive; unset ch13_read_ledgers | play `ch13_archive_ledgers` (B07) |
+| 11 | ch13_read_cantor_roll | ch13/lamp_archive | new `roll` trigger at the lectern (row la_roll's POI `roll`) | set ch13_read_ledgers; unset ch13_read_cantor_roll | play `ch13_archive_roll` (B08) |
+| 12 | ch13_archive_read | ch13/lamp_archive | the same `roll` lectern, the third day | set ch13_read_cantor_roll; unset ch13_archive_read | play `ch13_archive_hands` (B09) |
+| 13–14 | ch13_pact_of_silence, ch13_complete | ch13/ansedra | arrive `FromArchive` at night (row a_moorings's POI `moorings`) | set ch13_archive_read; unset ch13_pact_of_silence | place FromArchive; play `ch13_the_pact` (B10–B11; sets both, then Sefir closes the book) |
+| 15 | ch14_started | ch13/ansedra_lacquer_court | **already set** by ch14.json's arrive row. It's unraised only because Ch13's thread checks the court's rows (below) | — | — |
+| 16–17 | ch14_vows_spoken, ch14_declared_heretics | ch13/ansedra_lacquer_court | new `dais` trigger at `vows` (row lc_vows's POI `dais`) | set ch14_started; unset ch14_vows_spoken | play `ch14_the_vows` (B02–B05, one scene with nodes; ends on `start_battle ch14_water_steps`) |
+| 18 | ch14_steps_held | ch13/ansedra_lacquer_court | the vows' battle return (spawn `Steps`) | — | battle `ch14_water_steps` (set piece), victory_flag `ch14_steps_held`, return_spawn Barge → play `ch14_first_ripple` (B07–B08, sets it too; ends on `start_battle ch14_malcor_venn`) |
+| 19 | ch14_complete | ch13/ansedra_lacquer_court | the Venn battle's return | — | battle `ch14_malcor_venn`, victory_flag `ch14_venn_beaten` (**declare it**: act2_ch14's flag table) → play `ch14_left_standing` (B10) → the existing `escape` go |
+
+**Missing encounters (combat lane, before #18 and #19 can run):** `ch14_water_steps` and `ch14_malcor_venn` aren't in
+`game/data/battle/encounters.json` yet. Ch13 has no boss encounter (Ethren is a binding scene, not a fight).
+
+**Thread tests:** each `test_chNN_thread.gd` should touch the new triggers in order, as test_ch05_thread does, so the
+guard sees every flag raised. Then delete each flag's row from `qa_known.json` `"unraised"`.
 
 **The Lacquer Court's rows are Ch14's but sit in a `ch13/` zone**, so Ch13's thread is the one that checks them (see
 M3-UI-1242). Their five flags (ch14_started and the four beat flags) stay in `unraised` until either the guard reads a
