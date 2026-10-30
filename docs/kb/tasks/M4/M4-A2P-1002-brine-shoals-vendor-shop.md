@@ -1,5 +1,5 @@
 ---
-id: M4-A2P-117
+id: M4-A2P-1002
 title: "Request: the Brine Shoals camp vendor sells as the Ch4 ferry's \"Purser's Chest\""
 role: progression
 status: todo
@@ -17,6 +17,9 @@ wreck-ridge camp, act1_ch06 B08 has "a travelling vendor's boat".
 
 ## Acceptance criteria
 - [ ] A `brine_shoals_vendor` shop with its own name (loc key) and stock tier.
-- [ ] act1-chapters points the trigger at it (one-line layout change; noted on M4-A2P-116).
+- [ ] act1-chapters points the trigger at it (one-line layout change; noted on M4-A2P-1001, was 116).
 
 ## Review log
+
+## Gate note
+- Renumbered from M4-A2P-117 by the big27 gate: that id was already taken on the integration branch; then into the filer's own range (TRACK-RULES "FROM 2026-10-30 18:05"). The owner's live log may still say 117.

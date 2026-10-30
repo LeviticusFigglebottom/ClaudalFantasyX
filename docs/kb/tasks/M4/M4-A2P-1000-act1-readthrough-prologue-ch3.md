@@ -1,5 +1,5 @@
 ---
-id: M4-A2P-115
+id: M4-A2P-1000
 title: "Request: Act I read-through fixes, the Prologue to Ch3 (as played on integration @ 4b1988109)"
 role: cinematics
 status: todo
@@ -32,3 +32,6 @@ trigger coordinates and flags: check the walk in-engine.
 - [ ] A1–A8 fixed or answered on this task, with a reason.
 
 ## Review log
+
+## Gate note
+- Renumbered from M4-A2P-115 by the big27 gate: that id was already taken on the integration branch; then into the filer's own range (TRACK-RULES "FROM 2026-10-30 18:05"). The owner's live log may still say 115.
