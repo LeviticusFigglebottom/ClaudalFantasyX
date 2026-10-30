@@ -974,6 +974,26 @@ that test at this branch's zones.
   - The Ch5–Ch6 eye-height walk and rows 62/63 were already done and pushed (above: 008c7de3, e72c9631).
 - **BACKLOG EMPTY (10-30, after the shore walls):** what's left waits on env-art's kits (M3-ENV-1328/1329/1330) and
   on M4-A2P-103 to 107.
+- **Ashcrown and Coilspire: floating props and stretching (10-30, the Lead's order):** a scratch probe measured every
+  dressing piece under 8 m against the ground beneath it, then each flagged one was viewed.
+  - **Ashcrown:**
+    - **The problem:** 26 road graves (curbs and steles by the causeway's mid landings) floated 0.5–2.3 m over
+      the slope. They were set on the analytic massif, and the crest's built mesh lies under it out there.
+    - **The fix:** ZoneKitDressing gets an optional per-piece `"snap"`. After placing, a piece drops onto the
+      ground under its origin, plus the offset. A terrain that collides as its LOD1 trimesh gets a temporary LOD0
+      body for the snap, so props sit on the ground that draws, and walk collision is unchanged.
+    - **Applied to:** the road graves (sunk 0.2 m) and the flank rock patches (−0.3).
+    - Re-probed: 0 floating. Viewed: the curbs sit into the slope.
+    - New test: `tests/integration/test_zone_snap.gd`.
+  - **Coilspire:** nothing floats. The flagged wall lamps, flue keys, the niche and the beacon are wall-mounted, and
+    the Watcher heads stand on the parapet, which has no collision under them. The scrub's 0.1–0.7 m was against
+    the coarse collision; in view they stand on their stems.
+  - **Texture stretching:** none seen in either zone's eye-height stills (the earlier walk plus these views).
+  - Checks: Godot --filter=ashcrown (22), dressing (31), zone_kit (13), edge_walls, shore_walls and zone_snap pass;
+    test_ashcrown_kit passes.
+  - **MERGE-READY @ 4516750e.**
+- **BACKLOG EMPTY (10-30, after the float pass):** the Ch13–16 water and dock edges were done in the shore-wall
+  pass above, and rows 62/63 were already pushed. What's left waits on M3-ENV-1328/1329/1330 and M4-A2P-103 to 107.
 ### PC-QUEUE
 - Pass 3 row 65 (@ edb18aae): re-measure the camp's smoke columns (24 steps at High) and the Tamsule drop (High has no
   god rays now) at High 1440p against the 0.3 ms target.
@@ -1014,3 +1034,4 @@ SELF-RENDERED @ 7999fb30: ch15_hollowmere_supper, ch15_hollowmere_dock, viewed (
 SELF-RENDERED @ e1903b9e: battle_boss_intro_matron, battle_arena_ashcrown_anvil_court (the loggia lattice), pemakar_p11_sea_cut_weir_day (before, after and a tint test), ch09_corrow_strand plus the strand spawn view (scratch, each shroud step plus a red paint test), battle_arena_pale_rim_shallows (new), all viewed.
 SELF-RENDERED @ 008c7de3: the Ch5–Ch9 eye-height walk (548 stills, scratch), Brine Shoals' variation, LOD and wet tests, Tamsule's cloth and Corrow's wall-slit and pool before/after views (scratch), ch07_tamsule_market, ch08_corrow_flood, ch08_corrow_arrival — all viewed.
 SELF-RENDERED @ 2d9a9c36: the Ch13-Ch16 eye-height walk (160 stills over 8 zones, scratch), the five Ch13-16 arenas' hint views, lacquer_hall and archive_case before/after (scratch) — all viewed.
+SELF-RENDERED @ 4516750e: Ashcrown's road graves before, snapped to collision, and snapped to the drawn crest; Coilspire's wall-end heads and a headland scrub clump (scratch) — all viewed.
