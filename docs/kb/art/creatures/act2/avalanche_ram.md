@@ -113,3 +113,18 @@ skills.json; the `contact` times are already in the row):
 ```json
 "clip_by_skill": {"ram_charge": "attack", "bellow": "cast", "neck_sweep": "neck_sweep", "fleece_shake": "fleece_shake"}
 ```
+
+## Own VFX (M4-A2P-058)
+
+In the battle scene (`AmbientVfx`, CreatureAmbientVfx; data `game/data/creatures/creature_vfx.json`). **No ice, frost
+or shards** (ADR 0015, M4-A2P-059): every effect is a soft round sprite; the unit test checks the Ram's effects for it.
+
+- **Breath.** The living animal fogs: every 3.4-4.6 s (2.0-2.6 s torn, breathing harder) eight puffs leave the nostrils
+  (`head`), out and a little down, swelling and fading over 2.2 s (`foam_white` to `cumulus_shadow`, lit). Against
+  the terrace's pale wall it is a quiet blue-grey mist; it stops on the KO.
+- **Hits.** On each hit clip (`hit`, `hit_b`, `*_torn`) snow puffs shake loose from both flanks' locks and fall,
+  meltwater drips fly and drop, and three `glimmer_held` motes drift sideways and down out of the widest parting
+  (`vfx_wound`; the design sheet's `shed`, rule 1).
+- **Fleece shake.** At its contact (0.6 s) a bigger fling of snow puffs and drips off both flanks.
+- **Viewed** (lavapipe, `keth_seep_terrace` at enemy slot 0; battle camera and close): soft and low-key; white on the
+  pale fleece and wall, so it never clutters the read.

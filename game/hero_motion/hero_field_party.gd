@@ -467,7 +467,9 @@ func follow_point(i: int) -> Vector3:
 
 
 ## `at` moved beside the leader, square to the camera's line to him, (i + 1) * spacing_m out on follower i's side
-## (the other side when that is blocked or still near the lens); `at` unchanged when neither side will do.
+## (the other side when that is blocked or still near the lens), else that far beyond him, away from the lens; with
+## the camera close behind him (none of those clear of the lens), the unblocked one farthest from it; `at` unchanged
+## when all are blocked.
 func off_lens(i: int, at: Vector3) -> Vector3:
 	var cam := controller.get_viewport().get_camera_3d() if controller.is_inside_tree() else null
 	if cam == null:
@@ -479,11 +481,21 @@ func off_lens(i: int, at: Vector3) -> Vector3:
 	var right := line.normalized().cross(Vector3.UP)
 	var out := (i + 1) * float(_cfg.get("spacing_m", 0.0))
 	var side := _sight_side[i] if i < _sight_side.size() and _sight_side[i] != 0 else (1 if i % 2 == 0 else -1)
-	for s: int in [side, -side]:
-		var spot := Vector3(lead.x, at.y, lead.z) + right * (s * out)
-		if not blocked(spot) and not near_camera(spot):
+	var base := Vector3(lead.x, at.y, lead.z)
+	var spots: Array[Vector3] = [base + right * (side * out), base - right * (side * out)]
+	spots.append(base + line.normalized() * out)
+	var best := at
+	var best_d := Vector2(at.x - cam.global_position.x, at.z - cam.global_position.z).length()
+	for spot in spots:
+		if blocked(spot):
+			continue
+		if not near_camera(spot):
 			return spot
-	return at
+		var d := Vector2(spot.x - cam.global_position.x, spot.z - cam.global_position.z).length()
+		if d > best_d:
+			best = spot
+			best_d = d
+	return best
 
 
 ## `at`, or, when it lies between the field camera and the leader (at least sight_depth_m short of him), under the

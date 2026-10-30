@@ -53,12 +53,11 @@ DRUM = [(0.0, 1.30), (0.3, 1.285), (0.55, 1.26), (0.75, 1.225), (0.88, 1.19), (0
         (0.925, 0.63), (0.925, 0.55), (0.9, 0.55),  # the waist band (brass)
         (0.9, 0.34), (0.9, 0.18), (0.9, 0.0), (0.6, 0.0), (0.0, 0.0)]
 BANDS = ((1.10, 1.17), (0.55, 0.63))
+LID_RING = (0.55, 0.75, 1.2)  # the lid's brass ring plate: from radius, to radius, above y
 WET_Y = 0.22  # wet below this (the lagoon's splash line)
 SEAM_AZ = 25.0  # the seam the drum splits along, through the axis at SEAM_AZ and SEAM_AZ + 180 (degrees, +z is 0)
 HALVES = (("a", SEAM_AZ - 180.0, SEAM_AZ), ("b", SEAM_AZ, SEAM_AZ + 180.0))  # (name, az from, az to)
 SEAM_COL = 1.5  # degrees: the extra column each side of the seam that keeps its dark line crisp
-SPLIT_BROKEN = 6.0  # degrees each half stands tipped outward in the broken mesh
-SPLIT_KO = 7.0  # and in the KO
 # The window (+z, on half a): a round salt-glass porthole in a brass frame
 WIN_AZ, WIN_Y, WIN_R = 0.0, 0.8, 0.2
 # The chimney on the lid (half b) under its bell cowl
@@ -72,9 +71,24 @@ HINGE_R, HINGE_Y = R + 0.08, 0.34  # the hinge pins' axis: this far out, this hi
 LENGTH = 3.0  # hinge to tip
 BLADE_IN = R + 0.72  # where the blade starts (the loom meets it on top)
 BLADE_Y0, BLADE_T = 0.003, 0.045  # the blade's underside on the water, its thickness
-# Broken: each paddle slewed off the fan (degrees about the vertical through its hinge), neighbours never crossing
-SLACK = (6.0, -6.0, 4.0, 10.0, -2.0, 10.0, -4.0, 8.0)
-KO_SLACK = (8.0, -9.0, 5.0, 13.0, -3.0, 12.0, -6.0, 10.0)
+# M4-CRB-009: the broken stance is a pose of the rig (the `broken` phase's `break` clip ends on it and `idle_broken`
+# holds it), so the whole and broken meshes share one rest geometry and swap without a jump at any frame. In it the
+# drum stands split along its seam, each half tipped out; the stack is knocked over on its half; each paddle hangs
+# slewed off the fan (degrees about the vertical through its hinge; neighbours differ by at most 18, so they never
+# cross), and two are jammed up off the water on their snapped hinges.
+BROKEN_SPLIT = 14.0  # degrees each half tips outward about its outer base edge
+BROKEN_CHIMNEY = 24.0  # degrees the stack leans (with its cowl) about its tangent
+BROKEN_SLEW = (10.0, -6.0, 8.0, -4.0, 12.0, -5.0, 9.0, -8.0)
+BROKEN_LIFT = (0.0, 26.0, 0.0, 0.0, 0.0, 0.0, 34.0, 0.0)  # the jammed paddles' lift off the water
+# The KO from the broken stance: the jammed paddles drop back slack, the halves sag further, the stack goes over
+KO_BROKEN_SPLIT, KO_BROKEN_CHIMNEY = 17.0, 34.0
+# The idle (running): a slow wave of lifts round the ring, its first frame where every one-shot starts and ends
+IDLE_SEC, IDLE_AMP = 6.0, 5.0
+# The stilling (`cast`, the flat pulse: plan malcor_venn.md move list): the paddles lift (0-0.7 s), press at 0.8 s
+CAST_SEC, CAST_CONTACT, CAST_LIFT = 1.6, 0.8, 16.0
+INTRO_SEC = 2.6
+BREAK_SEC, BREAK_CONTACT = 2.8, 0.6  # the break; the seam cracks open at its contact (the first ripple's cue)
+WOUND_PADDLE = 3  # the hinge vfx_wound marks: the near one left of the window
 
 
 # ---------------------------------------------------------------------------------------------
@@ -158,11 +172,6 @@ def half_axis(half: str) -> tuple[np.ndarray, np.ndarray]:
     return o * R, t
 
 
-def half_xf(half: str, deg: float) -> Xf:
-    p, t = half_axis(half)
-    return Xf(rot_axis(t, deg), p)
-
-
 def lift_axis(i: int) -> np.ndarray:
     """The axis a paddle lifts about (its hinge pin): a positive turn raises the blade off the water."""
     _, t = az_dirs(PADDLE_AZ[i])
@@ -199,6 +208,16 @@ def build_rig() -> ck.Rig:
         o, _ = az_dirs(az)
         h = hinge_pt(i)
         rig.add(f"paddle{i}", h, h + o * 0.4, f"half_{half_of(az)}")
+    # M4-CRB-009, the VFX anchors (unweighted): the near hinge's mark (where hits land and the weak point is), the
+    # window (the bound light: the break's going-dark), and the seam's face toward the party (where it cracks open)
+    w = hinge_pt(WOUND_PADDLE) + az_dirs(PADDLE_AZ[WOUND_PADDLE])[0] * 0.05
+    rig.add("vfx_wound", w, w + az_dirs(PADDLE_AZ[WOUND_PADDLE])[0] * 0.15, f"paddle{WOUND_PADDLE}")
+    o, _ = az_dirs(WIN_AZ)
+    c = o * (R + 0.05) + UP * WIN_Y
+    rig.add("vfx_core", c, c + o * 0.2, "half_a")
+    o, _ = az_dirs(SEAM_AZ)
+    s = o * (R + 0.02) + UP * 0.8
+    rig.add("vfx_phase", s, s + o * 0.2, "drum")
     return rig
 
 
@@ -250,6 +269,8 @@ def drum_half(mesh: ck.Mesh, rig: ck.Rig, half: str, xf: Xf) -> None:
     band = np.zeros(len(P))
     for lo, hi in BANDS:
         band = np.maximum(band, ((y >= lo - 1e-6) & (y <= hi + 1e-6) & (r > R + 1e-6)).astype(float))
+    # M4-CRB-009: a brass ring plate on the lid (from the battle camera's height the lid was one black disc)
+    band = np.maximum(band, ((y > LID_RING[2]) & (r > LID_RING[0] - 1e-6) & (r < LID_RING[1] + 1e-6)).astype(float))
     col = ck.mix(col, bcol, band[:, None])
     seam = ((np.abs(az - a0) < 1e-6) | (np.abs(az - a1) < 1e-6)) & (r > 0.5)
     col = np.where(seam[:, None], np.clip(PAL["lacquer_black"] * 0.9, FLOOR, 1.0), col)
@@ -273,8 +294,12 @@ def drum_half(mesh: ck.Mesh, rig: ck.Rig, half: str, xf: Xf) -> None:
         Tc = np.array([(0, 1 + k, 1 + (k + 1) % n) for k in range(n)], dtype=np.int64)
         Tc = orient(Pc, Tc, sgn * t)
         Pcw = xf(Pc)
-        col, wet = iron(Pc, SEED + 5)
-        ck.finish(mesh, Pcw, Tc, "iron", np.clip(col * 0.92, FLOOR, 1.0), bone, wet=wet, cavity=0.5, flat=True)
+        # M4-CRB-009: the drum is plated inside with brass (a Lit Age engine's bright works), so the split shows a
+        # raw brass face against the black iron: at night, at battle distance, the open seam reads as broken
+        col, pat = brass(Pc, SEED + 5, polish=0.8)
+        rim = ck.smoothstep(0.3, 0.05, np.hypot(np.hypot(Pc[:, 0], Pc[:, 2]) - 0.45, Pc[:, 1] - 0.62))
+        col = ck.mix(np.clip(PAL["lacquer_black"] * 1.2, FLOOR, 1.0), col, (0.35 + 0.65 * rim)[:, None])
+        ck.finish(mesh, Pcw, Tc, "iron", col, bone, wet=0.1, cavity=0.3 + 0.2 * pat, flat=True)
 
 
 def window(mesh: ck.Mesh, rig: ck.Rig, xf: Xf, broken: bool) -> None:
@@ -439,62 +464,18 @@ def paddle(mesh: ck.Mesh, rig: ck.Rig, i: int, xf: Xf) -> None:
     part_iron(mesh, place(P), T, pad, SEED + 61)
 
 
-def settle(mesh: ck.Mesh, start: int, i: int, xf: Xf) -> None:
-    """Turns the vertices from index `start` on (one slack paddle) about its hinge pin, where `xf` (its half's tilt)
-    put it, by the least that keeps them on the water (bisection, deterministic)."""
-    P = np.concatenate(mesh.pos)
-    sl = P[start:]
-    h = xf(hinge_pt(i)[None])[0]
-    k = xf.R @ lift_axis(i)
-
-    def turned(deg):
-        return (sl - h) @ rot_axis(k, deg).T + h
-
-    if turned(0.0)[:, 1].min() >= 0.0:
-        return
-    lo, hi = 0.0, 30.0
-    for _ in range(40):
-        mid = 0.5 * (lo + hi)
-        if turned(mid)[:, 1].min() >= 0.0:
-            hi = mid
-        else:
-            lo = mid
-    new = turned(hi)
-    # write back across the per-part arrays
-    off = 0
-    for j, arr in enumerate(mesh.pos):
-        n = len(arr)
-        if off + n > start:
-            a = max(start - off, 0)
-            mesh.pos[j] = arr.copy()
-            mesh.pos[j][a:] = new[off + a - start: off + n - start]
-            R_ = rot_axis(k, hi)
-            mesh.nrm[j] = mesh.nrm[j].copy()
-            mesh.nrm[j][a:] = mesh.nrm[j][a:] @ R_.T
-        off += n
-
-
 def build_variant(rig: ck.Rig, broken: bool) -> ck.Mesh:
+    """M4-CRB-009: both meshes at the same rest geometry; the broken one's window is cracked dark and its hinge marks
+    are out. Its split, toppled, slack shape is the broken stance's pose (`break`, `idle_broken`), so the swap at the
+    break's first frame changes only the lights."""
     mesh = ck.Mesh("EngineBroken" if broken else "Engine")
-    xfs = {h: (half_xf(h, SPLIT_BROKEN) if broken else ID) for h, _, _ in HALVES}
     for h, _, _ in HALVES:
-        drum_half(mesh, rig, h, xfs[h])
-    window(mesh, rig, xfs["a"], broken)
-    chim = xfs["b"]
-    if broken:  # the stack leans further on its half, its cowl knocked askew with it
-        _, t = az_dirs(CHIM_AZ)
-        chim = Xf(rot_axis(t, 9.0), chim_base()).then(xfs["b"])
-    chimney(mesh, rig, chim)
-    for i, az in enumerate(PADDLE_AZ):
-        xf = xfs[half_of(az)]
-        hinge(mesh, rig, i, xf, broken)
-        if broken:
-            slew = Xf(ck.rot_y(SLACK[i]), hinge_pt(i))
-            start = mesh.count
-            paddle(mesh, rig, i, slew.then(xf))
-            settle(mesh, start, i, xf)
-        else:
-            paddle(mesh, rig, i, xf)
+        drum_half(mesh, rig, h, ID)
+    window(mesh, rig, ID, broken)
+    chimney(mesh, rig, ID)
+    for i in range(len(PADDLE_AZ)):
+        hinge(mesh, rig, i, ID, broken)
+        paddle(mesh, rig, i, ID)
     return mesh
 
 
@@ -511,78 +492,205 @@ def lift(clip: ck.Clip, i: int, t: float, deg: float, slew: float = 0.0) -> None
     clip.key(f"paddle{i}", t, euler_of(R_))
 
 
-def stilling(name: str) -> ck.Clip:
-    """`cast` (the stilling): every paddle lifts together, then presses down flat at 0.8 s and holds; the drum
-    rises a little on the lift and settles as they press; the cowl jolts. `attack` is the same clip (the sheet)."""
-    c = ck.Clip(name, 1.8)
+def idle_lift(i: int, t: float) -> float:
+    """The running idle's lift of paddle i at t: a slow wave of presses round the ring."""
+    return IDLE_AMP * 0.5 * (1.0 - math.cos(2.0 * math.pi * (t / IDLE_SEC - i / 8.0)))
+
+
+I0 = tuple(idle_lift(i, 0.0) for i in range(8))  # the idle's first frame: every one-shot starts and ends here
+
+
+def tc_chim() -> np.ndarray:
+    return az_dirs(CHIM_AZ)[1]
+
+
+def key_halves(c: ck.Clip, t: float, deg: float) -> None:
+    for h, _, _ in HALVES:
+        c.key(f"half_{h}", t, axis_euler(half_axis(h)[1], deg))
+
+
+def key_chimney(c: ck.Clip, t: float, deg: float) -> None:
+    c.key("chimney", t, axis_euler(tc_chim(), deg))
+
+
+def paddles(c: ck.Clip, keys) -> None:
+    """keys: per paddle a list of (t, lift, slew) or a function i -> that list."""
     for i in range(8):
-        for t, deg in ((0.0, 0.0), (0.25, 2.5), (0.6, 11.0), (0.8, 0.0), (0.95, 1.2), (1.1, 0.0), (1.8, 0.0)):
-            lift(c, i, t, deg)
-    for t, dy, rx in ((0.0, 0.0, 0.0), (0.6, 0.03, -1.0), (0.8, 0.0, 0.0), (0.92, 0.012, 0.4), (1.1, 0.0, 0.0),
-                      (1.8, 0.0, 0.0)):
+        for t, deg, sl in (keys(i) if callable(keys) else keys):
+            lift(c, i, t, deg, sl)
+
+
+def stilling(name: str) -> ck.Clip:
+    """`cast` (the stilling, the flat pulse): from the idle every paddle lifts together, higher and higher (0-0.7 s,
+    the telegraph), then all press down flat at 0.8 s and hold the water still; the drum rises and leans back on the
+    lift and drops as they press; the cowl jolts. `attack` is the same clip (the sheet: it never strikes)."""
+    c = ck.Clip(name, CAST_SEC)
+    paddles(c, lambda i: ((0.0, I0[i], 0.0), (0.2, I0[i] + 2.0, 0.0), (0.7, CAST_LIFT, 0.0),
+                          (CAST_CONTACT, 0.0, 0.0), (0.95, 1.5, 0.0), (1.1, 0.0, 0.0), (1.25, 0.0, 0.0),
+                          (CAST_SEC, I0[i], 0.0)))
+    for t, dy, rx in ((0.0, 0.0, 0.0), (0.7, 0.045, -1.2), (CAST_CONTACT, 0.0, 0.0), (0.9, 0.015, 0.5),
+                      (1.05, 0.0, 0.0), (CAST_SEC, 0.0, 0.0)):
         c.key("drum", t, (rx, 0.0, 0.0), (0.0, dy, 0.0))
-    _, tc = az_dirs(CHIM_AZ)
-    for t, deg in ((0.0, 0.0), (0.6, -1.5), (0.82, 3.5), (0.97, -1.8), (1.15, 0.8), (1.35, 0.0), (1.8, 0.0)):
-        c.key("chimney", t, axis_euler(tc, deg))
+    for t, deg in ((0.0, 0.0), (0.7, -2.0), (0.82, 4.5), (0.97, -2.0), (1.15, 1.0), (1.35, 0.0), (CAST_SEC, 0.0)):
+        key_chimney(c, t, deg)
     return c
 
 
 def hit_clip(name: str, sgn: float, kick: int, amp: float) -> ck.Clip:
-    """M3-CRE-617: the drum jolts back and one paddle kicks up; the peak at 0.1 s."""
+    """M3-CRE-617: the drum jolts back and one paddle kicks up; the peak at 0.1 s; from the idle's first frame."""
     c = ck.Clip(name, 0.7)
-    _, tc = az_dirs(CHIM_AZ)
     for t, s in ((0.0, 0.0), (0.1, 1.0), (0.22, -0.4), (0.36, 0.18), (0.5, -0.06), (0.7, 0.0)):
         m = s * amp
         c.key("drum", t, (-3.0 * m, 0.0, 1.6 * m * sgn), (0.0, 0.02 * max(m, 0.0), 0.0))
     for t, s in ((0.0, 0.0), (0.12, 1.0), (0.26, -0.5), (0.42, 0.2), (0.7, 0.0)):
-        c.key("chimney", t, axis_euler(tc, -6.0 * s * amp))
+        key_chimney(c, t, -6.0 * s * amp)
     for i in range(8):
-        if i == kick:
-            for t, deg in ((0.0, 0.0), (0.1, 24.0), (0.24, 7.0), (0.38, 11.0), (0.55, 2.0), (0.7, 0.0)):
-                lift(c, i, t, deg * amp)
-        else:
-            for t, deg in ((0.0, 0.0), (0.1, 2.0), (0.3, 0.5), (0.7, 0.0)):
-                lift(c, i, t, deg * amp)
+        ks = ((0.0, 0.0), (0.1, 24.0), (0.24, 7.0), (0.38, 11.0), (0.55, 2.0), (0.7, 0.0)) if i == kick else \
+            ((0.0, 0.0), (0.1, 2.0), (0.3, 0.5), (0.7, 0.0))
+        for t, deg in ks:
+            lift(c, i, t, I0[i] + deg * amp)
+    return c
+
+
+def broken_hit(name: str, sgn: float, kick: int, amp: float) -> ck.Clip:
+    """The broken stance's hit: the split drum jolts, its halves rock open, the fallen stack rattles, and one slack
+    paddle kicks; from and back to the broken stance."""
+    c = ck.Clip(name, 0.7)
+    for t, s in ((0.0, 0.0), (0.1, 1.0), (0.22, -0.4), (0.36, 0.18), (0.5, -0.06), (0.7, 0.0)):
+        m = s * amp
+        c.key("drum", t, (-2.5 * m, 0.0, 1.2 * m * sgn), (0.0, 0.015 * max(m, 0.0), 0.0))
+        key_halves(c, t, BROKEN_SPLIT + 1.5 * m)
+    for t, s in ((0.0, 0.0), (0.12, 1.0), (0.26, -0.5), (0.42, 0.2), (0.7, 0.0)):
+        key_chimney(c, t, BROKEN_CHIMNEY + 5.0 * s * amp)
+    for i in range(8):
+        ks = ((0.0, 0.0), (0.1, 16.0), (0.24, 4.0), (0.38, 7.0), (0.55, 1.0), (0.7, 0.0)) if i == kick else \
+            ((0.0, 0.0), (0.1, 2.0), (0.3, 0.5), (0.7, 0.0))
+        for t, deg in ks:
+            lift(c, i, t, BROKEN_LIFT[i] + deg * amp, BROKEN_SLEW[i])
     return c
 
 
 def build_clips() -> list[ck.Clip]:
-    # idle: the paddles lift and press back in a slow wave round the ring (up to 3.5 degrees), the cowl sways
-    idle = ck.Clip("idle", 6.0, loop=True)
+    # idle (running): the paddles lift and press back in a slow wave round the ring, the drum throbs, the cowl sways
+    idle = ck.Clip("idle", IDLE_SEC, loop=True)
     n = 12
-    for i in range(8):
-        for s in range(n + 1):
-            ph = 2.0 * math.pi * (s / n - i / 8.0)
-            lift(idle, i, 6.0 * s / n, 3.5 * 0.5 * (1.0 - math.cos(ph)))
-    _, tc = az_dirs(CHIM_AZ)
+    paddles(idle, lambda i: [(IDLE_SEC * s / n, idle_lift(i, IDLE_SEC * s / n), 0.0) for s in range(n + 1)])
     for s in range(n + 1):
-        idle.key("chimney", 6.0 * s / n, axis_euler(tc, 0.8 * math.sin(2.0 * math.pi * s / n)))
+        t = IDLE_SEC * s / n
+        key_chimney(idle, t, 0.8 * math.sin(2.0 * math.pi * s / n))
+        idle.key("drum", t, loc=(0.0, 0.004 * 0.5 * (1.0 - math.cos(4.0 * math.pi * s / n)), 0.0))
+
+    # idle_b (the fidget): the governor knocks twice; the drum jumps, the cowl rattles, the wave hitches
+    idle_b = ck.Clip("idle_b", 1.6)
+    paddles(idle_b, lambda i: ((0.0, I0[i], 0.0), (0.3, I0[i] + 3.0, 0.0), (0.55, I0[i], 0.0),
+                               (0.85, I0[i] + 2.0, 0.0), (1.2, I0[i], 0.0), (1.6, I0[i], 0.0)))
+    for t, dy, rz in ((0.0, 0.0, 0.0), (0.25, 0.018, 0.8), (0.4, 0.0, -0.3), (0.75, 0.012, -0.6), (0.9, 0.0, 0.2),
+                      (1.1, 0.0, 0.0), (1.6, 0.0, 0.0)):
+        idle_b.key("drum", t, (0.0, 0.0, rz), (0.0, dy, 0.0))
+    for t, deg in ((0.0, 0.0), (0.27, 3.0), (0.4, -2.0), (0.55, 1.0), (0.77, 2.5), (0.92, -1.5), (1.15, 0.5),
+                   (1.6, 0.0)):
+        key_chimney(idle_b, t, deg)
+
+    # intro (under the boss camera's hold on `the_engine`): every paddle rises off the water together, slowly, the
+    # drum lifting with them, a held breath; then all slam down flat at once (the Warden plants his rod) and the
+    # water goes still; it settles into the running wave
+    intro = ck.Clip("intro", INTRO_SEC)
+    paddles(intro, lambda i: ((0.0, I0[i], 0.0), (0.3, I0[i], 0.0), (1.45, 20.0, 0.0), (1.7, 19.0, 0.0),
+                              (1.95, 0.0, 0.0), (2.05, 2.0, 0.0), (2.2, 0.0, 0.0), (INTRO_SEC, I0[i], 0.0)))
+    for t, dy, rx in ((0.0, 0.0, 0.0), (0.3, 0.0, 0.0), (1.45, 0.05, -1.5), (1.7, 0.05, -1.5), (1.95, 0.0, 0.5),
+                      (2.08, 0.02, -0.4), (2.25, 0.0, 0.0), (INTRO_SEC, 0.0, 0.0)):
+        intro.key("drum", t, (rx, 0.0, 0.0), (0.0, dy, 0.0))
+    for t, deg in ((0.0, 0.0), (1.45, -3.0), (1.7, -3.0), (1.97, 6.0), (2.12, -3.0), (2.3, 1.2), (INTRO_SEC, 0.0)):
+        key_chimney(intro, t, deg)
+
+    # ready (looped while it waits its turn): the paddles held a hand off the water, trembling, the drum up
+    ready = ck.Clip("ready", 1.4, loop=True)
+    paddles(ready, lambda i: ((0.0, I0[i], 0.0), (0.35, 6.0 + 0.5 * (i % 2), 0.0), (0.7, 5.0, 0.0),
+                              (1.05, 6.5 - 0.5 * (i % 2), 0.0), (1.4, I0[i], 0.0)))
+    for t, dy in ((0.0, 0.0), (0.35, 0.012), (1.05, 0.012), (1.4, 0.0)):
+        ready.key("drum", t, loc=(0.0, dy, 0.0))
+    for t, deg in ((0.0, 0.0), (0.4, -1.2), (0.7, 0.6), (1.0, -1.0), (1.4, 0.0)):
+        key_chimney(ready, t, deg)
 
     cast = stilling("cast")
     attack = stilling("attack")
     hit = hit_clip("hit", 1.0, 3, 1.0)
     hit_b = hit_clip("hit_b", -1.0, 5, 1.25)
 
-    # ko (it breaks): a shudder, then the seam splits and the halves tip apart, the stack leans, and the paddles go
-    # slack one by one, slewing off the fan (the window's going dark is the broken mesh's: the shader's emission is
-    # static)
-    ko = ck.Clip("ko", 2.6)
-    for t, rz, dy in ((0.0, 0.0, 0.0), (0.12, 1.5, 0.02), (0.26, -1.2, 0.0), (0.4, 0.6, 0.01), (0.55, 0.0, 0.0),
-                      (2.6, 0.0, 0.0)):
+    # break (the `broken` phase's clip; Liss's blow): the strike jolts the drum and kicks the near paddles; at 0.6 s
+    # the seam cracks open (the window is already dark: the phase swaps in the broken mesh on this clip's first frame)
+    # and the halves fall apart; the stack topples over on its half; the paddles go slack one by one, slewing off the
+    # fan, two jamming up on their snapped hinges; it ends on the broken stance (idle_broken's first frame)
+    brk = ck.Clip("break", BREAK_SEC)
+    for t, rx, rz, dy in ((0.0, 0.0, 0.0, 0.0), (0.1, -4.0, 2.0, 0.03), (0.25, 1.5, -1.5, 0.0), (0.4, -1.0, 1.0, 0.015),
+                          (0.55, 0.0, 0.0, 0.0), (0.64, 0.0, -1.2, 0.02), (0.78, 0.0, 0.8, 0.0), (0.92, 0.0, 0.0, 0.0),
+                          (BREAK_SEC, 0.0, 0.0, 0.0)):
+        brk.key("drum", t, (rx, 0.0, rz), (0.0, dy, 0.0))
+    for t, deg in ((0.0, 0.0), (0.5, 0.0), (BREAK_CONTACT, 3.0), (0.7, 2.0), (1.2, BROKEN_SPLIT + 1.5),
+                   (1.45, BROKEN_SPLIT - 0.5), (1.65, BROKEN_SPLIT), (BREAK_SEC, BROKEN_SPLIT)):
+        key_halves(brk, t, deg)
+    for t, deg in ((0.0, 0.0), (0.12, -6.0), (0.3, 3.0), (BREAK_CONTACT, 0.0), (0.9, 6.0),
+                   (1.5, BROKEN_CHIMNEY + 4.0), (1.75, BROKEN_CHIMNEY - 2.0), (1.95, BROKEN_CHIMNEY),
+                   (BREAK_SEC, BROKEN_CHIMNEY)):
+        key_chimney(brk, t, deg)
+
+    def slack(i: int) -> list:
+        t0 = 0.65 + 0.09 * i
+        kick = 14.0 if i in (3, 4) else 3.0
+        out = [(0.0, I0[i], 0.0), (0.1, I0[i] + kick, 0.0), (0.3, 0.5 * I0[i], 0.0), (t0, 5.0, 0.0),
+               (t0 + 0.3, 0.6 * BROKEN_LIFT[i] + 1.0, 0.4 * BROKEN_SLEW[i])]
+        if BROKEN_LIFT[i] > 0.0:
+            out.append((t0 + 0.55, BROKEN_LIFT[i] + 6.0, 0.85 * BROKEN_SLEW[i]))
+        return out + [(t0 + 0.8, BROKEN_LIFT[i], BROKEN_SLEW[i]), (BREAK_SEC, BROKEN_LIFT[i], BROKEN_SLEW[i])]
+
+    paddles(brk, slack)
+
+    # idle_broken (the broken stance, looped): nothing runs; the slack paddles rock a little on the water, the jammed
+    # ones tremble, the toppled stack creaks. Its first frame is the broken pose exactly
+    idle_broken = ck.Clip("idle_broken", 5.0, loop=True)
+    for s in range(n + 1):
+        u = 2.0 * math.pi * s / n
+        t = 5.0 * s / n
+        for i in range(8):
+            ph = 1.7 * i
+            amp = 1.5 if BROKEN_LIFT[i] > 0.0 else 1.0
+            lift(idle_broken, i, t, BROKEN_LIFT[i] + amp * (math.sin(u + ph) - math.sin(ph)),
+                 BROKEN_SLEW[i] + 0.8 * (math.sin(u + ph + 1.0) - math.sin(ph + 1.0)))
+        key_chimney(idle_broken, t, BROKEN_CHIMNEY + 0.6 * math.sin(u))
+        key_halves(idle_broken, t, BROKEN_SPLIT)
+    hit_broken = broken_hit("hit_broken", 1.0, 6, 1.0)
+    hit_b_broken = broken_hit("hit_b_broken", -1.0, 1, 1.25)
+
+    # ko (the stop, whole): the wave stops, the paddles sag flat on the water, the drum shudders and settles listing,
+    # the stack rocks and stays leaning; then the KO fade
+    ko = ck.Clip("ko", 2.4)
+    paddles(ko, lambda i: ((0.0, I0[i], 0.0), (0.12, I0[i] + 2.0, 0.0), (0.5, 0.0, 0.0), (0.7, 1.0, 0.0),
+                           (1.0, 0.0, 0.0), (2.4, 0.0, 0.0)))
+    for t, rz, dy in ((0.0, 0.0, 0.0), (0.15, 1.5, 0.02), (0.3, -1.2, 0.0), (0.45, 0.6, 0.01), (0.6, 0.0, 0.0),
+                      (1.2, 0.0, 0.0), (1.8, 2.5, 0.0), (2.4, 2.2, 0.0)):
         ko.key("drum", t, (0.0, 0.0, rz), (0.0, dy, 0.0))
-    for h, _, _ in HALVES:
-        _, t_ = half_axis(h)
-        for t, deg in ((0.0, 0.0), (0.45, 0.0), (0.6, 2.5), (0.75, 2.0), (1.3, SPLIT_KO + 0.6), (1.5, SPLIT_KO),
-                       (2.6, SPLIT_KO)):
-            ko.key(f"half_{h}", t, axis_euler(t_, deg))
-    for t, deg in ((0.0, 0.0), (0.6, 0.0), (1.35, 13.0), (1.6, 10.0), (1.8, 11.0), (2.6, 11.0)):
-        ko.key("chimney", t, axis_euler(tc, deg))
-    for i in range(8):
-        t0 = 0.5 + 0.07 * i
-        for t, deg, sl in ((0.0, 0.0, 0.0), (t0, 4.0, 0.0), (t0 + 0.25, 1.0, 0.3 * KO_SLACK[i]),
-                           (t0 + 0.9, 0.0, KO_SLACK[i]), (2.6, 0.0, KO_SLACK[i])):
-            lift(ko, i, min(t, 2.6), deg, sl)
-    return [idle, attack, cast, hit, hit_b, ko]
+    for t, deg in ((0.0, 0.0), (0.2, -5.0), (0.4, 3.0), (0.6, 0.0), (1.6, 8.0), (1.8, 6.5), (2.4, 7.0)):
+        key_chimney(ko, t, deg)
+
+    # ko_broken (the stop from the broken stance): a last shudder; the jammed paddles fall back slack on the water,
+    # the halves sag further apart, the stack goes over
+    ko_broken = ck.Clip("ko_broken", 2.4)
+    paddles(ko_broken, lambda i: ((0.0, BROKEN_LIFT[i], BROKEN_SLEW[i]), (0.15, BROKEN_LIFT[i] + 3.0, BROKEN_SLEW[i]),
+                                  (0.9, 0.0, 1.2 * BROKEN_SLEW[i]), (1.05, 4.0 if BROKEN_LIFT[i] else 0.5,
+                                                                     1.2 * BROKEN_SLEW[i]),
+                                  (1.25, 0.0, 1.2 * BROKEN_SLEW[i]), (2.4, 0.0, 1.2 * BROKEN_SLEW[i])))
+    for t, rz, dy in ((0.0, 0.0, 0.0), (0.15, 1.5, 0.02), (0.3, -1.2, 0.0), (0.45, 0.6, 0.01), (0.6, 0.0, 0.0),
+                      (2.4, 0.0, 0.0)):
+        ko_broken.key("drum", t, (0.0, 0.0, rz), (0.0, dy, 0.0))
+    for t, deg in ((0.0, BROKEN_SPLIT), (0.5, BROKEN_SPLIT), (1.2, KO_BROKEN_SPLIT + 1.0), (1.4, KO_BROKEN_SPLIT),
+                   (2.4, KO_BROKEN_SPLIT)):
+        key_halves(ko_broken, t, deg)
+    for t, deg in ((0.0, BROKEN_CHIMNEY), (0.2, BROKEN_CHIMNEY - 4.0), (0.5, BROKEN_CHIMNEY),
+                   (1.3, KO_BROKEN_CHIMNEY + 3.0), (1.5, KO_BROKEN_CHIMNEY - 1.0), (1.7, KO_BROKEN_CHIMNEY),
+                   (2.4, KO_BROKEN_CHIMNEY)):
+        key_chimney(ko_broken, t, deg)
+    return [idle, idle_b, intro, ready, attack, cast, hit, hit_b, ko, brk, idle_broken, hit_broken, hit_b_broken,
+            ko_broken]
 
 
 # ---------------------------------------------------------------------------------------------
@@ -610,7 +718,7 @@ def report(rig: ck.Rig, meshes: list[ck.Mesh], clips: list[ck.Clip]) -> None:
 # blade on the water when the drum's jolt (the hit) or a slewing slack paddle (the KO) would press it under; the
 # drum lifts the least it takes when its jolt would tip an edge of its skirt under the waterline.
 GROUNDED_LIMBS = [(f"paddle{i}", tuple(float(v) for v in lift_axis(i)), 1.0, 30.0) for i in range(8)] + [
-    ("drum", gr.LIFT, 1.0, 0.2, ("hit", "hit_b", "ko"))]
+    ("drum", gr.LIFT, 1.0, 0.2)]
 
 
 def export_clips(rig: ck.Rig, meshes: list[ck.Mesh]) -> list[ck.Clip]:

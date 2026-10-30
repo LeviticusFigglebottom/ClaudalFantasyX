@@ -11,16 +11,16 @@ with its own seed, so the Act I set renders byte for byte as before.
                       salt-glass lamps that chime when they swing, and a steady hum (its bound light does not pulse,
                       so neither does the hum, until it dies and winds down).
     avalanche_ram     Ch12 boss: an Ullari woolback grown huge. A deep nasal bellow (formants of a long throat, not any
-                      real animal's call), it chews, its hooves are broad pads on packed snow, and the ice in its locks
-                      tinkles and shatters.
+                      real animal's call), it chews, its hooves are broad pads on packed snow, and its wet, matted
+                      locks shed water (ADR 0204 §2: no ice).
     wakefin           Ch15 boss: a spawn sailfish that is mostly a blade cutting the water. Its voice is the water:
                       the hiss of the cut, the breach, the slap of the blade; a sub thrum is the spawn in it.
     tannin_archer     Ch10: an archerfish on a mangrove root. Sculling fins, a gill click, the spit (a pressured jet
                       and its droplets), the tail slapping the water.
     gallery_ray       Ch11: a ray gliding through the air between pools. Slow wing air, a faint glassy shimmer (its
                       margin's sea-glow), the wing's slap.
-    rime_urchin       Ch11: an urchin of ice-crusted spines on an ice plinth. Its spine field rattles like icicles in
-                      wind, the stab crunches.
+    rime_urchin       Ch11: an urchin of salt-glass spines on a salt-glass plinth (re-materialled from ice, ADR
+                      0015). Its spine field rattles glassy and brittle in wind; the stab cracks a spine.
     conduit_crawler   Ch11, a Lit Age construct: a small brass cleaner under a glass dome. Ticking tripod feet, a
                       bristle brush, a squeaking wiper, a faint steady hum.
 
@@ -123,6 +123,8 @@ BRASS = [420.0, 1130.0, 2050.0, 3300.0, 4870.0]
 BRASS_DECAY = [0.35, 0.22, 0.14, 0.09, 0.06]
 ICE = [3150.0, 4400.0, 6100.0, 8200.0]
 ICE_DECAY = [0.05, 0.035, 0.025, 0.018]
+SALT_GLASS = [2350.0, 3870.0, 5520.0, 7690.0]      # the rime urchin's salt-glass spines: lower, longer than ice
+SALT_GLASS_DECAY = [0.11, 0.07, 0.045, 0.028]
 
 
 def clang(g: np.random.Generator, scale: float, amp: float = 1.0, ring: float = 1.0) -> np.ndarray:
@@ -282,7 +284,8 @@ class Engine:
 
 
 class Woolback:
-    """The Avalanche Ram: an Ullari woolback grown huge, its locks frozen and hung with ice."""
+    """The Avalanche Ram: an Ullari woolback grown huge, its locks wet and matted (ADR 0204 §2: no ice from Ch12 to
+    Ch15; M4-A2P-093 replaced the ice that hung in its locks with the water they shed)."""
 
     F = [(380, 140, 1.0), (950, 220, 0.5), (2300, 420, 0.15)]
 
@@ -305,8 +308,16 @@ class Woolback:
 
     @staticmethod
     def locks(g, sec, amp=1.0):
-        """The frozen locks swinging: a soft heavy swish."""
+        """The wet, matted locks swinging: a soft heavy swish."""
         return amp * whoosh(g, sec, 700, 1500)
+
+    @staticmethod
+    def wet(g, sec, amp=1.0):
+        """Water shed from the matted wool: a soft spray and a few wet grains falling."""
+        x = buf(sec + 0.3)
+        place(x, burst(g, min(sec, 0.3), [bq_bandpass(1500, 0.7), bq_lowpass(3000, 0.7)], 0.005, 0.08), 0.0, 0.6)
+        place(x, crackle(g, sec, 40, 1200, 0.8, sec * 0.4), 0.02, 0.3)
+        return amp * x
 
     @classmethod
     def idle(cls, p, v, g):
@@ -315,7 +326,7 @@ class Woolback:
             place(x, crackle(g, 0.18, 300, 700, 0.9, 0.06), 0.3 + 0.55 * i, 0.4)
         place(x, cls.bellow(g, 0.7, contour(72, 84, 66, 0.3), 0.6, 0.5), 2.4)
         place(x, cls.locks(g, 1.2, 0.3), 1.0)
-        place(x, tinkle(g, 2.8, 4, 2800, 4400, 0.3), 0.2)
+        place(x, cls.wet(g, 2.8, 0.3), 0.2)
         return x
 
     @classmethod
@@ -328,7 +339,7 @@ class Woolback:
         place(x, rumble, 0.3, 0.6)
         place(x, cls.locks(g, 0.6, 0.5), 0.35)
         place(x, thump(g, 95, 38, 0.2, 0.7, 0.8), 0.75, 1.0)
-        place(x, tinkle(g, 0.4, 6, 2600, 4600, 0.6), 0.76)
+        place(x, cls.wet(g, 0.4, 0.6), 0.76)
         place(x, cls.bellow(g, 0.6, contour(80 + 6 * v, 110, 75, 0.3), 0.5, 0.6), 0.85)
         return x
 
@@ -336,7 +347,7 @@ class Woolback:
     def hurt(cls, p, v, g):
         x = buf(1.4)
         place(x, cls.bellow(g, 0.55, contour(95 + 8 * v, 140 + 10 * v, 85, 0.25), 0.3, 1.0), 0.0)
-        place(x, tinkle(g, 0.3, 7, 2600, 5000, 0.7), 0.02)
+        place(x, cls.wet(g, 0.3, 0.7), 0.02)
         place(x, crackle(g, 0.15, 1200, 3200, 1.0, 0.04), 0.02, 0.4)
         place(x, cls.locks(g, 0.5, 0.4), 0.05)
         return x
@@ -350,7 +361,7 @@ class Woolback:
         place(x, thump(g, 80, 38, 0.22, 0.5, 0.7), 1.25, 0.8)
         place(x, cls.locks(g, 1.4, 0.5), 1.6)
         place(x, thump(g, 70, 32, 0.35, 0.6, 1.0), 2.4, 1.0)
-        place(x, tinkle(g, 1.2, 6, 2600, 4400, 0.4), 2.4)
+        place(x, cls.wet(g, 1.2, 0.4), 2.4)
         exhale = burst(g, 1.6, [bq_bandpass(700, 0.7), bq_lowpass(2000, 0.7)], 0.3, 0.6)
         place(x, exhale, 3.2, 0.45)
         return x
@@ -567,25 +578,29 @@ class Ray:
 
 
 class Urchin:
-    """The rime urchin: a test of ice-crusted spines on an ice plinth. The spines rattle like icicles in wind."""
+    """The rime urchin: a test of salt-glass spines on a salt-glass plinth (the Lead, 2026-10-30, after ADR 0015's
+    "nothing frozen" in Lowlight; it was ice). The spines rattle glassy and brittle: longer, inharmonic rings than
+    ice's dry ticks, and a crack when one breaks."""
 
     @staticmethod
     def field(g, sec, rate, amp=1.0, swell=True):
-        """The spine field: tiny ice taps, their density swelling as a wave runs round the test."""
+        """The spine field: tiny salt-glass taps, their density swelling as a wave runs round the test."""
         x = buf(sec + 0.2)
         tt = 0.0
         while tt < sec:
             u = tt / sec
             a = np.sin(np.pi * u) ** 1.5 if swell else 1.0
-            place(x, tap(g, ICE, ICE_DECAY, float(a * g.uniform(0.2, 1.0)), 0.3, 0.12), tt)
+            place(x, tap(g, SALT_GLASS, SALT_GLASS_DECAY, float(a * g.uniform(0.2, 1.0)), 0.4, 0.15), tt)
             tt += 1.0 / (rate * (0.4 + 0.6 * (a if swell else 1.0))) * float(g.uniform(0.6, 1.4))
         return amp * x
 
     @staticmethod
     def crunch(g, amp=1.0):
-        x = buf(0.4)
-        place(x, crackle(g, 0.2, 1500, 2800, 0.9, 0.05), 0.0)
-        place(x, thump(g, 260, 140, 0.03, 0.6, 0.15), 0.0, 0.5)
+        """A spine cracking: a brittle glass crack, shards and a short ring."""
+        x = buf(0.8)
+        place(x, crackle(g, 0.15, 1500, 3600, 0.9, 0.04), 0.0)
+        place(x, thump(g, 260, 140, 0.03, 0.6, 0.15), 0.0, 0.4)
+        place(x, glass_ring(g, float(g.uniform(2100, 2900)), 0.5, 0.5), 0.01)
         return amp * x
 
     @classmethod
@@ -613,11 +628,12 @@ class Urchin:
 
     @classmethod
     def death(cls, p, v, g):
-        """A last clench, then the spines droop out and the test settles onto its ice."""
+        """A last clench, then the spines droop out and the test settles onto its glass plinth."""
         x = buf(2.6)
         place(x, cls.field(g, 0.2, 180, 1.0, False), 0.0)
-        place(x, train(g, 1.4, 50, 6, ICE, ICE_DECAY, 0.2, 0.3, 0.3), 0.3, 0.8)
-        place(x, cls.crunch(g, 0.7), 1.7)
+        place(x, train(g, 1.4, 50, 6, SALT_GLASS, SALT_GLASS_DECAY, 0.2, 0.3, 0.3), 0.3, 0.8)
+        place(x, tap(g, [880.0, 2150.0, 3600.0], [0.12, 0.06, 0.03], 0.8, 0.5, 0.05), 1.7)   # onto the glass plinth
+        place(x, cls.crunch(g, 0.5), 1.72)
         return x
 
     @classmethod

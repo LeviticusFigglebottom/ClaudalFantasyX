@@ -32,7 +32,11 @@ def _source():
 class VowboundSfxTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.ids = sorted(r["id"] for r in _json("game/data/battle/vowbound.json")["vowbound"])
+        rows = _json("game/data/battle/vowbound.json")["vowbound"]
+        # M4-A2P-024/025: a row added ahead of its voice names the audio task in "sfx_pending" (as creatures.json's
+        # vowbound_pending does the other way round); the checks cover it once audio drops the key
+        cls.ids = sorted(r["id"] for r in rows if not r.get("sfx_pending"))
+        cls.pending = {r["id"]: r["sfx_pending"] for r in rows if r.get("sfx_pending")}
         cls.voices = _json("game/data/audio/creature_voices.json")["creatures"]
         cls.creature_rows = _json("game/data/audio/sfx_creatures.json")["sfx"]
         cls.choreo = _json("game/data/audio/choreo_sfx.json")
@@ -65,6 +69,11 @@ class VowboundSfxTest(unittest.TestCase):
                     self._rendered(f)
                     self.assertEqual(targets.rule_for(f.removeprefix("res://assets/audio/"))[2], -22.0,
                                      f"{f} sits under the shared rows")
+
+    def test_a_row_waiting_for_its_voice_names_the_task(self) -> None:
+        for vid, task in self.pending.items():
+            self.assertRegex(task, r"^M\d+-[A-Z]+-\d+$", vid)
+            self.assertNotIn(vid, self.voices, f"{vid} has its voice now: drop sfx_pending")
 
     def test_the_source_names_every_file_and_fliers_take_no_steps(self) -> None:
         files = set(_source().FILES)
