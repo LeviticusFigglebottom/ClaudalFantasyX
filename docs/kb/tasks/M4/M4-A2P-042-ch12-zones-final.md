@@ -2,9 +2,8 @@
 id: M4-A2P-042
 title: "Keth Pass, Quellan and Cloudloom dressed, lit and walkable at final quality"
 role: environment
-status: blocked
-blocked-by: ADR 0203
-owner_session: ""
+status: doing
+owner_session: "env-art (claude/env-art, 2026-10-30)"
 depends_on: []
 reviewer: rendering
 milestone: M4
