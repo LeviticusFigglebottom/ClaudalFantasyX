@@ -241,7 +241,8 @@ JOBS = [
      _source_files("assets_src/sfx/act2_cutscene_sfx.py"), "sfx"),
     ("assets_src/sfx/act2_ui_sfx.py", "assets/audio/sfx", _source_files("assets_src/sfx/act2_ui_sfx.py"), "sfx"),
     # M4-A2P-090 (ADR 0175): Act II scene cues, plain git under assets/audio/act2/music/
-    ("assets_src/music/act2/farewell_tide.py", "assets/audio/act2/music", ["farewell_tide.ogg"], "music"),
+    ("assets_src/music/act2/farewell_tide.py", "assets/audio/act2/music",
+     ["farewell_tide.ogg", "farewell_tide.loop.json", "farewell_tide_release.ogg"], "music_loop"),  # M4-CIN-1301
     ("assets_src/music/act2/peace_wedding_break.py", "assets/audio/act2/music", ["peace_wedding_break.ogg"], "music"),
     ("assets_src/music/act2/lagoon_escape.py", "assets/audio/act2/music", ["lagoon_escape.ogg"], "music"),
     ("assets_src/music/act2/kerrid_at_sea.py", "assets/audio/act2/music", ["kerrid_at_sea.ogg"], "music"),
