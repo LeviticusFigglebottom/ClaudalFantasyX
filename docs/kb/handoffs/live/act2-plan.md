@@ -439,3 +439,6 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
   - The 5 Lacquer Court flags are listed because those Ch14 rows sit in a `ch13/` zone (M3-UI-1242).
 - **M4-A2P-114 (act1-chapters) is updated:** add the `play` or `victory_flag` setter, and delete that flag's `unraised` row in the same commit. The rows need no change.
 - **Checks:** validate_data 0/0 · taskboard clean · test_qa_flag_reach OK · my static check of every Ch10–13 wait against flow sets, thread sets and the known rows: 0 failures.
+  - Godot `qa_threads` 1/0, reporting 19 KNOWN unraised and no failure.
+- MERGE-READY objectives restored @ 86262eb93
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114 (act1-chapters adds the setters and empties `unraised`), M4-A2P-112 items 3, 5 and 6.
