@@ -140,6 +140,25 @@ A no-fail held input inside a cutscene, for the Ebbing's three movements (act1_c
 - **Tests.** In `instant` mode the waits are zero, so a gate passes at once. `tests/integration/test_ch09_thread.gd` `test_the_ebbing_cannot_fail` drives a real-time play with `tick()`.
 - **Two notes.** A skip (holding `ui_cancel`) counts its hold in `advance`, so it fills only while the action is held too. The gate gives the sequencer its processing state back when it closes.
 
+### Release (M4-CIN-1302, the farewell-tide)
+
+The other kind of gate ends by letting go (act2_ch10.md B09: the player who held Asha's staff down into the sea now lets the dead rise). `<<event release_input <prompt>>>` opens it: the scene's time **stands still while the action is held**, and the scene goes on the first frame it is not. Put it straight after a `hold_input_end`, so the player is holding when it opens (the hold gate's time only runs while they hold).
+
+```
+<<event hold_input watch>>
+@camera F02
+@wait 6.0
+<<event hold_input_end>>
+<<event release_input release>>
+@music farewell_tide stem=1
+@anim clutch turn_away
+```
+
+- The prompt is the host's row for the id (`prompts`), shown by the same `HoldPrompt`.
+- No timer and no fail: holding longer only holds the moment. A scene that ends closes it.
+- The score must be able to hold too (a loop or drone under the moment, then the tail on release; M4-CIN-1301).
+- Tests: `tests/unit/test_cutscene_release_gate.gd`.
+
 ## Motion (M2-FP-29)
 The human's playtest said cutscene turns snapped and walks started and stopped at full speed. `CutsceneMotion` (game/cutscene/cutscene_motion.gd) shapes both, using the tunings in `sequencer.json`:
 - **Turns** (`@anim <actor> look_at`, the turn into a walk, the turn onto a stand-in mark): eased in and out on Godot's `ease()` curve `turn_ease` (negative means in-out). They take from `turn_min_sec` for a small angle up to `turn_sec` for a half turn. Nothing snaps any more.
