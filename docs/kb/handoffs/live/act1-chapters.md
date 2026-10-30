@@ -686,7 +686,7 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - Lore wording, for story if they want it (LORE_MANGROVE_DROWNER, mine): "Something came up the estuary as a slick
     of black water and stayed in the cage of an old mangrove's roots. The roots grew around it and through it. The
     fen's dead are snagged in it, and they cannot rise."
-- MERGE-READY @ (this push)
+- MERGE-READY @ c33c39015 (row 34 fix; FAST-TRACK for big20)
 
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
