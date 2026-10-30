@@ -1,4 +1,4 @@
-# big22: 576 shots: 331 PASS, 157 DRIFT (0 size mismatch), 75 NO-BASELINE, 13 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
+# big22: 598 shots: 334 PASS, 160 DRIFT (0 size mismatch), 84 NO-BASELINE, 20 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
 PASS boot_title rmse 0.00000 (limit 0.00400)
 NO-BASELINE slice_end_card (pending_baseline)
 PASS lighting_probe rmse 0.00000 (limit 0.00800)
@@ -547,31 +547,53 @@ PASS brightwater_landing_f01 rmse 0.00656 (limit 0.00800)
 PASS brightwater_landing_f06 rmse 0.00018 (limit 0.00800)
 PASS zone_oruvel_storm_o12 rmse 0.00011 (limit 0.00800)
 PASS zone_oruvel_storm_o16 rmse 0.00020 (limit 0.00800)
+PASS ch07_tamsule_mouth rmse 0.00063 (limit 0.00800)
 PASS ch07_tamsule_market rmse 0.00063 (limit 0.00800)
 PASS ch07_tamsule_gantry rmse 0.00198 (limit 0.00800)
+DRIFT ch05_pemakar_weir rmse 0.01472 (limit 0.00800)
 DRIFT ch05_pemakar_harbour_day rmse 0.01796 (limit 0.00800)
 NO-BASELINE ch09_corrow_landing
+PASS ch09_corrow_rocks rmse 0.00066 (limit 0.00800)
 NO-BASELINE ch08_corrow_flood
 PASS ch08_corrow_lake rmse 0.00151 (limit 0.00800)
+NO-BASELINE ch08_coilspire_gate
 PASS ch08_coilspire_storm rmse 0.00000 (limit 0.00800)
 NO-BASELINE ch08_corrow_storm
+DRIFT ch05_ashcrown_causeway rmse 0.01322 (limit 0.00800)
 NO-BASELINE ch05_ashcrown_forecourt
 DRIFT ch05_ashcrown_crown rmse 0.02495 (limit 0.00800)
+NO-BASELINE ch05_ashcrown_tiers
 DRIFT ch05_ashcrown_court rmse 0.01053 (limit 0.00800)
 NO-BASELINE battle_arena_ashcrown_forecourt_day
+DRIFT battle_arena_ashcrown_anvil_court rmse 0.08641 (limit 0.00800)
 NO-BASELINE ch04_haluna_wake_feast
 PASS ch04_haluna_wake_lane rmse 0.00046 (limit 0.00800)
+NO-BASELINE creature_ilun
 NO-BASELINE creature_kahre
 PASS creature_virel rmse 0.00000 (limit 0.00800)
+NO-BASELINE creature_nhoa
 NO-BASELINE creature_hesk
 NO-BASELINE creature_ethren
+NO-BASELINE creature_kesh (pending_baseline)
 NO-BASELINE creature_ilun_held
 NO-BASELINE creature_kahre_held
+PASS creature_virel_held rmse 0.00000 (limit 0.00800)
 NO-BASELINE creature_hesk_held
 NO-BASELINE creature_nhoa_held
+NO-BASELINE creature_ethren_held
 NO-BASELINE battle_ch08_intercept
 NO-BASELINE battle_ch08_counter
+NO-BASELINE battle_ch08_withdraw
 NO-BASELINE kite_map
 NO-BASELINE field_menu_kite
+NO-BASELINE menu_glyphs
 NO-BASELINE field_menu_map_keth_pass
 NO-BASELINE field_menu_map_lowlight
+NO-BASELINE field_menu_map_ansedra
+FAILED-TO-CAPTURE slice_neme_table [capture rc=124 nopng 600s]
+FAILED-TO-CAPTURE ch01_oruvel_storm [capture rc=124 nopng 600s]
+FAILED-TO-CAPTURE ch01_drop [capture rc=124 nopng 600s]
+FAILED-TO-CAPTURE ch01_bell_room [capture rc=124 nopng 600s]
+FAILED-TO-CAPTURE ch01_scale_hull [capture rc=124 nopng 600s]
+FAILED-TO-CAPTURE ch01_net_pen [capture rc=124 nopng 600s]
+FAILED-TO-CAPTURE ch01_hullgnaw_rises [capture rc=124 nopng 600s]
