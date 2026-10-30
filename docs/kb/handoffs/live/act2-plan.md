@@ -262,3 +262,25 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - The rule is now in the glossary (an appended "Spelling" section) and in the voice guide's global rules: British with Oxford -ize (Customize stays), and keys and ids keep their spelling.
 - **Checks:** validate_data 0/0 · loc tools tests OK · Godot `settings` 48/0, `equip` 66/0, `status_menu` 7/0, `lattice` 67/0, `pseudo_loc` 26/0.
 - MERGE-READY @ 73c2cb482
+
+## 2026-10-30: Act II proofread and spelling pass (Lead request)
+- The automated pass over 822 Act II strings (spell, spacing, quotes, American spellings) found nothing. A reviewer then read all of them against the glossary, voice guide, beat sheets and ADRs 0015, 0016 and 0204. I checked all 13 findings against the source and applied all 13.
+- **Continuity, the important ones:**
+  - **Imra walked on to the Choir** (Ch15 K "She walked on to the Choir"; Ch16 "My mother walked here"). My Ch13 register line "Mother never got this far" was wrong. It's now "Mother would have stood right here", and the script note and M4-A2P-108 are corrected.
+  - **Herd-cord errand:** Pell already ties the cord on the pass in B07, so the errand no longer hands the cord over. Dorro's daughter asks after the animal and learns it's on the road with him. `OBJ_CH12_SIDE_CORD` and the flag's description are updated.
+  - **"Lamplighters"** is the glossary's proper noun for the six founders. The wedding's lamp-carriers I invented are now **lamp-bearers**: the speaker labels in `ch13_side_the_leaning_flame`, `ch14_side_six_lamps` and `ch14_bark_lamplighter`, plus `OBJ_CH13_SIDE_FLAME`. The ids and flags keep "lamplighter".
+  - **Seamstress:** "a Cantor's wedding" → "the wedding". The bride is Merel, not Asha.
+  - **Wakefin lore:** it's now Undertow-spawn that "followed the first ripples out of Ansedra's lagoon" (glossary and ADR 0016), not a fish the Saltwrights know.
+  - **Drowner lore:** "the full moon before last", to match Pell.
+- **Codex rows** (ui-menus wrote them; I fixed them as proofread):
+  - `CODEX_HERESY_BODY`: "Outside the Level" capitalised.
+  - `CODEX_LOWLIGHT_BODY`: the cold wells up *and* the glimmer sifts down.
+  - `CODEX_SUNKEN_VEY_BODY`: copper conduits holding a steady light, not ceramic and not pulsing (Ch11 rule 3).
+  - `CODEX_REEDHOLLOW_BODY`: one clutch, so each lodge is a family's.
+  - `CODEX_MALCOR_VENN_BODY`: "decree" → "declaration".
+- **Voice:**
+  - Rhen's "Big fan" → "My favourite kind". It came from the beat sheet, but it's modern slang.
+  - Toma's "anymore" → "any more" (British).
+- **Checks:** dlgc --check 0/0 · validate_data 0/0 · taskboard clean · loc tools tests OK · Godot `act2_dialogue` 1/0, `codex` 16/0, `bestiary` 37/0.
+- MERGE-READY @ 348b65795
+- BACKLOG EMPTY (story track).
