@@ -1,5 +1,5 @@
 {
- "_doc": "M4-CIN-1304: Ch12 Quellan's inn at night (cinematics'), from act2_ch12_direction.md. The greybox has only inn_door; the room is the dressing's, inside the Inn block.",
+ "_doc": "M4-CIN-1304: Ch12 Quellan's inn at night (cinematics'), from act2_ch12_direction.md. The greybox has only inn_door; the room is the dressing's, inside the Inn block. The inn had no light; inn_fire is cinematics' hearth practical (warm key low at the fire, a soft fill).",
  "shots": {
   "Q03": {
    "pos": [
@@ -66,6 +66,23 @@
    0.0,
    -9.6,
    0.0
+  ],
+  "fire": [
+   34.0,
+   0.6,
+   -10.2,
+   0.0
   ]
+ },
+ "props": {
+  "inn_fire": {
+   "at": [
+    34.0,
+    0.0,
+    -10.2,
+    0.0
+   ],
+   "scene": "res://game/data/cutscene/ch12/inn_fire.tscn"
+  }
  }
 }
