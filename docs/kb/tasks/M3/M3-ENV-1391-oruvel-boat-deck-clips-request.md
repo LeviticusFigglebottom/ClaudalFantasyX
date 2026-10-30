@@ -34,4 +34,8 @@ Owner: env-art (the Prologue to Ch4 zones, ADR 0041). See act1_gpu_qa.md row 75 
 QA re-check on big27 (9572c4129, dock_overlaps.py): the scale, keel and terrace hulls and the first outrigger are
 clear. Only the second outrigger under the two plank bridges is left.
 
+QA re-check on big32 (8889542f6): the second outrigger now lies alongside the net pen (its booms over the walkway
+edge, `docs/kb/qa/cloud/pass6/row75_outrigger_big32.jpg`); no hull runs through a deck. QA passes it from the cloud side.
+
 ## Review log
+- 2026-10-30, qa (cloud-qa): pass on big32; the dive raft's pairs are intended. Ready to close.

@@ -122,6 +122,24 @@ reaches 3.59–3.66 m/s on open ground).
 - With the longer gaps, the main routes (straight-line spawn-to-spawn: 13–197 m) now hold 0–1 random fights each. The
   Coilspire path (102 m) and the derelict (13 m) hold none.
 
+## RE-RUN after "Merge lead/gate-big32" (integration @ 8889542f6): playtest (a) and (b)
+Same probes and box. Milliseconds from Return, big28 → big32:
+
+| Fight | black | field in | fade clear | resident | Verdict (≤ 1 s of black) |
+|---|---|---|---|---|---|
+| tideline | 426 → **161** | 469 → 445 | 1086 → 838 | yes | PASS |
+| Oruvel scuttlers | 57 → 71 | 387 → 392 | 735 → 740 | yes | PASS |
+| the Drownbell (→ Haluna DockNight) | to the field: 5032 → **2533** | 1987 → 2062 | 5032 → 2533 | no (another zone) | **FAIL, better:** about 2.5 s of black before Haluna shows (was 5.0) |
+| causeway / Ch4 ferry / Ch6 (random) | 54 / 69 / 83 → 57 / 69 / 72 | ~390 | ~740–754 | yes | PASS |
+
+- **(a): 5 of 6 pass.** The Drownbell's cross-zone return has improved to 2.5 s but is still over 1 s (integration-qa). The
+  hero moves only after the fade clears.
+- **(b) Oruvel boats: PASS.** 4 AABB pairs: the dive raft's three (intended) and the second outrigger against the net
+  pen (0.35 × 1.14 × 6.77 m). Viewed on lavapipe (`docs/kb/qa/cloud/pass6/row75_outrigger_big32.jpg`): the canoe now
+  lies in open water alongside the pen's outer walkway, its booms resting over the walkway edge. It reads as moored;
+  no hull runs through a deck. M3-ENV-1391 can close. **Edges: PASS** (0 of 260).
+- The UiAudio reconnect ERROR is still there on big32 (60 lines in the return probe's six fights).
+
 ## RE-RUN after "Merge lead/gate-big28" (integration @ c646c3a8, the scripted-fight resident return)
 Same probes and box. Milliseconds from Return, big27 → big28:
 
@@ -354,7 +372,7 @@ in and `git lfs pull` plus an import first:
 - (b) `dock_probe.tscn -- --out=<dir>`, then `dock_overlaps.py <dir>/meshes.json`;
 - (d) `encounter_gap_probe.tscn`.
 
-Then report the deltas against the big27 numbers above (the latest re-run). The playthrough smoke: `tools/gpu_bench/playthrough_probe.tscn` from an empty XDG_DATA_HOME.
+Then report the deltas against the big32 numbers above (the latest re-run). The playthrough smoke: `tools/gpu_bench/playthrough_probe.tscn` from an empty XDG_DATA_HOME.
 
 Files touched: `tools/gpu_bench/{return_probe,dock_probe,run_cycle_probe,encounter_gap_probe,spawn_stills,fight_entry_probe}.gd/.tscn`,
 `tools/gpu_bench/dock_overlaps.py` and `act1_walk_pass6.json`/`act1_walk_row21.json`. Brought from gpu/act1-qa-5:
