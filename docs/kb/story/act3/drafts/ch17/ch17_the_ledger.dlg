@@ -1,0 +1,97 @@
+// DRAFT (Act III, planning only). Ch17 B05 "The ledger" (E, held page-turns, 6 min): the chapter's centre.
+// act3_ch17.md §2 B05. Rhen sits in the hull's cabin; Liss sits beside him. Each page is the ledger in the document
+// reader (M4-A2P-080: held page-turns, a blank-page end); the #narration lines below are its captions, in Dace's hand.
+// RULE 1: the ledger is READ, NEVER VOICED: no Dace voice-over, no flashback, no speaker "dace" anywhere.
+// RULE 2: the facts are exact (act_outline Ch17; ADR 0022 S4, S6; rhen_sallow.md; the Ch15 confession): RHEN'S NAME IS
+// IN EVERY ENTRY (he was eight); the stair, eleven years ago, and a Cantor whose name he learned only on the stair; the comb carried to
+// Haluna, sleeves down, after dark; the torn sleeves, the line-marks seen, the Bastion asking for the marked diver by
+// morning; a hunted wright going home brings the Order to Oruvel and to his son; "Kell. Of course." FIRST among the
+// entries a season after Corrow; the hull begun to follow her; the LAST entry, verbatim, breaks off. The next page is
+// blank, and so is every page after it. NOBODY SAYS THE REASONS EXCUSE HIM (Liss's line is there so they don't).
+// Kerrid never learns this (ADR 0022): he is not in the cabin.
+title: ch17_the_ledger
+location: ch17/hollowmere
+---
+@letterbox on
+@camera D07
+@music dace_ledger fade=2.0
+@mark rhen cabin_seat walk
+@mark liss cabin_seat_b walk
+@wait 2.0
+<<if $ch11_lamp_repaired>>
+    @anim liss give rhen
+    @wait 2.5
+<<endif>>
+@letterbox off
+@camera D08
+<<event hold_input turn_page>>
+@wait 1.5
+<<event hold_input_end>>
+Corrow. The stair. A Cantor came down it for me. I learned her name halfway up: Imra. #line:ch17_ledger_page_001 #narration #tn:"Dace Sallow's ledger, eleven years ago, in a plain working hand. Shown as a page in the document reader; never read aloud."
+The watch captain held the hand-line to the last. I reached back. I missed. #line:ch17_ledger_page_002 #narration
+She hummed going up. The Haluna tune, the one I hum Rhen to sleep with. #line:ch17_ledger_page_003 #narration
+@wait 2.0
+<<event hold_input turn_page>>
+@wait 1.5
+<<event hold_input_end>>
+Haluna. Took her comb to her girl. Sleeves down, after dark. Did not stay. #line:ch17_ledger_page_004 #narration
+Rhen would like a town with this many lanterns. #line:ch17_ledger_page_005 #narration
+@wait 2.0
+<<event hold_input turn_page>>
+@wait 1.5
+<<event hold_input_end>>
+My sleeves tore on the stair. They saw the line-marks. The Bastion wants the marked diver by morning. #line:ch17_ledger_page_006 #narration
+A hunted wright going home brings the Order to Oruvel. To Rhen. #line:ch17_ledger_page_007 #narration
+So I don't go home. Haluna I risked once, after dark. Never Oruvel. #line:ch17_ledger_page_008 #narration
+Sent Rhen word through the traders' post. Helping a friend on a long trip. All I could put my name to. #line:ch17_ledger_page_016 #narration #tn:"The one message that reached Rhen as a boy, left at Kell's stall (rhen_sallow.md). Dace's own judgement on it."
+@wait 2.5
+Liss [cold]: He could have sent word. #line:ch17_ledger_001
+@wait 2.0
+<<event hold_input turn_page>>
+@wait 1.5
+<<event hold_input_end>>
+A season after Corrow. A Hollowmere trader says the chandler has the boy. Kell. Of course. #line:ch17_ledger_page_009 #narration #tn:"'Kell. Of course.': relief and recognition, not surprise. Kell is the Oruvel stallholder who raised Rhen."
+Rhen is eating. Rhen has a hammock. Rhen is learning the lamps. #line:ch17_ledger_page_010 #narration
+@camera D09
+@wait 2.0
+Rhen [neutral]: He knew where I was. #line:ch17_ledger_002
+@wait 2.5
+Rhen [sad]: He knew where I was the whole time. #line:ch17_ledger_003
+<<if $ch12_rhen_tied_knot>>
+    @anim rhen touch wrist
+    @wait 2.0
+<<endif>>
+@camera D08
+<<event hold_input turn_page>>
+@wait 1.5
+<<event hold_input_end>>
+Varrow's last berth. Begun a hull. Not for trade. To follow her. #line:ch17_ledger_page_011 #narration
+She's in the storm. I heard her in it, at the Rim, holding it together. #line:ch17_ledger_page_012 #narration
+Rhen is nine at midwinter. When it flies I could take him up in it. #line:ch17_ledger_page_013 #narration
+@wait 2.0
+<<event hold_input turn_page>>
+@wait 1.5
+<<event hold_input_end>>
+The hull won't be ready. The storm goes down to sleep tonight. I'm going in after her. #line:ch17_ledger_page_014 #narration
+Rhen. If I bring him here he's a wright's son for life. Oruvel thinks he's a diver's boy. Let him be one. After the storm #line:ch17_ledger_page_015 #narration #tn:"The LAST entry. It breaks off mid-sentence, with no full stop: keep it unfinished in translation."
+@wait 3.0
+// The blank page: the reader turns to it and nothing follows. Rhen turns two more blank pages himself, then stops.
+@music silence fade=0.0
+@camera D10
+<<event hold_input turn_page>>
+@wait 2.0
+<<event hold_input_end>>
+@wait 3.0
+<<event hold_input turn_page>>
+@wait 2.0
+<<event hold_input_end>>
+@wait 2.0
+<<event hold_input turn_page>>
+@wait 2.0
+<<event hold_input_end>>
+@wait 4.0
+@camera D09
+@anim liss look_at rhen
+@wait 3.0
+<<set $ch17_read_the_ledger = true>>
+===

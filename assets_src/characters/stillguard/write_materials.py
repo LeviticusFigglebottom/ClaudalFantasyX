@@ -38,7 +38,9 @@ IRIS = {"a": "Color(0.20, 0.15, 0.10, 1)", "b": "Color(0.12, 0.08, 0.05, 1)", "c
         "d": "Color(0.26, 0.28, 0.27, 1)", "e": "Color(0.10, 0.07, 0.05, 1)", "f": "Color(0.30, 0.24, 0.14, 1)",
         "ivo": "Color(0.24, 0.15, 0.08, 1)",  # M3-CHR-540: Ivo's warm brown
         "officer": "Color(0.22, 0.20, 0.17, 1)",  # M3-CHR-593: the Ch8 officer's grey-brown
-        "venn": "Color(0.19, 0.20, 0.21, 1)"}  # M4-A2P-051: Malcor Venn's slate grey
+        "venn": "Color(0.19, 0.20, 0.21, 1)",  # M4-A2P-051: Malcor Venn's slate grey
+        "abiding_halberd": "Color(0.16, 0.11, 0.07, 1)", "abiding_bulwark": "Color(0.18, 0.13, 0.08, 1)",
+        "abiding_captain": "Color(0.14, 0.10, 0.07, 1)"}  # M4-A2P-051: the Abiding guard (under the veil)
 
 
 def hexcol(h: str, k: float = 1.0) -> str:
@@ -77,10 +79,14 @@ def write(v: str) -> None:
     for key, (shader, prio, params, tex) in table.items():
         mw.wm.write_shader_material(key, shader, prio, params, tex)
     standard = {"bronze": mw.STANDARD_MATERIALS["bronze"], "steel": STEEL, "spear": SPEAR}
-    if not extra["_variant"].get("spear", True) and not extra["_variant"].get("halberd"):  # M3-CHR-540: no spear
+    textures = {"spear": SPEAR_TEX}
+    if extra["_variant"].get("iron"):  # M4-A2P-051: Moll's brine-iron, on his maps (the Abiding guard's casters)
+        standard = {"bronze": standard["bronze"], "iron": mw.STANDARD_MATERIALS["iron"]}
+        textures = {"iron": mw.STANDARD_TEXTURES["iron"]}
+    elif not extra["_variant"].get("spear", True) and not extra["_variant"].get("halberd"):  # M3-CHR-540: no spear
         standard = {"bronze": standard["bronze"]}
     for key, body in standard.items():
-        mw.wm.write_standard_material(key, body, SPEAR_TEX if key == "spear" else {})
+        mw.wm.write_standard_material(key, body, textures.get(key, {}))
     print(f"wrote {len(table) + len(standard)} materials to {out}")
 
 

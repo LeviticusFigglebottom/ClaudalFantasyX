@@ -109,5 +109,57 @@ def helm(lm, body, params: dict, surface, V=None, F=None, freg=None) -> Part:
     eu0, ev0, eu1, ev1 = C.ATLAS["top_edge"]
     grid(part, E, "cloth", closed_u=True, tags=TAG_CLOTH, flip=not flip,
          uv_fn=lambda j, i: (eu0 + (eu1 - eu0) * i / COLS, ev0 + (ev1 - ev0) * j))
+    if params.get("veil"):  # M4-A2P-051: the Abiding guard's veil, hung from the brim (rigid on the head with it)
+        veil(part, lm, params, c, (ra, rb, rc), V, F, freg, flip)
     part.C = [(0.0, 0.0, 0.0, 0.0)] * len(part.V)
     return part
+
+
+VEIL_AZ = 85.0  # degrees either side of the front: the veil's span round the face
+VEIL_COLS = 32
+VEIL_ROWS = 10
+VEIL_THICK = 0.0015  # m: the gauze's two faces
+VEIL_FOLDS = 11  # folds across the span
+VEIL_FOLD_AMP = (0.0015, 0.006)  # m: a fold's depth at the brim and at the hem (the gauze falls into its folds)
+VEIL_HEM_RISE = 0.035  # m: the hem rises this much toward the span's ends (it hangs longest at the front)
+
+
+def veil(part: Part, lm, params: dict, c: np.ndarray, radii: tuple, V, F, freg, flip: bool) -> None:
+    """M4-A2P-051 (act2_ch16.md 5a: "veiled gold lacquer"): a gauze curtain from the helm's rim over the face to
+    `veil_drop_m` below the chin, round the front VEIL_AZ either side. Each column stands `veil_clear_m` off the
+    furthest head skin in its direction below the rim (the nose, the lips, the chin), so the face never comes through;
+    two faces VEIL_THICK apart, on the costume atlas's sash island (the palette's linen: his gauze)."""
+    S = lm.S
+    ra, rb, _rc = radii
+    clear = float(params["veil_clear_m"]) * S
+    zc = float(lm.P("chin")[2])
+    z_bot = zc - float(params["veil_drop_m"]) * S
+    used = np.unique(F[np.isin(freg, ["head", "scalp", "mouth"])])
+    H = V[used[used >= 0]]
+    az = np.radians(np.linspace(-VEIL_AZ, VEIL_AZ, VEIL_COLS))
+    d = np.stack([np.sin(az), -np.cos(az), np.zeros_like(az)], axis=1)  # outward in the plan (front is -Y)
+    z_rim = zc + np.interp(np.abs(np.degrees(az)), RIM_AZ, RIM_V) * lm.h
+    ell = 1.0 / np.sqrt((np.sin(az) / ra) ** 2 + (np.cos(az) / rb) ** 2)  # the shell's plan radius per column
+    Hc = H - np.array([c[0], c[1], 0.0])
+    reach = np.zeros(VEIL_COLS)
+    for i in range(VEIL_COLS):  # the furthest skin within 12 degrees of this column, below its rim
+        below = Hc[:, 2] < z_rim[i]
+        ang = np.arctan2(Hc[:, 0], -Hc[:, 1])
+        near = below & (np.abs(ang - az[i]) < np.radians(12.0))
+        reach[i] = float((Hc[near, :2] @ d[i, :2]).max()) if near.any() else 0.0
+    r = np.maximum(ell, reach + clear)
+    r = np.maximum(r, np.convolve(np.pad(r, 1, mode="edge"), np.ones(3) / 3.0, mode="valid"))  # no notches
+    P = np.zeros((VEIL_ROWS, VEIL_COLS, 3))
+    span = np.abs(np.degrees(az)) / VEIL_AZ
+    hem = z_bot + VEIL_HEM_RISE * S * span ** 2
+    fold = np.cos(np.pi * VEIL_FOLDS * np.degrees(az) / VEIL_AZ)  # a crest at the front
+    for j in range(VEIL_ROWS):
+        t = j / (VEIL_ROWS - 1)
+        z = z_rim + (hem - z_rim) * t
+        amp = (VEIL_FOLD_AMP[0] + (VEIL_FOLD_AMP[1] - VEIL_FOLD_AMP[0]) * t) * S
+        rr = r + amp * (0.5 + 0.5 * fold)  # folds only outward: the clearance holds
+        P[j] = np.array([c[0], c[1], 0.0]) + d * rr[:, None] + np.stack([np.zeros(VEIL_COLS)] * 2 + [z], axis=1)
+    u0, v0, u1, v1 = C.ATLAS["sash"]
+    rect = lambda j, i: (u0 + (u1 - u0) * i / (VEIL_COLS - 1), v0 + (v1 - v0) * j / (VEIL_ROWS - 1))  # noqa: E731
+    grid(part, P, "cloth", tags=TAG_CLOTH, flip=flip, uv_fn=rect)
+    grid(part, P - d[None, :, :] * VEIL_THICK * S, "cloth", tags=TAG_CLOTH, flip=not flip, uv_fn=rect)

@@ -1,0 +1,30 @@
+// DRAFT (Act III, planning only). Ch20 U04 the release: Hesk. Ama asks whether anyone read her cords. Toma says he did
+// (with Ysolde: ch12_ysolde_confessed); that they broke his faith; he thanks her for it. If ch15_toma_confessed and
+// ch14_toma_refused: one more line. A believer honouring the believer who told the truth. The keth bundle goes last.
+title: ch20_hesk_release
+location: ch20/undertow_layers
+---
+@letterbox on
+@camera U18
+@music silence fade=1.0
+Hesk as "Ama" [neutral]: Did anyone read my cords? #line:ch20_hesk_001 #tn:"Hesk speaks as Ama Quillo, an Ullari keth-reader, plainly devout."
+@wait 2.0
+<<if $ch12_ysolde_confessed>>
+    Toma [neutral]: I did. Ysolde read them to me. All forty-seven. And the question. #line:ch20_hesk_002
+<<else>>
+    Toma [neutral]: I did. All forty-seven. And the question. #line:ch20_hesk_003
+<<endif>>
+Toma [sad]: They broke my faith. #line:ch20_hesk_004
+@wait 2.0
+Toma [tender]: Thank you. #line:ch20_hesk_005
+<<if $ch15_toma_confessed and $ch14_toma_refused>>
+    Toma [neutral]: I stopped saying it. "Be level." I say your count instead. #line:ch20_hesk_006
+<<endif>>
+@music release_sting fade=0.0
+@vfx glimmer_lift at=hesk count=40 motion=spiral_up rate=slow
+@wait 6.0
+@vfx glimmer_lift at=keth_bundle count=1 motion=spiral_up rate=slow
+@wait 4.0
+<<set $ch20_hesk_released = true>>
+@letterbox off
+===

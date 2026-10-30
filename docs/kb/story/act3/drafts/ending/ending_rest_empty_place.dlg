@@ -1,0 +1,14 @@
+// DRAFT (Act III, planning only). Ending R4 "Rest: the empty place" (E, 0.75 min). act3_ending.md §2 R4. No dialogue.
+// Rhen sits where Kerrid stood. Toma sits beside him, NOT TOUCHING. The deck is empty of the dead. Only a few motes still
+// rise off the sea, far below and much nearer than before. The bed thins to nothing.
+title: ending_rest_empty_place
+location: ch18/kite
+---
+@music silence fade=20.0
+@mark rhen kite_rail walk
+@anim rhen sit kite_rail
+@mark toma kite_rail_b walk
+@anim toma sit kite_rail_b
+@vfx glimmer_lift at=sea_far count=8 motion=spiral_up rate=slow
+@wait 40.0
+===

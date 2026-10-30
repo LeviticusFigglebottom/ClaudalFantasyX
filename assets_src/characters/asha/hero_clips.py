@@ -1102,7 +1102,7 @@ def _victory(hero: str, u: float, sk: Skeleton, persona: dict) -> dict:
     s1, c1 = math.sin(ph), math.cos(ph)
     if hero == "kerrid":  # M3-CHR-505: the look back down the line (his block)
         return kerrid_victory(u, sk, persona)
-    if hero in ("moll", "venn"):  # M3-CHR-507: the iron grounded, the long look over the field (his block; Venn's)
+    if hero in ("moll", "venn") or hero.startswith("abiding_"):  # M3-CHR-507: his block (Venn's, the guard's)
         return moll_victory(u, sk, persona)
     if hero == "pell":  # M3-CHR-506: very still, listening to the quiet (his block); never his back turned
         return pell_victory(u, sk, persona)
@@ -4623,6 +4623,26 @@ GRIP["venn"] = {"R": ("mesh", "Spear", "DEF-spear")}
 GRIP_ALWAYS.add("venn")
 IDLE_GROUNDED.add("venn")
 PROP_DOWN["venn"] = dict(PROP_DOWN["moll"])
+
+# M4-A2P-051: Sefir's Abiding guard (act2_ch16.md 5a), three named builds on the same kit, veiled: the halberdiers and
+# the Captain of the Veil fight as Venn does (his keys, the halberd on DEF-spear), the Bulwark casters as Moll does
+# (his keys as they are, the brine-iron on DEF-iron and the shield on the left arm). Each its own persona (their
+# skeletons differ), a little stiller than Moll: sworn guards.
+for _h, _keys, _grip in (("abiding_halberd", _venn_keys, ("Spear", "DEF-spear")),
+                         ("abiding_captain", _venn_keys, ("Spear", "DEF-spear")),
+                         ("abiding_bulwark", _moll_keys, ("Iron", "DEF-iron"))):
+    PERSONA[_h] = dict(PERSONA["moll"], sway=0.25)
+    CLIPS[_h] = list(CLIPS["moll"])
+    BATTLE_HEROES = BATTLE_HEROES + (_h,)
+    FOOT_FLAT[_h] = FOOT_FLAT["moll"]
+    STANCE_DORSI[_h] = STANCE_DORSI["moll"]
+    BATTLE_STRIKER[_h] = dict(BATTLE_STRIKER["moll"])
+    _BATTLE_KEYS[_h] = _keys
+    KO_OWN.add(_h)
+    GRIP[_h] = {"R": ("mesh", *_grip)}
+    GRIP_ALWAYS.add(_h)
+    IDLE_GROUNDED.add(_h)
+    PROP_DOWN[_h] = dict(PROP_DOWN["moll"])
 
 
 # ---------------------------------------------------------------------------------------------
