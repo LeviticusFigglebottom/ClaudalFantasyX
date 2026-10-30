@@ -560,7 +560,7 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
     `LORE_MANGROVE_DROWNER`, `PHASE_MANGROVE_DROWNER_UPROOTED`, `SKILL_RISING_WATER`. validate_data errors on
     cross-file duplicates.
   - After the merge I'll tune the Lamp Engine, the Ram and the Wakefin with the sim, and add their suites.
-- MERGE-READY @ (this push)
+- MERGE-READY @ fd5b4414e
 
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
