@@ -141,3 +141,16 @@ This is the creatures they imply, checked against them. **Planning only:** no as
   encounters, `deep_scuttler` ×3 and `hull_rasp` alone.
 - Ch20: does the held-shapes crowd react to the fight (scatter like held light), or stay a backdrop? Default: a
   backdrop, which dims as each Vowbound is released (SPEC §6.3: the lights shrink).
+
+## As built (Act III production, ADR 0207)
+- **`deep_scuttler`** (M5-A3P-1805, 2026-10-30), from `assets_src/creatures/deep_scuttler/build_deep_scuttler.py`. The
+  scuttler's rig and clips, imported, so a fix to the scuttler reaches it, with its plates rebuilt:
+  - darker (lacquer black sunk toward abyss navy);
+  - every seam opened wider, and small raw wounds broken through the plates (`spawn_wound`, brighter and faster than
+    the scuttler's: energy 2.6, 0.45 Hz);
+  - a second pair of eyes;
+  - a ridge of short bone-tipped barbs along the spine, the new silhouette (the scuttler's arch with a saw edge).
+  - It stands 1.3 times the scuttler's size (the battle scene's `Model` scale).
+  - Clip audit: the scuttler's own profile, scaled up.
+  - Portrait and review shot `creature_deep_scuttler`.
+  - The enemies.json row and the Ch17 moorings encounter are Combat's and the chapter designer's.

@@ -446,6 +446,13 @@
       "out_dir": "res://assets/ui/portraits/creatures"
     },
     {
+      "id": "deep_scuttler",
+      "light_scale": {"key": 3.0, "rim": 3.0, "fill": 3.0},
+      "stage_environment": {"background_color": [0.35, 0.55, 0.65, 0.0]},
+      "scene": "res://game/creatures/deep_scuttler/deep_scuttler_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
       "id": "shoal_skipper",
       "scene": "res://game/creatures/shoal_skipper/shoal_skipper_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures"
