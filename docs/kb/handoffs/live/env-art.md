@@ -589,6 +589,21 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **M5-A3P-1400 (Act III): Ch20's three missing memory rooms. MERGE-READY @ 83fbf95e** (review: art).
+  - **New pieces:** `memory_terrace` (U02), `memory_gallery` (U05) and `memory_square` (U06), each within 7k / 500
+    triangles, with glbs, imports, PROVENANCE rows and manifest rows.
+  - **The undertow_cage arena now hangs all six rooms.** The gallery replaces its stand-in second kitchen.
+  - **Viewed in the arena:**
+    - the square's pool and flags were raised onto the island's top (they first sat under it);
+    - the terrace's boats became pointed hulls;
+    - the gallery's columns read dark under the top-down key, which Ch20's staging will light.
+  - **Checks:**
+    - Tools: test_undertow_layers (+2 checks), undertow_heart, haluna_kit and arenas, 51 OK.
+    - Godot `--filter=arena`: 18/0.
+    - validate_data clean; no banned terms.
+  - **Baselines that move (none written):** battle_arena_undertow_cage.
+  - **Next (still waiting for env-art-b to confirm the split):** Ch19's Iskarra (the full dusk version, and the Lamp
+    Spire's floors beyond its crown, M3-ENV-726).
 - **ACT III (ADR 0207): CLAIM M5-A3P-1400, Ch20's three missing memory rooms** (`memory_terrace`, `memory_gallery`,
   `memory_square` in undertow_layers.py; task file in docs/kb/tasks/M5/). Lead, please record the claim on integration.
   - **Ownership row appended:** Act III env-art covers the Undertow and Heart kits, Ch19 Iskarra and the Spire, the
