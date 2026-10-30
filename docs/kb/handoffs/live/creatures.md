@@ -1277,3 +1277,11 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
     - These are new, with no baselines. The existing `npc_haluna_dock` (re-rendered and viewed), `npc_haluna_lane`, `npc_haluna_market`, `slice_haluna_villagers_village`, `crowd_zone_oruvel` and `crowd_zone_pemakar` gain people and need new baselines (shots session).
 - **MERGE-READY @ 30e39d407.**
 - **BACKLOG EMPTY:** M4-CRE-702 is in review (character); Act III stays planning-only; the brow.tres drift FAST-TRACK is characters'.
+- **Your 20:26 relay: test_villager_routines fixed @ 533d27512.**
+  - **Cause:** `test_a_greybox_actor_model_is_adopted_into_a_villager` builds ch01/oruvel's real rows on a bare zone and expected only Kell to resolve. Oruvel's `at`-row vignettes make their own spots, so 7 built.
+  - **Fix:** the test now counts the `at` rows (1 + 6).
+  - **Checks** (Godot):
+    - test_villager_routines 19/0, villager 46/0, npc 10/0, crowd 18/0;
+    - oruvel 17/0, pemakar 10/0, haluna 65/0, ch01 20/0, ch05 13/0.
+  - My miss: I ran the villager filter before the Oruvel rows went in. From now on I re-run it after any zone data change.
+- **MERGE-READY @ 533d27512.** Next: the Act II town vignettes (Hollowmere, Ansedra, Quellan, Reedhollow).
