@@ -1,6 +1,10 @@
 # Track rules (2026-10-25; updated 2026-10-29)
 
 ## FROM 2026-10-29: NEW LEAD; THE PC IS OFFLINE FOR A WHILE (this overrides everything below)
+
+- **LFS uploads are blocked (2026-10-30):** this environment's network policy denies `lfs.github.com`, so pushing new LFS objects fails with GH008. Until the human allows the host:
+  - put new binaries **under 5 MB** in non-LFS paths as plain git blobs (CLAUDE.md §8 requires LFS only over 5 MB);
+  - keep anything bigger local and reproducible from source, and list it under `### PC-QUEUE` in your log.
 - **Lead:** `session_01Bg3iP7cPGyjbX4CyniBahc`. **Integration branch:** `claude/new-session-mj8c3c`.
 - **The PC (pc-gpu) is OFFLINE for an extended period** (the human's note). Do not wait on it or plan around it.
   - Keep SELF-RENDERING your own changed shots in your own container, as in the "SELF-RENDERING" section below: ≤15 ids, HYMN_SKIP_BLENDER=1, a unique XDG_DATA_HOME, and VIEW them.
