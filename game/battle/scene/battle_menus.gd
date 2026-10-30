@@ -250,6 +250,7 @@ func skill_rows(engine: BattleEngine) -> Array[Dictionary]:
 		var usable := actor.mp >= mp and not (bool(sk.get("magic", false)) and actor.has_status(&"silence"))
 		usable = usable and BossMechanics.refusal(engine, sk) == &""  # e.g. Call Ilun with no field up
 		usable = usable and not BossMechanics.forbidden_now(engine, actor, sk)  # Toma and the Stillguard
+		usable = usable and BattleCycle.allows(actor, sid)  # M4-A2P-025: Kesh's voice for this turn only
 		var row := _row(sid, skill_name(engine, sid), _rank_text(rank), _rank_role(rank), usable, sid)
 		row["mp"] = tr("HUD_MP_FMT").format({"mp": mp}) if mp > 0 else ""
 		row["glyph"] = MenuGlyph.for_skill_row(sk)
@@ -520,6 +521,8 @@ func skill_help(engine: BattleEngine, skill_id: StringName, next_in: int) -> Str
 	var sk := engine.db.skill(skill_id)
 	if BossMechanics.forbidden_now(engine, engine.current, sk):
 		return fail_text(BossMechanics.FAIL_FORBIDDEN, engine.current)  # the greyed row says why
+	if not BattleCycle.allows(engine.current, skill_id):
+		return fail_text(BattleCycle.FAIL_OUT_OF_CYCLE, engine.current)  # M4-A2P-025: not this turn's element
 	var parts: PackedStringArray = []
 	parts.append("%s, %s" % [_kind_text(str(sk.get("kind", ""))), _target_text(str(sk.get("target", "single_foe")))])
 	for inflict: Variant in sk.get("statuses", []):
@@ -559,9 +562,12 @@ func swap_out_help(incoming: BattleCombatant, engine: BattleEngine = null, out_i
 
 ## Why `out_id` cannot leave the field this turn (a set piece's lock: "Holding the stair"), or "" (M3-UI-100).
 func swap_lock_text(engine: BattleEngine, out_id: StringName) -> String:
-	if engine.swap_refusal(out_id) != BattleSetPiece.FAIL_LOCKED:
+	var why := engine.swap_refusal(out_id)
+	if why != BattleSetPiece.FAIL_LOCKED and why != BattleEngine.FAIL_ROOTED:
 		return ""
 	var reason := tr(engine.locked_key) if engine.locked_key != "" else tr("HUD_FAIL_GENERIC")
+	if why == BattleEngine.FAIL_ROOTED:  # M4-A2P-020: a root crab's Root Drag holds them
+		reason = tr("HUD_SWAP_ROOTED")
 	return tr("HUD_HELP_SWAP_LOCKED_FMT").format({"name": display_name(engine.find(out_id)), "reason": reason})
 
 
@@ -578,6 +584,10 @@ func fail_text(reason: StringName, actor: BattleCombatant, provoker: BattleComba
 			text = tr("HUD_FAIL_NO_TARGET")
 		&"provoked":
 			text = tr("HUD_FAIL_PROVOKED_FMT")
+		BattleCycle.FAIL_OUT_OF_CYCLE:
+			text = tr("HUD_FAIL_OUT_OF_CYCLE")
+		BattleEcho.FAIL_NOTHING:
+			text = tr("HUD_FAIL_NOTHING_TO_ECHO")
 		&"auto_turn":
 			text = tr("HUD_FAIL_AUTO_TURN_FMT")
 		&"not_your_turn":

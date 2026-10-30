@@ -255,7 +255,9 @@
     "summon_cinematic": {
       "doc": "M2-BPR-08 C10, BattleSummonCinematic: a Vowbound's first call in a live story battle (first_call_flags: its seen-flag, declared in flags.tres) under UiSettings summon_cinematic (the UI track's row): 'short' (default) = the first call only, 'full' = every call, 'off' = off_entry (no rise). entry replaces vowbound.entry: the water stills for delay_sec after the party steps off, then the Vowbound rises depth_m over sec, tipped lean_deg; hold_sec more after it stands. Bound light (color script C10: glimmer_bound, steady): an OmniLight3D light_height_m above its slot, light_energy reached over light_in_sec from light_at_sec, light_range_m. Camera: the 'summon' shot (camera.shots), in over camera_in_sec, back to the default over the last camera_out_sec.",
       "first_call_flags": {"ilun": "ch03_ilun_first_call_seen", "kahre": "ch05_kahre_first_call_seen",
-                           "virel": "ch08_virel_first_call_seen"},
+                           "virel": "ch08_virel_first_call_seen", "nhoa": "ch11_nhoa_first_call_seen",
+                           "hesk": "ch12_hesk_first_call_seen", "ethren": "ch13_ethren_first_call_seen",
+                           "kesh": "ch16_kesh_first_call_seen"},
       "entry": {"delay_sec": 1.4, "sec": 2.6, "back_m": 0.0, "depth_m": 2.6, "lean_deg": 6.0, "clip": "ready", "clip_own": "rise"},
       "off_entry": {"delay_sec": 0.0, "sec": 0.0, "back_m": 0.0, "depth_m": 0.0, "lean_deg": 0.0, "clip": "idle"},
       "hold_sec": 0.9,
