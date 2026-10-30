@@ -34,8 +34,8 @@
    - Seamless loops start a sixteenth before the downbeat (`downbeat_offset_s`), and every music file writes its
      `.loop.json` with bpm, so MusicDeck's on-the-beat changes work (M3-AUD-864). An unmetered piece's cue row says
      `"beat": "free"`.
-   - **Storage:** `assets/audio/music/act2/**` is an LFS path. While LFS uploads are refused here, anything under 5 MB
-     ships as plain git outside the LFS paths (ADR 0174), and anything larger waits for the PC.
+   - **Storage (ADR 0175):** new Act II audio ships as plain git under `assets/audio/act2/{music,ambience,sfx}/`.
+     The 16 finals already in `assets/audio/music/act2/**` stay in LFS. Anything over 5 MB waits for the PC.
 4. **Determinism:** every render is byte-identical twice (`render_all.py --determinism`). Every file gets a
    PROVENANCE row, and an `.import` with `beat_count=0`.
 
@@ -136,8 +136,8 @@ everywhere (M4-A2P-091). Durations of gaps are the outline's.
 
 | Cue | Kind | Exists? | Mood | Instrumentation | Key / tempo | Length | Transitions |
 |---|---|---|---|---|---|---|---|
-| `peace_wedding` | scene loop (C1) | yes (the ceremony loop) | The ceremony: tender, public, already watched | zither, slow flute descant, the couple's tune (E minor), the Stillguard's damped gong stepping 2 against 3 | C minor / E minor, from the final's source | 130.9 s loop | `@music peace_wedding fade=3.0` |
-| `peace_wedding_break` | scene cue (C2, the trap) | **gap** | The break: the ceremony torn. The gong's 2-against-3 wins; the couple's tune breaks off mid-phrase. | the wedding's ensemble cut to the gong and low drums; ORDER_HUM entering **loud and close** (the Conclave springing it) | C minor, the wedding's tempo, then free | ~25 s, ends in a held low drone | `@music peace_wedding_break fade=0.2` (the only near-cut in the act, by design; still ≥ min_fade_sec) |
+| `peace_wedding` | scene loop (C1) | yes (the ceremony loop) | The ceremony: tender, public, already watched | zither, slow flute descant, the couple's tune (E minor), the Stillguard's damped gong stepping 2 against 3 | G major, 3/4 at 88 BPM (its dark episode in E-flat and C minor) | 130.9 s loop | `@music peace_wedding fade=3.0` |
+| `peace_wedding_break` | scene cue (C2, the trap) | **gap** | The break: the ceremony torn. The gong's 2-against-3 wins; the couple's tune breaks off mid-phrase. | the wedding's ensemble cut to the gong and low drums; ORDER_HUM entering **loud and close** (the Conclave springing it) | the wedding's 3/4 at 88 BPM, broken into C minor, then free | ~25 s, ends in a held low C | `@music peace_wedding_break fade=0.2` (the only near-cut in the act, by design; still ≥ min_fade_sec) |
 | C3 Tobin's death | cutscene | silence | Nothing plays | — | — | — | `@music silence fade=0.5`; foley only |
 | `court_steps` | set-piece battle | **gap** | §2 | §2 | C minor, 112 BPM | ~60 s, 2 stems | §2 |
 | `lagoon_escape` | scene cue (C4–C6) | **gap** | The first ripple in four hundred years: terror and wonder. The bells ring, the city comes to its windows, and Merel stays behind. | the pole's stroke as a pulse (low drum and water), tower bells entering one by one, the couple's tune reborn in the flute, a bowed string for Merel at the gate | E minor → C minor at Merel, 4/4 at 72 BPM (the strokes) | ~2 min, through-composed (sections cut to C4, C5 and C6) | from the step-hold on the beat; into `malcor_venn` at C7 |
