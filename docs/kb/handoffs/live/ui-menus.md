@@ -1342,3 +1342,27 @@ MERGE-READY @ fca18c182: M4-A2P-1700, the Act II UI as played (inn refusals and 
   - **Tests:** tutorial_tips 8/0 (three new), input_parity_glyphs 7/0, objective_hud 7/0, field_controller 5/0;
     tools test_tutorial_tips OK; validate_data 0/0; taskboard ok.
 MERGE-READY @ 07386b3d0: M4-A2P-1701, the first-hour tips (once, in Ch1, skippable).
+- 2026-10-30 22:30, **the Lead's 18:45 note: the Act II first-time hints** (M4-A2P-1702, a3065f588).
+  - **Added** (act2-plan's `ui/tutorials.md` text, already on the integration branch):
+    - Seven heroes on `ch10_started` (a flag tip, so it survives the fade-in);
+    - Records on `ch13_archive_read`;
+    - Dark shrines at the first shrine in reach after `ch14_declared_heretics`, never before.
+    - Each shows once (`tut_records_seen` and `tut_dark_shrine_seen` are declared) and fades when its action is
+      pressed.
+  - **Ch10's Where-to-next:** the objective line slides in when `ch10_started` makes the Ch10 row live (the line
+    shows on change), so the fade-in timing doesn't lose it.
+  - **To act2-plan (narrative), M4-A2P-1004:**
+    - **F1:** done in 07386b3d0.
+    - **F5:** the objective tip now comes at the bell room (`ch01_saw_bell_room`, or `ch02_met_asha` on the slice
+      route).
+    - **F8:** layout shrines are tagged `shrine`.
+    - **Optional wording, taken:** "objective", "Items, Equip … the Map".
+    - Please move 1004 to done on your branch; it isn't on the integration branch yet.
+  - **Waiting on others:**
+    - The Swell-mode tip: no `<mode>_unlocked` flags yet (Progression).
+    - The new statuses' lessons are combat's battle prompts (`TUT_CH10_ROOTED` and the rest), not in
+      `encounters.json` yet. The help line shows each once per fight when they land.
+    - Act II Vowbound: untaught by plan.
+  - **Tests:** tutorial_tips 9/0, input_parity_glyphs 7/0, save_shrine 13/0; tools test_tutorial_tips OK;
+    validate_data 0/0; taskboard ok.
+MERGE-READY @ a3065f588: M4-A2P-1702, the Act II first-time tips and M4-A2P-1004's fixes.

@@ -341,5 +341,7 @@ flags = {
 "codex_outside_the_level_read": "Codex (story track Act II set, game/data/lore/codex.json): the entry 'outside_the_level' has been opened in the Codex (clears its New marker).",
 "codex_the_hush_read": "Codex (story track Act II set, game/data/lore/codex.json): the entry 'the_hush' has been opened in the Codex (clears its New marker).",
 "ch11_engine_released": "Ch11 B06: the party put the Lamp Engine down in the engine hall (ch11_lamp_engine's victory_flag; act2_ch11.md, M4-A2P-114).",
-"ch11_twice_seen": "Ch11 B07: ch11_twice has played after the Lamp Engine fight, so the engine hall's return plays it once (M4-A2P-114)."
+"ch11_twice_seen": "Ch11 B07: ch11_twice has played after the Lamp Engine fight, so the engine hall's return plays it once (M4-A2P-114).",
+"tut_records_seen": "Tutorial tips (M4-A2P-1702): the Records tip (found records in the codex) has shown in this save.",
+"tut_dark_shrine_seen": "Tutorial tips (M4-A2P-1702): the Dark shrines tip (the Order's shrines refuse heretics) has shown in this save."
 }
