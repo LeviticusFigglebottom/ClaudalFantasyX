@@ -36,4 +36,4 @@ head. What changed (4,624 to 7,786 triangles; the bones, the clip names and the 
 **Triangle count after M3-CRE-660 (noted 2026-10-30):** the primitive pass on the Lead's list (a 44×112 crust
 lathe, up from 24×64, tilted plates, 12 clinker lumps, domed leg scutes) brought the build to 17,502 triangles, over
 the 8k budget above. The pass was the Lead's request and was reviewed at that count. The scree crawler shares the
-mesh. The budget line stands until the Lead rules (live log LEAD-ASK, 2026-10-30).
+mesh. **The Lead's ruling (2026-10-30):** about 18k at LOD0 (quality first), and an authored **LOD1 at ≤ 8k** for distance. build_slag_tortoise.py's `build_lod1` rebuilds with a 24×64 crust, 6 clinkers, a 9×12 head and lighter leg scutes (7,674 triangles) as `slag_tortoise-lod1` in the same GLB. game/data/import/creatures.json `lods` chains it past 16 m. Budget: **~18k LOD0 / 8k LOD1**.

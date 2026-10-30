@@ -34,7 +34,7 @@ Encounters in data: `ch12_pass_scree` (no Act II arena is named yet: judge it in
 build_slag_tortoise (rig, clips, the flip-over KO).
 
 ## State against the final bar
-Meets the bar. Checked 2026-10-30: its 17,502 triangles are the slag tortoise's own since M3-CRE-660's primitive pass (the Lead's list: the crust's lathe went from 24×64 to 44×112), over that sheet's 8k line. The variant changes only colours and the stone count, so it matches its base. Flagged to the Lead (the live log) instead of cutting the crust back.
+Meets the bar. Checked 2026-10-30: its 17,502 triangles are the slag tortoise's own since M3-CRE-660's primitive pass (the Lead's list: the crust's lathe went from 24×64 to 44×112), over that sheet's 8k line. The variant changes only colours and the stone count, so it matches its base. The Lead's ruling: ~18k LOD0 is approved, with an authored LOD1 at ≤ 8k (`scree_crawler-lod1`, 7,674 triangles, the tortoise's `build_lod1` with the scree's stones), shown past 16 m. Budget: **~18k LOD0 / 8k LOD1**.
 
 ## Work at the gate (after `act1-complete`)
 ~~Frost to snow and grit~~ (done, M4-CRE-670); enemy `model` key; arena shot; `scree_slide` effect.

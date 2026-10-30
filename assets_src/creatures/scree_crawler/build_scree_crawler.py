@@ -64,8 +64,9 @@ def stones(mesh: ck.Mesh) -> None:
     C[:, :3] = np.where(keep[:, None], C[:, :3], np.maximum(C[:, :3] * tone[:, None], ck.hexrgb("#1D1916")))
 
 
-def build_mesh(rig: ck.Rig) -> ck.Mesh:
-    mesh = base.build_mesh(rig, "scree_crawler")
+def build_mesh(rig: ck.Rig, lod1: bool = False) -> ck.Mesh:
+    """The scree crawler's mesh, or its LOD1 (the slag tortoise's lighter build, base.LOD1)."""
+    mesh = base.build_lod1(rig, "scree_crawler") if lod1 else base.build_mesh(rig, "scree_crawler")
     stones(mesh)
     # the eyes keep the base's lacquer_black (the palette swatch, not the scree's slate)
     eye = mesh.materials.index("eye")
@@ -82,7 +83,8 @@ def main() -> None:
     args = ap.parse_args(argv)
     rig = base.build_rig()
     mesh = build_mesh(rig)
-    info = ck.export_creature(mesh, rig, base.export_clips(rig, mesh), args.out, extras={"hymn_creature": "scree_crawler"})
+    info = ck.export_creature(mesh, rig, base.export_clips(rig, mesh), args.out,
+                              extra_meshes=[build_mesh(rig, lod1=True)], extras={"hymn_creature": "scree_crawler"})
     print(f"scree_crawler: {info}")
 
 

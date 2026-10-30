@@ -21,7 +21,7 @@ branch: tools/creatures/clip_audit.gd (slip, pops, dips) and clip_sheet.tscn (po
 | [conduit_crawler](conduit_crawler.md) | 11 | construct | close | done: jointed legs. Left: **no enemy row** (a boss add, M4-A2P-022); its repair effect |
 | [ridge_lynx](ridge_lynx.md) | 12 | beast | yes | done: paws pinned, snow and grit, shaped legs. Left: `pounce` effect |
 | [cord_moth](cord_moth.md) | 12 | beast | yes | done: battle scale 1.35×, dusky wing margins, hover 1.12 m (it read as a sliver in keth_seep_terrace before). Left: `unravel` effect |
-| [scree_crawler](scree_crawler.md) | 12 | variant (slag tortoise) | yes | done: snow and grit. 17.5k tris, the same as the slag tortoise since M3-CRE-660 (see its sheet). Left: `scree_slide` effect |
+| [scree_crawler](scree_crawler.md) | 12 | variant (slag tortoise) | yes | done: snow and grit. ~18k LOD0 / 7.7k authored LOD1 past 16 m (the Lead's ruling). Left: `scree_slide` effect |
 | [glass_skate](glass_skate.md) | 16 | reef beast | yes | checked in drowned_choir_ring (reads). Left: the Rim's own arena when it exists; `skate_sting` effect |
 | [rim_crawler](rim_crawler.md) | 16 | variant (tide crawler) | yes | done: slate flanks and seams, brighter wounds. Left: re-judge in the Rim's grade |
 
