@@ -834,6 +834,41 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - **Not mine (Ch1–Ch3, slice-polish's):** the other `todo` rows addressed to cinematics: M3-HER-1119, 1155, 1156,
     1160; M3-CHR-543; M3-CIN-1231, 1234; M3-C09-201.
 
+### The Lead's 12:08 list (10-30)
+1. **Arenas:** the Ch11 randoms (ch11_vey_rays, ch11_vey_urchins) fight in `lowlight_engine_hall`, the same arena as the
+   Lamp Engine (Ch10's and Ch12's randoms share their boss arenas the same way).
+   - Ch16 (ch16_rim_skates, ch16_rim_crawlers) waits for env-art-b's `pale_rim_shallows`. It exists only on
+     claude/env-art-b, and the validator rejects an unknown arena id. Both are in test_act1_encounters_resolve's
+     `ACT2_NO_ARENA_YET` until it lands.
+   - **LEAD-ASK:** merge env-art-b's arena, then I set the two rows in one line each.
+2. **Foe skills with no effects:** on this head (after merging integration) only the conduit crawler's three remain:
+   `brush_jab`, `crawler_mend` and `crawler_tend`. Filed to battle-presentation as **M3-BPR-445** (the relight itself
+   is M3-BPR-441).
+3. **The Sanctum gate marker:** fixed on this branch in 57dec16dc's batch (the POI is at [0,-5] on the Gate spawn).
+   Integration still has [0,-2], so big22 predates the merge.
+4. **test_qa_threads with ui:** six Act II objectives end on the *next* chapter's `_started` flag, which no thread of
+   their own raises. Filed to ui-menus as **M3-UI-1242**: end them on each chapter's own `chNN_complete`. Each closing
+   scene sets that flag, which is Act I's `ch05_done` pattern.
+   - The task also flags two zone-prefix strays: court_dais and court_barge sit in a `ch13/` zone, and
+     hollowmere_house in a `ch17/` zone.
+   - That run also found a red of mine: the Lamp Engine's field cast in Lowlight kept its battle-only
+     `CreatureAmbientVfx`, which warned with no CreatureActor parent. `zone_cast.gd` now drops that node from
+     `creature:` casts.
+5. **Rows 34 and 39:**
+   - Row 34's fix c33c39015 is on integration.
+   - Row 39's a063bbad3 is pushed here and waits on the next merge.
+   - The PC re-check recipes are below.
+6. **The blocked-by rows:** 17 cinematics and combat rows are now `todo` under ADR 0205, including M4-C10..C14 and
+   M4-A2P-017/018/019/061/070-075. Other roles' rows are left to them.
+7. **Ch11–Ch13 mounts:**
+   - Ch11 (M4-A2P-0411) and Ch12 (0421) are mine and done.
+   - Ch13 is already mounted in the zone scenes by env-art-b (M4-A2P-043): Ansedra has Water, Tide, Dressing and
+     Ripples; the Sanctum and the Archive have Dressing. No preview is left to copy.
+   - The Sanctum's light rows are M4-A2P-103 (done).
+   - Checks: encounters_resolve, ch11 (3/0), ch13 (4/0) on the dressed zones, validate_data, taskboard --check,
+     gdlint/gdformat. test_qa_threads is re-running; its result follows.
+- MERGE-READY @ c1a6c9031
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
