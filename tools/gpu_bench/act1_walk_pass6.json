@@ -1,6 +1,6 @@
 {
  "version": 1,
- "doc": "Cloud QA pass 6 (lavapipe, headless stand-in for the PC): the segments behind the walk-only open rows of act1_gpu_qa.md (24 haluna_wake DockShore, 34 ridge skippers' arena, 37 causeway AfterHarrier, 38 coilspire Encounter, 39 Ch9 followers, 47 FerryAft, 51 corrow_night graves, 66 Ch4's start camera with a still every second). Generated from act1_walk_rows.json; no launch or title (lavapipe's boot warm-up is minutes long).",
+ "doc": "Cloud QA pass 6 (lavapipe, headless stand-in for the PC): the segments behind the walk-only open rows of act1_gpu_qa.md (24 haluna_wake DockShore, 34 ridge skippers' arena, 37 causeway AfterHarrier, 38 coilspire Encounter, 39 Ch9 followers, 47 FerryAft, 51 corrow_night graves, 66 Ch4's start camera with a still every 4 s (on lavapipe a still per frame starves the dwell's frame count: slice_sweep leaves a still's frame out, so the dwell never ends)). Generated from act1_walk_rows.json; no launch or title (lavapipe's boot warm-up is minutes long).",
  "segments": [
   {
    "id": "ch03",
@@ -19,7 +19,7 @@
    "arg": "ch04",
    "dwell": 30,
    "press": "ui_accept",
-   "still_every": 1.0
+   "still_every": 4.0
   },
   {
    "id": "ch04_spawns",
