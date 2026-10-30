@@ -1,5 +1,21 @@
 # Live log: audio (branch `claude/audio`)
 
+## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
+Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
+
+- **MERGE-READY @ f86639b3: Act II, Ch10 and the two set pieces.**
+  - **Ch10 zones play:** `music.json` zone rows for Ossa Fen and Reedhollow (the existing finals). Their own beds: `fen_dusk` (insects, frogs, drips in tannin water, root creak, a far fen bird) and `reedhollow_roost` (reed wind, the lagoon, a cook-fire, the clutch's wordless hum in the Kirru mode).
+  - **The footstep surfaces root, snow and slate** (ADR 0204 §11), 48 files, and footsteps.json rows naming the ground of all 14 Act II levels. The Act II audit's Footsteps section is at 0.
+  - **`farewell_tide`** (Ch10 C3, ~91 s): reedhollow's clutch line rising, and the Letting's first cell carried into the Kirru mode by its rhythm and contour.
+  - **The wedding trap:**
+    - `peace_wedding_break` (~27 s): the couple's tune cut off on the Stillguard's gong, the Order's hum close, a held low C;
+    - `lagoon_escape` (~123 s): the pole's strokes, the city's bells one by one, the couple's tune reborn, Merel at the gate in C minor.
+  - **The reveal:** `kerrid_at_sea` (~154 s), a bed for his telling. His bowed string stays low, under the voice band. KERRID_STAIR's tread slows until it stops, and the held motes drift sideways.
+  - Every cue is −16 LUFS, its renders byte-identical twice, with a beat grid (or `"free"`) on its `music.json` row. The beds are −26 LUFS, with clean seams.
+  - **Checks:** validate_data 0 errors; test_audio_loudness and test_audio_data OK (the 105 MiB budget included); test_act1_audio_audit OK (Act I still 0); Godot `--filter=footstep` 23/0 and `--filter=audio` 175/0, after fixing test_footstep_contacts_audio's hard-coded surface count. **Skipped:** screenshots (no scene touched), Blender.
+  - **Not wired yet:** no Act II `.dlg` exists, so the scene cues wait for Story's scripts to name them (`@music farewell_tide` and the rest). The Drowner's intro sting waits for its boss encounter id.
+  - **Next:** Ch11–Ch12 beds (rendering now) and their zone rows; then `cloudloom` and `sanctum_of_the_level`, the Vowbound stings, `battle_heretic`, the people-boss stems, and the remaining scene cues (`hollowmere_answers`, `sefir_go_home`, `act2_break`).
+
 ## FROM 2026-10-29 (Lead `session_01Bg3iP7cPGyjbX4CyniBahc`; integration `claude/new-session-mj8c3c`)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. Brief: the final-quality audit of Act I sound as played, on lead/gate-big18 (M3-AUD-864). Newest first.
 
