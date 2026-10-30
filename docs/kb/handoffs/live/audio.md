@@ -3,6 +3,20 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **Re the Lead's 18:45 message:** the slice-path polish (18:24) was already done, MERGE-READY @ b97ac894 (below). **Kite work is parked:** the one KiteMapMenu hook from that pass stays (data only, nothing more planned).
+- **MERGE-READY @ faaa30a0: the Ch11–Ch13 cutscene cues as slice-polish stages them** (the 18:45 item).
+  - **Staged so far** (integration + claude/m2-slice @ b710cfa9): Ch11's sunken_vey and lowlight, Ch12's cloudloom, keth_pass and quellan. Ch13 isn't staged yet.
+  - **On m2-slice's tree** (a scratch worktree, nothing of theirs edited):
+    - The Act II audit is clean: cutscenes 0, cutscene actions 0 (every `@anim` of the staged scenes has its foley).
+    - `act1_playthrough.py --act 2 --holds` finds no gap in Ch11–Ch13.
+    - The staging changed no script timing: the files are shots, marks and props, and the only Ch11–Ch13 script difference is ch13_still_city's restored `pole_no_wake`.
+  - **New:** Ch12's staging adds cinematics' first practical, `inn_fire` (the Quellan inn hearth that ch12_forty_seven_voices plays beside). It was light only, so the scene's fire was silent.
+    - `PropAudio` (game/audio/prop_audio.gd) and `game/data/audio/prop_sfx.json` give a staged prop a positional loop by its scene. It starts as the prop enters and goes with it.
+    - The hearth's loop is `hearth_fire` (act2_ambience.py, appended: a low peat-and-pine fire, pops, a log shifting once; 24 s, -26 LUFS, seam flux x1.52, `loop=true`, rendered byte-identical twice). It plays on World, so it ducks under a line.
+    - The row is `pending` until the scene merges from claude/m2-slice. `data_check` then requires the scene, and a planted missing scene is reported.
+    - Any later practical (a lamp, a brazier) is one row.
+  - **Checks:** validate_data 0; test_audio_data and test_audio_loudness OK; Godot prop_audio 2/0 (new), audio_runtime 11/0, field_audio 22/0, foley_detail 4/0. **Skipped:** screenshots, Blender, coverage.
+- **BACKLOG EMPTY (after faaa30a0):** waiting on Ch13's staging (then a rerun), combat's Ch14–Ch16 fights, and the listening verdict.
 - **MERGE-READY @ b97ac894: the Lead's 18:24 item, the Act I audio polish pass on the slice path (Prologue → Ch3), as played.**
   - **Interactables:** every interact trigger on the path is heard.
     - Oruvel's lashings and the underway's tethers, hinge and tin have their own rows (InteractAudio).
