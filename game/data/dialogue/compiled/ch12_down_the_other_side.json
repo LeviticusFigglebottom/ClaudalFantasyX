@@ -1,0 +1,32 @@
+{
+ "format": 1,
+ "scene": "ch12_down_the_other_side",
+ "source": "game/data/dialogue/ch12/ch12_down_the_other_side.dlg",
+ "start": "ch12_down_the_other_side",
+ "nodes": {
+  "ch12_down_the_other_side": {
+   "headers": {"location": "ch12/keth_pass"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["P08"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "music", "args": ["keth_pass"], "kwargs": {"fade": 2.0}, "src": 9},
+    {"op": "cue", "cue": "mark", "args": ["toma", "descent_1", "walk"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "mark", "args": ["pell", "descent_2", "walk"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "mark", "args": ["asha", "descent_3", "walk"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "mark", "args": ["ysolde", "descent_4", "walk"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "mark", "args": ["liss", "descent_5", "walk"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "descent_6", "walk"], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "mark", "args": ["kerrid", "descent_7", "walk"], "kwargs": {}, "src": 16},
+    {"op": "if_not", "cond": ["flag", "ch12_rhen_tied_knot"], "to": 12, "src": 17},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "touch", "pass_cord"], "kwargs": {}, "src": 18},
+    {"op": "goto", "to": 12, "src": 17},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "anim", "args": ["toma", "look_at", "kerrid"], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "anim", "args": ["toma", "look_at", "road_ahead"], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 24},
+    {"op": "set", "flag": "ch12_complete", "value": ["lit", true], "src": 25},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 26}
+   ]
+  }
+ }
+}

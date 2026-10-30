@@ -38,6 +38,16 @@ DLG_CH11_VEY_002	ch11_drowned_galleries		He means the bound dead inside the ligh
 DLG_CH11_MARK_002	ch11_housing_mark		'Seats' and 'pair-built': wright terms; the lantern was made as one of a pair.	Same hand. Same seats. Pair-built. This mark's older than you. Whose is it?
 DLG_CH11_BENCH_001	ch11_lamp_bench		A wright's term for things made as a matching pair: said of the two lamps, meant of the two of them.	Pair-built.
 DLG_CH11_NHOA_001	ch11_nhoa		'Lifted': the Kirru word for the dead who have gone up. Pell speaks of his sister.	She is here. She is not lifted. Do not speak yet. Please.
+DLG_CH12_BREATH_001	ch12_breath		Said quietly, not as an accusation. 'Her captain': the captain of the stair-watch.	At Corrow, one of the old watch told me she had seen her captain on the stair.
+DLG_CH12_ROAD_001	ch12_cold_road		The dead lift quickly in the mountains.	Quick. Up here.
+DLG_CH13_REC_LEDGER_001	ch13_archive_ledgers		A Lit Age engineer's ledger entry, in a dry record-keeping register. Shown as a page in the document reader.	Lamp-ledger, first year of the Rising, Iskarra: Twelve bound into the tide-engine at the north lamp-tower. Seated by my hand and the hands below.
+DLG_CH13_REC_BINDING_001	ch13_archive_ledgers		A TORN page: only these fragments survive. Keep the ellipses and the gaps; do not complete the sentence.	…the Cage made… …the heart sung in… …kept by one…
+DLG_CH13_REC_EDICT_001	ch13_archive_ledgers		A note in the margin of a later ledger: the reason for the Salt Edicts, written by their author.	Margin of the Edict ledger, in a clear hand: Forbid the binding, that the binding be kept.
+DLG_CH13_REC_ROLL_001	ch13_archive_roll		An entry in the Order's private Cantor roll. 'Kept' and 'Spent' are the hidden column's two values.	Cantor roll. Sixtieth: Corran Ysel. Tender, Ansedra. Kept, Sanctum.
+DLG_CH13_REC_ROLL_002	ch13_archive_roll		A marginal note in a different, official hand: Ysolde recognises it from the Wardens' seals.	In the margin, small: to be spent at the next Calm.
+DLG_CH13_MOORINGS_002	ch13_moorings_kerrid		He means: the water is being held unnaturally still.	Too well.
+DLG_CH13_HOUSE_007	ch13_still_city		The Order's greeting; the reply is 'And still'.	Be level, Okeru.
+DLG_CH13_TOBIN_010	ch13_tobin		A private joke between him and Merel; it returns as his last words in Ch14.	I'll need it. Her knots are terrible.
 DLG_CH14_DECL_002	ch14_the_vows		'Outside the Level' is the Order's formal phrase for heresy. Keep it a fixed phrase, capitalised as a title.	The guardians of the Lady Cantor, having sheltered binders and handled the sealed ledgers, are declared Outside the Level.
 DLG_CH14_TOBIN_FALL_002	ch14_the_vows		Said to Merel, gently, almost a joke between them: his last words.	...Your knots are terrible.
 DLG_CH14_TOBIN_FALL_003	ch14_the_vows		A wright's repair words ('seat it', 'she'll hold'), said to his wound as if it were a machine.	Hold it. Hold, hold, she'll hold, seat it, hold—

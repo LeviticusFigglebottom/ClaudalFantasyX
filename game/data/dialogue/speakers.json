@@ -47,6 +47,9 @@
   {"id": "brannoc_hale", "name_key": "CHAR_BRANNOC_HALE", "blip_pitch": 0.8, "portrait_id": "portrait_villager_placeholder"},
   {"id": "hull_captain", "name_key": "CHAR_HULL_CAPTAIN", "blip_pitch": 0.9, "portrait_id": "portrait_villager_placeholder"},
   {"id": "aldous_varrow", "name_key": "CHAR_ALDOUS_VARROW", "blip_pitch": 0.82, "portrait_id": "portrait_villager_placeholder"},
-  {"id": "hull_widow", "name_key": "CHAR_HULL_WIDOW", "blip_pitch": 1.0, "portrait_id": "portrait_villager_placeholder"}
+  {"id": "hull_widow", "name_key": "CHAR_HULL_WIDOW", "blip_pitch": 1.0, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "ullari", "name_key": "CHAR_ULLARI", "blip_pitch": 0.94, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "ullari_woman", "name_key": "CHAR_ULLARI_WOMAN", "blip_pitch": 1.0, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "householder", "name_key": "CHAR_HOUSEHOLDER", "blip_pitch": 1.1, "portrait_id": "portrait_villager_placeholder"}
  ]
 }

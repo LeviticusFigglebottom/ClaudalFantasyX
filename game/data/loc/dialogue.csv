@@ -865,6 +865,119 @@ DLG_CH11_ENGINE_003,Break her.
 DLG_CH11_TWICE_001,That is twice.
 DLG_CH11_TWICE_002,They were waiting. Inside it. All this time.
 DLG_CH11_WENNA_001,Same hand as Coilspire. Somebody went through every temple and left her name for us. Nobody ever looked.
+DLG_CH12_BARK_EVEN_001,Even here.
+DLG_CH12_BARK_HERDER_001,The big one? That was Dorro's. Dorro's gone. Last winter.
+DLG_NAME_ULLARI_HERDER,Herder
+DLG_CH12_BARK_HERDER_002,Mind the terrace road. Something drinks at the wall up there.
+DLG_CH12_BARK_INN_001,"You tie the knot. You walk on. They go up quick here, the dead. It's the air."
+DLG_NAME_ULLARI_INNKEEPER,Innkeeper
+DLG_CH12_BARK_COUNTING_001,Like the Kirru's standing marks. Everybody up here counts things. Nobody down there reads them.
+DLG_CH12_BARK_COUNTING_002,Everybody up here counts things. Nobody down there reads them.
+DLG_CH12_BARK_LAUNCHER_001,"Rhen. If I fall off this mountain, the launcher goes to Tobin."
+DLG_CH12_BARK_LAUNCHER_002,"Sallow. If I fall off this mountain, the launcher goes to Tobin."
+DLG_CH12_BARK_CAIRN_001,They tie a knot and walk on. In Haluna we would sit with them for three days.
+DLG_CH12_BARK_KINDER_001,"Three days, in Haluna. Sitting with them."
+DLG_CH12_BARK_KINDER_002,I do not know anymore which is kinder.
+DLG_CH12_BARK_WEAVER_001,Tide patterns. My grandmother's. Nobody here has seen the sea. We weave it anyway.
+DLG_NAME_ULLARI_WEAVER,Weaver
+DLG_CH12_BARK_KNOT_001,Each knot is a name. They are read by touch.
+DLG_CH12_BREATH_001,"At Corrow, one of the old watch told me she had seen her captain on the stair."
+DLG_CH12_BREATH_002,"At Corrow, the old watch still tells of a captain who held the stair."
+DLG_CH12_ROAD_001,Quick. Up here.
+DLG_CH12_VOICES_001,I read the cords. I lied to you about them. I would like to stop doing that now.
+DLG_CH12_VOICES_002,What do they say?
+DLG_CH12_VOICES_003,"They are a count. Hers. Ama Quillo's. Every Cantor on the roll up to her own name, one knot each. Forty-seven."
+DLG_CH12_VOICES_004,And then the Saints. The houses that keep one. One knot each.
+DLG_CH12_VOICES_005,Forty-seven voices. Seven houses.
+DLG_CH12_VOICES_006,...Where did the rest go?
+DLG_CH12_VOICES_007,"She tied that too. A question-knot. Hanging at the end of the count, by itself."
+DLG_CH12_VOICES_008,She sang anyway. She believed faith could hold a question.
+DLG_CH12_VOICES_009,Could it?
+DLG_CH12_VOICES_010,"I have visited my husband every year for twenty-four years, Lady Cantor. I would very much like it to."
+DLG_CH12_VOICES_011,Seven houses.
+DLG_CH12_VOICES_012,I stood guard at four of them.
+DLG_CH12_CORD_001,Three names. The herder's family.
+DLG_CH12_CORD_002,Somebody loved this animal.
+DLG_CH12_PRAYERS_001,What do they say?
+DLG_CH12_PRAYERS_002,Prayers. A pilgrim's devotions. The Cantor who stayed here was Ullari: they tie everything.
+DLG_CH12_PRAYERS_003,It is very old wool.
+DLG_CH12_KNOT_001,How do you do that? Just walk.
+DLG_CH12_KNOT_002,My son. Last spring. On this road.
+DLG_NAME_ULLARI_WOMAN_ULLARI_WOMAN,Ullari woman
+DLG_CH12_KNOT_003,And you just walk on?
+DLG_CH12_KNOT_004,I carry the knot. He doesn't have to.
+DLG_CH12_KNOT_005,Tie a knot.
+DLG_CH12_KNOT_006,Walk on.
+DLG_CH12_WALL_001,It drank the wrong water.
+DLG_CH13_HANDS_001,These are all the same person.
+DLG_CH13_HANDS_002,Yes.
+DLG_CH13_HANDS_003,Or they are all the same few people.
+DLG_CH13_REC_LEDGER_001,"Lamp-ledger, first year of the Rising, Iskarra: Twelve bound into the tide-engine at the north lamp-tower. Seated by my hand and the hands below."
+DLG_CH13_LEDGERS_001,"'Seated.' A binding word. They bound the drowned into the lamps, and signed for it."
+DLG_CH13_LEDGERS_002,That's a wright mark. On a founder.
+DLG_CH13_REC_BINDING_001,…the Cage made… …the heart sung in… …kept by one…
+DLG_CH13_LEDGERS_003,The rest of the page is gone. I will not guess at what it said.
+DLG_CH13_REC_EDICT_001,"Margin of the Edict ledger, in a clear hand: Forbid the binding, that the binding be kept."
+DLG_CH13_LEDGERS_004,So only they bind.
+DLG_CH13_REC_ROLL_001,"Cantor roll. Sixtieth: Corran Ysel. Tender, Ansedra. Kept, Sanctum."
+DLG_CH13_REC_ROLL_002,"In the margin, small: to be spent at the next Calm."
+DLG_CH13_ROLL_001,"Kept, Sanctum. To be spent at the next Calm."
+DLG_CH13_ROLL_002,The next Calm is hers.
+DLG_CH13_ROLL_003,"When you sing, Lady Cantor, they spend him."
+DLG_CH13_ROLL_004,...I have him. He's with me now.
+DLG_CH13_ROLL_005,Then I would ask you to keep him a little longer.
+DLG_CH13_BARK_PALM_001,It's pushing back. Something's holding it down.
+DLG_CH13_BARK_PILGRIM_001,Hush. You'll stir the water.
+DLG_NAME_TOWNSFOLK_PILGRIM,Pilgrim
+DLG_CH13_BARK_GUARD_001,Okeru? From the Corrow wall?
+DLG_CH13_BARK_GUARD_002,Once.
+DLG_CH13_BARK_TENDER_001,Lady Cantor. The water has not moved in four hundred years. Isn't it peaceful?
+DLG_CH13_BARK_HOLINESS_001,I grew up here. I used to think the quiet was holiness.
+DLG_CH13_ETHREN_001,The Saints are at peace. I visit my husband every year. He has never once been anything but at peace.
+DLG_CH13_ETHREN_002,"Thank you, Lady Cantor."
+DLG_CH13_MOORINGS_001,They pole well here.
+DLG_CH13_MOORINGS_002,Too well.
+DLG_CH13_HOUSE_SIDE_001,That was our house. Corran's and mine. Eleven years.
+DLG_CH13_HOUSE_SIDE_002,The Order gave it to a Tender's family when he was raised. They have painted the door.
+DLG_CH13_HOUSE_SIDE_003,Do you want to go in?
+DLG_CH13_HOUSE_SIDE_004,No.
+DLG_CH13_HOUSE_SIDE_005,Yes.
+DLG_CH13_HOUSE_SIDE_006,He was a terrible cook. That is from a fish.
+DLG_CH13_HOUSE_SIDE_007,"Should we paint over it again, Mistress?"
+DLG_NAME_HOUSEHOLDER_THE_HOUSEHOLDER,The householder
+DLG_CH13_HOUSE_SIDE_008,No. Please. Leave it.
+DLG_CH13_HOUSE_SIDE_009,"Thank you, Master Sallow. I have decided to notice."
+DLG_CH13_CITY_001,They're not making ripples. How are they not making ripples?
+DLG_CH13_HOUSE_001,"Lady Cantor. You have come further than most, and faster. Ansedra is yours. Rest here. Nothing in this city will hurry you."
+DLG_CH13_HOUSE_002,"And you have come at a good time. In four days a Saltwright will marry a Warden's daughter, in the Lacquer Court, and I will say the words."
+DLG_CH13_HOUSE_003,Mistress Varrow's brother. I believe she had something to do with it.
+DLG_CH13_HOUSE_004,The Sanctum is open to you tomorrow.
+DLG_CH13_HOUSE_005,"And to you, Mistress Varrow, the Lamp Archive, for as long as you are our guest."
+DLG_CH13_HOUSE_006,You were told for years the Order hides the Lit Age from your people. Read whatever you like. We have nothing to hide from a wright.
+DLG_CH13_HOUSE_007,"Be level, Okeru."
+DLG_CH13_HOUSE_008,"And still, High Warden."
+DLG_CH13_PACT_001,Tobin's married tomorrow. Then we get him out. Then we say it. All of it. Not before.
+DLG_CH13_PACT_002,"If we say it before, they will not let him marry. They will not let him leave."
+DLG_CH13_PACT_003,So we smile at the wedding.
+DLG_CH13_PACT_004,We have all smiled at worse.
+DLG_CH13_PACT_005,And the High Warden?
+DLG_CH13_PACT_006,No.
+DLG_CH13_PACT_007,"If I run, there's no peace. Hollowmere's captains are here, Liss. They came because I said it was safe."
+DLG_CH13_PACT_008,"If I run the night before, they're all hostages. If I marry her, they go home as family."
+DLG_CH13_PACT_009,Somebody has to go first.
+DLG_CH13_PACT_010,Tobin.
+DLG_CH13_PACT_011,One day. Then you can get me out of whatever you like.
+DLG_CH13_TOBIN_001,"You came. You actually came. Three years of letters telling me this was a terrible idea, and you came."
+DLG_CH13_TOBIN_002,"Put me down. Put me down, you're making ripples."
+DLG_CH13_TOBIN_003,Good.
+DLG_CH13_TOBIN_004,He talks about you all the time. Mostly complaints.
+DLG_CH13_TOBIN_005,Good. Accurate.
+DLG_CH13_TOBIN_006,"You're the diver. She mentioned you. She said, 'Don't trust the diver.' So I like you already."
+DLG_CH13_TOBIN_007,Why marry into the Order?
+DLG_CH13_TOBIN_008,Somebody had to go first. I volunteered. Nobody had to be chosen.
+DLG_CH13_TOBIN_009,Good luck.
+DLG_CH13_TOBIN_010,I'll need it. Her knots are terrible.
+DLG_CH13_WENNA_001,In the Sanctum. She came here. She knelt here and scratched her name under their noses.
 DLG_CH14_BARK_CAPTAIN_001,Sea-coat in a lacquer hall. I feel like a stain.
 DLG_NAME_HULL_CAPTAIN_HULL_CAPTAIN,Hull-captain
 DLG_CH14_BARK_TENDER_001,Still water. Not a ripple. Look at the domes: you can't tell which way is up.

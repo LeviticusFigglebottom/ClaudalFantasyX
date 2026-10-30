@@ -1,0 +1,34 @@
+// Ch13 B03 "Tobin" (E, 3 min). act2_ch13.md §2 B03. A07: Hollowmere's delegation barge, a sea-stained lashed
+// hull ridiculous among the lacquer. Tobin Varrow jumps off before it's tied and picks Liss up off her feet:
+// charming, idealistic, loud in a quiet city. The `peace_wedding` melody's first statement, on one
+// instrument, so the player knows the tune before Ch14 breaks it. A08: Merel offers Liss her hand palm to
+// palm, Saltwright fashion; Liss takes it. Then the player may ask Tobin why.
+title: ch13_tobin
+location: ch13/ansedra
+---
+@letterbox on
+@camera A07
+@music peace_wedding fade=1.0
+@mark tobin guest_moorings run
+@anim tobin lift liss
+Tobin [laugh]: You came. You actually came. Three years of letters telling me this was a terrible idea, and you came. #line:ch13_tobin_001
+Liss [laugh]: Put me down. Put me down, you're making ripples. #line:ch13_tobin_002
+Tobin [smile]: Good. #line:ch13_tobin_003
+@camera A08
+@mark merel guest_moorings walk
+@anim merel bow asha
+@anim merel offer_palm liss
+@wait 2.0
+@anim liss take_palm merel
+Merel [soft_smile]: He talks about you all the time. Mostly complaints. #line:ch13_tobin_004
+Liss [smile]: Good. Accurate. #line:ch13_tobin_005
+@anim tobin look_at rhen
+Tobin [smile]: You're the diver. She mentioned you. She said, 'Don't trust the diver.' So I like you already. #line:ch13_tobin_006
+-> Why marry into the Order? #line:ch13_tobin_007
+    Tobin [tender]: Somebody had to go first. I volunteered. Nobody had to be chosen. #line:ch13_tobin_008
+-> Good luck. #line:ch13_tobin_009
+    Tobin [laugh]: I'll need it. Her knots are terrible. #line:ch13_tobin_010 #tn:"A private joke between him and Merel; it returns as his last words in Ch14."
+<<set $ch13_met_tobin = true>>
+@letterbox off
+@camera release
+===

@@ -1,0 +1,15 @@
+{
+ "format": 1,
+ "scene": "ch13_bark_liss_palm",
+ "source": "game/data/dialogue/ch13/ch13_bark_liss_palm.dlg",
+ "start": "ch13_bark_liss_palm",
+ "nodes": {
+  "ch13_bark_liss_palm": {
+   "headers": {"location": "ch13/ansedra"},
+   "ops": [
+    {"op": "cue", "cue": "anim", "args": ["liss", "palm_on_water"], "kwargs": {}, "src": 6},
+    {"op": "line", "id": "ch13_bark_palm_001", "key": "DLG_CH13_BARK_PALM_001", "speaker": "liss", "emotion": "worried", "voice": "", "src": 7}
+   ]
+  }
+ }
+}
