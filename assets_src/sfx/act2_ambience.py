@@ -70,6 +70,10 @@ Ch15 and Ch16's remaining beds (the Lead's 10-30 13:48 item; beats act2_ch15.md 
     hearth_fire         Ch12, Quellan's inn hearth (cinematics' `inn_fire` practical, staged for ch12_forty_seven_voices; a
                         positional loop on the prop, game/data/audio/prop_sfx.json): a peat-and-pine fire settled
                         low, its breath, a few soft pops and a log shifting once; no roar. Close and dry (a room).
+    lamp_flame          Act II's flickering flames (env-art-b's ambient life: the Lacquer Court's eight lanterns,
+                        Hollowmere's lamps; a positional loop on each warm `fire_lights` row with a `flicker`,
+                        game/data/audio/prop_sfx.json `flames`): an oil wick's soft breath, wavering at the flicker's
+                        own rates (1.7 and 4.3 Hz, ZoneKitDressing.FLICKER_HZ), a rare small gutter. Heard only close.
     choir_storm         Ch16, the storm waking early at the Drowned Choir (`ch16_holding_the_line`, by encounter):
                         the stone mouths roaring in a rising gale, surge pounding the ring channel, spray, the sea's
                         low roar under it all. It is weather, not the Undertow's voice (storm_wall carries that).
@@ -114,7 +118,8 @@ LOOPS = {"fen_dusk": 48.0, "reedhollow_roost": 46.0, "vey_galleries": 50.0, "low
          "lacquer_court": 46.0, "archive_room": 44.0, "sanctum_basin": 40.0, "open_sea_night": 48.0,
          "pale_rim_shallows": 50.0, "choir_bowl": 52.0, "arena_fen_roots": 40.0, "arena_engine_hall": 36.0,
          "arena_seep_terrace": 40.0, "arena_lagoon_dusk": 42.0, "arena_court_steps": 40.0,
-         "hollowmere_flotilla": 48.0, "open_sea_fog": 44.0, "choir_storm": 36.0, "hearth_fire": 24.0}
+         "hollowmere_flotilla": 48.0, "open_sea_fog": 44.0, "choir_storm": 36.0, "hearth_fire": 24.0,
+         "lamp_flame": 20.0}
 # The Kirru mode on A (reedhollow.py): A B C# D# F#, G# only as the top of a rise; never E.
 KIRRU = {"A3": 57, "B3": 59, "C#4": 61, "D#4": 63, "F#4": 66, "F#3": 54, "G#4": 68}
 
@@ -824,6 +829,24 @@ def hearth_fire(g):
     return mx, _room(SEED % 9973 + 23, 0.5, 0.8, highcut=7000.0)
 
 
+def lamp_flame(g):
+    mx, L = _mixer("lamp_flame")
+    mx.bus("wick", 0.0, send=0.08)
+    Ls = L / SR
+    n = L + int(2.0 * SR)
+    t = np.arange(n) / SR - 1.0  # the clip starts a second before the loop (added at -1.0)
+    breath = filt(g.standard_normal(n), [bq_lowpass(520, 0.7), bq_highpass(120, 0.7)])
+    breath = breath / (np.abs(breath).max() + 1e-9)
+    # the flame's waver, at ZoneKitDressing's flicker rates (whole cycles in the loop, so the seam holds)
+    waver = 1.0 - 0.25 * (0.5 + 0.5 * np.sin(t * 2 * np.pi * 34 / Ls)) - 0.15 * (0.5 + 0.5 * np.sin(t * 2 * np.pi * 86 / Ls))
+    mx.add("wick", breath * waver, -1.0, pan=0.0, gain=0.5)
+    for t0 in FA.schedule(L, 2.6, g, 0.8):                                  # a rare gutter: a wet, tiny tick
+        k = int(0.006 * SR)
+        tick = filt(g.standard_normal(k), [bq_bandpass(2400, 1.2)]) * np.linspace(1, 0, k) ** 2
+        mx.add("wick", tick, t0, pan=float(g.uniform(-0.1, 0.1)), gain=float(g.uniform(0.08, 0.2)))
+    return mx, _room(SEED % 9973 + 29, 0.3, 0.5, highcut=6000.0)
+
+
 BEDS = {"fen_dusk": fen_dusk, "reedhollow_roost": reedhollow_roost, "vey_galleries": vey_galleries,
         "lowlight_temple": lowlight_temple, "keth_pass_wind": keth_pass_wind, "quellan_town": quellan_town,
         "cloudloom_hall": cloudloom_hall, "ansedra_still": ansedra_still, "lacquer_court": lacquer_court,
@@ -832,7 +855,7 @@ BEDS = {"fen_dusk": fen_dusk, "reedhollow_roost": reedhollow_roost, "vey_galleri
         "arena_engine_hall": arena_engine_hall, "arena_seep_terrace": arena_seep_terrace,
         "arena_lagoon_dusk": arena_lagoon_dusk, "arena_court_steps": arena_court_steps,
         "hollowmere_flotilla": hollowmere_flotilla, "open_sea_fog": open_sea_fog, "choir_storm": choir_storm,
-        "hearth_fire": hearth_fire}
+        "hearth_fire": hearth_fire, "lamp_flame": lamp_flame}
 FILES = [f"{b}{ext}" for b in BEDS for ext in (".ogg", ".loop.json")]
 
 

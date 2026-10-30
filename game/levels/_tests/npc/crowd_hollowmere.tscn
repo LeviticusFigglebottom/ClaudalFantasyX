@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/npc/haluna_villagers.gd" id="stage"]
+
+[node name="CrowdHollowmere" type="Node3D"]
+script = ExtResource("stage")
+zone_scene = "res://game/levels/ch17/hollowmere/hollowmere.tscn"
+zone_id = &"ch17/hollowmere"
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Dock" type="Camera3D" parent="Cameras"]
+transform = Transform3D(-0.977802, 0.0615495, -0.200285, 0, 0.955882, 0.293751, 0.209529, 0.287231, -0.934664, 31, 3, -7)
+fov = 50.0
+
+[node name="Platforms" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.743294, 0.190647, -0.641223, -0, 0.958531, 0.284988, 0.668965, -0.21183, 0.71247, 41, 2.6, -12)
+fov = 50.0
+
+[node name="Mender" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.819232, 0.194464, -0.539484, -0, 0.940749, 0.339104, 0.573462, -0.277805, 0.770691, 27, 2.6, -12)
+fov = 50.0

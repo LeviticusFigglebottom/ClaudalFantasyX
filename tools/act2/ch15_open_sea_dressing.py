@@ -43,6 +43,11 @@ BARGE_SCALE = 0.65  # the kit's 16 x 7.5 m barge to the greybox's 4 x 10 m deck 
 BARGE_YAW = -90.0  # its bow (-X) to the greybox's bow (-Z, the `bow` mark)
 WATER_Y = round(bb.WATERLINE_Y * BARGE_SCALE, 3)  # the barge's waterline at its scale
 SEA_GLOW = 0.12
+# The ambient-life pass (10-30): the wedding's wreckage rides the night swell round the drifting barge, out of the
+# deck's way: planks and weed, far enough off that the field camera sees them on the water, not under the rails.
+DEBRIS_AT = ((-9.0, -6.0, 40.0), (11.0, 4.0, 150.0), (-6.5, 14.0, 260.0), (14.0, -15.0, 320.0))
+DEBRIS_DRIFT = {"bob_m": 0.12, "period_s": 7.0, "tilt_deg": 4.0, "wander_m": 1.5, "wander_s": 90.0}
+DEBRIS_FLOAT_Y = 0.05  # tide_debris's planks sit 0.2 m under its origin
 EBBING_DATA = "res://game/data/vfx/ebbing_ch15_open_sea.json"
 
 WATER_NAME = "open_sea_night_water_material.tres"
@@ -70,6 +75,8 @@ def dressing() -> dict:
     b = blocks()
     pieces = [{"piece": "bridal_barge_sea", "at": [b["Deck"]["pos"][0], barge_origin_z(b)], "y": 0.0,
                "yaw_deg": BARGE_YAW, "scale": BARGE_SCALE}]
+    pieces += [{"piece": "tide_debris", "at": [x, z], "y": round(WATER_Y + DEBRIS_FLOAT_Y, 3), "yaw_deg": yaw,
+                "drift": dict(DEBRIS_DRIFT)} for x, z, yaw in DEBRIS_AT]
     looks = {slot: ans.RES_ZONE + name for slot, (name, _) in ans.LOOKS.items()}
     return {
         "schema": "ZoneKitDressing (game/levels/act1/zone_kit_dressing.gd; ADR 0200)",

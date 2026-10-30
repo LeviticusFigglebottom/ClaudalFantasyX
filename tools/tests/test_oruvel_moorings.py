@@ -38,7 +38,7 @@ DECKS = ("raft_deck", "raft_deck_tucked", "raft_deck_small", "raft_deck_small_tu
 HULL_MATS = {oc.M_TAR, oc.M_PAINT, oc.M_PAINT_RED, oc.M_PAINT_OCHRE, oc.M_PAINT_TEAL, oc.M_PAINT_WHITE}
 # Pieces whose painted walls stand on a deck (not hulls), and the clips the story places on purpose.
 NOT_HULLS = {"cabin_keelroof", "keel_hull", "chandlery", "storm_debris"}
-ALLOWED = {("hull_outrigger", "LowHull"), ("scale_hull", "")}
+ALLOWED = {("scale_hull", "")}
 ALLOWED_ON = {("dive_raft", "plank_bridge"), ("dive_raft", "plank_bridge_broken")}  # (hull piece, deck piece)
 UNDER_M = 0.3
 OVER_M = 0.05

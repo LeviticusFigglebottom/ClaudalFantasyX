@@ -16,12 +16,14 @@
     {"op": "cue", "cue": "mark", "args": ["toma", "ship_deck_2", "walk"], "kwargs": {}, "src": 14},
     {"op": "cue", "cue": "mark", "args": ["asha", "ship_deck_3", "walk"], "kwargs": {}, "src": 15},
     {"op": "cue", "cue": "mark", "args": ["rhen", "ship_deck_4", "walk"], "kwargs": {}, "src": 16},
-    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 17},
-    {"op": "cue", "cue": "mark", "args": ["kerrid", "ship_deck_5", "walk"], "kwargs": {}, "src": 18},
-    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 19},
-    {"op": "set", "flag": "ch15_complete", "value": ["lit", true], "src": 20},
-    {"op": "cue", "cue": "fade", "args": ["out", 2.0], "kwargs": {}, "src": 21},
-    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 22}
+    {"op": "cue", "cue": "mark", "args": ["ysolde", "ship_deck_6", "walk"], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "mark", "args": ["pell", "ship_deck_7", "walk"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "mark", "args": ["kerrid", "ship_deck_5", "walk"], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 21},
+    {"op": "set", "flag": "ch15_complete", "value": ["lit", true], "src": 22},
+    {"op": "cue", "cue": "fade", "args": ["out", 2.0], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 24}
    ]
   }
  }

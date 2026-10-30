@@ -630,3 +630,60 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - **Checks:** dlgc 0/0 · validate_data 0/0 · taskboard clean. Godot `dialogue` 87/0, `haluna_zone` 7/0, `memories` 15/0, `cutscene_sequencer` 22/0. No screenshot shows the changed lines (`slice_beach_standing` holds line 031, which is unchanged).
 - MERGE-READY emotional-beats pass @ 5b401f65a
 - BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1010; M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Act II emotional-beats pass, Ch10–Ch13 staged and Ch14–Ch16 on paper (Lead; pillars 1 and 6)
+- **Read:** the key scenes in order.
+  - Ch10: the farewell-tide, the dawn gate.
+  - Ch11: the housing-mark, twice, Nhoa, "By you, now.".
+  - Ch12: the herd-cord, Hesk, forty-seven voices.
+  - Ch13: Ethren, the roll, the hands, the pact, the house.
+  - Ch14: the vows, the declaration, Tobin, Merel.
+  - Ch15: the confession, "Let me carry him.".
+  - Ch16: the High Warden, swept away.
+- **Lines: no change needed.**
+  - **Sincerity:** no Act II line undercuts sorrow. Every [laugh] and [smile] in the main scenes sits before a loss (Tobin's joy in Ch13), never after it. Tobin's dying "Your knots are terrible." pays off Ch13's knots: his tenderness, not a release.
+  - **Pillar 6 (no one keeps everything):** "You are very good at asking." (the Hush's cost, Ch10); "She is held. By you, now."; Ysolde's "I would very much like it to."; Liss's "I'm not going to say it's all right." to Toma.
+- **Earned beats depend on mounting.** Tobin's death needs `ch13_tobin` played; "Your breath. In Ullar." needs `ch12_breath`; Ch11's split needs `ch11_housing_mark`. All are filed in M4-A2P-1003.
+- **Tightened (my scripts' holds, to the direction notes):**
+  - V00: 5 → 9 s;
+  - Pell's kneel (N05): 4 → 7 s;
+  - N09: 6 → 8 s;
+  - Ch13's A01: 5 → 8 s;
+  - Ethren's rise (S05): 4 → 6 s.
+- **Staging filed: M4-A2P-1011 → slice-polish.** A Ch10–Ch16 checklist of the beats staging can break, each pointing at its direction note: the backs to the tide, Pell's ledge, Tobin's fall, Merel from the barge, Kerrid's eye height and K11, the dock-master unheard, Pell's turn last, Sefir's smile, the hard cuts.
+- **Checks:** dlgc 0/0 · taskboard clean · Godot `dialogue` 87/0 · tools music-sync test OK.
+- MERGE-READY Act II emotional pass @ 270c32419
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1011; M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Act II read-through, Ch14–Ch16 on paper (Lead)
+- **Read:** every Ch14–Ch16 script in the beat sheets' order, against the sheets, the ADRs and the earlier chapters.
+- **The required facts hold:**
+  - Kerrid sits only at K05, and the confession matches its RULE 4;
+  - the Hush is told only in Kesh's memory; no "revenant";
+  - the one `glimmer_lift` is the sheet's;
+  - no ice; Tobin, Merel and the lamp are right;
+  - Imra, Dace and Kerrid are never grouped; Pell has no battle kit.
+- **No leak** (one possible: Kerrid's "Nobody, if she does it right." in the Ch15 camp implied the Act III premise; now "I don't know. Somebody always has.").
+- **Story fixes (my scripts and sheets):**
+  - **Repeats:**
+    - the Ch14 camp repeated Ch15's deck beat and the "volunteered" line. It keeps the wick-tool and "I want it to cost them", and moves to `ch15/open_sea`.
+    - Tobin's Ch13 "volunteered" is now "Peace has to start with somebody's wedding." (Ch14 carries the line).
+    - Liss's and Merel's Ch14 talks are reworded.
+  - **Flags now paid:**
+    - the supper reads `ch14_spoke_with_tobin` (Aldous asks; Rhen: "He said nobody had to be chosen. He volunteered.");
+    - the barge reads `ch14_vows_spoken` (Liss says Tobin's vow back, "I'll learn your quiet.").
+  - **Order:**
+    - the pyre-raft now ends on Pell's turn;
+    - three Hollowmere barks wait for the news (`ch15_toma_carried_tobin`), with arrival lines before it.
+  - **Continuity:**
+    - Ysolde and Pell board the ship;
+    - 13 zone headers named `ch14/lacquer_court` or `ch15/hollowmere`, which don't exist, and now name the real zones;
+    - "after the bells" is now "after the vows";
+    - Dace's hull is "years after" his first visit.
+  - **Docs:** kerrid.md and act2_ch14 "sat out" are now "stood out"; Pell is out of two boss role-answers.
+- **Filed:**
+  - **M4-A2P-1012 → act1-chapters:** the Ch14–16 flows play no scene; the dock-master on arrival; four missing encounters (`ch14_water_steps`, `ch14_malcor_venn`, `ch16_abiding_guard`, `ch16_storm_wakes`); the battle chaining.
+  - **M4-A2P-1013 → slice-polish:** Warden Dask on the steps (L09); the lamp-bearers' entrance and the oar-pin (W03/W05); two ship marks.
+- **Checks:** dlgc 0/0 · validate_data 0/0 · taskboard clean · tools dlgc, sfx and flag-reach tests OK · check_drafts 73/0 · Godot `dialogue` 87/0. It was 1 red until a fresh `--import` rebuilt the translations for the two new supper lines.
+- MERGE-READY Ch14–16 read-through @ e8825bce8
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1013; M4-A2P-112 items 3, 5 and 6.

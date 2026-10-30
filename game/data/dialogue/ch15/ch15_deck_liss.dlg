@@ -11,6 +11,10 @@ Liss [grief]: Lacquer over cedar. Pegged, not nailed. Ansedrans peg everything. 
         @anim rhen sit_beside liss
         Liss [grief]: Don't. Don't say anything kind. #line:ch15_deck_liss_003
         @wait 4.0
+        <<if $ch14_vows_spoken>>
+            Liss [grief]: I'll learn your quiet. #line:ch15_deck_liss_006 #tn:"Tobin's vow to Merel at the wedding (Ch14), said back to herself by his sister."
+            @wait 3.0
+        <<endif>>
         <<set $ch15_sat_with_liss = true>>
     -> Leave her be. #line:ch15_deck_liss_004
         @anim rhen step_back

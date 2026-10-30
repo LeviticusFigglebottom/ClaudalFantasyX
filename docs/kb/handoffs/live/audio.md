@@ -3,6 +3,43 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ 1ad5bbcfb: the Lead's 21:05 item.**
+  - **The Act II boss themes as played in the intros (bdc5ef22):** done at d04d79422 (above). Each sting now lands with the title card at 0.7 s, under the boss cue's 3.5 s duck.
+  - **Victory stings:** each Act II boss win returns to the field (the chapter flows: `victory_flag`, then the zone), not into a scene of grief, the same as Act I. So the one modest victory figure (pentatonic, open fifths) stays, with no triumphant boss fanfare. act1_mix_pass `--act 2`: 62 handovers, none with a step over 3 LU. Victory → field is level in every Act II zone (-16.0 against -16.0 to -16.1, at most 0.1 LU).
+  - **Zone ambience against env-art-b's ambient life** (env-art-b @ 9a85e089, not on integration yet):
+    - **What it added:** flames that flicker (the Lacquer Court's eight lanterns at 0.15; Hollowmere's seven warm lamps at 0.3 and four bound-teal conduit lights at 0.12), and tide debris that drifts at Hollowmere, the open sea and round the bridal barge. No birds; the gulls are already in hollowmere_flotilla.
+    - **The flames now sound:** a new close loop, `lamp_flame` (20 s, act2_ambience.py: an oil wick's soft breath wavering at ZoneKitDressing's own flicker rates of 1.7 and 4.3 Hz, and a rare small gutter). It plays under each warm `fire_lights` row with a `flicker` of at least 0.1, through PropAudio and the new `flames` row in prop_sfx.json. The loop is heard within about 9 m and never across the zone, and each flame starts at its own point in the loop, so a row of lanterns doesn't breathe in step. The teal lights flicker but aren't flames, so they stay silent.
+    - **How it hooks in:** it reads only ZoneKitDressing's public `layout`, the `FireLights` children in row order, and the `dressed` signal. It waits for `dressed` if the lights aren't placed yet, and it changes nothing until env-art-b merges.
+    - **The drifting debris needs no new sound:** it rides the swell, and the beds already carry water on hulls and pilings (hollowmere_flotilla, open_sea_night, open_sea_fog).
+  - **Checks:**
+    - Run: render_all `--only act2_ambience` (only `lamp_flame` new, every other bed byte-identical; loudness re-checked); test_audio_loudness OK; validate_data 0; data_check OK; gdlint and gdformat clean.
+    - Godot tests: flame_audio 3/0 (new), prop_audio 2/0, battle_stings 8/0, audio_runtime 11/0, ambience 5/0, footsteps 8/0.
+    - Skipped: screenshots, Blender, coverage.
+  - **PC-QUEUE:** walking past the Lacquer Court's lanterns once env-art-b merges.
+- **BACKLOG EMPTY (after 1ad5bbcfb):** waiting on Ch11 and Ch13 staging, combat's Ch14–Ch16 fights, and env-art-b's merge (the flames go live then).
+- **MERGE-READY @ d04d79422 (unchanged): the Lead's 20:45 item. Ch11 and Ch14–Ch16 were already rendered from the direction notes, so there was nothing to add.**
+  - **Ch11 (`docs/kb/story/beats/act2_ch11_direction.md`):** the table is camera and blocking. Its only sound calls are already met:
+    - the `nhoa_bound` sting on N07 (rendered);
+    - "2 s of silence on V06" and "let the music cut to silence on the walk away (it does)";
+    - its held shots (V00 8 s, V07 3 s, V09 4 s, T00 3 s, T03 5 s, N02–N09). Each has a row in `act2_direction_holds.json` (task 22), and act1_playthrough `--holds` finds no cue ending inside any of them.
+  - **Ch12–Ch16:** a scan of every `@music`/`@sfx`/`@ambience` name in the six direction notes finds every one rendered and in a table: Ch12 6, Ch13 7, Ch14 9, Ch15 10, Ch16 12; missing 0. Ch14–Ch16's holds (three, three and one) pass too. `test_direction_holds` passes.
+  - **When Ch11's staging lands:** I'll rerun act1_playthrough `--act 2 --holds` against it. A staged hold longer than the note's floor is the only thing that can need a cue retimed.
+  - **Checks:** test_direction_holds OK and act1_playthrough `--act 2` (13 items, all known notes). Nothing changed but this log.
+- **MERGE-READY @ d04d79422 (unchanged): the Lead's 20:26 item. There's nothing new to render or score yet.**
+  - **Ch11's scoring as slice-polish stages it:** m2-slice @ e262e104 stages the same Ch11 and Ch12 scenes as before (lowlight, sunken_vey; cloudloom, keth_pass, quellan, inn_fire), and their cues were checked as played at faaa30a0. Every Ch11–Ch13 script difference between m2-slice and audio is audio's own newer side, already on integration @ 46d8a067: m2-slice predates the restored `@sfx pole_no_wake` in ch13_still_city and the `ch13/sanctum` location. I'll rescore Ch11 when slice-polish pushes a new stage.
+  - **Ch12–Ch13 from act2-plan's cue tables:** every cue is rendered and every ref resolves. act1_playthrough `--act 2 --holds` reports no missing cue in Ch11–Ch13, only the four known notes: the Vowbound `fade=0.0` lines play as 0.2 s fades, and ansedra is named twice. Ch13 has no staging on any branch.
+  - **Checks:** none. Nothing changed but this log.
+- **MERGE-READY @ 425b1109: the Lead's 19:45 item.**
+  - **Ch11–Ch13 cutscene cues:** Ch13 has no staging yet on any branch (Ch11 and Ch12's were checked at faaa30a0). act2-plan's cue tables have no missing cue (17:50), so there is nothing to render. I'll rerun the staged check when Ch13 lands.
+  - **The Act II boss themes as played in battle-presentation's intros** (bdc5ef22 and the Ch10–Ch12 intros on big25; choreo.json boss_intro: camera_in 1.1 s, hold 2.0–2.4 s, camera_out 0.8 s; the title card at 0.7 s).
+    - **Found:** BattleBossIntro announces `boss_intro` "as the intro starts", as the camera begins to move, but every boss sting (Act I's and Act II's) hits in its first 0–0.2 s. So the hit came before the boss's name was on screen.
+    - **Fixed in audio's layer** (no battle-presentation change): battle_stings.json rows take a `delay_sec`, and `boss_intro`'s is 0.7 s (= choreo.json `card_at_sec`). StingAudio holds the row and plays it on time from `advance()`. The `boss_intro` duck still starts with the event, so the boss cue dips as the camera moves and the hit lands with the card.
+    - A test ties `delay_sec` to `card_at_sec`, so a retimed card can't leave the sting behind.
+    - **Levels:** the boss cues sit at ~-18 LUFS, -23 under the duck; the stings hit at -16 momentary. The shortest stings now ring until 2.5 s (Drowner) and 2.8 s (Wakefin) of a 3.9–4.3 s intro, and the ducked cue plays under the rest: not silence.
+    - The battle cue enters at the battle's attach (battle_in_sec 0.3), before the reveal, as Act I's do.
+  - **Checks:** validate_data 0; Godot battle_stings 8/0 (one new), battle_audio 22/0 (test_battle_audio_live now steps through the delay), audio_runtime 11/0, impact_audio 6/0. **Skipped:** screenshots, Blender, coverage.
+  - **PC-QUEUE:** a boss intro by ear (the hit with the card).
+- **BACKLOG EMPTY (after 425b1109):** waiting on Ch13's staging, combat's Ch14–Ch16 fights, and the listening verdict.
 - **MERGE-READY @ 3d9476ea: the Lead's 19:25 item, the music of Act I's emotional beats as played** (cbc63b39 WIP, 3d9476ea).
   - **Scenes checked:** each key scene's cues traced against the scene's timeline (`act1_playthrough.py`'s pacing, including the player-paced hold gates): the Prologue, the Ch1 storm (the rising, going under, the Hullgnaw), the Drownbell, the Ch4 wake, Corrow (the storm against the wind, the Reach, Virel's binding, the Ebbing) and the Act I end (the road out, the vigil, the act card, the end card).
   - **Fine as they were:** the rising's loop gains its stem on cue; going_under fades 3 s before its own end; Hullgnaw, the Reach and the wake are loops; the storm against the wind is silent on purpose. The Drownbell is battle-driven (its stems on the Flood).

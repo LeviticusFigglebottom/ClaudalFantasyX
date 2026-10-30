@@ -61,7 +61,9 @@ CHANDLERY_BEACON_Z = -1.8  # its beacon lantern's post, off the keel-roof's fore
 CHANDLERY_BEACON_UP_M = 0.12 + 1.2 + 0.3  # the post's foot over the roof, its height, the lantern's middle
 GULL_PERCH_M = 0.08  # a gull's feet over the ridge line
 LOW_HULL_LOAD_Y = -0.05  # the salvage on the run's planks over LowHull (the bridge sags 0.15 m mid-span)
-LOW_HULL_KEEL_Y = 0.24  # hull_outrigger's keel is 0.31 m under its origin; the run's bridge sags 0.07 m where it lies
+LOW_HULL_AFLOAT_Y = -0.5  # as the moored canoes ride
+LOW_HULL_OFF_RUN_M = -4.25  # its booms' AABB 0.1 m off the run's bridges (z -18), afloat
+LOW_HULL_YAW_DEG = 180.0
 # Canoes moored in open water beside the decks, clear of every plank (x, z, yaw): the town's boats, now that the
 # mooring rafts are tucked.
 MOORED = ((9.6, 10.0, 0.0), (-20.0, -21.5, 180.0), (30.0, 2.6, 90.0))
@@ -190,8 +192,10 @@ def pieces() -> list[dict]:
     out.append(span((46.0, -17.0), (40.0, -17.0)))
     out.append(span((40.0, -17.0), (34.0, -17.0)))
     lh = b["LowHull"]
-    # Thrown up across the run's planks (C1-12), its keel on them, not through them (the human's playtest, 10-30).
-    out.append(pl.put("hull_outrigger", lh["pos"][0] - 1.0, LOW_HULL_KEEL_Y, lh["pos"][2], 0.0, block="LowHull"))
+    # Swamped alongside the run where C1-12 threw it (cloud-qa pass 6, the Lead 10-30: lying along the planks, its
+    # booms ran through the bridges' rails); its salvage on the planks below is what blocks the way.
+    out.append(pl.put("hull_outrigger", lh["pos"][0] - 1.0, LOW_HULL_AFLOAT_Y, lh["pos"][2] + LOW_HULL_OFF_RUN_M,
+                      LOW_HULL_YAW_DEG, block="LowHull"))
     # Its load (C1-13 cuts it loose across the run's planks): salvage piled over the block, so it reads as cargo
     # blocking the way, not a canoe; it drifts clear with the block.
     out.append(pl.put("salvage_heap", lh["pos"][0], LOW_HULL_LOAD_Y, lh["pos"][2], 90.0, scale=LOW_HULL_LOAD_SCALE,

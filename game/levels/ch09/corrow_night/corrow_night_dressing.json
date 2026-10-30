@@ -5363,7 +5363,8 @@
    "yaw_deg": -1.15,
    "block": "Rocks",
    "material_paths": {
-    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"
+    "cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres",
+    "cw_headland": "res://game/levels/ch09/corrow_night/corrow_strand_rocks_material.tres"
    }
   },
   {

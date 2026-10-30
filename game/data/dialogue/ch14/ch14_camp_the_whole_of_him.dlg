@@ -1,16 +1,11 @@
 // Ch14 camp (optional, the night after the escape, on the cut barge; requires ch14_complete). Liss and Rhen. Liss will
-// not sleep. Rhen tries to make Tobin's death mean something and she stops him; then she says the cost she wants, and
-// Rhen says the true thing. No jokes (pillar 1). Sets ch14_camp_talk.
+// not sleep; she gives him Tobin's wick-tool to hold, says the cost she wants, and Rhen says the true thing. No jokes
+// (pillar 1). Sets ch14_camp_talk. (Read-through 2026-10-30: the "Don't." / sit beat is ch15_deck_liss's, and Tobin's
+// "volunteered" is ch14_talk_tobin's; both cut here. Zone: the barge at sea, ch15/open_sea.)
 title: ch14_camp_the_whole_of_him
-location: ch14/lacquer_court
+location: ch15/open_sea
 ---
 Rhen [neutral]: Liss. #line:ch14_camp_001
-Liss [cold]: Don't. #line:ch14_camp_002
-Rhen [neutral]: I wasn't going to say anything. I'll just sit. #line:ch14_camp_003
-Liss [grief]: He volunteered. They wanted a groom and he put his hand up so nobody would get picked. That's the whole of him. #line:ch14_camp_004 #long
-Rhen [sad]: That's the whole of a lot of people we've met. #line:ch14_camp_005
-Liss [angry]: Don't make him a lesson. #line:ch14_camp_006
-Rhen [guilty]: Sorry. You're right. #line:ch14_camp_007
 Liss [grief]: Here. Hold this. My hands won't stop. #line:ch14_camp_008
 Rhen [neutral]: What is it? #line:ch14_camp_009
 Liss [sad]: His wick-tool. He lent it to me in the morning. I was going to give it back after. #line:ch14_camp_010
