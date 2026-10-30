@@ -143,6 +143,7 @@ Shot ids are proposed in §7 (W = the wedding court, S = the water-steps, L = th
   - and then he is gone.
 - **W15:** Liss's face. She doesn't scream. She goes to him and puts both hands on the wound the way a wright seats a housing, and talks to it, low and fast (her tell: she narrates repairs when grieving): *"Hold it. Hold, hold, she'll hold, seat it, hold—"* It doesn't. Toma lifts her off him with one arm, still holding the shield with the other, and she fights him. Sets `ch14_tobin_killed`. ~30 words.
 - **No blood on the slabs in close-up** beyond the sleeve: the wound is framed out. The mark the player remembers is on **Merel's sleeve** (B08).
+- **His light** (color script `ch14`: `glimmer_held`, sideways and down): a few motes come off him on the slabs and **don't go anywhere**. They hang low round him and Liss, held, anchored by her (bible §2). They stay with his body onto the barge (L01) and through Ch15 (act2_ch15.md U03, B13). Nobody remarks on them. Nothing rises.
 
 ### B06. Set piece: the water-steps (P, ~6 min)
 See §5.
