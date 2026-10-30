@@ -19,6 +19,7 @@ The scene cues act2_finals.md lists as not written, timed to the beat sheets and
 
 ## Notes
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). Plan §2. LFS uploads are blocked (TRACK-RULES 2026-10-30): files under 5 MB go as plain blobs outside the LFS paths, or wait in PC-QUEUE.
+- 2026-10-30: the pre-gate beat-sheet drafts add two proposed cues: `tobin_pyre` (act2_ch15 §6, ~60 s, the wedding's vow phrase on a fiddle) and `kesh_memory` (act2_ch16 §6, ~3 min, the memory sequence). Time every cue to the drafts' beats.
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
 
 ## Review log

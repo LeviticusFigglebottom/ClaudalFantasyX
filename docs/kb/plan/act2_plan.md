@@ -45,6 +45,8 @@ ADR 0041 §3's "final" bar is Act II's bar from day one (ADR 0203: "Act I's bar 
 
 ## 2. Chapter by chapter
 
+**Beat-sheet drafts (pre-gate, 2026-10-30)** now exist for every chapter: [Ch10](../story/beats/act2_ch10.md), [Ch11](../story/beats/act2_ch11.md), [Ch12](../story/beats/act2_ch12.md), [Ch13](../story/beats/act2_ch13.md), [Ch14](../story/beats/act2_ch14.md), [Ch15](../story/beats/act2_ch15.md) and [Ch16](../story/beats/act2_ch16.md). Where a draft and this section differ, the draft is newer. The main differences: the Ram's hazard is stone and scree, not snow (ADR 0015); the Abiding guard are living; and Kesh is bound in Ch16 but callable only from Ch17.
+
 Each chapter lists zones and kit needs; cast and NPCs; enemies, bosses and Vowbound; set pieces; cutscenes; music and ambience; new menus and systems; balance targets. "Exists" means on a branch today (§3, the inventory); "gap" means a task in §6.
 
 ### Ch10 "Fen of the Kirru"

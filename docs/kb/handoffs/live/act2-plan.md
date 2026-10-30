@@ -52,3 +52,10 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - MERGE-READY @ 18bf1e77: `docs/kb/story/beats/act2_ch12.md` (draft: pre-gate; M4-C12-01). Checks: validate_data 0/0. Skipped: dlgc, Godot (docs only). Next: Ch13.
 - LEAD-ASK: **The Avalanche Ram's ice vs ADR 0015.** avalanche_ram.md (built, M3-CRE-624) has ice plates and icicles on its fleece; ADR 0015 and keth_pass.md say no ice in any temple **or set piece** from Ch12 to Ch15. Default in act2_ch12 §10.1: creatures-b swaps the ice for wet, matted, seep-lit wool at the gate (a materials change, not a rebuild). Or rule a creature's frosted fleece on an open mountain as weather?
 - MERGE-READY @ 15f641de: `docs/kb/story/beats/act2_ch13.md` (draft: pre-gate; M4-C13-01). §10.2 asks the Lead whether the ledger phrase "the heart sung in" spends the Choir early. Checks: validate_data 0/0. Skipped: dlgc, Godot (docs only). Next: Ch16.
+- MERGE-READY @ 4a1602ae: `docs/kb/story/beats/act2_ch16.md` (draft: pre-gate; M4-C16-01). **All seven Act II beat sheets are drafted** (Ch10–Ch16, about 4,600 words written, 3,300 on the critical path). A cross-check finds every flag a draft reads declared in a draft, in Act I's sheets or in flags.tres. Checks: validate_data 0/0, taskboard --check clean. Skipped: dlgc, Godot (docs only).
+- LEAD-ASK: **Review flags across the drafts** (each has a §10 with its open questions; defaults are in the text):
+  - Ch15 §10.1: Tobin's light is caught in a Saltwright lamp at the pyre-raft (plants Liss's Act III), or goes out on the tide?
+  - Ch16 §10.3: Sefir's one word to Kerrid, "Captain."; keep, or is it too close to naming the dead?
+  - Ch13 §10.2: the ledger phrase "the heart sung in"; does it spend the Choir truth early?
+  - Ch16 §10.5: act3_ending H03 says Sefir "raises Kesh from the stones" in Ch21, but Ch16 binds her to Asha; Act III's to reconcile.
+  - Names proposed (banned-terms clean): Commander Brannoc Hale, Warden Dask, the dock-master Aldous Varrow, the Kirru eldest Owa (or unnamed); "Outside the Level" as the heresy's words.
