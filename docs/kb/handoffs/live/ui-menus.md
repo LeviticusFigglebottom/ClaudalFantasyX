@@ -1503,3 +1503,17 @@ MERGE-READY @ dd8d136e1: M5-A3P-1706, the ledger page.
   - No shot changes: captures read no flags.
   - **Tests and checks:** test_battle_barks 6/0; vowbound 119/0; validate_data 0/0; taskboard ok; lint ok.
 MERGE-READY @ a27a38bc0: M5-A3P-1708, the Vowbound answers (Ch17 B09).
+
+- **Small items:**
+  - **M4-A2P-1708:** dropped the stale KNOWN_EMPTY entries. Ch6 and Ch8's objective rows have landed, so
+    test_objective_coverage now holds every mapped zone (2/0).
+  - **M5-A3P-1709, request to progression (design):** kite.json `secrets` is empty, so every chart search finds
+    nothing. Design names the secret places; the menu reads them as they are.
+  - Fixed M5-A3P-1702's reviewer to `progression`; the board has no design role.
+- **Blocked or waiting, not idle:**
+  - **The ending flow:** waits on E7's staging (M5-A3P-1015, todo). When E7 has a scene, set credits.json
+    `next_scene` and the beach-rite vignette's `scene` (request M5-A3P-1701).
+  - **The Drownbell re-measure:** waits on M3-HER-1168, in review.
+  - **Mounts in the cinematics lane:** M5-A3P-1704 (revisit flags) and M5-A3P-1707 (the ledger page).
+  - **For combat (M5-A3P-1013):** `released_flag` in vowbound.json.
+MERGE-READY @ HEAD: M4-A2P-1708 (KNOWN_EMPTY dropped) and M5-A3P-1709 (request), docs and tests only.
