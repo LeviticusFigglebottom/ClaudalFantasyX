@@ -161,9 +161,9 @@
       "crowd": "haluna_beach_hauler",
       "stand_in": "CrowdSpots/haluna_beach_hauler",
       "at": [
-        2.0,
-        0.7,
-        -112.0,
+        8.5,
+        0.32,
+        -114.0,
         -90.0
       ],
       "shown": "day"
@@ -173,9 +173,9 @@
       "crowd": "haluna_stones_girl",
       "stand_in": "CrowdSpots/haluna_stones_girl",
       "at": [
-        -7.0,
-        1.2,
-        -111.5,
+        3.0,
+        0.46,
+        -104.5,
         -90.0
       ],
       "shown": "day"
@@ -185,9 +185,9 @@
       "crowd": "haluna_stones_boy",
       "stand_in": "CrowdSpots/haluna_stones_boy",
       "at": [
-        -6.1,
-        1.16,
-        -111.5,
+        3.9,
+        0.41,
+        -104.5,
         90.0
       ],
       "shown": "day"
