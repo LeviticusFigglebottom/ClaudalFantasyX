@@ -21,7 +21,7 @@ Aldous_varrow as "Dock-master" [soft_smile]: He came through here twenty years a
 Aldous_varrow as "Dock-master" [soft_smile]: Sang every chart he knew. Too loud. #line:ch15_daces_006
 Aldous_varrow as "Dock-master" [neutral]: Built a hull in my dry-dock for a season, left it half-done, never came back for it. Best ear in the flotilla. Worst at finishing things. #line:ch15_daces_007 #long
 <<if $ch15_sat_with_liss>>
-    @mark liss supper_table walk
+    @mark liss supper walk
     @anim liss sit_beside rhen
     @anim aldous_varrow set_bowl liss
     @wait 2.0

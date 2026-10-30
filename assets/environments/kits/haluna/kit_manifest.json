@@ -150,9 +150,9 @@
         6000,
         300
       ],
-      "bytes": 194556,
+      "bytes": 209288,
       "lods": {
-        "archive_case": 1576,
+        "archive_case": 1720,
         "archive_case-lod1": 264
       }
     },
@@ -1426,9 +1426,9 @@
         8000,
         500
       ],
-      "bytes": 87052,
+      "bytes": 117460,
       "lods": {
-        "lacquer_hall": 900,
+        "lacquer_hall": 1176,
         "lacquer_hall-lod1": 264
       }
     },
@@ -1822,7 +1822,7 @@
         40000,
         2500
       ],
-      "bytes": 1150032,
+      "bytes": 1138888,
       "lods": {
         "ossa_fen_ground": 29036,
         "ossa_fen_ground-lod1": 1326
@@ -2064,7 +2064,7 @@
         24000,
         2000
       ],
-      "bytes": 308312,
+      "bytes": 300880,
       "lods": {
         "reedhollow_ground": 8292,
         "reedhollow_ground-lod1": 468

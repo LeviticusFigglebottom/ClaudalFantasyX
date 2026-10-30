@@ -54,6 +54,8 @@ extends HalunaDresser
 ##   ebbing       {"data"?}: the Ebbing's motes (EbbingMotes; Ch9's game/data/vfx/ebbing.json, M3-C09-03, or the
 ##                  zone's own "data" file, as Ch15's held dead): the held fields
 ##                  the chapter's `@vfx glimmer_held` cues play, on the zone's stage.
+##   pieces[].snap  a float: after every piece is placed, the piece drops onto the collision under its origin plus
+##                  this offset (graves on a slope whose built mesh lies off the analytic surface they were set on).
 ##   edge_walls   [{"pos": [x, y, z], "size": [x, y, z], "yaw"?, "while_hidden"?: <id>}]: invisible static boxes along
 ##                  the walkways' edges over the water (assets_src/environments/zone_edges.py), so the hero can't
 ##                  step off; a "while_hidden" wall collides only while Greybox/<id> is hidden (a bridge the story
@@ -86,6 +88,9 @@ const KEY_DROPS := "drops"
 const KEY_SMOKES := "smokes"
 const KEY_EBBING := "ebbing"
 const KEY_EDGE_WALLS := "edge_walls"
+const KEY_SNAP := "snap"
+const SNAP_FROM_M := 4.0
+const SNAP_DOWN_M := 16.0
 const EDGE_WALLS := &"EdgeWalls"
 const KEY_MATERIAL_PATHS := "material_paths"
 const KEY_KIT_MATERIAL_PATHS := "kit_material_paths"
@@ -121,6 +126,8 @@ func dress() -> void:
 	zone = get_parent() as GreyboxZone
 	_rng.seed = int(layout.get("seed", 1))
 	var kit_paths: Dictionary = layout.get(KEY_KIT_MATERIAL_PATHS, {})
+	var snaps: Array[Array] = []  ## [piece, offset]
+	var grounds: Array[Node3D] = []  ## the pieces that collide as a LOD1 trimesh (a terrain)
 	for spec: Dictionary in layout.get("pieces", []):
 		var piece := _place_from_kit(spec)
 		if piece == null:
@@ -135,6 +142,7 @@ func dress() -> void:
 		var collide: Variant = spec.get(KEY_COLLIDE, false)
 		if collide is String and collide == COLLIDE_TRIMESH:
 			piece.add_child(trimesh_collider(piece, true, lod0_boxes(spec.get(KEY_COLLIDE_LOD0_IN, []))))
+			grounds.append(piece)
 		elif collide is String and collide == COLLIDE_TRIMESH_LOD0:
 			piece.add_child(trimesh_collider(piece, false))
 		elif collide is bool and collide:
@@ -146,6 +154,9 @@ func dress() -> void:
 		var turn := block(str(spec.get(KEY_TURN, "")))
 		if turn != null:
 			_turners.append([piece, turn, piece.basis])
+		if spec.has(KEY_SNAP):
+			snaps.append([piece, float(spec[KEY_SNAP])])
+	_snap_to_ground(snaps, grounds)
 	_place_fire_lights()
 	_place_multimeshes()
 	_place_far_lights()
@@ -426,6 +437,38 @@ func _follow(block_id: String) -> void:
 	for n: Node3D in followers(block_id):
 		n.visible = shown
 		_pause_hidden(n)
+
+
+## Drops each "snap" piece onto the ground under its origin (its own bodies excluded), plus its offset: a prop
+## placed on an analytic surface sits on the built ground, whose coarse mesh can lie metres off it. A terrain that
+## collides as its LOD1 gets a LOD0 body for the while, so the prop sits on the ground that draws.
+func _snap_to_ground(snaps: Array[Array], grounds: Array[Node3D]) -> void:
+	if snaps.is_empty() or not is_inside_tree():
+		return
+	var coarse: Array[RID] = []  ## the terrains' own LOD1 bodies: the snap looks past them
+	for g: Node3D in grounds:
+		for b: Node in g.find_children("*", "CollisionObject3D", true, false):
+			coarse.append((b as CollisionObject3D).get_rid())
+	var drawn: Array[StaticBody3D] = []
+	for g: Node3D in grounds:
+		var body := trimesh_collider(g, false)
+		g.add_child(body)
+		drawn.append(body)
+	var space := get_world_3d().direct_space_state
+	for row: Array in snaps:
+		var piece := row[0] as Node3D
+		var mine: Array[RID] = coarse.duplicate()
+		for b: Node in piece.find_children("*", "CollisionObject3D", true, false):
+			mine.append((b as CollisionObject3D).get_rid())
+		var at := piece.global_position
+		var q := PhysicsRayQueryParameters3D.create(at + Vector3.UP * SNAP_FROM_M, at + Vector3.DOWN * SNAP_DOWN_M)
+		q.exclude = mine
+		var hit := space.intersect_ray(q)
+		if not hit.is_empty():
+			piece.global_position.y = float(hit["position"].y) + float(row[1])
+	for body: StaticBody3D in drawn:
+		body.get_parent().remove_child(body)
+		body.free()
 
 
 func _place_edge_walls() -> void:

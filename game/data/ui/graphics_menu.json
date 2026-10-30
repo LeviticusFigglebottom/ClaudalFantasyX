@@ -22,6 +22,11 @@
     "help": {
       "rect": [459, 858, 1002, 72]
     },
+    "controls": {
+      "doc": "The controls line under the help (the Lead's controller pass, 2026-10-30): how to move, change and go back.",
+      "rect": [459, 936, 1002, 32],
+      "min_scale": 0.8
+    },
     "hub": {"canvas_layer": 66},
     "apply": {
       "doc": "M1-UI-11: a preset change with GraphicsRuntime armed spawns the resident shader warm-up (a frame can freeze 0.5-1.7 s), so the page fades to an opaque veil over fade_out_sec, lets settle_frames opaque frames draw, selects the preset, holds card_key until the warm-up is done (max_hold_sec is a safety net), then fades back over fade_in_sec. Input is blocked throughout. card.rect is x, y, w, h at 1920 x 1080.",

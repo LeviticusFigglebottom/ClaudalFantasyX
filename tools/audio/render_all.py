@@ -516,7 +516,9 @@ def main() -> int:
             if f.endswith(".json"):
                 rows.append((os.path.join(rel_dir, f), size, None, None, None, None, _sha(p)))
                 continue
-            looped = kind in ("music_loop", "ambience_loop")
+            # a loop job may carry a one-shot beside its loop (farewell_tide_release): only a file with its own
+            # .loop.json sidecar is checked as a loop
+            looped = kind in ("music_loop", "ambience_loop") and os.path.isfile(os.path.splitext(p)[0] + ".loop.json")
             one_shot = kind == "sfx"
             if kind == "sfx_set":
                 looped = os.path.splitext(f)[0] + ".loop.json" in files

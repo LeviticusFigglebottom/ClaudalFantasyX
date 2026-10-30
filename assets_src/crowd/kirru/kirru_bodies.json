@@ -1,0 +1,184 @@
+{
+  "_about": "The Kirru crowd bodies (the Lead, 2026-10-30: Reedhollow's clutch, built by the creatures track's crowd generator; the characters track keeps the named Pell, Owa and the Kirru child). Each body is Pell's own build (assets_src/characters/pell/build_pell.py, the MPFB2 hero path with the Kirru head warp; pell.md) run on Pell's pell_params.json with these overrides deep-merged on top, so the bodies share his proportions, his head, fur, crest and whisker rules and his palette rules (pell.md section 5: wet dark brown, cream, reed gold and bone), and a fix to Pell reaches them on their next rebuild. Each body's `textures` sets the mantle's reed colours (pell_textures REED and REED_SHADE: bleached for the old, green for the young), and the costume and shell measures scale with its height (kirru_params). Only the LOD1 build ships (assets/crowd/<id>/<id>.glb, as the villager crowd bodies), with its textures at half Pell's resolution. Heights are the bible's (section 8: 2.1-2.4 m adults). Every body carries the carved name-shell (Pell's is the blank one) and a fishing-staff sized to its height (the Kirru fish; the clutch stands with its staffs like a flock of herons). Age shows only in the fur and the crest (pell.md section 1): grey guard hairs and paler, worn crest feathers.",
+  "library": "kirru",
+  "texture_scale": 0.5,
+  "bodies": {
+    "kirru_man": {
+      "about": "An adult man of the clutch: a little taller and heavier than Pell, the darkest fur.",
+      "age_band": "adult",
+      "sex": "male",
+      "overrides": {
+        "name": "kirru_man",
+        "height_m": 2.38,
+        "muscle": 0.65,
+        "mass": 0.2,
+        "shoulder_width_heads": 1.6,
+        "_proportions": {
+          "age_years": 90,
+          "grey_guard_hair_share": 0.02
+        },
+        "_fur": {
+          "dark": "#211711",
+          "mid": "#4E3C30",
+          "grey_guard_share": 0.02,
+          "seed": 71
+        },
+        "_crest": {
+          "colour": "#A9A79F",
+          "tips": "#4E4A45",
+          "seed": 73
+        },
+        "_whiskers": {
+          "seed": 79
+        },
+        "_brow": {
+          "seed": 83
+        },
+        "_staff": {
+          "staff_m": 2.7
+        }
+      },
+      "textures": {
+        "REED": "#8F8150",
+        "REED_SHADE": "#675C38"
+      }
+    },
+    "kirru_woman": {
+      "about": "An adult woman: slighter and a little shorter than Pell, warmer brown fur and a broader cream stripe.",
+      "age_band": "adult",
+      "sex": "female",
+      "overrides": {
+        "name": "kirru_woman",
+        "height_m": 2.2,
+        "femininity": 0.9,
+        "breast": 0.1,
+        "muscle": 0.45,
+        "mass": 0.12,
+        "shoulder_width_heads": 1.45,
+        "hip_width_heads": 1.2,
+        "_proportions": {
+          "age_years": 70,
+          "grey_guard_hair_share": 0.0
+        },
+        "_fur": {
+          "dark": "#4A3122",
+          "mid": "#8E6A4E",
+          "stripe_width_m": [
+            0.08,
+            0.035
+          ],
+          "grey_guard_share": 0.0,
+          "seed": 89
+        },
+        "_crest": {
+          "colour": "#BDB9AE",
+          "tips": "#615B54",
+          "seed": 97
+        },
+        "_whiskers": {
+          "seed": 101
+        },
+        "_brow": {
+          "seed": 103
+        },
+        "_staff": {
+          "staff_m": 2.5
+        }
+      },
+      "textures": {
+        "REED": "#BBA35E",
+        "REED_SHADE": "#8E7A44"
+      }
+    },
+    "kirru_elder_woman": {
+      "about": "An old woman of the clutch, grey at the muzzle and brows, her crest pale and worn.",
+      "age_band": "elder",
+      "sex": "female",
+      "overrides": {
+        "name": "kirru_elder_woman",
+        "height_m": 2.16,
+        "femininity": 0.9,
+        "breast": 0.08,
+        "muscle": 0.35,
+        "mass": 0.08,
+        "shoulder_width_heads": 1.45,
+        "_proportions": {
+          "age_years": 200,
+          "grey_guard_hair_share": 0.5
+        },
+        "_fur": {
+          "dark": "#4A4038",
+          "mid": "#8E8274",
+          "grey_guard_share": 0.5,
+          "seed": 107
+        },
+        "_crest": {
+          "colour": "#DCD9D0",
+          "tips": "#9A968E",
+          "seed": 109
+        },
+        "_whiskers": {
+          "colour": "#E6E1D6",
+          "seed": 113
+        },
+        "_brow": {
+          "seed": 127
+        },
+        "_staff": {
+          "staff_m": 2.45
+        }
+      },
+      "textures": {
+        "REED": "#C8BD92",
+        "REED_SHADE": "#9C9068"
+      }
+    },
+    "kirru_youngster": {
+      "about": "A youngster of the clutch, not yet grown: shorter, a bigger head for the body, the softest crest.",
+      "age_band": "child",
+      "sex": "male",
+      "overrides": {
+        "name": "kirru_youngster",
+        "height_m": 1.62,
+        "heads_tall": 7.0,
+        "muscle": 0.4,
+        "mass": 0.1,
+        "shoulder_width_heads": 1.5,
+        "crotch_height_heads": 3.4,
+        "_proportions": {
+          "age_years": 18,
+          "grey_guard_hair_share": 0.0
+        },
+        "_fur": {
+          "dark": "#3E2C21",
+          "mid": "#7E644F",
+          "grey_guard_share": 0.0,
+          "seed": 131
+        },
+        "_crest": {
+          "length_m": 0.16,
+          "colour": "#C6C3BA",
+          "tips": "#6E6A63",
+          "seed": 137
+        },
+        "_whiskers": {
+          "length_m": [
+            0.045,
+            0.08
+          ],
+          "seed": 139
+        },
+        "_brow": {
+          "seed": 149
+        },
+        "_staff": {
+          "staff_m": 1.9
+        }
+      },
+      "textures": {
+        "REED": "#A9A262",
+        "REED_SHADE": "#7C7744"
+      }
+    }
+  }
+}

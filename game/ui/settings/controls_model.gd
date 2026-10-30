@@ -23,6 +23,8 @@ const ROW_RESET := &"reset"
 const KIND_KEYS := &"keys"
 const KIND_PAD := &"pad"
 const KINDS: Array[StringName] = [KIND_KEYS, KIND_PAD]
+## The controls line while choosing a binding (Confirm changes it).
+const REBIND_CONTROLS_KEY := "SET_MENU_CONTROLS_REBIND"
 
 ## {action: Array[InputEvent]}: every remappable action's events at boot (defaults()).
 static var _defaults: Dictionary = {}
@@ -341,6 +343,11 @@ func move(delta: int) -> bool:
 func set_cursor(index: int) -> bool:
 	_notice = ""
 	return super(index)
+
+
+## Rebinding: Confirm changes a binding; while listening the help says what to press, so no controls line.
+func controls_key() -> String:
+	return "" if is_listening() else REBIND_CONTROLS_KEY
 
 
 func help_key() -> String:

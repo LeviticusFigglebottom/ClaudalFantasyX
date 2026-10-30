@@ -178,6 +178,17 @@
         "lit_fragments-lod1": 32
       }
     },
+    "old_tin": {
+      "budget": [
+        1500,
+        120
+      ],
+      "bytes": 23008,
+      "lods": {
+        "old_tin": 202,
+        "old_tin-lod1": 24
+      }
+    },
     "pipe_run": {
       "budget": [
         3000,
@@ -253,6 +264,17 @@
       "lods": {
         "seagrass_patch": 2400,
         "seagrass_patch-lod1": 96
+      }
+    },
+    "shaft_limpet": {
+      "budget": [
+        3000,
+        200
+      ],
+      "bytes": 90740,
+      "lods": {
+        "shaft_limpet": 2304,
+        "shaft_limpet-lod1": 98
       }
     },
     "stair_flight": {

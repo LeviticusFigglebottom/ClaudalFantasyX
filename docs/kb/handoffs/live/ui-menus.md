@@ -1099,3 +1099,94 @@ MERGE-READY @ 4edf33c21: the as-played Act I UI pass.
       battle waits while it is open, so I left it.
     - **Tests:** battle_controller 33/0, timeline 30/0, pseudo_loc_screens 17/0.
 MERGE-READY @ 8132685db: the battle text-size fixes.
+- 2026-10-30 13:10, **the Lead's 12:48 note: the black screen after a won battle.**
+  - **Cause (ResidentLoads, fixed in 8df5fe2b4):** entering the field battle let the zone's own resident loads go.
+    On Return they were read again from disk, and the prewarm feed staged about 950 materials a second time.
+    - **Measured** with the probe's new `--round-trip=<encounter>` option, returning to Brine Shoals after
+      `ch06_flats_crabs` (headless): **4875 ms** zone entry with 614 prewarm frames before the fix, **667 ms** with
+      2 frames after.
+    - **Fix:** a change into the battle scene now keeps the zone's loads, so the return loads nothing and prewarms
+      nothing again.
+    - **Test:** `test_a_field_battle_keeps_the_zone_s_loads_for_the_return` (resident_loads 9/0).
+  - **Each segment after the fix:**
+    - **Victory panel:** it opens 0.6 s after the last blow, with the battle still on screen. Nothing is black.
+    - **Confirm on Return:** `FieldBattle.return_to_field` calls `FlowRouting.go_to` the same frame, with no wait.
+    - **Fade-out:** `SceneRouter.FADE_SEC` 0.35 s.
+    - **Black:** the entry from the cache (about 0.67 s headless), plus `MEASURE_FRAMES` 4 frames. The loading cover
+      holds nothing on this path.
+    - **Fade-in:** 0.35 s.
+    - **Input:** live as the fade lifts. Field input doesn't gate on `SceneRouter.is_busy()`.
+  - **To integration-qa (owner of the SceneRouter return):** my side has no fixed wait left. The black is now the
+    cached entry alone, under 1 s. The fades are the router's 0.35 s each way. If the PC's entry still runs over 1 s,
+    the next cut is in the router or the zone's `_ready`, not in ResidentLoads or the results panel.
+  - **PC-QUEUE:** re-measure the return on the GPU, either with
+    `scene_swap_probe.tscn -- --resident-loads --warm-resident --to=<brine shoals> --round-trip=ch06_flats_crabs`
+    or by hand: win a fight and time from Return until you can walk.
+  - **Tests:** resident_loads 9/0, scene_router 17/0, prewarm 27/0, act1_swap_sweep (tools) OK; lint and format clean.
+  - **test_qa_threads and act1-chapters (ca5ce4037):** the guard failed 6 ways on my Act II objective rows.
+    - **Cause:** a chapter's last row ran `until` the next chapter's start flag, which that chapter's thread never
+      raises.
+    - **Fix:** `reed_clutch`, `low_sanctum`, `cloudloom_dais`, `archive_ledgers` and `court_barge` now have
+      `until: null`, holding until the zone changes, as Act I's `t_harbour` does.
+    - **Still unraised:** Lacquer Court's `court_dais` and `court_barge` (filed under `ch13/`) wait on
+      `ch14_started` and `ch14_declared_heretics`. Ch14 has no thread yet, so both are listed in `qa_known.json`
+      "unraised" and point at M4-A2P-014.
+    - **To act1-chapters:** when the ch14 thread raises those two flags, drop both rows from `qa_known.json`.
+    - **Result:** qa_threads 1/0; objective 16/0, field_menu 37/0, zone_map 22/0; validate_data 0/0.
+MERGE-READY @ ca5ce4037: the battle-return black screen (ResidentLoads keeps the zone through a field battle) and the Act II objective flags for test_qa_threads.
+  - **To integration-qa:** the measurement method and the remaining end-to-end check are in request task **M4-UI-212** (role qa), per the Lead's 13:48 note.
+- 2026-10-30 14:30, **the Lead's 13:48 note.**
+  - **Request task to integration-qa:** M4-UI-212 (role qa) holds the measurement method and the end-to-end check.
+  - **Next item, the Act II queue (M4-A2P-083):** a foe's broken parts now show on the battle's Read panel ("Broken ·
+    Lamplight: silent until it is mended") until a tender mends them.
+    - **Test:** test_read_panel 13/0, plus bestiary 37/0, battle_parts 4/0 and pseudo_loc 26/0.
+    - **Render:** viewed with the line injected. The battle_read_panel shot itself is unchanged (no part there).
+    - **Next:** the answered-by cursor line once Venn's row has `answered_key`; the Lacquer Court rows once ch14's
+      flags exist (M4-A2P-014).
+MERGE-READY @ eb1d12998: broken parts on the Read (M4-A2P-083).
+BACKLOG EMPTY: everything left in this track's queue waits on another track.
+- **M4-A2P-081 NPC portraits** (Malcor Venn, the Abiding guard): wait on their models (characters track).
+- **M4-A2P-082 seven-hero formation check:** waits on Pell's battle row (combat).
+- **M4-A2P-083:**
+  - The answered-by cursor line waits on Venn's row carrying `answered_key` (M4-A2P-023, combat).
+  - The darkness telegraphs are battle-presentation's, already in (M4-A2P-062, in review), and the timeline shows them.
+  - The Act II bestiary pages fill as the foe rows land.
+- **Lacquer Court objective rows:** wait on ch14's thread raising its flags (M4-A2P-014, act1-chapters); then drop the two
+  `qa_known.json` "unraised" rows.
+- **Battle return end to end:** M4-UI-212 (integration-qa, plus a PC measurement).
+- 2026-10-30 16:10, **the Lead's 14:28 note: a controller-only pass over Act I's menus** (merged big23 at 63175d0b3).
+  - **Merge:** act1-chapters' Act II objective rows replace my interim ones. Theirs cover every zone beat by beat, so
+    I dropped my 17 `OBJ_*` strings and pointed the Act II objective test at their rows.
+  - **The walk:** `tests/unit/test_input_parity_pad_walk.gd` (3/0) drives the pad alone over:
+    - every field menu page, with a played save: Down, Confirm three deep (equip a piece, use a tonic, the Lattice, the
+      map, Settings), then Cancel out;
+    - every battle command (Attack, Skills, Items, Swell, Swap, Escape), into its page and target, then back;
+    - the battle pause, including Settings and one of its pages;
+    - the save list (with the overwrite question) and the title's load list.
+  - **After every press it fails on:**
+    - an unfilled `{action}`;
+    - a key's name where the pad has its own button;
+    - focus on a Control that isn't on screen;
+    - a menu page with nothing saying how to go back.
+  - **Found and fixed:**
+    1. **Settings never said how to move or go back** (hub and pages, from the field, the title and the pause). A
+       controls line now sits under the help. The Controls page hides it while listening, and the hub's line hides
+       under an open page.
+    2. **The save and load lists ignored the pad.** They take their input before the UiInput autoload, so a pad press
+       left the prompts on the keys and a held D-pad never repeated there. They now let UiInput notice each event
+       first (`UiInput.notice`).
+    3. **The save and load lists never said how to go back.** A controls line now sits at the right of the help row:
+       "Confirm: record · Cancel: close" (load: "continue"), and the question's "Up and Down: choose · Cancel: keep it".
+  - **Not changed, by design:** the battle command menu's help line is the action's cost and turn, and Cancel at its
+    root opens the pause (which says how to go back). The walk exempts only those stops.
+  - **Focus:** no Control kept the focus while hidden. Dead ends: none (with test_input_parity_dead_ends).
+  - **Renders viewed:** settings_hub, settings_accessibility (130%), settings_controls, save_menu, save_menu_overwrite.
+    All five change baselines (the new lines). The Lead re-approves; I wrote no baselines.
+  - **Tests:** pad_walk 3/0, settings 48/0, controls 12/0, graphics_menu 9/0, accessibility 9/0, save 201/0,
+    title_menu 16/0, input_parity_title 2/0, pseudo_loc 26/0, aspect 18/0, objective 16/0, field_menu 37/0,
+    zone_map 22/0, ui_input 4/0; validate_data 0/0; lint and format clean.
+  - **For act1-chapters (seen on big23 itself):** test_qa_threads fails 15 ways on their new Act II objective rows.
+    The ch10–13 threads don't yet raise the beats those rows wait on (`ch10_farewell_tide_seen`, `ch11_nhoa_bound`,
+    `ch12_ram_felled`, `ch13_read_ledgers`, each chapter's `_complete`, and the Lacquer Court's ch14 beats). My
+    merge took their `objectives.json` and threads unchanged. I only renamed the rows in my two qa_known notes.
+MERGE-READY @ 0fda0d8b5: the controller-only pass (Settings and save/load controls lines, the save list's pad notice, the pad walk test).

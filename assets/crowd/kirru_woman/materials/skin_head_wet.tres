@@ -1,0 +1,38 @@
+[gd_resource type="ShaderMaterial" load_steps=7 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/character/character_skin.gdshader" id="sh"]
+[ext_resource type="Texture2D" path="res://assets/crowd/kirru_woman/textures/kirru_woman_head_albedo.png" id="t0"]
+[ext_resource type="Texture2D" path="res://assets/characters/asha/textures/asha_thread_detail_normal.png" id="t1"]
+[ext_resource type="Texture2D" path="res://assets/crowd/kirru_woman/textures/kirru_woman_head_normal.png" id="t2"]
+[ext_resource type="Texture2D" path="res://assets/crowd/kirru_woman/textures/kirru_woman_head_orm.png" id="t3"]
+[ext_resource type="Texture2D" path="res://assets/crowd/kirru_woman/textures/kirru_woman_head_skinmask.png" id="t4"]
+
+[resource]
+resource_name = "skin_head_wet"
+render_priority = 0
+shader = ExtResource("sh")
+shader_parameter/tex_albedo = ExtResource("t0")
+shader_parameter/tex_detail_normal = ExtResource("t1")
+shader_parameter/tex_normal = ExtResource("t2")
+shader_parameter/tex_orm = ExtResource("t3")
+shader_parameter/tex_skin_mask = ExtResource("t4")
+shader_parameter/cavity_albedo = 0.3
+shader_parameter/cavity_specular = 0.9
+shader_parameter/col_albedo = Color(0.900, 0.900, 0.900, 1)
+shader_parameter/col_scatter = Color(0.29, 0.18, 0.133, 1.0)
+shader_parameter/curvature_scale = 0.6
+shader_parameter/detail_strength = 0.3
+shader_parameter/detail_tiling = 200.0
+shader_parameter/diffuse_wrap = 0.22
+shader_parameter/lobe_mix = 0.6
+shader_parameter/lobe_roughness_b = 2.2
+shader_parameter/micro_roughness = 0.08
+shader_parameter/normal_blur = 0.3
+shader_parameter/normal_strength = 0.8
+shader_parameter/painterly = 0.2
+shader_parameter/roughness_max = 0.8
+shader_parameter/roughness_min = 0.35
+shader_parameter/shadow_scatter = 0.4
+shader_parameter/specular_scale = 0.9
+shader_parameter/sss_strength = 0.25
+shader_parameter/transmission_strength = 0.1

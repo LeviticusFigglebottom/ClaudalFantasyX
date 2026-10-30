@@ -51,7 +51,6 @@ class AvalancheRamRowTest(unittest.TestCase):
         self.assertEqual(phase["clips"], b.TORN_CLIPS)
         self.assertEqual((phase["clip"], phase["idle"]), ("phase_tear", "idle_torn"))
         self.assertEqual((phase["show"], phase["hide_after"]), (["TornShoulder"], ["ShoulderPlate"]))
-        self.assertFalse(row.get("clip_by_skill"), "skills are combat's: the clip map waits in the sheets")
 
     def test_the_glb_has_every_clip_and_the_phase_nodes(self) -> None:
         js = _glb()
@@ -63,6 +62,17 @@ class AvalancheRamRowTest(unittest.TestCase):
         self.assertEqual(sorted(set(row["contact"]) - clips), [], "every contact names a clip")
         nodes = {n.get("name") for n in js["nodes"]}
         self.assertTrue({"TornShoulder", "ShoulderPlate"} <= nodes, nodes)
+
+    def test_each_mapped_skill_exists_and_plays_a_built_clip(self) -> None:
+        # M4-CRB-005: wired to combat's skill ids once skills.json had them (each charge's release included)
+        row = _row()
+        clips = {a["name"] for a in _glb()["animations"]}
+        skills = {s["id"] for s in json.loads((ROOT / "game/data/battle/skills.json").read_text())["skills"]}
+        cbs = row.get("clip_by_skill", {})
+        self.assertTrue(cbs, "the Ram's skills map to its clips")
+        for sid, clip in cbs.items():
+            self.assertIn(sid, skills, sid)
+            self.assertIn(clip, clips, "%s -> %s" % (sid, clip))
 
     def test_nothing_on_it_is_ice(self) -> None:
         mats = {m["name"] for m in _glb()["materials"]}

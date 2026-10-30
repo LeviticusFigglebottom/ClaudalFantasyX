@@ -19,7 +19,7 @@ const SLACK := 0.05
 
 func test_no_two_foes_cover_each_other_or_the_command_menu_at_rest() -> void:
 	var sc := (BattleChoreo.load_data()["spacing"] as Dictionary)["screen"] as Dictionary
-	var avoid := HudLayout.rect_of(HudLayout.section(&"commands"))
+	var avoid := BattleScreenSpread.menu_rect(BattleChoreo.load_data())
 	var db := BattleDB.load_default()
 	for enc in FIGHTS:
 		if not db.encounters.has(enc):
