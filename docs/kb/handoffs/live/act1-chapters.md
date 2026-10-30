@@ -528,6 +528,15 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
     skills, encounter `ch10_mangrove_drowner` and sim suite (9686fff6f, in band). Please don't add a second one:
     stage on that row. I review and tune the Lamp Engine, Ram and Wakefin rows with the sim when yours land.
 
+- **Ch13 cameras (M4-A2P-013, claimed):**
+  - Added A02–A06, S02, R02 and R03, all viewed. Marks for Sefir and Ysolde. Kerrid at the moorings on
+    `ch13_guest_of_sefir`. Pan-follow volumes in all three zones.
+  - **Fixed my own Ch12 red:** `test_qa_field_camera` failed on cloudloom:Hall (the camera sat beside the spawn) and
+    keth_pass:Encounter (the origin return spawn sat outside every volume). I re-aimed the Hall and added Foot volumes.
+    The test is green, and so are ch12, ch13 and layout.
+  - Next: Ch14's cameras (W02–W07; the lagoon L01–L04 waits on the night variant).
+- MERGE-READY @ (this push)
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.

@@ -35,6 +35,8 @@ RIGS = {
     "ch11/sunken_vey": "ch11_sunken_vey_shots", "ch11/lowlight": "ch11_lowlight_shots",  # M4-A2P-011
     "ch12/keth_pass": "ch12_keth_pass_shots", "ch12/quellan": "ch12_quellan_shots",  # M4-A2P-012
     "ch12/cloudloom": "ch12_cloudloom_shots",
+    "ch13/ansedra": "ch13_ansedra_shots", "ch13/sanctum": "ch13_sanctum_shots",  # M4-A2P-013
+    "ch13/lamp_archive": "ch13_lamp_archive_shots",
 }
 RIG_DIR = "game/levels/_tests/act1_zones"
 PREVIEW = ROOT / RIG_DIR / "_preview"

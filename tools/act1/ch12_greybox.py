@@ -156,7 +156,10 @@ def keth_pass() -> dict:
         + [{"id": "RamShelf", "mode": "pan_follow", "at": [45.0, 13.5, -40.0], "size": [22.0, 4.0, 20.0],
             "pos": [37.0, 18.0, -30.0], "look_at": [46.0, 12.8, -42.0], "fov": 55, "priority": 2},
            {"id": "Saddle", "mode": "pan_follow", "at": [95.0, 19.5, -40.0], "size": [22.0, 4.0, 20.0],
-            "pos": [86.0, 23.0, -30.0], "look_at": [96.0, 18.8, -42.0], "fov": 55, "priority": 2}],
+            "pos": [86.0, 23.0, -30.0], "look_at": [96.0, 18.8, -42.0], "fov": 55, "priority": 2},
+           # the pass's foot: PassFoot and the "Encounter" return spawn (the origin) sit below Flight0's box
+           {"id": "Foot", "mode": "pan_follow", "at": [0.0, 1.5, 1.0], "size": [10.0, 4.0, 10.0],
+            "pos": [0.0, 4.5, 9.0], "look_at": [0.0, 2.0, -6.0], "fov": 50, "priority": 1}],
         "triggers": [{"id": "to_quellan", "activation": "touch", "at": [108.5, 18.0, -40.0], "size": [1.5, 0, 4.0],
                       "payload": {"beat": "to_quellan"}, "yaw": 0.0}],
         # M4-C12-03: the pass's random fights (act2_roster.md Ch12); none in Quellan or the Cloudloom
@@ -275,7 +278,9 @@ def cloudloom() -> dict:
                   "C03": {"pos": [2.5, HALL_Y + 1.6, -50.0], "look_at": [0.0, HALL_Y + 1.5, -54.0], "fov": 35}},
         "camera_volumes": climb_volumes("Stair", [((0.0, 0.0, -5.0), (0.0, HALL_Y, hz0 + hz))])
         + [{"id": "Hall", "mode": "pan_follow", "at": [hx0, HALL_Y + 1.5, hz0], "size": [2 * hx, 4.0, 2 * hz],
-            "pos": [10.0, HALL_Y + 6.0, -24.0], "look_at": [hx0, HALL_Y + 1.0, hz0], "fov": 55, "priority": 1}],
+            "pos": [4.0, HALL_Y + 5.0, -15.0], "look_at": [hx0, HALL_Y + 0.5, -34.0], "fov": 55, "priority": 1},
+           {"id": "Foot", "mode": "pan_follow", "at": [0.0, 1.5, 1.0], "size": [8.0, 4.0, 8.0],
+            "pos": [0.0, 4.0, 8.0], "look_at": [0.0, 3.0, -8.0], "fov": 50, "priority": 1}],
         "triggers": [{"id": "to_quellan", "activation": "touch", "at": [0.0, 0.0, 4.25], "size": [4.0, 0, 1.5],
                       "payload": {"beat": "to_quellan"}, "yaw": 0.0}],
     }
