@@ -1089,6 +1089,15 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - **Checks:** slice_primitives 1, ch01 20, oruvel 17, all 0 failed; validate_data clean.
   - **Viewed (lavapipe):** ch01_going_under_u11 shows the rippled floor and rocks, the pen's drowned frame and
     pilings in silhouette, and the motes sinking over them. ch01_going_under_u10 is unchanged.
+- **FAST-TRACK, found re-rendering row 58 on 7dc3ab41: every cutscene insert turned to Rhen. Fixed, MERGE-READY @ eef941bcf.**
+  - 692b5515 (hero-integration, GPU QA rows 37/38, in big20) gave FIXED shots a safety net (`keep_in_frame_fixed_share`)
+    that turns a locked frame toward the leader when he would be out of it.
+  - It also caught scripted cutscene shots. O07's name-board insert turned across the town to Rhen, and so would any
+    insert or reverse without him in it.
+  - The net now skips the scripted shot (`shot != _scripted_shot` in FieldCameraDirector.evaluate). It is a
+    one-line change in `game/world/` (Systems and hero-integration's), so **hero-integration, please review.**
+  - test_camera_director gains a test that fails without the fix; 51 run, 0 failed.
+  - Stills re-rendering now; the audit results follow.
 ### PC-QUEUE
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan
   emissive reading. Check that its glow and silhouette read on the GPU; if not, it needs a rim light or a grade.
