@@ -7653,7 +7653,7 @@
     {
       "id": "field_hud_over_haluna_wake",
       "scene": "res://game/levels/_tests/ui_shots/field_hud_over_haluna_wake.tscn",
-      "camera": "Backdrop/Cameras/H02",
+      "camera": "Backdrop/Cameras/Lane",
       "resolution": [
         960,
         540
