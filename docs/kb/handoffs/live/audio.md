@@ -24,7 +24,16 @@ Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 a
   - **PC-QUEUE, by ear:**
     - `unbinding_swell`'s A major resolution: the loudest moment in the game by design, momentary max -6.3.
     - The Letting's vocalise vowels.
-- **IN PROGRESS (M5-A3P-1951):** kesh_first_voice, sefir_warden, sefir_heart; then the ending (goodbyes, lift bed, dock, credits, post-credits); then Ch17–Ch20.
+- **MERGE-READY @ 4ff7c51c5: the Act III score, part 2, the finale (M5-A3P-1951, to review).**
+  - **`kesh_first_voice`** (H03, a loop): the seven verses' first lines in turn, in Lamptongue, a step higher each, over a 3+3+2 drum and string ostinato; her own verse is the fullest.
+  - **`sefir_warden`** (H04): the Order hums ORDER_HUM over airless strings, and his motif hangs on its C#.
+  - **`sefir_heart`** (H05–H06): the storm's note on the heart's A under rock-fusion percussion in 7/8, his C# now the A's major third.
+  - **Battle:** `ch21_kesh` and `ch21_sefir_heart` are pending rows in `battle.encounters`.
+  - **For combat:**
+    - H04's fight has no id in the drafts yet: it needs a row to `sefir_warden`.
+    - A BattleCycle `cycle_changed` signal would let Kesh's verses follow her element.
+  - **Checks:** render_all loudness, seams and determinism (all identical; kesh's seam re-placed half a beat in); true peaks under -1; mono fold 0 failing; validate_data 0; audio_loudness and audio_data OK; Godot battle_audio 22/0, music_transitions 7/0.
+- **IN PROGRESS (M5-A3P-1952): the ending:** goodbye_imra (one piano note after her hum) with its `velamir_lullaby_hum` sfx, ending_lift_bed, goodbye_dace, goodbye_kerrid, ending_dock, credits_suite, post_credits_lamp; then Ch17–Ch20.
 - **MERGE-READY @ 6fcbce03d: the Lead's 21:25 item, the audio accessibility pass (M4-A2P-1952, to review).**
   - **Sliders reach every sound.** Every bus sends to a slider bus (UI, World and Combat under SFX; Ambience with the effects slider). Two fixes:
     - **Strays:** a player that never names a bus would sit on Master, under no slider but the master's. `AudioDirector.route_stray` now moves it to mix.json `stray_bus` (SFX). Nothing hits this today (the dialogue blip goes to Voice, the cutscene sound fallback to SFX); it guards any track's future players.
