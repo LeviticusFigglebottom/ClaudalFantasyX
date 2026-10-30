@@ -104,6 +104,26 @@ Session `session_015hKkhtpX67kS4yZeA8AAhv`. Integration branch `claude/undertow-
     Kahre, the shop tier).
   - The integration branch's coverage reds.
 
+### 2026-10-30: the Lead's 23:10 item, the Act I encounter sweep (in progress)
+- **The tool:** `tools/vfx/encounter_sweep.gd` (75b2ebea, ab7c9925). It plays every Act I encounter (33: ch01..ch09,
+  the Drownbell and the Reach) on the real stage at real pacing.
+  - **Stills:** the opening, each party action type (attack, skill, item, Swell, Vowbound call), each foe or entry
+    skill, and the victory.
+  - **checks.json:**
+    - the arena shown against the encounter's;
+    - every landed hit and added status with an effect on its target;
+    - at each contact, the actor and target on screen and clear of the HUD panels, and the target not hidden
+      behind a bystander;
+    - the longest stretch with nothing animating.
+- **It runs** in a scratch worktree of origin/lead/gate-big18 @ d00d3284, with this branch merged on top (8 files).
+- **First finding, fixed:**
+  - On ch02_tideline, Toma's shield hid the Reef Crab at the contact of Rhen's Lamp Dive, Asha's Ember Pot and
+    Rhen's Quick Hit.
+  - The director now drops a contact shot when a bystander crosses the sight line to the target. If the held lead
+    hides it too, it comes home for the contact. Test: test_a_bystander_across_the_sight_line_keeps_the_default.
+  - Re-rendered: the crab shows at every contact.
+- **Next:** view each encounter's contact sheet, fix, file and log. BACKLOG EMPTY only when every encounter is clean.
+
 ### PC-QUEUE
 - GPU QA row 36 (the Reach): re-check in live play on the RX 9070 XT (M3-BPR-425's rest frame).
 - GPU QA row 34: re-check once M3-BPR-427 lands (and hold the zone's random encounters in the walk).
