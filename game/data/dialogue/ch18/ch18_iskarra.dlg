@@ -1,0 +1,15 @@
+// M5-A3P-1003. Ch18 K08 "Iskarra." (C, 1 min). act3_ch18.md §2 K08. At the chart table Kerrid puts
+// his finger on the drowned city. The anchor-engine is Ch19's: nobody explains it here.
+title: ch18_iskarra
+location: ch18/kite
+---
+@letterbox on
+@camera K13
+@mark kerrid chart_table walk
+@anim kerrid point iskarra
+@wait 3.0
+Kerrid [neutral]: Iskarra. Where it started. Where we go in. #line:ch18_iskarra_001
+@wait 4.0
+<<set $ch18_complete = true>>
+@letterbox off
+===

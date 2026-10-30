@@ -569,6 +569,13 @@ MATERIALS["kit_fen_bank"]["params"].update({"wet_roughness": 0.6, "wet_flatten":
 # The reed platforms read plastic green under the fen grade (lut_ch10_fen takes the greens further): cut reed, dried
 # toward straw-grey.
 STANDARD["kit_fen_reed"]["albedo_color"] = hexc("#8E8466")
+# Ch12 (Keth Pass, Quellan, Cloudloom) at eye height: the volcanic crag behind every cliff block read as flat black
+# masses (several walker stills near-black), against keth_pass.md's "grey crags" under an enormous sky. The crag lifts
+# to grey (a neutral tint over 1 on the dark volcanic albedo: a cool one read blue under the cold light); Kerrid's
+# breath frame keeps its dark ground in shade. The road's granite (the paving, the parapets, the houses' walls) read
+# near black in the overcast too, so it lifts a step.
+MATERIALS["kit_keth_crag"]["params"]["col_tint"] = "Color(1.55, 1.55, 1.5, 1)"
+MATERIALS["kit_keth_road"]["params"]["col_tint"] = "Color(1.3, 1.29, 1.24, 1)"
 
 
 if __name__ == "__main__":

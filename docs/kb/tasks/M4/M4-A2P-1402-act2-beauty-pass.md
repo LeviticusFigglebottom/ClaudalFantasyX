@@ -22,6 +22,11 @@ Eye-height beauty pass on Act II's Ch10–Ch12 zones as played, keeping them bea
   - The fen's reed platforms read plastic green under the fen grade; `kit_fen_reed` is now dried straw-grey.
   - The fen mud and bank used the shader's mirror-wet defaults (roughness 0.12, normals flattened).
     `kit_fen_mud` and `kit_fen_bank` now take a matte damp.
+- **Ch12 (Keth Pass 6, Quellan 6, Cloudloom 4, Reedhollow 4 stills):** the volcanic crag behind every cliff block
+  read as flat black masses, against keth_pass.md's "grey crags", and the road's granite read near black.
+  `kit_keth_crag` takes a neutral grey tint over 1 (a cool one read blue), and `kit_keth_road` (which is also
+  M_DRYSTONE) lifts a step. Reedhollow reads well. A few POI stills still face a shaded cliff from a metre away;
+  that is the probe's standing spot.
 - **Viewed and kept:**
   - The fen edge and Pell's mark look into a low sun, so the bank's sheen there is the backlight, not the material.
   - The Sunken Vey's landing and gallery, and Lowlight's engine hall, lamp bench and sanctum, read intact,

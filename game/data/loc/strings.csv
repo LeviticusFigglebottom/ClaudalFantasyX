@@ -880,7 +880,9 @@ SET_VOLUME_MUSIC_HELP,The score and the cutscenes' music.
 SET_VOLUME_SFX,Effects volume
 SET_VOLUME_SFX_HELP,"Battle and world sounds, menus, and the sea and wind around you."
 SET_VOLUME_VOICE,Voice volume
-SET_VOLUME_VOICE_HELP,The voice sounds under each line of dialogue.
+SET_VOLUME_VOICE_HELP,"The voice sounds under each line of dialogue, and townsfolk talking among themselves."
+SET_MONO_AUDIO,Mono audio
+SET_MONO_AUDIO_HELP,"Both speakers play the same sound: nothing is lost on one speaker, one ear or a single earbud."
 SET_VOLUME_0,0%
 SET_VOLUME_10,10%
 SET_VOLUME_20,20%
@@ -1154,3 +1156,16 @@ SAVE_CONTROLS_SAVE,Confirm: record · Cancel: close
 SAVE_CONTROLS_LOAD,Confirm: continue · Cancel: close
 SAVE_CONTROLS_QUESTION,Up and Down: choose · Cancel: keep it
 SAVE_CONTROLS_RESULT,Confirm: continue
+MAP_POI_K_IVO,The watch captain
+MAP_POI_Q_GREAT_KEY,The beacon's great key
+OBJ_A_STAIR,Climb the pilgrim stair to the grave tier.
+OBJ_A_UPPER,Climb on past the copper tier.
+OBJ_S_RIDGE,Cross the Brine Shoals to the last wreck-ridge.
+OBJ_S_DAWN,"At first light, take the shoal channel on."
+OBJ_S_SIDE_LAMP,Something lies on the tideline below the camp.
+OBJ_K_IVO,Find the watch captain on the sea-wall.
+OBJ_K_HEADLAND,Go out by the wall-gate to the headland and the Coilspire.
+OBJ_K_SIDE_STAIR,Look down the fisher stair from the wall-head.
+OBJ_Q_DOOR,Climb the headland path to the Coilspire's door.
+OBJ_Q_CROWN,Lead the flame up the flues to the crown chamber.
+OBJ_Q_BEACON,Open the beacon with the great key.

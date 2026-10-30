@@ -23,6 +23,7 @@
 | act2-plan | `session_01UPFyE8YdUYQ5LuuhgfZtqS` | claude/act2-plan (docs only: the Act II plan, the tasks blocked by ADR 0203, the track split) |
 | gate big18 | `session_01UPFyEAXofxWazWNnRTzFGJ` | lead/gate-big18 (log `gate-big18.md`) |
 
+- 10-30 23:12: **PC back.** Briefed for PASS 7 (real GPU, Act I sign-off) on 5695a69c (big33), plus the human-playtest fixes on real hardware and an Act II Ch10–Ch13 first look. Its queued 12:13–13:03 messages are superseded. Since 13:30: big23–big33 merged. All five human-playtest fixes are in, and cloud-qa confirmed them, apart from the Drownbell cross-zone return (3.4 s headless; Haluna's add-frame split is in progress, slice-polish). The fresh-profile playthrough reached the Act I end card (big28) with no soft-lock. ADR 0206 (British spelling) and ADR 0207 (Act III opens per track; empty queues supplement others) are accepted. Remaining before Act I complete: big34's ERROR and touch-beat fixes, Haluna's add-frame split, and PC pass 7.
 - 10-30 13:30: **PC OFF for a while (the human).** Its queue moved to three new cloud sessions:
   - **shots** (session_01UPFyE9cvyQkTt3JUMukyig, lead/shots-bigN, log shots.md): post-merge lavapipe captures. big22's full manifest first, including big21's 173 missing shots.
   - **cloud-qa** (session_01UPFyE9YjTAw8X8J3Kax1iU, qa/cloud-pass6, log cloud-qa.md): pass 6 on lavapipe, the human-playtest measurements (battle return, Oruvel boats and edges, the run, encounter spacing), and the full non-blocking suite.

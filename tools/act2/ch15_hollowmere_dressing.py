@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import math
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -53,7 +54,7 @@ JETTY_SPAN = (-1.8, -15.0)  # from the dock's north edge to the house platform's
 HOUSE_YAW = 180.0  # the deckhouse on the platform's north half, its door to the jetty
 HOMES = ((4.0, -33.0, 15.0), (20.0, -35.0, -10.0), (36.0, -33.0, 5.0), (52.0, -31.0, 20.0), (60.0, -18.0, 80.0),
          (12.0, -47.0, 0.0), (30.0, -49.0, 30.0), (48.0, -46.0, -20.0), (68.0, -34.0, 10.0), (-8.0, -20.0, 70.0))
-WINDMILLS = ((-12.0, -40.0, 30.0), (76.0, -10.0, -60.0), (70.0, -55.0, 10.0), (22.0, -62.0, 180.0), (55.0, 15.0, 200.0))
+WINDMILLS = ((-12.0, -40.0, 30.0), (66.0, -14.0, -60.0), (70.0, -55.0, 10.0), (22.0, -62.0, 180.0), (55.0, 15.0, 200.0))
 TIDE_WHEELS = ((4.0, -27.5, 0.0), (20.0, -27.5, 0.0), (36.0, -27.5, 0.0))
 SIGNAL_LAMPS = ((7.6, -15.6), (23.6, -15.6), (48.4, -15.6), (-1.0, -1.6))
 SIGNAL_COLOR = "#4FB3B0"
@@ -73,6 +74,10 @@ LAMP_FLAME = (0.0, 1.55, 0.45)  # hollowmere.LAMP_FLAME
 SUPPER_AT = (42.0, 0.95, 0.0)  # by the father's place, against the south rail: the walk from the supper mark to the
 #   pyre-raft runs along the north half (z -0.8 to 0), so the table's box (stools at +-0.87 m) stays 0.4 m clear of a body
 DACE_AT = (78.0, -24.0, 30.0)  # seen at the zone's edge in Ch15 (Ch17's heart)
+# Ch17's dry-dock row (M5-A3P-1500): three empty berths beside Dace's, along his hull's beam toward the dock's east end,
+# BERTH_PITCH_M apart, the first (Tobin's post, B07) nearest the dock and Dace's "the last one" (B03).
+BERTH_PITCH_M = 8.5
+BERTHS = ("hm_drydock_berth", "hm_drydock_berth", "hm_drydock_berth_first")
 FLOTILLA_AT = (25.0, -5.0)
 
 WATER_NAME = "hollowmere_dawn_water_material.tres"
@@ -162,6 +167,10 @@ def dressing() -> dict:
     pieces.append(_row("pyre_raft", b["PyreRaft"]["pos"][0], b["PyreRaft"]["pos"][2], WATER_Y))
     pieces.append(_row("hm_ship", b["Ship"]["pos"][0], b["Ship"]["pos"][2], WATER_Y))
     pieces.append(_row("dace_hull_frame", DACE_AT[0], DACE_AT[1], WATER_Y, DACE_AT[2]))
+    beam = (math.sin(math.radians(DACE_AT[2])), math.cos(math.radians(DACE_AT[2])))  # the hull's +Z in the zone
+    for k, piece in enumerate(BERTHS, 1):
+        pieces.append(_row(piece, r3(DACE_AT[0] + beam[0] * BERTH_PITCH_M * k), r3(DACE_AT[1] + beam[1] * BERTH_PITCH_M * k),
+                           WATER_Y, DACE_AT[2]))
     pieces.append(_row("hm_far_flotilla", FLOTILLA_AT[0], FLOTILLA_AT[1], WATER_Y))
     # The dock's mooring piles, where the greybox stood them (DockPile*: the gulls' perches, tops y 2.7; the wildlife
     # audit found the perches over open water with the greybox hidden): a stilt post from the bed, scaled to the top.

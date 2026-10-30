@@ -1,0 +1,43 @@
+{
+ "format": 1,
+ "scene": "ch17_first_berth",
+ "source": "game/data/dialogue/ch17/ch17_first_berth.dlg",
+ "start": "ch17_first_berth",
+ "nodes": {
+  "ch17_first_berth": {
+   "headers": {"location": "ch17/hollowmere"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["D12"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "mark", "args": ["aldous_varrow", "first_berth", "walk"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "first_berth_b", "walk"], "kwargs": {}, "src": 11},
+    {"op": "if_not", "cond": ["flag", "ch15_supper_with_father"], "to": 6, "src": 12},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 13},
+    {"op": "goto", "to": 8, "src": 12},
+    {"op": "cue", "cue": "wait", "args": [6.0], "kwargs": {}, "src": 15},
+    {"op": "goto", "to": 8, "src": 14},
+    {"op": "line", "id": "ch17_berth_001", "key": "DLG_CH17_BERTH_001", "speaker": "aldous_varrow", "emotion": "neutral", "voice": "", "src": 17, "name_key": "DLG_NAME_ALDOUS_VARROW_DOCK_MASTER"},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 18},
+    {"op": "line", "id": "ch17_berth_002", "key": "DLG_CH17_BERTH_002", "speaker": "aldous_varrow", "emotion": "soft_smile", "voice": "", "src": 19, "name_key": "DLG_NAME_ALDOUS_VARROW_DOCK_MASTER"},
+    {"op": "cue", "cue": "anim", "args": ["aldous_varrow", "look_at", "mooring_post"], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 21},
+    {"op": "line", "id": "ch17_berth_003", "key": "DLG_CH17_BERTH_003", "speaker": "aldous_varrow", "emotion": "sad", "voice": "", "src": 22, "name_key": "DLG_NAME_ALDOUS_VARROW_DOCK_MASTER"},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 23},
+    {"op": "line", "id": "ch17_berth_004", "key": "DLG_CH17_BERTH_004", "speaker": "rhen", "emotion": "tender", "voice": "", "src": 24},
+    {"op": "if_not", "cond": ["flag", "ch14_spoke_with_tobin"], "to": 26, "src": 25},
+    {"op": "options", "choices": [{"id": "ch17_berth_005", "key": "DLG_CH17_BERTH_005", "to": 18, "src": 26}, {"id": "ch17_berth_008", "key": "DLG_CH17_BERTH_008", "to": 23, "src": 31}], "src": 26, "next": 25},
+    {"op": "line", "id": "ch17_berth_006", "key": "DLG_CH17_BERTH_006", "speaker": "rhen", "emotion": "tender", "voice": "", "src": 27},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 28},
+    {"op": "line", "id": "ch17_berth_007", "key": "DLG_CH17_BERTH_007", "speaker": "aldous_varrow", "emotion": "grief", "voice": "", "src": 29, "name_key": "DLG_NAME_ALDOUS_VARROW_DOCK_MASTER"},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 30},
+    {"op": "goto", "to": 25, "src": 26},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 32},
+    {"op": "goto", "to": 25, "src": 31},
+    {"op": "goto", "to": 26, "src": 25},
+    {"op": "line", "id": "ch17_berth_009", "key": "DLG_CH17_BERTH_009", "speaker": "aldous_varrow", "emotion": "neutral", "voice": "", "src": 34, "name_key": "DLG_NAME_ALDOUS_VARROW_DOCK_MASTER"},
+    {"op": "cue", "cue": "anim", "args": ["aldous_varrow", "hand_on", "rhen"], "kwargs": {}, "src": 35},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 36},
+    {"op": "set", "flag": "ch17_first_berth", "value": ["lit", true], "src": 37}
+   ]
+  }
+ }
+}

@@ -1,0 +1,18 @@
+{
+ "format": 1,
+ "scene": "ch18_revisit_quellan",
+ "source": "game/data/dialogue/ch18/ch18_revisit_quellan.dlg",
+ "start": "ch18_revisit_quellan",
+ "nodes": {
+  "ch18_revisit_quellan": {
+   "headers": {"location": "ch12/quellan"},
+   "ops": [
+    {"op": "if_not", "cond": ["flag", "ch12_returned_herd_cord"], "to": 3, "src": 6},
+    {"op": "line", "id": "ch18_quellan_001", "key": "DLG_CH18_QUELLAN_001", "speaker": "ullari_woman", "emotion": "soft_smile", "voice": "", "src": 7, "name_key": "DLG_NAME_ULLARI_WOMAN_DORRO_S_DAUGHTER"},
+    {"op": "goto", "to": 5, "src": 6},
+    {"op": "line", "id": "ch18_quellan_002", "key": "DLG_CH18_QUELLAN_002", "speaker": "ullari_woman", "emotion": "neutral", "voice": "", "src": 9, "name_key": "DLG_NAME_ULLARI_WOMAN_DORRO_S_DAUGHTER"},
+    {"op": "goto", "to": 5, "src": 8}
+   ]
+  }
+ }
+}

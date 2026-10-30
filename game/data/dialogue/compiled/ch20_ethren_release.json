@@ -1,0 +1,37 @@
+{
+ "format": 1,
+ "scene": "ch20_ethren_release",
+ "source": "game/data/dialogue/ch20/ch20_ethren_release.dlg",
+ "start": "ch20_ethren_release",
+ "nodes": {
+  "ch20_ethren_release": {
+   "headers": {"location": "ch20/undertow_layers"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "camera", "args": ["U25"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 1.0}, "src": 10},
+    {"op": "if_not", "cond": ["flag", "ch13_camp_talk"], "to": 6, "src": 11},
+    {"op": "cue", "cue": "mark", "args": ["asha", "behind_ysolde", "walk"], "kwargs": {}, "src": 12},
+    {"op": "goto", "to": 6, "src": 11},
+    {"op": "line", "id": "ch20_ethren_001", "key": "DLG_CH20_ETHREN_001", "speaker": "ethren", "emotion": "tender", "voice": "", "src": 14, "name_key": "DLG_NAME_ETHREN_CORRAN"},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 15},
+    {"op": "line", "id": "ch20_ethren_002", "key": "DLG_CH20_ETHREN_002", "speaker": "ysolde", "emotion": "grief", "voice": "", "src": 16},
+    {"op": "if_not", "cond": ["flag", "ch13_corran_house"], "to": 14, "src": 17},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 18},
+    {"op": "line", "id": "ch20_ethren_003", "key": "DLG_CH20_ETHREN_003", "speaker": "ysolde", "emotion": "sad", "voice": "", "src": 19},
+    {"op": "line", "id": "ch20_ethren_004", "key": "DLG_CH20_ETHREN_004", "speaker": "ysolde", "emotion": "tender", "voice": "", "src": 20},
+    {"op": "goto", "to": 14, "src": 17},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 22},
+    {"op": "line", "id": "ch20_ethren_005", "key": "DLG_CH20_ETHREN_005", "speaker": "ethren", "emotion": "soft_smile", "voice": "", "src": 23, "name_key": "DLG_NAME_ETHREN_CORRAN"},
+    {"op": "cue", "cue": "music", "args": ["release_sting"], "kwargs": {"fade": 0.0}, "src": 24},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "ethren", "count": 40, "motion": "spiral_up", "rate": "slow"}, "src": 25},
+    {"op": "cue", "cue": "wait", "args": [8.0], "kwargs": {}, "src": 26},
+    {"op": "cue", "cue": "camera", "args": ["U26"], "kwargs": {}, "src": 27},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "copper_ring", "count": 1, "motion": "spiral_up", "rate": "slow"}, "src": 28},
+    {"op": "cue", "cue": "wait", "args": [5.0], "kwargs": {}, "src": 29},
+    {"op": "set", "flag": "ch20_ethren_released", "value": ["lit", true], "src": 30},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 31}
+   ]
+  }
+ }
+}

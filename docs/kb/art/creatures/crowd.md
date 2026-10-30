@@ -146,3 +146,22 @@ The details:
     (community `brightwater`, which the crossing brings), with Pemakar's own elders and a woman.
   - More children would need more planned child bodies (a characters-track body plan).
 - **Review:** `crowd_vignette_oruvel_north`, `_oruvel_south`, `_pemakar_west` and `_pemakar_east`.
+
+### The Act II towns (the Lead, 2026-10-30)
+- **Quellan** (8 people):
+  - in the square below the tower: two children at a clapping game, a girl at stones, a woman with a basket of wool,
+    and an old man sweeping;
+  - at the doors: a woman folding cloth and an old woman mending keth-cord;
+  - at the well: a man hauling the bucket.
+- **Hollowmere at the Ch15 dawn** (4 people): only the morning's work after the burning, no games (pillar 1). A
+  salvage line hauled, what was saved carried, a scorched net mended, and a girl folding saved cloths.
+- **Ansedra's moorings** (7 people), the polers' families: a girl and her brother clapping, a girl at stones, a
+  basket carrier, a woman folding the barge awning, a poler mending a net, and an old poler sweeping.
+- **Reedhollow** (6 Kirru `body` rows), as still as the Kirru are, on their own clips (Pell's idle and talk):
+  - three fishers on the ring's inner edge with their staffs out over the mangrove water. The lagoon is a mangrove
+    stand, so wading was dropped;
+  - a pair talking in bouts (a chat pair);
+  - a youngster watching.
+  - No work clips: their 2.4 m staffs would go through any mending or hauling pose.
+- **Review:** `crowd_vignette_quellan_{square,well}`, `_hollowmere_{dock,platforms,mender}`, `_ansedra_moorings`,
+  `_reedhollow_lagoon`.

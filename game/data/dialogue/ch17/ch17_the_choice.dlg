@@ -1,0 +1,52 @@
+// M5-A3P-1000. Ch17 B08 "The choice" (C, 4 min, ~220 words): the act's hinge. act3_ch17.md §2 B08.
+// Night on the hull's deck, the whole party in a ring, Asha standing. RULE 3: Asha chooses the Unbinding in her OWN
+// words, plainly (gentle, precise, unbending), and says the cost out loud ONCE: everything bound goes. Not a vow, not
+// a speech. Each companion answers in ONE line, none of them a vow; Liss is the hardest and comes last (pillar 6: she
+// builds the rig anyway). Kerrid's is "First down the stair." (ADR 0020). `the_choice` is a bed that never resolves.
+// RULE 5: held light only. README rule 3: no singing of any verse here.
+title: ch17_the_choice
+location: ch17/hollowmere
+---
+@letterbox on
+@camera D13
+@music the_choice fade=3.0
+@wait 4.0
+@mark asha deck_centre walk
+@wait 2.0
+Asha [neutral]: I've been thinking since the Choir. I want to say it once, properly. #line:ch17_choice_001
+Asha [determined]: I'm not going to sing myself in. And I'm not going home to sing nothing. #line:ch17_choice_002
+@wait 2.0
+Asha [neutral]: If I sing myself in, I hold it thirteen years. Then somebody's daughter does. #line:ch17_choice_003
+Asha [sad]: If I go home, my mother holds it, and the High Warden spends someone else. #line:ch17_choice_004
+@wait 2.5
+Asha [determined]: I'm going to end it. All of it. #line:ch17_choice_005
+@wait 3.0
+@camera D14
+Asha [grief]: Everything that's held goes. The lamps. Their engines. Ressa. Corran. Kerrid. #line:ch17_choice_006
+@wait 4.0
+@camera D13
+Toma [neutral]: I stopped asking them to stay a while ago. I just hadn't said so. #line:ch17_choice_007
+@wait 1.5
+Ysolde [sad]: Corran would have said yes before you finished the sentence. #line:ch17_choice_008
+@wait 1.5
+Pell [sad]: Ressa too. She has waited long enough to be lifted. #line:ch17_choice_009
+@wait 2.0
+<<if $ch16_camp_talk>>
+    Rhen [tender]: Coming up slow. I said I'd count. #line:ch17_choice_010
+<<else>>
+    Rhen [determined]: Then we go down and do it. #line:ch17_choice_011
+<<endif>>
+@wait 2.0
+Kerrid [neutral]: First down the stair. #line:ch17_choice_012
+@wait 4.0
+@camera D15
+@anim liss look_at hull_engine
+@wait 3.0
+Liss [cold]: The Kite flies on bound light. Everything we make does. #line:ch17_choice_013
+@wait 2.0
+Liss [determined]: Then I'd better build you something that gets you there. #line:ch17_choice_014
+@wait 4.0
+<<set $ch17_chose_the_unbinding = true>>
+@fade out 2.0
+@letterbox off
+===

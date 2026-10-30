@@ -1,0 +1,33 @@
+{
+ "format": 1,
+ "scene": "ch17_hull_sails",
+ "source": "game/data/dialogue/ch17/ch17_hull_sails.dlg",
+ "start": "ch17_hull_sails",
+ "nodes": {
+  "ch17_hull_sails": {
+   "headers": {"location": "ch17/hollowmere"},
+   "ops": [
+    {"op": "cue", "cue": "anim", "args": ["liss", "look_at", "hull_sails"], "kwargs": {}, "src": 7},
+    {"op": "line", "id": "ch17_hull_001", "key": "DLG_CH17_HULL_001", "speaker": "liss", "emotion": "surprised", "voice": "", "src": 8},
+    {"op": "line", "id": "ch17_hull_002", "key": "DLG_CH17_HULL_002", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 9}
+   ]
+  },
+  "ch17_hull_tool_rack": {
+   "headers": {},
+   "ops": [
+    {"op": "cue", "cue": "anim", "args": ["rhen", "pick_up", "diving_hooks"], "kwargs": {}, "src": 13},
+    {"op": "line", "id": "ch17_hull_003", "key": "DLG_CH17_HULL_003", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 14},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 15},
+    {"op": "line", "id": "ch17_hull_004", "key": "DLG_CH17_HULL_004", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 16}
+   ]
+  },
+  "ch17_hull_chart_wall": {
+   "headers": {},
+   "ops": [
+    {"op": "cue", "cue": "anim", "args": ["ysolde", "look_at", "chart_wall"], "kwargs": {}, "src": 20},
+    {"op": "line", "id": "ch17_hull_005", "key": "DLG_CH17_HULL_005", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 21},
+    {"op": "line", "id": "ch17_hull_006", "key": "DLG_CH17_HULL_006", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 22}
+   ]
+  }
+ }
+}

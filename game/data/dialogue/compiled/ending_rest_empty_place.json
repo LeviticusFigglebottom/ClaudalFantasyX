@@ -1,0 +1,20 @@
+{
+ "format": 1,
+ "scene": "ending_rest_empty_place",
+ "source": "game/data/dialogue/ending/ending_rest_empty_place.dlg",
+ "start": "ending_rest_empty_place",
+ "nodes": {
+  "ending_rest_empty_place": {
+   "headers": {"location": "ch18/kite"},
+   "ops": [
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 20.0}, "src": 7},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "kite_rail", "walk"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "sit", "kite_rail"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "mark", "args": ["toma", "kite_rail_b", "walk"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "anim", "args": ["toma", "sit", "kite_rail_b"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_lift"], "kwargs": {"at": "sea_far", "count": 8, "motion": "spiral_up", "rate": "slow"}, "src": 12},
+    {"op": "cue", "cue": "wait", "args": [40.0], "kwargs": {}, "src": 13}
+   ]
+  }
+ }
+}

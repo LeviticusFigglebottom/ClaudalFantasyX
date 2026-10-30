@@ -354,7 +354,8 @@ class PipelineTest(unittest.TestCase):
 
         import numpy as np  # noqa: PLC0415
 
-        sinks_by_design = {"hullgnaw": "it slides back down between the planks (hullgnaw.md)"}
+        sinks_by_design = {"hullgnaw": "it slides back down between the planks (hullgnaw.md)",
+                           "hull_rasp": "the hullgnaw's breach and clips (M5-A3P-1806)"}
         defaults = _load(vc.CREATURES_FILE)["defaults"]
         for cid, row in self.rows.items():
             raw = (ROOT / "assets/creatures" / cid / f"{cid}.glb").read_bytes()
@@ -479,6 +480,7 @@ class GroundedClipsTest(unittest.TestCase):
         # it rises out of the breach it smashed in the raft's deck, and its KO slides back down through it
         # (docs/kb/art/creatures/act1/hullgnaw.md); HullgnawBreachTest holds it to the hole
         "hullgnaw": "rises through its breach in the deck",
+        "hull_rasp": "the hullgnaw's breach and clips, scaled (M5-A3P-1806)",
         # it rises out of the water or sand; as built, its tail is buried and runs along under the ground before the S
         # rises (docs/kb/art/creatures/lantern_eel.md, "Notes for the model")
         "lantern_eel": "its tail is buried",

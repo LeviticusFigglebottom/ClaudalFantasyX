@@ -1,0 +1,48 @@
+// M5-A3P-1014. Ending E2 "Dace" (C, 3 min). GOODBYE: DACE. act3_ending.md §2 E2, §0 rule 8; ADR 0022 (i).
+// With Imra gone his hands are free for the first time in eleven years; HE TURNS AROUND, and we see his face for the first
+// time. He knows Rhen at once. DACE AND KERRID: ONE LOOK, NO WORDS: past Rhen's shoulder he sees Kerrid at the rail; for
+// one beat the reach he missed on the Corrow stair is in his face; Kerrid shakes his head once. Then Dace looks only at
+// his son. Dace says goodbye, and THIS TIME RHEN SAYS IT BACK, aloud, plainly, never cut away from. Dace sees his old
+// lantern on Rhen's shoulder (the first of his pair, left on its hook at Oruvel; still its own oil burner, NOT Kell's
+// wick) and is glad. The lantern is UNLIT: Rhen put it out on the dark deck. FRAMING: one slow push-in on the pair (E03);
+// the look is a shot (Dace, Kerrid off-frame past Rhen's shoulder: E04) and a reverse single of Kerrid alone at the rail
+// (E05), never a three-shot or a two-shot of the two dead; ONE reverse at "Goodbye, Dad." (E06: W23's lens and distance
+// on Rhen exactly, the rhyme with Ch8 B17). The current-song stays until after the line. `goodbye_dace`.
+title: ending_dace
+location: ch18/kite
+---
+@letterbox on
+@light LanternLight off
+@camera E03
+@music goodbye_dace fade=2.0
+@anim dace turn_to rhen
+@vfx glimmer_lift at=dace count=20 motion=spiral_up rate=slow
+@wait 4.0
+Dace [tender]: Rhen. #line:ending_dace_001 #tn:"Dace Sallow's first spoken word in the game. Plain, a diver's voice."
+@wait 2.0
+@camera E04
+@anim dace look_at kerrid
+@wait 2.5
+@camera E05
+@anim kerrid shake_head
+@wait 2.0
+@camera E03
+@anim dace look_at rhen
+@wait 2.0
+Dace [soft_smile]: You took the old one down. Off the hook. #line:ending_dace_002
+Rhen [neutral]: The winter I turned nine. #line:ending_dace_003
+@wait 2.0
+Dace [tender]: Good. It was always the better of the two. #line:ending_dace_004
+@wait 3.0
+Dace [grief]: I'm sorry, son. I should have come home. #line:ending_dace_005
+@wait 3.0
+Dace [tender]: Goodbye, Rhen. #line:ending_dace_006
+@wait 2.0
+@camera E06
+Rhen [grief]: Goodbye, Dad. #line:ending_dace_007 #tn:"The payoff of Rhen's arc: this time he says it back. Plain, aloud, no softening."
+@wait 3.0
+@camera E03
+@vfx glimmer_lift at=dace count=60 motion=spiral_up rate=slow
+@wait 6.0
+@letterbox off
+===

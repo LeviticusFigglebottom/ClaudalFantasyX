@@ -1,0 +1,18 @@
+{
+ "format": 1,
+ "scene": "ch17_bark_kesh_chosen",
+ "source": "game/data/dialogue/ch17/ch17_bark_kesh_chosen.dlg",
+ "start": "ch17_bark_kesh_chosen",
+ "nodes": {
+  "ch17_bark_kesh_chosen": {
+   "headers": {"location": "ch17/hollowmere"},
+   "ops": [
+    {"op": "if_not", "cond": ["flag", "ch17_chose_the_unbinding"], "to": 3, "src": 7},
+    {"op": "line", "id": "ch17_kesh_001", "key": "DLG_CH17_KESH_001", "speaker": "kesh", "emotion": "tender", "voice": "", "src": 8},
+    {"op": "goto", "to": 5, "src": 7},
+    {"op": "line", "id": "ch17_kesh_002", "key": "DLG_CH17_KESH_002", "speaker": "kesh", "emotion": "neutral", "voice": "", "src": 10},
+    {"op": "goto", "to": 5, "src": 9}
+   ]
+  }
+ }
+}

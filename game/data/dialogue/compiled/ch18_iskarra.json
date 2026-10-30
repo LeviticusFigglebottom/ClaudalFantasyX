@@ -1,0 +1,22 @@
+{
+ "format": 1,
+ "scene": "ch18_iskarra",
+ "source": "game/data/dialogue/ch18/ch18_iskarra.dlg",
+ "start": "ch18_iskarra",
+ "nodes": {
+  "ch18_iskarra": {
+   "headers": {"location": "ch18/kite"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 6},
+    {"op": "cue", "cue": "camera", "args": ["K13"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "mark", "args": ["kerrid", "chart_table", "walk"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "anim", "args": ["kerrid", "point", "iskarra"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 10},
+    {"op": "line", "id": "ch18_iskarra_001", "key": "DLG_CH18_ISKARRA_001", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 11},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 12},
+    {"op": "set", "flag": "ch18_complete", "value": ["lit", true], "src": 13},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 14}
+   ]
+  }
+ }
+}
