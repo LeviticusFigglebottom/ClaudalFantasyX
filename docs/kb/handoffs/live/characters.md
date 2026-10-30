@@ -487,7 +487,7 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
     hero_stage 11, follower 13. The rig probes pass. Rhen's Body count is 44 -> 47 with a per-mesh reason: the right
     armpit's inner crease, under the arm in every frame of the sheets.
 - **GPU pass 5 rows**, all re-rendered and viewed:
-  - **Row 46 (7d1d6d4b):** moll_face_yield is on the prop-free face stage.
+  - **Row 46 (4c706a3f):** moll_face_yield is on the prop-free face stage.
   - **Row 55 (7fbc2da2):** Fenn's and Sabe's white crops sit over a mid underpaint (no white cap).
   - **Row 54 (a3494fea):** Sefir's front locks fall along the cheek and jaw, fuller.
   - **Row 56 (5bb7e0ed):** the underskirt's hem follows the legs, so the stride shows.
