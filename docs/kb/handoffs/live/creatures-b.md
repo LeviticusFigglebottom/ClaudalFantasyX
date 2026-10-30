@@ -872,3 +872,8 @@ MERGE-READY @ 6973ffc08: the Lamp Engine lineup spacing (test_battle_lineup gree
 MERGE-READY @ 021ce7405: Kesh's rise fits the summon hold (found in the Vowbound summon passes).
 MERGE-READY @ 0b8efe499: the branch head, which carries the two above, 098a878d1 (test_avalanche_ram), 650257eaa (boss phase timing) and f893ee590 (the Spar-Wraith's deck KO).
 LEAD-ASK: none blocking. The Act II boss as-played passes are DONE (Ch10–12 and Ch15; Ch13 has no boss encounter), with no model fixes needed (logged 15:40 and 16:30). The Vowbound summon passes are rendering (the last finishers). My 18:05 status above repeats all of this.
+- **Kesh, re-run on 021ce740:** her whole kit plays now, The Seven included. The 2.6 s rise is seen mid-way (she
+  forms bowed from the column). **For battle-presentation:** at the default camera her head is already at the top of
+  the frame, and in The Seven she rises further on the column, so her head and raised arms leave the frame. The
+  vowbound slot's framing needs her 4.2 m (ADR 0204 §7) plus the Seven's lift; this is the strongest case of the
+  slot-before-the-camera note above.
