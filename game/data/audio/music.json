@@ -438,7 +438,10 @@
     "release_sting": {"file": "res://assets/audio/act3/music/release_sting.ogg", "beat": "free", "_note": "M5-A3P-1950: a Vowbound let go (Ch20's six, Ch21's Kesh): the Letting's cell rising on metallophone and glass over strings opening A minor to C major; no voice, no cadence; started fade=0.0 on the release line (assets_src/music/act3/release_sting.py)"},
     "unbinding_swell": {"file": "res://assets/audio/act3/music/unbinding_swell.ogg", "beat": "free", "_note": "M5-A3P-1950: Ch21 H09, the Great Unbinding: the Letting's close, the swell, then full choir and orchestra (the only time) singing the Hush's first phrase in Lamptongue, twice; the second resolves upward, B D E | A, to A major on tash; 109 s (assets_src/music/act3/unbinding_swell.py)"},
     "heart_approach": {"file": "res://assets/audio/act3/music/heart_approach.ogg", "beat": "free", "_note": "M5-A3P-1951: Ch21 H01-H02, the last layer: the heart's low A drone sinking, and the Hush's first phrase backwards (its notes last to first, each a whole piano note reversed in time), very slow; a 72 s loop; H02 silences it on Sefir's first word (assets_src/music/act3/heart.py; plain git, ADR 0208)"},
-    "heart_rest": {"file": "res://assets/audio/act3/music/heart_rest.ogg", "beat": "free", "_note": "M5-A3P-1951: Ch21 R1, seven bands: the heart's drone alone at a bed's stillness (-22); a 48 s loop"}
+    "heart_rest": {"file": "res://assets/audio/act3/music/heart_rest.ogg", "beat": "free", "_note": "M5-A3P-1951: Ch21 R1, seven bands: the heart's drone alone at a bed's stillness (-22); a 48 s loop"},
+    "kesh_first_voice": {"file": "res://assets/audio/act3/music/kesh_first_voice.ogg", "beat": {"bpm": 112.0, "downbeat_offset_s": 0.268}, "_note": "M5-A3P-1951: Ch21 H03, Kesh's fight: a 3+3+2 drum and low-string ostinato; the stones' choir sings each verse's first line in Lamptongue (verses 1-7) to the Hush's cell, a step higher each, the seventh her own and fullest; a 60 s loop (assets_src/music/act3/kesh_first_voice.py; plain git, ADR 0208)"},
+    "sefir_warden": {"file": "res://assets/audio/act3/music/sefir_warden.ogg", "beat": {"bpm": 52.0, "downbeat_offset_s": 0.0}, "_note": "M5-A3P-1951: Ch21 H04, Sefir phase 1: the congregation hums ORDER_HUM over close dark strings in C major, his motif hanging on its C# over F, soft low bells; a dead room, airless; a 74 s loop. Its fight id is combat's to add (assets_src/music/act3/sefir_finale.py)"},
+    "sefir_heart": {"file": "res://assets/audio/act3/music/sefir_heart.ogg", "beat": {"bpm": 132.0, "downbeat_offset_s": 0.0}, "_note": "M5-A3P-1951: Ch21 H05-H06, Sefir phase 2, the Undertow-heart: the storm's own note (the heart's A, a huge low throat swelling a quarter tone) under rock-fusion percussion in 7/8 (2+2+3), a Phrygian low-string riff; his motif's C# now the A major third: he has become the storm; a 51 s loop"}
   },
   "zones": [
     {
@@ -506,6 +509,8 @@
   "battle": {
     "default": "battle_standard_v2",
     "encounters": {
+      "ch21_kesh": "kesh_first_voice",
+      "ch21_sefir_heart": "sefir_heart",
       "ch21_sefir_letting": "the_letting",
       "drownbell": "drownbell",
       "ch01_hullgnaw": "hullgnaw", "ch04_spar_wraith": "spar_wraith", "ch05_cinder_matron": "cinder_matron", "ch06_inquisitor": "stillguard_inquisitor",
@@ -513,7 +518,7 @@
       "ch10_mangrove_drowner": "mangrove_drowner", "ch11_lamp_engine": "lamp_engine", "ch12_avalanche_ram": "avalanche_ram", "ch15_wakefin": "wakefin",
       "ch14_malcor_venn": "malcor_venn", "ch14_water_steps": "court_steps", "ch14_hold_the_steps": "court_steps", "ch16_abiding_guard": "abiding_guard"
     },
-    "pending_encounters": ["ch14_hold_the_steps", "ch21_sefir_letting"],
+    "pending_encounters": ["ch14_hold_the_steps", "ch21_kesh", "ch21_sefir_heart", "ch21_sefir_letting"],
     "_pending_note": "M4-A2P-1951 (the Act II mix pass as played): the people bosses' and the Ch14 set piece's cues, wired before combat writes their encounters (the scripts already start ch14_malcor_venn, ch14_water_steps and ch16_abiding_guard; the chapter plan calls the set piece ch14_hold_the_steps, so both ids name court_steps until combat settles it). An id here drops off once encounters.json has it.",
     "phases": {
       "flood": {

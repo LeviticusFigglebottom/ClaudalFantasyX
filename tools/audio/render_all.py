@@ -264,6 +264,10 @@ JOBS = [
     # M5-A3P-1951: the finale (Ch21 H01-H06)
     ("assets_src/music/act3/heart.py", "assets/audio/act3/music",
      [f"{c}{ext}" for c in ("heart_approach", "heart_rest") for ext in (".ogg", ".loop.json")], "music_loop"),
+    ("assets_src/music/act3/kesh_first_voice.py", "assets/audio/act3/music",
+     ["kesh_first_voice.ogg", "kesh_first_voice.loop.json"], "music_loop"),
+    ("assets_src/music/act3/sefir_finale.py", "assets/audio/act3/music",
+     [f"{c}{ext}" for c in ("sefir_warden", "sefir_heart") for ext in (".ogg", ".loop.json")], "music_loop"),
     # M4-A2P-092 (ADR 0175): the people bosses' stems
     ("assets_src/music/act2/malcor_venn.py", "assets/audio/act2/music",
      [f"malcor_venn_p{i}{ext}" for i in (1, 2) for ext in (".ogg", ".loop.json")], "music_loop"),
