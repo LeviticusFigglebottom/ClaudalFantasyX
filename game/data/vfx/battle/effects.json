@@ -23,6 +23,15 @@
     "flash_alpha_scale": 0.33,
     "flash_min_ramp_s": 0.3
   },
+  "dark_arenas": {
+    "doc": "M4-A2P-062 (Ch15, the Wakefin in the dark, act2_plan.md): in these arenas every effect layer's energy is multiplied by energy_scale, except a layer with one of keep_swatches: the sea-glow is the fight's only light, and a hit's white core was a flash in the night (viewed on the boss camera sheet, 10-30).",
+    "bridal_barge_night": {
+      "energy_scale": 0.35,
+      "keep_swatches": [
+        "sea_glow"
+      ]
+    }
+  },
   "effects": {
     "hit_none": {
       "kind": "particles",
@@ -8162,7 +8171,7 @@
     "sound_dive": {
       "kind": "particles",
       "anchor": "target",
-      "at": "ground",
+      "at": "feet",
       "layers": [
         {
           "color": "#1C6B78",

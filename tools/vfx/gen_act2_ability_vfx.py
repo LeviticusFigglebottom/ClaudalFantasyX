@@ -69,7 +69,8 @@ SKILLS = {
     "ram_bellow": fx("head", sink("mortar_white", "overcast_slate", 40, 0.5),
                      "The bellow brings the snow down off the wall onto the party (wet snow, never ice)."),
     "fin_cut": fx("chest", slash("sea_glow", "abyss_navy", 40), "The Wakefin's blade cuts across the rail: a seam of sea-glow."),
-    "sound_dive": fx("ground", ring("sea_glow", "abyss_navy", 48, 1.6),
+    # feet, not ground: ground sits on the body's near face, which for a fin in the water is against the barge's hull
+    "sound_dive": fx("feet", ring("sea_glow", "abyss_navy", 48, 1.6),
                      "The Wakefin sounds: the water darkens, then a ring of sea-glow marks where it will rise (a glow, not a light)."),
     "wake_breach": fx("chest", spray("sea_glow", "deep_teal_shadow", 60),
                       "It breaches alongside and the fin sweeps the deck: black water lit from below."),
