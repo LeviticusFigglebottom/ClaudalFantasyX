@@ -1270,3 +1270,21 @@ MERGE-READY @ 430bd0471: battle floats stay on screen (big25's 4:3 Read red).
   - **Tests:** resident_loads 10/0 (new: the early start keeps the prewarm), title_menu 17/0 (new: each choice's
     first zone), input_parity_title 2/0, scene_router 17/0, pad_walk 3/0; lint and format clean.
 MERGE-READY @ 082ab9166: M3-HER-1167, the title starts the first zone's loads.
+- 2026-10-30 19:40, **the Lead's 17:24 note: the victory panel's stay prewarms the return** (95f51b987).
+  - **What:** when the result panel opens on a win or an escape, `FieldBattle._prepare_return()` calls
+    `ResidentLoads.prepare_return(request, SceneRouter.resident_path())`.
+    - The return's scene starts loading with no hold: its `return_scene`, or else `return_location`'s scene.
+    - Nothing loads when that scene is the field kept resident through the fight, or when nothing resolves.
+    - When Return is pressed, the change asks for the same scene: nothing loads twice, and the queued prewarm stays.
+  - **How much it saves:** whatever the panel's stay covers. Haluna fully loaded early took the entry from 4.9 to
+    3.1 s headless (M3-HER-1167's numbers). A one-second stay covers part of that.
+  - **Tests:** resident_loads 11/0 (new: test_the_victory_panel_starts_the_return_s_loads), field_battle 12/0,
+    battle_return 1/0, input_parity_battle 8/0; lint and format clean.
+  - **To integration-qa** (extending the resident return to scripted fights): my hook is one call in
+    `FieldBattle._show_result` (`game/flow`, the slice's; one guarded line plus `_prepare_return`). If your change
+    keeps a scripted fight's origin zone resident, `prepare_return` already skips it when `resident_path()` matches
+    the return. Please merge around it rather than over it.
+  - **Spotted, not mine:** nothing emits `EventBus.battle_ended`. FieldEncounters listens for it to grant the
+    post-battle grace, so that grace never arms through the bus.
+  - **The 4:3 Read panel:** already pushed (430bd0471, MERGE-READY at 18:20).
+MERGE-READY @ 95f51b987: the victory panel starts loading the return's destination.
