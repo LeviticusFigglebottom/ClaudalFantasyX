@@ -1161,3 +1161,16 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
      - Checks: validate_data; tools test_npc 33 OK; Godot crowd 15/0, villager 43/0, npc 10/0, haluna 65/0.
 - **MERGE-READY @ 14b55254.**
 - **BACKLOG EMPTY:** the crowd behaviour pass is done; the conduit crawler waits on M4-CRE-702.
+- **Your 15:08 relay:**
+  - **Baselines:** understood. I write none; the shots session captures them after the merge.
+  - **conduit_crawler is already complete and placeholder-free**, built earlier from the beat sheet, the lore and act2_roster:
+    - an 18-bone rig (body, six legs of two, two arms of two);
+    - the full clip contract (idle, attack, cast for its mend, hit, ko, hit_b, idle_b), feet on the floor in every clip;
+    - 4,608 triangles, with its battle scene (`creature_actor`), creatures.json row, portrait and review shot.
+    - It is ready to wire up the moment M4-CRE-702's enemies.json row lands, using `model`: `res://game/creatures/conduit_crawler/conduit_crawler_battle.tscn`.
+  - **Act II wildlife idle behaviours @ 3a287760:** the fen kingfisher's plunge-dive (the one behaviour its plan sheet listed as not built).
+    - From a perch it drops wings-folded to the water ahead, holds a moment, and beats back to the same perch; gulls never dive.
+    - The other Act II animals already do what their sheets describe: woolbacks graze, look up and amble; fireflies drift and blink; rim rays swim, turn and startle (their sheet: "they never bury"). Hollowmere's gulls and fish are Act I's.
+    - Checks: validate_data; tools test_wildlife 20 OK; Godot wildlife 23/0.
+- **MERGE-READY @ 3a287760.**
+- **BACKLOG EMPTY:** Act II wildlife behaviours are done; the conduit crawler waits only on M4-CRE-702's row.
