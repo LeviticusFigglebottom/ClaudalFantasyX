@@ -176,6 +176,28 @@ ch01_wickfry, ch01_oil_slug, ch01_shaft_limpet and ch01_scuttlers.
 - An earlier run showed 4 reds (battle_result_motion, battle_stings). They came from merging the integration branch
   while the run was going: each file passes 5/0 on the merged tree, and the clean run above is 817/0.
 
+### 2026-10-30 ~11:xx: the Lead's 10:47 item (row 64 is the camera search, after creatures-b's trace)
+**MERGE-READY @ 7c3307df** (+ this log commit). Rows 61 (ef997f3d) and the glimmer hit (4c4a3dd3) were done before.
+- **Row 64's cause** (creatures-b's trace of pc-gpu's big21 capture): BattleBossHeroShot.search ran on the first
+  uncovered frame. There were no pipeline compiles. 65e776af (the particle variants) stays as a harmless guard.
+- **The fix:**
+  - BattleBossIntro frames its boss at the first turn, while the fade covers the screen, and keeps that pose for
+    the reveal.
+  - The arena's occluders are built once per battle.
+  - Meshes shorter than `boss_intro.hero.occluder_min_h_m` (0.5) are no longer occluders. The Drownbell drops from
+    935 occluders to 217 (its saltgrass).
+- **Verified headless** (shared CPU, so the absolute numbers run high):
+  - The reveal frame is 1.2–2.6 ms in the Drownbell, Hermit, Inquisitor (Moll), Matron and Hullgnaw fights.
+  - The search, 27–343 ms, now runs behind the fade, inside ADR 0029's 1 s limit for hidden frames.
+  - Every fight's chosen pose is unchanged with the filter, so no baseline moves.
+  - Tests test_the_boss_is_framed_behind_the_fade and test_short_arena_meshes_are_not_occluders. boss 88/0,
+    camera 65/0.
+- **Still open, mid-fight:** the phase and fall camera moments run the same search after an action, uncovered: about
+  100 ms on the Drownbell headless. The filter and the cache help. If PC-QUEUE shows them over 50 ms, the next step
+  is to search once at the action's start, in the time the action plays.
+- **PC-QUEUE:** re-measure row 64 (the 60 frames after the fade) at tideline, the causeway, the Drownbell, the Hermit
+  and Moll.
+
 ### 2026-10-30 ~10:xx: the Lead's 10:07 item (PC pass 5 rows 61 and 64)
 **MERGE-READY @ ef997f3d** (+ this log commit). The glimmer swatch is in 4c4a3dd3 (below).
 - **Row 64 (65e776af): a 73-119 ms frame in the 60 after the fade, in five fights.**
@@ -332,7 +354,7 @@ element (voice_glimmer, level_hand, still_water).
   - ch04_spar_wraith: running.
 
 ### PC-QUEUE
-- Row 64 re-measure (65e776af): the 60 frames after the fade at tideline, causeway, the Drownbell, the Hermit and Moll.
+- Row 64 re-measure (7c3307df, the search behind the fade): the 60 frames after the fade at tideline, causeway, the Drownbell, the Hermit and Moll; and the Drownbell's phase and fall moments.
 - GPU QA row 36 (the Reach): re-check in live play on the RX 9070 XT (M3-BPR-425's rest frame).
 - GPU QA row 34: re-check once M3-BPR-427 lands (and hold the zone's random encounters in the walk).
 
