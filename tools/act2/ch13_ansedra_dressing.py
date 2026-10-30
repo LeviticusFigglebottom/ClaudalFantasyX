@@ -75,7 +75,7 @@ SEFIR_HALL = ("SefirHouse", 0.6, 0.0)
 # Corran's old house: a plainer hall (timber columns for the lacquer), facing the west causeway's end (+X).
 CORRAN_HALL = ("CorranHouse", 0.45, 90.0)
 CORRAN_SLOTS = {"kit_lacquer_red": KIT_MATERIALS + "kit_timber.tres"}
-# The mooring barges: the bridal barge at 0.55, poled along Z beside the moorings' water-steps (the steps reach 10.1 m
+# The mooring barges: the bridal barge at 0.55 (its wedding dress: no bier before Ch15), poled along Z beside the moorings' water-steps (the steps reach 10.1 m
 # out, so the hulls lie at 12.6 m, clear of them).
 BARGES = (("BargeA", -12.6, 10.0, 90.0), ("BargeB", 12.6, 12.0, -90.0))
 BARGE_SCALE = 0.55
@@ -202,7 +202,7 @@ def dressing() -> dict:
     pieces.append(hall_row(b, SEFIR_HALL))
     pieces.append(dict(hall_row(b, CORRAN_HALL), material_paths=dict(CORRAN_SLOTS)))
     for bid, x, z, yaw in BARGES:
-        pieces.append({"piece": "bridal_barge", "at": [x, z], "y": 0.0, "yaw_deg": yaw, "scale": BARGE_SCALE,
+        pieces.append({"piece": "bridal_barge_wedding", "at": [x, z], "y": 0.0, "yaw_deg": yaw, "scale": BARGE_SCALE,
                        "block": bid})
     looks = {slot: RES_ZONE + name for slot, (name, _) in LOOKS.items()}
     looks["kit_order_marble"] = RES_ZONE + MARBLE_NAME

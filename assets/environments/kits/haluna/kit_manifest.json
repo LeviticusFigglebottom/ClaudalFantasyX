@@ -222,6 +222,17 @@
         "bridal_barge-lod1": 648
       }
     },
+    "bridal_barge_wedding": {
+      "budget": [
+        16000,
+        1200
+      ],
+      "bytes": 205412,
+      "lods": {
+        "bridal_barge_wedding": 3486,
+        "bridal_barge_wedding-lod1": 624
+      }
+    },
     "cairn": {
       "budget": [
         2500,
