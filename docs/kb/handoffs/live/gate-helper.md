@@ -46,3 +46,6 @@ and reports; it never edits game or test files.
 - big32 @ 7f6211b3 (HEAD checked): lanes B 3 files, 21:49-21:52 UTC (3 min). 2 green, 1 red:
   test_qa_capsules (1 failed: abiding_first, abiding_guard and court_stillguard fight as primitive stand-ins, with no actor
   scene in battle_sandbox or creatures). Result: gate-big32-lanes-b-result.md.
+- big33 @ 1067c447 (HEAD checked): lanes B 27 files, 22:32-22:48 UTC (16 min). 26 green, 1 red:
+  test_debug_overlay (1 failed: game/core/scene_router.gd names SceneSwapProbe, a class under game/core/debug/, which the
+  release build strips). Result: gate-big33-lanes-b-result.md.
