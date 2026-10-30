@@ -127,3 +127,26 @@ func test_the_floods_phase_moment_stays_above_the_water() -> void:
 	assert_true(ctl.stage.camera.position.y >= water + clear - 0.001, "and the camera does, held on the bell")
 	ctl.get_parent().remove_child(ctl)
 	ctl.free()
+
+
+## The encounter sweep (10-30): the Hullgnaw's fall, framed at its intro's low lens with Rhen alone, sank behind the
+## raft's rail and a post. The fall moment searches with its own higher lenses (moments.fall.hero).
+func test_the_fall_looks_down_from_above_the_intros_lens() -> void:
+	ctl = (load(SANDBOX) as PackedScene).instantiate() as BattleController
+	ctl.auto_start = false
+	ctl.pacing_scale = 0.0
+	ctl.persist_progress = false
+	var tree := Engine.get_main_loop() as SceneTree
+	(tree.current_scene if tree.current_scene != null else tree.root).add_child(ctl)
+	ctl.start_battle([&"rhen"] as Array[StringName], [], &"ch01_hullgnaw", 20261030)
+	var intro := BattleBossIntro.of(ctl.stage)
+	intro._frame_boss(false)
+	var low: Vector3 = intro._pose["pos"]
+	var fall := (BattleChoreo.load_data()["camera"]["moments"] as Dictionary)["fall"] as Dictionary
+	intro.hero_override = fall["hero"] as Dictionary
+	intro._frame_boss(true)
+	intro.hero_override = {}
+	assert_eq(intro.shot_id, BattleBossIntro.HERO_SHOT, "the fall still takes a hero shot")
+	assert_true((intro._pose["pos"] as Vector3).y > low.y + 1.0, "the fall's lens is above the intro's")
+	ctl.get_parent().remove_child(ctl)
+	ctl.free()

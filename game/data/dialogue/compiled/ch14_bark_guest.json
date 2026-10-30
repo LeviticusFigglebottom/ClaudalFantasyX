@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch14_bark_guest",
+ "source": "game/data/dialogue/ch14/ch14_bark_guest.dlg",
+ "start": "ch14_bark_guest",
+ "nodes": {
+  "ch14_bark_guest": {
+   "headers": {"location": "ch14/lacquer_court"},
+   "ops": [
+    {"op": "line", "id": "ch14_bark_guest_001", "key": "DLG_CH14_BARK_GUEST_001", "speaker": "townsfolk", "emotion": "smile", "voice": "", "src": 5, "name_key": "DLG_NAME_TOWNSFOLK_WEDDING_GUEST", "tags": ["long"]}
+   ]
+  }
+ }
+}

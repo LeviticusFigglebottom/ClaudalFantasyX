@@ -1,0 +1,10 @@
+// Ch12: Quellan's night variant (ch12_hesk_bound). The wind drops; nobody knows why, and she doesn't ask.
+title: ch12_bark_quellan_night
+location: ch12/quellan
+---
+<<if $ch12_hesk_bound>>
+    Ullari_woman as "Woman at the well" [tender]: The wind's dropped. First time since my mother's knot. I'm going to sit out in it a while. #line:ch12_bark_night_001
+<<else>>
+    Ullari_woman as "Woman at the well" [neutral]: Wind's up at Cloudloom again. The cords will be talking all night. #line:ch12_bark_night_002
+<<endif>>
+===

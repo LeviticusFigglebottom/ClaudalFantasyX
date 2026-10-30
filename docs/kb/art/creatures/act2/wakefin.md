@@ -111,3 +111,18 @@ camera and from a close camera on the deck. At 16 m the blade reads as a fin in 
 Wakefin Rise, Bill Strike) clear the far rail against the water, their seams and wounds lit; the dive leaves a blade
 top in view; the torn tip shows a ragged top after the ram. Not judged: the wake and the ring of sea-glow (VFX,
 M4-A2P-058/062) and the seam brightening (rendering).
+
+## Own VFX (M4-A2P-058)
+
+In the battle scene (`AmbientVfx`, CreatureAmbientVfx; data `game/data/creatures/creature_vfx.json`). The Wakefin carries
+no light: only the glow it stirs, at about the arena's sea-glow, so the timeline and the seam's telegraph stay the
+brightest information (pillar 4).
+
+- **The wake.** Where the blade meets the water (`fin_0`, held level on the water line: `pin_y_m`, so it never rolls
+  or rises with the body), flat `sea_glow` discs spread and fade over 3.2 s along the body's length, with small
+  brighter `sea_glow`/`lagoon_teal` glints over them. World-space, so whatever the blade does leaves its glow on the
+  water; in a breach the glow stays on the water where it left. It stops on the KO and fades as the body drifts off.
+- **Draw order.** The particle materials draw after the arena sea (`render_priority` 1): the sea is a transparent
+  pass that would otherwise cover them.
+- **Viewed** (lavapipe, `bridal_barge_night` at the staging (−5.0, −0.6, −6.5); battle camera and close): a lit cut at
+  the blade's foot; in Fin Cut the glow stays on the water under the breach.
