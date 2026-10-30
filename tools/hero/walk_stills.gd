@@ -4,6 +4,9 @@ extends Node3D
 ## the party and the camera director) and saves the frame every `every` frames as <out>/<route>_<frame>.png.
 ## Render it with the software renderer (lavapipe, like the screenshots):
 ##   godot-render --path . res://tools/hero/walk_stills.tscn -- --route=haluna_lane --every=90 --out=/abs/dir
+## or, for one spawn (the party arrives and stands; the still is TAIL_FRAMES later, as a player sees it):
+##   godot-render ... -- --scene=res://game/levels/ch03/.../saltgrass_causeway.tscn --spawn=Encounter --out=/abs/dir
+## --unstage hides the stage's party-hero actors, so the followers show (zones that stage Asha and Toma standing).
 ## Viewing them is the check (camera clearance, followers on their spots, feet on the steps); nothing is compared.
 
 const AUDIT := preload("res://tests/integration/test_qa_walk_audit.gd")
@@ -31,6 +34,10 @@ func _ready() -> void:
 		_args[kv[0]] = kv[1] if kv.size() > 1 else ""
 	var data := AUDIT._json(ROUTES)
 	var route := (data.get("routes", {}) as Dictionary).get(str(_args.get("route", "")), {}) as Dictionary
+	if _args.has("scene") and _args.has("spawn"):  # a spawn still: the party arrives there and stands (no walk)
+		route = {"scene": str(_args["scene"]), "start_spawn": str(_args["spawn"]), "flags": []}
+		_args["route"] = "%s_%s" % [str(_args["scene"]).get_file().get_basename(), _args["spawn"]]
+		_args["every"] = str(TAIL_FRAMES)
 	if route.is_empty():
 		push_error("walk_stills: no route '%s'" % _args.get("route", ""))
 		get_tree().quit(2)
@@ -64,7 +71,16 @@ func _ready() -> void:
 		stairs.build_from_layout()
 	for block: Variant in route.get("hide_blocks", []):
 		zone.call(&"hide_block", str(block))
+	if _args.has("unstage"):  # the stage's party heroes hidden, so the followers walk (the PC's story-state walks)
+		for st in HeroFieldParty.find_scripted(zone, &"CutsceneStage"):
+			var actors := (st as Node).get_node_or_null(^"Actors")
+			for a in actors.get_children() if actors != null else []:
+				if StringName(a.name) in Game.state.party_ids:
+					(a as Node3D).visible = false
+		_party.rescan()
 	_points = AUDIT._route_points(route, zone, _player)
+	if _points.is_empty():
+		_points = [_player.global_position]  # a spawn still: the "walk" is standing where he arrived
 	_run = bool(route.get("run", true))
 	_party.catch_up()
 	for i in SETTLE_FRAMES:
@@ -74,7 +90,7 @@ func _ready() -> void:
 ## Simulates up to the next still (or the walk's end), then lets one frame render and saves it: the software
 ## renderer draws only the frames that are kept, so a long route takes minutes, not an hour.
 func _process(_delta: float) -> void:
-	if _points.is_empty() or _player == null or _busy:
+	if _player == null or _busy:
 		return
 	_busy = true
 	var every := maxi(int(_args.get("every", "60")), 1)

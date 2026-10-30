@@ -355,6 +355,16 @@ func catch_up() -> void:
 	_apply_staged()
 
 
+## True when `at` is within camera_near_m (flat) of the field camera: a follower laid out there stands in the lens's
+## foreground (the PC's GPU QA row 37: at the causeway's spawns Toma's shield filled the frame, a metre from the lens).
+func near_camera(at: Vector3) -> bool:
+	var near := float(_cfg.get("camera_near_m", 0.0))
+	var cam := controller.get_viewport().get_camera_3d() if controller.is_inside_tree() else null
+	if near <= 0.0 or cam == null:
+		return false
+	return Vector2(at.x - cam.global_position.x, at.z - cam.global_position.z).length() < near
+
+
 ## Follower i's place when the party is laid out: its trail point if that is clear (no wall, at least min_gap_m
 ## from every body in `placed`), else further back along the trail, else a ring around the leader; never on top
 ## of another body (the human's playtest: followers stacked inside each other at a spawn).
@@ -365,13 +375,13 @@ func _formation_spot(i: int, placed: Array[Vector3]) -> Vector3:
 	var steps := int(_cfg.get("spawn_search_steps", 0))
 	for k in steps + 1:
 		var at := sight_clear(i, trail_point((i + 1) * spacing + k * gap))
-		if _clear_of(at, placed, gap) and not blocked(at):
+		if _clear_of(at, placed, gap) and not blocked(at) and not near_camera(at):
 			return at
 	for ring in range(1, steps + 1):
 		for turn in 12:
 			var dir := Vector3.FORWARD.rotated(Vector3.UP, TAU * turn / 12.0)
 			var at := lead + dir * (spacing * ring)
-			if _clear_of(at, placed, gap) and not blocked(at):
+			if _clear_of(at, placed, gap) and not blocked(at) and not near_camera(at):
 				return at
 	for ring in range(1, steps + 1):  # walls everywhere: at least never on top of another body
 		for turn in 12:
@@ -449,9 +459,31 @@ func _record(lead: Vector3) -> void:
 			trail = trail.slice(trail.size() - cap)
 
 
-## Where follower `i` heads: its trail point, moved off the camera's line of sight to the leader (sight_clear).
+## Where follower `i` heads: its trail point, moved off the camera's line of sight to the leader (sight_clear), and
+## beside him instead when that spot is in the lens's foreground (near_camera: a close camera behind a spawn).
 func follow_point(i: int) -> Vector3:
-	return sight_clear(i, trail_point((i + 1) * float(_cfg.get("spacing_m", 0.0))))
+	var at := sight_clear(i, trail_point((i + 1) * float(_cfg.get("spacing_m", 0.0))))
+	return off_lens(i, at) if near_camera(at) else at
+
+
+## `at` moved beside the leader, square to the camera's line to him, (i + 1) * spacing_m out on follower i's side
+## (the other side when that is blocked or still near the lens); `at` unchanged when neither side will do.
+func off_lens(i: int, at: Vector3) -> Vector3:
+	var cam := controller.get_viewport().get_camera_3d() if controller.is_inside_tree() else null
+	if cam == null:
+		return at
+	var lead := controller.global_position
+	var line := Vector3(lead.x - cam.global_position.x, 0.0, lead.z - cam.global_position.z)
+	if line.length() < 1e-3:
+		return at
+	var right := line.normalized().cross(Vector3.UP)
+	var out := (i + 1) * float(_cfg.get("spacing_m", 0.0))
+	var side := _sight_side[i] if i < _sight_side.size() and _sight_side[i] != 0 else (1 if i % 2 == 0 else -1)
+	for s: int in [side, -side]:
+		var spot := Vector3(lead.x, at.y, lead.z) + right * (s * out)
+		if not blocked(spot) and not near_camera(spot):
+			return spot
+	return at
 
 
 ## `at`, or, when it lies between the field camera and the leader (at least sight_depth_m short of him), under the

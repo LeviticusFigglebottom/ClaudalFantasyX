@@ -14,7 +14,8 @@
   "pan_follow_smoothing_per_sec": 4.0,
   "keep_in_frame_share": 0.5,
   "keep_in_frame_aspect": 1.7778,
-  "keep_in_frame_doc": "PAN_FOLLOW keeps the leader within keep_in_frame_share of the frame's half angles of its aim, vertically (the shot's fov) and horizontally (from keep_in_frame_aspect, the 1920 x 1080 reference): when a shot's capped pan (max_pan_deg) would lose him, the aim turns just enough to hold him; a composition with him on a third stays as authored (FieldCameraDirector.keep_in_frame; the Lead's 10-29 walk audit).",
+  "keep_in_frame_fixed_share": 0.95,
+  "keep_in_frame_doc": "PAN_FOLLOW keeps the leader within keep_in_frame_share of the frame's half angles of its aim, vertically (the shot's fov) and horizontally (from keep_in_frame_aspect, the 1920 x 1080 reference): when a shot's capped pan (max_pan_deg) would lose him, the aim turns just enough to hold him; a composition with him on a third stays as authored. keep_in_frame_fixed_share: the same safety net for FIXED shots, near the frame's edge, so a locked composition only moves when it would lose him (row 37, the causeway's C07 at BeforeHarrier) (FieldCameraDirector.keep_in_frame; the Lead's 10-29 walk audit).",
   "dolly_follow_smoothing_per_sec": 3.0,
   "orbit": {
     "doc": "Only when the director's hub_orbit_enabled flag is set (SPEC §6.6: no free orbit except optional hub zones).",
@@ -30,11 +31,15 @@
     "height_m": 4.0
   },
   "occlusion": {
-    "doc": "The PC's real-GPU Act I QA (row 38, Coilspire): a wall the player sees standing between a volume shot's camera and the leader's chest (chest_m over his feet) pulls the camera in along that line to margin_m short of it, at once; with the view clear it eases back out at release_mps. Never nearer the leader than min_distance_m. A wall is a drawn mesh, tested by its triangles (collision misses walls and has walls nobody sees): every MeshInstance3D at least min_size_m across with no transparent surface, the leader's own body aside; hidden meshes don't count. Scripted (cutscene) shots are composed and left alone.",
+    "doc": "The PC's real-GPU Act I QA (row 38, Coilspire): a wall the player sees standing between a volume shot's camera and the leader's chest (chest_m over his feet) pulls the camera in along that line to margin_m short of it, at once; with the view clear it eases back out at release_mps. Never nearer the leader than min_distance_m. When the clear stretch is shorter than min_view_m (the camera would sit in his face; row 38, Coilspire's Tier4), it cranes up instead: straight up by crane_step_m, up to crane_max_m, to the first clear height whose crane_clear_m sphere touches no solid, looking down at him. A wall is a drawn mesh, tested by its triangles (collision misses walls and has walls nobody sees): every MeshInstance3D at least min_size_m across with no transparent surface, the leader's own body aside; hidden meshes don't count. Scripted (cutscene) shots are composed and left alone.",
     "enabled": true,
     "chest_m": 1.3,
     "margin_m": 0.3,
     "min_distance_m": 0.6,
+    "min_view_m": 1.8,
+    "crane_step_m": 0.5,
+    "crane_max_m": 6.0,
+    "crane_clear_m": 0.25,
     "release_mps": 4.0,
     "min_size_m": 3.0
   }

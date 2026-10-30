@@ -5,8 +5,9 @@ extends TestCase
 ## Per route it prints a report: arrival, the leader's ramp to full speed and its stop, vertical jumps and airborne
 ## frames on the stairs, each hero's foot slide (travel speed past what the gait's feet cover), the followers' spacing,
 ## catch-ups and frames their torso stands inside level geometry, and frames the camera sits inside geometry or a wall
-## hides the leader. It fails on what a player would call broken: a route not walked to its end (stuck), a follower's
-## torso inside geometry or the leader hidden for longer than LIMIT_FRAMES in a row, the camera inside geometry.
+## hides the leader. It fails on what a player would call broken: a route not walked to its end (stuck); for longer
+## than LIMIT_FRAMES in a row, a follower's torso inside geometry, a follower inside the body ahead, a follower sunk
+## in the floor, the leader hidden or out of frame; the camera inside geometry at all.
 
 const ROUTES := "res://tests/integration/qa_walk_routes.json"
 const DT := 1.0 / 60.0
@@ -22,6 +23,10 @@ const TORSO_RADIUS_M := 0.15
 const TORSO_HEIGHT_M := 0.9
 const TORSO_CENTRE_M := 1.0
 const CAMERA_PROBE_M := 0.08
+const SUNK_M := 0.3
+## Bodies nearer than this (flat) stand inside each other.
+const OVERLAP_M := 0.4
+const SUNK_RAY_M := 1.6
 const STEADY_RUN_FRACTION := 0.9
 
 var _state_was: GameStateData
@@ -75,6 +80,13 @@ func walk(route: Dictionary, data: Dictionary) -> Dictionary:
 	var stairs := player.get_node_or_null(NodePath(String(HeroStairs.NAME))) as HeroStairs
 	if stairs != null:  # the zone is ready now: in play its deferred build lands a frame later
 		stairs.build_from_layout()
+	if bool(route.get("unstage", false)):  # the followers walk where the zone stages its heroes standing
+		for st in HeroFieldParty.find_scripted(_zone, &"CutsceneStage"):
+			var actors := (st as Node).get_node_or_null(^"Actors")
+			for a in actors.get_children() if actors != null else []:
+				if StringName(a.name) in Game.state.party_ids:
+					(a as Node3D).visible = false
+		party.rescan()
 	for block: Variant in route.get("hide_blocks", []):  # story gates the route assumes open
 		_zone.call(&"hide_block", str(block))
 	var points := _route_points(route, _zone, player)
@@ -99,6 +111,10 @@ func walk(route: Dictionary, data: Dictionary) -> Dictionary:
 	var airborne := 0
 	var catchups := 0
 	var clip_run := {}
+	var sunk_run := {}
+	var overlap_run := {}
+	var overlap_max := {}
+	var sunk_max := {}
 	var clip_max := {}
 	var hidden_run := 0
 	var hidden_max := 0
@@ -171,7 +187,17 @@ func walk(route: Dictionary, data: Dictionary) -> Dictionary:
 			var id_f := StringName(f.get_meta(&"hero_id", ""))
 			var g := gaps.get(id_f, [INF, 0.0]) as Array
 			gaps[id_f] = [minf(float(g[0]), gap), maxf(float(g[1]), gap)]
+			if gap < OVERLAP_M:
+				overlap_run[id_f] = int(overlap_run.get(id_f, 0)) + 1
+				overlap_max[id_f] = maxi(int(overlap_max.get(id_f, 0)), int(overlap_run[id_f]))
+			else:
+				overlap_run[id_f] = 0
 			ahead = f
+			if _sunk(space, f.global_position, player):
+				sunk_run[id_f] = int(sunk_run.get(id_f, 0)) + 1
+				sunk_max[id_f] = maxi(int(sunk_max.get(id_f, 0)), int(sunk_run[id_f]))
+			else:
+				sunk_run[id_f] = 0
 			if _torso_inside(space, f.global_position, player):
 				clip_run[id_f] = int(clip_run.get(id_f, 0)) + 1
 				clip_max[id_f] = maxi(int(clip_max.get(id_f, 0)), int(clip_run[id_f]))
@@ -212,10 +238,22 @@ func walk(route: Dictionary, data: Dictionary) -> Dictionary:
 	report["top_speed"] = top_speed
 	report["hidden_why"] = hidden_why
 	report["clip_max"] = clip_max
+	report["sunk_max"] = sunk_max
+	report["overlap_max"] = overlap_max
 	report["hidden_max"] = hidden_max
 	report["camera_inside"] = camera_inside
 	report["out_max"] = out_max
 	report["out_shots"] = out_shots.keys()
+	for id_f: StringName in overlap_max.keys():
+		if int(overlap_max[id_f]) > LIMIT_FRAMES:
+			(report["failures"] as Array).append(
+				"%s stands inside the body ahead for %d frames in a row" % [id_f, overlap_max[id_f]]
+			)
+	for id_f: StringName in sunk_max.keys():
+		if int(sunk_max[id_f]) > LIMIT_FRAMES:
+			(report["failures"] as Array).append(
+				"%s stands sunk in the floor for %d frames in a row" % [id_f, sunk_max[id_f]]
+			)
 	for id_f: StringName in clip_max.keys():
 		if int(clip_max[id_f]) > LIMIT_FRAMES:
 			(report["failures"] as Array).append(
@@ -252,15 +290,20 @@ static func format(id: String, r: Dictionary) -> String:
 	]
 	var gaps := r.get("gaps", {}) as Dictionary
 	for id_f: Variant in gaps.keys():
-		lines.append(
-			(
-				"    %s: gap %.2f-%.2f m, inside geometry max %d frames"
-				% [
-					id_f,
-					float(gaps[id_f][0]),
-					float(gaps[id_f][1]),
-					int((r.get("clip_max", {}) as Dictionary).get(id_f, 0))
-				]
+		(
+			lines
+			. append(
+				(
+					"    %s: gap %.2f-%.2f m (inside the one ahead max %d frames), inside geometry max %d frames, sunk max %d frames"
+					% [
+						id_f,
+						float(gaps[id_f][0]),
+						float(gaps[id_f][1]),
+						int((r.get("overlap_max", {}) as Dictionary).get(id_f, 0)),
+						int((r.get("clip_max", {}) as Dictionary).get(id_f, 0)),
+						int((r.get("sunk_max", {}) as Dictionary).get(id_f, 0))
+					]
+				)
 			)
 		)
 	var slide := r.get("slide", {}) as Dictionary
@@ -403,6 +446,19 @@ static func _torso_inside(space: PhysicsDirectSpaceState3D, feet: Vector3, playe
 	q.exclude = [player.get_rid()]
 	q.collide_with_areas = false
 	return not space.intersect_shape(q, 1).is_empty()
+
+
+## True when feet at `feet` stand more than SUNK_M below the floor right over them (a ray down from SUNK_RAY_M above,
+## the flight profile where a stair covers it): the PC's GPU QA row 50, Toma sunk to his chest at Ashcrown's crown.
+static func _sunk(space: PhysicsDirectSpaceState3D, feet: Vector3, player: FieldController) -> bool:
+	var profile := HeroStairs.height_at(player, feet)
+	if not is_nan(profile):
+		return feet.y < profile - SUNK_M
+	var q := PhysicsRayQueryParameters3D.create(feet + Vector3.UP * SUNK_RAY_M, feet + Vector3.DOWN * 0.1)
+	q.exclude = [player.get_rid()]
+	q.collide_with_areas = false
+	var hit := space.intersect_ray(q)
+	return not hit.is_empty() and feet.y < (hit["position"] as Vector3).y - SUNK_M
 
 
 static func _point_inside(space: PhysicsDirectSpaceState3D, at: Vector3, player: FieldController) -> bool:

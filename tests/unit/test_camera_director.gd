@@ -129,6 +129,31 @@ func test_fixed_shot_holds_its_authored_frame() -> void:
 	_move(Vector3(1.5, 0, 4))
 	_settle()
 	assert_true(cam.global_position.distance_to(shot.position) < POS_TOLERANCE_M, "player motion moves nothing")
+	assert_true(-cam.global_basis.z.dot(aim) > AIM_TOLERANCE, "he is in frame, so the composition holds")
+	_free()
+
+
+## The PC's GPU QA row 37 (the causeway's C07 at BeforeHarrier): a FIXED shot that would lose the leader entirely turns
+## to hold him at the edge (keep_in_frame_fixed_share); one with him in frame is never moved (the test above).
+func test_a_fixed_shot_that_would_lose_him_turns_to_hold_him() -> void:
+	var shot := (zone.get_node("CameraVolumes/LaneVolume") as CameraVolume).shot
+	var from := shot.position
+	var aim := shot.look_at
+	var behind := from - (aim - from).normalized() * 4.0  # right behind the camera: no authored frame shows him
+	var kept := FieldCameraDirector.keep_in_frame(
+		from,
+		aim,
+		behind,
+		shot.fov_deg if shot.fov_deg > 0.0 else 37.8,
+		float(director.data.get("keep_in_frame_fixed_share", 1.0)),
+		float(director.data.get("keep_in_frame_aspect", 1.0))
+	)
+	assert_true((kept - from).normalized().dot((behind - from).normalized()) > 0.99, "turned to look at him")
+	var inside := aim + Vector3(0.3, 0.0, 0.0)
+	var same := FieldCameraDirector.keep_in_frame(
+		from, aim, inside, 37.8, float(director.data.get("keep_in_frame_fixed_share", 1.0)), 16.0 / 9.0
+	)
+	assert_true(same.is_equal_approx(aim), "with him in frame the locked aim is untouched")
 	_free()
 
 
