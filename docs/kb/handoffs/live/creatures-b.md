@@ -934,3 +934,14 @@ MERGE-READY @ c095cfec2: M3-HER-1134. The Cinder Matron's cutscene cues play her
   characters track's. validate_data 0/0; taskboard --check clean.
 - Running: the four Act II Vowbound with battle-presentation's big29 effects, to view each one on its body. Next:
   the Act II boss feel pass. M3-HER-1168 is creatures': they haven't asked in their log.
+- **The Act II effects viewed on the bodies (big29), Ethren and Kesh so far:** the sweep's impacts check finds
+  every landed hit has its effect, and no framing failures. Ethren's Level Hand, Hold the Hour, Lacquer Screen and
+  Still Water, and Kesh's six voices and The Seven, sit on the bodies (the projectiles leave her hands; the impacts
+  are on the target's chest). The big29 framing now fits Kesh whole in her turns. **Filed M4-A2P-1850 for
+  battle-presentation:** all of Kesh's voices fly one shared pale orb, so the element reads only on impact, and the
+  orb casts a shadow on the floor. Nothing in my models needs fixing. Hesk (with the crawlers) and Nhoa are rendering.
+- **The Act II effects on the bodies, done (big29):** Hesk (Knot Light's gold burst on the Engine, Cord Lift,
+  Mending, Pass Cord), Nhoa (Silt Fall on the Drowner, Deep Well, Echo, Farewell Tide), and the conduit crawler's
+  Brush Jab (a brass spark on its target) all sit on their bodies. Nhoa's impacts check is clean; Hesk's run ended on
+  its time limit (the pass keeps the Vowbound unkillable, so the fight is long). The crawler's mend and tend didn't
+  come up in this sweep. M4-A2P-1850 is the only request.
