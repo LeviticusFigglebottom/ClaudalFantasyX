@@ -11,13 +11,14 @@ milestone: M4
 request-from: lead
 ---
 ## Goal
-Ambient wildlife (never foes): fen birds and fireflies (Ch10), highland goats or woolbacks (Ch12), still-city birds (Ch13), rays in the white shallows (Ch16).
+Ambient wildlife (never foes): fen birds and fireflies (Ch10), highland goats or woolbacks (Ch12), rays in the white shallows (Ch16).
 
 ## Acceptance criteria
 - [ ] Wildlife rows and actors; placed with the zone dressing.
 - [ ] ADR 0041 §3's final bar (no greybox, stand-in or placeholder the player can see or hear).
 
 ## Notes
+- ADR 0204 §1: Ansedra has **no** wildlife (no seabirds, bible §5.8); the Ch13 row is dropped.
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). Plan §2.
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
 
