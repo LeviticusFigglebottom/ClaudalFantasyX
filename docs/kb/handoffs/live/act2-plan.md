@@ -240,3 +240,15 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
   - The UI and stat strings use American: `STAT_DEFENSE` "Defense", `STATUS_*_BREAK_DESC` "defense", `EQUIP_MENU_SLOT_ARMOR` and `STATUS_MENU_ARMOR` "Armor", `FIELD_MENU_EQUIP_DESC` "armor", `TUT_CH05_ARMOR_BREAK` "Armored … armor" (while the same chapter's `ROLE_KERRID` says "Breaks armour"), `SET_PALETTE*` "Color palette / colors / Colorblind-friendly", `TITLE_HELP_SETTINGS`, `FIELD_MENU_SETTINGS_DESC`, `SET_MENU_HELP_ACCESSIBILITY`.
   - "Customize" (‑ize) is consistent and fine under Oxford spelling.
   - **Proposal:** British (Oxford) everywhere a player reads it, as the glossary already does. That means Defence, Armour, Colour palette, Colour-blind-friendly; keys unchanged. It's about 15 strings; I'll do it as one FAST-TRACK when you say yes.
+- **Act I proofread, read-through:** a reviewer read every Act I string against the glossary and voice guide, and I checked each finding against the source. I applied 9 and skipped 1 as style. All are FAST-TRACKs:
+  - **Two rows truncated in game:** `ITEMS_MENU_ERR_KEY_FMT` and `FORMATION_MENU_ERR_OPEN_PLACE` had an unquoted comma, so the player saw "It is kept" and "Pick a hero first". They're quoted now. A new `tools/tests/test_loc_csv_shape.py` fails on any loc row whose column count is wrong; these were the only two in the repo.
+  - `TUT_CH04_VOWBOUND`: Ilun is Teyo Marrin, so "Call him … he fights … he leaves" (the codex and Ch3 already say "him").
+  - `RBL_SIDE_PEMAKAR` and `RBL_DIVER_PEM_*` showed "Pemakar Terraces", but Ch7's opponent is **Sorrin** (act1_ch07.md §203, the board and market barks). The display text now says Sorrin. **For reefball's owner:** the side id `pemakar` in sides.json and matches.json could be renamed to match, at your call.
+  - `DLG_CH03_BARK_CAUSEWAY_TIDEPOOL_002`: "Two copper" → "Two lume". The glossary has one currency.
+  - `FLOW_END_CARD_TITLE` and `CREDITS_SLICE`: "Act One" → "Act I", to match the act cards' "Act II" and "Act III".
+  - `ITEM_TIDEWASH_SALVE_DESC`: "every Break" → "Sundered, Unmoored, Weakened and Dimmed", the names the player sees.
+  - `ABILITY_DEEP_LUNGS_DESC` "Max HP"; `HUD_ITEM_COUNT_FMT` "×{n}", like every other count; `CODEX_BELL_GALLERIES_BODY` "where the Tidecup is played".
+  - Skipped: `DLG_CH07_TAVI_016` ("Asha. I'm so sorry…"). It reads as an introduction in context; that's style, not a defect.
+- **Checks:** validate_data 0/0 · dlgc --check 0/0 · loc tools tests plus the new one OK · Godot `formation` 18/0, `items_menu` 13/0, `reefball` 80/0, `end_card` 5/0, `pseudo_loc` 26/0.
+- MERGE-READY @ 090457c88
+- BACKLOG EMPTY (story track). The British-spelling LEAD-ASK above is still open.
