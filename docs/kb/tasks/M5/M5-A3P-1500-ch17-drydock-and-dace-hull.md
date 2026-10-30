@@ -41,7 +41,7 @@ in the mud under the water.
 - [x] `dace_hull_frame` is revised in `hollowmere.py`: a decked stern with a hatch and a cabin below (bunk, desk and
       ledger, chart wall, tool rack), an empty engine bed, a brass keel shoe, and the mast with a half-rigged kite
       wing. It stays within budget and is rebuilt with its manifest row.
-- [ ] `hm_drydock_berth` (new) is built and placed four times, the first one with Tobin's post.
+- [x] `hm_drydock_berth` (new) is built and placed four times, the first one with Tobin's post.
 - [ ] The zone dressing places them, with walk collision for the hull's deck, hatch ladder and cabin floor, and
       lights for the cabin (one oil lamp) and the engine bed (cold, until B10 lights it).
 - [ ] Eye-height renders of the berths at noon, the hull at dusk (H04, H07), the cabin (H05) and the engine bay
@@ -64,5 +64,15 @@ in the mud under the water.
   - the engine bed: x -1.6 to 0.4, centre y 2.5;
   - the deck: y 3.8, from x -6.0 to -2.0.
   The walk collision (deck, hatch ramp, cabin floor) comes with the berths' dressing.
+- 2026-10-30, env-art-b (07fb3f7f): `hm_drydock_berth` (295 / 126 triangles) and `hm_drydock_berth_first` (837 / 180),
+  built with PROVENANCE rows and the kit's import settings. Placed by `ch15_hollowmere_dressing.py` (the zone is Ch15's
+  and Ch17's) in a row along Dace's beam, 8.5 m apart: (82.25, -16.64), (86.5, -9.28) and the first at
+  (90.75, -1.92), all at yaw 30, the first berth nearest the dock's east end. Tobin's post stands at the first berth's
+  outer corner, world (98.7, -2.9), top y 0.85. The rotted keel lies in the shallows off its -X end, around
+  (82.1, 3.1). The Ch15 windmill at (76, -10) stood against the row and moves to (66, -14). Viewed along the row from
+  the dock's end, and at the post and the keel.
+- **Waiting on the Act III chapters:** how the party reaches the row (a gangway from the dock's east end to the first
+  berth, and walks between berths). The walk collision for the hull (deck, hatch ramp, cabin floor) and the berths
+  follows that layout; env-art-b adds it when the path exists.
 
 ## Review log
