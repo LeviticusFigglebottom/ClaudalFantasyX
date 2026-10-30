@@ -44,7 +44,47 @@ const WAKEFIN_STRIKES: Array[StringName] = [
 const WAKEFIN_DIVE_HOLD := Vector2(1.0, 2.0)
 const WAKEFIN_DIVE_BLADE_MIN_Y := 0.3
 
+# --- The Lamp Engine (M4-CRB-003, docs/kb/plan/act2/bosses/lamp_engine.md) -----------------------------------------
+
+## Its full clip set: the contract clips, one clip per skill on the sheet's move list, and the `opened` versions that
+## phase plays through its `clips` map.
+const LAMP_ENGINE_CLIPS: Array[StringName] = [
+	&"idle",
+	&"idle_b",
+	&"ready",
+	&"intro",
+	&"attack",
+	&"cast",
+	&"lamp_gather",
+	&"lamp_burn",
+	&"call",
+	&"twin_trim",
+	&"hit",
+	&"hit_b",
+	&"ko",
+	&"phase_change",
+	&"idle_opened",
+	&"ready_opened",
+	&"attack_opened",
+	&"cast_opened",
+	&"lamp_gather_opened",
+	&"lamp_burn_opened",
+	&"call_opened",
+	&"twin_trim_opened",
+	&"hit_opened",
+	&"hit_b_opened",
+	&"ko_opened"
+]
+## The striking clips (each with a contact beat) and what the `opened` phase plays for them.
+const LAMP_ENGINE_STRIKES: Array[StringName] = [&"attack", &"cast", &"lamp_gather", &"lamp_burn", &"call", &"twin_trim"]
+const LAMP_ENGINE_ANCHORS: Array[StringName] = [&"vfx_wound", &"vfx_core", &"vfx_phase"]
+## The intro plays under the boss_tall hold (choreo.json by_enemy lamp_engine, 2.4 s, plus its ease-in).
+const LAMP_ENGINE_INTRO_MIN_SEC := 1.5
+const LAMP_ENGINE_INTRO_MAX_SEC := 3.5
+## The move-pass rule: a wind-up of at least this long reads before contact.
+const LAMP_ENGINE_WIND_UP_SEC := 0.45
 var made: Array[Node] = []
+var lamp_engine_made: Array[Node] = []
 
 
 func before_each() -> void:
@@ -166,49 +206,6 @@ func _wakefin_weighted_bones(skel: Skeleton3D) -> Dictionary:
 					var b := mi.skin.get_bind_name(bones[i])
 					out[String(b) if b != &"" else skel.get_bone_name(mi.skin.get_bind_bone(bones[i]))] = true
 	return out
-
-
-# --- The Lamp Engine (M4-CRB-003, docs/kb/plan/act2/bosses/lamp_engine.md) -----------------------------------------
-
-## Its full clip set: the contract clips, one clip per skill on the sheet's move list, and the `opened` versions that
-## phase plays through its `clips` map.
-const LAMP_ENGINE_CLIPS: Array[StringName] = [
-	&"idle",
-	&"idle_b",
-	&"ready",
-	&"intro",
-	&"attack",
-	&"cast",
-	&"lamp_gather",
-	&"lamp_burn",
-	&"call",
-	&"twin_trim",
-	&"hit",
-	&"hit_b",
-	&"ko",
-	&"phase_change",
-	&"idle_opened",
-	&"ready_opened",
-	&"attack_opened",
-	&"cast_opened",
-	&"lamp_gather_opened",
-	&"lamp_burn_opened",
-	&"call_opened",
-	&"twin_trim_opened",
-	&"hit_opened",
-	&"hit_b_opened",
-	&"ko_opened"
-]
-## The striking clips (each with a contact beat) and what the `opened` phase plays for them.
-const LAMP_ENGINE_STRIKES: Array[StringName] = [&"attack", &"cast", &"lamp_gather", &"lamp_burn", &"call", &"twin_trim"]
-const LAMP_ENGINE_ANCHORS: Array[StringName] = [&"vfx_wound", &"vfx_core", &"vfx_phase"]
-## The intro plays under the boss_tall hold (choreo.json by_enemy lamp_engine, 2.4 s, plus its ease-in).
-const LAMP_ENGINE_INTRO_MIN_SEC := 1.5
-const LAMP_ENGINE_INTRO_MAX_SEC := 3.5
-## The move-pass rule: a wind-up of at least this long reads before contact.
-const LAMP_ENGINE_WIND_UP_SEC := 0.45
-
-var lamp_engine_made: Array[Node] = []
 
 
 func test_lamp_engine_has_the_full_clip_set() -> void:
