@@ -73,3 +73,9 @@ LEAD-ANSWERED (05:51): the Combat side's single definition of the Drowner is cor
 
 GATE-FAST-DONE big20 @ b76eae4c (06:25 UTC). **Not green:** two batch reds (hero-integration's lens guard; the Act II snaps in
 Lowlight and the Sanctum). Everything else is fixed, known or routed. Lead's call: merge with them FAST-TRACKed, or hold.
+- Tools reds classified on the track heads (07:50): **none is merge fallout; all are branch content. FAST-TRACK list:**
+  - act1-chapters: test_act1_audio_audit, test_battle_vfx_coverage (both red on claude/act1-chapters alone).
+  - act2-plan: test_cutscene_sfx_files, test_hero_clips (red on claude/act2-plan alone; test_hero_clips takes ~10 min).
+  - env-art: test_keth (red on claude/env-art alone).
+  - characters: test_sefir and the 13 villagers' test_rig_integrity (garments through the skin).
+  - Known: test_palette_check, test_villagers (red on the integration branch itself), test_screenshots.
