@@ -3,6 +3,20 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ a326ef8a: M4-A2P-1950 (the Lead's 18:04 item; audio's Act II ids are M4-A2P-1950–1979), the Act II mix pass as played, Ch10–Ch13.** The cue tables need no renders (17:44 entry below).
+  - **Loudness steps** (`tools/audio/act1_mix_pass.py --act 2 --chapters ch10,ch11,ch12,ch13`, report `docs/kb/audio/act2_mix_pass.md`): 40 hand-overs, **0 over 3 LU**.
+    - Cutscene cue → cue and → field: all within 0.2 LU, except a boss cue handing back to its zone (+1.9 to +2.1).
+    - Field ↔ the regular battle: within 0.1 LU.
+    - Field ↔ boss (Drowner, Lamp Engine, Ram): the bosses sit ~2 LU under the field, by their rows' `volume_db`, as Act I's do, so the fight carries its own weight.
+    - **Victory → field (new pair):** the sting at its own momentary rule (-16.0) against each zone loop (-16.0 to -16.1): 0.0 to 0.1 LU, and the field fades in under it.
+  - **Silences:** none (`act1_playthrough.py --act 2 --holds`, with the direction notes' holds).
+  - **Doubled starts:**
+    - Both cutscene → battle seams carry the same cue straight on with no restart: `ch11_the_engine` → `lamp_engine`, `ch12_weeping_wall` → `avalanche_ram`. The Drowner fight starts from the zone flow.
+    - The one repeated `@music` (`ch13_still_city`'s second node, `ch13_sefirs_house`, says `ansedra` again) is harmless: the deck leaves a sounding cue be, and that node can play on its own.
+  - **Tool:** the mix pass gains `--act`, `--chapters` and the victory → field pair. An encounter's chapter comes from its id (ch10_…), not just Act I's `ch0N`. A new test case covers Act II, and Act I's run is unchanged (98 hand-overs, 0 over).
+  - **Task:** `docs/kb/tasks/M4/M4-A2P-1950-act2-mix-pass-ch10-13.md` (review: lead).
+  - **Checks:** test_act1_mix_pass 3/3; taskboard --check clean. Tools only, so no Godot run. **Skipped:** screenshots, Blender, coverage.
+  - **Next, unless the Lead says otherwise:** the same pass on Ch14–Ch16 (M4-A2P-1951), as their staging lands.
 - **Re the Lead's 17:44 message ("render the Ch12–Ch13 cues from the cue tables, then Ch14–Ch16"): there is nothing to render. Ch12–Ch16 are MERGE-READY @ 0266514c (one line per chapter, below).** Checked again at 17:50:
   - **On integration** (e605c9f4, big26, without claude/audio), every one of the 70 refs in f5f0be21's tables has its file on disk: each music cue's own file or its stand-in's, each `@sfx` file. That is missing = []. So the tables play today even before this branch merges.
   - **What this branch adds for those chapters:** the six FAST-TRACK placeholder SFX replaced by their own cues (b4dcb22a), Ch14's low C held to "No." (0266514c), and longer binding tails (b39dfacb).
