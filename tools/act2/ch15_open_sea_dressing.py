@@ -43,6 +43,7 @@ BARGE_SCALE = 0.65  # the kit's 16 x 7.5 m barge to the greybox's 4 x 10 m deck 
 BARGE_YAW = -90.0  # its bow (-X) to the greybox's bow (-Z, the `bow` mark)
 WATER_Y = round(bb.WATERLINE_Y * BARGE_SCALE, 3)  # the barge's waterline at its scale
 SEA_GLOW = 0.12
+EBBING_DATA = "res://game/data/vfx/ebbing_ch15_open_sea.json"
 
 WATER_NAME = "open_sea_night_water_material.tres"
 ENV_NAME = "open_sea_night_environment.tres"
@@ -83,6 +84,9 @@ def dressing() -> dict:
         "environment": RES_ZONE + ENV_NAME,
         "time_of_day_h": 1.0,
         "greybox": {"hide_all": True, "keep": []},
+        # The held dead under the barge (C3): the Ebbing's rig on this zone's data; its field plays at the `shoal`
+        # mark when the reveal's cue names it (both requested of chapters, M4-A2P-105).
+        "ebbing": {"data": EBBING_DATA},
         "kit_material_paths": looks,
         "pieces": pieces,
     }

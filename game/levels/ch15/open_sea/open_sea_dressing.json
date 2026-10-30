@@ -13,6 +13,9 @@
   "hide_all": true,
   "keep": []
  },
+ "ebbing": {
+  "data": "res://game/data/vfx/ebbing_ch15_open_sea.json"
+ },
  "kit_material_paths": {
   "kit_gold_leaf": "res://game/levels/ch13/ansedra/ansedra_gold_leaf_material.tres",
   "kit_lacquer_red": "res://game/levels/ch13/ansedra/ansedra_lacquer_red_material.tres",
