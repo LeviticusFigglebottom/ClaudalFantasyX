@@ -80,3 +80,4 @@ i:nap shot
 i:wither shot
 Aurochs
 i:blue mage
+Farplane
