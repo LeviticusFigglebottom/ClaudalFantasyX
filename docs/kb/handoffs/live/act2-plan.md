@@ -143,3 +143,9 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
   - Note for ui-menus: `test_codex.gd` pins the world and records counts, so the Archive's records stay in `ch13_archive_*` scripts (keys `DLG_CH13_REC_*`) for the document reader to show, not codex rows. If ui-menus wants them in the codex, add them with the test update.
 - **Story track status:** all eight story tasks (M4-A2P-001…008) and the seven beat sheets (M4-C10…C16-01) are in review, waiting on cinematics (and the Lead for Ch14–Ch16, and ui-menus for 008).
 - BACKLOG EMPTY (story track): every story task is scripted and in review. When reviews come back, their notes are the next work.
+
+## 2026-10-30 — merged integration @ c38ba639
+- Lead: the Pell portrait red is fixed (big19). I merged `claude/new-session-mj8c3c`. The only conflict was in `tools/banned_terms.txt`; both sides had appended lines and I kept them all (`Farplane` plus the four `* break` terms). No Act II script uses the new terms.
+- The **LEAD-ASK on the Pell portrait is closed**. Godot `--filter=dialogue`: 86 run, 0 failed. validate_data 0/0, dlgc --check 0/0, taskboard --check clean.
+- MERGE-READY @ 1dc453a9 (merge commit; the next commit adds only this log entry).
+- BACKLOG EMPTY (story track): every Act II script is in review.
