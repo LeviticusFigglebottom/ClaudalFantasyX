@@ -202,7 +202,7 @@ ITEM_THROAT_HONEY_DESC,Cantors keep a jar for the long road. Cures Silence.
 ITEM_SMELLING_SALTS,Smelling Salts
 ITEM_SMELLING_SALTS_DESC,Sharp enough to wake a sleeping net-mender. Cures Sleep.
 ITEM_TIDEWASH_SALVE,Tidewash Salve
-ITEM_TIDEWASH_SALVE_DESC,"A healer's last resort. Cures Poison, Darkness, Silence, Sleep, Slow and every Break."
+ITEM_TIDEWASH_SALVE_DESC,"A healer's last resort. Cures Poison, Darkness, Silence, Sleep, Slow, Sundered, Unmoored, Weakened and Dimmed."
 ITEM_RELIGHTING_WICK,Relighting Wick
 ITEM_RELIGHTING_WICK_DESC,A taper lit from a living lamp. Revives one fallen ally with a quarter of their HP.
 ITEM_DRAG_NET,Drag Net
@@ -271,7 +271,7 @@ ABILITY_CLEAR_MIND_DESC,Magic +3.
 ABILITY_KEEN_SIGHT,Keen Sight
 ABILITY_KEEN_SIGHT_DESC,Accuracy +5.
 ABILITY_DEEP_LUNGS,Deep Lungs
-ABILITY_DEEP_LUNGS_DESC,max HP +60.
+ABILITY_DEEP_LUNGS_DESC,Max HP +60.
 ABILITY_HARD_CARAPACE,Hard Carapace
 ABILITY_HARD_CARAPACE_DESC,Defense +3.
 ABILITY_STILL_HEART,Still Heart
@@ -407,7 +407,7 @@ TITLE_CONFIRM_BACK,Go back
 TITLE_CONFIRM_BEGIN,Begin anew
 HUD_CMD_ITEMS,Items
 HUD_HELP_ITEMS,"Tonics, salves and tools from the pack. Each use spends one."
-HUD_ITEM_COUNT_FMT,x{n}
+HUD_ITEM_COUNT_FMT,×{n}
 HUD_FAIL_NO_ITEM,None of those are left.
 HUD_FAIL_UNKNOWN_ITEM,That has no use in battle.
 HUD_HELP_ITEM_FELLS_FMT,{name} is Hollowed: this revive fells them
@@ -438,7 +438,7 @@ HUD_FAIL_SWELL_CANCELLED,The Swell was held back. Nothing was spent.
 GFX_SKY_DETAIL,Sky Detail
 ENC_CH02_TIDELINE,The Tideline
 LOCATION_PROLOGUE,A Dead City at Dusk
-FLOW_END_CARD_TITLE,The end of Act One
+FLOW_END_CARD_TITLE,The end of Act I
 FLOW_END_CARD_LINE,Thank you for walking with them this far.
 FLOW_END_CARD_PROMPT,Confirm to return to the title
 CHAR_VENDOR,Fish Seller
@@ -826,7 +826,7 @@ TUT_FLIER_RHEN,"Fliers dodge most blows. Rhen's quick, precise strikes find them
 SAVE_SLOT_PROLOGUE,Prologue
 FLOW_END_CARD_VOICE,"""I said yes to a girl I'd known for two days. I didn't know yet what I was walking her toward."""
 CREDITS_GAME,Hymn of the Undertow
-CREDITS_SLICE,"Act One: from the Underway at Oruvel to the road out of Corrow"
+CREDITS_SLICE,"Act I: from the Underway at Oruvel to the road out of Corrow"
 CREDITS_MUSIC,Original music
 CREDITS_ENGINE,Made with the Godot Engine (MIT License)
 CREDITS_FONTS,EB Garamond and Source Sans 3 (SIL Open Font License)
@@ -919,14 +919,14 @@ RBL_ROLE_ANCHOR,Anchor
 RBL_ROLE_PRESSER,Presser
 RBL_ROLE_RINGWARD,Ringward
 RBL_SIDE_ORUVEL,Oruvel
-RBL_SIDE_PEMAKAR,Pemakar Terraces
+RBL_SIDE_PEMAKAR,Sorrin
 RBL_DIVER_TAVI,Tavi Orse
 RBL_DIVER_NOA,Noa
 RBL_DIVER_AMA,Old Ama
-RBL_DIVER_PEM_LIFTER,Pemakar lifter
-RBL_DIVER_PEM_ANCHOR,Pemakar anchor
-RBL_DIVER_PEM_PRESSER,Pemakar presser
-RBL_DIVER_PEM_RINGWARD,Pemakar ringward
+RBL_DIVER_PEM_LIFTER,Sorrin lifter
+RBL_DIVER_PEM_ANCHOR,Sorrin anchor
+RBL_DIVER_PEM_PRESSER,Sorrin presser
+RBL_DIVER_PEM_RINGWARD,Sorrin ringward
 RBL_MATCH_TIDECUP_OPENING,"The Tidecup, opening round"
 OBJ_U_CROWN_TETHER,Take the crown's tether down to the first bell-room.
 OBJ_U_BELL_TETHER,Follow the bell-room's tether down into the lamp galleries.
