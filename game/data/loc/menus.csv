@@ -63,7 +63,7 @@ STATUS_PROVOKE_DESC,Attacks aimed at a single foe must aim at the one who provok
 STATUS_ROOTED,Rooted
 STATUS_ROOTED_DESC,Held by roots: cannot be swapped out of the line.
 TIP_SEVEN_TITLE,Seven Together
-TIP_SEVEN_BODY,Three stand in the line and four wait behind them. Choose who stands where under Formation in the field menu.
+TIP_SEVEN_BODY,Three stand in the line and the rest wait behind them. Choose who stands where under Formation in the field menu.
 SAVE_SHRINE_DARK_PROMPT,Touch the dark shrine
 SHOP_ERR_HERETIC,"""Not to you. Not now."" The keeper will not trade with those outside the Level."
 FIELD_MENU_SUBTITLE_HERETIC,Outside the Level

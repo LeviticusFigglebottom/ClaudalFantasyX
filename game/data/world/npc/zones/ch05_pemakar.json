@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "doc": "Pemakar's terraces before Lanternfall (M3-CRE-659, ADR 0152): leaf-boat folders and the boat seller, a lacquerer, a sweeper at the graves, the ferryman's mate and a boat fisher, and four children, each a crowd person (game/data/world/npc/crowd.json) inside its stage actor (attach child). Garo, the elder and the ferryman are named speakers.",
+  "doc": "Pemakar's terraces before Lanternfall (M3-CRE-659, ADR 0152): leaf-boat folders and the boat seller, a lacquerer, a sweeper at the graves, the ferryman's mate and a boat fisher, and four children, each a crowd person (game/data/world/npc/crowd.json) inside its stage actor (attach child). Garo, the elder and the ferryman are named speakers. The quay at Lanternfall (the Lead, 2026-10-30: the slice towns lived in): five crowd people on `at` spots on the harbour quay's two ends (the middle is the story's), ground probed against the zone's collision (2026-10-30): an old man mending a net, two Low Reaches traders off the Brightwater crossing (one hauling his skiff in, one with a basket of salt fish), a woman come down for the folded boats with a basket of lanterns, and an old woman folding leaf-boats.",
   "zone": "ch05/pemakar",
   "villagers": [
     {
@@ -64,6 +64,61 @@
       "crowd": "pemakar_weir_child",
       "stand_in": "CutsceneStage/Actors/weir_child",
       "attach": "child"
+    },
+    {
+      "npc_id": "pemakar_quay_mender",
+      "crowd": "pemakar_quay_mender",
+      "stand_in": "CrowdSpots/pemakar_quay_mender",
+      "at": [
+        -14.0,
+        1.2,
+        24.6,
+        -180.0
+      ]
+    },
+    {
+      "npc_id": "pemakar_quay_hauler",
+      "crowd": "pemakar_quay_hauler",
+      "stand_in": "CrowdSpots/pemakar_quay_hauler",
+      "at": [
+        -11.5,
+        1.2,
+        25.8,
+        -180.0
+      ]
+    },
+    {
+      "npc_id": "pemakar_quay_trader",
+      "crowd": "pemakar_quay_trader",
+      "stand_in": "CrowdSpots/pemakar_quay_trader",
+      "at": [
+        -9.6,
+        1.2,
+        23.4,
+        141.6
+      ]
+    },
+    {
+      "npc_id": "pemakar_quay_carrier",
+      "crowd": "pemakar_quay_carrier",
+      "stand_in": "CrowdSpots/pemakar_quay_carrier",
+      "at": [
+        6.8,
+        1.2,
+        23.4,
+        -96.7
+      ]
+    },
+    {
+      "npc_id": "pemakar_quay_folder",
+      "crowd": "pemakar_quay_folder",
+      "stand_in": "CrowdSpots/pemakar_quay_folder",
+      "at": [
+        8.5,
+        1.2,
+        23.6,
+        -180.0
+      ]
     }
   ]
 }

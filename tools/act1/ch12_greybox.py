@@ -161,7 +161,11 @@ def keth_pass() -> dict:
            {"id": "Foot", "mode": "pan_follow", "at": [0.0, 1.5, 1.0], "size": [10.0, 4.0, 10.0],
             "pos": [0.0, 4.5, 9.0], "look_at": [0.0, 2.0, -6.0], "fov": 50, "priority": 1}],
         "triggers": [{"id": "to_quellan", "activation": "touch", "at": [108.5, 18.0, -40.0], "size": [1.5, 0, 4.0],
-                      "payload": {"beat": "to_quellan"}, "yaw": 0.0}],
+                      "payload": {"beat": "to_quellan"}, "yaw": 0.0},
+                     # M4-A2P-114: the seeping wall's terrace, where the Avalanche Ram comes down (B06)
+                     {"id": "terrace", "activation": "touch", "at": [40.0, 12.0, -40.0], "size": [2.0, 0, 4.0],
+                      "requires_flag": "ch12_started", "blocked_by_flag": "ch12_ram_felled",
+                      "payload": {"beat": "terrace"}, "yaw": 0.0}],
         # M4-C12-03: the pass's random fights (act2_roster.md Ch12); none in Quellan or the Cloudloom
         "encounters": {"table": [{"encounter": "ch12_pass_lynxes", "weight": 2}, {"encounter": "ch12_pass_moths", "weight": 1},
                                  {"encounter": "ch12_pass_scree", "weight": 1}],
@@ -278,11 +282,18 @@ def cloudloom() -> dict:
                   "C03": {"pos": [2.5, HALL_Y + 1.6, -50.0], "look_at": [0.0, HALL_Y + 1.5, -54.0], "fov": 35}},
         "camera_volumes": climb_volumes("Stair", [((0.0, 0.0, -5.0), (0.0, HALL_Y, hz0 + hz))])
         + [{"id": "Hall", "mode": "pan_follow", "at": [hx0, HALL_Y + 1.5, hz0], "size": [2 * hx, 4.0, 2 * hz],
-            "pos": [4.0, HALL_Y + 5.0, -15.0], "look_at": [hx0, HALL_Y + 0.5, -34.0], "fov": 55, "priority": 1},
+            # up the aisle from just inside the south wall, under the beams, to the dais (the POI stills, 10-30: at z -15 it
+            # stood outside the hall, inside the stair's cliff)
+            "pos": [hx0, HALL_Y + 4.5, hz0 + hz - 2.5], "look_at": [hx0, HALL_Y + 0.8, hz0 - hz + 6.0], "fov": 55,
+            "priority": 1},
            {"id": "Foot", "mode": "pan_follow", "at": [0.0, 1.5, 1.0], "size": [8.0, 4.0, 8.0],
             "pos": [0.0, 4.0, 8.0], "look_at": [0.0, 3.0, -8.0], "fov": 50, "priority": 1}],
         "triggers": [{"id": "to_quellan", "activation": "touch", "at": [0.0, 0.0, 4.25], "size": [4.0, 0, 1.5],
-                      "payload": {"beat": "to_quellan"}, "yaw": 0.0}],
+                      "payload": {"beat": "to_quellan"}, "yaw": 0.0},
+                     # M4-A2P-114: up the aisle before the dais, where Hesk is bound (B10-B11)
+                     {"id": "dais", "activation": "touch", "at": [hx0, HALL_Y, -50.0], "size": [4.0, 0, 1.5],
+                      "requires_flag": "ch12_reached_cloudloom", "blocked_by_flag": "ch12_hesk_bound",
+                      "payload": {"beat": "dais"}, "yaw": 0.0}],
     }
 
 

@@ -1,0 +1,51 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/characters/props/act2/dock_hook.glb" id="hook"]
+[ext_resource type="PackedScene" path="res://assets/characters/props/act2/salt_glass_housing.glb" id="housing"]
+[ext_resource type="PackedScene" path="res://assets/characters/props/act2/wedding_cord.glb" id="cord"]
+
+[sub_resource type="Environment" id="Env"]
+background_mode = 1
+background_color = Color(0.32, 0.27, 0.23, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.55, 0.52, 0.5, 1)
+ambient_light_energy = 0.6
+tonemap_mode = 4
+
+[sub_resource type="StandardMaterial3D" id="Floor_mat"]
+albedo_color = Color(0.26, 0.255, 0.25, 1)
+roughness = 0.95
+
+[sub_resource type="PlaneMesh" id="Floor_mesh"]
+material = SubResource("Floor_mat")
+size = Vector2(4, 4)
+
+[node name="Act2PropsStage" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="KeyLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.707, 0.408, -0.577, 0, 0.816, 0.577, 0.707, -0.408, 0.577, 0, 3, 0)
+light_color = Color(1, 0.92, 0.82, 1)
+light_energy = 1.6
+shadow_enabled = true
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+mesh = SubResource("Floor_mesh")
+
+[node name="Hook" parent="." instance=ExtResource("hook")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 0.02, 0)
+
+[node name="Housing" parent="." instance=ExtResource("housing")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0.05, 0.62, 0)
+
+[node name="Cord" parent="." instance=ExtResource("cord")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, 0.45, 0)
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Front" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, 0, 0, 0.985, 0.174, 0, -0.174, 0.985, 0.05, 0.52, 1.35)
+fov = 40.0
+current = true

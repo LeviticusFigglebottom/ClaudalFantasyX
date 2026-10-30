@@ -273,7 +273,7 @@ func _strand() -> void:
 	assert_eq(Game.state.chapter, 9, "B01 moves the story to chapter 9")
 	assert_true(bool(Game.get_flag(&"ch09_started")))
 	assert_eq(Game.state.party_ids, [&"rhen", &"asha", &"toma"] as Array[StringName])
-	assert_eq(Game.state.reserve_ids, [&"kerrid", &"ysolde"] as Array[StringName])
+	assert_eq(Game.state.reserve_ids, [&"ysolde"] as Array[StringName], "Kerrid is gone since the stair")
 	assert_false(&"pell" in Game.state.party_ids or &"pell" in Game.state.reserve_ids, "Pell has no battle row")
 	assert_true(_at(&"Strand"))
 	assert_true(SaveSystem.has_pending_autosave(), "the chapter autosave")
@@ -355,6 +355,7 @@ func _road_out_and_act_break() -> void:
 	assert_false(asha_in_below_frame, "Asha is off frame: 'below' never means her")
 	assert_true(bool(Game.get_flag(&"ch09_pell_named")), "'Pell.'")
 	assert_true(bool(Game.get_flag(&"ch09_kerrid_on_road")))
+	assert_true(Game.state.reserve_ids.has(&"kerrid"), "he walks last in the line, and is back in the reserve")
 	# D03: Kerrid walks last, behind the whole line (the road heads east, +X).
 	var kx := zone.stage.actor(&"kerrid").position.x
 	for id in LINE_WALKERS:

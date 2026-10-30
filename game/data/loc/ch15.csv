@@ -14,7 +14,7 @@ OBJ_CH15_SHIP,A ship is waiting to carry you south.
 OBJ_CH15_SIDE_SUPPER,The dock-master has set out bowls.
 OBJ_CH15_SIDE_PHRASE,A current-singer at a bow is humming something low.
 OBJ_CH15_SIDE_TALLY,Toma wants to see the tally hull.
-TUT_WAKEFIN_DARK,"In the dark, listen. The timeline still shows what it means to do."
+TUT_WAKEFIN_DARK,Sound Dive means a Breach on its next turn: the fin sweeps the whole deck. Heal or guard before it lands.
 ITEM_SEAGLOW_SCALE,Sea-Glow Scale
 ITEM_SEAGLOW_SCALE_DESC,A black scale that gives off a faint green light when it's wet. Used in Customize.
 ITEM_CURRENT_BROTH,Current Broth

@@ -7,22 +7,22 @@
   "ch05_ferry_comes_in": {
    "headers": {"location": "ch05/pemakar"},
    "ops": [
-    {"op": "cue", "cue": "music", "args": ["pemakar_terraces"], "kwargs": {"fade": 3.0}, "src": 10},
-    {"op": "cue", "cue": "camera", "args": ["P01"], "kwargs": {}, "src": 11},
-    {"op": "cue", "cue": "fade", "args": ["in", 2.0], "kwargs": {}, "src": 12},
-    {"op": "cue", "cue": "anim", "args": ["ferryman", "carry_name_board"], "kwargs": {}, "src": 13},
-    {"op": "cue", "cue": "mark", "args": ["ferryman", "wake_wall", "walk"], "kwargs": {}, "src": 14},
-    {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 15},
-    {"op": "cue", "cue": "camera", "args": ["P02"], "kwargs": {}, "src": 16},
-    {"op": "cue", "cue": "anim", "args": ["rhen", "look_at", "asha"], "kwargs": {}, "src": 17},
-    {"op": "line", "id": "ch05_ferry_001", "key": "DLG_CH05_FERRY_001", "speaker": "rhen", "emotion": "surprised", "voice": "", "src": 18},
-    {"op": "cue", "cue": "anim", "args": ["asha", "touch_forearm"], "kwargs": {}, "src": 19},
-    {"op": "line", "id": "ch05_ferry_002", "key": "DLG_CH05_FERRY_002", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 20},
-    {"op": "line", "id": "ch05_ferry_003", "key": "DLG_CH05_FERRY_003", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 21},
-    {"op": "cue", "cue": "anim", "args": ["ysolde", "read_letter"], "kwargs": {}, "src": 22},
-    {"op": "line", "id": "ch05_ferry_004", "key": "DLG_CH05_FERRY_004", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 23},
-    {"op": "line", "id": "ch05_ferry_005", "key": "DLG_CH05_FERRY_005", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 24},
-    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 25}
+    {"op": "cue", "cue": "music", "args": ["pemakar_terraces"], "kwargs": {"fade": 3.0}, "src": 11},
+    {"op": "cue", "cue": "camera", "args": ["P01"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "fade", "args": ["in", 2.0], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "anim", "args": ["ferryman", "carry_name_board"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "mark", "args": ["ferryman", "wake_wall", "walk"], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "camera", "args": ["P02"], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "look_at", "asha"], "kwargs": {}, "src": 18},
+    {"op": "line", "id": "ch05_ferry_001", "key": "DLG_CH05_FERRY_001", "speaker": "rhen", "emotion": "surprised", "voice": "", "src": 19},
+    {"op": "cue", "cue": "anim", "args": ["asha", "touch_forearm"], "kwargs": {}, "src": 20},
+    {"op": "line", "id": "ch05_ferry_002", "key": "DLG_CH05_FERRY_002", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 21},
+    {"op": "line", "id": "ch05_ferry_003", "key": "DLG_CH05_FERRY_003", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 22},
+    {"op": "cue", "cue": "anim", "args": ["ysolde", "read_letter"], "kwargs": {}, "src": 23},
+    {"op": "line", "id": "ch05_ferry_004", "key": "DLG_CH05_FERRY_004", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 24},
+    {"op": "line", "id": "ch05_ferry_005", "key": "DLG_CH05_FERRY_005", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 25},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 26}
    ]
   }
  }

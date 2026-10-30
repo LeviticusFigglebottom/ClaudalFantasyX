@@ -31,7 +31,8 @@
         {"when": {"set": ["ch07_tavi_withdrew"]}, "map": {
           "ch07_bark_market": "ch07_bark_market_after",
           "ch07_bark_lane": "ch07_bark_lane_after",
-          "ch07_bark_gantry": "ch07_bark_gantry_after"
+          "ch07_bark_gantry": "ch07_bark_gantry_after",
+          "ch07_bark_board": "ch07_bark_board_after"
         }}
       ]
     },

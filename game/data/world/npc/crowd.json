@@ -64,7 +64,7 @@
     }
   },
   "work_tuning": {
-    "doc": "Per crowd work clip (assets_src/crowd/crowd_clips.py): FieldNpc's `work` section (where the head looks while working, node space, and how often it looks up) plus any other tuning the pose needs (a kneeling head is lower). A person's `work` puts {clips.work: <clip>, work: <this>} over its tuning.",
+    "doc": "Per crowd work clip (assets_src/crowd/crowd_clips.py): FieldNpc's `work` section (where the head looks while working, node space, and how often it looks up) plus any other tuning the pose needs (a kneeling head is lower). A person's `work` puts {clips.work: <clip>, work: <this>} over its tuning. The children's games (play_stones, play_clap) look at the stones on the ground and at the partner's face 0.6 m off, with quick looks round at passers-by.",
     "mend": {
       "work": {
         "look_at": [
@@ -196,6 +196,39 @@
           2.0
         ],
         "yaw_deg": 20.0
+      }
+    },
+    "play_stones": {
+      "work": {
+        "look_at": [
+          0.0,
+          0.05,
+          -0.4
+        ],
+        "look_up_every_sec": [
+          5.0,
+          9.0
+        ],
+        "look_up_sec": 1.2,
+        "look_up_yaw_deg": 40.0
+      },
+      "look": {
+        "head_height_m": 0.62
+      }
+    },
+    "play_clap": {
+      "work": {
+        "look_at": [
+          0.0,
+          0.95,
+          -0.6
+        ],
+        "look_up_every_sec": [
+          6.0,
+          10.0
+        ],
+        "look_up_sec": 1.0,
+        "look_up_yaw_deg": 45.0
       }
     }
   },
@@ -2213,6 +2246,526 @@
       },
       "work": "",
       "about": "Her small brother."
+    },
+    {
+      "id": "haluna_rack_folder",
+      "zone": "ch02/haluna",
+      "stage_actor": "CrowdSpots/haluna_rack_folder",
+      "role": "folder",
+      "island": "low_reaches",
+      "community": "haluna",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "body": "crowd_woman_medium_b",
+      "tints": {
+        "cloth_a": "#E7E1D6",
+        "cloth_b": "#4D7A88",
+        "cloth_c": "#335686",
+        "hair": "#231B16"
+      },
+      "work": "fold",
+      "about": "Laying the morning's catch along the drying rack by the causeway head."
+    },
+    {
+      "id": "haluna_stall_buyer",
+      "zone": "ch02/haluna",
+      "stage_actor": "CrowdSpots/haluna_stall_buyer",
+      "role": "townsfolk",
+      "island": "low_reaches",
+      "community": "haluna",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "lean",
+      "body": "crowd_woman_lean_a",
+      "tints": {
+        "cloth_a": "#E5DED1",
+        "cloth_b": "#3C78A8",
+        "cloth_c": "#355E8E",
+        "hair": "#231B16"
+      },
+      "work": "carry",
+      "about": "A basket on her hip at the causeway-head stall, choosing."
+    },
+    {
+      "id": "haluna_beach_hauler",
+      "zone": "ch02/haluna",
+      "stage_actor": "CrowdSpots/haluna_beach_hauler",
+      "role": "fisher",
+      "island": "low_reaches",
+      "community": "haluna",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "heavy",
+      "body": "crowd_man_heavy_b",
+      "tints": {
+        "cloth_a": "#DCD0BA",
+        "cloth_b": "#3E79A8",
+        "cloth_c": "#345C8D",
+        "hair": "#241B15"
+      },
+      "work": "haul",
+      "about": "Hauling a line in hand over hand at the water's edge below the causeway steps."
+    },
+    {
+      "id": "haluna_stones_girl",
+      "zone": "ch02/haluna",
+      "stage_actor": "CrowdSpots/haluna_stones_girl",
+      "role": "child_stones",
+      "island": "low_reaches",
+      "community": "haluna",
+      "age_band": "child",
+      "sex": "female",
+      "build": "tall",
+      "body": "crowd_girl_tall",
+      "tints": {
+        "cloth_a": "#E6DFD2",
+        "cloth_b": "#5482A4",
+        "cloth_c": "#A23F2D",
+        "hair": "#2B1D14"
+      },
+      "work": "play_stones",
+      "about": "Kneeling on the open sand below the dunes at a game of stones with the boy facing her."
+    },
+    {
+      "id": "haluna_stones_boy",
+      "zone": "ch02/haluna",
+      "stage_actor": "CrowdSpots/haluna_stones_boy",
+      "role": "child_stones",
+      "island": "low_reaches",
+      "community": "haluna",
+      "age_band": "child",
+      "sex": "male",
+      "build": "tall",
+      "body": "crowd_boy_tall",
+      "tints": {
+        "cloth_a": "#E8E3D9",
+        "cloth_b": "#568C90",
+        "cloth_c": "#304B7C",
+        "hair": "#231B16"
+      },
+      "work": "play_stones",
+      "about": "Her partner at the game of stones."
+    },
+    {
+      "id": "haluna_lane_mender",
+      "zone": "ch02/haluna",
+      "stage_actor": "CrowdSpots/haluna_lane_mender",
+      "role": "netmender",
+      "island": "low_reaches",
+      "community": "haluna",
+      "age_band": "elder",
+      "sex": "female",
+      "build": "lean",
+      "body": "crowd_elder_woman_a",
+      "tints": {
+        "cloth_a": "#DCD1BC",
+        "cloth_b": "#565B75",
+        "cloth_c": "#A13E2C",
+        "hair": "#89847E"
+      },
+      "work": "mend",
+      "about": "Mending at the net heap by her door in the tide-wall lane, by day and by lamplight."
+    },
+    {
+      "id": "haluna_lane_carrier",
+      "zone": "ch02/haluna",
+      "stage_actor": "CrowdSpots/haluna_lane_carrier",
+      "role": "townsfolk",
+      "island": "low_reaches",
+      "community": "haluna",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "heavy",
+      "body": "crowd_woman_heavy",
+      "tints": {
+        "cloth_a": "#EBE6DE",
+        "cloth_b": "#5784A3",
+        "cloth_c": "#5A8BB1",
+        "hair": "#201A16"
+      },
+      "work": "carry",
+      "about": "Back from the dock with a basket on her hip, by the sacks in the lane."
+    },
+    {
+      "id": "haluna_clap_girl",
+      "zone": "ch02/haluna",
+      "stage_actor": "CrowdSpots/haluna_clap_girl",
+      "role": "child_clap",
+      "island": "low_reaches",
+      "community": "haluna",
+      "age_band": "child",
+      "sex": "female",
+      "build": "small",
+      "body": "crowd_girl_small",
+      "tints": {
+        "cloth_a": "#E1D9C8",
+        "cloth_b": "#53858D",
+        "cloth_c": "#366292",
+        "hair": "#221B16"
+      },
+      "work": "play_clap",
+      "about": "At a clapping game in the lane with the boy facing her."
+    },
+    {
+      "id": "haluna_clap_boy",
+      "zone": "ch02/haluna",
+      "stage_actor": "CrowdSpots/haluna_clap_boy",
+      "role": "child_clap",
+      "island": "low_reaches",
+      "community": "haluna",
+      "age_band": "child",
+      "sex": "male",
+      "build": "small",
+      "body": "crowd_boy_small",
+      "tints": {
+        "cloth_a": "#E5DED1",
+        "cloth_b": "#5A85A2",
+        "cloth_c": "#7099B8",
+        "hair": "#251C15"
+      },
+      "work": "play_clap",
+      "about": "Her partner at the clapping game."
+    },
+    {
+      "id": "haluna_lane_sweeper",
+      "zone": "ch02/haluna",
+      "stage_actor": "CrowdSpots/haluna_lane_sweeper",
+      "role": "sweeper",
+      "island": "low_reaches",
+      "community": "haluna",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_man_lean_a",
+      "tints": {
+        "cloth_a": "#E9E4DA",
+        "cloth_b": "#497284",
+        "cloth_c": "#335989",
+        "hair": "#251B15"
+      },
+      "work": "sweep",
+      "about": "Sweeping the lane in front of his house, two strokes at a time."
+    },
+    {
+      "id": "haluna_dock_mender",
+      "zone": "ch02/haluna",
+      "stage_actor": "CrowdSpots/haluna_dock_mender",
+      "role": "netmender",
+      "island": "low_reaches",
+      "community": "haluna",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "medium",
+      "body": "crowd_man_medium_a",
+      "tints": {
+        "cloth_a": "#EAE5DC",
+        "cloth_b": "#34416D",
+        "cloth_c": "#9E3B2B",
+        "hair": "#241B15"
+      },
+      "work": "mend",
+      "about": "Knelt at the net heap at the dock's foot, mending."
+    },
+    {
+      "id": "haluna_dock_folder",
+      "zone": "ch02/haluna",
+      "stage_actor": "CrowdSpots/haluna_dock_folder",
+      "role": "folder",
+      "island": "low_reaches",
+      "community": "haluna",
+      "age_band": "elder",
+      "sex": "female",
+      "build": "heavy",
+      "body": "crowd_elder_woman_b",
+      "tints": {
+        "cloth_a": "#EBE7DF",
+        "cloth_b": "#5181A4",
+        "cloth_c": "#983526",
+        "hair": "#B8B3AC"
+      },
+      "work": "fold",
+      "about": "Turning the fish on the drying rack by the dock."
+    },
+    {
+      "id": "haluna_dock_hauler",
+      "zone": "ch02/haluna",
+      "stage_actor": "CrowdSpots/haluna_dock_hauler",
+      "role": "boatman",
+      "island": "low_reaches",
+      "community": "haluna",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_man_lean_b",
+      "tints": {
+        "cloth_a": "#E3DBCC",
+        "cloth_b": "#407AA7",
+        "cloth_c": "#315182",
+        "hair": "#291D15"
+      },
+      "work": "haul",
+      "about": "Hauling a mooring line in along the dock."
+    },
+    {
+      "id": "haluna_dock_carrier",
+      "zone": "ch02/haluna",
+      "stage_actor": "CrowdSpots/haluna_dock_carrier",
+      "role": "trader",
+      "island": "low_reaches",
+      "community": "haluna",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "heavy",
+      "body": "crowd_man_heavy",
+      "tints": {
+        "cloth_a": "#D5C6AB",
+        "cloth_b": "#487DA6",
+        "cloth_c": "#5D8DB2",
+        "hair": "#241B15"
+      },
+      "work": "carry",
+      "about": "A basket of the catch on his hip by the jars, ready to carry it up."
+    },
+    {
+      "id": "haluna_night_carrier",
+      "zone": "ch02/haluna",
+      "stage_actor": "CrowdSpots/haluna_night_carrier",
+      "role": "townsfolk",
+      "island": "low_reaches",
+      "community": "haluna",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "body": "crowd_woman_medium",
+      "tints": {
+        "cloth_a": "#EBE7DE",
+        "cloth_b": "#50818B",
+        "cloth_c": "#AE4B35",
+        "hair": "#241B15"
+      },
+      "work": "carry",
+      "about": "Bringing the last basket home past the market stall after dark."
+    },
+    {
+      "id": "oruvel_deck_stones",
+      "zone": "ch01/oruvel",
+      "stage_actor": "CrowdSpots/oruvel_deck_stones",
+      "role": "child_stones",
+      "island": "low_reaches",
+      "community": "oruvel",
+      "age_band": "child",
+      "sex": "female",
+      "build": "teen",
+      "body": "crowd_girl_teen",
+      "tints": {
+        "cloth_a": "#EBE7DE",
+        "cloth_b": "#34416D",
+        "cloth_c": "#4A7485",
+        "hair": "#271C15"
+      },
+      "work": "play_stones",
+      "about": "A girl at a game of stones by herself against the commons' north rail."
+    },
+    {
+      "id": "oruvel_deck_sweeper",
+      "zone": "ch01/oruvel",
+      "stage_actor": "CrowdSpots/oruvel_deck_sweeper",
+      "role": "sweeper",
+      "island": "low_reaches",
+      "community": "oruvel",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_man_lean_a",
+      "tints": {
+        "cloth_a": "#E5DED0",
+        "cloth_b": "#7CABA6",
+        "cloth_c": "#40617C",
+        "hair": "#211A16"
+      },
+      "work": "sweep",
+      "about": "Sweeping the commons deck along the west rail, two strokes at a time."
+    },
+    {
+      "id": "oruvel_deck_hauler",
+      "zone": "ch01/oruvel",
+      "stage_actor": "CrowdSpots/oruvel_deck_hauler",
+      "role": "fisher",
+      "island": "low_reaches",
+      "community": "oruvel",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "medium",
+      "body": "crowd_man_medium_b",
+      "tints": {
+        "cloth_a": "#E3DBCC",
+        "cloth_b": "#5C86A2",
+        "cloth_c": "#456C81",
+        "hair": "#3E2617"
+      },
+      "work": "haul",
+      "about": "Hauling a line in over the south rail, hand over hand."
+    },
+    {
+      "id": "oruvel_deck_carrier",
+      "zone": "ch01/oruvel",
+      "stage_actor": "CrowdSpots/oruvel_deck_carrier",
+      "role": "townsfolk",
+      "island": "low_reaches",
+      "community": "oruvel",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "lean",
+      "body": "crowd_woman_lean_b",
+      "tints": {
+        "cloth_a": "#E5DED1",
+        "cloth_b": "#7EABA6",
+        "cloth_c": "#4F7F8A",
+        "hair": "#3D2617"
+      },
+      "work": "carry",
+      "about": "A basket on her hip by the cookboat, waiting on the cook."
+    },
+    {
+      "id": "oruvel_deck_folder",
+      "zone": "ch01/oruvel",
+      "stage_actor": "CrowdSpots/oruvel_deck_folder",
+      "role": "folder",
+      "island": "low_reaches",
+      "community": "oruvel",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "heavy",
+      "body": "crowd_man_heavy_b",
+      "tints": {
+        "cloth_a": "#DED4C1",
+        "cloth_b": "#5A5E75",
+        "cloth_c": "#4F7E8A",
+        "hair": "#211A16"
+      },
+      "work": "fold",
+      "about": "Laying fish to dry along the south rail."
+    },
+    {
+      "id": "oruvel_deck_mender",
+      "zone": "ch01/oruvel",
+      "stage_actor": "CrowdSpots/oruvel_deck_mender",
+      "role": "netmender",
+      "island": "low_reaches",
+      "community": "oruvel",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_man_lean_b",
+      "tints": {
+        "cloth_a": "#DED3BF",
+        "cloth_b": "#38446E",
+        "cloth_c": "#456B81",
+        "hair": "#251B15"
+      },
+      "work": "mend",
+      "about": "Knelt on the commons mending a lamp-diver's net bag."
+    },
+    {
+      "id": "pemakar_quay_mender",
+      "zone": "ch05/pemakar",
+      "stage_actor": "CrowdSpots/pemakar_quay_mender",
+      "role": "netmender",
+      "island": "pemakar_terraces",
+      "community": "pemakar",
+      "age_band": "elder",
+      "sex": "male",
+      "build": "heavy",
+      "body": "crowd_elder_man_b",
+      "tints": {
+        "cloth_a": "#DCD1BC",
+        "cloth_b": "#2D613A",
+        "cloth_c": "#2D603A",
+        "hair": "#B9B5AE"
+      },
+      "work": "mend",
+      "about": "An old man knelt at the quay's west end mending a net while the town readies for Lanternfall."
+    },
+    {
+      "id": "pemakar_quay_hauler",
+      "zone": "ch05/pemakar",
+      "stage_actor": "CrowdSpots/pemakar_quay_hauler",
+      "role": "boatman",
+      "island": "low_reaches",
+      "community": "brightwater",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "heavy",
+      "body": "crowd_man_heavy_b",
+      "tints": {
+        "cloth_a": "#2C3B6B",
+        "cloth_b": "#4F5573",
+        "cloth_c": "#993627",
+        "hair": "#201A16"
+      },
+      "work": "haul",
+      "about": "A Low Reaches trader off the Brightwater crossing, hauling his skiff in to the quay for the night."
+    },
+    {
+      "id": "pemakar_quay_trader",
+      "zone": "ch05/pemakar",
+      "stage_actor": "CrowdSpots/pemakar_quay_trader",
+      "role": "trader",
+      "island": "low_reaches",
+      "community": "brightwater",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "medium",
+      "body": "crowd_man_medium_b",
+      "tints": {
+        "cloth_a": "#303E6C",
+        "cloth_b": "#35426D",
+        "cloth_c": "#9B3828",
+        "hair": "#482B19"
+      },
+      "work": "carry",
+      "about": "His partner, a basket of Low Reaches salt fish on his hip."
+    },
+    {
+      "id": "pemakar_quay_carrier",
+      "zone": "ch05/pemakar",
+      "stage_actor": "CrowdSpots/pemakar_quay_carrier",
+      "role": "townsfolk",
+      "island": "pemakar_terraces",
+      "community": "pemakar",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "body": "crowd_woman_medium",
+      "tints": {
+        "cloth_a": "#E0D6C4",
+        "cloth_b": "#525874",
+        "cloth_c": "#7E1813",
+        "hair": "#201A16"
+      },
+      "work": "carry",
+      "about": "A basket of paper lanterns on her hip, come down for the folded boats."
+    },
+    {
+      "id": "pemakar_quay_folder",
+      "zone": "ch05/pemakar",
+      "stage_actor": "CrowdSpots/pemakar_quay_folder",
+      "role": "folder",
+      "island": "pemakar_terraces",
+      "community": "pemakar",
+      "age_band": "elder",
+      "sex": "female",
+      "build": "heavy",
+      "body": "crowd_elder_woman_b",
+      "tints": {
+        "cloth_a": "#DFCFB1",
+        "cloth_b": "#3A466E",
+        "cloth_c": "#2E623A",
+        "hair": "#48423E"
+      },
+      "work": "fold",
+      "about": "An old woman folding leaf-boats for Lanternfall at the quay's east end."
     }
   ]
 }

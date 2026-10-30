@@ -7,8 +7,8 @@
   "ch09_bark_hobb": {
    "headers": {"location": "ch09/corrow_night"},
    "ops": [
-    {"op": "line", "id": "ch09_bark_hobb_001", "key": "DLG_CH09_BARK_HOBB_001", "speaker": "hobb", "emotion": "exhausted", "voice": "", "src": 6},
-    {"op": "line", "id": "ch09_bark_hobb_002", "key": "DLG_CH09_BARK_HOBB_002", "speaker": "hobb", "emotion": "exhausted", "voice": "", "src": 7}
+    {"op": "line", "id": "ch09_bark_hobb_001", "key": "DLG_CH09_BARK_HOBB_001", "speaker": "hobb", "emotion": "exhausted", "voice": "", "src": 7},
+    {"op": "line", "id": "ch09_bark_hobb_002", "key": "DLG_CH09_BARK_HOBB_002", "speaker": "hobb", "emotion": "exhausted", "voice": "", "src": 8}
    ]
   }
  }

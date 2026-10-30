@@ -31,20 +31,22 @@ KIND_KEYS = {
              "pitch_max_deg", "flap_hz", "flap_s", "glide_s", "glide_dihedral_deg", "amp_rate", "decide_s",
              "perch_chance", "approach_s", "landing_speed_mps", "takeoff_s", "takeoff_lift_m", "perch_s",
              "head_turn_s", "head_yaw_deg", "head_rate", "nod_chance", "nod_hz", "gravity_mps2", "flap_start_chance",
-             "flare_from", "approach_amp", "takeoff_lead_deg", "takeoff_speed_fraction"},
+             "flare_from", "approach_amp", "takeoff_lead_deg", "takeoff_speed_fraction",
+             "flush_radius_m", "flush_delay_s"},  # the party lifts a perched bird (M4 wildlife reactions)
     "crab": {"scale", "flee_radius_m", "safe_radius_m", "flee_speed_mps", "walk_speed_mps", "turn_rate",
              "return_after_s", "shuffle_s", "shuffle_m", "gait_hz", "walk_gait_hz", "amp_rate", "arrive_m"},
     "fish": {"scale", "speed_mps", "dart_speed_mps", "spread_m", "follow_rate", "turn_rate", "wander_arrive_m",
              "wobble_m", "wobble_hz", "startle_radius_m", "startle_s", "swim_hz", "swim_hz_per_mps", "swim_amp",
-             "bottom_clearance_m", "startle_follow_mult", "wobble_y_fraction"},
+             "bottom_clearance_m", "startle_follow_mult", "wobble_y_fraction",
+             "scatter_spread"},  # a startle throws the school apart
     "insect": {"moth", "dragonfly", "firefly"},  # tables: INSECT_KEYS
 }
 # the kingfisher (Ch10, M4-A2P-056) is the gull's flock with its own tuning, meshes and rows
 KIND_KEYS["kingfisher"] = KIND_KEYS["gull"] | {"dive_chance", "dive_reach_m", "dive_s", "dive_speed_mps", "dive_hold_s",
                                                "dive_return_s"}  # its plunge (fen_kingfisher.md)
 # the woolback (Ch12, M4-A2P-056): skinned actors in herds (WildlifeHerd), its scene an actor .tscn, no meshes table
-KIND_KEYS["woolback"] = {"scale", "walk_speed_mps", "turn_rate", "graze_s", "look_chance", "look_s", "look_radius_m",
-                         "look_rate", "wander_m", "spacing_m", "arrive_m", "height_m", "bounds_pad_m"}
+KIND_KEYS["woolback"] = {"scale", "walk_speed_mps", "turn_rate", "graze_s", "graze_pace", "look_chance", "look_s",
+                         "look_radius_m", "look_rate", "wander_m", "spacing_m", "arrive_m", "height_m", "bounds_pad_m"}
 SKINNED_KINDS = {"woolback"}
 # the rim ray (Ch16, M4-A2P-056) is the fish shoal with its own tuning, mesh and rows
 KIND_KEYS["ray"] = KIND_KEYS["fish"]
