@@ -58,6 +58,7 @@
     "stubble_shadow": 0.2
   },
   "_hair": {
+    "grey_strands": true,
     "brow_params": {"alpha_boost": "1.0", "strand_value_jitter": "0.4"},
     "hairline_feather": 1.0,
     "kind": "cropped",
@@ -71,17 +72,15 @@
     ],
     "recede": 0.045,
     "scalp_cards": [
-      0,
-      0,
-      0
-    
-    
+      300,
+      230,
+      150
     ],
     "hairline_cards": 0,
-    "colour": "#BDB6AA",
-    "grey": "#E2DED6",
-    "grey_share": 0.0,
-    "underpaint": "#D2CBC0",
+    "colour": "#9E978C",
+    "grey": "#D6D2CA",
+    "grey_share": 0.35,
+    "underpaint": "#7A6E64",
     "brow": "#8E877C",
     "spec": "#CFC8BC",
     "grey_width_k": 1.3

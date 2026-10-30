@@ -1,0 +1,124 @@
+{
+ "_about": "Tobin Varrow, Liss's older brother, about 26, a Saltwright of Hollowmere: charming, idealistic, can't stop grinning (act2_ch14.md B01: 'in a Saltwright wedding coat with a Warden's red sash over it, both families' colours'; liss_varrow.md: he volunteered so nobody would have to be chosen). Killed shielding Merel (B05 `tobin_falls`: he sits down on the slabs, surprised, one hand on the knotted cord). Liss's family face (her skin, ancestry mix and eye tilt; act1_npcs.md \u00a72.10) on a taller, broader man; dark-brown crop. The coat: a long-sleeved hip-length Saltwright coat in indigo_dye, sand-cloth trousers to the shin, the Warden's sash lacquer_red with long tails, sandals. An eleven-mark Saltwright record on the right side (forearm 5, upper arm 4 under the sleeve, two up the collarbone and neck showing at the coat's V) (liss_textures' generator). M4-A2P-050. Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules, not by bb_params.",
+ "name": "tobin",
+ "height_m": 1.78,
+ "heads_tall": 7.4,
+ "shoulder_width_heads": 1.84,
+ "chest_width_heads": 1.32,
+ "chest_depth_heads": 0.94,
+ "waist_width_heads": 1.12,
+ "hip_width_heads": 1.3,
+ "crotch_height_heads": 3.56,
+ "arm_span_ratio": 1.02,
+ "hand_length_heads": 0.8,
+ "foot_length_ratio": 0.15,
+ "neck_length_heads": 0.42,
+ "neck_width_ratio": 0.56,
+ "head_width_ratio": 0.68,
+ "femininity": 0.05,
+ "muscle": 0.6,
+ "mass": 0.15,
+ "breast": 0.0,
+ "eye_scale": 1.06,
+ "ipd_m": 0.064,
+ "arm_abduction_deg": 47.0,
+ "skin_hex": "#A2765A",
+ "eye_tilt_deg": 2.0,
+ "jaw_width": 1.02,
+ "cheekbone_height": 0.003,
+ "cheekbone_width": 1.04,
+ "chin_size": 0.96,
+ "nose_bridge_width": 0.98,
+ "nose_tip_projection": 0.98,
+ "lip_fullness": 0.8,
+ "lip_close": 0.6,
+ "lip_seal": 0.96,
+ "lip_lower_fullness": 0.74,
+ "mouth_corner_lift": 0.0012,
+ "brow_ridge": 1.02,
+ "donor_mix_african": 0.3,
+ "donor_mix_asian": 0.35,
+ "donor_mix_caucasian": 0.35,
+ "_skin": {
+  "hex": "#A2765A",
+  "age": 0.1,
+  "freckles": 0,
+  "reach_bands": {
+   "L": 0,
+   "R": 0
+  },
+  "seed": 501,
+  "lip": "#8A5848",
+  "body_size": [
+   2048,
+   1024
+  ],
+  "line_marks": {
+   "seed": 5051,
+   "placement": {
+    "forearm": 5,
+    "upper_arm": 4,
+    "collar_neck": 2
+   },
+   "length_m": [
+    0.03,
+    0.06
+   ],
+   "line_mm": 1.0,
+   "gap_mm": 1.4,
+   "dot_mm": 2.2
+  }
+ },
+ "_hair": {
+  "kind": "short",
+  "tufts": true,
+  "seed": 502,
+  "scalp_cards": [
+   170,
+   130,
+   90
+  ],
+  "hairline_cards": 60,
+  "colour": "#2E1E14",
+  "underpaint": "#24180F"
+ },
+ "_eyes": {
+  "iris": "#3A2616"
+ },
+ "_costume": {
+  "top": {
+   "mat": "cloth_a",
+   "hem": "hip",
+   "sleeve": 0.94,
+   "neck_v_m": 0.06
+  },
+  "trousers": {
+   "mat": "cloth_b",
+   "hem": "shin",
+   "loose_m": 0.014
+  },
+  "sash": {
+   "mat": "cloth_c",
+   "width_m": 0.075,
+   "turns": 1,
+   "tails_m": 0.34
+  },
+  "sandals": "leather"
+ },
+ "_tints": {
+  "cloth_a": "#2B3A6B",
+  "cloth_b": "#C9B48E",
+  "cloth_c": "#B3261E",
+  "leather": "#FFFFFF"
+ },
+ "_build": {
+  "shapes": "all",
+  "host_snaps": true,
+  "garment_fit": true
+ },
+ "_persona": {
+  "sway": 1.2,
+  "lean": -1.0,
+  "arms_down": 41.0
+ }
+}

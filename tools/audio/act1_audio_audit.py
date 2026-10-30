@@ -76,6 +76,10 @@ BY_DESIGN = {
         "Cutscene B's own @music (shell_shrine_interior, hush_first_verse) scores it; a zone cue would fight it",
     "game/levels/ch07/tidecup_match/tidecup_match.tscn: no ambience bed":
         "ReefballAudio plays the crowd beds (reefball_hooks.json murmur/excited) with the match's state",
+    "game/levels/ch01/oruvel/dive_lamp.tscn: no music and no ambience bed":
+        "not a zone: the Ch1 dive's stage-actor model (Rhen's lantern light, oruvel_layout.json `dive_lamp`, M3-CIN-1232)",
+    "game/levels/ch01/oruvel/dive_lamp.tscn: no footsteps.json scene row (falls to `stone`)":
+        "not a zone: the Ch1 dive's stage-actor model (Rhen's lantern light); nobody walks in it",
     "ui class `BattlePause` (game/ui/menus/battle_pause/battle_pause.gd) takes input and has no hook on it or a base class":
         "the pause controller (a Node); what the player sees and moves is BattlePauseMenu, which has its hook",
     "ui class `DialogueAssist` (game/ui/dialogue_assist/dialogue_assist.gd) takes input and has no hook on it or a base class":
@@ -112,8 +116,8 @@ def act1_scenes() -> list[str]:
     out = []
     for d in ACT1_DIRS:
         for p in sorted((ROOT / "game" / "levels" / d).rglob("*.tscn")):
-            if p.stem.endswith("_dressing"):
-                continue
+            if p.stem.endswith("_dressing") or p.stem != p.parent.name:
+                continue                # a level is <level>/<level>.tscn; other scenes there are parts it instances
             out.append("res://" + p.relative_to(ROOT).as_posix())
     return out
 
@@ -188,6 +192,29 @@ def audit_enemies() -> list[str]:
     return out
 
 
+def _skill_users() -> tuple[set, set, dict[str, set]]:
+    """(the foes only later-act encounters field, the act's own foes, skill id -> the foes that use it). A charged skill
+    is used by whoever gathers it, and a Vowbound bound in a later act counts as a later-act user (M4-A2P-024/025)."""
+    later = {e for enc in _json(DATA / "battle" / "encounters.json")["encounters"]
+             if _later(enc["id"]) for e in enc.get("enemies", [])}
+    act1_foes = set(_act1_enemies())
+    users: dict[str, set] = {}
+    for f in _json(DATA / "battle" / "enemies.json")["enemies"]:
+        for sid in re.findall(r'"([a-z0-9_]+)"', json.dumps(f)):
+            users.setdefault(sid, set()).add(f["id"])
+    for v in _json(DATA / "battle" / "vowbound.json")["vowbound"]:
+        if not ACT_FLAG.match(str(v.get("bound_flag", ""))) and re.match(r"ch(1[0-9]|2[0-9])_", str(v.get("bound_flag", ""))):
+            later.add("vowbound:" + v["id"])
+            for sid in v.get("skills", []) + [v.get("swell", {}).get("technique", "")]:
+                users.setdefault(sid, set()).add("vowbound:" + v["id"])
+    skills = _json(DATA / "battle" / "skills.json")["skills"]
+    for r in (skills if isinstance(skills, list) else []):
+        charged = str((r.get("charge") or {}).get("skill", ""))
+        if charged and r["id"] in users:
+            users.setdefault(charged, set()).update(users[r["id"]])
+    return later, act1_foes, users
+
+
 def audit_skills() -> list[str]:
     skills = _json(DATA / "battle" / "skills.json")["skills"]
     rows = skills if isinstance(skills, list) else [dict(id=k, **v) for k, v in skills.items()]
@@ -196,13 +223,7 @@ def audit_skills() -> list[str]:
     named = "".join(p.read_text(encoding="utf-8") for p in sorted(AUDIO.glob("*.json")))
     named += (DATA / "vfx" / "battle" / "boss_vfx.json").read_text(encoding="utf-8")
     # a skill only later-act foes use is paused with them (ADR 0041)
-    later = {e for enc in _json(DATA / "battle" / "encounters.json")["encounters"]
-             if _later(enc["id"]) for e in enc.get("enemies", [])}
-    act1_foes = set(_act1_enemies())
-    users: dict[str, set] = {}
-    for f in _json(DATA / "battle" / "enemies.json")["enemies"]:
-        for sid in re.findall(r'"([a-z0-9_]+)"', json.dumps(f)):
-            users.setdefault(sid, set()).add(f["id"])
+    later, act1_foes, users = _skill_users()
     out = []
     for r in rows:
         sid = r["id"]
@@ -229,6 +250,8 @@ def audit_battles() -> list[str]:
         phased = [f for f in e.get("enemies", []) if foes.get(f, {}).get("phases")]
         if not phased:
             continue
+        if _later(e["id"]):
+            continue  # a later act's boss: its cue is that act's audit (ADR 0041)
         cue = battle["encounters"].get(e["id"])
         if cue is None:
             out.append(f"boss encounter `{e['id']}` ({', '.join(phased)}) plays the default battle music")
@@ -250,13 +273,7 @@ def audit_abilities() -> list[str]:
     the generic hit / heal / status rows it borrowed when battle-presentation gave it a VFX (M3-BPR-421)."""
     vmap = _json(DATA / "vfx" / "battle" / "effects.json")["map"].get("skills", {})
     rows = _json(AUDIO / "battle_sfx.json")["vfx"]
-    later = {e for enc in _json(DATA / "battle" / "encounters.json")["encounters"]
-             if _later(enc["id"]) for e in enc.get("enemies", [])}
-    act1_foes = set(_act1_enemies())
-    users: dict[str, set] = {}
-    for f in _json(DATA / "battle" / "enemies.json")["enemies"]:
-        for sid in re.findall(r'"([a-z0-9_]+)"', json.dumps(f)):
-            users.setdefault(sid, set()).add(f["id"])
+    later, act1_foes, users = _skill_users()
     out = []
     for sid, effect in sorted(vmap.items()):
         if sid in users and not (users[sid] & act1_foes) and users[sid] <= later:

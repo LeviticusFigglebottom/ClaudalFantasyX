@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/kerrid/kerrid_stage.tscn" id="stage"]
+[ext_resource type="Script" path="res://game/levels/_tests/characters/kerrid/kerrid_glow_driver.gd" id="driver"]
+
+[node name="KerridStage" instance=ExtResource("stage")]
+emotion = "grief"
+face_distance = 0.78
+face_aim_drop = 0.06
+face_yaw_degrees = 22.0
+
+[node name="KeyLight" parent="."]
+light_color = Color(0.72, 0.8, 1, 1)
+light_energy = 0.55
+
+[node name="RimLight" parent="."]
+light_color = Color(0.55, 0.68, 0.95, 1)
+light_energy = 0.5
+
+[node name="GlowDriver" type="Node" parent="."]
+script = ExtResource("driver")
+glow = 0.6

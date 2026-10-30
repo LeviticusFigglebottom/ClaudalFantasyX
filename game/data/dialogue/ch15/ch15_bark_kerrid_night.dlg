@@ -1,9 +1,9 @@
-// M4-A2P-008 Kerrid after the reveal (ch15_kerrid_told): longer, plainer, dry about being dead (voice guide,
+// M4-A2P-008 Kerrid after the reveal (ch15_kerrid_revealed): longer, plainer, dry about being dead (voice guide,
 // post-reveal). A Hollowmere night: he sits now. The voice guide's sample line.
 title: ch15_bark_kerrid_night
 location: ch17/hollowmere
 ---
-<<if $ch15_kerrid_told>>
+<<if $ch15_kerrid_revealed>>
     Kerrid [soft_smile]: I don't sleep. I sit. You'd be surprised how long a night is, Rhen. #line:ch15_kerrid_night_001
 <<else>>
     @anim kerrid nod rhen

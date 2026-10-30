@@ -1,0 +1,22 @@
+{
+ "format": 1,
+ "scene": "ch15_side_the_tally_hull",
+ "source": "game/data/dialogue/ch15/ch15_side_the_tally_hull.dlg",
+ "start": "ch15_side_the_tally_hull",
+ "nodes": {
+  "ch15_side_the_tally_hull": {
+   "headers": {"location": "ch15/hollowmere"},
+   "ops": [
+    {"op": "line", "id": "ch15_tally_001", "key": "DLG_CH15_TALLY_001", "speaker": "clerk", "emotion": "neutral", "voice": "", "src": 7, "name_key": "DLG_NAME_CLERK_RECORD_KEEPER", "tags": ["long"]},
+    {"op": "line", "id": "ch15_tally_002", "key": "DLG_CH15_TALLY_002", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 8},
+    {"op": "line", "id": "ch15_tally_003", "key": "DLG_CH15_TALLY_003", "speaker": "clerk", "emotion": "cold", "voice": "", "src": 9, "name_key": "DLG_NAME_CLERK_RECORD_KEEPER"},
+    {"op": "line", "id": "ch15_tally_004", "key": "DLG_CH15_TALLY_004", "speaker": "toma", "emotion": "guilty", "voice": "", "src": 10, "tags": ["long"]},
+    {"op": "line", "id": "ch15_tally_005", "key": "DLG_CH15_TALLY_005", "speaker": "clerk", "emotion": "neutral", "voice": "", "src": 11, "name_key": "DLG_NAME_CLERK_RECORD_KEEPER"},
+    {"op": "line", "id": "ch15_tally_006", "key": "DLG_CH15_TALLY_006", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 12},
+    {"op": "line", "id": "ch15_tally_007", "key": "DLG_CH15_TALLY_007", "speaker": "clerk", "emotion": "neutral", "voice": "", "src": 13, "name_key": "DLG_NAME_CLERK_RECORD_KEEPER"},
+    {"op": "line", "id": "ch15_tally_008", "key": "DLG_CH15_TALLY_008", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 14},
+    {"op": "set", "flag": "ch15_toma_on_the_tally", "value": ["lit", true], "src": 15}
+   ]
+  }
+ }
+}

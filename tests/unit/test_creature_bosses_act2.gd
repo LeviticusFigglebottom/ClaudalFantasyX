@@ -9,7 +9,6 @@ const INTRO_MAX_SEC := 3.5
 ## A strike's wind-up reads before its blow (docs/kb/plan/act2/bosses/README.md, the standard, item 3).
 const WIND_UP_MIN_SEC := 0.45
 const BOSS_ANCHORS: Array[StringName] = [&"vfx_wound", &"vfx_core", &"vfx_phase"]
-
 ## M4-CRB-004, the Wakefin (docs/kb/plan/act2/bosses/wakefin.md): one whole animal (ADR 0204: no fin target, no
 ## deck adds). Its skills' clips (combat maps the skills to them), the close circle's stance clips, and the KO.
 const WAKEFIN: StringName = &"wakefin"
@@ -43,9 +42,6 @@ const WAKEFIN_STRIKES: Array[StringName] = [
 ## (y 0 is the water line) by at least this much.
 const WAKEFIN_DIVE_HOLD := Vector2(1.0, 2.0)
 const WAKEFIN_DIVE_BLADE_MIN_Y := 0.3
-
-# --- The Lamp Engine (M4-CRB-003, docs/kb/plan/act2/bosses/lamp_engine.md) -----------------------------------------
-
 ## Its full clip set: the contract clips, one clip per skill on the sheet's move list, and the `opened` versions that
 ## phase plays through its `clips` map.
 const LAMP_ENGINE_CLIPS: Array[StringName] = [
@@ -125,7 +121,6 @@ const MANGROVE_DROWNER_STRIKES: Array[StringName] = [
 const MANGROVE_DROWNER_PHASE := &"uprooted"
 ## The two snag roots (the break parts): each part's whole and broken nodes.
 const MANGROVE_DROWNER_PARTS: Array[StringName] = [&"SnagA", &"SnagABroken", &"SnagB", &"SnagBBroken"]
-
 ## M4-CRB-005, the Avalanche Ram (docs/kb/plan/act2/bosses/avalanche_ram.md): its skills' clips (combat maps the skills
 ## to them), the torn_fleece phase's stance clips through its `clips` map, and the KO.
 const AVALANCHE_RAM: StringName = &"avalanche_ram"
@@ -162,9 +157,6 @@ const AVALANCHE_RAM_PLANTED: Array[StringName] = [
 ]
 const AVALANCHE_RAM_POSE_TOL_M := 0.01
 const AVALANCHE_RAM_HOOF_TOL_M := 0.02
-
-# --- The flat-engine (M4-CRB-009, docs/kb/plan/act2/bosses/malcor_venn.md: the Ch14 boss part) -------------------
-
 const FLAT_ENGINE: StringName = &"flat_engine"
 ## Its clip set: running, the flat pulse (`cast`; `attack` is its copy), the hits, the stop, and the broken stance
 ## its `broken` phase plays through its `clips` map.
@@ -201,6 +193,14 @@ const FLAT_ENGINE_STACK_MIN_DEG := 20.0
 const FLAT_ENGINE_JAMMED: Array[String] = ["paddle1", "paddle6"]
 const FLAT_ENGINE_JAM_MIN_DEG := 20.0
 const FLAT_ENGINE_WATER_TOL_M := 0.02
+## M4: every skill combat gives an Act II boss (enemies.json, its phases, and each charge's release) plays a clip the
+## model has, in every phase that can use it (creatures.json clip_by_skill, then the phase's `clips` map).
+const ACT2_BOSSES: Array[StringName] = [&"mangrove_drowner", &"lamp_engine", &"avalanche_ram", &"wakefin"]
+const ACT2_ENEMIES_PATH := "res://game/data/battle/enemies.json"
+const ACT2_SKILLS_PATH := "res://game/data/battle/skills.json"
+## ADR 0204 §5: the Act II people bosses stand in through the characters track's battle actors, as Moll does. Once
+## the actor is on the branch, the fight seats it as a real body, not a capsule.
+const ACT2_PEOPLE_BOSSES := {&"malcor_venn": "res://game/characters/foes/venn_battle.tscn"}
 
 var made: Array[Node] = []
 var lamp_engine_made: Array[Node] = []
@@ -727,3 +727,66 @@ func _flat_engine_actor() -> CreatureActor:
 func _flat_engine_turn(skel: Skeleton3D, bone: String) -> float:
 	var b := skel.find_bone(bone)
 	return rad_to_deg(skel.get_bone_rest(b).basis.get_rotation_quaternion().angle_to(skel.get_bone_pose_rotation(b)))
+
+
+func test_act2_boss_skills_each_play_a_clip_the_model_has() -> void:
+	var skills := {}
+	for row: Dictionary in _act2_json(ACT2_SKILLS_PATH).get("skills", []) as Array:
+		skills[str(row.get("id", ""))] = row
+	for row: Dictionary in _act2_json(ACT2_ENEMIES_PATH).get("enemies", []) as Array:
+		var id := StringName(str(row.get("id", "")))
+		if not ACT2_BOSSES.has(id):
+			continue
+		var a := _act2_actor(id)
+		var phases: Array[StringName] = [&""]
+		var used: Array = (row.get("skills", []) as Array).duplicate()
+		for ph: Dictionary in row.get("phases", []) as Array:
+			phases.append(StringName(str(ph.get("id", ""))))
+			used.append_array(ph.get("skills", []) as Array)
+		for sid: Variant in used.duplicate():
+			var release := str(
+				((skills.get(str(sid), {}) as Dictionary).get("charge", {}) as Dictionary).get("skill", "")
+			)
+			if release != "":
+				used.append(release)
+		for sid: Variant in used:
+			var skill: Dictionary = skills.get(str(sid), {})
+			assert_false(skill.is_empty(), "%s's %s is a skill" % [id, sid])
+			var clip := a.clip_for(StringName(str(sid)), StringName(str(skill.get("kind", ""))))
+			assert_true(clip != &"", "%s's %s names a clip" % [id, sid])
+			for ph in phases:
+				if ph != &"":
+					a.enter_phase(ph, true)
+				assert_true(
+					a.has_clip(a.phase_clip(clip)), "%s's %s plays %s in %s" % [id, sid, a.phase_clip(clip), ph]
+				)
+	before_each()
+
+
+func _act2_json(path: String) -> Dictionary:
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+	return parsed as Dictionary if parsed is Dictionary else {}
+
+
+func _act2_actor(id: StringName) -> CreatureActor:
+	var row := CreatureActor.row_for(id)
+	var a := (load(str(row.get("scene", ""))) as PackedScene).instantiate() as CreatureActor
+	var tree := Engine.get_main_loop() as SceneTree
+	(tree.current_scene if tree.current_scene != null else tree.root).add_child(a)
+	made.append(a)
+	return a
+
+
+func test_act2_people_bosses_stand_in_through_their_battle_actors() -> void:
+	for id: StringName in ACT2_PEOPLE_BOSSES:
+		var scene := str(BattleStage.stand_in_spec(id).get("scene", ""))
+		assert_eq(scene, ACT2_PEOPLE_BOSSES[id], "%s stands in through its battle actor" % id)
+		if not ResourceLoader.exists(scene):
+			continue
+		var f := FighterStandIn.new()
+		var tree := Engine.get_main_loop() as SceneTree
+		(tree.current_scene if tree.current_scene != null else tree.root).add_child(f)
+		f.setup(id, BattleStage.stand_in_spec(id), {})
+		assert_true(f.has_actor(), "%s is drawn as its model, not a capsule" % id)
+		f.get_parent().remove_child(f)
+		f.free()

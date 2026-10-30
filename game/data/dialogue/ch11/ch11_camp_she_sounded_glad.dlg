@@ -1,0 +1,18 @@
+// Ch11 camp (optional, Lowlight's upper gallery after the binding; requires ch11_nhoa_bound). Asha and Pell. Asha
+// has bound his sister. She tries to apologise; he does not let it be an apology, and he does not let her off either.
+// Her first sense that a binding costs the one bound (pillar 6). Sets ch11_camp_talk.
+title: ch11_camp_she_sounded_glad
+location: ch11/lowlight
+---
+Asha [guilty]: Pell. I should have stopped. When I saw your face, I should have stopped. #line:ch11_camp_001
+Pell [neutral]: You did not know her name. #line:ch11_camp_002
+Asha [sad]: I do now. Ressa. #line:ch11_camp_003
+Pell [neutral]: Yes. #line:ch11_camp_004
+Asha [worried]: She sang the verse back to me. She sounded glad. Why would she sound glad? #line:ch11_camp_005
+Pell [neutral]: She was alone down there a long time. Now someone is calling her by name. #line:ch11_camp_006
+Pell [sad]: I do not know if glad is the right word. It is the word I would want. #line:ch11_camp_007
+Asha [determined]: Then I'll call her by name. Every time. Not the Saint's. Hers. #line:ch11_camp_008
+Pell [neutral]: Good. #line:ch11_camp_009
+Pell [neutral]: You are holding her now, Lady Cantor. Someone should see it. I will. #line:ch11_camp_010
+<<set $ch11_camp_talk = true>>
+===

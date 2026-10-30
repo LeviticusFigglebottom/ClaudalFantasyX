@@ -1,0 +1,20 @@
+// Ch11 side errand (optional; requires ch11_reached_lowlight). The Lowlight keeper's altar lamp has to go up one step
+// ahead of the water, and she cannot lift it alone. Toma carries it. A small faithful act in a temple the party is about
+// to learn the truth of; nobody undercuts it. Sets ch11_moved_altar_lamp.
+title: ch11_side_the_altar_lamp
+location: ch11/lowlight
+---
+<<if $ch11_moved_altar_lamp>>
+    Tender as "Lowlight keeper" [soft_smile]: One more year, on that step. Thank you. #line:ch11_altar_001
+<<else>>
+    Tender as "Lowlight keeper" [exhausted]: The altar lamp has to go up a step before the water reaches it. There used to be four of us to lift it. #line:ch11_altar_002 #long
+    -> Toma lifts it. #line:ch11_altar_003
+        Toma [neutral]: Show me where. #line:ch11_altar_004
+        Tender as "Lowlight keeper" [neutral]: Gently. It has never once gone out. #line:ch11_altar_005
+        Toma [neutral]: It will not go out now. #line:ch11_altar_006
+        <<set $ch11_moved_altar_lamp = true>>
+        Tender as "Lowlight keeper" [soft_smile]: One more year, on that step. Thank you, guardian. #line:ch11_altar_007
+    -> Later. #line:ch11_altar_008
+        Tender as "Lowlight keeper" [neutral]: The water is slow. I will be here. #line:ch11_altar_009
+<<endif>>
+===

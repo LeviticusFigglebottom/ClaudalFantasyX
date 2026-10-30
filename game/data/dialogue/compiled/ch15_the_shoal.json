@@ -117,7 +117,7 @@
     {"op": "cue", "cue": "anim", "args": ["kerrid", "look_at", "sea_south"], "kwargs": {}, "src": 125},
     {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 126},
     {"op": "line", "id": "ch15_conf_032", "key": "DLG_CH15_CONF_032", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 127},
-    {"op": "set", "flag": "ch15_kerrid_told", "value": ["lit", true], "src": 128},
+    {"op": "set", "flag": "ch15_kerrid_revealed", "value": ["lit", true], "src": 128},
     {"op": "jump", "node": "ch15_still_below", "src": 129}
    ]
   },
