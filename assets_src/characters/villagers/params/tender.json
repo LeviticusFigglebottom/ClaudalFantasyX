@@ -62,6 +62,7 @@
     "bun_r_m": 0.034,
     "bun_ribbons": 28,
     "grey_share": 0.3,
+    "grey_strands": true,
     "colour": "#141417",
     "grey": "#8C867D",
     "underpaint": "#18181B"
