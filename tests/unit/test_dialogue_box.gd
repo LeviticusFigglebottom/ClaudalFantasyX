@@ -255,6 +255,24 @@ func test_every_act1_speaker_with_a_model_has_a_portrait() -> void:
 	_done()
 
 
+## M4-A2P-081: the same for Act II (ch1x): a speaker whose villager stage has landed has a baked face. The bosses'
+## and wardens' faces bake from their own stages, aliased by speaker id (Malcor Venn), checked above.
+func test_every_act2_speaker_with_a_model_has_a_portrait() -> void:
+	var dir := "res://game/data/dialogue/compiled"
+	var speakers := {}
+	for f: String in DirAccess.get_files_at(dir):
+		if f.ends_with(".json") and f.begins_with("ch1"):
+			var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(dir.path_join(f)))
+			_collect_speakers(parsed, speakers)
+	var modelled := 0
+	for s: String in speakers:
+		if ResourceLoader.exists("res://game/levels/_tests/characters/villagers/%s_stage.tscn" % s):
+			modelled += 1
+			assert_eq(DialogueBox.portrait_for(StringName(s)), StringName(s), "%s has a model, so a portrait" % s)
+	assert_true(modelled >= 3, "Merel, Tobin and the clerk were found")
+	_done()
+
+
 func _collect_speakers(v: Variant, out: Dictionary) -> void:
 	if v is Dictionary:
 		var d := v as Dictionary
