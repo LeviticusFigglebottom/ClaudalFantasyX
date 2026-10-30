@@ -85,8 +85,8 @@ the engine stops, far out at sea the storm opens.
   *"Eight tides. He talked about you every one."* Sets `ch19_learned_the_hitch` (read in H02 and E3: §10 Q3).
 
 ### I04. The words (optional, E, 2 min)
-- Ysolde and Asha on the steps. Ysolde has the Eighth Verse's Lamptongue whole, from the keth (Ch12), the Choir stones
-  (Ch16) and the farewell-tide's shape (Ch18). She reads the words aloud, **spoken, not sung** (README rule 3). Asha
+- Ysolde and Asha on the steps. Ysolde has the Eighth Verse whole: the words from the Choir stones (Ch16), the tune read
+  through the farewell-tide (Ch18), and its place from Ama's question-knot (Ch12). She reads the words aloud, **spoken, not sung** (README rule 3). Asha
   repeats them once, spoken. *"Never the words and the tune together,"* Ysolde says. *"Not until it's time."* Sets `ch19_words_whole`.
 
 ### I05–I06. The Lamp Spire (P, ~28 min)
