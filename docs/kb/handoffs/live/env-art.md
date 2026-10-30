@@ -589,6 +589,18 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **2026-10-30, M4-A2P-040 (Ch10) in progress, pushed @ 3abc9d20; not merge-ready (the mount is chapters', M4-A2P-0401).**
+  - Built: a four-variant **mangrove system** (`ossa_fen.build_tree` parametrised: `mangrove_tall`/`_low`/`_young`
+    beside the kit tree); each zone's **ground** from its greybox (`fen_zones.py`: level land, channels, root-mat humps,
+    litter and roots in the new `kit_fen_bank`); `tools/act2/ch10_fen_dressing.py` writes both zones' dressing (walks
+    tiled, platforms and roosts, the clutch's stone and cords, ~150 trees and ~30 reed beds per zone off the walks, the
+    far tree-line), grade (`lut_ch10_fen`) and tannin water, plus previews with ten composed cameras each.
+  - **Viewed (20 cameras):** reads as the fen at dusk. Open: the flat land is dark because `Ch05Zone.apply_variant()`
+    re-applies the layout's ambient 0.5 after the dressing (the ask to set 0.85 is in M4-A2P-0401); Pell's capsule.
+  - **Checks:** `test_ch10_fen_dressing` (5, new), `test_haluna_kit`, `test_ossa_fen`, `test_reedhollow`,
+    `test_blender_builds` OK; validate_data; taskboard; haluna_kit rebuilt (the new pieces and the manifest only).
+  - **Next:** Reedhollow's lodge weave reads busy close up (a look pass); the egrets and fireflies (creatures'
+    wildlife); then Ch11 (M4-A2P-041).
 - **2026-10-30, ACT II STARTED (ADR 0205: no open Act I row in env-art's lane).** Scope (act2_tracks.md): Ch10–Ch12, in
   chapter order. **Doing: M4-A2P-040**, Ossa Fen and Reedhollow at final quality with a mangrove vegetation system: a
   zone-dressing generator per zone (`tools/act2/ch10_*_dressing.py`, ZoneKitDressing, as Act I's Ch4–9) from the built
