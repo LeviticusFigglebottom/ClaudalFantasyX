@@ -1022,3 +1022,12 @@ MERGE-READY @ 8287ca8b: the portraits re-baked on big20's models, and the Act II
       `{"inn": "ansedra_guest"}`, as Quellan's inn does.
   - **Portraits:** Malcor Venn and the three Abiding guards aren't in big21 yet; I'll bake them as soon as they land.
 MERGE-READY @ 92151e255: big21 merged; the Bound section; Act II inns.
+- 2026-10-30 14:20, **Act II battle floats** (a4336326a), on Combat's new hit keys:
+  - a drain (`drained`, the fen leech, M4-CMB-1001) puts its heal number over the user, with "Drained";
+  - a crawler's repair (`part_restored`, M4-A2P-022) floats "{part} mended" over the boss, the part named by its charge
+    skill.
+  Combat already built the rooted swap reason ("held by the roots") and the element cycle's timeline, so hud.md's
+  rooted and cycle items are done on their side.
+  test_battle_controller 33/0 (a new drain and repair test), battle_choreo 28/0, battle_reduced 5/0, pseudo_loc 26/0.
+  No committed shot shows them.
+MERGE-READY @ a4336326a: Act II battle floats.
