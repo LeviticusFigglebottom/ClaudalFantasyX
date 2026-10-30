@@ -7979,6 +7979,82 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "ch13_archive_door",
+      "scene": "res://game/levels/_tests/ansedra_kit/ch13_archive_shots.tscn",
+      "camera": "Cameras/Door",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch13_archive_aisle",
+      "scene": "res://game/levels/_tests/ansedra_kit/ch13_archive_shots.tscn",
+      "camera": "Cameras/Aisle",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch13_archive_table",
+      "scene": "res://game/levels/_tests/ansedra_kit/ch13_archive_shots.tscn",
+      "camera": "Cameras/Table",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch13_archive_roll",
+      "scene": "res://game/levels/_tests/ansedra_kit/ch13_archive_shots.tscn",
+      "camera": "Cameras/Roll",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }
