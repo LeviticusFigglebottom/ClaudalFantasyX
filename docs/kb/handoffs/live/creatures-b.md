@@ -593,3 +593,26 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   Slot0, not its boss seat; **battle-presentation's 921e5fec already fixes it** (the preview uses boss_seats and the
   rest fit, as the fight does), pending the Lead's merge. Nothing left on my side (the seat [-5.0, 0, -2.4] is in).
   The Spar-wraith's 45° turn needs a capture in motion (PC-QUEUE).
+- **MERGE-READY @ (this commit): M4-A2P-057, Kesh** (three passes; pass 3 viewed by me on creature_kesh): a pale
+  woman of water in a deep sea-dark silk robe and bodice with a slate stole, set with 39 worn Choir-stone mouths
+  scattered along the drape; hair in parted locks (no helmet), the face the brightest thing on her head; the
+  hand-on-heart idle. 4.2 m, 26 clips (six voices, six element-shift cues, The Seven), anchors; 19,794 triangles
+  (justified in her sheet); portrait re-baked. **Clip map for combat (M4-A2P-024/025):** in her design and art
+  sheets (kesh_shift -> shift / shift_<element>; voice_water 0.9, voice_lightning 0.7, voice_fire 0.8 (+1.05, 1.3),
+  voice_ice 0.9, voice_holy 0.8, voice_glimmer 0.9; the_seven -> special 1.8). Checks: Blender identical; validate_data;
+  Godot vowbound 116/0. **Open (LEAD-ASK above):** up close her hair is sculpted and her face soft; the bind-memory
+  close-up (cinematics) wants a sculpted head.
+
+### State of creatures-b's Act II list (2026-10-30)
+All built at the final bar and MERGE-READY: the Mangrove Drowner (M4-CRB-002), the Lamp Engine (003), the Wakefin
+(004), the Avalanche Ram's wool (M4-A2P-059) and moves (005), the flat-engine part (009), Nhoa (006), Hesk (007),
+Ethren (008), Kesh (M4-A2P-057), and the four bosses' own VFX (M4-A2P-058). Every clip map waits on combat's skills
+(validate_creatures rejects clip_by_skill for skills not yet in skills.json): the maps are in each design sheet.
+What the Act II fights still need from others: enemy rows and encounters (combat), boss seats/framing per fight
+(battle-presentation: the Wakefin's staging note above), skill VFX, summons and bindings, portraits for the UI.
+
+- **BACKLOG EMPTY (2026-10-30):** every Act II boss and Vowbound in creatures-b's lane is built, viewed and
+  MERGE-READY; no open Act I row is mine (GPU QA pass 4: 12/35/36 fixed, 61 fixed by battle-presentation 921e5fec).
+  Open asks are the LEAD-ASKs above (M4-A2P-058's split; Kesh's face); defaults taken. Next when anything lands:
+  wire-up checks once combat adds the enemy rows and skills (paste the clip maps, re-render the bosses in their real
+  fights), and any new GPU QA row first.
