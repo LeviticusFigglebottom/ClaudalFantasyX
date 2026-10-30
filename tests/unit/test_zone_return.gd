@@ -99,6 +99,34 @@ func test_after_a_battle_the_field_comes_back_at_once_under_the_sting() -> void:
 	_done()
 
 
+func test_the_resident_return_resumes_the_zone_under_the_sting() -> void:
+	# integration-qa's resident field (big24): a random fight's way back re-attaches the zone in about 0.4 s of black,
+	# and the router's scene_swapping still runs apply_zone under it. The quickest Return lands while battle_out is
+	# still fading and the victory sting (Combat bus, 2.4 s) still rings: the zone's cue starts at once, from where it
+	# was when the fight began (its resume point, on a beat of its own), fading in under the sting; nothing is silent
+	# and nothing on the Combat bus is touched.
+	assert_true(dir.play_music(ZONE_CUE, 0.2))
+	_run(0.5)
+	var battle := Node.new()
+	_host().add_child(battle)
+	dir._battles.append(battle)
+	assert_true(dir.play_music(&"battle_standard_v2", float(dir.music_cfg().get("battle_in_sec", 0.0))))
+	dir.music.positions[ZONE_CUE] = 42.0  # where the field's cue was (headless playback does not advance)
+	_run(1.0)
+	dir.stop_music(float(dir.music_cfg().get("battle_out_sec", 0.0)))  # battle_finished: battle_out and the sting
+	_run(0.45)  # Return pressed at once, then the router's ~0.4 s of black
+	dir.apply_zone("res://game/levels/ch01/oruvel/oruvel.tscn")  # scene_swapping, under the fade
+	battle.free()
+	_run(float(dir.music_cfg().get("beat_sync_max_wait_sec", 0.0)) + 0.1)
+	assert_eq(dir.music.current, ZONE_CUE, "the zone's cue is back at once")
+	assert_false(dir.music.is_silent(), "no gap")
+	assert_true(dir.music.started_from > 0.0, "from its resume point (%.2f s), not the top" % dir.music.started_from)
+	assert_true(dir.music.gain() < 0.9, "fading in under the sting's tail")
+	var sting := AudioData.sfx_rows().get("victory", {}) as Dictionary
+	assert_eq(str(sting.get("bus", "")), "Combat", "the sting is on Combat, which no zone change fades")
+	_done()
+
+
 func test_a_swap_after_a_battle_keeps_its_own_cue() -> void:
 	var battle := Node.new()
 	_host().add_child(battle)

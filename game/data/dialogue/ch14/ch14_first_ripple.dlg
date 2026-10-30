@@ -21,18 +21,18 @@ location: ch13/ansedra_lacquer_court
 @wait 1.5
 @camera L02
 @anim merel pole_push
-@sfx barge_pole
+@sfx pole_stroke
 @wait 6.0
 @camera L03
 <<event hold_input pole_stroke>>
 @anim merel pole_push
-@sfx barge_pole
+@sfx pole_stroke
 @wait 2.0
 @anim merel pole_push
-@sfx barge_pole
+@sfx pole_stroke
 @wait 2.0
 @anim merel pole_push
-@sfx barge_pole
+@sfx pole_stroke
 @wait 2.0
 <<event hold_input_end>>
 @camera L04

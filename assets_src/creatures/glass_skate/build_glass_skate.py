@@ -326,9 +326,15 @@ def build_idle() -> ck.Clip:
     """Buried: only the eyes and the breathing back move. The back rises and falls, the margins lift a hair with it,
     and each eye turns on its turret in its own time."""
     idle = ck.Clip("idle", IDLE_SEC, loop=True)
-    idle.wave("body", amp_loc=(0.0, 0.005, 0.0), base_loc=(0.0, 0.005, 0.0), cycles=2)
+    # the animation polish pass (2026-10-30): a 5 mm breath and 0.6 deg at the disc read as a still frame. It breathes
+    # deeper, a slow ripple runs out along its margins (only ever up, off the sand: base = amp), and the tail sweeps
+    idle.wave("body", amp_loc=(0.0, 0.012, 0.0), base_loc=(0.0, 0.012, 0.0), cycles=2)
     for s, tag in ((1.0, "l"), (-1.0, "r")):
-        idle.wave(f"disc_{tag}0", amp_rot=(0.0, 0.0, s * 0.6), base_rot=(0.0, 0.0, s * 0.6), cycles=2, phase=0.4)
+        for k in range(DISC):
+            a = s * (1.2 + 0.8 * k)
+            idle.wave(f"disc_{tag}{k}", amp_rot=(0.0, 0.0, a), base_rot=(0.0, 0.0, a), cycles=2, phase=0.4 - 0.9 * k)
+    for k in range(1, 4):
+        idle.wave(f"tail{k}", amp_rot=(0.0, 5.0, 0.0), cycles=1, phase=-0.7 * k)
     for t, l, r in ((0.0, 0, 0), (0.5, 0, 0), (0.75, 18, 0), (1.4, 18, -6), (1.7, 0, -14), (2.4, -10, -14),
                     (2.7, 0, 0), (IDLE_SEC, 0, 0)):
         idle.key("eye_l", t, (0.0, l, 0.0))

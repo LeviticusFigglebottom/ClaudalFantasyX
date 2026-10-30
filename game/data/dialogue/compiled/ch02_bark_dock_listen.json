@@ -1,0 +1,15 @@
+{
+ "format": 1,
+ "scene": "ch02_bark_dock_listen",
+ "source": "game/data/dialogue/ch02/ch02_bark_dock_listen.dlg",
+ "start": "ch02_bark_dock_listen",
+ "nodes": {
+  "ch02_bark_dock_listen": {
+   "headers": {"location": "ch02/haluna"},
+   "ops": [
+    {"op": "line", "id": "ch02_bark_dock_listen_001", "key": "DLG_CH02_BARK_DOCK_LISTEN_001", "speaker": "netmender", "emotion": "neutral", "voice": "", "src": 6},
+    {"op": "line", "id": "ch02_bark_dock_listen_002", "key": "DLG_CH02_BARK_DOCK_LISTEN_002", "speaker": "fisher", "emotion": "neutral", "voice": "", "src": 7}
+   ]
+  }
+ }
+}

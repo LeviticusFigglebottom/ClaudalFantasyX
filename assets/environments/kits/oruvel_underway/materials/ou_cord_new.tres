@@ -27,6 +27,7 @@ shader_parameter/use_algae = false
 shader_parameter/use_barnacles = false
 shader_parameter/use_moss = false
 shader_parameter/use_salt = false
+shader_parameter/uw_caustics = 1.2
 shader_parameter/wet_darken = 0.9
 shader_parameter/wet_flatten = 0.15
 shader_parameter/wet_roughness = 0.5

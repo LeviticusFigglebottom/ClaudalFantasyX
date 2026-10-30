@@ -1,0 +1,9 @@
+// Ch2 B03 (M4-A2P-115 A5): the Listen follow-up. The fragment itself is overheard once in passing (ch02_bark_chapel);
+// talking to them afterwards is a short exchange of its own, not the fragment again. Still nobody says "Cantor".
+title: ch02_bark_chapel_listen
+location: ch02/haluna
+---
+Reed [neutral]: The steps are swept. The shell's cut. There's nothing left to do but wait. #line:ch02_bark_chapel_listen_001
+Rhen [neutral]: Wait for what? #line:ch02_bark_chapel_listen_002
+Reed [soft_smile]: The tide. It always comes. #line:ch02_bark_chapel_listen_003
+===

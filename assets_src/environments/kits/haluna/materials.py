@@ -541,6 +541,24 @@ MATERIALS["kit_keth_turf"] = _ext_stone(_PEM + "ash_soil_albedo.png", _PEM + "as
                                         roughness_base=0.95, cavity_darken=0.3, variation_value=0.16,
                                         col_lichen=hexc("#8E9A6E"), **_DRY)
 
+# ---- The Prologue dressing pass (appended by env-art; the Lead, 10-30: beautiful and doomed at dusk) ----------------
+# The lit lamp globes read as white electric street lamps across P01 (albedo near white, emission 2.5 into the bloom).
+# Oil behind old salt-glass: amber and dim, so the four lamps glow as embers and Rhen's lantern stays the frame's flame.
+STANDARD["kit_lamp_glass_lit"] = {"albedo_color": hexc("#C98A4E"), "roughness": 0.35, "emission_enabled": "true",
+                                  "emission": hexc("#FF9447"), "emission_energy_multiplier": 1.2}
+# The towers' painted wet (the tide band, the old high-water ring, the rain streaks under each ledge) reads as dry grime
+# (env_weathering grime_from_wet): wet gloss mirrored the dusk sky and the stains vanished at P01's distance.
+MATERIALS["kit_iskarra_cladding"]["params"]["grime_from_wet"] = 1.0
+MATERIALS["kit_iskarra_cladding"]["params"]["col_grime"] = hexc("#5E5A4C")
+
+# ---- M4-A2P-1400 (appended by env-art): the Haluna beauty pass (the Lead, 10-30) -----------------------------------------
+# The windbreak trees read as black blots at eye height, lit side and backlit alike: their sprays are the atlas's
+# darkest blue-green cluster (about #2F5A45), and the dense crown's baked occlusion (ao_in_albedo 0.55) under a dim tint
+# left no green. A tint over 1 lifts the cluster, half the baked darkening, more sun let through the thick leaves and a
+# softer wrap: dark-green shade trees, their leaves catching the sea light.
+MATERIALS["kit_windbreak_leaf"]["params"].update({"col_tint": "Color(1.75, 1.8, 1.6, 1)", "ao_in_albedo": 0.25,
+                                                  "ao_strength": 0.6, "translucency": 0.7, "diffuse_wrap": 0.5})
+
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -32,7 +32,7 @@ Pell [neutral]: You are very good at asking. #line:ch10_dawn_004 #tn:"Not a comp
 @wait 1.5
 Pell [neutral]: I did not turn around. #line:ch10_dawn_007
 @wait 2.5
-Pell [sad]: She went into the sea. I watched her go. Seventy years. #line:ch10_dawn_008
+Pell [sad]: Ressa. My sister. She went into the sea. I watched her go. Seventy years. #line:ch10_dawn_008
 @wait 1.0
 @mark pell root_walk_out walk
 @mark toma line_2 walk

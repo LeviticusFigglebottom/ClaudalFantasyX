@@ -301,6 +301,11 @@ const VOWBOUND_ACT2_SIGNATURES := {
 }
 const VOWBOUND_ACT2_PATH := "res://game/data/battle/vowbound.json"
 const VOWBOUND_ACT2_SKILLS_PATH := "res://game/data/battle/skills.json"
+## The as-played summon pass (10-30): a Vowbound's first call plays its rise under the summon cinematic, which holds
+## choreo.json's summon_cinematic entry.sec (2.6 s); a rise longer than that is cut by its first action (Kesh's 3.0 s
+## rise lost its settle). Every Vowbound rises within it.
+const VOWBOUND_ALL: Array[StringName] = [&"ilun", &"kahre", &"virel", &"nhoa", &"hesk", &"ethren", &"kesh"]
+const VOWBOUND_RISE_SLACK_SEC := 0.05
 
 var hesk_made: Array[Node] = []
 
@@ -966,3 +971,21 @@ func test_act2_vowbound_skills_play_their_built_clips() -> void:
 func _vowbound_act2_json(path: String) -> Dictionary:
 	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
 	return parsed as Dictionary if parsed is Dictionary else {}
+
+
+func test_every_vowbound_rise_fits_the_call_hold() -> void:
+	var cine := BattleChoreo.load_data().get("summon_cinematic", {}) as Dictionary
+	var entry := float((cine.get("entry", {}) as Dictionary).get("sec", 0.0))
+	assert_true(entry > 0.0, "choreo.json has the summon cinematic's entry hold (the check is live)")
+	for id in VOWBOUND_ALL:
+		var made: Array[Node] = []
+		var a := (load(str(CreatureActor.row_for(id).get("scene", ""))) as PackedScene).instantiate() as CreatureActor
+		var tree := Engine.get_main_loop() as SceneTree
+		(tree.current_scene if tree.current_scene != null else tree.root).add_child(a)
+		made.append(a)
+		var sec := a.clip_length(&"rise")
+		var fits := sec > 0.0 and sec <= entry + VOWBOUND_RISE_SLACK_SEC
+		assert_true(fits, "%s rises in %.2f s (the hold is %.2f)" % [id, sec, entry])
+		for n in made:
+			n.get_parent().remove_child(n)
+			n.free()

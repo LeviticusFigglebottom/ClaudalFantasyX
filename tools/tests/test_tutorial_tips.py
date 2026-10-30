@@ -27,6 +27,12 @@ class TutorialTipsTest(unittest.TestCase):
         self.assertTrue(any("'nope' is not declared" in e for e in errs))
         self.assertTrue(any("used by another tip" in e for e in errs))
 
+    def test_a_list_of_whens_and_requires_any_are_checked_flag_by_flag(self) -> None:
+        tip = dict(GOOD, on="flag", when=["seen_a", "nope_when"], requires_any=["nope_any"])
+        errs, _ = vd.tutorial_tip_errors(_doc(tip), {"seen_a"})
+        self.assertTrue(any("'nope_when' is not declared" in e for e in errs))
+        self.assertTrue(any("'nope_any' is not declared" in e for e in errs))
+
     def test_the_shipped_file_is_clean(self) -> None:
         root = Path(__file__).resolve().parents[2]
         import json

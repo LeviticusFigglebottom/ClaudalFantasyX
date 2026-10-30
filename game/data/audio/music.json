@@ -54,7 +54,9 @@
     },
     "hush_coda": {
       "file": "res://assets/audio/music/hush_coda.ogg",
-      "_note": "the slice end card (B12), piano alone"
+      "beat": "free",
+      "resume": true,
+      "_note": "the slice end card (B12), piano alone. Also Ch9's act-break vigil (act1_ch09.md B10: 'hush_first_verse (piano coda, as the slice's end card)'), whose fade into the act card the end card's zone row then resumes from where it stopped, so the coda is one piece across the act break, never heard twice from the top (the Lead's 10-30 19:25 item)"
     },
     "haluna_dawn": {
       "beat": {"bpm": 50.0, "downbeat_offset_s": 0.5},
@@ -79,8 +81,14 @@
     "the_ebbing": {
       "beat": {"bpm": 64.0, "downbeat_offset_s": 0.5},
       "file": "res://assets/audio/music/the_ebbing.ogg",
-      "_note": "M3 Ch9, the Ebbing (through-composed)",
-      "markers": {"cantor": 11.75, "dance": 34.25, "dance_full": 56.75, "thinning": 79.25, "last_chord": 96.125}
+      "release": "the_ebbing_release",
+      "_note": "M3 Ch9, the Ebbing (through-composed). Laid to the scene as played (the Lead's 10-30 19:25 item): the dance full on the long line, its hero frame; wherever the scene silences it, its `release` plays instead of a plain fade (AudioDirector.play_music)",
+      "markers": {"dance_full": 11.75, "dance": 34.25, "cantor": 56.75, "thinning": 79.25, "last_chord": 96.125}
+    },
+    "the_ebbing_release": {
+      "file": "res://assets/audio/music/the_ebbing_release.ogg",
+      "beat": "free",
+      "_note": "the Ebbing let go: the last chord, the motes falling away, the Cantor's E held; unresolved, about 9 s (the_ebbing.py render_release)"
     },
     "tidecup_match": {
       "file": "res://assets/audio/music/tidecup_match.ogg",
@@ -495,8 +503,11 @@
       "drownbell": "drownbell",
       "ch01_hullgnaw": "hullgnaw", "ch04_spar_wraith": "spar_wraith", "ch05_cinder_matron": "cinder_matron", "ch06_inquisitor": "stillguard_inquisitor",
       "ch08_stair_hold_1": "seawall_hold", "ch08_stair_hold_2": "seawall_hold_rope", "ch08_stair_hold_3": "seawall_hold_last", "undertows_reach": "undertows_reach",
-      "ch10_mangrove_drowner": "mangrove_drowner", "ch11_lamp_engine": "lamp_engine", "ch12_avalanche_ram": "avalanche_ram", "ch15_wakefin": "wakefin"
+      "ch10_mangrove_drowner": "mangrove_drowner", "ch11_lamp_engine": "lamp_engine", "ch12_avalanche_ram": "avalanche_ram", "ch15_wakefin": "wakefin",
+      "ch14_malcor_venn": "malcor_venn", "ch14_water_steps": "court_steps", "ch14_hold_the_steps": "court_steps", "ch16_abiding_guard": "abiding_guard"
     },
+    "pending_encounters": ["ch14_malcor_venn", "ch14_water_steps", "ch14_hold_the_steps", "ch16_abiding_guard"],
+    "_pending_note": "M4-A2P-1951 (the Act II mix pass as played): the people bosses' and the Ch14 set piece's cues, wired before combat writes their encounters (the scripts already start ch14_malcor_venn, ch14_water_steps and ch16_abiding_guard; the chapter plan calls the set piece ch14_hold_the_steps, so both ids name court_steps until combat settles it). An id here drops off once encounters.json has it.",
     "phases": {
       "flood": {
         "stems_on": [

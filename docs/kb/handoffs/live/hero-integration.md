@@ -1926,3 +1926,139 @@ MERGE-READY @ (this commit).
   pass.
 - **Next:** big24 (with characters' jog, b344b974, and my 99989c2bc), then the run speed from the jog's measured
   travel and Haluna's cold entry.
+
+### Lead FAST-TRACK 10-30 15:49: big24's red test_qa_field_camera (lowlight.tscn:Sanctum), fixed
+- **Reproduced on big24 (efe7fb10, merged here):** with the committed FieldShore, `lowlight.tscn:Sanctum (shot Hall):
+  the leader is out of frame`. It passes with the fix.
+- **Cause:** a safety-catch bug in my guard. Lowlight's hall water plane (x 32–72, y −2.05) does cover the Sanctum
+  spawn (60, −8, 4), 6 m under it, the drowned sanctum. The refusals skip anyone more than underwater_m under (a
+  seabed walk), but the catch in `settle()` didn't. It put Rhen back on his last safe spot, the previous spawn's
+  (Gate or EngineHall), across the zone, so the camera at Sanctum lost him.
+- **Fix:**
+  - `settle()` does nothing more than underwater_m under a surface (the same rule as the refusals);
+  - a last safe spot more than `teleport_m` (2.0, field_movement.json "shore") away is forgotten, because a spawn or
+    a teleport put him here and the old spot is elsewhere.
+  - New `tests/unit/test_field_shore.gd`: the catch near the safe spot, a teleport forgets it, and no catch under a
+    surface.
+- **Checks:** test_qa_field_camera 2/0 (red before the fix), field_shore 3/0, qa_dock_edges 1/0 (23 zones).
+MERGE-READY @ (this commit).
+- **Run speed from characters' jog (the Lead, 10-30):** after big24, the heroes' run clip is characters' jog (a 2.6 m
+  stride at 164 steps a minute, `locomotion.json` run.speed_mps 3.545).
+  - **The field run stays 3.6 m/s,** 1.6% over the clip, so the body plays the jog at 1.02x and the feet plant.
+  - **3.55 was tried:** test_qa_walk_audit's Coilspire spiral then put Toma in the steps for 50 frames, a follower
+    path that sensitive to a 1.5% speed change, so the walk-audit routes are for another day.
+  - The data's doc says this, and **test_field_motor `test_the_field_run_is_the_jog_clips_speed`** pins the run
+    within 2% of the clip and inside 2.3–3.6.
+  - max_playback_scale stays 1.8 until Kerrid, Ysolde and Liss get the jog too (Kerrid's old run still needs 2.0x).
+  - Checks: field_motor 10/0, hero_field_actor 15/0 (the clip speeds match the measured foot plant), qa_walk_audit
+    1/0, validate_data 0/0.
+MERGE-READY @ (this commit).
+- **Next:** Haluna's cold entry and the battle return, re-measured on big24.
+- **Re-measured on big24 (+ this branch), headless, real time** (`scene_swap_probe`):
+  - **Haluna battle return, resident:** entry 461 ms, worst hidden frame 89 ms. **The same return reloading
+    (`--no-resident`):** 4,997 ms, with a 2,997 ms hidden frame. The playtest's black is gone at Haluna too.
+  - **Causeway battle return, resident:** 399 ms, worst hidden frame 33 ms.
+  - **Haluna cold entry from boot, with ResidentLoads on (`--to=haluna --resident-loads`):** entry 15,478 ms,
+    instantiate 899 ms, worst hidden frame 1,885 ms. Over ADR 0029's 3 s entry and 1 s hidden-frame budgets.
+    - This is the first entry from the title, while the hero bodies and the zone load cold. It isn't the
+      after-battle case, but it's the next loading item.
+    - **LEAD-ASK:** whose is it, the loading or resident-loads owner or mine (SceneRouter)? A first look would be
+      what the 15 s waits on: the resident-load swap hold versus the zone's own load.
+
+### Haluna's cold entry, profiled (the Lead 10-30 16:26: mine, ui-menus for ResidentLoads)
+- `scene_swap_probe --to=haluna`, headless (lavapipe, so judged by the split):
+
+  | Run | entry | swap held | instantiate | worst hidden frame |
+  |---|---|---|---|---|
+  | `--resident-loads`, cold with no warm (probe-only start; the 15–24 s figure) | 24.2 s | 560 frames | 0.9 s | 853 ms |
+  | `--resident-loads --warm-resident` (**the game's New Game**: the title warms the bodies) | **5.3 s** | 477 frames | 0.9 s | **699 ms** |
+  | ResidentLoads off | 6.6 s | 13 frames | 0.9 s | 3,467 ms |
+
+- **The hidden-frame target (≤ 1 s behind the New Game card) is met on the game's path:** 699 ms, even on lavapipe.
+  ResidentLoads moved the bodies' 3.5 s off the hidden frame as intended.
+- **The 15–24 s was the unwarmed probe,** a start the game never makes.
+- **What's left is the 5.3 s total,** almost all the swap held on Haluna's own `scene_loads` list: 424 resources,
+  57 MB, 4 in flight, requested only when the change starts. SceneRouter waits on nothing else.
+- **Filed M3-HER-1167 (ui-menus):** start the New Game zone's loads with `ResidentLoads.load_scene()` while the
+  title shows, as `warm()` does for the bodies, so the hold finds them in.
+
+### big25 (4b198810), merged here; the Lead 10-30 17:04
+- **The test_qa_field_camera red in big24 and big25 (lowlight.tscn:Sanctum) is fixed by 314559cfc,** which big25
+  doesn't carry (it took this branch before it). On big25 + this branch (1204cbffd, a fresh import):
+  test_qa_field_camera 2/0 and field_shore 3/0. **big26 needs 314559cfc, together with b335f0325.**
+- **The field-camera rows on big25 + this branch:**
+  - qa_field_camera 2/0 (spawn sweep with in-face and steep checks) covers 24 (DockShore), 47 (FerryAft) and 38
+    (Coilspire's Encounter). The only KNOWN entries are Tier4 (M3-HER-1157, env-art-b's spawn) and B02 (M3-HER-1160,
+    m2-slice).
+  - qa_party 3/0, camera_director 56/0.
+  - **37 (AfterHarrier):** the still on this tree shows Rhen clear at centre, Asha and Toma at a reading scale.
+  - **66 (Ch4 opening), real time:** never nearer than 5.1 m in the 12 s after the release; 6 of 111 samples during
+    the 1.2 s cross-town blend; settles on NemeDoor at 9.8 m.
+  - **21 (Haluna beach start), real time:** 0 of 121 samples out of frame; settles on beach_shallows at 7.5 m.
+MERGE-READY @ (this commit) (it includes 314559cfc and b335f0325).
+
+### URGENT, found while extending the resident return (the Lead 10-30 17:24): a resident zone came back deaf
+- **The bug, live in big24 and big25 for random fights:** a re-attached zone doesn't re-run `_ready`, and many nodes
+  let go of things in `_exit_tree` that they only take in `_ready`.
+  - Every ZoneStory and HalunaStory dropped its `field_interacted` and `field_trigger_entered` connections.
+  - Ashcrown and Coilspire dropped one more `field_interacted` connection each.
+  - Haluna's and the wake's shrines unregistered from the ShrineNetwork.
+  - **So after a random fight, that zone's story triggers and talk interactions stopped answering.**
+- **Fix (SceneRouter, generic; no other track's file touched):**
+  - `zone_links(zone)` records, at detach, every EventBus connection whose target is inside the zone, and its
+    registered shrines.
+  - `restore_links()` puts back whatever is missing on the first frame after the re-attach, before the spawn and
+    `scene_changed`.
+- **Guard:** new `tests/integration/test_resident_reattach.gd` detaches and re-attaches every field zone the way the
+  router does, then compares EventBus connections per signal, registered shrines and root children. Before the fix
+  it failed in every zone; now it passes. battle_return 1/0 and scene_router 17/0.
+MERGE-READY @ (this commit). **Take it into the next batch:** big24 and big25 carry the bug.
+
+### Lead FAST-TRACK 10-30 17:24 (cloud-qa row 74): scripted fights resident, destination prewarm, input on a clear screen
+- **Every fight now keeps the field resident** (random or scripted, `BattleRequest.pending()`). The way back
+  re-attaches the zone and calls `on_resident_return()` through it, so the zone **arrives again as a fresh load would**:
+  - ZoneStory and HalunaStory clear the hand-off and re-run their autostart, so a scripted win's scene plays. This also
+    fixes a second live big24/25 bug: after a random fight the story stayed `handed_off`, so `is_free()` was false,
+    which blocked interactions and further encounters.
+  - GreyboxZone re-applies `refresh_states()` / `apply_variant()`, since the win may have set their flags.
+- **The router waits for the zone to be back in the tree.** The battle scene is replaced at the end of a frame, so on
+  the first frame the zone wasn't in yet. Its arrival and its spawn placement had been skipped; random fights only
+  looked right because Rhen came back where he stood.
+- **A fight returning elsewhere** (`return_scene`, or another location) starts that scene's threaded load as the fight
+  begins, so the change after the victory panel finds it in.
+- **Input on a clear screen:** FieldController's device stick and interact wait for `screen_clear()` (SceneRouter's
+  fade at 0). Tests and cutscenes (input_override, interact()) are not gated. Test:
+  `test_the_stick_waits_for_the_fade_to_clear`.
+- **cloud-qa's return_probe** (qa/cloud-pass6 tools/gpu_bench/return_probe.gd, run here untracked; headless):
+
+  | case | black | covered | ready | moved | before (row 74) |
+  |---|---|---|---|---|---|
+  | tideline (scripted, Haluna) | 164 ms | 857 ms | 14.2 s (B02 plays, read through) | 14.3 s | 5.5 s black |
+  | oruvel_scuttlers (scripted) | 53 ms | 732 ms | 732 ms | (placed on AfterScuttlers) | 2.8 s black |
+  | causeway (random) | 58 ms | 748 ms | 748 ms | 834 ms | — |
+  | ch04_ferry (random) | 67 ms | 757 ms | 757 ms | 848 ms | — |
+  | ch06 (random) | 84 ms | 737 ms | 745 ms | 836 ms | — |
+  | drownbell → Haluna → the Ch4 card → the wake | 10.7 s | 4.8 s | in the wake's opening | — | ~4 s to Haluna |
+
+  - "moved" now comes after "covered", so the stick waits for the screen.
+  - Tideline's ready is the post-battle scene playing.
+  - Drownbell's return is a chain of three changes: a different zone (Haluna, prewarmed), then the chapter card,
+    then Ch4's wake. Its black is the card and the wake's own entry, story flow rather than the fight's return. If
+    the Lead wants it shorter, the lever is the card-to-wake change: M3-HER-1167's start-loads-early applies there too.
+- **Checks:** resident_reattach 1/0, battle_return 1/0, scene_router 17/0, zone_story 18/0, haluna_story 2/0,
+  field_controller 6/0, fp_ 30/0, qa_encounters 1/0, ch04_thread 3/0; gdlint and gdformat clean; validate_data 0/0.
+- **Ownership note:** `on_resident_return()` is a small new method in slice-polish's ZoneStory and HalunaStory
+  (game/flow). The resident field needs the stories to arrive again, and the bug (hand-off state kept, arrival
+  skipped) is from my change.
+MERGE-READY @ (this commit).
+
+### big27 (9572c412), merged here (56d3005d2); the Lead 10-30 18:44
+- **The field-camera rows on 9572c412 + this branch (only 799b6633a on top), a fresh import:**
+  - qa_field_camera 2/0 covers 24 (DockShore), 47 (FerryAft) and 38 (Coilspire's Encounter). The only KNOWN entries
+    are other tracks': Tier4 (M3-HER-1157, env-art-b) and B02 (M3-HER-1160, m2-slice).
+  - qa_party 3/0, camera_director 56/0.
+  - **37 (AfterHarrier):** the still is clean; Rhen at centre, the followers at a reading scale.
+  - **66 (Ch4 opening), real time:** never nearer than 5.1 m; 6 of 111 samples, all in the 1.2 s cross-town blend;
+    settles on NemeDoor at 9.8 m.
+  - **21 (Haluna beach start), real time:** 0 of 121 samples out of frame; settles on beach_shallows at 7.5 m.
+  - Unchanged from big23 and big25: **all six are fixed on the headless checks.** The PC confirms by hand.

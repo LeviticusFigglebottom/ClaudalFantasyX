@@ -1,6 +1,6 @@
 {
   "tutorial_tips": {
-    "doc": "M2-UI-24 (intro audit 2): first-time tips in the field. Each tip shows once per save: its seen 'flag' (declared in game/data/flags.tres) is set when it shows. 'on' is what raises it: 'field_ready' (the field takes input in a scene), 'near' (an interactable comes in reach whose tags include 'tag': its payload's keys, plus 'shrine' for a save shrine), or 'flag' (story flag 'when' becomes true). 'requires' flags must all be set. Text is title_key and body_key; a body may name bindings as {action} (an InputMap action), shown by the first key's name, or the first pad button's after the pad was used. Tips queue, one at a time. The card sits at 'panel' (x, y, w, h at the 1920 x 1080 reference; it grows for long text; its top sits below the area title's band, area_title.json, since both show when the field first takes input and a long name such as Corrow's night runs under it otherwise), fades over fade_sec, and stays hold_sec plus sec_per_char for each body character. It never shows while the field refuses input or a menu pauses the tree (a tip raised then waits), and the Accessibility setting 'tutorial_tips' turns them all off (raised tips are then dropped, not saved as seen). pad_deadzone: stick motion under it does not count as using the pad (for the bindings a body names). Ch1's own story prompts (ch01_field.json 'prompts') are separate.",
+    "doc": "M2-UI-24 (intro audit 2): first-time tips in the field. Each tip shows once per save: its seen 'flag' (declared in game/data/flags.tres) is set when it shows. 'on' is what raises it: 'field_ready' (the field takes input in a scene), 'near' (an interactable comes in reach whose tags include 'tag': its payload's keys, plus 'shrine' for a save shrine), or 'flag' (story flag 'when' becomes true). 'requires' flags must all be set. Text is title_key and body_key; a body may name bindings as {action} (an InputMap action), shown by the first key's name, or the first pad button's after the pad was used. Tips queue, one at a time. The card sits at 'panel' (x, y, w, h at the 1920 x 1080 reference; it grows for long text; its top sits below the area title's band, area_title.json, since both show when the field first takes input and a long name such as Corrow's night runs under it otherwise), fades over fade_sec, and stays hold_sec plus sec_per_char for each body character. It never shows while the field refuses input or a menu pauses the tree (a tip raised then waits), and the Accessibility setting 'tutorial_tips' turns them all off (raised tips are then dropped, not saved as seen). pad_deadzone: stick motion under it does not count as using the pad (for the bindings a body names). Ch1's own story prompts (ch01_field.json 'prompts') are separate. The Lead's first-hour pass (2026-10-30): 'when' may list flags (any raises it) and 'requires_any' asks one of its flags, so the Act I route (ch01_started, Ch1's first win) and the slice's both teach; pressing an action a tip's body names fades it out (TipCard.dismiss). Act II (M4-A2P-1702, act2-plan's ui/tutorials.md): the objective tip comes at Ch1's bell room (a Ch1 field_ready fires in the fade-in, before ch01_started is set: M4-A2P-1004 F5); Seven heroes, Records and Dark shrines; Swell mode waits for Progression's unlock flags.",
     "canvas_layer": 43,
     "panel": {"rect": [1347, 396, 525, 120], "pin": "top_right", "pad": 18, "title_height": 33, "glyph_px": 9},
     "fade_sec": 0.3,
@@ -8,9 +8,9 @@
     "hold_sec": 4.0,
     "sec_per_char": 0.04,
     "tips": [
-      {"id": "objective", "on": "field_ready", "requires": ["ch02_met_asha"], "flag": "tut_objective_seen",
+      {"id": "objective", "on": "flag", "when": ["ch01_saw_bell_room", "ch02_met_asha"], "flag": "tut_objective_seen",
        "title_key": "TIP_OBJECTIVE_TITLE", "body_key": "TIP_OBJECTIVE_BODY"},
-      {"id": "field_menu", "on": "flag", "when": "ch02_tideline_won", "flag": "tut_field_menu_seen",
+      {"id": "field_menu", "on": "flag", "when": ["ch01_wickfry_won", "ch02_tideline_won"], "flag": "tut_field_menu_seen",
        "title_key": "TIP_FIELD_MENU_TITLE", "body_key": "TIP_FIELD_MENU_BODY"},
       {"id": "save_shrine", "on": "near", "tag": "shrine", "flag": "tut_save_shrine_seen",
        "title_key": "TIP_SAVE_SHRINE_TITLE", "body_key": "TIP_SAVE_SHRINE_BODY"},
@@ -20,8 +20,12 @@
        "title_key": "TIP_MENU_SAVE_TITLE", "body_key": "TIP_MENU_SAVE_BODY"},
       {"id": "swell", "on": "field_ready", "requires": ["tut_menu_save_seen"], "flag": "tut_swell_seen",
        "title_key": "TIP_SWELL_TITLE", "body_key": "TIP_SWELL_BODY"},
-      {"id": "seven", "on": "field_ready", "requires": ["ch10_started"], "flag": "tut_seven_seen",
-       "title_key": "TIP_SEVEN_TITLE", "body_key": "TIP_SEVEN_BODY"}
+      {"id": "seven", "on": "flag", "when": ["ch10_started"], "flag": "tut_seven_seen",
+       "title_key": "TIP_SEVEN_TITLE", "body_key": "TIP_SEVEN_BODY"},
+      {"id": "records", "on": "flag", "when": ["ch13_archive_read"], "flag": "tut_records_seen",
+       "title_key": "TIP_RECORDS_TITLE", "body_key": "TIP_RECORDS_BODY"},
+      {"id": "dark_shrine", "on": "near", "tag": "shrine", "requires": ["ch14_declared_heretics"], "flag": "tut_dark_shrine_seen",
+       "title_key": "TIP_DARK_SHRINE_TITLE", "body_key": "TIP_DARK_SHRINE_BODY"}
     ]
   }
 }

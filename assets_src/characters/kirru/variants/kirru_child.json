@@ -1,0 +1,42 @@
+{
+ "_about": "A Kirru child (M4-A2P-053; act2_ch10.md B07 side scene: 'young, perhaps twenty, which is a child for the Kirru, already taller than Rhen'): Pell's build at 1.95 m, slight, the fur darker and plain (no grey), a short crest. No notched ear. Keys over pell_params.json (pell_variant.py).",
+ "height_m": 1.95,
+ "muscle": 0.35,
+ "mass": 0.06,
+ "_kirru": {
+  "ear_notch": {
+   "side": "L",
+   "depth_m": 0.0
+  },
+  "neck_s_deg": [
+   16.0,
+   -12.0
+  ],
+  "seed": 81
+ },
+ "_fur": {
+  "dark": "#2A1F18",
+  "mid": "#5E4838",
+  "pale": "#D2C4A8",
+  "grey_guard_share": 0.0,
+  "seed": 82
+ },
+ "_proportions": {
+  "age_years": 20,
+  "grey_guard_hair_share": 0.0,
+  "idle_sway": 0.35,
+  "breath": 0.9
+ },
+ "_crest": {
+  "count": 9,
+  "length_m": 0.13,
+  "width_m": 0.03,
+  "seed": 83
+ },
+ "_shell": {
+  "seed": 84
+ },
+ "_look": {
+  "cloth_tint": "#D2A070"
+ }
+}

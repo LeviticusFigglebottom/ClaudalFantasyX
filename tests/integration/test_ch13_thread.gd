@@ -41,6 +41,34 @@ func test_the_city_leads_to_the_sanctum_and_the_archive_and_back() -> void:
 	Game.state = saved_state
 
 
+## M4-A2P-114: the chapter's story in order: Ethren at the basin's edge (B05-B06), the Archive's three days (the
+## ledgers B07, the Cantor roll B08, the hands B09 on the third visit) and the pact at night back in the city (B10-B11).
+func test_the_still_city_plays_its_scenes_in_order() -> void:
+	_visit(CITY)
+	_go(&"to_sanctum", "ch13/sanctum", "Gate")
+	_visit(SANCTUM)
+	assert_true(_trigger(&"ledge").on_touched())
+	assert_true(bool(Game.get_flag(&"ch13_ethren_bound")), "Ethren is bound")
+	_go(&"to_city", "ch13/ansedra", "FromSanctum")
+	_visit(ARCHIVE)
+	assert_false(_trigger(&"roll").is_available(), "the roll waits on the ledgers")
+	assert_true(_trigger(&"ledgers").on_touched())
+	assert_true(bool(Game.get_flag(&"ch13_read_ledgers")), "the first day")
+	assert_true(_trigger(&"roll").on_touched())
+	assert_true(bool(Game.get_flag(&"ch13_read_cantor_roll")), "the second")
+	_go(&"to_city", "ch13/ansedra", "FromArchive")
+	_visit(CITY)
+	assert_false(bool(Game.get_flag(&"ch13_pact_of_silence")), "no pact before the third day")
+	_visit(ARCHIVE)
+	assert_true(bool(Game.get_flag(&"ch13_archive_read")), "the third day: the hands")
+	_go(&"to_city", "ch13/ansedra", "FromArchive")
+	_visit(CITY)
+	assert_true(bool(Game.get_flag(&"ch13_pact_of_silence")), "the pact at night")
+	assert_true(bool(Game.get_flag(&"ch13_complete")), "closes the chapter")
+	_close()
+	Game.state = saved_state
+
+
 ## Opens `path` (closing the zone before) and runs its arrival: a `go` ends the story's run, so each way is a visit.
 func _visit(path: String) -> void:
 	_close()

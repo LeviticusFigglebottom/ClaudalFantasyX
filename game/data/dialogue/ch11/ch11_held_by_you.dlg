@@ -4,9 +4,11 @@
 title: ch11_held_by_you
 location: ch11/sunken_vey
 ---
+// M4-CIN-1304 (cinematics): staged from act2_ch11_direction.md (shots and marks in game/data/cutscene/ch11/).
+@mark pell landing_pell
 @camera V08
 @music sunken_vey fade=2.0
-@mark asha landing_pell walk
+@mark asha landing_asha walk
 @wait 2.0
 Asha [grief]: I didn't know. Pell. If I'd known— #line:ch11_held_001
 Pell [neutral]: She is not lifted. She is held. #line:ch11_held_002
@@ -23,7 +25,7 @@ Pell [neutral]: You cannot. Not yet. #line:ch11_held_005
     @mark rhen line_back_a walk
     @mark liss line_front walk
 <<endif>>
-@wait 3.0
+@wait 4.0
 <<set $ch11_complete = true>>
 @camera release
 ===

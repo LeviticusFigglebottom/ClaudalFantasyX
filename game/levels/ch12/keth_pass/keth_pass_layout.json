@@ -1118,6 +1118,26 @@
     "beat": "to_quellan"
    },
    "yaw": 0.0
+  },
+  {
+   "id": "terrace",
+   "activation": "touch",
+   "at": [
+    40.0,
+    12.0,
+    -40.0
+   ],
+   "size": [
+    2.0,
+    0,
+    4.0
+   ],
+   "requires_flag": "ch12_started",
+   "blocked_by_flag": "ch12_ram_felled",
+   "payload": {
+    "beat": "terrace"
+   },
+   "yaw": 0.0
   }
  ],
  "encounters": {

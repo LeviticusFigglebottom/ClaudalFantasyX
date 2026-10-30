@@ -1,0 +1,7 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[resource]
+resource_name = "wedding_ring"
+albedo_color = Color(0.831, 0.643, 0.216, 1)
+metallic = 1.0
+roughness = 0.25
