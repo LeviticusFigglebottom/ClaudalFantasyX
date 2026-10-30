@@ -564,3 +564,4 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - **Checks:** dlgc 0/0 (328 scenes) · validate_data 0/0 · taskboard clean · tools dialogue tests OK · check_drafts 73/0 · Godot `dialogue` 86/0 after an import.
 - MERGE-READY Act II read-through @ 98e94c41c
 - BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 118–120, 1000; M4-A2P-112 items 3, 5 and 6.
+- **Correction (task ids):** big27's final renumbering moved my Act I read-through tasks 115/116/117 to **M4-A2P-1000/1001/1002**, not 118–120. This branch now carries the gate's three files. The Act II read-through request I had filed as 1000 is now **M4-A2P-1003**. Taskboard clean.
