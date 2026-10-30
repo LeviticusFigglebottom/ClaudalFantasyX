@@ -243,9 +243,9 @@
         20000,
         2000
       ],
-      "bytes": 662324,
+      "bytes": 749168,
       "lods": {
-        "shophouse_a": 14626,
+        "shophouse_a": 15722,
         "shophouse_a-lod1": 1084
       }
     },
@@ -254,9 +254,9 @@
         20000,
         2000
       ],
-      "bytes": 695548,
+      "bytes": 781112,
       "lods": {
-        "shophouse_b": 14806,
+        "shophouse_b": 15914,
         "shophouse_b-lod1": 1060
       }
     },

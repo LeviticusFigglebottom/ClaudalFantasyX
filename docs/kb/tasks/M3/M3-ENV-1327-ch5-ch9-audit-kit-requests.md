@@ -27,7 +27,9 @@ The zones and env-art-b's own pieces were fixed in place. These are in env-art's
   - Also done (M3-ENV-1330): the per-triangle cobble patches are gone.
   - **`market_boat_a`'s umbrella done:** eight timber ribs under the cloth, the cloth sagging between them and its
     hem scalloped. Rebuilt at 3904 tris (budget 9000); viewed on the boat in Ch7.
-  - Still open here: Tamsule's shophouse voids, the kits' preview slots, the headland's far facets, `camp_tent`
-    end-on, the order chapel.
+  - **Tamsule's shophouses stocked:** a lacquered counter across the open front with jars and a folded cloth, two
+    shelves on the back panel with jars, cloth bolts and baskets, and dyed cloth lengths hung from a pole
+    (`port._shop_stock`, its own rng). `shophouse_a/b` rebuilt (15.7k/15.9k of 20k); viewed from the lane.
+  - Still open here: the kits' preview slots, the headland's far facets, `camp_tent` end-on, the order chapel.
 
 ## Review log
