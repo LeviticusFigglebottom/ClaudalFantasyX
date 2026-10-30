@@ -1005,6 +1005,31 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - The four camera fixes wait on the 14:48 LEAD-ASK for a second shot budget. Moving them unverified would be
     guessing.
 
+### The Lead's 16:08 approval (10-30): the four Ch10–13 field cameras
+All four are moved in the generators (ch10/11/12/13_greybox.py) and regenerated; nothing else in the layouts changed.
+1. **ossa_fen `Clearing`:** the camera now stands on the clearing's east side at (118, 5, 6), looking west over the
+   platform at the way in. Before, it was outside the root ring, in the canopy.
+2. **lowlight:** a new `GateStep` volume (priority 2) covers the step outside the west door. Its camera is inside the
+   atrium at (6, 3.5, 3) and looks out through the door. Before, there was no volume there, so the default orbit
+   hugged the outside of the wall.
+3. **cloudloom `Hall`:** the camera now looks up the aisle from just inside the south wall at (0, 10.5, -22.5) to the
+   dais. Before, it was at z -15, outside the hall and inside the stair's cliff.
+4. **lamp_archive `LedgerBay`:** the camera is now in the aisle inside the door at (2, 3.4, -3), looking at the ledger
+   table. Before, it was at z 1.5, in the door frame.
+- **Viewed:** 4 re-renders of the same POIs (the second budget; 11 shots of it remain). All four now read: the
+  clearing platform, Rhen at the gate with the water beyond, the keth aisle to the dais, the stacks and the ledger
+  table.
+- **Checks:**
+  - Godot: ch10 (3/0), ch11 (3/0), ch12 (4/0), ch13 (4/0), qa_field_camera (2/0), hero_field_snaps (2/0),
+    layout (18/0), zone_map (22/0).
+  - validate_data, and the generator and flow tool tests (46 OK).
+- MERGE-READY @ d19b47b9d
+- **BACKLOG EMPTY (10-30, after 16:08).** Waiting on others:
+  - env-art-b: the Drowned Choir's dressing.
+  - M3-BPR-445, M3-UI-1242 and M4-A2P-061 (the Swell effects).
+  - The PC re-check of rows 34 and 39.
+  - The inherited tool reds named at 13:48.
+
 ## Exact next step
 **BACKLOG EMPTY (2026-10-30 ~02:00):** the flow and pacing pass is done (`docs/kb/qa/act1_flow_pacing_pass.md`) and the
 Act II chapter drafts are written (`docs/kb/plan/act2/chapters/`, pre-gate). Waiting on:
