@@ -122,6 +122,28 @@ reaches 3.59–3.66 m/s on open ground).
 - With the longer gaps, the main routes (straight-line spawn-to-spawn: 13–197 m) now hold 0–1 random fights each. The
   Coilspire path (102 m) and the derelict (13 m) hold none.
 
+## RE-RUN after "Merge lead/gate-big28" (integration @ c646c3a8, the scripted-fight resident return)
+Same probes and box. Milliseconds from Return, big27 → big28:
+
+| Fight | black | field in | fade clear | hero moves | resident | Verdict (≤ 1 s of black) |
+|---|---|---|---|---|---|---|
+| tideline (scripted) | 5098 → **426** | 4098 → 469 | 5649 → 1086 | 4277 → 14512 (the post-fight lines first) | yes | **PASS** |
+| Oruvel scuttlers (scripted) | 2893 → **57** | 3192 → 387 | 3582 → 735 | 3207 → 397 | yes | **PASS** |
+| the Drownbell (scripted, Shell Shrine → Haluna DockNight) | 14868 → 11086 (B11 and the chapter card on to Ch4) | 4079 → **1987** | 5542 → **5032** | 4478 → 2381 | no (another zone) | **FAIL:** Haluna is in by 2.0 s, but the screen stays black until 5.0 s |
+| causeway (random) | 75 → 54 | 409 → 387 | 767 → 740 | 450 → 837 | yes | PASS |
+| Ch4 ferry (random) | 62 → 69 | 389 → 394 | 753 → 759 | 449 → 850 | yes | PASS |
+| Ch6 ridge skippers (random) | 93 → 83 | 414 → 394 | 780 → 750 | 456 → 841 | yes | PASS |
+
+- **5 of 6 returns pass.** The Drownbell's is a cross-zone return (Shell Shrine → Haluna), so it can't stay resident. It
+  still holds about 5 s of black, about 2 s of load and then about 3 s more under the fade before B11 shows. Owner
+  integration-qa (with slice-polish for B11's opening fade). Row 74 is now partly fixed: only the Drownbell is left.
+- On the field-to-field returns the hero now moves only after the fade clears (837–850 ms against 740–759 ms): the
+  "walk blind" note is fixed.
+- **(b) Oruvel: edges PASS** (0 of 260 off the deck). **Boats: FAIL (partly):** still 5 pairs, unchanged from big27.
+  The second outrigger lies under the two plank bridges (0.61 and 2.76 m), a real clip, M3-ENV-1391's last box; the
+  dive raft's three are intended.
+- The fresh-profile playthrough past Haluna to the Act I end card is running on c646c3a8 (results below when done).
+
 ## RE-RUN after "Merge lead/gate-big27" (integration @ 9572c4129): playtest (a) and (b)
 Same probes and box. The deltas against big25:
 - **(a) Scripted-fight returns: still FAIL, unchanged.** Black from Return: tideline 5507 → 5098 ms, Oruvel scuttlers

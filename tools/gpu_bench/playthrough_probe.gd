@@ -89,6 +89,11 @@ func _run() -> void:
 		if path != last_scene:
 			last_scene = path
 			_progress("PLAY_SCENE %.1f %s" % [t, path])
+			if path.contains(until) and _player(cur) == null:
+				# A non-field goal (the Act I end card): reaching the scene is arriving.
+				print("PLAY_ARRIVED %.1f %s (flags raised: %d)" % [t, path, _flags.size()])
+				get_tree().quit()
+				return
 			stuck_logged = false
 			softlock_logged = false
 		if cur is FieldBattle:
