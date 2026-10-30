@@ -1348,6 +1348,21 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     - tools test_dlgc and the corpus suites 141 OK; check_drafts clean.
   - **For env-art (LEAD-ASK):** Kesh's memory has no set; K01–K08 frame the open dark past the Choir's floor. The
     Lamplighters and young Sefir are on M4-CIN-1305.
+- **BACKLOG EMPTY (2026-10-30, evening): every open item in this lane waits on another track:**
+  - **Act II stills** (M4-A2P-070..075, Ch10–Ch16 staged): wait on the people (M4-CIN-1305, the chapters track; the
+    Saints from creatures-b).
+  - **Ch13's R10 and Corran's front room:** M4-A2P-077 (chapters).
+  - **Ch15's flow:** plays none of Ch15's scenes (chapters).
+  - **Kesh's memory set:** env-art.
+  - **PC-QUEUE:** the GPU.
+  - **Act III (ADR 0207):**
+    - Ch19's vigil already reuses the prologue's P01/P02 and its `by_asha` mark (nothing to stage);
+    - Ch17's drafts (D01–D18) need Dace's hull, cabin and dry-dock set in `ch17/hollowmere`, which isn't built;
+    - Ch18 and Ch20 have no zones;
+    - M5-A3P-1600 (`@memory`) is in review. The Ch20 drafts can open each memory with `@memory on 1.5 look=held`;
+      I'm noting that for story, not editing their drafts.
+  - **Capacity offer (ADR 0207 §1):** cinematics can take frames, staging or cutscene tooling for another track by
+    request task.
 ### PC-QUEUE
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan
