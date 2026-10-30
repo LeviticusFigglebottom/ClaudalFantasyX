@@ -105,6 +105,19 @@
         "c": [["lacquer_black", "cold_blue_stone", 0.3, 0.7], ["order_marble", "cold_blue_stone", 0.2, 0.6]]
       }
     },
+    "quellan": {
+      "island": "ullar",
+      "about": "Quellan's Ullari townsfolk, the highland town of stone and woven awnings (act2_ch12 B08; bible section 5.7): undyed wool, keth-cord red, indigo, Toma's people (skin round skin_toma). A stand-in community from the bodies that exist (the Lead, 2026-10-30) until the characters track's Ullari costume set (act2_tracks.md row 55) replaces it.",
+      "accepts": ["corrow", "pemakar", "tamsule", "brightwater", "oruvel", "saltwright"],
+      "skin": ["#A06A4C", "#76482F"],
+      "reach_bands": {"adult": [0, 0], "elder": [0, 0]},
+      "hair": [["hair_black", "hair_dark_brown", 0.0, 0.4]],
+      "cloth": {
+        "a": [["bone", "sand_cloth", 0.0, 0.6], ["sand_cloth", "timber_weathered", 0.2, 0.6]],
+        "b": [["indigo_dye", "cold_blue_stone", 0.0, 0.5], ["laterite", "timber_weathered", 0.2, 0.6], ["timber_weathered", "sand_cloth", 0.0, 0.4]],
+        "c": [["lacquer_red", "laterite", 0.0, 0.6], ["lacquer_red_deep", "timber_weathered", 0.0, 0.4], ["indigo_dye", "bone", 0.0, 0.3]]
+      }
+    },
     "order": {
       "island": "order",
       "about": "The Order of the Still Water (bible section 4): tenders, a clerk and a Reed. Their dress is imported: white and marble, a pale-ochre or indigo sash; a temple tender may wear lacquer red.",

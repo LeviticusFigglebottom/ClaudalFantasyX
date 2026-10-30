@@ -1944,12 +1944,12 @@
       "age_band": "adult",
       "sex": "male",
       "build": "heavy",
-      "body": "crowd_man_heavy",
+      "body": "crowd_man_heavy_b",
       "tints": {
-        "cloth_a": "#BCAF96",
-        "cloth_b": "#6C6C6E",
-        "cloth_c": "#262E4C",
-        "hair": "#251B15"
+        "cloth_a": "#DED4C0",
+        "cloth_b": "#394871",
+        "cloth_c": "#283256",
+        "hair": "#201A16"
       },
       "work": "kneel_mourn",
       "about": "Kneels on the south ledge."
@@ -2033,6 +2033,186 @@
       },
       "work": "",
       "about": "Beside her mother at the west ledge, very still."
+    },
+    {
+      "id": "quellan_weaver",
+      "zone": "ch12/quellan",
+      "stage_actor": "CrowdSpots/quellan_weaver",
+      "role": "folder",
+      "island": "ullar",
+      "community": "quellan",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "body": "crowd_woman_medium_b",
+      "tints": {
+        "cloth_a": "#DFD0B3",
+        "cloth_b": "#34436F",
+        "cloth_c": "#465177",
+        "hair": "#271C15"
+      },
+      "work": "fold",
+      "about": "A weaver at her door on the street (the weaver's bark: tide patterns nobody here has seen)."
+    },
+    {
+      "id": "quellan_weaver_2",
+      "zone": "ch12/quellan",
+      "stage_actor": "CrowdSpots/quellan_weaver_2",
+      "role": "folder",
+      "island": "ullar",
+      "community": "quellan",
+      "age_band": "elder",
+      "sex": "female",
+      "build": "lean",
+      "body": "crowd_elder_woman_a",
+      "tints": {
+        "cloth_a": "#E5D8BE",
+        "cloth_b": "#394971",
+        "cloth_c": "#7A1A14",
+        "hair": "#8F8A84"
+      },
+      "work": "fold",
+      "about": "An old weaver folding cloth at her door."
+    },
+    {
+      "id": "quellan_herder",
+      "zone": "ch12/quellan",
+      "stage_actor": "CrowdSpots/quellan_herder",
+      "role": "townsfolk",
+      "island": "ullar",
+      "community": "quellan",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "heavy",
+      "body": "crowd_man_heavy",
+      "tints": {
+        "cloth_a": "#E6DAC0",
+        "cloth_b": "#435275",
+        "cloth_c": "#AF3929",
+        "hair": "#201A16"
+      },
+      "work": "carry",
+      "about": "A herder carrying fleece down the street."
+    },
+    {
+      "id": "quellan_carrier",
+      "zone": "ch12/quellan",
+      "stage_actor": "CrowdSpots/quellan_carrier",
+      "role": "townsfolk",
+      "island": "ullar",
+      "community": "quellan",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "lean",
+      "body": "crowd_woman_heavy",
+      "tints": {
+        "cloth_a": "#E3D6BA",
+        "cloth_b": "#2F3E6D",
+        "cloth_c": "#525B7D",
+        "hair": "#271C15"
+      },
+      "work": "carry",
+      "about": "Carries water from the well."
+    },
+    {
+      "id": "quellan_sweeper",
+      "zone": "ch12/quellan",
+      "stage_actor": "CrowdSpots/quellan_sweeper",
+      "role": "sweeper",
+      "island": "ullar",
+      "community": "quellan",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_man_lean_a",
+      "tints": {
+        "cloth_a": "#3B4A71",
+        "cloth_b": "#33426E",
+        "cloth_c": "#3D4973",
+        "hair": "#221B16"
+      },
+      "work": "sweep",
+      "about": "Sweeps the frost off his step."
+    },
+    {
+      "id": "quellan_cord_mender",
+      "zone": "ch12/quellan",
+      "stage_actor": "CrowdSpots/quellan_cord_mender",
+      "role": "netmender",
+      "island": "ullar",
+      "community": "quellan",
+      "age_band": "elder",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_elder_man_a",
+      "tints": {
+        "cloth_a": "#2E3D6C",
+        "cloth_b": "#31406D",
+        "cloth_c": "#B22B21",
+        "hair": "#948F89"
+      },
+      "work": "mend",
+      "about": "An old man mending a pass-cord by the well."
+    },
+    {
+      "id": "quellan_mender",
+      "zone": "ch12/quellan",
+      "stage_actor": "CrowdSpots/quellan_mender",
+      "role": "netmender",
+      "island": "ullar",
+      "community": "quellan",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "medium",
+      "body": "crowd_man_medium_a",
+      "tints": {
+        "cloth_a": "#2C3B6B",
+        "cloth_b": "#364670",
+        "cloth_c": "#5B6381",
+        "hair": "#201A16"
+      },
+      "work": "mend",
+      "about": "Mends a woven awning's cord."
+    },
+    {
+      "id": "quellan_child",
+      "zone": "ch12/quellan",
+      "stage_actor": "CrowdSpots/quellan_child",
+      "role": "child",
+      "island": "ullar",
+      "community": "quellan",
+      "age_band": "child",
+      "sex": "female",
+      "build": "teen",
+      "body": "crowd_girl_teen",
+      "tints": {
+        "cloth_a": "#E0D2B6",
+        "cloth_b": "#425275",
+        "cloth_c": "#565F7F",
+        "hair": "#251B15"
+      },
+      "work": "",
+      "about": "A girl at the well."
+    },
+    {
+      "id": "quellan_child_2",
+      "zone": "ch12/quellan",
+      "stage_actor": "CrowdSpots/quellan_child_2",
+      "role": "child",
+      "island": "ullar",
+      "community": "quellan",
+      "age_band": "child",
+      "sex": "male",
+      "build": "small",
+      "body": "crowd_boy_small",
+      "tints": {
+        "cloth_a": "#E3D6BA",
+        "cloth_b": "#34436F",
+        "cloth_c": "#2E3C6C",
+        "hair": "#211A16"
+      },
+      "work": "",
+      "about": "Her small brother."
     }
   ]
 }
