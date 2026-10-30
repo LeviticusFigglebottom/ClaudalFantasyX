@@ -2178,3 +2178,12 @@ MERGE-READY @ (this commit).
   - Act III: the Kite hub zone (`ch18/kite`) needs Ch18's chapter data first. I'll take its field side (party staging, camera volumes) when it lands.
 LEAD-ASK: the M5-A3P block now holds 1980 and 1981 (hero-integration). Is there an Act III chapter-select start (`ch18`) planned? Both guards would gain a runtime landing smoke from it.
 MERGE-READY @ (this commit).
+
+### 2026-10-30: the UiAudio reconnect ERROR (the Lead asked)
+- **It is caused by the resident return, but the fix is on audio's side.** The re-attached zone fires `node_added` again, `AudioDirector` asks `UiAudio.watch` again, and `watch()` connects the same `request` callable twice. The causeway fight-and-return logs 6 "Signal 'used' is already connected" errors.
+- SceneRouter can't stop `node_added` firing. The guard belongs in `UiAudio.watch`: skip a connection that already exists.
+- I tested that patch locally: 0 errors after the return, `--filter=audio` 185/0. I didn't commit it, because `game/audio/**` is audio's.
+- Filed as **M3-HER-1169** (role audio), with the exact diff and the repro command.
+- The Haluna `--ready-profile` split was already offered above. It's in big33 per the Lead's merge note.
+LEAD-ASK: please pass M3-HER-1169 to audio (a 4-line, tested guard in `ui_audio.gd`), or tell me to apply it myself if audio is busy.
+MERGE-READY @ (this commit).
