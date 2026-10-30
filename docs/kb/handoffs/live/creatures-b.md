@@ -775,3 +775,9 @@ What the Act II fights still need from others: enemy rows and encounters (combat
 - **Act II as-played passes, running:** ch10_mangrove_drowner (Ethren called), ch11_lamp_engine (Hesk), and
   ch12_avalanche_ram (Nhoa), on the real stage with the sweep (intro, mid-fight, each phase, defeat). Ch13 has no
   boss encounter yet.
+- **Ch11 Lamp Engine, as played** (Hesk called): intro, both hits, **the phase change now seen** (`phase_change` caught
+  mid-way, then `hit_opened` and `ko_opened`), the victory; Hesk rises and falls cleanly. Nothing to fix on the
+  models. **The default camera's dark slab (for env-art / battle-presentation), traced:** the BattleCamera at
+  (0.72, 3.99, 9.76) sits inside the bounds of `Arena/Ground/engine_hall` (the ray's first hit at 0 m), and the Engine
+  is 7–8 m behind it: a wall of the hall stands between the battle camera and the fight in every wide frame (the
+  opening, mid-fight, the KO). The close shots (intro, hits, phase) are clear.
