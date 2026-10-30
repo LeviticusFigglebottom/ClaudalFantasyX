@@ -1,0 +1,23 @@
+# sha 43af4e0c7d7df7a8003566e71d88beb8ebdb8f7b
+res://tests/integration/test_footsteps_jog.gd
+res://tests/integration/test_shrine_audio.gd
+res://tests/unit/test_ashcrown_audio.gd
+res://tests/unit/test_audio_live_hooks.gd
+res://tests/unit/test_audio_reverb.gd
+res://tests/unit/test_battle_audio.gd
+res://tests/unit/test_choreo_audio.gd
+res://tests/unit/test_crowd_villagers.gd
+res://tests/unit/test_cutscene_face_per_actor.gd
+res://tests/unit/test_cutscene_sound.gd
+res://tests/unit/test_field_hud_legibility.gd
+res://tests/unit/test_flags.gd
+res://tests/unit/test_footstep_contacts_audio.gd
+res://tests/unit/test_haluna_footstep_surfaces.gd
+res://tests/unit/test_input_parity_glyphs.gd
+res://tests/unit/test_menu_motion.gd
+res://tests/unit/test_prop_audio.gd
+res://tests/unit/test_pseudo_locale.gd
+res://tests/unit/test_save_music.gd
+res://tests/unit/test_tutorial_tips.gd
+res://tests/unit/test_villager_snaps.gd
+res://tests/unit/test_zone_return.gd

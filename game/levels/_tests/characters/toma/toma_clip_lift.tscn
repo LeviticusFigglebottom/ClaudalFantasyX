@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/toma/toma_stage.tscn" id="stage"]
+[ext_resource type="AnimationLibrary" path="res://assets/characters/toma/anim/toma_clips.tres" id="clips"]
+
+[node name="TomaStage" instance=ExtResource("stage")]
+clip = &"lift"
+clip_time = 2.2
+clip_library = ExtResource("clips")

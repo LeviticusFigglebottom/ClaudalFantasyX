@@ -343,11 +343,13 @@ class TestClips(unittest.TestCase):
                 "sabe": ["sit_watch", "shout_lines"], "scaleman": ["weigh_stamp", "nod"],
                 "skipper_sadi": ["cast_off", "laugh"], "ferrymaster": ["nod"], "purser": ["offer_goods"],
                 "elder": ["give_boat"], "garo": ["fold_boat", "nod", "laugh", "take_boat"],
-                "tender": ["open_pavilion", "palms_level", "paint_gilt", "open_chamber", "hand_key"], "ione": ["nod"],
+                "tender": ["open_pavilion", "palms_level", "paint_gilt", "open_chamber", "hand_key",
+                           "paint_gilt_line"], "ione": ["nod"],
                 "poolkeeper": ["chalk_slate"], "fenn": ["feed_fire", "hand_driftwood", "hand_key"],
                 "gatekeeper": ["open_gate"], "hobb": ["drill_call"], "marra": ["hold_hands", "look_back"],
                 # M4-A2P-050: the vows, B05 and the barge
-                "tobin": ["hold_hands", "tobin_falls"], "merel": ["hold_hands", "pole_barge"],
+                "tobin": ["hold_hands", "tobin_falls", "give_cord", "lift", "shield_merel", "sit_down"],
+                "merel": ["hold_hands", "pole_barge", "pull_pin", "pole_push", "bow", "offer_palm", "lay_cloth"],
                 "aldous": ["push_raft", "hold_up_housing", "nod"],  # M4-A2P-052: H13, H14
                 "ullari_woman": ["tie_knot", "touch_knot", "nod"]}  # M4-A2P-053: the pass-cord
         for npc in NPCS:
