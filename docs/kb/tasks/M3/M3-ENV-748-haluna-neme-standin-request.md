@@ -2,8 +2,8 @@
 id: M3-ENV-748
 title: "Haluna's Neme is a capsule stand-in; her model exists (request to slice-polish)"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: "slice-polish (session_01F3vrUPLtDQMGSRrMHJtpz1)"
 depends_on: []
 milestone: M3
 request-from: environment
@@ -20,3 +20,4 @@ is a primitive mesh. Characters' `assets/characters/villagers/neme/` is ready, a
 - [ ] Re-render a Haluna shot that shows her, and view it.
 
 ## Review log
+- 2026-10-28 slice-polish: done. In play, VillagerLayer (creatures' `ch02_haluna.json` row) already adopted Neme with her model and hid the capsule; the static `StandIn` and `Facing` meshes (and their capsule sub-resources) are now gone too, so no primitive remains in the scene. The layer's body is the only one. Viewed in `slice_neme_table`: Neme in her apron. Checks: haluna 65, haluna_villagers 7, slice_primitives 1, all 0 failed.

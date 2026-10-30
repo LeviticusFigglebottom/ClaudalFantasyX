@@ -26,6 +26,18 @@ both fixed and pushed. The branch head also carries:
   - any battle shot with an Act I creature, since the heights and the near-face anchor move its effects. I am
     self-rendering those next.
 
+**BACKLOG EMPTY (2026-10-28 19:xx), MERGE-READY @ the branch head: the Lead's 18:37 item (the Fisher Stair).**
+- **Merged origin/claude/env-art-b** (its marks and camera hint). The Ch8 arena ids agree on both sides.
+- **M3-BPR-1325:** the Climb anchors on `StairHead_ward`. The stair-aimed skills have their own effects there, and the
+  Climb's turn cuts to `the_stair_head`.
+  - SELF-RENDERED and viewed: battle_ch08_stair_hold (no capsule), battle_ch08_intercept, and the Climb's cut.
+- **The prop mesh is not missing:** the Corrow kit's `fisher_stair` stands in all three seawall arenas. So there is no
+  LEAD-ASK.
+- **Shots for the gate:** battle_ch08_stair_hold and battle_ch08_intercept move (the storm sky and the marks), plus the
+  earlier list.
+- **What is left is not mine:** combat's design tasks (Kerrid's and Liss's techniques), creatures-b's vfx_anchors rows
+  and Hullgnaw's intro clip, and the gate's baselines.
+
 **BACKLOG EMPTY (2026-10-28 16:xx, MERGE-READY @ the branch head):** the Lead's 13:25 list and the combat-owned
 presentation tasks are done, self-rendered and viewed:
 - M3-BPR-411 (VFX coverage closed);

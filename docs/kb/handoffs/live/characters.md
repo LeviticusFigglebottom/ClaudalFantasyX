@@ -95,6 +95,18 @@ Branch `claude/characters` (this environment; cloud session_01JqzzxgJU9Dmu7fRhmC
   - Liss and Rhen hair fringe (liss_review.md).
   - Toma's beard edge, once the toma_face render is back.
   - Pell stays blocked on M3-NAR-01.
+- **Pell (M3-CHR-506), 2026-10-28, worktree `/home/user/pell-wt`, branch `chr-pell-wip` (local, not pushed):** built
+  and in `review` (reviewer rendering), the sheet's §12 questions carried with their defaults (M3-NAR-1000 still todo).
+  LOD0 47.0k / 4.09 MB, LOD1 27.3k / 1.33 MB; 21 clips (story + contract + revive), other libraries byte-identical;
+  battle actor, name-shell toggle, 14 shots self-rendered and viewed (no baselines); rig probe passes with pinned
+  allowances; job `pell` verified natively and on the two numpy paths (see the task notes). Not final art: the face reads
+  as a muzzled human and the fur as a carving at full figure (`docs/kb/art/characters/pell_review.md`). Next: merge it,
+  render the 14 `pell_*` shots, Rendering decides the face/fur pass. Handoff `2026-10-28-character-pell-1.md`.
+  **Look-dev pass done (same branch, 4 commits after the coordinator's review):** an otter-like head (the warp now
+  reshapes the donor head onto a Kirru head surface; no ADR needed), short soft fur with standing outline fur, the split
+  reed girdle (§12 Q3's default overridden: it read as nudity), the crest skinned (it floated), stronger face shapes,
+  storm_call's palm on the throat. Verified on three numpy paths, rig probe and tests green. Left: the almond lids,
+  human ears, uniform fur at full figure (pell_review.md).
 
 ## Queue
 1. ~~M2-CHR-01 Rhen~~ (review) → 2. ~~M2-CHR-02 Toma~~ (review) → 3. ~~M2-FP-07 clips~~ (review) → 4. ~~M1-CHR-12~~ (review;
@@ -242,6 +254,15 @@ Branch `claude/characters` (this environment; cloud session_01JqzzxgJU9Dmu7fRhmC
   - **Seen:** self-rendered and viewed before and after.
   - **Left:** Ione's top stands out under the arms like short cap sleeves (it did before); a faint edge where each strap lies over the panel; Ione's fringe shows the card tips as short dark dashes.
   - **Shots to re-approve:** these six NPCs' face and front shots.
+
+- MERGE-READY @ 787211f1: **Pell (M3-CHR-506)**, the Kirru hero. ui-menus can bake his portrait from pell_face.
+  - **Head:** the MPFB2 donor head warped onto an otter-like head (broad low skull, short muzzle, nose pad, whisker pads, thick neck). It reads as otter or weasel in profile and three-quarter. All 40 face shapes, no ADR needed.
+  - **Build:** short soft fur with 4,200 outline fur cards; the reed mantle, name-shell (blank and carved), the staff in a closed left fist; pell.md §4.2's reed girdle (the §12 Q3 default overridden on review: it read as nudity).
+  - **Clips and actor:** 21 clips (9 story, the 12-clip battle contract, revive) and pell_battle.tscn. LOD0 52.3k, 4.72 MB; LOD1 27.2k, 1.31 MB.
+  - **Checks:** verify --job pell 37/37 identical on all three numpy paths; test_pell 20, test_hero_clips, test_hero_battle_clips, test_blender_builds and TestRigIntegrityPell OK (ratchets reasoned in rig_checks.json: ko squat, arm across the chest); Godot post_import 21, hero_stage 11, pell 3; validate_data, taskboard, gdlint and gdformat OK.
+  - **Seen:** self-rendered all 14 pell_* shots and viewed them.
+  - **Not yet Kerrid's bar** (a second look-dev pass is running): the eyes are human almond lids with whites, the ears small human ears, the face's fur smooth up close, the body thin and smooth between the fur cards; the right hand is open in storm_call.
+  - **Requests:** M3-BPR-1340 (battle framing for his height), M3-CIN-1240 (crest values with face tags). Narrative's pell.md §12 questions are carried with their defaults.
 
 ### Render requests
 RENDERED+APPROVED (gpu/render-characters-dc93a5d) RENDER-REQUEST @ dc93a5de: asha_front,asha_q34,asha_profile,asha_face_neutral,asha_face_smile,asha_face_grief,asha_sleeve_s0,asha_sleeve_s4,asha_extreme_pose,asha_face_stylized_compare,asha_clip_kneel_over_rhen,asha_clip_walk,asha_clip_offer_hand,asha_clip_face_west,asha_clip_laugh,asha_clip_run,asha_smile_variant_compare,asha_battle_idle,rhen_battle_idle,toma_battle_idle,rhen_front,rhen_q34,rhen_profile,rhen_back,rhen_face_neutral,rhen_face_smile,toma_front,toma_q34,toma_profile,toma_back,toma_face_neutral,toma_face_smile,rhen_clip_take_hand,rhen_clip_kneel,toma_clip_walk,toma_clip_talk,asha_battle_attack,rhen_battle_attack,toma_battle_attack,asha_clip_walk_cycle,asha_clip_turn,rhen_clip_walk_cycle,rhen_clip_turn,toma_clip_walk_cycle,toma_clip_turn; why: M1-CHR-15 rebuilt Asha, Rhen and Toma (skirt gathers, shoulder correctives, spear) on top of M2-CHR-12's clips

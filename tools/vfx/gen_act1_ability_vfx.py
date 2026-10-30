@@ -10,9 +10,8 @@ Art rules kept here (color_script.md, decisions_log):
   - glimmer_lift (released, rising gold) is only for release; nobody's attack uses it.
   - Undertow-spawn wounds are spawn_wound / glimmer_held, sinking or sideways, never rising.
   - Lamps burn oil (oil_lamp, dusk_gold), never glimmer. Vowbound light is glimmer_bound: steady, no drift.
-Not mapped on purpose: skills whose target is the stair (`ward`: grip_the_stair, rope_dive, hand_closes). The ward is
-an entry with no fighter, so an effect would play at the VFX node's origin. Their own motion is
-BattleChoreo's push reaction on the climb.
+The skills aimed at the stair (`ward`: grip_the_stair, rope_dive, hand_closes) play at the arena's StairHead_ward mark
+(M3-BPR-1325, BattleVfx.entry_mark); their motion is BattleChoreo's push reaction on the climb.
 
 Usage: python3 tools/vfx/gen_act1_ability_vfx.py [--check]   (--check: exit 1 if the file would change)
 """
@@ -178,6 +177,14 @@ SKILLS = {
     "recrust_gather": fx("chest", charge("volcanic_stone", "ember_orange", 40), "The Matron's crust re-forms."),
     "lines_taut": fx("chest", charge("sand_cloth", "timber_weathered", 30), "The Spar-Wraith's lines go taut."),
     "climb_up": fx("feet", rise("sand_cloth", "bone", 20, 0.8), "The Climb: a group goes up the stair."),
+    # M3-BPR-1325: aimed at the stair (the Climb, a ward entry with no fighter), played at the arena's StairHead_ward mark.
+    "grip_the_stair": fx("feet", slash("spawn_wound", "glimmer_held", 34) + sink("deep_teal_shadow", "abyss_navy", 18),
+                         "A crawler grips the stair head: wound-light clawing sideways, the climbers falter."),
+    "rope_dive": fx("chest", [layer("sand_cloth", "cumulus_shadow", 40, 0.5, 0.95, (2.5, 4.0), 20, (0, -3.0, 0), (0.06, 0.14),
+                                    (1.0, -0.4, 0), 0.2, energy=1.3)],
+                    "A squall wing dives the hand-line: spray and rope fibre whipped down across the stair."),
+    "hand_closes": fx("chest", sink("abyss_navy", "storm_slate", 70, 0.9) + burst("spawn_wound", "deep_teal_shadow", 30, -1.0),
+                      "The storm's hand closes on the stair head: the dark comes down whole, wound-light crushed out."),
     "surge_ebb": fx("feet", sink("deep_teal_shadow", "sea_glow", 20), "The Surge ebbs."),
     "rouse_polyp": fx("chest", charge("glimmer_held", "spawn_wound", 30), "The Drownbell rouses a polyp."),
     "surge_crawler": fx("feet", spray("deep_teal_shadow", "sea_glow", 30), "The Surge throws up a crawler."),

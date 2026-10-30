@@ -97,3 +97,13 @@ swap wait while holders make progress, as the reveal hold already does (M2-ARC-0
 - Coilspire's dressing build (about 1.7 s of CPU on the cloud box): env-art-b and act1-chapters.
 - Haluna's zone build and dresser (about 0.9 s each): first-playable and env-art.
 - Battle arenas and creatures are not listed yet. The field battle's entry is the next measurement.
+
+## Amendment 2 (2026-10-28, the swap wait past the frame cap)
+- **The rule.** A held swap waits past `PREWARM_WAIT_MAX_FRAMES` only while a holder reporting loading work
+  (`swap_wait_progress()`, which ResidentLoads has) moved within `SWAP_STALL_MS` (3 s of wall time). It never waits past
+  `SWAP_WAIT_CAP_MS` (15 s). One hero battle actor takes about 1.6 s to load, and Godot reports its threaded progress as
+  0 until it is in, so a frame-count stall window released the first battle early. That cost 1.4 s of `stage.spawn` in
+  one frame.
+- **ShaderPrewarm.** Its `wait_progress()` counts frames for the reveal's stall check. It is not work, so it never
+  extends a swap: a swap held only by the prewarm stops at the frame cap exactly as before.
+- **Tests.** `test_scene_router_swap::test_only_loading_holders_extend_the_swap_wait` covers the rule.

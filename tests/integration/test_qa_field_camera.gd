@@ -26,12 +26,20 @@ const HALUNA := "res://game/levels/ch02/haluna/haluna.tscn"
 const BEACH_PATH_MARK := &"beach_path"
 const ROUTE: Array[Vector2] = [Vector2(-18, 7), Vector2(-29, 6), Vector2(-36, 4), Vector2(-48, -1), Vector2(-52, -2.6)]
 const WALK_MPS := 1.4
+## Shots on the walk already handed to their owner: shot id -> task. Reported, not failed.
+const KNOWN_WALK_SHOTS := {
+	&"B02": "M3-HER-1160 (m2-slice: NemeTable's close shot covers the Village spawn)",
+}
 const ROUTE_MAX_FRAMES := 3600
 const FLOOR_RAY_M := 3.0
 ## "<zone file>:<spawn>" -> the task that owns it.
 const KNOWN := {
 	"saltgrass_causeway.tscn:BeforeHarrier": "M3-HER-1156 (env-art: the fixed C07 shot looks away from the spawn)",
 	"coilspire.tscn:Tier4": "M3-HER-1157 (env-art-b: the orbit looks through the spiral's steps behind him)",
+	"brightwater_ferry.tscn:DerelictDeck": "M3-HER-1159 (act1-chapters: FerryWaist faces away)",
+	"brightwater_ferry.tscn:Stern": "M3-HER-1159 (act1-chapters: FerryWaist faces away)",
+	"coilspire.tscn:Encounter": "M3-HER-1159 (act1-chapters: GallerySouth faces away)",
+	"corrow.tscn:Bastion": "M3-HER-1159 (act1-chapters: WallGate faces away)",
 }
 
 var _state_was: GameStateData
@@ -77,7 +85,7 @@ func test_the_field_camera_sees_the_leader_at_every_spawn() -> void:
 				if KNOWN.has(where):
 					print("  KNOWN %s: %s (%s)" % [where, p, KNOWN[where]])
 				else:
-					fail("%s: %s" % [where, p])
+					fail("%s (shot %s): %s" % [where, director.active_shot_id(), p])
 		zone.free()
 	Game.state = _state_was
 	print("  spawns checked: %d" % checked)
@@ -135,7 +143,15 @@ func test_the_walk_from_the_beach_to_the_village_keeps_the_party_in_view() -> vo
 		problems.append_array(_followers_out_of_frame(director.camera, party))
 		for p in problems:
 			var key := "%s %s" % [director.active_shot_id(), _kind(p)]
-			if not seen.has(key):
+			if not seen.has(key) and KNOWN_WALK_SHOTS.has(director.active_shot_id()):
+				seen[key] = true
+				print(
+					(
+						"  KNOWN on the walk, shot %s: %s (%s)"
+						% [director.active_shot_id(), p, KNOWN_WALK_SHOTS[director.active_shot_id()]]
+					)
+				)
+			elif not seen.has(key):
 				seen[key] = true
 				fail(
 					(

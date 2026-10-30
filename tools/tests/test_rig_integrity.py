@@ -245,6 +245,10 @@ class TestRigIntegrityKerrid(_HeroGuards, unittest.TestCase):  # M3-CHR-505
     hero = "kerrid"
 
 
+class TestRigIntegrityPell(_HeroGuards, unittest.TestCase):  # M3-CHR-506
+    hero = "pell"
+
+
 class TestRigIntegrityMoll(_HeroGuards, unittest.TestCase):  # M3-CHR-507
     hero = "moll"
 

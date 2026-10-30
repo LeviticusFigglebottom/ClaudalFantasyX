@@ -229,14 +229,17 @@ def staff_hold(pose: dict, persona: dict) -> dict:
         return pose
     pose = dict(pose)
     assist = ELBOW_ASSIST if pose.pop("_assist", True) else 0.0  # a strike keeps its authored arm (battle_pose_at)
-    want = qmul(qeuler(pose.get("DEF-hand.R", (0.0, 0.0, 0.0))), prop_hold(persona))  # the hand's world turn
+    sd = persona.get("staff_side", "R")  # M3-CHR-506: Pell holds his staff in the left hand
+    hand_b, fore_b = f"DEF-hand.{sd}", f"DEF-forearm.{sd}"
+    want = qmul(qeuler(pose.get(hand_b, (0.0, 0.0, 0.0))), prop_hold(persona))  # the hand's world turn
     fore_dir = _FORE.get(_hero_of(persona), np.array([0.0, -1.0, 0.0]))  # the forearm's line at rest
-    fore = np.asarray(pose.get("DEF-forearm.R", (0.0, 0.0, 0.0)), dtype=float)
+    fore = np.asarray(pose.get(fore_b, (0.0, 0.0, 0.0)), dtype=float)
+    hand_chain = _HAND_CHAIN if sd == "R" else tuple(b.replace(".R", ".L") for b in _HAND_CHAIN)
 
     def wrist_for(f: np.ndarray) -> tuple:
         chain = np.array([0.0, 0.0, 0.0, 1.0])
-        for b in _HAND_CHAIN:  # the forearm's accumulated world turn: child turns on the left
-            chain = qmul(chain, qeuler(f if b == "DEF-forearm.R" else pose.get(b, (0.0, 0.0, 0.0))))
+        for b in hand_chain:  # the forearm's accumulated world turn: child turns on the left
+            chain = qmul(chain, qeuler(f if b == fore_b else pose.get(b, (0.0, 0.0, 0.0))))
         w = qmul(want, qinv(chain))  # the hand's own turn that gives exactly the tilt
         axis = qrot(chain, fore_dir)  # the forearm's line: a turn about it is the forearm's own roll
         sw, tw = _swing_twist(w, axis / np.linalg.norm(axis))
@@ -251,8 +254,8 @@ def staff_hold(pose: dict, persona: dict) -> dict:
     if bend > WRIST_MAX:  # no wrist bends further: past it, the prop goes where the fist points
         sw = qpow(sw, WRIST_MAX / bend)
     out = dict(pose)
-    out["DEF-forearm.R"] = tuple(float(x) for x in fore)
-    out["DEF-hand.R"] = _euler_yxz(qmul(sw, tw))
+    out[fore_b] = tuple(float(x) for x in fore)
+    out[hand_b] = _euler_yxz(qmul(sw, tw))
     return out
 
 
@@ -282,7 +285,11 @@ def stand(persona: dict) -> dict:
          "DEF-upper_arm.R": (4.0, 0.0, a), "DEF-forearm.R": (-12.0, 0.0, 0.0),
          "DEF-spine.001": (lean * 0.4, 0.0, 0.0), "DEF-spine.006": (-lean * 0.3, 0.0, 0.0),
          "DEF-thigh.L": (-lean * 0.5, 0.0, 0.0), "DEF-thigh.R": (-lean * 0.5, 0.0, 0.0)}
-    if persona["staff"]:  # the staff a little forward of the body (asha.md §2.3), held upright in the fist on the bent
+    if persona["staff"] and persona.get("staff_side", "R") == "L":  # M3-CHR-506: Pell's staff arm, the mirror
+        sa = persona.get("staff_arm", STAFF_ARM)  # his own: the long arm closer in, the staff beside the left foot
+        p["DEF-upper_arm.L"] = (sa[0], 0.0, -(a + sa[1]))
+        p["DEF-forearm.L"] = (sa[2], 0.0, 0.0)
+    elif persona["staff"]:  # the staff a little forward of the body (asha.md §2.3), held upright in the fist on the bent
         # arm (M2-CHR-515: the forearm comes forward so the wrist stays straight with the thumb up)
         p["DEF-upper_arm.R"] = (STAFF_ARM[0], 0.0, a + STAFF_ARM[1])
         p["DEF-forearm.R"] = (STAFF_ARM[2], 0.0, 0.0)
@@ -293,6 +300,8 @@ def stand(persona: dict) -> dict:
         p["DEF-upper_arm.L"] = (4.0, 0.0, -a + GUARD_ARM)
     if persona.get("hunch"):  # M3-CHR-505, kerrid.md §10.1: the bend is all above the waist (the Kerrid block below)
         p.update(hunch_pose(persona["hunch"], p))
+    if persona.get("neck_s"):  # M3-CHR-506, pell.md §10.1: the long neck's S (the Pell block below)
+        p.update(neck_s_pose(persona["neck_s"], p))
     return p
 
 
@@ -405,6 +414,9 @@ def walk_pose(t: float, persona: dict, stride: float, knee: float, arm: float, b
         "DEF-upper_arm.R": (-(arm * (0.35 if persona["staff"] else (BOOK_SWING if persona.get("book") else 1.0)))
                             * math.cos(ph), 0.0, 0.0),
     })
+    if persona["staff"] and persona.get("staff_side", "R") == "L":  # M3-CHR-506: the left hand carries the staff
+        p = add(p, {"DEF-upper_arm.L": (-0.65 * arm * math.cos(ph), 0.0, 0.0),
+                    "DEF-upper_arm.R": (-0.65 * arm * math.cos(ph), 0.0, 0.0)})
     return p
 
 
@@ -437,6 +449,8 @@ def _pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) ->
         return liss_pose_at(clip, t, length, sk, persona)
     if persona.get("hunch") and clip in KERRID_OWN:  # M3-CHR-505: Kerrid's own clips (kerrid_pose_at, below)
         return kerrid_pose_at(clip, t, length, sk, persona)
+    if persona.get("neck_s") and clip in PELL_OWN:  # M3-CHR-506: Pell's own clips (pell_pose_at, below)
+        return pell_pose_at(clip, t, length, sk, persona)
     if persona.get("inquisitor"):  # M3-CHR-507: Moll's clips (moll_pose_at, below)
         return moll_pose_at(clip, t, length, sk, persona)
     if persona.get("stillguard"):  # M3-CHR-508: the Stillguard soldiers' clips (sg_pose_at, below)
@@ -700,6 +714,7 @@ def book_fan_weight(clip: str, t: float) -> float | None:
 BLEND_SHAPES = {"book_fan": ("Book", "book_fan"), "cast_glyph": ("Book", "book_fan")}
 
 
+HERO_LENGTHS: dict = {}  # M3-CHR-506: {hero: {clip: s}}, a hero's own length where a clip name is shared (go_still)
 LENGTHS = {"idle": 6.0, "walk": 1.1, "run": 0.7, "talk": 3.2, "kneel_over_rhen": 1.8, "laugh": 2.2,
            "rise_to_stand": 2.0, "offer_hand": 1.4, "take_hand": 1.2, "walk_to_chamber": 1.4, "emerge_doorway": 2.4,
            "face_west": 1.6, "spear_level": 1.6, "lower_spear": 1.6, "palms_level": 2.0, "catch_rhen": 1.4,
@@ -1072,6 +1087,8 @@ def _victory(hero: str, u: float, sk: Skeleton, persona: dict) -> dict:
         return kerrid_victory(u, sk, persona)
     if hero == "moll":  # M3-CHR-507: the iron grounded, the long look over the field (his block)
         return moll_victory(u, sk, persona)
+    if hero == "pell":  # M3-CHR-506: very still, listening to the quiet (his block); never his back turned
+        return pell_victory(u, sk, persona)
     if hero == "liss":  # M3-CHR-03: weight on one hip, the gloved hand flexing, the head up and turned off (her block)
         return add(_sway(sk, persona, 0.018 * s1, 0.01), add(liss_victory(u), {
             "DEF-spine.003": (-1.5 * math.sin(2 * ph), 4.0 * math.sin(ph + 0.5), 0.0),
@@ -1098,6 +1115,9 @@ def _victory(hero: str, u: float, sk: Skeleton, persona: dict) -> dict:
             "DEF-spine.006": (-8.0 + 5.0 * b, 9.0 * math.sin(ph + 0.8), 3.0 * math.sin(2 * ph)),
             "DEF-upper_arm.L": (-118.0 + 14.0 * b, 0.0, 16.0), "DEF-forearm.L": (-30.0 - 20.0 * b, 0.0, 0.0),
             "DEF-upper_arm.R": (-6.0 * math.sin(4 * ph), 0.0, -4.0), "DEF-forearm.R": (-40.0 - 10.0 * b, 0.0, 0.0)})
+
+    if hero != "toma":  # M3-CHR-506: every hero has an explicit branch (Toma's is the one below)
+        raise KeyError(hero)
 
     # Toma: the spear planted upright at his right side, the hand on it at the chest; he rolls his shoulders, the
     # left then the right, half a loop apart, and his head tilts with them as the stiffness goes out of his neck
@@ -1339,6 +1359,8 @@ def _staff_arm_comp(persona: dict) -> dict:
     the staff in the fist, so the keys (not the rest frames) add back the difference and strike as authored."""
     if not persona["staff"] or persona.get("inquisitor"):  # M3-CHR-507: Moll's keys are authored on today's stand
         return {}
+    if persona.get("staff_side", "R") != "R":  # M3-CHR-506: Pell's keys are authored on today's (left-handed) stand
+        return {}
     return {"DEF-upper_arm.R": (STAFF_ARM_M2[0] - STAFF_ARM[0], 0.0, STAFF_ARM_M2[1] - STAFF_ARM[1]),
             "DEF-forearm.R": (STAFF_ARM_M2[2] - STAFF_ARM[2], 0.0, 0.0)}
 
@@ -1554,6 +1576,8 @@ def clip_length(hero: str, clip: str) -> float:
     if spec is not None:
         return clip_length(hero, spec["alias"]) if "alias" in spec else spec["frames"] / FPS
     n = LOCO_CYCLE_FRAMES.get(hero, {}).get(clip)
+    if not n and clip in HERO_LENGTHS.get(hero, {}):  # M3-CHR-506: a hero's own length for a shared clip name
+        return HERO_LENGTHS[hero][clip]
     return n / FPS if n else LENGTHS[clip]
 
 
@@ -3313,7 +3337,7 @@ def _arc(a: np.ndarray, b: np.ndarray) -> np.ndarray:
 def prop_hold(persona: dict) -> np.ndarray:
     """The hand's turn that stands this hero's staff or spear upright (identity for a hero without one)."""
     hero = _hero_of(persona)
-    if hero in GRIP and hero not in _HOLD and GRIP[hero].get("R", ("",))[0] == "mesh":
+    if hero in GRIP and hero not in _HOLD and any(v[0] == "mesh" for v in GRIP[hero].values()):
         Skeleton(ROOT / "assets" / "characters" / hero / f"{hero}.glb")  # reads it (grips_init)
     return _HOLD.get(hero, np.array([0.0, 0.0, 0.0, 1.0]))
 
@@ -4405,6 +4429,421 @@ CLIPS["ivo"] = ["idle", "walk", "run", "talk"]
 STORY_LEG_HEROES = STORY_LEG_HEROES + ("ivo",)
 FOOT_FLAT["ivo"] = FOOT_FLAT["moll"]  # the trousers gathered into the shin wraps (Moll's kit)
 KO_LEGS["ivo"] = dict(KO_LEGS["toma"])  # on both knees, up on the bent toes (the hems take no flexed ankle)
+
+
+# ---------------------------------------------------------------------------------------------
+# Pell (M3-CHR-506, pell.md §1, §10): the wading-bird stand. Plumb from the heels to the shoulders, the long neck
+# rising 20 degrees forward of vertical and the head pitched back so the face is level (the new persona key `neck_s`,
+# default 0: absent, so the other libraries do not change: DEF-spine.004 flexed forward by it, DEF-spine.005 and the
+# head counter-pitched back by NECK_S_UPPER and NECK_S_HEAD of it, 0.75 in all; `stand` adds it the way it adds
+# `lean`); the feet close (stance 0.9), the arms long and close (arms_down 30); idle sway 0.15, the stillest living
+# figure in the cast, with a slow deep breath (0.8). The fishing-staff stands in his **left** hand (the new persona key
+# `staff_side`, default "R": stand's staff arm, the walk's reduced swing and staff_hold's counter-rotation on that
+# side; the M2-CHR-515/544 grip and the fist's hole on the left hand, GRIP and GRIP_ALWAYS below), planted beside the
+# left foot in the idle (IDLE_GROUNDED). Every movement is economical: one movement, then stillness. A persona with
+# `neck_s` takes his own idle, walk, run and talk and his story clips here (pose_at dispatches PELL_OWN; HERO_LENGTHS
+# gives his own lengths where a clip name is shared). His battle idiom is a fishing heron (pell.md §10.3): long
+# stillness, one fast exact movement, stillness again; the staff stands or darts *down*, it is never levelled as a
+# lance or twirled, and he never leaves the ground. His `ko` is his own (KO_OWN): he sinks back onto his heels and the
+# neck lowers until the head is a hand's width from the floor, the staff across his knees.
+# ---------------------------------------------------------------------------------------------
+NECK_S_UPPER = 0.35  # of neck_s: DEF-spine.005's counter-pitch back
+NECK_S_HEAD = 0.40  # of neck_s: the head's (with the upper neck's, 0.75: pell.md §10.1)
+PELL_HEAD_HOLD = 0.3  # pell.md §10.1: the head's vertical motion in the walk, of the hips' (the neck takes the rest)
+PELL_WALK = (25.3, 44.0, 10.0, 0.016, 0.0)  # stride (1.15 x the shared 22), knee (feet lifted higher), arm, bob, lean
+PELL_RUN = (34.0, 78.0, 18.0, 0.028, 4.0)  # a long lope
+PELL_RUN_NECK = 10.0  # degrees: the run's neck lowered forward (the face held level)
+PELL_HEAD_TURN = 10.0  # degrees: the idle's one slow head turn per loop
+PELL_TALK = (10.0, 32.0, 50.0, 4.0)  # talk: the right upper arm forward, the forearm, the palm's turn up, the head tilt
+PELL_STORM_STRAIGHTEN = 15.0  # degrees: storm_call straightens the neck's S by this
+PELL_LISTEN = (15.0, 10.0, 8.0)  # listen_tilt: the tilt to his right, the turn to his right, the neck's extension
+PELL_BOW = 10.0  # back_to_sea: the head bowed
+PELL_ELBOW_MAX = 155.0  # degrees: the most the reach search bends an elbow
+PELL_THROAT_HAND = (45.0, 90.0, 30.0)  # storm_call's palm: fingers up the throat, the palm (-x) on it (searched)
+PELL_THROAT_FRONT = 0.075  # m: the throat's front off the neck's axis (the thick neck), where the palm lies
+PELL_THROAT_ELBOW = 0.22  # m: storm_call's elbow stays this far under the shoulder, tucked (the mantle's cap stays)
+PELL_STEP_DOWN = (0.30, 0.22)  # descend_rocks: each step's drop and its reach forward (m)
+PELL_CROUCH = 25.0  # defend: the knees' bend
+PELL_STAFF_HOLD_L = 0.25  # m: the right hand joins the staff this far below the left fist (defend, attack)
+PELL_STAFF_ARM = (20.0, 8.0, -70.0)  # stand's staff arm (as STAFF_ARM): the forearm level, the staff upright by a foot
+PERSONA["pell"] = {"sway": 0.15, "lean": 0.0, "staff": True, "staff_side": "L", "arms_down": 30.0, "stance": 0.9,
+                   "breath": 0.8, "neck_s": 20.0, "staff_arm": PELL_STAFF_ARM}
+PELL_STORY = ["storm_call", "descend_rocks", "go_still", "listen_tilt", "back_to_sea"]
+PELL_OWN = {"idle", "walk", "run", "talk", *PELL_STORY}
+CLIPS["pell"] = ["idle", "walk", "run", "talk", *PELL_STORY]
+LOOPS |= {"storm_call", "back_to_sea"}
+HERO_LENGTHS["pell"] = {"idle": 12.0, "walk": 1.4, "run": 0.9, "talk": 4.0, "storm_call": 4.0, "descend_rocks": 3.6,
+                        "go_still": 1.2, "listen_tilt": 1.4, "back_to_sea": 8.0}
+
+
+def neck_s_pose(n: float, p: dict) -> dict:
+    """The neck's S (added to `stand`'s pose p): pell.md §1 and §10.1."""
+    head = np.asarray(p.get("DEF-spine.006", (0.0, 0.0, 0.0)), dtype=float)
+    return {"DEF-spine.004": (n, 0.0, 0.0), "DEF-spine.005": (-NECK_S_UPPER * n, 0.0, 0.0),
+            "DEF-spine.006": (float(head[0]) - NECK_S_HEAD * n, float(head[1]), float(head[2]))}
+
+
+def _neck(d: float) -> dict:
+    """A delta on the S: the neck's lower bone flexed d degrees more, the upper neck and the head counter-pitched so
+    the face keeps its level (d < 0 straightens the S: the head rises)."""
+    return {"DEF-spine.004": (d, 0.0, 0.0), "DEF-spine.005": (-NECK_S_UPPER * d, 0.0, 0.0),
+            "DEF-spine.006": (-(1.0 - NECK_S_UPPER) * d, 0.0, 0.0)}
+
+
+def _pell_breath(u: float, cycles: int, persona: dict, sway: float) -> dict:
+    """The idle's terms: the sway (a slow weight shift), the breath (the chest only, `cycles` per loop)."""
+    ph = 2 * math.pi * u
+    b = persona.get("breath", 1.0)
+    return {"hips": (0.010 * sway * math.sin(ph), -0.002 * sway * (1 - math.cos(2 * ph)), 0.0),
+            "DEF-spine.001": (0.0, 0.0, -1.6 * sway * math.sin(ph)),
+            "DEF-spine.003": (1.1 * b * math.sin(cycles * ph), 0.0, 0.0),
+            "DEF-spine.006": (0.0, 1.5 * sway * math.sin(ph + 0.6), 0.6 * sway * math.sin(ph)),
+            "DEF-thigh.L": (0.0, 0.0, 1.2 * sway * math.sin(ph)), "DEF-thigh.R": (0.0, 0.0, 1.2 * sway * math.sin(ph)),
+            "DEF-upper_arm.R": (1.2 * b * math.sin(cycles * ph + 0.4), 0.0, 0.0)}
+
+
+def _neck_len(sk: Skeleton) -> float:
+    return float(np.linalg.norm(sk.g_t["DEF-spine.006"] - sk.g_t["DEF-spine.004"]))
+
+
+_PELL_REACH: dict = {}
+
+
+def _pell_reach(sk: Skeleton, pose: dict, side: str, target: np.ndarray, key: str,
+                elbow_below: float | None = None) -> dict:
+    """The arm turns (world axes, absolute) that bring the `side` wrist (DEF-hand.<side>'s head) to `target`
+    (skeleton frame) on the pose, by coordinate search (deterministic), cached under `key`. `elbow_below` (m): keep
+    the elbow at least this far under the shoulder joint (the mantle's shoulder cap follows the clavicle, so a raised
+    right arm passes up through it)."""
+    if key in _PELL_REACH:
+        return _PELL_REACH[key]
+    ua, fa = f"DEF-upper_arm.{side}", f"DEF-forearm.{side}"
+    x = [*np.asarray(pose.get(ua, (0.0, 0.0, 0.0)), dtype=float), float(pose.get(fa, (0.0, 0.0, 0.0))[0])]
+
+    def err(v: list) -> float:
+        q = dict(pose)
+        q[ua] = (v[0], v[1], v[2])
+        q[fa] = (v[3], 0.0, 0.0)
+        _g, t = _loco_fk(sk, q)
+        lift = 0.0 if elbow_below is None else max(0.0, float(t[fa][1] - t[ua][1]) + elbow_below)
+        return float(np.linalg.norm(t[f"DEF-hand.{side}"] - target)) + 0.0004 * max(0.0, v[3]) + \
+            0.002 * max(0.0, -PELL_ELBOW_MAX - v[3]) + 2.0 * lift  # the elbow bends one way, to a limit
+
+    best = err(x)
+    step = 16.0
+    while step > 0.05:
+        moved = False
+        for i in range(4):
+            for s in (step, -step):
+                y = list(x)
+                y[i] += s
+                e = err(y)
+                if e < best - 1e-12:
+                    x, best, moved = y, e, True
+        if not moved:
+            step *= 0.5
+    out = {ua: (round(x[0], 3), round(x[1], 3), round(x[2], 3)), fa: (round(x[3], 3), 0.0, 0.0)}
+    _PELL_REACH[key] = out
+    return out
+
+
+def pell_walk(u: float, sk: Skeleton, persona: dict, gait: tuple, neck: float = 0.0) -> dict:
+    """The shared walk on his gait, with his head-hold (pell.md §10.1): the neck's S takes up PELL_HEAD_HOLD's
+    complement of the hips' bob, so the head moves forward smoothly and level (no head pumping); the staff swings a
+    little with the left arm and lands with the left foot."""
+    ph = 2 * math.pi * u
+    p = walk_pose(u, persona, *gait)
+    bob = -gait[3] * (0.5 + 0.5 * math.cos(2 * ph))  # the hips' drop (walk_pose's)
+    sin_s = math.sin(math.radians(persona["neck_s"] + neck))
+    d = -math.degrees((1.0 - PELL_HEAD_HOLD) * bob / max(_neck_len(sk) * sin_s, 1e-6))
+    p = add(p, _neck(-d + neck))
+    p["DEF-hand.L"] = (-6.0 * math.cos(ph), 0.0, 0.0)  # the staff's own tilt (staff_hold): forward as the left leg is
+    return p
+
+
+def pell_pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> dict:
+    u = t / length
+    sway = persona["sway"]
+    base = planted(sk, persona)
+    if clip == "idle":
+        # the wading-bird stand; one slow head turn of PELL_HEAD_TURN degrees per loop (12 s), then still
+        turn = _win(u, 0.30, 0.42) * (1.0 - _win(u, 0.55, 0.68))
+        return add(add(base, _pell_breath(u, 3, persona, sway)), {"DEF-spine.005": (0.0, 0.3 * PELL_HEAD_TURN * turn,
+                                                                                      0.0),
+                                                                    "DEF-spine.006": (0.0, 0.7 * PELL_HEAD_TURN * turn,
+                                                                                      0.0)})
+    if clip == "walk":
+        return pell_walk(u, sk, persona, PELL_WALK)
+    if clip == "run":
+        p = pell_walk(u, sk, persona, PELL_RUN, PELL_RUN_NECK)
+        return add(p, {"DEF-forearm.R": (-55.0, 0.0, 0.0), "DEF-forearm.L": (-25.0, 0.0, 0.0),
+                       "DEF-upper_arm.R": (0.0, 0.0, -8.0)})
+    if clip == "talk":
+        # economy: once per loop the right hand opens slightly at hip height, palm up, and closes; the head tilts
+        g = math.sin(math.pi * min(max((u - 0.25) / 0.5, 0.0), 1.0)) ** 2
+        up, fo, palm, tilt = PELL_TALK
+        return add(add(base, _pell_breath(u, 1, persona, sway)), {
+            "DEF-upper_arm.R": (-up * g, 0.0, 0.0), "DEF-forearm.R": (-fo * g, 0.0, 0.0),
+            "DEF-hand.R": (0.0, -palm * g, 0.0), "DEF-spine.006": (0.0, 0.0, tilt * g)})
+    if clip == "storm_call":
+        # Ch8 B13: the neck extends up and forward (the S straightens), the chest lifts, the right palm flat on the
+        # throat's cream stripe; the chest swells and settles with the note over the loop
+        ph = 2 * math.pi * u
+        swell = 0.5 - 0.5 * math.cos(ph)
+        p = add(add(base, _neck(-PELL_STORM_STRAIGHTEN)), {"DEF-spine.003": (-3.0 - 2.5 * swell, 0.0, 0.0),
+                                                          "DEF-spine.002": (-1.0 * swell, 0.0, 0.0),
+                                                          "DEF-spine.006": (-4.0, 0.0, 0.0)})
+        p.update(_pell_throat_hand(sk, persona, p))
+        return add(p, {"hips": (0.0, 0.004 * swell, 0.0)})
+    if clip == "descend_rocks":
+        # Ch9 N17: two steps down a rock face, the staff placed first on the lower rock each time, then the feet,
+        # slow and sure; ends in the stand on the lower rock
+        drop, reach = PELL_STEP_DOWN
+        p = dict(base)
+        for k, (a0, a1) in enumerate(((0.05, 0.5), (0.5, 0.95))):
+            staff = math.sin(math.pi * _win(u, a0, a0 + 0.12))  # the staff reaches forward and down, then up again
+            step = _win(u, a0 + 0.12, a1 - 0.08)
+            swing = math.sin(math.pi * step)
+            lead, trail = ("R", "L")
+            p = add(p, {"DEF-upper_arm.L": (-24.0 * staff, 0.0, 0.0), "DEF-hand.L": (14.0 * staff, 0.0, 0.0),
+                        f"DEF-thigh.{lead}": (-28.0 * swing, 0.0, 0.0), f"DEF-shin.{lead}": (36.0 * swing, 0.0, 0.0),
+                        f"DEF-thigh.{trail}": (-6.0 * swing, 0.0, 0.0), f"DEF-shin.{trail}": (14.0 * swing, 0.0, 0.0),
+                        "DEF-spine.001": (6.0 * swing, 0.0, 0.0), "DEF-spine.006": (8.0 * swing, 0.0, 0.0)})
+            _ = k
+        down = _win(u, 0.17, 0.42) + _win(u, 0.62, 0.87)
+        return add(p, {"hips": (0.0, -drop * down, reach * down)})
+    if clip == "go_still":
+        # Ch9 N17: the sway eases to nothing over 0.6 s and holds; the breath goes on
+        k = 1.0 - _win(t, 0.0, 0.6)
+        b = _pell_breath(u, 1, persona, 0.0)
+        return add(add(base, _scale(_pell_breath(0.25, 3, persona, sway), k)), {"DEF-spine.003": b["DEF-spine.003"]})
+    if clip == "listen_tilt":
+        # the head tilts to his right and turns, the neck extending; holds
+        tilt, turn, ext = PELL_LISTEN
+        e = _win(u, 0.0, 0.6)
+        return add(add(base, _neck(-ext * e)), {"DEF-spine.005": (0.0, -0.3 * turn * e, 0.3 * tilt * e),
+                                               "DEF-spine.006": (0.0, -0.7 * turn * e, 0.7 * tilt * e)})
+    if clip == "back_to_sea":
+        # the Prologue and Ch9 B10 vigils: the stand, the staff planted, the head bowed (the eyes closed through
+        # @face); the facing is the @mark's
+        return add(add(base, _pell_breath(u, 2, persona, 0.5 * sway)),
+                   {"DEF-spine.005": (0.3 * PELL_BOW, 0.0, 0.0), "DEF-spine.006": (0.7 * PELL_BOW, 0.0, 0.0)})
+    raise KeyError(clip)
+
+
+def _pell_throat_hand(sk: Skeleton, persona: dict, pose: dict) -> dict:
+    """storm_call's right hand: the wrist below and in front of the throat's base, the palm turned flat onto it."""
+    _g, t = _loco_fk(sk, pose)
+    n4, n5 = t["DEF-spine.004"], t["DEF-spine.005"]
+    throat = n4 + (n5 - n4) * 0.35 + np.array([0.0, 0.0, PELL_THROAT_FRONT])
+    target = throat + np.array([0.0, -0.05, -0.008])
+    out = dict(_pell_reach(sk, pose, "R", target, "storm_call", PELL_THROAT_ELBOW))
+    out["DEF-hand.R"] = PELL_THROAT_HAND
+    return out
+
+
+# attack's keys (skeleton frame, m): the left wrist's place, the staff's tilt (DEF-hand.L: the hand's key that stands
+# it there through staff_hold's wrist limits, found by search) and the staff's resulting line; the right hand holds
+# the shaft PELL_STAFF_HOLD_L below the left (toward the staff's foot). The dart turns the staff forward about the
+# shoulders' axis only, down and back up the same way: never levelled, never twirled.
+PELL_DART_LIFT = ((-12.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 1.0, 0.0))  # the left arm's turn: the staff lifted
+PELL_DART_HELD = ((-26.0, 0.0, 0.0), (-12.0, 0.0, 0.0), (0.0, 0.978, -0.208))  # higher, cocked back
+PELL_DART_HIT = ((0.18, 1.6, 0.62), (140.0, 60.0, 30.0), (-0.12, -0.81, 0.57))  # the jab (the wrist's place): the tip
+# to knee height
+PELL_DART_BACK = ((0.22, 1.5, 0.42), (70.0, 30.0, 15.0))  # the slow return, halfway (the wrist's place)
+
+
+# finisher's sweep (the wrist's place, skeleton frame, m; the staff's tilt as DEF-hand.L, searched as PELL_DART's):
+# wound to his left, the counterweight foot swept low and forward across the front (contact), through to his right,
+# planted. staff_hold's wrist limit lets the staff lean about 30 degrees from upright here, so the foot's arc runs a
+# hand above the floor rather than at knee height (noted in the task for review)
+PELL_SWEEP = (((0.42, 1.05, 0.3), (10.0, -30.0, 30.0)), ((0.1, 1.0, 0.8), (0.0, -45.0, 30.0)),
+              ((-0.35, 1.0, 0.45), (0.0, -30.0, -30.0)), ((-0.2, 1.15, 0.3), (0.0, 0.0, 0.0)))
+
+
+def _on_staff(wrist: tuple, line: tuple) -> tuple:
+    """The right wrist's place on the staff, PELL_STAFF_HOLD_L below the left wrist along its line."""
+    return tuple(float(w - PELL_STAFF_HOLD_L * d) for w, d in zip(wrist, line))
+
+
+def _wrist(sk: Skeleton, base: dict, delta: dict, side: str) -> tuple:
+    _g, t = _loco_fk(sk, add(base, delta))
+    return tuple(float(x) for x in t[f"DEF-hand.{side}"])
+
+
+def _pell_arms(sk: Skeleton, base: dict, delta: dict, targets: dict, key: str) -> dict:
+    """The arm deltas (on top of `delta`, on the idle's first frame `base`) that bring each side's wrist to its
+    target (_pell_reach on the whole pose)."""
+    q = add(base, delta)
+    out: dict = {}
+    for side, target in targets.items():
+        for b, v in _pell_reach(sk, q, side, np.asarray(target, dtype=float), f"{key}_{side}").items():
+            out[b] = tuple(float(x) for x in np.subtract(v, q.get(b, (0.0, 0.0, 0.0))))
+    return out
+
+
+def _pell_keys(clip: str, sk: Skeleton, persona: dict, base: dict) -> list:
+    """Pell (pell.md §10.3: a fishing heron): long stillness, one fast exact movement, stillness again. The staff is
+    kept upright by staff_hold except where his hand turns it (DEF-hand.L is then the staff's own tilt); it stands or
+    darts down, never levelled or twirled; the feet stay on the ground. Deltas on the idle's first frame (base)."""
+    a = persona["arms_down"]
+    if clip == "ready":
+        # the heron's cocked neck: the S deepens, the knees soften, the staff lifts 5 cm off the ground
+        k = add(add(_legs(sk, persona, 0.03), _neck(6.0)), {"DEF-upper_arm.L": (-6.0, 0.0, 0.0),
+                                                             "DEF-forearm.L": (-6.0, 0.0, 0.0)})
+        return [(0.0, {}), (0.45, k), (1.0, {})]
+    if clip == "attack":
+        # the heron's dart: the staff lifted high in the left hand and turned tip-down, the right hand joining it
+        # below, the neck drawn back, a held beat; then one fast jab down and forward with the barbed tip to knee
+        # height, the neck and both arms extending together; a slow return
+        lift = add(_neck(4.0), {"DEF-upper_arm.L": PELL_DART_LIFT[0], "DEF-hand.L": PELL_DART_LIFT[1]})
+        lift = add(lift, _pell_arms(sk, base, lift, {"R": _on_staff(_wrist(sk, base, lift, "L"), PELL_DART_LIFT[2])},
+                                    "attack_lift"))
+        held = add(add(_legs(sk, persona, 0.02), _neck(10.0)), {
+            "DEF-spine.001": (-4.0, 0.0, 0.0), "DEF-upper_arm.L": PELL_DART_HELD[0], "DEF-hand.L": PELL_DART_HELD[1]})
+        held = add(held, _pell_arms(sk, base, held, {"R": _on_staff(_wrist(sk, base, held, "L"), PELL_DART_HELD[2])},
+                                    "attack_held"))
+        hit = add(add(_legs(sk, persona, 0.08, 0.10, -0.04), _neck(-14.0)), {
+            "DEF-spine.001": (14.0, 0.0, 0.0), "DEF-spine.002": (6.0, 0.0, 0.0), "DEF-hand.L": PELL_DART_HIT[1]})
+        hit = add(hit, _pell_arms(sk, base, hit, {"L": PELL_DART_HIT[0],
+                                                  "R": _on_staff(PELL_DART_HIT[0], PELL_DART_HIT[2])}, "attack_hit"))
+        back = add(add(_legs(sk, persona, 0.04), _neck(-4.0)), {"DEF-spine.001": (6.0, 0.0, 0.0),
+                                                                "DEF-hand.L": PELL_DART_BACK[1]})
+        back = add(back, _pell_arms(sk, base, back, {"L": PELL_DART_BACK[0]}, "attack_back"))
+        return [(0.0, {}), (0.18, lift), (0.36, held), (0.46, held), (0.55, hit), (0.66, hit), (0.82, back),
+                (1.0, {})]
+    if clip == "cast":
+        # the imitation: the right hand to the throat, the neck stretching up (storm_call's shape), a held call, then
+        # the right hand sweeps out flat toward the foe, sending the sound; the staff stays planted
+        call = add(_neck(-PELL_STORM_STRAIGHTEN), {"DEF-spine.003": (-4.0, 0.0, 0.0),
+                                                   "DEF-spine.006": (-4.0, 0.0, 0.0)})
+        hand = _minus(_pell_throat_hand(sk, persona, add(base, call)), {k: base.get(k, (0.0, 0.0, 0.0)) for k in
+                                                                         ("DEF-upper_arm.R", "DEF-forearm.R",
+                                                                          "DEF-hand.R")})
+        call = add(call, hand)
+        send = add(add(_legs(sk, persona, 0.02), _neck(-6.0)), {
+            "DEF-spine.001": (4.0, 6.0, 0.0), "DEF-upper_arm.R": (-70.0, 0.0, -a * 0.6),
+            "DEF-forearm.R": (-6.0, 0.0, 0.0), "DEF-hand.R": (0.0, 0.0, 70.0)})
+        return [(0.0, {}), (0.3, call), (0.6, call), (0.8, send), (1.0, {})]
+    if clip == "item":
+        # the right hand reaches out long and low, palm up, and opens
+        reach = add(_legs(sk, persona, 0.02), {"DEF-upper_arm.R": (-20.0, 0.0, -a * 0.3),
+                                               "DEF-forearm.R": (-40.0, 0.0, 0.0)})
+        offer = add(add(_legs(sk, persona, 0.04), _neck(4.0)), {
+            "DEF-spine.001": (8.0, -6.0, 0.0), "DEF-upper_arm.R": (-56.0, 0.0, -a * 0.5),
+            "DEF-forearm.R": (-8.0, 0.0, 0.0), "DEF-hand.R": (0.0, 60.0, 0.0)})
+        return [(0.0, {}), (0.35, reach), (0.7, offer), (1.0, {})]
+    if clip == "read":
+        # listen: listen_tilt's tilt and turn, the neck reaching out toward the foe, the right ear turned to it
+        tilt, turn, ext = PELL_LISTEN
+        look = add(add(_legs(sk, persona, 0.01), _neck(ext)), {
+            "DEF-spine.001": (5.0, 0.0, 0.0), "DEF-spine.003": (2.0, 0.0, 0.0),
+            "DEF-spine.005": (0.0, -0.3 * turn, 0.3 * tilt), "DEF-spine.006": (0.0, -0.7 * turn, 0.7 * tilt)})
+        return [(0.0, {}), (0.6, look), (0.78, look), (1.0, {})]
+    if clip == "defend":
+        # he folds: the knees bend, the neck lowers into a deep S, the right (mantled) shoulder turns to the blow,
+        # the staff upright before him in both hands
+        k = math.radians(PELL_CROUCH)
+        drop = (sk.leg_thigh + sk.leg_shin) * (1.0 - math.cos(k)) * 0.5
+        guard = add(add(_legs(sk, persona, drop), _neck(14.0)), {
+            "DEF-spine.001": (8.0, -16.0, 0.0), "DEF-spine.002": (4.0, -8.0, 0.0), "DEF-spine.006": (0.0, 18.0, 0.0),
+            "DEF-upper_arm.L": (-46.0, 0.0, a * 0.75), "DEF-forearm.L": (-44.0, 0.0, 0.0),
+            "DEF-upper_arm.R": (-52.0, -10.0, -a * 0.2), "DEF-forearm.R": (-40.0, 0.0, 0.0)})
+        return [(0.0, {}), (0.6, guard), (0.8, _scale(guard, 0.9)), (1.0, {})]
+    if clip == "finisher":
+        # call and response (his Swell): the call, the staff planted, the neck rising straight and the chest lifting;
+        # the response, the staff swept from his left in one wide flat arc at knee height round to his right, the
+        # body turning with it, the counterweight end leading; then planted on the far side, and stillness
+        call = add(_neck(-12.0), {"DEF-spine.003": (-4.0, 0.0, 0.0), "DEF-spine.006": (-3.0, 0.0, 0.0)})
+        wind = add(add(_legs(sk, persona, 0.05), _neck(6.0)), {
+            "DEF-spine": (0.0, 24.0, 0.0), "DEF-spine.001": (6.0, 18.0, 0.0), "DEF-spine.006": (0.0, -16.0, 0.0),
+            "DEF-hand.L": PELL_SWEEP[0][1]})
+        wind = add(wind, _pell_arms(sk, base, wind, {"L": PELL_SWEEP[0][0]}, "finisher_wind"))
+        sweep = add(add(_legs(sk, persona, 0.08), _neck(4.0)), {
+            "DEF-spine": (0.0, -6.0, 0.0), "DEF-spine.001": (10.0, -6.0, 0.0), "DEF-spine.002": (4.0, 0.0, 0.0),
+            "DEF-hand.L": PELL_SWEEP[1][1], "DEF-upper_arm.R": (10.0, 0.0, -a * 0.8)})
+        sweep = add(sweep, _pell_arms(sk, base, sweep, {"L": PELL_SWEEP[1][0]}, "finisher_sweep"))
+        through = add(add(_legs(sk, persona, 0.06), _neck(4.0)), {
+            "DEF-spine": (0.0, -40.0, 0.0), "DEF-spine.001": (6.0, -30.0, 0.0), "DEF-spine.002": (2.0, -12.0, 0.0),
+            "DEF-spine.006": (0.0, 24.0, 0.0), "DEF-hand.L": PELL_SWEEP[2][1],
+            "DEF-upper_arm.R": (10.0, 0.0, -a * 0.8)})
+        through = add(through, _pell_arms(sk, base, through, {"L": PELL_SWEEP[2][0]}, "finisher_through"))
+        plant = add(_neck(2.0), {"DEF-spine": (0.0, -30.0, 0.0), "DEF-spine.001": (2.0, -20.0, 0.0),
+                                  "DEF-spine.006": (0.0, 14.0, 0.0), "DEF-hand.L": PELL_SWEEP[3][1]})
+        plant = add(plant, _pell_arms(sk, base, plant, {"L": PELL_SWEEP[3][0]}, "finisher_plant"))
+        return [(0.0, {}), (0.15, call), (0.35, call), (0.48, wind), (0.62, sweep), (0.7, through), (0.8, plant),
+                (0.9, plant), (1.0, {})]
+    if clip == "hit":
+        # the neck takes it: the head snaps back, the S deepens, the body sways back 2 cm, the feet stay
+        jolt = add(add(_legs(sk, persona, 0.01), _neck(8.0)), {"hips": (0.0, 0.0, -0.02),
+                                                                "DEF-spine.006": (-10.0, 0.0, 0.0),
+                                                                "DEF-spine.001": (-3.0, 0.0, 0.0)})
+        return [(0.0, {}), (0.2, jolt), (1.0, {})]
+    if clip == "dodge":
+        # a lean away over the right foot, the left foot lifting 8 cm for a beat, the neck swaying the other way to
+        # keep the head level
+        lean = add(_sway(sk, persona, -0.07, 0.02), {
+            "DEF-thigh.L": (-10.0, 0.0, 6.0), "DEF-shin.L": (22.0, 0.0, 0.0), "DEF-spine.001": (0.0, 0.0, 6.0),
+            "DEF-spine.004": (0.0, 0.0, -10.0), "DEF-spine.006": (0.0, 0.0, 4.0)})
+        return [(0.0, {}), (0.3, lean), (0.5, lean), (1.0, {})]
+    if clip in ("ko", "revive"):
+        # the knees fold and he sinks back onto his heels, then the long neck lowers forward until the head is a
+        # hand's width from the ground; the staff laid across his knees; holds
+        drop, dz = PELL_KO["squat"]
+        squat = add(add(_legs(sk, persona, drop, dz, dz), {"hips": (0.0, 0.0, -dz)}), {
+            "DEF-spine.001": (12.0, 0.0, 0.0)})
+        squat = add(squat, _pell_arms(sk, base, squat, {"L": PELL_KO["knees"][0], "R": PELL_KO["knees"][1]},
+                                      "ko_squat"))
+        bow, neck = PELL_KO["bow"], PELL_KO["neck"]
+        felled = add(squat, {"DEF-spine.001": (bow[0] - 12.0, 0.0, 0.0), "DEF-spine.002": (bow[1], 0.0, 0.0),
+                             "DEF-spine.003": (bow[2], 0.0, 0.0), "DEF-spine.004": (neck[0], 0.0, 0.0),
+                             "DEF-spine.005": (neck[1], 0.0, 0.0), "DEF-spine.006": (neck[2], 0.0, 0.0),
+                             "DEF-hand.L": PELL_KO["staff"]})
+        felled = add(felled, _pell_arms(sk, base, felled, {"L": PELL_KO["hands"][0], "R": PELL_KO["hands"][1]}, "ko"))
+        buckle = add(_legs(sk, persona, 0.10), {"DEF-spine.001": (6.0, 0.0, 0.0)})
+        if clip == "revive":  # M2-CHR-513: from ko's held frame back to the idle: the neck rises first, then the legs
+            risen = dict(felled)
+            for b in ("DEF-spine.004", "DEF-spine.005", "DEF-spine.006"):
+                risen[b] = (0.0, 0.0, 0.0)
+            return [(0.0, felled), (0.35, risen), (0.6, squat), (0.85, buckle), (1.0, {})]
+        return [(0.0, {}), (0.2, buckle), (0.55, squat), (0.85, felled), (1.0, felled)]
+    raise KeyError(clip)
+
+
+# ko: he folds down onto his heels (the hips `squat` m lower, the feet that far forward of them, flat), then the long
+# neck lowers forward (the spine's and the neck's bends, degrees) until the head is a hand's width from the floor; the
+# wrists by the knees (skeleton frame, m), the staff laid across them (its tilt as DEF-hand.L)
+PELL_KO = {"squat": (0.85, 0.2), "bow": (35.0, 30.0, 20.0), "neck": (70.0, 45.0, -10.0),
+           "hands": ((0.26, 0.5, 0.45), (-0.26, 0.5, 0.45)), "staff": (0.0, 0.0, 90.0),
+           "knees": ((0.24, 0.62, 0.42), (-0.24, 0.62, 0.42))}  # the wrists on the knees as he goes down
+
+
+def pell_victory(u: float, sk: Skeleton, persona: dict) -> dict:
+    """Very still: the stand, the head lifted 5 degrees, listening to the quiet (the eyes half closed and the crest
+    settling are the face's and the stage's); a slow breath, the faintest sway, and one slow listening turn of the
+    chest and head across the field (the contract's reading minimum). He never turns his back."""
+    ph = 2 * math.pi * u
+    s1 = math.sin(ph)
+    return add(_sway(sk, persona, 0.006 * s1, 0.002), {
+        "DEF-spine.003": (-1.5 + 1.5 * math.sin(2 * ph), 3.2 * s1, 0.0), "DEF-spine.005": (-1.5, 2.0 * s1, 0.0),
+        "DEF-spine.006": (-3.5 + 1.0 * math.sin(2 * ph), 4.0 * math.sin(ph + 0.4), 1.2 * s1)})
+
+
+# the battle contract (the M2-CHR-07 block) and his own fall
+BATTLE_HEROES = BATTLE_HEROES + ("pell",)
+CLIPS["pell"] = CLIPS["pell"] + [c for c in BATTLE_CLIPS if c not in CLIPS["pell"]] + ["revive"]
+BATTLE_STRIKER["pell"] = {"attack": ("DEF-hand.L", (0.0, -0.5, 0.85)), "cast": ("DEF-hand.R", (0.0, 0.2, 0.98)),
+                          "finisher": ("DEF-hand.L", (0.0, 0.0, 1.0)), "item": ("DEF-hand.R", (0.0, -0.3, 0.95)),
+                          "read": ("DEF-spine.006", (0.0, 0.0, 1.0)), "defend": ("DEF-spine", (0.0, -1.0, 0.0))}
+FOOT_FLAT["pell"] = 1.0  # bare feet, no hem: the feet stay flat
+STANCE_DORSI["pell"] = 25.0
+_BATTLE_KEYS["pell"] = _pell_keys
+KO_OWN.add("pell")
+# M2-CHR-515/544: the fishing-staff is held like Asha's staff, in the left fist (it never leaves the hand); planted in
+# the idle
+GRIP["pell"] = {"L": ("mesh", "Staff", "DEF-staff")}
+GRIP_ALWAYS.add("pell")
+IDLE_GROUNDED.add("pell")
 
 
 # M3-CHR-05: the story clips go after each hero's own (every hero's block above has set its list by now)

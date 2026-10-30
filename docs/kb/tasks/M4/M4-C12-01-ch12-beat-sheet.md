@@ -25,4 +25,7 @@ saddle against the cliff (`cold_ledge`), the inn (`inn_door`), the hall and Hesk
 - [ ] `docs/kb/story/beats/act2_ch12.md`, every outline beat placed, timed and tagged C/E/P; flags `ch12_*` with setter
       and reader; requests to other roles listed; validate_data and the banned-terms grep clean.
 
+## Notes
+- 2026-10-30 (act2-plan track, the Lead's assignment): **draft: pre-gate** written at `docs/kb/story/beats/act2_ch12.md`. Not reviewed; stays `blocked` until the gate. It declares `ch12_toma_saw_breath`, which Ch15 reads. Its §10.1 raises the Avalanche Ram's built ice against ADR 0015 for the Lead.
+
 ## Review log

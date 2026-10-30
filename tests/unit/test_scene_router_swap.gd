@@ -21,6 +21,8 @@ const HIDDEN_STALL_MS := 1200.0
 ## A fake-clock frame time is FRAME_USEC exactly; this only absorbs the usec -> ms float conversion.
 const STEP_EPS_MS := 0.001
 const BOOT_SCENE := "res://game/core/boot.tscn"
+## The shell's "command not found": the child probe never ran (the runner's PATH or GODOT), so no stats.
+const EXIT_NOT_FOUND := 127
 
 
 func test_budget_data_has_headroom_below_the_spec_budget() -> void:
@@ -294,6 +296,9 @@ func _run_probe(probe_scene: String, user_args: Array[String], target: String) -
 				var parsed: Variant = JSON.parse_string(line.trim_prefix(PROBE_TAG))
 				if parsed is Dictionary:
 					return parsed as Dictionary
+	if code == EXIT_NOT_FOUND:  # the runner's environment, not the router: say so (big15's cloud suite)
+		fail("probe for %s: the Godot binary was not found (exit 127, %s); not a budget failure" % [target, _godot()])
+		return {}
 	fail("probe for %s printed no stats (exit %d)" % [target, code])
 	return {}
 
@@ -322,3 +327,13 @@ func test_a_held_swap_waits_on_while_its_holders_make_progress() -> void:
 	)
 	assert_false(SceneRouter.swap_wait_continues(cap, SceneRouter.SWAP_STALL_MS, 100.0), "a stalled holder ends it")
 	assert_false(SceneRouter.swap_wait_continues(cap, 0.0, SceneRouter.SWAP_WAIT_CAP_MS), "never past the hard cap")
+
+
+## ADR 0111: only a holder reporting loading work (swap_wait_progress) extends a held swap past the frame cap.
+## ShaderPrewarm's wait_progress() counts frames for the reveal: it must not keep a swap waiting (big15's gate).
+func test_only_loading_holders_extend_the_swap_wait() -> void:
+	var prewarm_like := RefCounted.new()
+	assert_eq(SceneRouter.swap_progress([prewarm_like] as Array[Object]), -1, "no loader: the frame cap only")
+	var loader := ResidentLoads.new()
+	assert_eq(SceneRouter.swap_progress([prewarm_like, loader] as Array[Object]), 0, "a loader reports its work")
+	loader.free()

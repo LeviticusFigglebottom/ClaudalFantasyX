@@ -1,0 +1,26 @@
+{
+  "_about": "Pell's emotion tags -> face blendshape weights (docs/kb/art/characters/pell.md \u00a76.2), on the Kirru muzzle (the shared 40-shape API through pell_head.kirru_warp). A pair is [L, R]; a scalar sets both sides of a paired shape. His tell: the crest speaks before the face does; each row carries the crest (`crest_raise` 0-1 on the Crest mesh, `crest_flat` for grief), which the stage applies with the face; the face itself moves very little, the whiskers following cheek_raise forward and mouth_frown down. The smile rises on the right first (R = L x 1.15). He hums, never cries out: no row opens the mouth past jaw_open 0.10, and lip_upper_up (bared teeth) is never used. No tear layer (pell.md \u00a712 Q6, carried). Blend 0.36 s, measured, no overshoot, starting 0.25 s after the line or the cut (`onset_delay_s`, a per-actor setting requested from Cinematics with the crest column). Tags: game/data/dialogue/emotions.json. Read by the hero stage for the M3-CHR-506 review shots; the sequencer.json face_poses entry is Cinematics'.",
+  "blend_in_s": 0.36,
+  "onset_delay_s": 0.25,
+  "rest": {},
+  "overshoot": {},
+  "crest": {"neutral": 0.1, "soft_smile": 0.15, "smile": 0.25, "laugh": 0.35, "worried": 0.3, "sad": 0.0, "grief": 0.0, "angry": 0.7, "cold": 0.05, "surprised": 0.85, "afraid": 0.9, "determined": 0.55, "tender": 0.05, "guilty": 0.0, "exhausted": 0.0},
+  "head_notes": {"neutral": "still, attentive; most of Act I", "soft_smile": "Ch9 N17, 'Beautiful.'; small", "laugh": "a soft huff, the mouth nearly closed; the head dips 6 degrees (a clip or gesture, not the face)", "sad": "the whiskers droop through the frown", "grief": "reserved: Ch11 before Nhoa, the dive; no tear layer", "angry": "the crest up hard and the muzzle wrinkled; the mouth stays closed; rare", "surprised": "the crest does most of it", "afraid": "rare: only for Asha", "determined": "battle; the Storm-Call", "guilty": "Ch9 B09, the blank shell; gaze down 10 degrees", "exhausted": "the neck lowers 6 degrees (a clip, not the face)"},
+  "emotions": {
+    "neutral": {"crest_raise": 0.1},
+    "soft_smile": {"mouth_smile": [0.12, 0.14], "cheek_raise": 0.12, "lid_squint": 0.08, "crest_raise": 0.15},
+    "smile": {"mouth_smile": [0.32, 0.37], "cheek_raise": 0.3, "lid_squint": 0.18, "crest_raise": 0.25},
+    "laugh": {"mouth_smile": [0.5, 0.58], "cheek_raise": 0.5, "lid_squint": 0.4, "jaw_open": 0.1, "crest_raise": 0.35},
+    "worried": {"brow_inner_up": 0.4, "brow_down": 0.15, "crest_raise": 0.3},
+    "sad": {"brow_inner_up": 0.4, "lid_close": 0.25, "mouth_frown": 0.2, "crest_raise": 0.0},
+    "grief": {"brow_inner_up": 0.75, "brow_down": 0.3, "lid_close": 0.4, "mouth_frown": 0.4, "jaw_clench": 0.15, "crest_raise": 0.0, "crest_flat": 0.4},
+    "angry": {"brow_down": 0.6, "lid_squint": 0.3, "nose_sneer": 0.25, "crest_raise": 0.7},
+    "cold": {"brow_down": 0.2, "lid_close": 0.15, "mouth_press": 0.25, "crest_raise": 0.05},
+    "surprised": {"brow_inner_up": 0.35, "brow_outer_up": 0.5, "lid_wide": 0.35, "crest_raise": 0.85},
+    "afraid": {"brow_inner_up": 0.6, "lid_wide": 0.45, "mouth_stretch": 0.15, "crest_raise": 0.9},
+    "determined": {"brow_down": 0.35, "lid_squint": 0.2, "mouth_press": 0.3, "crest_raise": 0.55},
+    "tender": {"brow_inner_up": 0.25, "mouth_smile": [0.1, 0.12], "lid_close": 0.2, "crest_raise": 0.05},
+    "guilty": {"brow_inner_up": 0.45, "lid_close": 0.35, "mouth_press": 0.2, "crest_raise": 0.0},
+    "exhausted": {"lid_close": 0.4, "brow_inner_up": 0.15, "crest_raise": 0.0}
+  }
+}

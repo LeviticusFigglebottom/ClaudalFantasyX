@@ -6,6 +6,7 @@ extends Node
 ##   godot-render --path . --audio-driver Dummy --fixed-fps 60 --disable-vsync --rendering-driver vulkan \
 ##     res://tools/vfx/boss_camera_sheet.tscn -- --out=<abs dir> [--lead=0.7] [--only=<encounter>]
 ##     [--moment=phase|fall]   (M3-BPR-426: each fight's camera moment instead, mid-hold)
+##     [--entry]               (M3-BPR-1325: the Climb's camera cut and its stair effects)
 
 const SCENE := "res://game/battle/scene/battle_sandbox.tscn"
 const PARTY: Array[StringName] = [&"rhen", &"asha", &"toma"]
@@ -32,6 +33,10 @@ func _run() -> void:
 	var out := str(_opts.get("out", ""))
 	DirAccess.make_dir_recursive_absolute(out)
 	get_window().size = Vector2i(1280, 720)
+	if _opts.has("entry"):  # M3-BPR-1325: the Climb's turn on the stair head, its effects on the mark
+		await _entry(out)
+		get_tree().quit()
+		return
 	for enc: StringName in FIGHTS:
 		if _opts.has("only") and str(_opts["only"]) != String(enc):
 			continue
@@ -90,6 +95,43 @@ func _run() -> void:
 		remove_child(ctl)
 		ctl.queue_free()
 	get_tree().quit()
+
+
+## The stair hold's Climb: the entry camera's stair hint held, the stair-aimed effects playing on the Climb's mark.
+## Saves <out>/ch08_stair_hold_1_entry.png.
+func _entry(out: String) -> void:
+	var ctl := (load(SCENE) as PackedScene).instantiate() as BattleController
+	ctl.auto_start = false
+	ctl.persist_progress = false
+	ctl.show_damage_numbers = false
+	add_child(ctl)
+	ctl.pacing_scale = 0.0
+	ctl.set_meta(BattleBossIntro.META_PLAYED, "ch08_stair_hold_1")
+	ctl.start_battle(PARTY, [], &"ch08_stair_hold_1", 20261028)
+	for i in SETTLE_FRAMES:
+		await get_tree().process_frame
+	var choreo := ctl.stage.choreo
+	choreo.force_play = true
+	choreo.reduced_motion = false
+	choreo.skip = false
+	var climb: BattleCombatant = null
+	for c in ctl.engine.entries:
+		if c.entry_role == &"ward":
+			climb = c
+	var cam := choreo.get_node(^"BattleEntryCamera") as BattleEntryCamera
+	var vfx := ctl.stage.get_node(^"BattleVfx") as BattleVfx
+	var r := ActionResult.new()
+	r.actor_id = climb.id
+	choreo.contact.emit(r)
+	choreo.advance(float(cam.cfg.get("in_sec", 0.0)) + 0.2)
+	for eid: StringName in [&"climb_up", &"grip_the_stair", &"hand_closes"]:
+		vfx.play(eid, climb.id)
+	await get_tree().create_timer(0.3).timeout
+	await RenderingServer.frame_post_draw
+	var img := get_viewport().get_texture().get_image()
+	img.convert(Image.FORMAT_RGB8)
+	img.save_png(out.path_join("ch08_stair_hold_1_entry.png"))
+	print("BOSS_CAMERA_SHEET entry %s" % [cam.cut_for])
 
 
 ## Plays the boss's --moment (phase or fall) and saves <out>/<encounter>_<moment>.png once it is in and held.

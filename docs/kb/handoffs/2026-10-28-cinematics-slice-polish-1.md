@@ -30,10 +30,29 @@ live log `docs/kb/handoffs/live/slice-polish.md` has every item, its checks and 
   - M3-CHR-102 (Asha's kneeling skirt through Rhen, row 31);
   - M3-ENV-103 (Asha's packed bag is a box).
 
+## Done (later the same session)
+- **Ch1 zones on env-art's dressings** (the Lead's ruling): Oruvel (M3-ENV-740) and the Underway (M3-ENV-742). My
+  generators are retired, the cutscene side is re-staged onto their hulls, and the storm set follows StormWall
+  (M3-ENV-751).
+- **Cutscene VFX at final quality:** `@vfx glimmer_*` builds Rendering's GlimmerField (CutsceneVfx), with
+  per-mode energy, `center_y_m`, `amount_multiplier` and `end_after_sec` from sequencer.json "vfx". CutsceneMotes is
+  deleted.
+- **New pending stills, all viewed:** slice_verse_c08 (C08 re-framed, the bell brought in), slice_end_card,
+  slice_end_card_voice. O07 holds Sadi's line 003 again.
+- **Haluna:** the seven villagers' static capsules are gone (M3-ENV-748); the trees use their real names
+  (M3-ENV-750).
+- **Filed:**
+  - M3-ENV-104 (Oruvel gaps, the storm sky);
+  - M3-ENV-105 (high: the Underway's walls stand inside the collision);
+  - M3-ENV-106 (the grades for `@camera grade=`).
+
 ## In progress
 - Nothing uncommitted. The gate baselines my pending shots at big15 or big16 (the Lead's answer).
 
 ## Exact next step
+0. When env-art lands M3-ENV-105 (the Underway's walls on the greybox lines), re-render ch01_underway_crown and
+   ch01_underway_gallery and view them. When they land M3-ENV-106, wire `@camera grade=` and the nodes' `grade:` in
+   the sequencer, through a helper like CutsceneVfx (the sequencer is at 995 of 1000 lines).
 1. Merge the integration branch when the Lead announces big15 or big16.
 2. Re-run `--filter=haluna`, `cutscene`, `fp_`, `ch01`.
 3. Answer M3-CHR-102 when characters reply: move Asha's kneel mark by the clearance they name, keeping both faces
