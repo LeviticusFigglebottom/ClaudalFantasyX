@@ -359,8 +359,26 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
   optional hairline, default Toma's). moll_face viewed before and after. Verify: moll 40/40 identical on all three
   numpy paths; toma 38, stillguard 178 and ivo 27 identical natively (unchanged); test_moll, test_toma,
   test_stillguard, test_short_hair_dialogue OK. M3-CHR-592 is in review (rendering).
-- **Next:** Pell's leftovers are GPU-dependent (PC-QUEUE). BACKLOG check: no Lead-routed items open; the self-directed
-  backlog continues with the Act I NPCs' dialogue-range audit.
+- Merged lead/gate-big18 into claude/characters (13ea98ef; ui-menus' Pell portraits and camera taken, my duplicate
+  PROVENANCE rows dropped, the two rows for big18's deleted Haluna placeholder kit files dropped).
+- **The Lead's final-quality audit (party + every named Act I NPC), done on big18 + this branch.** Self-rendered and
+  viewed 69 shots in five batches: every face close-up (party, Moll, Ivo, a Stillguard, Sefir, 20 named villagers),
+  talk and laugh, walk/run cycles and the gait strip, the story clips (kneels, hauls, grips, the cast), the battle
+  heroes (idle, attack, cast, ko, victory, finisher), the field party, and the silhouette line-ups. Rig probes on the
+  ten heroes and 17 named villagers: all pass (cloth, props in fists, nothing through the body). Found and fixed:
+  - **Bodies:** Ch6's `inquisitor` was a generic vendor: now Moll. The four Reed polers and the two wright children
+    wore the Haluna Reed and the lane child: now their own models. Ch8's Stillguard `officer` had no body: built as a
+    named Stillguard (M3-CHR-593: helmed, shield, no spear, the hatchet the scene's prop in his fist; idle, walk,
+    hatchet_blow; job `officer` identical on the three numpy paths; stillguard 178 and ivo 27 still identical).
+  - **Hair:** Tender Ruwen's grey read as light flakes: single strands now (verified on the three paths).
+  - Checked and left: Ivo's laugh (an open mouth with his broken tooth, not a stray tongue); Asha's run (the wide
+    skirt is M2-CHR-522's accepted look); the Old Ferryman, the boat seller, the wrights and the two unnamed children
+    stay on townsfolk bodies (act1_ch05.md §27: roles the generic villagers cover).
+  - Checks: Godot zone_cast 5, ch06_thread 5, ch08_thread 6, post_import 21, hero_stage 11 (all 0 failed);
+    test_villagers, test_hero_clips, test_stillguard, test_blender_builds OK; validate_data, taskboard OK.
+- MERGE-READY @ (this commit): the audit's fixes (ac2cef62, the officer's test and import files, Tender's strands).
+- **BACKLOG EMPTY:** every Lead-routed item is merge-ready, the audit is clean, and what remains needs the real GPU
+  (PC-QUEUE: Pell's fur read and warm face under the warm key).
 - (was) **In progress:** Pell's second look-dev pass (M3-CHR-506, pell_review.md "What still does not read" 1–5): rounder
   lid openings and a dark eye ring, round flat ears, a flat right hand in storm_call and cast, the fur pattern, the
   nape ridge.
