@@ -805,6 +805,14 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
     R06's sky is the scripted tilt up with the motes.
 - MERGE-READY @ 1529927af
 
+- **M3-UI-204, done and in review:**
+  - Save shrines that save and travel at Brine Shoals, Tamsule and Corrow.
+  - Tamsule's trader, inn and outfitter.
+  - Coilspire's niche gives Sailmaker's Needle.
+  - Also fixed two map POIs whose spawns I'd moved (PassFoot, the Sanctum's Gate). test_zone_map_pois is green.
+  - Checks: shrine, ch06, ch07, ch08, coilspire, zone_map_pois, chapter_flow, validate.
+- MERGE-READY @ (this push)
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
