@@ -2,8 +2,8 @@
 id: M3-HER-1152
 title: "RevenantTells casts a stored light before its is_instance_valid check (a 'Trying to cast a freed object' on teardown)"
 role: rendering
-status: todo
-owner_session: ""
+status: review
+owner_session: "pc-gpu (gpu/m3-her-1152-1124-freed-casts)"
 reviewer: qa
 depends_on: []
 milestone: M3
@@ -16,8 +16,8 @@ router's swap into a fight) is a script error on the cast, which is the human's 
 twins at `p[2]`/`p[3]` are cast without any check.
 
 ## Acceptance criteria
-- [ ] Check `p[0]` (and the twins) with `is_instance_valid` before casting them.
-- [ ] Remove this task's KNOWN row from `tools/freed_cast_lint.py` (`python3 tools/freed_cast_lint.py` shows 0 hits for the file).
+- [x] Check `p[0]` (and the twins) with `is_instance_valid` before casting them.
+- [x] Remove this task's KNOWN row from `tools/freed_cast_lint.py` (`python3 tools/freed_cast_lint.py` shows 0 hits for the file).
 
 ## Notes
 Found by integration-qa's freed-cast lint. The same bug in HeroFieldParty.should_hide reproduced the human's message

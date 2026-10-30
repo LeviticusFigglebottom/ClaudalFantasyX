@@ -398,7 +398,8 @@ func _build_lantern(shadows: bool) -> void:
 		# A positional light near the cast: the mouths' bounce passes now draw (M1-RND-26).
 		var root := _scene_root()
 		if root != null:
-			CharacterShaderTiers.refresh_bounce_passes.call_deferred(root)
+			# The zone can be freed before the deferred call runs (a swap into a fight): check it then (M3-HER-1124).
+			_refresh_bounce_if_live.call_deferred(root)
 	var ln := data.get("lantern", {}) as Dictionary
 	lantern.light_color = Color(str(colors().get("lantern", "#FFB16E")))
 	lantern.light_energy = float(ln.get("energy", 5.0))
@@ -471,3 +472,8 @@ func _follow_surface() -> void:
 		underside.mesh = surf.mesh
 		_sync_water_uniforms()
 	underside.custom_aabb = surf.custom_aabb
+
+
+func _refresh_bounce_if_live(root: Object) -> void:
+	if is_instance_valid(root):
+		CharacterShaderTiers.refresh_bounce_passes(root as Node)

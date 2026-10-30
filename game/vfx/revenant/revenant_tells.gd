@@ -159,10 +159,12 @@ func _update() -> void:
 		h[slot] = float(c[2])
 		ShaderGlobals.set_value(HEIGHTS_GLOBAL, h)
 	for p: Array in pairs:
-		var light := p[0] as DirectionalLight3D
-		if not is_instance_valid(light):
+		if not is_instance_valid(p[0]):
 			continue
+		var light := p[0] as DirectionalLight3D
 		for k in [2, 3]:
+			if not is_instance_valid(p[k]):
+				continue
 			var twin := p[k] as DirectionalLight3D
 			twin.global_transform = light.global_transform
 			_copy_light(light, twin)
