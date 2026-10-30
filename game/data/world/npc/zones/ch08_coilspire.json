@@ -5,6 +5,8 @@
   "villagers": [
     {
       "npc_id": "coilspire_tender",
+      "offset": [0.6, 0.0, -1.0],
+      "_offset_note": "Off a drop or a doorway (the crowd placement audit, tools/creatures/crowd_spot_audit.gd, 2026-10-30).",
       "crowd": "coilspire_tender",
       "stand_in": "CutsceneStage/Actors/tender",
       "attach": "child"

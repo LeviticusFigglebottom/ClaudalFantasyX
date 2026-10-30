@@ -59,6 +59,8 @@
     },
     {
       "npc_id": "pemakar_weir_child",
+      "offset": [0.5, 0.0, 0.2],
+      "_offset_note": "Off a drop or a doorway (the crowd placement audit, tools/creatures/crowd_spot_audit.gd, 2026-10-30).",
       "crowd": "pemakar_weir_child",
       "stand_in": "CutsceneStage/Actors/weir_child",
       "attach": "child"
