@@ -277,7 +277,7 @@ in and `git lfs pull` plus an import first:
 - (b) `dock_probe.tscn -- --out=<dir>`, then `dock_overlaps.py <dir>/meshes.json`;
 - (d) `encounter_gap_probe.tscn`.
 
-Then report the deltas against the big25 numbers above.
+Then report the deltas against the big27 numbers above (the latest re-run). The playthrough smoke: `tools/gpu_bench/playthrough_probe.tscn` from an empty XDG_DATA_HOME.
 
 Files touched: `tools/gpu_bench/{return_probe,dock_probe,run_cycle_probe,encounter_gap_probe,spawn_stills,fight_entry_probe}.gd/.tscn`,
 `tools/gpu_bench/dock_overlaps.py` and `act1_walk_pass6.json`/`act1_walk_row21.json`. Brought from gpu/act1-qa-5:
