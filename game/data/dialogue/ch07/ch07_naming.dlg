@@ -3,7 +3,7 @@
 // rim stones under the weeping column and each names one person the sea has taken. NO ONE PRESIDES:
 // no Order official blesses or opens anything (ADR 0017 Ch7 watch). R03: the crowd falls silent from
 // the pool outward until there is real silence (Audio: no music, no bed, only the column's weep).
-// Ione Sabe, Sorrin's captain, names her brother; the whole Bell answers with one word. R04, Tavi
+// Ione Merrow (not Sabe: Oruvel's old diver has that name; M4-A2P-116 C5), Sorrin's captain, names her brother; the whole Bell answers with one word. R04, Tavi
 // names the whole town; a long hold; the answer is louder and ragged at the edges because some
 // people are crying. Asha says it quietly with them in the third gallery, Toma too, and Rhen in the
 // water, looking up the column at the drop; if he lit his Pemakar boat for Oruvel, he says it a beat
@@ -22,7 +22,7 @@ location: ch07/tamsule_bell_galleries
 @wait 3.0
 @sfx column_weep
 @wait 1.5
-Ione [neutral]: Aldo Sabe. My brother. #line:ch07_naming_001
+Ione [neutral]: Aldo Merrow. My brother. #line:ch07_naming_001
 @wait 1.0
 Crowd [neutral]: Up. #line:ch07_naming_002 #tn:"The call to a diver who should be surfacing. One word, said low and together by ten thousand people."
 @sfx crowd_up

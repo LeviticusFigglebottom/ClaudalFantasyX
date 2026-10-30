@@ -141,7 +141,7 @@
     "W10_dawn": {"pos": [-22, 1.4, -63], "look_at": [-16, 0.8, -78], "fov": 50}
   },
   "triggers": [
-    {"id": "banter_brass", "at": [0, 0, 56], "size": [8, 0, 4], "once": true, "requires_flag": "ch06_arrived",
+    {"id": "banter_brass", "blocked_by_flag": "ch06_sheltered_liss", "at": [0, 0, 56], "size": [8, 0, 4], "once": true, "requires_flag": "ch06_arrived",
      "payload": {"dialogue": "ch06_banter_brass", "overheard": true}},
     {"id": "midday", "at": [0, 0, 24], "size": [8, 0, 3], "requires_flag": "ch06_arrived", "blocked_by_flag": "ch06_midday_seen",
      "payload": {"beat": "midday"}},

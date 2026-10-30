@@ -95,7 +95,7 @@
         "cut_rope": {"steps": [
           {"play": "ch08_cut_rope"},
           {"set": "ch08_done"},
-          {"party": {"party": ["rhen", "asha", "toma"], "reserve": ["kerrid", "ysolde", "liss"]}},
+          {"party": {"party": ["rhen", "asha", "toma"], "reserve": ["ysolde", "liss"]}},
           {"go": {"location": "ch09/corrow_night", "spawn": "Strand"}}
         ]}
       }
