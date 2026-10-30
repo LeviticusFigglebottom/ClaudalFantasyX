@@ -109,6 +109,35 @@ def climb_volumes(prefix: str, runs: list[tuple[tuple[float, float, float], tupl
     return out
 
 
+# M4-A2P-1003 E5: the climb's barks (B02), overheard once each on the flights: (dialogue, at on the ramp, size)
+PASS_BARKS = (("ch12_bark_traveller", (0.0, 1.29, -12.0), (4.0, 0, 3.0)),
+              ("ch12_bark_asha_even_here", (0.0, 3.0, -20.0), (4.0, 0, 3.0)),
+              ("ch12_bark_toma_cairn", (12.0, 7.29, -40.0), (3.0, 0, 4.0)),
+              ("ch12_bark_ysolde_knot", (26.0, 10.29, -40.0), (3.0, 0, 4.0)),
+              ("ch12_bark_liss_launcher", (62.0, 13.29, -40.0), (3.0, 0, 4.0)),
+              ("ch12_bark_liss_counting", (76.0, 16.29, -40.0), (3.0, 0, 4.0)))
+
+
+def overheard(dialogue: str, at: tuple[float, float, float], size: tuple[float, float, float],
+              requires: str = "ch12_started", blocked_by: str = "") -> dict:
+    """A bark heard once in passing (a touch box; the dialogue plays overheard, the walk goes on)."""
+    row = {"id": dialogue.removeprefix("ch12_"), "activation": "touch", "at": list(at), "size": list(size),
+           "once": True, "requires_flag": requires, "payload": {"dialogue": dialogue, "overheard": True}, "yaw": 0.0}
+    if blocked_by:
+        row["blocked_by_flag"] = blocked_by
+    return row
+
+
+def listen(tid: str, dialogue: str, at: tuple[float, float, float], requires: str, blocked_by: str = "",
+           prompt: str = "FIELD_PROMPT_LISTEN") -> dict:
+    """Someone to talk to: an interact box with a prompt."""
+    row = {"id": tid, "activation": "interact", "at": list(at), "size": [1.6, 0, 1.6], "prompt_key": prompt,
+           "requires_flag": requires, "payload": {"dialogue": dialogue}, "yaw": 0.0}
+    if blocked_by:
+        row["blocked_by_flag"] = blocked_by
+    return row
+
+
 def keth_pass() -> dict:
     blocks, ramps = [], []
     blocks += landing("Foot", 0.0, 0.0, 0.0, 6.0, 6.0, {"n": (-2.2, 2.2)})
@@ -165,7 +194,16 @@ def keth_pass() -> dict:
                      # M4-A2P-114: the seeping wall's terrace, where the Avalanche Ram comes down (B06)
                      {"id": "terrace", "activation": "touch", "at": [40.0, 12.0, -40.0], "size": [2.0, 0, 4.0],
                       "requires_flag": "ch12_started", "blocked_by_flag": "ch12_ram_felled",
-                      "payload": {"beat": "terrace"}, "yaw": 0.0}],
+                      "payload": {"beat": "terrace"}, "yaw": 0.0},
+                     # M4-A2P-1003 E4: the saddle, across its whole width, plays Kerrid's breath (B03, never cut)
+                     {"id": "cold_ledge", "activation": "touch", "at": [90.0, 18.0, -40.0], "size": [2.0, 0, 18.0],
+                      "once": True, "requires_flag": "ch12_ram_felled", "blocked_by_flag": "ch12_toma_saw_breath",
+                      "payload": {"beat": "cold_ledge"}, "yaw": 0.0},
+                     # E12: the Ullari woman's knot at the first landing's cord post (B04, optional)
+                     {"id": "knot_post", "activation": "interact", "at": [-1.6, 6.0, -43.0], "size": [2.0, 0, 2.0],
+                      "prompt_key": "FIELD_PROMPT_LOOK", "requires_flag": "ch12_started",
+                      "blocked_by_flag": "ch12_heard_the_knot", "payload": {"dialogue": "ch12_the_knot"}, "yaw": 0.0}]
+        + [overheard(bid, at, size) for bid, at, size in PASS_BARKS],
         # M4-C12-03: the pass's random fights (act2_roster.md Ch12); none in Quellan or the Cloudloom
         "encounters": {"table": [{"encounter": "ch12_pass_lynxes", "weight": 2}, {"encounter": "ch12_pass_moths", "weight": 1},
                                  {"encounter": "ch12_pass_scree", "weight": 1}],
@@ -232,7 +270,21 @@ def quellan() -> dict:
         "triggers": [{"id": "to_pass", "activation": "touch", "at": [-4.5, 0.0, 0.0], "size": [1.5, 0, 6.0],
                       "payload": {"beat": "to_pass"}, "yaw": 0.0},
                      {"id": "to_cloudloom", "activation": "touch", "at": [56.0, north_y, -42.5], "size": [4.0, 0, 1.5],
-                      "payload": {"beat": "to_cloudloom"}, "yaw": 0.0}],
+                      "payload": {"beat": "to_cloudloom"}, "yaw": 0.0},
+                     # M4-A2P-1003 E5: Quellan's people (B08), the side errands and the inn's camp
+                     overheard("ch12_bark_toma_kinder", (6.0, 0.0, 0.0), (2.0, 0, 8.0), "ch12_reached_quellan"),
+                     overheard("ch12_bark_quellan_boy", (38.0, 0.0, 0.0), (2.0, 0, 8.0), "ch12_reached_quellan"),
+                     overheard("ch12_bark_quellan_night", (26.0, 0.0, 0.0), (2.0, 0, 8.0), "ch12_hesk_bound",
+                               "ch12_complete"),
+                     listen("npc_herder", "ch12_bark_herder", (14.0, 0.0, 3.0), "ch12_reached_quellan"),
+                     listen("npc_weaver", "ch12_bark_weaver", (24.0, 0.0, 3.0), "ch12_reached_quellan"),
+                     listen("npc_innkeeper", "ch12_bark_innkeeper", (36.0, 0.0, -3.0), "ch12_reached_quellan"),
+                     listen("npc_reader", "ch12_bark_reader", (51.0, 0.0, 8.0), "ch12_reached_quellan"),
+                     listen("side_dorros_cord", "ch12_side_dorros_cord", (10.0, 0.0, -3.0), "ch12_ram_felled",
+                            "ch12_returned_herd_cord"),
+                     listen("side_the_boys_knot", "ch12_side_the_boys_knot", (42.0, 0.0, 3.0), "ch12_reached_quellan"),
+                     listen("camp", "ch12_camp_the_end_of_the_road", (29.0, 0.0, -3.0), "ch12_ysolde_confessed",
+                            "ch12_camp_talk", "FIELD_PROMPT_REST")],
     }
 
 
@@ -293,7 +345,9 @@ def cloudloom() -> dict:
                      # M4-A2P-114: up the aisle before the dais, where Hesk is bound (B10-B11)
                      {"id": "dais", "activation": "touch", "at": [hx0, HALL_Y, -50.0], "size": [4.0, 0, 1.5],
                       "requires_flag": "ch12_reached_cloudloom", "blocked_by_flag": "ch12_hesk_bound",
-                      "payload": {"beat": "dais"}, "yaw": 0.0}],
+                      "payload": {"beat": "dais"}, "yaw": 0.0},
+                     # M4-A2P-1003 E5: the Order's keeper, by the hall's door
+                     listen("npc_keeper", "ch12_bark_cloudloom_keeper", (5.0, HALL_Y, -26.0), "ch12_reached_cloudloom")],
     }
 
 

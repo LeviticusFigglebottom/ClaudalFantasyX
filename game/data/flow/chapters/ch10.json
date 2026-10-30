@@ -33,6 +33,27 @@
        "set": "ch10_started"
       }
      ]
+    },
+    {
+     "when": {
+      "set": [
+       "ch10_drowner_defeated"
+      ],
+      "unset": [
+       "ch10_what_went_up_seen"
+      ]
+     },
+     "steps": [
+      {
+       "place": "DrownerArena"
+      },
+      {
+       "play": "ch10_what_went_up"
+      },
+      {
+       "set": "ch10_what_went_up_seen"
+      }
+     ]
     }
    ],
    "beats": {
@@ -90,6 +111,9 @@
        "place": "Gate"
       },
       {
+       "play": "ch10_causeway"
+      },
+      {
        "set": "ch10_reached_reedhollow"
       }
      ]
@@ -127,6 +151,12 @@
       },
       {
        "play": "ch10_dawn_gate"
+      },
+      {
+       "go": {
+        "location": "ch11/sunken_vey",
+        "spawn": "Landing"
+       }
       }
      ]
     }

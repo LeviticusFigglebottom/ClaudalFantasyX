@@ -213,7 +213,7 @@ func test_act_two_zones_point_along_the_main_path() -> void:
 		[[&"ch13_entered_sanctum"], &"ch13/sanctum", &"s_ledge", &"ledge"],
 		[[&"ch13_ethren_bound", &"ch13_started"], &"ch13/ansedra", &"a_archive", &"archive"],
 		[[&"ch13_entered_archive"], &"ch13/lamp_archive", &"la_ledgers", &"ledgers"],
-		[[&"ch13_entered_archive", &"ch13_read_ledgers"], &"ch13/lamp_archive", &"la_roll", &"roll"],
+		[[&"ch13_entered_archive", &"ch13_read_ledgers"], &"ch13/lamp_archive", &"la_roll", &"door"],  # E9
 		[[&"ch13_archive_read", &"ch13_ethren_bound", &"ch13_started"], &"ch13/ansedra", &"a_moorings", &"moorings"],
 		[
 			[&"ch13_archive_read", &"ch13_ethren_bound", &"ch13_pact_of_silence", &"ch13_started"],

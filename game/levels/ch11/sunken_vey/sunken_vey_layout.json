@@ -1256,6 +1256,27 @@
     "beat": "to_lowlight"
    },
    "yaw": 0.0
+  },
+  {
+   "id": "conduit_mark",
+   "activation": "touch",
+   "at": [
+    38.0,
+    0.0,
+    -22.0
+   ],
+   "size": [
+    12.0,
+    0,
+    12.0
+   ],
+   "once": true,
+   "requires_flag": "ch11_started",
+   "blocked_by_flag": "ch11_rhen_admitted",
+   "payload": {
+    "beat": "housing_mark"
+   },
+   "yaw": 0.0
   }
  ],
  "encounters": {
