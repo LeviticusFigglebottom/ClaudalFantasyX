@@ -1170,4 +1170,5 @@ SELF-RENDERED @ 34d374de: the eight Act II arenas' battle cameras and hint views
 SELF-RENDERED @ 124f3f40: Lowlight's battle camera with its position printed; Quellan and Reedhollow eye-height walks (scratch) — all viewed.
 SELF-RENDERED @ f0e1e6fd: battle_arena_lowlight_engine_hall's battle camera at 16:9 after the pier move (scratch) — viewed.
 SELF-RENDERED @ e14c3355: Hollowmere's dock with the new piles and the perched gulls (scratch) — viewed.
-SELF-RENDERED @ d364a561: ch05_pemakar_harbour, _crown, _harbour_day, _weir, ch05_ashcrown_causeway, _forecourt, _tiers, _crown, _court, ch08_coilspire_hall, _gate, _storm (before), and Ashcrown's tiers, forecourt, court and crown after, all viewed.\n
+SELF-RENDERED @ d364a561: ch05_pemakar_harbour, _crown, _harbour_day, _weir, ch05_ashcrown_causeway, _forecourt, _tiers, _crown, _court, ch08_coilspire_hall, _gate, _storm (before), and Ashcrown's tiers, forecourt, court and crown after, all viewed.
+STATUS 18:46 (answer to the Lead's 18:45 ask): the Ch5 Pemakar/Ashcrown and Ch8 Coilspire beauty pass is done and pushed — MERGE-READY @ d364a561 (entry above). Waiting for the next order.
