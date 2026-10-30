@@ -19,6 +19,7 @@
              "res://assets/characters/stillguard_f/",
              "res://assets/characters/ivo/",
              "res://assets/characters/officer/",
+             "res://assets/characters/venn/",
              "res://assets/characters/villagers/shopkeeper/", "res://assets/characters/villagers/smith/",
              "res://assets/characters/villagers/innkeeper/", "res://assets/characters/villagers/clerk/",
              "res://assets/characters/villagers/reed_a/", "res://assets/characters/villagers/reed_b/",
@@ -31,7 +32,8 @@
              "res://assets/characters/villagers/garo/", "res://assets/characters/villagers/tender/",
              "res://assets/characters/villagers/ione/", "res://assets/characters/villagers/poolkeeper/",
              "res://assets/characters/villagers/fenn/", "res://assets/characters/villagers/gatekeeper/",
-             "res://assets/characters/villagers/hobb/", "res://assets/characters/villagers/marra/"],
+             "res://assets/characters/villagers/hobb/", "res://assets/characters/villagers/marra/",
+             "res://assets/characters/villagers/tobin/", "res://assets/characters/villagers/merel/"],
   "adoption_pending": {},
   "generate_lods": true,
   "materials": {

@@ -1493,6 +1493,83 @@
       "settle_frames": 30
     },
     {
+      "id": "villager_tobin_front",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/tobin_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_tobin_face",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/tobin_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_tobin_falls",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/tobin_falls.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_merel_front",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/merel_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_merel_face",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/merel_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_merel_pole_barge",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/merel_pole_barge.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_merel_bloodied",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/villagers/merel_bloodied.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "villager_ferrymaster_front",
       "scene": "res://game/levels/_tests/characters/villagers/ferrymaster_stage.tscn",
       "camera": "Cameras/Front",
@@ -4777,6 +4854,39 @@
       "settle_frames": 30
     },
     {
+      "id": "kerrid_confession_grief",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kerrid/kerrid_confession_grief.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kerrid_confession_guilty",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kerrid/kerrid_confession_guilty.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kerrid_confession_burns",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/kerrid/kerrid_confession_grief.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "kerrid_face_stylized",
       "scene": "res://game/levels/_tests/characters/kerrid/kerrid_face_stylized.tscn",
       "camera": "Cameras/Compare",
@@ -5000,6 +5110,83 @@
       "id": "stillguard_c_face",
       "scene": "res://game/levels/_tests/characters/stillguard/stillguard_c_face.tscn",
       "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "venn_front",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "venn_three_quarter",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_stage.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "venn_face",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_face.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "venn_face_cold",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_face_cold.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "venn_clip_attack",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_clip_attack.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "venn_clip_defend",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_clip_defend.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "venn_clip_yield",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/characters/stillguard/venn_clip_yield.tscn",
+      "camera": "Cameras/ThreeQuarter",
       "resolution": [
         960,
         540

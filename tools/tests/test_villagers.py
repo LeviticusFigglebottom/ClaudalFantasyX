@@ -32,7 +32,9 @@ ACT1 = ["shopkeeper", "smith", "innkeeper", "clerk", "reed_a", "reed_b", "reed_c
 # Tamsule, Ch8-9 Corrow)
 NAMED = ["sabe", "scaleman", "skipper_sadi", "ferrymaster", "purser", "elder", "garo", "tender", "ione", "poolkeeper",
          "fenn", "gatekeeper", "hobb", "marra"]
-NPCS = ["neme", "osu", "child", "vendor", "reed", "netmender", "fisher", "tavi", "kell"] + ACT1 + NAMED
+# M4-A2P-050: the named Act II people of Ch13-14 on the villager build
+ACT2 = ["tobin", "merel"]
+NPCS = ["neme", "osu", "child", "vendor", "reed", "netmender", "fisher", "tavi", "kell"] + ACT1 + NAMED + ACT2
 M2_SEVEN = NPCS[:7]  # M2-CHR-03; tavi and kell are M3-CHR-03 (params opt-ins, per-NPC clips)
 REEDS = ["reed_a", "reed_b", "reed_c", "reed_d"]
 WRIGHTS = ["wright_girl", "wright_child_a", "wright_child_b"]
@@ -343,7 +345,9 @@ class TestClips(unittest.TestCase):
                 "elder": ["give_boat"], "garo": ["fold_boat", "nod", "laugh", "take_boat"],
                 "tender": ["open_pavilion", "palms_level", "paint_gilt", "open_chamber", "hand_key"], "ione": ["nod"],
                 "poolkeeper": ["chalk_slate"], "fenn": ["feed_fire", "hand_driftwood", "hand_key"],
-                "gatekeeper": ["open_gate"], "hobb": ["drill_call"], "marra": ["hold_hands", "look_back"]}
+                "gatekeeper": ["open_gate"], "hobb": ["drill_call"], "marra": ["hold_hands", "look_back"],
+                # M4-A2P-050: the vows, B05 and the barge
+                "tobin": ["hold_hands", "tobin_falls"], "merel": ["hold_hands", "pole_barge"]}
         for npc in NPCS:
             with self.subTest(npc=npc):
                 text = villager_clips.out_path(npc).read_text(encoding="utf-8")

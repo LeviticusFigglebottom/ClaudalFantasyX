@@ -741,6 +741,43 @@
         }
       }
     },
+    "venn": {
+      "garments": [
+        "Costume",
+        "Sleeves"
+      ],
+      "props": [
+        "Spear"
+      ],
+      "seams": {
+        "groups": [
+          [
+            "Body",
+            "Head:skin_head"
+          ],
+          [
+            "Costume"
+          ],
+          [
+            "Sleeves"
+          ]
+        ],
+        "max_exposed": 4
+      },
+      "_allowances": "M4-A2P-051 (probe at the default stride): Moll's kit and clips on a broader, taller build, the halberd held as his iron. Costume 19/6 (18.6, kneel): the trouser's knee folds into the thigh in the 96-degree kneel, as Moll's. Sleeves 11/6 (10.5, defend): his parry (venn_parry: both hands on the haft before him, Moll's yield arms standing) brings the right upper arm in across the armpit, and the sleeve's offset shell passes inside the torso at the crease, as Moll's finisher (7) and Liss's work-sleeve (12). Body 20/50 (19.2, ko and yield): as Moll's yield, the right arm across to the planted weapon brings the torso's side through the sleeve's inner face. max_exposed 4: as Moll's, the underarm cut's edge vertices with the arm raised in the finisher. The prop guards pass with no allowance.",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 19.0,
+          "Sleeves": 11.0,
+          "Body": 20.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Sleeves": 6,
+          "Body": 50
+        }
+      }
+    },
     "shopkeeper": {
       "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/shopkeeper/shopkeeper.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB: the pole, the brine-iron, the hammer and the lamp are scene props.",
       "villager": true,
