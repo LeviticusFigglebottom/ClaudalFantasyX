@@ -1,6 +1,6 @@
 ---
 id: M4-A2P-114
-title: "Request: play the Act II scenes from the Ch10–Ch16 flows, then restore the beat-level objective rows"
+title: "Request: play the Act II scenes from the Ch10–Ch16 flows (the setters for the beat-level objective rows)"
 role: cinematics
 status: todo
 owner_session: ""
@@ -17,12 +17,17 @@ The greybox flows play no Act II scene, so no chapter thread raises the story fl
 requires every main objective's `requires` and `until` in a chapter's zones to be raised by that chapter's thread.
 Story's beat-level objective rows for Ch10–Ch13 therefore failed on 19 flags.
 
-To make the thread pass, story cut those rows back to the flags the greybox raises (chNN_started, reached/entered,
-the Drowner's victory). The removed rows and the old `until`s are in git, on claude/act2-plan before this task's commit
-(`git show 089c254d4:game/data/flow/objectives.json`), and their loc keys are still in `game/data/loc/ch1x.csv`.
+**Update (2026-10-30, the Lead):** story has written the 10 cut rows back in, unchanged (the Ch10–Ch14 block is as
+at 089c254d4). Each flag the threads can't raise yet is listed in `tests/integration/qa_known.json` `"unraised"`, with
+the scene that sets it and this task, so test_qa_threads reports it instead of failing. An objective's `until` gates no
+beat, so none of them is a softlock.
+
+**For act1-chapters:** as each flow step lands (a `play` of the scene, or a battle's `victory_flag`), delete that
+flag's `unraised` row in the same commit. The guard then holds it for good. The rows in `objectives.json` need no
+change.
 
 ## What to wire (the scene that sets each flag, and the row that waits on it)
-| Flag | Set by (scene or battle) | Rows to restore or re-chain |
+| Flag | Set by (scene or battle) | Rows that wait on it |
 |---|---|---|
 | ch10_farewell_tide_seen | `ch10_farewell_tide` | r_shore `until`; r_gate |
 | ch10_complete | `ch10_dawn_gate` | r_gate `until` |
@@ -45,14 +50,15 @@ The scenes' running order and the flags they set are in each `act2_chNN.md` §1,
 `act2_chNN_direction.md`.
 
 **The Lacquer Court's rows are Ch14's but sit in a `ch13/` zone**, so Ch13's thread is the one that checks them (see
-M3-UI-1242). They now have no `requires` and no `until` because the court is only visited in Ch14. To restore them,
-either the guard reads a row's `"chapter"`, or Ch13's thread plays into Ch14.
+M3-UI-1242). Their five flags (ch14_started and the four beat flags) stay in `unraised` until either the guard reads a
+row's `"chapter"` or Ch13's thread plays into Ch14.
 
 **Ch15** (`ch15_the_dock_master` must play when the party reaches Hollowmere, after `ch15_current_song` at sea) and
 **Ch16** have no thread that checks their rows yet, so their rows are unchanged.
 
 ## Acceptance criteria
+- [x] The beat-level rows are back in `objectives.json` (story, 2026-10-30).
 - [ ] Each Ch10–Ch14 flow plays its scenes and battles in §1's order.
-- [ ] The beat-level rows are restored, and test_qa_threads stays green.
+- [ ] `qa_known.json` `"unraised"` is empty again, and test_qa_threads stays green.
 
 ## Review log
