@@ -11,6 +11,12 @@ their rows are on integration (06a51e5c). Checks on the merged tree: `--filter=v
 - **test_battle_act1_ability_vfx (red on integration since the Vowbound rows landed):** it needs every Swell technique
   to have its own effect, and the_seven, farewell_tide, pass_cord and still_water had none. Fixed by 06a51e5c.
   `--filter=act1_ability_vfx` 5/0 at 19f9abe6.
+- **Act II boss intros on big25 (bdc5ef22), SELF-RENDERED and viewed:**
+  - Drowner and Lamp Engine: they read, and the crawlers stay out of the intro.
+  - Avalanche Ram: its hero shot saw the new model's rump, its low head behind the card. Its row takes the fitted
+    boss shot: the Ram head-on above the card. boss_intro 24/0.
+  - The Lamp Engine's moves sheet (on its fight with the crawlers) is clean.
+  - **MERGE-READY @ bdc5ef22.**
 - Also in this range: a called Vowbound kept clear of the timeline (55e54edd, the sweep's ch04_derelict_leeches;
   screen_spread 3/0).
 - Next: the Ch10–Ch13 boss intros. On integration that is the Drowner, the Lamp Engine (now with two conduit
