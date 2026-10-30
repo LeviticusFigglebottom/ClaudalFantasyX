@@ -56,3 +56,17 @@ GATE-BUILT @ 8c47d977
   dlgc clean · gdlint clean · test_gdignore_imports OK · no new duplicate rows, keys or shot ids.
   Re-gate: a fresh import plus the 66 test files these merges touch, run by me. characters' newer head doesn't sync
   Sefir's shipped poses yet (still routed).
+- Late re-gate (66 files, fresh import, on c31b627b): import check clean · boot 0 ERROR lines · log check 0 · gdformat clean (1062).
+  65 green.
+  - **test_villager_routines** 19/1 (`test_a_greybox_actor_model_is_adopted_into_a_villager`: "Kell's row finds her
+    stage actor", expected 1 match, got 7). Red on claude/creatures @ 3c681f8d alone (m2-slice green): branch content
+    from the crowd vignettes. Routed: **creatures**.
+- Tools suite (-j 2, 211 units): beyond the known test_palette_check, test_screenshots and test_villagers:
+  - **test_hero_clips** (6 failures: Asha's library doesn't rebuild byte-for-byte; the called clips `turn_back` and others
+    are missing for Asha, Sefir and Toma). Red on claude/characters alone (m2-slice green). Routed: **characters**.
+  - **test_zone_map_pois** (`ch01/oruvel_underway/stair_lip` doesn't sit where its source does). Red on claude/m2-slice
+    alone (env-art green). Routed: **m2-slice / slice-polish** (the A1–A8 story fixes).
+
+GATE-FAST-DONE @ c31b627b (merge-approved: every red is branch content, none batch-caused). Routed:
+characters (test_cutscene_face_per_actor: sync Sefir's shipped poses; test_hero_clips); creatures (test_villager_routines);
+m2-slice (test_zone_map_pois). Known: test_palette_check, test_screenshots, test_villagers.
