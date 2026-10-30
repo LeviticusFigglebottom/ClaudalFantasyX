@@ -3,6 +3,10 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ d04d79422 (unchanged): the Lead's 20:26 item. There's nothing new to render or score yet.**
+  - **Ch11's scoring as slice-polish stages it:** m2-slice @ e262e104 stages the same Ch11 and Ch12 scenes as before (lowlight, sunken_vey; cloudloom, keth_pass, quellan, inn_fire), and their cues were checked as played at faaa30a0. Every Ch11–Ch13 script difference between m2-slice and audio is audio's own newer side, already on integration @ 46d8a067: m2-slice predates the restored `@sfx pole_no_wake` in ch13_still_city and the `ch13/sanctum` location. I'll rescore Ch11 when slice-polish pushes a new stage.
+  - **Ch12–Ch13 from act2-plan's cue tables:** every cue is rendered and every ref resolves. act1_playthrough `--act 2 --holds` reports no missing cue in Ch11–Ch13, only the four known notes: the Vowbound `fade=0.0` lines play as 0.2 s fades, and ansedra is named twice. Ch13 has no staging on any branch.
+  - **Checks:** none. Nothing changed but this log.
 - **MERGE-READY @ 425b1109: the Lead's 19:45 item.**
   - **Ch11–Ch13 cutscene cues:** Ch13 has no staging yet on any branch (Ch11 and Ch12's were checked at faaa30a0). act2-plan's cue tables have no missing cue (17:50), so there is nothing to render. I'll rerun the staged check when Ch13 lands.
   - **The Act II boss themes as played in battle-presentation's intros** (bdc5ef22 and the Ch10–Ch12 intros on big25; choreo.json boss_intro: camera_in 1.1 s, hold 2.0–2.4 s, camera_out 0.8 s; the title card at 0.7 s).
