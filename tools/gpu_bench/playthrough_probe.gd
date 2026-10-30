@@ -17,6 +17,7 @@ extends Node
 ## PLAY_NO_TARGET (the field takes input but the objective names no target), PLAY_ARRIVED / PLAY_TIMEOUT.
 
 const BOOT := "res://game/core/boot.tscn"
+const CHAPTER_SELECT := "res://game/data/debug/chapter_select.json"
 const TAP_S := 1.5
 const HOP_M := 0.25
 const NEAR_M := 1.0
@@ -34,8 +35,9 @@ const SWEEP_RADIUS_M := 20.0
 ## A teleport settles the hero's origin a hair under the deck (y -0.0004), under a touch box that starts exactly at
 ## deck height, so the sweep lands him this far above the trigger's floor and lets him drop into it.
 const SWEEP_LIFT_M := 0.3
-## A hero this far under the objective's target has fallen out of the world.
-const FALL_M := 20.0
+## A hero under this height has fallen out of the world (Ashcrown's stair foot is at -81 m, so a target-relative
+## test misfires).
+const OUT_OF_WORLD_Y := -500.0
 ## Jumps find the ground with a ray from this high above the spot.
 const GROUND_RAY_M := 40.0
 
@@ -70,7 +72,16 @@ func _run() -> void:
 		if not found.is_empty():
 			menu = found[0] as TitleMenu
 	await get_tree().create_timer(2.0).timeout
-	print("PLAY_NEWGAME %s" % error_string(menu.start_new_game() if menu != null else ERR_UNAVAILABLE))
+	var chapter := str(_opts.get("chapter", ""))
+	if chapter == "":
+		print("PLAY_NEWGAME %s" % error_string(menu.start_new_game() if menu != null else ERR_UNAVAILABLE))
+	else:
+		# --chapter=chNN: start as the F8 chapter select does (the story so far, the party), from the title.
+		for start: Dictionary in DebugReadouts.chapter_starts(CHAPTER_SELECT):
+			if str(start["id"]) == chapter:
+				DebugReadouts.apply_chapter_start(start)
+				FlowRouting.go_to(StringName(str(start["location"])), StringName(str(start["spawn"])))
+				print("PLAY_CHAPTER_START %s" % chapter)
 	var router := get_tree().root.get_node(^"SceneRouter")
 	var last_scene := ""
 	var next_tap := 0.0
@@ -168,6 +179,25 @@ func _run() -> void:
 			if t >= next_tap:
 				_tap(&"ui_accept")
 				next_tap = t + TAP_S * 2.0
+			# No objective (Ch6 and Ch8 have no rows): step onto the zone's available story triggers in turn, from the
+			# nearest, as a player exploring would.
+			if t - _last_progress > SWEEP_AFTER_S and t >= next_interact:
+				if sweep.is_empty():
+					sweep = _triggers_near(cur, p.global_position, INF)
+					print(
+						(
+							"PLAY_SWEEP %.1f %s: no objective target; %d available triggers in the zone"
+							% [t, path, sweep.size()]
+						)
+					)
+				if not sweep.is_empty():
+					var a := sweep.pop_front() as Node3D
+					p.velocity = Vector3.ZERO
+					p.global_position = _on_ground(p, a.global_position)
+					p.interact.call_deferred()
+					next_interact = t + SWEEP_DWELL_S
+					hold_until = t + SWEEP_DWELL_S
+					print("PLAY_SWEEP_STEP %.1f %s" % [t, a.name])
 		else:
 			var to := Vector3(target.x - p.global_position.x, 0, target.z - p.global_position.z)
 			if to.length() > NEAR_M:
@@ -191,7 +221,7 @@ func _run() -> void:
 					best_at = t
 					continue
 				p.velocity = Vector3.ZERO
-				if p.global_position.y < target.y - FALL_M:
+				if p.global_position.y < OUT_OF_WORLD_Y:
 					# Fell out of the world (a hop or a jump under the ground): back on the ground near the target.
 					print("PLAY_FELL %.1f %s: at %s, put back near %s" % [t, path, p.global_position, target])
 					p.global_position = _on_ground(p, target - to.normalized() * NEAR_M)
@@ -291,7 +321,7 @@ func _target() -> Vector3:
 
 ## The available Interactables (the zone's touch triggers, NPCs, shrines: Interactable.GROUP) within SWEEP_RADIUS_M of
 ## `at`, nearest first.
-func _triggers_near(_cur: Node, at: Vector3) -> Array:
+func _triggers_near(_cur: Node, at: Vector3, radius: float = SWEEP_RADIUS_M) -> Array:
 	var out: Array = []
 	for n in get_tree().get_nodes_in_group(Interactable.GROUP):
 		var it := n as Interactable
@@ -302,7 +332,7 @@ func _triggers_near(_cur: Node, at: Vector3) -> Array:
 			and not services
 			and it.is_inside_tree()
 			and it.is_available()
-			and it.global_position.distance_to(at) <= SWEEP_RADIUS_M
+			and it.global_position.distance_to(at) <= radius
 		):
 			out.append(it)
 	out.sort_custom(

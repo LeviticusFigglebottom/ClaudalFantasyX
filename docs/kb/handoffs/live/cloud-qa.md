@@ -149,13 +149,27 @@ Same probes and box. Milliseconds from Return, big27 → big28:
   them, so `watch` connects a second time. No crash and no doubled sound (the second connect fails), but it's an engine
   ERROR on every return, and qa_threads-style guards count those. Make `watch` skip a node it's already connected to
   (`is_connected`), or forget/re-watch on detach.
-- **The fresh-profile playthrough to the Act I end card on c646c3a8** (in progress; restarted after probe fixes):
-  - So far it has played clean through Ch1, Ch2 (with the save shrine), Ch3 and the Drownbell, and on to Ch4's ferry
-    after the leeches.
-  - The Shell Shrine's basin puzzle can't be solved by guided hops. The probe raised its objective's flag
-    (`ch03_shrine_door_open`, PLAY_SKIP): that step was not played.
-  - A "stuck dialogue" on the ferry was the probe's doing: it interacted with the purser and opened his shop menu. The
-    probe now skips shops and inns, and taps ui_cancel when stuck.
+- **The fresh-profile playthrough to the Act I end card on c646c3a8.**
+  `playthrough_probe.tscn` uses guided hops toward the objective marker, so it skips a puzzle or climb it can't play by
+  raising that objective's flag (PLAY_SKIP).
+  - **New Game → Ch6 Brine Shoals: no game soft-lock in 2350 s, 0 SCRIPT ERROR.**
+  - Played: the Prologue → Ch1 (Underway, Oruvel, 4 fights) → Ch2 Haluna (beach, tideline, Nemes, the save shrine) →
+    Ch3 (the causeway, the harrier, the Shell Shrine, the Drownbell, B11, the chapter card) → Ch4 (the wake feast, the
+    shell set, the dock; the ferry, Ysolde joins, the derelict: leeches, the Spar-Wraith) → Ch5 (Pemakar, Kerrid, then
+    Pemakar again, ch05_done) → Ch6 arrival.
+  - **Steps the probe skipped (not played; each checked as probe limits, not game bugs):**
+    - Ch3 the Shell Shrine's basin puzzle (`ch03_shrine_door_open`).
+    - Ch4 the bottle-hermit (`ch04_hermit_won`). A headless stick walk confirms the hermit fight fires when you walk
+      round the hold hatch at x −7. Straight at the hatch corner the hero catches on its 0.42 m lip (minor collision
+      feel, env-art).
+    - Ch5 the Ashcrown stair and trial (`ch05_trial_begun`, `ch05_strike_landed`). The objective's target height (y 0)
+      sits between the stair foot (−81) and the crown (+36), so the probe's jumps land on the wrong level.
+  - **Real finding, owner ui-menus + act1-chapters: Ch6 Brine Shoals and Ch8 (Corrow, the Coilspire) have no objective
+    rows in `objectives.json`.** On arriving in Ch6 the objective line reads "No errand calls just now. The road will
+    keep." with no marker. Every other Act I zone has 1–7 rows (ch09/corrow_night has 4).
+  - **Ch6 → the end card** is running from the F8 Ch6 start (`--chapter=ch06`). Where there's no objective, the probe now
+    steps through the zone's available story triggers. Results below when done.
+  - The Ch1–Ch6 log is in the scratchpad only (play_full_ch1_ch6.log); the lines above are its summary.
 
 ## RE-RUN after "Merge lead/gate-big27" (integration @ 9572c4129): playtest (a) and (b)
 Same probes and box. The deltas against big25:
