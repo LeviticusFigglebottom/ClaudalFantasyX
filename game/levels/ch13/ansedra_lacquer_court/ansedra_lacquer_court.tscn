@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="4_water"]
 [ext_resource type="Resource" path="res://game/levels/ch13/ansedra/ansedra_still_waves.tres" id="5_waves"]
 [ext_resource type="Material" path="res://game/levels/ch13/ansedra/ansedra_still_water_material.tres" id="6_sea"]
+[ext_resource type="Script" path="res://game/world/water/ripple_field.gd" id="7_ripples"]
 [ext_resource type="Script" path="res://game/levels/act1/zone_cast.gd" id="90_cast"]
 
 [node name="AnsedraLacquerCourt" type="Node3D"]
@@ -29,6 +30,10 @@ water = NodePath("../Water")
 script = ExtResource("2_dressing")
 layout_path = "res://game/levels/ch13/ansedra_lacquer_court/ansedra_lacquer_court_dressing.json"
 tide = NodePath("../Tide")
+
+[node name="Ripples" type="Node" parent="." node_paths=PackedStringArray("water")]
+script = ExtResource("7_ripples")
+water = NodePath("../Water")
 
 [node name="Cast" type="Node" parent="."]
 script = ExtResource("90_cast")

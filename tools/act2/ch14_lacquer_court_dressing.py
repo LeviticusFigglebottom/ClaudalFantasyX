@@ -187,6 +187,25 @@ tide = NodePath("../Tide")
 """
 
 
+RIPPLES_RES = '[ext_resource type="Script" path="res://game/world/water/ripple_field.gd" id="7_ripples"]\n'
+RIPPLES_NODE = """[node name="Ripples" type="Node" parent="." node_paths=PackedStringArray("water")]
+script = ExtResource("7_ripples")
+water = NodePath("../Water")
+
+"""
+
+
+def wire_ripples() -> None:
+    """The zone's RippleField on its water (M4-A2P-047: Ch14's first ripples), once."""
+    text = SCENE.read_text(encoding="utf-8")
+    if 'id="7_ripples"' in text:
+        return
+    anchor = '[ext_resource type="Script" path="res://game/levels/act1/zone_cast.gd" id="90_cast"]\n'
+    cast = '[node name="Cast" type="Node" parent="."]'
+    assert text.count(anchor) == 1 and text.count(cast) == 1
+    SCENE.write_text(text.replace(anchor, RIPPLES_RES + anchor).replace(cast, RIPPLES_NODE + cast), encoding="utf-8")
+
+
 def wire_scene() -> None:
     text = SCENE.read_text(encoding="utf-8")
     if 'id="2_dressing"' in text:
@@ -201,6 +220,7 @@ def main() -> None:
     (ZONE / "ansedra_lacquer_court_dressing.json").write_text(json.dumps(dressing(), indent=1) + "\n", encoding="utf-8")
     (ZONE / ENV_NAME).write_text(environment(), encoding="utf-8")
     wire_scene()
+    wire_ripples()
 
 
 if __name__ == "__main__":

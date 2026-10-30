@@ -1,0 +1,12 @@
+{
+  "_doc": "M4-A2P-047 (env-art-b): RippleField's tuning (game/world/water/ripple_field.gd) for the still water's rings (water_surface_body.gdshaderinc ring_slope). max_sources matches WATER_RIPPLE_MAX; a source lives life_s; a strike is strike_height_m high; a wake drops a source every wake_spacing_m its target moves, wake_height_m high.",
+  "max_sources": 16,
+  "life_s": 14.0,
+  "speed_m_s": 1.4,
+  "wavelength_m": 0.7,
+  "width_m": 1.1,
+  "decay_s": 6.0,
+  "strike_height_m": 0.012,
+  "wake_spacing_m": 1.5,
+  "wake_height_m": 0.008
+}
