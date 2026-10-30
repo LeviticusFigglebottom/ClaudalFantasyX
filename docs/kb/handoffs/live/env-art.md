@@ -589,6 +589,45 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ a319362b: env-art-b's kit requests, the next batch.**
+  - **M3-ENV-1327, partly** (798184107, 5d9d63a4, a319362b), each viewed:
+    - Corrow's puddles bake damp, not mirror-wet: no black holes at `foot_kerrid`.
+    - `market_boat_a`'s umbrella has ribs, a sagging cloth and a scalloped hem.
+    - Tamsule's shophouses are stocked (counter, shelves of jars, bolts and baskets, hung cloth).
+  - **M3-ENV-1323** (f5cd318c), the Underway arenas' rectangles: **blocked on the real GPU.**
+    - On lavapipe they follow the F9 slabs' edges against the sand.
+    - A softer sun (trial, reverted) only brightened the floor.
+    - A/B on the PC-QUEUE.
+  - **`camp_tent` end-on** (next commit): the rear gable has a belly, a seam and a hem.
+  - **Still open in M3-ENV-1316/1327:** the kits' own flat preview slots, the Coilspire headland's far facets, the
+    order chapel.
+- **MERGE-READY @ 990bdbb2: the Lead's 14:48 batch (the Ch10–Ch12 walk and dock-edge check; env-art-b's kit requests,
+  first three). The integration branch (big24) is merged in.**
+  - **Dock edges, Ch10–Ch11** (b01d806e):
+    - Edge walls in Ossa Fen (84), Reedhollow (136), the Sunken Vey (81) and Lowlight (10).
+    - `zone_edges` now traces each walk block's own edges, so the yawed ring walks get a few turned walls, not
+      hundreds of grid steps.
+    - Walking every spawn in eight directions gives 0 falls with the walls. Without them: Ossa Fen 5/24,
+      Reedhollow 8/16, the Vey 8/16.
+    - **M4-HER-1166 → review:** chapters' `GateStep` closes Lowlight's gate (`hero_field_snaps` 2/0). The test owner
+      drops its KNOWN entry.
+  - **The Ch10–Ch12 eye-height walk** (`poi_stills` now covers them; 41 stills viewed):
+    - **Fixed** (990bdbb2): the fens' root-mat humps rose as bare grey domes round each mangrove's foot. They now lie
+      under the tannin water. `ossa_fen_ground` and `reedhollow_ground` rebuilt.
+    - **Reads:** the Vey (landing, conduit, fig end, the way to Lowlight), Lowlight (gate, engine hall, lamp bench,
+      sanctum), Cloudloom's hall and dais, Reedhollow.
+    - **Ch12, still on the PC-QUEUE:** Keth Pass and Quellan are near-black in shade under lavapipe.
+  - **env-art-b's requests:**
+    - **M3-ENV-1329** (9ba63a92), Brine Shoals' wet/dry seam: done as proposed, plus a stale `camp_tent_burned`
+      rebuilt from its source.
+    - **M3-ENV-1328** (d11b8437), the sea-cut weir: tight arrises, broken joints, the crest above the water. P11
+      viewed.
+    - **M3-ENV-1330** (08f61623), Corrow's low-town ground: the per-triangle cobble is gone, so no triangle or
+      tile-edge patches. The plain from the wall is only faintly helped (the earth material mutes the vertex channels;
+      next step noted in the task).
+    - All three are at review for env-art-b.
+  - **Next:** M3-ENV-1323 (the Underway arenas' light leak), M3-ENV-1316 (near-range kit faces) and M3-ENV-1327
+    (Ch5–Ch9 audit kit items).
 - **MERGE-READY @ b45addab: the Lead's Prologue–Ch4 POI and interactable walk at eye height (the 10-30 pass).**
   - **Method:** `tools/act1/poi_stills.py` drives walk_render's new `auto_targets`. It takes every Interactable in
     each zone and every zone-map POI, standing an eye off each on its clearest side. About 130 stills over Oruvel,
@@ -1059,6 +1098,8 @@ Read this section first; everything below it is history. The branch is `claude/e
     (characters/slice-polish), and `reefball_drop_proxy` / `tb_drop_proxy` are env-art-b's (M3-RND-26).
 
 ### PC-QUEUE
+- **M3-ENV-1323 (2026-10-30):** A/B `battle_arena_underway_tower` with its Sun node hidden. Rectangles that
+  stay are the F9 slabs against the sand (a material edge); rectangles that go are window light.
 - **Ch12 shade at spawn height (2026-10-30):** Keth Pass (PassFoot, RamArena, FromQuellan), Quellan (FromPass,
   FromCloudloom: a black void behind the party) and Cloudloom Approach are near-black at arrival under lavapipe.
   Check on the GPU; if they're as dark there, env-art lifts the ch12 grade's fill.

@@ -115,6 +115,10 @@ def quay(name: str, seed: int, *, lod: bool = False) -> kc.MeshBuilder:
     return mb
 
 
+WEIR_ARRIS_M = 0.025  # a dressed course's arris: tight, so the courses read as ashlar, not logs (M3-ENV-1328)
+WEIR_POOL_Y = -0.02  # the arriving water, under the crest stones' tops (y 0)
+
+
 def weir(name: str, seed: int, *, lod: bool = False) -> kc.MeshBuilder:
     rng = kc.rng_for(name, seed)
     noise = kc.Noise3(rng)
@@ -124,21 +128,23 @@ def weir(name: str, seed: int, *, lod: bool = False) -> kc.MeshBuilder:
     dressed = mb.material(pc.M_DRESSED)
     # The cut's bed upstream (the channels' water arriving over it) and the crest stone.
     kc.rounded_block(mb, (0.0, -0.25, -1.6), (hw, 0.2, 1.4), dressed, radius=0.03, seg=1, weather=pc.WASHED)
-    pc.water_plane(mb, -hw, hw, -3.0, 0.25, 0.06, pc.M_WATER, nx=2 if lod else 6, nz=2 if lod else 6)
+    # The arriving water lies just under the crest stones' tops and stops at their upstream face, so the crest breaks
+    # it (M3-ENV-1328: at 0.06 over the crest it read as one flat dark slab).
+    pc.water_plane(mb, -hw, hw, -3.0, -0.3, WEIR_POOL_Y, pc.M_WATER, nx=2 if lod else 6, nz=2 if lod else 6)
     x = -hw
     while x < hw - 0.05:
         ln = min(rng.uniform(0.7, 1.2), hw - x)
         kc.rounded_block(mb, (x + ln * 0.5, -0.12, 0.0), (ln * 0.5 - 0.01, 0.12, 0.28), dressed,
-                         rot=kc.rot_y(rng.normal(0.0, 0.01)), radius=0.06, seg=seg, noise=None if lod else noise,
+                         rot=kc.rot_y(rng.normal(0.0, 0.01)), radius=WEIR_ARRIS_M, seg=seg, noise=None if lod else noise,
                          disp_m=0.01, weather=pc.WASHED, variation=float(rng.random()))
         x += ln
     # The ogee face in three courses, each set back under the one above, to the sea.
     for k, (y, z, d) in enumerate(((-0.33, 0.42, 0.22), (-0.6, 0.72, 0.26), (-0.9, 1.05, 0.3))):
-        x = -hw + (0.3 if k % 2 else 0.0)
+        x = -hw + float(rng.uniform(0.15, 0.55)) * (k % 2)  # the joints break course to course
         while x < hw - 0.05:
             ln = min(rng.uniform(0.8, 1.3), hw - x)
             kc.rounded_block(mb, (x + ln * 0.5, y, z), (ln * 0.5 - 0.01, 0.13, d), dressed,
-                             rot=kc.rot_y(rng.normal(0.0, 0.01)), radius=0.07, seg=seg, noise=None if lod else noise,
+                             rot=kc.rot_y(rng.normal(0.0, 0.01)), radius=WEIR_ARRIS_M, seg=seg, noise=None if lod else noise,
                              disp_m=0.012, weather=HARBOUR, variation=float(rng.random()))
             x += ln
         x = -hw

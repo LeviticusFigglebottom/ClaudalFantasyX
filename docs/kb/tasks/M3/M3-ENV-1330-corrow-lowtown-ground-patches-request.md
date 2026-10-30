@@ -2,8 +2,8 @@
 id: M3-ENV-1330
 title: "Corrow's low town ground: hard-edged cobble triangles and a flat dark plain from the wall"
 role: environment
-status: todo
-owner_session: ""
+status: review
+owner_session: "env-art (claude/env-art, 2026-10-30)"
 depends_on: []
 reviewer: environment
 milestone: M3
@@ -30,5 +30,16 @@ env-art-b's player-height walk of Ch8 Corrow (on big21 merged) shows two problem
 ## Acceptance criteria
 - [ ] No triangle-edged cobble patches and no patch edges along tile borders in env-art-b's walk stills.
 - [ ] `lowtown_ground` is rebuilt; env-art-b re-renders `ch08_corrow_arrival` and `ch08_corrow_flood` and the walk.
+
+- 2026-10-30 (env-art): **the patches are fixed; the plain from the wall is only weakly helped.**
+  - The per-triangle cobble is gone (`build_ground`), so there are no triangle-edged patches and none stopping at
+    tile edges. Viewed at street level (−35, −21) north and east: continuous earth.
+  - The earth now carries broad drying-salt patches (the salt channel, 8–20 m) and darker trodden bands (the AO
+    channel). Both fade to their base values at the cell edge, so the rotated tiles still meet seamlessly.
+  - From the wall-walk the change is faint: `cw_earth`'s material barely shows those channels at 20–60 m. If the
+    plain still reads flat in your re-render, the next step is the earth material's own large-scale value variation
+    (a macro noise in `cw_materials`), not the mesh. Say so here and env-art takes it.
+  - `lowtown_ground` rebuilt (3200/288 tris, cobble slot gone); the Corrow kit rebuilt in full (48, the rest
+    byte-identical); manifest updated. Reviewer: environment (env-art-b).
 
 ## Review log
