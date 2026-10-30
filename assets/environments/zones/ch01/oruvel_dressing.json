@@ -30,19 +30,18 @@
  },
  "pieces": [
   {
-   "piece": "raft_deck_tucked",
+   "piece": "raft_deck_square",
    "at": [
     0,
     10
    ],
-   "y": -1.143,
-   "yaw_deg": 0.0,
-   "scale": 1.429
+   "y": -0.8,
+   "yaw_deg": 0.0
   },
   {
    "piece": "scale_hull",
    "at": [
-    -7.4,
+    -7.7,
     10.5
    ],
    "y": -0.8,
@@ -300,7 +299,7 @@
    "piece": "hull_outrigger",
    "at": [
     19.6,
-    -17.0
+    -16.4
    ],
    "y": -0.5,
    "yaw_deg": 0.0
@@ -344,7 +343,7 @@
   {
    "piece": "raft_deck_tucked",
    "at": [
-    -26.5,
+    -26.15,
     -12
    ],
    "y": -1.143,
@@ -460,7 +459,7 @@
    "piece": "raft_deck_tucked",
    "at": [
     -4.5,
-    -30.0
+    -29.5
    ],
    "y": -0.794,
    "yaw_deg": 0.0
@@ -469,7 +468,7 @@
    "piece": "raft_deck_tucked",
    "at": [
     4.5,
-    -30.0
+    -29.5
    ],
    "y": -0.794,
    "yaw_deg": 0.0

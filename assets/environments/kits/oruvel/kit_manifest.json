@@ -277,6 +277,17 @@
         "raft_deck_small_tucked-lod1": 524
       }
     },
+    "raft_deck_square": {
+      "budget": [
+        20000,
+        1000
+      ],
+      "bytes": 759408,
+      "lods": {
+        "raft_deck_square": 17468,
+        "raft_deck_square-lod1": 604
+      }
+    },
     "raft_deck_tucked": {
       "budget": [
         18000,
