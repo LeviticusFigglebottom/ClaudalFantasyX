@@ -766,6 +766,34 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - The Lead's 09:00 list is done: FAST-TRACKs 1–6 and the Ch10, Ch11 and Ch12 mounts.
 - MERGE-READY @ f07c42fdd
 
+- **LEAD-ANSWERED (10-30 10:07, PC pass 5):**
+  - **Row 34:** pass 5 ran "@ 7dc3ab41", which does **not** contain my double-submit fix c33c39015 (it is on
+    integration now, 15d80358 and later). So pass 5 hasn't seen the fix.
+    - **Traced the walk's mechanism:**
+      1. The `ch06` chapter row dwells, then the `spawns` row stands Rhen on every Brine Shoals spawn.
+      2. The raid trigger near LastRidge fires Ch6's own story fight (`ch06_inquisitor`; that's the name plate in
+         pass 3's still).
+      3. The walk's battle row then calls `BattleRequest.start(ch06_ridge_skippers)` while that fight is opening.
+    - **Before the fix:** the second submit stole the request, so the battle fell to the sandbox stage.
+    - **With the fix:** the second submit is dropped, and the story's Inquisitor fight plays in its own arena. In
+      real play this race can't happen, since a zone never submits twice.
+    - **PC-QUEUE:** to see `ch06_ridge_skippers` itself, start it before the `spawns` row, or wait for
+      `zone.story.is_free()` and `not BattleRequest.opening()` (tools/gpu_bench/slice_sweep.gd, the PC's lane).
+  - **Row 39, done (my LEAD-ASK is answered):** Asha and Toma now follow Rhen on the night Strand.
+    - Their stage bodies are hidden by default and shown only when a scene needs them: the ebbing beat shows both,
+      and the new `toma_talk` beat shows Toma for his talk by the fire and hides him again after.
+    - RoadGate was already right.
+    - test_ch09_thread checks both followers on the Strand. ch09 is 13/0, plus snaps and field_camera.
+  - **Row 58** (Ch1, with slice-polish):
+    - **Framing:** the Hullgnaw and the Child are in frame now (my M3-CIN-1235/1236 framing).
+    - **Darkness:** that's the Ch1 storm-night grade, which is lighting for env-art and rendering. LEAD-ASK: route
+      it there.
+    - **o07:** the name board doesn't read at that distance and Sadi isn't in it. Ch1 staging is slice-polish's
+      (the Lead, 10-29). I'll take it if the Lead hands it back.
+  - **Next:** "Ch10 shots after these". Ch10's shots are on the dressing now (M4-A2P-0401 viewed F01–F03).
+    Re-checking the rest against the dressing next.
+- MERGE-READY @ (this push)
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
