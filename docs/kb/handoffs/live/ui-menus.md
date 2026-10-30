@@ -1190,3 +1190,25 @@ BACKLOG EMPTY: everything left in this track's queue waits on another track.
     `ch12_ram_felled`, `ch13_read_ledgers`, each chapter's `_complete`, and the Lacquer Court's ch14 beats). My
     merge took their `objectives.json` and threads unchanged. I only renamed the rows in my two qa_known notes.
 MERGE-READY @ 0fda0d8b5: the controller-only pass (Settings and save/load controls lines, the save list's pad notice, the pad walk test).
+- 2026-10-30 17:00, **the Lead's 16:09 note: as-played check of the new battle return** (merged big24 efe7fb10 at ce9c0d6d0).
+  - **Merge:** `objectives.json`, `test_objective_tracker` and `qa_known` take the integration side (act2-plan's
+    M4-A2P-109). The `OBJ_*` strings it keeps are restored, and `strings.csv` is the integration file plus my
+    seven controls lines.
+  - **Found and fixed (8d42e9508):** a resident field stopped following the text size and palette.
+    - **Cause:** big24 keeps the field zone through a random fight. It leaves the tree and comes back without
+      `_ready`, and `UiSettings.follow` stopped for good on `tree_exited`.
+    - **Effect:** after the first random battle, nothing in that zone took a text-size or palette change again: the
+      interact prompt, tip card, area title card, codex notice, objective HUD, hold prompt and dialogue box. That
+      included a change made in the battle pause.
+    - **Fix:** `follow()` now stops while out of the tree and catches up when back.
+    - **Test:** test_ui_settings::test_a_control_out_of_the_tree_catches_up_and_keeps_following fails on the old code
+      and passes now.
+  - **Victory and rewards:** battle_victory rendered at 100% and at 130% (the fixture's `ui_settings`, restored
+    afterwards), both viewed. The rows, XP, "+3 movement" (this game's level-up: Lattice movement), lume and drops
+    fit, and so do the choices. Nothing is cut.
+  - **Pad:** the result choices are covered by test_input_parity_battle (result panel, each device). The A press that
+    picks Return can't fire an interaction on arrival: the field acts on the press event, which the battle consumed.
+  - **Return:** test_battle_return 1/0 (the resident re-attach, under the fade).
+  - **Tests:** ui_settings 12/0, settings 49/0, field_menu 37/0, objective_hud 7/0, interact 13/0, battle_return 1/0,
+    pad_walk 3/0; validate_data 0/0; lint and format clean.
+MERGE-READY @ 8d42e9508: a resident field keeps following the text size and palette; battle-return as-played check.
