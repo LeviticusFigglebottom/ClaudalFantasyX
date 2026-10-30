@@ -122,6 +122,14 @@ reaches 3.59–3.66 m/s on open ground).
 - With the longer gaps, the main routes (straight-line spawn-to-spawn: 13–197 m) now hold 0–1 random fights each. The
   Coilspire path (102 m) and the derelict (13 m) hold none.
 
+## STATUS for the Lead (23:05): the Act I end-card playthrough
+- **Done on big28 (c646c3a8): the Act I end card is reached, with no game soft-lock.** The run is pieced together:
+  fresh New Game → Ch6, then F8 Ch6 → Ch8, then F8 Ch9 → end_card. Details are in the big28 section below.
+- **The probe did stall where Ch6 and Ch8 had no objectives.** It got through Ch6 and Corrow by sweeping their story
+  triggers, but it couldn't play the Coilspire interior.
+- **Now:** re-running Ch6 → end card and Ch5 (the new Ashcrown stair rows) on act1-chapters' 7a37c3d53, which has the
+  objectives. That commit contains big28 but not big32. When big33 merges I'll re-run Ch6 and Ch8 there.
+
 ## RE-RUN after "Merge lead/gate-big32" (integration @ 8889542f6): playtest (a) and (b)
 Same probes and box. Milliseconds from Return, big28 → big32:
 
