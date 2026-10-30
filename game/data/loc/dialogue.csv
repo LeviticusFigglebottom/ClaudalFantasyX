@@ -781,6 +781,8 @@ DLG_CH09_SHIELD_012,I'll take him first.
 DLG_PROLOGUE_DEAD_CITY_001,"Everyone I'm going to tell you about is still here tonight. Remember that, later."
 DLG_TEST_CUTSCENE_ARRIVE_001,Arrive fixture line.
 DLG_TEST_CUTSCENE_ARRIVE_002,Arrive fixture closing line.
+DLG_TEST_CUTSCENE_CARD_001,Card fixture.
+DLG_TEST_CUTSCENE_CARD_002,After the card.
 DLG_TEST_CUTSCENE_001,First fixture line.
 DLG_TEST_CUTSCENE_002,Fixture option A.
 DLG_TEST_CUTSCENE_003,Fixture option B.

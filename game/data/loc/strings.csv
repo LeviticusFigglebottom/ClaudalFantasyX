@@ -438,7 +438,7 @@ HUD_FAIL_SWELL_CANCELLED,The Swell was held back. Nothing was spent.
 GFX_SKY_DETAIL,Sky Detail
 ENC_CH02_TIDELINE,The Tideline
 LOCATION_PROLOGUE,A Dead City at Dusk
-FLOW_END_CARD_TITLE,End of the first playable
+FLOW_END_CARD_TITLE,The end of Act One
 FLOW_END_CARD_LINE,Thank you for walking with them this far.
 FLOW_END_CARD_PROMPT,Confirm to return to the title
 CHAR_VENDOR,Fish Seller
@@ -826,7 +826,7 @@ TUT_FLIER_RHEN,"Fliers dodge most blows. Rhen's quick, precise strikes find them
 SAVE_SLOT_PROLOGUE,Prologue
 FLOW_END_CARD_VOICE,"""I said yes to a girl I'd known for two days. I didn't know yet what I was walking her toward."""
 CREDITS_GAME,Hymn of the Undertow
-CREDITS_SLICE,"The first playable: Haluna, the Saltgrass Causeway and the Shell Shrine"
+CREDITS_SLICE,"Act One: from the Underway at Oruvel to the road out of Corrow"
 CREDITS_MUSIC,Original music
 CREDITS_ENGINE,Made with the Godot Engine (MIT License)
 CREDITS_FONTS,EB Garamond and Source Sans 3 (SIL Open Font License)
@@ -1116,3 +1116,5 @@ SWELL_INPUT_WEIGHTED_SWING,Weighted Swing
 SWELL_INPUT_WEIGHTED_SWING_HELP,Hold Confirm while the cleaver coils and let go on the count.
 SWELL_INPUT_REEL_STOP,Reel-Stop
 SWELL_INPUT_REEL_STOP_HELP,Stop each reel as its part lines up. Reels: {beats}
+CHAPTER_CARD_CH04_LABEL,Chapter 4
+CHAPTER_CARD_CH04_TITLE,The Pilgrim's Wake
