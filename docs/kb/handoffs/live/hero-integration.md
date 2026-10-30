@@ -2074,3 +2074,27 @@ MERGE-READY @ (this commit).
 - **No soft-lock or stuck transition.** The logs have no timeout, no stuck story and no held reveal. The only
   "softlock" text is Ch14's flag docs (Act II, M4-A2P-118).
 - (A big27 run was stopped part-way when big28 landed; its threads, encounters and fp_ were clean too.)
+
+### The Drownbell's return, traced (the Lead 10-30 19:45: the last piece of the black-screen report)
+- cloud-qa's return_probe on big28 (c646c3a8) + this branch, logging SceneRouter's fade and its reveal holders every
+  100 ms from the victory panel's Return:
+  - **0–0.4 s:** the fade going down.
+  - **0.4–1.9 s:** Haluna loading and instantiating (ui's 95f51b98 prepare_return prewarms it during the panel; the
+    load does come in).
+  - **1.9–5.0 s: Haluna is in the tree, and the reveal is held by creatures' VillagerLayer.** `_build_spread` adds 18
+    rows one a frame at ~120–250 ms a frame headless.
+  - **5.0–5.3 s:** the fade lifting.
+  - The later black in the probe's 10 s total is B11's chapter card and the Ch4 wake: the story's own black, not the
+    return.
+- **Tried:** a per-frame time budget in VillagerLayer (as many rows a frame as fit 40 ms). No change: in a real change
+  each row alone costs ~180 ms (actor instantiate and ready, or a model adopted), so the edit was **reverted**, not
+  shipped.
+- **Filed M3-HER-1168 (creatures):** instantiate the villagers' actors on worker threads under the fade, as
+  SceneRouter does for the zone, or during the zone's threaded instantiate. Target ≤ 0.5 s held after the zone is in.
+  **Every fresh Haluna entry** pays this, not only the Drownbell.
+- **With that done, the Drownbell's black would be ~1.9 s headless** (the fade plus a cross-zone load). Getting under
+  1 s needs Haluna resident or already instantiated before the Return, which is a bigger change.
+  **LEAD-ASK:** worth it for this one return (Haluna is the chapter hub, entered from the shrine once), or is ~1.9 s
+  headless (much less on the PC) acceptable after M3-HER-1168?
+- **B11's opening:** after the router's fade lifts (5.3 s), B11 opens from the field, with no extra black of its own in
+  the trace. Nothing to agree with slice-polish there.
