@@ -629,6 +629,7 @@ Read this section first; everything below it is history. The branch is `claude/e
       env-art-b's zone looks (c1ed49ad6), so it now leaves them to `ansedra_arenas.py`'s own test (8e4ab352).
     - **`test_palette_check` H07:** the committed baseline (big17, 00:46) predates the chapel fix b0eb0a49 (03:16).
       It needs the Lead's re-approval of `haluna_h07_chapel_court`; env-art writes no baselines.
+      Checked: a fresh render of H07 on this branch passes all four palette checks (chapel ΔE 0.018).
     - **Other reds aren't env-art's:** rig integrity, villagers/hero clips, audio, status names, the
       `oruvel_seabed.glb` build job (M3-CIN-1232) and the wildlife baseline.
   - **Next:** Ch10–Ch12 walk-through stills at player height (rendering now).
