@@ -54,6 +54,12 @@ func before_each() -> void:
 				n.get_parent().remove_child(n)
 			n.free()
 	made.clear()
+	for n in lamp_engine_made:
+		if is_instance_valid(n):
+			if n.get_parent() != null:
+				n.get_parent().remove_child(n)
+			n.free()
+	lamp_engine_made.clear()
 
 
 func test_wakefin_has_the_full_clip_set_and_its_close_circle_stance() -> void:
@@ -146,6 +152,131 @@ func _wakefin_skeleton(a: Node) -> Skeleton3D:
 
 ## Names of the bones some vertex actually weights (> 0) in any skinned mesh under the skeleton.
 func _wakefin_weighted_bones(skel: Skeleton3D) -> Dictionary:
+	var out: Dictionary = {}
+	for n: Node in skel.find_children("*", "MeshInstance3D", true, false):
+		var mi := n as MeshInstance3D
+		if mi.skin == null or mi.mesh == null:
+			continue
+		for s in mi.mesh.get_surface_count():
+			var arrays := mi.mesh.surface_get_arrays(s)
+			var bones: PackedInt32Array = arrays[Mesh.ARRAY_BONES]
+			var weights: PackedFloat32Array = arrays[Mesh.ARRAY_WEIGHTS]
+			for i in mini(bones.size(), weights.size()):
+				if weights[i] > 0.0:
+					var b := mi.skin.get_bind_name(bones[i])
+					out[String(b) if b != &"" else skel.get_bone_name(mi.skin.get_bind_bone(bones[i]))] = true
+	return out
+
+
+# --- The Lamp Engine (M4-CRB-003, docs/kb/plan/act2/bosses/lamp_engine.md) -----------------------------------------
+
+## Its full clip set: the contract clips, one clip per skill on the sheet's move list, and the `opened` versions that
+## phase plays through its `clips` map.
+const LAMP_ENGINE_CLIPS: Array[StringName] = [
+	&"idle",
+	&"idle_b",
+	&"ready",
+	&"intro",
+	&"attack",
+	&"cast",
+	&"lamp_gather",
+	&"lamp_burn",
+	&"call",
+	&"twin_trim",
+	&"hit",
+	&"hit_b",
+	&"ko",
+	&"phase_change",
+	&"idle_opened",
+	&"ready_opened",
+	&"attack_opened",
+	&"cast_opened",
+	&"lamp_gather_opened",
+	&"lamp_burn_opened",
+	&"call_opened",
+	&"twin_trim_opened",
+	&"hit_opened",
+	&"hit_b_opened",
+	&"ko_opened"
+]
+## The striking clips (each with a contact beat) and what the `opened` phase plays for them.
+const LAMP_ENGINE_STRIKES: Array[StringName] = [&"attack", &"cast", &"lamp_gather", &"lamp_burn", &"call", &"twin_trim"]
+const LAMP_ENGINE_ANCHORS: Array[StringName] = [&"vfx_wound", &"vfx_core", &"vfx_phase"]
+## The intro plays under the boss_tall hold (choreo.json by_enemy lamp_engine, 2.4 s, plus its ease-in).
+const LAMP_ENGINE_INTRO_MIN_SEC := 1.5
+const LAMP_ENGINE_INTRO_MAX_SEC := 3.5
+## The move-pass rule: a wind-up of at least this long reads before contact.
+const LAMP_ENGINE_WIND_UP_SEC := 0.45
+
+var lamp_engine_made: Array[Node] = []
+
+
+func test_lamp_engine_has_the_full_clip_set() -> void:
+	var a := _lamp_engine_actor()
+	for clip in LAMP_ENGINE_CLIPS:
+		assert_true(a.has_clip(clip), "the Lamp Engine has %s" % clip)
+	before_each()
+
+
+func test_lamp_engine_intro_fits_the_camera_hold() -> void:
+	var sec := _lamp_engine_actor().clip_length(&"intro")
+	assert_between(sec, LAMP_ENGINE_INTRO_MIN_SEC, LAMP_ENGINE_INTRO_MAX_SEC, "its intro is %.2f s" % sec)
+	before_each()
+
+
+func test_lamp_engine_has_its_vfx_anchor_bones() -> void:
+	var a := _lamp_engine_actor()
+	var found := a.find_children("*", "Skeleton3D", true, false)
+	assert_false(found.is_empty(), "it has a skeleton")
+	if found.is_empty():
+		return
+	var skel := found[0] as Skeleton3D
+	var weighted := _lamp_engine_weighted_bones(skel)
+	assert_false(weighted.is_empty(), "its mesh is weighted to some bones (the check is live)")
+	for bone in LAMP_ENGINE_ANCHORS:
+		assert_true(skel.find_bone(String(bone)) >= 0, "it has the %s bone" % bone)
+		assert_false(weighted.has(String(bone)), "%s carries no vertices" % bone)
+	assert_true(a.vfx_anchor(&"wound").is_finite(), "spawn and death effects find its wound")
+	before_each()
+
+
+func test_lamp_engine_strikes_wind_up_before_contact() -> void:
+	var a := _lamp_engine_actor()
+	for clip in LAMP_ENGINE_STRIKES:
+		var c := a.contact_time(clip)
+		assert_true(c >= LAMP_ENGINE_WIND_UP_SEC, "%s lands at %.2f s, after its wind-up" % [clip, c])
+		assert_true(c < a.clip_length(clip), "%s lands inside its clip" % clip)
+	before_each()
+
+
+func test_lamp_engine_plays_every_move_from_its_open_stance() -> void:
+	var a := _lamp_engine_actor()
+	assert_true(a.enter_phase(&"opened"))
+	a.settle()
+	assert_eq(a.current_clip, &"idle_opened")
+	var mapped: Array[StringName] = []
+	mapped.append_array(LAMP_ENGINE_STRIKES)
+	mapped.append_array([&"hit", &"hit_b", &"ready", &"ko"] as Array[StringName])
+	for clip in mapped:
+		assert_eq(a.phase_clip(clip), StringName("%s_opened" % clip), "open, %s plays from the open stance" % clip)
+	for clip in LAMP_ENGINE_STRIKES:
+		var c := a.contact_time(clip)
+		assert_true(c >= LAMP_ENGINE_WIND_UP_SEC, "open, %s lands at %.2f s, after its wind-up" % [clip, c])
+	before_each()
+
+
+func _lamp_engine_actor() -> CreatureActor:
+	var row := CreatureActor.row_for(&"lamp_engine")
+	var a := (load(str(row.get("scene", ""))) as PackedScene).instantiate() as CreatureActor
+	var tree := Engine.get_main_loop() as SceneTree
+	(tree.current_scene if tree.current_scene != null else tree.root).add_child(a)
+	lamp_engine_made.append(a)
+	return a
+
+
+## Names of the bones some vertex actually weights (> 0) in any skinned mesh under the skeleton (the kit binds every
+## bone in the skin, so the binds alone say nothing; the vertex arrays do).
+func _lamp_engine_weighted_bones(skel: Skeleton3D) -> Dictionary:
 	var out: Dictionary = {}
 	for n: Node in skel.find_children("*", "MeshInstance3D", true, false):
 		var mi := n as MeshInstance3D

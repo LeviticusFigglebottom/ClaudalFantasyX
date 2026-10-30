@@ -122,13 +122,19 @@
     },
     "lamp_engine": {
       "scene": "res://game/creatures/lamp_engine/lamp_engine_battle.tscn",
-      "contact": {"attack": 0.6, "cast": 1.0, "attack_opened": 0.6, "cast_opened": 1.0},
-      "loop": ["idle", "idle_opened"],
+      "vfx_anchors": {"core": "vfx_core", "wound": "vfx_wound"},
+      "contact": {"attack": 0.6, "cast": 1.0, "lamp_gather": 1.2, "lamp_burn": 0.8, "call": 0.7, "twin_trim": 0.85,
+                  "phase_change": 1.1, "attack_opened": 0.6, "cast_opened": 1.0, "lamp_gather_opened": 1.2,
+                  "lamp_burn_opened": 0.8, "call_opened": 0.7, "twin_trim_opened": 0.85},
+      "loop": ["idle", "idle_opened", "ready", "ready_opened"],
       "ko_fade_sec": 1.2,
-      "stand_in": {"yaw_deg": 90.0},
+      "stand_in": {"yaw_deg": 55.0},
       "phases": {
         "opened": {"clip": "phase_change", "idle": "idle_opened", "sec": 0,
-                   "clips": {"attack": "attack_opened", "cast": "cast_opened", "hit": "hit_opened"}}
+                   "clips": {"attack": "attack_opened", "cast": "cast_opened", "hit": "hit_opened",
+                             "hit_b": "hit_b_opened", "ready": "ready_opened", "ko": "ko_opened",
+                             "lamp_gather": "lamp_gather_opened", "lamp_burn": "lamp_burn_opened",
+                             "call": "call_opened", "twin_trim": "twin_trim_opened"}}
       },
       "portrait": {"clip": "idle", "clip_time": 0.0}
     },
