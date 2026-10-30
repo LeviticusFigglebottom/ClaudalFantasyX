@@ -79,5 +79,25 @@ class LacquerCourtTests(unittest.TestCase):
         self.assertEqual((GEN.ZONE / GEN.ENV_NAME).read_text(encoding="utf-8"), GEN.environment())
 
 
+class StepHoldArenaTests(unittest.TestCase):
+    def test_the_arena_is_the_writers_and_the_courts(self) -> None:
+        import tempfile  # noqa: PLC0415
+
+        arenas = importlib.util.spec_from_file_location(
+            "ansedra_arenas_test", ROOT / "assets_src/environments/kits/haluna/ansedra_arenas.py")
+        mod = importlib.util.module_from_spec(arenas)
+        arenas.loader.exec_module(mod)
+        with tempfile.TemporaryDirectory() as tmp:
+            mod.main(Path(tmp))
+            written = (Path(tmp) / "lacquer_court_steps" / "lacquer_court_steps.tscn").read_text(encoding="utf-8")
+        committed = ROOT / "assets/environments/arenas/lacquer_court_steps/lacquer_court_steps.tscn"
+        self.assertEqual(written, committed.read_text(encoding="utf-8"), "re-run ansedra_arenas.py")
+        a = mod.steps()
+        pieces = {p["glb"].rsplit("/", 1)[1] for p in a["pieces"]}
+        self.assertIn("wedding_dais.glb", pieces)
+        self.assertIn("conclave_gallery.glb", pieces)
+        self.assertEqual(len(a["lamps"]), len(GEN.LAMP_STANDS), "a light on every lamp-stand")
+
+
 if __name__ == "__main__":
     unittest.main()
