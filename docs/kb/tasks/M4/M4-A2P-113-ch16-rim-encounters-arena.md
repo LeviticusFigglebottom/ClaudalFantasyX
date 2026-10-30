@@ -1,5 +1,5 @@
 ---
-id: M4-A2P-107
+id: M4-A2P-113
 title: "Ch16's rim encounters fight in pale_rim_shallows (name the arena on their rows)"
 role: combat
 status: todo
