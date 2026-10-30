@@ -422,6 +422,14 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
 
 - Request **M3-CIN-1234** (slice-polish, the Lead's ask): Ch1's dive rolls ~4–5 random fights (130 m route, 18–34 m gaps); min 32 / max 52 gives ~3.
 
+- **Act II preparation, docs only (ADR 0203; Lead 10-30 01:08):** `docs/kb/plan/act2/chapters/` (README + ch10..ch16,
+  each `draft: pre-gate`): per chapter the flow outline (arrive rows, beats, flags, hand-offs), triggers and map POIs on
+  the greybox frame, encounter tables (random density at ~3 per route, scripted fights with arenas, the Act II bands)
+  and the field-camera plan (scene shots per zone letter, pan-follow volumes). Gaps found: the regular rows have **no
+  arenas** (ch10–ch12, ch16 tables; Vey and the Rim need new arenas); Ch16's 254 m wade rolls ~6 fights without its
+  montage cut; each act break needs its own end-card next stop. No game data touched. QA pass 3 (gpu/act1-qa-3) has no
+  new rows yet; M3-CIN-1233 not MERGE-READY yet.
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
