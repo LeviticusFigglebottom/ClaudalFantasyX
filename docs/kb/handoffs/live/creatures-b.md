@@ -638,3 +638,17 @@ What the Act II fights still need from others: enemy rows and encounters (combat
 - **BACKLOG EMPTY (09:40):** every Act II boss and Vowbound in my lane is built, wired to combat's ids where they
   exist (the Vowbound's rows are M4-A2P-024's; the flat-engine's M4-A2P-023's) and viewed. Next: the Vowbound maps
   when their rows land; any new GPU QA row first.
+
+## 2026-10-30 ~10:20: the Lead's 09:58 re-send (crossed my 09:40 MERGE-READY)
+- The re-sent queue is already done: the four Act II bosses' models, rigs, clip sets and own VFX are built and viewed,
+  and wired to combat's ids in **MERGE-READY @ 9781d0fe2** above (not yet in big21, which merged creatures-b @
+  10490ad9). Drowner (Ch10), Lamp Engine (Ch11), Ram (Ch12), Wakefin (Ch15), in chapter order.
+- Kesh: the creature-kit face with the stylized mask/veil reading stays (no lane crossed, no ADR).
+- Merged the integration branch @ 6a8349e7 (ownership.md: theirs; PROVENANCE union, no stale ice.tres row).
+- **MERGE-READY @ 618d916b3:** M4-A2P-024's Vowbound wiring mapped Ethren's hold_the_hour and lacquer_screen to
+  `cast`, so his built `stop` and `ward` clips never played; now per his sheet (`stop`, `ward`). New test: every
+  Act II Vowbound skill and swell plays a clip the model has, and each built signature clip is reached (live: the old
+  map fails it). Nhoa, Hesk and Kesh's maps already matched their sheets. Godot creature 157/0, validate_data
+  (the one warning, rime_urchin's ice.tres, is not mine).
+- **BACKLOG EMPTY (10:20):** all four bosses and four Vowbound built, wired and checked; the flat-engine waits on its
+  M4-A2P-023 row and Liss's break; no GPU QA row open on my side.
