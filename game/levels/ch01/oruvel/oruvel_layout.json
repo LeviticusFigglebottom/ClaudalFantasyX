@@ -61,7 +61,7 @@
     "pen_child_3": {"at": [31, 0, -25, 0], "color": "#b4907a", "radius": 0.18, "height": 0.9, "hidden": true, "model": "res://assets/characters/villagers/child/child_actor.tscn"},
     "hullgnaw": {"at": [31.0, -1.2, -21.8, 39], "hidden": true, "model": "res://assets/creatures/hullgnaw/hullgnaw.glb"},
     "dive_lamp": {"at": [30.5, -3.9, -14.6, 0], "model": "res://game/levels/ch01/oruvel/dive_lamp.tscn"},
-    "seabed": {"at": [30, -11, -25, 0], "model": "res://game/levels/ch01/oruvel/seabed.tscn"}
+    "seabed": {"at": [30, -11, -25, 0], "model": "res://assets/cutscene/ch01/oruvel_seabed.glb"}
   },
   "shots": {
     "O01": {"pos": [0, 0.3, 26], "look_at": [0, 1.2, 0], "fov": 52},

@@ -1081,6 +1081,14 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     sheet's staging review is done, and the tools its staging needs are built (M4-CIN-1302/1303, MERGE-READY).
   - **For the Lead:** apply act2_tracks.md's cinematics rows (`game/data/cutscene/ch1[0-6]/**`,
     `game/cutscene/act2/**`) and unblock M4-A2P-070 when Ch10's scripts land; I start it then.
+- **FAST-TRACK (big20, test_slice_primitives): Oruvel's seabed, MERGE-READY @ d207cb49.**
+  - The PlaneMesh is gone. `assets_src/cutscene/ch01/oruvel_seabed.py` generates a 40 m floor from a fixed seed:
+    silt in current ripples over low dunes, with fourteen half-buried rock lumps, vertex-coloured. It writes
+    `assets/cutscene/ch01/oruvel_seabed.glb` (`--check` rebuilds and compares), with a PROVENANCE row. The layout's
+    `seabed` actor uses the glb. New paths for this track: `assets_src/cutscene/**` and `assets/cutscene/**`.
+  - **Checks:** slice_primitives 1, ch01 20, oruvel 17, all 0 failed; validate_data clean.
+  - **Viewed (lavapipe):** ch01_going_under_u11 shows the rippled floor and rocks, the pen's drowned frame and
+    pilings in silhouette, and the motes sinking over them. ch01_going_under_u10 is unchanged.
 ### PC-QUEUE
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan
   emissive reading. Check that its glow and silhouette read on the GPU; if not, it needs a rim light or a grade.
