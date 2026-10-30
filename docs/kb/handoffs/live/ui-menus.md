@@ -1212,3 +1212,19 @@ MERGE-READY @ 0fda0d8b5: the controller-only pass (Settings and save/load contro
   - **Tests:** ui_settings 12/0, settings 49/0, field_menu 37/0, objective_hud 7/0, interact 13/0, battle_return 1/0,
     pad_walk 3/0; validate_data 0/0; lint and format clean.
 MERGE-READY @ 8d42e9508: a resident field keeps following the text size and palette; battle-return as-played check.
+- 2026-10-30 17:50, **Act II menus for the content that has landed (big24).**
+  - **Malcor Venn's portrait** (4eabd31f3): baked neutral, cold and determined from his model (M4-A2P-051). The
+    dialogue box shows it for speaker `malcor_venn` (alias), so his Ch14 decree reads with his face.
+  - **Merel, Tobin and Ansedra's clerk** (8b07bcd50): 16 faces, in the emotions their Act II lines use. A new test,
+    test_every_act2_speaker_with_a_model_has_a_portrait, guards the next Act II model to land.
+  - **Viewed:** every bake. Two notes for characters:
+    - Venn's face uses Asha's pose weights, so his three expressions look nearly alike at 256 px. A Venn face-pose
+      table would give the decree its chill.
+    - Tobin's `laugh` reads as a lopsided grimace with the tongue showing.
+  - **Still waiting:**
+    - the Abiding guard's portrait (no model yet);
+    - Venn's bestiary page and the answered-by cursor line (no Venn enemy row, no `answered_key` yet);
+    - the seven-hero formation check (Pell's battle row).
+  - **Tests:** hero_portraits 10/0, dialogue_box 27/0; validate_data 0/0 (PROVENANCE rows); lint and format clean.
+MERGE-READY @ 8b07bcd50: Act II faces (Venn, Merel, Tobin, the clerk) in the dialogue box.
+BACKLOG EMPTY: every remaining item waits on another track (the Abiding guard's model; Venn's enemy row with `answered_key`; Pell's battle row; ch14's thread for the Lacquer Court objectives).
