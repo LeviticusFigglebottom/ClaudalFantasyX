@@ -2,9 +2,8 @@
 id: M4-A2P-046
 title: "The Pale Rim and the Drowned Choir at final quality (a hero zone)"
 role: environment
-status: blocked
-blocked-by: ADR 0203
-owner_session: ""
+status: doing
+owner_session: env-art-b
 depends_on: []
 reviewer: rendering
 milestone: M4
@@ -20,5 +19,6 @@ The white shallows, cairns and the waiting ship; the Choir's ring of colossal mo
 ## Notes
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). Plan §2 Ch16.
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
+- 2026-10-30: started by env-art-b under ADR 0205.
 
 ## Review log
