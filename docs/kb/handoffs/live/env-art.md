@@ -589,6 +589,19 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **The Ch10–Ch12 beauty pass is complete (M4-A2P-1402, review: art). MERGE-READY @ f3df9d62.**
+  - **Ch12 at eye height** (Keth Pass, Quellan, Cloudloom): the volcanic crag read as flat black masses (keth_pass.md
+    calls for "grey crags"), and the road's granite read near black.
+    - `kit_keth_crag` now has a neutral grey tint over 1. The first, cool tint read blue (99692b06); this commit
+      corrects it.
+    - `kit_keth_road` (also the dry-stone walls) lifts a step.
+  - Reedhollow reads well.
+  - **Checks:**
+    - Tools: the keth and haluna kit tests OK.
+    - Godot `--filter=ch12` is green; validate_data clean.
+  - **Baselines that move (none written):** the Ch12 zone shots and the keth_seep_terrace arena.
+  - **Next:** Act III per ADR 0207. First, claim the paths in ownership.md and agree the zone split with env-art-b
+    here.
 - **LEAD (21:56, ADR 0207), noted.** When the queue is empty: supplement others, or start Act III environments in my lane
   (M5-A3P-1400..1499). I'll claim the paths in ownership.md first and agree the zone split with env-art-b here.
   The order: the hatch lip (done, M4-A2P-1403), then the rest of the Ch10–Ch12 pass (Reedhollow and the Ch12 zones,
