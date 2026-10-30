@@ -41,7 +41,13 @@ const HEROES: Array[StringName] = [
 	&"netmender",
 	&"fisher",
 	&"vendor",
-	&"child"
+	&"child",
+	# Act II (M4-A2P-081): Warden Malcor Venn, who reads the Ch14 decree and fights on the lagoon.
+	&"venn",
+	# Act II townsfolk who speak (M4-A2P-081): the Lacquer Court's bride and groom, and Ansedra's clerk.
+	&"merel",
+	&"tobin",
+	&"clerk"
 ]
 ## The six party heroes (the pages below stand them up).
 const PARTY: Array[StringName] = [&"rhen", &"asha", &"toma", &"ysolde", &"liss", &"kerrid"]

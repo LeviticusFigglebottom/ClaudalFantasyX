@@ -6,11 +6,12 @@ extends RefCounted
 ## on the ground, which does not stop one body covering another from the lens.
 ##
 ## At spawn, after the line-up, each foe's screen box is taken from the fight's rest frame (the authored camera, fitted
-## by camera.rest_by_enemy). While two foes' boxes share more than max_share of the smaller one, they step apart along
-## the screen's sideways axis (step_m each pass, iters passes); a foe whose box meets the command menu's rect steps
-## toward the screen's middle. A step that would bring two footprints closer than BattleLineup keeps them takes the
-## neighbour along, else goes straight back from the lens, else is not taken; a foe the line-up left too close at its
-## cap keeps its seat. No foe moves more than max_shift_m from its mark. choreo.json spacing.screen.
+## by camera.rest_by_enemy). While two foes' boxes share more than max_share of the smaller one, they step apart
+## (step_m each pass, iters passes): the left one further from the party (on the battle axis the screen's right is
+## toward the party), the right one back from the lens. A foe whose box meets the command menu's rect steps back (up
+## the screen), else toward the middle. No step brings two footprints closer than BattleLineup keeps them (a first cut
+## carried the causeway's Gull into Rhen's melee lane); a foe the line-up left too close at its cap keeps its seat. No
+## foe moves more than max_shift_m from its mark. choreo.json spacing.screen.
 
 const REF := Vector2(1920.0, 1080.0)
 
@@ -25,7 +26,7 @@ static func apply(fighters: Array, cam: Camera3D, xf: Transform3D, fov: float, d
 	var lens := (parent.global_transform if parent != null else Transform3D.IDENTITY) * xf
 	var side := Vector3(lens.basis.x.x, 0.0, lens.basis.x.z).normalized()
 	var back := Vector3(-lens.basis.z.x, 0.0, -lens.basis.z.z).normalized()  # away from the lens
-	var avoid := HudLayout.rect_of(HudLayout.section(&"commands"))
+	var avoid := menu_rect(data)
 	var shapes: Array[AABB] = []  # each body's box about its own origin
 	var homes: Array[Vector3] = []
 	var radii: Array[float] = []  # BattleLineup's footprints: no step brings two closer than they keep on the ground
@@ -45,34 +46,35 @@ static func apply(fighters: Array, cam: Camera3D, xf: Transform3D, fov: float, d
 		var boxes: Array[Rect2] = []
 		for i in fighters.size():
 			boxes.append(screen_box(lens, fov, shapes[i], (fighters[i] as Node3D).global_position))
-		var moves: Array[float] = []
-		moves.resize(fighters.size())
-		moves.fill(0.0)
+		# Each foe's steps, most wanted first: a pair's left one further left (away from the party, out of the heroes'
+		# melee lanes) else back, its right one back from the lens; a foe on the command menu back (up the screen), else
+		# right. None steps onto the menu.
+		var wants: Array = []
+		for i in fighters.size():
+			wants.append([])
 		for i in fighters.size():
 			for j in range(i + 1, fighters.size()):
 				if share(boxes[i], boxes[j]) > max_share:
 					var left := i if boxes[i].get_center().x <= boxes[j].get_center().x else j
 					var right := j if left == i else i
-					moves[left] -= step * 0.5
-					moves[right] += step * 0.5
+					(wants[left] as Array).append_array([-side * step, back * step])
+					(wants[right] as Array).append(back * step)
 			if boxes[i].intersects(avoid):
-				moves[i] += step if boxes[i].get_center().x < REF.x * 0.5 else -step
+				(wants[i] as Array).append_array([back * step, (back + side).normalized() * step, side * step])
 		var moved := false
 		for i in fighters.size():
-			if moves[i] == 0.0 or pinned[i]:
+			if pinned[i]:
 				continue
 			var f := fighters[i] as Node3D
-			var p := f.global_position + side * moves[i]
-			var off := p - homes[i]
-			if off.length() > cap:
-				p = homes[i] + off.normalized() * cap
-			if _crowds(fighters, radii, clear, i, p) and not _carry(fighters, radii, clear, i, p, homes, cap):
-				p = f.global_position + back * absf(moves[i])  # boxed in on the ground: a step back from the lens
-				off = p - homes[i]
-				if off.length() > cap or _crowds(fighters, radii, clear, i, p):
+			for d: Vector3 in wants[i]:
+				var p := f.global_position + d
+				if (p - homes[i]).length() > cap or _crowds(fighters, radii, clear, i, p):
 					continue
-			moved = moved or not p.is_equal_approx(f.global_position)
-			f.global_position = p
+				if screen_box(lens, fov, shapes[i], p).intersects(avoid) and not boxes[i].intersects(avoid):
+					continue  # never onto the command menu
+				f.global_position = p
+				moved = true
+				break
 		if not moved:
 			return
 
@@ -103,38 +105,43 @@ static func _crowded(fighters: Array, radii: Array[float], clear: float, i: int)
 	return false
 
 
-## Fighter `i` stepping to `p` takes along each neighbour it would crowd, by the same step, when every one of them
-## can go (within `cap` of its mark, crowding no one). True when they moved (`i` itself is left to the caller).
-static func _carry(
-	fighters: Array, radii: Array[float], clear: float, i: int, p: Vector3, homes: Array[Vector3], cap: float
-) -> bool:
-	var here := (fighters[i] as Node3D).global_position
-	var delta := p - here
-	var carried: Array[int] = []
-	for j in fighters.size():
-		if j == i:
-			continue
-		var o := (fighters[j] as Node3D).global_position
-		var then := Vector2(p.x - o.x, p.z - o.z).length()
-		if then < radii[i] + radii[j] + clear and then < Vector2(here.x - o.x, here.z - o.z).length():
-			carried.append(j)
-	if carried.is_empty():
-		return false
-	for j in carried:
-		if _crowded(fighters, radii, clear, j):
-			return false
-		var q := (fighters[j] as Node3D).global_position + delta
-		if (q - homes[j]).length() > cap:
-			return false
-		for k in fighters.size():
-			if k == j or k == i or carried.has(k):
-				continue
-			var o := (fighters[k] as Node3D).global_position
-			if Vector2(q.x - o.x, q.z - o.z).length() < radii[j] + radii[k] + clear:
-				return false
-	for j in carried:
-		(fighters[j] as Node3D).global_position += delta
-	return true
+## The sweep (10-30, ch04_derelict_leeches): Ilun's net, on the middle party slot, reached under the timeline when he
+## acted. A fighter `f` whose box on the rest frame meets one of `rects` (1920x1080) steps toward the screen's left
+## (toward the foes and the middle), step_m at a time, up to spacing.screen.hud_shift_m from where it stands.
+static func clear_of_hud(
+	f: FighterStandIn, cam: Camera3D, xf: Transform3D, fov: float, rects: Array, data: Dictionary
+) -> void:
+	var sc := (data.get("spacing", {}) as Dictionary).get("screen", {}) as Dictionary
+	if sc.is_empty() or cam == null or f == null:
+		return
+	var parent := cam.get_parent() as Node3D
+	var lens := (parent.global_transform if parent != null else Transform3D.IDENTITY) * xf
+	var left := -Vector3(lens.basis.x.x, 0.0, lens.basis.x.z).normalized()
+	var shape := _shape(f)
+	var home := f.global_position
+	var step := float(sc.get("step_m", 0.1))
+	var cap := float(sc.get("hud_shift_m", 0.0))
+	var p := home
+	while (p - home).length() + step <= cap + 0.001:
+		var box := screen_box(lens, fov, shape, p)
+		var hit := false
+		for r: Rect2 in rects:
+			hit = hit or box.intersects(r)
+		if not hit:
+			break
+		p += left * step
+	f.global_position = p
+
+
+## The command menu's rect, less its top spacing.screen.menu_edge_px: a foe's leg tips may reach that far over the
+## menu's top edge when every step off it would push two footprints together (the causeway's and the flats' Crabs,
+## boxed in by the Eel behind and the Gull beside). Its body may not.
+static func menu_rect(data: Dictionary) -> Rect2:
+	var r := HudLayout.rect_of(HudLayout.section(&"commands"))
+	var edge := float(
+		((data.get("spacing", {}) as Dictionary).get("screen", {}) as Dictionary).get("menu_edge_px", 0.0)
+	)
+	return Rect2(r.position + Vector2(0.0, edge), r.size - Vector2(0.0, edge))
 
 
 ## The share of the smaller box that two screen boxes have in common.

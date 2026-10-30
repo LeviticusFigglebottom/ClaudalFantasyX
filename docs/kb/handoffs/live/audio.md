@@ -3,6 +3,122 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ b39dfacb: the Lead's 16:27 item, the Ch12–Ch13 cutscene cues against act2-plan's direction notes** (`act2_ch12_direction.md`, `act2_ch13_direction.md`, on integration since big24; integration merged). Ch15–Ch16 ambience was already done (529a1f3c).
+  - **What the notes change for audio:** time, as with Ch11. The scenes run about 3–5x their scripts' floor (B10–B11 Hesk 0.83 → 4.5 min, B05–B06 Ethren 0.86 → 6.5 min), with long held shots (K06 ≥ 5 s, S02 ≥ 8 s, S05 ≥ 6 s, A01 8 s, B13's rail ≥ 40 s).
+    - Every Ch12–Ch13 scene sits under a looping cue (keth_pass, cloudloom, ansedra, lamp_archive, sanctum_of_the_level) or an intended `@music silence`, except the two bindings.
+    - The notes' "P03: no music cue" is already so; B13's ≥ 40 s rail is under `keth_pass`.
+  - **New tool option:** `act1_playthrough.py --holds docs/kb/audio/act2_direction_holds.json` applies the notes' stated shot holds (Ch11–Ch13, 13 scripts) to the timeline, so a one-shot cue's gap is measured against the staged scene. With them, the only gap in Act II is still `ch14_the_vows` (Story's question).
+  - **Margins:** the binding tails (44c4ae1a) covered the staged scenes, but with only 1–2 s to spare (Hesk 1 s, Nhoa, Ethren and Kesh 2 s), and the notes' unmeasured pauses (Ch12's "2 s after 005", Ch13's 2 s for Ysolde's laugh) could eat that. Each tail is now 6 s longer (Nhoa 22, Hesk 20, Ethren 15, Kesh 12); the scene's next `@music` cross-fades over it.
+    - Kesh's low pad then rose over the loudness gate and the -3 dBFS ceiling held its gain (-17.4 LUFS), so its tail is quieter (`TAIL_VEL`); it's back at -16.1.
+  - **New test:** `tools/tests/test_direction_holds.py` checks that every script and shot in the holds file exists (a renamed shot can't drop out unseen), and that with the holds Act II has no music gap but the known Ch14 one.
+  - **Checks:**
+    - Renders `--determinism` identical; test_audio_loudness, test_audio_data, test_act1_mix_pass and test_direction_holds OK; validate_data 0.
+    - Godot: music_transitions 7/0, creature_vowbound_act2 28/0.
+    - **Skipped:** screenshots, Blender, coverage.
+  - **Next:** act2-plan's Ch14–Ch16 direction notes are on claude/act2-plan, not yet on integration. When they land I'll add their holds to the file and rerun.
+- **BACKLOG EMPTY (after b39dfacb):** waiting on the Ch14–Ch16 direction notes (integration), slice-polish's staging, Story's answer on ch14_the_vows, the people bosses' encounters, and the listening verdict.
+- **MERGE-READY @ 21638070: the Lead's 16:09 item, the jog's footsteps on big24 (efe7fb10) and the victory → field handoff on the resident return** (995b61f1, 21638070; integration merged, c7f22ea1).
+  - **Jog footsteps:** the heroes' steps come from the body's `foot_contact`, which fires on the clips' `foot_l_down`/`foot_r_down` markers. hero_clips.py places those on each heel strike from its own plant schedule, so the steps re-time with the jog: Asha, Rhen and Toma's `run` is 0.733 s with the feet 0.367 s apart (164 a minute).
+    - Measured on the real Haluna scene and Rhen's body (new `tests/integration/test_footsteps_jog.gd`): a 3.55 m/s jog plays `hero_step_sand_run` every 0.367 s exactly (163.6 a minute, 13 intervals), with no doubled step.
+    - The distance fallback is `run_step_m` 1.3 since 5fb30861, and the test holds it to the jog.
+  - **Surfaces:**
+    - Oruvel is its planks (`wood`, its zone default) with the sea round it wading (`water`) (new test).
+    - Haluna is sand, with the dock's planks and the shallows; the causeway is stone slabs over sand flats and the sea (test_footsteps_slice_zones 5/0, on big24's scenes).
+    - The run rows are the surfaces' own `*_run` rows.
+  - **Victory → field on the resident return** (integration-qa's 99989c2b: the field kept through a random fight, about 0.39 s of black):
+    - The router still emits `scene_swapping` on the way back, so `apply_zone` starts the zone's cue under the fade.
+    - Zone loops resume (27 of the 32 zone cues, every Act II one), so it picks up where the fight interrupted it, on a beat of its own, over the 1.5 s crossfade.
+    - On the quickest Return (0.45 s after victory, `battle_out_sec` 1.2 still fading) the cue is back within 0.7 s, from its resume point, still fading in under the 2.4 s victory sting. The sting is on Combat, which no zone change fades (new test in test_zone_return, 9/0).
+    - The arena's beds hand back to the field's when the battle's listener leaves, whichever comes first (arena_ambience 5/0).
+    - No data change was needed: `battle_return_sec` 0.3 / `battle_return_fade_sec` 2.0 still cover a battle that ends in place.
+  - **Checks:**
+    - Godot: footsteps_jog 3/0 (new), footsteps_slice_zones 5/0, footstep_contacts 8/0, hero_foot_contacts 5/0, zone_return 9/0, battle_audio 22/0, arena_ambience 5/0.
+    - validate_data 0; test_cutscene_sfx_files and test_audio_data OK. The merge took integration's own empty to-do lists and both sides' PROVENANCE rows.
+    - **Skipped:** screenshots, Blender, coverage.
+  - **PC-QUEUE:** the jog on sand, planks and stone, by ear (the density at 164 a minute); a quick Return after a victory.
+- **BACKLOG EMPTY (after 21638070):** waiting on slice-polish's Ch11 staging, Story's answer on ch14_the_vows, the people bosses' encounters, and the listening verdict.
+- **MERGE-READY @ 5fb30861: the Lead's 14:28 and 15:08 items, the silence-gap check over the staged Act II cutscenes (Ch10–Ch11) and the jog's footsteps** (8ee646e0, 5fb30861). Ch15–Ch16 ambience was already done (MERGE-READY @ 529a1f3c below).
+  - **Staging and timing:** the Ch10 staging (`game/data/cutscene/ch10/*.json`) holds shots and marks only. Walks don't stretch a scene: none of the Ch10–Ch11 scripts waits on one (`@wait arrive=`) or on a music marker. So the timeline is the scripts' `@wait`s and lines, plus the Ch11 direction notes' longer holds (Ch11 has no staging yet).
+  - **Ch10 gap:** cinematics' `@music farewell_tide_release fade=0.5` (now on integration) left about 6 s of nothing under B10. The 16 s release ended before Pell and Kerrid's back-to-back shot, which closes on its own `@music silence fade=3.0`. The release now carries the backs-turned on: two more harp roots, softer, a bar apart, with clicks (26.4 s). The gathering loop is byte-identical, and the release's level is still set by its top note.
+  - **Ch11:** the four binding gaps were closed in 44c4ae1a. With the notes' holds every other Ch11 scene sits under a looping cue. `act1_playthrough.py --act 2` now finds no gaps in Ch10–Ch13 or Ch16. Only `ch14_the_vows` (~12 s) remains, a question for Story (below).
+  - **Tool fix:** `render_all.py` checked every file in a `music_loop` job as a loop and crashed on the one-shot release. Now only a file with its own `.loop.json` is checked as a loop.
+  - **Jog footsteps** (characters' b344b974, coming in big24): the jog's clips keep their `foot_l_down`/`foot_r_down` markers, retimed to a step every 0.367 s (164 a minute), so the heroes' steps follow the new stride with no change. The distance fallback assumed a 1.0 m run step (~213 a minute at 3.55 m/s), so footsteps.json now uses `run_step_m` 1.3 (the 2.6 m stride's half) and `stall_m` 1.9 (about 1.5 steps, as before). After big24 I'll recheck that the markers arrived and listen to the density.
+  - **SFX to-do lists:** `test_cutscene_sfx_files` was red on integration because its to-do lists still held the eleven Act II cutscene SFX and `kesh_memory`, all delivered. Both lists are empty now.
+  - **Checks:**
+    - Renders: `farewell_tide` `--determinism` identical; act1_playthrough as above; validate_data 0; test_audio_loudness, test_audio_data and test_cutscene_sfx_files OK.
+    - Godot: creature_vowbound_act2 28/0, music_transitions 7/0, footstep 23/0, field_audio 22/0.
+    - **The tools suite (-j 4):** red on 8 units that are red on integration too (`origin/claude/new-session-mj8c3c` @ 8fe3644b): test_avalanche_ram, test_causeway_gameplay, test_oruvel_underway_kit, test_palette_check, test_qa_flag_reach (`ch14_steps_held` has no setter), test_screenshots, test_status_names, test_villagers (`ch13_ethren.dlg: tender paint_gilt_line` has no clip). None is audio's.
+    - **Skipped:** screenshots, Blender, coverage.
+  - **PC-QUEUE:** the farewell-tide's B10 under the release's tail; the jog's footsteps after big24.
+- **BACKLOG EMPTY (after 5fb30861):** what's left waits on input: big24 (the jog), slice-polish's Ch11 staging, Story's answer on ch14_the_vows, integration-qa's resident return, the people bosses' encounters, and the listening verdict.
+- **MERGE-READY @ 44c4ae1a: the Lead's 13:48 item (2 of 2), Ch11's cues against act2-plan's direction notes** (`docs/kb/story/beats/act2_ch11_direction.md`, on claude/act2-plan).
+  - **What the notes change for audio:** act2-plan's script updates are camera ids (V00, V10, T00) and Pell's mark (`pell_kneel`); no `@music`, `@sfx` or `@anim` changed. Every Ch11 cue resolves: the Act II audit shows cutscenes 0, and every `@anim` and walk has foley (the Vey and the sanctum are stone). What changes is time: the holds roughly triple the scenes (B03 1.1 → 3 min, B09 1.3 → 4 min).
+  - **Checked scene by scene against the new holds:**
+    - B01 V00 8–10 s under `sunken_vey`; B03's `@music silence fade=1.5` lands on the walk away, as the notes want.
+    - B05 `lamp_engine` carries straight into the battle: same cue, no restart, and the tide-line dip releases before the black.
+    - B07 T03's open-ended hold rides `cs_glimmer_lift` and the hall's bed (the fast battle return waits for the scene).
+    - B10 and B11 are fine.
+  - **The one fault was B09 `ch11_nhoa`:** the 8 s `nhoa_bound` sting ended about 12 s before the scene's next `@music`. With the notes' N09 hold (6 → 8 s) that was about 14 s of the music simply stopping while Nhoa turns to Pell and Kerrid stands behind him.
+    - Fix: each `*_bound` sting now holds its light, a quiet pad on its last colour and one glass ring, steady (bound light never pulses), fading out over a tail (`vowbound_stings.py` TAIL). The scene's next `@music` cross-fades over it.
+    - `nhoa_bound` gets 16 s; Hesk (13 s gap), Ethren (7 s) and Kesh (4 s) had the same fault and get 14, 9 and 6 s.
+    - Integrated stays -16 LUFS. Momentary max moves 0.1–1.0 dB (Hesk's bell under the tail's pad). The summon stings are unchanged.
+  - **Checks:**
+    - `act1_playthrough.py --act 2`: the four binding gaps are gone.
+    - Renders `--determinism` identical; validate_data 0; test_audio_loudness and test_audio_data OK.
+    - Godot: music_transitions 7/0, vowbound 117/0 (its one left node is the same on the previous commit), audio_runtime 11/0.
+    - **Skipped:** screenshots, Blender, coverage.
+  - **Left for the scripts' owners** (not in this item; one line each):
+    - `ch14_the_vows` still goes ~12 s without music after `peace_wedding_break`, before its `@music silence`. Story: is that silence meant? If not, I'll give it a tail the same way.
+    - The scripts' `fade=0.0` lines play as 0.2 s fades (the deck's floor), as before.
+  - **Not done:** N02/N08's "through the water" shots could take mix.json's `muffle`, but that's a proposal for cinematics, not a fault.
+  - **PC-QUEUE:** the binding scenes' tails under the holds (B09 especially).
+- **BACKLOG EMPTY (after 44c4ae1a):** what's left waits on input: slice-polish's Ch11 staging (`game/data/cutscene/ch11/*.json`), Story's answer on ch14_the_vows, integration-qa's resident return, the encounter spacing, the people bosses' encounters, and the listening verdict.
+- **MERGE-READY @ 529a1f3c: the Lead's 13:48 item (1 of 2), the Ch15–Ch16 ambience loops and arena switching.**
+  - **Gaps found:**
+    - Hollowmere's first visit (`ch17/hollowmere`, Ch15 B10–B12) had no music or ambience row. The beat sheet (act2_ch15.md §6) says "ambience only, no zone loop": it is grief, and Act III's `hollowmere` cue belongs to Ch17.
+    - The Ch15 dawn in fog at the bow (B09) had no bed of its own.
+    - The Ch16 storm set piece (`ch16_holding_the_line`) fought on the moonrise Choir's bed.
+    - Two of the beat sheets' SFX (`shoal_hum`, `choir_wind_chord`) didn't exist.
+  - **New loops** (`act2_ambience.py`, appended so the earlier beds stay byte-identical):
+    - `hollowmere_flotilla`: water among the hulls, two tide-wheels, a pump, gulls, far hammers, low voices; no laughter, no song.
+    - `open_sea_fog`: `ch15/open_sea` swaps to it once B08's `ch15_pell_said_he_knew` is set, through the zone's `night` list.
+    - `choir_storm`: the mouths roaring in a gale, surge and spray.
+  - **Arena switching by encounter:** ambience.json `encounters` is tried before the arena (`AudioData.battle_beds`). `ch16_holding_the_line` plays `choir_storm` over `choir_bowl`, and `ch16_abiding_guard` keeps the Choir at moonrise. The encounter isn't written yet, so it's listed under `pending_encounters` and `data_check` accepts it.
+    - Ch16's random fights (`ch16_rim_*`) have no arena yet (`pale_rim_shallows` is env-art-b's gap), so the field's `pale_rim_shallows` bed carries on under them, which is right.
+    - The wade's footsteps are the `water` surface, already set for pale_rim.
+  - **SFX:** `shoal_hum` (Ch15 B06, the held dead's hum and a sideways glass shimmer) and `choir_wind_chord` (Ch16), as rows in `sfx_cutscene_act2.json`, ready for a script's `@sfx`.
+  - **Checks:**
+    - Renders: the beds at -26.1 LUFS, seams flux ≤ x1.48, `loop=true` in their imports, re-rendered byte-identical. The SFX are `--determinism` identical and the earlier cutscene SFX unchanged.
+    - Data and tools: validate_data 0; the Act I and Act II audits 0; test_audio_data, test_audio_loudness (two target rules added) and test_act1_audio_audit OK.
+    - Godot: arena_ambience 5/0 (two new), battle_audio 22/0, audio_runtime 11/0, field_audio 22/0.
+    - **Skipped:** screenshots, Blender, coverage.
+  - **PC-QUEUE:** the fog swap at the bow, Hollowmere's first visit, the storm set piece.
+- **MERGE-READY @ b436efa1: the Lead's 13:08 item, the Act II battle arenas' ambience and Ch11's cues** (b436efa1). The 12:28 item was already MERGE-READY @ 023c94f1 below.
+  - **Arena beds:** before, a battle had no ambience of its own. The field's beds carried on 3 dB down, and with integration-qa's resident field nothing would have reset them. Now the encounter's arena (encounters.json `arena`) plays ambience.json `arenas` beds in place of the field's, fading over `arena_fade_sec` 1.0. The field's beds come back when the battle's listener leaves (`AudioDirector.set_arena_ambience` / `release_arena_ambience`, owned by its `BattleAudio`). A retry's new listener keeps the beds; an arena with no row keeps the field's.
+    - Five new loops (`act2_ambience.py`, appended so the 14 existing beds stay byte-identical): `arena_fen_roots` (Ch10, the Drowner's mudbank: the fen gone quiet), `arena_engine_hall` (Ch11, the engine's throb near), `arena_seep_terrace` (Ch12), `arena_lagoon_dusk` (Ch14, Malcor Venn on the barge, a far wedding bell) and `arena_court_steps` (Ch14).
+    - `bridal_barge_night` uses `open_sea_night` and `drowned_choir_ring` uses `choir_bowl`: same places.
+    - `data_check` checks every arena id and bed.
+  - **Ch11:** every `@music`, `@sfx` and `@anim` in the Ch11 scripts resolves; the Act II audit shows cutscenes 0. Ch11 has no staging yet on claude/m2-slice. The one silent Ch11 piece was the Lamp Engine's new conduit crawlers (big22): `crawler_mend` (leg-ticks, a spark, the bound light humming back up) and `crawler_tend` now sound (`act2_skill_sfx.py`, appended).
+  - **Checks:**
+    - Renders: all 19 Act II beds rendered, the old 14 unchanged; the 5 arena beds at -26.1 LUFS, seams flux ≤ x1.49, `loop=true` in their imports, re-rendered byte-identical; the crawler skills at -19 and `--determinism` identical.
+    - Data and tools: validate_data 0; the Act I audit 0 and the Act II audit 0 (skills now 0); test_audio_data, test_audio_loudness and test_act1_audio_audit OK.
+    - Godot: arena_ambience 3/0 (new), battle_audio 22/0, audio_runtime 11/0, zone_return 8/0, battle_stings 7/0, field_audio 22/0.
+    - **Skipped:** screenshots (no scene or shader), Blender, coverage (nothing under game/battle or game/progression).
+  - **PC-QUEUE:** the five arena beds under their bosses' cues; the field coming back after a fight.
+- **BACKLOG EMPTY (after b436efa1):** what's left waits on input: Ch11 staging (slice-polish), integration-qa's resident return, the encounter spacing, the people bosses' encounters, and the listening verdict.
+- **MERGE-READY @ 023c94f1: the Lead's 12:28 item, the victory sting into the field over the short return, then the battle-start stinger over the new encounter spacing** (e271faa7, 023c94f1).
+  - **Victory → field:** before, the zone's music came back only through the router's `apply_zone` on the swap, or after 3 s of silence (`zone_return_sec`). With integration-qa's resident field, under 1 s back and no swap, that left a 3 s gap after the sting. Now, once a battle leaves the tree, the zone's cue returns after `battle_return_sec` 0.3 and fades in over `battle_return_fade_sec` 2.0 (mix.json; `AudioDirector._step_zone_return`, `_after_battle`).
+    - It sits under the sting's 2.4 s tail. The sting plays on the Combat bus from the director's own SfxBank, so neither the scene change nor the music clips it.
+    - If a scene or a swap takes the music first, its own cue stands. A defeat keeps the battle in the tree through its result screen.
+    - Tests: `test_zone_return` 8/0 (two new).
+  - **Battle-start stinger:** the tide line rises over 0.5 s and holds for 0.25 s, the router goes black at 1.10 s, and the battle cue enters from about 1.1 s with a 0.3 s fade. The old `sting_tideline` crested at 1.55 s, after the cut and on top of the battle cue's first bars. It is re-rendered to crest with the line at 0.5 s and is about 16 dB down at black, total 1.8 s.
+    - The field music now dips 3 dB under it as the field dims (mix.json duck `encounter`; battle_stings.json `duck_sec` 0.75 = rise + hold). It is released before the black, so the battle cue never enters ducked. A test reads battle_transition.json and `SceneRouter.FADE_SEC` to keep that true.
+    - With 30–45 s spacing, the row's 1000 ms cooldown can't drop a stinger. `BattleRequest` already refuses a second request while one opens (M3-BPR-427).
+    - Tests: `test_battle_stings` 7/0 (one new).
+  - **Checks:** validate_data 0 errors; gdlint and gdformat clean; the `battle_stings` render byte-identical with `--determinism` (the other five stings are unchanged); Godot battle_stings 7/0, battle_audio 22/0, audio_runtime 11/0, zone_return 8/0. **Skipped:** screenshots (no scene or shader touched), Blender, and coverage (no game/battle or game/progression changes).
+  - **Note:** integration-qa's resident return and act1-chapters' spacing haven't landed on integration yet. Both changes are data-driven, so if the return path changes I'll re-check the timings as they land.
+  - **PC-QUEUE:** a victory into the field with the short return (no gap, the sting's tail intact), and two encounters 30 s apart (the crest with the line).
+- **BACKLOG EMPTY (after 023c94f1):** the Lead's 12:28 item is done. What's left waits on input: integration-qa's resident return, the encounter spacing, Ch11+ staging, the people bosses' encounters, and the listening verdict.
 - **MERGE-READY @ 11463e21: the Lead's 11:48 item, the Act I foley detail audit as played** (4284c13d, plus the tests' follow-up).
   - **Footsteps:** every surface has its walk, run, stop and turn, but Ysolde, Kerrid and Liss clinked Rhen's lantern on every other step (gear_default). They now carry their own: Ysolde's lacquer book and ink-guards, Kerrid's anchor-ring, Liss's harness and launcher. There are no separate wet-stone, reed or shell grounds yet: those zones play stone or sand (env-art marks areas).
   - **Interactables:** every one played the menu's soft `ui_interact` only.

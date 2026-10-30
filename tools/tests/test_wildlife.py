@@ -195,6 +195,18 @@ class InsectValidatorTest(unittest.TestCase):
         fen = _load(f"{vw.WILDLIFE_DIR}/ch10_ossa_fen.json")
         self.assertEqual(sum(k["count"] for k in fen["kingfishers"]), self.budgets["kingfishers"])
 
+    def test_a_kingfisher_row_dives_to_water_below_its_perches(self) -> None:
+        z = copy.deepcopy(self.zone)
+        z["kingfishers"] = [{"id": "k", "center": [0.0, 0.0], "radius_m": 5.0, "altitude_m": [0.5, 1.5], "count": 1,
+                             "perches": [[0.0, 0.4, 0.0, 0.0]], "water_y": 0.6}]
+        self.assertTrue(any("water_y: must be below every perch" in e for e in self.zone_errs(z)))
+        z["kingfishers"][0]["water_y"] = "low"
+        self.assertTrue(any("water_y: must be a number" in e for e in self.zone_errs(z)))
+        z["kingfishers"][0]["water_y"] = -0.25
+        self.assertFalse(any("water_y" in e for e in self.zone_errs(z)))
+        fen = _load(f"{vw.WILDLIFE_DIR}/ch10_ossa_fen.json")
+        self.assertTrue(all(k.get("water_y") == -0.25 for k in fen["kingfishers"]), "the fen's channels at -0.25")
+
     def test_herd_rows_and_the_woolback_kind(self) -> None:
         z = copy.deepcopy(self.zone)
         z["herds"] = [{"id": "h", "center": [0.0, 0.0, 0.0], "radius_m": 0.0, "count": 2, "y": "low"}]

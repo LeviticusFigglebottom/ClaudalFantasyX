@@ -12,7 +12,11 @@ fair estimate, not a frame count. What happens after a scene (the field, a battl
 AudioDirector's: the zone returns on release (zone_return_sec, test_zone_return.gd), battles start their own cue
 (battle_in_sec) and stop it on victory (battle_out_sec), and act1_mix_pass.py measures the loudness of every hand-over.
 
-Run:  python3 tools/audio/act1_playthrough.py [--md docs/kb/audio/act1_playthrough.md]
+With `--holds <json>` (docs/kb/audio/act2_direction_holds.json: the holds act2-plan's direction notes ask for), each
+listed shot's first `@wait` is raised to its hold, or the hold added when the shot has none, so the gaps are those of
+the staged scene, not the script's floor.
+
+Run:  python3 tools/audio/act1_playthrough.py [--md docs/kb/audio/act1_playthrough.md] [--act 2 --holds <json>]
 """
 from __future__ import annotations
 
@@ -35,6 +39,7 @@ GAP_SEC = 3.0
 LINE_BASE_S, CPS = 0.8, 14.0
 MUSIC = re.compile(r"^\s*@music\s+(\S+)(.*)$")
 WAIT = re.compile(r"^\s*@wait\s+([0-9.]+)")
+CAMERA = re.compile(r"^\s*@camera\s+(\S+)")
 LINE = re.compile(r"^\s*[A-Z][A-Za-z_ ]*(?:\s+as\s+\"[^\"]*\")?\s*(?:\[[^\]]*\])?:\s*(.+?)\s*(?:#line:.*)?$")
 
 
@@ -55,9 +60,11 @@ def cue_info(cid: str) -> tuple[bool, float] | None:
     return loops, len(read_audio(str(p), channels=1)) / 44100.0
 
 
-def scan(path: Path, min_fade: float) -> list[str]:
+def scan(path: Path, min_fade: float, holds: dict | None = None) -> list[str]:
     out: list[str] = []
     t = 0.0
+    shot_holds = (holds or {}).get(path.stem, {})
+    owed = 0.0  # the current shot's hold not yet spent on a @wait
     cur, cur_at, cur_end = "", 0.0, None
     rel = path.relative_to(ROOT).as_posix()
     for i, raw in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
@@ -77,13 +84,20 @@ def scan(path: Path, min_fade: float) -> list[str]:
             cur, cur_at = cid, t
             cur_end = (t + info[1]) if info is not None and not info[0] else None
             continue
+        c = CAMERA.match(raw)
+        if c:
+            t += owed  # the last shot's hold, when it had no @wait of its own
+            owed = float(shot_holds.get(c.group(1), 0.0))
+            continue
         w = WAIT.match(raw)
         if w:
-            t += float(w.group(1))
+            t += max(float(w.group(1)), owed)
+            owed = 0.0
             continue
         ln = LINE.match(raw)
         if ln and not raw.lstrip().startswith(("@", "<<", "//", "title:", "location:", "---", "===")):
             t += LINE_BASE_S + len(ln.group(1)) / CPS
+    t += owed
     if cur_end is not None and t - cur_end > GAP_SEC:
         out.append(f"{rel}: end: `{cur}` ran out about {t - cur_end:.0f} s before the scene ends (~{t:.0f} s); "
                    f"the zone returns on release (zone_return_sec)")
@@ -94,13 +108,15 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--md")
     ap.add_argument("--act", type=int, default=1)
+    ap.add_argument("--holds", help="a direction-notes holds file (docs/kb/audio/act2_direction_holds.json)")
     args = ap.parse_args()
+    holds = _json(Path(args.holds)) if args.holds else None
     A.set_act(args.act)
     mix = _json(ROOT / "game/data/audio/mix.json")["music"]
     rows: list[str] = []
     for p in A._dlg_files():
         if "@music" in p.read_text(encoding="utf-8"):
-            rows += scan(p, float(mix.get("min_fade_sec", 0.2)))
+            rows += scan(p, float(mix.get("min_fade_sec", 0.2)), holds)
     for r in rows:
         print(r)
     print(f"{len(rows)} item(s)")

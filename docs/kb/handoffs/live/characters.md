@@ -468,3 +468,62 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
   - In the parry the left hand stops at the chest, short of the haft.
 - MERGE-READY @ 3f0f5d67
 - **Next:** the Abiding guard (veiled gold lacquer: halberdier, Bulwark caster, the Captain of the Veil), in progress.
+
+## 2026-10-30, Lead FAST-TRACKs: the human's run playtest and GPU pass 5
+- **The jog (the human's #1 complaint), b344b974.** The default run for Asha, Rhen and Toma is now a brisk, grounded
+  jog.
+  - **Cause:** the cycle covered 2.6 m/s while the field runs at 3.6 m/s, so playback ran 1.4x fast (about 228 steps
+    a minute). Rhen's sprinter arm flung his hands to his face, and the 15 fps keys were linear.
+  - **Now:** elbows at 80-100 degrees with the hands between the waist and the chest, a compact counter-swing, a
+    slight lean, a soft bob and a heel strike.
+  - **Speed:** 164 steps a minute over a 2.6 m stride, so the cycle speed is 3.55-3.61 m/s and playback is about 1.0
+    at the field's 3.6 m/s, with no foot slide. integration-qa: locomotion.json's `run.speed_mps` changed to match.
+  - **Keys:** the body tracks are cubic.
+  - Asha's skirt and the white underskirt move with the legs (row 56 below).
+  - **Evidence:** side, front and three-quarter sheets at 6 phases, before and after, in
+    `docs/kb/qa/characters/jog_2026-10-30/` (`<hero>_run_before.jpg`, `<hero>_run_after.jpg`), rendered by
+    `tools/dev/loco_sheet.gd`.
+  - **Checks:** test_hero_clips 19, test_hero_locomotion OK; Godot hero_field_actor 15, locomotion 9, field_motor 9,
+    hero_stage 11, follower 13. The rig probes pass. Rhen's Body count is 44 -> 47 with a per-mesh reason: the right
+    armpit's inner crease, under the arm in every frame of the sheets.
+- **GPU pass 5 rows**, all re-rendered and viewed:
+  - **Row 46 (4c706a3f):** moll_face_yield is on the prop-free face stage.
+  - **Row 55 (7fbc2da2):** Fenn's and Sabe's white crops sit over a mid underpaint (no white cap).
+  - **Row 54 (a3494fea):** Sefir's front locks fall along the cheek and jaw, fuller.
+  - **Row 56 (5bb7e0ed):** the underskirt's hem follows the legs, so the stride shows.
+  - **Pell (5bb7e0ed):** stronger fur break-up, a calmer face, mass 0.25.
+  - **Checks:** asha, pell, sefir, villager_fenn and villager_sabe are identical on all 3 numpy paths.
+- **The 13 villagers' rig limits (6154f6d4).** The Lead (10:07) says not to raise limits without a reason per mesh.
+  I rendered every re-pinned overrun at its worst pose (front, three-quarter, back three-quarter).
+  - **Visible:** the Reeds, the scaleman and the smith showed skin through the top at the back of the shoulders as
+    the arms came forward. The fix is in the build: villager_costume hides a sleeved arm's skin from
+    `SLEEVE_HIDE_FROM` -0.35, not -0.10. On reed_b, skin-through went from 6.4 mm/10 to 2.0/0 and the exposed boundary
+    from 14 to 3, and the render is clean.
+  - **In progress:** all 36 villagers are rebuilding with it. I'll then lower each re-pinned limit back to what passes
+    and write a per-mesh reason for any that stays above the original.
+  - The remaining overruns at full figure (elder: the sandal sole under the foot; fenn, garo, gatekeeper, marra,
+    purser, ferrymaster, skipper_sadi) read clean in those renders.
+- MERGE-READY @ b344b974 (jog + pass-5 rows; the villager-limit follow-up is next)
+- **Rhen's armpit count (the Lead, 14:28: fix the skinning, don't stiffen the arm).** I tried giving the shirt over
+  the underarm the corrective's weights (helper_bones.armpit_cloth_weights, a per-hero `mix` and `reach`). It trades
+  one failure for another rather than fixing it:
+  - mix 0.8: the count is 44 (pass), but throw_sail reaches 67 mm (limit 62);
+  - mix 0.65: the count is 44, but throw_sail reaches 69 mm;
+  - mix 0.5: the depth is 56 mm, but the count is 46.
+
+  I reverted it, so b344b974 stands: the jog is unchanged with the count at 47 and the per-mesh reason (the right
+  armpit's inner crease under the arm, covered in every jog frame of the sheets). The arm was not stiffened.
+- LEAD-ASK: a proper fix is a shirt underarm gusset (a cloth patch bridging the armhole and the side, weighted to the
+  armpit corrective) in rhen_costume plus a 3-path rebuild, about 2 h. Shall I do it now, or after the villager limit
+  pass?
+- **For integration-qa (the run speed):** per loop of `run`, the root travels 2.6 m (Asha and Rhen) or 2.65 m (Toma)
+  in 0.733 s, two steps, 164 steps a minute, so `speed_mps` is 3.545 / 3.545 / 3.614 in
+  game/data/characters/locomotion.json. The field's run_speed_mps 3.6 plays it at 1.00-1.02x.
+- **Villager limits done (ff1b0544).** villager_costume hides a sleeved arm's skin from -0.35 of the arm, which fixes
+  the shoulder poke-through. All 36 villagers were rebuilt and are identical on all 3 numpy paths; test_villagers
+  passes.
+  - **Original limits restored and passing:** ferrymaster, garo, gatekeeper, reed_d, smith.
+  - **Small raises, each with a per-mesh "covered" reason checked by a render at the worst pose:** elder (the sandal
+    sole under the foot), fenn, reed_b, reed_c, scaleman, skipper_sadi (cloth inside a resting forearm), marra (edge
+    verts under the kerchief knot), purser (the sleeve edge under the arm).
+- MERGE-READY @ ff1b0544

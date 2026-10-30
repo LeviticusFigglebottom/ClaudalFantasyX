@@ -9,7 +9,9 @@
              "res://assets/crowd/crowd_man_lean_b/", "res://assets/crowd/crowd_man_medium_a/", "res://assets/crowd/crowd_man_medium_b/",
              "res://assets/crowd/crowd_order_man/", "res://assets/crowd/crowd_order_woman/", "res://assets/crowd/crowd_woman_heavy/",
              "res://assets/crowd/crowd_woman_lean_a/", "res://assets/crowd/crowd_woman_lean_b/", "res://assets/crowd/crowd_woman_medium/",
-             "res://assets/crowd/crowd_woman_medium_b/"],
+             "res://assets/crowd/crowd_woman_medium_b/",
+             "res://assets/crowd/kirru_man/", "res://assets/crowd/kirru_woman/",
+             "res://assets/crowd/kirru_elder_woman/", "res://assets/crowd/kirru_youngster/"],
   "adoption_pending": {},
   "generate_lods": true,
   "materials": {
@@ -27,7 +29,8 @@
       "crowd_girl_teen": "child", "crowd_man_heavy": "adult", "crowd_man_heavy_b": "adult", "crowd_man_lean_a": "adult",
       "crowd_man_lean_b": "adult", "crowd_man_medium_a": "adult", "crowd_man_medium_b": "adult", "crowd_order_man": "adult",
       "crowd_order_woman": "adult", "crowd_woman_heavy": "adult", "crowd_woman_lean_a": "adult", "crowd_woman_lean_b": "adult",
-      "crowd_woman_medium": "adult", "crowd_woman_medium_b": "adult"
+      "crowd_woman_medium": "adult", "crowd_woman_medium_b": "adult",
+      "kirru_man": "kirru", "kirru_woman": "kirru", "kirru_elder_woman": "kirru", "kirru_youngster": "kirru"
     },
     "armature": "crowd_skeleton",
     "hips_bone": "DEF-spine",

@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "doc": "Quellan's Ullari townsfolk (act2_ch12 B08: a highland town of stone and woven awnings; the Lead, 2026-10-30: Act II crowds from the bodies that exist). Weavers, a herder, menders, a sweeper and children by the well, from the stand-in `quellan` community, at the houses' doors along the street's edges and round the well, clear of the inn door, the well mark and the road up. Each row's `at` makes its stand-in at CrowdSpots/<id> (VillagerLayer). The Ullari woman, the innkeeper, the weaver and herder who speak, the keth-reader and the trader are the characters track's named people.",
+  "zone": "ch12/quellan",
+  "storm_flag": "",
+  "villagers": [
+    {
+      "npc_id": "quellan_weaver",
+      "crowd": "quellan_weaver",
+      "attach": "child",
+      "stand_in": "CrowdSpots/quellan_weaver",
+      "at": [6.0, 0.0, -4.4, 180.0]
+    },
+    {
+      "npc_id": "quellan_weaver_2",
+      "crowd": "quellan_weaver_2",
+      "attach": "child",
+      "stand_in": "CrowdSpots/quellan_weaver_2",
+      "at": [21.5, 0.0, 4.4, 0.0]
+    },
+    {
+      "npc_id": "quellan_herder",
+      "crowd": "quellan_herder",
+      "attach": "child",
+      "stand_in": "CrowdSpots/quellan_herder",
+      "at": [14.0, 0.0, -4.3, 200.0]
+    },
+    {
+      "npc_id": "quellan_carrier",
+      "crowd": "quellan_carrier",
+      "attach": "child",
+      "stand_in": "CrowdSpots/quellan_carrier",
+      "at": [46.0, 0.0, -4.4, 190.0]
+    },
+    {
+      "npc_id": "quellan_sweeper",
+      "crowd": "quellan_sweeper",
+      "attach": "child",
+      "stand_in": "CrowdSpots/quellan_sweeper",
+      "at": [40.0, 0.0, 4.4, 0.0]
+    },
+    {
+      "npc_id": "quellan_cord_mender",
+      "crowd": "quellan_cord_mender",
+      "attach": "child",
+      "stand_in": "CrowdSpots/quellan_cord_mender",
+      "at": [54.0, 0.0, 12.4, 0.0]
+    },
+    {
+      "npc_id": "quellan_mender",
+      "crowd": "quellan_mender",
+      "attach": "child",
+      "stand_in": "CrowdSpots/quellan_mender",
+      "at": [26.0, 0.0, 4.4, 20.0]
+    },
+    {
+      "npc_id": "quellan_child",
+      "crowd": "quellan_child",
+      "attach": "child",
+      "stand_in": "CrowdSpots/quellan_child",
+      "at": [56.5, 0.0, 11.5, 40.0]
+    },
+    {
+      "npc_id": "quellan_child_2",
+      "crowd": "quellan_child_2",
+      "attach": "child",
+      "stand_in": "CrowdSpots/quellan_child_2",
+      "at": [56.5, 0.0, 8.6, 70.0]
+    }
+  ]
+}

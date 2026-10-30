@@ -4,6 +4,18 @@
 
 The gap (the human's playtest note): battles had no action animation. This track adds a listen-only presentation layer: choreography, a clip contract, a camera director, the specials, the intro and outro. Docs: `docs/kb/tech/battle_presentation.md`.
 
+## CURRENT STATUS (2026-10-30 15:00; newest entry first under "NEW ACCOUNT" below, at the 14:50 heading)
+**MERGE-READY @ a5aa7e63** (the branch head). Every item from the Lead's 14:09, 14:48 and 15:00 messages is done and pushed:
+| Item | Commit | Check |
+|---|---|---|
+| Rank overlap and the command-menu safe area (creatures' audit) | aa227a57 (c552664f, 3d65ec00) | `--filter=battle` 826/0; six fights viewed |
+| Row 64: the camera search before the fade | 7c3307df (+ 65e776af) | reveal frame 1.2–2.6 ms headless; boss 88/0 |
+| Row 61: the Surge framing | ef997f3d | SELF-RENDERED and viewed; camera 65/0, boss 86/0, arena 18/0 |
+| The glimmer swatch / hit | 4c4a3dd3 | `--filter=battle_vfx` 10/0 on big21 + this branch |
+| Act II foe-skill effects | 65ea933e, 8d0fe783..f2bbb673, 6f3608a7 | every Act II encounter's skills have effects. The 3 newest (conduit crawler) and the Vowbound's 19 are written as their rows land. I found 3 such skills, not 6. |
+- After big22/23 lands: run `python3 tools/vfx/gen_act2_ability_vfx.py` once (I will, on my next integration merge).
+- In flight: the Act I encounter sweep (batch 5 running), then Ch6 and Ch8.
+
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_015hKkhtpX67kS4yZeA8AAhv`. Integration branch `claude/undertow-lead-handoff-ze8rrn` merged in
 (c6a960ab).
@@ -175,6 +187,41 @@ ch01_wickfry, ch01_oil_slug, ch01_shaft_limpet and ch01_scuttlers.
 - **Skipped:** the full manifest (ADR 0205), Blender (none touched), coverage (no game/battle core .gd change).
 - An earlier run showed 4 reds (battle_result_motion, battle_stings). They came from merging the integration branch
   while the run was going: each file passes 5/0 on the merged tree, and the clean run above is 817/0.
+
+### 2026-10-30 14:50: for the Lead's 14:48. Every item is pushed, MERGE-READY, branch head @ 7973fb7a
+- **All five items are MERGE-READY** (the table below, committed at e32568c2 and 7973fb7a). The overlap and
+  command-menu fix landed at aa227a57: full `--filter=battle` 826/0.
+- **The split with creatures-b** (proposed; creatures-b, please confirm in your log):
+  - **battle-presentation:** the effects data. The three conduit-crawler skills and the four Vowbound's 19 are
+    written in tools/vfx/gen_act2_ability_vfx.py. I run the generator on the first integration merge that carries
+    their skill rows (big22/23).
+  - **creatures-b:** once those rows are in, view each Vowbound's and the crawler's effects on its own model (the
+    anchors and sizes fit the bodies you built). File any misfit to me as a task. I fix the data the same day.
+- **In flight:** sweep batch 5 (the last four Ch4–5 encounters, the Hermit re-run, the stair re-check with the
+  spread), then Ch6 and Ch8.
+
+### 2026-10-30 ~14:10: status for the Lead's 14:09 (for big24)
+| Item | State | Commits |
+|---|---|---|
+| Glimmer element hit | **MERGE-READY**, verified on big21 | 4c4a3dd3 |
+| Row 61 (the Reach's rest frame) | **MERGE-READY**, viewed | ef997f3d |
+| Row 64 (the camera search behind the fade) | **MERGE-READY**: reveal frame 1.2–2.6 ms headless | 7c3307df (+ 65e776af, the particle variants) |
+| Act II foe-skill effects | **MERGE-READY**: the Act II regulars and bosses (65ea933e, 8d0fe783..f2bbb673); act1-chapters' 3 new conduit-crawler skills and the Vowbound's 19 are written as their rows land | 6f3608a7, 97e22896 |
+| Rank overlap and the command-menu safe area | **MERGE-READY @ aa227a57**: full `--filter=battle` 826/0 | c552664f, 3d65ec00, aa227a57 |
+
+- **Act II effects:** act1-chapters' and gate-big22's skills.json hold 3 Act II foe skills with no effect (brush_jab,
+  crawler_mend, crawler_tend). Those are in FOES_PENDING. On gate-big22's data, gen_act2_ability_vfx writes them
+  with the Vowbound's 19, and `--check` is clean. **After big22/big23 merge, run `python3 tools/vfx/gen_act2_ability_vfx.py`
+  (or I will on my next integration merge).**
+  - I found 3 such skills, not 6. The only other candidates (drowning_grasp, tide_gather) are on older branches.
+- **Rank overlap (BattleScreenSpread):**
+  - At spawn, on the fight's rest frame, foes whose boxes share more than 20% of the smaller step apart. The left
+    foe steps away from the party, and the right foe steps back. A foe on the command menu steps back or right.
+  - No step lands a foe in another's footprint, on the menu or in a melee lane. A lone foe keeps its seat.
+  - Viewed: tideline, the stair's tortoises, the flats' crabs, both underway fights and the fen's root crabs.
+  - Allowance: the causeway's and the flats' Crabs are boxed in by the Eel and the Gull. Their leg tips may reach
+    56 px over the menu's top edge (`spacing.screen.menu_edge_px`), but never their bodies.
+  - Baseline drift: the opening line-up moves in any multi-foe fight, so the gate re-renders the battle shots.
 
 ### 2026-10-30 ~11:xx: the Lead's 10:47 item (row 64 is the camera search, after creatures-b's trace)
 **MERGE-READY @ 7c3307df** (+ this log commit). Rows 61 (ef997f3d) and the glimmer hit (4c4a3dd3) were done before.

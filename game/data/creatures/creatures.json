@@ -199,7 +199,8 @@
     },
     "conduit_crawler": {
       "scene": "res://game/creatures/conduit_crawler/conduit_crawler_battle.tscn",
-      "contact": {"attack": 0.45, "cast": 1.0},
+      "clip_by_skill": {"brush_jab": "attack", "crawler_mend": "cast", "crawler_tend": "idle_b"},
+      "contact": {"attack": 0.45, "cast": 1.0, "idle_b": 0.6},
       "portrait": {"yaw_deg": 40.0, "pitch_deg": 20.0}
     },
     "ridge_lynx": {
