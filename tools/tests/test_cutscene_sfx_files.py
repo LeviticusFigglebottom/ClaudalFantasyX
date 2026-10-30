@@ -13,8 +13,14 @@ SFX_CUE = re.compile(r"^\s*@sfx\s+(\S+)", re.M)
 MUSIC_CUE = re.compile(r"^\s*@music\s+(\S+)", re.M)
 SILENCE = "silence"
 # Cues the scripts name that audio has not delivered yet. Empty since M3-AUD-819..822 landed; a new script id must
-# get a cue, or join this set on purpose while one is being made (it may only shrink).
-MUSIC_TODO: set[str] = set()
+# get a cue, or join this set on purpose while one is being made (it may only shrink). Act II's two people-boss and
+# memory gaps (act2_cue_sheet.md: abiding_guard is M4-A2P-092, kesh_memory is a row-only proposal) are on it.
+MUSIC_TODO: set[str] = {"abiding_guard", "kesh_memory"}
+# The same for `@sfx`: Act II script cues audio is making (M4-A2P-105). They play silent until their files land.
+SFX_TODO: set[str] = {
+    "egret_lift", "engine_tick", "fin_cut", "kerrid_sits", "kesh_rise", "lamp_crack", "lamp_housing_close",
+    "lamp_seat", "level_pin_ring", "stirring_bells", "water_gate_drop",
+}
 
 
 def sfx_dir() -> Path:
@@ -44,7 +50,7 @@ def missing() -> list[str]:
         if dlg.name.startswith("test_"):
             continue  # the parser's fixtures name made-up cues on purpose
         for m in SFX_CUE.finditer(dlg.read_text(encoding="utf-8")):
-            if not (base / f"{m.group(1)}.ogg").is_file():
+            if m.group(1) not in SFX_TODO and not (base / f"{m.group(1)}.ogg").is_file():
                 out.append(f"{dlg.relative_to(ROOT)}: @sfx {m.group(1)}")
     return out
 
@@ -70,6 +76,12 @@ class CutsceneSfxFilesTest(unittest.TestCase):
     def test_the_todo_list_only_holds_missing_cues(self) -> None:
         done = sorted(MUSIC_TODO & known_music())
         self.assertEqual(done, [], "these cues exist now: take them off MUSIC_TODO")
+
+    def test_the_sfx_todo_list_only_holds_missing_cues_that_a_script_names(self) -> None:
+        named = {m.group(1) for d in _scripts() for m in SFX_CUE.finditer(d.read_text(encoding="utf-8"))}
+        self.assertEqual(sorted(SFX_TODO - named), [], "no script names these any more: take them off SFX_TODO")
+        done = sorted(i for i in SFX_TODO if (sfx_dir() / f"{i}.ogg").is_file())
+        self.assertEqual(done, [], "these cues have files now: take them off SFX_TODO")
 
     def test_the_act1_source_renders_into_the_sequencers_folder(self) -> None:
         import importlib.util

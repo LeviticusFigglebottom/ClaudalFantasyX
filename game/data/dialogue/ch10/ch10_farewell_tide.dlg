@@ -48,7 +48,7 @@ Ysolde [tender]: Turn around. They asked us not to stay watching. #line:ch10_tid
 <<if $ch09_ebbing_danced>>
     Asha [grief]: Mine went down. #line:ch10_tide_002 #tn:"Her Ebbing at Corrow led the dead down into the sea; these went up."
 <<endif>>
-<<set $ch10_tide_witnessed = true>>
+<<set $ch10_farewell_tide_seen = true>>
 <<jump ch10_outside_causeway>>
 ===
 // B10 "Outside the causeway" (C, 1.5 min, no dialogue). R07: outside the gate, PELL stands with his back
