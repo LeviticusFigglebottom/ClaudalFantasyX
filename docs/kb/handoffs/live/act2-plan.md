@@ -112,3 +112,18 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
     - §4b: the Act II track-briefs table (12 tracks, eight on day 1).
   - Checks: validate_data 0/0, taskboard --check clean. Skipped: Godot (docs only).
 - BACKLOG EMPTY: all of the Lead's items are done. The rest is the gate commit (the Lead) and the lanes' consistency rows (owners).
+
+### Story track: Act II scripts (from 2026-10-30, ADR 0205)
+- MERGE-READY @ f068e5de: **Ch10, Ch14, Ch15 and Ch11 scripts** (M4-A2P-001, 005, 006, 002, now in review; M4-C10/C11/C14/C15-01 in review):
+  - 71 `.dlg` scenes in `game/data/dialogue/ch1{0,1,4,5}/`, compiled, with `dialogue.csv`;
+  - new speakers `owa`, `kirru`, `kirru_child`, `tobin`, `merel`, `malcor_venn`, `brannoc_hale`, `hull_captain`, `aldous_varrow`, `hull_widow`: `speakers.json`, `CHAR_*` rows in `loc/ch1x.csv`, and `voices.json` rows borrowed from existing timbres (audio to tune);
+  - about 40 flags declared in `flags.tres`;
+  - `tests/unit/test_act2_dialogue.gd`: every Ch10–Ch16 scene down every option path, all flags unset and all set, checking END, no runner warnings, letterbox off, translated keys, known speakers, emotions and the light rules.
+  - Checks run: dlgc --check 0/0; validate_data 0/0; taskboard --check; gdlint and gdformat on the test; Godot `--import`; `--filter=act2_dialogue` 1 run, 0 failed.
+  - A pre-existing "Invalid UTF-8 leading byte (a7)" warning shows at Godot start. No text file under game/ or tests/ has invalid UTF-8, so it isn't from this work.
+  - Skipped: the coverage step (no battle or progression code) and screenshots (no scene changed).
+- **Requests the scripts make** (for the owners; also in each scene's header):
+  - **cinematics/UI:** the hold_input prompt rows `hold_to_watch`, `release_tide` (Ch10), `pole_stroke` (Ch14), `hold_steady`, `turn_collar`, `seat_it` (Ch11) need loc keys in each chapter's field data, as `ch09_field.json`'s `raise_staff`. The farewell-tide's "Release" variant is still a UI request.
+  - **chapters:** the flow sets `ch10_drowner_felled` and `ch14_steps_held` on those fights' ends (declared), and plays the scenes in order. The scenes hand off with `start_battle` on encounter ids `ch11_lamp_engine`, `ch14_water_steps`, `ch14_malcor_venn` and `ch15_wakefin` (ids to create, or rename here).
+  - **systems/cinematics:** `cues.json` has no grade ids for ch10–ch16 and no sideways drift for held light. The scripts use no `grade=` and give held motes no drift until those are added.
+- Next: Ch12, then Ch13, then Ch16 (M4-A2P-003, 004, 007), then M4-A2P-008 (heresy barks and the people's codex).
