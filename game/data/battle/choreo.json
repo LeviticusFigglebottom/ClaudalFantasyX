@@ -201,8 +201,10 @@
                       "fov": 56.0},
         "boss_sweep": {"anchor": "actor", "back_m": -4.6, "side_m": 6.6, "up_m": 2.6, "look_at": 0.6, "look_up_m": 1.0,
                        "fov": 50.0},
-        "charge_side": {"anchor": "target", "back_m": 1.8, "side_m": 5.2, "up_m": 0.25, "look_at": 0.5, "look_up_m": 0.4,
-                        "fov": 50.0}
+        "charge_side": {"anchor": "target", "back_m": 1.2, "side_m": 7.2, "up_m": 1.0, "look_at": 0.5, "look_up_m": 1.1,
+                        "fov": 54.0},
+        "boss_over_rail": {"anchor": "target", "back_m": 6.2, "side_m": 3.0, "up_m": 3.0, "look_at": 1.0,
+                           "look_up_m": -0.5, "fov": 54.0}
       },
       "enemy_by_skill": {"doc": "M3-BPR-420 (ADR 0041): the Act I bosses' big moves get a shot, not the enemy's default push. A heavy single blow frames the boss at its strike point, then the hero it hits (boss_blow, target); a move on the whole party frames the boss winding up from its mark (boss_sweep) and then holds wide. Checked before enemy_by_actor; a shot that fails the safe frame falls back to the default. A foe whose body at its strike point stands across the lens's sight of its targets drops that shot (the director's body check). The Reach keeps the default frame for all its moves: at its size every placed shot saw only its body or dropped under the wall-head, while the default frame already shows its hand over the party.",
                          "hood_slam": {"lead": "boss_blow", "contact": "target"},
@@ -217,7 +219,8 @@
                          "torch_hulk": {"lead": "boss_sweep", "contact": ""}},
       "moments": {"doc": "M3-BPR-426 (BattleBossCamera): a boss fight's camera moments besides its intro and its big moves. phase: once the action that changed the boss's phase has played, the camera eases over in_sec to the boss as its intro frames it (the hero shot), holds hold_sec, and eases home over out_sec; fall: the same on the boss as it falls to the finishing blow. The boss is the encounter's boss_intro row's enemy. None under reduced motion or skipped animations; the next turn waits for it.",
                   "phase": {"in_sec": 0.5, "hold_sec": 1.1, "out_sec": 0.5},
-                  "fall": {"in_sec": 0.4, "hold_sec": 1.4, "out_sec": 0.6},
+                  "fall": {"in_sec": 0.4, "hold_sec": 1.4, "out_sec": 0.6, "hero": {"cam_height_m": [2.4, 3.2, 1.8], "look_frac": 0.3},
+                           "hero_doc": "The encounter sweep (10-30): at the intro's low lens the Hullgnaw, sunk in its fall, was behind the raft's rail and a post; the fall looks down from higher (keys over boss_intro.hero)."},
                   "entry": {"doc": "M3-BPR-1325 (BattleEntryCamera): a set piece's entry acting (the Climb) eases to the arena's camera hint for its role (hints: role -> node path under the arena; env-art-b's seawall arenas carry CameraHints/the_stair_head, looking over the stair head, and CameraHints/along_the_walk, down the wall-walk), looking look_m ahead, at fov.",
                             "hints": {"ward": "CameraHints/the_stair_head", "guest": "CameraHints/along_the_walk"},
                             "skills_doc": "M3-BPR-406: skills limits a role's cut to those skills; once cuts that role's first such turn only. The Kirru (wave 3's guest) cuts along the wall-walk (the movers in front, the party behind them) the first time Pell sounds Storm-Call; the withdrawal it brings plays on the home frame, where the player sees which spawn leaves.",
@@ -226,8 +229,9 @@
       "rest_by_enemy": {"doc": "M3-BPR-425 (the PC's GPU QA row 36: the Reach's arm filled most of the frame and passed over the party all fight): a foe too big for the authored frame moves its fight's rest frame back_m along the view and up_m higher, still on the authored look point, at fov. The Reach: 40% of the screen and the party outside the safe frame at the authored rest; with creatures-b's boss_seats (M3-CRB-011: the Reach, the Matron and the Spar-Wraith sit on their own marks) these rows finish the frame: the Reach 4 m back and 2 m up (its hand grips the wall beside the party, the party and the sea read), the Spar-Wraith 3 m back and 1.5 m up (its masts were out of the top of the frame). The Matron's seat needs no row. Each viewed in its own arena.",
                         "undertows_reach": {"back_m": 4.0, "up_m": 2.0, "fov": 48.0},
                         "spar_wraith": {"back_m": 3.0, "up_m": 1.5, "fov": 50.0},
-                        "mangrove_drowner": {"back_m": 1.8, "up_m": 1.1, "fov": 50.0}},
-      "enemy_by_actor": {"doc": "M3-BPR-408: a foe whose actions get their own framing, by its enemy id (otherwise enemy). The Avalanche Ram's charge rides low and side-on.",
+                        "mangrove_drowner": {"back_m": 1.8, "up_m": 1.1, "fov": 50.0},
+                        "lamp_engine": {"back_m": 1.4, "up_m": 0.9, "fov": 50.0}},
+      "enemy_by_actor": {"doc": "M3-BPR-408: a foe whose actions get their own framing, by its enemy id (otherwise enemy). The Avalanche Ram's charge rides side-on (the boss camera sheet, 10-30: from 0.25 m up and 5.2 m out, Toma's shield stood across the Ram and its head left the frame; 1.0 m up and 7.2 m out keep both).",
                          "avalanche_ram": {"lead": "charge_side", "contact": ""}},
       "by_style": {
         "melee": {"lead": "actor", "contact": "target"},
@@ -454,7 +458,7 @@
                           "epithet_key": "BOSS_EPITHET_AVALANCHE_RAM", "on_retry": false},
         "mangrove_drowner": {"shot": "boss_tall", "hold_sec": 2.2, "title_key": "BOSS_TITLE_MANGROVE_DROWNER",
                              "epithet_key": "BOSS_EPITHET_MANGROVE_DROWNER", "on_retry": false},
-        "wakefin": {"shot": "boss", "hold_sec": 2.4, "title_key": "BOSS_TITLE_WAKEFIN",
+        "wakefin": {"shot": "boss_over_rail", "hero": false, "fit": false, "hold_sec": 2.4, "title_key": "BOSS_TITLE_WAKEFIN",
                     "epithet_key": "BOSS_EPITHET_WAKEFIN", "on_retry": false}
       }
     }
