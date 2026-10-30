@@ -121,9 +121,17 @@ letterbox left on, a line for Dace, an undeclared flag) trips all five rules.
     - E01–E13 for the Ending, on the Kite deck (`ch18/kite`), the Haluna dock and Oruvel. No collisions.
 11. **The vigil's line** has its own id (`ch19_vigil_001`), and its translator note says it must match
     `prologue_dead_city_001` word for word.
-12. **Lamptongue placeholders:** `ch19_words_001`/`002` (the Eighth Verse, spoken) and `ch20_fight_006` (the Cage) are
-    built from the glossary's roots and marked `#notr`. Audio owns the lyrics (SPEC §16 Q4/Q5). The Letting's sung text
-    (H07) is not written here.
+12. **Lamptongue: Audio's final texts** ([docs/kb/audio/lamptongue.md](../../../audio/lamptongue.md) §2–§3; on
+    `claude/audio` until it merges). These lines are tagged `#lamptongue #notr` (and `#sung` when sung), and are never
+    translated on screen.
+    - `ch19_words_001`: Ysolde reads verse 8 whole as cut in the stones, spoken.
+    - `ch19_words_002`: Asha repeats its first line and its last word.
+    - `ch20_fight_006`: kept as written ("Mir, mir. Tash.").
+    - H07: `ch21_the_letting_verse` sings verse 8 whole, the only time.
+    - `check_drafts.py` now holds every `#lamptongue` line to §1's 17 roots, and verse 8 to H07.
+    - **Verses 1–7 in play** (2026-10-30): verse 1 (`ch03_verse_042`–`045`) and verse 2 (`ch05_kahre_014`–`017`)
+      match §2 word for word. Ch4's "Vey enu" (`ch04_banter_ennu_001`) is Asha's deliberate mispronunciation, which
+      Ysolde corrects on screen. Verses 3–7 have no sung text in play yet: the `*_bound` stings are instrumental (§2).
 13. **Fight lines** (Ch19 I08, the Ch20 fights, Sefir's H04/H06) are bark files with one node per trigger. The game has
     no mid-battle line hook (only lead-in barks): **a request for Combat**. New encounters:
     - Ch19: `ch19_abiding_wardens`;

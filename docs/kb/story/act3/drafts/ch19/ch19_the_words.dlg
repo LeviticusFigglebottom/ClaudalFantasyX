@@ -2,8 +2,8 @@
 // act3_threads T-04; ending_cost_audit §6. Ysolde and Asha on the plaza steps. Ysolde has the Eighth Verse whole (the
 // words from the Choir stones, the tune read through the farewell-tide, its place from Ama's question-knot). She reads
 // the words aloud, SPOKEN, NOT SUNG (README rule 3); Asha repeats them once, spoken. Then Ysolde's want turns, dry,
-// never a joke. THE VERSE'S WORDS ARE A PLACEHOLDER built from the glossary's Lamptongue roots (ish light, mir stay,
-// tash let go, re again, oan home): Audio owns the lyric (SPEC §16 Q4/Q5); replace both lines with the final words.
+// never a joke. THE WORDS ARE AUDIO'S (docs/kb/audio/lamptongue.md §2 verse 8, §3): Ysolde reads verse 8 whole as cut in
+// the stones; Asha repeats only its first line and its last word (she doesn't have the rest by heart yet).
 title: ch19_the_words
 location: prologue
 ---
@@ -11,9 +11,9 @@ location: prologue
 @mark ysolde plaza_steps_b walk
 @anim ysolde open book
 @wait 2.0
-Ysolde [neutral]: Ish mir, ish re. Oan, oan. Tash. #line:ch19_words_001 #notr #tn:"PLACEHOLDER Lamptongue (Audio owns the lyric). Spoken flat, not sung. Do not translate."
+Ysolde [neutral]: Ish oan, ish oan. Vey hal, ennu tash. Oan re, oan re... tash. #line:ch19_words_001 #lamptongue #notr #tn:"Lamptongue, the Eighth Verse as cut in the stones (lamptongue.md verse 8): keep exactly as written. Spoken flat, not sung."
 @wait 2.0
-Asha [neutral]: Ish mir, ish re. Oan, oan. Tash. #line:ch19_words_002 #notr #tn:"PLACEHOLDER Lamptongue, Asha repeating it once, spoken. Do not translate."
+Asha [neutral]: Ish oan, ish oan... tash. #line:ch19_words_002 #lamptongue #notr #tn:"Lamptongue: keep exactly as written. Asha repeats only the first line and the last word, spoken."
 @wait 2.0
 Ysolde [neutral]: Never the words and the tune together. Not until it's time. #line:ch19_words_003
 @anim ysolde close book

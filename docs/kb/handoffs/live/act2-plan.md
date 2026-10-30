@@ -519,3 +519,21 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - **Checks** (docs only): taskboard clean · validate_data 0/0.
 - MERGE-READY Act I read-through @ 9be201224
 - BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114–117, M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Lamptongue (Lead; Audio's lamptongue.md)
+- **Source:** `docs/kb/audio/lamptongue.md` is on `origin/claude/audio` only (688bd032d), not yet on integration. I read it there.
+- **§3 into the drafts:**
+  - `ch19_words_001` is verse 8 whole, spoken;
+  - `ch19_words_002` is its first line and last word;
+  - `ch20_fight_006` is kept as written;
+  - **H07 now sings verse 8 whole**, in a new node `ch21_the_letting_verse` (4 sung lines);
+  - every line is tagged `#lamptongue #notr` (`#sung` where sung), per §4.
+- **check_drafts.py** now holds every `#lamptongue` line to §1's 17 roots, and verse 8 to H07; a planted bad line trips both. 73 files, 0/0.
+- **Act I/II verses in play match §2:**
+  - verse 1 (`ch03_verse_042`–`045`) and verse 2 (`ch05_kahre_014`–`017`) match word for word, punctuation included, in the scripts and dialogue.csv;
+  - Ch4's "Vey enu" is the deliberate mispronunciation that Ysolde corrects;
+  - verses 3–7 have no sung text in play (the bound stings are instrumental, as §2 says);
+  - no Lamptongue elsewhere in loc or codex. **No request needed.**
+- **Checks:** validate_data 0/0 · dlgc --check 0/0.
+- MERGE-READY Lamptongue pass @ 9a036d6e1
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114–117, M4-A2P-112 items 3, 5 and 6.

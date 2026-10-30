@@ -12,7 +12,8 @@ Usage: python3 docs/kb/story/act3/drafts/check_drafts.py
 3. The Act III rules (act3/README.md, act3_ending §0): no line in Dace's voice in Ch17 (the ledger is read);
    "revenant" not before Ch19; no Eighth Verse sung before H07; light rises only in a lifting, a release, or after H09,
    and nothing is held or bound after H09; every flag read or set is declared in game/data/flags.tres or in README.md's
-   "Flags to declare" table. Speakers the game doesn't have yet come from README.md's "Speakers to add" table and are
+   "Flags to declare" table; a #lamptongue line uses only docs/kb/audio/lamptongue.md §1's roots, and verse 8 is sung
+   only in H07. Speakers the game doesn't have yet come from README.md's "Speakers to add" table and are
    added to the temporary copy only.
 Banned terms are covered by tools/validate_data.py, which already scans docs/kb/story/ and every .dlg file.
 Exit code 1 on any error.
@@ -38,6 +39,10 @@ LIFT_ALLOWED = {"ch18_backs_to_the_water.dlg", "ch21_kesh_release.dlg", "ch21_th
 LIFT_ALLOWED_SUFFIX = "_release.dlg"
 AFTER_H09 = ("ch21_great_unbinding.dlg", "ending_")
 README_SPEAKER = re.compile(r"^\| `([a-z0-9_]+)` \| ([^|]+?) \| speaker \|", re.M)
+# docs/kb/audio/lamptongue.md §1: the glossary's nine roots and Audio's eight. New Lamptongue is built from these only.
+LAMPTONGUE_ROOTS = {"vey", "ish", "karra", "hal", "ennu", "mir", "tash", "re", "oan",
+                    "arre", "seli", "aun", "thel", "sen", "sev", "kor", "una"}
+LETTING = "ch21_the_letting.dlg"
 FLAG_USE = re.compile(r"\$([a-z0-9_]+)")
 README_FLAG = re.compile(r"^\| `([a-z0-9_]+)` \|", re.M)
 DECLARED = re.compile(r'^"([a-z0-9_]+)":', re.M)
@@ -130,6 +135,13 @@ def act3_errors(path: Path, flags: set[str]) -> list[str]:
             out.append(f"{path.name}:{no}: 'revenant' is not said before Ch19")
         if re.search(r"\bsings?\b.*\bEighth Verse\b", t):
             out.append(f"{path.name}:{no}: the Eighth Verse is never sung before H07")
+        if "#lamptongue" in t:
+            text = re.sub(r"^[A-Z][A-Za-z_]*(?: as \"[^\"]+\")? \[[a-z_]+\]: ", "", t.split(" #line:")[0])
+            for word in re.findall(r"[a-z]+", text.lower()):
+                if word not in LAMPTONGUE_ROOTS:
+                    out.append(f"{path.name}:{no}: '{word}' is not a Lamptongue root (docs/kb/audio/lamptongue.md §1)")
+            if "#sung" in t and "tash" in text.lower() and path.name != LETTING:
+                out.append(f"{path.name}:{no}: verse 8 (the Letting) is sung only in H07, {LETTING}")
         if t.startswith("<<"):
             for f in FLAG_USE.findall(t):
                 if f not in flags:
