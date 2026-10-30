@@ -2,7 +2,7 @@
 id: M4-A2P-008
 title: "Act II state lines: heresy barks, Kerrid's revealed barks, and the people's codex pages"
 role: narrative
-status: doing
+status: review
 owner_session: "act2 story track (claude/act2-plan, ADR 0205)"
 depends_on: [M4-A2P-005, M4-A2P-006]
 reviewer: ui
@@ -20,5 +20,15 @@ The lines that change by state across Act II: every town NPC's heretic-state lin
 ## Notes
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). Plan §4.2, §4.3, §4.5.
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
+
+## Done (story track, 2026-10-30)
+- **Codex (people), 12 entries:** `owa`, `tobin`, `merel`, `ressa`, `ama_quillo`, `corran`, `malcor_venn`, `conclave`, `brannoc_hale`, `aldous_varrow`, `kesh`, `kerrid_stair`.
+  - Each unlocks on its chapter's flag and uses the bible's own words (unrisen, held).
+  - The rows are appended to `codex.json`, `loc/codex.csv` and `flags.tres` (`codex_<id>_read`).
+  - The Kerrid entry is a second page, `kerrid_stair`, unlocked by `ch15_kerrid_told`, because the codex has no conditional body.
+  - The Archive's records stay in the `ch13_archive_*` scripts for the document reader: a `records` or `world` entry would break `test_codex.gd`'s pinned counts, which are ui-menus'.
+- **Heresy barks:** `ch14_bark_purveyor_refuses`, `ch14_bark_dark_shrine` and `ch15_bark_outside_the_level`.
+- **Kerrid's post-reveal barks:** `ch15_bark_kerrid_night` and `ch15_bark_kerrid_floors`, plus the Ch16 wade bark.
+- **Checks:** validate_data, dlgc, Godot `--filter=act2_dialogue` and `--filter=codex` 15/0. Reviewer: ui-menus.
 
 ## Review log

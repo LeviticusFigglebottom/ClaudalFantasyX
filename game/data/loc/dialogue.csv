@@ -978,8 +978,11 @@ DLG_CH13_TOBIN_008,Somebody had to go first. I volunteered. Nobody had to be cho
 DLG_CH13_TOBIN_009,Good luck.
 DLG_CH13_TOBIN_010,I'll need it. Her knots are terrible.
 DLG_CH13_WENNA_001,In the Sanctum. She came here. She knelt here and scratched her name under their noses.
+DLG_CH14_HERESY_SHRINE_001,The shrine's bowl is dry. Someone has turned its lamp to face the wall.
 DLG_CH14_BARK_CAPTAIN_001,Sea-coat in a lacquer hall. I feel like a stain.
 DLG_NAME_HULL_CAPTAIN_HULL_CAPTAIN,Hull-captain
+DLG_CH14_HERESY_SHOP_001,"Outside the Level. I can't sell to you. I'm sorry. Go, before someone sees me being sorry."
+DLG_NAME_VENDOR_ORDER_PURVEYOR,Order purveyor
 DLG_CH14_BARK_TENDER_001,Still water. Not a ripple. Look at the domes: you can't tell which way is up.
 DLG_CH14_BARK_COMMANDER_001,That is my old commander.
 DLG_CH14_BARK_SMILE_001,"Smile, Lady Cantor. It is a wedding."
@@ -1014,6 +1017,10 @@ DLG_CH14_TOBIN_FALL_002,...Your knots are terrible.
 DLG_CH14_TOBIN_FALL_003,"Hold it. Hold, hold, she'll hold, seat it, hold—"
 DLG_CH15_BARK_TALL_001,You're very tall.
 DLG_CH15_BARK_TALL_002,Yes.
+DLG_CH15_KERRID_FLOORS_001,"Floors that float. I'd have liked this, alive."
+DLG_CH15_KERRID_NIGHT_001,"I don't sleep. I sit. You'd be surprised how long a night is, Rhen."
+DLG_CH15_HERESY_HOLLOWMERE_001,"Outside the Level, are you? Welcome aboard. So's everyone on this hull."
+DLG_NAME_HULL_CAPTAIN_HOLLOWMERE_WRIGHT,Hollowmere wright
 DLG_CH15_BARK_WIDOW_001,They took my husband in his good coat. He hates that coat.
 DLG_NAME_HULL_WIDOW_CAPTAIN_S_WIFE,Captain's wife
 DLG_CH15_BARK_PUMP_001,She's a grandmother of mine. Pumps the bilge every night. Best worker on the hull.
