@@ -3,6 +3,14 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ 3e7910593: the Lead's 23:05 FAST-TRACK (the two ERRORs). It pre-empts the score (ADR 0207).**
+  - **UiAudio "already connected" on every resident battle return (134 in Ch1–Ch6):**
+    - Cause: the field leaves the tree for the battle and comes back with its connections intact. `step()` had dropped it from `watched`, so the director's `watch()` connected every hooked signal again.
+    - Fix: a node now carries the UiAudio that connected it (meta `ui_audio_connected`). A second `watch()` only resumes its reads, and a signal still plays its row once.
+  - **ashcrown_audio.gd:53 `unbind(0)`:** the trial's `ran` has three arguments and went through `unbind(argc - 3)`, which is 0 and an ERROR. Now three arguments connect plainly, and only a signal with more drops its extras.
+  - **Test:** `tests/unit/test_audio_reconnect.gd` (2) fails on any engine error (QaLogger), not only script errors. It reproduces both on the old code (the exact messages) and passes on the fix.
+  - **Checks:** gdlint and gdformat clean; Godot audio_reconnect 2/0, ui_ 58/0, ashcrown 22/0, audio_runtime 11/0, battle_audio 22/0. ui_'s "2 left nodes in the tree" happens without this change too.
+  - **Not pushed yet:** the ending's cues (goodbye_imra, ending_lift_bed, goodbye_kerrid, ending_dock, goodbye_dace, credits_suite) are rendered locally; they land in the next push.
 - **MERGE-READY @ e8755571d: Act III production starts (ADR 0207; the Lead's 21:56 item). The score, part 1, is the Unbinding themes (M5-A3P-1950, to review); part 2, the finale, is begun (M5-A3P-1951).**
   - **Merged integration** (46d8a067 onward) into claude/audio; it was clean.
   - **Storage, ADR 0208:** Act III's new audio is plain git under `assets/audio/act3/`, the same route as Act II's (LFS uploads are still refused from the cloud). The budget is 150 MiB; plain audio was at 100.3 MiB of 105. **LEAD-ASK:** accept ADR 0208 (repository size) on merge.
