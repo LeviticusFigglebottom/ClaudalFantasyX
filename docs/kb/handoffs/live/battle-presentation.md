@@ -4,6 +4,15 @@
 
 The gap (the human's playtest note): battles had no action animation. This track adds a listen-only presentation layer: choreography, a clip contract, a camera director, the specials, the intro and outro. Docs: `docs/kb/tech/battle_presentation.md`.
 
+LEAD-ASK (18:30): Not idle and not blocked. Everything you asked at 17:04, 18:04 and 18:2x has been MERGE-READY on
+`origin/claude/battle-presentation` since 17:30, as logged right below and in the CURRENT STATUS table. If these
+updates aren't reaching you, please read this file on this branch, not the integration copy.
+- **MERGE-READY @ 064c9e46:** the crawler's 3 effects and the Vowbound's 19.
+- **test_battle_act1_ability_vfx:** green.
+- **MERGE-READY @ bdc5ef22:** the Act II boss intros.
+- **MERGE-READY @ 5aa9f169:** the branch head, everything.
+- Since then: the Act I encounter sweep only.
+
 ## 2026-10-30 ~17:30: the Lead's 17:04 (big25 merged in at 9795b3f3)
 **MERGE-READY @ 064c9e46.** The conduit crawler's 3 and the four Vowbound's 19 battle effects are generated, now that
 their rows are on integration (06a51e5c). Checks on the merged tree: `--filter=vfx` 46/0, `--filter=vowbound` 117/0,
