@@ -32,6 +32,23 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
   - Fix for battle-presentation: search under the fade, or over several frames.
   - slice_sweep's `--pipeline-trace` now prints process, render_cpu, render_gpu and new_nodes too.
   - `tools/gpu_bench/act1_walk_fights.json` replays just the fights.
+- **Heavy Blender verifies (the Lead's 10:15 ask), WSL `hymn`, Blender 5.0.1, changed jobs vs the integration branch:**
+  - **characters @ 6154f6d4 (base 7fbe446f): 71 jobs, 23 FAIL, 41 DIFF.**
+    - 22 crowd `materials/brow.tres` (every crowd variant);
+    - 3 crowd models (crowd_girl_small, crowd_man_lean_a, crowd_woman_lean_a: POSITION, NORMAL, UV, WEIGHTS and
+      indices), plus their body and head textures;
+    - 5 more crowd head albedos;
+    - `villager_fenn/anim/fenn_clips.tres`.
+    - Malcor Venn, the Abiding guards and the other villagers are identical.
+    - Owner characters: the committed crowd brows and these three bodies no longer match their source. Rebuild and
+      commit, or say which machine built them.
+  - **creatures @ 132fb47f (9b65894c in it):** 1 changed job (creature_rime_urchin), identical.
+  - **creatures-b @ 790c70bf (618d916b3 in it):** no Blender job touched vs the integration branch.
+  - **Both exit 1 only because of `BLENDER UNCOVERED assets/cutscene/ch01/oruvel_seabed.glb`:** no job rebuilds
+    it. It's repo-wide, not theirs: add a job or a coverage_exempt entry (owner slice-polish / env-art, the Ch1
+    cutscene).
+- **Battle-UI pass (pillar 4), done:** rows 69–73 in act1_gpu_qa.md. Sheets are in pass5/battle_ui/.
+- **NEXT:** pass 6 once big22 merges.
 - The worktree is C:/Users/Aaron/hymn_qa4 (branch gpu/act1-qa-5). The C:/Users/Aaron/hymn_ui worktree (329e7bce) was
   never needed; I'll remove it.
 
