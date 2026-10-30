@@ -2250,6 +2250,8 @@ def _vowbound_row_errors(r: dict, skills: dict[str, dict], char_ids: set[str], l
                 errs.append(f"{w}: unknown skill '{sid}'")
             elif skills[sid].get("swell") is True:
                 errs.append(f"{w}: '{sid}' is a Swell technique; name it in swell.technique")
+    if "sfx_pending" in r and (not isinstance(r["sfx_pending"], str) or not r["sfx_pending"].strip()):
+        errs.append(f"{w}: sfx_pending must name the audio task")  # M4-A2P-024: a row ahead of its voice
     cyc = r.get("cycle", [])  # M4-A2P-025 (BattleCycle): one of its own skills per element, in order
     if not isinstance(cyc, list) or any(s not in (sk or []) for s in cyc) or len(set(cyc)) != len(cyc):
         errs.append(f"{w}: cycle must list distinct skills of its own")
