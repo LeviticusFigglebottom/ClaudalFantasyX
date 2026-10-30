@@ -248,6 +248,8 @@ JOBS = [
      [f"malcor_venn_p{i}{ext}" for i in (1, 2) for ext in (".ogg", ".loop.json")], "music_loop"),
     ("assets_src/music/act2/abiding_guard.py", "assets/audio/act2/music",
      [f"abiding_guard_p{i}{ext}" for i in (1, 2) for ext in (".ogg", ".loop.json")], "music_loop"),
+    ("assets_src/music/act2/court_steps.py", "assets/audio/act2/music",
+     [f"court_steps_p{i}{ext}" for i in (1, 2) for ext in (".ogg", ".loop.json")], "music_loop"),
     # M4-A2P-091: Act II zone loops new in plain git (ADR 0175)
     ("assets_src/music/act2/cloudloom.py", "assets/audio/act2/music", ["cloudloom.ogg", "cloudloom.loop.json"],
      "music_loop"),

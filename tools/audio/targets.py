@@ -24,6 +24,7 @@ RULES = [
     ("music/*.ogg", "integrated", -16.0, 0.5, -1.0, "music beds, themes and cutscene cues"),
     ("act2/music/malcor_venn_p*.ogg", "stem", -16.0, 0.5, -1.0, "Malcor Venn's two stems, stacked at -16 (ADR 0175)"),
     ("act2/music/abiding_guard_p*.ogg", "stem", -16.0, 0.5, -1.0, "the Abiding guard's two stems, stacked at -16 (ADR 0175)"),
+    ("act2/music/court_steps_p*.ogg", "stem", -16.0, 0.5, -1.0, "Ch14's step-hold, two stems stacked at -16 (ADR 0175)"),
     ("act2/music/*.ogg", "integrated", -16.0, 0.5, -1.0, "Act II scene cues, loops and stings in plain git (ADR 0175)"),
     ("ambience/*.ogg", "integrated", -26.0, 0.5, -5.0, "ambience beds (mix.md: -26, peaks well down)"),
     ("act2/ambience/*.ogg", "integrated", -26.0, 0.5, -5.0, "Act II ambience beds (M4-A2P-093, ADR 0175)"),
