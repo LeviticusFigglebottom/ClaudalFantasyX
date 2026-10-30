@@ -4,7 +4,7 @@ id: gallery_ray
 kind: reef beast
 chapter: 11
 exists: yes, on the integration branch (built; `creatures.json` row, review baseline, portrait)
-meets_bar: no
+meets_bar: yes (read fixed 2026-10-30)
 ---
 # gallery_ray (Ch11, Sunken Vey, the drowned galleries)
 
@@ -36,4 +36,4 @@ Its own build (a disc rig of wing chains and a tail). The glass skate's disc bui
 Model meets the bar; the read fix is in (dusky back, margin glow, hover 0.95 m). Judge it again in its Act II arena's grade.
 
 ## Work at the gate (after `act1-complete`)
-~~Read fix~~ (done); `glide_lash` effect; enemy `model` key.
+~~Read fix~~ (done); `glide_lash` effect; ~~enemy `model` key~~ (done 2026-10-30).

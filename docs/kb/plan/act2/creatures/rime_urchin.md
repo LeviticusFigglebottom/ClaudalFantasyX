@@ -35,4 +35,4 @@ Its own build.
 Meets the bar for its model. **KO done 2026-10-30 (creatures track, ADR 0205):** after a last clench the spines fall open 50 degrees round the test (their tips lift as they open, so the low ones lie on the floor, not in it) and the test slumps 6 cm and tips 8 degrees: the ball of spines becomes a flat, parted star (clip sheet). The ice cracking is left to the KO effect (VFX).
 
 ## Work at the gate (after `act1-complete`)
-~~A readable KO~~ (done); `rime_spine` effect; enemy `model` key.
+~~A readable KO~~ (done); `rime_spine` effect; ~~enemy `model` key~~ (done 2026-10-30).

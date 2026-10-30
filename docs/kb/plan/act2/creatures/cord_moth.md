@@ -35,4 +35,4 @@ Its own build; the ashwing is its sibling (flat-winged flier).
 Meets the bar for its model; its flap pops (9–14% of its size) are fast wingbeats.
 
 ## Work at the gate (after `act1-complete`)
-~~Battle scale~~ (done 2026-10-30: the Model at 1.35× in cord_moth_battle.tscn, the stand-in hover 1.35 m, the build's KO fall 1.0 m in model space; self-rendered in `ch12_pass_moths`, where the wings read as broad shapes, not slivers); `unravel` effect (in test_battle_act1_ability_vfx's list); enemy `model` key.
+~~Battle scale~~ (done 2026-10-30: the Model at 1.35× in cord_moth_battle.tscn, the stand-in hover 1.35 m, the build's KO fall 1.0 m in model space; self-rendered in `ch12_pass_moths`, where the wings read as broad shapes, not slivers); `unravel` effect (in test_battle_act1_ability_vfx's list); ~~enemy `model` key~~ (done 2026-10-30).

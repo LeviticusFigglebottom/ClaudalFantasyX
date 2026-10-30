@@ -35,4 +35,4 @@ build_reef_crab (rig, clips, the planted-foot pin since 2026-10-29, `grounding.p
 Meets the bar (the crab family's audit: feet held, KO a collapse).
 
 ## Work at the gate (after `act1-complete`)
-Enemy `model` key; arena shot; the `root_drag` skill's effect.
+~~Enemy `model` key~~ (done 2026-10-30); arena shot; the `root_drag` skill's effect.

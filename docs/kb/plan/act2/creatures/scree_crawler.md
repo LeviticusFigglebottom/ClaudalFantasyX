@@ -35,4 +35,4 @@ build_slag_tortoise (rig, clips, the flip-over KO).
 Meets the bar (17.5k tris: check the budget at the gate).
 
 ## Work at the gate (after `act1-complete`)
-Frost to snow and grit (M4-CRE-670); enemy `model` key; arena shot; `scree_slide` effect.
+~~Frost to snow and grit~~ (done, M4-CRE-670); enemy `model` key; arena shot; `scree_slide` effect.

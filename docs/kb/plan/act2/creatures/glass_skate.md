@@ -35,4 +35,4 @@ Its own disc build (see gallery_ray).
 Meets the bar. Its `cast` slides 63 cm: that is the burial wriggle into the sand (it moves itself), not a planted foot.
 
 ## Work at the gate (after `act1-complete`)
-Enemy `model` key; `skate_sting` effect; check the risen read in the Rim arena.
+~~Enemy `model` key~~ (done 2026-10-30); `skate_sting` effect; check the risen read in the Rim arena.

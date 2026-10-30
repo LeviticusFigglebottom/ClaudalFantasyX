@@ -4,7 +4,7 @@ id: rim_crawler
 kind: variant (tide crawler)
 chapter: 16
 exists: yes, on the integration branch (built; `creatures.json` row, review baseline, portrait)
-meets_bar: no
+meets_bar: yes (value fixed 2026-10-30; re-judge in the Rim's grade)
 ---
 # rim_crawler (Ch16, the Pale Rim)
 
@@ -36,4 +36,4 @@ build_tide_crawler (its 2026-10-29 primitive pass: carapace plates and seams, jo
 Model meets the bar (rebuilt with the tide crawler); the value fix is in (slate flanks and seams, brighter wounds).
 
 ## Work at the gate (after `act1-complete`)
-~~Value check~~ (done; re-judge in the Rim's grade); enemy `model` key.
+~~Value check~~ (done; re-judge in the Rim's grade); ~~enemy `model` key~~ (done 2026-10-30).
