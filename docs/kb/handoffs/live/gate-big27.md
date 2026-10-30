@@ -48,3 +48,8 @@ GATE-BUILT @ b7b09c5e
 ## Fast gate
 - Selected: 54 test files (plus test_aspect_layouts, to re-check the routed red).
 - Lane A (mine): 27; lane B (GATE-HELPER): 27, in `gate-big27-lanes-b.txt` @ 66ae0cc2.
+- LEAD-ANSWERED (18:04): per-track M4-A2P ranges (TRACK-RULES "FROM 2026-10-30 18:05"). The moved tasks are now in
+  their filers' ranges: act2-plan's read-throughs and Brine Shoals vendor are **M4-A2P-1000, 1001, 1002** (were 115,
+  116, 117), and env-art-b's Pale Rim exit request is **M4-A2P-1500** (was 116). Gate notes and cross-references updated.
+- ui @ 33a57693 merged (≥ 43fa81ab; the commits after 2742662e are live-log only). The 4:3 Read fix was already in
+  through 2742662e: **test_aspect_layouts 18/0** in lane A.
