@@ -4681,6 +4681,36 @@
       "settle_frames": 30
     },
     {
+      "id": "kerrid_confession_grief",
+      "scene": "res://game/levels/_tests/characters/kerrid/kerrid_confession_grief.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kerrid_confession_guilty",
+      "scene": "res://game/levels/_tests/characters/kerrid/kerrid_confession_guilty.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kerrid_confession_burns",
+      "scene": "res://game/levels/_tests/characters/kerrid/kerrid_confession_grief.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "kerrid_face_stylized",
       "scene": "res://game/levels/_tests/characters/kerrid/kerrid_face_stylized.tscn",
       "camera": "Cameras/Compare",
