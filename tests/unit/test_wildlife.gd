@@ -573,6 +573,25 @@ func test_a_kingfisher_plunges_to_the_water_and_back_to_its_perch() -> void:
 	assert_true(flock.bounds.position.y <= -0.25, "the culling box reaches the water")
 
 
+## The idle pass (2026-10-30): each woolback grazes at its own pace (graze_pace), the graze clip's playback; the walk
+## and the look play at 1.0 (the walk's hooves are planted for walk_speed_mps).
+func test_woolbacks_graze_at_their_own_pace() -> void:
+	var kind: Dictionary = _kinds["kinds"]["woolback"]
+	var range: Array = kind["graze_pace"]
+	var herd := WildlifeHerd.new(
+		{"id": "h", "center": [0.0, 0.0], "radius_m": 4.0, "count": 4}, kind, 77, 4, Callable()
+	)
+	var paces: Array[float] = []
+	for a in herd.animals:
+		assert_between(a.pace, float(range[0]), float(range[1]), "its pace in range")
+		paces.append(a.pace)
+		a.clip = WildlifeHerd.CLIP_GRAZE
+		assert_true(is_equal_approx(herd.playback_of(a), a.pace), "grazing plays at its pace")
+		a.clip = WildlifeHerd.CLIP_WALK
+		assert_eq(herd.playback_of(a), 1.0, "the walk keeps its planted hooves")
+	assert_true(paces.max() - paces.min() > 0.02, "four woolbacks, four paces")
+
+
 func test_woolbacks_graze_look_and_amble_within_their_area() -> void:
 	var kind: Dictionary = _kinds["kinds"]["woolback"]
 	var row := {"id": "h", "center": [2.0, -3.0], "radius_m": 3.0, "count": 3, "y": 0.5}

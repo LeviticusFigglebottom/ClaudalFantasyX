@@ -906,6 +906,32 @@
    "priority": 1
   },
   {
+   "id": "GateStep",
+   "mode": "pan_follow",
+   "at": [
+    -1.5,
+    1.5,
+    0.0
+   ],
+   "size": [
+    3.5,
+    4.0,
+    5.0
+   ],
+   "pos": [
+    6.0,
+    3.5,
+    3.0
+   ],
+   "look_at": [
+    -1.5,
+    0.8,
+    0.0
+   ],
+   "fov": 50,
+   "priority": 2
+  },
+  {
    "id": "Hall",
    "mode": "pan_follow",
    "at": [

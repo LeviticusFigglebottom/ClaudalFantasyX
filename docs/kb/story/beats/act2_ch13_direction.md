@@ -125,3 +125,26 @@ B12 side scene. The script now cuts between **A15b** (the street, lines 001–00
 | A15b | 50 mm on the street outside the house, the door in frame; `[-40.02, 1.6, -37.38]` → `[-42.33, 1.4, -40.13]`, 27° | street, street_b, door | `house_side_001` ysolde in frame; `house_side_002` ysolde in frame; `house_side_003` rhen in frame; `house_side_004` ysolde in frame; `house_side_005` ysolde in frame |
 | A15 | 50 mm locked, the front room and the scorch mark (insert on the mark); `[-43.09, 1.6, -40.96]` → `[-44.25, 1.4, -44.15]`, 27° | front_room, front_room_b, door, scorch | `house_side_006` ysolde in frame; `house_side_007` householder in frame; `house_side_008` ysolde in frame |
 | A15b | 50 mm on the street outside the house, the door in frame; `[-40.02, 1.6, -37.38]` → `[-42.33, 1.4, -40.13]`, 27° | street, street_b, door | `house_side_009` ysolde in frame |
+
+## Audio cues by shot (for audio)
+
+Every `@music` and `@sfx` in the chapter's scenes, in script order, with the shot it lands on and what follows it
+(the next line or hold). A music change marked `fade=0.0` is a hard cut. Barks, camps and shrines play in the field and
+are left out. A shot of — means the cue plays before the node's first shot, over the fade.
+
+| Scene | Shot | Cue | Then |
+|---|---|---|---|
+| `ch13_archive_ledgers` | R01 | `@music lamp_archive fade=2.0` | hold 3.0 s |
+| `ch13_archive_roll` | R03 | `@music lamp_archive fade=1.0` | `ch13_rec_roll_001` Cantor roll. Sixtieth |
+| `ch13_archive_roll` | R05 | `@music silence fade=2.0` | `ch13_roll_001` Ysolde |
+| `ch13_ethren` | S01 | `@music sanctum_of_the_level fade=2.0` | hold 5.0 s |
+| `ch13_ethren` | S07 | `@music ethren_bound fade=0.0` | hold 8.0 s |
+| `ch13_ethren` | S09 | `@music sanctum_of_the_level fade=2.0` | hold 2.0 s |
+| `ch13_someone_elses_house` | A15b | `@music silence fade=1.0` | hold 2.0 s |
+| `ch13_someone_elses_house` | A15b | `@music ansedra fade=3.0` | scene end |
+| `ch13_still_city` | A01 | `@music ansedra fade=2.0` | hold 5.0 s |
+| `ch13_still_city` | A02 | `@sfx barge_pole` | hold 2.0 s |
+| `ch13_sefirs_house` | A04 | `@music ansedra fade=1.0` | hold 1.5 s |
+| `ch13_the_pact` | A11 | `@music ansedra fade=2.0` | hold 2.0 s |
+| `ch13_sefir_closes_the_book` | R10 | `@music silence fade=2.0` | hold 2.0 s |
+| `ch13_tobin` | A07 | `@music peace_wedding fade=1.0` | `ch13_tobin_001` Tobin |

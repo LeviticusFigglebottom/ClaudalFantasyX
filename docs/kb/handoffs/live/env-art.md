@@ -589,6 +589,21 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **LEAD (16:26), answered: cloud-qa pass 6's Oruvel hull-vs-deck overlaps are fixed. MERGE-READY @ bc790ea8.**
+  - Each pair was viewed at eye height before and after (scale booth, keel moorings, Terrace raft, commons canoe):
+    - scale_hull x raft deck: the booth's raft is now `raft_deck_square` (new kit piece, 10 x 10 m, tucked float
+      logs, glb + import + PROVENANCE row + manifest), and the hull sits at x -7.7, 0.8 m of water off the deck edge;
+      the scaleman's place (x -7.2) is still inside the booth;
+    - keel_hull x two tucked decks: the moorings move to z -29.5, clear of the keel;
+    - terrace_hull x tucked deck: the raft shifts 0.85 m east;
+    - outriggers x small deck and two bridges: the commons canoe moves to (19.6, -16.4).
+  - **Kept, intended:** dive_raft x the two plank bridges and the broken bridge; the stilted LowHull outrigger x
+    its two bridges. The AABB mirror of cloud-qa's check now lists only those 5 pairs.
+  - **Checks:** test_oruvel_moorings, test_oruvel_kit, test_zone_dressing_ch01, test_ch01_zone_copies OK;
+    validate_data and taskboard --check clean; Godot `--filter=ch01` 20 run / 0 failed, `--filter=edge_walls`
+    2 / 0. Skipped: the full suite and the manifest (no code touched). The kit preview's back row gains the
+    square raft at x 168; any preview shot that frames it shows it new (no baseline written).
+  - M3-ENV-1323's GPU A/B still waits on the PC.
 - **LEAD (16:09), answered: the Ch10–Ch12 eye-height walk, the dock-edge check (the Sunken Vey gallery included) and
   env-art-b's kit requests are done.**
   - The branch head is f4b2b548 plus a `.uid` commit. The MERGE-READY lines below cover each part:
@@ -2065,3 +2080,4 @@ Done or in review: M2-ART-01/02/03 (done); M1-ENV-10, M2-ENV-06, M2-ENV-07, M2-E
 - 2026-10-24: M2-ENV-06 pass 1 (6436775). Gates: verify_blender_builds haluna_kit 31 identical; Godot environment 11, haluna 13, post_import 17; validate_data; taskboard --check; the five haluna shots captured, viewed and re-approved.
 - 2026-10-24: merged the Art sign-offs (3c3fa19, aa3b4ca, f067ba4). Gates: validate_data, taskboard --check, palette.json parses (docs only, no Godot run).
 - 2026-10-24: set up the branch and toolchain; claimed the queue's tasks.
+- 2026-10-30 (note by env-art-b, with the Lead's leave): M4-A2P-114 done in your kit, `haluna/lowlight.py` `PIER_AT`'s south-middle pier (0, 9.5) -> (0, 11.0), and `engine_hall.glb` rebuilt (f6442153). The pier stood where the battle camera rests after rest_fit (0.7, 4.0, 9.8) and filled the left of `lowlight_engine_hall`'s frame. Ch11's zone dressing places the same hall: the pier is 1.5 m nearer the south wall there too. Checks: test_lowlight, test_lowlight_housing, test_ch11_lowlight_dressing, test_haluna_kit, test_arenas; Godot ch11 and arena. Please review the task.

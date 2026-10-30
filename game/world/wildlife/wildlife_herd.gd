@@ -28,6 +28,9 @@ class Animal:
 	var target := Vector2.ZERO
 	var timer := 0.0
 	var scale := 1.0
+	## Its own grazing pace (the kind's `graze_pace` [lo, hi]): the graze clip's playback, so a herd chews out of pace
+	## as well as out of phase (the walk stays at 1.0: its hooves are planted for walk_speed_mps).
+	var pace := 1.0
 	## The clip to play, and whether it changed since the layer last started it (the layer clears it).
 	var clip: StringName = CLIP_GRAZE
 	var clip_changed := true
@@ -60,6 +63,7 @@ func _init(row: Dictionary, kind: Dictionary, seed_value: int, count: int, groun
 		a.target = a.pos
 		a.yaw = _rng.randf() * TAU
 		a.scale = _r("scale")
+		a.pace = _r("graze_pace") if _kind.has("graze_pace") else 1.0
 		a.timer = _r("graze_s") * _rng.randf()
 		a.y = height(a.pos)
 		animals.append(a)
@@ -167,6 +171,11 @@ func _walk(a: Animal) -> void:
 			a.target = a.pos + (p - a.pos).limit_length(dist)
 			break
 	_set_clip(a, CLIP_WALK)
+
+
+## The playback rate for the animal's current clip: its pace while it grazes, 1.0 otherwise.
+func playback_of(a: Animal) -> float:
+	return a.pace if a.clip == CLIP_GRAZE else 1.0
 
 
 func transform_of(a: Animal) -> Transform3D:

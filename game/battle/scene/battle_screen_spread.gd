@@ -105,6 +105,34 @@ static func _crowded(fighters: Array, radii: Array[float], clear: float, i: int)
 	return false
 
 
+## The sweep (10-30, ch04_derelict_leeches): Ilun's net, on the middle party slot, reached under the timeline when he
+## acted. A fighter `f` whose box on the rest frame meets one of `rects` (1920x1080) steps toward the screen's left
+## (toward the foes and the middle), step_m at a time, up to spacing.screen.hud_shift_m from where it stands.
+static func clear_of_hud(
+	f: FighterStandIn, cam: Camera3D, xf: Transform3D, fov: float, rects: Array, data: Dictionary
+) -> void:
+	var sc := (data.get("spacing", {}) as Dictionary).get("screen", {}) as Dictionary
+	if sc.is_empty() or cam == null or f == null:
+		return
+	var parent := cam.get_parent() as Node3D
+	var lens := (parent.global_transform if parent != null else Transform3D.IDENTITY) * xf
+	var left := -Vector3(lens.basis.x.x, 0.0, lens.basis.x.z).normalized()
+	var shape := _shape(f)
+	var home := f.global_position
+	var step := float(sc.get("step_m", 0.1))
+	var cap := float(sc.get("hud_shift_m", 0.0))
+	var p := home
+	while (p - home).length() + step <= cap + 0.001:
+		var box := screen_box(lens, fov, shape, p)
+		var hit := false
+		for r: Rect2 in rects:
+			hit = hit or box.intersects(r)
+		if not hit:
+			break
+		p += left * step
+	f.global_position = p
+
+
 ## The command menu's rect, less its top spacing.screen.menu_edge_px: a foe's leg tips may reach that far over the
 ## menu's top edge when every step off it would push two footprints together (the causeway's and the flats' Crabs,
 ## boxed in by the Eel behind and the Gull beside). Its body may not.

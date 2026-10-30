@@ -9,7 +9,8 @@ extends RefCounted
 ##   - it lies more than deep_water_m under the surface and deeper than where he stood (wading out too deep; walking
 ##     back out of water is always allowed, so a spawn in the shallows never traps him).
 ## A safety catch: grounded more than deep_water_m under water anyway (a fall, a push), he is put back on the last
-## spot he stood on dry or shallow ground. Zones with no WaterSurface are never touched, and a hero already more
+## spot he stood on dry or shallow ground, if that is within teleport_m (a spawn or a teleport placed him: the old
+## spot is elsewhere, and is forgotten). Zones with no WaterSurface are never touched, and a hero already more
 ## than underwater_m under the surface walks the seabed (Oruvel's underway) with no shore rule at all.
 
 var cfg: Dictionary = {}
@@ -96,7 +97,11 @@ func settle(body: CharacterBody3D, grounded: bool) -> bool:
 	if under <= float(cfg.get("deep_water_m", INF)):
 		last_safe = at
 		return false
-	if is_nan(last_safe.x):
+	if under > float(cfg.get("underwater_m", INF)):
+		last_safe = Vector3(NAN, NAN, NAN)  # under a surface (a seabed walk, Lowlight's drowned Sanctum): no shore
+		return false
+	if is_nan(last_safe.x) or last_safe.distance_to(at) > float(cfg.get("teleport_m", INF)):
+		last_safe = Vector3(NAN, NAN, NAN)  # placed here (a spawn, a teleport): the old safe spot is somewhere else
 		return false
 	body.global_position = last_safe
 	body.velocity = Vector3.ZERO
