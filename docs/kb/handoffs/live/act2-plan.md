@@ -749,3 +749,16 @@ I merged integration (big28) first; the two conflicted compiled ch11 JSONs were 
   - Tools tests touching my areas pass: act3_rules, dlgc, loc_*, banned_scan, qa_flag_reach, taskboard, vowbound_flag, audio_data and others.
   - The full tools suite was stopped part-way. Its reds were `test_rig_integrity` (gate-big31's known characters red), plus `test_audio_loudness` and `test_dialogue_clarity` beds. Those two fail because the audio files in this container are LFS pointers; none of the three is in my diff.
 - MERGE-READY Act III Ch17–Ch20 (M5-A3P-1000/1003/1006/1010) + OBJ_CH13_REST fix @ df6f46e17
+
+## 2026-10-30: Act III production, Ch21 and the Ending (M5-A3P-1014)
+- 10 `ch21_*` scenes are now in `game/data/dialogue/ch21/`, and 11 `ending_*` in `game/data/dialogue/ending/`. Flag `ch21_unbound`. New speakers `imra` and `dace`, with placeholder portraits and voice rows. `loc/ch21.csv` (new, registered) holds their names and FIELD_PROMPT_ENDING_TAKE_THE_STRAIN.
+- **Every Act III draft is now in the game.** `docs/kb/story/act3/drafts/` keeps only the README (as the record) and `check_drafts.py`, which now has nothing left to check. `tools/tests/test_act3_rules.py` holds the production scripts to the rules.
+- **Requests filed:**
+  - **M5-A3P-1015 → cinematics:** the `ch21/heart` zone (HT01–HT22), the Ending's E01–E13 on the Kite, the dock and Oruvel, and the flow H01 → E7, with the credits before `ending_first_lamp`.
+  - **M5-A3P-1016 → audio:** 15 music cues (the Letting is the one sung verse 8) and 6 sounds.
+  - **M5-A3P-1017 → combat:** Kesh; Sefir's Warden, heart and Letting phases; his fight lines (hook: M5-A3P-1009).
+- **Checks:**
+  - dlgc 0/0 (407 scenes), validate_data 0/0, taskboard clean.
+  - Tools: act3_rules, dlgc, loc_csv_shape, loc_key_names, qa_flag_reach, taskboard, audio_data all OK.
+  - Godot: `act3` 1/0; `dialogue` 87/1, the one red being M4-A2P-1014's portrait.
+- **Next for this track:** Act III objective text once 1001/1004/1007/1011/1015 land flags and POIs, the word-budget growth if the Lead says so (LEAD-ASK above), and any FAST-TRACK first.
