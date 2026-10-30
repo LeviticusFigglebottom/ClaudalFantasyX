@@ -121,7 +121,8 @@ func test_the_menu_asks_first_then_flies_and_marks_here() -> void:
 	var rows := menu.rows_page().rows
 	assert_eq(str(rows[0]["right"]), tr("KITE_HERE"))
 	assert_false(bool(rows[0]["enabled"]), "here: not chosen")
-	assert_eq(StringName(str(rows[-2]["id"])), KiteMapMenu.ROW_SEARCH)
+	assert_eq(StringName(str(rows[-3]["id"])), KiteMapMenu.ROW_SEARCH)
+	assert_eq(StringName(str(rows[-2]["id"])), KiteMapMenu.ROW_LOG)
 	assert_eq(StringName(str(rows[-1]["id"])), KiteMapMenu.ROW_LEAVE)
 	assert_eq(StringName(str(menu.rows_page().current_row()["id"])), &"shoals", "the cursor skips Here")
 	assert_true(menu.desc_text().contains(tr("KITE_REGION_OSSA_FEN")), "the line names the region")
@@ -139,7 +140,7 @@ func test_the_menu_asks_first_then_flies_and_marks_here() -> void:
 
 func test_the_menu_searches_a_square_and_lists_what_it_finds() -> void:
 	var menu := KiteMapMenu.open_in(host, _model())
-	menu.rows_page().set_cursor(menu.rows_page().rows.size() - 2, false)
+	menu.rows_page().set_cursor(menu.rows_page().rows.size() - 3, false)
 	menu.accept()
 	assert_eq(menu.level, KiteMapMenu.Level.SEARCH)
 	menu.handle_input(_ev(&"ui_right"))
@@ -151,7 +152,7 @@ func test_the_menu_searches_a_square_and_lists_what_it_finds() -> void:
 	assert_eq(menu.level, KiteMapMenu.Level.LIST)
 	assert_true(menu.desc_text().contains(tr("KITE_REGION_HOLLOWMERE")), "found, by name")
 	assert_eq(StringName(str(menu.rows_page().current_row()["id"])), &"cove", "the cursor goes to it")
-	menu.rows_page().set_cursor(menu.rows_page().rows.size() - 2, false)
+	menu.rows_page().set_cursor(menu.rows_page().rows.size() - 3, false)
 	menu.accept()
 	menu.handle_input(_ev(&"ui_left"))
 	menu.handle_input(_ev(&"ui_left"))
@@ -191,6 +192,107 @@ func test_the_shipped_chart_lists_oruvel_and_refuses_ansedra_to_heretics() -> vo
 			assert_false(bool(r["enabled"]), "the row is greyed")
 			assert_eq(str(r["right"]), tr("KITE_CLOSED_HERETICS"), "and says why")
 	_close(menu)
+	_done()
+
+
+## M5-A3P-1703: the log lists a revisit once the chart lists its place (Seen, and what changed, once its scene has
+## played) and an heirloom once its requires_flag is set (where it waits, then what is carried); it points the chart
+## at the row's place, is read rather than chosen from, and Cancel returns to the list on its own row.
+func test_the_log_lists_revisits_and_heirlooms_and_points_the_chart() -> void:
+	var m := _model()
+	var table := {
+		"places":
+		[
+			{"destination": "isle", "seen_flag": "kite_test_isle_seen", "changed_key": "KITE_LOG_CHANGED_ORUVEL"},
+			{"destination": "cove", "seen_flag": "kite_test_cove_seen", "changed_key": "KITE_LOG_CHANGED_TAMSULE"},
+		],
+		"heirlooms":
+		[
+			{
+				"id": "rhen",
+				"label_key": "KITE_LOG_HEIR_RHEN",
+				"flag": "kite_test_hooks",
+				"requires_flag": "",
+				"where": "shoals",
+				"where_key": "KITE_LOG_WHERE_RHEN",
+				"found_key": "KITE_LOG_FOUND_RHEN"
+			},
+			{
+				"id": "pell",
+				"label_key": "KITE_LOG_HEIR_PELL",
+				"flag": "kite_test_spear",
+				"requires_flag": "kite_test_named",
+				"where": "isle",
+				"where_key": "KITE_LOG_WHERE_PELL",
+				"found_key": "KITE_LOG_FOUND_PELL"
+			},
+		],
+	}
+	var log := KiteLogModel.new(table, m)
+	var ids: Array = log.entries().map(func(e: Dictionary) -> StringName: return e["id"])
+	assert_eq(ids, [&"isle", &"heirloom_rhen"], "the unfound cove and the unnamed hero's errand wait")
+	assert_eq(str(log.entry(&"isle")["line"]), tr("KITE_LOG_NOT_YET"))
+	assert_eq(str(log.entry(&"isle")["right"]), "", "no mark before it is seen")
+	assert_eq(str(log.entry(&"heirloom_rhen")["line"]), tr("KITE_LOG_WHERE_RHEN"), "where it waits")
+	flags[&"kite_test_isle_seen"] = true
+	flags[&"kite_test_hooks"] = true
+	flags[&"kite_test_named"] = true
+	assert_eq(str(log.entry(&"isle")["right"]), tr("KITE_LOG_SEEN"))
+	assert_eq(str(log.entry(&"isle")["line"]), tr("KITE_LOG_CHANGED_ORUVEL"), "what changed there")
+	assert_eq(str(log.entry(&"heirloom_rhen")["right"]), tr("KITE_LOG_CARRIED"))
+	assert_eq(str(log.entry(&"heirloom_rhen")["line"]), tr("KITE_LOG_FOUND_RHEN"), "what is carried now")
+	assert_false(log.entry(&"heirloom_pell").is_empty(), "named: the errand is listed")
+	var menu := KiteMapMenu.open_in(host, m)
+	menu.ship_log = log
+	menu.rows_page().set_cursor(menu.rows_page().rows.size() - 2, false)
+	menu.accept()
+	assert_eq(menu.level, KiteMapMenu.Level.LOG)
+	assert_eq(menu.help_text(), tr("KITE_LOG_HELP"))
+	assert_eq(menu.desc_text(), tr("KITE_LOG_CHANGED_ORUVEL"))
+	assert_eq(menu.chart().cursor, &"isle", "the chart points at the place")
+	menu.handle_input(_ev(&"ui_down"))
+	assert_eq(menu.chart().cursor, &"shoals", "and at where an heirloom waits")
+	menu.accept()
+	assert_eq(menu.level, KiteMapMenu.Level.LOG, "the log is read, not chosen from")
+	assert_true(trips.is_empty(), "nothing flies from the log")
+	assert_eq(StringName(str(menu.rows_page().rows[-1]["id"])), KiteMapMenu.ROW_LOG_BACK)
+	menu.handle_input(_ev(&"ui_cancel"))
+	assert_eq(menu.level, KiteMapMenu.Level.LIST)
+	assert_eq(StringName(str(menu.rows_page().current_row()["id"])), KiteMapMenu.ROW_LOG, "back on the log's row")
+	_close(menu)
+	_done()
+
+
+## The shipped log: every flag declared, every key translated, every place on the shipped chart; all eight revisits
+## and all seven heirlooms are listed once Act III's flags are set.
+func test_the_shipped_log_is_whole() -> void:
+	var data := KiteLogModel.load_data()
+	var reg := Game.registry
+	var chart := KiteMapModel.load_data()
+	var dests: Array = (chart.get("destinations", []) as Array).map(func(d: Dictionary) -> String: return str(d["id"]))
+	var bag := {}
+	for r: Dictionary in data.get("places", []):
+		assert_true(dests.has(str(r["destination"])), "%s is on the chart" % r["destination"])
+		assert_true(reg.is_declared(StringName(str(r["seen_flag"]))), "%s is declared" % r["seen_flag"])
+		assert_ne(tr(str(r["changed_key"])), str(r["changed_key"]), "%s is translated" % r["changed_key"])
+	for r: Dictionary in data.get("heirlooms", []):
+		assert_true(dests.has(str(r["where"])), "%s is on the chart" % r["where"])
+		for f: String in [str(r["flag"]), str(r["requires_flag"])]:
+			assert_true(f == "" or reg.is_declared(StringName(f)), "%s is declared" % f)
+		for k: String in ["label_key", "where_key", "found_key"]:
+			assert_ne(tr(str(r[k])), str(r[k]), "%s is translated" % r[k])
+	for d: Dictionary in chart.get("destinations", []):
+		bag[StringName(str(d.get("requires_flag", "")))] = true
+	bag[&"ch18_pell_named"] = true
+	var m := KiteMapModel.new(
+		chart, func(f: StringName) -> Variant: return bag.get(f, false), func(_f, _v) -> void: pass
+	)
+	var log := KiteLogModel.new(data, m)
+	var kinds := {}
+	for e in log.entries():
+		kinds[e["kind"]] = int(kinds.get(e["kind"], 0)) + 1
+	assert_eq(int(kinds.get(KiteLogModel.KIND_PLACE, 0)), 8, "the eight revisits")
+	assert_eq(int(kinds.get(KiteLogModel.KIND_HEIRLOOM, 0)), 7, "the seven heirlooms")
 	_done()
 
 

@@ -5,6 +5,8 @@ extends FieldSubmenu
 ## cursor), and Fly closes the page and goes (KiteMapModel.fly). "Search the chart" names a cell
 ## (Left / Right: the column, Up / Down: the row) and Confirm searches it for a secret place, which
 ## joins the list once found. The place the party stands in is marked Here and can't be chosen.
+## M5-A3P-1703: "The ship's log" opens the log page (KiteLogModel): the revisits and the heirloom errands, read-only,
+## each pointing the chart at its place; Cancel or "Back to the chart" returns to the list.
 ## Layout: game/data/ui/kite_map.json.
 ##
 ## Input: ui_up / ui_down move, ui_accept chooses, ui_cancel backs out or leaves; while searching,
@@ -13,16 +15,20 @@ extends FieldSubmenu
 
 signal flight_chosen(destination: StringName)
 
-enum Level { LIST, CONFIRM, SEARCH }
+enum Level { LIST, CONFIRM, SEARCH, LOG }
 
 const DATA_PATH := "res://game/data/ui/kite_map.json"
 const ROW_SEARCH := &"search"
+const ROW_LOG := &"log"
+const ROW_LOG_BACK := &"log_back"
 const ROW_LEAVE := &"leave"
 const ROW_STAY := &"stay"
 const ROW_FLY := &"fly"
 
 var level := Level.LIST
 var model: KiteMapModel
+## The log page's model (built over `model` from game/data/world/kite_log.json when unset).
+var ship_log: KiteLogModel
 ## The destination being confirmed (&"" on the list).
 var picked: StringName = &""
 ## Where the Kite flew (&"" until a flight goes; the page closes then).
@@ -92,6 +98,10 @@ func handle_input(event: InputEvent) -> bool:
 ## Chooses the highlighted row: a place asks first; Fly goes; Stay steps back; Search opens the search.
 func accept() -> void:
 	var id := StringName(str(_rows.current_row().get("id", "")))
+	if level == Level.LOG:
+		if id == ROW_LOG_BACK:
+			back()
+		return  # the log is read, not chosen from
 	if level == Level.CONFIRM:
 		if id == ROW_FLY:
 			fly(picked)
@@ -105,6 +115,8 @@ func accept() -> void:
 			level = Level.SEARCH
 			_notice = ""
 			_render()
+		ROW_LOG:
+			open_log()
 		_:
 			if model.is_here(id):
 				return
@@ -118,7 +130,11 @@ func back() -> void:
 	if level == Level.LIST:
 		close()
 		return
-	var at := maxi(model.ids().find(picked), 0) if level == Level.CONFIRM else _list_rows().size() - 2
+	var at := maxi(model.ids().find(picked), 0)
+	if level == Level.SEARCH:
+		at = _list_index(ROW_SEARCH)
+	elif level == Level.LOG:
+		at = _list_index(ROW_LOG)
 	level = Level.LIST
 	picked = &""
 	_show_rows(_list_rows(), at)
@@ -145,12 +161,21 @@ func search() -> Dictionary:
 	level = Level.LIST
 	if found.is_empty():
 		_notice = tr("KITE_SEARCH_NOTHING_FMT").format({"cell": name})
-		_show_rows(_list_rows(), _list_rows().size() - 2)
+		_show_rows(_list_rows(), _list_index(ROW_SEARCH))
 	else:
 		var id := StringName(str(found["id"]))
 		_notice = tr("KITE_SEARCH_FOUND_FMT").format({"cell": name, "place": model.place_name(id)})
 		_show_rows(_list_rows(), maxi(model.ids().find(id), 0))
 	return found
+
+
+## Opens the log page: the revisits, then the heirlooms, then Back to the chart.
+func open_log() -> void:
+	if ship_log == null:
+		ship_log = KiteLogModel.new(KiteLogModel.load_data(), model)
+	level = Level.LOG
+	_notice = ""
+	_show_rows(_log_rows(), 0)
 
 
 ## The searched cell's name ("F2").
@@ -213,7 +238,24 @@ func _list_rows() -> Array[Dictionary]:
 		var right := tr("KITE_HERE") if here else refused
 		out.append({"id": id, "label": model.place_name(id), "right": right, "enabled": not here and refused == ""})
 	out.append({"id": ROW_SEARCH, "label": tr("KITE_SEARCH"), "enabled": true})
+	out.append({"id": ROW_LOG, "label": tr("KITE_LOG"), "enabled": true})
 	out.append({"id": ROW_LEAVE, "label": tr("KITE_LEAVE"), "enabled": true})
+	return out
+
+
+func _list_index(id: StringName) -> int:
+	var rows := _list_rows()
+	for i in rows.size():
+		if rows[i]["id"] == id:
+			return i
+	return 0
+
+
+func _log_rows() -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for e in ship_log.entries():
+		out.append({"id": e["id"], "label": e["label"], "right": e["right"], "enabled": true})
+	out.append({"id": ROW_LOG_BACK, "label": tr("KITE_LOG_BACK"), "enabled": true})
 	return out
 
 
@@ -240,8 +282,14 @@ func _render() -> void:
 	var id := StringName(str(_rows.current_row().get("id", "")))
 	_chart.search_cell = cell if level == Level.SEARCH else Vector2i(-1, -1)
 	_chart.cursor = picked if level == Level.CONFIRM else id
+	if level == Level.LOG:
+		_chart.cursor = StringName(str(ship_log.entry(id).get("destination", "")))
 	_chart.queue_redraw()
 	match level:
+		Level.LOG:
+			var e := ship_log.entry(id)
+			_desc.text = tr("KITE_LOG_BACK_DESC") if e.is_empty() else str(e["line"])
+			_help.text = tr("KITE_LOG_HELP")
 		Level.SEARCH:
 			_desc.text = tr("KITE_SEARCH_DESC_FMT").format({"cell": cell_name()})
 			_help.text = tr("KITE_HELP_SEARCH")
@@ -254,6 +302,8 @@ func _render() -> void:
 			match id:
 				ROW_SEARCH:
 					line = tr("KITE_SEARCH_ROW_DESC")
+				ROW_LOG:
+					line = tr("KITE_LOG_ROW_DESC")
 				ROW_LEAVE:
 					line = tr("KITE_LEAVE_DESC")
 				_:

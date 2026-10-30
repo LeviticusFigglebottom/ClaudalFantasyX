@@ -32,3 +32,40 @@ FIELD_MENU_KITE,The Kite
 FIELD_MENU_KITE_DESC,"Where the Kite can carry you, on the chart of the sea."
 KITE_PLACE_SHORT_FMT,"{place}. Square {cell}."
 KITE_CLOSED_HERETICS,Closed to heretics
+KITE_LOG,The ship's log
+KITE_LOG_ROW_DESC,"What the Kite has seen since it flew, and what still waits to be carried home."
+KITE_LOG_BACK,Back to the chart
+KITE_LOG_BACK_DESC,Close the log and return to the chart.
+KITE_LOG_HELP,Up and Down: read · Cancel: back to the chart
+KITE_LOG_SEEN,Seen
+KITE_LOG_CARRIED,Carried
+KITE_LOG_NOT_YET,Not visited since the Kite flew.
+KITE_LOG_CHANGED_HALUNA,"Asha's shell is in the wake wall now, among the others."
+KITE_LOG_CHANGED_ORUVEL,"New hulls lashed to the old keel-hull. Kell's stall still stands, empty, on the second mooring."
+KITE_LOG_CHANGED_PEMAKAR,Mooring rings for the boats along the terraces. The folding goes on.
+KITE_LOG_CHANGED_TAMSULE,The Reefball season has started again. There is a band on the moorings.
+KITE_LOG_CHANGED_CORROW,"A watch on the Fisher Stair again, at dusk."
+KITE_LOG_CHANGED_QUELLAN,A new cord tied on the pass. One bark from below.
+KITE_LOG_CHANGED_ANSEDRA,"Seen from the air only. A window in Merel's father's house, and a red thread on the sill."
+KITE_LOG_CHANGED_HOLLOWMERE,"The dock-master is working again, and teaching windmills."
+KITE_LOG_HEIR_RHEN,"Rhen, for Dace"
+KITE_LOG_HEIR_ASHA,"Asha, for Imra"
+KITE_LOG_HEIR_TOMA,"Toma, for Ivo"
+KITE_LOG_HEIR_YSOLDE,"Ysolde, for Corran"
+KITE_LOG_HEIR_LISS,"Liss, for Tobin"
+KITE_LOG_HEIR_KERRID,"Kerrid, for his watch"
+KITE_LOG_HEIR_PELL,"Pell, for Ressa"
+KITE_LOG_WHERE_RHEN,"Dace's diving hooks are still on the hull's tool rack, at Hollowmere."
+KITE_LOG_WHERE_ASHA,Imra's lantern-staff waits in the Velamir house at Haluna.
+KITE_LOG_WHERE_TOMA,"Ivo's boarding spear is in the armoury at Corrow, now the watch has opened it."
+KITE_LOG_WHERE_YSOLDE,"Corran's recipe book is in Ansedra. The Kite can't land there, but a courier can."
+KITE_LOG_WHERE_LISS,"Tobin's tide-wheel drawings are at Hollowmere, waiting to be built."
+KITE_LOG_WHERE_KERRID,"The stair-watch's anchor lies at the foot of the Fisher Stair, at Corrow."
+KITE_LOG_WHERE_PELL,Owa keeps Ressa's reed-spear at Reedhollow.
+KITE_LOG_FOUND_RHEN,"Dace's diving hooks, re-edged. Same nick in the left one."
+KITE_LOG_FOUND_ASHA,Imra's lantern-staff.
+KITE_LOG_FOUND_TOMA,Ivo's boarding spear.
+KITE_LOG_FOUND_YSOLDE,"Corran's recipe book, bound as her folding book."
+KITE_LOG_FOUND_LISS,A launcher built from Tobin's tide-wheel drawings.
+KITE_LOG_FOUND_KERRID,The stair-watch's anchor.
+KITE_LOG_FOUND_PELL,"Ressa's reed-spear, from Owa's hands."
