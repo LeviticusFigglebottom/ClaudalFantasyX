@@ -91,8 +91,8 @@ DLG_CH01_RISING_007,"Not me, you fool! The net-pen! The little ones!"
 DLG_CH01_RISING_008,Go to the net-pen.
 DLG_CH01_RISING_009,Kell first.
 DLG_CH01_TUT_001,"Walk with the left stick or {field_move_forward}, {field_move_left}, {field_move_back}, {field_move_right}. The right stick or {field_camera_left} and {field_camera_right} turn the camera."
-DLG_CH01_TUT_003,"Hold {field_lantern_shutter} to open the shutter. The more you light, the more you see, and the more that sees you."
-DLG_CH01_TUT_002,"A tether point. Press {field_interact} beside it to drop to the floor below, or to climb back up."
+DLG_CH01_TUT_003,"Hold {field_lantern_shutter} to open the shutter. Open, the lamp finds hidden things, but more creatures find you."
+DLG_CH01_TUT_002,A tether point. Press {field_interact} beside it to drop to the floor below.
 DLG_CH02_BARK_CAUSEWAY_UNSAVED_001,"Hold, Rhen. No one walks the causeway without resting at the town shrine first."
 DLG_CH02_BARK_CAUSEWAY_UNSAVED_002,"It only takes a moment. Sit at the little shrine in town, then we'll go."
 DLG_CH02_BARK_CHAPEL_001,The Lady Cantor's shell is cut. They'll set it at the wake.
