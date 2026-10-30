@@ -236,5 +236,6 @@ flags = {
 "ch10_farewell_tide_seen": "Ch10 (Act II): the party has watched the Kirru farewell-tide at Reedhollow (C3; unlocks the codex entry, ui-menus). The Ch10 dialogue sets it.",
 "codex_farewell_tide_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'farewell_tide' has been opened in the Codex (clears its New marker).",
 "codex_name_shells_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'name_shells' has been opened in the Codex (clears its New marker).",
-"codex_kirru_eldest_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'kirru_eldest' has been opened in the Codex (clears its New marker)."
+"codex_kirru_eldest_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'kirru_eldest' has been opened in the Codex (clears its New marker).",
+"tut_seven_seen": "Tutorial seen-flag (ui-menus, Act II, M4): the tip that three of the seven fight and four wait (Formation) has been shown."
 }
