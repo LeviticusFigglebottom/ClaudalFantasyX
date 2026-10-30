@@ -85,7 +85,9 @@ LAGOON_CENTRE = (0.0, -45.0)
 # kit_gold_leaf: zl.GOLD cooled ~300 K (col_bronze #C9A85A), roughness 0.25, worn only at the edges. Never warm.
 GOLD = dict(zl.GOLD, col_bronze=(0.7882, 0.6588, 0.3529), col_worn=(0.5098, 0.4118, 0.2471),
             roughness_bronze=0.25, patina_coverage=(0.0, 0.08), wear_strength=0.35)
-LACQUER_RED = zl.lacquer((0.62, 0.14, 0.11))
+# Oxblood under the chips and a satin sheen: glossy over a near-black undercoat, the shaded faces mirrored the grey sky
+# and read as flat navy at eye height (the Ch13 walk, 10-30).
+LACQUER_RED = dict(zl.lacquer((0.62, 0.14, 0.11), undercoat=(0.29, 0.07, 0.06)), roughness_bronze=0.5)
 LACQUER_BLACK = zl.lacquer((0.055, 0.05, 0.05), undercoat=(0.29, 0.07, 0.06))  # oxblood under the chips
 LOOKS = {
     "kit_gold_leaf": ("ansedra_gold_leaf_material.tres", GOLD),
