@@ -77,6 +77,13 @@ DACE_AT = (78.0, -24.0, 30.0)  # seen at the zone's edge in Ch15 (Ch17's heart)
 # Ch17's dry-dock row (M5-A3P-1500): three empty berths beside Dace's, along his hull's beam toward the dock's east end,
 # BERTH_PITCH_M apart, the first (Tobin's post, B07) nearest the dock and Dace's "the last one" (B03).
 BERTH_PITCH_M = 8.5
+# Aldous Varrow's house (fathers_door at HousePlatform1's door): the furnished deckhouse, his table lit by a hanging oil
+# lamp (Ch17 B07, B11). TABLE_AT is hollowmere.py's, in the piece's frame; LAMP_OVER_TABLE_M its flame over the deck.
+DOCKMASTER_BLOCK = "HousePlatform1"
+DOCKMASTER_PIECE = "hm_dockmaster_house"
+DM_TABLE_AT = (0.45, 2.05)
+DM_DECK_Y = 0.9
+LAMP_OVER_TABLE_M = 1.6
 BERTHS = ("hm_drydock_berth", "hm_drydock_berth", "hm_drydock_berth_first")
 FLOTILLA_AT = (25.0, -5.0)
 
@@ -156,7 +163,8 @@ def _row(piece: str, x: float, z: float, y: float = 0.0, yaw: float = 0.0, **ext
 def dressing() -> dict:
     b = blocks()
     pieces = dock_rows(b) + jetty_rows(b)
-    pieces += [_row("hm_lashed_hulls", v["pos"][0], v["pos"][2], WATER_Y, HOUSE_YAW)
+    pieces += [_row(DOCKMASTER_PIECE if k == DOCKMASTER_BLOCK else "hm_lashed_hulls", v["pos"][0], v["pos"][2], WATER_Y,
+                    HOUSE_YAW)
                for k, v in sorted(b.items()) if k.startswith("HousePlatform") and k[13:].isdigit()]
     pieces += [_row("hm_lashed_hulls", x, z, WATER_Y, yaw) for x, z, yaw in HOMES]
     pieces += [_row("hm_windmill", x, z, WATER_Y, yaw) for x, z, yaw in WINDMILLS]
@@ -180,6 +188,12 @@ def dressing() -> dict:
                for x, z, yaw in DEBRIS_AT]
     lights = [{"at": _flame(x, z, yaw), "energy": OIL_ENERGY, "range": OIL_RANGE_M, "flicker": OIL_FLICKER}
               for x, z, yaw in OIL_LAMPS]
+    hp = b[DOCKMASTER_BLOCK]["pos"]
+    yaw = math.radians(HOUSE_YAW)
+    tx = hp[0] + DM_TABLE_AT[0] * math.cos(yaw) + DM_TABLE_AT[1] * math.sin(yaw)
+    tz = hp[2] - DM_TABLE_AT[0] * math.sin(yaw) + DM_TABLE_AT[1] * math.cos(yaw)
+    lights.append({"at": [r3(tx), r3(WATER_Y + DM_DECK_Y + LAMP_OVER_TABLE_M), r3(tz)], "energy": 0.7, "range": 4.0,
+                   "flicker": OIL_FLICKER})
     lights.append({"at": [SUPPER_AT[0] + 0.15, 0.75, SUPPER_AT[1] - 0.2], "energy": 0.6, "range": 3.5,
                    "flicker": OIL_FLICKER})
     lights += [{"at": [x + 0.55, 3.0, z], "energy": 0.8, "range": 6.0, "color": SIGNAL_COLOR, "flicker": SIGNAL_FLICKER}
