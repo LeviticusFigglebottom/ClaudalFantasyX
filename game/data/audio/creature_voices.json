@@ -493,6 +493,8 @@
         "move": "cre_flat_engine_clank"
       }
     },
-    "malcor_venn": "silent"
+    "malcor_venn": "silent",
+    "abiding_first": "silent",
+    "abiding_guard": "silent"
   }
 }
