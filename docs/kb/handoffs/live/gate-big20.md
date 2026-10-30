@@ -47,3 +47,29 @@ follow-up.
 
 Checks at the build: validate_data 0/0; taskboard --check ok; dlgc 0/0; gdlint and gdformat clean; no duplicate loc
 keys, PROVENANCE rows or shot ids (653 shots); no conflict markers.
+LEAD-ANSWERED (05:51): the Combat side's single definition of the Drowner is correct; act1-chapters tunes numbers on it.
+
+### Fast gate (started 05:19 UTC; big19's capture paused for it)
+- Godot import clean (seeded from big19's .godot); **boot smoke 0 ERROR lines**.
+- **Filtered Godot tests: 233 files** (every changed test plus every test naming a changed game/ or assets/ file by
+  res:// path or class_name; diff against the integration branch); no script errors in any log. 3 red:
+  - **test_slice_primitives: FIXED.** "oruvel.tscn shows a PlaneMesh at CutsceneStage/Actors/seabed/Model/Seabed"
+    (m2-slice's e3ad5bbe). Per the Lead, slice-polish's FAST-TRACK d207cb49 (a generated sand-and-rock seabed) was
+    merged (5aca3d9b, claude/m2-slice @ cf413489): 1/0 after. Its PROVENANCE union re-added ice.tres; dropped (b76eae4c).
+  - **BATCH RED (hero-integration):** test_hero_followers::test_no_follower_is_laid_out_in_front_of_the_lens: "asha
+    still 0.31 m from the lens", "toma still 0.84 m from the lens". hero-integration's new guard (692b5515, GPU QA rows
+    37/38). Deterministic (re-run alone) and **red on claude/hero-integration @ 20266878 alone**.
+  - **BATCH RED (Act II):** test_hero_field_snaps::test_no_hero_body_snaps_in_any_zone: "lowlight.tscn: rhen never
+    snaps (241 snaps)" is **red on claude/act1-chapters @ 85e513cb alone** (Ch11's marks and cameras, M4-A2P-011).
+    "sanctum.tscn: asha (1), toma (3)" appears only in the merge: env-art-b's Sanctum dressing (M4-A2P-043, green
+    alone) meets act1-chapters' Ch13 marks (M4-A2P-013). Route to act1-chapters, with env-art-b for the Sanctum.
+- **Tools suite: 199 units, 2012 tests, 22 failing units.** Classified so far against the track heads:
+  - known or routed: test_palette_check and test_villagers (red on the integration branch itself), test_screenshots
+    (baselines pending).
+  - **characters, red alone:** test_rig_integrity for 13 villagers (garments through the skin, e.g. Elder "penetration
+    garment_in_body Costume, count 4 > 3"), test_sefir.
+  - Still classifying: test_act1_audio_audit, test_battle_vfx_coverage, test_cutscene_sfx_files, test_keth and
+    test_hero_clips (the remaining track heads are running).
+
+GATE-FAST-DONE big20 @ b76eae4c (06:25 UTC). **Not green:** two batch reds (hero-integration's lens guard; the Act II snaps in
+Lowlight and the Sanctum). Everything else is fixed, known or routed. Lead's call: merge with them FAST-TRACKed, or hold.
