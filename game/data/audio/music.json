@@ -54,6 +54,7 @@
     },
     "hush_coda": {
       "file": "res://assets/audio/music/hush_coda.ogg",
+      "beat": "free",
       "resume": true,
       "_note": "the slice end card (B12), piano alone. Also Ch9's act-break vigil (act1_ch09.md B10: 'hush_first_verse (piano coda, as the slice's end card)'), whose fade into the act card the end card's zone row then resumes from where it stopped, so the coda is one piece across the act break, never heard twice from the top (the Lead's 10-30 19:25 item)"
     },
