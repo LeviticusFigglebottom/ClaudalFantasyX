@@ -944,6 +944,47 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
 - Row 39: on the real GPU, walk Ch9's road from RoadGate to the milestone (Asha and Toma follow) and look at the
   gate's camera with Rhen in it; check Ch4's fights show Toma.
 
+### The Lead's 14:48 list (10-30)
+- **Arenas:** ch11_vey_rays and ch11_vey_urchins now fight in env-art's `sunken_vey_gallery`, and ch16_rim_skates and
+  ch16_rim_crawlers in env-art-b's `pale_rim_shallows`. Both arenas came in with this merge.
+  - `ACT2_NO_ARENA_YET` is now empty, so every Act II encounter names its arena. encounters_resolve is 2/0.
+- **test_causeway_route's fight count:** confirmed it matches the new spacing.
+  - The walk from the Harrier to the islet steps is 206 m. Each fight owes the 15 m grace (the Harrier's too) plus a
+    95–145 m gap, so a straight run meets exactly one random fight.
+  - The test now counts the grace and the floor and expects 1–2. It was 2–3 under the old 67.6–95.1 m gaps. It is
+    renamed `test_the_route_after_the_harrier_meets_one_or_two_fights` and is 5/0.
+- **Ch14–16 mounts:** unchanged since 13:48. The Court, Open Sea, Hollowmere and Pale Rim are mounted in their zone
+  scenes by env-art-b. The Drowned Choir still has no `_dressing.json` (M4-A2P-046 is `doing`), so there's nothing
+  to mount yet.
+- **Ch10–13 as-played walks (headless):** all green after merging integration and re-importing:
+  - The chapter threads and walkable routes: ch10 (3/0), ch11 (3/0), ch12 (4/0), ch13 (4/0).
+  - hero_field_snaps (2/0), qa_field_camera (2/0), zone_map (22/0).
+- **POI stills (15, my cap; all viewed; not baselines):** the picks span all 12 Ch10–13 zones:
+  - ossa_fen: fen_edge, clearing. reedhollow: clutch.
+  - sunken_vey: landing, to_lowlight. lowlight: gate, engine_hall, sanctum.
+  - keth_pass: pass_foot, saddle. quellan: well. cloudloom: dais.
+  - ansedra: moorings. sanctum: gate. lamp_archive: ledgers.
+  - **Good:** the Vey landing and to_lowlight, Lowlight's engine hall and sanctum, the Keth Pass foot, the Quellan
+    well, the Ansedra moorings. The Sanctum gate is dark by design (lit only by the bound light).
+  - **Four bad framings, all from my layouts' `camera_volumes`:**
+    1. lamp_archive `ledgers`: the camera at (0, 2.6, 1.5) looks at (-0.5, 0.8, -8) from inside the door wall; the
+       frame is nearly flat grey.
+    2. cloudloom `dais`: the camera at (4, 11, -15) looks at (0, 6.5, -34); a pillar fills the frame, and the dais is
+       at z -54, 39 m away.
+    3. lowlight `gate`: the camera at (-0.5, 6, 7.5) looks down at (-0.5, 1.2, 0); the frame is mostly the gate wall.
+    4. ossa_fen `clearing`: the camera at (101, 6, -8) is in the mangrove canopy over the Drowner's clearing.
+  - Also, the formation tutorial toast ("Seven Together") shows in two Ch10 stills. That's from the capture rig, not
+    the field.
+  - qa_field_camera only checks Act I spawns, which is why these got through.
+  - **LEAD-ASK:** a second 15-shot budget to move the four cameras in ch10/11/12/13_greybox.py and verify them by
+    render; or put the 24 POIs I didn't render on the full manifest.
+- MERGE-READY @ 7f54af722
+- **BACKLOG EMPTY (10-30, after the 14:48 list) except the LEAD-ASK above.** Waiting on others:
+  - env-art-b: the Drowned Choir's dressing.
+  - M3-BPR-445 and M3-UI-1242.
+  - The PC re-check of rows 34 and 39.
+  - The 7 inherited tool reds, with the owners named at 13:48.
+
 ## Exact next step
 **BACKLOG EMPTY (2026-10-30 ~02:00):** the flow and pacing pass is done (`docs/kb/qa/act1_flow_pacing_pass.md`) and the
 Act II chapter drafts are written (`docs/kb/plan/act2/chapters/`, pre-gate). Waiting on:
