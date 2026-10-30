@@ -391,8 +391,9 @@ func state_snapshot() -> Dictionary:
 ## (field_camera.json "occlusion"): at once to margin_m short of the wall, then eased back out at release_mps once the
 ## view is clear.
 ## Never nearer him than min_distance_m. The pose keeps its rotation (sliding along its line to him keeps him framed).
-## When the clear stretch is shorter than min_view_m (the camera would end up in his face), it cranes up instead
-## (crane()), when some height clears.
+## When the clear stretch is shorter than min_view_m (the camera would end up in his face), it cranes up or round
+## instead (crane()); when nothing clears, it pulls in as before while min_distance_m is clear, and keeps the shot's own
+## pose when not even that is (his chest boxed in) rather than push into his face.
 func clear_view(pose: CameraPose, delta: float) -> CameraPose:
 	var cfg := data.get("occlusion", {}) as Dictionary
 	if target == null or not bool(cfg.get("enabled", false)) or not target.is_inside_tree():
@@ -412,6 +413,11 @@ func clear_view(pose: CameraPose, delta: float) -> CameraPose:
 			if craned != null:
 				_pull_m = 0.0
 				return craned
+			if free < float(cfg.get("min_distance_m", 0.0)):
+				# not even min_distance_m is clear (his chest is boxed in: Coilspire's Tier4 spawn stands inside the
+				# spiral's steps): the shot's own pose, not a camera pushed into his face
+				_pull_m = 0.0
+				return pose
 		want = clampf(length - maxf(free, float(cfg.get("min_distance_m", 0.0))), 0.0, length)
 	if want >= _pull_m:
 		_pull_m = want
@@ -426,8 +432,9 @@ func clear_view(pose: CameraPose, delta: float) -> CameraPose:
 
 ## `pose` raised straight up by crane_step_m at a time, up to crane_max_m, to the first height where no wall stands
 ## between it and the leader's `chest` and the camera itself isn't inside a solid (crane_clear_m), looking down at
-## him; null when no height clears (the PC's GPU QA row 38: Coilspire's Tier4, where pulling in past the spiral's
-## steps put the camera inside Rhen's head).
+## him; when none does (a ceiling right over him), a ring of spots round him (crane_ring_m out, crane_ring_up_m over his
+## chest, crane_ring_turns of them, from the shot's side first); null when nothing clears (the PC's GPU QA row 38:
+## Coilspire's Tier4, where the spiral's next turn over his head put the camera inside it).
 func crane(pose: CameraPose, chest: Vector3, cfg: Dictionary) -> CameraPose:
 	var step := float(cfg.get("crane_step_m", 0.0))
 	var top := float(cfg.get("crane_max_m", 0.0))
@@ -442,6 +449,20 @@ func crane(pose: CameraPose, chest: Vector3, cfg: Dictionary) -> CameraPose:
 		if view_blocker(chest, at).is_empty() and not _inside_solid(space, probe, at):
 			return CameraPose.looking(at, chest, pose.fov_deg, pose.dof)
 		h += step
+	# a ceiling right over him (a spiral's next turn): no height clears, so look in from the side instead, around
+	# him from the shot's own side first, at crane_ring_m out and crane_ring_up_m over his chest
+	var away := Vector3(pose.origin.x - chest.x, 0.0, pose.origin.z - chest.z)
+	var start := atan2(away.x, away.z) if away.length_squared() > 1e-6 else 0.0
+	var turns := maxi(int(cfg.get("crane_ring_turns", 0)), 1)
+	for dist: Variant in cfg.get("crane_ring_m", []):
+		for k in turns:
+			# 0, +1, -1, +2, -2 ... steps round from the shot's side
+			var n := (k + 1) / 2 * (1 if k % 2 == 1 else -1)
+			var angle := start + TAU * n / turns
+			var at := chest + Vector3(sin(angle), 0.0, cos(angle)) * float(dist)
+			at.y += float(cfg.get("crane_ring_up_m", 0.0))
+			if view_blocker(chest, at).is_empty() and not _inside_solid(space, probe, at):
+				return CameraPose.looking(at, chest, pose.fov_deg, pose.dof)
 	return null
 
 

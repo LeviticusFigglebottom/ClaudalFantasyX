@@ -31,7 +31,7 @@
     "height_m": 4.0
   },
   "occlusion": {
-    "doc": "The PC's real-GPU Act I QA (row 38, Coilspire): a wall the player sees standing between a volume shot's camera and the leader's chest (chest_m over his feet) pulls the camera in along that line to margin_m short of it, at once; with the view clear it eases back out at release_mps. Never nearer the leader than min_distance_m. When the clear stretch is shorter than min_view_m (the camera would sit in his face; row 38, Coilspire's Tier4), it cranes up instead: straight up by crane_step_m, up to crane_max_m, to the first clear height whose crane_clear_m sphere touches no solid, looking down at him. A wall is a drawn mesh, tested by its triangles (collision misses walls and has walls nobody sees): every MeshInstance3D at least min_size_m across with no transparent surface, the leader's own body aside; hidden meshes don't count. Scripted (cutscene) shots are composed and left alone.",
+    "doc": "The PC's real-GPU Act I QA (row 38, Coilspire): a wall the player sees standing between a volume shot's camera and the leader's chest (chest_m over his feet) pulls the camera in along that line to margin_m short of it, at once; with the view clear it eases back out at release_mps. Never nearer the leader than min_distance_m. When the clear stretch is shorter than min_view_m (the camera would sit in his face; row 38, Coilspire's Tier4), it cranes up instead: straight up by crane_step_m, up to crane_max_m, to the first clear height whose crane_clear_m sphere touches no solid, looking down at him; under a ceiling (no height clears) it looks in from the side: a ring of crane_ring_turns spots crane_ring_m out and crane_ring_up_m over his chest, from the shot's side first. A wall is a drawn mesh, tested by its triangles (collision misses walls and has walls nobody sees): every MeshInstance3D at least min_size_m across with no transparent surface, the leader's own body aside; hidden meshes don't count. Scripted (cutscene) shots are composed and left alone.",
     "enabled": true,
     "chest_m": 1.3,
     "margin_m": 0.3,
@@ -40,6 +40,9 @@
     "crane_step_m": 0.5,
     "crane_max_m": 6.0,
     "crane_clear_m": 0.25,
+    "crane_ring_m": [2.5, 1.9],
+    "crane_ring_up_m": 0.6,
+    "crane_ring_turns": 12,
     "release_mps": 4.0,
     "min_size_m": 3.0
   }
