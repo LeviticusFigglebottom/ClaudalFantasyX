@@ -1243,6 +1243,19 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     so B11 frame runs need a wall-clock budget of over an hour.
 - **MERGE-READY @ e9551cf83:** M4-A2P-1600's renumbering, the B11 timing finding (for integration-qa), the cutscene_frames
   fix.
+- **big29 red test_zone_map_pois, fixed, MERGE-READY @ 4d5c9ed0b:**
+  - The Underway map's `stair_lip` POI follows A2's widened low_lights trigger (z −28).
+  - tools test OK; zone_map 22, 0 failed.
+  - **My miss:** I didn't run the tools suite after moving a trigger in A2. I now run it for any layout change.
+  - Full tools suite on this head: the remaining reds are other tracks':
+    - characters: rig_integrity (10 rigs), hero_clips (Asha's and Sefir's clip lists), villagers;
+    - audio: audio_loudness;
+    - env-art: palette_check, the Haluna H07 chapel face;
+    - the Lead: test_screenshots, wildlife_zone_ossa_fen_walk0 with no baseline.
+- **Ch11 staging (the Lead's next item):** already on integration since big27 (de52fb88, at_mark 61fc9729).
+  - Every Ch11 music cue id resolves (sunken_vey, lamp_engine, lowlight, nhoa_bound; audio's renders fill the files).
+  - The five stills postdate the zones' last change.
+  - The people still wait on M4-CIN-1305: the Ch11 layouts have no party actors, Nhoa included.
 ### PC-QUEUE
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan
