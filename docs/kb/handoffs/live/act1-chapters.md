@@ -712,6 +712,16 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - Next: the rest of my queue waits on other lanes (see the BACKLOG line).
 - MERGE-READY @ fc316eda4
 
+- **BACKLOG EMPTY (10-30):** every remaining item waits on another lane.
+  - Row 49 waits on M3-CIN-1251 (integration-qa; still todo on big20).
+  - Rows 34 and 39 wait on the PC's re-check, plus the row 39 LEAD-ASK above.
+  - The Act II beats and triggers wait on story's scenes reaching integration (they're on act2-plan).
+  - M4-A2P-019 waits on the Lattice and gear (030/031, blocked).
+  - Venn's and the flat-engine's data wait on characters and story.
+  - The VFX, voices and staging requests are with battle-presentation, audio and UI (M3-BPR-440–443, M3-UI-1240/1241,
+    M4-AUD-1010).
+  - Handoff: docs/kb/handoffs/2026-10-30-cinematics-act1-chapters-1.md.
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
