@@ -9,8 +9,8 @@ owner: characters (Venn); creatures-b (flat-engine)
 # Warden Malcor Venn and the flat-engine, Ch14 boss: design sheet (draft: pre-gate)
 
 **Model and rig: the characters track's** (a person; M4-A2P-051). This sheet still writes his design for the fight.
-The **flat-engine** on his barge is creatures-b's: built ([flat_engine.md](../../../art/creatures/act2/flat_engine.md):
-mesh, rig, `whole`/`broken` meshes, 5 clips). **Nothing else exists:** no enemy row, music (`malcor_venn`, 2 stems, is
+The **flat-engine** on his barge is creatures-b's: built at final quality ([flat_engine.md](../../../art/creatures/act2/flat_engine.md) "As built", M4-CRB-009:
+mesh, rig, anchors, `whole`/`broken` meshes, 14 clips, the `broken` phase). **Nothing else exists:** no enemy row, music (`malcor_venn`, 2 stems, is
 a gap), encounter or clips.
 
 **Who, in the fight:** one of the five Wardens of the Conclave. He fights on the night of the wedding trap, on
@@ -53,7 +53,8 @@ guard), a `coat_*` cloth chain of 3 at the hem, and unweighted `vfx_wound` (none
 the chest), `vfx_core` (the sternum), `vfx_phase` (the rod's head). **Grounding:** feet planted by IK on a deck that
 rocks (the barge's rock is staging): the feet follow the deck, never slide. **The crossing:** a `board` root offset
 (about 4 m along −z) for the phase clip, so he steps off his rail onto a gangplank the grapnel line drew in.
-**Engine:** drum, chimney, eight paddle hinges, plus `vfx_core` (the window) and `vfx_phase` (the drum's seam).
+**Engine (built, M4-CRB-009):** drum, two halves, chimney, eight paddle hinges, plus unweighted `vfx_core` (the
+window), `vfx_phase` (the drum's seam toward the party) and `vfx_wound` (the near hinge mark, `paddle3`).
 
 ## 4. Move list
 
@@ -62,14 +63,14 @@ rocks (the barge's rock is staging): the feet follow the deck, never slide. **Th
 | intro | `intro` *(proposed)* | — (2.6 s) | he plants the rod on his deck; the engine's paddles press down together | — | `boss`, on the `the_engine` hint |
 | idle | `idle`, `idle_b` | — (4.0 s / 1.6 s) | he stands still, rod upright; `idle_b` he shifts the rod a hand's width | — | — |
 | ready | `ready` *(proposed)* | — (1.4 s) | the rod comes down to level | — | — |
-| `flat_pulse` *(proposed; the engine's)* | engine `cast` (built, "the stilling") | 0.0–0.7 s: every paddle lifts a little → 0.8 s (1.6 s) | all paddles press down; the window holds bright | the party: Slow (`field_rules`); a timeline `entries` row (role `tide`) shows the pulse coming | the water pressed flat round the bridal barge (the still-mirror look) |
+| `flat_pulse` *(proposed; the engine's)* | engine `cast` (built and retimed, M4-CRB-009) | 0.0–0.7 s: every paddle lifts to 16° → 0.8 s (1.6 s) | all paddles press down; the window holds bright | the party: Slow (`field_rules`); a timeline `entries` row (role `tide`) shows the pulse coming | the water pressed flat round the bridal barge (the still-mirror look) |
 | `venn_sentence` *(proposed)* | `sentence` *(proposed)* | 0.0–0.6 s: he raises the rod head high → 0.75 s (1.6 s) | he lowers it level at one hero | one foe: magical damage, `magic_break` | a cold line across the water, no glimmer |
 | `grapnel_line` *(proposed)* | `grapnel` *(proposed)* | 0.0–0.55 s: he draws back, the line coiled → 0.7 s (1.4 s) | a thrown grapnel bites the bridal barge's rail | one foe: damage and delay; pulls the barges closer (the board's set-up) | the line stays taut across the gap until phase 2 |
 | *(phase 2)* `rod_sweep` *(proposed)* | `rod_sweep` *(proposed)* | 0.0–0.6 s: the rod swings back over the shoulder → 0.75 s (1.5 s) | a wide level sweep | the front two foes | `boss_sweep` |
 | *(phase 2)* `still_hand` *(proposed)* | `still_hand` *(proposed)* | 0.0–0.6 s: he steps in, left palm raised → 0.7 s (1.4 s) | the palm pressed down on a hero's shoulder | one foe: a long delay (the Order's gesture) | `target` shot |
 | *(phase 2)* `level_guard` *(proposed)* | `level_guard` *(proposed)* | — (1.2 s) | the rod held level across his chest | self: `protect`, counters the next melee | — |
 | hit | `hit`, `hit_b` *(proposed)* | peak 0.1 s | an old man's flinch; a step back; he recovers his footing | — | a hit spark, never motes |
-| break the engine | engine `ko` (built: the break) | — | the seam splits, the window goes dark, the paddles fall slack | Liss's skill only (M4-A2P-023) | the first ripple ring (M4-A2P-047) |
+| break the engine | engine `break` (built, M4-CRB-009: the `broken` phase's clip; crack at 0.6 s), then `idle_broken` | — | the seam splits, the window goes dark, the paddles fall slack | Liss's skill only (M4-A2P-023) | the first ripple ring (M4-A2P-047) |
 | phase `boarded` *(proposed)* | `board` *(proposed)* (2.4 s) | — | he walks the gangplank and steps onto the bridal barge, unhurried | — | the gangplank is staging; the city's windows light behind him |
 | end | `left_standing` *(proposed)* | — (3.0 s) | at the yield he steps back across, the line is cut, and he stands on his crippled barge as they part | — | `yield_at_hp_pct` (the Inquisitor's precedent): no KO, no fall |
 
@@ -112,3 +113,19 @@ rocks (the barge's rock is staging): the feet follow the deck, never slide. **Th
 2. Echo check: a church elder fought on the wedding night is close to the inspiring game's shape. Plan §2a moves it: the
    fight is on open water during the escape, nothing is revealed, he is not killed, and there is no aftermath trial.
    This draft keeps all four. The Lead reviews the staging (risk R4).
+
+## The flat-engine as built (M4-CRB-009)
+
+The engine's clips, contacts and anchors are in its art sheet's "As built". For combat:
+- **Clip map** (paste into creatures.json once `flat_pulse` exists in skills.json): `"clip_by_skill": {"flat_pulse":
+  "cast"}`, contact 0.8 s. The wind-up is 0.0–0.7 s.
+- **The break:** Liss's lent skill (M4-A2P-023) calls the engine actor's `enter_phase(&"broken")`. `break` plays (the
+  window goes dark on its first frame, the seam cracks at 0.6 s: the first ripple's cue at `vfx_phase`), and the engine
+  idles on `idle_broken`. Its hits and KO map to the broken versions. It has no action once broken.
+- **Optional `break_parts`** (once the skill id exists): `{"<liss_break_skill>": {"whole": ["Engine"], "broken":
+  ["EngineBroken"]}}`. Never use it without the phase: the broken stance is a pose the phase plays.
+- **`ko`** is the stop (the wave dies and the paddles sag). It is not the break, because a KO fades the actor out and the
+  broken engine stays on the crippled barge for `left_standing`.
+- **Stand-in yaw 20°:** the window faces the camera and the fan opens toward the party. Placement on the pursuit barge
+  (`BossAnchor`) is battle-presentation's.
+

@@ -6969,6 +6969,15 @@
       ]
     },
     {
+      "id": "creature_kesh",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/creatures/shots/creature_kesh.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
       "id": "creature_ilun_held",
       "scene": "res://game/levels/_tests/creatures/shots/creature_ilun_held.tscn",
       "resolution": [
@@ -8529,17 +8538,6 @@
       "scene": "res://game/levels/_tests/document_reader/document_reader_one.tscn"
     },
     {
-      "id": "slice_end_card_voice",
-      "pending_baseline": true,
-      "scene": "res://game/flow/end_card.tscn",
-      "resolution": [
-        1920,
-        1080
-      ],
-      "settle_frames": 180,
-      "threshold_rmse": 0.004
-    },
-    {
       "id": "ch15_hollowmere_arrival",
       "scene": "res://game/levels/_tests/hollowmere_kit/ch15_hollowmere_shots.tscn",
       "camera": "Cameras/Arrival",
@@ -8747,6 +8745,22 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "battle_boss_intro_drowner",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_drowner.tscn"
+    },
+    {
+      "id": "battle_boss_intro_lamp_engine",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_lamp_engine.tscn"
+    },
+    {
+      "id": "battle_boss_intro_ram",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_ram.tscn"
+    },
+    {
+      "id": "battle_boss_intro_wakefin",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_wakefin.tscn"
     }
   ]
 }

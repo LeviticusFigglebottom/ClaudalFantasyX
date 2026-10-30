@@ -1,0 +1,18 @@
+{
+ "format": 1,
+ "scene": "ch11_bark_pell_conduits",
+ "source": "game/data/dialogue/ch11/ch11_bark_pell_conduits.dlg",
+ "start": "ch11_bark_pell_conduits",
+ "nodes": {
+  "ch11_bark_pell_conduits": {
+   "headers": {"location": "ch11/sunken_vey"},
+   "ops": [
+    {"op": "if_not", "cond": ["flag", "ch11_nhoa_bound"], "to": 3, "src": 5},
+    {"op": "line", "id": "ch11_bark_pcond_001", "key": "DLG_CH11_BARK_PCOND_001", "speaker": "pell", "emotion": "sad", "voice": "", "src": 6},
+    {"op": "goto", "to": 5, "src": 5},
+    {"op": "line", "id": "ch11_bark_pcond_002", "key": "DLG_CH11_BARK_PCOND_002", "speaker": "pell", "emotion": "worried", "voice": "", "src": 8},
+    {"op": "goto", "to": 5, "src": 7}
+   ]
+  }
+ }
+}

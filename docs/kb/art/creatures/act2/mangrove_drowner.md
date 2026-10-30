@@ -183,3 +183,24 @@ where a jolt turns its tip down (the build's `--report`). The bestiary portrait 
 
 **Budget:** 17,676 triangles (body 14,457; `Stump` 819; each snag cradle 816 whole, 384 broken), under the 18k. 58
 bones (the 53 built, the three anchors and the two snag bones).
+
+## Own VFX (M4-A2P-058)
+
+The creature's own effects live in its battle scene (`AmbientVfx`, CreatureAmbientVfx), driven by
+`game/data/creatures/creature_vfx.json`; skill VFX stay battle-presentation's (effects.json).
+
+- **The snagged motes' drift.** Around each cradle (`snag_root_a`, `snag_root_b`), seven tiny `glimmer_held` motes
+  drift in the cradle's own space, a few millimetres a second in every direction, never rising and never sinking:
+  held, not falling. A soft `glimmer_held` halo sits on each cradle so the beads read through the fen's fog. Both show
+  only while the cradle's mesh (`SnagA`, `SnagB`) does.
+- **The lift.** When a cradle's mesh is hidden (the break part, once combat keys `break_parts`), or 0.5 s / 0.8 s into
+  the KO for a cradle still holding, its six motes come loose **upward**: 0.2-0.4 m/s, blending `glimmer_held` to
+  `glimmer_lift` in Oklab (colour script rule 1's one sanctioned blend) and whitening to `glimmer_lift_hi`. On the KO
+  the lift also swaps the cradle to its broken mesh, so the beads are gone as the motes rise.
+- **The drag.** While a drag root hauls (`attack`/`attack_risen` 0.45-1.25 s, `snag`/`snag_risen` 0.55-1.3 s) and as it
+  wrenches free (`phase_change` 0.2-1.6 s), churned water and silt (`foam_white` to `sand_wet` to `timber_weathered`)
+  puffs off its foot and water drips from it; a wider churn spreads round the trunk's foot on the water at the
+  `phase_change` (0.5 s), the `root_stamp_risen` (0.8 s) and the `intro`'s heave (0.9 s).
+- **Viewed** (lavapipe, scratch fixtures in `ossa_fen_roots` at the boss seat; battle camera and close): the motes and
+  halos read as the soft thing on it; the KO lift rises as a few pale sparks; the drag reads close up as a faint
+  haze at the root tips. On the sand bank where the preview seats it the churn is quiet; in water it would read more.

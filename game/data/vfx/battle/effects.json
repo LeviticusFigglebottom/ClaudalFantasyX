@@ -23,6 +23,15 @@
     "flash_alpha_scale": 0.33,
     "flash_min_ramp_s": 0.3
   },
+  "dark_arenas": {
+    "doc": "M4-A2P-062 (Ch15, the Wakefin in the dark, act2_plan.md): in these arenas every effect layer's energy is multiplied by energy_scale, except a layer with one of keep_swatches: the sea-glow is the fight's only light, and a hit's white core was a flash in the night (viewed on the boss camera sheet, 10-30).",
+    "bridal_barge_night": {
+      "energy_scale": 0.35,
+      "keep_swatches": [
+        "sea_glow"
+      ]
+    }
+  },
   "effects": {
     "hit_none": {
       "kind": "particles",
@@ -7690,10 +7699,10 @@
       "layers": [
         {
           "color": "#7E6A55",
-          "color_end": "#1E4A3A",
+          "color_end": "#A8573A",
           "swatches": [
             "timber_weathered",
-            "foliage_shadow"
+            "laterite"
           ],
           "amount": 66,
           "lifetime_s": 0.6,
@@ -7723,10 +7732,10 @@
         },
         {
           "color": "#B59D74",
-          "color_end": "#0E4A55",
+          "color_end": "#1E4A3A",
           "swatches": [
             "sand_wet",
-            "deep_teal_shadow"
+            "foliage_shadow"
           ],
           "amount": 30,
           "lifetime_s": 0.9,
@@ -8162,8 +8171,41 @@
     "sound_dive": {
       "kind": "particles",
       "anchor": "target",
-      "at": "ground",
+      "at": "head",
       "layers": [
+        {
+          "color": "#1C6B78",
+          "color_end": "#1FA3A6",
+          "swatches": [
+            "sea_glow",
+            "lagoon_teal"
+          ],
+          "amount": 70,
+          "lifetime_s": 2.4,
+          "explosiveness": 0.15,
+          "velocity_m_s": [
+            0.3,
+            0.7
+          ],
+          "spread_deg": 20,
+          "gravity": [
+            0,
+            0.2,
+            0
+          ],
+          "size_m": [
+            0.3,
+            0.55
+          ],
+          "energy": 2.2,
+          "emission_radius_m": 1.0,
+          "turbulence": 0.25,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
         {
           "color": "#1C6B78",
           "color_end": "#061A2B",
@@ -8171,26 +8213,26 @@
             "sea_glow",
             "abyss_navy"
           ],
-          "amount": 48,
-          "lifetime_s": 0.9,
-          "explosiveness": 0.85,
+          "amount": 30,
+          "lifetime_s": 2.8,
+          "explosiveness": 0.1,
           "velocity_m_s": [
-            0.05,
-            0.15
+            0.15,
+            0.35
           ],
-          "spread_deg": 5,
+          "spread_deg": 30,
           "gravity": [
             0,
-            0.5,
+            0.1,
             0
           ],
           "size_m": [
-            0.16,
-            0.3
+            0.5,
+            0.8
           ],
-          "energy": 1.4,
-          "emission_radius_m": 1.6,
-          "turbulence": 0.0,
+          "energy": 1.6,
+          "emission_radius_m": 0.6,
+          "turbulence": 0.2,
           "direction": [
             0,
             1,
@@ -8198,7 +8240,7 @@
           ]
         }
       ],
-      "note": "The Wakefin sounds: the water darkens, then a ring of sea-glow marks where it will rise (a glow, not a light)."
+      "note": "The Wakefin sounds: it goes under and sea-glow rises off the water where its fin was, marking where it will come up (a glow, not a light)."
     },
     "wake_breach": {
       "kind": "particles",

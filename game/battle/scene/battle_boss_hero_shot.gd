@@ -41,7 +41,7 @@ static var _tri_cache: Dictionary = {}
 ## The hero pose {pos, look, fov} for `intro`'s boss, whose bounds (camera parent space) are `bounds`, standing on
 ## `slot`. {} when no candidate holds (the intro then falls back to the fitted shot).
 static func search(intro: BattleBossIntro, bounds: AABB, slot: Vector3) -> Dictionary:
-	var hc := intro.cfg.get("hero", {}) as Dictionary
+	var hc := hero_cfg(intro)
 	var director := intro._choreo.camera
 	if hc.is_empty() or director == null or bounds.size == Vector3.ZERO:
 		return {}
@@ -71,6 +71,12 @@ static func search(intro: BattleBossIntro, bounds: AABB, slot: Vector3) -> Dicti
 	return without_party
 
 
+## boss_intro.hero, with the intro's hero_override on top (a camera moment's own lenses: the fall's look down).
+static func hero_cfg(intro: BattleBossIntro) -> Dictionary:
+	var hc := intro.cfg.get("hero", {}) as Dictionary
+	return hc if intro.hero_override.is_empty() else hc.merged(intro.hero_override, true)
+
+
 ## `yaw` degrees, signed to turn from the boss-to-party direction toward the viewer's side.
 static func _toward_viewer(director: BattleCameraDirector, yaw: float) -> float:
 	var to_party := -director.axis()
@@ -81,7 +87,7 @@ static func _toward_viewer(director: BattleCameraDirector, yaw: float) -> float:
 
 static func _holds(intro: BattleBossIntro, pose: Dictionary, bounds: AABB, occluders: Array[Dictionary]) -> bool:
 	var director := intro._choreo.camera
-	var hc := intro.cfg.get("hero", {}) as Dictionary
+	var hc := hero_cfg(intro)
 	var pos: Vector3 = pose["pos"]
 	var xform := Transform3D(Basis.looking_at((pose["look"] as Vector3) - pos, Vector3.UP), pos)
 	var safe := director.data.get("safe_frame", {}) as Dictionary
@@ -172,8 +178,7 @@ static func _party_small(intro: BattleBossIntro, pose: Dictionary) -> bool:
 	var aspect := director._aspect()
 	var safe := director.data.get("safe_frame", {}) as Dictionary
 	var fit_max := float((intro.cfg.get("fit", {}) as Dictionary).get("party_max_h", 1.0))
-	var hero_cfg := intro.cfg.get("hero", {}) as Dictionary
-	var max_h := float(hero_cfg.get("party_max_h", fit_max))
+	var max_h := float(hero_cfg(intro).get("party_max_h", fit_max))
 	for c in intro._engine.party_active:
 		var f := intro._ctl.stage.stand_in(c.id)
 		if f == null or not f.is_visible_in_tree():

@@ -7,4 +7,15 @@ ENEMY_RIM_CRAWLER,Rim Crawler
 LORE_RIM_CRAWLER,"Tide crawlers bleached chalky by days of white water. Out here there is no wall for them to climb, so they come straight on."
 SKILL_SKATE_STING,Skate Sting
 ENC_CH16_RIM,The Pale Rim
+VOWBOUND_KESH,Kesh
+SKILL_VOICE_WATER,Voice of Water
+SKILL_VOICE_LIGHTNING,Voice of Lightning
+SKILL_VOICE_FIRE,Voice of Fire
+SKILL_VOICE_ICE,Voice of Ice
+SKILL_VOICE_HOLY,Voice of Holy
+SKILL_VOICE_GLIMMER,Voice of Glimmer
+SKILL_THE_SEVEN,The Seven
+HUD_FAIL_OUT_OF_CYCLE,Not this turn's voice: she holds another element now.
 CHAR_KESH,Kesh
+ENEMY_ABIDING_GUARD,The Abiding Guard
+LORE_ABIDING_GUARD,"Three tall hooded figures carrying Lamplighters' hooks, the lamp cages empty. They stand on the Choir's dais as if they have always stood there. They fight in silence, and they never look up."

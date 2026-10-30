@@ -589,6 +589,24 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **VERIFIED on lead/gate-big20 (4e3c74c9), with self-rendered stills on lavapipe: the Lead's Act I rows.**
+  - **Closed (env-art's part):**
+    - **Row 25:** `brightwater_landing_f01`'s lower half reads (the islet's moon fill, 2e2233c3). f06 is fine.
+    - **Row 47, Landing:** the pier and landing at night read in walk frames from the Landing spawn: textured
+      stone, boulders, Rhen, the lit ferry.
+    - **Chapel ΔE:** `palette_check --shots haluna_h07_chapel_court` gives 4 ok (ΔE 0.018).
+    - **O17:** the storm slate is intended (M3-ENV-104).
+    - **Row 43:** `field_hud_over_haluna_wake` captures (no hang).
+    - **Row 23, bell-room haze:** gone. The room reads teal, and Rhen faces the camera.
+    - **Row 59, the asset:** walk frames from O10's own position and lens show the carved hero gull on its post.
+  - **Not env-art's, still open:**
+    - Row 47 FerryAft, and row 24 DockShore: the field camera (hero-integration).
+    - Row 23's listener: act1-chapters' shot.
+  - **LEAD-ASK, route to cinematics/act1-chapters:** on big20 the `ch01_o10_gull` capture doesn't frame O10. It shows
+    a shell-covered surface from above, with no gull, where big19's pass-4 still framed the gull from O10. The O10
+    camera row and the dressing round the gull are unchanged since big19 (no piece stands between O10 and the gull).
+    So the cutscene's camera in that shot is the suspect: M3-CIN-1232/1235/1236 (ea3247ed, e3ad5bbe) touched Ch1's
+    shots and the dive since.
 - **MERGE-READY @ cd7fbf94: M4-A2P-042, Ch12 (Keth Pass, Quellan, Cloudloom) dressed.** The change is additive: no
   played scene changes until chapters mount it (M4-A2P-0421, filed). The details are in keth_pass.md's revision line.
   - **Built from the greybox** (§6's modules don't fit it), in `keth_zones.py`:
