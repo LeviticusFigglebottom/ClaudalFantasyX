@@ -24,7 +24,7 @@ sys.path.insert(0, str(ROOT / "tools" / "tests"))
 import validate_wildlife as vw  # noqa: E402
 from test_post_import import read_glb  # noqa: E402
 
-ANIMALS = ("gull", "shore_crab", "shoal_fish", "insect", "kingfisher")
+ANIMALS = ("gull", "shore_crab", "shoal_fish", "insect", "kingfisher", "rim_ray")
 # Per mesh: small enough to draw dozens through MultiMesh (docs/kb/art/wildlife.md, Budgets).
 MAX_TRIANGLES = 1500
 # An insect is a few pixels on screen (M3-CRE-616): about 300 triangles at most.
@@ -180,8 +180,8 @@ class InsectValidatorTest(unittest.TestCase):
         z = copy.deepcopy(self.zone)
         z["swarms"][2]["count"] = self.budgets["insects"]
         self.assertTrue(any("swarms" in e and "over the budget" in e for e in self.zone_errs(z)))
-        self.assertEqual(self.budgets["draw_calls"], 9,
-                         "nine MultiMeshes: gulls x2, kingfishers x2, crabs, fish, moths, dragonflies, fireflies")
+        self.assertEqual(self.budgets["draw_calls"], 10,
+                         "ten MultiMeshes: gulls x2, kingfishers x2, crabs, fish, rays, moths, dragonflies, fireflies")
 
     def test_kingfisher_rows_are_flocks_with_their_own_budget(self) -> None:
         z = copy.deepcopy(self.zone)

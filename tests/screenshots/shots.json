@@ -4230,6 +4230,22 @@
       }
     },
     {
+      "id": "wildlife_zone_pale_rim_wade",
+      "scene": "res://game/levels/_tests/wildlife/zone_wildlife_pale_rim.tscn",
+      "camera": "Cameras/Wade",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
       "id": "wildlife_zone_underway_crown",
       "scene": "res://game/levels/_tests/wildlife/zone_wildlife_oruvel_underway.tscn",
       "camera": "Cameras/Crown",

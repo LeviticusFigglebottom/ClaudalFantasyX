@@ -2,7 +2,7 @@
   "_about": "M3-CRE-611 post-import rules for the ambient wildlife (game/core/import/wildlife_post_import.gd, AssetImportRules): assets/wildlife/<id>/*.glb, unskinned meshes drawn through MultiMesh by WildlifeLayer (docs/kb/art/wildlife.md). Each glTF material slot maps to <asset dir>/materials/<slot>.tres (assets_src/wildlife/common/write_materials.py). No generated LODs (a MultiMesh picks one LOD for its whole flock, and the meshes are already a few hundred to a thousand triangles), no authored chains and no collision (wildlife never blocks the player).",
   "kind": "wildlife",
   "script": "res://game/core/import/wildlife_post_import.gd",
-  "assets": ["res://assets/wildlife/gull/", "res://assets/wildlife/insect/", "res://assets/wildlife/kingfisher/", "res://assets/wildlife/shoal_fish/", "res://assets/wildlife/shore_crab/"],
+  "assets": ["res://assets/wildlife/gull/", "res://assets/wildlife/insect/", "res://assets/wildlife/kingfisher/", "res://assets/wildlife/rim_ray/", "res://assets/wildlife/shoal_fish/", "res://assets/wildlife/shore_crab/"],
   "adoption_pending": {},
   "generate_lods": false,
   "materials": {

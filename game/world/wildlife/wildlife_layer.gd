@@ -7,10 +7,11 @@ extends Node3D
 ## WildlifeLayer node (at the zone's origin) with `zone_id` set to its location id; the placement is
 ## game/data/world/wildlife/<zone id with / as _>.json, the kinds and budgets wildlife.json.
 ##
-## Cheap by construction: at most nine MultiMeshes for the whole layer (gulls and kingfishers flying and perched,
-## crabs, fish, moths, dragonflies, fireflies; the motion is the wildlife shader's, driven per instance from here),
-## no Skeleton3D, no AnimationPlayer, no physics bodies (wildlife never blocks the player). A group (a flock, a
-## beach, a shoal, a swarm) pauses while its bounds are off screen and hides past the cull distance.
+## Cheap by construction: at most ten MultiMeshes for the whole layer (gulls and kingfishers flying and perched,
+## crabs, fish, rays, moths, dragonflies, fireflies; the motion is the wildlife shader's, driven per instance from
+## here), no Skeleton3D, no AnimationPlayer, no physics bodies (wildlife never blocks the player); the one exception
+## is Ch12's woolback herds, a few skinned actors (WildlifeHerd). A group (a flock, a beach, a shoal, a swarm, a
+## herd) pauses while its bounds are off screen and hides past the cull distance.
 ## Deterministic: every animal's choices come from a seed made from the zone id, and the motion from the frame
 ## deltas only.
 
@@ -20,6 +21,7 @@ const KINGFISHERS_FLYING := &"kingfisher_flying"
 const KINGFISHERS_PERCHED := &"kingfisher_perched"
 const CRABS := &"crab"
 const FISH := &"fish"
+const RAYS := &"ray"
 const MOTHS := &"moth"
 const DRAGONFLIES := &"dragonfly"
 const FIREFLIES := &"firefly"
@@ -54,6 +56,8 @@ var flocks: Array[WildlifeGullFlock] = []
 var kingfishers: Array[WildlifeGullFlock] = []
 var beaches: Array[WildlifeCrabBeach] = []
 var shoals: Array[WildlifeShoal] = []
+## Rim rays (Ch16, M4-A2P-056): shoals of the `ray` kind, flapping.
+var rays: Array[WildlifeShoal] = []
 var swarms: Array[WildlifeSwarm] = []
 ## Woolback herds (Ch12, M4-A2P-056): skinned actors, one node per animal (herd_actors[h][i]) and its player.
 var herds: Array[WildlifeHerd] = []
@@ -124,6 +128,11 @@ func build() -> void:
 		var n := _take(row, left, "fish")
 		left -= n
 		shoals.append(WildlifeShoal.new(row, k["fish"], _group_seed("fish", row), n, ground))
+	left = int(budgets.get("rays", 0))
+	for row: Dictionary in zone.get("rays", []):
+		var n := _take(row, left, "rays")
+		left -= n
+		rays.append(WildlifeShoal.new(row, k["ray"], _group_seed("ray", row), n, ground, WildlifeBuffer.MODE_FLAP))
 	left = int(budgets.get("insects", 0))
 	for row: Dictionary in zone.get("swarms", []):
 		var n := _take(row, left, "insects")
@@ -137,6 +146,7 @@ func build() -> void:
 	buffers[KINGFISHERS_PERCHED] = WildlifeBuffer.new(kfs)
 	buffers[CRABS] = WildlifeBuffer.new(crab_count())
 	buffers[FISH] = WildlifeBuffer.new(fish_count())
+	buffers[RAYS] = WildlifeBuffer.new(ray_count())
 	buffers[MOTHS] = WildlifeBuffer.new(insect_count(WildlifeSwarm.TYPE_MOTH))
 	buffers[DRAGONFLIES] = WildlifeBuffer.new(insect_count(WildlifeSwarm.TYPE_DRAGONFLY))
 	buffers[FIREFLIES] = WildlifeBuffer.new(insect_count(WildlifeSwarm.TYPE_FIREFLY))
@@ -147,6 +157,8 @@ func build() -> void:
 		_make_multimesh(KINGFISHERS_PERCHED, k["kingfisher"], "perched", _union(kingfishers))
 	_make_multimesh(CRABS, k["crab"], "body", _union(beaches))
 	_make_multimesh(FISH, k["fish"], "body", _union(shoals))
+	if k.has("ray"):
+		_make_multimesh(RAYS, k["ray"], "body", _union(rays))
 	if k.has("insect"):
 		_make_multimesh(MOTHS, k["insect"], "moth", _union(swarms_of(WildlifeSwarm.TYPE_MOTH)))
 		_make_multimesh(DRAGONFLIES, k["insect"], "dragonfly", _union(swarms_of(WildlifeSwarm.TYPE_DRAGONFLY)))
@@ -230,6 +242,13 @@ func fish_count() -> int:
 	return n
 
 
+func ray_count() -> int:
+	var n := 0
+	for s in rays:
+		n += s.count()
+	return n
+
+
 ## Insects of one type (WildlifeSwarm.TYPE_MOTH, TYPE_DRAGONFLY or TYPE_FIREFLY), or of all with "".
 func insect_count(swarm_type: String = "") -> int:
 	var n := 0
@@ -291,6 +310,17 @@ func step(delta: float, player: Vector3, has_player: bool, camera: Camera3D = nu
 		if _changed(g, vis):
 			_write_or_hide(vis, fish, base, s.count(), s.write)
 			dirty[FISH] = true
+		base += s.count()
+		g += 1
+	base = 0
+	var ray_buf: WildlifeBuffer = buffers.get(RAYS)
+	for s in rays:
+		var vis := _visibility(s.bounds, camera)
+		if vis == VIS_ACTIVE:
+			s.step(delta, player, has_player)
+		if _changed(g, vis):
+			_write_or_hide(vis, ray_buf, base, s.count(), s.write)
+			dirty[RAYS] = true
 		base += s.count()
 		g += 1
 	for s in swarms:

@@ -227,7 +227,7 @@ func test_the_layer_reads_each_zone_file_within_budget() -> void:
 		var zone_id := StringName(str(data["zone"]))
 		assert_eq(WildlifeConfig.zone_path(zone_id), ZONE_DIR + f, "%s is named after its zone id" % f)
 		var layer := _layer("", zone_id)
-		var want := {"flocks": 0, "kingfishers": 0, "beaches": 0, "shoals": 0, "swarms": 0}
+		var want := {"flocks": 0, "kingfishers": 0, "beaches": 0, "shoals": 0, "rays": 0, "swarms": 0, "herds": 0}
 		for key: String in want:
 			for row: Dictionary in data.get(key, []):
 				want[key] += int(row["count"])
@@ -236,6 +236,8 @@ func test_the_layer_reads_each_zone_file_within_budget() -> void:
 		assert_true(layer.kingfisher_count() <= int(budgets["kingfishers"]), "%s kingfisher budget" % f)
 		assert_eq(layer.crab_count(), want["beaches"], "%s crabs" % f)
 		assert_eq(layer.fish_count(), want["shoals"], "%s fish" % f)
+		assert_eq(layer.ray_count(), want["rays"], "%s rays" % f)
+		assert_eq(layer.woolback_count(), want["herds"], "%s woolbacks" % f)
 		assert_eq(layer.insect_count(), want["swarms"], "%s insects" % f)
 		assert_true(layer.insect_count() <= int(budgets["insects"]), "%s insect budget" % f)
 		assert_true(layer.gull_count() <= int(budgets["gulls"]), "%s gull budget" % f)
@@ -584,4 +586,25 @@ func test_keth_pass_woolbacks_are_skinned_actors_playing_their_clips() -> void:
 			assert_true(ap.is_playing(), "%s plays a clip" % actor.name)
 			assert_eq(str(ap.current_animation), str(layer.herds[h].animals[i].clip), "the one its herd names")
 			assert_true(actor.position.is_equal_approx(layer.herds[h].transform_of(layer.herds[h].animals[i]).origin))
+	layer.free()
+
+
+func test_rim_rays_glide_flat_over_the_sand_and_beat_their_fins() -> void:
+	var layer := _layer("", &"ch16/pale_rim")
+	assert_eq(layer.ray_count(), 16, "three loose groups")
+	var mmi := layer.multimeshes[WildlifeLayer.RAYS] as MultiMeshInstance3D
+	assert_true((mmi.material_override as ShaderMaterial).resource_path.ends_with("/rim_ray/materials/skin.tres"))
+	assert_eq(mmi.cast_shadow, GeometryInstance3D.SHADOW_CASTING_SETTING_ON, "their shadows carry them")
+	var start: Array[Vector3] = []
+	for r in layer.rays[0].fish:
+		start.append(r.pos)
+	for f in 60 * 30:
+		layer.step(DT, Vector3(0.0, 0.0, 60.0), true)
+		for s in layer.rays:
+			for r in s.fish:
+				assert_true(absf(r.pos.y - 0.04) < EPS, "flat in a hand of water (%.3f)" % r.pos.y)
+	assert_true(layer.rays[0].fish[0].pos.distance_to(start[0]) > 0.2, "always moving")
+	var buf := layer.buffers[WildlifeLayer.RAYS] as WildlifeBuffer
+	assert_eq(buf.data[14], WildlifeBuffer.MODE_FLAP, "the fins beat (the shader's flap)")
+	assert_eq((layer.buffers[WildlifeLayer.FISH] as WildlifeBuffer).count, 0, "and no fish here")
 	layer.free()

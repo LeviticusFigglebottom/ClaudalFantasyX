@@ -45,6 +45,8 @@ KIND_KEYS["kingfisher"] = KIND_KEYS["gull"]
 KIND_KEYS["woolback"] = {"scale", "walk_speed_mps", "turn_rate", "graze_s", "look_chance", "look_s", "look_radius_m",
                          "look_rate", "wander_m", "spacing_m", "arrive_m", "height_m", "bounds_pad_m"}
 SKINNED_KINDS = {"woolback"}
+# the rim ray (Ch16, M4-A2P-056) is the fish shoal with its own tuning, mesh and rows
+KIND_KEYS["ray"] = KIND_KEYS["fish"]
 # The insect kind's tables (WildlifeSwarm): every key, and the ones drawn once per insect from a [lo, hi] range
 # (the rest are read as plain numbers).
 INSECT_KEYS = {
@@ -64,9 +66,9 @@ INSECT_RANGES = {
 INSECT_RANGES["firefly"] = INSECT_RANGES["moth"] | {"blink_s"}
 SWARM_TYPES = set(INSECT_KEYS)
 KIND_MESHES = {"gull": {"flying", "perched"}, "crab": {"body"}, "fish": {"body"}, "insect": {"moth", "dragonfly", "firefly"},
-               "kingfisher": {"flying", "perched"}}
+               "kingfisher": {"flying", "perched"}, "ray": {"body"}}
 KIND_COMMON = {"scene", "meshes", "material", "cast_shadow"}
-BUDGET_KEYS = {"gulls", "kingfishers", "woolbacks", "crabs", "fish", "insects", "draw_calls", "ms_per_frame"}
+BUDGET_KEYS = {"gulls", "kingfishers", "woolbacks", "crabs", "fish", "rays", "insects", "draw_calls", "ms_per_frame"}
 # zone row tables -> (budget key, required keys, optional keys)
 ROWS = {
     "flocks": ("gulls", {"id", "center", "radius_m", "altitude_m", "count", "perches"}, {"perched_at_start"}),
@@ -74,9 +76,10 @@ ROWS = {
     "beaches": ("crabs", {"id", "center", "half_extents", "count"}, {"yaw_deg", "y"}),
     "shoals": ("fish", {"id", "center", "radius_m", "count"}, {"scale", "spread_m"}),
     "swarms": ("insects", {"id", "type", "center", "radius_m", "count"}, {"perches"}),
+    "rays": ("rays", {"id", "center", "radius_m", "count"}, {"scale", "spread_m"}),
     "herds": ("woolbacks", {"id", "center", "radius_m", "count"}, {"y"}),
 }
-ZONE_KEYS = {"zone", "ground", "flocks", "kingfishers", "beaches", "shoals", "swarms", "herds"}
+ZONE_KEYS = {"zone", "ground", "flocks", "kingfishers", "beaches", "shoals", "rays", "swarms", "herds"}
 
 
 def _num(v: object) -> bool:

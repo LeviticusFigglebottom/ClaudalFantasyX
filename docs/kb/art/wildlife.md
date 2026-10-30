@@ -268,3 +268,15 @@ The first skinned wildlife. A herd is two or three animals close to the path, so
   MultiMeshes, so they don't count toward `draw_calls`.
 - **Placed:** ch12_keth_pass.json (the pass foot and the saddle). Review shots `wildlife_zone_keth_pass_foot` and
   `wildlife_zone_keth_pass_saddle`.
+
+## Act II: rim rays (Ch16 the Pale Rim, M4-A2P-056, 2026-10-30)
+`assets/wildlife/rim_ray/rim_ray.glb` (assets_src/wildlife/rim_ray/build_rim_ray.py): a small pale ray, 0.4 m
+across, sand-pale and freckled, a faint darker margin. Its fins carry the flap mask (span 0 at the body's edge, 1 at
+the tip).
+- **Motion:** WildlifeShoal, unchanged except that it takes the shader mode: the `ray` kind's shoals draw with the
+  flap (mode 1), the stroke lagging out to the tips, instead of the fish's swim. They are slow, loose and flat,
+  with no vertical spread or wobble, so they stay in a hand of water, and a wader startles them into a glide off.
+- **Zone rows:** `rays` (the shoal schema), budget `rays` 16, one MultiMesh (`draw_calls` 10 is now the most a layer
+  can have). They cast shadows.
+- **Placed:** ch16_pale_rim.json, three groups off the wade. Review shot `wildlife_zone_pale_rim_wade`, whose stage
+  hides the greybox's opaque water plane (`hide_nodes`).
