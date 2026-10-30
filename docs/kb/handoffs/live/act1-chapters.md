@@ -1168,6 +1168,21 @@ All four are moved in the generators (ch10/11/12/13_greybox.py) and regenerated;
   - ui-menus: M3-UI-1242.
   - The PC re-check of rows 34 and 39.
 
+### The Lead's 19:45 and 20:05 messages (10-30)
+- **19:45 status:** everything it listed was already pushed at 3e62a3256 (MERGE-READY in the 18:24 entry): the Pale Rim
+  exit, the three encounters, all 19 M4-A2P-114 setters, and the Ch14 court.
+  - The **ch01_zones red** isn't real. act2-plan's own log corrects it (a stale import cache after the merge), and it
+    passes 6/0 here.
+  - Ch14–16 mounts: the Choir's dressing still isn't anywhere.
+- **cloud-qa 1 (touch boxes):** GreyboxZone extends every trigger box `trigger_sink_m` (0.1 m, greybox_defaults.json)
+  below its `at` height, so a hero who settles at y -0.0004 still stands in it. New test:
+  `test_a_touch_box_reaches_below_its_floor`.
+- **cloud-qa 2 (o_kell):** a `kell_talk` interact trigger on Kell herself (29, 0, -7) plays the same `kell_stall` beat,
+  under the same flags. Its prompt is "Talk to Kell" (FIELD_PROMPT_CH01_KELL, appended). test_ch01_thread checks it.
+- **Checks:** zone_story (19/0), ch01 (20/0), ch04 (13/0), ch08 (25/0), ch09 (13/0), validate_data, flow check.
+  `layout`'s only red is the inherited test_aspect_layouts (ui's).
+- MERGE-READY @ 2f9f87dd9
+
 ## Exact next step
 **BACKLOG EMPTY (2026-10-30 ~02:00):** the flow and pacing pass is done (`docs/kb/qa/act1_flow_pacing_pass.md`) and the
 Act II chapter drafts are written (`docs/kb/plan/act2/chapters/`, pre-gate). Waiting on:
