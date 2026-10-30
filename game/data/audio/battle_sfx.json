@@ -145,6 +145,7 @@
     "hand_closes": "skill_hand_closes"
   },
   "skills": {
+    "unravel": "skill_unravel",
     "toll": "drownbell_toll",
     "rouse_polyp": "skill_rouse_polyp",
     "gnaw_coil": "skill_gnaw_coil",

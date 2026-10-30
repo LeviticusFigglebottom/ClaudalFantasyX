@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "doc": "Act II's battle sounds new in Act II (M4-A2P-093): skills that would otherwise be silent. Files from assets_src/sfx/act2_skill_sfx.py (plain git, ADR 0175). Same row format as sfx_battle.json.",
+  "sfx": {
+    "skill_unravel": {
+      "files": [
+        "res://assets/audio/act2/sfx/battle/skill_unravel.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M4-A2P-093: the cord moth's unravel, a weave pulled apart and a ward's ring dying"
+    }
+  }
+}
