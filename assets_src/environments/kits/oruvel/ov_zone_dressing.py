@@ -26,6 +26,8 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[3]
 sys.path.insert(0, str(HERE))
 
+sys.path.insert(0, str(HERE.parent.parent))
+import zone_edges  # noqa: E402
 import ov_cabins as ocab  # noqa: E402
 import ov_common as oc  # noqa: E402
 import ov_heroes as oh  # noqa: E402
@@ -272,7 +274,14 @@ def layout() -> dict:
         "fire_lights": storm_lights(),
         "greybox": {"hide_all": True, "keep": []},  # StormWall: the zone stands the UndertowStorm there (M3-ENV-751)
         "pieces": pieces(),
+        # Invisible walls along the walkways over the water (the human's playtest, 10-30).
+        "edge_walls": edge_walls(),
     }
+
+
+def edge_walls() -> list[dict]:
+    lay = json.loads(GREYBOX.read_text(encoding="utf-8"))
+    return zone_edges.walls(lay, zone_edges.hideable_ids(lay))
 
 
 def write_preview(storm: bool = False) -> None:
