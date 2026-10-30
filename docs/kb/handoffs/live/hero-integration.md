@@ -1926,3 +1926,58 @@ MERGE-READY @ (this commit).
   pass.
 - **Next:** big24 (with characters' jog, b344b974, and my 99989c2bc), then the run speed from the jog's measured
   travel and Haluna's cold entry.
+
+### Lead FAST-TRACK 10-30 15:49: big24's red test_qa_field_camera (lowlight.tscn:Sanctum), fixed
+- **Reproduced on big24 (efe7fb10, merged here):** with the committed FieldShore, `lowlight.tscn:Sanctum (shot Hall):
+  the leader is out of frame`. It passes with the fix.
+- **Cause:** a safety-catch bug in my guard. Lowlight's hall water plane (x 32–72, y −2.05) does cover the Sanctum
+  spawn (60, −8, 4), 6 m under it, the drowned sanctum. The refusals skip anyone more than underwater_m under (a
+  seabed walk), but the catch in `settle()` didn't. It put Rhen back on his last safe spot, the previous spawn's
+  (Gate or EngineHall), across the zone, so the camera at Sanctum lost him.
+- **Fix:**
+  - `settle()` does nothing more than underwater_m under a surface (the same rule as the refusals);
+  - a last safe spot more than `teleport_m` (2.0, field_movement.json "shore") away is forgotten, because a spawn or
+    a teleport put him here and the old spot is elsewhere.
+  - New `tests/unit/test_field_shore.gd`: the catch near the safe spot, a teleport forgets it, and no catch under a
+    surface.
+- **Checks:** test_qa_field_camera 2/0 (red before the fix), field_shore 3/0, qa_dock_edges 1/0 (23 zones).
+MERGE-READY @ (this commit).
+- **Run speed from characters' jog (the Lead, 10-30):** after big24, the heroes' run clip is characters' jog (a 2.6 m
+  stride at 164 steps a minute, `locomotion.json` run.speed_mps 3.545).
+  - **The field run stays 3.6 m/s,** 1.6% over the clip, so the body plays the jog at 1.02x and the feet plant.
+  - **3.55 was tried:** test_qa_walk_audit's Coilspire spiral then put Toma in the steps for 50 frames, a follower
+    path that sensitive to a 1.5% speed change, so the walk-audit routes are for another day.
+  - The data's doc says this, and **test_field_motor `test_the_field_run_is_the_jog_clips_speed`** pins the run
+    within 2% of the clip and inside 2.3–3.6.
+  - max_playback_scale stays 1.8 until Kerrid, Ysolde and Liss get the jog too (Kerrid's old run still needs 2.0x).
+  - Checks: field_motor 10/0, hero_field_actor 15/0 (the clip speeds match the measured foot plant), qa_walk_audit
+    1/0, validate_data 0/0.
+MERGE-READY @ (this commit).
+- **Next:** Haluna's cold entry and the battle return, re-measured on big24.
+- **Re-measured on big24 (+ this branch), headless, real time** (`scene_swap_probe`):
+  - **Haluna battle return, resident:** entry 461 ms, worst hidden frame 89 ms. **The same return reloading
+    (`--no-resident`):** 4,997 ms, with a 2,997 ms hidden frame. The playtest's black is gone at Haluna too.
+  - **Causeway battle return, resident:** 399 ms, worst hidden frame 33 ms.
+  - **Haluna cold entry from boot, with ResidentLoads on (`--to=haluna --resident-loads`):** entry 15,478 ms,
+    instantiate 899 ms, worst hidden frame 1,885 ms. Over ADR 0029's 3 s entry and 1 s hidden-frame budgets.
+    - This is the first entry from the title, while the hero bodies and the zone load cold. It isn't the
+      after-battle case, but it's the next loading item.
+    - **LEAD-ASK:** whose is it, the loading or resident-loads owner or mine (SceneRouter)? A first look would be
+      what the 15 s waits on: the resident-load swap hold versus the zone's own load.
+
+### Haluna's cold entry, profiled (the Lead 10-30 16:26: mine, ui-menus for ResidentLoads)
+- `scene_swap_probe --to=haluna`, headless (lavapipe, so judged by the split):
+
+  | Run | entry | swap held | instantiate | worst hidden frame |
+  |---|---|---|---|---|
+  | `--resident-loads`, cold with no warm (probe-only start; the 15–24 s figure) | 24.2 s | 560 frames | 0.9 s | 853 ms |
+  | `--resident-loads --warm-resident` (**the game's New Game**: the title warms the bodies) | **5.3 s** | 477 frames | 0.9 s | **699 ms** |
+  | ResidentLoads off | 6.6 s | 13 frames | 0.9 s | 3,467 ms |
+
+- **The hidden-frame target (≤ 1 s behind the New Game card) is met on the game's path:** 699 ms, even on lavapipe.
+  ResidentLoads moved the bodies' 3.5 s off the hidden frame as intended.
+- **The 15–24 s was the unwarmed probe,** a start the game never makes.
+- **What's left is the 5.3 s total,** almost all the swap held on Haluna's own `scene_loads` list: 424 resources,
+  57 MB, 4 in flight, requested only when the change starts. SceneRouter waits on nothing else.
+- **Filed M3-HER-1167 (ui-menus):** start the New Game zone's loads with `ResidentLoads.load_scene()` while the
+  title shows, as `warm()` does for the bodies, so the hold finds them in.
