@@ -1,0 +1,73 @@
+{
+ "version": 1,
+ "doc": "Row 64 probe (pc-gpu): the fight starts whose first visible frame passes 50 ms, plus a control fight (scuttlers). Generated from act1_walk.json.",
+ "segments": [
+  {
+   "id": "launch",
+   "kind": "launch",
+   "arg": "res://game/core/boot.tscn"
+  },
+  {
+   "id": "title",
+   "kind": "scene",
+   "arg": "res://game/core/boot.tscn"
+  },
+  {
+   "id": "oruvel_b_ch01_scuttlers",
+   "kind": "battle",
+   "arg": "ch01_scuttlers",
+   "dwell": 16,
+   "return": "ch01/oruvel",
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch02_b_ch02_tideline",
+   "kind": "battle",
+   "arg": "ch02_tideline",
+   "spawn": "BattleReturn",
+   "dwell": 16,
+   "return": "ch02/haluna",
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch03_b_ch03_causeway_shore",
+   "kind": "battle",
+   "arg": "ch03_causeway_shore",
+   "dwell": 16,
+   "return": "ch03/saltgrass_causeway",
+   "press": "ui_accept"
+  },
+  {
+   "id": "shell_shrine_b_drownbell",
+   "kind": "battle",
+   "arg": "drownbell",
+   "dwell": 16,
+   "return": "ch03/shell_shrine",
+   "press": "ui_accept"
+  },
+  {
+   "id": "brightwater_ferry_b_ch04_bottle_hermit",
+   "kind": "battle",
+   "arg": "ch04_bottle_hermit",
+   "dwell": 16,
+   "return": "ch04/brightwater_ferry",
+   "press": "ui_accept"
+  },
+  {
+   "id": "ashcrown_b_ch05_cinder_matron",
+   "kind": "battle",
+   "arg": "ch05_cinder_matron",
+   "dwell": 16,
+   "return": "ch05/ashcrown",
+   "press": "ui_accept"
+  },
+  {
+   "id": "ch06_b_ch06_inquisitor",
+   "kind": "battle",
+   "arg": "ch06_inquisitor",
+   "dwell": 16,
+   "return": "ch06/brine_shoals",
+   "press": "ui_accept"
+  }
+ ]
+}

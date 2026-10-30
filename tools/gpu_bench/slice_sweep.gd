@@ -103,6 +103,8 @@ const CSV_FIELDS := [
 var _opts: Dictionary = {}
 var _rid: RID
 var _pipe_prev := PackedInt64Array()
+var _pipe_nodes := 0
+var _pipe_objects := 0
 var _segment_id := ""
 ## Per hidden frame of the current segment: drawn behind the boot card's first-run cue (ADR 0037). _frames_until
 ## fills _last_cued for its frames; the segment keeps the hidden window's.
@@ -456,11 +458,39 @@ func _trace_pipelines(window: String, i: int, ms: float) -> void:
 	for k in now.size():
 		d.append(now[k] - (_pipe_prev[k] if _pipe_prev.size() == now.size() else 0))
 	_pipe_prev = now
+	# Where the rest of a slow frame went (row 64): main-thread process time, the render thread's CPU time, and new
+	# nodes and objects (a frame with no pipeline compile is CPU work: UI built, scenes instanced, glyphs drawn).
+	var nodes := int(Performance.get_monitor(Performance.OBJECT_NODE_COUNT))
+	var objects := int(Performance.get_monitor(Performance.OBJECT_COUNT))
+	var new_nodes := nodes - _pipe_nodes
+	var new_objects := objects - _pipe_objects
+	_pipe_nodes = nodes
+	_pipe_objects = objects
 	if ms > PIPELINE_TRACE_MS or d[3] > 0:
+		var rid := get_viewport().get_viewport_rid()
 		print(
 			(
-				"SLICE_PIPE %s %s f=%d ms=%.1f canvas=%d mesh=%d surface=%d draw=%d spec=%d"
-				% [_segment_id, window, i, ms, d[0], d[1], d[2], d[3], d[4]]
+				(
+					"SLICE_PIPE %s %s f=%d ms=%.1f canvas=%d mesh=%d surface=%d draw=%d spec=%d process=%.1f physics=%.1f"
+					+ " render_cpu=%.1f render_gpu=%.1f new_nodes=%d new_objects=%d"
+				)
+				% [
+					_segment_id,
+					window,
+					i,
+					ms,
+					d[0],
+					d[1],
+					d[2],
+					d[3],
+					d[4],
+					Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0,
+					Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0,
+					RenderingServer.viewport_get_measured_render_time_cpu(rid),
+					RenderingServer.viewport_get_measured_render_time_gpu(rid),
+					new_nodes,
+					new_objects,
+				]
 			)
 		)
 

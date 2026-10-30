@@ -25,6 +25,13 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
   - The covered entries lengthen to 8.1–8.5 s fresh (big20 6.0–6.4).
   - **New row 68:** 1 of 3 hitch walks segfaulted on the Ch6 entry, after duplicate-load errors for reed_b/reed_d.glb
     ("Another resource is loaded from path"). It points at 329e7bce's four loads in flight. Owner ui-menus.
+- **Row 64 (the Lead's ask, big21): cause found.** The over-50 ms frame after the fade at boss fights is BattleBossIntro's
+  `_frame_boss()` → `BattleBossHeroShot.search`, running on the first visible frame:
+  - the Drownbell 339 ms, the Hermit 98, the Matron 79, Moll 54;
+  - no pipeline compile; render CPU under 1 ms.
+  - Fix for battle-presentation: search under the fade, or over several frames.
+  - slice_sweep's `--pipeline-trace` now prints process, render_cpu, render_gpu and new_nodes too.
+  - `tools/gpu_bench/act1_walk_fights.json` replays just the fights.
 - The worktree is C:/Users/Aaron/hymn_qa4 (branch gpu/act1-qa-5). The C:/Users/Aaron/hymn_ui worktree (329e7bce) was
   never needed; I'll remove it.
 
