@@ -208,7 +208,7 @@ Each chapter lists zones and kit needs; cast and NPCs; enemies, bosses and Vowbo
   - C7: the pyre-raft;
   - C8: the side scene, Rhen and Liss's father share a supper and two memories of Dace.
 - **Music:** `unlamped` (exists); `wakefin` (exists); `kerrid_at_sea` (gap, ~2.5 min); `hollowmere_answers` (gap, ~60 s); a Hollowmere zone loop (gap: act3_plan.md may hold it, §3); the pyre-raft (no new cue: Narrative picks a reprise).
-- **New systems:** a **darkness-lit battle** (battle-presentation: the arena's light is the sea-glow, telegraph VFX as glow and sound); Kerrid's codex page updated ("unsent"/"held" wording in our own terms); no random fights on the barge.
+- **New systems:** a **darkness-lit battle** (battle-presentation: the arena's light is the sea-glow, telegraph VFX as glow and sound); Kerrid's codex page updated (in the bible's own words: "unrisen", "held"; `tools/banned_terms.txt` bans the inspiring game's term for the lingering dead); no random fights on the barge.
 - **Balance:** the Wakefin on the Act II boss curve. Darkness must never hide information the timeline should show.
 
 ### Ch16 "The Edge of the World"
@@ -241,6 +241,18 @@ Each chapter lists zones and kit needs; cast and NPCs; enemies, bosses and Vowbo
 - **Music:** `pale_rim`, `drowned_choir` (exist); `kesh_bound` (gap); `sefir_go_home` (gap, ~2 min, ORDER_HUM); `abiding_guard` (gap, 2 stems); `act2_break` (gap, ~90 s).
 - **New systems:** the **element-cycling** boss and Vowbound telegraph (Kesh: "telegraph each shift on the timeline"); Sefir's guard as people-enemies (the characters pipeline making battle actors for humans: Act I's Stillguard boss is the precedent).
 - **Balance:** the Abiding guard on the Act II boss curve, with the storm's waking on the set-piece curve.
+
+## 2a. Guardrails specific to Act II
+
+Act II is where the inspiring game's shape is closest (a wedding that is a trap, the party declared outlaws, a companion revealed as dead). The story track already moved every beat off its echo (ADR 0015, 0016, 0020, 0022; decisions_log N-09, N-15, N-18). These rules hold for every Act II task:
+- **The escape goes out across the water, never under the city.** There is no prison, no trial scene and no sewer or underground route at Ansedra.
+- **Nothing is revealed about any Warden at the wedding.** No revenant reveal and no rite at the wedding; Malcor Venn fights as a living-seeming man.
+- **Nothing frozen in any temple or set piece from Ch12 to Ch15.** No ice, frost, glacier or frozen basin; Ice belongs to Nhoa, under Sunken Vey (Ch11). Keth Pass's snow is weather.
+- **Kerrid's reveal is his own confession at sea.** Nobody exposes him, nobody performs a rite on him, and nobody attacks.
+- **Nobody says "revenant" at the Archive (Ch13) or the wedding (Ch14)** (act_outline Ch13: Liss just lays the pages side by side), and no line voices the lantern-to-Haluna link aloud before Ch15.
+- **Our own words for the lingering dead:** unrisen, held, lifted. `tools/banned_terms.txt` bans the inspiring game's words for them and for the rite.
+- **Sefir's temptation is "go home and live".** He never asks to be sung in.
+- **New names** (NPCs, foes, skills, places) are checked against `tools/banned_terms.txt` and for near-misses before they land. Add any near-miss you notice.
 
 ## 3. What already exists (the inventory)
 
