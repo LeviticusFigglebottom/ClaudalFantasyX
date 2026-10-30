@@ -2,9 +2,8 @@
 id: M4-A2P-059
 title: "The Avalanche Ram without ice: swap the ice plates and icicles for wet, matted, seep-lit wool (ADR 0015)"
 role: character
-status: blocked
-blocked-by: ADR 0203
-owner_session: ""
+status: doing
+owner_session: "creatures-b (ADR 0205, the Lead 2026-10-30 02:26)"
 depends_on: [M3-CRE-624]
 reviewer: rendering
 milestone: M4
