@@ -764,7 +764,7 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - PassFoot moved off the trough (the snaps test caught it). Q02 and K04 re-aimed on the dressing.
   - Five shots viewed. Checks: ch12, snaps, field_camera, walkable.
   - The Lead's 09:00 list is done: FAST-TRACKs 1–6 and the Ch10, Ch11 and Ch12 mounts.
-- MERGE-READY @ (this push)
+- MERGE-READY @ f07c42fdd
 
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
