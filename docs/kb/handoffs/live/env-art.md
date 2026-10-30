@@ -589,6 +589,10 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **2026-10-30, ACT II STARTED (ADR 0205: no open Act I row in env-art's lane).** Scope (act2_tracks.md): Ch10–Ch12, in
+  chapter order. **Doing: M4-A2P-040**, Ossa Fen and Reedhollow at final quality with a mangrove vegetation system: a
+  zone-dressing generator per zone (`tools/act2/ch10_*_dressing.py`, ZoneKitDressing, as Act I's Ch4–9) from the built
+  kit (M3-ENV-718/733), then the mount, grade, shots and walk checks.
 - **MERGE-READY @ 6afe97f1: the Lead's pass-3 rows (`act1_gpu_qa.md` on `gpu/act1-qa-3`), each self-rendered and viewed.**
   - **Row 59 (`ch01_o10_gull`, a crude faceted bird on a plain box): env-art's, fixed.** It is the Oruvel kit's
     `lintel_gull_open` (`village.lintel_gull`, not creatures'). A `fine` carving for the O10 close-up: 16-sided lofts on

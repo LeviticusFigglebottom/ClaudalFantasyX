@@ -2,9 +2,8 @@
 id: M4-A2P-040
 title: "Ossa Fen and Reedhollow dressed, lit and walkable at final quality, with a mangrove vegetation system"
 role: environment
-status: blocked
-blocked-by: ADR 0203
-owner_session: ""
+status: doing
+owner_session: "env-art (claude/env-art, 2026-10-30)"
 depends_on: []
 reviewer: rendering
 milestone: M4
@@ -21,5 +20,7 @@ Place the built kit (M3-ENV-718, 733) in both zones per ossa_fen.md's swap map, 
 ## Notes
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). Plan §2 Ch10. Don't rebuild the kit.
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
+
+- **2026-10-30 (env-art):** claimed under ADR 0205 (env-art has no open Act I row; rows 24 and 47-FerryAft are field-camera rows, routed).
 
 ## Review log
