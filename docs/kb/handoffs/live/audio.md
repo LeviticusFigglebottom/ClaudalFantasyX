@@ -3,6 +3,26 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ 529a1f3c: the Lead's 13:48 item (1 of 2), the Ch15–Ch16 ambience loops and arena switching.**
+  - **Gaps found:**
+    - Hollowmere's first visit (`ch17/hollowmere`, Ch15 B10–B12) had no music or ambience row. The beat sheet (act2_ch15.md §6) says "ambience only, no zone loop": it is grief, and Act III's `hollowmere` cue belongs to Ch17.
+    - The Ch15 dawn in fog at the bow (B09) had no bed of its own.
+    - The Ch16 storm set piece (`ch16_holding_the_line`) fought on the moonrise Choir's bed.
+    - Two of the beat sheets' SFX (`shoal_hum`, `choir_wind_chord`) didn't exist.
+  - **New loops** (`act2_ambience.py`, appended so the earlier beds stay byte-identical):
+    - `hollowmere_flotilla`: water among the hulls, two tide-wheels, a pump, gulls, far hammers, low voices; no laughter, no song.
+    - `open_sea_fog`: `ch15/open_sea` swaps to it once B08's `ch15_pell_said_he_knew` is set, through the zone's `night` list.
+    - `choir_storm`: the mouths roaring in a gale, surge and spray.
+  - **Arena switching by encounter:** ambience.json `encounters` is tried before the arena (`AudioData.battle_beds`). `ch16_holding_the_line` plays `choir_storm` over `choir_bowl`, and `ch16_abiding_guard` keeps the Choir at moonrise. The encounter isn't written yet, so it's listed under `pending_encounters` and `data_check` accepts it.
+    - Ch16's random fights (`ch16_rim_*`) have no arena yet (`pale_rim_shallows` is env-art-b's gap), so the field's `pale_rim_shallows` bed carries on under them, which is right.
+    - The wade's footsteps are the `water` surface, already set for pale_rim.
+  - **SFX:** `shoal_hum` (Ch15 B06, the held dead's hum and a sideways glass shimmer) and `choir_wind_chord` (Ch16), as rows in `sfx_cutscene_act2.json`, ready for a script's `@sfx`.
+  - **Checks:**
+    - Renders: the beds at -26.1 LUFS, seams flux ≤ x1.48, `loop=true` in their imports, re-rendered byte-identical. The SFX are `--determinism` identical and the earlier cutscene SFX unchanged.
+    - Data and tools: validate_data 0; the Act I and Act II audits 0; test_audio_data, test_audio_loudness (two target rules added) and test_act1_audio_audit OK.
+    - Godot: arena_ambience 5/0 (two new), battle_audio 22/0, audio_runtime 11/0, field_audio 22/0.
+    - **Skipped:** screenshots, Blender, coverage.
+  - **PC-QUEUE:** the fog swap at the bow, Hollowmere's first visit, the storm set piece.
 - **MERGE-READY @ b436efa1: the Lead's 13:08 item, the Act II battle arenas' ambience and Ch11's cues** (b436efa1). The 12:28 item was already MERGE-READY @ 023c94f1 below.
   - **Arena beds:** before, a battle had no ambience of its own. The field's beds carried on 3 dB down, and with integration-qa's resident field nothing would have reset them. Now the encounter's arena (encounters.json `arena`) plays ambience.json `arenas` beds in place of the field's, fading over `arena_fade_sec` 1.0. The field's beds come back when the battle's listener leaves (`AudioDirector.set_arena_ambience` / `release_arena_ambience`, owned by its `BattleAudio`). A retry's new listener keeps the beds; an arena with no row keeps the field's.
     - Five new loops (`act2_ambience.py`, appended so the 14 existing beds stay byte-identical): `arena_fen_roots` (Ch10, the Drowner's mudbank: the fen gone quiet), `arena_engine_hall` (Ch11, the engine's throb near), `arena_seep_terrace` (Ch12), `arena_lagoon_dusk` (Ch14, Malcor Venn on the barge, a far wedding bell) and `arena_court_steps` (Ch14).
