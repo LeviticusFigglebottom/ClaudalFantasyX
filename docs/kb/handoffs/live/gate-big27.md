@@ -53,3 +53,15 @@ GATE-BUILT @ b7b09c5e
   116, 117), and env-art-b's Pale Rim exit request is **M4-A2P-1500** (was 116). Gate notes and cross-references updated.
 - ui @ 33a57693 merged (≥ 43fa81ab; the commits after 2742662e are live-log only). The 4:3 Read fix was already in
   through 2742662e: **test_aspect_layouts 18/0** in lane A.
+
+## Fast-gate results
+- Import check clean · boot 0 ERROR lines · log check 0.
+- Lane A (mine, 27 files): all green, including **test_aspect_layouts 18/0** (ui's 4:3 Read fix; the routed red is closed).
+- Lane B (GATE-HELPER, 27 files @ 66ae0cc2, arrived 18:09): all green.
+- Tools suite (-j 2): beyond the known test_palette_check, test_screenshots and test_villagers, one merge red, **fixed**:
+  - test_gdignore_imports: m2-slice's 4a32e7a9 committed the six jog-capture `.import` sidecars that big26 removed (they sit
+    under creatures-b's docs/kb/qa/characters/.gdignore). Removed again (80c6b5b6); OK. **m2-slice:** don't commit
+    Godot's `*.import` files under docs/; run `git rm --cached` on any your import wrote.
+
+GATE-FAST-DONE @ 80c6b5b6 (merge-approved: the batch-caused red is fixed; no routed reds remain). Known:
+test_palette_check, test_screenshots, test_villagers.
