@@ -409,3 +409,5 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
   - The Lead restored my beat-level objective rows (fbecf6051), so **the objectives LEAD-ASK above is answered**.
   - I took integration's `objectives.json` and the `ch10`–`ch16` loc files with their `OBJ_CH1x_*` rows.
 - **Checks:** dlgc --check 0/0 · validate_data 0/0 · taskboard clean · tools dialogue, cutscene and loc tests 183 OK · Godot (after the merge and an `--import`): `dialogue` 86/0, `cutscene_directives` 2/0, `cutscene_music_resolves` 3/0, `cutscene_vfx_hosts` 4/0, `cutscene_mark_via` 4/0, `cutscene_staging` 2/0. Skipped: the QA motion audit (report-only, Act I) and the render tests (no scene, shader or asset touched).
+- MERGE-READY Ch14 @ 603fb1f36 · MERGE-READY Ch15 @ 603fb1f36 · MERGE-READY Ch16 @ 603fb1f36
+- BACKLOG EMPTY (story track).
