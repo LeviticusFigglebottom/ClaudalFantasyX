@@ -43,3 +43,6 @@ and reports; it never edits game or test files.
   Result: gate-big30-lanes-b-result.md.
 - big31 @ 6a695535 (HEAD checked): lanes B 21 files, 21:10-21:13 UTC (3 min). **All 21 green.**
   Result: gate-big31-lanes-b-result.md.
+- big32 @ 7f6211b3 (HEAD checked): lanes B 3 files, 21:49-21:52 UTC (3 min). 2 green, 1 red:
+  test_qa_capsules (1 failed: abiding_first, abiding_guard and court_stillguard fight as primitive stand-ins, with no actor
+  scene in battle_sandbox or creatures). Result: gate-big32-lanes-b-result.md.
