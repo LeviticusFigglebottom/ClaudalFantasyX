@@ -67,7 +67,7 @@ Shot ids are proposed in §7 (U = unlamped, the barge; K = the confession; H = H
 | B04 | **Boss: the Wakefin** | `bridal_barge_night` (arena) | 23:42 | P | 7.0 | battle | `wakefin` (stems) | A fight by sea-glow; telegraphs by sound and light on the water. | `ch15_wakefin_felled` |
 | B05 | **After** | the barge | 00:30 | C | 1.0 | U07 | `unlamped` (stripped) | Exhaustion. People sleep sitting up. Kerrid stands at the stern. | — |
 | B06 | **The shoal** | the barge over the shoal | 01:00 | C | 1.5 | K01–K04 | `silence` → `kerrid_at_sea` (enters) | The held dead come up and drift toward him; his own light starts to leave. | — |
-| B07 | **The confession** | `kerrid_sits` | 01:05 | C | 5.0 | K05–K18 | `kerrid_at_sea` | **The reveal.** Corrow, 1001. A name said for the first time. | `ch15_kerrid_told` |
+| B07 | **The confession** | `kerrid_sits` | 01:05 | C | 5.0 | K05–K18 | `kerrid_at_sea` | **The reveal.** Corrow, 1001. A name said for the first time. | `ch15_kerrid_revealed` |
 | B08 | **Still below** | the barge | 01:15 | E | 1.5 | K19, K20 | `kerrid_at_sea` (tail) → `silence` | Nobody does anything to him. The motes settle. Pell knew. | `ch15_pell_said_he_knew` |
 | B09 | **The current-song** | the bow (`dawn`), fog | 05:40 | C | 2.0 | H01–H03 | `hollowmere_answers` | A sung chart into the fog, and an answer. | `ch15_hollowmere_answered` |
 | B10 | **The dock-master** | `ch17/hollowmere` dock, `fathers_door` | 06:00 | C | 2.0 | H04–H06 | `silence` | The worst errand. | `ch15_liss_told_father` |
@@ -149,7 +149,7 @@ See §5.
 13. **The question nobody can answer:** Rhen, finally, hoarse: *"What happened to him? After?"* Kerrid: *"I don't know. I was in no state to ask."* (Dry, not a joke. Rule 4: he doesn't know. Rhen carries the half-story into Ch16: rhen_sallow.md.)
 14. **"Somebody's still below."**, made legible (Rhen remembers the road; Kerrid looks south, past them, out to sea): *"She walked on to the Choir. A captain doesn't come off the wall while there's anyone below."* (ADR 0022 (e).) He doesn't say Imra is in the storm; he doesn't know what the Choir does (Ch16).
 
-Sets `ch15_kerrid_told`. ~360 words, of which ~280 are Kerrid's.
+Sets `ch15_kerrid_revealed`. ~360 words, of which ~280 are Kerrid's.
 
 **Optional lines, by flag** (each one line, if set):
 - `ch05_heard_straw_cape_tale`: Rhen: *"The big man in the straw cape. The one who pulls them out."* Kerrid: *"Somebody has to."*
@@ -234,7 +234,7 @@ Declared in `game/data/flags.tres` when the gate passes (M4-A2P-015 adds them). 
 | `ch15_started` | B01 | flow | — |
 | `ch15_sat_with_liss` | B02 (optional) | B14 | The supper: Liss joins them halfway through and sits by Rhen |
 | `ch15_wakefin_felled` | B04 | flow | — |
-| `ch15_kerrid_told` | B07 (critical) | Ch16, every Kerrid bark from here, codex, Ch19 | **The reveal is done.** Kerrid's barks become his post-reveal voice; his codex page rewrites (M4-A2P-008); Ch16's walk on the Rim and "I carried her up so you could do this" |
+| `ch15_kerrid_revealed` | B07 (critical) | Ch16, every Kerrid bark from here, codex, Ch19 | **The reveal is done.** Kerrid's barks become his post-reveal voice; his codex page rewrites (M4-A2P-008); Ch16's walk on the Rim and "I carried her up so you could do this" |
 | `ch15_pell_said_he_knew` | B08 (optional) | Ch20 | Pell, before Nhoa's release: "I knew about him too. I did not say. I am learning when to say." |
 | `ch15_hollowmere_answered` | B09 | Ch17 | Hollowmere's current-song recurs when the Hollowmere ship pulls the party from the sea |
 | `ch15_liss_told_father` | B10 (critical) | Ch17 | act_outline Ch17: "Liss's father hasn't spoken since Tobin's pyre-raft" |
@@ -420,7 +420,7 @@ New shot ids for `ch15/open_sea` and `ch17/hollowmere` (to add to open_sea_ch15.
 `kerrid_at_sea`, `hollowmere_answers`, the `hush_first_verse` reprise (ADR 0204 §12), and the SFX in §6.
 
 ### UI
-1. Kerrid's codex page rewrite and his post-reveal barks behind `ch15_kerrid_told` (M4-A2P-008).
+1. Kerrid's codex page rewrite and his post-reveal barks behind `ch15_kerrid_revealed` (M4-A2P-008).
 2. Hollowmere's save point is a Saltwright lamp-post with a slate (plan §4.2), not an Order shrine.
 
 ### Combat (M4-A2P-015, M4-A2P-021)

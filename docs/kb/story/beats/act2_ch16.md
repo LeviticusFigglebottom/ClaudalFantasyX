@@ -218,7 +218,7 @@ Declared in `game/data/flags.tres` when the gate passes (M4-A2P-016 adds them). 
 | `ch16_line_held` | B09 (critical) | Ch17, Ch20 | Kerrid in Act III: "first down the stair" |
 | `ch16_act_two_complete` | B11 (end) | flow (the Act III gate), save summary | — |
 
-**Flags this chapter reads:** `ch10_asha_answered_child`, `ch10_asha_asked_pell`, `ch11_engine_released`, `ch12_ysolde_lied`, `ch12_ysolde_confessed`, `ch13_read_cantor_roll`, `ch15_kerrid_told`, `ch15_pyre_raft` (the lamp on the ship).
+**Flags this chapter reads:** `ch10_asha_answered_child`, `ch10_asha_asked_pell`, `ch11_engine_released`, `ch12_ysolde_lied`, `ch12_ysolde_confessed`, `ch13_read_cantor_roll`, `ch15_kerrid_revealed`, `ch15_pyre_raft` (the lamp on the ship).
 
 ---
 

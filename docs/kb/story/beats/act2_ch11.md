@@ -147,7 +147,7 @@ See §5.
 ### B07. Twice (C, 1 min)
 - **T03:** the Engine on its knees in the water, its rings folded back, its core's salt-glass globe cracked open. The bound light in the core **goes still, and then goes up.** A small lift of motes rises out of the broken globe in slow vertical spirals, turning `glimmer_lift` gold as they climb (color rule 1), up through the collapsed vault bay into the grey (the color script's 3 s warm grade lift, `lut_ch11_vey`). Only the core's: the dark rings' lamps let theirs go too, a mote or two from each. (Rule 3: what is released rises.)
 - **T04:** the party watching, as in Ch10's B05. This time somebody says it.
-  - Ysolde (reads `ch10_drowner_felled`): *"That is twice."*
+  - Ysolde (reads `ch10_drowner_defeated`): *"That is twice."*
   - Asha: *"They were waiting. Inside it. All this time."*
   - Liss stands looking at the dead frame with her jaw tight. Every lamp in her own gear is the same kind of light (liss_varrow.md; she sees it and doesn't say it). (Act III's "Every lamp on this ship is somebody" starts here, unspoken.)
 - ~20 words.
@@ -199,7 +199,7 @@ Declared in `game/data/flags.tres` when the gate passes (M4-A2P-011 adds them). 
 | `ch11_lamp_repaired` | B10 (optional) | Ch12, Ch15, Ch17 | **Ch12:** Liss calls him "Rhen" on the pass; **Ch15:** she lets him sit with her at the bier (B02); **Ch17:** they restore the Kite's first lamp the same way |
 | `ch11_complete` | B11 (end) | flow (Ch12 gate) | — |
 
-**Act I/II flags this chapter reads:** `ch06_liss_read_lantern`, `ch08_liss_found_marks`, `ch10_drowner_felled`, `ch10_tide_witnessed`.
+**Act I/II flags this chapter reads:** `ch06_liss_read_lantern`, `ch08_liss_found_marks`, `ch10_drowner_defeated`, `ch10_farewell_tide_seen`.
 
 ---
 

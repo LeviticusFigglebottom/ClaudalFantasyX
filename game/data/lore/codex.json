@@ -146,7 +146,7 @@
       {"id": "kesh", "category": "people", "title_key": "CODEX_KESH_TITLE",
        "body_key": "CODEX_KESH_BODY", "unlock": {"flag": "ch16_learned_the_hush"}},
       {"id": "kerrid_stair", "category": "people", "title_key": "CODEX_KERRID_STAIR_TITLE",
-       "body_key": "CODEX_KERRID_STAIR_BODY", "unlock": {"flag": "ch15_kerrid_told"}}
+       "body_key": "CODEX_KERRID_STAIR_BODY", "unlock": {"flag": "ch15_kerrid_revealed"}}
     ]
   }
 }
