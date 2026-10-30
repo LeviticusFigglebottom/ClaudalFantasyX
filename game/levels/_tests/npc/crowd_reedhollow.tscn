@@ -10,5 +10,5 @@ zone_id = &"ch10/reedhollow"
 [node name="Cameras" type="Node3D" parent="."]
 
 [node name="Lagoon" type="Camera3D" parent="Cameras"]
-transform = Transform3D(-0.759257, -0.230975, 0.608424, 0, 0.934899, 0.354914, -0.650791, 0.269471, -0.709828, 58, 3.2, -13.5)
+transform = Transform3D(0.6, -0.297113, 0.742781, 0, 0.928477, 0.371391, -0.8, -0.222834, 0.557086, 44.5, 3, -9)
 fov = 55.0

@@ -10315,6 +10315,22 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "creature_deep_scuttler",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_deep_scuttler.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_hull_rasp",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_hull_rasp.tscn",
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }

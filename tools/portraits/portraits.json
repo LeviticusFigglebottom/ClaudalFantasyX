@@ -409,6 +409,13 @@
       "out_dir": "res://assets/ui/portraits/creatures"
     },
     {
+      "id": "hull_rasp",
+      "light_scale": {"key": 3.0, "rim": 3.0, "fill": 3.0},
+      "stage_environment": {"background_color": [0.35, 0.55, 0.65, 0.0]},
+      "scene": "res://game/creatures/hull_rasp/hull_rasp_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
       "id": "lantern_eel",
       "scene": "res://game/creatures/lantern_eel/lantern_eel_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures",
@@ -443,6 +450,13 @@
       "light_scale": {"key": 3.0, "rim": 3.0, "fill": 3.0},
       "stage_environment": {"background_color": [0.35, 0.55, 0.65, 0.0]},
       "scene": "res://game/creatures/scuttler/scuttler_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "deep_scuttler",
+      "light_scale": {"key": 3.0, "rim": 3.0, "fill": 3.0},
+      "stage_environment": {"background_color": [0.35, 0.55, 0.65, 0.0]},
+      "scene": "res://game/creatures/deep_scuttler/deep_scuttler_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures"
     },
     {

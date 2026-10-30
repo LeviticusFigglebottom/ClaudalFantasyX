@@ -52,6 +52,7 @@
     "slag_tortoise": {"scene": "res://game/creatures/slag_tortoise/slag_tortoise_battle.tscn", "vfx_anchors": {"core": "shell", "wound": "shell"}, "contact": {"attack": 0.55}},
     "ashwing": {"scene": "res://game/creatures/ashwing/ashwing_battle.tscn", "vfx_anchors": {"core": "thorax", "wound": "fore_l"}, "stand_in": {"hover": 1.86}, "contact": {"attack": 0.6}, "hit_snap": {"preroll_sec": 0.1}},
     "scuttler": {"scene": "res://game/creatures/scuttler/scuttler_battle.tscn", "vfx_anchors": {"core": "back", "wound": "front"}, "contact": {"attack": 0.45}, "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}},
+    "deep_scuttler": {"scene": "res://game/creatures/deep_scuttler/deep_scuttler_battle.tscn", "vfx_anchors": {"core": "back", "wound": "front"}, "contact": {"attack": 0.45}, "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}},
     "spar_wraith": {
       "scene": "res://game/creatures/spar_wraith/spar_wraith_battle.tscn", "stand_in": {"yaw_deg": 45.0},
       "clip_by_skill": {"spar_stab": "attack", "shroud_sweep": "shroud_sweep", "lines_taut": "lines_taut_deck",
@@ -85,6 +86,13 @@
     },
     "hullgnaw": {
       "scene": "res://game/creatures/hullgnaw/hullgnaw_battle.tscn", "contact": {"attack": 0.8, "rib_lash": 0.8, "thrash": 1.25},
+      "clip_by_skill": {"gnaw": "attack", "rib_lash": "rib_lash", "thrash": "thrash", "gnaw_coil": "coil"},
+      "ko_fade_sec": 0.8,
+      "phases": {"breaking": {"clip": "phase_break", "hide_after": ["Ribs"], "sec": 0}},
+      "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}
+    },
+    "hull_rasp": {
+      "scene": "res://game/creatures/hull_rasp/hull_rasp_battle.tscn", "contact": {"attack": 0.8, "rib_lash": 0.8, "thrash": 1.25},
       "clip_by_skill": {"gnaw": "attack", "rib_lash": "rib_lash", "thrash": "thrash", "gnaw_coil": "coil"},
       "ko_fade_sec": 0.8,
       "phases": {"breaking": {"clip": "phase_break", "hide_after": ["Ribs"], "sec": 0}},

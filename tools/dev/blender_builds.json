@@ -1160,6 +1160,26 @@
       ]
     },
     {
+      "id": "creature_deep_scuttler",
+      "owner": "character",
+      "sources": ["assets_src/creatures/deep_scuttler/**", "assets_src/creatures/scuttler/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/deep_scuttler/*.glb", "assets/creatures/deep_scuttler/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/deep_scuttler/build_deep_scuttler.py", "--", "--out", "assets/creatures/deep_scuttler/deep_scuttler.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "deep_scuttler"]
+      ]
+    },
+    {
+      "id": "creature_hull_rasp",
+      "owner": "character",
+      "sources": ["assets_src/creatures/hull_rasp/**", "assets_src/creatures/hullgnaw/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/hull_rasp/*.glb", "assets/creatures/hull_rasp/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/hull_rasp/build_hull_rasp.py", "--", "--out", "assets/creatures/hull_rasp/hull_rasp.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "hull_rasp"]
+      ]
+    },
+    {
       "id": "creature_flat_engine",
       "owner": "character",
       "sources": ["assets_src/creatures/flat_engine/**", "assets_src/creatures/common/**"],
