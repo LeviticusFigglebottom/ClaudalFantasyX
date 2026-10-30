@@ -81,8 +81,8 @@ and Ch17 (the ledger tells of Imra on the stair).
   - he says it back (E2).
 
 **Verdict: earned.** The "back" in "says it back" depends on Ch8 B17 being read as a goodbye he didn't answer.
-**Check (proposed, Cinematics):** in E2, an insert that rhymes with Ch8 B17's framing (the same lens and the same
-distance) so the player feels the answer arrive. If `ch12_rhen_tied_knot`, H02 may use "I carry the knot. You don't
+**Check (accepted and applied, 2026-10-30):** act3_ending E2 now rhymes with Ch8 B17. Dace's turn toward him mirrors
+W22's turn away, and the reverse at "Goodbye, Dad." uses W23's lens and distance, so the player feels the answer arrive. If `ch12_rhen_tied_knot`, H02 may use "I carry the knot. You don't
 have to." (the act2_ch12 flag table suggests it).
 
 **Not lost, and right:** Kell's wick stays lit for the future (E7). Rhen keeps something, and it's the one thing the
@@ -200,8 +200,8 @@ rise, and he tends them anyway".
   - the beach rite (Ending).
 
 **Verdict: earned, but thin if Ch18's Haluna lifting is skipped.** Then the Ending's beach rite arrives with no rehearsal.
-**Fix (proposed, Narrative, act3_ending):** if `ch18_haluna_lifted` is unset, the beach rite opens with Toma asking
-the villagers to turn their backs (one line), so the rite is taught on screen.
+**Fix (accepted and applied, 2026-10-30):** act3_ending CR stages the beach rite as a credits vignette. If
+`ch18_haluna_lifted` is unset, it opens with Toma teaching it (one line), so the rite is taught on screen.
 
 ## 8. Checks that cross people
 - **Nobody keeps everything, and somebody keeps something:**
