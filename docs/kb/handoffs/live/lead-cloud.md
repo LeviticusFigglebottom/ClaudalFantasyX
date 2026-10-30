@@ -19,7 +19,12 @@
 | creatures | `session_01UPFyE7ob7hr4Skv4cw3rtN` | claude/creatures (started 18:43: big17 gate reds test_npc/test_post_import, audit M3-HER-1142, QA row 40) |
 | creatures-b | `session_01UPFyE6iidnDAeaAEP21ZYd` | claude/creatures-b (started 18:43: Moll capsule in battle rows 12/35, Reach arm row 36, row 30) |
 
-- Not started: audio (no rows yet). Start it when a gate or the inventory files rows for it.
+| gate big18 | `session_01UPFyEAXofxWazWNnRTzFGJ` | lead/gate-big18 (log `gate-big18.md`) |
+
+- 21:25: **big17 merged** @ 96222b30 ahead of its shots (the human asked to play it now, in the gate session). big18 gate started.
+| audio | `session_01UPFyE9L9BA3QodpCNJEfAs` | claude/audio (started 23:10: Act I sound audit) |
+
+- 23:10: **Lead rule from here: no track idles waiting on a gate.** A track with BACKLOG EMPTY gets a self-directed final-quality audit of its own Act I lane on the newest gate branch (as played, with self-rendered stills). Sent to env-art, env-art-b, creatures, creatures-b, battle-presentation, ui-menus, act1-chapters, integration-qa and slice-polish.
 - 18:40: ADR 0201 (Pell's niche wording, SPEC v1.5, `i:blue mage` banned). Routed big17's 4 pre-existing tools reds: freed-cast lint → env-art-b; test_npc and test_post_import → creatures; villager_shopkeeper_front NO BASE → approve at the gate.
 - **The PC is offline.** When it returns: find it with `list_sessions` (environment_kind `bridge`), then send it the PC brief (SESSION-BRIEFS.md) plus this queue:
   1. Gate whatever batch is next, if the cloud gate session hasn't already gated it.
