@@ -663,3 +663,31 @@ func test_reedhollow_vignettes_wade_talk_and_watch() -> void:
 			assert_true(npc.global_position.y < -1.0, "%s wades the lagoon" % id)
 	assert_eq(layer.villager(&"talker_1").partner, layer.villager(&"talker_2"), "the pair talk together")
 	_done()
+
+
+## M3-HER-1168: under a scene change the layer loads each row's actor scene on worker threads first; _actor_path names
+## the scene _make will wear for a crowd person, a bare body and a villager (its own or a borrowed `actor`).
+func test_each_row_names_the_actor_scene_it_will_wear() -> void:
+	var people := _people()
+	var layer := VillagerLayer.new()
+	var body := str((people["haluna_dock_mender"] as Dictionary)["body"])
+	assert_eq(
+		layer._actor_path({"npc_id": "x", "crowd": "haluna_dock_mender"}),
+		VillagerLayer.CROWD_ACTOR_PATH % [body, body],
+		"a crowd person wears its body"
+	)
+	assert_eq(
+		layer._actor_path({"npc_id": "x", "body": "kirru_man"}),
+		VillagerLayer.CROWD_ACTOR_PATH % ["kirru_man", "kirru_man"],
+		"a bare body row"
+	)
+	assert_eq(
+		layer._actor_path({"npc_id": "fisher"}), VillagerLayer.ACTOR_PATH % ["fisher", "fisher"], "a villager's own"
+	)
+	assert_eq(
+		layer._actor_path({"npc_id": "smith", "actor": "fisher"}),
+		VillagerLayer.ACTOR_PATH % ["fisher", "fisher"],
+		"a borrowed model"
+	)
+	assert_eq(layer._actor_path("not a row"), "", "nothing for a bad row")
+	layer.free()
