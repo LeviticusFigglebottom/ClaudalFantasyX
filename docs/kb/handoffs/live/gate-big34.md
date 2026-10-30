@@ -29,3 +29,13 @@ GATE-BUILT @ adab5e73
 ## Fast gate
 - Selected: 10 test files.
 - Lane A (mine): 5; lane B (GATE-HELPER): 5, in `gate-big34-lanes-b.txt` @ ec0a766c.
+
+## Mid-batch (after lanes A and B finished)
+- **audio @ 4d4fbd50** (FAST-TRACK 3e791059: no UiAudio reconnect ERROR on a resident battle return, no unbind(0) ERROR;
+  plus Act III score part 2, M5-A3P-1951). Clean. Re-gate on a fresh import of 15 files (the audio, UI audio, ashcrown,
+  battle-return and resident tests): **all green**, import and boot clean.
+- **m2-slice @ f7fe9250** (slice-polish's **fdc9ece5: revert of the deferred Haluna beach pose 97c591c3**: 3 of 19
+  scene_swap_probe runs into Haluna crashed mid-swap with signal 11, and 0 of 16 without it; the hidden frame stays under ADR
+  0029's 1 s at a median of about 600 ms), with the Ch15/Ch16 staging (M4-A2P-075) and the Act III memory fixture. Clean.
+  Re-gate of 52 files on a fresh import is running.
+- act1-chapters' touch-beat queue fix didn't post during this batch; it goes to big35.
