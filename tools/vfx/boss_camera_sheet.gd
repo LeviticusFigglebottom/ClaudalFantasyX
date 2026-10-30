@@ -19,6 +19,11 @@ const FIGHTS := {
 	&"drownbell": [&"drownbell", [&"hood_slam"]],
 	&"ch04_bottle_hermit": [&"bottle_hermit", []],  # moments only (no big move)
 	&"undertows_reach": [&"undertows_reach", []],  # moments only (its moves keep the default frame)
+	# ADR 0205: the Act II creature bosses (PROVISIONAL rows), each move with its own effect
+	&"ch10_mangrove_drowner": [&"mangrove_drowner", [&"drowner_drag", &"rising_water", &"root_stamp"]],
+	&"ch11_lamp_engine": [&"lamp_engine", [&"lamp_trim", &"lamp_flare", &"core_pulse"]],
+	&"ch12_avalanche_ram": [&"avalanche_ram", [&"horn_toss", &"ram_charge", &"ram_bellow"]],
+	&"ch15_wakefin": [&"wakefin", [&"fin_cut", &"sound_dive", &"wake_breach", &"wake_wheel"]],
 }
 
 var _opts: Dictionary = {}
@@ -65,7 +70,11 @@ func _run() -> void:
 			r.actor_id = boss.id
 			r.skill_id = sid
 			var hits: Array[Dictionary] = []
-			for h in ctl.engine.party_active:
+			var row := ctl.engine.db.skill(sid)
+			var charge := row.get("charge", {}) as Dictionary
+			if str(row.get("target", "")) == "self":  # a telegraph (the Wakefin's Sound Dive): on itself
+				hits.append({"target_id": boss.id, "hit": true, "crit": false, "amount": 0, "statuses_added": []})
+			for h in ctl.engine.party_active if hits.is_empty() else []:
 				hits.append({"target_id": h.id, "hit": true, "crit": false, "amount": 10, "statuses_added": []})
 				if not _sweeps(sid):
 					break
@@ -78,6 +87,9 @@ func _run() -> void:
 			choreo.skip = false
 			choreo.speed = 1.0
 			ctl.engine.action_resolved.emit(r)
+			if not charge.is_empty():  # as BossMechanics: the charge's own staging (M3-BPR-418's blade under)
+				var next := StringName(str(charge.get("skill", "")))
+				ctl.engine.charge_started.emit(boss, next, maxi(int(charge.get("turns", 1)), 1))
 			var c := float(choreo.current().get("contact", 0.5))
 			for moment: String in ["lead", "contact"]:
 				choreo.seek(c * float(_opts.get("lead", 0.7)) if moment == "lead" else c)
@@ -168,10 +180,12 @@ func _moment(ctl: BattleController, boss: BattleCombatant, out: String, enc: Str
 	print("BOSS_CAMERA_SHEET %s %s %s" % [enc, which, choreo.camera.moments_played])
 
 
-## A move on the whole party (its enemy_by_skill lead is boss_sweep) hits every hero.
+## A move on the whole party (its enemy_by_skill lead is boss_sweep, or it targets all foes) hits every hero.
 func _sweeps(sid: StringName) -> bool:
 	var by_skill := BattleChoreo.load_data()["camera"]["enemy_by_skill"] as Dictionary
-	return str((by_skill.get(String(sid), {}) as Dictionary).get("lead", "")) == "boss_sweep"
+	if str((by_skill.get(String(sid), {}) as Dictionary).get("lead", "")) == "boss_sweep":
+		return true
+	return str(BattleDB.load_default().skill(sid).get("target", "")) == "all_foes"
 
 
 func _args() -> Dictionary:

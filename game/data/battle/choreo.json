@@ -202,7 +202,9 @@
         "boss_sweep": {"anchor": "actor", "back_m": -4.6, "side_m": 6.6, "up_m": 2.6, "look_at": 0.6, "look_up_m": 1.0,
                        "fov": 50.0},
         "charge_side": {"anchor": "target", "back_m": 1.8, "side_m": 5.2, "up_m": 0.25, "look_at": 0.5, "look_up_m": 0.4,
-                        "fov": 50.0}
+                        "fov": 50.0},
+        "boss_over_rail": {"anchor": "target", "back_m": 6.2, "side_m": 3.0, "up_m": 3.0, "look_at": 1.0,
+                           "look_up_m": -0.5, "fov": 54.0}
       },
       "enemy_by_skill": {"doc": "M3-BPR-420 (ADR 0041): the Act I bosses' big moves get a shot, not the enemy's default push. A heavy single blow frames the boss at its strike point, then the hero it hits (boss_blow, target); a move on the whole party frames the boss winding up from its mark (boss_sweep) and then holds wide. Checked before enemy_by_actor; a shot that fails the safe frame falls back to the default. A foe whose body at its strike point stands across the lens's sight of its targets drops that shot (the director's body check). The Reach keeps the default frame for all its moves: at its size every placed shot saw only its body or dropped under the wall-head, while the default frame already shows its hand over the party.",
                          "hood_slam": {"lead": "boss_blow", "contact": "target"},
@@ -454,7 +456,7 @@
                           "epithet_key": "BOSS_EPITHET_AVALANCHE_RAM", "on_retry": false},
         "mangrove_drowner": {"shot": "boss_tall", "hold_sec": 2.2, "title_key": "BOSS_TITLE_MANGROVE_DROWNER",
                              "epithet_key": "BOSS_EPITHET_MANGROVE_DROWNER", "on_retry": false},
-        "wakefin": {"shot": "boss", "hold_sec": 2.4, "title_key": "BOSS_TITLE_WAKEFIN",
+        "wakefin": {"shot": "boss_over_rail", "hero": false, "fit": false, "hold_sec": 2.4, "title_key": "BOSS_TITLE_WAKEFIN",
                     "epithet_key": "BOSS_EPITHET_WAKEFIN", "on_retry": false}
       }
     }

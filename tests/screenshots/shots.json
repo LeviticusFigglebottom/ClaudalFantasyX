@@ -7808,6 +7808,22 @@
         540
       ],
       "settle_frames": 30
+    },
+    {
+      "id": "battle_boss_intro_drowner",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_drowner.tscn"
+    },
+    {
+      "id": "battle_boss_intro_lamp_engine",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_lamp_engine.tscn"
+    },
+    {
+      "id": "battle_boss_intro_ram",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_ram.tscn"
+    },
+    {
+      "id": "battle_boss_intro_wakefin",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_wakefin.tscn"
     }
   ]
 }
