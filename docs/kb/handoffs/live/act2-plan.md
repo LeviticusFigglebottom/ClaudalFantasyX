@@ -495,3 +495,27 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
   - a new flag, `ch21_unbound`.
 - MERGE-READY Act III drafts Ch19–Ending @ 3a7f19d73
 - BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114 (act1-chapters), M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Act I as-played read-through, New Game → Ch9 (Lead)
+- **Read:** integration @ 4b1988109, the scenes in play order:
+  - Title → the Prologue → Ch1 (the Underway, then Oruvel) → the slice (Ch2 Haluna, Ch3 the causeway, the shrine, the Drownbell, the dock at night);
+  - the chapter card → Ch4–Ch9 → the Act I end card.
+  - `tools/act1/flow_audit.py` is clean (no never-set or late flags), so this was a content read.
+- **Overall:** every flow plays in its beat sheet's §1 order; every one-shot story beat has its gate; no Act II or III secret is stated.
+- **26 findings**, filed with file:line evidence and a one-line fix each:
+  - **M4-A2P-115 → slice-polish** (Prologue–Ch3), 8 rows. The worst:
+    - **A1:** "You leave the day after tomorrow." No line on any path ever tells Rhen.
+    - **A2:** the Ch1 low lights (the first held light, "never cut") can be skipped.
+    - **A3:** Rhen agrees to go before he's invited.
+    - **A4:** B03 content is reachable at dawn.
+  - **M4-A2P-116 → act1-chapters** (Ch4–Ch9), 17 rows. The worst:
+    - **C1:** Hobb reads "Jory Sallow. Mag Sallow." among Corrow's drowned. That is Rhen's surname at Corrow (Dace's withheld secret), and the line also uses a founder's surname, Tesk.
+    - **C2:** a teammates' roster mismatch.
+    - **C3, C4:** two beats out of order.
+    - **B1:** Ysolde's and Kerrid's nameplates show before they introduce themselves.
+    - **B2:** the derelict's payoff is spent early.
+  - **M4-A2P-117 → Progression:** the Brine Shoals vendor uses the Ch4 ferry's shop.
+- Every dialogue finding was re-read line by line. The layout-based ones (A2, A4–A6) are traced from trigger coordinates and flags: the tasks say to check the walk in-engine.
+- **Checks** (docs only): taskboard clean · validate_data 0/0.
+- MERGE-READY Act I read-through @ 9be201224
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114–117, M4-A2P-112 items 3, 5 and 6.
