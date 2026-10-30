@@ -10,6 +10,8 @@
 title: ch14_first_ripple
 location: ch13/ansedra_lacquer_court
 ---
+// The steps were held (B06): set here too, so the flag has a setter in the scene that follows the set piece.
+<<set $ch14_steps_held = true>>
 @letterbox on
 @camera L01
 @music lagoon_escape fade=0.5
