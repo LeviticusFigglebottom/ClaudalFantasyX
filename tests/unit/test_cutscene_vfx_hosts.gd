@@ -106,11 +106,12 @@ func _step(kwargs: Dictionary) -> DialogueStep:
 	return step
 
 
-## CutsceneMotes placeholders spawned under the stage.
+## The sequencer's own glimmer fields under the stage (CutsceneVfx; M2-FP-01's CutsceneMotes placeholder is gone,
+## ADR 0041: what draws when no host takes a cue is Rendering's GlimmerField).
 func _motes(stage: Node) -> int:
 	var n := 0
 	for c in stage.find_children("*", "", true, false):
-		if c is CutsceneMotes:
+		if c is GlimmerField:
 			n += 1
 	return n
 

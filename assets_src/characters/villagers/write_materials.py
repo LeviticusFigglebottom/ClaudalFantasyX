@@ -31,6 +31,11 @@ _spec.loader.exec_module(wm)
 ROOT = HERE.parents[2]
 PARAMS_DIR = HERE / "params"
 A = "asha/textures/"
+SHORT_HAIR = "toma/textures/toma_shorthair.png"  # M3-CHR-592 `tufts`: toma_textures.short_hair_atlas
+# and toma's crop shading (toma/write_materials.py): a near-surface, mostly wrapped Lambert, a low broad highlight
+TUFT_HAIR = {"flow_strength": "0.0", "kajiya_diffuse_mix": "0.15", "diffuse_wrap": "0.3",
+             "spec_primary_intensity": "0.07", "spec_primary_exponent": "60.0", "spec_secondary_intensity": "0.0", "root_occlusion": "0.85",
+             "depth_occlusion": "0.85", "alpha_boost": "0.85", "strand_value_jitter": "0.12"}
 # the scene m2-slice swaps in for a haluna.tscn NPC capsule: the GLB turned to face -Z, as the capsules'
 # Facing boxes do (a glTF character faces +Z); the import rule has already dressed it
 ACTOR = """[gd_scene load_steps=2 format=3]
@@ -68,6 +73,10 @@ def tables(npc: str, extra: dict) -> tuple[dict, dict, dict]:
                    "spec_primary_exponent": "120.0", "spec_secondary_intensity": "0.06",
                    "transmission_strength": "0.2", "indirect_specular": "0.06", "root_occlusion": "0.6",
                    "depth_occlusion": "0.65", "alpha_boost": "1.4", **still}
+    hair_tex = {"tex_hair": A + "asha_hair.png", "tex_hairflow": A + "asha_hairflow.png"}
+    if hp.get("tufts"):  # M3-CHR-592: Toma's short-hair atlas and his matte crop (strands along +V: no flow map)
+        hair_tex = {"tex_hair": SHORT_HAIR}
+        hair_params = {**hair_params, **TUFT_HAIR}
     shader = {
         "skin_head": ("character_skin", 0, {
             "painterly": "0.2", "detail_tiling": "64.0", "detail_strength": "0.8", "normal_strength": "1.0",
@@ -97,9 +106,8 @@ def tables(npc: str, extra: dict) -> tuple[dict, dict, dict]:
                                        "col_root": brow, "col_tip": brow, **still,
                                        **hp.get("brow_params", {})},  # M3-CHR-536 (optional): an aged brow
                  {"tex_hair": A + "asha_facehair.png"}),
-        "hair": ("character_hair", 0, hair_params, {"tex_hair": A + "asha_hair.png", "tex_hairflow": A + "asha_hairflow.png"}),
-        "hair_grey": ("character_hair", 0, {**hair_params, "col_root": grey, "col_tip": grey},
-                      {"tex_hair": A + "asha_hair.png", "tex_hairflow": A + "asha_hairflow.png"}),
+        "hair": ("character_hair", 0, hair_params, hair_tex),
+        "hair_grey": ("character_hair", 0, {**hair_params, "col_root": grey, "col_tip": grey}, hair_tex),
         # M1-RND-21's mouth family, reading this villager's head atlas (Asha's values)
         "teeth": ("character_mouth", 0, {
             "col_albedo": "Color(1, 1, 1, 1)", "roughness": "1.0", "specular": "0.06", "ao_light_affect": "0.35",

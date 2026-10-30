@@ -189,8 +189,13 @@ def zone_errors(root: Path, rel: str, locations: set[str], flags: set[str],
         if vid in by_id:
             errs.append(f"{where}: npc_id {vid!r} appears twice")
         by_id[vid] = row
+        if "crowd" in row and "body" in row:
+            errs.append(f"{where}: a row names a crowd person or a bare crowd body, not both")
         if "crowd" in row:
             errs += _crowd_row_errors(root, where, zone, row, people)
+        elif "body" in row:
+            if not (root / CROWD_ACTOR.format(id=str(row["body"]))).exists():
+                errs.append(f"{where}: body {row['body']!r} has no crowd actor scene")
         else:
             actor = str(row.get("actor", vid))
             if not (root / ACTOR.format(id=actor)).exists():
@@ -203,6 +208,10 @@ def zone_errors(root: Path, rel: str, locations: set[str], flags: set[str],
                 errs.append(f"{where}: an offset places a villager inside its stand-in (attach child) only")
         if not str(row.get("stand_in", "")):
             errs.append(f"{where}: no stand_in")
+        if "silhouette" in row and not re.fullmatch(r"#[0-9A-Fa-f]{6}", str(row["silhouette"])):
+            errs.append(f"{where}: silhouette is not a #RRGGBB colour")
+        if "tuning" in row and not isinstance(row["tuning"], dict):
+            errs.append(f"{where}: tuning is not an object")
         for key in ("shelter", "work_at"):
             if key in row and not _point(row[key]):
                 errs.append(f"{where}: {key} is not [x, y, z] or [x, y, z, yaw_deg]")

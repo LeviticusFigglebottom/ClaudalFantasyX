@@ -1,49 +1,52 @@
 {
-  "_doc": "Corrow by day, before the storm: gulls work the seawall and the harbour mole and stand on the Watchers' parapet (top 5.2 m); shore crabs on the shingle at the wall's outer foot. The sea is a solid greybox slab, so no fish. The storm states (ch08_beacon_opened onward) keep them: gulls over a seawall in a rising storm are true to the coast. Placed on the greybox layout (M3-CRE-636); move the coordinates when env-art's kit replaces the blocks (same keys as ch02_haluna.json).",
+  "_doc": "Corrow by day, before the storm, in the kit's frame (ADR 0200): gulls work the seawall and stand on the Watchers' heads on its sea parapet (top y 15.4; none on the Breach's stretch, x -36 to -24, so none is left on air when the wall falls); shore crabs on the mole pier (top 1.2; the wall's apron is too narrow and sea-washed for them, the sea at 0.5). The storm states (ch08_beacon_opened onward) keep them: gulls over a seawall in a rising storm are true to the coast. Re-seated on the dressed kit (the Act I audit, 2026-10-29: tools/creatures/wildlife_snap.gd and wildlife_audit.gd, which ray against the zone's visible meshes). Fish: shoals in the sea off the mole and under the wall (the sea at 0.5, deep from z 17).",
   "zone": "ch08/corrow",
+  "ground": {
+    "physics": true
+  },
   "flocks": [
     {
       "id": "seawall",
       "center": [
         0.0,
-        40.0
+        14.0
       ],
-      "radius_m": 36.0,
+      "radius_m": 30.0,
       "altitude_m": [
-        7.0,
-        15.0
+        18.0,
+        26.0
       ],
       "count": 7,
       "perched_at_start": 3,
       "perches": [
         [
-          -30.0,
-          5.2,
-          38.5,
+          -19.5,
+          15.39,
+          4.5,
           180.0
         ],
         [
-          -18.0,
-          5.2,
-          38.5,
+          -10.5,
+          15.41,
+          4.0,
           0.0
         ],
         [
-          -6.0,
-          5.2,
-          38.5,
+          -1.5,
+          15.35,
+          4.0,
           180.0
         ],
         [
-          22.0,
-          5.2,
-          38.5,
+          10.5,
+          15.4,
+          4.0,
           0.0
         ],
         [
-          32.0,
-          5.2,
-          38.5,
+          25.0,
+          15.37,
+          5.0,
           180.0
         ]
       ]
@@ -51,33 +54,40 @@
   ],
   "beaches": [
     {
-      "id": "shingle_west",
+      "id": "mole_pier",
       "center": [
-        -40.0,
-        42.0
+        13.75,
+        33.0
       ],
       "half_extents": [
-        8.0,
-        1.5
+        1.4,
+        5.0
       ],
       "yaw_deg": 0.0,
-      "y": 0.0,
-      "count": 5
-    },
-    {
-      "id": "shingle_east",
-      "center": [
-        12.0,
-        42.0
-      ],
-      "half_extents": [
-        6.0,
-        1.5
-      ],
-      "yaw_deg": 0.0,
-      "y": 0.0,
-      "count": 4
+      "y": 1.2,
+      "count": 9
     }
   ],
-  "shoals": []
+  "shoals": [
+    {
+      "id": "mole",
+      "center": [
+        8.0,
+        -0.1,
+        31.0
+      ],
+      "radius_m": 3.5,
+      "count": 8
+    },
+    {
+      "id": "wall_sea",
+      "center": [
+        -10.0,
+        -0.1,
+        24.0
+      ],
+      "radius_m": 4.0,
+      "count": 6
+    }
+  ]
 }

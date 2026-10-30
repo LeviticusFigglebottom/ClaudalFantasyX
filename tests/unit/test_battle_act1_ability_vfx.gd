@@ -167,5 +167,11 @@ func test_a_hit_lands_on_a_big_body_near_face() -> void:
 	assert_true(closer, "toward the camera")
 	var feet := vfx.anchor(matron, "feet")
 	assert_true((flat.call(feet) as Vector2).is_equal_approx(flat.call(centre)), "the feet stay centred")
+	# The finisher self-render (M3-C05-06): a ground impact (Kerrid's sweep, Anchor Fall) at her feet was hidden inside
+	# her too; `ground` and `knee` sit low on the near face.
+	for low: String in ["ground", "knee"]:
+		var at := vfx.anchor(matron, low)
+		assert_true((flat.call(at) as Vector2).distance_to(flat.call(centre)) > 0.8, "%s steps out of her bulk" % low)
+		assert_true(at.y < chest.y, "%s stays low" % low)
 	ctl.get_parent().remove_child(ctl)
 	ctl.free()

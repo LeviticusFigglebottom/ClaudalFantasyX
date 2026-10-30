@@ -14,7 +14,7 @@ from __future__ import annotations
 import numpy as np
 
 import toma_hair
-from toma_hair import _flow_dir, _gather, hairline_v, in_hair  # noqa: F401  (the skin maps' interface)
+from toma_hair import _flow_dir, _gather  # noqa: F401  (the skin maps' interface; hairline_v and in_hair below)
 from asha_mesh import Part
 
 GREY_MAT = "hair_grey"
@@ -38,9 +38,38 @@ def temple_weight(lm, P: np.ndarray) -> np.ndarray:
     return band * smoothstep(TEMPLE_V[0], TEMPLE_V[1], v)
 
 
+# M3-CHR-592 (optional `_hair.front_break`, Moll's): Toma's hairline is square across the brow, so the crop ended on a
+# straight line there. A broken front: within `width_deg` of the front the hairline moves up and down by up to `amp`
+# head heights (two sines across the brow), the cards rooted inside it and the scalp painted to it. configure() sets
+# it from the `_hair` table (build_hair, moll_textures.skin); without the key, Toma's hairline (the Stillguard crops).
+FRONT_BREAK: dict = {}
+FRONT_BREAK_WAVES = ((23.0, 1.7, 0.6), (41.0, 0.3, 0.4))  # (cycles per radian of azimuth, phase, share of amp)
+
+
+def configure(params: dict) -> None:
+    FRONT_BREAK.clear()
+    FRONT_BREAK.update(params.get("front_break", {}))
+
+
+def hairline_v(lm, P: np.ndarray) -> np.ndarray:
+    v = toma_hair.hairline_v(lm, P)
+    if not FRONT_BREAK:
+        return v
+    yc = lm.P("head_c")[1]
+    phi = np.arctan2(P[:, 0], -(P[:, 1] - yc))
+    front = np.exp(-(np.degrees(phi) / float(FRONT_BREAK["width_deg"])) ** 2)
+    wave = sum(k * np.sin(f * phi + ph) for f, ph, k in FRONT_BREAK_WAVES)
+    return v + float(FRONT_BREAK["amp"]) * front * wave
+
+
+def in_hair(lm, P: np.ndarray, margin_h: float = 0.0) -> np.ndarray:
+    return toma_hair.in_hair(lm, P, margin_h, hairline_v)
+
+
 def build_hair(lm, body, params: dict, scalp=None) -> dict[str, Part]:
     """Toma's cropped cards with Moll's numbers, the temple cards turned grey."""
-    out = toma_hair.build_hair(lm, body, params, scalp)
+    configure(params)
+    out = toma_hair.build_hair(lm, body, params, scalp, hairline_v if FRONT_BREAK else None)
     rng = np.random.default_rng([int(params["seed"]), 5])
     for part in out.values():
         V = part.varr()

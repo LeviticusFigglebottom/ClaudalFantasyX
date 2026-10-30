@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
 [ext_resource type="Shader" path="res://game/shaders/environment/env_sky_low_sun.gdshader" id="2_r"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" path="res://assets/environments/kits/coilspire/flue_key.glb" id="8_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/coilspire/flue_key_wheel.glb" id="9_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/coilspire/tier_brazier.glb" id="10_r"]
+[ext_resource type="Script" path="res://game/levels/act1/kit_slot_swaps.gd" id="slot_swaps"]
 
 [sub_resource type="ShaderMaterial" id="SkyMat"]
 shader = ExtResource("2_r")
@@ -196,3 +197,7 @@ transform = Transform3D(0.490844, 0.0745636, -0.868051, -0, 0.996331, 0.0855825,
 
 [node name="up_the_well" type="Marker3D" parent="CameraHints"]
 transform = Transform3D(0.97855, 0.132932, 0.157383, 0, 0.763955, -0.645269, -0.20601, 0.631428, 0.747568, 1, 0.8, 4.5)
+
+[node name="KitSlotSwaps" type="Node" parent="."]
+script = ExtResource("slot_swaps")
+paths = {"cs_copper": "res://game/levels/ch08/coilspire/coilspire_copper_material.tres", "cs_copper_worn": "res://game/levels/ch08/coilspire/coilspire_copper_worn_material.tres", "cs_iron": "res://game/levels/ch08/coilspire/coilspire_iron_material.tres"}

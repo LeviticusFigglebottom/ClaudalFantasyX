@@ -849,6 +849,24 @@
       ]
     },
     {
+      "id": "officer",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-593: the Ch8 Stillguard officer at Liss's hoist, a named Stillguard on the squad's build (stillguard_variants.json `named`), helmed, no spear; like Ivo's, his cloth and shield maps are the stillguard job's shared atlases.",
+      "sources": ["assets_src/characters/stillguard/**", "assets_src/characters/moll/**", "assets_src/characters/villagers/**",
+                  "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**",
+                  "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/officer/*.glb", "assets/characters/officer/textures/*.png",
+                  "assets/characters/officer/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/stillguard/build_stillguard.py", "--", "--variant", "officer",
+         "--bake-dir", "{scratch}/officer_bake"],
+        ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--variant", "officer", "--bake-dir",
+         "{scratch}/officer_bake"],
+        ["{python}", "assets_src/characters/stillguard/write_materials.py", "--variant", "officer"]
+      ]
+    },
+    {
       "id": "pell",
       "threads": 4,
       "owner": "character",

@@ -1,8 +1,8 @@
 extends TestCase
 ## M3-BPR-422 (ADR 0041): every Act I party member's Swell plays a finisher of its own: its own style (a "shot" style,
 ## not the plain melee or cast), its camera framing and its own effect. Rhen, Asha, Toma and Ysolde have their
-## techniques (swell.json); Kerrid's weighted swing and Liss's reel-stop wait on combat (M3-C05-06, M3-C06-05), so their
-## finishers play from swell_style_by_hero and map.swell_by_hero for any technique of theirs marked "swell".
+## techniques (swell.json), and since M3-C05-06 / M3-C06-05 so do Kerrid (The Long Hold) and Liss (Three-Reel Charge).
+## swell_style_by_hero and map.swell_by_hero still give any later technique of theirs its finisher.
 
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const ACT1_HEROES: Array[StringName] = [&"rhen", &"asha", &"toma", &"ysolde", &"kerrid", &"liss"]

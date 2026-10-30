@@ -11,6 +11,13 @@ extends Node
 ## --frame-usec=<n> (M2-MNU-06) measures on a fake clock that advances exactly n microseconds per process
 ## frame (SceneRouter.set_measure_clock), so every window's frame times are known in advance and the test
 ## judges the real swap deterministically, whatever the machine's load.
+## --resident-loads (ADR 0111, ADR 0042 §4) turns ResidentLoads on in the headless run, as the game has it, so
+## tools/loading/act1_swap_sweep.py measures the Act I changes with their threaded loads behind the fade.
+## --warm-resident also loads the resident set (the hero bodies) before the change, as the title does while it
+## shows, so the entry measures a change made in play rather than the first one after launch.
+## --encounter=<id> routes to a field battle instead of --to: it queues a BattleRequest for that encounter (as a
+## field trigger does, without its stinger) and changes to the field battle scene, so the battle's arena and
+## enemies load behind the fade as in play.
 
 const BUDGETS_PATH := "res://game/data/debug/perf_budgets.json"
 const SECTION := "scene_swap"
@@ -19,6 +26,9 @@ const ARG_TO := "--to="
 const ARG_LEGACY := "--legacy"
 const ARG_LAUNCH := "--launch"
 const ARG_FRAME_USEC := "--frame-usec="
+const ARG_RESIDENT_LOADS := "--resident-loads"
+const ARG_WARM_RESIDENT := "--warm-resident"
+const ARG_ENCOUNTER := "--encounter="
 const EXIT_OK := 0
 const EXIT_FAILED := 1
 
@@ -47,6 +57,7 @@ func _run() -> void:
 	var legacy := false
 	var launch := false
 	var frame_usec := 0
+	var warm_resident := false
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with(ARG_TO):
 			to = arg.trim_prefix(ARG_TO)
@@ -56,6 +67,12 @@ func _run() -> void:
 			legacy = true
 		elif arg == ARG_LAUNCH:
 			launch = true
+		elif arg == ARG_RESIDENT_LOADS:
+			ResidentLoads.run_headless = true
+		elif arg == ARG_WARM_RESIDENT:
+			warm_resident = true
+		elif arg.begins_with(ARG_ENCOUNTER):
+			to = _queue_battle(StringName(arg.trim_prefix(ARG_ENCOUNTER)))
 	if frame_usec > 0:
 		SceneRouter.set_measure_clock(frame_clock(frame_usec))
 	if launch and not cfg.is_empty():
@@ -72,6 +89,13 @@ func _run() -> void:
 	get_tree().change_scene_to_file(str(cfg.get("from", "")))
 	for i in int(cfg.get("settle_frames", 0)):
 		await get_tree().process_frame
+	var resident := ResidentLoads.shared()
+	if warm_resident and resident != null:
+		resident.warm()
+		var warm_frames := int(cfg.get("timeout_frames", 0))
+		while not resident.is_ready() and warm_frames > 0:
+			warm_frames -= 1
+			await get_tree().process_frame
 	SceneRouter.last_swap_stats = {}
 	SceneRouter.change_scene(to)
 	var frames_left := int(cfg.get("timeout_frames", 0))
@@ -83,6 +107,16 @@ func _run() -> void:
 	stats["legacy"] = legacy
 	print("%s %s" % [OUTPUT_TAG, JSON.stringify(stats)])
 	get_tree().quit(EXIT_OK if stats.has("max_frame_ms") else EXIT_FAILED)
+
+
+## Queues a field battle for `encounter` (BattleRequest.submit with the change recorded, not made) and returns the
+## field battle scene to route to.
+static func _queue_battle(encounter: StringName) -> String:
+	var r := BattleRequest.make(encounter, &"", &"")
+	BattleRequest.change_scene = func(_path: String) -> void: pass
+	BattleRequest.submit(r)
+	BattleRequest.change_scene = Callable()
+	return BattleRequest.scene_path()
 
 
 ## A fake clock for SceneRouter.set_measure_clock: `step_usec` microseconds per process frame, so two reads in

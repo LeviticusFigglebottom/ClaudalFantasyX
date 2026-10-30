@@ -73,8 +73,8 @@ class TestHeroClips(unittest.TestCase):
         """Every `@anim <hero> <clip>` in the dialogue has a clip (look_at is the sequencer's own turn), or is still
         on the requested list (PENDING, M3-CHR-1000): Asha, Toma, and Rhen and Ysolde, who had no such check before
         M3-CHR-05."""
-        # M3-CHR-03: Liss; M3-CHR-505: Kerrid; M3-CHR-540: Ivo Brannick; M3-CHR-506: Pell
-        for hero in ("asha", "rhen", "toma", "ysolde", "liss", "kerrid", "ivo", "pell"):
+        # M3-CHR-03: Liss; M3-CHR-505: Kerrid; M3-CHR-540: Ivo Brannick; M3-CHR-506: Pell; M3-CHR-593: the officer
+        for hero in ("asha", "rhen", "toma", "ysolde", "liss", "kerrid", "ivo", "pell", "officer"):
             called = slice_calls(hero)
             self.assertTrue(called, hero)
             missing = called - set(hero_clips.CLIPS[hero]) - {"look_at"} - PENDING.get(hero, set())

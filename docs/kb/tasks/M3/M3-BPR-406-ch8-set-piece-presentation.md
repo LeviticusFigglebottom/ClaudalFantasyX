@@ -2,7 +2,7 @@
 id: M3-BPR-406
 title: "Ch8 set pieces on stage: entries, intercepts, counters, withdrawals, the Reach's phases (ADR 0100)"
 role: combat
-status: doing
+status: review
 owner_session: claude/battle-presentation
 depends_on: [M3-CMB-01]
 milestone: M3
@@ -53,9 +53,14 @@ evacuation, and nobody's death is a joke.
 - [x] The Breach push-in (camera.pressure) and the Reach's intro row.
 - [x] Staging: arenas.json `wall_head_storm` travel_scale 0.85 (the narrow wall-walk: shorter runs, as on the
       derelict's deck). The timeline names the entries (the Fisher Stair, the Surge, the Kirru).
-- [ ] **Ask act1-chapters (M3-C08-02's owner):** the per-wave beats. Should wave 3's Kirru (the guest) get its own
-      camera beat on Storm-Call? Should the Reach's breach_gather turns stay on the default frame (the push-in only)?
-      Reply on this task or in your live log; until then, each wave uses the shared staging above.
+- [x] **The per-wave beats** (asked of act1-chapters on 10-27, never answered; decided 2026-10-29 under ADR 0042).
+      Wave 3's Kirru cuts to the hoist arena's `CameraHints/along_the_walk` (the movers in front, the party behind
+      them) the first time Pell sounds Storm-Call. His later calls, and Storm-Call itself (the withdrawal), stay on
+      the home frame, where the player sees which spawn leaves. This uses choreo.json `camera.moments.entry`
+      `skills` / `once` in BattleEntryCamera, tested by test_the_kirrus_first_call_cuts_along_the_walk. Five hints
+      were rendered and viewed with `boss_camera_sheet --entry`. `the_storm_wall` showed only Toma's back against
+      the storm, and `party_side` hid the foes. The Breach's gather turns stay on the home frame, with the push-in
+      only.
 - [x] The phase looks: BattlePhaseLooks fades an untargetable foe to `phase_looks.untargetable.alpha` (the
       Reach's Breach) and back. A blow on a damage-immune foe plays the `immune` reaction (a hard stop, a stiff
       sideways shudder, no recoil). Test test_battle_phase_looks.

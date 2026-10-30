@@ -7,8 +7,8 @@
   "ch08_bark_netmender": {
    "headers": {"location": "ch08/corrow"},
    "ops": [
-    {"op": "line", "id": "ch08_bark_netmender_001", "key": "DLG_CH08_BARK_NETMENDER_001", "speaker": "", "emotion": "", "voice": "", "src": 6},
-    {"op": "line", "id": "ch08_bark_netmender_002", "key": "DLG_CH08_BARK_NETMENDER_002", "speaker": "", "emotion": "", "voice": "", "src": 7}
+    {"op": "line", "id": "ch08_bark_netmender_001", "key": "DLG_CH08_BARK_NETMENDER_001", "speaker": "netmender", "emotion": "neutral", "voice": "", "src": 6},
+    {"op": "line", "id": "ch08_bark_netmender_002", "key": "DLG_CH08_BARK_NETMENDER_002", "speaker": "netmender", "emotion": "neutral", "voice": "", "src": 7}
    ]
   }
  }

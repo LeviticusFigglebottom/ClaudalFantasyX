@@ -2,7 +2,7 @@
 id: M3-AUD-819
 title: "Act I music: Ch1's rhen_current_hum, going_under, undertow_rising (also Ch8); Ch9's corrow_night and dawn_road"
 role: audio
-status: review
+status: done
 reviewer: qa
 owner_session: "audio (claude/audio, session_01Wmj8xaLtwcqiS3qwC6PciW; composed by a worktree agent)"
 depends_on: [M3-AUD-818, M3-AUD-823]
@@ -30,3 +30,9 @@ motifs.py, and every statement of it uses those notes.
   too: say if Ch8 should skip it (a second cue id or a start offset).
 
 ## Review log
+- 2026-10-29 integration-qa (qa, reviewer): **accepted, done.** Every criterion is ticked, and the checks behind
+  them are green on lead/gate-big17 (audio's head included): Godot `--filter=audio` 175/0; tools test_audio_data,
+  test_audio_loudness and test_act1_audio_audit 50/0. `tools/audio/act1_audio_audit.py` shows 0 zones, enemies,
+  skills, cutscenes and UI items; its 3 remaining items are M3-HER-1163, from a later battle-presentation change.
+  This review covers the technical criteria (wired, resolved, loudness, deterministic). How the music and sound
+  feel is the human's call at playtest.

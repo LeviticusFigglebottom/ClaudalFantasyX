@@ -74,4 +74,22 @@ villager scenes) in place of each capsule, with their field idle.
   front of him at 1.25-1.3 m: Toma's lift (his feet off the floor) is the scene's placement. Not built: a lying-in-shroud
   pose for Ch9 N05/N05B (`corrow_night`), which the task leaves to the Ch9 owner's call; ask the characters track.
 
+- 2026-10-29 (characters, M3-CHR-506): **Pell is built** (`res://assets/characters/pell/pell.glb`, `pell_lod1.glb`,
+  `materials/`, `anim/pell_clips.tres` with idle, walk, run, talk, storm_call, descend_rocks, go_still, listen_tilt,
+  back_to_sea and the battle contract). Stage wrapper to copy (materials, the name-shell toggle and the idle set):
+  `game/levels/_tests/characters/pell/pell_stage.tscn`. It replaces the capsules `pell` and `vigil_pell` in
+  `game/levels/ch09/corrow_night/corrow_night.tscn` (variant `ch09_pell_joined`, act1_final_inventory.md) and the
+  Prologue's party vigil (M3-CHR-518). The vigils play `back_to_sea`; the name-shell starts blank
+  (`PellNameShell.apply(root, false)`) and is carved after the Ch9 naming.
+
+- 2026-10-29 (characters; CONSOLIDATED: "capsules: named NPCs -> characters"): **the named Act I NPCs are cast as
+  themselves.** Every zone layout row that named one cast a generic villager in its place (the ferrymaster as `fisher`,
+  Ione as `vendor`, the Stillguard as `fisher`/`netmender` ...). Now `"cast": "<id>"` for ferrymaster, purser, elder,
+  garo, tender (Ch5 x2, Ch8, Ch9), ione, poolkeeper, fenn (Ch8, Ch9), gatekeeper, hobb (Ch8, Ch9), marra (Ch8, Ch9),
+  ivo, clerk, stillguard_a/b/c (Ch6, Ch8) and Ch9's `stillguard` (as stillguard_d); Ch1's `model` for sabe, scaleman
+  and skipper_sadi. Only the `cast`/`model` value changed in each row. ZoneCast resolves
+  `assets/characters/villagers/<id>/<id>_actor.tscn`, so the Stillguard soldiers and Ivo got actor wrappers there
+  (their GLBs stay in `assets/characters/<id>/`). Every named model has every clip its dialogue calls except the
+  Stillguard's (M3-CHR-590) and `look_at` (the sequencer's turn).
+
 ## Review log

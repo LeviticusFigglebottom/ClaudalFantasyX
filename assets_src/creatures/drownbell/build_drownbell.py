@@ -1394,7 +1394,18 @@ def build_meshes(rig: ck.Rig) -> tuple[ck.Mesh, list[ck.Mesh]]:
 # ---------------------------------------------------------------------------------------------
 # Clips
 # ---------------------------------------------------------------------------------------------
+# M3-CRB-013 (the final move pass, from the battle camera): every skill has its own clip (creatures.json
+# `clip_by_skill`), the flood phase has its own heavier stance and its own versions of the clips it plays (the
+# phase's `clips` map), and the feet stay planted: every clip but the KO's end is re-solved so each hooked foot stays
+# where it grips the ground while the bell rocks over it (`plant_feet`), lifting only where a clip steps or stamps.
+# Root rotations: +x leans the crown toward its foe (+z, the face), +z leans it toward -x.
 LEGS = [f"leg{i}" for i in range(6)]
+MIRROR_LEG = [5, 4, 3, 2, 1, 0]  # the leg across the x = 0 plane (legs sit at azimuth (i + 0.5) x 60 degrees)
+Y = np.array([0.0, 1.0, 0.0])
+REST = ((0.0, 0.0, 0.0), (0.0, 0.0, 0.0))
+# The flood's stance: sunk 12 cm on bent legs and slumped 4 degrees toward its foe, over the stage's own sink and
+# tilt (creatures.json phases.flood): idle_flood rocks about it, and every clip the flood plays starts and ends on it.
+FLOOD = ((4.0, 0.0, 0.0), (0.0, -0.12, 0.0))
 
 
 def _leg_out(i: int, deg: float) -> tuple[float, float, float]:
@@ -1417,95 +1428,220 @@ def _tip(rz: float, rx: float, pivot_x: float, pivot_z: float, pivot_y: float = 
     return (rx, 0.0, rz), tuple(off)
 
 
-def build_clips() -> list[ck.Clip]:
+# How a move arrives at a key: eased in and out (a hold at the key), accelerating into it (a blow landing: it is
+# still at full speed on the contact frame), leaving it fast and slowing (a recoil, a bounce), or between.
+EASES = {"s": lambda u: u * u * (3.0 - 2.0 * u), "in": lambda u: u * u, "out": lambda u: 1.0 - (1.0 - u) ** 2,
+         "in_s": lambda u: 0.5 * u * u + 0.5 * u * u * (3.0 - 2.0 * u)}
+
+
+def body(c: ck.Clip, rows, stance=REST) -> None:
+    """Keys the whole bell (the root) relative to `stance`: rows (t, rx, rz, lift[, ease[, ry[, z]]]), each arriving by
+    its ease (EASES), keyed at every baked frame so the ease is what plays."""
+    rows = [tuple(r) + ("s", 0.0, 0.0)[len(r) - 4:] for r in rows]
+    (sx, sy, sz), (lx, ly, lz) = stance
+
+    def at(r) -> tuple:
+        return np.array([sx + r[1], sy + r[5], sz + r[2]]), np.array([lx, ly + r[3], lz + r[6]])
+
+    frames = range(int(rows[0][0] * ck.FPS), int(rows[-1][0] * ck.FPS) + 1)
+    ts = sorted({r[0] for r in rows} | {f / ck.FPS for f in frames if rows[0][0] <= f / ck.FPS <= rows[-1][0]})
+    for t in ts:
+        k = max(j for j, r in enumerate(rows) if r[0] <= t)
+        if k == len(rows) - 1:
+            rot, loc = at(rows[k])
+        else:
+            a, b = rows[k], rows[k + 1]
+            e = EASES[b[4]]((t - a[0]) / (b[0] - a[0]))
+            (r0, l0), (r1, l1) = at(a), at(b)
+            rot, loc = r0 + (r1 - r0) * e, l0 + (l1 - l0) * e
+        c.key("root", t, tuple(rot), tuple(loc))
+
+
+def osc(c: ck.Clip, bone: str, t0: float, t1: float, amp, f0: float, f1: float, a0: float = 1.0,
+        a1: float = 1.0) -> None:
+    """A tremor of `bone` between t0 and t1 (zero at both): a swing of `amp` degrees (rx, ry, rz) at f0 rising or
+    falling to f1 Hz, its size a0 -> a1 (times `amp`), keyed at each swing's peak (the keys ease, so it is smooth)."""
+    c.key(bone, t0)
+    t, sign = t0 + 0.25 / f0, 1.0
+    while True:
+        u = (t - t0) / (t1 - t0)
+        f = f0 + (f1 - f0) * u
+        if t > t1 - 0.25 / f:
+            break
+        e = a0 + (a1 - a0) * u
+        c.key(bone, t, tuple(sign * e * v for v in amp))
+        sign = -sign
+        t += 0.5 / f
+    c.key(bone, t1)
+
+
+def end_on(c: ck.Clip, src: ck.Clip, t_src: float = 0.0) -> None:
+    """Keys every bone either clip moves to `src`'s pose at `t_src`, at `c`'s end (no pop into it)."""
+    for b in sorted(set(c.keys) | set(src.keys)):
+        r, loc = src.sample(b, t_src)
+        c.key(b, c.length, tuple(r), tuple(loc))
+
+
+def slam(name: str, stance) -> ck.Clip:
+    """Hood Slam: it dips, rears up on its hind legs with the crown thrown back (0.14-0.62 s, the tell), hangs, and
+    drops forward, gathering speed, to slam the rim down at 0.8 s; the impact jolts the bell and the rim rings,
+    and it settles heavily. From the flood stance the drop is shallower (the rim is already low)."""
+    c = ck.Clip(name, 1.6)
+    hit_rx, hit_lift = (12.5, -0.07) if stance is REST else (8.5, -0.02)
+    body(c, ((0.0, 0.0, 0.0, 0.0), (0.14, 2.5, 0.0, -0.035), (0.48, -12.0, 0.0, 0.24), (0.62, -13.5, 0.0, 0.27),
+             (0.8, hit_rx, 0.0, hit_lift, "in_s"), (0.9, hit_rx - 2.5, 0.0, hit_lift + 0.02, "out"),
+             (1.05, hit_rx - 1.5, 0.0, hit_lift), (1.3, 3.0, 0.0, 0.0), (1.6, 0.0, 0.0, 0.0)), stance)
+    osc(c, "bell", 0.8, 1.2, (1.4, 0.0, 0.5), 7.0, 6.0, 1.0, 0.0)
+    osc(c, "rim", 0.8, 1.35, (0.0, 0.0, 1.8), 6.5, 6.0, 1.0, 0.0)
+    for t, r in ((0.0, 0.0), (0.14, -3.0), (0.62, -12.0), (0.85, 20.0), (1.15, -7.0), (1.6, 0.0)):
+        c.key("rope1", t, (r, 0, 0))
+        c.key("rope2", t, (r * 0.5, 0, 0))
+    return c
+
+
+def build_clips() -> tuple[list[ck.Clip], dict]:
+    """The clips, and per clip how its feet are planted (`plant_feet`)."""
+    plant: dict = {}
     idle = ck.Clip("idle", 3.2, loop=True)
     idle.wave("bell", amp_rot=(1.0, 0.0, 1.5), cycles=1)
     idle.wave("rope0", amp_rot=_rope_sway(2.0), cycles=1, phase=0.6)
     idle.wave("rope1", amp_rot=_rope_sway(3.0), cycles=1, phase=1.2)
     idle.wave("rope2", amp_rot=_rope_sway(4.0), cycles=1, phase=1.8)
-    for i, leg_ in enumerate(LEGS):  # every loop two legs shift their grip under the rim
-        lift = 14.0 if i in (1, 4) else 0.0
-        t0 = 0.6 if i == 1 else 2.0
-        idle.key(f"{leg_}_b", 0.0)
-        if lift:
-            idle.key(f"{leg_}_b", t0, (0, 0, 0))
-            idle.key(f"{leg_}_b", t0 + 0.3, _leg_out(i, lift))
-            idle.key(f"{leg_}_b", t0 + 0.6, (0, 0, 0))
-        idle.key(f"{leg_}_b", 3.2)
     idle.wave("mass", amp_loc=(0.0, 0.012, 0.0), cycles=2)
+    plant["idle"] = {"steps": [(1, 0.6, 1.2, 0.05, 0.0, 0.0), (4, 2.0, 2.6, 0.05, 0.0, 0.0)]}  # two shift their grip
 
-    def legs_extend(c: ck.Clip, t: float, deg: float) -> None:
-        for i, leg_ in enumerate(LEGS):
-            c.key(f"{leg_}_a", t, _leg_out(i, -deg))
-            c.key(f"{leg_}_b", t, _leg_out(i, deg * 0.6))
-
-    # ready: an alert hold, the bell lifted a hand's breadth on braced legs and leaning toward its foe, the rim
-    # shivering, the rope swinging quicker; a loop
+    # ready: an alert hold, lifted 10 cm on braced legs and leaning 6 degrees at its foe, its weight shifting side to
+    # side, the rim shivering, the rope swinging quicker; a loop
     ready = ck.Clip("ready", 2.0, loop=True)
-    ready.wave("root", amp_rot=(0.6, 0.0, 0.0), amp_loc=(0.0, 0.012, 0.0), base_rot=(2.5, 0.0, 0.0),
-               base_loc=(0.0, 0.05, 0.0), cycles=1)
+    ready.wave("root", amp_rot=(0.8, 0.0, 1.4), amp_loc=(0.0, 0.015, 0.0), base_rot=(6.0, 0.0, 0.0),
+               base_loc=(0.0, 0.10, 0.0), cycles=1)
     ready.wave("bell", amp_rot=(0.5, 0.0, 0.9), cycles=2, phase=0.5)
-    ready.wave("rim", amp_rot=(0.0, 0.0, 0.35), cycles=4)
-    for i, leg_ in enumerate(LEGS):
-        ready.wave(f"{leg_}_a", amp_rot=_leg_out(i, 1.2), base_rot=_leg_out(i, -6.0), cycles=1, phase=i * 1.1)
-        ready.wave(f"{leg_}_b", amp_rot=_leg_out(i, 1.5), base_rot=_leg_out(i, 2.0), cycles=1, phase=i * 1.1 + 0.6)
+    osc(ready, "rim", 0.0, 2.0, (0.0, 0.0, 0.45), 5.0, 5.0)
     ready.wave("rope1", amp_rot=_rope_sway(5.0), cycles=2, phase=0.8)
     ready.wave("rope2", amp_rot=_rope_sway(7.0), cycles=2, phase=1.4)
     ready.wave("mass", amp_loc=(0.0, 0.015, 0.0), cycles=2)
 
-    attack = ck.Clip("attack", 1.5)  # hood_slam
-    for t, rx, lift, fwd, ext in ((0.0, 0, 0, 0, 0), (0.55, -10, 0.42, -0.05, 50), (0.8, 9, -0.02, 0.28, 0),
-                                  (1.0, 4, 0.0, 0.22, 0), (1.5, 0, 0, 0, 0)):
-        attack.key("root", t, (rx, 0, 0), (0, lift, fwd))
-        legs_extend(attack, t, ext)
-    for t, r in ((0.0, 0), (0.55, -10), (0.8, 18), (1.1, -6), (1.5, 0)):
-        attack.key("rope1", t, (r, 0, 0))
+    attack = slam("attack", REST)
 
-    cast = ck.Clip("cast", 1.8)  # the toll's swing; the ring lands at 1.0 s
+    cast = ck.Clip("cast", 1.8)  # the generic swing (no skill plays it now; idle_b echoes it)
     for t, rx, rz in ((0.0, 0, 0), (0.5, -13, 2), (1.0, 15, -2), (1.15, 13, -1.5), (1.4, -6, 1), (1.8, 0, 0)):
         cast.key("bell", t, (rx, 0, rz))
     for t, s in ((0.95, 0.0), (1.0, 1.0), (1.05, -1.0), (1.1, 0.8), (1.15, -0.6), (1.2, 0.4), (1.3, 0.0)):
         cast.key("rim", t, (0.0, 0.0, 1.2 * s))
-    for t, r in ((0.0, 0), (0.5, 12), (1.0, -22), (1.4, 8), (1.8, 0)):  # the trailing end drags on the ground
+    for t, r in ((0.0, 0), (0.5, 12), (1.0, -22), (1.4, 8), (1.8, 0)):
         cast.key("rope1", t, (r, 0, 0))
         cast.key("rope2", t, (r * 0.4, 0, 0))
 
-    # M3-CRE-617: the blow rocks the whole bell back on its legs (peak at 0.1 s, where a hit snaps in), the legs
-    # brace, the rim rings and the bell shivers as it settles.
+    # The Toll: a short dip toward its foe, then it rocks far back on its legs (the crown 0.7 m back), hangs, and swings
+    # the whole bell through: the rim rings at 1.0 s (the shockwave and the toll's sound), and it rocks back and forth
+    # to rest while the bronze keeps trembling
+    toll = ck.Clip("toll", 2.4)
+    body(toll, ((0.0, 0.0, 0.0, 0.0), (0.16, 3.0, 0.0, -0.03), (0.62, -15.0, 1.5, 0.09), (0.78, -16.5, 1.8, 0.10),
+                (1.0, 13.0, -1.0, -0.03, "in_s"), (1.14, 10.0, -0.6, -0.01, "out"), (1.38, -6.0, 0.5, 0.03),
+                (1.65, 3.5, -0.3, 0.0), (1.95, -1.5, 0.0, 0.0), (2.4, 0.0, 0.0, 0.0)))
+    osc(toll, "bell", 1.0, 2.4, (0.6, 0.0, 1.0), 6.0, 5.0, 1.5, 0.0)
+    osc(toll, "rim", 1.0, 1.9, (0.0, 0.0, 2.0), 6.5, 6.0, 1.0, 0.0)
+    for t, r in ((0.0, 0.0), (0.16, -3.0), (0.7, 14.0), (1.02, -24.0), (1.4, 10.0), (1.8, -4.0), (2.4, 0.0)):
+        toll.key("rope1", t, (r, 0, 0))
+        toll.key("rope2", t, (r * 0.45, 0, 0))
+
+    # Gathering Toll (the two-turn tell before the Toll): it settles low, steps its legs out wide and braces, then tips
+    # slowly back (9 degrees) while the bronze trembles faster and harder; the charge locks at 1.6 s (BattleBossVfx's
+    # rim glow, BattleBossChoreo's gather sway), it holds, and lets go back up to its stance
+    gather = ck.Clip("toll_gather", 2.6)
+    body(gather, ((0.0, 0.0, 0.0, 0.0), (0.55, 1.0, 0.0, -0.08), (0.9, 0.0, 0.0, -0.085), (1.6, -9.0, 0.8, -0.07),
+                  (2.15, -9.5, 0.9, -0.07), (2.6, 0.0, 0.0, 0.0)))
+    osc(gather, "bell", 0.6, 2.5, (0.3, 0.0, 1.0), 2.0, 7.0, 0.3, 1.3)
+    osc(gather, "rim", 0.6, 2.4, (0.0, 0.0, 1.0), 3.0, 7.0, 0.2, 1.0)
+    gather.wave("rope2", amp_rot=_rope_sway(2.0), cycles=3)
+    plant["toll_gather"] = {"steps": [(i, 0.12 + 0.18 * (i % 2), 0.42 + 0.18 * (i % 2), 0.06, 0.0, 0.07)
+                                      for i in range(6)]
+                            + [(i, 2.12 + 0.14 * (i % 2), 2.42 + 0.14 * (i % 2), 0.05, 0.07, 0.0) for i in range(6)]}
+
+    # the blow rocks the whole bell back on its legs (peak at 0.13 s: a hit snaps in at 0.067 s), the rim jolts and
+    # rings, the front feet shuffle (lift and grip again) and it settles
     hit = ck.Clip("hit", 0.6)
-    for k, t in enumerate(np.linspace(0.0, 0.54, 10)):
-        s = (1.0 if k % 2 else -1.0) * (1.0 - t / 0.6) * (0.0 if k == 0 else 1.0)
-        hit.key("bell", float(t), (0.8 * s, 0.0, 2.6 * s))
-    hit.key("bell", 0.6)
-    for t, rx, lift in ((0.0, 0.0, 0.0), (0.1, -5.0, 0.04), (0.26, 2.2, 0.0), (0.42, -0.8, 0.0), (0.6, 0.0, 0.0)):
-        hit.key("root", t, (rx, 0, 0), (0, lift, -0.06 * rx / 5.0))
-    for t, s in ((0.06, 0.0), (0.1, 1.0), (0.15, -0.8), (0.2, 0.6), (0.26, -0.4), (0.34, 0.2), (0.44, 0.0)):
-        hit.key("rim", t, (0.0, 0.0, 1.0 * s))
-    for t, deg in ((0.0, 0.0), (0.1, 9.0), (0.35, 3.0), (0.6, 0.0)):
-        legs_extend(hit, t, deg)
+    body(hit, ((0.0, 0.0, 0.0, 0.0), (0.13, -9.0, 3.5, 0.05, "out"), (0.3, 3.0, -1.0, 0.0), (0.44, -1.0, 0.4, 0.0),
+               (0.6, 0.0, 0.0, 0.0)))
+    osc(hit, "rim", 0.06, 0.56, (0.0, 0.0, 2.2), 5.0, 5.0, 1.0, 0.0)
+    for t, rx in ((0.0, 0.0), (0.1, 0.0), (0.2, -1.6), (0.36, 0.8), (0.6, 0.0)):
+        hit.key("bell", t, (rx, 0.0, 0.0))
+    for t, r in ((0.0, 0.0), (0.13, 9.0), (0.32, -5.0), (0.6, 0.0)):
+        hit.key("rope1", t, (r, 0, 0))
+    hit_steps = [(0, 0.06, 0.3, 0.05), (5, 0.12, 0.36, 0.045), (1, 0.2, 0.44, 0.035)]
+    plant["hit"] = {"steps": [(i, a, b, h, 0.0, 0.0) for i, a, b, h in hit_steps]}
+    hit_b = ck.varied(hit, "hit_b", **ck.HIT_B)  # the kit's mirrored, heavier hit, its shuffle on the mirrored legs
+    plant["hit_b"] = {"steps": [(MIRROR_LEG[i], a, b, h * 1.2, 0.0, 0.0) for i, a, b, h in hit_steps]}
 
-    # the Flood: the legs let go and splay (the stage sinks and tilts the model into the water, creatures.json)
-    phase = ck.Clip("phase_change", 2.4)
-    for t, s in ((0.0, 0.0), (0.8, 0.5), (1.8, 0.95), (2.4, 1.0)):
-        for i, leg_ in enumerate(LEGS):
-            phase.key(f"{leg_}_a", t, _leg_out(i, 4.0 * s))
-            phase.key(f"{leg_}_b", t, _leg_out(i, 55.0 * s))
-    for t, rx in ((0.0, 0.0), (0.6, -4.0), (1.4, 5.0), (2.0, -2.0), (2.4, 0.0)):
-        phase.key("bell", t, (rx, 0, 0))
-
+    # the flood's stance: lower, slumped toward its foe, a slow heavy wallow and a bob in the water; a loop
     flood = ck.Clip("idle_flood", 3.6, loop=True)
-    flood.wave("bell", amp_rot=(1.6, 0.0, 2.2), cycles=1)
-    for i, leg_ in enumerate(LEGS):
-        flood.wave(f"{leg_}_a", amp_rot=_leg_out(i, 1.5), base_rot=_leg_out(i, 4.0), cycles=1, phase=i)
-        flood.wave(f"{leg_}_b", amp_rot=_leg_out(i, 4.0), base_rot=_leg_out(i, 55.0), cycles=1, phase=i + 0.7)
+    flood.wave("root", amp_rot=(1.5, 0.0, 2.6), amp_loc=(0.0, 0.02, 0.0), base_rot=FLOOD[0], base_loc=FLOOD[1],
+               cycles=1)
+    flood.wave("bell", amp_rot=(0.6, 0.0, 0.8), cycles=2)
+    flood.wave("mass", amp_loc=(0.0, 0.01, 0.0), cycles=1, phase=2.0)
     flood.wave("rope1", amp_rot=(4.0, 0.0, 6.0), cycles=1, phase=0.9)
     flood.wave("rope2", amp_rot=(6.0, 0.0, 9.0), cycles=1, phase=1.5)
 
-    ko = ck.Clip("ko", 2.6)  # it tips onto its side about the lip and slides seaward (+x), rim toward the sea
+    # The Flood (phase change): the blow that brings it jolts it, the bronze shudders harder and the legs scrabble
+    # for grip, then they give: it lurches forward and sinks low on bent legs, rocks, and settles into the flood stance
+    # (the stage sinks and tilts it into the rising water over the same 2.4 s, creatures.json)
+    phase = ck.Clip("phase_change", 2.4)
+    body(phase, ((0.0, 0.0, 0.0, 0.0), (0.18, -5.0, 2.0, 0.03, "out"), (0.45, 1.5, -0.5, 0.0), (1.0, 0.0, 0.0, -0.02),
+                 (1.3, 8.0, -1.5, -0.17, "in"), (1.6, 5.5, 0.5, -0.13, "out"), (2.0, 3.5, -0.3, -0.125)))
+    osc(phase, "bell", 0.3, 2.0, (0.6, 0.0, 1.4), 5.0, 7.0, 1.0, 0.2)
+    osc(phase, "rim", 0.2, 1.7, (0.0, 0.0, 1.6), 6.0, 6.5, 1.0, 0.3)
+    for t, r in ((0.0, 0.0), (0.18, 10.0), (0.6, -6.0), (1.3, 16.0), (1.7, -8.0)):
+        phase.key("rope1", t, (r, 0, 0))
+    end_on(phase, flood)
+    plant["phase_change"] = {"steps": [(1, 0.45, 0.65, 0.05, 0.0, 0.0), (4, 0.58, 0.78, 0.05, 0.0, 0.0),
+                                       (0, 0.7, 0.9, 0.05, 0.0, 0.0), (3, 0.82, 1.02, 0.04, 0.0, 0.0)]}
+
+    # Floodtide: it heaves itself up out of its crouch, the front legs lifting high, hangs, and drops hard, stamping,
+    # so the water bursts out from under the rim at 1.0 s; it bounces and sinks back into the flood stance
+    flood_surge = ck.Clip("flood_surge", 2.0)
+    body(flood_surge, ((0.0, 0.0, 0.0, 0.0), (0.45, -3.0, 0.0, 0.19), (0.72, -4.0, 0.0, 0.22),
+                       (1.0, 2.0, 0.0, -0.06, "in"), (1.12, 1.0, 0.0, -0.035, "out"), (1.3, 1.5, 0.0, -0.05),
+                       (2.0, 0.0, 0.0, 0.0)), FLOOD)
+    osc(flood_surge, "bell", 1.0, 1.45, (1.2, 0.0, 0.4), 7.0, 6.0, 1.0, 0.0)
+    osc(flood_surge, "rim", 1.0, 1.5, (0.0, 0.0, 1.4), 6.5, 6.0, 1.0, 0.0)
+    for t, r in ((0.0, 0.0), (0.6, -10.0), (1.02, 14.0), (1.4, -5.0), (2.0, 0.0)):
+        flood_surge.key("rope1", t, (r, 0, 0))
+    end_on(flood_surge, flood)
+    plant["flood_surge"] = {"steps": [(0, 0.3, 0.98, 0.14, 0.0, 0.0), (5, 0.36, 1.0, 0.14, 0.0, 0.0),
+                                      (1, 0.42, 1.0, 0.08, 0.0, 0.0), (4, 0.46, 1.0, 0.08, 0.0, 0.0)]}
+
+    # Undertow Surge: a heavy turn away (it twists 14 degrees on its planted legs and leans), then it hauls round the
+    # other way and back, dragging: the pull lands at 1.3 s, and the drag carries on before it settles
+    undertow = ck.Clip("undertow_surge", 2.4)
+    body(undertow, ((0.0, 0.0, 0.0, 0.0), (0.7, 2.0, 3.0, -0.02, "s", -12.0, 0.0),
+                    (1.0, 1.0, 3.0, -0.02, "s", -14.0, 0.02), (1.3, -5.0, -2.5, 0.03, "in_s", 10.0, -0.07),
+                    (1.55, -4.0, -3.0, 0.03, "out", 12.0, -0.08), (1.9, -1.0, -1.0, 0.0, "s", 4.0, -0.03),
+                    (2.4, 0.0, 0.0, 0.0)), FLOOD)
+    for t, rz in ((0.0, 0.0), (1.0, -1.5), (1.4, 2.0), (1.9, -0.6), (2.4, 0.0)):
+        undertow.key("bell", t, (0.0, 0.0, rz))
+    for t, r in ((0.0, 0.0), (0.8, 12.0), (1.35, -18.0), (1.9, 6.0), (2.4, 0.0)):
+        undertow.key("rope1", t, _rope_sway(r))
+        undertow.key("rope2", t, _rope_sway(r * 1.3))
+    end_on(undertow, flood)
+
+    # Rouse the Spawn: it tips its mouth down toward the ground and knocks the rim on it three times, a call to the
+    # spawn (the second knock at 1.2 s); each knock rings the rim
+    rouse = ck.Clip("rouse_polyp", 2.2)
+    body(rouse, [(t, rx, 0.0, 0.0, ease) for t, rx, ease in (
+        (0.0, 0.0, "s"), (0.55, 4.5, "s"), (0.8, 3.0, "out"), (0.92, 6.5, "in"), (1.05, 3.0, "out"), (1.2, 7.0, "in"),
+        (1.35, 3.0, "out"), (1.5, 6.5, "in"), (1.8, 2.0, "out"), (2.2, 0.0, "s"))], FLOOD)
+    for t0 in (0.92, 1.2, 1.5):
+        osc(rouse, "rim", t0, t0 + 0.26, (0.0, 0.0, 1.2), 7.0, 7.0, 1.0, 0.0)
+    for t, r in ((0.0, 0.0), (0.55, 8.0), (1.0, -4.0), (1.6, 6.0), (2.2, 0.0)):
+        rouse.key("rope1", t, (r, 0, 0))
+    end_on(rouse, flood)
+
+    ko = ck.Clip("ko", 2.6)  # from the flood stance it tips onto its side about the lip and slides seaward (+x)
     for t, rz, slide, drop in ((0.0, 0.0, 0.0, 0.0), (0.5, -6.0, 0.0, 0.0), (1.2, -30.0, 0.05, 0.08),
                                (1.9, -68.0, 0.15, 0.24), (2.2, -76.0, 0.2, 0.3), (2.6, -74.0, 0.22, 0.29)):
-        rot, off = _tip(rz, 0.0, RIM_R, 0.0)
-        ko.key("root", t, rot, (off[0] + slide, off[1] - drop, off[2]))
+        rx = FLOOD[0][0] * (1.0 - ck.smoothstep(0.0, 1.2, t))
+        rot, off = _tip(rz, float(rx), RIM_R, 0.0)
+        ko.key("root", t, rot, (off[0] + slide, off[1] - drop + FLOOD[1][1], off[2]))
     for i, leg_ in enumerate(LEGS):
         ko.key(f"{leg_}_a", 0.0)
         ko.key(f"{leg_}_a", 1.4, _leg_out(i, 4.0))
@@ -1513,34 +1649,132 @@ def build_clips() -> list[ck.Clip]:
         ko.key(f"{leg_}_b", 0.0)
         ko.key(f"{leg_}_b", 1.4, _leg_out(i, 50.0))
         ko.key(f"{leg_}_b", 2.6, _leg_out(i, 62.0))
+    plant["ko"] = {"weight": lambda i, t: 1.0 - float(ck.smoothstep(0.2, 1.0, t))}  # the legs let go
 
-    # intro: it rises out of the shallows (low on its splayed legs, tilted), the legs unfold and plant, it pushes
-    # itself up to its full height, draws back and tolls once, softly (presentation owns the strike-ring), and
-    # settles on idle's first frame
+    # intro: it starts sunk in the shallows, tilted, its legs folded up; the legs unfold and reach down to grip, it
+    # heaves itself up past its full height, draws back and swings to toll once (the ring at about 2.02 s; presentation
+    # owns the strike-ring) and settles on idle's first frame
     intro = ck.Clip("intro", 2.8)
-    for t, (lift, rx, rz, la, lb, mass_y) in ((0.0, (-0.17, -3.0, 5.0, 3.0, 62.0, 0.05)),
-                                             (0.45, (-0.16, -2.0, 4.0, 2.0, 50.0, 0.05)),
-                                             (0.95, (-0.1, 1.0, 1.5, -4.0, 6.0, 0.03)),
-                                             (1.3, (0.06, -1.0, -1.5, -7.0, -2.0, 0.0)),
-                                             (1.55, (0.0, 0.5, 0.5, -1.0, 1.0, 0.0)),
-                                             (2.8, (0.0, 0.0, 0.0, 0.0, 0.0, 0.0))):
-        intro.key("root", t, (rx, 0.0, rz), (0.0, lift, 0.0))
+    body(intro, ((0.0, -4.0, 7.0, -0.2), (0.35, -3.0, 6.0, -0.19), (0.8, 0.0, 3.0, -0.12), (1.15, 2.0, -1.5, 0.1),
+                 (1.4, 0.0, 0.5, 0.04), (1.55, -2.0, 0.0, 0.06), (1.8, -8.0, 0.0, 0.07),
+                 (2.02, 6.0, 0.0, -0.02, "in_s"),
+                 (2.25, -2.5, 0.0, 0.0, "out"), (2.5, 1.0, 0.0, 0.0)))
+    for t, mass_y in ((0.0, 0.05), (0.45, 0.05), (1.0, 0.0)):
         intro.key("mass", t, (0, 0, 0), (0.0, mass_y, 0.0))
-        for i, leg_ in enumerate(LEGS):
-            stagger = 0.06 * ((i * 3) % 6) / 5.0 if 0.0 < t < 1.5 else 0.0
-            intro.key(f"{leg_}_a", t + stagger, _leg_out(i, la))
-            intro.key(f"{leg_}_b", t + stagger, _leg_out(i, lb))
-    for t, rx in ((0.0, 0.0), (1.6, 0.0), (1.85, -5.0), (2.08, 4.5), (2.35, -1.5), (2.6, 0.5)):
-        intro.key("bell", t, (rx, 0.0, 0.0))
-    for t, s in ((2.04, 0.0), (2.08, 0.7), (2.13, -0.6), (2.19, 0.45), (2.26, -0.3), (2.34, 0.15), (2.45, 0.0)):
-        intro.key("rim", t, (0.0, 0.0, s))
+    osc(intro, "rim", 2.02, 2.5, (0.0, 0.0, 1.0), 6.0, 6.0, 1.0, 0.0)
     for t, r in ((0.0, -10.0), (0.9, 6.0), (1.5, -3.0), (1.85, 4.0), (2.08, -8.0), (2.45, 3.0)):
         intro.key("rope1", t, _rope_sway(r))
         intro.key("rope2", t, _rope_sway(r * 1.4))
-    for b in sorted(set(intro.keys) | set(idle.keys)):  # end on idle's first frame
-        r, loc = idle.sample(b, 0.0)
-        intro.key(b, 2.8, tuple(r), tuple(loc))
-    return [idle, ready, intro, attack, cast, hit, ko, phase, flood]
+    end_on(intro, idle)
+    # its feet start tucked in and up under the rim, and reach out and down to their grips, one after another
+    lag = [0.05 * ((i * 3) % 6) for i in range(6)]
+    plant["intro"] = {"steps": [(i, 0.42 + lag[i], 0.95 + lag[i], 0.05, -0.14, 0.0, 0.1, 0.0) for i in range(6)]}
+    idle_b = ck.varied(cast, "idle_b", **ck.IDLE_B)  # the kit's fidget (a small quick echo of the swing), planted
+
+    clips = [idle, ready, intro, attack, cast, hit, ko, phase, flood, toll, gather, flood_surge, undertow, rouse,
+             hit_b, idle_b, slam("attack_flood", FLOOD), ck.in_pose(hit, "hit_flood", pose_dict(FLOOD)),
+             ck.in_pose(ready, "ready_flood", pose_dict(FLOOD))]
+    plant["hit_flood"] = plant["hit"]
+    return clips, plant
+
+
+def pose_dict(stance) -> dict:
+    return {"root": (np.asarray(stance[0], float), np.asarray(stance[1], float))}
+
+
+# ---------------------------------------------------------------------------------------------
+# Planted feet (M3-CRB-013)
+# ---------------------------------------------------------------------------------------------
+def _axis_rot(k: np.ndarray, rad: float) -> np.ndarray:
+    k = k / np.linalg.norm(k)
+    K = np.array([[0.0, -k[2], k[1]], [k[2], 0.0, -k[0]], [-k[1], k[0], 0.0]])
+    return np.eye(3) + math.sin(rad) * K + (1.0 - math.cos(rad)) * (K @ K)
+
+
+def _euler_of(R: np.ndarray) -> np.ndarray:
+    """The kit's Euler degrees (X, then Y, then Z about the rest axes) of a rotation."""
+    b = math.asin(max(-1.0, min(1.0, -R[2, 0])))
+    return np.degrees([math.atan2(R[2, 1], R[2, 2]), b, math.atan2(R[1, 0], R[0, 0])])
+
+
+class LegIK:
+    """Two-bone IK for leg i: the femur turns about the vertical (to face the foot) and about the axis across it, the
+    tibia about the same axis at the knee, so the leg stays in its upright plane and the knee keeps pointing up."""
+
+    def __init__(self, rig: ck.Rig, i: int) -> None:
+        a, b = rig.bones[rig.index(f"leg{i}_a")], rig.bones[rig.index(f"leg{i}_b")]
+        self.H, self.K, self.F = (np.asarray(p, float) for p in (a.head, b.head, b.tail))
+        self.u = leg_frame(i)
+        self.n = np.cross(self.u, Y)
+        self.v1, self.v2 = self.K - self.H, self.F - self.K
+        self.L1, self.L2 = float(np.linalg.norm(self.v1)), float(np.linalg.norm(self.v2))
+        self.g0 = self._ang(self.v2) - self._ang(self.v1)
+
+    def _ang(self, v: np.ndarray) -> float:
+        return math.atan2(float(v @ Y), float(v @ self.u))
+
+    def solve(self, target: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        """Euler degrees of the femur and the tibia that put the foot at `target` (in the mass's rest frame); a target
+        out of reach gets the nearest the leg can do."""
+        d = target - self.H
+        dist = float(np.clip(np.linalg.norm(d), abs(self.L1 - self.L2) + 1e-4, self.L1 + self.L2 - 1e-4))
+        cg = (dist * dist - self.L1 ** 2 - self.L2 ** 2) / (2.0 * self.L1 * self.L2)
+        g = math.copysign(math.acos(max(-1.0, min(1.0, cg))), self.g0)
+        Rb = _axis_rot(self.n, g - self.g0)
+        w = self.v1 + Rb @ self.v2
+        dh = d - (d @ Y) * Y
+        dhl = float(np.linalg.norm(dh))
+        psi = math.atan2(float(Y @ np.cross(self.u, dh)), float(self.u @ dh)) if dhl > 1e-6 else 0.0
+        alpha = math.atan2(float(d @ Y), dhl) - self._ang(w)
+        Ra = _axis_rot(Y, psi) @ _axis_rot(self.n, alpha)
+        return _euler_of(Ra), _euler_of(Rb)
+
+
+def _foot_offset(steps: list, i: int, t: float) -> np.ndarray:
+    """Leg i's foot target offset from its rest grip at `t`: each step (leg, t0, t1, height, out0, out1[, up0, up1])
+    lifts the foot by an arc of `height` and moves it out from its grip by out0 -> out1 (and up by up0 -> up1); before
+    a leg's first step its foot holds that step's start."""
+    off = None
+    for s in sorted((s for s in steps if s[0] == i), key=lambda s: s[1]):
+        _leg, t0, t1, h, o0, o1 = s[:6]
+        y0, y1 = s[6:8] if len(s) > 6 else (0.0, 0.0)
+        if t < t0:
+            off = (o0, y0) if off is None else off
+            break
+        if t <= t1:
+            u = (t - t0) / (t1 - t0)
+            e = float(ck.smoothstep(0.0, 1.0, u))
+            off = (o0 + (o1 - o0) * e, y0 + (y1 - y0) * e + h * math.sin(math.pi * u))
+            break
+        off = (o1, y1)
+    out, up = off or (0.0, 0.0)
+    return leg_frame(i) * out + Y * up
+
+
+def plant_feet(rig: ck.Rig, meshes: list[ck.Mesh], clips: list[ck.Clip], plant: dict) -> list[ck.Clip]:
+    """Re-keys both bones of every leg at every baked frame so its foot stays on its grip (its rest position on the
+    floor, or where the clip's steps move it), blended with the authored legs by the clip's `weight` (i, t)."""
+    poser = gr.Poser(rig, meshes)
+    iks = [LegIK(rig, i) for i in range(6)]
+    mass = rig.index("mass")
+    leg_bones = {f"{leg_}_{s}" for leg_ in LEGS for s in "ab"}
+    out = []
+    for clip in clips:
+        spec = plant.get(clip.name, {})
+        weight = spec.get("weight", lambda i, t: 1.0)
+        fixed = ck.Clip(clip.name, clip.length, loop=clip.loop)
+        fixed.keys = {b: list(ks) for b, ks in clip.keys.items() if b not in leg_bones}
+        for t in gr.frame_times(clip):
+            pose = gr.pose_at(clip, poser.names, t)
+            Mi = np.linalg.inv(poser.matrices(pose)[mass])
+            for i, ik in enumerate(iks):
+                goal = ik.F + _foot_offset(spec.get("steps", []), i, t)
+                ra, rb = ik.solve((Mi @ np.r_[goal, 1.0])[:3])
+                w = float(weight(i, t))
+                for b, r in ((f"leg{i}_a", ra), (f"leg{i}_b", rb)):
+                    fixed.key(b, t, tuple(np.asarray(pose[b][0]) * (1.0 - w) + r * w))
+        out.append(fixed)
+    return out
 
 
 def _outward(i: int) -> tuple[float, float, float]:
@@ -1554,17 +1788,21 @@ def _rope_up() -> tuple[float, float, float]:
     return (-math.cos(a), 0.0, math.sin(a))
 
 
-# Kept off the floor (M3-CRE-632, common/grounding.py): where the bell's swing (the toll, the slam, the blow) would
-# press a foot through the floor, that leg swings up about its outward axis the least it takes, so its foot stays
-# planted; the rope's trailing end rides up over the floor as the bell sways; and the KO, which tips it about its lip,
-# and the intro, which starts low, lift the bell the least it takes to stay on the floor (the rim is an extra mesh,
-# measured with the body).
+# Kept off the floor (M3-CRE-632, common/grounding.py): where a foot would still dip through the floor, that leg swings
+# up about its outward axis the least it takes; the rope's trailing end rides up over the floor as the bell sways; and
+# where the rim or the mass would touch down past the floor (the slam, the knocks, the KO, the intro's low start), the
+# bell lifts the least it takes, so the rim lands on the floor (the rim is an extra mesh, measured with the body).
 GROUNDED_LIMBS = [(f"{leg}_a", _outward(i), 1.0, 45.0) for i, leg in enumerate(LEGS)] + [
-    ("rope2", _rope_up(), 1.0, 60.0), ("root", gr.LIFT, 1.0, 0.3, ("ko", "intro"))]
+    ("rope2", _rope_up(), 1.0, 60.0), ("root", gr.LIFT, 1.0, 0.3)]
 
 
 def export_clips(rig: ck.Rig, meshes: list[ck.Mesh]) -> list[ck.Clip]:
-    return gr.grounded(rig, meshes, build_clips(), GROUNDED_LIMBS)
+    """Plant the feet, keep everything on the floor (which may lift the bell), plant the feet again under the lifted
+    bell, and take any foot that still dips off the floor."""
+    clips, plant = build_clips()
+    clips = plant_feet(rig, meshes, gr.grounded(rig, meshes, plant_feet(rig, meshes, clips, plant), GROUNDED_LIMBS),
+                       plant)
+    return gr.grounded(rig, meshes, clips, GROUNDED_LIMBS[:-1])
 
 
 def main() -> None:

@@ -4,7 +4,7 @@ The old **ui** and **menus** tracks merged into one (Lead, 2026-10-25). `claude/
 
 **Owns:** the HUD, objectives and map, prompts, title, tips, the dialogue box, settings, input parity, pseudo-loc, resolutions, and the field menu (Lattice, Equip, Items, Status, Formation, portraits, bestiary, codex, save).
 **Id block:** tasks 200–399 (ui 200s, menus 300s), ADRs 0110–0129 (0120 is taken), handoffs `<date>-ui-ui-menus-<n>.md`.
-**Integration branch:** `claude/undertow-lead-handoff-ze8rrn`.
+**Integration branch:** `claude/new-session-mj8c3c` (from 2026-10-29; Lead `session_01Bg3iP7cPGyjbX4CyniBahc`).
 
 ## NEW ACCOUNT (from 2026-10-25)
 
@@ -570,3 +570,239 @@ MERGE-READY @ 84bbd575a: the swap-wait fix for big16.
 LEAD-ANSWERED (17:25: the runner prints FAILURE lines only in its end summary, and big15's isn't out yet; the Lead will paste them. The box was cloud lavapipe on 4 CPUs with two capture shards beside it, so load timing is likely. The surrounding swap checks pass. **Not reproduced on big15 or big16, in isolation or under load.** 84bbd575a stays: it fixes a real latent wait, documented in ADR 0111 amendment 2, and changes no test expectation): Please paste the two tests' FAILURE lines from big15's cloud suite, or the gate log path. I can't reproduce either one in isolation or under load on big15 or big16, and the message decides whether it's the child probe (crash or timeout) or the entry budget that 84bbd575a covers.
 - 2026-10-28 17:50: **big15 router failures are LEAD-ANSWERED.** The causes were "printed no stats (exit 127)" for boot.tscn, battle_sandbox.tscn and launch: the cloud runner could not find the child probe's Godot binary. That is the environment, not the router. Run alone the test passed 15/0, and no logic was changed.
   - **Optional hardening done:** test_scene_router_swap's probe helper now fails with "the Godot binary was not found (exit 127, <path>); not a budget failure", so it cannot pass for a budget failure. scene_router_swap 17/0.
+
+## FROM 2026-10-29 (Lead session_01Bg3iP7cPGyjbX4CyniBahc, integration claude/new-session-mj8c3c; the PC is offline)
+- 2026-10-29: **merged** origin/claude/new-session-mj8c3c (600e05af; pc-gpu.md took the integration side) and origin/claude/characters (92566b71: Pell, M3-CHR-506; PROVENANCE and shots.json by merge_union; shots.json keeps boot_title 72 and battle_victory 90).
+- **Work item 2, portraits: Pell baked** (fa8ab442): five emotions, framed closer (`camera` distance 0.86, aim_drop 0.05) so his head matches the humans' size with the crest in frame. Viewed as a contact sheet against Rhen, Kerrid and Tavi. His emotions differ only slightly at 256 px; that is the face-pose table (characters' call), not the bake. Every named Act I speaker now has a portrait (test_dialogue_box's guard). Pell joins the party only in Ch10 (flags.tres), so no Act I menu needs him.
+- **Work item 1, every Act I scene change covered and under 1 s hidden (ADR 0042 §4; ADR 0111 amendment 3):**
+  - SceneRouter records the fade's alpha on the swap frame and each hidden frame (`judge_cover`: `covered`, `cover_alpha_min`) and warns when one is not opaque (0bc329a6).
+  - test_scene_change_cover: no game script outside the router and the debug probes changes scene directly; no CanvasLayer in a .tscn or a data table sits at or above the fade's layer 128. test_scene_router_swap: the probe's real changes report `covered`.
+  - **Haluna fix (b7b1b53f):** tools/loading/scene_loads.gd collected each zone in the frame it entered, before VillagerLayer's deferred build, so Reed, the child, Neme and Osu (about 1 s) loaded inside the swap frame. It now lets each zone settle 3 frames; the regenerated lists add 89 paths. test_resident_loads::test_each_zone_s_villager_actors_are_listed fails on the old list. Haluna's worst hidden frame: 1245 → 453 ms.
+  - **tools/loading/act1_swap_sweep.py** runs the probe per Act I zone, the title and the battle sandbox, with ResidentLoads on and the hero bodies warm (`--resident-loads --warm-resident`, as after the title); exit 1 on an uncovered change.
+  - **Sweep at ec6be9da (headless, cloud box, about 1.8× slower than the PC): all 18 covered; worst hidden frame per target:** Oruvel 180, Underway 309, Haluna 453, causeway 149, shrine 142, ferry 247, wake 491, Ashcrown 168, **Pemakar 733**, Brine Shoals 222, Tamsule 287, Bell Galleries 227, Coilspire 475, Corrow 376, Corrow night 321, prologue 105, title 21, battle 130 ms. Worst visible frame 35 ms (Pemakar). Entries 0.4–3.9 s; Haluna (3.7 s) and the wake (3.9 s) are over ADR 0029's 3 s entry on this box, all under the fade.
+  - Pemakar's remaining 0.6 s is spread over many small dressing nodes (no single culprit; profiled).
+- **Work item 3, inventory rows:** `placeholder_audit.py --static-only` lists nothing for ui-menus. M3-HER-1147 and M3-UI-101 are set to review (both were done on 10-28).
+- **M3-NAR-1000 (narrative seat), to review** (f5a1a17c): decisions_log N-27. Pell's echo check passes with no beat changes and four authoring guards; every Kerrid and Pell sheet question answered (story sheets' new sections); ADR 0020 append note; glossary superseding rows.
+LEAD-ANSWERED (18:22, ADR 0201: SPEC v1.5 and pell.md reworded, the term banned): SPEC §3's roster row called Pell's niche by the series' job word, the inspiring series' own job word (also in ADR 0017 and pell.md's header). Reword SPEC to "learns enemy abilities by listening" (N-27 guard 3), and ban the term?
+- **Known, not this track's:** test_qa_capsules fails (Haluna villagers and ossa_fen's Pell as capsules, ten foes without bodies): characters, creatures and integration-qa.
+
+### PC-QUEUE
+- **Act I scene-change hitches on the RX 9070 XT** (act1_gpu_qa rows 22, 41, 42): re-walk New Game→Prologue, Ch1, Ch2, the first fight, every Act I zone entry and Ch5's fresh entry on this head. Expect every hidden frame under 1 s (cloud headless worst 733 ms) and no visible frame over 50 ms. Then close or update the rows. Quick per-zone numbers: `python3 tools/loading/act1_swap_sweep.py` (headless; the walk is the budget-grade measurement).
+- **Row 33** (the result panel's freed-row count-up, fixed 503b99839): confirm no `_set_count` SCRIPT ERROR in a pass.
+
+MERGE-READY @ bcfb63160: Pell's portraits; the scene-change cover record, guards and Act I sweep; Haluna's villager loads; M3-NAR-1000; M3-HER-1147 and M3-UI-101 to review. Checks: hero/creature/battle portraits 16/0, dialogue_box 26/0, scene_change_cover 4/0, scene_router_swap 17/0, resident_loads 8/0; tools test_act1_swap_sweep OK; gdlint and gdformat clean; validate_data 0 errors; taskboard --check passed; banned-terms scan of the new text clean. Skipped: screenshots (no shot changed: portraits viewed directly, the cover record is invisible); coverage (no game/battle or game/progression change); the full tools suite (only the new tools test can see tools/loading).
+- 2026-10-29 (superseded by the Lead's 18:22 list below) **BACKLOG EMPTY:** items 1–3 are done and merge-ready. Item 1's budget-grade numbers wait on the PC (PC-QUEUE). Item 2 waits on characters landing new Act I speakers: every named Act I speaker is baked. Item 3: the audit lists nothing for ui-menus. No ui `todo` tasks are left, and the narrative `todo`s are Act II or wait on other tasks. Handoff: docs/kb/handoffs/2026-10-29-ui-ui-menus-1.md.
+- 2026-10-29 19:40, **the Lead's 18:22 list:**
+  - **Merged** claude/new-session-mj8c3c (ADR 0201). N-27 no longer quotes the banned job word (validate_data is clean).
+  - **Row 33, FIXED twice over** (c0e98a59): the result panel kills its count's tween in NOTIFICATION_PREDELETE. A bound
+    tween only notices a freed node on the tree's next step, and stepped into freed rows until then.
+    test_battle_result_motion::test_freeing_the_panel_mid_count_ends_the_count frees the panel mid-count (6/0).
+  - **Row 42 (Ch5 fresh entry), headless:**
+    - Pemakar's swap frame, fresh launch with ResidentLoads: 700–780 ms with a warm disk cache, 1.8–2.4 s cold (just
+      after the container restarted).
+    - The cold excess is not in any node's _ready, any load (every one under 20 ms) or the Ch5 arrival steps; the
+      synchronous cutscene cues add about 215 ms (Rhen's `look_at` is 211 ms of it).
+    - The visible spike is on the fade's last lift frame: 24–39 ms headless, under 50 ms, with no node added. The PC's
+      61.6 ms came with the pre-ADR 0111 6.2 s hidden frame (loads landing late). PC-QUEUE below.
+  - **Rows 22/41, field battles:** the probe takes `--encounter=<id>` (a real BattleRequest), and the sweep covers all
+    31 Act I encounters (625dabd1).
+    - All covered; worst hidden frame 266 ms (ch03_causeway_shore), most 115–240 ms; entries 0.56–1.5 s.
+    - Run alone, the worst visible frame is 10–18 ms (the 160–277 ms in the first sweep were CPU contention with the
+      playthrough tests).
+    - Coilspire is 475–634 ms headless.
+  - **The headless UI error sweep** (the Act I playthrough tests fp_ and ch01, ch04–ch09 _thread, plus the UI areas:
+    menu 251, hud 76, dialogue 85, field_ 132, battle_ 737, codex, bestiary, title): **no SCRIPT ERROR anywhere.**
+    - Every push_error in the UI areas is a test exercising an error path on purpose.
+    - Not UI, for their owners:
+      - rendering: `refresh_bounce_passes` called deferred with a freed node (underwater_rig.gd:401), 2–12 times a run;
+      - battle-presentation: battle_vfx.gd:249/299 and battle_boss_vfx.gd:380 read get_global_transform off the tree;
+      - cinematics: "@vfx rate=/drift=/motion=/form=" and "@camera grade=" are not performed yet (Ch1–Ch9 cutscenes).
+    - Fixed while there: **Liss's battle tint** (c2d3a9b71): integration-qa's row set #7A8C5A, but the spec
+      (M3-HER-1120) and test_battle_party_stand_ins say #7A8F6A. That was a big14 gate failure (3/0 now).
+    - Other failures seen, not this track's: test_battle_act1_ability_vfx (battle-presentation), test_hero_field_snaps
+      (hero-motion), fp_prologue's Liss vigil (characters).
+### PC-QUEUE (added 19:40)
+- **Row 42:** a fresh F8 Ch5 start on this head: the hidden frame (headless 0.7–2.4 s) and the visible frame at the lift's
+  end (headless 24–39 ms). If it is still over 50 ms on the GPU, it is a draw-side cost (the cutscene's first camera or
+  UI material) that headless can't see.
+- **Row 41's field battles:** a walk of a few Act I field battles; headless they are 115–266 ms hidden, 10–18 ms visible.
+MERGE-READY @ c2d3a9b71: rows 33 and 42 (diagnosis), the field-battle sweep, the UI error sweep, and Liss's tint. Checks:
+battle_result_motion 6/0, battle_rewards 10/0, party_stand_ins 3/0, the UI areas above, and the Act I thread tests (fp_
+29/1 = the Liss vigil, characters'). tools test_act1_swap_sweep OK. Lint, format and validate_data are clean.
+Skipped: screenshots (nothing visual changed: a tint value matching the spec, and the panel's teardown) and coverage (no
+game/battle core or game/progression change).
+- 2026-10-29 19:40 (superseded by the Lead's 19:24 list below) **BACKLOG EMPTY:** the Lead's 18:22 list is done. What's left needs the PC (PC-QUEUE) or other
+  tracks' fixes, listed above.
+- 2026-10-29 21:30, **the Lead's 19:24 list:**
+  - **Underwater rig, at the Lead's request (rendering's file, `game/world/water/underwater/underwater_rig.gd`; no
+    rendering track is running)** (ce8c1683): the lantern's bounce-pass refresh is deferred through the rig itself, so a
+    rig or scene freed before the flush drops the call; it no longer hands a freed root to
+    CharacterShaderTiers.refresh_bounce_passes. test_underwater::test_the_lantern_s_bounce_refresh_is_bound_to_the_rig
+    (9/0). The Ch1 playthrough no longer prints the error.
+  - **UI final-quality pass, Act I:**
+    - **4:3 added** to the aspect audit (1440x1080 and 1024x768, laid out at 1920x1440), next to 16:9, 16:10, 21:9 and
+      43:18, at 100 % and 130 % text (2dd514a4).
+    - **No default Godot theme:** the aspect audit now fails on any visible Control drawing a stylebox, font or icon from
+      Godot's built-in theme. None does (the only hits were Label focus styles, which never draw).
+    - **No placeholder icons:** the menus' icons are drawn glyphs, and test_menu_glyphs already gives every item,
+      equipment piece and skill one. No icon.svg or placeholder texture anywhere in game/ui.
+    - **No focus dead ends** (35a18896): test_input_parity_dead_ends opens every field menu page with the keyboard and
+      the pad, goes three Confirms deep, and Cancel always walks out until the menu closes with nothing left showing.
+      Every page already has its own device-parity test (the codex through its action test).
+    - **Text** (b2137061, e40234da): the pseudo-locale walk (+40 % length) passes, but with English strings at 130 % text
+      it showed real trims:
+      - the Customize header at 100 % ("Customize Coral-Bitten Hooks");
+      - Equip's "Magic Defense" stat name;
+      - the Reefball HUD's names, bands, counts and tags;
+      - the battle help line on a Vowbound's call;
+      - the shop and inn description and status lines;
+      - two settings help lines.
+      Fixes:
+      - **HudLayout.fit_label and fit_lines** shrink a label's font to 80 % at the least before it ellipsizes;
+      - MenuPage headers fit their row and are indented on the left only (488 px instead of 460);
+      - Equip's stat-name column is 234 px;
+      - the Reefball outfitter panel is 1400 px wide;
+      - the shop's description has 165 px and its status 120 px;
+      - the not-enough-lume line is shorter ("Not enough lume: 120 lume needed, 100 lume in hand.");
+      - the Reefball Read panel's read line takes what the rows leave, so the panel no longer runs 80 px into the drop
+        panel at 130 %.
+      An English walk now trims nothing.
+    - **Fixed while there:** the backlog parity test leaked its layer (3b792de6).
+SELF-RENDERED (at e40234da's parent, before the text fixes; a temporary manifest, never committed): 17 Act I screens at
+2560x1440, 1440x1080 (4:3) and 2560x1080 (21:9):
+- boot_title, field_menu, equip, lattice, items, status, formation, codex, bestiary, map (Haluna), save, settings hub,
+  shop buy, dialogue_continue, battle_hud_preview, battle_victory and battle_pause.
+- All read. The frame is centred at every aspect; at 4:3 it sits in the middle with room above and below, as `expand`
+  gives.
+- The only oddity: the victory shot's sandbox greybox floor shows its edge at 21:9. That set is the battle sandbox's
+  own, not an Act I arena.
+- No baselines written. Baselines that will move: equip_menu (stat columns), shop_menu_buy (the shorter line), and any
+  page whose title used to ellipsize.
+MERGE-READY @ e562b48d1: the underwater rig fix (rendering's file, at the Lead's request) and the Act I UI final-quality pass
+(4:3 in the aspect audit, the default-theme check, the dead-end test, English text fits at 100 % and 130 %).
+Checks:
+- aspect_layouts 18/0, pseudo_loc 26/0, menu 251/0, input_parity 65/0 (no node left), shop 28/0, reefball 80/0,
+  equip 66/0, settings 48/0, underwater 9/0;
+- battle_ 737/1: only test_battle_act1_ability_vfx (battle-presentation's, routed by the Lead);
+- an English text walk trims nothing;
+- lint and validate_data are clean.
+Skipped: coverage (no game/battle core or game/progression change; game/ui/battle is the scene layer). I did not
+re-render all 51 views after the text fixes; the five shots they touch are self-rendered below.
+- 2026-10-29 21:40 (superseded by the Lead's 23:10 list below) **BACKLOG EMPTY:** the Lead's 19:24 list is done. What's left waits on the PC (PC-QUEUE) or on other
+  tracks' routed findings.
+SELF-RENDERED @ d7840ba0 (1280x720): equip_menu, equip_customize, shop_menu_buy, shop_menu_sell, inn_menu. What I saw:
+- the Customize header reads whole ("Customize Coral-Bitten Hooks");
+- Equip's stat columns line up with the wider names;
+- the shop's shorter lume line wraps cleanly onto two lines;
+- sell and inn are unchanged.
+Baselines will move for equip_menu, equip_customize and shop_menu_buy.
+- 2026-10-30 00:30, **the Lead's 23:10 list: the Act I narrative and onboarding seat.** Audited on lead/gate-big18 @ d00d3284 (a
+  scratch worktree); the fixes are on claude/ui, which has claude/new-session-mj8c3c merged in (dae73fd8).
+  1. **Codex, bestiary and item/skill/status text:** a scripted audit of every *_key in the codex, the 25 Act I foes'
+     names and bestiary lore, the skills, statuses, items, equipment, gear types, abilities and Vowbound. Every key
+     exists, is final text and is not its own id. Every codex unlock flag is declared in flags.tres and set by the
+     story. There is no separate in-game glossary: the codex is it.
+     - **Fixed:** statuses had names but no player-facing description (only the engine's notes, "x0.2").
+       STATUS_<ID>_DESC is now written for all 21, and the Status page explains each carried status under its name
+       (test_status_menu::test_every_status_has_a_description). Self-rendered status_menu: "Poison", then "Loses a
+       tenth of their health at the end of each of their turns."
+  2. **Tutorials and first-time prompts:**
+     - field tips: objective, field menu, save shrine, shop, menu save;
+     - battle prompts: commands (Ch1), items, escape, the timeline (tideline, Hullgnaw), Swap and Read (Ch4 hermit),
+       armour break, fliers, the set pieces.
+     Each shows once: the tips per save, the prompts in their one scripted fight, with a retry repeating its line.
+     The tips name the bindings of the device in use; the prompts name none.
+     - **Fixed: nothing taught Swell or the Vowbound** (c4ef3370):
+       - a Swell tip (the gauge, techniques, the field menu's fill modes) follows the menu-save tip;
+       - Asha's first turn in Ch4's first fight (ch04_sail_leeches; the call only needs ch03_ilun_bound) prompts the
+         call. encounters.json is combat's table; one row gains turn_prompt fields, as Ch4's hermit has.
+       test_tutorial_tips::test_the_swell_tip_follows_the_menu_tips. The tip test no longer leaves a card in the tree.
+     - **Dismissal:** the tips never take input. Each fades after its reading time, hides while a menu is open, and
+       the Accessibility page turns them off. I did not add a dismiss key: it would take a binding from the field.
+       The Lead can overrule.
+  3. **Save and load at every Act I save point:** test_qa_save_shrines (every shrine and rest point: zone, party,
+     flags, respawn) passes. **Added test_save_music:** every Act I zone has music, and a save round trip, with each
+     variant flag set, picks the same cue (eeb20c31).
+  4. **Banned terms and tone:** validate_data's banned scan is clean.
+     - Grepped every Act I line for meta, game-speak and slang. Three hits, all in-world: a Reefball "player", "one
+       joke", and "cool" as temperature.
+     - Read every grief or sad line followed by a smile or laugh within two lines: Osu's grandfather, the first
+       verse, Neme, the wake vendor. All tender; none undercuts.
+     - Ch2's "he's allowed one joke" comes before Rhen learns Oruvel is gone, and the scene then turns to grief.
+     - **Fixed** (52ca86c1): the Ch8 net-mender bark shipped "Old Net-Mender [neutral]: ..." as its text. dlgc read
+       the hyphenated name as narration. The speaker is now Netmender (CHAR_NETMENDER is "Old Net-Mender"), and dlgc's
+       speaker-like check takes hyphenated and apostrophe-joined names (test_dlgc).
+LEAD-ANSWERED (23:52, ADR 0202, SPEC v1.6: accepted as written): SPEC §6.8 names the statuses, and several are the series' own set: Shell, Protect, Reflect, Regen, Doom,
+Zombie and the four Breaks (Armor, Mental, Power, Magic). Rename them in SPEC (like ADR 0201)? My proposal:
+- Shell → Tide Ward, Protect → Bulwark, Reflect → Mirrorwater, Regen → Mending, Doom → Last Tide, Zombie → Hollowed;
+- Armor/Mental/Power/Magic Break → Sundered, Unmoored, Weakened, Dimmed.
+Poison, Sleep, Silence, Darkness, Petrify, Slow, Haste, Stop, Berserk, Confuse and Provoke are generic. Until you
+answer, nothing is renamed: the names are SPEC's.
+MERGE-READY @ 1d1bf96e7: the Act I narrative and onboarding pass (status descriptions, the Swell tip and Vowbound
+prompt, the save-music test, the net-mender bark and dlgc's check).
+Checks: status_menu 6/0, tutorial_tips 5/0, save_music 1/0, qa_save_shrines 2/0, boss_hud 4/0, aspect 18/0,
+pseudo_loc 26/0, input_parity_glyphs 7/0, field_hud_legibility 3/0; tools test_dlgc and the corpus test (131) OK;
+dlgc --check clean; validate_data has 0 errors; the text audit shows 0 problems.
+Not this track's: test_ch04_zones::test_the_wakes_field_camera_is_halunas (Haluna's camera volumes).
+Skipped: coverage (no game/battle core change).
+- 2026-10-30 00:30 (superseded by the 23:52 answer below) **BACKLOG EMPTY:** the 23:10 list is done and clean. The LEAD-ASK on the SPEC status names is open,
+  with nothing renamed until you answer.
+- 2026-10-30 02:30, **the Lead's 23:52 answer: ADR 0202 applied** (dc257d86; claude/new-session-mj8c3c merged in).
+  - **Every player-facing string renamed:** Tide Ward, Bulwark, Mirrorwater, Mending, Last Tide, Hollowed, Sundered,
+    Unmoored, Weakened, Dimmed. That covers the ten STATUS_ names, three ability descriptions and the battle help and
+    float lines.
+    - No .dlg, codex text or tip named one.
+    - The internal ids are unchanged.
+    - "Shell" stays in the Shell Shrine, Shell Breaker, Shell Ram, Shell Wall and Bell-Shell, and lowercase "shell"
+      stays in prose.
+  - **banned_terms.txt** gains i:armor break, i:mental break, i:power break and i:magic break. The comments, data notes
+    and story docs that used them now say sundering blow, Sundered or Weakened. validate_data has 0 errors.
+  - **tools/tests/test_status_names.py** fails on any loc value with an old name. Capitalized Shell, Protect, Reflect
+    and Doom count, Regen and Zombie count in any case, and proper nouns are allowed. It fails on the old strings.
+  - Status descriptions use no status names, so none changed.
+SELF-RENDERED @ dc257d86: battle_statuses, battle_statuses_colorblind and status_menu.
+- The help line reads "Mirrorwater turns it onto Rhen · provoked: must strike Lantern Eel".
+- The status glyphs are drawn shapes and are unchanged; status_menu shows Poison (unchanged).
+- battle_statuses' baseline moves.
+- 2026-10-30 03:00, **my Act I menu audit at gameplay pace, controller only** (the no-idle rule):
+  - **Fixed (8cb7f517):** a held d-pad or stick did not repeat. Godot echoes held keys but not pad buttons or axes, so a
+    pad player tapped through every row of the 40-item bag or the 54-entry codex.
+    - The UiInput autoload now repeats a held pad direction after 0.4 s, every 0.08 s (ui_input.json).
+    - Each repeat is a press and release marked with device -8.
+    - Whether the direction is still held is read from the pad, so nothing sticks.
+  - **Fixed (d5b25b32):** with repeats, a held direction raced round a list. MenuPage.move no longer wraps on a held
+    key or pad (pressed but not just pressed); a fresh press still wraps.
+  - **Checked, fine:**
+    - menus take input during their open and close fades (MenuMotion never gates it);
+    - the dead-end test walks every page with the pad.
+  - Tests: test_ui_input_repeat 4/0, input_parity 65/0, menu 252/0.
+  - **Liss's battle tint:** the integration branch's test now expects big14's #7A8C5A, so my earlier #7A8F6A is
+    reverted (50678c8a). party_stand_ins is 3/0.
+MERGE-READY @ 638fb3cb5 (for big19): ADR 0202's status names, held pad directions repeating, and lists that stop at
+their end while held; Liss's tint back to big14's row.
+Checks:
+- battle_ 757/0, menu 252/0, input_parity 65/0, status 55/0, pseudo_loc 26/0, ui_input 4/0, party_stand_ins 3/0;
+- tools test_status_names OK (it fails on the old strings);
+- validate_data has 0 errors; lint is clean.
+Skipped: coverage. game/battle got comment edits only (the renamed Breaks), no code change.
+- 2026-10-30 03:30, **BACKLOG EMPTY:** the 23:52 list and my controller-only menu pass are done. Real-hardware
+  pace (pad feel, menu sound latency) is a PC-QUEUE item: a pad walk of every Act I menu on the PC, holding the
+  d-pad and stick in the bag, the codex and the Lattice.
+- 2026-10-30 04:30, **the Lead's 01:08 item: Act II preparation, docs only (ADR 0203).** No act1_gpu_qa row is open for
+  this track except row 33, which is fixed twice (503b99839, c0e98a59) and waits on the PC's re-walk.
+  The spec, all `draft: pre-gate`, is in `docs/kb/plan/act2/ui/`:
+  - README (the index, what exists, the loc-key totals);
+  - screens (the document reader, seven heroes, six callable Vowbound, Pell's Listen, Act II shops);
+  - hud (rooted, drain, repair, the flat-engine part and tide pulse, the darkness fight, element cycling, buff strip,
+    the set pieces, objectives);
+  - tutorials (12 battle prompts, 4 field tips);
+  - codex_bestiary (6 world, 8 people, 4 Vowbound, 5 records, 14 bestiary rows, the Listen marks);
+  - portraits (14 speakers; Merel's wedding red; Kerrid's `guilty`);
+  - heresy (dark Order shrines refuse, travel lists them greyed, Order shops refuse, the heretic subtitle and slot tag);
+  - kerrid (a second codex body, `guilty` baked, one quiet Status line, nothing in battle).
+  About 225 loc keys are listed, plus Narrative's record sentences.
+  Decisions taken as defaults (the Lead can overrule):
+  - a Vowbound codex category, with Act I's three moved in;
+  - dark shrines visible on travel and the map, greyed;
+  - the heretic subtitle on the field menu, never red.
+- 2026-10-30 04:30, **BACKLOG EMPTY:** the 01:08 item is done. Act II work waits on the `act1-complete` tag (ADR 0203).
