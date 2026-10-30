@@ -1830,3 +1830,16 @@ MERGE-READY @ (this commit).
   - Checks: hero_ 116/0, hero_followers 14/0, qa_party 3/0, qa_walk_audit 1/0, qa_field_camera 2/0 (4.5 results,
     with qa_party and hero_followers re-run at 4.0); validate_data 0/0.
 MERGE-READY @ (this commit).
+- **Row 21 (Haluna's field start after the beach): reproduced headless, and clean on this tree.** The PC's walk can't
+  reach it, so I played it as New Game does: `prologue_seen`, Haluna loaded, HalunaStory.begin(), Cutscene A in real
+  time with auto-advancing lines at fixed 60 fps, then the camera sampled every 0.25 s for 12 s after the release.
+  - The release (t = 95.5 s) blends from H01 to `beach_shallows` (1.2 s blend, settled after about 1.5 s).
+  - Rhen is **in frame on every sample** from the first frame after the release, and nothing blocks the view.
+  - The camera settles at 7.5 m from his chest and stays there; it isn't left at H01.
+  - This tree has row 66's pull fix (e7af4147d), the likely cause of the pass-3 "camera over the shallows, Rhen off
+    screen".
+  - **For the PC:** confirm by hand on the merge of this branch. Close it if it's clean.
+- Open on my side after this branch merges: nothing on act1_gpu_qa.md. Rows 21, 24, 37, 38, 47 and 66 are fixed or
+  verified here; row 50 is closed, not reproduced. Still waiting on other tracks: M3-HER-1157 (env-art-b, Tier4's spawn
+  inside the steps), M3-HER-1159 (act1-chapters, shots facing away), M4-HER-1166 (Lowlight's open gate).
+MERGE-READY @ (this commit).
