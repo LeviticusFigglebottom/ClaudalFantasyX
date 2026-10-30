@@ -32,7 +32,7 @@ Encounters in data: `ch11_vey_urchins` (no Act II arena is named yet: judge it i
 Its own build.
 
 ## State against the final bar
-Meets the bar for its model. Its KO barely differs from its idle at battle distance (clip sheet): give it a clear KO (spines droop flat, the ice cracks) at the gate.
+Meets the bar for its model. **KO done 2026-10-30 (creatures track, ADR 0205):** after a last clench the spines fall open 50 degrees round the test (their tips lift as they open, so the low ones lie on the floor, not in it) and the test slumps 6 cm and tips 8 degrees: the ball of spines becomes a flat, parted star (clip sheet). The ice cracking is left to the KO effect (VFX).
 
 ## Work at the gate (after `act1-complete`)
-A readable KO; `rime_spine` effect; enemy `model` key.
+~~A readable KO~~ (done); `rime_spine` effect; enemy `model` key.
