@@ -8,6 +8,7 @@ const ZONE := "res://game/levels/_tests/field/field_test.tscn"
 const FIXTURE := &"test_cutscene_fixture"
 const BEACH := &"ch02_girl_on_the_beach"
 const ARRIVE := &"test_cutscene_arrive"
+const CARD := &"test_cutscene_card"
 const DT := 1.0 / 30.0
 const MAX_FRAMES := 3000
 const SPOT := Vector3(2.0, 0.0, 6.0)
@@ -328,6 +329,30 @@ func test_wait_arrive_holds_until_the_walk_lands() -> void:
 	seq.overlay.box.skip_reveal()
 	seq.overlay.box.advance_requested.emit()
 	assert_eq(lines_seen, 2, "with no walk under way, arrive= does not wait at all")
+	_drive()
+	_free()
+
+
+func test_a_card_line_is_the_act_card_on_black_then_the_scene_fades_in() -> void:
+	# M2-FP-121: Ch1's "One month earlier." showed as a box line over the field instead of a card on black.
+	assert_true(CutsceneCard.starts_black(CARD), "a card before the first fade-in still starts the scene black")
+	_start(CARD)
+	var cards := seq.find_children("*", "ActCard", true, false)
+	assert_eq(cards.size(), 1, "the card is UI's ActCard")
+	var card := cards[0] as ActCard
+	assert_true(card.is_showing())
+	assert_eq(seq.overlay.fade_alpha(), 1.0, "on black")
+	assert_false(seq.overlay.box.visible, "not a line in the box")
+	var t := 0.0
+	while lines_seen == 0 and t < 30.0:
+		if is_instance_valid(card):
+			card.advance(DT)
+		_frame()
+		t += DT
+	var d := ActCard.load_data()
+	var card_sec := float(d["in_sec"]) + float(d["hold_sec"]) + float(d["out_sec"])
+	assert_eq(lines_seen, 1, "the next line came")
+	assert_true(t >= card_sec, "after the card's words came and went (%.2f s)" % t)
 	_drive()
 	_free()
 

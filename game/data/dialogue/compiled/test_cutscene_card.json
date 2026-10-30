@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "test_cutscene_card",
+ "source": "game/data/dialogue/test/test_cutscene_card.dlg",
+ "start": "test_cutscene_card",
+ "nodes": {
+  "test_cutscene_card": {
+   "headers": {},
+   "ops": [
+    {"op": "line", "id": "test_cutscene_card_001", "key": "DLG_TEST_CUTSCENE_CARD_001", "speaker": "", "emotion": "", "voice": "", "src": 5, "tags": ["card"]},
+    {"op": "cue", "cue": "fade", "args": ["in", 1.0], "kwargs": {}, "src": 6},
+    {"op": "line", "id": "test_cutscene_card_002", "key": "DLG_TEST_CUTSCENE_CARD_002", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 7}
+   ]
+  }
+ }
+}

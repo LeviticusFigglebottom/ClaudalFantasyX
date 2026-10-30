@@ -905,7 +905,81 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     walks). Tools: test_glimmer_forms. dlgc, validate_data 0/0, gdlint and gdformat clean. test_screenshots is red
     only on other tracks' unbaselined shots (kerrid_front …).
   - **Skipped:** coverage and Blender (no battle, progression or Blender source).
+- **Cutscene A watched in motion** (tools/cutscene_frames from New Game's Beach arrival, every 1 s, 200 s):
+  - **Pace reads:**
+    - the VO lines open at 19.6 s, after the fade;
+    - the joke, the spear and the lantern beat hold their 4–7 s each;
+    - the H06/H05 cuts land on their lines;
+    - the H01 VO plays on the walk-off;
+    - the field takes over at 170 s.
+  - **Fixed (this branch):** in the stay branch the pair rose on H05 (the kneeling height), so for 1.2 s the frame was
+    Rhen's legs at the lens before H05_up. The cut to H05_up now comes first, and they rise in the standing two-shot.
+    Viewed (every 0.5 s): the cut lands at 134 s, and they rise beside Toma with the dock behind. No legs frame.
+    MERGE-READY.
+  - **Not mine, seen:**
+    - the skirt balloon on H05 and H06 (row 31, M3-CHR-102, characters);
+    - the field opens with the camera far back and the party small on the beach. That is integration-qa's party-start
+      fix (M3-HER-1149, claude/hero-integration), not on this branch; big17 brings it.
+  - The wash runs over Rhen in the shallows now and then; that is as staged (the human's fast-track).
+- **The Lead's 23:10 check-in:** the unperformed directives item is done (M2-FP-120 above, MERGE-READY): `rate=`,
+  `drift=` and `motion=` were already performed; `form=` and `grade=` (both the header and the cue) are now performed,
+  and `test_cutscene_directives` guards them. **Merged `origin/lead/gate-big18` @ d00d3284** (fceea746, clean; it
+  already carried this branch through f8f4d802); validate_data 0/0, dlgc and taskboard clean. The beat-by-beat pass
+  (every line's speaker in frame, eyelines, timing, dead frames, music on the beats) now continues on this merged tree:
+  Ch1 next, then the slice scenes again on big18.
+- **On big18, the guard earned its keep (MERGE-READY @ the branch head):**
+  - **`@vfx follow=` / `anchors=`** (integration-qa's M3-ARC-1326) are in cues.json and reach a stage VFX host, but no
+    host reads them yet; EbbingMotes doesn't. They are now in the sequencer's UNSUPPORTED_KWARGS, so a scene that
+    uses them warns, and no Act I scene does. **For integration-qa:** when Ch9's Ebbing host reads them, drop them
+    from that list and test_cutscene_directives stays green.
+  - **test_cutscene_vfx_hosts** (integration-qa's) failed to load on big18. It counted M2-FP-01's CutsceneMotes,
+    which I deleted at 47f7707b (the cutscene VFX at final quality). It now counts the sequencer's GlimmerFields
+    (test-only), 4/0.
+  - On the merged tree: cutscene_directives 2, cutscene_grade 3, cutscene_sequencer 18, first_verse 3, fp_ 30,
+    haluna 65, prologue 8, ch01 20, all 0 failed.
+- **M3-CIN-1233, the M2 review switch flipped (the Lead's 23:31 order and 23:52 answer, ADR 0041/0042). MERGE-READY @
+  the branch head, for big19; act1-chapters reviews.** New Game plays Act I as one path:
+  - **New Game → Prologue → Ch1:** `prologue.next_location/next_spawn` = `ch01/oruvel_underway`/`Drop`.
+  - **The slice's end → Ch4's chapter card → Ch4:** B11's `haluna.night_end_scene` is now `game/flow/chapter_card.tscn`
+    (ChapterCard). It is UI's ActCard on black, with no credits and no demo card:
+    - B12's voice-over first, as a caption ("I said yes to a girl…", now the bridge into Ch4);
+    - then "Chapter 4" over the gold rule, then "The Pilgrim's Wake" (`CHAPTER_CARD_CH04_*`);
+    - then `ch04/haluna_wake` at `NemeDoor`.
+  - **Ch9's end → credits → the title:** the end card is Act I's ending only. Its next_location is empty, it has no
+    voice-over, its title is "The end of Act One", and CREDITS_SLICE's line now reads as Act One's.
+  - Both `_next_note`s record the flip.
+  - **For ui-menus (your ActCard, additive):** `show_titled(label_key, title_key)` (show_act uses it), and captions
+    word-wrap. B12's sentence ran off both edges.
+  - **For act1-chapters:** Ch9's "Act II: The Truth" is still a box line standing in for the card
+    (ch09_the_road_out's `ch09_act_card` node). `<<event act_card 2>>` or the new `#card` tag (M2-FP-121) would make it
+    UI's card. Ch4's "Pemakar. Dusk." is a card over the terraces, which ActCard (on black) doesn't fit.
+  - **Tests:**
+    - **new test_act1_route:** New Game → prologue → Ch1; B11 → the chapter card → Ch4; Ch9's end → credits → title;
+      every hand-off resolves in the registry;
+    - test_fp_prologue, test_fp_thread, test_ch01_thread, test_haluna_night and test_fp_end_card follow the route.
+  - **Also fixed:** CutsceneGrade's once-per-grade warning failed test_qa_threads; it is print_verbose now (the guard's
+    known list tracks those grades).
+  - **SELF-RENDERED (viewed; new pending stills):**
+    - flow_chapter_card_ch04_voice: the voice-over, three centred lines;
+    - flow_chapter_card_ch04: "Chapter 4" / "The Pilgrim's Wake";
+    - slice_end_card: "The end of Act One" with the roll and "Confirm to return to the title".
+    - slice_end_card_voice is dropped: the card has no voice-over now.
+    - **New Game → Prologue → Ch1, played as one run** (tools/cutscene_frames from the prologue at Start, 110 s):
+      Iskarra at dusk with the vigil line; a fade to black; "One month earlier." centred as UI's card on black
+      (48–50 s, M2-FP-121 in play); black; the fade up on U01 (54 s); the voice-over; the field with "The Underway"
+      and the movement tip. The hand-off reads as one path.
+  - **Checks:** act1_route 3, end_card 5, haluna_night 9, fp_ 30, act_card 7, zone_story 15, _thread 40 (on the
+    re-run: fp_thread 2 and qa_threads 1), cutscene_grade 3, all 0 failed. validate_data 0/0, dlgc, gdlint and gdformat
+    clean. No duplicate loc keys.
+  - **Skipped:** coverage and Blender (nothing they cover).
+- LEAD-ANSWERED (23:52: no demo card mid-game; the chapter card into Ch4; the credits at Act I's end; done above):
+  the slice's end card mid-Act I.
+- **M2-FP-121 (Ch1's "One month earlier." as UI's card on black), MERGE-READY:** a `#card` line is ActCard's caption.
+  A card before the first fade-in no longer stops a scene starting black. cutscene 98, ch01 20, dialogue 85,
+  cutscene_sequencer 19, all 0 failed (mutation-checked).
 ### PC-QUEUE
+- New Game → the beach: 15 s of black before the fade on lavapipe (the load and prewarm at a fixed 30 fps). Measure it on
+  the GPU against ADR 0042's ≤ 1 s hidden-frames target.
 - Re-check PC GPU QA rows 18 (C07 harrier) and 32 (beach standing lines) on the GPU: both are fixed here (rendered on
   lavapipe), and the sheet still lists them open.
 

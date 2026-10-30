@@ -57,6 +57,17 @@
         "dive_raft-lod1": 364
       }
     },
+    "gull_post": {
+      "budget": [
+        1200,
+        120
+      ],
+      "bytes": 27996,
+      "lods": {
+        "gull_post": 520,
+        "gull_post-lod1": 24
+      }
+    },
     "hull_cabin": {
       "budget": [
         5500,

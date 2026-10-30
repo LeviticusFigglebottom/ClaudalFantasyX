@@ -2,8 +2,8 @@
 id: M3-CHR-592
 title: "Villager short and cropped hair at dialogue range (Ione's chips and hard fringe; Moll's square fringe line)"
 role: character
-status: todo
-owner_session: ""
+status: review
+owner_session: "characters (claude/characters)"
 depends_on: [M2-CHR-524]
 milestone: M3
 request-from: ""
@@ -29,7 +29,17 @@ a card is 2-3 cm long). Reverted, not committed.
   the front breaks up without changing Toma (verify toma byte-identical).
 
 ## Acceptance criteria
-- [ ] `villager_ione_face` and `moll_face` show a broken, soft fringe edge and no square chips; viewed before and after.
-- [ ] Every other villager and hero job byte-identical; changed jobs identical on the three numpy paths.
+- [x] `villager_ione_face` and `moll_face` show a broken, soft fringe edge and no square chips; viewed before and after.
+- [x] Every other villager and hero job byte-identical; changed jobs identical on the three numpy paths.
+
+## Notes
+- 2026-10-29 (characters): done.
+  - `tufts` (villager_hair, write_materials): short and cropped hair on toma_hair's three layers and short-hair
+    atlas, rooted inside the villager's own hairline; `grey_strands` has a tufts form (grey cards on the sparse
+    column, narrower). On for Ione, the gatekeeper, the clerk, Kell, Tavi, the ferrymaster, Garo, Hobb, Sabe and the
+    scaleman (before/after viewed). Fenn stays on the old cards (his thin white hair read as a bald dome on tufts).
+  - Moll: `_hair.front_break` (moll_hair.hairline_v; toma_hair's in_hair, _roots_inside, scalp_cards and build_hair
+    take an optional hairline, default Toma's): the fringe ends on a broken edge instead of a straight line.
+  - Their manifest portraits were re-rendered to match.
 
 ## Review log

@@ -21,17 +21,6 @@
       "threshold_rmse": 0.004
     },
     {
-      "id": "slice_end_card_voice",
-      "pending_baseline": true,
-      "scene": "res://game/flow/end_card.tscn",
-      "resolution": [
-        1920,
-        1080
-      ],
-      "settle_frames": 180,
-      "threshold_rmse": 0.004
-    },
-    {
       "id": "slice_end_card",
       "pending_baseline": true,
       "scene": "res://game/flow/end_card.tscn",
@@ -5022,6 +5011,36 @@
       "settle_frames": 30
     },
     {
+      "id": "officer_front",
+      "scene": "res://game/levels/_tests/characters/stillguard/officer_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "officer_face",
+      "scene": "res://game/levels/_tests/characters/stillguard/officer_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "officer_clip_hatchet_blow",
+      "scene": "res://game/levels/_tests/characters/stillguard/officer_clip_hatchet_blow.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "ch05_pemakar_harbour",
       "scene": "res://game/levels/_tests/act1_zones/ch05_pemakar_shots.tscn",
       "camera": "Cameras/Harbour",
@@ -7926,6 +7945,28 @@
         },
         "time_scale": 4.0
       }
+    },
+    {
+      "id": "flow_chapter_card_ch04_voice",
+      "pending_baseline": true,
+      "scene": "res://game/flow/chapter_card.tscn",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "settle_frames": 150,
+      "threshold_rmse": 0.004
+    },
+    {
+      "id": "flow_chapter_card_ch04",
+      "pending_baseline": true,
+      "scene": "res://game/flow/chapter_card.tscn",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "settle_frames": 480,
+      "threshold_rmse": 0.004
     }
   ]
 }

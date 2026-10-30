@@ -1,53 +1,204 @@
 {
-  "_doc": "M3-CRE-611: Haluna's ambient wildlife (WildlifeLayer zone_id ch02/haluna). Read from the dressed zone (2026-10-24): the sea stands at y 0.15 (WeatheringTide), the waterline is about 3.5 m inland of HalunaTerrain's shore line (x = 50 (|z|/210)^2), the tide wall's top is y 3.15 at x -26.9, the dock's tall posts and the net racks top out at 2.30 and 2.25, the beach houses' ridge ends at 6.1-6.45 and the stilt house's peak at 6.14. flocks: centre [x, z], radius_m (horizontal), altitude_m [lo, hi] (world y), perches [x, y, z, yaw_deg] (yaw 0 faces +z, 90 faces the sea at +x), every perch inside the radius. beaches: crab areas on the sand between the waterline and the dry beach, centre [x, z], half_extents [x, z], yaw_deg; ground heights from `ground` (a node path from the zone root and its height_at(x, z) method), else y. shoals: centre [x, y, z] in the shallows (0.3-0.5 m under the surface, 6-12 m offshore), radius_m, scale. swarms (M3-CRE-616): Haluna has no marsh or reed bed, so one dragonfly patrol hovers over the lagoon shallows' edge by the north crabs (the waterline runs about x -3 there, the sand at y ~0.35), centre [x, y, z] at about 1.2 m above the sand, radius_m, count.",
+  "_doc": "M3-CRE-611: Haluna's ambient wildlife (WildlifeLayer zone_id ch02/haluna). Read from the dressed zone (2026-10-24): the sea stands at y 0.15 (WeatheringTide), the waterline is about 3.5 m inland of HalunaTerrain's shore line (x = 50 (|z|/210)^2), the tide wall's top is y 3.15 at x -26.9, the dock's tall posts and the net racks top out at 2.30 and 2.25, the beach houses' ridge ends at 6.1-6.45 and the stilt house's peak at 6.14. flocks: centre [x, z], radius_m (horizontal), altitude_m [lo, hi] (world y), perches [x, y, z, yaw_deg] (yaw 0 faces +z, 90 faces the sea at +x), every perch inside the radius. beaches: crab areas on the sand between the waterline and the dry beach, centre [x, z], half_extents [x, z], yaw_deg; ground heights from `ground` (a node path from the zone root and its height_at(x, z) method), else y. shoals: centre [x, y, z] in the shallows (0.3-0.5 m under the surface, 6-12 m offshore), radius_m, scale. swarms (M3-CRE-616): Haluna has no marsh or reed bed, so one dragonfly patrol hovers over the lagoon shallows' edge by the north crabs (the waterline runs about x -3 there, the sand at y ~0.35), centre [x, y, z] at about 1.2 m above the sand, radius_m, count. Re-seated on the dressed kit (the Act I audit, 2026-10-29: tools/creatures/wildlife_snap.gd and wildlife_audit.gd, which ray against the zone's visible meshes).",
   "zone": "ch02/haluna",
-  "ground": {"node": "HalunaMood/Terrain", "method": "height_at"},
+  "ground": {
+    "node": "HalunaMood/Terrain",
+    "method": "height_at"
+  },
   "flocks": [
     {
       "id": "beach",
-      "center": [-14.0, 6.0],
+      "center": [
+        -14.0,
+        6.0
+      ],
       "radius_m": 32.0,
-      "altitude_m": [7.0, 15.0],
+      "altitude_m": [
+        7.0,
+        15.0
+      ],
       "count": 4,
       "perched_at_start": 2,
       "perches": [
-        [-26.9, 3.16, -9.1, 90.0],
-        [-26.9, 3.15, 8.9, 80.0],
-        [-26.2, 3.15, 24.9, 100.0],
-        [-41.98, 6.1, -7.62, 90.0],
-        [-42.04, 6.1, -5.8, 60.0]
+        [
+          -26.9,
+          3.16,
+          -9.1,
+          90.0
+        ],
+        [
+          -26.9,
+          3.15,
+          8.9,
+          80.0
+        ],
+        [
+          -26.2,
+          3.15,
+          24.9,
+          100.0
+        ],
+        [
+          -41.98,
+          6.1,
+          -7.62,
+          90.0
+        ],
+        [
+          -42.04,
+          6.1,
+          -5.8,
+          60.0
+        ]
       ]
     },
     {
       "id": "dock",
-      "center": [8.0, 50.0],
+      "center": [
+        8.0,
+        50.0
+      ],
       "radius_m": 22.0,
-      "altitude_m": [6.0, 13.0],
+      "altitude_m": [
+        6.0,
+        13.0
+      ],
       "count": 4,
       "perched_at_start": 2,
       "perches": [
-        [-2.25, 2.3, 55.9, 125.0],
-        [-0.89, 2.3, 57.87, 100.0],
-        [5.95, 2.3, 50.21, 125.0],
-        [7.29, 2.3, 52.17, 160.0],
-        [14.24, 2.3, 44.6, 125.0],
-        [22.0, 2.3, 38.2, 100.0],
-        [-0.21, 2.25, 45.97, 90.0],
-        [4.28, 2.25, 48.16, 70.0],
-        [21.73, 6.14, 55.49, 35.0]
+        [
+          -2.25,
+          1.99,
+          55.9,
+          125.0
+        ],
+        [
+          -0.89,
+          2.3,
+          57.87,
+          100.0
+        ],
+        [
+          5.95,
+          2.3,
+          50.21,
+          125.0
+        ],
+        [
+          7.29,
+          2.3,
+          52.17,
+          160.0
+        ],
+        [
+          14.24,
+          2.3,
+          44.6,
+          125.0
+        ],
+        [
+          22.0,
+          2.03,
+          38.2,
+          100.0
+        ],
+        [
+          -0.21,
+          2.25,
+          45.97,
+          90.0
+        ],
+        [
+          4.28,
+          2.25,
+          48.16,
+          70.0
+        ],
+        [
+          21.73,
+          6.14,
+          55.49,
+          35.0
+        ]
       ]
     }
   ],
   "beaches": [
-    {"id": "beach_north", "center": [-7.0, 24.0], "half_extents": [3.6, 9.0], "yaw_deg": 0.0, "y": 0.35, "count": 6},
-    {"id": "beach_south", "center": [-6.6, -21.0], "half_extents": [3.4, 10.0], "yaw_deg": 0.0, "y": 0.35, "count": 6}
+    {
+      "id": "beach_north",
+      "center": [
+        -7.0,
+        24.0
+      ],
+      "half_extents": [
+        3.6,
+        9.0
+      ],
+      "yaw_deg": 0.0,
+      "y": 0.35,
+      "count": 6
+    },
+    {
+      "id": "beach_south",
+      "center": [
+        -6.74,
+        -21.42
+      ],
+      "half_extents": [
+        3.4,
+        10.0
+      ],
+      "yaw_deg": 0.0,
+      "y": 0.38,
+      "count": 6
+    }
   ],
   "shoals": [
-    {"id": "shallows_north", "center": [9.5, -0.15, 18.0], "radius_m": 3.5, "count": 14, "scale": 1.0},
-    {"id": "shallows_south", "center": [9.5, -0.15, -18.0], "radius_m": 3.5, "count": 12, "scale": 1.0},
-    {"id": "dock", "center": [11.0, -0.12, 68.0], "radius_m": 3.0, "count": 12, "scale": 1.0}
+    {
+      "id": "shallows_north",
+      "center": [
+        9.5,
+        -0.15,
+        18.0
+      ],
+      "radius_m": 3.5,
+      "count": 14,
+      "scale": 1.0
+    },
+    {
+      "id": "shallows_south",
+      "center": [
+        9.5,
+        -0.15,
+        -18.0
+      ],
+      "radius_m": 3.5,
+      "count": 12,
+      "scale": 1.0
+    },
+    {
+      "id": "dock",
+      "center": [
+        11.0,
+        -0.12,
+        68.0
+      ],
+      "radius_m": 3.0,
+      "count": 12,
+      "scale": 1.0
+    }
   ],
   "swarms": [
-    {"id": "shallows_edge_north", "type": "dragonfly", "center": [-2.0, 1.5, 22.0], "radius_m": 4.0, "count": 4}
+    {
+      "id": "shallows_edge_north",
+      "type": "dragonfly",
+      "center": [
+        -2.0,
+        1.5,
+        22.0
+      ],
+      "radius_m": 4.0,
+      "count": 4
+    }
   ]
 }

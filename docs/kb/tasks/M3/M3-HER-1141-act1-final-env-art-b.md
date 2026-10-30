@@ -48,3 +48,5 @@ drop and column, the Coilspire storm wall). The inventory file is integration-qa
   them): `assets/environments/kits/tamsule_bell/reefball_drop_proxy.glb` and `materials/tb_drop_proxy.tres`. Both
   are named as placeholders, and the Bell's held drop is rendering's (M3-RND-26). Rename them, or replace them with
   the final drop, and re-run the audit.
+- 2026-10-29 ~23:40 integration-qa: on lead/gate-big18 these two are **the only rows left in all of Act I**
+  (`tb_drop_proxy.tres`, `reefball_drop_proxy.glb`, both low: names only).

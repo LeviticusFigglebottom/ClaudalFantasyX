@@ -246,22 +246,24 @@ TRIAL_PIECES = (("Gate_t1", "flue_gate", "foot"), ("Gate_t2", "flue_gate", "foot
                 ("WrightMark", "wright_mark", "centre"))
 
 
-# Virel at rest in the crown chamber (B06 F07: "a long ribbon-serpent of sailcloth panels ... perfectly still"):
-# creatures-b's model (assets/creatures/virel, its own slot materials) on the Virel block's foot, held still (a
-# dressing piece, so no idle plays). It was the zone's last greybox stand-in (Act I inventory, M3-HER-1141).
-VIREL = {"piece": "virel", "kit_dir": "res://assets/creatures/virel/",
-         "materials_dir": "res://assets/creatures/virel/materials/", "block": "Virel", "yaw_deg": 0.0}
+# Virel in the crown chamber is act1-chapters' ZoneCast actor on her coil (M3-CRE-700), which owns her state after the
+# binding (the Lead, 2026-10-29: Coilspire showed her twice). This dressing places no model of her (it did, as
+# M3-ENV-1320's still piece, until then).
 
 
 # The interior on the GPU (M3-ENV-1322, the PC's QA rows 6 and 27): the kit's cs_laterite_inner gathers its green
 # verdigris into every mortar joint, so the well's walls read as a thin green grid, and the well was near-black away
 # from the four braziers. The zone's own copy keeps a little verdigris off the joints, and each tier gets a ring of
-# low, shadowless wall-wash lamps (the keepers' lamps, warm), so the stonework reads.
+# low, shadowless wall-wash lights at the keepers' wall lamps (wash_lamps), so the stonework reads.
 INNER_SLOT = "cs_laterite_inner"
 INNER_MAT = "coilspire_inner_material"
 INNER_OVERRIDES = {"salt_coverage": "Vector2(0.0, 0.16)", "salt_cavity_gather": "0.3"}
 WASH_PER_TIER = 4
-WASH = {"lift_m": 2.2, "in_m": 1.3, "energy": 1.3, "range": 7.5}
+WASH = {"lift_m": 2.2, "energy": 1.7, "range": 7.5}
+LAMP_TRIES = 12
+LAMP_MIN_GAP_DEG = 60.0
+LAMP_TREAD_CLEAR_DEG = 14.0
+LAMP_BLOCK_CLEAR_M = 1.8
 
 
 def write_inner_material() -> None:
@@ -272,23 +274,50 @@ def write_inner_material() -> None:
     (ZONE / f"{INNER_MAT}.tres").write_text(text, encoding="utf-8")
 
 
-def wash_lights() -> list[dict]:
-    out = []
+def wash_lamps() -> tuple[list[dict], list[dict]]:
+    """The keepers' lamps (the 10-29 audit: the wash lights had no source): b_spire_trial's wall_lamp on the well's
+    wall WASH["lift_m"] over each tier's floor, facing the well's centre, its light at the dish. Each tier tries
+    LAMP_TRIES angles and keeps up to WASH_PER_TIER of them, at least LAMP_MIN_GAP_DEG apart, clear of every flight's
+    treads (with headroom) and of the trial's blocks."""
+    flights, _landings = cs.plan()
+    treads = [f.tread(i) for f in flights for i in range(1, f.count + 1)]
+    blocks = [b for b in json.loads(LAYOUT.read_text(encoding="utf-8"))["blocks"]]
+    pieces, lights = [], []
     for k, ty in enumerate(cs.TIER_Y):
         y = ty + WASH["lift_m"]
-        r = float(cs.inner_r(y)) - WASH["in_m"]
-        for i in range(WASH_PER_TIER):
-            a = 2.0 * math.pi * (i + 0.5 * (k % 2)) / WASH_PER_TIER
-            x, wy, z = cs.world_from_spire(r * math.cos(a), y, r * math.sin(a))
-            out.append({"at": [r3(x), r3(wy), r3(z)], "energy": WASH["energy"], "range": WASH["range"]})
-    return out
+        r = float(cs.inner_r(y))
+        kept: list[float] = []
+        for n in range(LAMP_TRIES):
+            a = 360.0 * (n + 0.5 * (k % 2)) / LAMP_TRIES
+            if any(abs((a - b + 180.0) % 360.0 - 180.0) < LAMP_MIN_GAP_DEG for b in kept):
+                continue
+            if any(abs((a - ta + 180.0) % 360.0 - 180.0) < LAMP_TREAD_CLEAR_DEG and y - 2.1 < top < y + 0.4
+                   for ta, top in treads):
+                continue
+            ar = math.radians(a)
+            wx, wy, wz = cs.world_from_spire(r * math.cos(ar), y, r * math.sin(ar))
+            if any(math.dist((wx, wy, wz), b["pos"]) < LAMP_BLOCK_CLEAR_M for b in blocks):
+                continue
+            kept.append(a)
+            if len(kept) == WASH_PER_TIER:
+                break
+        for a in kept:
+            ar = math.radians(a)
+            wall = cs.world_from_spire(r * math.cos(ar), y, r * math.sin(ar))
+            inner = cs.world_from_spire((r - 1.0) * math.cos(ar), y, (r - 1.0) * math.sin(ar))
+            yaw = math.degrees(math.atan2(inner[0] - wall[0], inner[2] - wall[2]))
+            pieces.append({"piece": "wall_lamp", "at": [r3(wall[0]), r3(wall[2])], "y": r3(wall[1]), "yaw_deg": r3(yaw)})
+            reach = b_lamp_reach()
+            d = ((inner[0] - wall[0]), (inner[2] - wall[2]))
+            lights.append({"at": [r3(wall[0] + d[0] * reach[0]), r3(wall[1] - reach[1] + 0.06), r3(wall[2] + d[1] * reach[0])],
+                           "energy": WASH["energy"], "range": WASH["range"]})
+    return pieces, lights
 
 
-def virel_piece() -> list[dict]:
-    g = json.loads(LAYOUT.read_text(encoding="utf-8"))
-    b = next(b for b in g["blocks"] if b["id"] == VIREL["block"])
-    foot = b["pos"][1] - b["size"][1] * 0.5
-    return [dict(VIREL, at=[r3(b["pos"][0]), r3(b["pos"][2])], y=r3(foot))]
+def b_lamp_reach() -> tuple[float, float]:
+    import b_spire_trial  # noqa: PLC0415  (the kit's own lamp dimensions)
+
+    return b_spire_trial.LAMP_REACH, b_spire_trial.LAMP_DROP
 
 
 def trial_pieces() -> list[dict]:
@@ -339,7 +368,7 @@ def dressing() -> dict:
             pieces.append(dict(p, collide="trimesh", collide_lod0_in=door_boxes()))
             continue
         pieces.append(p)
-    pieces += key_pieces() + trial_pieces() + virel_piece()
+    pieces += key_pieces() + trial_pieces()
     backdrop = json.loads((PREVIEW / "coilspire_backdrop.json").read_text(encoding="utf-8"))
     corrow = "res://assets/environments/kits/corrow/"
     for p in backdrop.get("pieces", []):
@@ -348,7 +377,9 @@ def dressing() -> dict:
     for i, light in enumerate(lights[:4]):  # the tier braziers' lights burn with their braziers (Flame_t1-t4)
         light["block"] = f"Flame_t{i + 1}"
     lights += [{"at": l[:3], "energy": l[3], "range": l[4]} for l in preview.get("fire_lights", [])]
-    lights += wash_lights()
+    lamps, lamp_lights = wash_lamps()
+    pieces += lamps
+    lights += lamp_lights
     for p in pieces:
         if p["piece"] in ("coilspire_shell", "coilspire_tiers"):
             p["material_paths"] = {INNER_SLOT: RES_ZONE + INNER_MAT + ".tres"}

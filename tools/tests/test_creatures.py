@@ -12,6 +12,7 @@ from __future__ import annotations
 import copy
 import importlib.util
 import json
+import re
 import sys
 import tempfile
 import unittest
@@ -198,6 +199,18 @@ ACT1_REGULARS = ("ashwing", "flue_moth", "gull_harrier", "lantern_eel", "oil_slu
                  "tower_limpet", "vein_sparker", "wall_polyp", "wallcrab", "glassfry", "wreck_crab")
 
 
+def model_scale(row: dict) -> float:
+    """The battle scene's scale on its `Model` (the Act I audit: a small foe stands larger in battle, as the Oil Slug's
+    1.3); 1 when the scene sets none. Its clips' drops and lows scale with it."""
+    scene = ROOT / str(row.get("scene", "")).removeprefix("res://")
+    text = scene.read_text(encoding="utf-8") if scene.is_file() else ""
+    m = re.search(r'\[node name="Model"[^\]]*\]\ntransform = Transform3D\(([^)]*)\)', text)
+    if not m:
+        return 1.0
+    v = [float(x) for x in m.group(1).split(",")]
+    return (v[0] ** 2 + v[3] ** 2 + v[6] ** 2) ** 0.5
+
+
 def model_rows(rows: dict) -> dict:
     """The rows that own a model: a row whose scene lives in game/creatures/<its id>/. A second row on the same model
     (a Vowbound's `<id>_held` foe form, M3-CRE-647) shares that row's GLB, job and materials."""
@@ -355,9 +368,11 @@ class PipelineTest(unittest.TestCase):
             if cid in sinks_by_design:
                 continue
             if hover > 0.0:
-                self.assertAlmostEqual(-dy, hover, delta=0.05, msg=f"{cid}: a flier's KO lands on the floor")
+                self.assertAlmostEqual(-dy * model_scale(row), hover, delta=0.05,
+                                       msg=f"{cid}: a flier's KO lands on the floor")
             else:
-                self.assertGreater(dy, -0.5, f"{cid}: a grounded creature's KO doesn't sink through the floor")
+                self.assertGreater(dy * model_scale(row), -0.5,
+                                   f"{cid}: a grounded creature's KO doesn't sink through the floor")
 
 
 def skinned_lowest(glb: Path) -> dict[str, float]:
@@ -477,10 +492,11 @@ class GroundedClipsTest(unittest.TestCase):
             if cid in self.ALLOW:
                 continue
             hover = float({**data["defaults"]["stand_in"], **row.get("stand_in", {})}.get("hover", 0.0))
+            scale = model_scale(row)
             for clip, low in skinned_lowest(ROOT / "assets/creatures" / cid / f"{cid}.glb").items():
                 with self.subTest(creature=cid, clip=clip):
-                    self.assertGreaterEqual(low + hover, -self.TOLERANCE,
-                                            f"{cid} {clip}: a vertex goes {-(low + hover):.3f} m under the floor"
+                    self.assertGreaterEqual(low * scale + hover, -self.TOLERANCE,
+                                            f"{cid} {clip}: a vertex goes {-(low * scale + hover):.3f} m under the floor"
                                             + (f" (with its {hover} m hover)" if hover else ""))
 
     def test_the_allow_list_names_creatures(self) -> None:

@@ -543,7 +543,8 @@ class NearMissTests(DlgcTestBase):
     def test_speaker_like_narration_is_an_error(self) -> None:
         """review-sweep-D: 1-2 name words with a speaker among them, or any `[...]` group, is an error."""
         for line in ("Old Toma: Lie still.", "Toma Vell: Lie still.", "Asha Vell: I never learned her name.",
-                     "Old Toma [sad]: Lie still.", "Mother Ilse [sad]: Hi.", "The Keeper of Lamps [cold]: Hm."):
+                     "Old Toma [sad]: Lie still.", "Mother Ilse [sad]: Hi.", "The Keeper of Lamps [cold]: Hm.",
+                     "Old Net-Mender [neutral]: The pale blocks."):  # a hyphenated name (the Ch8 bark)
             with self.subTest(line=line):
                 self.assert_error(f"{line} #line:t_001", "looks like a speaker, but this line would compile as "
                                                          "narration", 3)

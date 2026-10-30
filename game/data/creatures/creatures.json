@@ -50,7 +50,7 @@
     "shoal_skipper": {"scene": "res://game/creatures/shoal_skipper/shoal_skipper_battle.tscn", "vfx_anchors": {"core": "spine1", "wound": "spine1"}, "contact": {"attack": 0.5}},
     "cinder_matron": {"scene": "res://game/creatures/cinder_matron/cinder_matron_battle.tscn", "clip_by_skill": {"ladle_swing": "attack", "slag_pour": "slag_pour", "bank_the_fire": "bank_the_fire", "recrust_gather": "recrust_gather", "recrust": "recrust"}, "contact": {"attack": 0.85, "slag_pour": 1.15, "bank_the_fire": 1.0, "recrust_gather": 1.1, "recrust": 0.8, "phase_change": 0.85}, "loop": ["idle", "ready"], "phases": {"pour": {"clip": "phase_change", "idle": "idle", "hide": ["Crust"], "sec": 0.0}}},
     "slag_tortoise": {"scene": "res://game/creatures/slag_tortoise/slag_tortoise_battle.tscn", "vfx_anchors": {"core": "shell", "wound": "shell"}, "contact": {"attack": 0.55}},
-    "ashwing": {"scene": "res://game/creatures/ashwing/ashwing_battle.tscn", "vfx_anchors": {"core": "thorax", "wound": "fore_l"}, "stand_in": {"hover": 1.38}, "contact": {"attack": 0.6}, "hit_snap": {"preroll_sec": 0.1}},
+    "ashwing": {"scene": "res://game/creatures/ashwing/ashwing_battle.tscn", "vfx_anchors": {"core": "thorax", "wound": "fore_l"}, "stand_in": {"hover": 1.86}, "contact": {"attack": 0.6}, "hit_snap": {"preroll_sec": 0.1}},
     "scuttler": {"scene": "res://game/creatures/scuttler/scuttler_battle.tscn", "vfx_anchors": {"core": "back", "wound": "front"}, "contact": {"attack": 0.45}, "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}},
     "spar_wraith": {
       "scene": "res://game/creatures/spar_wraith/spar_wraith_battle.tscn", "stand_in": {"yaw_deg": 45.0},
@@ -64,7 +64,7 @@
                         "clips": {"attack": "attack_deck", "cast": "cast_deck", "hit": "hit_deck", "ko": "ko_deck"}}
       }
     },
-    "sail_leech": {"scene": "res://game/creatures/sail_leech/sail_leech_battle.tscn", "vfx_anchors": {"core": "body", "wound": "body"}, "stand_in": {"hover": 1.38}, "contact": {"attack": 0.7}},
+    "sail_leech": {"scene": "res://game/creatures/sail_leech/sail_leech_battle.tscn", "vfx_anchors": {"core": "body", "wound": "body"}, "stand_in": {"hover": 1.26}, "contact": {"attack": 0.7}},
     "bottle_hermit": {"scene": "res://game/creatures/bottle_hermit/bottle_hermit_battle.tscn", "contact": {"attack": 0.55, "cast": 0.75}, "loop": ["idle", "ready"], "stand_in": {"yaw_deg": 90.0, "height": 1.2, "radius": 0.75}},
     "glassfry": {"scene": "res://game/creatures/glassfry/glassfry_battle.tscn", "vfx_anchors": {"core": "cloud", "wound": "fry30"}, "contact": {"attack": 0.55}},
     "oil_slug": {"scene": "res://game/creatures/oil_slug/oil_slug_battle.tscn", "vfx_anchors": {"core": "spine1", "wound": "spine1"}, "contact": {"attack": 0.55, "cast": 0.6}, "stand_in": {"yaw_deg": 60.0}, "portrait": {"rim_energy": 2.8, "kick_energy": 1.8, "margin": 1.2}},

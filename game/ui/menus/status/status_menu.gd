@@ -242,7 +242,12 @@ func _render_carried(cm: Dictionary, top: float) -> void:
 	var names: Array = _shown["statuses"]
 	var none := names.size() == 1 and str(names[0]) == tr(StatusMenuModel.NONE_KEY)
 	var text := tr(StatusMenuModel.JOIN_KEY).join(PackedStringArray(names))
-	_line(Rect2(r.position.x, y, r.size.x, 0.0), text, &"text_dim" if none else &"danger", true)
+	y = _line(Rect2(r.position.x, y, r.size.x, 0.0), text, &"text_dim" if none else &"danger", true)
+	var descs: Array = _shown.get("status_descs", [])
+	var lines := int(HudLayout.num(cm, "desc_lines"))
+	for desc: String in descs:  # what each one does; one alone needs no name, it is just above
+		var shown := desc.get_slice(": ", 1) if descs.size() == 1 else desc
+		y = _line(Rect2(r.position.x, y, r.size.x, 0.0), shown, &"text_dim", true, &"HelpDimLabel", lines)
 
 
 func _render_side(sm: Dictionary) -> void:
@@ -274,16 +279,19 @@ func _section_header(r: Rect2, text: String) -> float:
 
 
 ## One line of text (wrapping onto up to wrap_lines lines when `wrap`). Returns the y under it.
-func _line(r: Rect2, text: String, role: StringName, wrap: bool = false, variation: StringName = &"HudName") -> float:
+func _line(
+	r: Rect2, text: String, role: StringName, wrap: bool = false, variation: StringName = &"HudName", lines: int = 0
+) -> float:
 	var sec: Dictionary = _d.get("section", {})
 	var line_h := HudLayout.num(sec, "line_height")
-	var h := line_h * (HudLayout.num(sec, "wrap_lines") if wrap else 1.0)
+	var wrap_lines := float(lines) if lines > 0 else HudLayout.num(sec, "wrap_lines")
+	var h := line_h * (wrap_lines if wrap else 1.0)
 	var l := _add_label(variation, Rect2(r.position.x, r.position.y, r.size.x, h), text)
 	l.add_theme_color_override(&"font_color", _c(role))
 	if wrap:
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		l.vertical_alignment = VERTICAL_ALIGNMENT_TOP
-		l.max_lines_visible = int(HudLayout.num(sec, "wrap_lines"))
+		l.max_lines_visible = int(wrap_lines)
 		l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		l.size = Vector2(r.size.x, h)  # M2-MNU-11: the text, set before autowrap, had widened it to one line
 		return r.position.y + line_h * maxf(1.0, float(mini(l.get_line_count(), l.max_lines_visible)))

@@ -41,6 +41,9 @@ uniform float under_reflect_radius_m = 16.0;
 uniform float under_top_m = -4.5;
 uniform float under_floor_m = -32.0;
 uniform float under_scale_per_m = 0.6;
+// The direct web's horizontal bound round the axis (m; 0: none). The Tamsule drop's web falls on its catch-pool and
+// posts only, not on the harbour water past the pool's coping (the big17 gate: a white net on the dark water by the dock).
+uniform float under_radius_m = 0.0;
 
 vec3 sphere_under_light(vec2 screen_uv, float depth, mat4 inv_proj, mat4 inv_view) {
 	if (!use_caustics || under_strength <= 0.0 || depth <= SPHERE_SKY_DEPTH) {
@@ -62,9 +65,10 @@ vec3 sphere_under_light(vec2 screen_uv, float depth, mat4 inv_proj, mat4 inv_vie
 	vec3 w = cross(s, u);
 	float tm = hymn_wind_time * caustic_speed;
 	float web = hymn_caustic(vec2(dot(p, u), dot(p, w)) * under_scale_per_m, tm, caustic_width, SPHERE_CAUSTIC_LAYERS);
-	float direct = smoothstep(0.0, under_lens_m, chord) * exp(-max(t.x, 0.0) / under_reach_m)
-			* clamp(dot(n, s) * 0.5 + 0.5, 0.0, 1.0);
 	vec3 rel = p - sphere_center;
+	float bound = under_radius_m > 0.0 ? 1.0 - smoothstep(under_radius_m - 1.5, under_radius_m, length(rel.xz)) : 1.0;
+	float direct = smoothstep(0.0, under_lens_m, chord) * exp(-max(t.x, 0.0) / under_reach_m)
+			* clamp(dot(n, s) * 0.5 + 0.5, 0.0, 1.0) * bound;
 	float ring = 1.0 - smoothstep(under_reflect_radius_m * 0.75, under_reflect_radius_m, length(rel.xz));
 	float span = smoothstep(under_floor_m, under_floor_m + 1.0, rel.y) * (1.0 - smoothstep(under_top_m - 1.0, under_top_m, rel.y));
 	float web2 = hymn_caustic(rel.xz * under_scale_per_m * 1.7 + vec2(5.3, 2.1), tm, caustic_width * 1.5, 1);

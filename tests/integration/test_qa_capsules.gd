@@ -64,6 +64,9 @@ func test_no_zone_shows_a_capsule_the_owners_do_not_know_of() -> void:
 				print("  KNOWN capsule %s: %s" % [path.get_file(), who])
 			else:
 				fail("%s shows %s as a capsule" % [path.get_file(), who])
+		for who: Variant in listed:  # a ratchet: a KNOWN row whose actor has its body now would hide its return
+			if not shown.has(str(who)):
+				fail("%s: %s is KNOWN but no longer a capsule; drop it from qa_known.json" % [path.get_file(), who])
 		zone.free()
 	Game.state = state_was
 

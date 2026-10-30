@@ -31,7 +31,7 @@ const CAUSTIC_KEYS: Array[String] = [
 ]
 ## The data's "under" keys, both passes' "under_<key>" uniforms (the light through the drop under it, M3-RND-26).
 const UNDER_KEYS: Array[String] = [
-	"strength", "reach_m", "lens_m", "reflect", "reflect_radius_m", "top_m", "floor_m", "scale_per_m"
+	"strength", "reach_m", "lens_m", "reflect", "reflect_radius_m", "top_m", "floor_m", "scale_per_m", "radius_m"
 ]
 const OPTICS_SURFACE: Array[String] = [
 	"ior",
