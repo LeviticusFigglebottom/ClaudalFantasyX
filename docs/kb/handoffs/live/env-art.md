@@ -589,6 +589,13 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ b0eb0a49: the Lead's big19 `test_palette_check` red (haluna_h07_chapel_court).** The chapel's sun face read
+  #B0B2B2 (ΔE 0.042 to order_marble 0, max 0.03): M3-ENV-102's lime-wash damp (wet 0.25 + bias 0.15) darkened it. The damp
+  is dialled back (wet 0.08, bias 0.03, moss 0.06; the salt streaks kept): #B8BABA, ΔE 0.018. The marble is right, so the
+  asset moved, not the target. Re-rendering H07 also showed the zenith check failing (median green): one of my audit
+  palms west of the chapel (f44e218d) stood in its sky sample, so the five audit palms there are frangipani now.
+  **`palette_check.py check --shots haluna_h07_chapel_court`: 4 ok, 0 failed.** Viewed. Also: `test_haluna_kit`,
+  `test_haluna_dressing`, `test_shrine_gi_bake` OK; haluna_kit rebuilt (only `order_chapel.glb`). H07 drifts (re-approve).
 - **2026-10-30, M4-A2P-040 (Ch10) in progress, pushed @ 3abc9d20; not merge-ready (the mount is chapters', M4-A2P-0401).**
   - Built: a four-variant **mangrove system** (`ossa_fen.build_tree` parametrised: `mangrove_tall`/`_low`/`_young`
     beside the kit tree); each zone's **ground** from its greybox (`fen_zones.py`: level land, channels, root-mat humps,
