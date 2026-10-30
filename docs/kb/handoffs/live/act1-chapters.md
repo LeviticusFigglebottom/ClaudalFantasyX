@@ -710,7 +710,7 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - Checks: act2_bosses, battle_parts, boss, arena, encounters_resolve, validate, vfx_coverage, balance_sim,
     creatures, banned.
   - Next: the rest of my queue waits on other lanes (see the BACKLOG line).
-- MERGE-READY @ (this push)
+- MERGE-READY @ fc316eda4
 
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
