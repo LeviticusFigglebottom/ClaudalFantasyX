@@ -221,9 +221,9 @@
       "stand_in": "CrowdSpots/haluna_clap_girl",
       "at": [
         -82.0,
-        2.32,
-        -8.5,
-        -0.0
+        2.33,
+        -6.0,
+        0.0
       ],
       "shown": "day"
     },
@@ -233,9 +233,9 @@
       "stand_in": "CrowdSpots/haluna_clap_boy",
       "at": [
         -82.0,
-        2.32,
-        -9.1,
-        -180.0
+        2.33,
+        -6.6,
+        180.0
       ],
       "shown": "day"
     },
