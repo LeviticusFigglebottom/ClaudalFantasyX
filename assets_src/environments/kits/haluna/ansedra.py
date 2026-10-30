@@ -40,6 +40,23 @@ The city's walk (M4-A2P-043, env-art-b; docs/kb/plan/act2/zones/ch13_ansedra.md)
   mooring_platform    the outer moorings (16 x 16 m, top y 0): a marble landing stage with water-steps and marble
                       bollards on its east and west edges, two punt-pole racks, and the lacquered mooring arch over the
                       north exit. Origin at the platform's top centre.
+The Sanctum of the Level (M4-A2P-043; ch13_sanctum.md), in its greybox's frame (the nave 24 x 36 m, floor y 0):
+  sanctum_nave_bay    one 6 m bay of the nave along Z: Order-marble walls (inner faces at x +-11.75, 10 m) on a dado,
+                      pilasters at the bay's ends, the gilt Level line at eye height, and a segmental marble vault
+                      springing at 10 m to a 15 m crown. Origin at the bay's floor centre.
+  sanctum_nave_floor  the nave's polished floor (24 x 36 m, top y 0) round the basin's opening (10.8 x 18.8 m), the
+                      kneeling band of darker stones round the opening edged in gilt. Origin at the nave's centre.
+  sanctum_basin_nave  the basin (10 x 18 m inside): the rim is the kneeling ledge (0.4 m high), the floor salt-glass
+                      tiles 1 m under the rim over the bound light (the light that never moves); the scene's still water
+                      stands at y 0.3. Origin at the basin's centre on the nave floor.
+  sanctum_vestibule   the gatehouse (12 x 12 m, 6 m ceiling) and the nave's south end wall: the lacquered double door
+                      shut in the south opening, the doorway into the nave under its gilt Level-line lintel. Origin at
+                      the vestibule's floor centre (the nave's south wall stands 6 m to its -Z).
+  sanctum_bench       a marble bench (2.4 m) for the vestibule's walls. Origin at its foot, centre.
+  sanctum_apse        the nave's north end wall with the apse's arch (10 m wide): a plain marble half-dome over a raised
+                      step, the gilt Level line round it at eye height, nothing on it. Origin at the end wall's foot.
+  cantor_stand        the Cantor's stand at the binding: a marble post with a gilt-edged slanted top. Origin at its
+                      foot.
 """
 
 from __future__ import annotations
@@ -65,7 +82,9 @@ M_PAPER = "kit_cloth_sand"
 TRI_BUDGET = {"bowl_dome": (6000, 400), "ansedra_far_domes": (8000, 3000), "pursuit_barge": (10000, 700),
               "lacquer_hall": (8000, 500), "lacquer_court_ground": (12000, 800), "sanctum_basin": (8000, 500),
               "archive_stacks": (9000, 500), "ansedra_causeway_6m": (3000, 200), "gold_lamp_post": (1500, 200),
-              "island_plinth_16m": (8000, 400), "mooring_platform": (9000, 650)}
+              "island_plinth_16m": (8000, 400), "mooring_platform": (9000, 650), "sanctum_nave_bay": (6000, 600),
+              "sanctum_nave_floor": (12000, 300), "sanctum_basin_nave": (6000, 300), "sanctum_vestibule": (8000, 600),
+              "sanctum_bench": (600, 60), "sanctum_apse": (8000, 900), "cantor_stand": (800, 80)}
 BUDGET_KEY = {"ansedra_far_domes_lit": "ansedra_far_domes"}
 
 PLINTH_TOP = 0.6
@@ -635,6 +654,272 @@ def build_mooring_platform(seed: int = 2114) -> list[kc.MeshBuilder]:
     return out
 
 
+# --- the Sanctum of the Level (M4-A2P-043) ------------------------------------------------------------------------
+NAVE_HALF_W = 11.75  # the walls' inner faces (the greybox's walls at +-12, 0.5 m thick)
+NAVE_WALL_H = 10.0
+NAVE_CROWN = 15.0
+NAVE_BAY = 6.0
+NAVE_HALF_L = 18.0
+BASIN_IN = (5.0, 9.0)  # the basin's inside half extents (x, z): the greybox's ledges stand on its rim
+BASIN_RIM = 0.4  # the rim's width and height (the greybox's KneelingLedge blocks)
+BASIN_FLOOR_Y = -0.6
+KNEEL_BAND = 1.2
+EYE_H = 1.6
+VEST_HALF = 6.0
+VEST_H = 6.0
+VEST_DOOR_HALF = 2.2  # the gate (the greybox's GateStep opening)
+NAVE_DOOR = (3.0, 5.0)  # the doorway into the nave: half width, height
+APSE = (5.0, 8.0)  # the apse's radius and its arch's spring height
+APSE_STEP = 0.3
+SHELL_COL = (0.0, 0.0, 0.0, 0.2)
+SHELL_SKIN_M = 0.3
+WALL_OVERLAP_M = 1.0  # the nave walls run past the vault's spring, so no seam lets the sun in
+
+
+def _shell(mb, grid: np.ndarray, mat: int, inside, *, uv_scale: float = 0.25, skin_m: float = SHELL_SKIN_M) -> None:
+    """A (rows, cols, 3) grid as a smooth surface facing `inside` (a point on its lit side), with an outward skin
+    `skin_m` behind it."""
+    rows, cols = grid.shape[:2]
+    u = np.cumsum(np.r_[0.0, np.linalg.norm(np.diff(grid[0], axis=0), axis=-1)])
+    v = np.cumsum(np.r_[0.0, np.linalg.norm(np.diff(grid[:, 0], axis=0), axis=-1)])
+    uv = np.stack(np.meshgrid(u, v), -1) * uv_scale
+    probe = kc.MeshBuilder("probe")
+    kc.quad_strip(probe, grid, probe.material(M_STONE), uv=uv, col=SHELL_COL, uv2=(0.8, 0.5))
+    n = np.asarray(probe.nrm)[rows * cols // 2 + cols // 2]
+    flip = float(np.dot(n, np.asarray(inside, float) - grid[rows // 2, cols // 2])) < 0.0
+    kc.quad_strip(mb, grid, mat, uv=uv, col=SHELL_COL, uv2=(0.8, 0.5), flip=flip)
+    if skin_m > 0.0:  # the back skin: a single face casts no shadow from behind, so the sun would light the room
+        away = grid - np.asarray(inside, float)
+        away = away / np.maximum(np.linalg.norm(away, axis=-1, keepdims=True), 1e-6)
+        kc.quad_strip(mb, grid + away * skin_m, mat, uv=uv, col=SHELL_COL, uv2=(0.8, 0.5), flip=not flip)
+
+
+def build_sanctum_nave_bay(seed: int = 2121) -> list[kc.MeshBuilder]:
+    out = []
+    hb = NAVE_BAY * 0.5
+    for lod in (False, True):
+        rng = kc.rng_for("sanctum_nave_bay", seed)
+        mb = kc.MeshBuilder("sanctum_nave_bay" + ("-lod1" if lod else ""))
+        stone, gilt = mb.material(M_STONE), mb.material(M_GILT)
+        for sx in (-1.0, 1.0):
+            kc.rounded_block(mb, (sx * (NAVE_HALF_W + 0.4), (NAVE_WALL_H + WALL_OVERLAP_M) * 0.5, 0.0),
+                             (0.4, (NAVE_WALL_H + WALL_OVERLAP_M) * 0.5, hb),
+                             stone, radius=0.02, seg=1, weather=MARBLE_W, variation=float(rng.random()))
+            if not lod:
+                kc.rounded_block(mb, (sx * (NAVE_HALF_W - 0.06), 0.35, 0.0), (0.06, 0.35, hb), stone, radius=0.02,
+                                 seg=1, weather=MARBLE_W)  # the dado
+                kc.tube(mb, np.array([[sx * (NAVE_HALF_W - 0.01), EYE_H, -hb], [sx * (NAVE_HALF_W - 0.01), EYE_H, hb]]),
+                        0.025, 4, gilt)  # the Level line
+                kc.rounded_block(mb, (sx * (NAVE_HALF_W - 0.2), NAVE_WALL_H - 0.2, 0.0), (0.2, 0.2, hb), stone,
+                                 radius=0.05, seg=1, weather=MARBLE_W)  # the cornice
+            for z in (-hb, hb):  # the pilasters (half of one at each end: the next bay brings the other half)
+                kc.rounded_block(mb, (sx * (NAVE_HALF_W - 0.17), NAVE_WALL_H * 0.5, z * 0.97), (0.17, NAVE_WALL_H * 0.5,
+                                 0.4 * 0.5 if lod else 0.2), stone, radius=0.03, seg=1, weather=MARBLE_W)
+        # The vault: a segmental arc from the cornice (x +-11.75, 10 m) to the crown (15 m).
+        rise = NAVE_CROWN - NAVE_WALL_H
+        r = (NAVE_HALF_W ** 2 + rise ** 2) / (2 * rise)
+        cy = NAVE_CROWN - r
+        half_a = math.asin(NAVE_HALF_W / r)
+        a = np.linspace(-half_a, half_a, 6 if lod else 18)
+        arc = np.stack([r * np.sin(a), cy + r * np.cos(a)], -1)
+        grid = np.array([[[x, y, z] for x, y in arc] for z in (-hb, hb)])
+        _shell(mb, grid, stone, (0.0, 2.0, 0.0))
+        if not lod:  # a flat marble rib over the pilasters at each end
+            for z in (-hb + 0.01, hb - 0.01):
+                pts = np.array([[x * 0.995, y - 0.08, z] for x, y in arc])
+                kc.tube(mb, pts, 0.12, 4, stone)
+        out.append(mb)
+    return out
+
+
+def build_sanctum_nave_floor(seed: int = 2122) -> list[kc.MeshBuilder]:
+    out = []
+    hx, hz = NAVE_HALF_W + 0.25, NAVE_HALF_L
+    ox, oz = BASIN_IN[0] + BASIN_RIM, BASIN_IN[1] + BASIN_RIM
+    kx, kz = ox + KNEEL_BAND, oz + KNEEL_BAND
+    for lod in (False, True):
+        rng = kc.rng_for("sanctum_nave_floor", seed)
+        mb = kc.MeshBuilder("sanctum_nave_floor" + ("-lod1" if lod else ""))
+        stone, gilt = mb.material(M_STONE), mb.material(M_GILT)
+        # The floor round the opening as four slabs (the polished field), then the kneeling band inside them.
+        for (cx, cz, sx, sz) in ((0.0, -(hz + kz) * 0.5, hx, (hz - kz) * 0.5), (0.0, (hz + kz) * 0.5, hx, (hz - kz) * 0.5),
+                                 (-(hx + kx) * 0.5, 0.0, (hx - kx) * 0.5, kz), ((hx + kx) * 0.5, 0.0, (hx - kx) * 0.5, kz)):
+            if lod:
+                kc.rounded_block(mb, (cx, -0.15, cz), (sx, 0.15, sz), stone, radius=0.01, seg=1, weather=MARBLE_W)
+                continue
+            nx, nz = max(1, round(2 * sx / 2.0)), max(1, round(2 * sz / 2.0))
+            for i in range(nx):
+                for k in range(nz):
+                    w, d = 2 * sx / nx, 2 * sz / nz
+                    kc.rounded_block(mb, (cx - sx + w * (i + 0.5), -0.15, cz - sz + d * (k + 0.5)),
+                                     (w * 0.5 - 0.006, 0.15, d * 0.5 - 0.006), stone, radius=0.006, seg=1,
+                                     weather=MARBLE_W, variation=float(rng.random()))
+        for (cx, cz, sx, sz) in ((0.0, -(oz + kz) * 0.5, kx, KNEEL_BAND * 0.5), (0.0, (oz + kz) * 0.5, kx, KNEEL_BAND * 0.5),
+                                 (-(ox + kx) * 0.5, 0.0, KNEEL_BAND * 0.5, oz), ((ox + kx) * 0.5, 0.0, KNEEL_BAND * 0.5, oz)):
+            kc.rounded_block(mb, (cx, -0.15, cz), (sx, 0.15, sz), stone, radius=0.01, seg=1,
+                             weather=kc.Weathering(moss=0.0, salt=0.0, wet=0.5, erosion=0.2), wet_bias=0.35,
+                             variation=0.9)  # the kneeling band: worn darker by the kneelers
+        if not lod:
+            ring = np.array([[-kx, 0.004, -kz], [kx, 0.004, -kz], [kx, 0.004, kz], [-kx, 0.004, kz], [-kx, 0.004, -kz]])
+            kc.tube(mb, ring, 0.02, 4, gilt)
+        out.append(mb)
+    return out
+
+
+def build_sanctum_basin_nave(seed: int = 2123) -> list[kc.MeshBuilder]:
+    out = []
+    ix, iz = BASIN_IN
+    for lod in (False, True):
+        rng = kc.rng_for("sanctum_basin_nave", seed)
+        mb = kc.MeshBuilder("sanctum_basin_nave" + ("-lod1" if lod else ""))
+        stone, gilt, glass = mb.material(M_STONE), mb.material(M_GILT), mb.material(M_GLASS)
+        kc.rounded_block(mb, (0.0, BASIN_FLOOR_Y - 0.1, 0.0), (ix, 0.06, iz), mb.material(M_CORE), radius=0.02, seg=1)
+        if lod:
+            kc.rounded_block(mb, (0.0, BASIN_FLOOR_Y, 0.0), (ix, 0.02, iz), glass, radius=0.01, seg=1)
+        else:
+            for x in np.arange(-ix, ix - 0.01, 1.0):
+                for z in np.arange(-iz, iz - 0.01, 1.0):
+                    kc.rounded_block(mb, (x + 0.5, BASIN_FLOOR_Y, z + 0.5), (0.48, 0.02, 0.48), glass, radius=0.01,
+                                     seg=1)
+        y0 = BASIN_FLOOR_Y - 0.16
+        hy = (BASIN_RIM - y0) * 0.5
+        for (cx, cz, sx, sz) in ((0.0, -iz - BASIN_RIM * 0.5, ix + BASIN_RIM, BASIN_RIM * 0.5),
+                                 (0.0, iz + BASIN_RIM * 0.5, ix + BASIN_RIM, BASIN_RIM * 0.5),
+                                 (-ix - BASIN_RIM * 0.5, 0.0, BASIN_RIM * 0.5, iz),
+                                 (ix + BASIN_RIM * 0.5, 0.0, BASIN_RIM * 0.5, iz)):
+            kc.rounded_block(mb, (cx, y0 + hy, cz), (sx, hy, sz), stone, radius=0.04, seg=1 if lod else 2,
+                             weather=MARBLE_W, variation=float(rng.random()))
+        if not lod:  # the gilt Level line round the rim's inner edge
+            e = (ix + 0.02, iz + 0.02)
+            ring = np.array([[-e[0], BASIN_RIM - 0.02, -e[1]], [e[0], BASIN_RIM - 0.02, -e[1]],
+                             [e[0], BASIN_RIM - 0.02, e[1]], [-e[0], BASIN_RIM - 0.02, e[1]], [-e[0], BASIN_RIM - 0.02, -e[1]]])
+            kc.tube(mb, ring, 0.025, 4, gilt)
+        out.append(mb)
+    return out
+
+
+def build_sanctum_vestibule(seed: int = 2124) -> list[kc.MeshBuilder]:
+    out = []
+    h = VEST_HALF
+    for lod in (False, True):
+        rng = kc.rng_for("sanctum_vestibule", seed)
+        mb = kc.MeshBuilder("sanctum_vestibule" + ("-lod1" if lod else ""))
+        stone, gilt, red, black = (mb.material(M_STONE), mb.material(M_GILT), mb.material(M_LACQUER),
+                                   mb.material(M_BLACK))
+        if lod:
+            kc.rounded_block(mb, (0.0, -0.15, 0.0), (h, 0.15, h), stone, radius=0.01, seg=1, weather=MARBLE_W)
+        else:
+            _paving(mb, rng, h, h, 2.0, stone)
+        kc.rounded_block(mb, (0.0, VEST_H + 0.2, 0.0), (h + 0.5, 0.2, h + 0.25), stone, radius=0.02, seg=1,
+                         weather=MARBLE_W)  # the ceiling
+        for sx in (-1.0, 1.0):  # the side walls, and the south wall either side of the gate
+            kc.rounded_block(mb, (sx * (h + 0.25), VEST_H * 0.5, 0.0), (0.25, VEST_H * 0.5, h), stone, radius=0.02,
+                             seg=1, weather=MARBLE_W, variation=float(rng.random()))
+            w = (h + 0.5 - VEST_DOOR_HALF) * 0.5
+            kc.rounded_block(mb, (sx * (VEST_DOOR_HALF + w), VEST_H * 0.5, h + 0.25), (w, VEST_H * 0.5, 0.25), stone,
+                             radius=0.02, seg=1, weather=MARBLE_W)
+            # The gate's red frame and the two black-lacquered leaves, shut.
+            kc.rounded_block(mb, (sx * (VEST_DOOR_HALF - 0.1), 2.1, h + 0.15), (0.12, 2.1, 0.18), red, radius=0.02, seg=1)
+            kc.rounded_block(mb, (sx * VEST_DOOR_HALF * 0.5 - sx * 0.05, 2.0, h + 0.2), (VEST_DOOR_HALF * 0.5 - 0.1, 2.0,
+                             0.06), black, radius=0.015, seg=1)
+            if not lod:  # gilt studs in rows on each leaf, and a ring pull
+                for yy in np.arange(0.5, 3.8, 0.55):
+                    for xx in np.linspace(0.35, VEST_DOOR_HALF - 0.45, 3):
+                        kc.rounded_block(mb, (sx * xx, yy, h + 0.13), (0.035, 0.035, 0.02), gilt, radius=0.012, seg=1)
+                kc.tube(mb, np.array([[sx * 0.3, 1.25, h + 0.12], [sx * 0.3, 1.0, h + 0.1], [sx * 0.42, 0.9, h + 0.1]]),
+                        0.02, 5, gilt)
+        kc.rounded_block(mb, (0.0, 4.3, h + 0.15), (VEST_DOOR_HALF + 0.05, 0.12, 0.2), red, radius=0.02, seg=1)
+        kc.rounded_block(mb, (0.0, (VEST_H + 4.42) * 0.5, h + 0.25), (VEST_DOOR_HALF, (VEST_H - 4.42) * 0.5, 0.25), stone,
+                         radius=0.02, seg=1, weather=MARBLE_W)
+        # The nave's south end wall (z -6 from here), the doorway through it, and its lintel's Level line.
+        dw, dh = NAVE_DOOR
+        wz = -h - 0.25
+        for sx in (-1.0, 1.0):
+            w = (NAVE_HALF_W + 0.8 - dw) * 0.5
+            kc.rounded_block(mb, (sx * (dw + w), NAVE_CROWN * 0.5, wz), (w, NAVE_CROWN * 0.5, 0.25), stone, radius=0.02,
+                             seg=1, weather=MARBLE_W, variation=float(rng.random()))
+        kc.rounded_block(mb, (0.0, (NAVE_CROWN + dh) * 0.5, wz), (dw, (NAVE_CROWN - dh) * 0.5, 0.25), stone,
+                         radius=0.02, seg=1, weather=MARBLE_W)
+        kc.rounded_block(mb, (0.0, dh + 0.15, wz - 0.3), (dw + 0.4, 0.15, 0.06), stone, radius=0.02, seg=1,
+                         weather=MARBLE_W)  # the lintel's face on the nave side
+        kc.rounded_block(mb, (0.0, dh + 0.15, wz - 0.37), (dw + 0.2, 0.012, 0.01), gilt, radius=0.004, seg=1)
+        out.append(mb)
+    return out
+
+
+def build_sanctum_bench(seed: int = 2125) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("sanctum_bench", seed)
+        mb = kc.MeshBuilder("sanctum_bench" + ("-lod1" if lod else ""))
+        stone = mb.material(M_STONE)
+        kc.rounded_block(mb, (0.0, 0.41, 0.0), (0.26, 0.05, 1.2), stone, radius=0.03, seg=1 if lod else 2,
+                         weather=MARBLE_W, variation=float(rng.random()))
+        for z in (-0.9, 0.9):
+            kc.rounded_block(mb, (0.0, 0.18, z), (0.2, 0.18, 0.12), stone, radius=0.02, seg=1, weather=MARBLE_W)
+        out.append(mb)
+    return out
+
+
+def build_sanctum_apse(seed: int = 2126) -> list[kc.MeshBuilder]:
+    out = []
+    r, spring = APSE
+    for lod in (False, True):
+        rng = kc.rng_for("sanctum_apse", seed)
+        mb = kc.MeshBuilder("sanctum_apse" + ("-lod1" if lod else ""))
+        stone, gilt = mb.material(M_STONE), mb.material(M_GILT)
+        # The end wall either side of the arch and over it.
+        for sx in (-1.0, 1.0):
+            w = (NAVE_HALF_W + 0.8 - r) * 0.5
+            kc.rounded_block(mb, (sx * (r + w), NAVE_CROWN * 0.5, 0.25), (w, NAVE_CROWN * 0.5, 0.25), stone, radius=0.02,
+                             seg=1, weather=MARBLE_W, variation=float(rng.random()))
+        kc.rounded_block(mb, (0.0, (NAVE_CROWN + spring + r) * 0.5, 0.25), (r, (NAVE_CROWN - spring - r) * 0.5, 0.25),
+                         stone, radius=0.02, seg=1, weather=MARBLE_W)
+        # The arch's spandrels: the wall between the round arch and its square frame, one smooth face (the round edge
+        # to the square), skinned behind; and the jambs under the spring.
+        n_sp = 8 if lod else 24
+        a = np.linspace(0.0, math.pi, n_sp)
+        rim = np.stack([r * np.cos(a), spring + r * np.sin(a), np.zeros(n_sp)], -1)
+        sq = np.stack([np.clip(np.cos(a) * 2.0 * r, -r, r), spring + np.clip(np.sin(a) * 2.0 * r, 0.0, r),
+                       np.zeros(n_sp)], -1)
+        _shell(mb, np.stack([rim, sq]), stone, (0.0, spring, -200.0), skin_m=0.5)
+        # The recess: a raised step, a half-cylinder wall to the spring, and the half-dome over it.
+        kc.rounded_block(mb, (0.0, APSE_STEP * 0.5, r * 0.5), (r, APSE_STEP * 0.5, r * 0.5 + 0.01), stone,
+                         radius=0.03, seg=1, weather=MARBLE_W)
+        cols = 8 if lod else 24
+        th = np.linspace(0.0, math.pi, cols)
+        wall = np.array([[[r * math.cos(a), y, r * math.sin(a)] for a in th] for y in (APSE_STEP, spring)])
+        _shell(mb, wall, stone, (0.0, 2.0, 0.0))
+        ph = np.linspace(0.0, math.pi * 0.5, 4 if lod else 10)
+        dome = np.array([[[r * math.cos(b) * math.cos(a), spring + r * math.sin(b), r * math.cos(b) * math.sin(a)]
+                          for a in th] for b in ph])
+        _shell(mb, dome, stone, (0.0, spring - 2.0, 0.0))
+        if not lod:  # the Level line round the recess at eye height over the step
+            ring = np.array([[(r - 0.02) * math.cos(a), APSE_STEP + EYE_H, (r - 0.02) * math.sin(a)] for a in th])
+            kc.tube(mb, ring, 0.025, 4, gilt)
+            arch = np.array([[r * math.cos(a), spring + r * math.sin(a), -0.02] for a in np.linspace(0, math.pi, 24)])
+            kc.tube(mb, arch, 0.05, 4, gilt)
+        out.append(mb)
+    return out
+
+
+def build_cantor_stand(seed: int = 2127) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("cantor_stand", seed)
+        mb = kc.MeshBuilder("cantor_stand" + ("-lod1" if lod else ""))
+        stone, gilt = mb.material(M_STONE), mb.material(M_GILT)
+        kc.rounded_block(mb, (0.0, 0.06, 0.0), (0.3, 0.06, 0.3), stone, radius=0.02, seg=1, weather=MARBLE_W)
+        _revolve(mb, np.array([0.12, 0.2, 0.9, 1.0]), np.array([0.14, 0.1, 0.08, 0.12]), 6 if lod else 12, M_STONE)
+        kc.rounded_block(mb, (0.0, 1.06, 0.0), (0.26, 0.03, 0.2), stone, rot=kc.rot_x(-0.35), radius=0.01, seg=1,
+                         weather=MARBLE_W, variation=float(rng.random()))
+        if not lod:
+            kc.rounded_block(mb, (0.0, 1.1, -0.17), (0.27, 0.012, 0.012), gilt, rot=kc.rot_x(-0.35), radius=0.004,
+                             seg=1)
+        out.append(mb)
+    return out
+
+
 TARGETS = {
     "bowl_dome": build_bowl_dome,
     "ansedra_far_domes": build_far_domes,
@@ -648,4 +933,11 @@ TARGETS = {
     "gold_lamp_post": build_lamp_post,
     "island_plinth_16m": build_island_plinth,
     "mooring_platform": build_mooring_platform,
+    "sanctum_nave_bay": build_sanctum_nave_bay,
+    "sanctum_nave_floor": build_sanctum_nave_floor,
+    "sanctum_basin_nave": build_sanctum_basin_nave,
+    "sanctum_vestibule": build_sanctum_vestibule,
+    "sanctum_bench": build_sanctum_bench,
+    "sanctum_apse": build_sanctum_apse,
+    "cantor_stand": build_cantor_stand,
 }

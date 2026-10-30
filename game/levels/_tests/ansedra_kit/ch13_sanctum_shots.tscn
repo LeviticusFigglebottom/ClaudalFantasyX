@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/act1_zones/act1_zone_rig.gd" id="1_rig"]
+[ext_resource type="PackedScene" path="res://game/levels/ch13/sanctum/sanctum.tscn" id="2_zone"]
+
+[node name="Ch13SanctumShots" type="Node3D"]
+script = ExtResource("1_rig")
+zone_scene = ExtResource("2_zone")
+views = {
+"Gate": [[0.0, 1.6, -16.0], [0.0, 0.5, -40.0], 45.0],
+"Basin": [[-4.0, 1.2, -18.5], [0.0, 4.0, -36.0], 50.0],
+"Vault": [[0.0, 1.6, -44.0], [0.0, 6.0, -14.0], 55.0]
+}

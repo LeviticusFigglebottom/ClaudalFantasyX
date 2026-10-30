@@ -200,6 +200,17 @@
         "cairn-lod1": 36
       }
     },
+    "cantor_stand": {
+      "budget": [
+        800,
+        80
+      ],
+      "bytes": 14468,
+      "lods": {
+        "cantor_stand": 108,
+        "cantor_stand-lod1": 60
+      }
+    },
     "cargo_sacks": {
       "budget": [
         3200,
@@ -1564,6 +1575,17 @@
         "ruin_wall_sunk-lod1": 12
       }
     },
+    "sanctum_apse": {
+      "budget": [
+        8000,
+        900
+      ],
+      "bytes": 72680,
+      "lods": {
+        "sanctum_apse": 1428,
+        "sanctum_apse-lod1": 188
+      }
+    },
     "sanctum_basin": {
       "budget": [
         8000,
@@ -1573,6 +1595,61 @@
       "lods": {
         "sanctum_basin": 2540,
         "sanctum_basin-lod1": 168
+      }
+    },
+    "sanctum_basin_nave": {
+      "budget": [
+        6000,
+        300
+      ],
+      "bytes": 249832,
+      "lods": {
+        "sanctum_basin_nave": 2396,
+        "sanctum_basin_nave-lod1": 72
+      }
+    },
+    "sanctum_bench": {
+      "budget": [
+        600,
+        60
+      ],
+      "bytes": 11648,
+      "lods": {
+        "sanctum_bench": 72,
+        "sanctum_bench-lod1": 36
+      }
+    },
+    "sanctum_nave_bay": {
+      "budget": [
+        6000,
+        600
+      ],
+      "bytes": 39900,
+      "lods": {
+        "sanctum_nave_bay": 476,
+        "sanctum_nave_bay-lod1": 92
+      }
+    },
+    "sanctum_nave_floor": {
+      "budget": [
+        12000,
+        300
+      ],
+      "bytes": 218312,
+      "lods": {
+        "sanctum_nave_floor": 2024,
+        "sanctum_nave_floor-lod1": 96
+      }
+    },
+    "sanctum_vestibule": {
+      "budget": [
+        8000,
+        600
+      ],
+      "bytes": 139368,
+      "lods": {
+        "sanctum_vestibule": 1096,
+        "sanctum_vestibule-lod1": 204
       }
     },
     "sandals": {
