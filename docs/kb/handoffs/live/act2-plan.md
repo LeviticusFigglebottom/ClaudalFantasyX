@@ -306,3 +306,18 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - **Checks:** banned-terms scan of the new docs: 0 hits. validate_data 0/0. taskboard clean. No game file touched.
 - MERGE-READY @ 49ae12a1f
 - BACKLOG EMPTY (story track).
+
+## 2026-10-30: Lead answers applied; the ending-cost audit
+- **Spelling (ADR 0206):** the FAST-TRACK was already applied (18 strings, keys unchanged). I merged integration with ADR 0206: no American forms are left in any loc csv.
+- **T-01 (accepted):** act3_ending H03 now has Asha call Kesh out of the sleeve one last time; she is released like the six. vowbound §7 gains a Release line.
+- **T-04 (accepted):** the Eighth Verse's sources are reconciled in vowbound.md (Kesh §7, Hesk §4), pell.md and ysolde.md, and act3_ch19 I04 matches: the words are in the stones; the melody is in the stones, read through the farewell-tide; the count is Ama's question-knot.
+- **T-07 (accepted):** act_outline's Prologue now says the held glimmer drifts and never rises. The cue in `prologue_dead_city.dlg` (`glimmer_lift`) and its shot baseline (`slice_prologue_vigil_line`) are **M4-A2P-111** (cinematics, todo), because it moves a rendered baseline.
+- **Reefball `pemakar` → `sorrin`:** **M4-A2P-110** (progression, the reefball data owner, todo).
+- **Ending-cost audit** (`docs/kb/story/act3/ending_cost_audit.md`): for every companion, what they lose, the chain of scenes that earns it, a verdict and a fix. Three gaps, all closed in my Act III sheets:
+  - Asha's voice was only ever heard as a Cantor's. Ch18 K05 now has her give Pell the Velamir lullaby, the one time she hums for herself.
+  - Liss never chose to let go of anything. Ch20 U00 now has her seat Tobin's lamp in the Kite's engine and spend it on the last charge.
+  - Ysolde's want ("a good death") never turned. Ch19 I04 adds "a long, dull life instead".
+- One proposal for act3_ending: Toma's beach rite gets a fallback line when Ch18's lifting was skipped. Rhen's E2 needs a check that it rhymes with Ch8 B17.
+- **Checks:** banned-terms scan of every edited doc: 0 hits. validate_data 0/0. taskboard clean.
+- MERGE-READY @ 39859600c
+- BACKLOG EMPTY (story track).
