@@ -797,3 +797,16 @@ What the Act II fights still need from others: enemy rows and encounters (combat
   behind engine_hall, ch11's line-up, the Vowbound slot before the camera, Kahre's rise during the Climb's cut).
   Next when they land: battle-presentation's Act II effects (view them on my bodies, the agreed split), the Abiding
   guard's actor (its stand-in), the flat-engine's row and Liss's break.
+
+## 2026-10-30 ~16:30: the Lead's 16:09 (Act II as-played on Ch10–13; it crossed my 15:40 report)
+- Ch10–12 were played and logged above (15:40); **Ch13 still has no boss encounter on big24** (encounters.json: ch15
+  and ch16 are the next). Merged big24 (no conflicts, validate_data 0/0).
+- **Ch15 Wakefin, as played** (Kesh called, her first real fight): the intro (its fin cutting the dark), the hits,
+  `fin_cut`, the close_circle stance (`hit_close`, `ko_close`) and the victory all play; Kesh attacks and falls
+  cleanly. Checked headless: in close_circle it stays on its seat (-2.6, -0.6, -5.0), more than 5 m off the party, its
+  head in the default camera's view. **For battle-presentation (M4-A2P-062, the dark fight):** in the close_circle
+  frames (the hit and the KO) its body is lost in the dark water at the default camera (the sea-glow too faint there),
+  and Kesh at 4.2 m on the vowbound slot runs out of the top of the frame. Nothing in my models needs fixing.
+- **BACKLOG EMPTY (16:30):** every mounted Act I and Act II boss fight is played; fixes in my lane are merged-ready
+  (650257ea, f893ee59); the rest is logged for its owners. Next when they land: battle-presentation's Act II effects
+  (big25: view them on my bodies), the Abiding guard's actor, the flat-engine's row, Ch13+ boss encounters.
