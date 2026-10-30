@@ -1222,3 +1222,12 @@ SELF-RENDERED @ 4cd6ed12: ch05_pemakar_harbour, _crown and _weir with the lamp f
 - The perf check is done (above). My queue is empty, so under ADR 0207 I'm starting Act III in my lane. **CLAIM (Lead, please record on integration):** M5-A3P-1500, Ch17 Hollowmere's dry-dock berths and Dace's hull. Ownership row appended. Hollowmere's kit module and dressing are already mine; the Ch17 layout and marks stay the Act III chapters' track's.
 - **The reading:** one hull serves Ch15, Ch17 and Ch18's Kite. The stern third is decked, with a hatch down to the cabin (ledger, chart wall, tool rack, bunk). The engine bay forward of it holds an empty lift-engine bed. The bow stays bare ribs, as Ch15 sees it. The keel gets a brass shoe, and the mast carries one kite wing half-rigged. Four berths stand in a row, Dace's last, with Tobin's post at the first. Spelled out in the task file, for the story track to overrule in review.
 - **Next:** revise `dace_hull_frame` in hollowmere.py, add `hm_drydock_berth`, rebuild both, then dress and render.
+- **M5-A3P-1500 step 1 (7fd8e3e5):** `dace_hull_frame` revised in hollowmere.py and rebuilt (4,648 / 850 triangles, with its manifest row).
+  - **The stern third:** planked both sides and decked, with an open hatch, a ladder down, and a bulkhead that follows the rib with a doorway.
+  - **The cabin:** bunk, fold-down desk with the open ledger, stool, the chart wall (Corrow in a red ring), and the tool rack with copper hooks.
+  - **The engine bay:** an empty bed (bearers, chocks, a bronze mounting ring), a brass keel shoe, the mast, and the +Z kite wing with two panels bent on and the rest furled.
+  - **Unchanged:** Ch15's view from the arrival side (bare ribs and the near-side strakes forward).
+  - **Viewed** at eye height in the zone (exterior, cabin, engine bay, deck). The cabin first showed the sea through its one-sided planking; the planking, deck underside and bulkhead now have both faces.
+  - **Checks:** test_hollowmere 5, test_haluna_kit, Godot hollowmere 2, ambient_life 2 and validate_data all OK.
+  - **Marks** for the Act III chapters are in the task file.
+  - **Next:** `hm_drydock_berth` ×4 (Tobin's post at the first), then the berth row's dressing and the walk collision.
