@@ -118,6 +118,30 @@ func test_leaving_every_volume_keeps_the_shot() -> void:
 	_free()
 
 
+## M3-CIN-1251: with a hub shot (initial_shot), walking out of every volume blends back to it, and a teleport out
+## of every volume cuts to it; the camera is never left parked on the last volume.
+func test_leaving_every_volume_returns_to_the_hub_shot() -> void:
+	var hub := CameraShot.new()
+	hub.id = &"hub_orbit"
+	hub.position = Vector3(0, 6, 12)
+	hub.look_at = Vector3(0, 1, 0)
+	director.initial_shot = hub
+	_walk_to(Vector3(0, 0, -5))
+	assert_eq(director.active_shot_id(), COURT)
+	_move(Vector3(15, 0, -5))
+	assert_eq(director.state_snapshot()["inside"], 0)
+	assert_eq(director.active_shot_id(), &"hub_orbit", "walked out: back to the hub shot")
+	assert_true(director.is_blending(), "a walk out blends")
+	assert_eq(director.state_snapshot()["volume"], "")
+	_walk_to(Vector3(0, 0, -5))
+	assert_eq(director.active_shot_id(), COURT, "and a volume takes it again")
+	player.global_position = Vector3(15, 0, -5)
+	director.snap()
+	assert_eq(director.active_shot_id(), &"hub_orbit", "a teleport out cuts to the hub shot")
+	assert_false(director.is_blending(), "a snap cuts")
+	_free()
+
+
 func test_fixed_shot_holds_its_authored_frame() -> void:
 	_settle()
 	var shot := (zone.get_node("CameraVolumes/LaneVolume") as CameraVolume).shot

@@ -143,8 +143,8 @@ func snap() -> void:
 		var best := _pick_volume()
 		if best != null:
 			_enter(best, true)
-		elif active_shot == null and initial_shot != null:
-			_activate(initial_shot, null, true, 0.0)
+		elif initial_shot != null and (active_shot == null or active_volume != null):
+			_activate(initial_shot, null, true, 0.0)  # outside every volume: the hub shot (M3-CIN-1251)
 	var was_blending := _blending
 	_pull_m = 0.0  # a cut starts from the shot's own place: pulled in again at once if a wall is there
 	collect_occluders()  # a zone load or a teleport: the zone's walls as they stand now
@@ -314,6 +314,12 @@ func update(delta: float) -> void:
 		var best := _pick_volume()
 		if best != null and best != active_volume:
 			_enter(best, false)
+		elif best == null and active_volume != null and initial_shot != null:
+			# Walked out of every volume: back to the hub shot, not parked on the last volume (M3-CIN-1251).
+			var dur := (
+				initial_shot.blend_sec if initial_shot.blend_sec >= 0.0 else float(data.get("default_blend_sec", 0.0))
+			)
+			_activate(initial_shot, null, initial_shot.hard_cut or dur <= 0.0, dur)
 	# Safe to return before the landed snapshot below: every path that sets _settle_pending or
 	# starts a blend also sets active_shot, so nothing is owed here. Keep it that way.
 	if active_shot == null:
