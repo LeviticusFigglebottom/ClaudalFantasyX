@@ -109,14 +109,14 @@ func _process(_delta: float) -> void:
 		var chest := _player.global_position + Vector3.UP * 1.2
 		print(
 			(
-				"still %05d shot=%s volume=%s mode=%d authored=%s pull=%.2f cam=%s pitch=%.0f to_chest=%.2f m"
+				"still %05d shot=%s volume=%s mode=%d authored=%s kept=%.2f cam=%s pitch=%.0f to_chest=%.2f m"
 				% [
 					_frame,
 					_player.director.active_shot_id(),
 					_player.director.state_snapshot().get("volume", ""),
 					_player.director.active_shot.mode,
 					_player.director.active_shot.position,
-					_player.director.get(&"_pull_m"),
+					minf(_player.director.get(&"_kept_m"), 999.0),
 					cam.global_position,
 					rad_to_deg(asin(clampf(-cam.global_basis.z.y, -1.0, 1.0))),
 					cam.global_position.distance_to(chest),

@@ -181,6 +181,32 @@ func test_a_shot_in_his_face_backs_off_to_the_standoff() -> void:
 	_free()
 
 
+## The PC's row 66 (Ch4's opening): a release blends from a cutscene shot 120 m off, a wall on that long line pulls the
+## camera in, then the blend shortens the line to a clear one. The pull is kept as a distance from his chest, so the
+## camera is never left on him (it was, for ~19 s: a pull measured on the long line outlasted the short one).
+func test_a_pull_on_a_long_line_never_leaves_the_camera_on_him() -> void:
+	player.global_position = Vector3(15, 0, -5)
+	var cfg := director.data.get("occlusion", {}) as Dictionary
+	var chest := player.global_position + Vector3.UP * float(cfg.get("chest_m", 0.0))
+	var wall := MeshInstance3D.new()
+	var box := BoxMesh.new()
+	box.size = Vector3(8, 6, 0.3)
+	wall.mesh = box
+	zone.add_child(wall)
+	wall.global_position = chest + Vector3(0, 0, 20)
+	director.collect_occluders()
+	var far := CameraPose.looking(chest + Vector3(0, 0, 60), chest, 50.0, {})
+	var pulled := director.clear_view(far, DT)
+	assert_true(pulled.origin.distance_to(chest) < 20.0, "pulled in short of the wall")
+	var near := CameraPose.looking(chest + Vector3(0, 2, 6), chest, 50.0, {})
+	var out := director.clear_view(near, DT)
+	assert_true(
+		out.origin.distance_to(chest) > 5.0,
+		"the short, clear line keeps its place (%.2f m)" % out.origin.distance_to(chest)
+	)
+	_free()
+
+
 func test_fixed_shot_holds_its_authored_frame() -> void:
 	_settle()
 	var shot := (zone.get_node("CameraVolumes/LaneVolume") as CameraVolume).shot

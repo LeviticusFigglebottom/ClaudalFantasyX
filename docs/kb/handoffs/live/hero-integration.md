@@ -1745,3 +1745,29 @@ MERGE-READY @ (this commit).
   (fetched 10-30) plus my status and review entry: **take hero-integration's side**. If act1-chapters has added to
   it since, also keep their newer lines. The other conflicts are other tracks' shared data files (enemies,
   encounters, skills, battle_sandbox, battle_sfx, ownership), the same as in the trial-merge report.
+
+### Lead 10-30 04:06: row 66 (Ch4 opening → field) and the rows "still open on big19"
+- **Row 66 FIXED (game/world/**, mine):** reproduced headless in real time (the wake's C4-01 with auto-advancing
+  lines, fixed 60 fps).
+  - **Cause:** the release blends from the cutscene's H12 shot, 120 m off. On the first blended frame a windbreak tree
+    on that 120 m line pulled the camera in by about 87 m. The pull was stored as metres in from the shot's place and
+    eased out at release_mps 4 m/s. Once the blend shortened the line to 9.8 m, a pull longer than the whole line put
+    the camera **on Rhen's chest, inside Neme's house wall, for about 19 s** (the PC's ch04_03/05).
+  - **Fix:** occlusion now keeps the pulled-in camera at a **distance from his chest** (`_kept_m`; INF when not
+    pulled), not a pull from the shot's place, so a shortening line can never leave the camera on him. After it, the
+    camera is never nearer than 5.9 m and is on NemeDoor's shot 2.3 s after the release.
+  - **Test:** `test_a_pull_on_a_long_line_never_leaves_the_camera_on_him` fails on the old director (0.00 m) and
+    passes now.
+- **Rows 24 (DockShore), 37, 38 and 50 "still open on big19":** none of my fixes were in the PC's pass-4 tree
+  (integration @ 2f544938). 692b55156, cb04c330f, 2e5292613, 1da21c732 and 0ffe9260d are all after it, so they come
+  in with this branch's merge:
+  - **37 (Toma's shield filling one side):** fixed by camera_near_m, 692b55156, plus today's off_lens fix in 0ffe9260d.
+  - **38 (Tier4 camera in Rhen's head):** fixed on the camera side by cb04c330f, today's widest_view and this fix. The
+    spawn standing inside the steps is still M3-HER-1157 (env-art-b). The Encounter shot looking at open sea is
+    M3-HER-1159 (act1-chapters).
+  - **50 (Toma sunk at the Crown):** I couldn't reproduce it (walk audit sunk check, stills). The pass-4 tree also
+    lacked the stair fixes. If it shows on a tree with them, the save or story state would help.
+  - **24 (DockShore):** fixed by 0ffe9260d.
+- Checks: camera 70/0 (qa_field_camera included), hero_ 115/0, qa_walk_audit 1/0, qa_party 3/0, ch04 13/0; gdlint and
+  gdformat clean. No shots rendered: the change only moves a pulled-in camera, which no fixed-camera shot uses.
+MERGE-READY @ (this commit).

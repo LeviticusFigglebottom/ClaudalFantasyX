@@ -88,9 +88,11 @@ var _aim_warned: Dictionary = {}
 var _settle_pending := false
 ## True from _exit_tree until the director enters a tree again (M1-ARC-07 review-sweep-E S1).
 var _leaving := false
-## Occlusion pull-in (field_camera.json "occlusion"): how far in (m) the camera stands now, the zone's occluder
-## meshes (collect_occluders) and each mesh resource's TriangleMesh.
-var _pull_m := 0.0
+## Occlusion pull-in (field_camera.json "occlusion"): how far from the leader's chest (m) the pulled-in camera is kept
+## (INF: not pulled in; kept as a distance from him, not a pull from the shot's place, so a line that shortens under a
+## blend never leaves the camera on him: the PC's row 66), the zone's occluder meshes (collect_occluders) and each mesh
+## resource's TriangleMesh.
+var _kept_m := INF
 var _occluders: Array[MeshInstance3D] = []
 var _occluders_read := false
 var _tri_cache: Dictionary = {}
@@ -146,7 +148,7 @@ func snap() -> void:
 		elif initial_shot != null and (active_shot == null or active_volume != null):
 			_activate(initial_shot, null, true, 0.0)  # outside every volume: the hub shot (M3-CIN-1251)
 	var was_blending := _blending
-	_pull_m = 0.0  # a cut starts from the shot's own place: pulled in again at once if a wall is there
+	_kept_m = INF  # a cut starts from the shot's own place: pulled in again at once if a wall is there
 	collect_occluders()  # a zone load or a teleport: the zone's walls as they stand now
 	_end_blend()
 	if active_shot != null:
@@ -403,20 +405,20 @@ func state_snapshot() -> Dictionary:
 func clear_view(pose: CameraPose, delta: float) -> CameraPose:
 	var cfg := data.get("occlusion", {}) as Dictionary
 	if target == null or not bool(cfg.get("enabled", false)) or not target.is_inside_tree():
-		_pull_m = 0.0
+		_kept_m = INF
 		return pose
 	var chest := target.global_position + Vector3.UP * float(cfg.get("chest_m", 0.0))
 	var line := pose.origin - chest
 	var length := line.length()
 	if length < 1e-3:
 		return pose
-	var want := 0.0
+	var want := INF
 	var hit := view_blocker(chest, pose.origin)
 	if hit.is_empty() and length < float(cfg.get("standoff_m", 0.0)):
 		# the shot itself sits in his face (a spawn on a pan-follow camera's spot: Ch4 wake's DockShore, the PC's row
 		# 24): backed off along its own line to standoff_m (no jump: at standoff_m it's the shot's own place), or where
 		# the most room is round him when that line is blocked
-		_pull_m = 0.0
+		_kept_m = INF
 		var off := _backed_off(pose, chest, line / length * float(cfg.get("standoff_m", 0.0)), cfg)
 		return off if off != null else pose
 	if not hit.is_empty():
@@ -428,17 +430,18 @@ func clear_view(pose: CameraPose, delta: float) -> CameraPose:
 			# not even min_distance_m clear (his chest boxed in: Coilspire's Tier4 spawn stands inside the spiral's
 			# steps): the shot's own pose, not a camera pushed into his face
 			if craned != null or free < float(cfg.get("min_distance_m", 0.0)):
-				_pull_m = 0.0
+				_kept_m = INF
 				return craned if craned != null else pose
-		want = clampf(length - maxf(free, float(cfg.get("min_distance_m", 0.0))), 0.0, length)
-	if want >= _pull_m:
-		_pull_m = want
+		want = maxf(free, float(cfg.get("min_distance_m", 0.0)))
+	if want <= _kept_m:
+		_kept_m = want
 	else:
-		_pull_m = maxf(want, _pull_m - float(cfg.get("release_mps", 0.0)) * delta)
-	if _pull_m <= 0.0:
+		_kept_m = minf(want, _kept_m + float(cfg.get("release_mps", 0.0)) * delta)
+	if _kept_m >= length:
+		_kept_m = INF
 		return pose
 	var out := pose.copy()
-	out.origin = pose.origin - line / length * minf(_pull_m, length)
+	out.origin = chest + line / length * _kept_m
 	return out
 
 
