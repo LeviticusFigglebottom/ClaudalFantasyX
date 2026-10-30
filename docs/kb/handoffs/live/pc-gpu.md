@@ -47,9 +47,11 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
     and M3-HER-1124 (the UnderwaterRig deferred root). Both tasks are in review (qa).
     - Checks: `--filter=_thread` 40/0 with no deferred-call error; revenant 8/0; underwater 8/0; lint and format clean.
     - test_freed_cast_lint's one remaining hit is env-art-b's ebbing_motes (fixed on their branch).
-  - M3-RND-28 (the Ch8 storm figure) should be met by creatures' storm figure (M3-HER-1142, MERGE-READY on
-    claude/creatures); I'll check it in pass 4. Still for rendering: M3-RND-28 (the Ch8 storm figure's capsule over the water) and M3-HER-1161 (EbbingMotes, fixed by
-    env-art-b on their branch).
+  - M3-RND-28 (the Ch8 storm figure's capsule over the water) should be met by creatures' storm figure (M3-HER-1142,
+    MERGE-READY on claude/creatures); I'll check it in pass 4. M3-HER-1161 (EbbingMotes) is fixed by env-art-b on their
+    branch.
+- **NEXT:** waiting for big19 to merge into claude/new-session-mj8c3c. Then **pass 4**: a re-check of only the open
+  rows that tracks mark fixed, plus the hitches, published to gpu/act1-qa-4.
 - **Item 1 (the plan as started), Act I real-GPU QA pass 3:** on `gpu/act1-qa-3`. That's origin/lead/gate-big18 @ 37a90b4c,
   plus integration cf03aa8d (4 commits ahead), plus gpu/act1-qa-2, which held act1_gpu_qa.md and had never been merged.
   The worktree is C:/Users/Aaron/hymn_qa3.
