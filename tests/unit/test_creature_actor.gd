@@ -343,11 +343,14 @@ func test_phase_nodes_hide_at_once_or_after_the_clip() -> void:
 	var sheath := w.find_child("Sheath", true, false) as Node3D
 	assert_true(shroud.visible and not sheath.visible, "shrouded in the rigging; the sheath starts hidden")
 	assert_true(w.enter_phase(&"hauled_down"))
-	assert_false(shroud.visible, "the shroud burns away at once")
+	assert_true(shroud.visible, "M3-CRB-013: the shroud is seen hauled down with it in the drop")
 	assert_false(sheath.visible, "the sea comes up its lines after the drop")
 	w.settle()
+	assert_false(shroud.visible, "hide_after: the shroud is gone once the drop has played")
 	assert_true(sheath.visible, "show_after: sheathed once the drop has played")
 	assert_eq(w.phase_clip(&"attack"), &"attack_deck", "it strikes from the deck")
+	w.set_ko(true, 0.5)
+	assert_eq(w.current_clip, &"ko_deck", "M3-CRB-013: the phase's clips map sends the KO too: it falls from the deck")
 	before_each()
 
 

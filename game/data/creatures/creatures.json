@@ -54,11 +54,14 @@
     "scuttler": {"scene": "res://game/creatures/scuttler/scuttler_battle.tscn", "vfx_anchors": {"core": "back", "wound": "front"}, "contact": {"attack": 0.45}, "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}},
     "spar_wraith": {
       "scene": "res://game/creatures/spar_wraith/spar_wraith_battle.tscn", "stand_in": {"yaw_deg": 45.0},
-      "contact": {"attack": 0.8, "attack_deck": 0.8},
+      "clip_by_skill": {"spar_stab": "attack", "shroud_sweep": "shroud_sweep", "lines_taut": "lines_taut_deck",
+                        "haul": "haul_deck", "sea_lash": "sea_lash_deck"},
+      "contact": {"attack": 0.8, "attack_deck": 0.8, "shroud_sweep": 1.0, "lines_taut_deck": 0.8, "haul_deck": 1.1,
+                  "sea_lash_deck": 1.0, "phase_drop": 0.82},
       "loop": ["idle", "ready", "idle_deck"],
       "phases": {
-        "hauled_down": {"clip": "phase_drop", "idle": "idle_deck", "hide": ["Shroud"], "show_after": ["Sheath"], "sec": 0,
-                        "clips": {"attack": "attack_deck", "cast": "cast_deck", "hit": "hit_deck"}}
+        "hauled_down": {"clip": "phase_drop", "idle": "idle_deck", "hide_after": ["Shroud"], "show_after": ["Sheath"], "sec": 0,
+                        "clips": {"attack": "attack_deck", "cast": "cast_deck", "hit": "hit_deck", "ko": "ko_deck"}}
       }
     },
     "sail_leech": {"scene": "res://game/creatures/sail_leech/sail_leech_battle.tscn", "vfx_anchors": {"core": "body", "wound": "body"}, "stand_in": {"hover": 1.38}, "contact": {"attack": 0.7}},
