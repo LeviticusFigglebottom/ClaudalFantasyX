@@ -1366,3 +1366,22 @@ MERGE-READY @ 07386b3d0: M4-A2P-1701, the first-hour tips (once, in Ch1, skippab
   - **Tests:** tutorial_tips 9/0, input_parity_glyphs 7/0, save_shrine 13/0; tools test_tutorial_tips OK;
     validate_data 0/0; taskboard ok.
 MERGE-READY @ a3065f588: M4-A2P-1702, the Act II first-time tips and M4-A2P-1004's fixes.
+- 2026-10-30 23:20, **the Lead's 19:25 note.**
+  - **Requests filed:**
+    - M4-A2P-1703 (combat): wire the Act II battle prompts (`TUT_CH10_ROOTED` and the rest) into
+      `encounters.json`.
+    - M4-A2P-1704 (progression): the Swell-mode unlock flags, for the "A New Swell" tip.
+  - **Save and load pass (M4-A2P-1705, ace2d088c):**
+    - **The sweep:** `tests/integration/test_continue_every_act1_zone.gd` covers every enterable Act I location
+      (17, the prologue to Ch9). It writes a chapter autosave, then Continues as the title does. Chapter, location,
+      party and reserve, flags, bag, money and play time come back, and the party enters that location's scene at a
+      named spawn.
+    - **Found and fixed (ADR 0121):** Continue from a chapter autosave went to the last shrine, a chapter back, while
+      the slot named the new zone. 16 of 17 locations were wrong on the old code. The autosave now records its
+      location as the respawn, on a copy (`SaveSystem.autosave_state`); Game.state keeps its shrine.
+    - **Already covered and green:** the shrine round trip in every zone (test_qa_save_shrines); the autosave during
+      a cutscene waits and saves its end (test_autosave_deferred); the pause menu's Settings and resume
+      (pad walk, input_parity_battle).
+    - **Tests:** autosave 23/0 (new: test_a_chapter_autosave_continues_in_the_chapter_s_zone), continue_every 1/0,
+      save_system 11/0, world_return 17/0, title_menu 17/0, save_new_run 4/0; validate_data 0/0; taskboard ok.
+MERGE-READY @ ace2d088c: M4-A2P-1705 (ADR 0121), plus requests M4-A2P-1703 and M4-A2P-1704.
