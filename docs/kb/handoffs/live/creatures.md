@@ -1191,3 +1191,7 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
      - With that, every Act II animal does what its sheet describes. Checks: tools test_wildlife OK; Godot wildlife 24/0.
 - **MERGE-READY @ 517c22705.**
 - **BACKLOG EMPTY:** M4-CRE-702 is in review (character); Act III stays planning-only until its gate.
+- **Your 16:27 relay:** both items had already landed. Your message likely crossed with the 16:08 entry above.
+  - **The Act III bestiary list** @ d7509e52b, planning only, no assets. It is in docs/kb/art/creatures/act3_roster.md, section "Reconciled with the Act III beat sheets (2026-10-30)": every creature docs/kb/story/act3/ implies, chapter by chapter (Ch17 to Ch21), with design notes, status against the 10-28 roster, a revised order of work and two questions for the chapter designer.
+  - **The Act II wildlife idle behaviours:** the kingfisher plunge-dive and per-woolback grazing pace, @ 3a287760b (dive) and 517c22705 (pace). Every Act II animal now does what its plan sheet describes.
+- **MERGE-READY @ 517c22705** (unchanged since 16:08). **BACKLOG EMPTY.**
