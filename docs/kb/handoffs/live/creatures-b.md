@@ -522,3 +522,12 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   identical; tools OK; Godot creature 120/0, vowbound 96/0. Open: rounder beads would double the motes' triangles (a
   budget call, or a shader soft edge).
 - **In progress:** M4-CRB-007 Hesk (worktree agent); next Ethren, then Kesh (M4-A2P-057, a model from scratch).
+- **MERGE-READY @ (this commit): M4-CRB-007, Hesk** (worktree agent, viewed by it; review combat). The cords hung as
+  a rake of rods: now each bends down and trails, uneven, with a frayed tuft; knots rounder (a raised crossing strand,
+  long knots a tapering helix, the glow following each knot's shape; the numbers they spell unchanged); the ruff two
+  tiers of cord loops; a lean folded neck and low brows. New `cleanse` (Cord-Lift, 1.6 s, contact 0.9) and `mending`
+  (1.4 s, 0.8: she lifts the keth bundle and bows over it). Anchors; no ice (ADR 0015). Budget 14k -> 18k (the Act I
+  Vowbound bar; 17,930). **Clip map for combat (M4-A2P-024):** attack 0.55; knot_light -> cast 0.8; cord_lift ->
+  cleanse 0.9; hesk_mending -> mending 0.8; pass_cord -> special 1.45. Portraits re-baked. Checks: Blender identical;
+  tools OK; Godot creature 125/0, vowbound 101/0.
+- **In progress:** M4-CRB-008 Ethren and M4-A2P-057 Kesh (a new model) (worktree agents).
