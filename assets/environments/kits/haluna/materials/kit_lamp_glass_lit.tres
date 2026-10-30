@@ -2,8 +2,8 @@
 
 [resource]
 resource_name = "kit_lamp_glass_lit"
-albedo_color = Color(1, 0.8902, 0.7216, 1)
-emission = Color(1, 0.6941, 0.4314, 1)
+albedo_color = Color(0.7882, 0.5412, 0.3059, 1)
+emission = Color(1, 0.5804, 0.2784, 1)
 emission_enabled = true
-emission_energy_multiplier = 2.5
-roughness = 0.2
+emission_energy_multiplier = 1.2
+roughness = 0.35
