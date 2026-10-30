@@ -1,0 +1,14 @@
+{
+  "bar_beats": 4,
+  "beat_count": 128,
+  "bpm": 96.0,
+  "downbeat_offset_s": 0.15625850340136055,
+  "loop_bars": 32,
+  "loop_length_samples": 3528000,
+  "loop_length_seconds": 80.0,
+  "loop_offset_seconds": 0.0,
+  "loop_start_samples": 0,
+  "sample_rate": 44100,
+  "stems_of": "malcor_venn",
+  "total_samples": 3528000
+}
