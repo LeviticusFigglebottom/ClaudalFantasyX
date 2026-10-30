@@ -163,6 +163,45 @@ const AVALANCHE_RAM_PLANTED: Array[StringName] = [
 const AVALANCHE_RAM_POSE_TOL_M := 0.01
 const AVALANCHE_RAM_HOOF_TOL_M := 0.02
 
+# --- The flat-engine (M4-CRB-009, docs/kb/plan/act2/bosses/malcor_venn.md: the Ch14 boss part) -------------------
+
+const FLAT_ENGINE: StringName = &"flat_engine"
+## Its clip set: running, the flat pulse (`cast`; `attack` is its copy), the hits, the stop, and the broken stance
+## its `broken` phase plays through its `clips` map.
+const FLAT_ENGINE_CLIPS: Array[StringName] = [
+	&"idle",
+	&"idle_b",
+	&"intro",
+	&"ready",
+	&"attack",
+	&"cast",
+	&"hit",
+	&"hit_b",
+	&"ko",
+	&"break",
+	&"idle_broken",
+	&"hit_broken",
+	&"hit_b_broken",
+	&"ko_broken",
+]
+const FLAT_ENGINE_PHASE: StringName = &"broken"
+const FLAT_ENGINE_BROKEN_MAP := {
+	&"hit": &"hit_broken", &"hit_b": &"hit_b_broken", &"ko": &"ko_broken", &"ready": &"idle_broken"
+}
+const FLAT_ENGINE_STRIKES: Array[StringName] = [&"attack", &"cast", &"break"]
+## Clips that start on the running idle's first frame and end there (`break` starts there and ends on the broken
+## stance); the broken stance's clips start (and the hits end) on idle_broken's first frame.
+const FLAT_ENGINE_WHOLE: Array[StringName] = [&"idle_b", &"intro", &"ready", &"attack", &"cast", &"hit", &"hit_b"]
+const FLAT_ENGINE_BROKEN: Array[StringName] = [&"hit_broken", &"hit_b_broken"]
+const FLAT_ENGINE_POSE_TOL_M := 0.01
+## The broken stance reads as broken at battle distance: each drum half tipped out at least this far, the stack
+## knocked over at least this far, and the two jammed paddles up off the water at least this far (degrees).
+const FLAT_ENGINE_SPLIT_MIN_DEG := 12.0
+const FLAT_ENGINE_STACK_MIN_DEG := 20.0
+const FLAT_ENGINE_JAMMED: Array[String] = ["paddle1", "paddle6"]
+const FLAT_ENGINE_JAM_MIN_DEG := 20.0
+const FLAT_ENGINE_WATER_TOL_M := 0.02
+
 var made: Array[Node] = []
 var lamp_engine_made: Array[Node] = []
 
@@ -590,3 +629,101 @@ func _avalanche_ram_pose_gap(a: Dictionary, b: Dictionary) -> float:
 		for i in 2:
 			worst = maxf(worst, (a[k][i] as Vector3).distance_to(b[k][i] as Vector3))
 	return worst
+
+
+func test_flat_engine_has_the_full_clip_set() -> void:
+	var a := _flat_engine_actor()
+	for clip in FLAT_ENGINE_CLIPS:
+		assert_true(a.has_clip(clip), "the flat-engine has %s" % clip)
+	var sec := a.clip_length(&"intro")
+	assert_between(sec, INTRO_MIN_SEC, INTRO_MAX_SEC, "its intro is %.2f s" % sec)
+	before_each()
+
+
+func test_flat_engine_pulse_winds_up_before_contact() -> void:
+	var a := _flat_engine_actor()
+	for clip in FLAT_ENGINE_STRIKES:
+		var c := a.contact_time(clip)
+		assert_true(
+			c >= WIND_UP_MIN_SEC and c < a.clip_length(clip), "%s lands at %.2f s, after its wind-up" % [clip, c]
+		)
+	before_each()
+
+
+func test_flat_engine_has_its_vfx_anchor_bones_unweighted() -> void:
+	var a := _flat_engine_actor()
+	var skel := _wakefin_skeleton(a)
+	for bone in BOSS_ANCHORS:
+		assert_true(skel.find_bone(String(bone)) >= 0, "the flat-engine has the %s bone" % bone)
+	var weighted := _wakefin_weighted_bones(skel)
+	assert_true(weighted.has("half_a"), "its drum is weighted to its halves (the check is live)")
+	for bone in BOSS_ANCHORS:
+		assert_false(weighted.has(String(bone)), "the flat-engine's %s carries no vertices" % bone)
+	assert_true(a.vfx_anchor(&"core") != Vector3.INF and a.vfx_anchor(&"wound") != Vector3.INF, "anchors resolve")
+	before_each()
+
+
+func test_flat_engine_broken_phase_swaps_the_lights_and_holds_the_broken_stance() -> void:
+	var a := _flat_engine_actor()
+	var whole := a.find_child("Engine", true, false) as Node3D
+	var broken := a.find_child("EngineBroken", true, false) as Node3D
+	assert_true(whole.visible and not broken.visible, "it runs whole: the lit window and hinge marks")
+	assert_true(a.enter_phase(FLAT_ENGINE_PHASE))
+	assert_eq(a.current_clip, &"break", "the break plays")
+	assert_true(broken.visible and not whole.visible, "the window goes dark on the break's first frame")
+	for clip: StringName in FLAT_ENGINE_BROKEN_MAP:
+		assert_eq(a.phase_clip(clip), FLAT_ENGINE_BROKEN_MAP[clip], "the broken stance's %s" % clip)
+	var skel := _wakefin_skeleton(a)
+	var player := a.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
+	for clip: StringName in [&"idle_broken", &"hit_broken", &"ko_broken"]:
+		player.play(clip, 0.0)
+		player.seek(0.0, true)
+		for h in ["half_a", "half_b"]:
+			assert_true(_flat_engine_turn(skel, h) > FLAT_ENGINE_SPLIT_MIN_DEG, "%s: the drum split (%s)" % [clip, h])
+		assert_true(_flat_engine_turn(skel, "chimney") > FLAT_ENGINE_STACK_MIN_DEG, "%s: the stack over" % clip)
+		for p in FLAT_ENGINE_JAMMED:
+			assert_true(_flat_engine_turn(skel, p) > FLAT_ENGINE_JAM_MIN_DEG, "%s: %s jammed up" % [clip, p])
+		for b in skel.get_bone_count():
+			var y := (skel.global_transform * skel.get_bone_global_pose(b)).origin.y
+			assert_true(y > -FLAT_ENGINE_WATER_TOL_M, "%s: %s stays on the water" % [clip, skel.get_bone_name(b)])
+	before_each()
+
+
+func test_flat_engine_clips_start_and_end_on_their_stance() -> void:
+	var a := _flat_engine_actor()
+	var skel := _wakefin_skeleton(a)
+	var player := a.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
+	var idle := _avalanche_ram_pose(player, skel, &"idle", 0.0)
+	var idle_broken := _avalanche_ram_pose(player, skel, &"idle_broken", 0.0)
+	var cases: Array = []
+	for clip in FLAT_ENGINE_WHOLE:
+		cases.append([clip, idle, idle])
+	for clip in FLAT_ENGINE_BROKEN:
+		cases.append([clip, idle_broken, idle_broken])
+	cases.append([&"break", idle, idle_broken])
+	cases.append([&"ko", idle, null])
+	cases.append([&"ko_broken", idle_broken, null])
+	for c: Array in cases:
+		var clip: StringName = c[0]
+		var length := player.get_animation(clip).length
+		var off := _avalanche_ram_pose_gap(_avalanche_ram_pose(player, skel, clip, 0.0), c[1])
+		assert_true(off < FLAT_ENGINE_POSE_TOL_M, "%s starts on its stance (%.3f m off)" % [clip, off])
+		if c[2] != null:
+			off = _avalanche_ram_pose_gap(_avalanche_ram_pose(player, skel, clip, length), c[2])
+			assert_true(off < FLAT_ENGINE_POSE_TOL_M, "%s ends on its stance (%.3f m off)" % [clip, off])
+	before_each()
+
+
+func _flat_engine_actor() -> CreatureActor:
+	var row := CreatureActor.row_for(FLAT_ENGINE)
+	var a := (load(str(row.get("scene", ""))) as PackedScene).instantiate() as CreatureActor
+	var tree := Engine.get_main_loop() as SceneTree
+	(tree.current_scene if tree.current_scene != null else tree.root).add_child(a)
+	made.append(a)
+	return a
+
+
+## How far a bone is turned from its rest (degrees).
+func _flat_engine_turn(skel: Skeleton3D, bone: String) -> float:
+	var b := skel.find_bone(bone)
+	return rad_to_deg(skel.get_bone_rest(b).basis.get_rotation_quaternion().angle_to(skel.get_bone_pose_rotation(b)))

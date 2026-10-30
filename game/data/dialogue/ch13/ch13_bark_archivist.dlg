@@ -1,0 +1,10 @@
+// Ch13: the Archive's clerk. Before the reading, procedure; after it, he noticed.
+title: ch13_bark_archivist
+location: ch13/lamp_archive
+---
+<<if $ch13_archive_read>>
+    Clerk as "Archivist" [worried]: You were a long time at the founders' shelf. Most people read the first page and go and pray. #line:ch13_bark_arch_001
+<<else>>
+    Clerk as "Archivist" [neutral]: Gloves, please. The ledgers are older than the Calm, and the Calm is old. #line:ch13_bark_arch_002
+<<endif>>
+===

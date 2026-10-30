@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch12_bark_quellan_boy",
+ "source": "game/data/dialogue/ch12/ch12_bark_quellan_boy.dlg",
+ "start": "ch12_bark_quellan_boy",
+ "nodes": {
+  "ch12_bark_quellan_boy": {
+   "headers": {"location": "ch12/quellan"},
+   "ops": [
+    {"op": "line", "id": "ch12_bark_boy_001", "key": "DLG_CH12_BARK_BOY_001", "speaker": "ullari", "emotion": "laugh", "voice": "", "src": 5, "name_key": "DLG_NAME_ULLARI_ULLARI_BOY"}
+   ]
+  }
+ }
+}

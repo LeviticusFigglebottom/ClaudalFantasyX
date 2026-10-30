@@ -47,6 +47,8 @@ var shot_id := ""
 var elapsed := 0.0
 ## Plays even at instant pacing, with skip animations or on a retry (its freeze-frame capture).
 var force_play := false
+## Keys over boss_intro.hero for the next _frame_boss (BattleBossCamera's moments set and clear it).
+var hero_override: Dictionary = {}
 ## False holds its clock (captures); advance() still moves it.
 var live := true
 ## Whether the screen is still covered by a transition: () -> bool. Unset = SceneRouter.is_busy(). Tests set it.

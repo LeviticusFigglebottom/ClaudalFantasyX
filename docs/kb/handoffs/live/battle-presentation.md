@@ -205,6 +205,32 @@ ch01_wickfry, ch01_oil_slug, ch01_shaft_limpet and ch01_scuttlers.
   - Default if no answer: battle-presentation writes PROVISIONAL rows (model, arena, phases from creatures.json, and
     stats copied from the Act II boss curve with a `_note`) so the presentation can be built and viewed. The combat
     seat then owns the numbers.
+- **Act II boss intros (c3e45bb0), SELF-RENDERED and viewed:** battle_boss_intro_drowner, _lamp_engine, _ram and
+  _wakefin, on the PROVISIONAL encounters.
+  - The Drowner, the Lamp Engine and the Ram take their hero shots under their cards.
+  - The Wakefin's did not: no low lens was clear of the barge, and the fitted fallback framed its mostly-submerged
+    bounds from 17 m behind the hull, so it was not in shot. Its row now takes `camera.shots.boss_over_rail` (hero
+    and fit off): the fin above the card, with the rail leading to it.
+  - New baselines for the gate: those four shots (never written by this track).
+- **Act II boss moves, viewed** on tools/vfx/boss_camera_sheet (now covering the four Act II creature bosses):
+  - **The Wakefin in the dark (M4-A2P-062):**
+    - Each hit's white core was a flash in the night. effects.json `dark_arenas` now scales every layer's energy in
+      bridal_barge_night by 0.35, except the sea-glow's (BattleVfx.dark_scale). 8d0fe783.
+    - Sound Dive's ring played on the fin's near face against the hull, hidden by the barge. It now centres on the
+      fin, and sea-glow motes climb the fin over the rail. A tried over-rail cut framed mostly deck and was
+      withdrawn. 8d0fe783, 5d16499d.
+  - **The Avalanche Ram:** Toma's shield stood across the Ram and its head left the frame in its charge_side shot.
+    1.0 m up and 7.2 m out keep both. Viewed. 5dc0eb00.
+  - **The Lamp Engine:** its canopy left the top of the rest frame (rest_by_enemy lamp_engine). Viewed. fdc92fbe.
+  - **The Mangrove Drowner:** Root Stamp throws splinters and fen mud. The teal over it was Rising Water's,
+    left on the sheet, which now waits out each move. 3ae3896c, 5d16499d.
+- **Act I sweep, Hullgnaw (batch 3):**
+  - Checks clean: the arena, impacts, framing, and no dead time.
+  - But the victory frame put the fall moment behind the raft's rail and a post. With Rhen alone, the intro's hero
+    shot is a low 30° lens from across the raft. The fall now searches its own higher lenses (moments.fall.hero).
+    8b0e12c2, test test_the_fall_looks_down_from_above_the_intros_lens.
+- **Not mine, for the Lead:** test_cutscene_vfx_hosts fails to parse on this branch with or without my changes. It
+  uses `CutsceneMotes`, which 93c1aa2d removed.
 - **The Act I encounter sweep (the Lead's 23:10)**, so far:
   - Done: ch02_tideline clean (arena, impacts, framing). The Drownbell's 8 stills were viewed and are clean after
     the hit-core and float fixes.

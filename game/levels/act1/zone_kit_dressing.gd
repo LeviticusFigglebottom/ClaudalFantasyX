@@ -51,7 +51,8 @@ extends HalunaDresser
 ##                  volumetric columns (SmokeColumn, game/data/vfx/smoke_column.json "columns", M3-RND-21), framed
 ##                  as the kit's smoke_plume pieces (yawed so +X is downwind, uniform scale); a "block" one follows
 ##                  its block.
-##   ebbing       {}: Ch9's Ebbing motes (EbbingMotes, game/data/vfx/ebbing.json, M3-C09-03): the held fields
+##   ebbing       {"data"?}: the Ebbing's motes (EbbingMotes; Ch9's game/data/vfx/ebbing.json, M3-C09-03, or the
+##                  zone's own "data" file, as Ch15's held dead): the held fields
 ##                  the chapter's `@vfx glimmer_held` cues play, on the zone's stage.
 ##   environment  a res:// Environment: the zone's WorldEnvironment takes a copy (sky, grade, fog).
 ##   time_of_day_h  the hymn_time_of_day the sky reads.
@@ -597,6 +598,7 @@ func _place_ebbing() -> void:
 	var ebb := EbbingMotes.new()
 	ebb.name = "Ebbing"
 	ebb.zone = zone
+	ebb.data_path = str((layout[KEY_EBBING] as Dictionary).get("data", EbbingMotes.DATA_PATH))
 	add_child(ebb)
 
 

@@ -24,6 +24,14 @@ this branch):
 Wait for the Lead's merge of claude/audio, then merge the integration branch back in. If a new item arrives, take
 it; otherwise take the PC-QUEUE listening notes as they come.
 
+## Act II (later the same day, ADR 0205)
+Audio started Act II content: all 14 zones play their music and their own beds; the root, snow and slate footsteps;
+cloudloom and sanctum_of_the_level; battle_heretic; the seven Vowbound stings; the four creature bosses' intro stings
+(keyed by title key); the people bosses' stems; the scene cues farewell_tide, peace_wedding_break, lagoon_escape,
+kerrid_at_sea, hollowmere_answers, sefir_go_home and act2_break; the variant creatures' own voices; unravel. New
+audio is plain git under assets/audio/act2/ (ADR 0175, budget 105 MiB). The Act II audit is 0 in every section. Next
+step: the live log's "BACKLOG (Act II)" list, as its inputs land.
+
 ## Known issues
 - The cutscene suite has one load failure that isn't audio's: `tests/unit/test_cutscene_vfx_hosts.gd` names
   `CutsceneMotes`, a class that is not on the integration branch yet (M3-ARC-1326).

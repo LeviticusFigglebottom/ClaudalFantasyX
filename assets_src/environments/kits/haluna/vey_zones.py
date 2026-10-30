@@ -79,8 +79,9 @@ def _covers(b: dict, x: float, z: float, pad: float = 0.0) -> bool:
     return abs(lx) <= b["size"][0] / 2 + pad and abs(lz) <= b["size"][2] / 2 + pad
 
 
-def _earlier(bid: str, bl: dict) -> list[dict]:
-    return [bl[i] for i in ORDER[:ORDER.index(bid)] if i in bl]
+def _earlier(bid: str, bl: dict, order: tuple = ORDER) -> list[dict]:
+    """The surfaces laid before this one (`order`: the zone's laying order; Ansedra's walks reuse these builders)."""
+    return [bl[i] for i in order[:order.index(bid)] if i in bl]
 
 
 def _world(b: dict, lx: float, lz: float) -> tuple[float, float]:
@@ -161,7 +162,7 @@ def _slabs(mb, rng, noise, b: dict, earlier: list[dict], hx: float, hz: float, m
             _flat_top(mb, v0)
 
 
-def _gallery(mb, rng, noise, b: dict, bl: dict, lod: bool) -> None:
+def _gallery(mb, rng, noise, b: dict, bl: dict, lod: bool, order: tuple = ORDER) -> None:
     """One gallery walk at its block's length, in its own frame (axis X)."""
     hl, hw = b["size"][0] / 2, ll.WALK_HALF_W
     cer, stone = mb.material(ll.M_CERAMIC), mb.material(ll.M_STONE)
@@ -174,7 +175,7 @@ def _gallery(mb, rng, noise, b: dict, bl: dict, lod: bool) -> None:
         return
     # The bedding under the slabs (the joints read as grooves, never as slits onto the water), then the slabs.
     kc.rounded_block(mb, (0.0, -0.14, 0.0), (hl, 0.02, hw), stone, radius=0.01, seg=1)
-    _slabs(mb, rng, noise, b, _earlier(b["id"], bl), hl, hw, ll.M_CERAMIC, rows_z=(-0.9, 0.9))
+    _slabs(mb, rng, noise, b, _earlier(b["id"], bl, order), hl, hw, ll.M_CERAMIC, rows_z=(-0.9, 0.9))
     for sz in (-1.0, 1.0):  # the cornice and the arcade's top course, the conduit along the cornice
         kc.rounded_block(mb, (0.0, -0.18, sz * (hw + 0.1)), (hl, 0.08, 0.16), cer, radius=0.02, seg=1,
                          weather=ll.CERAMIC)
@@ -202,7 +203,7 @@ def _gallery(mb, rng, noise, b: dict, bl: dict, lod: bool) -> None:
                              disp_m=0.01, weather=ll.STONE)
 
 
-def _paved(mb, rng, noise, b: dict, bl: dict, lod: bool) -> None:
+def _paved(mb, rng, noise, b: dict, bl: dict, lod: bool, order: tuple = ORDER) -> None:
     """A paved block (the landing, the court, the fig end): stone flags inside a ceramic border, the stone body down to
     the bed with a cornice round it, the conduit along the cornice."""
     hx, hz = b["size"][0] / 2, b["size"][2] / 2
@@ -223,7 +224,7 @@ def _paved(mb, rng, noise, b: dict, bl: dict, lod: bool) -> None:
         cc = (sx * (hx + 0.08), -0.2, sz * (hz + 0.08))
         ch = (0.14, 0.08, hz + 0.2) if sx else (hx + 0.2, 0.08, 0.14)
         kc.rounded_block(mb, cc, ch, cer, radius=0.02, seg=1, weather=ll.CERAMIC)
-    earlier = _earlier(b["id"], bl)
+    earlier = _earlier(b["id"], bl, order)
     sub = dict(b, size=[b["size"][0] - 2 * border, b["size"][1], b["size"][2] - 2 * border])
     _slabs(mb, rng, noise, sub, earlier, hx - border, hz - border, ll.M_STONE)
     # The conduit along the cornice, on the sides no gallery leaves from.
@@ -350,11 +351,11 @@ def build_group(name: str, seed: int) -> list[kc.MeshBuilder]:
     return out
 
 
-def bed_height(noise: kc.Noise3):
+def bed_height(noise: kc.Noise3, bl: dict | None = None, order: tuple = ORDER):
     """The lagoon's bed: silt at BED_Y with soft swells, rising under every walk and court to the drowned arcades'
     footings (-2.2), so the stone stands on it."""
-    bl = blocks()
-    walks = [bl[i] for i in ORDER]
+    bl = bl or blocks()
+    walks = [bl[i] for i in order if i in bl]
 
     def h(X, Z):
         X, Z = np.asarray(X, float), np.asarray(Z, float)

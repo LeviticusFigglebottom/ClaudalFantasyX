@@ -68,7 +68,9 @@ LEAD_IN_S = BEAT / 4
 CHORDS = ["Am", "Am", "F", "E", "Am", "Dm", "E", "E"] * 4
 ROOTS = {"Am": "A1", "F": "F1", "E": "E1", "Dm": "D2"}
 HUM_BARS = (1, 9, 17, 25)
-GAINS = {"march": -4.0, "gong": -8.0, "hum": -2.0, "stab": -9.0, "surge": -4.0, "big": -4.0}
+# surge: undertows_reach.surge() is normalized to unit variance, so it sits far down; set from measurement so the
+# storm stem lands about 2.5 LU under the guard's (malcor_venn's balance)
+GAINS = {"march": -4.0, "gong": -8.0, "hum": -2.0, "stab": -9.0, "surge": -26.0, "big": -8.0}
 
 
 def t_of(bar: int, beat: float = 0.0) -> float:
@@ -135,7 +137,9 @@ def render(out_path: str = OUT, verbose: bool = True, stats: dict | None = None)
     L = len(full)
     for _ in range(4):                    # one limiter gain curve for both stems, from the full stack (wrap-aware)
         f = full * gain
-        lg = limit_gain(np.concatenate([f[-ctx:], f, f[:ctx]]), -3.0)[ctx: ctx + L]   # drums overshoot when decoded
+        # the limiter reads the loudest of the stack and each stem: a stem alone can peak where the stems cancel
+        env = np.maximum.reduce([np.abs(f)] + [np.abs(x * gain) for x in loops])
+        lg = limit_gain(np.concatenate([env[-ctx:], env, env[:ctx]]), -3.0)[ctx: ctx + L]   # drums overshoot decoded
         cur = integrated_lufs(f * lg[:, None])
         if abs(cur - TARGET_LUFS) < 0.1:
             break
