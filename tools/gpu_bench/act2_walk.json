@@ -1,0 +1,137 @@
+{
+ "version": 1,
+ "doc": "Act II Ch10-Ch13 real-GPU first look (pc-gpu): every location and its spawns, stills and --budget.",
+ "segments": [
+  {
+   "id": "launch",
+   "kind": "launch",
+   "arg": "res://game/core/boot.tscn"
+  },
+  {
+   "id": "title",
+   "kind": "scene",
+   "arg": "res://game/core/boot.tscn"
+  },
+  {
+   "id": "ossa_fen",
+   "kind": "location",
+   "arg": "ch10/ossa_fen",
+   "dwell": 25,
+   "press": "ui_accept"
+  },
+  {
+   "id": "ossa_fen_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "reedhollow",
+   "kind": "location",
+   "arg": "ch10/reedhollow",
+   "dwell": 25,
+   "press": "ui_accept"
+  },
+  {
+   "id": "reedhollow_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "sunken_vey",
+   "kind": "location",
+   "arg": "ch11/sunken_vey",
+   "dwell": 25,
+   "press": "ui_accept"
+  },
+  {
+   "id": "sunken_vey_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "lowlight",
+   "kind": "location",
+   "arg": "ch11/lowlight",
+   "dwell": 25,
+   "press": "ui_accept"
+  },
+  {
+   "id": "lowlight_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "keth_pass",
+   "kind": "location",
+   "arg": "ch12/keth_pass",
+   "dwell": 25,
+   "press": "ui_accept"
+  },
+  {
+   "id": "keth_pass_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "quellan",
+   "kind": "location",
+   "arg": "ch12/quellan",
+   "dwell": 25,
+   "press": "ui_accept"
+  },
+  {
+   "id": "quellan_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "cloudloom",
+   "kind": "location",
+   "arg": "ch12/cloudloom",
+   "dwell": 25,
+   "press": "ui_accept"
+  },
+  {
+   "id": "cloudloom_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "ansedra",
+   "kind": "location",
+   "arg": "ch13/ansedra",
+   "dwell": 25,
+   "press": "ui_accept"
+  },
+  {
+   "id": "ansedra_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "sanctum",
+   "kind": "location",
+   "arg": "ch13/sanctum",
+   "dwell": 25,
+   "press": "ui_accept"
+  },
+  {
+   "id": "sanctum_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "lamp_archive",
+   "kind": "location",
+   "arg": "ch13/lamp_archive",
+   "dwell": 25,
+   "press": "ui_accept"
+  },
+  {
+   "id": "lamp_archive_spawns",
+   "kind": "spawns"
+  },
+  {
+   "id": "ansedra_lacquer_court",
+   "kind": "location",
+   "arg": "ch13/ansedra_lacquer_court",
+   "dwell": 25,
+   "press": "ui_accept"
+  },
+  {
+   "id": "ansedra_lacquer_court_spawns",
+   "kind": "spawns"
+  }
+ ]
+}
