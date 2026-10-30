@@ -1407,6 +1407,62 @@ def _lowlight_arena() -> dict:
 
 LOWLIGHT_ARENA = _lowlight_arena()
 
+# The Sunken Vey's conduit court (M4-A2P-041; lowlight.md §5): the galleries' regular fights (ch11_vey_rays,
+# ch11_vey_urchins) on the zone's own court, its dressing round it (ch11_lowlight_dressing.py's output, read-only),
+# moved so the court's centre is the arena's origin. Ch11's overcast noon outside: the engine hall's grade without
+# its lamps, the still lagoon round the court.
+VEY_COURT_AT = (38.0, -22.0)  # the greybox Court block's centre (sunken_vey_layout.json)
+VEY_DRESSING = Path(__file__).resolve().parents[4] / "game" / "levels" / "ch11" / "sunken_vey" / "sunken_vey_dressing.json"
+VEY_PROP_CLEAR_M = 4.0
+VEY_STRUCTURE = ("vey_arcade_bay", "ruin_column_broken", "lowlight_nave_bay", "lowlight_nave_bay_broken", "ruin_wall_sunk")
+
+
+def _vey_pieces() -> list:
+    rows = json.loads(VEY_DRESSING.read_text(encoding="utf-8"))["pieces"]
+    pieces = []
+    for p in rows:
+        if p["piece"] == "sunken_vey_court":
+            continue  # the ground
+        x, z = p["at"][0] - VEY_COURT_AT[0], p["at"][1] - VEY_COURT_AT[1]
+        y = float(p.get("y", 0.0))
+        row = {"glb": KIT + p["piece"] + ".glb", "at": (round(x, 3), y, round(z, 3)), "yaw": p["yaw_deg"]}
+        if "scale" in p:
+            row["scale"] = p["scale"]
+        if p["piece"] in VEY_STRUCTURE:
+            row["structure"] = True
+        elif abs(y) < 0.5 and _near_slot(x, z, VEY_PROP_CLEAR_M):
+            continue
+        pieces.append(row)
+    return pieces
+
+
+def _vey_arena() -> dict:
+    return dict(
+        LOWLIGHT_ARENA,
+        id="sunken_vey_gallery",
+        ground_glb=KIT + "sunken_vey_court.glb",
+        ground_at=(-VEY_COURT_AT[0], 0.0, -VEY_COURT_AT[1]),
+        # Outside under the overcast: no shaft, the key the grey sky's (colour script ch11, 12:30).
+        sun={"elev": 65.0, "az": 200.0, "color": "#F3F2FF", "energy": 1.4},
+        fog={"color": "#8A9A98", "aerial": 0.4, "density": 0.004, "sky_affect": 0.1, "height": 0.0,
+             "height_density": 0.0},
+        sea={"y": -0.3, "tide_line_y": -0.3, "sea_glow": 0.0, "material": OVERCAST_LAGOON,
+             "waves": [(20.0, 3.0, 0.004, 0.05), (140.0, 1.7, 0.002, 0.05)]},
+        pieces=_vey_pieces(),
+        lamps=[],
+        hints={
+            "wide_high": ((-1.5, 7.5, 13.5), (0.0, 0.8, -3.0)),
+            "party_side": ((5.6, 1.7, 4.5), (-1.5, 1.0, -0.5)),
+            "foe_side": ((-5.6, 1.7, 4.0), (1.5, 1.0, 0.0)),
+            "the_galleries": ((3.0, 1.4, 5.0), (-4.0, 1.5, -14.0)),
+            "the_lagoon": ((-2.0, 2.2, -2.0), (6.0, -0.3, 20.0)),
+        },
+        anchors={"BossAnchor": (-5.0, 0.0, -2.5)},
+    )
+
+
+VEY_ARENA = _vey_arena()
+
 # ---------------------------------------------------------------------------------------------
 # M3-ENV-718: the Mangrove Drowner's mudbank under the dead tree, Ossa Fen (ossa_fen.py; ossa_fen.md §2)
 # ---------------------------------------------------------------------------------------------
@@ -1763,7 +1819,7 @@ UNDERTOW_HEART_LETTING = dict(
 
 ARENAS = {a["id"]: a for a in (TIDELINE, CAUSEWAY, CAUSEWAY_ROUTE, DERELICT_DECK, ASH_TERRACE, UNDERWAY_TOWER,
                                RAFT_MORNING, SHOALS, CAMP, WALLHEAD_STORM, WALLHEAD_HOIST, WALLHEAD_SURGE, HEADLAND, TIER_HALL, KETH_ARENA,
-                               LOWLIGHT_ARENA, FEN_ARENA, BRIDAL_ARENA, ANSEDRA_ESCAPE, CHOIR_ARENA,
+                               LOWLIGHT_ARENA, VEY_ARENA, FEN_ARENA, BRIDAL_ARENA, ANSEDRA_ESCAPE, CHOIR_ARENA,
                                SPIRE_CROWN, UNDERTOW_CAGE, UNDERTOW_HEART, UNDERTOW_HEART_LETTING)}
 
 

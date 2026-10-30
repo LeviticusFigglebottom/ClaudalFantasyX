@@ -2,8 +2,7 @@
 id: M4-A2P-073
 title: "Stage Kerrid's reveal at sea (Ch15)"
 role: cinematics
-status: blocked
-blocked-by: ADR 0203
+status: todo
 owner_session: ""
 depends_on: [M4-A2P-006, M4-A2P-049, M4-A2P-054]
 reviewer: narrative

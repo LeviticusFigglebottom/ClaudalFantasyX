@@ -16,7 +16,9 @@ shipped skin); every other step and every host snap (M2-CHR-11) is Moll's. Deter
 
 M3-CHR-540: a named Stillguard (sg_table.named(), Ivo Brannick) builds the same way, out to assets/characters/<id>/
 under its own id; its table can drop the spear (`_variant.spear` false: the shield only, build_moll's `no_prop`) and
-chip an upper front tooth (`_variant.broken_tooth`, broken_tooth below).
+chip an upper front tooth (`_variant.broken_tooth`, broken_tooth below). M4-A2P-051: Warden Malcor Venn takes the
+halberd (`_variant.halberd`, sg_halberd, on the spear's bone) and no shield (`_variant.shield` false), and keeps Moll's
+sash (his `_costume`).
 """
 from __future__ import annotations
 
@@ -33,6 +35,7 @@ sys.path.insert(0, str(HERE.parent / "moll"))
 
 import build_moll as bm  # noqa: E402  (sets up the shared module path and Moll's tables, replaced below)
 import moll_props  # noqa: E402
+import sg_halberd  # noqa: E402
 import sg_helm  # noqa: E402
 from sg_table import TABLE, builds, name, variant_params  # noqa: E402
 import toma_costume  # noqa: E402
@@ -53,7 +56,16 @@ bm.hb.LOD1_RATIO.update({"Head": 0.4, "Body": 0.5, "Costume": 0.42, bm.SLEEVES: 
 def spear(lm, cparams: dict):
     """Toma's spear in the right fist, built upright through the fist and turned into the held line (M2-CHR-515),
     its shaft and cord grip moved from Toma's atlas onto the brine-iron's maps (moll_props.IRON_ATLAS)."""
-    part = toma_props.spear(lm, cparams, moll_props.IRON_ATLAS["band"])
+    return _on_iron_maps(toma_props.spear(lm, cparams, moll_props.IRON_ATLAS["band"]), lm)
+
+
+def halberd(lm, cparams: dict):
+    """M4-A2P-051: Malcor Venn's halberd (sg_halberd), held as the spear is and on the same bone and maps."""
+    return _on_iron_maps(sg_halberd.halberd(lm, cparams, moll_props.IRON_ATLAS["band"]), lm)
+
+
+def _on_iron_maps(part, lm):
+    """A shafted prop's shaft and cord moved from Toma's atlas onto the brine-iron's maps; (part, mesh, bone, bone)."""
     su0, sv0, su1, sv1 = toma_costume.ATLAS["spear_shaft"]
     hu0, hv0, hu1, hv1 = moll_props.IRON_ATLAS["haft"]
     for k, m in enumerate(part.M):
@@ -95,9 +107,10 @@ def spec_for(v: str) -> dict:
     var = extra["_variant"]
     if var.get("broken_tooth"):
         asha_mouth.mouth_interior = broken_tooth(asha_mouth.mouth_interior, float(var["broken_tooth"]))
+    prop = halberd if var.get("halberd") else spear if var.get("spear", True) else None  # M4-A2P-051: Venn's halberd
     return {"name": name(v), "params": TABLE, "extra": extra, "subdiv_face": False,
-            "hair": var["hair"] == "crop" and not var["helm"], "prop": spear if var.get("spear", True) else None,
-            "no_prop": not var.get("spear", True), "helm": sg_helm.helm if var["helm"] else None}
+            "hair": var["hair"] == "crop" and not var["helm"], "prop": prop, "no_prop": prop is None,
+            "no_shield": not var.get("shield", True), "helm": sg_helm.helm if var["helm"] else None}
 
 
 def parse_args() -> argparse.Namespace:

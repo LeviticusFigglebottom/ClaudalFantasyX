@@ -1,0 +1,18 @@
+// Ch16 camp (optional, the last night of the wade, before the Choir; requires ch16_started). Asha and Rhen. She asks
+// him to tell her what the divers' lamps look like coming up (Rhen's own image, from Ch5). She says that's how she'd like
+// it to be. Nothing names what the Hush does (B05 is later); nothing about Kell's wick (Act III). Sets ch16_camp_talk.
+title: ch16_camp_coming_up
+location: ch16/pale_rim
+---
+Asha [neutral]: Rhen. Tell me something from Oruvel. #line:ch16_camp_001
+Rhen [neutral]: What kind of thing? #line:ch16_camp_002
+Asha [soft_smile]: The divers. When they come up at dusk. Tell me what it looks like. #line:ch16_camp_003
+Rhen [tender]: You see the lamps before you see the people. Little lights under the water, coming up slow, one and then another. #line:ch16_camp_004 #long
+Rhen [tender]: Everybody on the hulls goes quiet and counts them. When the count's right, somebody laughs. Every time. Like it was never going to be right. #line:ch16_camp_005 #long
+Asha [neutral]: That's how I'd like it to be. #line:ch16_camp_006
+Rhen [worried]: Like what? #line:ch16_camp_007
+Asha [tender]: Coming up slow. With somebody counting. #line:ch16_camp_008
+Rhen [neutral]: I'll count. #line:ch16_camp_009
+Asha [soft_smile]: I know you will. #line:ch16_camp_010
+<<set $ch16_camp_talk = true>>
+===

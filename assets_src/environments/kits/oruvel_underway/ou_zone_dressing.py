@@ -192,6 +192,8 @@ def pieces() -> list[dict]:
     out += gb_wall(b, "TinAlcoveWallW", 1, ("tower_bay_solid",))
     out += gb_wall(b, "TinAlcoveWallN", 1, ("tower_bay_solid",), centres=[71.0])
     out += gb_wall(b, "TinAlcoveWallS", -1, ("tower_bay_solid",), centres=[71.0])
+    ta = b["TinAlcove"]  # the old tin at the alcove's back, where the open shutter finds it (the `old_tin` trigger)
+    out.append(put("old_tin", ta["pos"][0] - 1.9, 0.0, ta["pos"][2] - 0.3, 78.0))
     cc = b["CoralCurtain"]
     out.append(put("coral_curtain", cc["pos"][0], 0.0, cc["pos"][2], 90.0, scale=round(cc["size"][2] / 3.0, 3),
                    block="CoralCurtain"))
@@ -211,6 +213,9 @@ def pieces() -> list[dict]:
     for n in range(2):
         out.append(put("current_shaft", sh["pos"][0], ot.STOREY * n, sh["pos"][2], 11.0, block="ShaftLight"))
     out.append(put("lit_fragments", 88.2, 0.0, -38.6, 20.0))
+    # The limpet the `limpet` trigger looks at, clamped to the north wall's face behind it.
+    wn = b["GalleryWallN"]
+    out.append(put("shaft_limpet", 92.0, 0.75, wn["pos"][2] + wn["size"][2] / 2, 0.0))
     out += terrace()
     return out
 

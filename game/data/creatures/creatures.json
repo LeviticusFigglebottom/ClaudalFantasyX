@@ -109,7 +109,7 @@
       "portrait": {"yaw_deg": 60.0, "pitch_deg": 20.0}
     },
     "mangrove_drowner": {
-      "scene": "res://game/creatures/mangrove_drowner/mangrove_drowner_battle.tscn",
+      "scene": "res://game/creatures/mangrove_drowner/mangrove_drowner_battle.tscn", "clip_by_skill": {"drowner_drag": "attack", "rising_water": "rising_water", "root_stamp": "root_stamp_risen"},
       "contact": {"attack": 0.7, "cast": 1.0, "rising_water": 1.0, "snag": 0.75, "attack_risen": 0.7, "cast_risen": 1.0,
                   "rising_water_risen": 1.0, "snag_risen": 0.75, "root_stamp_risen": 0.8},
       "loop": ["idle", "idle_risen", "ready", "ready_risen"],
@@ -125,7 +125,7 @@
       "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}
     },
     "lamp_engine": {
-      "scene": "res://game/creatures/lamp_engine/lamp_engine_battle.tscn",
+      "scene": "res://game/creatures/lamp_engine/lamp_engine_battle.tscn", "clip_by_skill": {"lamp_trim": "attack", "lamp_gather": "lamp_gather", "lamp_flare": "lamp_burn", "core_pulse": "cast"},
       "vfx_anchors": {"core": "vfx_core", "wound": "vfx_wound"},
       "contact": {"attack": 0.6, "cast": 1.0, "lamp_gather": 1.2, "lamp_burn": 0.8, "call": 0.7, "twin_trim": 0.85,
                   "phase_change": 1.1, "attack_opened": 0.6, "cast_opened": 1.0, "lamp_gather_opened": 1.2,
@@ -143,7 +143,7 @@
       "portrait": {"clip": "idle", "clip_time": 0.0}
     },
     "avalanche_ram": {
-      "scene": "res://game/creatures/avalanche_ram/avalanche_ram_battle.tscn",
+      "scene": "res://game/creatures/avalanche_ram/avalanche_ram_battle.tscn", "clip_by_skill": {"horn_toss": "neck_sweep", "ram_charge_gather": "charge_gather", "ram_charge": "attack", "ram_bellow": "cast"},
       "vfx_anchors": {"core": "vfx_core", "wound": "vfx_wound"},
       "contact": {"attack": 0.75, "cast": 0.9, "neck_sweep": 0.75, "fleece_shake": 0.6, "phase_tear": 1.0,
                   "attack_torn": 0.75, "cast_torn": 0.9, "neck_sweep_torn": 0.75, "fleece_shake_torn": 0.6},
@@ -165,7 +165,7 @@
       "portrait": {"yaw_deg": 40.0, "pitch_deg": 10.0}
     },
     "wakefin": {
-      "scene": "res://game/creatures/wakefin/wakefin_battle.tscn",
+      "scene": "res://game/creatures/wakefin/wakefin_battle.tscn", "clip_by_skill": {"fin_cut": "attack", "sound_dive": "dive", "wake_breach": "rise_strike", "wake_wheel": "wake_wash"},
       "vfx_anchors": {"core": "vfx_core", "wound": "vfx_wound"},
       "contact": {"attack": 0.8, "cast": 1.5, "dive": 1.0, "rise_strike": 0.85, "wake_wash": 0.75, "phase_close": 0.85,
                   "attack_close": 0.8, "cast_close": 1.5, "dive_close": 1.0, "rise_strike_close": 0.85,
@@ -295,7 +295,7 @@
       "scene": "res://game/creatures/ethren/ethren_battle.tscn",
       "vowbound": true,
       "contact": {"attack": 0.55, "cast": 0.8, "stop": 0.9, "ward": 0.8, "special": 1.45},
-      "clip_by_skill": {"level_hand": "cast", "hold_the_hour": "cast", "lacquer_screen": "cast", "still_water": "special"},
+      "clip_by_skill": {"level_hand": "cast", "hold_the_hour": "stop", "lacquer_screen": "ward", "still_water": "special"},
       "stand_in": {"yaw_deg": -90.0, "height": 2.5, "radius": 0.6}
     },
     "kesh": {

@@ -671,16 +671,6 @@
   {
    "piece": "mangrove_young",
    "at": [
-    99.038,
-    -2.007
-   ],
-   "y": 0.0,
-   "yaw_deg": 16.645,
-   "scale": 1.124
-  },
-  {
-   "piece": "mangrove_young",
-   "at": [
     67.201,
     -8.43
    ],
@@ -739,16 +729,6 @@
    "scale": 0.93
   },
   {
-   "piece": "mangrove_low",
-   "at": [
-    124.5,
-    4.2
-   ],
-   "y": 0.0,
-   "yaw_deg": 225.766,
-   "scale": 0.913
-  },
-  {
    "piece": "mangrove_young",
    "at": [
     131.5,
@@ -767,16 +747,6 @@
    "y": 0.0,
    "yaw_deg": 32.048,
    "scale": 0.867
-  },
-  {
-   "piece": "mangrove_tall",
-   "at": [
-    124.5,
-    -4.2
-   ],
-   "y": 0.0,
-   "yaw_deg": 273.384,
-   "scale": 1.039
   },
   {
    "piece": "mangrove_low",
@@ -827,16 +797,6 @@
    "y": 0.0,
    "yaw_deg": 5.874,
    "scale": 1.015
-  },
-  {
-   "piece": "mangrove_tree",
-   "at": [
-    99.747,
-    -4.925
-   ],
-   "y": 0.0,
-   "yaw_deg": 60.671,
-   "scale": 0.933
   },
   {
    "piece": "mangrove_tree",

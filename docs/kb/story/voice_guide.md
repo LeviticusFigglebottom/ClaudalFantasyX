@@ -7,6 +7,7 @@ How each principal character talks. Use this when writing any `.dlg` line. If a 
 - **No lore dump over four lines.** Exposition comes through argument, discovery, or action. If a character must explain, someone interrupts, disagrees, or walks away.
 - **Swearing:** in-world oaths only, sparing. Examples: *"Salt and stone."* (Low Reaches), *"Level preserve us."* (Order), *"Rust it."* (Saltwright).
 - **Address:** the Order says *Lady Cantor* and *Warden*. Friends use first names. Kerrid uses no names until Act II.
+- **Spelling:** British, with Oxford -ize, in every string a player reads: colour, armour, defence, grey, harbour, honour and traveller, but Customize (Lead, 2026-10-30).
 - **Line length:** keep most lines to one or two sentences of about 25 words or fewer. Long speeches are earned only by Kerrid (once, Ch15, ADR 0016), Sefir (once, Ch16), and Rhen's narration.
 
 ---

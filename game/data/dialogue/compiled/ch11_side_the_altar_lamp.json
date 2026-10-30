@@ -1,0 +1,27 @@
+{
+ "format": 1,
+ "scene": "ch11_side_the_altar_lamp",
+ "source": "game/data/dialogue/ch11/ch11_side_the_altar_lamp.dlg",
+ "start": "ch11_side_the_altar_lamp",
+ "nodes": {
+  "ch11_side_the_altar_lamp": {
+   "headers": {"location": "ch11/lowlight"},
+   "ops": [
+    {"op": "if_not", "cond": ["flag", "ch11_moved_altar_lamp"], "to": 3, "src": 7},
+    {"op": "line", "id": "ch11_altar_001", "key": "DLG_CH11_ALTAR_001", "speaker": "tender", "emotion": "soft_smile", "voice": "", "src": 8, "name_key": "DLG_NAME_TENDER_LOWLIGHT_KEEPER"},
+    {"op": "goto", "to": 14, "src": 7},
+    {"op": "line", "id": "ch11_altar_002", "key": "DLG_CH11_ALTAR_002", "speaker": "tender", "emotion": "exhausted", "voice": "", "src": 10, "name_key": "DLG_NAME_TENDER_LOWLIGHT_KEEPER", "tags": ["long"]},
+    {"op": "options", "choices": [{"id": "ch11_altar_003", "key": "DLG_CH11_ALTAR_003", "to": 5, "src": 11}, {"id": "ch11_altar_008", "key": "DLG_CH11_ALTAR_008", "to": 11, "src": 17}], "src": 11, "next": 13},
+    {"op": "line", "id": "ch11_altar_004", "key": "DLG_CH11_ALTAR_004", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 12},
+    {"op": "line", "id": "ch11_altar_005", "key": "DLG_CH11_ALTAR_005", "speaker": "tender", "emotion": "neutral", "voice": "", "src": 13, "name_key": "DLG_NAME_TENDER_LOWLIGHT_KEEPER"},
+    {"op": "line", "id": "ch11_altar_006", "key": "DLG_CH11_ALTAR_006", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 14},
+    {"op": "set", "flag": "ch11_moved_altar_lamp", "value": ["lit", true], "src": 15},
+    {"op": "line", "id": "ch11_altar_007", "key": "DLG_CH11_ALTAR_007", "speaker": "tender", "emotion": "soft_smile", "voice": "", "src": 16, "name_key": "DLG_NAME_TENDER_LOWLIGHT_KEEPER"},
+    {"op": "goto", "to": 13, "src": 11},
+    {"op": "line", "id": "ch11_altar_009", "key": "DLG_CH11_ALTAR_009", "speaker": "tender", "emotion": "neutral", "voice": "", "src": 18, "name_key": "DLG_NAME_TENDER_LOWLIGHT_KEEPER"},
+    {"op": "goto", "to": 13, "src": 17},
+    {"op": "goto", "to": 14, "src": 9}
+   ]
+  }
+ }
+}

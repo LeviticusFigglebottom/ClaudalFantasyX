@@ -1,7 +1,7 @@
 """env-art-b's battle arenas (M3-ENV-1303..1314) are reproducible from their writers. Each wrapper writes env-art's
 arena table (`assets_src/environments/kits/haluna/arena_scenes.py`, read-only) through the same `write_arena`, with
 its own additions (Lanternfall's votives and terrace, the camp's fires, the Ch6 arenas' smoke columns, the wall-head's Undertow, the headland's
-scrub), or writes its own table (the Ashcrown arenas). test_arenas.py skips the ids in WRAPPERS; this test reproduces
+scrub, the Ch14–15 arenas' zone looks), or writes its own table (the Ashcrown arenas, the Lacquer Court's steps). test_arenas.py skips the ids in WRAPPERS; this test reproduces
 them instead."""
 
 from __future__ import annotations
@@ -20,6 +20,8 @@ WRAPPERS = {
     "corrow/b_seawall_storm.py": ("seawall_stairhead_storm", "seawall_stairhead_hoist", "seawall_stairhead_surge"),
     "coilspire/b_headland_arena.py": ("coilspire_headland_path", "coilspire_tier_landing"),
     "ashcrown/b_arenas.py": ("ashcrown_forecourt_day", "ashcrown_anvil_court"),
+    "haluna/ansedra_arenas.py": ("lacquer_court_steps", "ansedra_lagoon_escape", "bridal_barge_night"),
+    "haluna/rim_arenas.py": ("pale_rim_shallows",),
 }
 WRAPPED = {aid for ids in WRAPPERS.values() for aid in ids}
 

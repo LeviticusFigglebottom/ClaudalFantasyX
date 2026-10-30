@@ -20,7 +20,7 @@
     {"op": "cue", "cue": "camera", "args": ["N04"], "kwargs": {}, "src": 25},
     {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 26},
     {"op": "cue", "cue": "camera", "args": ["N05"], "kwargs": {}, "src": 27},
-    {"op": "cue", "cue": "mark", "args": ["pell", "ledge_edge", "walk"], "kwargs": {}, "src": 28},
+    {"op": "cue", "cue": "mark", "args": ["pell", "pell_kneel", "walk"], "kwargs": {}, "src": 28},
     {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 29},
     {"op": "line", "id": "ch11_nhoa_001", "key": "DLG_CH11_NHOA_001", "speaker": "pell", "emotion": "grief", "voice": "", "src": 30},
     {"op": "cue", "cue": "anim", "args": ["pell", "kneel"], "kwargs": {}, "src": 31},

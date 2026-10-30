@@ -11,12 +11,16 @@
 title: prologue_dead_city
 location: prologue
 ---
+// The human's playtest (2026-10-30, "New Game starts in the underwater sequence"): the prologue played, but as 20 s
+// with one line it didn't read as one. It opens on its title card on black, and P01 holds the dead city before
+// Rhen crosses (the establishing beat).
+Prologue #line:prologue_dead_city_000 #card #tn:"Title card, centred on black, before the first frame of the game."
 @letterbox on
 @camera P01
 @light LanternLight off
 @anim ysolde vigil_book_shut
 @fade in 3.0
-@wait 1.5
+@wait 3.5
 @mark rhen by_asha walk
 @camera P02 blend=7.0 ease=in_out_sine
 @anim rhen look_at asha

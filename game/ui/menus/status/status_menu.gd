@@ -230,6 +230,7 @@ func _row_cells(at: Vector2, widths: Array, h: float, texts: Array, roles: Array
 		var l := _add_label(variation, Rect2(x, at.y, w, h), str(texts[i]))
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT if i == 0 else HORIZONTAL_ALIGNMENT_RIGHT
 		l.add_theme_color_override(&"font_color", _c(StringName(str(roles[i]))))
+		HudLayout.fit_label(l, w)  # the Act I UI pass: at 130 % "Lattice" ran into "Base"
 		x += w
 
 
@@ -280,6 +281,13 @@ func _render_side(sm: Dictionary) -> void:
 	var lines: Array = (_shown["lattice"] as Dictionary)["lines"]
 	for i in lines.size():
 		y = _line(Rect2(r.position.x, y, r.size.x, 0.0), str(lines[i]), &"text", i == lines.size() - 1)
+	# A caller's Vowbound (Act II screens.md section 3), here rather than under Swell: the left column has no room
+	# once all seven heroes are in the list.
+	var bound: Dictionary = _shown.get("bound", {})
+	if bool(bound.get("has", false)):
+		y += HudLayout.num(sec, "section_gap")
+		y = _section_header(Rect2(r.position.x, y, r.size.x, 0.0), tr(StatusMenuModel.BOUND_KEY))
+		_line(Rect2(r.position.x, y, r.size.x, 0.0), str(bound["text"]), &"text", true)
 
 
 ## A section title with the gold rule under it at `r`'s top. Returns the y under it.

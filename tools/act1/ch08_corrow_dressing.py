@@ -38,6 +38,7 @@ BREACH_KS = (-4, -3, -2)
 MOLE_GAP_S = (13.0, 17.0)  # no Watchers' heads where the mole's ramp crosses the parapet
 HEAD_GAP_S = (-18.4, -14.2)  # the kerb opens onto the stair's head landing
 BASTION_S = (-100.0, -58.0)
+FAR_DROP_M = -0.03
 BASTION_Z = (-2.5, -27.0)  # inner overlaps the walk (no crack at the curve); outer is its revetment's parapet edge
 WALL_Z = (-3.9, 4.2)  # the body, inner face to the parapet's sea edge (the sea batter is art: the mole climbs it)
 KERB_Z = (cf.cw.KERB[0], cf.cw.KERB[1])
@@ -143,7 +144,10 @@ def bastion_pieces() -> list[dict]:
     edge = cf.cw.PARAPET[1]  # the parapet's outer edge, local z
     for sc in (s0 + 6.0, s0 + 18.0, s0 + 30.0, s1 - 6.0):
         out.append(seg(sc, zo + edge, 180.0))  # the town side: local +z faces inland
-    for zc in (zi - 6.0, zo + 6.0):  # two 12 m segments from the walk's edge to the town-side edge
+    # two 12 m segments from the walk's edge to the town-side edge, slid together so they meet: the 24.5 m end left a
+    # 0.5 m slit of sky between them (the player-height walk, 10-30)
+    meet = (zi - zo - 2.0 * cf.cw.SEGMENT_M) * 0.5
+    for zc in (zi - cf.cw.SEGMENT_M * 0.5 - meet, zo + cf.cw.SEGMENT_M * 0.5 + meet):
         out.append(seg(s1 - edge, zc, 90.0))  # the east end faces +s
         out.append(seg(s0 + edge, zc, -90.0))  # the west end faces -s
     for sc in (s0 + 12.0, s1 - 12.0):
@@ -480,7 +484,9 @@ def story_waters(layout_path: Path, ids: tuple[str, ...], material: str = WATER_
 
 def dressing() -> dict:
     head, _beacon = cwl.headland()
-    pieces = [{"piece": "corrow_far", "at": [0.0, 0.0], "y": 0.0, "yaw_deg": 0.0, "lod1_from_m": 5000.0}] + head
+    # The far ground lies flat at TOWN_Y - 0.03 under the town and the town cells' hollows dip to -0.0375: lowered 3 cm
+    # so it doesn't show through them as black pools (the player-height walk, 10-30)
+    pieces = [{"piece": "corrow_far", "at": [0.0, 0.0], "y": FAR_DROP_M, "yaw_deg": 0.0, "lod1_from_m": 5000.0}] + head
     pieces += wall_pieces()
     pieces.append(dict(cwl.put_arc("fisher_stair", cf.STAIR_S), block="StairFlight2"))
     pieces.append(dict(cwl.put_arc("liss_hoist", cf.HOIST_S, cwl.HEAD_Y, cwl.HEAD_Z), block="HoistRope"))

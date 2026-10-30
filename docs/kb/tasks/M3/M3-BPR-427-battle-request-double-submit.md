@@ -2,8 +2,8 @@
 id: M3-BPR-427
 title: "Request (slice-polish): a second BattleRequest.submit while one is opening drops the first fight to the sandbox (GPU QA row 34)"
 role: cinematics
-status: todo
-owner_session:
+status: review
+owner_session: act1-chapters
 depends_on: []
 milestone: M3
 request-from: combat

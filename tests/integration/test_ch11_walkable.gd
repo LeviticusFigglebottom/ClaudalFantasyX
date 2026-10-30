@@ -37,7 +37,13 @@ func test_lowlight_goes_down_the_shaft_to_the_sanctum() -> void:
 		0.0
 	)
 	var pts: Array[Vector3] = [gate, Vector3(14, 0, 4), Vector3(20, 0, 4), Vector3(36, -4, 4), Vector3(40, -4, 4)]
-	pts.append_array([Vector3(56, SANCTUM_Y, 4), _mark(&"nhoa")] as Array[Vector3])
+	# round the well's mouth (its collision ring, r 3.1 about (64, 4): M4-A2P-0411), never over it
+	pts.append_array(
+		(
+			[Vector3(56, SANCTUM_Y, 4), Vector3(60, SANCTUM_Y, 8.5), Vector3(68, SANCTUM_Y, 8.5), _mark(&"nhoa")]
+			as Array[Vector3]
+		)
+	)
 	var end := walk("down the shaft", pts, 0.0)
 	assert_true(absf(end - SANCTUM_Y) < 0.1, "on the sanctum's floor (y %.2f)" % end)
 	close()

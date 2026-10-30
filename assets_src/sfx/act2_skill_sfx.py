@@ -22,7 +22,21 @@ leave room, and each sound is timed to its clip (wind-up, then contact at the sh
     close_circle   (a phase sound, phase_close_circle.ogg) it rams the hull: a hollow boom, the barge rocking and
                    creaking, the water slapping back
 
-The skill ids are the sheet's proposed ones; combat owns them, and the rows wait in battle_sfx.json until they land.
+and two Vowbound skills (M4-A2P-024, called by Asha) whose effect is no hit, heal or status:
+
+    nhoa_echo      Nhoa copies the last enemy action: a salt-glass sweep drawn in, and the same figure given back from
+                   her, a beat later and brighter (the echo)
+    cord_lift      Hesk lifts the party's statuses: pale threads drawn up (a rising plucked-cord glissando), each knot's
+                   light loosing, and a soft holy bell at the top
+
+and the Lamp Engine's conduit crawlers (Ch11, M4-A2P-022, bosses/lamp_engine.md §4), whose support skills make no
+hit, heal or status:
+
+    crawler_mend   it scuttles to the engine's leg and relights a broken part: quick leg-ticks on metal, a spark
+                   catching (a crackle), and the conduit's bound light humming back up (it rises and holds, never pulses)
+    crawler_tend   it tends the engine: a few unhurried leg-ticks and soft taps on the casing, a small settling hum
+
+The Wakefin's skill ids are the sheet's proposed ones; combat owns them, and the rows wait in battle_sfx.json until they land.
 
 Synthesized here and in tools/audio/synth/ (SPEC §2, §9). Files are assets/audio/act2/sfx/battle/skill_<id>.ogg (mono,
 q4), at -19 LUFS momentary max (the combat rule).
@@ -155,6 +169,71 @@ def close_circle(g) -> np.ndarray:
 SKILLS: list[tuple[str, object, float]] = [("unravel", unravel, CAST), ("fin_cut", fin_cut, CAST),
                                            ("sound_dive", sound_dive, CAST), ("wakefin_rise", wakefin_rise, CAST),
                                            ("wake_wash", wake_wash, CAST), ("bill_strike", bill_strike, CAST)]
+def _glass_sweep(g, f0: float, f1: float, count: int, sec: float, amp: float = 1.0) -> np.ndarray:
+    x = buf(sec + 0.8)
+    for k in range(count):
+        f = f0 * (f1 / f0) ** (k / max(1, count - 1))
+        place(x, glass_ring(g, f, 0.5, 0.5), sec * k / count)
+    return amp * x
+
+
+def nhoa_echo(g) -> np.ndarray:
+    x = buf(2.2)
+    place(x, _glass_sweep(g, 3800.0, 2300.0, 6, 0.5, 0.8), 0.0)          # drawn in
+    place(x, _glass_sweep(g, 2300.0 * 1.5, 3800.0 * 1.5, 6, 0.5, 0.6), 0.75)   # given back, brighter
+    air = noise(g, _n(1.4), [bq_bandpass(2800, 0.8)]) * np.sin(np.pi * _t(_n(1.4)) / 1.4) ** 2
+    place(x, air / (np.abs(air).max() + 1e-9), 0.1, 0.12)
+    return x
+
+
+def cord_lift(g) -> np.ndarray:
+    x = buf(2.6)
+    for k in range(9):                                                    # pale threads drawn up
+        f = 440.0 * 2 ** (k * 4 / 12 / 2)
+        place(x, tap(g, [f, f * 2.01, f * 3.02], [0.25, 0.15, 0.08], 0.6, click=0.3), 0.08 * k)
+    place(x, _glass_sweep(g, 1760.0, 3520.0, 5, 0.6, 0.3), 0.3)          # the knots loosing their light
+    place(x, glass_ring(g, 880.0, 1.6, 0.35), 0.8)                         # a soft holy bell
+    place(x, glass_ring(g, 1320.0, 1.4, 0.2), 0.82)
+    return x
+
+
+SKILLS += [("nhoa_echo", nhoa_echo, CAST), ("cord_lift", cord_lift, CAST)]   # appended: earlier seeds stay
+
+
+def _ticks(g, count: int, gap: float, amp: float) -> np.ndarray:
+    x = buf(count * gap + 0.3)
+    for k in range(count):                                                 # leg tips on metal
+        f = float(g.uniform(2600, 3400))
+        place(x, tap(g, [f, f * 1.7, f * 2.9], [0.012, 0.008, 0.004], amp, click=0.6), k * gap * float(g.uniform(0.8, 1.2)))
+    return x
+
+
+def _bound_hum(sec: float, f0: float, rise: float) -> np.ndarray:
+    t = _t(_n(sec))
+    env = np.clip(t / rise, 0, 1) ** 1.5 * np.clip((sec - t) / 0.3, 0, 1)
+    return sum(a * np.sin(2 * np.pi * f0 * k * t) for k, a in ((1, 1.0), (2, 0.45), (3, 0.2))) * env
+
+
+def crawler_mend(g) -> np.ndarray:
+    x = buf(1.8)
+    place(x, _ticks(g, 7, 0.06, 0.6), 0.0)                                 # the scuttle to the leg
+    spark = noise(g, _n(0.25), [bq_highpass(2500, 0.7)]) * (g.random(_n(0.25)) < 0.02)
+    place(x, spark * 1.5, 0.45)                                            # a spark catching
+    place(x, glass_ring(g, 1560.0, 0.6, 0.35), 0.5)
+    place(x, _bound_hum(1.1, 196.0, 0.5) * 0.35, 0.5)                      # the light humming back up
+    return x
+
+
+def crawler_tend(g) -> np.ndarray:
+    x = buf(1.3)
+    place(x, _ticks(g, 4, 0.14, 0.45), 0.0)
+    for k, at in enumerate((0.62, 0.8)):                                   # soft taps on the casing
+        place(x, tap(g, [620.0 + 40 * k, 1450.0, 2600.0], [0.04, 0.02, 0.01], 0.5, click=0.2), at)
+    place(x, _bound_hum(0.6, 196.0, 0.15) * 0.12, 0.65)
+    return x
+
+
+SKILLS += [("crawler_mend", crawler_mend, CAST), ("crawler_tend", crawler_tend, CAST)]   # appended
 PHASES: list[tuple[str, object, float]] = [("close_circle", close_circle, CAST)]
 FILES = [f"skill_{name}.ogg" for name, _, _ in SKILLS] + [f"phase_{name}.ogg" for name, _, _ in PHASES]
 

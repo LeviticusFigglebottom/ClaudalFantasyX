@@ -298,13 +298,12 @@ Root Stomp and a two-turn charged Drowning Grasp.
 
 | Boss (suite) | Party (reserve) | Stats changed from the provisional row | `naive` | `role_answer` | `smart` (turns) |
 |---|---|---|---|---|---|
-| Lamp Engine (`ch11_lamp_engine`) | Rhen, Asha, Liss (Toma, Ysolde) | HP 5600 → 4000, strength 28 → 22, magic 26 → 20, defence 110 → 140, magic defence 40 → 60; `opened` defence 30 → 80, magic defence 20 → 40 | 2.7 | **report only** (9.7) | 100 (68) |
+| Lamp Engine (`ch11_lamp_engine`), **with two conduit crawlers (M4-A2P-022)** | Rhen, Asha, Liss (Toma, Ysolde) | HP 2000, strength 5, magic 5, defence 80, magic defence 60; `opened` defence 50, magic defence 40. Crawlers: HP 200, strength 9, defence 20. The lamps a part on a 2-hit weak point | 0.2 | 55–80% (63.2) | 100 (33) |
 | Avalanche Ram (`ch12_avalanche_ram`) | Rhen, Asha, Kerrid (Toma, Ysolde) | HP 6200 → 4000, strength 36 → 22, defence 44 → 120; `torn_fleece` defence 22 → 40 | 2.2 | 61.3 | 100 (43) |
 | Wakefin (`ch15_wakefin`) | Rhen, Asha, Toma (Ysolde, Kerrid) | HP 7000 → 5000, strength 38 → 30, magic 18 → 16, agility 22 → 16, evasion 8 → 4, defence 36 → 120 | 0.0 | 70.3 | 100 (43) |
 
 - **Why the defence wall:** the sim's `role_answer` opens with a Break skill the foe lacks: Kerrid's Fluke Cleave on
   the Ram, Toma's Shell Breaker on the Wakefin. At the rows' low defence, nothing separated a naive player from the
   answer. As provisional, every policy lost by attrition (role 0–5%).
-- **The Lamp Engine's answer is Liss's part repair (M4-A2P-022), which is not data yet.**
-  - Liss has no Break skill, so `role_answer` can't beat naive, and her row stays report only until the mechanic lands.
-  - Re-tune it then.
+- **The Lamp Engine's answer** now has its adds (M4-A2P-022). The role play kills the tenders first, then works the
+  engine, so it has a real band. Its low numbers fit the Ch8 loadout; re-tune on the Ch11 loadout.

@@ -23,6 +23,8 @@ class Act1AudioAuditTest(unittest.TestCase):
         for d in audit.ACT1_DIRS:
             self.assertTrue(any(f"/levels/{d}/" in s for s in scenes), d)
         self.assertFalse(any(s.endswith("_dressing.tscn") for s in scenes))
+        # a level is <level>/<level>.tscn; a part it instances (ch01/oruvel/dive_lamp.tscn, a light) is no zone
+        self.assertTrue(all(Path(s).stem == Path(s).parent.name for s in scenes))
 
     def test_act1_has_no_silent_missing_or_placeholder_sound(self) -> None:
         for name, fn in audit.SECTIONS:

@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch16_shrine_pale_rim",
+ "source": "game/data/dialogue/ch16/ch16_shrine_pale_rim.dlg",
+ "start": "ch16_shrine_pale_rim",
+ "nodes": {
+  "ch16_shrine_pale_rim": {
+   "headers": {"location": "ch16/pale_rim"},
+   "ops": [
+    {"op": "line", "id": "ch16_shrine_001", "key": "DLG_CH16_SHRINE_001", "speaker": "", "emotion": "", "voice": "", "src": 5, "tags": ["long"]}
+   ]
+  }
+ }
+}
