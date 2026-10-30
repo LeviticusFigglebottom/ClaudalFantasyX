@@ -104,6 +104,24 @@ Session `session_015hKkhtpX67kS4yZeA8AAhv`. Integration branch `claude/undertow-
     Kahre, the shop tier).
   - The integration branch's coverage reds.
 
+### 2026-10-30 ~01:xx: the big17 gate's drownbell_flood regression (the Lead's 00:47), fixed @ 9524f9f0
+- **Cause, mine:** M3-BPR-426's phase moment.
+  - The fixture forces the Flood (BossMechanics.check_phases). That now eases the camera onto the bell, and the
+    capture froze it mid push-in, so the party was out of shot.
+  - The fixture now ends the moment (BattleCameraDirector.end_moment).
+- **A real-play bug behind it:** that moment's lens sat at the risen waterline (y 0.6, the flood's 0.6), so the water
+  was edge-on and invisible.
+  - Camera moments now keep the lens camera.water_clear_m (0.5) above the flood's target height. It is checked each
+    step, because the rise is set after the moment starts.
+  - Test: test_the_floods_phase_moment_stays_above_the_water. `--filter=camera` 60/0.
+- Not creatures-b's: the Drownbell model is fine.
+- **SELF-RENDERED @ 9524f9f0:** drownbell_flood and battle_boss_intro_drownbell, both viewed.
+  - drownbell_flood: the party waist-deep in the teal flood, the bell and the glowing polyp, as the baseline.
+  - battle_boss_intro_drownbell: the bell on the causeway disc under its title card.
+- **Drift for the gate:** drownbell_flood (the new bell model and the arena, against the old baseline). Plus the
+  battle shots my 339ddd43 can move: the element hit cores are smaller, and damage floats start inside the safe
+  frame.
+
 ### 2026-10-30: the Lead's 23:10 item, the Act I encounter sweep (in progress)
 - **The tool:** `tools/vfx/encounter_sweep.gd` (75b2ebea, ab7c9925). It plays every Act I encounter (33: ch01..ch09,
   the Drownbell and the Reach) on the real stage at real pacing.
