@@ -941,3 +941,25 @@ MERGE-READY @ HEAD of claude/ui (this commit): the document reader's shots as pe
   warning.
 MERGE-READY @ 329e7bce (FAST-TRACK row 67): the router instantiates only after its loads are in; scene_loads lists
 every cast model; max_in_flight 4.
+- 2026-10-30 10:30, **the Lead's 05:52 Act II lane.** I merged the integration branch (1e63e5ba, baseline approvals).
+  - **Heresy words** (e9de89f6): ADR 0204 approved "Outside the Level". The field-menu subtitle, a heretic save's slot
+    ("Chapter 14 · Outside the Level", rendered and viewed: it fits) and the Order shop's refusal now use it, along with
+    heresy.md. The save fixtures can now carry `flags`.
+  - **Codex, M4-A2P-008** (dbc4fa8a): `keth`, `conclave` (only the public "Conclave of Elders", nothing about its truth
+    and no "revenant"), `malcor_venn` (a man, nothing stranger) and `heresy` ("Outside the Level"). These are every plan
+    entry whose unlock flag is declared today. The rest land as the Ch11–Ch16 beats declare their flags.
+    test_codex 16/0, pseudo_loc_screens 17/0; validate_data clean, banned terms included.
+  - **No Vowbound category yet:** Act I's three have no entries of their own, and what the party knows of each one's
+    human life at its binding is Narrative's call (vowbound.md holds the whole truth). I won't write these until a beat
+    says what's known.
+  - **Portraits:** none of Act II's new speakers has a model on any branch (Tobin, Merel, Malcor Venn, the Kirru, the
+    Ullari, Liss's father), so none was baked and none was stubbed.
+  - **Bestiary:** Ch10's three rows in enemies.json have no `model`, so the bestiary has no picture, and the fight
+    probably draws a capsule. Noted on Combat's request M3-UI-208 (578a6ceb).
+MERGE-READY @ 578a6ceb: the heresy's words per ADR 0204, and four Act II codex entries.
+- **BACKLOG EMPTY:** the rest of Act II waits on other tracks:
+  - Ch11–Ch16 flags and beats (more codex entries);
+  - speaker models (portraits);
+  - Combat: Pell's row, the rooted status, the enemy model links;
+  - Narrative: records.json and the Vowbound text.
+  - Row 67's PC verification (gpu/row67-verify) would jump ahead of everything.
