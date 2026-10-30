@@ -556,3 +556,8 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   stiff idle). Sent back for a polish round (water depth and flow, a clear bodice, a face, carved stone mouths in
   bands, a living idle). Her rig, clips, contacts and clip map stand.
 - **In progress:** Kesh polish; M4-A2P-058 the bosses' own VFX (worktree agents).
+- **Spot-check (my own view, the merged tree, creature_* review shots):** the Wakefin, Hesk and the Lamp Engine hold
+  up; Nhoa's mote figure is spindly in the studio light but reads in her battle sheet (her design); the Drowner and
+  the flat-engine read. **Ethren still reads primitive** (stacked cone robe, tube arms with ball joints, a plate
+  halo, a board-like screen): a polish round is running (cloth robe, sleeves and hands, a halo of light, articulated
+  screens). M4-CRB-008 is therefore NOT final until it lands.
