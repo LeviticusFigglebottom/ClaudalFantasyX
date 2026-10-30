@@ -51,9 +51,16 @@ static func tags_of(it: Interactable) -> Array[StringName]:
 	return out
 
 
-## The field took input in a scene.
+## The field took input in a scene. It also catches up a flag tip whose flag was set while no field listened (the
+## first fight's victory flag is set in the battle scene; the field reloads after it: the Lead's first-hour pass,
+## 2026-10-30, found the menu tip never came). Seen tips never come back, so this is still once.
 func raise_field_ready() -> void:
-	_raise(func(t: Dictionary) -> bool: return _on(t) == ON_FIELD_READY)
+	_raise(
+		func(t: Dictionary) -> bool:
+			if _on(t) == ON_FIELD_READY:
+				return true
+			return _on(t) == ON_FLAG and _whens(t).any(func(f: StringName) -> bool: return bool(_is_set.call(f)))
+	)
 
 
 ## An interactable with `tags` came in reach.
@@ -65,7 +72,7 @@ func raise_near(tags: Array[StringName]) -> void:
 func raise_flag(flag: StringName, value: Variant) -> void:
 	if not bool(value):
 		return
-	_raise(func(t: Dictionary) -> bool: return _on(t) == ON_FLAG and StringName(str(t.get("when", ""))) == flag)
+	_raise(func(t: Dictionary) -> bool: return _on(t) == ON_FLAG and _whens(t).has(flag))
 
 
 ## Takes the next waiting tip to show and marks it seen ({} when none).
@@ -91,8 +98,32 @@ func _raise(matches: Callable) -> void:
 		var ready := true
 		for f: Variant in t.get("requires", []):
 			ready = ready and bool(_is_set.call(StringName(str(f))))
+		var any: Array = t.get("requires_any", [])
+		if not any.is_empty():
+			ready = ready and any.any(func(f: Variant) -> bool: return bool(_is_set.call(StringName(str(f)))))
 		if ready:
 			queue.append(t)
+
+
+## A flag tip's `when`: one flag, or a list of which any raises it (the Act I route and the slice's both teach).
+static func _whens(t: Dictionary) -> Array[StringName]:
+	var out: Array[StringName] = []
+	var w: Variant = t.get("when", "")
+	for f: Variant in w as Array if w is Array else [w]:
+		out.append(StringName(str(f)))
+	return out
+
+
+## The actions tip `tip`'s body names as {action} (pressing one of them dismisses it: TipCard.dismiss).
+static func actions_named(tip: Dictionary) -> Array[StringName]:
+	var out: Array[StringName] = []
+	var key := str(tip.get("body_key", ""))
+	if key == "":
+		return out
+	var re := RegEx.create_from_string("\\{([a-z_]+)\\}")
+	for m in re.search_all(TranslationServer.translate(key)):
+		out.append(StringName(m.get_string(1)))
+	return out
 
 
 func _on(t: Dictionary) -> StringName:
