@@ -35,7 +35,7 @@ The flag in brackets after each script is when it may first run. The chapter flo
 
 ## Notes
 - **Facts kept (bible and scripts):**
-  - Imra never reached Ansedra: she was struck at Corrow in 1001. So the Archive register shows an earlier, unnamed Velamir.
+  - Imra survived Corrow and walked on to the Choir (Ch15 K, Ch16). The register's open page shows an earlier, unnamed Velamir, and Asha says her mother would have stood there too (corrected by the Act II proofread).
   - Kell's wick stays unlit and is never paid off: E7 is Act III's.
   - Nothing says what the Hush does before Ch16 B05.
   - The current-song is Hollowmere's, never Dace's.

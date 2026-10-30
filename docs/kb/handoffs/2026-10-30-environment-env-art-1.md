@@ -15,6 +15,11 @@
   merge because the integration branch already carries them, mounted, from an earlier run under this session id.
 - **FAST-TRACK:** `test_keth` follows the inn's dry-stone walls (c010ee90).
 - **Mount requests filed to chapters:** M4-A2P-0401, 0411 and 0421.
+- **PC pass 5:**
+  - Row 59 fixed: the camera guard for cutscene shots, and the Oruvel deck timber's bands.
+  - Rows 24 and 66 have no env side: hero-integration fixed both after the pass.
+  - `test_arenas` leaves env-art-b's two Ansedra arenas to `ansedra_arenas.py`'s own test.
+- **Ch10–Ch12 walk-through stills:** Ossa Fen's camera lines are now clear of trees.
 
 ## In progress
 - M4-A2P-040/041/042 stay `doing` until each mount lands and env-art views the mounted zone (walk renders).
@@ -22,7 +27,8 @@
 ## Exact next step
 1. Watch for chapters' mounts. Once one lands, walk-render that zone (`game/levels/_tests/walkthrough/walk_render.tscn`
    with the zone's own scene), fix what reads wrong, and set the task to `review` (reviewer: rendering).
-2. The Lead's PC pass 5: row 59 (`ch01_o10_gull` framing, the roof's ring decals); rows 24/66 with integration-qa.
+2. When chapters mount Ch10–Ch12, re-take the spawn stills on the real scenes (walk_stills `--scene=<zone>.tscn`).
+   Ch12's shade waits on the PC (PC-QUEUE).
 3. (Done: Ch10's Kirru roost weave was re-rendered close up and reads fine. No other env-art item is open.)
 
 ## Known issues

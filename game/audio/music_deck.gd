@@ -203,6 +203,11 @@ func gain() -> float:
 	return s.gain if s != null else 0.0
 
 
+## True when nothing is heard and no change is waiting for its beat (a one-shot cue that has ended, or a stop).
+func is_silent() -> bool:
+	return _sounding() == null and _queued.is_empty()
+
+
 func player() -> AudioStreamPlayer:
 	var s := _active()
 	return s.player as AudioStreamPlayer if s != null else null

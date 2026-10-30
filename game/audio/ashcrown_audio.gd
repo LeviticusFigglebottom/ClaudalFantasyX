@@ -4,6 +4,8 @@ extends Node
 ## The Audio autoload builds one when a Ch05AshcrownZone enters the tree. **Listens only** to the zone's
 ## AshcrownTrial (the catch, each stud going dark, the fade, every release's run by its outcome, the landing, the
 ## gates, the plates, the alcove) and never touches the rules. Rows and places are game/data/audio/ashcrown_sfx.json.
+## M3-AUD-864: the same listener plays Ch8's Coilspire flue-key trial from coilspire_sfx.json (any trial whose signals
+## a table names); `by_arg` picks an event's row by one of its arguments (a flue key turned open or shut).
 
 ## Plays a row at a place: (id: StringName, at: Vector3) -> void.
 var player_at: Callable = Callable()
@@ -30,6 +32,8 @@ func attach(z: Node3D) -> void:
 	var t := trial as Object
 	for event: String in data.get("events", {}) as Dictionary:
 		_connect(t, event)
+	for event: String in data.get("by_arg", {}) as Dictionary:
+		_connect(t, event)
 	_connect(t, "ran")
 
 
@@ -53,8 +57,12 @@ func _connect(t: Object, sig: String) -> void:
 ## Plays `sig`'s row: an event's own, or for `ran` the row its outcome (the third argument) names.
 func on_event(sig: String, args: Array) -> void:
 	var row := ""
+	var by := (data.get("by_arg", {}) as Dictionary).get(sig, {}) as Dictionary
 	if sig == "ran":
 		row = str((data.get("ran", {}) as Dictionary).get(str(args[2]) if args.size() > 2 else "", ""))
+	elif not by.is_empty():
+		var i := int(by.get("index", 0))
+		row = str((by.get("rows", {}) as Dictionary).get(str(args[i]).to_lower() if args.size() > i else "", ""))
 	else:
 		row = str((data.get("events", {}) as Dictionary).get(sig, ""))
 	if row == "":

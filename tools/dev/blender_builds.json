@@ -1744,6 +1744,15 @@
         ["{blender}", "--python", "assets_src/crowd/build_crowd.py", "--", "--body", "crowd_woman_medium_b", "--bake-dir", "{scratch}/crowd_woman_medium_b_bake"],
         ["{python}", "assets_src/crowd/build_crowd.py", "--body", "crowd_woman_medium_b", "--bake-dir", "{scratch}/crowd_woman_medium_b_bake"]
       ]
+    },
+    {
+      "id": "oruvel_seabed",
+      "owner": "cinematics",
+      "sources": ["assets_src/cutscene/ch01/oruvel_seabed.py"],
+      "outputs": ["assets/cutscene/ch01/oruvel_seabed.glb"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/cutscene/ch01/oruvel_seabed.py", "--"]
+      ]
     }
   ]
 }

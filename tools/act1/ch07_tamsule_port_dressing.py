@@ -222,7 +222,20 @@ GOLD = {"col_bronze": (0.8314, 0.6431, 0.2157), "col_worn": (0.5490, 0.3922, 0.1
         "metallic_bronze": 1.0, "roughness_bronze": 0.28, "roughness_worn": 0.45, "patina_coverage": (0.0, 0.15),
         "patina_shade_bias": 0.1, "patina_roughness": 0.85, "streak_strength": 0.2, "wear_strength": 0.6,
         "detail_scale_m": 0.5, "normal_strength": 0.3, "normal_tile_m": 1.6}
-KIT_SLOTS = {"tb_gold_leaf": "res://game/levels/ch07/tamsule/" + GOLD_NAME}
+# The kit's dyed cloths (the stalls' awnings, the boats' canopies and sun umbrellas) are 92 % flat paint over the weave:
+# at walk range they read as flat colour (the player-height walk, 10-30). The zone's copies let the weave show
+# through a sun-faded dye.
+CLOTHS = ("tb_cloth_faded_teal", "tb_cloth_indigo", "tb_cloth_red", "tb_cloth_sand", "tb_cloth_sea_blue")
+CLOTH_LOOK = {"paint_cover": "0.7", "normal_strength": "1.0", "tile_m": "Vector2(0.35, 0.35)"}
+CLOTH_KIT = "res://assets/environments/kits/tamsule_bell/materials/"
+
+
+def cloth_name(slot: str) -> str:
+    return "tamsule_" + slot.removeprefix("tb_") + "_material.tres"
+
+
+KIT_SLOTS = {"tb_gold_leaf": "res://game/levels/ch07/tamsule/" + GOLD_NAME,
+             **{c: "res://game/levels/ch07/tamsule/" + cloth_name(c) for c in CLOTHS}}
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -234,6 +247,9 @@ def main(argv: list[str] | None = None) -> int:
     data = json.loads(LAYOUT.read_text(encoding="utf-8"))
     (ZONE / "tamsule_dressing.json").write_text(json.dumps(layout(), indent=1) + "\n", encoding="utf-8")
     (ZONE / GOLD_NAME).write_text(zl.bronze_material(GOLD_NAME, GOLD), encoding="utf-8")
+    for c in CLOTHS:
+        (ZONE / cloth_name(c)).write_text(zl.copy_material(CLOTH_KIT + c + ".tres", cloth_name(c).removesuffix(".tres"),
+                                                           CLOTH_LOOK), encoding="utf-8")
     (ZONE / "tamsule_collision.json").write_text(json.dumps(collision(data["blocks"]), indent=1) + "\n",
                                                  encoding="utf-8")
     return 0

@@ -65,6 +65,9 @@ TIMBER = (HTEX + "timber_albedo.png", HTEX + "timber_normal.png", (0.4, 1.6))
 WOVEN = (HTEX + "woven_panel_albedo.png", HTEX + "woven_panel_normal.png")
 CONCRETE = (HTEX + "coral_concrete_albedo.png", HTEX + "coral_concrete_normal.png")
 DRY = {"use_algae": False, "use_barnacles": False}
+# Decks ride at the tide line: their weed and barnacles stop below the walked top, soft edges included (PC QA row 59,
+# the dive raft's deck crusted under O10). Hull timber under the deck keeps them.
+DECK = {"algae_band_m": "Vector2(-0.45, -0.2)", "barnacle_band_m": "Vector2(-0.6, -0.25)"}
 
 
 def paint(hex_color: str, cover: float = 0.8) -> dict:
@@ -81,7 +84,7 @@ def canvas(hex_color: str) -> dict:
 
 MATERIALS: dict[str, dict] = {
     # Decks, bridges, cabin walls: sun-silvered timber_weathered, paler and greyer than Haluna's (no shade, all salt).
-    "ov_timber": weather(*TIMBER, base_triplanar=False, col_tint=hexc("#D6D4CE"), normal_strength=1.25,
+    "ov_timber": weather(*TIMBER, base_triplanar=False, **DECK, col_tint=hexc("#D6D4CE"), normal_strength=1.25,
                          roughness_base=0.82, specular_base=0.3, cavity_darken=0.45, variation_value=0.24,
                          variation_warmth=0.03, erosion_lighten=0.08, wet_darken=0.55, wet_roughness=0.14),
     # The hull bottoms below the boot line: tarred dark brown-black (#3A3029), weed and barnacles at the waterline.
@@ -133,7 +136,7 @@ MATERIALS: dict[str, dict] = {
                         use_salt=False),
     # M3-ENV-730 (post_credits): new timber among the old on the rebuilt moorings: the same grain, not yet silvered
     # (a warm pale #D9B98C), crisp edges, little salt.
-    "ov_timber_new": weather(*TIMBER, base_triplanar=False, col_tint=hexc("#D9B98C"), normal_strength=1.1,
+    "ov_timber_new": weather(*TIMBER, base_triplanar=False, **DECK, col_tint=hexc("#D9B98C"), normal_strength=1.1,
                              roughness_base=0.78, specular_base=0.3, cavity_darken=0.35, variation_value=0.12,
                              variation_warmth=0.05, erosion_lighten=0.02, wet_darken=0.55, wet_roughness=0.14),
 }

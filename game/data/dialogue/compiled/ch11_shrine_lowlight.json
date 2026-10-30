@@ -1,0 +1,18 @@
+{
+ "format": 1,
+ "scene": "ch11_shrine_lowlight",
+ "source": "game/data/dialogue/ch11/ch11_shrine_lowlight.dlg",
+ "start": "ch11_shrine_lowlight",
+ "nodes": {
+  "ch11_shrine_lowlight": {
+   "headers": {"location": "ch11/lowlight"},
+   "ops": [
+    {"op": "if_not", "cond": ["flag", "ch14_declared_heretics"], "to": 3, "src": 5},
+    {"op": "line", "id": "ch11_shrine_001", "key": "DLG_CH11_SHRINE_001", "speaker": "", "emotion": "", "voice": "", "src": 6},
+    {"op": "goto", "to": 5, "src": 5},
+    {"op": "line", "id": "ch11_shrine_002", "key": "DLG_CH11_SHRINE_002", "speaker": "", "emotion": "", "voice": "", "src": 8, "tags": ["long"]},
+    {"op": "goto", "to": 5, "src": 7}
+   ]
+  }
+ }
+}

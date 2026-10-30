@@ -26,6 +26,8 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[3]
 sys.path.insert(0, str(HERE))
 
+sys.path.insert(0, str(HERE.parent.parent))
+import zone_edges  # noqa: E402
 import ov_cabins as ocab  # noqa: E402
 import ov_common as oc  # noqa: E402
 import ov_heroes as oh  # noqa: E402
@@ -59,6 +61,10 @@ CHANDLERY_BEACON_Z = -1.8  # its beacon lantern's post, off the keel-roof's fore
 CHANDLERY_BEACON_UP_M = 0.12 + 1.2 + 0.3  # the post's foot over the roof, its height, the lantern's middle
 GULL_PERCH_M = 0.08  # a gull's feet over the ridge line
 LOW_HULL_LOAD_Y = -0.05  # the salvage on the run's planks over LowHull (the bridge sags 0.15 m mid-span)
+LOW_HULL_KEEL_Y = 0.24  # hull_outrigger's keel is 0.31 m under its origin; the run's bridge sags 0.07 m where it lies
+# Canoes moored in open water beside the decks, clear of every plank (x, z, yaw): the town's boats, now that the
+# mooring rafts are tucked.
+MOORED = ((9.6, 10.0, 0.0), (-20.0, -21.5, 180.0), (30.0, 2.6, 90.0))
 LOW_HULL_LOAD_SCALE = 0.65  # 2.0 x 1.5 m: inside LowHull's 2 x 3 m footprint, turned across the run
 
 
@@ -68,12 +74,13 @@ def _blocks() -> dict[str, dict]:
 
 def raft_over(block: dict, *, cx: float | None = None, cz: float | None = None, dx: float = 0.0,
               dz: float = 0.0) -> dict:
-    """A raft_deck, scaled so its deck covers (size_x + dx) by (size_z + dz), sunk so its deck is at y 0."""
+    """A raft deck, scaled so its deck covers (size_x + dx) by (size_z + dz), sunk so its deck is at y 0. Tucked: every
+    mooring raft abuts a bridge or a deck, and an open raft's bows rise through them (the human's playtest, 10-30)."""
     sx, sz = block["size"][0] + dx, block["size"][2] + dz
     s = max(sx / RAFT_DECK[0], sz / RAFT_DECK[1], 1.0)
     x = block["pos"][0] if cx is None else cx
     z = block["pos"][2] if cz is None else cz
-    d = pl.put("raft_deck", x, -ohl.RAFT_DECK_Y * s, z, 0.0)
+    d = pl.put("raft_deck_tucked", x, -ohl.RAFT_DECK_Y * s, z, 0.0)
     if s > 1.0:
         d["scale"] = round(s, 3)
     return d
@@ -119,11 +126,13 @@ def pieces() -> list[dict]:
     cab = decor("cabin_keelroof", roof["pos"][0], 0.0, roof["pos"][2], 90.0, scale=s)
     out.append(cab)
     out.append(ridge_gull(cab, s))
-    out.append(pl.put("cookboat", -19.6, WATER_Y, -6.0, 0.0))
+    # The cook's boat off the commons' south-west corner, clear of the outer mooring's raft (it lay 0.8 m into it).
+    out.append(pl.put("cookboat", -20.3, WATER_Y + 0.25, -1.5, 0.0))  # riding high: no sea inside her
     out.append(decor("net_frame", 15.4, 0.0, -7.0, 0.0))
     out.append(decor("salvage_heap", 16.0, 0.0, -18.5, 30.0))
     out.append(decor("salvage_heap", -16.5, 0.0, -13.0, 200.0))
     out.append(pl.put("hull_outrigger", 19.6, WATER_Y + 0.3, -17.0, 0.0))
+    out += [pl.put("hull_outrigger", x, WATER_Y + 0.3, z, yaw) for x, z, yaw in MOORED]
     # The outer mooring and the *Seventh Terrace* west of it: her name-board where the greybox's NameBoard is (O07).
     out.append(span((-18.0, -12.0), (-21.0, -12.0)))
     om = b["OuterMooring"]
@@ -143,8 +152,8 @@ def pieces() -> list[dict]:
     out.append(pl.put("keel_hull", 0.0, -oh.KEEL_DECK_Y, kz, 90.0))
     gx, gz = pl.local(0.0, kz, 90.0, 0.0, 6.7)
     out.append(pl.gull(gx, oh.KEEL_HULL_RIDGE - oh.KEEL_DECK_Y, gz, 1.35))
-    for x in (-4.5, 4.5):
-        out.append(pl.put("raft_deck", x, WATER_Y + 0.006, -30.0, 0.0))
+    for x in (-4.5, 4.5):  # tucked: an open raft's bows rose through the commons' north decks and the bridge
+        out.append(pl.put("raft_deck_tucked", x, WATER_Y + 0.006, -30.0, 0.0))
     # Kell's mooring (east): the chandlery's hull with its counter where the greybox's stall is (Kell, O09), the
     # mooring's raft south of it, the bridges.
     out.append(span((18.0, -6.0), (25.0, -6.0)))
@@ -171,7 +180,8 @@ def pieces() -> list[dict]:
     out.append(span((46.0, -17.0), (40.0, -17.0)))
     out.append(span((40.0, -17.0), (34.0, -17.0)))
     lh = b["LowHull"]
-    out.append(pl.put("hull_outrigger", lh["pos"][0] - 1.0, WATER_Y + 0.3, lh["pos"][2], 0.0, block="LowHull"))
+    # Thrown up across the run's planks (C1-12), its keel on them, not through them (the human's playtest, 10-30).
+    out.append(pl.put("hull_outrigger", lh["pos"][0] - 1.0, LOW_HULL_KEEL_Y, lh["pos"][2], 0.0, block="LowHull"))
     # Its load (C1-13 cuts it loose across the run's planks): salvage piled over the block, so it reads as cargo
     # blocking the way, not a canoe; it drifts clear with the block.
     out.append(pl.put("salvage_heap", lh["pos"][0], LOW_HULL_LOAD_Y, lh["pos"][2], 90.0, scale=LOW_HULL_LOAD_SCALE,
@@ -264,7 +274,14 @@ def layout() -> dict:
         "fire_lights": storm_lights(),
         "greybox": {"hide_all": True, "keep": []},  # StormWall: the zone stands the UndertowStorm there (M3-ENV-751)
         "pieces": pieces(),
+        # Invisible walls along the walkways over the water (the human's playtest, 10-30).
+        "edge_walls": edge_walls(),
     }
+
+
+def edge_walls() -> list[dict]:
+    lay = json.loads(GREYBOX.read_text(encoding="utf-8"))
+    return zone_edges.walls(lay, zone_edges.hideable_ids(lay))
 
 
 def write_preview(storm: bool = False) -> None:

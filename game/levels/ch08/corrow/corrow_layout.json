@@ -33,7 +33,8 @@
     "MoleStair": [13.6, 6.1, 18.0, 0.0],
     "WallHead": [-15.044, 12.0, -0.624, 2.86],
     "WallGate": [30.945, 12.0, 1.6, 84.08],
-    "Bastion": [-66.169, 12.0, -0.603, 12.41]
+    "Bastion": [-66.169, 12.0, -0.603, 12.41],
+    "Shrine": [-66.169, 12.0, -0.603, 12.41]
   },
   "marks": {
     "mole_greet_a": [13.519, 9.674, 10.526, 177.33],
@@ -197,7 +198,7 @@
     {"id": "bark_stillguard", "at": [-29.95, 12.0, 1.499], "size": [3, 0, 10], "once": true, "requires_flag": "ch08_arrived_corrow", "blocked_by_flag": "ch08_beacon_opened", "payload": {"dialogue": "ch08_bark_stillguard", "overheard": true}, "yaw": 5.73},
     {"id": "bark_kites", "at": [0.0, 12.0, 0.0], "size": [3, 0, 10], "once": true, "requires_flag": "ch08_arrived_corrow", "blocked_by_flag": "ch08_beacon_opened", "payload": {"dialogue": "ch08_bark_kites", "overheard": true}, "yaw": 0.0},
     {"id": "bark_netmender", "activation": "interact", "at": [-34.634, 1.0, -20.946], "size": [1.6, 0, 1.6], "prompt_key": "FIELD_PROMPT_LISTEN", "requires_flag": "ch08_arrived_corrow", "blocked_by_flag": "ch08_beacon_opened", "payload": {"dialogue": "ch08_bark_netmender"}, "yaw": 0.0},
-    {"id": "shrine", "activation": "interact", "at": [-66.479, 12.0, -2.01], "size": [1.6, 0, 1.2], "prompt_key": "FIELD_PROMPT_REST", "requires_flag": "ch08_arrived_corrow", "blocked_by_flag": "ch08_beacon_opened", "payload": {"beat": "shrine"}, "yaw": 12.41},
+    {"id": "shrine", "activation": "interact", "at": [-66.479, 12.0, -2.01], "size": [1.6, 0, 1.2], "prompt_key": "FIELD_PROMPT_REST", "requires_flag": "ch08_arrived_corrow", "blocked_by_flag": "ch08_beacon_opened", "payload": {"beat": "shrine", "save_shrine": "corrow_shrine"}, "yaw": 12.41},
     {"id": "chandler", "activation": "interact", "at": [-78.3, 12.0, 1.664], "size": [3, 0, 1.4], "prompt_key": "SHOP_PROMPT", "requires_flag": "ch08_arrived_corrow", "blocked_by_flag": "ch08_beacon_opened", "payload": {"shop": "brightwater_purser"}, "yaw": 14.71},
     {"id": "gate", "activation": "interact", "at": [32.933, 12.0, 1.813], "size": [2, 0, 6], "prompt_key": "FIELD_PROMPT_CH08_GATE", "requires_flag": "ch08_met_ivo", "blocked_by_flag": "ch08_beacon_opened", "payload": {"beat": "to_headland"}, "yaw": -6.3}
   ],

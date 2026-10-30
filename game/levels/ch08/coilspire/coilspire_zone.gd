@@ -125,6 +125,7 @@ func _on_lit(tier: int) -> void:
 func _on_niche() -> void:
 	Game.set_flag(_flag("niche_flag"))
 	hide_block(SEAL_BLOCK)
+	give({"sailmakers_needle": 1})  # M3-UI-204 (ADR 0040): the tier-2 niche gives the needle
 
 
 func _on_hint() -> void:

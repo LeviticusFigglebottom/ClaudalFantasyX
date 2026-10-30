@@ -129,6 +129,10 @@ func _layout_children() -> void:
 	_caption.visible = show_caption
 	_caption.position = Vector2(name_x, size.y - cap_h - pad)
 	_caption.size = Vector2(name_w, cap_h)
+	# The Act I UI pass (2026-10-30): at 130 % text "Acting now" read "Acting ..." and long names lost their ends;
+	# both shrink a little (to 80 % at most) before an ellipsis cuts them. Who acts next stays readable (pillar 4).
+	HudLayout.fit_label(_name, name_w)
+	HudLayout.fit_label(_caption, name_w)
 	_layout_doom(right)
 	var dim := skipped or ghost
 	_name.modulate = Color(1, 1, 1, HudLayout.num(_metrics, "skipped_alpha")) if skipped else Color.WHITE

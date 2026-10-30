@@ -589,6 +589,118 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ eb887bc5 (supersedes 3389db19): the playtest FAST-TRACK is complete and pushed.**
+  - **What's in it:** the boats (7fbb9319) and the Oruvel edge walls (28b005ad), as the entry below says.
+  - **The interrupted step (the Lead, 13:48):** a long compound shell command stalled on a permission prompt. It is
+    redone as plain single steps inside the worktree and the scratchpad: no process kills, no writes outside, no
+    network. Nothing was refused this time.
+  - **Also in eb887bc5, the walk pass's first fix:** the Underway's two interact points had no prop.
+    - `old_tin` (the find behind the coral curtain) now has a Lit Age tin at the alcove's back.
+    - `limpet` ("Look", the shaft fight) now has a ribbed ochre limpet and three young ones on the gauge room's
+      north wall.
+    - New pieces `old_tin` and `shaft_limpet` in `ou_props.py`, with PROVENANCE rows. Viewed at player height.
+  - **The walk pass continues next.** The rest of the Prologue–Ch4 POI and interactable stills are rendered and being
+    reviewed: Haluna, the causeway, the ferry and the wake.
+- **MERGE-READY @ 925367eaf: FAST-TRACK, the human's playtest in Oruvel ("docked boats clip through the docks …
+  you can easily fall off and start walking in the water").**
+  - **(1) Boats, fixed (7fbb9319).**
+    - **The finder:** every piece of the dressing rebuilt from the kit and placed as dressed; a hull vertex (tar or
+      paint) inside another piece's walking planks is a clip. It found 11 real clips:
+      - the five free-standing mooring rafts' bows rose through the bridges next to them and the commons' north
+        decks (the keel-hull's two rafts by about 95 vertices each);
+      - the run's low hull lay in the water *through* its bridge;
+      - the cook's boat sat 0.8 m into the outer mooring's raft.
+    - **The fix:**
+      - the mooring rafts are the tucked rafts (hulls under their own planks);
+      - the low hull lies *on* the run's planks (C1-12's "thrown up across");
+      - the cook's boat moved clear and rides dry (the sea showed inside her);
+      - three outrigger canoes are moored in open water beside the decks, so the town keeps its boats.
+    - **Viewed:** before and after stills at ten spots from player height and above, plus the new moorings. The
+      scale booth's hull stays, its counter over the deck edge by design.
+    - **Test:** `tools/tests/test_oruvel_moorings.py` (11 failures on the old dressing, OK now).
+    - **Not added:** fenders and lines to cleats. Say if you want them.
+  - **(2) Edge walls, Oruvel (28b005ad).**
+    - **How:** `assets_src/environments/zone_edges.py` derives invisible walls (0.12 × 1.6 m) along every walkway
+      edge over the water from the greybox. Junctions stay open; a stall or hull taller than the deck already walls
+      itself. A wall at an opening a hideable block fills (the storm's lost dive bridge) collides only while that
+      block is hidden. 58 walls.
+    - **Runtime:** `ZoneKitDressing` builds them from the dressing's new `edge_walls` list (a small additive block:
+      **FYI act1-chapters**, it's your file).
+    - **Proved by walking:** without them the hero falls to the sea floor (y −1.0); with them he stops 0.3 m from
+      the edge.
+    - **Test:** `tests/integration/test_zone_edge_walls.gd` (walls collide and draw nothing; the dive bridge's ends
+      wall up only when it's hidden).
+    - **Brightwater's ferry:** already railed in its own collision (ferry, derelict, islet, gangplank). Nothing
+      needed.
+    - **Ch4 wake's dock (real Haluna):** walked off it in eight directions from the shore end, the middle and the
+      end. It's railed; only the shore end steps down onto the beach (Haluna's natural shallows).
+  - **Checks:** test_zone_dressing_ch01, test_oruvel_moorings, Godot `--filter=edge_walls` 2/0, `zone_kit` 13/0,
+    `ch01` 20/0, validate_data.
+  - **Shots that will drift:** the Oruvel shots that frame the moorings, the commons' north edge, the cook's boat or
+    the run (`ch01_oruvel_dressed`, `zone_oruvel_*`, `ch01_net_pen`, the storm shots).
+- **MERGE-READY @ 2adf2b2c: the Lead's 12:08 items (1) and (2).**
+  - **(1) H07 chapel marble: already within ΔE 0.03 on this branch.**
+    - The fix is b0eb0a49 (03:16). The committed baseline was approved at 00:46 (big17), before it, and that is
+      what fails.
+    - A fresh capture on this branch passes all four H07 palette checks: chapel sun face ΔE_ok 0.018 to
+      order_marble 0 (max 0.03), wall grain 0.0032, banyan root L 0.447.
+    - No loosening and no new change needed: re-approve `haluna_h07_chapel_court` from a big23 render.
+  - **(2) the Ch11 regular-fight arena: `sunken_vey_gallery`, built and registered** (the id chapters asked for in
+    M4-A2P-041).
+    - It's the Vey's conduit court as the fighting floor, with the zone's own dressing round it (arcades, drowned
+      columns, figs, the galleries, the conduit housing; props kept 4 m off the slots). Ch11's overcast noon over
+      the still lagoon.
+    - Viewed: urchin and party on the court, the gallery bridge and the arcades behind.
+    - Checks: `test_arenas` 21 OK, Godot `--filter=arena` 18/0, validate_data.
+    - chapters names it on `ch11_vey_rays` and `ch11_vey_urchins`.
+    - **No `battle_arena_sunken_vey_gallery` shot yet:** adding one turns `test_screenshots` red until the Lead
+      approves a first baseline. Say if you want it.
+  - **(3) the Prologue–Ch4 POI and interactable walk:** rendering (`tools/act1/poi_stills.py`, walk_render's new
+    `auto_targets`).
+- **MERGE-READY @ 59628c29e: Ch10–Ch12 walk-through stills at player height** (the Lead's next item).
+  - **Method:** `tools/hero/walk_stills` arrival stills at all 17 spawns, on env-art's dressed previews, since
+    none of Ch10–Ch12 is mounted yet.
+  - **Ossa Fen, fixed:** at DrownerArena the field camera looked through a mangrove's limbs. The generator now keeps
+    living trees 4.5 m off each spawn's measured camera line (`CAMERA_LINES`), which removed four trees, and a test
+    checks it. Re-viewed: DrownerArena and FromReedhollow are clear.
+  - **These read:** Reedhollow Gate; Lowlight Gate, EngineHall and Sanctum; Sunken Vey Landing and FromLowlight;
+    Cloudloom Hall.
+  - **Reedhollow Shore:** the camera settles 2 m behind Rhen beside a hull arch. That's the field camera's cabin
+    rule, not the dressing: FYI hero-integration.
+  - **Ch12, PC-QUEUE (again):** Keth Pass, Quellan and Cloudloom's Approach are near-black in shade under lavapipe
+    although the layouts are morning and noon (sun 2.0, ambient 0.8). Quellan FromCloudloom shows the party against
+    a black void. Judge on the real GPU before any grade change; the stills are in env-art's scratchpad and can be
+    re-made with walk_stills `--scene=res://game/levels/_tests/ch12_zones/<zone>_dressed.tscn --spawn=<id>`.
+- **MERGE-READY @ 8e4ab352: PC pass 5's rows 59, 24 and 66, and a tools-suite red.**
+  - **The Lead's correction is taken.** Ch13–Ch16 are env-art-b's. env-art's parallel Ch13–Ch15 dressings were
+    already withdrawn in the big22 merge (7fad181e) and are not filed as requests: env-art-b's mounted versions
+    stand.
+  - **Row 59 (`ch01_o10_gull`), fixed** and viewed (O10 now frames the carved gull against the sky).
+    - **Cause:** the field camera's keep-in-frame safety net for FIXED shots (692b5515, `game/world/**`, Systems')
+      also turned *cutscene* shots toward the leader. O10's 85 mm telephoto doesn't frame Rhen, so it swung down
+      onto his deck.
+    - **Fix:** a scripted (cutscene) shot keeps its composition; the net stays for volume shots (26661c7a, the
+      Lead's assignment). Test `test_a_scripted_fixed_shot_keeps_its_frame_without_him`; camera tests 72/0.
+      **FYI hero-integration / Systems:** it's a one-line guard in `evaluate()`.
+  - **Row 59, the "ring decals"** were the weathering shader's barnacle and weed bands. Their soft tops reach
+    +0.2 m over the tide line, so Oruvel's decks (at the tide line) were crusted.
+    - **Fix:** `ov_timber` and `ov_timber_new` end both bands below the walked top (9866ea4a). Hull timber keeps
+      them; `ov_hull_tar` is unchanged.
+    - **Viewed** on ten Oruvel shots: decks clean, nothing else moved. The Oruvel shots will drift slightly on the
+      decks.
+  - **Row 24 (DockShore): no env side.** It's fixed on the current tree by hero-integration's 0ffe9260 (after pass
+    5's 7dc3ab41): a still at DockShore shows the camera in front of Rhen on the jetty, clear.
+  - **Row 66 (Ch4 start): no env side.** Hero-integration's e7af4147 (also after 7dc3ab41) fixed the pull, which a
+    windbreak tree on a 120 m release line started. The settled NemeDoor camera is clear of every mesh.
+  - **Tools suite on big22:**
+    - **`test_arenas`:** it regenerated `ansedra_lagoon_escape` and `bridal_barge_night` without
+      env-art-b's zone looks (c1ed49ad6), so it now leaves them to `ansedra_arenas.py`'s own test (8e4ab352).
+    - **`test_palette_check` H07:** the committed baseline (big17, 00:46) predates the chapel fix b0eb0a49 (03:16).
+      It needs the Lead's re-approval of `haluna_h07_chapel_court`; env-art writes no baselines.
+      Checked: a fresh render of H07 on this branch passes all four palette checks (chapel ΔE 0.018).
+    - **Other reds aren't env-art's:** rig integrity, villagers/hero clips, audio, status names, the
+      `oruvel_seabed.glb` build job (M3-CIN-1232) and the wildlife baseline.
+  - **Next:** Ch10–Ch12 walk-through stills at player height (rendering now).
 - **MERGE-READY @ 7fad181e: the FAST-TRACK `test_keth` fix and the big22 integration merge; env-art's Ch13–Ch15
   dressings are WITHDRAWN.**
   - **test_keth:** the inn's door test looked for crag walls. The inn's walls have been dry stone since Ch12
@@ -918,6 +1030,9 @@ Read this section first; everything below it is history. The branch is `claude/e
     (characters/slice-polish), and `reefball_drop_proxy` / `tb_drop_proxy` are env-art-b's (M3-RND-26).
 
 ### PC-QUEUE
+- **Ch12 shade at spawn height (2026-10-30):** Keth Pass (PassFoot, RamArena, FromQuellan), Quellan (FromPass,
+  FromCloudloom: a black void behind the party) and Cloudloom Approach are near-black at arrival under lavapipe.
+  Check on the GPU; if they're as dark there, env-art lifts the ch12 grade's fill.
 - **Ch14's court at dusk (the layout's 4° sun, 0.5 navy ambient): the court's centre reads near-black on lavapipe.** The
   lanterns light the colonnade only. Judge it on the real GPU. The remedy is chapters' ambient (M4-A2P-0441).
 - **Ch12's shade at a walker's eye (Keth Pass, Quellan): the dark slate and crag go near-black on lavapipe in every

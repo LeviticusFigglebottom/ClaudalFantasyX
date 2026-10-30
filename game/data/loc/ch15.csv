@@ -6,4 +6,24 @@ FIELD_PROMPT_CH15_SHIP,Board the ship
 CHAR_ALDOUS_VARROW,Aldous Varrow
 CHAR_HULL_WIDOW,Captain's wife
 ENEMY_WAKEFIN,Wakefin
-LORE_WAKEFIN,"A great black fish of the open sea, known to the Saltwrights by its blade of a fin and the bright wake it cuts. It circles a hull before it strikes, and it dives at the sound of singing. Hollowmere's crews sing anyway."
+LORE_WAKEFIN,"A great black thing of the storm, with a blade of a fin and a bright wake. It followed the first ripples out of Ansedra's lagoon. It circles a hull before it strikes, and it dives at the sound of singing."
+OBJ_CH15_DRIFT,Keep watch through the night. No lamps.
+OBJ_CH15_FATHER,Liss's father keeps the dry-dock berths.
+OBJ_CH15_PYRE,"At dusk, the pyre-raft."
+OBJ_CH15_SHIP,A ship is waiting to carry you south.
+OBJ_CH15_SIDE_SUPPER,The dock-master has set out bowls.
+OBJ_CH15_SIDE_PHRASE,A current-singer at a bow is humming something low.
+OBJ_CH15_SIDE_TALLY,Toma wants to see the tally hull.
+TUT_WAKEFIN_DARK,"In the dark, listen. The timeline still shows what it means to do."
+ITEM_SEAGLOW_SCALE,Sea-Glow Scale
+ITEM_SEAGLOW_SCALE_DESC,A black scale that gives off a faint green light when it's wet. Used in Customize.
+ITEM_CURRENT_BROTH,Current Broth
+ITEM_CURRENT_BROTH_DESC,"Hollowmere fish broth, ladled out to whoever is on deck. Everyone gets a bowl."
+EQUIP_KERRID_HULL_IRON_CLEAVER,Hull-Iron Cleaver
+EQUIP_KERRID_HULL_IRON_CLEAVER_DESC,A cleaver forged from a Saltwright keel-plate. The wright who made it asked nothing for it.
+EQUIP_LISS_TIDEWHEEL_LAUNCHER,Tide-Wheel Launcher
+EQUIP_LISS_TIDEWHEEL_LAUNCHER_DESC,"A launcher geared like a tide-wheel, Hollowmere-built. Tobin drew the first plan for it."
+EQUIP_RHEN_CURRENT_HARNESS,Current Harness
+EQUIP_RHEN_CURRENT_HARNESS_DESC,"A Saltwright tether harness, patched and lent. You give it back at the end of the voyage."
+EQUIP_TOMA_HOLLOWMERE_PIKE,Hollowmere Boat-Pike
+EQUIP_TOMA_HOLLOWMERE_PIKE_DESC,A long boat-pike for fending off hulls. No Order mark on it anywhere.
