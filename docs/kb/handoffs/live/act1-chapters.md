@@ -399,6 +399,37 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - SELF-RENDERED @ cb97a0cf: ch01_oruvel_dressed drift 0.0124 (the Scale-Man now stands visibly at his hull's front;
     intended), ch01_bell_room, ch01_scale_hull, ch01_kell_stall (no baselines: each frames its speaker). For the gate.
 
+- **Lead (10-29 21:48, big18):** Coilspire's Virel stays my ZoneCast actor (env-art-b drops their duplicate dressing
+  piece). Ch1's U03 and O02 (the Scale-Man) keep **slice-polish's** framing in big18 (they own Ch1 staging): don't
+  re-apply mine (cb97a0cf's Ch1 hunks lose to theirs on merge). After big18 lands, if a speaker is still out of frame
+  there, file a request to slice-polish with the still. O09 (Kell) is not named; check it after big18 too.
+
+- **MERGE-READY @ ae713835: Kell's zone-map POI** (Lead, big18 gate 10-29 22:38). `zone_maps.json` ch01/oruvel
+  `kell` moved to [29.0, -7.0] with her actor (cb97a0cf). `python3 -m unittest tools.tests.test_zone_map_pois`: OK on
+  lead/gate-big18 with this row (5/0). On this branch alone the test still lists the eight ch04/haluna_wake rows as
+  "source not found": big18 already fixes those (the wake's map row names its own layout in `points`, dd52da35), and
+  they clear once that reaches the integration branch. For big19.
+
+- **DONE (see `docs/kb/qa/act1_flow_pacing_pass.md`): the Lead's flow and pacing pass** (brief 10-29 23:10, on lead/gate-big18 @ d00d3284). Done so far
+  (60b55833): `tools/act1/flow_audit.py` + `tools.tests.test_act1_flow_audit` (flags never set, read early, unreachable
+  beats or triggers, unreached zones, orphan scenes): clean on big18 and here; orphans only the Reefball barks
+  (M3-RBL-1208). Request **M3-CIN-1233** (slice-polish): the Prologue skips Ch1 and the slice's end card returns to the
+  title, so Ch4–Ch9 can't be reached by play; one end_card block serves both end cards (Ch9's too).
+  Pacing: no walked leg between beats over ~75 s. Ch1's dive may roll ~7 random fights (slice-polish's zone; noted).
+  Balance sim, every Act I suite on big18: 138/138 in band; no wall (smart ≥ 84%), no walkover past Ch1's tutorial.
+- LEAD-ANSWERED (10-29 23:31): yes; slice-polish makes it, act1-chapters reviews (run the `_thread` tests on it and view the Ch1 Drop and Ch4 NemeDoor arrivals in stills). Was: M3-CIN-1233: flip first_playable.json's M2 switch (Prologue → ch01/oruvel_underway @ Drop; the slice's
+  end card → ch04/haluna_wake @ NemeDoor, Ch9's → the title)? It's slice-polish's file and the notes say the Lead sets it.
+
+- Request **M3-CIN-1234** (slice-polish, the Lead's ask): Ch1's dive rolls ~4–5 random fights (130 m route, 18–34 m gaps); min 32 / max 52 gives ~3.
+
+- **Act II preparation, docs only (ADR 0203; Lead 10-30 01:08):** `docs/kb/plan/act2/chapters/` (README + ch10..ch16,
+  each `draft: pre-gate`): per chapter the flow outline (arrive rows, beats, flags, hand-offs), triggers and map POIs on
+  the greybox frame, encounter tables (random density at ~3 per route, scripted fights with arenas, the Act II bands)
+  and the field-camera plan (scene shots per zone letter, pan-follow volumes). Gaps found: the regular rows have **no
+  arenas** (ch10–ch12, ch16 tables; Vey and the Rim need new arenas); Ch16's 254 m wade rolls ~6 fights without its
+  montage cut; each act break needs its own end-card next stop. No game data touched. QA pass 3 (gpu/act1-qa-3) has no
+  new rows yet; M3-CIN-1233 not MERGE-READY yet.
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
@@ -406,7 +437,16 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   gate's camera with Rhen in it; check Ch4's fights show Toma.
 
 ## Exact next step
-**BACKLOG EMPTY (2026-10-29, again @ cb97a0cf after the Lead's QA rows 23, 34 and 39; first @ f67d6134):** the fresh title → Ch9 playthrough is done (handoff
+**BACKLOG EMPTY (2026-10-30 ~02:00):** the flow and pacing pass is done (`docs/kb/qa/act1_flow_pacing_pass.md`) and the
+Act II chapter drafts are written (`docs/kb/plan/act2/chapters/`, pre-gate). Waiting on:
+- **M3-CIN-1233** (slice-polish flips the M2 switch): when they log MERGE-READY, merge their head into a scratch
+  worktree, run every `_thread` test, render stills of the Ch1 Drop and Ch4 NemeDoor arrivals, and write the review
+  in the task's log.
+- **gpu/act1-qa-3:** any new row for act1-chapters comes first.
+- M3-CIN-1234 (Ch1's dive rate, slice-polish), and the filed Act I requests.
+- At the `act1-complete` tag (ADR 0203): turn the Act II drafts into data, Ch10 first.
+
+### Earlier exact next step
 `docs/kb/handoffs/2026-10-29-cinematics-act1-chapters-1.md`). Every `_thread` test passes. Every Act I cutscene of
 Ch1 and Ch4–Ch9 was viewed in flow-order stills, and every problem in my lane is fixed and re-viewed (the fourth pass in
 `docs/kb/qa/act1_playthrough_ch04_ch09.md`). Ashcrown's POIs have camera volumes. What is left waits on filed requests:
