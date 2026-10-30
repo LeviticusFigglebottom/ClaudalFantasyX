@@ -8415,6 +8415,16 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "document_reader_three",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/document_reader/document_reader_three.tscn"
+    },
+    {
+      "id": "document_reader_one",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/document_reader/document_reader_one.tscn"
     }
   ]
 }

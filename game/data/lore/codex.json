@@ -1,6 +1,6 @@
 {
   "codex": {
-    "doc": "The lore codex (M3-UI-03, SPEC §6.11; docs/kb/tech/ui.md section Lore codex). 'categories' are listed in this order, each with name_key and desc_key. An entry is {id, category, title_key, body_key, unlock}; entries show in file order within their category. 'unlock' is one of {\"flag\": <declared story flag>} (shown once the flag is set), {\"record\": true} (a text record found in the field: an Interactable whose payload is {\"record\": \"<id>\"} sets its seen flag codex_<id>_found), or {\"always\": true}. Every entry also has a read flag codex_<id>_read (the 'New' marker until it is opened). Both flags are declared in game/data/flags.tres; validate_data.py (check_codex) checks categories, flags, loc keys and unique ids. Text lives in game/data/loc/codex.csv. Narrative reviews and extends the entries (M3-NAR-01). M3-UI-207 added Act II's places (Ch10 to Ch16, each on its chapter's arrival flag) and two peoples (the Kirru, the Ullari), saying only what a traveller knows on arriving.",
+    "doc": "The lore codex (M3-UI-03, SPEC §6.11; docs/kb/tech/ui.md section Lore codex). 'categories' are listed in this order, each with name_key and desc_key. An entry is {id, category, title_key, body_key, unlock}; entries show in file order within their category. 'unlock' is one of {\"flag\": <declared story flag>} (shown once the flag is set), {\"record\": true} (a text record found in the field: an Interactable whose payload is {\"record\": \"<id>\"} sets its seen flag codex_<id>_found), or {\"always\": true}. A record entry may name a document reader record (\"reader\": a game/data/lore/records.json id): Confirm on it opens the record in the reader (M4-A2P-080). Every entry also has a read flag codex_<id>_read (the 'New' marker until it is opened). Both flags are declared in game/data/flags.tres; validate_data.py (check_codex) checks categories, flags, loc keys and unique ids. Text lives in game/data/loc/codex.csv. Narrative reviews and extends the entries (M3-NAR-01). M3-UI-207 added Act II's places (Ch10 to Ch16, each on its chapter's arrival flag) and two peoples (the Kirru, the Ullari), saying only what a traveller knows on arriving.",
     "categories": [
       {"id": "world", "name_key": "CODEX_CAT_WORLD", "desc_key": "CODEX_CAT_WORLD_DESC"},
       {"id": "places", "name_key": "CODEX_CAT_PLACES", "desc_key": "CODEX_CAT_PLACES_DESC"},
@@ -115,7 +115,10 @@
       {"id": "causeway_notice", "category": "records", "title_key": "CODEX_CAUSEWAY_NOTICE_TITLE",
        "body_key": "CODEX_CAUSEWAY_NOTICE_BODY", "unlock": {"record": true}},
       {"id": "basin_steps", "category": "records", "title_key": "CODEX_BASIN_STEPS_TITLE",
-       "body_key": "CODEX_BASIN_STEPS_BODY", "unlock": {"record": true}}
+       "body_key": "CODEX_BASIN_STEPS_BODY", "unlock": {"record": true}},
+      {"id": "farewell_tide", "category": "world", "title_key": "CODEX_FAREWELL_TIDE_TITLE", "body_key": "CODEX_FAREWELL_TIDE_BODY", "unlock": {"flag": "ch10_farewell_tide_seen"}},
+      {"id": "name_shells", "category": "world", "title_key": "CODEX_NAME_SHELLS_TITLE", "body_key": "CODEX_NAME_SHELLS_BODY", "unlock": {"flag": "ch10_reached_reedhollow"}},
+      {"id": "kirru_eldest", "category": "people", "title_key": "CODEX_KIRRU_ELDEST_TITLE", "body_key": "CODEX_KIRRU_ELDEST_BODY", "unlock": {"flag": "ch10_reached_reedhollow"}}
     ]
   }
 }

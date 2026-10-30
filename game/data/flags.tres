@@ -233,5 +233,12 @@ flags = {
 "codex_cantors_read": "Codex (ui-menus, M3-NAR-01 Act I additions, game/data/lore/codex.json): the entry 'cantors' has been opened in the Codex (clears its New marker).",
 "codex_ebbing_read": "Codex (ui-menus, M3-NAR-01 Act I additions, game/data/lore/codex.json): the entry 'ebbing' has been opened in the Codex (clears its New marker).",
 "codex_moll_read": "Codex (ui-menus, M3-NAR-01 Act I additions, game/data/lore/codex.json): the entry 'moll' has been opened in the Codex (clears its New marker).",
-"tut_swell_seen": "Tutorial seen-flag (ui-menus, the Lead's Act I onboarding pass, 2026-10-29): the tip about the Swell gauge, its techniques and its fill modes has been shown."
+"tut_swell_seen": "Tutorial seen-flag (ui-menus, the Lead's Act I onboarding pass, 2026-10-29): the tip about the Swell gauge, its techniques and its fill modes has been shown.",
+"ch10_farewell_tide_seen": "Ch10 (Act II): the party has watched the Kirru farewell-tide at Reedhollow (C3; unlocks the codex entry, ui-menus). The Ch10 dialogue sets it.",
+"codex_farewell_tide_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'farewell_tide' has been opened in the Codex (clears its New marker).",
+"codex_name_shells_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'name_shells' has been opened in the Codex (clears its New marker).",
+"codex_kirru_eldest_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'kirru_eldest' has been opened in the Codex (clears its New marker).",
+"tut_seven_seen": "Tutorial seen-flag (ui-menus, Act II, M4): the tip that three of the seven fight and four wait (Formation) has been shown.",
+"ch14_declared_heretics": "Ch14 (Act II): the Conclave has sprung the wedding trap and declared the party heretics (C2). Order shrines go dark and Order shops refuse from here on (ui-menus, M4-A2P-082). The Ch14 flow sets it.",
+"ch15_kerrid_revealed": "Ch15 (Act II): Kerrid has told the party at sea that he is unrisen, held since the stair at Corrow. His Status page shows the Unrisen line from here on (ui-menus, docs/kb/plan/act2/ui/kerrid.md); the reveal's script sets it."
 }
