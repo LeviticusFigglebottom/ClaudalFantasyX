@@ -504,3 +504,21 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   the `break_parts` block (keyed drowner_haul) is ready in the art sheet. **Boss seat** [-5.0, 0, -3.0] added to
   battle_sandbox.json `boss_seats` (on the default slot the trunk filled a third of the frame, its top cut).
   Checks: Blender identical; tools OK; Godot creature 106/0. Open: risen feet slide ≤6 cm in rising_water_risen.
+- **MERGE-READY @ (this commit): M4-CRB-005, the Avalanche Ram's moves** (worktree agent, viewed by it; review
+  combat). 23 clips: intro (drinks, lifts, stamps), ready, idle_b, charge_gather, the charge, the bellow (cast, 2.0 s),
+  neck_sweep, fleece_shake, hits, KO (kneels, lies down, the herd-cord last); phase `torn_fleece` (40%): `phase_tear`
+  rears and slams at 1.0 s, a felted shoulder plate tears and falls (its own `plate` bone keeps it where it fell;
+  `TornShoulder` shows the seep via the phase's `show`), `idle_torn` and `_torn` versions. Hooves solved every frame,
+  lifting only for the stamp, the paw, the scrape and the rear. `cord` bone (the herd-cord swings). 15,779 triangles
+  (≤16k). **Clip map for combat:** ram_charge -> attack 0.75 (charge_gather on the gather turn); bellow -> cast 0.9;
+  neck_sweep 0.75; fleece_shake 0.6; each `_torn` in the phase map (in creatures.json). New tools test
+  test_avalanche_ram.py (no ice material, contacts, phase). Checks: Blender identical; tools OK; Godot creature 113/0.
+- **MERGE-READY @ (this commit): M4-CRB-006, Nhoa** (worktree agent, viewed by it; review combat). Her beads read as
+  ice crystals up close (ADR 0015: ice is hers, but not crystal shards): flatter, even-lit, rough; dry matte body;
+  denser neck/head motes; the KO no longer levels her antler crowns at the foes like a lance. New `deep_well` (1.8 s)
+  and `echo` (1.4 s) clips; Farewell-Tide lifts 0.2 m (the motes go UP). Anchors. 15,672 triangles (≤16k); portraits
+  re-baked. **Clip map for combat (M4-A2P-024):** attack 0.55; silt_fall -> cast 0.8; deep_well 1.0;
+  nhoa_echo -> echo 0.65; farewell_tide -> special 1.45. New test_creature_vowbound_act2.gd. Checks: Blender
+  identical; tools OK; Godot creature 120/0, vowbound 96/0. Open: rounder beads would double the motes' triangles (a
+  budget call, or a shader soft edge).
+- **In progress:** M4-CRB-007 Hesk (worktree agent); next Ethren, then Kesh (M4-A2P-057, a model from scratch).
