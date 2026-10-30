@@ -589,6 +589,18 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ 39968c35: M4-A2P-045, Ch15's open sea dressed** (the Lead's (b), the last of Ch13–Ch15). The
+  change is additive; chapters mount it (M4-A2P-0451, filed).
+  - **The barge:** `open_sea_barge`, bridal_barge.py's builders at the greybox deck's size (`build_fitted`). The
+    arena's `bridal_barge.glb` is byte-identical.
+  - **Grade and water:** the Wakefin arena's unlamped grade, and the night sea with the sea-glow at the barge's
+    waterline (−0.6).
+  - **Viewed** at ten cameras.
+  - **Checks:** the kit's full build gives 230 glbs, all byte-identical; tests ch15 and haluna_kit (25 OK), Godot
+    post_import 21/0, validate_data, taskboard and gdlint.
+  - **Open, filed in M4-A2P-0451:**
+    - Hollowmere's first visit has no greybox zone; chapters are asked for one, and the kit (M3-ENV-723) is ready.
+    - The shoal's held dead and the dawn fog are rendering's.
 - **MERGE-READY @ 562c7f57: M4-A2P-044, Ch14 (the Lacquer Court) dressed.** The change is additive; chapters mount it
   (M4-A2P-0441).
   - **Built from the greybox:** the court, red-lacquer colonnades with a wedding lantern on every column, the dais,
