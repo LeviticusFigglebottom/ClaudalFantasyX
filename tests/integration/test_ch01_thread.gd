@@ -130,7 +130,16 @@ func _underway() -> void:
 	assert_true(_trigger(&"wickfry").on_touched())
 	assert_eq(hand_offs.size(), 0, "a won fight never starts again")
 
-	assert_true(_trigger(&"low_lights").on_touched())
+	# M4-A2P-115 A2: the gauge room's slug waits for the low lights, and the low lights' box spans the whole mouth of
+	# the gauge room (x 86, z -22 to -40), so no way into it walks round them.
+	assert_false(_trigger(&"oil_slug").is_available(), "the slug waits for the low lights")
+	var lights := _trigger(&"low_lights")
+	var cs := lights.get_node(^"Shape") as CollisionShape3D
+	var half := (cs.shape as BoxShape3D).size * 0.5
+	for z in [-22.5, -26.0, -30.0, -33.5]:
+		var local := cs.global_transform.affine_inverse() * Vector3(85.0, cs.global_position.y, z)
+		assert_true(absf(local.x) <= half.x and absf(local.z) <= half.z, "the low lights cover the mouth at z %s" % z)
+	assert_true(lights.on_touched())
 	assert_true(bool(Game.get_flag(&"ch01_saw_low_lights")), "C1-05")
 	assert_true(&"ch01_low_003" in lines)
 
@@ -177,8 +186,12 @@ func _oruvel() -> void:
 	assert_true(&"ch01_bark_roof_005" in lines, "then does it")
 
 	assert_false(_trigger(&"dive_mooring").is_available(), "the dive waits for Kell's stall")
+	# cloud-qa (the Lead, 10-30): o_kell points at Kell herself, so talking to her plays the same beat as her stall
+	assert_true(_trigger(&"kell_talk").is_available(), "Kell answers when spoken to")
+	assert_eq(_trigger(&"kell_talk").payload, _trigger(&"kell_stall").payload)
 	assert_true(_trigger(&"kell_stall").on_touched())
 	assert_true(bool(Game.get_flag(&"ch01_has_kell_wick")), "C1-10, every path")
+	assert_false(_trigger(&"kell_talk").is_available(), "and once")
 	assert_eq(_count(&"kell_wick"), 1, "the key item")
 	assert_true(bool(Game.get_flag(&"ch01_kell_side_scene")), "'Stay a minute.' (the first option)")
 	assert_true(&"ch01_kell_012" in lines, "the line Rhen repeats on Ch2's beach")

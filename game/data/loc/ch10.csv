@@ -22,8 +22,8 @@ OBJ_CH10_TO_REEDHOLLOW,Follow the root-walks to Reedhollow.
 OBJ_CH10_SHORE,"At dusk, go down to the shore. Stand at the back."
 OBJ_CH10_GATE,Pell is waiting outside the gate.
 OBJ_CH10_SIDE_NETS,A widow's net is still in the dead channel.
-TUT_CH10_ROOTED,Roots hold whoever they catch. A rooted hero can't be swapped out until they break free.
-TUT_CH10_DRAIN,The leeches heal on what they take. Strike them before they feed.
+TUT_CH10_ROOTED,Root Drag holds a hero for their next two turns: they can't be swapped out. It also knocks them two ranks back.
+TUT_CH10_DRAIN,Each Leech Bite heals the leech by half the damage it deals. Bring them down fast; fire is their weakness.
 TUT_CH10_LISTEN,"Listen, and Pell learns what he hears. It costs him this turn."
 TUT_DROWNER_ROOTS,Each root holding it shows on the timeline. Break them and it comes loose.
 FORMATION_AWAY_PELL_FEN,Waits at the fen's edge

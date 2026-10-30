@@ -4,6 +4,8 @@ extends RefCounted
 ## save (a tip's seen flag is set when it is taken to show). Rows: game/data/ui/tutorial_tips.json.
 ## TipCard is the view. Tests build it with their own flag reader and writer and setting.
 
+## The payload key a layout trigger names a save shrine by (Ch6-Ch8 place theirs so).
+const SAVE_SHRINE_KEY := &"save_shrine"
 const DATA_PATH := "res://game/data/ui/tutorial_tips.json"
 const ON_FIELD_READY := &"field_ready"
 const ON_NEAR := &"near"
@@ -46,7 +48,7 @@ static func tags_of(it: Interactable) -> Array[StringName]:
 		return out
 	for k: Variant in it.payload.keys():
 		out.append(StringName(str(k)))
-	if it is SaveShrine:
+	if it is SaveShrine or it.payload.has(SAVE_SHRINE_KEY):  # a layout trigger's shrine too (M4-A2P-1004 F8)
 		out.append(TAG_SHRINE)
 	return out
 

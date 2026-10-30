@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "doc": "Oruvel's villagers alive (M3-CRE-656; docs/kb/tech/field_npc.md, VillagerLayer). Oruvel is a GreyboxZone: its stage actors stand under CutsceneStage/Actors/<id>, and a layout row's `model` (M2-FP-111) puts a villager actor there in place of the capsule. Each row here names one such actor (`attach: child`): VillagerLayer adopts that model into a FieldNpc, so the villager glances at the party, turns to talk and breathes out of step instead of only idling. Rows for the other Oruvel speakers (the scaleman, the cook, Sabe, Skipper Sadi, the children) are added when M3-CHR-100 gives them bodies and their layout rows a `model`. M3-CRE-659 adds the crowd: the cook, the two net-lane menders (they talk) and the pen and roof children, crowd people (game/data/world/npc/crowd.json, ADR 0152) in their stage actors' capsules.",
+  "doc": "Oruvel's villagers alive (M3-CRE-656; docs/kb/tech/field_npc.md, VillagerLayer). Oruvel is a GreyboxZone: its stage actors stand under CutsceneStage/Actors/<id>, and a layout row's `model` (M2-FP-111) puts a villager actor there in place of the capsule. Each row here names one such actor (`attach: child`): VillagerLayer adopts that model into a FieldNpc, so the villager glances at the party, turns to talk and breathes out of step instead of only idling. Rows for the other Oruvel speakers (the scaleman, the cook, Sabe, Skipper Sadi, the children) are added when M3-CHR-100 gives them bodies and their layout rows a `model`. M3-CRE-659 adds the crowd: the cook, the two net-lane menders (they talk) and the pen and roof children, crowd people (game/data/world/npc/crowd.json, ADR 0152) in their stage actors' capsules. The vignettes (the Lead, 2026-10-30: the slice towns lived in): six crowd people on `at` spots on the commons deck (ground probed against the zone's collision, 2026-10-30), at its edges so the deck's paths stay clear: a girl at stones by the north rail, a man mending a diver's net bag, a man sweeping along the west rail between two stations, a woman with her basket by the cookboat, and along the south rail a man laying fish to dry and a man hauling a line in.",
   "zone": "ch01/oruvel",
   "villagers": [
     {
@@ -46,6 +46,92 @@
       "stand_in": "CutsceneStage/Actors/roof_child",
       "attach": "child",
       "talk": "Triggers/npc_roof"
+    },
+    {
+      "npc_id": "oruvel_deck_stones",
+      "crowd": "oruvel_deck_stones",
+      "stand_in": "CrowdSpots/oruvel_deck_stones",
+      "at": [
+        8.0,
+        0.0,
+        -20.6,
+        -180.0
+      ]
+    },
+    {
+      "npc_id": "oruvel_deck_sweeper",
+      "crowd": "oruvel_deck_sweeper",
+      "stand_in": "CrowdSpots/oruvel_deck_sweeper",
+      "at": [
+        -14.5,
+        0.0,
+        -14.0,
+        90.0
+      ],
+      "route": [
+        {
+          "at": [
+            -14.5,
+            0.0,
+            -14.0
+          ],
+          "pause_sec": 7.0,
+          "activity": "work"
+        },
+        {
+          "at": [
+            -14.5,
+            0.0,
+            -11.0
+          ],
+          "pause_sec": 6.0,
+          "activity": "work"
+        }
+      ]
+    },
+    {
+      "npc_id": "oruvel_deck_hauler",
+      "crowd": "oruvel_deck_hauler",
+      "stand_in": "CrowdSpots/oruvel_deck_hauler",
+      "at": [
+        6.0,
+        0.0,
+        -1.4,
+        -180.0
+      ]
+    },
+    {
+      "npc_id": "oruvel_deck_carrier",
+      "crowd": "oruvel_deck_carrier",
+      "stand_in": "CrowdSpots/oruvel_deck_carrier",
+      "at": [
+        -15.0,
+        0.0,
+        -5.0,
+        -71.6
+      ]
+    },
+    {
+      "npc_id": "oruvel_deck_folder",
+      "crowd": "oruvel_deck_folder",
+      "stand_in": "CrowdSpots/oruvel_deck_folder",
+      "at": [
+        -8.0,
+        0.0,
+        -1.4,
+        -180.0
+      ]
+    },
+    {
+      "npc_id": "oruvel_deck_mender",
+      "crowd": "oruvel_deck_mender",
+      "stand_in": "CrowdSpots/oruvel_deck_mender",
+      "at": [
+        -3.0,
+        0.0,
+        -18.0,
+        -0.0
+      ]
     }
   ]
 }

@@ -569,8 +569,9 @@ script = ExtResource("8_int")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 2.7, 1.9)
 id = &"npc_market"
 prompt_key = "FIELD_PROMPT_LISTEN"
+requires_flag = &"ch02_ate_at_nemes"
 payload = {
-"dialogue": "ch02_bark_market"
+"dialogue": "ch02_bark_market_listen"
 }
 
 [node name="Shape" type="CollisionShape3D" parent="NPCs/Market/Talk"]
@@ -595,8 +596,9 @@ script = ExtResource("8_int")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -116.3, 3.5, 34)
 id = &"npc_chapel"
 prompt_key = "FIELD_PROMPT_LISTEN"
+requires_flag = &"ch02_ate_at_nemes"
 payload = {
-"dialogue": "ch02_bark_chapel"
+"dialogue": "ch02_bark_chapel_listen"
 }
 
 [node name="Shape" type="CollisionShape3D" parent="NPCs/Chapel/Talk"]
@@ -627,8 +629,9 @@ script = ExtResource("8_int")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.407558, 2.2, 39.408606)
 id = &"npc_dock"
 prompt_key = "FIELD_PROMPT_LISTEN"
+requires_flag = &"ch02_ate_at_nemes"
 payload = {
-"dialogue": "ch02_bark_dock"
+"dialogue": "ch02_bark_dock_listen"
 }
 
 [node name="Shape" type="CollisionShape3D" parent="NPCs/Dock/Talk"]
@@ -650,8 +653,9 @@ script = ExtResource("8_int")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -70, 3, -9.3)
 id = &"npc_lane"
 prompt_key = "FIELD_PROMPT_LISTEN"
+requires_flag = &"ch02_ate_at_nemes"
 payload = {
-"dialogue": "ch02_bark_lane"
+"dialogue": "ch02_bark_lane_listen"
 }
 
 [node name="Shape" type="CollisionShape3D" parent="NPCs/Lane/Talk"]
@@ -693,7 +697,7 @@ script = ExtResource("8_int")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.4, 2.3, -120.8)
 id = &"npc_osu"
 prompt_key = "FIELD_PROMPT_LISTEN"
-requires_flag = &"ch02_met_asha"
+requires_flag = &"ch02_ate_at_nemes"
 payload = {
 "dialogue": "ch02_pila_granddaughter"
 }
@@ -854,7 +858,7 @@ script = ExtResource("8_int")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 1.5, -125)
 id = &"causeway_head_unsaved"
 activation = 1
-requires_flag = &"ch02_met_asha"
+requires_flag = &"ch02_ate_at_nemes"
 blocked_by_flag = &"ch02_saved_once"
 payload = {
 "dialogue": "ch02_bark_causeway_unsaved",
@@ -869,7 +873,9 @@ script = ExtResource("8_int")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -42, 2.7, 0)
 id = &"overhear_market"
 activation = 1
-requires_flag = &"ch02_met_asha"
+requires_flag = &"ch02_ate_at_nemes"
+blocked_by_flag = &"ch02_overheard_market"
+sets_flag = &"ch02_overheard_market"
 once = true
 payload = {
 "dialogue": "ch02_bark_market",
@@ -884,7 +890,9 @@ script = ExtResource("8_int")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -114, 3.5, 35)
 id = &"overhear_chapel"
 activation = 1
-requires_flag = &"ch02_met_asha"
+requires_flag = &"ch02_ate_at_nemes"
+blocked_by_flag = &"ch02_overheard_chapel"
+sets_flag = &"ch02_overheard_chapel"
 once = true
 payload = {
 "dialogue": "ch02_bark_chapel",
@@ -899,7 +907,9 @@ script = ExtResource("8_int")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 1.5, 38.5)
 id = &"overhear_dock"
 activation = 1
-requires_flag = &"ch02_met_asha"
+requires_flag = &"ch02_ate_at_nemes"
+blocked_by_flag = &"ch02_overheard_dock"
+sets_flag = &"ch02_overheard_dock"
 once = true
 payload = {
 "dialogue": "ch02_bark_dock",
@@ -914,7 +924,9 @@ script = ExtResource("8_int")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -70, 3, -9.5)
 id = &"overhear_lane"
 activation = 1
-requires_flag = &"ch02_met_asha"
+requires_flag = &"ch02_ate_at_nemes"
+blocked_by_flag = &"ch02_overheard_lane"
+sets_flag = &"ch02_overheard_lane"
 once = true
 payload = {
 "dialogue": "ch02_bark_lane",

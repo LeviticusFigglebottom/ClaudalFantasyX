@@ -108,6 +108,7 @@
         ]}
       },
       "barks": [
+        {"when": {"set": ["ch01_roof_dived"]}, "map": {"ch01_bark_roof": "ch01_bark_roof_after"}},
         {"when": {"set": ["ch01_roof_dared"]}, "map": {"ch01_bark_roof": "ch01_bark_roof_dive"}}
       ]
     }

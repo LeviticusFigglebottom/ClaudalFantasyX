@@ -2051,3 +2051,50 @@ MERGE-READY @ (this commit). **Take it into the next batch:** big24 and big25 ca
   (game/flow). The resident field needs the stories to arrive again, and the bug (hand-off state kept, arrival
   skipped) is from my change.
 MERGE-READY @ (this commit).
+
+### big27 (9572c412), merged here (56d3005d2); the Lead 10-30 18:44
+- **The field-camera rows on 9572c412 + this branch (only 799b6633a on top), a fresh import:**
+  - qa_field_camera 2/0 covers 24 (DockShore), 47 (FerryAft) and 38 (Coilspire's Encounter). The only KNOWN entries
+    are other tracks': Tier4 (M3-HER-1157, env-art-b) and B02 (M3-HER-1160, m2-slice).
+  - qa_party 3/0, camera_director 56/0.
+  - **37 (AfterHarrier):** the still is clean; Rhen at centre, the followers at a reading scale.
+  - **66 (Ch4 opening), real time:** never nearer than 5.1 m; 6 of 111 samples, all in the 1.2 s cross-town blend;
+    settles on NemeDoor at 9.8 m.
+  - **21 (Haluna beach start), real time:** 0 of 121 samples out of frame; settles on beach_shallows at 7.5 m.
+  - Unchanged from big23 and big25: **all six are fixed on the headless checks.** The PC confirms by hand.
+
+### The Act I smoke run on big28 (c646c3a8), a clean worktree with a fresh profile; the Lead 10-30 19:25
+- `act1_gate_check.py --only 2` (each suite alone, its own XDG_DATA_HOME): **PASS, 0 SCRIPT ERRORs.**
+  - qa_threads 1/0: every chapter thread start to end, save and load at every shrine;
+  - qa_encounters 1/0: every Act I fight entered, won and left;
+  - fp_ 30/0: title → New Game → Prologue → the slice → Ch3;
+  - save_ 153/0;
+  - **act1_route 3/0:** New Game → Ch1 → the slice → Ch4 → Ch9's end card (with the credits) → the title, with the
+    taps.
+- **No soft-lock or stuck transition.** The logs have no timeout, no stuck story and no held reveal. The only
+  "softlock" text is Ch14's flag docs (Act II, M4-A2P-118).
+- (A big27 run was stopped part-way when big28 landed; its threads, encounters and fp_ were clean too.)
+
+### The Drownbell's return, traced (the Lead 10-30 19:45: the last piece of the black-screen report)
+- cloud-qa's return_probe on big28 (c646c3a8) + this branch, logging SceneRouter's fade and its reveal holders every
+  100 ms from the victory panel's Return:
+  - **0–0.4 s:** the fade going down.
+  - **0.4–1.9 s:** Haluna loading and instantiating (ui's 95f51b98 prepare_return prewarms it during the panel; the
+    load does come in).
+  - **1.9–5.0 s: Haluna is in the tree, and the reveal is held by creatures' VillagerLayer.** `_build_spread` adds 18
+    rows one a frame at ~120–250 ms a frame headless.
+  - **5.0–5.3 s:** the fade lifting.
+  - The later black in the probe's 10 s total is B11's chapter card and the Ch4 wake: the story's own black, not the
+    return.
+- **Tried:** a per-frame time budget in VillagerLayer (as many rows a frame as fit 40 ms). No change: in a real change
+  each row alone costs ~180 ms (actor instantiate and ready, or a model adopted), so the edit was **reverted**, not
+  shipped.
+- **Filed M3-HER-1168 (creatures):** instantiate the villagers' actors on worker threads under the fade, as
+  SceneRouter does for the zone, or during the zone's threaded instantiate. Target ≤ 0.5 s held after the zone is in.
+  **Every fresh Haluna entry** pays this, not only the Drownbell.
+- **With that done, the Drownbell's black would be ~1.9 s headless** (the fade plus a cross-zone load). Getting under
+  1 s needs Haluna resident or already instantiated before the Return, which is a bigger change.
+  **LEAD-ASK:** worth it for this one return (Haluna is the chapter hub, entered from the shrine once), or is ~1.9 s
+  headless (much less on the PC) acceptable after M3-HER-1168?
+- **B11's opening:** after the router's fade lifts (5.3 s), B11 opens from the field, with no extra black of its own in
+  the trace. Nothing to agree with slice-polish there.

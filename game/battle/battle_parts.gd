@@ -15,6 +15,10 @@ extends RefCounted
 ##                                         (never refused). "answered_key" is the loc key the target cursor says why.
 ##   enemies.json phase rows "when_down": enemy id   the phase also comes when no foe of that id stands (Venn boards
 ##                                         on the engine's break, or at 50%, whichever is first).
+## M4-A2P-1200, a part that leaves with its owner:
+##   enemies.json "leaves_with": enemy id  once no foe of that id stands (fallen or yielded), the part withdraws:
+##                                         Venn's yield ends the fight with the flat-engine still on his barge, and
+##                                         a fight whose answering hero is down can't stall on a part nobody may strike.
 
 
 ## True when `actor` may act on `target`: a foe answered by one hero is that hero's alone (M4-A2P-023).
@@ -28,6 +32,13 @@ static func is_down(engine: BattleEngine, enemy: StringName) -> bool:
 		if e.is_alive() and BattleEngine.enemy_id(e) == enemy:
 			return false
 	return true
+
+
+## Withdraws every living part whose owner (its "leaves_with") no longer stands. Before the outcome check.
+static func withdraw_orphans(engine: BattleEngine) -> void:
+	for e in engine.enemies:
+		if e.leaves_with != &"" and e.is_alive() and is_down(engine, e.leaves_with):
+			e.withdraw()
 
 
 ## The charge `actor` lost on the weak point: its part breaks when the row declares it.

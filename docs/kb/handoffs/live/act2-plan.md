@@ -590,3 +590,100 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
   - `ch01_zones` is 6/6 red, **and red the same on the unchanged tree**: an integration script error in its setup (`test_ch01_zones.gd:128` `auto_update` on Nil), not this change.
 - MERGE-READY tutorial pass @ 16b18b2c1
 - BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1006; M4-A2P-112 items 3, 5 and 6.
+- **Correction (ch01_zones):** not a real red. After a fresh `--import`, `test_ch01_zones` passes 6/0. My run, and its "red on the unchanged tree" check, both used an import cache made stale by the integration merge: `raft_deck_square.glb` changed in bc790ea89, its import failed, so `scene_router.gd` didn't compile and `zone.director` was null at `_open`. **Nothing to file**, so no task for act1-chapters. Lesson for me: re-import after every merge before trusting a Godot red.
+
+## 2026-10-30: Act II tutorial and tip clarity pass (Lead; pillar 4)
+- **Main finding: every Act II tutorial and tip is dead except `seven`.**
+  - No encounter, enemy or phase references any Act II `TUT_*` (no `prompt_key` or `turn_prompt_key`).
+  - Records, Dark shrine and Swell-mode have no tip rows.
+  - `seven` said "four wait" when the party is six (Pell isn't a hero yet).
+  - Several fights the lines describe aren't built: the Ch14 steps and Venn, the Ch16 guard and storm, Pell's Listen, the Drowner's roots, the Ram's scree field.
+  - **The Kite is Act III only**: no Act II data.
+- **Text fixed (13 rows plus one lore row):**
+  - **Built mechanics, now matching the data:** Root Drag (2 turns, 2 ranks, no Swap), Leech Bite (heals half), Unravel (strips Haste, Bulwark, Tide Ward, Mending), the Lamp Engine (two quick blows while the lamps turn; the crawlers relight), the Wakefin (Sound Dive means a Breach next turn), the dark shrine (no heal, no save), Swell mode (on unlock), `seven` ("the rest wait").
+  - **Unbuilt set pieces, now precise to the beat sheets:** the steps (four lines; Hold the Steps), the flat-engine (Slows the party; Strip the Drum), the line (three breaths).
+  - **TUT_RAM_FIELD:** scree, not snow (act2_consistency P2).
+  - **TUT_CH16_CYCLE:** now Kesh's cycle (Act III).
+  - **LORE_ABIDING_GUARD:** four in veiled gold lacquer plus the Veil-First (act2_ch16 §5a), not "three hooded figures".
+- **Filed:**
+  - **M4-A2P-1007 → ui-menus:** raise the Records, Dark-shrine and Swell-mode tips; re-gate `seven` on Pell's join; the battle help hides Echo's copied action, Cord Lift's cures, Rooted and the rays' and skates' cover; the timeline doesn't label a cycle.
+  - **M4-A2P-1008 → act1-chapters' combat seat:** wire each `TUT_*` at its first fight (with a seen flag: `prompt_key` has none, and these sit on random groups); the unbuilt fights and mechanics; Kesh's Call shows in Ch16 although vowbound.md says Act III.
+- **Checks:** validate_data 0/0 · loc tests OK · taskboard clean · Godot `tip` 5/0, `tutorial` 5/0, `codex` 16/0 (after a fresh import).
+- MERGE-READY Act II tutorial pass @ 5e03ea26e
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1008; M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Act I emotional-beats pass (Lead; pillars 1 and 6)
+- **Read in play order:** the Prologue line; the Ch1 storm (the Rising, Hullgnaw, going under); Haluna's welcome (the beach, Neme's table); the Drownbell (the first verse, the lullaby, the dock at night); the Ch4 wake (the shell set, the keeps, the song, the dark dock); Corrow's drowned (the wall falls, the cut rope, the strand barks, the Ebbing); the road out and the vigil voice-over.
+- **What holds (and why I kept it):**
+  - **Rhen's jokes in danger** ("I'm not scared. I'm busy.") are his defence (rhen_sallow.md), not humour over grief.
+  - **Asha's stool joke at her own wake** is staged as her consoling Neme, whose laugh breaks back into grief: humour carrying sorrow, not undercutting it.
+  - **The Drownbell's light lines** come before the lullaby reveal.
+  - **Liss's "Thirty-one baskets. I counted."** is grief.
+  - **Earned:** "Every night until he didn't.", Marra's "Stair's clear." teaching, Kerrid's "Somebody's still below.", and the closing seven-count voice-over (it pays off the Prologue).
+- **Tightened (two slice lines, one Ch4 emotion):**
+  - **The beach (pillar 1):** straight after "Those are ours.", Asha's "He's nicer than his spear." is now "I'm Asha. And that's Toma.", and "Who is very glad you aren't dead." is now "Who is glad you're here." (tender).
+  - **The dark dock:** "Eat your cake, Rhen." is now tender, not soft_smile. She spares him the answer about Oruvel's held dead.
+- **Staging filed:**
+  - **M4-A2P-1009 → slice-polish:** two 2 s holds on the beach's grief beat.
+  - **M4-A2P-1010 → act1-chapters:** a 3 s hold before Asha's non-answer, eyes on the sea.
+  - The beats' other problems were already filed in the read-through (1000/1001: the dock's "day after tomorrow", Hobb's Sallows, the Act II card before "The end of Act I").
+- **Checks:** dlgc 0/0 · validate_data 0/0 · taskboard clean. Godot `dialogue` 87/0, `haluna_zone` 7/0, `memories` 15/0, `cutscene_sequencer` 22/0. No screenshot shows the changed lines (`slice_beach_standing` holds line 031, which is unchanged).
+- MERGE-READY emotional-beats pass @ 5b401f65a
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1010; M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Act II emotional-beats pass, Ch10–Ch13 staged and Ch14–Ch16 on paper (Lead; pillars 1 and 6)
+- **Read:** the key scenes in order.
+  - Ch10: the farewell-tide, the dawn gate.
+  - Ch11: the housing-mark, twice, Nhoa, "By you, now.".
+  - Ch12: the herd-cord, Hesk, forty-seven voices.
+  - Ch13: Ethren, the roll, the hands, the pact, the house.
+  - Ch14: the vows, the declaration, Tobin, Merel.
+  - Ch15: the confession, "Let me carry him.".
+  - Ch16: the High Warden, swept away.
+- **Lines: no change needed.**
+  - **Sincerity:** no Act II line undercuts sorrow. Every [laugh] and [smile] in the main scenes sits before a loss (Tobin's joy in Ch13), never after it. Tobin's dying "Your knots are terrible." pays off Ch13's knots: his tenderness, not a release.
+  - **Pillar 6 (no one keeps everything):** "You are very good at asking." (the Hush's cost, Ch10); "She is held. By you, now."; Ysolde's "I would very much like it to."; Liss's "I'm not going to say it's all right." to Toma.
+- **Earned beats depend on mounting.** Tobin's death needs `ch13_tobin` played; "Your breath. In Ullar." needs `ch12_breath`; Ch11's split needs `ch11_housing_mark`. All are filed in M4-A2P-1003.
+- **Tightened (my scripts' holds, to the direction notes):**
+  - V00: 5 → 9 s;
+  - Pell's kneel (N05): 4 → 7 s;
+  - N09: 6 → 8 s;
+  - Ch13's A01: 5 → 8 s;
+  - Ethren's rise (S05): 4 → 6 s.
+- **Staging filed: M4-A2P-1011 → slice-polish.** A Ch10–Ch16 checklist of the beats staging can break, each pointing at its direction note: the backs to the tide, Pell's ledge, Tobin's fall, Merel from the barge, Kerrid's eye height and K11, the dock-master unheard, Pell's turn last, Sefir's smile, the hard cuts.
+- **Checks:** dlgc 0/0 · taskboard clean · Godot `dialogue` 87/0 · tools music-sync test OK.
+- MERGE-READY Act II emotional pass @ 270c32419
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1011; M4-A2P-112 items 3, 5 and 6.
+
+## 2026-10-30: Act II read-through, Ch14–Ch16 on paper (Lead)
+- **Read:** every Ch14–Ch16 script in the beat sheets' order, against the sheets, the ADRs and the earlier chapters.
+- **The required facts hold:**
+  - Kerrid sits only at K05, and the confession matches its RULE 4;
+  - the Hush is told only in Kesh's memory; no "revenant";
+  - the one `glimmer_lift` is the sheet's;
+  - no ice; Tobin, Merel and the lamp are right;
+  - Imra, Dace and Kerrid are never grouped; Pell has no battle kit.
+- **No leak** (one possible: Kerrid's "Nobody, if she does it right." in the Ch15 camp implied the Act III premise; now "I don't know. Somebody always has.").
+- **Story fixes (my scripts and sheets):**
+  - **Repeats:**
+    - the Ch14 camp repeated Ch15's deck beat and the "volunteered" line. It keeps the wick-tool and "I want it to cost them", and moves to `ch15/open_sea`.
+    - Tobin's Ch13 "volunteered" is now "Peace has to start with somebody's wedding." (Ch14 carries the line).
+    - Liss's and Merel's Ch14 talks are reworded.
+  - **Flags now paid:**
+    - the supper reads `ch14_spoke_with_tobin` (Aldous asks; Rhen: "He said nobody had to be chosen. He volunteered.");
+    - the barge reads `ch14_vows_spoken` (Liss says Tobin's vow back, "I'll learn your quiet.").
+  - **Order:**
+    - the pyre-raft now ends on Pell's turn;
+    - three Hollowmere barks wait for the news (`ch15_toma_carried_tobin`), with arrival lines before it.
+  - **Continuity:**
+    - Ysolde and Pell board the ship;
+    - 13 zone headers named `ch14/lacquer_court` or `ch15/hollowmere`, which don't exist, and now name the real zones;
+    - "after the bells" is now "after the vows";
+    - Dace's hull is "years after" his first visit.
+  - **Docs:** kerrid.md and act2_ch14 "sat out" are now "stood out"; Pell is out of two boss role-answers.
+- **Filed:**
+  - **M4-A2P-1012 → act1-chapters:** the Ch14–16 flows play no scene; the dock-master on arrival; four missing encounters (`ch14_water_steps`, `ch14_malcor_venn`, `ch16_abiding_guard`, `ch16_storm_wakes`); the battle chaining.
+  - **M4-A2P-1013 → slice-polish:** Warden Dask on the steps (L09); the lamp-bearers' entrance and the oar-pin (W03/W05); two ship marks.
+- **Checks:** dlgc 0/0 · validate_data 0/0 · taskboard clean · tools dlgc, sfx and flag-reach tests OK · check_drafts 73/0 · Godot `dialogue` 87/0. It was 1 red until a fresh `--import` rebuilt the translations for the two new supper lines.
+- MERGE-READY Ch14–16 read-through @ e8825bce8
+- BACKLOG EMPTY (story track). Open, owned by others: M4-A2P-114, 1000–1013; M4-A2P-112 items 3, 5 and 6.

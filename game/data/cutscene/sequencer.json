@@ -37,7 +37,8 @@
     "rhen/lie_in_shallows": "ko",
     "rhen/sit_up": "kneel_over_rhen",
     "rhen/sit_in_shallows": "kneel_over_rhen",
-    "rhen/stand_unsteady": "rise_to_stand"
+    "rhen/stand_unsteady": "rise_to_stand",
+    "matron/bank": "bank_the_fire", "matron/unfold": "intro"
   },
   "fade_color": "#05080B",
   "fade_back_sec": 0.8,

@@ -52,6 +52,9 @@ func test_hollowmeres_dock() -> void:
 func test_the_rim_wade_and_the_choir() -> void:
 	open(RIM)
 	walk("the wade", [_spawn(&"Rim"), Vector3(100, 0, 0), _mark(&"choir_edge")] as Array[Vector3], 0.0)
+	# M4-A2P-1500: the exit to the Choir stands on the sand, reachable from where the montage sets the party down
+	var exit := (zone.get_node(^"Triggers/to_choir") as Node3D).position
+	walk("to the Choir's edge", [_spawn(&"ChoirEdge"), exit] as Array[Vector3], 0.0)
 	close()
 	open(CHOIR)
 	walk("to Kesh", [_spawn(&"Approach"), _mark(&"kerrid_line"), _mark(&"kesh")] as Array[Vector3], 0.0)

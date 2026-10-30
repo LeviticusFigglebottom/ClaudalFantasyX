@@ -2,5 +2,9 @@
 title: ch15_bark_widow
 location: ch17/hollowmere
 ---
-Hull_widow as "Captain's wife" [grief]: They took my husband in his good coat. He hates that coat. #line:ch15_bark_widow_001
+<<if $ch15_toma_carried_tobin>>
+    Hull_widow as "Captain's wife" [grief]: They took my husband in his good coat. He hates that coat. #line:ch15_bark_widow_001
+<<else>>
+    Hull_widow as "Captain's wife" [soft_smile]: The captains went south for a wedding. Back by the new moon. #line:ch15_bark_widow_002
+<<endif>>
 ===

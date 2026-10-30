@@ -117,6 +117,17 @@ SHADER_MATERIALS: dict[str, tuple[str, int, dict, dict]] = {
         "ao_light_affect": "0.5",
     }, {"tex_albedo": T + "sefir_head_albedo.png", "tex_orm": T + "sefir_head_orm.png"}),
 }
+# M4-A2P-055 (act2_ch16.md K06-K07): the memory's Sefir at forty, grey with grief as he binds Kesh, and smooth again
+# the moment her light runs into his hands (K07: shown, never said). A material variant of skin_head, no glTF slot
+# takes its name: CostumeVariant swaps it in for K06 and out for K07. The skin drained toward a cool grey, the warm
+# scatter cooled, the pores and curvature up a little (the face drawn).
+GRIEF_GREY = "Color(0.66, 0.68, 0.76, 1)"
+GRIEF_SCATTER = "Color(0.42, 0.38, 0.42, 1)"
+SHADER_MATERIALS["skin_head_grief"] = (SHADER_MATERIALS["skin_head_dialogue"][0], SHADER_MATERIALS["skin_head_dialogue"][1],
+                                       dict(SHADER_MATERIALS["skin_head_dialogue"][2], col_albedo=GRIEF_GREY,
+                                            col_scatter=GRIEF_SCATTER, curvature_scale="1.6"),
+                                       SHADER_MATERIALS["skin_head_dialogue"][3])
+
 STANDARD_MATERIALS = {
     # §1.4 #6: gilt metal; the crown's convex back, rim, band and stem in gold_leaf #D4A437 ...
     "gilt": "albedo_color = Color(0.831, 0.643, 0.216, 1)\nmetallic = 1.0\nroughness = 0.32\n",

@@ -1,0 +1,8 @@
+// Ch1 C1-09 (M4-A2P-115 A7): after the dive, a talk to the roof children is a short after-bark, not the dive again
+// (act1_ch01 has the dive as a one-off). The same voices; the dare is spent.
+title: ch01_bark_roof_after
+location: ch01/oruvel
+---
+Child [laugh]: Do it again! #line:ch01_bark_roof_006
+Rhen [smile]: Once. You get once. #line:ch01_bark_roof_007
+===

@@ -18,17 +18,17 @@
     {"op": "line", "id": "ch03_dock_002", "key": "DLG_CH03_DOCK_002", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 26},
     {"op": "line", "id": "ch03_dock_003", "key": "DLG_CH03_DOCK_003", "speaker": "rhen", "emotion": "tender", "voice": "", "src": 27},
     {"op": "goto", "to": 11, "src": 24},
-    {"op": "line", "id": "ch03_dock_004", "key": "DLG_CH03_DOCK_004", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 29},
-    {"op": "line", "id": "ch03_dock_005", "key": "DLG_CH03_DOCK_005", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 30},
-    {"op": "line", "id": "ch03_dock_006", "key": "DLG_CH03_DOCK_006", "speaker": "rhen", "emotion": "determined", "voice": "", "src": 31},
-    {"op": "line", "id": "ch03_dock_007", "key": "DLG_CH03_DOCK_007", "speaker": "asha", "emotion": "smile", "voice": "", "src": 32},
-    {"op": "line", "id": "ch03_dock_008", "key": "DLG_CH03_DOCK_008", "speaker": "toma", "emotion": "worried", "voice": "", "src": 33},
-    {"op": "cue", "cue": "anim", "args": ["asha", "look_at", "toma"], "kwargs": {}, "src": 34},
-    {"op": "line", "id": "ch03_dock_009", "key": "DLG_CH03_DOCK_009", "speaker": "asha", "emotion": "tender", "voice": "", "src": 35},
-    {"op": "line", "id": "ch03_dock_010", "key": "DLG_CH03_DOCK_010", "speaker": "toma", "emotion": "exhausted", "voice": "", "src": 36},
-    {"op": "cue", "cue": "wait", "args": [0.8], "kwargs": {}, "src": 37},
-    {"op": "line", "id": "ch03_dock_011", "key": "DLG_CH03_DOCK_011", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 38},
-    {"op": "set", "flag": "ch03_rhen_sworn_guardian", "value": ["lit", true], "src": 39}
+    {"op": "line", "id": "ch03_dock_012", "key": "DLG_CH03_DOCK_012", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 31},
+    {"op": "line", "id": "ch03_dock_005", "key": "DLG_CH03_DOCK_005", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 32},
+    {"op": "line", "id": "ch03_dock_006", "key": "DLG_CH03_DOCK_006", "speaker": "rhen", "emotion": "determined", "voice": "", "src": 33},
+    {"op": "line", "id": "ch03_dock_007", "key": "DLG_CH03_DOCK_007", "speaker": "asha", "emotion": "smile", "voice": "", "src": 34},
+    {"op": "line", "id": "ch03_dock_008", "key": "DLG_CH03_DOCK_008", "speaker": "toma", "emotion": "worried", "voice": "", "src": 35},
+    {"op": "cue", "cue": "anim", "args": ["asha", "look_at", "toma"], "kwargs": {}, "src": 36},
+    {"op": "line", "id": "ch03_dock_009", "key": "DLG_CH03_DOCK_009", "speaker": "asha", "emotion": "tender", "voice": "", "src": 37},
+    {"op": "line", "id": "ch03_dock_010", "key": "DLG_CH03_DOCK_010", "speaker": "toma", "emotion": "exhausted", "voice": "", "src": 38},
+    {"op": "cue", "cue": "wait", "args": [0.8], "kwargs": {}, "src": 39},
+    {"op": "line", "id": "ch03_dock_011", "key": "DLG_CH03_DOCK_011", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 40},
+    {"op": "set", "flag": "ch03_rhen_sworn_guardian", "value": ["lit", true], "src": 41}
    ]
   }
  }

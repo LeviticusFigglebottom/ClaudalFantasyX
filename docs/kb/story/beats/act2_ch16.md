@@ -237,7 +237,7 @@ The Pale Rim is a route and the Choir is not a town (SPEC §3.6's side-scene rul
 
 **The fight** (two waves in one battle; act2_finals.md: two stems, stem 2 is the storm):
 1. **The Veiled** (four guards): disciplined, paired. Two **Bulwark** casters and two halberdiers who Slow ("settle") a target, the Order's craft of stillness as tactics, an echo of Ethren's kit turned against the party. Ysolde's magic breaks the casters; Toma's counters punish the halberds.
-2. **The Veil-First** (one, joins at the first wave's half): a duellist who reads the timeline. (Not "captain": Sefir's one rank word, "Captain.", is Kerrid's alone in this scene.) He **delays** the hero who just acted (pushes them back) and parries physical blows. Rhen's turn manipulation, and Pell's learned skills, are the answer.
+2. **The Veil-First** (one, joins at the first wave's half): a duellist who reads the timeline. (Not "captain": Sefir's one rank word, "Captain.", is Kerrid's alone in this scene.) He **delays** the hero who just acted (pushes them back) and parries physical blows. Rhen's turn manipulation is the answer (Pell has no battle kit yet, M3-C09-07).
 - **Under the fight, the storm stirs:** every few rounds the singers' chord deepens and the held motes over the channel all drift south at once (a field cue, telegraphed on the timeline as "The Choir shudders"), a warning of B09.
 
 **Balance:** the Act II boss band (naive ≤ 3%, role_answer 55–80%, smart 70–90%, p90 ≤ 80) on the Ch16 loadout (M4-A2P-019). `scripted: true` (no Escape).

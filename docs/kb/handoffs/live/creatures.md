@@ -1250,3 +1250,55 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
     - causeway and lane_games: re-aimed (the first frames were behind the tide wall and inside a wall), re-rendering now.
     - The existing `npc_haluna_dock`, `npc_haluna_lane` and `npc_haluna_market`, and `slice_haluna_villagers_village`, will gain people. They need new baselines (shots session).
 - **MERGE-READY @ ba2445136.** Next: the same vignettes for Oruvel (Ch1) and the Pemakar harbour (your 18:45 relay).
+- **Your 18:45 relay: Oruvel and the Pemakar quay lived in @ 4e09b97b7, plus Haluna fixes, HEAD 30e39d407.**
+  - **Oruvel's commons deck:** six people at the deck's edges, so the paths stay clear:
+    - a girl at stones by the north rail, and a man mending a diver's net bag;
+    - a man sweeping along the west rail, and a woman with her basket by the cookboat;
+    - along the south edge, a man laying fish to dry and a man hauling a line in.
+  - **The Pemakar quay at Lanternfall:** five people on the quay's two ends (the middle is the story's staging):
+    - an old man mending;
+    - two Low Reaches traders off the Brightwater crossing, one hauling his skiff in and one with a basket of salt fish;
+    - a woman come down with a basket of lanterns;
+    - an old woman folding leaf-boats.
+  - **Fewer children than Haluna.** No body repeats within a zone, and each community accepts only some bodies:
+    - Oruvel had one child body left, so its child plays stones alone;
+    - Pemakar had no child body and no Pemakar-accepted man left, hence the ferry traders.
+    - **LEAD-ASK (optional):** more children in these towns needs more planned child bodies (a characters-track body plan). Say if you want me to request it.
+  - **The late tier now goes by id prefix too** (`late_prefixes`: `oruvel_deck_`, `pemakar_quay_`). Late people are assigned after everyone else and never wear a body their zone already shows, so nothing already placed moved (tools test).
+  - **Haluna fixes after viewing the renders:**
+    - the stones pair moved out of the dune grass onto open sand;
+    - the hauler moved to the water's edge;
+    - the clapping pair moved into the open yard, clear of the tide wall;
+    - the dock hauler was over the water past the deck's visible edge; he is now on the planks.
+  - **Checks:** tools test_npc 35 OK; validate_data/npc; gen_crowd --check; Godot crowd 18/0. The libraries are unchanged by the towns (the play clips were already in).
+  - **Shots, all viewed and good:**
+    - `npc_haluna_vignette_causeway`, `_lane_games`, `_lane_mender`, `_dock`, `_night_market`, `_night_lane`;
+    - `crowd_vignette_oruvel_north`, `_oruvel_south`, `_pemakar_west`, `_pemakar_east`.
+    - These are new, with no baselines. The existing `npc_haluna_dock` (re-rendered and viewed), `npc_haluna_lane`, `npc_haluna_market`, `slice_haluna_villagers_village`, `crowd_zone_oruvel` and `crowd_zone_pemakar` gain people and need new baselines (shots session).
+- **MERGE-READY @ 30e39d407.**
+- **BACKLOG EMPTY:** M4-CRE-702 is in review (character); Act III stays planning-only; the brow.tres drift FAST-TRACK is characters'.
+- **Your 20:26 relay: test_villager_routines fixed @ 533d27512.**
+  - **Cause:** `test_a_greybox_actor_model_is_adopted_into_a_villager` builds ch01/oruvel's real rows on a bare zone and expected only Kell to resolve. Oruvel's `at`-row vignettes make their own spots, so 7 built.
+  - **Fix:** the test now counts the `at` rows (1 + 6).
+  - **Checks** (Godot):
+    - test_villager_routines 19/0, villager 46/0, npc 10/0, crowd 18/0;
+    - oruvel 17/0, pemakar 10/0, haluna 65/0, ch01 20/0, ch05 13/0.
+  - My miss: I ran the villager filter before the Oruvel rows went in. From now on I re-run it after any zone data change.
+- **MERGE-READY @ 533d27512.** Next: the Act II town vignettes (Hollowmere, Ansedra, Quellan, Reedhollow).
+- **Your 20:45 FAST-TRACK: M3-HER-1168 @ 445d5888e** (branch merged with lead/gate-big30 first, @ 0019a65b8; shots.json conflict resolved by taking big30's and appending my 7 new shots).
+  - **Cause, timed per row on Haluna:** a row's cost was mostly loading its actor scene (100–250 ms the first time). A row whose scene is loaded costs ~20 ms. Haluna now has 25 rows with the vignettes.
+  - **Fix** (`VillagerLayer._build_spread`):
+    1. Under the fade, every row's actor scene is requested on worker threads (`load_threaded_request`, sub-threads).
+    2. Once loaded, the rows go in as many a frame as fit 30 ms.
+    3. The reveal waits 2 frames for the first ticks.
+  - **scene_swap_probe → Haluna (headless):**
+    - cold: reveal held 1854 ms → 179–201 ms; hidden frames after the zone's own are 28, 4 and 2 ms;
+    - resident loads, warm: 1348 ms → 16–25 ms;
+    - worst visible frame 27 ms.
+    - The zone's own entry frame (2.5–3.0 s cold) is unchanged; it is not the layer's.
+  - return_probe (the Drownbell case) isn't committed on any branch, so integration-qa re-measures it. The task is at `review` with that box open.
+  - **Tests** (Godot): villager 47/0, crowd 20/0 (new actor-path test), npc 10/0, haluna 66/0, scene_router 17/0, swap 17/0, resident_loads 11/0, zone_cast 5/0.
+- **MERGE-READY @ 445d5888e.** It also carries the Act II vignettes:
+  - Quellan, Hollowmere and Ansedra (`late_prefixes`), plus Reedhollow's Kirru: fishers wading, a pair talking, a youngster watching, on the clips the Kirru have;
+  - shots `crowd_vignette_{quellan,hollowmere,ansedra,reedhollow}_*`;
+  - viewed: Quellan square and well, Hollowmere dock, Ansedra moorings. The Hollowmere platform cameras are re-aimed, and they and Reedhollow are still to view (next).

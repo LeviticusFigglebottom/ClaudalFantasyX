@@ -2325,7 +2325,7 @@
         "hair": "#2B1D14"
       },
       "work": "play_stones",
-      "about": "Kneeling on the sand at a game of stones with the boy facing her."
+      "about": "Kneeling on the open sand below the dunes at a game of stones with the boy facing her."
     },
     {
       "id": "haluna_stones_boy",
@@ -2546,6 +2546,606 @@
       },
       "work": "carry",
       "about": "Bringing the last basket home past the market stall after dark."
+    },
+    {
+      "id": "oruvel_deck_stones",
+      "zone": "ch01/oruvel",
+      "stage_actor": "CrowdSpots/oruvel_deck_stones",
+      "role": "child_stones",
+      "island": "low_reaches",
+      "community": "oruvel",
+      "age_band": "child",
+      "sex": "female",
+      "build": "teen",
+      "body": "crowd_girl_teen",
+      "tints": {
+        "cloth_a": "#EBE7DE",
+        "cloth_b": "#34416D",
+        "cloth_c": "#4A7485",
+        "hair": "#271C15"
+      },
+      "work": "play_stones",
+      "about": "A girl at a game of stones by herself against the commons' north rail."
+    },
+    {
+      "id": "oruvel_deck_sweeper",
+      "zone": "ch01/oruvel",
+      "stage_actor": "CrowdSpots/oruvel_deck_sweeper",
+      "role": "sweeper",
+      "island": "low_reaches",
+      "community": "oruvel",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_man_lean_a",
+      "tints": {
+        "cloth_a": "#E5DED0",
+        "cloth_b": "#7CABA6",
+        "cloth_c": "#40617C",
+        "hair": "#211A16"
+      },
+      "work": "sweep",
+      "about": "Sweeping the commons deck along the west rail, two strokes at a time."
+    },
+    {
+      "id": "oruvel_deck_hauler",
+      "zone": "ch01/oruvel",
+      "stage_actor": "CrowdSpots/oruvel_deck_hauler",
+      "role": "fisher",
+      "island": "low_reaches",
+      "community": "oruvel",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "medium",
+      "body": "crowd_man_medium_b",
+      "tints": {
+        "cloth_a": "#E3DBCC",
+        "cloth_b": "#5C86A2",
+        "cloth_c": "#456C81",
+        "hair": "#3E2617"
+      },
+      "work": "haul",
+      "about": "Hauling a line in over the south rail, hand over hand."
+    },
+    {
+      "id": "oruvel_deck_carrier",
+      "zone": "ch01/oruvel",
+      "stage_actor": "CrowdSpots/oruvel_deck_carrier",
+      "role": "townsfolk",
+      "island": "low_reaches",
+      "community": "oruvel",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "lean",
+      "body": "crowd_woman_lean_b",
+      "tints": {
+        "cloth_a": "#E5DED1",
+        "cloth_b": "#7EABA6",
+        "cloth_c": "#4F7F8A",
+        "hair": "#3D2617"
+      },
+      "work": "carry",
+      "about": "A basket on her hip by the cookboat, waiting on the cook."
+    },
+    {
+      "id": "oruvel_deck_folder",
+      "zone": "ch01/oruvel",
+      "stage_actor": "CrowdSpots/oruvel_deck_folder",
+      "role": "folder",
+      "island": "low_reaches",
+      "community": "oruvel",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "heavy",
+      "body": "crowd_man_heavy_b",
+      "tints": {
+        "cloth_a": "#DED4C1",
+        "cloth_b": "#5A5E75",
+        "cloth_c": "#4F7E8A",
+        "hair": "#211A16"
+      },
+      "work": "fold",
+      "about": "Laying fish to dry along the south rail."
+    },
+    {
+      "id": "oruvel_deck_mender",
+      "zone": "ch01/oruvel",
+      "stage_actor": "CrowdSpots/oruvel_deck_mender",
+      "role": "netmender",
+      "island": "low_reaches",
+      "community": "oruvel",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_man_lean_b",
+      "tints": {
+        "cloth_a": "#DED3BF",
+        "cloth_b": "#38446E",
+        "cloth_c": "#456B81",
+        "hair": "#251B15"
+      },
+      "work": "mend",
+      "about": "Knelt on the commons mending a lamp-diver's net bag."
+    },
+    {
+      "id": "pemakar_quay_mender",
+      "zone": "ch05/pemakar",
+      "stage_actor": "CrowdSpots/pemakar_quay_mender",
+      "role": "netmender",
+      "island": "pemakar_terraces",
+      "community": "pemakar",
+      "age_band": "elder",
+      "sex": "male",
+      "build": "heavy",
+      "body": "crowd_elder_man_b",
+      "tints": {
+        "cloth_a": "#DCD1BC",
+        "cloth_b": "#2D613A",
+        "cloth_c": "#2D603A",
+        "hair": "#B9B5AE"
+      },
+      "work": "mend",
+      "about": "An old man knelt at the quay's west end mending a net while the town readies for Lanternfall."
+    },
+    {
+      "id": "pemakar_quay_hauler",
+      "zone": "ch05/pemakar",
+      "stage_actor": "CrowdSpots/pemakar_quay_hauler",
+      "role": "boatman",
+      "island": "low_reaches",
+      "community": "brightwater",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "heavy",
+      "body": "crowd_man_heavy_b",
+      "tints": {
+        "cloth_a": "#2C3B6B",
+        "cloth_b": "#4F5573",
+        "cloth_c": "#993627",
+        "hair": "#201A16"
+      },
+      "work": "haul",
+      "about": "A Low Reaches trader off the Brightwater crossing, hauling his skiff in to the quay for the night."
+    },
+    {
+      "id": "pemakar_quay_trader",
+      "zone": "ch05/pemakar",
+      "stage_actor": "CrowdSpots/pemakar_quay_trader",
+      "role": "trader",
+      "island": "low_reaches",
+      "community": "brightwater",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "medium",
+      "body": "crowd_man_medium_b",
+      "tints": {
+        "cloth_a": "#303E6C",
+        "cloth_b": "#35426D",
+        "cloth_c": "#9B3828",
+        "hair": "#482B19"
+      },
+      "work": "carry",
+      "about": "His partner, a basket of Low Reaches salt fish on his hip."
+    },
+    {
+      "id": "pemakar_quay_carrier",
+      "zone": "ch05/pemakar",
+      "stage_actor": "CrowdSpots/pemakar_quay_carrier",
+      "role": "townsfolk",
+      "island": "pemakar_terraces",
+      "community": "pemakar",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "body": "crowd_woman_medium",
+      "tints": {
+        "cloth_a": "#E0D6C4",
+        "cloth_b": "#525874",
+        "cloth_c": "#7E1813",
+        "hair": "#201A16"
+      },
+      "work": "carry",
+      "about": "A basket of paper lanterns on her hip, come down for the folded boats."
+    },
+    {
+      "id": "pemakar_quay_folder",
+      "zone": "ch05/pemakar",
+      "stage_actor": "CrowdSpots/pemakar_quay_folder",
+      "role": "folder",
+      "island": "pemakar_terraces",
+      "community": "pemakar",
+      "age_band": "elder",
+      "sex": "female",
+      "build": "heavy",
+      "body": "crowd_elder_woman_b",
+      "tints": {
+        "cloth_a": "#DFCFB1",
+        "cloth_b": "#3A466E",
+        "cloth_c": "#2E623A",
+        "hair": "#48423E"
+      },
+      "work": "fold",
+      "about": "An old woman folding leaf-boats for Lanternfall at the quay's east end."
+    },
+    {
+      "id": "quellan_town_clap_girl",
+      "zone": "ch12/quellan",
+      "stage_actor": "CrowdSpots/quellan_town_clap_girl",
+      "role": "child_clap",
+      "island": "ullar",
+      "community": "quellan",
+      "age_band": "child",
+      "sex": "female",
+      "build": "small",
+      "body": "crowd_girl_small",
+      "tints": {
+        "cloth_a": "#33426E",
+        "cloth_b": "#3B4B72",
+        "cloth_c": "#7A2019",
+        "hair": "#211A16"
+      },
+      "work": "play_clap",
+      "about": "At a clapping game in the square below the tower with the boy facing her."
+    },
+    {
+      "id": "quellan_town_clap_boy",
+      "zone": "ch12/quellan",
+      "stage_actor": "CrowdSpots/quellan_town_clap_boy",
+      "role": "child_clap",
+      "island": "ullar",
+      "community": "quellan",
+      "age_band": "child",
+      "sex": "male",
+      "build": "small",
+      "body": "crowd_boy_tall",
+      "tints": {
+        "cloth_a": "#2D3C6C",
+        "cloth_b": "#34436F",
+        "cloth_c": "#B22A20",
+        "hair": "#201A16"
+      },
+      "work": "play_clap",
+      "about": "Her partner at the clapping game."
+    },
+    {
+      "id": "quellan_town_stones",
+      "zone": "ch12/quellan",
+      "stage_actor": "CrowdSpots/quellan_town_stones",
+      "role": "child_stones",
+      "island": "ullar",
+      "community": "quellan",
+      "age_band": "child",
+      "sex": "female",
+      "build": "tall",
+      "body": "crowd_girl_tall",
+      "tints": {
+        "cloth_a": "#2F3E6D",
+        "cloth_b": "#394971",
+        "cloth_c": "#B03325",
+        "hair": "#2C1D14"
+      },
+      "work": "play_stones",
+      "about": "A girl at stones on the square's flags."
+    },
+    {
+      "id": "quellan_town_well_hauler",
+      "zone": "ch12/quellan",
+      "stage_actor": "CrowdSpots/quellan_town_well_hauler",
+      "role": "fisher",
+      "island": "ullar",
+      "community": "quellan",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "medium",
+      "body": "crowd_man_medium_b",
+      "tints": {
+        "cloth_a": "#3D4D73",
+        "cloth_b": "#35446F",
+        "cloth_c": "#444F76",
+        "hair": "#2E1E14"
+      },
+      "work": "haul",
+      "about": "Hauling the well's bucket up hand over hand."
+    },
+    {
+      "id": "quellan_town_carrier",
+      "zone": "ch12/quellan",
+      "stage_actor": "CrowdSpots/quellan_town_carrier",
+      "role": "townsfolk",
+      "island": "ullar",
+      "community": "quellan",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "body": "crowd_woman_medium",
+      "tints": {
+        "cloth_a": "#425174",
+        "cloth_b": "#32416E",
+        "cloth_c": "#3F4B74",
+        "hair": "#231B16"
+      },
+      "work": "carry",
+      "about": "A basket of wool on her hip at the square's edge, watching the children."
+    },
+    {
+      "id": "quellan_town_folder",
+      "zone": "ch12/quellan",
+      "stage_actor": "CrowdSpots/quellan_town_folder",
+      "role": "folder",
+      "island": "ullar",
+      "community": "quellan",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "lean",
+      "body": "crowd_woman_lean_b",
+      "tints": {
+        "cloth_a": "#2B3A6B",
+        "cloth_b": "#364570",
+        "cloth_c": "#7B221B",
+        "hair": "#342115"
+      },
+      "work": "fold",
+      "about": "Folding a woven cloth at her door."
+    },
+    {
+      "id": "quellan_town_mender",
+      "zone": "ch12/quellan",
+      "stage_actor": "CrowdSpots/quellan_town_mender",
+      "role": "netmender",
+      "island": "ullar",
+      "community": "quellan",
+      "age_band": "elder",
+      "sex": "female",
+      "build": "lean",
+      "body": "crowd_elder_woman_b",
+      "tints": {
+        "cloth_a": "#E4D8BD",
+        "cloth_b": "#425275",
+        "cloth_c": "#7A1B15",
+        "hair": "#A7A29C"
+      },
+      "work": "mend",
+      "about": "An old woman knelt at her door mending keth-cord."
+    },
+    {
+      "id": "quellan_town_sweeper",
+      "zone": "ch12/quellan",
+      "stage_actor": "CrowdSpots/quellan_town_sweeper",
+      "role": "sweeper",
+      "island": "ullar",
+      "community": "quellan",
+      "age_band": "elder",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_elder_man_b",
+      "tints": {
+        "cloth_a": "#DECFB2",
+        "cloth_b": "#2C3B6B",
+        "cloth_c": "#B13024",
+        "hair": "#8D8882"
+      },
+      "work": "sweep",
+      "about": "An old man sweeping the square's edge, two strokes at a time."
+    },
+    {
+      "id": "hollowmere_dawn_hauler",
+      "zone": "ch17/hollowmere",
+      "stage_actor": "CrowdSpots/hollowmere_dawn_hauler",
+      "role": "fisher",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "heavy",
+      "body": "crowd_man_heavy",
+      "tints": {
+        "cloth_a": "#8D8F8D",
+        "cloth_b": "#5D6D7F",
+        "cloth_c": "#8FC0BB",
+        "hair": "#261C15"
+      },
+      "work": "haul",
+      "about": "Hauling a salvage line in at the dock's edge in the grey after the burning."
+    },
+    {
+      "id": "hollowmere_dawn_carrier",
+      "zone": "ch17/hollowmere",
+      "stage_actor": "CrowdSpots/hollowmere_dawn_carrier",
+      "role": "trader",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_man_lean_b",
+      "tints": {
+        "cloth_a": "#8D8F8C",
+        "cloth_b": "#67826F",
+        "cloth_c": "#8EC0BB",
+        "hair": "#2A1D15"
+      },
+      "work": "carry",
+      "about": "Carrying a basket of what was saved along the dock."
+    },
+    {
+      "id": "hollowmere_dawn_mender",
+      "zone": "ch17/hollowmere",
+      "stage_actor": "CrowdSpots/hollowmere_dawn_mender",
+      "role": "netmender",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "elder",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_elder_man_b",
+      "tints": {
+        "cloth_a": "#9E9B91",
+        "cloth_b": "#57677D",
+        "cloth_c": "#A9D5CF",
+        "hair": "#A7A29B"
+      },
+      "work": "mend",
+      "about": "An old man knelt on his platform, mending a scorched net."
+    },
+    {
+      "id": "hollowmere_dawn_folder",
+      "zone": "ch17/hollowmere",
+      "stage_actor": "CrowdSpots/hollowmere_dawn_folder",
+      "role": "folder",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "child",
+      "sex": "female",
+      "build": "tall",
+      "body": "crowd_girl_teen",
+      "tints": {
+        "cloth_a": "#999790",
+        "cloth_b": "#668370",
+        "cloth_c": "#82B6B2",
+        "hair": "#221B16"
+      },
+      "work": "fold",
+      "about": "A girl folding the cloths her family saved, helping."
+    },
+    {
+      "id": "ansedra_moorings_clap_girl",
+      "zone": "ch13/ansedra",
+      "stage_actor": "CrowdSpots/ansedra_moorings_clap_girl",
+      "role": "child_clap",
+      "island": "ansedra",
+      "community": "ansedra",
+      "age_band": "child",
+      "sex": "female",
+      "build": "small",
+      "body": "crowd_girl_small",
+      "tints": {
+        "cloth_a": "#8B8D8C",
+        "cloth_b": "#5C6C7F",
+        "cloth_c": "#AFB1B2",
+        "hair": "#201A16"
+      },
+      "work": "play_clap",
+      "about": "A poler's girl at a clapping game on the moorings with her brother."
+    },
+    {
+      "id": "ansedra_moorings_clap_boy",
+      "zone": "ch13/ansedra",
+      "stage_actor": "CrowdSpots/ansedra_moorings_clap_boy",
+      "role": "child_clap",
+      "island": "ansedra",
+      "community": "ansedra",
+      "age_band": "child",
+      "sex": "male",
+      "build": "small",
+      "body": "crowd_boy_small",
+      "tints": {
+        "cloth_a": "#A8ADB2",
+        "cloth_b": "#54637C",
+        "cloth_c": "#34363B",
+        "hair": "#201A16"
+      },
+      "work": "play_clap",
+      "about": "Her brother at the clapping game."
+    },
+    {
+      "id": "ansedra_moorings_stones",
+      "zone": "ch13/ansedra",
+      "stage_actor": "CrowdSpots/ansedra_moorings_stones",
+      "role": "child_stones",
+      "island": "ansedra",
+      "community": "ansedra",
+      "age_band": "child",
+      "sex": "female",
+      "build": "tall",
+      "body": "crowd_girl_tall",
+      "tints": {
+        "cloth_a": "#A49F92",
+        "cloth_b": "#59697E",
+        "cloth_c": "#393E44",
+        "hair": "#291D15"
+      },
+      "work": "play_stones",
+      "about": "A girl at stones on the moorings' flags."
+    },
+    {
+      "id": "ansedra_moorings_carrier",
+      "zone": "ch13/ansedra",
+      "stage_actor": "CrowdSpots/ansedra_moorings_carrier",
+      "role": "townsfolk",
+      "island": "ansedra",
+      "community": "ansedra",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "body": "crowd_woman_medium_b",
+      "tints": {
+        "cloth_a": "#A5A093",
+        "cloth_b": "#464E59",
+        "cloth_c": "#3A3F46",
+        "hair": "#231B16"
+      },
+      "work": "carry",
+      "about": "A poler's wife with a basket on her hip, come down to the barges."
+    },
+    {
+      "id": "ansedra_moorings_folder",
+      "zone": "ch13/ansedra",
+      "stage_actor": "CrowdSpots/ansedra_moorings_folder",
+      "role": "folder",
+      "island": "ansedra",
+      "community": "ansedra",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "lean",
+      "body": "crowd_woman_heavy",
+      "tints": {
+        "cloth_a": "#8A949E",
+        "cloth_b": "#515D6B",
+        "cloth_c": "#444D56",
+        "hair": "#241B15"
+      },
+      "work": "fold",
+      "about": "Folding the barge's grey awning at the rail."
+    },
+    {
+      "id": "ansedra_moorings_mender",
+      "zone": "ch13/ansedra",
+      "stage_actor": "CrowdSpots/ansedra_moorings_mender",
+      "role": "netmender",
+      "island": "ansedra",
+      "community": "ansedra",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "medium",
+      "body": "crowd_man_lean_a",
+      "tints": {
+        "cloth_a": "#9C9A90",
+        "cloth_b": "#56667D",
+        "cloth_c": "#3A3F46",
+        "hair": "#261C15"
+      },
+      "work": "mend",
+      "about": "A poler knelt at the rail mending a barge net."
+    },
+    {
+      "id": "ansedra_moorings_sweeper",
+      "zone": "ch13/ansedra",
+      "stage_actor": "CrowdSpots/ansedra_moorings_sweeper",
+      "role": "sweeper",
+      "island": "ansedra",
+      "community": "ansedra",
+      "age_band": "elder",
+      "sex": "male",
+      "build": "heavy",
+      "body": "crowd_elder_man_b",
+      "tints": {
+        "cloth_a": "#BDBFC0",
+        "cloth_b": "#4A5460",
+        "cloth_c": "#A5A9AC",
+        "hair": "#B7B3AC"
+      },
+      "work": "sweep",
+      "about": "An old poler sweeping the moorings' top edge."
     }
   ]
 }

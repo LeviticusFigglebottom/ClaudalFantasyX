@@ -117,8 +117,10 @@
     "arms_down": 41.7
   },
   "_work": [
+    "carry",
     "haul",
     "kneel_mourn",
+    "mend",
     "vigil"
   ]
 }

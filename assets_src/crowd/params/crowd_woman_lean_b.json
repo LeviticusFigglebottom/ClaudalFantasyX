@@ -114,6 +114,8 @@
     "arms_down": 42.1
   },
   "_work": [
+    "carry",
+    "fold",
     "kneel_mourn",
     "vigil"
   ]

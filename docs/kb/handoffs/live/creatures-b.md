@@ -877,3 +877,60 @@ LEAD-ASK: none blocking. The Act II boss as-played passes are DONE (Ch10–12 an
   the frame, and in The Seven she rises further on the column, so her head and raised arms leave the frame. The
   vowbound slot's framing needs her 4.2 m (ADR 0204 §7) plus the Seven's lift; this is the strongest case of the
   slot-before-the-camera note above.
+
+## 2026-10-30 ~19:10: the Lead's 18:45 (the Act I boss feel pass)
+Measured, not only viewed: each Act I boss in its own fight at the default camera (1920x1080). For each clip, the
+farthest any bone moves on screen from the idle's first frame, and its peak speed (px per 0.05 s):
+
+| Boss | body on screen | hit | hit_b | idle | ready | tells (gather, phase) |
+|---|---|---|---|---|---|---|
+| Hullgnaw | 517 px | 54 / v51 | 82 / v69 | 107 / v9 | 76 / v17 | coil 109, phase_break 849 |
+| Drownbell | 460 | 85 / v52 | 93 / v51 | 48 / v4 | 54 / v9 | toll_gather 82, phase_change 88 |
+| Bottle Hermit | 116 | 55 / v27 | 77 / v40 | 13 / v1 | 132 / v1 | attack 175, ready 132 |
+| Spar-Wraith | 317 | 94 / v69 | 54 / v33 | 13 / v1 | 23 / v2 | shroud_sweep 117, phase_drop 98 |
+| Cinder Matron | 382 | 85 / v44 | 117 / v60 | 8 / v1 | 97 / v3 | recrust_gather 125, phase_change 382 |
+| Undertow's Reach | 1016 | **40 / v17** | 60 / v44 | 49 / v4 | 81 / v13 | breach_gather 607, phase_breach 471 |
+
+- Every hit is a fast jolt against a slow idle (5 to 70 times the idle's speed), and every tell moves well past the
+  idle, **except the Reach's `hit`** (and `hit_dark`, made from it). At 17 px per 0.05 s on a body that fills the
+  screen, it barely beat its own ready loop: the shudder ran along the view axis. (Its mirrored hit_b crossed the
+  screen at 44.)
+- **MERGE-READY @ de6c131bf: the Reach's hit throws the hand up and aside off the wall-head**, with a stronger shudder up the
+  limb. Measured again: hit 47 / v35, hit_dark 144 / v36, hit_b 111 / v83. Clip sheet viewed: the hand lifts clear
+  of the wall at 0.24 s. New tools/tests/test_undertows_reach.py (the hand thrown at least 0.55 m; the old hit moved
+  it 0.38 m and fails). Blender creature_undertows_reach 4 identical; Godot boss_seat (the party-lane check) 3/0,
+  creature_bosses 40/0, creature_actor 31/0; tools test_creatures and test_blender_builds OK; validate_data 0/0.
+- Moll (the Inquisitor) is the characters track's actor, so its clips are outside this measure.
+- Stagger and phase tells were all clear: the phase clips move 88 to 849 px. What hides them in play is the
+  phase-moment cut (battle-presentation, traced above), not the clips.
+- **The Vowbound summon passes: COMPLETE** (all seven, every skill once plus the finisher, in the mounted Act II
+  fights). All clips read on their bodies:
+  - **Ilun** (ch10): Brine Lash, Tidal Ward, the Floodnet finisher (the net-wings spread).
+  - **Nhoa** (ch10): Silt Fall, Deep Well, Echo, the Farewell Tide finisher (she lifts, arms raised).
+  - **Kahre** (ch11): Forge Bolt, the Last Strike finisher. Its mid-clip still looks like Forge Bolt's, so I
+    measured both: Last Strike peaks 2.8 m from rest over 2.8 s with two strikes, Forge Bolt 1.5 m over 1.6 s.
+  - **Hesk** (ch11): Knot Light, Cord Lift (`cleanse`), Mending, the Pass Cord finisher, and the guard.
+  - **Virel**, **Ethren**, **Kesh** (ch12): as above.
+  - **Fixed in my lane:** Kesh's rise (021ce740). **For battle-presentation:** the normal call's hold (1.3 s after
+    the 0.95 s delay) is shorter than the 2.6 s rises; Kesh's 4.2 m (and The Seven's lift) leave the frame at the
+    vowbound slot; the slot stands before the default camera.
+  - The effects on these skills are battle-presentation's (big25+); I re-run the same passes to view them on the
+    bodies once they are on the integration branch (the agreed split).
+- **BACKLOG EMPTY (19:40):** the Act I and Act II boss passes, the Act I feel pass (de6c131b) and the Vowbound summon
+  passes are done, with every fix in my lane MERGE-READY. Next when they land: battle-presentation's Act II effects
+  (view them on the bodies), the Abiding guard's actor, the flat-engine's row, and the Ch13+ boss encounters.
+
+## 2026-10-30 20:30: answer to the Lead's 20:26 (the Act I boss feel pass is DONE, logged at 19:10)
+MERGE-READY @ de6c131bf: the Act I boss feel pass. All six bosses measured at battle distance (the table at 19:10). The one weak tell, the Reach's hit, is fixed and tested; the stagger and phase tells all read.
+MERGE-READY @ 589c27676: the branch head (everything above).
+
+## 2026-10-30 ~21:40: M3-HER-1134 (an open Act I row of mine, before the Act II feel pass)
+MERGE-READY @ c095cfec2: M3-HER-1134. The Cinder Matron's cutscene cues play her own clips (to review: cinematics).
+- She was already her creature on the Ashcrown stage (cast `creature:cinder_matron`). Only the clip names were
+  missing. Two keys were appended to the sequencer's `clip_stand_ins` (game/data/cutscene/sequencer.json):
+  `matron/bank` plays `bank_the_fire`, and `matron/unfold` plays `intro` (the anvil's ring wakes her).
+- qa_cutscene_motion_audit, before and after: ch05_kahre real 7 -> 8 (`matron/bank` was none; it's real now);
+  ch05_matron_wakes real 1 -> 2, gaps none. The one gap left in ch05_kahre, `tender/open_chamber`, is the
+  characters track's. validate_data 0/0; taskboard --check clean.
+- Running: the four Act II Vowbound with battle-presentation's big29 effects, to view each one on its body. Next:
+  the Act II boss feel pass. M3-HER-1168 is creatures': they haven't asked in their log.

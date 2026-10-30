@@ -312,10 +312,11 @@
                 "sash": {"mat": "cloth_c", "width_m": [0.05, 0.06], "turns": 1}, "?sandals": "leather"}
   },
   "assign": {
-    "_about": "Person -> body scores (gen_crowd.assign): a body must match the person's age band and sex, be in the community's `accepts` and not be used in the zone yet; robe bodies only wear Order roles and Order roles only robes. `late_zones` (crowds added after the rest: Haluna's vignettes, the Lead 2026-10-30) are assigned after every other zone, so they never reshuffle bodies already placed. Among those: the build, the body's own community, a preferred kit; each earlier use costs `per_use`. Ties break by a seeded hash.",
+    "_about": "Person -> body scores (gen_crowd.assign): a body must match the person's age band and sex, be in the community's `accepts` and not be used in the zone yet; robe bodies only wear Order roles and Order roles only robes. `late_zones` and `late_prefixes` (people added after the rest, by zone or by id prefix: the slice towns' vignettes, the Lead 2026-10-30) are assigned after everyone else, so they never reshuffle bodies already placed. Among those: the build, the body's own community, a preferred kit; each earlier use costs `per_use`. Ties break by a seeded hash.",
     "build": 10.0, "home": 4.0, "accepted_rank": 0.5, "kit": 3.0, "per_use": 2.5,
     "tint_min_distance": 40.0,
     "late_zones": ["ch02/haluna"],
+    "late_prefixes": ["oruvel_deck_", "pemakar_quay_", "quellan_town_", "hollowmere_dawn_", "ansedra_moorings_"],
     "tint_tries": 24
   },
   "clip_libraries": {

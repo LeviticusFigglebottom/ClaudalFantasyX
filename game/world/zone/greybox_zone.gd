@@ -387,11 +387,13 @@ func _build_triggers() -> void:
 		var size := _vec3(t.get("size", [1, 1, 1]))
 		if size.y <= 0.0:
 			size.y = float(setting("trigger_height"))
+		var sink := float(setting("trigger_sink_m"))  # a body settled a hair under the floor still stands in it
+		size.y += sink
 		shape.size = size
 		var cs := CollisionShape3D.new()
 		cs.name = "Shape"
 		cs.shape = shape
-		cs.position.y = size.y * 0.5
+		cs.position.y = size.y * 0.5 - sink
 		area.add_child(cs)
 		root.add_child(area)
 

@@ -563,3 +563,55 @@ SELF-RENDERED @ (this commit): a temporary strip, not committed: Asha's run at 4
 - MERGE-READY @ 39b1ed81
 - **Next:** M4-A2P-055 (Sefir in person), M4-A2P-057 (Kesh), and the prop request (the dock-hook, the salt-glass
   housing, the wedding cord).
+
+## 2026-10-30, Act II: M4-A2P-055 Sefir in person
+- The temptation's tender and sad now read at 85 mm (raised in the data, the sheet and the test). The memory's
+  grief-grey is a material variant (skin_head_grief, via CostumeVariant). The officiant is the Act I model.
+- **Checks:** close-ups viewed; sefir identical on 3 paths; test_sefir, Godot hero_stage 11.
+- LEAD-ASK (crowd sets, M4-A2P-052): act2_tracks gives characters the Act II crowd sets, but the Act II layouts
+  (ch12/quellan, ch13/ansedra, ch17/hollowmere) have no actors yet, and gen_crowd.py reads one ranges.json (the
+  creatures track's). Proposal: once env-art places the crowd stage actors, I add the ansedra and quellan
+  communities (Saltwright exists) in assets_src/crowd/{ansedra,quellan}_ranges.json, with a three-line loader in
+  gen_crowd.py. creatures to OK the loader?
+- MERGE-READY @ dd590bd7
+- **Next:** the hand-prop request (Aldous's dock-hook and salt-glass housing, the wedding cord) to cinematics. Then
+  the Act II queue is done for characters, apart from the crowd sets (blocked as above) and Owa (Act III).
+- **Hand props (Act II):** assets/characters/props/act2/{dock_hook,salt_glass_housing,wedding_cord}.glb. Each
+  origin is the grip, for a BoneAttachment3D. The housing's bound glow is `emission_energy_multiplier` on
+  housing_glass.tres, off by default. The shot was viewed and the job is identical on 3 paths. MERGE-READY @ 1d4f93cb
+
+## 2026-10-30, M3-CHR-1000: every queued story clip, Act II's included (and the Ch14 Character Art list)
+- **Ch14 Character Art list:**
+  - Liss: `press_wound` (kneeling, both hands on the wound) and `fight_free`.
+  - Toma: `lift`, one-armed. ch14_the_vows cues it on Liss; ch15_let_me_carry_him reuses it on Tobin.
+  - The Stillguard: `withdraw_wounded` (falling back hurt, not dying), on all six variants.
+  - Merel: `pull_pin` and `pole_push`, renamed to ch14_first_ripple's cues.
+  - The Tender: `paint_gilt_line` (ch13_ethren). This was big27's test_villagers red.
+- **The queue** (`requested_clips.json` `clips` was 81 rows; it is now empty):
+  - Asha 8, Rhen 13, Toma 4, Liss 20, Kerrid 9, Ysolde 7, Pell 6 and Sefir 5 rows are built.
+  - Merel (`bow`, `offer_palm`, `lay_cloth`) and Tobin (`give_cord`, `lift`, `shield_merel`, `sit_down`) are on the
+    villager path.
+  - New shared specs: `turn_back`, `nod`, `raise_hand`, `step_back`, `tie_knot`, `wake`, `touch_hip`, `hold_out_r`.
+- **Hand heights** were measured by FK against the shoulder and hip heights, not guessed.
+  - Sefir's idle already bends his elbows, so his table work uses negative elbow values.
+  - Ysolde's book hand sits about 0.18 m higher than her free hand, so it is compensated.
+  - Asha's hair touches and her take_hand use her free hand, the left.
+- **big29 reds fixed:**
+  - test_cutscene_face_per_actor: Sefir's shipped pose table is synced with the source.
+  - test_hero_clips: the gate merged a WIP head; it rebuilds byte for byte now.
+- **Shots:** 15 new, all pending_baseline:
+  - Ch14: liss_clip_{press_wound,fight_free}, toma_clip_lift, stillguard_c_clip_withdraw_wounded,
+    villager_merel_pull_pin.
+  - kerrid_clip_turn_palms, pell_clip_kneel, ysolde_clip_remove_pin, sefir_clip_square_pages, liss_clip_wash_hand,
+    rhen_clip_knock, asha_clip_{touch,sleep_sitting}, toma_clip_bow, villager_tobin_lift.
+  - All viewed; the ones that read wrong were fixed and rendered again.
+- **Libraries:** Asha's is 4.02 MB and Rhen's 3.99 MB, against test_hero_clips' 4 MiB (4.19 MB) text bound. The
+  next batch of story clips for them needs a binary .res (the test's own note).
+- **Known limits:**
+  - A free hand has no per-clip finger curl, so Rhen's knock is an open hand.
+  - Toma's `lift` is one-armed for both cues; ch15's carry may want a two-arm cradle (cinematics' call).
+- **Script actor ids with no library** (cinematics/story to route):
+  - `aldous_varrow` (the build is `aldous`).
+  - `stillguard` (ch14: the builds are stillguard_a…f).
+  - `kirru` (ch10: the builds are kirru_{adult,child,elder}).
+  - `young_sefir`, `owa`, `householder`, `conclave`.

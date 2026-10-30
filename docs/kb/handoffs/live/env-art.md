@@ -589,9 +589,76 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
-- **LEAD (18:24), IN PROGRESS: the Ch2 Haluna and Ch3 causeway beauty pass** (ids M4-A2P-1400..1499). Started 18:25.
-  Eye-height stills along the walkthrough path are rendered for Haluna (22) and the causeway (12); the Shell Shrine's
-  approach is rendering. Next: view them, then fix and log MERGE-READY.
+- **CONFIRMED 21:06: the last Oruvel outrigger fix (M3-ENV-1391) is pushed.** It is 0de280e2 on origin/claude/env-art,
+  MERGE-READY.
+- **LEAD (21:05), answered: the Act II Ch10–Ch12 beauty pass (M4-A2P-1402, review: art). MERGE-READY @ a60417fc.**
+  - **Viewed:** eye-height stills at every interactable and zone-map POI: Ossa Fen 7, the Sunken Vey 5, Lowlight 5.
+  - **Fixed:**
+    - The fen's reed platforms read plastic green; `kit_fen_reed` is now straw-grey.
+    - The fen mud and bank used mirror-wet defaults; they are now matte damp.
+  - **Kept:**
+    - The fen edge's sheen is backlight from the low sun.
+    - The Vey and Lowlight read cold and empty, as designed.
+  - **LEAD-ASK:** the Vey landing is a bare flagged platform with a rail. Dressing it would be new content; your
+    call.
+  - **Checks:**
+    - Tools: the fen and haluna kit tests OK.
+    - Godot `--filter=ch10`: 3/0.
+    - validate_data and taskboard --check clean.
+  - **Baselines that move (none written):** the Ossa Fen shots with reed platforms.
+- **STATUS 20:46 (answers the Lead's 20:45 check-in): everything is pushed; the head is the log commit after 937389e9.**
+  - Oruvel's last outrigger (M3-ENV-1391): MERGE-READY @ 0de280e2 (pushed 19:58).
+  - The Ch4 beauty pass and the Prologue-to-Ch4 arrivals (M4-A2P-1401): MERGE-READY @ 937389e9 (pushed 19:58).
+  - **Transitions, viewed as played:**
+    - Zone exits: this stretch has none to walk through; every hand-off is a beat or cutscene. So I viewed the frame
+      the player gets on arriving at each spawn (M4-A2P-1401 has the findings: the ferry Landing is fixed; the
+      DockShore camera and the shrine Entry party stacking are the Lead's call).
+    - Chapter cards: flow_chapter_card_ch04_voice, flow_chapter_card_ch04 and cutscene_act_card were captured to my
+      scratchpad (no baseline) and viewed. They are clean: centred serif titles on black under the gold rule.
+    - One typography note for UI/narrative: the Ch4 voice caption uses straight ASCII quotes ("...") on the serif card;
+      typographic quotes would match the card. That's a loc string, not env-art's.
+    - Ch1 to Ch3 have no chapter card in the played route; each hand-off is a fade into the next zone's arrival.
+- **LEAD (19:45), answered: M3-ENV-1391's last box. MERGE-READY @ 4f46aecd.** LowHull's outrigger lay along the run's
+  two plank bridges, its booms through their rails. It now floats alongside the run (z -21.25, yaw 180), with its
+  AABB 0.1 m clear. The salvage on the planks over LowHull still blocks the way, and both still drift with the block.
+  - Viewed from the run, from the bridge and from the side.
+  - The AABB mirror of cloud-qa's check lists only the dive raft's three intended pairs.
+  - test_oruvel_moorings drops the LowHull allowance and passes; test_zone_dressing_ch01 OK.
+  - Godot `--filter=ch01` and `--filter=edge_walls` are green.
+  - The Ch4 pass continues (the galley's satin walls are in at 7d2197e6).
+- **LEAD (19:25), answered: the Ch4 beauty pass and the Prologue-to-Ch4 arrivals (M4-A2P-1401, review: art).
+  MERGE-READY @ 34fdefa3.**
+  - **Viewed:**
+    - eye-height stills along the walkthrough legs: Haluna wake 18, ferry 18;
+    - the arrival frame at each hand-off's spawn (`tools/hero/walk_stills`, the real camera and party): Drop, Surface,
+      Beach, FromHaluna, Entry, NemeDoor, DockShore and Landing.
+  - **Fixed:**
+    - The Terrace galley's lacquer boards streaked white with sky reflections indoors; they are now satin
+      (`bf_lacquer_black_satin`, 7d2197e6).
+    - The Landing arrival was a black rock. A ferry lantern now sits at the gangplank's head as its warm key light.
+  - **LEAD-ASK (not env-art's to change):**
+    - The Haluna wake's night shallows glow bright day-cyan (`haluna_mood.gd`'s held-glimmer sea-glow). Intended, or
+      calm it?
+    - The DockShore arrival camera sits behind Rhen's head, so he fills the frame (camera).
+    - At the shrine Entry arrival, Asha and Toma stand stacked into Rhen (party spawn spots).
+  - **Checks:**
+    - Tools: the ch04 and ferry tests OK.
+    - Godot `--filter=ch04`: 13/0.
+    - validate_data and taskboard --check clean.
+  - **Baselines that move (none written):** the ferry galley and landing shots.
+- **LEAD (18:24), answered: the Ch2 Haluna and Ch3 causeway beauty pass (M4-A2P-1400, review: art). MERGE-READY @ dadb6930.**
+  - Stills at eye height along the walkthrough legs, viewed: Haluna 22, the causeway 12, the Shell Shrine 8.
+  - **Fixed:** Haluna's 49 windbreak trees rendered as black blots from every side. `kit_windbreak_leaf` now has a
+    tint over 1, half the baked AO, more transmission and a softer wrap; the trees read as leafy dark-green shade.
+  - **Viewed and left as is:**
+    - Haluna's beach, lanes and stilt pier: the sea light is strong.
+    - The causeway's stepping stones, posts and tide pools read clearly.
+    - The shrine's sunlit approach and cool interior are as designed.
+  - **Checks:**
+    - Tools: test_haluna_kit and test_haluna_dressing OK.
+    - Godot `--filter`: vegetation 17/0, haluna 65/0.
+    - validate_data and taskboard --check clean.
+  - **Baselines that move (none written):** every Haluna shot that frames a windbreak tree.
 - **LEAD (17:45), answered: the Ch1 Underway and Oruvel dressing pass. MERGE-READY @ 922cd122.**
   - **Stills viewed before and after:**
     - the Underway's four walkthrough dive legs, 22 points at eye height;
