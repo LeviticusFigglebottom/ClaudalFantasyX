@@ -338,3 +338,53 @@ no game content, scene, asset, data table or test changes while ADR 0041 stands)
 - **Checks:** dlgc --check 0/0 · validate_data 0/0 · taskboard clean · Godot `act2_dialogue` 1/0 and `dialogue` 86/0.
 - MERGE-READY @ 4185052e2
 - BACKLOG EMPTY (story track).
+
+## 2026-10-30: big22 merged; two tools reds fixed (Lead FAST-TRACK)
+- Merged integration (big22) @ 3ef552f87. The fixes are in the merge commit:
+  - **test_cutscene_sfx_files:** big22 delivered all 11 pending SFX and `kesh_memory`, so `SFX_TODO` and `MUSIC_TODO` are now empty, as the test demands. `kesh_memory`'s stand-in row came with the merge. M4-A2P-107's audio rows are ticked; characters' clips remain.
+  - **test_status_names:** the Kirru speaker label "Shell-carver" collided with ADR 0202's retired status name Shell. It's now **"Name-carver"** (she carves the name-shells), and act3_ch18 is updated to match.
+- **Conflicts:**
+  - `ch11.csv`: both appends kept.
+  - `objectives.json`: integration's zone-level main rows (8287ca8b3) are pinned by `test_act_two_zones_point_along_the_main_path`, and my beat-level main rows clash with them in either order. **I dropped my 30 main rows and their `OBJ_CH1N_*` text and kept my 13 side errands.** M4-A2P-109 and act2_text_ids.md are updated.
+- **LEAD-ASK:** later, when the chapter flows set the story flags, should the beat-level main lines replace the zone-level ones? They're in git history at 1a3aa7b9a. Owner of the test: whoever wrote 8287ca8b3.
+- **Checks:**
+  - tools: test_cutscene_sfx_files and test_status_names (8 tests) OK; loc_csv_shape, loc_key_names, loc_literals and loc_readiness OK; the hero-clip subset (7 tests) OK.
+  - validate_data 0/0 · taskboard clean · dlgc 0/0.
+  - Godot: `objective` 16/0, `zone_map` 22/0, `pseudo_loc` 26/0, `act2_dialogue` 1/0, `codex` 16/0.
+- MERGE-READY @ 3ef552f87
+
+## 2026-10-30: dropped objective rows checked; Ch10 staging re-checked; Ch11 direction notes
+- **The 30 dropped main objective rows. Were they duplicates of the existing rows? Partly, not wholly.** I compared each against integration's 17 zone-level rows (8287ca8b3):
+  - **16 had a direct counterpart** (same zone and target): the fen to Reedhollow, the galleries to Lowlight, Lowlight's sanctum, the pass to Quellan, Quellan to Cloudloom, Cloudloom's dais, the Sanctum, the Archive, the ledgers, the court dais, the barge, the sea watch, Hollowmere, the Rim, and the Choir. That content isn't lost; it's said in their words.
+  - **14 were beat-level steps with no counterpart in the shipped rows**:
+    - Ch10: the Drowner's clearing, the shore at dusk, Pell at the gate;
+    - Ch11: back up and out of Lowlight;
+    - Ch12: the snow wall on the terrace, the Quellan inn night, the descent;
+    - Ch13: the ledge, the Cantor roll, Kerrid at the moorings, the High Warden's house;
+    - Ch14: hold the water-steps, the water-gate;
+    - Ch15: the dock-master, the pyre-raft, the ship south;
+    - Ch16: hold the line.
+
+    Those are **out of the game data, but not lost**: the rows and their text are in git (1a3aa7b9a). The LEAD-ASK above stands: when the flows set the story flags, restore them as finer steps under the zone rows.
+- **Ch10 staging re-check** (m2-slice @ a9e826427), recorded in M4-A2P-112's status section:
+  - resolved: 1 (the flag);
+  - fixed in my scripts, reaching their branch with the next merge of this branch: 2 (dawn gate) and 4 (Pell's exit);
+  - still open: 3 (R02 singles for Owa), 5 (Ysolde's mark; waits on M4-CIN-1305) and 6 (pacing). Their new stills are greybox, before the actors.
+- **Ch11 direction notes:** `docs/kb/story/beats/act2_ch11_direction.md`, per scene. Each has the blocking (proposed marks with coordinates in the greybox frame), every shot (lens, position and target), and for **every spoken line who is in frame**, each checked with the frustum test, plus the pauses against §1's minutes.
+  - **A collision caught and fixed in the scripts:** the greybox layout's own L01–L07 aren't lowlight.md's composed shots (the layout's L05 is a sanctum view), so `@camera L05` would have staged the engine scene in the wrong room with no error. The scripts now use V00, V10 and T00 for the art doc's L01, L03 and L05, and Pell kneels on the layout's `pell_kneel`.
+- **Checks:** dlgc --check 0/0 · validate_data 0/0 · taskboard clean · Godot `dialogue` 86/0.
+- MERGE-READY @ e25478fd1
+- BACKLOG EMPTY (story track).
+
+## 2026-10-30: Ch12 and Ch13 direction notes (Lead request)
+- `docs/kb/story/beats/act2_ch12_direction.md` and `act2_ch13_direction.md`, in the Ch11 format.
+- A script (kept in the scratchpad, not the repo) frames each shot on its subjects in the greybox frame, runs each scene's cues and checks every spoken line's speaker against the active shot. **Ch12:** all lines in frame, one deliberately off (Ysolde over the Ram). **Ch13:** 58 in frame, 5 deliberately off (voices over the reader, Rhen over the polers' wide).
+- Each doc lists the **greybox ids that collide with a different picture**, to replace in staging (Ch12: K01, K04, C02, C03; Ch13: A03–A06, S02), and the pacing per beat against §1. Every scene runs 2–8× short; the notes say where the holds go.
+- **Blocking bugs fixed in my scripts:**
+  - Kerrid and Tobin shared `outer_moorings`, so Kerrid now stands on the layout's `kerrid_moorings`;
+  - Merel and Tobin shared `guest_moorings`, so Merel uses `guest_moorings_b`;
+  - the house side scene now cuts between A15b (the street) and A15 (the front room), with Rhen on his own marks.
+- act2_ch13 §7's A03 said Kerrid sits; it now says he stands, per ADR 0204.
+- **Checks:** dlgc --check 0/0 · validate_data 0/0 · taskboard clean · Godot `dialogue` 86/0.
+- MERGE-READY Ch12 @ d56bcb66d · MERGE-READY Ch13 @ d56bcb66d
+- Next: the Ch14–Ch16 notes.

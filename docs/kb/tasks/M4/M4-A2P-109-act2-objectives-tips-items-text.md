@@ -16,7 +16,7 @@ banned terms. The ids are coordinated with their data owners in
 [act2_text_ids.md](../../plan/act2/act2_text_ids.md).
 
 ## Acceptance criteria
-- [x] 42 objectives.json rows (29 main, 13 side), with `OBJ_CH1N_*` text in the chapter csv files.
+- [x] 13 `side` errand rows in objectives.json, with `OBJ_CH1N_SIDE_*` text. My 30 main-path rows were dropped at the big22 merge (2026-10-30): integration's zone-level main rows (8287ca8b3, pinned by `test_act_two_zones_point_along_the_main_path`) are canonical. The beat-level main lines are in git history (1a3aa7b9a) for a later pass (LEAD-ASK, live log).
 - [x] 12 battle prompts, 3 field tips, the set-piece HUD lines and Pell's formation line, all from ui's tutorials.md and hud.md ids.
 - [x] Names and descriptions for 11 items and key items and 12 gear pieces, plus 2 inns, at the ids in act2_text_ids.md.
 - [x] Six save-shrine flavour scripts, with dark variants for the Order's shrines after the heresy.

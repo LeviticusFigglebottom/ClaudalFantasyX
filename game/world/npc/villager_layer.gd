@@ -46,6 +46,8 @@ const WORK_SUFFIX := "Work"
 const GREYBOX_MODEL := "Model"
 ## ZoneCast's villager model on an Act I stage actor (M3-CIN-1217; game/levels/act1/zone_cast.gd).
 const ZONE_CAST := "Cast"
+## Where a row's `at` spot is made when the zone has no stand-in for it (a crowd on a greybox that names no actors).
+const CROWD_SPOTS := "CrowdSpots"
 
 ## crowd.json, read once (crowd_data) and its people by id.
 static var _crowd: Dictionary = {}
@@ -184,6 +186,27 @@ static func wire(zone: Node3D, zone_id: StringName) -> VillagerLayer:
 	return layer
 
 
+## A row's `at` ([x, y, z] or [x, y, z, yaw_deg] in the zone's space): the empty stand-in at `path`
+## (CrowdSpots/<name>) made for it, for a zone whose greybox names no actor there (the Act II towns' crowds).
+func _spot(root: Node, path: String, at: Variant) -> Node3D:
+	var parts := path.split("/")
+	if parts.size() != 2 or parts[0] != CROWD_SPOTS or _vec3(at) == Vector3.INF:
+		push_warning(
+			"VillagerLayer %s: an `at` row's stand-in must be %s/<name>, not %s" % [zone_id, CROWD_SPOTS, path]
+		)
+		return null
+	var holder := root.get_node_or_null(CROWD_SPOTS) as Node3D
+	if holder == null:
+		holder = Node3D.new()
+		holder.name = CROWD_SPOTS
+		root.add_child(holder)
+	var spot := Node3D.new()
+	spot.name = parts[1]
+	spot.transform = offset_transform(at)
+	holder.add_child(spot)
+	return spot
+
+
 ## The FieldNpc a zone already put on `stand_in` (itself, or a child), or null.
 static func placed_on(stand_in: Node) -> FieldNpc:
 	if stand_in is FieldNpc:
@@ -198,6 +221,8 @@ func _make(row: Dictionary) -> FieldNpc:
 	var root := _root()
 	var id := StringName(str(row.get("npc_id", "")))
 	var stand_in := root.get_node_or_null(NodePath(str(row.get("stand_in", "")))) as Node3D
+	if stand_in == null and row.has("at"):
+		stand_in = _spot(root, str(row.get("stand_in", "")), row["at"])
 	var crowd_id := StringName(str(row.get("crowd", "")))
 	var person := crowd_person(crowd_id) if crowd_id != &"" else {}
 	if crowd_id != &"" and person.is_empty():

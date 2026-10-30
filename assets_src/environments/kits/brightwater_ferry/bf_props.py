@@ -9,6 +9,9 @@
                      a lidded basket, a rolled sleeping mat, a bedroll, a gourd and a flat mat.
   ferry_lantern      a deck lantern (origin at its hanging ring): iron cage, glass chimney (the lit glass), hood.
                      LANTERN_FLAME is where the preview's rig puts its light.
+  deck_shrine        the deckhouse's Order shrine (C4-10, the crossing's rest): a limewashed board on the wall, the
+                     Level's gilt line across it under a carved lintel, a shelf with a clay lamp, a bowl of salt and
+                     two shells left by passengers. Origin on the deck at the board's foot, its face toward -Z.
 """
 
 from __future__ import annotations
@@ -21,7 +24,7 @@ import bf_common as bf
 from bf_common import kc
 
 TRI_BUDGET = {"ferry_cargo": (14000, 1400), "ferry_skiff": (10000, 1000), "passenger_bundles": (8000, 800),
-              "ferry_lantern": (1500, 200)}
+              "ferry_lantern": (1500, 200), "deck_shrine": (3000, 200)}
 LANTERN_FLAME = (0.0, -0.23, 0.0)  # below the ring
 LANTERN_DROP_M = 0.4  # ring to the bottom of the pan
 SKIFF_Z = bf.FERRY.transom_z + 1.15
@@ -349,5 +352,43 @@ def build_lantern(seed: int = 871) -> list[kc.MeshBuilder]:
     return out
 
 
-TARGETS = {"ferry_cargo": build_cargo, "ferry_skiff": build_skiff, "passenger_bundles": build_bundles,
+def build_deck_shrine(seed: int = 872) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("deck_shrine", seed)
+        mb = kc.MeshBuilder("deck_shrine" + (bf.LOD if lod else ""))
+        seg = 1 if lod else 2
+        # The board: limewash in a timber frame, standing off the wall on two cleats, its foot 0.4 m over the deck.
+        kc.rounded_block(mb, (0.0, 1.0, 0.04), (0.45, 0.55, 0.025), mb.material(bf.M_LIME), radius=0.01, seg=seg,
+                         weather=bf.RAIL_W, variation=0.3)
+        for x in (-0.47, 0.47):
+            kc.rounded_block(mb, (x, 1.0, 0.03), (0.03, 0.6, 0.04), mb.material(bf.M_TIMBER), radius=0.008, seg=1,
+                             weather=bf.RAIL_W)
+        # The carved lintel over it, and the Level's gilt line across the board (the Order's one sign).
+        kc.rounded_block(mb, (0.0, 1.6, 0.02), (0.56, 0.06, 0.07), mb.material(bf.M_CARVED), radius=0.015, seg=seg,
+                         weather=bf.RAIL_W)
+        kc.rounded_block(mb, (0.0, 1.12, 0.012), (0.36, 0.012, 0.006), mb.material(bf.M_BRASS), radius=0.003, seg=1,
+                         weather=kc.FRESH)
+        # The shelf on two brackets.
+        kc.rounded_block(mb, (0.0, 0.62, -0.06), (0.42, 0.02, 0.12), mb.material(bf.M_TIMBER), radius=0.008, seg=1,
+                         weather=bf.RAIL_W)
+        if not lod:
+            for x in (-0.3, 0.3):
+                kc.tube(mb, np.array([[x, 0.5, 0.06], [x, 0.6, -0.12]]), 0.012, 4, mb.material(bf.M_TIMBER))
+            # A clay lamp (unlit by day; the crossing's night lights it in the zone), a bowl of salt, two shells.
+            bf.lathe(mb, (-0.18, 0.64, -0.06), [(0.0, 0.0), (0.05, 0.0), (0.06, 0.025), (0.035, 0.045), (0.0, 0.045)],
+                     10, bf.M_CLAY, weather=bf.CLOTH_W)
+            bf.lathe(mb, (0.12, 0.64, -0.05), [(0.0, 0.0), (0.06, 0.005), (0.075, 0.04), (0.07, 0.045), (0.0, 0.03)],
+                     12, bf.M_CLAY, weather=bf.CLOTH_W)
+            kc.rounded_block(mb, (0.12, 0.677, -0.05), (0.06, 0.004, 0.06), mb.material(bf.M_MARBLE), radius=0.003,
+                             seg=1)
+            for x, z, r in ((0.3, -0.1, 0.035), (-0.32, -0.02, 0.03)):
+                bf.lathe(mb, (x, 0.64, z), [(0.0, 0.0), (r, 0.0), (r * 0.7, r * 0.6), (0.0, r * 0.75)], 8, bf.M_MARBLE,
+                         weather=kc.FRESH)
+        del rng
+        out.append(mb)
+    return out
+
+
+TARGETS = {"deck_shrine": build_deck_shrine, "ferry_cargo": build_cargo, "ferry_skiff": build_skiff, "passenger_bundles": build_bundles,
            "ferry_lantern": build_lantern}

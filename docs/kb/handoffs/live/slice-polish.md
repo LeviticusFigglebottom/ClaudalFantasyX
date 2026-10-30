@@ -1138,6 +1138,28 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     what_went_up and dawn_gate in stills.
 - For the Lead: `tools.tests.test_screenshots` now fails on `wildlife_zone_ossa_fen_walk0` (not mine; no baseline
   and no pending flag).
+- **FAST-TRACK (the human's playtest: "New Game starts in the underwater sequence"), MERGE-READY @ 76cb77bc0.**
+  - **Traced headlessly from a fresh profile (no save, no flags):** boot → title → New Game → `prologue` at Start →
+    prologue_dead_city (fade in, P01, P02, the one VO line, fade out) → ch01/oruvel_underway at Drop ("One month
+    earlier." card, U01).
+  - **Nothing skips it:** locations.json new_game is `prologue/Start`, and PrologueScene reads no flag, setting or
+    save before playing.
+  - **But it didn't read as a prologue:** about 20 s, one line, no title, the dead city on screen 1.5 s before
+    Rhen starts to cross. On a GPU with a short load it is easy to take for the game's intro to the Underway.
+  - **Fix:** it opens on a "Prologue" title card on black (CutsceneCard, as Ch1's card), and P01 holds the dead
+    city 3.5 s before Rhen crosses.
+  - **Viewed (cutscene_frames from the prologue):** "Prologue" centred on black, then the dead city fades up, then
+    the vigil two-shot and the line.
+  - **Checks:** prologue 8 (test_fp_prologue counts the card apart from the one narrated line), act1_route 3, all 0
+    failed.
+  - **Gotcha:** a new card line shows its raw key until the project is re-imported (the .translation files are
+    generated at import).
+- **Lead's small adds, MERGE-READY @ 76cb77bc0:**
+  - `@music farewell_tide_release fade=0.5` straight after the farewell-tide's release gate (audio brings the cue).
+  - A Blender job `oruvel_seabed` in tools/dev/blender_builds.json: the generator runs under Blender's Python too;
+    coverage is clean, `--check` is byte-identical, test_blender_builds OK. Not run under Blender here (none in
+    this container).
+  - Noted: the three Haluna shopkeeper rows in haluna_villagers.json go (characters' M3-CHR-512); I won't restore them.
 ### PC-QUEUE
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan

@@ -87,6 +87,8 @@ func show_page(p: Dictionary) -> void:
 		_fact(tr("HUD_READ_DELAY"), str(p["delay"]), false)
 	if str(p.get("statuses", "")) != "":
 		_fact(tr("HUD_READ_STATUSES"), str(p["statuses"]), false)
+	if str(p.get("parts", "")) != "":  # M4-A2P-083: a part broken and not yet mended
+		_fact(tr("HUD_READ_PARTS"), str(p["parts"]), false)
 	_facts.visible = _facts.get_child_count() > 0
 	for r in _rules:
 		r.visible = bool(p.get("read", false))

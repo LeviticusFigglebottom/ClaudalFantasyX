@@ -74,3 +74,15 @@ The static check can't follow `track=` moves, so O02 is judged by eye.
 - [ ] Stills of R02, R10, O07 and T05 viewed.
 
 ## Review log
+
+## Status after slice-polish's newest Ch10 staging (origin/claude/m2-slice @ a9e826427, 2026-10-30, story re-check)
+- **1. Farewell-tide flag:** RESOLVED. Their script sets `ch10_farewell_tide_seen`.
+- **2. Dawn gate, R10 empty:** RESOLVED IN STORY'S SCRIPT (`@mark pell causeway_last_root`). It reaches their branch with
+  the next integration merge of claude/act2-plan (big22 took act2-plan before the fix).
+- **3. B06, Owa's first line off R02:** OPEN. No R02 is in `reedhollow.json` yet; the staging stills (4ad355b8e) cover
+  O02, R03, F02, T04 and R07.
+- **4. B05, Pell's line from behind O07:** RESOLVED IN STORY'S SCRIPT (the line now comes before his exit). It arrives
+  with the same merge as item 2.
+- **5. B09, Ysolde has no place:** OPEN. There's still no Ysolde or `tide_*` mark; it waits on M4-CIN-1305 (chapters
+  placing the stage actors).
+- **6. Pacing:** OPEN. The waits are unchanged. The stills are greybox, before the actors.

@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "doc": "The Sanctum's pilgrims (act2_ch13 S01: kneeling on the ledges outside the basin's rim, humming very low) (the Lead, 2026-10-30: Act II crowds from the bodies that exist). Clear of the story marks (pilgrims, ethren, corran, basin_ysolde) and the nave's walk to the apse. Each row's `at` makes its stand-in at CrowdSpots/<id> (VillagerLayer).",
+  "zone": "ch13/sanctum",
+  "storm_flag": "",
+  "villagers": [
+    {
+      "npc_id": "sanctum_pilgrim",
+      "crowd": "sanctum_pilgrim",
+      "attach": "child",
+      "stand_in": "CrowdSpots/sanctum_pilgrim",
+      "at": [-3.0, 0.0, -19.9, 0.0]
+    },
+    {
+      "npc_id": "sanctum_pilgrim_2",
+      "crowd": "sanctum_pilgrim_2",
+      "attach": "child",
+      "stand_in": "CrowdSpots/sanctum_pilgrim_2",
+      "at": [3.2, 0.0, -19.9, 0.0]
+    },
+    {
+      "npc_id": "sanctum_pilgrim_3",
+      "crowd": "sanctum_pilgrim_3",
+      "attach": "child",
+      "stand_in": "CrowdSpots/sanctum_pilgrim_3",
+      "at": [-6.1, 0.0, -25.0, 270.0]
+    },
+    {
+      "npc_id": "sanctum_pilgrim_4",
+      "crowd": "sanctum_pilgrim_4",
+      "attach": "child",
+      "stand_in": "CrowdSpots/sanctum_pilgrim_4",
+      "at": [-6.1, 0.0, -31.5, 270.0]
+    },
+    {
+      "npc_id": "sanctum_pilgrim_5",
+      "crowd": "sanctum_pilgrim_5",
+      "attach": "child",
+      "stand_in": "CrowdSpots/sanctum_pilgrim_5",
+      "at": [6.1, 0.0, -24.5, 90.0]
+    },
+    {
+      "npc_id": "sanctum_pilgrim_child",
+      "crowd": "sanctum_pilgrim_child",
+      "attach": "child",
+      "stand_in": "CrowdSpots/sanctum_pilgrim_child",
+      "at": [-6.4, 0.0, -24.2, 270.0]
+    }
+  ]
+}

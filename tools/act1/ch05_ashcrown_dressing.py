@@ -332,6 +332,7 @@ def _ground(x: float, z: float) -> float:
 
 GRAVE_LANDINGS = (4, 5, 6, 7, 8)  # Pemakar buries its dead where the way passes (B07's grave banter, landing 6)
 GRAVE_X = (4.2, 5.6)  # off the causeway's battered side, on the slope
+GRAVE_SINK_M = -0.2  # set level into the slope: on its steep fall a shallower sink left the curb's downhill edge in the air
 
 
 def road_graves() -> list[dict]:
@@ -345,9 +346,13 @@ def road_graves() -> list[dict]:
                 zz = z + 1.4 * j - 0.7
                 y = r3(_ground(x, zz) - 0.05)
                 yaw = 90.0 if sx < 0 else 270.0
-                out.append({"piece": "grave_curb", "kit_dir": PEM, "at": [r3(x), r3(zz)], "y": y, "yaw_deg": yaw})
+                # snapped to the built crest: its coarse rings lie up to 2 m under the analytic massif out here, and
+                # the graves floated over the slope (the eye-height pass, 10-30)
+                out.append({"piece": "grave_curb", "kit_dir": PEM, "at": [r3(x), r3(zz)], "y": y, "yaw_deg": yaw,
+                            "snap": GRAVE_SINK_M})
                 out.append({"piece": ("grave_stele_a", "grave_stele_b")[(i + j) % 2], "kit_dir": PEM,
-                            "at": [r3(x + sx * 0.6), r3(zz)], "y": y, "yaw_deg": yaw, "collide": True})
+                            "at": [r3(x + sx * 0.6), r3(zz)], "y": y, "yaw_deg": yaw, "collide": True,
+                            "snap": GRAVE_SINK_M})
     return out
 
 
@@ -362,7 +367,7 @@ def flank_rocks() -> list[dict]:
         z = rng.uniform(52.0, 150.0)
         x = rng.choice((-1.0, 1.0)) * rng.uniform(9.0, 60.0)
         out.append({"piece": "flank_rocks", "kit_dir": PEM, "at": [r3(x), r3(z)], "y": r3(_ground(x, z) - 0.3),
-                    "yaw_deg": r3(rng.uniform(0.0, 360.0))})
+                    "yaw_deg": r3(rng.uniform(0.0, 360.0)), "snap": -0.3})
     return out
 
 

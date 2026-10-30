@@ -45,5 +45,8 @@
     }
   },
   "unraised_doc": "test_qa_threads.gd: a flag a thread's chapter or main objectives wait on that its thread never raises -> why it isn't a softlock, and the task that closes the gap.",
-  "unraised": {}
+  "unraised": {
+    "ch14_started": "Lacquer Court (zone ch13/ansedra_lacquer_court) holds ch14's trial; its objective rows court_dais and court_barge wait on ch14's flags, and ch14 has no thread yet. Display rows only, not a gate. Closed by M4-A2P-014 (ch14 playable, act1-chapters).",
+    "ch14_declared_heretics": "As ch14_started: court_dais ends and court_barge starts on it, raised in ch14's trial, which has no thread yet. Closed by M4-A2P-014."
+  }
 }
