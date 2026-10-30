@@ -13,22 +13,22 @@ branch: tools/creatures/clip_audit.gd (slip, pops, dips) and clip_sheet.tscn (po
 
 | Id | Ch | Kind | Meets the bar | What is left at the gate |
 |---|---|---|---|---|
-| [tannin_archer](tannin_archer.md) | 10 | fen beast | yes | `model` key, `tannin_jet` effect |
-| [root_crab](root_crab.md) | 10 | variant (reef crab) | yes | `model` key, value check in the fen |
-| [fen_leech](fen_leech.md) | 10 | variant (sail leech) | **no (read)** | hang lower (edge-on read, as the sail leech was) |
-| [gallery_ray](gallery_ray.md) | 11 | reef beast | **no (read)** | pale on pale and flat: pattern or margin glow, lower hover |
-| [rime_urchin](rime_urchin.md) | 11 | reef beast | yes, but its KO | a readable KO |
-| [conduit_crawler](conduit_crawler.md) | 11 | construct | close | **no enemy row** (a boss add, M4-A2P-022); jointed legs |
-| [ridge_lynx](ridge_lynx.md) | 12 | beast | **no** | paws slide 18–29 cm: `grounding.pinned`, a stepping pounce, leg shaping; frost to snow (M4-CRE-670) |
-| [cord_moth](cord_moth.md) | 12 | beast | yes (read: medium) | battle scale like the ashwing's |
-| [scree_crawler](scree_crawler.md) | 12 | variant (slag tortoise) | yes | `model` key; 17.5k tris vs budget; frost to snow and grit (M4-CRE-670) |
-| [glass_skate](glass_skate.md) | 16 | reef beast | yes | the risen read on white water |
-| [rim_crawler](rim_crawler.md) | 16 | variant (tide crawler) | model yes, **read no** | chalk on white: value check |
+| [tannin_archer](tannin_archer.md) | 10 | fen beast | yes | `tannin_jet` effect |
+| [root_crab](root_crab.md) | 10 | variant (reef crab) | yes | value check in the fen's own arena; `root_drag` effect |
+| [fen_leech](fen_leech.md) | 10 | variant (sail leech) | close | done: hangs at 0.85 m. Left: a check in the dusk fen arena; `leech_bite` effect |
+| [gallery_ray](gallery_ray.md) | 11 | reef beast | yes | done: dusky back, margin glow, hover 0.95 m. Left: `glide_lash` effect |
+| [rime_urchin](rime_urchin.md) | 11 | reef beast | yes | done: the KO splays its spines. Left: `rime_spine` effect |
+| [conduit_crawler](conduit_crawler.md) | 11 | construct | close | done: jointed legs. Left: **no enemy row** (a boss add, M4-A2P-022); its repair effect |
+| [ridge_lynx](ridge_lynx.md) | 12 | beast | yes | done: paws pinned, snow and grit, shaped legs. Left: `pounce` effect |
+| [cord_moth](cord_moth.md) | 12 | beast | yes | done: battle scale 1.35×. Left: `unravel` effect |
+| [scree_crawler](scree_crawler.md) | 12 | variant (slag tortoise) | yes | done: snow and grit. 17.5k tris, the same as the slag tortoise since M3-CRE-660 (see its sheet). Left: `scree_slide` effect |
+| [glass_skate](glass_skate.md) | 16 | reef beast | yes | the risen read in the Rim's own arena; `skate_sting` effect |
+| [rim_crawler](rim_crawler.md) | 16 | variant (tide crawler) | yes | done: slate flanks and seams, brighter wounds. Left: re-judge in the Rim's grade |
 
-**Common to all ten with enemy rows:** the rows have no `model` key (they fight as capsules: act2_plan.md §5), and
-their skills have no effects yet (test_battle_act1_ability_vfx lists them).
+**All ten with enemy rows** now have the enemies.json `model` key (2026-10-30), so they fight as their models, not
+capsules. Their skills still have no effects (M4-A2P-058; test_battle_act1_ability_vfx lists them).
 
-## Wildlife (M4-A2P-056; none exists yet)
+## Wildlife (M4-A2P-056: all four built and placed on the greybox, 2026-10-30; in review)
 
 | Id | Ch | From | Sheet |
 |---|---|---|---|

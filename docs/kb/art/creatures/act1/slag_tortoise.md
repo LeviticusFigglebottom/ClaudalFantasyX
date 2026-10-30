@@ -32,3 +32,8 @@ head. What changed (4,624 to 7,786 triangles; the bones, the clip names and the 
 - **KO:** a root lift (in `ko` only) sets the crust's skirt, drips and clinker on the floor as it rolls.
 - **The scree crawler** (Act II variant) shares the build. It is rebuilt (7,786 triangles) and keeps its frost-split
   scree.
+
+**Triangle count after M3-CRE-660 (noted 2026-10-30):** the primitive pass on the Lead's list (a 44×112 crust
+lathe, up from 24×64, tilted plates, 12 clinker lumps, domed leg scutes) brought the build to 17,502 triangles, over
+the 8k budget above. The pass was the Lead's request and was reviewed at that count. The scree crawler shares the
+mesh. The budget line stands until the Lead rules (live log LEAD-ASK, 2026-10-30).

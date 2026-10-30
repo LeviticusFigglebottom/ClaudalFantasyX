@@ -978,3 +978,5 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - All four are placed on the greybox layouts. Re-seat them when the dressed kits arrive; the woolbacks go to the Keth troughs.
   - LEAD-ASK: the task file now says `review`, owner claude/creatures. Please carry the claim and the status to the integration branch.
 - **MERGE-READY @ fe0da8c2** (includes everything since 2ea2d324).
+- **Act II regulars: enemies.json `model` keys** @ 52ad6adb, for the ten built Act II foes. They had battle scenes but no `model`, so CreatureModels left them as capsules in battle. The additive field is ours (ownership.md). Checks: creature 87/0, portrait 21/0, battle_ko_once, part_cues, vfx_anchors; validate_data.
+- LEAD-ASK: the slag tortoise (and the scree crawler, the same mesh) is 17,502 triangles since M3-CRE-660's primitive pass on your list (the crust lathe went from 24×64 to 44×112), but its sheet's budget says ≤ 8k. Either approve about 18k for this pair (a few on screen at once), or I cut the crust back to about 32×80 (about 10k) and re-render. I've noted it on both sheets.
