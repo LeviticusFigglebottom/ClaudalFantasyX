@@ -963,6 +963,41 @@
         "res://game/levels/ch03/first_verse/first_verse.tscn"
       ],
       "note": "M2-BPR-05 the encounter stinger's tide line (built at runtime by BattleStinger, drawn in the field before the router's fade). The zones that open a battle list their scenes here."
+    },
+    {
+      "path": "res://game/creatures/ambient_vfx/materials/ambient_process.tres",
+      "draw_material": "res://game/creatures/ambient_vfx/materials/ambient_glow_draw.tres",
+      "scenes": [
+        "res://game/battle/scene/battle_sandbox.tscn",
+        "res://game/flow/field_battle.tscn"
+      ],
+      "note": "M4-A2P-058 an Act II boss's own glow motes (the Drowner's snagged motes and their lift, the Engine's KO lift, the Ram's shed motes), built at runtime by CreatureAmbientVfx. The process .tres carries the curve and ramp every effect's copy has, so it is the same pipeline."
+    },
+    {
+      "path": "res://game/creatures/ambient_vfx/materials/ambient_process.tres",
+      "draw_material": "res://game/creatures/ambient_vfx/materials/ambient_puff_draw.tres",
+      "scenes": [
+        "res://game/battle/scene/battle_sandbox.tscn",
+        "res://game/flow/field_battle.tscn"
+      ],
+      "note": "M4-A2P-058 an Act II boss's own soft puffs (the Drowner's drag, the Engine's KO dust, the Ram's breath, snow and drips)."
+    },
+    {
+      "path": "res://game/creatures/ambient_vfx/materials/ambient_process.tres",
+      "draw_material": "res://game/creatures/ambient_vfx/materials/ambient_flat_glow_draw.tres",
+      "scenes": [
+        "res://game/battle/scene/battle_sandbox.tscn",
+        "res://game/flow/field_battle.tscn"
+      ],
+      "note": "M4-A2P-058 the Wakefin's wake: flat sea-glow on the water line."
+    },
+    {
+      "path": "res://game/creatures/ambient_vfx/materials/ambient_halo.tres",
+      "scenes": [
+        "res://game/battle/scene/battle_sandbox.tscn",
+        "res://game/flow/field_battle.tscn"
+      ],
+      "note": "M4-A2P-058 the Lamp Engine's lamp and core halos and the Drowner's cradle halos (billboards built at runtime by CreatureAmbientVfx)."
     }
   ],
   "first_run_live_scenes": [
