@@ -9,3 +9,9 @@ creature_id = &"mangrove_drowner"
 metadata/hymn_battle_actor = true
 
 [node name="Model" parent="." instance=ExtResource("2_model")]
+
+[node name="SnagABroken" parent="Model/Armature/Skeleton3D" index="2"]
+visible = false
+
+[node name="SnagBBroken" parent="Model/Armature/Skeleton3D" index="4"]
+visible = false

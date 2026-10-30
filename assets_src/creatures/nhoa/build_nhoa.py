@@ -60,6 +60,7 @@ STRAND_Y = (HEM_Y, 0.55, 0.35, 0.15)  # the strand chains' joints
 STRAND_LOW = 0.15  # the strands' lowest ends over the water
 CHAINS = {"l": 60.0, "r": -60.0, "b": 180.0}  # each strand chain's bearing round her (degrees from +z toward +x)
 CHAIN_R = 0.22
+VFX_CORE = np.array([0.0, 1.6, 0.03])  # M4-CRB-006: her chest, where the light is held (the `vfx_core` anchor)
 
 # torso and robe sections: (y, half width x, half depth z), top to bottom
 TORSO = [(1.80, 0.0, 0.0), (1.79, 0.055, 0.05), (1.75, 0.12, 0.085), (1.70, 0.17, 0.1), (1.63, 0.18, 0.11),
@@ -70,10 +71,13 @@ N_STRANDS = 18
 
 # ---- the motes -----------------------------------------------------------------------------------
 MOTE_SHELL = {"torso": 0.06, "neck": 0.035, "head": 0.025, "arm": 0.04, "hand": 0.02}  # the shell's depth per part
-MOTE_COUNT = {"torso": 620, "neck": 130, "head": 70, "arm": 135, "hand": 40}  # arm and hand counts are per side
+MOTE_COUNT = {"torso": 620, "neck": 230, "head": 120, "arm": 135, "hand": 40}  # arm and hand counts are per side
+# (M4-CRB-006: the neck and head denser, so up close she reads grainy, never a smooth dark tube)
 MOTE_R = {"torso": (0.012, 0.02), "neck": (0.01, 0.016), "head": (0.007, 0.011), "arm": (0.01, 0.016),
           "hand": (0.007, 0.011)}
-MOTE_FLAT = (0.5, 0.3)  # a bead's pole heights (out, in) as fractions of its radius: flattened
+MOTE_FLAT = (0.3, 0.2)  # a bead's pole heights (out, in) as fractions of its radius: flattened (M4-CRB-006: a fleck,
+# never a point; pointed bipyramids read as ice crystals up close, which ADR 0015 forbids her)
+BODY_WET = 0.0  # M4-CRB-006: dry (the design sheet: she never touches the water, so she never wets)
 MOTE_GLOW = (0.4, 1.0)  # the emission mask per bead: the swarm has depth
 STRAND_STEP = 0.024  # beads along a hanging strand
 TRAIL_LEN = (0.2, 0.28)  # the strands each hand trails
@@ -169,6 +173,11 @@ def build_rig() -> ck.Rig:
         for k in range(3):
             rig.add(f"strand_{tag}{k}", pts[k], pts[k + 1], parent)
             parent = f"strand_{tag}{k}"
+    # M4-CRB-006: the VFX anchors, unweighted (no vertex is skinned to them; they are added last, so every other
+    # bone keeps its index): `vfx_core` in her chest on spine_2, `vfx_keepsake` at the name-shell on neck_0
+    rig.add("vfx_core", VFX_CORE, VFX_CORE + (0.0, 0.2, 0.0), "spine_2")
+    sc = shell_centre()
+    rig.add("vfx_keepsake", sc, sc - (0.0, 0.1, 0.0), "neck_0")
     BONES[:] = [b.name for b in rig.bones]
     return rig
 
@@ -264,7 +273,7 @@ def torso_mesh() -> tuple[np.ndarray, np.ndarray, np.ndarray]:
 def torso(mesh: ck.Mesh, rig: ck.Rig) -> tuple[np.ndarray, np.ndarray]:
     P, T, _ = torso_mesh()
     before = mesh.triangle_count
-    ck.finish(mesh, P, T, "body", PAL["abyss_navy"], torso_skin(rig), wet=0.4)
+    ck.finish(mesh, P, T, "body", PAL["abyss_navy"], torso_skin(rig), wet=BODY_WET)
     count("body", mesh, before)
     return P, T
 
@@ -282,7 +291,7 @@ def neck(mesh: ck.Mesh, rig: ck.Rig) -> tuple[np.ndarray, np.ndarray]:
     t = np.linspace(0.0, 1.0, len(path))
     P, T = ck.tube(path, neck_radius(t), 10, cap_start=False, cap_end=False, up_hint=(1.0, 0.0, 0.0))
     before = mesh.triangle_count
-    ck.finish(mesh, P, T, "body", PAL["abyss_navy"], rig.chain([f"neck_{k}" for k in range(4)], NECK), wet=0.4)
+    ck.finish(mesh, P, T, "body", PAL["abyss_navy"], rig.chain([f"neck_{k}" for k in range(4)], NECK), wet=BODY_WET)
     count("body", mesh, before)
     return P, T
 
@@ -303,7 +312,7 @@ def head(mesh: ck.Mesh, rig: ck.Rig) -> tuple[np.ndarray, np.ndarray]:
     P, T = head_mesh()
     T = orient(P, T, np.tile(HEAD_C, (len(T), 1)))
     before = mesh.triangle_count
-    ck.finish(mesh, P, T, "body", PAL["abyss_navy"], rig.rigid("head"), wet=0.4)
+    ck.finish(mesh, P, T, "body", PAL["abyss_navy"], rig.rigid("head"), wet=BODY_WET)
     count("body", mesh, before)
     for s in (1.0, -1.0):
         Pe, Te = ck.ellipsoid(EYE * (s, 1.0, 1.0), (0.016, 0.014, 0.017), 5, 8)
@@ -323,7 +332,7 @@ def arm(mesh: ck.Mesh, rig: ck.Rig, s: float, tag: str) -> tuple[np.ndarray, np.
     P, T = ck.tube(path, 0.048 - 0.02 * t, 8, cap_start=True, cap_end=False)
     before = mesh.triangle_count
     ck.finish(mesh, P, T, "body", PAL["abyss_navy"], rig.chain([f"upper_{tag}", f"fore_{tag}"], arm_points(s)[:3]),
-              wet=0.4)
+              wet=BODY_WET)
     count("body", mesh, before)
     return P, T
 
@@ -365,20 +374,20 @@ def hand(mesh: ck.Mesh, rig: ck.Rig, s: float, tag: str) -> list[tuple[np.ndarra
     Pp = Pp @ R.T + w + u * 0.05
     Tp = orient(Pp, Tp, np.tile(w + u * 0.05, (len(Tp), 1)))
     before = mesh.triangle_count
-    ck.finish(mesh, Pp, Tp, "body", PAL["abyss_navy"], bone, wet=0.4)
+    ck.finish(mesh, Pp, Tp, "body", PAL["abyss_navy"], bone, wet=BODY_WET)
     surfaces.append((Pp, Tp))
     paths = finger_paths(s)
     for path in paths:
         t = np.linspace(0.0, 1.0, len(path))
         P, T = ck.tube(path, 0.009 - 0.005 * t, 5, cap_start=False, cap_end=True, up_hint=tuple(n))
-        ck.finish(mesh, P, T, "body", PAL["abyss_navy"], bone, wet=0.4)
+        ck.finish(mesh, P, T, "body", PAL["abyss_navy"], bone, wet=BODY_WET)
         surfaces.append((P, T))
     for a, b in zip(paths, paths[1:]):  # the webs, to just past halfway along the fingers, both faces
         k = 4
         P = np.vstack([a[:k], b[:k]])
         T = np.array([(i, k + i, i + 1) for i in range(k - 1)] + [(i + 1, k + i, k + i + 1) for i in range(k - 1)])
-        ck.finish(mesh, P, T, "body", PAL["abyss_navy"], bone, wet=0.4)
-        ck.finish(mesh, P, ck.flip(T), "body", PAL["abyss_navy"], bone, wet=0.4)
+        ck.finish(mesh, P, T, "body", PAL["abyss_navy"], bone, wet=BODY_WET)
+        ck.finish(mesh, P, ck.flip(T), "body", PAL["abyss_navy"], bone, wet=BODY_WET)
     count("body", mesh, before)
     return surfaces
 
@@ -534,8 +543,10 @@ class Motes:
         T = orient(P, T, np.repeat(C, 6, axis=0))
         glow = np.repeat(rng.uniform(*MOTE_GLOW, len(C)), 5)
         before = mesh.triangle_count
+        # M4-CRB-006: every vertex of a bead takes the bead's own outward normal, so each bead shades as one even
+        # point of light (no lit facets: faceted beads read as crystals up close)
         ck.finish(mesh, P, T, "motes", PAL["salt_glass"], fixed(np.repeat(J, 5, axis=0), np.repeat(W, 5, axis=0)),
-                  wet=0.3, emission=glow)
+                  wet=0.0, emission=glow, N=np.repeat(N, 5, axis=0))
         count("motes", mesh, before)
         return len(C)
 
@@ -859,11 +870,14 @@ def build_defend() -> ck.Clip:
 
 def build_ko() -> ck.Clip:
     c = ck.Clip("ko", KO_SEC)  # she bows her neck and folds in on herself; the strands hang straight down
-    down = merge(body(spine=(0.0, 18.0, 12.0), neck=(14.0, 18.0, 12.0, 0.0), head=-8.0, lift=-0.1, antler=-6.0),
+    # M4-CRB-006: the head counter-turns (-30) so the crowns stay up (60 deg over level) as she bows: seen from the
+    # battle camera, a level crown read as antlers lowered at the foes, a charge, not a sister's fall
+    down = merge(body(spine=(0.0, 18.0, 12.0), neck=(14.0, 18.0, 12.0, 0.0), head=-30.0, lift=-0.1, antler=4.0),
                  arms(upper=(-18.0, -12.0, -4.0), fore=(-26.0, -10.0, 0.0), hand=(0.0, 0.0, -10.0)))
     keyp(c, 0.0, REST)
     keyp(c, 0.2, hit_pose(0.6, 1.0))
-    keyp(c, 1.0, merge(down, body(spine=(0.0, 15.0, 10.0), neck=(12.0, 16.0, 10.0, 0.0), head=-10.0, lift=-0.08)))
+    keyp(c, 1.0, merge(down, body(spine=(0.0, 15.0, 10.0), neck=(12.0, 16.0, 10.0, 0.0), head=-26.0, lift=-0.08,
+                                  antler=4.0)))
     keyp(c, 1.45, down)
     keyp(c, KO_SEC, down)
     return c
@@ -910,19 +924,97 @@ def build_special() -> ck.Clip:
     c = ck.Clip("special", SPECIAL_SEC)
     gather = merge(body(spine=(0.0, 8.0, 6.0), neck=(6.0, 8.0, 6.0, 2.0), head=6.0, lift=-0.04), CROSSED,
                    strands(out=(-10.0, -10.0, -6.0)))
-    raised = merge(body(spine=(0.0, -3.0, -3.0), neck=(-3.0, -2.0, -2.0, -2.0), head=-8.0, lift=0.08, antler=-4.0),
+    raised = merge(body(spine=(0.0, -3.0, -3.0), neck=(-3.0, -2.0, -2.0, -2.0), head=-8.0, lift=SPECIAL_LIFT * 0.55,
+                        antler=-4.0),
                    arms(upper=(-150.0, 0.0, 16.0), fore=(-14.0, 0.0, -6.0), hand=(-10.0, 0.0, -10.0)),
                    strands(out=(70.0, 40.0, 20.0)))
-    column = merge(body(spine=(0.0, -3.0, -4.0), neck=(-3.0, -3.0, -3.0, -3.0), head=-10.0, lift=0.1, antler=-6.0),
+    column = merge(body(spine=(0.0, -3.0, -4.0), neck=(-3.0, -3.0, -3.0, -3.0), head=-10.0, lift=SPECIAL_LIFT,
+                        antler=-6.0),
                    arms(upper=(-166.0, 0.0, 8.0), fore=(-8.0, 0.0, -4.0), hand=(-6.0, 0.0, -6.0)),
                    strands(out=(122.0, 38.0, 14.0)))
     keyp(c, 0.0, REST)
     keyp(c, 0.5, gather)
     keyp(c, 1.15, raised)
     keyp(c, SPECIAL_CONTACT, column)
-    keyp(c, 1.85, column)
+    keyp(c, 1.85, merge(column, body(spine=(0.0, -3.0, -4.0), neck=(-3.0, -3.0, -3.0, -3.0), head=-10.0,
+                                     lift=SPECIAL_LIFT * 1.15, antler=-6.0)))
     keyp(c, SPECIAL_SEC, REST)
     return c
+
+
+# M4-CRB-006 (the Act II move pass, docs/kb/plan/act2/bosses/nhoa.md §4): one clip per skill on the design sheet.
+DEEP_WELL_SEC, DEEP_WELL_CONTACT = 1.8, 1.0
+DEEP_WELL_SINK = 0.28  # how far she sinks toward the water in the wind-up (the sheet's 0.3 m, held clear of it)
+ECHO_SEC, ECHO_CONTACT = 1.4, 0.65
+SPECIAL_LIFT = 0.2  # Farewell-Tide lifts her with the strands: the only finisher whose motes go up
+
+
+def fanned(k: float) -> dict:
+    """Deep Well's strands fanned out flat over the water (`k` of the way): swung out, and the front ones forward too
+    (the front strands are blended between the two front chains, so their outward swings half cancel; the back chain
+    swings back, the same way as its out, so all of it adds)."""
+    fwd = (14.0 * k, 12.0 * k, 8.0 * k)
+    return strands(out=(40.0 * k, 34.0 * k, 24.0 * k), fwd=fwd, chain={"b": ((0, 0, 0), tuple(-2.0 * f for f in fwd),
+                                                                              (0, 0, 0))})
+
+
+def build_deep_well() -> ck.Clip:
+    """Deep Well: she sinks straight down toward the water (a shallow bow, the head level, so the crowns stay up),
+    arms wide and low, palms down over it, and the strands fan out flat
+    across the water (so the sink never puts them in it); then her arms sweep up from below and forward, she rises,
+    and the strands stream up after them (the swarm rising from the water under the foes, VFX), and she settles."""
+    c = ck.Clip("deep_well", DEEP_WELL_SEC)
+    low = merge(body(spine=(0.0, 6.0, 4.0), neck=(4.0, 4.0, 2.0, 0.0), head=0.0, lift=-DEEP_WELL_SINK * 0.55),
+                arms(upper=(-12.0, 0.0, 44.0), fore=(-12.0, 0.0, 6.0), hand=(14.0, 0.0, 0.0)),
+                fanned(0.7))
+    sunk = merge(body(spine=(0.0, 8.0, 5.0), neck=(5.0, 6.0, 3.0, 0.0), head=-4.0, lift=-DEEP_WELL_SINK),
+                 arms(upper=(-6.0, 0.0, 58.0), fore=(-8.0, 0.0, 8.0), hand=(20.0, 0.0, 0.0)),
+                 fanned(1.0))
+    sweep = merge(body(spine=(0.0, -2.0, -4.0), neck=(-2.0, -4.0, -4.0, -2.0), head=-6.0, lift=-0.03),
+                  arms(upper=(-104.0, -6.0, 18.0), fore=(-10.0, 0.0, 0.0), hand=(-24.0, 0.0, 0.0)),
+                  strands(fwd=(16.0, 14.0, 10.0), out=(28.0, 22.0, 14.0)))
+    up = merge(body(spine=(0.0, -4.0, -5.0), neck=(-3.0, -4.0, -4.0, -3.0), head=-10.0, lift=0.05, antler=6.0),
+               arms(upper=(-132.0, -4.0, 20.0), fore=(-8.0, 0.0, -4.0), hand=(-18.0, 0.0, 0.0)),
+               strands(fwd=(10.0, 12.0, 10.0), out=(8.0, 6.0, 4.0)))
+    keyp(c, 0.0, REST)
+    keyp(c, 0.45, low)
+    keyp(c, 0.9, sunk)
+    keyp(c, DEEP_WELL_CONTACT, sweep)
+    keyp(c, 1.2, up)
+    keyp(c, 1.4, up)
+    keyp(c, DEEP_WELL_SEC, REST)
+    return c
+
+
+def build_echo() -> ck.Clip:
+    """Echo (the copy of the last enemy action): a mirror-still pause, the head cocked toward the foe and the near
+    palm lifted toward it like a reflecting face, everything else held; then the palm thrusts forward with the
+    strands, her own version of the move, and she settles. (The copied move's effect is VFX.)"""
+    c = ck.Clip("echo", ECHO_SEC)
+    head_cock = {"head": ((-4.0, 0.0, 16.0), (0.0, 0.0, 0.0))}
+    mirror = merge(body(spine=(0.0, -2.0, -2.0), neck=(-2.0, 2.0, 2.0, 0.0), twist=10.0, lift=0.02),
+                   arms(upper=(-52.0, 20.0, 18.0), fore=(-58.0, 0.0, 0.0), hand=(-50.0, 0.0, 0.0),
+                        right=((-4.0, 0.0, 10.0), (-10.0, 0.0, 0.0), (0.0, 0.0, 0.0))),
+                   strands(out=(-6.0, -6.0, -4.0)), head_cock)
+    still = merge(mirror, body(spine=(0.0, -2.0, -2.0), neck=(-2.0, 2.0, 2.0, 0.0), twist=12.0, lift=0.02),
+                  {"head": ((-4.0, 0.0, 18.0), (0.0, 0.0, 0.0))})
+    thrust = merge(body(spine=(0.0, 8.0, 6.0), neck=(4.0, 6.0, 2.0, 0.0), head=-2.0, twist=-16.0),
+                   arms(upper=(-84.0, -4.0, 6.0), fore=(-4.0, 0.0, 0.0), hand=(-44.0, 0.0, 0.0),
+                        right=((4.0, 0.0, 12.0), (-8.0, 0.0, 0.0), (0.0, 0.0, 0.0))),
+                   strands(fwd=(18.0, 14.0, 10.0), side=(6.0, 4.0, 2.0)))
+    keyp(c, 0.0, REST)
+    keyp(c, 0.3, mirror)
+    keyp(c, 0.5, still)
+    keyp(c, ECHO_CONTACT, thrust)
+    keyp(c, 0.9, merge(thrust, strands(fwd=(10.0, 14.0, 14.0), side=(-4.0, -6.0, -6.0))))
+    keyp(c, ECHO_SEC, REST)
+    return c
+
+
+def idle_first(idle: ck.Clip) -> dict:
+    """Idle's first frame as a pose ({bone: (rot, loc)}): every other clip is authored from rest and played from it
+    (ck.in_pose), so each one starts (and the one-shots that come back end) exactly where the idle starts."""
+    return {b: tuple(np.asarray(v, float) for v in idle.sample(b, 0.0)) for b in idle.keys}
 
 
 RELEASE_SEC = 3.4  # M3-CRE-647: the held form's release (Ch20), its KO
@@ -955,9 +1047,14 @@ def build_release() -> ck.Clip:
 
 
 def build_clips() -> list[ck.Clip]:
-    return [build_idle(), build_ready(), build_attack(), build_cast(), build_hit(),
-            build_hit("hit_b", -1.0, ck.HIT_B["amp"]), build_defend(), build_ko(), build_victory(), build_rise(),
-            build_dismiss(), build_special(), build_release()]
+    """Every clip played from idle's first frame (M4-CRB-006); idle_b, the kit's quick echo of the cast, is made here
+    so it is played from there too."""
+    idle = build_idle()
+    start = idle_first(idle)
+    authored = [build_ready(), build_attack(), build_cast(), build_hit(), build_hit("hit_b", -1.0, ck.HIT_B["amp"]),
+                build_defend(), build_ko(), build_victory(), build_rise(), build_dismiss(), build_special(),
+                build_release(), build_deep_well(), build_echo(), ck.varied(build_cast(), "idle_b", **ck.IDLE_B)]
+    return [idle] + [ck.in_pose(c, c.name, start) for c in authored]
 
 
 # ---------------------------------------------------------------------------------------------
