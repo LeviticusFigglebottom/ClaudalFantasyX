@@ -131,6 +131,13 @@
         "rise_max_mps": 0.6,
         "spiral_rate_rad_s": 1.4,
         "drift_max_mps": 0.3
+      },
+      "hang": {
+        "_note": "M4-A2P-116 B2 (act1_ch04: the derelict's held light 'hangs... like spray that won't fall' until the Canticle): held motes that barely move and do not sink seaward.",
+        "drift_min_mps": 0.0,
+        "drift_max_mps": 0.02,
+        "down_bias_min_deg": 0.0,
+        "down_bias_max_deg": 3.0
       }
     }
   },
