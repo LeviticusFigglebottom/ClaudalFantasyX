@@ -127,15 +127,26 @@ def add_stair_marks(text: str, table: dict) -> str:
     return out + "\n"
 
 
+def _zone_looks():
+    """tools/act1/ch05_09_zone_looks.py: the zones' slot looks, which the arena wears too (KitSlotSwaps)."""
+    spec = importlib.util.spec_from_file_location("ch05_09_zone_looks", ROOT / "tools" / "act1" / "ch05_09_zone_looks.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
 def main(out_dir: Path | None = None) -> int:
     AS = _arena_scenes()
     if out_dir is not None:  # tools/tests/test_b_arenas.py writes to a scratch dir
         AS.OUT_DIR = out_dir
+    zl = _zone_looks()
+    mod = zl.load_generator("ch08_corrow_dressing")
+    paths = mod.kit_material_paths()  # the zone's slot looks (M3-ENV-1326)
     for aid, preset in PRESETS.items():
         table = AS.ARENAS[aid]
         path = AS.write_arena(table)
         text = add_stair_marks(add_storm(path.read_text(encoding="utf-8"), table, preset), table)
-        path.write_text(text, encoding="utf-8")
+        path.write_text(zl.add_kit_slot_swaps(text, paths), encoding="utf-8")
         print(f"ARENA {path.name} (+ Undertow {preset} at {azimuth_deg(table)} deg)")
     return 0
 

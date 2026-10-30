@@ -116,10 +116,12 @@ class KitGeometryTests(unittest.TestCase):
 
     def test_placeholders_are_listed(self) -> None:
         self.assertIn("shell_shrine_massing", BUILD.PLACEHOLDERS)
-        # M2-ENV-07: the two trees are real (trees.py); they keep their piece names as the scene contract.
-        for name in ("banyan_placeholder", "windbreak_placeholder"):
+        # M2-ENV-07: the two trees are real (trees.py); M3-ENV-750 retired their old placeholder names.
+        for name in ("banyan_hero", "windbreak_tree"):
             self.assertNotIn(name, BUILD.PLACEHOLDERS)
             self.assertIn(name, BUILD.targets())
+        for name in ("banyan_placeholder", "windbreak_placeholder"):
+            self.assertNotIn(name, BUILD.targets())
 
 
 @unittest.skipUnless(find_blender(), "Blender 5.0.1 not installed (tools/dev/fetch_blender or HYMN_BLENDER)")

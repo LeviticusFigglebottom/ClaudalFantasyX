@@ -1,6 +1,8 @@
 """tools/dev/merge_union.py: the keyed loc CSV union (a key one side edited is not duplicated), and every keyed file
 merged three-way against the merge base (big15 lost battle-presentation's settle_frames edits to existing shots).
 Run: python3 -m unittest discover -s tools/tests"""
+import contextlib
+import io
 import json
 import os
 import subprocess
@@ -119,6 +121,86 @@ class MergeInGitTest(unittest.TestCase):
                 os.chdir(cwd)
             merged = json.loads(shots.read_text())["shots"]
             self.assertEqual(merged, [_shot("a"), _shot("b", 90), _shot("c")])
+
+    def test_a_virtual_base_with_conflict_markers_falls_back_to_the_real_bases(self) -> None:
+        """A criss-cross (big17's shots.json): A and B set b differently; X merges B into A keeping A's b and adds x,
+        Y merges A into B keeping B's b and adds y. Merging Y into X has two merge bases, so git's stage 1 is a
+        virtual base holding conflict markers. The bases disagree on b, so b is a clash (ours kept, reported); x
+        and y are both kept; a, which every base agrees on, is unchanged."""
+        with tempfile.TemporaryDirectory() as tmp:
+            self.root = tmp
+            shots = Path(tmp, mu.JSON_SHOTS)
+            shots.parent.mkdir(parents=True)
+            g = ["-c", "user.email=qa@example.invalid", "-c", "user.name=qa"]
+
+            def write(*rows: dict) -> None:
+                shots.write_text(json.dumps({"shots": list(rows)}, indent=2) + "\n")
+
+            self._git("init", "-q", "-b", "main")
+            write(_shot("a"), _shot("b"))
+            self._git("add", "-A")
+            self._git(*g, "commit", "-q", "-m", "base")
+            self._git("checkout", "-q", "-b", "A")
+            write(_shot("a"), _shot("b", 50))
+            self._git(*g, "commit", "-q", "-am", "A")
+            self._git("checkout", "-q", "-b", "B", "main")
+            write(_shot("a"), _shot("b", 70))
+            self._git(*g, "commit", "-q", "-am", "B")
+            self._git("checkout", "-q", "-b", "X", "A")
+            self._git(*g, "merge", "-q", "B")
+            write(_shot("a"), _shot("b", 50), _shot("x"))
+            self._git("add", "-A")
+            self._git(*g, "commit", "-q", "-m", "X")
+            self._git("checkout", "-q", "-b", "Y", "B")
+            self._git(*g, "merge", "-q", "A")
+            write(_shot("a"), _shot("b", 70), _shot("y"))
+            self._git("add", "-A")
+            self._git(*g, "commit", "-q", "-m", "Y")
+            self._git("checkout", "-q", "X")
+            self._git(*g, "merge", "-q", "Y")
+            self.assertIn(mu.JSON_SHOTS, self._git("diff", "--name-only", "--diff-filter=U"), "a real conflict")
+            self.assertIn("<<<<<<<", self._git("show", ":1:" + mu.JSON_SHOTS), "stage 1 is a marked virtual base")
+            cwd = os.getcwd()
+            os.chdir(tmp)
+            out = io.StringIO()
+            try:
+                with contextlib.redirect_stdout(out):
+                    self.assertEqual(mu.main(), 0)
+            finally:
+                os.chdir(cwd)
+            merged = json.loads(shots.read_text())["shots"]
+            self.assertEqual(merged, [_shot("a"), _shot("b", 50), _shot("x"), _shot("y")])
+            self.assertIn("BOTH CHANGED %s b" % mu.JSON_SHOTS, out.getvalue())
+            self.assertIn("VIRTUAL BASE", out.getvalue())
+
+
+class AgreedTest(unittest.TestCase):
+    """Several merge bases: a side equal to any base's version of a key is unchanged."""
+
+    def test_a_key_the_bases_disagree_on_holds_every_version(self) -> None:
+        got = mu.agreed([{"a": 1, "b": 2, "c": 3}, {"a": 1, "b": 9}])
+        self.assertEqual(got["a"], 1)
+        self.assertIsInstance(got["b"], mu.Bases)
+        self.assertEqual(got["b"].vals, [2, 9])
+        self.assertIs(got["c"].vals[1], mu._MISSING)
+
+    def test_a_side_still_on_a_base_takes_the_other_side(self) -> None:
+        base = mu.agreed([{"a": 1, "b": 2, "c": 3}, {"a": 1, "b": 9}])
+        merged, clashes = mu.merge_keyed(base, {"a": 1, "b": 2, "c": 4}, {"a": 1, "b": 5})
+        self.assertEqual(merged, {"a": 1, "b": 5, "c": 4}, "theirs moved b, ours moved c; c missing is a base")
+        self.assertEqual(clashes, [])
+
+    def test_both_off_every_base_keeps_ours_and_is_reported(self) -> None:
+        base = mu.agreed([{"b": 2}, {"b": 9}])
+        merged, clashes = mu.merge_keyed(base, {"b": 5}, {"b": 6})
+        self.assertEqual((merged, clashes), ({"b": 5}, ["b"]))
+
+    def test_each_side_on_a_different_base_keeps_ours_and_is_reported(self) -> None:
+        """big17's zone_wake_* shots: one base has them, one doesn't; ours deleted them, theirs still has them.
+        Either side could be the change, so ours stands and the key is reported."""
+        base = mu.agreed([{"w": 1}, {}])
+        merged, clashes = mu.merge_keyed(base, {}, {"w": 1})
+        self.assertEqual((merged, clashes), ({}, ["w"]))
 
 
 if __name__ == "__main__":

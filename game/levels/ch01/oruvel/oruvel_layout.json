@@ -46,15 +46,15 @@
     "bridge": [21, 0, -22, 270]
   },
   "actors": {
-    "scaleman": {"at": [-7.2, -0.4, 10.5, 270], "color": "#6e7f8c", "model": "res://assets/characters/villagers/netmender/netmender_actor.tscn"},
+    "scaleman": {"at": [-7.2, -0.4, 10.5, 270], "color": "#6e7f8c", "model": "res://assets/characters/villagers/scaleman/scaleman_actor.tscn"},
     "cook": {"at": [-12, 0, -6, 90], "color": "#c48a5a", "model": "res://assets/characters/villagers/vendor/vendor_actor.tscn"},
     "netmender": {"at": [12, 0, -6, 270], "color": "#8a9a7a", "model": "res://assets/characters/villagers/netmender/netmender_actor.tscn"},
     "netmender_2": {"at": [13, 0, -8, 270], "color": "#7a8a6a", "model": "res://assets/characters/villagers/fisher/fisher_actor.tscn"},
     "roof_child": {"at": [-12, 3.45, -19, 180], "color": "#d4b07a", "radius": 0.2, "height": 1.1, "model": "res://assets/characters/villagers/child/child_actor.tscn"},
     "pen_child": {"at": [30, 0, -24, 0], "color": "#d4907a", "radius": 0.2, "height": 1.2, "model": "res://assets/characters/villagers/child/child_actor.tscn"},
-    "skipper_sadi": {"at": [-28, 0, -12, 270], "color": "#b0503a", "model": "res://assets/characters/villagers/fisher/fisher_actor.tscn"},
-    "sabe": {"at": [0, 0, -37, 0], "color": "#9a8a9a", "model": "res://assets/characters/villagers/vendor/vendor_actor.tscn"},
-    "kell": {"at": [31, 0, -7.5, 200], "color": "#7a5a8a", "model": "res://assets/characters/villagers/kell/kell_actor.tscn"},
+    "skipper_sadi": {"at": [-28, 0, -12, 270], "color": "#b0503a", "model": "res://assets/characters/villagers/skipper_sadi/skipper_sadi_actor.tscn"},
+    "sabe": {"at": [0, 0, -37, 0], "color": "#9a8a9a", "model": "res://assets/characters/villagers/sabe/sabe_actor.tscn"},
+    "kell": {"at": [29.0, 0, -7.0, 100], "color": "#7a5a8a", "model": "res://assets/characters/villagers/kell/kell_actor.tscn"},
     "pen_child_2": {"at": [29, 0, -25, 0], "color": "#c4a07a", "radius": 0.18, "height": 1.0, "hidden": true, "model": "res://assets/characters/villagers/child/child_actor.tscn"},
     "pen_child_3": {"at": [31, 0, -25, 0], "color": "#b4907a", "radius": 0.18, "height": 0.9, "hidden": true, "model": "res://assets/characters/villagers/child/child_actor.tscn"}
   },
@@ -62,7 +62,7 @@
     "O01": {"pos": [0, 0.3, 26], "look_at": [0, 1.2, 0], "fov": 52},
     "O02": {"pos": [-2.6, 1.75, 11.4], "look_at": [-7.3, 1.2, 10.3], "fov": 40},
     "O07": {"pos": [-33.1, 1.8, -4], "look_at": [-35.8, 0.95, -5.8], "fov": 22},
-    "O09": {"pos": [28.5, 1.5, -4.5], "look_at": [31, 1.2, -7.5], "fov": 25},
+    "O09": {"pos": [27.0, 1.71, -0.76], "look_at": [26.0, 1.4, -6.5], "fov": 55},
     "O10": {"pos": [44, 1.0, -4], "look_at": [47, 3.0, -9], "fov": 14},
     "O11": {"pos": [45, 3, -6], "look_at": [60, 20, -90], "fov": 60},
     "O12": {"pos": [10, 8, 14], "look_at": [10, 1, -20], "fov": 55},

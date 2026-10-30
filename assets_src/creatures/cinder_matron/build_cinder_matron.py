@@ -1158,12 +1158,214 @@ def crust(rig: ck.Rig) -> ck.Mesh:
 # ---------------------------------------------------------------------------------------------
 # Clips
 # ---------------------------------------------------------------------------------------------
-def build_clips() -> list[ck.Clip]:
+HEM_R = 1.06  # the hem hoop's outer edge on the floor (measured: 1.052 m), where she rocks
+
+
+def keyrows(c: ck.Clip, bone: str, table) -> None:
+    """Keys `bone` from (t, rot) or (t, rot, loc) rows."""
+    for r in table:
+        c.key(bone, r[0], r[1], r[2] if len(r) > 2 else (0.0, 0.0, 0.0))
+
+
+def rock(rx: float, rz: float = 0.0) -> tuple[tuple, tuple]:
+    """(rot, loc) of the root that tips her on the edge of her hem (the edge that stays down is the pivot), so the
+    skirt rocks on the floor instead of sliding or sinking. rx > 0 tips her forward, rz > 0 toward -X."""
+    Rm = ck.euler(rx, 0.0, rz)
+    th = np.linspace(0.0, 2.0 * math.pi, 73)[:-1]
+    ring = np.column_stack([HEM_R * np.cos(th), np.zeros(len(th)), HEM_R * np.sin(th)])
+    p = ring[int(np.argmin((ring @ Rm.T)[:, 1]))]
+    return (rx, 0.0, rz), tuple(p - Rm @ p)
+
+
+def rock_rows(c: ck.Clip, table) -> None:
+    for t, rx, rz in table:
+        rot, loc = rock(rx, rz)
+        c.key("root", t, rot, loc)
+
+
+def idle_clip() -> ck.Clip:
     idle = ck.Clip("idle", 4.0, loop=True)  # a slow bellows breath, the arms' weight settling
     idle.wave("torso", amp_rot=(1.0, 0.0, 0.0), amp_loc=(0.0, 0.02, 0.0), cycles=1)
     idle.wave("head", amp_rot=(1.5, 1.5, 0.0), cycles=1, phase=0.8)
     for tag in ("l", "r"):
         idle.wave(f"arm_{tag}", amp_rot=(-1.5, 0.0, 0.0), cycles=1, phase=0.4)
+    return idle
+
+
+def ladle_swing() -> ck.Clip:
+    """Ladle Swing (contact 0.85 s): she winds the ladle back, twisting at the waist, then flings it forward and up so
+    the slag leaves the bowl toward the party."""
+    attack = ck.Clip("attack", 1.6)
+    for t, wind, swing, tip in ((0.0, 0, 0, 0), (0.45, 1.0, 0, 0), (0.72, 0, 0.75, 0.0), (0.85, 0, 1.0, 1.0),
+                                (1.15, 0, 0.85, 0.6), (1.6, 0, 0, 0)):
+        attack.key("arm_r", t, (35.0 * wind - 68.0 * swing, 0, 8.0 * swing))
+        attack.key("fore_r", t, (15.0 * wind - 18.0 * swing, 0, 0))
+        attack.key("hand_r", t, (12.0 * wind - 30.0 * tip, 0, 0))
+        attack.key("torso", t, (-3.0 * wind + 8.0 * swing, 14.0 * wind - 10.0 * swing, 0))
+        attack.key("head", t, (6.0 * swing, 0, 0))
+    return attack
+
+
+def slag_pour() -> ck.Clip:
+    """Slag Pour (contact 1.15 s): she sinks to take the ladle's weight, then heaves it up and out in front of her at
+    chest height, leaning back under it, turned to her left (0.35-0.95 s: the telegraph); she tips the bowl and turns
+    at the waist, so the slag pours in an arc across the whole party lane; she lowers it. The tongs go out wide."""
+    c = ck.Clip("slag_pour", 2.2)
+    keyrows(c, "arm_r", ((0.0, (0, 0, 0)), (0.35, (8, 0, 0)), (0.75, (-55, 0, 8)), (0.95, (-56, 0, 9)),
+                         (1.15, (-58, 0, 10)), (1.5, (-57, 0, 14)), (1.8, (-25, 0, 4)), (2.2, (0, 0, 0))))
+    keyrows(c, "fore_r", ((0.0, (0, 0, 0)), (0.35, (6, 0, 0)), (0.75, (-40, 0, 0)), (1.5, (-40, 0, 0)),
+                          (1.8, (-15, 0, 0)), (2.2, (0, 0, 0))))
+    keyrows(c, "hand_r", ((0.0, (0, 0, 0)), (0.35, (8, 0, 0)), (0.75, (80, 0, 0)), (0.95, (92, 0, 0)),
+                          (1.15, (125, 0, 0)), (1.5, (130, 0, 0)), (1.8, (40, 0, 0)), (2.2, (0, 0, 0))))
+    keyrows(c, "torso", ((0.0, (0, 0, 0)), (0.35, (6, 0, 0), (0, -0.02, 0)), (0.75, (-6, 16, 0), (0, 0.02, 0)),
+                         (0.95, (-6, 12, 0), (0, 0.02, 0)), (1.15, (-5, 0, 0), (0, 0.02, 0)), (1.5, (-5, -18, 0)),
+                         (1.8, (-2, -6, 0)), (2.2, (0, 0, 0))))
+    keyrows(c, "head", ((0.0, (0, 0, 0)), (0.35, (8, 0, 0)), (0.75, (-10, 10, 0)), (1.15, (2, 0, 0)),
+                        (1.5, (4, -14, 0)), (1.8, (2, -4, 0)), (2.2, (0, 0, 0))))
+    keyrows(c, "arm_l", ((0.0, (0, 0, 0)), (0.75, (-20, 0, 22)), (1.5, (-22, 0, 26)), (1.8, (-8, 0, 8)),
+                         (2.2, (0, 0, 0))))
+    keyrows(c, "fore_l", ((0.0, (0, 0, 0)), (0.75, (-15, 0, 0)), (1.5, (-15, 0, 0)), (2.2, (0, 0, 0))))
+    rock_rows(c, ((0.0, 0, 0), (0.35, 0.8, 0), (0.75, -1.2, 0), (1.15, -0.8, 0), (1.5, -0.8, -0.6), (1.9, 0, 0),
+                  (2.2, 0, 0)))
+    return c
+
+
+def bank_the_fire() -> ck.Clip:
+    """Bank the Fire (a buff; contact 1.0 s): she lifts the tongs high over her head (0.1-0.5 s), bows over her
+    firebox and drives them down at its door, draws them out and drives them in again, stoking it (the heart port's
+    flare is VFX); then she straightens, chest swelling, the head lifted."""
+    c = ck.Clip("bank_the_fire", 2.0)
+    keyrows(c, "arm_l", ((0.0, (0, 0, 0)), (0.42, (-110, 0, 10)), (0.5, (-112, 0, 10)), (0.76, (0, 0, -35)),
+                         (0.88, (-12, 0, -30)), (1.0, (0, 0, -36)), (1.15, (3, 0, -32)), (1.45, (-15, 0, 10)),
+                         (2.0, (0, 0, 0))))
+    keyrows(c, "fore_l", ((0.0, (0, 0, 0)), (0.42, (-30, 0, 0)), (0.5, (-32, 0, 0)), (0.76, (-110, 0, 0)),
+                          (0.88, (-90, 0, 0)), (1.0, (-112, 0, 0)), (1.15, (-96, 0, 0)), (1.45, (-30, 0, 0)),
+                          (2.0, (0, 0, 0))))
+    keyrows(c, "hand_l", ((0.0, (0, 0, 0)), (0.42, (20, 0, 0)), (0.5, (20, 0, 0)), (0.76, (100, 0, -40)),
+                          (0.88, (85, 0, -35)), (1.0, (102, 0, -40)), (1.15, (90, 0, -35)), (1.45, (10, 0, 0)),
+                          (2.0, (0, 0, 0))))
+    keyrows(c, "torso", ((0.0, (0, 0, 0)), (0.42, (-4, 4, 0)), (0.76, (10, 8, 0)), (1.0, (10, 8, 0)), (1.15, (9, 6, 0)),
+                         (1.45, (-7, 0, 0), (0, 0.06, 0)), (1.7, (-5, 0, 0), (0, 0.04, 0)), (2.0, (0, 0, 0))))
+    keyrows(c, "head", ((0.0, (0, 0, 0)), (0.42, (-8, 4, 0)), (0.76, (14, 8, 0)), (1.0, (16, 10, 0)),
+                        (1.15, (14, 8, 0)), (1.45, (-16, 0, 0)), (1.75, (-8, 0, 0)), (2.0, (0, 0, 0))))
+    keyrows(c, "arm_r", ((0.0, (0, 0, 0)), (1.0, (0, 0, -4)), (1.45, (-12, 0, -14)), (1.75, (-6, 0, -8)),
+                         (2.0, (0, 0, 0))))
+    rock_rows(c, ((0.0, 0, 0), (0.42, -0.6, 0), (0.76, 1.2, 0), (1.0, 1.4, 0), (1.15, 1.0, 0), (1.45, -1.2, 0),
+                  (1.75, -0.4, 0),
+                  (2.0, 0, 0)))
+    return c
+
+
+def recrust_gather() -> ck.Clip:
+    """Recrust Gather (the telegraph: in two turns the crust closes over her again; contact 1.1 s): she hunches deep
+    over her fire, the arms drawn in round it and the head bowed, rocking forward on her hem; her plates grind as
+    if sealing; she holds, then rises a little."""
+    c = ck.Clip("recrust_gather", 2.2)
+    shudder = ((0.85, 1.5), (0.95, -1.5), (1.05, 1.5), (1.15, -1.2), (1.25, 0.8))
+    keyrows(c, "torso", [(0.0, (0, 0, 0)), (0.5, (12, 0, 0), (0, -0.03, 0))]
+         + [(t, (16 + (1 if t == 1.05 else 0), 0, z), (0, -0.04, 0)) for t, z in shudder]
+         + [(1.6, (15, 0, 0), (0, -0.03, 0)), (1.9, (5, 0, 0)), (2.2, (0, 0, 0))])
+    keyrows(c, "head", ((0.0, (0, 0, 0)), (0.5, (20, 0, 0)), (1.1, (24, 0, 0)), (1.6, (22, 0, 0)), (1.9, (8, 0, 0)),
+                        (2.2, (0, 0, 0))))
+    keyrows(c, "arm_l", ((0.0, (0, 0, 0)), (0.5, (-18, 0, -18)), (1.1, (-22, 0, -22)), (1.6, (-20, 0, -20)),
+                         (1.9, (-6, 0, -6)), (2.2, (0, 0, 0))))
+    keyrows(c, "fore_l", ((0.0, (0, 0, 0)), (0.5, (-35, 0, 0)), (1.1, (-42, 0, 0)), (1.6, (-38, 0, 0)),
+                          (1.9, (-10, 0, 0)), (2.2, (0, 0, 0))))
+    keyrows(c, "arm_r", ((0.0, (0, 0, 0)), (0.5, (-14, 0, 16)), (1.1, (-18, 0, 20)), (1.6, (-16, 0, 18)),
+                         (1.9, (-5, 0, 5)), (2.2, (0, 0, 0))))
+    keyrows(c, "fore_r", ((0.0, (0, 0, 0)), (0.5, (-25, 0, 0)), (1.1, (-30, 0, 0)), (1.6, (-28, 0, 0)),
+                          (1.9, (-8, 0, 0)), (2.2, (0, 0, 0))))
+    rock_rows(c, [(0.0, 0, 0), (0.5, 1.0, 0)] + [(t, 2.0, 0.4 * z) for t, z in shudder]
+              + [(1.6, 1.5, 0), (1.9, 0.4, 0), (2.2, 0, 0)])
+    return c
+
+
+def recrust() -> ck.Clip:
+    """Recrust (the payoff; contact 0.8 s, when the crust closes: battle presentation shows `Crust` again): she
+    draws in, then heaves upright and rocks back with her arms pressed down and out, and her plates grind as the slag
+    seals over her; she settles."""
+    c = ck.Clip("recrust", 1.8)
+    shudder = ((0.9, 2.0), (1.0, -2.0), (1.1, 1.6), (1.2, -1.2), (1.3, 0.6))
+    keyrows(c, "torso", [(0.0, (0, 0, 0)), (0.3, (10, 0, 0), (0, -0.02, 0)), (0.8, (-10, 0, 0), (0, 0.07, 0))]
+         + [(t, (-9, 0, z), (0, 0.06, 0)) for t, z in shudder] + [(1.5, (3, 0, 0)), (1.8, (0, 0, 0))])
+    keyrows(c, "head", ((0.0, (0, 0, 0)), (0.3, (14, 0, 0)), (0.8, (-18, 0, 0)), (1.3, (-14, 0, 0)), (1.55, (2, 0, 0)),
+                        (1.8, (0, 0, 0))))
+    for tag, s in (("l", 1.0), ("r", -1.0)):
+        keyrows(c, f"arm_{tag}", ((0.0, (0, 0, 0)), (0.3, (-8, 0, -8 * s)), (0.8, (8, 0, 26 * s)),
+                                  (1.3, (6, 0, 22 * s)), (1.55, (1, 0, 4 * s)), (1.8, (0, 0, 0))))
+        keyrows(c, f"fore_{tag}", ((0.0, (0, 0, 0)), (0.3, (-20, 0, 0)), (0.8, (-6, 0, 0)), (1.3, (-8, 0, 0)),
+                                   (1.8, (0, 0, 0))))
+    rock_rows(c, [(0.0, 0, 0), (0.3, 1.2, 0), (0.8, -2.0, 0)] + [(t, -1.6, 0.5 * z) for t, z in shudder]
+              + [(1.5, 0.3, 0), (1.8, 0, 0)])
+    return c
+
+
+def cast_clip() -> ck.Clip:
+    cast = ck.Clip("cast", 1.8)  # the tongs raised high, the head lifted, the heart flares
+    for t, s in ((0.0, 0.0), (0.7, 1.0), (1.2, 1.0), (1.8, 0.0)):
+        cast.key("arm_l", t, (-115.0 * s, 0, 12.0 * s))
+        cast.key("fore_l", t, (-25.0 * s, 0, 0))
+        cast.key("arm_r", t, (-15.0 * s, 0, -8.0 * s))
+        cast.key("head", t, (-12.0 * s, 0, 0))
+        cast.key("torso", t, (-4.0 * s, 0, 0), (0, 0.04 * s, 0))
+    return cast
+
+
+def hit_clip(name: str, s: float = 1.0, a: float = 1.0) -> ck.Clip:
+    """The blow rocks her back onto the back of her hem (peak 0.1 s, where a hit snaps in) and the front comes down
+    with a grinding thud; the head snaps aside, the arms swing back with the tools. `s` = -1 snaps to the other side."""
+    c = ck.Clip(name, 0.6)
+    rock_rows(c, ((0.0, 0, 0), (0.1, -4.5 * a, 1.4 * s * a), (0.2, -3.0 * a, 0.8 * s * a), (0.32, 0.0, 0),
+                  (0.38, 0.5 * a, 0), (0.47, 0, 0), (0.6, 0, 0)))
+    keyrows(c, "torso", ((0.0, (0, 0, 0)), (0.1, (-10 * a, 0, 5 * s * a)), (0.22, (3 * a, 0, -2 * s * a)),
+                         (0.34, (-1 * a, 0, 1 * s * a)), (0.45, (0.5 * a, 0, -0.5 * s * a)), (0.6, (0, 0, 0))))
+    keyrows(c, "head", ((0.0, (0, 0, 0)), (0.1, (-16 * a, 0, -12 * s * a)), (0.22, (5 * a, 0, 4 * s * a)),
+                        (0.36, (-1.5 * a, 0, -1 * s * a)), (0.6, (0, 0, 0))))
+    for tag, side, amp in (("l", 1.0, 1.0), ("r", -1.0, 0.6)):
+        keyrows(c, f"arm_{tag}", ((0.0, (0, 0, 0)), (0.1, (20 * a * amp, 0, 14 * a * side * amp)),
+                                  (0.24, (-4 * a * amp, 0, -3 * a * side * amp)), (0.4, (1 * a, 0, 0)),
+                                  (0.6, (0, 0, 0))))
+        keyrows(c, f"fore_{tag}", ((0.0, (0, 0, 0)), (0.1, (10 * a * amp, 0, 0)), (0.24, (-3 * a, 0, 0)),
+                                   (0.6, (0, 0, 0))))
+    return c
+
+
+def phase_change() -> ck.Clip:
+    """Into the pour (contact 0.85 s, the burst; the crust goes at once and the burst is VFX at vfx_phase): she
+    hunches over her fire with her arms drawn in, her plates grinding and shuddering as the heat builds; then she
+    heaves up and back on her hem with her arms flung up and out over her head and her head thrown back; she holds,
+    trembling, and settles."""
+    c = ck.Clip("phase_change", 2.2)
+    shudder = ((0.42, 2.0), (0.48, -2.0), (0.55, 2.0))
+    tremble = ((1.0, 1.0), (1.12, -1.0), (1.24, 0.6))
+    keyrows(c, "torso", [(0.0, (0, 0, 0)), (0.38, (14, 0, 0), (0, -0.03, 0))]
+         + [(t, (15, 0, z), (0, -0.03, 0)) for t, z in shudder]
+         + [(0.85, (-12, 0, 0), (0, 0.08, 0))] + [(t, (-11, 0, z), (0, 0.07, 0)) for t, z in tremble]
+         + [(1.6, (4, 0, 0)), (1.9, (1, 0, 0)), (2.2, (0, 0, 0))])
+    keyrows(c, "head", ((0.0, (0, 0, 0)), (0.38, (20, 0, 0)), (0.55, (22, 0, 0)), (0.85, (-24, 0, 0)),
+                        (1.24, (-20, 0, 0)), (1.6, (4, 0, 0)), (2.2, (0, 0, 0))))
+    for tag, s in (("l", 1.0), ("r", -1.0)):
+        keyrows(c, f"arm_{tag}", ((0.0, (0, 0, 0)), (0.38, (-15, 0, -15 * s)), (0.55, (-16, 0, -16 * s)),
+                                  (0.85, (-105, 0, -40 * s)), (1.24, (-98, 0, -36 * s)), (1.6, (-20, 0, -6 * s)),
+                                  (2.2, (0, 0, 0))))
+        keyrows(c, f"fore_{tag}", ((0.0, (0, 0, 0)), (0.38, (-30 if s > 0 else -20, 0, 0)), (0.85, (-15, 0, 0)),
+                                   (1.24, (-15, 0, 0)), (1.6, (-5, 0, 0)), (2.2, (0, 0, 0))))
+    keyrows(c, "hand_r", ((0.0, (0, 0, 0)), (0.55, (10, 0, 0)), (0.85, (100, 0, 0)), (1.24, (95, 0, 0)),
+                          (1.6, (20, 0, 0)), (2.2, (0, 0, 0))))
+    rock_rows(c, [(0.0, 0, 0), (0.38, 1.5, 0)] + [(t, 1.5, 0.5 * z) for t, z in shudder]
+              + [(0.85, -2.5, 0)] + [(t, -2.2, 0.4 * z) for t, z in tremble] + [(1.6, 0.5, 0), (2.2, 0, 0)])
+    return c
+
+
+def build_clips() -> list[ck.Clip]:
+    idle = idle_clip()
+    idle0 = {b: tuple(np.asarray(v, float) for v in idle.sample(b, 0.0)) for b in idle.keys}
+
+    def from_idle(c: ck.Clip, name: str | None = None) -> ck.Clip:
+        """M3-CRB-013: a clip authored from the rest pose, played from idle's first frame (so it starts and ends
+        exactly there)."""
+        return ck.in_pose(c, name or c.name, idle0)
+
     # ready (M3-CRB-006): the keeper on guard, a loop. She straightens, the head lifted from its bow toward the party,
     # the ladle drawn up and back a little, the tongs raised forward and open; a quicker, deeper bellows breath.
     ready = ck.Clip("ready", 2.0, loop=True)
@@ -1194,35 +1396,6 @@ def build_clips() -> list[ck.Clip]:
     for b in ("torso", "head", "arm_r", "fore_r", "hand_r", "arm_l", "fore_l", "hand_l"):  # end on idle's first frame
         r, loc = idle.sample(b, 0.0)
         intro.key(b, 2.6, tuple(r), tuple(loc))
-    attack = ck.Clip("attack", 1.6)  # a ladle pour-swing: wind back, swing up and over, tip the slag at the party
-    for t, wind, swing, tip in ((0.0, 0, 0, 0), (0.45, 1.0, 0, 0), (0.72, 0, 0.75, 0.0), (0.85, 0, 1.0, 1.0),
-                                (1.15, 0, 0.85, 0.6), (1.6, 0, 0, 0)):
-        attack.key("arm_r", t, (35.0 * wind - 68.0 * swing, 0, 8.0 * swing))
-        attack.key("fore_r", t, (15.0 * wind - 18.0 * swing, 0, 0))
-        attack.key("hand_r", t, (12.0 * wind - 30.0 * tip, 0, 0))
-        attack.key("torso", t, (-3.0 * wind + 8.0 * swing, 14.0 * wind - 10.0 * swing, 0))
-        attack.key("head", t, (6.0 * swing, 0, 0))
-    cast = ck.Clip("cast", 1.8)  # the tongs raised high, the head lifted, the heart flares
-    for t, s in ((0.0, 0.0), (0.7, 1.0), (1.2, 1.0), (1.8, 0.0)):
-        cast.key("arm_l", t, (-115.0 * s, 0, 12.0 * s))
-        cast.key("fore_l", t, (-25.0 * s, 0, 0))
-        cast.key("arm_r", t, (-15.0 * s, 0, -8.0 * s))
-        cast.key("head", t, (-12.0 * s, 0, 0))
-        cast.key("torso", t, (-4.0 * s, 0, 0), (0, 0.04 * s, 0))
-    # a grinding shudder of plates; M3-CRE-617: she rocks back under the blow first (peak 0.1 s, where a hit snaps
-    # in) and the head snaps aside, then the plates grind her upright
-    hit = ck.Clip("hit", 0.6)
-    for k, t in enumerate(np.linspace(0, 0.6, 7)):
-        s = 0.0 if k in (0, 6) else (1.0 if k % 2 else -1.0) * (1 - t / 0.6)
-        back = {1: 1.0, 2: 0.45, 3: 0.15}.get(k, 0.0)
-        hit.key("torso", float(t), (-2.5 * abs(s) - 6.0 * back, 0, 3.0 * s), (0, 0, -0.08 * back))
-        hit.key("head", float(t), (-4.0 * back, 0, -6.0 * s))
-    phase = ck.Clip("phase_change", 2.0)  # the crust bursts off: a hunch, then she heaves up and throws her arms out
-    for t, s in ((0.0, 0.0), (0.5, -1.0), (0.8, 1.0), (1.3, 0.3), (2.0, 0.0)):
-        phase.key("torso", t, (6.0 * s, 0, 0), (0, 0.06 * abs(s), 0))
-        for tag, sg in (("l", 1), ("r", -1)):
-            phase.key(f"arm_{tag}", t, (-10.0 * max(s, 0), 0, 28.0 * max(s, 0) * sg))
-        phase.key("head", t, (-15.0 * max(s, 0), 0, 0))
     ko = ck.Clip("ko", 2.4)  # she settles onto her skirt, the head bowing, the tools sagging to the floor
     for t, s in ((0.0, 0.0), (1.0, 0.6), (2.0, 1.0), (2.4, 1.0)):
         ko.key("torso", t, (16.0 * s, 0, 0), (0, -0.1 * s, 0.05 * s))
@@ -1230,7 +1403,10 @@ def build_clips() -> list[ck.Clip]:
         for tag in ("l", "r"):
             ko.key(f"arm_{tag}", t, (-8.0 * s, 0, 0))
             ko.key(f"hand_{tag}", t, (20.0 * s, 0, 0))
-    return [idle, ready, intro, attack, cast, hit, ko, phase]
+    cast = cast_clip()
+    return [idle, ready, intro] + [from_idle(c) for c in (
+        ladle_swing(), cast, hit_clip("hit"), hit_clip("hit_b", -1.0, 1.3), ck.varied(cast, "idle_b", **ck.IDLE_B), ko,
+        phase_change(), slag_pour(), bank_the_fire(), recrust_gather(), recrust())]
 
 
 # Kept off the floor (M3-CRE-632, common/grounding.py): where a tool would go through the floor (the ladle on the

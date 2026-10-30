@@ -60,6 +60,16 @@
     "res://game/levels/ch04/brightwater_ferry/brightwater_ferry.tscn": "wood",
     "res://game/levels/ch04/haluna_wake/haluna_wake.tscn": "sand",
     "res://game/levels/ch06/brine_shoals/brine_shoals.tscn": "sand",
-    "res://game/levels/ch09/corrow_night/corrow_night.tscn": "sand"
+    "res://game/levels/ch09/corrow_night/corrow_night.tscn": "sand",
+    "res://game/levels/prologue/prologue.tscn": "stone",
+    "res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn": "stone",
+    "res://game/levels/ch03/first_verse/first_verse.tscn": "stone",
+    "res://game/levels/ch05/ashcrown/ashcrown.tscn": "stone",
+    "res://game/levels/ch05/pemakar/pemakar.tscn": "stone",
+    "res://game/levels/ch07/tamsule/tamsule.tscn": "stone",
+    "res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries.tscn": "stone",
+    "res://game/levels/ch07/tidecup_match/tidecup_match.tscn": "stone",
+    "res://game/levels/ch08/coilspire/coilspire.tscn": "stone",
+    "res://game/levels/ch08/corrow/corrow.tscn": "stone"
   }
 }

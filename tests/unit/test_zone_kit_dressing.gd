@@ -16,7 +16,7 @@ const ACT1_DRESSINGS := {
 	"res://game/levels/ch07/tamsule/tamsule_dressing.json": [],
 	"res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries_dressing.json": ["Column"],  # M3-RND-27
 	"res://game/levels/ch08/corrow/corrow_dressing.json": [],
-	"res://game/levels/ch08/coilspire/coilspire_dressing.json": ["Virel"],  # M3-CRE-627
+	"res://game/levels/ch08/coilspire/coilspire_dressing.json": [],  # Virel is her own body (M3-CRE-700)
 	"res://game/levels/ch09/corrow_night/corrow_night_dressing.json": [],
 }
 
@@ -192,6 +192,7 @@ func test_the_quick_reject_keeps_the_clip_exact() -> void:
 		+ _area(ZoneKitDressing._clip_faces(faces, to_parent, boxes, true))
 	)
 	assert_true(absf(parts - whole) < 1e-3, "outside and inside still add up to the mesh")
+	_close()  # before_each's zone (this test never uses it), as the other tests close theirs
 
 
 ## The clip as it was before the quick reject: every polygon cut by every box.

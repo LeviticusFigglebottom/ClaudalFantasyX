@@ -160,10 +160,9 @@ func _set_status(line: Dictionary) -> void:
 func _fit_desc() -> void:
 	var cap := HudLayout.num(_d.get("desc", {}), "height")
 	_desc.size.y = cap  # measure the wrap at full height: the label's own line metrics
-	var lines := _desc.get_line_count()
-	var spacing := float(_desc.get_theme_constant(&"line_spacing"))
-	var need := lines * _desc.get_line_height() + maxi(lines - 1, 0) * spacing
-	_desc.size.y = minf(ceilf(need), cap) if _desc.text != "" else 0.0
+	HudLayout.fit_lines(_desc, cap)  # a line too long for the cap at 130 % shrinks a little first
+	HudLayout.fit_lines(_status)
+	_desc.size.y = minf(ceilf(HudLayout.lines_height(_desc)), cap) if _desc.text != "" else 0.0
 	_status.position.y = _desc.position.y + _desc.size.y + HudLayout.num(_d.get("status", {}), "gap")
 
 

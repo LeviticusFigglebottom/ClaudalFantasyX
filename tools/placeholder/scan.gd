@@ -1,9 +1,9 @@
 extends Node
 ## ADR 0041 placeholder audit, the runtime half (tools/placeholder_audit.py runs it and reads its JSON):
 ## `godot --headless --path . res://tools/placeholder/scan.tscn -- --out=<file.json>`.
-## Loads every Act I zone (locations.json, the test rooms excluded; the First Verse set) as the game loads it, again
+## Loads every zone (locations.json, the test rooms excluded; the First Verse set) as the game loads it, again
 ## under each layout variant's flags and after each layout state's flag, and every battle arena an Act I encounter
-## fights on. Records what a player would see:
+## fights on (the Python half keeps the act it audits). Records what a player would see:
 ##   capsule    a visible StandIn mesh: a stage actor or NPC still drawn as its capsule (the actor's name)
 ##   greybox    a visible primitive mesh (box, capsule, cylinder, sphere, prism, torus) with a flat, untextured
 ##              material, or a visible CSG shape: greybox geometry (grouped by its top node under the zone)
@@ -17,8 +17,6 @@ const ENCOUNTERS := "res://game/data/battle/encounters.json"
 const TEST_DIR := "res://game/levels/_tests/"
 const CHAPTERS_DIR := "res://game/data/flow/chapters"
 const REEFBALL_DIR := "res://game/data/reefball"
-## Act I ends with Ch9 (ADR 0041).
-const LAST_CHAPTER := 9
 ## Scenes a data file names that are part of the playable game: levels, and env-art's sets.
 const SCENE_ROOTS: Array[String] = ["res://game/levels/", "res://assets/environments/"]
 const STANDIN := "StandIn"
@@ -54,7 +52,7 @@ func _ready() -> void:
 	get_tree().quit(0)
 
 
-## The Act I zones: every location scene but the test rooms, and the First Verse set.
+## Every zone: each location scene but the test rooms, and the First Verse set (the Python half picks the act).
 static func zone_scenes() -> Array[String]:
 	var out: Array[String] = []
 	for row: Variant in _json(LOCATIONS).get("locations", []):
@@ -62,8 +60,9 @@ static func zone_scenes() -> Array[String]:
 		if p != "" and not p.begins_with(TEST_DIR) and not out.has(p):
 			out.append(p)
 	_collect_scenes(_json(FIRST_PLAYABLE), out)
-	for file in DirAccess.get_files_at(CHAPTERS_DIR):  # a chapter's `scene` steps (Ch7's Tidecup match)
-		if file.ends_with(".json") and int(file.trim_prefix("ch").get_slice(".", 0)) <= LAST_CHAPTER:
+	# a chapter's `scene` steps (Ch7's Tidecup match), every act's: the Python half keeps the --act's chapters
+	for file in DirAccess.get_files_at(CHAPTERS_DIR):
+		if file.ends_with(".json"):
 			_collect_scenes(_json(CHAPTERS_DIR.path_join(file)), out)
 	for file in DirAccess.get_files_at(REEFBALL_DIR):  # the Tidecup's own arena
 		if file.ends_with(".json"):
@@ -71,7 +70,7 @@ static func zone_scenes() -> Array[String]:
 	return out
 
 
-## The arenas Act I encounters fight on (an encounter with no arena fights on the sandbox's own; the Python half
+## Every encounter's arena (an encounter with no arena fights on the sandbox's own; the Python half
 ## reports those).
 static func arena_scenes() -> Array[String]:
 	var scenes := ((_json(ARENAS).get("arenas", {}) as Dictionary).get("scenes", {})) as Dictionary

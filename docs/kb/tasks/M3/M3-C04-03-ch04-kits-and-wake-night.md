@@ -2,8 +2,8 @@
 id: M3-C04-03
 title: Ch4 kits swap-in (the ferry, the derelict, the islet landing) and Haluna's wake-night dressing
 role: environment
-status: todo
-owner_session: ""
+status: review
+owner_session: "env-art (claude/env-art, 2026-10-29)"
 depends_on: [M3-C04-02]
 milestone: M3
 request-from: cinematics
@@ -35,5 +35,11 @@ Keep every spawn, mark, trigger, shot and `states` id (Ch04Zone hides and shows 
 - **env-art, 2026-10-28 (ADR 0041):** the wake night is dressed on the greybox stand-in itself
   (M3-ENV-743, mount request M3-ENV-744 to act1-chapters), so Ch4 needn't wait for Haluna's ZoneStory move.
   The ferry zone is dressed (`brightwater_ferry_dressing.json`, mounted).
+
+## Checked (env-art, 2026-10-29)
+- The ferry zone mounts `brightwater_ferry_dressing.json` (the kit, the derelict alongside, unjoined, the islet landing's
+  `bf_landing` pieces); the wake night is on the real Haluna (M3-C04-1226; M3-ENV-743/744 retired). Godot
+  `--filter=ch04_thread` 3 run, 0 failed. The derelict's night read is M3-ENV-1228 (review). D06's re-aim on the
+  name-board is act1-chapters' camera (noted in M3-ENV-1228).
 
 ## Review log

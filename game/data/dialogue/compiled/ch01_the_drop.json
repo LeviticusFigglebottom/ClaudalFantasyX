@@ -7,19 +7,19 @@
   "ch01_the_drop": {
    "headers": {"location": "ch01/oruvel_underway"},
    "ops": [
-    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 12},
-    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {}, "src": 13},
-    {"op": "line", "id": "ch01_drop_001", "key": "DLG_CH01_DROP_001", "speaker": "", "emotion": "", "voice": "", "src": 14},
-    {"op": "cue", "cue": "sfx", "args": ["tether_run"], "kwargs": {}, "src": 15},
-    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 16},
-    {"op": "cue", "cue": "camera", "args": ["U01"], "kwargs": {}, "src": 17},
-    {"op": "cue", "cue": "music", "args": ["oruvel_underway"], "kwargs": {"fade": 4.0}, "src": 18},
-    {"op": "cue", "cue": "fade", "args": ["in", 3.0], "kwargs": {}, "src": 19},
-    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 20},
-    {"op": "line", "id": "ch01_drop_002", "key": "DLG_CH01_DROP_002", "speaker": "", "emotion": "neutral", "voice": "", "src": 21, "narrator": "rhen", "tags": ["vo"]},
-    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 22},
-    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 23},
-    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 24}
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {}, "src": 14},
+    {"op": "line", "id": "ch01_drop_001", "key": "DLG_CH01_DROP_001", "speaker": "", "emotion": "", "voice": "", "src": 15, "tags": ["card"]},
+    {"op": "cue", "cue": "sfx", "args": ["tether_run"], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "camera", "args": ["U01"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "music", "args": ["oruvel_underway"], "kwargs": {"fade": 4.0}, "src": 19},
+    {"op": "cue", "cue": "fade", "args": ["in", 3.0], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 21},
+    {"op": "line", "id": "ch01_drop_002", "key": "DLG_CH01_DROP_002", "speaker": "", "emotion": "neutral", "voice": "", "src": 22, "narrator": "rhen", "tags": ["vo"]},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 24},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 25}
    ]
   }
  }

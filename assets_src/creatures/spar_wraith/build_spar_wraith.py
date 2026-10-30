@@ -405,6 +405,9 @@ def build_rig() -> tuple[ck.Rig, np.ndarray]:
     cc, _t, _v = body_at(LENGTH * 0.5)
     rig.add("vfx_core", cc, cc + np.array([0.0, 0.25, 0.0]), body_bone_at(LENGTH * 0.5))
     rig.add("vfx_phase", j[1], j[1] + np.array([0.0, 0.0, 0.25]), "body1")
+    # M3-CRB-013: the shroud's lower half on a bone of its own, so the sail can billow, trail and be hauled down
+    # (the clips key it to follow the body below body1, plus its own lag and flare)
+    rig.add("sail", j[2], j[4], "body1")
     return rig, j
 
 
@@ -1154,7 +1157,8 @@ def shroud_mesh(rig: ck.Rig, j: np.ndarray) -> ck.Mesh:
     """Torn, tarred sailcloth wrapped round the back and flanks, open in front, gathered and lashed at the hub."""
     rng = np.random.default_rng(SEED + 51)
     m = ck.Mesh("Shroud")
-    skin = rig.chain([f"body{i}" for i in range(N_BODY)], j)
+    # M3-CRB-013: gathered at the hub on body0 and body1, the lower half on `sail` (blended across body1's last third)
+    skin = rig.chain(["body0", "body1", "sail"], [j[0], j[1], j[2], j[4]])
     NU, NV = 20, 19
     s_end = LENGTH * 0.86
     us = np.linspace(0.0, 1.0, NU)
@@ -1276,6 +1280,56 @@ def sheath_mesh(rig: ck.Rig, j: np.ndarray) -> ck.Mesh:
 # Clips
 # ---------------------------------------------------------------------------------------------
 BODIES = [f"body{i}" for i in range(N_BODY)]
+LOWER = BODIES[1:]
+
+
+def frame_times(length: float) -> list[float]:
+    return [min(f / ck.FPS, length) for f in range(int(round(length * ck.FPS)) + 1)]
+
+
+def rows(c: ck.Clip, bone: str, table) -> None:
+    """Keys `bone` from (t, rot) or (t, rot, loc) rows."""
+    for r in table:
+        c.key(bone, r[0], r[1], r[2] if len(r) > 2 else (0.0, 0.0, 0.0))
+
+
+def lower_rows(c: ck.Clip, table, scale=(1.0, 1.0, 1.0, 1.0)) -> None:
+    """Keys body1..4 from (t, rot) rows, each segment's turn scaled (a bend shared down the body)."""
+    for b, s in zip(LOWER, scale):
+        for t, r in table:
+            c.key(b, t, tuple(s * v for v in r))
+
+
+def spar_lean(side: float, rx: float, rz: float) -> tuple[tuple, tuple]:
+    """(rot, loc) turning a planted spar about its foot, so the foot stays put on the deck while the spar creaks.
+    rz > 0 leans the top toward -X; rx > 0 leans it toward the party."""
+    top, foot = spar_ends(side)
+    d = foot - top
+    return (rx, 0.0, rz), tuple(d - ck.euler(rx, 0.0, rz) @ d)
+
+
+def lean_rows(c: ck.Clip, side: float, table) -> None:
+    """Keys a planted spar's creak from (t, rx, rz) rows (degrees about its foot)."""
+    tag = "l" if side > 0 else "r"
+    for t, rx, rz in table:
+        rot, loc = spar_lean(side, rx, rz)
+        c.key(f"spar_{tag}", t, rot, loc)
+
+
+def follow_sail(c: ck.Clip, drag: float = 0.0, lag: float = 0.12) -> ck.Clip:
+    """Keys `sail` (the shroud's lower half) at every frame: body2's turn, half of body3's and a quarter of body4's
+    (the body it hangs round), plus whatever the clip keyed on `sail` (a flare or a haul), plus `drag`: it trails
+    body0's swing by `lag` seconds. The drag fades out over the last 0.2 s, so a clip still ends on its pose."""
+    own = ck.Clip("_sail", c.length)
+    own.keys["sail"] = c.keys.pop("sail", [])
+    for t in frame_times(c.length):
+        r = c.sample("body2", t)[0] + 0.5 * c.sample("body3", t)[0] + 0.25 * c.sample("body4", t)[0]
+        ra, la = own.sample("sail", t)
+        if drag:
+            w = min(1.0, max(c.length - t, 0.0) / 0.2)
+            r = r + drag * w * (c.sample("body0", max(t - lag, 0.0))[0] - c.sample("body0", t)[0])
+        c.key("sail", t, tuple(r + ra), tuple(la))
+    return c
 
 
 def idle_clip() -> ck.Clip:
@@ -1287,20 +1341,254 @@ def idle_clip() -> ck.Clip:
     idle.wave("tackle", amp_rot=(4.0, 0.0, 6.0), cycles=1, phase=-3.8)
     # M3-CRE-632: the hub (the web's centre) does not rock: the shrouds it carries are made fast to the deck and the
     # spars planted on it. The body still sways in the web.
-    return idle
+    return follow_sail(idle)
+
+
+# M3-CRB-013: every strike is authored as offsets from the rest pose and played from the phase's idle first frame
+# (ck.in_pose), so each clip starts and ends exactly where its idle starts. Times below are seconds.
+def spar_stab() -> ck.Clip:
+    """Spar Stab (contact 0.8 s): the near spar (-X, toward the camera) tears its foot off the deck and swings it out,
+    back and up, high and wide of the frame, while the body coils back in the web and the face lifts to its target
+    (0.1-0.58 s, the telegraph); it drives the spar's foot down and across, forward at the party, the body lunging after
+    it; it holds, then walks the spar back and plants it. The far spar braces on its foot as the weight comes onto it."""
+    c = ck.Clip("attack", 1.6)
+    rows(c, "spar_r", ((0.0, (0, 0, 0)), (0.1, (2, 0, -2), (0, 0.04, 0)), (0.42, (14, 0, -20), (0, 0.3, -0.05)),
+                       (0.58, (16, 0, -22), (0, 0.34, -0.06)), (0.8, (-24, 0, 7), (0, -0.16, 0.22)),
+                       (0.95, (-22, 0, 6), (0, -0.14, 0.2)), (1.2, (-8, 0, 0), (0, 0.16, 0.06)),
+                       (1.42, (0, 0, -0.5), (0, 0.04, 0)), (1.6, (0, 0, 0))))
+    lean_rows(c, 1.0, ((0.0, 0, 0), (0.45, 0, 1.6), (0.8, 0.6, 1.0), (0.9, 0.8, 2.0), (1.02, 0.3, 1.2),
+                       (1.3, 0, 0.3), (1.6, 0, 0)))
+    rows(c, "body0", ((0.0, (0, 0, 0)), (0.1, (2, 0, -1), (0, 0.02, -0.01)), (0.42, (14, 0, -7), (0, 0.12, -0.08)),
+                      (0.58, (16, 0, -8), (0, 0.13, -0.09)), (0.8, (-14, 0, 4), (0, 0.04, 0.12)),
+                      (0.95, (-12, 0, 3), (0, 0.03, 0.1)), (1.25, (4, 0, -1), (0, 0.02, 0)), (1.6, (0, 0, 0))))
+    lower_rows(c, ((0.0, (0, 0, 0)), (0.42, (3, 0, 0)), (0.58, (3.5, 0, 0)), (0.8, (-4, 0, 0)), (0.95, (-3, 0, 0)),
+                   (1.25, (1, 0, 0)), (1.6, (0, 0, 0))))
+    rows(c, "head", ((0.0, (0, 0, 0)), (0.1, (-4, -3, 0)), (0.42, (-24, -14, 0)), (0.58, (-26, -15, 0)),
+                     (0.8, (14, -6, 0)), (0.95, (12, -5, 0)), (1.25, (-3, 0, 0)), (1.6, (0, 0, 0))))
+    rows(c, "block", ((0.0, (0, 0, 0)), (0.5, (0, 0, -8)), (0.85, (0, 0, 18)), (1.1, (0, 0, -10)), (1.4, (0, 0, 4)),
+                      (1.6, (0, 0, 0))))
+    rows(c, "tackle", ((0.0, (0, 0, 0)), (0.5, (10, 0, -15)), (0.85, (-20, 0, 28)), (1.1, (8, 0, -14)),
+                       (1.4, (0, 0, 5)), (1.6, (0, 0, 0))))
+    return follow_sail(c, drag=0.7)
+
+
+def shroud_sweep() -> ck.Clip:
+    """Shroud Sweep (contact 1.0 s): it draws back and twists to one side in the web (0.35-0.62 s), then swings
+    the whole body out over the party on its lines in a wide arc, the shroud flaring and trailing behind it, the
+    face leading; it swings back and settles."""
+    c = ck.Clip("shroud_sweep", 1.9)
+    rows(c, "body0", ((0.0, (0, 0, 0)), (0.35, (10, 22, -5), (0, 0.06, -0.05)), (0.62, (-6, 36, -8), (0, 0.14, 0.02)),
+                      (0.85, (-28, 18, -4), (0, 0.2, 0.1)), (1.0, (-33, -8, 2), (0, 0.2, 0.12)),
+                      (1.18, (-24, -34, 6), (0, 0.16, 0.08)), (1.45, (5, -14, 2), (0, 0.05, -0.02)),
+                      (1.7, (-2, 3, 0), (0, 0.01, 0)), (1.9, (0, 0, 0))))
+    lower_rows(c, ((0.0, (0, 0, 0)), (0.35, (2, -3, 0)), (0.62, (0, 4, 0)), (0.85, (-4, 6, 0)), (1.0, (-4, 2, 0)),
+                   (1.18, (-4, -6, 0)), (1.45, (1, -2, 0)), (1.9, (0, 0, 0))))
+    rows(c, "head", ((0.0, (0, 0, 0)), (0.35, (-14, 18, 0)), (0.62, (-18, 24, 0)), (0.85, (4, -6, 0)),
+                     (1.0, (10, -22, 0)), (1.18, (6, -26, 0)), (1.45, (-4, -6, 0)), (1.9, (0, 0, 0))))
+    rows(c, "block", ((0.0, (0, 0, 0)), (0.62, (0, 0, -14)), (0.95, (0, 0, 22)), (1.25, (0, 0, -12)), (1.6, (0, 0, 4)),
+                      (1.9, (0, 0, 0))))
+    rows(c, "tackle", ((0.0, (0, 0, 0)), (0.62, (0, 0, -20)), (0.85, (-25, 0, 10)), (1.0, (-10, 0, 32)),
+                       (1.2, (15, 0, 0)), (1.3, (6, 0, -16)), (1.6, (0, 0, 6)), (1.9, (0, 0, 0))))
+    for side, s in ((1.0, 1.0), (-1.0, -1.0)):  # the frame creaks as the weight swings across it
+        lean_rows(c, side, ((0.0, 0, 0), (0.62, 0, 0.6 * s), (0.9, 0.6, -1.0 * s), (1.1, 0.4, 1.2 * s),
+                            (1.35, 0, -0.4 * s), (1.6, 0, 0), (1.9, 0, 0)))
+    return follow_sail(c, drag=0.8, lag=0.14)
+
+
+def hit_clip(name: str, s: float = 1.0, amp: float = 1.0) -> ck.Clip:
+    """It jerks in its lines (peak 0.1 s, where a hit snaps in): the body kicks back and aside, the face snaps up,
+    the segments ripple, the tackle swings and the spars shudder on their feet. `s` = -1 recoils to the other side."""
+    c = ck.Clip(name, 0.5)
+    a = amp
+    rows(c, "body0", ((0.0, (0, 0, 0)), (0.1, (13 * a, 0, -16 * s * a), (-0.1 * s * a, 0.12 * a, -0.06 * a)),
+                      (0.22, (-6 * a, 0, 7 * s * a), (0.03 * s * a, 0.02 * a, 0.02 * a)),
+                      (0.36, (2 * a, 0, -2 * s * a)), (0.5, (0, 0, 0))))
+    for i, b in enumerate(LOWER):
+        alt = 1.0 if i % 2 else -1.0
+        rows(c, b, ((0.0, (0, 0, 0)), (0.1, (3 * a, 0, 7 * alt * s * a)), (0.22, (-1 * a, 0, -4 * alt * s * a)),
+                    (0.36, (0, 0, 1 * alt * s * a)), (0.5, (0, 0, 0))))
+    rows(c, "head", ((0.0, (0, 0, 0)), (0.1, (-22 * a, 12 * s * a, 0)), (0.22, (8 * a, -5 * s * a, 0)),
+                     (0.36, (-2 * a, 1 * s * a, 0)), (0.5, (0, 0, 0))))
+    rows(c, "block", ((0.0, (0, 0, 0)), (0.1, (0, 0, 12 * s * a)), (0.25, (0, 0, -6 * s * a)), (0.5, (0, 0, 0))))
+    rows(c, "tackle", ((0.0, (0, 0, 0)), (0.1, (0, 0, 30 * s * a)), (0.25, (0, 0, -16 * s * a)),
+                       (0.4, (0, 0, 5 * s * a)), (0.5, (0, 0, 0))))
+    for side in (1.0, -1.0):
+        lean_rows(c, side, ((0.0, 0, 0), (0.1, 0.5 * a, 1.2 * s * a), (0.22, -0.2 * a, -0.6 * s * a),
+                            (0.36, 0, 0.2 * s * a), (0.5, 0, 0)))
+    return follow_sail(c, drag=0.6, lag=0.08)
+
+
+def cast_clip() -> ck.Clip:
+    """The web draws taut and hauls the body up into it, arched, the face thrown back; the spars lean in."""
+    c = ck.Clip("cast", 1.6)
+    rows(c, "body0", ((0.0, (0, 0, 0)), (0.25, (4, 0, 0), (0, -0.04, 0)), (0.6, (-6, 0, 0), (0, 0.42, 0)),
+                      (1.1, (-7, 0, 1), (0, 0.44, 0)), (1.6, (0, 0, 0))))
+    lower_rows(c, ((0.0, (0, 0, 0)), (0.25, (3, 0, 0)), (0.6, (-6, 0, 0)), (1.1, (-6, 0, 0)), (1.6, (0, 0, 0))))
+    rows(c, "head", ((0.0, (0, 0, 0)), (0.25, (8, 0, 0)), (0.6, (-34, 0, 0)), (1.1, (-32, 6, 0)), (1.6, (0, 0, 0))))
+    rows(c, "tackle", ((0.0, (0, 0, 0)), (0.6, (-25, 0, 12)), (0.9, (10, 0, -8)), (1.2, (-4, 0, 3)), (1.6, (0, 0, 0))))
+    for side, s in ((1.0, 1.0), (-1.0, -1.0)):
+        lean_rows(c, side, ((0.0, 0, 0), (0.6, -0.5, -2.0 * s), (1.1, -0.5, -1.8 * s), (1.6, 0, 0)))
+    return follow_sail(c, drag=0.5)
+
+
+def lines_taut() -> ck.Clip:
+    """Lines Taut (a buff, deck stance; the snap at 0.8 s): it gathers low on the deck, then every line snaps taut
+    at once and hauls it half up off the planks, arched, the face thrown back; it hangs there trembling while the
+    frame groans (the spars lean in on their feet), then the lines ease and it settles."""
+    c = ck.Clip("lines_taut_deck", 1.8)
+    tremble = [(0.9, 1.5), (1.0, -1.5), (1.1, 1.2), (1.2, -1.2), (1.32, 0.6)]
+    rows(c, "body0", [(0.0, (0, 0, 0)), (0.35, (6, 0, 0), (0, 0.0, 0.02)), (0.62, (-4, 0, 0), (0, 0.25, 0)),
+                      (0.8, (-12, 0, 0), (0, 0.55, -0.05))]
+         + [(t, (-12.5, 0, z), (0, 0.56, -0.05)) for t, z in tremble]
+         + [(1.55, (-3, 0, 0), (0, 0.15, 0)), (1.8, (0, 0, 0))])
+    lower_rows(c, ((0.0, (0, 0, 0)), (0.35, (5, 0, 0)), (0.8, (-7, 0, 0)), (1.32, (-7, 0, 0)), (1.55, (-1, 0, 0)),
+                   (1.8, (0, 0, 0))))
+    rows(c, "head", [(0.0, (0, 0, 0)), (0.35, (12, 0, 0)), (0.8, (-32, 0, 0))]
+         + [(t, (-30, 1.4 * z, 0)) for t, z in tremble] + [(1.55, (-6, 0, 0)), (1.8, (0, 0, 0))])
+    rows(c, "block", ((0.0, (0, 0, 0)), (0.8, (-20, 0, 8)), (1.0, (6, 0, -6)), (1.25, (-4, 0, 3)), (1.8, (0, 0, 0))))
+    rows(c, "tackle", ((0.0, (0, 0, 0)), (0.62, (10, 0, 0)), (0.8, (-40, 0, 14)), (1.0, (12, 0, -12)),
+                       (1.25, (-8, 0, 5)), (1.55, (3, 0, 0)), (1.8, (0, 0, 0))))
+    for side, s in ((1.0, 1.0), (-1.0, -1.0)):
+        lean_rows(c, side, [(0.0, 0, 0), (0.62, 0, 0), (0.8, -1.0, -2.0 * s)]
+                  + [(t, -1.0, (-2.0 + 0.4 * z) * s) for t, z in tremble] + [(1.6, 0, 0), (1.8, 0, 0)])
+    return follow_sail(c, drag=0.5)
+
+
+def haul() -> ck.Clip:
+    """Haul (deck stance; contact 1.1 s, the yank): it rears up and turns its face on a foe (0.25-0.48 s), flings
+    its block and hook out at them (0.75 s), holds reaching, then hauls back hard, the body snapping back up the
+    deck and the frame groaning back on its feet as the line comes in; it settles."""
+    c = ck.Clip("haul_deck", 2.0)
+    rows(c, "body0", ((0.0, (0, 0, 0)), (0.25, (6, -8, 0), (0, 0.18, -0.04)), (0.48, (10, -14, 0), (0, 0.36, -0.08)),
+                      (0.75, (-16, -6, 12), (0, 0.26, 0.18)), (0.92, (-17, -5, 13), (0, 0.24, 0.2)),
+                      (1.1, (18, 8, -16), (0, 0.2, -0.16)), (1.35, (12, 5, -11), (0, 0.12, -0.1)),
+                      (1.7, (-2, 0, 0), (0, 0.02, 0)), (2.0, (0, 0, 0))))
+    lower_rows(c, ((0.0, (0, 0, 0)), (0.48, (4, 0, 0)), (0.75, (-5, 0, 0)), (0.92, (-5, 0, 0)), (1.1, (7, 0, 0)),
+                   (1.35, (4, 0, 0)), (1.7, (0, 0, 0)), (2.0, (0, 0, 0))))
+    rows(c, "head", ((0.0, (0, 0, 0)), (0.25, (-12, -10, 0)), (0.48, (-26, -16, 0)), (0.75, (14, -8, 0)),
+                     (0.92, (12, -8, 0)), (1.1, (-22, 14, 0)), (1.35, (-14, 8, 0)), (1.7, (-2, 0, 0)),
+                     (2.0, (0, 0, 0))))
+    rows(c, "block", ((0.0, (0, 0, 0)), (0.45, (25, 0, 0)), (0.75, (-40, 0, 6)), (0.92, (-45, 0, 6)),
+                      (1.12, (-5, 0, -2)), (1.35, (18, 0, -3)), (1.6, (-4, 0, 0)), (2.0, (0, 0, 0))))
+    rows(c, "tackle", ((0.0, (0, 0, 0)), (0.45, (35, 0, 0)), (0.78, (-75, 0, 8)), (0.92, (-85, 0, 8)),
+                       (1.12, (-15, 0, -6)), (1.35, (35, 0, -6)), (1.62, (-12, 0, 2)), (1.85, (3, 0, 0)),
+                       (2.0, (0, 0, 0))))
+    for side in (1.0, -1.0):
+        lean_rows(c, side, ((0.0, 0, 0), (0.75, 0.6, 0), (1.1, -2.0, 0), (1.22, -1.2, 0), (1.35, -1.8, 0),
+                            (1.7, -0.2, 0), (2.0, 0, 0)))
+    return follow_sail(c, drag=0.5)
+
+
+def sea_lash() -> ck.Clip:
+    """Sea Lash (deck stance; contact 1.0 s): it rises and coils its sheathed body to one side (0.3-0.58 s), then
+    lashes it out across the whole party like a whip, the body first and the head cracking last; it recoils."""
+    c = ck.Clip("sea_lash_deck", 1.9)
+    rows(c, "body0", ((0.0, (0, 0, 0)), (0.3, (4, 18, -4), (0, 0.2, 0)), (0.58, (6, 32, -8), (0, 0.32, -0.04)),
+                      (0.8, (-8, 8, 2), (0, 0.3, 0.06)), (1.0, (-14, -30, 10), (0, 0.25, 0.12)),
+                      (1.2, (-8, -36, 8), (0, 0.16, 0.06)), (1.5, (2, -8, 1), (0, 0.04, 0)), (1.9, (0, 0, 0))))
+    for i, b in enumerate(LOWER):  # the lash runs down the body: each segment a little later than the one above
+        d = 0.04 * i
+        rows(c, b, ((0.0, (0, 0, 0)), (0.3, (0, 4, -2)), (0.58, (2, 6, -3)), (0.8 + d, (-2, 10, 2)),
+                    (1.0 + d, (-3, -6, 3)), (1.12 + d, (-2, -10, 2)), (1.45, (0, -2, 0)), (1.9, (0, 0, 0))))
+    rows(c, "head", ((0.0, (0, 0, 0)), (0.3, (-10, 20, 0)), (0.58, (-18, 28, 0)), (0.8, (-6, 14, 0)),
+                     (1.0, (16, -30, 0)), (1.2, (8, -24, 0)), (1.5, (-2, -4, 0)), (1.9, (0, 0, 0))))
+    rows(c, "block", ((0.0, (0, 0, 0)), (0.58, (0, 0, -12)), (1.0, (0, 0, 20)), (1.3, (0, 0, -8)), (1.9, (0, 0, 0))))
+    rows(c, "tackle", ((0.0, (0, 0, 0)), (0.58, (0, 0, -30)), (1.0, (-15, 0, 45)), (1.3, (6, 0, -20)), (1.6, (0, 0, 8)),
+                       (1.9, (0, 0, 0))))
+    for side, s in ((1.0, 1.0), (-1.0, -1.0)):
+        lean_rows(c, side, ((0.0, 0, 0), (0.58, 0, -0.6 * s), (1.0, 0.8, 1.2 * s), (1.15, 0.3, -0.6 * s),
+                            (1.4, 0, 0.2 * s), (1.9, 0, 0)))
+    return follow_sail(c, drag=0.7)
+
+
+def deck_pose(c: ck.Clip, t: float, d: float) -> None:
+    """`hauled_down` (m2-slice act1_ch04 §5): the body dropped out of the web onto the deck (the spars stay
+    planted)."""
+    c.key("body0", t, (8.0 * d, 0, 0), (0, -1.05 * d, 0.25 * d))
+    for i, b in enumerate(LOWER, 1):
+        c.key(b, t, (12.0 * d * (1 if i % 2 else -0.5), 0, 0))
+    c.key("head", t, (-10.0 * d, 0, 0))
+
+
+# On the deck the block and its hook ride up against the body instead of lying on the planks (so the hook's floor
+# correction rarely has to act, and never flips from frame to frame)
+DECK_GEAR = {"block": (-35.0, 0.0, 0.0), "tackle": (-40.0, 0.0, 0.0)}
+
+
+def phase_drop() -> ck.Clip:
+    """`hauled_down` (1.8 s): every line snaps at once (0.2 s): it jerks up in the web and the frame jolts; it hangs
+    a beat, thrashing; then it is hauled down out of the web and slams onto the deck (0.82 s), the shroud billowing
+    up round it as it falls and slumping onto the planks after; it bounces and settles on the deck, face up. The
+    shroud goes as it ends (creatures.json `hide_after`), as the sea comes up its lines (`show_after` Sheath)."""
+    c = ck.Clip("phase_drop", 1.8)
+    for t, d in ((0.0, 0.0), (0.2, -0.18), (0.42, -0.12), (0.62, 0.22), (0.72, 0.62), (0.82, 1.1), (0.95, 0.9),
+                 (1.15, 1.03), (1.4, 0.98), (1.8, 1.0)):
+        deck_pose(c, t, d)
+    extra = {0.2: ((-10, 0, 0), (-26, 0, 0)), 0.42: ((0, 0, 6), (-18, 12, 0)), 0.82: ((4, 0, -3), (12, 0, 0)),
+             0.95: ((-3, 0, 2), (-14, -6, 0))}  # body0 and head on top of the drop: the jerk, the thrash, the slam
+    for b, k in (("body0", 0), ("head", 1)):
+        ks = c.keys[b]
+        c.keys[b] = [(t, tuple(np.add(r, extra[t][k] if t in extra else (0, 0, 0))), l) for t, r, l in ks]
+    rows(c, "block", ((0.0, (0, 0, 0)), (0.2, (0, 0, 30)), (0.42, (0, 0, -24)), (0.82, (-20, 0, 36)),
+                      (1.0, (-40, 0, -16)), (1.3, (-34, 0, 6)), (1.8, DECK_GEAR["block"])))
+    rows(c, "tackle", ((0.0, (0, 0, 0)), (0.2, (-30, 0, 20)), (0.42, (20, 0, -30)), (0.72, (-55, 0, 10)),
+                       (0.95, (-20, 0, 22)), (1.2, (-48, 0, -8)), (1.5, (-38, 0, 2)), (1.8, DECK_GEAR["tackle"])))
+    # the shroud: it billows up as the body falls out from under it, then slumps onto the deck
+    rows(c, "sail", ((0.0, (0, 0, 0)), (0.2, (-8, 0, 0)), (0.42, (6, 0, 4)), (0.72, (40, 0, -6)), (0.85, (55, 0, 0)),
+                     (1.1, (20, 0, 4)), (1.4, (0, 0, 0)), (1.8, (0, 0, 0))))
+    for side in (1.0, -1.0):  # the frame jolts as the lines part, and again as the deck takes the weight
+        lean_rows(c, side, ((0.0, 0, 0), (0.2, 1.2, 1.2 * side), (0.32, -0.6, -0.6 * side), (0.5, 0, 0),
+                            (0.82, -0.8, 0), (0.92, 0.6, 0), (1.05, -0.2, 0), (1.3, 0, 0), (1.8, 0, 0)))
+    return follow_sail(c)
+
+
+def ko_clip() -> ck.Clip:
+    """The lines part and it drops to the deck; the spars fall outward."""
+    ko = ck.Clip("ko", 2.2)
+    for t, d in ((0.0, 0.0), (0.5, 0.15), (1.1, 1.0), (1.5, 1.05), (2.2, 1.05)):
+        ko.key("body0", t, (10.0 * d, 0, 0), (0, -1.6 * d, 0.2 * d))
+        for i, b in enumerate(LOWER, 1):
+            ko.key(b, t, (18.0 * d * (1 if i % 2 else -0.6), 0, 6.0 * d))
+        ko.key("head", t, (30.0 * d, 0, 0))
+        ko.key("spar_l", t, (0, 0, 22.0 * d))
+        ko.key("spar_r", t, (0, 0, -22.0 * d))
+    return follow_sail(ko, drag=0.6)
+
+
+def ko_deck_clip() -> ck.Clip:
+    """The KO from the deck (`hauled_down` maps `ko` to it): the last lines part with a jerk (0.4 s), the body slumps
+    flat along the planks and the face goes down; the spars fall outward. Played from the deck pose."""
+    c = ck.Clip("ko_deck", 2.2)
+    for t, d, jerk in ((0.0, 0.0, 0.0), (0.4, 0.08, 1.0), (1.05, 1.0, 0.0), (1.4, 1.03, 0.0), (2.2, 1.03, 0.0)):
+        c.key("body0", t, (2.5 * d - 4.0 * jerk, 0, 0), (0, -0.63 * d + 0.1 * jerk, -0.04 * d))
+        for i, b in enumerate(LOWER, 1):
+            c.key(b, t, ((6.9 if i % 2 else -3.6) * d, 0, 6.0 * d))
+        c.key("head", t, (40.0 * d - 12.0 * jerk, 0, 0))
+        c.key("spar_l", t, (0, 0, 22.0 * d))
+        c.key("spar_r", t, (0, 0, -22.0 * d))
+    return follow_sail(c, drag=0.6)
 
 
 def build_clips() -> list[ck.Clip]:
     idle = idle_clip()
+    idle0 = {b: tuple(np.asarray(v, float) for v in idle.sample(b, 0.0)) for b in idle.keys}
+
+    def from_idle(c: ck.Clip, name: str | None = None, pose: dict | None = None) -> ck.Clip:
+        base = dict(idle0)
+        for b, (r, l) in (pose or {}).items():
+            r0, l0 = base.get(b, (np.zeros(3), np.zeros(3)))
+            base[b] = (r0 + r, l0 + l)
+        return ck.in_pose(c, name or c.name, base)
 
     # ready: drawn up into the web, the body tense and twitching, the head raised toward the party; a loop
     ready = ck.Clip("ready", 2.0, loop=True)
     ready.wave("body0", amp_rot=(0.8, 0.0, 0.0), amp_loc=(0.0, 0.02, 0.0), cycles=2, base_loc=(0.0, 0.09, 0.0))
-    for i, b in enumerate(BODIES[1:], 1):
+    for i, b in enumerate(LOWER, 1):
         ready.wave(b, amp_rot=(1.5, 0.0, 2.0), cycles=2, phase=-i * 0.6, base_rot=(-4.0, 0.0, 0.0))
     ready.wave("head", amp_rot=(3.0, 10.0, 0.0), cycles=2, phase=-1.5, base_rot=(-14.0, 0.0, 0.0))
     ready.wave("block", amp_rot=(0.0, 0.0, 6.0), cycles=2, phase=-2.0)
     ready.wave("tackle", amp_rot=(3.0, 0.0, 5.0), cycles=2, phase=-2.6)
+    follow_sail(ready)
 
     # intro: it unfolds in the web. Curled low and slack with the spars lifted, the spars come down and plant, the
     # lines snap taut and haul it up, it uncurls segment by segment and lifts its head to the party, then settles.
@@ -1309,7 +1597,7 @@ def build_clips() -> list[ck.Clip]:
             (1.25, -0.12, 1.0, 1.0), (1.6, 0.0, 1.0, 1.0), (2.1, 0.0, 1.0, 0.85))
     for t, slack, plant, rear in keys:
         intro.key("body0", t, (6.0 * slack, 0.0, 0.0), (0.0, -0.38 * slack + 0.08 * rear, 0.05 * slack))
-        for i, b in enumerate(BODIES[1:], 1):
+        for i, b in enumerate(LOWER, 1):
             curl = 16.0 * slack * (1 if i % 2 else -0.7)
             intro.key(b, t, (curl - 3.0 * rear, 2.0 * math.sin(t * 7.0 + i) * slack, 0.0))
         intro.key("head", t, (34.0 * slack - 24.0 * rear, 12.0 * math.sin(t * 4.0) * rear, 0.0))
@@ -1317,65 +1605,38 @@ def build_clips() -> list[ck.Clip]:
         intro.key("spar_r", t, (0.0, 0.0, -14.0 * (1 - plant)))
         intro.key("block", t, (0.0, 0.0, 25.0 * slack * math.sin(t * 6.0)))
         intro.key("tackle", t, (0.0, 0.0, 18.0 * slack * math.sin(t * 6.0 + 1.0)))
-    for b in list(idle.keys) + ["spar_l", "spar_r"]:  # end on idle's first frame
+    for b in [k for k in idle.keys if k != "sail"] + ["spar_l", "spar_r"]:  # end on idle's first frame
         r, loc = idle.sample(b, 0.0)
         intro.key(b, 2.8, tuple(r), tuple(loc))
+    follow_sail(intro, drag=0.5)
 
-    attack = ck.Clip("attack", 1.5)  # a spar stabs down at the target
-    for t, lift, stab in ((0.0, 0, 0), (0.55, 1.0, -0.4), (0.8, -0.2, 1.0), (1.05, 0.0, 0.8), (1.5, 0, 0)):
-        attack.key("spar_r", t, (-14.0 * stab, 0, -10.0 * max(lift, 0)), (0, 0.25 * max(lift, 0), 0))
-        for i, b in enumerate(BODIES):
-            attack.key(b, t, (4.0 * stab * (i + 1) / N_BODY, 0, 0))
-        attack.key("head", t, (12.0 * stab, 0, 0))
-
-    cast = ck.Clip("cast", 1.6)  # the web draws taut and the body rises into it
-    for t, s in ((0.0, 0.0), (0.6, 1.0), (1.1, 1.0), (1.6, 0.0)):
-        cast.key("body0", t, (0, 0, 0), (0, 0.25 * s, 0))
-        for i, b in enumerate(BODIES[1:], 1):
-            cast.key(b, t, (-5.0 * s, 0, 0))
-        cast.key("head", t, (-25.0 * s, 0, 0))
-        cast.key("spar_l", t, (0, 0, 4.0 * s))
-        cast.key("spar_r", t, (0, 0, -4.0 * s))
-
-    hit = ck.Clip("hit", 0.5)
-    for t, s in ((0.0, 0.0), (0.1, 1.0), (0.25, -0.5), (0.5, 0.0)):
-        for i, b in enumerate(BODIES):
-            hit.key(b, t, (6.0 * s * (1 if i % 2 else -1), 0, 4.0 * s))
-        hit.key("tackle", t, (0, 0, 14.0 * s))
-
-    ko = ck.Clip("ko", 2.2)  # the lines part and it drops to the deck; the spars fall outward
-    for t, d in ((0.0, 0.0), (0.5, 0.15), (1.1, 1.0), (1.5, 1.05), (2.2, 1.05)):
-        ko.key("body0", t, (10.0 * d, 0, 0), (0, -1.6 * d, 0.2 * d))
-        for i, b in enumerate(BODIES[1:], 1):
-            ko.key(b, t, (18.0 * d * (1 if i % 2 else -0.6), 0, 6.0 * d))
-        ko.key("head", t, (30.0 * d, 0, 0))
-        ko.key("spar_l", t, (0, 0, 22.0 * d))
-        ko.key("spar_r", t, (0, 0, -22.0 * d))
-
-    # `hauled_down` (m2-slice act1_ch04 §5): the shroud burns away and it drops out of the rigging onto the deck. The
-    # drop is held on the body (the spars stay planted), so the deck strikes are the base clips played from that pose.
-    def deck_pose(c: ck.Clip, t: float, d: float) -> None:
-        c.key("body0", t, (8.0 * d, 0, 0), (0, -1.05 * d, 0.25 * d))
-        for i, b in enumerate(BODIES[1:], 1):
-            c.key(b, t, (12.0 * d * (1 if i % 2 else -0.5), 0, 0))
-        c.key("head", t, (-10.0 * d, 0, 0))
-
-    drop = ck.Clip("phase_drop", 1.6)
-    for t, d, flail in ((0.0, 0.0, 0.0), (0.35, 0.1, 1.0), (0.8, 1.08, -0.6), (1.1, 0.96, 0.3), (1.6, 1.0, 0.0)):
-        deck_pose(drop, t, d)
-        drop.key("block", t, (0, 0, 35.0 * flail))
     deck = ck.pose_of(lambda c: deck_pose(c, 0.0, 1.0))
+    deck.update({b: (np.asarray(r, float), np.zeros(3)) for b, r in DECK_GEAR.items()})
+    deck_sail = ck.Clip("_deck", 1.0)
+    for b, (r, l) in deck.items():
+        deck_sail.key(b, 0.0, tuple(r), tuple(l))
+    deck["sail"] = tuple(np.asarray(v, float) for v in follow_sail(deck_sail).sample("sail", 0.0))
     idle_deck = ck.in_pose(idle, "idle_deck", deck)
-    variants = [ck.in_pose(c, f"{c.name}_deck", deck) for c in (attack, cast, hit)]
-    return [idle, ready, intro, attack, cast, hit, ko, drop, idle_deck] + variants
+
+    cast = cast_clip()
+    hit = hit_clip("hit")
+    stab = spar_stab()
+    out = [idle, ready, intro, from_idle(stab), from_idle(shroud_sweep()), from_idle(cast), from_idle(hit),
+           from_idle(hit_clip("hit_b", -1.0, 1.35)), from_idle(ck.varied(cast, "idle_b", **ck.IDLE_B)),
+           from_idle(ko_clip()), from_idle(phase_drop()), idle_deck]
+    out += [from_idle(c, f"{c.name}_deck", deck) for c in (stab, cast, hit)]
+    out += [from_idle(c, pose=deck) for c in (lines_taut(), haul(), sea_lash(), ko_deck_clip())]
+    return out
 
 
 # Kept off the floor (M3-CRE-632, common/grounding.py): where the body drops to the deck (the KO, `phase_drop` and the
-# deck clips) the tackle swings aside, the head turns up and the body lifts the least it takes to lie on the deck; the
-# shroud and sheath are measured with it. The intro's slack start is measured the same way.
-DECK_CLIPS = ("ko", "phase_drop", "idle_deck", "attack_deck", "cast_deck", "hit_deck", "intro")
-GROUNDED_LIMBS = [("tackle", 0, -1.0, 80.0, DECK_CLIPS), ("head", 0, -1.0, 30.0, DECK_CLIPS),
-                  ("body0", gr.LIFT, 1.0, 1.6, DECK_CLIPS)]
+# deck clips) the shroud's hem turns back onto the planks, the tackle swings aside, the head turns up and the body
+# lifts the least it takes to lie on the deck; the shroud and sheath are measured with it. The intro's slack start is
+# measured the same way.
+DECK_CLIPS = ("ko", "phase_drop", "idle_deck", "attack_deck", "cast_deck", "hit_deck", "lines_taut_deck", "haul_deck",
+              "sea_lash_deck", "ko_deck", "intro")
+GROUNDED_LIMBS = [("sail", 0, 1.0, 90.0, DECK_CLIPS), ("tackle", 0, -1.0, 80.0, DECK_CLIPS),
+                  ("head", 0, -1.0, 30.0, DECK_CLIPS), ("body0", gr.LIFT, 1.0, 1.6, DECK_CLIPS)]
 
 
 def export_clips(rig: ck.Rig, meshes: list[ck.Mesh]) -> list[ck.Clip]:

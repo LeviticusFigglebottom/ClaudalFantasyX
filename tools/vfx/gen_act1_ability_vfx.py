@@ -107,13 +107,13 @@ SKILLS = {
     "fluke_cleave": fx("chest", heavy("cold_blue_stone", "bone", "sand_wet", "timber_weathered", 40),
                        "Kerrid: the anchor-fluke bites: iron chips and splinters."),
     "snub_line": fx("chest", slash("sand_cloth", "timber_weathered", 34, -1.0), "Kerrid: the line snubbed hard: rope fibres snapping."),
-    "anchor_fall": fx("feet", heavy("cold_blue_stone", "bone", "sand_dry", "laterite", 60), "Kerrid: the anchor comes down: dust and stone."),
+    "anchor_fall": fx("ground", heavy("cold_blue_stone", "bone", "sand_dry", "laterite", 60), "Kerrid: the anchor comes down: dust and stone."),
     "reel_shot": fx("chest", slash("brass", "foam_white", 26), "Liss: the line strikes home, brass bright."),
     "flash_housing": fx("head", [core("oil_lamp", "sun_noon", 1.4, 0.3)] + burst("oil_lamp", "dusk_gold", 30, 0.5),
                         "Liss: the lamp housing's flash in the foe's eyes (oil light; capped by particles, not a screen flash)."),
     "hoist_haul": fx("chest", rise("sand_cloth", "bone", 24, 0.8), "Liss (Ch8): the hoist hauls a group up."),
     # Swells (lamp_dive and shallows_verse are rendering's own).
-    "return_tide": fx("feet", spray("turquoise_shallow", "foam_white", 70), "Toma's Swell: the tide thrown back out from the stair."),
+    "return_tide": fx("ground", spray("turquoise_shallow", "foam_white", 70), "Toma's Swell: the tide thrown back out from the stair."),
     "written_light": fx("chest", [layer("starlight", "salt_glass", 50, 0.9, 0.5, (0.6, 1.4), 15, (0, 0.2, 0), (0.04, 0.1),
                                         (1, 0.3, 0), 0.4)] + burst("starlight", "lit_ceramic", 20),
                         "Ysolde's Swell: written strokes of pale light across each foe (not glimmer)."),
@@ -199,7 +199,8 @@ SKILLS = {
                     "The Cinder Matron pours slag over the party."),
     "torch_hulk": fx("head", sink("volcanic_stone", "lacquer_black", 40), "The Inquisitor torches the hulk: smoke over each foe."),
     "breach": fx("chest", heavy("spawn_wound", "glimmer_held", "deep_teal_shadow", "abyss_navy", 60), "The Breach: the wall gives under the Reach."),
-    "recrust": fx("feet", ring("volcanic_stone", "ember_orange", 44), "The Cinder Matron's crust closes over her."),
+    # Her bulk is ~2.9 m: the default 0.75 m ring closed inside her and never showed (M3-C05-06 sweep).
+    "recrust": fx("feet", ring("volcanic_stone", "ember_orange", 60, 1.6), "The Cinder Matron's crust closes over her."),
     "flood_surge": fx("chest", spray("turquoise_shallow", "lagoon_teal", 60), "The Drownbell's flood surges over each foe."),
     "undertow_surge": fx("feet", sink("deep_teal_shadow", "abyss_navy", 40), "The Drownbell's undertow drags at each foe's feet."),
 }
@@ -255,7 +256,7 @@ ITEMS = {
 # Liss M3-C06-05). BattleVfx plays map.swell_by_hero[hero] for any of that hero's skills marked "swell" with no
 # map.skills row, so they play the moment the technique lands. The motion is BattleChoreo's swing / reel styles.
 SWELL_BY_HERO = {
-    "kerrid": ("swell_weighted_swing", fx("feet", [layer("brass", "cold_blue_stone", 70, 0.55, 0.95, (3.0, 5.0), 22, (0, -3.0, 0),
+    "kerrid": ("swell_weighted_swing", fx("knee", [layer("brass", "cold_blue_stone", 70, 0.55, 0.95, (3.0, 5.0), 22, (0, -3.0, 0),
                                                          (0.12, 0.26), (-1.0, 0.12, 0), 0.25, energy=1.4)]
                                        + heavy("sand_wet", "storm_slate", "sand_dry", "cumulus_shadow", 40),
                                        "Kerrid's Swell (the weighted swing): one flat, low sweep of iron across the "
@@ -292,6 +293,10 @@ TICK_SOUNDS = {"tick_poison": "status_apply", "tick_regen": "heal", "tick_doom":
 
 
 SFX = ROOT / "game/data/audio/battle_sfx.json"
+SWELL = ROOT / "game/data/battle/swell.json"
+# Low anchors on the body's near face (BattleVfx.anchor: only `feet` stays centred, for rings). A ground impact at a big
+# body's feet spawned inside it: the Cinder Matron hid Kerrid's sweep and Anchor Fall (the finisher self-render).
+ANCHOR_HEIGHTS = {"ground": 0.05, "knee": 0.25}
 
 
 def _stand_in_sounds(data: dict, sfx: dict) -> None:
@@ -359,9 +364,13 @@ def main() -> int:
         data["effects"][eid] = eff
         data["map"]["ticks"][cause] = eid
     data["map"]["swell_by_hero"] = {}
+    swell_heroes = {h["id"]: h["techniques"] for h in json.loads(SWELL.read_text())["swell"]["heroes"]}
     for hero, (eid, eff) in SWELL_BY_HERO.items():
         data["effects"][eid] = eff
         data["map"]["swell_by_hero"][hero] = eid
+        for tech in swell_heroes.get(hero, []):  # M3-C05-06 / M3-C06-05: the techniques now exist; map them by id
+            data["map"]["skills"][tech] = eid
+    data["anchor_heights"].update(ANCHOR_HEIGHTS)
     out = json.dumps(data, indent=2) + "\n"
     boss_text = BOSS_VFX.read_text()
     boss = json.loads(boss_text)

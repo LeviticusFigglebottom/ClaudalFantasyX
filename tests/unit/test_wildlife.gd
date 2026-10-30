@@ -173,6 +173,21 @@ func test_crabs_ignore_a_player_outside_the_radius_and_use_the_ground() -> void:
 	assert_true(absf(c.y - (0.1 * c.pos.x + 0.05 * c.pos.y)) < EPS, "stands on the ground callable")
 
 
+## The Act I audit (2026-10-29): `"ground": {"physics": true}` makes crabs follow the zone's collision. It resolves to
+## the layer's ray-cast ground, and a ground that cannot answer yet (NAN: the collision not in the physics space in
+## the first frames) leaves a crab at its area's flat y instead of NAN.
+func test_a_physics_ground_resolves_and_falls_back_to_the_flat_y() -> void:
+	var layer := WildlifeLayer.new()
+	var g: Callable = layer.call(&"_resolve_ground", {"physics": true})
+	assert_true(g.is_valid(), "a physics ground is a callable")
+	assert_true(is_nan(float(g.call(0.0, 0.0))), "off the tree it cannot answer yet")
+	var kind: Dictionary = _kinds["kinds"]["crab"]
+	var beach := WildlifeCrabBeach.new(_beach_row(), kind, 9, 3, func(_x: float, _z: float) -> float: return NAN)
+	for c in beach.crabs:
+		assert_eq(c.y, 0.3, "a crab keeps its flat y while the ground cannot answer")
+	layer.free()
+
+
 func test_fish_count_and_bounds() -> void:
 	var kind: Dictionary = _kinds["kinds"]["fish"]
 	var row := {"id": "t", "center": [3.0, -0.3, 2.0], "radius_m": 3.0, "count": 14, "scale": 1.0}

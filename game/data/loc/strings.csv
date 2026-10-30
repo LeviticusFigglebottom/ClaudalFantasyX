@@ -47,16 +47,16 @@ STATUS_HASTE,Haste
 STATUS_STOP,Stop
 STATUS_BERSERK,Berserk
 STATUS_CONFUSE,Confuse
-STATUS_DOOM,Doom
-STATUS_ZOMBIE,Zombie
-STATUS_SHELL,Shell
-STATUS_PROTECT,Protect
-STATUS_REFLECT,Reflect
-STATUS_REGEN,Regen
-STATUS_ARMOR_BREAK,Armor Break
-STATUS_MENTAL_BREAK,Mental Break
-STATUS_POWER_BREAK,Power Break
-STATUS_MAGIC_BREAK,Magic Break
+STATUS_DOOM,Last Tide
+STATUS_ZOMBIE,Hollowed
+STATUS_SHELL,Tide Ward
+STATUS_PROTECT,Bulwark
+STATUS_REFLECT,Mirrorwater
+STATUS_REGEN,Mending
+STATUS_ARMOR_BREAK,Sundered
+STATUS_MENTAL_BREAK,Unmoored
+STATUS_POWER_BREAK,Weakened
+STATUS_MAGIC_BREAK,Dimmed
 STATUS_PROVOKE,Provoke
 CHAR_LISS,Liss
 CHAR_KERRID,Kerrid
@@ -295,13 +295,13 @@ ABILITY_VOICE_WARD_DESC,Prevents Silence.
 ABILITY_SIGHT_WARD,Sightward
 ABILITY_SIGHT_WARD_DESC,Prevents Darkness.
 ABILITY_STANDING_GUARD,Standing Guard
-ABILITY_STANDING_GUARD_DESC,Protect for the whole battle.
+ABILITY_STANDING_GUARD_DESC,Bulwark for the whole battle.
 ABILITY_STANDING_MEND,Standing Mend
-ABILITY_STANDING_MEND_DESC,Regen for the whole battle.
+ABILITY_STANDING_MEND_DESC,Mending for the whole battle.
 ABILITY_LOW_TIDE_HASTE,Low Tide Haste
 ABILITY_LOW_TIDE_HASTE_DESC,Haste while HP is below half.
 ABILITY_LOW_TIDE_MEND,Low Tide Mend
-ABILITY_LOW_TIDE_MEND_DESC,Regen while HP is below half.
+ABILITY_LOW_TIDE_MEND_DESC,Mending while HP is below half.
 ABILITY_FULL_NET,Full Net
 ABILITY_FULL_NET_DESC,Doubles the lume won in battle.
 ABILITY_LIGHT_STEP,Light Step
@@ -378,12 +378,12 @@ HUD_TL_NOW,Acting now
 HUD_TL_BERSERK,Berserk: acts alone
 HUD_TL_CONFUSE,Confused: acts alone
 HUD_HELP_PROVOKED_FMT,provoked: must strike {name}
-HUD_HELP_REFLECT_FMT,Reflect bounces it onto {name}
-HUD_HELP_ZOMBIE_FMT,{name} is a Zombie: this heal will harm
+HUD_HELP_REFLECT_FMT,Mirrorwater turns it onto {name}
+HUD_HELP_ZOMBIE_FMT,{name} is Hollowed: this heal will harm
 HUD_FLOAT_REFLECTED,Reflected
 HUD_FLOAT_INVERTED,Heal turns to harm
-HUD_FLOAT_REGEN_INVERTED,Regen turns to harm
-HUD_FLOAT_DOOM,Doom
+HUD_FLOAT_REGEN_INVERTED,Mending turns to harm
+HUD_FLOAT_DOOM,Last Tide
 SET_REDUCED_MOTION,Reduced motion
 SET_REDUCED_MOTION_HELP,Turn-order chips change places without sliding. No screen shake and no pulsing.
 SET_TEXT_SCALE,Text size
@@ -410,8 +410,8 @@ HUD_HELP_ITEMS,"Tonics, salves and tools from the pack. Each use spends one."
 HUD_ITEM_COUNT_FMT,x{n}
 HUD_FAIL_NO_ITEM,None of those are left.
 HUD_FAIL_UNKNOWN_ITEM,That has no use in battle.
-HUD_HELP_ITEM_FELLS_FMT,{name} is a Zombie: this revive fells them
-HUD_HELP_ITEM_DEFEAT_FMT,"{name} is a Zombie and the last one standing: this revive fells them, and the fight is lost"
+HUD_HELP_ITEM_FELLS_FMT,{name} is Hollowed: this revive fells them
+HUD_HELP_ITEM_DEFEAT_FMT,"{name} is Hollowed and the last one standing: this revive fells them, and the fight is lost"
 GFX_VEGETATION_DETAIL,Vegetation Detail
 SKILL_LAMP_DIVE,Lamp Dive
 SWELL_MODE_BALLAST,Ballast
@@ -438,7 +438,7 @@ HUD_FAIL_SWELL_CANCELLED,The Swell was held back. Nothing was spent.
 GFX_SKY_DETAIL,Sky Detail
 ENC_CH02_TIDELINE,The Tideline
 LOCATION_PROLOGUE,A Dead City at Dusk
-FLOW_END_CARD_TITLE,End of the first playable
+FLOW_END_CARD_TITLE,The end of Act One
 FLOW_END_CARD_LINE,Thank you for walking with them this far.
 FLOW_END_CARD_PROMPT,Confirm to return to the title
 CHAR_VENDOR,Fish Seller
@@ -674,7 +674,7 @@ SHOP_ERR_CLOSED,The shutters are down. Come back later.
 SHOP_ERR_NOT_IN_STOCK,{name} is not for sale here.
 SHOP_ERR_BAD_COUNT,Choose how many first.
 SHOP_ERR_NO_ROOM_FMT,Your bag has room for only {room} more {name}.
-SHOP_ERR_NO_FUNDS_FMT,"Not enough lume: this costs {price}, and the purse holds {purse}."
+SHOP_ERR_NO_FUNDS_FMT,"Not enough lume: {price} needed, {purse} in hand."
 SHOP_ERR_NOT_SELLABLE_FMT,No one here will buy {name}.
 SHOP_ERR_NOT_ENOUGH_FMT,You hold only {held} {name}.
 SHOP_ERR_UNKNOWN_PIECE,That piece is no longer in your pack.
@@ -826,7 +826,7 @@ TUT_FLIER_RHEN,"Fliers dodge most blows. Rhen's quick, precise strikes find them
 SAVE_SLOT_PROLOGUE,Prologue
 FLOW_END_CARD_VOICE,"""I said yes to a girl I'd known for two days. I didn't know yet what I was walking her toward."""
 CREDITS_GAME,Hymn of the Undertow
-CREDITS_SLICE,"The first playable: Haluna, the Saltgrass Causeway and the Shell Shrine"
+CREDITS_SLICE,"Act One: from the Underway at Oruvel to the road out of Corrow"
 CREDITS_MUSIC,Original music
 CREDITS_ENGINE,Made with the Godot Engine (MIT License)
 CREDITS_FONTS,EB Garamond and Source Sans 3 (SIL Open Font License)
@@ -1110,3 +1110,11 @@ ACT_CARD_3_LABEL,Act III
 ACT_CARD_3_TITLE,The Unbinding
 OBJ_NONE_HALUNA,No errand calls just now. Haluna's lanes are yours to walk.
 BARK_CH02_TOMA_TURN_ORDER,"Toma: Be level, Rhen. Watch who moves next. Every blow costs you time."
+SKILL_LONG_HOLD,The Long Hold
+SKILL_THREE_REEL_CHARGE,Three-Reel Charge
+SWELL_INPUT_WEIGHTED_SWING,Weighted Swing
+SWELL_INPUT_WEIGHTED_SWING_HELP,Hold Confirm while the cleaver coils and let go on the count.
+SWELL_INPUT_REEL_STOP,Reel-Stop
+SWELL_INPUT_REEL_STOP_HELP,Stop each reel as its part lines up. Reels: {beats}
+CHAPTER_CARD_CH04_LABEL,Chapter 4
+CHAPTER_CARD_CH04_TITLE,The Pilgrim's Wake

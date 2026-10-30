@@ -360,8 +360,13 @@ def build_clips() -> list[ck.Clip]:
 GROUNDED_LIMBS = [("spine2", 0, 1.0, 30.0, ("cast", "hit", "hit_b", "idle_b")), ("root", gr.LIFT, 1.0, 0.5)]
 
 
+# The planted feet held where they touch down (common/grounding.py pinned(); the Act I audit's foot sliding).
+PINNED_LEGS = [(f"fin_{tag}", None, 2, 1.0 if tag == "l" else -1.0) for tag in "lr"]  # the pectorals it props itself on
+
+
 def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
-    return gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS)
+    pinned = gr.pinned(rig, mesh, gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS), PINNED_LEGS)
+    return gr.reground(rig, mesh, pinned, GROUNDED_LIMBS)  # a held foot's toes back above the floor
 
 
 def build_mesh(rig: ck.Rig, j: np.ndarray) -> ck.Mesh:

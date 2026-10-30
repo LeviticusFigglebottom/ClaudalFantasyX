@@ -241,3 +241,52 @@ SPEC §6.10 mandates "a suspended sphere of water", and Cinematics flagged that 
   - **Watch carried from sweep I (concurred):** no Act I line has Asha connect the lantern's make to the man at Haluna aloud before Ch15.
 - **Why:** review-sweep-I (cinematics + IP) found that the sweep-H S4 log text gave the father his own words about his son, written before he goes into the calamity, which moves our ledger toward the inspiring game's recorded messages from the father. The reasons stay ours. The delivery must not drift, and an unfinished promise is ours where a stated one is not.
 - **Supersedes:** N-25 S4's quote "After the storm I'll go myself" (marked inline).
+
+---
+
+## 2026-10-29 (narrative seat, ui-menus track, M3-NAR-1000): Pell's echo check and the Kerrid and Pell sheet questions
+
+### N-27. Pell's arc passes the echo check, with four authoring guards; the sheet questions answered
+- **The echo check (SPEC §2, pillar 1).** The outline (a tall non-human who learns enemy abilities, carries a long pole,
+  bears a mark of shame and returns to his people) shares a silhouette with a well-known beast-folk guardian. The beats
+  that carry the meaning differ in kind, so **no beat changes**:
+  - **Not a guardian.** Pell is never sworn to Asha and never protects her as a duty. He meets her as a critic ("beautiful,
+    and pointing the wrong way") and joins after the Ebbing for his own reason (Ressa).
+  - **The shame is chosen grief, not a lost fight.** His name-shell was scraped because he would not turn his back on his
+    sister's death. Nothing was broken off his body, and no rival did it to him.
+  - **The return is a letting-go, not a trial.** His name is carved again when he tells the elders he will turn around. He
+    never fights his own people to earn it.
+  - **He learns by listening.** His learning is the Kirru habit of imitating what he hears (the Listen stance), not being
+    struck by a technique and taking it.
+  - The visual sheet already avoids every cue (no horn, mane, blue fur, tattoos or tail; the staff is a wading bird's leg).
+  - ADR 0017 passed him for Act I on the same grounds. This entry extends that to Acts II and III.
+- **Authoring guards (every role):**
+  1. Never call Pell a guardian, protector or sworn companion, in text, task titles or shot names.
+  2. No scene where Pell fights other Kirru for his honour or his name.
+  3. Never describe his ability-learning as taking a blow, or by the series' job word. In docs he "learns by listening".
+     SPEC §3's roster row now says "learns enemy abilities by listening to them" (ADR 0201, the Lead, 2026-10-29), and
+     the job word is on the banned list.
+  4. His crest, not his body, carries emotion; keep him free of any horn or breakable feature.
+- **Kerrid (the art sheet's §12 questions):**
+  - **No breath: yes.** The unrisen don't breathe (bible §2). He speaks, and speech needs no idle breath: no breath
+    cycle, no sighs, no fog in the cold. His lines are delivered without a visible intake.
+  - **No tears: yes.** The unrisen don't weep. His grief is held in the face and the stillness.
+  - **The anchor's shackle ring as the cleaver's pommel: welcome.** A stair-watch captain carrying the wall's own iron fits
+    the man, and it is not an Order mark.
+  - **Skin desaturation: keep 0.06.** The unrisen don't bleed; a slight pallor is right. More would read as a monster, and
+    the bible says they are not monsters.
+- **Pell (the art sheet's questions):**
+  - **No tail: yes.** The Kirru are heron-tall and otter-faced; no tail keeps the outline far from any beast-folk echo.
+  - **No lower garment: yes.** The Kirru dislike clothing; the split reed girdle is all he wears below the mantle.
+  - **A spiral of notches as the name carving: yes.** Kirru names are carved, not written in a human script.
+  - **No tears: yes.** Kirru grief is the farewell-tide, a song. In private it shows as a lowered crest and stillness.
+  - **Keepsakes: both sources hold.** The bible's "no keepsakes" means nothing kept *of the dead*. A living Kirru wears their
+    own name-shell, and it is their name, not a keepsake. Nhoa wearing her own carved shell is the point of her: Ressa is
+    anchored by her own self, the one thing a Kirru keeps. vowbound.md's "(the keepsake)" is the Vowbound design term for
+    the anchoring object and stays.
+  - **Fur: confirmed.** A dark saddle over the back and shoulders, mid-brown on the front, and a pale throat.
+- **Stale sources:** ADR 0020's stair-watch and rope-burn text and the glossary's "Stillguard" stair-law rows were
+  already superseded by ADR 0022's notes and the glossary's own later rows; an append note on ADR 0020 and a glossary
+  row now point at them. Mother Kell's "diver" rows (195, 254) are superseded by row 258 (chandler). The glossary's
+  "unrisen" row now follows the bible: anything unfinished, not only a promise.
+- **Supersedes:** nothing in canon. It adds guards for authoring.

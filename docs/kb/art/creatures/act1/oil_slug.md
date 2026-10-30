@@ -16,6 +16,11 @@ The one exaggeration: it **glows with eaten lamplight**.
 - Body `sand_wet` to `tortoiseshell` along the foot; frills translucent with `oil_lamp` emissive tips (the oil
   glow is the creature's, not glimmer; never a glimmer swatch); horns `ember_orange`; weak point a `spawn_wound` gill
   rosette on its back near the tail.
+- **Battle read (GPU QA row 40, 2026-10-29):** in the dark underway the slug was a small dark shape. Its battle scene
+  now stands it at 1.3× (1.4 m), flank-on (`stand_in.yaw_deg` 60), with a lighter back, a stronger oil-film sheen, a
+  body rim sheen (0.55), brighter cerata tips (emission 3.0) and `LampGlow`: a small shadowless `oil_lamp` omni light
+  over the cerata (range 1.8 m) that lights its own back and the floor round it, the eaten lamplight made visible.
+  CreatureActor fades a creature's lights with its KO.
 
 ## Clips
 

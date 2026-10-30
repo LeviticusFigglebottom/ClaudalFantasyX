@@ -2,8 +2,8 @@
 id: M2-ENV-12
 title: "Shell Shrine: build the hall's geometry off the tree on instantiate (as HalunaZone.prebuild), so the warm-up and the router's thread can do it"
 role: environment
-status: todo
-owner_session: ""
+status: review
+owner_session: "env-art (claude/env-art, 2026-10-29)"
 reviewer: rendering
 depends_on: [M2-RND-17]
 milestone: M2
@@ -37,5 +37,10 @@ shrine in `first_run_live_scenes`. It ran on `claude/m2-slice` @ 8f74db3a, cold,
   `NOTIFICATION_SCENE_INSTANTIATED` off the main thread (`game/levels/ch03/shell_shrine/shell_shrine_level.gd:105`;
   m2-slice's live log, "M2-ENV-12 (the shrine's hall built off the tree)"). Nothing left for env-art. For the Lead:
   close it, or have Rendering check M2-RND-17's measure on hardware.
+
+## Checked (env-art, 2026-10-29)
+- On this tree `ShellShrineLevel._notification` builds on `NOTIFICATION_SCENE_INSTANTIATED` off the main thread
+  (`shell_shrine_level.gd:105`, m2-slice's). M2-RND-17 is done. To review: Rendering checks the 188 ms first frame on
+  hardware (PC-QUEUE).
 
 ## Review log

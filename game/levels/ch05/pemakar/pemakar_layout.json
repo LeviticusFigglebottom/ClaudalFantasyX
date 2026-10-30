@@ -152,14 +152,14 @@
     "folder": {"cast": "vendor", "at": [-2.52, 8.028, -1.621, 90.0], "color": "#9a6a4a"},
     "folder_2": {"cast": "netmender", "at": [-2.1, 8.028, -1.615, 90.0], "color": "#aa7a5a", "radius": 0.22, "height": 1.4},
     "lacquerer": {"cast": "vendor", "at": [2.52, 8.028, -1.621, 270.0], "color": "#7a2a2a"},
-    "garo": {"cast": "fisher", "at": [6.3, 8.028, -1.734, 90.0], "color": "#6a4a3a", "radius": 0.36, "height": 1.8},
+    "garo": {"cast": "garo", "at": [6.3, 8.028, -1.734, 90.0], "color": "#6a4a3a", "radius": 0.36, "height": 1.8},
     "forge_child": {"cast": "child", "at": [8.8, 8.028, -1.861, 0.0], "color": "#c4a07a", "radius": 0.18, "height": 1.1},
     "grave_child": {"cast": "child", "at": [13.0, 17.628, -30.304, 0.0], "color": "#b4907a", "radius": 0.18, "height": 1.0},
-    "elder": {"cast": "reed", "at": [-1.5, 29.641, -65.233, 90.0], "color": "#8a8a8a"},
+    "elder": {"cast": "elder", "at": [-1.5, 29.641, -65.233, 90.0], "color": "#8a8a8a"},
     "boat_seller": {"cast": "vendor", "at": [2.5, 29.65, -65.697, 270.0], "color": "#7a6a3a"},
     "weir_child": {"cast": "child", "at": [15.6, 1.2, 26.5, 180.0], "color": "#d4b07a", "radius": 0.18, "height": 1.05},
     "boat_fisher": {"cast": "fisher", "at": [13.6, 1.2, 26.1, 180.0], "color": "#5a7a8a", "hidden": true},
-    "tender": {"cast": "reed", "at": [-2.0, 29.711, -68.625, 180.0], "color": "#8a2a2a", "hidden": true}
+    "tender": {"cast": "tender", "at": [-2.0, 29.711, -68.625, 180.0], "color": "#8a2a2a", "hidden": true}
   },
   "shots": {
     "P01": {"pos": [-8.0, 1.6, 58.0], "look_at": [0.0, 22.0, -40.0], "fov": 46},
