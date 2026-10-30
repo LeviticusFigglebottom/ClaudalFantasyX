@@ -24,5 +24,5 @@ urchin has no ice. Its "rime" is a **salt crust** on the spines (`salt_glass` go
 toward `bone`, faceted, with no `foam_white` frost). It sits on a **mound of salt-glass** it has grown, glossy and
 clear-green with a bloom of salt on top: material slot `glass`, which replaces `ice`. In the KO it slumps onto the
 mound; in the cast the salt crusts along the turned spines (the effect, M4-A2P-060). The lines above that say rime,
-frost or ice are superseded. The ids (`rime_urchin`, `rime_spine`) and the skill's ice element are the encounter
-data's (design); the name stays.
+frost or ice are superseded. The ids (`rime_urchin`, `rime_spine`) and the name stay (rime is a salt crust here too). The Lead's ruling, 2026-10-30:
+no ice for it in the data either: it absorbs water and `rime_spine` is water (enemies.json, skills.json).
