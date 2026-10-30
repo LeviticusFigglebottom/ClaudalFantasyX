@@ -470,3 +470,18 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   Ram's own clips (M4-CRB-005), then the Vowbound (Nhoa, Hesk, Ethren), then Kesh (M4-A2P-057, model from scratch).
 - **For combat (skills are yours):** creatures.json `clip_by_skill` can't name a skill before skills.json has it
   (validate_creatures.py). Each boss's design sheet will carry a ready-to-paste clip map (skill -> clip, contact).
+- **MERGE-READY @ 7efa5f56: M4-CRB-004, the Wakefin at the final bar** (worktree agent, viewed by it; review combat).
+  A `breach` root at the water carries its travel; unweighted anchors; a lit blade seam; a `BladeTip` torn off by the
+  close-circle ram. 24 clips, each from its phase idle's first frame. **Clip map for combat** (proposed skill ids):
+  `fin_cut` -> attack 0.8; `sound_dive` -> dive 1.0 (the blade's top stays in view: evasion up, ADR 0204);
+  `wakefin_rise` -> rise_strike 0.85; `wake_wash` -> wake_wash 0.75; `bill_strike` -> bill_strike_close 0.7 (phase 2);
+  phase `close_circle` -> phase_close (ram 0.85) -> idle_close, `_close` versions mapped. 11,128 triangles (≤14k).
+  New tools/tests/test_wakefin.py (every clip skinned against the barge) and test_creature_bosses_act2.gd. Checks:
+  tools 62 OK, Godot creature 95/0, boss 93/0, Blender identical, validate_data, gdlint/gdformat.
+  - **For battle-presentation (M4-A2P-062), blocking it in a real fight:** the clips are authored for the fish in the
+    water off the barge's far side toward the bow, at (-5.0, -0.6, -6.5) yaw 90. The arena's `BossAnchor`
+    (-10, -0.6, -1.5) is outside the battle camera (42° off-axis against a 33.5° half-width) and a boss today sits on
+    EnemySlots/Slot0 (on the deck). Seat it at the staging point (a `boss_seats` row works once the encounter
+    exists) and give its strikes `travel: none`. Also yours: the glowing wake, the rise's glow ring.
+  - Note for creatures (M3-CRB-014): test_creature_actor's Wakefin bone list updated.
+- **In progress:** M4-CRB-002 Drowner, M4-CRB-003 Lamp Engine, M4-CRB-005 the Ram's moves (worktree agents).
