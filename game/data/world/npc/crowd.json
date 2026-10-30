@@ -1513,6 +1513,206 @@
         "hair": "#211A16"
       },
       "work": "vigil"
+    },
+    {
+      "id": "hollowmere_netmender",
+      "zone": "ch17/hollowmere",
+      "stage_actor": "CrowdSpots/hollowmere_netmender",
+      "role": "netmender",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "elder",
+      "sex": "female",
+      "build": "heavy",
+      "body": "crowd_elder_woman_b",
+      "tints": {
+        "cloth_a": "#B2A996",
+        "cloth_b": "#53637C",
+        "cloth_c": "#9CCAC5",
+        "hair": "#4E4843"
+      },
+      "work": "mend",
+      "about": "Mends a net on the first hull-house platform."
+    },
+    {
+      "id": "hollowmere_platform_child",
+      "zone": "ch17/hollowmere",
+      "stage_actor": "CrowdSpots/hollowmere_platform_child",
+      "role": "child",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "child",
+      "sex": "female",
+      "build": "tall",
+      "body": "crowd_girl_tall",
+      "tints": {
+        "cloth_a": "#91928D",
+        "cloth_b": "#54647C",
+        "cloth_c": "#9B9990",
+        "hair": "#281C15"
+      },
+      "work": "",
+      "about": "Watches the dock from the first platform."
+    },
+    {
+      "id": "hollowmere_wright",
+      "zone": "ch17/hollowmere",
+      "stage_actor": "CrowdSpots/hollowmere_wright",
+      "role": "wright",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "medium",
+      "body": "crowd_man_medium_b",
+      "tints": {
+        "cloth_a": "#96968F",
+        "cloth_b": "#5B6B7F",
+        "cloth_c": "#80B4B0",
+        "hair": "#3E2617"
+      },
+      "work": "kneel_mourn",
+      "about": "A wright at the second hull-house, beside the dock-master's."
+    },
+    {
+      "id": "hollowmere_netmender_2",
+      "zone": "ch17/hollowmere",
+      "stage_actor": "CrowdSpots/hollowmere_netmender_2",
+      "role": "netmender",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "heavy",
+      "body": "crowd_man_heavy",
+      "tints": {
+        "cloth_a": "#B5AB97",
+        "cloth_b": "#68816E",
+        "cloth_c": "#94C5BF",
+        "hair": "#201A16"
+      },
+      "work": "mend",
+      "about": "Mends lines on the third platform."
+    },
+    {
+      "id": "hollowmere_elder",
+      "zone": "ch17/hollowmere",
+      "stage_actor": "CrowdSpots/hollowmere_elder",
+      "role": "mourner",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "elder",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_elder_man_a",
+      "tints": {
+        "cloth_a": "#DCD1BC",
+        "cloth_b": "#606E7D",
+        "cloth_c": "#E4DCCE",
+        "hair": "#A09B95"
+      },
+      "work": "kneel_mourn",
+      "about": "An old Saltwright on the third platform, branded at the wrist."
+    },
+    {
+      "id": "hollowmere_carrier",
+      "zone": "ch17/hollowmere",
+      "stage_actor": "CrowdSpots/hollowmere_carrier",
+      "role": "townsfolk",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "body": "crowd_woman_medium_b",
+      "tints": {
+        "cloth_a": "#8C8E8C",
+        "cloth_b": "#69806D",
+        "cloth_c": "#7CB2AD",
+        "hair": "#221B16"
+      },
+      "work": "carry",
+      "about": "On the dock by the landing, watching who comes ashore."
+    },
+    {
+      "id": "hollowmere_fisher",
+      "zone": "ch17/hollowmere",
+      "stage_actor": "CrowdSpots/hollowmere_fisher",
+      "role": "fisher",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_man_lean_a",
+      "tints": {
+        "cloth_a": "#9C9A90",
+        "cloth_b": "#51617B",
+        "cloth_c": "#A1CFC9",
+        "hair": "#241B15"
+      },
+      "work": "haul",
+      "about": "Hauls a line on the dock's south edge."
+    },
+    {
+      "id": "hollowmere_dock_child",
+      "zone": "ch17/hollowmere",
+      "stage_actor": "CrowdSpots/hollowmere_dock_child",
+      "role": "child",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "child",
+      "sex": "male",
+      "build": "small",
+      "body": "crowd_boy_small",
+      "tints": {
+        "cloth_a": "#B4AB97",
+        "cloth_b": "#69806D",
+        "cloth_c": "#7DB2AE",
+        "hair": "#231B16"
+      },
+      "work": "",
+      "about": "A boy on the dock's edge."
+    },
+    {
+      "id": "hollowmere_wright_2",
+      "zone": "ch17/hollowmere",
+      "stage_actor": "CrowdSpots/hollowmere_wright_2",
+      "role": "wright",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "lean",
+      "body": "crowd_woman_lean_b",
+      "tints": {
+        "cloth_a": "#9E9B91",
+        "cloth_b": "#4F5F7A",
+        "cloth_c": "#85B9B4",
+        "hair": "#412817"
+      },
+      "work": "kneel_mourn",
+      "about": "A wright on the dock past the second jetty."
+    },
+    {
+      "id": "hollowmere_sweeper",
+      "zone": "ch17/hollowmere",
+      "stage_actor": "CrowdSpots/hollowmere_sweeper",
+      "role": "sweeper",
+      "island": "hollowmere",
+      "community": "saltwright",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "body": "crowd_woman_medium",
+      "tints": {
+        "cloth_a": "#90918D",
+        "cloth_b": "#51617B",
+        "cloth_c": "#A8D4CE",
+        "hair": "#211A16"
+      },
+      "work": "sweep",
+      "about": "Sweeps salt off the dock beyond the supper."
     }
   ]
 }

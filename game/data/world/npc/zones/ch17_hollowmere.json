@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "doc": "Hollowmere's townsfolk at the Ch15 dawn (B11: the people the Order burned, looking at Toma's pauldron; the Lead, 2026-10-30: Act II crowds from the bodies that exist). Saltwright crowd people (crowd.json, the saltwright community) on the hull-house platforms and along the dock's edges, clear of the walkway and the story marks (fathers_door, supper, confess_*). The greybox names no actors here, so each row's `at` makes its stand-in at CrowdSpots/<id> (VillagerLayer). Liss's father, the brine-branded old woman and the widow are the characters track's named people, not these.",
+  "zone": "ch17/hollowmere",
+  "storm_flag": "",
+  "villagers": [
+    {
+      "npc_id": "hollowmere_netmender",
+      "crowd": "hollowmere_netmender",
+      "attach": "child",
+      "stand_in": "CrowdSpots/hollowmere_netmender",
+      "at": [10.0, 0.0, -17.5, 0.0]
+    },
+    {
+      "npc_id": "hollowmere_platform_child",
+      "crowd": "hollowmere_platform_child",
+      "attach": "child",
+      "stand_in": "CrowdSpots/hollowmere_platform_child",
+      "at": [14.5, 0.0, -17.0, 300.0]
+    },
+    {
+      "npc_id": "hollowmere_wright",
+      "crowd": "hollowmere_wright",
+      "attach": "child",
+      "stand_in": "CrowdSpots/hollowmere_wright",
+      "at": [24.5, 0.0, -21.0, 60.0]
+    },
+    {
+      "npc_id": "hollowmere_netmender_2",
+      "crowd": "hollowmere_netmender_2",
+      "attach": "child",
+      "stand_in": "CrowdSpots/hollowmere_netmender_2",
+      "at": [42.0, 0.0, -18.0, 20.0]
+    },
+    {
+      "npc_id": "hollowmere_elder",
+      "crowd": "hollowmere_elder",
+      "attach": "child",
+      "stand_in": "CrowdSpots/hollowmere_elder",
+      "at": [46.5, 0.0, -17.0, 340.0]
+    },
+    {
+      "npc_id": "hollowmere_carrier",
+      "crowd": "hollowmere_carrier",
+      "attach": "child",
+      "stand_in": "CrowdSpots/hollowmere_carrier",
+      "at": [8.0, 0.0, -1.35, 10.0]
+    },
+    {
+      "npc_id": "hollowmere_fisher",
+      "crowd": "hollowmere_fisher",
+      "attach": "child",
+      "stand_in": "CrowdSpots/hollowmere_fisher",
+      "at": [20.0, 0.0, 1.35, 190.0]
+    },
+    {
+      "npc_id": "hollowmere_dock_child",
+      "crowd": "hollowmere_dock_child",
+      "attach": "child",
+      "stand_in": "CrowdSpots/hollowmere_dock_child",
+      "at": [15.5, 0.0, 1.35, 170.0]
+    },
+    {
+      "npc_id": "hollowmere_wright_2",
+      "crowd": "hollowmere_wright_2",
+      "attach": "child",
+      "stand_in": "CrowdSpots/hollowmere_wright_2",
+      "at": [33.5, 0.0, -1.35, 350.0]
+    },
+    {
+      "npc_id": "hollowmere_sweeper",
+      "crowd": "hollowmere_sweeper",
+      "attach": "child",
+      "stand_in": "CrowdSpots/hollowmere_sweeper",
+      "at": [49.0, 0.0, 1.35, 180.0]
+    }
+  ]
+}

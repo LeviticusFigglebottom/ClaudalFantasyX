@@ -326,6 +326,38 @@ func test_a_borrowed_model_placed_first_gives_way_to_the_rows_own() -> void:
 	_done()
 
 
+## An Act II town's greybox names no actors: a row's `at` makes its stand-in at CrowdSpots/<name> and the person
+## stands there (the Lead, 2026-10-30: Hollowmere's townsfolk).
+func test_an_at_row_makes_its_own_spot() -> void:
+	var zone := _holder()
+	var rows := [
+		{
+			"npc_id": "netmender",
+			"crowd": "hollowmere_netmender",
+			"attach": "child",
+			"stand_in": "CrowdSpots/hollowmere_netmender",
+			"at": [4.0, 0.5, -2.0, 90.0],
+		},
+		{
+			"npc_id": "stray",
+			"crowd": "hollowmere_fisher",
+			"attach": "child",
+			"stand_in": "Elsewhere/x",
+			"at": [0, 0, 0]
+		},
+	]
+	var layer := _layer(zone, rows)
+	layer.build()
+	var spot := zone.get_node_or_null(^"CrowdSpots/hollowmere_netmender") as Node3D
+	assert_true(spot != null, "the spot is made")
+	if spot != null:
+		assert_true(spot.position.is_equal_approx(Vector3(4.0, 0.5, -2.0)), "at its `at`")
+		assert_true(is_equal_approx(spot.rotation.y, deg_to_rad(90.0)), "facing its yaw")
+		assert_eq(spot.find_children("*", "FieldNpc", true, false).size(), 1, "the person stands in it")
+	assert_true(layer.villager(&"stray") == null, "a spot outside CrowdSpots is refused")
+	_done()
+
+
 ## M3-HER-1142: a `body` row wears a crowd body with no crowd person, and `silhouette` draws it as one glowing shape
 ## that casts no shadow; its `tuning` keeps it from glancing at the party.
 func test_a_silhouette_row_wears_a_bare_crowd_body_as_one_glowing_shape() -> void:

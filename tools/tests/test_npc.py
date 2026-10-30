@@ -62,6 +62,18 @@ class ZoneMistakes(unittest.TestCase):
         self.assertEqual(vn.person_stand_in({"stage_actor": "NPCs/Town/Smith"}), "NPCs/Town/Smith")
         self.assertEqual(vn.person_stand_in({"stage_actor": "clerk"}), "CutsceneStage/Actors/clerk")
 
+    def test_an_at_row_stands_at_its_crowd_spot(self) -> None:
+        """A row's `at` makes its stand-in at CrowdSpots/<name> (an Act II town's greybox names no actors)."""
+        d = self._haluna()
+        row = d["villagers"][0]
+        row["at"] = [1, 2]
+        errs = " | ".join(self._errors(d))
+        self.assertIn("at is not", errs)
+        self.assertIn("stands at CrowdSpots/<name>", errs)
+        row["at"] = [1.0, 0.0, 2.0, 90.0]
+        row["stand_in"] = "CrowdSpots/vendor"
+        self.assertFalse(any("`at`" in e or "at is not" in e for e in self._errors(d)))
+
     def test_zone_must_name_the_file_and_be_a_location(self) -> None:
         d = self._haluna()
         self.assertTrue(any("does not name the file" in e for e in self._errors(d, "ch03_other.json")))
@@ -163,7 +175,9 @@ class Crowd(unittest.TestCase):
         self.assertEqual(sum(p["stage_actor"] == "wrights" for p in self.crowd["people"]),
                          self.crowd["groups"]["brine_shoals_wrights"]["people"])
         self.assertNotIn("ch04/haluna_wake", by_zone, "Haluna's own villagers keep their M2-CHR-03 bodies")
-        self.assertEqual(len(self.crowd["people"]), 56)
+        act1 = [p for p in self.crowd["people"] if int(p["zone"].split("/")[0][2:]) < 10]
+        self.assertEqual(len(act1), 56)
+        self.assertEqual(len(by_zone["ch17/hollowmere"]), 10, "Hollowmere's Saltwright townsfolk (Ch15 B11)")
 
     def test_crowd_rows_must_match_their_person(self) -> None:
         data = copy.deepcopy(_load(CROWD_ZONE))
@@ -238,6 +252,20 @@ class Crowd(unittest.TestCase):
         for name, text in files.items():
             self.assertEqual((ROOT / "assets_src" / "crowd" / "params" / name).read_text(encoding="utf-8"), text, name)
         self.assertEqual((ROOT / vn.CROWD_FILE).read_text(encoding="utf-8"), roster)
+
+    def test_an_act_two_town_never_reshuffles_act_ones_bodies(self) -> None:
+        """Act II zones are assigned after every Act I zone: dropping them leaves each Act I body as it is."""
+        sys.path.insert(0, str(ROOT / "assets_src" / "crowd"))
+        import gen_crowd
+
+        ranges = gen_crowd.load_json(gen_crowd.RANGES)
+        whole = gen_crowd.assign(ranges, self.crowd)
+        act1 = copy.deepcopy(self.crowd)
+        act1["people"] = [p for p in act1["people"] if gen_crowd.chapter_of(p["zone"]) < gen_crowd.ACT2_CHAPTER]
+        alone = gen_crowd.assign(ranges, act1)
+        self.assertEqual({k: whole[k] for k in alone}, alone)
+        self.assertEqual(gen_crowd.chapter_of("ch17/hollowmere"), 17)
+        self.assertEqual(gen_crowd.chapter_of("_tests/crowd"), 0)
 
     def test_bodies_span_ages_builds_and_hair_and_are_new_faces(self) -> None:
         sys.path.insert(0, str(ROOT / "assets_src" / "crowd"))
