@@ -26,13 +26,14 @@ Clip audit (tools/creatures/clip_audit.gd, 2026-10-30): worst slip 25.5 cm (ko),
 
 ## Battle-distance read
 Chalk-white on white shallows: **risk: high** for value. The tide crawler's dark lacquer is what read; bleached, the legs' shadows and the dim seams carry it. Consider a grey-blue wet underside and stronger seam glow in the Rim's flat light.
+**Done 2026-10-30 (creatures track, ADR 0205):** the flanks go a wet `storm_slate` toward the underside, the plate seams are slate, the chalk is weathered with `overcast_slate` mottling, and the wounds glow at energy 1.7 (from 1.0). Self-rendered in `ch16_rim_crawlers` on pale sand: slate flanks, black joints and cyan glows read; judge it again in the Rim's own grade.
 Encounters in data: `ch16_rim_crawlers` (no Act II arena is named yet: judge it in the arena the encounter gets).
 
 ## Reuse of existing generators
 build_tide_crawler (its 2026-10-29 primitive pass: carapace plates and seams, jointed legs, the planted-foot pin), so it inherited all of it.
 
 ## State against the final bar
-Model meets the bar (rebuilt with the tide crawler); its read on the Rim does not yet.
+Model meets the bar (rebuilt with the tide crawler); the value fix is in (slate flanks and seams, brighter wounds).
 
 ## Work at the gate (after `act1-complete`)
-Value check against the Rim; enemy `model` key.
+~~Value check~~ (done; re-judge in the Rim's grade); enemy `model` key.
