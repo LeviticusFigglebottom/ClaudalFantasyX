@@ -1475,3 +1475,12 @@ MERGE-READY @ 9a4d0b55f: M5-A3P-1702, the Kite's Act III revisits (with c2b8608b
     validate_data 0/0; taskboard ok; lint ok; audio audit UI 0.
   - **Next:** the ending flow, once slice-polish's E7 lands. Meanwhile, more Act III UI per ADR 0207.
 MERGE-READY @ 52cd5a5bb: M5-A3P-1703, the Kite's log.
+
+- **M5-A3P-1705, the Vowbound menus lose names (80f0fdcc3):**
+  - A Vowbound whose `released_flag` is set leaves the battle Call list (`BattleVowboundHud.bound_ids`) and the
+    Status page's Bound line, which now shares that rule. There is no animation (act3_ch20 §9).
+  - **For combat (M5-A3P-1013):** add `released_flag` (`ch20_<id>_released`, already declared) to the six
+    vowbound.json rows. The UI reads it as soon as it's there.
+  - **Tests and checks:** vowbound 119/0 and status 57/0. Freeing the sandbox fixes the bound_ids test's leftover
+    node, which was there before. validate_data 0/0; taskboard ok; lint ok.
+MERGE-READY @ 80f0fdcc3: M5-A3P-1705, the Vowbound menus lose a name on release.
