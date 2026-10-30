@@ -951,3 +951,19 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
 - Checks: validate_data 0/0; tools test_creatures OK; Godot creature 87/0 (test_creature_actor's ray constants now 0.95 m hover and 0.8 m pool drop); gdlint and gdformat clean; Blender verify identical (gallery_ray, rime_urchin, plus ridge_lynx, scree_crawler and fen_leech for the earlier commits). Skipped: coverage (no battle or progression code) and the full manifest.
 - **MERGE-READY @ 8152d4de** (it includes 87edc76c, 35816168 and c4360dfb).
 - Next: the conduit crawler's legs (Ch11), the cord moth's battle scale (Ch12), the rim crawler's value (Ch16), the ridge lynx's leg shaping, then the Act II wildlife builds.
+- **Ch11, the conduit crawler's legs** @ 563eda19: knee knuckles with brass caps, thigh collars and shin piston sleeves; the leg tubes drop to 4 rings, so the total is 4,608 triangles (budget 5k). Viewed on the clip sheet. It has no enemy row (a boss add), so no portrait.
+- **Ch12, the cord moth** @ 506425f2: battle Model at 1.35× (the ashwing's fix), stand-in hover 1.35 m, the build's KO falling 1.0 m in model space. SELF-RENDERED audit ch12_pass_moths (broad wings, not slivers). test_creature_actor's MOTH_HOVER_M is now 1.35. The portrait re-bake came out pixel-identical, so it's unchanged.
+- **Ch16, the rim crawler's value** @ 7bb55186: wet storm_slate flanks and seams, overcast_slate weathering on the chalk, wounds at energy 1.7. SELF-RENDERED audit ch16_rim_crawlers on pale sand (it reads). Portrait re-baked.
+- **Ch12, the ridge lynx's legs** @ 7fbc0202: flatter side to side, shaped along their length (muscle, forearm or gaskin, slim wrist or hock, pastern), tops buried in the torso, toes as creased knuckles; 7,544 triangles (budget 8k). Viewed before and after on the clip sheet. Portrait re-baked.
+- **M4-A2P-056, the fen fireflies (Ch10)** @ 2ea2d324:
+  - A firefly mesh and slot in insect.glb. Its lantern glows warm yellow-green, never glimmer.
+  - The wildlife shader gains mode 6 (the flutter with the blink in the mode parameter). The lit lantern swells toward a 0.006 rad view angle, so it reads as a point without bloom.
+  - WildlifeSwarm gains the `firefly` type; the layer gets a seventh MultiMesh (the draw_calls budget goes 6 → 7).
+  - Placement: ch10_ossa_fen.json, four swarms of six on the greybox.
+  - New shots `wildlife_zone_ossa_fen_walk0` and `wildlife_zone_ossa_fen_pocket` (SELF-RENDERED, viewed). **Baselines needed from the Lead.**
+  - zone_wildlife.gd now keeps a zone's own WildlifeLayer instead of adding a second.
+  - Checks: validate_data, tools test_wildlife, Godot wildlife 17/0 and ch10 3/0, lint and format, Blender verify identical.
+- Baselines to approve, all self-rendered: creature_gallery_ray, and the new wildlife_zone_ossa_fen_walk0 and _pocket. Other shots whose assets changed (I viewed the audit renders, not these shots): portraits for gallery_ray, rim_crawler and ridge_lynx; any shot with the rime urchin, conduit crawler or cord moth.
+- LEAD-ASK: M4-A2P-056 (role: character) is still `blocked` by ADR 0203. Please record my claim (`doing`, claude/creatures) on the integration branch per ADR 0205.
+- **MERGE-READY @ 2ea2d324** (includes everything above).
+- Next: the fen kingfisher (Ch10), the woolback (Ch12), the rim rays (Ch16).
