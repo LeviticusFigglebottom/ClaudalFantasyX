@@ -23,6 +23,13 @@ signal gone
 const SCENE_PATH := "res://game/ui/save/save_menu.tscn"
 const DATA_PATH := "res://game/data/ui/save_menu.json"
 const SCRIM_SHADER := preload("res://game/ui/shaders/scrim.gdshader")
+## The controls line at the right of the help row (the Lead's controller pass, 2026-10-30), by mode and phase.
+const CONTROLS_KEYS := {
+	SaveMenuModel.Mode.SAVE: "SAVE_CONTROLS_SAVE",
+	SaveMenuModel.Mode.LOAD: "SAVE_CONTROLS_LOAD",
+}
+const CONTROLS_QUESTION_KEY := "SAVE_CONTROLS_QUESTION"
+const CONTROLS_RESULT_KEY := "SAVE_CONTROLS_RESULT"
 
 ## Pause the tree while open (the field must not move under a menu).
 @export var pause_tree := true
@@ -40,6 +47,7 @@ var _panel: Panel
 var _title: Label
 var _subtitle: Label
 var _help: Label
+var _controls: Label
 var _list: Control
 var _rows: Array[SaveSlotRow] = []
 var _cursor_box: Panel
@@ -124,7 +132,13 @@ func is_open() -> bool:
 
 
 func _input(event: InputEvent) -> void:
-	if is_open() and handle_input(event):
+	if not is_open():
+		return
+	# Taken here, before the UiInput autoload sees it: let it note the device and a held d-pad first.
+	var ui := get_node_or_null(^"/root/UiInput")
+	if ui != null:
+		ui.call(&"notice", event)
+	if handle_input(event):
 		get_viewport().set_input_as_handled()
 
 
@@ -250,6 +264,9 @@ func _build() -> void:
 	_list.add_child(_mote)
 	y += list_h + HudLayout.num(p, "gap")
 	_help = _label(&"HelpDimLabel", Rect2(pad, y, inner_w, HudLayout.num(p, "help_height")))
+	_controls = _label(&"HelpDimLabel", Rect2(pad, y, inner_w, HudLayout.num(p, "help_height")))
+	_controls.name = &"Controls"
+	_controls.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_build_dialog()
 
 
@@ -300,8 +317,27 @@ func _render() -> void:
 	_list.modulate.a = HudLayout.num(_d.get("cursor", {}) as Dictionary, "dim_behind_dialog") if in_dialog else 1.0
 	_mote.visible = not in_dialog
 	_help.text = tr(model.help_key()) if model.help_key() != "" and not in_dialog else ""
+	_render_controls()
 	_place_cursor()
 	_render_dialog(in_dialog)
+
+
+## The controls line on the help row's right; the help keeps the rest of the row (it shrinks before it would cross).
+func _render_controls() -> void:
+	var key := str(CONTROLS_KEYS.get(model.mode, ""))
+	if model.phase == SaveMenuModel.Phase.CONFIRM:
+		key = CONTROLS_QUESTION_KEY
+	elif model.phase == SaveMenuModel.Phase.RESULT:
+		key = CONTROLS_RESULT_KEY
+	_controls.text = tr(key)
+	var gap := HudLayout.num(_d.get("panel", {}) as Dictionary, "gap")
+	var room := _controls.size.x - _controls.get_combined_minimum_size().x - gap
+	_help.size.x = room
+	HudLayout.fit_label(_help, room)
+
+
+func controls_text() -> String:
+	return _controls.text
 
 
 func _render_dialog(in_dialog: bool) -> void:

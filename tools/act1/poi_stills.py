@@ -21,8 +21,13 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import walkthrough  # noqa: E402
 
-# walkthrough's zones, one per level (its Haluna "touch" walk is the same level).
-ZONES = [z for z in walkthrough.ZONES if z != "ch02_haluna_touch"]
+# walkthrough's zones, one per level (its Haluna "touch" walk is the same level), and Act II's Ch10–Ch12 (the Lead's
+# 10-30 pass): (level, spawn, flags).
+ACT2 = {z.replace("/", "_"): (f"res://game/levels/{z}/{z.split('/')[1]}.tscn", spawn, []) for z, spawn in (
+    ("ch10/ossa_fen", "FenEdge"), ("ch10/reedhollow", "Gate"), ("ch11/sunken_vey", "Landing"),
+    ("ch11/lowlight", "Gate"), ("ch12/keth_pass", "PassFoot"), ("ch12/quellan", "FromPass"),
+    ("ch12/cloudloom", "Approach"))}
+ZONES = [z for z in walkthrough.ZONES if z != "ch02_haluna_touch"] + list(ACT2)
 ZONE_MAPS = ROOT / "game" / "data" / "ui" / "zone_maps.json"
 
 
@@ -36,7 +41,7 @@ def pois(level_path: str) -> list[dict]:
 
 
 def targets(zone: str) -> dict:
-    level, spawn, flags, _legs = walkthrough.ZONES[zone]
+    level, spawn, flags = ACT2[zone] if zone in ACT2 else walkthrough.ZONES[zone][:3]
     return {"level_path": level, "spawn": spawn, "flags": flags, "auto_targets": True, "pois": pois(level),
             "points": []}
 

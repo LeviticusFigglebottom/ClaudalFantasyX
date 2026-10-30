@@ -22,7 +22,7 @@
     {"op": "line", "id": "ch15_daces_006", "key": "DLG_CH15_DACES_006", "speaker": "aldous_varrow", "emotion": "soft_smile", "voice": "", "src": 21, "name_key": "DLG_NAME_ALDOUS_VARROW_DOCK_MASTER"},
     {"op": "line", "id": "ch15_daces_007", "key": "DLG_CH15_DACES_007", "speaker": "aldous_varrow", "emotion": "neutral", "voice": "", "src": 22, "name_key": "DLG_NAME_ALDOUS_VARROW_DOCK_MASTER", "tags": ["long"]},
     {"op": "if_not", "cond": ["flag", "ch15_sat_with_liss"], "to": 20, "src": 23},
-    {"op": "cue", "cue": "mark", "args": ["liss", "supper_table", "walk"], "kwargs": {}, "src": 24},
+    {"op": "cue", "cue": "mark", "args": ["liss", "supper", "walk"], "kwargs": {}, "src": 24},
     {"op": "cue", "cue": "anim", "args": ["liss", "sit_beside", "rhen"], "kwargs": {}, "src": 25},
     {"op": "cue", "cue": "anim", "args": ["aldous_varrow", "set_bowl", "liss"], "kwargs": {}, "src": 26},
     {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 27},
