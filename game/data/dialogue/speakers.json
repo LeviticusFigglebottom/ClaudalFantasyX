@@ -63,6 +63,8 @@
   {"id": "orin_tesk", "name_key": "CHAR_ORIN_TESK", "blip_pitch": 0.84, "portrait_id": "portrait_villager_placeholder"},
   {"id": "halde_moor", "name_key": "CHAR_HALDE_MOOR", "blip_pitch": 0.9, "portrait_id": "portrait_villager_placeholder"},
   {"id": "isse_varan", "name_key": "CHAR_ISSE_VARAN", "blip_pitch": 1.06, "portrait_id": "portrait_villager_placeholder"},
-  {"id": "cael_imbrey", "name_key": "CHAR_CAEL_IMBREY", "blip_pitch": 0.98, "portrait_id": "portrait_villager_placeholder"}
+  {"id": "cael_imbrey", "name_key": "CHAR_CAEL_IMBREY", "blip_pitch": 0.98, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "imra", "name_key": "CHAR_IMRA", "blip_pitch": 1.0, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "dace", "name_key": "CHAR_DACE", "blip_pitch": 0.86, "portrait_id": "portrait_villager_placeholder"}
  ]
 }

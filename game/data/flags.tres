@@ -388,5 +388,6 @@ flags = {
 "ch20_nhoa_released": "Ch20 (ch20_nhoa_release): Asha released Nhoa (Ressa); the keepsake rose last. Read by vowbound.json released_flag, the summon menu and the codex.",
 "ch20_ethren_released": "Ch20 (ch20_ethren_release): Asha released Ethren (Corran); the keepsake rose last. Read by vowbound.json released_flag, the summon menu and the codex.",
 "ch20_cage_broken": "Ch20 U07: the Cage encounter's victory_flag (the four founders fought as one); read by H01.",
-"ch20_complete": "Ch20 U08 (ch20_thank_you): the founders' four thank-yous; the flow hands off to Ch21."
+"ch20_complete": "Ch20 U08 (ch20_thank_you): the founders' four thank-yous; the flow hands off to Ch21.",
+"ch21_unbound": "Ch21 H09 (M5-A3P-1014, ch21_great_unbinding): the Great Unbinding; every held mote rises. Read by the Ending's flow."
 }

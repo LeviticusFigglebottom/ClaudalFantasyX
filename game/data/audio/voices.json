@@ -387,6 +387,8 @@
     "orin_tesk": {"blips": ["voice_low"], "pitch": 0.84, "rate_ms": 70, "jitter": 0.04, "volume_db": 0.0},
     "halde_moor": {"blips": ["voice_low"], "pitch": 0.9, "rate_ms": 70, "jitter": 0.04, "volume_db": 0.0},
     "isse_varan": {"blips": ["voice_bright"], "pitch": 1.06, "rate_ms": 60, "jitter": 0.05, "volume_db": 0.0},
-    "cael_imbrey": {"blips": ["voice_bright"], "pitch": 0.98, "rate_ms": 60, "jitter": 0.05, "volume_db": 0.0}
+    "cael_imbrey": {"blips": ["voice_bright"], "pitch": 0.98, "rate_ms": 60, "jitter": 0.05, "volume_db": 0.0},
+    "imra": {"blips": ["voice_bright"], "pitch": 1.0, "rate_ms": 60, "jitter": 0.05, "volume_db": 0.0},
+    "dace": {"blips": ["voice_low"], "pitch": 0.86, "rate_ms": 65, "jitter": 0.05, "volume_db": 0.0}
   }
 }

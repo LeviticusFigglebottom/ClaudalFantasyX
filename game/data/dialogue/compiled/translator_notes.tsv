@@ -83,5 +83,13 @@ DLG_CH20_ILUN_001	ch20_ilun_release		Ilun speaks in the voice of Teyo Marrin, a 
 DLG_CH20_KAHRE_001	ch20_kahre		vowbound.md, verbatim. Kahre speaks as Daro Pemakan, an old smith.	Finally. Hit harder, I'm old.
 DLG_CH20_NHOA_002	ch20_nhoa_release		Nhoa speaks as Ressa, Pell's clutch-sister, Kirru, seventy years gone: glad and sad at once.	You got old.
 DLG_CH20_VIREL_001	ch20_virel		Virel speaks as Wenna Corr, a young Corrow woman of hidden Saltwright blood, giddy and proud.	A wright! A real one, with the marks and everything!
+DLG_CH21_LETTING_001	ch21_the_letting	yes	Lamptongue, the Eighth Verse (lamptongue.md verse 8): keep exactly as written. Sung.	Ish oan, ish oan,
+DLG_CH21_LETTING_002	ch21_the_letting	yes	Lamptongue: keep exactly as written.	vey hal, ennu tash,
+DLG_CH21_LETTING_003	ch21_the_letting	yes	Lamptongue: keep exactly as written.	oan re, oan re...
+DLG_CH21_LETTING_004	ch21_the_letting	yes	Lamptongue: keep exactly as written. The last word of the game's song: 'let go'.	...tash.
+DLG_ENDING_DACE_001	ending_dace		Dace Sallow's first spoken word in the game. Plain, a diver's voice.	Rhen.
+DLG_ENDING_DACE_007	ending_dace		The payoff of Rhen's arc: this time he says it back. Plain, aloud, no softening.	Goodbye, Dad.
+DLG_ENDING_KERRID_001	ending_kerrid		The Corrow stair-watch's all-clear: a captain's report, not a farewell.	Stair's clear.
+DLG_ENDING_SEA_002	ending_the_dark_sea		Answers the Prologue's 'Remember that, later.' Quiet, not a flourish.	Everyone I told you about is gone. I remembered.
 DLG_PROLOGUE_DEAD_CITY_000	prologue_dead_city		Title card, centred on black, before the first frame of the game.	Prologue
 DLG_TEST_DLG_020	test_dialogue_fixture	yes	Invented language: keep as written.	Ennu re.

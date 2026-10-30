@@ -1,0 +1,34 @@
+{
+ "format": 1,
+ "scene": "ch21_two_lamps",
+ "source": "game/data/dialogue/ch21/ch21_two_lamps.dlg",
+ "start": "ch21_two_lamps",
+ "nodes": {
+  "ch21_two_lamps": {
+   "headers": {"location": "ch21/heart"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "camera", "args": ["HT03"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "arms_length", "walk"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "wait", "args": [5.0], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "camera", "args": ["HT04"], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "camera", "args": ["HT05"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "anim", "args": ["kerrid", "hand_on", "rhen"], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 20},
+    {"op": "if_not", "cond": ["flag", "ch19_learned_the_hitch"], "to": 14, "src": 21},
+    {"op": "cue", "cue": "camera", "args": ["HT06"], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "tie_hitch", "dace_lamp_line"], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 24},
+    {"op": "goto", "to": 14, "src": 21},
+    {"op": "cue", "cue": "camera", "args": ["HT07"], "kwargs": {}, "src": 26},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 0.0}, "src": 27},
+    {"op": "line", "id": "ch21_lamps_001", "key": "DLG_CH21_LAMPS_001", "speaker": "sefir", "emotion": "tender", "voice": "", "src": 28},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 29},
+    {"op": "line", "id": "ch21_lamps_002", "key": "DLG_CH21_LAMPS_002", "speaker": "sefir", "emotion": "neutral", "voice": "", "src": 30},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 31},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 32}
+   ]
+  }
+ }
+}

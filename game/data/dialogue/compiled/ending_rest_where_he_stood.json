@@ -1,0 +1,17 @@
+{
+ "format": 1,
+ "scene": "ending_rest_where_he_stood",
+ "source": "game/data/dialogue/ending/ending_rest_where_he_stood.dlg",
+ "start": "ending_rest_where_he_stood",
+ "nodes": {
+  "ending_rest_where_he_stood": {
+   "headers": {"location": "ch18/kite"},
+   "ops": [
+    {"op": "cue", "cue": "music", "args": ["ending_lift_bed"], "kwargs": {"fade": 2.0}, "src": 7},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "where_dace_stood", "walk"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "mark", "args": ["kerrid", "rhen_shoulder", "walk"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "wait", "args": [25.0], "kwargs": {}, "src": 10}
+   ]
+  }
+ }
+}
