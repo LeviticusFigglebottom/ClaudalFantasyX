@@ -805,6 +805,15 @@ that test at this branch's zones.
     (M4-A2P-105).
   - Godot ebbing 8/0 (new `test_ebbing_zone_data`), ch09 13/0, open_sea 2/0.
   - **MERGE-READY @ 3c2ba4cb.**
+- **The Ch14–15 arenas carry the city's zone looks (arenas_ch13_16.md) @ c1ed49ad.**
+  - `ansedra_arenas.py` also writes `ansedra_lagoon_escape` and `bridal_barge_night` from env-art's tables. Without
+    the swaps they reproduce env-art's scenes byte for byte; with them, `KitSlotSwaps` puts Ansedra's gilt, lacquers
+    and marble over the barges' and domes' flat slots.
+  - Viewed beside their baselines: subtly richer lacquer and gilt, no regression. Both shots drift by design.
+  - Godot battle_arenas 10/0; the tools test re-writes all three arenas and compares.
+  - **Gotcha for env-art and the Lead:** re-running `arena_scenes.py` on its own rewrites these two without the
+    swaps. Re-run `assets_src/environments/kits/haluna/ansedra_arenas.py` after it (it's in my ownership row).
+  - **MERGE-READY @ c1ed49ad.**
 
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
