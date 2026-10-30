@@ -896,3 +896,34 @@ BACKLOG EMPTY (again): no other items.
   - the bell galleries, the shell shrine and the prologue (interiors or a cutscene);
   - Corrow by night (the strand of the drowned: animals among the shrouds would undercut it, pillar 1; the motes are its life).
 - In progress: battle-distance renders of all 16 Act I encounters with a regular (arena silhouette and value).
+
+### The Act I audit: finished
+- **Battle-distance renders of all 16 Act I encounters with a regular, viewed.** Fixed in my lane:
+  - **The ashwing** read as two small pale slivers: 1.35× in battle, hover 1.86 so its KO still lands. test_creatures now reads a battle scene's Model scale.
+  - **The sail leech** was seen edge-on as glowing dashes on the Ch4 night deck: it hangs lower (hover 1.26, its KO's fall matched, `KO_DROP`), at 1.3×, with brighter slits and a salt-pale canvas edge. The paused fen leech pins its own fall.
+  - **The Oil Slug, the tower limpet:** re-rendered, they read.
+  - **Request M3-CRE-665 (combat):** in two-foe openings the back foe stands hidden behind the front one (the vein sparker behind the slag tortoise, the shoal skipper behind the wreck crab).
+- **Villagers and wildlife moving: `tools/creatures/life_audit.tscn`** loads every Act I zone with villagers or wildlife. **All 14 zones: no frozen villager, wildlife moving everywhere** (culling off; a 4-second run).
+- **Final clip audit:** 44 actors, none missing a reaction. The legged foes' worst residual slides are the raid hound's attack 8 cm (was 37), the tide crawler's hit 6 cm (was 22) and the vein sparker's hit_b 10 cm (was 27).
+- **Checks:**
+  - Godot: creature 85/0, wildlife 15/0, crowd 10/0, villager 38/0, npc 10/0, zone_cast 3/0, portrait 21/0, battle 790/3 (the known three).
+  - tools test_creatures, test_wildlife, test_npc, test_post_import OK; validate_data 0/0; gdlint and gdformat clean; taskboard ok.
+  - Blender verify identical: 49 creature jobs after `pinned`, then sail_leech, fen_leech, ashwing.
+- Integration merged (c789b9a9): test_zone_cast kept mine (it accepts a work clip as the resting clip; integration's version requires `idle`, which Tamsule's crowd fisher on `haul` fails); shots.json rebuilt by hand (merge_union couldn't parse the base); the three stale wake-dressing PROVENANCE rows dropped again.
+- **SELF-RENDERED (viewed, no baselines written):** creature_tide_crawler, creature_tower_limpet, creature_oil_slug(_battle), npc_corrow_storm_figure(_near), crowd_mourners, crowd_work, crowd_lineup_*. The 16 encounter renders were scratch shots in a worktree, not committed.
+- **LEAD-ASK: baselines at the gate.** Add creature_tower_limpet, creature_sail_leech, creature_ashwing, creature_reef_crab, creature_wallcrab, creature_wreck_crab, creature_raid_hound, creature_vein_sparker, creature_bottle_hermit, creature_shoal_skipper and creature_rim_crawler (all rebuilt or rescaled) to the earlier list.
+
+MERGE-READY @ (this push): the Act I final-quality audit (planted feet, KOs, the ashwing, the sail leech, the wildlife re-seated, fish, crab ground, M3-CRE-664/665, the audit tools).
+
+### Act II preparation, docs only (ADR 0203; the Lead, 2026-10-30 01:08)
+- **`docs/kb/plan/act2/creatures/`, all `draft: pre-gate`.** README plus 11 regular foes and 4 wildlife proposals: silhouette, materials, rig, clips, the battle-distance read, reuse of existing generators, and the state against the bar (measured with clip_audit and clip_sheet).
+- **All 11 regulars exist and are built.** Meeting the bar: tannin archer, root crab, rime urchin (but its KO), cord moth, scree crawler, glass skate. Close: conduit crawler. Below it:
+  - ridge lynx (paws slide 18–29 cm; plain legs);
+  - fen leech and gallery ray (edge-on or pale-on-pale reads);
+  - rim crawler (chalk on white).
+- **None of the ten enemy rows has a `model` key.**
+- **Wildlife proposals:** fen kingfisher (never a heron: the Kirru), fen fireflies (never glimmer), woolback (the ram's build at 0.3 scale), rim rays (fish-sized, always moving, unlike the glass skate).
+- **LEAD-ASK: Ansedra has "no seabirds" (bible §5.8, ansedra.md). M4-A2P-056's "still-city birds (Ch13)" contradicts canon. Drop it from the task (I proposed no Ansedra wildlife, by design).**
+- PC rows (the Oil Slug, the storm figure) come first when the PC reports on gpu/act1-qa-3.
+
+BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are written (docs only until `act1-complete`). The rest waits on others: M3-CRE-664 (environment), M3-CRE-665 (combat), the PC's QA pass, the Lead's baselines.
