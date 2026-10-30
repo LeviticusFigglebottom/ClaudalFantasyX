@@ -8,6 +8,19 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 > `session_01Bg3iP7cPGyjbX4CyniBahc`; the integration branch is **`claude/new-session-mj8c3c`**.
 > **This copy, on `gpu/act1-qa-3`, is the newest.**
 
+## PASS 4 @ 2026-10-30 (big19, integration @ 2f544938)
+
+- **GPU-QA-DONE pass4 @ gpu/act1-qa-4.** act1_gpu_qa.md has the "Pass 4" summary and the row updates; stills are in
+  docs/kb/qa/gpu/act1/pass4/.
+  - **Fixed:** 31 and 48.
+  - **Partly fixed:** 24, 37, 39, 49 and 51.
+  - **Still open:** the rest. Most track fixes aren't in big19 yet, so pass 5 after big20 picks them up.
+  - **New rows:** 66 (Ch4's field camera inside a wall) and 67, a **hitch regression**: the heavy zones' entries are
+    over 2 s again on big19. Ch6 is 2.56 s in the walk and 2.86 s fresh; Corrow is 3.77 s fresh; one Brine Shoals
+    probe hung.
+- **Pass 5 needs** big20 merged into the integration branch. It re-checks rows 17, 23, 25, 43, 47, 52–63 (the pending
+  track fixes), plus 66 and 67.
+
 ## BACK ONLINE @ 2026-10-29 ~20:20 EDT: the Lead's pass-3 queue
 
 - **LFS: this PC reaches lfs.github.com** (HTTP 302 from Git Bash). `git lfs pull` fetched all 197 LFS objects
