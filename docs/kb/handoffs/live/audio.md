@@ -3,6 +3,10 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **Re the Lead's 17:04 message ("idle since 16:53; render the missing cues, Ch12 first"):**
+  - The 16:45 item was done and pushed by 17:00, with MERGE-READY @ 0266514c per chapter, Ch12–Ch16 (the entries just below; head 8956ca68).
+  - **The cue tables have no missing cues.** All 70 refs (36 distinct) at f5f0be21, unchanged on act2-plan since, play delivered renders. The only wrong ones were the morning FAST-TRACK's six placeholder SFX, now restored to their own cues (b4dcb22a). Ch14's low C now holds to "No." (0266514c).
+  - **LEAD-ASK:** act2-plan's branch still names those six placeholders (`barge_pole` ×6, `hearth_crackle`, `undertow_wall_roar`, `current_song`) on the same lines. When both merge, keep claude/audio's ids (`pole_no_wake`, `pole_stroke`, `pyre_crackle`, `storm_wall`, `current_song_hum`, `barge_no_wake`), or ask act2-plan to take them.
 - **The Lead's 16:45 item: score Ch12–Ch16 from act2-plan's audio cue tables** (`## Audio cues by shot` in `act2_ch12..16_direction.md`, f5f0be21 on claude/act2-plan).
   - **What the tables hold:** 70 `@music`/`@sfx` refs, 36 distinct, by shot. Every one already resolves: the 15 music refs through sequencer stand-ins point at the real Act II renders of the same name, and `hush_first_verse` → `hush_theme_v2` is ADR 0204 §12's reprise. So there was nothing new to render.
   - **Placeholders:** the morning's FAST-TRACK (ab6b7704) had made the scripts resolve by renaming six script SFX to existing generic sounds. Their own cues have since been delivered (`act2_cutscene_sfx.py`), so the scripts now name them again (b4dcb22a; `dlgc` recompiled only those five scenes).
