@@ -1516,4 +1516,4 @@ MERGE-READY @ a27a38bc0: M5-A3P-1708, the Vowbound answers (Ch17 B09).
   - **The Drownbell re-measure:** waits on M3-HER-1168, in review.
   - **Mounts in the cinematics lane:** M5-A3P-1704 (revisit flags) and M5-A3P-1707 (the ledger page).
   - **For combat (M5-A3P-1013):** `released_flag` in vowbound.json.
-MERGE-READY @ HEAD: M4-A2P-1708 (KNOWN_EMPTY dropped) and M5-A3P-1709 (request), docs and tests only.
+MERGE-READY @ 9807c2d55: M4-A2P-1708 (KNOWN_EMPTY dropped) and M5-A3P-1709 (request), docs and tests only.
