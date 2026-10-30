@@ -1106,10 +1106,25 @@ that test at this branch's zones.
   - **Exits:** every exit is reachable on foot (Ansedra's `to_sanctum` and `to_archive`, the Archive's and the
     Sanctum's `to_city`, the Court's `barge`, the open sea's `dawn`, Hollowmere's `ship`), except one.
   - **The exception:** the Pale Rim's `to_choir` stands at x 230, past the greybox `Sand`'s end at x 220, so it can
-    never fire on foot. It's chapters' greybox (`RIM_LEN + 10`): request **M4-A2P-116**, to move it to about 216
+    never fire on foot. It's chapters' greybox (`RIM_LEN + 10`): request **M4-A2P-1500** (first filed as 116, which act2-plan uses), to move it to about 216
     or lengthen the sand. My dressing follows either way.
   - **Act II town interiors:** still none (see above).
   - **MERGE-READY @ 1f9d2e8c** (the request; no change of mine was needed).
+- **Renumbered (10-30, the Lead):** the Pale Rim exit request is **M4-A2P-1500**. Act II ids are per track now, and
+  env-art-b's are M4-A2P-1500 to 1599 (TRACK-RULES). The Act II town interiors still have nothing to walk: no shop or
+  inn interior exists, the shops wait on M4-A2P-031, and the two existing towns were walked above (M4-A2P-115).
+  **MERGE-READY @ a18348d9.**
+- **Beauty pass, Ch5 Pemakar and Ashcrown, Ch8 Coilspire, as played (pillar 2, 10-30):** the zones' hero shots
+  (12) rendered on lavapipe and viewed together.
+  - **Pemakar:** strong. At night the lantern-lit town climbs to the glowing crown, with its harbour lights on the
+    water; the day harbour is turquoise under the town. No change.
+  - **Coilspire:** the storm over the sea is dramatic and the tower's warm lamp-lit interiors read. No change.
+  - **Ashcrown:** the weak one. The plume read as a cold blue-grey, lumpy wall (a rock face, not ash) against the
+    grey overcast. Ashcrown now has its own copy, `ashcrown_plume_day_material.tres`, with a warm ash grey-brown
+    body, softer and feathered billows, and the sun catching its rim. The generator keeps it through the Pemakar
+    slot swap. Viewed before/after: tiers, forecourt, crown and court.
+  - Checks: test_ashcrown_kit; Godot ashcrown (22); validate_data.
+  - **MERGE-READY @ d364a561.**
 ### PC-QUEUE
 - Pass 3 row 65 (@ edb18aae): re-measure the camp's smoke columns (24 steps at High) and the Tamsule drop (High has no
   god rays now) at High 1440p against the 0.3 ms target.
@@ -1155,3 +1170,4 @@ SELF-RENDERED @ 34d374de: the eight Act II arenas' battle cameras and hint views
 SELF-RENDERED @ 124f3f40: Lowlight's battle camera with its position printed; Quellan and Reedhollow eye-height walks (scratch) — all viewed.
 SELF-RENDERED @ f0e1e6fd: battle_arena_lowlight_engine_hall's battle camera at 16:9 after the pier move (scratch) — viewed.
 SELF-RENDERED @ e14c3355: Hollowmere's dock with the new piles and the perched gulls (scratch) — viewed.
+SELF-RENDERED @ d364a561: ch05_pemakar_harbour, _crown, _harbour_day, _weir, ch05_ashcrown_causeway, _forecourt, _tiers, _crown, _court, ch08_coilspire_hall, _gate, _storm (before), and Ashcrown's tiers, forecourt, court and crown after, all viewed.\n

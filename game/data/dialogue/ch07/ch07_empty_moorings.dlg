@@ -12,8 +12,8 @@
 // ring; it turns once in the eddy and drifts out toward the sea, and Asha says nothing. Kerrid is
 // knee-deep at the far end of the moorings, back to them; he doesn't turn. No jokes; no more than
 // four lines from anyone in a row. The boat names after the Gull, the Second Mooring and the
-// Wicklight, and the families, are this script's (the Oruvel side's proposed names, act1_ch07.md
-// §5.2: Mae Ketter, Brann Ollo, Dovic Saan, Tull Arro). The chapter flow takes the band (and the
+// Wicklight, and the families, are this script's (act1_ch07.md §5.2). M4-A2P-116 C2: the families are tied to
+// Noa and Old Ama, the Oruvel side the player met in the match. The chapter flow takes the band (and the
 // leaf-boat) out of the bag after it.
 title: ch07_empty_moorings
 location: ch07/tamsule_bell_galleries
@@ -32,12 +32,12 @@ Tavi [neutral]: You're the Cantor. #line:ch07_moor_003
 Asha [tender]: Then I'll do it the way we do it at home. Tell me what tied up here. #line:ch07_moor_004
 @camera R09
 Tavi [neutral]: The Tallow Hen. #line:ch07_moor_005
-Rhen [sad]: Ollo's. Brann's uncle, and his wife. #line:ch07_moor_006
+Rhen [sad]: Ollo's. Noa's uncle, and his wife. #line:ch07_moor_006
 @anim asha kneel_touch_ring
 @sfx mooring_ring
-Asha [tender]: Brann's uncle, and his wife. #line:ch07_moor_007
+Asha [tender]: Noa's uncle, and his wife. #line:ch07_moor_007
 Tavi [neutral]: The Second Mooring. #line:ch07_moor_008
-Rhen [sad]: The Ketters. All of them but Mae. #line:ch07_moor_009
+Rhen [sad]: The Ketters. All of them. #line:ch07_moor_009
 @sfx mooring_ring
 Asha [tender]: The Ketters. #line:ch07_moor_010
 @mark asha asha_ring_3 walk
@@ -46,9 +46,9 @@ Rhen [grief]: Kell. #line:ch07_moor_012
 @sfx mooring_ring
 Asha [tender]: Kell. #line:ch07_moor_013
 Tavi [neutral]: The Brass Thrush. The Low Lantern. #line:ch07_moor_014
-Rhen [sad]: Dovic's brothers. Old Arro and his daughter. #line:ch07_moor_015
+Rhen [sad]: Ama's brothers. Old Arro and his daughter. #line:ch07_moor_015
 @sfx mooring_ring
-Asha [tender]: Dovic's brothers. Old Arro, and his daughter. #line:ch07_moor_016
+Asha [tender]: Ama's brothers. Old Arro, and his daughter. #line:ch07_moor_016
 @mark asha asha_ring_6 walk
 @wait 2.0
 @anim tavi look_at ring_gull

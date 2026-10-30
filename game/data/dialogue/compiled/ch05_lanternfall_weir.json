@@ -27,7 +27,7 @@
     {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 36},
     {"op": "cue", "cue": "anim", "args": ["kerrid", "look_at", "asha"], "kwargs": {}, "src": 37},
     {"op": "cue", "cue": "wait", "args": [0.6], "kwargs": {}, "src": 38},
-    {"op": "line", "id": "ch05_weir_002", "key": "DLG_CH05_WEIR_002", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 39},
+    {"op": "line", "id": "ch05_weir_002", "key": "DLG_CH05_WEIR_002", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 39, "name_key": "DLG_NAME_KERRID_X2D86C2"},
     {"op": "cue", "cue": "face", "args": ["asha", "neutral", 0.2], "kwargs": {}, "src": 40},
     {"op": "cue", "cue": "wait", "args": [0.8], "kwargs": {}, "src": 41},
     {"op": "line", "id": "ch05_weir_003", "key": "DLG_CH05_WEIR_003", "speaker": "asha", "emotion": "tender", "voice": "", "src": 42},

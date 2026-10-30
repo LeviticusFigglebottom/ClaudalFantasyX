@@ -51,9 +51,9 @@
         18000,
         900
       ],
-      "bytes": 656916,
+      "bytes": 704992,
       "lods": {
-        "dive_raft": 14404,
+        "dive_raft": 15424,
         "dive_raft-lod1": 364
       }
     },

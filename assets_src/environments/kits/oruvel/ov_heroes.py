@@ -568,8 +568,42 @@ def build_dive_raft(seed: int = 745) -> list[kc.MeshBuilder]:
         oc.crate(mb, (2.5, y + 0.25, 0.6), (0.3, 0.25, 0.35), rng, noise, yaw=0.2)
         for cx, cz in ((x0 + 0.2, z0 + 0.2), (x1 - 0.2, z0 + 0.2), (x0 + 0.2, z1 - 0.2), (x1 - 0.2, z1 - 0.2)):
             oc.village.post(mb, (cx, y - 0.25, cz), (cx, y + 0.4, cz), 0.07, rng, noise, weather=oc.SUN)
+        _dive_mark(mb)
         out.append(mb)
     return out
+
+
+# The Ch1 Underway dressing pass (the Lead, 10-30: the dive's readability): seen from the deck, the well was flat dark
+# water, the tether and ladder tarred black and lost under it. A rope hoop of white floats rides the well's water
+# (Oruvel's water at the dressing's y and scale: local +0.15) and a pale shot-line, white-tagged every 0.6 m, drops
+# from it to a lead sinker: the way down reads before the prompt does.
+DIVE_WATER_LOCAL_Y = 0.15
+DIVE_HOOP_R = 0.5
+DIVE_FLOATS = 6
+DIVE_FLOAT_PROFILE = [(0.0, -0.09), (0.08, -0.08), (0.11, -0.03), (0.11, 0.03), (0.08, 0.08), (0.0, 0.09)]
+DIVE_LINE_TO_Y = -4.0
+DIVE_TAG_STEP_M = 0.6
+
+
+def _dive_mark(mb: kc.MeshBuilder) -> None:
+    wy = DIVE_WATER_LOCAL_Y
+    rope, white, lead = mb.material(oc.M_ROPE), mb.material(oc.M_PAINT_WHITE), mb.material(oc.M_LEAD)
+    oc.ring(mb, (0.0, wy, 0.0), (0.0, 1.0, 0.0), DIVE_HOOP_R, 0.02, rope, segs=24, sides=5)
+    for k in range(DIVE_FLOATS):
+        a = 2.0 * math.pi * (k + 0.5) / DIVE_FLOATS
+        oc.lathe(mb, DIVE_FLOAT_PROFILE, white, sides=10, at=(math.cos(a) * DIVE_HOOP_R, wy, math.sin(a) * DIVE_HOOP_R),
+                 rot=kc.rot_y(-a) @ kc.rot_x(math.pi * 0.5), weather=oc.SOAK)
+    for k in range(3):  # the bridle from the hoop to the line's head
+        a = 2.0 * math.pi * k / 3
+        kc.tube(mb, np.array([[math.cos(a) * DIVE_HOOP_R, wy, math.sin(a) * DIVE_HOOP_R], [0.0, wy - 0.35, 0.0]]),
+                0.01, 4, rope)
+    kc.tube(mb, np.array([[0.0, wy - 0.35, 0.0], [0.04, (wy + DIVE_LINE_TO_Y) * 0.5, 0.03],
+                          [0.06, DIVE_LINE_TO_Y, 0.05]]), 0.016, 5, rope)
+    for ty in np.arange(wy - 0.35 - DIVE_TAG_STEP_M, DIVE_LINE_TO_Y, -DIVE_TAG_STEP_M):
+        t = (wy - 0.35 - ty) / (wy - 0.35 - DIVE_LINE_TO_Y)
+        kc.rounded_block(mb, (0.06 * t + 0.03, ty, 0.05 * t), (0.035, 0.05, 0.005), white, radius=0.0, seg=1)
+    oc.lathe(mb, [(0.0, -0.12), (0.07, -0.1), (0.08, 0.0), (0.05, 0.1), (0.0, 0.12)], lead, sides=8,
+             at=(0.06, DIVE_LINE_TO_Y - 0.1, 0.05))
 
 
 TARGETS = {

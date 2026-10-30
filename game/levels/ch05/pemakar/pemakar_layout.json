@@ -146,7 +146,7 @@
     "toma": {"at": [-1.5, 1.2, 24.3, 0.0], "color": "#6a7a5a", "radius": 0.34, "height": 1.85},
     "ysolde": {"at": [2.8, 1.2, 24.975, 0.0], "color": "#2a2a4a"},
     "kerrid": {"at": [15.6, 1.2, 26.5, 180.0], "color": "#8a7a5a", "radius": 0.38, "height": 1.95, "hidden": true},
-    "ferryman": {"cast": "fisher", "at": [-2.0, 1.2, 26.1, 0.0], "color": "#5a6a7a"},
+    "ferryman": {"cast": "ferrymaster", "at": [-2.0, 1.2, 26.1, 0.0], "color": "#5a6a7a"},
     "ferryman_mate": {"cast": "netmender", "at": [5.0, 1.2, 25.2, 270.0], "color": "#6a6a5a"},
     "sweeper": {"cast": "netmender", "at": [11.0, 17.628, -30.104, 180.0], "color": "#7a5a6a"},
     "folder": {"cast": "vendor", "at": [-2.52, 8.028, -1.621, 90.0], "color": "#9a6a4a"},

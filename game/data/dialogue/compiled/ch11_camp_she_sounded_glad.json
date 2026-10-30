@@ -16,8 +16,7 @@
     {"op": "line", "id": "ch11_camp_007", "key": "DLG_CH11_CAMP_007", "speaker": "pell", "emotion": "sad", "voice": "", "src": 13},
     {"op": "line", "id": "ch11_camp_008", "key": "DLG_CH11_CAMP_008", "speaker": "asha", "emotion": "determined", "voice": "", "src": 14},
     {"op": "line", "id": "ch11_camp_009", "key": "DLG_CH11_CAMP_009", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 15},
-    {"op": "line", "id": "ch11_camp_010", "key": "DLG_CH11_CAMP_010", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 16},
-    {"op": "set", "flag": "ch11_camp_talk", "value": ["lit", true], "src": 17}
+    {"op": "set", "flag": "ch11_camp_talk", "value": ["lit", true], "src": 16}
    ]
   }
  }

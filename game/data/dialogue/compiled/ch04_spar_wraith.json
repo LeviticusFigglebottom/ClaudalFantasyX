@@ -7,10 +7,9 @@
   "ch04_spar_wraith": {
    "headers": {"location": "ch04/brightwater_ferry"},
    "ops": [
-    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 12},
-    {"op": "cue", "cue": "camera", "args": ["D05"], "kwargs": {}, "src": 13},
-    {"op": "cue", "cue": "sfx", "args": ["sails_luff_and_fall"], "kwargs": {"vol": 0.4}, "src": 14},
-    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "derelict_rigging", "count": 8, "drift": "down_seaward", "rate": "slow"}, "src": 15},
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "camera", "args": ["D05"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "derelict_rigging", "count": 8, "rate": "hang"}, "src": 15},
     {"op": "cue", "cue": "music", "args": ["spar_wraith"], "kwargs": {"fade": 1.0}, "src": 16},
     {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 17},
     {"op": "line", "id": "ch04_wraith_001", "key": "DLG_CH04_WRAITH_001", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 18},

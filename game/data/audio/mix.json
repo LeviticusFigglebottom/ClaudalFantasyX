@@ -40,10 +40,10 @@
       "sec": 0.25,
       "buses": {
         "Music": -4.0,
-        "Ambience": -2.0,
+        "Ambience": -6.0,
         "World": -3.0
       },
-      "_note": "M3-AUD-850: World too (footsteps, villagers' work, wildlife, cutscene foley sit under a line); villagers' chat is held outright (LifeAudio.quiet)"
+      "_note": "M3-AUD-850: World too (footsteps, villagers' work, wildlife, cutscene foley sit under a line); villagers' chat is held outright (LifeAudio.quiet). Ambience -6 (was -2; the Lead's 10-30 18:24 polish pass): a zone's beds stack (Haluna at night: its bed, the surf, the dock and the wind), and at -2 they sat level with a line's blip stream (-23.3); at -6 every zone's beds sit at least 2.7 LU under it (tools/tests/test_dialogue_clarity.py)"
     },
     "battle": {
       "sec": 0.5,
