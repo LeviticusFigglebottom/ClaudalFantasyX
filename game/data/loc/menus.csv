@@ -69,3 +69,9 @@ SHOP_ERR_HERETIC,"""Not to you. Not now."" The keeper will not trade with hereti
 FIELD_MENU_SUBTITLE_HERETIC,Heretics of the Level
 SAVE_SLOT_HERETIC_FMT,{chapter} · Heretics
 STATUS_MENU_KERRID_UNRISEN,Unrisen: held since the stair at Corrow
+READER_TITLE_FMT,{record}
+READER_HELP,Left and Right: page · Up and Down: line · Confirm: mark the hand · Cancel: close
+READER_HELP_ONE,Up and Down: read · Cancel: close
+READER_HANDS_LEFT_FMT,Hands still to find: {n} of {count}
+READER_ALL_FOUND,Every hand is found.
+READER_PANE_FMT,{n} of {count}

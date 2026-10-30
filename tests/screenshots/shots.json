@@ -2357,6 +2357,14 @@
       "scene": "res://game/ui/menus/items/shots/items_menu_use.tscn"
     },
     {
+      "id": "document_reader_three",
+      "scene": "res://game/levels/_tests/document_reader/document_reader_three.tscn"
+    },
+    {
+      "id": "document_reader_one",
+      "scene": "res://game/levels/_tests/document_reader/document_reader_one.tscn"
+    },
+    {
       "id": "status_menu",
       "scene": "res://game/ui/menus/status/shots/status_menu.tscn"
     },

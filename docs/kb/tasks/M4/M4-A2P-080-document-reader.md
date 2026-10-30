@@ -2,9 +2,8 @@
 id: M4-A2P-080
 title: "The document reader: the Lamp Archive's records side by side, and found records in the codex"
 role: ui
-status: blocked
-blocked-by: ADR 0203
-owner_session: ""
+status: doing
+owner_session: "ui-menus (claude/ui)"
 depends_on: []
 reviewer: narrative
 milestone: M4
@@ -20,5 +19,8 @@ A codex view that lays two or three records side by side and highlights the matc
 ## Notes
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). Plan §2 Ch13, §4.5.
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
+- 2026-10-30 ui-menus: **the reader is in** (DocumentReaderModel, DocumentReader, game/data/ui/document_reader.json). It lays out one to three panes, one mark per pane. A hand is found when every one of its lines is marked: its lines turn gold, a gold rule draws on across the gaps (at once under Reduced motion), and the last hand sets the record's `flag`. The line under the panes counts the hands left. Input covers keys, pad and mouse (hover, click to mark, wheel, right-click Cancel). Tests: test_document_reader 7/0 (model, view, three-device parity, long-pane scroll); pseudo-locale at 100% and 130% fits. New shots document_reader_three and document_reader_one (over a fixture record) are viewed; they have no baselines (the Lead bakes them).
+  - `game/data/lore/records.json` ships empty. **Narrative** fills the Archive's ledgers, the Cantor roll and Corran's line (RECORD_<ID>_<NN> keys, hands, the Ch13 flag), and the scene opens the reader with `DocumentReader.open_in(host, DocumentReaderModel.new(DocumentReaderModel.row_of(&"<id>")))`.
+  - Next: the codex's Records category opens a found record in the reader (single pane) once records.json has rows.
 
 ## Review log
