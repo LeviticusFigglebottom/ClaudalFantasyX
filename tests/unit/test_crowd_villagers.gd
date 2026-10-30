@@ -215,6 +215,32 @@ func test_every_crowd_body_loads_with_its_clips() -> void:
 	_done()
 
 
+## The crowd behaviour pass (the Lead, 2026-10-30): each villager idles at its own rate (npc.json `idle_playback`,
+## drawn from its id), so two of one body are out of pace as well as out of phase; a row's `idle_playback` narrows it.
+func test_villagers_idle_at_their_own_pace() -> void:
+	var range: Array = VillagerLayer.load_data("res://game/data/world/npc/npc.json")["defaults"]["idle_playback"]
+	var rates: Array[float] = []
+	for id: String in ["oruvel_cook", "pemakar_folder", "tamsule_vendor", "corrow_townsfolk_a"]:
+		var npc := FieldNpc.new()
+		npc.name = id
+		npc.npc_id = StringName(id)
+		npc.auto_process = false
+		npc.actor_scene = load(VillagerLayer.CROWD_ACTOR_PATH % ["crowd_woman_medium", "crowd_woman_medium"])
+		_holder().add_child(npc)
+		assert_between(npc.idle_rate, float(range[0]), float(range[1]), "%s: its pace in range" % id)
+		assert_true(is_equal_approx(npc.anim.speed_scale, npc.idle_rate), "%s: its idle plays at its pace" % id)
+		rates.append(npc.idle_rate)
+	assert_true(rates.max() - rates.min() > 0.02, "four villagers, four paces")
+	var still := FieldNpc.new()
+	still.npc_id = &"clutch_0"
+	still.auto_process = false
+	still.tuning_over = {"idle_playback": [0.92, 1.02]}
+	still.actor_scene = load(VillagerLayer.CROWD_ACTOR_PATH % ["kirru_man", "kirru_man"])
+	_holder().add_child(still)
+	assert_between(still.idle_rate, 0.92, 1.02, "a Kirru row's narrower pace")
+	_done()
+
+
 ## The Kirru crowd bodies (assets_src/crowd/kirru; the Lead, 2026-10-30): each loads with the kirru library's clips
 ## (Pell's idle, talk and walk), its hips track fitted to its own height, and Reedhollow's rows resolve to them.
 func test_every_kirru_body_loads_with_pells_clips() -> void:
