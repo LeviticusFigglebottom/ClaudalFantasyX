@@ -201,8 +201,8 @@
                       "fov": 56.0},
         "boss_sweep": {"anchor": "actor", "back_m": -4.6, "side_m": 6.6, "up_m": 2.6, "look_at": 0.6, "look_up_m": 1.0,
                        "fov": 50.0},
-        "charge_side": {"anchor": "target", "back_m": 1.8, "side_m": 5.2, "up_m": 0.25, "look_at": 0.5, "look_up_m": 0.4,
-                        "fov": 50.0},
+        "charge_side": {"anchor": "target", "back_m": 1.2, "side_m": 7.2, "up_m": 1.0, "look_at": 0.5, "look_up_m": 1.1,
+                        "fov": 54.0},
         "boss_over_rail": {"anchor": "target", "back_m": 6.2, "side_m": 3.0, "up_m": 3.0, "look_at": 1.0,
                            "look_up_m": -0.5, "fov": 54.0}
       },
@@ -229,7 +229,7 @@
                         "undertows_reach": {"back_m": 4.0, "up_m": 2.0, "fov": 48.0},
                         "spar_wraith": {"back_m": 3.0, "up_m": 1.5, "fov": 50.0},
                         "mangrove_drowner": {"back_m": 1.8, "up_m": 1.1, "fov": 50.0}},
-      "enemy_by_actor": {"doc": "M3-BPR-408: a foe whose actions get their own framing, by its enemy id (otherwise enemy). The Avalanche Ram's charge rides low and side-on.",
+      "enemy_by_actor": {"doc": "M3-BPR-408: a foe whose actions get their own framing, by its enemy id (otherwise enemy). The Avalanche Ram's charge rides side-on (the boss camera sheet, 10-30: from 0.25 m up and 5.2 m out, Toma's shield stood across the Ram and its head left the frame; 1.0 m up and 7.2 m out keep both).",
                          "avalanche_ram": {"lead": "charge_side", "contact": ""}},
       "by_style": {
         "melee": {"lead": "actor", "contact": "target"},
