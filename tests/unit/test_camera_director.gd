@@ -118,6 +118,95 @@ func test_leaving_every_volume_keeps_the_shot() -> void:
 	_free()
 
 
+## M3-CIN-1251: with a hub shot (initial_shot), walking out of every volume blends back to it, and a teleport out
+## of every volume cuts to it; the camera is never left parked on the last volume.
+func test_leaving_every_volume_returns_to_the_hub_shot() -> void:
+	var hub := CameraShot.new()
+	hub.id = &"hub_orbit"
+	hub.position = Vector3(0, 6, 12)
+	hub.look_at = Vector3(0, 1, 0)
+	director.initial_shot = hub
+	_walk_to(Vector3(0, 0, -5))
+	assert_eq(director.active_shot_id(), COURT)
+	_move(Vector3(15, 0, -5))
+	assert_eq(director.state_snapshot()["inside"], 0)
+	assert_eq(director.active_shot_id(), &"hub_orbit", "walked out: back to the hub shot")
+	assert_true(director.is_blending(), "a walk out blends")
+	assert_eq(director.state_snapshot()["volume"], "")
+	_walk_to(Vector3(0, 0, -5))
+	assert_eq(director.active_shot_id(), COURT, "and a volume takes it again")
+	player.global_position = Vector3(15, 0, -5)
+	director.snap()
+	assert_eq(director.active_shot_id(), &"hub_orbit", "a teleport out cuts to the hub shot")
+	assert_false(director.is_blending(), "a snap cuts")
+	_free()
+
+
+## The PC's row 24: the hub orbit never looks down more steeply than orbit.max_pitch_deg; it swings down round the aim
+## point at the same distance and heading. A shallower one is left as it is.
+func test_clamp_pitch_swings_a_steep_orbit_down() -> void:
+	var aim := Vector3(1, 1.2, 2)
+	var steep := aim + Vector3(0, 4.8, 7.5)
+	var out := FieldCameraDirector.clamp_pitch(steep, aim, deg_to_rad(24.0))
+	var v := out - aim
+	assert_between(rad_to_deg(atan2(v.y, Vector2(v.x, v.z).length())), 23.9, 24.1, "clamped to 24 deg")
+	assert_between(v.length(), (steep - aim).length() - 0.001, (steep - aim).length() + 0.001, "same distance")
+	assert_between(atan2(v.x, v.z), -0.001, 0.001, "same heading")
+	var shallow := aim + Vector3(0, 2.0, 7.5)
+	assert_eq(FieldCameraDirector.clamp_pitch(shallow, aim, deg_to_rad(24.0)), shallow, "a shallow orbit is kept")
+	_free()
+
+
+## The PC's rows 24 and 25/47: a free-play shot whose own place is in the leader's face (a spawn on a pan-follow
+## camera's spot) backs off along its line to occlusion.standoff_m; no blocker, so no pull-in either.
+func test_a_shot_in_his_face_backs_off_to_the_standoff() -> void:
+	var cfg := director.data.get("occlusion", {}) as Dictionary
+	var standoff := float(cfg.get("standoff_m", 0.0))
+	assert_true(standoff > float(cfg.get("min_view_m", 0.0)), "the standoff is past min_view_m")
+	player.global_position = Vector3(15, 0, -5)  # outside every volume
+	var near := CameraShot.new()
+	near.id = &"in_his_face"
+	near.mode = CameraShot.Mode.PAN_FOLLOW
+	near.position = Vector3(15, 1.6, -4.0)
+	near.look_at = Vector3(15, 1.2, -5)
+	director.initial_shot = near
+	director.snap()
+	_settle()
+	var chest := player.global_position + Vector3.UP * float(cfg.get("chest_m", 0.0))
+	var d := director.camera.global_position.distance_to(chest)
+	assert_between(d, standoff - 0.01, standoff + 0.01, "backed off to the standoff (%.2f m)" % d)
+	var back := (director.camera.global_position - chest).normalized()
+	var own := (near.position - chest).normalized()
+	assert_true(back.dot(own) > 0.999, "along the shot's own line")
+	_free()
+
+
+## The PC's row 66 (Ch4's opening): a release blends from a cutscene shot 120 m off, a wall on that long line pulls the
+## camera in, then the blend shortens the line to a clear one. The pull is kept as a distance from his chest, so the
+## camera is never left on him (it was, for ~19 s: a pull measured on the long line outlasted the short one).
+func test_a_pull_on_a_long_line_never_leaves_the_camera_on_him() -> void:
+	player.global_position = Vector3(15, 0, -5)
+	var cfg := director.data.get("occlusion", {}) as Dictionary
+	var chest := player.global_position + Vector3.UP * float(cfg.get("chest_m", 0.0))
+	var wall := MeshInstance3D.new()
+	var box := BoxMesh.new()
+	box.size = Vector3(8, 6, 0.3)
+	wall.mesh = box
+	zone.add_child(wall)
+	wall.global_position = chest + Vector3(0, 0, 20)
+	director.collect_occluders()
+	var far := CameraPose.looking(chest + Vector3(0, 0, 60), chest, 50.0, {})
+	var pulled := director.clear_view(far, DT)
+	assert_true(pulled.origin.distance_to(chest) < 20.0, "pulled in short of the wall")
+	var near := CameraPose.looking(chest + Vector3(0, 2, 6), chest, 50.0, {})
+	var out := director.clear_view(near, DT)
+	assert_true(
+		out.origin.distance_to(chest) > 5.0,
+		"the short, clear line keeps its place (%.2f m)" % out.origin.distance_to(chest)
+	)
+	_free()
+
+
 func test_fixed_shot_holds_its_authored_frame() -> void:
 	_settle()
 	var shot := (zone.get_node("CameraVolumes/LaneVolume") as CameraVolume).shot

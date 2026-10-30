@@ -20,4 +20,6 @@ Ambience beds for the fen, Reedhollow, the high pass and Quellan, the still city
 - Filed by the act2-plan track (2026-10-30) from [act2_plan.md](../../plan/act2_plan.md). Plan §2.
 - Blocked until the Lead tags `act1-complete` (ADR 0203); then `todo`.
 
+- 2026-10-30 (audio): done: 14 beds (every Act II zone), the root, snow and slate footsteps, unravel's sound. Still to do: the rest of the cue sheet's §4 families (ripples and bells foley, drain and rooted, repair, part breaks, darkness telegraphs, heresy and reader UI) as their features land.
+
 ## Review log

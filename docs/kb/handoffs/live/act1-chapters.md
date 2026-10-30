@@ -587,6 +587,122 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - Next: M4-A2P-020, rooted (the root crab's Root Drag refuses the swap).
 - MERGE-READY @ 1993229a2
 
+- **M4-A2P-020 rooted (combat seat): done, in review.**
+  - It's a skill effect (`root_turns`), not a new status, so SPEC §6.8 is untouched. Root Drag holds its target for
+    2 turns, and the swap line says why. `ch10_fen_roots` is in band.
+  - Requested the HUD marker from UI (M3-UI-1240).
+  - Checks: rooted, battle_engine, hud, set_piece, validate, lint and format. `test_scene_router_swap` needs `godot`
+    on PATH here: environmental, not this diff.
+  - Next: M4-A2P-021, glide and ambush.
+- MERGE-READY @ ebdac75c9
+
+- **M4-A2P-021 glide and ambush (combat seat): done, in review.**
+  - Added BattleCover. It never hides the last strikable foe.
+  - The ray glides and the skate ambushes; both suites are in band.
+  - Requested the readout from UI (M3-UI-1241).
+  - Checks: cover, battle_engine, set_piece, boss, validate, lint and format.
+  - Next: M4-A2P-022, part repair (the Lamp Engine's answer). It unblocks the Lamp Engine's role band.
+- MERGE-READY @ 42e34dcbe
+
+- **M4-A2P-022 part repair (combat seat): the engine is in.**
+  - BattleParts: lasting broken parts, `restores_part`, and the AI keys `ally_part_broken`, `ally_struck` and
+    `broken_ally`. Tests and validator added.
+  - The data (the Lamp Engine's rings, the conduit crawler) waits on battle-presentation's `lamp_engine` row reaching
+    integration.
+  - Requested the stage relight from battle-presentation (M3-BPR-441).
+  - Checks: battle_parts, battle_engine, boss, set_piece, sim, validate, lint and format.
+  - Next: M4-A2P-023, part-break targeting (the flat-engine).
+- MERGE-READY @ c9dd9bb63
+
+- **M4-A2P-023 part-break targeting (combat seat): the engine is in.**
+  - `answered_by` (a foe only one hero may act on; group skills pass over it) and the phase key `when_down`. Tests and
+    validator added.
+  - Venn's and the flat-engine's data wait on characters and story.
+  - Checks: answered_part, parts, battle_engine, boss, set_piece, sim, cover, rooted, drain, validate, lint and format.
+  - Next: M4-A2P-025, Kesh's element cycling.
+- MERGE-READY @ 33158c10b
+
+- **M4-A2P-025 Kesh's element cycling (combat seat): done, in review.**
+  - BattleCycle: the `cycle` row key. Only this turn's voice is usable, the AI skips the others, and the timeline
+    gives each coming turn its voice as intent; the menu says why.
+  - Kesh's PROVISIONAL Vowbound row: six voices plus The Seven, `ch16_kesh_bound` declared, names in ch16.csv.
+  - Requested the staging and the timeline mark from battle-presentation (M3-BPR-442).
+  - **Fixed my own red:** tools test_battle_vfx_coverage was red on `tide_gather` (the Drowner, pushed earlier). It
+    and `voice_glimmer` are now explained in its INTENDED map, pointing at the requests.
+  - Checks: battle_cycle, battle_engine, timeline, vowbound, swell, boss, set_piece, sim, hud, parts, cover; tools
+    vfx_coverage, vowbound, swell, set_piece, boss, banned, balance_sim, flow; validate, lint and format.
+  - The full tools suite overran its 20-minute timeout on this container, so I ran the battle and flow modules
+    instead.
+  - Next: M4-A2P-019, the Act II loadouts (re-run every Act II suite on its chapter's loadout).
+- MERGE-READY @ fe3686aea
+
+- **M4-A2P-024 Nhoa, Hesk and Ethren (combat seat): done, in review.**
+  - PROVISIONAL Vowbound rows and skills, and BattleEcho (Nhoa copies the last enemy action).
+  - Bound and first-call flags; clip maps.
+  - **Fixed my own red:** Kesh's row (pushed in the M4-A2P-025 batch) would have turned test_vowbound_sfx and the
+    summon first-call test red. Both are covered now, see below.
+  - **Cross-lane edits, each in its own commit, mirroring existing patterns** (LEAD-ASK: flag if an owner objects):
+    - creatures.json: dropped the three `vowbound_pending` keys (validate_data demands it once a row exists) and
+      added `clip_by_skill`. Fixture fix in tools/tests/test_creatures.py.
+    - choreo.json `first_call_flags` for the four.
+    - tools/tests/test_vowbound_sfx.py skips rows with `sfx_pending` (the audio task) and checks the key names one.
+    - tools/battle_vfx_coverage.py INTENDED: entries for `cord_lift` and `nhoa_echo`.
+  - **Requests:** M4-AUD-1010 (voices; drops sfx_pending) and M3-BPR-443 (effects).
+  - **Checks:** battle_echo, vowbound, summon, creature, battle_engine; tools vowbound, creatures, vfx_coverage,
+    flags; validate, lint and format.
+  - **Next:** the combat seat's engine queue is done except M4-A2P-019, which waits on the Lattice and gear (030/031).
+    Then the provisional boss rows once they reach integration (the tune is ready), and the Act II flow beats once
+    story's scenes land.
+- MERGE-READY @ ed80e67d5
+
+- **LEAD-ANSWERED (10-30 04:06, urgent): Act I rows 34 and 39.** Both earlier fixes (ae27be2f9, de7450392) are in
+  big19.
+  - **Row 34 was not fixed by them.** My test checked the request path, not the double submit that M3-BPR-427
+    diagnosed: the QA walk's `BattleRequest.start` from outside brine_shoals while its FieldEncounters can still fire.
+    The second submit replaced the pending request, so the second scene change opened the sandbox fight.
+    - **Fixed now:** submit drops a second request while one is opening, and FieldEncounters holds off while a battle
+      opens.
+    - Tests: double_submit 3/0, zone_story 16/0, qa_encounters 1/0, fp_field_battle, battle_stinger,
+      act1_encounters_resolve, ch06_thread and fp_thread all green.
+    - **PC-QUEUE:** re-check row 34 on this commit.
+  - **Row 39:** reproduced on this head with test_ch09_thread (7/0). It plays Ch9 from the Strand through the ebbing
+    to RoadGate at dawn, and checks Asha's and Toma's followers walk the road.
+    - **The walk sees "alone" for two reasons, neither a lost party:**
+      - **The night Strand is staged.** Asha's body is the Caller at the raft landing, gilded for the rite
+        (ch09_the_ebbing walks her onto the raft). Toma's body carries his talk prompt (the Shield-Mate side scene).
+        So their followers stand down by design (act1_ch09 B01–B02).
+      - **The walk reaches RoadGate wrongly.** It visits RoadGate under the F8 ch09 start's flags, the night state.
+        Dawn needs `ch09_ebbing_danced` and `ch09_pell_joined` (set by the ebbing scene). Only then does RoadGate's
+        arrival row hide the stage bodies and the followers walk.
+    - **PC-QUEUE re-check recipe:** play the ebbing (touch the raft landing), or set those two flags and enter
+      `ch09/corrow_night` at RoadGate.
+    - LEAD-ASK: if the human wants companions following on the night Strand too, that's a story staging change to the
+      beat sheet. Say so and I'll restage it.
+- **LEAD-ANSWERED (10-30 05:28): one Drowner row.** Understood: the Combat side's row is the record, and I own the
+  numbers.
+  - When big20 lands I'll merge it, take battle-presentation's `mangrove_drowner`, drop my second definition (my
+    `tide_gather`/`drowning_grasp` rows and my enemy and encounter row), and re-tune the record's stats.
+  - Same for the Lamp Engine, the Ram and the Wakefin: stats only, from my balance_targets tune.
+  - Lore wording, for story if they want it (LORE_MANGROVE_DROWNER, mine): "Something came up the estuary as a slick
+    of black water and stayed in the cage of an old mangrove's roots. The roots grew around it and through it. The
+    fen's dead are snagged in it, and they cannot rise."
+- MERGE-READY @ c33c39015 (row 34 fix; FAST-TRACK for big20)
+
+- **One definition per Act II boss; the combat seat's numbers are applied (merged lead/gate-big20, which is
+  fast-gated).**
+  - **The Drowner:** the Combat side's record row stands. My second definition, its two skills and its loc rows are
+    dropped.
+    - Re-tuned that row's stats (HP 2200, str 11, mag 8, def 200, uprooted def 160).
+    - 1,000 seeds: naive 1.1, role (Ysolde) 62.1, smart 100 over 20+ turns.
+  - **The Lamp Engine, the Ram and the Wakefin:** my pre-tuned stats are applied and the suites added, all in band.
+    The Lamp Engine's role band stays report only until its parts data is in.
+  - Kept my engine keys on the record regulars (the ray's `glide`, the skate's `ambush`).
+  - Took creatures-b's documented Nhoa and Hesk clip maps (their own `deep_well`, `echo`, `cleanse` and `mending`
+    clips) and dropped their `vowbound_pending` (the rows exist).
+  - Checks: act2_bosses, ch10_thread, boss, validate, balance tool tests, vfx_coverage.
+  - **Next:** the Lamp Engine's parts and the conduit crawler (M4-A2P-022's data), now that its row is here.
+- MERGE-READY @ 2551e68b1
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
