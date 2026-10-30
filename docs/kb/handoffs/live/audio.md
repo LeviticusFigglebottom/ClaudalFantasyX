@@ -3,6 +3,26 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **MERGE-READY @ 21638070: the Lead's 16:09 item, the jog's footsteps on big24 (efe7fb10) and the victory → field handoff on the resident return** (995b61f1, 21638070; integration merged, c7f22ea1).
+  - **Jog footsteps:** the heroes' steps come from the body's `foot_contact`, which fires on the clips' `foot_l_down`/`foot_r_down` markers. hero_clips.py places those on each heel strike from its own plant schedule, so the steps re-time with the jog: Asha, Rhen and Toma's `run` is 0.733 s with the feet 0.367 s apart (164 a minute).
+    - Measured on the real Haluna scene and Rhen's body (new `tests/integration/test_footsteps_jog.gd`): a 3.55 m/s jog plays `hero_step_sand_run` every 0.367 s exactly (163.6 a minute, 13 intervals), with no doubled step.
+    - The distance fallback is `run_step_m` 1.3 since 5fb30861, and the test holds it to the jog.
+  - **Surfaces:**
+    - Oruvel is its planks (`wood`, its zone default) with the sea round it wading (`water`) (new test).
+    - Haluna is sand, with the dock's planks and the shallows; the causeway is stone slabs over sand flats and the sea (test_footsteps_slice_zones 5/0, on big24's scenes).
+    - The run rows are the surfaces' own `*_run` rows.
+  - **Victory → field on the resident return** (integration-qa's 99989c2b: the field kept through a random fight, about 0.39 s of black):
+    - The router still emits `scene_swapping` on the way back, so `apply_zone` starts the zone's cue under the fade.
+    - Zone loops resume (27 of the 32 zone cues, every Act II one), so it picks up where the fight interrupted it, on a beat of its own, over the 1.5 s crossfade.
+    - On the quickest Return (0.45 s after victory, `battle_out_sec` 1.2 still fading) the cue is back within 0.7 s, from its resume point, still fading in under the 2.4 s victory sting. The sting is on Combat, which no zone change fades (new test in test_zone_return, 9/0).
+    - The arena's beds hand back to the field's when the battle's listener leaves, whichever comes first (arena_ambience 5/0).
+    - No data change was needed: `battle_return_sec` 0.3 / `battle_return_fade_sec` 2.0 still cover a battle that ends in place.
+  - **Checks:**
+    - Godot: footsteps_jog 3/0 (new), footsteps_slice_zones 5/0, footstep_contacts 8/0, hero_foot_contacts 5/0, zone_return 9/0, battle_audio 22/0, arena_ambience 5/0.
+    - validate_data 0; test_cutscene_sfx_files and test_audio_data OK. The merge took integration's own empty to-do lists and both sides' PROVENANCE rows.
+    - **Skipped:** screenshots, Blender, coverage.
+  - **PC-QUEUE:** the jog on sand, planks and stone, by ear (the density at 164 a minute); a quick Return after a victory.
+- **BACKLOG EMPTY (after 21638070):** waiting on slice-polish's Ch11 staging, Story's answer on ch14_the_vows, the people bosses' encounters, and the listening verdict.
 - **MERGE-READY @ 5fb30861: the Lead's 14:28 and 15:08 items, the silence-gap check over the staged Act II cutscenes (Ch10–Ch11) and the jog's footsteps** (8ee646e0, 5fb30861). Ch15–Ch16 ambience was already done (MERGE-READY @ 529a1f3c below).
   - **Staging and timing:** the Ch10 staging (`game/data/cutscene/ch10/*.json`) holds shots and marks only. Walks don't stretch a scene: none of the Ch10–Ch11 scripts waits on one (`@wait arrive=`) or on a music marker. So the timeline is the scripts' `@wait`s and lines, plus the Ch11 direction notes' longer holds (Ch11 has no staging yet).
   - **Ch10 gap:** cinematics' `@music farewell_tide_release fade=0.5` (now on integration) left about 6 s of nothing under B10. The 16 s release ended before Pell and Kerrid's back-to-back shot, which closes on its own `@music silence fade=3.0`. The release now carries the backs-turned on: two more harp roots, softer, a bar apart, with clicks (26.4 s). The gathering loop is byte-identical, and the release's level is still set by its top note.
