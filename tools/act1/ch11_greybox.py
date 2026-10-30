@@ -122,7 +122,7 @@ def sunken_vey() -> dict:
                       "payload": {"beat": "to_lowlight"}, "yaw": 0.0}],
         # M4-C11-03: the galleries' random fights (act2_roster.md Ch11); none in Lowlight
         "encounters": {"table": [{"encounter": "ch11_vey_rays", "weight": 1}, {"encounter": "ch11_vey_urchins", "weight": 1}],
-                       "min_m": 30, "max_m": 50, "when": {"set": ["ch11_started"]}, "seed": 11},
+                       "min_m": 95, "max_m": 145, "when": {"set": ["ch11_started"]}, "seed": 11},
     }
 
 

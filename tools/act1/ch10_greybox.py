@@ -171,7 +171,7 @@ def ossa_fen() -> dict:
         # M4-C10-03: the root-walks' random fights (act2_roster.md Ch10); none in Reedhollow (the roster's proposal)
         "encounters": {"table": [{"encounter": "ch10_fen_archers", "weight": 2}, {"encounter": "ch10_fen_roots", "weight": 1},
                                  {"encounter": "ch10_fen_leeches", "weight": 1}],
-                       "min_m": 30, "max_m": 50, "when": {"set": ["ch10_started"]}, "seed": 10},
+                       "min_m": 95, "max_m": 145, "when": {"set": ["ch10_started"]}, "seed": 10},
     }
 
 
