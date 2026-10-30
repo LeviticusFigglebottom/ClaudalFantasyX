@@ -231,7 +231,7 @@ Declared in `game/data/flags.tres` when the gate passes (M4-A2P-010 adds them). 
 
 **Phases (two):**
 1. **Rooted (100–50%).** It is a tree first, and its roots are the fight.
-   - **The drag:** a telegraphed charge (`root_drag`-class, one turn's warning on the timeline). The water rises along the roots and pulls the party's footing: the field rule gives **Slow** to the front hero for a turn, so the timeline visibly stretches.
+   - **The drag:** a telegraphed charge (its own skill, `drowner_haul` in the bosses lane; `root_drag` is the root crab's; one turn's warning on the timeline). The water rises along the roots and pulls the party's footing: the field rule gives **Slow** to the front hero for a turn, so the timeline visibly stretches.
    - **The snagged roots:** two **break parts**, the two root clusters with the most snagged lights (the sheet's proposal; M3-CRE-621's notes). Breaking one frees its lights: a short in-battle beat where three or four motes rise straight up past the dead crown (VFX, M4-A2P-058). This is **the first upward lift in the game**. Breaking both roots shortens phase 1.
    - **Weakness:** fire (dead wood), so Ysolde is the role answer. Kerrid's armour break works on the roots.
 2. **Uprooted (below 50%).** It tears the trunk up and stands on three root-clusters. It reaches for the drag every other turn, and its crushing roots strike the back line. It is faster and less armoured, so Rhen's turn manipulation is the answer.

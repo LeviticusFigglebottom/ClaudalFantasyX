@@ -153,6 +153,7 @@ Sets `ch15_kerrid_told`. ~360 words, of which ~280 are Kerrid's.
 
 **Optional lines, by flag** (each one line, if set):
 - `ch05_heard_straw_cape_tale`: Rhen: *"The big man in the straw cape. The one who pulls them out."* Kerrid: *"Somebody has to."*
+- `ch13_sat_at_moorings`: Kerrid, to Rhen: *"You stood at the moorings with me. You didn't ask. I noticed."*
 - `ch14_steps_held`: Kerrid, of the court: *"Held a stair again. At a wedding. Didn't expect that."*
 - `ch08_fishwife_called`: Kerrid: *"Marra knew me. On the stair. I went down a step so she'd stop looking."*
 
@@ -243,7 +244,7 @@ Declared in `game/data/flags.tres` when the gate passes (M4-A2P-015 adds them). 
 | `ch15_supper_with_father` | B14 (optional) | Ch17 | The dock-master breaks his silence to show Rhen the berth where Dace built his first hull (act_outline Ch17's side scene) more readily |
 | `ch15_complete` | B15 (end) | flow (Ch16 gate) | — |
 
-**Flags this chapter reads:** `ch05_heard_straw_cape_tale`, `ch08_fishwife_called`, `ch09_toma_knelt_with_ivo`, `ch09_rhen_answered_toma`, `ch09_kerrid_on_road`, `ch12_toma_saw_breath` (Ch12 to declare), `ch14_steps_held`, `ch14_toma_refused`, `ch14_spoke_with_tobin`, `ch14_vows_spoken`.
+**Flags this chapter reads:** `ch11_lamp_repaired` (B02: Liss lets Rhen sit with her only if it's set; otherwise she sends him off with *"Go and sit somewhere else, Sallow."*), `ch11_rhen_admitted` (B14: "Liss says you're Sallow's boy"), `ch13_sat_at_moorings` (B07's optional line below), `ch05_heard_straw_cape_tale`, `ch08_fishwife_called`, `ch09_toma_knelt_with_ivo`, `ch09_rhen_answered_toma`, `ch09_kerrid_on_road`, `ch12_toma_saw_breath` (Ch12 to declare), `ch14_steps_held`, `ch14_toma_refused`, `ch14_spoke_with_tobin`, `ch14_vows_spoken`.
 
 ---
 

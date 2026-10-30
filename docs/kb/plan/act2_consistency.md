@@ -154,6 +154,22 @@ The drafts' §3 tables are the canon below. Most lane flags are renamed copies o
 
 **Checks skipped:** this was a docs-only, read-only review, so none of the repo's gates were run. Nothing in the repo was changed.
 
+
+## Rows by owner (for routing)
+
+Each lane picks up its rows when it returns to Act II docs (the Lead, 2026-10-30). A row listed under two owners needs both. Row ids refer to the tables above.
+
+| Owner | Rows | Count |
+|---|---|---|
+| chapters (act1-chapters) | F1, F2, F3, F4, F5, F6, F7, C1, C3, C5, C6, C7, C10, C11, A7, A10, P2, P4, P5, P6, P7, P8, P10, P11, P12, P13, P23 | 27 |
+| creatures-b | N5, N6, C7, C8, C9, C15, A1, A2, A6, A7, A8, A11, P1, P2, P3, P4, P24 | 17 |
+| creatures | A2, P25, P26, P27 | 4 |
+| ui-menus | N1, N2, N3, N4, F6, F8, F9, C2, C5, A10, P2, P6 | 12 |
+| audio | N9, A3, A4, A5, P2, P14, P16, P17, P18, P19, P20, P21, P22 | 13 |
+| env-art-b | C4, C12, C13, C14, A12, P7, P8, P9, P10, P12 | 10 |
+| act2-plan drafts | N3, N7, N8, N9, F10, A3, A8, A11, P14, P15, D1, D2, D3, D4, D5, D6, D7 (the act2-plan side of all of them was handled on 2026-10-30: see the status section below; none left open on the drafts' side; N9's id list also needs the audio lane) | 17 |
+| (any / none) | N10, A9 | 2 |
+
 ---
 
 ## Status of the act2-plan-owned rows (2026-10-30, after this review)
@@ -166,5 +182,9 @@ Fixed in the drafts and the plan on `claude/act2-plan`:
 - **D7 and the other ADR 0204 rows:** applied (commit f9f8c709 and after).
 - **A3, the drafts' side:** Ch12's B12 now reprises `ysolde_theme`.
 - **P14:** Ch15's §6 says `kerrid_at_sea` must cover about 7–8 min (a loop with a tail, or through-composed).
+- **N7:** the Drowner's drag is its own skill (`drowner_haul`); `root_drag` stays the crab's.
+- **N8:** the guard leader is renamed the Veil-First, so "Captain." stays Kerrid's alone.
+- **N9 (the drafts' side) and P15:** Ch14 names `peace_wedding_break` and puts the audio lane's looping `court_steps` under the water-steps; `lagoon_escape` starts on B07.
+- **F10:** the reads lists in Ch14 (adds `ch13_met_tobin`) and Ch15 (adds `ch11_lamp_repaired`, `ch11_rhen_admitted`, `ch13_sat_at_moorings`, with the lines they drive) are completed.
 
 Every other row belongs to the lane named in its Owner column and is logged for that lane in `docs/kb/handoffs/live/act2-plan.md` (LEAD-ASK, for the Lead to route).
