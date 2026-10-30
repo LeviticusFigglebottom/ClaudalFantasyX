@@ -992,3 +992,13 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - Palette: M4-CRE-670's snow #E8E6DF is now `gauze_white` (lynx, scree crawler @ a0430bc7), and the sail leech's canvas #B9B1A0 is now a sand_cloth/coral_stone_weathered mix @ 9224953c. Portraits re-baked; the changes are 2 levels.
 - **M4-A2P-058, the regulars' part:** specified in docs/kb/art/creatures/act2/skill_vfx.md, eight entries in the Act I generator's vocabulary, for M4-A2P-060 (combat) to generate into effects.json (rendering's file, not edited here).
 - **MERGE-READY @ cd21ece0** (includes everything above).
+- Handoff docs/kb/handoffs/2026-10-30-art-creatures-12.md.
+- **BACKLOG EMPTY:**
+  - Act I: no open row for this track.
+  - Act II regulars: every sheet item this track can do is done. Left:
+    - the skill effects go to M4-A2P-060 (combat, from the skill_vfx.md spec);
+    - the conduit crawler's enemy row waits on M4-A2P-022;
+    - two arena re-checks wait on arenas that don't exist yet (the Rim's own arena for the glass skate; the Rim's grade for the rim crawler).
+  - Act II wildlife: done and in review. Re-seating waits on env-art's dressed kits.
+  - Waiting on the Lead: the tortoise budget LEAD-ASK, M4-A2P-056's status on the integration branch, and the baselines.
+  - PC-QUEUE unchanged.
