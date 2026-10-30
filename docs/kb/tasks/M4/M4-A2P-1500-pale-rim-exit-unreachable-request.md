@@ -1,5 +1,5 @@
 ---
-id: M4-A2P-121
+id: M4-A2P-1500
 title: "Ch16 Pale Rim: the to_choir exit stands 10 m past the end of the walkable sand"
 role: cinematics
 status: todo
@@ -29,4 +29,4 @@ Either move `to_choir` onto the sand (x about 216, still about 11 m past `ChoirE
 ## Review log
 
 ## Gate note
-- Renumbered from M4-A2P-116 by the big27 gate: that id was already taken on the integration branch. The owner's live log may still say 116.
+- Renumbered from M4-A2P-116 by the big27 gate: that id was already taken on the integration branch; then into the filer's own range (TRACK-RULES "FROM 2026-10-30 18:05"). The owner's live log may still say 116.

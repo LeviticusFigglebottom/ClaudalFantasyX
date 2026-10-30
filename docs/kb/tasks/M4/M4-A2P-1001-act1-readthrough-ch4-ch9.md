@@ -1,5 +1,5 @@
 ---
-id: M4-A2P-119
+id: M4-A2P-1001
 title: "Request: Act I read-through fixes, Ch4–Ch9 (as played on integration @ 4b1988109)"
 role: cinematics
 status: todo
@@ -36,7 +36,7 @@ findings; the dialogue ones were re-read line by line.
 | C10 | stale bark | low | `ch07/ch07_bark_board.dlg:7-8` | Still announces Oruvel's match after Oruvel has withdrawn | A `ch07_bark_board_after` variant in the barks map |
 | — | doc | — | `flow/chapters/ch04.json:2` doc | Says Ch4 hands on to the end card; the flow goes to Ch5 | Update the doc |
 
-Also filed: **M4-A2P-120** (was 117) (Progression), the Brine Shoals vendor showing "The Purser's Chest".
+Also filed: **M4-A2P-1002** (was 117) (Progression), the Brine Shoals vendor showing "The Purser's Chest".
 
 ## Acceptance criteria
 - [ ] Each row fixed, or answered on this task with a reason.
@@ -44,4 +44,4 @@ Also filed: **M4-A2P-120** (was 117) (Progression), the Brine Shoals vendor show
 ## Review log
 
 ## Gate note
-- Renumbered from M4-A2P-116 by the big27 gate: that id was already taken on the integration branch. The owner's live log may still say 116.
+- Renumbered from M4-A2P-116 by the big27 gate: that id was already taken on the integration branch; then into the filer's own range (TRACK-RULES "FROM 2026-10-30 18:05"). The owner's live log may still say 116.
