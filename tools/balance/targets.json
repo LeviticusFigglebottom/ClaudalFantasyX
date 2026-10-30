@@ -1571,6 +1571,40 @@
       }
     },
     {
+      "id": "ch14_water_steps",
+      "chapter": "Ch14 set piece (hold the Lacquer Court's water-steps while Merel's knife cuts the bridal barge loose, four lines; Kerrid locked in with Hold the Steps covering the knife; the court sends Stillguard down; the Ch8 stair hold's schema and curve; tuned by the chapters combat seat; the ch08_seawall loadout until M4-A2P-019)",
+      "kind": "set_piece",
+      "encounter": "ch14_water_steps",
+      "active": [
+        "kerrid",
+        "toma",
+        "asha"
+      ],
+      "reserve": [
+        "rhen",
+        "ysolde"
+      ],
+      "bands": {
+        "naive": [
+          10,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          85,
+          95
+        ],
+        "smart": [
+          97,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 80,
+      "loadout": "ch08_seawall",
+      "swell": "good"
+    },
+    {
       "id": "ch14_malcor_venn",
       "chapter": "Ch14 boss (Warden Malcor Venn and the flat-engine on Ansedra's lagoon; Liss alone can break the engine, whose pulse Slows the party, M4-A2P-023; he boards at 50% or the engine's fall and yields at 15%; act2_plan: the Act II boss curve, smart report only with an ease floor as ch05_cinder_matron; tuned by the chapters combat seat; the ch08_seawall loadout until M4-A2P-019)",
       "kind": "boss",
