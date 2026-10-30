@@ -457,3 +457,16 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   the README's Kesh scale fixed to 4.2 m; **M4-CRE-701** filed for creatures (ridge_lynx, scree_crawler frost -> snow
   and grit; blocked by ADR 0203). Checks: taskboard --check, validate_data. BACKLOG EMPTY stands (PC rows first when
   gpu/act1-qa-3 lands).
+
+## 2026-10-30 ~03:00: ACT II STARTED for creatures-b (ADR 0205; the Lead's 02:26 message)
+- Merged the integration branch (ADR 0205, act2_tracks.md). Ownership row added for the Act II bosses and Vowbound.
+- **MERGE-READY @ a70e62d3: M4-A2P-059, the Avalanche Ram without ice (to review, rendering).** Wet matted wool,
+  sodden blunt dripping lock ends, a wet beard; the `ice` slot, its .tres and PROVENANCE row removed; seep partings,
+  head, herd-cord, clips and budget (15,035) unchanged. Blender verify identical; tools test_creatures OK; Godot
+  creature 88/0. SELF-RENDERED creature_avalanche_ram (viewed: no ice reads; drift vs the icy baseline is intended)
+  and the portrait (re-baked, viewed). M4-CRB-001 closed as its duplicate.
+- **In progress (worktree agents, chapter order):** M4-CRB-002 the Mangrove Drowner, M4-CRB-003 the Lamp Engine,
+  M4-CRB-004 the Wakefin: final-quality pass + a clip per skill + anchors + test_creature_bosses_act2. Next: the
+  Ram's own clips (M4-CRB-005), then the Vowbound (Nhoa, Hesk, Ethren), then Kesh (M4-A2P-057, model from scratch).
+- **For combat (skills are yours):** creatures.json `clip_by_skill` can't name a skill before skills.json has it
+  (validate_creatures.py). Each boss's design sheet will carry a ready-to-paste clip map (skill -> clip, contact).
