@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch16_bark_ysolde_corran",
+ "source": "game/data/dialogue/ch16/ch16_bark_ysolde_corran.dlg",
+ "start": "ch16_bark_ysolde_corran",
+ "nodes": {
+  "ch16_bark_ysolde_corran": {
+   "headers": {"location": "ch16/pale_rim"},
+   "ops": [
+    {"op": "line", "id": "ch16_bark_corran_001", "key": "DLG_CH16_BARK_CORRAN_001", "speaker": "ysolde", "emotion": "tender", "voice": "", "src": 5, "tags": ["long"]}
+   ]
+  }
+ }
+}

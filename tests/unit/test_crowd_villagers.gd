@@ -317,13 +317,60 @@ func test_a_silhouette_row_wears_a_bare_crowd_body_as_one_glowing_shape() -> voi
 	assert_false((zone.get_node(^"CutsceneStage/Actors/figure/StandIn") as Node3D).visible, "the capsule is hidden")
 	var meshes := npc.actor.find_children("*", "MeshInstance3D", true, false)
 	assert_true(meshes.size() > 0, "the body has meshes")
-	var want := NpcSilhouette.material_for(Color.html("#5fd6e0"))
+	var glow := Color.html("#5fd6e0")
+	var detailed := 0
 	for node: Node in meshes:
 		var mi := node as MeshInstance3D
-		assert_eq(mi.material_override, want, "%s wears the silhouette" % mi.name)
 		assert_eq(mi.cast_shadow, GeometryInstance3D.SHADOW_CASTING_SETTING_OFF, "%s casts no shadow" % mi.name)
+		for i in mi.mesh.get_surface_count():
+			var mat := mi.get_surface_override_material(i) as ShaderMaterial
+			assert_true(mat != null and mat.shader == NpcSilhouette.SHADER, "%s/%d wears the silhouette" % [mi.name, i])
+			if mat == null:
+				continue
+			assert_true((mat.get_shader_parameter(&"glow") as Color).is_equal_approx(glow), "in its colour")
+			if mat.get_shader_parameter(&"tex_albedo") is Texture2D:
+				detailed += 1
+	assert_true(detailed > 0, "its surfaces keep their own maps under the glow (cloth, seams: the PC's pass 3)")
 	assert_eq(float((npc.tuning["glance"] as Dictionary)["radius_m"]), 0.0, "the row's tuning is merged")
 	_done()
+
+
+## The PC's pass 3: freeing the storm figure logged "material is null" (a cached material outlived it). Its silhouette
+## materials now belong to its meshes alone: once the figure is freed, nothing holds them.
+func test_a_freed_silhouette_leaves_no_material_behind() -> void:
+	var zone := _greybox_zone(["figure"])
+	var layer := _layer(
+		zone,
+		[
+			{
+				"npc_id": "storm_figure_free",
+				"body": "crowd_man_lean_a",
+				"silhouette": "#5fd6e0",
+				"stand_in": "CutsceneStage/Actors/figure",
+				"attach": "child"
+			}
+		]
+	)
+	layer.build()
+	var refs := _override_refs(layer.villager(&"storm_figure_free").actor)
+	assert_true(refs.size() > 0, "the figure wore silhouette materials")
+	_done()  # frees the zone, the figure and its meshes
+	var alive := 0
+	for r in refs:
+		if r.get_ref() != null:
+			alive += 1
+	assert_eq(alive, 0, "no silhouette material outlives the figure")
+
+
+## Weak references to every surface override under `actor`, gathered in a function of their own: GDScript keeps an
+## expression's last value in a stack slot until its function returns, which would hold one material alive.
+func _override_refs(actor: Node) -> Array[WeakRef]:
+	var refs: Array[WeakRef] = []
+	for node: Node in actor.find_children("*", "MeshInstance3D", true, false):
+		var mi := node as MeshInstance3D
+		for i in mi.mesh.get_surface_count():
+			refs.append(weakref(mi.get_surface_override_material(i)))
+	return refs
 
 
 ## M3-HER-1142: the real Corrow zone's storm figure is a body, not a capsule, once its layer is built.

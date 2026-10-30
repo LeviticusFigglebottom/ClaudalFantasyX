@@ -1,0 +1,9 @@
+// Ch11 B04 optional: Wenna's second mark behind a fallen trim-arm in a lamp niche (the old-style lines,
+// node-dots and key glyph of Coilspire, act1_ch08 B05). Liss, still angry, says it to Toma, not Rhen. She
+// doesn't know the name yet (vowbound.md §3).
+title: ch11_wenna_mark
+location: ch11/lowlight
+---
+Liss [neutral]: Same hand as Coilspire. Somebody went through every temple and left her name for us. Nobody ever looked. #line:ch11_wenna_001
+<<set $ch11_found_wenna_mark = true>>
+===

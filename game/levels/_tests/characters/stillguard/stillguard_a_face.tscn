@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/stillguard/stillguard_a_stage.tscn" id="stage"]
+
+[node name="StillguardAStage" instance=ExtResource("stage")]
+hide_nodes = Array[StringName]([&"Shield", &"Spear"])

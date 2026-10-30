@@ -40,6 +40,7 @@ func before_each() -> void:
 					{"id": "court_shrine", "location_id": "court", "spawn": ""},
 					{"id": "broken_shrine", "location_id": "missing"},
 					{"id": "mood_shrine", "location_id": "mood", "spawn": "Lane"},
+					{"id": "temple_shrine", "location_id": "court", "spawn": "", "order": true},
 				],
 			}
 		)
@@ -112,6 +113,18 @@ func test_teleport_refusals() -> void:
 	ShrineNetwork.travel = func(_l: StringName, _s: StringName) -> bool: return false
 	assert_false(ShrineNetwork.request_teleport(here, &"court_shrine"), "the swap was refused")
 	assert_eq(Game.state.respawn_location_id, &"", "a refused trip moves nothing")
+	assert_eq(trips, [] as Array[Array])
+	_done()
+
+
+func test_the_order_s_shrines_go_dark_for_heretics() -> void:
+	ShrineNetwork.attune(here)
+	ShrineNetwork.attune_id(&"temple_shrine")
+	assert_false(ShrineNetwork.is_dark(&"temple_shrine"), "lit before the heresy")
+	Game.state.flags[String(SaveShrine.HERETIC_FLAG)] = true
+	assert_true(ShrineNetwork.is_dark(&"temple_shrine"))
+	assert_false(ShrineNetwork.is_dark(&"court_shrine"), "a shrine not the Order's keeps working")
+	assert_false(ShrineNetwork.request_teleport(here, &"temple_shrine"), "no road to a dark shrine")
 	assert_eq(trips, [] as Array[Array])
 	_done()
 

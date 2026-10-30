@@ -76,7 +76,12 @@ func _ready() -> void:
 		# At once, also when added in the zone's own _ready: a zone loaded as the game loads it shows no capsule even
 		# before its first frame (big14 gate). Haluna's shop rows sit inside their bodies under `node_name`
 		# "Villager", where HalunaVillagers.populate (run after) looks, so it skips them instead of doubling them.
-		build()
+		# During a scene change the fade covers the screen until the reveal, which the spread build holds until the
+		# last villager is in, so no capsule is ever seen either way (ADR 0111 amendment 4).
+		if _router_changing():
+			_build_spread()
+		else:
+			build()
 	set_process(auto_build)
 
 
@@ -106,16 +111,57 @@ func build() -> int:
 	if _built:
 		return villagers.size()
 	_built = true
+	var rows := _begin_build()
+	var by_id: Dictionary = {}
+	for row: Variant in rows:
+		_add_row(row, by_id)
+	_finish_build(rows, by_id)
+	return villagers.size()
+
+
+## ADR 0111 amendment 4 (the PC's pass 3: Pemakar's entry stayed over 1 s hidden): adopting a villager moves its
+## whole model out of the tree and back under a FieldNpc (100-240 ms headless each), so built during a scene change
+## the layer adds one villager a frame and holds the router's reveal until the last is in. The fade stays opaque.
+func _build_spread() -> void:
+	if _built:
+		return
+	_built = true
+	var router := get_tree().root.get_node_or_null(^"SceneRouter")
+	router.call(&"hold_reveal", self)
+	var rows := _begin_build()
+	var by_id: Dictionary = {}
+	for i in rows.size():
+		_add_row(rows[i], by_id)
+		if i < rows.size() - 1:
+			await get_tree().process_frame
+			if not is_inside_tree():
+				router.call(&"release_reveal", self)
+				return
+	_finish_build(rows, by_id)
+	router.call(&"release_reveal", self)
+
+
+## True while SceneRouter (when there is one) is changing scene: its fade covers the screen.
+func _router_changing() -> bool:
+	var router := get_tree().root.get_node_or_null(^"SceneRouter") if is_inside_tree() else null
+	return router != null and bool(router.call(&"is_busy"))
+
+
+func _begin_build() -> Array:
 	data = load_data(data_path if data_path != "" else path_for(zone_id))
 	_storm_flag = StringName(str(data.get("storm_flag", "")))
-	var by_id: Dictionary = {}
-	var rows: Array = data.get("villagers", [])
-	for row: Variant in rows:
-		if row is Dictionary:
-			var npc := _make(row as Dictionary)
-			if npc != null:
-				villagers.append(npc)
-				by_id[npc.npc_id] = npc
+	return data.get("villagers", [])
+
+
+func _add_row(row: Variant, by_id: Dictionary) -> void:
+	if row is Dictionary:
+		var npc := _make(row as Dictionary)
+		if npc != null:
+			villagers.append(npc)
+			by_id[npc.npc_id] = npc
+
+
+func _finish_build(rows: Array, by_id: Dictionary) -> void:
 	for row: Variant in rows:
 		if not row is Dictionary or not by_id.has(StringName(str(row.get("npc_id", "")))):
 			continue
@@ -123,7 +169,6 @@ func build() -> int:
 		if by_id.has(mate):
 			(by_id[StringName(str(row["npc_id"]))] as FieldNpc).partner = by_id[mate] as FieldNpc
 	_check_storm()
-	return villagers.size()
 
 
 ## Adds a layer for `zone_id` under `zone` (after the zone has placed any villagers of its own) and builds it; a zone

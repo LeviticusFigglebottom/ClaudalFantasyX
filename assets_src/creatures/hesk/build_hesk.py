@@ -15,9 +15,14 @@ object: never lit), whose cords hang to 0.1 m over the water.
 baked frame (`solve_legs`, Kahre's two-bone solve, M3-CRE-640); the body sways, bows and settles over it. The cords,
 the bundle and the folded left leg are kept off the water by grounding.grounded where a clip lays them on it.
 
-Rig (25 bones): `root`, `body`, `neck_0..2`, `head`, `wing_l0..2` (humerus, forearm, hand) and the right wing,
+Rig (27 bones): `root`, `body`, `neck_0..2`, `head`, `wing_l0..2` (humerus, forearm, hand) and the right wing,
 `cord_l0`, `cord_l1` (the soft chain every cord of that wing sways on) and the right, `leg_l0`, `leg_l1`, `talon_l`
-and the right leg (+x is `l`), `bundle_0`, `bundle_1`, `tail`.
+and the right leg (+x is `l`), `bundle_0`, `bundle_1`, `tail`, and the unweighted VFX anchors `vfx_core` (the
+breast) and `vfx_keepsake` (the keth bundle) (M4-CRB-007).
+
+M4-CRB-007 (final quality, docs/kb/art/creatures/vowbound/hesk.md "Final quality"): the cords hang as soft rope, the
+knots are tied and lit by their form, the ruff is a fringe of cord loops, the neck is lean and folded; `cleanse`
+(Cord-Lift) and `mending` (her Mending) are her own clips, and every one-shot plays from idle's first frame.
 
 `python3 build_hesk.py --report` prints the triangle count, per-part counts and per-clip lows (numpy, no export).
 """
@@ -46,7 +51,12 @@ UNDER = ck.mix(PAL["storm_slate"], PAL["lacquer_black"], 0.35)
 BEAK = ck.mix(PAL["storm_slate"], PAL["lacquer_black"], 0.6)
 CORD_GLOW = 0.2  # the faint light along a cord (emission mask)
 KNOT_GLOW = 1.0  # the knots are what shines
+KNOT_DIM = 0.4  # a knot's light where it tucks into the cord (M4-CRB-007)
 RUFF_GLOW = 0.2
+NECK_RINGS, NECK_FOLDS, NECK_FOLD = 22, 5.0, 0.09
+RUFF_TIERS = ((12, 0.09, 0.19), (10, 0.14, 0.2))  # (loops, drop m, radius out from the neck's axis) per tier
+RUFF_LOOP_PTS = 8
+BROW = ((0.052, 2.138, 0.488), (0.028, 0.013, 0.042))  # the brow over each eye (centre, radii)
 EYE_GLOW = 0.55
 
 # ---- the skeleton's rest joints (metres, Godot axes, facing +z; the water at y 0) ----------------
@@ -63,6 +73,8 @@ LEG_R = np.array([(0.80, -0.10), (0.42, -0.22), (0.10, -0.04), (0.03, 0.18)])
 LEG_X = 0.17
 LEG_L = np.array([(0.17, 0.80, -0.10), (0.21, 0.56, -0.16), (0.21, 0.44, 0.15), (0.21, 0.40, 0.25)])  # drawn up
 BUNDLE = np.array([(0.21, 0.38, 0.25), (0.21, 0.24, 0.25), (0.21, 0.10, 0.25)])
+VFX_CORE = np.array([0.0, 1.32, 0.30])  # the breast, in front of the body's middle
+VFX_KEEPSAKE = np.array([0.21, 0.22, 0.25])  # the keth bundle's middle
 
 # ---- the body: control rings along the spine (t, half width, half depth) -------------------------
 BODY_RINGS = ((0.0, 0.05, 0.05), (0.07, 0.24, 0.2), (0.25, 0.38, 0.34), (0.5, 0.40, 0.36), (0.75, 0.33, 0.29),
@@ -76,9 +88,11 @@ CORD_LEN = (1.05, 1.18, 1.28, 1.30, 1.26, 1.18, 1.08, 1.0)  # leading to trailin
 CORD_FAN = (34.0, 26.0, 18.0, 10.0, 2.0, -7.0, -16.0, -24.0)  # degrees from straight down, + forward
 CORD_OUT = 12.0  # degrees the fan leans out from the body
 CORD_R = 0.018
-CORD_STEP = 0.05  # ring spacing along a cord
+CORD_STEP = 0.06  # ring spacing along a cord (M4-CRB-007: was 0.05; the knots took the triangles)
 CORD_SEGS = 5
 STRAND_PITCH = 0.18  # metres per turn of the sand_cloth strand
+CORD_HANG = 0.45  # how far a cord's lower half bends from its fan line toward straight down (M4-CRB-007)
+CORD_LEN_JITTER = 0.05
 # keth (the build's own convention, docs/kb/art/creatures/vowbound/hesk.md "The knots"): a number per cord, its digits
 # as clusters read from the hand outward, the highest place first. In every place but the units a digit d is d single
 # knots (beads); the units digit is one long knot of d turns (2-9), a figure-eight for 1, and a bare gap for 0. The
@@ -88,6 +102,14 @@ KETH_START = 0.26  # metres from the hand to the first cluster
 KNOT_STEP = 0.045  # bead to bead in a cluster
 PLACE_GAP = 0.2  # the gap between two places
 TURN_PITCH = 0.021  # a long knot's turn
+# M4-CRB-007, the knots up close: a single knot is a rounder lump (5 x 8, was 3 x 6, which read as a hexagonal bead)
+# with its crossing strand raised across it; a long knot's wraps run round the cord as a helix (3 rings a turn, 6
+# around), tapering into the cord at both ends (was a 5-sided sleeve whose ridges read as a zigzag).
+BEAD_RINGS, BEAD_SEGS = 5, 8
+BEAD_R = (0.034, 0.028, 0.034)
+EIGHT_R = (0.027, 0.024, 0.03)
+BEAD_CROSS = 0.16
+COIL_RINGS, COIL_SEGS = 3, 6
 
 PARTS: dict[str, int] = {}
 
@@ -224,6 +246,9 @@ def build_rig() -> ck.Rig:
     rig.add("bundle_0", BUNDLE[0], BUNDLE[1], "talon_l")
     rig.add("bundle_1", BUNDLE[1], BUNDLE[2], "bundle_0")
     rig.add("tail", TAIL_PTS[0], TAIL_PTS[1], "body")
+    # M4-CRB-007: the VFX anchors (unweighted): the breast, and the keth bundle (its lower bone, so it swings with it)
+    rig.add("vfx_core", VFX_CORE, VFX_CORE + (0.0, 0.2, 0.0), "body")
+    rig.add("vfx_keepsake", VFX_KEEPSAKE, VFX_KEEPSAKE - (0.0, 0.12, 0.0), "bundle_1")
     return rig
 
 
@@ -257,14 +282,20 @@ def body(mesh: ck.Mesh, rig: ck.Rig) -> None:
 
 def neck_and_head(mesh: ck.Mesh, rig: ck.Rig) -> None:
     pts = neck_points()
-    path = ck.bezier(((0.0, 1.70, 0.14),) + NECK_PATH[1:] + ((0.0, 2.08, 0.46),), 14)
+    path = ck.bezier(((0.0, 1.70, 0.14),) + NECK_PATH[1:] + ((0.0, 2.08, 0.46),), NECK_RINGS)
     t = np.linspace(0.0, 1.0, len(path))
-    rad = 0.13 * (1.0 - t) ** 1.2 + 0.055
-    P, T = loft(path, rad, rad, 12, up_hint=(0.0, 0.0, 1.0))
+    # M4-CRB-007: a condor's neck is bare and lean above the ruff (it read as a smooth cone, 0.185 m at the base): it
+    # swells only under the ruff, and the bare skin is folded in rings
+    fold = 1.0 + NECK_FOLD * np.sin(2.0 * math.pi * NECK_FOLDS * t) ** 2 * ck.smoothstep(0.2, 0.35, t)
+    rad = (0.1 * (1.0 - t) ** 3.5 + 0.043) * fold
+    P, T = loft(path, rad, rad * 1.08, 12, up_hint=(0.0, 0.0, 1.0))
     chain = rig.chain(["body", "neck_0", "neck_1", "neck_2", "head"],
                       np.vstack([[SPINE[2]], pts, [HEAD_TIP]]))
     k = np.clip((P[:, 1] - 1.8) / 0.25, 0.0, 1.0)  # bare skin above the ruff: bone going to slate
+    crease = np.repeat(1.0 - (fold - 1.0) / NECK_FOLD, 12)
+    crease = np.r_[crease, 1.0, 1.0]
     col = ck.mix(DARK, ck.mix(PAL["bone"], SLATE, 0.45), k[:, None])
+    col = ck.mix(col, DARK, (0.3 * k * crease)[:, None])  # the folds' hollows darker
     before = mesh.triangle_count
     ck.finish(mesh, P, T, "head", col, chain, wet=0.1)
     count("neck", mesh, before)
@@ -280,6 +311,13 @@ def neck_and_head(mesh: ck.Mesh, rig: ck.Rig) -> None:
     P, T = loft(path, 0.032 * (1.0 - t) ** 0.8 + 0.006, 0.04 * (1.0 - t) ** 0.7 + 0.006, 10)
     k = ck.smoothstep(0.0, 0.3, (P[:, 2] - 0.53) / 0.13)
     ck.finish(mesh, P, T, "head", ck.mix(ck.mix(PAL["bone"], SLATE, 0.5), BEAK, k[:, None]), hb, wet=0.3)
+    # M4-CRB-007: a low brow over each eye, so the bare skull has a reader's steady look and not a ball's
+    bc, br = BROW
+    for s in (1.0, -1.0):
+        c = np.array([s * bc[0], bc[1], bc[2]])
+        Pb, Tb = ck.ellipsoid(c, br, 4, 8)
+        Pb = (Pb - c) @ ck.rot_y(-14.0 * s).T + c
+        ck.finish(mesh, Pb, oriented(Pb, Tb, c[None]), "head", ck.mix(PAL["bone"], SLATE, 0.35), hb, wet=0.15)
     count("head", mesh, before)
     before = mesh.triangle_count
     for s in (1.0, -1.0):
@@ -320,18 +358,21 @@ def ruff(mesh: ck.Mesh, rig: ck.Rig) -> None:
     ring = np.array([centre + (math.cos(x) * e1 + math.sin(x) * e2) * R0 for x in a])
     T = oriented(P, np.asarray(T, dtype=np.int64), ring)
     ck.finish(mesh, P, T, "ruff", PAL["gauze_white"], chain, wet=0.05, cavity=0.2, emission=RUFF_GLOW)
-    # the loose ends
-    n = 18
-    for i in range(n):
-        x = 2.0 * math.pi * (i + 0.5) / n + rng.uniform(-0.1, 0.1)
-        radial = math.cos(x) * e1 + math.sin(x) * e2
-        base = centre + radial * (R0 + 0.04) - axis * 0.02
-        out = unit(radial * 0.7 - axis * 0.7)
-        L = 0.13 * rng.uniform(0.8, 1.2)
-        path = ck.bezier([base, base + radial * L * 0.6 + axis * 0.01, base + out * L], 5)
-        r = np.linspace(0.02, 0.008, 5)
-        P, T = loft(path, r, r, 4)
-        ck.finish(mesh, P, T, "ruff", PAL["gauze_white"], chain, wet=0.05, emission=RUFF_GLOW)
+    # M4-CRB-007: the fringe is loops of soft cord, each leaving the roll and coming back to it a hand's width round
+    # (they were single straight ends, which read as fingers round the neck); two tiers, the lower one longer
+    for tier, (n, drop, R1) in enumerate(RUFF_TIERS):
+        for i in range(n):
+            x = 2.0 * math.pi * (i + 0.5 * tier) / n + rng.uniform(-0.08, 0.08)
+            w = 2.0 * math.pi / n * 0.9
+            a0 = centre + (math.cos(x - w / 2) * e1 + math.sin(x - w / 2) * e2) * R1 - axis * (0.02 + 0.03 * tier)
+            a1 = centre + (math.cos(x + w / 2) * e1 + math.sin(x + w / 2) * e2) * R1 - axis * (0.02 + 0.03 * tier)
+            radial = math.cos(x) * e1 + math.sin(x) * e2
+            L = drop * rng.uniform(0.85, 1.15)
+            tip = centre + radial * (R1 + L * 0.55) - axis * (L + 0.03 * tier)
+            path = ck.bezier([a0, a0 + radial * L * 0.5 - axis * L * 0.4, tip, a1 + radial * L * 0.5 - axis * L * 0.4,
+                              a1], RUFF_LOOP_PTS)
+            P, T = loft(path, 0.014, 0.012, 4)
+            ck.finish(mesh, P, T, "ruff", PAL["gauze_white"], chain, wet=0.05, cavity=0.1, emission=RUFF_GLOW)
     count("ruff", mesh, before)
 
 
@@ -474,21 +515,27 @@ def cords(mesh: ck.Mesh, rig: ck.Rig, s: float) -> None:
         fan = math.radians(CORD_FAN[i])
         out = math.radians(CORD_OUT + 4.0 * (1.0 - f))
         d = unit(np.array([s * math.sin(out), -math.cos(fan) * math.cos(out), math.sin(fan)]))
-        L = CORD_LEN[i]
-        bow = np.array([s * 0.05, 0.0, -0.03])
-        path = ck.bezier([root, root + d * L * 0.5 + bow, root + d * L], max(int(L / CORD_STEP), 8))
+        L = CORD_LEN[i] * (1.0 + CORD_LEN_JITTER * float(rng.uniform(-1.0, 1.0)))
+        # M4-CRB-007: soft rope, not a rake of rods: each cord leaves the hand along its fan line and bends toward
+        # straight down as it hangs (and a little back, trailing), with a slight wander of its own
+        hang = unit(d * (1.0 - CORD_HANG) + np.array([0.0, -1.0, -0.12]) * CORD_HANG)
+        wander = np.array([s * rng.uniform(0.0, 0.04), 0.0, rng.uniform(-0.04, 0.02)])
+        ctrl = [root, root + d * L * 0.4, root + (d + hang) * 0.5 * L * 0.72 + wander, root + d * L * 0.25 + hang * L * 0.78]
+        path = ck.bezier(ctrl, max(int(L / CORD_STEP), 8))
         arc = np.r_[0.0, np.cumsum(np.linalg.norm(np.diff(path, axis=0), axis=1))]
         g = arc / arc[-1]
         twist = 2.0 * math.pi * arc / STRAND_PITCH * 0.5  # the two-lobed section turns once per half pitch
-        rad = CORD_R * (1.0 - 0.35 * ck.smoothstep(0.85, 1.0, g))
+        # the whipping just above the end, then the unlaid tuft flaring past it
+        rad = CORD_R * (1.0 - 0.3 * ck.smoothstep(0.86, 0.93, g) + 0.75 * ck.smoothstep(0.95, 1.0, g))
         P, T = loft(path, rad, rad * 0.78, CORD_SEGS, up_hint=(0.0, 0.0, 1.0), twist=twist)
         # the sand_cloth strand: a helical stripe round the white rope
         K = len(path)
         a = np.tile(np.arange(CORD_SEGS) * 2.0 * math.pi / CORD_SEGS, K) + np.repeat(twist, CORD_SEGS)
         stripe = ck.smoothstep(0.55, 0.85, np.cos(a))
         stripe = np.r_[stripe, 0.0, 0.0]
-        col = ck.mix(PAL["gauze_white"], PAL["sand_cloth"], stripe[:, None])
         gv = np.r_[np.repeat(g, CORD_SEGS), 0.0, 1.0]
+        stripe = np.maximum(stripe, 0.55 * ck.smoothstep(0.95, 1.0, gv))  # the tuft is the strands unlaid
+        col = ck.mix(PAL["gauze_white"], PAL["sand_cloth"], stripe[:, None])
         J, W = cord_skin(rig, t, gv, 0.12)
         before = mesh.triangle_count
         ck.finish(mesh, P, T, "cord", col, weights(J, W), wet=0.05, cavity=0.15, emission=CORD_GLOW)
@@ -499,13 +546,27 @@ def cords(mesh: ck.Mesh, rig: ck.Rig, s: float) -> None:
         count("knots", mesh, before)
 
 
+BEAD_UNIT, BEAD_T = ck.ellipsoid((0.0, 0.0, 0.0), (1.0, 1.0, 1.0), BEAD_RINGS, BEAD_SEGS)
+
+
+def bead_points(radii: np.ndarray, sgn: float = 1.0) -> np.ndarray:
+    """A single knot round the cord (its local y): a round lump with the crossing strand standing proud across it,
+    a band tilted over the knot's face, so it reads as rope tied over itself and not as a bead."""
+    P = BEAD_UNIT.copy()
+    phi = np.arctan2(P[:, 2], P[:, 0])
+    band = np.exp(-(((P[:, 1] - 0.55 * sgn * np.sin(phi)) / 0.32) ** 2))
+    P *= (1.0 + BEAD_CROSS * band * np.sqrt(np.clip(1.0 - P[:, 1] ** 2, 0.0, 1.0)))[:, None]
+    return P * radii
+
+
 def knot(mesh: ck.Mesh, rig: ck.Rig, t: str, path: np.ndarray, arc: np.ndarray, kind: str, s: float,
          turns: int) -> None:
     c, tan = place_along(path, arc, s)
     n, b = frame_of(tan)
     R = np.column_stack([n, tan, b])  # the knot's local y runs along the cord
     if kind == "bead":
-        P, T = ck.ellipsoid((0.0, 0.0, 0.0), (0.033, 0.03, 0.033), 3, 6)
+        P = bead_points(np.array(BEAD_R))
+        T = BEAD_T
         P = P @ R.T + c
         T = oriented(P, T, c[None])
         span = (s, s)
@@ -513,25 +574,43 @@ def knot(mesh: ck.Mesh, rig: ck.Rig, t: str, path: np.ndarray, arc: np.ndarray, 
         parts = []
         for k, sgn in ((0, 1.0), (1, -1.0)):
             q = c + tan * (k * 0.036 - 0.018) + n * 0.01 * sgn
-            Pq, Tq = ck.ellipsoid((0.0, 0.0, 0.0), (0.026, 0.024, 0.03), 3, 6)
+            Pq = bead_points(np.array(EIGHT_R), sgn)
             Pq = Pq @ ck.rot_y(35.0 * sgn).T @ R.T + q
-            parts.append((Pq, oriented(Pq, Tq, q[None])))
+            parts.append((Pq, oriented(Pq, BEAD_T, q[None])))
         P = np.vstack([parts[0][0], parts[1][0]])
         T = np.vstack([parts[0][1], parts[1][1] + len(parts[0][0])])
         span = (s - 0.018, s + 0.018)
-    else:  # a long knot: the cord wound round itself `turns` times, a sleeve with a ridge per turn
+    else:  # a long knot: the cord wound round itself `turns` times, a sleeve whose wraps run round it as a helix
         L = turns * TURN_PITCH
-        k = 2 * turns + 1
+        k = COIL_RINGS * turns + 1
         u = np.linspace(0.0, 1.0, k)
         pts = np.array([place_along(path, arc, s + L * x)[0] for x in u])
-        ridge = np.where(np.arange(k) % 2 == 1, 1.0, 0.55)
-        ridge[0] = ridge[-1] = 0.6
-        r = (CORD_R + 0.014) * ridge
-        P, T = loft(pts, r, r, 5, up_hint=n)
+        tan_, nrm, bin_ = ck.frames_along(pts, n)
+        a = np.arange(COIL_SEGS) * 2.0 * math.pi / COIL_SEGS
+        end = np.minimum(u, 1.0 - u) * L
+        base = CORD_R + 0.011 * ck.smoothstep(0.0, 0.012, end)  # the sleeve tapers into the cord at both ends
+        rings = []
+        for i in range(k):
+            wrap = 1.0 + 0.24 * np.cos(2.0 * math.pi * turns * u[i] - a)  # one ridge per turn, wound round
+            r = base[i] * wrap
+            rings.append(pts[i] + np.outer(r * np.cos(a), nrm[i]) + np.outer(r * np.sin(a), bin_[i]))
+        P = np.vstack(rings + [pts[:1] - tan_[:1] * 0.002, pts[-1:] + tan_[-1:] * 0.002])
+        T = ck.grid_tris(k, COIL_SEGS, True)
+        s0, s1 = len(P) - 2, len(P) - 1
+        caps = [(j, (j + 1) % COIL_SEGS, s0) for j in range(COIL_SEGS)]
+        caps += [((k - 1) * COIL_SEGS + j, (k - 1) * COIL_SEGS + (j + 1) % COIL_SEGS, s1) for j in range(COIL_SEGS)]
+        T = oriented(P, np.vstack([T, np.asarray(caps, dtype=np.int64)]), pts)
         span = (s, s + L)
     g = np.full(len(P), 0.5 * (span[0] + span[1]) / arc[-1])
     J, W = cord_skin(rig, t, g, 0.12)
-    ck.finish(mesh, P, T, "cord", PAL["gauze_white"], weights(J, W), wet=0.05, emission=KNOT_GLOW)
+    # the light follows the knot's form (M4-CRB-007): brightest where it stands proudest (the crossing strand, a
+    # wrap's crest), dimmer where it tucks into the cord, so a lit knot keeps its shape instead of a flat blob
+    centres = np.vstack([c[None], P[-2:]]) if kind != "long" else pts
+    d = np.linalg.norm(P[:, None, :] - centres[None, :, :], axis=2).min(axis=1)
+    proud = ck.smoothstep(float(np.percentile(d, 10)), float(d.max()), d)
+    glow = KNOT_GLOW * (KNOT_DIM + (1.0 - KNOT_DIM) * proud)
+    ck.finish(mesh, P, T, "cord", PAL["gauze_white"], weights(J, W), wet=0.05, cavity=0.25 * (1.0 - proud),
+              emission=glow)
 
 
 def legs(mesh: ck.Mesh, rig: ck.Rig) -> None:
@@ -763,6 +842,10 @@ WING_POSES = {
     "down": [((1.0, -0.3, 0.1), (0.0, -0.3, -1.0)), ((1.0, -0.5, 0.35), (0.0, -0.3, -1.0)),
              ((0.7, -0.8, 0.7), (0.0, 0.0, 1.0)), ((0.3, -1.0, 0.8), (0.0, 0.0, 1.0)),
              ((0.05, -1.0, 0.9), (0.0, 0.0, 1.0))],
+    # M4-CRB-007, Cord-Lift's gather: low and forward, the hands reaching round in front of her
+    "scoop": [((0.8, 0.05, 0.55), (0.0, -1.0, 0.3)), ((0.45, -0.35, 1.0), (0.0, -1.0, 0.0)),
+              ((0.15, -0.9, 0.7), (-1.0, 0.0, 0.0)), ((0.1, -1.0, 0.45), (-1.0, 0.0, 0.0)),
+              ((0.0, -1.0, 0.2), (-1.0, 0.0, 0.0))],
     "flat": [((1.0, -0.45, -0.20), (0.0, -0.4, -1.0)), ((1.0, -0.35, 0.05), (0.0, -0.4, -1.0)),
              ((0.7, -0.2, 0.6), (0.0, 0.0, 1.0)), ((0.4, -0.1, 1.0), (0.0, 0.0, 1.0)),
              ((0.15, -0.05, 1.0), (0.0, 0.0, 1.0))],
@@ -828,21 +911,25 @@ DISMISS_SEC = 1.0
 SPECIAL_SEC = 2.4
 SPECIAL_CONTACT = 1.45
 IDLE_B_SEC = 1.2
+CLEANSE_RAISE = 0.45  # how far Cord-Lift's lift goes from `half` toward `raised` (its span stays under cast's)
+MEND_RAISE = 80.0  # degrees the held leg swings up in the Mending
+MEND_BUNDLE = (30.0, 0.0)  # and the bundle's counter-swing, so it still hangs
 
 
 def pose(c: ck.Clip, t: float, body=(0.0, 0.0, 0.0), lift: float = 0.0, slide: float = 0.0,
          neck=(0.0, 0.0, 0.0), head: float = 0.0, turn: float = 0.0, tail: float = 0.0, grip: float = 0.0,
-         bundle=(0.0, 0.0)) -> None:
+         bundle=(0.0, 0.0), raise_: float = 0.0) -> None:
     """One key of the body. body (rx, ry, rz) about the pivot (+rx: bows forward), lift/slide (m), neck (rx per
     bone), head (rx, + down), turn (ry over the neck), tail (+ lifts), grip (the held talon closes, degrees),
-    bundle (rx of bundle_0, bundle_1: its swing)."""
+    bundle (rx of bundle_0, bundle_1: its swing), raise_ (degrees: the held leg swung forward and up, lifting the
+    keth bundle toward her breast; M4-CRB-007's Mending)."""
     c.key("body", t, body, (0.0, lift, slide))
     for k in range(3):
         c.key(f"neck_{k}", t, (neck[k], turn / 3.0, 0.0))
     c.key("head", t, (head, 0.0, 0.0))
     c.key("tail", t, (-tail, 0.0, 0.0))
-    c.key("leg_l0", t, (-grip * 0.4, 0.0, 0.0))
-    c.key("leg_l1", t, (grip * 0.3, 0.0, 0.0))
+    c.key("leg_l0", t, (-grip * 0.4 - raise_, 0.0, 0.0))
+    c.key("leg_l1", t, (grip * 0.3 + raise_ * 0.35, 0.0, 0.0))
     c.key("talon_l", t, (grip, 0.0, 0.0))
     c.key("bundle_0", t, (bundle[0], 0.0, 0.0))
     c.key("bundle_1", t, (bundle[1], 0.0, 0.0))
@@ -1049,6 +1136,57 @@ def build_special() -> ck.Clip:
     return c
 
 
+CLEANSE_SEC = 1.6
+CLEANSE_CONTACT = 0.9
+MENDING_SEC = 1.4
+MENDING_CONTACT = 0.8
+
+
+def build_cleanse() -> ck.Clip:
+    """M4-CRB-007, Cord-Lift (`cord_lift`, all allies: statuses lifted off): the way the high passes lift the dead.
+    She bows and brings both wings low and forward, the hands reaching round in front of her (0.0-0.7 s, the
+    gather), then lifts them up and open with her head raised (contact 0.9 s), the cords trailing under the hands;
+    the statuses rise off the party as pale threads (VFX). It opens no wider than `cast`."""
+    c = ck.Clip("cleanse", CLEANSE_SEC)
+    gather = dict(body=(12.0, 0.0, 0.0), lift=-0.06, slide=0.03, neck=(8.0, 8.0, 6.0), head=10.0, tail=-3.0,
+                  grip=6.0)
+    lifted = dict(body=(-10.0, 0.0, 0.0), lift=0.06, neck=(-8.0, -8.0, -6.0), head=-14.0, tail=5.0, grip=4.0)
+    for t, kw in ((0.0, {}), (0.4, gather), (0.7, dict(gather, body=(14.0, 0.0, 0.0), head=12.0)),
+                  (CLEANSE_CONTACT, lifted), (1.2, dict(lifted, head=-10.0)), (CLEANSE_SEC, {})):
+        pose(c, t, **kw)
+    wings(c, 0.0, "rest")
+    wings(c, 0.4, "scoop", sway=(6.0, 10.0))
+    wings(c, 0.7, "scoop", sway=(10.0, 16.0))
+    wings(c, CLEANSE_CONTACT, "half", mix_to="raised", u=CLEANSE_RAISE, sway=(-14.0, -22.0))
+    wings(c, 1.2, "half", mix_to="raised", u=CLEANSE_RAISE * 0.8, sway=(6.0, 10.0))
+    wings(c, CLEANSE_SEC, "rest")
+    foot(c, 0.0)
+    foot(c, CLEANSE_SEC)
+    return c
+
+
+def build_mending() -> ck.Clip:
+    """M4-CRB-007, her Mending (`hesk_mending`, all allies: Regen; ADR 0204, its own skill and gesture): she draws
+    the keth bundle up in her held talon and bows her head over it, the wings curled forward round it (0.0-0.6 s),
+    and at the contact (0.8 s) bows a little deeper, as if reading one knot: one knot of light settles on each ally
+    (VFX). Quiet where Cord-Lift is wide."""
+    c = ck.Clip("mending", MENDING_SEC)
+    bowed = dict(body=(18.0, 0.0, 0.0), lift=-0.08, neck=(16.0, 22.0, 18.0), head=22.0, grip=10.0,
+                 raise_=MEND_RAISE, bundle=MEND_BUNDLE)
+    for t, kw in ((0.0, {}), (0.6, bowed),
+                  (MENDING_CONTACT, dict(bowed, body=(22.0, 0.0, 0.0), neck=(18.0, 24.0, 20.0), head=28.0)),
+                  (1.05, bowed), (MENDING_SEC, {})):
+        pose(c, t, **kw)
+    wings(c, 0.0, "rest")
+    wings(c, 0.6, "rest", mix_to="mantle", u=0.7, sway=(4.0, 6.0))
+    wings(c, MENDING_CONTACT, "rest", mix_to="mantle", u=0.8, sway=(8.0, 12.0))
+    wings(c, 1.05, "rest", mix_to="mantle", u=0.7, sway=(-3.0, -5.0))
+    wings(c, MENDING_SEC, "rest")
+    foot(c, 0.0)
+    foot(c, MENDING_SEC)
+    return c
+
+
 def build_idle_b() -> ck.Clip:
     c = ck.Clip("idle_b", IDLE_B_SEC)  # the fidget: a rouse of the wings, the cords shaken out, the bundle gripped
     for t, kw in ((0.0, {}), (0.3, dict(neck=(-2.0, -2.0, -2.0), head=-4.0, turn=8.0, grip=8.0)),
@@ -1094,9 +1232,14 @@ def build_release() -> ck.Clip:
 
 
 def authored_clips() -> list[ck.Clip]:
-    return [build_idle(), build_ready(), build_attack(), build_cast(), build_hit(), build_hit("hit_b", -1.0, 1.35),
-            build_defend(), build_ko(), build_victory(), build_rise(), build_dismiss(), build_special(),
-            build_idle_b(), build_release()]
+    """M4-CRB-007: every one-shot is authored from rest and played from idle's first frame (`ck.in_pose`), so it
+    starts (or, for `rise`, ends) exactly where the idle is when the stage cuts to it."""
+    idle = build_idle()
+    idle0 = {b: tuple(np.asarray(v, float) for v in idle.sample(b, 0.0)) for b in idle.keys}
+    shots = [build_ready(), build_attack(), build_cast(), build_hit(), build_hit("hit_b", -1.0, 1.35),
+             build_defend(), build_ko(), build_victory(), build_rise(), build_dismiss(), build_special(),
+             build_idle_b(), build_release(), build_cleanse(), build_mending()]
+    return [idle] + [ck.in_pose(c, c.name, idle0) for c in shots]
 
 
 # Kept off the water where a clip lays them on it: the cords (lifted about the hand's chain), the bundle and the

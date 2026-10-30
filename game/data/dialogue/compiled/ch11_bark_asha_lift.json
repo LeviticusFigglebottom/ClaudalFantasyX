@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch11_bark_asha_lift",
+ "source": "game/data/dialogue/ch11/ch11_bark_asha_lift.dlg",
+ "start": "ch11_bark_asha_lift",
+ "nodes": {
+  "ch11_bark_asha_lift": {
+   "headers": {"location": "ch11/sunken_vey"},
+   "ops": [
+    {"op": "line", "id": "ch11_bark_lift_001", "key": "DLG_CH11_BARK_LIFT_001", "speaker": "asha", "emotion": "sad", "voice": "", "src": 6}
+   ]
+  }
+ }
+}

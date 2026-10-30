@@ -246,3 +246,46 @@ Measured at 1000 seeds (balance_report.md, 2026-10-24 M3-CMB-01):
 | Wave 2 | 53.2 | 54.1 | 87.8 | 100.0 | 44.9 |
 | Wave 3 | 33.2 | 37.3 | 93.0 | 100.0 | 8.4 |
 | The Reach | 0.3 | 12.8 | 80.7 | 86.2 | 0.3 |
+
+### Ch10: the Mangrove Drowner (M4-A2P-010, chapters' combat seat)
+
+The suite runs on the `ch08_seawall` loadout until M4-A2P-019's Ch10 loadout lands; re-run it then. Active Rhen, Asha and
+Toma; Ysolde and Kerrid in reserve. Swell is `good`. Toma's Shell Breaker is the role answer (phase 1 is armoured roots,
+defence 120). The Drowner is level 9, 3,600 HP, strength 14. Phase 2 (`uprooted`) comes at 55%: defence 30, agility 16,
+Root Stomp and a two-turn charged Drowning Grasp.
+
+| Suite | Kind | `naive` | `role_answer` | `smart` | p90 turns |
+|---|---|---|---|---|---|
+| `ch10_mangrove_drowner` | Ch10–Ch16 boss | ≤ 3% (2.5) | 55–80% (71.9) | **report only**, ≥ 30 mean turns (100%, 34.4 turns, 0.75 KOs) | ≤ 80 (46) |
+
+- **`smart` is report only, as for `ch05_cinder_matron`.** With healing, two reserves and items, `smart` won every
+  seed of every tuning tried (1,000 seeds):
+  - lowering steady damage (strength 22 → 11) didn't move it;
+  - nor did raising the charged burst (Drowning Grasp power 20 → 40).
+  - It still costs a careful player about one KO a fight.
+- **The Act II curve's 70–90%** needs the same escalation mechanic the Matron's note asks for (M3-C05-06).
+- **The tuning that mattered:** the fight's length. At 4,800 HP, `role_answer` (which never heals) lost by attrition at
+  every damage level. At 3,600 HP behind defence 120, Shell Breaker's answer carries it.
+
+### Act II creature bosses: the combat seat's tune for battle-presentation's PROVISIONAL rows (1dbfed6d5)
+
+- **Status:** battle-presentation wrote the rows so the staging (M3-BPR-419) could go live. These values were tuned in a
+  scratch worktree of their branch (1,000 seeds). The chapters seat applies them, and adds the three suites, once the
+  rows reach the integration branch.
+- **Common to all three:**
+  - Loadout `ch08_seawall` until M4-A2P-019.
+  - Swell `good`.
+  - Smart is report only (≥ 30 mean turns), on the Drowner's grounds: smart won 100% at every tune.
+
+| Boss (suite) | Party (reserve) | Stats changed from the provisional row | `naive` | `role_answer` | `smart` (turns) |
+|---|---|---|---|---|---|
+| Lamp Engine (`ch11_lamp_engine`) | Rhen, Asha, Liss (Toma, Ysolde) | HP 5600 → 4000, strength 28 → 22, magic 26 → 20, defence 110 → 140, magic defence 40 → 60; `opened` defence 30 → 80, magic defence 20 → 40 | 2.7 | **report only** (9.7) | 100 (68) |
+| Avalanche Ram (`ch12_avalanche_ram`) | Rhen, Asha, Kerrid (Toma, Ysolde) | HP 6200 → 4000, strength 36 → 22, defence 44 → 120; `torn_fleece` defence 22 → 40 | 2.2 | 61.3 | 100 (43) |
+| Wakefin (`ch15_wakefin`) | Rhen, Asha, Toma (Ysolde, Kerrid) | HP 7000 → 5000, strength 38 → 30, magic 18 → 16, agility 22 → 16, evasion 8 → 4, defence 36 → 120 | 0.0 | 70.3 | 100 (43) |
+
+- **Why the defence wall:** the sim's `role_answer` opens with a Break skill the foe lacks: Kerrid's Fluke Cleave on
+  the Ram, Toma's Shell Breaker on the Wakefin. At the rows' low defence, nothing separated a naive player from the
+  answer. As provisional, every policy lost by attrition (role 0–5%).
+- **The Lamp Engine's answer is Liss's part repair (M4-A2P-022), which is not data yet.**
+  - Liss has no Break skill, so `role_answer` can't beat naive, and her row stays report only until the mechanic lands.
+  - Re-tune it then.

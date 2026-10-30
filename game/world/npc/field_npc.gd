@@ -224,6 +224,11 @@ func _sub(section: String, key: String) -> float:
 
 
 ## A deterministic value in [section.key[0], section.key[1]] (or the number itself) for the `index`th draw.
+func _exit_tree() -> void:
+	if silhouette.a > 0.0:
+		NpcSilhouette.clear(actor)  # no silhouette override outlives the meshes it was set on (the PC's pass 3)
+
+
 func _share_range(section: String, key: String, index: int) -> float:
 	var v: Variant = _section(section).get(key, 0.0)
 	if v is Array and (v as Array).size() == 2:

@@ -611,7 +611,7 @@ class TestDialoguePolish2(unittest.TestCase):
     old villagers' brow hairs, each an optional key whose default leaves every other villager as it was."""
 
     TANK = {"sabe", "ione"}
-    FEATHER = {"sabe", "ione", "hobb"}
+    FEATHER = {"sabe", "ione", "hobb", "fenn"}
     BROWS = {"fenn", "marra", "osu", "sabe"}
 
     def test_opt_ins(self):
@@ -693,7 +693,7 @@ class TestDialoguePolish2(unittest.TestCase):
             self.assertEqual(shader["brow"][2][k], v)
         plain = dict(p, _hair={k: v for k, v in p["_hair"].items() if k != "brow_params"})
         base, _s, _t = wm.tables("sabe", plain)
-        self.assertEqual(base["brow"][2]["alpha_boost"], "1.6")
+        self.assertEqual(base["brow"][2]["alpha_boost"], "0.95")  # GPU QA row 55 (was 1.6)
         self.assertEqual({k: v for k, v in shader.items() if k != "brow"}, {k: v for k, v in base.items() if k != "brow"})
 
 

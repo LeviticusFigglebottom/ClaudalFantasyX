@@ -6,6 +6,10 @@
 - **Author:** audio (claude/audio), 2026-10-30. **Companions:** [act2_plan.md](../../act2_plan.md) (the work list),
   [act2_finals.md](../../../audio/act2_finals.md) (the existing finals and their sizes), the motif library
   `assets_src/music/motifs.py`.
+- **Decided by ADR 0204 (2026-10-30):** `battle_heretic` from Ch14, the Order's one sung lullaby and Liss's sung
+  current-song, the `root`, `snow` and `slate` footstep surfaces, and the two Act I reprises (§5). This sheet also
+  follows ADR 0204's boss phases (the Ram's `torn_fleece`, the Wakefin's `close_circle`) and its Wakefin (one whole
+  animal; `sound_dive` is evasion up with a clear telegraph).
 - **Timings are provisional:** no Act II beat sheet or `.dlg` exists yet (act2_plan §5.1). Every scene cue's length
   here is the outline's estimate, and is re-cut to the scene once Story's sheet lands.
 
@@ -30,8 +34,8 @@
    - Seamless loops start a sixteenth before the downbeat (`downbeat_offset_s`), and every music file writes its
      `.loop.json` with bpm, so MusicDeck's on-the-beat changes work (M3-AUD-864). An unmetered piece's cue row says
      `"beat": "free"`.
-   - **Storage:** `assets/audio/music/act2/**` is an LFS path. While LFS uploads are refused here, anything under 5 MB
-     ships as plain git outside the LFS paths (ADR 0174), and anything larger waits for the PC.
+   - **Storage (ADR 0175):** new Act II audio ships as plain git under `assets/audio/act2/{music,ambience,sfx}/`.
+     The 16 finals already in `assets/audio/music/act2/**` stay in LFS. Anything over 5 MB waits for the PC.
 4. **Determinism:** every render is byte-identical twice (`render_all.py --determinism`). Every file gets a
    PROVENANCE row, and an `.import` with `beat_count=0`.
 
@@ -58,7 +62,7 @@ dominant.
 | Tier | Cue | Exists? | Mood | Instrumentation | Key / tempo | Loop | Transitions |
 |---|---|---|---|---|---|---|---|
 | Regular, Ch10–Ch13 | `battle_standard_v2` (Act I's) | yes | Continuity: the same road, further along | as Act I | as Act I | as Act I | battle_in 0.3 / out 1.2 on the beat |
-| Regular, Ch14–Ch16 (heretics) | `battle_heretic` | **gap (proposed)** | The same fight theme with the Order now hunting them: harder, its warmth gone. **Proposal:** a variant of `battle_standard_v2`, not a new theme, with ORDER_HUM's first cell in the low winds under the riff. | battle_standard_v2's ensemble, minus its bright lead; low reed winds, frame drums, kettle gong | battle_standard_v2's key and tempo (so the two can swap mid-act) | ~75 s | as above. `music.json` `battle.default` stays; the Ch14+ encounters' rows name `battle_heretic`. **LEAD-ASK in the log: new cue or keep v2.** |
+| Regular, Ch14–Ch16 (heretics) | `battle_heretic` | **gap (ADR 0204 §9)** | The same fight theme with the Order now hunting them: harder, its warmth gone. **Proposal:** a variant of `battle_standard_v2`, not a new theme, with ORDER_HUM's first cell in the low winds under the riff. | battle_standard_v2's ensemble, minus its bright lead; low reed winds, frame drums, kettle gong | battle_standard_v2's key and tempo (so the two can swap mid-act) | ~75 s | as above. `music.json` `battle.default` stays; the Ch14+ encounters' rows name `battle_heretic`. |
 | Creature boss | per boss (§3): `mangrove_drowner`, `lamp_engine`, `avalanche_ram`, `wakefin` | yes (2 stems each) | each its own | each its own | each its own | 74–84 s | boss intro sting → stem 1; the phase row brings stem 2 in over 3–4 s |
 | People boss | `malcor_venn`, `abiding_guard` | **gap** (M4-A2P-092) | §3 Ch14, Ch16 | §3 | §3 | ~80 s, 2 stems | as above; `abiding_guard`'s stem 2 is the storm waking early |
 | Set-piece hold | Ch14's step-hold (Merel's knife) | **gap** | The court steps held while the barge is cut loose: the ceremony's music torn open | **Proposal:** `peace_wedding`'s break material as stem 1 of a two-stem `court_steps` cue; stem 2 enters at the last turn | C minor, 112 BPM (the wedding's tune in diminution) | ~60 s | the trap cutscene → the set piece on the beat; out to `lagoon_escape`, which carries the boss |
@@ -103,12 +107,12 @@ everywhere (M4-A2P-091). Durations of gaps are the outline's.
 | `keth_pass` | zone loop | yes | Thin air, a long climb, cords singing in the wind | low pipe, plucked string, wind-like pad, frame drum on the switchbacks | E minor (Aeolian), 6/8 at 46 dotted quarters a minute | 125.2 s | resume; to `quellan` 1.5 s on the beat |
 | `quellan` | zone loop | yes | A highland town's warmth against the cold; red banners | fiddle-like bowed string, plucked strings, frame drums, a town hum | F major / D minor, 4/4 at 92 BPM | 125.2 s | resume |
 | `cloudloom` | zone loop | **gap** | The open-roofed weaving-hall: thousands of keth, noon light writing on white stone; reverent and busy at once | a **loom figure** (an ostinato of plucked strings and soft wooden clicks in 3+3+2), high metallophone shimmer, a held women's hum; no Order hum (this is the Ullari's place) | A minor, 4/4 at 72 BPM (3+3+2 eighths). A minor ties it to keth_pass's E and to Hesk's binding. | ~120 s loop | resume; the bind cinematic takes the bed |
-| `avalanche_ram` | boss, 2 stems | yes | The mountain itself charging | stem 1: low drums, horn-like reed, snow-noise swells; stem 2 (under 50% HP): the bellow's rage | E minor, 6/8 at 92 dotted quarters a minute (twice the pass) | 83.5 s | the HP row brings stem 2 in over 3 s |
+| `avalanche_ram` | boss, 2 stems | yes | The mountain itself charging | stem 1: low drums, horn-like reed, snow-noise swells; stem 2 (under 50% HP): the bellow's rage | E minor, 6/8 at 92 dotted quarters a minute (twice the pass) | 83.5 s | the `torn_fleece` phase row (ADR 0204 §6) brings stem 2 in over 3 s. If combat cuts the phase, the row moves to the 50% HP rule. |
 | Ram intro | sting | **gap** | the shelf groans, the first snow slides | big drum, low brass-reed, a hiss of snow | E minor | ≤ 8 s | boss_intro by_arg |
 | `hesk_bound` / `hesk_summon` | stings | **gap** | Holy, woven: light through cords | the loom figure condensed, bells, a sung (Cantor) note | A major (lifted from cloudloom's A minor) / free | ≤ 8 s / ≤ 6 s | as Ch11 |
 | C1 the pass-cords; Kerrid's breath | cutscene | reuse + hold | Unease noticed and not said | `keth_pass` with its drum stem out; KERRID_STAIR's two notes, once, far below, on Toma's look | — | — | the zone stays; a one-shot motif SFX (Music bus) |
 | C3 Hesk's binding; Ysolde's lie | cutscene | reuse + sting | Beauty with a lie inside it | `cloudloom` at full, then `hesk_bound` | — | — | `@music cloudloom fade=2.0` |
-| C4 night at Quellan: the confession | cutscene | **gap (short)** | Forty-seven voices, seven houses: a confession by a fire | **Proposal:** `ysolde_theme`'s zither (Act I's identity: fourths and fifths, cold and exact) in F, slower and alone: a ~70 s reprise cue, `ysolde_confession` | F major, 4/4 at 56 BPM | ~70 s | `@music ysolde_confession fade=3.0`; it ends in silence |
+| C4 night at Quellan: the confession | cutscene | **reprise (ADR 0204 §12)** | Forty-seven voices, seven houses: a confession by a fire | Act I's `ysolde_theme` as it is (the zither in fourths and fifths, cold and exact), no new render | C major, 4/4 at 63 BPM (the final's) | the scene's length; the deck fades it out | `@music ysolde_theme fade=3.0`; `@music silence fade=2.0` at the scene's end |
 | C5 the Ullari woman's knot | side scene | reuse | Small, kind | `quellan` thinned | — | — | resume |
 
 ### Ch13 "Gold and Lacquer" (overcast 16:30, cold gold; no fights)
@@ -132,8 +136,8 @@ everywhere (M4-A2P-091). Durations of gaps are the outline's.
 
 | Cue | Kind | Exists? | Mood | Instrumentation | Key / tempo | Length | Transitions |
 |---|---|---|---|---|---|---|---|
-| `peace_wedding` | scene loop (C1) | yes (the ceremony loop) | The ceremony: tender, public, already watched | zither, slow flute descant, the couple's tune (E minor), the Stillguard's damped gong stepping 2 against 3 | C minor / E minor, from the final's source | 130.9 s loop | `@music peace_wedding fade=3.0` |
-| `peace_wedding_break` | scene cue (C2, the trap) | **gap** | The break: the ceremony torn. The gong's 2-against-3 wins; the couple's tune breaks off mid-phrase. | the wedding's ensemble cut to the gong and low drums; ORDER_HUM entering **loud and close** (the Conclave springing it) | C minor, the wedding's tempo, then free | ~25 s, ends in a held low drone | `@music peace_wedding_break fade=0.2` (the only near-cut in the act, by design; still ≥ min_fade_sec) |
+| `peace_wedding` | scene loop (C1) | yes (the ceremony loop) | The ceremony: tender, public, already watched | zither, slow flute descant, the couple's tune (E minor), the Stillguard's damped gong stepping 2 against 3 | G major, 3/4 at 88 BPM (its dark episode in E-flat and C minor) | 130.9 s loop | `@music peace_wedding fade=3.0` |
+| `peace_wedding_break` | scene cue (C2, the trap) | **gap** | The break: the ceremony torn. The gong's 2-against-3 wins; the couple's tune breaks off mid-phrase. | the wedding's ensemble cut to the gong and low drums; ORDER_HUM entering **loud and close** (the Conclave springing it) | the wedding's 3/4 at 88 BPM, broken into C minor, then free | ~25 s, ends in a held low C | `@music peace_wedding_break fade=0.2` (the only near-cut in the act, by design; still ≥ min_fade_sec) |
 | C3 Tobin's death | cutscene | silence | Nothing plays | — | — | — | `@music silence fade=0.5`; foley only |
 | `court_steps` | set-piece battle | **gap** | §2 | §2 | C minor, 112 BPM | ~60 s, 2 stems | §2 |
 | `lagoon_escape` | scene cue (C4–C6) | **gap** | The first ripple in four hundred years: terror and wonder. The bells ring, the city comes to its windows, and Merel stays behind. | the pole's stroke as a pulse (low drum and water), tower bells entering one by one, the couple's tune reborn in the flute, a bowed string for Merel at the gate | E minor → C minor at Merel, 4/4 at 72 BPM (the strokes) | ~2 min, through-composed (sections cut to C4, C5 and C6) | from the step-hold on the beat; into `malcor_venn` at C7 |
@@ -146,14 +150,14 @@ everywhere (M4-A2P-091). Durations of gaps are the outline's.
 | Cue | Kind | Exists? | Mood | Instrumentation | Key / tempo | Length | Transitions |
 |---|---|---|---|---|---|---|---|
 | `unlamped` | zone loop (the barge) | yes | Drifting south in the dark with the dead aboard | pad turning through F-flat and B-flat, rising glow tones, very low drums | E-flat minor, 4/4 at 51 BPM | 155.3 s | resume |
-| `wakefin` | boss, 2 stems | yes | Fought in the dark: telegraphs are **sounds** (pillar 4), so the music leaves room for them | stem 1: sub pulse and sea-glow shimmer; stem 2: the full chase. The mix leaves 1–4 kHz clear for the telegraph SFX (§4). | E-flat minor, 4/4 at 102 BPM | 75.3 s | intro sting → stem 1; phase row → stem 2 |
+| `wakefin` | boss, 2 stems | yes | Fought in the dark: telegraphs are **sounds** (pillar 4), so the music leaves room for them | stem 1: sub pulse and sea-glow shimmer; stem 2: the full chase. The mix leaves 1–4 kHz clear for the telegraph SFX (§4). One whole animal, no deck adds (ADR 0204 §3). | E-flat minor, 4/4 at 102 BPM | 75.3 s | intro sting → stem 1; the `close_circle` phase row (ADR 0204 §6) brings stem 2 in over 3 s |
 | Wakefin intro | sting | **gap** | something circling under the barge | low swell, glass glint, a single drum | E-flat minor | ≤ 8 s | boss_intro by_arg |
 | `kerrid_at_sea` | scene cue (C3, the reveal) | **gap** | The act's emotional peak: a bed for a voice. Grief, guilt and a long-held stillness, never sentimental. | a sustained **bowed string** and a low pad, KERRID_STAIR's two notes (D, A) far below as his tread, now slowed until they stop; the held motes as faint sideways glass. No melody over his words. | D minor, free (`"beat": "free"`), the tread at 40 BPM where it appears | ~2.5 min (cut to the scene), a bed like `iskarra_vigil` | `@music kerrid_at_sea fade=4.0` from `unlamped`; it ends in silence |
-| `hollowmere_answers` | scene cue (C4) | **gap** | Dawn in fog: Liss sings a current-song, and Hollowmere answers from the flotilla | Liss's voice on CURRENT_SONG (sung: she's no Cantor, but a current-song is work-song, not rite; Narrative confirms); the answer as many far voices and a horn, the flotilla's bells | CURRENT_SONG's key, at CURRENT_SONG_BPM 76 | ~60 s, ends into `hollowmere` | `@music hollowmere_answers fade=2.0`, carrying into the zone loop |
+| `hollowmere_answers` | scene cue (C4) | **gap** | Dawn in fog: Liss sings a current-song, and Hollowmere answers from the flotilla | Liss's voice on CURRENT_SONG, sung (ADR 0204 §10: a current-song is a work-song, not a rite; Narrative confirms in review); the answer as many far voices and a horn, the flotilla's bells | CURRENT_SONG's key, at CURRENT_SONG_BPM 76 | ~60 s, ends into `hollowmere` | `@music hollowmere_answers fade=2.0`, carrying into the zone loop |
 | `hollowmere` | zone loop (first visit) | yes (Act III's cue) | The Saltwright flotilla: work, scrap, family | Act III's cue, as is | D Dorian | 135 s | **the zone row only** (M4-A2P-091); resume |
 | C5 Liss and her father | cutscene | reuse | Reunion, hard words | `hollowmere` thinned | — | — | resume |
 | C6 Toma's confession | cutscene | silence → reuse | Faith breaking | silence under the confession (fade 1.0), then the pyre-raft cue | — | — | silence |
-| C7 the pyre-raft | cutscene | **reprise (Narrative picks)** | A funeral on the water | **Proposal:** `hush_first_verse`'s opening (the Hush's first statement, hummed), the chapter's grief answered by the song the party carries | A minor | ~60 s | `@music` with fade 3.0 |
+| C7 the pyre-raft | cutscene | **reprise (ADR 0204 §12)** | A funeral on the water | Act I's `hush_first_verse` (the Hush's first statement), no new render | as the cue (free) | the scene's length | `@music hush_first_verse fade=3.0` |
 | C8 supper: two memories of Dace | side scene | reuse | Warm and sore | `hollowmere`, and `dace_ledger`'s zither (Act III's) as a 30 s insert if Narrative wants Dace heard | — | — | resume |
 
 ### Ch16 "The Edge of the World" (white noon, the game's lowest contrast; the Choir at moonrise)
@@ -164,7 +168,7 @@ everywhere (M4-A2P-091). Durations of gaps are the outline's.
 | `drowned_choir` | zone loop | yes | The ring of colossal mouths at moonrise | the stones' open-vowel chords, the Cantor's E-D-C cell | A minor (the Hush's key), F and E majors, 3/4 at 47 BPM | 153.2 s | resume |
 | `kesh_bound` | sting | **gap** | All six elements in turn; the singer becomes the storm's heart | six short colours chained (fire crackle-bell, ice glass, lightning static-chime, water, holy bell, glimmer), resolving onto the Hush's A minor | A minor, free | ≤ 8 s | as the others. `kesh_summon` is Act III's (H03). |
 | C4 Kesh's memory (the binding) | cutscene | **gap** | A memory sequence a thousand years back: what the Hush really does | **Proposal:** `drowned_choir` heard **through water** (MusicDeck under the muffle, mix.json `muffle`) plus MEL_A sung by one far voice | A minor | ~90 s (the cue row `kesh_memory`) | `@music kesh_memory fade=2.0`; the muffle is a mix reason for the scene |
-| `sefir_go_home` | scene cue (C5) | **gap** | The temptation: the Long Stillness offered as a gift. Sefir's motif at its warmest, and frightening because it is kind. | grand piano and a warm pad, ORDER_HUM sung for the first and only time as a lullaby by many (the Order hums; here it **sings**, so the scene says what it costs: Narrative and audio confirm), no percussion | C major (Ansedra's), 3/4 at 52 BPM | ~2 min | `@music sefir_go_home fade=3.0`; it breaks to silence (0.5 s) on Asha's refusal (C6) |
+| `sefir_go_home` | scene cue (C5) | **gap** | The temptation: the Long Stillness offered as a gift. Sefir's motif at its warmest, and frightening because it is kind. | grand piano and a warm pad, ORDER_HUM **sung** for the first and only time as a lullaby by many (ADR 0204 §10: a deliberate break from "the Order hums"; Narrative confirms in review), no percussion | C major (Ansedra's), 3/4 at 52 BPM | ~2 min | `@music sefir_go_home fade=3.0`; it breaks to silence (0.5 s) on Asha's refusal (C6) |
 | `abiding_guard` | people boss, 2 stems | **gap** (M4-A2P-092) | Sefir's elite: disciplined, faithful, terrible | stem 1: low frame-drum roll, the guard's own hum (a Stillguard choir, ORDER_HUM in canon), gongs; stem 2: **the storm waking early**: the Undertow's octatonic storm band (Act I's `undertows_reach` mode) breaking in | stem 1 A minor at 88 BPM; stem 2 reaches G octatonic as the storm takes over | ~80 s | intro sting → stem 1; the storm's row → stem 2 over 4 s; into the scripted escape |
 | Abiding guard intro | sting | **gap** | the guard closing ranks | big drum, hum cut off | A minor | ≤ 8 s | boss_intro by_arg |
 | C8 the storm wakes; swept away | cutscene | reuse | Catastrophe | `abiding_guard` stem 2 at full, then the sea's roar (SFX) | — | — | `@music silence fade=0.5` at the sweep |
@@ -178,7 +182,7 @@ Each family is a source module and a data file in the Act I pattern: a `sfx_<dom
 |---|---|---|---|
 | **Fen ambience and wildlife** | Ossa Fen and Reedhollow beds, LifeAudio | insects at dusk, root creak, tannin drips, fen birds, fireflies (silent: wildlife, not glimmer), reed wind, the clutch's wordless hum as a bed | 2 beds + life rows |
 | **Kirru voices** | CreatureAudio-like hook on the Kirru actors, cutscenes | wordless calls, the clutch's sung line (non-verbal), a child's question tone | a people, never monster sounds (act2_roster) |
-| **Mangrove and water-root foley** | footsteps (`mangrove`/root-walk surface), cutscene foley | wet wood on roots, splash-through on tannin water | **new footstep surface:** `root` (wet hollow wood), plus `snow` (Ch12) and `slate` (Ch12) |
+| **Mangrove and water-root foley** | footsteps (the root-walks), cutscene foley | wet wood on roots, splash-through on tannin water | **new footstep surfaces (ADR 0204 §11):** `root` (wet hollow wood, Ch10), `snow` and `slate` (Ch12); env-art marks them in the kits |
 | **Drain and rooted statuses** | battle_sfx `vfx` rows for the new effects | drain: a pull from target to caster (inverse heal); rooted: roots gripping, a creak lock; a no-swap refusal tick in the menu | M4-CMB-1001 |
 | **Repair (conduit crawlers)** | battle_sfx skill rows | ratchet, a spark-weld, a part's light coming back | the Lamp Engine's adds |
 | **Part break** (the flat-engine, the Engine's lamps) | CreatureAudio `break_parts` | a part breaking off: brass crack, glass shatter, the bound light escaping upward | one family, variants per part material |
@@ -189,7 +193,7 @@ Each family is a source module and a data file in the Act I pattern: a `sfx_<dom
 | **City bells and windows** | the lagoon escape | the bells of Ansedra ringing across water one by one, shutters opening along the canals, distant voices | layered with `lagoon_escape`; the bells are SFX so they sit in space |
 | **The flat-engine and timeline slow** | Malcor Venn's stem 1, the field rule | a low gong pulse on the timeline's slow tick, a pressure hum that flattens other sounds (a mix reason that low-passes Combat) | the pulse must be **visible on the timeline and heard on the beat** |
 | **People-boss voices** (Malcor Venn, the Abiding guard) | CreatureAudio-style sets for human bosses | armour, haft, breath, effort; a yield rather than a death where the story spares them | Act I's Stillguard Inquisitor is the precedent |
-| **Darkness telegraphs** (the Wakefin) | battle_sfx telegraph rows | a sound per telegraph type (the circle, the dive, the tail): distinct pitch families in 1–4 kHz | every telegraph needs one; the audit must check it |
+| **Darkness telegraphs** (the Wakefin) | battle_sfx telegraph rows | a sound per telegraph type (the circle, `sound_dive`, the tail): distinct pitch families in 1–4 kHz. `sound_dive` is evasion up, so its sound says "it's gone deep", never "it's gone" (ADR 0204 §3). | every telegraph needs one; the audit must check it |
 | **Sea-glow and held motes** | Ch15 cutscenes, the shoal | sideways glass glints for held motes (not rising, not falling), the shoal's slow hum below the barge | consistent with the visual rule: held motes go sideways |
 | **Hollowmere work foley** | Hollowmere beds (shared with Act III) | windmills, tide-wheels, hull creak, rope and capstan, a work crowd | build once at final quality (Act III reuses it) |
 | **Pyre-raft** | cutscene foley | fire on water, a raft pushed off, embers hissing on the sea | — |
@@ -200,21 +204,23 @@ Each family is a source module and a data file in the Act I pattern: a `sfx_<dom
 | **The document reader** | ui_sfx hook on the reader | paper slides, a page laid beside another, the matching-hand highlight tone | the Archive's set piece (ui-menus) |
 | **Act II creature voices** | creature_voices.json (M4-AUD-1001) | the 11 regulars and the 4 creature bosses (most exist: act2_creature_sfx.py); `conduit_crawler` and the variants are new | the Act I audit's Enemies section, scoped `--act 2` |
 
-## 5. Open questions (to the Lead, as `LEAD-ASK` lines in the live log)
-1. **`battle_heretic`:** a variant regular-battle cue from Ch14, or keep `battle_standard_v2` throughout? Default: the variant.
-2. **Sung or hummed:** `sefir_go_home` sings ORDER_HUM (the only time the Order sings), and Liss sings the
-   current-song in `hollowmere_answers`. Both touch the bible's rule. Default: sung, flagged to Narrative.
-3. **New footstep surfaces** `root`, `snow` and `slate`: confirm with env-art's kits, which mark the surfaces.
-4. **The pyre-raft reprise and Ysolde's confession:** reprises of Act I cues (the default), or new cues?
+## 5. Decided (ADR 0204, 2026-10-30)
+1. **`battle_heretic`:** a variant regular-battle cue from Ch14 on (§9).
+2. **Singing:** the Order sings ORDER_HUM once, as `sefir_go_home`'s lullaby, and Liss sings the current-song in
+   `hollowmere_answers` (§10). Narrative confirms both in review.
+3. **Footstep surfaces** `root`, `snow` and `slate` are approved (§11). env-art marks them.
+4. **Reprises:** the pyre-raft plays `hush_first_verse` and Ysolde's confession plays `ysolde_theme` (§12). Neither
+   needs a new render.
 
 ## 6. Mapping to tasks
 - M4-A2P-090 (scene cues): `farewell_tide`, `peace_wedding_break`, `lagoon_escape` (+ coda row), `kerrid_at_sea`,
-  `hollowmere_answers`, `sefir_go_home`, `kesh_memory` (row only), `ysolde_confession`, `act2_break`.
+  `hollowmere_answers`, `sefir_go_home`, `kesh_memory` (row only), `act2_break`. The two reprises (§5.4) need only
+  their `@music` lines.
 - M4-A2P-091 (zone loops, stings, zone rows): `cloudloom`, `sanctum_of_the_level`, the Vowbound `*_bound` and
   `*_summon` stings (Nhoa, Hesk, Ethren; Kesh's bound only), `music.json` zone rows for all 15 Act II zones, `beat`
   grids, and the `peace_wedding_preview` row.
 - M4-A2P-092 (people bosses): `malcor_venn`, `abiding_guard`, `court_steps`; every Act II boss's encounter and phase
-  rows; the six boss-intro stings.
+  rows (the Ram's `torn_fleece` and the Wakefin's `close_circle` included); the six boss-intro stings.
 - M4-A2P-093 (ambience and foley): §4's families, the new footstep surfaces and the beds.
 - M4-AUD-1001: the creature voices.
 - A new item for the Act II gate: extend `tools/audio/act1_audio_audit.py` with an `--act 2` scope (the zone, battle,

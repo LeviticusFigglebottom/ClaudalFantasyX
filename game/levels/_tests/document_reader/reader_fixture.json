@@ -1,0 +1,46 @@
+{
+  "doc": "Test and shot fixture for the document reader (M4-A2P-080): not a game record. The words are plain stand-in lines in the ledgers' register so the layout shows real wrapping; the game's records are Narrative's (game/data/lore/records.json).",
+  "records": [
+    {
+      "id": "fixture_three",
+      "title_key": "Lamp-ledgers of the east stair",
+      "panes": [
+        {"title_key": "The founders' ledger", "lines": [
+          "First lamp, the east stair: lit by Abrel, oil from the north press.",
+          "Second lamp, the landing: lit by Sorrow-of-Tide, wick of reed.",
+          "Third lamp, the long hall: lit by the founders together, the night the water stood still.",
+          "Fourth lamp, the cistern door: lit, and the name scraped away.",
+          "Fifth lamp, the low arch: lit by Mirrin, who signs with a hooked stroke."
+        ]},
+        {"title_key": "The Cantor roll", "lines": [
+          "Cantor of the first chair: Ottel, of the reed-houses.",
+          "Cantor of the second chair: one who signs with a hooked stroke.",
+          "Cantor of the third chair: vacant since the flood year.",
+          "Cantor of the fourth chair: Abrel, oil-presser, admitted late."
+        ]},
+        {"title_key": "A line in the margin", "lines": [
+          "Kept in a careful hand: the lamps will be lit again when the water moves.",
+          "Below it, crossed through: not by us.",
+          "In the corner, a hooked stroke and nothing else."
+        ]}
+      ],
+      "hands": [
+        {"id": "hooked", "lines": [[0, 4], [1, 1], [2, 2]]},
+        {"id": "abrel", "lines": [[0, 0], [1, 3]]}
+      ],
+      "flag": ""
+    },
+    {
+      "id": "fixture_one",
+      "title_key": "Wenna's marks",
+      "panes": [
+        {"title_key": "Scratched under the jetty", "lines": [
+          "Three notches: the tide came twice and did not go.",
+          "A circle with a line through it: do not ring the bell.",
+          "A small fish, and her letter beside it."
+        ]}
+      ],
+      "hands": []
+    }
+  ]
+}

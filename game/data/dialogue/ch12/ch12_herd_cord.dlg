@@ -1,0 +1,21 @@
+// Ch12 B07 "The herd-cord" (E, 1 min). The seep's light leaves the fallen Ram and rises quickly (rule 2).
+// Kerrid kneels and unties the herd-cord (animals shied from him all game; this one is past shying) and
+// hands it to Pell, who reads the knots by touch. Pell ties it onto the nearest pass-cord; they walk on
+// without looking back.
+title: ch12_herd_cord
+location: ch12/keth_pass
+---
+@camera P07
+@vfx glimmer_lift at=avalanche_ram count=10 motion=spiral_up rate=fast
+@wait 2.5
+@anim kerrid kneel avalanche_ram
+@anim kerrid give pell
+@wait 2.0
+@anim pell read_knots
+Pell [neutral]: Three names. The herder's family. #line:ch12_cord_001
+@wait 1.5
+Pell [sad]: Somebody loved this animal. #line:ch12_cord_002
+@anim pell tie_knot pass_cord
+@wait 2.0
+<<set $ch12_ram_felled = true>>
+===

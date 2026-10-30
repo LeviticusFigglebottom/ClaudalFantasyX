@@ -1,0 +1,22 @@
+// Ch13 B09 "Day three: the hands" (P → C, 3 min). act2_ch13.md §2 B09. R07: Liss lays ledgers from four
+// centuries side by side in the reader and the player marks the signatures: the same few hands, under
+// different names. R08: the pull-out: eight pages in a row, four hundred years apart, signed by the same
+// hand, among them the margin hand from Corran's line: the High Warden's. R09: NOBODY SAYS IT (rule 1).
+title: ch13_archive_hands
+location: ch13/lamp_archive
+---
+@camera R07
+@wait 4.0
+@camera R08 blend=6.0 ease=in_out_sine
+@wait 6.0
+@camera R09
+@anim liss lay_page reading_table
+@wait 3.0
+Asha [afraid]: These are all the same person. #line:ch13_hands_001
+Ysolde [cold]: Yes. #line:ch13_hands_002
+@wait 2.0
+Ysolde [cold]: Or they are all the same few people. #line:ch13_hands_003
+@wait 3.0
+<<set $ch13_archive_read = true>>
+@camera release
+===

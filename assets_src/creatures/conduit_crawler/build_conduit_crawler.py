@@ -44,6 +44,10 @@ LIGHT = np.array([0.0, BODY_Y + 0.07, 0.07])  # the bound light inside, under th
 LEG_Z = (0.17, 0.0, -0.17)
 FOOT_PAD = 0.011  # the foot pads' half-height: their centres stand this high
 ARM_SHOULDER = (0.075, BODY_Y - 0.035, 0.33)
+LEG_RINGS = 4  # rings along each leg segment's gentle bow
+KNUCKLE = (0.016, 0.026)  # the knee hinge: its radius and half-length across the leg
+COLLAR = (0.16, 0.022)  # the thigh's collar: where (a share of hip to knee) and its radius
+SLEEVE = (0.04, 0.55)  # the shin's piston sleeve: from and to, as shares of knee to foot
 
 PARTS: dict[str, tuple[int, int]] = {}
 
@@ -150,13 +154,29 @@ def legs(mesh: ck.Mesh, rig: ck.Rig) -> None:
         for i in range(3):
             hip, knee, foot = leg_pts(s, i)
             for seg, p0, p1, r0, r1 in (("a", hip, knee, 0.015, 0.012), ("b", knee, foot, 0.011, 0.008)):
-                P, T = ck.tube(ck.bezier([p0, (p0 + p1) / 2 + np.array([s * 0.01, 0.012, 0.0]), p1], 6),
-                               np.linspace(r0, r1, 6), 6)
+                P, T = ck.tube(ck.bezier([p0, (p0 + p1) / 2 + np.array([s * 0.01, 0.012, 0.0]), p1], LEG_RINGS),
+                               np.linspace(r0, r1, LEG_RINGS), 6)
                 ck.finish(mesh, P, T, "frame", aged_brass(P, SEED + 10 + i), rig.rigid(f"leg_{tag}{i}_{seg}"),
                           wet=0.0, cavity=0.2)
-            for c, r, bone in ((hip, 0.02, "body"), (knee, 0.019, f"leg_{tag}{i}_a")):
-                P, T = ck.ellipsoid(c, (r, r, r), 4, 6)
-                ck.finish(mesh, P, T, "frame", PAL["lacquer_black"], rig.rigid(bone), wet=0.1, cavity=0.3)
+            P, T = ck.ellipsoid(hip, (0.02, 0.02, 0.02), 4, 6)
+            ck.finish(mesh, P, T, "frame", PAL["lacquer_black"], rig.rigid("body"), wet=0.1, cavity=0.3)
+            # machined detail (the plan sheet: the legs read as plain thin tubes up close): a hinge knuckle across the
+            # knee with brass end caps, a collar near the hip, and a piston sleeve over the shin (within the 5k budget)
+            axis = np.cross(knee - hip, foot - knee)
+            axis /= np.linalg.norm(axis)
+            # the knuckle: lacquer-black, its end caps brass (by vertex colour along the hinge)
+            knuckle = np.array([knee - axis * KNUCKLE[1], knee + axis * KNUCKLE[1]])
+            P, T = ck.tube(knuckle, KNUCKLE[0], 6)
+            ends = ck.smoothstep(0.6, 0.9, np.abs((P - knee) @ axis) / KNUCKLE[1])
+            col = ck.mix(PAL["lacquer_black"], aged_brass(P, SEED + 20 + i), ends[:, None])
+            ck.finish(mesh, P, T, "frame", col, rig.rigid(f"leg_{tag}{i}_a"), wet=0.1, cavity=0.3)
+            thigh = (knee - hip) / np.linalg.norm(knee - hip)
+            c = hip + (knee - hip) * COLLAR[0]
+            P, T = ck.tube(np.array([c - thigh * 0.007, c + thigh * 0.007]), COLLAR[1], 6)
+            ck.finish(mesh, P, T, "frame", PAL["lacquer_black"], rig.rigid(f"leg_{tag}{i}_a"), wet=0.1, cavity=0.3)
+            P, T = ck.tube(np.array([knee + (foot - knee) * f for f in SLEEVE]), np.array([0.016, 0.0135]), 6)
+            ck.finish(mesh, P, T, "frame", ck.mix(aged_brass(P, SEED + 30 + i), PAL["lacquer_black"], 0.25),
+                      rig.rigid(f"leg_{tag}{i}_b"), wet=0.0, cavity=0.3)
     mark("legs", mesh, start)
     start = mesh.count
     for s, tag in ((1.0, "l"), (-1.0, "r")):

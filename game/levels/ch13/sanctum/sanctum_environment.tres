@@ -1,0 +1,33 @@
+[gd_resource type="Environment" load_steps=2 format=3]
+
+[ext_resource type="Texture3D" path="res://game/levels/ch13/sanctum/lut_ch13_sanctum.png" id="1_lut"]
+
+[resource]
+resource_name = "sanctum_ch13"
+background_mode = 1
+background_color = Color(0.0863, 0.1059, 0.1176, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.5412, 0.5882, 0.6431, 1)
+ambient_light_energy = 0.2
+reflected_light_source = 1
+tonemap_mode = 4
+tonemap_exposure = 1.0
+tonemap_agx_white = 12.0
+ssr_enabled = true
+ssr_max_steps = 64
+ssr_fade_in = 0.15
+ssr_fade_out = 2.0
+ssao_enabled = true
+ssao_radius = 1.2
+ssao_intensity = 1.2
+glow_enabled = true
+glow_intensity = 0.6
+glow_bloom = 0.04
+glow_hdr_threshold = 0.9
+fog_enabled = true
+fog_light_color = Color(0.3098, 0.702, 0.6902, 1)
+fog_light_energy = 0.05
+fog_density = 0.004
+fog_sky_affect = 0.0
+adjustment_enabled = true
+adjustment_color_correction = ExtResource("1_lut")

@@ -1,0 +1,27 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/water/water_ocean.gdshader" id="1_ocean"]
+
+[resource]
+resource_name = "ansedra_still_water"
+render_priority = 0
+shader = ExtResource("1_ocean")
+shader_parameter/col_deep = Color(0.3686, 0.4314, 0.502, 1)
+shader_parameter/col_scatter_shallow = Color(0.3412, 0.4706, 0.502, 1)
+shader_parameter/absorption_per_m = Vector3(2.0, 0.5, 0.42)
+shader_parameter/absorption_scale = 1.5
+shader_parameter/scatter_energy = 0.08
+shader_parameter/caustic_strength = 0.0
+shader_parameter/col_foam = Color(0.933, 0.965, 0.957, 1)
+shader_parameter/col_sss = Color(0.4, 0.5098, 0.5373, 1)
+shader_parameter/foam_crest_threshold = 0.62
+shader_parameter/roughness_near = 0.0
+shader_parameter/roughness_far = 0.02
+shader_parameter/detail_strength = 0.0
+shader_parameter/use_foam = false
+shader_parameter/use_caustics = false
+shader_parameter/ssr_max_distance_m = 400.0
+shader_parameter/ssr_edge_fade = 0.04
+shader_parameter/glint_strength = 0.0
+shader_parameter/time_scale = 0.0
+shader_parameter/refraction_strength = 0.0

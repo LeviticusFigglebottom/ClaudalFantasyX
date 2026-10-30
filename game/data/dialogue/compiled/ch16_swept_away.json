@@ -1,0 +1,42 @@
+{
+ "format": 1,
+ "scene": "ch16_swept_away",
+ "source": "game/data/dialogue/ch16/ch16_swept_away.dlg",
+ "start": "ch16_swept_away",
+ "nodes": {
+  "ch16_swept_away": {
+   "headers": {"location": "ch16/drowned_choir"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "camera", "args": ["S01"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "music", "args": ["abiding_guard"], "kwargs": {"fade": 0.0}, "src": 14},
+    {"op": "cue", "cue": "sfx", "args": ["storm_wall"], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "camera", "args": ["S02"], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "anim", "args": ["kerrid", "hold_line"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "sfx", "args": ["current_song_hum"], "kwargs": {"at": "storm", "vol": 0.3}, "src": 19},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "grab_hand", "asha"], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "camera", "args": ["S03"], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 0.0}, "src": 24},
+    {"op": "cue", "cue": "fade", "args": ["out", 0.5], "kwargs": {}, "src": 25},
+    {"op": "cue", "cue": "camera", "args": ["S04"], "kwargs": {}, "src": 26},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 27},
+    {"op": "cue", "cue": "camera", "args": ["P04"], "kwargs": {}, "src": 28},
+    {"op": "cue", "cue": "fade", "args": ["in", 2.0], "kwargs": {}, "src": 29},
+    {"op": "cue", "cue": "music", "args": ["act2_break"], "kwargs": {"fade": 2.0}, "src": 30},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 31},
+    {"op": "line", "id": "ch16_break_001", "key": "DLG_CH16_BREAK_001", "speaker": "", "emotion": "tender", "voice": "", "src": 32, "narrator": "rhen", "tags": ["vo"]},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 33},
+    {"op": "cue", "cue": "fade", "args": ["out", 3.0], "kwargs": {}, "src": 34},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 2.0}, "src": 35},
+    {"op": "set", "flag": "ch16_act_two_complete", "value": ["lit", true], "src": 36},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 37},
+    {"op": "line", "id": "ch16_act_card_001", "key": "DLG_CH16_ACT_CARD_001", "speaker": "", "emotion": "", "voice": "", "src": 38},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 39},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 40}
+   ]
+  }
+ }
+}

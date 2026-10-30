@@ -165,7 +165,7 @@ def build_chapel(seed: int = 83, *, w: float = 6.0, d: float = 9.0, wall_h: floa
     noise = kc.Noise3(rng)
     crisp = kc.Weathering(moss=0.05, salt=0.15, wet=0.0, erosion=0.08)
     # M3-ENV-102: the whitewash kept up but not new: salt and damp low on the walls, the lime-wash streaked.
-    washed = kc.Weathering(moss=0.12, salt=0.35, wet=0.25, erosion=0.3, noise_scale_m=0.6)
+    washed = kc.Weathering(moss=0.06, salt=0.35, wet=0.08, erosion=0.3, noise_scale_m=0.6)  # big19: in order_marble 0
     out = []
     for lod in (False, True):
         mb = kc.MeshBuilder("order_chapel" + ("-lod1" if lod else ""))
@@ -186,7 +186,7 @@ def build_chapel(seed: int = 83, *, w: float = 6.0, d: float = 9.0, wall_h: floa
                  ((0.0, (door_h + wall_h) * 0.5, hd - t * 0.5), (door_w * 0.5, (wall_h - door_h) * 0.5, t * 0.5))]
         for c, half in walls:
             kc.rounded_block(mb, c, half, ww, radius=0.02, seg=seg, noise=None if lod else noise, disp_m=0.006,
-                             weather=washed, variation=float(rng.random()), wet_bias=0.15)
+                             weather=washed, variation=float(rng.random()), wet_bias=0.03)
         # The stepped base: a course of bare coral stone under the marble plinth, where the whitewash never held.
         kc.rounded_block(mb, (0.0, 0.09, 0.0), (hw + 0.2, 0.09, hd + 0.2), mb.material(M_STONE), radius=0.02,
                          seg=1 if lod else 2, noise=None if lod else noise, disp_m=0.01, weather=washed,

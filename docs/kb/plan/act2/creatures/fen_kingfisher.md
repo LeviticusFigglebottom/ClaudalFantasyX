@@ -1,10 +1,10 @@
 ---
-draft: pre-gate
+draft: built
 id: fen_kingfisher
 kind: wildlife (bird)
 chapter: 10
-exists: no
-meets_bar: n/a
+exists: yes
+meets_bar: yes (greybox placement; re-seat on the dressed kit)
 ---
 # fen_kingfisher (Ch10, Ossa Fen, the mangrove channels and Reedhollow's edge)
 
@@ -31,8 +31,11 @@ A 1-2 cm silhouette at walking distance against dark water; it reads by its wing
 The gull's generator (assets_src/wildlife/gull: lathe body and wing quads) at a third of the size, with a longer bill; a `kingfisher` kind in wildlife.json with its own budget share.
 
 ## State
-Does not exist.
+**Built 2026-10-30 (creatures track, ADR 0205, M4-A2P-056):**
+- assets/wildlife/kingfisher/kingfisher.glb (assets_src/wildlife/kingfisher/build_kingfisher.py): the gull generator's two meshes and masks, its own shape. A stocky body, a big head, a long black dagger bill, a stub tail, short rounded wings (0.26 m span); a tannin-brown back and crown, a blue-green flash on the wings and rump (sea_blue_cloth toward palm_green: not a glimmer teal, and it never glows), a pale rust breast, a pale throat, red feet. 796 triangles flying, 920 perched.
+- A `kingfisher` kind in wildlife.json: the gull's flock (WildlifeGullFlock, the same keys) tuned small and low, with fast whirring bursts (11 Hz), brief glides, a tight orbit, long perches and quick head turns. It has its own zone rows (`kingfishers`), budget (6) and two MultiMeshes (draw_calls 9).
+- Placed: three pairs in ch10_ossa_fen.json over the channels by Walk0, Walk2 and Walk3, perching on the root-walk rails facing the water, one of each pair sitting at the start. Review shot `wildlife_zone_ossa_fen_rail0` (self-rendered and viewed: a kingfisher on Walk0's rail, another flying).
+- Not built: a plunge-dive state. The tight, low orbit carries the read. Birds can pass through a greybox trunk (wildlife has no collision); re-seat the flocks on the dressed kit.
 
 ## Work at the gate (after `act1-complete`)
-Build, a wildlife.json kind with its budget, placement in the zone file with tools/creatures/wildlife_snap.gd and
-wildlife_audit.gd on the zone's dressed kit, a review shot, PROVENANCE rows.
+Left: re-seat the flocks and perches on the dressed kit when env-art replaces the greybox blocks.

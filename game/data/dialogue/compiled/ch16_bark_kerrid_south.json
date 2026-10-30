@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch16_bark_kerrid_south",
+ "source": "game/data/dialogue/ch16/ch16_bark_kerrid_south.dlg",
+ "start": "ch16_bark_kerrid_south",
+ "nodes": {
+  "ch16_bark_kerrid_south": {
+   "headers": {"location": "ch16/pale_rim"},
+   "ops": [
+    {"op": "line", "id": "ch16_bark_south_001", "key": "DLG_CH16_BARK_SOUTH_001", "speaker": "kerrid", "emotion": "soft_smile", "voice": "", "src": 5}
+   ]
+  }
+ }
+}

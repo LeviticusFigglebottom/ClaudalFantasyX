@@ -59,6 +59,13 @@ func test_heal_amount() -> void:
 	assert_eq(Formulas.heal_amount(10, 18, 5, 93, false), 213, "230 * 0.93 = 213.9 floors")
 
 
+func test_drain_heal() -> void:
+	assert_eq(Formulas.drain_heal(152, 50), 76)
+	assert_eq(Formulas.drain_heal(7, 50), 3, "3.5 floors")
+	assert_eq(Formulas.drain_heal(0, 50), 0)
+	assert_eq(Formulas.drain_heal(-40, 50), 0, "an absorbed hit drains nothing")
+
+
 func test_hit_chance() -> void:
 	assert_eq(Formulas.hit_chance(95, 14, 14, false), 95)
 	assert_eq(Formulas.hit_chance(95, 10, 30, false), 75)

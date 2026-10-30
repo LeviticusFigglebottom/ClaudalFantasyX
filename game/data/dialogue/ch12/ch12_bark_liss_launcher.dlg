@@ -1,0 +1,11 @@
+// Ch12 B02 bark: Liss on the narrow road. Tobin is alive: the line is a joke, and in hindsight it isn't.
+// "Rhen" if the lamp bench was played (ch11_lamp_repaired), otherwise "Sallow".
+title: ch12_bark_liss_launcher
+location: ch12/keth_pass
+---
+<<if $ch11_lamp_repaired>>
+    Liss [smile]: Rhen. If I fall off this mountain, the launcher goes to Tobin. #line:ch12_bark_launcher_001
+<<else>>
+    Liss [neutral]: Sallow. If I fall off this mountain, the launcher goes to Tobin. #line:ch12_bark_launcher_002
+<<endif>>
+===

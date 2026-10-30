@@ -57,7 +57,11 @@
     "spec_secondary_hex": "#9A948A",
     "spec_secondary": 0.3,
     "length_m": 0.65,
-    "scalp_cards": [130, 110, 60],
+    "scalp_cards": [
+      190,
+      150,
+      80
+    ],
     "back_groups": 6,
     "front_groups": 2,
     "cards_per_group": [26, 26],

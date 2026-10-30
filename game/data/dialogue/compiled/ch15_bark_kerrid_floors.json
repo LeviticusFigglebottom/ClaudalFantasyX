@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch15_bark_kerrid_floors",
+ "source": "game/data/dialogue/ch15/ch15_bark_kerrid_floors.dlg",
+ "start": "ch15_bark_kerrid_floors",
+ "nodes": {
+  "ch15_bark_kerrid_floors": {
+   "headers": {"location": "ch17/hollowmere"},
+   "ops": [
+    {"op": "if_not", "cond": ["flag", "ch15_kerrid_told"], "to": 3, "src": 5},
+    {"op": "line", "id": "ch15_kerrid_floors_001", "key": "DLG_CH15_KERRID_FLOORS_001", "speaker": "kerrid", "emotion": "soft_smile", "voice": "", "src": 6},
+    {"op": "goto", "to": 3, "src": 5}
+   ]
+  }
+ }
+}

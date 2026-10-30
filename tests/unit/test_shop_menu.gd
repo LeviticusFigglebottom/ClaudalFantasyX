@@ -35,6 +35,16 @@ func test_the_root_is_buy_sell_leave_and_a_shut_shop_says_why() -> void:
 	assert_false(shut.root_rows()[1]["enabled"], "and no Sell")
 	assert_true(shut.root_rows()[2]["enabled"], "Leave always works")
 	assert_eq(shut.root_desc(ShopMenuModel.ROW_BUY), tr("SHOP_ERR_CLOSED"))
+	# Act II's heresy (M4-A2P-082): an Order shop refuses heretics with its keeper's line; others keep trading.
+	flags.values["ch13_started"] = true
+	flags.values["ch15_reached_hollowmere"] = true
+	assert_true(_model(&"ansedra_purveyor").root_rows()[0]["enabled"], "the Order's purveyor trades before the trap")
+	flags.values[String(ShopMenuModel.HERETIC_FLAG)] = true
+	var order := _model(&"ansedra_purveyor")
+	assert_eq(order.closed_reason(), ShopMenuModel.ERR_HERETIC)
+	assert_false(order.root_rows()[0]["enabled"] or order.root_rows()[1]["enabled"], "no Buy, no Sell for heretics")
+	assert_eq(order.root_desc(ShopMenuModel.ROW_BUY), tr("SHOP_ERR_HERETIC"))
+	assert_true(_model(&"hollowmere_chandler").root_rows()[0]["enabled"], "a Saltwright keeper still trades")
 	var nowhere := _model(&"no_such_shop")
 	assert_eq(nowhere.title(), tr("SHOP_MENU_UNKNOWN_TITLE"))
 	assert_eq(nowhere.root_desc(ShopMenuModel.ROW_SELL), tr("SHOP_ERR_UNKNOWN_SHOP"))

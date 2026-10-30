@@ -10,8 +10,11 @@ owner: creatures-b
 **Built:** mesh, rig, `idle`, `attack`, `cast`, `hit`, `ko`, `phase_change`, `idle_risen`, `attack_risen`,
 `cast_risen`, `hit_risen` (M3-CRE-622; [art sheet](../../../art/creatures/act2/mangrove_drowner.md), risen lean 48°
 approved). Choreo has its intro (`boss_tall`, 2.2 s) and the `uprooted` moment (M3-BPR-418). Music `mangrove_drowner`,
-2 stems. **Missing:** the `enemies.json` row and the encounter, skills, break parts wired, its own clip per skill,
-`intro`, `ready`, `hit_b`, `idle_b`, the anchors, and the VFX (snagged motes, rising water).
+2 stems. **M4-CRB-002 (the move pass, 2026-10-30):** every clip in §4 is built, with the planted roots held by IK, every
+clip on its phase's idle first frame, the anchors, the snag roots' motes and their broken meshes, `contact` and the
+phase `clips` map in creatures.json (art sheet "As built", with the clip map for combat). **Missing:** the
+`enemies.json` row and the encounter, the skills, `clip_by_skill` and `break_parts` wired (combat; ready to paste), the
+boss seat, and the VFX (the motes' lift, rising water).
 
 **What the fight teaches:** a boss that holds the dead down. Breaking its roots frees motes that go **up**, the first
 time the player sees what release looks like (a seed for the Letting and the farewell-tide). The pillar is beauty in
@@ -70,12 +73,26 @@ every frame; only `root_stamp_risen` lifts and plants a pair.
 | phase `uprooted` | `phase_change` (built, 2.2 s) | — | wrenches free, `stump` splinters off, the trunk tips, three clusters plant | — | choreo `uprooted` moment; `vfx_phase` splinter burst |
 | KO | `ko_risen` *(proposed; maps the KO in phase 2)* | — (2.6 s) | the roots let go one by one, the trunk keels back, the mass slumps onto the water | — | every remaining mote lifts; the water's sinking VFX |
 
+**As built (M4-CRB-002):** every clip above exists under the name in its row; `idle_b`, `ready`, `ready_risen`,
+`hit_b_risen`, `snag_break` and `snag_break_risen` too, plus `rising_water_risen` so the field can be raised from either
+phase. `snag_break` is a full clip from idle (not additive). **Clip map for combat** (paste into `clip_by_skill` once
+the skills are in skills.json; the phase map sends each to its risen clip):
+
+| Skill | Clip | Contact (s) | Phase 2 |
+|---|---|---|---|
+| `drowner_haul` | `attack` | 0.7 | `attack_risen` 0.7 |
+| `rising_water` | `rising_water` | 1.0 | `rising_water_risen` 1.0 |
+| `drowner_snag` | `snag` | 0.75 | `snag_risen` 0.75 |
+| `root_stamp` | `root_stamp_risen` | 0.8 | phase 2 only |
+| `drink_the_fen` | `cast` | 1.0 | `cast_risen` 1.0 (phase 2 only) |
+
 ## 5. Phase change
 
 - **Trigger:** 50% HP (`at_hp_pct` 50).
 - **Clip:** `phase_change` (2.2 s), ending on `idle_risen`'s first frame.
 - **Stance:** the 48° lean on three root-feet. The phase `clips` map gains `snag` → `snag_risen`, `hit_b` →
-  `hit_b_risen`, `ready` → `ready_risen` *(proposed)* and `ko` → `ko_risen`, on top of the built three.
+  `hit_b_risen`, `ready` → `ready_risen` and `ko` → `ko_risen`, on top of the built three (built, M4-CRB-002, with
+  `rising_water` → `rising_water_risen` and `snag_break` → `snag_break_risen`).
 - **What the player learns:** the tree was the cage. Once it stands it hits everyone (`root_stamp`) and feeds
   (`drink_the_fen`), so a broken snag root, which weakens the haul, is worth more now.
 
@@ -99,7 +116,7 @@ every frame; only `root_stamp_risen` lifts and plants a pair.
   (mote lift and water field VFX staging); rendering (`glimmer_lift` look); audio (stems exist; SFX for snag and
   stamp); ui (bestiary, the part's broken state).
 
-## Open questions
+## Open questions (answered: ADR 0204, 2026-10-30; the drafts stand unless marked)
 
 1. Does breaking a snag root lower the haul's power or remove the Rooted effect? Draft: it weakens the haul (as the art
    sheet says), and Rooted stays the snag's.
