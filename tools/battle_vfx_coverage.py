@@ -90,6 +90,8 @@ INTENDED = {
     "unravel": "Act II (Ch12's cord moth), paused by ADR 0041; its effect comes with Act II",
     "tide_gather": "the Mangrove Drowner's charge (M4-A2P-010): its gather effect is battle-presentation's (M3-BPR-419)",
     "voice_glimmer": "Kesh's Glimmer voice (M4-A2P-025): her six voices' effects are M3-BPR-442's",
+    "cord_lift": "Hesk's cleanse (M4-A2P-024): Nhoa's, Hesk's and Ethren's effects are M3-BPR-443's",
+    "nhoa_echo": "Nhoa's echo plays the copied action's effect; her own double (M4-A2P-024) is M3-BPR-443's",
 }
 
 
