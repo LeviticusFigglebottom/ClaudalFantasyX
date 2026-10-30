@@ -19,8 +19,8 @@ with its own seed, so the Act I set renders byte for byte as before.
                       and its droplets), the tail slapping the water.
     gallery_ray       Ch11: a ray gliding through the air between pools. Slow wing air, a faint glassy shimmer (its
                       margin's sea-glow), the wing's slap.
-    rime_urchin       Ch11: an urchin of ice-crusted spines on an ice plinth. Its spine field rattles like icicles in
-                      wind, the stab crunches.
+    rime_urchin       Ch11: an urchin of salt-glass spines on a salt-glass plinth (re-materialled from ice, ADR
+                      0015). Its spine field rattles glassy and brittle in wind; the stab cracks a spine.
     conduit_crawler   Ch11, a Lit Age construct: a small brass cleaner under a glass dome. Ticking tripod feet, a
                       bristle brush, a squeaking wiper, a faint steady hum.
 
@@ -123,6 +123,8 @@ BRASS = [420.0, 1130.0, 2050.0, 3300.0, 4870.0]
 BRASS_DECAY = [0.35, 0.22, 0.14, 0.09, 0.06]
 ICE = [3150.0, 4400.0, 6100.0, 8200.0]
 ICE_DECAY = [0.05, 0.035, 0.025, 0.018]
+SALT_GLASS = [2350.0, 3870.0, 5520.0, 7690.0]      # the rime urchin's salt-glass spines: lower, longer than ice
+SALT_GLASS_DECAY = [0.11, 0.07, 0.045, 0.028]
 
 
 def clang(g: np.random.Generator, scale: float, amp: float = 1.0, ring: float = 1.0) -> np.ndarray:
@@ -576,25 +578,29 @@ class Ray:
 
 
 class Urchin:
-    """The rime urchin: a test of ice-crusted spines on an ice plinth. The spines rattle like icicles in wind."""
+    """The rime urchin: a test of salt-glass spines on a salt-glass plinth (the Lead, 2026-10-30, after ADR 0015's
+    "nothing frozen" in Lowlight; it was ice). The spines rattle glassy and brittle: longer, inharmonic rings than
+    ice's dry ticks, and a crack when one breaks."""
 
     @staticmethod
     def field(g, sec, rate, amp=1.0, swell=True):
-        """The spine field: tiny ice taps, their density swelling as a wave runs round the test."""
+        """The spine field: tiny salt-glass taps, their density swelling as a wave runs round the test."""
         x = buf(sec + 0.2)
         tt = 0.0
         while tt < sec:
             u = tt / sec
             a = np.sin(np.pi * u) ** 1.5 if swell else 1.0
-            place(x, tap(g, ICE, ICE_DECAY, float(a * g.uniform(0.2, 1.0)), 0.3, 0.12), tt)
+            place(x, tap(g, SALT_GLASS, SALT_GLASS_DECAY, float(a * g.uniform(0.2, 1.0)), 0.4, 0.15), tt)
             tt += 1.0 / (rate * (0.4 + 0.6 * (a if swell else 1.0))) * float(g.uniform(0.6, 1.4))
         return amp * x
 
     @staticmethod
     def crunch(g, amp=1.0):
-        x = buf(0.4)
-        place(x, crackle(g, 0.2, 1500, 2800, 0.9, 0.05), 0.0)
-        place(x, thump(g, 260, 140, 0.03, 0.6, 0.15), 0.0, 0.5)
+        """A spine cracking: a brittle glass crack, shards and a short ring."""
+        x = buf(0.8)
+        place(x, crackle(g, 0.15, 1500, 3600, 0.9, 0.04), 0.0)
+        place(x, thump(g, 260, 140, 0.03, 0.6, 0.15), 0.0, 0.4)
+        place(x, glass_ring(g, float(g.uniform(2100, 2900)), 0.5, 0.5), 0.01)
         return amp * x
 
     @classmethod
@@ -622,11 +628,12 @@ class Urchin:
 
     @classmethod
     def death(cls, p, v, g):
-        """A last clench, then the spines droop out and the test settles onto its ice."""
+        """A last clench, then the spines droop out and the test settles onto its glass plinth."""
         x = buf(2.6)
         place(x, cls.field(g, 0.2, 180, 1.0, False), 0.0)
-        place(x, train(g, 1.4, 50, 6, ICE, ICE_DECAY, 0.2, 0.3, 0.3), 0.3, 0.8)
-        place(x, cls.crunch(g, 0.7), 1.7)
+        place(x, train(g, 1.4, 50, 6, SALT_GLASS, SALT_GLASS_DECAY, 0.2, 0.3, 0.3), 0.3, 0.8)
+        place(x, tap(g, [880.0, 2150.0, 3600.0], [0.12, 0.06, 0.03], 0.8, 0.5, 0.05), 1.7)   # onto the glass plinth
+        place(x, cls.crunch(g, 0.5), 1.72)
         return x
 
     @classmethod
