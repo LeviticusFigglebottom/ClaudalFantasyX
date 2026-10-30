@@ -437,6 +437,18 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - **For env-art (the Prologue–Ch4 zones):** the bell room's orange haze washes the frame and Rhen's face (the
     lantern's volume or the room's fog). Please bring it down; the shot is ready for it.
 
+- **GPU QA pass 3 (gpu/act1-qa-3, on big18), my rows:**
+  - **34 FIXED-PENDING-GPU:** ae27be2f (the encounter guard; data was right) is in lead/gate-big19.
+  - **39 FIXED-PENDING-GPU:** de745039 (Ch9's road: Asha and Toma follow) is in lead/gate-big19. The gate camera is the
+    10-28 volume (also in big19).
+  - **23:** fc5643264 (ch01_bell_room U03 faces Rhen) is MERGE-READY, after big19. The haze asked of env-art.
+  - **48:** the end card before Ch4 (F8 start) is M3-CIN-1233, slice-polish's. I review when they log MERGE-READY.
+  - **49 MERGE-READY @ c9da92f3:** Pemakar's Harbour volume now looks seaward from the landward side (the old
+    view looked into the quay's lamps, which bloomed over a silhouetted party), and Weir has its own volume across its
+    lit quay (viewed: poi_views harbour and weir). **For env-art-b:** the harbour quay at the stair foot (x 0, z 22–26)
+    has no fire light within 16 m (only the weir's lamp at 15.4, 23.5), so the party there stays dark until the night
+    fill lands. Checks: test_act1_poi_views, test_zone_map_pois OK; validate_data clean.
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
