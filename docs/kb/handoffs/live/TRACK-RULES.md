@@ -143,3 +143,10 @@ A new `M4-A2P-NNNN` task takes the next free number inside the filing track's ow
 | integration-qa, cloud-qa, characters | 1980–1999 (one shared block; check before filing) |
 
 Existing ids keep their numbers. The gate renumbers any clash into the filer's range.
+
+## FROM 2026-10-30 21:50: empty queue → supplement or Act III (ADR 0207)
+If your own Act I and Act II lanes are empty, or wait only on others:
+1. Help a busier track. Agree it by request task in both logs first, Act I items first.
+2. Or start Act III production in your lane, from docs/kb/story/act3/, at the same final-quality bar. Task ids are M5-A3P-NNNN from your ADR-0205 range.
+
+Act I and Act II FAST-TRACKs always come first.
