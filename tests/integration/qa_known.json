@@ -16,147 +16,16 @@
       "pattern": "is not performed yet \\(placeholder\\)$",
       "task": "M3-HER-1123",
       "owner": "slice-polish"
+    },
+    {
+      "pattern": "^CutsceneGrade: no grade '[a-z0-9_]+' in the zones' grade tables",
+      "task": "M3-ENV-106",
+      "owner": "environment",
+      "note": "M2-FP-120 made a missing grade a soft failure by design: the colour script names grades nobody has built yet (Ch3's ch03, ch03_steps, ch03_boss, ch03_shrine_int on big18); test_cutscene_directives lists them."
     }
   ],
   "capsules_doc": "test_qa_capsules.gd: zone file name -> the actors (StandIn's parent) still shown as capsules, and 'battle' -> party members with no battle actor scene. All handed to their owners: M3-HER-1125 (characters: the Act I cast's models), M3-HER-1120 (ui-menus: Liss's battle row; her actor is ready). Remove a name when its model lands; the guard then fails if the capsule comes back. Each zone is checked as it loads and again under every layout variant's flags (Ch9's dawn road: Kerrid at the milestone, act1-chapters' staging of characters' M3-CHR-505 model). 'battle_foes' -> every encounter enemy, spawn, summon and Vowbound with no actor scene, with its owner and task.",
   "capsules": {
-    "ashcrown.tscn": [
-      "kerrid",
-      "matron",
-      "tender"
-    ],
-    "brightwater_ferry.tscn": [
-      "ferrymaster",
-      "passenger_child",
-      "passenger_reed",
-      "purser",
-      "spar_wraith",
-      "trader_a",
-      "trader_b"
-    ],
-    "brine_shoals.tscn": [
-      "brand_girl",
-      "clerk",
-      "hound",
-      "inquisitor",
-      "kerrid",
-      "stillguard_a",
-      "stillguard_b",
-      "stillguard_c",
-      "wright_child_a",
-      "wright_child_b",
-      "wrights"
-    ],
-    "coilspire.tscn": [
-      "fenn",
-      "liss",
-      "tender"
-    ],
-    "corrow.tscn": [
-      "boy",
-      "child_a",
-      "child_b",
-      "child_c",
-      "figure",
-      "fisher_a",
-      "gatekeeper",
-      "hobb",
-      "ivo",
-      "kerrid",
-      "liss",
-      "marra",
-      "netmender",
-      "officer",
-      "pell",
-      "stillguard_a",
-      "stillguard_b",
-      "townsfolk_a",
-      "townsfolk_b",
-      "watch_a",
-      "watch_b"
-    ],
-    "corrow_night.tscn": [
-      "child",
-      "fenn",
-      "hobb",
-      "kerrid",
-      "kerrid_stair",
-      "liss",
-      "marra",
-      "mourner_1",
-      "mourner_2",
-      "mourner_3",
-      "mourner_4",
-      "pell",
-      "stillguard",
-      "tender",
-      "vigil_asha",
-      "vigil_kerrid",
-      "vigil_liss",
-      "vigil_pell",
-      "vigil_rhen",
-      "vigil_toma",
-      "vigil_ysolde"
-    ],
-    "haluna_wake.tscn": [
-      "child",
-      "fisher",
-      "neme",
-      "netmender",
-      "osu",
-      "reed",
-      "vendor",
-      "ysolde_edge"
-    ],
-    "oruvel.tscn": [
-      "cook",
-      "kell",
-      "netmender",
-      "netmender_2",
-      "pen_child",
-      "roof_child",
-      "sabe",
-      "scaleman",
-      "skipper_sadi"
-    ],
-    "pemakar.tscn": [
-      "boat_fisher",
-      "boat_seller",
-      "elder",
-      "ferryman",
-      "ferryman_mate",
-      "folder",
-      "folder_2",
-      "forge_child",
-      "garo",
-      "grave_child",
-      "lacquerer",
-      "sweeper",
-      "weir_child"
-    ],
-    "tamsule.tscn": [
-      "board",
-      "boatman",
-      "child",
-      "fisher",
-      "kerrid",
-      "liss",
-      "netmender",
-      "tavi",
-      "trader_boatman",
-      "vendor"
-    ],
-    "tamsule_bell_galleries.tscn": [
-      "ione",
-      "kerrid",
-      "liss",
-      "oruvel_diver_1",
-      "oruvel_diver_2",
-      "poolkeeper",
-      "sorrin_diver_1",
-      "sorrin_diver_2",
-      "tavi"
-    ],
     "battle": [],
     "battle_foes": {
       "ilun": "creatures, M3-HER-1126 (the Vowbound's battle bodies)",
@@ -173,13 +42,28 @@
       "scree_crawler": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
       "glass_skate": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
       "rim_crawler": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts"
-    },
-    "ossa_fen.tscn": [
-      "pell"
-    ]
+    }
   },
   "unraised_doc": "test_qa_threads.gd: a flag a thread's chapter or main objectives wait on that its thread never raises -> why it isn't a softlock, and the task that closes the gap.",
   "unraised": {
-    "ch02_ate_at_nemes": "test_fp_thread reloads Haluna after the tideline win without HalunaStory.begin(), so B02 (Neme's table, which sets it) never plays in the thread; the game plays it on arrival and test_haluna_slice_beats covers it. M2-HER-1128 (slice-polish): play B02 in the thread."
+    "ch10_farewell_tide_seen": "An Act II objective's step, not a softlock: no chapter beat waits on it. Set by ch10_farewell_tide, which the greybox flow doesn't play yet. Closes with M4-A2P-114 (act1-chapters: the greybox flow plays ch10_farewell_tide).",
+    "ch10_complete": "An Act II objective's step, not a softlock: no chapter beat waits on it. Set by ch10_dawn_gate, which the greybox flow doesn't play yet. Closes with M4-A2P-114 (act1-chapters: the greybox flow plays ch10_dawn_gate).",
+    "ch11_nhoa_bound": "An Act II objective's step, not a softlock: no chapter beat waits on it. Set by ch11_nhoa, which the greybox flow doesn't play yet. Closes with M4-A2P-114 (act1-chapters: the greybox flow plays ch11_nhoa).",
+    "ch11_complete": "An Act II objective's step, not a softlock: no chapter beat waits on it. Set by ch11_held_by_you, which the greybox flow doesn't play yet. Closes with M4-A2P-114 (act1-chapters: the greybox flow plays ch11_held_by_you).",
+    "ch12_ram_felled": "An Act II objective's step, not a softlock: no chapter beat waits on it. Set by the Avalanche Ram's battle with this victory_flag, which the greybox flow doesn't play yet. Closes with M4-A2P-114 (act1-chapters: the greybox flow plays the Avalanche Ram's battle with this victory_flag).",
+    "ch12_hesk_bound": "An Act II objective's step, not a softlock: no chapter beat waits on it. Set by ch12_hesk, which the greybox flow doesn't play yet. Closes with M4-A2P-114 (act1-chapters: the greybox flow plays ch12_hesk).",
+    "ch12_ysolde_confessed": "An Act II objective's step, not a softlock: no chapter beat waits on it. Set by ch12_forty_seven_voices, which the greybox flow doesn't play yet. Closes with M4-A2P-114 (act1-chapters: the greybox flow plays ch12_forty_seven_voices).",
+    "ch12_complete": "An Act II objective's step, not a softlock: no chapter beat waits on it. Set by ch12_down_the_other_side, which the greybox flow doesn't play yet. Closes with M4-A2P-114 (act1-chapters: the greybox flow plays ch12_down_the_other_side).",
+    "ch13_ethren_bound": "An Act II objective's step, not a softlock: no chapter beat waits on it. Set by ch13_ethren, which the greybox flow doesn't play yet. Closes with M4-A2P-114 (act1-chapters: the greybox flow plays ch13_ethren).",
+    "ch13_read_ledgers": "An Act II objective's step, not a softlock: no chapter beat waits on it. Set by ch13_archive_ledgers, which the greybox flow doesn't play yet. Closes with M4-A2P-114 (act1-chapters: the greybox flow plays ch13_archive_ledgers).",
+    "ch13_read_cantor_roll": "An Act II objective's step, not a softlock: no chapter beat waits on it. Set by ch13_archive_roll, which the greybox flow doesn't play yet. Closes with M4-A2P-114 (act1-chapters: the greybox flow plays ch13_archive_roll).",
+    "ch13_archive_read": "An Act II objective's step, not a softlock: no chapter beat waits on it. Set by ch13_archive_hands, which the greybox flow doesn't play yet. Closes with M4-A2P-114 (act1-chapters: the greybox flow plays ch13_archive_hands).",
+    "ch13_pact_of_silence": "An Act II objective's step, not a softlock: no chapter beat waits on it. Set by ch13_the_pact, which the greybox flow doesn't play yet. Closes with M4-A2P-114 (act1-chapters: the greybox flow plays ch13_the_pact).",
+    "ch13_complete": "An Act II objective's step, not a softlock: no chapter beat waits on it. Set by ch13_the_pact, which the greybox flow doesn't play yet. Closes with M4-A2P-114 (act1-chapters: the greybox flow plays ch13_the_pact).",
+    "ch14_started": "A Ch14 objective in a ch13/ zone (the Lacquer Court), so Ch13's thread checks it (M3-UI-1242); not a softlock. Set by ch14.json's arrive (Ch14's own chapter). Closes with M4-A2P-114 (a row 'chapter' field, or Ch13's thread playing into Ch14).",
+    "ch14_vows_spoken": "A Ch14 objective in a ch13/ zone (the Lacquer Court), so Ch13's thread checks it (M3-UI-1242); not a softlock. Set by ch14_the_vows. Closes with M4-A2P-114 (a row 'chapter' field, or Ch13's thread playing into Ch14).",
+    "ch14_declared_heretics": "A Ch14 objective in a ch13/ zone (the Lacquer Court), so Ch13's thread checks it (M3-UI-1242); not a softlock. Set by ch14_the_vows. Closes with M4-A2P-114 (a row 'chapter' field, or Ch13's thread playing into Ch14).",
+    "ch14_steps_held": "A Ch14 objective in a ch13/ zone (the Lacquer Court), so Ch13's thread checks it (M3-UI-1242); not a softlock. Set by the water-steps set piece's escape, and ch14_first_ripple. Closes with M4-A2P-114 (a row 'chapter' field, or Ch13's thread playing into Ch14).",
+    "ch14_complete": "A Ch14 objective in a ch13/ zone (the Lacquer Court), so Ch13's thread checks it (M3-UI-1242); not a softlock. Set by ch14_left_standing. Closes with M4-A2P-114 (a row 'chapter' field, or Ch13's thread playing into Ch14)."
   }
 }

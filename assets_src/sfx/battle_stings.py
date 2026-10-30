@@ -41,22 +41,30 @@ TEXTURE = -22.0
 
 
 def tideline():
-    """The tide line rises: a band of surf noise climbing, bubbles thickening, a low swell that crests and spills."""
+    """The tide line rises: a band of surf noise climbing, bubbles thickening, a low swell that crests and spills.
+
+    Timed to the stinger (battle_transition.json, BattleStinger): the line rises over rise_sec 0.5 and holds 0.25,
+    then SceneRouter fades to black over 0.35 s and the battle cue comes in (battle_in_sec) once the battle scene is
+    in. So the swell crests and spills with the line (CREST), its tail falls through the hold and the fade, and it is
+    all but gone (about -14 dB) at black, never cresting over the battle cue's first bars (M3-AUD-864, the encounter
+    pass; it crested at 1.55 s before, after the cut).
+    """
     g = rng(SEED + 100)
-    N = B._n(2.4)
+    crest = 0.55
+    N = B._n(1.8)
     t = B._t(N)
-    rise = np.clip(t / 1.55, 0, 1) ** 1.8 * np.where(t > 1.55, np.exp(-(t - 1.55) / 0.35), 1.0)
+    rise = np.clip(t / crest, 0, 1) ** 1.3 * np.where(t > crest, np.exp(-(t - crest) / 0.3), 1.0)
     surf = B._sweep_band(B._noise(g, N), 300.0, 2600.0, q=1.1, steps=20) * rise
     body = filt(B._noise(g, N), [bq_lowpass(380, 0.7)]) * rise * (1 + 0.25 * smooth_noise(N, 3.0, g))
-    under = B._sine_glide(N, 48.0, 62.0, 1.4) * B._swell(N, 1.5, 1.8, 0.45)
+    under = B._sine_glide(N, 48.0, 62.0, 1.4) * B._swell(N, crest - 0.05, 1.5, 0.35)
     buf = 0.55 * surf + 0.35 * body + 0.22 * under
-    buf += B._bubbles(g, N, 40, 1.2, 4.0, 0.2, 1.6, amp=0.16, grow=0.8)
-    M = B._n(0.85)
-    spill = filt(B._noise(g, M), [bq_bandpass(1400, 0.8)]) * B._decay(M, 0.22, attack=0.03)
-    B._place(buf, 0.45 * spill, 1.5)
-    B._place(buf, B._bubbles(g, B._n(0.9), 18, 2.0, 5.0, 0.0, 0.5, amp=0.18), 1.55)
+    buf += B._bubbles(g, N, 30, 1.2, 4.0, 0.1, crest + 0.05, amp=0.16, grow=0.8)
+    M = B._n(0.7)
+    spill = filt(B._noise(g, M), [bq_bandpass(1400, 0.8)]) * B._decay(M, 0.18, attack=0.03)
+    B._place(buf, 0.45 * spill, crest - 0.05)
+    B._place(buf, B._bubbles(g, B._n(0.7), 14, 2.0, 5.0, 0.0, 0.4, amp=0.18), crest)
     buf = filt(buf, [bq_highpass(32, 0.7)])
-    return B._tail_fade(B._room(buf, 1.4, 0.2, SEED + 101, high=6000), 0.3)
+    return B._tail_fade(B._room(buf, 1.1, 0.2, SEED + 101, high=6000), 0.3)
 
 
 def bark():

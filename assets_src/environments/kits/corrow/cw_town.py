@@ -34,6 +34,21 @@ def _n2(noise: kc.Noise3, X, Z, scale: float, octaves: int = 3, off: float = 0.0
     return noise.fbm(p, octaves)
 
 
+def ground_salt(noise: kc.Noise3, X, Z):
+    """Drying salt in broad pale patches (8-20 m), so the floor isn't one dark plain from the wall; the base 0.1 at the
+    cell edge, where the zone's rotated tiles meet (M3-ENV-1330)."""
+    fade = bsc.edge_fade(X, Z, HALF, 4.0)
+    patch = kc.smoothstep(0.45, 0.7, _n2(noise, X, Z, 11.0, 3, 29.0))
+    return 0.1 + 0.45 * patch * fade
+
+
+def ground_tracks(noise: kc.Noise3, X, Z):
+    """The trodden tracks between the doors, darker (the AO channel) in long soft bands; 0.95 at the cell edge."""
+    fade = bsc.edge_fade(X, Z, HALF, 4.0)
+    band = kc.smoothstep(0.5, 0.75, _n2(noise, X * 0.45, Z, 9.0, 2, 41.0))
+    return 0.95 - 0.32 * band * fade
+
+
 def ground_height(noise: kc.Noise3, X, Z):
     """Trodden earth: gentle relief (+-3 cm) and shallow hollows that hold puddles; 0 at the cell edge."""
     fade = bsc.edge_fade(X, Z, HALF, 3.0)
@@ -52,17 +67,13 @@ def build_ground(name: str = "lowtown_ground", seed: int = 861) -> list[kc.MeshB
         xs = np.linspace(-HALF, HALF, n)
         i_earth = mb.material(cw.M_EARTH)
         bsc.heightfield(mb, xs, xs, lambda X, Z: ground_height(noise, X, Z), i_earth,
-                        wet=lambda X, Z, Y: np.clip((-Y - 0.012) / 0.02, 0, 1) * 0.9 + 0.1,
-                        salt=lambda X, Z, Y: np.full_like(X, 0.1),
-                        ao=lambda X, Z, Y: np.full_like(X, 0.95), erosion=0.4, variation=float(rng.random()))
-        if not lod:
-            # Worn cobble where the field says so (per triangle).
-            i_cob = mb.material(cw.M_COBBLE)
-            c = bsc.tri_centroids(mb)
-            f = _n2(noise, c[:, 0], c[:, 2], 7.0, 3, 41.0)
-            for t, v in enumerate(f):
-                if v > 0.6:
-                    mb.tri_mat[t] = i_cob
+                        # the hollows damp, not mirrors: at full wetness they reflected the dark sky as black holes
+                        # at grazing angles (M3-ENV-1327)
+                        wet=lambda X, Z, Y: np.clip((-Y - 0.012) / 0.02, 0, 1) * 0.5 + 0.1,
+                        salt=lambda X, Z, Y: ground_salt(noise, X, Z),
+                        ao=lambda X, Z, Y: ground_tracks(noise, X, Z), erosion=0.4, variation=float(rng.random()))
+        # No per-triangle cobble (M3-ENV-1330: its patches broke along the grid's triangles and stopped dead at the
+        # rotated tiles' edges). The earth carries the town's wear in its vertex colour instead.
         out.append(mb)
     return out
 

@@ -46,6 +46,16 @@
    "id": "hold_input_end",
    "doc": "Ends the held input hold_input began: the scene's time runs on its own again and the prompt goes.",
    "args": []
+  },
+  {
+   "id": "release_input",
+   "doc": "M4-CIN-1302 (act2_ch10.md B09, the farewell-tide): a no-fail release. From here the scene's time stands still while the player holds the host's action, and the scene goes on the first moment it is let go (CutsceneHoldGate's release gate). Put it straight after a hold_input_end, so the player is holding when it opens. No timer, no fail. prompt names the prompt row in the host's data (a loc key, e.g. \"Release\").",
+   "args": [{"name": "prompt", "type": "id"}]
+  },
+  {
+   "id": "act_card",
+   "doc": "Shows the act card between acts (M3-C09-09; act1_ch09.md B11, the end of Act I). ActCard (game/ui/cards/act_card.gd) listens to the scene's sequencer and shows act's row of game/data/ui/act_card.json.",
+   "args": [{"name": "act", "type": "int"}]
   }
  ]
 }

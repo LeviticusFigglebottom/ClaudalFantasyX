@@ -1,0 +1,40 @@
+// Ch15 B13 "The pyre-raft" (C, 2 min, no dialogue). act2_ch15.md §2 B13; ADR 0204 §12 (the pyre-raft
+// reprises `hush_first_verse`) and §13 (Tobin's light caught in a Saltwright lamp, and something is still
+// lost). H12: dusk in the flotilla's lee; Tobin on the raft under the bridal cloth, the wedding cord in his
+// hands; all four thousand on the hulls, quiet. H13: Aldous Varrow pushes it off with his dock-hook; it is
+// lit; it burns going out on the tide. Tobin's held motes drift low toward the hulls and into the salt-glass
+// housing he holds up; he closes it (bound, steady). THE GLASS CRACKS in the raft's heat with a small sharp
+// crack: a thread escapes, held, sideways over the water with the smoke, and is gone. H14: Asha watches; so
+// does Pell, who turns his back to the water and to the lamp. Liss takes the cracked lamp and holds it.
+title: ch15_pyre_raft
+location: ch17/hollowmere
+---
+@letterbox on
+@camera H12
+@music hush_first_verse fade=3.0
+@wait 5.0
+@camera H13
+@anim aldous_varrow push_off pyre_raft
+@sfx hearth_crackle
+@wait 4.0
+@vfx glimmer_held at=pyre_raft count=6 rate=slow
+@anim aldous_varrow raise lamp_housing
+@wait 3.0
+@sfx lamp_housing_close
+@vfx glimmer_bound at=lamp_housing count=5
+@wait 2.0
+@sfx lamp_crack
+@vfx glimmer_held at=lamp_crack count=1 rate=slow
+@wait 3.0
+@camera H14
+@anim asha look_at lamp_housing
+@wait 2.0
+@anim pell turn_back
+@wait 2.0
+@anim liss take lamp_housing
+@wait 4.0
+@music silence fade=4.0
+<<set $ch15_pyre_raft = true>>
+@fade out 3.0
+@letterbox off
+===

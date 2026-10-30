@@ -5,10 +5,16 @@
 title: ch01_bark_outer_mooring
 location: ch01/oruvel
 ---
+// PC GPU QA pass 5, row 58: Sadi is in frame for her lines (O07_sadi, her single at the mooring); O07 stays the
+// beat's one insert on the name-board, with no one in it.
+@camera O07_sadi
 Skipper_Sadi [smile]: Sallow! Come to complain about my arithmetic again? #line:ch01_bark_sadi_001
 Rhen [smile]: You paid me for half a lamp-housing. I sold you a whole one. #line:ch01_bark_sadi_002
+// M3-CIN-1235 (PC GPU QA row 58): O07 had been pressed against the hull's side with no board; it now looks at the
+// name-board on her stern, and the insert ends before Sadi's answer, which she gives in the field camera.
 @camera O07
 @wait 1.5
+@camera O07_sadi
 Skipper_Sadi [laugh]: The other half was my company. We sail at the turn. #line:ch01_bark_sadi_003
 @camera release
 ===

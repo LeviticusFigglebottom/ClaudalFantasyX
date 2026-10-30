@@ -1,8 +1,9 @@
 extends TestCase
 ## M3-AUD-18: stings on the battle presentation's announcements. StingAudio plays battle_stings.json's row for an
 ## EventBus.dialogue_event (the encounter's own row first), swaps in the version without sub-bass under reduced
-## audio, holds the boss intro's music duck for its time and lets it go, ignores events with no row; every row
-## resolves and imports; and the director listens to EventBus and drives its ducks.
+## audio, holds the boss intro's music duck for its time and lets it go, dips the field under the tide line until the
+## router's black, ignores events with no row; every row resolves and imports; and the director listens to EventBus
+## and drives its ducks.
 
 var played: Array[StringName] = []
 var duck_calls: Array = []
@@ -53,6 +54,25 @@ func test_events_play_their_rows() -> void:
 	_done()
 
 
+## M4-A2P-092: an Act II boss staged before its encounter exists (choreo.json boss_intro.by_enemy) is named by its
+## intro's title key; a written encounter's own row still wins over the title key.
+func test_a_staged_boss_is_named_by_its_title_key() -> void:
+	var s := _listener()
+	var staged := ["mangrove_drowner", "lamp_engine", "avalanche_ram", "wakefin"]
+	for boss: String in staged:
+		var title := "BOSS_TITLE_%s" % boss.to_upper()
+		assert_eq(s.on_event(&"boss_intro", ["ch1x_unwritten", title]), StringName("sting_boss_" + boss), boss)
+	assert_eq(
+		s.on_event(&"boss_intro", ["ch01_hullgnaw", "BOSS_TITLE_WAKEFIN"]),
+		&"sting_boss_hullgnaw",
+		"the encounter's own row wins"
+	)
+	reduced = true
+	assert_eq(s.on_event(&"boss_intro", ["x", "BOSS_TITLE_WAKEFIN"]), &"sting_boss_wakefin_soft", "reduced audio")
+	reduced = false
+	_done()
+
+
 func test_reduced_audio_swaps_the_boss_stings() -> void:
 	var s := _listener()
 	reduced = true
@@ -77,8 +97,22 @@ func test_the_boss_intro_holds_its_duck_then_lets_go() -> void:
 	s.advance(sec)
 	assert_eq(duck_calls, [[&"boss_intro", true], [&"boss_intro", false]], "and let go after duck_sec")
 	assert_true(s.held.is_empty(), "nothing left held")
+	_done()
+
+
+func test_the_tide_line_dips_the_field_and_lets_go_before_the_black() -> void:
+	var s := _listener()
+	var row := (s.data["events"] as Dictionary)["battle_stinger"] as Dictionary
+	var sec := float(row["duck_sec"])
 	s.on_event(&"battle_stinger", ["x"])
-	assert_eq(duck_calls.size(), 2, "the tide line ducks nothing")
+	assert_eq(duck_calls, [[&"encounter", true]], "the field music dips as the field dims")
+	s.advance(sec + 0.01)
+	assert_eq(duck_calls, [[&"encounter", true], [&"encounter", false]], "and lets go after duck_sec")
+	var c := BattleStinger.load_config()
+	var ramp := float(((AudioData.table(AudioData.MIX)["ducks"] as Dictionary)["encounter"] as Dictionary)["sec"])
+	var black := BattleStinger.duration(c, false) + float(preload("res://game/core/scene_router.gd").FADE_SEC)
+	assert_true(sec <= BattleStinger.duration(c, false) + 0.001, "held no longer than the rise and hold")
+	assert_true(sec + ramp < black, "back at level before the router's black, so the battle cue never enters ducked")
 	_done()
 
 

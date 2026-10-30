@@ -7,6 +7,11 @@ extends Node
 ##   click, and holding the button holds Cancel (a cutscene's hold to skip, M2-UI-26).
 ## - **Pad defaults everywhere:** ControlsModel.defaults() runs here, at startup, so pad A and B
 ##   confirm and cancel (controls.json pad_defaults) in every scene, not only after boot.tscn.
+## - **Pad repeat (the Lead's Act I menu pass, controller only):** a key held on a list repeats (the OS's echo) but a
+##   held d-pad button or stick did not, so a pad player tapped through every row of a long list. A held pad direction
+##   (repeat_actions) now repeats after repeat_delay_sec, every repeat_rate_sec, as a press and release of the action
+##   marked with repeat_device. Whether it is still held is read from the pad itself, never the action, so a repeat
+##   can never leave an action stuck down.
 ## - **Last device:** remembers whether the pad or the keyboard and mouse was used last
 ##   (InputNames.using_pad), so key glyphs and prompts switch with the player's hands.
 ## - **Debug launch options (M2-UI-28):** in debug builds, `--pseudo-loc` or HYMN_PSEUDO_LOC turns
@@ -22,6 +27,11 @@ const DEBUG_PSEUDO_LOC := "res://game/core/debug/pseudo_loc.gd"
 
 var _d: Dictionary = {}
 var _cancel_buttons: Array[int] = []
+## The pad direction being held for repeat: its action, the pad event that pressed it, and how long it has been held.
+var _held_action: StringName = &""
+var _held_event: InputEvent
+var _held_sec := 0.0
+var _next_repeat_sec := 0.0
 
 
 func _ready() -> void:
@@ -48,13 +58,88 @@ static func load_data() -> Dictionary:
 
 
 func _input(event: InputEvent) -> void:
+	notice(event)
+	if is_cancel_button(event):
+		get_viewport().set_input_as_handled()
+		send_cancel_edge(get_viewport(), event.is_pressed())
+
+
+## The last device and the pad's held direction, from `event`. A screen that takes an event in its own _input runs
+## before this autoload (a node later in the tree gets _input first), so it calls this first (the Lead's controller
+## pass, 2026-10-30: in the save list the prompts stayed on the keys and a held d-pad never repeated). Noticing an
+## event twice is harmless.
+func notice(event: InputEvent) -> void:
 	var was := InputNames.using_pad
 	InputNames.note(event, float(_d.get("pad_deadzone", 0.5)))
 	if InputNames.using_pad != was:
 		device_changed.emit(InputNames.using_pad)
-	if is_cancel_button(event):
-		get_viewport().set_input_as_handled()
-		send_cancel_edge(get_viewport(), event.is_pressed())
+	note_pad_hold(event)
+
+
+## Starts or ends a pad direction's hold (repeat_actions) from a pad event; other events are ignored.
+func note_pad_hold(event: InputEvent) -> void:
+	if not (event is InputEventJoypadButton or event is InputEventJoypadMotion):
+		return
+	for a: Variant in _d.get("repeat_actions", []):
+		var action := StringName(str(a))
+		if not InputMap.has_action(action):
+			continue
+		if event.is_action_pressed(action) and _held_action != action:
+			_held_action = action
+			_held_event = event
+			_held_sec = 0.0
+			_next_repeat_sec = float(_d.get("repeat_delay_sec", 0.0))
+		elif event.is_action_released(action) and _held_action == action:
+			_held_action = &""
+
+
+func _process(delta: float) -> void:
+	advance_repeat(delta)
+
+
+## Moves the held pad direction's clock on by `delta` seconds and sends its repeats that are due. Returns how many.
+func advance_repeat(delta: float, held: Callable = Callable()) -> int:
+	if _held_action == &"":
+		return 0
+	var still := bool(held.call()) if held.is_valid() else pad_still_holds(_held_event)
+	if not still:
+		_held_action = &""
+		return 0
+	_held_sec += delta
+	var sent := 0
+	var rate := maxf(float(_d.get("repeat_rate_sec", 0.0)), 0.01)
+	while _held_sec >= _next_repeat_sec:
+		send_repeat(get_viewport(), _held_action)
+		_next_repeat_sec += rate
+		sent += 1
+	return sent
+
+
+## The action being repeated (&"" when no pad direction is held).
+func held_action() -> StringName:
+	return _held_action
+
+
+## True while the pad still holds what `event` pressed: its button, or its stick past the deadzone the same way.
+func pad_still_holds(event: InputEvent) -> bool:
+	if event is InputEventJoypadButton:
+		var b := event as InputEventJoypadButton
+		return Input.is_joy_button_pressed(b.device, b.button_index)
+	if event is InputEventJoypadMotion:
+		var m := event as InputEventJoypadMotion
+		var now := Input.get_joy_axis(m.device, m.axis)
+		return absf(now) >= float(_d.get("pad_deadzone", 0.5)) and signf(now) == signf(m.axis_value)
+	return false
+
+
+## Delivers one repeat of `action` to `vp`: a press, then its release, marked with the data's repeat_device.
+static func send_repeat(vp: Viewport, action: StringName) -> void:
+	for down: bool in [true, false]:
+		var a := InputEventAction.new()
+		a.action = action
+		a.pressed = down
+		a.device = int(load_data().get("repeat_device", 0))
+		vp.push_input(a)
 
 
 ## True for a mouse button press that stands for Cancel.

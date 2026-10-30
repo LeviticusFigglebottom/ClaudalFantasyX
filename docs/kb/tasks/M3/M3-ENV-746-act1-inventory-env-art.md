@@ -2,7 +2,7 @@
 id: M3-ENV-746
 title: "Act I inventory (M3-HER-1140): env-art's 15 rows"
 role: environment
-status: doing
+status: review
 owner_session: "env-art (session_01YbaV2c8yquRHqj6afQYg89)"
 depends_on: []
 milestone: M3
@@ -39,5 +39,9 @@ ADR 0041: clear env-art's rows of `docs/kb/qa/act1_final_inventory.md` (integrat
 ## Notes
 - 2026-10-28 (env-art): the derelict arena's flames self-rendered (battle_arena_derelict, _deck_night,
   _ash_terrace_lanternfall all pass, rmse ≤ 0.0074).
+
+## Notes (2026-10-29)
+- The four Haluna tree rows are gone (M3-ENV-750, 3bd6865f; `placeholder_audit.py` runtime scan: env-art 3, none medium).
+- The three left (the Prologue `City/Vigils` capsule; `reefball_drop_proxy` / `tb_drop_proxy`) are characters' and env-art-b's; the Lead had integration-qa re-route them in the audit's owner map (10-29).
 
 ## Review log

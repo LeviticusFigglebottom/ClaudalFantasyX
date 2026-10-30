@@ -7,10 +7,16 @@
   "ch01_net_pen": {
    "headers": {"location": "ch01/oruvel"},
    "ops": [
-    {"op": "line", "id": "ch01_net_pen_001", "key": "DLG_CH01_NET_PEN_001", "speaker": "child", "emotion": "afraid", "voice": "", "src": 6},
-    {"op": "line", "id": "ch01_net_pen_002", "key": "DLG_CH01_NET_PEN_002", "speaker": "rhen", "emotion": "determined", "voice": "", "src": 7},
-    {"op": "cue", "cue": "mark", "args": ["pen_child", "bridge", "run"], "kwargs": {}, "src": 8},
-    {"op": "line", "id": "ch01_net_pen_003", "key": "DLG_CH01_NET_PEN_003", "speaker": "rhen", "emotion": "determined", "voice": "", "src": 9}
+    {"op": "cue", "cue": "light", "args": ["PenKey", "on"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "light", "args": ["PenRim", "on"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "camera", "args": ["P01"], "kwargs": {}, "src": 12},
+    {"op": "line", "id": "ch01_net_pen_001", "key": "DLG_CH01_NET_PEN_001", "speaker": "child", "emotion": "afraid", "voice": "", "src": 13},
+    {"op": "line", "id": "ch01_net_pen_002", "key": "DLG_CH01_NET_PEN_002", "speaker": "rhen", "emotion": "determined", "voice": "", "src": 14},
+    {"op": "cue", "cue": "mark", "args": ["pen_child", "bridge", "run"], "kwargs": {}, "src": 15},
+    {"op": "line", "id": "ch01_net_pen_003", "key": "DLG_CH01_NET_PEN_003", "speaker": "rhen", "emotion": "determined", "voice": "", "src": 16},
+    {"op": "cue", "cue": "light", "args": ["PenKey", "off", 0.5], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "light", "args": ["PenRim", "off", 0.5], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 19}
    ]
   }
  }

@@ -112,8 +112,7 @@
       "npc_id": "shopkeeper",
       "attach": "child",
       "node_name": "Villager",
-      "actor": "netmender",
-      "_note": "M3-CRE-100: the shopkeeper wears the netmender's model until M2-CHR-100 (moved here from game/data/flow/haluna_villagers.json).",
+      "_note": "M3-CRE-100: the shopkeeper wore the netmender's model until M3-CHR-512 built their own (the Lead, 2026-10-30: named interactable villagers wear their bespoke models).",
       "stand_in": "NPCs/Town/Shopkeeper",
       "talk": "NPCs/Town/ShopkeeperTalk"
     },
@@ -121,8 +120,7 @@
       "npc_id": "smith",
       "attach": "child",
       "node_name": "Villager",
-      "actor": "fisher",
-      "_note": "M3-CRE-100: the smith wears the fisher's model until M2-CHR-100 (moved here from game/data/flow/haluna_villagers.json).",
+      "_note": "M3-CRE-100: the smith wore the fisher's model until M3-CHR-512 built their own (the Lead, 2026-10-30: named interactable villagers wear their bespoke models).",
       "stand_in": "NPCs/Town/Smith",
       "talk": "NPCs/Town/SmithTalk"
     },
@@ -130,8 +128,7 @@
       "npc_id": "innkeeper",
       "attach": "child",
       "node_name": "Villager",
-      "actor": "vendor",
-      "_note": "M3-CRE-100: the innkeeper wears the vendor's model until M2-CHR-100 (moved here from game/data/flow/haluna_villagers.json).",
+      "_note": "M3-CRE-100: the innkeeper wore the vendor's model until M3-CHR-512 built their own (the Lead, 2026-10-30: named interactable villagers wear their bespoke models).",
       "stand_in": "NPCs/Town/Innkeeper",
       "talk": "NPCs/Town/InnkeeperTalk"
     }

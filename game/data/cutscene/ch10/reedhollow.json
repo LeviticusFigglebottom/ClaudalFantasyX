@@ -1,0 +1,294 @@
+{
+ "_doc": "M4-CIN-1304: Ch10 Reedhollow's cutscene shots and marks (cinematics'), for ch10_causeway, ch10_why_swim, ch10_farewell_tide (B09-B10) and ch10_dawn_gate, in the layout's frame (the causeway runs x -1.8..31.8 at z 0; the shore is x 59.8..67.8; the clutch faces the lagoon, -x). R03 and R06 replace the layout's ids of the same name: the chapter plan's R03 (the platform two-shot) and R06 (the tilt into the stars) are the scripts' R06 and T03. Shot lenses from act2_ch10.md section 7.",
+ "replace": [
+  "R03",
+  "R06"
+ ],
+ "shots": {
+  "R03": {
+   "pos": [
+    -0.8,
+    2.3,
+    0.9
+   ],
+   "look_at": [
+    6.0,
+    1.9,
+    -0.1
+   ],
+   "fov": 20
+  },
+  "R06": {
+   "pos": [
+    37.0,
+    1.1,
+    -7.8
+   ],
+   "look_at": [
+    33.2,
+    0.8,
+    -11.1
+   ],
+   "fov": 27
+  },
+  "T01": {
+   "pos": [
+    70.5,
+    2.6,
+    3.5
+   ],
+   "look_at": [
+    60.0,
+    1.0,
+    0.0
+   ],
+   "fov": 38
+  },
+  "T02": {
+   "pos": [
+    60.5,
+    0.6,
+    -5.0
+   ],
+   "look_at": [
+    52.0,
+    2.5,
+    1.0
+   ],
+   "fov": 53
+  },
+  "T03": {
+   "pos": [
+    59.0,
+    1.2,
+    -2.0
+   ],
+   "look_at": [
+    52.0,
+    14.0,
+    0.0
+   ],
+   "fov": 67
+  },
+  "F02": {
+   "pos": [
+    68.6,
+    1.9,
+    -1.2
+   ],
+   "look_at": [
+    55.0,
+    2.8,
+    0.4
+   ],
+   "fov": 38
+  },
+  "T04": {
+   "pos": [
+    70.8,
+    3.1,
+    -2.0
+   ],
+   "look_at": [
+    61.0,
+    1.0,
+    -0.6
+   ],
+   "fov": 40
+  },
+  "T05": {
+   "pos": [
+    66.2,
+    1.6,
+    3.6
+   ],
+   "look_at": [
+    66.6,
+    1.55,
+    0.0
+   ],
+   "fov": 22
+  },
+  "T06": {
+   "pos": [
+    67.9,
+    1.5,
+    -2.6
+   ],
+   "look_at": [
+    65.5,
+    1.3,
+    0.3
+   ],
+   "fov": 38
+  },
+  "R07": {
+   "pos": [
+    -0.6,
+    2.4,
+    4.8
+   ],
+   "look_at": [
+    -0.8,
+    1.2,
+    0.0
+   ],
+   "fov": 30
+  },
+  "R08": {
+   "pos": [
+    -0.2,
+    1.15,
+    1.4
+   ],
+   "look_at": [
+    -0.95,
+    1.0,
+    -0.35
+   ],
+   "fov": 14
+  },
+  "R09": {
+   "pos": [
+    3.5,
+    1.7,
+    -3.0
+   ],
+   "look_at": [
+    -0.4,
+    1.3,
+    0.4
+   ],
+   "fov": 38
+  },
+  "R10": {
+   "pos": [
+    -4.5,
+    1.65,
+    1.2
+   ],
+   "look_at": [
+    -1.0,
+    1.6,
+    0.5
+   ],
+   "fov": 18
+  }
+ },
+ "marks": {
+  "causeway_gate": [
+   6.0,
+   0.0,
+   0.0,
+   90.0
+  ],
+  "ring_owa": [
+   29.5,
+   0.0,
+   0.0,
+   270.0
+  ],
+  "causeway_last_root": [
+   -1.0,
+   0.0,
+   0.5,
+   90.0
+  ],
+  "causeway_last_root_b": [
+   -1.0,
+   0.0,
+   -0.6,
+   270.0
+  ],
+  "kerrid_scar": [
+   -0.95,
+   1.0,
+   -0.35,
+   270.0
+  ],
+  "pell_shell": [
+   -1.1,
+   1.55,
+   0.5,
+   90.0
+  ],
+  "gate_asha": [
+   0.6,
+   0.0,
+   0.4,
+   90.0
+  ],
+  "root_walk_out": [
+   -2.0,
+   0.0,
+   0.0,
+   90.0
+  ],
+  "line_2": [
+   -0.4,
+   0.0,
+   -0.6,
+   90.0
+  ],
+  "line_3": [
+   1.0,
+   0.0,
+   0.6,
+   90.0
+  ],
+  "line_4": [
+   2.4,
+   0.0,
+   -0.6,
+   90.0
+  ],
+  "line_5": [
+   3.8,
+   0.0,
+   0.6,
+   90.0
+  ],
+  "line_6": [
+   5.2,
+   0.0,
+   -0.6,
+   90.0
+  ],
+  "line_7": [
+   6.6,
+   0.0,
+   0.6,
+   90.0
+  ],
+  "platform_edge_child": [
+   33.6,
+   0.0,
+   -11.6,
+   225.0
+  ],
+  "platform_edge_rhen": [
+   31.3,
+   0.0,
+   -10.9,
+   0.0
+  ],
+  "lagoon_swim": [
+   37.5,
+   -0.6,
+   -8.5,
+   45.0
+  ],
+  "shore_front": [
+   66.6,
+   0.0,
+   0.0,
+   90.0
+  ],
+  "lagoon_motes": [
+   54.0,
+   1.5,
+   0.0,
+   0.0
+  ]
+ }
+}

@@ -18,7 +18,7 @@ Greybox: M4-C11-02:
 - `ch11/sunken_vey`: the landing, gallery roofs, the conduit court with `conduit_mark`, the side gallery to `fig_end`, `to_lowlight`;
 - `ch11/lowlight`: the atrium's `lamp_bench`, EngineHall, the well-shaft's two flights, the sanctum `nhoa`, `to_vey`.
 
-Fights: M4-C11-03 (`gallery_ray`, `rime_urchin`).
+Fights: M4-C11-03 (`gallery_ray`, `rime_urchin`). ADR 0204 (the Lead's answers, 2026-10-30) applies; §8 is used in §5.
 
 Scripts: none yet (M4-A2P-002). Sample lines set the voice only.
 
@@ -147,7 +147,7 @@ See §5.
 ### B07. Twice (C, 1 min)
 - **T03:** the Engine on its knees in the water, its rings folded back, its core's salt-glass globe cracked open. The bound light in the core **goes still, and then goes up.** A small lift of motes rises out of the broken globe in slow vertical spirals, turning `glimmer_lift` gold as they climb (color rule 1), up through the collapsed vault bay into the grey (the color script's 3 s warm grade lift, `lut_ch11_vey`). Only the core's: the dark rings' lamps let theirs go too, a mote or two from each. (Rule 3: what is released rises.)
 - **T04:** the party watching, as in Ch10's B05. This time somebody says it.
-  - Ysolde (reads `ch10_drowner_felled`): *"That is twice."*
+  - Ysolde (reads `ch10_drowner_defeated`): *"That is twice."*
   - Asha: *"They were waiting. Inside it. All this time."*
   - Liss stands looking at the dead frame with her jaw tight. Every lamp in her own gear is the same kind of light (liss_varrow.md; she sees it and doesn't say it). (Act III's "Every lamp on this ship is somebody" starts here, unspoken.)
 - ~20 words.
@@ -199,7 +199,7 @@ Declared in `game/data/flags.tres` when the gate passes (M4-A2P-011 adds them). 
 | `ch11_lamp_repaired` | B10 (optional) | Ch12, Ch15, Ch17 | **Ch12:** Liss calls him "Rhen" on the pass; **Ch15:** she lets him sit with her at the bier (B02); **Ch17:** they restore the Kite's first lamp the same way |
 | `ch11_complete` | B11 (end) | flow (Ch12 gate) | — |
 
-**Act I/II flags this chapter reads:** `ch06_liss_read_lantern`, `ch08_liss_found_marks`, `ch10_drowner_felled`, `ch10_tide_witnessed`.
+**Act I/II flags this chapter reads:** `ch06_liss_read_lantern`, `ch08_liss_found_marks`, `ch10_drowner_defeated`, `ch10_farewell_tide_seen`.
 
 ---
 
@@ -230,7 +230,7 @@ Declared in `game/data/flags.tres` when the gate passes (M4-A2P-011 adds them). 
 1. **The lamps (100–50%).** Three gimballed rings, four lamps each.
    - **The gathering:** a telegraphed charge (one or two turns: every lamp swings to face the target and brightens in sequence). It lands a heavy Glimmer blow and pushes the target back on the timeline.
    - **The rings are break parts** (lamp_engine.md's proposal; M3-CRE-623's notes: a charge skill per ring, and `Ring0..2`/`Broken` meshes). Each broken ring darkens its lamps (a mote or two rises from each: B07's foreshadow begins in the fight) and **shortens the gathering's charge-up**: fewer lamps, less light.
-   - **The conduit crawlers** (`conduit_crawler`, the design default from the roster: a repairing add, M4-A2P-022): two salt-glass shells on brass feet come out of the trimming rail when a ring breaks, and **repair it** in two turns unless they're stopped. They ignore the party until the Engine is struck. They're fragile and evasive, so Rhen's speed and Ysolde's magic are the answer.
+   - **The conduit crawlers** (`conduit_crawler`, a repairing add, M4-A2P-022; **ADR 0204 §8: two at the start, dormant**): two salt-glass shells on brass feet sit on the dais edge in front of the Engine's knees from the first turn, lit and still. When a ring breaks they wake, walk to the Engine's leg (`crawler_mend`), and **repair it** in two turns unless they're stopped. They ignore the party until the Engine is struck. They're fragile and evasive, so Rhen's speed and Ysolde's magic are the answer.
    - **Liss's answer:** her steal unseats a lamp from a ring (a smaller break), and her gadget can jam a crawler's repair (a Delay).
 2. **The core (`opened`, below 50%).** The rings fold back like petals, and the cracked salt-glass core shows. The trimming arms strike faster, and the core is the weak point: **Kerrid's armour break** opens it, and heavy blows end it.
 
@@ -357,7 +357,7 @@ New shot ids for `ch11/sunken_vey` and `ch11/lowlight` (to add to lowlight.md be
 2. The lamp-bench held inputs (B10): the same widget family.
 
 ### Combat (M4-A2P-011, M4-A2P-022, M4-A2P-024)
-§5: the Engine's ring break parts and charge skills, the gathering's telegraph, the conduit crawler as a repairing add (`restores_part`), the `opened` core. Nhoa's `vowbound.json` row (`bound_flag: ch11_nhoa_bound`).
+§5: the Engine's ring break parts and charge skills, the gathering's telegraph, the conduit crawler as a repairing add (`restores_part`), the `opened` core. Nhoa's `vowbound.json` row (`bound_flag: ch11_nhoa_bound`); her echo copies **ordinary skills only**, never a boss's charge (ADR 0204 §8).
 
 ### Systems / Chapters (M4-A2P-011)
 1. **Speakers:** none new beyond Nhoa's sung verse (a `nhoa` sung line, no portrait).

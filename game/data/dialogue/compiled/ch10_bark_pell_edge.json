@@ -1,0 +1,18 @@
+{
+ "format": 1,
+ "scene": "ch10_bark_pell_edge",
+ "source": "game/data/dialogue/ch10/ch10_bark_pell_edge.dlg",
+ "start": "ch10_bark_pell_edge",
+ "nodes": {
+  "ch10_bark_pell_edge": {
+   "headers": {"location": "ch10/ossa_fen"},
+   "ops": [
+    {"op": "if_not", "cond": ["flag", "ch10_drowner_defeated"], "to": 3, "src": 5},
+    {"op": "line", "id": "ch10_bark_pedge_001", "key": "DLG_CH10_BARK_PEDGE_001", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 6},
+    {"op": "goto", "to": 5, "src": 5},
+    {"op": "line", "id": "ch10_bark_pedge_002", "key": "DLG_CH10_BARK_PEDGE_002", "speaker": "pell", "emotion": "worried", "voice": "", "src": 8},
+    {"op": "goto", "to": 5, "src": 7}
+   ]
+  }
+ }
+}

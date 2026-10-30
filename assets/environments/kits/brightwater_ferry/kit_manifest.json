@@ -13,6 +13,17 @@
         "alongside_gear-lod1": 348
       }
     },
+    "deck_shrine": {
+      "budget": [
+        3000,
+        200
+      ],
+      "bytes": 41940,
+      "lods": {
+        "deck_shrine": 444,
+        "deck_shrine-lod1": 72
+      }
+    },
     "derelict_hulk_a": {
       "budget": [
         16000,
@@ -125,12 +136,12 @@
     },
     "islet_landing": {
       "budget": [
-        16000,
+        20000,
         1500
       ],
-      "bytes": 406944,
+      "bytes": 726096,
       "lods": {
-        "islet_landing": 12376,
+        "islet_landing": 17050,
         "islet_landing-lod1": 616
       }
     },

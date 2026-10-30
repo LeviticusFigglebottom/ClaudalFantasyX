@@ -67,7 +67,7 @@
       "materials": "res://assets/characters/kerrid/materials/",
       "face_poses": "res://game/levels/_tests/characters/kerrid/kerrid_face_poses.json",
       "out_dir": "res://assets/ui/portraits/heroes",
-      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "emotions": ["neutral", "smile", "determined", "worried", "grief", "guilty"],
       "camera": {}
     },
     {
@@ -89,6 +89,16 @@
       "out_dir": "res://assets/ui/portraits/heroes",
       "emotions": ["neutral", "smile", "determined", "worried", "grief"],
       "camera": {}
+    },
+    {
+      "id": "pell",
+      "stage": "res://game/levels/_tests/characters/pell/pell_stage.tscn",
+      "model": "res://assets/characters/pell/pell.glb",
+      "materials": "res://assets/characters/pell/materials/",
+      "face_poses": "res://game/levels/_tests/characters/pell/pell_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {"distance": 0.86, "aim_drop": 0.05}
     },
     {
       "id": "stillguard",
@@ -590,6 +600,11 @@
     {
       "id": "ethren",
       "scene": "res://game/creatures/ethren/ethren_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "kesh",
+      "scene": "res://game/creatures/kesh/kesh_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures"
     },
     {

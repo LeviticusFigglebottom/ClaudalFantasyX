@@ -1,0 +1,164 @@
+// Ch15 B05 "After", B06 "The shoal", B07 "The confession" and B08 "Still below" (C/E, ~9 min).
+// act2_ch15.md §2 B05-B08. THE REVEAL, mandated (SPEC §3.5), by Kerrid's own word, at sea, among friends.
+// RULE 1: nobody performs a rite on him, nobody attacks, nobody exposes him; he tells them before anyone asks.
+// RULE 2: every mote is HELD and moves SIDEWAYS: the shoal's dead toward him, his own leaving his hands from
+// the rope-burns (≤ 0.6). Nothing rises; nothing turns gold (his light lifts only at H09).
+// RULE 4: the facts are exact (ADR 0022 + sweeps): he KEPT THE GATE and opened it for Imra every dawn and
+// dusk, never walked beside her; he HELD DACE'S LINE at the rings for eight low tides, and they did not drink
+// together; Imra and Dace never met before the stair; she went down for a diver she had never met; he does
+// NOT know what became of Dace; no rank, no title, no promise.
+// RULE 5: Kerrid's one long speech (voice guide). Short blocks, broken by the others. `kerrid_at_sea` is a
+// bed for a voice: it never swells under a line, and drops out for two bars on "Your father, Rhen."
+// The camera never stands over him: every shot of him is at his seated eye height or below.
+title: ch15_the_shoal
+location: ch15/open_sea
+---
+@letterbox on
+@camera U07
+@music unlamped fade=1.0
+@anim asha sleep_sitting
+@wait 4.0
+@camera K01
+@music silence fade=3.0
+@vfx glimmer_held at=shoal_floor count=48 rate=slow
+@wait 3.0
+@camera K02
+@vfx glimmer_held at=shoal_rising count=36 rate=slow
+@wait 3.0
+@camera K03
+@vfx glimmer_held at=kerrid_orbit count=18 rate=slow
+@wait 3.0
+@camera K04
+@music kerrid_at_sea fade=4.0
+@vfx glimmer_held at=kerrid_scar count=6 rate=slow
+@wait 3.0
+@anim asha wake
+@anim rhen wake
+@wait 1.5
+<<jump ch15_the_confession>>
+===
+// B07, K05 onward. Kerrid SITS DOWN on the deck by the bier: the first time anyone has seen him sit. He
+// rests his forearms on his knees and holds his hands still, palms up; the motes leaving them slow. The
+// party gathers without being asked: Asha nearest, Rhen opposite, Toma standing, Ysolde, Liss by the bier
+// with her hand on the cloth, Pell at the rail with his back to the water. Nobody reaches for him.
+title: ch15_the_confession
+---
+@camera K05
+@anim kerrid sit_down
+@sfx kerrid_sits
+@wait 3.0
+@mark asha reveal_asha walk
+@mark rhen kerrid_opposite walk
+@mark toma reveal_toma walk
+@mark ysolde reveal_ysolde walk
+@wait 2.0
+Kerrid [neutral]: I'll tell it before you ask. You've been very patient. #line:ch15_conf_001
+@camera K06
+Kerrid [neutral]: I kept the Fisher Stair at Corrow. Fourteen years. Captain of the watch. #line:ch15_conf_002
+Kerrid [neutral]: Fishers, all of us. No rank. The wall's the Order's. The stair's ours. #line:ch15_conf_003
+@camera K07
+@anim kerrid look_at asha
+Kerrid [neutral]: Eleven years ago a Cantor came for the Coilspire trial. The path to the headland goes out through my gate. #line:ch15_conf_004
+Kerrid [soft_smile]: I opened it for her every dawn. Every dusk. We said good morning. She laughed at the wrong times. #line:ch15_conf_005
+@camera K08
+@anim kerrid look_at rhen
+Kerrid [neutral]: Same eight days I'd hired a Low Reaches lamp-diver. To re-seat the rings at the stair foot, under low water. #line:ch15_conf_006
+Kerrid [neutral]: I held his line. Eight low tides. He slouched. #line:ch15_conf_007
+@camera K09
+Kerrid [neutral]: They never met. She was a Cantor with a Stillguard escort. He was a wright with his marks under his sleeves. #line:ch15_conf_008
+Kerrid [neutral]: I was the only man in Corrow who knew them both. #line:ch15_conf_009
+@camera K10
+Kerrid [sad]: On the eighth day the sea went out and came back early. He was under the stair foot at the last ring. #line:ch15_conf_010
+@wait 2.0
+Kerrid [grief]: She heard a man drowning under my stair and went down for him. A diver she'd never met. Your father, Rhen. #line:ch15_conf_011 #tn:"The first time Kerrid uses Rhen's name in the game. It should land hard."
+@camera K11
+@wait 3.5
+@camera K12
+Kerrid [sad]: I held the gate past the hour. Went down after them. Got them both on the stair. #line:ch15_conf_012
+Kerrid [tender]: She hummed to the children going up ahead of her. Kept them climbing. #line:ch15_conf_013
+@camera K13
+@anim kerrid turn_palms
+Kerrid [neutral]: I was last on the hand-line when the sea came over. It ran through my hands. #line:ch15_conf_014
+@wait 1.5
+Kerrid [determined]: I held it. #line:ch15_conf_015
+@camera K14
+@face kerrid guilty
+Kerrid [guilty]: Your father reached back for me. He missed. I don't think he forgave himself. #line:ch15_conf_016
+@wait 2.0
+@camera K15
+Kerrid [neutral]: I woke at the next low tide, at the foot of the stair, with the drowned. Corrow had already lit my name. #line:ch15_conf_017
+Kerrid [neutral]: I'd stood on the wall twice while they Stilled one of us. I was gone before light. #line:ch15_conf_018 #tn:"'Stilled': the Order's rite on the dead who stay (the Stilling). It is mentioned, never shown."
+@camera K16
+@anim kerrid look_at asha
+Kerrid [grief]: I got your mother up the stair. That's all I did. I got her up so she could walk to the Choir. #line:ch15_conf_019
+@camera K17
+@anim asha touch comb
+@wait 1.5
+@anim asha look_at rhen_lantern
+Asha [grief]: A man with a lantern like that brought me this. I was seven. #line:ch15_conf_020 #tn:"'This' is the tortoiseshell comb in her hair. 'A lantern like that': Rhen's lantern's twin."
+@anim rhen look_at rhen_lantern
+@wait 2.5
+@camera K18
+Toma [neutral]: Your breath. In Ullar. #line:ch15_conf_021
+Kerrid [neutral]: Yes. #line:ch15_conf_022
+<<if $ch08_fishwife_called>>
+    @wait 2.0
+    Toma [sad]: The watch at Corrow tells it every Rising. The captain who held the stair. I served seven years on that wall and never knew his face. #line:ch15_conf_023 #long
+    Kerrid [neutral]: Nobody did. That was the point of a watch. #line:ch15_conf_024
+<<endif>>
+// act2_ch15_direction.md: K18b takes in Rhen for the rest of the talk (K18 is Toma and Kerrid's two-shot).
+@camera K18b
+<<if $ch05_heard_straw_cape_tale>>
+    Rhen [sad]: The big man in the straw cape. The one who pulls them out. #line:ch15_conf_025
+    Kerrid [neutral]: Somebody has to. #line:ch15_conf_026
+<<endif>>
+<<if $ch08_fishwife_called>>
+    Kerrid [sad]: Marra knew me. On the stair. I went down a step so she'd stop looking. #line:ch15_conf_027
+<<endif>>
+<<if $ch13_sat_at_moorings>>
+    Kerrid [soft_smile]: You stood at the moorings with me. You didn't ask. I noticed. #line:ch15_conf_028
+<<endif>>
+<<if $ch14_steps_held>>
+    Kerrid [neutral]: Held a stair again. At a wedding. Didn't expect that. #line:ch15_conf_029
+<<endif>>
+@wait 2.0
+Rhen [grief]: What happened to him? After? #line:ch15_conf_030
+Kerrid [sad]: I don't know. I was in no state to ask. #line:ch15_conf_031 #tn:"Dry, not a joke: he had just drowned."
+@anim kerrid look_at sea_south
+@wait 2.0
+Kerrid [neutral]: She walked on to the Choir. A captain doesn't come off the wall while there's anyone below. #line:ch15_conf_032
+<<set $ch15_kerrid_revealed = true>>
+<<jump ch15_still_below>>
+===
+// B08 "Still below" (E, 1.5 min). K19: nobody moves to do anything to him. Asha sits down beside him, not as
+// a Cantor, as a person, shoulder to shoulder; she does NOT touch his hands. The motes leaving them slow and
+// stop (the scar eases to Ch10's faint leak over ~6 s); the shoal's motes drift on past the barge and sink
+// back, still held, still sideways. Then each of them, briefly; Kerrid last, opening his Act III voice.
+// No "Be level" from Toma (it's gone).
+title: ch15_still_below
+---
+@camera K19
+@mark asha kerrid_beside walk
+@anim asha sit_beside kerrid
+@wait 6.0
+@anim liss look_at pell
+// K19b: the group round the bier for the talk (K19 is Asha sitting down beside him).
+@camera K19b
+Liss [angry]: You knew? #line:ch15_below_001
+Pell [neutral]: From the first day. It was his to say. #line:ch15_below_002
+<<set $ch15_pell_said_he_knew = true>>
+Ysolde [tender]: Thank you for telling us, Kerrid. #line:ch15_below_003
+@anim toma nod kerrid
+@wait 1.5
+Rhen [sad]: You knew who I was. In Pemakar. #line:ch15_below_004
+Kerrid [neutral]: Yes. #line:ch15_below_005
+Rhen [sad]: You could've said. #line:ch15_below_006
+Kerrid [guilty]: You'd have asked me the end. I didn't have it. #line:ch15_below_007
+@wait 2.0
+Kerrid [soft_smile]: I have nothing left to hide. I may as well talk. #line:ch15_below_008
+@camera K20
+@music silence fade=6.0
+@wait 6.0
+@fade out 3.0
+@letterbox off
+===

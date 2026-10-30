@@ -17,7 +17,11 @@
       {"id": "shop", "on": "near", "tag": "shop", "flag": "tut_shop_seen",
        "title_key": "TIP_SHOP_TITLE", "body_key": "TIP_SHOP_BODY"},
       {"id": "menu_save", "on": "field_ready", "requires": ["tut_field_menu_seen"], "flag": "tut_menu_save_seen",
-       "title_key": "TIP_MENU_SAVE_TITLE", "body_key": "TIP_MENU_SAVE_BODY"}
+       "title_key": "TIP_MENU_SAVE_TITLE", "body_key": "TIP_MENU_SAVE_BODY"},
+      {"id": "swell", "on": "field_ready", "requires": ["tut_menu_save_seen"], "flag": "tut_swell_seen",
+       "title_key": "TIP_SWELL_TITLE", "body_key": "TIP_SWELL_BODY"},
+      {"id": "seven", "on": "field_ready", "requires": ["ch10_started"], "flag": "tut_seven_seen",
+       "title_key": "TIP_SEVEN_TITLE", "body_key": "TIP_SEVEN_BODY"}
     ]
   }
 }

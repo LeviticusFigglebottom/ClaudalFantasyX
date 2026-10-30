@@ -81,6 +81,32 @@ func test_every_act1_zone_lists_its_runtime_loads() -> void:
 			assert_true(ResourceLoader.exists(str(p)), "%s: %s exists" % [path.get_file(), p])
 
 
+## ADR 0042 §4: a VillagerLayer builds after its zone's own set-up, so its villagers' actors were missing from the
+## lists until the generator let each zone settle. Each villager a zone's npc table dresses (its `actor`, else its
+## npc_id, as VillagerLayer._make reads it) is in that zone's list, or it loads in the swap frame.
+func test_each_zone_s_villager_actors_are_listed() -> void:
+	var scenes := (_json(ResidentLoads.SCENE_LOADS_PATH)["scene_loads"] as Dictionary)["scenes"] as Dictionary
+	var reg := LocationRegistry.load_default()
+	var checked := 0
+	for f in DirAccess.get_files_at(VillagerLayer.DATA_DIR):
+		if not f.ends_with(".json"):
+			continue
+		var data := VillagerLayer.load_data(VillagerLayer.DATA_DIR + f)
+		var path := reg.scene_of(StringName(str(data.get("zone", ""))))
+		if not scenes.has(path):
+			continue
+		for row: Dictionary in data.get("villagers", []):
+			var actor := str(row.get("actor", row.get("npc_id", "")))
+			var actor_path := VillagerLayer.ACTOR_PATH % [actor, actor]
+			if ResourceLoader.exists(actor_path):
+				checked += 1
+				assert_true(
+					(scenes[path] as Array).has(actor_path),
+					"%s lists %s (rerun tools/loading/scene_loads.gd)" % [path.get_file(), actor_path]
+				)
+	assert_true(checked > 5, "the villager tables were read")
+
+
 ## A change loads the zone's own list behind the same hold, and the next change drops it.
 func test_a_change_loads_the_zone_s_list_and_drops_the_last() -> void:
 	var router := Node.new()
@@ -109,6 +135,34 @@ func test_a_change_loads_the_zone_s_list_and_drops_the_last() -> void:
 	while not r.is_ready():
 		r.poll()
 		OS.delay_msec(5)
+	_done()
+
+
+## A field battle keeps the zone's loads, so the change back to the field reads nothing again (the human playtest's
+## seconds of black after a won fight, 2026-10-30).
+func test_a_field_battle_keeps_the_zone_s_loads_for_the_return() -> void:
+	ResidentLoads.run_headless = true
+	var router := Node.new()
+	router.set_script(load("res://tests/fixtures/resident/hold_router.gd"))
+	_add(router)
+	var r := ResidentLoads.install(router)
+	var ch1 := "res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn"
+	r.load_scene(ch1)
+	while not r.is_ready():
+		r.poll()
+		OS.delay_msec(5)
+	var zone := r.scene.keys()
+	assert_false(zone.is_empty(), "the zone's resources are in")
+	r.load_scene(SceneSwapProbe._queue_battle(&"ch02_tideline"))
+	for path: String in zone:
+		assert_true(r.scene.has(path), "kept through the battle: %s" % path)
+	while not r.is_ready():
+		r.poll()
+		OS.delay_msec(5)
+	BattleRequest.clear()
+	r.load_scene(ch1)
+	assert_true(r.is_ready(), "the return has nothing to load")
+	assert_false(r.prewarm_pending(), "nor anything to prewarm again")
 	_done()
 
 

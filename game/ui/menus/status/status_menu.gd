@@ -164,6 +164,18 @@ func _render_vitals(vm: Dictionary) -> void:
 	var lvl := _add_label(&"DimLabel", Rect2(r.position.x, r.position.y, r.size.x, name_h), str(_shown["level_text"]))
 	lvl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	var y := r.position.y + name_h + gap
+	# A note (Kerrid's after the reveal) tucks under the name row; the gap between the gauges narrows to keep the
+	# block's height.
+	var note := str(_shown.get("note", ""))
+	var after_gauge := gap * 2.0
+	if note != "":
+		var note_y := r.position.y + name_h - HudLayout.num(vm, "note_lift")
+		var nl := _add_label(
+			&"HelpDimLabel", Rect2(r.position.x, note_y, r.size.x, HudLayout.num(vm, "note_height")), note
+		)
+		HudLayout.fit_label(nl, r.size.x, HudLayout.num(vm, "note_min_scale"))
+		y = nl.position.y + nl.size.y + gap
+		after_gauge = gap
 	for v: Array in [["hp", "STATUS_MENU_HP", "max_hp"], ["mp", "STATUS_MENU_MP", "max_mp"]]:
 		var role := StringName(str(v[0]))
 		var tag := _add_label(&"HudName", Rect2(r.position.x, y, r.size.x, line_h), tr(str(v[1])))
@@ -176,7 +188,7 @@ func _render_vitals(vm: Dictionary) -> void:
 			num.add_theme_color_override(&"font_color", _c(&"danger"))
 		y += line_h + gap
 		_add_gauge(role, Rect2(r.position.x, y, r.size.x, gauge_h), int(_shown[role]), int(_shown[v[2]]))
-		y += gauge_h + gap * 2.0
+		y += gauge_h + after_gauge
 
 
 func _render_stats(sm: Dictionary) -> void:
@@ -218,6 +230,7 @@ func _row_cells(at: Vector2, widths: Array, h: float, texts: Array, roles: Array
 		var l := _add_label(variation, Rect2(x, at.y, w, h), str(texts[i]))
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT if i == 0 else HORIZONTAL_ALIGNMENT_RIGHT
 		l.add_theme_color_override(&"font_color", _c(StringName(str(roles[i]))))
+		HudLayout.fit_label(l, w)  # the Act I UI pass: at 130 % "Lattice" ran into "Base"
 		x += w
 
 
@@ -242,7 +255,12 @@ func _render_carried(cm: Dictionary, top: float) -> void:
 	var names: Array = _shown["statuses"]
 	var none := names.size() == 1 and str(names[0]) == tr(StatusMenuModel.NONE_KEY)
 	var text := tr(StatusMenuModel.JOIN_KEY).join(PackedStringArray(names))
-	_line(Rect2(r.position.x, y, r.size.x, 0.0), text, &"text_dim" if none else &"danger", true)
+	y = _line(Rect2(r.position.x, y, r.size.x, 0.0), text, &"text_dim" if none else &"danger", true)
+	var descs: Array = _shown.get("status_descs", [])
+	var lines := int(HudLayout.num(cm, "desc_lines"))
+	for desc: String in descs:  # what each one does; one alone needs no name, it is just above
+		var shown := desc.get_slice(": ", 1) if descs.size() == 1 else desc
+		y = _line(Rect2(r.position.x, y, r.size.x, 0.0), shown, &"text_dim", true, &"HelpDimLabel", lines)
 
 
 func _render_side(sm: Dictionary) -> void:
@@ -263,6 +281,13 @@ func _render_side(sm: Dictionary) -> void:
 	var lines: Array = (_shown["lattice"] as Dictionary)["lines"]
 	for i in lines.size():
 		y = _line(Rect2(r.position.x, y, r.size.x, 0.0), str(lines[i]), &"text", i == lines.size() - 1)
+	# A caller's Vowbound (Act II screens.md section 3), here rather than under Swell: the left column has no room
+	# once all seven heroes are in the list.
+	var bound: Dictionary = _shown.get("bound", {})
+	if bool(bound.get("has", false)):
+		y += HudLayout.num(sec, "section_gap")
+		y = _section_header(Rect2(r.position.x, y, r.size.x, 0.0), tr(StatusMenuModel.BOUND_KEY))
+		_line(Rect2(r.position.x, y, r.size.x, 0.0), str(bound["text"]), &"text", true)
 
 
 ## A section title with the gold rule under it at `r`'s top. Returns the y under it.
@@ -274,16 +299,19 @@ func _section_header(r: Rect2, text: String) -> float:
 
 
 ## One line of text (wrapping onto up to wrap_lines lines when `wrap`). Returns the y under it.
-func _line(r: Rect2, text: String, role: StringName, wrap: bool = false, variation: StringName = &"HudName") -> float:
+func _line(
+	r: Rect2, text: String, role: StringName, wrap: bool = false, variation: StringName = &"HudName", lines: int = 0
+) -> float:
 	var sec: Dictionary = _d.get("section", {})
 	var line_h := HudLayout.num(sec, "line_height")
-	var h := line_h * (HudLayout.num(sec, "wrap_lines") if wrap else 1.0)
+	var wrap_lines := float(lines) if lines > 0 else HudLayout.num(sec, "wrap_lines")
+	var h := line_h * (wrap_lines if wrap else 1.0)
 	var l := _add_label(variation, Rect2(r.position.x, r.position.y, r.size.x, h), text)
 	l.add_theme_color_override(&"font_color", _c(role))
 	if wrap:
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		l.vertical_alignment = VERTICAL_ALIGNMENT_TOP
-		l.max_lines_visible = int(HudLayout.num(sec, "wrap_lines"))
+		l.max_lines_visible = int(wrap_lines)
 		l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		l.size = Vector2(r.size.x, h)  # M2-MNU-11: the text, set before autowrap, had widened it to one line
 		return r.position.y + line_h * maxf(1.0, float(mini(l.get_line_count(), l.max_lines_visible)))

@@ -31,7 +31,8 @@ extends Node
 ##      in a few per frame (M1-RND-15) and holds the swap (hold_swap) while it is staging, up
 ##      to PREWARM_WAIT_MAX_FRAMES, so pipelines compile in small slices under the opaque fade.
 ##   3. The PackedScene is instantiated on a WorkerThreadPool thread (the node is not in the tree
-##      yet, which Godot 4 allows), never on the main thread.
+##      yet, which Godot 4 allows), never on the main thread, and only once the swap's holders are done
+##      (row 67: its load() calls must not wait on a threaded load of the same file in flight).
 ##   4. The old scene is unloaded one frame before the new one is added, so freeing it and
 ##      entering the new scene's _ready never share a frame.
 ## Each swap records its phase costs and frame times in last_swap_stats, emits swap_measured, and
@@ -99,6 +100,8 @@ const SWAP_STALL_MS := 3000.0
 const SWAP_WAIT_CAP_MS := 15000.0
 const USEC_PER_MSEC := 1000.0
 const LOG_PREFIX := "SceneRouter"
+## The scenes a field zone stays resident through (see keep_field_resident).
+const RESIDENT_THROUGH: Array[String] = ["res://game/flow/field_battle.tscn"]
 
 ## Tuning switches (all on in the game; tests and the profiler flip them to compare).
 var instantiate_on_thread := true
@@ -107,12 +110,23 @@ var split_swap := true
 ## Last swap: {scene_path, instantiate_ms, instantiated_on_thread, unload_ms, prewarm_ms, fonts_warmed,
 ## font_warm_ms, frame_ms: Array[float] (MEASURE_FRAMES hidden frames from the swap), max_frame_ms,
 ## budget_ms (HIDDEN_FRAME_BUDGET_MS), over_budget (a hidden frame over it), entry_ms, entry_budget_ms,
-## entry_over_budget}, then, once the visible window ends (M1-ARC-16): {visible_frame_ms: Array[float],
+## entry_over_budget, cover_alpha_min, covered (ADR 0042 §4: the swap and its hidden frames under the opaque fade)},
+## then, once the visible window ends (M1-ARC-16): {visible_frame_ms: Array[float],
 ## lift_frames (how many of them were while the fade lifted), max_visible_frame_ms, visible_budget_ms,
 ## visible_over_budget, visible_complete}.
 var last_swap_stats: Dictionary = {}
 ## Return-to-world on load (M1-ARC-06). Disabled until boot.gd sets world_return.enabled.
 var world_return: WorldReturn
+## The field kept resident through a random fight (the human's playtest: seconds of black after every won battle,
+## the whole zone loaded, instantiated and readied again on the way back). A change from a field zone into one of
+## RESIDENT_THROUGH, for a random encounter (BattleRequest.pending(): no victory flag, no return scene of its own),
+## detaches the zone instead of freeing it, with its zone shader globals; the change back to that zone re-attaches
+## the same instance (no load, no instantiate, no _ready) and puts the party on its spawn. Any other change, or a
+## loaded game, frees it. Scripted fights reload their zone as before (their story plays on the zone's arrival).
+var keep_field_resident := true
+var _resident: Node = null
+var _resident_path := ""
+var _resident_globals := {}
 
 var _fade_layer: CanvasLayer
 var _fade_rect: ColorRect
@@ -156,6 +170,12 @@ func _ready() -> void:
 	world_return = WorldReturn.new()
 	world_return.name = "WorldReturn"
 	add_child(world_return)
+	EventBus.game_loaded.connect(func(_slot: int) -> void: drop_resident())  # a loaded game reloads its zone
+
+
+## The opaque fade's alpha now (0 clear, 1 covering the screen).
+func fade_alpha() -> float:
+	return _fade_rect.color.a
 
 
 func is_busy() -> bool:
@@ -223,22 +243,106 @@ func change_scene(scene_path: String, spawn: StringName = &"") -> void:
 	cancel_visible_window()
 	var entry_start := _now_usec()
 	var stats := {"scene_path": scene_path, "budget_ms": HIDDEN_FRAME_BUDGET_MS}
-	ResourceLoader.load_threaded_request(scene_path)
+	var keep := keeps_resident(scene_path)
+	var back := _resident != null and is_instance_valid(_resident) and scene_path == _resident_path
+	stats["resident"] = back
+	if not back:
+		ResourceLoader.load_threaded_request(scene_path)
 	change_started.emit(scene_path)
 	_start_font_warm(stats)
 	await _fade_to(1.0)
-	while ResourceLoader.load_threaded_get_status(scene_path) == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
-		await get_tree().process_frame
-	var packed := ResourceLoader.load_threaded_get(scene_path) as PackedScene
-	if packed == null:
-		push_error("SceneRouter: failed to load %s" % scene_path)
-	else:
-		await _swap(packed, scene_path, stats, spawn, entry_start)
+	if keep:
+		_detach_resident()
+	if back:
+		await _swap_resident(scene_path, stats, spawn, entry_start)
 		await _wait_for_reveal(stats)
+	else:
+		while ResourceLoader.load_threaded_get_status(scene_path) == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
+			await get_tree().process_frame
+		var packed := ResourceLoader.load_threaded_get(scene_path) as PackedScene
+		if packed == null:
+			push_error("SceneRouter: failed to load %s" % scene_path)
+		else:
+			await _swap(packed, scene_path, stats, spawn, entry_start)
+			await _wait_for_reveal(stats)
+	if not keep and not back:
+		drop_resident()  # gone anywhere else: the field kept for the fight isn't coming back
 	if stats.has("frame_ms"):
 		_measure_visible(stats, _fade_lifted)
 	await _fade_to(0.0)
 	_busy = false
+
+
+## True when the change to `scene_path` keeps the current field zone resident (see keep_field_resident).
+func keeps_resident(scene_path: String) -> bool:
+	if not keep_field_resident or not RESIDENT_THROUGH.has(scene_path) or not is_inside_tree():
+		return false
+	var cur := get_tree().current_scene
+	if cur == null or cur.scene_file_path == "" or cur.find_children("*", "FieldController", true, false).is_empty():
+		return false
+	var r := BattleRequest.pending()
+	return r != null and r.victory_flag == &"" and r.return_scene == ""
+
+
+## The resident field zone (null when none is kept) and its scene path.
+func resident() -> Node:
+	return _resident if _resident != null and is_instance_valid(_resident) else null
+
+
+func resident_path() -> String:
+	return _resident_path
+
+
+## Frees the resident field zone, if one is kept.
+func drop_resident() -> void:
+	if _resident != null and is_instance_valid(_resident):
+		_resident.queue_free()
+	_resident = null
+	_resident_path = ""
+	_resident_globals = {}
+
+
+## Takes the current scene out of the tree, kept (not freed), with its zone shader globals.
+func _detach_resident() -> void:
+	drop_resident()
+	var cur := get_tree().current_scene
+	if cur == null:
+		return
+	_resident_globals = ShaderGlobals.zone_snapshot()
+	_resident_path = cur.scene_file_path
+	cur.get_parent().remove_child(cur)
+	get_tree().current_scene = null
+	_resident = cur
+
+
+## The swap back to the resident field zone: the same instance re-enters the tree (no load, no instantiate, no
+## _ready), its zone globals are given back after the swap's reset, and the party is put on `spawn`.
+func _swap_resident(scene_path: String, stats: Dictionary, spawn: StringName, entry_start_usec: int) -> void:
+	var node := _resident
+	var globals := _resident_globals
+	_resident = null
+	_resident_path = ""
+	_resident_globals = {}
+	stats["instantiate_ms"] = 0.0
+	var frames: Array[float] = []
+	_swap_clock.reset_at(_now_usec())
+	scene_swapping.emit(scene_path)
+	ShaderGlobals.restore_zone(globals)
+	var cover: Array[float] = [fade_alpha()]
+	get_tree().change_scene_to_node(node)
+	for i in MEASURE_FRAMES:
+		await get_tree().process_frame
+		frames.append(_swap_clock.lap())
+		cover.append(fade_alpha())
+		if i == 0:
+			if spawn != &"" and node.is_inside_tree():
+				WorldReturn.place_player(node, spawn)
+			EventBus.scene_changed.emit(scene_path)
+	if entry_start_usec >= 0:
+		judge_entry(stats, _ms_since(entry_start_usec))
+	for w in judge_cover(stats, cover):
+		push_warning("%s: %s: %s" % [LOG_PREFIX, w, scene_path])
+	_record(stats, frames)
 
 
 ## M2-ARC-03: keeps the fade opaque while anything holds the reveal (boot's warm-up), recording the wait.
@@ -274,7 +378,9 @@ static func swap_progress(holders: Array[Object]) -> int:
 	var total := -1
 	for h in holders:
 		if h != null and h.has_method(&"swap_wait_progress"):
-			total = maxi(total, 0) + int(h.call(&"swap_wait_progress"))
+			var p := int(h.call(&"swap_wait_progress"))
+			if p >= 0:  # -1: not loading now (ShaderPrewarm outside a zone feed)
+				total = maxi(total, 0) + p
 	return total
 
 
@@ -332,10 +438,9 @@ func _swap(
 	stats["prewarm_ms"] = _ms_since(t)
 	if split_swap:
 		await get_tree().process_frame
-	var node := await _instantiate(packed, stats)
-	if node == null:
-		push_error("SceneRouter: failed to instantiate %s" % scene_path)
-		return
+	# PC pass 4 row 67 (big19: one fresh Brine Shoals entry never finished): the holders (ResidentLoads' threaded
+	# loads, the prewarm) are waited on before the zone is instantiated, so the zone's own load() calls on the worker
+	# thread find every resource already in, and never wait on a threaded load of the same file in flight.
 	var waited := 0
 	var wait_start := _now_usec()
 	var last_move := wait_start
@@ -352,6 +457,10 @@ func _swap(
 		await get_tree().process_frame
 		waited += 1
 	stats["prewarm_wait_frames"] = waited
+	var node := await _instantiate(packed, stats)
+	if node == null:
+		push_error("SceneRouter: failed to instantiate %s" % scene_path)
+		return
 	if split_swap:
 		if get_tree().current_scene != null:
 			t = _now_usec()
@@ -367,17 +476,21 @@ func _swap(
 	# Zone render globals (M1-RND-15) reset on this signal: the new zone starts from the project
 	# defaults, so one that never writes them does not inherit the last zone's sea-glow or tide line.
 	scene_swapping.emit(scene_path)
+	var cover: Array[float] = [fade_alpha()]
 	attach_graphics_hook(node, stats)
 	get_tree().change_scene_to_node(node)
 	for i in MEASURE_FRAMES:
 		await get_tree().process_frame
 		frames.append(_swap_clock.lap())
+		cover.append(fade_alpha())
 		if i == 0:
 			if spawn != &"" and node.is_inside_tree():
 				WorldReturn.place_player(node, spawn)
 			EventBus.scene_changed.emit(scene_path)
 	if entry_start_usec >= 0:
 		judge_entry(stats, _ms_since(entry_start_usec))
+	for w in judge_cover(stats, cover):
+		push_warning("%s: %s: %s" % [LOG_PREFIX, w, scene_path])
 	_record(stats, frames)
 
 
@@ -456,6 +569,19 @@ static func judge_hidden(stats: Dictionary, frames: Array[float]) -> Array[Strin
 			)
 		)
 	return out
+
+
+## ADR 0042 §4: the fade's alpha at the swap and at each hidden frame after it (`cover`). Writes cover_alpha_min and
+## covered (every one fully opaque) into `stats` and returns the warnings to raise (empty when covered).
+static func judge_cover(stats: Dictionary, cover: Array[float]) -> Array[String]:
+	var low := 1.0
+	for a in cover:
+		low = minf(low, a)
+	stats["cover_alpha_min"] = low
+	stats["covered"] = not cover.is_empty() and low >= 1.0
+	if bool(stats["covered"]):
+		return []
+	return ["a hidden swap frame was not under the opaque fade (alpha %.2f; ADR 0042 §4)" % low]
 
 
 ## ADR 0029's entry limit: writes entry_ms, entry_budget_ms and entry_over_budget into `stats`.

@@ -24,11 +24,13 @@ extends HalunaDresser
 ##                    (Corrow's trader is the ferry kit's hull); each kit keeps its own material cache.
 ##                  "material_paths": {slot: "res://...tres"}  one slot's material swapped for a zone's own, the
 ##                    piece's other slots kept from its kit (Coilspire's inner laterite without its green joints).
+##   kit_material_paths  {slot: "res://...tres"}: the same swap on every piece from the zone's own kit (no "kit_dir"),
+##                  under each row's own "material_paths" (Corrow's weathered lacquer, copper and iron, M3-ENV-1326).
 ##   greybox      {"hide_all": bool, "keep": [ids]}: hides the greybox meshes (collision stays), except
 ##                  the kept ones (story pieces no kit has yet).
-##   fire_lights  [{"at": [x, y, z], "energy", "range", "block"?, "shadow"?, "attenuation"?, "color"?}] omnis
-##                  in "fire_light_color" or their own "color" (shadowless unless "shadow"); a "block" light
-##                  follows its block.
+##   fire_lights  [{"at": [x, y, z], "energy", "range", "block"?, "shadow"?, "attenuation"?, "color"?, "specular"?}]
+##                  omnis in "fire_light_color" or their own "color" (shadowless unless "shadow"; "specular" 0 for a
+##                  light under a mirror, which would show as a hot point); a "block" light follows its block.
 ##   multimeshes  [{"name", "piece", "transforms": [[x, y, z, yaw_rad]], "block"?}]: many copies of one kit
 ##                  piece's LOD0 (with its slot materials) as one shadowless MultiMesh (Pemakar's leaf-boats).
 ##   far_lights   [{"name", "points": [[x, y, z]], "size_m": [near, far], "color", "energy", "block"?}]: lights
@@ -49,8 +51,15 @@ extends HalunaDresser
 ##                  volumetric columns (SmokeColumn, game/data/vfx/smoke_column.json "columns", M3-RND-21), framed
 ##                  as the kit's smoke_plume pieces (yawed so +X is downwind, uniform scale); a "block" one follows
 ##                  its block.
-##   ebbing       {}: Ch9's Ebbing motes (EbbingMotes, game/data/vfx/ebbing.json, M3-C09-03): the held fields
+##   ebbing       {"data"?}: the Ebbing's motes (EbbingMotes; Ch9's game/data/vfx/ebbing.json, M3-C09-03, or the
+##                  zone's own "data" file, as Ch15's held dead): the held fields
 ##                  the chapter's `@vfx glimmer_held` cues play, on the zone's stage.
+##   pieces[].snap  a float: after every piece is placed, the piece drops onto the collision under its origin plus
+##                  this offset (graves on a slope whose built mesh lies off the analytic surface they were set on).
+##   edge_walls   [{"pos": [x, y, z], "size": [x, y, z], "yaw"?, "while_hidden"?: <id>}]: invisible static boxes along
+##                  the walkways' edges over the water (assets_src/environments/zone_edges.py), so the hero can't
+##                  step off; a "while_hidden" wall collides only while Greybox/<id> is hidden (a bridge the story
+##                  takes away leaves no open edge).
 ##   environment  a res:// Environment: the zone's WorldEnvironment takes a copy (sky, grade, fog).
 ##   time_of_day_h  the hymn_time_of_day the sky reads.
 ## It writes hymn_sun_direction from the zone's sun every frame, so the sky's sun follows the story's
@@ -78,7 +87,13 @@ const KEY_STORMS := "storms"
 const KEY_DROPS := "drops"
 const KEY_SMOKES := "smokes"
 const KEY_EBBING := "ebbing"
+const KEY_EDGE_WALLS := "edge_walls"
+const KEY_SNAP := "snap"
+const SNAP_FROM_M := 4.0
+const SNAP_DOWN_M := 16.0
+const EDGE_WALLS := &"EdgeWalls"
 const KEY_MATERIAL_PATHS := "material_paths"
+const KEY_KIT_MATERIAL_PATHS := "kit_material_paths"
 const DEFAULT_WAVES := "res://game/world/water/lagoon_waves.tres"
 ## The waters' plane cells (m): fine enough for the wave field's short waves to read on a still lake.
 const WATER_CELL_M := 2.0
@@ -110,10 +125,15 @@ func dress() -> void:
 		return
 	zone = get_parent() as GreyboxZone
 	_rng.seed = int(layout.get("seed", 1))
+	var kit_paths: Dictionary = layout.get(KEY_KIT_MATERIAL_PATHS, {})
+	var snaps: Array[Array] = []  ## [piece, offset]
+	var grounds: Array[Node3D] = []  ## the pieces that collide as a LOD1 trimesh (a terrain)
 	for spec: Dictionary in layout.get("pieces", []):
 		var piece := _place_from_kit(spec)
 		if piece == null:
 			continue
+		if not kit_paths.is_empty() and not spec.has(KEY_KIT_DIR):
+			swap_slots(piece, kit_paths)
 		if spec.has(KEY_MATERIAL_PATHS):
 			swap_slots(piece, spec[KEY_MATERIAL_PATHS])
 		if spec.has(KEY_SCALE_Y):
@@ -122,6 +142,7 @@ func dress() -> void:
 		var collide: Variant = spec.get(KEY_COLLIDE, false)
 		if collide is String and collide == COLLIDE_TRIMESH:
 			piece.add_child(trimesh_collider(piece, true, lod0_boxes(spec.get(KEY_COLLIDE_LOD0_IN, []))))
+			grounds.append(piece)
 		elif collide is String and collide == COLLIDE_TRIMESH_LOD0:
 			piece.add_child(trimesh_collider(piece, false))
 		elif collide is bool and collide:
@@ -133,6 +154,9 @@ func dress() -> void:
 		var turn := block(str(spec.get(KEY_TURN, "")))
 		if turn != null:
 			_turners.append([piece, turn, piece.basis])
+		if spec.has(KEY_SNAP):
+			snaps.append([piece, float(spec[KEY_SNAP])])
+	_snap_to_ground(snaps, grounds)
 	_place_fire_lights()
 	_place_multimeshes()
 	_place_far_lights()
@@ -141,6 +165,7 @@ func dress() -> void:
 	_place_drops()
 	_place_smokes()
 	_place_ebbing()
+	_place_edge_walls()
 	_hide_greybox()
 	_apply_environment()
 	if layout.has(KEY_TIME_OF_DAY):
@@ -414,6 +439,65 @@ func _follow(block_id: String) -> void:
 		_pause_hidden(n)
 
 
+## Drops each "snap" piece onto the ground under its origin (its own bodies excluded), plus its offset: a prop
+## placed on an analytic surface sits on the built ground, whose coarse mesh can lie metres off it. A terrain that
+## collides as its LOD1 gets a LOD0 body for the while, so the prop sits on the ground that draws.
+func _snap_to_ground(snaps: Array[Array], grounds: Array[Node3D]) -> void:
+	if snaps.is_empty() or not is_inside_tree():
+		return
+	var coarse: Array[RID] = []  ## the terrains' own LOD1 bodies: the snap looks past them
+	for g: Node3D in grounds:
+		for b: Node in g.find_children("*", "CollisionObject3D", true, false):
+			coarse.append((b as CollisionObject3D).get_rid())
+	var drawn: Array[StaticBody3D] = []
+	for g: Node3D in grounds:
+		var body := trimesh_collider(g, false)
+		g.add_child(body)
+		drawn.append(body)
+	var space := get_world_3d().direct_space_state
+	for row: Array in snaps:
+		var piece := row[0] as Node3D
+		var mine: Array[RID] = coarse.duplicate()
+		for b: Node in piece.find_children("*", "CollisionObject3D", true, false):
+			mine.append((b as CollisionObject3D).get_rid())
+		var at := piece.global_position
+		var q := PhysicsRayQueryParameters3D.create(at + Vector3.UP * SNAP_FROM_M, at + Vector3.DOWN * SNAP_DOWN_M)
+		q.exclude = mine
+		var hit := space.intersect_ray(q)
+		if not hit.is_empty():
+			piece.global_position.y = float(hit["position"].y) + float(row[1])
+	for body: StaticBody3D in drawn:
+		body.get_parent().remove_child(body)
+		body.free()
+
+
+func _place_edge_walls() -> void:
+	var rows: Array = layout.get(KEY_EDGE_WALLS, [])
+	if rows.is_empty():
+		return
+	var root := Node3D.new()
+	root.name = EDGE_WALLS
+	add_child(root)
+	for row: Dictionary in rows:
+		var body := StaticBody3D.new()
+		body.position = _vec3(row["pos"])
+		body.rotation_degrees.y = float(row.get("yaw", 0.0))
+		var shape := BoxShape3D.new()
+		shape.size = _vec3(row["size"])
+		var cs := CollisionShape3D.new()
+		cs.shape = shape
+		body.add_child(cs)
+		root.add_child(body)
+		var b := block(str(row.get("while_hidden", "")))
+		if b != null:
+			cs.disabled = b.visible
+			b.visibility_changed.connect(func() -> void: cs.disabled = b.visible)
+
+
+static func _vec3(v: Array) -> Vector3:
+	return Vector3(float(v[0]), float(v[1]), float(v[2]))
+
+
 func _place_fire_lights() -> void:
 	var rows: Array = layout.get(KEY_FIRE, [])
 	if rows.is_empty():
@@ -431,6 +515,7 @@ func _place_fire_lights() -> void:
 		light.omni_range = float(row.get("range", 5.0))
 		light.shadow_enabled = bool(row.get("shadow", false))
 		light.omni_attenuation = float(row.get("attenuation", light.omni_attenuation))
+		light.light_specular = float(row.get("specular", light.light_specular))
 		light.light_volumetric_fog_energy = 0.0  # the fog-lamp rule (test_fog_lamps)
 		light.position = Vector3(float(at[0]), float(at[1]), float(at[2]))
 		root.add_child(light)
@@ -590,6 +675,7 @@ func _place_ebbing() -> void:
 	var ebb := EbbingMotes.new()
 	ebb.name = "Ebbing"
 	ebb.zone = zone
+	ebb.data_path = str((layout[KEY_EBBING] as Dictionary).get("data", EbbingMotes.DATA_PATH))
 	add_child(ebb)
 
 

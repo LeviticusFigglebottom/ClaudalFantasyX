@@ -72,7 +72,11 @@ func before_each() -> void:
 	settings = UiSettings.new()
 	UiSettings.set_shared(settings)
 	heard = []
-	audio = ChoreoAudio.new(AudioData.table(ChoreoAudio.TABLE))
+	# the weapon accents alone: what a blow struck (materials, M3-AUD-864) is test_foley_detail's (a copy: the table is
+	# AudioData's cached one)
+	var table := AudioData.table(ChoreoAudio.TABLE).duplicate()
+	table.erase("materials")
+	audio = ChoreoAudio.new(table)
 	audio.player = func(id: StringName, _opts: Dictionary) -> void: heard.append([id, audio._clock])
 	ChoreoAudio.matcher = func(n: Node) -> String: return "BattleChoreo" if n == standin else ""
 	audio.attach(standin, engine)
@@ -395,7 +399,8 @@ func test_the_director_attaches_by_class_name_and_lets_go() -> void:
 	# (recorded here: a real playback left running at exit is reported as a leak)
 	l.player = func(id: StringName, _opts: Dictionary) -> void: assert_true(dir.sfx.has(id), "%s is a bank row" % id)
 	standin.emit_signal(&"contact", _result(&"rhen", &"attack", [_hit(_foe())]))
-	assert_eq(l.played, [&"accent_hooks"] as Array[StringName], "the listener the director built hears it")
+	assert_eq(l.played[0], &"accent_hooks", "the listener the director built hears it")
+	assert_true(l.played.size() <= 2, "and at most what the blow struck under it (M3-AUD-864)")
 	holder.remove_child(standin)
 	dir.advance(0.0)
 	assert_false(dir.listeners.has(standin), "freed when the choreography leaves (a retry)")

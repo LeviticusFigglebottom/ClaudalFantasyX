@@ -1,7 +1,7 @@
 {
   "doc": "M3-C05-02 story (act1_ch05.md B07-B10) on env-art's Ashcrown kit in its own frame since M3-ENV-1303 (ADR 0200; tools/act1/ch05_ashcrown_dressing.py, which wrote these points once and writes the collision and the dressing): the pilgrims' causeway from StairFoot up to the forecourt, the flying stair (48°, HeroStairs: ADR 0193) to the crown (tier 6, y 42), the trial down the east ambulatories of tiers 6 to 3 (t1-t4: release, gates, bowl, catch-rod running north; the east vein stairs (60°) down, chained by Stair_t<k> until the strike reaches the tier below), and the anvil court in the anvil hall (floor y -4: the anvil at z -8.4, the Matron's alcove on the west wall, Kahre's door at the crater loggia). The walk down ends at tier 3's east vein stair, whose head is the anvil_court trigger. The outer pilgrim stair runs north (x 0, z 0 to -88: the Tenders' gate A01, the grave tier A02, the copper tier A03) to the crown platform (z -88 to -100), where the crown pavilion and the catch-spire stand. The four inner tiers run back south along x 40 (t1 the crown, t2 to t4 below it), each with a catch-rod, a copper bowl (Bowl_<tier>), its vein-gates (blocks named for the trial's gates; the view turns them), floor plates on t4, and a release lever; Stair_<tier> walls the way down until the strike reaches that tier. The sealed side vein (QuenchSeal) and the quench-trough alcove are off tier 3's east wall. The anvil court is at the mountain's foot (z 0 to 14), with the anvil-stone, the Matron's alcove, the sea-facing arch and Kahre's chamber door. Random fights on the outer stair only (none in the trial, none in the court). trial_view: the stage actor shown on the tier-4 plates and the charged bowl's light (white-violet: lightning is never glimmer's gold, cyan or teal). Env-art's Ashcrown kit replaces the blocks.",
   "sun": {"pitch_deg": -58.0, "yaw_deg": -45.0, "energy": 2.8, "color": "#fff0dc"},
-  "environment": {"background": "#8c8882", "ambient_color": "#8e959c", "ambient_energy": 0.45},
+  "environment": {"background": "#8c8882", "ambient_color": "#8e959c", "ambient_energy": 1.8},
   "block_color": "#4a4644",
   "trial_view": {"plate_actor": "toma", "charge_color": "#e6dcff"},
   "blocks": [
@@ -44,7 +44,8 @@
     "court_front": [0.0, -4.0, -2.4, 0.0],
     "matron_heart": [-5.3, -2.6, -10.4, 270.0],
     "kahre_heart": [0.0, -2.2, -18.4, 0.0],
-    "chamber_in": [0.0, -4.0, -16.6, 180.0],
+    "kahre_bound_at": [0.0, -4.0, -19.0, 180.0],
+    "chamber_in": [0.0, -4.0, -15.15, 180.0],
     "chamber_door": [0.0, -4.0, -14.6, 0.0],
     "court_asha_in": [3.2, -4.0, -11.6, 180.0],
     "court_kerrid_in": [-2.5, -4.0, 0.1, 180.0],
@@ -55,12 +56,13 @@
     "toma": {"at": [-1.5, -81.44, 148.26, 0.0], "color": "#6a7a5a", "radius": 0.34, "height": 1.85},
     "ysolde": {"at": [1.5, -81.44, 150.76, 0.0], "color": "#2a2a4a"},
     "kerrid": {"at": [0.0, -81.44, 152.26, 0.0], "color": "#8a7a5a", "radius": 0.38, "height": 1.95},
-    "tender": {"cast": "reed", "at": [-1.6, 42.0, -3.6, 180.0], "color": "#8a2a2a"},
-    "matron": {"cast": "creature:cinder_matron", "at": [-5.3, -4.0, -10.4, 270.0], "color": "#5a3a2a", "radius": 0.7, "height": 3.0}
+    "tender": {"cast": "tender", "at": [-1.6, 42.0, -3.6, 180.0], "color": "#8a2a2a"},
+    "matron": {"cast": "creature:cinder_matron", "at": [-5.3, -4.0, -10.4, 270.0], "color": "#5a3a2a", "radius": 0.7, "height": 3.0},
+    "kahre": {"cast": "creature:kahre", "at": [0.0, -4.0, -19.0, 180.0], "cast_still": true, "color": "#c87040", "radius": 0.75, "height": 3.3}
   },
   "shots": {
     "A01": {"pos": [3.0, -79.4, 154.0], "look_at": [0.0, -76.0, 140.0], "fov": 46},
-    "A02": {"pos": [5.0, -62.5, 122.0], "look_at": [0.0, -50.0, 102.0], "fov": 40},
+    "A02": {"pos": [0.0, -78.4, 143.0], "look_at": [0.0, -79.9, 150.0], "fov": 40},
     "A03": {"pos": [12.0, -2.2, 40.0], "look_at": [17.0, 4.0, 19.0], "fov": 46},
     "A04": {"pos": [3.5, 43.8, -1.0], "look_at": [0.0, 52.0, -8.4], "fov": 50},
     "A05": {"pos": [26.0, 52.0, 18.0], "look_at": [9.0, 30.0, -4.0], "fov": 55},
@@ -69,9 +71,18 @@
     "A08": {"pos": [2.0, -2.0, 4.5], "look_at": [-2.5, -2.4, -9.0], "fov": 50},
     "A09": {"pos": [-1.0, -2.4, -6.0], "look_at": [-5.3, -2.4, -10.4], "fov": 40},
     "A10": {"pos": [2.6, -2.4, -11.0], "look_at": [0.0, -2.6, -15.6], "fov": 40},
-    "A11": {"pos": [0.0, -2.4, -19.0], "look_at": [0.0, -2.2, -16.6], "fov": 32},
-    "A12": {"pos": [0.0, -3.0, -11.4], "look_at": [0.0, 2.0, -15.6], "fov": 55}
+    "A11": {"pos": [0.4, -1.8, -16.2], "look_at": [0.0, -1.2, -19.0], "fov": 50},
+    "A12": {"pos": [0.8, -2.3, -11.4], "look_at": [0.0, -2.3, -15.6], "fov": 45}
   },
+  "camera_volumes": [
+    {"id": "Poi_tier_1", "mode": "pan_follow", "at": [6, 44.0, -10.8], "size": [4.0, 4.0, 6.0], "pos": [11.84, 46.9, -7.88], "look_at": [6, 43.2, -10.8], "fov": 55, "priority": 1},
+    {"id": "Poi_tier_2", "mode": "pan_follow", "at": [9.5, 38.0, -12.0], "size": [4.0, 4.0, 6.0], "pos": [15.34, 40.9, -9.08], "look_at": [9.5, 37.2, -12.0], "fov": 55, "priority": 1},
+    {"id": "Poi_tier_3", "mode": "pan_follow", "at": [12.9, 32.0, -10.4], "size": [4.0, 4.0, 6.0], "pos": [18.74, 34.9, -7.48], "look_at": [12.9, 31.2, -10.4], "fov": 55, "priority": 1},
+    {"id": "Poi_tier_4", "mode": "pan_follow", "at": [16.3, 26.0, -9.1], "size": [4.0, 4.0, 6.0], "pos": [22.14, 28.9, -6.18], "look_at": [16.3, 25.2, -9.1], "fov": 55, "priority": 1},
+    {"id": "Poi_quench", "mode": "pan_follow", "at": [12.9, 32.0, -12.8], "size": [3.0, 4.0, 2.4], "pos": [19.36, 34.9, -13.76], "look_at": [12.9, 31.2, -12.8], "fov": 55, "priority": 2},
+    {"id": "Poi_anvil_court", "mode": "pan_follow", "at": [10.9, 26.0, 7.7], "size": [4.0, 4.0, 6.0], "pos": [16.74, 28.9, 10.62], "look_at": [10.9, 25.2, 7.7], "fov": 55, "priority": 1},
+    {"id": "Poi_copper_tier", "mode": "pan_follow", "at": [0.0, -2.0, 30.0], "size": [4.0, 4.0, 6.0], "pos": [5.84, 0.9, 32.92], "look_at": [0.0, -2.8, 30.0], "fov": 55, "priority": 1}
+  ],
   "triggers": [
     {"id": "banter_tenders_gate", "at": [0.0, -81.44, 144.76], "size": [4.0, 0.0, 1.5], "once": true, "payload": {"dialogue": "ch05_banter_tenders_gate", "overheard": true}, "yaw": 0.0},
     {"id": "tortoises", "at": [0.0, -74.4, 137.5], "size": [4.0, 0.0, 1.2], "blocked_by_flag": "ch05_tortoises_won", "payload": {"beat": "tortoises"}, "yaw": 0.0},
@@ -99,6 +110,6 @@
     {"id": "release_t4", "activation": "interact", "at": [16.294, 24.0, 3.859], "size": [2.0, 0.0, 2.0], "prompt_key": "FIELD_PROMPT_RELEASE", "requires_flag": "ch05_trial_begun", "blocked_by_flag": "ch05_strike_landed", "payload": {"trial": "release", "id": "t4"}, "yaw": 0.0},
     {"id": "anvil_court", "at": [10.859, 24.0, 7.694], "size": [2.0, 0.0, 2.0], "requires_flag": "ch05_strike_landed", "blocked_by_flag": "ch05_matron_quieted", "payload": {"beat": "matron"}, "yaw": 0.0}
   ],
-  "encounters": {"table": [{"encounter": "ch05_stair_ashwings", "weight": 2}, {"encounter": "ch05_stair_tortoise_sparker", "weight": 1}, {"encounter": "ch05_stair_tortoise_ashwing", "weight": 1}], "min_m": 30, "max_m": 50, "when": {"set": ["ch05_tortoises_won"], "unset": ["ch05_trial_begun"]}, "seed": 5},
+  "encounters": {"table": [{"encounter": "ch05_stair_ashwings", "weight": 2}, {"encounter": "ch05_stair_tortoise_sparker", "weight": 1}, {"encounter": "ch05_stair_tortoise_ashwing", "weight": 1}], "min_m": 95, "max_m": 145, "when": {"set": ["ch05_tortoises_won"], "unset": ["ch05_trial_begun"]}, "seed": 5},
   "collision_path": "res://game/levels/ch05/ashcrown/ashcrown_collision.json"
 }

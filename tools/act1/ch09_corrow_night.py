@@ -102,6 +102,18 @@ def collision() -> dict:
 RUBBLE_PIECES = ("wall_apron", "seawall_breach_a", "seawall_breach_b", "seawall_breach_end_e", "seawall_breach_end_w",
                  "lowtown_rubble", "strand_rocks", "milestone")
 APRON_NIGHT = {"cw_rubble": "res://assets/environments/kits/corrow/materials/cw_laterite_broken.tres"}
+# The shrouds (the PC's pass 3, row 51: from the field camera the rows read as blurred orange rectangles): the trader's
+# tan canvas took the vigil lamps as flat orange and its fine weave mipmapped away. The dead lie under grey, damp
+# sailcloth: darker and cooler, a coarser weave that holds at field distance, the creases darkened over the bodies.
+SHROUD_NAME = "corrow_shroud_canvas_material.tres"
+# The PC's pass 5 (row 51): the sand ground through the canvas read as soft orange under the lamps; the cloth is
+# cooler and covers more of the base now, and the woven normal is soft and coarser: at 0.2 m and 1.7 its weave shaded
+# the cloth into dark stripes that read as spiky ridges from the field camera.
+SHROUD_OVERRIDES = {"col_paint": "Color(0.6, 0.62, 0.63, 1)", "paint_cover": "0.8", "tile_m": "Vector2(0.45, 0.45)",
+                    "normal_strength": "0.45", "variation_value": "0.18", "salt_coverage": "Vector2(0.05, 0.3)"}
+SHROUD_ADDED = {"cavity_darken": "0.55"}
+SHROUD_PIECES = ("shroud_bound_a", "shroud_bound_b", "shroud_bound_small")  # b_strand.py's crisper shrouds
+SHROUD_SLOTS = {"cw_sail": "res://game/levels/ch09/corrow_night/" + SHROUD_NAME}
 
 
 def dressing() -> dict:
@@ -123,7 +135,10 @@ def dressing() -> dict:
         pieces.append({"piece": "watcher_head_fallen", "at": [cf.r3(x), cf.r3(z)], "y": 1.2 + 0.7 * k,
                        "yaw_deg": cf.yaw_norm(a + dyaw), "block": "Rocks"})
     pieces += strand_pieces() + iskarra_pieces() + strand_kit_pieces()
+    pieces += flood_debris_pieces(pieces)
     for p in pieces:  # the night's rubble: dry broken laterite, not the wet black cw_rubble (GPU QA row 28's spheres)
+        if p["piece"] in SHROUD_PIECES and not p.get("kit_dir"):
+            p["material_paths"] = dict(SHROUD_SLOTS)
         if p["piece"] in RUBBLE_PIECES and not p.get("kit_dir"):
             p["material_paths"] = dict(APRON_NIGHT)
     src.update(pieces=pieces, environment=RES_C8 + "corrow_ch09_environment.tres", time_of_day_h=22.0,
@@ -219,7 +234,8 @@ def strand_pieces() -> list[dict]:
             u = (i + 0.5) * SHROUD_PITCH_M - n * SHROUD_PITCH_M * 0.5
             x, z = _along(b, u, rng.uniform(-SHROUD_JITTER[1], SHROUD_JITTER[1]))
             soldier = rid in STILLGUARD_ROWS
-            piece = "shroud_small" if not soldier and i % SHROUD_SMALL_EVERY == 2 else ("shroud_a", "shroud_b")[i % 2]
+            piece = ("shroud_bound_small" if not soldier and i % SHROUD_SMALL_EVERY == 2
+                     else ("shroud_bound_a", "shroud_bound_b")[i % 2])
             out.append({"piece": piece, "at": [cf.r3(x), cf.r3(z)], "y": STRAND_Y,
                         "yaw_deg": cf.yaw_norm(b.get("yaw", 0.0) + 90.0 + rng.uniform(-SHROUD_JITTER[0], SHROUD_JITTER[0])),
                         "block": rid})
@@ -236,7 +252,7 @@ def strand_pieces() -> list[dict]:
     for lid in ("LampA", "LampB", "LampC", "LampD"):
         b = rows[lid]
         out.append({"piece": "strand_lamp", "at": [b["pos"][0], b["pos"][2]], "y": STRAND_Y, "yaw_deg": 0.0, "block": lid})
-    for bid, piece, kit in (("Raft", "ebbing_raft", ""), ("IvoShroud", "shroud_a", ""), ("HoistCoil", "rope_coil", HALUNA),
+    for bid, piece, kit in (("Raft", "ebbing_raft", ""), ("IvoShroud", "shroud_bound_a", ""), ("HoistCoil", "rope_coil", HALUNA),
                             ("Milestone", "milestone", "")):
         b = rows[bid]
         y = b["pos"][1] if bid == "Raft" else b["pos"][1] - b["size"][1] * 0.5
@@ -267,6 +283,41 @@ def strand_kit_pieces() -> list[dict]:
     (x0, y0, z0), (x1, _y1, z1) = r["from"], r["to"]
     out.append({"piece": "mole_bridge", "at": [x0, z0], "y": y0,
                 "yaw_deg": cf.r3(-math.degrees(math.atan2(z1 - z0, x1 - x0)))})
+    return out
+
+
+# The low town flooded to the eaves (act1_ch09.md §9 Environment 1): the Corrow kit's flood_debris (M3-ENV-708: planks,
+# a door, a shutter, a basket, a cloth) adrift on the lake between the drowned houses: HOUSE_CLEAR_M to HOUSE_NEAR_M
+# from the nearest house's centre (their roofs stand out of the water). Seeded, so the dressing is reproducible.
+DEBRIS_COUNT = 12
+DEBRIS_SEED = 909
+HOUSE_CLEAR_M = 5.0
+HOUSE_NEAR_M = 12.0
+DEBRIS_EDGE_M = 6.0  # in from the lake's edges (the wall's apron on one side, the town's rise on the others)
+
+
+def flood_debris_pieces(pieces: list[dict]) -> list[dict]:
+    import random  # noqa: PLC0415
+
+    layout = json.loads(LAYOUT.read_text(encoding="utf-8"))
+    lake = next(b for b in layout["blocks"] if b["id"] == "LowTownLake")
+    (cx, cy, cz), (sx, _sy, sz) = lake["pos"], lake["size"]
+    water_y = next(w["pos"][1] for w in c8.story_waters(LAYOUT, ("LowTownLake",)))
+    houses = [p["at"] for p in pieces if p["piece"].startswith("lowtown_house")]
+    rng = random.Random(DEBRIS_SEED)
+    out: list[dict] = []
+    for _ in range(DEBRIS_COUNT * 50):
+        if len(out) == DEBRIS_COUNT:
+            break
+        x = cx + rng.uniform(-sx * 0.5 + DEBRIS_EDGE_M, sx * 0.5 - DEBRIS_EDGE_M)
+        z = cz + rng.uniform(-sz * 0.5 + DEBRIS_EDGE_M, sz * 0.5 - DEBRIS_EDGE_M)
+        near = min(math.hypot(x - hx, z - hz) for hx, hz in houses)
+        if not HOUSE_CLEAR_M <= near <= HOUSE_NEAR_M:  # in the open water among the houses (the plane runs on under
+            continue  # the bastion and the wall's apron, where nothing shows)
+        if any(math.hypot(x - o["at"][0], z - o["at"][1]) < HOUSE_CLEAR_M for o in out):
+            continue
+        out.append({"piece": "flood_debris", "at": [cf.r3(x), cf.r3(z)], "y": cf.r3(water_y),
+                     "yaw_deg": cf.r3(rng.uniform(0.0, 360.0)), "block": "LowTownLake"})
     return out
 
 
@@ -407,6 +458,8 @@ def main() -> None:
     if "--moon-relayout" in sys.argv:
         moon_relayout()
     write_dawn_grade()
+    (ZONE / SHROUD_NAME).write_text(c8.zl.copy_material(c8.RES_ZONE + c8.CANVAS_NAME, SHROUD_NAME, SHROUD_OVERRIDES,
+                                                        SHROUD_ADDED), encoding="utf-8")
     (ZONE / "corrow_night_collision.json").write_text(json.dumps(collision(), indent=1) + "\n", encoding="utf-8")
     (ZONE / "corrow_night_dressing.json").write_text(json.dumps(dressing(), indent=1) + "\n", encoding="utf-8")
 

@@ -367,7 +367,11 @@ func test_every_row_footsteps_json_names_exists_and_loads() -> void:
 	for key: String in ["cloth", "gear"]:
 		for id: Variant in ((d["foley"] as Dictionary)[key] as Dictionary).values():
 			ids.append(str(id))
-	assert_eq(ids.size(), 21, "4 surfaces x 4 kinds, 2 cloth and 3 gear rows")
+	var surfaces := (d["surfaces"] as Dictionary).keys()
+	for surf: String in ["sand", "stone", "wood", "water", "root", "snow", "slate"]:
+		assert_true(surfaces.has(surf), "surface %s (Act I's four, Act II's root, snow and slate: ADR 0204 §11)" % surf)
+	var gear := ((d["foley"] as Dictionary)["gear"] as Dictionary).size()
+	assert_eq(ids.size(), surfaces.size() * 4 + 2 + gear, "every surface x 4 kinds, 2 cloth rows and a gear row a hero")
 	for id in ids:
 		var row := rows.get(id, {}) as Dictionary
 		assert_eq(str(row.get("bus", "")), "World", "%s plays on World" % id)

@@ -36,10 +36,6 @@ const FLOOR_RAY_M := 3.0
 const KNOWN := {
 	"saltgrass_causeway.tscn:BeforeHarrier": "M3-HER-1156 (env-art: the fixed C07 shot looks away from the spawn)",
 	"coilspire.tscn:Tier4": "M3-HER-1157 (env-art-b: the orbit looks through the spiral's steps behind him)",
-	"brightwater_ferry.tscn:DerelictDeck": "M3-HER-1159 (act1-chapters: FerryWaist faces away)",
-	"brightwater_ferry.tscn:Stern": "M3-HER-1159 (act1-chapters: FerryWaist faces away)",
-	"coilspire.tscn:Encounter": "M3-HER-1159 (act1-chapters: GallerySouth faces away)",
-	"corrow.tscn:Bastion": "M3-HER-1159 (act1-chapters: WallGate faces away)",
 }
 
 var _state_was: GameStateData

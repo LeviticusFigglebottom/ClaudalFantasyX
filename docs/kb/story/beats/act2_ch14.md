@@ -67,7 +67,7 @@ Shot ids are proposed in §7 (W = the wedding court, S = the water-steps, L = th
 | B03 | **The declaration** | the dais, the Conclave's gallery | 18:26 | C | 2.5 | W07–W10 | `peace_wedding` → **the break** → `silence` | The trap. Heresy declared: for binding, by binders. | `ch14_declared_heretics` |
 | B04 | **"Stand aside, Okeru."** | the dais | 18:28 | C | 1.0 | W11, W12 | `silence` | Toma's first refusal of the Order he served. Ysolde's pin. | `ch14_toma_refused` |
 | B05 | **Tobin** | the dais (`tobin_falls`) | 18:29 | C | 1.0 | W13–W15 | `silence` (court noise only) | Act II's real cost, fast and unglamorous. | `ch14_tobin_killed` |
-| B06 | **Set piece: the water-steps** | the water-steps (`kerrid_steps`), the bridal barge | 18:30 | P | 6.0 | battle (set piece) | `lagoon_escape` (part 1, under the fight) | Hold the steps while Merel cuts the barge loose. Kerrid holds a stair again. | `ch14_steps_held` |
+| B06 | **Set piece: the water-steps** | the water-steps (`kerrid_steps`), the bridal barge | 18:30 | P | 6.0 | battle (set piece) | `court_steps` (a looping set-piece cue, audio lane) | Hold the steps while Merel cuts the barge loose. Kerrid holds a stair again. | `ch14_steps_held` |
 | B07 | **The first ripple** | the lagoon from the barge | 18:40 | C → E | 2.5 | L01–L05 | `lagoon_escape` (part 2) | Every stroke is the first wake in four hundred years. The bells. The city at its windows. | — |
 | B08 | **Merel at the gate** | the water-gate (`merel_gate`), seen from the barge | 18:45 | C | 1.5 | L06–L09 | `lagoon_escape` (part 3) → `silence` | The ally's cost, watched and paid. | `ch14_merel_taken` |
 | B09 | **Boss: Warden Malcor Venn** | `ansedra_lagoon_escape` (arena) | 19:10 | P | 8.0 | battle | `malcor_venn` (stem 1 → stem 2 on the boarding) | The water goes flat again. Liss breaks the engine. A Warden fights like a man. | `ch14_engine_broken`, `ch14_venn_beaten` |
@@ -128,7 +128,7 @@ Shot ids are proposed in §7 (W = the wedding court, S = the water-steps, L = th
 - The `peace_wedding` loop **breaks** on the declaration's first line: the ceremony's melody stops mid-phrase, and under it there is only the court's held breath (§6). Sets `ch14_declared_heretics`. ~110 words.
 
 ### B04. "Stand aside, Okeru." (C, 1 min)
-- **W11:** Stillguard move toward Asha. Toma steps in front of her with his tide-shield up. His **old commander** (a Stillguard officer, grey-bearded, decent; name him in the script; this sheet proposes **Commander Brannoc Hale**, checked against the banned-terms list) comes to the foot of the dais and speaks to him as to a son:
+- **W11:** Stillguard move toward Asha. Toma steps in front of her with his tide-shield up. His **old commander** (a Stillguard officer, grey-bearded, decent; name him in the script; **Commander Brannoc Hale**, approved by ADR 0204 §4) comes to the foot of the dais and speaks to him as to a son:
   - Commander: *"Stand aside, Okeru. You know me. Stand aside, and be level."*
   - Toma (a long pause before the hard truth: voice guide): *"I know you, sir."* He does not move. *"I am on my shield."*
   - He doesn't answer "Be level." It's the first time in the game he lets the greeting go unanswered. **Cinematics:** hold on it; the player who knows the Ch9 side scene hears the silence (toma_okeru.md; his faith *breaks* in Ch15, and this is the crack opening).
@@ -193,10 +193,10 @@ Declared in `game/data/flags.tres` when the gate passes (M4-A2P-014 adds them). 
 | `ch14_steps_held` | B06 | Ch15, Ch21 | **Ch15:** Kerrid's confession: "I held a stair again. At a wedding." (one line, if Narrative keeps it); **Ch21:** the stair motif |
 | `ch14_merel_taken` | B08 (critical) | Ch15, Ch18, the Ending | **Ch18:** an optional revisit of Ansedra learns what became of her (Narrative's call: she lives, held in her father's house) |
 | `ch14_engine_broken` | B09 phase 1 | Ch17 | Liss asks the Kite's engines not to forgive her for breaking that one. Narrative, keep or cut |
-| `ch14_venn_beaten` | B09 | Ch19 | Venn is fought again, openly a revenant, in Act III (ADR 0016: revenants are first fought openly in Ch19) |
+| `ch14_venn_beaten` | B09 | — | ~~Venn fought again in Ch19~~ **Corrected (act3_ch19 §10 Q1):** Venn isn't one of the Abiding and isn't refought. The revenants first fought openly in Ch19 are Hesper Oan and Ilsabet Rue (ADR 0016) |
 | `ch14_complete` | B10 (end) | flow (Ch15 gate) | — |
 
-**Act II flags this chapter reads** (Ch13 to confirm): `ch13_ethren_bound`, `ch13_archive_read` (proposed), `ch13_pact_of_silence` (proposed).
+**Act II flags this chapter reads:** `ch13_ethren_bound`, `ch13_met_tobin`, `ch13_archive_read`, `ch13_pact_of_silence` (all declared in act2_ch13.md §3).
 
 ---
 
@@ -231,7 +231,7 @@ act_outline Ch14: "No side scene; the chapter runs straight on." The only option
 3. **The commander doesn't fight.** He stands at the top of the steps and doesn't come down (B04's refusal stands between them).
 
 **Balance:** the Ch8 set-piece curve (`scripted_escape` counts as a win): naive 20–60%, role_answer ≥ 92%, smart ≥ 97%. It is short (4 Merel turns), and it shouldn't be the hard fight. B09 is.
-**Music:** `lagoon_escape` part 1 under the fight (the escape has begun; it isn't a boss).
+**Music:** `court_steps`, the audio lane's looping set-piece cue (a through-composed cue can't underscore a battle of open length). `lagoon_escape` starts on B07.
 
 ### 5b. Boss: Warden Malcor Venn (B09)
 **Lore justification (SPEC §6.7):** the Conclave's pursuit barge carries a bound Lit Age **flat-engine** that pulls the water level and still (ansedra.md; flat_engine.md): the same craft that keeps Ansedra's lagoon a mirror, turned on fugitives. It is bound glimmer, which the Order forbids, and it's the Archive's ledgers made into a weapon (the player can read the irony; nobody says it).
@@ -264,10 +264,12 @@ act_outline Ch14: "No side scene; the chapter runs straight on." The only option
 | Cue id | Beats | Kind | Brief |
 |---|---|---|---|
 | `peace_wedding` | B01 (court loop), B02 (ceremony) | Zone/ceremony loop (exists, M3-AUD-842: 130.9 s) | — |
-| `peace_wedding` **break** | B03 | **Not yet written** (act2_finals.md: "the break at the trap is a later cue"; M4-A2P-090) | The ceremony's melody stops mid-phrase on Venn's first word, not on a cadence. Under it, a held low string at the edge of hearing for the length of the declaration, then nothing. The break must sound like a held breath, not a sting. |
+| `peace_wedding_break` | B03 | **Not yet written** (act2_finals.md: "the break at the trap is a later cue"; M4-A2P-090) | The ceremony's melody stops mid-phrase on Venn's first word, not on a cadence. Under it, a held low string at the edge of hearing for the length of the declaration, then nothing. The break must sound like a held breath, not a sting. |
 | `silence` | B04, B05 | — | Court noise only: shuffling, a shield set down, the hull-captains, one cry. Tobin's death has **no music**. |
-| `lagoon_escape` | B06 (part 1, under the set piece), B07 (part 2), B08 (part 3) | **Not yet written** (~2 min, M4-A2P-090) | Part 1: urgent but low; the Order's hum (ORDER_HUM) broken up and turned rhythmic. Part 2: **the first ripple**: the first open, moving music in Ansedra, a slow wide melody with a pulse like poling. The bells come in as a diegetic layer, pitched to the cue's key. Part 3: Merel at the gate; the melody thins to one line and stops when the gate drops. |
+| `court_steps` | B06 | **Looping set-piece cue** (audio lane; not yet in act2_finals.md) | Urgent but low; the Order's hum (ORDER_HUM) broken up and turned rhythmic. Loops for the open length of the steps. |
+| `lagoon_escape` | B07 (part 1: the first ripple), B08 (part 2) | **Not yet written** (~2 min, M4-A2P-090) | Part 1: **the first ripple**: the first open, moving music in Ansedra, a slow wide melody with a pulse like poling. The bells come in as a diegetic layer, pitched to the cue's key. Part 2: Merel at the gate; the melody thins to one line and stops when the gate drops. |
 | `malcor_venn` | B09 | **Boss, two stems** (not yet written, M4-A2P-092) | Stem 1 (the still water): pressing, flat, metronomic, the engine's paddle-press as the pulse. Stem 2 (the boarding): percussion and low brass-like synth, a man's fight. |
+| `battle_heretic` | every regular battle from B03 on | **Variant regular-battle cue** (ADR 0204 §9; audio lane) | The party fights as heretics from the declaration on, through the rest of Act II. |
 | `unlamped` | B10 (first bars) | Zone loop (exists, M3-AUD-843) | It begins as Ch14 ends. |
 
 **SFX:**
@@ -409,6 +411,6 @@ The poling input's pacing and the bells' build are yours.
 ## 10. Open questions for review
 
 1. **"Outside the Level"** as the heresy's formal words (B03) is a proposal in our own idiom. Narrative may coin a better one; check it against the banned-terms list (the inspiring game's words for its church's heretics must not be echoed).
-2. **Names proposed here:** Commander **Brannoc Hale** (Toma's old commander) and Warden **Dask** (Merel's father, a living Warden). Both are checked against `tools/banned_terms.txt`. Narrative may rename them.
+2. ~~Names~~: **approved by ADR 0204 §4**: Commander Brannoc Hale, Warden Dask, and "Outside the Level" (§1 above too).
 3. **The set piece (B06)** is design default (b). If Combat finds the chapter too fight-heavy with B09 behind it, the steps can become a cutscene with Kerrid's last-onto-the-barge kept. The rhyme with Ch8's stair is the reason to keep it.
 4. **What happens to Merel** is left for Act III (`ch14_merel_taken`). Narrative decides; this sheet's suggestion is that she lives, held in her father's house, and the Ch18 revisit can find her.

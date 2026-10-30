@@ -4,7 +4,8 @@ landing with the headland's ground rising round it; at battle-camera distance th
 grey-brown triangles behind every angle (`battle`, `party_side`, `to_the_spire`). This writes the table through the
 same `write_arena` with the kit's scrub clumps scattered over the slopes in view, each set on the ground's own height
 (the table's `_headland_ground_y`), clear of the fight and of the path up to the spire. Re-run after the table
-changes, instead of `arena_scenes.py`'s own write of this arena:
+changes, instead of `arena_scenes.py`'s own write of this arena. It also writes `coilspire_tier_landing` (env-art's
+TIER_HALL table as is) so both arenas wear the zone's slot looks (M3-ENV-1326, KitSlotSwaps):
 
     python3 assets_src/environments/kits/coilspire/b_headland_arena.py
 """
@@ -72,14 +73,32 @@ def scrub(AS, table: dict) -> list[dict]:
     return out
 
 
+def _zone_looks():
+    """tools/act1/ch05_09_zone_looks.py: the zones' slot looks, which the arena wears too (KitSlotSwaps)."""
+    spec = importlib.util.spec_from_file_location("ch05_09_zone_looks", ROOT / "tools" / "act1" / "ch05_09_zone_looks.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
 def main(out_dir: Path | None = None) -> int:
     AS = _arena_scenes()
     if out_dir is not None:  # tools/tests/test_b_arenas.py writes to a scratch dir
         AS.OUT_DIR = out_dir
+    zl = _zone_looks()
+    mod = zl.load_generator("ch08_coilspire_dressing")
+    paths = {slot: mod.RES_ZONE + name for slot, (name, _) in mod.KIT_LOOKS.items()}  # the zone's slot looks (M3-ENV-1326)
     table = AS.HEADLAND
     extra = scrub(AS, table)
     path = AS.write_arena({**table, "pieces": list(table["pieces"]) + extra})
+    text = zl.add_kit_slot_swaps(path.read_text(encoding="utf-8"), paths)
+    # The ground's centre stands ~80 m from the fight, so its import chain drew the coarse LOD1 as the backdrop
+    path.write_text(zl.pin_lod0(text, "Ground", "arena_headland_ground"), encoding="utf-8")
     print(f"ARENA {path.name} (+{len(extra)} scrub clumps)")
+    # The tier landing (env-art's TIER_HALL table, unchanged): only the zone's slot looks (its pipes read pale mint)
+    path = AS.write_arena(AS.TIER_HALL)
+    path.write_text(zl.add_kit_slot_swaps(path.read_text(encoding="utf-8"), paths), encoding="utf-8")
+    print(f"ARENA {path.name} (+ the zone's slot looks)")
     return 0
 
 

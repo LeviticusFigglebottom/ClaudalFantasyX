@@ -47,16 +47,16 @@ STATUS_HASTE,Haste
 STATUS_STOP,Stop
 STATUS_BERSERK,Berserk
 STATUS_CONFUSE,Confuse
-STATUS_DOOM,Doom
-STATUS_ZOMBIE,Zombie
-STATUS_SHELL,Shell
-STATUS_PROTECT,Protect
-STATUS_REFLECT,Reflect
-STATUS_REGEN,Regen
-STATUS_ARMOR_BREAK,Armor Break
-STATUS_MENTAL_BREAK,Mental Break
-STATUS_POWER_BREAK,Power Break
-STATUS_MAGIC_BREAK,Magic Break
+STATUS_DOOM,Last Tide
+STATUS_ZOMBIE,Hollowed
+STATUS_SHELL,Tide Ward
+STATUS_PROTECT,Bulwark
+STATUS_REFLECT,Mirrorwater
+STATUS_REGEN,Mending
+STATUS_ARMOR_BREAK,Sundered
+STATUS_MENTAL_BREAK,Unmoored
+STATUS_POWER_BREAK,Weakened
+STATUS_MAGIC_BREAK,Dimmed
 STATUS_PROVOKE,Provoke
 CHAR_LISS,Liss
 CHAR_KERRID,Kerrid
@@ -202,7 +202,7 @@ ITEM_THROAT_HONEY_DESC,Cantors keep a jar for the long road. Cures Silence.
 ITEM_SMELLING_SALTS,Smelling Salts
 ITEM_SMELLING_SALTS_DESC,Sharp enough to wake a sleeping net-mender. Cures Sleep.
 ITEM_TIDEWASH_SALVE,Tidewash Salve
-ITEM_TIDEWASH_SALVE_DESC,"A healer's last resort. Cures Poison, Darkness, Silence, Sleep, Slow and every Break."
+ITEM_TIDEWASH_SALVE_DESC,"A healer's last resort. Cures Poison, Darkness, Silence, Sleep, Slow, Sundered, Unmoored, Weakened and Dimmed."
 ITEM_RELIGHTING_WICK,Relighting Wick
 ITEM_RELIGHTING_WICK_DESC,A taper lit from a living lamp. Revives one fallen ally with a quarter of their HP.
 ITEM_DRAG_NET,Drag Net
@@ -224,13 +224,13 @@ ITEM_TIDE_PEARL_DESC,A grey pearl that is always slightly damp. Used in Customiz
 ITEM_STORM_SCALE,Storm Scale
 ITEM_STORM_SCALE_DESC,A scale that crackles when rubbed. Used in Customize.
 ITEM_RIME_SHARD,Rime Shard
-ITEM_RIME_SHARD_DESC,Highland ice that does not melt in the sun. Used in Customize.
+ITEM_RIME_SHARD_DESC,"Highland salt-rime that never dissolves, even in the sea. Used in Customize."
 ITEM_LIT_AGE_BRASS,Lit Age Brass
 ITEM_LIT_AGE_BRASS_DESC,"Pre-Edict brass, cut out of a drowned tower. Dealers pay well and ask nothing."
 ITEM_SALT_GLASS_SHARD,Salt-Glass Shard
 ITEM_SALT_GLASS_SHARD_DESC,A shard of Lit Age salt-glass. Something inside it is very still. Used in Customize.
-ITEM_FACET_POWER_DESC,"A dull red crystal. Activates HP, Strength and Defense nodes on the Lattice."
-ITEM_FACET_MIND_DESC,"A pale blue crystal. Activates MP, Magic and Magic Defense nodes on the Lattice."
+ITEM_FACET_POWER_DESC,"A dull red crystal. Activates HP, Strength and Defence nodes on the Lattice."
+ITEM_FACET_MIND_DESC,"A pale blue crystal. Activates MP, Magic and Magic Defence nodes on the Lattice."
 ITEM_FACET_SPEED_DESC,"A clear green crystal. Activates Agility, Accuracy and Evasion nodes on the Lattice."
 ITEM_FACET_FORTUNE_DESC,A gold-flecked crystal. Activates Luck nodes on the Lattice.
 ITEM_FACET_ABILITY_DESC,A crystal with a light inside it. Activates ability nodes on the Lattice.
@@ -271,11 +271,11 @@ ABILITY_CLEAR_MIND_DESC,Magic +3.
 ABILITY_KEEN_SIGHT,Keen Sight
 ABILITY_KEEN_SIGHT_DESC,Accuracy +5.
 ABILITY_DEEP_LUNGS,Deep Lungs
-ABILITY_DEEP_LUNGS_DESC,max HP +60.
+ABILITY_DEEP_LUNGS_DESC,Max HP +60.
 ABILITY_HARD_CARAPACE,Hard Carapace
-ABILITY_HARD_CARAPACE_DESC,Defense +3.
+ABILITY_HARD_CARAPACE_DESC,Defence +3.
 ABILITY_STILL_HEART,Still Heart
-ABILITY_STILL_HEART_DESC,Magic Defense +3.
+ABILITY_STILL_HEART_DESC,Magic Defence +3.
 ABILITY_LIGHT_FEET,Light Feet
 ABILITY_LIGHT_FEET_DESC,Agility +2.
 ABILITY_EMBER_GUARD,Ember Guard
@@ -295,13 +295,13 @@ ABILITY_VOICE_WARD_DESC,Prevents Silence.
 ABILITY_SIGHT_WARD,Sightward
 ABILITY_SIGHT_WARD_DESC,Prevents Darkness.
 ABILITY_STANDING_GUARD,Standing Guard
-ABILITY_STANDING_GUARD_DESC,Protect for the whole battle.
+ABILITY_STANDING_GUARD_DESC,Bulwark for the whole battle.
 ABILITY_STANDING_MEND,Standing Mend
-ABILITY_STANDING_MEND_DESC,Regen for the whole battle.
+ABILITY_STANDING_MEND_DESC,Mending for the whole battle.
 ABILITY_LOW_TIDE_HASTE,Low Tide Haste
 ABILITY_LOW_TIDE_HASTE_DESC,Haste while HP is below half.
 ABILITY_LOW_TIDE_MEND,Low Tide Mend
-ABILITY_LOW_TIDE_MEND_DESC,Regen while HP is below half.
+ABILITY_LOW_TIDE_MEND_DESC,Mending while HP is below half.
 ABILITY_FULL_NET,Full Net
 ABILITY_FULL_NET_DESC,Doubles the lume won in battle.
 ABILITY_LIGHT_STEP,Light Step
@@ -378,12 +378,12 @@ HUD_TL_NOW,Acting now
 HUD_TL_BERSERK,Berserk: acts alone
 HUD_TL_CONFUSE,Confused: acts alone
 HUD_HELP_PROVOKED_FMT,provoked: must strike {name}
-HUD_HELP_REFLECT_FMT,Reflect bounces it onto {name}
-HUD_HELP_ZOMBIE_FMT,{name} is a Zombie: this heal will harm
+HUD_HELP_REFLECT_FMT,Mirrorwater turns it onto {name}
+HUD_HELP_ZOMBIE_FMT,{name} is Hollowed: this heal will harm
 HUD_FLOAT_REFLECTED,Reflected
 HUD_FLOAT_INVERTED,Heal turns to harm
-HUD_FLOAT_REGEN_INVERTED,Regen turns to harm
-HUD_FLOAT_DOOM,Doom
+HUD_FLOAT_REGEN_INVERTED,Mending turns to harm
+HUD_FLOAT_DOOM,Last Tide
 SET_REDUCED_MOTION,Reduced motion
 SET_REDUCED_MOTION_HELP,Turn-order chips change places without sliding. No screen shake and no pulsing.
 SET_TEXT_SCALE,Text size
@@ -391,10 +391,10 @@ SET_TEXT_SCALE_HELP,Scales menu and battle text.
 SET_TEXT_SCALE_100,100%
 SET_TEXT_SCALE_115,115%
 SET_TEXT_SCALE_130,130%
-SET_PALETTE,Color palette
-SET_PALETTE_HELP,Swaps red warnings and enemy fills for colors that stay distinct with red-green color blindness.
+SET_PALETTE,Colour palette
+SET_PALETTE_HELP,Swaps red warnings and enemy fills for colours that stay distinct with red-green colour blindness.
 SET_PALETTE_STANDARD,Standard
-SET_PALETTE_COLORBLIND,Colorblind-friendly
+SET_PALETTE_COLORBLIND,Colour-blind-friendly
 TITLE_CONTINUE,Continue
 TITLE_NEW_GAME,New Game
 TITLE_LOAD,Load
@@ -407,11 +407,11 @@ TITLE_CONFIRM_BACK,Go back
 TITLE_CONFIRM_BEGIN,Begin anew
 HUD_CMD_ITEMS,Items
 HUD_HELP_ITEMS,"Tonics, salves and tools from the pack. Each use spends one."
-HUD_ITEM_COUNT_FMT,x{n}
+HUD_ITEM_COUNT_FMT,×{n}
 HUD_FAIL_NO_ITEM,None of those are left.
 HUD_FAIL_UNKNOWN_ITEM,That has no use in battle.
-HUD_HELP_ITEM_FELLS_FMT,{name} is a Zombie: this revive fells them
-HUD_HELP_ITEM_DEFEAT_FMT,"{name} is a Zombie and the last one standing: this revive fells them, and the fight is lost"
+HUD_HELP_ITEM_FELLS_FMT,{name} is Hollowed: this revive fells them
+HUD_HELP_ITEM_DEFEAT_FMT,"{name} is Hollowed and the last one standing: this revive fells them, and the fight is lost"
 GFX_VEGETATION_DETAIL,Vegetation Detail
 SKILL_LAMP_DIVE,Lamp Dive
 SWELL_MODE_BALLAST,Ballast
@@ -438,7 +438,7 @@ HUD_FAIL_SWELL_CANCELLED,The Swell was held back. Nothing was spent.
 GFX_SKY_DETAIL,Sky Detail
 ENC_CH02_TIDELINE,The Tideline
 LOCATION_PROLOGUE,A Dead City at Dusk
-FLOW_END_CARD_TITLE,End of the first playable
+FLOW_END_CARD_TITLE,The end of Act I
 FLOW_END_CARD_LINE,Thank you for walking with them this far.
 FLOW_END_CARD_PROMPT,Confirm to return to the title
 CHAR_VENDOR,Fish Seller
@@ -485,8 +485,8 @@ HUD_READ_NO_WEAKNESS,No weakness found
 AUTOSAVE_SKIPPED_TOAST,"The autosave still holds a journey further along, so it was kept. Rest at a shrine to record this one."
 STAT_STRENGTH,Strength
 STAT_MAGIC,Magic
-STAT_DEFENSE,Defense
-STAT_MAGIC_DEFENSE,Magic Defense
+STAT_DEFENSE,Defence
+STAT_MAGIC_DEFENSE,Magic Defence
 STAT_AGILITY,Agility
 STAT_ACCURACY,Accuracy
 STAT_EVASION,Evasion
@@ -547,7 +547,7 @@ HUD_BOSS_FIELD_FMT,{field}: {count} bound to it
 PHASE_DROWNBELL_TOLL,The Toll
 FIELD_DROWNBELL_FLOOD,The flood
 TITLE_SETTINGS,Settings
-TITLE_HELP_SETTINGS,"Graphics, and accessibility: text size, motion, colors and timing."
+TITLE_HELP_SETTINGS,"Graphics, and accessibility: text size, motion, colours and timing."
 GFX_MENU_TITLE,Graphics
 GFX_MENU_PRESET,Preset
 GFX_MENU_HELP_PRESET,Left and right choose a preset. It sets every row below.
@@ -635,12 +635,12 @@ HUD_SWELL_BRACE_HOLDING,Holding
 HUD_SWELL_BRACE_NOT_HOLDING,Not holding
 HUD_SWELL_MODE_UNLOCKED_FMT,{mode} unlocked
 FIELD_MENU_SETTINGS,Settings
-FIELD_MENU_SETTINGS_DESC,"Graphics, and accessibility: text size, motion, colors and timing."
+FIELD_MENU_SETTINGS_DESC,"Graphics, and accessibility: text size, motion, colours and timing."
 SET_MENU_TITLE,Settings
 SET_MENU_GRAPHICS,Graphics
 SET_MENU_ACCESSIBILITY,Accessibility
 SET_MENU_HELP_GRAPHICS,"Graphics quality, from a whole preset down to each setting."
-SET_MENU_HELP_ACCESSIBILITY,"Text size, reduced motion, a colorblind-friendly palette and timing assist. Changes show at once."
+SET_MENU_HELP_ACCESSIBILITY,"Text size, reduced motion, a colour-blind-friendly palette and timing assist. Changes show at once."
 GFX_VALUE_PERCENT_FMT,{n}%
 GFX_VALUE_TIMES_FMT,×{n}
 CHAR_OSU,Grandmother Osu
@@ -674,7 +674,7 @@ SHOP_ERR_CLOSED,The shutters are down. Come back later.
 SHOP_ERR_NOT_IN_STOCK,{name} is not for sale here.
 SHOP_ERR_BAD_COUNT,Choose how many first.
 SHOP_ERR_NO_ROOM_FMT,Your bag has room for only {room} more {name}.
-SHOP_ERR_NO_FUNDS_FMT,"Not enough lume: this costs {price}, and the purse holds {purse}."
+SHOP_ERR_NO_FUNDS_FMT,"Not enough lume: {price} needed, {purse} in hand."
 SHOP_ERR_NOT_SELLABLE_FMT,No one here will buy {name}.
 SHOP_ERR_NOT_ENOUGH_FMT,You hold only {held} {name}.
 SHOP_ERR_UNKNOWN_PIECE,That piece is no longer in your pack.
@@ -826,7 +826,7 @@ TUT_FLIER_RHEN,"Fliers dodge most blows. Rhen's quick, precise strikes find them
 SAVE_SLOT_PROLOGUE,Prologue
 FLOW_END_CARD_VOICE,"""I said yes to a girl I'd known for two days. I didn't know yet what I was walking her toward."""
 CREDITS_GAME,Hymn of the Undertow
-CREDITS_SLICE,"The first playable: Haluna, the Saltgrass Causeway and the Shell Shrine"
+CREDITS_SLICE,"Act I: from the Underway at Oruvel to the road out of Corrow"
 CREDITS_MUSIC,Original music
 CREDITS_ENGINE,Made with the Godot Engine (MIT License)
 CREDITS_FONTS,EB Garamond and Source Sans 3 (SIL Open Font License)
@@ -919,14 +919,14 @@ RBL_ROLE_ANCHOR,Anchor
 RBL_ROLE_PRESSER,Presser
 RBL_ROLE_RINGWARD,Ringward
 RBL_SIDE_ORUVEL,Oruvel
-RBL_SIDE_PEMAKAR,Pemakar Terraces
+RBL_SIDE_PEMAKAR,Sorrin
 RBL_DIVER_TAVI,Tavi Orse
 RBL_DIVER_NOA,Noa
 RBL_DIVER_AMA,Old Ama
-RBL_DIVER_PEM_LIFTER,Pemakar lifter
-RBL_DIVER_PEM_ANCHOR,Pemakar anchor
-RBL_DIVER_PEM_PRESSER,Pemakar presser
-RBL_DIVER_PEM_RINGWARD,Pemakar ringward
+RBL_DIVER_PEM_LIFTER,Sorrin lifter
+RBL_DIVER_PEM_ANCHOR,Sorrin anchor
+RBL_DIVER_PEM_PRESSER,Sorrin presser
+RBL_DIVER_PEM_RINGWARD,Sorrin ringward
 RBL_MATCH_TIDECUP_OPENING,"The Tidecup, opening round"
 OBJ_U_CROWN_TETHER,Take the crown's tether down to the first bell-room.
 OBJ_U_BELL_TETHER,Follow the bell-room's tether down into the lamp galleries.
@@ -1116,6 +1116,8 @@ SWELL_INPUT_WEIGHTED_SWING,Weighted Swing
 SWELL_INPUT_WEIGHTED_SWING_HELP,Hold Confirm while the cleaver coils and let go on the count.
 SWELL_INPUT_REEL_STOP,Reel-Stop
 SWELL_INPUT_REEL_STOP_HELP,Stop each reel as its part lines up. Reels: {beats}
+CHAPTER_CARD_CH04_LABEL,Chapter 4
+CHAPTER_CARD_CH04_TITLE,The Pilgrim's Wake
 SKILL_DROWNER_DRAG,Root Haul
 SKILL_RISING_WATER,Rising Water
 SKILL_ROOT_STAMP,Root Stamp
@@ -1131,10 +1133,6 @@ SKILL_FIN_CUT,Fin Cut
 SKILL_SOUND_DIVE,Sound Dive
 SKILL_WAKE_BREACH,Breach
 SKILL_WAKE_WHEEL,Closing Circle
-ENEMY_MANGROVE_DROWNER,Mangrove Drowner
-ENEMY_LAMP_ENGINE,Lamp Engine
-ENEMY_AVALANCHE_RAM,Avalanche Ram
-ENEMY_WAKEFIN,Wakefin
 PHASE_MANGROVE_DROWNER_FIRST,Rooted
 PHASE_MANGROVE_DROWNER_UPROOTED,Uprooted
 PHASE_LAMP_ENGINE_FIRST,The Lamps
@@ -1147,7 +1145,12 @@ ENC_CH10_MANGROVE_DROWNER,The Roots
 ENC_CH11_LAMP_ENGINE,The Engine Hall
 ENC_CH12_AVALANCHE_RAM,The Seeping Wall
 ENC_CH15_WAKEFIN,The Dark Water
-LORE_MANGROVE_DROWNER,"Undertow-spawn grown through a mangrove's prop-roots. Its body is the root cage; its wounds open between the roots. The held lights it has dragged out of the fen snag there."
-LORE_LAMP_ENGINE,"A Lit Age machine still running in Lowlight's engine hall: salt-glass lamps on a brass frame around one cracked core, every lamp full of the bound dead."
-LORE_AVALANCHE_RAM,"A woolback grown monstrous on the drowned glimmer seeping from a terrace wall. Its fleece hangs wet and matted, and the seep's cold light shows through the parting."
-LORE_WAKEFIN,"Undertow-spawn that followed the first wake out of Ansedra's lagoon. In the dark it is mostly a tall black fin and the sea-glow running along its flanks."
+HUD_READ_PARTS,Broken
+HUD_READ_PARTS_BROKEN_FMT,"{list}: silent until it is mended"
+SET_MENU_CONTROLS_HUB,Up and Down: choose · Confirm: open · Cancel: back
+SET_MENU_CONTROLS_PAGE,Up and Down: choose · Left and Right: change · Cancel: back
+SET_MENU_CONTROLS_REBIND,Up and Down: choose · Confirm: change · Cancel: back
+SAVE_CONTROLS_SAVE,Confirm: record · Cancel: close
+SAVE_CONTROLS_LOAD,Confirm: continue · Cancel: close
+SAVE_CONTROLS_QUESTION,Up and Down: choose · Cancel: keep it
+SAVE_CONTROLS_RESULT,Confirm: continue

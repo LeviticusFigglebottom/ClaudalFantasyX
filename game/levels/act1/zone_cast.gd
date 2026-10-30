@@ -13,13 +13,15 @@ extends Node
 ## Two prefixes name other bodies: `"cast": "creature:<id>"` puts the creature's model (game/data/creatures/
 ## creatures.json `scene`, which faces +Z) on the actor, turned to its -Z, idling (the raid hound, the Cinder
 ## Matron); `"cast": "hero:<id>"` gives an actor whose id isn't the hero's own (Ch9's `vigil_asha`) that hero's
-## field body (HeroFieldActor), nothing when the hero has none yet.
+## field body (HeroFieldActor), nothing when the hero has none yet. A row's `"cast_still": true` holds the body on its
+## idle's first frame with no breathing (Coilspire's Virel in the binding's F07: "perfectly still").
 
 const VILLAGER_SCENE := "res://assets/characters/villagers/%s/%s_actor.tscn"
 const CREATURES_PATH := "res://game/data/creatures/creatures.json"
 const PREFIX_CREATURE := "creature:"
 const PREFIX_HERO := "hero:"
 const KEY_CAST := "cast"
+const KEY_STILL := "cast_still"
 const CAST := &"Cast"
 const STAND_IN := &"StandIn"
 const CLIP_IDLE := &"idle"
@@ -28,23 +30,54 @@ const SALT_IDLE := "idle_clip"
 var zone: GreyboxZone
 ## Actor id -> its villager model.
 var cast: Dictionary = {}
+var _prebuilt := false
 
 
 func _ready() -> void:
+	if not prebuild():
+		return
+	for id: StringName in cast.keys():
+		_start_idle(id, cast[id] as Node3D)
+	var rows: Dictionary = zone.layout.get("actors", {})
+	for id: String in rows.keys():  # hero bodies attach in the tree (HeroFieldActor), as before
+		var row := rows[id] as Dictionary
+		var villager := str(row.get(KEY_CAST, ""))
+		if villager.begins_with(PREFIX_HERO):
+			cast_actor(StringName(id), villager)
+		if villager != "":
+			shape(cast.get(StringName(id)) as Node3D, row)  # after the idle starts: a still body pauses it
+
+
+## Instances every cast model onto its actor, once: called by GreyboxZone.build() while the zone is still off the
+## tree (on SceneRouter's worker thread, so the instancing never lands in the swap frame: ADR 0111 amendment 4), or by
+## _ready when the zone was built in the tree. False when this is not under a built GreyboxZone.
+func prebuild() -> bool:
+	if _prebuilt:
+		return true
 	zone = get_parent() as GreyboxZone
 	if zone == null or zone.stage == null:
 		push_warning("ZoneCast: not under a built GreyboxZone")
-		return
+		return false
+	_prebuilt = true
 	var rows: Dictionary = zone.layout.get("actors", {})
 	for id: String in rows.keys():
 		var villager := str((rows[id] as Dictionary).get(KEY_CAST, ""))
-		if villager != "":
-			cast_actor(StringName(id), villager)
+		if villager != "" and not villager.begins_with(PREFIX_HERO):
+			_attach(StringName(id), villager)
+	return true
 
 
 ## Puts `villager` (or a "creature:" / "hero:" body) on the stage actor `id` and starts its idle; returns the
 ## model, or null when either is missing.
 func cast_actor(id: StringName, villager: String) -> Node3D:
+	var model := _attach(id, villager)
+	if model != null and is_inside_tree() and not villager.begins_with(PREFIX_HERO):
+		_start_idle(id, model)
+	return model
+
+
+## The heavy half of cast_actor: instances the model and puts it on the actor (safe off the tree).
+func _attach(id: StringName, villager: String) -> Node3D:
 	var actor := zone.stage.actor(id)
 	if actor != null and villager.begins_with(PREFIX_HERO):
 		var body := HeroFieldActor.attach_actor(actor, StringName(villager.trim_prefix(PREFIX_HERO)))
@@ -61,17 +94,43 @@ func cast_actor(id: StringName, villager: String) -> Node3D:
 		model.rotation.y = PI  # a creature's model faces +Z; an actor faces its -Z
 		# the battle root (CreatureActor) answers the battle's play_clip; a cutscene drives the AnimationPlayer
 		model.set_script(null)
+		# its own ambient VFX reads the CreatureActor, so it stays in the battle scene (the Lamp Engine in Lowlight)
+		for child in model.get_children():
+			if child is CreatureAmbientVfx:
+				model.remove_child(child)
+				child.free()
 	actor.add_child(model)
 	var stand_in := actor.get_node_or_null(NodePath(String(STAND_IN))) as Node3D
 	if stand_in != null:
 		stand_in.visible = false
+	cast[id] = model
+	return model
+
+
+## The in-tree half: the villager's idle from its own phase, with HeroIdleMicro's breathing on top.
+func _start_idle(id: StringName, model: Node3D) -> void:
+	if not is_instance_valid(model):
+		return
 	var anim := HeroMotion.player_of(model)
 	if anim != null and anim.has_animation(CLIP_IDLE):
 		anim.play(CLIP_IDLE)
 		anim.seek(HeroIdleMicro.share(id, SALT_IDLE) * anim.get_animation(CLIP_IDLE).length, true)
 	HeroMotion.add_micro_motion(model, id)
-	cast[id] = model
-	return model
+
+
+## Applies a layout row's `cast_still` to a cast body (null: nothing to shape).
+static func shape(model: Node3D, row: Dictionary) -> void:
+	if model == null:
+		return
+	if bool(row.get(KEY_STILL, false)):
+		var micro := HeroMotion.micro_of(model)
+		if micro != null:
+			micro.active = false  # kept, inactive: the sequencer's add_micro_motion finds it and adds no other
+		var anim := HeroMotion.player_of(model)
+		if anim != null and anim.has_animation(CLIP_IDLE):
+			anim.play(CLIP_IDLE)
+			anim.seek(0.0, true)
+			anim.pause()
 
 
 ## The villager's actor scene (or a "creature:" id's model scene), or "" when there is none. A "hero:" cast has no

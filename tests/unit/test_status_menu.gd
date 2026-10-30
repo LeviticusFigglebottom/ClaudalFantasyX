@@ -68,11 +68,22 @@ func test_the_page_says_gear_swell_lattice_and_carried_statuses() -> void:
 	assert_eq((lat["lines"] as Array)[0], tr("STATUS_MENU_MOVEMENT_FMT").format({"count": 3}))
 	assert_eq((lat["lines"] as Array)[1], tr("STATUS_MENU_WOKEN_FMT").format({"count": 2}))
 	assert_eq(p["statuses"], [tr("STATUS_POISON")] as Array[String])
+	assert_eq(p["status_descs"], ["%s: %s" % [tr("STATUS_POISON"), tr("STATUS_POISON_DESC")]] as Array[String])
 	var asha := m.page(&"asha")
 	assert_eq(asha["statuses"], [tr("STATUS_MENU_NONE")] as Array[String])
+	assert_true((asha["status_descs"] as Array).is_empty(), "nothing carried, nothing to explain")
 	assert_eq((asha["swell"] as Dictionary)["mode"], &"ballast", "no saved mode: swell.json's default")
 	assert_eq((asha["swell"] as Dictionary)["points"], 0)
 	assert_true(m.page(&"nobody").is_empty())
+
+
+## The Lead's Act I pass: every status a fight can leave on a hero says what it does (STATUS_<ID>_DESC).
+func test_every_status_has_a_description() -> void:
+	var rows: Dictionary = BattleDB.load_default().statuses
+	assert_true(rows.size() > 10)
+	for sid: Variant in rows:
+		var key := str((rows[sid] as Dictionary).get("name_key", "")) + StatusMenuModel.DESC_SUFFIX
+		assert_ne(tr(key), key, "%s has a description (%s)" % [sid, key])
 
 
 func test_a_fallen_hero_says_so() -> void:
@@ -81,6 +92,36 @@ func test_a_fallen_hero_says_so() -> void:
 	assert_true(m.page(&"toma")["fallen"])
 	assert_eq(m.hero_rows()[2]["right"], tr("STATUS_MENU_FALLEN"))
 	assert_eq(m.hero_rows()[0]["right"], "")
+
+
+func test_kerrid_s_unrisen_line_shows_only_after_the_reveal() -> void:
+	var party: Array[StringName] = [&"rhen", &"kerrid"]
+	state.party_ids = party.duplicate()
+	var m := StatusMenuModel.new(PartySheet.new(state, party))
+	assert_eq(m.page(&"kerrid")["note"], "", "no hint before the reveal (kerrid.md section 6)")
+	state.flags[&"ch15_kerrid_revealed"] = true
+	assert_eq(m.page(&"kerrid")["note"], tr("STATUS_MENU_KERRID_UNRISEN"))
+	assert_eq(m.page(&"rhen")["note"], "", "his line only")
+	menu = StatusMenu.create(PartySheet.new(state, party))
+	_root().add_child(menu)
+	menu.show_hero(&"kerrid")
+	assert_true(menu.detail_texts().has(tr("STATUS_MENU_KERRID_UNRISEN")), "the page shows it")
+	_teardown()
+
+
+func test_a_caller_s_page_lists_the_vowbound_bound_so_far() -> void:
+	var m := StatusMenuModel.new(PartySheet.new(state, HEROES))
+	assert_eq(m.page(&"asha")["bound"], {"has": true, "text": tr("STATUS_MENU_BOUND_NONE")}, "a caller with none yet")
+	assert_false(bool(m.page(&"rhen")["bound"]["has"]), "a hero who calls none has no section")
+	state.flags["ch03_ilun_bound"] = true
+	state.flags["ch05_kahre_bound"] = true
+	var both := tr("ITEMS_MENU_LIST_JOIN").join([tr("VOWBOUND_ILUN"), tr("VOWBOUND_KAHRE")] as Array[String])
+	assert_eq(m.page(&"asha")["bound"]["text"], both, "in bind order")
+	menu = StatusMenu.create(PartySheet.new(state, HEROES))
+	_root().add_child(menu)
+	menu.show_hero(&"asha")
+	assert_true(menu.detail_texts().has(tr("STATUS_MENU_BOUND")) and menu.detail_texts().has(both), "the page shows it")
+	_teardown()
 
 
 func test_keys_switch_heroes_and_cancel_closes() -> void:

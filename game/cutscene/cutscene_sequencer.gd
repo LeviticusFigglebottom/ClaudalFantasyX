@@ -41,17 +41,14 @@ const GAIT_RUN := &"run"
 const FADE_OUT := &"out"
 const SWITCH_ON := &"on"
 const DEFAULT_SEED := 1
-## The energy a light was authored with, kept on it by the first @light (M2-FP-102).
-const META_LIGHT_ENERGY := &"cutscene_authored_energy"
 ## Process after the FieldCameraDirector (priority 0), so the breath turns the pose it just set.
 const PROCESS_AFTER_DIRECTOR := 10
 ## cues.json keys this sequencer accepts but does not perform yet; each warns once per scene.
 ## A line tagged #timed shows and the scene goes on: its @waits pace it (a sung verse in time with its cue).
 const TAG_TIMED := "timed"
 const UNSUPPORTED_KWARGS := {
-	&"camera": ["grade"],
 	&"anim": ["loop"],
-	&"vfx": ["form"],
+	&"vfx": ["follow", "anchors"],  # M3-ARC-1326 hands them to a stage VFX host; none reads them yet
 }
 
 ## Tests and captures: no waits, no typewriter, lines and options answer themselves.
@@ -83,6 +80,8 @@ var warnings: Array[String] = []
 ## shapes and a sequencer.json "face_poses" row also show it (CutsceneFace), blink (M2-FP-18,
 ## sequencer.json "blink") and lip-sync each line's text to its reveal (M2-CHR-10, lipsync.json).
 var faces: Array = []
+## The grade the scene has put on its level (M2-FP-120), taken off at its end.
+var grade := CutsceneGrade.new()
 var config: Dictionary = {}
 var overlay: CutsceneOverlay
 var runner: DialogueRunner
@@ -237,6 +236,7 @@ func play(scene_id: StringName, stage: CutsceneStage) -> bool:
 	if not runner.load_scene(scene_id) or not runner.start():
 		push_error("CutsceneSequencer: cannot start scene '%s'" % scene_id)
 		return false
+	CutsceneStaging.apply(stage)  # M4-CIN-1304: cinematics' own shots and marks for the zone
 	_begin(scene_id, stage)
 	var step := runner.next()
 	while not step.is_end() and not _aborted:
@@ -319,9 +319,11 @@ func _begin(scene_id: StringName, stage: CutsceneStage) -> void:
 		_player_input_was = _player.accepts_input
 		_player.accepts_input = false
 		_player.velocity = Vector3.ZERO
-	if _starts_black(scene_id):
+	if CutsceneCard.starts_black(scene_id):
 		overlay.set_fade(1.0)
 	runner.event_triggered.connect(_on_event)
+	runner.node_started.connect(func(n: StringName) -> void: _grade(runner.headers(n).get("grade", "")))  # M2-FP-120
+	_grade(runner.headers().get("grade", ""))
 
 
 func _finish() -> void:
@@ -352,6 +354,7 @@ func _finish() -> void:
 	_held.clear()
 	_npc_talk.end_all()
 	_key_drop()
+	grade.restore()
 	SaveSystem.release_autosave(self)
 	_playing = false
 	finished.emit(_scene_id)
@@ -364,6 +367,13 @@ func _restore_player() -> void:
 
 
 func _line(step: DialogueStep) -> void:
+	if CutsceneCard.TAG in step.tags:  # M2-FP-121: a time card on black, not a line in the box
+		overlay.set_fade(1.0)
+		var card := CutsceneCard.open(self, step)
+		if not _fast():
+			await _await_on(&"wait", card.finished, _on_awaited_plain)
+		CutsceneCard.close(card)
+		return
 	overlay.box.visible = true
 	overlay.box.show_line(step)
 	line_shown.emit(step)
@@ -474,7 +484,10 @@ func _cue_camera(step: DialogueStep) -> void:
 		if blend > 0.0:
 			overlay.box.visible = false
 		_key_for(_stage.shot_node(id))
+		var who := str(step.kwargs.get("track", ""))  # M4-CIN-1302: one continuous move with an actor
+		shot = CutsceneTrack.attach(self, shot, _actor(StringName(who)) if who != "" else null, _director)
 		_director.play_shot(shot, blend, ease)
+		_grade(step.kwargs.get("grade", ""))
 	await _land()
 
 
@@ -496,6 +509,10 @@ func _cue_wait(step: DialogueStep) -> void:
 		await _wait_for(float(step.kwargs.get("max", config.get("music_wait_fallback_sec", 0.0))))
 		if runner.is_waiting_for_marker():
 			runner.release_wait()
+		return
+	var walk: Dictionary = _motions.get(StringName("move:%s" % step.kwargs.get("arrive", "")), {})
+	if step.kwargs.has("arrive"):  # M2-FP-119: until that actor's walk lands, wherever it set off from
+		await _wait_for(float(walk.get("duration", 0.0)) - float(walk.get("elapsed", 0.0)))
 		return
 	await _wait_for(float(step.args[0]) if not step.args.is_empty() else 0.0)
 
@@ -577,6 +594,8 @@ func _cue_mark(step: DialogueStep) -> void:
 
 
 func _cue_anim(step: DialogueStep) -> void:
+	if CutsceneGroup.play(step, _stage, config, _start_motion, _cue_anim):  # M4-CIN-1302: a group, member by member
+		return
 	var actor := _actor(StringName(str(step.args[0])))
 	if actor == null:
 		return
@@ -666,34 +685,33 @@ func _cue_vfx(step: DialogueStep) -> void:
 		_warn("cannot place @vfx %s at '%s'" % [effect, at_id])
 		return
 	var host: Node3D = at if at != null else _stage
+	if host != null and step.kwargs.has("release"):  # M4-CIN-1303: the light already there lets go and rises
+		if not CutsceneVfx.release(host, float(step.kwargs["release"])):
+			_warn("@vfx release=: nothing held at '%s'" % at_id)
+		return
 	if host == null or CutsceneVfxHosts.offer(get_tree(), effect, at_id, step.kwargs):  # M3-ARC-1326: a stage host
 		return
-	CutsceneVfx.spawn(rows[effect], effect, step.kwargs, host, "Vfx_%s_%d" % [effect, _vfx_count], finished)
+	var vfx_name := "Vfx_%s_%d" % [effect, _vfx_count]
+	var field := CutsceneVfx.spawn(rows[effect], effect, step.kwargs, host, vfx_name, finished)
+	if field == null:
+		_warn("no @vfx %s %s" % [effect, step.kwargs])
+	elif float(rows[effect].get("end_after_sec", 0.0)) > 0.0:  # one shot's light (S08's bound Ilun), on scene time
+		_start_motion(StringName("vfx_end:%d" % _vfx_count), rows[effect]["end_after_sec"], CutsceneVfx.ender(field))
 	_vfx_count += 1
 
 
-## M2-FP-102: `@light <name> on|off [sec]` eases a stage practical's energy (a Light3D found by name under
-## the stage, wherever a body carries it) to its authored energy or to 0 (sequencer.json light_ease).
+## M2-FP-120: a grade (CutsceneGrade) on the stage's level, from a node's `grade:` header or `@camera grade=`. One
+## nobody has built yet is not a stage gap: it waits on Rendering (test_cutscene_directives' list).
+func _grade(id: Variant) -> void:
+	if str(id) != "":
+		grade.apply(_stage, StringName(str(id)))
+
+
+## M2-FP-102: `@light <name> on|off [sec]` (CutsceneLight).
 func _cue_light(step: DialogueStep) -> void:
-	var light_name := str(step.args[0])
-	var light := _stage.find_child(light_name, true, false) as Light3D if _stage != null else null
-	if light == null:
-		_warn("no light '%s' on the stage" % light_name)
-		return
-	if not light.has_meta(META_LIGHT_ENERGY):
-		light.set_meta(META_LIGHT_ENERGY, light.light_energy)
-	var from := light.light_energy if light.visible else 0.0
-	var to := float(light.get_meta(META_LIGHT_ENERGY)) if StringName(str(step.args[1])) == SWITCH_ON else 0.0
-	var sec := float(step.args[2]) if step.args.size() > 2 else 0.0
-	var curve := float(config.get("light_ease", 1.0))
-	light.visible = true
-	_start_motion(
-		&"light:%s" % light_name,
-		sec,
-		func(t: float) -> void:
-			if is_instance_valid(light):
-				light.light_energy = lerpf(from, to, CutsceneMotion.eased(t, curve))
-	)
+	var light_ease := float(config.get("light_ease", 1.0))
+	if not CutsceneLight.cue(_stage, step.args, light_ease, SWITCH_ON, _start_motion):
+		_warn("no light '%s' on the stage" % step.args[0])
 
 
 # --- key light (M2-FP-10) --------------------------------------------------------------------
@@ -970,23 +988,6 @@ func _place(actor: Node3D, pos: Vector3) -> void:
 
 
 ## True when the scene's first @fade (in its start node) is a fade in: the screen starts black.
-func _starts_black(scene_id: StringName) -> bool:
-	var f := FileAccess.open(DialogueRunner.scene_path(scene_id), FileAccess.READ)
-	if f == null:
-		return false
-	var data: Variant = JSON.parse_string(f.get_as_text())
-	if not data is Dictionary:
-		return false
-	var nodes: Dictionary = (data as Dictionary).get("nodes", {})
-	var start: Dictionary = nodes.get(str((data as Dictionary).get("start", "")), {})
-	for op: Dictionary in start.get("ops", []):
-		if str(op.get("cue", "")) == "fade":
-			return str((op.get("args", []) as Array)[0]) == "in"
-		if str(op.get("op", "")) == "line":
-			return false
-	return false
-
-
 func _warn(msg: String) -> void:
 	var full := "CutsceneSequencer(%s): %s" % [_scene_id, msg]
 	if full in warnings:

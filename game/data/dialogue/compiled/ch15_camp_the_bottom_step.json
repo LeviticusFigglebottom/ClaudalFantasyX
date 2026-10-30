@@ -1,0 +1,26 @@
+{
+ "format": 1,
+ "scene": "ch15_camp_the_bottom_step",
+ "source": "game/data/dialogue/ch15/ch15_camp_the_bottom_step.dlg",
+ "start": "ch15_camp_the_bottom_step",
+ "nodes": {
+  "ch15_camp_the_bottom_step": {
+   "headers": {"location": "ch15/hollowmere"},
+   "ops": [
+    {"op": "line", "id": "ch15_camp_001", "key": "DLG_CH15_CAMP_001", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 8},
+    {"op": "line", "id": "ch15_camp_002", "key": "DLG_CH15_CAMP_002", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 9},
+    {"op": "line", "id": "ch15_camp_003", "key": "DLG_CH15_CAMP_003", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 10},
+    {"op": "line", "id": "ch15_camp_004", "key": "DLG_CH15_CAMP_004", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 11},
+    {"op": "line", "id": "ch15_camp_005", "key": "DLG_CH15_CAMP_005", "speaker": "toma", "emotion": "worried", "voice": "", "src": 12},
+    {"op": "line", "id": "ch15_camp_006", "key": "DLG_CH15_CAMP_006", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 13},
+    {"op": "line", "id": "ch15_camp_007", "key": "DLG_CH15_CAMP_007", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 14},
+    {"op": "line", "id": "ch15_camp_008", "key": "DLG_CH15_CAMP_008", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 15, "tags": ["long"]},
+    {"op": "line", "id": "ch15_camp_009", "key": "DLG_CH15_CAMP_009", "speaker": "toma", "emotion": "sad", "voice": "", "src": 16},
+    {"op": "line", "id": "ch15_camp_010", "key": "DLG_CH15_CAMP_010", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 17},
+    {"op": "line", "id": "ch15_camp_011", "key": "DLG_CH15_CAMP_011", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 18},
+    {"op": "line", "id": "ch15_camp_012", "key": "DLG_CH15_CAMP_012", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 19},
+    {"op": "set", "flag": "ch15_camp_talk", "value": ["lit", true], "src": 20}
+   ]
+  }
+ }
+}

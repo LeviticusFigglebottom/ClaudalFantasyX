@@ -17,7 +17,7 @@ She is cold because warmth would make it unbearable.
 ## Arc Beats
 - **Act I:** joins at the ferry after Haluna (Ch4) by Order appointment. She is exacting, correct, and witheringly polite. She stands apart at the Pilgrim's Wake, then quietly fixes the ink on Asha's wake-shell. At Corrow she is magnificent in battle and, in private, the only one who does not cry at the Ebbing.
 - **Act II:** at Cloudloom, Ama Quillo's keth contradict scripture. Ysolde can read them, and she lies to the party about what they say. That night she confesses the lie to Asha. At the Sanctum (Ch13) she lets Asha bind Ethren, and she stands before her husband's spirit for the first time with a Cantor beside her. In the Lamp Archive (Ch13) she reads the Cantor roll and does the maths: Corran is *kept, Sanctum*, and the margin says *to be spent at the next Calm* ([ADR 0016](../../decisions/0016-act-two-restaging.md)). **She becomes the pilgrimage's fiercest critic**, coldly and precisely, and her anger frightens even Sefir's Wardens. She denounces Sefir to his face at the Choir.
-- **Act III:** she reconstructs the Eighth Verse's Lamptongue with Asha from keth, Kirru song, and Choir stones. She is the scholar who makes the ending possible.
+- **Act III:** she reconstructs the Eighth Verse with Asha: the words from the Choir stones, the tune read through Pell's farewell-tide, and its place from Ama's question-knot in the keth (act3_threads T-04). She is the scholar who makes the ending possible.
 - **Ending:** she releases Ethren in the dive, the hardest Vowbound fight in the game for her. She says goodbye to Corran. In the epilogue she is teaching Lamptongue in Haluna, the words only, never the tune.
 
 ## Silhouette and Costume

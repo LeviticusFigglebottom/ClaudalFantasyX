@@ -57,6 +57,17 @@
         "dive_raft-lod1": 364
       }
     },
+    "gull_post": {
+      "budget": [
+        1200,
+        120
+      ],
+      "bytes": 27996,
+      "lods": {
+        "gull_post": 520,
+        "gull_post-lod1": 24
+      }
+    },
     "hull_cabin": {
       "budget": [
         5500,
@@ -125,12 +136,12 @@
     },
     "lintel_gull_open": {
       "budget": [
-        2800,
+        3600,
         420
       ],
-      "bytes": 110212,
+      "bytes": 438424,
       "lods": {
-        "lintel_gull_open": 772,
+        "lintel_gull_open": 2960,
         "lintel_gull_open-lod1": 338
       }
     },
@@ -253,6 +264,28 @@
       "lods": {
         "raft_deck_small": 11384,
         "raft_deck_small-lod1": 524
+      }
+    },
+    "raft_deck_small_tucked": {
+      "budget": [
+        12000,
+        600
+      ],
+      "bytes": 502956,
+      "lods": {
+        "raft_deck_small_tucked": 11204,
+        "raft_deck_small_tucked-lod1": 524
+      }
+    },
+    "raft_deck_tucked": {
+      "budget": [
+        18000,
+        900
+      ],
+      "bytes": 622328,
+      "lods": {
+        "raft_deck_tucked": 14160,
+        "raft_deck_tucked-lod1": 604
       }
     },
     "reef_edge_far": {

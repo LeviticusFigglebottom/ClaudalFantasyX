@@ -170,6 +170,16 @@ and, for a dragonfly patrol only, optional `perches` `[x, y, z, yaw_deg]` inside
 checks the file: the zone id names it and is a location, perches sit inside their flock, the counts stay within
 the budgets.
 
+### Ground and placement (the Act I final-quality audit, 2026-10-29)
+- **`"ground"`:** `{"node", "method"}` (a terrain's height function, as Haluna's) or `{"physics": true}`: crabs ray down
+  to the zone's collision under them (cached on a 25 cm grid; the flat `y` until the collision is in the physics
+  space). Kit zones whose ground is uneven use `physics`.
+- **Placement tools:** `godot --headless --path . -s tools/creatures/wildlife_audit.gd [-- zone ...]` gives every
+  visible mesh a collider and checks every perch (on a surface, not under a roof or on air), crab area (on dry ground)
+  and shoal (under water); `tools/creatures/wildlife_snap.gd -- --out=DIR zone ...` re-seats them on the dressed kit and
+  `python3 tools/creatures/wildlife_apply.py DIR` merges the result into the committed files. Run both after a zone's
+  kit or layout moves.
+
 ## Review
 
 - `game/levels/_tests/wildlife/wildlife_stage.tscn` (data `wildlife_stage.json`): sand, a water plane over a
@@ -208,3 +218,65 @@ lightning), `ch07/tamsule_bell_galleries` (story staging under the Bell), the pr
 Review: `game/levels/_tests/wildlife/zone_wildlife.gd` instances a zone scene with its layer;
 `zone_wildlife_brine_shoals.tscn` (shots `wildlife_zone_brine_flats`, `wildlife_zone_brine_wrecks`) and
 `zone_wildlife_oruvel_underway.tscn` (`wildlife_zone_underway_crown`).
+
+## Act II: fireflies (Ch10 Ossa Fen, M4-A2P-056, 2026-10-30)
+A third insect, `insect_firefly` (assets_src/wildlife/insect/build_insect.py): a slim beetle about 1.4 cm long, dusky
+wing covers with a pale margin held up and out, clear hind wings beating beneath, a faded red shield over the head,
+and the lantern, the abdomen's last segments in pale yellow-green wax. Wildlife, never glimmer: the fen's lights are
+animals (ossa_fen.md), and the glow is sun_gold mixed 30% toward palm_green, warm yellow-green.
+- **The glow** is the only light wildlife makes. The wildlife shader's mode 6 is mode 5's flutter with the
+  instance's blink in its mode parameter; the `firefly` material lights the mesh behind `glow_tail_z` at
+  `glow_color` x `glow_energy` x the blink, and swells the lit lantern about `glow_centre` toward `glow_angle`
+  radians of the view at its distance (from its own `glow_radius`), so a centimetre of light still reads as a point
+  at walking distance without a bloom pass, and stays small up close. No TIME: the blink comes from the layer.
+- **The motion** (WildlifeSwarm, type `firefly`): the moth's orbit, slower and lower (wildlife.json `firefly`), and
+  each one flashes once every `blink_s` (its own period, re-drawn per flash) over `blink_on_s`, a sine-squared rise
+  and fall, keeping `glow_floor` between flashes.
+- **Budgets:** fireflies count against `insects` (24 a zone) and draw in their own MultiMesh, the layer's seventh
+  (`draw_calls` 7).
+- **Placed:** ch10_ossa_fen.json, four swarms of six beside the root-walks; review shots
+  `wildlife_zone_ossa_fen_walk0` and `wildlife_zone_ossa_fen_pocket` (zone_wildlife.gd now keeps a zone's own
+  layer, as GreyboxZone builds one from the wildlife file, instead of adding a second).
+
+## Act II: fen kingfishers (Ch10 Ossa Fen, M4-A2P-056, 2026-10-30)
+`assets/wildlife/kingfisher/kingfisher.glb` (assets_src/wildlife/kingfisher/build_kingfisher.py) follows the gull's
+recipe: two meshes (`kingfisher_flying`, `kingfisher_perched`), one `plumage` slot, the flap and head-turn masks.
+Its shape is its own: stocky, a big head and a long black dagger bill, a stub tail, short rounded wings with a 0.26 m
+span. It is tannin brown above, with a blue-green flash on the wings and rump (sea_blue_cloth toward palm_green,
+never a glimmer teal, never emissive) and a pale rust breast. Never a heron, an egret or an otter: those shapes are
+the Kirru.
+- **Motion:** WildlifeGullFlock, unchanged, driven by the `kingfisher` kind (the gull's keys): fast and low on 11 Hz
+  bursts with brief glides, a tight orbit within altitude_m 0.6–1.6 over the water, long perches, quick head turns.
+- **Zone rows:** `kingfishers` (the flock schema), with their own budget (`kingfishers` 6) and two MultiMeshes
+  (`draw_calls` 9 is the most a layer can now have).
+- **Placed:** ch10_ossa_fen.json, three pairs perching on the root-walk rails (the perch points follow each rail's
+  yawed line, facing the water). Review shot `wildlife_zone_ossa_fen_rail0`.
+
+## Act II: woolback herds (Ch12 Keth Pass, M4-A2P-056, 2026-10-30)
+The first skinned wildlife. A herd is two or three animals close to the path, so each woolback is its own actor
+(game/creatures/woolback/woolback_actor.tscn: the model at 0.3) with an AnimationPlayer, not a MultiMesh instance.
+- **Model:** assets_src/creatures/woolback/build_woolback.py, the Avalanche Ram's build without the seep and the
+  ice (it imports the ram's module), so the boss and the herd read as the same animal at a third the size.
+- **Clips:** `idle` grazing, `look`, `walk`. The walk's hooves are solved per frame so a planted hoof slides back
+  at the clip's own speed: the herd moves the actor at exactly that (`walk_speed_mps`), so the hooves stay put.
+- **Motion:** WildlifeHerd (headless, seeded): graze for `graze_s`, then look round (`look_chance`, for `look_s`,
+  the look clip's length) or amble `wander_m` to a spot `spacing_m` from the others, turning at `turn_rate` and
+  slowing while it turns; a player within `look_radius_m` makes a grazing animal look up. WildlifeLayer puts the
+  actors where the herd says, plays the clip it names (the first from a phase of its own) and hides them past the
+  cull distance.
+- **Zone rows:** `herds` ([x, z] centre, radius, count, optional y), with the `woolbacks` budget (6). They are not
+  MultiMeshes, so they don't count toward `draw_calls`.
+- **Placed:** ch12_keth_pass.json (the pass foot and the saddle). Review shots `wildlife_zone_keth_pass_foot` and
+  `wildlife_zone_keth_pass_saddle`.
+
+## Act II: rim rays (Ch16 the Pale Rim, M4-A2P-056, 2026-10-30)
+`assets/wildlife/rim_ray/rim_ray.glb` (assets_src/wildlife/rim_ray/build_rim_ray.py): a small pale ray, 0.4 m
+across, sand-pale and freckled, a faint darker margin. Its fins carry the flap mask (span 0 at the body's edge, 1 at
+the tip).
+- **Motion:** WildlifeShoal, unchanged except that it takes the shader mode: the `ray` kind's shoals draw with the
+  flap (mode 1), the stroke lagging out to the tips, instead of the fish's swim. They are slow, loose and flat,
+  with no vertical spread or wobble, so they stay in a hand of water, and a wader startles them into a glide off.
+- **Zone rows:** `rays` (the shoal schema), budget `rays` 16, one MultiMesh (`draw_calls` 10 is now the most a layer
+  can have). They cast shadows.
+- **Placed:** ch16_pale_rim.json, three groups off the wade. Review shot `wildlife_zone_pale_rim_wade`, whose stage
+  hides the greybox's opaque water plane (`hide_nodes`).

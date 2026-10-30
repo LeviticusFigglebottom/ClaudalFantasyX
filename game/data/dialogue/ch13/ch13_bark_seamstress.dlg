@@ -1,0 +1,12 @@
+// Ch13: the wedding's red thread. After the heresy, the spool she kept.
+title: ch13_bark_seamstress
+location: ch13/ansedra
+---
+<<if $ch14_declared_heretics>>
+    Townsfolk as "Seamstress" [sad]: They took the red thread down. I kept a spool. I don't know why I'm telling you. #line:ch13_bark_seam_001
+<<elseif $ch13_wedding_announced>>
+    Townsfolk as "Seamstress" [smile]: Red thread for the wedding. I haven't slept. I don't mind. #line:ch13_bark_seam_002
+<<else>>
+    Townsfolk as "Seamstress" [neutral]: Red for weddings, white for the Order, and nothing for anything else. #line:ch13_bark_seam_003
+<<endif>>
+===

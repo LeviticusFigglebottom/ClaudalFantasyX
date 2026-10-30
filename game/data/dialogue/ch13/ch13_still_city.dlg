@@ -1,0 +1,57 @@
+// Ch13 B01 "The still city" (C, 1.5 min) and B02 "The High Warden's house" (C, 2 min). act2_ch13.md §2.
+// RULE 4: nothing on the water moves; every barge is poled with no wake. A01: gold bowl-domes doubled in a
+// mirror lagoon (cold gold: wealth, not warmth). A02: the outer moorings; polers leave no wake. A03: KERRID
+// steps off at the outer moorings and stays there STANDING among the polers (he never sits until Ch15); the
+// party goes in without him (rule 3). B02: Sefir at his door: unnaturally still, no breathing idle, warm and
+// delighted (rule 6: no sneering villain). A05: half a beat's glance toward the outer moorings (ADR 0022 (c):
+// he knows what Kerrid is and lets him be). A06: Toma's bow; his "And still" still answers (Ch14 is the first
+// time it doesn't).
+title: ch13_still_city
+location: ch13/ansedra
+---
+@letterbox on
+@camera A01
+@music ansedra fade=2.0
+@wait 5.0
+@camera A02
+@sfx barge_pole
+@wait 2.0
+Rhen [worried]: They're not making ripples. How are they not making ripples? #line:ch13_city_001
+@wait 1.5
+@camera A03
+@mark kerrid kerrid_moorings walk
+@anim asha look_at kerrid
+@anim kerrid raise_hand
+@wait 3.0
+<<jump ch13_sefirs_house>>
+===
+title: ch13_sefirs_house
+---
+@camera A04
+@music ansedra fade=1.0
+@mark sefir sefir_door walk
+@wait 1.5
+Sefir [smile]: Lady Cantor. You have come further than most, and faster. Ansedra is yours. Rest here. Nothing in this city will hurry you. #line:ch13_house_001 #long
+Sefir [soft_smile]: And you have come at a good time. In four days a Saltwright will marry a Warden's daughter, in the Lacquer Court, and I will say the words. #line:ch13_house_002 #long
+Sefir [smile]: Mistress Varrow's brother. I believe she had something to do with it. #line:ch13_house_003
+<<set $ch13_wedding_announced = true>>
+@anim liss look_away
+@wait 1.0
+Sefir [tender]: The Sanctum is open to you tomorrow. #line:ch13_house_004
+@anim sefir hold_out_key liss
+Sefir [soft_smile]: And to you, Mistress Varrow, the Lamp Archive, for as long as you are our guest. #line:ch13_house_005
+Sefir [soft_smile]: You were told for years the Order hides the Lit Age from your people. Read whatever you like. We have nothing to hide from a wright. #line:ch13_house_006 #long
+@anim liss take_key
+@wait 1.5
+@camera A05
+@anim sefir look_at outer_moorings
+@wait 0.6
+@anim sefir look_at asha
+@camera A06
+@anim toma bow sefir
+Sefir [smile]: Be level, Okeru. #line:ch13_house_007 #tn:"The Order's greeting; the reply is 'And still'."
+Toma [neutral]: And still, High Warden. #line:ch13_house_008
+@wait 1.5
+@letterbox off
+@camera release
+===

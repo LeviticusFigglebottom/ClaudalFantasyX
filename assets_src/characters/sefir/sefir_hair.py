@@ -37,21 +37,22 @@ STILL = (0.0, 0.0, 0.0, 0.0)
 # the chin; the group's half-width at the root in deg; the drape's bias: back (+) or forward (-) per metre of drop)
 BACK_GROUPS = ((-108.0, 0.74, 14.0, 0.30), (-136.0, 0.80, 15.0, 0.22), (-162.0, 0.84, 14.0, 0.14),
                (162.0, 0.84, 14.0, 0.14), (136.0, 0.80, 15.0, 0.22), (108.0, 0.74, 14.0, 0.30))
-FRONT_GROUPS = ((-86.0, 0.74, 7.0, -0.30), (86.0, 0.74, 7.0, -0.30))
+FRONT_GROUPS = ((-86.0, 0.74, 10.0, -0.12), (86.0, 0.74, 10.0, -0.12))  # GPU QA row 54 (pass 5): was 7 deg, -0.30
 FALL_LIFT = (0.0050, 0.0085)  # m at s = 1: inner and outer layer off the scalp (over the scalp cards' 1.2-4 mm)
 FALL_CLEAR = 0.010  # m: off the cloth (avoid() already includes the garments' own offsets)
 FALL_STEP = 0.022  # m per drape step
 FALL_POINTS = 18  # points per fall card after resampling
 FALL_WIDTH = (0.012, 0.020)  # m, one fall card
-FRONT_WIDTH = (0.008, 0.013)
+FRONT_WIDTH = (0.012, 0.018)  # GPU QA row 54 (pass 5): was 8-13 mm, thin floating ribbons
 LEAVE_SDF = 0.004  # m past its lift: the strand has left the scalp
 DRAPE_GRID = 1e-5  # m: the drape's state is rounded to this every step (the iteration amplified the last bits that
 # numpy's SIMD paths leave in the field and the projections, so hosts disagreed by a micron by the tips)
 HEAD_REACH = 0.04  # m: farther than this from the head skin a point is off the head
 BIAS_FADE = 0.18  # m of drop over which a group's back/forward bias fades
-COHESION = {"b": 0.35, "f": 0.6}  # how far a group's strands close up below the head, behind and in front
-LATERAL = 0.25  # an outward push off the sides of the head per unit drop (fading with the bias)
-BODY_PULL = 0.25  # pull toward the nearest surface under the strand, per unit drop
+COHESION = {"b": 0.45, "f": 0.9}  # (GPU QA row 54: was 0.35/0.6; strands floated apart)  # how far a group's strands close up below the head, behind and in front
+LATERAL = 0.12  # an outward push off the sides of the head per unit drop (fading with the bias)
+FRONT_LATERAL = 0.0  # GPU QA row 54 (pass 5): the front locks fall along the cheek and jaw, not out past them
+BODY_PULL = 0.4  # pull toward the nearest surface under the strand, per unit drop
 
 
 # ---------------------------------------------------------------------------------------------
@@ -179,7 +180,8 @@ def _head_sd(scalp, P: np.ndarray) -> np.ndarray:
     return sd
 
 
-def drape(scalp, avoid, roots: np.ndarray, lift: np.ndarray, length: np.ndarray, bias: np.ndarray, lm) -> tuple:
+def drape(scalp, avoid, roots: np.ndarray, lift: np.ndarray, length: np.ndarray, bias: np.ndarray, lm,
+          lateral: float = LATERAL) -> tuple:
     """Draped strands: from each root, steps of FALL_STEP down (with `bias` back/forward per unit drop and a little
     outward from the head axis), held `lift` off the scalp while on it and FALL_CLEAR off `avoid` everywhere.
     Returns (paths (n, FALL_POINTS, 3), arc length at which each strand leaves the scalp)."""
@@ -195,7 +197,7 @@ def drape(scalp, avoid, roots: np.ndarray, lift: np.ndarray, length: np.ndarray,
         # the bias fades over the first BIAS_FADE m (it only carries the strand past the shoulder); then gravity and a
         # pull toward the body, so the strand lies on what is under it instead of standing off it
         b = bias * np.exp(-s / BIAS_FADE)
-        lat = LATERAL * np.exp(-s / BIAS_FADE) * np.sign(cur[:, 0])  # out past the cheeks and the ears
+        lat = lateral * np.exp(-s / BIAS_FADE) * np.sign(cur[:, 0])  # out past the cheeks and the ears
         d = np.stack([lat, b, -np.ones(n)], axis=1) - BODY_PULL * out
         d /= np.linalg.norm(d, axis=1, keepdims=True)
         nxt = cur + d * FALL_STEP
@@ -282,7 +284,8 @@ def fall(lm, params: dict, rng: np.random.Generator, scalp, avoid) -> tuple[Part
         # every strand ends near the same height: 65 cm below the crown at the back, the chest in front
         tip_z = crown_z - L if kind == "b" else float(lm.P("nipple")[2]) + 0.03 * s
         length = (roots[:, 2] - tip_z) * (1.25 if kind == "b" else 1.45) + rng.uniform(-0.02, 0.02, n)
-        paths, leave = drape(scalp, avoid, roots, lift, length, np.full(n, bias), lm)
+        paths, leave = drape(scalp, avoid, roots, lift, length, np.full(n, bias), lm,
+                             LATERAL if kind == "b" else FRONT_LATERAL)
         paths = _cohere(paths, avoid, COHESION[kind])
         # the group's mean strand from where its strands leave the scalp to the tips: the bone chain
         lf = float(np.median(leave / length))

@@ -397,6 +397,14 @@
    "block": "LampD"
   }
  ],
+ "kit_material_paths": {
+  "cw_lacquer_red": "res://game/levels/ch08/corrow/corrow_lacquer_red_material.tres",
+  "cw_watch_red": "res://game/levels/ch08/corrow/corrow_watch_red_material.tres",
+  "cw_lacquer_dark": "res://game/levels/ch08/corrow/corrow_lacquer_dark_material.tres",
+  "cw_copper": "res://game/levels/ch08/corrow/corrow_copper_material.tres",
+  "cw_iron": "res://game/levels/ch08/corrow/corrow_iron_material.tres",
+  "cw_sail": "res://game/levels/ch08/corrow/corrow_canvas_material.tres"
+ },
  "pieces": [
   {
    "piece": "corrow_far",
@@ -404,7 +412,7 @@
     0.0,
     0.0
    ],
-   "y": 0.0,
+   "y": -0.03,
    "yaw_deg": 0.0,
    "lod1_from_m": 5000.0
   },
@@ -425,7 +433,9 @@
     31.184
    ],
    "y": 0.0,
-   "yaw_deg": 26.356
+   "yaw_deg": 26.356,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -500,7 +510,9 @@
     26.073
    ],
    "y": 0.0,
-   "yaw_deg": 24.064
+   "yaw_deg": 24.064,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -575,7 +587,9 @@
     21.401
    ],
    "y": 0.0,
-   "yaw_deg": 21.772
+   "yaw_deg": 21.772,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -650,7 +664,9 @@
     17.174
    ],
    "y": 0.0,
-   "yaw_deg": 19.481
+   "yaw_deg": 19.481,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -725,7 +741,9 @@
     13.399
    ],
    "y": 0.0,
-   "yaw_deg": 17.189
+   "yaw_deg": 17.189,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -800,7 +818,9 @@
     10.083
    ],
    "y": 0.0,
-   "yaw_deg": 14.897
+   "yaw_deg": 14.897,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -875,7 +895,9 @@
     7.231
    ],
    "y": 0.0,
-   "yaw_deg": 12.605
+   "yaw_deg": 12.605,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -950,7 +972,9 @@
     4.847
    ],
    "y": 0.0,
-   "yaw_deg": 10.313
+   "yaw_deg": 10.313,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -1151,7 +1175,9 @@
     0.06
    ],
    "y": 0.0,
-   "yaw_deg": 1.146
+   "yaw_deg": 1.146,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -1226,7 +1252,9 @@
     0.06
    ],
    "y": 0.0,
-   "yaw_deg": -1.146
+   "yaw_deg": -1.146,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -1301,7 +1329,9 @@
     0.54
    ],
    "y": 0.0,
-   "yaw_deg": -3.438
+   "yaw_deg": -3.438,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -1358,7 +1388,9 @@
     1.499
    ],
    "y": 0.0,
-   "yaw_deg": -5.73
+   "yaw_deg": -5.73,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -1433,7 +1465,9 @@
     2.935
    ],
    "y": 0.0,
-   "yaw_deg": -8.021
+   "yaw_deg": -8.021,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -1508,7 +1542,9 @@
     4.847
    ],
    "y": 0.0,
-   "yaw_deg": -10.313
+   "yaw_deg": -10.313,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -1583,7 +1619,9 @@
     7.231
    ],
    "y": 0.0,
-   "yaw_deg": -12.605
+   "yaw_deg": -12.605,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -1658,7 +1696,9 @@
     10.083
    ],
    "y": 0.0,
-   "yaw_deg": -14.897
+   "yaw_deg": -14.897,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -1733,7 +1773,9 @@
     13.399
    ],
    "y": 0.0,
-   "yaw_deg": -17.189
+   "yaw_deg": -17.189,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -1808,7 +1850,9 @@
     17.174
    ],
    "y": 0.0,
-   "yaw_deg": -19.481
+   "yaw_deg": -19.481,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -1883,7 +1927,9 @@
     21.401
    ],
    "y": 0.0,
-   "yaw_deg": -21.772
+   "yaw_deg": -21.772,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -1958,7 +2004,9 @@
     26.073
    ],
    "y": 0.0,
-   "yaw_deg": -24.064
+   "yaw_deg": -24.064,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -2033,7 +2081,9 @@
     31.184
    ],
    "y": 0.0,
-   "yaw_deg": -26.356
+   "yaw_deg": -26.356,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -2108,7 +2158,9 @@
     36.725
    ],
    "y": 0.0,
-   "yaw_deg": -28.648
+   "yaw_deg": -28.648,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -2183,7 +2235,9 @@
     42.687
    ],
    "y": 0.0,
-   "yaw_deg": -30.94
+   "yaw_deg": -30.94,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -2258,7 +2312,9 @@
     49.061
    ],
    "y": 0.0,
-   "yaw_deg": -33.232
+   "yaw_deg": -33.232,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -2333,7 +2389,9 @@
     55.836
    ],
    "y": 0.0,
-   "yaw_deg": -35.523
+   "yaw_deg": -35.523,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -2408,7 +2466,9 @@
     63.002
    ],
    "y": 0.0,
-   "yaw_deg": -37.815
+   "yaw_deg": -37.815,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -2483,7 +2543,9 @@
     70.547
    ],
    "y": 0.0,
-   "yaw_deg": -40.107
+   "yaw_deg": -40.107,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -2558,7 +2620,9 @@
     78.459
    ],
    "y": 0.0,
-   "yaw_deg": -42.399
+   "yaw_deg": -42.399,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -2633,7 +2697,9 @@
     86.726
    ],
    "y": 0.0,
-   "yaw_deg": -44.691
+   "yaw_deg": -44.691,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -2708,7 +2774,9 @@
     95.334
    ],
    "y": 0.0,
-   "yaw_deg": -46.983
+   "yaw_deg": -46.983,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -2783,7 +2851,9 @@
     104.269
    ],
    "y": 0.0,
-   "yaw_deg": -49.274
+   "yaw_deg": -49.274,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -2858,7 +2928,9 @@
     113.517
    ],
    "y": 0.0,
-   "yaw_deg": -51.566
+   "yaw_deg": -51.566,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -2933,7 +3005,9 @@
     123.064
    ],
    "y": 0.0,
-   "yaw_deg": -53.858
+   "yaw_deg": -53.858,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -3008,7 +3082,9 @@
     132.893
    ],
    "y": 0.0,
-   "yaw_deg": -56.15
+   "yaw_deg": -56.15,
+   "scale": 1.01,
+   "scale_y": 1.0
   },
   {
    "piece": "wall_apron",
@@ -3558,8 +3634,8 @@
   {
    "piece": "seawall_curve",
    "at": [
-    -63.505,
-    -1.893
+    -63.557,
+    -2.138
    ],
    "y": 0.0,
    "yaw_deg": 101.88
@@ -3567,8 +3643,8 @@
   {
    "piece": "seawall_curve",
    "at": [
-    -96.849,
-    7.096
+    -96.927,
+    6.859
    ],
    "y": 0.0,
    "yaw_deg": -71.7
@@ -3576,8 +3652,8 @@
   {
    "piece": "seawall_curve",
    "at": [
-    -66.078,
-    -14.125
+    -66.027,
+    -13.881
    ],
    "y": 0.0,
    "yaw_deg": 101.88
@@ -3585,8 +3661,8 @@
   {
    "piece": "seawall_curve",
    "at": [
-    -100.773,
-    -4.772
+    -100.694,
+    -4.534
    ],
    "y": 0.0,
    "yaw_deg": -71.7
@@ -3793,7 +3869,10 @@
    ],
    "y": 12.0,
    "yaw_deg": 12.41,
-   "kit_dir": "res://assets/environments/kits/brine_shoals/"
+   "kit_dir": "res://assets/environments/kits/brine_shoals/",
+   "material_paths": {
+    "bs_level_stone": "res://game/levels/ch06/brine_shoals/brine_shoals_level_stone_material.tres"
+   }
   },
   {
    "piece": "mole_pier",
@@ -3896,424 +3975,550 @@
    "block": "Rocks"
   },
   {
-   "piece": "shroud_a",
+   "piece": "shroud_bound_a",
    "at": [
     -52.645,
     25.742
    ],
    "y": 0.6,
    "yaw_deg": 97.64,
-   "block": "ShroudRow1"
+   "block": "ShroudRow1",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_b",
+   "piece": "shroud_bound_b",
    "at": [
     -50.278,
     25.34
    ],
    "y": 0.6,
    "yaw_deg": 100.6,
-   "block": "ShroudRow1"
+   "block": "ShroudRow1",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_small",
+   "piece": "shroud_bound_small",
    "at": [
     -47.907,
     24.969
    ],
    "y": 0.6,
    "yaw_deg": 98.42,
-   "block": "ShroudRow1"
+   "block": "ShroudRow1",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_b",
+   "piece": "shroud_bound_b",
    "at": [
     -45.512,
     24.759
    ],
    "y": 0.6,
    "yaw_deg": 95.88,
-   "block": "ShroudRow1"
+   "block": "ShroudRow1",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_a",
+   "piece": "shroud_bound_a",
    "at": [
     -43.146,
     24.354
    ],
    "y": 0.6,
    "yaw_deg": 99.1,
-   "block": "ShroudRow1"
+   "block": "ShroudRow1",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_b",
+   "piece": "shroud_bound_b",
    "at": [
     -40.784,
     23.922
    ],
    "y": 0.6,
    "yaw_deg": 97.67,
-   "block": "ShroudRow1"
+   "block": "ShroudRow1",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_a",
+   "piece": "shroud_bound_a",
    "at": [
     -38.394,
     23.677
    ],
    "y": 0.6,
    "yaw_deg": 98.11,
-   "block": "ShroudRow1"
+   "block": "ShroudRow1",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_small",
+   "piece": "shroud_bound_small",
    "at": [
     -36.019,
     23.329
    ],
    "y": 0.6,
    "yaw_deg": 96.34,
-   "block": "ShroudRow1"
+   "block": "ShroudRow1",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_a",
+   "piece": "shroud_bound_a",
    "at": [
     -33.656,
     22.902
    ],
    "y": 0.6,
    "yaw_deg": 96.07,
-   "block": "ShroudRow1"
+   "block": "ShroudRow1",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_b",
+   "piece": "shroud_bound_b",
    "at": [
     -31.276,
     22.594
    ],
    "y": 0.6,
    "yaw_deg": 100.94,
-   "block": "ShroudRow1"
+   "block": "ShroudRow1",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_a",
+   "piece": "shroud_bound_a",
    "at": [
     -28.9,
     22.256
    ],
    "y": 0.6,
    "yaw_deg": 100.05,
-   "block": "ShroudRow1"
+   "block": "ShroudRow1",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_a",
+   "piece": "shroud_bound_a",
    "at": [
     -52.428,
     27.214
    ],
    "y": 0.6,
    "yaw_deg": 99.88,
-   "block": "ShroudRow2"
+   "block": "ShroudRow2",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_b",
+   "piece": "shroud_bound_b",
    "at": [
     -50.06,
     26.818
    ],
    "y": 0.6,
    "yaw_deg": 97.15,
-   "block": "ShroudRow2"
+   "block": "ShroudRow2",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_small",
+   "piece": "shroud_bound_small",
    "at": [
     -47.673,
     26.558
    ],
    "y": 0.6,
    "yaw_deg": 99.75,
-   "block": "ShroudRow2"
+   "block": "ShroudRow2",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_b",
+   "piece": "shroud_bound_b",
    "at": [
     -45.304,
     26.168
    ],
    "y": 0.6,
    "yaw_deg": 95.93,
-   "block": "ShroudRow2"
+   "block": "ShroudRow2",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_a",
+   "piece": "shroud_bound_a",
    "at": [
     -42.934,
     25.793
    ],
    "y": 0.6,
    "yaw_deg": 96.66,
-   "block": "ShroudRow2"
+   "block": "ShroudRow2",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_b",
+   "piece": "shroud_bound_b",
    "at": [
     -40.559,
     25.444
    ],
    "y": 0.6,
    "yaw_deg": 100.26,
-   "block": "ShroudRow2"
+   "block": "ShroudRow2",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_a",
+   "piece": "shroud_bound_a",
    "at": [
     -38.187,
     25.081
    ],
    "y": 0.6,
    "yaw_deg": 100.72,
-   "block": "ShroudRow2"
+   "block": "ShroudRow2",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_small",
+   "piece": "shroud_bound_small",
    "at": [
     -35.797,
     24.838
    ],
    "y": 0.6,
    "yaw_deg": 95.73,
-   "block": "ShroudRow2"
+   "block": "ShroudRow2",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_a",
+   "piece": "shroud_bound_a",
    "at": [
     -33.434,
     24.408
    ],
    "y": 0.6,
    "yaw_deg": 98.35,
-   "block": "ShroudRow2"
+   "block": "ShroudRow2",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_b",
+   "piece": "shroud_bound_b",
    "at": [
     -31.068,
     24.001
    ],
    "y": 0.6,
    "yaw_deg": 97.95,
-   "block": "ShroudRow2"
+   "block": "ShroudRow2",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_a",
+   "piece": "shroud_bound_a",
    "at": [
     -28.673,
     23.79
    ],
    "y": 0.6,
    "yaw_deg": 96.07,
-   "block": "ShroudRow2"
+   "block": "ShroudRow2",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_a",
+   "piece": "shroud_bound_a",
    "at": [
     -52.204,
     28.731
    ],
    "y": 0.6,
    "yaw_deg": 96.13,
-   "block": "ShroudRow3"
+   "block": "ShroudRow3",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_b",
+   "piece": "shroud_bound_b",
    "at": [
     -49.83,
     28.378
    ],
    "y": 0.6,
    "yaw_deg": 100.77,
-   "block": "ShroudRow3"
+   "block": "ShroudRow3",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_small",
+   "piece": "shroud_bound_small",
    "at": [
     -47.465,
     27.968
    ],
    "y": 0.6,
    "yaw_deg": 95.45,
-   "block": "ShroudRow3"
+   "block": "ShroudRow3",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_b",
+   "piece": "shroud_bound_b",
    "at": [
     -45.093,
     27.598
    ],
    "y": 0.6,
    "yaw_deg": 98.64,
-   "block": "ShroudRow3"
+   "block": "ShroudRow3",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_a",
+   "piece": "shroud_bound_a",
    "at": [
     -42.721,
     27.237
    ],
    "y": 0.6,
    "yaw_deg": 95.91,
-   "block": "ShroudRow3"
+   "block": "ShroudRow3",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_b",
+   "piece": "shroud_bound_b",
    "at": [
     -40.335,
     26.962
    ],
    "y": 0.6,
    "yaw_deg": 100.93,
-   "block": "ShroudRow3"
+   "block": "ShroudRow3",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_a",
+   "piece": "shroud_bound_a",
    "at": [
     -37.963,
     26.6
    ],
    "y": 0.6,
    "yaw_deg": 97.79,
-   "block": "ShroudRow3"
+   "block": "ShroudRow3",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_small",
+   "piece": "shroud_bound_small",
    "at": [
     -35.583,
     26.284
    ],
    "y": 0.6,
    "yaw_deg": 95.96,
-   "block": "ShroudRow3"
+   "block": "ShroudRow3",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_a",
+   "piece": "shroud_bound_a",
    "at": [
     -33.21,
     25.924
    ],
    "y": 0.6,
    "yaw_deg": 96.44,
-   "block": "ShroudRow3"
+   "block": "ShroudRow3",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_b",
+   "piece": "shroud_bound_b",
    "at": [
     -30.835,
     25.578
    ],
    "y": 0.6,
    "yaw_deg": 101.15,
-   "block": "ShroudRow3"
+   "block": "ShroudRow3",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_a",
+   "piece": "shroud_bound_a",
    "at": [
     -28.474,
     25.139
    ],
    "y": 0.6,
    "yaw_deg": 98.73,
-   "block": "ShroudRow3"
+   "block": "ShroudRow3",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_a",
+   "piece": "shroud_bound_a",
    "at": [
     -25.114,
     22.023
    ],
    "y": 0.6,
    "yaw_deg": 91.34,
-   "block": "ShroudRow4"
+   "block": "ShroudRow4",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_b",
+   "piece": "shroud_bound_b",
    "at": [
     -22.721,
     21.825
    ],
    "y": 0.6,
    "yaw_deg": 96.41,
-   "block": "ShroudRow4"
+   "block": "ShroudRow4",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_small",
+   "piece": "shroud_bound_small",
    "at": [
     -20.319,
     21.798
    ],
    "y": 0.6,
    "yaw_deg": 91.17,
-   "block": "ShroudRow4"
+   "block": "ShroudRow4",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_b",
+   "piece": "shroud_bound_b",
    "at": [
     -17.926,
     21.607
    ],
    "y": 0.6,
    "yaw_deg": 96.15,
-   "block": "ShroudRow4"
+   "block": "ShroudRow4",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_a",
+   "piece": "shroud_bound_a",
    "at": [
     -15.535,
     21.388
    ],
    "y": 0.6,
    "yaw_deg": 94.11,
-   "block": "ShroudRow4"
+   "block": "ShroudRow4",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_b",
+   "piece": "shroud_bound_b",
    "at": [
     -13.141,
     21.213
    ],
    "y": 0.6,
    "yaw_deg": 92.64,
-   "block": "ShroudRow4"
+   "block": "ShroudRow4",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_a",
+   "piece": "shroud_bound_a",
    "at": [
     -10.739,
     21.17
    ],
    "y": 0.6,
    "yaw_deg": 93.98,
-   "block": "ShroudRow4"
+   "block": "ShroudRow4",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_small",
+   "piece": "shroud_bound_small",
    "at": [
     -8.342,
     21.042
    ],
    "y": 0.6,
    "yaw_deg": 90.96,
-   "block": "ShroudRow4"
+   "block": "ShroudRow4",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
-   "piece": "shroud_a",
+   "piece": "shroud_bound_a",
    "at": [
     -22.541,
     24.833
    ],
    "y": 0.6,
    "yaw_deg": 95.62,
-   "block": "StillguardRow"
+   "block": "StillguardRow",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
    "piece": "round_shield",
@@ -4326,14 +4531,17 @@
    "block": "StillguardShields"
   },
   {
-   "piece": "shroud_b",
+   "piece": "shroud_bound_b",
    "at": [
     -20.144,
     24.705
    ],
    "y": 0.6,
    "yaw_deg": 92.85,
-   "block": "StillguardRow"
+   "block": "StillguardRow",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
    "piece": "round_shield",
@@ -4346,14 +4554,17 @@
    "block": "StillguardShields"
   },
   {
-   "piece": "shroud_a",
+   "piece": "shroud_bound_a",
    "at": [
     -17.747,
     24.581
    ],
    "y": 0.6,
    "yaw_deg": 90.55,
-   "block": "StillguardRow"
+   "block": "StillguardRow",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
    "piece": "round_shield",
@@ -4366,14 +4577,17 @@
    "block": "StillguardShields"
   },
   {
-   "piece": "shroud_b",
+   "piece": "shroud_bound_b",
    "at": [
     -15.354,
     24.398
    ],
    "y": 0.6,
    "yaw_deg": 93.04,
-   "block": "StillguardRow"
+   "block": "StillguardRow",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
    "piece": "round_shield",
@@ -4386,14 +4600,17 @@
    "block": "StillguardShields"
   },
   {
-   "piece": "shroud_a",
+   "piece": "shroud_bound_a",
    "at": [
     -12.957,
     24.272
    ],
    "y": 0.6,
    "yaw_deg": 92.39,
-   "block": "StillguardRow"
+   "block": "StillguardRow",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
    "piece": "round_shield",
@@ -4406,14 +4623,17 @@
    "block": "StillguardShields"
   },
   {
-   "piece": "shroud_b",
+   "piece": "shroud_bound_b",
    "at": [
     -10.56,
     24.158
    ],
    "y": 0.6,
    "yaw_deg": 91.06,
-   "block": "StillguardRow"
+   "block": "StillguardRow",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
    "piece": "round_shield",
@@ -4786,14 +5006,17 @@
    "block": "Raft"
   },
   {
-   "piece": "shroud_a",
+   "piece": "shroud_bound_a",
    "at": [
     -8.279,
     24.124
    ],
    "y": 0.6,
    "yaw_deg": 1.72,
-   "block": "IvoShroud"
+   "block": "IvoShroud",
+   "material_paths": {
+    "cw_sail": "res://game/levels/ch09/corrow_night/corrow_shroud_canvas_material.tres"
+   }
   },
   {
    "piece": "rope_coil",
@@ -5162,6 +5385,126 @@
    ],
    "y": 0.6,
    "yaw_deg": -1.25
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -80.772,
+    -28.829
+   ],
+   "y": 3.5,
+   "yaw_deg": 293.393,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -71.781,
+    -29.811
+   ],
+   "y": 3.5,
+   "yaw_deg": 357.321,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -47.487,
+    -35.888
+   ],
+   "y": 3.5,
+   "yaw_deg": 223.194,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -16.492,
+    -4.853
+   ],
+   "y": 3.5,
+   "yaw_deg": 23.11,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -0.941,
+    -20.871
+   ],
+   "y": 3.5,
+   "yaw_deg": 131.9,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -29.888,
+    -40.308
+   ],
+   "y": 3.5,
+   "yaw_deg": 104.966,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -17.775,
+    -34.721
+   ],
+   "y": 3.5,
+   "yaw_deg": 6.129,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -89.087,
+    -45.868
+   ],
+   "y": 3.5,
+   "yaw_deg": 123.194,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -81.353,
+    -35.228
+   ],
+   "y": 3.5,
+   "yaw_deg": 282.919,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -60.378,
+    -34.042
+   ],
+   "y": 3.5,
+   "yaw_deg": 97.664,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -11.134,
+    -31.828
+   ],
+   "y": 3.5,
+   "yaw_deg": 69.017,
+   "block": "LowTownLake"
+  },
+  {
+   "piece": "flood_debris",
+   "at": [
+    -69.568,
+    -44.869
+   ],
+   "y": 3.5,
+   "yaw_deg": 245.549,
+   "block": "LowTownLake"
   }
  ],
  "ebbing": {}

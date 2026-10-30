@@ -22,13 +22,22 @@ grade: ch03_shrine_int
 @music shell_shrine_interior fade=2.0
 @anim asha walk_to_chamber
 Asha [soft_smile]: Don't look so worried, both of you. It's only my first one. #line:ch03_verse_001
+// M3-CIN-1236 (PC GPU QA row 60): S07 sat between Rhen's shoulder and Toma's shield; it is pulled back to a clear
+// over-the-shoulder on Asha, and the two who stay answer her on S07_reverse, the reverse from inside the hall.
+@camera S07_reverse
 Rhen [worried]: Shout if it bites. #line:ch03_verse_002
+@camera S07
 Asha [laugh]: He's been in there a hundred and forty years. I think he'll be polite. #line:ch03_verse_003
+@camera S07_reverse
 Toma [neutral]: We will be here, Lady Cantor. #line:ch03_verse_004
+@camera S07
 Asha [smile]: Toma. #line:ch03_verse_005
+@camera S07_reverse
 Toma [tender]: ...Asha. #line:ch03_verse_006
 @mark asha chamber_pool walk
-@fade out 0.6
+// M2-FP-119: she is seen going in, a few steps into the hall, before the black (the fade had cut her at her first step).
+@wait 1.4
+@fade out 0.8
 @anim asha idle_shift
 @camera S08 blend=0.0
 @fade in 0.8
@@ -43,10 +52,11 @@ location: ch03/shell_shrine
 grade: ch03_steps
 ---
 @camera S06
-@fade in 1.0
+// M2-FP-119: seated under the black. After the fade, Rhen's 2.3 m stand-in glide to his tread showed as a slide.
 @anim rhen sit_steps
 @anim toma sit_steps
-@wait 2.0
+@fade in 1.0
+@wait 1.5
 Rhen [neutral]: So. How long does a verse take? #line:ch03_verse_007
 Toma [neutral]: As long as it takes. The last time, the village waited on the beach until dark. #line:ch03_verse_008
 Rhen [smile]: You weren't here for that one? #line:ch03_verse_009
@@ -88,7 +98,8 @@ Toma [tender]: Now she does not hide. I find I miss it. #line:ch03_verse_026
 // In the black, two hours on: they are on their feet when she comes out (S10 is the reverse on Rhen, facing her).
 @mark rhen rhen_rise walk
 @mark toma toma_rise walk
-@wait 1.0
+@wait arrive=rhen
+@wait arrive=toma
 <<jump threshold>>
 ===
 title: threshold
@@ -96,11 +107,13 @@ location: ch03/shell_shrine
 grade: ch03
 ---
 @camera S09
-@fade in 2.0
-<<set $ch03_ilun_bound = true>>
 // ADR 0017 watch: she walks out on her own feet. No stumble, no catch at the door, and no summon
 // shown here. Ilun is first called in the Drownbell fight.
+// M2-FP-119: the emerge starts under the black, so the fade finds her stepping out (S09 had faded in on an empty
+// doorway, and then she popped into it from the inner pool).
 @anim asha emerge_doorway
+@fade in 2.0
+<<set $ch03_ilun_bound = true>>
 @anim rhen look_at asha
 @anim toma look_at asha
 @vfx glimmer_lift at=asha motion=spiral_up rate=slow
@@ -183,6 +196,10 @@ Asha [worried]: Something heard that. #line:ch03_verse_059
 @camera C08 blend=0.0 grade=ch03_boss
 @sfx drownbell_toll at=drownbell
 @vfx glimmer_held at=drownbell drift=down_seaward
+// The slice beat audit on 7dc3ab41 (every speaker in frame): the Drownbell's rise gets its beat on C08, then Toma's
+// command is his own, low and close as he brings the shield up (C08_toma, a stage variant of C08).
+@wait 1.2
+@camera C08_toma
 Toma [determined]: On my shield. Everyone, on my shield, now. #line:ch03_verse_060
 @letterbox off
 <<event start_battle drownbell>>

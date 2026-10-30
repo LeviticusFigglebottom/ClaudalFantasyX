@@ -65,6 +65,12 @@
    "block": "Shrine"
   }
  ],
+ "kit_material_paths": {
+  "bs_lacquer_red": "res://game/levels/ch06/brine_shoals/brine_shoals_lacquer_red_material.tres",
+  "bs_brass": "res://game/levels/ch06/brine_shoals/brine_shoals_brass_material.tres",
+  "bs_gold": "res://game/levels/ch06/brine_shoals/brine_shoals_gold_material.tres",
+  "bs_iron": "res://game/levels/ch06/brine_shoals/brine_shoals_iron_material.tres"
+ },
  "pieces": [
   {
    "piece": "mudflat_far",
@@ -1038,7 +1044,10 @@
    ],
    "y": 0.0,
    "yaw_deg": 0.0,
-   "block": "Shrine"
+   "block": "Shrine",
+   "material_paths": {
+    "bs_level_stone": "res://game/levels/ch06/brine_shoals/brine_shoals_level_stone_material.tres"
+   }
   },
   {
    "piece": "tide_wheel_burned",

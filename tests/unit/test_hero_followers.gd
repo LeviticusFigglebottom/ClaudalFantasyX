@@ -154,6 +154,26 @@ func test_hidden_while_a_cutscene_holds_the_player() -> void:
 	_done()
 
 
+## M3-HER-1227: a cached sequencer freed in play (a scene's, or tools/act1/cutscene_stills') is skipped, not cast. A
+## freed cast is a script error that aborts should_hide(), so the playing sequencer after it would never be seen.
+func test_a_freed_cached_sequencer_is_skipped() -> void:
+	var gone := CutsceneSequencer.new()
+	zone.add_child(gone)
+	var seq := CutsceneSequencer.new()
+	zone.add_child(seq)
+	party.rescan()
+	assert_eq(party._sequencers.size(), 2, "both cached")
+	gone.free()
+	seq._playing = true
+	assert_true(party.should_hide(), "the live sequencer behind the freed one still holds the player")
+	party.advance(DT)
+	for f in party.followers:
+		assert_false(f.visible, "hidden during the cutscene")
+	seq._playing = false
+	assert_false(party.should_hide(), "and not after it")
+	_done()
+
+
 func test_followers_turn_to_face_who_rhen_talks_to() -> void:
 	for i in 30:
 		_step()
@@ -221,6 +241,28 @@ func test_arriving_with_his_back_to_a_wall_puts_no_one_in_it() -> void:
 	party.catch_up()
 	for f in party.followers:
 		assert_false(_inside_wall(f.global_position), "%s is not put in the wall" % f.get_meta(&"hero_id"))
+	_done()
+
+
+## The PC's GPU QA row 37 (the causeway's spawns): a camera right behind the arrival never gets a follower laid out
+## in its foreground; every one stands at least camera_near_m (flat) from the lens.
+func test_no_follower_is_laid_out_in_front_of_the_lens() -> void:
+	zone.call("place_at", &"Court")
+	var cam := Camera3D.new()
+	zone.add_child(cam)
+	var back := Basis(Vector3.UP, player.motor.facing_yaw) * Vector3.BACK  # his trail runs this way
+	cam.global_position = player.global_position + back * 1.5 + Vector3.UP * 1.6
+	cam.current = true
+	party.catch_up()
+	var near := float(party._cfg["camera_near_m"])
+	for f in party.followers:
+		var d := Vector2(f.global_position.x - cam.global_position.x, f.global_position.z - cam.global_position.z)
+		assert_true(d.length() >= near - 1e-3, "%s stands %.2f m from the lens" % [f.get_meta(&"hero_id"), d.length()])
+	for i in 120:  # standing there, they don't walk back into the foreground (they flank him instead)
+		_step()
+	for f in party.followers:
+		var d := Vector2(f.global_position.x - cam.global_position.x, f.global_position.z - cam.global_position.z)
+		assert_true(d.length() >= near - 0.05, "%s still %.2f m from the lens" % [f.get_meta(&"hero_id"), d.length()])
 	_done()
 
 

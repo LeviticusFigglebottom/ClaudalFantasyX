@@ -119,6 +119,12 @@ func current_node() -> StringName:
 	return _node
 
 
+## A node's headers (`location:`, `grade:`; the current node's when `node` is empty). M2-FP-120.
+func headers(node: StringName = &"") -> Dictionary:
+	var n := String(node if node != &"" else _node)
+	return (_nodes.get(n, {}) as Dictionary).get("headers", {})
+
+
 ## Advances to the next thing the player sees: a line, a cue, options, or the end.
 ## While options are pending, returns them again until choose() is called.
 func next() -> DialogueStep:

@@ -1,0 +1,26 @@
+// Ch16 B01 "The ship waits" (C, 1 min). act2_ch16.md §2 B01. W01: the Hollowmere ship at anchor where the
+// sea goes pale. W02: over the side into knee-deep water; Liss leaves Tobin's cracked lamp in its padded box
+// on the ship (ADR 0204 §13); Kerrid last over the side, as on a stair.
+title: ch16_ship_waits
+location: ch16/pale_rim
+---
+@letterbox on
+@camera W01
+@music pale_rim fade=2.0
+@wait 2.0
+Hull_captain as "Ship's captain" [neutral]: This is as far as she floats. We'll wait. As long as it takes. #line:ch16_ship_001
+@camera W02
+@anim liss give lamp_box
+Liss [tender]: Keep it dry. #line:ch16_ship_002 #tn:"'It' is the cracked lamp holding Tobin's light."
+@mark toma wade_1 walk
+@mark pell wade_2 walk
+@mark asha wade_3 walk
+@mark ysolde wade_4 walk
+@mark liss wade_5 walk
+@mark rhen wade_6 walk
+@wait 1.5
+@mark kerrid wade_7 walk
+@wait 2.0
+@letterbox off
+@camera release
+===

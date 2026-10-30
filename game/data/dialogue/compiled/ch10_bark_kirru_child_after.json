@@ -1,0 +1,18 @@
+{
+ "format": 1,
+ "scene": "ch10_bark_kirru_child_after",
+ "source": "game/data/dialogue/ch10/ch10_bark_kirru_child_after.dlg",
+ "start": "ch10_bark_kirru_child_after",
+ "nodes": {
+  "ch10_bark_kirru_child_after": {
+   "headers": {"location": "ch10/reedhollow"},
+   "ops": [
+    {"op": "if_not", "cond": ["flag", "ch10_farewell_tide_seen"], "to": 3, "src": 5},
+    {"op": "line", "id": "ch10_bark_kchild_001", "key": "DLG_CH10_BARK_KCHILD_001", "speaker": "kirru_child", "emotion": "neutral", "voice": "", "src": 6, "name_key": "DLG_NAME_KIRRU_CHILD_KIRRU_CHILD"},
+    {"op": "goto", "to": 5, "src": 5},
+    {"op": "line", "id": "ch10_bark_kchild_002", "key": "DLG_CH10_BARK_KCHILD_002", "speaker": "kirru_child", "emotion": "neutral", "voice": "", "src": 8, "name_key": "DLG_NAME_KIRRU_CHILD_KIRRU_CHILD"},
+    {"op": "goto", "to": 5, "src": 7}
+   ]
+  }
+ }
+}

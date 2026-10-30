@@ -1,20 +1,23 @@
 {
-  "_doc": "Haluna on the Pilgrim's Wake night: the gulls are roosting out of sight; a few ghost crabs work the dark shore by the dock head, where the village has gone quiet. Placed on the greybox layout (M3-CRE-615); move the coordinates when env-art's kit replaces the blocks (same keys as ch02_haluna.json).",
+  "_doc": "Haluna on the Pilgrim's Wake night: the gulls are roosting out of sight; a few ghost crabs work the dark shore on the south beach (day Haluna's crab shore), where the village has gone quiet. Placed on the greybox layout (M3-CRE-615); move the coordinates when env-art's kit replaces the blocks (same keys as ch02_haluna.json). Re-seated on the dressed kit (the Act I audit, 2026-10-29: tools/creatures/wildlife_snap.gd and wildlife_audit.gd, which ray against the zone's visible meshes).",
   "zone": "ch04/haluna_wake",
+  "ground": {
+    "physics": true
+  },
   "flocks": [],
   "beaches": [
     {
       "id": "dock_shore",
       "center": [
-        27.0,
-        -20.0
+        -6.74,
+        -21.42
       ],
       "half_extents": [
-        2.5,
-        5.0
+        3.4,
+        6.0
       ],
       "yaw_deg": 0.0,
-      "y": 0.0,
+      "y": 0.38,
       "count": 5
     }
   ],

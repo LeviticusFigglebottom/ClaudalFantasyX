@@ -1,5 +1,11 @@
 # CONSOLIDATED HANDOFF: the new Lead starts here
 
+## STATE 2026-10-30 03:25 UTC (ADR 0205: fast batches)
+- **big19 is merged** (2f544938) through the fast gate. Its 254 affected shots, the full suite and Blender run non-blocking afterwards. The big18/19 gate session (`session_01UPFyEAXofxWazWNnRTzFGJ`) runs a rolling batch cadence of about 90 minutes (big20, big21 and so on).
+- **The PC is on pass 4**, open rows only (gpu/act1-qa-4).
+- **Act II has started per track:** creatures-b (the bosses), audio (the music) and act2-plan (the story track, the scripts). The rest start as their Act I rows close.
+- **Act I's remaining long pole is characters** (rows 31, 46 and 54–56, plus Pell's look).
+
 ## STATE 2026-10-30 02:20 UTC
 - **PC GPU QA pass 3 is done** (`gpu/act1-qa-3` @ f56c2e82, on big18): 14 rows fixed, 10 still open, 21 new (43–63). Every row is routed to its owner.
   - Hitches still over 1 s: Ch5, Pemakar, Ch6, Ch8, Ch9 and Corrow at night (1.3–1.8 s). ui-menus has them.

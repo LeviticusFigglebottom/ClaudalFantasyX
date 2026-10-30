@@ -1,0 +1,16 @@
+// Ch15 side errand (optional; requires ch15_toma_confessed). The tally hull keeps the names of the salvage camps the
+// Order burned; the Brine Shoals camp of 1003 is on it. Toma asks the record-keeper to write his name under it. She
+// says they don't write the line's names. He asks anyway. She does. Sets ch15_toma_on_the_tally.
+title: ch15_side_the_tally_hull
+location: ch15/hollowmere
+---
+Clerk as "Record-keeper" [neutral]: Brine Shoals, 1003. A salvage camp. Every hull in it burned. We write them all down. #line:ch15_tally_001 #long
+Toma [neutral]: Write my name under it. #line:ch15_tally_002
+Clerk as "Record-keeper" [cold]: We don't write the names of the line. #line:ch15_tally_003
+Toma [guilty]: I was on the line. I held the torch. I want it written where they keep the camps. Not where they keep the Order. #line:ch15_tally_004 #long
+Clerk as "Record-keeper" [neutral]: Spell it. #line:ch15_tally_005
+Toma [neutral]: Toma. Of Haluna. #line:ch15_tally_006
+Clerk as "Record-keeper" [neutral]: There. It doesn't make it better. #line:ch15_tally_007
+Toma [neutral]: No. It makes it true. #line:ch15_tally_008
+<<set $ch15_toma_on_the_tally = true>>
+===

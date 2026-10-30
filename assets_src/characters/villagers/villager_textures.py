@@ -534,6 +534,50 @@ def cloth_atlas(size: int = 2048) -> None:
     at.write("villagers_cloth_orm.png", o / 255.0)
 
 
+BLOOD_MUL = (0.42, 0.2, 0.18)  # a dried stain's darkening of the dyed cloth (over lacquer red: a deep brown-red)
+BLOOD_RIM = 0.78  # the stain's edge, darker where it dried first
+BLOOD_SPOTS = 14  # small spatters past the stain's edge
+BLOOD_FIELD = 0.62  # the patches' share of the stain against the pull toward the cuff
+
+
+def blood_atlas(npc: str) -> None:
+    """M4-A2P-050 (`_blood`, optional): a copy of the shared cloth albedo with a dried stain painted in one island
+    (Merel's right sleeve: Tobin's blood, act2_ch14.md B08), <npc>/textures/<npc>_blood_albedo.png. write_materials
+    gives `<mat>_blood` this albedo; CostumeVariant swaps it in at runtime. The stain gathers toward the island's far
+    end (`from_v` .. 1 along it; the cuff), `cover` sets how much of that it takes."""
+    import villager_costume as C
+
+    spec = load(npc).get("_blood")
+    if not spec:
+        return
+    src = np.asarray(Image.open(OUT_ROOT / "textures" / "villagers_cloth_albedo.png").convert("RGB"), dtype=float) / 255.0
+    size = src.shape[0]
+    rng = np.random.default_rng(int(spec["seed"]))
+    u0, v0, u1, v1 = C.ATLAS[spec["island"]]
+    x0, x1, y0, y1 = int(u0 * size), int(u1 * size), int(v0 * size), int(v1 * size)
+    h, w = y1 - y0, x1 - x0
+    iv = ((np.arange(h) + 0.5) / h)[:, None] * np.ones((1, w))
+    # soaked patches, streaked along the sleeve where it was wiped, over a pull toward the cuff
+    field = (0.5 * periodic_noise(h, w, 3, 7, rng) + 0.3 * periodic_noise(h, w, 8, 12, rng)
+             + 0.2 * periodic_noise(h, w, 30, 26, rng))
+    reach = smoothstep(float(spec["from_v"]), 1.0, iv)
+    cover = float(spec.get("cover", 0.5))
+    level = BLOOD_FIELD * field + (1.0 - BLOOD_FIELD) * 1.2 * reach
+    s = smoothstep(1.0 - cover, 1.0 - cover + 0.06, level)
+    yy, xx = np.mgrid[0:h, 0:w]
+    for _ in range(BLOOD_SPOTS):
+        cy = h * (float(spec["from_v"]) + (1.0 - float(spec["from_v"])) * rng.random())
+        cx, r = w * rng.random(), (0.006 + 0.012 * rng.random()) * h
+        s = np.maximum(s, smoothstep(r, 0.6 * r, np.hypot(yy - cy, xx - cx)))
+    rim = np.clip(4.0 * s * (1.0 - s), 0.0, 1.0)
+    mul = 1.0 + (np.array(BLOOD_MUL) - 1.0) * s[..., None]
+    mul = mul * (1.0 + (BLOOD_RIM - 1.0) * rim[..., None])
+    out = src.copy()
+    out[y0:y1, x0:x1] = src[y0:y1, x0:x1] * mul
+    at.OUT = OUT_ROOT / npc / "textures"
+    at.write(f"{npc}_blood_albedo.png", np.clip(out, 0.0, 1.0))
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--npc")
@@ -544,6 +588,7 @@ def main() -> int:
         cloth_atlas()
     if args.npc:
         skin(args.npc, Path(args.bake_dir))
+        blood_atlas(args.npc)
     return 0
 
 

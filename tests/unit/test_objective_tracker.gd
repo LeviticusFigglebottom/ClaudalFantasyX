@@ -184,6 +184,74 @@ func test_ch4_to_ch9_spot_checks() -> void:
 		assert_eq(_poi(c[1]), c[3], "%s with %s: the target" % [c[1], c[0]])
 
 
+## Act II: every Act II zone's line and map point move along its chapter's main path, beat by beat (act1-chapters'
+## rows; each case sets the beats before it in the same zone and the row's own requires).
+func test_act_two_zones_point_along_the_main_path() -> void:
+	var checks := [
+		[[&"ch10_started"], &"ch10/ossa_fen", &"f_drowner", &"clearing"],
+		[[&"ch10_drowner_defeated", &"ch10_started"], &"ch10/ossa_fen", &"f_to_reedhollow", &"to_reedhollow"],
+		[[&"ch10_reached_reedhollow"], &"ch10/reedhollow", &"r_shore", &"shore"],
+		[[&"ch10_farewell_tide_seen", &"ch10_reached_reedhollow"], &"ch10/reedhollow", &"r_gate", &"gate"],
+		[[&"ch11_started"], &"ch11/sunken_vey", &"v_to_lowlight", &"to_lowlight"],
+		[[&"ch11_reached_lowlight"], &"ch11/lowlight", &"l_down", &"sanctum"],
+		[[&"ch11_nhoa_bound", &"ch11_reached_lowlight"], &"ch11/lowlight", &"l_out", &"gate"],
+		[[&"ch12_started"], &"ch12/keth_pass", &"k_wall", &"terrace"],
+		[[&"ch12_ram_felled", &"ch12_started"], &"ch12/keth_pass", &"k_to_quellan", &"to_quellan"],
+		[[&"ch12_reached_quellan"], &"ch12/quellan", &"q_road_up", &"road_up"],
+		[[&"ch12_reached_cloudloom"], &"ch12/cloudloom", &"c_dais", &"dais"],
+		[[&"ch12_hesk_bound", &"ch12_reached_cloudloom", &"ch12_reached_quellan"], &"ch12/quellan", &"q_inn", &"inn"],
+		[
+			[&"ch12_hesk_bound", &"ch12_reached_cloudloom", &"ch12_reached_quellan", &"ch12_ysolde_confessed"],
+			&"ch12/quellan",
+			&"q_on",
+			&""
+		],
+		[[&"ch13_started"], &"ch13/ansedra", &"a_sanctum", &"sanctum"],
+		[[&"ch13_entered_sanctum"], &"ch13/sanctum", &"s_ledge", &"ledge"],
+		[[&"ch13_ethren_bound", &"ch13_started"], &"ch13/ansedra", &"a_archive", &"archive"],
+		[[&"ch13_entered_archive"], &"ch13/lamp_archive", &"la_ledgers", &"ledgers"],
+		[[&"ch13_entered_archive", &"ch13_read_ledgers"], &"ch13/lamp_archive", &"la_roll", &"roll"],
+		[[&"ch13_archive_read", &"ch13_ethren_bound", &"ch13_started"], &"ch13/ansedra", &"a_moorings", &"moorings"],
+		[
+			[&"ch13_archive_read", &"ch13_ethren_bound", &"ch13_pact_of_silence", &"ch13_started"],
+			&"ch13/ansedra",
+			&"a_rest",
+			&"sefir"
+		],
+		[[&"ch14_started"], &"ch13/ansedra_lacquer_court", &"lc_vows", &"dais"],
+		[
+			[&"ch14_declared_heretics", &"ch14_started", &"ch14_vows_spoken"],
+			&"ch13/ansedra_lacquer_court",
+			&"lc_steps",
+			&"steps"
+		],
+		[
+			[&"ch14_declared_heretics", &"ch14_started", &"ch14_steps_held", &"ch14_vows_spoken"],
+			&"ch13/ansedra_lacquer_court",
+			&"lc_gate",
+			&"water_gate"
+		],
+		[[&"ch15_started"], &"ch15/open_sea", &"os_drift", &"bow"],
+		[[&"ch15_reached_hollowmere"], &"ch17/hollowmere", &"h_father", &"dock"],
+		[[&"ch15_liss_told_father", &"ch15_reached_hollowmere"], &"ch17/hollowmere", &"h_pyre", &"pyre_raft"],
+		[
+			[&"ch15_liss_told_father", &"ch15_pyre_raft", &"ch15_reached_hollowmere"],
+			&"ch17/hollowmere",
+			&"h_ship",
+			&"ship"
+		],
+		[[&"ch16_started"], &"ch16/pale_rim", &"pr_wade", &"choir_edge"],
+		[[&"ch16_reached_choir"], &"ch16/drowned_choir", &"dc_choir", &"head"],
+		[[&"ch16_kesh_bound", &"ch16_reached_choir", &"ch16_refused_sefir"], &"ch16/drowned_choir", &"dc_hold", &""],
+	]
+	for c: Array in checks:
+		flags = {}
+		for f: StringName in c[0]:
+			flags[f] = true
+		assert_eq(_id(c[1]), c[2], "%s with %s" % [c[1], c[0]])
+		assert_eq(_poi(c[1]), c[3], "%s with %s: the target" % [c[1], c[0]])
+
+
 func test_act_one_errands_come_and_go() -> void:
 	flags = {&"ch04_started": true, &"ch04_feast_neme": true, &"ch04_shell_set": true, &"ch04_dock_comforted": true}
 	assert_eq(StringName(str(t.side(WAKE)[0]["id"])), &"w_side_ink", "the lamp at the wall, after the dock")

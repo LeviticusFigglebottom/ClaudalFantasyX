@@ -4,7 +4,33 @@ LOCATION_CH11_LOWLIGHT,Lowlight
 ENEMY_GALLERY_RAY,Gallery Ray
 LORE_GALLERY_RAY,"A pale ray that glides the flooded corridors of the Vey, nearly the colour of the salt-glass floors. It has learned that people walk the gallery roofs."
 ENEMY_RIME_URCHIN,Rime Urchin
-LORE_RIME_URCHIN,A long-spined urchin from where the deep's cold wells up into the galleries. Rime grows on its spines and doesn't melt.
+LORE_RIME_URCHIN,"A long-spined urchin from where the deep's cold wells up into the galleries. Salt-rime crusts its spines, white and hard, and the water never takes it back."
 SKILL_GLIDE_LASH,Glide Lash
 SKILL_RIME_SPINE,Rime Spine
 ENC_CH11_VEY,Sunken Vey
+VOWBOUND_NHOA,Nhoa
+SKILL_SILT_FALL,Silt Fall
+SKILL_DEEP_WELL,Deep Well
+SKILL_NHOA_ECHO,Echo
+SKILL_FAREWELL_TIDE,Farewell-Tide
+HUD_FAIL_NOTHING_TO_ECHO,Nothing to echo yet: no foe has acted.
+ENEMY_CONDUIT_CRAWLER,Conduit Crawler
+LORE_CONDUIT_CRAWLER,"A Lit Age machine for keeping the light-conduits clean: a glass dome on six brass feet, with a dim, steady light inside. It mends whatever it was told is broken. Nobody has told it anything new in a very long time."
+ENEMY_LAMP_ENGINE,Lamp Engine
+LORE_LAMP_ENGINE,"A ringed tower of lamps standing knee-deep in Lowlight's flooded hall, built in the Lit Age to keep the temple bright. Every lamp burns steady and none of them flickers. Its crawlers keep it whole, whatever that costs the lamps."
+SKILL_BRUSH_JAB,Brush Jab
+SKILL_CRAWLER_MEND,Mend
+SKILL_CRAWLER_TEND,Tend
+PART_LAMP_ENGINE_LAMPS,The lamps
+OBJ_CH11_TO_LOWLIGHT,Cross the drowned galleries to Lowlight.
+OBJ_CH11_DOWN,Go down through the engine hall to the sanctum.
+OBJ_CH11_OUT,"Climb back up to the light. The road goes on, into the Heights."
+OBJ_CH11_SIDE_ALTAR,The keeper's altar lamp has to go up a step.
+OBJ_CH11_SIDE_BENCH,"There's a broken lamp on the bench, and Liss beside it."
+TUT_LAMP_ENGINE_CRAWLERS,The crawlers mend what you break. Stop them first.
+ITEM_CONDUIT_GLASS,Conduit Glass
+ITEM_CONDUIT_GLASS_DESC,A shard of Lit Age salt-glass from a dry conduit. Empty and clear. Used in Customize.
+EQUIP_ASHA_CONDUIT_STAFF,Conduit Lantern-Staff
+EQUIP_ASHA_CONDUIT_STAFF_DESC,A lantern-staff set with a Lit Age globe. The globe is empty. She would not carry it otherwise.
+EQUIP_LISS_LOWLIGHT_SLEEVE,Gallery Work-Sleeve
+EQUIP_LISS_LOWLIGHT_SLEEVE_DESC,Brass mesh cut from a drowned trim-arm and fitted to the wrist. It still smells of old oil.

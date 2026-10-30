@@ -130,8 +130,9 @@ def body(mesh: ck.Mesh, rig: ck.Rig, j: np.ndarray) -> None:
     P = P + nrm * ((0.003 * (1 - net) - 0.002 * net) * upper + 0.003 * ck.fbm(P * 16.0, SEED + 2))[:, None]
     top = ck.smoothstep(-0.1, 0.6, CA)
     mottle = ck.fbm(P * 14.0, SEED)
-    col = ck.mix(PAL["tortoiseshell"], PAL["sand_wet"], (0.25 + 0.45 * top + 0.25 * mottle)[:, None])
-    col = ck.mix(col, PAL["lacquer_black"], (0.35 * ck.smoothstep(0.2, 0.45, ck.value_noise(P * 30.0, SEED + 4))
+    # GPU QA row 40: the back is lighter than the floor it crawls on, so the slug reads at battle distance
+    col = ck.mix(PAL["tortoiseshell"], PAL["sand_wet"], (0.35 + 0.5 * top + 0.2 * mottle)[:, None])
+    col = ck.mix(col, PAL["lacquer_black"], (0.25 * ck.smoothstep(0.2, 0.45, ck.value_noise(P * 30.0, SEED + 4))
                                               * top)[:, None])  # dark freckles
     flank = np.exp(-((CA + 0.05) / 0.16) ** 2) * ck.smoothstep(-0.02, 0.15, U) * ck.smoothstep(1.08, 0.95, U)
     col = ck.mix(col, PAL["tortoiseshell"] * 0.6, (0.4 * flank)[:, None])  # a dark band along each flank
@@ -154,8 +155,8 @@ def _sheen(P: np.ndarray, col: np.ndarray, amount: np.ndarray) -> np.ndarray:
     """An oil film's sheen: thin, swirling bands of a sea colour and gold over the wet skin."""
     swirl = P[:, 2] * 9.0 + 3.0 * ck.fbm(P * 5.0, SEED + 8) + P[:, 0] * 4.0
     band = 0.5 + 0.5 * np.sin(swirl * 2.0)
-    col = ck.mix(col, PAL["sea_glow"] * 1.3, (0.4 * ck.smoothstep(0.7, 1.0, band) * amount)[:, None])
-    return ck.mix(col, PAL["dusk_gold"] * 0.85, (0.32 * ck.smoothstep(0.7, 1.0, 1 - band) * amount)[:, None])
+    col = ck.mix(col, PAL["sea_glow"] * 1.6, (0.5 * ck.smoothstep(0.7, 1.0, band) * amount)[:, None])
+    return ck.mix(col, PAL["dusk_gold"] * 0.9, (0.4 * ck.smoothstep(0.7, 1.0, 1 - band) * amount)[:, None])
 
 
 def _surface_y(z: float) -> tuple[float, float]:

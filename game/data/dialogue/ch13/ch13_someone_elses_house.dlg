@@ -1,0 +1,41 @@
+// Ch13 B12 side scene (optional): "Someone Else's House" (E, 4 min, ~170 words). act2_ch13.md §4. Corran is
+// spoken of in the past tense, as a man, not a Saint; no Archive talk; Ysolde cries at no point. She laughs,
+// once, a real laugh: the first in the game (pillar 1: warmth that IS the grief, never undercutting it).
+title: ch13_someone_elses_house
+location: ch13/ansedra
+---
+// act2_ch13_direction.md: A15b is the street (lines 001-005, 009), A15 the locked front room with the scorch mark.
+@camera A15b
+@music silence fade=1.0
+@anim ysolde look_at red_door
+@wait 2.0
+Ysolde [neutral]: That was our house. Corran's and mine. Eleven years. #line:ch13_house_side_001
+@wait 1.5
+Ysolde [neutral]: The Order gave it to a Tender's family when he was raised. They have painted the door. #line:ch13_house_side_002
+Rhen [neutral]: Do you want to go in? #line:ch13_house_side_003
+Ysolde [cold]: No. #line:ch13_house_side_004
+@wait 2.0
+Ysolde [sad]: Yes. #line:ch13_house_side_005
+@anim rhen knock red_door
+@mark householder door walk
+@anim householder bow ysolde
+@wait 2.0
+@mark ysolde front_room walk
+@mark rhen front_room_b walk
+@camera A15
+@anim ysolde look_at scorch_mark
+@wait 3.0
+Ysolde [soft_smile]: He was a terrible cook. That is from a fish. #line:ch13_house_side_006
+@anim rhen laugh
+@anim ysolde laugh
+@wait 2.0
+Householder as "The householder" [worried]: Should we paint over it again, Mistress? #line:ch13_house_side_007
+Ysolde [tender]: No. Please. Leave it. #line:ch13_house_side_008
+@camera A15b
+@mark ysolde street walk
+@mark rhen street_b walk
+@wait 2.0
+Ysolde [soft_smile]: Thank you, Master Sallow. I have decided to notice. #line:ch13_house_side_009
+<<set $ch13_corran_house = true>>
+@music ansedra fade=3.0
+===

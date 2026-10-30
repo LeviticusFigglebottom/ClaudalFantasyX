@@ -1,0 +1,42 @@
+{
+ "format": 1,
+ "scene": "ch15_two_daces",
+ "source": "game/data/dialogue/ch15/ch15_two_daces.dlg",
+ "start": "ch15_two_daces",
+ "nodes": {
+  "ch15_two_daces": {
+   "headers": {"location": "ch17/hollowmere"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["H15"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "anim", "args": ["aldous_varrow", "set_bowl", "rhen"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 11},
+    {"op": "if_not", "cond": ["flag", "ch11_rhen_admitted"], "to": 6, "src": 12},
+    {"op": "line", "id": "ch15_daces_001", "key": "DLG_CH15_DACES_001", "speaker": "aldous_varrow", "emotion": "neutral", "voice": "", "src": 13, "name_key": "DLG_NAME_ALDOUS_VARROW_DOCK_MASTER"},
+    {"op": "goto", "to": 8, "src": 12},
+    {"op": "line", "id": "ch15_daces_002", "key": "DLG_CH15_DACES_002", "speaker": "aldous_varrow", "emotion": "neutral", "voice": "", "src": 15, "name_key": "DLG_NAME_ALDOUS_VARROW_DOCK_MASTER"},
+    {"op": "goto", "to": 8, "src": 14},
+    {"op": "line", "id": "ch15_daces_003", "key": "DLG_CH15_DACES_003", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 17},
+    {"op": "line", "id": "ch15_daces_004", "key": "DLG_CH15_DACES_004", "speaker": "aldous_varrow", "emotion": "neutral", "voice": "", "src": 18, "name_key": "DLG_NAME_ALDOUS_VARROW_DOCK_MASTER"},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 19},
+    {"op": "line", "id": "ch15_daces_005", "key": "DLG_CH15_DACES_005", "speaker": "aldous_varrow", "emotion": "soft_smile", "voice": "", "src": 20, "name_key": "DLG_NAME_ALDOUS_VARROW_DOCK_MASTER", "tags": ["long"]},
+    {"op": "line", "id": "ch15_daces_006", "key": "DLG_CH15_DACES_006", "speaker": "aldous_varrow", "emotion": "soft_smile", "voice": "", "src": 21, "name_key": "DLG_NAME_ALDOUS_VARROW_DOCK_MASTER"},
+    {"op": "line", "id": "ch15_daces_007", "key": "DLG_CH15_DACES_007", "speaker": "aldous_varrow", "emotion": "neutral", "voice": "", "src": 22, "name_key": "DLG_NAME_ALDOUS_VARROW_DOCK_MASTER", "tags": ["long"]},
+    {"op": "if_not", "cond": ["flag", "ch15_sat_with_liss"], "to": 20, "src": 23},
+    {"op": "cue", "cue": "mark", "args": ["liss", "supper", "walk"], "kwargs": {}, "src": 24},
+    {"op": "cue", "cue": "anim", "args": ["liss", "sit_beside", "rhen"], "kwargs": {}, "src": 25},
+    {"op": "cue", "cue": "anim", "args": ["aldous_varrow", "set_bowl", "liss"], "kwargs": {}, "src": 26},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 27},
+    {"op": "goto", "to": 20, "src": 23},
+    {"op": "line", "id": "ch15_daces_008", "key": "DLG_CH15_DACES_008", "speaker": "rhen", "emotion": "sad", "voice": "", "src": 29},
+    {"op": "line", "id": "ch15_daces_009", "key": "DLG_CH15_DACES_009", "speaker": "rhen", "emotion": "sad", "voice": "", "src": 30},
+    {"op": "line", "id": "ch15_daces_010", "key": "DLG_CH15_DACES_010", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 31},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 32},
+    {"op": "line", "id": "ch15_daces_011", "key": "DLG_CH15_DACES_011", "speaker": "aldous_varrow", "emotion": "sad", "voice": "", "src": 33, "name_key": "DLG_NAME_ALDOUS_VARROW_DOCK_MASTER"},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 34},
+    {"op": "line", "id": "ch15_daces_012", "key": "DLG_CH15_DACES_012", "speaker": "aldous_varrow", "emotion": "neutral", "voice": "", "src": 35, "name_key": "DLG_NAME_ALDOUS_VARROW_DOCK_MASTER"},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 36},
+    {"op": "set", "flag": "ch15_supper_with_father", "value": ["lit", true], "src": 37}
+   ]
+  }
+ }
+}

@@ -28,6 +28,10 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from test_b_arenas import WRAPPED  # noqa: E402
 
+# ansedra_arenas.py writes these from arena_scenes' tables plus KitSlotSwaps; test_ch14_lacquer_court_dressing.py
+# reproduces them.
+ANSEDRA_SWAPPED = ("ansedra_lagoon_escape", "bridal_barge_night")
+
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "assets_src" / "environments" / "kits" / "haluna"
 sys.path.insert(0, str(SRC))
@@ -183,6 +187,8 @@ class ArenaSceneTests(unittest.TestCase):
             scenes.OUT_DIR = Path(tmp)
             for aid, arena in scenes.ARENAS.items():
                 if aid in WRAPPED:  # env-art-b writes these through its wrappers; test_b_arenas.py reproduces them
+                    continue
+                if aid in ANSEDRA_SWAPPED:  # ansedra_arenas.py writes these with the zone looks (c1ed49ad6)
                     continue
                 with self.subTest(arena=aid):
                     out = scenes.write_arena(arena)

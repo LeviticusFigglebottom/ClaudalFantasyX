@@ -33,7 +33,8 @@
     "MoleStair": [13.6, 6.1, 18.0, 0.0],
     "WallHead": [-15.044, 12.0, -0.624, 2.86],
     "WallGate": [30.945, 12.0, 1.6, 84.08],
-    "Bastion": [-66.169, 12.0, -0.603, 12.41]
+    "Bastion": [-66.169, 12.0, -0.603, 12.41],
+    "Shrine": [-66.169, 12.0, -0.603, 12.41]
   },
   "marks": {
     "mole_greet_a": [13.519, 9.674, 10.526, 177.33],
@@ -137,17 +138,17 @@
     "kerrid": {"at": [12.798, 1.2, 44.256, -2.86], "color": "#5a4a3a", "radius": 0.4, "height": 2.0},
     "townsfolk_a": {"cast": "vendor", "at": [13.913, 12.338, 2.075, 177.33], "color": "#b09070"},
     "townsfolk_b": {"cast": "netmender", "at": [15.899, 12.338, 2.174, 176.94], "color": "#a07a60"},
-    "ivo": {"cast": "netmender", "at": [20.948, 12.0, 1.233, -94.01], "color": "#a8302a", "radius": 0.36, "height": 1.9},
-    "hobb": {"cast": "fisher", "at": [-17.48, 12.53, -4.546, 93.28], "color": "#7a5a40", "radius": 0.34, "height": 1.8},
+    "ivo": {"cast": "ivo", "at": [20.948, 12.0, 1.233, -94.01], "color": "#a8302a", "radius": 0.36, "height": 1.9},
+    "hobb": {"cast": "hobb", "at": [-17.48, 12.53, -4.546, 93.28], "color": "#7a5a40", "radius": 0.34, "height": 1.8},
     "fisher_a": {"cast": "fisher", "at": [-18.66, 12.33, -3.495, -86.48], "color": "#8a7a60"},
-    "stillguard_a": {"cast": "fisher", "at": [-29.85, 12.0, 2.494, -174.27], "color": "#a8302a"},
-    "stillguard_b": {"cast": "netmender", "at": [-34.979, 12.0, 1.543, 96.68], "color": "#a8302a"},
-    "gatekeeper": {"cast": "fisher", "at": [34.097, 12.0, 0.434, -96.49], "color": "#8a3a2a"},
+    "stillguard_a": {"cast": "stillguard_a", "at": [-29.85, 12.0, 2.494, -174.27], "color": "#a8302a"},
+    "stillguard_b": {"cast": "stillguard_b", "at": [-34.979, 12.0, 1.543, 96.68], "color": "#a8302a"},
+    "gatekeeper": {"cast": "gatekeeper", "at": [34.097, 12.0, 0.434, -96.49], "color": "#8a3a2a"},
     "child_a": {"cast": "child", "at": [0.0, 12.0, 1.0, 180.0], "color": "#c09070", "radius": 0.2, "height": 1.2},
     "child_b": {"cast": "child", "at": [1.495, 12.0, 1.004, 179.71], "color": "#c8a070", "radius": 0.2, "height": 1.2},
     "child_c": {"cast": "child", "at": [1.002, 12.0, -0.498, 179.81], "color": "#b08060", "radius": 0.2, "height": 1.1},
     "netmender": {"cast": "netmender", "at": [-34.634, 1.0, -21.946, 180.0], "color": "#8a8070"},
-    "marra": {"cast": "netmender", "at": [-48.634, 1.0, -10.446, 90.0], "color": "#9a8a7a", "radius": 0.28, "height": 1.55},
+    "marra": {"cast": "marra", "at": [-48.634, 1.0, -10.446, 90.0], "color": "#9a8a7a", "radius": 0.28, "height": 1.55},
     "boy": {"cast": "child", "at": [-42.634, 1.0, -17.446, 0.0], "color": "#c09070", "radius": 0.18, "height": 1.0},
     "watch_a": {"cast": "fisher", "at": [-16.512, 12.53, -3.598, 93.11], "color": "#8a3a2a", "hidden": true},
     "watch_b": {"cast": "netmender", "at": [-16.555, 12.53, -4.397, 93.11], "color": "#8a3a2a", "hidden": true},
@@ -156,7 +157,7 @@
     "climber_c": {"cast": "fisher", "at": [-34.074, 4.935, -3.337, -83.59], "color": "#9a8a7a", "hidden": true},
     "pell": {"at": [-6.915, 12.9, 3.681, 1.34], "color": "#5a6e78", "radius": 0.3, "height": 2.6, "hidden": true},
     "figure": {"at": [-11.586, 0.5, 32.787, 2.48], "color": "#5fd6e0", "radius": 0.3, "height": 1.9, "hidden": true},
-    "officer": {"cast": "vendor", "at": [-27.009, 12.0, 0.716, 95.16], "color": "#a8302a", "radius": 0.34, "height": 1.85, "hidden": true}
+    "officer": {"cast": "officer", "at": [-27.009, 12.0, 0.716, 95.16], "color": "#a8302a", "radius": 0.34, "height": 1.85, "hidden": true}
   },
   "shots": {
     "W01": {"pos": [9.248, 2.5, 47.905], "look_at": [-14.859, 18.0, 3.072], "fov": 50},
@@ -197,14 +198,14 @@
     {"id": "bark_stillguard", "at": [-29.95, 12.0, 1.499], "size": [3, 0, 10], "once": true, "requires_flag": "ch08_arrived_corrow", "blocked_by_flag": "ch08_beacon_opened", "payload": {"dialogue": "ch08_bark_stillguard", "overheard": true}, "yaw": 5.73},
     {"id": "bark_kites", "at": [0.0, 12.0, 0.0], "size": [3, 0, 10], "once": true, "requires_flag": "ch08_arrived_corrow", "blocked_by_flag": "ch08_beacon_opened", "payload": {"dialogue": "ch08_bark_kites", "overheard": true}, "yaw": 0.0},
     {"id": "bark_netmender", "activation": "interact", "at": [-34.634, 1.0, -20.946], "size": [1.6, 0, 1.6], "prompt_key": "FIELD_PROMPT_LISTEN", "requires_flag": "ch08_arrived_corrow", "blocked_by_flag": "ch08_beacon_opened", "payload": {"dialogue": "ch08_bark_netmender"}, "yaw": 0.0},
-    {"id": "shrine", "activation": "interact", "at": [-66.479, 12.0, -2.01], "size": [1.6, 0, 1.2], "prompt_key": "FIELD_PROMPT_REST", "requires_flag": "ch08_arrived_corrow", "blocked_by_flag": "ch08_beacon_opened", "payload": {"beat": "shrine"}, "yaw": 12.41},
+    {"id": "shrine", "activation": "interact", "at": [-66.479, 12.0, -2.01], "size": [1.6, 0, 1.2], "prompt_key": "FIELD_PROMPT_REST", "requires_flag": "ch08_arrived_corrow", "blocked_by_flag": "ch08_beacon_opened", "payload": {"beat": "shrine", "save_shrine": "corrow_shrine"}, "yaw": 12.41},
     {"id": "chandler", "activation": "interact", "at": [-78.3, 12.0, 1.664], "size": [3, 0, 1.4], "prompt_key": "SHOP_PROMPT", "requires_flag": "ch08_arrived_corrow", "blocked_by_flag": "ch08_beacon_opened", "payload": {"shop": "brightwater_purser"}, "yaw": 14.71},
     {"id": "gate", "activation": "interact", "at": [32.933, 12.0, 1.813], "size": [2, 0, 6], "prompt_key": "FIELD_PROMPT_CH08_GATE", "requires_flag": "ch08_met_ivo", "blocked_by_flag": "ch08_beacon_opened", "payload": {"beat": "to_headland"}, "yaw": -6.3}
   ],
   "states": [
     {"flag": "ch08_arrived_corrow", "hide": ["kerrid"], "place": {"asha": "day_asha", "toma": "day_toma", "ysolde": "day_ysolde", "liss": "day_liss", "townsfolk_a": "mole_greet_a", "townsfolk_b": "mole_greet_b"}},
-    {"flag": "ch08_beacon_opened", "hide": ["Kites", "KitesHigh", "townsfolk_a", "townsfolk_b", "child_a", "child_b", "child_c", "netmender", "fisher_a", "gatekeeper"], "show": ["watch_a", "watch_b", "climber_a", "climber_b", "climber_c", "Storm"], "place": {"asha": "storm_asha", "toma": "storm_toma", "ysolde": "storm_ysolde", "liss": "storm_liss", "ivo": "shield_line_ivo", "hobb": "stair_head_hobb", "stillguard_a": "shield_line_a", "stillguard_b": "shield_line_b", "marra": "stair_crowd_marra", "boy": "stair_crowd_boy", "climber_a": "stair_crowd_a", "climber_b": "stair_crowd_b", "climber_c": "stair_crowd_c"}},
-    {"flag": "ch08_wave1_held", "hide": ["hobb", "watch_a", "watch_b"], "show": ["child_a", "child_b", "child_c"], "place": {"asha": "wh_asha", "toma": "shield_line_toma", "ysolde": "wh_ysolde", "liss": "wh_liss", "child_a": "basket_low_a", "child_b": "basket_low_b", "child_c": "basket_low_c"}},
+    {"flag": "ch08_beacon_opened", "hide": ["townsfolk_a", "townsfolk_b", "child_a", "child_b", "child_c", "netmender", "fisher_a", "gatekeeper"], "show": ["watch_a", "watch_b", "climber_a", "climber_b", "climber_c", "Storm"], "place": {"asha": "storm_asha", "toma": "storm_toma", "ysolde": "storm_ysolde", "liss": "storm_liss", "ivo": "shield_line_ivo", "hobb": "stair_head_hobb", "stillguard_a": "shield_line_a", "stillguard_b": "shield_line_b", "marra": "stair_crowd_marra", "boy": "stair_crowd_boy", "climber_a": "stair_crowd_a", "climber_b": "stair_crowd_b", "climber_c": "stair_crowd_c"}},
+    {"flag": "ch08_wave1_held", "hide": ["Kites", "KitesHigh", "hobb", "watch_a", "watch_b"], "show": ["child_a", "child_b", "child_c"], "place": {"asha": "wh_asha", "toma": "shield_line_toma", "ysolde": "wh_ysolde", "liss": "wh_liss", "child_a": "basket_low_a", "child_b": "basket_low_b", "child_c": "basket_low_c"}},
     {"flag": "ch08_hoist_rigged", "show": ["HoistPins", "HoistRope", "Basket"], "place": {"child_a": "basket_top_a", "child_b": "basket_top_b", "child_c": "basket_top_c", "liss": "hoist_liss", "toma": "shield_line_toma"}},
     {"flag": "ch08_wave2_held", "show": ["pell"], "place": {"pell": "parapet_pell", "boy": "boy_stair"}},
     {"flag": "ch08_pell_seen", "place": {"boy": "boy_climbed", "asha": "wh_asha"}},

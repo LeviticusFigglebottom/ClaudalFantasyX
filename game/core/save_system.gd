@@ -879,6 +879,8 @@ func _fill_info(info: Dictionary, d: Dictionary, st: Dictionary) -> void:
 	info["play_time_sec"] = float(st.get("play_time_sec", 0.0))
 	info["location_id"] = str(st.get("location_id", ""))
 	info["location_key"] = location_name_key(StringName(str(info["location_id"])))
+	# Act II (M4-A2P-082): a save made after the trap carries its heretic tag on the slot row.
+	info["heretic"] = bool((st.get("flags", {}) as Dictionary).get("ch14_declared_heretics", false))
 	var party: Variant = st.get("party_ids", [])  # the active line, for the save rows' faces
 	info["party"] = (party as Array).map(func(v: Variant) -> String: return str(v)) if party is Array else []
 	var meta: Variant = d.get("meta")

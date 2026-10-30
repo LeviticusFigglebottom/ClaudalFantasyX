@@ -1,0 +1,60 @@
+{
+ "format": 1,
+ "scene": "ch13_still_city",
+ "source": "game/data/dialogue/ch13/ch13_still_city.dlg",
+ "start": "ch13_still_city",
+ "nodes": {
+  "ch13_still_city": {
+   "headers": {"location": "ch13/ansedra"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "camera", "args": ["A01"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "music", "args": ["ansedra"], "kwargs": {"fade": 2.0}, "src": 14},
+    {"op": "cue", "cue": "wait", "args": [5.0], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "camera", "args": ["A02"], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "sfx", "args": ["barge_pole"], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 18},
+    {"op": "line", "id": "ch13_city_001", "key": "DLG_CH13_CITY_001", "speaker": "rhen", "emotion": "worried", "voice": "", "src": 19},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "camera", "args": ["A03"], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "mark", "args": ["kerrid", "kerrid_moorings", "walk"], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "anim", "args": ["asha", "look_at", "kerrid"], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "anim", "args": ["kerrid", "raise_hand"], "kwargs": {}, "src": 24},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 25},
+    {"op": "jump", "node": "ch13_sefirs_house", "src": 26}
+   ]
+  },
+  "ch13_sefirs_house": {
+   "headers": {},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["A04"], "kwargs": {}, "src": 30},
+    {"op": "cue", "cue": "music", "args": ["ansedra"], "kwargs": {"fade": 1.0}, "src": 31},
+    {"op": "cue", "cue": "mark", "args": ["sefir", "sefir_door", "walk"], "kwargs": {}, "src": 32},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 33},
+    {"op": "line", "id": "ch13_house_001", "key": "DLG_CH13_HOUSE_001", "speaker": "sefir", "emotion": "smile", "voice": "", "src": 34, "tags": ["long"]},
+    {"op": "line", "id": "ch13_house_002", "key": "DLG_CH13_HOUSE_002", "speaker": "sefir", "emotion": "soft_smile", "voice": "", "src": 35, "tags": ["long"]},
+    {"op": "line", "id": "ch13_house_003", "key": "DLG_CH13_HOUSE_003", "speaker": "sefir", "emotion": "smile", "voice": "", "src": 36},
+    {"op": "set", "flag": "ch13_wedding_announced", "value": ["lit", true], "src": 37},
+    {"op": "cue", "cue": "anim", "args": ["liss", "look_away"], "kwargs": {}, "src": 38},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 39},
+    {"op": "line", "id": "ch13_house_004", "key": "DLG_CH13_HOUSE_004", "speaker": "sefir", "emotion": "tender", "voice": "", "src": 40},
+    {"op": "cue", "cue": "anim", "args": ["sefir", "hold_out_key", "liss"], "kwargs": {}, "src": 41},
+    {"op": "line", "id": "ch13_house_005", "key": "DLG_CH13_HOUSE_005", "speaker": "sefir", "emotion": "soft_smile", "voice": "", "src": 42},
+    {"op": "line", "id": "ch13_house_006", "key": "DLG_CH13_HOUSE_006", "speaker": "sefir", "emotion": "soft_smile", "voice": "", "src": 43, "tags": ["long"]},
+    {"op": "cue", "cue": "anim", "args": ["liss", "take_key"], "kwargs": {}, "src": 44},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 45},
+    {"op": "cue", "cue": "camera", "args": ["A05"], "kwargs": {}, "src": 46},
+    {"op": "cue", "cue": "anim", "args": ["sefir", "look_at", "outer_moorings"], "kwargs": {}, "src": 47},
+    {"op": "cue", "cue": "wait", "args": [0.6], "kwargs": {}, "src": 48},
+    {"op": "cue", "cue": "anim", "args": ["sefir", "look_at", "asha"], "kwargs": {}, "src": 49},
+    {"op": "cue", "cue": "camera", "args": ["A06"], "kwargs": {}, "src": 50},
+    {"op": "cue", "cue": "anim", "args": ["toma", "bow", "sefir"], "kwargs": {}, "src": 51},
+    {"op": "line", "id": "ch13_house_007", "key": "DLG_CH13_HOUSE_007", "speaker": "sefir", "emotion": "smile", "voice": "", "src": 52},
+    {"op": "line", "id": "ch13_house_008", "key": "DLG_CH13_HOUSE_008", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 53},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 54},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 55},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 56}
+   ]
+  }
+ }
+}

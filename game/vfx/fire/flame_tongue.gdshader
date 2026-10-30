@@ -4,10 +4,13 @@
 // - the tongues sway downwind-ish and stretch as a lick runs up them, more toward the tip (nothing moves at the bed);
 // - rising noise tears the upper half of each tongue into licks (discard), so the tips break and re-form;
 // - the colour runs from the slot's base to its tip colour and flickers with slow noise per fire.
+// - the tongue is translucent: dense at its heart and foot, thinning toward its silhouette and its torn tips (opaque,
+//   the camp's fires read as cut card against the noon flats; M3-ENV-1326), and broken into licks so that at arm's
+//   length no smooth cone shows (the 10-29 audit).
 // All on the held weather clock (hymn_wind_time), never TIME, so a capture is deterministic. Unshaded: the flame is
 // its own light (the zone's fire lights do the lighting). Never glimmer colours (references.md §1.4 rule 10).
 shader_type spatial;
-render_mode unshaded, cull_disabled, shadows_disabled, fog_disabled;
+render_mode unshaded, cull_disabled, shadows_disabled, fog_disabled, depth_draw_never;
 
 #include "res://game/shaders/include/globals.gdshaderinc"
 #include "res://game/shaders/include/common.gdshaderinc"
@@ -33,6 +36,14 @@ uniform float flicker = 0.22;
 uniform float tear = 0.55;
 uniform float tear_scale_per_m = 2.6;
 uniform float rise_m_s = 1.6;
+// Opacity: a tongue's heart (facing the camera) at its foot, its silhouette, and how much the tips thin it.
+uniform float heart_alpha : hint_range(0.0, 1.0) = 0.78;
+uniform float rim_alpha : hint_range(0.0, 1.0) = 0.0;
+uniform float tip_thin : hint_range(0.0, 1.0) = 0.75;
+// The rising noise also thins the body into licks (0: an even sheet).
+uniform float lick_breakup : hint_range(0.0, 1.0) = 0.85;
+// The heart runs toward this hot colour where it faces the camera, low in the tongue.
+uniform vec3 hot_color : source_color = vec3(1.0, 0.86, 0.55);
 
 varying float v_h;
 varying vec3 v_obj;
@@ -62,8 +73,11 @@ void fragment() {
 	float f = hymn_value_noise3(vec3(t * 4.0, v_phase, v_phase * 0.5)) * 2.0 - 1.0;
 	float facing = pow(clamp(abs(dot(NORMAL, VIEW)), 0.0, 1.0), rim_power);
 	vec3 body = mix(base_color, tip_color, smoothstep(0.25, 1.0, v_h));
+	body = mix(body, hot_color, facing * facing * (1.0 - smoothstep(0.0, 0.6, v_h)));
 	vec3 c = mix(tip_color * 0.8, body * heart_gain, facing) * (1.0 + flicker * f) * (0.85 + 0.3 * n)
 			* mix(foot_gain, tip_gain, v_h);
 	ALBEDO = c;
 	EMISSION = c * emission;
+	float licks = mix(1.0, smoothstep(0.25, 0.75, n + 0.35 * (1.0 - v_h)), lick_breakup);
+	ALPHA = mix(rim_alpha, heart_alpha, facing) * (1.0 - tip_thin * smoothstep(0.3, 1.0, v_h)) * licks;
 }

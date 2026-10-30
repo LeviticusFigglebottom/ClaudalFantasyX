@@ -88,6 +88,11 @@ def _skill_gap(s: dict, mapped: set[str], elements: set[str]) -> str:
 INTENDED = {
     "toll_gather": "the Drownbell's gather plays through its own rig (BattleBossVfx on charge_started)",
     "unravel": "Act II (Ch12's cord moth), paused by ADR 0041; its effect comes with Act II",
+    "voice_glimmer": "Kesh's Glimmer voice (M4-A2P-025): her six voices' effects are M3-BPR-442's",
+    "crawler_mend": "the conduit crawler's mend plays as its walk and the ring relighting (M3-BPR-441)",
+    "crawler_tend": "the conduit crawler idles while it tends; no effect of its own (M4-A2P-022)",
+    "cord_lift": "Hesk's cleanse (M4-A2P-024): Nhoa's, Hesk's and Ethren's effects are M3-BPR-443's",
+    "nhoa_echo": "Nhoa's echo plays the copied action's effect; her own double (M4-A2P-024) is M3-BPR-443's",
 }
 
 

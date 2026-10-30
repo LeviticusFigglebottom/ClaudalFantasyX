@@ -112,7 +112,7 @@
         ],
         "max_exposed": 2
       },
-      "_allowances": "M1-CHR-15 (every-frame worst in brackets). Costume 34/6 (32.8): the sandal soles sit inside the feet at rest; the skirts are clean in every frame (skirt panels: 43.8 -> 32.8; the old worst was the skirt in the calf-thigh fold of the deep kneel). VerseSleeve 36/6 (35.5, walk): the sleeve's inner elbow against the waist as the arm hangs (her staff arm now hangs 6 degrees wider, and the hanging bag rides the shoulder corrective). Body 47/24 (46.7): the extreme_pose stage pose, the right arm raised 80 degrees forward (the front of the shoulder passes the vest's armhole edge, as in M1-CHR-14); in the clips the armpit is 37.7 at worst (attack), down from 46 in walk and laugh before the shoulder correctives. max_exposed 2: two halter-edge vertices at the right shoulder, under 2 mm. ADR 0140 (16 skirt panels, the even ones derived): Body count 24 -> 25: float_boat's crouch counts one more Body vertex through the Costume than before (25, at 41 mm, under the 47 mm limit; the worst is still extreme_pose's armpit), from the narrower panels; viewed in a float_boat render, nothing shows through.",
+      "_allowances": "M1-CHR-15 (every-frame worst in brackets). Costume 34/6 (32.8): the sandal soles sit inside the feet at rest; the skirts are clean in every frame (skirt panels: 43.8 -> 32.8; the old worst was the skirt in the calf-thigh fold of the deep kneel). VerseSleeve 36/6 (35.5, walk): the sleeve's inner elbow against the waist as the arm hangs (her staff arm now hangs 6 degrees wider, and the hanging bag rides the shoulder corrective). Body 47/24 (46.7): the extreme_pose stage pose, the right arm raised 80 degrees forward (the front of the shoulder passes the vest's armhole edge, as in M1-CHR-14); in the clips the armpit is 37.7 at worst (attack), down from 46 in walk and laugh before the shoulder correctives. max_exposed 2: two halter-edge vertices at the right shoulder, under 2 mm. ADR 0140 (16 skirt panels, the even ones derived): Body count 24 -> 25: float_boat's crouch counts one more Body vertex through the Costume than before (25, at 41 mm, under the 47 mm limit; the worst is still extreme_pose's armpit), from the narrower panels; viewed in a float_boat render, nothing shows through. big17 review (the skirt as soft cloth, wider bend bands): Body count 25 -> 26 at extreme_pose, the stress stage's raised thigh (one more vertex under the vest's armhole edge, 46.7 mm, inside the limit).",
       "penetration": {
         "limits_mm": {
           "Costume": 34.0,
@@ -122,7 +122,7 @@
         "limits_count": {
           "Costume": 6,
           "VerseSleeve": 6,
-          "Body": 25
+          "Body": 26
         }
       },
       "_prop_grip": "M2-CHR-515/520: Asha sets the staff down on the floor beside her where she kneels, sits or crouches (hero_clips.prop_down), so it no longer crosses her pooled skirt there. Still allowed: pole_in and pole_out, which pole the raft with the staff in both hands (the shaft passes the skirt's front; re-authoring the arms is a follow-up), and attack (one line through her own sleeve at the strike's wind-up).",
@@ -138,7 +138,7 @@
       "props": [
         "Props"
       ],
-      "_allowances": "M1-CHR-15 (every-frame worst in brackets). Costume 31.5/6 (31.2): the shirt's side against the forearm and the lowered upper arm (finisher, talk). Body 62/44 (61.1, item@6; count 42 every frame once merged with M2-CHR-12's clips): the toss lifts the right arm 92 degrees forward and its front passes the shirt's armhole edge; with the arms down (idle, talk) the armpit is under 30 since the shoulder correctives. max_exposed 24: the thigh's hidden-face edge opens inside the deep knee fold of the kneel, under the trousers (rhen_clip_kneel).",
+      "_allowances": "M1-CHR-15 (every-frame worst in brackets). Costume 31.5/6 (31.2): the shirt's side against the forearm and the lowered upper arm (finisher, talk). Body 62/44 (61.1, item@6; count 42 every frame once merged with M2-CHR-12's clips): the toss lifts the right arm 92 degrees forward and its front passes the shirt's armhole edge; with the arms down (idle, talk) the armpit is under 30 since the shoulder correctives. max_exposed 24: the thigh's hidden-face edge opens inside the deep knee fold of the kneel, under the trousers (rhen_clip_kneel). The jog (the human playtest, 2026-10-30): Body count 47 (was 44) in run, run_start and run_stop, the right armpit's inner crease under the arm (DEF-armpit.R vs DEF-spine.003, 24-31 mm, inside the depth limit). The verts are covered by the upper arm itself in every frame of the cycle (viewed side, front and three-quarter at six phases), so it is invisible; opening the arm (abduction 4 to 12 degrees, the back swing eased) moved the depth, not the count.",
       "penetration": {
         "limits_mm": {
           "Costume": 31.5,
@@ -146,7 +146,7 @@
         },
         "limits_count": {
           "Costume": 6,
-          "Body": 44
+          "Body": 47
         }
       },
       "seams": {
@@ -411,21 +411,21 @@
         "max_exposed": 23
       },
       "_stage_poses": "The crest's two keys (crest_raise, crest_flat) are morph targets, which rig_probe does not apply; tools/tests/test_pell.py checks the Crest clear of the head in both keys (its crest_raise stage pose) instead.",
-      "_allowances": "M3-CHR-506 after the look-dev review (cloud probe at the default stride; every-key worst in brackets). The defaults hold in the idle, walk, talk and the story stand clips except where noted. Costume 45/6 (41.8, the ko/revive squat: the mantle's front fall folds into the belly as he sinks onto his heels and bows his neck to the floor; 36-37 in finisher and cast, 25-28 in attack, item, storm_call: the mantle's arm band against the raised right arm). Body 103/113 (102.8, ko/revive: both forearms on the knees take the right upper arm's front up through the mantle's shoulder cap; 77-78 in cast and storm_call, the right palm on the throat, the elbow kept 22 cm under the shoulder, seen in pell_clip_storm_call and pell_storm_ch8 as the cap's underside at the armpit; 42-46 in item and defend). Wraps 19/6 (18.7, ko/revive: the forearm wrap on the knee; 13.3 in storm_call, the wrap's top turn in the full elbow fold). NameShell 45/6 (42.6, ko/revive: the throat cord with the neck bowed 125 degrees; 16-27 in defend, finisher, storm_call, cast as the trapezius and the thick neck rise under it), NameShellBlank/Carved 20/6 (19.6, ko/revive; 18.9 in storm_call: the palm lies over the shell on the throat, as the sheet stages it; 6-8 in defend, run, attack). Crest 5/4 (4.5, ko/revive: the bowed head lays the crest's tips on the left thigh). max_exposed 23 (15 seen; ko/revive up to 44 mm: the cut edge under the mantle's front fall shows at the belly in the deep squat; 12 verts up to 13 mm in run, attack, defend, read, hit at the right breast under the mantle's front edge). Lower them when the mantle gets a squat-aware fold.",
+      "_allowances": "M3-CHR-506 after the look-dev review (cloud probe at the default stride; every-key worst in brackets). The defaults hold in the idle, walk, talk and the story stand clips except where noted. Costume 45/6 (41.8, the ko/revive squat: the mantle's front fall folds into the belly as he sinks onto his heels and bows his neck to the floor; 36-37 in finisher and cast, 25-28 in attack, item, storm_call: the mantle's arm band against the raised right arm). Body 103/113 (102.8, ko/revive: both forearms on the knees take the right upper arm's front up through the mantle's shoulder cap; 77-78 in cast and storm_call, the right palm on the throat, the elbow kept 22 cm under the shoulder, seen in pell_clip_storm_call and pell_storm_ch8 as the cap's underside at the armpit; 42-46 in item and defend). Wraps 19/6 (18.7, ko/revive: the forearm wrap on the knee; 13.3 in storm_call, the wrap's top turn in the full elbow fold). NameShell 45/6 (42.6, ko/revive: the throat cord with the neck bowed 125 degrees; 16-27 in defend, finisher, storm_call, cast as the trapezius and the thick neck rise under it), NameShellBlank/Carved 20/6 (19.6, ko/revive; 18.9 in storm_call: the palm lies over the shell on the throat, as the sheet stages it; 6-8 in defend, run, attack). Crest 5/4 (4.5, ko/revive: the bowed head lays the crest's tips on the left thigh). max_exposed 23 (15 seen; ko/revive up to 44 mm: the cut edge under the mantle's front fall shows at the belly in the deep squat; 12 verts up to 13 mm in run, attack, defend, read, hit at the right breast under the mantle's front edge). Lower them when the mantle gets a squat-aware fold. GPU pass 3 look (muscle 0.6): the crest's count at the ko squat 4 -> 5 (4.3 mm, within the depth limit), the head bowed to the thigh. GPU pass 5 (mass 0.15 -> 0.25 for the arms): Wraps 20 (19.6, revive) and Body 104 (103.7, ko), the same mechanisms.",
       "penetration": {
         "limits_mm": {
           "Costume": 45.0,
-          "Wraps": 19.0,
+          "Wraps": 20.0,
           "Crest": 5.0,
           "NameShell": 45.0,
           "NameShellBlank": 20.0,
           "NameShellCarved": 20.0,
-          "Body": 103.0
+          "Body": 104.0
         },
         "limits_count": {
           "Costume": 6,
           "Wraps": 6,
-          "Crest": 4,
+          "Crest": 5,
           "NameShell": 6,
           "NameShellBlank": 6,
           "NameShellCarved": 6,
@@ -458,17 +458,17 @@
         ],
         "max_exposed": 4
       },
-      "_allowances": "M3-CHR-508 (probe at the default stride, shield arm SG_SHIELD_ARM). The prop guards (spear grip turn and offset, through_garment) and both props' prop_in_body (Spear, Shield) pass with no allowance; the Helm passes at the default. Costume and Sleeves: Moll's (M3-CHR-507) -- the jack's armhole edge, dropped under the shoulder (M1-CHR-14), takes the lowered upper arm into it at the side, and the sleeve shells sit inside the torso at the armpit crease as the arm comes forward (walk's swing, level_spear's reach). Body (skin_through_garment): at rest (the A pose) the inner face of the upper arm lies against that dropped armhole edge (0.1-0.5 mm on these builds, 6 mm on Moll's broader one, where the sleeve is the nearer cloth), so the probe tracks the jack's edge as the cloth over that skin; as the arm hangs it goes in under the armhole edge, inside the jack, and the depth is how far the arm passes under it, not skin showing through (the sleeve stays over it; the renders show none). max_exposed: in shield_up the raised left arm opens the front of the armpit's underarm cut (one to three edge vertices, behind the raised shield) and in the walk one at the back of the left shoulder's cap edge (under 5 mm), as Moll's finisher.",
+      "_allowances": "M3-CHR-508 (probe at the default stride, shield arm SG_SHIELD_ARM). The prop guards (spear grip turn and offset, through_garment) and both props' prop_in_body (Spear, Shield) pass with no allowance; the Helm passes at the default. Costume and Sleeves: Moll's (M3-CHR-507) -- the jack's armhole edge, dropped under the shoulder (M1-CHR-14), takes the lowered upper arm into it at the side, and the sleeve shells sit inside the torso at the armpit crease as the arm comes forward (walk's swing, level_spear's reach). Body (skin_through_garment): at rest (the A pose) the inner face of the upper arm lies against that dropped armhole edge (0.1-0.5 mm on these builds, 6 mm on Moll's broader one, where the sleeve is the nearer cloth), so the probe tracks the jack's edge as the cloth over that skin; as the arm hangs it goes in under the armhole edge, inside the jack, and the depth is how far the arm passes under it, not skin showing through (the sleeve stays over it; the renders show none). max_exposed: in shield_up the raised left arm opens the front of the armpit's underarm cut (one to three edge vertices, behind the raised shield) and in the walk one at the back of the left shoulder's cap edge (under 5 mm), as Moll's finisher. M3-CHR-590 (the dialogue clips): in kneel_palms_flat (Toma's two-knee kneel, as Ivo's) the trouser's knee fold takes the shin into the thigh (Costume, up to 16.7 mm) and the calf presses up into the back of that fold (Body: 36-57 vertices, hidden behind the thigh; the depth stays under the squad's arm-under-armhole limit), and the sleeve shells sit in the armpit crease as both arms come forward to the floor (Sleeves); walk_torch's raised shield arm puts the sleeve into the armpit crease as level_spear's reach does, and on the two broader builds (b, e) opens the front of the underarm cut by up to six edge vertices behind the raised arm, as shield_up does.",
       "penetration": {
         "limits_mm": {
-          "Costume": 13.0,
+          "Costume": 17.0,
           "Sleeves": 7.0,
           "Body": 62.0
         },
         "limits_count": {
           "Costume": 6,
           "Sleeves": 4,
-          "Body": 8
+          "Body": 47
         }
       }
     },
@@ -495,9 +495,9 @@
             "Sleeves"
           ]
         ],
-        "max_exposed": 4
+        "max_exposed": 6
       },
-      "_allowances": "M3-CHR-508 (probe at the default stride, shield arm SG_SHIELD_ARM). The prop guards (spear grip turn and offset, through_garment) and both props' prop_in_body (Spear, Shield) pass with no allowance; the Helm passes at the default. Costume and Sleeves: Moll's (M3-CHR-507) -- the jack's armhole edge, dropped under the shoulder (M1-CHR-14), takes the lowered upper arm into it at the side, and the sleeve shells sit inside the torso at the armpit crease as the arm comes forward (walk's swing, level_spear's reach). Body (skin_through_garment): at rest (the A pose) the inner face of the upper arm lies against that dropped armhole edge (0.1-0.5 mm on these builds, 6 mm on Moll's broader one, where the sleeve is the nearer cloth), so the probe tracks the jack's edge as the cloth over that skin; as the arm hangs it goes in under the armhole edge, inside the jack, and the depth is how far the arm passes under it, not skin showing through (the sleeve stays over it; the renders show none). max_exposed: in shield_up the raised left arm opens the front of the armpit's underarm cut (one to three edge vertices, behind the raised shield) and in the walk one at the back of the left shoulder's cap edge (under 5 mm), as Moll's finisher.",
+      "_allowances": "M3-CHR-508 (probe at the default stride, shield arm SG_SHIELD_ARM). The prop guards (spear grip turn and offset, through_garment) and both props' prop_in_body (Spear, Shield) pass with no allowance; the Helm passes at the default. Costume and Sleeves: Moll's (M3-CHR-507) -- the jack's armhole edge, dropped under the shoulder (M1-CHR-14), takes the lowered upper arm into it at the side, and the sleeve shells sit inside the torso at the armpit crease as the arm comes forward (walk's swing, level_spear's reach). Body (skin_through_garment): at rest (the A pose) the inner face of the upper arm lies against that dropped armhole edge (0.1-0.5 mm on these builds, 6 mm on Moll's broader one, where the sleeve is the nearer cloth), so the probe tracks the jack's edge as the cloth over that skin; as the arm hangs it goes in under the armhole edge, inside the jack, and the depth is how far the arm passes under it, not skin showing through (the sleeve stays over it; the renders show none). max_exposed: in shield_up the raised left arm opens the front of the armpit's underarm cut (one to three edge vertices, behind the raised shield) and in the walk one at the back of the left shoulder's cap edge (under 5 mm), as Moll's finisher. M3-CHR-590 (the dialogue clips): in kneel_palms_flat (Toma's two-knee kneel, as Ivo's) the trouser's knee fold takes the shin into the thigh (Costume, up to 16.7 mm) and the calf presses up into the back of that fold (Body: 36-57 vertices, hidden behind the thigh; the depth stays under the squad's arm-under-armhole limit), and the sleeve shells sit in the armpit crease as both arms come forward to the floor (Sleeves); walk_torch's raised shield arm puts the sleeve into the armpit crease as level_spear's reach does, and on the two broader builds (b, e) opens the front of the underarm cut by up to six edge vertices behind the raised arm, as shield_up does.",
       "penetration": {
         "limits_mm": {
           "Costume": 15.0,
@@ -506,8 +506,8 @@
         },
         "limits_count": {
           "Costume": 4,
-          "Sleeves": 4,
-          "Body": 9
+          "Sleeves": 5,
+          "Body": 42
         }
       }
     },
@@ -536,17 +536,17 @@
         ],
         "max_exposed": 4
       },
-      "_allowances": "M3-CHR-508 (probe at the default stride, shield arm SG_SHIELD_ARM). The prop guards (spear grip turn and offset, through_garment) and both props' prop_in_body (Spear, Shield) pass with no allowance; the Helm passes at the default. Costume and Sleeves: Moll's (M3-CHR-507) -- the jack's armhole edge, dropped under the shoulder (M1-CHR-14), takes the lowered upper arm into it at the side, and the sleeve shells sit inside the torso at the armpit crease as the arm comes forward (walk's swing, level_spear's reach). Body (skin_through_garment): at rest (the A pose) the inner face of the upper arm lies against that dropped armhole edge (0.1-0.5 mm on these builds, 6 mm on Moll's broader one, where the sleeve is the nearer cloth), so the probe tracks the jack's edge as the cloth over that skin; as the arm hangs it goes in under the armhole edge, inside the jack, and the depth is how far the arm passes under it, not skin showing through (the sleeve stays over it; the renders show none). max_exposed: in shield_up the raised left arm opens the front of the armpit's underarm cut (one to three edge vertices, behind the raised shield) and in the walk one at the back of the left shoulder's cap edge (under 5 mm), as Moll's finisher.",
+      "_allowances": "M3-CHR-508 (probe at the default stride, shield arm SG_SHIELD_ARM). The prop guards (spear grip turn and offset, through_garment) and both props' prop_in_body (Spear, Shield) pass with no allowance; the Helm passes at the default. Costume and Sleeves: Moll's (M3-CHR-507) -- the jack's armhole edge, dropped under the shoulder (M1-CHR-14), takes the lowered upper arm into it at the side, and the sleeve shells sit inside the torso at the armpit crease as the arm comes forward (walk's swing, level_spear's reach). Body (skin_through_garment): at rest (the A pose) the inner face of the upper arm lies against that dropped armhole edge (0.1-0.5 mm on these builds, 6 mm on Moll's broader one, where the sleeve is the nearer cloth), so the probe tracks the jack's edge as the cloth over that skin; as the arm hangs it goes in under the armhole edge, inside the jack, and the depth is how far the arm passes under it, not skin showing through (the sleeve stays over it; the renders show none). max_exposed: in shield_up the raised left arm opens the front of the armpit's underarm cut (one to three edge vertices, behind the raised shield) and in the walk one at the back of the left shoulder's cap edge (under 5 mm), as Moll's finisher. M3-CHR-590 (the dialogue clips): in kneel_palms_flat (Toma's two-knee kneel, as Ivo's) the trouser's knee fold takes the shin into the thigh (Costume, up to 16.7 mm) and the calf presses up into the back of that fold (Body: 36-57 vertices, hidden behind the thigh; the depth stays under the squad's arm-under-armhole limit), and the sleeve shells sit in the armpit crease as both arms come forward to the floor (Sleeves); walk_torch's raised shield arm puts the sleeve into the armpit crease as level_spear's reach does, and on the two broader builds (b, e) opens the front of the underarm cut by up to six edge vertices behind the raised arm, as shield_up does.",
       "penetration": {
         "limits_mm": {
-          "Costume": 10.0,
-          "Sleeves": 5.0,
+          "Costume": 15.0,
+          "Sleeves": 5.5,
           "Body": 59.0
         },
         "limits_count": {
           "Costume": 6,
-          "Sleeves": 4,
-          "Body": 9
+          "Sleeves": 6,
+          "Body": 36
         }
       }
     },
@@ -575,7 +575,7 @@
         ],
         "max_exposed": 4
       },
-      "_allowances": "M3-CHR-508 (probe at the default stride, shield arm SG_SHIELD_ARM). The prop guards (spear grip turn and offset, through_garment) and both props' prop_in_body (Spear, Shield) pass with no allowance; the Helm passes at the default. Costume and Sleeves: Moll's (M3-CHR-507) -- the jack's armhole edge, dropped under the shoulder (M1-CHR-14), takes the lowered upper arm into it at the side, and the sleeve shells sit inside the torso at the armpit crease as the arm comes forward (walk's swing, level_spear's reach). Body (skin_through_garment): at rest (the A pose) the inner face of the upper arm lies against that dropped armhole edge (0.1-0.5 mm on these builds, 6 mm on Moll's broader one, where the sleeve is the nearer cloth), so the probe tracks the jack's edge as the cloth over that skin; as the arm hangs it goes in under the armhole edge, inside the jack, and the depth is how far the arm passes under it, not skin showing through (the sleeve stays over it; the renders show none). max_exposed: in shield_up the raised left arm opens the front of the armpit's underarm cut (one to three edge vertices, behind the raised shield) and in the walk one at the back of the left shoulder's cap edge (under 5 mm), as Moll's finisher.",
+      "_allowances": "M3-CHR-508 (probe at the default stride, shield arm SG_SHIELD_ARM). The prop guards (spear grip turn and offset, through_garment) and both props' prop_in_body (Spear, Shield) pass with no allowance; the Helm passes at the default. Costume and Sleeves: Moll's (M3-CHR-507) -- the jack's armhole edge, dropped under the shoulder (M1-CHR-14), takes the lowered upper arm into it at the side, and the sleeve shells sit inside the torso at the armpit crease as the arm comes forward (walk's swing, level_spear's reach). Body (skin_through_garment): at rest (the A pose) the inner face of the upper arm lies against that dropped armhole edge (0.1-0.5 mm on these builds, 6 mm on Moll's broader one, where the sleeve is the nearer cloth), so the probe tracks the jack's edge as the cloth over that skin; as the arm hangs it goes in under the armhole edge, inside the jack, and the depth is how far the arm passes under it, not skin showing through (the sleeve stays over it; the renders show none). max_exposed: in shield_up the raised left arm opens the front of the armpit's underarm cut (one to three edge vertices, behind the raised shield) and in the walk one at the back of the left shoulder's cap edge (under 5 mm), as Moll's finisher. M3-CHR-590 (the dialogue clips): in kneel_palms_flat (Toma's two-knee kneel, as Ivo's) the trouser's knee fold takes the shin into the thigh (Costume, up to 16.7 mm) and the calf presses up into the back of that fold (Body: 36-57 vertices, hidden behind the thigh; the depth stays under the squad's arm-under-armhole limit), and the sleeve shells sit in the armpit crease as both arms come forward to the floor (Sleeves); walk_torch's raised shield arm puts the sleeve into the armpit crease as level_spear's reach does, and on the two broader builds (b, e) opens the front of the underarm cut by up to six edge vertices behind the raised arm, as shield_up does.",
       "penetration": {
         "limits_mm": {
           "Costume": 12.0,
@@ -584,8 +584,8 @@
         },
         "limits_count": {
           "Costume": 6,
-          "Sleeves": 4,
-          "Body": 10
+          "Sleeves": 6,
+          "Body": 57
         }
       }
     },
@@ -612,19 +612,19 @@
             "Sleeves"
           ]
         ],
-        "max_exposed": 4
+        "max_exposed": 6
       },
-      "_allowances": "M3-CHR-508 (probe at the default stride, shield arm SG_SHIELD_ARM). The prop guards (spear grip turn and offset, through_garment) and both props' prop_in_body (Spear, Shield) pass with no allowance; the Helm passes at the default. Costume and Sleeves: Moll's (M3-CHR-507) -- the jack's armhole edge, dropped under the shoulder (M1-CHR-14), takes the lowered upper arm into it at the side, and the sleeve shells sit inside the torso at the armpit crease as the arm comes forward (walk's swing, level_spear's reach). Body (skin_through_garment): at rest (the A pose) the inner face of the upper arm lies against that dropped armhole edge (0.1-0.5 mm on these builds, 6 mm on Moll's broader one, where the sleeve is the nearer cloth), so the probe tracks the jack's edge as the cloth over that skin; as the arm hangs it goes in under the armhole edge, inside the jack, and the depth is how far the arm passes under it, not skin showing through (the sleeve stays over it; the renders show none). max_exposed: in shield_up the raised left arm opens the front of the armpit's underarm cut (one to three edge vertices, behind the raised shield) and in the walk one at the back of the left shoulder's cap edge (under 5 mm), as Moll's finisher.",
+      "_allowances": "M3-CHR-508 (probe at the default stride, shield arm SG_SHIELD_ARM). The prop guards (spear grip turn and offset, through_garment) and both props' prop_in_body (Spear, Shield) pass with no allowance; the Helm passes at the default. Costume and Sleeves: Moll's (M3-CHR-507) -- the jack's armhole edge, dropped under the shoulder (M1-CHR-14), takes the lowered upper arm into it at the side, and the sleeve shells sit inside the torso at the armpit crease as the arm comes forward (walk's swing, level_spear's reach). Body (skin_through_garment): at rest (the A pose) the inner face of the upper arm lies against that dropped armhole edge (0.1-0.5 mm on these builds, 6 mm on Moll's broader one, where the sleeve is the nearer cloth), so the probe tracks the jack's edge as the cloth over that skin; as the arm hangs it goes in under the armhole edge, inside the jack, and the depth is how far the arm passes under it, not skin showing through (the sleeve stays over it; the renders show none). max_exposed: in shield_up the raised left arm opens the front of the armpit's underarm cut (one to three edge vertices, behind the raised shield) and in the walk one at the back of the left shoulder's cap edge (under 5 mm), as Moll's finisher. M3-CHR-590 (the dialogue clips): in kneel_palms_flat (Toma's two-knee kneel, as Ivo's) the trouser's knee fold takes the shin into the thigh (Costume, up to 16.7 mm) and the calf presses up into the back of that fold (Body: 36-57 vertices, hidden behind the thigh; the depth stays under the squad's arm-under-armhole limit), and the sleeve shells sit in the armpit crease as both arms come forward to the floor (Sleeves); walk_torch's raised shield arm puts the sleeve into the armpit crease as level_spear's reach does, and on the two broader builds (b, e) opens the front of the underarm cut by up to six edge vertices behind the raised arm, as shield_up does.",
       "penetration": {
         "limits_mm": {
-          "Costume": 14.0,
-          "Sleeves": 6.0,
+          "Costume": 15.5,
+          "Sleeves": 6.5,
           "Body": 63.0
         },
         "limits_count": {
           "Costume": 4,
           "Sleeves": 4,
-          "Body": 7
+          "Body": 50
         }
       }
     },
@@ -653,17 +653,17 @@
         ],
         "max_exposed": 4
       },
-      "_allowances": "M3-CHR-508 (probe at the default stride, shield arm SG_SHIELD_ARM). The prop guards (spear grip turn and offset, through_garment) and both props' prop_in_body (Spear, Shield) pass with no allowance; the Helm passes at the default. Costume and Sleeves: Moll's (M3-CHR-507) -- the jack's armhole edge, dropped under the shoulder (M1-CHR-14), takes the lowered upper arm into it at the side, and the sleeve shells sit inside the torso at the armpit crease as the arm comes forward (walk's swing, level_spear's reach). Body (skin_through_garment): at rest (the A pose) the inner face of the upper arm lies against that dropped armhole edge (0.1-0.5 mm on these builds, 6 mm on Moll's broader one, where the sleeve is the nearer cloth), so the probe tracks the jack's edge as the cloth over that skin; as the arm hangs it goes in under the armhole edge, inside the jack, and the depth is how far the arm passes under it, not skin showing through (the sleeve stays over it; the renders show none). max_exposed: in shield_up the raised left arm opens the front of the armpit's underarm cut (one to three edge vertices, behind the raised shield) and in the walk one at the back of the left shoulder's cap edge (under 5 mm), as Moll's finisher.",
+      "_allowances": "M3-CHR-508 (probe at the default stride, shield arm SG_SHIELD_ARM). The prop guards (spear grip turn and offset, through_garment) and both props' prop_in_body (Spear, Shield) pass with no allowance; the Helm passes at the default. Costume and Sleeves: Moll's (M3-CHR-507) -- the jack's armhole edge, dropped under the shoulder (M1-CHR-14), takes the lowered upper arm into it at the side, and the sleeve shells sit inside the torso at the armpit crease as the arm comes forward (walk's swing, level_spear's reach). Body (skin_through_garment): at rest (the A pose) the inner face of the upper arm lies against that dropped armhole edge (0.1-0.5 mm on these builds, 6 mm on Moll's broader one, where the sleeve is the nearer cloth), so the probe tracks the jack's edge as the cloth over that skin; as the arm hangs it goes in under the armhole edge, inside the jack, and the depth is how far the arm passes under it, not skin showing through (the sleeve stays over it; the renders show none). max_exposed: in shield_up the raised left arm opens the front of the armpit's underarm cut (one to three edge vertices, behind the raised shield) and in the walk one at the back of the left shoulder's cap edge (under 5 mm), as Moll's finisher. M3-CHR-590 (the dialogue clips): in kneel_palms_flat (Toma's two-knee kneel, as Ivo's) the trouser's knee fold takes the shin into the thigh (Costume, up to 16.7 mm) and the calf presses up into the back of that fold (Body: 36-57 vertices, hidden behind the thigh; the depth stays under the squad's arm-under-armhole limit), and the sleeve shells sit in the armpit crease as both arms come forward to the floor (Sleeves); walk_torch's raised shield arm puts the sleeve into the armpit crease as level_spear's reach does, and on the two broader builds (b, e) opens the front of the underarm cut by up to six edge vertices behind the raised arm, as shield_up does.",
       "penetration": {
         "limits_mm": {
-          "Costume": 10.0,
-          "Sleeves": 6.0,
+          "Costume": 16.5,
+          "Sleeves": 6.5,
           "Body": 66.0
         },
         "limits_count": {
-          "Costume": 5,
-          "Sleeves": 4,
-          "Body": 10
+          "Costume": 6,
+          "Sleeves": 6,
+          "Body": 43
         }
       }
     },
@@ -704,6 +704,80 @@
         }
       }
     },
+    "officer": {
+      "garments": [
+        "Costume",
+        "Sleeves"
+      ],
+      "props": [
+        "Shield"
+      ],
+      "seams": {
+        "groups": [
+          [
+            "Body",
+            "Head:skin_head"
+          ],
+          [
+            "Costume"
+          ],
+          [
+            "Sleeves"
+          ]
+        ],
+        "max_exposed": 4
+      },
+      "_allowances": "M3-CHR-593 (probe at the default stride): the squad's kit on a leaner, taller build. Sleeves 7.5 and Body 40 mm at walk@9: as the squad's (M3-CHR-508), the dropped armhole edge takes the swinging upper arm in under it at the side, inside the jack (the sleeve stays over it; no skin shows). hatchet_blow's raise is held to 122 degrees, where the underarm cut stays covered (at 150 it opened 20 mm).",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 16.0,
+          "Sleeves": 7.5,
+          "Body": 40.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Sleeves": 6,
+          "Body": 37
+        }
+      }
+    },
+    "venn": {
+      "garments": [
+        "Costume",
+        "Sleeves"
+      ],
+      "props": [
+        "Spear"
+      ],
+      "seams": {
+        "groups": [
+          [
+            "Body",
+            "Head:skin_head"
+          ],
+          [
+            "Costume"
+          ],
+          [
+            "Sleeves"
+          ]
+        ],
+        "max_exposed": 4
+      },
+      "_allowances": "M4-A2P-051 (probe at the default stride): Moll's kit and clips on a broader, taller build, the halberd held as his iron. Costume 19/6 (18.6, kneel): the trouser's knee folds into the thigh in the 96-degree kneel, as Moll's. Sleeves 11/6 (10.5, defend): his parry (venn_parry: both hands on the haft before him, Moll's yield arms standing) brings the right upper arm in across the armpit, and the sleeve's offset shell passes inside the torso at the crease, as Moll's finisher (7) and Liss's work-sleeve (12). Body 20/50 (19.2, ko and yield): as Moll's yield, the right arm across to the planted weapon brings the torso's side through the sleeve's inner face. max_exposed 4: as Moll's, the underarm cut's edge vertices with the arm raised in the finisher. The prop guards pass with no allowance.",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 19.0,
+          "Sleeves": 11.0,
+          "Body": 20.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Sleeves": 6,
+          "Body": 50
+        }
+      }
+    },
     "shopkeeper": {
       "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/shopkeeper/shopkeeper.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB: the pole, the brine-iron, the hammer and the lamp are scene props.",
       "villager": true,
@@ -725,7 +799,7 @@
     "smith": {
       "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/smith/smith.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB: the pole, the brine-iron, the hammer and the lamp are scene props.",
       "villager": true,
-      "_allowances": "M3-CHR-509..517 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 31/6 (30.52, walk@3: Costume:cloth_a on DEF-spine.003 vs DEF-upper_arm.R.001); Body 7/8 (6.6, hammer_strike@18: Body through Costume:cloth_a on DEF-shoulder.R vs DEF-shoulder.R); max_exposed 18 (farthest 6.16 mm, hammer_strike@12). Linear-blend-skinning limits as Kell's and Tavi's: the top's armhole edge and the hanging arm, and the deep reaches of the story clips (crawl_out's all-fours arms forward, pole_barge's raised arms, hammer_strike's overhead). Lower them when a fix lands.",
+      "_allowances": "M3-CHR-509..517 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 31/6 (30.52, walk@3: Costume:cloth_a on DEF-spine.003 vs DEF-upper_arm.R.001); Body 7/8 (6.6, hammer_strike@18: Body through Costume:cloth_a on DEF-shoulder.R vs DEF-shoulder.R); max_exposed 18 (farthest 6.16 mm, hammer_strike@12). Linear-blend-skinning limits as Kell's and Tavi's: the top's armhole edge and the hanging arm, and the deep reaches of the story clips (crawl_out's all-fours arms forward, pole_barge's raised arms, hammer_strike's overhead). Lower them when a fix lands. Re-pinned 2026-10-30 after the big17 face-variety rebuild (each villager's own ancestry mix through MPFB2's macro targets moves the body under the same garments; the mechanisms are the ones above): max_exposed 20 (farthest 6.33 mm, hammer_strike@15).",
       "penetration": {
         "limits_mm": {
           "Costume": 31.0,
@@ -737,7 +811,7 @@
         }
       },
       "seams": {
-        "max_exposed": 18
+        "max_exposed": 20
       }
     },
     "innkeeper": {
@@ -793,41 +867,41 @@
     "reed_b": {
       "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/reed_b/reed_b.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB: the pole, the brine-iron, the hammer and the lamp are scene props.",
       "villager": true,
-      "_allowances": "M3-CHR-509..517 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 18/6 (17.72, walk@12: Costume:cloth_a on DEF-pelvis.L vs DEF-forearm.L.001); Body 7/8 (6.02, pole_barge@49: Body through Costume:cloth_a on DEF-shoulder.R vs DEF-shoulder.R); max_exposed 13 (farthest 3.87 mm, pole_barge@0). Linear-blend-skinning limits as Kell's and Tavi's: the top's armhole edge and the hanging arm, and the deep reaches of the story clips (crawl_out's all-fours arms forward, pole_barge's raised arms, hammer_strike's overhead). Lower them when a fix lands.",
+      "_allowances": "M3-CHR-509..517 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 18/6 (17.72, walk@12: Costume:cloth_a on DEF-pelvis.L vs DEF-forearm.L.001); Body 7/8 (6.02, pole_barge@49: Body through Costume:cloth_a on DEF-shoulder.R vs DEF-shoulder.R); max_exposed 13 (farthest 3.87 mm, pole_barge@0). Linear-blend-skinning limits as Kell's and Tavi's: the top's armhole edge and the hanging arm, and the deep reaches of the story clips (crawl_out's all-fours arms forward, pole_barge's raised arms, hammer_strike's overhead). Lower them when a fix lands. Re-pinned 2026-10-30 after the big17 face-variety rebuild (each villager's own ancestry mix through MPFB2's macro targets moves the body under the same garments; the mechanisms are the ones above): Costume 18.5/6 (18.3, idle@60); Body 7/10 (6.36, pole_barge@49); max_exposed 14 (farthest 4.29 mm, pole_barge@7).",
       "penetration": {
         "limits_mm": {
-          "Costume": 18.0,
+          "Costume": 18.5,
           "Body": 7.0
         },
         "limits_count": {
           "Costume": 6,
-          "Body": 8
+          "Body": 10
         }
       },
       "seams": {
-        "max_exposed": 13
+        "max_exposed": 14
       }
     },
     "reed_c": {
       "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/reed_c/reed_c.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB: the pole, the brine-iron, the hammer and the lamp are scene props.",
       "villager": true,
-      "_allowances": "M3-CHR-509..517 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 30/6 (29.17, talk@12: Costume:cloth_a on DEF-spine.002 vs DEF-upper_arm.L.001); max_exposed 20 (farthest 4.17 mm, pole_barge@0). Linear-blend-skinning limits as Kell's and Tavi's: the top's armhole edge and the hanging arm, and the deep reaches of the story clips (crawl_out's all-fours arms forward, pole_barge's raised arms, hammer_strike's overhead). Lower them when a fix lands.",
+      "_allowances": "M3-CHR-509..517 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 30/6 (29.17, talk@12: Costume:cloth_a on DEF-spine.002 vs DEF-upper_arm.L.001); max_exposed 20 (farthest 4.17 mm, pole_barge@0). Linear-blend-skinning limits as Kell's and Tavi's: the top's armhole edge and the hanging arm, and the deep reaches of the story clips (crawl_out's all-fours arms forward, pole_barge's raised arms, hammer_strike's overhead). Lower them when a fix lands. Re-pinned 2026-10-30 after the big17 face-variety rebuild (each villager's own ancestry mix through MPFB2's macro targets moves the body under the same garments; the mechanisms are the ones above): Costume 30.5/6 (30.25, talk@12); max_exposed 22 (farthest 3.69 mm, pole_barge@0).",
       "penetration": {
         "limits_mm": {
-          "Costume": 30.0
+          "Costume": 30.5
         },
         "limits_count": {
           "Costume": 6
         }
       },
       "seams": {
-        "max_exposed": 20
+        "max_exposed": 22
       }
     },
     "reed_d": {
       "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/reed_d/reed_d.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB: the pole, the brine-iron, the hammer and the lamp are scene props.",
       "villager": true,
-      "_allowances": "M3-CHR-509..517 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 20/6 (19.36, talk@30: Costume:cloth_a on DEF-forearm.R.001 vs DEF-forearm.R.001); Body 6/6 (5.86, pole_barge@35: Body through Costume:cloth_a on DEF-shoulder.L vs DEF-shoulder.L); max_exposed 15 (farthest 4.19 mm, pole_barge@21). Linear-blend-skinning limits as Kell's and Tavi's: the top's armhole edge and the hanging arm, and the deep reaches of the story clips (crawl_out's all-fours arms forward, pole_barge's raised arms, hammer_strike's overhead). Lower them when a fix lands.",
+      "_allowances": "M3-CHR-509..517 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 20/6 (19.36, talk@30: Costume:cloth_a on DEF-forearm.R.001 vs DEF-forearm.R.001); Body 6/6 (5.86, pole_barge@35: Body through Costume:cloth_a on DEF-shoulder.L vs DEF-shoulder.L); max_exposed 15 (farthest 4.19 mm, pole_barge@21). Linear-blend-skinning limits as Kell's and Tavi's: the top's armhole edge and the hanging arm, and the deep reaches of the story clips (crawl_out's all-fours arms forward, pole_barge's raised arms, hammer_strike's overhead). Lower them when a fix lands. Re-pinned 2026-10-30 after the big17 face-variety rebuild (each villager's own ancestry mix through MPFB2's macro targets moves the body under the same garments; the mechanisms are the ones above): max_exposed 16 (farthest 4.35 mm, pole_barge@0).",
       "penetration": {
         "limits_mm": {
           "Costume": 20.0,
@@ -839,7 +913,7 @@
         }
       },
       "seams": {
-        "max_exposed": 15
+        "max_exposed": 16
       }
     },
     "wright_girl": {
@@ -912,10 +986,10 @@
     "scaleman": {
       "_villager": "M3-CHR-526..539: a villager build (assets/characters/villagers/scaleman/scaleman.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
       "villager": true,
-      "_allowances": "M3-CHR-526..539 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 23/6 (22.76, talk@12: Costume:cloth_a on DEF-forearm.R vs DEF-pelvis.R); Body 7/9 (6.75, weigh_stamp@16: Body through Costume:cloth_a on DEF-upper_arm.L vs DEF-shoulder.L); max_exposed 24 (farthest 4.11 mm, weigh_stamp@16). Linear-blend-skinning limits as Kell's and Tavi's: the top's side and the hanging arm; on the sleeveless tops (armhole 10-11.5 cm under the shoulder) the upper arm passes the armhole edge in the walk's swing and the raised gestures, as Tavi's Body 67. Lower them when a fix lands.",
+      "_allowances": "M3-CHR-526..539 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 23/6 (22.76, talk@12: Costume:cloth_a on DEF-forearm.R vs DEF-pelvis.R); Body 7/9 (6.75, weigh_stamp@16: Body through Costume:cloth_a on DEF-upper_arm.L vs DEF-shoulder.L); max_exposed 24 (farthest 4.11 mm, weigh_stamp@16). Linear-blend-skinning limits as Kell's and Tavi's: the top's side and the hanging arm; on the sleeveless tops (armhole 10-11.5 cm under the shoulder) the upper arm passes the armhole edge in the walk's swing and the raised gestures, as Tavi's Body 67. Lower them when a fix lands. Re-pinned 2026-10-30 after the big17 face-variety rebuild (each villager's own ancestry mix through MPFB2's macro targets moves the body under the same garments; the mechanisms are the ones above): Costume 25.5/6 (25.21, talk@36).",
       "penetration": {
         "limits_mm": {
-          "Costume": 23.0,
+          "Costume": 25.5,
           "Body": 7.0
         },
         "limits_count": {
@@ -930,10 +1004,10 @@
     "skipper_sadi": {
       "_villager": "M3-CHR-526..539: a villager build (assets/characters/villagers/skipper_sadi/skipper_sadi.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
       "villager": true,
-      "_allowances": "M3-CHR-526..539 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 32/6 (31.56, cast_off@28: Costume:cloth_a on DEF-spine.001 vs DEF-forearm.R); Body 59/9 (58.4, walk@0: Body through Costume:cloth_c on DEF-upper_arm.L vs DEF-spine.003); max_exposed 3 (farthest 5.61 mm, cast_off@16). Linear-blend-skinning limits as Kell's and Tavi's: the top's side and the hanging arm; on the sleeveless tops (armhole 10-11.5 cm under the shoulder) the upper arm passes the armhole edge in the walk's swing and the raised gestures, as Tavi's Body 67. Lower them when a fix lands.",
+      "_allowances": "M3-CHR-526..539 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 32/6 (31.56, cast_off@28: Costume:cloth_a on DEF-spine.001 vs DEF-forearm.R); Body 59/9 (58.4, walk@0: Body through Costume:cloth_c on DEF-upper_arm.L vs DEF-spine.003); max_exposed 3 (farthest 5.61 mm, cast_off@16). Linear-blend-skinning limits as Kell's and Tavi's: the top's side and the hanging arm; on the sleeveless tops (armhole 10-11.5 cm under the shoulder) the upper arm passes the armhole edge in the walk's swing and the raised gestures, as Tavi's Body 67. Lower them when a fix lands. Re-pinned 2026-10-30 after the big17 face-variety rebuild (each villager's own ancestry mix through MPFB2's macro targets moves the body under the same garments; the mechanisms are the ones above): Costume 32.5/6 (32.49, walk@6).",
       "penetration": {
         "limits_mm": {
-          "Costume": 32.0,
+          "Costume": 32.5,
           "Body": 59.0
         },
         "limits_count": {
@@ -948,7 +1022,7 @@
     "ferrymaster": {
       "_villager": "M3-CHR-526..539: a villager build (assets/characters/villagers/ferrymaster/ferrymaster.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
       "villager": true,
-      "_allowances": "M3-CHR-526..539 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 27/6 (26.17, idle@30: Costume:cloth_b on DEF-spine.001 vs DEF-forearm.L); Body 6/2 (5.16, walk@0: Body through Costume:cloth_c on DEF-shoulder.R vs DEF-shoulder.R); max_exposed 19 (farthest 4.19 mm, talk@12). Linear-blend-skinning limits as Kell's and Tavi's: the top's side and the hanging arm; on the sleeveless tops (armhole 10-11.5 cm under the shoulder) the upper arm passes the armhole edge in the walk's swing and the raised gestures, as Tavi's Body 67. Lower them when a fix lands.",
+      "_allowances": "M3-CHR-526..539 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 27/6 (26.17, idle@30: Costume:cloth_b on DEF-spine.001 vs DEF-forearm.L); Body 6/2 (5.16, walk@0: Body through Costume:cloth_c on DEF-shoulder.R vs DEF-shoulder.R); max_exposed 19 (farthest 4.19 mm, talk@12). Linear-blend-skinning limits as Kell's and Tavi's: the top's side and the hanging arm; on the sleeveless tops (armhole 10-11.5 cm under the shoulder) the upper arm passes the armhole edge in the walk's swing and the raised gestures, as Tavi's Body 67. Lower them when a fix lands. Re-pinned 2026-10-30 after the big17 face-variety rebuild (each villager's own ancestry mix through MPFB2's macro targets moves the body under the same garments; the mechanisms are the ones above): Body 6/4 (4.5, walk@0); max_exposed 20 (farthest 4.23 mm, walk@3).",
       "penetration": {
         "limits_mm": {
           "Costume": 27.0,
@@ -956,17 +1030,17 @@
         },
         "limits_count": {
           "Costume": 6,
-          "Body": 2
+          "Body": 4
         }
       },
       "seams": {
-        "max_exposed": 19
+        "max_exposed": 20
       }
     },
     "purser": {
       "_villager": "M3-CHR-526..539: a villager build (assets/characters/villagers/purser/purser.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
       "villager": true,
-      "_allowances": "M3-CHR-526..539 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 36/6 (35.4, walk@0: Costume:cloth_c on DEF-spine.003 vs DEF-upper_arm.R); Body 62/12 (61.6, walk@9: Body through Costume:cloth_c on DEF-upper_arm.R vs DEF-spine.003); max_exposed 5 (farthest 8.26 mm, offer_goods@12). Linear-blend-skinning limits as Kell's and Tavi's: the top's side and the hanging arm; on the sleeveless tops (armhole 10-11.5 cm under the shoulder) the upper arm passes the armhole edge in the walk's swing and the raised gestures, as Tavi's Body 67. Lower them when a fix lands.",
+      "_allowances": "M3-CHR-526..539 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 36/6 (35.4, walk@0: Costume:cloth_c on DEF-spine.003 vs DEF-upper_arm.R); Body 62/12 (61.6, walk@9: Body through Costume:cloth_c on DEF-upper_arm.R vs DEF-spine.003); max_exposed 5 (farthest 8.26 mm, offer_goods@12). Linear-blend-skinning limits as Kell's and Tavi's: the top's side and the hanging arm; on the sleeveless tops (armhole 10-11.5 cm under the shoulder) the upper arm passes the armhole edge in the walk's swing and the raised gestures, as Tavi's Body 67. Lower them when a fix lands. Re-pinned 2026-10-30 after the big17 face-variety rebuild (each villager's own ancestry mix through MPFB2's macro targets moves the body under the same garments; the mechanisms are the ones above): max_exposed 7 (farthest 8.68 mm, offer_goods@28).",
       "penetration": {
         "limits_mm": {
           "Costume": 36.0,
@@ -978,19 +1052,19 @@
         }
       },
       "seams": {
-        "max_exposed": 5
+        "max_exposed": 7
       }
     },
     "elder": {
       "_villager": "M3-CHR-526..539: a villager build (assets/characters/villagers/elder/elder.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
       "villager": true,
-      "_allowances": "M3-CHR-526..539 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 31/3 (30.09, rest: Costume:leather on DEF-foot.R vs DEF-foot.R); max_exposed 3 (farthest 1.19 mm, give_boat@16). Linear-blend-skinning limits as Kell's and Tavi's: the top's side and the hanging arm; on the sleeveless tops (armhole 10-11.5 cm under the shoulder) the upper arm passes the armhole edge in the walk's swing and the raised gestures, as Tavi's Body 67. The sandal depth at rest is the sole's front edge under the ball of the foot (as the innkeeper's). Lower them when a fix lands.",
+      "_allowances": "M3-CHR-526..539 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 31/3 (30.09, rest: Costume:leather on DEF-foot.R vs DEF-foot.R); max_exposed 3 (farthest 1.19 mm, give_boat@16). Linear-blend-skinning limits as Kell's and Tavi's: the top's side and the hanging arm; on the sleeveless tops (armhole 10-11.5 cm under the shoulder) the upper arm passes the armhole edge in the walk's swing and the raised gestures, as Tavi's Body 67. The sandal depth at rest is the sole's front edge under the ball of the foot (as the innkeeper's). Lower them when a fix lands. Re-pinned 2026-10-30 after the big17 face-variety rebuild (each villager's own ancestry mix through MPFB2's macro targets moves the body under the same garments; the mechanisms are the ones above): Costume 31/4 (29.19, rest).",
       "penetration": {
         "limits_mm": {
           "Costume": 31.0
         },
         "limits_count": {
-          "Costume": 3
+          "Costume": 4
         }
       },
       "seams": {
@@ -1000,7 +1074,7 @@
     "garo": {
       "_villager": "M3-CHR-526..539: a villager build (assets/characters/villagers/garo/garo.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
       "villager": true,
-      "_allowances": "M3-CHR-526..539 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 33/6 (32.71, walk@3: Costume:cloth_a on DEF-spine.003 vs DEF-upper_arm.R.001); Body 9/13 (8.49, take_boat@12: Body through Costume:cloth_a on DEF-upper_arm.R vs DEF-shoulder.R); max_exposed 22 (farthest 4.82 mm, fold_boat@10). Linear-blend-skinning limits as Kell's and Tavi's: the top's side and the hanging arm; on the sleeveless tops (armhole 10-11.5 cm under the shoulder) the upper arm passes the armhole edge in the walk's swing and the raised gestures, as Tavi's Body 67. Lower them when a fix lands.",
+      "_allowances": "M3-CHR-526..539 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 33/6 (32.71, walk@3: Costume:cloth_a on DEF-spine.003 vs DEF-upper_arm.R.001); Body 9/13 (8.49, take_boat@12: Body through Costume:cloth_a on DEF-upper_arm.R vs DEF-shoulder.R); max_exposed 22 (farthest 4.82 mm, fold_boat@10). Linear-blend-skinning limits as Kell's and Tavi's: the top's side and the hanging arm; on the sleeveless tops (armhole 10-11.5 cm under the shoulder) the upper arm passes the armhole edge in the walk's swing and the raised gestures, as Tavi's Body 67. Lower them when a fix lands. Re-pinned 2026-10-30 after the big17 face-variety rebuild (each villager's own ancestry mix through MPFB2's macro targets moves the body under the same garments; the mechanisms are the ones above): Body 9/15 (7.38, take_boat@12).",
       "penetration": {
         "limits_mm": {
           "Costume": 33.0,
@@ -1008,7 +1082,7 @@
         },
         "limits_count": {
           "Costume": 6,
-          "Body": 13
+          "Body": 15
         }
       },
       "seams": {
@@ -1065,10 +1139,10 @@
     "fenn": {
       "_villager": "M3-CHR-526..539: a villager build (assets/characters/villagers/fenn/fenn.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
       "villager": true,
-      "_allowances": "M3-CHR-526..539 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 21/6 (20.15, idle@80: Costume:cloth_a on DEF-spine.001 vs DEF-forearm.L); Body 7/10 (6.33, feed_fire@0: Body through Costume:cloth_c on DEF-shoulder.L vs DEF-shoulder.L); max_exposed 15 (farthest 4.75 mm, feed_fire@20). Linear-blend-skinning limits as Kell's and Tavi's: the top's side and the hanging arm; on the sleeveless tops (armhole 10-11.5 cm under the shoulder) the upper arm passes the armhole edge in the walk's swing and the raised gestures, as Tavi's Body 67. Lower them when a fix lands.",
+      "_allowances": "M3-CHR-526..539 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 21/6 (20.15, idle@80: Costume:cloth_a on DEF-spine.001 vs DEF-forearm.L); Body 7/10 (6.33, feed_fire@0: Body through Costume:cloth_c on DEF-shoulder.L vs DEF-shoulder.L); max_exposed 15 (farthest 4.75 mm, feed_fire@20). Linear-blend-skinning limits as Kell's and Tavi's: the top's side and the hanging arm; on the sleeveless tops (armhole 10-11.5 cm under the shoulder) the upper arm passes the armhole edge in the walk's swing and the raised gestures, as Tavi's Body 67. Lower them when a fix lands. Re-pinned 2026-10-30 after the big17 face-variety rebuild (each villager's own ancestry mix through MPFB2's macro targets moves the body under the same garments; the mechanisms are the ones above): Costume 22/6 (21.8, idle@30); max_exposed 16 (farthest 5.04 mm, feed_fire@20).",
       "penetration": {
         "limits_mm": {
-          "Costume": 21.0,
+          "Costume": 22.0,
           "Body": 7.0
         },
         "limits_count": {
@@ -1077,13 +1151,13 @@
         }
       },
       "seams": {
-        "max_exposed": 15
+        "max_exposed": 16
       }
     },
     "gatekeeper": {
       "_villager": "M3-CHR-526..539: a villager build (assets/characters/villagers/gatekeeper/gatekeeper.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
       "villager": true,
-      "_allowances": "M3-CHR-526..539 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 17/6 (16.36, walk@3: Costume:cloth_b on DEF-thigh.L vs DEF-thumb.01.L); Body 7/10 (6.92, open_gate@12: Body through Costume:cloth_c on DEF-shoulder.L vs DEF-shoulder.L); max_exposed 10 (farthest 5.41 mm, open_gate@8). Linear-blend-skinning limits as Kell's and Tavi's: the top's side and the hanging arm; on the sleeveless tops (armhole 10-11.5 cm under the shoulder) the upper arm passes the armhole edge in the walk's swing and the raised gestures, as Tavi's Body 67. Lower them when a fix lands.",
+      "_allowances": "M3-CHR-526..539 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 17/6 (16.36, walk@3: Costume:cloth_b on DEF-thigh.L vs DEF-thumb.01.L); Body 7/10 (6.92, open_gate@12: Body through Costume:cloth_c on DEF-shoulder.L vs DEF-shoulder.L); max_exposed 10 (farthest 5.41 mm, open_gate@8). Linear-blend-skinning limits as Kell's and Tavi's: the top's side and the hanging arm; on the sleeveless tops (armhole 10-11.5 cm under the shoulder) the upper arm passes the armhole edge in the walk's swing and the raised gestures, as Tavi's Body 67. Lower them when a fix lands. Re-pinned 2026-10-30 after the big17 face-variety rebuild (each villager's own ancestry mix through MPFB2's macro targets moves the body under the same garments; the mechanisms are the ones above): max_exposed 12 (farthest 5.74 mm, open_gate@24).",
       "penetration": {
         "limits_mm": {
           "Costume": 17.0,
@@ -1095,7 +1169,7 @@
         }
       },
       "seams": {
-        "max_exposed": 10
+        "max_exposed": 12
       }
     },
     "hobb": {
@@ -1119,7 +1193,7 @@
     "marra": {
       "_villager": "M3-CHR-526..539: a villager build (assets/characters/villagers/marra/marra.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
       "villager": true,
-      "_allowances": "M3-CHR-526..539 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 20/4 (19.6, rest: Costume:leather on DEF-foot.L vs DEF-foot.L); max_exposed 2 (farthest 0.69 mm, hold_hands@20). Linear-blend-skinning limits as Kell's and Tavi's: the top's side and the hanging arm; on the sleeveless tops (armhole 10-11.5 cm under the shoulder) the upper arm passes the armhole edge in the walk's swing and the raised gestures, as Tavi's Body 67. The sandal depth at rest is the sole's front edge under the ball of the foot (as the innkeeper's). Lower them when a fix lands.",
+      "_allowances": "M3-CHR-526..539 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 20/4 (19.6, rest: Costume:leather on DEF-foot.L vs DEF-foot.L); max_exposed 2 (farthest 0.69 mm, hold_hands@20). Linear-blend-skinning limits as Kell's and Tavi's: the top's side and the hanging arm; on the sleeveless tops (armhole 10-11.5 cm under the shoulder) the upper arm passes the armhole edge in the walk's swing and the raised gestures, as Tavi's Body 67. The sandal depth at rest is the sole's front edge under the ball of the foot (as the innkeeper's). Lower them when a fix lands. Re-pinned 2026-10-30 after the big17 face-variety rebuild (each villager's own ancestry mix through MPFB2's macro targets moves the body under the same garments; the mechanisms are the ones above): max_exposed 3 (farthest 7.95 mm, look_back@28).",
       "penetration": {
         "limits_mm": {
           "Costume": 20.0
@@ -1129,7 +1203,7 @@
         }
       },
       "seams": {
-        "max_exposed": 2
+        "max_exposed": 3
       }
     }
 

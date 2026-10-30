@@ -25,6 +25,11 @@ extends Node3D
 ## The line (its #line id) the scene stops on: once it shows, lines stop advancing, so the shot holds that line on
 ## its own camera whatever the frame count (a slower or faster capture can't land on the wrong line). Empty = run on.
 @export var hold_line: StringName = &""
+## M2-FP-120: "<cue> <first arg>" (e.g. "vfx glimmer_bound"): once that cue has run, the scene's clock stops, so a
+## beat with no line (S08's held form) holds whatever the frame count. Empty = run on.
+@export var hold_cue: String = ""
+## Stage actors to show before the scene, as a chapter beat's `show_block` steps do (Ch1's Hullgnaw).
+@export var show: Array = []
 
 var level: Node3D
 var sequencer: CutsceneSequencer
@@ -66,6 +71,10 @@ func start() -> void:
 	if scene_id == &"":
 		return
 	var stage := level.get(&"stage") as CutsceneStage
+	for id: Variant in show:
+		var shown := stage.actor(StringName(str(id))) if stage != null else null
+		if shown != null:
+			shown.visible = true
 	sequencer = CutsceneSequencer.new()
 	sequencer.name = "ShotSequencer"
 	sequencer.auto_advance = true
@@ -80,6 +89,13 @@ func start() -> void:
 func _hold(seq: CutsceneSequencer) -> void:
 	if hold_line != &"":
 		seq.line_shown.connect(_on_line_shown)
+	if hold_cue != "":
+		seq.cue_played.connect(_on_cue_played)
+
+
+func _on_cue_played(cue: StringName, args: Array, _kwargs: Dictionary) -> void:
+	if "%s %s" % [cue, args[0] if not args.is_empty() else ""] == hold_cue:
+		sequencer.set_process.call_deferred(false)  # after the cue has run
 
 
 func _on_line_shown(step: DialogueStep) -> void:

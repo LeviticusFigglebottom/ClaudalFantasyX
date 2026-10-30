@@ -13,10 +13,18 @@ sound a player can meet from the title through Ch9, from the data the runtime re
               so what BattleAudio hears; a skill that does none of those is silent
   cutscenes   every Act I .dlg `@music` / `@sfx` id: a music.json cue, a real file, or a sequencer music_stand_ins
               row (temp), or nothing (silent)
+  actions     every Act I .dlg `@anim` clip: a cutscene_foley.json row (or '' for a silent gesture), or an `@sfx`
+              beside it; doors opened in cutscenes are heard here or through `@sfx`
+  battle      every battle-wide sound: element hits, heal, status landing and ticks, KO, openings, outcomes, Rim
+              break, each Act I Vowbound's call sting, the items, the Swell finishers and choreo styles
+  footsteps   every Act I level names its ground; every surface has walk, run, stop and turn rows
   ui          ui_sfx.json hooks still `pending` (their target class has not landed, so they are silent)
+  ui core     the cursor, confirm, cancel and error rows, and every hook's signal rows, on disk
   notes       audio data rows whose own note says stand-in, temp, placeholder, sketch or "no scene yet"
 
-Run: python3 tools/audio/act1_audio_audit.py [--md]   (exit 0; it is a report, not a gate)"""
+Run: python3 tools/audio/act1_audio_audit.py [--md] [--act 2]   (exit 1 while any Act I item is open:
+tools/tests/test_act1_audio_audit.py gates on it, M3-AUD-864. `--act 2` audits Ch10-Ch16 the same way as a report,
+exit 0: the Act II audio inventory for ADR 0203's gate.)"""
 from __future__ import annotations
 
 import argparse
@@ -27,6 +35,39 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 ACT1_DIRS = ["prologue"] + [f"ch0{i}" for i in range(1, 10)]
+# The act under audit (set_act): its level and dialogue folders, its encounter, flag and dialogue-path patterns, and
+# the later acts a data note may name without being a temp note. Act I's are the defaults; `--act 2` (ADR 0203
+# preparation, report-only) audits Ch10-Ch16 the same way.
+ACT = 1
+IN_ACT_ENC = re.compile(r"(?!ch(1[0-9]|2[0-9])_)")   # Act I: every encounter id but Ch10+'s
+ACT_FLAG = re.compile(r"ch0[1-9]_")
+ACT_DLG = re.compile(r"(prologue|ch0[1-9]|slice|act1|vertical)")
+LATER_NOTE = re.compile(r"act[23]|Act I{2,3}\b|Ch1[0-9]|Ch2[0-9]")
+
+
+def set_act(n: int) -> None:
+    """Point every section at act `n` (1 or 2)."""
+    global ACT, ACT1_DIRS, IN_ACT_ENC, ACT_FLAG, ACT_DLG, LATER_NOTE
+    ACT = n
+    if n == 1:
+        ACT1_DIRS = ["prologue"] + [f"ch0{i}" for i in range(1, 10)]
+        IN_ACT_ENC = re.compile(r"(?!ch(1[0-9]|2[0-9])_)")
+        ACT_FLAG = re.compile(r"ch0[1-9]_")
+        ACT_DLG = re.compile(r"(prologue|ch0[1-9]|slice|act1|vertical)")
+        LATER_NOTE = re.compile(r"act[23]|Act I{2,3}\b|Ch1[0-9]|Ch2[0-9]")
+    elif n == 2:
+        ACT1_DIRS = [f"ch1{i}" for i in range(0, 7)]
+        IN_ACT_ENC = re.compile(r"ch1[0-6]_")
+        ACT_FLAG = re.compile(r"ch1[0-6]_")
+        ACT_DLG = re.compile(r"/ch1[0-6]/|act2")
+        LATER_NOTE = re.compile(r"act3|Act III\b|Ch1[7-9]|Ch2[0-9]")
+    else:
+        raise ValueError(f"no act {n}")
+
+
+def _later(enc_id: str) -> bool:
+    """An encounter outside the act under audit."""
+    return not IN_ACT_ENC.match(enc_id)
 DATA = ROOT / "game" / "data"
 AUDIO = DATA / "audio"
 # Reported cases that are right as they are, each with its reason (printed under "By design", never counted)
@@ -35,6 +76,10 @@ BY_DESIGN = {
         "Cutscene B's own @music (shell_shrine_interior, hush_first_verse) scores it; a zone cue would fight it",
     "game/levels/ch07/tidecup_match/tidecup_match.tscn: no ambience bed":
         "ReefballAudio plays the crowd beds (reefball_hooks.json murmur/excited) with the match's state",
+    "game/levels/ch01/oruvel/dive_lamp.tscn: no music and no ambience bed":
+        "not a zone: the Ch1 dive's stage-actor model (Rhen's lantern light, oruvel_layout.json `dive_lamp`, M3-CIN-1232)",
+    "game/levels/ch01/oruvel/dive_lamp.tscn: no footsteps.json scene row (falls to `stone`)":
+        "not a zone: the Ch1 dive's stage-actor model (Rhen's lantern light); nobody walks in it",
     "ui class `BattlePause` (game/ui/menus/battle_pause/battle_pause.gd) takes input and has no hook on it or a base class":
         "the pause controller (a Node); what the player sees and moves is BattlePauseMenu, which has its hook",
     "ui class `DialogueAssist` (game/ui/dialogue_assist/dialogue_assist.gd) takes input and has no hook on it or a base class":
@@ -71,8 +116,8 @@ def act1_scenes() -> list[str]:
     out = []
     for d in ACT1_DIRS:
         for p in sorted((ROOT / "game" / "levels" / d).rglob("*.tscn")):
-            if p.stem.endswith("_dressing"):
-                continue
+            if p.stem.endswith("_dressing") or p.stem != p.parent.name:
+                continue                # a level is <level>/<level>.tscn; other scenes there are parts it instances
             out.append("res://" + p.relative_to(ROOT).as_posix())
     return out
 
@@ -103,7 +148,7 @@ def _act1_enemies() -> list[str]:
     ids = list(enemies) if isinstance(enemies, dict) else [r["id"] for r in enemies]
     fielded: dict[str, set] = {}
     for e in _json(DATA / "battle" / "encounters.json")["encounters"]:
-        later = bool(re.match(r"ch(1[0-9]|2[0-9])_", e["id"]))
+        later = _later(e["id"])
         for f in e.get("enemies", []):
             fielded.setdefault(f, set()).add(later)
     return [i for i in ids if i not in fielded or False in fielded[i]]
@@ -147,6 +192,29 @@ def audit_enemies() -> list[str]:
     return out
 
 
+def _skill_users() -> tuple[set, set, dict[str, set]]:
+    """(the foes only later-act encounters field, the act's own foes, skill id -> the foes that use it). A charged skill
+    is used by whoever gathers it, and a Vowbound bound in a later act counts as a later-act user (M4-A2P-024/025)."""
+    later = {e for enc in _json(DATA / "battle" / "encounters.json")["encounters"]
+             if _later(enc["id"]) for e in enc.get("enemies", [])}
+    act1_foes = set(_act1_enemies())
+    users: dict[str, set] = {}
+    for f in _json(DATA / "battle" / "enemies.json")["enemies"]:
+        for sid in re.findall(r'"([a-z0-9_]+)"', json.dumps(f)):
+            users.setdefault(sid, set()).add(f["id"])
+    for v in _json(DATA / "battle" / "vowbound.json")["vowbound"]:
+        if not ACT_FLAG.match(str(v.get("bound_flag", ""))) and re.match(r"ch(1[0-9]|2[0-9])_", str(v.get("bound_flag", ""))):
+            later.add("vowbound:" + v["id"])
+            for sid in v.get("skills", []) + [v.get("swell", {}).get("technique", "")]:
+                users.setdefault(sid, set()).add("vowbound:" + v["id"])
+    skills = _json(DATA / "battle" / "skills.json")["skills"]
+    for r in (skills if isinstance(skills, list) else []):
+        charged = str((r.get("charge") or {}).get("skill", ""))
+        if charged and r["id"] in users:
+            users.setdefault(charged, set()).update(users[r["id"]])
+    return later, act1_foes, users
+
+
 def audit_skills() -> list[str]:
     skills = _json(DATA / "battle" / "skills.json")["skills"]
     rows = skills if isinstance(skills, list) else [dict(id=k, **v) for k, v in skills.items()]
@@ -155,13 +223,7 @@ def audit_skills() -> list[str]:
     named = "".join(p.read_text(encoding="utf-8") for p in sorted(AUDIO.glob("*.json")))
     named += (DATA / "vfx" / "battle" / "boss_vfx.json").read_text(encoding="utf-8")
     # a skill only later-act foes use is paused with them (ADR 0041)
-    later = {e for enc in _json(DATA / "battle" / "encounters.json")["encounters"]
-             if re.match(r"ch(1[0-9]|2[0-9])_", enc["id"]) for e in enc.get("enemies", [])}
-    act1_foes = set(_act1_enemies())
-    users: dict[str, set] = {}
-    for f in _json(DATA / "battle" / "enemies.json")["enemies"]:
-        for sid in re.findall(r'"([a-z0-9_]+)"', json.dumps(f)):
-            users.setdefault(sid, set()).add(f["id"])
+    later, act1_foes, users = _skill_users()
     out = []
     for r in rows:
         sid = r["id"]
@@ -188,6 +250,8 @@ def audit_battles() -> list[str]:
         phased = [f for f in e.get("enemies", []) if foes.get(f, {}).get("phases")]
         if not phased:
             continue
+        if _later(e["id"]):
+            continue  # a later act's boss: its cue is that act's audit (ADR 0041)
         cue = battle["encounters"].get(e["id"])
         if cue is None:
             out.append(f"boss encounter `{e['id']}` ({', '.join(phased)}) plays the default battle music")
@@ -209,13 +273,7 @@ def audit_abilities() -> list[str]:
     the generic hit / heal / status rows it borrowed when battle-presentation gave it a VFX (M3-BPR-421)."""
     vmap = _json(DATA / "vfx" / "battle" / "effects.json")["map"].get("skills", {})
     rows = _json(AUDIO / "battle_sfx.json")["vfx"]
-    later = {e for enc in _json(DATA / "battle" / "encounters.json")["encounters"]
-             if re.match(r"ch(1[0-9]|2[0-9])_", enc["id"]) for e in enc.get("enemies", [])}
-    act1_foes = set(_act1_enemies())
-    users: dict[str, set] = {}
-    for f in _json(DATA / "battle" / "enemies.json")["enemies"]:
-        for sid in re.findall(r'"([a-z0-9_]+)"', json.dumps(f)):
-            users.setdefault(sid, set()).add(f["id"])
+    later, act1_foes, users = _skill_users()
     out = []
     for sid, effect in sorted(vmap.items()):
         if sid in users and not (users[sid] & act1_foes) and users[sid] <= later:
@@ -233,7 +291,7 @@ def audit_intros() -> list[str]:
     by = stings.get("by_arg", {})
     out = []
     for enc, row in intro.get("rows", {}).items():
-        if re.match(r"ch(1[0-9]|2[0-9])_", enc):
+        if _later(enc):
             continue
         if enc not in by:
             out.append(f"boss intro `{enc}` ({row.get('enemy')}) plays the shared `{stings.get('sfx')}` sting")
@@ -247,7 +305,7 @@ def _dlg_files() -> list[Path]:
     act1 = []
     for p in out:
         rel = p.relative_to(ROOT).as_posix()
-        m = re.search(r"(prologue|ch0[1-9]|slice|act1|vertical)", rel)
+        m = ACT_DLG.search(rel)
         if m:
             act1.append(p)
     return act1
@@ -336,7 +394,7 @@ def audit_notes() -> list[str]:
             if isinstance(o, dict):
                 for k, v in o.items():
                     if k in ("_note", "note") and isinstance(v, str) and TEMP_WORDS.search(v) \
-                            and not re.search(r"act[23]|Act I{2,3}\b|Ch1[0-9]|Ch2[0-9]", v):
+                            and not LATER_NOTE.search(v):
                         out.append(f"{p.name}:{path}: {v[:140]}")
                     else:
                         walk(v, f"{path}.{k}" if path else k)
@@ -347,16 +405,155 @@ def audit_notes() -> list[str]:
     return out
 
 
+def _sfx_rows() -> dict:
+    rows = {}
+    for p in [AUDIO / "sfx.json"] + sorted(AUDIO.glob("sfx_*.json")):
+        for k, v in _json(p).get("sfx", {}).items():
+            rows.setdefault(k, v)  # AudioData.sfx_rows: the first file's row wins
+    return rows
+
+
+def _row_problem(rows: dict, rid: str) -> str:
+    """'' when sfx row `rid` exists and every file it names is on disk, else what is wrong with it."""
+    row = rows.get(rid)
+    if row is None:
+        return f"`{rid}` is no sfx row"
+    files = row.get("files") or ([row["file"]] if row.get("file") else [])
+    if not files:
+        return f"`{rid}` names no file"
+    gone = [f for f in files if not _res(f).is_file()]
+    return f"`{rid}` is missing {gone[0]}" if gone else ""
+
+
+def audit_cutscene_actions() -> list[str]:
+    """Every Act I `@anim` clip is heard or silent on purpose: cutscene_foley.json `anim` maps it (exactly, else
+    by glob) to a row, or to '' for a gesture that makes no sound; or an `@sfx` within two lines plays for it."""
+    import fnmatch
+    anim = _json(AUDIO / "cutscene_foley.json")["anim"]
+    rows = _sfx_rows()
+    out, seen = [], set()
+    for p in _dlg_files():
+        rel = p.relative_to(ROOT).as_posix()
+        lines = p.read_text(encoding="utf-8").splitlines()
+        for i, line in enumerate(lines):
+            m = re.match(r"\s*@anim\s+\S+\s+(\S+)", line)
+            if not m or m.group(1) in seen:
+                continue
+            clip = m.group(1)
+            key = clip if clip in anim else next((k for k in anim if "*" in k and fnmatch.fnmatch(clip, k)), None)
+            if key is None:
+                if any(lines[j].lstrip().startswith("@sfx") for j in range(max(0, i - 2), min(len(lines), i + 3))):
+                    continue
+                seen.add(clip)
+                out.append(f"{rel}:{i + 1} @anim clip `{clip}`: no foley row and no @sfx beside it (silent)")
+                continue
+            seen.add(clip)
+            if anim[key] and _row_problem(rows, anim[key]):
+                out.append(f"{rel}:{i + 1} @anim clip `{clip}`: {_row_problem(rows, anim[key])}")
+    return out
+
+
+def audit_battle_events() -> list[str]:
+    """What every battle plays whatever the skill: each element hit, the heal, a status landing, each status tick,
+    a KO, the openings, the outcomes, a Rim break, a Vowbound's call, dismissal and fall, the items, and each
+    Swell style's contact. Each must reach an sfx row whose files are on disk."""
+    vmap = _json(DATA / "vfx" / "battle" / "effects.json")["map"]
+    bsfx = _json(AUDIO / "battle_sfx.json")
+    choreo = _json(AUDIO / "choreo_sfx.json")
+    rows = _sfx_rows()
+    out = []
+    for sec in ("elements", "events", "ticks", "items", "swell_by_hero", "ko_overrides"):
+        for k, effect in vmap.get(sec, {}).items():
+            rid = bsfx["vfx"].get(effect)
+            if rid is None:
+                out.append(f"battle {sec} `{k}` (effect `{effect}`): no battle_sfx vfx row (silent)")
+            elif rid and _row_problem(rows, rid):
+                out.append(f"battle {sec} `{k}`: {_row_problem(rows, rid)}")
+    for sec in ("events", "outcomes", "openings"):
+        for k, rid in bsfx.get(sec, {}).items():
+            if rid and _row_problem(rows, rid):
+                out.append(f"battle_sfx {sec} `{k}`: {_row_problem(rows, rid)}")
+    stings = bsfx.get("vowbound_stings", {})
+    for v in _json(DATA / "battle" / "vowbound.json")["vowbound"]:
+        flag = str(v.get("bound_flag", ""))
+        if not ACT_FLAG.match(flag):
+            continue  # bound in another act
+        if v["id"] not in stings:
+            out.append(f"Vowbound `{v['id']}` (bound by {flag}): no call sting in battle_sfx vowbound_stings")
+        elif _row_problem(rows, stings[v["id"]]):
+            out.append(f"Vowbound `{v['id']}`: {_row_problem(rows, stings[v['id']])}")
+    accents = choreo.get("accents", {})
+    for style, row in choreo.get("styles", {}).items():
+        for part in ("strike", "contact"):
+            rid = row.get(part)
+            if rid == "@weapon":  # the actor's weapon accent (ChoreoAudio WEAPON), checked below
+                continue
+            if rid and _row_problem(rows, rid):
+                out.append(f"choreo style `{style}` {part}: {_row_problem(rows, rid)}")
+        for by in ("strike_by_weapon", "contact_by_weapon"):
+            for w, rid in (row.get(by) or {}).items():
+                if rid and _row_problem(rows, rid):
+                    out.append(f"choreo style `{style}` {by} `{w}`: {_row_problem(rows, rid)}")
+    for kind in set(choreo.get("weapons", {}).values()) | {choreo.get("weapon_default", "")}:
+        rid = accents.get(kind)
+        if rid is None:
+            out.append(f"weapon kind `{kind}`: no accent row in choreo_sfx.json (its blows land silent)")
+        elif rid and _row_problem(rows, rid):
+            out.append(f"weapon kind `{kind}` accent: {_row_problem(rows, rid)}")
+    return out
+
+
+def audit_footsteps() -> list[str]:
+    """Every Act I level a hero walks names its ground (footsteps.json `scenes`) rather than falling to the default,
+    and every surface has its walk, run, stop and turn rows with files on disk."""
+    fs = _json(AUDIO / "footsteps.json")
+    rows = _sfx_rows()
+    out = []
+    for name, srf in fs["surfaces"].items():
+        for gait in ("walk", "run", "stop", "turn"):
+            rid = srf.get(gait)
+            if not rid:
+                out.append(f"footstep surface `{name}`: no `{gait}` row")
+            elif _row_problem(rows, rid):
+                out.append(f"footstep surface `{name}` {gait}: {_row_problem(rows, rid)}")
+    for s in act1_scenes():
+        sid = fs["scenes"].get(s)
+        if sid is None:
+            out.append(f"{s.removeprefix('res://')}: no footsteps.json scene row (falls to `{fs['default']}`)")
+        elif sid not in fs["surfaces"]:
+            out.append(f"{s.removeprefix('res://')}: footstep surface `{sid}` does not exist")
+    for rule in fs.get("mesh_surfaces", {}).get("rules", []):
+        if rule.get("surface") not in fs["surfaces"]:
+            out.append(f"footsteps mesh rule {rule.get('match')}: surface `{rule.get('surface')}` does not exist")
+    return out
+
+
+def audit_ui_core() -> list[str]:
+    """The sounds every menu leans on: the cursor, confirm, cancel and error rows, and each hook's rows on disk."""
+    rows = _sfx_rows()
+    out = [f"core ui sound: {_row_problem(rows, r)}" for r in ("ui_cursor", "ui_confirm", "ui_cancel", "ui_error")
+           if _row_problem(rows, r)]
+    for hook in _json(AUDIO / "ui_sfx.json").get("hooks") or []:
+        for sig, rid in (hook.get("signals") or {}).items():
+            if isinstance(rid, str) and rid and _row_problem(rows, rid):
+                out.append(f"ui hook `{hook.get('class')}`.{sig}: {_row_problem(rows, rid)}")
+    return out
+
+
 SECTIONS = [("Zones", audit_zones), ("Enemies", audit_enemies), ("Battles", audit_battles), ("Intros", audit_intros),
             ("Abilities", audit_abilities),
             ("Skills", audit_skills),
-            ("Cutscenes", audit_cutscenes), ("UI", audit_ui), ("Notes that say temp", audit_notes)]
+            ("Cutscenes", audit_cutscenes), ("Cutscene actions", audit_cutscene_actions),
+            ("Battle events", audit_battle_events), ("Footsteps", audit_footsteps), ("UI", audit_ui),
+            ("UI core", audit_ui_core), ("Notes that say temp", audit_notes)]
 
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--md", action="store_true", help="print as a markdown list")
+    ap.add_argument("--act", type=int, default=1, help="1 (the gate) or 2 (ADR 0203 preparation: a report, exit 0)")
     args = ap.parse_args()
+    set_act(args.act)
     total = 0
     held = []
     for name, fn in SECTIONS:
@@ -370,7 +567,7 @@ def main() -> int:
     for it in held:
         print(f"- {it}: {BY_DESIGN[it]}" if args.md else f"  {it}: {BY_DESIGN[it]}")
     print(f"\n{total} item(s)")
-    return 0
+    return 1 if total and ACT == 1 else 0
 
 
 if __name__ == "__main__":

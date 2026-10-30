@@ -1,5 +1,5 @@
-"""The Act I audio audit runs over the live data and reports every section (M3-AUD-861; ADR 0041).
-It is a report, not a gate: the work list it prints is in docs/kb/handoffs/live/audio.md.
+"""The Act I audio audit runs over the live data and reports every section (M3-AUD-861; ADR 0041). Since M3-AUD-864
+it is also a gate: any open item (a silent, missing, borrowed or placeholder sound on the Act I path) fails here.
 Run: python3 -m unittest discover -s tools/tests"""
 import importlib.util
 import unittest
@@ -23,6 +23,31 @@ class Act1AudioAuditTest(unittest.TestCase):
         for d in audit.ACT1_DIRS:
             self.assertTrue(any(f"/levels/{d}/" in s for s in scenes), d)
         self.assertFalse(any(s.endswith("_dressing.tscn") for s in scenes))
+        # a level is <level>/<level>.tscn; a part it instances (ch01/oruvel/dive_lamp.tscn, a light) is no zone
+        self.assertTrue(all(Path(s).stem == Path(s).parent.name for s in scenes))
+
+    def test_act1_has_no_silent_missing_or_placeholder_sound(self) -> None:
+        for name, fn in audit.SECTIONS:
+            open_items = [i for i in fn() if i not in audit.BY_DESIGN]
+            self.assertEqual(open_items, [], f"Act I audio audit, {name}: run python3 tools/audio/act1_audio_audit.py")
+
+    def test_a_row_is_checked_down_to_its_files(self) -> None:
+        rows = {"ok": {"files": ["res://assets/audio/sfx/ui_confirm.ogg"]}, "gone": {"files": ["res://nowhere.ogg"]},
+                "empty": {"files": []}}
+        self.assertEqual(audit._row_problem(rows, "ok"), "")
+        self.assertIn("missing", audit._row_problem(rows, "gone"))
+        self.assertIn("names no file", audit._row_problem(rows, "empty"))
+        self.assertIn("no sfx row", audit._row_problem(rows, "absent"))
+
+    def test_the_act2_scope_reports_without_touching_the_act1_gate(self) -> None:
+        try:
+            audit.set_act(2)
+            self.assertTrue(all(s.startswith("res://game/levels/ch1") for s in audit.act1_scenes()))
+            for name, fn in audit.SECTIONS:
+                self.assertIsInstance(fn(), list, name)
+        finally:
+            audit.set_act(1)
+        self.assertTrue(any("/levels/prologue/" in s for s in audit.act1_scenes()), "back on Act I")
 
 
 if __name__ == "__main__":

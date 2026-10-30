@@ -122,6 +122,20 @@ static func reset_zone_values() -> void:
 		set_value(name, project_default(name))
 
 
+## The ZONE_GLOBALS values now (SceneRouter keeps a resident field zone's, to give them back on its return).
+static func zone_snapshot() -> Dictionary:
+	var out := {}
+	for name in ZONE_GLOBALS:
+		out[name] = get_value(name, project_default(name))
+	return out
+
+
+## Writes back a zone_snapshot() (after the swap's reset_zone_values()).
+static func restore_zone(snapshot: Dictionary) -> void:
+	for name: StringName in snapshot:
+		set_value(name, snapshot[name])
+
+
 ## The project.godot [shader_globals] default of `name`, or null if it is not declared.
 static func default_value(name: StringName) -> Variant:
 	var entry: Variant = ProjectSettings.get_setting(SETTINGS_PREFIX + String(name))

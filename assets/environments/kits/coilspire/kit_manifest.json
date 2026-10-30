@@ -200,6 +200,17 @@
         "tier_brazier-lod1": 168
       }
     },
+    "wall_lamp": {
+      "budget": [
+        1500,
+        120
+      ],
+      "bytes": 24628,
+      "lods": {
+        "wall_lamp": 250,
+        "wall_lamp-lod1": 95
+      }
+    },
     "wright_mark": {
       "budget": [
         1200,

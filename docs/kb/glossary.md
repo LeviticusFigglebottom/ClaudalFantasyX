@@ -281,3 +281,12 @@ Hullgnaw, Drownbell (slice), Spar-Wraith, Cinder Matron, the Undertow's Reach, M
 
 ### Added 2026-10-24 (M3-CHR-506, Character Art)
 - **shell-tile wraps**: the cords of small square shell tiles on Pell's forearms (the art sheet's reading of his "beaded cord wraps"). The left wrap's sequence is the call and the right's the mirrored response, echoing his call-and-response Swell input. *art/characters/pell.md §3*
+
+### Added 2026-10-29 (M3-NAR-1000, Narrative)
+- **unrisen** (row above): a dead person whose motes re-cohered into their own shape around anything unfinished (a
+  promise, a duty, a watch not yet over; bible §2). Supersedes the table row's "around an unkept promise".
+- **Mother Kell**, **stair-law**, **Stair's clear** (rows above): the later rows hold: Kell is Oruvel's chandler, never a
+  diver; the stair-law and the all-clear are the stair-watch's, never the Stillguard's (decisions_log N-25, N-27).
+
+### Spelling (Lead, 2026-10-30)
+Player-facing text uses British spelling with Oxford -ize: colour, armour, defence, grey, harbour, honour, traveller, but Customize. Code ids and loc keys keep their spelling (`STAT_DEFENSE`, `EQUIP_MENU_SLOT_ARMOR`).

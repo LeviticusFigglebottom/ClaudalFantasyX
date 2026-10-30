@@ -21,6 +21,7 @@ var ui_settings: UiSettings
 
 var _page: MenuPage
 var _help: Label
+var _controls: Label
 var _backdrop: ColorRect
 var _caustics: CausticBackdrop
 var _open := false
@@ -60,6 +61,8 @@ func _ready() -> void:
 	_help.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	_help.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_help)
+	_controls = controls_line(data)
+	add_child(_controls)
 	UiFrame.centre(self)  # M2-UI-29
 	page_model.changed.connect(_render)
 	_open = true
@@ -144,6 +147,36 @@ func help_text() -> String:
 	return _help.text
 
 
+## The controls line under the help ("" while hidden).
+func controls_text() -> String:
+	return _controls.text if _controls.visible else ""
+
+
+## The controls line under the help (the Lead's controller pass, 2026-10-30): layout "controls" in `data`.
+static func controls_line(data: Dictionary) -> Label:
+	var l := Label.new()
+	l.name = &"Controls"
+	l.theme_type_variation = &"HelpDimLabel"
+	HudLayout.place(l, data.get("controls", {}) as Dictionary)
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return l
+
+
+## Shows `key` on the controls line `l` (hidden for ""), fitted to its width.
+static func show_controls(l: Label, key: String, data: Dictionary) -> void:
+	l.visible = key != ""
+	l.text = tr_key(key)
+	var m := data.get("controls", {}) as Dictionary
+	HudLayout.fit_label(l, HudLayout.rect_of(m).size.x, float(m.get("min_scale", 1.0)))
+
+
+static func tr_key(key: String) -> String:
+	return TranslationServer.translate(key) if key != "" else ""
+
+
 func _rows() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for id in page_model.row_ids():
@@ -157,6 +190,8 @@ func _render() -> void:
 	_page.replace_rows(_rows())
 	_page.set_cursor(page_model.cursor, is_inside_tree())
 	_help.text = tr(page_model.help_key())
+	HudLayout.fit_lines(_help)  # a long row's help at 130 % shrinks a little before it ellipsizes
+	show_controls(_controls, page_model.controls_key(), page_model.layout())
 
 
 func _paint_backdrop() -> void:

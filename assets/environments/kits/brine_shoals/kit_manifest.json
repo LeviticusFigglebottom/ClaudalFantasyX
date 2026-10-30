@@ -117,9 +117,9 @@
         9000,
         900
       ],
-      "bytes": 120884,
+      "bytes": 136220,
       "lods": {
-        "camp_tent": 2432,
+        "camp_tent": 2864,
         "camp_tent-lod1": 8
       }
     },
@@ -128,9 +128,9 @@
         9000,
         900
       ],
-      "bytes": 123780,
+      "bytes": 126076,
       "lods": {
-        "camp_tent_burned": 1886,
+        "camp_tent_burned": 1958,
         "camp_tent_burned-lod1": 8
       }
     },

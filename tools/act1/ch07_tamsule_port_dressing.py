@@ -28,6 +28,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 KIT_SRC = ROOT / "assets_src" / "environments" / "kits" / "tamsule_bell"
 sys.path.insert(0, str(KIT_SRC))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import ch05_09_zone_looks as zl  # noqa: E402
 import bell  # noqa: E402
 import port_preview as pp  # noqa: E402
 
@@ -39,6 +41,11 @@ RES_GALLERIES = "res://game/levels/ch07/tamsule_bell_galleries/"
 KIT = pp.KIT
 CW = pp.CW
 OTHER_KIT = {"trader_boat": CW}
+# Corrow's canvas on the trader's sail and bales (M3-ENV-1326; written by ch08_corrow_dressing.py)
+OTHER_SLOTS = {"trader_boat": {"cw_sail": "res://game/levels/ch08/corrow/corrow_canvas_material.tres"},
+               "trader_cargo": {"cw_sail": "res://game/levels/ch08/corrow/corrow_canvas_material.tres"}}
+# The trader's deck cargo as lashed bales over the boat's box bales (M3-ENV-1326, Corrow's b_cargo.py)
+RIDERS = {"trader_boat": "trader_cargo"}
 # Story pieces that follow a greybox block (hide_block / show_block / states drive them).
 BLOCKS = {"Trader": "Trader", "StallA": "MarketStallA", "StallB": "MarketStallB"}
 WATER_Y = pp.WATER_Y
@@ -65,9 +72,13 @@ def rows() -> list[dict]:
         if piece in OTHER_KIT:
             row["kit_dir"] = OTHER_KIT[piece]
             row["materials_dir"] = OTHER_KIT[piece] + "materials/"
+        if piece in OTHER_SLOTS:
+            row["material_paths"] = dict(OTHER_SLOTS[piece])
         if name in BLOCKS:
             row["block"] = BLOCKS[name]
         out.append(row)
+        if piece in RIDERS:  # a piece riding on this one at its transform (the trader's lashed bales)
+            out.append(dict(row, name=name + "_" + RIDERS[piece], piece=RIDERS[piece]))
     return out
 
 
@@ -111,6 +122,7 @@ def layout() -> dict:
         "environment": env,
         "time_of_day_h": tod,
         "greybox": {"hide_all": True, "keep": []},
+        "kit_material_paths": dict(KIT_SLOTS),
         "pieces": rows() + weep_rows(),
         "drops": drop_rows(),
     }
@@ -202,6 +214,30 @@ def relayout(text: str) -> str:
     return text
 
 
+# The kit's gilt (`tb_gold_leaf`, the boards' and counters' edges, the Bell's ring trim) is a flat StandardMaterial: worn
+# gilt by slot on every Tamsule piece in both Ch7 zones (M3-ENV-1326; the galleries' dressing names the same file).
+GOLD_NAME = "tamsule_gold_leaf_material.tres"
+GOLD = {"col_bronze": (0.8314, 0.6431, 0.2157), "col_worn": (0.5490, 0.3922, 0.1961),
+        "col_patina": (0.3725, 0.5412, 0.4706), "col_patina_pale": (0.5216, 0.6588, 0.5843),
+        "metallic_bronze": 1.0, "roughness_bronze": 0.28, "roughness_worn": 0.45, "patina_coverage": (0.0, 0.15),
+        "patina_shade_bias": 0.1, "patina_roughness": 0.85, "streak_strength": 0.2, "wear_strength": 0.6,
+        "detail_scale_m": 0.5, "normal_strength": 0.3, "normal_tile_m": 1.6}
+# The kit's dyed cloths (the stalls' awnings, the boats' canopies and sun umbrellas) are 92 % flat paint over the weave:
+# at walk range they read as flat colour (the player-height walk, 10-30). The zone's copies let the weave show
+# through a sun-faded dye.
+CLOTHS = ("tb_cloth_faded_teal", "tb_cloth_indigo", "tb_cloth_red", "tb_cloth_sand", "tb_cloth_sea_blue")
+CLOTH_LOOK = {"paint_cover": "0.7", "normal_strength": "1.0", "tile_m": "Vector2(0.35, 0.35)"}
+CLOTH_KIT = "res://assets/environments/kits/tamsule_bell/materials/"
+
+
+def cloth_name(slot: str) -> str:
+    return "tamsule_" + slot.removeprefix("tb_") + "_material.tres"
+
+
+KIT_SLOTS = {"tb_gold_leaf": "res://game/levels/ch07/tamsule/" + GOLD_NAME,
+             **{c: "res://game/levels/ch07/tamsule/" + cloth_name(c) for c in CLOTHS}}
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--relayout", action="store_true")
@@ -210,6 +246,10 @@ def main(argv: list[str] | None = None) -> int:
         LAYOUT.write_text(relayout(LAYOUT.read_text(encoding="utf-8")), encoding="utf-8")
     data = json.loads(LAYOUT.read_text(encoding="utf-8"))
     (ZONE / "tamsule_dressing.json").write_text(json.dumps(layout(), indent=1) + "\n", encoding="utf-8")
+    (ZONE / GOLD_NAME).write_text(zl.bronze_material(GOLD_NAME, GOLD), encoding="utf-8")
+    for c in CLOTHS:
+        (ZONE / cloth_name(c)).write_text(zl.copy_material(CLOTH_KIT + c + ".tres", cloth_name(c).removesuffix(".tres"),
+                                                           CLOTH_LOOK), encoding="utf-8")
     (ZONE / "tamsule_collision.json").write_text(json.dumps(collision(data["blocks"]), indent=1) + "\n",
                                                  encoding="utf-8")
     return 0

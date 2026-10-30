@@ -6,10 +6,10 @@ extends TestCase
 const PROLOGUE_SCENE := "res://game/levels/prologue/prologue.tscn"
 const SCENE_ID := &"prologue_dead_city"
 const LINE_KEY := &"DLG_PROLOGUE_DEAD_CITY_001"
-## The M2 review build's route (first_playable.json prologue.next_location; Act I's Ch1 comes after
-## the human signs off M2, M3-C01-02).
-const NEXT_LOCATION := &"ch02/haluna"
-const NEXT_SPAWN := &"Beach"
+## Act I's route (first_playable.json prologue.next_location): the M2 review switch flipped on 2026-10-29 under
+## ADR 0042 (M3-CIN-1233), so the prologue hands off to Ch1 (M3-C01-02), not the slice's beach.
+const NEXT_LOCATION := &"ch01/oruvel_underway"
+const NEXT_SPAWN := &"Drop"
 ## Far more steps than the script has; a run that needs more is looping.
 const MAX_STEPS := 100
 ## M2-FP-28: the colour the dusk frame must carry (colour script prologue_iskarra_dusk).
@@ -100,7 +100,7 @@ func test_the_scene_is_staged_for_the_cutscene() -> void:
 	_done()
 
 
-func test_play_sets_prologue_seen_and_hands_off_to_haluna() -> void:
+func test_play_sets_prologue_seen_and_hands_off_to_ch01() -> void:
 	_make_scene()
 	var seq := CutsceneSequencer.new()
 	seq.instant = true
@@ -110,7 +110,7 @@ func test_play_sets_prologue_seen_and_hands_off_to_haluna() -> void:
 	scene.play()
 	assert_true(bool(Game.get_flag(&"prologue_seen")), "prologue_seen is set")
 	assert_true(scene.finished, "an instant cutscene ends at once")
-	assert_eq(travels, [[NEXT_LOCATION, NEXT_SPAWN]] as Array[Array], "on to Haluna at Beach (the M2 slice route)")
+	assert_eq(travels, [[NEXT_LOCATION, NEXT_SPAWN]] as Array[Array], "on to Ch1's Underway at Drop (Act I)")
 	assert_false(scene.hand_off(), "the hand-off happens once")
 	assert_eq(travels.size(), 1)
 	_done()
@@ -124,13 +124,16 @@ func test_the_prologue_script_runs_to_the_end() -> void:
 	var lines: Array[DialogueStep] = []
 	var cues: Array[StringName] = []
 	var cameras: Array = []
+	var cards: Array = []
 	var ended := false
 	for _i in MAX_STEPS:
 		var step := runner.next()
 		if step.is_end():
 			ended = true
 			break
-		if step.is_line():
+		if step.is_line() and step.tags.has(CutsceneCard.TAG):
+			cards.append(step)  # the title card (the human's playtest, 2026-10-30): not narration
+		elif step.is_line():
 			lines.append(step)
 		elif step.is_cue():
 			cues.append(step.cue)
@@ -138,6 +141,7 @@ func test_the_prologue_script_runs_to_the_end() -> void:
 				cameras.append(step.args[0])
 	assert_true(ended, "reaches END")
 	assert_eq(lines.size(), 1, "one narrated line, no more story than SPEC §3.5")
+	assert_eq(cards.size(), 1, "the 'Prologue' title card opens it, so it reads as the prologue")
 	if lines.size() == 1:
 		assert_eq(lines[0].text_key, LINE_KEY)
 		assert_eq(lines[0].narrator, &"rhen", "Rhen's voice-over")
@@ -267,10 +271,8 @@ func test_a_vigil_takes_its_body_when_its_hero_has_one() -> void:
 	if feet != null:
 		var y := feet.global_position.y
 		assert_between(y, PAVING_TOP_Y - FEET_TOLERANCE, PAVING_TOP_Y + FEET_TOLERANCE, "feet on the paving")
-	# The others follow the data: Liss has had her body since M3-HER-100; Pell waits for his.
-	for id: String in ["Pell", "Liss"]:
-		var has_body := heroes.has(id.to_lower())
-		var capsule := (scene.get_node(NodePath("City/Vigils/" + id)) as MeshInstance3D).mesh != null
-		assert_true(capsule != has_body, id + (" takes its body" if has_body else " waits"))
+	for id: String in ["Pell", "Liss"]:  # M3-CHR-506, M3-CHR-03: they have their field bodies too now
+		var vigil := scene.get_node(NodePath("City/Vigils/" + id)) as MeshInstance3D
+		assert_true(vigil.mesh == null, id + "'s capsule goes")
 	HeroFieldActor._data_cache = saved
 	_done()

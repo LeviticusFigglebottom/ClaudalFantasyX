@@ -30,6 +30,8 @@ const AFFINITY_KEYS := {
 const ELEMENT_KEY_PREFIX := "ELEMENT_"
 const STATUS_KEY_PREFIX := "STATUS_"
 const LIST_SEPARATOR := ", "
+## M4-A2P-083: the Read's line for a foe's broken parts (BattleParts), each named by its charge skill.
+const PARTS_BROKEN_FMT_KEY := "HUD_READ_PARTS_BROKEN_FMT"
 
 
 ## The page for a Read in battle: HP, MP and statuses as they stand. `statuses` is the battle's
@@ -49,6 +51,12 @@ func from_reveal(reveal: Dictionary, statuses: Dictionary = {}) -> Dictionary:
 	for sid: Variant in reveal.get("statuses", []):
 		names.append(status_name(StringName(str(sid)), statuses))
 	page["statuses"] = LIST_SEPARATOR.join(names) if not names.is_empty() else tr("HUD_READ_NONE")
+	var parts: PackedStringArray = []
+	for key: Variant in reveal.get("broken_parts", []):
+		parts.append(tr(str(key)))
+	page["parts"] = (
+		tr(PARTS_BROKEN_FMT_KEY).format({"list": LIST_SEPARATOR.join(parts)}) if not parts.is_empty() else ""
+	)
 	return page
 
 
@@ -123,6 +131,7 @@ func _blank() -> Dictionary:
 		"affinities": [],
 		"delay": "",
 		"statuses": "",
+		"parts": "",
 		"lore": "",
 		"defeated": "",
 		"read": false,

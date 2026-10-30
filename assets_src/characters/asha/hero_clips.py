@@ -68,7 +68,7 @@ BONES = ["DEF-spine", "DEF-spine.001", "DEF-spine.002", "DEF-spine.003", "DEF-sp
          "DEF-shin.R.001", "DEF-foot.R", "DEF-toe.R"]
 HIPS = "DEF-spine"
 PERSONA = {
-    "asha": {"sway": 0.4, "lean": 0.0, "staff": True, "arms_down": 40.0},
+    "asha": {"sway": 0.4, "lean": 0.0, "staff": True, "arms_down": 40.0, "kneel_both": True},
     "rhen": {"sway": 1.3, "lean": 4.0, "staff": False, "arms_down": 42.0},
     # toma.md §1: "stance" = ankle spacing / shoulder-joint spacing in the standing clips; "knee" = the soft knees
     # (degrees) that carry his weight low. The spear is held like the staff.
@@ -165,6 +165,7 @@ class Skeleton:
         helpers_init(self, glb, nodes, parent)  # M1-CHR-15: the skirt and shoulder helper bones, if the GLB has them
         hooks_init(self, nodes, parent)  # M2-CHR-513: Rhen's reef-hooks and the grips that hold them
         grips_init(self, glb, js, nodes, parent)  # M2-CHR-515: the held prop's bone, and the fingers closed round it
+        flat_init(self, nodes, parent)  # M3-CHR-506: the flat free hand, for the heroes of FLAT_HAND
 
     def local_pose(self, turns: dict, hips=None, hold=None) -> dict:
         """World-axis turns (bone -> quaternion) -> local rotations, parents first. `hips` is the pose's hips offset
@@ -191,6 +192,7 @@ class Skeleton:
         pivot = prop_pivot(self, g, hips, carry) if down < 1.0 else None
         prop_pose(self, g, out, hips, carry, pivot, down)
         grip_pose(self, out, hold or {})
+        flat_pose(self, out, hold or {})  # M3-CHR-506: a free hand laid flat (Pell's palm on the throat)
         return out
 
 
@@ -391,7 +393,22 @@ def kneel(sk: Skeleton, persona: dict) -> dict:
          "DEF-spine.005": (6.0, 0.0, 0.0), "DEF-spine.006": (16.0, 0.0, 0.0),
          "DEF-upper_arm.L": (-34.0, 0.0, -a + 6.0), "DEF-forearm.L": (-38.0, 0.0, 0.0),
          "DEF-upper_arm.R": (-10.0, 0.0, a - 12.0), "DEF-forearm.R": (-30.0, 0.0, 0.0)}
+    if persona.get("kneel_both"):
+        # M3-CHR-102 (PC QA row 31): on both knees, the legs of the two-knee kneel (KO_LEGS), the same lean over him.
+        # On the right knee with the left foot planted, the raised left knee (0.44 m up, 0.38 m forward) tents the
+        # floor-length skirt about half a metre out in front of her, over whoever lies there; on both knees it pools
+        # round them.
+        th, sh, ft, toe = KO_LEGS[_hero_of(persona)]["kneel"]
+        p.update({"hips": (0.0, -drop - KNEEL_BOTH_DROP, KNEEL_BOTH_BACK),
+                  "DEF-thigh.L": (th, 0.0, -3.0), "DEF-thigh.R": (th, 0.0, 3.0),
+                  "DEF-shin.L": (sh, 0.0, 0.0), "DEF-shin.R": (sh, 0.0, 0.0),
+                  "DEF-foot.L": (ft, 0.0, 0.0), "DEF-foot.R": (ft, 0.0, 0.0),
+                  "DEF-toe.L": (toe, 0.0, 0.0), "DEF-toe.R": (toe, 0.0, 0.0)})
     return p
+
+
+KNEEL_BOTH_DROP = 0.012  # m: the two-knee kneel's hips sit this much lower than the one-knee drop (as _kneel_both)
+KNEEL_BOTH_BACK = -0.03  # m: and this far back
 
 
 def walk_pose(t: float, persona: dict, stride: float, knee: float, arm: float, bob: float, lean: float) -> dict:
@@ -1085,7 +1102,7 @@ def _victory(hero: str, u: float, sk: Skeleton, persona: dict) -> dict:
     s1, c1 = math.sin(ph), math.cos(ph)
     if hero == "kerrid":  # M3-CHR-505: the look back down the line (his block)
         return kerrid_victory(u, sk, persona)
-    if hero == "moll":  # M3-CHR-507: the iron grounded, the long look over the field (his block)
+    if hero in ("moll", "venn"):  # M3-CHR-507: the iron grounded, the long look over the field (his block; Venn's)
         return moll_victory(u, sk, persona)
     if hero == "pell":  # M3-CHR-506: very still, listening to the quiet (his block); never his back turned
         return pell_victory(u, sk, persona)
@@ -1520,7 +1537,7 @@ LOOPS |= LOCO_LOOPS
 LENGTHS.update({c: n / FPS for c, n in LOCO_FRAMES.items()})
 # The cycles' lengths, per hero, in whole keys (so a loop's last key is its first): the shared 1.1 s walk and 0.7 s
 # run fall between keys. Rhen's quicker cadence, Toma's slower one.
-LOCO_CYCLE_FRAMES = {"asha": {"walk": 17, "run": 11}, "rhen": {"walk": 16, "run": 10},
+LOCO_CYCLE_FRAMES = {"asha": {"walk": 17, "run": 11}, "rhen": {"walk": 16, "run": 11},
                      "toma": {"walk": 18, "run": 11}}
 HEEL_BACK = 0.05  # m: the heel's contact point behind the ankle (the heel-strike pivot)
 ANKLE_DORSI = 10.0  # degrees a swinging foot may turn toes-up past its standing angle to the shin
@@ -1545,26 +1562,31 @@ _WALK = {"beta": 0.6, "c": 0.0, "width": 0.0, "hs": 14.0, "to": 24.0, "rh": 0.12
 # hips and chest wrung, the knee kicked high, the staff whipped). A grounded run: the elbow held bent near the body and
 # folding more as the arm comes forward (the `fwd` terms of M2-CHR-513), little abduction, less follow-through lag, a
 # smaller hip and chest counter-turn, a lower swing-foot lift and a steadier staff
-_RUN = dict(_WALK, beta=0.36, c=-0.08, hs=5.0, to=26.0, rh=0.06, rb=0.26, clear=0.09, peak=0.4, bump=6.0, drop=0.06,
-            bob=0.025, run=True, sway=0.012, yaw=4.5, tilt=1.5, chest=4.0, lean=8.0, flex=2.5, nod=1.2, arm=20.0,
-            elbow=16.0, fore=68.0, fore_s=40.0, abd=6.0, lag=0.025, staff=2.5, fwd=0.55, fwd_elbow=28.0, fwd_abd=3.0)
+# the human's second playtest (FAST-TRACK, 2026-10-30): the run still read "janky and jagged, the arms flailing up".
+# A brisk, grounded jog: the elbows held at 80-100 degrees (fore + the swing's bend), the hands low (waist to chest), a
+# compact counter-swing with the forward swing folded only a little and barely opened (no elbows flying up), a slight
+# lean, a soft bob, a clear heel strike; the stride (S, per hero below) matched to the field's run speed at about
+# 165 steps a minute, and the cycles keyed cubic (CUBIC_CLIPS), not linear, so the 15 fps keys read as one curve
+_RUN = dict(_WALK, beta=0.36, c=-0.08, hs=8.0, to=26.0, rh=0.06, rb=0.26, clear=0.09, peak=0.4, bump=6.0, drop=0.06,
+            bob=0.03, run=True, sway=0.012, yaw=4.0, tilt=1.5, chest=3.5, lean=7.0, flex=2.5, nod=1.0, arm=18.0,
+            elbow=8.0, fore=85.0, fore_s=40.0, abd=4.0, lag=0.02, staff=2.5, fwd=0.6, fwd_elbow=10.0, fwd_abd=2.0)
+CUBIC_CLIPS = {"walk", "run"}  # the three heroes' cycles: keyed cubic (smooth through the 15 fps keys)
 LOCO_GAIT = {
     # asha.md §1: stillness (sway 0.4): a short, level, quiet walk, the staff carried upright in the right hand
     "asha": {"walk": dict(_WALK, S=1.0, c=-0.02, sway=0.014, yaw=3.5, tilt=0.5, chest=3.0, lean=1.5, arm=13.0,
                           bob=0.016, drop=0.035, abd=7.0, clear=0.04),  # abd: the verse sleeve's bag clears the thigh
-             "run": dict(_RUN, S=1.9, sway=0.008, lean=7.0, arm=18.0, abd=7.0)},  # abd: as the walk's
+             "run": dict(_RUN, S=2.6, sway=0.008, lean=6.0, arm=16.0, abd=7.0)},  # abd: as the walk's
     # rhen.md §1: light and quick (sway 1.3, the 4 degree lean): springier, leaning, a bigger arm swing, a shorter
     # stride for his legs, so the controller plays him at a quicker cadence for the same ground speed
     "rhen": {"walk": dict(_WALK, S=1.05, c=-0.02, sway=0.022, yaw=4.0, tilt=1.0, chest=1.5, lean=4.0, arm=17.0, abd=5.0, back_r=0.35, bob=0.026,
                           drop=0.03, clear=0.065, hs=16.0, to=28.0),
-             "run": dict(_RUN, S=2.0, c=-0.13, sway=0.014, lean=12.0, arm=30.0, bob=0.035, hs=0.0, to=32.0,
-                         clear=0.12, fwd=0.7, fwd_elbow=45.0,
-                         fwd_abd=10.0)},  # M2-CHR-513: a sprinter's arm, not a reach
+             "run": dict(_RUN, S=2.6, c=-0.13, sway=0.014, lean=8.0, arm=20.0, to=30.0, abd=8.0, back_r=0.5,
+                         clear=0.11)},  # the jog: the shared arm (his sprinter's arm flew up); abd: the underarm clear
     # toma.md §1: broad, the weight low, the spear held like the staff: a long, heavy, rolling stride, the feet
     # tracking wide, a lower body and a big side-to-side transfer, little bounce
     "toma": {"walk": dict(_WALK, S=1.25, sway=0.03, yaw=4.0, tilt=2.0, chest=3.0, lean=2.0, arm=11.0,
                           bob=0.012, drop=0.045, clear=0.05),
-             "run": dict(_RUN, S=2.1, width=0.12, sway=0.018, lean=8.0, arm=18.0, bob=0.02, drop=0.07)},
+             "run": dict(_RUN, S=2.65, width=0.12, sway=0.018, lean=7.0, arm=16.0, bob=0.025, drop=0.07)},
 }
 SUPPORT_K = {"asha": 0.45, "rhen": 0.5, "toma": 0.35}  # how far the hips follow the weight-bearing foot
 
@@ -2949,6 +2971,8 @@ def hook_hold(hero: str, clip: str, u: float) -> dict:
         out["_down"] = down
     for side, (a, b, c, d) in HOOK_HOLD.get(hero, {}).get(clip, {}).items():
         out[side] = smooth((u - a) / (b - a)) * (1.0 - smooth((u - c) / (d - c)))
+    for side, (a, b, c, d) in FLAT_HAND.get(hero, {}).get(clip, {}).items():  # M3-CHR-506
+        out.setdefault("_flat", {})[side] = smooth((u - a) / (b - a)) * (1.0 - smooth((u - c) / (d - c)))
     return out
 
 
@@ -3717,6 +3741,96 @@ def grip_pose(sk: "Skeleton", out: dict, hold: dict) -> None:
 
 
 def grip_bones(sk: "Skeleton") -> list:
+    held = grip_bones_held(sk)
+    return held + [n for side in sorted(getattr(sk, "flat", {})) for n in sk.flat[side] if n not in held]
+
+
+# ---------------------------------------------------------------------------------------------
+# M3-CHR-506 (pell_review.md item 4: "the right hand is open in storm_call"): a free hand laid flat on the body. The
+# rest hand's fingers splay, so a palm set on the throat read as a spread hand. FLAT_HAND gives, per hero and clip,
+# each side's window (u in, held, out, gone: hook_hold's form); in it the fingers close together beside the middle
+# finger (each .01 turned about its own z to lie parallel to it), curl a little (FLAT_CURL degrees on .01/.02/.03,
+# the sign GRIP's solve finds for a fist on the same side) and the thumb lies in along the index (its .01 turned about
+# x and z to bring its tip nearest FLAT_THUMB_AT of the way along the index's first bone). Keyed only for these heroes.
+# ---------------------------------------------------------------------------------------------
+FLAT_HAND: dict = {}
+FLAT_CURL = (6.0, 10.0, 8.0)
+# M3-CHR-590: a hero's side may close to a fist instead (HAND_SHAPE: the torch's and a held forearm's grip); the same
+# solve with the fingers curled FIST_CURL degrees
+HAND_SHAPE: dict = {}
+FIST_CURL = (55.0, 85.0, 60.0)
+FLAT_SPREAD = range(-30, 31)  # degrees: each finger's .01 turn about its z, searched
+FLAT_THUMB_TURN = range(-40, 41, 2)
+FLAT_THUMB_AT = 0.6
+FLAT_FINGERS = ("f_index", "f_ring", "f_pinky")  # turned to the middle finger, which only curls
+
+
+def flat_init(sk: "Skeleton", nodes: list, parent: dict) -> None:
+    sk.flat = {}
+    hero = next((h for h in FLAT_HAND if sk.root_name.startswith(h + "_")), None)
+    if hero is None:
+        return
+    idx = {n.get("name"): i for i, n in enumerate(nodes)}
+    gq, gt = _node_globals(nodes, parent)
+    x, z = np.array([1.0, 0.0, 0.0]), np.array([0.0, 0.0, 1.0])
+    for side in sorted({sd for spec in FLAT_HAND[hero].values() for sd in spec}):
+        def chain(f: str) -> list:
+            return [f"DEF-{f}.0{k}.{side}" for k in (1, 2, 3)]
+
+        if not all(n in idx for f in GRIP_FINGERS + ("thumb",) for n in chain(f)):
+            continue
+        sgn = 1.0  # the fist's curl sign on this side (as GRIP solves it); -1 only if the fingers would bend back
+        shape = FIST_CURL if HAND_SHAPE.get(hero, {}).get(side) == "fist" else FLAT_CURL
+        curl = [qaxis(x, sgn * a) for a in shape]
+        mid = _chain_points(chain("f_middle"), curl, nodes, parent, idx, gq, gt)
+        m0 = gt[idx[chain("f_middle")[0]]]
+        md = (mid[-1] - m0) / np.linalg.norm(mid[-1] - m0)
+        out = {}
+        rots = {"f_middle": curl}
+        for f in FLAT_FINGERS:
+            k0 = gt[idx[chain(f)[0]]]
+            best = None
+            for a in FLAT_SPREAD:
+                r = [qmul(qaxis(z, a), curl[0]), curl[1], curl[2]]
+                tip = _chain_points(chain(f), r, nodes, parent, idx, gq, gt)[-1]
+                v = tip - k0
+                e = float(np.linalg.norm(v - md * float(v @ md)))  # off the middle finger's line
+                if best is None or e < best[0] - 1e-12:
+                    best = (e, r)
+            rots[f] = best[1]
+        i1 = _chain_points(chain("f_index"), rots["f_index"], nodes, parent, idx, gq, gt)[0]
+        i0 = gt[idx[chain("f_index")[0]]]
+        at = i0 + (i1 - i0) * FLAT_THUMB_AT
+        best = None
+        for ax in FLAT_THUMB_TURN:
+            for az in FLAT_THUMB_TURN:
+                r = [qmul(qaxis(x, ax), qaxis(z, az)), curl[1], curl[2]]
+                tip = _chain_points(chain("thumb"), r, nodes, parent, idx, gq, gt)[-1]
+                e = float(np.linalg.norm(tip - at))
+                if best is None or e < best[0] - 1e-12:
+                    best = (e, r)
+        rots["thumb"] = best[1]
+        for f, r in rots.items():
+            for name, dq in zip(chain(f), r):
+                q = qmul(np.array(nodes[idx[name]].get("rotation", [0.0, 0.0, 0.0, 1.0]), dtype=float), dq)
+                out[name] = q / np.linalg.norm(q)
+                sk.rest_q[name] = np.array(nodes[idx[name]].get("rotation", [0.0, 0.0, 0.0, 1.0]), dtype=float)
+        sk.flat[side] = out
+
+
+def flat_pose(sk: "Skeleton", out: dict, hold: dict) -> None:
+    """The flat hands' finger rotations (into out), weighted by hold["_flat"][side]; a held grip's fingers win."""
+    held = set(grip_bones_held(sk))
+    for side, rots in getattr(sk, "flat", {}).items():
+        w = float(hold.get("_flat", {}).get(side, 0.0))
+        for name, q1 in rots.items():
+            if name in held:
+                continue
+            q0 = sk.rest_q[name]
+            out[name] = q0 if w <= 0.0 else (q1 if w >= 1.0 else _slerp(q0, q1, w))
+
+
+def grip_bones_held(sk: "Skeleton") -> list:
     return [n for side in sorted(getattr(sk, "grips", {})) for n in sk.grips[side]]
 
 
@@ -4357,6 +4471,27 @@ for _i, _v in enumerate(SG_VARIANTS):
     GRIP[_h] = {"R": ("mesh", "Spear", "DEF-spear")}
     GRIP_ALWAYS.add(_h)
     IDLE_GROUNDED.add(_h)
+# M3-CHR-590: the squad's dialogue clips (Ch6 raid and barge, Ch8 cut_rope). `walk_torch` is the walk with a torch held
+# up in the shield hand (a loop; the torch is the scene's prop on DEF-hand.L). The rest are story specs
+# (requested_clips.json `heroes.stillguard_<v>`): `hold_arm` (the shield hand closes on the wright girl's forearm held
+# out over the brazier, at about a metre, a forearm's length in front of him: the contact point for Cinematics),
+# `let_go` (hold_arm played back), the shared `kneel_palms_flat` (the spear set down over the posture change,
+# PROP_DOWN) and `shake_head`, on the legs' solvers with Moll's kit (FOOT_FLAT) and Toma's kneel.
+SG_TORCH = ("L", 36.0, -4.0, 22.0)  # the torch arm (a reach): carried low and forward, the arm nearly straight
+# (a bent forearm brings the strapped shield's rim back into the shoulder)
+SG_STORY = ["walk_torch"]
+LOOPS.add("walk_torch")
+LENGTHS["walk_torch"] = LENGTHS["walk"]
+for _v in SG_VARIANTS:
+    _h = f"stillguard_{_v}"
+    CLIPS[_h] = CLIPS[_h] + SG_STORY
+    STORY_LEG_HEROES = STORY_LEG_HEROES + (_h,)
+    FOOT_FLAT[_h] = FOOT_FLAT["moll"]
+    KO_LEGS[_h] = dict(KO_LEGS["toma"])
+    PROP_DOWN[_h] = {}
+    FLAT_HAND[_h] = {"walk_torch": {"L": (-1.0, 0.0, 2.0, 3.0)}, "hold_arm": {"L": (0.2, 0.5, 2.0, 3.0)},
+                     "let_go": {"L": (-1.0, 0.0, 0.2, 0.5)}}
+    HAND_SHAPE[_h] = {"L": "fist"}
 
 
 def sg_pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> dict:
@@ -4373,6 +4508,12 @@ def sg_pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) 
             "DEF-spine.002": (0.0, 0.2 * turn, 0.0), "DEF-spine.003": (0.0, 0.2 * turn, 0.0),
             "DEF-spine.005": (0.4 * lift, 0.25 * turn, 0.0), "DEF-spine.006": (0.6 * lift - MOLL_HEAD_DOWN, 0.35 * turn,
                                                                              0.0)})
+    if clip == "walk_torch":  # M3-CHR-590: the walk, the shield arm held up with the torch instead of swinging
+        p = walk_pose(u, shared, *SG_WALK)
+        base = planted(sk, shared)
+        for b in SG_ARM_L:  # the stand's arm (lowered from the rest pose), not the walk's swing
+            p[b] = base.get(b, (0.0, 0.0, 0.0))
+        return add(add(p, carry), _gesture(["reach", *SG_TORCH], sk, shared))
     if clip == "shield_up":  # the shield brought up across the chest, the shoulder into it; held
         return sg_guard(planted(sk, shared), carry, smooth(u / SG_RAISE))
     if clip == "level_spear":  # Toma's path for the spear arm (one-handed); the shield arm comes up into a low guard
@@ -4429,6 +4570,59 @@ CLIPS["ivo"] = ["idle", "walk", "run", "talk"]
 STORY_LEG_HEROES = STORY_LEG_HEROES + ("ivo",)
 FOOT_FLAT["ivo"] = FOOT_FLAT["moll"]  # the trousers gathered into the shin wraps (Moll's kit)
 KO_LEGS["ivo"] = dict(KO_LEGS["toma"])  # on both knees, up on the bent toes (the hems take no flexed ankle)
+
+# M3-CHR-593: the Ch8 Stillguard officer at Liss's hoist (ch08_cut_rope.dlg), a named Stillguard on the squad's build,
+# helmed, the shield on his left arm and no spear: the hatchet is the scene's prop in his right fist (HAND_SHAPE "fist",
+# held in every clip). He walks to his mark and gives the rope two blows (`hatchet_blow`, requested_clips.json
+# `heroes.officer`, once per call), on the squad's idle and walk.
+PERSONA["officer"] = {"sway": 0.35, "lean": 0.0, "staff": False, "arms_down": 38.0, "stillguard": True}
+CLIPS["officer"] = ["idle", "walk"]
+STORY_LEG_HEROES = STORY_LEG_HEROES + ("officer",)  # the blow's crouch uses the legs' solver
+FOOT_FLAT["officer"] = FOOT_FLAT["moll"]
+KO_LEGS["officer"] = dict(KO_LEGS["toma"])
+FLAT_HAND["officer"] = {c: {"R": (-1.0, 0.0, 2.0, 3.0)} for c in ("idle", "walk", "hatchet_blow")}
+HAND_SHAPE["officer"] = {"R": "fist"}
+
+# M4-A2P-051: Warden Malcor Venn (act2_ch14.md B09), a named build on the squad's kit (stillguard_variants.json
+# `named.venn`) in Moll's idiom: Moll's persona, clips and battle contract (`inquisitor`: an officer's economy, the
+# weapon kept upright at his right like a standard; his `ko` is the yield, which B09's scripted end needs: "he is driven
+# back", not killed). The halberd stands where Moll's iron does (the M2-CHR-515 grip on DEF-spear, grounded in the
+# idle); he carries no shield, so the shield arm's carry hangs empty. A little stiller than Moll.
+VENN_PARRY_SPINE = {"DEF-spine.001": (8.0, -10.0, 0.0), "DEF-spine.002": (6.0, -4.0, 0.0),
+                    "DEF-spine.003": (4.0, 0.0, 0.0), "DEF-spine.006": (-6.0, 10.0, 0.0)}  # the guard's lean and turn
+VENN_PARRY_CROUCH = 0.08  # m: the knees' give in the parry
+VENN_ARMS = ("DEF-upper_arm.R", "DEF-forearm.R", "DEF-hand.R", "DEF-upper_arm.L", "DEF-forearm.L", "DEF-hand.L")
+
+
+def venn_parry(sk: Skeleton, persona: dict) -> dict:
+    """B09's parry stance (he has no shield): standing, the halberd upright before him with both hands on the haft,
+    the left over the right (the arms of Moll's yield, which hold his weapon so), the shoulders turned into it."""
+    p = {b: v for b, v in planted(sk, _moll_shared(persona)).items() if b not in VENN_ARMS}
+    y = moll_yield(sk, persona)
+    p.update({b: y[b] for b in VENN_ARMS})
+    return add(add(p, _legs(sk, persona, VENN_PARRY_CROUCH)), VENN_PARRY_SPINE)
+
+
+def _venn_keys(clip: str, sk: Skeleton, persona: dict, base: dict) -> list:
+    """Moll's keys (an officer's economy), but his `defend` is the two-handed parry (venn_parry), not a shield guard."""
+    if clip == "defend":
+        guard = _minus(venn_parry(sk, persona), base)
+        return [(0.0, {}), (0.5, guard), (0.8, _scale(guard, 0.9)), (1.0, {})]
+    return _moll_keys(clip, sk, persona, base)
+
+
+PERSONA["venn"] = dict(PERSONA["moll"], sway=0.3)
+CLIPS["venn"] = list(CLIPS["moll"])
+BATTLE_HEROES = BATTLE_HEROES + ("venn",)
+FOOT_FLAT["venn"] = FOOT_FLAT["moll"]
+STANCE_DORSI["venn"] = STANCE_DORSI["moll"]
+BATTLE_STRIKER["venn"] = dict(BATTLE_STRIKER["moll"])
+_BATTLE_KEYS["venn"] = _venn_keys
+KO_OWN.add("venn")
+GRIP["venn"] = {"R": ("mesh", "Spear", "DEF-spear")}
+GRIP_ALWAYS.add("venn")
+IDLE_GROUNDED.add("venn")
+PROP_DOWN["venn"] = dict(PROP_DOWN["moll"])
 
 
 # ---------------------------------------------------------------------------------------------
@@ -4843,6 +5037,8 @@ KO_OWN.add("pell")
 # the idle
 GRIP["pell"] = {"L": ("mesh", "Staff", "DEF-staff")}
 GRIP_ALWAYS.add("pell")
+# M3-CHR-506: the right palm flat on the throat in storm_call (all through) and in cast's call (its 0.3-0.6 hold)
+FLAT_HAND["pell"] = {"storm_call": {"R": (-1.0, 0.0, 2.0, 3.0)}, "cast": {"R": (0.1, 0.28, 0.62, 0.75)}}
 IDLE_GROUNDED.add("pell")
 
 
@@ -4923,13 +5119,16 @@ def build(hero: str, names: list | None = None) -> str:
         if persona.get("book") and clip in BLEND_SHAPES:  # ysolde: the book opens on its shape
             node, shape = BLEND_SHAPES[clip]
             tracks.append(("blend_shape", f"/{node}:{shape}", [(t, [book_fan_weight(clip, t)]) for t in times]))
+        # the cycles' body tracks keyed cubic (every key kept); the helper, prop and grip tracks stay linear: their
+        # keys are reduced against a linear slerp, which cubic would overshoot between
+        cubic = hero in LOCO_HEROES and clip in CUBIC_CLIPS
         for ti, (kind, bone, keys) in enumerate(tracks):
             vals = []
             for t, v in keys:
                 vals += [fmt(t), "1"] + [fmt(x) for x in v]
             lines += [f'tracks/{ti}/type = "{kind}"', f"tracks/{ti}/imported = false", f"tracks/{ti}/enabled = true",
                       f'tracks/{ti}/path = NodePath("{base[:-1] + bone if kind == "blend_shape" else base + bone}")',
-                      f"tracks/{ti}/interp = 1",
+                      f"tracks/{ti}/interp = {2 if cubic and (bone in BONES or bone == HIPS) else 1}",
                       f"tracks/{ti}/loop_wrap = true", f"tracks/{ti}/keys = PackedFloat32Array({', '.join(vals)})"]
         subs.append("\n".join(lines))
     data = ",\n".join(f'&"{c}": SubResource("clip_{i}")' for i, c in enumerate(names))

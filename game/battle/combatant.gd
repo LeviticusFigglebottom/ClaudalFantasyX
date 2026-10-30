@@ -53,6 +53,9 @@ var provoker_id: StringName = &""
 var low_hp_owned: Array[StringName] = []
 ## Delays received since this combatant's last own turn (diminishing returns; formulas.md).
 var delays_taken := 0
+## M4-A2P-020: own turns left held by the roots (a skill's root_turns): while > 0 a hero on the field can't be swapped
+## out (BattleEngine.FAIL_ROOTED). Counts down at the end of each own turn, like a timed status.
+var rooted_turns := 0
 ## Data flag (enemies.json "delay_immune", e.g. bosses): delay effects add no ticks.
 var delay_immune := false
 ## Swell gauge, 0..Formulas.SWELL_MAX (SPEC §6.2). BattleSwell fills and empties it.
@@ -117,6 +120,22 @@ var summon_cap := -1
 ## takes HP): the Undertow's Reach drawn back over the sea.
 var untargetable := false
 var damage_immune := false
+## M4-A2P-021 (BattleCover): enemies.json "glide" (up out of reach every other turn) and "ambush" (buried until its
+## first turn); `covered` is cover's own untargetable, so a phase's untargetable is never lifted by it.
+var glides := false
+var ambushes := false
+var covered := false
+## M4-A2P-022 (BattleParts): enemies.json "parts" (the charge skills that are breakable parts), the ones broken now
+## (oldest first; a restores_part skill mends the first), and whether the party has landed a blow on it yet.
+var parts: Array[StringName] = []
+## M4-A2P-023: enemies.json "answered_by" (the one hero who may act on it) and "answered_key" (why, for the cursor).
+var answered_by: StringName = &""
+var answered_key := ""
+var broken_parts: Array[StringName] = []
+var struck := false
+## M4-A2P-025 (BattleCycle): a "cycle" row's skills, one per element in order, and the one this turn holds.
+var cycle: Array[StringName] = []
+var cycle_index := 0
 ## enemies.json "hp_floor_pct": hits never take it below this share of max HP (the Reach can't fall
 ## before its last phase begins). -1 = none.
 var hp_floor_pct := -1
@@ -154,6 +173,14 @@ static func from_dict(cid: StringName, team_id: StringName, d: Dictionary) -> Ba
 	c.ai_rules = (d.get("ai", []) as Array).duplicate(true)
 	c.xp_reward = int(d.get("xp", 0))
 	c.delay_immune = bool(d.get("delay_immune", false))
+	c.glides = bool(d.get("glide", false))
+	c.ambushes = bool(d.get("ambush", false))
+	c.answered_by = StringName(str(d.get("answered_by", "")))
+	c.answered_key = str(d.get("answered_key", ""))
+	for s: Variant in d.get("cycle", []):
+		c.cycle.append(StringName(str(s)))
+	for p: Variant in d.get("parts", []):
+		c.parts.append(StringName(str(p)))
 	c.phases = (d.get("phases", []) as Array).duplicate(true)
 	c.weak_point = (d.get("weak_point", {}) as Dictionary).duplicate(true)
 	c.field = StringName(str(d.get("field", "")))
@@ -267,7 +294,7 @@ func speed_mult() -> float:
 	return m
 
 
-## Strength after Power Break, then Berserk (Berserk multiplies the broken value).
+## Strength after Weakened, then Berserk (Berserk multiplies the broken value).
 func effective_strength() -> int:
 	var s := Formulas.broken_stat(strength, has_status(&"power_break"))
 	return Formulas.berserk_strength(s) if has_status(&"berserk") else s
@@ -371,6 +398,7 @@ func tick_statuses() -> bool:
 			statuses.erase(s)
 		else:
 			statuses[s] = left
+	rooted_turns = maxi(rooted_turns - 1, 0)
 	if not has_status(&"provoke"):
 		provoker_id = &""
 	if doomed and hp > 0:

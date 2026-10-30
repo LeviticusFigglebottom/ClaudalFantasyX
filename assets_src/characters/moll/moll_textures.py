@@ -115,6 +115,7 @@ def skin(bake_dir: Path, extra: dict, out: Path | None = None, prefix: str = "mo
 
     moll = hair_mod is None  # Moll himself (the Stillguard variants pass their own hair module)
     hair_mod = hair_mod or moll_hair
+    moll_hair.configure(extra.get("_hair", {}))  # M3-CHR-592: the broken front, where the params give one
     sk = dict(extra["_skin"], scalp_density=SCALP_DENSITY)
     if moll:  # M2-CHR-524: Toma's shaded scalp under the cards (the lit skin between the painted hairs read ginger);
         # the helmeted Stillguard variants keep their scalp until they are rebuilt with it
@@ -185,9 +186,10 @@ ALL_MAPS = ("albedo", "clothmask", "normal", "orm")
 
 
 def cloth_atlas(extra: dict, size: int = 2048, out: Path | None = None, prefix: str = "moll", worn: float = 0.0,
-                maps: tuple = ALL_MAPS) -> None:
+                maps: tuple = ALL_MAPS, palette: dict | None = None) -> None:
     """M3-CHR-508: `out`, `prefix`, `worn` (weather) and `maps` (the ones to write: weathering changes only the albedo
-    and the ORM) for the Stillguard's weathered atlas; the defaults are Moll's."""
+    and the ORM) for the Stillguard's weathered atlas; the defaults are Moll's. M4-A2P-051: `palette` (optional) swaps
+    the dyes by name (lacquer, lacquer_deep, bone, linen, indigo: a Warden's black lacquer, his red sash)."""
     import moll_costume as C
     import toma_costume as TC
     import toma_textures as tt
@@ -208,8 +210,11 @@ def cloth_atlas(extra: dict, size: int = 2048, out: Path | None = None, prefix: 
         m = (U >= u0) & (U < u1) & (V >= v0) & (V < v1)
         return m, np.clip((U - u0) / (u1 - u0), 0.0, 1.0), np.clip((V - v0) / (v1 - v0), 0.0, 1.0)
 
-    red, red_deep, black, gold = hexc(LACQUER_RED), hexc(LACQUER_RED_DEEP), hexc(LACQUER_BLACK), hexc(GOLD_LEAF)
-    bone, linen, indigo = hexc(BONE), hexc(LINEN_WHITE), hexc(INDIGO)
+    pal = palette or {}
+    red, red_deep = hexc(pal.get("lacquer", LACQUER_RED)), hexc(pal.get("lacquer_deep", LACQUER_RED_DEEP))
+    black, gold = hexc(LACQUER_BLACK), hexc(GOLD_LEAF)
+    bone, linen = hexc(pal.get("bone", BONE)), hexc(pal.get("linen", LINEN_WHITE))
+    indigo = hexc(pal.get("indigo", INDIGO))
     mottle = periodic_noise(size, size, 24, 24, rng)
     fine = periodic_noise(size, size, 160, 160, rng)
     cotton = weave(size, size, 420)

@@ -121,6 +121,11 @@ static func heal_amount(power: int, magic: int, level: int, variance_pct: int, b
 	return mini(cap, power * (magic + level) * variance_pct / 100)
 
 
+## M4-CMB-1001: the HP a drain skill gives back, a share of the HP its hit took. Exact in integers.
+static func drain_heal(hp_lost: int, drain_pct: int) -> int:
+	return maxi(0, hp_lost) * drain_pct / 100
+
+
 ## Percent chance for a physical action to hit.
 static func hit_chance(skill_accuracy: int, accuracy: int, evasion: int, darkness: bool) -> int:
 	var chance := float(skill_accuracy + accuracy - evasion)
@@ -134,7 +139,7 @@ static func crit_chance(luck: int, target_luck: int) -> int:
 	return clampi(CRIT_BASE_PCT + (luck - target_luck) / 2, 0, CRIT_MAX_PCT)
 
 
-## Effective stat after Break statuses (Power/Magic Break halve; Armor/Mental Break zero).
+## Effective stat after Break statuses (Weakened/Dimmed halve; Sundered/Unmoored zero).
 static func broken_stat(value: int, half_break: bool) -> int:
 	return floori(value * STAT_BREAK_MULT) if half_break else value
 
@@ -171,7 +176,7 @@ static func affinity_hurts_more(a: StringName, b: StringName) -> bool:
 	return int(ra[0]) * int(rb[1]) > int(rb[0]) * int(ra[1])
 
 
-## Berserk strength, applied after Power Break: floor(strength x 3/2).
+## Berserk strength, applied after Weakened: floor(strength x 3/2).
 static func berserk_strength(value: int) -> int:
 	return value * BERSERK_STR_RATIO[0] / BERSERK_STR_RATIO[1]
 

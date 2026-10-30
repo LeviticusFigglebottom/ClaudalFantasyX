@@ -17,8 +17,13 @@ const VOWBOUND_ANCHORS: Array[StringName] = [&"vfx_core", &"vfx_keepsake"]
 ## The intro is a display for the camera's hold (choreo.json boss_intro hold_sec 1.6–2.4 plus its ease-in).
 const SKILLS_PATH := "res://game/data/battle/skills.json"
 const VOWBOUND_PATH := "res://game/data/battle/vowbound.json"
+const ENCOUNTERS_PATH := "res://game/data/battle/encounters.json"
 const INTRO_MIN_SEC := 1.5
 const INTRO_MAX_SEC := 3.5
+## The as-played pass (10-30): the engine ends the turn that crosses a phase's HP after the action resolved, so the
+## phase change used to play at once and the blow's hit reaction then cut it (Hullgnaw's phase_break, the Drownbell's
+## phase_change were never seen). The phase clip waits for the action's sequence, under the camera's phase hold.
+const PHASE_SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 
 var made: Array[Node] = []
 
@@ -26,7 +31,8 @@ var made: Array[Node] = []
 func before_each() -> void:
 	for n in made:
 		if is_instance_valid(n):
-			n.get_parent().remove_child(n)
+			if n.get_parent() != null:
+				n.get_parent().remove_child(n)
 			n.free()
 	made.clear()
 
@@ -73,6 +79,29 @@ func test_every_act1_boss_and_vowbound_stands_in_as_a_real_body() -> void:
 		)
 
 
+## GPU QA rows 12/35: the battle builds each boss encounter's foes through BattleStage.stand_in_spec into a
+## FighterStandIn; one whose scene is missing or empty falls back to the capsule. Build them the same way.
+func test_every_act1_boss_encounter_seats_real_bodies_not_capsules() -> void:
+	var bosses: Array[StringName] = []
+	bosses.append_array(BOSSES)
+	bosses.append_array(PEOPLE_BOSSES)
+	var seen := {}
+	for row: Dictionary in _json(ENCOUNTERS_PATH).get("encounters", []) as Array:
+		for eid: Variant in row.get("enemies", []) as Array:
+			var cid := StringName(str(eid))
+			if not bosses.has(StringName(String(cid).get_slice("#", 0))):
+				continue
+			seen[String(cid).get_slice("#", 0)] = true
+			var f := FighterStandIn.new()
+			(Engine.get_main_loop() as SceneTree).root.add_child(f)
+			made.append(f)
+			f.setup(cid, BattleStage.stand_in_spec(cid), {})
+			assert_true(f.has_actor(), "%s in %s is drawn as its model, not a capsule" % [cid, row.get("id", "")])
+	for id in bosses:
+		assert_true(seen.has(String(id)), "%s is fought in some encounter (the check is live)" % id)
+	before_each()
+
+
 func test_every_act1_vowbound_skill_and_finisher_has_its_clip() -> void:
 	var skills := {}
 	for row: Dictionary in _json(SKILLS_PATH).get("skills", []) as Array:
@@ -88,6 +117,7 @@ func test_every_act1_vowbound_skill_and_finisher_has_its_clip() -> void:
 			var kind := StringName(str((skills.get(str(sid), {}) as Dictionary).get("kind", "")))
 			var clip := a.clip_for(StringName(str(sid)), kind)
 			assert_true(a.has_clip(clip), "%s's %s plays a clip it has (%s)" % [id, sid, clip])
+	before_each()
 
 
 func _json(path: String) -> Dictionary:
@@ -143,3 +173,34 @@ func _weighted_bones(skel: Skeleton3D) -> Dictionary:
 func _bind_bone_name(skel: Skeleton3D, skin: Skin, bind: int) -> String:
 	var b := skin.get_bind_name(bind)
 	return String(b) if b != &"" else skel.get_bone_name(skin.get_bind_bone(bind))
+
+
+func test_a_boss_phase_clip_waits_for_the_blow_that_turned_it() -> void:
+	var ctl := (load(PHASE_SANDBOX) as PackedScene).instantiate() as BattleController
+	ctl.auto_start = false
+	ctl.pacing_scale = 0.0
+	ctl.persist_progress = false
+	var tree := Engine.get_main_loop() as SceneTree
+	(tree.current_scene if tree.current_scene != null else tree.root).add_child(ctl)
+	made.append(ctl)
+	ctl.set_meta(BattleBossIntro.META_PLAYED, "ch01_hullgnaw")
+	ctl.start_battle([&"rhen"] as Array[StringName], [], &"ch01_hullgnaw", 20261030)
+	var choreo := ctl.stage.choreo
+	choreo.force_play = true
+	choreo.reduced_motion = false
+	choreo.skip = false
+	choreo.speed = 1.0
+	var boss := ctl.engine.enemies[0]
+	var body := ctl.stage.stand_in(boss.id).creature()
+	var r := ActionResult.new()
+	r.actor_id = ctl.engine.party_active[0].id
+	r.skill_id = &"attack"
+	r.hits.append({"target_id": boss.id, "hit": true, "amount": 10, "crit": false})
+	ctl.engine.action_resolved.emit(r)
+	assert_true(choreo.playing(), "the blow plays (the check is live)")
+	ctl.engine.phase_changed.emit(boss, &"breaking")
+	assert_eq(body.phase(), &"", "no phase while the blow that turned it plays")
+	choreo.finish()
+	assert_eq(body.phase(), &"breaking", "the phase once the blow has played")
+	assert_eq(body.current_clip, &"phase_break", "its phase clip, not cut by the hit reaction")
+	before_each()

@@ -31,6 +31,11 @@ _spec.loader.exec_module(wm)
 ROOT = HERE.parents[2]
 PARAMS_DIR = HERE / "params"
 A = "asha/textures/"
+SHORT_HAIR = "toma/textures/toma_shorthair.png"  # M3-CHR-592 `tufts`: toma_textures.short_hair_atlas
+# and toma's crop shading (toma/write_materials.py): a near-surface, mostly wrapped Lambert, a low broad highlight
+TUFT_HAIR = {"flow_strength": "0.0", "kajiya_diffuse_mix": "0.15", "diffuse_wrap": "0.3",
+             "spec_primary_intensity": "0.07", "spec_primary_exponent": "60.0", "spec_secondary_intensity": "0.0", "root_occlusion": "0.85",
+             "depth_occlusion": "0.85", "alpha_boost": "0.85", "strand_value_jitter": "0.12"}
 # the scene m2-slice swaps in for a haluna.tscn NPC capsule: the GLB turned to face -Z, as the capsules'
 # Facing boxes do (a glTF character faces +Z); the import rule has already dressed it
 ACTOR = """[gd_scene load_steps=2 format=3]
@@ -51,12 +56,23 @@ def colour(hex_: str) -> str:
     return f"Color({r:.3f}, {g:.3f}, {b:.3f}, 1)"
 
 
+BROW_SKIN_MIX = 0.3
+
+
+def _mix_hex(a: str, b: str, t: float) -> str:
+    ca = [int(a.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4)]
+    cb = [int(b.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4)]
+    return "#" + "".join(f"{round(x + (y - x) * t):02X}" for x, y in zip(ca, cb))
+
+
 def tables(npc: str, extra: dict) -> tuple[dict, dict, dict]:
     T = f"villagers/{npc}/textures/{npc}_"
     hp = extra["_hair"]
     hair = colour(hp.get("colour", "#201A16"))
     grey = colour(hp.get("grey", "#8C867D"))
-    brow = colour(hp.get("brow", hp.get("colour", "#201A16")))
+    # GPU QA row 55: near-black brow cards on lighter skin read as scribbles; the brow takes BROW_SKIN_MIX of the skin
+    lash = colour(hp.get("brow", hp.get("colour", "#201A16")))
+    brow = colour(_mix_hex(hp.get("brow", hp.get("colour", "#201A16")), extra["_skin"]["hex"], BROW_SKIN_MIX))
     spec = colour(hp.get("spec", "#D8CCC0"))
     still = {"wind_response": "0.0"}
     iris = colour(extra.get("_eyes", {}).get("iris", "#2A1A10"))
@@ -68,6 +84,10 @@ def tables(npc: str, extra: dict) -> tuple[dict, dict, dict]:
                    "spec_primary_exponent": "120.0", "spec_secondary_intensity": "0.06",
                    "transmission_strength": "0.2", "indirect_specular": "0.06", "root_occlusion": "0.6",
                    "depth_occlusion": "0.65", "alpha_boost": "1.4", **still}
+    hair_tex = {"tex_hair": A + "asha_hair.png", "tex_hairflow": A + "asha_hairflow.png"}
+    if hp.get("tufts"):  # M3-CHR-592: Toma's short-hair atlas and his matte crop (strands along +V: no flow map)
+        hair_tex = {"tex_hair": SHORT_HAIR}
+        hair_params = {**hair_params, **TUFT_HAIR}
     shader = {
         "skin_head": ("character_skin", 0, {
             "painterly": "0.2", "detail_tiling": "64.0", "detail_strength": "0.8", "normal_strength": "1.0",
@@ -89,17 +109,18 @@ def tables(npc: str, extra: dict) -> tuple[dict, dict, dict]:
         "tear_line": ("character_tear_line", 3, {}, {}),
         "lash": ("character_hair", 0, {"flow_strength": "0.0", "spec_primary_intensity": "0.06",
                                        "spec_secondary_intensity": "0.0", "transmission_strength": "0.1",
-                                       "indirect_specular": "0.03", "col_root": brow, "col_tip": brow, **still},
+                                       "indirect_specular": "0.03", "col_root": lash, "col_tip": lash, **still},
                  {"tex_hair": A + "asha_facehair.png"}),
-        "brow": ("character_hair", 0, {"flow_strength": "0.0", "spec_primary_intensity": "0.08", "alpha_boost": "1.6",
+        # GPU QA row 55: at 1.6 the brow cards' few dark hairs read as scribbles; softer, the painted brow shows through
+        "brow": ("character_hair", 0, {"flow_strength": "0.0", "spec_primary_intensity": "0.08", "alpha_boost": "0.95",
+                                       "strand_value_jitter": "0.08",
                                        "spec_secondary_intensity": "0.05", "transmission_strength": "0.2",
                                        "root_occlusion": "0.2", "indirect_specular": "0.05",
                                        "col_root": brow, "col_tip": brow, **still,
                                        **hp.get("brow_params", {})},  # M3-CHR-536 (optional): an aged brow
                  {"tex_hair": A + "asha_facehair.png"}),
-        "hair": ("character_hair", 0, hair_params, {"tex_hair": A + "asha_hair.png", "tex_hairflow": A + "asha_hairflow.png"}),
-        "hair_grey": ("character_hair", 0, {**hair_params, "col_root": grey, "col_tip": grey},
-                      {"tex_hair": A + "asha_hair.png", "tex_hairflow": A + "asha_hairflow.png"}),
+        "hair": ("character_hair", 0, hair_params, hair_tex),
+        "hair_grey": ("character_hair", 0, {**hair_params, "col_root": grey, "col_tip": grey}, hair_tex),
         # M1-RND-21's mouth family, reading this villager's head atlas (Asha's values)
         "teeth": ("character_mouth", 0, {
             "col_albedo": "Color(1, 1, 1, 1)", "roughness": "1.0", "specular": "0.06", "ao_light_affect": "0.35",
@@ -116,6 +137,11 @@ def tables(npc: str, extra: dict) -> tuple[dict, dict, dict]:
     for name, hex_ in extra["_tints"].items():
         shader[name] = ("character_cloth", 0, {"detail_tiling": "150.0", "col_albedo": colour(hex_),
                                                **tuned.get(name, {})}, cloth_tex)
+    blood = extra.get("_blood")
+    if blood:  # M4-A2P-050 (optional): `<mat>_blood`, the stained albedo (villager_textures.blood_atlas); no glTF slot
+        mat = blood["mat"]  # takes this name, so the import never wears it: CostumeVariant swaps it in at runtime
+        sh, prio, params, tex = shader[mat]
+        shader[f"{mat}_blood"] = (sh, prio, params, {**tex, "tex_albedo": T + "blood_albedo.png"})
     return shader, {}, {}
 
 

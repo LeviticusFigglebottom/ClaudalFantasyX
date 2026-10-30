@@ -1,0 +1,21 @@
+// Ch11 B01 "The drowned galleries" (C, 1 min). act2_ch11.md §2 B01. L01: the drowned arcades in a still
+// turquoise lagoon under a grey noon; copper conduits along every cornice lit with steady bound teal
+// (glimmer_bound: still, never flickering, never drifting: rule 3). V01: the party on the landing; Liss looks
+// at the conduits the way other people look at a sunset. Pell hears the bound dead; nobody follows it up.
+title: ch11_drowned_galleries
+location: ch11/sunken_vey
+---
+@letterbox on
+// Shot ids: V00 is lowlight.md's L01 (the Vey hero frame). Renamed so it can't resolve to the greybox layout's own L01
+// (a sanctum view in ch11/lowlight); see act2_ch11_direction.md.
+@camera V00
+@music sunken_vey fade=2.0
+@vfx glimmer_bound at=cornice_conduits count=12
+@wait 5.0
+@camera V01
+Liss [smile]: Four hundred years and she's still lit. Nobody's touched her. Look at her. #line:ch11_vey_001
+Pell [neutral]: Many in there. #line:ch11_vey_002 #tn:"He means the bound dead inside the lights."
+@wait 1.5
+@letterbox off
+@camera release
+===

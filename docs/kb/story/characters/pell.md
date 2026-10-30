@@ -17,7 +17,7 @@ He has followed the Undertow ever since, alone, cataloguing it the Kirru way: by
 ## Arc Beats
 - **Act I:** first seen at Corrow (Ch8) on the seawall during the attack, imitating the storm's own sounds to lure spawn away from fishers. He joins after the Ebbing (Ch9). He tells Asha that her dance is "beautiful, and pointing the wrong way." He doesn't explain.
 - **Act II:** at Reedhollow (Ch10) he isn't permitted to enter. The party sees the farewell-tide from a distance while Pell stands with his back to them. At Lowlight (Ch11), Ressa is the Vowbound **Nhoa**. He did not know she had survived as a Saint. He kneels in front of her and doesn't speak for a full scene.
-- **Act III:** he teaches Asha the farewell-tide, the melody that holds the Eighth Verse. He returns to Reedhollow, and his name is carved again on a new shell when he tells the elders he will turn around at last.
+- **Act III:** he teaches Asha the farewell-tide, the melody that lets the Eighth Verse's tune be read out of the Choir stones (act3_threads T-04). He returns to Reedhollow, and his name is carved again on a new shell when he tells the elders he will turn around at last.
 - **Ending:** in the dive, Pell fights Nhoa and, as she lifts, **turns his back to her**. It is the most loving thing he can do. In the epilogue he lives at Reedhollow and sings at every tide.
 
 ## Silhouette and Costume
@@ -36,3 +36,11 @@ The Kirru learn by listening and imitating. Pell learns enemy abilities by *hear
 - **Kerrid:** a deep, wordless understanding between two who are outside life. Pell knows what Kerrid is from the first day (Kirru can smell anchored motes) and says nothing.
 - **Ressa (Nhoa):** his sister, the reason for everything.
 - **The Kirru elders:** exile and eventual return.
+
+## Narrative answers for the art sheet (2026-10-29, [decisions_log N-27](../decisions_log.md))
+- **Echo check: passes, no beat changes.** He is never a guardian or sworn to Asha; his shame is chosen grief, not a lost
+  fight; his return is a letting-go, never a trial against his own people; he learns by listening. Keep the four
+  authoring guards in N-27.
+- **No tail, no lower garment** (the split reed girdle only), **a spiral of notches** as the name carving, **no tears**
+  (a lowered crest and stillness), and **the fur:** a dark saddle, mid-brown front, a pale throat.
+- **Keepsakes:** the Kirru keep nothing of the dead. A name-shell is the wearer's own name, not a keepsake.

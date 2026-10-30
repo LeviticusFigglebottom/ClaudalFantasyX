@@ -158,13 +158,19 @@ func _set_status(line: Dictionary) -> void:
 ## status sits "status" "gap" under it (M2-UI-15: a fixed height cut long lines short or left a
 ## hole). Every page renders through _set_status, so this runs after each redraw.
 func _fit_desc() -> void:
+	var gap := HudLayout.num(_d.get("status", {}), "gap")
 	var cap := HudLayout.num(_d.get("desc", {}), "height")
+	# The Act I UI pass (2026-10-30): at 130 % a two-line line and a two-line refusal ran into the help line. The
+	# column from the line's top to the help is shared: the status keeps its lines, the line gets the rest.
+	_status.remove_theme_font_size_override(&"font_size")
+	var status_h := ceilf(HudLayout.lines_height(_status)) if _status.text != "" else 0.0
+	var room := _help.position.y - _desc.position.y - gap - status_h
+	cap = maxf(minf(cap, room), 0.0)
 	_desc.size.y = cap  # measure the wrap at full height: the label's own line metrics
-	var lines := _desc.get_line_count()
-	var spacing := float(_desc.get_theme_constant(&"line_spacing"))
-	var need := lines * _desc.get_line_height() + maxi(lines - 1, 0) * spacing
-	_desc.size.y = minf(ceilf(need), cap) if _desc.text != "" else 0.0
-	_status.position.y = _desc.position.y + _desc.size.y + HudLayout.num(_d.get("status", {}), "gap")
+	HudLayout.fit_lines(_desc, cap)  # a line too long for the cap at 130 % shrinks a little first
+	_desc.size.y = minf(ceilf(HudLayout.lines_height(_desc)), cap) if _desc.text != "" else 0.0
+	_status.position.y = _desc.position.y + _desc.size.y + gap
+	HudLayout.fit_lines(_status, _help.position.y - _status.position.y)
 
 
 ## Puts the line and the status under `top` (a y in reference pixels).

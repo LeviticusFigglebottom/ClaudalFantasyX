@@ -17,7 +17,11 @@ const VFX_HOSTS_GROUP := &"cutscene_vfx_hosts"
 const EFFECT := "glimmer_held"
 const STAFF_HEAD := &"StaffHead"
 
+## path -> parsed data: each zone's Ebbing reads its own file (Ch9's by default; Ch15's held dead, M4-A2P-045).
 static var _data_cache: Dictionary = {}
+
+## The data this rig reads (a zone's dressing names its own: `"ebbing": {"data": ...}`).
+var data_path := DATA_PATH
 
 ## The cutscene stage (mark(id), actor(id)), or the zone whose `stage` it is (ZoneKitDressing sets the zone: the
 ## zone builds its stage after its dressing is ready).
@@ -31,14 +35,15 @@ var staff_head: Node3D
 var _mourners: Dictionary = {}
 
 
-static func load_data() -> Dictionary:
-	if _data_cache.is_empty():
-		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(DATA_PATH))
+static func load_data(path: String = DATA_PATH) -> Dictionary:
+	if not _data_cache.has(path):
+		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
 		if typeof(parsed) == TYPE_DICTIONARY:
-			_data_cache = parsed as Dictionary
+			_data_cache[path] = parsed as Dictionary
 		else:
-			push_warning("EbbingMotes: cannot read %s" % DATA_PATH)
-	return _data_cache
+			push_warning("EbbingMotes: cannot read %s" % path)
+			return {}
+	return _data_cache[path] as Dictionary
 
 
 ## A mourner's pull, over its full strength, `since_pass_s` after the staff passed it (< 0: not yet): 1, easing to 0
@@ -50,7 +55,7 @@ static func mourner_share(since_pass_s: float, ramp_s: float) -> float:
 
 
 func _ready() -> void:
-	data = load_data()
+	data = load_data(data_path)
 	add_to_group(VFX_HOSTS_GROUP)
 
 
@@ -157,7 +162,7 @@ func _set_mourner(field: GlimmerField, node: Node3D, strength: float) -> void:
 
 
 func _process(delta: float) -> void:
-	if _mourners.is_empty() or staff_head == null or not is_instance_valid(staff_head):
+	if _mourners.is_empty() or not is_instance_valid(staff_head):
 		return
 	var m := data.get("mourners", {}) as Dictionary
 	var pass_r := float(m.get("pass_radius_m", 3.5))
@@ -165,10 +170,10 @@ func _process(delta: float) -> void:
 	var head := staff_head.global_position
 	for id: String in _mourners.keys():
 		var row := _mourners[id] as Dictionary
-		var node := row["node"] as Node3D
-		if not is_instance_valid(node):
+		if not is_instance_valid(row["node"]):  # check the stored ref before casting it (a freed one fails the cast)
 			_mourners.erase(id)
 			continue
+		var node := row["node"] as Node3D
 		var p := node.global_position
 		var passed := float(row["passed_s"])
 		if passed < 0.0 and Vector2(head.x - p.x, head.z - p.z).length() <= pass_r:

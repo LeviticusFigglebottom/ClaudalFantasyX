@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3]
+[gd_scene load_steps=33 format=3]
 
 [ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
 [ext_resource type="Shader" path="res://game/shaders/environment/env_sky_low_sun.gdshader" id="2_r"]
@@ -27,6 +27,7 @@
 [ext_resource type="PackedScene" path="res://assets/environments/kits/corrow/lowtown_house_a.glb" id="25_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/corrow/lowtown_house_b.glb" id="26_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/coilspire/arena_headland_path.glb" id="27_r"]
+[ext_resource type="Script" path="res://game/levels/act1/kit_slot_swaps.gd" id="slot_swaps"]
 
 [sub_resource type="ShaderMaterial" id="SkyMat"]
 shader = ExtResource("2_r")
@@ -1560,3 +1561,13 @@ transform = Transform3D(0.490844, 0.0745636, -0.868051, -0, 0.996331, 0.0855825,
 
 [node name="to_the_spire" type="Marker3D" parent="CameraHints"]
 transform = Transform3D(0.965716, 0.0352537, 0.257196, 0, 0.990736, -0.1358, -0.259601, 0.131144, 0.95677, 4.5, 1.4, 6.5)
+
+[node name="KitSlotSwaps" type="Node" parent="."]
+script = ExtResource("slot_swaps")
+paths = {"cs_copper": "res://game/levels/ch08/coilspire/coilspire_copper_material.tres", "cs_copper_worn": "res://game/levels/ch08/coilspire/coilspire_copper_worn_material.tres", "cs_iron": "res://game/levels/ch08/coilspire/coilspire_iron_material.tres"}
+
+[node name="arena_headland_ground" parent="Ground" index="0"]
+visibility_range_end = 2000.0
+
+[node name="arena_headland_ground-lod1" parent="Ground" index="1"]
+visibility_range_begin = 2000.0

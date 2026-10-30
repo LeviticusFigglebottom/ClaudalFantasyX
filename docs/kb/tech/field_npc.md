@@ -243,6 +243,19 @@ one with `crowd`:
 These zones are GreyboxZones, which do not add a VillagerLayer yet: M3-CRE-657 (slice-polish) asks for the two
 lines. Until then the review stages (`crowd_<zone>.tscn`) and the tests wire one with `VillagerLayer.wire`.
 
+### Silhouette rows (M3-HER-1142)
+A row may name a crowd body with no crowd person: `"body": "<crowd body id>"` wears `assets/crowd/<body>/<body>_actor.tscn`
+with no tints and the npc.json tuning for its `npc_id`. `"silhouette": "#RRGGBB"` draws the villager as one glowing
+silhouette in that colour (`NpcSilhouette`, `game/world/npc/npc_silhouette.gdshader`: unshaded, a fresnel rim brighter
+than the core, fading in from the feet, no shadow, no TIME). Each surface gets its own material carrying the maps it
+wore (albedo brightness, occlusion, normal map), so cloth folds and seams show under the glow, plus brine tide lines and
+drip streaks; the materials belong to the meshes alone and FieldNpc clears them on leaving the tree (the PC's pass 3:
+a shared cached material logged "material is null" on free). `"tuning": {...}` is merged over the villager's tuning.
+- **Corrow's storm figure** (act1_ch08 W22, "a single cyan silhouette", a man's shape in the storm wall) is
+  `corrow_storm_figure` in `zones/ch08_corrow.json`: the Oruvel diver's body `crowd_man_lean_a` in `#5fd6e0`, inside the
+  `figure` stage actor (attach child, so the layout's flags show and hide it and the cutscene's `@mark figure
+  figure_gone walk` moves it). Its tuning zeroes the glance, look-around and talk radii: it never turns to the party.
+
 ## Who owns what (decided 2026-10-27, creatures with slice-polish's M2-FP-102)
 
 - **Runtime: creatures.** FieldNpc, NpcLook, the routines, `npc.json` (per-villager tuning: work, glance,

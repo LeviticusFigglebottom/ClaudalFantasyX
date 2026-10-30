@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "doc": "Act II's Vowbound call stings (M4-A2P-091): battle_sfx.json `vowbound_stings` plays them on the Music bus when the Vowbound is called, as Act I's virel_summon. Files from assets_src/music/act2/vowbound_stings.py (plain git, ADR 0175). Kesh has no call sting in Act II (kesh_summon is Act III's H03).",
+  "sfx": {
+    "nhoa_summon": {
+      "files": [
+        "res://assets/audio/act2/music/stings/nhoa_summon.ogg"
+      ],
+      "bus": "Music",
+      "voices": 1,
+      "cooldown_ms": 2000,
+      "_note": "M4-A2P-091 music sting (assets_src/music/act2/vowbound_stings.py): Nhoa called: glass rising through the Letting's cell, the only Vowbound whose motes go up"
+    },
+    "hesk_summon": {
+      "files": [
+        "res://assets/audio/act2/music/stings/hesk_summon.ogg"
+      ],
+      "bus": "Music",
+      "voices": 1,
+      "cooldown_ms": 2000,
+      "_note": "M4-A2P-091 music sting (assets_src/music/act2/vowbound_stings.py): Hesk called: the cords plucked in a rising sweep, and the bell"
+    },
+    "ethren_summon": {
+      "files": [
+        "res://assets/audio/act2/music/stings/ethren_summon.ogg"
+      ],
+      "bus": "Music",
+      "voices": 1,
+      "cooldown_ms": 2000,
+      "_note": "M4-A2P-091 music sting (assets_src/music/act2/vowbound_stings.py): Ethren called: a C major swell with no attack, a glass ring at its top"
+    },
+    "kesh_summon": {
+      "files": [
+        "res://assets/audio/act2/music/stings/kesh_summon.ogg"
+      ],
+      "bus": "Music",
+      "voices": 1,
+      "cooldown_ms": 2000,
+      "_note": "M4-AUD-1010 music sting (assets_src/music/act2/vowbound_stings.py): Kesh called: the six colours flicked through, quick, over the Hush's A minor"
+    }
+  }
+}

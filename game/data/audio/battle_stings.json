@@ -1,9 +1,11 @@
 {
   "version": 1,
-  "doc": "Stings on the battle presentation's announcements (M3-AUD-18; game/audio/sting_audio.gd, docs/kb/tech/audio_runtime.md 'Battle stings'). events: an EventBus.dialogue_event name -> {sfx: an sfx row; by_arg: {the event's first argument (the encounter id): row}, overriding sfx; duck: a mix.json duck reason held for duck_sec under the sting}. battle_stinger [encounter] fires as the tide line rises before the field -> battle fade; battle_bark [encounter, line_key, speaker_key] with the lead-in line; boss_intro [encounter_id, title_key] as a boss's title card shows (about 3-4 s). reduced: with reduced audio on, a row -> its version without sub-bass.",
+  "doc": "Stings on the battle presentation's announcements (M3-AUD-18; game/audio/sting_audio.gd, docs/kb/tech/audio_runtime.md 'Battle stings'). events: an EventBus.dialogue_event name -> {sfx: an sfx row; by_arg: {the event's first argument (the encounter id): row}, overriding sfx; duck: a mix.json duck reason held for duck_sec under the sting}. battle_stinger [encounter] fires as the tide line rises before the field -> battle fade; battle_bark [encounter, line_key, speaker_key] with the lead-in line; boss_intro [encounter_id, title_key] as a boss's title card shows (about 3-4 s). reduced: with reduced audio on, a row -> its version without sub-bass. Act II's creature bosses are keyed by their intro's title key (BOSS_TITLE_*, choreo.json boss_intro.by_enemy) until their encounters exist; StingAudio tries the encounter first, then the title key (M4-A2P-092). Combat's encounters now name the four creature bosses (ch10_mangrove_drowner and the rest), so they are keyed by encounter id too; the title keys stay as the fallback. The people bosses are keyed by their planned encounter ids (ch14.md, ch16.md §3). The tide line (M3-AUD-864, the encounter pass) crests with the line at 0.5 s and dips the field music (mix.json `encounter`) for the rise and hold (battle_transition.json rise_sec + hold_sec), letting go as the router fades, so the battle cue never enters ducked.",
   "events": {
     "battle_stinger": {
-      "sfx": "sting_tideline"
+      "sfx": "sting_tideline",
+      "duck": "encounter",
+      "duck_sec": 0.75
     },
     "battle_bark": {
       "sfx": "sting_bark"
@@ -17,7 +19,17 @@
         "ch04_spar_wraith": "sting_boss_spar_wraith",
         "ch05_cinder_matron": "sting_boss_cinder_matron",
         "ch06_inquisitor": "sting_boss_inquisitor",
-        "undertows_reach": "sting_boss_undertows_reach"
+        "undertows_reach": "sting_boss_undertows_reach",
+        "BOSS_TITLE_MANGROVE_DROWNER": "sting_boss_mangrove_drowner",
+        "BOSS_TITLE_LAMP_ENGINE": "sting_boss_lamp_engine",
+        "BOSS_TITLE_AVALANCHE_RAM": "sting_boss_avalanche_ram",
+        "BOSS_TITLE_WAKEFIN": "sting_boss_wakefin",
+        "ch14_malcor_venn": "sting_boss_malcor_venn",
+        "ch16_abiding_guard": "sting_boss_abiding_guard",
+        "ch10_mangrove_drowner": "sting_boss_mangrove_drowner",
+        "ch11_lamp_engine": "sting_boss_lamp_engine",
+        "ch12_avalanche_ram": "sting_boss_avalanche_ram",
+        "ch15_wakefin": "sting_boss_wakefin"
       },
       "duck": "boss_intro",
       "duck_sec": 3.5
@@ -31,6 +43,12 @@
     "sting_boss_spar_wraith": "sting_boss_spar_wraith_soft",
     "sting_boss_cinder_matron": "sting_boss_cinder_matron_soft",
     "sting_boss_inquisitor": "sting_boss_inquisitor_soft",
-    "sting_boss_undertows_reach": "sting_boss_undertows_reach_soft"
+    "sting_boss_undertows_reach": "sting_boss_undertows_reach_soft",
+    "sting_boss_mangrove_drowner": "sting_boss_mangrove_drowner_soft",
+    "sting_boss_lamp_engine": "sting_boss_lamp_engine_soft",
+    "sting_boss_avalanche_ram": "sting_boss_avalanche_ram_soft",
+    "sting_boss_wakefin": "sting_boss_wakefin_soft",
+    "sting_boss_malcor_venn": "sting_boss_malcor_venn_soft",
+    "sting_boss_abiding_guard": "sting_boss_abiding_guard_soft"
   }
 }

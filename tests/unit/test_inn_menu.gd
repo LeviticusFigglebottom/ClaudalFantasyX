@@ -75,6 +75,25 @@ func test_a_rest_pays_and_heals_and_a_poor_party_is_told_why() -> void:
 	assert_eq(shut.rest_line()["text"], tr("INN_ERR_CLOSED"))
 
 
+func test_sefir_s_guest_rooms_are_free_and_shut_to_heretics() -> void:
+	# Act II screens.md section 5 and heresy.md section 2: a price-0 Order house.
+	flags.values["ch13_started"] = true
+	state.currency = 0
+	var m := InnMenuModel.new(Inn.new(db, &"ansedra_guest"), PartyGoods.from_state(db, state), flags, _heal)
+	assert_eq(m.title(), tr("INN_ANSEDRA_GUEST"))
+	assert_eq(m.root_rows()[0]["right"], tr("INN_MENU_FREE"), "no lume shown")
+	assert_eq(m.rest_line()["text"], tr("INN_MENU_PREVIEW_FREE"))
+	assert_true(m.rest()["ok"], "an empty purse rests")
+	assert_eq(healed, [&"ansedra_guest"] as Array[StringName])
+	flags.values[String(ShopMenuModel.HERETIC_FLAG)] = true
+	assert_false(m.root_rows()[0]["enabled"], "outside the Level: the door is shut")
+	assert_eq(m.rest_line()["text"], tr("INN_ERR_HERETIC"))
+	assert_false(m.rest()["ok"])
+	assert_eq(healed.size(), 1, "no second rest")
+	var kept := InnMenuModel.new(Inn.new(db, &"hollowmere_inn"), PartyGoods.from_state(db, state), flags, _heal)
+	assert_ne(kept.rest_line()["text"], tr("INN_ERR_HERETIC"), "a Saltwright inn still takes them")
+
+
 func test_the_live_rest_heals_like_a_shrine_and_writes_no_save() -> void:
 	_saved_state = Game.state
 	_saved_dir = SaveSystem.save_dir

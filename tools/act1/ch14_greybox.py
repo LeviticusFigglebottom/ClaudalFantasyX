@@ -21,7 +21,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from ch10_greybox import box, water  # noqa: E402
+from ch10_greybox import box, r3, water  # noqa: E402
 from ch11_greybox import floor, walls  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -65,6 +65,11 @@ def lacquer_court() -> dict:
                           color=COL_GOLD))
     blocks.append(box("BargeStern", cx, DECK_Y + 0.3, cz + hz + 14.1, 4.2, 0.6, 0.2, color=COL_GOLD))
     blocks.append(box("WaterGate", cx, 2.0, cz + hz + 18.0, 10.0, 5.0, 0.8, color=COL_LACQUER, solid=False))
+    # M4-A2P-104 (ch14_lacquer_court.md "After the trap"): env-art-b binds the eight gilt lamp stands and their lights
+    # to CeremonyLamps (shown at the wedding) and the fallen, unlit stands to CeremonyLampsFallen (after the trap);
+    # anchors only (no mesh, no collision), swapped by the variants rows below
+    for lid in ("CeremonyLamps", "CeremonyLampsFallen"):
+        blocks.append(box(lid, cx, 0.5, cz - 2.0, 2 * hx - 4.0, 1.0, 2 * hz - 6.0, solid=False, visible=False))
     blocks.append(box("EntryStep", cx + hx + 1.5, -0.25, cz + 9.5, 3.0, 0.5, 3.0, color=COL_STONE))
     blocks.append(box("EntryBound", cx + hx + 3.25, 1.0, cz + 9.5, 0.5, 2.0, 3.0, color=COL_STONE))
     return {
@@ -79,12 +84,40 @@ def lacquer_court() -> dict:
         "block_color": COL_STONE,
         "blocks": blocks,
         "ramps": ramps,
-        "spawns": {"CourtEntry": [cx + hx - 2.0, 0.0, cz + 9.5, 90.0], "Barge": [cx, DECK_Y, cz + hz + 7.0, 180.0]},
+        "spawns": {"CourtEntry": [cx + hx - 2.0, 0.0, cz + 9.5, 90.0], "Barge": [cx, DECK_Y, cz + hz + 7.0, 180.0],
+                   # M4-A2P-014: the head of the water-steps, where a defeat in the hold retries (not the ceremony)
+                   "Steps": [cx, 0.0, cz + hz - 2.0, 180.0]},
         "marks": {"vows": [cx, 0.0, cz - hz + 5.5, 0.0], "tobin_falls": [cx + 1.5, 0.0, cz - hz + 6.0, 0.0],
                   "kerrid_steps": [cx, 0.0, cz + hz - 0.8, 0.0], "barge_deck": [cx, DECK_Y, cz + hz + 10.0, 180.0],
-                  "merel_gate": [cx + 4.0, DECK_Y, cz + hz + 14.6, 180.0]},
+                  "merel_gate": [cx + 4.0, DECK_Y, cz + hz + 14.6, 180.0],
+                  # M4-A2P-014: the party among the guests before the dais (C1, C2; W04 frames them as one)
+                  **{f"court_{h}": [r3(cx - 2.6 + 1.3 * k), 0.0, r3(cz - 1.0 + 0.4 * (k % 2)), 0.0]
+                     for k, h in enumerate(("asha", "toma", "rhen", "ysolde", "liss"))},
+                  "court_kerrid": [cx + 4.2, 0.0, cz + 0.6, 330.0]},
         "actors": {},
-        "shots": {"W01": {"pos": [cx, 2.4, cz + hz - 2.0], "look_at": [cx, 1.4, cz - hz + 3.0], "fov": 45}},
+        "shots": {"W01": {"pos": [cx, 2.4, cz + hz - 2.0], "look_at": [cx, 1.4, cz - hz + 3.0], "fov": 45},
+                  # M4-A2P-014 (docs/kb/plan/act2/chapters/ch14.md §4): C1 the dais (Sefir, Merel and Tobin, the
+                  # Conclave's gallery above); C2 the trap from the Conclave's gallery, then the party as heretics
+                  # (hold); C3 Tobin and Merel, close and low; C4 the cut rope and the first ripple on the mirror,
+                  # then Kerrid on the water-steps from the barge, last aboard
+                  "W02": {"pos": [4.44, 1.78, -12.85], "look_at": [0.0, 1.6, -19.5], "fov": 45},
+                  "W03": {"pos": [-11.38, 4.29, -21.01], "look_at": [0.0, 0.5, -12.0], "fov": 50},
+                  "W04": {"pos": [0.0, 1.77, -18.49], "look_at": [0.0, 1.4, -13.0], "fov": 45},
+                  "W05": {"pos": [3.09, 0.54, -15.46], "look_at": [1.5, 0.6, -18.0], "fov": 40},
+                  "W06": {"pos": [3.48, 0.98, 0.11], "look_at": [0.0, -0.5, 6.0], "fov": 50},
+                  "W07": {"pos": [0.0, 0.86, 5.18], "look_at": [0.0, 1.4, -0.8], "fov": 40}},
+        # M4-A2P-014: the field before the ceremony (the entry, the colonnade) and the steps down to the barge
+        "camera_volumes": [
+            {"id": "Entry", "mode": "pan_follow", "at": [cx + hx - 4.0, 1.5, cz + 9.5], "size": [10.0, 4.0, 8.0],
+             "pos": [cx + hx + 2.0, 4.5, cz + 16.0], "look_at": [cx + hx - 6.0, 0.5, cz + 7.0], "fov": 50,
+             "priority": 2},
+            {"id": "Colonnade", "mode": "pan_follow", "at": [cx, 1.5, cz], "size": [2 * hx, 4.0, 2 * hz],
+             "pos": [cx + 8.0, 6.0, cz + hz + 2.0], "look_at": [cx, 0.5, cz - 2.0], "fov": 50, "priority": 1},
+            {"id": "Barge", "mode": "pan_follow", "at": [cx, 0.5, cz + hz + 8.0], "size": [8.0, 4.0, 14.0],
+             "pos": [cx, 4.5, cz + hz - 5.0], "look_at": [cx, -0.5, cz + hz + 10.0], "fov": 50, "priority": 2}],
+        "variants": [{"when": {"unset": ["ch14_declared_heretics"]}, "hide": ["CeremonyLampsFallen"]},
+                     {"when": {"set": ["ch14_declared_heretics"]}, "hide": ["CeremonyLamps"],
+                      "show": ["CeremonyLampsFallen"]}],
         "triggers": [{"id": "barge", "activation": "touch", "at": [cx, DECK_Y, cz + hz + 12.0], "size": [3.0, 0, 3.0],
                       "payload": {"beat": "escape"}, "yaw": 0.0}],
     }

@@ -1,0 +1,25 @@
+// Ch10 camp (optional, the rest point on the root-walk platform before Reedhollow). Rhen and Pell. Pell watched Ressa
+// go into the sea and did not turn around; Rhen carries Kell's wick and has not lit it. Two people holding something
+// they can't use yet. The cost (pillar 6): Pell knows what watching cost him, and would do it again. Never mention the
+// wick's payoff (it stays unburned until Act III's E7). Sets ch10_camp_talk.
+title: ch10_camp_what_you_carry
+location: ch10/ossa_fen
+---
+Rhen [neutral]: You're still up. #line:ch10_camp_001
+Pell [neutral]: The fen is loud at night. Frogs. The water under the roots. I like to hear it. #line:ch10_camp_002
+Rhen [neutral]: Can I ask you something? Your shell. Why's it blank? #line:ch10_camp_003
+Pell [neutral]: When one of us goes into the sea, the clutch turns its back and sings. So the one going does not look back at us. #line:ch10_camp_004 #long
+Pell [neutral]: I did not turn around. #line:ch10_camp_005
+Rhen [sad]: Why not? #line:ch10_camp_006
+Pell [neutral]: When a thing is given, somebody should see it given. Otherwise it is only gone. #line:ch10_camp_007
+Pell [neutral]: So they took my name. That is fair. I knew it would cost that. #line:ch10_camp_008
+Rhen [neutral]: Would you do it again? #line:ch10_camp_009
+Pell [neutral]: Yes. #line:ch10_camp_010
+Pell [neutral]: You keep a tin at your belt. You touch it when you think nobody sees. #line:ch10_camp_011
+Rhen [soft_smile]: Everybody sees, apparently. #line:ch10_camp_012
+Rhen [neutral]: It's a wick. My mother's. Kell's. She gave it to me before I went under. I haven't lit it. #line:ch10_camp_013
+Pell [neutral]: You are waiting for the right thing to light it for. #line:ch10_camp_014
+Rhen [neutral]: Something like that. #line:ch10_camp_015
+Pell [neutral]: You will know it. It will cost you something. That is how you will know. #line:ch10_camp_016
+<<set $ch10_camp_talk = true>>
+===

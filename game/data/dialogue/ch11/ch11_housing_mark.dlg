@@ -1,0 +1,54 @@
+// Ch11 B03 "The housing-mark" (E, 3 min, ~150 words). act2_ch11.md §2 B03. L03: Liss wipes the verdigris off
+// a conduit housing: the Saltwright mark, a circle, three slanted lines, two seats side by side (pair-built).
+// V04: the same mark on Rhen's lantern collar (M3-ENV-719); she holds out her hand and he gives it to her.
+// RULE 5: Liss asks; the admission is Rhen's. V05: to Liss, Dace is a legend of her people. Then the anger.
+// V06: she shoves the lantern back into his chest and walks off; stops at the court's edge without turning.
+// V07: the others heard it all; nobody speaks. Asha's hand moves to her comb and STOPS (sweep-G B3: nothing
+// connects the lantern to the man with the comb before Ch15; a hand that moves and stops, nothing more).
+title: ch11_housing_mark
+location: ch11/sunken_vey
+---
+@letterbox on
+// V10 is lowlight.md's L03 (the conduit court), renamed off the greybox's L03 (act2_ch11_direction.md).
+@camera V10
+@anim liss wipe conduit_mark
+@wait 2.0
+@camera V04
+@anim liss look_at rhen_lantern
+@anim liss hold_out_hand rhen
+@wait 2.0
+@anim rhen give liss
+<<if $ch06_liss_read_lantern>>
+    Liss [cold]: I told you on the shoals it was wright work. #line:ch11_mark_001
+<<endif>>
+Liss [neutral]: Same hand. Same seats. Pair-built. This mark's older than you. Whose is it? #line:ch11_mark_002 #tn:"'Seats' and 'pair-built': wright terms; the lantern was made as one of a pair."
+Rhen [smile]: Told you. Somebody who liked oil. #line:ch11_mark_003
+Liss [cold]: Don't. #line:ch11_mark_004
+@wait 2.0
+Rhen [sad]: Dace Sallow. My father. #line:ch11_mark_005
+<<if $ch08_liss_found_marks>>
+    Rhen [sad]: I nearly said it at Coilspire. #line:ch11_mark_006
+<<endif>>
+@camera V05
+@wait 1.5
+Liss [angry]: Your father built a ship nobody can fly. You hid his name in your sleeve. Real proud family, Sallow. #line:ch11_mark_007
+Rhen [angry]: I didn't hide it. Nobody asked. #line:ch11_mark_008
+Liss [angry]: I asked. On the shoals. I asked you whose it was. #line:ch11_mark_009
+@wait 1.5
+Rhen [grief]: He left. That's what I know about him. He went up the coast and didn't come back. #line:ch11_mark_010
+Rhen [grief]: You lot got the legend. I got a lantern on a hook. #line:ch11_mark_011
+@camera V06
+@anim liss shove_lantern rhen
+@mark liss court_edge walk
+@music silence fade=1.5
+@wait 2.0
+Liss [grief]: He was the best of us. Everybody says. And you're sitting on his name like it's a debt. #line:ch11_mark_012
+@mark liss gallery_away walk
+@wait 2.0
+@camera V07
+@anim asha touch_hair_stop
+@wait 3.0
+<<set $ch11_rhen_admitted = true>>
+@letterbox off
+@camera release
+===

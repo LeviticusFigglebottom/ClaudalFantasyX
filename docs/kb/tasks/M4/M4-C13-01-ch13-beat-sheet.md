@@ -2,9 +2,8 @@
 id: M4-C13-01
 title: Ch13 "Gold and Lacquer" beat sheet
 role: narrative
-status: blocked
-blocked-by: ADR 0041
-owner_session: ""
+status: review
+owner_session: "act2 story track (claude/act2-plan, ADR 0205)"
 depends_on: [M4-C12-01]
 reviewer: cinematics
 milestone: M4

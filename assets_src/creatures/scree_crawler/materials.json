@@ -1,5 +1,5 @@
 {
-  "_doc": "Scree crawler (act2/variants.md): the slag tortoise's slots. The crust is frost-split slate scree (dry, rough, rime in the splits) and keeps the spawn_wound neck crack's emission; the skin is shaggier (a finer, deeper detail). Colours are vertex data. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "_doc": "Scree crawler (act2/variants.md): the slag tortoise's slots. The crust is split slate scree (dry, rough, snow packed in the splits and grit between the stones; no frost: ADR 0015, M4-CRE-670) and keeps the spawn_wound neck crack's emission; the skin is shaggier (a finer, deeper detail). Colours are vertex data. write_materials.py on game/shaders/creature/creature.gdshader.",
   "slots": {
     "crust": {
       "roughness_dry": 0.82,

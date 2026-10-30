@@ -43,6 +43,7 @@ func set_read(text: String) -> void:
 	_read.text = text
 	_read.visible = text != ""
 	_read.custom_minimum_size.x = _inner_width()
+	_fit_read()
 
 
 func header_text() -> String:
@@ -66,6 +67,7 @@ func set_rows(rows: Array[Dictionary]) -> void:
 	for i in rows.size():
 		_fill(_rows[i], rows[i])
 		_row_ids.append(StringName(str(rows[i].get("id", ""))))
+	_fit_read()
 
 
 ## The tag shown on diver `id`'s row ("" when none or no such row).
@@ -127,11 +129,44 @@ func _fill(row: HBoxContainer, d: Dictionary) -> void:
 	)
 	var tag := row.get_child(4) as Label
 	tag.text = str(d.get("tag", ""))
+	_fit_row(row)
 	var role := StringName(str(d.get("tag_role", "")))
 	if role == &"":
 		tag.remove_theme_color_override(&"font_color")
 	else:
 		tag.add_theme_color_override(&"font_color", get_theme_color(role, HymnThemeBuilder.PALETTE_TYPE))
+
+
+## Fixed cells sized for 100 % text: at 130 % a long name, band, count or tag shrinks a little to fit (the Lead's
+## final-quality pass); the tag fits what the fixed cells leave of the panel's inner width.
+func _fit_row(row: HBoxContainer) -> void:
+	for i: int in [0, 1, 3]:
+		HudLayout.fit_label(row.get_child(i) as Label, (row.get_child(i) as Control).custom_minimum_size.x)
+	var used := 0.0
+	for i in 4:
+		used += (row.get_child(i) as Control).custom_minimum_size.x + row.get_theme_constant(&"separation")
+	HudLayout.fit_label(row.get_child(4) as Label, _inner_width() - used)
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_THEME_CHANGED:
+		for row in _rows:
+			_fit_row(row)
+		_fit_read()
+
+
+## At 130 % text the rows grow, and the panel grew past its rect into the drop panel below. The wrapped read line
+## takes what the header and rows leave of the rect, its font shrinking a little to fit (HudLayout.fit_lines).
+func _fit_read() -> void:
+	if _read == null or not _read.visible:
+		return
+	_read.remove_theme_font_size_override(&"font_size")
+	_read.size.x = _inner_width()
+	var sb := get_theme_stylebox(&"panel")
+	var sep := float(_box.get_theme_constant(&"separation"))
+	var others := _box.get_combined_minimum_size().y - _read.get_combined_minimum_size().y - sep
+	var room := HudLayout.rect_of(_m).size.y - (sb.get_minimum_size().y if sb != null else 0.0) - others
+	HudLayout.fit_lines(_read, room)
 
 
 func _label(variation: StringName) -> Label:

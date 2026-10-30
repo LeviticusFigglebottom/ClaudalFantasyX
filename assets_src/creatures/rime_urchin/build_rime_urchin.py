@@ -5,12 +5,14 @@ blender --background --factory-startup --threads 4 --python \
     --out assets/creatures/rime_urchin/rime_urchin.glb
 
 A long-spined sea urchin from the cold well-water of the Vey: a 0.9 m test bristling with spines up to twice its
-radius, longest on top, sitting on a plinth of ice it has made. Its one exaggeration is the rime, which grows on its
-spines even underwater. The test is `abyss_navy` (lifted onto the albedo floor with `deep_teal_shadow`), the spines
-`deep_teal_shadow` at the root going `salt_glass` and, where the rime is thickest, toward `foam_white` (held under the
-albedo ceiling). The tube feet are `bone`. The mouth underneath, glimpsed when it rolls, is the weak point: its five
-teeth and the ring round them are `spawn_wound` on the body slot's emission mask. The plinth is ice: `salt_glass`
-frosted toward `foam_white`, its own slot.
+radius, longest on top, sitting on a mound of salt-glass it has grown. Its one exaggeration is the salt crust that
+grows on its spines even underwater: salt-glass, not ice (ADR 0015: nothing is frozen in Lowlight; the Lead,
+2026-10-30, as ADR 0204 §2 did for the Ch12 regulars). The name `rime` is the encounter data's. The test is
+`abyss_navy` (lifted onto the albedo floor with `deep_teal_shadow`), the spines `deep_teal_shadow` at the root going
+`salt_glass` and, where the crust is thickest, toward a pale salt (`salt_glass` toward `bone`). The tube feet are
+`bone`. The mouth underneath, glimpsed when it rolls, is the weak point: its five teeth and the ring round them are
+`spawn_wound` on the body slot's emission mask. The mound is salt-glass, glossy and clear-green, bloomed with salt on
+top: its own slot, `glass`.
 
 Rig (10 bones): root (the plinth, never moves), `body` (the test, pivoting at its centre) and the spine field's eight
 sectors `sector_0`..`sector_7` (by azimuth from the front, counter-clockwise seen from above). A spine is skinned to
@@ -33,11 +35,11 @@ import creature_kit as ck  # noqa: E402
 
 SEED = 6273
 PAL = {k: ck.hexrgb(v) for k, v in {
-    "abyss_navy": "#061A2B", "deep_teal_shadow": "#0E4A55", "salt_glass": "#BFE6E0", "foam_white": "#EEF6F4",
+    "abyss_navy": "#061A2B", "deep_teal_shadow": "#0E4A55", "salt_glass": "#BFE6E0",
     "bone": "#E6DAC0", "spawn_wound": "#3FE0C8", "lacquer_black": "#1D1916",
 }.items()}
 TEST_COL = ck.mix(PAL["abyss_navy"], PAL["deep_teal_shadow"], 0.3)  # abyss_navy, lifted onto the albedo floor
-RIME = ck.mix(PAL["salt_glass"], PAL["foam_white"], 0.3)  # the brightest rime: foam_white held under the ceiling
+RIME = ck.mix(PAL["salt_glass"], PAL["bone"], 0.35)  # the salt crust: salt-glass going to a pale salt, not frost
 
 PLINTH_H = 0.14
 TEST_R = (0.45, 0.36, 0.45)  # 0.9 m across, a little flattened like every urchin
@@ -174,7 +176,7 @@ def tube_feet(mesh: ck.Mesh, rig: ck.Rig) -> None:
 
 
 def plinth(mesh: ck.Mesh, rig: ck.Rig) -> None:
-    """The ice it has made: a low, lumpy disc, frosted on top."""
+    """The salt-glass it has grown: a low, lumpy mound, glossy and clear-green, bloomed with salt on top."""
     segs = 28
     prof = [(0.0, PLINTH_H + 0.004), (0.25, PLINTH_H), (0.48, PLINTH_H - 0.01), (0.6, PLINTH_H - 0.045),
             (0.66, 0.06), (0.64, 0.0), (0.0, 0.0)]
@@ -190,12 +192,12 @@ def plinth(mesh: ck.Mesh, rig: ck.Rig) -> None:
     out = P[T].mean(axis=1) - np.array([0.0, PLINTH_H * 0.5, 0.0])
     bad = (fn * out).sum(axis=1) < 0
     T[bad] = T[bad][:, ::-1]
-    frost = ck.smoothstep(PLINTH_H - 0.05, PLINTH_H, P[:, 1]) * ck.smoothstep(-0.2, 0.3, ck.fbm(P * 12.0, SEED + 5))
+    bloom = ck.smoothstep(PLINTH_H - 0.05, PLINTH_H, P[:, 1]) * ck.smoothstep(-0.2, 0.3, ck.fbm(P * 12.0, SEED + 5))
     col = ck.mix(ck.mix(PAL["salt_glass"], PAL["deep_teal_shadow"], 0.25), PAL["salt_glass"],
                  ck.smoothstep(0.0, PLINTH_H, P[:, 1])[:, None])
-    col = ck.mix(col, RIME, frost[:, None])
+    col = ck.mix(col, RIME, (0.8 * bloom)[:, None])
     start = mesh.count
-    ck.finish(mesh, P, T, "ice", col, rig.rigid("root"), wet=0.5 - 0.4 * frost, cavity=0.1)
+    ck.finish(mesh, P, T, "glass", col, rig.rigid("root"), wet=0.8 - 0.5 * bloom, cavity=0.1)
     mark("plinth", mesh, start)
 
 
@@ -218,6 +220,10 @@ CAST_SEC = 1.4
 CAST_CONTACT = 0.8
 HIT_SEC = 0.45
 KO_SEC = 2.0
+KO_SPLAY = 50.0  # degrees the dead spines fall open
+KO_SLUMP = (0, -0.06, 0)  # the test sinks onto its mound
+KO_TIP = 8.0  # and tips (degrees about z)
+KO_LIFT = 0.32  # metres the splayed spines' tips lift, keeping the low ones off the floor
 
 
 def lean_out(k: int, a: float) -> tuple:
@@ -260,7 +266,7 @@ def build_attack() -> ck.Clip:
 
 
 def build_cast() -> ck.Clip:
-    c = ck.Clip("cast", CAST_SEC)  # every spine turns to the target and the frost blooms along them (VFX)
+    c = ck.Clip("cast", CAST_SEC)  # every spine turns to the target and the salt crusts along them (VFX)
     for t, s, rx in ((0.0, 0.0, 0.0), (0.5, 1.0, 5.0), (CAST_CONTACT, 1.1, 6.0), (1.05, 1.0, 5.0),
                      (CAST_SEC, 0.0, 0.0)):
         c.key("body", t, (rx, 0, 0))
@@ -279,14 +285,18 @@ def build_hit() -> ck.Clip:
 
 
 def build_ko() -> ck.Clip:
-    c = ck.Clip("ko", KO_SEC)  # a last clench, then the spines droop and the test settles on its ice
+    # a last clench, then the spines fall open flat round the test like a dead urchin's and the test slumps on its mound,
+    # tipped toward the camera. Splayed, not drooped: at 22 degrees it barely differed from the idle at battle distance
+    # (the Act II plan sheet); the ball of spines becomes a flat star
+    c = ck.Clip("ko", KO_SEC)
     for t, a, loc, rz in ((0.0, 0.0, (0, 0, 0), 0.0), (0.2, -9.0, (0, 0.01, 0), 0.0),
-                          (0.9, 16.0, (0, -0.03, 0), 3.0), (1.4, 21.0, (0, -0.04, 0), 5.0),
-                          (KO_SEC, 22.0, (0, -0.04, 0), 5.0)):
+                          (0.7, KO_SPLAY * 0.55, (0, -0.03, 0), 4.0), (1.2, KO_SPLAY * 1.06, KO_SLUMP, 9.0),
+                          (1.5, KO_SPLAY, KO_SLUMP, KO_TIP), (KO_SEC, KO_SPLAY, KO_SLUMP, KO_TIP)):
         c.key("body", t, (0, 0, rz), loc)
         for k in range(SECTORS):
             droop = a * (1.0 if a < 0 else 0.85 + 0.15 * math.cos(sector_phi(k) * 3.0))
-            c.key(f"sector_{k}", t, lean_out(k, droop))
+            # the tips lift as they fall open (the roots stay on the test), so the low spines lie on the floor, not in it
+            c.key(f"sector_{k}", t, lean_out(k, droop), (0, KO_LIFT * max(a, 0.0) / KO_SPLAY, 0))
     return c
 
 

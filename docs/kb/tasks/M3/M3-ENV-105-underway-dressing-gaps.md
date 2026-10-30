@@ -3,8 +3,8 @@ id: M3-ENV-105
 title: "The Underway: walls off the greybox's wall lines (walk-through), the cut gauge wheel's hub, a check"
 priority: high
 role: environment
-status: todo
-owner_session: ""
+status: review
+owner_session: "env-art (claude/env-art, 2026-10-29)"
 depends_on: [M3-ENV-741]
 reviewer: cinematics
 milestone: M3
@@ -34,5 +34,8 @@ The Lead's ruling (10-28): env-art's zone dressings win the zone. Slice-polish m
 - [ ] **A check:** the old layout also laid the galleries' podium as seafloor cells with a lip and an open stairwell,
       seagrass, a sand drift through a breach in the east wall, and the dead ship's ribs to the east. If yours leaves
       any out on purpose, say so. Slice-polish re-renders ch01_underway_gallery and ch01_underway_crown on yours.
+
+## Done (env-art)
+- MERGE-READY @ df2c8384a (2026-10-28): every Underway wall read from its greybox block, the cut gauge wheel on GaugeWheelCut, `tools/tests/test_underway_walk.py`. Details in env-art's live log; re-checked on the 10-29 walk-through (the rooms are walled where the walk stops).
 
 ## Review log

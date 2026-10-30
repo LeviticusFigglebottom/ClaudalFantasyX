@@ -47,6 +47,8 @@ AI_CONDITIONS = {"self_hp_below_pct", "turn_mod", "foe_has_status", "allies_aliv
 # every living active ally but the user (Shallows Verse: a song for the others, never the singer).
 SKILL_ONLY_TARGETS = {"all_other_allies"}
 SKILL_ONLY_TARGETS.add("ward")  # M3-CMB-01: a set piece's ward entry (the Climb), set_piece_battles.md
+AI_TARGETS.add("broken_ally")  # M4-A2P-022 (BattleParts): the first living ally with a broken part
+AI_CONDITIONS.update({"ally_part_broken", "ally_struck"})  # M4-A2P-022: bool args
 STAT_KEYS = {"level", "hp", "mp", "strength", "magic", "defense", "magic_defense",
              "agility", "accuracy", "evasion", "luck"}
 CANON_STATUSES = {"poison", "sleep", "silence", "darkness", "petrify", "slow", "haste", "stop",
@@ -189,6 +191,12 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
         for key in ("power", "mp_cost", "accuracy", "delay_ranks"):
             if key in s and (not isinstance(s[key], int) or s[key] < 0):
                 rep.err(f"{w}: '{key}' must be a non-negative int")
+        if "drain_pct" in s and (not isinstance(s["drain_pct"], int) or not 1 <= s["drain_pct"] <= 100):
+            rep.err(f"{w}: 'drain_pct' must be an int in 1..100 (M4-CMB-1001)")
+        if "root_turns" in s and (not isinstance(s["root_turns"], int) or s["root_turns"] < 1):
+            rep.err(f"{w}: 'root_turns' must be a positive int (M4-A2P-020)")
+        if "restores_part" in s and not isinstance(s["restores_part"], bool):
+            rep.err(f"{w}: 'restores_part' must be a bool (M4-A2P-022)")
         if not isinstance(s.get("magic", False), bool):
             rep.err(f"{w}: 'magic' must be a bool")
         if "name_key" not in s:
@@ -251,6 +259,15 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
             rep.err(f"{w}: currency must be a non-negative int")
         if "delay_immune" in e and not isinstance(e["delay_immune"], bool):
             rep.err(f"{w}: delay_immune must be true or false")
+        if "answered_by" in e and e["answered_by"] not in char_ids:  # M4-A2P-023
+            rep.err(f"{w}: answered_by '{e['answered_by']}' is not a character")
+        for ph in e.get("phases", []):
+            if "when_down" in ph and ph["when_down"] not in enemy_ids:
+                rep.err(f"{w}: phase {ph.get('id')} when_down '{ph['when_down']}' is not an enemy")
+        charged = {str(s.get("charge", {}).get("skill")) for s in skills if s["id"] in own and s.get("charge")}
+        for part in e.get("parts", []):  # M4-A2P-022: a part is a charge one of its own skills gathers
+            if part not in charged:
+                rep.err(f"{w}: part '{part}' is not the charge of one of its skills")
         for d in e.get("drops", []):
             if not isinstance(d, dict) or d.get("item") not in item_ids:
                 rep.err(f"{w}: drop {d!r} names an unknown item (game/data/items/items.json)")
@@ -299,6 +316,8 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
 
 
 def _ai_arg_ok(cond: str, arg: object, status_ids: set[str]) -> bool:
+    if cond in ("ally_part_broken", "ally_struck"):
+        return isinstance(arg, bool)
     if cond == "turn_mod":
         return (isinstance(arg, list) and len(arg) == 2 and all(isinstance(x, int) for x in arg)
                 and arg[0] > 0 and 0 <= arg[1] < arg[0])
@@ -2026,6 +2045,7 @@ BOSS_PHASE_STATS = {"strength", "magic", "defense", "magic_defense", "agility", 
 BOSS_PHASE_KEYS = {"id", "at_hp_pct", "name_key", "prompt_key", "skills", "ai", "affinities", "stats",
                    "delay_immune", "field", "spawn", "remove"}
 BOSS_PHASE_KEYS |= {"untargetable", "damage_immune", "spawn_bound", "field_rules"}  # M3-CMB-01 (set pieces)
+BOSS_PHASE_KEYS.add("when_down")  # M4-A2P-023: the phase comes when that enemy is down (BattleParts)
 
 
 def _boss_ai_errors(ai: object, w: str, own: set[str], status_ids: set[str]) -> list[str]:
@@ -2230,6 +2250,11 @@ def _vowbound_row_errors(r: dict, skills: dict[str, dict], char_ids: set[str], l
                 errs.append(f"{w}: unknown skill '{sid}'")
             elif skills[sid].get("swell") is True:
                 errs.append(f"{w}: '{sid}' is a Swell technique; name it in swell.technique")
+    if "sfx_pending" in r and (not isinstance(r["sfx_pending"], str) or not r["sfx_pending"].strip()):
+        errs.append(f"{w}: sfx_pending must name the audio task")  # M4-A2P-024: a row ahead of its voice
+    cyc = r.get("cycle", [])  # M4-A2P-025 (BattleCycle): one of its own skills per element, in order
+    if not isinstance(cyc, list) or any(s not in (sk or []) for s in cyc) or len(set(cyc)) != len(cyc):
+        errs.append(f"{w}: cycle must list distinct skills of its own")
     aff = r.get("affinities", {})
     if not isinstance(aff, dict) or any(k not in ELEMENTS - {"none"} or v not in AFFINITIES for k, v in aff.items()):
         errs.append(f"{w}: affinities must map elements to one of {sorted(AFFINITIES)}")

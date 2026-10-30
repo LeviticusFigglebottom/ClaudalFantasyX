@@ -26,10 +26,14 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[3]
 sys.path.insert(0, str(HERE))
 
+sys.path.insert(0, str(HERE.parent.parent))
+import zone_edges  # noqa: E402
 import ov_cabins as ocab  # noqa: E402
+import ov_common as oc  # noqa: E402
 import ov_heroes as oh  # noqa: E402
 import ov_hulls as ohl  # noqa: E402
 import ov_preview_layout as pl  # noqa: E402  (put, local, bridge, gull; read-only)
+import ov_props as opr  # noqa: E402  (GULL_POST_H)
 
 GREYBOX = ROOT / "game" / "levels" / "ch01" / "oruvel" / "oruvel_layout.json"
 OUT = ROOT / "assets" / "environments" / "zones" / "ch01" / "oruvel_dressing.json"
@@ -51,6 +55,17 @@ STORM_ENV_RES = "res://assets/environments/zones/ch01/oruvel_ch01_storm_environm
 PREVIEW_STORM = PREVIEW.parent / "oruvel_dressed_storm.tscn"
 PREVIEW_STORM_SHOTS = ("O12", "O16")
 STORM_FAR_M = pl.STORM_FAR_M
+CHANDLERY_GULL_Z = 0.9  # the chandlery's ridge gull, in the hull's frame (ov_preview_layout's)
+CHANDLERY_EAVE_M = 2.22  # its eave over its deck (ov_heroes.build_chandlery)
+CHANDLERY_BEACON_Z = -1.8  # its beacon lantern's post, off the keel-roof's fore end (the hull's frame)
+CHANDLERY_BEACON_UP_M = 0.12 + 1.2 + 0.3  # the post's foot over the roof, its height, the lantern's middle
+GULL_PERCH_M = 0.08  # a gull's feet over the ridge line
+LOW_HULL_LOAD_Y = -0.05  # the salvage on the run's planks over LowHull (the bridge sags 0.15 m mid-span)
+LOW_HULL_KEEL_Y = 0.24  # hull_outrigger's keel is 0.31 m under its origin; the run's bridge sags 0.07 m where it lies
+# Canoes moored in open water beside the decks, clear of every plank (x, z, yaw): the town's boats, now that the
+# mooring rafts are tucked.
+MOORED = ((9.6, 10.0, 0.0), (-20.0, -21.5, 180.0), (30.0, 2.6, 90.0))
+LOW_HULL_LOAD_SCALE = 0.65  # 2.0 x 1.5 m: inside LowHull's 2 x 3 m footprint, turned across the run
 
 
 def _blocks() -> dict[str, dict]:
@@ -59,12 +74,13 @@ def _blocks() -> dict[str, dict]:
 
 def raft_over(block: dict, *, cx: float | None = None, cz: float | None = None, dx: float = 0.0,
               dz: float = 0.0) -> dict:
-    """A raft_deck, scaled so its deck covers (size_x + dx) by (size_z + dz), sunk so its deck is at y 0."""
+    """A raft deck, scaled so its deck covers (size_x + dx) by (size_z + dz), sunk so its deck is at y 0. Tucked: every
+    mooring raft abuts a bridge or a deck, and an open raft's bows rise through them (the human's playtest, 10-30)."""
     sx, sz = block["size"][0] + dx, block["size"][2] + dz
     s = max(sx / RAFT_DECK[0], sz / RAFT_DECK[1], 1.0)
     x = block["pos"][0] if cx is None else cx
     z = block["pos"][2] if cz is None else cz
-    d = pl.put("raft_deck", x, -ohl.RAFT_DECK_Y * s, z, 0.0)
+    d = pl.put("raft_deck_tucked", x, -ohl.RAFT_DECK_Y * s, z, 0.0)
     if s > 1.0:
         d["scale"] = round(s, 3)
     return d
@@ -98,18 +114,25 @@ def pieces() -> list[dict]:
     # north edge; the cabin with the child on its roof, the cook's boat, the menders' nets.
     for i, x in enumerate((-13.5, -4.5, 4.5, 13.5)):
         for j, z in enumerate((-3.5, -10.5, -17.5)):
-            # Every other deck turned end for end (the same footprint), so the deck props don't repeat in rows.
-            out.append(pl.put("raft_deck", x, WATER_Y + 0.004 * ((i + j) % 2), z, 180.0 * ((i + j) % 2)))
-        out.append(pl.put("raft_deck_small", x - 1.5, -ohl.RAFT_SMALL_Y + 0.008, -22.6, 0.0))
-        out.append(pl.put("raft_deck_small", x + 3.0, -ohl.RAFT_SMALL_Y + 0.012, -22.6, 0.0))
+            # Every other deck turned end for end (the same footprint), so the deck props don't repeat in rows. The
+            # tucked decks keep their hulls under their own planks: an open raft's bows would rise through the next
+            # deck (the walk-through, 2026-10-29).
+            out.append(pl.put("raft_deck_tucked", x, WATER_Y + 0.004 * ((i + j) % 2), z, 180.0 * ((i + j) % 2)))
+        out.append(pl.put("raft_deck_small_tucked", x - 1.5, -ohl.RAFT_SMALL_Y + 0.008, -22.6, 0.0))
+        out.append(pl.put("raft_deck_small_tucked", x + 3.0, -ohl.RAFT_SMALL_Y + 0.012, -22.6, 0.0))
     roof = b["CabinRoof"]
-    s = round((roof["pos"][1] + roof["size"][1] * 0.5) / ocab.KEELROOF_RIDGE_Y, 3)  # its ridge at the roof's top
-    out.append(decor("cabin_keelroof", roof["pos"][0], 0.0, roof["pos"][2], 90.0, scale=s))
-    out.append(pl.put("cookboat", -19.6, WATER_Y, -6.0, 0.0))
+    # Its ridge under the roof child's feet (the cast stands her on it; the greybox block's top is 1 m lower).
+    s = round(_actor("roof_child")[1] / ocab.KEELROOF_RIDGE_Y, 3)
+    cab = decor("cabin_keelroof", roof["pos"][0], 0.0, roof["pos"][2], 90.0, scale=s)
+    out.append(cab)
+    out.append(ridge_gull(cab, s))
+    # The cook's boat off the commons' south-west corner, clear of the outer mooring's raft (it lay 0.8 m into it).
+    out.append(pl.put("cookboat", -20.3, WATER_Y + 0.25, -1.5, 0.0))  # riding high: no sea inside her
     out.append(decor("net_frame", 15.4, 0.0, -7.0, 0.0))
     out.append(decor("salvage_heap", 16.0, 0.0, -18.5, 30.0))
     out.append(decor("salvage_heap", -16.5, 0.0, -13.0, 200.0))
     out.append(pl.put("hull_outrigger", 19.6, WATER_Y + 0.3, -17.0, 0.0))
+    out += [pl.put("hull_outrigger", x, WATER_Y + 0.3, z, yaw) for x, z, yaw in MOORED]
     # The outer mooring and the *Seventh Terrace* west of it: her name-board where the greybox's NameBoard is (O07).
     out.append(span((-18.0, -12.0), (-21.0, -12.0)))
     om = b["OuterMooring"]
@@ -129,28 +152,40 @@ def pieces() -> list[dict]:
     out.append(pl.put("keel_hull", 0.0, -oh.KEEL_DECK_Y, kz, 90.0))
     gx, gz = pl.local(0.0, kz, 90.0, 0.0, 6.7)
     out.append(pl.gull(gx, oh.KEEL_HULL_RIDGE - oh.KEEL_DECK_Y, gz, 1.35))
-    for x in (-4.5, 4.5):
-        out.append(pl.put("raft_deck", x, WATER_Y + 0.006, -30.0, 0.0))
+    for x in (-4.5, 4.5):  # tucked: an open raft's bows rose through the commons' north decks and the bridge
+        out.append(pl.put("raft_deck_tucked", x, WATER_Y + 0.006, -30.0, 0.0))
     # Kell's mooring (east): the chandlery's hull with its counter where the greybox's stall is (Kell, O09), the
     # mooring's raft south of it, the bridges.
     out.append(span((18.0, -6.0), (25.0, -6.0)))
     sm = b["SecondMooring"]
     out.append(raft_over({"pos": [sm["pos"][0], 0.0, sm["pos"][2] + 1.0], "size": [10.0, 1.0, 8.0]}))
     st = b["KellStall"]
-    out.append(pl.put("chandlery", st["pos"][0], -oh.CHANDLERY_DECK_Y, st["pos"][2] - st["size"][2] * 0.5 - 1.7,
-                      -90.0))
+    ch = _chandlery(b)
+    out.append(ch)
+    # Her roof's gull (C1-11: every carved gull cries at once), where the preview sets it on the ridge.
+    gx, gz = pl.local(ch["at"][0], ch["at"][1], ch["yaw_deg"], 0.0, CHANDLERY_GULL_Z)
+    out.append(pl.gull(gx, ch["y"] + oh.CHANDLERY_DECK_Y + CHANDLERY_EAVE_M + oh.CHANDLERY_ROOF[2] + GULL_PERCH_M,
+                       gz))
     out.append(span((35.0, -6.0), (41.0, -6.0), block="DiveBridge"))
     # The dive mooring (the run's start) and the run's planks to the net-pen; the low hull the lashings hold.
     dm = b["DiveMooring"]
     s = round(dm["size"][0] / 6.0, 3)
     out.append(pl.put("dive_raft", dm["pos"][0], -oh.DIVE_DECK_Y * s, dm["pos"][2], 0.0, scale=s))
     dg = b["DiveGull"]
-    out.append(pl.gull(dg["pos"][0], dg["pos"][1] - 0.5, dg["pos"][2]))
+    dgull = pl.gull(dg["pos"][0], dg["pos"][1] - 0.5, dg["pos"][2])
+    out.append(dgull)
+    # Its perch: DiveGull is a marker in the air over the deck, so a pole lashed to the deck carries the gull.
+    out.append(pl.put("gull_post", dgull["at"][0], dgull["y"] - opr.GULL_POST_H, dgull["at"][1], dgull["yaw_deg"]))
     out.append(span((45.0, -10.0), (45.0, -16.0)))
     out.append(span((46.0, -17.0), (40.0, -17.0)))
     out.append(span((40.0, -17.0), (34.0, -17.0)))
     lh = b["LowHull"]
-    out.append(pl.put("hull_outrigger", lh["pos"][0] - 1.0, WATER_Y + 0.3, lh["pos"][2], 0.0, block="LowHull"))
+    # Thrown up across the run's planks (C1-12), its keel on them, not through them (the human's playtest, 10-30).
+    out.append(pl.put("hull_outrigger", lh["pos"][0] - 1.0, LOW_HULL_KEEL_Y, lh["pos"][2], 0.0, block="LowHull"))
+    # Its load (C1-13 cuts it loose across the run's planks): salvage piled over the block, so it reads as cargo
+    # blocking the way, not a canoe; it drifts clear with the block.
+    out.append(pl.put("salvage_heap", lh["pos"][0], LOW_HULL_LOAD_Y, lh["pos"][2], 90.0, scale=LOW_HULL_LOAD_SCALE,
+                      block="LowHull"))
     # The net-pen (Hullgnaw's arena, O16) and its bridge.
     np_ = b["NetPen"]
     out.append(pl.put("net_pen", np_["pos"][0], -ohl.NET_PEN_Y, np_["pos"][2], 0.0))
@@ -159,6 +194,14 @@ def pieces() -> list[dict]:
     for x, z, yaw in ((10.0, -110.0, 0.0), (-95.0, -30.0, 90.0), (115.0, -35.0, -90.0)):
         out.append(pl.put("town_far", x, WATER_Y, z, yaw, lod1_from_m=600.0))
     return out + storm_pieces()
+
+
+def ridge_gull(cab: dict, s: float) -> dict:
+    """The open-throat gull on a keel-roof cabin's ridge (ov_preview_layout.keelroof_cabin's rule, at scale s)."""
+    L, _B, D, eave, sheer = ocab.KEELROOF
+    gz = ocab.KEELROOF_GULL_Z if abs(((cab["yaw_deg"] + 180.0) % 360.0) - 180.0) < 90.0 else -ocab.KEELROOF_GULL_Z
+    gx, gzw = pl.local(cab["at"][0], cab["at"][1], cab["yaw_deg"], 0.0, gz * s)
+    return pl.gull(gx, cab["y"] + oc.keel_roof_ridge(gz, L, D, eave, sheer) * s, gzw)
 
 
 def storm_pieces() -> list[dict]:
@@ -172,10 +215,27 @@ def storm_pieces() -> list[dict]:
     return out
 
 
+def _chandlery(b: dict) -> dict:
+    st = b["KellStall"]
+    return pl.put("chandlery", st["pos"][0], -oh.CHANDLERY_DECK_Y, st["pos"][2] - st["size"][2] * 0.5 - 1.7, -90.0)
+
+
+def _actor(name: str) -> list[float]:
+    a = json.loads(GREYBOX.read_text(encoding="utf-8"))["actors"]
+    r = a[name] if isinstance(a, dict) else next(r for r in a if r.get("id") == name)
+    return r.get("at") or r.get("pos")
+
+
 def storm_lights() -> list[dict]:
-    """Kell's beacon (C1-12): lit in the storm, at the greybox's KellBeacon (the chandlery's roof lantern)."""
-    kb = _blocks()["KellBeacon"]
-    return [{"at": kb["pos"], "energy": 3.0, "range": 9.0, "block": STORM_BLOCK}]
+    """Kell's beacon (C1-12, O12): lit in the storm, in the chandlery's own beacon lantern (the post off its keel-roof's
+    fore end, ov_heroes.build_chandlery), not the greybox's KellBeacon block beside it."""
+    ch = _chandlery(_blocks())
+    rl, rb, rd, rs = oh.CHANDLERY_ROOF
+    eave = oh.CHANDLERY_DECK_Y + CHANDLERY_EAVE_M
+    lamp_y = oc.keel_roof_underside(0.0, CHANDLERY_BEACON_Z, rl, rb, rd, eave, rs) + CHANDLERY_BEACON_UP_M
+    x, z = pl.local(ch["at"][0], ch["at"][1], ch["yaw_deg"], 0.0, CHANDLERY_BEACON_Z)
+    return [{"at": [round(x, 3), round(ch["y"] + lamp_y, 3), round(z, 3)], "energy": 3.0, "range": 9.0,
+             "block": STORM_BLOCK}]
 
 
 def clearance_points() -> list[tuple[str, float, float, float]]:
@@ -214,7 +274,14 @@ def layout() -> dict:
         "fire_lights": storm_lights(),
         "greybox": {"hide_all": True, "keep": []},  # StormWall: the zone stands the UndertowStorm there (M3-ENV-751)
         "pieces": pieces(),
+        # Invisible walls along the walkways over the water (the human's playtest, 10-30).
+        "edge_walls": edge_walls(),
     }
+
+
+def edge_walls() -> list[dict]:
+    lay = json.loads(GREYBOX.read_text(encoding="utf-8"))
+    return zone_edges.walls(lay, zone_edges.hideable_ids(lay))
 
 
 def write_preview(storm: bool = False) -> None:

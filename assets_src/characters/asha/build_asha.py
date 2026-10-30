@@ -192,7 +192,8 @@ def unwrap_faces(ob: bpy.types.Object, mats: set[str], seams: set | None = None,
 
 
 HAND_FOOT_RATIO = 0.3  # the donor's hands and feet are dense (~10.7k tris); cut for the LOD0 budget
-UNDER_SKIRT_RATIO = 0.25  # M1-CHR-15: the legs and hips kept whole under the skirts, cut for the LOD0 budget
+UNDER_LEG_SHARE = 0.6  # GPU QA row 56 (pass 5): the underskirt hem's share of the legs' own weights
+UNDER_SKIRT_RATIO = 0.10  # M1-CHR-15: the legs and hips kept whole under the skirts, cut for the LOD0 budget (0.25 until the denser skirt of the big17 review)
 
 
 def region_of(ob: bpy.types.Object, P0: np.ndarray, reg0: np.ndarray, names: list) -> np.ndarray:
@@ -560,6 +561,17 @@ def nearest_distance(P: np.ndarray, Q: np.ndarray) -> np.ndarray:
     return np.array([kd.find(tuple(map(float, p)))[2] for p in P])
 
 
+def nearest_index(P: np.ndarray, Q: np.ndarray) -> np.ndarray:
+    """Index of the nearest row of Q to each row of P."""
+    from mathutils import kdtree
+
+    kd = kdtree.KDTree(len(Q))
+    for i, q in enumerate(Q):
+        kd.insert(tuple(map(float, q)), i)
+    kd.balance()
+    return np.array([kd.find(tuple(map(float, p)))[1] for p in P], dtype=int)
+
+
 def armpit_helpers(skel: bpy.types.Object, V: np.ndarray, W: np.ndarray, wnames: list) -> tuple:
     """M1-CHR-15, every hero: adds the shoulder correctives (helper_bones) to the skeleton and their weight columns
     after the donor's, and moves part of the underarm skin's upper-arm weight onto them. Returns (W, wnames, arms)."""
@@ -721,10 +733,13 @@ def main() -> int:
         is_skirt = []
         is_torso = []
         is_sash = []
+        is_inner, is_outer = [], []
         for key, p in costume.items():
             if key != "VerseSleeve":
                 opaque.extend(p)
                 is_skirt += [key in SKIRT_PARTS] * len(p.V)
+                is_inner += [key == "SkirtInner"] * len(p.V)
+                is_outer += [key == "SkirtOuter"] * len(p.V)
                 is_torso += [key in TORSO_PARTS] * len(p.V)
                 is_sash += [key == "Sash"] * len(p.V)
         Pc = opaque.varr()
@@ -751,6 +766,21 @@ def main() -> int:
                                               float(bone_head(skel, "DEF-shin.L")[2]),
                                               float(bone_head(skel, "DEF-foot.L")[2]), lm.S, W_legs,
                                               nearest_distance(Pc[hang], V[legs]))
+        # big17 review (a flat white wedge under the skirt): the underskirt takes the weights of the outer skirt over
+        # it (its nearest vertex), so the two layers move as one and the inner never fans out on its own
+        inner = np.array(is_inner, bool)
+        if inner.any():
+            outer = np.array(is_outer, bool)
+            idx = nearest_index(Pc[inner], Pc[outer])
+            W_out = Wc[np.nonzero(outer)[0][idx]]
+            # GPU QA row 56 (pass 5): copied whole, the underskirt was one stiff tube round both legs in the run;
+            # below the knee it leans toward the leg-following weights (UNDER_LEG_SHARE at the hem), so its hem
+            # tracks each leg's stride under the outer skirt without the old wedge
+            pos = np.searchsorted(np.nonzero(hang)[0], np.nonzero(inner)[0])
+            z_knee = float(bone_head(skel, "DEF-shin.L")[2])
+            z_in = Pc[inner, 2]
+            a = UNDER_LEG_SHARE * np.clip((z_knee - z_in) / max(z_knee - float(z_in.min()), 1e-6), 0.0, 1.0)
+            Wc[inner] = (1.0 - a[:, None]) * W_out + a[:, None] * W_legs[pos]
         ob = part_object(opaque)
         apply_weights(ob, Wc, wnames, skel)
         garment_objs.append(ob)

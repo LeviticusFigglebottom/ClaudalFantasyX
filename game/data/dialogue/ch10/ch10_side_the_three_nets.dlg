@@ -1,0 +1,19 @@
+// Ch10 side errand (optional; requires ch10_drowner_defeated and ch10_reached_reedhollow). A Kirru widow asks for the
+// net her mate left in the dead channel. The party brings it; she does not take it. She asks them to lay it at the
+// standing places, the way the Kirru give things back. Sets ch10_returned_net. Kirru speech: literal, no idiom.
+title: ch10_side_the_three_nets
+location: ch10/reedhollow
+---
+<<if $ch10_returned_net>>
+    Kirru as "Kirru widow" [neutral]: It is in the water now. Thank you. #line:ch10_nets_001
+<<else>>
+    Kirru as "Kirru widow" [neutral]: My mate's net is still in the channel. Where the three went. I cannot go there yet. #line:ch10_nets_002
+    -> We'll bring it. #line:ch10_nets_003
+        Rhen [neutral]: We'll bring it back to you. #line:ch10_nets_004
+        Kirru as "Kirru widow" [sad]: Not to me. Bring it to the standing places, and put it in. He will want it. #line:ch10_nets_005
+        Asha [tender]: We will. #line:ch10_nets_006
+        <<set $ch10_returned_net = true>>
+    -> Not now. #line:ch10_nets_007
+        Kirru as "Kirru widow" [neutral]: Then not now. The net will wait. Nets are good at it. #line:ch10_nets_008
+<<endif>>
+===

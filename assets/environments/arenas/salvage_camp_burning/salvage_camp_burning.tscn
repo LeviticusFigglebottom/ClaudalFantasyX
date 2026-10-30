@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3]
+[gd_scene load_steps=30 format=3]
 
 [ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
 [ext_resource type="Shader" path="res://game/shaders/environment/env_sky_low_sun.gdshader" id="2_r"]
@@ -24,6 +24,7 @@
 [ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/wreck_ribs_large.glb" id="22_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/camp_fire_large.glb" id="23_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/camp_fire_small.glb" id="24_r"]
+[ext_resource type="Script" path="res://game/levels/act1/kit_slot_swaps.gd" id="slot_swaps"]
 
 [sub_resource type="ShaderMaterial" id="SkyMat"]
 shader = ExtResource("2_r")
@@ -268,3 +269,7 @@ transform = Transform3D(0.485643, 0.0508571, -0.872677, -0, 0.998306, 0.0581784,
 
 [node name="past_the_brazier" type="Marker3D" parent="CameraHints"]
 transform = Transform3D(0.488603, -0.024351, 0.872166, 0, 0.99961, 0.0279093, -0.872506, -0.0136366, 0.488413, 10.5, 1.4, 4)
+
+[node name="KitSlotSwaps" type="Node" parent="."]
+script = ExtResource("slot_swaps")
+paths = {"bs_brass": "res://game/levels/ch06/brine_shoals/brine_shoals_brass_material.tres", "bs_gold": "res://game/levels/ch06/brine_shoals/brine_shoals_gold_material.tres", "bs_iron": "res://game/levels/ch06/brine_shoals/brine_shoals_iron_material.tres", "bs_lacquer_red": "res://game/levels/ch06/brine_shoals/brine_shoals_lacquer_red_material.tres"}

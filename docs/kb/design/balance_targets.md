@@ -246,3 +246,64 @@ Measured at 1000 seeds (balance_report.md, 2026-10-24 M3-CMB-01):
 | Wave 2 | 53.2 | 54.1 | 87.8 | 100.0 | 44.9 |
 | Wave 3 | 33.2 | 37.3 | 93.0 | 100.0 | 8.4 |
 | The Reach | 0.3 | 12.8 | 80.7 | 86.2 | 0.3 |
+
+### Ch10: the Mangrove Drowner (M4-A2P-010, chapters' combat seat)
+
+The suite runs on the `ch08_seawall` loadout until M4-A2P-019's Ch10 loadout lands; re-run it then. Active Rhen, Asha and
+Toma; Ysolde and Kerrid in reserve. Swell is `good`. Toma's Shell Breaker is the role answer (phase 1 is armoured roots,
+defence 120). The Drowner is level 9, 3,600 HP, strength 14. Phase 2 (`uprooted`) comes at 55%: defence 30, agility 16,
+Root Stomp and a two-turn charged Drowning Grasp.
+
+| Suite | Kind | `naive` | `role_answer` | `smart` | p90 turns |
+|---|---|---|---|---|---|
+| `ch10_mangrove_drowner` | Ch10–Ch16 boss | ≤ 3% (2.5) | 55–80% (71.9) | **report only**, ≥ 30 mean turns (100%, 34.4 turns, 0.75 KOs) | ≤ 80 (46) |
+
+- **`smart` is report only, as for `ch05_cinder_matron`.** With healing, two reserves and items, `smart` won every
+  seed of every tuning tried (1,000 seeds):
+  - lowering steady damage (strength 22 → 11) didn't move it;
+  - nor did raising the charged burst (Drowning Grasp power 20 → 40).
+  - It still costs a careful player about one KO a fight.
+- **The Act II curve's 70–90%** needs the same escalation mechanic the Matron's note asks for (M3-C05-06).
+- **The tuning that mattered:** the fight's length. At 4,800 HP, `role_answer` (which never heals) lost by attrition at
+  every damage level. At 3,600 HP behind defence 120, Shell Breaker's answer carries it.
+
+### Ch10: the Mangrove Drowner on its record row (big20; the Lead 10-30 05:28: one definition, the chapters seat owns the numbers)
+- **Superseded above:** my own row's tune (role answer Toma, Root Lash, Drowning Grasp). There's one row now:
+  battle-presentation's.
+  - Role answer: Ysolde (fire on a fire-weak boss).
+  - Skills: Root Haul (`drowner_drag`), Rising Water, Root Stamp.
+  - Phase `uprooted` at 50%.
+- **Stats changed:**
+  - HP 5200 → 2200, strength 30 → 11, magic 20 → 8, defence 60 → 200.
+  - `uprooted` defence 36 → 160.
+- **Why:**
+  - Ysolde's Ember costs 4 MP, and the role play never uses items, so her fire must finish it inside her MP.
+  - The physical wall (defence 200, then 160) keeps a naive basic-attack party out.
+- **The ease floor** drops to 20 turns: the record row is the shorter fight.
+- **Results** (1,000 seeds, `ch08_seawall`):
+  - naive 1.1, role_answer 62.1, smart 100 (about 24 turns, report only).
+  - **naive_swell 100** (report only): a player who fills the Swell overpowers it. Watch this once the Ch10 loadout
+    lands.
+
+### Act II creature bosses: the combat seat's tune for battle-presentation's PROVISIONAL rows (1dbfed6d5)
+
+- **Status: applied** on the record rows (big20), with suites `ch11_lamp_engine`, `ch12_avalanche_ram` and
+  `ch15_wakefin` added. The same 1,000-seed numbers as below.
+- **History:** battle-presentation wrote the rows so the staging (M3-BPR-419) could go live. I tuned them first in a
+  scratch worktree of their branch.
+- **Common to all three:**
+  - Loadout `ch08_seawall` until M4-A2P-019.
+  - Swell `good`.
+  - Smart is report only (≥ 30 mean turns), on the Drowner's grounds: smart won 100% at every tune.
+
+| Boss (suite) | Party (reserve) | Stats changed from the provisional row | `naive` | `role_answer` | `smart` (turns) |
+|---|---|---|---|---|---|
+| Lamp Engine (`ch11_lamp_engine`), **with two conduit crawlers (M4-A2P-022)** | Rhen, Asha, Liss (Toma, Ysolde) | HP 2000, strength 5, magic 5, defence 80, magic defence 60; `opened` defence 50, magic defence 40. Crawlers: HP 200, strength 9, defence 20. The lamps a part on a 2-hit weak point | 0.2 | 55–80% (63.2) | 100 (33) |
+| Avalanche Ram (`ch12_avalanche_ram`) | Rhen, Asha, Kerrid (Toma, Ysolde) | HP 6200 → 4000, strength 36 → 22, defence 44 → 120; `torn_fleece` defence 22 → 40 | 2.2 | 61.3 | 100 (43) |
+| Wakefin (`ch15_wakefin`) | Rhen, Asha, Toma (Ysolde, Kerrid) | HP 7000 → 5000, strength 38 → 30, magic 18 → 16, agility 22 → 16, evasion 8 → 4, defence 36 → 120 | 0.0 | 70.3 | 100 (43) |
+
+- **Why the defence wall:** the sim's `role_answer` opens with a Break skill the foe lacks: Kerrid's Fluke Cleave on
+  the Ram, Toma's Shell Breaker on the Wakefin. At the rows' low defence, nothing separated a naive player from the
+  answer. As provisional, every policy lost by attrition (role 0–5%).
+- **The Lamp Engine's answer** now has its adds (M4-A2P-022). The role play kills the tenders first, then works the
+  engine, so it has a real band. Its low numbers fit the Ch8 loadout; re-tune on the Ch11 loadout.

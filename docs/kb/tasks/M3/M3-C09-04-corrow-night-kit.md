@@ -2,10 +2,11 @@
 id: M3-C09-04
 title: "Corrow at night, the dawn road and the vigil's plaza: kits for Ch9's greybox"
 role: environment
-status: todo
-owner_session: ""
+status: review
+owner_session: "env-art-b (claude/env-art-b; Ch5–Ch9 dressing is env-art-b's, Lead 2026-10-28)"
 depends_on: [M3-C09-02]
 milestone: M3
+reviewer: art
 request-from: cinematics
 ---
 ## Goal
@@ -38,5 +39,15 @@ Ch9 plays on one greybox zone, `ch09/corrow_night` (M3-C09-02; `game/levels/ch09
   - **B01's save shrine:** M3-ENV-101's `save_shrine` / `save_shrine_core` (swap note in env-art's live log).
   - **B10, the Iskarra vigil:** dress the stand-in plaza with `assets/environments/zones/iskarra/iskarra_city.tscn`
     (M3-ENV-710). It instances as one node, so the x 300 stand-in can take it as is.
+
+- **env-art-b, 2026-10-29 (dressed; Ch9 keeps its own zone, dressed from Ch8's Corrow dressing):**
+  - The breach and its rubble (dry broken laterite at night, M3-ENV-1322), six fallen Watchers, the low town flooded
+    (`LowTownLake` water) with the kit's `flood_debris` adrift among the roofs (12, seeded), the strand's shrouds in
+    weathered sailcloth (M3-ENV-1326) with 35 strand lamps, the Stillguard row's round shields, the Ebbing raft, the cut
+    hoist rope, the broken Fisher Stair's foot; the dawn road with its milestone; the Iskarra vigil plaza dressed from
+    the Iskarra kit; the harbour, Iskarra's sea and the lake as water; the moon over the sea (M3-ENV-1309).
+  - The strand's landing, Pell's rocks and the mole gangway (`b_strand.py`), the Ebbing's motes (M3-C09-03).
+  - **B01's save shrine:** the Level-stone shrine stands on the wall-head on the `Shrine` block (in Haluna's shrine
+    stone, M3-ENV-1326); making it a SaveShrine interactable and the chandler are act1-chapters' (systems, not dressing).
 
 ## Review log

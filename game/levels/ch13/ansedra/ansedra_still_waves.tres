@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="WaveSet" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/world/water/wave_set.gd" id="1_set"]
+[ext_resource type="Script" path="res://game/world/water/wave_component.gd" id="2_comp"]
+
+[sub_resource type="Resource" id="Wave_0"]
+script = ExtResource("2_comp")
+direction_deg = 0.0
+wavelength_m = 40.0
+amplitude_m = 0.0
+steepness = 0.0
+phase_rad = 0.0
+
+[resource]
+script = ExtResource("1_set")
+components = Array[ExtResource("2_comp")]([SubResource("Wave_0")])
+amplitude_scale = 0.0

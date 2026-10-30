@@ -1,0 +1,18 @@
+{
+ "format": 1,
+ "scene": "ch12_bark_liss_launcher",
+ "source": "game/data/dialogue/ch12/ch12_bark_liss_launcher.dlg",
+ "start": "ch12_bark_liss_launcher",
+ "nodes": {
+  "ch12_bark_liss_launcher": {
+   "headers": {"location": "ch12/keth_pass"},
+   "ops": [
+    {"op": "if_not", "cond": ["flag", "ch11_lamp_repaired"], "to": 3, "src": 6},
+    {"op": "line", "id": "ch12_bark_launcher_001", "key": "DLG_CH12_BARK_LAUNCHER_001", "speaker": "liss", "emotion": "smile", "voice": "", "src": 7},
+    {"op": "goto", "to": 5, "src": 6},
+    {"op": "line", "id": "ch12_bark_launcher_002", "key": "DLG_CH12_BARK_LAUNCHER_002", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 9},
+    {"op": "goto", "to": 5, "src": 8}
+   ]
+  }
+ }
+}

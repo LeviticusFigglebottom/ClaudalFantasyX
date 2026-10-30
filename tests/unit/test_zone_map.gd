@@ -79,6 +79,24 @@ func test_the_objective_points_at_its_place_and_errands_list() -> void:
 	assert_eq(trial.objective_poi(), &"inner_pool", "the trial's line points at the inner pool")
 
 
+func test_an_order_shrine_goes_hollow_and_dark_for_heretics() -> void:
+	var maps := ZoneMaps.new()
+	var pois := [
+		{"id": "temple", "name_key": "MAP_POI_BEACH", "kind": "shrine", "at": [0.0, 0.0], "order": true},
+		{"id": "kirru", "name_key": "MAP_POI_DOCK", "kind": "shrine", "at": [4.0, 0.0]},
+	]
+	maps.data = {"zones": [{"id": "temple_zone", "bounds": [-10.0, -10.0, 20.0, 20.0], "pois": pois}]}
+	var lit := MapModel.new(&"temple_zone", Vector3.INF, 0.0, _flags([]), maps)
+	assert_eq(lit.pois()[0]["kind"], MapGlyphs.KIND_SHRINE, "lit before the heresy")
+	assert_eq(str(lit.poi_rows()[0]["label"]), tr("MAP_POI_BEACH"))
+	var heresy: Array[StringName] = [SaveShrine.HERETIC_FLAG]
+	var dark := MapModel.new(&"temple_zone", Vector3.INF, 0.0, _flags(heresy), maps)
+	assert_eq(dark.pois()[0]["kind"], MapGlyphs.KIND_SHRINE_DARK, "the hollow flame")
+	var named := tr("MAP_POI_SHRINE_DARK_FMT").format({"place": tr("MAP_POI_BEACH")})
+	assert_eq(str(dark.poi_rows()[0]["label"]), named, "Dark in its legend row")
+	assert_eq(dark.pois()[1]["kind"], MapGlyphs.KIND_SHRINE, "a shrine not the Order's keeps its light")
+
+
 func test_the_line_under_the_map_says_how_far_and_which_way() -> void:
 	var m := _haluna()
 	var shrine: Vector2 = m.pois()[m.poi_index(&"shrine")]["at"]

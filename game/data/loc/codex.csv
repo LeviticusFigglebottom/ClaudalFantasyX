@@ -62,7 +62,7 @@ CODEX_BRINE_SHOALS_BODY,"Low water over a drowned country: grey-green silted fla
 CODEX_TAMSULE_TITLE,Tamsule
 CODEX_TAMSULE_BODY,"A stilt city at a river mouth, with gilded lacquer signboards on every house-front, markets that float hull to hull, and a hundred languages. Above it hangs the Tamsule Bell, a dome of the Lit Age with a drop of seawater held in its mouth, lit from within. In Tidecup week the whole coast comes to watch the Reefball sides play, and every purse-cutter on the coast comes with it."
 CODEX_BELL_GALLERIES_TITLE,The Bell Galleries
-CODEX_BELL_GALLERIES_BODY,"The stilt galleries inside the Bell's gantry, tier on tier around the catch-pool where Tidecup is played. The drop hangs above them, perfectly still. Each side has its moorings under the Bell's skirt, iron rings set in a timber staging, and its people watch from the galleries over them."
+CODEX_BELL_GALLERIES_BODY,"The stilt galleries inside the Bell's gantry, tier on tier around the catch-pool where the Tidecup is played. The drop hangs above them, perfectly still. Each side has its moorings under the Bell's skirt, iron rings set in a timber staging, and its people watch from the galleries over them."
 CODEX_CORROW_TITLE,Corrow
 CODEX_CORROW_BODY,"A town that lives behind a seawall of grey laterite blocks carved with rows of faces, the Watchers, their eyes closed and their mouths open. The Fisher Stair is cut up the wall's inner face. The fishers of its stair-watch keep one law: first down the stair, last up it."
 CODEX_MOTHER_KELL_TITLE,Mother Kell
@@ -94,11 +94,11 @@ CODEX_ULLARI_BODY,"The people of the Ullar Heights, where the air is thin and th
 CODEX_OSSA_FEN_TITLE,Ossa Fen
 CODEX_OSSA_FEN_BODY,"Where the coast road from Corrow gives out, the land goes soft. Ossa Fen is a Kirru estuary of mangrove channels and tannin water, brown-black as steeped tea, and the only ways across it are the root-walks the Kirru keep between the trunks. White egrets stand in the shallows and do not startle. Something else lives in the roots."
 CODEX_REEDHOLLOW_TITLE,Reedhollow
-CODEX_REEDHOLLOW_BODY,"A Kirru roost-village of woven reed lodges raised on mangrove roots round a still lagoon, reached by a causeway of reeds. Each lodge is a clutch's. The shore on its far side is where the clutches gather at dusk."
+CODEX_REEDHOLLOW_BODY,"A Kirru roost-village of woven reed lodges raised on mangrove roots round a still lagoon, reached by a causeway of reeds. Each lodge is a family's. The shore on its far side is where the clutch gathers at dusk."
 CODEX_SUNKEN_VEY_TITLE,Sunken Vey
-CODEX_SUNKEN_VEY_BODY,"The largest Lit Age ruin still above water: stone galleries standing chest-deep in a turquoise lagoon, wrapped in strangler fig, their roofs the only dry way through. Ceramic conduits still run along the walls, and some of them still pulse faintly with bound light. Silent, gorgeous, and dead."
+CODEX_SUNKEN_VEY_BODY,"The largest Lit Age ruin still above water: stone galleries standing chest-deep in a turquoise lagoon, wrapped in strangler fig, their roofs the only dry way through. Copper conduits still run along the walls, and some of them still hold a faint, steady bound light. Silent, gorgeous, and dead."
 CODEX_LOWLIGHT_TITLE,Lowlight
-CODEX_LOWLIGHT_BODY,"A temple of the Order half under water, built round the foot of a Lit Age well-shaft. Below the waterline its galleries are flooded, and in the sanctum at the bottom the deep's own cold wells up through the floor, carrying drowned glimmer down through it like silt. Nothing in it is frozen."
+CODEX_LOWLIGHT_BODY,"A temple of the Order half under water, built round the foot of a Lit Age well-shaft. Below the waterline its galleries are flooded, and in the sanctum at the bottom the deep's own cold wells up through the floor, and drowned glimmer sifts down through it like silt. Nothing in it is frozen."
 CODEX_KETH_PASS_TITLE,Keth Pass
 CODEX_KETH_PASS_BODY,"The road up into the Ullar Heights climbs a cliff in switchbacks, with cords strung post to post along the drop. These are the pass-cords. An Ullari who has lost someone ties a knot on them for the dead, and then walks on without looking back."
 CODEX_QUELLAN_TITLE,Quellan
@@ -127,3 +127,41 @@ CODEX_EBBING_TITLE,The Ebbing
 CODEX_EBBING_BODY,"The Order's dance for the dead. After a drowning a priest dances on a floating platform with a long lantern-staff, and the motes of the dead follow the staff out to sea while the mourners kneel facing the water. After an Undertow the dance falls to a Cantor, and the whole strand watches her. It is the most beautiful thing the Order does."
 CODEX_MOLL_TITLE,Inquisitor Hadric Moll
 CODEX_MOLL_BODY,"An Inquisitor of the Stillguard, one of the officers who enforce the Salt Edicts, met on the Brine Shoals with a raid-hound and a long-hafted brine-iron. He is in his forties, tired, and sincere: he believes in what he burns. When the fight was done he knelt in the mud, and when the High Warden told him to put the iron in the water, he did not argue."
+CODEX_FAREWELL_TIDE_TITLE,The Farewell-Tide
+CODEX_FAREWELL_TIDE_BODY,"When a Kirru dies, the clutch gathers at the tideline at dusk and sings the farewell-tide, a wordless song that rises and keeps rising. Then they turn their backs to the water, so that the dead are not held by being watched. Within the hour the light goes up, straight up, and no one turns to see it go."
+CODEX_NAME_SHELLS_TITLE,Name-Shells
+CODEX_NAME_SHELLS_BODY,"Every Kirru wears a shell at the throat with their name cut into it, a spiral of notches no human script can read. It is not a keepsake: the Kirru keep nothing of their dead, and the shell is the name itself. A shell ground blank means its wearer has been sent away, until they can sing for the one they would not let go."
+CODEX_KIRRU_ELDEST_TITLE,The Eldest of Reedhollow
+CODEX_KIRRU_ELDEST_BODY,"A clutch is led by the eldest who still swims, and at Reedhollow that is a Kirru older than the lagoon's oldest roots. The eldest speaks the human tongue slowly, as if each word were borrowed and had to be given back. Pell is not let past the fen's edge."
+CODEX_OWA_TITLE,Owa
+CODEX_OWA_BODY,"The eldest of Reedhollow's clutch who still swims: grey at the muzzle, her crest gone white. She lets strangers into the village for what they have done, and keeps out the one who walked them there, because he did not turn around."
+CODEX_TOBIN_TITLE,Tobin Varrow
+CODEX_TOBIN_BODY,"Liss's older brother, a Hollowmere wright with a loud laugh in a quiet city. When the Order asked the flotilla for a groom for a Warden's daughter, he volunteered, so that nobody would have to be chosen."
+CODEX_MEREL_TITLE,Merel Dask
+CODEX_MEREL_BODY,"A Warden's daughter of Ansedra, who chose a Saltwright and learned his knots. Brave in a city that is never loud."
+CODEX_RESSA_TITLE,Ressa of Reedhollow
+CODEX_RESSA_BODY,"The fifty-sixth Cantor, the only Kirru ever named, and Pell's clutch-sister. She heard the dead, and believed she could end the storm from inside it. The Order keeps her as the Saint the pilgrims call Nhoa."
+CODEX_AMA_QUILLO_TITLE,Ama Quillo
+CODEX_AMA_QUILLO_BODY,"The forty-seventh Cantor, an Ullari keth-reader who started counting on her pilgrimage. She tied the count into cords and hung it in Cloudloom among thousands, where nobody thought to read it. Then she sang anyway."
+CODEX_CORRAN_TITLE,Corran Ysel
+CODEX_CORRAN_BODY,"The sixtieth Cantor: a Tender of Ansedra, patient, funny, and a terrible cook. Ysolde's husband. The Order raised him to the Sanctum as the Saint Ethren, and she has visited him every year for twenty-four years."
+CODEX_MALCOR_VENN_TITLE,Warden Malcor Venn
+CODEX_MALCOR_VENN_BODY,"A Warden of the Conclave of Elders, with a soldier's bearing and a magistrate's voice. He read the declaration at the peace wedding, and came after the bridal barge across the lagoon."
+CODEX_CONCLAVE_TITLE,The Conclave of Elders
+CODEX_CONCLAVE_BODY,"The five who stand above the Wardens: the High Warden and four more, veiled at every rite. They speak rarely, and the Order obeys them without asking why."
+CODEX_BRANNOC_HALE_TITLE,Commander Brannoc Hale
+CODEX_BRANNOC_HALE_BODY,"A Stillguard commander, grey-bearded and decent, who taught a Haluna fisher's son to hold a shield. At the peace wedding he ordered that son to stand aside."
+CODEX_ALDOUS_VARROW_TITLE,Aldous Varrow
+CODEX_ALDOUS_VARROW_BODY,"Hollowmere's dock-master, keeper of the flotilla's dry-dock berths, father of Liss and Tobin. Grief in his house is work and bowls set out without asking."
+CODEX_KESH_TITLE,Kesh
+CODEX_KESH_BODY,"The first Cantor, a Lamplighter of Iskarra, who sang herself into the storm a thousand years ago. She has been awake in the Choir's stones ever since."
+CODEX_KERRID_STAIR_TITLE,The Captain of the Stair
+CODEX_KERRID_STAIR_BODY,"Kerrid kept the Fisher Stair at Corrow for fourteen years, captain of a watch of conscripted fishers, with no rank in the Order. In 1001 he held the stair for a Cantor and a diver who had never met, and the sea took him off the bottom step. His light did not lift. He is one of the unrisen: held, and still keeping the watch, because somebody is still below."
+CODEX_KETH_TITLE,Keth
+CODEX_KETH_BODY,"The Ullari write with cord. A keth is a bundle of knotted strings, and the kind of each knot, its place on the string and the string's colour carry a word, a number or a name; a reader runs the fingers along it, and a good one can read in the dark. Herds, debts, weddings and the dead are all kept the same way. The cords on the passes are keth too, and every knot there is a name."
+CODEX_HERESY_TITLE,Outside the Level
+CODEX_HERESY_BODY,"The Order's words for those it puts out of the faith. No Order shrine will answer them and no Order keeper will trade with them, nobody of the faith may answer their ""Be level"", and the Stillguard may take them wherever the Order's word runs. At the Lacquer Court the party was declared Outside the Level for sheltering binders. The Kirru and the Saltwrights keep shrines of their own, and those still answer."
+CODEX_THE_HUSH_TITLE,What the Hush Does
+CODEX_THE_HUSH_BODY,"The storm is the dead who were never let go, and it wants to come apart. The Hush does not put it to sleep. It gives the storm a heart to hold on to, and the heart is the Cantor who sings it. Every Cantor since the first has ended there."
+CODEX_OUTSIDE_THE_LEVEL_TITLE,Outside the Level
+CODEX_OUTSIDE_THE_LEVEL_BODY,"The Order's word for those it has cast out. Its shops will not sell to them and its shrines will not answer them, and the faithful are asked to let them pass unspoken to. The Order does not say what becomes of them after that. It has never needed to."

@@ -47,8 +47,9 @@ CutsceneStage (director_path, player_path)
 | Cue | What the sequencer does |
 |---|---|
 | `@camera <id> [blend] [ease]` | `play_shot(shot, blend or 0, ease)`, then waits for the move to land. A missing shot warns once and keeps the current camera. |
+| `@camera <id> grade=<g>` and a node's `grade:` header | M2-FP-120: CutsceneGrade puts grade `g` on the stage's level: a copy of its Environment on the WorldEnvironment, and its sun (energy, colour, pitch, yaw), from the zones' grade tables (`assets/environments/zones/*/*_grades.json`). The header applies as its node starts; the scene's end restores the level's own look. A grade with no row changes nothing (no warning: the known list tracks it); `tests/integration/cutscene_directives_known.json` lists the ones waiting on Rendering (M3-ENV-106). |
 | `@camera release [blend] [ease]` | `release(blend or -1, ease)`, then waits. A scene that ends still holding a shot is released with the defaults. |
-| `@wait sec` | Waits. `@wait music=<m> max=<s>` waits `max` (no music markers are reported yet), then `release_wait()`. |
+| `@wait sec` | Waits. `@wait music=<m> max=<s>` waits `max` (no music markers are reported yet), then `release_wait()`. `@wait arrive=<actor>` (M2-FP-119) waits until that actor's current `@mark` walk lands, at once if it isn't walking: for a walk whose length depends on where the player started it (B11). |
 | `@fade in\|out sec [color]` | Fades the overlay and waits for it. A scene whose first fade is `in` starts black. Fading out hides the box. |
 | `@letterbox on\|off` | Slides the bars (`letterbox_sec`) without waiting. |
 | `@mark actor mark [walk\|run]` | Plays the rig's `walk`/`run` clip if it has one (then `idle` on arrival). Turns the actor toward the mark and moves it there at `walk_mps`/`run_mps`, **without waiting**: the next lines play over the walk, and several actors can walk at once. The scene's end completes every move. |
@@ -56,7 +57,7 @@ CutsceneStage (director_path, player_path)
 | `@face actor expr [sec]` | Blends the actor's face shape keys to the emotion's pose over `sec` (else the pose table's `blend_in_s`) through `CutsceneFace`, when the actor has blend shapes and a `face_poses` row in `sequencer.json` (Asha reads Character's `asha_face_poses.json`, read-only). Always recorded in `faces`. |
 | `@music track [fade]` | Plays `music_dir/<track>.ogg`, or its `music_stand_ins` row (placeholders until Audio ships the cues). `silence` fades out. |
 | `@sfx sound [vol]` | One-shot from `sfx_dir`. `at=` is ignored for now (2D). |
-| `@vfx effect [at] [count]` | `CutsceneMotes` at the mark or actor. `drift`, `motion` and `rate` come from the effect's row for now. |
+| `@vfx effect [at] [count]` | Rendering's GlimmerField at the mark or actor (CutsceneVfx): `count`, `drift`, `motion` and `rate` through glimmer.json's cues. `form=<id>` (M2-FP-120) stands the motes still on a creature's outline, one on each of glimmer_forms.json's points (`tools/cutscene/glimmer_forms.py`). `test_cutscene_directives` fails on any Act I key the sequencer doesn't perform. |
 | `@light name on\|off [sec]` | Finds a `Light3D` named `name` anywhere under the stage (Rhen's `LanternLight` rides his body) and eases its energy on `light_ease` to the energy it was authored with, or to 0. The prologue lights his lantern as the line lands. |
 | lines | The `DialogueBox` shows the line; `ui_accept` (or the field's interact key) skips the reveal, then advances. The speaker's `[emotion]` blends their face like `@face`, `DialogueBox.mouth_flap` drives the `lip_flap` shapes (visemes), and the speaker's `talk` clip plays (then `idle`) when the rig has them. |
 | options | `CutsceneChoices` over the box; the pick goes to `runner.choose()`. |
@@ -138,6 +139,32 @@ A no-fail held input inside a cutscene, for the Ebbing's three movements (act1_c
 - **Nothing can fail.** There is no timer, no score and no reset: `held_sec` only grows within a gate, and the only way out is the scene reaching `hold_input_end` or ending. The prompt (UI's `HoldPrompt`, `game/ui/prompts/`, M3-C09-05: the key for the device used last and the verb; holding lights the key, letting go lets it breathe; no meter) shows for the whole gate.
 - **Tests.** In `instant` mode the waits are zero, so a gate passes at once. `tests/integration/test_ch09_thread.gd` `test_the_ebbing_cannot_fail` drives a real-time play with `tick()`.
 - **Two notes.** A skip (holding `ui_cancel`) counts its hold in `advance`, so it fills only while the action is held too. The gate gives the sequencer its processing state back when it closes.
+
+### Release (M4-CIN-1302, the farewell-tide)
+
+The other kind of gate ends by letting go (act2_ch10.md B09: the player who held Asha's staff down into the sea now lets the dead rise). `<<event release_input <prompt>>>` opens it: the scene's time **stands still while the action is held**, and the scene goes on the first frame it is not. Put it straight after a `hold_input_end`, so the player is holding when it opens (the hold gate's time only runs while they hold).
+
+```
+<<event hold_input watch>>
+@camera F02
+@wait 6.0
+<<event hold_input_end>>
+<<event release_input release>>
+@music farewell_tide stem=1
+@anim clutch turn_away
+```
+
+- The prompt is the host's row for the id (`prompts`), shown by the same `HoldPrompt`.
+- No timer and no fail: holding longer only holds the moment. A scene that ends closes it.
+- The score must be able to hold too (a loop or drone under the moment, then the tail on release; M4-CIN-1301).
+- Tests: `tests/unit/test_cutscene_release_gate.gd`.
+
+## Tracking shots and groups (M4-CIN-1302)
+
+- **`@camera <shot> track=<actor>`** plays a copy of the shot that keeps its offset to the actor as it moves: one continuous move from one authored frame (act2_ch10.md O02, the camera going on with the line while Pell stops). `CutsceneTrack` (`game/cutscene/cutscene_track.gd`) moves the copy's position and look_at by the actor's movement each frame; the director evaluates a fixed shot from those every frame. It ends itself once the director is on any other shot. The authored shot is never changed.
+- **`@anim <group> <clip>`**, when the stage has no actor of that id, plays on every actor named `<group>_*`, each after its own fixed delay of up to `sequencer.json` `group_spread_sec` (`CutsceneGroup`). Thirty Kirru turn as many people, not one copy (T04). The delays come from each name, mixed so that `clutch_01` and `clutch_02` don't land together, and are the same on every run.
+- **`@vfx glimmer_lift at=<place> release=<sec>`** (M4-CIN-1303) spawns nothing: the held (or bound) light already at that place lets go over `sec` seconds (`GlimmerField.release`: held cyan to lift gold, rising, the change spreading out from the place). For act2_ch10.md B05 (the snagged lights hang, then rise) and T03 (the gathered dead climb toward the cloud gap). With nothing held there it warns.
+- Tests: `test_cutscene_sequencer.gd` (`test_a_tracked_shot_moves_with_its_actor`, `test_a_group_anim_plays_on_every_member_each_in_its_own_time`, `test_a_release_lets_the_held_light_already_there_go`).
 
 ## Motion (M2-FP-29)
 The human's playtest said cutscene turns snapped and walks started and stopped at full speed. `CutsceneMotion` (game/cutscene/cutscene_motion.gd) shapes both, using the tunings in `sequencer.json`:

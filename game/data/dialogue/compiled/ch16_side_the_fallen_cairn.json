@@ -1,0 +1,20 @@
+{
+ "format": 1,
+ "scene": "ch16_side_the_fallen_cairn",
+ "source": "game/data/dialogue/ch16/ch16_side_the_fallen_cairn.dlg",
+ "start": "ch16_side_the_fallen_cairn",
+ "nodes": {
+  "ch16_side_the_fallen_cairn": {
+   "headers": {"location": "ch16/pale_rim"},
+   "ops": [
+    {"op": "line", "id": "ch16_cairn_001", "key": "DLG_CH16_CAIRN_001", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 6},
+    {"op": "line", "id": "ch16_cairn_002", "key": "DLG_CH16_CAIRN_002", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 7},
+    {"op": "line", "id": "ch16_cairn_003", "key": "DLG_CH16_CAIRN_003", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 8},
+    {"op": "line", "id": "ch16_cairn_004", "key": "DLG_CH16_CAIRN_004", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 9},
+    {"op": "line", "id": "ch16_cairn_005", "key": "DLG_CH16_CAIRN_005", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 10},
+    {"op": "line", "id": "ch16_cairn_006", "key": "DLG_CH16_CAIRN_006", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 11},
+    {"op": "set", "flag": "ch16_rebuilt_cairn", "value": ["lit", true], "src": 12}
+   ]
+  }
+ }
+}

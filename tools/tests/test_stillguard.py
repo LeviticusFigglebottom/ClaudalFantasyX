@@ -181,7 +181,7 @@ def dialogue_calls(actor: str) -> set:
 class TestIvo(unittest.TestCase):
     def test_table(self):
         self.assertNotIn(IVO, sg_table.variants())  # the squad stays six
-        self.assertEqual(sg_table.named(), [IVO])
+        self.assertEqual(sg_table.named(), [IVO, "officer", "venn"])  # M3-CHR-593: the Ch8 officer; M4-A2P-051
         self.assertEqual(sg_table.name(IVO), IVO)  # his own folder and the dialogue's speaker id
         p = sg_table.variant_params(IVO)
         var = p["_variant"]
@@ -272,6 +272,48 @@ class TestIvo(unittest.TestCase):
         self.assertIn(f"assets/characters/{IVO}/*.glb", jobs[IVO]["outputs"])
         speakers = json.loads((ROOT / "game/data/dialogue/speakers.json").read_text(encoding="utf-8"))
         self.assertIn(IVO, {s["id"] for s in speakers["speakers"]})
+
+
+VENN = "venn"
+
+
+class TestVenn(unittest.TestCase):
+    """M4-A2P-051: Warden Malcor Venn, a named build on the squad's kit: the halberd on the spear's bone, no shield,
+    Moll's sash, his own dyes, Moll's battle contract."""
+
+    def test_table(self):
+        p = sg_table.variant_params(VENN)
+        var = p["_variant"]
+        self.assertTrue(var["halberd"])
+        self.assertFalse(var["shield"])
+        self.assertTrue(p["_costume"]["sash"])  # his own `_costume` over the squad's (sash false)
+        self.assertFalse(sg_table.variant_params("a")["_costume"]["sash"])  # the squad unchanged
+        self.assertEqual(var["palette"]["linen"], "#B3261E")  # the red sash (lacquer_red)
+
+    def test_committed(self):
+        import rig_probe
+
+        rig = rig_probe.Rig(VENN)
+        self.assertIsNone(rig.part("Shield"))
+        part = rig.part("Spear")
+        self.assertEqual({rig.joint_names[j] for j, w in zip(part.J.ravel(), part.W.ravel()) if w > 1e-4},
+                         {"DEF-spear"})
+        cfg = json.loads((ROOT / "tools/dev/rig_checks.json").read_text())["heroes"][VENN]
+        self.assertEqual(cfg["props"], ["Spear"])
+        grips = json.loads((ROOT / "game/data/characters/grips.json").read_text())["skeletons"]
+        self.assertIn(f"{VENN}_skeleton", grips)
+        mats = {f.name for f in (ROOT / "assets/characters" / VENN / "materials").glob("*.tres")}
+        self.assertNotIn("shield.tres", mats)
+        self.assertIn("spear.tres", mats)
+        cloth = (ROOT / "assets/characters" / VENN / "materials/cloth.tres").read_text(encoding="utf-8")
+        self.assertIn(f"{VENN}/textures/{VENN}_cloth_albedo.png", cloth)
+
+    def test_wiring(self):
+        rules = json.loads((ROOT / "game/data/import/characters.json").read_text(encoding="utf-8"))
+        self.assertIn(f"res://assets/characters/{VENN}/", rules["assets"])
+        jobs = {j["id"]: j for j in json.loads((ROOT / "tools/dev/blender_builds.json").read_text())["jobs"]}
+        self.assertIn(f"assets/characters/{VENN}/*.glb", jobs[VENN]["outputs"])
+        self.assertTrue((ROOT / "game/characters/foes/venn_battle.tscn").exists())
 
 
 class TestMollUnchanged(unittest.TestCase):

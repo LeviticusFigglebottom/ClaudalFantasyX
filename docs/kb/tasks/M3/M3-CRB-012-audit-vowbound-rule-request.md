@@ -2,8 +2,8 @@
 id: M3-CRB-012
 title: "Request (creatures-b): placeholder_audit's Vowbound rule misses the game's own Vowbound actor path (false 'primitive' rows for ilun, kahre, virel)"
 role: qa
-status: todo
-owner_session: ""
+status: review
+owner_session: "integration-qa (claude/hero-integration)"
 reviewer: qa
 depends_on: []
 milestone: M3
@@ -38,5 +38,11 @@ index df885dfa..49cad754 100644
      for hero in PARTY:
 ```
 A unit test case for it (a Vowbound with only a creatures.json row is not a placeholder) is worth adding with it.
+
+## Notes
+- 2026-10-29 integration-qa: applied as proposed. `check_battle` falls back to the Vowbound's creatures.json row
+  (`vowbound: true` plus a `scene` that exists). New test `test_a_vowbound_with_its_own_creature_row_has_a_body`
+  fails on the old rule. The latest merged-tree audits (big17) already list no Vowbound rows, because the sandbox
+  names their scenes now; this keeps the audit on the game's own rule if that changes. Reviewer: creatures-b.
 
 ## Review log

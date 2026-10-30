@@ -1,0 +1,21 @@
+{
+ "format": 1,
+ "scene": "ch13_find_velamir_register",
+ "source": "game/data/dialogue/ch13/ch13_find_velamir_register.dlg",
+ "start": "ch13_find_velamir_register",
+ "nodes": {
+  "ch13_find_velamir_register": {
+   "headers": {"location": "ch13/lamp_archive"},
+   "ops": [
+    {"op": "line", "id": "ch13_reg_001", "key": "DLG_CH13_REG_001", "speaker": "asha", "emotion": "surprised", "voice": "", "src": 8},
+    {"op": "line", "id": "ch13_reg_002", "key": "DLG_CH13_REG_002", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 9},
+    {"op": "line", "id": "ch13_reg_003", "key": "DLG_CH13_REG_003", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 10, "tags": ["long"]},
+    {"op": "line", "id": "ch13_reg_004", "key": "DLG_CH13_REG_004", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 11},
+    {"op": "line", "id": "ch13_reg_005", "key": "DLG_CH13_REG_005", "speaker": "asha", "emotion": "sad", "voice": "", "src": 12},
+    {"op": "line", "id": "ch13_reg_006", "key": "DLG_CH13_REG_006", "speaker": "rhen", "emotion": "tender", "voice": "", "src": 13},
+    {"op": "line", "id": "ch13_reg_007", "key": "DLG_CH13_REG_007", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 14},
+    {"op": "set", "flag": "ch13_found_velamir_register", "value": ["lit", true], "src": 15}
+   ]
+  }
+ }
+}

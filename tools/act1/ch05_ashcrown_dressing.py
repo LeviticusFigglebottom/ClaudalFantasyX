@@ -46,6 +46,7 @@ KIT_SRC = ROOT / "assets_src" / "environments" / "kits" / "ashcrown"
 sys.path.insert(0, str(KIT_SRC))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import ac_approach  # noqa: E402
+import ch05_09_zone_looks as zl  # noqa: E402
 import ac_common as ac  # noqa: E402
 
 ZONE = ROOT / "game" / "levels" / "ch05" / "ashcrown"
@@ -331,6 +332,7 @@ def _ground(x: float, z: float) -> float:
 
 GRAVE_LANDINGS = (4, 5, 6, 7, 8)  # Pemakar buries its dead where the way passes (B07's grave banter, landing 6)
 GRAVE_X = (4.2, 5.6)  # off the causeway's battered side, on the slope
+GRAVE_SINK_M = -0.2  # set level into the slope: on its steep fall a shallower sink left the curb's downhill edge in the air
 
 
 def road_graves() -> list[dict]:
@@ -344,9 +346,13 @@ def road_graves() -> list[dict]:
                 zz = z + 1.4 * j - 0.7
                 y = r3(_ground(x, zz) - 0.05)
                 yaw = 90.0 if sx < 0 else 270.0
-                out.append({"piece": "grave_curb", "kit_dir": PEM, "at": [r3(x), r3(zz)], "y": y, "yaw_deg": yaw})
+                # snapped to the built crest: its coarse rings lie up to 2 m under the analytic massif out here, and
+                # the graves floated over the slope (the eye-height pass, 10-30)
+                out.append({"piece": "grave_curb", "kit_dir": PEM, "at": [r3(x), r3(zz)], "y": y, "yaw_deg": yaw,
+                            "snap": GRAVE_SINK_M})
                 out.append({"piece": ("grave_stele_a", "grave_stele_b")[(i + j) % 2], "kit_dir": PEM,
-                            "at": [r3(x + sx * 0.6), r3(zz)], "y": y, "yaw_deg": yaw, "collide": True})
+                            "at": [r3(x + sx * 0.6), r3(zz)], "y": y, "yaw_deg": yaw, "collide": True,
+                            "snap": GRAVE_SINK_M})
     return out
 
 
@@ -361,7 +367,7 @@ def flank_rocks() -> list[dict]:
         z = rng.uniform(52.0, 150.0)
         x = rng.choice((-1.0, 1.0)) * rng.uniform(9.0, 60.0)
         out.append({"piece": "flank_rocks", "kit_dir": PEM, "at": [r3(x), r3(z)], "y": r3(_ground(x, z) - 0.3),
-                    "yaw_deg": r3(rng.uniform(0.0, 360.0))})
+                    "yaw_deg": r3(rng.uniform(0.0, 360.0)), "snap": -0.3})
     return out
 
 
@@ -448,9 +454,94 @@ def preview_pieces() -> tuple[list[dict], list[dict]]:
     return pieces, pv["lights"] + [VENT_GLOW]
 
 
+# --- the zone's own metal and lacquer looks and its grade (M3-ENV-1325) ---------------------------------------------
+# The kit's copper, gold and lacquer slots are flat StandardMaterials: at player height the trial's bowls, rods and
+# veins read as mint plastic and its posts as red plastic (GPU QA row 26, the 10-29 walk). The zone swaps those slots
+# (ZoneKitDressing `material_paths`) for env_bronze looks with patina, streaks and edge wear, written here.
+# slot -> (zone material file, env_bronze parameters). Colours are the kit's own (ac_materials.py) unless noted.
+ZONE_METALS = {
+    # the veins: old copper gone to verdigris (the kit's #5F8A78) over a dark copper body showing at the edges
+    "ac_copper_vein": ("ashcrown_copper_vein_material.tres", {
+        "col_bronze": (0.3529, 0.2039, 0.1412), "col_worn": (0.6510, 0.3529, 0.1647),
+        "col_patina": (0.2706, 0.3804, 0.3373), "col_patina_pale": (0.4314, 0.5137, 0.4706),
+        "metallic_bronze": 0.8, "roughness_bronze": 0.5, "roughness_worn": 0.3, "patina_coverage": (0.0, 0.55),
+        "patina_roughness": 0.88, "streak_strength": 0.6, "wear_strength": 0.7, "detail_scale_m": 0.6,
+        "normal_strength": 0.5, "normal_tile_m": 2.0}),
+    # the tiers' long veins (the per-tier slots and the hall's floor vein): weathered far longer and out in the ash
+    # rain, so verdigris runs down them in streaks over a dark body; the copper shows where hands and feet wear it
+    "ac_vein_t0": ("ashcrown_vein_material.tres", {
+        "col_bronze": (0.2706, 0.1569, 0.1098), "col_worn": (0.5490, 0.3020, 0.1569),
+        "col_patina": (0.2902, 0.4392, 0.3804), "col_patina_pale": (0.4471, 0.5882, 0.5216),
+        "metallic_bronze": 0.7, "roughness_bronze": 0.55, "roughness_worn": 0.35, "patina_coverage": (0.35, 1.0),
+        "patina_roughness": 0.9, "streak_strength": 0.85, "wear_strength": 0.5, "detail_scale_m": 0.6,
+        "normal_strength": 0.5, "normal_tile_m": 2.0, "variation_value": 0.12}),
+    # the Tenders' new copper (the rods, studs and leads they keep bright): a little bloom in the cavities only
+    "ac_copper_new": ("ashcrown_copper_new_material.tres", {
+        "col_bronze": (0.5020, 0.2706, 0.1255), "col_worn": (0.8000, 0.4784, 0.2706),
+        "col_patina": (0.3725, 0.5412, 0.4706), "col_patina_pale": (0.5216, 0.6588, 0.5843),
+        "metallic_bronze": 1.0, "roughness_bronze": 0.4, "roughness_worn": 0.24, "patina_coverage": (0.0, 0.18),
+        "patina_roughness": 0.8, "streak_strength": 0.25, "wear_strength": 0.9, "detail_scale_m": 0.5,
+        "normal_strength": 0.4, "normal_tile_m": 1.6}),
+    # gold leaf: worn through to the bronze under it at the edges, ash-dulled in the hollows
+    "ac_gold_leaf": ("ashcrown_gold_leaf_material.tres", {
+        "col_bronze": (0.7020, 0.5294, 0.2275), "col_worn": (0.4784, 0.3608, 0.2196),
+        "col_patina": (0.3608, 0.3451, 0.3255), "col_patina_pale": (0.5020, 0.4824, 0.4549),
+        "metallic_bronze": 1.0, "roughness_bronze": 0.3, "roughness_worn": 0.45, "patina_coverage": (0.0, 0.3),
+        "patina_roughness": 0.9, "streak_strength": 0.2, "wear_strength": 0.6, "detail_scale_m": 0.5,
+        "normal_strength": 0.3, "normal_tile_m": 1.6}),
+    # the lacquers: the hollows dull to an aged lacquer of the same hue and the edges chip to the undercoat (the shared
+    # look, ch05_09_zone_looks.lacquer(): a grey dust in the hollows read as camouflage on Kahre's door leaves)
+    "ac_lacquer_red": ("ashcrown_lacquer_red_material.tres", zl.lacquer((0.6, 0.1294, 0.1020))),
+    "ac_lacquer_black": ("ashcrown_lacquer_black_material.tres",
+                         zl.lacquer((0.0627, 0.0588, 0.0588), undercoat=(0.3216, 0.1176, 0.0863))),
+}
+# The trial's per-tier vein slots (ac_common: the kit gives each tier its own so a strike could light one; the zone
+# lights a strike with ZoneKitDressing.glow's overlay instead) and the anvil hall's floor vein: the same flat verdigris.
+VEIN_SLOTS = tuple("ac_vein_t%d" % k for k in range(7)) + ("ac_vein_floor",)
+# The zone's grade: env-art's Ch5 temple grade with more sky fill. Under the ash overcast the tiers' shaded faces
+# (tens of metres of ashlar, the flying stair's flanks) fell to near black at player height; this lifts them so
+# their coursing reads while the sunlit faces keep their contrast.
+ZONE_GRADE_NAME = "ashcrown_day_environment.tres"
+ZONE_AMBIENT_ENERGY = 1.8
+ZONE_GRADE_OVERRIDES = {"ambient_light_energy": str(ZONE_AMBIENT_ENERGY)}
+
+
+# The PC's pass 3 (10-30): the crown's benches and steps streaked on the GPU. Short rounded risers interpolate their
+# vertex normals toward +Y, so the triplanar base and the salt detail took the top-down projection on near-vertical
+# faces. The dressed stone uses the mesh's metre UVs (as ac_ashlar does), and neither copy takes salt: no salt
+# reaches a volcano's crown.
+# The kit's stone slots bake an occlusion (UV2) that keeps the tiers' faces in near-total shadow once the sun leaves
+# them: with the kit's ao_strength the sky's fill hardly reaches tens of metres of ashlar. The zone's copies keep
+# everything else and take the occlusion lighter.
+ZONE_STONES = {"ac_ashlar": ("ashcrown_ashlar_material.tres", {"ao_strength": "0.3", "salt_coverage": "Vector2(0, 0)"}),
+               "ac_dressed": ("ashcrown_dressed_material.tres", {"ao_strength": "0.35", "base_triplanar": "false",
+                                                                "salt_coverage": "Vector2(0, 0)"})}
+
+
+def zone_grade() -> str:
+    src = (ROOT / GRADE.removeprefix("res://")).read_text(encoding="utf-8")
+    for key, value in ZONE_GRADE_OVERRIDES.items():
+        src, n = re.subn(r"(?m)^%s = .*$" % key, "%s = %s" % (key, value), src)
+        assert n == 1, key
+    return src.replace('resource_name = "ch05_ashcrown_day"', 'resource_name = "ashcrown_day"')
+
+
+def metal_paths() -> dict:
+    paths = {slot: RES_ZONE + f for slot, (f, _) in (ZONE_METALS | ZONE_STONES).items()}
+    for slot in VEIN_SLOTS:  # every tier's veins and the hall's floor vein take tier 0's look
+        paths[slot] = paths["ac_vein_t0"]
+    return paths
+
+
 def dressing() -> dict:
     pieces, lights = preview_pieces()
     pieces += story_pieces()
+    pem = zl.load_generator("ch05_pemakar_dressing").PEMAKAR_SLOTS
+    for row in pieces:  # every Ashcrown kit piece; the borrowed Pemakar ones take Pemakar's own looks
+        if row.get("kit_dir", KIT) == KIT:
+            row["material_paths"] = metal_paths()
+        elif row.get("kit_dir") == PEM:
+            row["material_paths"] = dict(pem)
     return {
         "schema": "ZoneKitDressing (game/levels/act1/zone_kit_dressing.gd; ADR 0200)",
         "_about": "Generated by tools/act1/ch05_ashcrown_dressing.py from env-art's Ashcrown kit (M3-ENV-09); do not "
@@ -461,7 +552,7 @@ def dressing() -> dict:
         "lod1_from_m": 70.0,
         "lod_end_m": 4000.0,
         "lod_margin_m": 2.0,
-        "environment": GRADE,
+        "environment": RES_ZONE + ZONE_GRADE_NAME,
         "time_of_day_h": 13.0,
         "greybox": {"hide_all": True, "keep": []},
         "fire_light_color": "#FFB16E",
@@ -603,6 +694,19 @@ def main() -> None:
         relayout()
     (ZONE / "ashcrown_collision.json").write_text(json.dumps(collision(), indent=1) + "\n", encoding="utf-8")
     (ZONE / "ashcrown_dressing.json").write_text(json.dumps(dressing(), indent=1) + "\n", encoding="utf-8")
+    for name, params in ZONE_METALS.values():
+        (ZONE / name).write_text(zl.bronze_material(name, params), encoding="utf-8")
+    for slot, (name, overrides) in ZONE_STONES.items():
+        (ZONE / name).write_text(zl.copy_material(KIT + "materials/" + slot + ".tres", name, overrides), encoding="utf-8")
+    (ZONE / ZONE_GRADE_NAME).write_text(zone_grade(), encoding="utf-8")
+    # Ch05Zone.apply_variant writes the layout's `environment` row over the grade, so the fill goes there too
+    # (a one-key text edit: the layout is hand-formatted and act1-chapters edits it too)
+    text = LAYOUT.read_text(encoding="utf-8")
+    env = json.loads(text)["environment"]
+    old = '"ambient_color": "%s", "ambient_energy": %s}' % (env["ambient_color"], json.dumps(env["ambient_energy"]))
+    if env["ambient_energy"] != ZONE_AMBIENT_ENERGY:
+        assert text.count(old) == 1, old
+        LAYOUT.write_text(text.replace(old, old.rsplit(":", 1)[0] + ": %s}" % ZONE_AMBIENT_ENERGY), encoding="utf-8")
 
 
 if __name__ == "__main__":

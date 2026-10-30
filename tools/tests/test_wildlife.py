@@ -24,7 +24,7 @@ sys.path.insert(0, str(ROOT / "tools" / "tests"))
 import validate_wildlife as vw  # noqa: E402
 from test_post_import import read_glb  # noqa: E402
 
-ANIMALS = ("gull", "shore_crab", "shoal_fish", "insect")
+ANIMALS = ("gull", "shore_crab", "shoal_fish", "insect", "kingfisher", "rim_ray")
 # Per mesh: small enough to draw dozens through MultiMesh (docs/kb/art/wildlife.md, Budgets).
 MAX_TRIANGLES = 1500
 # An insect is a few pixels on screen (M3-CRE-616): about 300 triangles at most.
@@ -78,6 +78,16 @@ class ValidatorTest(unittest.TestCase):
         errs = self.zone_errs(z)
         self.assertTrue(any("belongs in ch02_elsewhere.json" in e for e in errs))
         self.assertTrue(any("not a locations.json location" in e for e in errs))
+
+    def test_ground_is_a_node_method_or_physics_alone(self) -> None:
+        # the Act I audit (2026-10-29): crabs may follow the zone's collision instead of a terrain method
+        z = copy.deepcopy(self.zone)
+        z["ground"] = {"physics": True}
+        self.assertFalse(any(".ground" in e for e in self.zone_errs(z)))
+        z["ground"] = {"physics": True, "node": "Terrain"}
+        self.assertTrue(any(".ground" in e for e in self.zone_errs(z)))
+        z["ground"] = {"physics": False}
+        self.assertTrue(any(".ground" in e for e in self.zone_errs(z)))
 
     def test_perches_must_be_inside_the_flock(self) -> None:
         z = copy.deepcopy(self.zone)
@@ -145,7 +155,7 @@ class InsectValidatorTest(unittest.TestCase):
 
     def test_swarm_rows_are_checked(self) -> None:
         z = copy.deepcopy(self.zone)
-        z["swarms"][0]["type"] = "firefly"
+        z["swarms"][0]["type"] = "beetle"
         z["swarms"][1]["center"] = [0.0, -24.0]
         z["swarms"][2]["radius_m"] = 0.0
         errs = self.zone_errs(z)
@@ -170,7 +180,46 @@ class InsectValidatorTest(unittest.TestCase):
         z = copy.deepcopy(self.zone)
         z["swarms"][2]["count"] = self.budgets["insects"]
         self.assertTrue(any("swarms" in e and "over the budget" in e for e in self.zone_errs(z)))
-        self.assertEqual(self.budgets["draw_calls"], 6, "six MultiMeshes: gulls x2, crabs, fish, moths, dragonflies")
+        self.assertEqual(self.budgets["draw_calls"], 10,
+                         "ten MultiMeshes: gulls x2, kingfishers x2, crabs, fish, rays, moths, dragonflies, fireflies")
+
+    def test_kingfisher_rows_are_flocks_with_their_own_budget(self) -> None:
+        z = copy.deepcopy(self.zone)
+        z["kingfishers"] = [{"id": "k", "center": [0.0, 0.0], "radius_m": 5.0, "altitude_m": [0.5, 1.5], "count": 2,
+                             "perches": [[0.0, 0.4, 0.0, 0.0], [9.0, 0.4, 0.0, 0.0]]}]
+        errs = self.zone_errs(z)
+        self.assertTrue(any("kingfishers[0].perches[1]" in e for e in errs), errs)
+        z["kingfishers"][0]["perches"].pop()
+        z["kingfishers"][0]["count"] = self.budgets["kingfishers"] + 1
+        self.assertTrue(any("kingfishers" in e and "over the budget" in e for e in self.zone_errs(z)))
+        fen = _load(f"{vw.WILDLIFE_DIR}/ch10_ossa_fen.json")
+        self.assertEqual(sum(k["count"] for k in fen["kingfishers"]), self.budgets["kingfishers"])
+
+    def test_a_kingfisher_row_dives_to_water_below_its_perches(self) -> None:
+        z = copy.deepcopy(self.zone)
+        z["kingfishers"] = [{"id": "k", "center": [0.0, 0.0], "radius_m": 5.0, "altitude_m": [0.5, 1.5], "count": 1,
+                             "perches": [[0.0, 0.4, 0.0, 0.0]], "water_y": 0.6}]
+        self.assertTrue(any("water_y: must be below every perch" in e for e in self.zone_errs(z)))
+        z["kingfishers"][0]["water_y"] = "low"
+        self.assertTrue(any("water_y: must be a number" in e for e in self.zone_errs(z)))
+        z["kingfishers"][0]["water_y"] = -0.25
+        self.assertFalse(any("water_y" in e for e in self.zone_errs(z)))
+        fen = _load(f"{vw.WILDLIFE_DIR}/ch10_ossa_fen.json")
+        self.assertTrue(all(k.get("water_y") == -0.25 for k in fen["kingfishers"]), "the fen's channels at -0.25")
+
+    def test_herd_rows_and_the_woolback_kind(self) -> None:
+        z = copy.deepcopy(self.zone)
+        z["herds"] = [{"id": "h", "center": [0.0, 0.0, 0.0], "radius_m": 0.0, "count": 2, "y": "low"}]
+        errs = self.zone_errs(z)
+        for want in ("herds[0].center", "herds[0].radius_m", "herds[0].y"):
+            self.assertTrue(any(want in e for e in errs), (want, errs))
+        z["herds"] = [{"id": "h", "center": [0.0, 0.0], "radius_m": 2.0, "count": self.budgets["woolbacks"] + 1}]
+        self.assertTrue(any("herds" in e and "over the budget" in e for e in self.zone_errs(z)))
+        k = copy.deepcopy(self.kinds)
+        k["kinds"]["woolback"]["scene"] = "res://assets/creatures/woolback/woolback.glb"
+        self.assertTrue(any("woolback.scene: must be the actor scene" in e for e in vw.kinds_errors(k, self.exists)))
+        keth = _load(f"{vw.WILDLIFE_DIR}/ch12_keth_pass.json")
+        self.assertEqual([(h["id"], h["count"]) for h in keth["herds"]], [("pass_foot", 2), ("saddle", 3)])
 
     def test_zone_swarms_as_placed(self) -> None:
         haluna = _load(f"{vw.WILDLIFE_DIR}/ch02_haluna.json")
@@ -236,6 +285,8 @@ class PipelineTest(unittest.TestCase):
             for mat in js["materials"]:
                 self.assertTrue((ROOT / "assets/wildlife" / animal / "materials" / f"{mat['name']}.tres").is_file())
         for kind in self.kinds.values():
+            if "meshes" not in kind:  # a skinned kind (the woolback): an actor scene, not a MultiMesh glb
+                continue
             animal = Path(kind["scene"]).stem
             for mesh in kind["meshes"].values():
                 self.assertIn(mesh, names[animal], (animal, mesh))

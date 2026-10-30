@@ -36,7 +36,9 @@ SPEAR_TEX = {"albedo_texture": M + "moll_iron_albedo.png", "normal_texture": M +
              "metallic_texture": M + "moll_iron_orm.png", "roughness_texture": M + "moll_iron_orm.png"}
 IRIS = {"a": "Color(0.20, 0.15, 0.10, 1)", "b": "Color(0.12, 0.08, 0.05, 1)", "c": "Color(0.16, 0.12, 0.09, 1)",
         "d": "Color(0.26, 0.28, 0.27, 1)", "e": "Color(0.10, 0.07, 0.05, 1)", "f": "Color(0.30, 0.24, 0.14, 1)",
-        "ivo": "Color(0.24, 0.15, 0.08, 1)"}  # M3-CHR-540: Ivo's warm brown
+        "ivo": "Color(0.24, 0.15, 0.08, 1)",  # M3-CHR-540: Ivo's warm brown
+        "officer": "Color(0.22, 0.20, 0.17, 1)",  # M3-CHR-593: the Ch8 officer's grey-brown
+        "venn": "Color(0.19, 0.20, 0.21, 1)"}  # M4-A2P-051: Malcor Venn's slate grey
 
 
 def hexcol(h: str, k: float = 1.0) -> str:
@@ -52,11 +54,15 @@ def write(v: str) -> None:
     hair = extra["_hair"]["colour"]
     table = {}
     for key, (shader, prio, params, tex) in mw.SHADER_MATERIALS.items():
+        if key == "shield" and not extra["_variant"].get("shield", True):  # M4-A2P-051: no shield, no slot
+            continue
         params, tex = dict(params), {k: val.replace("moll/textures/moll_head_", T + "head_")
                                      .replace("moll/textures/moll_body_", T + "body_") for k, val in tex.items()}
         if key in ("cloth", "shield") and worn:
             tex = {k: (val.replace(f"moll/textures/moll_{key}_", f"{WORN}{key}_") if k in ("tex_albedo", "tex_orm")
                        else val) for k, val in tex.items()}
+        if key == "cloth" and extra["_variant"].get("palette"):  # M4-A2P-051: his own dyes (sg_textures.dyed_cloth)
+            tex = dict(tex, tex_albedo=f"{T}cloth_albedo.png")
         if key == "eye":
             params["col_iris"] = IRIS[v]
         if key in ("lash", "brow"):
@@ -71,7 +77,7 @@ def write(v: str) -> None:
     for key, (shader, prio, params, tex) in table.items():
         mw.wm.write_shader_material(key, shader, prio, params, tex)
     standard = {"bronze": mw.STANDARD_MATERIALS["bronze"], "steel": STEEL, "spear": SPEAR}
-    if not extra["_variant"].get("spear", True):  # M3-CHR-540: no spear, so no shaft or blade materials
+    if not extra["_variant"].get("spear", True) and not extra["_variant"].get("halberd"):  # M3-CHR-540: no spear
         standard = {"bronze": standard["bronze"]}
     for key, body in standard.items():
         mw.wm.write_standard_material(key, body, SPEAR_TEX if key == "spear" else {})

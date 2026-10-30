@@ -18,6 +18,7 @@ coastal leaf atlas (veg_common.COASTAL_ATLAS's banyan sprays), tinted grey-green
   kirru_roost         a Kirru roost-lodge (bible §5.5): a barrel of bundled-reed arches and woven reed panels, 5 m long,
                       2.8 m inside (the Kirru stand 2.1-2.4 m), open at its +Z end, on a lashed pole deck 1.2 m over
                       the water on four mangrove-pole legs; origin at the legs' foot centre.
+  mangrove_tall, mangrove_low, mangrove_young   the zones' mangrove variants (MANGROVE_VARIANTS), from build_tree
   name_shell_cord     the clutch's name-shells on a cord between two poles at the water's edge, 6 m: each a carved
                       shell token, one scraped blank (an exile's). The living's own: the Kirru keep nothing of their
                       dead (bible §8).
@@ -45,7 +46,8 @@ M_SHELL = "kit_nacre"
 
 TRI_BUDGET = {"fen_bank_ground": (30000, 2400), "mangrove_tree": (10000, 900), "mangrove_dead": (12000, 900),
               "reed_bed": (3000, 300), "fen_far_mangroves": (4000, 800), "kirru_roost": (9000, 700),
-              "name_shell_cord": (3000, 250)}
+              "name_shell_cord": (3000, 250), "mangrove_tall": (11000, 900), "mangrove_low": (10000, 900),
+              "mangrove_young": (5000, 500)}
 
 WATER_Y = -0.15
 BANK = (-5.4, 6.8, -4.0, 5.0)  # x0, x1, z0, z1 of the bank's level top: the slots' metre and more
@@ -261,34 +263,53 @@ def _leaf_cluster(mb, rng, centre, n: int, radius: float, height_m: float, *, ph
               tint=float(rng.random()))
 
 
-def build_tree(seed: int = 1802) -> list[kc.MeshBuilder]:
+def build_tree(seed: int = 1802, piece: str = "mangrove_tree", height: float = 9.0, roots: int = 12,
+               root_r: tuple[float, float] = (1.8, 3.2), trunk_h: float = 5.0, trunk_r: tuple[float, float] = (0.32, 0.24),
+               lean: tuple[float, float, float] = (0.35, 0.0, 0.1), boughs: int = 5,
+               bough_len: tuple[float, float] = (1.6, 2.4), leaves: int = 16) -> list[kc.MeshBuilder]:
+    """A living mangrove (the defaults are the kit's `mangrove_tree`); the zones' system draws its variants from the
+    same builder (MANGROVE_VARIANTS), so they share the wind contract and materials."""
     out = []
-    height = 9.0
     for lod in (False, True):
-        rng = kc.rng_for("mangrove_tree", seed)
+        rng = kc.rng_for(piece, seed)
         noise = kc.Noise3(rng)
-        mb = kc.MeshBuilder("mangrove_tree" + ("-lod1" if lod else ""))
+        mb = kc.MeshBuilder(piece + ("-lod1" if lod else ""))
         bark = mb.material(M_BARK)
         foot = np.array([0.0, 0.0, 0.0])
         start = mb.vertex_count
-        _prop_roots(mb, rng, noise, foot, 8 if lod else 12, 1.8, 3.2, bark, lod=lod)
+        _prop_roots(mb, rng, noise, foot, max(5, roots * 2 // 3) if lod else roots, root_r[0], root_r[1], bark, lod=lod)
         _wind(mb, start, height, sway=False)
         start = mb.vertex_count
-        lean = np.array([0.35, 0.0, 0.1])
-        trunk = _bezier(foot + [0.0, 1.0, 0.0], foot + [0.15, 3.0, 0.05], foot + lean * 4.0 + [0.0, 5.0, 0.0],
+        lean_v = np.array(lean)
+        trunk = _bezier(foot + [0.0, 1.0, 0.0], foot + [0.15, trunk_h * 0.6, 0.05], foot + lean_v * 4.0 + [0.0, trunk_h, 0.0],
                         4 if lod else 8)
-        kc.tube(mb, trunk, np.linspace(0.32, 0.24, len(trunk)), 5 if lod else 9, bark, noise=None if lod else noise,
-                disp_m=0.015, v_scale=1.0 / 1.4, u_repeat=2.0)
+        kc.tube(mb, trunk, np.linspace(trunk_r[0], trunk_r[1], len(trunk)), 5 if lod else 9, bark,
+                noise=None if lod else noise, disp_m=0.015, v_scale=1.0 / 1.4, u_repeat=2.0)
         ends: list = []
-        for k in range(5):
-            th = 2 * math.pi * (k + rng.uniform(0.0, 0.6)) / 5
+        for k in range(boughs):
+            th = 2 * math.pi * (k + rng.uniform(0.0, 0.6)) / boughs
             d = np.array([math.cos(th), 1.0, math.sin(th)])
-            _bough(mb, rng, noise, trunk[-1], d, rng.uniform(1.6, 2.4), 0.16, 1, bark, ends, lod=lod, bare=False)
+            _bough(mb, rng, noise, trunk[-1], d, rng.uniform(bough_len[0], bough_len[1]), 0.16, 1, bark, ends,
+                   lod=lod, bare=False)
         _wind(mb, start, height, phase=0.0)
         for k, (e, d) in enumerate(ends):
-            _leaf_cluster(mb, rng, e + d * 0.2, 6 if lod else 16, 1.0 if lod else 0.85, height, phase=k * 0.13)
+            _leaf_cluster(mb, rng, e + d * 0.2, 6 if lod else leaves, 1.0 if lod else 0.85, height, phase=k * 0.13)
         out.append(mb)
     return out
+
+
+# The zones' mangrove system (M4-A2P-040): the kit tree and three variants, so a channel never repeats one tree.
+#   mangrove_tall    an old tree, 11 m, a long leaning trunk over a wide root cage, six boughs;
+#   mangrove_low     a squat tree, 6.5 m, many short roots, a broad low crown;
+#   mangrove_young   a sapling on a few roots, 4 m, three boughs (the edges of the root-mats).
+MANGROVE_VARIANTS = {
+    "mangrove_tall": dict(seed=1812, height=11.0, roots=14, root_r=(2.2, 3.8), trunk_h=6.8, trunk_r=(0.4, 0.28),
+                          lean=(0.55, 0.0, -0.2), boughs=6, bough_len=(2.0, 2.9), leaves=16),
+    "mangrove_low": dict(seed=1813, height=6.5, roots=16, root_r=(1.6, 2.6), trunk_h=3.2, trunk_r=(0.34, 0.26),
+                         lean=(-0.2, 0.0, 0.25), boughs=6, bough_len=(1.8, 2.6), leaves=14),
+    "mangrove_young": dict(seed=1814, height=4.0, roots=7, root_r=(0.9, 1.5), trunk_h=2.2, trunk_r=(0.14, 0.1),
+                           lean=(0.15, 0.0, 0.1), boughs=3, bough_len=(0.9, 1.3), leaves=10),
+}
 
 
 def build_dead(seed: int = 1803) -> list[kc.MeshBuilder]:
@@ -380,6 +401,9 @@ ROOST_W = 3.0
 ROOST_H = 2.8  # inside, over the deck
 
 
+SNAP_EPS = 1e-9  # coordinates nearer 0 than this are 0 (host determinism)
+
+
 def build_roost(seed: int = 1806) -> list[kc.MeshBuilder]:
     out = []
     for lod in (False, True):
@@ -433,6 +457,10 @@ def build_roost(seed: int = 1806) -> list[kc.MeshBuilder]:
         uv = np.stack(np.broadcast_arrays(t[:, None] * 6.0, np.array([0.0, 1.0])[None, :]), -1)
         kc.quad_strip(mb, grid, weave, uv=uv, col=(0, 0, 0, 0.3), uv2=(0.8, 0.5))
         kc.quad_strip(mb, grid, weave, uv=uv, col=(0, 0, 0, 0.3), uv2=(0.8, 0.5), flip=True)
+        # The arches' crown is cos(pi/2): 6e-17 on one numpy SIMD path and another on the next (M3-CRE-663). Snapped
+        # to 0 (and -0.0 cleared), the build is byte-identical on every host, as the Avalanche Ram's (ADR 0005).
+        p = np.asarray(mb.pos, dtype=np.float64)
+        mb.pos = (np.where(np.abs(p) < SNAP_EPS, 0.0, p) + 0.0).tolist()
         out.append(mb)
     return out
 
@@ -487,4 +515,5 @@ TARGETS = {
     "fen_far_mangroves": build_far,
     "kirru_roost": build_roost,
     "name_shell_cord": build_name_cord,
+    **{name: (lambda name=name: build_tree(piece=name, **MANGROVE_VARIANTS[name])) for name in MANGROVE_VARIANTS},
 }

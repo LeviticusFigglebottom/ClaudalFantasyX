@@ -12,6 +12,7 @@ from __future__ import annotations
 import copy
 import importlib.util
 import json
+import re
 import sys
 import tempfile
 import unittest
@@ -118,22 +119,29 @@ class ValidatorTest(unittest.TestCase):
         nhoa = self.creatures["creatures"]["nhoa"]
         self.assertTrue(nhoa["vowbound"])
         self.assertEqual(errs(self.creatures), [])
+        # M4-A2P-024 landed her row: the pending path is tested on a table without it
+        before = copy.deepcopy(vb)
+        before["vowbound"] = [r for r in before["vowbound"] if r["id"] != "nhoa"]
         cr = copy.deepcopy(self.creatures)
+        cr["creatures"]["nhoa"]["vowbound_pending"] = "M3-CRE-642"
+        self.assertEqual(errs(cr, before), [])
         del cr["creatures"]["nhoa"]["vowbound_pending"]
-        self.assertTrue(any("no game/data/battle/vowbound.json row 'nhoa'" in x for x in errs(cr)))
+        self.assertTrue(any("no game/data/battle/vowbound.json row 'nhoa'" in x for x in errs(cr, before)))
         cr = copy.deepcopy(self.creatures)
         cr["creatures"]["ilun"]["vowbound_pending"] = "M0-X-01"
         self.assertTrue(any("ilun.vowbound_pending: game/data/battle/vowbound.json has the row 'ilun' now" in x
                             for x in errs(cr)))
         cr = copy.deepcopy(self.creatures)
         cr["creatures"]["nhoa"]["vowbound_pending"] = " "
-        self.assertTrue(any("nhoa.vowbound_pending: must name the task" in x for x in errs(cr)))
+        self.assertTrue(any("nhoa.vowbound_pending: must name the task" in x for x in errs(cr, before)))
         cr = copy.deepcopy(self.creatures)
+        cr["creatures"]["nhoa"]["vowbound_pending"] = "M3-CRE-642"
         cr["creatures"]["nhoa"]["vowbound"] = False
-        self.assertTrue(any("nhoa.vowbound_pending: only on a row with vowbound true" in x for x in errs(cr)))
+        self.assertTrue(any("nhoa.vowbound_pending: only on a row with vowbound true" in x for x in errs(cr, before)))
         cr = copy.deepcopy(self.creatures)
+        cr["creatures"]["nhoa"]["vowbound_pending"] = "M3-CRE-642"
         del cr["creatures"]["nhoa"]["vowbound"]
-        self.assertTrue(any("nhoa.vowbound_pending: only on a row with vowbound true" in x for x in errs(cr)))
+        self.assertTrue(any("nhoa.vowbound_pending: only on a row with vowbound true" in x for x in errs(cr, before)))
 
     def test_a_stand_in_may_give_its_height_and_radius(self) -> None:
         """M3-CRE-640: Kahre has no battle_sandbox.json row, so his creatures.json stand_in gives the height the VFX
@@ -196,6 +204,18 @@ class ValidatorTest(unittest.TestCase):
 ACT1_REGULARS = ("ashwing", "flue_moth", "gull_harrier", "lantern_eel", "oil_slug", "raid_hound", "reef_crab",
                  "sail_leech", "scuttler", "shoal_skipper", "slag_tortoise", "squall_wing", "stormgull", "tide_crawler",
                  "tower_limpet", "vein_sparker", "wall_polyp", "wallcrab", "glassfry", "wreck_crab")
+
+
+def model_scale(row: dict) -> float:
+    """The battle scene's scale on its `Model` (the Act I audit: a small foe stands larger in battle, as the Oil Slug's
+    1.3); 1 when the scene sets none. Its clips' drops and lows scale with it."""
+    scene = ROOT / str(row.get("scene", "")).removeprefix("res://")
+    text = scene.read_text(encoding="utf-8") if scene.is_file() else ""
+    m = re.search(r'\[node name="Model"[^\]]*\]\ntransform = Transform3D\(([^)]*)\)', text)
+    if not m:
+        return 1.0
+    v = [float(x) for x in m.group(1).split(",")]
+    return (v[0] ** 2 + v[3] ** 2 + v[6] ** 2) ** 0.5
 
 
 def model_rows(rows: dict) -> dict:
@@ -355,15 +375,26 @@ class PipelineTest(unittest.TestCase):
             if cid in sinks_by_design:
                 continue
             if hover > 0.0:
-                self.assertAlmostEqual(-dy, hover, delta=0.05, msg=f"{cid}: a flier's KO lands on the floor")
+                self.assertAlmostEqual(-dy * model_scale(row), hover, delta=0.05,
+                                       msg=f"{cid}: a flier's KO lands on the floor")
             else:
-                self.assertGreater(dy, -0.5, f"{cid}: a grounded creature's KO doesn't sink through the floor")
+                self.assertGreater(dy * model_scale(row), -0.5,
+                                   f"{cid}: a grounded creature's KO doesn't sink through the floor")
 
 
 def skinned_lowest(glb: Path) -> dict[str, float]:
     """The lowest vertex y (metres) over every baked frame of each clip of a creature GLB, skinned as Godot plays it:
     each clip's channels are sampled at every frame (the kit force-samples them), nodes not keyed keep their rest TRS,
     and a vertex is the weighted sum of its joints' global matrices times their inverse bind matrices."""
+    out: dict[str, float] = {}
+    for name, V in skinned_frames(glb, (1,)):
+        out[name] = min(out.get(name, float("inf")), float(V[:, 0].min()))
+    return out
+
+
+def skinned_frames(glb: Path, rows: tuple = (0, 1, 2)):
+    """Yields (clip, the skinned vertices' coordinates `rows` (0 x, 1 y, 2 z) as columns) for every baked frame of every
+    clip of a creature GLB (M3-CRB-013: skinned_lowest's posing, for checks that need where a vertex is)."""
     import struct  # noqa: PLC0415
 
     import numpy as np  # noqa: PLC0415
@@ -418,12 +449,10 @@ def skinned_lowest(glb: Path) -> dict[str, float]:
     J = np.vstack([acc(p["attributes"]["JOINTS_0"]) for p in prims])
     W = np.vstack([acc(p["attributes"]["WEIGHTS_0"]) for p in prims])
     slot = {"translation": 0, "rotation": 1, "scale": 2}
-    out = {}
     for anim in js["animations"]:
         chans = [(c["target"]["node"], slot[c["target"]["path"]], acc(anim["samplers"][c["sampler"]]["output"]))
                  for c in anim["channels"] if c["target"]["path"] in slot]
         frames = max(len(v) for _, _, v in chans)
-        low = np.inf
         for f in range(frames):
             local = [list(r) for r in rest]
             for node, k, v in chans:
@@ -432,10 +461,8 @@ def skinned_lowest(glb: Path) -> dict[str, float]:
             for i in order:
                 G[i] = trs(*local[i]) if i not in parent else G[parent[i]] @ trs(*local[i])
             S = np.array([G[j] for j in joints]) @ ibm
-            y = sum(W[:, k] * np.einsum("nj,nj->n", S[J[:, k], 1, :], P) for k in range(J.shape[1]))
-            low = min(low, float(y.min()))
-        out[anim["name"]] = low
-    return out
+            yield anim["name"], np.column_stack([
+                sum(W[:, k] * np.einsum("nj,nj->n", S[J[:, k], r, :], P) for k in range(J.shape[1])) for r in rows])
 
 
 class GroundedClipsTest(unittest.TestCase):
@@ -449,9 +476,9 @@ class GroundedClipsTest(unittest.TestCase):
 
     TOLERANCE = 0.005
     ALLOW = {
-        # it rises out of the water between the raft's planks, and its KO slides back down between them
-        # (docs/kb/art/creatures/act1/hullgnaw.md)
-        "hullgnaw": "rises from the water between the planks",
+        # it rises out of the breach it smashed in the raft's deck, and its KO slides back down through it
+        # (docs/kb/art/creatures/act1/hullgnaw.md); HullgnawBreachTest holds it to the hole
+        "hullgnaw": "rises through its breach in the deck",
         # it rises out of the water or sand; as built, its tail is buried and runs along under the ground before the S
         # rises (docs/kb/art/creatures/lantern_eel.md, "Notes for the model")
         "lantern_eel": "its tail is buried",
@@ -472,15 +499,46 @@ class GroundedClipsTest(unittest.TestCase):
             if cid in self.ALLOW:
                 continue
             hover = float({**data["defaults"]["stand_in"], **row.get("stand_in", {})}.get("hover", 0.0))
+            scale = model_scale(row)
             for clip, low in skinned_lowest(ROOT / "assets/creatures" / cid / f"{cid}.glb").items():
                 with self.subTest(creature=cid, clip=clip):
-                    self.assertGreaterEqual(low + hover, -self.TOLERANCE,
-                                            f"{cid} {clip}: a vertex goes {-(low + hover):.3f} m under the floor"
+                    self.assertGreaterEqual(low * scale + hover, -self.TOLERANCE,
+                                            f"{cid} {clip}: a vertex goes {-(low * scale + hover):.3f} m under the floor"
                                             + (f" (with its {hover} m hover)" if hover else ""))
 
     def test_the_allow_list_names_creatures(self) -> None:
         rows = _load(vc.CREATURES_FILE)["creatures"]
         self.assertEqual(sorted(set(self.ALLOW) - set(rows)), [], "an ALLOW entry names no creature")
+
+
+class HullgnawBreachTest(unittest.TestCase):
+    """M3-CRB-013: the Hullgnaw is fought on the raft's deck, so it may go under the floor only through the breach its
+    build smashed in it: at every baked frame of every clip, a vertex more than 5 mm under the deck lies inside the
+    hole (the build's breach_radius round BREACH_C), never under the planks."""
+
+    def test_it_goes_under_only_through_its_breach(self) -> None:
+        import math  # noqa: PLC0415
+
+        import numpy as np  # noqa: PLC0415
+
+        src = ROOT / "assets_src/creatures/hullgnaw/build_hullgnaw.py"
+        sys.path.insert(0, str(src.parent.parent / "common"))
+        spec = importlib.util.spec_from_file_location("build_hullgnaw_breach", src)
+        b = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(b)
+        cx, cz = float(b.BREACH_C[0]), float(b.BREACH_C[2])
+        worst: dict[str, float] = {}
+        for clip, V in skinned_frames(ROOT / "assets/creatures/hullgnaw/hullgnaw.glb"):
+            under = V[V[:, 1] < -0.005]
+            if len(under):
+                phi = np.arctan2(under[:, 2] - cz, under[:, 0] - cx)
+                out = np.hypot(under[:, 0] - cx, under[:, 2] - cz) - b.breach_radius(phi)
+                worst[clip] = max(worst.get(clip, -math.inf), float(out.max()))
+        self.assertIn("ko", worst, "the KO goes down through the breach")
+        for clip, out in worst.items():
+            with self.subTest(clip=clip):
+                self.assertLessEqual(out, 0.005, f"hullgnaw {clip}: a vertex goes under the planks {out:.3f} m outside "
+                                     "the breach")
 
 
 if __name__ == "__main__":

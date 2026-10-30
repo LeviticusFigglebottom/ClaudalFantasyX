@@ -23,4 +23,4 @@ The one exaggeration: **scale and the shutter in its shell**.
 - `hit`: it clamps down flat.
 - `ko`: the shell lifts, tips onto its side, the foot curls.
 
-Rig: root, shell, foot (a few ripple bones). Budget ≤ 5k triangles.
+Rig: root, shell, foot (a few ripple bones). Budget ≤ 10k triangles (a lone foe; 9.1k after the 2026-10-29 primitive pass: sharp ribs into a scalloped margin, growth ledges, a worn pitted apex, the shutter as boards with gaps and two rusted iron straps, barnacle clusters, a fringe of mantle tentacles round the foot).

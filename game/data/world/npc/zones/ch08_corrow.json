@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "doc": "Corrow's low town and wall-head (M3-CRE-659, ADR 0152): the kite children, a stair-watch fisher, the netmender at the stair foot and two townsfolk who talk, each a crowd person (game/data/world/npc/crowd.json) inside its stage actor (attach child). Ivo, Hobb, Marra, the gatekeeper and the Stillguard are not crowd.",
+  "doc": "Corrow's low town and wall-head (M3-CRE-659, ADR 0152): the kite children, a stair-watch fisher, the netmender at the stair foot and two townsfolk who talk, each a crowd person (game/data/world/npc/crowd.json) inside its stage actor (attach child). Ivo, Hobb, Marra, the gatekeeper and the Stillguard are not crowd. The figure in the storm wall (act1_ch08 W22, M3-HER-1142) wears an Oruvel diver's crowd body as one cyan silhouette (`body`, `silhouette`): a man's shape, no face.",
   "zone": "ch08/corrow",
   "villagers": [
     {
@@ -29,6 +29,8 @@
     },
     {
       "npc_id": "corrow_fisher_a",
+      "offset": [0.75, 0.0, 0.11],
+      "_offset_note": "Off a drop or a doorway (the crowd placement audit, tools/creatures/crowd_spot_audit.gd, 2026-10-30).",
       "crowd": "corrow_fisher_a",
       "stand_in": "CutsceneStage/Actors/fisher_a",
       "attach": "child"
@@ -42,6 +44,8 @@
     },
     {
       "npc_id": "corrow_townsfolk_a",
+      "offset": [0.1, 0.0, 0.22],
+      "_offset_note": "Off a drop (the crowd placement audit, tools/creatures/crowd_spot_audit.gd, 2026-10-30).",
       "crowd": "corrow_townsfolk_a",
       "stand_in": "CutsceneStage/Actors/townsfolk_a",
       "attach": "child",
@@ -49,10 +53,26 @@
     },
     {
       "npc_id": "corrow_townsfolk_b",
+      "offset": [0.1, 0.0, 0.22],
+      "_offset_note": "Off a drop (the crowd placement audit, tools/creatures/crowd_spot_audit.gd, 2026-10-30).",
       "crowd": "corrow_townsfolk_b",
       "stand_in": "CutsceneStage/Actors/townsfolk_b",
       "attach": "child",
       "chat_with": "corrow_townsfolk_a"
+    },
+    {
+      "npc_id": "corrow_storm_figure",
+      "body": "crowd_man_lean_a",
+      "silhouette": "#5fd6e0",
+      "tuning": {
+        "glance": {"radius_m": 0.0},
+        "look_around": {"yaw_deg": 0.0},
+        "stop_radius_m": 0.0,
+        "face_radius_m": 0.0,
+        "release_radius_m": 0.0
+      },
+      "stand_in": "CutsceneStage/Actors/figure",
+      "attach": "child"
     }
   ]
 }

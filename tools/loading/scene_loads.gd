@@ -6,6 +6,8 @@ extends Node
 ## Run headless after a zone's cast or dressing changes (the test checks every zone has a list):
 ##   godot --headless --path . res://tools/loading/scene_loads.tscn
 
+## Frames each zone runs before its holdings are collected, so deferred builds are in.
+const SETTLE_FRAMES := 3
 const LOCATIONS := "res://game/data/world/locations.json"
 const OUT := "res://game/data/ui/scene_loads.json"
 ## Act I (ADR 0041): the prologue and chapters 1-9.
@@ -37,8 +39,12 @@ func _ready() -> void:
 			continue
 		var node := (load(scene) as PackedScene).instantiate()
 		get_tree().root.add_child(node)
+		# Deferred builds (VillagerLayer builds once the zone's own set-up is done) load at runtime too.
+		for f in SETTLE_FRAMES:
+			await get_tree().process_frame
 		var found := {}
 		_collect(node, found)
+		_collect_casts(node, found)
 		found.erase(scene)
 		var list: Array = found.keys()
 		list.sort()
@@ -82,6 +88,23 @@ func _collect(n: Node, out: Dictionary) -> void:
 				_res(mi.get_surface_override_material(i), out)
 	for c in n.get_children(true):
 		_collect(c, out)
+
+
+## Every model a zone's stage actors are cast as (ZoneCast: villagers and creatures; heroes are resident already).
+## The villager layer adopts or replaces a cast body after it is built (big19's PC pass 4, row 67: Brine Shoals'
+## and Corrow's casts were never listed, so each loaded cold in the change), so the tree no longer holds them by the
+## time _collect runs: they are read from the layout's `cast` rows instead.
+func _collect_casts(n: Node, out: Dictionary) -> void:
+	var zone := n as GreyboxZone
+	if zone == null:
+		return
+	for row: Variant in (zone.layout.get("actors", {}) as Dictionary).values():
+		var cast := str((row as Dictionary).get(ZoneCast.KEY_CAST, "")) if row is Dictionary else ""
+		if cast == "" or cast.begins_with(ZoneCast.PREFIX_HERO):
+			continue
+		var path := ZoneCast.scene_path(cast)
+		if path != "":
+			out[path] = true
 
 
 func _res(r: Resource, out: Dictionary) -> void:
