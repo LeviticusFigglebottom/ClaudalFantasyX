@@ -108,6 +108,33 @@ func test_meta_never_changes_the_restored_state() -> void:
 	_done()
 
 
+## ADR 0121 (the Lead's save pass, 2026-10-30): a chapter autosave continues where the slot says, the zone the
+## chapter began in, not at the last shrine (the chapter before). The party, flags and the rest load as they were, and
+## Game.state keeps its shrine. A save of another reason keeps its respawn.
+func test_a_chapter_autosave_continues_in_the_chapter_s_zone() -> void:
+	Game.state.chapter = 4
+	Game.state.location_id = &"ch04/haluna_wake"
+	Game.state.respawn_location_id = &"ch03/shell_shrine"
+	Game.state.respawn_spawn = &"Shrine"
+	Game.state.party_ids = [&"rhen", &"asha", &"toma"] as Array[StringName]
+	Game.state.flags = {"ch04_started": true, "ch03_shell_shrine_cleared": true}
+	assert_eq(SaveSystem.autosave(SaveSystem.REASON_CHAPTER), OK)
+	assert_eq(Game.state.respawn_location_id, &"ch03/shell_shrine", "the game's own state keeps its shrine")
+	var back := SaveSystem.load_from_slot(SaveSystem.AUTOSAVE_SLOT)
+	assert_eq(back.location_id, &"ch04/haluna_wake")
+	assert_eq(back.respawn_location_id, &"ch04/haluna_wake", "Continue starts where the chapter began")
+	assert_eq(back.party_ids, Game.state.party_ids, "the party as it was")
+	assert_eq(back.flags, Game.state.flags, "the flags as they were")
+	var reg := LocationRegistry.load_default()
+	var wr := WorldReturn.new()
+	wr.registry = reg
+	assert_eq(str(wr.resolve(back)["scene"]), reg.scene_of(&"ch04/haluna_wake"), "and the slot's label is the truth")
+	wr.free()
+	assert_eq(SaveSystem.save_to_slot(2, Game.state), OK)
+	assert_eq(SaveSystem.load_from_slot(2).respawn_location_id, &"ch03/shell_shrine", "a manual save keeps its respawn")
+	_done()
+
+
 func _done() -> void:
 	EventBus.autosave_finished.disconnect(_on_finished)
 	SaveSystem.cancel_pending_autosave()
