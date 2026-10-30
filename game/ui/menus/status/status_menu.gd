@@ -164,6 +164,18 @@ func _render_vitals(vm: Dictionary) -> void:
 	var lvl := _add_label(&"DimLabel", Rect2(r.position.x, r.position.y, r.size.x, name_h), str(_shown["level_text"]))
 	lvl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	var y := r.position.y + name_h + gap
+	# A note (Kerrid's after the reveal) tucks under the name row; the gap between the gauges narrows to keep the
+	# block's height.
+	var note := str(_shown.get("note", ""))
+	var after_gauge := gap * 2.0
+	if note != "":
+		var note_y := r.position.y + name_h - HudLayout.num(vm, "note_lift")
+		var nl := _add_label(
+			&"HelpDimLabel", Rect2(r.position.x, note_y, r.size.x, HudLayout.num(vm, "note_height")), note
+		)
+		HudLayout.fit_label(nl, r.size.x, HudLayout.num(vm, "note_min_scale"))
+		y = nl.position.y + nl.size.y + gap
+		after_gauge = gap
 	for v: Array in [["hp", "STATUS_MENU_HP", "max_hp"], ["mp", "STATUS_MENU_MP", "max_mp"]]:
 		var role := StringName(str(v[0]))
 		var tag := _add_label(&"HudName", Rect2(r.position.x, y, r.size.x, line_h), tr(str(v[1])))
@@ -176,7 +188,7 @@ func _render_vitals(vm: Dictionary) -> void:
 			num.add_theme_color_override(&"font_color", _c(&"danger"))
 		y += line_h + gap
 		_add_gauge(role, Rect2(r.position.x, y, r.size.x, gauge_h), int(_shown[role]), int(_shown[v[2]]))
-		y += gauge_h + gap * 2.0
+		y += gauge_h + after_gauge
 
 
 func _render_stats(sm: Dictionary) -> void:

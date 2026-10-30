@@ -68,3 +68,4 @@ SAVE_SHRINE_DARK_PROMPT,Touch the dark shrine
 SHOP_ERR_HERETIC,"""Not to you. Not now."" The keeper will not trade with heretics."
 FIELD_MENU_SUBTITLE_HERETIC,Heretics of the Level
 SAVE_SLOT_HERETIC_FMT,{chapter} · Heretics
+STATUS_MENU_KERRID_UNRISEN,Unrisen: held since the stair at Corrow

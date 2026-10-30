@@ -48,7 +48,11 @@ func test_entries_unlock_by_flag_by_record_or_always_and_locked_ones_are_not_lis
 	assert_eq(_ids(m.entries_in(&"world")), [&"glimmer"] as Array[StringName], "only the always entry at first")
 	assert_true(m.entries_in(&"records").is_empty())
 	assert_eq(m.categories()[0]["found"], 1)
-	assert_eq(m.categories()[0]["total"], 14, "locked entries still count (Act I's ten, the Kirru and Ullari, the farewell-tide and name-shells)")
+	assert_eq(
+		m.categories()[0]["total"],
+		14,
+		"locked entries still count (Act I's ten, the Kirru and Ullari, the farewell-tide and name-shells)"
+	)
 	flags[&"ch02_met_asha"] = true
 	assert_eq(
 		_ids(m.entries_in(&"world")),
