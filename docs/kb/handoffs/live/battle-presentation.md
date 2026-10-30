@@ -185,6 +185,10 @@ element (voice_glimmer, level_hand, still_water).
 - **Verified on origin/lead/gate-big21 with this branch merged** (scratch worktree, imported): `--filter=battle_vfx`
   10/0, and validate_data is clean.
 - Merge note: tests/screenshots/shots.json conflicts with big18+ (both sides append at the end). Keep both.
+- **Rows 57 and 61, verified on big21 + this branch (SELF-RENDERED, viewed):**
+  - battle_choreo_summon: the side-on frame keeps Ilun clear of the foes and the gull clear of the eel.
+  - battle_arena_seawall_stairhead_surge: the Reach is on its mark, its arm over the wall, with the party on the
+    wall-walk beside it.
 - Also MERGE-READY in this range: the Act II boss intros (c3e45bb0), the Act II boss moves fixed and viewed
   (8d0fe783..f2bbb673; M4-A2P-062 Sound Dive verified in live play: sea-glow at the fin's crest beside the Breach
   telegraph), and the Hullgnaw fall frame (8b0e12c2, viewed in a re-run of the sweep).
