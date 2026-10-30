@@ -1629,3 +1629,47 @@ Owners follow the Act I split until act2_tracks.md's ownership lands: env-art-b 
   - qa_field_camera 2/0, qa_walk_audit 1/0 (every route 0 frames out of frame);
   - gdlint/gdformat clean, validate_data 0/0.
 MERGE-READY @ b07d5bf35 (+ this log).
+
+### The PC's GPU QA pass 3 rows for me (21, 37, 38, 50), 2026-10-30 ~05:00
+Checked on lead/gate-big18 plus this branch, with **spawn stills** (`walk_stills.tscn -- --scene=… --spawn=…`, the
+party arriving and standing 60 frames, and `--unstage` to show the followers where a zone stages them), the walk
+audit, and probes.
+- **Row 37, the causeway (FIXED):**
+  - Encounter and AfterHarrier: the close camera behind the arrival had Toma 1.5 m from the lens filling a third
+    of the frame. Now **followers never stand within `camera_near_m` (3 m) of the lens.** At a spawn they're laid
+    out clear of it, and while standing they **flank** the leader instead of walking back into the foreground
+    (`off_lens`).
+  - BeforeHarrier: the FIXED shot C07 faced away and showed no one. Now a **FIXED shot that would lose the leader
+    entirely turns to hold him** (`keep_in_frame_fixed_share` 0.95; a locked frame with him anywhere in it is never
+    moved).
+  - Stills after: Encounter shows Rhen centred and Asha well off to the side; BeforeHarrier shows Rhen in frame.
+  - Tests: test_hero_followers' new no-follower-in-the-lens test (laid out and after 120 frames), and
+    test_camera_director's FIXED safety-net test.
+- **Row 38, Coilspire (FIXED on the camera side; the spawn is env-art-b's):**
+  - SpireBase and Tier2 read fine (keep_in_frame from earlier).
+  - **Tier4: the spawn stands inside the spiral's step mass.** Rays from his chest hit `coilspire_tiers` within
+    0.02-0.13 m in every direction, and 0.51 m straight up, so no camera can see him clearly. Evidence is on
+    **M3-HER-1157 (environment):** move the spawn.
+  - The camera no longer makes it worse. Deep occlusion (clear stretch < `min_view_m` 1.8) now **cranes**: straight
+    up to a clear height, clear of solids (`crane_clear_m`), looking down. Under a ceiling it tries **a ring of side
+    spots** (`crane_ring_m` 2.5/1.9, `crane_ring_up_m` 0.6, 12 turns). When nothing clears, it pulls in as before
+    while `min_distance_m` is free, and **keeps the shot's own pose when not even that is** (Tier4).
+  - The Tier4 still now shows him down the shaft framed by the valve wheels: the head-cam is gone.
+  - Encounter: Rhen is in frame (keep_in_frame), but the GallerySouth shot looks out over empty sea. The shot's
+    direction is **M3-HER-1159 (act1-chapters)**.
+- **Row 50, Toma sunk at Ashcrown's crown: NOT REPRODUCED.** At the Crown spawn (with `--unstage`, all three
+  showing) everyone stands on the 42 m floor (still and probe). Climbing the flying stair both ways with the
+  followers visible, the walk audit's new **sunk** check (feet > 0.3 m under the floor or the stair profile) gives
+  0 frames. The likely cause was the pre-fix stair handling. If the PC sees it again, the exact story state would
+  help.
+- **Row 21: re-checked by stills** of the start after the beach and the Village spawn: Rhen and the party in frame.
+  The PC couldn't reach it in pass 3 (New Game runs into the beach cutscene), so a hand playthrough confirms it.
+- The walk audit now walks the Ashcrown and Coilspire routes **with the followers visible** (`unstage`) and fails
+  on a follower **sunk** in the floor or **inside the body ahead** (OVERLAP_M 0.4) for more than 30 frames. All
+  routes pass. On the way down the flying stair, Toma closes to 0.13 m of Asha for 9 frames at the start (well
+  under the limit).
+- **ADR 0205:** `act1_gate_check.py` now names ADR 0205 §3 as its criteria (2 s hitches). Its two checks are unchanged.
+- **Row 44 / the PC-QUEUE `material is null`:** creatures' storm figure (row 44), so not mine. Done on my side.
+- Checks: camera 64/0, camera_director 49/0, hero_ 115/0, qa_field_camera 2/0, qa_party 3/0, qa_walk_audit 1/0,
+  gdlint/gdformat clean, validate_data 0/0.
+MERGE-READY @ (this commit).
