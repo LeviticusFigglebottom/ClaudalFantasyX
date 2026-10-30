@@ -1,4 +1,4 @@
-# big22: 600 shots: 335 PASS, 168 DRIFT (0 size mismatch), 97 NO-BASELINE, 0 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
+# big22: 622 shots: 335 PASS, 168 DRIFT (0 size mismatch), 119 NO-BASELINE, 0 FAILED-TO-CAPTURE (lavapipe, Forward+, baselines untouched)
 PASS boot_title rmse 0.00000 (limit 0.00400)
 NO-BASELINE slice_end_card (pending_baseline)
 PASS lighting_probe rmse 0.00000 (limit 0.00800)
@@ -599,3 +599,25 @@ NO-BASELINE ch01_kell_stall (pending_baseline)
 NO-BASELINE ch01_net_pen (pending_baseline)
 NO-BASELINE ch01_hullgnaw_rises (pending_baseline)
 NO-BASELINE ch01_going_under (pending_baseline)
+NO-BASELINE ch01_going_under_u10 (pending_baseline)
+NO-BASELINE ch01_going_under_u11 (pending_baseline)
+NO-BASELINE ch01_current_shaft_u09 (pending_baseline)
+NO-BASELINE slice_prologue_p01 (pending_baseline)
+NO-BASELINE crowd_lineup_a
+NO-BASELINE crowd_lineup_b
+NO-BASELINE crowd_lineup_c
+NO-BASELINE crowd_market
+NO-BASELINE crowd_work
+NO-BASELINE crowd_mourners
+NO-BASELINE crowd_zone_pemakar
+NO-BASELINE crowd_zone_brine_shoals
+NO-BASELINE crowd_zone_tamsule
+NO-BASELINE crowd_zone_corrow_night
+NO-BASELINE crowd_zone_corrow
+NO-BASELINE crowd_zone_oruvel
+NO-BASELINE crowd_lineup_back
+NO-BASELINE field_hud_over_oruvel
+NO-BASELINE field_hud_over_corrow_night
+NO-BASELINE ebbing_n08
+NO-BASELINE crowd_zone_ashcrown
+NO-BASELINE field_hud_over_ashcrown
