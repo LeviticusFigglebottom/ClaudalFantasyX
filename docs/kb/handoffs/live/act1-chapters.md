@@ -496,6 +496,18 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   - Skipped: coverage (data only, no game/battle code).
   - **LEAD-ASK (combat review):** the smart-band exception. Same cause as the Matron; M3-C05-06 is the fix.
 
+- **MERGE-READY @ 95a75dcf0: Ch11's shots, marks and field cameras (M4-A2P-011, claimed; 4e8ed0f8f).**
+  - Sunken Vey: V02–V04 and the gallery and court volumes.
+  - Lowlight: L02–L07, `pell_kneel`, and the atrium, hall, flight and sanctum volumes.
+  - All shot_check-solved and viewed through the new ch11 rigs. The sanctum frames wait on Nhoa's and Pell's bodies
+    to be judged.
+  - Checks: `--filter=ch11` 3/0; validate_data clean; poi_views and zone_map_pois tests OK.
+  - Next:
+    - the Lamp Engine (enemy row, the conduit crawler adds, the repair effect M4-A2P-022) when combat's part-repair
+      lands;
+    - Vey's arena (M4-A2P-041);
+    - then Ch12's placement and cameras.
+
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
   arena and the Shoal Skippers.
