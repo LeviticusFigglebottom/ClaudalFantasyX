@@ -807,7 +807,7 @@ DLG_CH10_BARK_PEDGE_001,The roots are quiet. They will grow back over the cut. T
 DLG_CH10_BARK_PEDGE_002,Something drags in the roots. Walk where the bark is pale. It does not like the pale.
 DLG_CH10_BARK_PGATE_001,I wait here. I am good at waiting. Go in. Eat what they give you. It is rude not to.
 DLG_CH10_BARK_PGATE_002,"If they say her name, do not say it back to me. Not yet."
-DLG_CH10_BARK_WALKWAY_001,Love a walkway that moves. Really. Big fan.
+DLG_CH10_BARK_WALKWAY_001,Love a walkway that moves. Really. My favourite kind.
 DLG_CH10_BARK_COUNTRY_001,The Order calls this country empty. It is not empty.
 DLG_CH10_BARK_EGRETS_001,Herons are sacred to nobody. It is restful.
 DLG_CH10_CAMP_001,You're still up.
@@ -966,7 +966,7 @@ DLG_NAME_ULLARI_KETH_READER,Keth-reader
 DLG_CH12_BARK_READER_002,You tied one on the pass. Good. The cord holds it now. You don't have to.
 DLG_CH12_BARK_CAIRN_001,They tie a knot and walk on. In Haluna we would sit with them for three days.
 DLG_CH12_BARK_KINDER_001,"Three days, in Haluna. Sitting with them."
-DLG_CH12_BARK_KINDER_002,I do not know anymore which is kinder.
+DLG_CH12_BARK_KINDER_002,I do not know any more which is kinder.
 DLG_CH12_BARK_TRAV_001,Don't read the knots on the pass. They're not for reading. They're for leaving.
 DLG_NAME_ULLARI_TRAVELLER,Traveller
 DLG_CH12_BARK_WEAVER_001,Tide patterns. My grandmother's. Nobody here has seen the sea. We weave it anyway.
@@ -1009,11 +1009,11 @@ DLG_CH12_PRAYERS_002,Prayers. A pilgrim's devotions. The Cantor who stayed here 
 DLG_CH12_PRAYERS_003,It is very old wool.
 DLG_CH12_SHRINE_001,"The Order's stone won't answer. The cords the Ullari hung on it are still there, knotted for the dead, and nobody has taken them down."
 DLG_CH12_SHRINE_002,"A Level-stone by the well, hung all over with Ullari cords. Somebody has knotted a name onto the Order's stone, and somebody else has left it there."
-DLG_CH12_DCORD_001,"That's my father's cord. Red, with the double knot. He tied it on her the spring she was born."
+DLG_CH12_DCORD_001,"You came down the terrace road. Did you see her? The big one. Red cord, double knot. My father tied it on her the spring she was born."
 DLG_NAME_ULLARI_WOMAN_DORRO_S_DAUGHTER,Dorro's daughter
-DLG_CH12_DCORD_002,I'm sorry. About her. And him.
+DLG_CH12_DCORD_002,We saw her. I'm sorry. Pell tied her cord on the pass.
 DLG_CH12_DCORD_003,She went wild after he died. Nobody walked her home.
-DLG_CH12_DCORD_004,"I'll tie it on the pass, next to his. Then they're both on the road together."
+DLG_CH12_DCORD_004,Then she's on the road with him. Good. That's where she belongs.
 DLG_CH12_BOY_001,You tied it? Good. Now she can stop waiting for me.
 DLG_CH12_BOY_002,My gran's knot isn't on the pass. I'm not old enough to walk the road. Would you tie it? You're going that way.
 DLG_CH12_BOY_003,Show me how.
@@ -1061,7 +1061,7 @@ DLG_NAME_TOWNSFOLK_PILGRIM,Pilgrim
 DLG_CH13_BARK_PCHILD_001,Mother says if I'm very still I can hear the water not moving.
 DLG_CH13_BARK_SEAM_001,They took the red thread down. I kept a spool. I don't know why I'm telling you.
 DLG_NAME_TOWNSFOLK_SEAMSTRESS,Seamstress
-DLG_CH13_BARK_SEAM_002,Red thread for a Cantor's wedding. I haven't slept. I don't mind.
+DLG_CH13_BARK_SEAM_002,Red thread for the wedding. I haven't slept. I don't mind.
 DLG_CH13_BARK_SEAM_003,"Red for weddings, white for the Order, and nothing for anything else."
 DLG_CH13_BARK_GUARD_001,Okeru? From the Corrow wall?
 DLG_CH13_BARK_GUARD_002,Once.
@@ -1083,7 +1083,7 @@ DLG_CH13_REG_001,"Rhen. Look. ""Velamir, of Haluna."""
 DLG_CH13_REG_002,Your family?
 DLG_CH13_REG_003,One of them. The ink's gone on the first name. She came all this way and wrote her name in a book by a door.
 DLG_CH13_REG_004,Her letters lean the same way mine do.
-DLG_CH13_REG_005,Mother never got this far.
+DLG_CH13_REG_005,Mother would have stood right here.
 DLG_CH13_REG_006,You did.
 DLG_CH13_REG_007,I'll write mine under hers.
 DLG_CH13_MOORINGS_001,They pole well here.
@@ -1091,7 +1091,7 @@ DLG_CH13_MOORINGS_002,Too well.
 DLG_CH13_SHRINE_001,"The basin is still, as it always is. It shows your faces. It doesn't show you anything else."
 DLG_CH13_SHRINE_002,A small basin of still water on a white plinth. It holds the sky without a ripple. Pilgrims touch the rim and don't touch the water.
 DLG_CH13_FLAME_001,Straight as a mast. I've walked it twenty times. Thank you.
-DLG_NAME_TOWNSFOLK_YOUNG_LAMPLIGHTER,Young Lamplighter
+DLG_NAME_TOWNSFOLK_YOUNG_LAMP_BEARER,Young lamp-bearer
 DLG_CH13_FLAME_002,"It leans. Every time I walk, it leans. Six of us carry them in, and mine's the one that leans."
 DLG_CH13_FLAME_003,Give it here.
 DLG_CH13_FLAME_004,Wick-seat's cracked. You're not walking crooked. The lamp is. There.
@@ -1145,7 +1145,7 @@ DLG_NAME_TOWNSFOLK_WEDDING_GUEST,Wedding guest
 DLG_CH14_BARK_CAPTAIN_001,Sea-coat in a lacquer hall. I feel like a stain.
 DLG_NAME_HULL_CAPTAIN_HULL_CAPTAIN,Hull-captain
 DLG_CH14_BARK_LAMP_001,"Six of us carry the lamps in. The whole length of the court, and the flame mustn't lean. I've practised all week."
-DLG_NAME_TOWNSFOLK_LAMPLIGHTER,Lamplighter
+DLG_NAME_TOWNSFOLK_LAMP_BEARER,Lamp-bearer
 DLG_CH14_HERESY_SHOP_001,"Outside the Level. I can't sell to you. I'm sorry. Go, before someone sees me being sorry."
 DLG_NAME_VENDOR_ORDER_PURVEYOR,Order purveyor
 DLG_CH14_BARK_SGCOURT_001,Keep to the galleries. The floor is for the vowed.
