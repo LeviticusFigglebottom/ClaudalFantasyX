@@ -180,6 +180,7 @@ flags = {
 "ch15_reached_hollowmere": "Ch15: at dawn the barge has come in to Hollowmere, its first visit (M4-C15-02).",
 "ch16_started": "Ch16 (Act II): the Hollowmere ship has left the party at the Pale Rim (the chapter becomes 16; M4-C16-02).",
 "ch16_reached_choir": "Ch16: the party has waded the white shallows to the Drowned Choir (M4-C16-02).",
+"ch16_kesh_bound": "Ch16 C4: Kesh is bound in the Choir's stones, the Glimmer Vowbound (vowbound.json bound_flag; M4-A2P-025).",
 "ch05_kahre_first_call_seen": "Kahre's first call in battle (C10) has played in full; later calls play the short entry (M3-BPR-414).",
 "ch08_virel_first_call_seen": "Virel's first call in battle (C10) has played in full; later calls play the short entry (M3-BPR-414).",
 "codex_lamp_divers_read": "Codex (ui-menus Act I set, game/data/lore/codex.json): the entry 'lamp_divers' has been opened in the Codex (clears its New marker).",
