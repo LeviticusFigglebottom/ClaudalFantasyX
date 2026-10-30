@@ -236,6 +236,9 @@ func advance(delta: float) -> void:
 func play_music(cue_id: StringName, sec: float = -1.0) -> bool:
 	var fade := float(music_cfg().get("crossfade_sec", 0.0)) if sec < 0.0 else sec
 	if cue_id == AudioData.SILENCE or cue_id == &"":
+		var release := StringName(str(AudioData.cue(music_data, music.current).get("release", "")))
+		if release != &"" and not music.is_silent():  # its own ending instead of a fade (the Ebbing)
+			return play_music(release, fade)
 		music.stop(fade)
 		return true
 	var row := AudioData.cue(music_data, cue_id)
