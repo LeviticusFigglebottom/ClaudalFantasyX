@@ -1740,3 +1740,8 @@ MERGE-READY @ (this commit).
     change doesn't touch. **The hub-orbit clamp can drift any shot taken through the field camera's orbit in free
     play**, so that needs the Lead's full manifest.
 MERGE-READY @ (this commit).
+- **Trial merge @ integration 8de373e5 (all 11 heads):** my only conflict is
+  `docs/kb/tasks/M3/M3-CIN-1251-camera-returns-to-the-orbit.md` (both act1-chapters and I added it). Mine is their copy
+  (fetched 10-30) plus my status and review entry: **take hero-integration's side**. If act1-chapters has added to
+  it since, also keep their newer lines. The other conflicts are other tracks' shared data files (enemies,
+  encounters, skills, battle_sandbox, battle_sfx, ownership), the same as in the trial-merge report.
