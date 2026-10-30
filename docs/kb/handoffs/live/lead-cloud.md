@@ -19,6 +19,8 @@
 | creatures | `session_01UPFyE7ob7hr4Skv4cw3rtN` | claude/creatures (started 18:43: big17 gate reds test_npc/test_post_import, audit M3-HER-1142, QA row 40) |
 | creatures-b | `session_01UPFyE6iidnDAeaAEP21ZYd` | claude/creatures-b (started 18:43: Moll capsule in battle rows 12/35, Reach arm row 36, row 30) |
 
+| **pc-gpu** (Remote Control, desktop-jj0o43o) | `session_01UPFyEABtMznCLCcXCPdmda` | gpu/* (briefed 00:20 10-30: Act I real-GPU QA pass 3 on lead/gate-big18, the PC-QUEUE items, perf budget, its own RND work, Blender verifies) |
+| act2-plan | `session_01UPFyE8YdUYQ5LuuhgfZtqS` | claude/act2-plan (docs only: the Act II plan, the tasks blocked by ADR 0203, the track split) |
 | gate big18 | `session_01UPFyEAXofxWazWNnRTzFGJ` | lead/gate-big18 (log `gate-big18.md`) |
 
 - 21:25: **big17 merged** @ 96222b30 ahead of its shots (the human asked to play it now, in the gate session). big18 gate started.
