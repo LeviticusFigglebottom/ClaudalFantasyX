@@ -535,7 +535,7 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
     keth_pass:Encounter (the origin return spawn sat outside every volume). I re-aimed the Hall and added Foot volumes.
     The test is green, and so are ch12, ch13 and layout.
   - Next: Ch14's cameras (W02–W07; the lagoon L01–L04 waits on the night variant).
-- MERGE-READY @ (this push)
+- MERGE-READY @ 882564c90
 
 ### PC-QUEUE
 - Row 34: on the real GPU, start ch06_ridge_skippers from the Brine Shoals field (a random fight) and confirm the
