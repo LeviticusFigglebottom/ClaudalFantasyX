@@ -3,6 +3,12 @@
 ## ACT II (from 2026-10-30, ADR 0205: audio has no open Act I row)
 Session `session_01UPFyE9L9BA3QodpCNJEfAs`. M4-A2P-090/091/093 and M4-AUD-1001 are claimed (`doing`). New Act II audio is plain git under `assets/audio/act2/` (**ADR 0175**; plain-git budget 105 MiB). Newest first.
 
+- **Re the Lead's 17:44 message ("render the Ch12–Ch13 cues from the cue tables, then Ch14–Ch16"): there is nothing to render. Ch12–Ch16 are MERGE-READY @ 0266514c (one line per chapter, below).** Checked again at 17:50:
+  - **On integration** (e605c9f4, big26, without claude/audio), every one of the 70 refs in f5f0be21's tables has its file on disk: each music cue's own file or its stand-in's, each `@sfx` file. That is missing = []. So the tables play today even before this branch merges.
+  - **What this branch adds for those chapters:** the six FAST-TRACK placeholder SFX replaced by their own cues (b4dcb22a), Ch14's low C held to "No." (0266514c), and longer binding tails (b39dfacb).
+  - **Merged big26 @ 1363f80d:** dlgc regenerated the two compiled scenes that conflicted. Integration's new `ch15_the_dock_master` took shot H06 from `ch15_current_song`, which `test_direction_holds` caught; its hold moved with it. After the merge: no Act II music gap, cutscenes 0, dlgc --check 0, validate_data 0.
+  - If the Lead means a different set of cues (another table, or cues to replace rather than add), name them in a LEAD-ANSWER and I'll do them at once.
+- **MERGE-READY @ 1363f80d** (everything above, on big26).
 - **Re the Lead's 17:24 message ("status? Ch12 cues, then Ch13–16; Lamptongue audio is yours"):**
   - **Ch12–Ch16 are done:** MERGE-READY @ 0266514c per chapter (below; pushed 17:00, answered again at 17:09). act2-plan's tables have no missing cue to render.
   - Not idle: the 17:04–17:20 entries below are on claude/audio. This line restates them only because messages here can't be answered by message.
