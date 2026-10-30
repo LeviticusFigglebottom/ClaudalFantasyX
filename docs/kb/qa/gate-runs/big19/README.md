@@ -1,4 +1,4 @@
-# GATE lead/gate-big19 @ 5993e490: screenshot results, PARTIAL (247 of 254 shots, 08:00 UTC 10-30)
+# GATE lead/gate-big19 @ 5993e490: screenshot results, FINAL (247 of 254 shots, 09:06 UTC 10-30)
 
 Fast gate (ADR 0205): only the 254 shots big19 can affect (the tracks' SELF-RENDERED / MERGE-READY / RENDER-REQUEST
 ids since big17, plus every shot whose scene, or the scenes, resources and data it loads, changed). Lavapipe, one
