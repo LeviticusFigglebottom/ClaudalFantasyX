@@ -1094,5 +1094,5 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - Oruvel, Pemakar, Ashcrown and every other Act I zone: no body repeats within a zone and no row borrows a model (checked across all 12 zone files).
     - Ashcrown's beat sheet names only Tender Ruwen, who has a crowd body.
   - Checks: validate_data; gen_crowd --check; tools test_npc 28 OK; Godot crowd 12/0, villager 40/0, haluna 65/0, npc 10/0.
-- **MERGE-READY @ the crowd commits (see the push below).**
+- **MERGE-READY @ 7b5deabd** (the crowd commits; the log commit after it is docs only).
 - **The Act II towns' crowds are not this track's paths.** act2_tracks.md row 55 gives characters the Kirru (base, Owa, child, clutch: Reedhollow's `clutch_0..7`, `kirru_child`), the Ansedran, Hollowmere and Quellan crowd sets, and the Act II rows of crowd.json. None has landed. When they do, I wire their VillagerLayer zone rows (game/data/world/npc/zones, mine) the same hour.
