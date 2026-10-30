@@ -2187,3 +2187,15 @@ MERGE-READY @ (this commit).
 - The Haluna `--ready-profile` split was already offered above. It's in big33 per the Lead's merge note.
 LEAD-ASK: please pass M3-HER-1169 to audio (a 4-line, tested guard in `ui_audio.gd`), or tell me to apply it myself if audio is busy.
 MERGE-READY @ (this commit).
+
+### 2026-10-30: Haluna re-measured after slice-polish's M4-A2P-070 (asha posed a frame after the swap), on big33
+- `--ready-profile`: asha's 168 ms is out of the add frame.
+  - What's left in the readies: root `.` 388 ms, WorldEnvironment 91 ms, Player 41 ms, BoundGlimmer 34 ms.
+  - They total 616 ms, so the readies didn't shrink overall.
+- The reveal wait after the add fell from **1.29 s to 50 ms**.
+- The worst hidden frame is 718–893 ms on a quiet box, under 1 s. Under load it is 1.6 s (the same run's return_probe).
+- `return_probe --cases=drownbell`: field in at 3.39 s, the player can move at 3.73 s. That's the same as before: the instantiate (1.3 s on the thread) and the add frame are still the cost.
+  - `black_ms` 10.2 s also counts the story moving on afterwards: Haluna, then the Ch4 chapter card, then Haluna Wake (Wake's own add frame is 4.2 s; that's a separate zone entry, not the return).
+- **Next lever for slice-polish:** the root's own 388 ms is what HalunaZone `_ready` still does on the add frame.
+  - Haluna Wake's 4.2 s hidden frame also deserves its own `--ready-profile` (`--to=res://game/levels/ch04/haluna_wake/haluna_wake.tscn`).
+MERGE-READY @ (this commit).
