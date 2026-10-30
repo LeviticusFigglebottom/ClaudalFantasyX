@@ -1584,12 +1584,12 @@
       "age_band": "adult",
       "sex": "male",
       "build": "heavy",
-      "body": "crowd_man_heavy",
+      "body": "crowd_man_heavy_b",
       "tints": {
-        "cloth_a": "#B5AB97",
-        "cloth_b": "#68816E",
-        "cloth_c": "#94C5BF",
-        "hair": "#201A16"
+        "cloth_a": "#A39E92",
+        "cloth_b": "#5C6C7F",
+        "cloth_c": "#A3D0CB",
+        "hair": "#251B15"
       },
       "work": "mend",
       "about": "Mends lines on the third platform."
@@ -1713,6 +1713,326 @@
       },
       "work": "sweep",
       "about": "Sweeps salt off the dock beyond the supper."
+    },
+    {
+      "id": "ansedra_poler",
+      "zone": "ch13/ansedra",
+      "stage_actor": "CrowdSpots/ansedra_poler",
+      "role": "poler",
+      "island": "ansedra",
+      "community": "ansedra",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_man_lean_b",
+      "tints": {
+        "cloth_a": "#A6ACB0",
+        "cloth_b": "#566473",
+        "cloth_c": "#BFBFBC",
+        "hair": "#251B15"
+      },
+      "work": "haul",
+      "about": "A barge-poler at the outer moorings, near where Kerrid stands (A02-A03)."
+    },
+    {
+      "id": "ansedra_poler_2",
+      "zone": "ch13/ansedra",
+      "stage_actor": "CrowdSpots/ansedra_poler_2",
+      "role": "poler",
+      "island": "ansedra",
+      "community": "ansedra",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "heavy",
+      "body": "crowd_man_heavy",
+      "tints": {
+        "cloth_a": "#B9BCBE",
+        "cloth_b": "#49535E",
+        "cloth_c": "#BDBEBB",
+        "hair": "#251B15"
+      },
+      "work": "haul",
+      "about": "A poler by the second barge."
+    },
+    {
+      "id": "ansedra_poler_3",
+      "zone": "ch13/ansedra",
+      "stage_actor": "CrowdSpots/ansedra_poler_3",
+      "role": "poler",
+      "island": "ansedra",
+      "community": "ansedra",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "medium",
+      "body": "crowd_man_medium_b",
+      "tints": {
+        "cloth_a": "#A4AAAF",
+        "cloth_b": "#5A6A7E",
+        "cloth_c": "#454E58",
+        "hair": "#422818"
+      },
+      "work": "haul",
+      "about": "A poler at the moorings' east edge."
+    },
+    {
+      "id": "ansedra_tender",
+      "zone": "ch13/ansedra",
+      "stage_actor": "CrowdSpots/ansedra_tender",
+      "role": "tender",
+      "island": "order",
+      "community": "order",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "body": "crowd_order_woman",
+      "tints": {
+        "cloth_a": "#EAE5D9",
+        "cloth_b": "#8B281E",
+        "cloth_c": "#D0A954",
+        "hair": "#211A16"
+      },
+      "work": "vigil",
+      "about": "A Tender on the central island, rapt at the still water (ch13 bark 1)."
+    },
+    {
+      "id": "ansedra_tender_2",
+      "zone": "ch13/ansedra",
+      "stage_actor": "CrowdSpots/ansedra_tender_2",
+      "role": "tender",
+      "island": "order",
+      "community": "order",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_order_man",
+      "tints": {
+        "cloth_a": "#E6E1D6",
+        "cloth_b": "#7E1B15",
+        "cloth_c": "#33436E",
+        "hair": "#221B16"
+      },
+      "work": "vigil",
+      "about": "A Tender at the foot of the Sanctum causeway."
+    },
+    {
+      "id": "ansedra_pilgrim",
+      "zone": "ch13/ansedra",
+      "stage_actor": "CrowdSpots/ansedra_pilgrim",
+      "role": "passenger",
+      "island": "low_reaches",
+      "community": "brightwater",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "body": "crowd_woman_medium",
+      "tints": {
+        "cloth_a": "#303E6C",
+        "cloth_b": "#313E6C",
+        "cloth_c": "#6794B6",
+        "hair": "#221B16"
+      },
+      "work": "",
+      "about": "A pilgrim at the causeway's edge, hushing her child (ch13 bark 2)."
+    },
+    {
+      "id": "ansedra_pilgrim_child",
+      "zone": "ch13/ansedra",
+      "stage_actor": "CrowdSpots/ansedra_pilgrim_child",
+      "role": "child",
+      "island": "low_reaches",
+      "community": "brightwater",
+      "age_band": "child",
+      "sex": "male",
+      "build": "tall",
+      "body": "crowd_boy_tall",
+      "tints": {
+        "cloth_a": "#DACDB6",
+        "cloth_b": "#34416D",
+        "cloth_c": "#A3402E",
+        "hair": "#231B16"
+      },
+      "work": "",
+      "about": "Her child, who doesn't play."
+    },
+    {
+      "id": "ansedra_pilgrim_2",
+      "zone": "ch13/ansedra",
+      "stage_actor": "CrowdSpots/ansedra_pilgrim_2",
+      "role": "passenger",
+      "island": "pemakar_terraces",
+      "community": "pemakar",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "medium",
+      "body": "crowd_man_medium_a",
+      "tints": {
+        "cloth_a": "#DED4C1",
+        "cloth_b": "#31673A",
+        "cloth_c": "#841A14",
+        "hair": "#201A16"
+      },
+      "work": "",
+      "about": "A Pemakar pilgrim on the central island."
+    },
+    {
+      "id": "ansedra_pilgrim_3",
+      "zone": "ch13/ansedra",
+      "stage_actor": "CrowdSpots/ansedra_pilgrim_3",
+      "role": "passenger",
+      "island": "corrow_coast",
+      "community": "corrow",
+      "age_band": "elder",
+      "sex": "female",
+      "build": "heavy",
+      "body": "crowd_elder_woman_b",
+      "tints": {
+        "cloth_a": "#C5C6C5",
+        "cloth_b": "#58687D",
+        "cloth_c": "#6A7E6B",
+        "hair": "#5B5650"
+      },
+      "work": "",
+      "about": "An old Corrow pilgrim on the west causeway."
+    },
+    {
+      "id": "ansedra_pilgrim_4",
+      "zone": "ch13/ansedra",
+      "stage_actor": "CrowdSpots/ansedra_pilgrim_4",
+      "role": "passenger",
+      "island": "tamsule",
+      "community": "tamsule",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "lean",
+      "body": "crowd_woman_lean_b",
+      "tints": {
+        "cloth_a": "#E5DFD2",
+        "cloth_b": "#A84E35",
+        "cloth_c": "#4E83AE",
+        "hair": "#452918"
+      },
+      "work": "",
+      "about": "A Tamsule pilgrim on the east causeway."
+    },
+    {
+      "id": "sanctum_pilgrim",
+      "zone": "ch13/sanctum",
+      "stage_actor": "CrowdSpots/sanctum_pilgrim",
+      "role": "mourner",
+      "island": "corrow_coast",
+      "community": "corrow",
+      "age_band": "elder",
+      "sex": "female",
+      "build": "heavy",
+      "body": "crowd_elder_woman_b",
+      "tints": {
+        "cloth_a": "#D8CBB2",
+        "cloth_b": "#35456F",
+        "cloth_c": "#262D4B",
+        "hair": "#47413D"
+      },
+      "work": "kneel_mourn",
+      "about": "Kneels on the south ledge outside the basin's rim, humming (S01)."
+    },
+    {
+      "id": "sanctum_pilgrim_2",
+      "zone": "ch13/sanctum",
+      "stage_actor": "CrowdSpots/sanctum_pilgrim_2",
+      "role": "mourner",
+      "island": "low_reaches",
+      "community": "brightwater",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "heavy",
+      "body": "crowd_man_heavy",
+      "tints": {
+        "cloth_a": "#BCAF96",
+        "cloth_b": "#6C6C6E",
+        "cloth_c": "#262E4C",
+        "hair": "#251B15"
+      },
+      "work": "kneel_mourn",
+      "about": "Kneels on the south ledge."
+    },
+    {
+      "id": "sanctum_pilgrim_3",
+      "zone": "ch13/sanctum",
+      "stage_actor": "CrowdSpots/sanctum_pilgrim_3",
+      "role": "mourner",
+      "island": "pemakar_terraces",
+      "community": "pemakar",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "heavy",
+      "body": "crowd_woman_heavy",
+      "tints": {
+        "cloth_a": "#E0D6C5",
+        "cloth_b": "#303F6D",
+        "cloth_c": "#DACEB7",
+        "hair": "#261C15"
+      },
+      "work": "kneel_mourn",
+      "about": "Kneels on the west ledge."
+    },
+    {
+      "id": "sanctum_pilgrim_4",
+      "zone": "ch13/sanctum",
+      "stage_actor": "CrowdSpots/sanctum_pilgrim_4",
+      "role": "mourner",
+      "island": "tamsule",
+      "community": "tamsule",
+      "age_band": "adult",
+      "sex": "male",
+      "build": "lean",
+      "body": "crowd_man_lean_b",
+      "tints": {
+        "cloth_a": "#E1D8C6",
+        "cloth_b": "#676D73",
+        "cloth_c": "#273052",
+        "hair": "#261C15"
+      },
+      "work": "kneel_mourn",
+      "about": "Kneels on the west ledge."
+    },
+    {
+      "id": "sanctum_pilgrim_5",
+      "zone": "ch13/sanctum",
+      "stage_actor": "CrowdSpots/sanctum_pilgrim_5",
+      "role": "mourner",
+      "island": "low_reaches",
+      "community": "oruvel",
+      "age_band": "adult",
+      "sex": "female",
+      "build": "medium",
+      "body": "crowd_woman_medium",
+      "tints": {
+        "cloth_a": "#E4DDCF",
+        "cloth_b": "#364570",
+        "cloth_c": "#28335A",
+        "hair": "#281C15"
+      },
+      "work": "kneel_mourn",
+      "about": "Kneels on the east ledge."
+    },
+    {
+      "id": "sanctum_pilgrim_child",
+      "zone": "ch13/sanctum",
+      "stage_actor": "CrowdSpots/sanctum_pilgrim_child",
+      "role": "child",
+      "island": "pemakar_terraces",
+      "community": "pemakar",
+      "age_band": "child",
+      "sex": "female",
+      "build": "small",
+      "body": "crowd_girl_small",
+      "tints": {
+        "cloth_a": "#E3DBCC",
+        "cloth_b": "#444E71",
+        "cloth_c": "#7E1813",
+        "hair": "#201A16"
+      },
+      "work": "",
+      "about": "Beside her mother at the west ledge, very still."
     }
   ]
 }

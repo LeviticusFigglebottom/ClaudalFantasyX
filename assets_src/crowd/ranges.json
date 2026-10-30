@@ -92,6 +92,19 @@
         "c": [["brass", "bronze_patina", 0.0, 0.6], ["salt_glass", "faded_teal_cloth", 0.2, 0.7], ["roof_clay", "timber_weathered", 0.2, 0.6]]
       }
     },
+    "ansedra": {
+      "island": "ansedra",
+      "about": "Ansedra's own working people, the barge-polers at the outer moorings (act2_ch13 A02: plain grey; bible section 5.8). A stand-in community from the bodies that exist (the Lead, 2026-10-30) until the characters track's Ansedran costume set (act2_tracks.md row 55) replaces it.",
+      "accepts": ["corrow", "pemakar", "tamsule", "brightwater", "oruvel", "saltwright"],
+      "skin": ["#B08062", "#7E5236"],
+      "reach_bands": {"adult": [0, 0], "elder": [0, 0]},
+      "hair": [["hair_black", "hair_dark_brown", 0.0, 0.5]],
+      "cloth": {
+        "a": [["cold_blue_stone", "gauze_white", 0.3, 0.7], ["coral_stone_weathered", "cold_blue_stone", 0.2, 0.6]],
+        "b": [["cold_blue_stone", "lacquer_black", 0.1, 0.4], ["cold_blue_stone", "indigo_dye", 0.0, 0.3]],
+        "c": [["lacquer_black", "cold_blue_stone", 0.3, 0.7], ["order_marble", "cold_blue_stone", 0.2, 0.6]]
+      }
+    },
     "order": {
       "island": "order",
       "about": "The Order of the Still Water (bible section 4): tenders, a clerk and a Reed. Their dress is imported: white and marble, a pale-ochre or indigo sash; a temple tender may wear lacquer red.",
@@ -130,7 +143,8 @@
     "lacquerer": {"kits": ["worker_m", "trader_m"], "work": "mend"},
     "cook": {"kits": ["worker_f", "market_f"], "work": "fold"},
     "ferryman_mate": {"kits": ["worker_m", "fisher_m"], "work": "haul"},
-    "brand_girl": {"kits": ["child_f", "wright"], "work": ""}
+    "brand_girl": {"kits": ["child_f", "wright"], "work": ""},
+    "poler": {"kits": ["worker_m", "fisher_m", "trader_m"], "work": "haul"}
   },
   "side_cloth": {
     "_about": "Reefball sides' colours for the divers (act1_ch07 section 8: Oruvel's side is oil-black and brass; Sorrin's is its own sea-blue and clay), by community.",
