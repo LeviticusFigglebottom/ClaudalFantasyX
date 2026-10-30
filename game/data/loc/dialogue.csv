@@ -885,7 +885,7 @@ DLG_CH10_SWIM_007,Because we're afraid to let them go.
 DLG_CH10_SWIM_008,Yes. You-people hold everything.
 DLG_CH10_SWIM_009,"I didn't finish the sentence, Rhen. I've said it all my life."
 DLG_CH11_BARK_LIFT_001,Nobody comes to lift them.
-DLG_CH11_BARK_KGAL_001,"Somebody built this to last, and it did. The stone did, anyway."
+DLG_CH11_BARK_KGAL_001,Built to last. The stone did.
 DLG_CH11_BARK_KEEPER_001,"The cold came up the shaft an hour ago, and then it stopped. Forty years I've come down to this temple. It has never stopped."
 DLG_NAME_TENDER_LOWLIGHT_KEEPER,Lowlight keeper
 DLG_CH11_BARK_KEEPER_002,The water takes a step a year. We pray on the step above it. There are not many steps left.
@@ -912,7 +912,7 @@ DLG_CH11_FIG_001,Held. In the roots. Like the fen.
 DLG_CH11_PLATE_001,"A maker's plate. Lamptongue, the old court hand. Give me a moment."
 DLG_CH11_PLATE_002,"""We borrow the light. At the end of the day we give it back."""
 DLG_CH11_PLATE_003,Give it back to what?
-DLG_CH11_PLATE_004,"It doesn't say. To the sky, I suppose. The way the Kirru do."
+DLG_CH11_PLATE_004,"It does not say. To the sky, I suppose. The way the Kirru do."
 DLG_CH11_PLATE_005,Every lamp in these galleries is still lit.
 DLG_CH11_PLATE_006,Somebody stopped giving it back.
 DLG_CH11_HELD_001,I didn't know. Pell. If I'd known—
@@ -987,7 +987,7 @@ DLG_CH12_CAMP_002,"Forty-seven Cantors, up to Ama Quillo's own name. And the one
 DLG_CH12_CAMP_003,And then the Lady Cantor's mother.
 DLG_CH12_CAMP_004,Yes.
 DLG_CH12_CAMP_005,And then her.
-DLG_CH12_CAMP_006,The cords don't say that.
+DLG_CH12_CAMP_006,The cords do not say that.
 DLG_CH12_CAMP_007,They do not need to.
 DLG_CH12_CAMP_008,"When I took the oath, they said, keep her safe to the end of the road. I said I would. I meant it."
 DLG_CH12_CAMP_009,Nobody told me what was at the end of it.
@@ -1007,7 +1007,7 @@ DLG_CH12_VOICES_006,...Where did the rest go?
 DLG_CH12_VOICES_007,"She tied that too. A question-knot. Hanging at the end of the count, by itself."
 DLG_CH12_VOICES_008,She sang anyway. She believed faith could hold a question.
 DLG_CH12_VOICES_009,Could it?
-DLG_CH12_VOICES_010,"I have visited my husband every year for twenty-four years, Lady Cantor. I would very much like it to."
+DLG_CH12_VOICES_010,"I have visited my husband every year for eleven years, Lady Cantor. I would very much like it to."
 DLG_CH12_VOICES_011,Seven houses.
 DLG_CH12_VOICES_012,I stood guard at four of them.
 DLG_CH12_CORD_001,Three names. The herder's family.
@@ -1115,7 +1115,7 @@ DLG_CH13_HOUSE_SIDE_007,"Should we paint over it again, Mistress?"
 DLG_NAME_HOUSEHOLDER_THE_HOUSEHOLDER,The householder
 DLG_CH13_HOUSE_SIDE_008,No. Please. Leave it.
 DLG_CH13_HOUSE_SIDE_009,"Thank you, Master Sallow. I have decided to notice."
-DLG_CH13_CITY_001,They're not making ripples. How are they not making ripples?
+DLG_CH13_CITY_001,They're not making ripples. How are they not making ripples? I make ripples in a bath.
 DLG_CH13_HOUSE_001,"Lady Cantor. You have come further than most, and faster. Ansedra is yours. Rest here. Nothing in this city will hurry you."
 DLG_CH13_HOUSE_002,"And you have come at a good time. In four days a Saltwright will marry a Warden's daughter, in the Lacquer Court, and I will say the words."
 DLG_CH13_HOUSE_003,Mistress Varrow's brother. I believe she had something to do with it.
@@ -1228,7 +1228,7 @@ DLG_CH15_BARK_WIDOW_002,The captains went south for a wedding. Back by the new m
 DLG_CH15_BARK_PUMP_001,She's a grandmother of mine. Pumps the bilge every night. Best worker on the hull.
 DLG_CH15_CAMP_001,Fourteen years on that stair.
 DLG_CH15_CAMP_002,And since.
-DLG_CH15_CAMP_003,I stood a watch on the seawall at Haluna once. One night. I counted the hours.
+DLG_CH15_CAMP_003,"My first night on the Corrow wall, I counted the hours."
 DLG_CH15_CAMP_004,Everybody counts the first night.
 DLG_CH15_CAMP_005,When it is over. When there is nobody left below. Do you go?
 DLG_CH15_CAMP_006,I expect so.
@@ -1323,7 +1323,7 @@ DLG_CH15_DACES_004,You've got his hands. Wright's hands. Don't let the diving fo
 DLG_CH15_DACES_005,He came through here twenty years ago trading salvage. Could hear a current in the water before he saw it.
 DLG_CH15_DACES_006,Sang every chart he knew. Too loud.
 DLG_CH15_DACES_007,"Came back years after. Built a hull in my dry-dock for a season, left it half-done, never came back for it. Best ear in the flotilla. Worst at finishing things."
-DLG_CH15_DACES_008,He hummed the same song every night. Came home from the Low Reaches with salt in his beard.
+DLG_CH15_DACES_008,He hummed the same song every night. Came home off the wrecks with salt in his beard.
 DLG_CH15_DACES_009,Went up the coast for wall-work when I was eight. Didn't come back.
 DLG_CH15_DACES_010,He left his lantern on its hook. That's the one thing he finished.
 DLG_CH15_DACES_011,He never said he had a son. Not once.
@@ -1365,8 +1365,8 @@ DLG_CH16_SHRINE_001,"A cairn taller than Kerrid, white with salt. The waders say
 DLG_CH16_CAIRN_001,This one fell. The next ones will walk past it and be lost.
 DLG_CH16_CAIRN_002,Then we put it back.
 DLG_CH16_CAIRN_003,Big stones first. Then small.
-DLG_CH16_CAIRN_004,I know how to build a wall.
-DLG_CH16_CAIRN_005,"This is not a wall. It is a voice. It says, this way."
+DLG_CH16_CAIRN_004,I know. I've set steps.
+DLG_CH16_CAIRN_005,"This is not a step. It is a voice. It says, this way."
 DLG_CH16_CAIRN_006,Then it's the same thing.
 DLG_CH16_BREAK_001,"Everybody I loved had a reason to stay where they were. That night, all of us stopped."
 DLG_CH16_ACT_CARD_001,Act III: The Unbinding
