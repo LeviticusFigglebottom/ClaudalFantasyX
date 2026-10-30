@@ -49,6 +49,7 @@ LAMP_STANDS = [(-3.4, 0.8, -20.0), (3.4, 0.8, -20.0)] + [(sx * 10.7, 0.6, z) for
 LAMP_COLOR = "#FFB16E"
 LAMP_ENERGY = 1.4
 LAMP_RANGE_M = 7.0
+LAMP_FLICKER = 0.15  # the ambient-life pass (10-30): the lamp-stands' flames stir; the court itself stays still
 FLAME_Y = 1.75  # ansedra.FLAME_Y: the flame over the stand's foot
 RACK = (-9.0, -23.4, 0.0)
 DOMES = ((-45.0, 35.0, 1.0, 0.0), (40.0, 45.0, 0.9, 30.0), (-70.0, -10.0, 1.1, 10.0), (75.0, 5.0, 0.8, 50.0),
@@ -107,7 +108,8 @@ def dressing() -> dict:
         "time_of_day_h": 18.5,
         "greybox": {"hide_all": True, "keep": []},
         "fire_light_color": LAMP_COLOR,
-        "fire_lights": [{"at": [x, round(y + FLAME_Y + 0.1, 3), z], "energy": LAMP_ENERGY, "range": LAMP_RANGE_M}
+        "fire_lights": [{"at": [x, round(y + FLAME_Y + 0.1, 3), z], "energy": LAMP_ENERGY, "range": LAMP_RANGE_M,
+                         "flicker": LAMP_FLICKER}
                         for x, y, z in LAMP_STANDS],
         "kit_material_paths": looks,
         "pieces": pieces,
