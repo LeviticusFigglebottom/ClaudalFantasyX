@@ -778,6 +778,118 @@
         }
       }
     },
+    "abiding_halberd": {
+      "garments": [
+        "Costume",
+        "Sleeves"
+      ],
+      "props": [
+        "Spear"
+      ],
+      "seams": {
+        "groups": [
+          [
+            "Body",
+            "Head:skin_head"
+          ],
+          [
+            "Costume"
+          ],
+          [
+            "Sleeves"
+          ]
+        ],
+        "max_exposed": 4
+      },
+      "_allowances": "M4-A2P-051: Venn's kit and clips on the guard's build (Venn's proportions at 1.88 m); passes Venn's limits.",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 19.0,
+          "Sleeves": 11.0,
+          "Body": 20.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Sleeves": 6,
+          "Body": 50
+        }
+      }
+    },
+    "abiding_bulwark": {
+      "garments": [
+        "Costume",
+        "Sleeves"
+      ],
+      "props": [
+        "Iron",
+        "Shield"
+      ],
+      "seams": {
+        "groups": [
+          [
+            "Body",
+            "Head:skin_head"
+          ],
+          [
+            "Costume"
+          ],
+          [
+            "Sleeves"
+          ]
+        ],
+        "max_exposed": 4
+      },
+      "_allowances": "M4-A2P-051: Moll's own loadout and clips (the brine-iron, the shield) on Venn's build at 1.88 m. Costume 19/6 (18.7, kneel): the trouser's knee folds into the thigh in the 96-degree kneel, as Moll's and Venn's, under the tunic. Body 20/50 (19.2, ko and yield): the sleeve's offset shell at the armpit crease as the right arm comes across to the planted iron, as Venn's (under the arm). The prop guards pass.",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 19.0,
+          "Sleeves": 7.0,
+          "Body": 20.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Sleeves": 6,
+          "Body": 50
+        }
+      }
+    },
+    "abiding_captain": {
+      "garments": [
+        "Costume",
+        "Sleeves"
+      ],
+      "props": [
+        "Spear"
+      ],
+      "seams": {
+        "groups": [
+          [
+            "Body",
+            "Head:skin_head"
+          ],
+          [
+            "Costume"
+          ],
+          [
+            "Sleeves"
+          ]
+        ],
+        "max_exposed": 4
+      },
+      "_allowances": "M4-A2P-051: Venn's kit and clips on the guard's build (Venn's proportions at 1.88 m); passes Venn's limits.",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 19.0,
+          "Sleeves": 11.0,
+          "Body": 20.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Sleeves": 6,
+          "Body": 50
+        }
+      }
+    },
     "shopkeeper": {
       "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/shopkeeper/shopkeeper.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB: the pole, the brine-iron, the hammer and the lamp are scene props.",
       "villager": true,

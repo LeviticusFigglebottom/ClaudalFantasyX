@@ -15,6 +15,7 @@ story track (claude/act2-plan) at the Lead's request, 2026-10-30.
 | 20 | [act3_ch20.md](act3_ch20.md) | "Undertow" | `ch20/undertow_layers` | six layers, six releases; the Cage |
 | 21 + Ending | [../beats/act3_ending.md](../beats/act3_ending.md) (exists, M1-NAR-05) | "The Heart" | `ch21/heart` | Kesh; Sefir in three phases; the Letting; three goodbyes; the dark sea |
 | — | [ending_cost_audit.md](ending_cost_audit.md) | pillar-6 audit | — | what each companion loses, and whether every scene earns it |
+| — | [drafts/](drafts/README.md) | draft scripts, Ch17–Ch18 | — | `.dlg` drafts from the Ch17 and Ch18 sheets, checked by `drafts/check_drafts.py`; not wired into the game |
 | — | [act3_threads.md](act3_threads.md) | consistency pass | — | every Act II → Act III thread: flags, companions' arcs, Vowbound, and the mismatches found |
 
 ## The act in one paragraph

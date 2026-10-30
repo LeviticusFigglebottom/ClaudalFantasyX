@@ -161,7 +161,11 @@ def keth_pass() -> dict:
            {"id": "Foot", "mode": "pan_follow", "at": [0.0, 1.5, 1.0], "size": [10.0, 4.0, 10.0],
             "pos": [0.0, 4.5, 9.0], "look_at": [0.0, 2.0, -6.0], "fov": 50, "priority": 1}],
         "triggers": [{"id": "to_quellan", "activation": "touch", "at": [108.5, 18.0, -40.0], "size": [1.5, 0, 4.0],
-                      "payload": {"beat": "to_quellan"}, "yaw": 0.0}],
+                      "payload": {"beat": "to_quellan"}, "yaw": 0.0},
+                     # M4-A2P-114: the seeping wall's terrace, where the Avalanche Ram comes down (B06)
+                     {"id": "terrace", "activation": "touch", "at": [40.0, 12.0, -40.0], "size": [2.0, 0, 4.0],
+                      "requires_flag": "ch12_started", "blocked_by_flag": "ch12_ram_felled",
+                      "payload": {"beat": "terrace"}, "yaw": 0.0}],
         # M4-C12-03: the pass's random fights (act2_roster.md Ch12); none in Quellan or the Cloudloom
         "encounters": {"table": [{"encounter": "ch12_pass_lynxes", "weight": 2}, {"encounter": "ch12_pass_moths", "weight": 1},
                                  {"encounter": "ch12_pass_scree", "weight": 1}],
@@ -285,7 +289,11 @@ def cloudloom() -> dict:
            {"id": "Foot", "mode": "pan_follow", "at": [0.0, 1.5, 1.0], "size": [8.0, 4.0, 8.0],
             "pos": [0.0, 4.0, 8.0], "look_at": [0.0, 3.0, -8.0], "fov": 50, "priority": 1}],
         "triggers": [{"id": "to_quellan", "activation": "touch", "at": [0.0, 0.0, 4.25], "size": [4.0, 0, 1.5],
-                      "payload": {"beat": "to_quellan"}, "yaw": 0.0}],
+                      "payload": {"beat": "to_quellan"}, "yaw": 0.0},
+                     # M4-A2P-114: up the aisle before the dais, where Hesk is bound (B10-B11)
+                     {"id": "dais", "activation": "touch", "at": [hx0, HALL_Y, -50.0], "size": [4.0, 0, 1.5],
+                      "requires_flag": "ch12_reached_cloudloom", "blocked_by_flag": "ch12_hesk_bound",
+                      "payload": {"beat": "dais"}, "yaw": 0.0}],
     }
 
 

@@ -65,6 +65,7 @@ ANNULI = 40.0  # rings per metre down the back
 # the middle raised ARCH over the nose and the rear (a parabola over the body's length, flat along the tail), and
 # side-on it is a living curve. The body is one bone, so the bow is in the mesh; the nose and rear keep the hover.
 ARCH = 0.28
+SET_DOWN_CLEAR = 0.01  # the lowest point 1 cm over the model's floor: the KO tips it 8 deg nose-down as it lands
 
 
 def annuli(mesh: ck.Mesh) -> None:
@@ -88,6 +89,11 @@ def arch(mesh: ck.Mesh) -> None:
         P[:, 1] += ARCH * (1.0 - u * u)
         N[:, 2] -= slope * N[:, 1]  # normals by the shear's inverse transpose
         N /= np.maximum(np.linalg.norm(N, axis=1, keepdims=True), 1e-12)
+    # set down so its lowest point rests at the model's floor: its KO (a fall of exactly its hover) then lays it on the
+    # ground (the animation polish pass, 2026-10-30: bowed, it ended 6 cm up)
+    low = min(float(P[:, 1].min()) for P in mesh.pos) - SET_DOWN_CLEAR
+    for P in mesh.pos:
+        P[:, 1] -= low
 
 
 def build_mesh(rig: ck.Rig) -> ck.Mesh:

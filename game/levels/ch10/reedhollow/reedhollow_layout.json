@@ -1594,6 +1594,26 @@
     "beat": "to_fen"
    },
    "yaw": 0.0
+  },
+  {
+   "id": "shore",
+   "activation": "touch",
+   "at": [
+    61.8,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    0,
+    3.0
+   ],
+   "requires_flag": "ch10_reached_reedhollow",
+   "blocked_by_flag": "ch10_complete",
+   "payload": {
+    "beat": "shore"
+   },
+   "yaw": 0.0
   }
  ]
 }

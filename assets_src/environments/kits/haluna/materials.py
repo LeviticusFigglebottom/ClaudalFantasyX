@@ -541,6 +541,16 @@ MATERIALS["kit_keth_turf"] = _ext_stone(_PEM + "ash_soil_albedo.png", _PEM + "as
                                         roughness_base=0.95, cavity_darken=0.3, variation_value=0.16,
                                         col_lichen=hexc("#8E9A6E"), **_DRY)
 
+# ---- The Prologue dressing pass (appended by env-art; the Lead, 10-30: beautiful and doomed at dusk) ----------------
+# The lit lamp globes read as white electric street lamps across P01 (albedo near white, emission 2.5 into the bloom).
+# Oil behind old salt-glass: amber and dim, so the four lamps glow as embers and Rhen's lantern stays the frame's flame.
+STANDARD["kit_lamp_glass_lit"] = {"albedo_color": hexc("#C98A4E"), "roughness": 0.35, "emission_enabled": "true",
+                                  "emission": hexc("#FF9447"), "emission_energy_multiplier": 1.2}
+# The towers' painted wet (the tide band, the old high-water ring, the rain streaks under each ledge) reads as dry grime
+# (env_weathering grime_from_wet): wet gloss mirrored the dusk sky and the stains vanished at P01's distance.
+MATERIALS["kit_iskarra_cladding"]["params"]["grime_from_wet"] = 1.0
+MATERIALS["kit_iskarra_cladding"]["params"]["col_grime"] = hexc("#5E5A4C")
+
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -196,10 +196,13 @@ def foot(mesh: ck.Mesh, rig: ck.Rig) -> None:
 
 
 def build_clips() -> list[ck.Clip]:
+    # the animation polish pass (2026-10-30): one 2 cm lift in 4 s read as a still frame at battle distance. It breathes
+    # twice a loop now, the shell lifting off its foot with a slight rock each way, the foot's rim rippling under it.
     idle = ck.Clip("idle", 4.0, loop=True)
-    for t, lift in ((0.0, 0.0), (1.4, 0.0), (2.0, 0.02), (2.8, 0.0), (4.0, 0.0)):
-        idle.key("shell", t, (0, 0, 0), (0, lift, 0))
-    idle.wave("foot", amp_rot=(0.0, 0.0, 0.4), cycles=1)
+    for t, lift, rz in ((0.0, 0.0, 0.0), (0.9, 0.035, 1.5), (1.6, 0.01, 0.0), (2.5, 0.03, -1.5), (3.3, 0.004, 0.0),
+                        (4.0, 0.0, 0.0)):
+        idle.key("shell", t, (0, 0, rz), (0, lift, 0))
+    idle.wave("foot", amp_rot=(0.0, 0.0, 1.5), cycles=2)
 
     attack = ck.Clip("attack", 1.2)
     for t, lift, fwd, tilt in ((0.0, 0, 0, 0), (0.35, 0.10, -0.05, -6), (0.55, 0.02, 0.30, 4), (0.65, 0.0, 0.30, 0),

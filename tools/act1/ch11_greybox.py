@@ -230,7 +230,15 @@ def lowlight() -> dict:
              "pos": [r3(sx - sh + 1.5), SANCTUM_Y + 4.0, r3(sz + sh - 1.5)], "look_at": [sx, SANCTUM_Y + 0.5, sz], "fov": 55,
              "priority": 2}],
         "triggers": [{"id": "to_vey", "activation": "touch", "at": [-0.5, 0.0, 0.0], "size": [1.0, 0, 4.0],
-                      "payload": {"beat": "to_vey"}, "yaw": 0.0}],
+                      "payload": {"beat": "to_vey"}, "yaw": 0.0},
+                     # M4-A2P-114: the engine hall's entry (the Lamp Engine wakes, B06) and the well-shaft's foot in the
+                     # drowned sanctum (Nhoa, B09)
+                     {"id": "engine", "activation": "touch", "at": [hx, 0.0, -19.0], "size": [4.0, 0, 1.5],
+                      "requires_flag": "ch11_reached_lowlight", "blocked_by_flag": "ch11_engine_released",
+                      "payload": {"beat": "engine"}, "yaw": 0.0},
+                     {"id": "sanctum", "activation": "touch", "at": [58.5, -8.0, 4.0], "size": [1.5, 0, 4.0],
+                      "requires_flag": "ch11_engine_released", "blocked_by_flag": "ch11_nhoa_bound",
+                      "payload": {"beat": "sanctum"}, "yaw": 0.0}],
     }
 
 

@@ -1,5 +1,5 @@
 {
-  "_doc": "The shot holds act2-plan's direction notes ask for (docs/kb/story/beats/act2_ch1X_direction.md), for tools/audio/act1_playthrough.py --holds: script stem -> {camera id: the least seconds that shot holds}. A shot's first @wait is raised to its hold (or the hold is added when the shot has none), so a one-shot cue's gap is measured against the staged scene, not the script's floor. Only holds the notes state in seconds; ranges take their low end.",
+  "_doc": "Ch11-Ch16 (Ch14-Ch16 from act2-plan f5f0be21). The shot holds act2-plan's direction notes ask for (docs/kb/story/beats/act2_ch1X_direction.md), for tools/audio/act1_playthrough.py --holds: script stem -> {camera id: the least seconds that shot holds}. A shot's first @wait is raised to its hold (or the hold is added when the shot has none), so a one-shot cue's gap is measured against the staged scene, not the script's floor. Only holds the notes state in seconds; ranges take their low end.",
   "ch11_drowned_galleries": {"V00": 8.0},
   "ch11_housing_mark": {"V07": 3.0},
   "ch11_held_by_you": {"V09": 4.0},
@@ -12,5 +12,12 @@
   "ch12_hesk": {"K06": 5.0, "C05": 4.0},
   "ch12_forty_seven_voices": {"Q05": 3.0},
   "ch13_still_city": {"A01": 8.0},
-  "ch13_ethren": {"S02": 8.0, "S05": 6.0, "S09": 2.0}
+  "ch13_ethren": {"S02": 8.0, "S05": 6.0, "S09": 2.0},
+  "ch14_the_vows": {"W03": 5.0},
+  "ch14_first_ripple": {"L02": 6.0},
+  "ch14_left_standing": {"L10": 3.0},
+  "ch15_unlamped": {"U01": 8.0, "U02": 3.0},
+  "ch15_the_shoal": {"K11": 3.0},
+  "ch15_the_dock_master": {"H06": 8.0},
+  "ch16_the_choir": {"C01": 6.0, "C09": 4.0, "C13": 3.0}
 }

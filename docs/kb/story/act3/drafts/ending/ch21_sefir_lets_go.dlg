@@ -1,0 +1,23 @@
+// DRAFT (Act III, planning only). Ch21 H08 "Sefir lets go" (C, 2 min). GOODBYE: SEFIR'S, TO KESH. act3_ending.md §2 H08.
+// Kesh, already lifting, doesn't take his hand. He finally watches her go, and he lets her. Then he lifts too, and his
+// last expression is RELIEF. NO SPEECH LONGER THAN TWO LINES. His reflection in the water ripples for the first time in
+// the game (his revenant tell, undone). `the_letting` thinning to one held note.
+title: ch21_sefir_lets_go
+location: ch21/heart
+---
+@letterbox on
+@camera HT14
+@anim sefir reach_for kesh
+@vfx glimmer_lift at=kesh_far count=20 motion=spiral_up rate=slow
+@wait 4.0
+Sefir [grief]: Kesh. #line:ch21_letsgo_001
+@wait 3.0
+@anim sefir lower_hand
+@wait 2.0
+Sefir [tender]: Go on, then. #line:ch21_letsgo_002
+@camera HT15
+@anim sefir reflection_ripples
+@vfx glimmer_lift at=sefir count=40 motion=spiral_up rate=slow
+@wait 6.0
+@letterbox off
+===

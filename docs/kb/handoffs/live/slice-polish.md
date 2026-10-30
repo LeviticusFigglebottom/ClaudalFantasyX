@@ -1182,6 +1182,12 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - **For env-art:** the farewell-tide's T03 looks straight up for the cloud gap, but the lagoon's canopy covers
     most of the sky over the shore (F02 showed it). The beat needs open sky over the lagoon (act2_ch10.md T03).
   - The people still wait on M4-CIN-1305 (the chapters track): the actors aren't in the layouts yet.
+- **Ch10 staging on the dressing, viewed, MERGE-READY @ 26b2014b5:**
+  - F02: the clutch's backs and the cords, the lagoon beyond.
+  - T04: the clutch's whole row from behind and above, a roost-shell framing the left edge.
+  - R07: the reed bed blocks every side view of the causeway's end, so the two-shot looks along the causeway from
+    the east, Kerrid facing the camera (and the gold behind it), Pell's back to it. R08's insert stays.
+  - The people still wait on M4-CIN-1305.
 ### PC-QUEUE
 - slice_causeway_harrier_view: no harrier on lavapipe (7dc3ab41); confirm it is still in the sky on the GPU.
 - Ch1's Hullgnaw in O16 (ch01_hullgnaw_rises): on lavapipe it is a dark mass in the storm light with only its cyan
