@@ -709,6 +709,24 @@ that test at this branch's zones.
   - **MERGE-READY @ 9fa8dce4.**
   - **Next, still in M4-A2P-044:** the after-the-trap `states` row (stands down, lights out); the ripples
     (M4-A2P-047's second half); the `lacquer_court_steps` arena; the `ch14_court_after` shot.
+- **The first ripples (M4-A2P-047 → review, rendering):**
+  - **The shader:** `water_surface_body.gdshaderinc` gains up to 16 ring sources (outward wave packets on their own
+    clock, `ripple_now_s`), so a still water still carries them. With `ripple_count` 0 (the default) every other
+    water is unchanged.
+  - **`RippleField`** (`game/world/water/ripple_field.gd`, tuning in `game/data/vfx/ripple_field.json`): `strike()`
+    sends a ring, and a `wake_target` drops a ring every 1.5 m. It works on its own copy of the water's material.
+    Ansedra and the court carry a `Ripples` node (their generators write it).
+  - **Shot (new):** `ch14_ansedra_ripple` (rig `ripple_shot_rig.gd`): the rings break the Sanctum dome's
+    reflection. Viewed beside `ch13_ansedra_mirror`, which is unchanged.
+  - **Requested of chapters (M4-A2P-104):** drive the field in the escape (the barge as `wake_target`, a strike per
+    pole stroke), and add the court's `CeremonyLamps` / `CeremonyLampsFallen` blocks and the state row. Then I
+    bind the stands and lights and add fallen stands.
+  - **Checks:** Godot water 48/0, ripple 3/0 (new), environment_shaders 11/0, battle_arenas 10/0, ansedra 4/0,
+    lacquer_court 2/0, sanctum 3/0; tools test_ch13_ansedra_dressing and test_ch14_lacquer_court_dressing;
+    validate_data 0/0; taskboard; gdlint and gdformat.
+  - **MERGE-READY @ b43b1610.**
+  - **Next:** the `lacquer_court_steps` arena (the step-hold), written from my own table as Act I's Ashcrown arenas
+    were (`b_arenas.py`'s pattern).
 
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
