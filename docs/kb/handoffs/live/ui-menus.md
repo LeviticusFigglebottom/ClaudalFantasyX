@@ -863,7 +863,10 @@ Skipped:
   - **Data:** `game/data/lore/records.json` ships empty. Narrative writes the Archive's ledgers, the Cantor roll,
     Corran's line, Wenna's marks and Ama's keth (RECORD_<ID>_<NN> keys and the hands). The Ch13 scene calls
     `DocumentReader.open_in(host, DocumentReaderModel.new(DocumentReaderModel.row_of(&"<id>")))`.
-  - **Shots:** document_reader_three and document_reader_one, over a fixture record under `game/levels/_tests/`, are
-    viewed. They are in the manifest with **no baselines**: the Lead bakes them (ADR 0205: screenshots never block).
+  - **Shots:** the scenes document_reader_three and document_reader_one (a fixture record under
+    `game/levels/_tests/document_reader/`) are viewed. They are **not in the manifest**, because test_screenshots
+    wants a baseline for every row. **LEAD-ASK:** please add both rows with their baselines.
+  - **Sounds:** a DocumentReader hook in ui_sfx.json on existing rows (the act1 audio audit asks every input-taking UI
+    class for one). Request M4-AUD-1080 asks Audio for the found hand's own row.
   - **Next:** the Act II items still waiting on other tracks (the seven-hero formation check, Pell's Listen, the rooted
     refusal reason, Act II NPC portraits, Kerrid's second codex body).
