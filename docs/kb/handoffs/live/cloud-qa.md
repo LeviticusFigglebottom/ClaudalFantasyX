@@ -122,6 +122,29 @@ reaches 3.59–3.66 m/s on open ground).
 - With the longer gaps, the main routes (straight-line spawn-to-spawn: 13–197 m) now hold 0–1 random fights each. The
   Coilspire path (102 m) and the derelict (13 m) hold none.
 
+## RE-RUN after "Merge lead/gate-big25" (integration @ 4b198810): playtest (a), (b) and (d)
+Same probes and box, in a worktree of 4b198810 (LFS pulled, imported). The deltas against big23:
+- **(a) Victory exit → field** (ms from Return; big23 → big25):
+
+  | Fight | black | field in | fade clear | input live |
+  |---|---|---|---|---|
+  | causeway shore (random) | 3744 → **63** | 4067 → 397 | 4432 → **752** | 4438 → 755 |
+  | Ch4 ferry (random) | 5497 → **60** | 5471 → 388 | 6158 → **738** | 6162 → 738 |
+  | Ch6 ridge skippers (random) | 11354 → **69** | 10841 → 391 | 11907 → **766** | 11914 → 766 |
+  | tideline (scripted) | 6130 → 5507 | 5310 → 4408 | 6679 → 6058 | 18524 → 17892 (the lines) |
+  | Oruvel scuttlers (scripted) | 2795 → 2808 | 3085 → 3104 | 3471 → 3495 | 3471 → 3495 |
+  | the Drownbell (scripted) | 14752 → 15361 | 4371 → 4031 | 5638 → 5513 | B11 → Ch4 |
+
+  **Random fights now meet the ≤ 1 s target** (99989c2b keeps the field resident). **Scripted fights still reload the
+  zone cold: 2.8–5.5 s of black.** Row 74 is now partly fixed (owner integration-qa: extend the resident return to
+  scripted fights, at least the tideline and the scuttlers). The hero still moves about 0.3 s before the fade clears.
+- **(b) Oruvel:** edges 0 of 260 off the deck (unchanged, fixed); boat/dock AABB overlaps 10 pairs (unchanged).
+- **(d) Encounter breather:** unchanged from big23 (31.0–52.0 s).
+
+MERGE-READY @ the head of qa/cloud-pass6: QA docs and tools only (act1_gpu_qa.md with pass 6 and rows 74–78, the cloud-qa
+log, the probes, docs/kb/qa/cloud/pass6). Checks: validate_data and taskboard ok; gdlint/gdformat on the probes clean; the
+tools suite was partial (see above). No game code or baselines.
+
 ### Full Godot suite on 19e7f01c (non-blocking), with godot_failures
 `godot --headless --path . res://tests/run_tests.tscn`, one pass on 19e7f01c. The box's memory cgroup OOM-killed it at about
 3430 tests, in test_qa_threads' Act II report. The 12 files it hadn't reached were run one by one with `--filter`, all green
