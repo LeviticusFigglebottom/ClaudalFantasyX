@@ -372,5 +372,12 @@ flags = {
 "ch18_heirloom_liss": "Ch18 heirloom (ch18_heirloom_rhen, node ch18_heirloom_liss): a launcher built from Tobin's tide-wheel drawings, at Hollowmere.",
 "ch18_heirloom_kerrid": "Ch18 heirloom (ch18_heirloom_rhen, node ch18_heirloom_kerrid): the stair-watch's anchor, at the Corrow stair foot.",
 "ch18_heirloom_pell": "Ch18 heirloom (ch18_heirloom_rhen, node ch18_heirloom_pell): Ressa's reed-spear, given by Owa at Reedhollow.",
-"ch18_complete": "Ch18 K08 (ch18_iskarra): Kerrid's finger on the city; the flow hands off to Ch19."
+"ch18_complete": "Ch18 K08 (ch18_iskarra): Kerrid's finger on the city; the flow hands off to Ch19.",
+"ch19_started": "Ch19 I01 (M5-A3P-1006, ch19_the_kite_comes_down): the Kite comes down at Iskarra; Ch19 begins.",
+"ch19_vigil": "Ch19 I02 (ch19_the_vigil): the Prologue's vigil, now played; the six keep their separate vigils.",
+"ch19_learned_the_hitch": "Ch19 I03 (ch19_the_hitch): Kerrid taught Rhen the hitch Dace taught him at the rings (paid in H02 and E3).",
+"ch19_words_whole": "Ch19 I04 optional (ch19_the_words): Ysolde has the Eighth Verse's words whole from the stones.",
+"ch19_abiding_beaten": "Ch19 I08 (ch19_bark_abiding_wardens end node, or the encounter's victory_flag): Wardens Hesper Oan and Ilsabet Rue are beaten.",
+"ch19_engine_stopped": "Ch19 I09 (ch19_the_engine_stops): Liss shut down Iskarra's anchor-engine.",
+"ch19_complete": "Ch19 I10 (ch19_the_engine_stops): the eye opens; the flow hands off to Ch20."
 }

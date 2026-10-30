@@ -51,6 +51,8 @@
   {"id": "ullari", "name_key": "CHAR_ULLARI", "blip_pitch": 0.94, "portrait_id": "portrait_villager_placeholder"},
   {"id": "ullari_woman", "name_key": "CHAR_ULLARI_WOMAN", "blip_pitch": 1.0, "portrait_id": "portrait_villager_placeholder"},
   {"id": "householder", "name_key": "CHAR_HOUSEHOLDER", "blip_pitch": 1.1, "portrait_id": "portrait_villager_placeholder"},
-  {"id": "kesh", "name_key": "CHAR_KESH", "blip_pitch": 0.9, "portrait_id": "portrait_villager_placeholder"}
+  {"id": "kesh", "name_key": "CHAR_KESH", "blip_pitch": 0.9, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "hesper_oan", "name_key": "CHAR_HESPER_OAN", "blip_pitch": 0.82, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "ilsabet_rue", "name_key": "CHAR_ILSABET_RUE", "blip_pitch": 1.04, "portrait_id": "portrait_villager_placeholder"}
  ]
 }

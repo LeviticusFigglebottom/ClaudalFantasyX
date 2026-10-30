@@ -71,5 +71,9 @@ DLG_CH17_LEDGER_PAGE_016	ch17_the_ledger		The one message that reached Rhen as a
 DLG_CH17_LEDGER_PAGE_009	ch17_the_ledger		'Kell. Of course.': relief and recognition, not surprise. Kell is the Oruvel stallholder who raised Rhen.	A season after Corrow. A Hollowmere trader says the chandler has the boy. Kell. Of course.
 DLG_CH17_LEDGER_PAGE_015	ch17_the_ledger		The LAST entry. It breaks off mid-sentence, with no full stop: keep it unfinished in translation.	Rhen. If I bring him here he's a wright's son for life. Oruvel thinks he's a diver's boy. Let him be one. After the storm
 DLG_CH18_GATE_006	ch18_through_the_gate		He says his own name once, as it is given back. Plain, not triumphant.	Pell.
+DLG_CH19_ROLL_001	ch19_the_signatures		One line of a duty roll, repeated for four hundred years. Shown in the document reader.	Duty roll, the anchor-engine, Iskarra: Watch kept. H. Oan. Entered, I. Rue.
+DLG_CH19_VIGIL_001	ch19_the_vigil		Must stay word for word the same as prologue_dead_city_001, in every language: the same line, heard again.	Everyone I'm going to tell you about is still here tonight. Remember that, later.
+DLG_CH19_WORDS_001	ch19_the_words	yes	Lamptongue, the Eighth Verse as cut in the stones (lamptongue.md verse 8): keep exactly as written. Spoken flat, not sung.	Ish oan, ish oan. Vey hal, ennu tash. Oan re, oan re... tash.
+DLG_CH19_WORDS_002	ch19_the_words	yes	Lamptongue: keep exactly as written. Asha repeats only the first line and the last word, spoken.	Ish oan, ish oan... tash.
 DLG_PROLOGUE_DEAD_CITY_000	prologue_dead_city		Title card, centred on black, before the first frame of the game.	Prologue
 DLG_TEST_DLG_020	test_dialogue_fixture	yes	Invented language: keep as written.	Ennu re.

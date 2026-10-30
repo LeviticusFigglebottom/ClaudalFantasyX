@@ -1545,6 +1545,35 @@ DLG_CH18_GATE_003,Then you may have your name back.
 DLG_CH18_GATE_004,We heard where you knelt. Under the old city. Before her.
 DLG_CH18_GATE_005,I scraped this one. My hands remember. Let them carve it.
 DLG_CH18_GATE_006,Pell.
+DLG_CH19_WARDENS_001,"Go home, children. We have this watch."
+DLG_NAME_HESPER_OAN_WARDEN_HESPER_OAN,Warden Hesper Oan
+DLG_CH19_WARDENS_002,Noted.
+DLG_NAME_ILSABET_RUE_ILSABET_RUE,Ilsabet Rue
+DLG_CH19_WARDENS_003,Four hundred years and nobody has asked to relieve us.
+DLG_CH19_WARDENS_004,You kept a watch.
+DLG_CH19_WARDENS_005,I did. I'd have liked relieving.
+DLG_CH19_WARDENS_006,Mark the time.
+DLG_CH19_ENGINE_001,That's the first one.
+DLG_CH19_ENGINE_002,There's the stair.
+DLG_CH19_HITCH_001,Give me your hands.
+DLG_CH19_HITCH_002,Your father's. He showed me eight times. I got it on the ninth.
+DLG_CH19_HITCH_003,Now lean on it. All of you.
+DLG_CH19_HITCH_004,"Holds anything. Then one pull, and it lets go."
+DLG_CH19_HITCH_005,Why are you teaching me this now?
+DLG_CH19_HITCH_006,Somebody should have it.
+DLG_CH19_HITCH_007,He wrote about the stair. In the ledger. He said the watch captain held the line to the last.
+DLG_CH19_HITCH_008,Eight tides. He talked about you every one.
+DLG_CH19_ROLL_001,"Duty roll, the anchor-engine, Iskarra: Watch kept. H. Oan. Entered, I. Rue."
+DLG_CH19_SIG_001,I've seen these hands. In the Archive. On every page.
+DLG_CH19_SIG_002,The same two hands. Every watch. Four hundred years of them.
+DLG_CH19_SIG_003,"Somebody's still on watch, then."
+DLG_CH19_VIGIL_001,"Everyone I'm going to tell you about is still here tonight. Remember that, later."
+DLG_CH19_WORDS_001,"Ish oan, ish oan. Vey hal, ennu tash. Oan re, oan re... tash."
+DLG_CH19_WORDS_002,"Ish oan, ish oan... tash."
+DLG_CH19_WORDS_003,Never the words and the tune together. Not until it's time.
+DLG_CH19_WORDS_004,I came to give you a good death.
+DLG_CH19_WORDS_005,"I would like to give you a long, dull life instead."
+DLG_CH19_WORDS_007,I'll try.
 DLG_PROLOGUE_DEAD_CITY_000,Prologue
 DLG_PROLOGUE_DEAD_CITY_001,"Everyone I'm going to tell you about is still here tonight. Remember that, later."
 DLG_TEST_CUTSCENE_ARRIVE_001,Arrive fixture line.

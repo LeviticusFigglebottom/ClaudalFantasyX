@@ -375,6 +375,8 @@
     "ullari": {"blips": ["voice_low"], "pitch": 0.94, "rate_ms": 70, "jitter": 0.04, "volume_db": 0.0},
     "ullari_woman": {"blips": ["voice_bright"], "pitch": 1.0, "rate_ms": 55, "jitter": 0.06, "volume_db": 0.0},
     "householder": {"blips": ["voice_bright"], "pitch": 1.1, "rate_ms": 55, "jitter": 0.06, "volume_db": 0.0},
-    "kesh": {"blips": ["voice_bright"], "pitch": 0.9, "rate_ms": 55, "jitter": 0.06, "volume_db": 0.0}
+    "kesh": {"blips": ["voice_bright"], "pitch": 0.9, "rate_ms": 55, "jitter": 0.06, "volume_db": 0.0},
+    "hesper_oan": {"blips": ["voice_low"], "pitch": 0.82, "rate_ms": 70, "jitter": 0.04, "volume_db": 0.0},
+    "ilsabet_rue": {"blips": ["voice_bright"], "pitch": 1.04, "rate_ms": 60, "jitter": 0.05, "volume_db": 0.0}
   }
 }
