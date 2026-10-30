@@ -1148,3 +1148,132 @@ BACKLOG EMPTY: the Act I audit is clean in my lane. The Act II sheets are writte
   - The rerun also refreshed stale lists in Oruvel, Pemakar, Coilspire, Corrow and Corrow night (generated output; nothing hand-edited).
   - Checks: Godot resident_loads 8/0, haluna 65/0.
 - **MERGE-READY @ 9b29d8b3.** The Kirru crowd is done (see above, MERGE-READY @ the 13:08 entry).
+- **Your 14:28 relay:**
+  1. **conduit_crawler:** request task **M4-CRE-702** (role combat, for act1-chapters under M4-A2P-022) asks for its enemies.json row.
+     - The model was already built from the lore and act2_roster: a salt-glass dome on six jointed brass legs (563eda19), with clips, portrait, creatures.json row and review shot. It needs only the row.
+  2. **Crowd behaviour pass @ 14b55254:**
+     - **Idle variety:** each villager idles and works at its own pace (npc.json `idle_playback` [0.88, 1.12], from its id), on top of the existing phase offsets.
+     - **Look-ats:** the existing party glances work for every crowd member. Reedhollow's Kirru now aim from their own eye height (2.05 m, the youngster's 1.45) and keep the Kirru stillness.
+     - **Doorways and edges:** the new **tools/creatures/crowd_spot_audit.gd** (`godot --headless --path . res://tools/creatures/crowd_spot_audit.tscn`) checks every crowd member in all 17 zones against door nodes and marks, and against drops within 0.6 m.
+       - Six moved by row offsets: Pemakar's weir child, the two Bell Galleries divers, Coilspire's tender off `door_liss`, and three in Corrow.
+       - The audit now reports 0 flagged. Corrow's storm figure is exempt: a silhouette over the water by design.
+     - **Baselines:** the idle pace changes the settled pose in every shot with field villagers (crowd_*, villager zone shots and the zone and mood shots that show villagers). **Those baselines need rewriting.** I self-rendered crowd_lineup_a and crowd_market and viewed them; they look right.
+     - Checks: validate_data; tools test_npc 33 OK; Godot crowd 15/0, villager 43/0, npc 10/0, haluna 65/0.
+- **MERGE-READY @ 14b55254.**
+- **BACKLOG EMPTY:** the crowd behaviour pass is done; the conduit crawler waits on M4-CRE-702.
+- **Your 15:08 relay:**
+  - **Baselines:** understood. I write none; the shots session captures them after the merge.
+  - **conduit_crawler is already complete and placeholder-free**, built earlier from the beat sheet, the lore and act2_roster:
+    - an 18-bone rig (body, six legs of two, two arms of two);
+    - the full clip contract (idle, attack, cast for its mend, hit, ko, hit_b, idle_b), feet on the floor in every clip;
+    - 4,608 triangles, with its battle scene (`creature_actor`), creatures.json row, portrait and review shot.
+    - It is ready to wire up the moment M4-CRE-702's enemies.json row lands, using `model`: `res://game/creatures/conduit_crawler/conduit_crawler_battle.tscn`.
+  - **Act II wildlife idle behaviours @ 3a287760:** the fen kingfisher's plunge-dive (the one behaviour its plan sheet listed as not built).
+    - From a perch it drops wings-folded to the water ahead, holds a moment, and beats back to the same perch; gulls never dive.
+    - The other Act II animals already do what their sheets describe: woolbacks graze, look up and amble; fireflies drift and blink; rim rays swim, turn and startle (their sheet: "they never bury"). Hollowmere's gulls and fish are Act I's.
+    - Checks: validate_data; tools test_wildlife 20 OK; Godot wildlife 23/0.
+- **MERGE-READY @ 3a287760.**
+- **BACKLOG EMPTY:** Act II wildlife behaviours are done; the conduit crawler waits only on M4-CRE-702's row.
+- **Your 16:08 relay:**
+  1. **conduit_crawler wired, M4-CRE-702 → review** @ 35bb8972e.
+     - The row (fc316eda4) is on the integration branch, merged here @ efe7fb10d.
+     - creatures.json `clip_by_skill`: `brush_jab` plays attack, `crawler_mend` cast, `crawler_tend` idle_b (it tends and pays the party no mind). Godot creature 159/0.
+     - **Finding for battle-presentation and env-art:** as played, `ch11_lamp_engine` on `lowlight_engine_hall` has a black slab of the arena covering the enemy half of the frame. The engine and both crawlers barely read; only one crawler's dome shows at the edge. The camera or the arena wall needs checking.
+  2. **Act III bestiary (planning, docs only) @ d7509e52b:** docs/kb/art/creatures/act3_roster.md, "Reconciled with the Act III beat sheets".
+     - **Changes and additions:**
+       - Ch17's optional mooring foes: `deep_scuttler` moved up from Ch18, `hull_rasp` new (a hullgnaw variant).
+       - Ch18: no foes inside the changed towns (its rule 3); the Kite's gulls as wildlife.
+       - Ch19: the conduit crawler reused in the Lamp Spire.
+       - Ch20: **held-shape crowds** per memory layer (crowd silhouettes in glimmer_held; the Reefball layer needs 30+).
+       - The Cage sheet amended to four chained **seats** round the well, one combatant with four parts.
+     - Also: a revised order of work, and two questions for the chapter designer.
+  3. **Act II wildlife idle behaviours** @ 517c22705: each woolback grazes at its own pace (`graze_pace`), on top of the kingfisher plunge-dive (earlier today).
+     - With that, every Act II animal does what its sheet describes. Checks: tools test_wildlife OK; Godot wildlife 24/0.
+- **MERGE-READY @ 517c22705.**
+- **BACKLOG EMPTY:** M4-CRE-702 is in review (character); Act III stays planning-only until its gate.
+- **Your 16:27 relay:** both items had already landed. Your message likely crossed with the 16:08 entry above.
+  - **The Act III bestiary list** @ d7509e52b, planning only, no assets. It is in docs/kb/art/creatures/act3_roster.md, section "Reconciled with the Act III beat sheets (2026-10-30)": every creature docs/kb/story/act3/ implies, chapter by chapter (Ch17 to Ch21), with design notes, status against the 10-28 roster, a revised order of work and two questions for the chapter designer.
+  - **The Act II wildlife idle behaviours:** the kingfisher plunge-dive and per-woolback grazing pace, @ 3a287760b (dive) and 517c22705 (pace). Every Act II animal now does what its plan sheet describes.
+- **MERGE-READY @ 517c22705** (unchanged since 16:08). **BACKLOG EMPTY.**
+- **Your 16:45 relay: Act I animation polish @ b2b5678b6.**
+  - **tools/creatures/clip_audit.gd** now judges what you asked for across all 22 Act I regulars:
+    - stiff idles: skin motion under 3% of the actor's size;
+    - hit reacts that don't read: under 6% travel, or under 70% of it by 0.25 s;
+    - KOs that float or pop: the whole mesh's lowest point at the end, counting the battle hover. A KO "sinks" only if it ends below where it started; the hullgnaw's slide back into its breach is exempt by design.
+  - **Fixed:**
+    - the tower limpet's idle (it read as a still frame);
+    - the tide crawler's and sail leech's `idle_b` (now authored);
+    - the sail leech's KO (it ended 9 cm in the air; its sails now drape onto the deck);
+    - the fen leech's KO (6 cm up after today's bow; the mesh is set down 1 cm over its floor).
+    - Root drops still equal the hovers (test_creatures). The rim crawler and fen leech were rebuilt on their bases.
+  - **Clean, no change needed:** every other idle, hit and KO. The eel's KO stays in the water it stands in, and the scuttler's and squall wing's hits get 70%+ of their travel in early.
+  - Checks: builds byte-identical (5 jobs); tools test_creatures OK; Godot creature 159/0; validate_data.
+  - **Shots that need new baselines** (the shots session): `creature_tower_limpet`, `creature_tide_crawler`, `creature_sail_leech`, `creature_fen_leech`, `creature_rim_crawler`, and the fen_leech portrait.
+- **MERGE-READY @ b2b5678b6.**
+- **BACKLOG EMPTY:** M4-CRE-702 is in review; Act III stays planning-only.
+- **Your 17:24 relay, part 1: Act II animation polish @ d91a783fb.**
+  - The clip audit was run across all 11 Act II regulars. Two needed work:
+    - the glass skate's idle (it read as a held frame): it now breathes deeper, ripples its disc margins front to back and sweeps its tail;
+    - the cord moth's hit (it snapped, with only 8–12% of its travel eased): its wings and root roll now ease in and out over five keys.
+  - **Clean, no change needed:** every other idle, hit and KO. The tannin archer's KO ends 8 cm down, by design: it stands in water and ends where it started.
+  - Checks: builds byte-identical (2 jobs); Godot creature 159/0.
+  - **Shots that need new baselines** (the shots session): `creature_glass_skate`, `creature_cord_moth`, and the glass_skate portrait.
+- **Part 2: Act I wildlife reactions @ cbcd5b5cc.**
+  - **Birds lift.** A gull perched within 6 m of the party (a kingfisher within 4 m) takes off after its own delay (gulls 0–0.9 s, kingfishers 0–0.4 s), so a rail of birds goes up one after another. Landing birds avoid perches by the party, and a kingfisher there won't plunge.
+  - **Fish scatter.** A startled school spreads to 2.2× (rays 1.4×) and closes up as the startle fades. The shoal's bounds include the wider spread.
+  - New kind keys: `flush_radius_m`, `flush_delay_s` (gull, kingfisher) and `scatter_spread` (fish, ray), in the validator's schema. Documented in docs/kb/art/wildlife.md.
+  - Checks: validate_data; tools test_wildlife 20 OK; Godot wildlife 26/0 (two new tests).
+  - **Shots:**
+    - `wildlife_stage` changes (rmse 0.020): the stage's player stands by the left post, so that gull is in the air and the school is scattered. It needs a new baseline (shots session).
+    - `wildlife_zone_brine_wrecks` passes.
+    - `wildlife_zone_ossa_fen_rail0` and `wildlife_zone_pale_rim_wade` have no baselines yet.
+- **MERGE-READY @ cbcd5b5cc.**
+- **BACKLOG EMPTY:** M4-CRE-702 is in review (character); Act III stays planning-only.
+- **Your 17:45 relay: Haluna lived in, M3-CRE-666 @ ba2445136.** (The Act II enemy polish was already done, @ d91a783fb.)
+  - **Who is there.** Fifteen crowd people (community `haluna`, new faces) at work by what they work on, on ground probed against the zone's collision:
+    - **causeway head:** fish laid on the drying rack, a buyer with her basket at the stall, a line hauled at the water's edge, two children at a game of stones;
+    - **tide-wall lane:** an old woman mending at the net heap, a basket carrier, two children at a clapping game, a sweeper between two stations;
+    - **dock:** a mender at the net heap, fish turned on the rack, a mooring line hauled, a basket of the catch.
+  - **New clips:** `play_stones` (knelt, toss, sweep and catch) and `play_clap` (clap and palms out, the pair 0.6 m apart where the palms meet), in the child libraries.
+  - **The dock at night:** VillagerLayer rows take `shown: day|night`, read from the zone's `is_night` (HalunaZone.set_night). No zone code changed.
+    - The dock's people and the children are gone home.
+    - The lane's mender and sweeper work by lamplight.
+    - One woman brings the last basket home past the market.
+  - **No reshuffle:** `assign.late_zones` keeps every body already placed in other zones (a tools test holds it).
+  - **Checks:**
+    - tools test_npc 35 OK; validate_data/npc; gen_crowd --check;
+    - Godot crowd 17/0, villager 45/0, npc 10/0, haluna 65/0;
+    - the rebuilt child libraries match the jobs' output.
+  - **FAST-TRACK (not mine, pre-existing):** every crowd body's `materials/brow.tres` and crowd_woman_lean_a's head textures and UVs rebuild differently from the committed files on an unchanged tree. That is drift from the shared villager sources (characters, likely 7fbc2da2c). The crowd jobs are owned "character"; a rebuild of all 22 crowd jobs would commit it.
+  - **Shots:** new `npc_haluna_vignette_*` shots (no baselines).
+    - Viewed: lane_mender, dock and night_market (the vendor and the night carrier by lamplight). All good.
+    - causeway and lane_games: re-aimed (the first frames were behind the tide wall and inside a wall), re-rendering now.
+    - The existing `npc_haluna_dock`, `npc_haluna_lane` and `npc_haluna_market`, and `slice_haluna_villagers_village`, will gain people. They need new baselines (shots session).
+- **MERGE-READY @ ba2445136.** Next: the same vignettes for Oruvel (Ch1) and the Pemakar harbour (your 18:45 relay).
+- **Your 18:45 relay: Oruvel and the Pemakar quay lived in @ 4e09b97b7, plus Haluna fixes, HEAD 30e39d407.**
+  - **Oruvel's commons deck:** six people at the deck's edges, so the paths stay clear:
+    - a girl at stones by the north rail, and a man mending a diver's net bag;
+    - a man sweeping along the west rail, and a woman with her basket by the cookboat;
+    - along the south edge, a man laying fish to dry and a man hauling a line in.
+  - **The Pemakar quay at Lanternfall:** five people on the quay's two ends (the middle is the story's staging):
+    - an old man mending;
+    - two Low Reaches traders off the Brightwater crossing, one hauling his skiff in and one with a basket of salt fish;
+    - a woman come down with a basket of lanterns;
+    - an old woman folding leaf-boats.
+  - **Fewer children than Haluna.** No body repeats within a zone, and each community accepts only some bodies:
+    - Oruvel had one child body left, so its child plays stones alone;
+    - Pemakar had no child body and no Pemakar-accepted man left, hence the ferry traders.
+    - **LEAD-ASK (optional):** more children in these towns needs more planned child bodies (a characters-track body plan). Say if you want me to request it.
+  - **The late tier now goes by id prefix too** (`late_prefixes`: `oruvel_deck_`, `pemakar_quay_`). Late people are assigned after everyone else and never wear a body their zone already shows, so nothing already placed moved (tools test).
+  - **Haluna fixes after viewing the renders:**
+    - the stones pair moved out of the dune grass onto open sand;
+    - the hauler moved to the water's edge;
+    - the clapping pair moved into the open yard, clear of the tide wall;
+    - the dock hauler was over the water past the deck's visible edge; he is now on the planks.
+  - **Checks:** tools test_npc 35 OK; validate_data/npc; gen_crowd --check; Godot crowd 18/0. The libraries are unchanged by the towns (the play clips were already in).
+  - **Shots, all viewed and good:**
+    - `npc_haluna_vignette_causeway`, `_lane_games`, `_lane_mender`, `_dock`, `_night_market`, `_night_lane`;
+    - `crowd_vignette_oruvel_north`, `_oruvel_south`, `_pemakar_west`, `_pemakar_east`.
+    - These are new, with no baselines. The existing `npc_haluna_dock` (re-rendered and viewed), `npc_haluna_lane`, `npc_haluna_market`, `slice_haluna_villagers_village`, `crowd_zone_oruvel` and `crowd_zone_pemakar` gain people and need new baselines (shots session).
+- **MERGE-READY @ 30e39d407.**
+- **BACKLOG EMPTY:** M4-CRE-702 is in review (character); Act III stays planning-only; the brow.tres drift FAST-TRACK is characters'.

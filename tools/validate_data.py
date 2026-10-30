@@ -2574,7 +2574,9 @@ def tutorial_tip_errors(doc: object, declared: set[str]) -> tuple[list[str], lis
         elif flag in seen_flags:
             errs.append(f"{w}: seen flag '{flag}' is used by another tip")
         seen_flags.add(flag)
-        for f in [flag, *t.get("requires", []), *([t["when"]] if t.get("when") else [])]:
+        when = t.get("when") or []
+        whens = when if isinstance(when, list) else [when]  # a list: any of them raises it (first-hour pass)
+        for f in [flag, *t.get("requires", []), *t.get("requires_any", []), *whens]:
             if f and f not in declared:
                 errs.append(f"{w}: flag '{f}' is not declared in game/data/flags.tres")
         for k in ("title_key", "body_key"):

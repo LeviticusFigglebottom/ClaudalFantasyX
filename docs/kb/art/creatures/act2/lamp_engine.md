@@ -62,6 +62,10 @@ materials unchanged (`frame`, `glass`, `hub`, `core`: no new `.tres`).
 - **Stand-in yaw 90° → 55°** (creatures.json `stand_in`). At 90° the battle camera saw it side-on and the near arm
   crossed in front of the body, cutting the core in half in phase 2. At 55° it faces the camera and the party's
   quarter: symmetric, both arms raised either side, the core seen whole.
+- **Stand-in yaw 55° → 80° (2026-10-30, big25's lineup red).** With the two conduit crawlers M4-A2P-022 seats beside
+  it, its footprint at 55° (2.10 m: the 3.6 x 2.35 m body turned diagonally) left them 2.49 and 2.55 m away where
+  2.74 is needed. At 80° the footprint is 1.75 m; rendered in the intro hero shot, closed and opened, both arms stay
+  raised either side and the core reads whole.
 - No gold anywhere: the lamps and core stay `glimmer_bound` (steady, teal). The opened burst and the KO lift are VFX
   at the anchors.
 

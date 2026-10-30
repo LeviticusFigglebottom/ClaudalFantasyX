@@ -215,6 +215,32 @@ func test_every_crowd_body_loads_with_its_clips() -> void:
 	_done()
 
 
+## The crowd behaviour pass (the Lead, 2026-10-30): each villager idles at its own rate (npc.json `idle_playback`,
+## drawn from its id), so two of one body are out of pace as well as out of phase; a row's `idle_playback` narrows it.
+func test_villagers_idle_at_their_own_pace() -> void:
+	var range: Array = VillagerLayer.load_data("res://game/data/world/npc/npc.json")["defaults"]["idle_playback"]
+	var rates: Array[float] = []
+	for id: String in ["oruvel_cook", "pemakar_folder", "tamsule_vendor", "corrow_townsfolk_a"]:
+		var npc := FieldNpc.new()
+		npc.name = id
+		npc.npc_id = StringName(id)
+		npc.auto_process = false
+		npc.actor_scene = load(VillagerLayer.CROWD_ACTOR_PATH % ["crowd_woman_medium", "crowd_woman_medium"])
+		_holder().add_child(npc)
+		assert_between(npc.idle_rate, float(range[0]), float(range[1]), "%s: its pace in range" % id)
+		assert_true(is_equal_approx(npc.anim.speed_scale, npc.idle_rate), "%s: its idle plays at its pace" % id)
+		rates.append(npc.idle_rate)
+	assert_true(rates.max() - rates.min() > 0.02, "four villagers, four paces")
+	var still := FieldNpc.new()
+	still.npc_id = &"clutch_0"
+	still.auto_process = false
+	still.tuning_over = {"idle_playback": [0.92, 1.02]}
+	still.actor_scene = load(VillagerLayer.CROWD_ACTOR_PATH % ["kirru_man", "kirru_man"])
+	_holder().add_child(still)
+	assert_between(still.idle_rate, 0.92, 1.02, "a Kirru row's narrower pace")
+	_done()
+
+
 ## The Kirru crowd bodies (assets_src/crowd/kirru; the Lead, 2026-10-30): each loads with the kirru library's clips
 ## (Pell's idle, talk and walk), its hips track fitted to its own height, and Reedhollow's rows resolve to them.
 func test_every_kirru_body_loads_with_pells_clips() -> void:
@@ -521,4 +547,99 @@ func test_two_people_at_the_same_work_are_out_of_step() -> void:
 	var length := a.anim.get_animation(a.current_clip).length
 	var gap := absf(a.anim.current_animation_position - b.anim.current_animation_position)
 	assert_true(minf(gap, length - gap) > 0.05, "out of step (%.3f s apart)" % gap)
+	_done()
+
+
+## The Lead, 2026-10-30: a row's `shown` follows the zone's `is_night` (HalunaZone.set_night: the dock at night).
+func test_a_shown_row_follows_the_zones_night() -> void:
+	var zone := _holder()
+	var night_zone := GDScript.new()
+	night_zone.source_code = "extends Node3D\nvar is_night := false\n"
+	night_zone.reload()
+	zone.set_script(night_zone)
+	var spot := func(id: String, x: float) -> Dictionary:
+		return {"npc_id": id, "crowd": id, "stand_in": "CrowdSpots/" + id, "at": [x, 0.0, -2.0, 0.0]}
+	var day: Dictionary = spot.call("haluna_dock_mender", 0.0)
+	day["shown"] = "day"
+	var by_night: Dictionary = spot.call("haluna_night_carrier", 2.0)
+	by_night["shown"] = "night"
+	var layer := _layer(zone, [day, by_night, spot.call("haluna_lane_mender", 4.0)])
+	assert_eq(layer.build(), 3, "three rows")
+	var mender := layer.villager(&"haluna_dock_mender")
+	var carrier := layer.villager(&"haluna_night_carrier")
+	var always := layer.villager(&"haluna_lane_mender")
+	assert_true(mender.visible and not carrier.visible and always.visible, "by day: the day row, not the night's")
+	zone.set(&"is_night", true)
+	layer.tick(DT)
+	assert_true(not mender.visible and carrier.visible and always.visible, "at night: the night row, not the day's")
+	assert_eq(mender.process_mode, Node.PROCESS_MODE_DISABLED, "a hidden villager is stopped")
+	zone.set(&"is_night", false)
+	layer.tick(DT)
+	assert_true(mender.visible and not carrier.visible, "and back by day")
+	_done()
+
+
+## Haluna lived in (the Lead, 2026-10-30): its vignettes stand in the real zone at work, the children at their games.
+func test_haluna_vignettes_come_alive_in_the_real_zone() -> void:
+	var people := _people()
+	var zone := (load("res://game/levels/ch02/haluna/haluna.tscn") as PackedScene).instantiate() as Node3D
+	var layer := VillagerLayer.new()
+	layer.zone_id = &"ch02/haluna"
+	layer.auto_build = false
+	zone.add_child(layer)
+	_holder().add_child(zone)
+	layer.build()
+	var ids: Array[String] = []
+	for id: String in people:
+		if str((people[id] as Dictionary)["zone"]) == "ch02/haluna":
+			ids.append(id)
+	assert_eq(ids.size(), 15, "fifteen vignette people")
+	for i in 30:
+		layer.tick(DT)
+	for id in ids:
+		var npc := layer.villager(StringName(id))
+		assert_true(npc != null, "%s stands in Haluna" % id)
+		if npc == null:
+			continue
+		var work := StringName(str((people[id] as Dictionary)["work"]))
+		assert_true(npc.anim != null and npc.anim.has_animation(work), "%s carries %s" % [id, work])
+		if npc.route_points.is_empty():
+			assert_eq(npc.current_clip, work, "%s plays %s" % [id, work])
+	var girl := layer.villager(&"haluna_clap_girl")
+	var boy := layer.villager(&"haluna_clap_boy")
+	if girl != null and boy != null:
+		var gap := Vector2(girl.global_position.x, girl.global_position.z).distance_to(
+			Vector2(boy.global_position.x, boy.global_position.z)
+		)
+		assert_between(gap, 0.5, 0.7, "the clapping pair stand a hand-meet apart")
+	_done()
+
+
+## The slice towns lived in (the Lead, 2026-10-30): Oruvel's deck and Pemakar's quay at Lanternfall, at work.
+func test_oruvel_and_pemakar_vignettes_come_alive_in_their_zones() -> void:
+	var people := _people()
+	for z: Array in [
+		["res://game/levels/ch01/oruvel/oruvel.tscn", &"ch01/oruvel", "oruvel_deck_", 6],
+		["res://game/levels/ch05/pemakar/pemakar.tscn", &"ch05/pemakar", "pemakar_quay_", 5]
+	]:
+		var zone := (load(str(z[0])) as PackedScene).instantiate() as Node3D
+		_holder().add_child(zone)
+		var layer := VillagerLayer.wire(zone, z[1] as StringName)
+		layer.build()
+		for i in 30:
+			layer.tick(DT)
+		var found := 0
+		for id: String in people:
+			if not id.begins_with(str(z[2])):
+				continue
+			found += 1
+			var npc := layer.villager(StringName(id))
+			assert_true(npc != null, "%s stands in %s" % [id, z[1]])
+			if npc == null:
+				continue
+			var work := StringName(str((people[id] as Dictionary)["work"]))
+			assert_true(npc.anim != null and npc.anim.has_animation(work), "%s carries %s" % [id, work])
+			if npc.route_points.is_empty():
+				assert_eq(npc.current_clip, work, "%s plays %s" % [id, work])
+		assert_eq(found, int(z[3]), "%s's vignette people" % z[1])
 	_done()

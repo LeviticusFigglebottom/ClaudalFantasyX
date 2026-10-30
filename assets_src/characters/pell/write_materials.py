@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -35,11 +36,13 @@ HERE = Path(__file__).resolve().parent
 _spec = importlib.util.spec_from_file_location("asha_write_materials", HERE.parent / "asha" / "write_materials.py")
 wm = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(wm)
+sys.path.insert(0, str(HERE))
 
 ROOT = HERE.parents[2]
 OUT = ROOT / "assets" / "characters" / "pell" / "materials"
 PARAMS = HERE / "pell_params.json"
 T = "pell/textures/"
+ST = T + "pell_"  # M4-A2P-053: the skin maps' prefix (a Kirru variant's own; the atlases stay Pell's)
 A = "asha/textures/"
 ROUGH = (0.5, 0.95)  # pell_textures.ROUGH: the ORM's roughness range
 
@@ -77,11 +80,11 @@ def wet(extra: dict, params: dict) -> dict:
 
 def tables(extra: dict) -> dict[str, tuple[str, int, dict, dict]]:
     fp, cr, wp = extra["_fur"], extra["_crest"], extra["_whiskers"]
-    skin_head = {"tex_albedo": T + "pell_head_albedo.png", "tex_normal": T + "pell_head_normal.png",
-                 "tex_orm": T + "pell_head_orm.png", "tex_skin_mask": T + "pell_head_skinmask.png",
+    skin_head = {"tex_albedo": ST + "head_albedo.png", "tex_normal": ST + "head_normal.png",
+                 "tex_orm": ST + "head_orm.png", "tex_skin_mask": ST + "head_skinmask.png",
                  "tex_detail_normal": A + "asha_thread_detail_normal.png"}  # strands, not pores
-    skin_body = {"tex_albedo": T + "pell_body_albedo.png", "tex_normal": T + "pell_body_normal.png",
-                 "tex_orm": T + "pell_body_orm.png", "tex_skin_mask": T + "pell_body_skinmask.png",
+    skin_body = {"tex_albedo": ST + "body_albedo.png", "tex_normal": ST + "body_normal.png",
+                 "tex_orm": ST + "body_orm.png", "tex_skin_mask": ST + "body_skinmask.png",
                  "tex_detail_normal": A + "asha_thread_detail_normal.png"}
     cloth = {"tex_albedo": T + "pell_cloth_albedo.png", "tex_normal": T + "pell_cloth_normal.png",
              "tex_orm": T + "pell_cloth_orm.png", "tex_cloth_mask": T + "pell_cloth_clothmask.png",
@@ -150,21 +153,34 @@ def tables(extra: dict) -> dict[str, tuple[str, int, dict, dict]]:
         # Asha's mouth family (character_mouth, the cavity bounce), reading Pell's head atlas
         "teeth": ("character_mouth", 0, {"col_albedo": "Color(1, 1, 1, 1)", "roughness": "1.0", "specular": "0.06",
                                          "ao_light_affect": "0.35"},
-                  {"tex_albedo": T + "pell_head_albedo.png", "tex_orm": T + "pell_head_orm.png"}),
+                  {"tex_albedo": ST + "head_albedo.png", "tex_orm": ST + "head_orm.png"}),
         "tongue": ("character_mouth", 0, {"col_albedo": "Color(0.42, 0.22, 0.21, 1)", "roughness": "0.6",
                                           "specular": "0.25"}, {}),
         "mouth": ("character_mouth", 0, {"col_albedo": "Color(1, 1, 1, 1)", "roughness": "0.5",
                                          "roughness_from_orm": "0.0", "ao_light_affect": "0.5"},
-                  {"tex_albedo": T + "pell_head_albedo.png", "tex_orm": T + "pell_head_orm.png"}),
+                  {"tex_albedo": ST + "head_albedo.png", "tex_orm": ST + "head_orm.png"}),
     }
 
 
 def main() -> int:
-    extra = json.loads(PARAMS.read_text(encoding="utf-8"))
+    global OUT, ST
+    variant = sys.argv[sys.argv.index("--variant") + 1] if "--variant" in sys.argv else None
+    import pell_variant
+
+    extra = pell_variant.extra(variant)
+    if variant:  # M4-A2P-053: a Kirru variant's materials, on its own skin maps
+        OUT = pell_variant.out_dir(variant) / "materials"
+        ST = f"{variant}/textures/{variant}_"
     wm.OUT = OUT
     wm.TEX = "res://assets/characters"
     OUT.mkdir(parents=True, exist_ok=True)
     table = tables(extra)
+    tint = extra.get("_look", {}).get("cloth_tint")  # M4-A2P-053 (optional): a Kirru variant's cloth dye
+    if tint:
+        h = tint.lstrip("#")
+        r, g, b = (int(h[i:i + 2], 16) / 255.0 for i in (0, 2, 4))
+        sh, prio, params, tex = table["cloth"]
+        table["cloth"] = (sh, prio, dict(params, col_albedo=f"Color({r:.3f}, {g:.3f}, {b:.3f}, 1)"), tex)
     for name, (shader, prio, params, textures) in table.items():
         wm.write_shader_material(name, shader, prio, params, textures)
     print(f"wrote {len(table)} materials to {OUT}")

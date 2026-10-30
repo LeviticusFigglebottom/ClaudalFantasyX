@@ -30,9 +30,25 @@ class CommittedData(unittest.TestCase):
         self.assertEqual(vn.npc_errors(ROOT), [])
 
     def test_haluna_places_the_seven_villagers(self) -> None:
-        ids = {r["npc_id"] for r in _load(HALUNA)["villagers"]}
+        rows = _load(HALUNA)["villagers"]
+        ids = {r["npc_id"] for r in rows if "crowd" not in r}
         self.assertEqual(ids, {"child", "fisher", "neme", "netmender", "osu", "reed", "vendor",
                                "shopkeeper", "smith", "innkeeper"})
+
+    def test_haluna_vignettes_work_by_day_and_a_few_by_night(self) -> None:
+        """The Lead, 2026-10-30: Haluna lived in. Crowd people at work at the causeway head, in the lane and on the
+        dock; the children play by day; the dock's people are gone home at night and one brings a basket home."""
+        rows = [r for r in _load(HALUNA)["villagers"] if "crowd" in r]
+        people = {p["id"]: p for p in _load(vn.CROWD_FILE)["people"]}
+        self.assertEqual(len(rows), 15)
+        works = {people[r["crowd"]]["work"] for r in rows}
+        self.assertTrue({"mend", "carry", "fold", "haul", "sweep", "play_stones", "play_clap"} <= works)
+        for r in rows:
+            p = people[r["crowd"]]
+            if p["age_band"] == "child" or "dock" in r["npc_id"]:
+                self.assertEqual(r.get("shown"), "day", r["npc_id"])
+        self.assertTrue(any(r.get("shown") == "night" for r in rows))
+        self.assertTrue(any("shown" not in r for r in rows), "some work by lamplight too")
 
 
 class ZoneMistakes(unittest.TestCase):
@@ -165,8 +181,16 @@ class Crowd(unittest.TestCase):
     def test_every_listed_capsule_is_a_person(self) -> None:
         """The task's inventory (Haluna's own villagers excepted) plus Tamsule's board-caller, a person
         (ch07_bark_board.dlg), and the six wrights who stand for Brine Shoals' `wrights` group."""
+        sys.path.insert(0, str(ROOT / "assets_src" / "crowd"))
+        import gen_crowd
+
+        ranges = gen_crowd.load_json(gen_crowd.RANGES)
         by_zone: dict[str, set[str]] = {}
+        vignettes: dict[str, int] = {}  # the slice towns' vignettes (the Lead, 2026-10-30) are people, not capsules
         for p in self.crowd["people"]:
+            if gen_crowd.is_late(ranges, p):
+                vignettes[p["zone"]] = vignettes.get(p["zone"], 0) + 1
+                continue
             by_zone.setdefault(p["zone"], set()).add(p["stage_actor"])
         self.assertEqual(by_zone["ch07/tamsule"], {"board", "boatman", "child", "fisher", "netmender",
                                                    "trader_boatman", "vendor"})
@@ -175,8 +199,10 @@ class Crowd(unittest.TestCase):
         self.assertEqual(sum(p["stage_actor"] == "wrights" for p in self.crowd["people"]),
                          self.crowd["groups"]["brine_shoals_wrights"]["people"])
         self.assertNotIn("ch04/haluna_wake", by_zone, "Haluna's own villagers keep their M2-CHR-03 bodies")
-        act1 = [p for p in self.crowd["people"] if int(p["zone"].split("/")[0][2:]) < 10]
+        act1 = [p for p in self.crowd["people"]
+                if int(p["zone"].split("/")[0][2:]) < 10 and not gen_crowd.is_late(ranges, p)]
         self.assertEqual(len(act1), 56)
+        self.assertEqual(vignettes, {"ch02/haluna": 15, "ch01/oruvel": 6, "ch05/pemakar": 5})
         self.assertEqual(len(by_zone["ch17/hollowmere"]), 10, "Hollowmere's Saltwright townsfolk (Ch15 B11)")
 
     def test_crowd_rows_must_match_their_person(self) -> None:
@@ -261,11 +287,30 @@ class Crowd(unittest.TestCase):
         ranges = gen_crowd.load_json(gen_crowd.RANGES)
         whole = gen_crowd.assign(ranges, self.crowd)
         act1 = copy.deepcopy(self.crowd)
-        act1["people"] = [p for p in act1["people"] if gen_crowd.chapter_of(p["zone"]) < gen_crowd.ACT2_CHAPTER]
+        act1["people"] = [p for p in act1["people"]
+                          if gen_crowd.chapter_of(p["zone"]) < gen_crowd.ACT2_CHAPTER and not gen_crowd.is_late(ranges, p)]
         alone = gen_crowd.assign(ranges, act1)
         self.assertEqual({k: whole[k] for k in alone}, alone)
         self.assertEqual(gen_crowd.chapter_of("ch17/hollowmere"), 17)
         self.assertEqual(gen_crowd.chapter_of("_tests/crowd"), 0)
+
+    def test_late_people_never_reshuffle_the_others(self) -> None:
+        """Late people (`late_zones`: Haluna; `late_prefixes`: Oruvel's deck and Pemakar's quay vignettes) go after
+        everyone: dropping them leaves every other body, and none repeats a body its zone already shows."""
+        sys.path.insert(0, str(ROOT / "assets_src" / "crowd"))
+        import gen_crowd
+
+        ranges = gen_crowd.load_json(gen_crowd.RANGES)
+        self.assertIn("ch02/haluna", ranges["assign"]["late_zones"])
+        whole = gen_crowd.assign(ranges, self.crowd)
+        rest = copy.deepcopy(self.crowd)
+        rest["people"] = [p for p in rest["people"] if not gen_crowd.is_late(ranges, p)]
+        self.assertTrue(any(p["zone"] == "ch05/pemakar" for p in rest["people"]), "Pemakar keeps its own crowd")
+        for zone in ("ch01/oruvel", "ch05/pemakar"):
+            worn = [whole[p["id"]] for p in self.crowd["people"] if p["zone"] == zone]
+            self.assertEqual(len(worn), len(set(worn)), f"{zone}: no body twice")
+        alone = gen_crowd.assign(ranges, rest)
+        self.assertEqual({k: whole[k] for k in alone}, alone)
 
     def test_bodies_span_ages_builds_and_hair_and_are_new_faces(self) -> None:
         sys.path.insert(0, str(ROOT / "assets_src" / "crowd"))

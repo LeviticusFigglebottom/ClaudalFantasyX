@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/liss/liss_stage.tscn" id="stage"]
+[ext_resource type="AnimationLibrary" path="res://assets/characters/liss/anim/liss_clips.tres" id="clips"]
+
+[node name="LissStage" instance=ExtResource("stage")]
+emotion = "determined"
+clip = &"fight_free"
+clip_time = 0.25
+clip_library = ExtResource("clips")

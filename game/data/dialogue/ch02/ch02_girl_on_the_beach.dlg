@@ -90,7 +90,7 @@ Toma [sad]: She woke the house before light. We came down so they would not come
     @wait 0.8
     // H05 is the kneeling height: once they are up, H05_up is the standing two-shot along the beach.
     @camera H05_up blend=0.0
-Asha [soft_smile]: I'm Asha. That's Toma. He's nicer than his spear. #line:ch02_beach_030
+Asha [soft_smile]: I'm Asha. And that's Toma. #line:ch02_beach_030
 <<if $ch02_rhen_stayed_with_dead>>
     // Stay branch (decisions_log N-19, N-22): he takes the hand she offered as soon as she has
     // named herself, so she isn't holding it out through Toma's introduction. They rise together,
@@ -104,7 +104,7 @@ Asha [soft_smile]: I'm Asha. That's Toma. He's nicer than his spear. #line:ch02_
     @wait 1.2
 <<endif>>
 Toma [neutral]: Toma Okeru, of Haluna. You are speaking to the Lady— #line:ch02_beach_031
-Asha [smile]: To Asha. Who is very glad you aren't dead. #line:ch02_beach_032
+Asha [tender]: To Asha. Who is glad you're here. #line:ch02_beach_032
 Rhen [surprised]: Lady what? #line:ch02_beach_033
 @face asha soft_smile 0.3
 Asha [soft_smile]: Later. You're shaking. #line:ch02_beach_034

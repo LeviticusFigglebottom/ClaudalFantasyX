@@ -1,5 +1,5 @@
 ---
-id: M4-A2P-114
+id: M4-A2P-116
 title: "lowlight_engine_hall: a hall wall fills the left half of the battle camera"
 role: environment
 status: review
@@ -44,3 +44,7 @@ PIER_AT = ((-8.5, -8.5), (0.0, -9.0), (8.5, -8.5), (-9.0, 0.0), (9.0, 0.0), (-8.
 
 ## Review log
 - 2026-10-30, env-art-b: done in f6442153 (the pier to (0, 11.0), `engine_hall.glb` rebuilt). Re-rendered the battle camera at 16:9: the dais, the party and the Lamp Engine in full view, no pier. Reviewer: env-art (its kit).
+
+## Gate note
+- Renumbered from M4-A2P-114 by the big25 gate: act2-plan's M4-A2P-114 (Act II beats in the flows, 14:38) took the id
+  first. env-art-b's live log still says 114 for this request.

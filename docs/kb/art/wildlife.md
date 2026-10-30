@@ -93,7 +93,7 @@ only the shine changes) and a faint rim sheen so the wings glint.
 | `WildlifeLayer` (Node3D) | Reads the zone's file, makes the groups and up to six MultiMeshes, steps them each frame, culls |
 | `WildlifeGullFlock` | Birds on their own circles (radius, height, speed, a slow rise and fall), banked into the turn, flapping in bursts between glides; now and then one glides in on a Hermite curve to a free perch, stands there turning its head (sometimes nodding), and takes off back into the circle |
 | `WildlifeCrabBeach` | Each crab has a home spot in its area and shuffles near it; a player inside `flee_radius_m` makes it turn side-on and scuttle away until it is `safe_radius_m` off (along the edge if cornered, never out of the area), hold still for `return_after_s`, then walk home once the player has gone |
-| `WildlifeShoal` | The shoal's centre wanders between points in its area (only where the ground is deep enough), turning as it goes; each fish holds a place in the school with a slow wobble and follows it with a lag; a player wading within `startle_radius_m` makes it dart away |
+| `WildlifeShoal` | The shoal's centre wanders between points in its area (only where the ground is deep enough), turning as it goes; each fish holds a place in the school with a slow wobble and follows it with a lag; a player wading within `startle_radius_m` makes it dart away, the school thrown apart to `scatter_spread` times its spread and closing up again as the startle fades |
 | `WildlifeSwarm` | Insects of one type. **Moths** loop round a point (a lamp), each on its own orbit (a fraction of the radius, its own speed and direction) with a bob, a jitter re-drawn every fraction of a second, and now and then a dart (a larger jitter chased fast); they ignore the player. **Dragonflies** hold a hover with a slight drift, then dart in a straight, eased line to a new spot 1-3 m off; with `perches`, now and then one darts to a free perch and sits with its wings still; a player within `flee_radius_m` (1.5 m) sends it `flee_m` away at 6 m/s, along the area's edge if cornered. Both stay within `radius_m` of the centre and `height_m` of its y |
 | `WildlifeBuffer` | One MultiMesh's per-instance data (transform plus the shader's custom data) |
 | `WildlifeConfig` | Data loading, the zone seed (FNV-1a of the zone id), range draws |
@@ -280,3 +280,12 @@ the tip).
   can have). They cast shadows.
 - **Placed:** ch16_pale_rim.json, three groups off the wade. Review shot `wildlife_zone_pale_rim_wade`, whose stage
   hides the greybox's opaque water plane (`hide_nodes`).
+
+## Reactions to the party passing (the Lead, 2026-10-30)
+- **Birds lift.** A gull or kingfisher perched within `flush_radius_m` of the party (gulls 6 m, kingfishers 4 m) takes
+  off after its own `flush_delay_s`, drawn once per bird (gulls 0–0.9 s, kingfishers 0–0.4 s), so a rail of gulls
+  goes up one after another, not all at once. A bird coming in to land never picks a perch the party is standing by,
+  and a kingfisher there doesn't start a plunge.
+- **Fish scatter.** A startled school spreads to `scatter_spread` times its spread (fish 2.2, rays 1.4) as it darts,
+  and closes back up over `startle_s`. The shoal's bounds include the scattered spread.
+- Tests: `test_the_party_flushes_perched_gulls_one_after_another` and `test_a_startle_throws_the_school_apart`.

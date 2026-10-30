@@ -132,14 +132,14 @@ sheet asks the Art Director to choose before M3-CHR-02's shots are approved.
 | `smile` ● | `mouth_smile` 0.55, `cheek_raise` 0.35, `lid_squint` 0.20 | Warm; with Rhen ("an amusing young man"). |
 | `laugh` | `mouth_smile` 0.70, `cheek_raise` 0.50, `jaw_open` 0.18, `lid_squint` 0.35 | Quiet and brief; head does not tilt. |
 | `worried` | `brow_inner_up` 0.25, `mouth_press` 0.15 | Barely used. |
-| `sad` | `brow_inner_up` 0.35, `lid_close` 0.20, `mouth_smile` 0.05 | "Public sorrow" at the wedding (Ch14): a sad face that keeps a trace of smile. |
+| `sad` | `brow_inner_up` 0.60, `lid_close` 0.28, `mouth_smile` 0.05, `mouth_press` 0.12 | "Public sorrow" at the wedding (Ch14): a sad face that keeps a trace of smile. M4-A2P-055: raised from 0.35/0.20 so it reads in Ch16's 85 mm temptation (C12, C17). |
 | `grief` | `brow_inner_up` 0.60, `lid_close` 0.30, `mouth_frown` 0.20 | Only for Kesh in Ch21. |
 | `angry` | `lid_squint` 0.12, `mouth_press` 0.20 | **His anger is almost nothing on the face**: the fingertip motes (VFX) carry it. |
 | `cold` | `brow_down` 0.12, `mouth_press` 0.25, smile 0 | Ch16, when Asha refuses. |
 | `surprised` | `brow_outer_up` 0.30, `brow_inner_up` 0.20, `lid_wide` 0.20 | Ysolde's rage (Act II) is the one thing that surprises him; small. |
 | `afraid` | `brow_inner_up` 0.40, `lid_wide` 0.30 | Not used by the story; shipped for completeness. |
 | `determined` | `brow_down` 0.15, `mouth_press` 0.20, `mouth_smile` 0.05 | Ch21, reaching into the heart. |
-| `tender` ● | `brow_inner_up` 0.22, `mouth_smile` 0.22, `lid_close` 0.18 | Ch6: "he knelt beside Asha's mother once and says so with real tenderness". |
+| `tender` ● | `brow_inner_up` 0.35, `mouth_smile` 0.35, `lid_close` 0.22, `cheek_raise` 0.15 | Ch6: "he knelt beside Asha's mother once and says so with real tenderness". M4-A2P-055: raised from 0.22/0.22/0.18 for the warm temptation at 85 mm (Ch16 C12). |
 | `guilty` | `brow_inner_up` 0.20, `lid_close` 0.20 | Not used; shipped. |
 | `exhausted` | `lid_close` 0.50, `mouth_smile` 0.20, `brow_inner_up` 0.10 | **The last expression is relief** (Defeat): staged as `exhausted` with the smile. |
 

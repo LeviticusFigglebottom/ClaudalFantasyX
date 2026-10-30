@@ -5,6 +5,7 @@
 // `current_song`. Rhen turns at the first phrase: the same FAMILY of song as the one in the storm. He says
 // nothing (a seed for Ch17). H03: silence; then an answer from the south, many voices singing the chart's
 // next phrase, and lashed hulls coming out of the white. Liss keeps singing until a line can be thrown.
+// B10 is ch15_the_dock_master.dlg (split 2026-10-30: B10 is staged in ch17/hollowmere; this file is the open sea).
 // B10 (H04-H06): Hollowmere at dawn, the first oil lamps on the hulls (rule 3 ends). Aldous Varrow, the
 // dock-master, at his hull-house door; he looks at the canopy, then at his daughter. H06: from the barge,
 // at a distance, Liss tells him. NO DIALOGUE IS HEARD in this beat: the errand is hers.
@@ -14,7 +15,7 @@ location: ch15/open_sea
 @letterbox on
 @fade in 3.0
 @camera H01
-@mark liss barge_bow walk
+@mark liss bow_liss walk
 @wait 3.0
 @camera H02
 @music hollowmere_answers fade=0.0
@@ -25,21 +26,6 @@ location: ch15/open_sea
 @camera H03
 @wait 8.0
 <<set $ch15_hollowmere_answered = true>>
-@camera H04
-@wait 4.0
-@camera H05
-@mark aldous_varrow fathers_door walk
-@anim aldous_varrow look_at tobin_bier
-@wait 2.0
-@anim aldous_varrow look_at liss
-@wait 2.0
-@camera H06
-@mark liss fathers_door walk
-@wait 6.0
-@anim aldous_varrow embrace liss
-@wait 4.0
-@music silence fade=3.0
-<<set $ch15_liss_told_father = true>>
+@fade out 1.5
 @letterbox off
-@camera release
 ===

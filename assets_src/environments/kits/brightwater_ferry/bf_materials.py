@@ -177,6 +177,10 @@ STANDARD: dict[str, dict] = {
     # Pemakar lacquer (pemakar_materials.py kit_lacquer_black, and lacquer_red_deep for the galley's dado).
     "bf_lacquer_black": {"albedo_color": hexc("#1D1916"), "roughness": 0.24, "clearcoat_enabled": "true",
                          "clearcoat": 0.6},
+    # M4-A2P-1401 (the Lead's 10-30 Ch4 pass): the galley's board walls in a satin of the same black. The glossy
+    # clearcoat caught the night sky on every board's rounded edge indoors (nothing occludes the sky reflection
+    # there), a bright streak per board; the hull keeps its gloss.
+    "bf_lacquer_black_satin": {"albedo_color": hexc("#1D1916"), "roughness": 0.55, "metallic_specular": 0.3},
     "bf_lacquer_red_deep": {"albedo_color": hexc("#7A1712"), "roughness": 0.26, "clearcoat_enabled": "true",
                             "clearcoat": 0.5},
     "bf_ceramic": {"albedo_color": hexc("#DCE3E0"), "roughness": 0.5, "metallic_specular": 0.5},

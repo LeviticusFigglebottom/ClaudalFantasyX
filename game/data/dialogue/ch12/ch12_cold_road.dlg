@@ -8,7 +8,8 @@ location: ch12/keth_pass
 @letterbox on
 @camera K01
 @music keth_pass fade=2.0
-@wait 5.0
+// M4-CIN-1304: K01 holds on the sky (act2_ch12_direction.md, B01).
+@wait 7.0
 @camera P01
 @vfx glimmer_lift at=pass_motes count=4 motion=spiral_up rate=fast
 @wait 2.0

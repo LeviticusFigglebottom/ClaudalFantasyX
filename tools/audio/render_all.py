@@ -46,7 +46,7 @@ M1_AUD_02 = ("hush_theme_v2", "battle_standard.", "temple_trial")
 # M2-AUD-03's cues, held to the music targets (-16 +- 0.5 LUFS, true peak <= -1 dBTP). drownbell_p1 is one stem of a
 # stack measured whole by its source (the full stack is -16; stem 1 alone is quieter by design, mix.md §2).
 M2_CUES = ("haluna_village", "haluna_night", "battle_standard_v2", "hush_first_verse", "hush_coda", "haluna_dawn",
-           "shell_shrine_interior", "ilun_summon", "saltgrass_causeway", "lamp_diver", "sefir_theme", "the_ebbing",
+           "shell_shrine_interior", "ilun_summon", "saltgrass_causeway", "lamp_diver", "sefir_theme", "the_ebbing", "the_ebbing_release",
            "tidecup_match", "terraces_of_ash", "corrow_seawall", "hullgnaw", "spar_wraith", "oruvel", "pilgrims_wake",
            "tamsule", "iskarra_vigil", "brightwater_ferry", "brine_shoals", "ashcrown", "coilspire",
            "tamsule_bell_galleries", "stillguard_inquisitor", "ossa_fen", "reedhollow", "sunken_vey", "lowlight",
@@ -121,7 +121,7 @@ JOBS = [
      ["saltgrass_causeway.ogg", "saltgrass_causeway.loop.json"], "music_loop"),
     ("assets_src/music/lamp_diver.py", "assets/audio/music", ["lamp_diver.ogg", "lamp_diver.loop.json"], "music_loop"),
     ("assets_src/music/sefir_theme.py", "assets/audio/music", ["sefir_theme.ogg", "sefir_theme.loop.json"], "music_loop"),
-    ("assets_src/music/the_ebbing.py", "assets/audio/music", ["the_ebbing.ogg"], "music"),
+    ("assets_src/music/the_ebbing.py", "assets/audio/music", ["the_ebbing.ogg", "the_ebbing_release.ogg"], "music"),
     ("assets_src/sfx/act1_ambience.py", "assets/audio/ambience",
      [f"{b}{ext}" for b in ("tamsule_port", "tamsule_bell", "brine_shoals", "pemakar_terraces", "ashcrown",
                            "corrow_seawall") for ext in (".ogg", ".loop.json")], "ambience_loop"),
@@ -516,7 +516,9 @@ def main() -> int:
             if f.endswith(".json"):
                 rows.append((os.path.join(rel_dir, f), size, None, None, None, None, _sha(p)))
                 continue
-            looped = kind in ("music_loop", "ambience_loop")
+            # a loop job may carry a one-shot beside its loop (farewell_tide_release): only a file with its own
+            # .loop.json sidecar is checked as a loop
+            looped = kind in ("music_loop", "ambience_loop") and os.path.isfile(os.path.splitext(p)[0] + ".loop.json")
             one_shot = kind == "sfx"
             if kind == "sfx_set":
                 looped = os.path.splitext(f)[0] + ".loop.json" in files

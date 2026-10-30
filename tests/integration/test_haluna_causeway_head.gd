@@ -41,6 +41,7 @@ func before_each() -> void:
 	story.overhear.line_shown.connect(func(s: DialogueStep) -> void: overheard.append(s.line_id))
 	story.hand_off = func(kind: StringName, target: String) -> void: hand_offs.append([kind, target])
 	Game.set_flag(&"ch02_met_asha", true)
+	Game.set_flag(&"ch02_ate_at_nemes", true)  # M4-A2P-115 A4: the causeway rule waits for Neme's table
 
 
 func test_the_unsaved_trigger_is_an_overheard_bark_on_the_causeway_box() -> void:
@@ -52,7 +53,7 @@ func test_the_unsaved_trigger_is_an_overheard_bark_on_the_causeway_box() -> void
 		return
 	assert_eq(bark.activation, Interactable.Activation.TOUCH)
 	assert_eq(bark.payload, {"dialogue": String(UNSAVED_BARK), "overheard": true})
-	assert_eq(bark.requires_flag, &"ch02_met_asha")
+	assert_eq(bark.requires_flag, &"ch02_ate_at_nemes", "after Neme's table (M4-A2P-115 A4)")
 	assert_eq(bark.blocked_by_flag, &"ch02_saved_once", "silent once Rhen has saved")
 	assert_false(bark.once, "every walk-in before the first save")
 	assert_true(bark.global_transform.is_equal_approx(head.global_transform), "the same place as the causeway head")
@@ -97,7 +98,9 @@ func test_not_yet_returns_control_and_the_trigger_fires_again() -> void:
 	story.sequencer.auto_choice = NOT_YET
 	_walk_in()
 	assert_true(ASK_LINE in lines and DECLINE_LINE in lines, "Asha asks; Rhen says not yet")
-	assert_false(&"ch02_low_tide_001" in lines, "the rest of B05 waits")
+	# M4-A2P-115 A3: the tide and the invitation come before the choice; Toma's objection and the walk wait.
+	assert_true(&"ch02_low_tide_002" in lines, "Asha's invitation comes before the choice")
+	assert_false(&"ch02_low_tide_003" in lines, "the rest of B05 waits")
 	assert_eq(hand_offs, [] as Array[Array], "nothing handed off")
 	assert_false(story.busy)
 	assert_false(story.sequencer.is_playing())

@@ -129,7 +129,7 @@
   ],
   "triggers": [
     {"id": "path_fight", "at": [284.844, 27.654, 111.268], "size": [8, 0, 2], "blocked_by_flag": "ch08_path_fight_won", "payload": {"beat": "path_fight"}, "yaw": -129.776},
-    {"id": "hearth", "activation": "interact", "at": [310.771, 38.935, 152.124], "size": [1.8, 0, 1.8], "prompt_key": "FIELD_PROMPT_CH08_HEARTH", "blocked_by_flag": "ch08_fed_the_beacon", "payload": {"beat": "keeping_flame"}, "yaw": -170.0},
+    {"id": "hearth", "activation": "interact", "at": [310.771, 38.935, 152.124], "size": [1.8, 0, 1.8], "prompt_key": "FIELD_PROMPT_CH08_HEARTH", "blocked_by_flag": "ch08_entered_coilspire", "once": true, "sets_flag": "ch08_fed_the_beacon", "payload": {"beat": "keeping_flame"}, "yaw": -170.0},
     {"id": "door", "at": [302.896, 38.935, 153.092], "size": [6, 0, 2], "blocked_by_flag": "ch08_entered_coilspire", "payload": {"beat": "door"}, "yaw": 75.0},
     {"id": "key_t1_a", "activation": "interact", "at": [311.339, 39.285, 160.298], "size": [1.6, 0, 1.6], "prompt_key": "FIELD_PROMPT_CH08_FLUE_KEY", "requires_flag": "ch08_entered_coilspire", "payload": {"flue": "t1_a"}, "yaw": -90.0},
     {"id": "key_t1_b", "activation": "interact", "at": [306.825, 39.285, 161.592], "size": [1.6, 0, 1.6], "prompt_key": "FIELD_PROMPT_CH08_FLUE_KEY", "requires_flag": "ch08_entered_coilspire", "payload": {"flue": "t1_b"}, "yaw": -178.0},
