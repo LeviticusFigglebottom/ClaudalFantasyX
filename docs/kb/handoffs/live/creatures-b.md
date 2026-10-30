@@ -834,3 +834,13 @@ What the Act II fights still need from others: enemy rows and encounters (combat
   arm crossing the core; rendered in the intro hero shot at 80°, both the closed and opened stances keep both arms
   raised either side and the core whole. lamp_engine.md "As built" is updated. Checks: Godot battle_lineup 5/0
   (red before), creature 159/0, boss green, boss_seat and stand_in 3/0, validate_data 0/0.
+- **Vowbound summon passes so far** (each skill once, then the Swell, in the mounted Act II fights):
+  - **Ethren** (ch12 Ram): Level Hand (`cast`, the wings open), Hold the Hour (`stop`: the 618d916b map fix seen in
+    play), Lacquer Screen (`ward`, the wings swing forward), the Still Water finisher (`special`), hit and KO all read.
+  - **Virel** (ch12): Kite Flare (`cast`), the Flare Line finisher, attack and hit all read.
+  - **Ilun** and **Nhoa** (ch10 Drowner): every skill read (Ilun's Brine Lash, Tidal Ward and Floodnet; Nhoa's Silt
+    Fall, `deep_well` and `echo`). Their finishers are being re-run: the sweep first unleashed through the party's
+    Swell system, which a Vowbound doesn't use. It now acts with the finisher, as the menu does.
+  - **For battle-presentation:** on Ilun's dismissal, the Drowner's fall camera ends inside its roots, which fill the
+    frame.
+  - Running: Kesh (ch12), Hesk and Kahre (ch11, more turns), and the two finishers.
