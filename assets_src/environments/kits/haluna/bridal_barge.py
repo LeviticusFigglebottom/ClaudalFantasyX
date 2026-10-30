@@ -33,6 +33,8 @@ WATERLINE_Y = -0.6
 RAIL_H = 0.35
 CANOPY = ((5.0, 2.5), (7.3, 2.1))  # (x, half-width) of the canopy's two post pairs
 BIER_AT = (6.2, 0.0)
+BOW_TAPER_FROM = 2.5  # the bow's taper runs from here (forward of amidships) to its point
+STERN_TAPER_FROM = 5.0  # and the stern's from here aft
 SLOTS_METRE = (-4.4, 4.0, -2.2, 3.0)  # x0, x1, z0, z1: the battle slots' floor (battle_arenas.md)
 LACQUER = kc.Weathering(moss=0.0, salt=0.15, wet=0.1, erosion=0.1)
 
@@ -40,8 +42,8 @@ LACQUER = kc.Weathering(moss=0.0, salt=0.15, wet=0.1, erosion=0.1)
 def half_beam(x) -> np.ndarray:
     """The deck's half-width at station x: full amidships, tapering to the bow's point and a little at the stern."""
     x = np.asarray(x, float)
-    bow = 1.0 - 0.92 * kc.smoothstep(2.5, -BOW_X, -x) ** 1.2
-    stern = 1.0 - 0.25 * kc.smoothstep(5.0, STERN_X, x)
+    bow = 1.0 - 0.92 * kc.smoothstep(BOW_TAPER_FROM, -BOW_X, -x) ** 1.2
+    stern = 1.0 - 0.25 * kc.smoothstep(STERN_TAPER_FROM, STERN_X, x)
     return HALF_BEAM * bow * stern
 
 
@@ -159,6 +161,24 @@ def _bow_hook(mb, lod) -> None:
         a = np.linspace(0.0, 1.6 * math.pi, 11)
         hook = np.stack([x[-1] - 0.12 * np.sin(a), y[-1] - 0.12 + 0.12 * np.cos(a), np.zeros_like(a)], -1)
         kc.tube(mb, hook, 0.012, 5, gilt)
+
+
+def build_fitted(name: str, seed: int, *, bow_x: float, stern_x: float, half_beam_m: float, bier_at: tuple[float, float],
+                 canopy: tuple[tuple[float, float], tuple[float, float]]) -> list[kc.MeshBuilder]:
+    """The same barge at another size (a zone's greybox deck: M4-A2P-045's open sea), its bier and canopy where the
+    zone's are. The builders read the module's dimensions, so they are set for this build and restored after it."""
+    g = globals()
+    saved = {k: g[k] for k in ("BOW_X", "STERN_X", "HALF_BEAM", "BIER_AT", "CANOPY", "BOW_TAPER_FROM",
+                                "STERN_TAPER_FROM")}
+    try:
+        g.update(BOW_X=bow_x, STERN_X=stern_x, HALF_BEAM=half_beam_m, BIER_AT=bier_at, CANOPY=canopy,
+                 BOW_TAPER_FROM=-bow_x * BOW_TAPER_FROM / -BOW_X, STERN_TAPER_FROM=stern_x * STERN_TAPER_FROM / STERN_X)
+        out = build_barge(seed)
+    finally:
+        g.update(saved)
+    for mb, lod in zip(out, (False, True)):
+        mb.name = name + ("-lod1" if lod else "")
+    return out
 
 
 TARGETS = {"bridal_barge": build_barge}

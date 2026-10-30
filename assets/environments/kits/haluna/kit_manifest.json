@@ -1498,6 +1498,17 @@
         "oil_lamp_post-lod1": 27
       }
     },
+    "open_sea_barge": {
+      "budget": [
+        16000,
+        1200
+      ],
+      "bytes": 214876,
+      "lods": {
+        "open_sea_barge": 3728,
+        "open_sea_barge-lod1": 648
+      }
+    },
     "order_chapel": {
       "budget": [
         9000,
